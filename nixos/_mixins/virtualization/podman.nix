@@ -6,7 +6,7 @@
     unstable.distrobox
     podman-tui
     podman-compose
-    docker-compose
+    aardvark-dns
     fuse-overlayfs # Container overlay+shiftfs
     #dive             # Container analyzer
     #grype            # Container vulnerability scanner
@@ -38,6 +38,7 @@
       defaultNetwork.settings = {
         dns_enabled = true;
       };
+      dockerSocket.enable = true;
       #extraPackages = [ pkgs.zfs ];  # Using podman with ZFS
       dockerCompat = true;
       enable = true;
@@ -58,9 +59,9 @@
       ];
 
       # https://nixos.wiki/wiki/Podman
-      containersConf.settings = {
-        engine.helper_binaries_dir = [ "${pkgs.netavark}/bin" ];
-      };
+      # containersConf.settings = {
+      #   engine.helper_binaries_dir = [ "${pkgs.netavark}/bin" ];
+      # };
 
       containersConf.settings = {
         containers.dns_servers = [ "8.8.8.8" "8.8.4.4" ];

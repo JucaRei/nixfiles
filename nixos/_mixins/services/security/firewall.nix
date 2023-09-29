@@ -22,7 +22,7 @@ let
       "zed"
     ];
     tcpPorts = [ 22000 ];
-    udpPorts = [ 22000 21027 ];
+    udpPorts = [ 22000 21027 53 5353 ];
   };
 in
 {
