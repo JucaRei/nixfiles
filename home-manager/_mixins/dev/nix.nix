@@ -11,6 +11,7 @@
       nixpkgs-fmt
       nurl
       nil
+      # nixd
       # rnix-lsp
       statix
     ];
