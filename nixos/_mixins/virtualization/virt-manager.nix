@@ -63,10 +63,6 @@
 
   users.groups.libvirtd.members = [ "root" "${username}" ];
 
-  security = {
-    polkit.enable = true;
-    unprivilegedUsernsClone = true;
-  };
   virtualisation = {
     libvirtd = {
       enable = true;

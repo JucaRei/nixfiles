@@ -58,3 +58,8 @@
     };
   };
 }
+
+
+# ssh -oHostKeyAlgorithms=+ssh-dss
+# HD/HD_a2/Transmission/complete
+# HD/HD_b2

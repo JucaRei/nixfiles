@@ -7,6 +7,7 @@ _: {
     # rebuild-iso-console = "pushd $HOME/Zero/nixfiles && nix build .#nixosConfigurations.iso-console.config.system.build.isoImage && popd";
     # rebuild-iso-desktop = "pushd $HOME/Zero/nixfiles && nix build .#nixosConfigurations.iso-desktop.config.system.build.isoImage && popd";
     nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
+    search = "nix search nixpkgs";
     mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
     mkdir = "mkdir -pv";
     cat = "bat --paging=never";

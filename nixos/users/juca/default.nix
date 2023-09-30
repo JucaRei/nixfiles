@@ -18,6 +18,7 @@ in
       "users"
       "video"
       "wheel"
+      "storage"
     ]
     ++ ifExists [
       "adbusers"
