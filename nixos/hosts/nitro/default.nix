@@ -38,6 +38,7 @@
     supportedFilesystems = [ "vfat" "btrfs" ];
 
     kernelModules = [
+      "kvm-intel"
       #"i915"
       "z3fold"
       #"hdapsd"

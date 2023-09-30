@@ -36,7 +36,6 @@
     consoleLogLevel = 0;
     kernelModules = [
       "vhost_vsock"
-      "kvm-intel"
       "tcp_bbr"
     ];
     kernelParams = [
@@ -62,7 +61,7 @@
         # Bypass hotspot restrictions for certain ISPs
         "net.ipv4.ip_default_ttl" = 65;
 
-        "vm.swappiness" = 10;
+        "vm.swappiness" = 30;
         # TODO: the higher default of 10% of RAM would be better here,
         # but it makes removable storage dangerous as it's a system wide setting
         # and there's no way to make the limit smaller for removable storeage

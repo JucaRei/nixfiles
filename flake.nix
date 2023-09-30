@@ -224,7 +224,7 @@
         hyperv = libx.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
         vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
         # Raspberry
-        rasp3 = libx.mkHost { hostname = "rasp3"; username = "juca"; desktop = "mate"; hostid = "6f2efa55"; };
+        rasp3 = libx.mkHost { hostname = "rasp3"; username = "juca"; hostid = "6f2efa55"; };
         rasp3-headless = libx.mkHost { hostname = "rasp3-headless"; username = "juca"; hostid = "9be877f1"; };
       };
     };

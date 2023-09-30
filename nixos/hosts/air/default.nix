@@ -21,9 +21,12 @@
       compressor = "zstd";
       supportedFilesystems = [ "btrfs" ];
     };
-    kernelModules = [ "kvm-intel" "i915" "wl" "crc32c-intel" "z3fold" "lz4hc" "lz4hc_compress" ];
+    kernelModules = [ "kvm-intel" "applesmc" "i915" "wl" "crc32c-intel" "z3fold" "lz4hc" "lz4hc_compress" ];
     kernelParams = [
+      "hid_apple.iso_layout=0"
       "hid_apple.swap_opt_cmd=1" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
+      "acpi_backlight=vendor"
+      "acpi_mask_gpe=0x15"
       "i915.force_probe=0116" # Force enable my intel graphics
       #"video=efifb:off" # Disable efifb driver, which crashes Xavier AGX/NX
       #"video=efifb"
@@ -192,6 +195,9 @@
       enable = true;
       aggressive = true;
     };
+    xserver.deviceSection = lib.mkDefault ''
+      Option "TearFree" "true"
+    '';
   };
 
   powerManagement.cpuFreqGovernor = "ondemand";

@@ -34,7 +34,7 @@
       availableKernelModules = [ "uhci_hcd" "ehci_pci" "ata_piix" "ahci" "firewire_ohci" "usbhid" "usb_storage" "sd_mod" "sr_mod" ];
       # kernelModules = [ "b43" "bcm5974" ];
     };
-    kernelModules = [ "bcm5974" ];
+    kernelModules = [ "kvm-intel" "applesmc" "bcm5974" ];
     kernelPackages = lib.mkDefault pkgs.linuxPackages_6_1;
     # kernelPackages = lib.mkDefault pkgs.linuxPackages_5_4;
     # kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
