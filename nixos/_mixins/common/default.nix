@@ -8,6 +8,7 @@
     # ../config/qt/qt-style.nix
     ../services/security/sudo.nix
     ../services/security/common.nix
+    ../services/security/detect-reboot-needed.nix
     # ../services/power/powertop.nix
     ../hardware/other/fwupd.nix
     ../hardware/other/usb.nix

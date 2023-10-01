@@ -141,22 +141,8 @@
   # };
 
   hardware = {
-    # cpu.intel.updateMicrocode =
-    #   lib.mkDefault config.hardware.enableRedistributableFirmware;
-    # nvidia =
-    #   {
-    #     prime = {
-    #       offload = {
-    #         enable = lib.mkForce false;
-    #         enableOffloadCmd = lib.mkForce false;
-    #       };
-    #       sync.enable = lib.mkForce false;
-    #     };
-    #     powerManagement = {
-    #       enable = true;
-    #       finegrained = lib.mkForce false;
-    #     };
-    #   };
+    cpu.intel.updateMicrocode =
+      lib.mkDefault config.hardware.enableRedistributableFirmware;
   };
 
   nixpkgs = {
@@ -183,7 +169,7 @@
       };
     };
     xserver = {
-      videoDrivers = [ "i915" ];
+      # videoDrivers = [ "i915" ];
       # displayManager.sessionCommands = ''
       #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource 1 0
       #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
@@ -195,6 +181,15 @@
       # xkbVariant = "pc105";
       xkbModel = lib.mkForce "pc105";
       xkbOptions = "grp:alt_shift_toggle";
+      libinput = {
+        enable = true;
+        touchpad = {
+          # horizontalScrolling = true;
+          naturalScrolling = false;
+          tapping = true;
+          # tappingDragLock = false;
+        };
+      };
     };
     # power-profiles-daemon.enable = lib.mkForce false;
     # tlp = {

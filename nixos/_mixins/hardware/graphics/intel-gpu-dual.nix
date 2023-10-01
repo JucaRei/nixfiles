@@ -36,6 +36,7 @@
       vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
     };
 
+    services.xserver.videoDrivers = [ "i915" ];
     boot.initrd.kernelModules = [ "i915" ];
   };
 }
