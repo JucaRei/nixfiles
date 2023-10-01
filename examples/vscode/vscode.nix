@@ -63,3 +63,4 @@
 # ssh -oHostKeyAlgorithms=+ssh-dss
 # HD/HD_a2/Transmission/complete
 # HD/HD_b2
+# sudo nixos-install -v --root /mnt --flake .#rasp3 --show-trace --option system aarch64-linux

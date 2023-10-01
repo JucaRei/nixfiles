@@ -2,17 +2,17 @@
 
 {
   imports = [
-    # "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
+    "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
     ../../_mixins/services/security/sudo.nix
     ../../_mixins/virtualization/docker.nix
   ];
   boot = {
     # Make sure not to use the latest kernel because it is not supported on NixOS RPI
-    # kernelPackages = lib.mkForce pkgs.linuxPackages_rpi3;
-    kernelPackages = lib.mkForce pkgs.linuxPackages;
-    initrd = {
-      availableKernelModules = [ ];
-    };
+    # kernelPackages = lib.mkForce pkgs.linuxPackages;
+    kernelPackages = pkgs.linuxPackages_rpi3;
+    # initrd = {
+    # availableKernelModules = [ ];
+    # };
     # kernelModules = [ "ahci" ];
 
     # A bunch of boot parameters needed for optimal runtime on RPi 3b+
@@ -20,21 +20,21 @@
       # "cma=128M"
       "cma=256M"
       # "cma=32M"
-      "console=ttyAMA0,115200"
-      "console=tty1"
+      # "console=ttyAMA0,115200"
+      # "console=tty1"
     ];
     loader = {
       # NixOS wants to enable GRUB by default
       grub.enable = false;
-      # generic-extlinux-compatible = lib.mkForce true;
+      generic-extlinux-compatible = lib.mkForce true;
       raspberryPi = {
         enable = true;
         version = 3;
         uboot.enable = true;
         firmwareConfig = ''
-          gpu_mem=128
+          gpu_mem=256
         '';
-        # gpu_mem=256
+        # gpu_mem=128
       };
     };
   };
@@ -48,13 +48,13 @@
 
   # File systems configuration for using the installer's partition layout
   fileSystems = {
-    # "/boot" = {
-    #   device = "/dev/disk/by-label/NIXOS_BOOT";
-    #   fsType = "vfat";
-    #   options = [ "nofail" ];
-    # };
+    "/boot" = {
+      device = "/dev/disk/by-label/BOOT";
+      fsType = "vfat";
+      options = [ "nofail" "noatime" "nodiratime" ];
+    };
     "/" = {
-      device = "/dev/disk/by-id/mmc-SC32G_0x78fe3e2e";
+      device = "/dev/disk/by-label/NIXOS-SD";
       fsType = "ext4";
     };
   };
@@ -125,12 +125,12 @@
   #   size = 2048;
   # }];
 
-  zramSwap = {
-    enable = true;
-    swapDevices = 5;
-    memoryPercent = 40; # 20% of total memory
-    algorithm = "lz4";
-  };
+  # zramSwap = {
+  #   enable = true;
+  #   swapDevices = 5;
+  #   memoryPercent = 40; # 20% of total memory
+  #   algorithm = "lz4";
+  # };
 
   hardware = {
     pulseaudio.enable = true;
@@ -146,6 +146,7 @@
 
   nixpkgs = {
     # localSystem.system = "aarch64-linux";
+    buildPlatform.system = "x86_64-linux";
     hostPlatform = lib.mkForce "aarch64-linux";
   };
 }

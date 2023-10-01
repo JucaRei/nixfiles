@@ -69,7 +69,7 @@ in
   #};
   disko.devices = {
     disk = {
-      sda = {
+      mmcblk0 = {
         # device = "/dev/mmcblk0";
         device = "/dev/disk/by-id/mmc-SC32G_0x78fe3e2e";
         type = "disk";
@@ -78,16 +78,29 @@ in
           format = "msdos";
           partitions = [
             {
+              name = "BOOT";
+              start = "0%";
+              end = "500M";
+              bootable = true;
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+                extraArgs = [ "-n BOOT" ];
+              };
+            }
+            {
               name = "root";
-              part-type = "primary";
-              start = "1M";
+              start = "500M";
               end = "100%";
+              part-type = "primary";
               bootable = true;
               content = {
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
                 mountOptions = defaultExt4Opts;
+                extraArgs = [ "-L NIXOS-SD" ];
               };
             }
           ];

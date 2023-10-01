@@ -9,7 +9,6 @@
     ../services/security/sudo.nix
     ../services/security/common.nix
     # ../services/power/powertop.nix
-    ../services/network/networkmanager.nix
     ../hardware/other/fwupd.nix
     ../hardware/other/usb.nix
     # ../services/openssh.nix
