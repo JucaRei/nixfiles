@@ -2,10 +2,12 @@
 
 # Micro SD 32gb
 export DISK=/dev/disk/by-id/mmc-SC32G_0x78fe3e2e
-parted /dev/mmcblk0 --mklabel msdos
-parted /dev/mmcblk0 --mkpart primary fat32 0MiB 512MiB  #/dev/mmcblk0p1 is /boot
-parted /dev/mmcblk0 --mkpart primary fat32 512MiB -2GiB  # This is the ZFS partition
-parted /dev/mmcblk0 --mkpart primary linux-swap -2GiB 100% # Swap. This is optional
+parted $DISK mklabel msdos
+parted $DISK mkpart primary 2048s 100%
+parted -a optimal $DISK mklabel msdos
+parted -a opt $DISK mkpart primary fat32 '0%' 512MiB  #/dev/mmcblk0p1 is /boot
+parted $DISK mkpart primary ext4 512MiB -2048MiB  # This is the ZFS partition
+parted $DISK mkpart primary linux-swap -2GiB 100% # Swap. This is optional
 
 mkfs.vfat -F32 $DISK-part1 # Format /boot
 

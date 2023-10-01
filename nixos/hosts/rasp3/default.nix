@@ -8,15 +8,17 @@
   ];
   boot = {
     # Make sure not to use the latest kernel because it is not supported on NixOS RPI
-    kernelPackages = pkgs.linuxPackages_rpi3;
+    # kernelPackages = lib.mkForce pkgs.linuxPackages_rpi3;
+    kernelPackages = lib.mkForce pkgs.linuxPackages;
     initrd = {
-      availableKernelModules = [ "usb_storage" "xhci_pci" "usbhid" ];
+      availableKernelModules = [ ];
     };
+    # kernelModules = [ "ahci" ];
 
     # A bunch of boot parameters needed for optimal runtime on RPi 3b+
     kernelParams = [
-      "cma=128M"
-      # "cma=256M"
+      # "cma=128M"
+      "cma=256M"
       # "cma=32M"
       "console=ttyAMA0,115200"
       "console=tty1"
@@ -24,7 +26,7 @@
     loader = {
       # NixOS wants to enable GRUB by default
       grub.enable = false;
-      generic-extlinux-compatible = true;
+      # generic-extlinux-compatible = lib.mkForce true;
       raspberryPi = {
         enable = true;
         version = 3;
@@ -37,7 +39,7 @@
     };
   };
   environment.systemPackages = with pkgs; [
-    raspberrypi-tools
+    libraspberrypi
     diskrsync
     partclone
     ntfsprogs
@@ -46,13 +48,13 @@
 
   # File systems configuration for using the installer's partition layout
   fileSystems = {
-    "/boot" = {
-      device = "/dev/disk/by-label/NIXOS_BOOT";
-      fsType = "vfat";
-      options = [ "nofail" ];
-    };
+    # "/boot" = {
+    #   device = "/dev/disk/by-label/NIXOS_BOOT";
+    #   fsType = "vfat";
+    #   options = [ "nofail" ];
+    # };
     "/" = {
-      device = "/dev/disk/by-label/NIXOS_SD";
+      device = "/dev/disk/by-id/mmc-SC32G_0x78fe3e2e";
       fsType = "ext4";
     };
   };
@@ -118,10 +120,18 @@
 
   # Use 1GB of additional swap memory in order to not run out of memory
   # when installing lots of things while running other things at the same time.
-  swapDevices = [{
-    device = "/swapfile";
-    size = 2048;
-  }];
+  # swapDevices = [{
+  #   device = "/swapfile";
+  #   size = 2048;
+  # }];
+
+  zramSwap = {
+    enable = true;
+    swapDevices = 5;
+    memoryPercent = 40; # 20% of total memory
+    algorithm = "lz4";
+  };
+
   hardware = {
     pulseaudio.enable = true;
     enableRedistributableFirmware = true;

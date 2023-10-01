@@ -70,7 +70,8 @@ in
   disko.devices = {
     disk = {
       sda = {
-        device = "/dev/mmcblk0";
+        # device = "/dev/mmcblk0";
+        device = "/dev/disk/by-id/mmc-SC32G_0x78fe3e2e";
         type = "disk";
         content = {
           type = "table";
