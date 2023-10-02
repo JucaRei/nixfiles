@@ -18,7 +18,7 @@
     ./neofetch.nix
     ./skim.nix
     ./starship.nix
-    ./neovim
+    ../config/neovim
     # ./xdg.nix
     # ./zoxide.nix
   ];
