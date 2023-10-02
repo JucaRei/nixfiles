@@ -83,7 +83,7 @@
       # bmon # Modern Unix `iftop`
       # breezy # Terminal bzr client
       # butler # Terminal Itch.io API client
-      chafa # Terminal image viewer
+      # chafa # Terminal image viewer
       # chroma # Code syntax highlighter
       # clinfo # Terminal OpenCL info
       # curlie # Terminal HTTP client
@@ -96,16 +96,16 @@
       duf # Modern Unix `df`
       # du-dust # Modern Unix `du`
       # entr # Modern Unix `watch`
-      fast-cli # Terminal fast.com
+      # fast-cli # Terminal fast.com
       fd # Modern Unix `find`
       # glow # Terminal Markdown renderer
-      gping # Modern Unix `ping`
+      # gping # Modern Unix `ping`
       # hexyl # Modern Unix `hexedit`
       # httpie # Terminal HTTP client
       # hyperfine # Terminal benchmarking
       # iperf3 # Terminal network benchmarking
       # iw # Terminal WiFi info
-      jpegoptim # Terminal JPEG optimizer
+      # jpegoptim # Terminal JPEG optimizer
       # jiq # Modern Unix `jq`
       # lazygit # Terminal Git client
       # libva-utils # Terminal VAAPI info
@@ -120,7 +120,7 @@
       # nyancat # Terminal rainbow spewing feline
       speedtest-go # Terminal speedtest.net 
       # optipng # Terminal PNG optimizer
-      procs # Modern Unix `ps`
+      # procs # Modern Unix `ps`
       # python310Packages.gpustat # Terminal GPU info
       # quilt # Terminal patch manager
       ripgrep # Modern Unix `grep`
@@ -132,7 +132,7 @@
       # vdpauinfo # Terminal VDPAU info
       # wavemon # Terminal WiFi monitor
       yq-go # Terminal `jq` for YAML
-      nvchad
+      # nvchad
     ];
     # sessionVariables = {
     #   BZR_EMAIL = "Reinaldo P Jr <code@wimpress.io>";
