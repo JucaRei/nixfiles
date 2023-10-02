@@ -9,7 +9,7 @@
         (import nixgl { inherit pkgs; }).nixGLIntel # OpenGL for GUI apps
         #.nixVulkanIntel
         pkgs.hello
-        pkgs.sudo
+        # pkgs.sudo
       ];
 
     #file.".bash_aliases".text = ''
