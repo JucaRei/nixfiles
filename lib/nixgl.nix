@@ -6,7 +6,8 @@
   home = {
     packages =
       [
-        (import nixgl { inherit pkgs; }).nixGLIntel # OpenGL for GUI apps
+        # (import nixgl { inherit pkgs; }).nixGLIntel # OpenGL for GUI apps
+        (import nixgl { inherit pkgs; }).nixVulkanIntel # OpenGL for GUI apps
         #.nixVulkanIntel
         pkgs.hello
         # pkgs.sudo

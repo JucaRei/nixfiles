@@ -15,6 +15,7 @@
       duf
       htop
       nixpkgs-fmt
+      neofetch
     ];
     shellHook = ''
       # alias ssh=dbclient
