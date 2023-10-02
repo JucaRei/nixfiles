@@ -176,7 +176,7 @@
         # Testing
         "juca@hyperv" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
         "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
-        "juca@voidvm" = libx.mkHome { hostname = "vm"; username = "juca"; };
+        "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; };
         "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
         # Wsl
         "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; desktop = null; };

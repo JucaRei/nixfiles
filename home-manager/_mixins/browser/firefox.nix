@@ -132,43 +132,43 @@ in
     };
   };
 
-  home.packages =
-    let
-      makeFirefoxProfileBin = args @ { profile, ... }:
-        let
-          name = "firefox-${profile}";
-          scriptBin = pkgs.writeScriptBin name ''
-            firefox -P "${profile}" --name="${name}" $@
-          '';
-          desktopFile = pkgs.makeDesktopItem ((removeAttrs args [ "profile" ])
-            // {
-            inherit name;
-            exec = "${scriptBin}/bin/${name} %U";
-            extraConfig.StartupWMClass = name;
-            genericName = "Web Browser";
-            mimeTypes = [
-              "text/html"
-              "text/xml"
-              "application/xhtml+xml"
-              "application/vnd.mozilla.xul+xml"
-              "x-scheme-handler/http"
-              "x-scheme-handler/https"
-            ];
-            categories = [ "Network" "WebBrowser" ];
-          });
-        in
-        pkgs.runCommand name { } ''
-          mkdir -p $out/{bin,share}
-          cp -r ${scriptBin}/bin/${name} $out/bin/${name}
-          cp -r ${desktopFile}/share/applications $out/share/applications
-        '';
-    in
-    with pkgs; [
-      (tor-browser-bundle-bin.override { pulseaudioSupport = true; })
-      (makeFirefoxProfileBin {
-        profile = "work";
-        desktopName = "Firefox (Work)";
-        icon = "firefox";
-      })
-    ];
+  # home.packages =
+  #   let
+  #     makeFirefoxProfileBin = args @ { profile, ... }:
+  #       let
+  #         name = "firefox-${profile}";
+  #         scriptBin = pkgs.writeScriptBin name ''
+  #           firefox -P "${profile}" --name="${name}" $@
+  #         '';
+  #         desktopFile = pkgs.makeDesktopItem ((removeAttrs args [ "profile" ])
+  #           // {
+  #           inherit name;
+  #           exec = "${scriptBin}/bin/${name} %U";
+  #           extraConfig.StartupWMClass = name;
+  #           genericName = "Web Browser";
+  #           mimeTypes = [
+  #             "text/html"
+  #             "text/xml"
+  #             "application/xhtml+xml"
+  #             "application/vnd.mozilla.xul+xml"
+  #             "x-scheme-handler/http"
+  #             "x-scheme-handler/https"
+  #           ];
+  #           categories = [ "Network" "WebBrowser" ];
+  #         });
+  #       in
+  #       pkgs.runCommand name { } ''
+  #         mkdir -p $out/{bin,share}
+  #         cp -r ${scriptBin}/bin/${name} $out/bin/${name}
+  #         cp -r ${desktopFile}/share/applications $out/share/applications
+  #       '';
+  #   in
+  #   with pkgs; [
+  #     (tor-browser-bundle-bin.override { pulseaudioSupport = true; })
+  #     (makeFirefoxProfileBin {
+  #       profile = "work";
+  #       desktopName = "Firefox (Work)";
+  #       icon = "firefox";
+  #     })
+  #   ];
 }
