@@ -8,11 +8,11 @@
     # ../config/qt/qt-style.nix
     ../services/security/sudo.nix
     ../services/security/common.nix
-    ../services/security/detect-reboot-needed.nix
+    # ../services/security/detect-reboot-needed.nix
     # ../services/power/powertop.nix
     ../hardware/other/fwupd.nix
     ../hardware/other/usb.nix
-    ../services/tools/fhs.nix
+    # ../services/tools/fhs.nix
     # ../services/openssh.nix
     # ../services/tailscale.nix
     # ../services/zerotier.nix
