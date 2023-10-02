@@ -4,7 +4,7 @@
 export DISK=/dev/disk/by-id/mmc-SC32G_0x78fe3e2e
 parted $DISK mklabel msdos
 parted $DISK mkpart primary 2048s 100%
-parted -a optimal $DISK mklabel msdos
+parted -s -a optimal $DISK mklabel msdos
 parted -a opt $DISK mkpart primary fat32 '0%' 512MiB  #/dev/mmcblk0p1 is /boot
 parted $DISK mkpart primary ext4 512MiB -2048MiB  # This is the ZFS partition
 parted $DISK mkpart primary linux-swap -2GiB 100% # Swap. This is optional

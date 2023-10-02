@@ -5,9 +5,19 @@
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
-    nativeBuildInputs = with pkgs; [ nix home-manager dropbear direnv git nil duf htop nixpkgs-fmt ];
+    nativeBuildInputs = with pkgs; [
+      nix
+      home-manager
+      # dropbear
+      direnv
+      git
+      nil
+      duf
+      htop
+      nixpkgs-fmt
+    ];
     shellHook = ''
-      alias ssh=dbclient
+      # alias ssh=dbclient
       echo "
       . _____   _           _
       |  ____| | |         | |

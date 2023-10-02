@@ -62,7 +62,7 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
-    #nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
+    nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
     #spicetify-nix.url = "github:the-argus/spicetify-nix";
     #nixpkgs-f2k.url = "github:fortuneteller2k/nixpkgs-f2k";
     # nixos-generators.url = "github:NixOS/nixos-hardware/master";
