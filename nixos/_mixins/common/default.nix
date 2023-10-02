@@ -12,6 +12,7 @@
     # ../services/power/powertop.nix
     ../hardware/other/fwupd.nix
     ../hardware/other/usb.nix
+    ../services/tools/fhs.nix
     # ../services/openssh.nix
     # ../services/tailscale.nix
     # ../services/zerotier.nix
