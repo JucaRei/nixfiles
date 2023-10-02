@@ -7,6 +7,7 @@ with lib.hm.gvariant;
     ../../_mixins/browser/vivaldi.nix
     # ../../_mixins/browser/firefox.nix
     ../../_mixins/music/rhythmbox.nix
+    ../../_mixins/video/mpv.nix
     ../../_mixins/tools/dconf-editor.nix
     # ../../_mixins/tools/gitkraken.nix
     # ../../_mixins/tools/meld.nix

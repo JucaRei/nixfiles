@@ -11,6 +11,7 @@
   modifications = final: prev: {
     cyberre = final.cyberre-grub-theme;
     nvchad = prev.nvchad;
+    # mpvconf = prev.mpv;
     # example = prev.example.overrideAttrs (oldAttrs: rec {
     # ...
     # });
