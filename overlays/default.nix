@@ -10,7 +10,7 @@
   # https://nixos.wiki/wiki/Overlays
   modifications = final: prev: {
     cyberre = final.cyberre-grub-theme;
-    nvchad = final.nvchaad;
+    nvchad = prev.nvchad;
     # example = prev.example.overrideAttrs (oldAttrs: rec {
     # ...
     # });

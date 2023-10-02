@@ -50,10 +50,9 @@ in
         # hi = final.hello.overrideAttrs (oldAttrs: {
         #   patches = [ ./change-hello-to-hi.patch ];
         # });
-        # nvchad = final.nvchaad.overrideAttrs (oldAttrs: {
-        #   patches = [ ../pkgs/mpv];
-        # });
-        # breeze-hacked-cursor = final.breeze-hacked-cursorr;
+        # nvchad = final.nvchad.override {
+        #   imports = [ ../pkgs/nvchad ];
+        # };
       })
     ];
 

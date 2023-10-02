@@ -5,7 +5,7 @@
   # example = pkgs.callPackage ./example { };
   cyberre-grub-theme = pkgs.callPackage ./cyberre-grub-theme { };
   firefox-csshacks = pkgs.callPackage ./firefox-csshacks { };
-  nvchaad = pkgs.callPackage ./nvchad { };
+  nvchad = pkgs.callPackage ./nvchad { };
   tidal-dl = pkgs.callPackage ./tidal-dl { };
   breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
 }

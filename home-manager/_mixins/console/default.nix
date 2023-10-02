@@ -18,6 +18,7 @@
     ./neofetch.nix
     ./skim.nix
     ./starship.nix
+    ./neovim
     # ./xdg.nix
     # ./zoxide.nix
   ];
@@ -28,8 +29,7 @@
       wget2 # Terminal downloader
       ncdu_1
       moar # Modern Unix `less`
-      neovim
-    ] ++ pkgs.unstable.nvchad;
+    ];
 
     sessionVariables = {
       EDITOR = "micro";
