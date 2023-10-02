@@ -50,7 +50,10 @@ in
         # hi = final.hello.overrideAttrs (oldAttrs: {
         #   patches = [ ./change-hello-to-hi.patch ];
         # });
-        breeze-hacked-cursor = final.breeze-hacked-cursorr;
+        # nvchad = final.nvchaad.overrideAttrs (oldAttrs: {
+        #   patches = [ ../pkgs/mpv];
+        # });
+        # breeze-hacked-cursor = final.breeze-hacked-cursorr;
       })
     ];
 

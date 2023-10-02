@@ -176,8 +176,8 @@
   }];
 
   environment.systemPackages = with pkgs; [
-    tidal-dl
-    nvchad
+    unstable.tidal-dl
+    unstable.nvchad
     inxi
 
     xorg.xbacklight

@@ -29,8 +29,7 @@
       ncdu_1
       moar # Modern Unix `less`
       neovim
-      nvchad
-    ];
+    ] ++ pkgs.unstable.nvchad;
 
     sessionVariables = {
       EDITOR = "micro";
