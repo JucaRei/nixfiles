@@ -1,6 +1,25 @@
 { pkgs, lib, ... }:
 
 {
+  imports = [
+    ../terminal/alacritty.nix
+    ../config/i3
+  ];
+  home = {
+    keyboard = {
+      layout = "br";
+    };
+    packages = with pkgs; [
+      arandr
+      tmate
+
+      # Terminal
+      any-nix-shell
+      escrotum
+      fetchTree
+      imagemagick
+    ];
+  };
   xsession = {
     enable = true;
     windowManager.i3 = {
