@@ -1,5 +1,5 @@
 { pkgs, config, ... }: {
-  home.packages = with pkgs; [ mpv mpvconf ];
+  home.packages = with pkgs; [ mpv ];
 
   programs.mpv = {
     enable = true;
