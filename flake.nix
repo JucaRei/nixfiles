@@ -178,6 +178,7 @@
         "juca@hyperv" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
         "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
         "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; desktop = "i3"; };
+        "juca@debianvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; desktop = "i3"; };
         "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
         # Wsl
         "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; desktop = null; };
