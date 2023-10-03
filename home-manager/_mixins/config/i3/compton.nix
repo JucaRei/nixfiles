@@ -7,7 +7,7 @@
     package = pkgs.callPackage ./packages/compton-unstable.nix { };
     experimentalBackends = true;
 
-    blur = true;
+    # blur = true;
     blurExclude = [ "window_type = 'dock'" "window_type = 'desktop'" ];
 
     fade = true;
