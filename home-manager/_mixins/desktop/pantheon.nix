@@ -37,7 +37,7 @@ with lib.hm.gvariant;
     };
 
     "io/elementary/desktop/wingpanel/sound" = {
-      max-volume = 120.0;
+      max-volume = 130.0;
     };
 
     "io/elementary/files/preferences" = {
@@ -74,11 +74,18 @@ with lib.hm.gvariant;
     #  picture-uri = "file:///home/martin/.local/share/backgrounds/2023-02-09-20-47-36-DeterminateColorway-2560x1440.png";
     #};
 
-    "org/gnome/desktop/default/applications/terminal" = {
-      exec = "tilix";
-      exec-arg = "-e";
+    # "org/gnome/desktop/default/applications/terminal" = {
+    #   exec = "tilix";
+    #   exec-arg = "-e";
+    # };
+    "net/launchpad/plank/docks/dock1" = {
+      alignment = "center";
+      hide-mode = "window-dodge";
+      icon-size = 42;
+      pinned-only = false;
+      position = "left";
+      theme = "Transparent";
     };
-
     "org/gnome/desktop/datetime" = {
       automatic-timezone = true;
     };
@@ -98,7 +105,7 @@ with lib.hm.gvariant;
       gtk-theme = lib.mkDefault "Yaru-blue-dark";
       gtk-enable-primary-paste = true;
       # icon-theme = "elementary";
-      icon-theme = lib.mkDefault "Yaru-red-dark";
+      icon-theme = lib.mkDefault "elementary";
       monospace-font-name = "FiraCode Nerd Font Medium 13";
       text-scaling-factor = 1.0;
     };
@@ -255,10 +262,12 @@ StartupNotify=false";
 Name=IBus Daemon
 Comment=IBus Daemon
 Type=Application
-Exec=ibus-daemon --daemonize --desktop=pantheon
+Exec=${pkgs.ibus}/bin/ibus-daemon --daemonize --desktop=pantheon --replace --xim
 Categories=
 Terminal=false
 NoDisplay=true
 StartupNotify=false";
   };
 }
+
+

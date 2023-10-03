@@ -1,4 +1,13 @@
-{ desktop, lib, pkgs, ... }: {
+{ desktop, lib, pkgs, ... }:
+# with lib;
+# with builtins;
+# let
+#   xorg = (elem "xorg" config.sys.hardware.graphics.desktopProtocols);
+#   wayland = (elem "wayland" config.sys.hardware.graphics.desktopProtocols);
+#   desktopMode = xorg || wayland;
+# in
+{
+  # config = mkIf desktopMode {
   imports = [
     # ../apps/browser/chromium.nix
     # ../services/tools/cups.nix
@@ -7,6 +16,11 @@
     # ../services/printers/sane.nix
   ]
   ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix")) ./${desktop}.nix;
+
+  # Fix issue with java applications and tiling window managers.
+  environment.sessionVariables = {
+    "_JAVA_AWT_WM_NONREPARENTING" = "1";
+  };
 
   boot = {
     # kernelParams = lib.mkDefault [ "quiet" ];
@@ -25,4 +39,5 @@
     excludePackages = [ pkgs.xterm ];
     desktopManager.xterm.enable = false;
   };
+  # };
 }

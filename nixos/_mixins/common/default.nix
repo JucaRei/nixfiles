@@ -109,4 +109,22 @@
   # };
 
   # security.rtkit.enable = true;
+
+  services = {
+    # Temperature management daemon
+    thermald = {
+      enable = true;
+    };
+
+    # Auto Nice Daemon
+    ananicy = {
+      enable = true;
+      package = pkgs.ananicy-cpp;
+    };
+
+    # Keeps the system timezone up-to-date based on the current location
+    automatic-timezoned = {
+      enable = true;
+    };
+  };
 }

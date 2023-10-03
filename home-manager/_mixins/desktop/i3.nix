@@ -3,7 +3,6 @@
 {
   imports = [
     ../terminal/alacritty.nix
-    ../config/i3
   ];
   home = {
     keyboard = {

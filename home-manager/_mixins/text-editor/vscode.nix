@@ -2,12 +2,15 @@
   programs.vscode = {
     enable = true;
     package = pkgs.unstable.vscode;
+    # package = pkgs.vscodium-fhs;
     # package = pkgs.vscodium.override {
     #   commandLineArgs = builtins.concatStringsSep " " [
     #     "--enable-wayland-ime"
     #     "--ozone-platform-hint=auto"
     #   ];
     # };
+    mutableExtensionsDir = false;
+    enableUpdateCheck = false;
 
     extensions =
       (with with pkgs; [ vscode-extensions ]; [
@@ -76,6 +79,8 @@
         minimap.maxColumn = 80;
         minimap.autohide = true;
         bracketPairColorization.enabled = true;
+        cursorStyle = "block";
+        renderWhitespace = "trailing";
       };
 
       workbench = {
@@ -87,7 +92,7 @@
 
       ocamlformat-vscode-extension = {
         customOcamlformatPath = "ocamlformat";
-        ocamlformatOption = "--enable-outside-detected-project,--break-cases=fit-or-vertical,--cases-exp-indent=4,--if-then-else=k-r,--type-decl-indent=4";
+        ocamlformatOption = "--enable-outside-detected-project,--break-cases = fit-or-vertical,--cases-exp-indent=4,--if-then-else=k-r,--type-decl-indent=4";
       };
 
       #jupyter.widgetScriptSources = [ "jsdelivr.com" "unpkg.com" ]; # required by qgrid
@@ -152,3 +157,4 @@
     };
   };
 }
+

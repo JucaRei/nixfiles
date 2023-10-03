@@ -9,6 +9,14 @@
   # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
   services.mpris-proxy.enable = true;
 
+  home.packages = with pkgs; [
+    font-manager
+    hexchat
+    unixtools.ifconfig
+    unixtools.netstat
+    xorg.xwininfo # Provides a cursor to click and learn about windows
+  ];
+
   xresources.properties = {
     "XTerm*background" = "#121214";
     "XTerm*foreground" = "#c8c8c8";

@@ -7,7 +7,9 @@
     config = {
       alang = "jp,jpn,ja,Japanese,japanese,en,eng,pt_BR";
       profile = "gpu-hq";
+      video-sync = "display-resample";
       vo = "gpu";
+      hwdec = "auto";
       screenshot-directory = "~/Pictures/mpv-screenshots/";
       screenshot-format = "png";
       watch-later-directory = "${config.xdg.cacheHome}/mpv-watch-later/";
@@ -85,4 +87,12 @@
         plot_color = "D900EA";
       };
     };
+  # xdg.desktopEntries.mpv = {
+  #   type = "Application";
+  #   name = "mpv";
+  #   genericName = "Video Player";
+  #   exec = "${pkgs.mpv}/bin/mpv %U";
+  #   categories = ["Application"];
+  #   mimeType = ["video/mp4"];
+  # };
 }
