@@ -1,4 +1,4 @@
-{}: {
+_: {
   imports = [
     ./home.nix
     ./polybar.nix
