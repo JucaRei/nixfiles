@@ -61,6 +61,7 @@
     gnome.excludePackages = (with pkgs; [
       # Gnome ignored packages
       gnome-tour
+      gnome-console
     ]) ++ (with pkgs.gnome; [
       # gedit
       epiphany
@@ -69,7 +70,6 @@
       gnome-system-monitor
       geary
       totem
-      gnome-console
       gnome-characters
       tali
       iagno
