@@ -10,11 +10,11 @@ if [ "$(id -u)" -eq 0 ]; then
   exit 1
 fi
 
-if [ ! -d "$HOME/Zero/nix-config/.git" ]; then
+if [ ! -d "$HOME/Zero/nixfiles/.git" ]; then
   git clone https://github.com/JucaRei/nixfiles.git "$HOME/Zero/nixfiles"
 fi
 
-pushd "$HOME/Zero/nix-config"
+pushd "$HOME/Zero/nixfiles"
 
 if [[ -z "$TARGET_HOST" ]]; then
   echo "ERROR! $(basename "$0") requires a hostname as the first argument"
@@ -60,9 +60,9 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   # sudo nixos-install --no-root-password --flake ".#$TARGET_HOST"
   sudo nixos-install --flake ".#$TARGET_HOST"
 
-  # Rsync nix-config to the target install and set the remote origin to SSH.
+  # Rsync nixfiles to the target install and set the remote origin to SSH.
   rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
-  pushd "/mnt/home/$TARGET_USER/Zero/nix-config"
+  pushd "/mnt/home/$TARGET_USER/Zero/nixfiles"
   git remote set-url origin git@github.com:JucaRei/nixfiles.git
   popd
 
