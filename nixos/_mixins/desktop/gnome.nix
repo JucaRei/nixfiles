@@ -36,7 +36,7 @@
     # Disable some core OS services
     # evolution-data-server.enable = mkForce false;
     # gnome-online-accounts.enable = false;
-    gnome-online-miners.enable = lib.mkForce false;
+    # gnome-online-miners.enable = lib.mkForce false;
     tracker.enable = false;
     tracker-miners.enable = false;
   };
