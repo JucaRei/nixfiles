@@ -6,11 +6,20 @@
   ]
   ++ lib.optional (builtins.pathExists (./. + "/../../users/${username}/desktop.nix")) ../../users/${username}/desktop.nix;
 
-  # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
-  services.mpris-proxy.enable = true;
+  services = {
+    # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
+    mpris-proxy.enable = true;
+
+    udiskie = {
+      enable = true;
+      tray = "auto";
+      automount = true;
+    };
+  };
 
   home.packages = with pkgs; [
     font-manager
+    dconf2nix
     hexchat
     unixtools.ifconfig
     unixtools.netstat

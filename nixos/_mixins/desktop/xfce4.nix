@@ -36,6 +36,13 @@
       xfce.xfce4-genmon-plugin
       xfce.xfce4-netload-plugin
       xfce.xfce4-panel
+      xfce.xfce4-session
+      xfce.xfce4-settings
+      xfce.xfce4-systemload-plugin
+      xfce.xfce4-power-manager
+      xfce.xfce4-terminal
+      xfce.xfce4-screensaver
+      xfce.xfce4-screenshooter
       xfce.xfce4-pulseaudio-plugin
       xfce.xfce4-systemload-plugin
       xfce.xfce4-weather-plugin
@@ -58,17 +65,17 @@
         thunar-volman
       ];
     };
-    gnome-disks.enable = true;
+    xfconf.enable = true;
     nm-applet.enable = true;
     seahorse.enable = true;
-    system-config-printer.enable = true;
+    # system-config-printer.enable = true;
   };
 
   # Enable services to round out the desktop
   services = {
     blueman.enable = true;
     gnome.gnome-keyring.enable = true;
-    system-config-printer.enable = true;
+    # system-config-printer.enable = true;
     xserver = {
       enable = true;
       libinput = {
@@ -121,5 +128,5 @@
     };
   };
   # security.pam.services.gdm.enableGnomeKeyring = true;
-  xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+  # xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
 }

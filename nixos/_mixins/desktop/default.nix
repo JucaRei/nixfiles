@@ -40,4 +40,8 @@
     desktopManager.xterm.enable = false;
   };
   # };
+  hardware = {
+    # smooth backlight control
+    brillo.enable = true;
+  };
 }

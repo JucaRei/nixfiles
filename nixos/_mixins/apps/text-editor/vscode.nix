@@ -28,6 +28,7 @@
         unstable.vscode-extensions.timonwong.shellcheck
         unstable.vscode-extensions.vscode-icons-team.vscode-icons
         unstable.vscode-extensions.yzhang.markdown-all-in-one
+        unstable.vscode-extensions.mhutchie.git-graph
       ] ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         {
           name = "bash-debug";
