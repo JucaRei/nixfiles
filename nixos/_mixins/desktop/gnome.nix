@@ -37,8 +37,8 @@
     # evolution-data-server.enable = mkForce false;
     # gnome-online-accounts.enable = false;
     # gnome-online-miners.enable = lib.mkForce false;
-    tracker.enable = false;
-    tracker-miners.enable = false;
+    # tracker.enable = false;
+    # tracker-miners.enable = false;
   };
 
   security.pam.services.gdm.enableGnomeKeyring = true;
