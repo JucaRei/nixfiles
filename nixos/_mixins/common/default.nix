@@ -36,6 +36,7 @@
     };
     consoleLogLevel = 0;
     kernelModules = [
+      "kvm-intel"
       "vhost_vsock"
       "tcp_bbr"
     ];
