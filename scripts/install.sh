@@ -11,7 +11,7 @@ if [ "$(id -u)" -eq 0 ]; then
 fi
 
 if [ ! -d "$HOME/Zero/nix-config/.git" ]; then
-  git clone http://192.168.1.200:9011/juca/nixfiles.git "$HOME/Zero/nixfiles"
+  git clone https://github.com/JucaRei/nixfiles.git "$HOME/Zero/nixfiles"
 fi
 
 pushd "$HOME/Zero/nix-config"
@@ -57,12 +57,13 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     --mode zap_create_mount \
     "nixos/hosts/$TARGET_HOST/disks.nix"
 
-  sudo nixos-install --no-root-password --flake ".#$TARGET_HOST"
+  # sudo nixos-install --no-root-password --flake ".#$TARGET_HOST"
+  sudo nixos-install --flake ".#$TARGET_HOST"
 
   # Rsync nix-config to the target install and set the remote origin to SSH.
   rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
   pushd "/mnt/home/$TARGET_USER/Zero/nix-config"
-  git remote set-url origin git@192.168.1.200:juca/nixfiles.git
+  git remote set-url origin git@github.com:JucaRei/nixfiles.git
   popd
 
   # If there is a keyfile for a data disk, put copy it to the root partition and
