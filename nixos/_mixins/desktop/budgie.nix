@@ -97,7 +97,7 @@
           greeters.slick = {
             enable = true;
             theme = lib.mkDefault { name = "Qogir"; package = lib.mkDefaultpkgs.qogir-theme; };
-            iconTheme = lib.mkDefault { name = "Qogir"; package = lib.mkDefault pkgs.qogir-icon-theme; };
+            iconTheme = lib.mkDefault { name = "Qogir"; };
             cursorTheme = lib.mkDefault { name = "Qogir"; };
           };
         };
