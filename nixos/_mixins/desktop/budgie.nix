@@ -16,26 +16,27 @@
       mate.mate-system-monitor
       vlc
     ];
+    systemPackages = with pkgs; [
+      # inputs.nix-software-center.packages.${system}.nix-software-center
+      budgie.budgie-backgrounds
+      budgie.budgie-control-center
+      budgie.budgie-desktop-view
+      budgie.budgie-screensaver
+
+      # Required by the Budgie Desktop session.
+      (gnome.gnome-session.override { gnomeShellSupport = false; })
+
+      # Required by Budgie Menu.
+      gnome-menus
+
+      # Required by Budgie Control Center.
+      gnome.zenity
+
+      # Update user directories.
+      xdg-user-dirs
+    ];
   };
-  systemPackages = with pkgs; [
-    # inputs.nix-software-center.packages.${system}.nix-software-center
-    budgie.budgie-backgrounds
-    budgie.budgie-control-center
-    budgie.budgie-desktop-view
-    budgie.budgie-screensaver
 
-    # Required by the Budgie Desktop session.
-    (gnome.gnome-session.override { gnomeShellSupport = false; })
-
-    # Required by Budgie Menu.
-    gnome-menus
-
-    # Required by Budgie Control Center.
-    gnome.zenity
-
-    # Update user directories.
-    xdg-user-dirs
-  ];
 
   # Qt application style.
   qt = lib.mkForce {
