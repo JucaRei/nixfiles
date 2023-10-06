@@ -26,16 +26,16 @@
     blueman.enable = true;
     gnome.gnome-keyring.enable = true;
     xserver = {
-      enable = true;
+      # enable = true;
       displayManager = {
         #gdm = {
         #  enable = true;
         #  wayland = true;
         #};
-        lightdm = {
-          enable = true;
-          greeters.slick.enable = true;
-        };
+        # lightdm = {
+        #   enable = true;
+        #   greeters.slick.enable = true;
+        # };
         autoLogin = {
           enable = false;
           #enable = true;
