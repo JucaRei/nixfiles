@@ -86,10 +86,10 @@
     xserver = {
       enable = true;
       displayManager = {
-        gdm = {
-          enable = true;
-          wayland = true;
-        };
+        # gdm = {
+        #   enable = true;
+        #   wayland = true;
+        # };
         lightdm = {
           enable = true;
           greeters.slick = {
