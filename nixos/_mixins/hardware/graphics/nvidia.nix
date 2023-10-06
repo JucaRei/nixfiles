@@ -1,5 +1,10 @@
 { pkgs, config, lib, inputs, ... }:
 let
+  displaySetupScript = pkgs.writeShellScript "display_setup.sh" ''
+    #!/bin/sh
+    ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
+    ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+  '';
 
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta;
@@ -50,13 +55,24 @@ in
         system.nixos.tags = [ "nvidia-display" ];
         boot = {
           loader.grub.configurationName = lib.mkForce "Nvidia Power Mode";
-          blacklistedKernelModules = lib.mkForce [ "nouveau" ];
-          kernelParams = lib.mkDefault [
+          blacklistedKernelModules = lib.mkForce [
+            "nouveau"
+            "rivafb"
+            "nvidiafb"
+            "rivatv"
+            "nv"
+            "uvcvideo"
+          ];
+          kernelModules = [
             "clearcpuid=514" # Fixes certain wine games crash on launch
             "nvidia"
             "nvidia_modeset"
-            "nvidia-uvm"
+            "nvidia_uvm"
             "nvidia_drm"
+          ];
+          kernelParams = lib.mkDefault [
+            "nouveau.modeset=0"
+            "nohibernate"
             "nvidia-drm.modeset=1"
           ];
           extraModprobeConfig = ''
@@ -163,14 +179,23 @@ in
         system.nixos.tags = [ "nvidia-offload" ];
         boot = {
           loader.grub.configurationName = lib.mkForce "Nvidia Offload";
-          blacklistedKernelModules = lib.mkForce [ "nouveau" ];
-          kernelParams = lib.mkDefault [
+          blacklistedKernelModules = lib.mkForce [
+            "nouveau"
+            "rivafb"
+            "nvidiafb"
+            "rivatv"
+            "nv"
+            "uvcvideo"
+          ];
+          kernelModules = [
             "clearcpuid=514" # Fixes certain wine games crash on launch
             "nvidia"
             "nvidia_modeset"
-            "nvidia-uvm"
+            "nvidia_uvm"
             "nvidia_drm"
-            # "nvidia-drm.modeset=1"
+          ];
+          kernelParams = lib.mkDefault [
+            "nouveau.modeset=0"
           ];
           kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
         };
@@ -201,16 +226,18 @@ in
         services = {
           xserver = {
             videoDrivers = [ "nvidia" ];
-            displayManager = {
-              setupCommands = ''
-                ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-0 modesetting
-                ${pkgs.xorg.xrandr}/bin/xrandr --auto
-              '';
-            };
+            # displayManager = {
+            #   setupCommands = ''
+            #     ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
+            #     ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+            #   '';
+            #   # ${pkgs.xorg.xrandr}/bin/xrandr --auto
+            # };
           };
         };
         environment = {
           systemPackages = with pkgs; [
+           # displaySetupScript
             nvidia-offload
             vulkan-loader
             vulkan-validation-layers

@@ -128,5 +128,5 @@
     };
   };
   # security.pam.services.gdm.enableGnomeKeyring = true;
-  # xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+  xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
 }

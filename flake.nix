@@ -94,10 +94,10 @@
     #  inputs.home-manager.follows = "nixpkgs";
     #};
 
-    budgie = {
-      url = "github:FedericoSchonborn/budgie-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # budgie = {
+    #   url = "github:FedericoSchonborn/budgie-nix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs =
@@ -176,7 +176,7 @@
         "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
         # Testing
         "juca@hyperv" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
-        "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; };
+        "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "xfce4"; };
         "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; desktop = "i3"; };
         "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "i3"; };
         "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
