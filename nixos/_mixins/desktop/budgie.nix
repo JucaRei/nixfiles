@@ -2,10 +2,12 @@
 {
   imports = [
     inputs.budgie.nixosModules.default
+    ../apps/terminal/tilix.nix
   ];
 
-  environment.budgie.excludePackages = with pkgs; [ mate.mate-terminal ];
-
+  environment = {
+    budgie.excludePackages = with pkgs; [ mate.mate-terminal ];
+  };
   # environment.systemPackages = [
   #   inputs.nix-software-center.packages.${system}.nix-software-center
   # ];
@@ -41,17 +43,17 @@
         };
       };
 
-      desktopManager = {
-        budgie = {
-          # enable = lib.mkForce true;
-          sessionPath = [ ];
-          extraGSettingsOverrides = ''          
-            [com.solus-project.icon-tasklist:Budgie]
-            pinned-launchers=["firefox.desktop", "nixos-manual.desktop", "mate-terminal.desktop", "nemo.desktop", "gparted.desktop", "io.calamares.calamares.desktop"] '';
-          extraGSettingsOverridePackages = [ ];
-          extraPlugins = with pkgs; [ budgiePlugins.budgie-analogue-clock-applet ];
-        };
-      };
+      # desktopManager = {
+      #   budgie = {
+      #     # enable = lib.mkForce true;
+      #     sessionPath = [ ];
+      #     extraGSettingsOverrides = ''          
+      #       [com.solus-project.icon-tasklist:Budgie]
+      #       pinned-launchers=["firefox.desktop", "nixos-manual.desktop", "mate-terminal.desktop", "nemo.desktop", "gparted.desktop", "io.calamares.calamares.desktop"] '';
+      #     extraGSettingsOverridePackages = [ ];
+      #     extraPlugins = with pkgs; [ budgiePlugins.budgie-analogue-clock-applet ];
+      #   };
+      # };
     };
   };
   xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gnome ];
