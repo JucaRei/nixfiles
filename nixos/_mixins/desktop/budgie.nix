@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, inputs, username, ... }:
 {
   imports = [
     ../apps/terminal/tilix.nix
@@ -104,7 +104,7 @@
         autoLogin = {
           # enable = false;
           enable = true;
-          #user = "${username}";
+          user = "${username}";
           # };
         };
       };
