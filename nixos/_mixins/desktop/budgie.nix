@@ -22,6 +22,7 @@
       budgie.budgie-control-center
       budgie.budgie-desktop-view
       budgie.budgie-screensaver
+      qogir-theme
 
       # Required by the Budgie Desktop session.
       (gnome.gnome-session.override { gnomeShellSupport = false; })
@@ -96,7 +97,7 @@
           enable = true;
           greeters.slick = {
             enable = true;
-            theme = lib.mkDefault { name = "Qogir"; package = lib.mkDefaultpkgs.qogir-theme; };
+            theme = lib.mkDefault { name = "Qogir"; };
             iconTheme = lib.mkDefault { name = "Qogir"; };
             cursorTheme = lib.mkDefault { name = "Qogir"; };
           };
