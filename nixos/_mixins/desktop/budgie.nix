@@ -5,7 +5,17 @@
   ];
 
   environment = {
-    budgie.excludePackages = with pkgs; [ mate.mate-terminal ];
+    budgie.excludePackages = with pkgs; [
+      mate.mate-terminal
+      mate.eom
+      mate.pluma
+      mate.atril
+      mate.engrampa
+      mate.mate-calc
+      mate.mate-terminal
+      mate.mate-system-monitor
+      vlc
+    ];
   };
   systemPackages = with pkgs; [
     # inputs.nix-software-center.packages.${system}.nix-software-center
@@ -25,16 +35,7 @@
 
     # Update user directories.
     xdg-user-dirs
-  ] ++ (utils.removePackagesByName [
-    mate.eom
-    mate.pluma
-    mate.atril
-    mate.engrampa
-    mate.mate-calc
-    mate.mate-terminal
-    mate.mate-system-monitor
-    vlc
-  ]);
+  ];
 
   # Qt application style.
   qt = lib.mkForce {
