@@ -36,6 +36,11 @@
       "zswap.zpool=z3fold"
       "fs.inotify.max_user_watches=524288"
       "mitigations=off"
+
+      # # Intel vm passthrought
+      # "intel_iommu=on"
+      # "i915.enable_guc=7"
+      # "i915.force_probe=46a6"
     ];
     kernel.sysctl = {
       "vm.vfs_cache_pressure" = 400;

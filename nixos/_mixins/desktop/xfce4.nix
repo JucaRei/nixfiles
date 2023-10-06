@@ -7,6 +7,9 @@
   # Exclude MATE themes. Yaru will be used instead.
   # Don't install mate-netbook or caja-dropbox
   environment = {
+    xfce.excludePackages = with pkgs; [
+
+    ];
 
     # Add some packages to complete the MATE desktop
     systemPackages = with pkgs; [
@@ -67,7 +70,9 @@
     xserver = {
       enable = true;
       libinput = {
-        middleEmulation = true;
+        touchpad = {
+          middleEmulation = true;
+        };
       };
       displayManager = {
         lightdm.enable = true;
