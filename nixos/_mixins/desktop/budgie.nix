@@ -96,9 +96,9 @@
           enable = true;
           greeters.slick = {
             enable = true;
-            theme = lib.mkDefault { name = "Qogir"; package = pkgs.qogir-theme; };
-            iconTheme = lib.mkDefault { name = "Qogir"; package = pkgs.qogir-icon-theme; };
-            cursorTheme = lib.mkDefault { name = "Qogir"; package = pkgs.qogir-icon-theme; };
+            theme = lib.mkDefault { name = "Qogir"; package = lib.mkDefaultpkgs.qogir-theme; };
+            iconTheme = lib.mkDefault { name = "Qogir"; package = lib.mkDefault pkgs.qogir-icon-theme; };
+            cursorTheme = lib.mkDefault { name = "Qogir"; package = lib.mkDefault pkgs.qogir-icon-theme; };
           };
         };
         autoLogin = {
