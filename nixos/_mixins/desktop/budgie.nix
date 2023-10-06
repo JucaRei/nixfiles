@@ -133,7 +133,7 @@
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
-      dg-desktop-portal-gtk # provides a XDG Portals implementation.
+      xdg-desktop-portal-gtk # provides a XDG Portals implementation.
     ];
   };
 }
