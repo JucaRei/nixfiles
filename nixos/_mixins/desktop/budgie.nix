@@ -43,7 +43,7 @@
 
       desktopManager = {
         budgie = {
-          enable = lib.mkForce true;
+          # enable = lib.mkForce true;
           sessionPath = [ ];
           extraGSettingsOverrides = ''          
             [com.solus-project.icon-tasklist:Budgie]
