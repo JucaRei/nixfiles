@@ -1,14 +1,7 @@
-{ pkgs
-, lib
-, inputs
-, ...
-}:
-let
-  system = "x86_64-linux";
-in
+{ pkgs, lib, inputs, ... }:
 {
   imports = [
-    #inputs.budgie.nixosModules.default
+    inputs.budgie.nixosModules.default
   ];
 
   environment.budgie.excludePackages = with pkgs; [ mate.mate-terminal ];
