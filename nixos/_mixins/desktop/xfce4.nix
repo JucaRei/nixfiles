@@ -7,18 +7,6 @@
   # Exclude MATE themes. Yaru will be used instead.
   # Don't install mate-netbook or caja-dropbox
   environment = {
-    xfce.excludePackages = with pkgs.xfce; [
-      xfce.xfburn
-      xfce.xfce4-cpugraph-plugin
-      xfce.xfce4-dict
-      xfce.xfdashboard
-      xwinmosaic
-      orca
-      inksacpe-with-extensions
-      gnome.gnome-disk-utility
-      gimp-with-plugins
-      drawing
-    ];
 
     # Add some packages to complete the MATE desktop
     systemPackages = with pkgs; [
