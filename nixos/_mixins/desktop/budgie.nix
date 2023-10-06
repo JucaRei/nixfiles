@@ -48,7 +48,6 @@
   ];
 
   # Required by Budgie Desktop.
-  services.xserver.updateDbusEnvironment = true;
   programs.dconf.enable = true;
 
   # Enable some programs to provide a complete desktop
