@@ -1,7 +1,7 @@
 { pkgs, lib, inputs, ... }:
 {
   imports = [
-    inputs.budgie.nixosModules.default
+    (lib.mkForce inputs.budgie.nixosModules.default)
     ../apps/terminal/tilix.nix
   ];
 
