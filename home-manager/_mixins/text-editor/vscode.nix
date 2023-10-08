@@ -17,6 +17,8 @@
         jnoortheen.nix-ide
         brettm12345.nixfmt-vscode
         oderwat.indent-rainbow
+        catppuccin.catppuccin-vsc-icons
+        formulahendry.code-runner
         davidanson.vscode-markdownlint
         editorconfig.editorconfig
       ] ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
@@ -60,6 +62,12 @@
           # sha256 = lib.fakeSha256;
           sha256 = "sha256-/Glcaj8K28ccB16WLJqs5+l5j3ROQnRli6oooVIvLqg=";
         }
+        {
+          publisher = "zguolee";
+          name = "tabler-icons";
+          version = "0.2.2";
+          sha256 = "UxMjXwfL9YMb7nGH41LoAu9R3b4dWdK66+w0tfGy8Lk=";
+        }
       ]);
 
     #     Saikumarchinna.rainbow
@@ -74,12 +82,15 @@
       editor = {
         fontFamily = "'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono','JetbrainsMono Nerd Font'";
         fontLigatures = true;
+        cursorBlinking = "expand";
+        cursorStyle = "line";
+        # cursorStyle = "block";
+        lineHeight = 2.3;
         inlineSuggest.enabled = true;
         minimap.renderCharecters = false;
         minimap.maxColumn = 80;
         minimap.autohide = true;
         bracketPairColorization.enabled = true;
-        cursorStyle = "block";
         renderWhitespace = "trailing";
       };
 
@@ -151,10 +162,19 @@
       "workbench.enableExperiments" = false;
       "workbench.colorTheme" = "Bearded Theme Monokai Stone";
       "workbench.settings.enableNaturalLanguageSearch" = false;
+      "workbench.productIconTheme" = "Tabler";
       "workbench.startupEditor" = "none";
       "git.enableSmartCommit" = true;
       "git.confirmSync" = false;
+
+      "[typescriptreact]" = {
+        "editor.defaultFormatter" = "esbenp.prettier-vscode";
+      };
+      "[typescript]" = {
+        "editor.defaultFormatter" = "esbenp.prettier-vscode";
+      };
     };
   };
 }
+
 

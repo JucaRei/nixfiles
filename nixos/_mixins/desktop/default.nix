@@ -34,10 +34,13 @@
   # Accept the joypixels license
   nixpkgs.config.joypixels.acceptLicense = true;
 
-  # Disable xterm
-  services.xserver = {
-    excludePackages = [ pkgs.xterm ];
-    desktopManager.xterm.enable = false;
+  services = {
+    # Disable xterm
+    xserver = {
+      excludePackages = [ pkgs.xterm ];
+      desktopManager.xterm.enable = false;
+    };
+    gvfs.enable = true;
   };
   # };
   hardware = {
