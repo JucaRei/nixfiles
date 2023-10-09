@@ -33,6 +33,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # FlakeHub
+    eza = {
+      url = "https://flakehub.com/f/eza-community/eza/0.14.0.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    fh = {
+      url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -108,6 +118,9 @@
     , nixgl
     , nix-formatter-pack
     , nixos-hardware
+    , fh
+    , eza
+    , vscode-server
     , ...
     } @ inputs:
     let

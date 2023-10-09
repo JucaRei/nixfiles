@@ -8,8 +8,8 @@
     ./bottom.nix
     ./dircolors.nix
     ./direnv.nix
-    ./exa.nix
-    # ./eza.nix
+    # ./exa.nix
+    ./eza.nix
     ./htop.nix
     # ./fish.nix
     ./git.nix

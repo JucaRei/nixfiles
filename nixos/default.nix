@@ -151,7 +151,7 @@
 
     '';
     hostName = hostname;
-    hostId = if (config.boot.zfs.enabled == true) then hostid else false;
+    hostId = hostid;
     useDHCP = lib.mkDefault true;
     firewall = {
       enable = true;

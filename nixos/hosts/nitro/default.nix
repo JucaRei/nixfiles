@@ -1,9 +1,4 @@
-{ config
-, lib
-, pkgs
-, inputs
-, ...
-}: {
+{ config, lib, pkgs, inputs, ... }: {
   imports = [
     # inputs.nixos-hardware.nixosModules.common-cpu-intel
     # inputs.nixos-hardware.nixosModules.common-gpu-intel
@@ -48,6 +43,8 @@
     ];
     plymouth = {
       enable = true;
+      themePackages = [ pkgs.adi1090x-plymouth-themes ];
+      theme = "deus_ex";
     };
 
     # Temporary workaround until mwprocapture 4328 patch is merged
