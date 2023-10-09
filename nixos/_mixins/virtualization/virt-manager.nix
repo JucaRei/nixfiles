@@ -4,6 +4,7 @@
 #   cfg = config.virtualization.firmware;
 # in
 {
+
   boot = {
     # kernelParams = [ "intel_iommu=on" "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ]; # or amd_iommu (cpu)
     # kernelModules = [ "vendor-reset" "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ];
@@ -51,7 +52,7 @@
     # kernelModules = [ "vfio_virqfd" "vfio_pci" "vfio_iommu_type1" "vfio" ];
 
     # Enable IOMMU
-    kernelParams = [ "intel_iommu=on" ];
+    kernelParams = [ "intel_iommu=on" "iommu=pt" ];
     binfmt = {
       emulatedSystems = [
         "aarch64-linux"
@@ -82,6 +83,8 @@
           packages = with pkgs.unstable; [
             (OVMFFull.override {
               secureBoot = true;
+              csmSupport = true;
+              httpSupport = true;
               tpmSupport = true;
             }).fd
             # pkgsCross.aarch64-multiplatform.OVMF.fd
@@ -93,7 +96,7 @@
       onShutdown = "suspend";
       onBoot = "ignore";
     };
-    spiceUSBRedirection.enable = true;
+    spiceUSBRedirection.enable = true; # USB redirection in virtual machine
   };
 
   environment = {
