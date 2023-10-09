@@ -27,7 +27,12 @@
         gdm.enable = true; # Display Manager
         defaultSession = "gnome";
       };
-      desktopManager.gnome.enable = true; # Window Manager
+      desktopManager.gnome = {
+        enable = true; # Window Manager
+        extraGSettingsOverridePackages = [
+          pkgs.nautilus-open-any-terminal
+        ];
+      };
     };
     udev.packages = with pkgs; [
       gnome.gnome-settings-daemon
@@ -51,6 +56,10 @@
       gnome.adwaita-icon-theme
       gnome.mutter
       gnome.libgnome-keyring
+      nautilus-open-any-terminal
+      gnome-extension-manager
+      qogir-icon-theme
+      gnome.nautilus-python
       libnotify
       yaru-theme
       gthumb
@@ -62,22 +71,50 @@
       # Gnome ignored packages
       gnome-tour
       gnome-console
+      gnome-text-editor
     ]) ++ (with pkgs.gnome; [
-      # gedit
-      epiphany
+      cheese # webcam tool
+      gnome-music
+      gedit # text editor
+      epiphany # web browser
+      geary # email reader
+      evince # document viewer
+      yelp # Help view
+      gnome-characters
       gnome-disk-utility
       gnome-music
       gnome-system-monitor
-      geary
       totem
       gnome-characters
-      tali
-      iagno
-      hitori
-      atomix
-      yelp
+      tali # poker game
+      iagno # go game
+      hitori # sudoku game
+      atomix # puzzle game
+      yelp # Help view
       gnome-contacts
+      gnome-maps
       gnome-initial-setup
     ]);
+
+    sessionVariables = {
+      NAUTILUS_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
+    };
+
+    pathsToLink = [
+      "/share/nautilus-python/extensions"
+    ];
+  };
+
+  programs.dconf.profiles = {
+    gdm.databases = [{
+      settings = {
+        "org/gnome/desktop/peripherals/touchpad" = {
+          tap-to-click = true;
+        };
+        "org/gnome/desktop/interface" = {
+          cursor-theme = "Qogir";
+        };
+      };
+    }];
   };
 }

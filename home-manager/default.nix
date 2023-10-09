@@ -53,6 +53,9 @@ in
         # nvchad = final.nvchad.override {
         #   imports = [ ../pkgs/nvchad ];
         # };
+        mpv = final.mpv.override {
+          imports = [ ../pkgs/mpv ];
+        };
       })
     ];
 

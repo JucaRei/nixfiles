@@ -150,12 +150,19 @@
     hostPlatform = lib.mkDefault "x86_64-linux";
   };
 
-  environment.sessionVariables = {
-    # LIBVA_DRIVER_NAME = "nvidia";
-    #  # maybe causes firefox crashed?
-    #  GBM_BACKEND = "nvidia-drm";
-    #  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    #  WLR_NO_HARDWARE_CURSORS = "1";
+  environment = {
+    systemPackages = with pkgs; [
+      btdu
+      btrfs-progs
+      compsize
+    ];
+    sessionVariables = {
+      # LIBVA_DRIVER_NAME = "nvidia";
+      #  # maybe causes firefox crashed?
+      #  GBM_BACKEND = "nvidia-drm";
+      #  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      #  WLR_NO_HARDWARE_CURSORS = "1";
+    };
   };
 
   services = {

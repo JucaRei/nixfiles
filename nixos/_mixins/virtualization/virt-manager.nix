@@ -33,7 +33,23 @@
         "vfio"
         "vfio_iommu_type1"
         # "vfio_virqfd"  ## zen not enabled
+        "virtio_balloon"
+        "virtio_console"
+        "virtio_rng"
       ];
+      availableKernelModules = [
+        "virtio_net"
+        "virtio_pci"
+        "virtio_mmio"
+        "virtio_blk"
+        "virtio_scsi"
+      ];
+      postDeviceCommands = ''
+        # Set the system time from the hardware clock to work around a
+        # bug in qemu-kvm > 1.5.2 (where the VM clock is initialised
+        # to the *boot time* of the host).
+        hwclock -s
+      '';
     };
     extraModprobeConfig = ''
       # Needed to run OSX-KVM
@@ -52,7 +68,11 @@
     # kernelModules = [ "vfio_virqfd" "vfio_pci" "vfio_iommu_type1" "vfio" ];
 
     # Enable IOMMU
-    kernelParams = [ "intel_iommu=on" "iommu=pt" ];
+    kernelParams = [
+      # Prevents Linux from touching devices which cannot be passed through
+      "iommu=pt" # (pass-through)
+      "intel_iommu=on" # needs to enable if on intel
+    ];
     binfmt = {
       emulatedSystems = [
         "aarch64-linux"
@@ -103,6 +123,10 @@
     systemPackages = with pkgs; [
       virt-manager
       spice-gtk
+      spice
+      spice-protocol
+      win-spice
+      win-virtio
       swtpm
       # virt-viewer
       qemu
@@ -122,4 +146,5 @@
     # "ovmf/OVMF.fd".source = (ovmfPackage.fd) + /FV/OVMF.fd;
     # };
   };
+  services.spice-vdagentd.enable = true;
 }

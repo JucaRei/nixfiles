@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 with lib.hm.gvariant;
 {
   imports = [
@@ -10,4 +10,8 @@ with lib.hm.gvariant;
   #     # picture-uri = "file://${config.home.homeDirectory}/Pictures/Determinate/DeterminateColorway-3440x1440.png";
   #   };
   # };
+
+  home.packages = with pkgs; [
+    mpv
+  ];
 }

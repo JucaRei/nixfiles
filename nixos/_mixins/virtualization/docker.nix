@@ -23,6 +23,7 @@
       # https://docs.docker.com/build/buildkit/
       #daemon.settings = { "features" = { "buildkit" = true; }; };
       storageDriver = "overlay2";
+      logDriver = "json-file";
     };
   };
   environment.systemPackages = with pkgs; [

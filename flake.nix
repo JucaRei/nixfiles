@@ -53,6 +53,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    hyprland.url = "github:hyprwm/Hyprland";
+    ags.url = "github:Aylur/ags";
+    lf-icons = {
+      url = "https://raw.githubusercontent.com/gokcehan/lf/master/etc/icons.example";
+      flake = false;
+    };
+
     # nixd = {
     #   url = "github:nix-community/nixd";
     #   inputs.nixpkgs.follows = "nixpkgs";
