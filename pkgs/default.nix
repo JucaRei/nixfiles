@@ -6,7 +6,7 @@
   cyberre-grub-theme = pkgs.callPackage ./cyberre-grub-theme { };
   firefox-csshacks = pkgs.callPackage ./firefox-csshacks { };
   nvchad = pkgs.callPackage ./nvchad { };
-  tidal-dl = pkgs.callPackage ./tidal-dl { };
-  breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
+  # tidal-dl = pkgs.callPackage ./tidal-dl { };
+  # breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
   # mpv = pkgs.callPackage ./mpv { };
 }

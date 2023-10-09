@@ -51,6 +51,7 @@
       allowUnfree = true;
       # Accept the joypixels license
       joypixels.acceptLicense = true;
+      allowUnsupportedSystem = true;
     };
   };
 
@@ -150,7 +151,7 @@
 
     '';
     hostName = hostname;
-    hostId = hostid;
+    hostId = if (config.boot.zfs.enabled == true) then hostid else false;
     useDHCP = lib.mkDefault true;
     firewall = {
       enable = true;

@@ -28,5 +28,6 @@ stdenvNoCC.mkDerivation {
     description = "CyberRe Grub theme";
     maintainers = with maintainers; [ anomalocaris ];
     platforms = platforms.linux;
+    badPlatforms = [ "x86_64-apple-darwin" ];
   };
 }
