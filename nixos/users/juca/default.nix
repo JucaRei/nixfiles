@@ -27,6 +27,7 @@ in
       "lxd"
       "wireshark"
       "libvirtd"
+      "qemu-libvirtd"
       "kvm"
       "input"
       "docker"

@@ -21,6 +21,7 @@
     # ../config/neovim
     # ./xdg.nix
     # ./zoxide.nix
+    ../dev/javascript.nix
   ];
 
   home = {
