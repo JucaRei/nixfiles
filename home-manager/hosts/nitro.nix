@@ -3,6 +3,7 @@ with lib.hm.gvariant;
 {
   imports = [
     ../_mixins/console/fish.nix
+    ../_mixins/video/mpv.nix
   ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {
@@ -11,7 +12,7 @@ with lib.hm.gvariant;
   #   };
   # };
 
-  home.packages = with pkgs; [
-    mpv
-  ];
+  # home.packages = with pkgs; [
+  #   mpv
+  # ];
 }
