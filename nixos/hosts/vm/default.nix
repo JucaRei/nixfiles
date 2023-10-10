@@ -47,6 +47,27 @@
   #   ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="zfs_member", ATTR{../queue/scheduler}="none"
   # '';
 
+  services.xserver = {
+    layout = lib.mkForce "br";
+    exportConfiguration = true;
+    virtualScreen = {
+      x = 1920;
+      y = 1080;
+    };
+    resolutions = [
+      {
+        x = 1920;
+        y = 1080;
+      }
+      {
+        x = 1600;
+        y = 1200;
+      }
+    ];
+    dpi = 96;
+    logFile = "/var/log/Xorg.0.log";
+  };
+
   boot = {
     initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
     kernelPackages = pkgs.linuxPackages_latest;
