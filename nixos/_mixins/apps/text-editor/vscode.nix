@@ -85,6 +85,13 @@
           sha256 = "sha256-t+iRBVN/Cw/eeakRzATCsV8noC2Wb6rnbZj7tcZJ/ew=";
         }
         # {
+        #   name = "Cody AI";
+        #   publisher = "sourcegraph";
+        #   Description = "Code AI with codebase context";
+        #   version = "0.14.0";
+        #   sha256 = lib.fakeSha256;
+        # }
+        # {
         #   name = "pubspec-assist";
         #   publisher = "jeroen-meijer";
         #   version = "2.3.2";

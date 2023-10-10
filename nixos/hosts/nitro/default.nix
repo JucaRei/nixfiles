@@ -14,6 +14,7 @@
     ../../_mixins/hardware/cpu/intel-cpu.nix
     ../../_mixins/hardware/boot/multiboot.nix
     ../../_mixins/hardware/sound/pipewire.nix
+    ../../_mixins/games/steam.nix
     ../../_mixins/services/security/sudo.nix
     ../../_mixins/services/security/common.nix
     ../../_mixins/virtualization
@@ -156,6 +157,7 @@
       btdu
       btrfs-progs
       compsize
+      # tidal
     ];
     sessionVariables = {
       # LIBVA_DRIVER_NAME = "nvidia";
@@ -195,6 +197,23 @@
           # tappingDragLock = false;
         };
       };
+      # xrandrHeads = [
+      #   {
+      #     output = "HDMI-1-0";
+      #     primary = true;
+      #     monitorConfig = ''
+      #       Modeline "1920x1080_60.00"
+      #     '';
+      #   }
+      #   {
+      #     output = "eDP";
+      #     primary = false;
+      #     monitorConfig = ''
+      #       Option "PreferredMode" "1920x1080"
+      #       Option "Position" "0 0"
+      #     '';
+      #   }
+      # ];
     };
     # power-profiles-daemon.enable = lib.mkForce false;
     # tlp = {

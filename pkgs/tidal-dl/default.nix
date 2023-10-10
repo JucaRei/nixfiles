@@ -8,6 +8,8 @@
 , prettytable
 , pycrypto
 , pydub
+, python3
+,
 }:
 let
   aigpy = buildPythonPackage rec {
@@ -22,7 +24,7 @@ let
     propagatedBuildInputs = [ mutagen requests colorama prettytable pycrypto pydub ];
   };
 in
-buildPythonApplication rec {
+python3.pkgs.buildPythonApplication rec {
   pname = "tidal-dl";
   version = "2022.10.31.1";
 
@@ -39,5 +41,7 @@ buildPythonApplication rec {
     license = licenses.asl20;
     maintainers = with maintainers; [ misterio77 ];
     platforms = platforms.all;
+    #platforms =  ["x86_64-linux"];
+    badPlataforms = [ "x86_64-unknown-linux-gnu" "i686-unknown-linux-gnu" "aarch64-unknown-linux-gnu" ];
   };
 }

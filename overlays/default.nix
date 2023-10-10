@@ -12,6 +12,7 @@
     cyberre = final.cyberre-grub-theme;
     # mpv = prev.mpv;
     nvchad = prev.nvchad;
+    # tidal = final.tidal-dl;
     # mpvconf = prev.mpv;
     # example = prev.example.overrideAttrs (oldAttrs: rec {
     # ...

@@ -12,7 +12,7 @@ with lib.hm.gvariant;
   #   };
   # };
 
-  # home.packages = with pkgs; [
-  #   mpv
-  # ];
+  home.packages = with pkgs; [
+    whatsapp-for-linux # Whatsapp desktop messaging app
+  ];
 }
