@@ -21,7 +21,7 @@
     # Add additional apps and include Yaru for syntax highlighting
     systemPackages = with pkgs; [
       appeditor # elementary OS menu editor
-      celluloid # Video Player
+      # celluloid # Video Player
       formatter # elementary OS filesystem formatter
       gthumb # Image Viewer
       gnome.simple-scan # Scanning
