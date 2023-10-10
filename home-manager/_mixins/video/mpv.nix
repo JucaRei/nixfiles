@@ -3,7 +3,6 @@
 
   programs.mpv = {
     enable = true;
-    package = pkgs.mpv;
     config = {
       alang = "jp,jpn,ja,Japanese,japanese,en,eng,pt_BR";
       profile = "gpu-hq";
