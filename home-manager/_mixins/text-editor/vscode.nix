@@ -74,15 +74,28 @@
 
     userSettings = {
       update.mode = "none";
-      window.zoomLevel = 0;
+      window = {
+        menuBarVisibility = "toggle";
+        nativeTabs = true;
+        # titleBarStyle = "custom";
+        # zoomLevel = 1;
+        zoomLevel = 0;
+      };
+      terminal.integrated = {
+        shell.linux = "${pkgs.bash}/bin/bash";
+        # shell.linux = "${pkgs.zsh}/bin/zsh";
+        # shell.linux = "${pkgs.fish}/bin/fish";
+        cursorBlinking = true;
+        cursorStyle = "line";
+        cursorWidth = 2;
+        fontFamily = "'monospace'";
+        fontSize = 16;
+        smoothScrolling = true;
+      };
 
-      # terminal.integrated.shell.linux = "${pkgs.zsh}/bin/zsh";
-      # terminal.integrated.shell.linux = "${pkgs.fish}/bin/fish";
-      terminal.integrated.shell.linux = "${pkgs.bash}/bin/bash";
       editor = {
         fontFamily = "'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono','JetbrainsMono Nerd Font'";
         fontLigatures = true;
-        cursorBlinking = "expand";
         cursorStyle = "line";
         # cursorStyle = "block";
         lineHeight = 2.3;
@@ -90,15 +103,36 @@
         minimap.renderCharecters = false;
         minimap.maxColumn = 80;
         minimap.autohide = true;
-        bracketPairColorization.enabled = true;
         renderWhitespace = "trailing";
+        smoothScrolling = true;
+        lineNumbers = "on";
+        cursorBlinking = "smooth";
+        cursorSmoothCaretAnimation = "on";
+        cursorWidth = 2;
+        formatOnSave = true;
+        guides = {
+          bracketPairs = true;
+          indentation = true;
+        };
+        bracketPairColorization = {
+          enabled = true;
+          independentColorPoolPerBracketType = true;
+        };
+        largeFileOptimizations = false;
+        # codeActionsOnSave.source = {
+        #   organizeImports = true;
+        #   fixAll.eslint = true;
+        # };
       };
 
       workbench = {
         iconTheme = "catppuccin-perfect-dark";
         # colorTheme = "GitHub Dark"; # Material Theme Ocean High Contrast
         # colorTheme = "Gamberetti Reborn (Dark)";
+        list.smoothScrolling = true;
         colorTheme = "Rainbow Extended";
+        # productIconTheme = "material-product-icons";
+        smoothScrolling = true;
       };
 
       ocamlformat-vscode-extension = {
@@ -116,16 +150,34 @@
       #  editor.defaultFormatter = "hoddy3190.ocamlformat-vscode-extension";
       #};
       "[css]" = { editor.defaultFormatter = "MikeBovenlander.formate"; };
-      window.menuBarVisibility = "toggle";
-      files.exclude = {
-        "**/.git" = true;
-        "**/.svn" = true;
-        "**/.hg" = true;
-        "**/CVS" = true;
-        "**/.DS_Store" = true;
-        "**/Thumbs.db" = true;
-        "**/*.olean" = true;
+      files = {
+        autoSave = "afterDelay";
+        eol = "\n";
+        insertFinalNewline = true;
+        trimTrailingWhitespace = true;
+
+        exclude = {
+          "**/.git" = true;
+          "**/.svn" = true;
+          "**/.hg" = true;
+          "**/CVS" = true;
+          "**/.DS_Store" = true;
+          "**/Thumbs.db" = true;
+          "**/*.olean" = true;
+          "**/.project" = true;
+          "**/.settings" = true;
+          "**/.classpath" = true;
+          "**/.direnv" = true;
+          "**/.factorypath" = true;
+        };
       };
+
+      git = {
+        autofetch = true;
+        confirmSync = false;
+        enableSmartCommit = true;
+      };
+
       "editor.bracketPairColorization.enabled" = true;
       "editor.fontFamily" = "Fira Code Retina";
       "editor.fontSize" = 21;
@@ -175,6 +227,20 @@
       };
     };
   };
+
+  # xdg.desktopEntries = {
+  #   "code" = {
+  #     categories = [ "Utility" "TextEditor" "Development" "IDE" ];
+  #     comment = "Code Editing. Redefined.";
+  #     exec = "${pkgs.vscode}/bin/code %F";
+  #     genericName = "Text Editor";
+  #     icon = "code";
+  #     mimeType = [ "text/plain" "inode/directory" ];
+  #     name = "Visual Studio Code";
+  #     startupNotify = true;
+  #     type = "Application";
+  #   };
+  # };
 }
 
 

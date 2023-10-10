@@ -9,5 +9,5 @@
   nvchad = pkgs.callPackage ./nvchad { };
   # tidal-dl = pkgs.callPackage ./tidal-dl { };
   # breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
-  mpv = pkgs.callPackage ./mpv { };
+  # mpv = pkgs.callPackage ./mpv { };
 }

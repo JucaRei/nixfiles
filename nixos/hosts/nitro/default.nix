@@ -18,6 +18,7 @@
     ../../_mixins/services/security/common.nix
     ../../_mixins/virtualization
     ../../_mixins/virtualization/quickemu.nix
+    ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
   ];
   boot = {

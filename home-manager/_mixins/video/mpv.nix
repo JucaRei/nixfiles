@@ -1,8 +1,15 @@
-{ pkgs, config, ... }: {
-  home.packages = with pkgs; [ mpv ];
+{ pkgs, lib, config, ... }:
+with lib.hm.gvariant;
+{
+  # home.packages = with pkgs; [ mpv ];
 
   programs.mpv = {
     enable = true;
+    package = pkgs.mpv;
+    scripts = with pkgs.mpvScripts; [
+      autoload
+      mpris
+    ];
     config = {
       alang = "jp,jpn,ja,Japanese,japanese,en,eng,pt_BR";
       profile = "gpu-hq";
