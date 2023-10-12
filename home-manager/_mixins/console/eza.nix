@@ -9,7 +9,7 @@
       la = "eza --icons -l --time-style long-iso -a";
       ll = "eza --icons -l";
       lla = "eza --icons -la";
-      ls = "eza --icons";
+      ls = "eza --icons -Slhga";
       tree = "eza --icons --tree -l";
     };
   };

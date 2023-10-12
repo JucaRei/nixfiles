@@ -109,7 +109,7 @@ in
               enable = lib.mkForce true;
               finegrained = lib.mkForce false;
             };
-            forceFullCompositionPipeline = true;
+            # forceFullCompositionPipeline = true;
           };
 
         };
@@ -174,6 +174,7 @@ in
             nvtop-nvidia
           ];
         };
+        services.xserver.videoDrivers = [ "nouveau" ];
       };
       nvidia-offload.configuration = {
         system.nixos.tags = [ "nvidia-offload" ];
@@ -237,7 +238,7 @@ in
         };
         environment = {
           systemPackages = with pkgs; [
-           # displaySetupScript
+            # displaySetupScript
             nvidia-offload
             vulkan-loader
             vulkan-validation-layers

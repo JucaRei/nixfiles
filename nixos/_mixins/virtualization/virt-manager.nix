@@ -6,27 +6,6 @@
 {
 
   boot = {
-    # kernelParams = [ "intel_iommu=on" "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ]; # or amd_iommu (cpu)
-    # kernelModules = [ "vendor-reset" "vfio" "vfio_iommu_type1" "vfio_pci" "vfio_virqfd" ];
-    # extraModulePackages = [ config.boot.kernelPackages.vendor-reset ]; # Presumably fix for GPU Reset Bug
-    # kernelPatches = [
-    #   {
-    #     name = "vendor-reset-reqs-and-other-stuff";
-    #     patch = null;
-    #     extraConfig = ''
-    #       FTRACE y
-    #       KPROBES y
-    #       FUNCTION_TRACER y
-    #       HWLAT_TRACER y
-    #       TIMERLAT_TRACER y
-    #       IRQSOFF_TRACER y
-    #       OSNOISE_TRACER y
-    #       PCI_QUIRKS y
-    #       KALLSYMS y
-    #       KALLSYMS_ALL y
-    #     '';
-    #   }
-    # ];
     initrd = {
       kernelModules = [
         "vfio_pci"
@@ -55,7 +34,8 @@
       # Needed to run OSX-KVM
       options kvm_intel nested=1
       options kvm_intel emulate_invalid_guest_state=0
-      options kvm ignore_nsrs=1
+      options kvm ignore_nsrs=Y
+      options kvm report_ignored_msrs=N
     '';
 
 
@@ -110,8 +90,13 @@
             # pkgsCross.aarch64-multiplatform.OVMF.fd
           ];
         };
-        runAsRoot = true;
-        swtpm.enable = true;
+        runAsRoot = false;
+        # Is this required for Windows 11?
+        swtpm = {
+          enable = true;
+          package = pkgs.swtpm-tpm2;
+
+        };
       };
       onShutdown = "suspend";
       onBoot = "ignore";
@@ -128,7 +113,7 @@
       win-spice
       win-virtio
       swtpm
-      # virt-viewer
+      virt-viewer
       qemu
       OVMFFull
       gvfs
@@ -146,5 +131,13 @@
     # "ovmf/OVMF.fd".source = (ovmfPackage.fd) + /FV/OVMF.fd;
     # };
   };
-  services.spice-vdagentd.enable = true;
+  services = {
+    spice-vdagentd.enable = true;
+    # udev.extraRules = ''
+    #   ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
+    #   SUBSYSTEMS=="usb", ATTRS{idVendor}=="vendor_id", ATTRS{idProduct}=="product_id", MODE="0660", TAG+="uaccess"
+    #   DEVPATH=="/devices/pci0000:00/0000:00:1f.2/host4/*", ENV{UDISKS_SYSTEM}="0"
+    #   ENV{ID_SERIAL_SHORT}=="WDC_WD10SPZX-21Z10T0_WD-WX61AA92ZH86", ENV{UDISKS_AUTO}="1", ENV{UDISKS_SYSTEM}="0"
+    # '';
+  };
 }

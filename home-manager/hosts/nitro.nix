@@ -15,4 +15,16 @@ with lib.hm.gvariant;
   home.packages = with pkgs; [
     whatsapp-for-linux # Whatsapp desktop messaging app
   ];
+
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      show-battery-percentage = true;
+    };
+
+    # Virtmanager
+    "org/virt-manager/virt-manager/connections" = {
+      autoconnect = [ "qemu:///system" ];
+      uris = [ "qemu:///system" ];
+    };
+  };
 }

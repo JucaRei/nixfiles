@@ -23,7 +23,28 @@
     ../../_mixins/virtualization/virt-manager.nix
   ];
   boot = {
-    loader.grub.theme = pkgs.cyberre;
+    loader = {
+      # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
+      grub = {
+        theme = pkgs.cyberre;
+        ## Copy kernels to /boot
+        # copyKernels = true;
+
+        ## mirror boot partitions
+        # mirroredBoots = [
+        #   {
+        #     devices = [ "nodev" ];
+        #     path = "/boot/efis/EFIBOOT0";
+        #     efiSysMountPoint = "/boot/efis/EFIBOOT0";
+        #   }
+        #   {
+        #     devices = [ "nodev" ];
+        #     path = "/boot/efis/EFIBOOT1";
+        #     efiSysMountPoint = "/boot/efis/EFIBOOT1";
+        #   }
+        # ];
+      };
+    };
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "usbhid" "sd_mod" "rtsx_pci_sdmmc" ];
       kernelModules = [ ];

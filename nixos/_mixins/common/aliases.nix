@@ -1,6 +1,5 @@
 _: {
   environment.shellAliases = {
-    ports = "sudo lsof -Pni"; # ports | fzf
 
     # fs
     r = "rsync -ra --info=progress2";
@@ -12,6 +11,7 @@ _: {
     ### NIX
     inspect-store = "nix path-info -rSh /run/current-system | sort -k2h ";
     wipe-user-packages = "nix-env -e '*'";
+    system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
 
     tor = "nix-shell -p tor-browser-bundle-bin --run tor-browser";
 

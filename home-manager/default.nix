@@ -31,6 +31,10 @@ in
     sessionPath = [ "$HOME/.local/bin" ];
     inherit stateVersion;
     inherit username;
+    sessionVariables = {
+      # only works for interactive shells, pam works for all kind of sessions
+      NIX_PATH = (lib.concatStringsSep ":" (lib.mapAttrsToList (name: path: "${name}=${path.to.path}") config.nix.registry));
+    };
   };
 
   nixpkgs = {

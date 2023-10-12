@@ -17,7 +17,6 @@ _: {
     less = "bat --paging=always";
     more = "bat --paging=always";
     top = "btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
-    # tree = "exa --tree";
     wget = "wget2";
     jq = "jiq";
     gitpfolders = "for i in */.git; do ( echo $i; cd $i/..; git pull; ); done";

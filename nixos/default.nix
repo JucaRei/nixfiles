@@ -60,11 +60,12 @@
     checkAllErrors = true;
 
     # 🍑 smooth rebuilds
+    # give nix-daemon the lowest priority 
     # Reduce disk usage
     daemonIOSchedClass = "idle";
     # Leave nix builds as a background task
     daemonCPUSchedPolicy = "idle";
-    #daemonIOSchedPriority = 2; # 7 max
+    daemonIOSchedPriority = 7; # only used by "best-effort"
 
     gc = {
       automatic = true;
