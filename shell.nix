@@ -9,7 +9,6 @@
       nix
       home-manager
       # dropbear
-      direnv
       git
       nil
       duf

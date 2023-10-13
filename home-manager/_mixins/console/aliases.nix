@@ -1,11 +1,14 @@
 _: {
   home.shellAliases = {
     ### Nix ###
-    rebuild-home = "home-manager switch -b backup --flake $HOME/Zero/nixfiles";
-    rebuild-lock = "pushd $HOME/Zero/nixfiles && nix flake lock --recreate-lock-file && popd";
+    # rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles";
+    rebuild-home = "systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=4000M -p CPUQuota=60% home-manager switch -b backup --flake $HOME/.dotfiles";
+    rebuild-lock = "pushd $HOME/.dotfiles && nix flake lock --recreate-lock-file && popd";
     nix-clean = "nix-collect-garbage -d";
-    # rebuild-iso-console = "pushd $HOME/Zero/nixfiles && nix build .#nixosConfigurations.iso-console.config.system.build.isoImage && popd";
-    # rebuild-iso-desktop = "pushd $HOME/Zero/nixfiles && nix build .#nixosConfigurations.iso-desktop.config.system.build.isoImage && popd";
+    # nixos-rebuild = "systemd-run --no-ask-password --uid=0 --system --scope -p MemoryLimit=16000M -p CPUQuota=60% nixos-rebuild";
+    # home-manager = "systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=16000M -p CPUQuota=60% home-manager";
+    # rebuild-iso-console = "pushd $HOME/.dotfiles && nix build .#nixosConfigurations.iso-console.config.system.build.isoImage && popd";
+    # rebuild-iso-desktop = "pushd $HOME/.dotfiles && nix build .#nixosConfigurations.iso-desktop.config.system.build.isoImage && popd";
     nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
     search = "nix search nixpkgs";
     mkhostid = "head -c4 /dev/urandom | od -A none -t x4";

@@ -132,6 +132,20 @@ in
     };
   };
 
+  home = {
+    sessionVariables = {
+      DEFAULT_BROWSER = "${pkgs.firefox}/bin/firefox";
+    };
+  };
+
+  xdg.mimeApps.defaultApplications = {
+    "text/html" = "firefox-browser.desktop";
+    "x-scheme-handler/http" = "firefox-browser.desktop";
+    "x-scheme-handler/https" = "firefox-browser.desktop";
+    "x-scheme-handler/about" = "firefox-browser.desktop";
+    "x-scheme-handler/unknown" = "firefox-browser.desktop";
+  };
+
   # home.packages =
   #   let
   #     makeFirefoxProfileBin = args @ { profile, ... }:

@@ -353,11 +353,20 @@ with lib.hm.gvariant;
     };
   };
 
-  home.pointerCursor = {
-    name = "Yaru";
-    package = pkgs.yaru-theme;
-    size = 32;
-    gtk.enable = true;
-    x11.enable = true;
+  home = {
+    pointerCursor = {
+      name = "Yaru";
+      package = pkgs.yaru-theme;
+      size = 32;
+      gtk.enable = true;
+      x11.enable = true;
+    };
+
+    packages = with pkgs; [
+      blueman
+    ];
+    services = {
+      blueman-applet.enable = true;
+    };
   };
 }
