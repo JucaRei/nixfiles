@@ -13,7 +13,7 @@ in
     # inputs.nix-colors.homeManagerModules.default
 
     # You can also split up your configuration and import pieces of it here:
-    ./_mixins/console
+    ./_mixins/common
     ./_mixins/dev
   ]
   # ++ lib.optional (builtins.isString desktop) ./_mixins/desktop

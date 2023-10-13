@@ -2,21 +2,21 @@
 with lib.hm.gvariant;
 {
   imports = [
-    # ../../_mixins/audio/audio-recorder.nix
-    # ../../_mixins/audio/gnome-sound-recorder.nix
-    ../../_mixins/browser/vivaldi.nix
-    # ../../_mixins/browser/firefox.nix
-    ../../_mixins/music/rhythmbox.nix
-    # ../../_mixins/video/mpv.nix
-    ../../_mixins/tools/dconf-editor.nix
-    # ../../_mixins/tools/gitkraken.nix
-    # ../../_mixins/tools/meld.nix
-    # ../../_mixins/terminal/sakura.nix
-    # ../../_mixins/terminal/tilix.nix
+    # ../../_mixins/apps/audio/audio-recorder.nix
+    # ../../_mixins/apps/audio/gnome-sound-recorder.nix
+    ../../_mixins/apps/browser/vivaldi.nix
+    # ../../_mixins/apps/browser/firefox.nix
+    ../../_mixins/apps/music/rhythmbox.nix
+    # ../../_mixins/apps/video/mpv.nix
+    ../../_mixins/apps/tools/dconf-editor.nix
+    # ../../_mixins/apps/tools/gitkraken.nix
+    # ../../_mixins/apps/tools/meld.nix
+    # ../../_mixins/apps/terminal/sakura.nix
+    # ../../_mixins/apps/terminal/tilix.nix
     # ../../_mixins/services/emote.nix
     ../../_mixins/services/localsend.nix
-    # ../../_mixins/text-editor/vscode.nix
-    # ../../_mixins/video/celluloid.nix
+    # ../../_mixins/apps/text-editor/vscode.nix
+    # ../../_mixins/apps/video/celluloid.nix
   ];
 
   dconf.settings = {

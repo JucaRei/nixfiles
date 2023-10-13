@@ -1,27 +1,18 @@
 { pkgs, ... }: {
   imports = [
-    ./aliases.nix
-    # ./atuin.nix
-    ./bat.nix
-    ./bash.nix
-    # ./btop.nix
-    ./bottom.nix
-    ./dircolors.nix
-    ./direnv.nix
-    # ./exa.nix
-    ./eza.nix
-    ./htop.nix
-    # ./fish.nix
-    ./git.nix
-    # ./glow.nix
-    ./micro.nix
-    ./neofetch.nix
-    ./skim.nix
-    ./starship.nix
-    # ../config/neovim
-    # ./xdg.nix
-    # ./zoxide.nix
-    ../dev/javascript.nix
+    ../console/aliases.nix
+    ../console/bat.nix
+    ../console/bash.nix
+    ../console/bottom.nix
+    ../console/dircolors.nix
+    ../console/direnv.nix
+    ../console/eza.nix
+    ../console/htop.nix
+    ../console/git.nix
+    ../console/micro.nix
+    ../console/neofetch.nix
+    ../console/skim.nix
+    ../console/starship.nix
   ];
 
   home = {

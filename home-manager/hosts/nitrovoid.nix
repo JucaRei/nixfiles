@@ -2,8 +2,8 @@
 with lib.hm.gvariant;
 {
   imports = [
-    ../_mixins/dev/nix.nix
-    ../_mixins/dev/nixpkgs.nix
+    # ../_mixins/dev/nix.nix
+    # ../_mixins/dev/nixpkgs.nix
   ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {

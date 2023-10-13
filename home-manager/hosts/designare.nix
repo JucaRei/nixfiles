@@ -2,7 +2,7 @@
 with lib.hm.gvariant;
 {
   imports = [
-    ../../../desktop/vorta.nix
+    ../_mixins/apps/backup/vorta.nix
   ];
   dconf.settings = {
     "org/gnome/desktop/background" = {

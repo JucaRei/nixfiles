@@ -1,7 +1,7 @@
 _: {
   imports = [
-    # ../_mixins/music/rhythmbox.nix
-    ../_mixins/browser/opera.nix
+    # ../_mixins/apps/music/rhythmbox.nix
+    ../_mixins/apps/browser/opera.nix
   ];
   home.shellAliases = {
     sudo = "doas";

@@ -1,6 +1,6 @@
 { config, lib, hostname, pkgs, username, nixpkgs, ... }: {
   imports = [
-    ../../_mixins/fonts
+    ../../_mixins/common/fonts.nix
     # ../../_mixins/services/keybase.nix
     # ../../_mixins/services/syncthing.nix
   ];
