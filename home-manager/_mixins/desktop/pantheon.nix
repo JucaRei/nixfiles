@@ -238,7 +238,7 @@ with lib.hm.gvariant;
   home.pointerCursor = {
     package = pkgs.pantheon.elementary-icon-theme;
     name = "elementary";
-    size = 24;
+    size = 20;
     gtk.enable = true;
     x11.enable = true;
   };

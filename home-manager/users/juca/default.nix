@@ -77,7 +77,7 @@
     };
     # A Modern Unix experience
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
-    packages = with pkgs; [
+    packages = with pkgs; lib.mkDefault [
       # asciinema # Terminal recorder
       black # Code format Python
       # bmon # Modern Unix `iftop`
@@ -133,6 +133,7 @@
       # wavemon # Terminal WiFi monitor
       yq-go # Terminal `jq` for YAML
       # nvchad
+      ariang # Modern web frontend making aria2
     ];
     # sessionVariables = {
     #   BZR_EMAIL = "Reinaldo P Jr <code@wimpress.io>";
