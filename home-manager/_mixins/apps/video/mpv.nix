@@ -75,7 +75,7 @@ with lib.hm.gvariant;
       font = "FiraCode Nerd Font";
     in
     {
-      "mpv/mpv.conf".source = ../config/mpv/mpv.conf;
+      "mpv/mpv.conf".source = ../../config/mpv/mpv.conf;
       "mpv/script-opts/console.conf".source = kvFormat.generate "mpv-script-opts-console" {
         font = font;
       };

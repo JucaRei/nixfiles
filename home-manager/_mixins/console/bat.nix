@@ -2,17 +2,17 @@
   programs.bat = {
     enable = true;
     config = {
-      theme = "Catppuccin-mocha";
+      theme = "tokyo_night";
     };
     themes = {
       # cyberpunk-neon =
       #   builtins.readFile ../config/bat/themes/cyberpunk-neon.tmTheme;
-      Catppuccin-mocha =
-        builtins.readFile ../config/bat/themes/Catppuccin-mocha.tmTheme;
+      # Catppuccin-mocha =
+      #   builtins.readFile ../config/bat/themes/Catppuccin-mocha.tmTheme;
       # rose_pine_moon =
       #   builtins.readFile ../config/bat/themes/rose_pine_moon.tmTheme;
-      # tokyo_night =
-      #   builtins.readFile ../config/bat/themes/tokyo_night.tmTheme;
+      tokyo_night =
+        builtins.readFile ../config/bat/themes/tokyo_night.tmTheme;
     };
     extraPackages = with pkgs.bat-extras; [
       batdiff

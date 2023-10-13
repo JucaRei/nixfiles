@@ -229,6 +229,33 @@ This is the directory structure I'm using.
 │  │  └──  video
 │  ├──  hosts
 │  ├──  users
+├──  home-manager
+│  ├──  _mixins
+│  │  ├──  apps
+│  │  │   ├──  audio
+│  │  │   ├──  backup
+│  │  │   ├──  bin
+│  │  │   ├──  browser
+│  │  │   ├──  config
+│  │  │   ├──  documents
+│  │  │   ├──  games
+│  │  │   ├──  music
+│  │  │   ├──  terminal
+│  │  │   ├──  text-editor
+│  │  │   ├──  tools
+│  │  │   └──  video
+│  ├──  common
+│  ├──  config
+│  ├──  console
+│  ├──  desktop
+│  ├──  dev
+│  └──  services
+├──  default.nix
+├──  hosts
+└──  users
+   ├──  deck
+   ├──  juca
+   └──  nixos
 ├──  lib
 ├──  nixos
 │  ├──  _mixins

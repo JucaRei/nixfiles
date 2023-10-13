@@ -1,0 +1,28 @@
+ home-manager
+├──  _mixins
+├──  apps
+│  │  ├──  audio
+│  │  ├──  backup
+│  │  ├──  bin
+│  │  ├──  browser
+│  │  ├──  config
+│  │  ├──  documents
+│  │  ├──  games
+│  │  ├──  music
+│  │  ├──  terminal
+│  │  ├──  text-editor
+│  │  ├──  tools
+│  │  └──  video
+│  ├──  common
+│  ├──  config
+│  ├──  console
+│  ├──  desktop
+│  ├──  dev
+│  └──  services
+├──  config.txt
+├──  default.nix
+├──  hosts
+└──  users
+   ├──  deck
+   ├──  juca
+   └──  nixos

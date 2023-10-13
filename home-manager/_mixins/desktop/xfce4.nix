@@ -78,8 +78,8 @@
   }; # xfwm4
 
   #xfce4-desktop = {
-    # 2023-07-29: MUST NOT have leading slashes
-    # FIXXME: this section is untested
+  # 2023-07-29: MUST NOT have leading slashes
+  # FIXXME: this section is untested
   #  "desktop-icons/file-icons/show-filesystem" = false;
   #  "desktop-icons/file-icons/show-home" = false;
   #  "desktop-icons/file-icons/show-removable" = false;
@@ -90,36 +90,36 @@
   #  "backdrop/single-workspace-number" = 3;
   #}; # xfce4-desktop
 
-  #xfce4-panel = {
+  xfce4-panel = {
     # FIXXME: this section is not working completely; in particular: "whiskermenu"; "cpugraph"; "netload"; "eyes";
 
     # example configurations:
     # https://github.com/vhminh/dotfiles/blob/7b7dd80408658f0d76f8d0b518a314f5952146ec/nix/modules/desktop.nix#L62
     # https://github.com/lobre/nix-home/blob/8117fbdb4bca887b875f622132b3b9e9c737a5bf/roles/hm/xfce/xfconf.nix#L144 -> leading slashes! :-O
 
-  #  "panels" = [ 1 ];
-  #  "panels/dark-mode" = true;
-  #  "panels/panel-1/nrows" = 1; # number of rows
-  #  "panels/panel-1/mode" = 0; # Horizontal
-  #  "panels/panel-1/output-name" = "Automatic";
-  #  "panels/panel-1/span-monitors" = false;
-  #  "panels/panel-1/background-style" = 0; # None (use system style)
-  #  "panels/panel-1/icon-size" = 0; # Adjust size automatically
-  #  "panels/panel-1/size" = 24; # Row size (pixels)
-  #  "panels/panel-1/length" = 100.0;
-  #  "panels/panel-1/length-adjust" = true;
-  #  "panels/panel-1/position" = "p=6;x=0;y=0";
-  #  "panels/panel-1/enable-struts" = true;
-  ##  "panels/panel-1/position-locked" = true;
-  #  "panels/panel-1/plugin-ids" = [ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ];
+    #  "panels" = [ 1 ];
+    #  "panels/dark-mode" = true;
+    #  "panels/panel-1/nrows" = 1; # number of rows
+    #  "panels/panel-1/mode" = 0; # Horizontal
+    #  "panels/panel-1/output-name" = "Automatic";
+    #  "panels/panel-1/span-monitors" = false;
+    #  "panels/panel-1/background-style" = 0; # None (use system style)
+    #  "panels/panel-1/icon-size" = 0; # Adjust size automatically
+    #  "panels/panel-1/size" = 24; # Row size (pixels)
+    #  "panels/panel-1/length" = 100.0;
+    #  "panels/panel-1/length-adjust" = true;
+    #  "panels/panel-1/position" = "p=6;x=0;y=0";
+    #  "panels/panel-1/enable-struts" = true;
+    ##  "panels/panel-1/position-locked" = true;
+    #  "panels/panel-1/plugin-ids" = [ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ];
     # Application menu = whiskermenu
-  #  "plugins/plugin-1" = "whiskermenu";
+    #  "plugins/plugin-1" = "whiskermenu";
     # Tasklist
-  #  "plugins/plugin-2" = "tasklist";
-  #  "plugins/plugin-2/grouping" = false;
-  #  "plugins/plugin-2/show-handle" = true;
-  #  "plugins/plugin-2/show-labels" = true;
-  #  "plugins/plugin-2/flat-buttons" = false;
+    #  "plugins/plugin-2" = "tasklist";
+    #  "plugins/plugin-2/grouping" = false;
+    #  "plugins/plugin-2/show-handle" = true;
+    #  "plugins/plugin-2/show-labels" = true;
+    #  "plugins/plugin-2/flat-buttons" = false;
     "plugins/plugin-2/include-all-monitors" = true;
     "plugins/plugin-2/window-scrolling" = false;
     "plugins/plugin-2/sort-order" = 1; # Group title and timestamp
@@ -211,64 +211,64 @@
 
   #xfce4-appfinder = { }; # xfce4-appfinder
 
- # keyboard-layout = {
-    # 2023-07-29: MUST have leading slashes
- #   "/Default/XkbDisable" = false;
- #   "/Default/XkbLayout" = "br";
- #   "/Default/XkbModel" = "pc105";
-    # "/Default/XkbOptions/Compose" = "compose:rctrl";
-    # "/Default/XkbVariant" = "intl";
- # }; # keyboard-layout
+  # keyboard-layout = {
+  # 2023-07-29: MUST have leading slashes
+  #   "/Default/XkbDisable" = false;
+  #   "/Default/XkbLayout" = "br";
+  #   "/Default/XkbModel" = "pc105";
+  # "/Default/XkbOptions/Compose" = "compose:rctrl";
+  # "/Default/XkbVariant" = "intl";
+  # }; # keyboard-layout
 
   #thunar-volman = {
-    # 2023-07-29: MUST have leading slashes
-    # FIXXME: this section is untested
+  # 2023-07-29: MUST have leading slashes
+  # FIXXME: this section is untested
   #  "/autobrowse/enabled" = true;
-    # "/autoburn/audio-cd-command" = -a;
-    # "/autoburn/data-cd-command" = -d;
-    # "/autoburn/enabled" = false;
-    # "/autoipod/enabled" = false;
-    # "/autokeyboard/enabled" = false;
+  # "/autoburn/audio-cd-command" = -a;
+  # "/autoburn/data-cd-command" = -d;
+  # "/autoburn/enabled" = false;
+  # "/autoipod/enabled" = false;
+  # "/autokeyboard/enabled" = false;
   #  "/automount-drives/enabled" = true;
   #  "/automount-media/enabled" = true;
   #  "/automouse/enabled" = false;
   #  "/autoopen/enabled" = false;
   #  "/autophoto/enabled" = false;
-    # "/autoplay-audio-cds/command" = --device=%d;
-    # "/autoplay-audio-cds/enabled" = true;
-    # "/autoplay-video-cds/command" = --device=%d;
-    # "/autoplay-video-cds/enabled" = true;
-    # "/autoprinter/enabled" = false;
+  # "/autoplay-audio-cds/command" = --device=%d;
+  # "/autoplay-audio-cds/enabled" = true;
+  # "/autoplay-video-cds/command" = --device=%d;
+  # "/autoplay-video-cds/enabled" = true;
+  # "/autoprinter/enabled" = false;
   #  "/autorun/enabled" = false;
-    # "/autotablet/enabled" = false;
- # }; # thunar-volman
+  # "/autotablet/enabled" = false;
+  # }; # thunar-volman
 
   #thunar = {
-    # 2023-07-29: MUST have leading slashes
-    # FIXXME: this section is untested
-    # "/hidden-bookmarks" = <<UNSUPPORTED>>;
-    # "/hidden-devices" = <<UNSUPPORTED>>;
-    # "/last-details-view-column-order" = "THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_TYPE,THUNAR_COLUMN_DATE_ACCESSED,THUNAR_COLUMN_OWNER,THUNAR_COLUMN_PERMISSIONS,THUNAR_COLUMN_MIME_TYPE,THUNAR_COLUMN_GROUP";
-    # "/last-details-view-column-widths" = "50,151,209,50,1083,50,50,81,1045,1074,50,50,50,1244";
-    # "/last-details-view-fixed-columns" = true;
-    # "/last-details-view-visible-columns" = "THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_TYPE";
-    # "/last-details-view-zoom-level" = "THUNAR_ZOOM_LEVEL_SMALLEST";
-    # "/last-icon-view-zoom-level" = "THUNAR_ZOOM_LEVEL_NORMAL";
-    # "/last-location-bar" = "ThunarLocationEntry";
-    # "/last-separator-position" = 170;
-    #"/last-show-hidden" = true;
-    # "/last-side-pane" = "ThunarShortcutsPane";
-    # "/last-sort-column" = "THUNAR_COLUMN_DATE_MODIFIED";
-    # "/last-sort-order" = "GTK_SORT_DESCENDING";
-    # "/last-splitview-separator-position" = 1194;
-    # "/last-view" = "ThunarDetailsView";
-    # "/last-window-height" = 1384;
-    # "/last-window-maximized" = true;
-    # "/last-window-width" = 2560;
-    #"/misc-date-style" = "THUNAR_DATE_STYLE_ISO";
-    #"/misc-middle-click-in-tab" = false;
-    #"/misc-single-click" = false;
-    #"/misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_NEVER";
-    #"/misc-volume-management" = false;
-# }; # thunar
-}
+  # 2023-07-29: MUST have leading slashes
+  # FIXXME: this section is untested
+  # "/hidden-bookmarks" = <<UNSUPPORTED>>;
+  # "/hidden-devices" = <<UNSUPPORTED>>;
+  # "/last-details-view-column-order" = "THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_TYPE,THUNAR_COLUMN_DATE_ACCESSED,THUNAR_COLUMN_OWNER,THUNAR_COLUMN_PERMISSIONS,THUNAR_COLUMN_MIME_TYPE,THUNAR_COLUMN_GROUP";
+  # "/last-details-view-column-widths" = "50,151,209,50,1083,50,50,81,1045,1074,50,50,50,1244";
+  # "/last-details-view-fixed-columns" = true;
+  # "/last-details-view-visible-columns" = "THUNAR_COLUMN_DATE_MODIFIED,THUNAR_COLUMN_NAME,THUNAR_COLUMN_SIZE,THUNAR_COLUMN_TYPE";
+  # "/last-details-view-zoom-level" = "THUNAR_ZOOM_LEVEL_SMALLEST";
+  # "/last-icon-view-zoom-level" = "THUNAR_ZOOM_LEVEL_NORMAL";
+  # "/last-location-bar" = "ThunarLocationEntry";
+  # "/last-separator-position" = 170;
+  #"/last-show-hidden" = true;
+  # "/last-side-pane" = "ThunarShortcutsPane";
+  # "/last-sort-column" = "THUNAR_COLUMN_DATE_MODIFIED";
+  # "/last-sort-order" = "GTK_SORT_DESCENDING";
+  # "/last-splitview-separator-position" = 1194;
+  # "/last-view" = "ThunarDetailsView";
+  # "/last-window-height" = 1384;
+  # "/last-window-maximized" = true;
+  # "/last-window-width" = 2560;
+  #"/misc-date-style" = "THUNAR_DATE_STYLE_ISO";
+  #"/misc-middle-click-in-tab" = false;
+  #"/misc-single-click" = false;
+  #"/misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_NEVER";
+  #"/misc-volume-management" = false;
+  # }; # thunar
+};

@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../terminal/alacritty.nix
+    ../apps/terminal/alacritty.nix
   ];
   home = {
     keyboard = {
