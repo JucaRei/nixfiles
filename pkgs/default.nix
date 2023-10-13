@@ -8,6 +8,6 @@
   firefox-csshacks = pkgs.callPackage ./firefox-csshacks { };
   nvchad = pkgs.callPackage ./nvchad { };
   # tidal-dl = pkgs.callPackage ./tidal-dl { };
-  # breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
+  breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
   # mpv = pkgs.callPackage ./mpv { };
 }

@@ -47,4 +47,10 @@
     # smooth backlight control
     brillo.enable = true;
   };
+
+  environment = {
+    systemPackages = with pkgs;[
+      hacked-cursor
+    ];
+  };
 }

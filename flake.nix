@@ -33,7 +33,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # FlakeHub
+    ## FlakeHub
     eza = {
       url = "https://flakehub.com/f/eza-community/eza/0.14.0.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";

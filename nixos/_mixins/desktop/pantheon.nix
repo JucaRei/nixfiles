@@ -31,6 +31,7 @@
       yaru-theme
       usbimager
       # inputs.nix-software-center.packages.${system}.nix-software-center
+      # hacked-cursor
     ];
   };
 

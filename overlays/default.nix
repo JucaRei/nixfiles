@@ -11,6 +11,7 @@
   modifications = final: prev: {
     cyberre = final.cyberre-grub-theme;
     # mpv = prev.mpv;
+    hacked-cursor = final.breeze-hacked-cursorr;
     nvchad = prev.nvchad;
     # tidal = final.tidal-dl;
     # mpvconf = prev.mpv;

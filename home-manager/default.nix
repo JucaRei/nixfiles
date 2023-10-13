@@ -1,4 +1,4 @@
-{ config, desktop, inputs, lib, outputs, pkgs, stateVersion, username, hostname, ... }:
+{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
 in
@@ -57,7 +57,6 @@ in
         # nvchad = final.nvchad.override {
         #   imports = [ ../pkgs/nvchad ];
         # };
-
       })
     ];
 
