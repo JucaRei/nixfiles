@@ -187,8 +187,8 @@
         "juca@win-max" = libx.mkHome { hostname = "win-max"; username = "juca"; desktop = "pantheon"; };
         "juca@zed" = libx.mkHome { hostname = "zed"; username = "juca"; desktop = "pantheon"; };
         # LAPTOP
-        # home-manager switch -b backup --flake $HOME/Zero/nix-config
-        # home-manager switch -b backup --flake $HOME/Zero/nix-config
+        # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
+        # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # nix build .#homeConfigurations."juca@DietPi".activationPackage
         "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "pantheon"; };
         "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };

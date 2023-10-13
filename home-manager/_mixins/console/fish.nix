@@ -41,10 +41,10 @@
         # https://github.com/NixOS/nixpkgs/issues/191128#issuecomment-1246030417
         nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
         nix-gc = "sudo nix-collect-garbage --delete-older-than 5d";
-        rebuild-home = "home-manager switch -b backup --flake $HOME/Zero/nixfiles";
-        # rebuild-host = "sudo nixos-rebuild switch --flake $HOME/Zero/nixfiles";
-        # rebuild-lock = "pushd $HOME/Zero/nixfiles && nix flake lock --recreate-lock-file && popd";
-        rebuild-iso = "pushd $HOME/Zero/nixfiles && nix build .#nixosConfigurations.iso.config.system.build.isoImage && popd";
+        rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
+        # rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles";
+        # rebuild-lock = "pushd $HOME/.dotfiles/nixfiles && nix flake lock --recreate-lock-file && popd";
+        rebuild-iso = "pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso.config.system.build.isoImage && popd";
       };
       shellAliases = {
         diff = "diffr";

@@ -65,7 +65,7 @@ let
       sudo nixos-install --no-root-password --flake ".#$TARGET_HOST"
 
       # Rsync nix-config to the target install and set the remote origin to SSH.
-      rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
+      rsync -a --delete "$HOME/.dotfiles/" "/mnt/home/$TARGET_USER/.dotfiles/"
       pushd "/mnt/home/$TARGET_USER/.dotfiles/nixfiles/nixfiles"
       # git remote set-url origin git@github.com:JucaRei/nixfiles.git
       git remote set-url origin git@192.168.1.200:juca/nixfiles.git

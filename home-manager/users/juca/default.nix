@@ -189,7 +189,7 @@
     "d ${config.home.homeDirectory}/Pictures/phones 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Pictures/wallpapers 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Pictures/resources 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Zero 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/.dotfiles 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Volatile/Vorta 0755 ${username} users - -"
     "L+ /home/${username}/.config/obs-studio/ - - - - ${config.home.homeDirectory}/Studio/OBS/config/obs-studio/"
   ];
