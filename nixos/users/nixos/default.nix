@@ -14,12 +14,12 @@ let
       exit 1
     fi
 
-    if [ ! -d "$HOME/.dotfiles/.git" ]; then
-      # git clone https://github.com/JucaRei/nixfiles.git "$HOME/.dotfiles"
-      git clone http://192.168.1.200/juca/nixfiles.git "$HOME/.dotfiles"
+    if [ ! -d "$HOME/.dotfiles/nixfiles/nixfiles/.git" ]; then
+      # git clone https://github.com/JucaRei/nixfiles.git "$HOME/.dotfiles/nixfiles/nixfiles"
+      git clone http://192.168.1.200/juca/nixfiles.git "$HOME/.dotfiles/nixfiles/nixfiles"
     fi
 
-    pushd "$HOME/.dotfiles"
+    pushd "$HOME/.dotfiles/nixfiles/nixfiles"
 
     if [[ -z "$TARGET_HOST" ]]; then
       echo "ERROR! $(basename "$0") requires a hostname as the first argument"
@@ -66,7 +66,7 @@ let
 
       # Rsync nix-config to the target install and set the remote origin to SSH.
       rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
-      pushd "/mnt/home/$TARGET_USER/.dotfiles"
+      pushd "/mnt/home/$TARGET_USER/.dotfiles/nixfiles/nixfiles"
       # git remote set-url origin git@github.com:JucaRei/nixfiles.git
       git remote set-url origin git@192.168.1.200:juca/nixfiles.git
       popd

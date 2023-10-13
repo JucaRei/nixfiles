@@ -226,7 +226,7 @@
         iso-win2 = libx.mkHost { hostname = "win2"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"; desktop = "pantheon"; hostid = "c8f5755d"; };
         iso-win-max = libx.mkHost { hostname = "iso-win-max"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"; desktop = "pantheon"; hostid = "7683ddba"; };
         # Workstations
-        #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles
+        #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles/nixfiles
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         designare = libx.mkHost { hostname = "designare"; username = "juca"; desktop = "pantheon"; hostid = "5588140b"; };
         p1 = libx.mkHost { hostname = "p1"; username = "juca"; desktop = "pantheon"; hostid = "3fecbbf7"; };
