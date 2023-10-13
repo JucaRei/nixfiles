@@ -215,7 +215,6 @@ This is the directory structure I'm using.
 │  ├──  _mixins
 │  │  ├──  backup
 │  │  ├──  browser
-│  │  ├──  config
 │  │  ├──  console
 │  │  ├──  desktop
 │  │  ├──  dev

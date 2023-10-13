@@ -49,6 +49,10 @@ in
     ];
 
     initExtra = ''
+      # Zsh-like completion
+        bind 'set show-all-if-ambiguous on'
+        bind 'TAB:menu-complete'
+
       tmux-projects () {
         local proj="$(${skim-cmds.projects})"
         [ "" != "$proj" ] && echo ${tm "$proj"}

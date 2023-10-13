@@ -13,6 +13,7 @@
     ../console/neofetch.nix
     ../console/skim.nix
     ../console/starship.nix
+    ./fonts.nix
   ];
 
   home = {
