@@ -26,6 +26,7 @@ in
       "plugdev"
       "lxd"
       "wireshark"
+      "storage"
       "libvirtd"
       "qemu-libvirtd"
       "kvm"
