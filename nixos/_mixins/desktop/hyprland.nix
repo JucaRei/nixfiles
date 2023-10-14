@@ -12,6 +12,7 @@
       autologinUser = "${username}";
     };
     xserver = {
+      enable = true;
       xkbVariant = "nodeadkeys";
       displayManager = {
         lightdm.enable = true;
