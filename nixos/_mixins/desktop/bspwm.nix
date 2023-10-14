@@ -36,10 +36,10 @@
     ];
   };
 
-  xdg = {
-    portal = {
-      enable = true;
-      extraPortals = pkgs.xdg-desktop-portal-gtk;
-    };
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk # provides a XDG Portals implementation.
+    ];
   };
 }
