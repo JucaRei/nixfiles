@@ -24,7 +24,12 @@
       # wacom.enable = true;
 
       displayManager = {
-        gdm.enable = true; # Display Manager
+        gdm = {
+          enable = true; # Display Manager
+          settings = {
+            greeter.IncludeAll = true;
+          };
+        };
         defaultSession = "gnome";
       };
       desktopManager.gnome = {

@@ -150,7 +150,10 @@
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
       devShells = libx.systems (system:
         let pkgs = nixpkgs.legacyPackages.${system};
-        in import ./shell.nix { inherit pkgs; }
+        in import ./shell.nix {
+          inherit pkgs;
+          node = nixpkgs.legacyPackages.${system}.callPackage ./shells/node { };
+        }
       );
 
       # Custom packages and modifications, exported as overlays

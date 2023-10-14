@@ -24,7 +24,7 @@ in
       rnix-lsp
       # base-packages
       fzf
-      tmux
+      # tmux
     ];
 
 

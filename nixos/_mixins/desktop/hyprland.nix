@@ -8,9 +8,9 @@
   };
 
   services = {
-    getty = {
-      autologinUser = "${username}";
-    };
+    # getty = {
+    #   autologinUser = "${username}";
+    # };
     xserver = {
       enable = true;
       xkbVariant = "nodeadkeys";

@@ -67,6 +67,9 @@
   virtualisation = {
     libvirtd = {
       enable = true;
+      extraConfig = ''
+        unix_sock_group = "libvirtd"
+      '';
       qemu = {
         verbatimConfig = ''
           namespaces = []
@@ -90,12 +93,12 @@
             # pkgsCross.aarch64-multiplatform.OVMF.fd
           ];
         };
-        runAsRoot = true;
+        runAsRoot = false;
+        # runAsRoot = true;
         # Is this required for Windows 11?
         swtpm = {
           enable = true;
           package = pkgs.swtpm-tpm2;
-
         };
       };
       onShutdown = "suspend";
