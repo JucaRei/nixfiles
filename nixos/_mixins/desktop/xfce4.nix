@@ -7,10 +7,6 @@
   # Exclude MATE themes. Yaru will be used instead.
   # Don't install mate-netbook or caja-dropbox
   environment = {
-    xfce.excludePackages = with pkgs; [
-
-    ];
-
     # Add some packages to complete the MATE desktop
     systemPackages = with pkgs; [
       elementary-xfce-icon-theme
