@@ -4,6 +4,7 @@
 { pkgs ? (import ../nixpkgs.nix) { } }: {
   # example = pkgs.callPackage ./example { };
   cyberre-grub-theme = pkgs.callPackage ./cyberre-grub-theme { };
+  cloneit = pkgs.callPackage ./cloneit { };
   plymouth-themes = pkgs.callPackage ./plymouth-themes { };
   firefox-csshacks = pkgs.callPackage ./firefox-csshacks { };
   nvchad = pkgs.callPackage ./nvchad { };

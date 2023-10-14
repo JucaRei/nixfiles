@@ -256,21 +256,30 @@
   ### Load z3fold and lz4
 
   systemd = {
-    services.zswap = {
-      description = "Enable ZSwap, set to LZ4 and Z3FOLD";
-      enable = true;
-      wantedBy = [ "basic.target" ];
-      path = [ pkgs.bash ];
-      serviceConfig = {
-        ExecStart = ''${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
+    services = {
+      zswap = {
+        description = "Enable ZSwap, set to LZ4 and Z3FOLD";
+        enable = true;
+        wantedBy = [ "basic.target" ];
+        path = [ pkgs.bash ];
+        serviceConfig = {
+          ExecStart = ''${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
       echo 1 > enabled&& \
       echo 20 > max_pool_percent&& \
       echo lz4hc > compressor&& \
       echo z3fold > zpool'
       '';
-        Type = "simple";
+          Type = "simple";
+        };
+      };
+
+      ### Limit resources used by nix-daemon
+      nix-daemon.serviceConfig = {
+        MemoryMax = "8G";
+        MemorySwapMax = "8G";
       };
     };
+
     sleep.extraConfig = ''
       AllowHibernation=no
       AllowSuspend=yes

@@ -119,6 +119,7 @@
       duf
       htop
       lshw
+      clonegit
     ];
     variables = {
       EDITOR = "micro";

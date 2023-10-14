@@ -17,6 +17,8 @@ let
     export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
     export __GLX_VENDOR_LIBRARY_NAME=nvidia
     export __VK_LAYER_NV_optimus=NVIDIA_only
+    export VK_ICD_FILENAMES="/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/nvidia_icd.i686.json"
+    export LIBVA_DRIVER_NAME="nvidia"
     exec "$@"
   '';
 
@@ -214,11 +216,11 @@ in
               inherit nvidiaBusId;
               reverseSync.enable = true;
             };
-            nvidiaSettings = lib.mkDefault true;
+            nvidiaSettings = lib.mkDefault false;
             modesetting.enable = true;
             powerManagement = {
               enable = lib.mkDefault true;
-              finegrained = lib.mkDefault true;
+              finegrained = lib.mkDefault false;
             };
             forceFullCompositionPipeline = true;
             # nvidiaPersistenced = true;
@@ -227,13 +229,19 @@ in
         services = {
           xserver = {
             videoDrivers = [ "nvidia" ];
-            # displayManager = {
-            #   setupCommands = ''
-            #     ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
-            #     ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-            #   '';
-            #   # ${pkgs.xorg.xrandr}/bin/xrandr --auto
-            # };
+
+            displayManager = {
+              #   setupCommands = ''
+              #     ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
+              #     ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+              #   '';
+              #   # ${pkgs.xorg.xrandr}/bin/xrandr --auto
+              sessionCommands = ''
+                ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-G0
+                ${pkgs.xorg.xrandr}/bin/xrandr --auto
+              '';
+              # ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+            };
           };
         };
         environment = {
@@ -246,6 +254,9 @@ in
             nvtop-nvidia
             arandr
           ];
+          variables = {
+            "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+          };
         };
         virtualisation.podman.enableNvidia = true;
       };

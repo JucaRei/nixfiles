@@ -90,7 +90,7 @@
             # pkgsCross.aarch64-multiplatform.OVMF.fd
           ];
         };
-        runAsRoot = false;
+        runAsRoot = true;
         # Is this required for Windows 11?
         swtpm = {
           enable = true;
