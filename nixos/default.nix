@@ -234,10 +234,10 @@
       implementation = "broker";
     };
 
-    chrony =
-      {
-        enable = true;
-      };
+    # chrony =
+    #   {
+    #     enable = true;
+    #   };
   };
   hardware.enableRedistributableFirmware = true;
 }
