@@ -94,10 +94,10 @@
     nvidia.modesetting.enable = true; # Most wayland compositors need this
   };
 
-  xdg = {
-    portal = {
-      enable = true;
-      extraPortals = with pkgs; [ xgd-desktop-portal-gtk ];
-    };
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk # provides a XDG Portals implementation.
+    ];
   };
 }
