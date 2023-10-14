@@ -54,9 +54,6 @@ in
         # hi = final.hello.overrideAttrs (oldAttrs: {
         #   patches = [ ./change-hello-to-hi.patch ];
         # });
-        # nvchad = final.nvchad.override {
-        #   imports = [ ../pkgs/nvchad ];
-        # };
       })
     ];
 
@@ -67,7 +64,11 @@ in
       # Disable broken package
       allowBroken = false;
       ### Allow old broken electron
-      permittedInsecurePackages = lib.singleton "electron-12.2.3";
+      permittedInsecurePackages = [
+        # Workaround for https://github.com/nix-community/home-manager/issues/2942
+        "electron-21.4.0"
+        "electron-12.2.3"
+      ];
       # Disable if you don't want unfree packages
       allowUnfree = true;
       # Workaround for https://github.com/nix-community/home-manager/issues/2942

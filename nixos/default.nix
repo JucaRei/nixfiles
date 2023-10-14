@@ -13,11 +13,10 @@
     inputs.vscode-server.nixosModules.default
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
-    ./_mixins/common
-    ./_mixins/console
     ./_mixins/services/tools/kmscon.nix
     ./_mixins/services/network/openssh.nix
     ./_mixins/services/tools/smartmon.nix
+    ./_mixins/common
     ./users/root
   ]
   # ++ lib.optional (builtins.pathExists (./. + "/${hostname}/disks.nix")) ./${hostname}/disks.nix
@@ -234,7 +233,11 @@
     dbus = {
       implementation = "broker";
     };
+
+    chrony =
+      {
+        enable = true;
+      };
   };
   hardware.enableRedistributableFirmware = true;
-  # hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

@@ -6,10 +6,10 @@
     ./fonts.nix
     # ./nano.nix
     # ../config/qt/qt-style.nix
+    ../console/fish.nix
     ../services/security/sudo.nix
     ../services/security/common.nix
     ../services/network/avahi.nix
-    ../services/security/polkit.nix
     # ../services/security/detect-reboot-needed.nix
     # ../services/power/powertop.nix
     ../hardware/other/fwupd.nix
@@ -50,6 +50,7 @@
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
       "udev.log_priority=3"
+      "vt.global_cursor_default=0"
     ];
     kernel = {
       sysctl = {
@@ -86,6 +87,8 @@
       "exfat"
       "ntfs"
     ];
+
+    # Run any appimage 
     binfmt.registrations.appimage = {
       # make appImage work seamlessly
       wrapInterpreterInShell = false;

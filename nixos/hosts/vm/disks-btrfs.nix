@@ -1,21 +1,21 @@
-_:
+{ disks ? [ "/dev/vda" ], ... }:
 let
-  defaultBtrfsOpts = [ "defaults" "compress=zstd:1" "ssd" "noatime" "nodiratime" ];
+  defaultBtrfsOpts = [ "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
 in
 {
-  environment.etc = {
-    "crypttab".text = ''
-      data  /dev/disk/by-partlabel/data  /etc/data.keyfile
-    '';
-  };
+  # environment.etc = {
+  #   "crypttab".text = ''
+  #     data  /dev/disk/by-partlabel/data  /etc/data.keyfile
+  #   '';
+  # };
 
   disko.devices = {
     disk = {
       # 512GB root/boot drive. Configured with:
       # - A FAT32 ESP partition for systemd-boot
       # - Multiple btrfs subvolumes for the installation of nixos
-      nvme0 = {
-        device = "/dev/nvme0n1";
+      vda = {
+        device = builtins.elemAt disks 0;
         type = "disk";
         content = {
           type = "table";
@@ -24,7 +24,7 @@ in
             {
               name = "EFI";
               start = "0%";
-              end = "612MiB";
+              end = "512MiB";
               bootable = true;
               fs-type = "fat32";
               content = {
@@ -71,44 +71,6 @@ in
               };
             }
           ];
-        };
-      };
-
-      # 4TB data drive. LUKS encrypted with single btrfs subvolume.
-      sda = {
-        device = "/dev/sda";
-        type = "disk";
-        content = {
-          type = "table";
-          format = "gpt";
-          partitions = [{
-            name = "data";
-            start = "0%";
-            end = "100%";
-            content = {
-              type = "luks";
-              name = "data";
-              extraOpenArgs = [ "--allow-discards" ];
-              # Make sure there is no trailing newline in keyfile if used for interactive unlock.
-              # Use `echo -n "password" > /tmp/secret.key`
-              keyFile = "/tmp/data.keyfile";
-
-              # Don't try to unlock this drive early in the boot.
-              initrdUnlock = false;
-
-              content = {
-                type = "btrfs";
-                # Override existing partition
-                extraArgs = [ "-f" ];
-                subvolumes = {
-                  "@data" = {
-                    mountpoint = "/data";
-                    mountOptions = defaultBtrfsOpts;
-                  };
-                };
-              };
-            };
-          }];
         };
       };
     };

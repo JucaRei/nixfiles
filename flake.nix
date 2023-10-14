@@ -107,6 +107,9 @@
     #  inputs.nixpkgs.follows = "nixpkgs";
     #};
 
+    # hyprland.url = "github:hyprwm/Hyprland";
+    # hyprland-contrib.url = "github:hyprwm/contrib";
+
     #plasma-manager = {
     #  # KDE Plasma user settings
     #  url = "github:pjones/plasma-manager"; # Add "inputs.plasma-manager.homeManagerModules.plasma-manager" to the home-manager.users.${user}.imports

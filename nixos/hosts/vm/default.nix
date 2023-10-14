@@ -2,14 +2,15 @@
 {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    (import ./disks.nix { })
-    ../../_mixins/hardware/boot/systemd-boot.nix
+    (import ./disks-btrfs.nix { })
+    ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/sound/pipewire.nix
+    ../../_mixins/sys/swapfile.nix
   ];
 
   swapDevices = [{
-    device = "/swap";
-    size = 1024;
+    device = "/.swap/swapfile";
+    size = 2048;
   }];
 
   # fileSystems."/mnt/nixos-nas/encrypted" = {
