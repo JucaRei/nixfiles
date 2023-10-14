@@ -35,4 +35,11 @@
       xfce.xfce4-terminal
     ];
   };
+
+  xdg = {
+    portal = {
+      enable = true;
+      extraPortals = pkgs.xdg-desktop-portal-gtk;
+    };
+  };
 }
