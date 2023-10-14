@@ -3,7 +3,9 @@
     hyprland = {
       enable = true;
       nvidiaPatches = true;
-      xwayland.enable = true;
+      xwayland = {
+        enable = true;
+      };
     };
   };
 
@@ -109,7 +111,11 @@
   };
 
   security = {
-    pam.services.swaylock = { };
+    pam.services = {
+      # swaylock = { };
+      gtklock = { };
+      login.enableGnomeKeyring = true;
+    };
   };
 
   hardware = lib.mkForce {

@@ -17,15 +17,18 @@
     };
   };
 
-  home.packages = with pkgs; [
-    font-manager
-    dconf2nix
-    hexchat
-    unixtools.ifconfig
-    unixtools.netstat
-    xorg.xwininfo # Provides a cursor to click and learn about windows
-  ];
+  home = {
+    packages = with pkgs; [
+      font-manager
+      dconf2nix
+      hexchat
 
+      flatpak
+    ];
+    sessionVariables = {
+      XDG_DATA_DIRS = lib.mkDefault "$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share"; # lets flatpak work
+    };
+  };
   xresources.properties = {
     "XTerm*background" = "#121214";
     "XTerm*foreground" = "#c8c8c8";

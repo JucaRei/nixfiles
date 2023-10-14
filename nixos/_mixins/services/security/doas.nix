@@ -1,4 +1,4 @@
-{ username, ... }: {
+{ username, pkgs, config, ... }: {
   security = {
     sudo.enable = false; # Disable sudo
 
@@ -8,12 +8,15 @@
         permit nopass :wheel
       '';
       extraRules = [{
-        users = [ username ];
+        users = [ "${username}" ];
         noPass = true;
         keepEnv = true;
+        persist = true;
       }];
       #wheelNeedsPassword = false;
     };
   };
-  environment.shellAliases = { sudo = "doas"; };
+  environment.systemPackages = [
+    (pkgs.writeScriptBin "sudo" ''exec doas "$@"'')
+  ];
 }
