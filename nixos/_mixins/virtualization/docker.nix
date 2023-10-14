@@ -1,8 +1,13 @@
-{ lib
-, pkgs
-, hostname
-, ...
-}: {
+{ lib, pkgs, hostname, storageDriver ? null, ... }:
+assert lib.asserts.assertOneOf "storageDriver" storageDriver [
+  null
+  "aufs"
+  "btrfs"
+  "devicemapper"
+  "overlay"
+  "overlay2"
+  "zfs"
+]; {
   virtualisation = {
     # oci-containers.backend = "docker";
     docker = {
@@ -22,7 +27,7 @@
 
       # https://docs.docker.com/build/buildkit/
       #daemon.settings = { "features" = { "buildkit" = true; }; };
-      storageDriver = "overlay2";
+      storageDriver = storageDriver;
       logDriver = "json-file";
     };
   };

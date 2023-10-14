@@ -28,6 +28,7 @@ in
       # Stops sudo from timing out.
       extraConfig = ''
         # ${username} ALL=(ALL) NOPASSWD:ALL
+        ${username} ALL=(ALL) NOPASSWD: /bin/systemctl
         Defaults env_reset,timestamp_timeout=-1
         Defaults 	insults
       '';
@@ -35,7 +36,7 @@ in
         Defaults lecture = always
         Defaults lecture_file=/etc/sudoers.d/00-lecture.txt
       '';
-      execWheelOnly = true;
+      execWheelOnly = false;
       wheelNeedsPassword = true;
     };
   };

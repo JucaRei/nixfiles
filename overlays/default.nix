@@ -13,6 +13,7 @@
     # mpv = prev.mpv;
     hacked-cursor = final.breeze-hacked-cursorr;
     clonegit = final.cloneit;
+    icloudpd = final.icloud-photo-downloader;
     nvchad = prev.nvchad;
     # tidal = final.tidal-dl;
     # mpvconf = prev.mpv;

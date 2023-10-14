@@ -1,5 +1,8 @@
-{ config, lib, pkgs, hostname, desktop, ... }: {
+{ config, lib, pkgs, hostname, desktop, ... }:
+
+{
   #https://nixos.wiki/wiki/Podman
+
 
   environment.systemPackages = with pkgs; [
     buildah # Container build tool
@@ -73,12 +76,12 @@
       };
       ## for ZFS
       # storage = {
-      #   settings = {
-      #     driver = "zfs";
-      #     graphroot = "/var/lib/containers/storage";
-      #     runroot = "/run/containers/storage";
-      #     options.zfs.fsname = "zroot/podman";
-      #   };
+      # settings = {
+      # driver = "zfs";
+      # graphroot = "/var/lib/containers/storage";
+      # runroot = "/run/containers/storage";
+      # options.zfs.fsname = "zroot/podman";
+      # };
       # };
     };
   };
