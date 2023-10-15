@@ -107,6 +107,10 @@ with lib.hm.gvariant;
     #     exec bspwm 
     #   '';
     # };
+
+    file = {
+      ".config/bspwm/bspwmrc".source = ../config/bspwm/bspwmrc;
+    };
     packages = with pkgs; [
       feh
       rofi
@@ -138,7 +142,6 @@ with lib.hm.gvariant;
 
   xdg =
     {
-      configFile."bspwm/bspwmrc".text = builtins.readFile ../config/bspwm/bspwmrc;
       configFile."bspwm/bspwmrc".executable = true;
       configFile."Xresources".text = ''
         *background-clr: #0A0E14
