@@ -95,7 +95,7 @@
     initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
     kernelPackages = pkgs.linuxPackages_latest;
 
-    loader.grub = {
+    loader.grub = lib.mkDefault {
       gfxmodeEfi = "1920x1080";
     };
   };
