@@ -15,18 +15,18 @@ with lib.hm.gvariant;
       #       "nm-applet --indicator"
       #       "sleep 2s;polybar -q main"
       #     ];
-      #     monitors = {
-      #       eDP-1 = [
-      #         "I"
-      #         "II"
-      #         "III"
-      #         "IV"
-      #         "V"
-      #         "VI"
-      #         "VII"
-      #         "VIII"
-      #       ];
-      #     };
+      monitors = {
+        Virtual-1 = [
+          "I"
+          "II"
+          "III"
+          "IV"
+          "V"
+          "VI"
+          "VII"
+          "VIII"
+        ];
+      };
       #     rules = {
       #       "mpv" = {
       #         state = "floating";
