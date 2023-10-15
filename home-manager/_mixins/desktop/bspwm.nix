@@ -7,14 +7,14 @@ with lib.hm.gvariant;
     windowManager.bspwm = {
       enable = true;
       alwaysResetDesktops = true;
-      #     startupPrograms = [
-      #       "sxhkd"
-      #       "default_wall"
-      #       "flameshot"
-      #       "dunst"
-      #       "nm-applet --indicator"
-      #       "sleep 2s;polybar -q main"
-      #     ];
+      startupPrograms = [
+        "sxhkd"
+        #       "default_wall"
+        "flameshot"
+        "dunst"
+        "nm-applet --indicator"
+        "sleep 2s;polybar -q main"
+      ];
       monitors = {
         Virtual-1 = [
           "I"
@@ -114,6 +114,12 @@ with lib.hm.gvariant;
       picom
       polybarFull
       sxhkd
+      gtk3
+      lf
+      papirus-icon-theme
+      lxde.lxtask
+      xcolor
+      xclip
     ];
 
     sessionVariables = {
@@ -121,6 +127,7 @@ with lib.hm.gvariant;
       BROWSER = "firefox";
       # TERMINAL = "kitty";
       GLFW_IM_MODULE = "ibus";
+      LIBPROC_HIDE_KERNEL = true; # prevent display kernel threads in top
       QT_QPA_PLATFORMTHEME = "gtk3";
     };
     sessionPath = [

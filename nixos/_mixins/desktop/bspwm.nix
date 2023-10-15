@@ -33,6 +33,7 @@
 
   environment = {
     systemPackages = with pkgs; [
+      xorg.xsetroot
       xfce.xfce4-terminal
       pamixer
       i3lock-fancy
