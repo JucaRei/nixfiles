@@ -124,6 +124,7 @@
       htop
       lshw
       clonegit
+      cifs-utils
     ];
     variables = {
       EDITOR = "micro";

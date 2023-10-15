@@ -51,12 +51,11 @@ in
       rclone
       wget2
       wormhole-william
-      yadm # Terminal dot file manager
+      # yadm # Terminal dot file manager
       zsync
     ] ++ lib.optionals (desktop != null) [
       appimage-run
       wmctrl
-      xdotool
       ydotool
     ];
   };

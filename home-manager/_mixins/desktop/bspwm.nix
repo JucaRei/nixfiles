@@ -123,6 +123,7 @@ with lib.hm.gvariant;
       lf
       papirus-icon-theme
       lxde.lxtask
+      xfce.thunar
       xcolor
       xclip
     ];
