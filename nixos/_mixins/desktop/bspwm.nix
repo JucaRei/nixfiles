@@ -20,6 +20,10 @@
       libinput = {
         enable = true;
         touchpad = {
+          tapping = true;
+          scrollMethod = "twofinger";
+          naturalScrolling = false;
+          accelProfile = "adaptive";
           disableWhileTyping = true;
           sendEventsMode = "disabled-on-external-mouse";
         };
