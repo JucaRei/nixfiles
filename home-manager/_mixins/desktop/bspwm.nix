@@ -142,7 +142,7 @@ with lib.hm.gvariant;
 
   xdg =
     {
-      # configFile."bspwm/bspwmrc".executable = true;
+      configFile."bspwm/bspwmrc".executable = true;
       configFile."Xresources".text = ''
         *background-clr: #0A0E14
         *background-dim-clr: #1F2430
