@@ -133,6 +133,10 @@
     # "ovmf/OVMF_CODE.fd".source = (ovmfPackage.fd) + /FV/OVMF_CODE.fd;
     # "ovmf/OVMF.fd".source = (ovmfPackage.fd) + /FV/OVMF.fd;
     # };
+
+    sessionVariables = {
+      LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
+    };
   };
   services = {
     spice-vdagentd.enable = true;

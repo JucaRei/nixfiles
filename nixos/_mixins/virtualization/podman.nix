@@ -7,7 +7,7 @@
   environment.systemPackages = with pkgs; [
     buildah # Container build tool
     unstable.distrobox
-    podman-tui
+    # podman-tui
     podman-compose
     aardvark-dns
     fuse-overlayfs # Container overlay+shiftfs
@@ -72,8 +72,23 @@
       # };
 
       containersConf.settings = {
-        containers.dns_servers = [ "8.8.8.8" "8.8.4.4" ];
+        containers = {
+          dns_servers = [ "8.8.8.8" "8.8.4.4" ];
+          userns = "auto"; # Create unique User Namespace for the container
+        };
       };
+      storage.settings = {
+        # defaults
+        storage = {
+          driver = "overlay";
+          graphroot = "/var/lib/containers/storage";
+          runroot = "/run/containers/storage";
+
+          # SUB_UID_MAX: https://man7.org/linux/man-pages/man5/login.defs.5.html
+          options.auto-userns-max-size = 600100000;
+        };
+      };
+
       ## for ZFS
       # storage = {
       # settings = {
@@ -88,5 +103,21 @@
   systemd = {
     services.podman-auto-update.enable = true;
     timers.podman-auto-update.enable = true;
+  };
+
+  users = {
+    users."containers" = {
+      isSystemUser = true;
+      group = "containers";
+      subUidRanges = [{
+        startUid = 60100000;
+        count = 60000000;
+      }];
+      subGidRanges = [{
+        startGid = 60100000;
+        count = 60000000;
+      }];
+    };
+    groups.containers = { };
   };
 }

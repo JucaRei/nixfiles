@@ -233,11 +233,6 @@
     dbus = {
       implementation = "broker";
     };
-
-    # chrony =
-    #   {
-    #     enable = true;
-    #   };
   };
   hardware.enableRedistributableFirmware = true;
 }

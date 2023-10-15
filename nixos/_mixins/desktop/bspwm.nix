@@ -2,12 +2,13 @@
   services = {
     xserver = {
       enable = true;
-      ### Enable bspwm
-      windowManager.bspwm = {
-        enable = true;
-      };
       displayManager = {
-        defaultSession = "none+bspwm";
+        defaultSession = "none+fake";
+        session = [{
+          name = "fake";
+          manage = "window";
+          start = "";
+        }];
         # setupCommands = '''';
         lightdm = {
           enable = true;
@@ -25,14 +26,16 @@
       };
     };
 
-    getty = {
-      autologinUser = "${username}";
-    };
+    # getty = {
+    #   autologinUser = "${username}";
+    # };
   };
 
   environment = {
     systemPackages = with pkgs; [
       xfce.xfce4-terminal
+      pamixer
+      i3lock-fancy
     ];
   };
 
