@@ -128,7 +128,7 @@ with lib.hm.gvariant;
       BROWSER = "firefox";
       # TERMINAL = "kitty";
       GLFW_IM_MODULE = "ibus";
-      LIBPROC_HIDE_KERNEL = true; # prevent display kernel threads in top
+      LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
       QT_QPA_PLATFORMTHEME = "gtk3";
     };
     sessionPath = [
