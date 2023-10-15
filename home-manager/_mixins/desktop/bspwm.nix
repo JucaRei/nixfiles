@@ -214,8 +214,8 @@ with lib.hm.gvariant;
         *cyan-clr: #90E1C6
         *white-clr: #C7C7C7
       '';
+      configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
     };
-  configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
 }
 
 
