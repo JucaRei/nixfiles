@@ -109,7 +109,7 @@ with lib.hm.gvariant;
     # };
 
     file = {
-      ".config/bspwm/bspwmrc".source = ../config/bspwm/bspwmrc;
+      "bspwm/bspwmrc".source = ../config/bspwm/bspwmrc;
     };
     packages = with pkgs; [
       feh
