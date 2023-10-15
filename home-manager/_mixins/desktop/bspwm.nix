@@ -13,7 +13,8 @@ with lib.hm.gvariant;
         "flameshot"
         "dunst"
         "nm-applet --indicator"
-        "sleep 2s;polybar -q main"
+        "polybar &"
+        # "sleep 2s;polybar -q main"
       ];
       monitors = {
         Virtual-1 = [
