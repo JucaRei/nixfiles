@@ -157,6 +157,9 @@ with lib.hm.gvariant;
       '';
       configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
       configFile."sxhkd/sxhkdrc".text = builtins.readFile ../config/bspwm/sxhkdrc;
+      configFile."sxhkd/scripts/bspwm-gap".text = builtins.readFile ../config/bspwm/scripts/bspwm-gap;
+      configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
+      configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
     };
 }
 

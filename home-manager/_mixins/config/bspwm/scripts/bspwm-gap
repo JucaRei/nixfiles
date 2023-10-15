@@ -1,0 +1,85 @@
+#! /bin/sh
+
+#import default values
+default_bsp_gap_file="/tmp/BSP_GAP"
+DEFAULT_BSP_GAP=$(cat $default_bsp_gap_file)
+
+default_polybar_height_file="/tmp/POLYBAR_HEIGHT"
+DEFAULT_POLYBAR_HEIGHT=$(cat $default_polybar_height_file)
+
+default_bsp_window_gap_file="/tmp/BSP_WINDOW_GAP"
+DEFAULT_BSP_WINDOW_GAP=$(cat $default_bsp_window_gap_file)
+
+# Define a file path to store the variable
+current_bsp_gap_file="/tmp/bsp_gap"
+if [ -e "$current_bsp_gap_file" ]; then
+	# If it exists, read the variable from the file
+	CURRENT_BSP_GAP=$(cat "$current_bsp_gap_file")
+else
+	# If it doesn't exist, set the initial value for the variable
+	# and create the file
+	echo "$DEFAULT_BSP_GAP" > $current_bsp_gap_file
+	CURRENT_BSP_GAP=$DEFAULT_BSP_GAP
+fi
+
+
+current_polystate_file="/tmp/polybar-state"
+if [ -e "$current_polystate_file" ]; then
+	# If it exists, read the variable from the file
+	CURRENT_POLYSTATE=$(cat "$current_polystate_file")
+else
+	CURRENT_POLYSTATE=1
+fi
+
+
+# helper function
+save_state() {
+	echo $1 > $current_bsp_gap_file
+	CURRENT_BSP_GAP=$1
+
+	if [ "$1" -eq 0 ]; then
+		bspc config window_gap 0
+	else
+		bspc config window_gap $DEFAULT_BSP_WINDOW_GAP
+	fi
+}
+
+
+
+#function that takes a gap size as an argument and apply them to bspwm
+change_gap() {
+	if [ $CURRENT_POLYSTATE -eq 1 ]; then
+		CURRENT_POLYBAR_HEIGHT=$DEFAULT_POLYBAR_HEIGHT
+	else
+		CURRENT_POLYBAR_HEIGHT=0
+	fi
+
+	bspc config top_padding				 $(($1 + $CURRENT_POLYBAR_HEIGHT))
+	bspc config bottom_padding		     $1	
+	bspc config left_padding		  	 $1	
+	bspc config right_padding		  	 $1	
+	
+	bspc config top_monocle_padding  	-$1
+	bspc config bottom_monocle_padding  -$1
+	bspc config left_monocle_padding  	-$1	
+	bspc config right_monocle_padding  	-$1	
+}
+
+if echo "$1" | grep -q "^--gap$"; then
+	save_state $DEFAULT_BSP_GAP
+
+elif echo "$1" | grep -q "^--gapless$"; then
+	save_state 0
+
+elif echo "$1" | grep -q "^--toggle$"; then
+	if [ "$CURRENT_BSP_GAP" -lt 2 ] ;then 
+		save_state $DEFAULT_BSP_GAP
+	else
+		save_state 0
+	fi
+else
+	echo $CURRENT_BSP_GAP
+	return
+fi
+
+change_gap $CURRENT_BSP_GAP
