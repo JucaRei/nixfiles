@@ -156,6 +156,7 @@ with lib.hm.gvariant;
         *white-clr: #C7C7C7
       '';
       configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
+      configFile."sxhkd/sxhkdrc".text = builtins.readFile ../config/bspwm/sxhkdrc;
     };
 }
 
