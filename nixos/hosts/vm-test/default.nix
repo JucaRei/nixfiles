@@ -5,12 +5,12 @@
     (import ./disks-btrfs.nix { })
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/sound/pipewire.nix
-    # ../../_mixins/sys/swapfile.nix
+    ../../_mixins/sys/swapfile.nix
   ];
 
   swapDevices = [{
-    device = "/var/lib/swapfile";
-    size = 2 * 1024;
+    device = "/.swap/swapfile";
+    size = 2048;
   }];
 
   # fileSystems."/mnt/nixos-nas/encrypted" = {

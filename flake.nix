@@ -247,7 +247,7 @@
         brix = libx.mkHost { hostname = "brix"; username = "juca"; };
         skull = libx.mkHost { hostname = "skull"; username = "juca"; };
         # Laptop
-        nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "gnome"; hostid = "718643c6"; };
+        nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "cinnamon"; hostid = "718643c6"; };
         air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "mate"; hostid = "718641c6"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
