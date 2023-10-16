@@ -25,9 +25,9 @@
 
       flatpak
     ];
-    sessionVariables = {
-      XDG_DATA_DIRS = lib.mkDefault "$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share"; # lets flatpak work
-    };
+    # sessionVariables = {
+    #   XDG_DATA_DIRS = lib.mkDefault "$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share"; # lets flatpak work
+    # };
   };
   xresources.properties = {
     "XTerm*background" = "#121214";

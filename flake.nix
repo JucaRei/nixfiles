@@ -155,7 +155,7 @@
         let pkgs = nixpkgs.legacyPackages.${system};
         in import ./shell.nix {
           inherit pkgs;
-          node = nixpkgs.legacyPackages.${system}.callPackage ./shells/node { };
+          # node = pkgs.callPackage ./shells/node { };
         }
       );
 

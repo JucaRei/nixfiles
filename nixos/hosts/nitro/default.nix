@@ -111,12 +111,12 @@
       options = [ "subvol=@snapshots" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
     };
 
-  # fileSystems."/var/tmp" =
-  #   {
-  #     device = "/dev/disk/by-label/NIXOS";
-  #     fsType = "btrfs";
-  #     options = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
-  #   };
+  fileSystems."/var/tmp" =
+    {
+      device = "/dev/disk/by-label/NIXOS";
+      fsType = "btrfs";
+      options = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+    };
 
   fileSystems."/nix" =
     {
@@ -271,8 +271,8 @@
 
       ### Limit resources used by nix-daemon
       nix-daemon.serviceConfig = {
-        MemoryMax = "8G";
-        MemorySwapMax = "8G";
+        MemoryMax = "4G";
+        MemorySwapMax = "4G";
       };
     };
 
