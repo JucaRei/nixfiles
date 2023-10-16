@@ -19,6 +19,17 @@
     ../../_mixins/virtualization/virt-manager.nix
   ];
   boot = {
+    extraModprobeConfig = ''
+      options vfio-pci ids=10de:1c8d,10de:0fb9
+    '';
+    # postBootCommands = ''
+    # DEVS="0000:01:00.0 0000:01:00.1"
+
+    # for DEV in $DEVS; do
+    #   echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
+    # done
+    # modprobe -i vfio-pci
+    # '';
     loader = {
       # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
       grub = {
@@ -68,7 +79,8 @@
 
     # Temporary workaround until mwprocapture 4328 patch is merged
     # - https://github.com/NixOS/nixpkgs/pull/221209
-    kernelPackages = pkgs.linuxPackages_zen;
+    # kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
     kernelParams = [
       "mitigations=off"

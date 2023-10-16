@@ -55,6 +55,7 @@
       ## defaults (no need to be set unless modified)
       #quantum = 64;
       #rate = 48000;
+      socketActivation = true;
     };
   };
   hardware = {
