@@ -1,14 +1,14 @@
 #!/bin/sh
 
-export DRIVE="/dev/nvme0n1"
+# export DRIVE="/dev/nvme0n1"
 
 # sgdisk -Z /dev/${DRIVE}p2
 # sgdisk -Z /dev/${DRIVE}p3
 # sgdisk -n 0:0:512MiB /dev/vda
 # sgdisk -n 0:0:0 /dev/vda
 
-export BOOT_PARTITION="${DRIVE}p2"
-export ROOT_PARTITION="${DRIVE}p3"
+# export BOOT_PARTITION="${DRIVE}p2"
+# export ROOT_PARTITION="${DRIVE}p3"
 
 # sgdisk -Z /dev/$ROOT_PARTITION
 # sgdisk -t 1:0C01 /dev/nvme01n1
