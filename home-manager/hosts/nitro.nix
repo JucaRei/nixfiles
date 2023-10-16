@@ -3,7 +3,7 @@ with lib.hm.gvariant;
 {
   imports = [
     # ../_mixins/console/fish.nix
-    ../_mixins/apps/video/mpv.nix
+    # ../_mixins/apps/video/mpv.nix
   ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {
@@ -15,6 +15,7 @@ with lib.hm.gvariant;
   home.packages = with pkgs; [
     whatsapp-for-linux # Whatsapp desktop messaging app
     icloudpd
+    vlc
   ];
 
   dconf.settings = {

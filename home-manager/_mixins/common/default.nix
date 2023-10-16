@@ -13,6 +13,7 @@
     ../console/neofetch.nix
     ../console/skim.nix
     ../console/starship.nix
+    ../console/yt-dlp.nix
     ./fonts.nix
   ];
 
