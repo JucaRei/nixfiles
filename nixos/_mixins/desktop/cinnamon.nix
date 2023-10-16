@@ -22,10 +22,6 @@
     };
     redshift = {
       enable = true;
-      settings = {
-        brightness-day = "1";
-        brightness-night = "1";
-      };
       temperature = {
         day = 5500;
         night = 3000;
