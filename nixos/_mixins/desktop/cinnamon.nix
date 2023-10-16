@@ -22,7 +22,7 @@
     };
     redshift = {
       enable = true;
-      settings.redshift = {
+      settings = {
         brightness-day = "1";
         brightness-night = "1";
       };
