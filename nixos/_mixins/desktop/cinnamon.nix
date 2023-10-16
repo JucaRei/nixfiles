@@ -67,7 +67,7 @@
       pix
     ]) ++ (with pkgs.gnome; [
       geary
-      gnome-disk-utility
+      # gnome-disk-utility
     ]);
   };
   xdg = {
