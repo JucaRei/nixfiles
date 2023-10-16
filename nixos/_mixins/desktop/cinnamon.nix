@@ -1,4 +1,7 @@
 { config, pkgs, ... }: {
+  imports = [
+    ../config/qt/qt-style.nix
+  ];
   services = {
     xserver = {
       enable = true;
@@ -28,6 +31,12 @@
       };
     };
     geoclue2.enable = true;
+    cinnamon.apps.enable = true;
+    gnome = {
+      evolution-data-server = {
+        enable = false;
+      };
+    };
   };
   environment = {
     systemPackages = (with pkgs; [
@@ -53,7 +62,7 @@
       orca
     ])
     ++ (with pkgs.cinnamon; [
-      # cinnamon-spice-updater
+      cinnamon-translations
     ]);
   };
   xdg = {

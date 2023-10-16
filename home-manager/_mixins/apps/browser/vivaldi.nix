@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, lib, params, ... }:
+let
+  ifDefault = lib.mkIf (params.browser == "vivaldi");
+in
+{
 
   # Module installing vivaldi as default browser
   home = {
@@ -11,11 +15,11 @@
     };
   };
 
-  xdg.mimeApps.defaultApplications = {
-    "text/html" = "vivaldi-browser.desktop";
-    "x-scheme-handler/http" = "vivaldi-browser.desktop";
-    "x-scheme-handler/https" = "vivaldi-browser.desktop";
-    "x-scheme-handler/about" = "vivaldi-browser.desktop";
-    "x-scheme-handler/unknown" = "vivaldi-browser.desktop";
+  xdg = {
+    mime.enable = ifDefault true;
+    mimeApps = {
+      enable = ifDefault true;
+      defaultApplications = ifDefault (import ./default-browser.nix "opera");
+    };
   };
 }

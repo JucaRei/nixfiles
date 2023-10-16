@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, lib, params, ... }:
+{
   programs = {
     firefox = {
       enable = true;
@@ -11,7 +12,7 @@
           Cache = true;
           Downloads = true;
           #FormData = true;
-          #History = true;
+          History = true;
           #Locked = true;
         };
         SearchBar = "unified";

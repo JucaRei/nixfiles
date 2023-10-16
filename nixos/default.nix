@@ -93,11 +93,11 @@
     extraOptions = ''
       log-lines = 15
 
-      # Free up to 4GiB whenever there is less than 1GiB left.
-      min-free = ${toString (1024 * 1024 * 1024)}
+      # Free up to 4GiB whenever there is less than 2GiB left.
+      min-free = ${toString (2048 * 1024 * 1024)}
+      max-free = ${toString (4096 * 1024 * 1024)}
       # Free up to 4GiB whenever there is less than 512MiB left.
       #min-free = ${toString (512 * 1024 * 1024)}
-      max-free = ${toString (4096 * 1024 * 1024)}
       #min-free = 1073741824 # 1GiB
       #max-free = 4294967296 # 4GiB
       #builders-use-substitutes = true

@@ -1,7 +1,9 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, params, ... }:
 with lib;
 let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
+
+  ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
 
   prefer-dark-theme =
     config.gtk.gtk3.extraConfig.gtk-application-prefer-dark-theme;
@@ -138,12 +140,12 @@ in
     };
   };
 
-  xdg.mimeApps.defaultApplications = {
-    "text/html" = "firefox-browser.desktop";
-    "x-scheme-handler/http" = "firefox-browser.desktop";
-    "x-scheme-handler/https" = "firefox-browser.desktop";
-    "x-scheme-handler/about" = "firefox-browser.desktop";
-    "x-scheme-handler/unknown" = "firefox-browser.desktop";
+  xdg = {
+    mime.enable = ifDefault true;
+    mimeApps = {
+      enable = ifDefault true;
+      defaultApplications = ifDefault (import ./default-browser.nix "firefox");
+    };
   };
 
   # home.packages =
