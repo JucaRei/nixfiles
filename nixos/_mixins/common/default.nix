@@ -124,7 +124,6 @@
       duf
       htop
       lshw
-      clonegit
       cifs-utils
     ];
     variables = {

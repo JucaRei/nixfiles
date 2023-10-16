@@ -174,6 +174,7 @@
       btdu
       btrfs-progs
       compsize
+      clonegit
       # tidal
     ];
     sessionVariables = {
