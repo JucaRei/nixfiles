@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, lib, ... }: {
   imports = [
     ../config/qt/qt-style.nix
   ];
@@ -34,7 +34,7 @@
     cinnamon.apps.enable = true;
     gnome = {
       evolution-data-server = {
-        enable = false;
+        enable = lib.mkDefault false;
       };
     };
   };
