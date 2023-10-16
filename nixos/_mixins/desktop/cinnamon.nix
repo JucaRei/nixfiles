@@ -60,9 +60,14 @@
     ]);
     cinnamon.excludePackages = (with pkgs; [
       orca
+      xplayer
     ])
     ++ (with pkgs.cinnamon; [
       cinnamon-translations
+      pix
+    ]) ++ (with pkgs.gnome; [
+      geary
+      gnome-disk-utility
     ]);
   };
   xdg = {
