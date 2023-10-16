@@ -2,7 +2,7 @@
 with lib.hm.gvariant;
 {
   imports = [
-    ../_mixins/console/fish.nix
+    # ../_mixins/console/fish.nix
     ../_mixins/apps/video/mpv.nix
   ];
   # dconf.settings = {

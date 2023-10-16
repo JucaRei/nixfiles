@@ -57,8 +57,8 @@
     systemPackages = with pkgs; [
       # Packages installed
       gnome.dconf-editor
-      gnome.gnome-tweaks
       gnome.adwaita-icon-theme
+      gnome.gnome-tweaks
       gnome.mutter
       gnome.libgnome-keyring
       nautilus-open-any-terminal

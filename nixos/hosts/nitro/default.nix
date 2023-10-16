@@ -13,10 +13,6 @@
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/cpu/intel-cpu.nix
     ../../_mixins/hardware/boot/multiboot.nix
-    ../../_mixins/hardware/sound/pipewire.nix
-    ../../_mixins/games/steam.nix
-    ../../_mixins/services/security/sudo.nix
-    ../../_mixins/services/security/common.nix
     ../../_mixins/virtualization
     ../../_mixins/virtualization/quickemu.nix
     # ../../_mixins/virtualization/k8s.nix

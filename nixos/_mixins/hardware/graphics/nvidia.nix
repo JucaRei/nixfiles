@@ -140,126 +140,126 @@ in
         };
         virtualisation.podman.enableNvidia = true;
       };
-      nvidia-nouveau.configuration = {
-        system.nixos.tags = [ "nvidia-nouveau" ];
-        imports = [ inputs.nixos-hardware.nixosModules.common-gpu-nvidia ];
-        boot = {
-          loader.grub.configurationName = lib.mkForce "Nvidia Nouveau";
-          # kernelParams = lib.mkDefault [
-          #   "clearcpuid=514" # Fixes certain wine games crash on launch
-          #   "nvidia"
-          #   "nvidia_modeset"
-          #   "nvidia-uvm"
-          #   "nvidia_drm"
-          #   "nvidia-drm.modeset=1"
-          # ];
-        };
-        hardware.nvidia = {
-          package = nvidiaPkg;
-          #open = lib.mkForce false;
-          nvidiaSettings = lib.mkDefault false;
-          # prime = {
-          #   inherit intelBusId;
-          #   inherit nvidiaBusId;
-          #   sync.enable = true;
-          # };
-          modesetting.enable = true;
-          powerManagement = {
-            enable = lib.mkDefault true;
-            finegrained = lib.mkDefault false;
-          };
-          # forceFullCompositionPipeline = true;
-        };
-        virtualisation.podman.enableNvidia = true;
-        environment = {
-          systemPackages = with pkgs; [
-            nvtop-nvidia
-          ];
-        };
-        services.xserver.videoDrivers = [ "nouveau" ];
-      };
-      nvidia-offload.configuration = {
-        system.nixos.tags = [ "nvidia-offload" ];
-        boot = {
-          loader.grub.configurationName = lib.mkForce "Nvidia Offload";
-          blacklistedKernelModules = lib.mkForce [
-            "nouveau"
-            "rivafb"
-            "nvidiafb"
-            "rivatv"
-            "nv"
-            "uvcvideo"
-          ];
-          kernelModules = [
-            "clearcpuid=514" # Fixes certain wine games crash on launch
-            "nvidia"
-            "nvidia_modeset"
-            "nvidia_uvm"
-            "nvidia_drm"
-          ];
-          kernelParams = lib.mkDefault [
-            "nouveau.modeset=0"
-          ];
-          kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
-        };
-        hardware = {
-          nvidia = {
-            # package = nvidiaPkg;
-            package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
-            #open = true;
-            prime = {
-              offload = {
-                enable = true;
-                enableOffloadCmd = true;
-              };
-              inherit intelBusId;
-              inherit nvidiaBusId;
-              reverseSync.enable = true;
-            };
-            nvidiaSettings = lib.mkDefault false;
-            modesetting.enable = true;
-            powerManagement = {
-              enable = lib.mkDefault true;
-              finegrained = lib.mkDefault false;
-            };
-            forceFullCompositionPipeline = true;
-            # nvidiaPersistenced = true;
-          };
-        };
-        services = {
-          xserver = {
-            videoDrivers = [ "nvidia" ];
+      # nvidia-nouveau.configuration = {
+      #   system.nixos.tags = [ "nvidia-nouveau" ];
+      #   imports = [ inputs.nixos-hardware.nixosModules.common-gpu-nvidia ];
+      #   boot = {
+      #     loader.grub.configurationName = lib.mkForce "Nvidia Nouveau";
+      #     # kernelParams = lib.mkDefault [
+      #     #   "clearcpuid=514" # Fixes certain wine games crash on launch
+      #     #   "nvidia"
+      #     #   "nvidia_modeset"
+      #     #   "nvidia-uvm"
+      #     #   "nvidia_drm"
+      #     #   "nvidia-drm.modeset=1"
+      #     # ];
+      #   };
+      #   hardware.nvidia = {
+      #     package = nvidiaPkg;
+      #     #open = lib.mkForce false;
+      #     nvidiaSettings = lib.mkDefault false;
+      #     # prime = {
+      #     #   inherit intelBusId;
+      #     #   inherit nvidiaBusId;
+      #     #   sync.enable = true;
+      #     # };
+      #     modesetting.enable = true;
+      #     powerManagement = {
+      #       enable = lib.mkDefault true;
+      #       finegrained = lib.mkDefault false;
+      #     };
+      #     # forceFullCompositionPipeline = true;
+      #   };
+      #   virtualisation.podman.enableNvidia = true;
+      #   environment = {
+      #     systemPackages = with pkgs; [
+      #       nvtop-nvidia
+      #     ];
+      #   };
+      #   services.xserver.videoDrivers = [ "nouveau" ];
+      # };
+      # nvidia-offload.configuration = {
+      #   system.nixos.tags = [ "nvidia-offload" ];
+      #   boot = {
+      #     loader.grub.configurationName = lib.mkForce "Nvidia Offload";
+      #     blacklistedKernelModules = lib.mkForce [
+      #       "nouveau"
+      #       "rivafb"
+      #       "nvidiafb"
+      #       "rivatv"
+      #       "nv"
+      #       "uvcvideo"
+      #     ];
+      #     kernelModules = [
+      #       "clearcpuid=514" # Fixes certain wine games crash on launch
+      #       "nvidia"
+      #       "nvidia_modeset"
+      #       "nvidia_uvm"
+      #       "nvidia_drm"
+      #     ];
+      #     kernelParams = lib.mkDefault [
+      #       "nouveau.modeset=0"
+      #     ];
+      #     kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
+      #   };
+      #   hardware = {
+      #     nvidia = {
+      #       # package = nvidiaPkg;
+      #       package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+      #       #open = true;
+      #       prime = {
+      #         offload = {
+      #           enable = true;
+      #           enableOffloadCmd = true;
+      #         };
+      #         inherit intelBusId;
+      #         inherit nvidiaBusId;
+      #         reverseSync.enable = true;
+      #       };
+      #       nvidiaSettings = lib.mkDefault false;
+      #       modesetting.enable = true;
+      #       powerManagement = {
+      #         enable = lib.mkDefault true;
+      #         finegrained = lib.mkDefault false;
+      #       };
+      #       forceFullCompositionPipeline = true;
+      #       # nvidiaPersistenced = true;
+      #     };
+      #   };
+      #   services = {
+      #     xserver = {
+      #       videoDrivers = [ "nvidia" ];
 
-            displayManager = {
-              #   setupCommands = ''
-              #     ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
-              #     ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-              #   '';
-              #   # ${pkgs.xorg.xrandr}/bin/xrandr --auto
-              sessionCommands = ''
-                ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-G0
-                ${pkgs.xorg.xrandr}/bin/xrandr --auto
-              '';
-              # ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-            };
-          };
-        };
-        environment = {
-          systemPackages = with pkgs; [
-            # displaySetupScript
-            nvidia-offload
-            vulkan-loader
-            vulkan-validation-layers
-            vulkan-tools
-            nvtop-nvidia
-            arandr
-          ];
-          variables = {
-            "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
-          };
-        };
-        virtualisation.podman.enableNvidia = true;
-      };
+      #       displayManager = {
+      #         #   setupCommands = ''
+      #         #     ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
+      #         #     ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+      #         #   '';
+      #         #   # ${pkgs.xorg.xrandr}/bin/xrandr --auto
+      #         sessionCommands = ''
+      #           ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-G0
+      #           ${pkgs.xorg.xrandr}/bin/xrandr --auto
+      #         '';
+      #         # ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+      #       };
+      #     };
+      #   };
+      #   environment = {
+      #     systemPackages = with pkgs; [
+      #       # displaySetupScript
+      #       nvidia-offload
+      #       vulkan-loader
+      #       vulkan-validation-layers
+      #       vulkan-tools
+      #       nvtop-nvidia
+      #       arandr
+      #     ];
+      #     variables = {
+      #       "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+      #     };
+      #   };
+      #   virtualisation.podman.enableNvidia = true;
+      # };
     };
   };
 }

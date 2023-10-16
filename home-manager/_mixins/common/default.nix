@@ -3,7 +3,7 @@
     ../console/aliases.nix
     ../console/bat.nix
     ../console/bash.nix
-    ../console/bottom.nix
+    # ../console/bottom.nix
     ../console/dircolors.nix
     ../console/direnv.nix
     ../console/eza.nix

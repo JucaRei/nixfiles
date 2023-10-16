@@ -79,7 +79,7 @@
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
     packages = with pkgs; lib.mkDefault [
       # asciinema # Terminal recorder
-      black # Code format Python
+      # black # Code format Python
       # bmon # Modern Unix `iftop`
       # breezy # Terminal bzr client
       # butler # Terminal Itch.io API client
@@ -97,7 +97,7 @@
       # du-dust # Modern Unix `du`
       # entr # Modern Unix `watch`
       # fast-cli # Terminal fast.com
-      fd # Modern Unix `find`
+      # fd # Modern Unix `find`
       # glow # Terminal Markdown renderer
       # gping # Modern Unix `ping`
       # hexyl # Modern Unix `hexedit`
@@ -125,15 +125,14 @@
       # quilt # Terminal patch manager
       ripgrep # Modern Unix `grep`
       # rustfmt # Code format Rust
-      shellcheck # Code lint Shell
-      shfmt # Code format Shell
+      # shellcheck # Code lint Shell
+      # shfmt # Code format Shell
       # tldr # Modern Unix `man`
       # tokei # Modern Unix `wc` for code
       # vdpauinfo # Terminal VDPAU info
       # wavemon # Terminal WiFi monitor
       yq-go # Terminal `jq` for YAML
       # nvchad
-      ariang # Modern web frontend making aria2
     ];
     # sessionVariables = {
     #   BZR_EMAIL = "Reinaldo P Jr <code@wimpress.io>";

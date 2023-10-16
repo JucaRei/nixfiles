@@ -6,7 +6,7 @@
     ./fonts.nix
     # ./nano.nix
     # ../config/qt/qt-style.nix
-    ../console/fish.nix
+    # ../console/fish.nix
     ../services/security/sudo.nix
     ../services/security/common.nix
     ../services/network/avahi.nix
