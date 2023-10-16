@@ -101,10 +101,19 @@ in
     extraOptions = ''
       keep-outputs          = true
       keep-derivations      = false
+      connect-timeout = 5
+      log-lines = 25
+
+      fallback = true
 
       # Free up to 1GiB whenever there is less than 100MiB left.
-      min-free = ${toString (100 * 1024 * 1024)}
-      max-free = ${toString (1024 * 1024 * 1024)}
+      # min-free = ${toString (100 * 1024 * 1024)}
+      # max-free = ${toString (1024 * 1024 * 1024)}
+      # Free up to 2GiB whenever there is less than 1GiB left.
+      min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
+      max-free = ${toString (2 * 1024 * 1024 * 1024)}    # 2 GiB
+    '' + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
+      extra-platforms = x86_64-darwin
     '';
   };
 

@@ -8,6 +8,7 @@ in
   imports = [ ] ++ lib.optionals (desktop != null) [
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/text-editor/vscode.nix
+    ../../_mixins/apps/tools/filesync.nix
   ];
 
   users.users.juca = {
@@ -45,32 +46,4 @@ in
     # shell = pkgs.fish;
     shell = pkgs.bash;
   };
-
-  environment = {
-    systemPackages = with pkgs; [
-      # aria2
-      rclone
-      wget2
-      wormhole-william
-      # yadm # Terminal dot file manager
-      zsync
-    ] ++ lib.optionals (desktop != null) [
-      appimage-run
-      wmctrl
-      ydotool
-    ];
-  };
-
-  # services = {
-  #   aria2 = {
-  #     enable = true;
-  #     openPorts = true;
-  #     rpcSecret = "${hostname}";
-  #   };
-  #   croc = {
-  #     enable = true;
-  #     pass = "${hostname}";
-  #     openFirewall = true;
-  #   };
-  # };
 }

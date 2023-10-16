@@ -51,6 +51,7 @@
       "rd.udev.log_level=3"
       "udev.log_priority=3"
       "vt.global_cursor_default=0"
+      "mitigations=off"
     ];
     kernel = {
       sysctl = {
@@ -157,5 +158,12 @@
     };
 
     envfs.enable = true; # populate /usr/bin for non-nix binaries
+  };
+  systemd.services.disable-wifi-powersave = {
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.iw ];
+    script = ''
+      iw dev wlan0 set power_save off
+    '';
   };
 }
