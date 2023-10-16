@@ -49,7 +49,7 @@
       orca
     ])
     ++ (with pkgs.cinnamon; [
-      cinnamon-spice-updater
+      # cinnamon-spice-updater
     ]);
   };
   xdg = {
