@@ -5,9 +5,6 @@ let
 
   ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
 
-  prefer-dark-theme =
-    config.gtk.gtk3.extraConfig.gtk-application-prefer-dark-theme;
-
   sharedSettings = {
     # Privacy & Security Improvements
     #"browser.contentblocking.category" = "strict";
@@ -64,22 +61,6 @@ let
     # Disable DNS over HTTPS (done system-wide)
     #"network.trr.mode" = 5;
 
-    # Theme
-    "browser.theme.toolbar-theme" = 0;
-    "ui.systemUsesDarkTheme" = prefer-dark-theme;
-    "extensions.activeThemeID" = concatStrings [
-      "firefox-compact-"
-      (
-        if prefer-dark-theme
-        then "dark"
-        else "light"
-      )
-      "@mozilla.org"
-    ];
-    "devtools.theme" =
-      if prefer-dark-theme
-      then "dark"
-      else "light";
 
     # i18n
     "intl.accept_languages" = "en-GB, en, pt-BR";
