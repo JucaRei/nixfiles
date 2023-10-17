@@ -13,78 +13,77 @@
     enableUpdateCheck = false;
 
     extensions =
-      (with with pkgs; [ vscode-extensions ]; [
+      with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
         brettm12345.nixfmt-vscode
         oderwat.indent-rainbow
-        catppuccin.catppuccin-vsc-icons
+        # Catppuccin.catppuccin-vsc-icons
         formulahendry.code-runner
         davidanson.vscode-markdownlint
         editorconfig.editorconfig
-        redhat.vscode-yaml
-        ms-python.python
-      ] ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "vsc-darker-plus-material-red";
-          publisher = "chireia";
-          version = "1.0.2";
-          # sha256 = lib.fakeSha256;  ### if you trust
-          sha256 = "sha256-LTgJDeNZoBi/QjHcal7QUMmQnNPjupi+K7l/EkFgfwI=";
-        }
-        {
-          name = "beardedicons";
-          publisher = "beardedbear";
-          version = "1.13.2";
-          sha256 = "sha256-PpIut/yhUNK1eTPRvVXONt06TOXpoGgmd6lrhFdADRQ";
-        }
-        {
-          name = "linux-desktop-file";
-          publisher = "nico-castell";
-          version = "0.0.21";
-          sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
-        }
-        {
-          name = "pork-and-beans";
-          publisher = "HighSpeedDirt";
-          version = "0.9.2";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-wIVQmlh4Dvka/O4l5PCSb4fv8iKgZDzXVEMShfjlQfY=";
-        }
-        {
-          name = "red-theme";
-          publisher = "RedCrafter07";
-          version = "0.0.2";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-GbNvoXeYpLMTyDze82qckTrepMJDE2I0RcilGKVGhdg=";
-        }
-        {
-          name = "gamberetti-reborn-theme";
-          publisher = "dSyncro";
-          version = "1.0.0";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-cRiwx6ELRnHIqobBwYkrZXnptue/+M9bDKvonhQ8hj4=";
-        }
-        {
-          name = "catppuccin-perfect-icons";
-          publisher = "thang-nm";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-S9s+CQWu3ADRW0J7BPxTTypwMOmpzmdeXcZcSVHXPyU=";
-        }
-        {
-          name = "Rainbow Theme";
-          publisher = "Dreamyplayer";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-/Glcaj8K28ccB16WLJqs5+l5j3ROQnRli6oooVIvLqg=";
-        }
-        {
-          publisher = "zguolee";
-          name = "tabler-icons";
-          version = "0.2.2";
-          sha256 = "UxMjXwfL9YMb7nGH41LoAu9R3b4dWdK66+w0tfGy8Lk=";
-        }
-      ]);
-
-    #     Saikumarchinna.rainbow
+        # redhat.vscode-yaml
+        # ms-python.python
+      ];
+    #  ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
+    #   # {
+    #   #   name = "vsc-darker-plus-material-red";
+    #   #   publisher = "chireia";
+    #   #   version = "1.0.2";
+    #   #   # sha256 = lib.fakeSha256;  ### if you trust
+    #   #   sha256 = "sha256-LTgJDeNZoBi/QjHcal7QUMmQnNPjupi+K7l/EkFgfwI=";
+    #   # }
+    #   # {
+    #   #   name = "beardedicons";
+    #   #   publisher = "beardedbear";
+    #   #   version = "1.13.2";
+    #   #   sha256 = "sha256-PpIut/yhUNK1eTPRvVXONt06TOXpoGgmd6lrhFdADRQ";
+    #   # }
+    #   # {
+    #   #   name = "linux-desktop-file";
+    #   #   publisher = "nico-castell";
+    #   #   version = "0.0.21";
+    #   #   sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
+    #   # }
+    #   {
+    #     name = "pork-and-beans";
+    #     publisher = "HighSpeedDirt";
+    #     version = "0.9.2";
+    #     # sha256 = lib.fakeSha256;
+    #     sha256 = "sha256-wIVQmlh4Dvka/O4l5PCSb4fv8iKgZDzXVEMShfjlQfY=";
+    #   }
+    #   {
+    #     name = "red-theme";
+    #     publisher = "RedCrafter07";
+    #     version = "0.0.2";
+    #     # sha256 = lib.fakeSha256;
+    #     sha256 = "sha256-GbNvoXeYpLMTyDze82qckTrepMJDE2I0RcilGKVGhdg=";
+    #   }
+    #   {
+    #     name = "gamberetti-reborn-theme";
+    #     publisher = "dSyncro";
+    #     version = "1.0.0";
+    #     # sha256 = lib.fakeSha256;
+    #     sha256 = "sha256-cRiwx6ELRnHIqobBwYkrZXnptue/+M9bDKvonhQ8hj4=";
+    #   }
+    #   {
+    #     name = "catppuccin-perfect-icons";
+    #     publisher = "thang-nm";
+    #     # sha256 = lib.fakeSha256;
+    #     sha256 = "sha256-S9s+CQWu3ADRW0J7BPxTTypwMOmpzmdeXcZcSVHXPyU=";
+    #   }
+    #   {
+    #     name = "Rainbow Theme";
+    #     publisher = "Dreamyplayer";
+    #     # sha256 = lib.fakeSha256;
+    #     sha256 = "sha256-/Glcaj8K28ccB16WLJqs5+l5j3ROQnRli6oooVIvLqg=";
+    #   }
+    #   {
+    #     publisher = "zguolee";
+    #     name = "tabler-icons";
+    #     version = "0.2.2";
+    #     sha256 = "UxMjXwfL9YMb7nGH41LoAu9R3b4dWdK66+w0tfGy8Lk=";
+    #   }
+    # ]);
 
     userSettings = {
       update.mode = "none";
