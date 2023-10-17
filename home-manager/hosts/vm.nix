@@ -1,1 +1,5 @@
-_: { }
+_: {
+	imports = [
+		../_mixins/apps/text-editor/vscode.nix
+	];
+}

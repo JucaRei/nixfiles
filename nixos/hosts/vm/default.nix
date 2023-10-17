@@ -6,6 +6,7 @@
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/sys/swapfile.nix
+    ../../_mixins/virtualization/podman.nix
   ];
 
   # swapDevices = [{
@@ -100,8 +101,8 @@
     initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
     kernelPackages = pkgs.linuxPackages_latest;
 
-    loader.grub = lib.mkForce {
-      gfxmodeEfi = "1920x1080";
+    loader.grub = {
+      gfxmodeEfi = lib.mkForce "1920x1080";
     };
   };
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
