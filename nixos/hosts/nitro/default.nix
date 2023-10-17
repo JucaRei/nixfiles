@@ -187,6 +187,7 @@
       btrfs-progs
       compsize
       clonegit
+      unstable.stacer
       # tidal
     ];
     sessionVariables = {
