@@ -170,40 +170,40 @@
   #   "plugins/plugin-16" = "eyes";
   # }; # xfce4-panel
 
-  xfce4-screensaver = {
-    # 2023-07-29: MUST have leading slashes
-    # FIXXME: this section is untested
-    "/lock/saver-activation/delay" = 2;
-    "/lock/saver-activation/enabled" = false;
-    "/lock/user-switching/enabled" = false;
-    #"/lock/enabled" = true; # Enable Lock Screen
-    # FIXXME: trying to find the correct syntax for setting the lock screen boolean according to "my.isvm":
-    #"/lock/enabled" =  "${nixos.config.networking.hostName}" == "nixosvms"; # error: undefined variable 'nixos'
-    #"/lock/enabled" =  "${config.networking.hostName}" == "nixosvms"; # error: attribute 'networking' missing
+  # xfce4-screensaver = {
+  #   # 2023-07-29: MUST have leading slashes
+  #   # FIXXME: this section is untested
+  #   "/lock/saver-activation/delay" = 2;
+  #   "/lock/saver-activation/enabled" = false;
+  #   "/lock/user-switching/enabled" = false;
+  #   #"/lock/enabled" = true; # Enable Lock Screen
+  #   # FIXXME: trying to find the correct syntax for setting the lock screen boolean according to "my.isvm":
+  #   #"/lock/enabled" =  "${nixos.config.networking.hostName}" == "nixosvms"; # error: undefined variable 'nixos'
+  #   #"/lock/enabled" =  "${config.networking.hostName}" == "nixosvms"; # error: attribute 'networking' missing
 
-    #"/lock/enabled" =  ! config.options.my.isvm; # error: attribute 'options' missing
-    #"/lock/enabled" =  ! ${config.options.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
-    #"/lock/enabled" =  ! ${nixos.config.options.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
-    #"/lock/enabled" =  ! ${options.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
-    #"/lock/enabled" =  ! "${options.my.isvm}"; # error: undefined variable 'options'
-    #"/lock/enabled" =  ! options.my.isvm; # error: undefined variable 'options'
+  #   #"/lock/enabled" =  ! config.options.my.isvm; # error: attribute 'options' missing
+  #   #"/lock/enabled" =  ! ${config.options.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
+  #   #"/lock/enabled" =  ! ${nixos.config.options.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
+  #   #"/lock/enabled" =  ! ${options.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
+  #   #"/lock/enabled" =  ! "${options.my.isvm}"; # error: undefined variable 'options'
+  #   #"/lock/enabled" =  ! options.my.isvm; # error: undefined variable 'options'
 
-    #"/lock/enabled" =  ! config.my.isvm; #attribute 'my' missing
-    #"/lock/enabled" =  ! my.isvm; # error: undefined variable 'my'
-    #"/lock/enabled" =  ! ${config.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
-    #"/lock/enabled" =  ! ${nixos.config.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
-    #"/lock/enabled" =  ! ${my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
-    #"/lock/enabled" =  ! "${my.isvm}"; # error: undefined variable 'my'
+  #   #"/lock/enabled" =  ! config.my.isvm; #attribute 'my' missing
+  #   #"/lock/enabled" =  ! my.isvm; # error: undefined variable 'my'
+  #   #"/lock/enabled" =  ! ${config.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
+  #   #"/lock/enabled" =  ! ${nixos.config.my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
+  #   #"/lock/enabled" =  ! ${my.isvm}; # error: syntax error, unexpected DOLLAR_CURLY
+  #   #"/lock/enabled" =  ! "${my.isvm}"; # error: undefined variable 'my'
 
-    #        "/lock/enabled" = enableSaver config.networking.hostName;
+  #   #        "/lock/enabled" = enableSaver config.networking.hostName;
 
-    "/saver/enabled" = true;
-    "/saver/idle-activation/delay" = 9;
-    "/saver/idle-activation/enabled" = true;
-    "/saver/mode" = 0;
-    "/screensavers/xfce-personal-slideshow/arguments" = "month";
-    "/screensavers/xfce-personal-slideshow/location" = "month";
-  }; # xfce4-screensaver
+  #   "/saver/enabled" = true;
+  #   "/saver/idle-activation/delay" = 9;
+  #   "/saver/idle-activation/enabled" = true;
+  #   "/saver/mode" = 0;
+  #   "/screensavers/xfce-personal-slideshow/arguments" = "month";
+  #   "/screensavers/xfce-personal-slideshow/location" = "month";
+  # }; # xfce4-screensaver
 
   #xfce4-appfinder = { }; # xfce4-appfinder
 
