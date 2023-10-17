@@ -3,7 +3,7 @@
     enable = true;
     # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
-    package = pkgs.vscodium.override {
+    package = pkgs.unstable.vscodium.override {
       commandLineArgs = builtins.concatStringsSep " " [
         "--enable-wayland-ime"
         "--ozone-platform-hint=auto"
@@ -25,41 +25,71 @@
         redhat.vscode-yaml
         ms-python.python
         ms-azuretools.vscode-docker
+        # ms-vscode-remote.remote-containers
+        # ms-vscode-remote.vscode-remote-extensionpack
       ]
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
-        # {
-        #   name = "vsc-darker-plus-material-red";
-        #   publisher = "chireia";
-        #   version = "1.0.2";
-        #   sha256 = lib.fakeSha256; ### if you trust
-        #   # sha256 = "sha256-LTgJDeNZoBi/QjHcal7QUMmQnNPjupi+K7l/EkFgfwI=";
-        # }
-        #   # {
-        #   #   name = "beardedicons";
-        #   #   publisher = "beardedbear";
-        #   #   version = "1.13.2";
-        #   #   sha256 = "sha256-PpIut/yhUNK1eTPRvVXONt06TOXpoGgmd6lrhFdADRQ";
-        #   # }
-        #   # {
-        #   #   name = "linux-desktop-file";
-        #   #   publisher = "nico-castell";
-        #   #   version = "0.0.21";
-        #   #   sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
-        #   # }
-        #   {
-        #     name = "pork-and-beans";
-        #     publisher = "HighSpeedDirt";
-        #     version = "0.9.2";
-        #     # sha256 = lib.fakeSha256;
-        #     sha256 = "sha256-wIVQmlh4Dvka/O4l5PCSb4fv8iKgZDzXVEMShfjlQfY=";
-        #   }
-        #   {
-        #     name = "red-theme";
-        #     publisher = "RedCrafter07";
-        #     version = "0.0.2";
-        #     # sha256 = lib.fakeSha256;
-        #     sha256 = "sha256-GbNvoXeYpLMTyDze82qckTrepMJDE2I0RcilGKVGhdg=";
-        #   }
+        {
+          name = "reload";
+          publisher = "natqe";
+          version = "0.0.6";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-bTFLk3sCJb7ztkC/Cxci6n7RbcyNjEYNKREUf9wDQRU=";
+        }
+        {
+          name = "remote-ssh";
+          publisher = "ms-vscode-remote";
+          version = "0.107.2023100615";
+          sha256 = lib.fakeSha256;
+          # sha256 = "sha256-mhNp7mAxcf/3wMeMTMiYyEtlY+KgSx9BZutTdtgB5dY=";
+        }
+        {
+          name = "remote-containers";
+          publisher = "ms-vscode-remote";
+          version = "0.318.0";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-mhNp7mAxcf/3wMeMTMiYyEtlY+KgSx9BZutTdtgB5dY=";
+        }
+        {
+          name = "vscode-remote-extensionpack";
+          publisher = "ms-vscode-remote";
+          version = "0.24.0";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-6v4JWpyMxqTDIjEOL3w25bdTN+3VPFH7HdaSbgIlCmo=";
+        }
+        {
+          name = "darker-plus-material-red";
+          publisher = "chireia";
+          version = "1.0.2";
+          # sha256 = lib.fakeSha256; ### if you trust
+          sha256 = "sha256-YT8g6hA4Cs0EGan+d3iIKVh/fZm10/DcOxYiiEXEeYc=";
+        }
+        {
+          name = "beardedicons";
+          publisher = "beardedbear";
+          version = "1.13.2";
+          sha256 = "sha256-PpIut/yhUNK1eTPRvVXONt06TOXpoGgmd6lrhFdADRQ";
+        }
+        {
+          name = "linux-desktop-file";
+          publisher = "nico-castell";
+          version = "0.0.21";
+          sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
+        }
+        {
+          name = "pork-and-beans";
+          publisher = "HighSpeedDirt";
+          version = "0.9.2";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-ErBbNPTxTbhQYkxuh3K9kEfkFvG35y/vuylsFPnlOtg=";
+        }
+        {
+          name = "red-theme";
+          publisher = "RedCrafter07";
+          version = "0.0.2";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-JLxVOPNJEythpA8K1aa/d1TcG1rWfV4yMl3bcXCu+KE=";
+        }
         #   {
         #     name = "gamberetti-reborn-theme";
         #     publisher = "dSyncro";
@@ -73,18 +103,19 @@
         #     # sha256 = lib.fakeSha256;
         #     sha256 = "sha256-S9s+CQWu3ADRW0J7BPxTTypwMOmpzmdeXcZcSVHXPyU=";
         #   }
-        #   {
-        #     name = "Rainbow Theme";
-        #     publisher = "Dreamyplayer";
-        #     # sha256 = lib.fakeSha256;
-        #     sha256 = "sha256-/Glcaj8K28ccB16WLJqs5+l5j3ROQnRli6oooVIvLqg=";
-        #   }
-        #   {
-        #     publisher = "zguolee";
-        #     name = "tabler-icons";
-        #     version = "0.2.2";
-        #     sha256 = "UxMjXwfL9YMb7nGH41LoAu9R3b4dWdK66+w0tfGy8Lk=";
-        #   }
+        # {
+        #   publisher = "zguolee";
+        #   name = "tabler-icons";
+        #   version = "0.2.2";
+        #   sha256 = "UxMjXwfL9YMb7nGH41LoAu9R3b4dWdK66+w0tfGy8Lk=";
+        # }
+        {
+          publisher = "PKief";
+          name = "material-product-icons";
+          version = "1.6.0";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-IpGnfpGgQLpSGhfMvV5FW7ykXeK1QjfBq5dZw519BNg=";
+        }
       ];
 
     userSettings = {
@@ -133,7 +164,7 @@
           enabled = true;
           independentColorPoolPerBracketType = true;
         };
-        largeFileOptimizations = false;
+        largeFileOptimizations = true;
         codeActionsOnSave.source = {
           organizeImports = true;
           #   fixAll.eslint = true;
@@ -144,17 +175,19 @@
         environment = {
           "DOCKER_HOST" = "unix:///run/user/1000/podman/podman.sock";
         };
-        "composeCommand" = "podman compose";
-        "dockerPath" = "/nix/store/5qk52lw1lvsb7znpn500zhwm5wsrvhsk-system-path/bin/podman";
+        "composeCommand" = "podman-compose";
+        "dockerPath" = "${pkgs.podman}/bin/podman";
       };
 
       workbench = {
-        iconTheme = "catppuccin-perfect-dark";
+        # iconTheme = "catppuccin-perfect-dark";
+        iconTheme = "bearded-icons";
         # colorTheme = "GitHub Dark"; # Material Theme Ocean High Contrast
-        # colorTheme = "Gamberetti Reborn (Dark)";
+        colorTheme = "RedCrafter07 Theme";
+        # colorTheme = "Rainbow Extended";
         list.smoothScrolling = true;
-        colorTheme = "Rainbow Extended";
-        # productIconTheme = "material-product-icons";
+        productIconTheme = "material-product-icons";
+        # productIconTheme = "tabler-icons";
         smoothScrolling = true;
       };
 
@@ -236,10 +269,7 @@
       "window.titleBarStyle" = "custom";
       "workbench.enableExperiments" = false;
       # "workbench.colorTheme" = "Bearded Theme Monokai Stone";
-      "workbench.colorTheme" = "Darker+ Material Red";
       "workbench.settings.enableNaturalLanguageSearch" = false;
-      "workbench.productIconTheme" = "Tabler";
-      "workbench.startupEditor" = "none";
       "git.enableSmartCommit" = true;
       "git.confirmSync" = false;
 
