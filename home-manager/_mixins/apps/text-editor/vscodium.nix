@@ -30,6 +30,13 @@
       ]
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         {
+          name = "vscode-thunder-client";
+          publisher = "rangav";
+          version = "2.13.5";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-EkwhzeNVOsaXv3Fmox3yGacw0PxlfHVysWyTG7iPRrg=";
+        }
+        {
           name = "reload";
           publisher = "natqe";
           version = "0.0.6";
@@ -37,11 +44,18 @@
           sha256 = "sha256-bTFLk3sCJb7ztkC/Cxci6n7RbcyNjEYNKREUf9wDQRU=";
         }
         {
+          name = "git-graph";
+          publisher = "mhutchie";
+          version = "1.30.0";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-sHeaMMr5hmQ0kAFZxxMiRk6f0mfjkg2XMnA4Gf+DHwA=";
+        }
+        {
           name = "remote-ssh";
           publisher = "ms-vscode-remote";
           version = "0.107.2023100615";
-          sha256 = lib.fakeSha256;
-          # sha256 = "sha256-mhNp7mAxcf/3wMeMTMiYyEtlY+KgSx9BZutTdtgB5dY=";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-pRdcEyApccS+A/8zgmzM3wSJcBx2P/BAK2ggbO2v4+A=";
         }
         {
           name = "remote-containers";
@@ -253,10 +267,37 @@
         "MD040" = false;
         "MD041" = false;
       };
+
+      # Nil
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = "${pkgs.nil}/bin/nil";
       "nix.serverSettings"."nil"."diagnostics"."ignored" = [ "unused_binding" "unused_with" ];
       "nix.serverSettings"."nil"."formatting"."command" = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
+
+      # Nixd
+      # nix = {
+      #   serverPath = "${pkgs.unstable.nixd}/bin/nixd";
+      #   serverSettings = {
+      #     nixd = {
+      #       eval = { };
+      #       formatting = {
+      #         command = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+      #       };
+      #       optios = {
+      #         enable = true;
+      #         target = {
+      #           arg = [ ];
+      #           # NixOS options
+      #           installable = "<flakeref>#nixosConfigurations.<name>.options";
+
+      #           # Home-manager options
+      #           # installable = "<flakeref>#homeConfigurations.<name>.options";
+      #         };
+      #       };
+      #     };
+      #   };
+      # };
+
       "[nix]" = {
         editor.defaultFormatter = "jnoortheen.nix-ide";
       };
