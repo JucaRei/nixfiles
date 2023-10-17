@@ -25,7 +25,7 @@
     };
   };
 
-  xfce4-session = { };
+  # xfce4-session = { };
 
   xfwm4 = {
     "general/workspace_count" = 4;
