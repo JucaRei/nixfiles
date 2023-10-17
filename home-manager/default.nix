@@ -1,4 +1,4 @@
-{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, ... }:
+{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, params, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
 in
