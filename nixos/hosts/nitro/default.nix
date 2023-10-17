@@ -19,9 +19,9 @@
     ../../_mixins/virtualization/virt-manager.nix
   ];
   boot = {
-    extraModprobeConfig = ''
-      options vfio-pci ids=10de:1c8d,10de:0fb9
-    '';
+    # extraModprobeConfig = ''
+    #   options vfio-pci ids=10de:1c8d,10de:0fb9 softdep nvidia pre: vfio-pci
+    # '';
     # postBootCommands = ''
     # DEVS="0000:01:00.0 0000:01:00.1"
 

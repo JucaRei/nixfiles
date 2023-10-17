@@ -11,8 +11,7 @@
         "vfio_pci"
         "vfio"
         "vfio_iommu_type1"
-        # "vfio_virqfd"
-        ## zen not enabled
+        # "vfio_virqfd" ### already in path since kernel 6.2
         "virtio_balloon"
         "virtio_console"
         "virtio_rng"

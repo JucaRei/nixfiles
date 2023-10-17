@@ -9,7 +9,7 @@
     #     "--ozone-platform-hint=auto"
     #   ];
     # };
-    mutableExtensionsDir = false;
+    mutableExtensionsDir = true;
     enableUpdateCheck = false;
 
     extensions =
@@ -21,6 +21,8 @@
         formulahendry.code-runner
         davidanson.vscode-markdownlint
         editorconfig.editorconfig
+        redhat.vscode-yaml
+        ms-python.python
       ] ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         {
           name = "vsc-darker-plus-material-red";
@@ -28,6 +30,18 @@
           version = "1.0.2";
           # sha256 = lib.fakeSha256;  ### if you trust
           sha256 = "sha256-LTgJDeNZoBi/QjHcal7QUMmQnNPjupi+K7l/EkFgfwI=";
+        }
+        {
+          name = "beardedicons";
+          publisher = "beardedbear";
+          version = "1.13.2";
+          sha256 = "sha256-PpIut/yhUNK1eTPRvVXONt06TOXpoGgmd6lrhFdADRQ";
+        }
+        {
+          name = "linux-desktop-file";
+          publisher = "nico-castell";
+          version = "0.0.21";
+          sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
         }
         {
           name = "pork-and-beans";
