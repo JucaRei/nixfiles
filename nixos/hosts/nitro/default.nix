@@ -15,6 +15,7 @@
     ../../_mixins/hardware/boot/multiboot.nix
     ../../_mixins/virtualization
     ../../_mixins/virtualization/quickemu.nix
+    ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
     ../../_mixins/apps/text-editor/vscode.nix

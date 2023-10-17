@@ -7,7 +7,8 @@
     # ./nano.nix
     # ../config/qt/qt-style.nix
     # ../console/fish.nix
-    ../services/security/sudo.nix
+    # ../services/security/sudo.nix
+    # ../services/security/doas.nix
     ../services/security/common.nix
     ../services/network/avahi.nix
     # ../services/security/detect-reboot-needed.nix
@@ -89,7 +90,7 @@
       "ntfs"
     ];
 
-    # Run any appimage 
+    # Run any appimage
     binfmt.registrations.appimage = {
       # make appImage work seamlessly
       wrapInterpreterInShell = false;

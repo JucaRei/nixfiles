@@ -4,12 +4,12 @@
 
     doas = {
       enable = true;
-      extraConfig = ''
-        permit nopass :wheel
-      '';
+      # extraConfig = ''
+      # permit nopass :wheel
+      # '';
       extraRules = [{
         users = [ "${username}" ];
-        noPass = true;
+        # noPass = true;
         keepEnv = true;
         persist = true;
       }];
