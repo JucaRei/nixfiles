@@ -1,6 +1,6 @@
 { pkgs, lib, params, ... }:
 let
-  ifDefault = lib.mkIf (params.browser == "vivaldi");
+  ifDefault = lib.mkIf (builtins.elem params.browser == "vivaldi");
 in
 {
 
