@@ -15,6 +15,7 @@
     clonegit = final.cloneit;
     icloudpd = final.icloud-photo-downloader;
     nvchad = prev.nvchad;
+    thorium = final.thorium-browser;
     # tidal = final.tidal-dl;
     # mpvconf = prev.mpv;
     # example = prev.example.overrideAttrs (oldAttrs: rec {

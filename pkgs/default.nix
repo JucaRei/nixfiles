@@ -12,4 +12,5 @@
   breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
   # mpv = pkgs.callPackage ./mpv { };
   icloud-photo-downloader = pkgs.callPackage ./icloud-photo-downloader { };
+  thorium-browser = pkgs.callPackage ./thorium-browser { };
 }
