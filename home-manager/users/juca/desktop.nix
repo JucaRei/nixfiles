@@ -4,8 +4,8 @@ with lib.hm.gvariant;
   imports = [
     # ../../_mixins/apps/audio/audio-recorder.nix
     # ../../_mixins/apps/audio/gnome-sound-recorder.nix
-    ../../_mixins/apps/browser/vivaldi.nix
-    # ../../_mixins/apps/browser/firefox.nix
+    # ../../_mixins/apps/browser/vivaldi.nix
+    ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/music/rhythmbox.nix
     # ../../_mixins/apps/video/mpv.nix
     ../../_mixins/apps/tools/dconf-editor.nix
