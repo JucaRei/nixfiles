@@ -17,6 +17,7 @@
     ../../_mixins/virtualization/quickemu.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
+    ../../_mixins/apps/text-editor/vscode.nix
   ];
   boot = {
     # extraModprobeConfig = ''
