@@ -271,4 +271,4 @@
   #"/misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_NEVER";
   #"/misc-volume-management" = false;
   # }; # thunar
-};
+}
