@@ -93,25 +93,7 @@ in
           id = 0;
           settings = sharedSettings;
         };
-        # work = {
-        #   id = 1;
-        #   settings = sharedSettings;
-        # };
       };
-      extensions = with firefox-addons; [
-        ublock-origin
-        terms-of-service-didnt-read
-        #vimium
-        #ipfs-companion
-        #bitwarden
-        darkreader
-        languagetool
-        metamask
-        libredirect
-        to-deepl
-        # not available yet:
-        # google-lighthouse
-      ];
     };
   };
 
