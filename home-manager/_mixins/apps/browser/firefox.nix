@@ -140,13 +140,13 @@ in
     };
   };
 
-  xdg = {
-    mime.enable = ifDefault true;
-    mimeApps = {
-      enable = ifDefault true;
-      defaultApplications = ifDefault (import ./default-browser.nix "firefox");
-    };
-  };
+  # xdg = {
+  #   mime.enable = ifDefault true;
+  #   mimeApps = {
+  #     enable = ifDefault true;
+  #     defaultApplications = ifDefault (import ./default-browser.nix "firefox");
+  #   };
+  # };
 
   # home.packages =
   #   let
