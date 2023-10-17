@@ -18,7 +18,7 @@
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
-    ../../_mixins/apps/text-editor/vscode.nix
+    # ../../_mixins/apps/text-editor/vscode.nix
   ];
   boot = {
     # extraModprobeConfig = ''

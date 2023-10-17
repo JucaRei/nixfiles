@@ -15,7 +15,6 @@ with lib.hm.gvariant;
     # ../../_mixins/apps/terminal/tilix.nix
     # ../../_mixins/services/emote.nix
     ../../_mixins/services/localsend.nix
-    # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/apps/video/celluloid.nix
   ];
 

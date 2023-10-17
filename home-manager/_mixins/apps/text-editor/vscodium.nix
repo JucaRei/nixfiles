@@ -30,6 +30,27 @@
       ]
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         {
+          name = "vscode-icons";
+          publisher = "vscode-icons-team";
+          version = "12.5.0";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-PrOakITVBJKaGqlhbWNSY2eh4R8fiBd2hEdWzN3lCjs=";
+        }
+        {
+          name = "vscode-status-bar-format-toggle";
+          publisher = "tombonnike";
+          version = "3.2.0";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-MuDOhp6Ur5iwzHjyK7qEVSGOQovfWPwwYJ0Sl/RsIQE=";
+        }
+        {
+          name = "shell-format";
+          publisher = "foxundermoon";
+          version = "7.2.5";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-kfpRByJDcGY3W9+ELBzDOUMl06D/vyPlN//wPgQhByk=";
+        }
+        {
           name = "vscode-thunder-client";
           publisher = "rangav";
           version = "2.13.5";
@@ -111,12 +132,12 @@
         #     # sha256 = lib.fakeSha256;
         #     sha256 = "sha256-cRiwx6ELRnHIqobBwYkrZXnptue/+M9bDKvonhQ8hj4=";
         #   }
-        #   {
-        #     name = "catppuccin-perfect-icons";
-        #     publisher = "thang-nm";
-        #     # sha256 = lib.fakeSha256;
-        #     sha256 = "sha256-S9s+CQWu3ADRW0J7BPxTTypwMOmpzmdeXcZcSVHXPyU=";
-        #   }
+        # {
+        #   name = "catppuccin-perfect-icons";
+        #   publisher = "thang-nm";
+        #   # sha256 = lib.fakeSha256;
+        #   sha256 = "sha256-S9s+CQWu3ADRW0J7BPxTTypwMOmpzmdeXcZcSVHXPyU=";
+        # }
         # {
         #   publisher = "zguolee";
         #   name = "tabler-icons";
@@ -193,9 +214,20 @@
         "dockerPath" = "${pkgs.podman}/bin/podman";
       };
 
+      dev = {
+        containers = {
+          # dockerPath = "${pkgs.podman}/bin/podman";
+          runArgs = [ "--userns=keep-id" ];
+          # containerUser = "juca";
+          # updateRemoteUserUID = true;
+          containerEnv = {
+            "HOME" = "home/node";
+          };
+        };
+      };
       workbench = {
-        # iconTheme = "catppuccin-perfect-dark";
-        iconTheme = "bearded-icons";
+        iconTheme = "vscode-icons";
+        # iconTheme = "bearded-icons";
         # colorTheme = "GitHub Dark"; # Material Theme Ocean High Contrast
         colorTheme = "RedCrafter07 Theme";
         # colorTheme = "Rainbow Extended";
