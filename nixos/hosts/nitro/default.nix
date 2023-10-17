@@ -190,6 +190,7 @@
       compsize
       clonegit
       unstable.stacer
+      thorium
       # tidal
     ];
     sessionVariables = {
