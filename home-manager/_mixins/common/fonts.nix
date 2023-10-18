@@ -13,10 +13,10 @@
     fira-code-symbols
     work-sans
     joypixels
+    hack-font
     ubuntu_font_family
 
     material-design-icons
-    (nerdfonts.override { fonts = [ "FiraCode" "UbuntuMono" "DroidSansMono" ]; })
+    (nerdfonts.override { fonts = [ "FiraCode" "UbuntuMono" "Hack" "DroidSansMono" ]; })
   ];
 }
-

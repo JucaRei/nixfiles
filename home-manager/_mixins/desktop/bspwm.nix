@@ -23,10 +23,10 @@ with lib.hm.gvariant;
       extraConfig = ''
 
         ### Color Catpuccin
-        bspc config normal_border_color        "#1E1E2E"
-        bspc config active_border_color        "#1E1E2E"
+        bspc config normal_border_color        "#0A0E14"
+        bspc config active_border_color        "#1F2430"
         bspc config focused_border_color       "#96CDFB"
-        bspc config presel_feedback_color      "#96CDFB"
+        bspc config presel_feedback_color      "#C7C7C7"
 
         ### Config
         bspc config border_width                2

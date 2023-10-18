@@ -16,37 +16,87 @@ in
     polybar = {
       enable = true;
       script = ''
-        #killall -q polybar &
-        #while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
-        #polybar main &
+        killall -q polybar &
+        while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+        polybar main &
         #polybar sec &
       ''; # Run Polybar on Startup
       package = polybar;
       config = {
+        "default" = {
+          module-foreground = "#0A0E14";
+          module-background = "#C7C7C7";
+          triangle-right = "%{T2}█%{T-}";
+          triangle-left = "%{T2}█%{T-}";
+          #triangle-right = %{T2}%{T-}
+          #triangle-left = %{T2}%{T-}
+
+          #triangle-right = %{T2} %{T-}
+          #triangle-left = %{T2} %{T-}
+
+          #triangle-right = %{T2}%{T-}
+          #triangle-left = %{T2}%{T-}
+
+          #triangle-right = %{T2}█ %{T-}
+          #triangle-left = %{T2} █%{T-}
+
+          #triangle-right = %{T2} %{T-}
+          #triangle-left = %{T2} %{T-}
+
+          #triangle-right = %{T2}%{T-}
+          #triangle-left = %{T2}%{T-}
+
+          #triangle-right = %{T2}█%{T-}
+          #triangle-left = %{T2}%{T-}
+
+          #triangle-right = %{T2}%{T-}
+          #triangle-left = %{T2}%{T-}
+        };
+        "settings" = {
+          screenchange-reload = true;
+          pseudo-transparency = true;
+        };
         "bar/main" = {
           # Bar "main"
           # monitor = mainMonitor;
           monitor = "Virtual-1";
           width = "100%";
-          height = 15;
+          height = 20;
+
           background = "#2E3440";
           foreground = "#2E3440";
 
-          offset-y = 2;
-          padding-right = 2;
+          border-size = 8;
+          border-color = "#0A0E14";
+
+          separater = " ";
+
+          offset-x = 0;
+          offset-y = 0;
+          dpi = 96;
+          radius = 0;
+          # padding-right = 2;
           module-margin-left = 1;
 
-          font-0 = "SourceCodePro:size=10";
-          font-1 = "FontAwesome6Free:style=Solid:size=8";
-          font-2 = "FontAwesome6Free:style=Regular:size=8";
-          font-3 = "FontAwesome6Brands:style=Regular:size=8";
-          font-4 = "FiraCodeNerdFont:size=10";
-          modules-left = "logo bspwm";
-          modules-right = "backlight pad memory cpu pad sink volume pad battery date";
+          font-0 = "Hack Nerd Font:size:22;2";
+          font-1 = "Hack Nerd font:size=22;4";
+          font-2 = "Hack Nerd font:size=22;4";
+          font-3 = "Hack Nerd font:size=8;2";
 
-          tray-position = "right";
-          tray-detached = "false";
+          # modules-left = "logo bspwm";
+          # modules-right = "backlight pad memory cpu pad sink volume pad battery date";
+          modules-left = "bspwm launchpad date";
+          modules-center = "xwindow";
+          modules-right = "memory wlan eth battery pulseaudio backlight color-picker power-menu";
+          cursor-click = "pointer";
+          cursor-scroll = "ns-resize";
 
+          tray-position = "center";
+
+          # tray-position = "right";
+          # tray-detached = "false";
+
+          enable-ipc = true;
           wm-restack = "bspwm";
         };
         # "bar/sec" = {
@@ -166,69 +216,85 @@ in
           date = "  %%{F#999}%d-%m-%Y%%{F-} %%{F#fff}%H:%M%%{F-}";
         };
         "module/bspwm" = {
-          # Workspaces
           type = "internal/bspwm";
-          pin-workspace = true;
 
-          ws-icon-0 = "1;";
-          ws-icon-1 = "2;";
-          ws-icon-2 = "3;";
-          ws-icon-3 = "4;";
-          ws-icon-4 = "5;";
-          ws-icon-5 = "6;";
-          ws-icon-6 = "7;";
-          ws-icon-7 = "8;";
-          ws-icon-8 = "9;";
-          ws-icon-9 = "10;";
+          background = "#707880";
 
-          format = "<label-state> <label-mode>";
+          pin-workspaces = true;
+          occupied-scroll = true;
 
-          label-dimmed-underline = "#ccffffff";
+          #format = %{T4}<label-state>%{T-} <label-mode>
+          format = "%{T4}<label-state>%{T-}";
+          format-background = "#0A0E14";
 
-          label-focused = "%icon%";
-          label-focused-foreground = "#fff";
-          label-focused-background = "#773f3f3f";
-          label-focused-underline = "#c9665e";
-          label-focused-font = 4;
-          label-focused-padding = 2;
+          format-prefix = "";
+          format-prefix-foreground = "#0A0E14";
+          format-prefix-background = "#0A0E14";
 
-          label-occupied = "%icon%";
-          label-occupied-foreground = "#ddd";
-          label-occupied-underline = "#666";
-          label-occupied-font = 4;
-          label-occupied-padding = 2;
+          format-suffix = "";
+          format-suffix-background = "#0A0E14";
+          format-suffix-foreground = "#0A0E14";
 
-          label-urgent = "%icon%";
-          label-urgent-foreground = "#000000";
-          label-urgent-background = "#bd2c40";
-          label-urgent-underline = "#9b0a20";
-          label-urgent-font = 4;
-          label-urgent-padding = 2;
+          ws-icon-0 = "1;󰈹";
+          ws-icon-1 = "2;󰅬";
+          ws-icon-2 = "3;";
+          ws-icon-3 = "4;󰨞";
+          ws-icon-4 = "5;";
+          #ws-icon-default = 
+          ws-icon-default = "■";
 
-          label-empty = "%icon%";
-          label-empty-foreground = "#55";
-          label-empty-font = 4;
-          label-empty-padding = 2;
 
-          label-monocle = "M";
-          label-monocle-underline = "#c9665e";
-          label-monocle-background = "#33ffffff";
-          label-monocle-padding = 2;
+          #label-active = %icon%
+          #label-active = ████
+          label-active = "██████";
+          #label-active = ■■■■■■
+          label-active-foreground = "#0A0E14";
+          #label-active-underline= ${colors.red}
+          label-active-padding = 1;
 
-          label-locked = "L";
-          label-locked-foreground = "#bd2c40";
-          label-locked-underline = "#c9665e";
-          label-locked-padding = 2;
+          #label-occupied = %icon%
+          #label-occupied = 
+          label-occupied = "■";
+          label-occupied-foreground = "#0A0E14";
+          label-occupied-padding = 1;
 
-          label-sticky = "S";
-          label-sticky-foreground = "#fba922";
-          label-sticky-underline = "#c9665e";
-          label-sticky-padding = 2;
+          label-urgent = "%name%";
+          label-urgent-background = "#EA6C73";
+          label-urgent-padding = 1;
 
-          label-private = "P";
-          label-private-foreground = "#bd2c40";
-          label-private-underline = "#c9665e";
-          label-private-padding = 2;
+          #label-empty = %icon%
+          #label-empty = 
+          label-empty = "□";
+          label-empty-foreground = "#0A0E14";
+          label-empty-padding = 1;
+
+          label-monocle = "m";
+          label-monocle-foreground = "#0A0E14";
+
+          label-tiled = "t";
+          label-tiled-foreground = "#0A0E14";
+
+          label-fullscreen = "f";
+          label-fullscreen-foreground = "#0A0E14";
+
+          label-floating = "y";
+          label-floating-foreground = "#0A0E14";
+
+          label-pseudotiled = "P";
+          label-pseudotiled-foreground = "#0A0E14";
+
+          label-locked = "l";
+          label-locked-foreground = "#0A0E14";
+
+          label-sticky = "s";
+          label-sticky-foreground = "#0A0E14";
+
+          label-private = "p";
+          label-private-foreground = "#0A0E14";
+
+          label-marked = "M";
+          label-marked-foreground = "#0A0E14";
+
         };
         "module/title" = {
           # Window Title
