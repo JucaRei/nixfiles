@@ -1,12 +1,12 @@
-_: {
+{ pkgs, ... }:
+let
+  terminal = "xfce4-terminal";
+in
+{
   services = {
     sxhkd = {
       enable = true;
       extraConfig = ''
-        # terminal emulator
-        super + Return
-          xfce4-terminal
-
         # program launcher
         super + @space
           rofi -show drun -show-icons
@@ -129,7 +129,8 @@ _: {
           bspc node -v {-20 0,0 20,0 -20,20 0}
       '';
       keybindings = {
-        "super + t" = "firefox";
+        "super + Return" = "${terminal}"; # Terminal
+        "super + t" = "firefox"; # Browser
       };
     };
   };
