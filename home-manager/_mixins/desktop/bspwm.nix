@@ -1,6 +1,9 @@
 { config, lib, pkgs, ... }:
 with lib.hm.gvariant;
 {
+  imports = [
+    ../config/bspwm/sxhkd.nix
+  ];
   xsession = {
     enable = true;
     numlock.enable = true;
@@ -191,7 +194,7 @@ with lib.hm.gvariant;
         *white-clr: #C7C7C7
       '';
       # configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
-      configFile."sxhkd/sxhkdrc".text = builtins.readFile ../config/bspwm/sxhkdrc;
+      # configFile."sxhkd/sxhkdrc".text = builtins.readFile ../config/bspwm/sxhkdrc;
       # configFile."sxhkd/scripts/bspwm-gap".text = builtins.readFile ../config/bspwm/scripts/bspwm-gap;
       # configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
       # configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
