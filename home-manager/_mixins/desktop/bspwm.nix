@@ -16,41 +16,43 @@ with lib.hm.gvariant;
         "polybar"
         # "sleep 2s;polybar -q main"
       ];
-      config = {
+      extraConfig = ''
+
         ### Color Catpuccin
-        normal_border_color = "1E1E2E";
-        active_border_color = "#1E1E2E";
-        focused_border_color = "#96CDFB";
-        presel_feedback_color = "96CDFB";
+        bspc config normal_border_color        "1E1E2E"
+        bspc config active_border_color        "#1E1E2E"
+        bspc config focused_border_color       "#96CDFB"
+        bspc config presel_feedback_color      "#96CDFB"
 
         ### Config
-        border_width = 2;
-        border_radius = 0;
-        window_gap = 6;
+        bspc config border_width                2
+        bspc config border_radius               0
+        bspc config window_gap                  6
 
-        top_padding = 18;
-        bottom_padding = 0;
-        left_padding = 0;
-        right_padding = 0;
+        bspc config top_padding                 18
+        bspc config bottom_padding              0
+        bspc config left_padding                0
+        bspc config right_padding               0
 
-        click_to_focus = true;
-        split_ratio = 0.50;
-        borderless_monocle = true;
-        gapless_monocle = true;
-        single_monocle = false;
-        paddingless_monocle = true;
-        focus_by_distance = true;
-        focus_follow_pointer = false;
-        history_aware_focus = true;
-        remove_disabled_monitors = true;
-        merge_overlapping_monitor = true;
-        ignore_ewmh_focus = true;
+        bspc config click_to_focus              true
+        bspc config split_ratio                 0.50
+        bspc config borderless_monocle          true
+        bspc config gapless_monocle             true
+        bspc config single_monocle              false
+        bspc config paddingless_monocle         true
+        bspc config focus_by_distance           true
+        bspc config focus_follow_pointer        false
+        bspc config history_aware_focus         true
+        bspc config remove_disabled_monitors    true
+        bspc config merge_overlapping_monitor   true
+        bspc config ignore_ewmh_focus           true
 
-        pointer_modifier = "mod4";
-        pointer_action1 = "move";
-        pointer_action2 = "resize_side";
-        pointer_action3 = "resize_corner";
-      };
+        bspc config pointer_modifier            mod4
+        bspc config pointer_action1             move
+        bspc config pointer_action2             resize_side
+        bspc config pointer_action3             resize_corner
+
+      '';
       monitors = {
         # Virtual-1 = [
         default = [
