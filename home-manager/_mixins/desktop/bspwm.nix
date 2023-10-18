@@ -199,15 +199,4 @@ with lib.hm.gvariant;
       # configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
       # configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
     };
-  home-manager = {
-    users.${username} = {
-      services = {
-        udiskie = {
-          enable = true;
-          automount = true;
-          tray = "auto";
-        };
-      };
-    };
-  };
 }
