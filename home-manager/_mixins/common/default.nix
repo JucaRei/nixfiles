@@ -1,4 +1,4 @@
-{ pkgs, username, ... }: {
+{ pkgs, ... }: {
   imports = [
     ../console/aliases.nix
     ../console/bat.nix
@@ -37,18 +37,7 @@
   programs = {
     command-not-found.enable = false;
     gpg.enable = true;
-    home-manager = {
-      enable = true;
-      users.${username} = {
-        services = {
-          udiskie = {
-            enable = true;
-            automount = true;
-            tray = "auto";
-          };
-        };
-      };
-    };
+    home-manager.enable = true;
     info.enable = true;
     jq = {
       enable = true;
