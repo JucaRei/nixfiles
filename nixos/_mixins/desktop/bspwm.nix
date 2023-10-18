@@ -14,6 +14,18 @@
           enable = true;
           greeter = {
             enable = true;
+            background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
+            gtk = {
+                theme = {
+                  name = "Dracula";
+                  package = pkgs.dracula-theme;
+                };
+                cursorTheme = {
+                  name = "Dracula-cursors";
+                  package = pkgs.dracula-theme;
+                  size = 16;
+                };
+              };
           };
         };
       };
@@ -28,6 +40,13 @@
           sendEventsMode = "disabled-on-external-mouse";
         };
       };
+
+      resolutions = [
+          { x = 1920; y = 1080; }
+          { x = 1600; y = 900; }
+          { x = 1366; y = 768; }
+        ];
+      };
     };
 
     # getty = {
@@ -37,6 +56,10 @@
 
   environment = {
     systemPackages = with pkgs; [
+      xclip             # Clipboard
+      xorg.xev          # Event Viewer
+      xorg.xkill        # Process Killer
+      xorg.xrandr       # Monitor Settings
       xorg.xsetroot
       xfce.xfce4-terminal
       pamixer

@@ -111,6 +111,20 @@ in
         "super + alt + {q,r}" = "bspc {quit,wm -r}"; # Exit WM / reload
         "super + m " = "bspc desktop -l next"; # alternate between the tiled and monocle layout
         "super + y" = "bspc node -n newest.!automatic"; ## send the focused node to the newest preselected node
+
+        ### Commands ###
+        "alt + w" = ''feh --randomize --bg-fill $(find ~/Pictures/wallpaper/. -name "*.png" | shuf -n1)'';
+
+        ### Hardware ###
+        "XF86AudioRaiseVolume" = "pamixer -i 5";
+        "XF86AudioLowerVolume" = "pamixer -d 5";
+        "XF86AudioMute" = "pamixer -t";
+        "XF86AudioMicMute" = "pamixer --default-source -t";
+        "XF86MonBrightnessUp" = "light -A 5";
+        "XF86MonBrightnessDown" = "light -U 5";
+        "XF86AudioPlay" = "mpc -q toggle";
+        "XF86AudioNext" = "mpc -q next";
+        "XF86AudioPrev" = "mpc -q prev";
       };
     };
   };
