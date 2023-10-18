@@ -2,9 +2,8 @@
 #  Bar
 #
 
-{ config, lib, pkgs, host, ... }:
+{ config, lib, pkgs, ... }:
 
-with host;
 let
   polybar = pkgs.polybar.override {
     # Extra Packages
@@ -27,11 +26,11 @@ in
         "bar/main" = {
           # Bar "main"
           # monitor = mainMonitor;
-          monitor = Virtual-1;
+          monitor = "Virtual-1";
           width = "100%";
           height = 15;
-          background = "#00000000";
-          foreground = "#ccffffff";
+          background = "#2E3440";
+          foreground = "#2E3440";
 
           offset-y = 2;
           padding-right = 2;
@@ -86,7 +85,7 @@ in
           interval = 1;
           format = "<label>";
           format-foreground = "#999";
-          label = "  %percentage%%";
+          label = " %percentage%%";
         };
         "module/volume" = {
           # Volume

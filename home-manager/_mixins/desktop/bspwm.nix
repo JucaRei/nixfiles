@@ -139,8 +139,6 @@ with lib.hm.gvariant;
       rofi-calc
       dunst
       picom
-      polybarFull
-      sxhkd
       gtk3
       lf
       papirus-icon-theme
