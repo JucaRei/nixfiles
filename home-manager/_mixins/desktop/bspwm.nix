@@ -1,9 +1,30 @@
 { config, lib, pkgs, username, ... }:
 with lib.hm.gvariant;
+let
+  polybar-user_modules = builtins.readFile (pkgs.substituteAll {
+    src = ../config/bspwm/config/polybar/user_modules.ini;
+    packages = "${xdg_configHome}/polybar/bin/check-nixos-updates.sh";
+    searchpkgs = "${xdg_configHome}/polybar/bin/search-nixos-updates.sh";
+    launcher = "${xdg_configHome}/polybar/bin/launcher.sh";
+    powermenu = "${xdg_configHome}/rofi/bin/powermenu.sh";
+    calendar = "${xdg_configHome}/polybar/bin/popup-calendar.sh";
+  });
+
+  polybar-config = pkgs.substituteAll {
+    src = ../config/bspwm/config/polybar/config.ini;
+    font0 = "DejaVu Sans:size=12;3";
+    font1 = "feather:size=12;3"; # dustinlyons/nixpkgs
+  };
+
+  polybar-modules = builtins.readFile ../config/bspwm/config/polybar/modules.ini;
+  polybar-bars = builtins.readFile ../config/bspwm/config/polybar/bars.ini;
+  polybar-colors = builtins.readFile ../config/bspwm/config/polybar/colors.ini;
+
+in
 {
   imports = [
-    ../config/bspwm/sxhkd.nix
-    ../config/bspwm/polybar.nix
+    ../config/bspwm2/sxhkd.nix
+    # ../config/bspwm/polybar.nix
   ];
   xsession = {
     enable = true;
@@ -198,6 +219,13 @@ with lib.hm.gvariant;
       enable = true;
       automount = true;
       tray = "auto";
+    };
+    polybar = {
+      enable = true;
+      config = polybar-config;
+      extraConfig = polybar-bars + polybar-colors + polybar-modules + polybar-user_modules;
+      package = pkgs.polybarFull;
+      script = "polybar main &";
     };
   };
 }
