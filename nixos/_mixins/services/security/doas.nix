@@ -9,9 +9,9 @@
       # '';
       extraRules = [{
         users = [ "${username}" ];
-        # noPass = true;
+        noPass = true;
         keepEnv = true;
-        persist = true;
+        # persist = true;
       }];
       #wheelNeedsPassword = false;
     };

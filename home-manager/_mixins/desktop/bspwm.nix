@@ -3,6 +3,7 @@ with lib.hm.gvariant;
 {
   imports = [
     ../config/bspwm/sxhkd.nix
+    ../config/bspwm/polybar.nix
   ];
   xsession = {
     enable = true;
@@ -83,8 +84,6 @@ with lib.hm.gvariant;
           center = true;
         };
       };
-      #     extraConfig = ''
-      #     '';
       #     extraConfigEarly = ''
       #       systemctl --user start bspwm-session.target
       #       systemctl --user start tray.target
@@ -134,9 +133,6 @@ with lib.hm.gvariant;
     #   '';
     # };
 
-    # file = {
-    #   "bspwm/bspwmrc".source = ../config/bspwm/bspwmrc;
-    # };
     packages = with pkgs; [
       feh
       rofi
