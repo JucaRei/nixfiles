@@ -128,6 +128,9 @@ _: {
         super + {Left,Down,Up,Right}
           bspc node -v {-20 0,0 20,0 -20,20 0}
       '';
+      keybindings = {
+        "super + t" = "firefox";
+      };
     };
   };
 }
