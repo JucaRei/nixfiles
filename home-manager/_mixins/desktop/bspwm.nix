@@ -41,7 +41,7 @@ with lib.hm.gvariant;
         bspc config single_monocle              false
         bspc config paddingless_monocle         true
         bspc config focus_by_distance           true
-        bspc config focus_follow_pointer        false
+        bspc config focus_follow_pointer        true
         bspc config history_aware_focus         true
         bspc config remove_disabled_monitors    true
         bspc config merge_overlapping_monitor   true
@@ -54,8 +54,8 @@ with lib.hm.gvariant;
 
       '';
       monitors = {
-        # Virtual-1 = [
-        default = [
+        Virtual-1 = [
+          # default = [
           "I"
           "II"
           "III"
