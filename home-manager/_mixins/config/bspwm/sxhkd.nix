@@ -101,6 +101,7 @@ in
         ### Apps ###
         "super + Return" = "${terminal}"; # Terminal
         "super + t" = "firefox"; # Browser
+        "super + e" = "pcmanfm"; # file manager
         "super + Escape" = "pkill -USR1 -x sxhkd"; # make sxhkd reload its configuration files
         "super + @space" = "rofi -show drun -show-icons"; # program launcher
         "Print" = "flameshot gui"; # Screenshots
