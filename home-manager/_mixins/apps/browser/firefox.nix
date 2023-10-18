@@ -106,18 +106,18 @@ in
         juca = {
           id = 0;
           settings = sharedSettings;
+          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+            # Install extensions from NUR
+            decentraleyes
+            ublock-origin
+            clearurls
+            sponsorblock
+            darkreader
+            h264ify
+            df-youtube
+          ];
         };
       };
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        # Install extensions from NUR
-        decentraleyes
-        ublock-origin
-        clearurls
-        sponsorblock
-        darkreader
-        h264ify
-        df-youtube
-      ];
     };
   };
 
