@@ -56,29 +56,19 @@ with lib.hm.gvariant;
         bspc config pointer_action3             resize_corner
 
       '';
-      monitor = [
-        "I"
-        "II"
-        "III"
-        "IV"
-        "V"
-        "VI"
-        "VII"
-        "VIII"
-      ];
-      # monitors = {
-      #   Virtual-1 = [
-      #     # default = [
-      #     "I"
-      #     "II"
-      #     "III"
-      #     "IV"
-      #     "V"
-      #     "VI"
-      #     "VII"
-      #     "VIII"
-      #   ];
-      # };
+      monitors = {
+        # Virtual-1 = [
+        monitor = [
+          "I"
+          "II"
+          "III"
+          "IV"
+          "V"
+          "VI"
+          "VII"
+          "VIII"
+        ];
+      };
       rules = {
         "mpv" = {
           state = "floating";
