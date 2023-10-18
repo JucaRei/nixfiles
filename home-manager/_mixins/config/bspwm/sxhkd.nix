@@ -7,37 +7,6 @@ in
     sxhkd = {
       enable = true;
       extraConfig = ''
-        # program launcher
-        super + @space
-          rofi -show drun -show-icons
-
-        # make sxhkd reload its configuration files:
-        super + Escape
-          pkill -USR1 -x sxhkd
-
-        # quit/restart bspwm
-        super + alt + {q,r}
-          bspc {quit,wm -r}
-
-        # close and kill
-        super + {_,shift + }w
-          bspc node -{c,k}
-
-        # alternate between the tiled and monocle layout
-        super + m
-          bspc desktop -l next
-
-        # send the focused node to the newest preselected node
-        super + y
-          bspc node -n newest.!automatic
-        # alternate between the tiled and monocle layout
-        super + m
-          bspc desktop -l next
-
-        # send the focused node to the newest preselected node
-        super + y
-          bspc node -n newest.!automatic
-
         # swap the current node and the biggest window
         #super + g
           #	bspc node -s biggest.window
@@ -129,8 +98,18 @@ in
           bspc node -v {-20 0,0 20,0 -20,20 0}
       '';
       keybindings = {
+        ### Apps ###
         "super + Return" = "${terminal}"; # Terminal
         "super + t" = "firefox"; # Browser
+        "super + Escape" = "pkill -USR1 -x sxhkd"; # make sxhkd reload its configuration files
+        "super + @space" = "rofi -show drun -show-icons"; # program launcher
+        "Print" = "flameshot gui"; # Screenshots
+
+        ### Bspwm ###
+        "super + {_,shift + }w" = "bspc node -{c,k}"; # Close or Kill
+        "super + alt + {q,r}" = "bspc {quit,wm -r}"; # Exit WM / reload
+        "super + m " = "bspc desktop -l next"; # alternate between the tiled and monocle layout
+        "super + y" = "bspc node -n newest.!automatic"; ## send the focused node to the newest preselected node
       };
     };
   };
