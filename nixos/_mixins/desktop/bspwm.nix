@@ -1,4 +1,4 @@
-{ username, pkgs, ... }: {
+{ username, pkgs, config, ... }: {
   services = {
     xserver = {
       enable = true;
@@ -44,10 +44,5 @@
     ];
   };
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk # provides a XDG Portals implementation.
-    ];
-  };
+  xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
 }
