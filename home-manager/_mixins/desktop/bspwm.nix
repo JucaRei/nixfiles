@@ -19,7 +19,7 @@ with lib.hm.gvariant;
       extraConfig = ''
 
         ### Color Catpuccin
-        bspc config normal_border_color        "1E1E2E"
+        bspc config normal_border_color        "#1E1E2E"
         bspc config active_border_color        "#1E1E2E"
         bspc config focused_border_color       "#96CDFB"
         bspc config presel_feedback_color      "#96CDFB"
@@ -151,6 +151,14 @@ with lib.hm.gvariant;
       xclip
     ];
 
+    pointerCursor = {
+      package = pkgs.gnome.adwaita-icon-theme;
+      name = "Adwaita";
+      size = 24;
+      x11.enable = true;
+      gtk.enable = true;
+    };
+
     sessionVariables = {
       # EDITOR = "nvim";
       BROWSER = "firefox";
@@ -182,10 +190,10 @@ with lib.hm.gvariant;
         *cyan-clr: #90E1C6
         *white-clr: #C7C7C7
       '';
-      configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
+      # configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
       configFile."sxhkd/sxhkdrc".text = builtins.readFile ../config/bspwm/sxhkdrc;
       # configFile."sxhkd/scripts/bspwm-gap".text = builtins.readFile ../config/bspwm/scripts/bspwm-gap;
-      configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
-      configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
+      # configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
+      # configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
     };
 }
