@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, username, ... }:
 with lib.hm.gvariant;
 {
   imports = [
@@ -57,8 +57,8 @@ with lib.hm.gvariant;
 
       '';
       monitors = {
-        # Virtual-1 = [
-        monitor = [
+        Virtual-1 = [
+          # monitor = [
           "I"
           "II"
           "III"
@@ -137,66 +137,75 @@ with lib.hm.gvariant;
     # file = {
     #   "bspwm/bspwmrc".source = ../config/bspwm/bspwmrc;
     # };
-    packages = with pkgs; [
-      feh
-      rofi
-      rofi-calc
-      dunst
-      picom
-      polybarFull
-      sxhkd
-      gtk3
-      lf
-      papirus-icon-theme
-      lxde.lxtask
-      xfce.thunar
-      xcolor
-      xclip
-    ];
+    users.${username} = {
+      services = {
+        udiskie = {
+          enable = true;
+          automount = true;
+          tray = "auto";
+        };
+      }
+        };
+      packages = with pkgs; [
+        feh
+        rofi
+        rofi-calc
+        dunst
+        picom
+        polybarFull
+        sxhkd
+        gtk3
+        lf
+        papirus-icon-theme
+        lxde.lxtask
+        xfce.thunar
+        xcolor
+        xclip
+      ];
 
-    pointerCursor = {
-      package = pkgs.gnome.adwaita-icon-theme;
-      name = "Adwaita";
-      size = 24;
-      x11.enable = true;
-      gtk.enable = true;
+      pointerCursor = {
+        package = pkgs.gnome.adwaita-icon-theme;
+        name = "Adwaita";
+        size = 24;
+        x11.enable = true;
+        gtk.enable = true;
+      };
+
+      sessionVariables = {
+        # EDITOR = "nvim";
+        BROWSER = "firefox";
+        # TERMINAL = "kitty";
+        GLFW_IM_MODULE = "ibus";
+        LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
+        QT_QPA_PLATFORMTHEME = "gtk3";
+      };
+      sessionPath = [
+        "$HOME/.local/bin"
+      ];
     };
 
-    sessionVariables = {
-      # EDITOR = "nvim";
-      BROWSER = "firefox";
-      # TERMINAL = "kitty";
-      GLFW_IM_MODULE = "ibus";
-      LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
-      QT_QPA_PLATFORMTHEME = "gtk3";
-    };
-    sessionPath = [
-      "$HOME/.local/bin"
-    ];
-  };
+    xdg =
+      {
+        configFile."bspwm/bspwmrc".executable = true;
+        configFile."Xresources".text = ''
+          *background-clr: #0A0E14
+          *background-dim-clr: #1F2430
+          *foreground-clr: #B3B1AD
+          *foreground-dim-clr: #707880
 
-  xdg =
-    {
-      configFile."bspwm/bspwmrc".executable = true;
-      configFile."Xresources".text = ''
-        *background-clr: #0A0E14
-        *background-dim-clr: #1F2430
-        *foreground-clr: #B3B1AD
-        *foreground-dim-clr: #707880
-
-        *black-clr: #01060E
-        *red-clr: #EA6C73
-        *green-clr: #91B362
-        *yellow-clr: #F9AF4F
-        *blue-clr: #53BDFA
-        *magenta-clr: #FAE994
-        *cyan-clr: #90E1C6
-        *white-clr: #C7C7C7
-      '';
-      # configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
-      # configFile."sxhkd/sxhkdrc".text = builtins.readFile ../config/bspwm/sxhkdrc;
-      # configFile."sxhkd/scripts/bspwm-gap".text = builtins.readFile ../config/bspwm/scripts/bspwm-gap;
-      # configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
-      # configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
-    };
-}
+          *black-clr: #01060E
+          *red-clr: #EA6C73
+          *green-clr: #91B362
+          *yellow-clr: #F9AF4F
+          *blue-clr: #53BDFA
+          *magenta-clr: #FAE994
+          *cyan-clr: #90E1C6
+          *white-clr: #C7C7C7
+        '';
+        # configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
+        # configFile."sxhkd/sxhkdrc".text = builtins.readFile ../config/bspwm/sxhkdrc;
+        # configFile."sxhkd/scripts/bspwm-gap".text = builtins.readFile ../config/bspwm/scripts/bspwm-gap;
+        # configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
+        # configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
+      };
+  }
