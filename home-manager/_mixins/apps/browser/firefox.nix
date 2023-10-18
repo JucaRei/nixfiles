@@ -1,4 +1,4 @@
-{ pkgs, config, lib, params, nur, ... }:
+{ pkgs, config, lib, params, inputs, ... }:
 with lib;
 let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
@@ -106,7 +106,7 @@ in
         juca = {
           id = 0;
           settings = sharedSettings;
-          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
             # Install extensions from NUR
             decentraleyes
             ublock-origin
