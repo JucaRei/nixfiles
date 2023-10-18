@@ -8,11 +8,16 @@ let
   sharedSettings = {
     # Privacy & Security Improvements
     #"browser.contentblocking.category" = "strict";
+    "browser.send_pings" = false;
     "browser.urlbar.speculativeConnect.enabled" = true;
     "dom.security.https_only_mode" = true;
+    "dom.event.clipboardevents.enabled" = true;
     "media.eme.enabled" = false; # disables DRM
+    "media.navigator.enabled" = false;
+    "network.cookie.cookieBehavior" = 1;
     # causes CORS error on waves.exchange when set to 2
     "network.http.referer.XOriginPolicy" = 1;
+    # "network.http.referer.XOriginPolicy" = 2;
     "network.http.referer.XOriginTrimmingPolicy" = 2;
     "network.IDN_show_punycode" = true;
     # forces ui.systemUsesDarkTheme to false
@@ -70,6 +75,16 @@ let
     "devtools.inspector.color-scheme-simulation.enabled" = true;
     "devtools.inspector.showAllAnonymousContent" = true;
 
+    # Disable Pocket
+    "browser.newtabpage.activity-stream.feeds.discoverystreamfeed" = false;
+    "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+    "browser.newtabpage.activity-stream.section.highlights.includePocket" = false;
+    "extensions.pocket.enabled" = false;
+    "media.autoplay.enabled" = false;
+
+    # Harden SSL
+    "security.ssl.require_safe_negotiation" = true;
+
     # Other
     "browser.uitour.enabled" = false;
     "browser.startup.page" = 3;
@@ -80,7 +95,6 @@ let
     #"services.sync.engine.passwords" = false;
     #"extensions.update.enabled" = false;
     #"extensions.update.autoUpdateDefault" = false;
-    "extensions.pocket.enabled" = false;
   };
 in
 {
@@ -89,11 +103,21 @@ in
       enable = true;
       package = pkgs.firefox;
       profiles = {
-        private = {
+        juca = {
           id = 0;
           settings = sharedSettings;
         };
       };
+      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        # Install extensions from NUR
+        decentraleyes
+        ublock-origin
+        clearurls
+        sponsorblock
+        darkreader
+        h264ify
+        df-youtube
+      ];
     };
   };
 

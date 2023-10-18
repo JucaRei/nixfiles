@@ -21,18 +21,6 @@
       sushi.enable = true;
     };
 
-    greetd = {
-      enable = true;
-      restart = false;
-      settings = {
-        default_session = {
-          command = ''
-            ${lib.makeBinPath [pkgs.greetd.tuigreet]}/tuigreet -r --asterisks --time \
-              --cmd ${runner}
-          '';
-        };
-      };
-    };
 
     gvfs.enable = true;
   };
@@ -40,7 +28,7 @@
   environment = {
     systemPackages = with pkgs; [
       ### Bars
-      # eww 
+      # eww
       (waybar.overrideAttrs (oldAttrs: {
         mesonFlags = oldAttrs.mesonFlags ++ [
           "-Dexperimental=true"
