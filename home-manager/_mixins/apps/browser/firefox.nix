@@ -1,4 +1,4 @@
-{ pkgs, config, lib, params, ... }:
+{ pkgs, config, lib, params, nur, ... }:
 with lib;
 let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
