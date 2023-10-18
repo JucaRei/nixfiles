@@ -7,7 +7,7 @@
         session = [{
           name = "fake";
           manage = "window";
-          start = "";
+          start = "bspwm";
         }];
         # setupCommands = '''';
         lightdm = {
