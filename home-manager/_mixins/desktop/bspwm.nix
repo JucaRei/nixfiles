@@ -16,47 +16,68 @@ with lib.hm.gvariant;
         "polybar"
         # "sleep 2s;polybar -q main"
       ];
-      # monitors = {
-      #   Virtual-1 = [
-      #     "I"
-      #     "II"
-      #     "III"
-      #     "IV"
-      #     "V"
-      #     "VI"
-      #     "VII"
-      #     "VIII"
-      #   ];
-      # };
-      #     rules = {
-      #       "mpv" = {
-      #         state = "floating";
-      #         center = true;
-      #       };
-      #       "termfloat" = {
-      #         state = "floating";
-      #         center = true;
-      #       };
-      #       "nemo" = {
-      #         state = "floating";
-      #         center = true;
-      #       };
-      #     };
-      #     settings = {
-      #       pointer_modifier = "mod1";
-      #       # top_padding = 40;
-      #       border_width = 3;
-      #       window_gap = 8;
-      #       split_ratio = 0.5;
-      #       bordeless_monocle = false;
-      #       gapless_monocle = false;
-      #       focus_follows_pointer = false;
-      #       normal_border_color = "#434c5e";
-      #       focused_border_color = "#81A1C1";
-      #       urgent_border_color = "#88C0D0";
-      #       presel_border_color = "#8FBCBB";
-      #       presel_feedback_color = "#B48EAD";
-      #     };
+      config = {
+        ### Color Catpuccin
+        normal_border_color = "1E1E2E";
+        active_border_color = "#1E1E2E";
+        focused_border_color = "#96CDFB";
+        presel_feedback_color = "96CDFB";
+
+        ### Config
+        border_width = 2;
+        border_radius = 0;
+        window_gap = 6;
+
+        top_padding = 18;
+        bottom_padding = 0;
+        left_padding = 0;
+        right_padding = 0;
+
+        click_to_focus = true;
+        split_ratio = 0.50;
+        borderless_monocle = true;
+        gapless_monocle = true;
+        single_monocle = false;
+        paddingless_monocle = true;
+        focus_by_distance = true;
+        focus_follow_pointer = false;
+        history_aware_focus = true;
+        remove_disabled_monitors = true;
+        merge_overlapping_monitor = true;
+        ignore_ewmh_focus = true;
+
+        pointer_modifier = "mod4";
+        pointer_action1 = "move";
+        pointer_action2 = "resize_side";
+        pointer_action3 = "resize_corner";
+      };
+      monitors = {
+        # Virtual-1 = [
+        default = [
+          "I"
+          "II"
+          "III"
+          "IV"
+          "V"
+          "VI"
+          "VII"
+          "VIII"
+        ];
+      };
+      rules = {
+        "mpv" = {
+          state = "floating";
+          center = true;
+        };
+        "termfloat" = {
+          state = "floating";
+          center = true;
+        };
+        "nemo" = {
+          state = "floating";
+          center = true;
+        };
+      };
       #     extraConfig = ''
       #     '';
       #     extraConfigEarly = ''
@@ -104,13 +125,13 @@ with lib.hm.gvariant;
     #     ${pkgs.xorg.xrdb}/bin/xrdb -merge <${pkgs.writeText "Xresources" ''
     #       Xcursor.theme: Catppuccin-Frappe-Dark
     #     ''}
-    #     exec bspwm 
+    #     exec bspwm
     #   '';
     # };
 
-    file = {
-      "bspwm/bspwmrc".source = ../config/bspwm/bspwmrc;
-    };
+    # file = {
+    #   "bspwm/bspwmrc".source = ../config/bspwm/bspwmrc;
+    # };
     packages = with pkgs; [
       feh
       rofi
@@ -161,10 +182,8 @@ with lib.hm.gvariant;
       '';
       configFile."polybar/config.ini".text = builtins.readFile ../config/bspwm/polybar/config.ini;
       configFile."sxhkd/sxhkdrc".text = builtins.readFile ../config/bspwm/sxhkdrc;
-      configFile."sxhkd/scripts/bspwm-gap".text = builtins.readFile ../config/bspwm/scripts/bspwm-gap;
+      # configFile."sxhkd/scripts/bspwm-gap".text = builtins.readFile ../config/bspwm/scripts/bspwm-gap;
       configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
       configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
     };
 }
-
-
