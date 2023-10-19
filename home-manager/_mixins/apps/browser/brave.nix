@@ -1,6 +1,6 @@
 { pkgs, lib, params, ... }:
 let
-  ifDefault = lib.mkIf (builtins.elem params.browser [ "brave" ]);
+  ifDefault = lib.mkIf (builtins.elem params.browser [ "brave" "brave-browser" ]);
 in
 {
   home.packages = with pkgs.unstable;[
@@ -11,7 +11,7 @@ in
     mime.enable = ifDefault true;
     mimeApps = {
       enable = ifDefault true;
-      defaultApplications = ifDefault (import ./default-browser.nix params "brave");
+      defaultApplications = ifDefault (import ./default-browser.nix "brave-browser");
     };
   };
 }
