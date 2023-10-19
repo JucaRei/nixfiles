@@ -4,7 +4,7 @@
     xserver = {
       enable = true;
       displayManager = {
-        defaultSession = "none+fake";
+        defaultSession = "none+bspwm";
         session = [{
           name = "fake";
           manage = "window";
@@ -18,7 +18,8 @@
             gtk = {
               theme = {
                 name = "Dracula";
-                package = pkgs.dracula-theme;
+                # package = pkgs.dracula-theme;
+                package = pkgs.tokyo-night-gtk;
               };
               cursorTheme = {
                 name = "Dracula-cursors";
@@ -59,13 +60,25 @@
   environment = {
     systemPackages = with pkgs; [
       xclip # Clipboard
-      xorg.xev # Event Viewer
-      xorg.xkill # Process Killer
-      xorg.xrandr # Monitor Settings
-      xorg.xsetroot
-      xfce.xfce4-terminal
+      kitty
       pamixer
       i3lock-fancy
+      papirus-icon-theme
+      gamemode
+      gnomeExtensions.gamemode
+    ] ++ pkgs.xorg [
+      xev # Event Viewer
+      xkill # Process Killer
+      xrandr # Monitor Settings
+      xinit
+      xsetroot
+    ] ++ pkgs.python311Packages [
+      xdg
+      pytz
+      pip
+    ] ++ pkgs.xfce [
+      xfce4-settings
+      xfce4-power-manager
     ];
   };
 }

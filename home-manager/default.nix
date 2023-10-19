@@ -23,7 +23,7 @@ in
   ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix
   ++ lib.optional (desktop != null) ./_mixins/desktop;
 
-  home = {
+  home = lib.mkDefault {
     activation.report-changes = config.lib.dag.entryAnywhere ''
       ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
     '';
