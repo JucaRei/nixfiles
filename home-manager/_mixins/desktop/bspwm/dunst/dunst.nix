@@ -74,21 +74,21 @@
             foreground = "#c0caf5";
             frame_color = "#c0caf5";
             timeout = 10;
-            script = ~/.config/dunst/scripts/sound-normal.sh;
+            script = "~/.config/dunst/scripts/sound-normal.sh";
           };
           urgency_normal = {
             background = "#1a1b26";
             foreground = "#c0caf5";
             frame_color = "#c0caf5";
             timeout = 10;
-            script = ~/.config/dunst/scripts/sound-normal.sh;
+            script = "~/.config/dunst/scripts/sound-normal.sh";
           };
           urgency_critical = {
             background = "#1a1b26";
             foreground = "#db4b4b";
             frame_color = "#f7768e";
             timeout = 0;
-            script = ~/.config/dunst/scripts/sound-critical.sh;
+            script = "~/.config/dunst/scripts/sound-critical.sh";
           };
           logger = {
             summary = "*";
@@ -110,12 +110,14 @@
     configFile = {
       "dunst/scripts/sound-critical.sh" = {
         text = ''
+          #!/usr/bin/env bash
           mpv /usr/share/sounds/Yaru/stereo/battery-low.oga
         '';
         executable = true;
       };
       "dunst/scripts/sound-normal.sh" = {
         text = ''
+          #!/usr/bin/env bash
           mpv /usr/share/sounds/Yaru/stereo/message-new-instant.oga
         '';
         executable = true;
