@@ -1,6 +1,9 @@
 { config, lib, pkgs, username, ... }:
 with lib.hm.gvariant;
 {
+  imports = [
+    ./sxhkd/sxhkd.nix
+  ];
   xsession = {
     enable = true;
     numlock.enable = true;
@@ -23,6 +26,9 @@ with lib.hm.gvariant;
     packages = with pkgs; [
       kitty
       gnome.nautilus
+      gnome.nautilus-python
+      gnome.sushi
+      nautilus-open-any-terminal
       lxappearance
       gnome.file-roller
       gtk_engines
