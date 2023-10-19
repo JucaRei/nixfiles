@@ -61,7 +61,7 @@ with lib.hm.gvariant;
     ];
 
     pointerCursor = {
-      packages = pkgs.papirus-icon-theme;
+      package = pkgs.papirus-icon-theme;
       # package = pkgs.gnome.adwaita-icon-theme;
       name = "Adwaita";
       size = 24;
