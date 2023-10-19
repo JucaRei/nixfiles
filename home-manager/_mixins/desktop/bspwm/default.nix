@@ -12,13 +12,13 @@ with lib.hm.gvariant;
       enable = true;
       alwaysResetDesktops = true;
       startupPrograms = [
-        "pgrep -x sxhkd > /dev/null || sxhkd &"
-        "xfce4-power-manager &"
-        "xsetroot -cursor_name left_ptr &"
+        "pgrep -x sxhkd > /dev/null || sxhkd"
+        "xfce4-power-manager"
+        "xsetroot -cursor_name left_ptr"
         # "flameshot"
         "dunst"
         "nm-applet --indicator"
-        "polybar &"
+        "polybar"
         # "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
