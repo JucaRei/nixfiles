@@ -12,14 +12,39 @@ with lib.hm.gvariant;
       enable = true;
       alwaysResetDesktops = true;
       startupPrograms = [
-        "sxhkd"
+        "pgrep -x sxhkd > /dev/null || sxhkd &"
+        "xfce4-power-manager &"
+        "xsetroot -cursor_name left_ptr &"
         # "flameshot"
         "dunst"
         "nm-applet --indicator"
-        # "polybar"
+        "polybar &"
         # "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
+        bspc monitor -d 1 2 3 4 5
+
+        bspc config border_width         0
+        bspc config window_gap          20
+        bspc config border_radius	15
+
+        bspc config normal_border_color \#c0caf5
+        bspc config active_border_color \#c0caf5
+        bspc config focused_border_color \#c0caf5
+
+        bspc config split_ratio          0.52
+        bspc config borderless_monocle   true
+        bspc config gapless_monocle      true
+
+        bspc rule -a Peek state=floating
+        bspc rule -a kitty state=floating
+        bspc config external_rules_command "$HOME/.config/bspwm/scripts/external-rules"
+        bspc rule -a conky-manager2 state=floating
+        bspc rule -a Kupfer.py focus=on
+        bspc rule -a Screenkey manage=off
+        bspc rule -a Plank manage=off border=off locked=on focus=off follow=off layer=above
+        bspc rule -a Rofi state=floating
+        bspc rule -a GLava state=floating layer=below sticky=true locked=true border=off focus=off center=true follow=off rectangle=1920x1080+0+0
       '';
     };
   };
