@@ -11,7 +11,7 @@ in
     mime.enable = ifDefault true;
     mimeApps = {
       enable = ifDefault true;
-      defaultApplications = ifDefault (import ./default-browser.nix "brave");
+      defaultApplications = ifDefault (import ./default-browser.nix params "brave");
     };
   };
 }
