@@ -1,3 +1,4 @@
+{ params, ... }:
 name: {
   "text/html" = "${name}.desktop";
   "x-scheme-handler/http" = "${name}.desktop";
