@@ -110,14 +110,12 @@
     configFile = {
       "dunst/scripts/sound-critical.sh" = {
         text = ''
-          #!/usr/bin/env bash
           mpv /usr/share/sounds/Yaru/stereo/battery-low.oga
         '';
         executable = true;
       };
       "dunst/scripts/sound-normal.sh" = {
         text = ''
-          #!/usr/bin/env bash
           mpv /usr/share/sounds/Yaru/stereo/message-new-instant.oga
         '';
         executable = true;
