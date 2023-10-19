@@ -4,11 +4,11 @@
     xserver = {
       enable = true;
       displayManager = {
-        defaultSession = "none+bspwm";
+        defaultSession = "none+fake";
         session = [{
           name = "fake";
           manage = "window";
-          start = "";
+          start = "bspwm";
         }];
         # setupCommands = '''';
         lightdm = {
@@ -64,6 +64,11 @@
       pamixer
       i3lock-fancy
       papirus-icon-theme
+      bsp-layout
+      dunst
+      rofi
+      sxhkd
+      polybar
       gamemode
       gnomeExtensions.gamemode
     ] ++ pkgs.xorg [

@@ -23,7 +23,6 @@ with lib.hm.gvariant;
   home = {
     packages = with pkgs; [
       kitty
-      polybar
       nautilus
       lxappearance
       gnome.file-roller
@@ -36,8 +35,6 @@ with lib.hm.gvariant;
       tint2
       moreutils
       recode
-      sxhkd
-      dunst
       plank
       redshift
       glava
@@ -48,7 +45,6 @@ with lib.hm.gvariant;
       i3lock-color
       networkmanager_dmenu
       conky
-      bsp-layout
       zscroll
       rnnoise-plugin
       jgmenu
@@ -61,7 +57,6 @@ with lib.hm.gvariant;
       feh
       rofi
       rofi-calc
-      dunst
       picom
       papirus-icon-theme
     ];
