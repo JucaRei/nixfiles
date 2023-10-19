@@ -3,11 +3,11 @@ with lib.hm.gvariant;
 let
   polybar-user_modules = builtins.readFile (pkgs.substituteAll {
     src = ../config/bspwm/config/polybar/user_modules.ini;
-    packages = "${xdg_configHome}/polybar/bin/check-nixos-updates.sh";
-    searchpkgs = "${xdg_configHome}/polybar/bin/search-nixos-updates.sh";
-    launcher = "${xdg_configHome}/polybar/bin/launcher.sh";
-    powermenu = "${xdg_configHome}/rofi/bin/powermenu.sh";
-    calendar = "${xdg_configHome}/polybar/bin/popup-calendar.sh";
+    packages = "${config.home.homeDirectory}/.config/polybar/bin/check-nixos-updates.sh";
+    searchpkgs = "${config.home.homeDirectory}/.config/polybar/bin/search-nixos-updates.sh";
+    launcher = "${config.home.homeDirectory}/.config/polybar/bin/launcher.sh";
+    powermenu = "${config.home.homeDirectory}/.config/rofi/bin/powermenu.sh";
+    calendar = "${config.home.homeDirectory}/.config/polybar/bin/popup-calendar.sh";
   });
 
   polybar-config = pkgs.substituteAll {
@@ -38,7 +38,7 @@ in
         # "flameshot"
         "dunst"
         "nm-applet --indicator"
-        "polybar"
+        # "polybar"
         # "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
@@ -111,49 +111,7 @@ in
       #     '';
     };
   };
-  # systemd.user.targets.bspwm-session = {
-  #   Unit = {
-  #     Description = "bspwm session";
-  #     BindsTo = [ "graphical-session.target" ];
-  #     Wants = [ "graphical-session-pre.target" "xdg-desktop-autostart.target" ];
-  #     After = [ "graphical-session-pre.target" ];
-  #   };
-  # };
-  # programs = {
-  #   bash = {
-  #     initExtra = ''
-  #       if [ -z $DISPLAY ] && [ "$(tty)" = "/dev/tty1" ]; then
-  #         exec  startx
-  #       fi
-  #     '';
-  #   };
-  #   fish = {
-  #     loginShellInit = ''
-  #       if status --is-login
-  #           if test -z "$DISPLAY" -a $XDG_VTNR = 1
-  #               exec startx
-  #           end
-  #       end
-  #     '';
-  #   };
-  # };
   home = {
-    # file = {
-    #   ".xinitrc".text = ''
-    #     if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
-    #       eval $(dbus-launch --exit-with-session --sh-syntax)
-    #     fi
-    #     systemctl --user import-environment DISPLAY XAUTHORITY
-    #     if command -v dbus-update-activation-environment >/dev/null 2>&1; then
-    #       dbus-update-activation-environment DISPLAY XAUTHORITY
-    #     fi
-    #     ${pkgs.xorg.xrdb}/bin/xrdb -merge <${pkgs.writeText "Xresources" ''
-    #       Xcursor.theme: Catppuccin-Frappe-Dark
-    #     ''}
-    #     exec bspwm
-    #   '';
-    # };
-
     packages = with pkgs; [
       feh
       rofi
@@ -213,6 +171,133 @@ in
       # configFile."sxhkd/scripts/bspwm-gap".text = builtins.readFile ../config/bspwm/scripts/bspwm-gap;
       # configFile."sxhkd/scripts/polybar-hide".text = builtins.readFile ../config/bspwm/scripts/polybar-hide;
       # configFile."sxhkd/scripts/sxhkd-help".text = builtins.readFile ../config/bspwm/scripts/sxhkd-help;
+      configFile."polybar/bin/popup-calendar.sh" = {
+        text = ''
+          #!/bin/sh
+
+          DATE="$(/run/current-system/sw/bin/date +"%B %d, %Y")"
+          case "$1" in
+          --popup)
+            /etc/profiles/per-user/${username}/bin/yad --calendar --fixed \
+              --posx=1800 --posy=80 --no-buttons --borders=0 --title="yad-calendar" \
+              --close-on-unfocus
+            ;;
+          *)
+            echo "$DATE"
+          ;;
+          esac
+        '';
+        executable = true;
+      };
+      configFile."polybar/bin/check-nixos-updates.sh" = {
+        text = ''
+          #!/bin/sh
+
+          /run/current-system/sw/bin/git -C ~/.dotfiles/nixfiles fetch upstream master
+          UPDATES=$(/run/current-system/sw/bin/git -C ~/.dotfiles/nixfiles rev-list origin/master..upstream/master --count 2>/dev/null);
+          /run/current-system/sw/bin/echo " $UPDATES"; # Extra space for presentation with icon
+          /run/current-system/sw/bin/sleep 1800;
+        '';
+        executable = true;
+      };
+      configFile."polybar/bin/search-nixos-updates.sh" = {
+        text = ''
+          #!/bin/sh
+
+          /etc/profiles/per-user/${username}/bin/firefox --new-window "https://search.nixos.org/packages?channel=23.05&from=0&size=50&sort=relevance&type=packages"
+        '';
+        executable = true;
+      };
+      configFile."rofi/colors.rasi".text = builtins.readFile ../config/bspwm/config/rofi/colors.rasi;
+      configFile."rofi/confirm.rasi".text = builtins.readFile ../config/bspwm/config/rofi/confirm.rasi;
+      configFile."rofi/launcher.rasi".text = builtins.readFile ../config/bspwm/config/rofi/launcher.rasi;
+      configFile."rofi/message.rasi".text = builtins.readFile ../config/bspwm/config/rofi/message.rasi;
+      configFile."rofi/networkmenu.rasi".text = builtins.readFile ../config/bspwm/config/rofi/networkmenu.rasi;
+      configFile."rofi/powermenu.rasi".text = builtins.readFile ../config/bspwm/config/rofi/powermenu.rasi;
+      configFile."rofi/styles.rasi".text = builtins.readFile ../config/bspwm/config/rofi/styles.rasi;
+      configFile."rofi/bin/powermenu.sh" = {
+        text = ''
+            #!/bin/sh
+
+                configDir="~/.dotfiles/nixfiles/home-manager/_mixins/config/bspwm/config/rofi"
+                uptime=$(uptime -p | sed -e 's/up //g')
+                rofi_command="rofi -no-config -theme $configDir/powermenu.rasi"
+
+                # Options
+                shutdown=" Shutdown"
+                reboot=" Restart"
+                lock=" Lock"
+                suspend=" Sleep"
+                logout=" Logout"
+
+                # Confirmation
+                confirm_exit() {
+          	      rofi -dmenu\
+                        -no-config\
+          		      -i\
+          		      -no-fixed-num-lines\
+          		      -p "Are You Sure? : "\
+          		      -theme $configDir/confirm.rasi
+                }
+
+                # Message
+                msg() {
+          	      rofi -no-config -theme "$configDir/message.rasi" -e "Available Options  -  yes / y / no / n"
+                }
+
+                # Variable passed to rofi
+                options="$lock\n$suspend\n$logout\n$reboot\n$shutdown"
+                chosen="$(echo -e "$options" | $rofi_command -p "Uptime: $uptime" -dmenu -selected-row 0)"
+                case $chosen in
+                    $shutdown)
+          		      ans=$(confirm_exit &)
+          		      if [[ $ans == "yes" || $ans == "YES" || $ans == "y" || $ans == "Y" ]]; then
+          			      systemctl poweroff
+          		      elif [[ $ans == "no" || $ans == "NO" || $ans == "n" || $ans == "N" ]]; then
+          			      exit 0
+                        else
+          			      msg
+                        fi
+                        ;;
+                    $reboot)
+          		      ans=$(confirm_exit &)
+          		      if [[ $ans == "yes" || $ans == "YES" || $ans == "y" || $ans == "Y" ]]; then
+          			      systemctl reboot
+          		      elif [[ $ans == "no" || $ans == "NO" || $ans == "n" || $ans == "N" ]]; then
+          			      exit 0
+                        else
+          			      msg
+                        fi
+                        ;;
+                    $lock)
+                    betterlockscreen -l
+                        ;;
+                    $suspend)
+          		      ans=$(confirm_exit &)
+          		      if [[ $ans == "yes" || $ans == "YES" || $ans == "y" || $ans == "Y" ]]; then
+          			      mpc -q pause
+          			      amixer set Master mute
+          			      systemctl suspend
+          		      elif [[ $ans == "no" || $ans == "NO" || $ans == "n" || $ans == "N" ]]; then
+          			      exit 0
+                        else
+          			      msg
+                        fi
+                        ;;
+                    $logout)
+          		      ans=$(confirm_exit &)
+          		      if [[ $ans == "yes" || $ans == "YES" || $ans == "y" || $ans == "Y" ]]; then
+          			      bspc quit
+          		      elif [[ $ans == "no" || $ans == "NO" || $ans == "n" || $ans == "N" ]]; then
+          			      exit 0
+                        else
+          			      msg
+                        fi
+                        ;;
+                esac
+        '';
+        executable = true;
+      };
     };
   services = {
     udiskie = {
