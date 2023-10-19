@@ -100,8 +100,8 @@
 
   boot = {
     initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
-    # kernelPackages = pkgs.linuxPackages_latest;
-    kernelPackages = pkgs.linuxKernel.packages.linux_5_15_hardened.system76;
+    kernelPackages = pkgs.linuxPackages_latest;
+    # kernelPackages = pkgs.linuxKernel.packages.linux_5_15_hardened.system76;
 
     loader = {
       grub = {

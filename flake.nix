@@ -206,8 +206,8 @@
         "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; };
         "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
         # Testing
-        "juca@hyperv" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
-        "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
+        "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
+        "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "bspwm"; };
         "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; desktop = "i3"; };
         "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "i3"; };
         "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
