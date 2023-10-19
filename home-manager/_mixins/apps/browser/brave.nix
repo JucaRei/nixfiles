@@ -7,11 +7,8 @@ in
     brave
   ];
 
-  xdg = {
-    mime.enable = ifDefault true;
-    mimeApps = {
-      enable = ifDefault true;
-      defaultApplications = ifDefault (import ./default-browser.nix "brave-browser");
-    };
-  };
+  xdg.mime.enable = ifDefault true;
+  xdg.mimeApps.enable = ifDefault true;
+  xdg.mimeApps.defaultApplications =
+    ifDefault (import ./default-browser.nix "brave-browser");
 }
