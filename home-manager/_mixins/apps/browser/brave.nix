@@ -1,16 +1,14 @@
-{ lib
-, params
-, pkgs
-, ...
-}:
-let
-  ifDefault = lib.mkIf (builtins.elem params.browser [ "brave" "brave-browser" ]);
-in
+{ lib, params, pkgs, ... }:
 {
   home.packages = [ pkgs.brave ];
 
-  xdg.mime.enable = ifDefault true;
-  xdg.mimeApps.enable = ifDefault true;
-  xdg.mimeApps.defaultApplications =
-    ifDefault (import ./default-browser.nix "brave-browser");
+  xdg.mime.enable = true;
+  xdg.mimeApps.enable = true;
+  xdg.mimeApps.defaultApplications = {
+    "text/html" = "brave-browser.desktop";
+    "x-scheme-handler/http" = "brave-browser.desktop";
+    "x-scheme-handler/https" = "brave-browser.desktop";
+    "x-scheme-handler/about" = "brave-browser.desktop";
+    "x-scheme-handler/unknown" = "brave-browser.desktop";
+  };
 }
