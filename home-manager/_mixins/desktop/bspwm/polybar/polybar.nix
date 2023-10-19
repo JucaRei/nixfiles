@@ -2,11 +2,12 @@
   services = {
     polybar = {
       enable = true;
-      package = pkgs.override.polybarFull {
-        # Extra Packages
-        alsaSupport = true;
-        pulseSupport = true;
-      };
+      package = pkgs.polybarFull;
+      # package = pkgs.override.polybar {
+      # Extra Packages
+      # alsaSupport = true;
+      # pulseSupport = true;
+      # };
       script = "polybar &";
       settings = {
         ### config.ini
@@ -72,42 +73,42 @@
           gleft = "";
         };
         "module/left1" = {
-          type = custom/text;
+          type = "custom/text";
           content-background = "\${colors.background}";
           content-foreground = "\${colors.background-alt}";
           content = "\${glyph.gleft}";
           content-font = 4;
         };
         "module/right1" = {
-          type = custom/text;
+          type = "custom/text";
           content-background = "\${colors.background}";
           content-foreground = "\${colors.background-alt}";
           content = "$\{glyph.gright}";
           content-font = 4;
         };
         "module/left2" = {
-          type = custom/text;
+          type = "custom/text";
           content-background = "\${colors.background}";
           content-foreground = "\${colors.background-alt}";
           content = "\${glyph.gleft}";
           content-font = 4;
         };
         "module/right2" = {
-          type = custom/text;
+          type = "custom/text";
           content-background = "\${colors.background}";
           content-foreground = "\${colors.background-alt}";
           content = "\${glyph.gright}";
           content-font = 4;
         };
         "module/left3" = {
-          type = custom/text;
+          type = "custom/text";
           content-background = "\${colors.background}";
           content-foreground = "\${colors.background-alt}";
           content = "\${glyph.gleft}";
           content-font = 4;
         };
         "module/right3" = {
-          type = custom/text;
+          type = "custom/text";
           content-background = "\${colors.background}";
           content-foreground = "\${colors.background-alt}";
           content = "\${glyph.gright}";
@@ -116,7 +117,7 @@
 
         ## modules.ini
         "modules/xworkspaces" = {
-          type = internal/xworkspaces;
+          type = "internal/xworkspaces";
 
           label-active = "󰝥";
           label-active-foreground = "\${colors.blue}";
@@ -138,18 +139,18 @@
           label-empty-background = "\${colors.background-alt}";
           label-empty-padding = 2;
           "module/bspwm" = {
-            type = custom/script;
+            type = "custom/script";
             exec = "cat $HOME/.config/bspwm/scripts/current-layout";
             click-left = "$HOME/.config/bspwm/scripts/switch-layouts";
             interval = 1;
-            format = <label>;
+            format = "<label>";
             label = "   %output%";
             label-font = 15;
             format-foreground = "\${colors.blue}";
             format-padding = 0;
           };
           "module/launcher" = {
-            type = custom/text;
+            type = "custom/text";
             content = "󱓞";
             content-foreground = "\${colors.blue}";
             click-left = "rofi -show drun";
@@ -157,7 +158,7 @@
             content-font = 3;
           };
           "module/powermenu" = {
-            type = custom/text;
+            type = "custom/text";
             content = "   ";
             content-foreground = "\${colors.alert}";
             click-left = "eww open-many --toggle background-closer powermenu";
@@ -165,7 +166,7 @@
             content-font = 5;
           };
           "module/tray" = {
-            type = custom/script;
+            type = "custom/script";
             exec = "tail -F $HOME/.config/polybar/scripts/tray-status 2> /dev/null";
             click-left = "$HOME/.config/polybar/scripts/tray --toggle";
             tail = true;
@@ -173,7 +174,7 @@
             label-padding = 3;
           };
           "module/date" = {
-            type = internal/date;
+            type = "internal/date";
             interval = 1;
 
             date = "%I:%M %p";
@@ -183,7 +184,7 @@
             label-foreground = "\${colors.foreground}";
           };
           "module/network" = {
-            type = internal/network;
+            type = "internal/network";
             # ; Name of the network interface to display. You can get the names of the
             # ; interfaces on your machine with `ip link`
             # ; Wireless interfaces often start with `wl` and ethernet interface with `eno` or `eth`
@@ -229,7 +230,7 @@
 
             # ; Available tags:
             # ;   <label-disconnected> (default)
-            format-disconnected = <label-disconnected>;
+            format-disconnected = "<label-disconnected>";
 
             # ; Default: (none)
             label-disconnected = "%{A1:$HOME/.config/eww/System-Menu/launch:}󰤭%{A}";
@@ -250,7 +251,7 @@
             ramp-signal-padding = 1;
           };
           "module/battery" = {
-            type = internal/battery;
+            type = "internal/battery";
 
             # ; This is useful in case the battery never reports 100% charge
             # ; Default: 100
@@ -361,7 +362,7 @@
             animation-low-foreground = "\${colors.alert}";
           };
           "module/pulseaudio" = {
-            type = internal/pulseaudio;
+            type = "internal/pulseaudio";
 
             # ; Use PA_VOLUME_UI_MAX (~153%) if true, or PA_VOLUME_NORM (100%) if false
             # ; Default: true
@@ -410,9 +411,9 @@
             # ; click-middle =
           };
           "module/github" = {
-            type = custom/script;
+            type = "custom/script";
             exec = "$HOME/.config/polybar/scripts/github";
-            format = <label>;
+            format = "<label>";
             label = "%output%";
             format-prefix = "󰊤 ";
             format-prefix-font = 3;
@@ -420,9 +421,9 @@
             format-padding = 3;
           };
           "module/updates" = {
-            type = custom/script;
+            type = "custom/script";
             exec = "~/.config/polybar/scripts/updates";
-            format = <label>;
+            format = "<label>";
             label = "%output%";
             format-foreground = "\${colors.foreground}";
             format-background = "\${colors.background-alt}";
@@ -433,12 +434,12 @@
             click-left = "kitty --hold paru";
           };
           "module/seperator" = {
-            type = custom/text;
+            type = "custom/text";
             content = "  ";
             content-font = 3;
           };
           "module/spotify" = {
-            type = custom/script;
+            type = "custom/script";
             tail = true;
             interval = 1;
             format-prefix = "%{A1:eww open-many --toggle background-closer player:} %{A}";
@@ -451,7 +452,7 @@
             exec = "~/.config/polybar/scripts/scroll-spotify";
           };
           "module/bluetooth" = {
-            type = custom/script;
+            type = "custom/script";
             exec = "~/.config/polybar/scripts/bluetooth";
             interval = 2;
             click-left = "exec blueberry";
@@ -462,7 +463,7 @@
             format-foreground = "\${colors.foreground}";
           };
           "module/microphone" = {
-            type = custom/script;
+            type = "custom/script";
             exec = "~/.config/polybar/scripts/microphone";
             interval = 5;
             format-padding = 1;
@@ -471,7 +472,7 @@
             format-foreground = "\${colors.foreground}";
           };
           "module/gamemode" = {
-            type = custom/script;
+            type = "custom/script";
             exec = "~/.config/polybar/scripts/gamemode";
             interval = 2;
             format-padding = 1;
