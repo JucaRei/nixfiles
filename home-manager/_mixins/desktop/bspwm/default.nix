@@ -3,6 +3,7 @@ with lib.hm.gvariant;
 {
   imports = [
     ./sxhkd/sxhkd.nix
+    ./dunst/dunst.nix
   ];
   xsession = {
     enable = true;
