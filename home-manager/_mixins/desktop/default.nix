@@ -5,9 +5,8 @@
     # (./. + "./${desktop}")
     # ../apps/documents/libreoffice.nix
   ]
-  ++ lib.optional (builtins.pathExists (./. + "./${desktop}.nix")) ./${desktop}.nix
-  ++ lib.optional (builtins.pathExists (./. + "./${desktop}")) ./${desktop}
-  ++ lib.optional (builtins.pathExists (./. + "/../../users/${username}/desktop.nix")) ../../users/${username}/desktop.nix;
+  ++ lib.optional (builtins.isString desktop) (./. + "./${desktop}.nix") || (./. + "./${desktop}")
+    ++ lib.optional (builtins.pathExists (./. + "/../../users/${username}/desktop.nix")) ../../users/${username}/desktop.nix;
 
   services = {
     # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
