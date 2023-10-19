@@ -365,8 +365,8 @@ with lib.hm.gvariant;
     packages = with pkgs; [
       blueman
     ];
-    services = {
-      blueman-applet.enable = true;
-    };
+  };
+  services = {
+    blueman-applet.enable = true;
   };
 }
