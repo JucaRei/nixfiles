@@ -101,13 +101,19 @@
   boot = {
     initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
     # kernelPackages = pkgs.linuxPackages_latest;
-    kernelPackages = pkgs.linux_5_15.system76-power;
+    kernelPackages = pkgs.linux_5_15;
 
     loader = {
       grub = {
         gfxmodeEfi = lib.mkForce "1920x1080";
       };
     };
+  };
+
+  environment = {
+    systemPackages = with pkgs; [
+      linux_5_15.system76-power
+    ];
   };
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
