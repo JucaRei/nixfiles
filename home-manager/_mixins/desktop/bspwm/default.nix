@@ -22,7 +22,7 @@ with lib.hm.gvariant;
   home = {
     packages = with pkgs; [
       kitty
-      nautilus
+      gnome.nautilus
       lxappearance
       gnome.file-roller
       gtk_engines
