@@ -14,8 +14,4 @@ in
       defaultApplications = ifDefault (import ./default-browser.nix "brave");
     };
   };
-
-  home.sessionVariables = {
-    DEFAULT_BROWSER = "${pkgs.brave}/bin/brave";
-  };
 }
