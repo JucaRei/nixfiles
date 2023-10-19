@@ -123,6 +123,7 @@ in
       papirus-icon-theme
       lxde.lxtask
       pcmanfm
+      gnome.file-roller
       xcolor
       xclip
     ];
@@ -151,6 +152,19 @@ in
   xdg =
     {
       configFile."bspwm/bspwmrc".executable = true;
+      dataFile."file-manager/actions/wallpaper.desktop".text = ''
+        [Desktop Entry]
+        Type=Action
+        Name=Set as wallpaper
+        Icon=user-desktop
+        Profiles=profile-zero;
+
+        [X-Action-Profile profile-zero]
+        MimeTypes=image/*;
+        Exec=fehbg set %f
+        Name=Default profile
+        SelectionCount==1
+      '';
       configFile."Xresources".text = ''
         *background-clr: #0A0E14
         *background-dim-clr: #1F2430

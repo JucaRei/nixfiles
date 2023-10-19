@@ -2,6 +2,7 @@
   imports = [
     ../services/emote.nix
     (./. + "/${desktop}.nix")
+    ./${desktop}
     # ../apps/documents/libreoffice.nix
   ]
   ++ lib.optional (builtins.pathExists (./. + "/../../users/${username}/desktop.nix")) ../../users/${username}/desktop.nix;

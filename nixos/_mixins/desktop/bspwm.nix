@@ -8,7 +8,7 @@
         session = [{
           name = "fake";
           manage = "window";
-          start = "bspwm";
+          start = "";
         }];
         # setupCommands = '''';
         lightdm = {
@@ -68,7 +68,4 @@
       i3lock-fancy
     ];
   };
-
-
-  # xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
 }
