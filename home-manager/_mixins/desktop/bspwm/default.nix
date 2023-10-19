@@ -19,7 +19,6 @@ with lib.hm.gvariant;
       '';
     };
   };
-  # linux_5_15.system76-power
   home = {
     packages = with pkgs; [
       kitty

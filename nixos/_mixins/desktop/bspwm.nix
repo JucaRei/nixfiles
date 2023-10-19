@@ -71,19 +71,15 @@
       polybar
       gamemode
       gnomeExtensions.gamemode
-    ] ++ pkgs.xorg [
-      xev # Event Viewer
-      xkill # Process Killer
-      xrandr # Monitor Settings
-      xinit
-      xsetroot
-    ] ++ pkgs.python311Packages [
-      xdg
-      pytz
-      pip
-    ] ++ pkgs.xfce [
-      xfce4-settings
-      xfce4-power-manager
+      xorg.xev # Event Viewer
+      xorg.xkill # Process Killer
+      xorg.xrandr # Monitor Settings
+      xorg.xinit
+      xorg.xsetroot
+      python311Packages.xdg
+      python311Packages.pytz
+      xfce.xfce4-settings
+      xfce.xfce4-power-manager
     ];
   };
 }
