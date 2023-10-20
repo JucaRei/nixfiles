@@ -19,11 +19,31 @@ with lib.hm.gvariant;
         # "flameshot"
         "dunst"
         "nm-applet --indicator"
-        "polybar"
+        # "polybar"
         # "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
-        bspc monitor -d 1 2 3 4 5
+        #!/bin/bash
+
+        _run() {
+            pgrep -x "$\{1}" >/dev/null || "$@" &
+        }
+
+        _run sxhkd
+
+        EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        if [[ $1 == 0 ]]; then
+            if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
+                bspc monitor "$EXTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8 9 0
+                bspc monitor "$INTERNAL_MONITOR" -d 10
+                bspc wm -O "$EXTERNAL_MONITOR" "$INTERNAL_MONITOR"
+            else
+                bspc monitor "$INTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8 9 0 10
+            fi
+        fi
+
+        # bspc monitor -d 1 2 3 4 5
 
         bspc config border_width         0
         bspc config window_gap          20
@@ -72,6 +92,8 @@ with lib.hm.gvariant;
       glava
       tokyo-night-gtk
       lsof
+      bc
+      pomodoro
       xdo
       wmctrl
       i3lock-color

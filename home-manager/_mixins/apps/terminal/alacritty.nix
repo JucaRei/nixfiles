@@ -7,8 +7,13 @@ with lib.hm.gvariant;
     settings = {
       window = {
         title = "Terminal";
-
-        padding = { y = 5; };
+        class = {
+          instance = "Alacritty";
+          general = "Alacritty";
+        };
+        padding = {
+          y = 5;
+        };
         dimensions = {
           lines = 75;
           columns = 100;
@@ -16,11 +21,31 @@ with lib.hm.gvariant;
       };
 
       font = {
-        normal.family = "JetbrainsMono Nerd Font";
-        size = 8.0;
+        normal = {
+          # family = "JetbrainsMono Nerd Font";
+          # style = "Regular";
+          family = "FiraCode Nerd Font Mono";
+          style = "Retina";
+        };
+        # italic = {
+        #   family = "FiraCode Nerd Font Mono";
+        #   style = "MediumItalic";
+        # };
+        # bold = {
+        #   family = "FiraCode Nerd Font Mono";
+        #   style = "Bold";
+        # };
+        # bold_italic = {
+        #   family = "FiraCode Nerd Font Mono";
+        #   style = "BoldItalic";
+        # };
+        size = 11.0;
       };
 
-      background_opacity = 0.3;
+      draw_bold_text_with_bright_colors = true;
+      live_config_reload = true;
+
+      window_opacity = 0.3;
 
       colors = {
         primary = {
@@ -51,6 +76,9 @@ with lib.hm.gvariant;
           cyan = "0x73FBF1";
           white = "0xFEFEF8";
         };
+      };
+      scrolling = {
+        history = 10000;
       };
     };
   };
