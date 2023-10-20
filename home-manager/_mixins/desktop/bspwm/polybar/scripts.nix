@@ -42,15 +42,15 @@ _: {
         source = ./scripts/updates;
         executable = true;
       };
-      "polybar/scripts/bluetooth_battery" = {
+      "polybar/scripts/bluetooth_battery.sh" = {
         source = ./scripts/bluetooth_battery.sh;
         executable = true;
       };
-      "polybar/scripts/mic" = {
+      "polybar/scripts/mic.sh" = {
         source = ./scripts/mic.sh;
         executable = true;
       };
-      "polybar/scripts/spotify" = {
+      "polybar/scripts/spotify.sh" = {
         source = ./scripts/spotify.sh;
         executable = true;
       };
