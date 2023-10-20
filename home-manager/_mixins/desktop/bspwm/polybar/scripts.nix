@@ -54,6 +54,10 @@ _: {
         source = ./scripts/spotify.sh;
         executable = true;
       };
+      "polybar/scripts/polywins" = {
+        source = ./scripts/polywins;
+        executable = true;
+      };
     };
   };
 }

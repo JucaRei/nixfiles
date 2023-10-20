@@ -39,7 +39,7 @@ with lib.hm.gvariant;
                 bspc monitor "$INTERNAL_MONITOR" -d 10
                 bspc wm -O "$EXTERNAL_MONITOR" "$INTERNAL_MONITOR"
             else
-                bspc monitor "$INTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8 9 0 10
+                bspc monitor "$INTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8
             fi
         fi
 
