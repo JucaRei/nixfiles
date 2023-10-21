@@ -11,6 +11,7 @@
         "colors" = {
           foreground = "#c8ccd4";
           background = "#1e222a";
+          disabled = "#707880";
 
           color0 = "#282c34";
           color1 = "#e06c75";
@@ -52,11 +53,19 @@
 
           modules-left = "round-left bspwm round-right empty-space round-left polywins round-right";
           modules-center = "title";
-          modules-right = "filesystem temperature round-left cpu round-right mem xbacklight alsa bluetooth wlan eth updates round-left time round-right powermenu";
+          modules-right = "disks temperature round-left cpu round-right mem xbacklight alsa bluetooth wlan eth updates round-left time round-right powermenu";
           font-0 = "JetBrainsMono Nerd Font:style=Bold:pixelsize=9;3";
           font-1 = "JetBrainsMono Nerd Font:size=14;4";
           font-2 = "Material Design Icons:style=Bold:size=9;3";
           font-3 = "unifont:fontformat=truetype:size=9;3";
+        };
+        "module/disks" = {
+          type = "custom/script";
+          interval = 300;
+          format-prefix = " ";
+          format = "<label>";
+          label-padding = 1;
+          exec = "~/.config/polybar/scripts/disks.sh";
         };
         "module/bluetooth" = {
           type = "custom/script";

@@ -62,6 +62,10 @@ _: {
         source = ./scripts/nix-updates;
         executable = true;
       };
+      "polybar/scripts/disks" = {
+        source = ./scripts/disks;
+        executable = true;
+      };
     };
   };
 }
