@@ -58,6 +58,10 @@ _: {
         source = ./scripts/polywins;
         executable = true;
       };
+      "polybar/scripts/nix-updates" = {
+        source = ./scripts/nix-updates;
+        executable = true;
+      };
     };
   };
 }

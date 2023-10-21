@@ -74,9 +74,9 @@ with lib.hm.gvariant;
   home = {
     packages = with pkgs; [
       kitty
-      gnome.nautilus
-      gnome.nautilus-python
-      gnome.sushi
+      # gnome.nautilus
+      # gnome.nautilus-python
+      # gnome.sushi
       nautilus-open-any-terminal
       lxappearance
       gnome.file-roller

@@ -51,14 +51,69 @@
           wm-restack = "bspwm";
 
           modules-left = "round-left bspwm round-right empty-space round-left polywins round-right";
-          modules-center = "";
-          modules-right = "alsa round-left cpu round-right updates wlan mem xbacklight round-left time round-right powermenu";
+          modules-center = "title";
+          modules-right = "filesystem temperature round-left cpu round-right mem xbacklight alsa bluetooth wlan eth updates round-left time round-right powermenu";
           font-0 = "JetBrainsMono Nerd Font:style=Bold:pixelsize=9;3";
           font-1 = "JetBrainsMono Nerd Font:size=14;4";
           font-2 = "Material Design Icons:style=Bold:size=9;3";
           font-3 = "unifont:fontformat=truetype:size=9;3";
         };
+        "module/bluetooth" = {
+          type = "custom/script";
+          exec = ''"bluetoothctl paired-devices | cut -d' ' -f2 | xargs -i -n1 bash -c "bluetoothctl info {} | grep -q 'Connected: yes' && bluetoothctl info {} | grep -o 'Alias: .*'" | awk -vORS=', ' '{sub($1 OFS,"")}1' | sed -e 's/, $//'" '';
+          exec-if = ''"$(bluetoothctl show | grep 'Powered: yes' | wc -l) -gt 0 ] && [ $(bluetoothctl show | grep 'Connected: yes' | wc -l) -gt 0 ]" '';
+          interval = 1;
+          # ;click-right = "blueman-manager &";
+          click-right = "blueberry &";
+          click-middle = "~/.config/polybar/scripts/toggle_bluetooth.sh &";
+          label = "";
+          # ;format-prefix = " ";
+          format-underline = "#2193ff";
+        };
+        "settings" = {
+          screenchange-reload = true;
+          pseudo-transparency = true;
+        };
+        "module/filesystem" = {
+          type = "internal/fs";
 
+          mount-0 = "/";
+          interval = 30;
+          fixed-values = false;
+          format-mounted = "<bar-used> <label-mounted>";
+          format-mounted-prefix = " ";
+
+          format-unmounted = "<label-unmounted>";
+          format-unmounted-prefix = " ";
+
+          label-mounted = "%{F#F0C674}%mountpoint%%{F-} %percentage_used%%";
+          # label-mounted = "%used%/%total%";
+
+          label-unmounted = "%mountpoint% not mounted";
+          label-unmounted-foreground = "\${colors.disabled}";
+
+          bar-used-width = 10;
+          bar-used-gradient = false;
+
+          bar-used-indicator = "\${bar.indicator}";
+          bar-used-indicator-foreground = "\${color.foreground}";
+
+          bar-used-fill = "\${bar.fill}";
+          bar-used-foreground-0 = "\${color.foreground}";
+          bar-used-foreground-1 = "\${color.foreground}";
+          bar-used-foreground-2 = "\${color.foreground}";
+
+          bar-used-empty = "\${bar.empty}";
+          bar-used-empty-foreground = "\${color.foreground}";
+        };
+        "module/now-playing" = {
+          type = "custom/script";
+          tail = true;
+          # ;format-prefix = "";
+          format = "<label>";
+          exec = "~/.config/polybar/scripts/polybar-now-playing";
+          click-right = "kill -USR1 $(pgrep --oldest --parent %pid%)";
+        };
         "module/polywins" = {
           type = "custom/script";
           exec = "~/.config/polybar/scripts/polywins 2>/dev/null";
@@ -138,7 +193,7 @@
           label-focused-margin = 0;
 
           label-occupied = " %icon%";
-          label-occupied-foreground = "#646870";
+          label-occupied-foreground = "#900000";
           label-occupied-background = "#2a2e36";
           label-occupied-padding = 1;
           label-occupied-margin = 0;
@@ -200,16 +255,19 @@
         };
         "module/mem" = {
           type = "custom/script";
-          exec = "free -m | sed -n 's/^Mem:\s\+[0-9]\+\s\+\([0-9]\+\)\s.\+/\1/p'";
+          # type = "internal/memory";
+          exec = ''free -m | sed -n 's/^Mem:\s\+[0-9]\+\s\+\([0-9]\+\)\s.\+/\1/p' '';
           format = "<label>";
-          format-prefix = "﬙ ";
-          label = "%output% MB";
+          interval = 2;
+          format-prefix = " ";
+          label = "%output%MB";
           label-padding = 1;
-          format-prefix-foreground = "#d19a66";
+          format-prefix-foreground = "#F4E8C1";
         };
         "module/updates" = {
           type = "custom/script";
-          exec = "doas xbps-install -S > /dev/null 2>&1; xbps-updates";
+          # exec = "doas xbps-install -S > /dev/null 2>&1; xbps-updates";
+          exec = "~/.config/polybar/scripts/nix-updates 2>/dev/null";
           format = "<label>";
           interval = 4600;
           label = "  %output%";
@@ -223,14 +281,56 @@
           click-left = "doas zzz &";
           content-foreground = "#f25287";
         };
-        "module/wlan" = {
+        "network-base" = {
           type = "internal/network";
-          interface = "wlp2s0";
-          interval = 3.0;
+          interval = 5;
           format-connected = "<label-connected>";
-          label-connected = "󰤪  ";
-          label-connected-foreground = "#A3BE8C";
+          format-disconnected = "<label-disconnected>";
+          label-disconnected = "%{F#F0C674}%ifname%%{F#707880} disconnected";
         };
+        "module/eth" = {
+          "inherit" = "network-base";
+          interface-type = "wired";
+          interval = 1;
+          # label-connected = "%{F#F0C674}%ifname%%{F-} %local_ip%";
+          label-connected = "%{F#16ACE0}  %{F#2DFF02}%downspeed% %{F#F04F4C}%upspeed%";
+          format-connected-background = "\${colors.background}";
+          format-connected-foreground = "\${colors.foreground}";
+          format-connected-padding = 1;
+          format-connected-prefix-foreground = "#960000";
+          # format-connected-underline = "#8E39E5";
+          format-disconnected-background = "\${colors.background}";
+          format-disconnected-foreground = "\${colors.foreground-alt}";
+          label-disconnected = "󰌺";
+        };
+        "module/wlan" = {
+          "inherit" = "network-base";
+          interval = 3.0;
+          unknown-as-up = true;
+          interface-type = "wireless";
+          format-connected-background = "\${colors.background}";
+          format-connected-foreground = "\${colors.foreground}";
+          format-connected-padding = 1;
+          label-connected = "%{F#F0C674}%ifname%%{F-} %essid% %local_ip%";
+          format-disconnected-background = "\${colors.background}";
+          format-disconnected-foreground = "\${colors.foreground}";
+          format-disconnected-padding = 1;
+          label-disconnected = "";
+          ramp-signal-0 = "󰤯";
+          ramp-signal-1 = "󰤟";
+          ramp-signal-2 = "󰤢";
+          ramp-signal-3 = "󰤥";
+          ramp-signal-4 = "󰤨";
+          ramp-signal-foreground = "\${colors.color16}";
+        };
+        # "module/wlan" = {
+        #   type = "internal/network";
+        #   interface = "wlp2s0";
+        #   interval = 3.0;
+        #   format-connected = "<label-connected>";
+        #   label-connected = "󰤪  ";
+        #   label-connected-foreground = "#A3BE8C";
+        # };
         "module/battery" = {
           type = "internal/battery";
           battery = "BAT1";
@@ -309,6 +409,15 @@
         "module/xwindow" = {
           type = "internal/xwindow";
           label = "%title:0:30:...";
+        };
+        "module/title" = {
+          type = "internal/xwindow";
+
+          format = "<label>";
+          format-foreground = "#99CEF0";
+
+          label = "  %title%";
+          label-maxlen = "15 ...";
         };
       };
     };

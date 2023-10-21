@@ -1,0 +1,6 @@
+#!/bin/sh
+
+/run/current-system/sw/bin/git -C ~/.dotfiles/nixfiles fetch
+UPDATES=$(/run/current-system/sw/bin/git -C ~/.dotfiles/nixfiles rev-list origin/main..upstream/main --count 2>/dev/null);
+/run/current-system/sw/bin/echo " $UPDATES"; # Extra space for presentation with icon
+/run/current-system/sw/bin/sleep 1800;
