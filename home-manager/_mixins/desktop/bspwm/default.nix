@@ -5,6 +5,7 @@ with lib.hm.gvariant;
     ./sxhkd/sxhkd.nix
     ./dunst/dunst.nix
     ./polybar/polybar.nix
+    ./picom/picom.nix
   ];
   xsession = {
     enable = true;
@@ -25,8 +26,8 @@ with lib.hm.gvariant;
       extraConfig = ''
         #!/bin/bash
 
-        EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        EXTERNAL_MONITOR=$(xrandr | grep 'HDMI*' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'Virtual*' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
             if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
                 bspc monitor "$EXTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8 9 0
@@ -84,6 +85,7 @@ with lib.hm.gvariant;
       gtk-engine-murrine
       imagemagick
       parcellite
+      blueberry
       xclip
       gpick
       tint2

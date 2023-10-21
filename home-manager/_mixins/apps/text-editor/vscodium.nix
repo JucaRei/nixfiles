@@ -29,7 +29,13 @@
         # ms-vscode-remote.vscode-remote-extensionpack
       ]
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
-        # Yunduo.color-highlight-css-color-4
+        {
+          name = "Rasi";
+          publisher = "dlasagno";
+          version = "1.0.0";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-s60alej3cNAbSJxsRlIRE2Qha6oAsmcOBbWoqp+w6fk=";
+        }
         {
           name = "color-highlight-css-color-4";
           publisher = "Yunduo";

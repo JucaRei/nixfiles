@@ -53,7 +53,8 @@
 
           modules-left = "round-left bspwm round-right empty-space round-left polywins round-right";
           modules-center = "title";
-          modules-right = "disks temperature round-left cpu round-right mem xbacklight alsa bluetooth wlan eth updates round-left time round-right powermenu";
+          # modules-right = "disks temperature round-left cpu round-right mem xbacklight alsa pulseaudio bluetooth wlan eth updates round-left time round-right powermenu";
+          modules-right = "disks temperature round-left cpu round-right mem xbacklight pulseaudio bluetooth wlan eth updates round-left time round-right powermenu";
           font-0 = "JetBrainsMono Nerd Font:style=Bold:pixelsize=9;3";
           font-1 = "JetBrainsMono Nerd Font:size=14;4";
           font-2 = "Material Design Icons:style=Bold:size=9;3";
@@ -65,7 +66,7 @@
           format-prefix = " ";
           format = "<label>";
           label-padding = 1;
-          exec = "~/.config/polybar/scripts/disks.sh";
+          exec = "~/.config/polybar/scripts/disks";
         };
         "module/bluetooth" = {
           type = "custom/script";
@@ -115,13 +116,43 @@
           bar-used-empty = "\${bar.empty}";
           bar-used-empty-foreground = "\${color.foreground}";
         };
-        "module/now-playing" = {
+        # "module/now-playing" = {
+        #   type = "custom/script";
+        #   tail = true;
+        #   # ;format-prefix = "";
+        #   format = "<label>";
+        #   exec = "~/.config/polybar/scripts/polybar-now-playing";
+        #   click-right = "kill -USR1 $(pgrep --oldest --parent %pid%)";
+        # };
+        "module/nowplaying" = {
           type = "custom/script";
           tail = true;
-          # ;format-prefix = "";
-          format = "<label>";
-          exec = "~/.config/polybar/scripts/polybar-now-playing";
-          click-right = "kill -USR1 $(pgrep --oldest --parent %pid%)";
+          interval = 1;
+          format = " <label>";
+          exec = ''playerctl metadata --format "{{ artist }} - {{ title }}"'';
+        };
+        "module/pulseaudio" = {
+          type = "internal/pulseaudio";
+          use-ui-max = false;
+          # #6c7086
+          # #f9e2af
+
+          format-volume = "<label-volume>";
+          format-volume-prefix = "%{T4}󰕾%{T-}";
+          # format-volume-prefix-foreground = "\${colors.yellow}";
+          format-volume-prefix-foreground = "#f9e2af";
+          label-volume = "%{T1}%percentage%%%{T-}";
+          label-volume-padding = 1;
+
+          format-muted = "<label-muted>";
+          format-muted-prefix = "󰕿";
+          # format-muted-prefix-foreground = "\${colors.overlay0}";
+          format-muted-prefix-foreground = "#6c7086";
+          label-muted = "%{T1}%percentage%%%{T-}";
+          label-muted-foreground = "#6c7086";
+          label-muted-padding = 1;
+
+          click-right = "pavucontrol&";
         };
         "module/polywins" = {
           type = "custom/script";
@@ -302,7 +333,7 @@
           interface-type = "wired";
           interval = 1;
           # label-connected = "%{F#F0C674}%ifname%%{F-} %local_ip%";
-          label-connected = "%{F#16ACE0}  %{F#2DFF02}%downspeed% %{F#F04F4C}%upspeed%";
+          label-connected = "%{F#16ACE0} %{F#713ABE}%local_ip% %{F#2DFF02}%downspeed% %{F#F04F4C}%upspeed%";
           format-connected-background = "\${colors.background}";
           format-connected-foreground = "\${colors.foreground}";
           format-connected-padding = 1;
