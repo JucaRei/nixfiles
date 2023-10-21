@@ -77,7 +77,7 @@
           user = "${username}"
           group = "kvm"
         '';
-        package = pkgs.unstable.qemu_kvm;
+        package = pkgs.unstable.qemu_kvm.override { smbdSupport = true; };
         ovmf = {
           enable = true;
           # packages = with pkgs.unstable; [

@@ -11,7 +11,8 @@ _: {
         "super + alt + {q,r}" = "bscp {quit,wm -r}"; #quit/restart bspwm
         "super + {_,shift +}{Left,Right,Up,Down}" = "bspc node -{f,s} {west,east,north,south}"; # Focus or move node in given direction
         "super + {t,h,f}" = "bspc node -t '~{tiled,floating,fullscreen}'"; # Toggle between initial state and new state
-        "alt + {F4, Shift + F4}" = "bspc node -{c,k}"; # close and kill
+        # "alt + {F4, Shift + F4}" = "bspc node -{c,k}"; # close and kill
+        "super + w" = "bspc node -{c,k}"; # close and kill
         "super + m" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
         "super + y" = "bspc node newest.marked.local -n newest.!automatic.local"; ## send the newest marked node to the newest preselected node
         "super + g" = "bspc node -s biggest.window"; # swap the current node and the biggest window
@@ -46,7 +47,7 @@ _: {
         # "super + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}"; ## move a floating window
 
         # Control - Resize
-        "control + shift +  {Left,Down,Up,Right}" = ''
+        "control + super +  {Left,Down,Up,Right}" = ''
           bspc node -z {left -20 0 || bspc node -z right -20 0, \
                         bottom 0 20 || bspc node -z top 0 20,\
                         top 0 -20 || bspc node -z bottom 0 -20,\

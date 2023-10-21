@@ -65,10 +65,7 @@
       i3lock-fancy
       papirus-icon-theme
       bsp-layout
-      dunst
-      rofi
-      sxhkd
-      polybar
+      betterlockscreen
       gamemode
       gnomeExtensions.gamemode
       xorg.xev # Event Viewer

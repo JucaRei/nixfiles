@@ -369,6 +369,7 @@
     };
   };
 
+
   # xdg.desktopEntries = {
   #   "code" = {
   #     categories = [ "Utility" "TextEditor" "Development" "IDE" ];
