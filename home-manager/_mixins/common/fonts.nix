@@ -15,8 +15,9 @@
     joypixels
     hack-font
     ubuntu_font_family
+    font-awesome
 
     material-design-icons
-    (nerdfonts.override { fonts = [ "FiraCode" "UbuntuMono" "Hack" "DroidSansMono" ]; })
+    (nerdfonts.override { fonts = [ "FiraCode" "UbuntuMono" "Hack" "DroidSansMono" "JetBrainsMono" ]; })
   ];
 }

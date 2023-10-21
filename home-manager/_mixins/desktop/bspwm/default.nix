@@ -25,12 +25,6 @@ with lib.hm.gvariant;
       extraConfig = ''
         #!/bin/bash
 
-        _run() {
-            pgrep -x "$\{1}" >/dev/null || "$@" &
-        }
-
-        _run sxhkd
-
         EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
         INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
@@ -43,29 +37,37 @@ with lib.hm.gvariant;
             fi
         fi
 
-        # bspc monitor -d 1 2 3 4 5
+        # bspc monitor -d 1 2 3 4 5 6 7 8
 
-        bspc config border_width         0
-        bspc config window_gap          20
-        bspc config border_radius	15
+        bspc config border_width                3
+        bspc config borderless_monocle          3
 
-        bspc config normal_border_color \#c0caf5
-        bspc config active_border_color \#c0caf5
-        bspc config focused_border_color \#c0caf5
+        bspc config window_gap                  10
+        bspc config split_ratio                 0.50
+        bspc config gapless_monocle             true
+        bspc config focus_follows_pointer       true
 
-        bspc config split_ratio          0.52
-        bspc config borderless_monocle   true
-        bspc config gapless_monocle      true
+        #bspc config border_width         2
+        #bspc config window_gap          20
+        #bspc config border_radius	      12
 
-        bspc rule -a Peek state=floating
-        bspc rule -a kitty state=floating
-        bspc config external_rules_command "$HOME/.config/bspwm/scripts/external-rules"
-        bspc rule -a conky-manager2 state=floating
-        bspc rule -a Kupfer.py focus=on
-        bspc rule -a Screenkey manage=off
-        bspc rule -a Plank manage=off border=off locked=on focus=off follow=off layer=above
-        bspc rule -a Rofi state=floating
-        bspc rule -a GLava state=floating layer=below sticky=true locked=true border=off focus=off center=true follow=off rectangle=1920x1080+0+0
+        #bspc config normal_border_color \#c0caf5
+        #bspc config active_border_color \#c0caf5
+        #bspc config focused_border_color \#c0caf5
+
+        #bspc config split_ratio          0.52
+        #bspc config borderless_monocle   true
+        #bspc config gapless_monocle      true
+
+        #bspc rule -a Peek state=floating
+        #bspc rule -a kitty state=floating
+        #bspc config external_rules_command "$HOME/.config/bspwm/scripts/external-rules"
+        #bspc rule -a conky-manager2 state=floating
+        #bspc rule -a Kupfer.py focus=on
+        #bspc rule -a Screenkey manage=off
+        #bspc rule -a Plank manage=off border=off locked=on focus=off follow=off layer=above
+        #bspc rule -a Rofi state=floating
+        #bspc rule -a GLava state=floating layer=below sticky=true locked=true border=off focus=off center=true follow=off rectangle=1920x1080+0+0
       '';
     };
   };

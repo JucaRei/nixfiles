@@ -9,13 +9,20 @@ _: {
 
         # Bspwm hotkeys
         "super + alt + {q,r}" = "bscp {quit,wm -r}"; #quit/restart bspwm
+        "super + {_,shift +}{Left,Right,Up,Down}" = "bspc node -{f,s} {west,east,north,south}"; # Focus or move node in given direction
+        "super + {t,h,f}" = "bspc node -t '~{tiled,floating,fullscreen}'"; # Toggle between initial state and new state
         "alt + {F4, Shift + F4}" = "bspc node -{c,k}"; # close and kill
         "super + m" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
         "super + y" = "bspc node newest.marked.local -n newest.!automatic.local"; ## send the newest marked node to the newest preselected node
         "super + g" = "bspc node -s biggest.window"; # swap the current node and the biggest window
 
+        # Alt - Move workspaces
+        "alt + {Left,Right}" = "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
+        "alt + {_,shift +}{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'"; # Focus or send to the given desktop
+        "alt + shift + {Left,Right}" = "bspc node -d {prev,next}.local --follow"; # Send and follow to previous or next desktop
+
         # State/flags
-        "super + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,fullscreen}"; # set the window state
+        # "super + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,fullscreen}"; # set the window state
         "super + ctrl + {m,x,y,z}" = "bspc node -g {marked,locked,sticky,private}"; # set the node flags
 
         # Focus/Swap
@@ -25,7 +32,7 @@ _: {
         "super + bracket{left,right}" = "bspc desktop -f {prev,next}.local"; # focus the next/previous desktop in the current monitor
         "super + {grave,Tab}" = "bspc {node,desktop} -f last"; # focus the last node/desktop
         "super + {o,i}" = "bspc wm -h off; \n bspc node {older,newer} -f; \n bspc wm -h on"; # focus the older or newer node in the focus history
-        "super + {_,shift + }{1-9,0}" = "bspc {desktop -f,node -d} '^{1-9,10}'"; # focus or send to the given desktop
+        # "super + {_,shift + }{1-9,0}" = "bspc {desktop -f,node -d} '^{1-9,10}'"; # focus or send to the given desktop
 
         # Preselect
         "super + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}"; # preselect the direction
@@ -34,9 +41,17 @@ _: {
         "super + ctrl + shift + space" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel"; # cancel the preselection for the focused desktop
 
         # Move/Resize
-        "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}"; # expand a window by moving one of its side outward
-        "super + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}"; # contract a window by moving one of its side inward
-        "super + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}"; ## move a floating window
+        # "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}"; # expand a window by moving one of its side outward
+        # "super + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}"; # contract a window by moving one of its side inward
+        # "super + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}"; ## move a floating window
+
+        # Control - Resize
+        "control + shift +  {Left,Down,Up,Right}" = ''
+          bspc node -z {left -20 0 || bspc node -z right -20 0, \
+                        bottom 0 20 || bspc node -z top 0 20,\
+                        top 0 -20 || bspc node -z bottom 0 -20,\
+                        right 20 0 || bspc node -z left 20 0}
+        '';
 
         # Play music
         "XF86AudioPlay" = "playerctl play";
@@ -64,20 +79,29 @@ _: {
 
         # Screenshot Area and save it
         "ctrl + Print" = "$HOME/Pictures/Screenshots - -area";
+
+        # XF86 Keys
+        "XF86AudioMute" = "pactl list sinks | grep -q Mute:.no && pactl set-sink-mute 0 1 || pactl set-sink-mute 0 0"; # Toggle mute audio
+        "XF86AudioRaiseVolume" = "pactl -- set-sink-volume 0 +10%"; # Raise volume
+        "XF86AudioLowerVolume" = "pactl -- set-sink-volume 0 -10%"; # Lower volume
+        "XF86AudioMicMute" = "pactl set-source-mute 1 toggle"; # Toggle mute mic audio
+        "XF86MonBrightnessDown" = "light -U  5"; # Brightness down
+        "XF86MonBrightnessUp" = "light -A 5";
+
         # Volume Up
-        "XF86AudioRaiseVolume" = "amixer sset Master 5%+ && $HOME/.config/eww/Misc/scripts/volume";
+        # "XF86AudioRaiseVolume" = "amixer sset Master 5%+ && $HOME/.config/eww/Misc/scripts/volume";
 
         # Volume Down
-        "XF86AudioLowerVolume" = "amixer sset Master 5%- && $HOME/.config/eww/Misc/scripts/volume";
+        # "XF86AudioLowerVolume" = "amixer sset Master 5%- && $HOME/.config/eww/Misc/scripts/volume";
 
         # Volume Mute
-        "XF86AudioMute" = "amixer sset Master toggle && $HOME/.config/eww/Misc/scripts/volume";
+        # "XF86AudioMute" = "amixer sset Master toggle && $HOME/.config/eww/Misc/scripts/volume";
 
         # Brightness Up
-        "XF86MonBrightnessUp" = "brightnessctl s 20+ && $HOME/.config/eww/Misc/scripts/brightness";
+        # "XF86MonBrightnessUp" = "brightnessctl s 20+ && $HOME/.config/eww/Misc/scripts/brightness";
 
         # Brightness Down
-        "XF86MonBrightnessDown" = "brightnessctl s 20- && $HOME/.config/eww/Misc/scripts/brightness";
+        # "XF86MonBrightnessDown" = "brightnessctl s 20- && $HOME/.config/eww/Misc/scripts/brightness";
 
         # Toggle right click context menu.
         "~button3" = "xqp 0 $(xdo id -N Bspwm -n root) && jgmenu_run";
