@@ -6,6 +6,7 @@ with lib.hm.gvariant;
     ./dunst/dunst.nix
     ./polybar/polybar.nix
     ./picom/picom.nix
+    ./rofi/rofi.nix
   ];
   xsession = {
     enable = true;
@@ -75,12 +76,16 @@ with lib.hm.gvariant;
   home = {
     packages = with pkgs; [
       kitty
+      yad
       # gnome.nautilus
       # gnome.nautilus-python
       # gnome.sushi
-      nautilus-open-any-terminal
+      # gnome.file-roller
+      # nautilus-open-any-terminal
+      cinnamon.nemo
+      cinnamon.nemo-with-extensions
+      cinnamon.nemo-fileroller
       lxappearance
-      gnome.file-roller
       gtk_engines
       gtk-engine-murrine
       imagemagick
@@ -88,16 +93,16 @@ with lib.hm.gvariant;
       blueberry
       xclip
       gpick
-      tint2
+      # tint2
       moreutils
       recode
       plank
       redshift
-      glava
+      # glava
       tokyo-night-gtk
       lsof
       bc
-      pomodoro
+      # pomodoro
       xdo
       wmctrl
       i3lock-color
@@ -111,7 +116,7 @@ with lib.hm.gvariant;
       brightnessctl
       acpi
       playerctl
-      maim
+      # maim
       feh
       rofi
       rofi-calc
