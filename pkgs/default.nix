@@ -3,6 +3,7 @@
 
 { pkgs ? (import ../nixpkgs.nix) { } }: {
   # example = pkgs.callPackage ./example { };
+  apple-fonts = pkgs.callPackage ./apple-fonts { };
   cyberre-grub-theme = pkgs.callPackage ./cyberre-grub-theme { };
   cloneit = pkgs.callPackage ./cloneit { };
   plymouth-themes = pkgs.callPackage ./plymouth-themes { };

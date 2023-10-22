@@ -16,6 +16,7 @@
     icloudpd = final.icloud-photo-downloader;
     nvchad = prev.nvchad;
     thorium = final.thorium-browser;
+    apple-font = final.apple-fonts;
     # tidal = final.tidal-dl;
     # mpvconf = prev.mpv;
     # example = prev.example.overrideAttrs (oldAttrs: rec {

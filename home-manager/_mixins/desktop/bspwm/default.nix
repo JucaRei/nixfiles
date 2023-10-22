@@ -41,12 +41,14 @@ with lib.hm.gvariant;
 
         # bspc monitor -d 1 2 3 4 5 6 7 8
 
-        bspc config border_width                3
-        bspc config borderless_monocle          3
+        bspc config border_width         3
+        bspc config focused_border_color "#56949f"
+        bspc config normal_border_color "#908caa"
+        bspc config window_gap          4
 
-        bspc config window_gap                  10
-        bspc config split_ratio                 0.50
-        bspc config gapless_monocle             true
+        bspc config split_ratio                 0.52
+        bspc config ga1pless_monocle             true
+        bspc config focus_follows_pointer       true
         bspc config focus_follows_pointer       true
 
         #bspc config border_width         2
