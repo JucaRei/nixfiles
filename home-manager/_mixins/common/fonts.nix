@@ -16,7 +16,7 @@
     hack-font
     ubuntu_font_family
     font-awesome
-    apple-font
+    # apple-font
 
     material-design-icons
     (nerdfonts.override { fonts = [ "FiraCode" "UbuntuMono" "Hack" "DroidSansMono" "JetBrainsMono" ]; })
