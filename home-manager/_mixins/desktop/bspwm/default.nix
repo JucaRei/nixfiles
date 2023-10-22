@@ -4,8 +4,9 @@ with lib.hm.gvariant;
   imports = [
     ./sxhkd/sxhkd.nix
     ./dunst/dunst.nix
-    ./polybar/polybar-alt.nix
-    ./picom/picom.nix
+    # ./polybar/polybar-alt.nix
+    ./polybar/polybar.nix
+    # ./picom/picom.nix
     ./rofi/rofi.nix
   ];
   xsession = {
@@ -21,7 +22,7 @@ with lib.hm.gvariant;
         # "flameshot"
         "dunst"
         "nm-applet --indicator"
-        # "polybar"
+        "polybar main"
         # "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
@@ -41,15 +42,20 @@ with lib.hm.gvariant;
 
         # bspc monitor -d 1 2 3 4 5 6 7 8
 
-        bspc config border_width         3
-        bspc config focused_border_color "#56949f"
-        bspc config normal_border_color "#908caa"
-        bspc config window_gap          4
+        bspc config border_width                2
+        bspc config focused_border_color        "#56949f"
+        bspc config normal_border_color         "#908caa"
+        bspc config window_gap                  2
 
         bspc config split_ratio                 0.52
-        bspc config ga1pless_monocle             true
+        bspc config ga1pless_monocle            true
         bspc config focus_follows_pointer       true
         bspc config focus_follows_pointer       true
+
+        bspc config pointer_modifier 						mod4
+        bspc config pointer_action1 						move
+        bspc config pointer_action2 						resize_side
+        bspc config pointer_action3 						resize_corner
 
         #bspc config border_width         2
         #bspc config window_gap          20
@@ -124,6 +130,19 @@ with lib.hm.gvariant;
       # rofi-calc
       picom
       papirus-icon-theme
+
+      # Fonts
+      cantarell-fonts
+      cascadia-code
+      hasklig
+      inconsolata
+      meslo-lgs-nf
+      font-awesome
+      hack-font
+      inter
+      (nerdfonts.override {
+        fonts = [ "DroidSansMono" "LiberationMono" "Iosevka" "Hasklig" "JetBrainsMono" "FiraCode" ];
+      })
     ];
 
     pointerCursor = {
@@ -164,5 +183,10 @@ with lib.hm.gvariant;
     };
 
     Install = { WantedBy = [ "graphical-session.target" ]; };
+  };
+  fonts = {
+    fontconfig = {
+      enable = true;
+    };
   };
 }

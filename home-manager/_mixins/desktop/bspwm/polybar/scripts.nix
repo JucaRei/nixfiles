@@ -66,6 +66,12 @@ _: {
         source = ./scripts/disks;
         executable = true;
       };
+      "polybar/scripts/memory" = {
+        executable = true;
+        text = ''
+          free -m | sed -n 's/^Mem:\s\+[0-9]\+\s\+\([0-9]\+\)\s.\+/\1/p'
+        '';
+      };
     };
   };
 }

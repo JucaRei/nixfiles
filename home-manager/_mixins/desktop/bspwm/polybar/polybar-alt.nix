@@ -6,6 +6,7 @@
       script = "";
       settings = {
         # https://github.com/gh0stzk/dotfiles By z0mbi3
+        # https://github.com/XXiaoA/dotfiles
 
         # Colors.ini
         "color" = {

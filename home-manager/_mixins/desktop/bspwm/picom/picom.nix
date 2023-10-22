@@ -118,11 +118,10 @@ _: {
         "WM_CLASS@:s *= 'screenkey'"
       ];
 
-
-      wintypes = [
+      wintypes = {
         "tooltip" = { fade = true; shadow = false; focus = true; full-shadow = false; };
         "fullscreen" = { fade = true; shadow = false; focus = true; };
-      ];
+      };
     };
   };
 }

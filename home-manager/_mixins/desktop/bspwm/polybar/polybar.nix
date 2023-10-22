@@ -296,7 +296,7 @@
         "module/mem" = {
           type = "custom/script";
           # type = "internal/memory";
-          exec = ''free -m | sed -n 's/^Mem:\s\+[0-9]\+\s\+\([0-9]\+\)\s.\+/\1/p' '';
+          exec = "~/.config/polybar/scripts/memory";
           format = "<label>";
           interval = 2;
           format-prefix = " ";
@@ -318,15 +318,20 @@
           type = "custom/text";
           content = " ";
           content-padding = 2;
-          click-left = "doas zzz &";
+          # click-left = "doas zzz &";
+          click-left = "/home/juca/.config/rofi/bin/powermenu.sh";
           content-foreground = "#f25287";
         };
         "network-base" = {
           type = "internal/network";
           interval = 5;
-          format-connected = "<label-connected>";
+          exec = "";
+          # format-connected = "<label-connected>";
+          format-connected = "%{A1:$HOME/.config/rofi/bin/rofi-wifi.sh:}<ramp-signal> <label-connected>%{A}";
           format-disconnected = "<label-disconnected>";
           label-disconnected = "%{F#F0C674}%ifname%%{F#707880} disconnected";
+          # click-left = "~/.config/rofi/bin/rofi-wifi-menu.sh";
+          # click-left = "~/.config/rofi/bin/rofi-wifi.sh";
         };
         "module/eth" = {
           "inherit" = "network-base";
@@ -352,6 +357,7 @@
           format-connected-foreground = "\${colors.foreground}";
           format-connected-padding = 1;
           label-connected = "%{F#F0C674}%ifname%%{F-} %essid% %local_ip%";
+          format-connected = "";
           format-disconnected-background = "\${colors.background}";
           format-disconnected-foreground = "\${colors.foreground}";
           format-disconnected-padding = 1;
@@ -434,6 +440,46 @@
           format-prefix-foreground = "#61afef";
           label-foreground = "#D8DEE9";
           format-padding = 1;
+        };
+        "module/brightness" = {
+          type = "internal/backlight";
+          ## ; Use the following command to list available cards:
+          ## ; $ ls -1 /sys/class/backlight/
+          # card = "intel_backlight";
+
+          # ; Available tags:
+          # ;   <label> (default)
+          # ;   <ramp>
+          # ;   <bar>
+          format = "<ramp> <bar>";
+
+          # ; Available tokens:
+          # ;   %percentage% (default)
+          label = "%percentage%%";
+
+          # ; Only applies if <ramp> is used
+          ramp-0 = "";
+          ramp-1 = "";
+          ramp-2 = "";
+          ramp-3 = "";
+          ramp-4 = "";
+
+          # ; Only applies if <bar> is used
+          bar-width = 10;
+          bar-gradient = false;
+
+          bar-indicator = "\${bar.indicator}";
+          bar-indicator-foreground = "\${color.foreground}";
+
+          bar-fill = "\${bar.fill}";
+          bar-foreground-0 = "\${color.foreground}";
+          bar-foreground-1 = "\${color.foreground}";
+          bar-foreground-2 = "\${color.foreground}";
+
+          bar-empty = "\${bar.empty}";
+          bar-empty-foreground = "\${color.foreground}";
+
+          # ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
         };
         "module/cpu" = {
           type = "internal/cpu";

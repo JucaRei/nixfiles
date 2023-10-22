@@ -21,6 +21,13 @@ in
       terminus_font
       source-sans-pro
       roboto
+      material-design-icons
+      font-awesome
+      inter
+      maple-mono
+      maple-mono-NF
+      maple-mono-SC-NF
+      meslo-lg
       cozette
     ] ++ lib.optionals lotsOfFonts [
       # Japanese
