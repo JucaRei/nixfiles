@@ -55,7 +55,7 @@
       "mitigations=off"
     ];
     kernel = {
-      sysctl = {
+      sysctl = lib,. {
         "net.ipv4.ip_forward" = 1;
         "net.ipv6.conf.all.forwarding" = 1;
 
