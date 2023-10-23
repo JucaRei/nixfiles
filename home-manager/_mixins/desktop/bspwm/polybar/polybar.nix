@@ -34,7 +34,9 @@
         };
         "bar/main" = {
           tray-position = "right";
-          monitor = "eDP1";
+          # monitor = "eDP1";
+          # monitor = "eDP-1";
+          monitor = "Virtual-1";
           width = "100%";
           height = 18;
           padding-left = 1;
@@ -60,6 +62,23 @@
           font-2 = "Material Design Icons:style=Bold:size=9;3";
           font-3 = "unifont:fontformat=truetype:size=9;3";
         };
+        # "bar/tray" = {
+        #   monitor-strict = false;
+        #   width = 30;
+        #   height = 30;
+        #   radius = 8;
+        #   offset-x = "98%";
+        #   offset-y = "35%";
+        #   override-redirect = true;
+        #   fixed-center = true;
+        #   background = "\${colors.background}";
+        #   line-size = 0;
+        #   line-color = "#f00";
+        #   padding-left = 0;
+        #   padding-right = 1;
+        #   module-margin-left = 0;
+        #   module-margin-right = 0;
+        # };
         "module/disks" = {
           type = "custom/script";
           interval = 300;
@@ -70,16 +89,26 @@
         };
         "module/bluetooth" = {
           type = "custom/script";
-          exec = ''"bluetoothctl paired-devices | cut -d' ' -f2 | xargs -i -n1 bash -c "bluetoothctl info {} | grep -q 'Connected: yes' && bluetoothctl info {} | grep -o 'Alias: .*'" | awk -vORS=', ' '{sub($1 OFS,"")}1' | sed -e 's/, $//'" '';
-          exec-if = ''"$(bluetoothctl show | grep 'Powered: yes' | wc -l) -gt 0 ] && [ $(bluetoothctl show | grep 'Connected: yes' | wc -l) -gt 0 ]" '';
+          exec = "~/.config/polybar/scripts/bluetooth.sh";
+          format = "<label>";
+          format-font = 0;
           interval = 1;
-          # ;click-right = "blueman-manager &";
-          click-right = "blueberry &";
-          click-middle = "~/.config/polybar/scripts/toggle_bluetooth.sh &";
-          label = "";
-          # ;format-prefix = " ";
-          format-underline = "#2193ff";
+
+          click-right = "~/.config/polybar/scripts/toggle_bluetooth.sh &";
+          click-left = "blueberry &";
         };
+        # "module/bluetooth" = {
+        #   type = "custom/script";
+        #   exec = ''"bluetoothctl paired-devices | cut -d' ' -f2 | xargs -i -n1 bash -c "bluetoothctl info {} | grep -q 'Connected: yes' && bluetoothctl info {} | grep -o 'Alias: .*'" | awk -vORS=', ' '{sub($1 OFS,"")}1' | sed -e 's/, $//'" '';
+        #   exec-if = ''"$(bluetoothctl show | grep 'Powered: yes' | wc -l) -gt 0 ] && [ $(bluetoothctl show | grep 'Connected: yes' | wc -l) -gt 0 ]" '';
+        #   interval = 1;
+        #   # ;click-right = "blueman-manager &";
+        #   click-right = "blueberry &";
+        #   click-middle = "~/.config/polybar/scripts/toggle_bluetooth.sh &";
+        #   label = "";
+        #   # ;format-prefix = " ";
+        #   format-underline = "#2193ff";
+        # };
         "settings" = {
           screenchange-reload = true;
           pseudo-transparency = true;
