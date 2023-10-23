@@ -1,7 +1,7 @@
 { pkgs, lib, params, ... }:
-let
-  ifDefault = lib.mkIf (builtins.elem params.browser == "vivaldi");
-in
+# let
+  # ifDefault = lib.mkIf (builtins.elem params.browser == "vivaldi");
+# in
 {
 
   # Module installing vivaldi as default browser
@@ -15,11 +15,11 @@ in
     };
   };
 
-  xdg = {
-    mime.enable = ifDefault true;
-    mimeApps = {
-      enable = ifDefault true;
-      defaultApplications = ifDefault (import ./default-browser.nix "opera");
-    };
-  };
+  # xdg = {
+    # mime.enable = ifDefault true;
+    # mimeApps = {
+      # enable = ifDefault true;
+      # defaultApplications = ifDefault (import ./default-browser.nix "opera");
+    # };
+  # };
 }

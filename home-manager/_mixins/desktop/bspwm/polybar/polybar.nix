@@ -34,7 +34,7 @@
         };
         "bar/main" = {
           tray-position = "right";
-          monitor = "Virtual-1";
+          monitor = "eDP1";
           width = "100%";
           height = 18;
           padding-left = 1;

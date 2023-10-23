@@ -202,8 +202,8 @@
         "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
         "juca@rocinante-headless" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
         #"juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "mate"; platform = if isDarwin then "x86_64-darwin" else "x86_64-linux"; };
-        # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "xfce"; };
-        "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; };
+        "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "bspwm"; };
+        # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; };
         "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
         # Testing
         "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };

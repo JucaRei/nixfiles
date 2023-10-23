@@ -1,9 +1,13 @@
-_: {
+{pkgs, ...}: {
   imports = [
     # ../_mixins/apps/music/rhythmbox.nix
-    ../_mixins/apps/browser/opera.nix
+    ../_mixins/apps/text-editor/vscodium.nix
+    # ../_mixins/apps/browser/opera.nix
   ];
-  home.shellAliases = {
-    sudo = "doas";
+  home = {
+  	packages = with pkgs; [thorium];
+  	# shellAliases = {
+      # sudo = "doas";
+    # };
   };
 }

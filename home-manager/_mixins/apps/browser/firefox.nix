@@ -3,7 +3,7 @@ with lib;
 let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
 
-  ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
+  # ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
 
   sharedSettings = {
     # Privacy & Security Improvements
