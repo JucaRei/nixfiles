@@ -21,7 +21,17 @@
       compressor = "zstd";
       supportedFilesystems = [ "btrfs" ];
     };
-    kernelModules = [ "kvm-intel" "applesmc" "i915" "wl" "crc32c-intel" "z3fold" "lz4hc" "lz4hc_compress" ];
+    kernelModules = [
+      "kvm-intel"
+      "applesmc"
+      # "i915"
+      "i965"
+      "wl"
+      "crc32c-intel"
+      "z3fold"
+      "lz4hc"
+      "lz4hc_compress"
+    ];
     kernelParams = [
       "hid_apple.iso_layout=0"
       "hid_apple.swap_opt_cmd=1" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
@@ -182,8 +192,8 @@
   }];
 
   environment.systemPackages = with pkgs; [
-    unstable.tidal-dl
-    unstable.nvchad
+    # unstable.tidal-dl
+    # unstable.nvchad
     inxi
 
     xorg.xbacklight

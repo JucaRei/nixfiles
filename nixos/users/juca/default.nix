@@ -6,7 +6,7 @@ in
   # Only include desktop components if one is supplied.
   # imports = [ ] ++ lib.optional (builtins.isString desktop) ./desktop.nix;
   imports = [ ] ++ lib.optionals (desktop != null) [
-    ../../_mixins/apps/browser/firefox.nix
+    # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/apps/tools/filesync.nix
   ];

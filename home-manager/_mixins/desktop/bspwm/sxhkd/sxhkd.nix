@@ -88,8 +88,10 @@ _: {
         "XF86AudioRaiseVolume" = "pactl -- set-sink-volume 0 +10%"; # Raise volume
         "XF86AudioLowerVolume" = "pactl -- set-sink-volume 0 -10%"; # Lower volume
         "XF86AudioMicMute" = "pactl set-source-mute 1 toggle"; # Toggle mute mic audio
-        "XF86MonBrightnessDown" = "xbacklight -inc 10"; # Brightness down
-        "XF86MonBrightnessUp" = "xbacklight -dec 10";
+        "XF86KbdBrightnessUp" = "kbdlight up 2";
+        "XF86KbdBrightnessDown" = "kbdlight down 2";
+        "XF86MonBrightnessUp" = "xbacklight -inc 2"; # Brightness down
+        "XF86MonBrightnessDown" = "xbacklight -dec 2";
         # "XF86MonBrightnessDown" = "light -U  5"; # Brightness down
         # "XF86MonBrightnessUp" = "light -A 5";
 

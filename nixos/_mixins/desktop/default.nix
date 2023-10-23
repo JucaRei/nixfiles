@@ -45,7 +45,7 @@
   # };
   hardware = {
     # smooth backlight control
-    brillo.enable = true;
+    # brillo.enable = true;
   };
 
   environment = {

@@ -84,7 +84,7 @@ with lib.hm.gvariant;
   home = {
     packages = with pkgs; [
       kitty
-      yad
+      # yad
       # gnome.nautilus
       # gnome.nautilus-python
       # gnome.sushi
@@ -97,15 +97,16 @@ with lib.hm.gvariant;
       gtk_engines
       gtk-engine-murrine
       imagemagick
-      parcellite
+      # parcellite
       blueberry
       xclip
       gpick
+      kbdlight
       # tint2
       moreutils
-      nix-shell -p xbindkeys-config
-      recode
-      plank
+      # xbindkeys-config
+      # recode
+      # plank
       redshift
       # glava
       tokyo-night-gtk
@@ -114,8 +115,8 @@ with lib.hm.gvariant;
       # pomodoro
       xdo
       wmctrl
-      i3lock-color
-      networkmanager_dmenu
+      # i3lock-color
+      # networkmanager_dmenu
       conky
       zscroll
       rnnoise-plugin

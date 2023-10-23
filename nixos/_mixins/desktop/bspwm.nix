@@ -62,12 +62,12 @@
       xclip # Clipboard
       kitty
       pamixer
-      i3lock-fancy
+      # i3lock-fancy
       papirus-icon-theme
       bsp-layout
       betterlockscreen
-      gamemode
-      gnomeExtensions.gamemode
+      # gamemode
+      # gnomeExtensions.gamemode
       xorg.xev # Event Viewer
       xorg.xkill # Process Killer
       xorg.xrandr # Monitor Settings

@@ -1,6 +1,6 @@
 { config, desktop, pkgs, username, lib, ... }: {
   imports = [
-    ../services/emote.nix
+    # ../services/emote.nix
 
     # (./. + "./${desktop}")
     # ../apps/documents/libreoffice.nix
