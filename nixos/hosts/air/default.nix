@@ -24,8 +24,8 @@
     kernelModules = [
       "kvm-intel"
       "applesmc"
-      # "i915"
-      "i965"
+      "i915"
+      # "i965"
       "wl"
       "crc32c-intel"
       "z3fold"
