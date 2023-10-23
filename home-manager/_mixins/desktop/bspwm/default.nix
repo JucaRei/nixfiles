@@ -47,13 +47,17 @@ with lib.hm.gvariant;
 
         # bspc monitor -d 1 2 3 4 5 6 7 8
 
-        bspc config border_width                2
-        bspc config focused_border_color        "#56949f"
-        bspc config normal_border_color         "#908caa"
-        bspc config window_gap                  2
+        bspc config border_width                3
+        bspc config borderless_monocle          false
+        bspc config ga1pless_monocle            false
+        bspc config focused_border_color        "#81A1C1"
+        bspc config normal_border_color         "#434c5e"
+        bspc config urgent_border_color         "#88C0D0"
+        bspc config presel_border_color         "#8FBCBB"
+        bspc config presel_feedback_color       "#B48EAD"
+        bspc config window_gap                  8
 
-        bspc config split_ratio                 0.52
-        bspc config ga1pless_monocle            true
+        bspc config split_ratio                 0.5
         bspc config focus_follows_pointer       true
         bspc config focus_follows_pointer       true
 
@@ -63,7 +67,7 @@ with lib.hm.gvariant;
         bspc config pointer_action3 						resize_corner
 
         #bspc config border_width         2
-        #bspc config window_gap          20
+        #bspc config window_gap           8
         #bspc config border_radius	      12
 
         #bspc config normal_border_color \#c0caf5
@@ -84,6 +88,16 @@ with lib.hm.gvariant;
         #bspc rule -a Rofi state=floating
         #bspc rule -a GLava state=floating layer=below sticky=true locked=true border=off focus=off center=true follow=off rectangle=1920x1080+0+0
       '';
+      rules = {
+        "mpv" = {
+          state = "floating";
+          center = true;
+        };
+        "nemo" = {
+          state = "floating";
+          center = true;
+        };
+      };
     };
   };
   home = {
