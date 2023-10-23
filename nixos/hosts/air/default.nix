@@ -182,7 +182,7 @@
   };
 
   swapDevices = [{
-    device = "/dev/disk/by-partlabel/SWAP";
+    device = "/dev/disk/by-label/SWAP";
     options = [ "defaults" "noatime" ];
     ### SWAPFILE
     #device = "/swap/swapfile";
