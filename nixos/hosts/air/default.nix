@@ -10,6 +10,7 @@
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/graphics/intel-old.nix
     ../../_mixins/hardware/sound/pipewire.nix
+    ../../_mixins/services/security/doas.nix
     ../../_mixins/virtualization
   ];
 
