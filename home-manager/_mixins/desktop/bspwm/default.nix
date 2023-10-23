@@ -103,6 +103,7 @@ with lib.hm.gvariant;
       gpick
       # tint2
       moreutils
+      nix-shell -p xbindkeys-config
       recode
       plank
       redshift

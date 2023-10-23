@@ -7,7 +7,7 @@ _: {
         "super + @space" = "rofi -show drun -show-icons"; # program launcher
         "super + Escape" = "pkill -USR1 -x sxhkd"; # make sxhkd reload its configuration files
         "super + e" = "nemo";
-		"super + b" = "thorium";
+        "super + b" = "thorium";
 
         # Bspwm hotkeys
         "super + alt + {q,r}" = "bscp {quit,wm -r}"; #quit/restart bspwm
@@ -88,8 +88,10 @@ _: {
         "XF86AudioRaiseVolume" = "pactl -- set-sink-volume 0 +10%"; # Raise volume
         "XF86AudioLowerVolume" = "pactl -- set-sink-volume 0 -10%"; # Lower volume
         "XF86AudioMicMute" = "pactl set-source-mute 1 toggle"; # Toggle mute mic audio
-        "XF86MonBrightnessDown" = "light -U  5"; # Brightness down
-        "XF86MonBrightnessUp" = "light -A 5";
+        "XF86MonBrightnessDown" = "xbacklight -inc 10"; # Brightness down
+        "XF86MonBrightnessUp" = "xbacklight -dec 10";
+        # "XF86MonBrightnessDown" = "light -U  5"; # Brightness down
+        # "XF86MonBrightnessUp" = "light -A 5";
 
         # Volume Up
         # "XF86AudioRaiseVolume" = "amixer sset Master 5%+ && $HOME/.config/eww/Misc/scripts/volume";
