@@ -10,28 +10,28 @@
   xdg = {
     configFile = {
       "rofi/colors.rasi" = {
-        text = builtins.readFile ./colors.rasi;
+        text = builtins.readFile ./config/colors.rasi;
       };
       "rofi/confirm.rasi" = {
-        text = builtins.readFile ./confirm.rasi;
+        text = builtins.readFile ./config/confirm.rasi;
       };
       "rofi/launcher.rasi" = {
-        text = builtins.readFile ./launcher.rasi;
+        text = builtins.readFile ./config/launcher.rasi;
       };
       "rofi/message.rasi" = {
-        text = builtins.readFile ./message.rasi;
+        text = builtins.readFile ./config/message.rasi;
       };
       "rofi/networkmenu.rasi" = {
-        text = builtins.readFile ./networkmenu.rasi;
+        text = builtins.readFile ./config/networkmenu.rasi;
       };
       "rofi/rofi-network-manager.rasi" = {
-        text = builtins.readFile ./rofi-network-manager.rasi;
+        text = builtins.readFile ./config/rofi-network-manager.rasi;
       };
       "rofi/powermenu.rasi" = {
-        text = builtins.readFile ./powermenu.rasi;
+        text = builtins.readFile ./config/powermenu.rasi;
       };
       "rofi/styles.rasi" = {
-        text = builtins.readFile ./styles.rasi;
+        text = builtins.readFile ./config/styles.rasi;
       };
       "rofi/bin/launcher.sh" = {
         executable = true;

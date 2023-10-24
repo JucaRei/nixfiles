@@ -82,7 +82,7 @@
         "module/disks" = {
           type = "custom/script";
           interval = 300;
-          format-prefix = " ";
+          format-prefix = " 󰋊";
           format = "<label>";
           label-padding = 1;
           exec = "~/.config/polybar/scripts/disks";
