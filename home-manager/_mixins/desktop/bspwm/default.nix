@@ -4,8 +4,8 @@ with lib.hm.gvariant;
   imports = [
     ./sxhkd/sxhkd.nix
     ./dunst/dunst.nix
-    # ./polybar/polybar-alt.nix
-    ./polybar/polybar.nix
+    ./polybar/poly-nord.nix
+    # ./polybar/polybar.nix
     ./picom/picom.nix
     ./rofi/rofi.nix
   ];
@@ -32,8 +32,8 @@ with lib.hm.gvariant;
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-0' | awk '{print $1}')
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
         EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
-        # INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
             if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
@@ -112,6 +112,7 @@ with lib.hm.gvariant;
       cinnamon.nemo
       # cinnamon.nemo-with-extensions
       cinnamon.nemo-fileroller
+      nordic
       lxappearance
       # gtk_engines
       # gtk-engine-murrine
