@@ -34,9 +34,9 @@
         };
         "bar/main" = {
           tray-position = "right";
-          # monitor = "eDP1";
+          monitor = "eDP1";
           # monitor = "eDP-1";
-          monitor = "Virtual-1";
+          # monitor = "Virtual-1";
           width = "100%";
           height = 18;
           padding-left = 1;
@@ -54,9 +54,9 @@
           wm-restack = "bspwm";
 
           modules-left = "round-left bspwm round-right empty-space round-left polywins round-right";
-          modules-center = "title";
+          modules-center = "nowplaying title";
           # modules-right = "disks temperature round-left cpu round-right mem xbacklight alsa pulseaudio bluetooth wlan eth updates round-left time round-right powermenu";
-          modules-right = "disks temperature round-left cpu round-right mem xbacklight pulseaudio bluetooth wlan eth updates round-left time round-right powermenu";
+          modules-right = "disks temperature round-left cpu round-right mem xbacklight pulseaudio bluetooth wlan eth round-left time round-right battery powermenu";
           font-0 = "JetBrainsMono Nerd Font:style=Bold:pixelsize=9;3";
           font-1 = "JetBrainsMono Nerd Font:size=14;4";
           font-2 = "Material Design Icons:style=Bold:size=9;3";
@@ -159,6 +159,7 @@
           interval = 1;
           format = " <label>";
           exec = ''playerctl metadata --format "{{ artist }} - {{ title }}"'';
+          label-maxlen = "20..";
         };
         "module/pulseaudio" = {
           type = "internal/pulseaudio";
@@ -464,8 +465,8 @@
         "module/xbacklight" = {
           type = "internal/xbacklight";
           format = "<label>";
-          format-prefix = "  ";
-          label = "%percentage%";
+          format-prefix = " ";
+          label = "%p@ercentage%";
           format-prefix-foreground = "#61afef";
           label-foreground = "#D8DEE9";
           format-padding = 1;
@@ -514,10 +515,11 @@
           type = "internal/cpu";
           interval = 2.5;
 
-          format-prefix = "  ";
+          format-prefix = " ";
           format = "<label>";
 
-          label = "CPU %percentage%%";
+          # label = "CPU %percentage%%";
+          label = "%percentage%%";
           format-background = "#2a2e36";
           format-foreground = "#989cff";
         };
@@ -532,7 +534,7 @@
           format-foreground = "#99CEF0";
 
           label = "  %title%";
-          label-maxlen = "15 ...";
+          label-maxlen = "18 ...";
         };
       };
     };

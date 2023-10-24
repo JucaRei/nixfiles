@@ -62,10 +62,10 @@
       xclip # Clipboard
       kitty
       pamixer
-      # i3lock-fancy
+      i3lock-fancy
       papirus-icon-theme
-      bsp-layout
-      betterlockscreen
+      # bsp-layout
+      # betterlockscreen
       # gamemode
       # gnomeExtensions.gamemode
       xorg.xev # Event Viewer
@@ -73,8 +73,8 @@
       xorg.xrandr # Monitor Settings
       xorg.xinit
       xorg.xsetroot
-      python311Packages.xdg
-      python311Packages.pytz
+      # python311Packages.xdg
+      # python311Packages.pytz
       xfce.xfce4-settings
       xfce.xfce4-power-manager
     ];

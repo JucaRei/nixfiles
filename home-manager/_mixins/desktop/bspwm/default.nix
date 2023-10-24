@@ -6,7 +6,7 @@ with lib.hm.gvariant;
     ./dunst/dunst.nix
     # ./polybar/polybar-alt.nix
     ./polybar/polybar.nix
-    # ./picom/picom.nix
+    ./picom/picom.nix
     ./rofi/rofi.nix
   ];
   xsession = {
@@ -32,8 +32,8 @@ with lib.hm.gvariant;
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-0' | awk '{print $1}')
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
         EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
-        # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
+        # INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
             if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
@@ -113,20 +113,20 @@ with lib.hm.gvariant;
       # cinnamon.nemo-with-extensions
       cinnamon.nemo-fileroller
       lxappearance
-      gtk_engines
-      gtk-engine-murrine
+      # gtk_engines
+      # gtk-engine-murrine
       imagemagick
       # parcellite
       blueberry
       xclip
-      gpick
+      # gpick
       kbdlight
       # tint2
-      moreutils
+      # moreutils
       # xbindkeys-config
       # recode
       # plank
-      redshift
+      # redshift
       # glava
       tokyo-night-gtk
       lsof
@@ -136,10 +136,10 @@ with lib.hm.gvariant;
       wmctrl
       # i3lock-color
       # networkmanager_dmenu
-      conky
-      zscroll
-      rnnoise-plugin
-      jgmenu
+      # conky
+      # zscroll
+      # rnnoise-plugin
+      # jgmenu
       mate.mate-polkit
       yaru-theme
       brightnessctl
