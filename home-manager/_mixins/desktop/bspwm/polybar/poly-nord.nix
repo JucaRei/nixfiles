@@ -7,7 +7,7 @@
       enable = true;
       package = pkgs.polybarFull;
       script = "";
-      settings = builtins.readFile ./poly-themes/config-nord.ini;
+      config = ./poly-themes/config-nord.ini;
     };
   };
 }

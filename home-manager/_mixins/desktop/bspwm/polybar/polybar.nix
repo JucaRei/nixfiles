@@ -157,7 +157,7 @@
           type = "custom/script";
           tail = true;
           interval = 1;
-          format = " <label> ";
+          format = "󰫔 <label> "; # 󰷞 󰽴 󰽱 󱂵
           exec = ''playerctl metadata --format "{{ artist }} - {{ title }}"'';
           label-maxlen = "20..";
         };
@@ -200,11 +200,13 @@
         "module/round-left" = {
           type = "custom/text";
           content = "%{T3}%{T-}";
+          # content = "%{T3}%{T-}";
           content-foreground = "#2a2e36";
         };
         "module/round-right" = {
           type = "custom/text";
           content = "%{T3}%{T-}";
+          # content = "%{T3}%{T-}";
           content-foreground = "#2a2e36";
         };
         "module/roundd-left" = {
@@ -245,13 +247,13 @@
 
           ws-icon-0 = "1;%{F#a4ebf3}";
           ws-icon-1 = "2;%{F#ff9b93}";
-          ws-icon-2 = "3;%{F#95e1d3}";
-          ws-icon-3 = "4;%{F#81A1C1}";
-          ws-icon-4 = "5;%{F#A3BE8C}";
+          ws-icon-2 = "3;%{F#95e1d3}󱂵";
+          ws-icon-3 = "4;%{F#81A1C1}";
+          ws-icon-4 = "5;%{F#A3BE8C}"; #   󰇩 󰌔  
           ws-icon-5 = "6;%{F#EB721E}";
           ws-icon-6 = "7;%{F#6cb5ed}";
           ws-icon-7 = "8;%{F#545862}";
-          #
+          # 󰂱 󰂳 󰂰 󰂯 󰑍 󰕼 󰚀 󰡨
 
           label-separator = " ";
           label-separator-background = "#2a2e36";
