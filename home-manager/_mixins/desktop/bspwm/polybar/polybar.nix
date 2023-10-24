@@ -56,7 +56,7 @@
           modules-left = "round-left bspwm round-right empty-space round-left polywins round-right";
           modules-center = "nowplaying title";
           # modules-right = "disks temperature round-left cpu round-right mem xbacklight alsa pulseaudio bluetooth wlan eth updates round-left time round-right powermenu";
-          modules-right = "disks temperature round-left cpu round-right mem xbacklight pulseaudio bluetooth wlan eth round-left time round-right battery powermenu";
+          modules-right = "disks temperature round-left cpu round-right mem pulseaudio bluetooth wlan eth round-left time round-right battery powermenu";
           font-0 = "JetBrainsMono Nerd Font:style=Bold:pixelsize=9;3";
           font-1 = "JetBrainsMono Nerd Font:size=14;4";
           font-2 = "Material Design Icons:style=Bold:size=9;3";
@@ -157,7 +157,7 @@
           type = "custom/script";
           tail = true;
           interval = 1;
-          format = " <label>";
+          format = " <label> ";
           exec = ''playerctl metadata --format "{{ artist }} - {{ title }}"'';
           label-maxlen = "20..";
         };

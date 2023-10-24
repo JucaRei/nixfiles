@@ -22,7 +22,7 @@ with lib.hm.gvariant;
         # "flameshot"
         "dunst"
         "nm-applet --indicator"
-        "polybar main"
+        # "polybar main"
         # "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
