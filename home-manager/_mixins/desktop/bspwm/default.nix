@@ -5,7 +5,8 @@ with lib.hm.gvariant;
     ./sxhkd/sxhkd.nix
     ./dunst/dunst.nix
     # ./polybar/poly-nord.nix
-    ./polybar/polybar.nix
+    # ./polybar/polybar.nix
+    ./polybar/polybar-test.nix
     ./picom/picom.nix
     # ./rofi/rofi.nix
     ./rofi/rofi-alucard.nix

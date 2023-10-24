@@ -7,7 +7,7 @@ listview {
 }
 
 inputbar {
-  width: 800px;
+  width: 600px;
 }
 
 textbox-icon {

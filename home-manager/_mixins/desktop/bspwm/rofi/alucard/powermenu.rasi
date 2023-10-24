@@ -6,7 +6,7 @@
 
 window {
   children: [ listview ];
-  width: 500px;
+  width: 300px;
 }
 
 listview {

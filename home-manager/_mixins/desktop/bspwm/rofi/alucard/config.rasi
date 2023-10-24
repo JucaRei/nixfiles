@@ -40,7 +40,7 @@ configuration {
 
 /**** Layout ****/
 window {
-  width:    1000px;
+  width:    600px;
   y-offset: -50px;
   anchor:   north;
   location: center;
