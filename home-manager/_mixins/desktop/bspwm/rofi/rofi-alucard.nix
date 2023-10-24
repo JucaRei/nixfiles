@@ -8,9 +8,14 @@
     };
   };
   xdg = {
-    configFile = {
-      "rofi".source = "./rofi-alucard";
-      recursive = true;
+    configFile."rofi".source = builtins.path {
+      path = ./alucard;
+      # name = "";
     };
   };
+
+  # home.file.".vim".source = builtins.path {
+  #   path = ./config;
+  #   name = "vim-config";
+  # };
 }
