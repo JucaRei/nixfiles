@@ -3,9 +3,11 @@ with lib.hm.gvariant;
 {
   imports = [
     ./sxhkd/sxhkd.nix
-    ./dunst/dunst.nix
+    # ./dunst/dunst.nix
+    ./dunst/dunst2.nix
     # ./polybar/poly-nord.nix
-    ./polybar/polybar.nix
+    # ./polybar/polybar.nix
+    ./polybar/onedark-poly.nix
     ./picom/picom.nix
     ./rofi/rofi.nix
     # ./rofi/rofi-alucard.nix
@@ -59,8 +61,7 @@ with lib.hm.gvariant;
         bspc config window_gap                  8
 
         bspc config split_ratio                 0.5
-        bspc config focus_follows_pointer       true
-        bspc config focus_follows_pointer       true
+        bspc config focus_follows_pointer       false
 
         bspc config pointer_modifier 						mod4
         bspc config pointer_action1 						move

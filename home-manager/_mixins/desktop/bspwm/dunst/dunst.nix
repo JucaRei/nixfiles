@@ -15,11 +15,11 @@
           monitor = 0;
           follow = "none";
           width = 300;
-          # height = 500;
+          height = 80;
           # origin = "bottom-right";
           origin = "top-right";
           # offset = "50x50";
-          offset = "20x50";
+          offset = "10x48";
           scale = 0;
           notification_limit = 0;
           progress_bar = true;
