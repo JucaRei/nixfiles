@@ -1,4 +1,4 @@
-{ username, pkgs, config, ... }: {
+{ username, pkgs, config, lib, ... }: {
 
   services = {
     xserver = {
@@ -36,7 +36,7 @@
       libinput = {
         enable = true;
         touchpad = {
-          tapping = true;
+          tapping = lib.mkDefault true;
           scrollMethod = "twofinger";
           naturalScrolling = true;
           accelProfile = "adaptive";
@@ -63,7 +63,7 @@
   environment = {
     systemPackages = with pkgs; [
       xclip # Clipboard
-      kitty
+      # kitty
       pamixer
       i3lock-fancy
       papirus-icon-theme
@@ -71,14 +71,14 @@
       # betterlockscreen
       # gamemode
       # gnomeExtensions.gamemode
-      xorg.xev # Event Viewer
-      xorg.xkill # Process Killer
-      xorg.xrandr # Monitor Settings
-      xorg.xinit
-      xorg.xsetroot
+      # xorg.xev # Event Viewer
+      # xorg.xkill # Process Killer
+      # xorg.xrandr # Monitor Settings
+      # xorg.xinit
+      # xorg.xsetroot
       # python311Packages.xdg
       # python311Packages.pytz
-      xfce.xfce4-settings
+      # xfce.xfce4-settings
       xfce.xfce4-power-manager
     ];
   };

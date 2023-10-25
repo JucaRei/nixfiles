@@ -6,7 +6,8 @@ let
     projects = "fd '.git$' ~ -I -t d -t f -d 3 -H -x dirname | sk | tr -d '\n'";
     files = "fd '.*' '.' --hidden -E '.git*' | sk";
     history = "history | sk --tac --no-sort | awk '{$1=\"\"}1'";
-    rg = "sk --ansi -i -c 'rg --color=never --line-number \"{}\" .'";
+    # rg = "sk --ansi -i -c 'rg --color=never --line-number \"{}\" .'";
+    rg = ''sk --ansi -i -c "${pkgs.ripgrep} --color=never --line-number \'{}\' ."'';
   };
 in
 {

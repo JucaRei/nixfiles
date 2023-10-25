@@ -1,16 +1,20 @@
 { config, lib, pkgs, username, ... }:
 with lib.hm.gvariant;
+let
+  browser = "thorium";
+  terminal = "alacritty";
+in
 {
   imports = [
-    ./sxhkd/sxhkd.nix
-    # ./dunst/dunst.nix
-    ./dunst/dunst2.nix
-    # ./polybar/poly-nord.nix
-    # ./polybar/polybar.nix
-    ./polybar/onedark-poly.nix
-    ./picom/picom.nix
-    ./rofi/rofi.nix
-    # ./rofi/rofi-alucard.nix
+    ./themes/default/sxhkd/sxhkd.nix
+    # ./themes/default/dunst/dunst.nix
+    ./themes/default/dunst/dunst2.nix
+    # ./themes/default/polybar/poly-nord.nix
+    ./themes/default/polybar/polybar.nix
+    # ./themes/default/polybar/onedark-poly.nix
+    ./themes/default/picom/picom.nix
+    ./themes/default/rofi/rofi.nix
+    # ./themes/default/rofi/rofi-alucard.nix
   ];
   xsession = {
     enable = true;
@@ -104,7 +108,11 @@ with lib.hm.gvariant;
   };
   home = {
     packages = with pkgs; [
-      kitty
+      # pamixer
+      # i3lock-fancy
+
+      # kitty
+      flameshot
       # yad
       # gnome.nautilus
       # gnome.nautilus-python
@@ -115,6 +123,7 @@ with lib.hm.gvariant;
       # cinnamon.nemo-with-extensions
       cinnamon.nemo-fileroller
       nordic
+      archiver
       lxappearance
       # gtk_engines
       # gtk-engine-murrine
@@ -164,6 +173,7 @@ with lib.hm.gvariant;
       font-awesome
       hack-font
       inter
+      twemoji-color-font
       (nerdfonts.override {
         fonts = [ "DroidSansMono" "LiberationMono" "Iosevka" "Hasklig" "JetBrainsMono" "FiraCode" ];
       })
@@ -180,8 +190,8 @@ with lib.hm.gvariant;
 
     sessionVariables = {
       # EDITOR = "nvim";
-      BROWSER = "thorium";
-      # TERMINAL = "kitty";
+      BROWSER = "${browser}";
+      TERMINAL = "${terminal}";
       GLFW_IM_MODULE = "ibus";
       LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
       QT_QPA_PLATFORMTHEME = "gtk3";

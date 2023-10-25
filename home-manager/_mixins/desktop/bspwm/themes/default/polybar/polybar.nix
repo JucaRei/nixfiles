@@ -53,7 +53,7 @@
           line-size = 1;
           wm-restack = "bspwm";
 
-          modules-left = "round-left bspwm round-right empty-space round-left polywins round-right";
+          modules-left = "menu sep round-left bspwm round-right empty-space round-left polywins round-right";
           modules-center = "nowplaying title";
           # modules-right = "disks temperature round-left cpu round-right mem xbacklight alsa pulseaudio bluetooth wlan eth updates round-left time round-right powermenu";
           modules-right = "disks temperature round-left cpu round-right mem pulseaudio bluetooth wlan eth round-left time round-right battery powermenu";
@@ -79,6 +79,12 @@
         #   module-margin-left = 0;
         #   module-margin-right = 0;
         # };
+        "module/sep" = {
+          type = "custom/text";
+          content = "  ";
+          content-background = "\${colors.background}";
+          content-foreground = "\${colors.background}";
+        };
         "module/disks" = {
           type = "custom/script";
           interval = 300;
@@ -234,6 +240,19 @@
           ramp-foreground = "#a4ebf3";
           #
         };
+        "module/menu" = {
+          type = "custom/text";
+
+          content = "";
+          content-font = 12;
+          content-background = "\${colors.background}";
+          content-foreground = "\${colors.color4}";
+          content-padding = 0;
+
+          click-left = "~/.config/bspwm/scripts/rofi_launcher";
+          click-right = "~/.config/bspwm/scripts/rofi_runner";
+
+        };
         "module/bspwm" = {
           type = "internal/bspwm";
 
@@ -331,7 +350,7 @@
           exec = "~/.config/polybar/scripts/memory";
           format = "<label>";
           interval = 2;
-          format-prefix = " ";
+          format-prefix = " ";
           label = "%output%MB";
           label-padding = 1;
           format-prefix-foreground = "#F4E8C1";
@@ -490,11 +509,12 @@
           label = "%percentage%%";
 
           # ; Only applies if <ramp> is used
-          ramp-0 = "";
-          ramp-1 = "";
-          ramp-2 = "";
-          ramp-3 = "";
-          ramp-4 = "";
+          ramp-0 = "󰃜";
+          ramp-1 = "󰃛";
+          ramp-2 = "󰃝";
+          ramp-3 = "󰃟";
+          ramp-4 = "󰃠";
+          ramp-5 = "󰃚";
 
           # ; Only applies if <bar> is used
           bar-width = 10;
@@ -515,9 +535,9 @@
         };
         "module/cpu" = {
           type = "internal/cpu";
-          interval = 2.5;
+          interval = 2.0;
 
-          format-prefix = " ";
+          format-prefix = " "; #
           format = "<label>";
 
           # label = "CPU %percentage%%";
