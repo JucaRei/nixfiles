@@ -3,7 +3,7 @@ _: {
     sxhkd = {
       enable = true;
       keybindings = {
-        "super + Return" = "kitty"; # terminal emulator
+        "super + Return" = "alacritty"; # terminal emulator
         "super + @space" = "rofi -show drun -show-icons"; # program launcher
         "super + Escape" = "pkill -USR1 -x sxhkd"; # make sxhkd reload its configuration files
         "super + e" = "nemo";

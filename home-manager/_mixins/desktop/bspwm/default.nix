@@ -10,7 +10,8 @@ in
     # ./themes/default/dunst/dunst.nix
     ./themes/default/dunst/dunst2.nix
     # ./themes/default/polybar/poly-nord.nix
-    ./themes/default/polybar/polybar.nix
+    # ./themes/default/polybar/polybar.nix
+    ./themes/everforest/path.nix
     # ./themes/default/polybar/onedark-poly.nix
     ./themes/default/picom/picom.nix
     ./themes/default/rofi/rofi.nix
