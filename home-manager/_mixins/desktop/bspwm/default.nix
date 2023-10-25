@@ -6,16 +6,7 @@ let
 in
 {
   imports = [
-    ./themes/default/sxhkd/sxhkd.nix
-    # ./themes/default/dunst/dunst.nix
-    ./themes/default/dunst/dunst2.nix
-    # ./themes/default/polybar/poly-nord.nix
-    # ./themes/default/polybar/polybar.nix
-    ./themes/everforest/path.nix
-    # ./themes/default/polybar/onedark-poly.nix
-    ./themes/default/picom/picom.nix
-    ./themes/default/rofi/rofi.nix
-    # ./themes/default/rofi/rofi-alucard.nix
+    ./themes/default
   ];
   xsession = {
     enable = true;
@@ -52,6 +43,17 @@ in
                 bspc monitor "$INTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8
             fi
         fi
+
+        workspaces() {
+          name=1
+          for monitor in `bspc query -M`; do
+            #bspc monitor "$\{monitor}" -n "$name" -d '一' '二' '三' '四' '五' '六' '七'
+            bspc monitor $\{monitor} -n "$name" -d I II III IV V VI VII VIII IX X
+            let name++
+          done
+        }
+
+        workspaces
 
         # bspc monitor -d 1 2 3 4 5 6 7 8
 

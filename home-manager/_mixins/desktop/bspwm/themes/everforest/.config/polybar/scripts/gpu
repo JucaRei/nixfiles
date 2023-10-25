@@ -1,1 +1,0 @@
-supergfxctl -g
