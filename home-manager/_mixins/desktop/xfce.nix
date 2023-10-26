@@ -108,6 +108,7 @@ with lib.hm.gvariant;
   home = {
     packages = with pkgs; [
       plank
+      tokyo-night-gtk
     ];
   };
 }

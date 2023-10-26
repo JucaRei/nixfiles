@@ -13,29 +13,21 @@
       gparted
       gthumb
       networkmanagerapplet
-      xdotool
       xfce.catfish
       xfce.orage
       xfce.gigolo
       xfce.xfce4-appfinder
-      xfce.xfce4-clipman-plugin
-      xfce.xfce4-fsguard-plugin
-      xfce.xfce4-genmon-plugin
-      xfce.xfce4-netload-plugin
       xfce.xfce4-panel
       xfce.xfce4-session
       xfce.xfce4-settings
-      xfce.xfce4-systemload-plugin
       xfce.xfce4-power-manager
       xfce.xfce4-terminal
       xfce.xfce4-screensaver
-      xfce.xfce4-screenshooter
       xfce.xfce4-pulseaudio-plugin
       xfce.xfce4-systemload-plugin
       xfce.xfce4-weather-plugin
       xfce.xfce4-whiskermenu-plugin
       xfce.xfce4-xkb-plugin
-      xorg.xev
       xsel
       zuki-themes
       # inputs.nix-software-center.packages.${system}.nix-software-center
