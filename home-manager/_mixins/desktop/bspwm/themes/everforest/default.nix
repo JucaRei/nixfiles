@@ -2,7 +2,7 @@ _: {
   imports = [
     ./dunst.nix
     ./picom.nix
-    ./xresources.nix
+    # ./xresources.nix
     # ./polybar.nix
     ./polybar-test.nix
   ];

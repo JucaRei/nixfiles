@@ -165,7 +165,7 @@ in
       playerctl
       # maim
       feh
-      # rofi
+      rofi
       # rofi-calc
       picom
       papirus-icon-theme
