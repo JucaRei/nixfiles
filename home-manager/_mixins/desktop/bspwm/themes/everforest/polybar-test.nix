@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   imports = [
     ../default/polybar/scripts.nix
   ];
@@ -9,10 +9,13 @@
       script = "";
     };
   };
-  xdg = {
-    configFile = {
-      "polybar".source = builtins.path {
-        path = ../../../config/polybar-everforest;
+  home = {
+    file = {
+      # ".config/polybar".source = builtins.path {
+      #   path = ../../../../config/polybar-everforest;
+      # };
+      ".config/polybar" = {
+        source = ../../../../config/polybar-everforest;
       };
     };
   };
