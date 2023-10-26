@@ -1,7 +1,7 @@
-_: {
+{ lib, ... }: {
   home = {
     file = {
-      ".Xresources" = {
+      ".Xresources" = lib.mkForce {
         text = ''
           ! special
           *.foreground:   #d3c6aa
