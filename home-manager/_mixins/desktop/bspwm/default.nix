@@ -6,7 +6,8 @@ let
 in
 {
   imports = [
-    ./themes/default
+    # ./themes/default
+    ./themes/everforest
     ./sxhkd.nix
   ];
   xsession = {
