@@ -7,6 +7,7 @@ in
 {
   imports = [
     ./themes/default
+    ./sxhkd.nix
   ];
   xsession = {
     enable = true;
