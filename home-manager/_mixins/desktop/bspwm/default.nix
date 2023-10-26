@@ -15,13 +15,14 @@ in
       enable = true;
       alwaysResetDesktops = true;
       startupPrograms = [
+        "killall -9 picom sxhkd dunst xfce4-power-manager ksuperkey eww oneko sct"
         "pgrep -x sxhkd > /dev/null || sxhkd"
         "xfce4-power-manager"
         "xsetroot -cursor_name left_ptr"
         # "flameshot"
-        "dunst"
+        "dunst -config $HOME/.config/dunst/dunstrc"
         "nm-applet --indicator"
-        # "polybar main"
+        # "picom --config $HOME/.config/picom/picom.conf"
         # "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
