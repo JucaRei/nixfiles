@@ -7,6 +7,7 @@ _: {
     # ./dunst/dunst.nix
     ../everforest/dunst.nix
     ../everforest/picom.nix
-    ../everforest/polybar.nix
+    # ../everforest/polybar.nix
+    ../everforest/polybar-test.nix
   ];
 }

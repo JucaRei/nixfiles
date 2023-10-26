@@ -46,9 +46,9 @@
           font-5 = "Maple Mono SC NF:size=11;2";
           # dpi = 96;
 
-          modules-left = "sep launcher blok bspwm sep";
+          modules-left = "launcher blok bspwm LD polywins RRD";
           modules-center = "";
-          modules-right = "sep network blok2 audio blok memory_bar blok battery blok date blok powermenu sep";
+          modules-right = "sep network blok2 audio blok memory_bar blok bi cpu_bar bd blok date blok powermenu";
 
           spacing = 0;
           separator = "";
@@ -98,6 +98,18 @@
           type = "custom/text";
           content = " ";
           content-background = "\${color.background}";
+        };
+        "module/round-left" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          # content = "%{T3}%{T-}";
+          content-foreground = "#2a2e36";
+        };
+        "module/round-right" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          # content = "%{T3}%{T-}";
+          content-foreground = "#2a2e36";
         };
         "module/sep" = {
           type = "custom/text";
@@ -679,6 +691,15 @@
           tail = false;
           interval = 960;
         };
+        "module/polywins" = {
+          type = "custom/script";
+          exec = "~/.config/polybar/scripts/polywins 2>/dev/null";
+          format = "<label>";
+          format-background = "#2a2e36";
+          label = "%output%";
+          label-padding = 0;
+          tail = true;
+        };
         # ; https://github.com/gh0stzk/dotfiles By z0mbi3
 
         "color" = {
@@ -749,7 +770,7 @@
   };
   home = {
     file = {
-      "polybar/scripts/powermenu" = {
+      ".config/polybar/scripts/powermenu" = {
         executable = true;
         text = ''
           #!/bin/sh
@@ -773,7 +794,7 @@
 
         '';
       };
-      "polybar/scripts/weather-plugin.sh" = {
+      "./config/polybar/scripts/weather-plugin.sh" = {
         executable = true;
         text = ''
           #!/bin/bash
