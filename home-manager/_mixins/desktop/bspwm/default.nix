@@ -1,7 +1,7 @@
 { config, lib, pkgs, username, ... }:
 with lib.hm.gvariant;
 let
-  browser = "thorium";
+  browser = "brave";
   terminal = "alacritty";
 in
 {

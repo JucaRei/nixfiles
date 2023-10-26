@@ -91,16 +91,16 @@
           format-prefix = " 󰋊";
           format = "<label>";
           label-padding = 1;
-          exec = "~/.config/polybar/scripts/disks";
+          exec = "~/.local/polybar/scripts/disks";
         };
         "module/bluetooth" = {
           type = "custom/script";
-          exec = "~/.config/polybar/scripts/bluetooth.sh";
+          exec = "~/.local/polybar/scripts/bluetooth.sh";
           format = "<label>";
           format-font = 0;
           interval = 1;
 
-          click-right = "~/.config/polybar/scripts/toggle_bluetooth.sh &";
+          click-right = "~/.local/polybar/scripts/toggle_bluetooth.sh &";
           click-left = "blueberry &";
         };
         # "module/bluetooth" = {
@@ -110,7 +110,7 @@
         #   interval = 1;
         #   # ;click-right = "blueman-manager &";
         #   click-right = "blueberry &";
-        #   click-middle = "~/.config/polybar/scripts/toggle_bluetooth.sh &";
+        #   click-middle = "~/.local/polybar/scripts/toggle_bluetooth.sh &";
         #   label = "";
         #   # ;format-prefix = " ";
         #   format-underline = "#2193ff";
@@ -156,7 +156,7 @@
         #   tail = true;
         #   # ;format-prefix = "";
         #   format = "<label>";
-        #   exec = "~/.config/polybar/scripts/polybar-now-playing";
+        #   exec = "~/.local/polybar/scripts/polybar-now-playing";
         #   click-right = "kill -USR1 $(pgrep --oldest --parent %pid%)";
         # };
         "module/nowplaying" = {
@@ -192,7 +192,7 @@
         };
         "module/polywins" = {
           type = "custom/script";
-          exec = "~/.config/polybar/scripts/polywins 2>/dev/null";
+          exec = "~/.local/polybar/scripts/polywins 2>/dev/null";
           format = "<label>";
           format-background = "#2a2e36";
           label = "%output%";
@@ -347,7 +347,7 @@
         "module/mem" = {
           type = "custom/script";
           # type = "internal/memory";
-          exec = "~/.config/polybar/scripts/memory";
+          exec = "~/.local/polybar/scripts/memory";
           format = "<label>";
           interval = 2;
           format-prefix = " ";
@@ -358,7 +358,7 @@
         "module/updates" = {
           type = "custom/script";
           # exec = "doas xbps-install -S > /dev/null 2>&1; xbps-updates";
-          exec = "~/.config/polybar/scripts/nix-updates 2>/dev/null";
+          exec = "~/.local/polybar/scripts/nix-updates 2>/dev/null";
           format = "<label>";
           interval = 4600;
           label = "  %output%";
