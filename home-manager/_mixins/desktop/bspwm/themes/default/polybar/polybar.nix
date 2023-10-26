@@ -347,7 +347,7 @@
         "module/mem" = {
           type = "custom/script";
           # type = "internal/memory";
-          exec = "~/.local/polybar/scripts/memory";
+          exec = "~/.local/polybar/scripts/mem.sh";
           format = "<label>";
           interval = 2;
           format-prefix = " ";
