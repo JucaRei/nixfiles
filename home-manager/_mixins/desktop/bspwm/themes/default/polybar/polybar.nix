@@ -95,7 +95,7 @@
         };
         "module/bluetooth" = {
           type = "custom/script";
-          exec = "~/.local/polybar/scripts/bluetooth.sh";
+          exec = "~/.local/polybar/scripts/bluetooth";
           format = "<label>";
           format-font = 0;
           interval = 1;
