@@ -6,6 +6,7 @@
     polybar = {
       enable = true;
       package = pkgs.polybar;
+      script = "";
       settings = {
         # Config.ini
         "global/wm" = {
@@ -47,7 +48,7 @@
 
           modules-left = "sep launcher blok bspwm sep";
           modules-center = "";
-          modules-right = "sep network blok2 weather blok gpu blok audio blok memory_bar blok battery blok date blok powermenu sep";
+          modules-right = "sep network blok2 audio blok memory_bar blok battery blok date blok powermenu sep";
 
           spacing = 0;
           separator = "";
@@ -502,7 +503,7 @@
           label-disconnected = " not connected";
           label-disconnected-foreground = "\${color.red}";
         };
-        "module;audio" = {
+        "module/audio" = {
           type = "internal/alsa";
           use-ui-max = true;
           interval = 2;
@@ -887,7 +888,7 @@
           else
               UNIT_URL="&units=$UNITS"
           fi
-          URL="api.openweathermap.org/data/2.5/weather?appid=$APIKEY$UNIT_URL&lang=$LANG&q=$(echo $CITY_NAME| sed 's/ /%20/g'),${COUNTRY_CODE}"
+          URL="api.openweathermap.org/data/2.5/weather?appid=$APIKEY$UNIT_URL&lang=$LANG&q=$(echo $CITY_NAME| sed 's/ /%20/g'),$\{COUNTRY_CODE}"
 
           function getData {
               ERROR=0
@@ -1047,11 +1048,11 @@
                       WIND="$WIND $COLOR_TEXT_BEGIN$WINDFORCE$COLOR_TEXT_END"
                       if [ $DISPLAY_WIND_UNIT = "yes" ]; then
                           if [ $KNOTS = "yes" ]; then
-                              WIND="$WIND ${COLOR_TEXT_BEGIN}kn$COLOR_TEXT_END"
+                              WIND="$WIND $\{COLOR_TEXT_BEGIN}kn$COLOR_TEXT_END"
                           elif [ $UNITS = "imperial" ]; then
-                              WIND="$WIND ${COLOR_TEXT_BEGIN}mph$COLOR_TEXT_END"
+                              WIND="$WIND $\{COLOR_TEXT_BEGIN}mph$COLOR_TEXT_END"
                           else
-                              WIND="$WIND ${COLOR_TEXT_BEGIN}km/h$COLOR_TEXT_END"
+                              WIND="$WIND $\{COLOR_TEXT_BEGIN}km/h$COLOR_TEXT_END"
                           fi
                       fi
                   fi
