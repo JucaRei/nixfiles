@@ -4,12 +4,13 @@
 
 # API settings ________________________________________________________________
 
-APIKEY=`cat $HOME/.owm-key`
+# APIKEY=`cat $HOME/.owm-key`
+APIKEY=``
 # if you leave these empty location will be picked based on your ip-adres
-CITY_NAME='Warsaw'
-COUNTRY_CODE='PL'
+CITY_NAME='São Paulo'
+COUNTRY_CODE='BR'
 # Desired output language
-LANG="en"
+LANG="pt_BR"
 # UNITS can be "metric", "imperial" or "kelvin". Set KNOTS to "yes" if you
 # want the wind in knots:
 
@@ -248,7 +249,7 @@ function setIcons {
     fi
     if [ $KNOTS = "yes" ]; then
         case $UNITS in
-            "imperial") 
+            "imperial")
                 # The division by one is necessary because scale works only for divisions. bc is stupid.
                 WINDFORCE=`echo "scale=$DECIMALS;$WINDFORCE * 0.8689762419 / 1" | bc`
                 ;;
@@ -287,9 +288,9 @@ function setIcons {
     else
         TEMP_ICON="󰔆"
     fi
-    
+
     TEMP=`echo "$TEMP" | cut -d "." -f 1`
-    
+
     if [ "$TEMP" -le $COLD_TEMP ]; then
         TEMP="%{F$COLOR_COLD}%{T$TEMP_FONT_CODE}%{T-}%{F-} $COLOR_TEXT_BEGIN$TEMP%{T$TEMP_FONT_CODE}$TEMP_ICON%{T-}$COLOR_TEXT_END"
     elif [ `echo "$TEMP >= $HOT_TEMP" | bc` -eq 1 ]; then
@@ -325,5 +326,5 @@ if [ $ERROR -eq 0 ]; then
     setIcons
     outputCompact
 else
-    echo "gówno nie działa"
+    echo "not working"
 fi
