@@ -254,7 +254,7 @@
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines
-        vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "kde"; hostid = "6f2efa51"; };
+        vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "bspwm"; hostid = "6f2efa51"; };
         hyperv = libx.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
         vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
         # Raspberry

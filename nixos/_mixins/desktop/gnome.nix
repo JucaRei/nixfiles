@@ -102,4 +102,12 @@
       "/share/nautilus-python/extensions"
     ];
   };
+
+  xdg = {
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      extraPortals = with pkgs; lib.mkForce [ xdg-desktop-portal-gnome ];
+    };
+  };
 }

@@ -1,6 +1,6 @@
 { lib, ... }: {
-  home = {
-    file = {
+  xdg = {
+    configFile = {
       ".Xresources" = lib.mkForce {
         text = ''
           ! special
