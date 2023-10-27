@@ -8,9 +8,6 @@
       package = pkgs.polybar;
       script = "";
       settings =
-        let
-          pulseaudio-control = "${pkgs.callPackage ../../../../config/polybar-scripts/pulseaudio-control.nix { } }/bin/pulseaudio-control";
-        in
         {
           # Config.ini
           "global/wm" = {
@@ -79,13 +76,13 @@
 
             # 必要に応じて nickname および sink や source 名(node名)を変更すること
             # --color-muted は # なしの rrggbb のため # を取り除く
-            exec = ''${pulseaudio-control} --format '$VOL_ICON\ \  $VOL_LEVEL% \($NODE_NICKNAME\)' --color-muted "${builtins.replaceStrings ["#"] [""] theme.disabled}" --icons-volume " , " --icon-muted "ﱝ " --node-nicknames-from "device.profile.name" --node-nickname "alsa_output.pci-0000_00_1f.3.analog-stereo:built-in" listen'';
+            exec = ''${pkgs.pulseaudio-control} --format '$VOL_ICON\ \  $VOL_LEVEL% \($NODE_NICKNAME\)' --color-muted "${builtins.replaceStrings ["#"] [""] theme.disabled}" --icons-volume " , " --icon-muted "ﱝ " --node-nicknames-from "device.profile.name" --node-nickname "alsa_output.pci-0000_00_1f.3.analog-stereo:built-in" listen'';
             click-right = "exec ${pkgs.pavucontrol}/bin/pavucontrol &";
-            click-left = "${pulseaudio-control} togmute";
-            click-middle = "${pulseaudio-control} next-node";
-            scroll-up = "${pulseaudio-control} --volume-max 130 down";
-            scroll-down = "${pulseaudio-control} --volume-max 130 up";
-            label-foreground = "${fg}";
+            click-left = "${pkgs.pulseaudio-control} togmute";
+            click-middle = "${pkgs.pulseaudio-control} next-node";
+            scroll-up = "${pkgs.pulseaudio-control} --volume-max 130 down";
+            scroll-down = "${pkgs.pulseaudio-control} --volume-max 130 up";
+            # label-foreground = "${fg}";
           };
           "settings" = {
             screenchange-reload = false;

@@ -169,6 +169,7 @@ in
       feh
       picom
       papirus-icon-theme
+      pulseaudio-control
 
       # Fonts
       cantarell-fonts

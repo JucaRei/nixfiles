@@ -16,6 +16,7 @@
     icloudpd = final.icloud-photo-downloader;
     nvchad = prev.nvchad;
     thorium = final.thorium-browser;
+    pulseaudio-control = final.polybar-pulseaudio-control;
     # apple-font = final.apple-fonts;
     # tidal = final.tidal-dl;
     # mpvconf = prev.mpv;
