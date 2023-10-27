@@ -5,7 +5,6 @@
 {
   imports = [
     ../default/polybar/scripts.nix
-    ../../../../config/polybar-scripts/pulseaudio-control.nix
   ];
   services = {
     polybar = {
