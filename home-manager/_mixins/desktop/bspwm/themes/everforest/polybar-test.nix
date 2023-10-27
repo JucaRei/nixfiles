@@ -1,4 +1,8 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, ... }:
+let
+  pulseaudio-control = "${pkgs.callPackage ../../../../config/polybar-scripts/pulseaudio-control.nix { } }/bin/pulseaudio-control";
+in
+{
   imports = [
     ../default/polybar/scripts.nix
   ];
@@ -18,5 +22,8 @@
         source = ../../../../config/polybar-everforest;
       };
     };
+    packages = with pkgs; [
+      pulseaudio-control
+    ];
   };
 }
