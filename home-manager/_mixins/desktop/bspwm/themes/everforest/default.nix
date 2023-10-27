@@ -5,5 +5,6 @@ _: {
     # ./xresources.nix
     # ./polybar.nix
     ./polybar-test.nix
+    ./rofi.nix
   ];
 }

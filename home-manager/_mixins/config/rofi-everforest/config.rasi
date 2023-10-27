@@ -17,4 +17,4 @@ configuration {
   }
 }
 
-@theme "/home/$USER/.config/rofi/themes/OneDark.rasi"
+@theme "/home/juca/.config/rofi/themes/OneDark.rasi"

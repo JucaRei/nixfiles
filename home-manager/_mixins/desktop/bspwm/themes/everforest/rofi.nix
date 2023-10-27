@@ -14,6 +14,12 @@
       # };
       ".config/rofi" = {
         source = ../../../../config/rofi-everforest;
+        recursive = true;
+      };
+      ".local/rofi" = {
+        source = ../../../../config/rofi-scripts;
+        recursive = true;
+        executable = true;
       };
     };
   };
