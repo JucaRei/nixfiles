@@ -130,6 +130,7 @@ in
       cinnamon.nemo-fileroller
       jq
       nordic
+      lm_sensors
       archiver
       lxappearance
       # gtk_engines
