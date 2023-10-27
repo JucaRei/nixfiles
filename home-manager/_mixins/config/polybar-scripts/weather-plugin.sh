@@ -4,8 +4,8 @@
 
 # API settings ________________________________________________________________
 
-# APIKEY=`cat $HOME/.owm-key`
-APIKEY=``
+APIKEY=`cat $HOME/.owm-key`
+# APIKEY=``
 # if you leave these empty location will be picked based on your ip-adres
 CITY_NAME='São Paulo'
 COUNTRY_CODE='BR'

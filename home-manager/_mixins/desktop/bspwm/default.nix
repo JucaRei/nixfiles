@@ -128,6 +128,7 @@ in
       cinnamon.nemo
       # cinnamon.nemo-with-extensions
       cinnamon.nemo-fileroller
+      jq
       nordic
       archiver
       lxappearance
