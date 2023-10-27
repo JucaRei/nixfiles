@@ -17,7 +17,7 @@ configuration {
   }
 }
 
-@theme "/home/juca/.config/rofi/themes/alter.rasi"
+@theme "/home/juca/.config/rofi/themes/nord2.rasi"
 // @theme "/home/juca/.config/rofi/themes/OneDark.rasi"
 // @theme "/home/juca/.config/rofi/themes/nord.rasi"
 // @theme "/home/juca/.config/rofi/themes/gruvbox-dark-hard.rasi"
