@@ -44,6 +44,13 @@
           sha256 = "sha256-2/x078M1wi4/F9aVpHQTgWKdDnEHqXKea+tsNw7YyBo=";
         }
         {
+          name = "color-picker";
+          publisher = "MarkosTh09";
+          version = "1.0.0";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-28tSGWdtQVu0I34DQBl1CicEqQHP37dS//FH9sTaECY=";
+        }
+        {
           name = "vscode-icons";
           publisher = "vscode-icons-team";
           version = "12.5.0";
