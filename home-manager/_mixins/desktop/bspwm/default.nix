@@ -1,7 +1,7 @@
 { config, lib, pkgs, username, ... }:
 with lib.hm.gvariant;
 let
-  browser = "brave";
+  browser = "brave-browser";
   terminal = "alacritty";
 in
 {
