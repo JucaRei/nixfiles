@@ -25,7 +25,7 @@ in
         "dunst -config $HOME/.config/dunst/dunstrc"
         "nm-applet --indicator"
         # "picom --config $HOME/.config/picom/picom.conf"
-        # "sleep 2s;polybar -q main"
+        "sleep 2s;polybar -q bar"
       ];
       extraConfig = ''
         #!/bin/bash
@@ -34,8 +34,8 @@ in
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-0' | awk '{print $1}')
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
         EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
-        # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
+        # INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
             if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
@@ -197,8 +197,8 @@ in
 
     sessionVariables = {
       # EDITOR = "nvim";
-      BROWSER = "${browser}";
-      TERMINAL = "${terminal}";
+      # BROWSER = "${browser}";
+      # TERMINAL = "${terminal}";
       GLFW_IM_MODULE = "ibus";
       LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
       QT_QPA_PLATFORMTHEME = "gtk3";

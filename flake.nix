@@ -1,5 +1,5 @@
 {
-  description = "Wimpy's NixOS and Home Manager Configuration";
+  description = "Juca's NixOS and Home Manager Configuration";
   inputs = {
     # nixpkgs-prev.url = "github:nixos/nixpkgs/nixos-22.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";

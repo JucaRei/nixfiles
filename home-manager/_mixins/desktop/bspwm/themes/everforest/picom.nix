@@ -232,7 +232,7 @@
           blur-kern = "3x3box";
           blur = {
             # requires: https://github.com/ibhagwan/picom
-            method = "dual_kawase";
+            # method = "dual_kawase";
             #method = "kernel";
             strength = 3;
             # deviation = 1.0;
@@ -267,13 +267,13 @@
           # `xrender` is the default one.
           #
           experimental-backends = true;
-          backend = "glx";
-          #backend = "xrender";
+          # backend = "glx";
+          backend = "xrender";
 
 
           # Enable/disable VSync.
           # vsync = false
-          vsync = true;
+          # vsync = true;
 
           # Enable remote control via D-Bus. See the *D-BUS API* section below for more details.
           # dbus = false
