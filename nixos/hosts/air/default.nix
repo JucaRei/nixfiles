@@ -53,7 +53,7 @@
       # "i915.enable_guc=7"
       # "i915.force_probe=46a6"
     ];
-    kernel.sysctl = {
+    kernel.sysctl = lib.mkForce {
       "vm.vfs_cache_pressure" = 400;
       "vm.swappiness" = 20;
       "vm.dirty_background_ratio" = 1;

@@ -7,7 +7,7 @@ in
 {
   imports = [
     # ./themes/default
-    ./themes/everforest
+    # ./themes/everforest
     ./sxhkd.nix
   ];
   xsession = {
@@ -25,7 +25,8 @@ in
         "dunst -config $HOME/.config/dunst/dunstrc"
         "nm-applet --indicator"
         # "picom --config $HOME/.config/picom/picom.conf"
-        "sleep 2s;polybar -q bar"
+        #"sleep 2s;polybar -q bar"        #"sleep 2s;polybar -q bar"
+        "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
         #!/bin/bash

@@ -34,9 +34,9 @@
         };
         "bar/main" = {
           tray-position = "right";
-          # monitor = "eDP1";
+          monitor = "eDP1";
           # monitor = "eDP-1";
-          monitor = "Virtual-1";
+          # monitor = "Virtual-1";
           width = "100%";
           height = 18;
           padding-left = 1;
@@ -192,7 +192,8 @@
         };
         "module/polywins" = {
           type = "custom/script";
-          exec = "~/.local/polybar/scripts/polywins 2>/dev/null";
+          # exec = "~/.local/polybar/scripts/polywins 2>/dev/null";
+          exec = "~/.local/polybar/scripts/polywins.sh 2>/dev/null";
           format = "<label>";
           format-background = "#2a2e36";
           label = "%output%";
@@ -227,8 +228,11 @@
         };
         "module/temperature" = {
           type = "internal/temperature";
+
+          interval = 1;
+
           thermal-zone = 0;
-          warn-temperature = 70;
+          warn-temperature = 80;
 
           format = "<ramp> <label>";
           format-warn = "<ramp> <label-warn>";
