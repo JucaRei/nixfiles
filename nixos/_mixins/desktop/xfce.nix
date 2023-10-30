@@ -1,4 +1,4 @@
-{ inputs, lib, pkgs, ... }: {
+{ inputs, lib, pkgs, config, ... }: {
   imports = [
     ../config/qt/qt-style.nix
     ../apps/terminal/tilix.nix
@@ -32,6 +32,16 @@
       zuki-themes
       # inputs.nix-software-center.packages.${system}.nix-software-center
     ];
+    pathsToLink = [
+      "/share/xfce4"
+      "/share/themes"
+      "/share/mime"
+      "/share/desktop-directories"
+      "/share/gtksourceview-2.0"
+    ];
+    variables.GIO_EXTRA_MODULES = [
+      "${pkgs.xfce.gvfs}/lib/gio/modules"
+    ];
   };
 
   # Enable some programs to provide a complete desktop
@@ -52,6 +62,8 @@
 
   # Enable services to round out the desktop
   services = {
+    udisks.enable = true;
+    upower.enable = config.powerManagement.enable;
     blueman.enable = true;
     gnome.gnome-keyring.enable = true;
     # system-config-printer.enable = true;

@@ -21,7 +21,7 @@ with lib.hm.gvariant;
     };
 
     "io/elementary/code/settings" = {
-      strip-trailing-on-save = true;
+      strip-trailing-on-save = true;d
       show-mini-map = true;
       show-right-margin = true;
       style-scheme = "Yaru-dark";
@@ -269,5 +269,3 @@ NoDisplay=true
 StartupNotify=false";
   };
 }
-
-
