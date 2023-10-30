@@ -62,7 +62,9 @@
 
   # Enable services to round out the desktop
   services = {
-    udisks.enable = true;
+    xserver = {
+      updateDbusEnvironment = true;
+    };
     upower.enable = config.powerManagement.enable;
     blueman.enable = true;
     gnome.gnome-keyring.enable = true;
