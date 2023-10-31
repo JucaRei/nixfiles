@@ -11,20 +11,22 @@ with lib.hm.gvariant;
 
   home = {
     packages = with pkgs; [
-      gnomeExtensions.tray-icons-reloaded
       gnomeExtensions.blur-my-shell
-      gnomeExtensions.removable-drive-menu
-      gnomeExtensions.dash-to-panel
-      gnomeExtensions.battery-indicator-upower
       gnomeExtensions.just-perfection
-      gnomeExtensions.caffeine
       gnomeExtensions.clipboard-indicator
-      gnomeExtensions.workspace-indicator-2
-      gnomeExtensions.bluetooth-quick-connect
+      gnomeExtensions.user-themes
+      gnomeExtensions.aylurs-widgets
+      # gnomeExtensions.tray-icons-reloaded
+      # gnomeExtensions.removable-drive-menu
+      # gnomeExtensions.dash-to-panel
+      # gnomeExtensions.battery-indicator-upower
+      # gnomeExtensions.caffeine
+      # gnomeExtensions.workspace-indicator-2
+      # gnomeExtensions.bluetooth-quick-connect
       gnomeExtensions.gsconnect # kdeconnect enabled in default.nix
-      gnomeExtensions.pip-on-top
-      gnomeExtensions.pop-shell
-      gnomeExtensions.forge
+      # gnomeExtensions.pip-on-top
+      # gnomeExtensions.pop-shell
+      # gnomeExtensions.forge
       # gnomeExtensions.fullscreen-avoider
       # gnomeExtensions.dash-to-dock
 
