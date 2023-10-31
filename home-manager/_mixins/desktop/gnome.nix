@@ -40,10 +40,14 @@ with lib.hm.gvariant;
     "org/gnome/shell" = {
       favorite-apps = [
         "org.gnome.settings.desktop"
-        # "alacritty.desktop"
+        "virt-manager.desktop"
+        "thorium-browser.desktop"
         "firefox.desktop"
+        "com.gexperts.Tilix.desktop"
+        "codium.desktop"
+        "org.gnome.Nautilus.desktop"
+        # "alacritty.desktop"
         # "emacs.desktop"
-        "org.gnome.nautilus.desktop"
         # "com.obsproject.studio.desktop"
         # "plexmediaplayer.desktop"
         # "smartcode-stremio.desktop"
@@ -52,10 +56,10 @@ with lib.hm.gvariant;
         # "retroarch.desktop"
         # "com.parsecgaming.parsec.desktop"
         # "org.remmina.remmina.desktop"
-        "virt-manager.desktop"
         # "blueman-manager.desktop"
         # "pavucontrol.desktop"
       ];
+      remember-mount-password = true;
       disable-user-extensions = false;
       enabled-extensions = [
         "just-perfection-desktop@just-perfection"
@@ -153,6 +157,26 @@ with lib.hm.gvariant;
       exec = "tilix";
       exec-arg = "-x";
     };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
+      binding = "<super>e";
+      command = "nautilus";
+      name = "open-file-browser";
+    };
+    "org/gnome/shell/extensions/forge/keybindings" = {
+      # Set Manually
+      focus-border-toggle = true;
+      float-always-on-top-enabled = true;
+      window-focus-up = [ "<super>up" ];
+      window-focus-down = [ "<super>down" ];
+      window-focus-left = [ "<super>left" ];
+      window-focus-right = [ "<super>right" ];
+      window-move-up = [ "<shift><super>up" ];
+      window-move-down = [ "<shift><super>down" ];
+      window-move-left = [ "<shift><super>left" ];
+      window-move-right = [ "<shift><super>right" ];
+      window-swap-last-active = [ "@as []" ];
+      window-toggle-float = [ "<shift><super>f" ];
+    };
     "org/gnome/desktop/datetime" = {
       automatic-timezone = true;
     };
@@ -160,6 +184,10 @@ with lib.hm.gvariant;
       workspaces-only-on-primary = false;
       center-new-windows = true;
       edge-tiling = true; # Tiling
+    };
+    "org/gnome/system/location" = {
+      enabled = true;
+      max-accuracy-level = "exact";
     };
   };
 }
