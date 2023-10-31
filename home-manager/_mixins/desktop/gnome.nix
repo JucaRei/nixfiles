@@ -10,6 +10,7 @@ with lib.hm.gvariant;
       gnomeExtensions.aylurs-widgets
       gnome.mutter
       gnomeExtensions.battery-indicator-upower
+      gnomeExtensions.bluetooth-quick-connect
       gnome-extension-manager
       gnome.gnome-tweaks
       gnome.libgnome-keyring
@@ -40,13 +41,10 @@ with lib.hm.gvariant;
     "org/gnome/shell" = {
       favorite-apps = [
         "org.gnome.settings.desktop"
-        "virt-manager.desktop"
-        "thorium-browser.desktop"
-        "firefox.desktop"
-        "com.gexperts.Tilix.desktop"
-        "codium.desktop"
-        "org.gnome.Nautilus.desktop"
         # "alacritty.desktop"
+        "firefox.desktop"
+        "virt-manager.desktop"
+        "org.gnome.nautilus.desktop"
         # "emacs.desktop"
         # "com.obsproject.studio.desktop"
         # "plexmediaplayer.desktop"
@@ -59,41 +57,40 @@ with lib.hm.gvariant;
         # "blueman-manager.desktop"
         # "pavucontrol.desktop"
       ];
-      remember-mount-password = true;
       disable-user-extensions = false;
       enabled-extensions = [
-        "just-perfection-desktop@just-perfection"
+        "trayiconsreloaded@selfmade.pl"
         "blur-my-shell@aunetx"
+        "drive-menu@gnome-shell-extensions.gcampax.github.com"
+        "dash-to-panel@jderose9.github.com"
+        "just-perfection-desktop@just-perfection"
+        "caffeine@patapon.info"
         "clipboard-indicator@tudmotu.com"
+        "horizontal-workspace-indicator@tty2.io"
         "bluetooth-quick-connect@bjarosze.gmail.com"
+        "battery-indicator@jgotti.org"
         "gsconnect@andyholmes.github.io"
+        "pip-on-top@rafostar.github.com"
         "forge@jmmaranan.com"
-        "battery-indicator-upower@malko"
-        # "battery-indicator@jgotti.org"
-        # "just-perfection@jrahmatzadeh"
-        # "trayiconsreloaded@selfmade.pl"
-        # "drive-menu@gnome-shell-extensions.gcampax.github.com"
-        # "dash-to-panel@jderose9.github.com"
-        # "caffeine@patapon.info"
-        # "horizontal-workspace-indicator@tty2.io"
-        # "pip-on-top@rafostar.github.com"
+        # "dash-to-dock@micxgx.gmail.com"           # Alternative Dash-to-Panel
+        # "fullscreen-avoider@noobsai.github.com"   # Dash-to-Panel Incompatable
       ];
     };
+
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
+      enable-hot-corners = false;
       clock-show-weekday = true;
-      clock-format = "24h";
-      clock-show-date = true;
-      clock-show-seconds = true;
-      gtk-theme = "adwaita-dark";
-      cursor-blink = true;
-      cursor-size = 24;
-      cursor-theme = "Breeze_Hacked";
-      enable-animations = true;
-      enable-hot-corners = true;
-      icon-theme = "Qogir-ubuntu-dark";
-      show-battery-percentage = true;
-      toolbar-icon-size = "small";
+      # gtk-theme = "adwaita-dark";
+    };
+    # "org/gnome/desktop/session" = {               # Not Working
+    #   idle-delay = "uint32 900";
+    # };
+    "org/gnome/desktop/privacy" = {
+      report-technical-problems = "false";
+    };
+    "org/gnome/desktop/calendar" = {
+      show-weekdate = true;
     };
     "org/gnome/desktop/wm/preferences" = {
       action-right-click-titlebar = "toggle-maximize";
@@ -101,14 +98,6 @@ with lib.hm.gvariant;
       resize-with-right-button = true;
       mouse-button-modifier = "<super>";
       button-layout = ":minimize,close";
-    };
-    "org/gnome/settings-daemon/plugins/power" = {
-      sleep-interactive-ac-type = "nothing";
-    };
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-      binding = "<ctrl><alt>t";
-      command = "tilix -x";
-      name = "open-terminal";
     };
     "org/gnome/desktop/wm/keybindings" = {
       # maximize = ["<super>up"];                   # Floating
@@ -134,33 +123,98 @@ with lib.hm.gvariant;
       close = [ "<super>q" "<alt>f4" ];
       toggle-fullscreen = [ "<super>f" ];
     };
+
+    "org/gnome/mutter" = {
+      workspaces-only-on-primary = false;
+      center-new-windows = true;
+      edge-tiling = false; # Tiling
+    };
     "org/gnome/mutter/keybindings" = {
       #toggle-tiled-left = ["<super>left"];         # Floating
       #toggle-tiled-right = ["<super>right"];
       toggle-tiled-left = [ "@as []" ]; # Tiling
       toggle-tiled-right = [ "@as []" ];
     };
-    "org/gnome/desktop/media-handling" = {
-      automount = true;
-      automount-open = true;
+
+    "org/gnome/settings-daemon/plugins/power" = {
+      sleep-interactive-ac-type = "nothing";
     };
-    "org/gnome/desktop/privacy" = {
-      report-technical-problems = "false";
+    "org/gnome/settings-daemon/plugins/media-keys" = {
+      custom-keybindings = [
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
+      ];
     };
-    "org/gnome/calendar" = {
-      active-view = "month";
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      binding = "<super>return";
+      command = "alacritty";
+      name = "open-terminal";
     };
-    "org/gnome/desktop/calendar" = {
-      show-weekdate = true;
-    };
-    "org/gnome/desktop/applications/terminal" = {
-      exec = "tilix";
-      exec-arg = "-x";
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+      binding = "<super>t";
+      command = "emacs";
+      name = "open-editor";
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
       binding = "<super>e";
       command = "nautilus";
       name = "open-file-browser";
+    };
+
+    "org/gnome/shell/extension/dash-to-panel" = {
+      # Set Manually
+      panel-position = ''{"0":"top","1":"top"}'';
+      panel-sizes = ''{"0":24,"1":24}'';
+      panel-element-positions-monitors-sync = true;
+      appicon-margin = 0;
+      appicon-padding = 4;
+      dot-position = "top";
+      dot-style-focused = "solid";
+      dot-style-unfocused = "dots";
+      animate-appicon-hover = true;
+      animate-appicon-hover-animation-travel = "{'simple': 0.14999999999999999, 'ripple': 0.40000000000000002, 'plank': 0.0}";
+      isolate-monitors = true;
+    };
+    "org/gnome/shell/extensions/just-perfection" = {
+      theme = true;
+      activities-button = false;
+      app-menu = false;
+      clock-menu-position = 1;
+      clock-menu-position-offset = 7;
+    };
+    "org/gnome/shell/extensions/caffeine" = {
+      enable-fullscreen = true;
+      restore-state = true;
+      show-indicator = true;
+      show-notification = false;
+    };
+    "org/gnome/shell/extensions/blur-my-shell" = {
+      brightness = 0.9;
+    };
+    "org/gnome/shell/extensions/blur-my-shell/panel" = {
+      customize = true;
+      sigma = 0;
+    };
+    "org/gnome/shell/extensions/blur-my-shell/overview" = {
+      customize = true;
+      sigma = 0;
+    };
+    "org/gnome/shell/extensions/horizontal-workspace-indicator" = {
+      widget-position = "left";
+      widget-orientation = "horizontal";
+      icons-style = "circles";
+    };
+    "org/gnome/shell/extensions/bluetooth-quick-connect" = {
+      show-battery-icon-on = true;
+      show-battery-value-on = true;
+    };
+    "org/gnome/shell/extensions/pip-on-top" = {
+      stick = true;
+    };
+    "org/gnome/shell/extensions/forge" = {
+      window-gap-size = 8;
+      dnd-center-layout = "stacked";
     };
     "org/gnome/shell/extensions/forge/keybindings" = {
       # Set Manually
@@ -177,17 +231,18 @@ with lib.hm.gvariant;
       window-swap-last-active = [ "@as []" ];
       window-toggle-float = [ "<shift><super>f" ];
     };
-    "org/gnome/desktop/datetime" = {
-      automatic-timezone = true;
-    };
-    "org/gnome/mutter" = {
-      workspaces-only-on-primary = false;
-      center-new-windows = true;
-      edge-tiling = true; # Tiling
-    };
-    "org/gnome/system/location" = {
-      enabled = true;
-      max-accuracy-level = "exact";
-    };
+    # "org/gnome/shell/extensions/dash-to-dock" = { # If Dock Preferred
+    #   multi-monitor = true;
+    #   dock-fixed = true;
+    #   dash-max-icon-size = 16;
+    #   custom-theme-shrink = true;
+    #   transparency-mode = "fixed";
+    #   background-opacity = 0.0;
+    #   show-apps-at-top = true;
+    #   show-trash = true;
+    #   hot-keys = false;
+    #   click-action = "previews";
+    #   scroll-action = "cycle-windows";
+    # };
   };
 }

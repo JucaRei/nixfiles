@@ -109,15 +109,16 @@
 
   environment = {
     systemPackages = with pkgs; [
-      virt-manager
+      virt-manager # VM Interface
       spice-gtk
       spice
       spice-protocol
       win-spice
       win-virtio
-      swtpm
-      virt-viewer
-      qemu
+      swtpm # TPM
+      virglrenderer # Virtual OpenGL
+      virt-viewer # Remote VM
+      qemu # UEFI Firmware
       OVMFFull
       gvfs
       virtiofsd
