@@ -102,8 +102,8 @@ with lib.hm.gvariant;
       sleep-interactive-ac-type = "nothing";
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-      binding = "<ctrl><alt>return";
-      command = "tilix";
+      binding = "<ctrl><alt>t";
+      command = "tilix -x";
       name = "open-terminal";
     };
     "org/gnome/desktop/wm/keybindings" = {
