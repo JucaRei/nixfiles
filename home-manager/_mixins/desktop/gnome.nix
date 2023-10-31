@@ -91,6 +91,51 @@ with lib.hm.gvariant;
       show-battery-percentage = true;
       toolbar-icon-size = "small";
     };
+    "org/gnome/desktop/wm/preferences" = {
+      action-right-click-titlebar = "toggle-maximize";
+      action-middle-click-titlebar = "minimize";
+      resize-with-right-button = true;
+      mouse-button-modifier = "<super>";
+      button-layout = ":minimize,close";
+    };
+    "org/gnome/settings-daemon/plugins/power" = {
+      sleep-interactive-ac-type = "nothing";
+    };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      binding = "<ctrl><alt>return";
+      command = "tilix";
+      name = "open-terminal";
+    };
+    "org/gnome/desktop/wm/keybindings" = {
+      # maximize = ["<super>up"];                   # Floating
+      # unmaximize = ["<super>down"];
+      maximize = [ "@as []" ]; # Tiling
+      unmaximize = [ "@as []" ];
+      switch-to-workspace-left = [ "<alt>left" ];
+      switch-to-workspace-right = [ "<alt>right" ];
+      switch-to-workspace-1 = [ "<alt>1" ];
+      switch-to-workspace-2 = [ "<alt>2" ];
+      switch-to-workspace-3 = [ "<alt>3" ];
+      switch-to-workspace-4 = [ "<alt>4" ];
+      switch-to-workspace-5 = [ "<alt>5" ];
+      move-to-workspace-left = [ "<shift><alt>left" ];
+      move-to-workspace-right = [ "<shift><alt>right" ];
+      move-to-workspace-1 = [ "<shift><alt>1" ];
+      move-to-workspace-2 = [ "<shift><alt>2" ];
+      move-to-workspace-3 = [ "<shift><alt>3" ];
+      move-to-workspace-4 = [ "<shift><alt>4" ];
+      move-to-workspace-5 = [ "<shift><alt>5" ];
+      move-to-monitor-left = [ "<super><alt>left" ];
+      move-to-monitor-right = [ "<super><alt>right" ];
+      close = [ "<super>q" "<alt>f4" ];
+      toggle-fullscreen = [ "<super>f" ];
+    };
+    "org/gnome/mutter/keybindings" = {
+      #toggle-tiled-left = ["<super>left"];         # Floating
+      #toggle-tiled-right = ["<super>right"];
+      toggle-tiled-left = [ "@as []" ]; # Tiling
+      toggle-tiled-right = [ "@as []" ];
+    };
     "org/gnome/desktop/media-handling" = {
       automount = true;
       automount-open = true;
