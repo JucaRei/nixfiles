@@ -37,24 +37,44 @@ with lib.hm.gvariant;
     };
   };
   dconf.settings = {
-    disable-user-extensions = false;
-    enabled-extensions = [
-      "just-perfection-desktop@just-perfection"
-      "blur-my-shell@aunetx"
-      "clipboard-indicator@tudmotu.com"
-      "bluetooth-quick-connect@bjarosze.gmail.com"
-      "gsconnect@andyholmes.github.io"
-      "forge@jmmaranan.com"
-      "battery-indicator-upower@malko"
-      # "battery-indicator@jgotti.org"
-      # "just-perfection@jrahmatzadeh"
-      # "trayiconsreloaded@selfmade.pl"
-      # "drive-menu@gnome-shell-extensions.gcampax.github.com"
-      # "dash-to-panel@jderose9.github.com"
-      # "caffeine@patapon.info"
-      # "horizontal-workspace-indicator@tty2.io"
-      # "pip-on-top@rafostar.github.com"
-    ];
+    "org/gnome/shell" = {
+      favorite-apps = [
+        "org.gnome.settings.desktop"
+        # "alacritty.desktop"
+        "firefox.desktop"
+        # "emacs.desktop"
+        "org.gnome.nautilus.desktop"
+        # "com.obsproject.studio.desktop"
+        # "plexmediaplayer.desktop"
+        # "smartcode-stremio.desktop"
+        # "discord.desktop"
+        # "steam.desktop"
+        # "retroarch.desktop"
+        # "com.parsecgaming.parsec.desktop"
+        # "org.remmina.remmina.desktop"
+        "virt-manager.desktop"
+        # "blueman-manager.desktop"
+        # "pavucontrol.desktop"
+      ];
+      disable-user-extensions = false;
+      enabled-extensions = [
+        "just-perfection-desktop@just-perfection"
+        "blur-my-shell@aunetx"
+        "clipboard-indicator@tudmotu.com"
+        "bluetooth-quick-connect@bjarosze.gmail.com"
+        "gsconnect@andyholmes.github.io"
+        "forge@jmmaranan.com"
+        "battery-indicator-upower@malko"
+        # "battery-indicator@jgotti.org"
+        # "just-perfection@jrahmatzadeh"
+        # "trayiconsreloaded@selfmade.pl"
+        # "drive-menu@gnome-shell-extensions.gcampax.github.com"
+        # "dash-to-panel@jderose9.github.com"
+        # "caffeine@patapon.info"
+        # "horizontal-workspace-indicator@tty2.io"
+        # "pip-on-top@rafostar.github.com"
+      ];
+    };
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
       clock-show-weekday = true;
@@ -90,6 +110,11 @@ with lib.hm.gvariant;
     };
     "org/gnome/desktop/datetime" = {
       automatic-timezone = true;
+    };
+    "org/gnome/mutter" = {
+      workspaces-only-on-primary = false;
+      center-new-windows = true;
+      edge-tiling = true; # Tiling
     };
   };
 }
