@@ -15,8 +15,8 @@ with lib.hm.gvariant;
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
       cursor-theme = "Breeze-Hacked";
-      gtk-theme = "Orchis-Red-Dark-Compact";
-      icon-theme = "ePapirus-Dark";
+      # gtk-theme = "Orchis-Red-Dark-Compact";
+      # icon-theme = "ePapirus-Dark";
       locate-pointer = true;
       show-battery-percentage = true;
     };
@@ -36,6 +36,29 @@ with lib.hm.gvariant;
     };
   };
 
+  gtk = {
+    enable = true;
+    iconTheme = {
+      name = "Qogir-manjaro-dark";
+      package = pkgs.qogir-icon-theme;
+    };
+    theme = {
+      name = "zukitre-dark";
+      package = pkgs.zuki-themes;
+    };
+    gtk3.extraConfig = {
+      Settings = ''
+        gtk-application-prefer-dark-theme=1
+      '';
+    };
+    gtk4.extraConfig = {
+      Settings = ''
+        gtk-application-prefer-dark-theme=1
+      '';
+    };
+  };
+
+  ### Xfconf not working
   xfconf.settings = {
     xfce4-session = { }; # xfce4-session
     xfwm4 = {
@@ -167,90 +190,211 @@ with lib.hm.gvariant;
       # "/Default/XkbOptions/Compose" = "compose:rctrl";
       # "/Default/XkbVariant" = "intl";
     }; # keyboard-layout
+    # xfce4-panel = {
+    #   # 2023-07-29: MUST have leading slashes
+    #   # FIXXME: this section is not working completely; in particular: "whiskermenu"; "cpugraph"; "netload"; "eyes";
+
+    #   # example configurations:
+    #   # https://github.com/vhminh/dotfiles/blob/7b7dd80408658f0d76f8d0b518a314f5952146ec/nix/modules/desktop.nix#L62
+    #   # https://github.com/lobre/nix-home/blob/8117fbdb4bca887b875f622132b3b9e9c737a5bf/roles/hm/xfce/xfconf.nix#L144 -> leading slashes! :-O
+
+    #   "panels" = [ 1 ];
+    #   "panels/dark-mode" = true;
+    #   "panels/panel-1/nrows" = 1; # number of rows
+    #   "panels/panel-1/mode" = 0; # Horizontal
+    #   "panels/panel-1/output-name" = "Automatic";
+    #   "panels/panel-1/span-monitors" = false;
+    #   "panels/panel-1/background-style" = 0; # None (use system style)
+    #   "panels/panel-1/icon-size" = 0; # Adjust size automatically
+    #   "panels/panel-1/size" = 24; # Row size (pixels)
+    #   "panels/panel-1/length" = 100.0;
+    #   "panels/panel-1/length-adjust" = true;
+    #   "panels/panel-1/position" = "p=6;x=0;y=0";
+    #   "panels/panel-1/enable-struts" = true;
+    #   "panels/panel-1/position-locked" = true;
+    #   "panels/panel-1/plugin-ids" = [ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ];
+    #   # Application menu = whiskermenu
+    #   "plugins/plugin-1" = "whiskermenu";
+    #   # Tasklist
+    #   "plugins/plugin-2" = "tasklist";
+    #   "plugins/plugin-2/grouping" = false;
+    #   "plugins/plugin-2/show-handle" = true;
+    #   "plugins/plugin-2/show-labels" = true;
+    #   "plugins/plugin-2/flat-buttons" = false;
+    #   "plugins/plugin-2/include-all-monitors" = true;
+    #   "plugins/plugin-2/window-scrolling" = false;
+    #   "plugins/plugin-2/sort-order" = 1; # Group title and timestamp
+    #   "plugins/plugin-2/middle-click" = 0; # Nothing
+    #   "plugins/plugin-2/show-wireframes" = false;
+    #   "plugins/plugin-2/include-all-workspaces" = false;
+    #   # Separator
+    #   "plugins/plugin-3" = "separator";
+    #   "plugins/plugin-3/style" = 0; # transparent
+    #   "plugins/plugin-3/expand" = true;
+    #   # Workspaces
+    #   "plugins/plugin-4" = "pager";
+    #   "plugins/plugin-4/rows" = 1;
+    #   "plugins/plugin-4/miniature-view" = false; # show name instead of preview
+    #   "plugins/plugin-4/numbering" = false;
+    #   "plugins/plugin-4/workspace-scrolling" = false;
+    #   # screenshooter (if order of this item is changed → also change order of symlink below: "files in ~/.config/")
+    #   "plugins/plugin-5" = "screenshooter";
+    #   # Separator
+    #   "plugins/plugin-6" = "separator";
+    #   "plugins/plugin-6/style" = 0; # transparent
+    #   # Sys tray
+    #   "plugins/plugin-7" = "systray";
+    #   # CPU graph (if order of this item is changed → also change order of symlink below: "files in ~/.config/")
+    #   "plugins/plugin-8" = "cpugraph";
+    #   # Pulse audio
+    #   "plugins/plugin-9" = "pulseaudio";
+    #   "plugins/plugin-9/enable-keyboard-shortcuts" = true;
+    #   # Network monitor (if order of this item is changed → also change order of symlink below: "files in ~/.config/")
+    #   "plugins/plugin-10" = "netload";
+    #   # clipboard
+    #   "plugins/plugin-11" = "xfce4-clipman-plugin";
+    #   "plugins/clipman/settings/save-on-quit" = true;
+    #   "plugins/clipman/settings/max-texts-in-history" = 1000;
+    #   "plugins/clipman/settings/add-primary-clipboard" = false;
+    #   # Notification
+    #   "plugins/plugin-12" = "notification-plugin";
+    #   # Separator
+    #   "plugins/plugin-13" = "separator";
+    #   "plugins/plugin-13/style" = 0; # transparent
+    #   # Power manager
+    #   "plugins/plugin-14" = "power-manager-plugin";
+    #   # Clock
+    #   "plugins/plugin-15" = "clock";
+    #   "plugins/plugin-15/digital-layout" = 3; # Time Only
+    #   "plugins/plugin-15/digital-time-font" = "Sans 11";
+    #   "plugins/plugin-15/digital-time-format" = "%a %d %R";
+    #   "plugins/plugin-15/tooltip-format" = "%A %d %B %Y"; # Saturday 29 July 2023
+    #   "plugins/plugin-15/mode" = 2; # digital
+    #   "plugins/plugin-15/show-frame" = false;
+    #   # Eyes: where's my mouse cursor?
+    #   "plugins/plugin-16" = "eyes";
+    # }; # xfce4-panel
+
     xfce4-panel = {
-      # 2023-07-29: MUST have leading slashes
-      # FIXXME: this section is not working completely; in particular: "whiskermenu"; "cpugraph"; "netload"; "eyes";
+      "/configver" = 2;
+      "/panels" = "[<1>, <2>, <3>]";
+      "/panels/panel-1/autohide-behavior" = "uint32 0";
+      "/panels/panel-1/background-alpha" = "uint32 100";
+      "/panels/panel-1/background-style" = "uint32 0";
+      "/panels/panel-1/disable-struts" = false;
+      "/panels/panel-1/enter-opacity" = "uint32 100";
+      "/panels/panel-1/leave-opacity" = "uint32 100";
+      "/panels/panel-1/length" = "uint32 42";
+      "/panels/panel-1/mode" = "uint32 0";
+      "/panels/panel-1/nrows" = "uint32 1";
+      "/panels/panel-1/plugin-ids" = "[<4>, <13>, <8>, <16>, <9>, <17>]";
+      "/panels/panel-1/position" = "'p = 2;x = 1526;y = 15'";
+      "/panels/panel-1/position-locked" = true;
+      "/panels/panel-1/size" = "uint32 28";
+      "/panels/panel-2/background-rgba" = "[ <1.0>, <1.0>, <1.0>, <0.0> ]";
+      "/panels/panel-2/background-style" = "uint32 0";
+      "/panels/panel-2/enter-opacity" = "uint32 100";
+      "/panels/panel-2/leave-opacity" = "uint32 100";
+      "/panels/panel-2/length" = "uint32 18";
+      "/panels/panel-2/length-adjust" = true;
+      "/panels/panel-2/plugin-ids" = "[ <1>, <3>, <5>, <6>, <2> ]";
+      "/panels/panel-2/position" = "'p=9;x = 955;y = 21'";
+      "/panels/panel-2/position-locked" = true;
+      "/panels/panel-2/size" = "uint32 28";
+      "/panels/panel-3/length" = "uint32 41";
+      "/panels/panel-3/length-adjust" = false;
+      "/panels/panel-3/plugin-ids" = "[ <10>, <11> ]";
+      "/panels/panel-3/position" = "'p=6;x = 96;y = 25'";
+      "/panels/panel-3/position-locked" = true;
+      "/panels/panel-3/size" = "uint32 28";
+      "/plugins/plugin-1" = "'separator'";
+      "/plugins/plugin-1/expand" = true;
+      "/plugins/plugin-1/style" = "uint32 0";
+      "/plugins/plugin-10" = "'launcher'";
+      "/plugins/plugin-10/disable-tooltips" = true;
+      "/plugins/plugin-10/items" = "[ <'16184796581.desktop'> ]";
+      "/plugins/plugin-10/move-first" = false;
+      "/plugins/plugin-10/show-label" = false;
+      "/plugins/plugin-11" = "'launcher'";
+      "/plugins/plugin-11/cache-max-age" = 172800;
+      "/plugins/plugin-11/disable-tooltips" = true;
+      "/plugins/plugin-11/forecast/days" = 5;
+      "/plugins/plugin-11/forecast/layout" = 1;
+      "/plugins/plugin-11/items" = "[ <'16184798803.desktop'> ]";
+      "/plugins/plugin-11/labels/label0" = 3;
+      "/plugins/plugin-11/location/latitude" = "'36.538778'";
+      "/plugins/plugin-11/location/longitude" = "' - 4.623335'";
+      "/plugins/plugin-11/location/name" = "'Fuengirola, Costa del Sol Occidental'";
+      "/plugins/plugin-11/msl" = 8;
+      "/plugins/plugin-11/offset" = "'+02:00'";
+      "/plugins/plugin-11/power-saving" = true;
+      "/plugins/plugin-11/round" = true;
+      "/plugins/plugin-11/scrollbox/animate" = true;
+      "/plugins/plugin-11/scrollbox/color" = "'rgba(0,0,0,0)'";
+      "/plugins/plugin-11/scrollbox/lines" = 1;
+      "/plugins/plugin-11/scrollbox/show" = true;
+      "/plugins/plugin-11/scrollbox/use-color" = false;
+      "/plugins/plugin-11/show-label" = true;
+      "/plugins/plugin-11/single-row" = true;
+      "/plugins/plugin-11/theme-dir" = "'/usr/share/xfce4/weather/icons/simplistic'";
+      "/plugins/plugin-11/timezone" = "'Europe/Madrid'";
+      "/plugins/plugin-11/tooltip-style" = 1;
+      "/plugins/plugin-11/units/altitude" = 0;
+      "/plugins/plugin-11/units/apparent-temperature" = 0;
+      "/plugins/plugin-11/units/precipitation" = 0;
+      "/plugins/plugin-11/units/pressure" = 0;
+      "/plugins/plugin-11/units/temperature" = 0;
+      "/plugins/plugin-11/units/windspeed" = 0;
+      "/plugins/plugin-13" = "'pulseaudio'";
+      "/plugins/plugin-13/enable-keyboard-shortcuts" = true;
+      "/plugins/plugin-13/mpris-players" = "'chromium.instance2513;firefox.instance1730'";
+      "/plugins/plugin-16" = "'separator'";
+      "/plugins/plugin-16/style" = "uint32 0";
+      "/plugins/plugin-17" = "'separator'";
+      "/plugins/plugin-17/style" = "uint32 0";
+      "/plugins/plugin-2" = "'separator'";
+      "/plugins/plugin-2/expand" = true;
+      "/plugins/plugin-2/style" = "uint32 0";
+      "/plugins/plugin-3" = "'clock'";
+      "/plugins/plugin-3/digital-format" = "'%A %d %B, %R:%S'";
+      "/plugins/plugin-4" = "'separator'";
+      "/plugins/plugin-4/expand" = true;
+      "/plugins/plugin-4/style" = "uint32 0";
+      "/plugins/plugin-5" = "'weather'";
+      "/plugins/plugin-5/cache-max-age" = 172800;
+      "/plugins/plugin-5/forecast/days" = 5;
+      "/plugins/plugin-5/forecast/layout" = 1;
+      "/plugins/plugin-5/location/latitude" = "'36.595798'";
+      "/plugins/plugin-5/location/longitude" = "'-4.637300'";
+      "/plugins/plugin-5/location/name" = "'Mijas, Spain'";
+      "/plugins/plugin-5/msl" = 418;
+      "/plugins/plugin-5/offset" = "'+02:00'";
+      "/plugins/plugin-5/power-saving" = true;
+      "/plugins/plugin-5/round" = true;
+      "/plugins/plugin-5/scrollbox/animate" = true;
+      "/plugins/plugin-5/scrollbox/color" = "'rgba(0,0,0,0)'";
+      "/plugins/plugin-5/scrollbox/lines" = 1;
+      "/plugins/plugin-5/scrollbox/show" = true;
+      "/plugins/plugin-5/scrollbox/use-color" = false;
+      "/plugins/plugin-5/single-row" = true;
+      "/plugins/plugin-5/theme-dir" = "'/usr/share/xfce4/weather/icons/simplistic'";
+      "/plugins/plugin-5/tooltip-style" = 1;
+      "/plugins/plugin-5/units/altitude" = 0;
+      "/plugins/plugin-5/units/apparent-temperature" = 0;
+      "/plugins/plugin-5/units/precipitation" = 0;
+      "/plugins/plugin-5/units/pressure" = 0;
+      "/plugins/plugin-5/units/temperature" = 0;
+      "/plugins/plugin-5/units/windspeed" = 0;
+      "/plugins/plugin-6" = "'notification-plugin'";
+      "/plugins/plugin-8" = "'systray'";
+      "/plugins/plugin-8/known-items" = "[<'steam'>, <'redshift'>, <'blueman'>, <'com.leinardi.gwe'>, <'discord1'>]";
+      "/plugins/plugin-8/known-legacy-items" = "[<'steam'>, <'xfce4-power-manager'>, <'notas'>, <'redshift-gtk'>, <'bluetooth activado'>, <'discord'>, <'pamac-tray'>, <'syncthing'>, <'portapapeles'>, <'miniaplicación gestor de la red'>]";
+      "/plugins/plugin-8/names-ordered" = "[<'miniaplicación gestor de la red'>, <'syncthing'>, <'notas'>, <'portapapeles'>, <'pamac-tray'>, <'discord'>, <'redshift-gtk'>, <'gwe'>, <'bluetooth activado'>]";
+      "/plugins/plugin-8/square-icons" = true;
+      "/plugins/plugin-9" = "'actions'";
+    };
 
-      # example configurations:
-      # https://github.com/vhminh/dotfiles/blob/7b7dd80408658f0d76f8d0b518a314f5952146ec/nix/modules/desktop.nix#L62
-      # https://github.com/lobre/nix-home/blob/8117fbdb4bca887b875f622132b3b9e9c737a5bf/roles/hm/xfce/xfconf.nix#L144 -> leading slashes! :-O
 
-      "panels" = [ 1 ];
-      "panels/dark-mode" = true;
-      "panels/panel-1/nrows" = 1; # number of rows
-      "panels/panel-1/mode" = 0; # Horizontal
-      "panels/panel-1/output-name" = "Automatic";
-      "panels/panel-1/span-monitors" = false;
-      "panels/panel-1/background-style" = 0; # None (use system style)
-      "panels/panel-1/icon-size" = 0; # Adjust size automatically
-      "panels/panel-1/size" = 24; # Row size (pixels)
-      "panels/panel-1/length" = 100.0;
-      "panels/panel-1/length-adjust" = true;
-      "panels/panel-1/position" = "p=6;x=0;y=0";
-      "panels/panel-1/enable-struts" = true;
-      "panels/panel-1/position-locked" = true;
-      "panels/panel-1/plugin-ids" = [ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ];
-      # Application menu = whiskermenu
-      "plugins/plugin-1" = "whiskermenu";
-      # Tasklist
-      "plugins/plugin-2" = "tasklist";
-      "plugins/plugin-2/grouping" = false;
-      "plugins/plugin-2/show-handle" = true;
-      "plugins/plugin-2/show-labels" = true;
-      "plugins/plugin-2/flat-buttons" = false;
-      "plugins/plugin-2/include-all-monitors" = true;
-      "plugins/plugin-2/window-scrolling" = false;
-      "plugins/plugin-2/sort-order" = 1; # Group title and timestamp
-      "plugins/plugin-2/middle-click" = 0; # Nothing
-      "plugins/plugin-2/show-wireframes" = false;
-      "plugins/plugin-2/include-all-workspaces" = false;
-      # Separator
-      "plugins/plugin-3" = "separator";
-      "plugins/plugin-3/style" = 0; # transparent
-      "plugins/plugin-3/expand" = true;
-      # Workspaces
-      "plugins/plugin-4" = "pager";
-      "plugins/plugin-4/rows" = 1;
-      "plugins/plugin-4/miniature-view" = false; # show name instead of preview
-      "plugins/plugin-4/numbering" = false;
-      "plugins/plugin-4/workspace-scrolling" = false;
-      # screenshooter (if order of this item is changed → also change order of symlink below: "files in ~/.config/")
-      "plugins/plugin-5" = "screenshooter";
-      # Separator
-      "plugins/plugin-6" = "separator";
-      "plugins/plugin-6/style" = 0; # transparent
-      # Sys tray
-      "plugins/plugin-7" = "systray";
-      # CPU graph (if order of this item is changed → also change order of symlink below: "files in ~/.config/")
-      "plugins/plugin-8" = "cpugraph";
-      # Pulse audio
-      "plugins/plugin-9" = "pulseaudio";
-      "plugins/plugin-9/enable-keyboard-shortcuts" = true;
-      # Network monitor (if order of this item is changed → also change order of symlink below: "files in ~/.config/")
-      "plugins/plugin-10" = "netload";
-      # clipboard
-      "plugins/plugin-11" = "xfce4-clipman-plugin";
-      "plugins/clipman/settings/save-on-quit" = true;
-      "plugins/clipman/settings/max-texts-in-history" = 1000;
-      "plugins/clipman/settings/add-primary-clipboard" = false;
-      # Notification
-      "plugins/plugin-12" = "notification-plugin";
-      # Separator
-      "plugins/plugin-13" = "separator";
-      "plugins/plugin-13/style" = 0; # transparent
-      # Power manager
-      "plugins/plugin-14" = "power-manager-plugin";
-      # Clock
-      "plugins/plugin-15" = "clock";
-      "plugins/plugin-15/digital-layout" = 3; # Time Only
-      "plugins/plugin-15/digital-time-font" = "Sans 11";
-      "plugins/plugin-15/digital-time-format" = "%a %d %R";
-      "plugins/plugin-15/tooltip-format" = "%A %d %B %Y"; # Saturday 29 July 2023
-      "plugins/plugin-15/mode" = 2; # digital
-      "plugins/plugin-15/show-frame" = false;
-      # Eyes: where's my mouse cursor?
-      "plugins/plugin-16" = "eyes";
-    }; # xfce4-panel
     xfce4-desktop = {
       # 2023-07-29: MUST NOT have leading slashes
       # FIXXME: this section is untested
@@ -322,7 +466,6 @@ with lib.hm.gvariant;
 
     xfce4-mime-settings = { }; # xfce4-mime-settings
 
-    displays = { }; # displays
     xfce4-mixer = {
       # 2023-07-29: MUST have leading slashes
       # FIXXME: this section is untested
@@ -401,15 +544,14 @@ with lib.hm.gvariant;
     }; # xfce4-settings-manager
   };
 
-
   home = {
     packages = with pkgs; [
       ulauncher
-      tokyo-night-gtk
-      orchis-theme
+      # tokyo-night-gtk
+      # orchis-theme
       papirus-icon-theme
-      qogir-theme
-      qogir-icon-theme
+      # qogir-theme
+      # qogir-icon-theme
     ];
   };
 }

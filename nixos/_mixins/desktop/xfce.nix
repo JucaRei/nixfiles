@@ -57,6 +57,9 @@
     xfconf.enable = true;
     nm-applet.enable = true;
     seahorse.enable = true;
+    dconf = {
+      enable = true;
+    };
     # system-config-printer.enable = true;
   };
 

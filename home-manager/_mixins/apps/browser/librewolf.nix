@@ -1,7 +1,4 @@
 { config, lib, pkgs, wmType, font, params, ... }:
-let
-  ifDefault = lib.mkIf (builtins.elem params.browser [ "librewolf" ]);
-in
 {
   # Module installing librewolf as default browser
   home.packages =
@@ -39,12 +36,12 @@ in
     pref("webgl.disabled",true);
     '';
 
-  xdg = {
-    mime.enable = ifDefault true;
-    mimeApps = {
-      enable = ifDefault true;
-      defaultApplications = ifDefault (import ./default-browser.nix "chromium");
-    };
+  xdg.mimeApps.defaultApplications = {
+    "text/html" = "librewolf.desktop";
+    "x-scheme-handler/http" = "librewolf.desktop";
+    "x-scheme-handler/https" = "librewolf.desktop";
+    "x-scheme-handler/about" = "librewolf.desktop";
+    "x-scheme-handler/unknown" = "librewolf.desktop";
   };
 
 }
