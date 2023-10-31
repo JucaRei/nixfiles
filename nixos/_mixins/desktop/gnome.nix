@@ -51,18 +51,14 @@
       # Packages installed
       gnome.dconf-editor
       gnome.adwaita-icon-theme
-      gnome.gnome-tweaks
-      gnome.mutter
-      gnome.libgnome-keyring
       nautilus-open-any-terminal
-      gnome-extension-manager
-      qogir-icon-theme
+      # qogir-icon-theme
       gnome.nautilus-python
       libnotify
-      yaru-theme
+      # yaru-theme
       gthumb
       gparted
-      gnomeExtensions.appindicator
+      # gnomeExtensions.appindicator
       gnomeExtensions.window-is-ready-remover
     ];
     gnome.excludePackages = (with pkgs; [
