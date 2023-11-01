@@ -51,6 +51,9 @@
       # Accept the joypixels license
       joypixels.acceptLicense = true;
       allowUnsupportedSystem = true;
+      permittedInsecurePackages = [
+      	"openssl-1.1.1w"
+      ];
     };
   };
 

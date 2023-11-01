@@ -19,6 +19,7 @@
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
     # ../../_mixins/apps/text-editor/vscode.nix
+    ../../_mixins/apps/browser/firefox.nix
   ];
   boot = {
     # extraModprobeConfig = ''
@@ -81,8 +82,8 @@
 
     # Temporary workaround until mwprocapture 4328 patch is merged
     # - https://github.com/NixOS/nixpkgs/pull/221209
-    # kernelPackages = pkgs.linuxPackages_zen;
-    kernelPackages = pkgs.linuxPackages_xanmod_stable;
+    kernelPackages = pkgs.linuxPackages_zen;
+    # kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
     kernelParams = [
       "mitigations=off"
@@ -152,7 +153,7 @@
   zramSwap = {
     enable = true;
     swapDevices = 4;
-    memoryPercent = 10;
+    memoryPercent = 15;
   };
 
   # # This allows you to dynamically switch between NVIDIA<->Intel using
@@ -188,9 +189,9 @@
       btdu
       btrfs-progs
       compsize
-      clonegit
+      # sublime4
+      # clonegit
       unstable.stacer
-      thorium
       # tidal
     ];
     sessionVariables = {

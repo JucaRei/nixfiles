@@ -96,21 +96,21 @@ in
             #open = true;
             nvidiaSettings = lib.mkDefault true;
             # nvidiaPersistenced = true;
-            prime = {
-              # offload = {
-              #   enable = lib.mkForce false;
-              #   enableOffloadCmd = lib.mkForce false;
-              inherit intelBusId;
-              inherit nvidiaBusId;
-              sync.enable = true;
-              # reverseSync.enable = lib.mkForce false;
-            };
+            # prime = {
+            #   # offload = {
+            #   #   enable = lib.mkForce false;
+            #   #   enableOffloadCmd = lib.mkForce false;
+            #   inherit intelBusId;
+            #   inherit nvidiaBusId;
+            #   sync.enable = true;
+            #   # reverseSync.enable = lib.mkForce false;
+            # };
             # };
             modesetting.enable = true;
-            powerManagement = {
-              enable = lib.mkForce true;
-              finegrained = lib.mkForce false;
-            };
+            # powerManagement = {
+            #   enable = lib.mkForce true;
+            #   finegrained = lib.mkForce false;
+            # };
             # forceFullCompositionPipeline = true;
           };
 

@@ -80,6 +80,7 @@ in
         # Workaround for https://github.com/nix-community/home-manager/issues/2942
         "electron-21.4.0"
         "electron-12.2.3"
+        "openssl-1.1.1w"
       ];
       # Disable if you don't want unfree packages
       allowUnfree = true;

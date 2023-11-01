@@ -5,6 +5,7 @@ with lib.hm.gvariant;
     # ../_mixins/console/fish.nix
     # ../_mixins/apps/video/mpv.nix
     ../_mixins/apps/text-editor/vscodium.nix
+    # ../_mixins/apps/text-editor/sublime.nix
   ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {
@@ -15,8 +16,10 @@ with lib.hm.gvariant;
 
   home.packages = with pkgs; [
     whatsapp-for-linux # Whatsapp desktop messaging app
-    icloudpd
+    # icloudpd
     vlc
+    clonegit
+    # thorium
   ];
 
   dconf.settings = {
