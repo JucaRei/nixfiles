@@ -177,6 +177,7 @@
     userSettings = {
       update.mode = "none";
       window = {
+        title = "\${rootName}\${separator}\${profileName}\${separator}\${activeEditorShort}";
         menuBarVisibility = "toggle";
         nativeTabs = true;
         # titleBarStyle = "custom";
