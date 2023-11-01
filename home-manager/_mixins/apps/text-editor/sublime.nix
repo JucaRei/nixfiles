@@ -32,7 +32,7 @@
                 				"highlight_gutter": true,
           					"highlight_modified_tabs": true,
                 				"hot_exit": false,
-                				"ignored_packages": 
+                				"ignored_packages":
                 				[
                 					"Vintage",
                 					"InactivePanes"
