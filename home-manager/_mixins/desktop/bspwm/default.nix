@@ -26,7 +26,7 @@ in
         "nm-applet --indicator"
         # "picom --config $HOME/.config/picom/picom.conf"
         #"sleep 2s;polybar -q bar"        #"sleep 2s;polybar -q bar"
-        # "sleep 2s;polybar -q main"
+        "sleep 2s;polybar -q main"
       ];
       extraConfig = ''
         #!/bin/bash

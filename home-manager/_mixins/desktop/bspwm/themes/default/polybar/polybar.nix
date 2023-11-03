@@ -6,7 +6,7 @@
     polybar = {
       enable = true;
       package = pkgs.polybarFull;
-      script = "sleep 2s;polybar -q main";
+      script = "";
       settings = {
         "colors" = {
           foreground = "#c8ccd4";
