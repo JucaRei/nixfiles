@@ -116,5 +116,7 @@
       };
     };
   };
+
+  environment.systemPackages = with pkgs; [ emacs ];
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

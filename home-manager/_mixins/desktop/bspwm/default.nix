@@ -17,7 +17,7 @@ in
       enable = true;
       alwaysResetDesktops = true;
       startupPrograms = [
-        "killall -9 picom sxhkd dunst xfce4-power-manager ksuperkey eww oneko sct"
+        # "killall -9 picom sxhkd dunst xfce4-power-manager ksuperkey eww oneko sct"
         "pgrep -x sxhkd > /dev/null || sxhkd"
         "xfce4-power-manager"
         "xsetroot -cursor_name left_ptr"
@@ -35,8 +35,8 @@ in
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-0' | awk '{print $1}')
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
         EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
-        # INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
             if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
