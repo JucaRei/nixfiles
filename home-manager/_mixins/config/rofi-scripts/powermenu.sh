@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Load Global Variable
 source $HOME/.aether-corevar

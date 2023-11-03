@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 rofi_command="rofi -theme themes/screenshotsmenu.rasi"
 
