@@ -67,5 +67,6 @@
     "XTerm.termName" = "xterm-256color";
     "XTerm*locale" = false;
     "XTerm*utf8" = true;
+    "Xcursor.theme" = lib.mkDefault "Breeze Hacked";
   };
 }
