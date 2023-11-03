@@ -6,7 +6,7 @@
     polybar = {
       enable = true;
       package = pkgs.polybarFull;
-      script = "";
+      script = "sleep 2s;polybar -q main";
       settings = {
         "colors" = {
           foreground = "#c8ccd4";
@@ -34,9 +34,9 @@
         };
         "bar/main" = {
           tray-position = "right";
-          monitor = "eDP1";
+          # monitor = "eDP1";
           # monitor = "eDP-1";
-          # monitor = "Virtual-1";
+          monitor = "Virtual-1";
           width = "100%";
           height = 18;
           padding-left = 1;

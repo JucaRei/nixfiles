@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # see man zscroll for documentation of the following parameters
 zscroll -l 1 \
