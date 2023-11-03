@@ -21,6 +21,12 @@
     size = 2048;
   }];
 
+  zramSwap = {
+    enable = true;
+    swapDevices = 4;
+    memoryPercent = 15;
+  };
+
   # fileSystems."/mnt/nixos-nas/encrypted" = {
   #   device = "10.42.0.1:/export/encrypted";
   #   fsType = "nfs";
