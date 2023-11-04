@@ -208,7 +208,7 @@
         "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
         # Testing
         "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
-        "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "bspwm"; };
+        "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "lxqt"; };
         "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; desktop = "i3"; };
         "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "i3"; };
         "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
@@ -250,7 +250,7 @@
         skull = libx.mkHost { hostname = "skull"; username = "juca"; };
         # Laptop
         nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "gnome"; hostid = "718643c6"; };
-        air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "bspwm"; hostid = "718641c6"; };
+        air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "lxqt"; hostid = "718641c6"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines

@@ -43,7 +43,7 @@
       #"video=efifb"
       "zswap.enabled=1"
       "zswap.compressor=lz4hc"
-      "zswap.max_pool_percent=20"
+      "zswap.max_pool_percent=25"
       "zswap.zpool=z3fold"
       "fs.inotify.max_user_watches=524288"
       "mitigations=off"
@@ -54,10 +54,12 @@
       # "i915.force_probe=46a6"
     ];
     kernel.sysctl = lib.mkForce {
-      "vm.vfs_cache_pressure" = 400;
-      "vm.swappiness" = 20;
-      "vm.dirty_background_ratio" = 1;
-      "vm.dirty_ratio" = 50;
+      # "vm.vfs_cache_pressure" = 400;
+      "vm.swappiness" = 25;
+      "vm.dirty_bytes"= 335544320; #320M
+      "vm.dirty_background_bytes"=167772160; #160M
+      # "vm.dirty_background_ratio" = 1;
+      # "vm.dirty_ratio" = 50;
       "dev.i915.perf_stream_paranoid" = 0;
     };
     # kernelPackages = pkgs.linuxPackages_lqx;
@@ -225,6 +227,30 @@
   networking.networkmanager.connectionConfig = {
     # "ethernet.mtu" = 1462;
     # "wifi.mtu" = 1462;
+  };
+
+  systemd = {
+    services = {
+      zswap = {
+        description = "Enable ZSwap, set to LZ4 and Z3FOLD";
+        enable = true;
+        wantedBy = [ "basic.target" ];
+        path = [ pkgs.bash ];
+        serviceConfig = {
+          ExecStart = ''${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
+          echo 1 > enabled&& \
+          echo 25 > max_pool_percent&& \
+          echo lz4hc > compressor&& \
+          echo z3fold > zpool'
+          '';
+          Type = "simple";
+        };
+      };
+      nix-daemon.serviceConfig = {
+        MemoryMax = "1G";
+        MemorySwapMax = "1G";
+      };
+    };
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

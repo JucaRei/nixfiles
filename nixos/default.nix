@@ -52,7 +52,7 @@
       joypixels.acceptLicense = true;
       allowUnsupportedSystem = true;
       permittedInsecurePackages = [
-      	"openssl-1.1.1w"
+        "openssl-1.1.1w"
       ];
     };
   };
@@ -62,7 +62,7 @@
     checkAllErrors = true;
 
     # 🍑 smooth rebuilds
-    # give nix-daemon the lowest priority 
+    # give nix-daemon the lowest priority
     # Reduce disk usage
     daemonIOSchedClass = "idle";
     # Leave nix builds as a background task
@@ -230,7 +230,8 @@
   services = {
     journald = {
       extraConfig = lib.mkDefault ''
-        SystemMaxUse=250M
+        SystemMaxUse=100M
+        MaxFileSec=7day
       '';
     };
     dbus = {
