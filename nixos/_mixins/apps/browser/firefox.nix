@@ -12,7 +12,7 @@
           Cache = true;
           Downloads = true;
           #FormData = true;
-          History = true;
+          History = false;
           #Locked = true;
         };
         SearchBar = "unified";

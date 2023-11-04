@@ -22,6 +22,15 @@ with lib.hm.gvariant;
       ytdl-format = "bestvideo[height<=?1080][vcodec!=?vp9]+bestaudio/best";
       save-position-on-quit = true;
       osd-font = "Bitstream Vera Sans";
+
+      # Video Settings
+      geometry = "50%:50%"; # force starting with centered window
+    
+      # don't allow a new window to have a size larger than 80% of the screen size
+      autofit-larger= "80%x80%";
+
+      # Do not close the window on exit.
+      keep-open = "yes";
     };
 
     # bindings = {

@@ -64,13 +64,13 @@
           # sha256 = lib.fakeSha256;
           sha256 = "sha256-MuDOhp6Ur5iwzHjyK7qEVSGOQovfWPwwYJ0Sl/RsIQE=";
         }
-        {
-          name = "shell-format";
-          publisher = "foxundermoon";
-          version = "7.2.5";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-kfpRByJDcGY3W9+ELBzDOUMl06D/vyPlN//wPgQhByk=";
-        }
+        # {
+        #   name = "shell-format";
+        #   publisher = "foxundermoon";
+        #   version = "7.2.5";
+        #   # sha256 = lib.fakeSha256;
+        #   sha256 = "sha256-kfpRByJDcGY3W9+ELBzDOUMl06D/vyPlN//wPgQhByk=";
+        # }
         {
           name = "vscode-thunder-client";
           publisher = "rangav";

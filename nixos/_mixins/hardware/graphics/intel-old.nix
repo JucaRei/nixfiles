@@ -32,7 +32,8 @@
     # services.udev.extraRules = ''KERNEL=="hidraw*", ATTRS{idVendor}=="20d6", ATTRS{idProduct}=="a711", MODE="0660", TAG+="uaccess"'';
 
 
-    services.xserver.videoDrivers = [ "intel" "i965" ];
+    # services.xserver.videoDrivers = [ "intel" "i965" ];
+    services.xserver.videoDrivers = [ "intel" ];
 
     ### INTEL FIX SCREEN TEARING ###
     environment = {
@@ -50,12 +51,17 @@
             Option        "TripleBuffer"      "true"
             Option        "VariableRefresh"   "true"
             Option        "DRI"               "2"
+            # Option        "DRI"               "3"
           EndSection
         '';
       };
 
       variables = {
         VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+      };
+
+      sessionVariables = {
+        LIBVA_DRIVER_NAME="i965";
       };
     };
 
