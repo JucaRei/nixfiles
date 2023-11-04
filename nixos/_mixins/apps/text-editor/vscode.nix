@@ -3,39 +3,39 @@
     (vscode-with-extensions.override {
       vscode = unstable.vscode;
       vscodeExtensions = [
-        unstable.vscode-extensions.coolbear.systemd-unit-file
+        # unstable.vscode-extensions.coolbear.systemd-unit-file
         # unstable.vscode-extensions.dart-code.flutter
         # unstable.vscode-extensions.dart-code.dart-code
-        unstable.vscode-extensions.dotjoshjohnson.xml
+        # unstable.vscode-extensions.dotjoshjohnson.xml
         # unstable.vscode-extensions.eamodio.gitlens
-        unstable.vscode-extensions.editorconfig.editorconfig
-        unstable.vscode-extensions.esbenp.prettier-vscode
+        # unstable.vscode-extensions.editorconfig.editorconfig
+        # unstable.vscode-extensions.esbenp.prettier-vscode
         # unstable.vscode-extensions.github.copilot
         # unstable.vscode-extensions.github.vscode-github-actions
-        unstable.vscode-extensions.golang.go
+        # unstable.vscode-extensions.golang.go
         unstable.vscode-extensions.jnoortheen.nix-ide
         unstable.vscode-extensions.brettm12345.nixfmt-vscode
         unstable.vscode-extensions.mads-hartmann.bash-ide-vscode
-        unstable.vscode-extensions.ms-azuretools.vscode-docker
+        # unstable.vscode-extensions.ms-azuretools.vscode-docker
         vscode-extensions.oderwat.indent-rainbow
-        vscode-extensions.ms-python.python
-        vscode-extensions.ms-python.vscode-pylance
+        # vscode-extensions.ms-python.python
+        # vscode-extensions.ms-python.vscode-pylance
         # unstable.vscode-extensions.ms-vscode.cpptools
         # unstable.vscode-extensions.ms-vsliveshare.vsliveshare
-        unstable.vscode-extensions.redhat.vscode-yaml
+        # unstable.vscode-extensions.redhat.vscode-yaml
         # unstable.vscode-extensions.ryu1kn.partial-diff
         # unstable.vscode-extensions.streetsidesoftware.code-spell-checker
-        unstable.vscode-extensions.timonwong.shellcheck
+        # unstable.vscode-extensions.timonwong.shellcheck
         unstable.vscode-extensions.vscode-icons-team.vscode-icons
         unstable.vscode-extensions.yzhang.markdown-all-in-one
         unstable.vscode-extensions.mhutchie.git-graph
       ] ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "bash-debug";
-          publisher = "rogalmic";
-          version = "0.3.9";
-          sha256 = "sha256-f8FUZCvz/PonqQP9RCNbyQLZPnN5Oce0Eezm/hD19Fg=";
-        }
+        # {
+          # name = "bash-debug";
+          # publisher = "rogalmic";
+          # version = "0.3.9";
+          # sha256 = "sha256-f8FUZCvz/PonqQP9RCNbyQLZPnN5Oce0Eezm/hD19Fg=";
+        # }
         {
           name = "beardedicons";
           publisher = "beardedbear";
@@ -54,12 +54,12 @@
         #   version = "0.1.2";
         #   sha256 = "sha256-DrCaEVf1tnB/ccFTJ5HpJfTxe0npbXMjqGkyHNri+G8=";
         # }
-        {
-          name = "font-switcher";
-          publisher = "evan-buss";
-          version = "4.1.0";
-          sha256 = "sha256-KkXUfA/W73kRfs1TpguXtZvBXFiSMXXzU9AYZGwpVsY=";
-        }
+        # {
+          # name = "font-switcher";
+          # publisher = "evan-buss";
+          # version = "4.1.0";
+          # sha256 = "sha256-KkXUfA/W73kRfs1TpguXtZvBXFiSMXXzU9AYZGwpVsY=";
+        # }
         # {
         #   name = "grammarly";
         #   publisher = "znck";
@@ -72,12 +72,12 @@
         #   version = "1.3.1";
         #   sha256 = "sha256-9dp8/gLAb8OJnmsLVbOAKAYZ5whavPW2Ak+WhLqEbJk=";
         # }
-        {
-          name = "linux-desktop-file";
-          publisher = "nico-castell";
-          version = "0.0.21";
-          sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
-        }
+        # {
+          # name = "linux-desktop-file";
+          # publisher = "nico-castell";
+          # version = "0.0.21";
+          # sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
+        # }
         {
           name = "non-breaking-space-highlighter";
           publisher = "viktorzetterstrom";
@@ -140,13 +140,13 @@
           # sha256 = lib.fakeSha256; ### if you trust
           sha256 = "sha256-YT8g6hA4Cs0EGan+d3iIKVh/fZm10/DcOxYiiEXEeYc=";
         }
-        {
-          name = "pork-and-beans";
-          publisher = "HighSpeedDirt";
-          version = "0.9.2";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-ErBbNPTxTbhQYkxuh3K9kEfkFvG35y/vuylsFPnlOtg=";
-        }
+        # {
+          # name = "pork-and-beans";
+          # publisher = "HighSpeedDirt";
+          # version = "0.9.2";
+          # # sha256 = lib.fakeSha256;
+          # sha256 = "sha256-ErBbNPTxTbhQYkxuh3K9kEfkFvG35y/vuylsFPnlOtg=";
+        # }
         {
           name = "red-theme";
           publisher = "RedCrafter07";
@@ -154,20 +154,20 @@
           # sha256 = lib.fakeSha256;
           sha256 = "sha256-JLxVOPNJEythpA8K1aa/d1TcG1rWfV4yMl3bcXCu+KE=";
         }
-        {
-          name = "gamberetti-reborn-theme";
-          publisher = "dSyncro";
-          version = "1.0.0";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-HTq5RpM2J1MfoKMm20sgdq3RNnPGaZ6Jwv9IFm0Ag0Q=";
-        }
-        {
-          name = "catppuccin-perfect-icons";
-          publisher = "thang-nm";
-          version = "0.21.22";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-H2f4sJjbShEERBL9FGCkyhNgkYH1hI6/taDyaOuReyY=";
-        }
+        # {
+          # name = "gamberetti-reborn-theme";
+          # publisher = "dSyncro";
+          # version = "1.0.0";
+          # # sha256 = lib.fakeSha256;
+          # sha256 = "sha256-HTq5RpM2J1MfoKMm20sgdq3RNnPGaZ6Jwv9IFm0Ag0Q=";
+        # }
+        # {
+          # name = "catppuccin-perfect-icons";
+          # publisher = "thang-nm";
+          # version = "0.21.22";
+          # # sha256 = lib.fakeSha256;
+          # sha256 = "sha256-H2f4sJjbShEERBL9FGCkyhNgkYH1hI6/taDyaOuReyY=";
+        # }
         # {
         #   name = "Material Monokai Theme";
         #   publisher = "repeale";

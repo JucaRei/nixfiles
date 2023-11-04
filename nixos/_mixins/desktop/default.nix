@@ -40,6 +40,12 @@
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
     };
+    samba = {
+      enable = true;
+      extraConfig = ''
+        client min protocol = NT1
+      '';
+    };
     gvfs.enable = true;
   };
   # };

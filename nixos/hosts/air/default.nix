@@ -8,6 +8,8 @@
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/boot/no-hz.nix
     ../../_mixins/hardware/bluetooth
+    ../../_mixins/apps/browser/firefox.nix
+    ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/hardware/graphics/intel-old.nix
     ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/services/security/doas.nix
@@ -203,6 +205,7 @@
     xorg.xbacklight
     xorg.xrdb
     cifs-utils
+    kodi
   ];
 
   hardware = { };
