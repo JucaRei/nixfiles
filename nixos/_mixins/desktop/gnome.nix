@@ -29,6 +29,7 @@
           settings = {
             greeter.IncludeAll = true;
           };
+          wayland = false; #only x11
         };
         defaultSession = "gnome";
       };
@@ -51,6 +52,7 @@
       # Packages installed
       gnome.dconf-editor
       gnome.adwaita-icon-theme
+      gnome.gnome-tweaks
       nautilus-open-any-terminal
       # qogir-icon-theme
       gnome.nautilus-python
@@ -58,7 +60,7 @@
       # yaru-theme
       gthumb
       gparted
-      # gnomeExtensions.appindicator
+      gnomeExtensions.appindicator
       gnomeExtensions.window-is-ready-remover
     ];
     gnome.excludePackages = (with pkgs; [

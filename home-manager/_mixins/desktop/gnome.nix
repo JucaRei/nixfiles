@@ -12,7 +12,6 @@ with lib.hm.gvariant;
       gnomeExtensions.battery-indicator-upower
       gnomeExtensions.bluetooth-quick-connect
       gnome-extension-manager
-      gnome.gnome-tweaks
       gnome.libgnome-keyring
       gnomeExtensions.forge
       gnomeExtensions.gsconnect # kdeconnect enabled in default.nix
@@ -148,7 +147,7 @@ with lib.hm.gvariant;
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<super>return";
-      command = "alacritty";
+      command = "tilix";
       name = "open-terminal";
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
