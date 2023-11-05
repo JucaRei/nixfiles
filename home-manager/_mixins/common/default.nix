@@ -6,7 +6,9 @@
     # ../console/bottom.nix
     ../console/dircolors.nix
     ../console/direnv.nix
-    ../console/eza.nix
+    # ../console/eza.nix
+    ../console/eza1.nix
+    # ../console/exa.nix
     ../console/htop.nix
     ../console/git.nix
     ../console/micro.nix
