@@ -81,11 +81,19 @@ with lib.hm.gvariant;
       enable-hot-corners = false;
       clock-show-weekday = true;
       # gtk-theme = "adwaita-dark";
+      show-battery-percentage = true;
     };
     # "org/gnome/desktop/session" = {               # Not Working
     #   idle-delay = "uint32 900";
     # };
     "org/gnome/desktop/privacy" = {
+      remember-recent-files = true;
+      # Remember file history for the last 30 days
+      recent-files-max-age = 30;
+      remove-old-temp-files = true;
+      remove-old-trash-files = true;
+      # Auto delete after 30 days
+      old-files-age = uint32 30;
       report-technical-problems = "false";
     };
     "org/gnome/desktop/calendar" = {
@@ -134,9 +142,29 @@ with lib.hm.gvariant;
       toggle-tiled-left = [ "@as []" ]; # Tiling
       toggle-tiled-right = [ "@as []" ];
     };
-
+    "org/gnome/desktop/peripherals/keyboard" = {
+      # Enable numlock by default
+      numlock-state = true;
+    };
+    "org/gnome/desktop/peripherals/touchpad" = {
+      click-method = "areas";
+      natural-scroll = false;
+      tap-to-click = true;
+      two-finger-scrolling-enabled = true;
+    };
     "org/gnome/settings-daemon/plugins/power" = {
+      # Disable auto suspend when charging
       sleep-interactive-ac-type = "nothing";
+      # Dim screen on inactivity
+      idle-dim = false;
+      # Auto suspend after 30 minutes of inactivity if on battery power
+      sleep-inactive-battery-type = "suspend";
+      sleep-inactive-battery-timeout = 1800;
+      # Auto power saver on low battery
+      power-saver-profile-on-low-battery = true;
+    };
+    "org/gnome/desktop/sound" = {
+      allow-volume-above-100-percent = true;
     };
     "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = [
