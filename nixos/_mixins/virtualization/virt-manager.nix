@@ -120,7 +120,7 @@
       virt-viewer # Remote VM
       qemu # UEFI Firmware
       OVMFFull
-      gvfs
+      # gvfs
       virtiofsd
     ];
 
@@ -135,9 +135,9 @@
     # "ovmf/OVMF.fd".source = (ovmfPackage.fd) + /FV/OVMF.fd;
     # };
 
-    sessionVariables = {
-      LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
-    };
+    # sessionVariables = {
+    #   LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
+    # };
   };
   services = {
     spice-vdagentd.enable = true;
