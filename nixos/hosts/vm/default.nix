@@ -100,6 +100,10 @@
         x = 1600;
         y = 1200;
       }
+      {
+        x = 1600;
+        y = 1050;
+      }
     ];
     dpi = 96;
     logFile = "/var/log/Xorg.0.log";
@@ -118,5 +122,6 @@
   };
 
   environment.systemPackages = with pkgs; [ emacs ];
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  nixpkgs.hostPlatform = lib.mkDefault
+    "x86_64-linux";
 }
