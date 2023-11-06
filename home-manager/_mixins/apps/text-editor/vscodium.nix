@@ -37,6 +37,12 @@
           sha256 = "sha256-s60alej3cNAbSJxsRlIRE2Qha6oAsmcOBbWoqp+w6fk=";
         }
         {
+         name = "codeium";
+         publisher = "Codeium";
+         version = "1.5.9";
+         sha256 = "sha256-6PLn7g/znfc2uruYTqxQ96IwXxfz6Sbguua3YqZd64U=";
+     }
+        {
           name = "color-highlight-css-color-4";
           publisher = "Yunduo";
           version = "1.1.3";

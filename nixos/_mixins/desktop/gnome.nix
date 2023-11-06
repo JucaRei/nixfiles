@@ -29,7 +29,7 @@
           settings = {
             greeter.IncludeAll = true;
           };
-          wayland = false; #only x11
+          # wayland = false; #only x11
         };
         defaultSession = "gnome";
       };
