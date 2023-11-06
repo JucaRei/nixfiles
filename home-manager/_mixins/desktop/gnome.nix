@@ -93,7 +93,7 @@ with lib.hm.gvariant;
       remove-old-temp-files = true;
       remove-old-trash-files = true;
       # Auto delete after 30 days
-      old-files-age = uint32 30;
+      old-files-age = "uint32 30";
       report-technical-problems = "false";
     };
     "org/gnome/desktop/calendar" = {
