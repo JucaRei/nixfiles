@@ -42,6 +42,7 @@
     #   url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.2.0.tar.gz";
 
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";

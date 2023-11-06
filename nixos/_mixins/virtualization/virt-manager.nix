@@ -65,6 +65,9 @@
   users.groups.libvirtd.members = [ "root" "${username}" ];
 
   virtualisation = {
+    lxd = {
+      enable = true;
+    };
     libvirtd = {
       enable = true;
       extraConfig = ''
