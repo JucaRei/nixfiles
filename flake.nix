@@ -132,9 +132,9 @@
     , nixgl
     , nix-formatter-pack
     , nixos-hardware
-    , fh
+      # , fh
     , nix-gaming
-    , eza
+      # , eza
     , vscode-server
     , ...
     } @ inputs:
