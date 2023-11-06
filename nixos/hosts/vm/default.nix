@@ -5,7 +5,7 @@
     (import ./disks-btrfs.nix { })
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/sound/pipewire.nix
-    ../../_mixins/hardware/bluetooth/default.nix
+    # ../../_mixins/hardware/bluetooth/default.nix
     ../../_mixins/sys/swapfile.nix
     ../../_mixins/services/security/doas.nix
     ../../_mixins/virtualization/podman.nix

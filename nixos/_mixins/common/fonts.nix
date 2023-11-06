@@ -10,13 +10,13 @@ in
       fira
       fira-go
       joypixels
-      liberation_ttf
+      # liberation_ttf
       gyre-fonts # TrueType substitutes for standard PostScript fonts
       noto-fonts-emoji # emoji
       source-serif
       ubuntu_font_family
       work-sans
-      siji # https://github.com/stark/siji
+      # siji # https://github.com/stark/siji
       source-code-pro
       terminus_font
       source-sans-pro

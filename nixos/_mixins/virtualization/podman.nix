@@ -18,7 +18,7 @@
     #syft             # Container SBOM generator
   ] ++ lib.optionals (desktop != null) [
     distrobox
-    unstable.pods
+    # unstable.pods
     xorg.xhost
   ];
 

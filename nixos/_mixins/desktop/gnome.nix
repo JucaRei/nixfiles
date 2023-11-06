@@ -71,6 +71,7 @@
     ]) ++ (with pkgs.gnome; [
       cheese # webcam tool
       gnome-music
+      gnome-font-viewer
       gedit # text editor
       epiphany # web browser
       geary # email reader
