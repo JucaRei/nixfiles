@@ -4,7 +4,8 @@ with lib.hm.gvariant;
   imports = [
     # ../_mixins/console/fish.nix
     # ../_mixins/apps/video/mpv.nix
-    ../_mixins/apps/text-editor/vscodium.nix
+    # ../_mixins/apps/text-editor/vscodium.nix
+    ../_mixins/apps/text-editor/vscode.nix
     # ../_mixins/apps/text-editor/sublime.nix
   ];
   # dconf.settings = {
