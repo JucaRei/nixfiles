@@ -1,13 +1,17 @@
 { pkgs, lib, config, ... }:
 with lib.hm.gvariant;
 {
-  home.packages = with pkgs; [ mpv ];
+  # home.packages = with pkgs; [ mpv ];
 
   programs.mpv = {
-    # enable = true;
-    # package = pkgs.mpv;
+    enable = true;
+    package = pkgs.mpv;
     scripts = with pkgs.mpvScripts; [
       autoload
+      sponsorblock
+      thumbfast
+      acompressor
+      inhibit-gnome
       mpris
     ];
     config = {
@@ -31,6 +35,30 @@ with lib.hm.gvariant;
 
       # Do not close the window on exit.
       keep-open = "yes";
+
+      ### Audio ###
+      volume = 60;
+      volume-max = 200;
+      audio-file-auto = "fuzzy"; #Load external audio with (almost) the same name as the video
+      audio-exclusive = "yes";
+      audio-channels = "stereo,5.1,7.1";
+      subs-with-matching-audio = "no"; #Won't ignore subtitles tagged as "Forced"
+      audio-spdif = "ac3,dts,eac3,dts-hd,truehd";
+      af = "acompressor=ratio=4,loudnorm";
+      audio-delay = "+0.084"; #Useful if you're watching with your headphones on PC, but output the video on your Television with a long HDMI cable (counter the delay)
+
+      ### SUBs ###
+      slang = "pt_BR,en,eng,de,deu,ger";
+      demuxer-mkv-subtitle-preroll = "yes"; #Forces showing subtitles while seeking through the video
+      blend-subtitles = "yes";
+      sub-gauss = "1.0";
+      sub-gray = "yes";
+      sub-ass-vsfilter-blur-compat = "yes"; # Backward compatibility for vsfilter fansubs
+      sub-ass-scale-with-window = "no"; # May have undesired effects with signs being misplaced.
+      sub-auto = "fuzzy"; # external subs don't have to match the file name exactly to autoload
+      embeddedfonts = "yes"; # use embedded fonts for SSA/ASS subs
+      sub-fix-timing = "no"; # do not try to fix gaps (which might make it worse in some cases). Enable if there are scenebleeds.
+
     };
 
     # bindings = {
