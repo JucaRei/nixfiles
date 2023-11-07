@@ -23,6 +23,8 @@ with lib.hm.gvariant;
     # vlc
     clonegit
     deezer-gui
+    fantezy
+    # autorandr
     # thorium
   ];
 
