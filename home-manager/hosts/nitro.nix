@@ -21,6 +21,7 @@ with lib.hm.gvariant;
     # icloudpd
     vlc
     clonegit
+    deezer-gui
     # thorium
   ];
 

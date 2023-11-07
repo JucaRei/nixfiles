@@ -6,6 +6,7 @@
   # apple-fonts = pkgs.callPackage ./apple-fonts { };
   cyberre-grub-theme = pkgs.callPackage ./cyberre-grub-theme { };
   cloneit = pkgs.callPackage ./cloneit { };
+  deezer = pkgs.callPackage ./deezer { };
   plymouth-themes = pkgs.callPackage ./plymouth-themes { };
   firefox-csshacks = pkgs.callPackage ./firefox-csshacks { };
   nvchad = pkgs.callPackage ./nvchad { };
