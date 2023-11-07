@@ -26,7 +26,6 @@ with lib.hm.gvariant;
       # gnomeExtensions.pop-shell
       # gnomeExtensions.fullscreen-avoider
       # gnomeExtensions.dash-to-dock
-      neuwaita-theme
 
       gnome3.gvfs
       gnome3.nautilus
