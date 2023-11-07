@@ -1,11 +1,11 @@
 { pkgs, lib, config, ... }:
 with lib.hm.gvariant;
 {
-  # home.packages = with pkgs; [ mpv ];
+  home.packages = with pkgs; [ mpv ];
 
   programs.mpv = {
-    enable = true;
-    package = pkgs.mpv;
+    # enable = true;
+    # package = pkgs.mpv;
     scripts = with pkgs.mpvScripts; [
       autoload
       mpris

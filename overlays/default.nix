@@ -10,7 +10,6 @@
   # https://nixos.wiki/wiki/Overlays
   modifications = final: prev: {
     cyberre = final.cyberre-grub-theme;
-    mpv = prev.mpv-custom;
     advcp = final.advmvcp;
     hacked-cursor = final.breeze-hacked-cursorr;
     clonegit = final.cloneit;
