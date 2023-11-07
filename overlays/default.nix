@@ -11,6 +11,7 @@
   modifications = final: prev: {
     cyberre = final.cyberre-grub-theme;
     # mpv = prev.mpv;
+    advcp = final.advmvcp;
     hacked-cursor = final.breeze-hacked-cursorr;
     clonegit = final.cloneit;
     deezer-gui = final.deezer;

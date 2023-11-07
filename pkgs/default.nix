@@ -13,6 +13,7 @@
   # tidal-dl = pkgs.callPackage ./tidal-dl { };
   breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
   # mpv = pkgs.callPackage ./mpv { };
+  advmvcp = pkgs.callPackage ./advmvcp { };
   icloud-photo-downloader = pkgs.callPackage ./icloud-photo-downloader { };
   thorium-browser = pkgs.callPackage ./thorium-browser { };
   polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
