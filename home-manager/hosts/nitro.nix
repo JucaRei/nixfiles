@@ -6,7 +6,8 @@ with lib.hm.gvariant;
     ../_mixins/apps/video/mpv.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     ../_mixins/apps/text-editor/vscode.nix
-    ../_mixins/apps/browser/librewolf.nix
+    ../_mixins/apps/browser/brave.nix
+    ../_mixins/apps/browser/firefox.nix
     # ../_mixins/apps/text-editor/sublime.nix
   ];
   # dconf.settings = {
@@ -19,7 +20,7 @@ with lib.hm.gvariant;
   home.packages = with pkgs; [
     whatsapp-for-linux # Whatsapp desktop messaging app
     # icloudpd
-    vlc
+    # vlc
     clonegit
     deezer-gui
     # thorium

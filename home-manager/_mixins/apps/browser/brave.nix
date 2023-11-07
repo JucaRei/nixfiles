@@ -2,7 +2,7 @@
 {
   home = {
     packages = [ pkgs.brave ];
-    sessionVariables = {
+    sessionVariables = lib.mkDefault {
       DEFAULT_BROWSER = "${pkgs.brave}/bin/brave";
     };
   };

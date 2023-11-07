@@ -10,6 +10,7 @@ let
     #"browser.contentblocking.category" = "strict";
     "browser.send_pings" = false;
     "browser.urlbar.speculativeConnect.enabled" = true;
+    "browser.search.hiddenOneOffs" = "Google,Yahoo, Bing,Amazon.com,Twitter";
     "dom.security.https_only_mode" = true;
     "dom.event.clipboardevents.enabled" = true;
     "media.eme.enabled" = false; # disables DRM
@@ -106,6 +107,7 @@ in
         juca = {
           id = 0;
           settings = sharedSettings;
+          isDefault = true;
           # extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
           #   # Install extensions from NUR
           #   decentraleyes
@@ -116,6 +118,39 @@ in
           #   h264ify
           #   df-youtube
           # ];
+          search.engines = {
+            "NixOS Options" = {
+              urls = [{
+                template = "https://search.nixos.org/options";
+                params = [
+                  { name = "type"; value = "packages"; }
+                  { name = "query"; value = "{searchTerms}"; }
+                ];
+              }];
+              icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = [ "@no" ];
+            };
+            "Nix Packages" = {
+              urls = [{
+                template = "https://search.nixos.org/packages";
+                params = [
+                  { name = "type"; value = "packages"; }
+                  { name = "query"; value = "{searchTerms}"; }
+                ];
+              }];
+              icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = [ "@np" ];
+            };
+            "NixOS Wiki" = {
+              urls = [{ template = "https://nixos.wiki/index.php?search={searchTerms}"; }];
+              definedAliases = [ "@nw" ];
+            };
+            "Bing".metaData.hidden = true;
+            "Google".metaData.alias = "@g";
+            "Wikipedia".metaData.alias = "@wiki";
+          };
+          search.default = "DuckDuckGo";
+          search.force = true;
         };
       };
     };
