@@ -25,9 +25,9 @@ with lib.hm.gvariant;
 
       # Video Settings
       geometry = "50%:50%"; # force starting with centered window
-    
+
       # don't allow a new window to have a size larger than 80% of the screen size
-      autofit-larger= "80%x80%";
+      autofit-larger = "80%x80%";
 
       # Do not close the window on exit.
       keep-open = "yes";

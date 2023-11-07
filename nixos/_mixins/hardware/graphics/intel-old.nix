@@ -32,8 +32,8 @@
     # services.udev.extraRules = ''KERNEL=="hidraw*", ATTRS{idVendor}=="20d6", ATTRS{idProduct}=="a711", MODE="0660", TAG+="uaccess"'';
 
 
-    # services.xserver.videoDrivers = [ "intel" "i965" ];
-    services.xserver.videoDrivers = [ "intel" ];
+    services.xserver.videoDrivers = [ "intel" "i965" ];
+    # services.xserver.videoDrivers = [ "intel" ];
 
     ### INTEL FIX SCREEN TEARING ###
     environment = {
@@ -61,7 +61,7 @@
       };
 
       sessionVariables = {
-        LIBVA_DRIVER_NAME="i965";
+        LIBVA_DRIVER_NAME = "i965";
       };
     };
 
