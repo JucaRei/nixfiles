@@ -10,7 +10,7 @@
 
   home.packages = with pkgs; [
     # thorium
-    # clonegit
+    clonegit
     # emacs
   ];
 }
