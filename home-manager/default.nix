@@ -81,6 +81,7 @@ in
         "electron-21.4.0"
         "electron-12.2.3"
         "openssl-1.1.1w"
+        "electron-13.6.9"
       ];
       # Disable if you don't want unfree packages
       allowUnfree = true;

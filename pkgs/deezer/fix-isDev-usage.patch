@@ -49,6 +49,5 @@ index a8bb8d6..73dc8b4 100644
              os: `${external_os_default().type()} ${external_os_default().release()}`,
              "os.name": external_os_default().type(),
              arch: process.arch,
--- 
+--
 2.34.1
-

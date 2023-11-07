@@ -1,5 +1,18 @@
-{ stdenv, lib, pkgs, sources, ... }:
+# { stdenv, lib, pkgs, sources, fetchurl, fetchFromGitHub, udev, makeDesktopItem, makeBinaryWrapper, electron_13, ... }:
 
+{ copyDesktopItems
+, electron_13
+, fetchFromGitHub
+, fetchurl
+, pkgs
+, lib
+, makeBinaryWrapper
+, makeDesktopItem
+, nodePackages
+, p7zip
+, stdenv
+, udev
+}:
 # see:
 # - https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=deezer
 # - https://github.com/Shawn8901/nix-configuration/blob/main/packages/deezer/default.nix
@@ -18,12 +31,33 @@ let
     terminal = false;
     startupNotify = true;
   };
+  version = "5.30.580";
+  electron = electron_13.overrideAttrs (old: {
+    meta = old.meta // {
+      # Ignore EOL for old Electron versions.
+      knownVulnerabilities = [ ];
+    };
+  });
 in
 stdenv.mkDerivation rec {
-  name = "deezer";
-  src = sources.deezer;
+  pname = "deezer-desktop";
+  inherit version;
+
+  src = fetchurl {
+    url = "https://www.deezer.com/desktop/download/artifact/win32/x86/${version}";
+    sha256 = "sha256-oUebThUpfI0poL65kG9kesarnGqOSQFycCgSYueVlQQ=";
+  };
+
+  meta = with lib; {
+    description = "Online music streaming service";
+    license = licenses.unfree;
+    homepage = "https://www.deezer.com";
+    platforms = platforms.linux;
+  };
 
   buildInputs = with pkgs; [
+    copyDesktopItems
+    makeBinaryWrapper
     imagemagick
     makeWrapper
     nodePackages.asar
@@ -36,7 +70,7 @@ stdenv.mkDerivation rec {
     ./quit.patch
     ./remove-kernel-version-from-user-agent.patch
     ./start-hidden-in-tray.patch
-    ./systray-buttons-fix.patch
+    # ./systray-buttons-fix.patch
   ];
 
   unpackPhase = ''
