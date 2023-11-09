@@ -25,7 +25,13 @@ let
   intelBusId = "PCI:0:2:0";
   nvidiaBusId = "PCI:1:0:0";
 
-
+  # ### With nvidia
+  # inherit (pkgs) libva;
+  # inherit (pkgs.lib.makeOverridableArgs) override;
+  # vaapiNvidia = pkgs.nvidia_x11.override {
+  #   vaapiSupport = true;
+  #   vdpauSupport = true;
+  # };
 in
 {
   # sessionVariables.NIXOS_OZONE_WL = "1"; # Fix for electron apps with wayland
@@ -90,6 +96,7 @@ in
           opengl = {
             extraPackages = with pkgs; [
               nvidia-vaapi-driver
+              # vaapiNvidia
             ];
           };
           nvidia = {
