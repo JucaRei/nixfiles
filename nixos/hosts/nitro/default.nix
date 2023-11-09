@@ -240,7 +240,7 @@
           # tappingDragLock = false;
           tapping = false;
           naturalScrolling = true;
-          scrollButton = "twofinger";
+          scrollMethod = "twofinger";
           disableWhileTyping = true;
           clickMethod = "clickfinger";
         };
