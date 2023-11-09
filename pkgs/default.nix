@@ -11,7 +11,7 @@
   firefox-csshacks = pkgs.callPackage ./firefox-csshacks { };
   nvchad = pkgs.callPackage ./nvchad { };
   # tidal-dl = pkgs.callPackage ./tidal-dl { };
-  fantezy-font = pkgs.fatenzy-font ./fantezy-font { };
+  fantezy-font = pkgs.callPackage ./fantezy-font { };
   breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
   advmvcp = pkgs.callPackage ./advmvcp { };
   icloud-photo-downloader = pkgs.callPackage ./icloud-photo-downloader { };
