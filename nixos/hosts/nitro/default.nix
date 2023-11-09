@@ -204,6 +204,16 @@
   };
 
   services = {
+    acpid = {
+      enable = true;
+    };
+    # power-profiles-daemon.enable = false;
+    # upower.enable = true;
+    udev.extraRules = lib.mkMerge [
+      ''ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"'' # autosuspend USB devices
+      ''ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"'' # autosuspend PCI devices
+      ''ACTION=="add", SUBSYSTEM=="net", NAME=="enp*", RUN+="${pkgs.ethtool}/sbin/ethtool -s $name wol d"'' # disable Ethernet Wake-on-LAN
+    ];
     btrfs = {
       autoScrub = {
         enable = true;
@@ -227,9 +237,12 @@
         enable = true;
         touchpad = {
           # horizontalScrolling = true;
-          naturalScrolling = false;
-          tapping = true;
           # tappingDragLock = false;
+          tapping = false;
+          naturalScrolling = true;
+          scrollButton = "twofinger";
+          disableWhileTyping = true;
+          clickMethod = "clickfinger";
         };
       };
       # xrandrHeads = [
@@ -249,6 +262,7 @@
       #     '';
       #   }
       # ];
+      exportConfiguration = true;
     };
     # power-profiles-daemon.enable = lib.mkForce false;
     # tlp = {

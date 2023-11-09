@@ -1,6 +1,16 @@
 # Taken from Colemickens
 # https://github.com/colemickens/nixcfg/blob/93e3d13b42e2a0a651ec3fbe26f3b98ddfdd7ab9/mixins/gfx-intel.nix
-{ pkgs, lib, hostname, config, ... }: {
+{ pkgs, lib, hostname, config, ... }:
+let
+  ### With nvidia
+  inherit (pkgs) libva;
+  inherit (pkgs.lib.makeOverridableArgs) override;
+  vaapiNvidia = pkgs.nvidia_x11.override {
+    vaapiSupport = true;
+    vdpauSupport = true;
+  };
+in
+{
   config = {
     environment.systemPackages = with pkgs; [ libva-utils ];
     hardware = {
@@ -11,8 +21,8 @@
             (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
             # intel-media-driver # LIBVA_DRIVER_NAME=iHD
             # vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-            intel-compute-runtime
-            vaapiVdpau
+            vaapiNvidia
+            libvdpau
             libvdpau-va-gl
           ]);
         #driSupport32Bit = true;

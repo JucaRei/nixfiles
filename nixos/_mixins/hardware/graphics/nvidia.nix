@@ -24,6 +24,8 @@ let
 
   intelBusId = "PCI:0:2:0";
   nvidiaBusId = "PCI:1:0:0";
+
+
 in
 {
   # sessionVariables.NIXOS_OZONE_WL = "1"; # Fix for electron apps with wayland
