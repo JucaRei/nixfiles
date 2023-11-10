@@ -65,6 +65,9 @@
 
   # Enable services to round out the desktop
   services = {
+    dbus = {
+      packages = with pkgs; [ xfconf ];
+    };
     xserver = {
       updateDbusEnvironment = true;
     };

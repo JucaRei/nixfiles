@@ -159,7 +159,7 @@
       enable = true;
     };
 
-    envfs.enable = true; # populate /usr/bin for non-nix binaries
+    # envfs.enable = true; # populate /usr/bin for non-nix binaries
   };
   systemd.services.disable-wifi-powersave = {
     wantedBy = [ "multi-user.target" ];

@@ -57,7 +57,7 @@ with lib.hm.gvariant;
   dconf = {
     settings = {
       "org/gnome/desktop/background" = {
-        picture-uri = "file://" + ../config/wallpapers/122.jpg;
+        picture-uri = "file:///" + ../config/wallpapers/122.jpg;
       };
       "org/gnome/desktop/interface" = {
         clock-format = "24h";
@@ -72,7 +72,7 @@ with lib.hm.gvariant;
       };
       "org/gnome/shell" = {
         disable-user-extensions = false;
-        disabled-user-extensions = [];
+        disabled-user-extensions = [ ];
         disable-extension-version-validation = true;
         enabled-extensions = [
           "dash-to-dock@micxgx.gmail.com"
@@ -94,7 +94,7 @@ with lib.hm.gvariant;
         show-apps-at-top = true;
         # clicking
         click-action = "previews";
-        scroll-action =  "cycle-windows";
+        scroll-action = "cycle-windows";
         shift-click-action = "launch";
         middle-click-action = "minimise";
         shift-middle-click-action = "launch";
@@ -102,7 +102,7 @@ with lib.hm.gvariant;
         running-indicator-style = "DASHES";
         # visibility
         intellihide = true;
-        isolate-workspaces=true;
+        isolate-workspaces = true;
         autohide = true;
         autohide-in-full-screen = true;
         require-pressure-to-show = true;
