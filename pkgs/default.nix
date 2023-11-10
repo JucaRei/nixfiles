@@ -17,5 +17,4 @@
   icloud-photo-downloader = pkgs.callPackage ./icloud-photo-downloader { };
   thorium-browser = pkgs.callPackage ./thorium-browser { };
   polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
-  graphite-gtk-theme = pkgs.callPackage ./graphite-gtk-theme { };
 }
