@@ -88,6 +88,7 @@
 
 
   services.xserver = {
+    videoDrivers = [ "qxl" ];
     layout = lib.mkForce "br";
     exportConfiguration = true;
     virtualScreen = {
@@ -125,7 +126,7 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [ 
+    systemPackages = with pkgs; [
       emacs
       # nixd
       unstable.nil
