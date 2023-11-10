@@ -31,7 +31,7 @@ with lib.hm.gvariant;
 
       gnome3.gvfs
       gnome3.nautilus
-      flat-remix
+      graphite-shell
     ];
 
     # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features

@@ -11,11 +11,11 @@ let
   fake-dconf = writeScriptBin "dconf" "echo -n";
 in
 stdenv.mkDerivation rec {
-  pname = "flat-remix-gnome";
-  version = "20231026";
+  pname = "Graphite-gtk-theme";
+  version = "2023-05-17";
 
   src = fetchFromGitHub {
-    owner = "daniruiz";
+    owner = "vinceliuice";
     repo = pname;
     rev = version;
     hash = "sha256-fm1YOKI6TLkCnkkPZkp8I0xWkNrZt4sVktYZyD5foKU=";
