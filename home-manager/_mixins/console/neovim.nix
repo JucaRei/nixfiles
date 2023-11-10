@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   home = {
-    packages = pkgs.neovim;
+    # packages = [ pkgs.neovim ];
+    packages = [ pkgs.neovim-unwrapped ];
   };
   programs.neovim = {
     defaultEditor = false;
