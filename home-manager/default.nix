@@ -133,4 +133,11 @@ in
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
+
+  config = {
+    home-manager = {
+      useUserPackages = true;
+      useGlobalPkgs = true;
+    };
+  };
 }
