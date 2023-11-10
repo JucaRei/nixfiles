@@ -16,9 +16,10 @@ with lib.hm.gvariant;
       gnome-extension-manager
       gnome.libgnome-keyring
       gnomeExtensions.forge
+      gnomeExtensions.vitals
       gnomeExtensions.gsconnect # kdeconnect enabled in default.nix
       gnomeExtensions.dash-to-dock
-      # gnomeExtensions.tray-icons-reloaded
+      gnomeExtensions.tray-icons-reloaded
       # gnomeExtensions.removable-drive-menu
       # gnomeExtensions.dash-to-panel
       # gnomeExtensions.battery-indicator-upower
@@ -30,6 +31,7 @@ with lib.hm.gvariant;
 
       gnome3.gvfs
       gnome3.nautilus
+      flat-remix
     ];
 
     # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features
@@ -57,9 +59,24 @@ with lib.hm.gvariant;
   dconf = {
     settings = {
       "org/gnome/desktop/background" = {
-        picture-uri = "file:///" + ../config/wallpapers/122.jpg;
+        picture-uri = "file://${../config/wallpapers/nix-asci.png}";
+      };
+      "org/gnome/shell/extensions/vitals" = {
+        show-storage = false;
+        show-voltage = true;
+        show-memory = true;
+        show-fan = true;
+        show-temperature = true;
+        show-processor = true;
+        show-network = true;
+      };
+      "org/gnome/desktop/wm/preferences" = {
+        workspace-name = [ "Main" ];
+        button-layout = "appmenu:minimize,maximize,close";
       };
       "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+        enable-hot-corners = false;
         clock-format = "24h";
         clock-show-weekday = true;
         show-battery-percentage = true;

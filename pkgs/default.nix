@@ -17,4 +17,5 @@
   icloud-photo-downloader = pkgs.callPackage ./icloud-photo-downloader { };
   thorium-browser = pkgs.callPackage ./thorium-browser { };
   polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
+  flat-remix-shell = pkgs.callPackage ./flat-remix-shell { };
 }
