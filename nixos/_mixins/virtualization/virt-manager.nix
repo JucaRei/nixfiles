@@ -72,6 +72,9 @@
       enable = true;
       extraConfig = ''
         unix_sock_group = "libvirtd"
+
+        # Needed for virtio-fs
+        memory_backing_dir = "/dev/shm/"
       '';
       qemu = {
         verbatimConfig = ''

@@ -39,7 +39,6 @@
   programs = {
     command-not-found.enable = false;
     gpg.enable = true;
-    home-manager.enable = true;
     info.enable = true;
     jq = {
       enable = true;

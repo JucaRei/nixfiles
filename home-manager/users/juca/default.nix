@@ -151,6 +151,20 @@
     #     signByDefault = true;
     #   };
     # };
+
+    home-manager = lib.mkDefault {
+      enable = true;
+      path = "${config.home.homeDirectory}/home-manager";
+    };
+  };
+
+  services = {
+    home-manager = {
+      autoUpgrade = {
+        enable = true;
+        frequency = "weekly";
+      };
+    };
   };
 
   systemd.user.tmpfiles.rules = [
