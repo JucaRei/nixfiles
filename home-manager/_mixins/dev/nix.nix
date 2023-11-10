@@ -7,11 +7,12 @@
       deadnix
       nix-bash-completions
       nix-index
+      nix-prefetch-git
       nix-du
       nixpkgs-fmt
       nurl
       nil
-      unstable.nixd
+      # nixd
       # rnix-lsp
       statix
     ];

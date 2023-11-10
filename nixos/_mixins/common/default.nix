@@ -125,6 +125,8 @@
       duf
       htop
       lshw
+      nix-index
+      nix-prefetch-git
       # cifs-utils
     ];
     variables = {

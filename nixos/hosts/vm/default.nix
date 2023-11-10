@@ -127,8 +127,9 @@
   environment = {
     systemPackages = with pkgs; [ 
       emacs
-      nixd
-      nil
+      # nixd
+      unstable.nil
+      nixpkgs-fmt
     ];
   };
   nixpkgs.hostPlatform = lib.mkDefault
