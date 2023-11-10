@@ -23,10 +23,13 @@
     wireless.iwd.package = pkgs.unstable.iwd;
   };
   systemd = {
-    # Workaround https://github.com/NixOS/nixpkgs/issues/180175
-    services.NetworkManager-wait-online.enable = false;
-    # Speed up boot
-    # https://discourse.nixos.org/t/boot-faster-by-disabling-udev-settle-and-nm-wait-online/6339
-    services.systemd-udev-settle.enable = false;
+    services = {
+      # Workaround https://github.com/NixOS/nixpkgs/issues/180175
+      NetworkManager-wait-online.enable = false;
+      # Speed up boot
+      # https://discourse.nixos.org/t/boot-faster-by-disabling-udev-settle-and-nm-wait-online/6339
+      systemd-udev-settle.enable = false;
+      # systemd-user-sessions.enable = false;
+    };
   };
 }

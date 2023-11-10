@@ -64,10 +64,7 @@
     #   flake = false;
     # };
 
-    nixd = {
-      url = "github:nix-community/nixd";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixd.url = "github:nix-community/nixd";
 
     # Gaming tweaks
     # nix-gaming.url = "github:fufexan/nix-gaming";
