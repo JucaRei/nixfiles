@@ -50,7 +50,9 @@
       gnome-user-share.enable = true;
       gnome-online-accounts.enable = false;
       gnome-initial-setup.enable = false;
-      gnome-browser-connector = false;
+      gnome-browser-connector = {
+        enable = false;
+      };
       gnome-remote-desktop = {
         enable = true;
       };
