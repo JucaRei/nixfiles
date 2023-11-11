@@ -46,11 +46,7 @@ in
 {
   home.packages = with pkgs; [ discord discocss ];
 
-  home.persistence = {
-    "${config.home.homeDirectory}".directories = [ ".config/discord" ];
-  };
-
-  xdg.configFile."discocss/custom.css".text = ''
+  xdg.configFile."discord/discocss/custom.css".text = ''
     .theme-dark {
         --header-primary: #${scheme.dracula.base05};
         --header-secondary: #${scheme.dracula.base04};
@@ -86,7 +82,7 @@ in
         --activity-card-background: var(--background-secondary);
     }
     body {
-        font-family: ${config.fontProfiles.regular.family}, sans serif;
+        font-family: Inter, sans serif;
     }
     .scroller-1Bvpku {
         background-color: var(--background-primary);

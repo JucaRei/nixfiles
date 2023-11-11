@@ -11,7 +11,7 @@ with lib.hm.gvariant;
       gnomeExtensions.hide-activities-button
       gnomeExtensions.caffeine
       gnome.mutter
-      gnomeExtensions.battery-indicator-upower
+      # gnomeExtensions.battery-indicator-upower
       gnomeExtensions.bluetooth-quick-connect
       gnome-extension-manager
       gnome.libgnome-keyring
@@ -19,7 +19,8 @@ with lib.hm.gvariant;
       gnomeExtensions.vitals
       gnomeExtensions.gsconnect # kdeconnect enabled in default.nix
       gnomeExtensions.dash-to-dock
-      gnomeExtensions.tray-icons-reloaded
+      gnomeExtensions.arcmenu
+      # gnomeExtensions.tray-icons-reloaded
       # gnomeExtensions.removable-drive-menu
       # gnomeExtensions.dash-to-panel
       # gnomeExtensions.battery-indicator-upower
@@ -28,10 +29,10 @@ with lib.hm.gvariant;
       # gnomeExtensions.pip-on-top
       # gnomeExtensions.pop-shell
       # gnomeExtensions.fullscreen-avoider
+      layan-gtk-theme
 
       gnome3.gvfs
       gnome3.nautilus
-      graphite-shell
     ];
 
     # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features
@@ -48,12 +49,14 @@ with lib.hm.gvariant;
       name = "Fira 10";
     };
     theme = {
-      package = pkgs.whitesur-gtk-theme;
-      name = "WhiteSur-light-solid-pink";
+      # package = pkgs.whitesur-gtk-theme;
+      # name = "WhiteSur-light-solid-pink";
+      package = pkgs.layan-gtk-theme;
+      name = "Layan-dark";
     };
     iconTheme = {
       package = pkgs.papirus-icon-theme;
-      name = "Papirus";
+      name = "EPapirus-dark";
     };
   };
   dconf = {
