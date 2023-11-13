@@ -154,7 +154,7 @@ with lib.hm.gvariant;
 
     "org/gnome/desktop/background" = {
       color-shading-type = "solid";
-      picture-options = "zoom";
+      picture-options = "stretched";
       picture-uri-dark = "file://${../config/wallpapers/nix-asci.png}";
       primary-color = "#ac5e0b";
       secondary-color = "#000000";
@@ -177,7 +177,7 @@ with lib.hm.gvariant;
       font-hinting = "slight";
       font-name = "Inter 10";
       gtk-enable-primary-paste = false;
-      gtk-theme = lib.mkDefault "Catppuccin-Frappe-Standard-Blue-Dark";
+      gtk-theme = lib.mkDefault "Layan-dark";
       icon-theme = lib.mkDefault "ePapirus-Dark";
       locate-pointer = true;
       show-battery-percentage = true;
@@ -255,7 +255,7 @@ with lib.hm.gvariant;
 
     "org/gnome/desktop/screensaver" = {
       color-shading-type = "solid";
-      picture-options = "zoom";
+      picture-options = "stretched";
       picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/truchet-l.webp";
       primary-color = "#ac5e0b";
       secondary-color = "#000000";
@@ -389,7 +389,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/nautilus/window-state" = {
-      initial-size = mkTuple [ 948 1035 ];
+      initial-size = mkTuple [ 948 749 ];
       maximized = false;
     };
 
