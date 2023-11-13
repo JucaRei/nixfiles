@@ -20,6 +20,7 @@
     # ../services/openssh.nix
     # ../services/tailscale.nix
     # ../services/zerotier.nix
+    ../config/scripts/nixos-change-summary.nix
   ];
 
   # don't install documentation i don't use

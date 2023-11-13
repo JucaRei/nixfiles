@@ -193,7 +193,7 @@
       # clonegit
       unstable.stacer
       lm_sensors
-      nixos-summary
+      # nixos-summary
       # tidal
     ];
     sessionVariables = {
