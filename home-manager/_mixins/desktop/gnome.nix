@@ -243,6 +243,11 @@ with lib.hm.gvariant;
       two-finger-scrolling-enabled = true;
     };
 
+    "org/gnome/desktop/search-providers" = {
+      disabled = [ "org.gnome.Software.desktop" "org.gnome.seahorse.Application.desktop" ];
+      sort-order = [ "org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
+    };
+
     "org/gnome/desktop/privacy" = {
       old-files-age = mkUint32 30;
       recent-files-max-age = -1;

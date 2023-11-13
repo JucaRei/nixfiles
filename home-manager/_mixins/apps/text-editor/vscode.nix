@@ -200,11 +200,27 @@
         fontFamily = "'UbuntuMono Nerd Font Mono Regular', 'monospace'";
         fontSize = 16;
         smoothScrolling = true;
+        copyOnSelection = true;
+        scrollback = 5000;
       };
+
+      explorer = {
+        sortOrder = "default";
+        sortOrderLexicographicOptions = "default";
+        incrementalNaming = "smart";
+        confirmDragAndDrop = false;
+        confirmDelete = true;
+      };
+
+
 
       editor = {
         fontFamily = "'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono','JetbrainsMono Nerd Font'";
         fontLigatures = true;
+        scrollbar = {
+          horizontal = "auto";
+          vertical = "auto";
+        };
         cursorStyle = "line";
         # cursorStyle = "block";
         lineHeight = 1.4;
@@ -212,12 +228,15 @@
         minimap.renderCharecters = false;
         minimap.maxColumn = 80;
         minimap.autohide = true;
+        roundedSelection = true;
         renderWhitespace = "trailing";
         smoothScrolling = true;
         lineNumbers = "on";
         cursorBlinking = "smooth";
         cursorSmoothCaretAnimation = "on";
         cursorWidth = 2;
+        tabsize = 2;
+        quickSuggestionsdelay = 1;
         formatOnSave = true;
         guides = {
           bracketPairs = true;
@@ -232,6 +251,12 @@
           organizeImports = true;
           #   fixAll.eslint = true;
         };
+      };
+
+      search = {
+        smartCase = true;
+        sortOrder = "default";
+        searchEditor.doubleClickBehaviour = "goToLocation";
       };
 
       docker = {
@@ -263,6 +288,12 @@
         productIconTheme = "material-product-icons";
         # productIconTheme = "tabler-icons";
         smoothScrolling = true;
+        tree = {
+          indent = 4;
+        };
+        settings = {
+          editor = "ui";
+        };
       };
 
       ocamlformat-vscode-extension = {
@@ -308,6 +339,10 @@
         enableSmartCommit = true;
       };
 
+      window = {
+        titleBarStyle = "custom";
+      };
+
       "editor.bracketPairColorization.enabled" = true;
       "editor.fontFamily" = "Fira Code Retina";
       "editor.fontSize" = 21;
@@ -321,6 +356,11 @@
       "files.trimFinalNewlines" = true;
       "files.trimTrailingWhitespace" = true;
       "lldb.suppressUpdateNotifications" = true;
+
+      markdown = {
+        preview.typographer = true;
+        extension.print.theme = "dark";
+      };
       "markdownlint.config" = {
         "MD024"."siblings_only" = true;
         "MD028" = false;

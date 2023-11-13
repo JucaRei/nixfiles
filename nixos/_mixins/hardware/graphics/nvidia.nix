@@ -61,10 +61,10 @@ in
     ];
     boot.kernelParams = [ "intel_iommu=igfx_off" ];
     specialisation = {
-      nvidia-display.configuration = lib.mkDefault {
-        system.nixos.tags = [ "nvidia-display" ];
+      nvidia-hybrid.configuration = lib.mkForce {
+        system.nixos.tags = [ "nvidia-hybrid" ];
         boot = {
-          loader.grub.configurationName = lib.mkForce "Nvidia Power Mode";
+          loader.grub.configurationName = lib.mkForce "Hybrid GPU";
           blacklistedKernelModules = lib.mkForce [
             "nouveau"
             "rivafb"
@@ -73,82 +73,150 @@ in
             "nv"
             "uvcvideo"
           ];
-          kernelModules = [
-            "clearcpuid=514" # Fixes certain wine games crash on launch
-            "nvidia"
-            "nvidia_modeset"
-            "nvidia_uvm"
-            "nvidia_drm"
-          ];
-          kernelParams = lib.mkDefault [
-            "nouveau.modeset=0"
-            "nohibernate"
-            "nvidia-drm.modeset=1"
-          ];
-          extraModprobeConfig = ''
-            options nvidia NVreg_UsePageAttributeTable=1
-            options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
-            options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
-          '';
-          kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
+        };
+        powerManagement.enable = true;
+        services = {
+          tlp = lib.mkForce {
+            enable = true;
+            settings = {
+              CPU_SCALING_GOVERNOR_ON_AC = "performance";
+              CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+              CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+              CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+
+              CPU_MIN_PERF_ON_AC = 0;
+              CPU_MAX_PERF_ON_AC = 100;
+              CPU_MIN_PERF_ON_BAT = 0;
+              CPU_MAX_PERF_ON_BAT = 20;
+
+              # This enables tlp and sets the minimum and maximum frequencies
+              # for the cpu based on whether it is plugged into power or not. It also
+              # changes the cpu scaling governor based on this.
+            };
+          };
+          auto-cpufreq = {
+            enable = true;
+            settings = {
+              battery = {
+                governor = "powersave";
+                turbo = "never";
+              };
+              charger = {
+                governor = "performance";
+                turbo = "auto";
+              };
+              # power management is auto-cpufreq which aims to replace tlp.
+              # When using auto-cpufreq it is therefore recommended to disable tlp as
+              # these tools are conflicting with each other. However, NixOS does allow
+              # for using both at the same time, and you therefore run them in tandem at your own risk.
+            };
+          };
         };
         hardware = {
-          opengl = {
-            extraPackages = with pkgs; [
-              nvidia-vaapi-driver
-              # vaapiNvidia
-            ];
-          };
           nvidia = {
             package = nvidiaPkg;
-            # package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
-            #open = true;
-            nvidiaSettings = lib.mkDefault true;
-            # nvidiaPersistenced = true;
-            # prime = {
-            #   # offload = {
-            #   #   enable = lib.mkForce false;
-            #   #   enableOffloadCmd = lib.mkForce false;
-            #   inherit intelBusId;
-            #   inherit nvidiaBusId;
-            #   sync.enable = true;
-            #   # reverseSync.enable = lib.mkForce false;
-            # };
-            # };
-            modesetting.enable = true;
-            # powerManagement = {
-            #   enable = lib.mkForce true;
-            #   finegrained = lib.mkForce false;
-            # };
-            # forceFullCompositionPipeline = true;
-          };
+            prime = {
+              offload.enable = true; # enable to use intel gpu (hybrid mode)
+              # sync.enable = true; # enable to use nvidia gpu (discrete mode)
 
-        };
-        services = {
-          xserver = {
-            videoDrivers = [ "nvidia" ];
-            screenSection = ''
-              Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-              Option         "AllowIndirectGLXProtocol" "off"
-              Option         "TripleBuffer" "on"
-            '';
+              inherit intelBusId;
+              inherit nvidiaBusId;
+            };
+            modesetting = {
+              enable = false;
+            };
           };
         };
-        environment = {
-          systemPackages = with pkgs; [
-            # nvidia-offload
-            vulkan-loader
-            nvtop-nvidia
-            # vulkan-validation-layers
-            # vulkan-tools
-            # nvitop
-          ];
-          variables = {
-            NVD_BACKEND = "direct";
-          };
-        };
-        virtualisation.podman.enableNvidia = true;
       };
+      # nvidia-display.configuration = lib.mkDefault {
+      #   system.nixos.tags = [ "nvidia-display" ];
+      #   boot = {
+      #     loader.grub.configurationName = lib.mkForce "Nvidia Power Mode";
+      #     blacklistedKernelModules = lib.mkForce [
+      #       "nouveau"
+      #       "rivafb"
+      #       "nvidiafb"
+      #       "rivatv"
+      #       "nv"
+      #       "uvcvideo"
+      #     ];
+      #     kernelModules = [
+      #       "clearcpuid=514" # Fixes certain wine games crash on launch
+      #       "nvidia"
+      #       "nvidia_modeset"
+      #       "nvidia_uvm"
+      #       "nvidia_drm"
+      #     ];
+      #     kernelParams = lib.mkDefault [
+      #       "nouveau.modeset=0"
+      #       "nohibernate"
+      #       "nvidia-drm.modeset=1"
+      #     ];
+      #     extraModprobeConfig = ''
+      #       options nvidia NVreg_UsePageAttributeTable=1
+      #       options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
+      #       options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
+      #     '';
+      #     kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
+      #   };
+      #   hardware = {
+      #     opengl = {
+      #       extraPackages = with pkgs; [
+      #         nvidia-vaapi-driver
+      #         # vaapiNvidia
+      #       ];
+      #     };
+      #     nvidia = {
+      #       package = nvidiaPkg;
+      #       # package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+      #       #open = true;
+      #       nvidiaSettings = lib.mkDefault true;
+      #       # nvidiaPersistenced = true;
+      #       # prime = {
+      #       #   # offload = {
+      #       #   #   enable = lib.mkForce false;
+      #       #   #   enableOffloadCmd = lib.mkForce false;
+      #       #   inherit intelBusId;
+      #       #   inherit nvidiaBusId;
+      #       #   sync.enable = true;
+      #       #   # reverseSync.enable = lib.mkForce false;
+      #       # };
+      #       # };
+      #       modesetting.enable = true;
+      #       # powerManagement = {
+      #       #   enable = lib.mkForce true;
+      #       #   finegrained = lib.mkForce false;
+      #       # };
+      #       # forceFullCompositionPipeline = true;
+      #     };
+
+      #   };
+      #   services = {
+      #     xserver = {
+      #       videoDrivers = [ "nvidia" ];
+      #       screenSection = ''
+      #         Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+      #         Option         "AllowIndirectGLXProtocol" "off"
+      #         Option         "TripleBuffer" "on"
+      #       '';
+      #     };
+      #   };
+      #   environment = {
+      #     systemPackages = with pkgs; [
+      #       # nvidia-offload
+      #       vulkan-loader
+      #       nvtop-nvidia
+      #       # vulkan-validation-layers
+      #       # vulkan-tools
+      #       # nvitop
+      #     ];
+      #     variables = {
+      #       NVD_BACKEND = "direct";
+      #     };
+      #   };
+      #   virtualisation.podman.enableNvidia = true;
+      # };
       # nvidia-nouveau.configuration = {
       #   system.nixos.tags = [ "nvidia-nouveau" ];
       #   imports = [ inputs.nixos-hardware.nixosModules.common-gpu-nvidia ];

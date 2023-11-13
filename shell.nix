@@ -15,6 +15,7 @@ in
       nix
       home-manager
       # dropbear
+      speedtest-cli
       git
       nil
       duf

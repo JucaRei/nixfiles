@@ -89,6 +89,7 @@
     package = pkgs.unstable.nix;
     settings = {
       sandbox = "relaxed";
+      show-trace = true;
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       # Allow to run nix
@@ -194,6 +195,11 @@
         ln -sfn "$(readlink -f "$systemConfig")" /run/current-system
       '';
     };
+
+    extraSystemBuilderCmds = ''
+      ln -sv ${pkgs.path} $out/nixpkgs
+    '';
+
     stateVersion = stateVersion;
 
     autoUpgrade = {

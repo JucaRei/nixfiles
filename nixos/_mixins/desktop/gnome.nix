@@ -18,6 +18,7 @@
     calls = {
       enable = true;
     };
+    gnupg.agent.pinentryFlavor = "gnome3";
   };
 
   services = {

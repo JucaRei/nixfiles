@@ -5,15 +5,21 @@ with lib.hm.gvariant;
 
   programs.mpv = {
     enable = true;
-    package = pkgs.mpv;
-    scripts = with pkgs.mpvScripts; [
-      autoload
-      sponsorblock
-      thumbfast
-      acompressor
-      inhibit-gnome
-      mpris
-    ];
+    # package = pkgs.mpv;
+    package = pkgs.wrapMpv
+      (pkgs.mpv-unwrapped.override {
+        # webp support
+        ffmpeg_5 = pkgs.ffmpeg_5-full;
+      })
+      {
+        scripts = with pkgs.mpvScripts; [
+          thumbnail
+          mpris
+          acompressor
+          thumbfast
+          sponsorblock
+        ];
+      };
     config = {
       alang = "jp,jpn,ja,Japanese,japanese,en,eng,pt_BR";
       profile = "gpu-hq";
@@ -23,6 +29,7 @@ with lib.hm.gvariant;
       screenshot-directory = "~/Pictures/mpv-screenshots/";
       screenshot-format = "png";
       watch-later-directory = "${config.xdg.cacheHome}/mpv-watch-later/";
+      cache-dir = "${config.xdg.cacheHome}/mpv";
       ytdl-format = "bestvideo[height<=?1080][vcodec!=?vp9]+bestaudio/best";
       save-position-on-quit = true;
       osd-font = "Bitstream Vera Sans";

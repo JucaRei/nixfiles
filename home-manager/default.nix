@@ -108,6 +108,7 @@ in
 
       # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
       keep-going = false;
+      show-trace = true;
 
       # Allow to run nix
       allowed-users = [ "${username}" "nixbld" "wheel" ];
