@@ -192,6 +192,8 @@
       # sublime4
       # clonegit
       unstable.stacer
+      lm_sensors
+      nixos-summary
       # tidal
     ];
     sessionVariables = {

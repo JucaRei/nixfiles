@@ -19,6 +19,7 @@
     thorium = final.thorium-browser;
     pulseaudio-control = final.polybar-pulseaudio-control;
     fantezy = final.fantezy-font;
+    nixos-summary = final.nixos-change-summary;
     # apple-font = final.apple-fonts;
     # tidal = final.tidal-dl;
     # mpvconf = prev.mpv;
