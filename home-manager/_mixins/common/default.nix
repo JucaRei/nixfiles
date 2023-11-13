@@ -1,5 +1,6 @@
 { pkgs, ... }: {
   imports = [
+    ../config/scripts/home-manager_change_summary.nix
     ../console/aliases.nix
     ../console/bat.nix
     ../console/bash.nix
