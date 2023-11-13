@@ -99,8 +99,8 @@
             # pkgsCross.aarch64-multiplatform.OVMF.fd
           ];
         };
-        # runAsRoot = false;
-        runAsRoot = true;
+        runAsRoot = false;
+        # runAsRoot = true;
         # Is this required for Windows 11?
         swtpm = {
           enable = true;
@@ -123,7 +123,7 @@
       win-virtio
       swtpm # TPM
       virglrenderer # Virtual OpenGL
-      virt-viewer # Remote VM
+      # virt-viewer # Remote VM/
       qemu # UEFI Firmware
       OVMFFull
       # gvfs

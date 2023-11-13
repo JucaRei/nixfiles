@@ -44,9 +44,9 @@
         ];
       };
     };
-    udev.packages = with pkgs; [
-      gnome.gnome-settings-daemon
-    ];
+    # udev.packages = with pkgs; [
+    #   gnome.gnome-settings-daemon
+    # ];
     gnome = {
       gnome-user-share.enable = true;
       gnome-online-accounts.enable = false;
