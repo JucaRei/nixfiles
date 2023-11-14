@@ -7,6 +7,17 @@
     # };
     networkmanager = {
       enable = true;
+      # Append Cloudflare and Google DNS servers
+      appendNameservers = [ "1.1.1.1" "8.8.8.8" ];
+
+      #---------------------------------------------------------------------
+      # Prevent fragmentation and reassembly, which can improve network performance
+      #---------------------------------------------------------------------
+      connectionConfig = {
+        "ethernet.mtu" = 1462;
+        "wifi.mtu" = 1462;
+      };
+
       # Use AdGuard Public DNS with ad/tracker blocking
       #  - https://adguard-dns.io/en/public-dns.html
       # insertNameservers = [ "94.140.14.14" "94.140.15.15" ];
@@ -23,18 +34,16 @@
       #   networkmanager-openvpn
       #   networkmanager-openconnect
       # ];
+
+      # defaultGateway = "192.168.1.1";
+      # interfaces.enp3s0.ipv4.addresses = [{
+      #  address = "192.168.0.13";
+      #  prefixLength = 24;
+      # }];
+
+      # terminal: arp -a
     };
     wireless.iwd.package = pkgs.unstable.iwd;
-  };
-  systemd = {
-    services = {
-      # Workaround https://github.com/NixOS/nixpkgs/issues/180175
-      NetworkManager-wait-online.enable = false;
-      # Speed up boot
-      # https://discourse.nixos.org/t/boot-faster-by-disabling-udev-settle-and-nm-wait-online/6339
-      systemd-udev-settle.enable = false;
-      # systemd-user-sessions.enable = false;
-    };
   };
 
   # services = {

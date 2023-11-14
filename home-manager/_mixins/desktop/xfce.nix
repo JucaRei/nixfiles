@@ -5,33 +5,33 @@ with lib.hm.gvariant;
     packages = with pkgs; [
       elementary-xfce-icon-theme
       gparted
-      gthumb
-      networkmanagerapplet
-      xfce.catfish
-      xfce.orage
-      xfce.gigolo
-      xfce.xfce4-appfinder
-      xfce.xfce4-panel
-      xfce.xfce4-session
-      xfce.xfce4-settings
-      xfce.xfce4-power-manager
-      xfce.xfce4-terminal
-      xfce.xfce4-screensaver
-      xfce.xfce4-pulseaudio-plugin
-      xfce.xfce4-systemload-plugin
-      xfce.xfce4-weather-plugin
-      xfce.xfce4-whiskermenu-plugin
-      xfce.xfce4-xkb-plugin
-      xsel
+      # gthumb
+      # networkmanagerapplet
+      # xfce.catfish
+      # xfce.orage
+      # xfce.gigolo
+      # xfce.xfce4-appfinder
+      # xfce.xfce4-panel
+      # xfce.xfce4-session
+      # xfce.xfce4-settings
+      # xfce.xfce4-power-manager
+      # xfce.xfce4-terminal
+      # xfce.xfce4-screensaver
+      # xfce.xfce4-pulseaudio-plugin
+      # xfce.xfce4-systemload-plugin
+      # xfce.xfce4-weather-plugin
+      # xfce.xfce4-whiskermenu-plugin
+      # xfce.xfce4-xkb-plugin
+      # xsel
       zuki-themes
     ];
     sessionVariables = {
-      GIO_EXTRA_MODULES = "${pkgs.xfce.gvfs}/lib/gio/modules";
+      GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
     };
   };
-  services = {
-    blueman-applet.enable = true;
-  };
+  # services = {
+  # blueman-applet.enable = true;
+  # };
 
   gtk = {
     enable = true;
@@ -539,16 +539,5 @@ with lib.hm.gvariant;
       #"/last/window-height" = 1029;
       #"/last/window-width" = 734;
     }; # xfce4-settings-manager
-  };
-
-  home = {
-    packages = with pkgs; [
-      ulauncher
-      # tokyo-night-gtk
-      # orchis-theme
-      papirus-icon-theme
-      # qogir-theme
-      # qogir-icon-theme
-    ];
   };
 }

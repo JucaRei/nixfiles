@@ -222,10 +222,14 @@
     ];
 
     # Reduce default service stop timeouts for faster shutdown
+    # Default timeout for stopping services managed by systemd to 10 seconds
     extraConfig = ''
       DefaultTimeoutStopSec=15s
       DefaultTimeoutAbortSec=8s
     '';
+
+    # When a program crashes, systemd will create a core dump file, typically in the /var/lib/systemd/coredump/ directory.
+    coredump.enable = true;
 
     # systemd's out-of-memory daemon
     # oomd = {
@@ -244,6 +248,57 @@
     };
     dbus = {
       implementation = "broker";
+    };
+
+    # ---------------------------------------------------------------------
+    # Do not restart these, since it messes up the current session
+    # Idea's used from previous fedora woe's
+    # ---------------------------------------------------------------------
+    NetworkManager.restartIfChanged = false;
+    display-manager.restartIfChanged = false;
+    libvirtd.restartIfChanged = false;
+    polkit.restartIfChanged = false;
+    systemd-logind.restartIfChanged = false;
+    wpa_supplicant.restartIfChanged = false;
+
+    lock-before-sleeping = {
+      restartIfChanged = false;
+      unitConfig = {
+        Description = "Helper service to bind locker to sleep.target";
+      };
+
+      serviceConfig = {
+        ExecStart = "${pkgs.slock}/bin/slock";
+        Type = "simple";
+      };
+
+      before = [ "pre-sleep.service" ];
+      wantedBy = [ "pre-sleep.service" ];
+
+      environment = {
+        DISPLAY = ":0";
+        XAUTHORITY = "/home/${username}/.Xauthority";
+      };
+
+      #---------------------------------------------------------------------
+      # Modify autoconnect priority of the connection of my home network
+      #---------------------------------------------------------------------
+      modify-autoconnect-priority = {
+        description = "Modify autoconnect priority of Matrix_5g connection";
+        script = ''
+          nmcli connection modify Matrix_5g connection.autoconnect-priority 1
+        '';
+      };
+
+      #---------------------------------------------------------------------
+      # Make nixos boot a tad faster by turning these off during boot
+      #---------------------------------------------------------------------
+      # Workaround https://github.com/NixOS/nixpkgs/issues/180175
+      NetworkManager-wait-online.enable = false;
+      # Speed up boot
+      # https://discourse.nixos.org/t/boot-faster-by-disabling-udev-settle-and-nm-wait-online/6339
+      systemd-udev-settle.enable = false;
+      # systemd-user-sessions.enable = false;
     };
   };
   hardware.enableRedistributableFirmware = true;

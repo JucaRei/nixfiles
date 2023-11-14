@@ -91,7 +91,7 @@
       "ntfs"
     ];
 
-    # Run any appimage
+    # Appimage Registration
     binfmt.registrations.appimage = {
       # make appImage work seamlessly
       wrapInterpreterInShell = false;
@@ -99,8 +99,11 @@
       recognitionType = "magic";
       offset = 0;
       mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
+      # mask = "\\xff\\xff\\xff\\xff\\x00\\x00\\x00\\x00\\xff\\xff\\xff";
       magicOrExtension = ''\x7fELF....AI\x02'';
+      # magicOrExtension = "\\x7fELF....AI\\x02";
     };
+
   };
 
   ##############################
@@ -162,6 +165,10 @@
 
     # envfs.enable = true; # populate /usr/bin for non-nix binaries
   };
+
+  # Enables simultaneous use of processor threads.
+  security.allowSimultaneousMultithreading = true;
+
   systemd.services.disable-wifi-powersave = {
     wantedBy = [ "multi-user.target" ];
     path = [ pkgs.iw ];

@@ -191,7 +191,7 @@
       compsize
       # sublime4
       # clonegit
-      unstable.stacer
+      # unstable.stacer
       lm_sensors
       # nixos-summary
       # tidal
@@ -209,7 +209,7 @@
     acpid = {
       enable = true;
     };
-    power-profiles-daemon.enable = lib.mkForce false;
+    power-profiles-daemon.enable = lib.mkForce true;
     # upower.enable = true;
     # udev.extraRules = lib.mkMerge [
     # ''ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"'' # autosuspend USB devices

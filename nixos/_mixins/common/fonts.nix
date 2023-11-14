@@ -47,6 +47,9 @@ in
 
     fontconfig = {
       antialias = true;
+      allowBitmaps = true;
+      cache32Bit = true;
+      useEmbeddedBitmaps = true;
       defaultFonts = {
         serif = [ "Source Serif" ];
         sansSerif = [ "Work Sans" "Fira Sans" "FiraGO" ];

@@ -128,6 +128,12 @@
       };
     };
   };
+  sound = {
+  	enable = true;
+  	mediaKeys = {
+  		enable = true;
+  	};
+  };
   # security.pam.services.gdm.enableGnomeKeyring = true;
   xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
 }
