@@ -6,43 +6,43 @@
 
   # Exclude MATE themes. Yaru will be used instead.
   # Don't install mate-netbook or caja-dropbox
-  environment = {
-    # Add some packages to complete the MATE desktop
-    systemPackages = with pkgs; [
-      elementary-xfce-icon-theme
-      gparted
-      gthumb
-      networkmanagerapplet
-      xfce.catfish
-      xfce.orage
-      xfce.gigolo
-      xfce.xfce4-appfinder
-      xfce.xfce4-panel
-      xfce.xfce4-session
-      xfce.xfce4-settings
-      xfce.xfce4-power-manager
-      xfce.xfce4-terminal
-      xfce.xfce4-screensaver
-      xfce.xfce4-pulseaudio-plugin
-      xfce.xfce4-systemload-plugin
-      xfce.xfce4-weather-plugin
-      xfce.xfce4-whiskermenu-plugin
-      xfce.xfce4-xkb-plugin
-      xsel
-      zuki-themes
-      # inputs.nix-software-center.packages.${system}.nix-software-center
-    ];
-    pathsToLink = [
-      "/share/xfce4"
-      "/share/themes"
-      "/share/mime"
-      "/share/desktop-directories"
-      "/share/gtksourceview-2.0"
-    ];
-    variables.GIO_EXTRA_MODULES = [
-      "${pkgs.xfce.gvfs}/lib/gio/modules"
-    ];
-  };
+  # environment = {
+  #   # Add some packages to complete the XFCE desktop
+  #   systemPackages = with pkgs; [
+  #     elementary-xfce-icon-theme
+  #     gparted
+  #     gthumb
+  #     networkmanagerapplet
+  #     xfce.catfish
+  #     xfce.orage
+  #     xfce.gigolo
+  #     xfce.xfce4-appfinder
+  #     xfce.xfce4-panel
+  #     xfce.xfce4-session
+  #     xfce.xfce4-settings
+  #     xfce.xfce4-power-manager
+  #     xfce.xfce4-terminal
+  #     xfce.xfce4-screensaver
+  #     xfce.xfce4-pulseaudio-plugin
+  #     xfce.xfce4-systemload-plugin
+  #     xfce.xfce4-weather-plugin
+  #     xfce.xfce4-whiskermenu-plugin
+  #     xfce.xfce4-xkb-plugin
+  #     xsel
+  #     zuki-themes
+  #     # inputs.nix-software-center.packages.${system}.nix-software-center
+  #   ];
+  #   pathsToLink = [
+  #     "/share/xfce4"
+  #     "/share/themes"
+  #     "/share/mime"
+  #     "/share/desktop-directories"
+  #     "/share/gtksourceview-2.0"
+  #   ];
+  #   variables.GIO_EXTRA_MODULES = [
+  #     "${pkgs.xfce.gvfs}/lib/gio/modules"
+  #   ];
+  # };
 
   # Enable some programs to provide a complete desktop
   programs = {
@@ -54,26 +54,26 @@
         thunar-volman
       ];
     };
-    xfconf.enable = true;
+    xfconf.enable = lib.mkDefault true;
     nm-applet.enable = true;
     seahorse.enable = true;
     dconf = {
-      enable = true;
+      enable = lib.mkDefault false;
     };
     # system-config-printer.enable = true;
   };
 
   # Enable services to round out the desktop
   services = {
-    dbus = {
-      packages = with pkgs; [ xfconf ];
-    };
-    xserver = {
-      updateDbusEnvironment = true;
-    };
+    # dbus = {
+    #   packages = with pkgs; [ xfconf ];
+    # };
+    # xserver = {
+    #   updateDbusEnvironment = true;
+    # };
     upower.enable = config.powerManagement.enable;
     blueman.enable = true;
-    gnome.gnome-keyring.enable = true;
+    # gnome.gnome-keyring.enable = true;
     # system-config-printer.enable = true;
     xserver = {
       enable = true;

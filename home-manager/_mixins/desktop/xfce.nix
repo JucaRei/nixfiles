@@ -1,39 +1,36 @@
 { config, pkgs, lib, ... }:
 with lib.hm.gvariant;
 {
+  home = {
+    packages = with pkgs; [
+      elementary-xfce-icon-theme
+      gparted
+      gthumb
+      networkmanagerapplet
+      xfce.catfish
+      xfce.orage
+      xfce.gigolo
+      xfce.xfce4-appfinder
+      xfce.xfce4-panel
+      xfce.xfce4-session
+      xfce.xfce4-settings
+      xfce.xfce4-power-manager
+      xfce.xfce4-terminal
+      xfce.xfce4-screensaver
+      xfce.xfce4-pulseaudio-plugin
+      xfce.xfce4-systemload-plugin
+      xfce.xfce4-weather-plugin
+      xfce.xfce4-whiskermenu-plugin
+      xfce.xfce4-xkb-plugin
+      xsel
+      zuki-themes
+    ];
+    sessionVariables = {
+      GIO_EXTRA_MODULES = "${pkgs.xfce.gvfs}/lib/gio/modules";
+    };
+  };
   services = {
     blueman-applet.enable = true;
-  };
-
-  dconf.settings = {
-    "org/gnome/desktop/calendar" = {
-      show-weekdate = true;
-    };
-    "org/gnome/desktop/datetime" = {
-      automatic-timezone = true;
-    };
-    "org/gnome/desktop/interface" = {
-      color-scheme = "prefer-dark";
-      cursor-theme = "Breeze-Hacked";
-      # gtk-theme = "Orchis-Red-Dark-Compact";
-      # icon-theme = "ePapirus-Dark";
-      locate-pointer = true;
-      show-battery-percentage = true;
-    };
-    "org/gtk/settings/file-chooser" = {
-      date-format = "regular";
-      location-mode = "path-bar";
-      show-hidden = true;
-      show-size-column = true;
-      show-type-column = true;
-      sidebar-width = 159;
-      sort-column = "name";
-      sort-directories-first = false;
-      sort-order = "ascending";
-      type-format = "category";
-      window-position = mkTuple [ 407 91 ];
-      window-size = mkTuple [ 1102 826 ];
-    };
   };
 
   gtk = {
