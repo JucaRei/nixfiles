@@ -37,21 +37,21 @@
     };
   };
 
-  services = {
-    resolved = {
-      enable = true;
-      dnssec = "allow-downgrade";
-      fallbackDns = [
-        "1.1.1.1"
-        "8.8.8.8"
-      ];
-      llmnr = "true";
-      extraConfig = ''
-        Domains=~.
-        MulticastDNS=true
-      '';
-    };
-  };
+  # services = {
+  #   resolved = {
+  #     enable = true;
+  #     dnssec = "allow-downgrade";
+  #     fallbackDns = [
+  #       "1.1.1.1"
+  #       "8.8.8.8"
+  #     ];
+  #     llmnr = "true";
+  #     extraConfig = ''
+  #       Domains=~.
+  #       MulticastDNS=true
+  #     '';
+  #   };
+  # };
 
   # system.nssDatabases.hosts = lib.mkMerge [
   #   (lib.mkBefore [ "mdns_minimal [NOTFOUND=return]" ])
