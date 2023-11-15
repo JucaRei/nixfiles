@@ -264,6 +264,11 @@
           disableWhileTyping = true;
           # clickMethod = "clickfinger";
         };
+        mouse = {
+          naturalScrolling = false;
+          disableWhileTyping = true;
+          accelProfile = "flat";
+        };
       };
       # xrandrHeads = [
       #   {

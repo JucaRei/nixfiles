@@ -23,9 +23,11 @@ with lib.hm.gvariant;
       gnomeExtensions.forge
       # gnomeExtensions.gsconnect # kdeconnect enabled in default.nix
       gnomeExtensions.dash-to-dock
+      gnomeExtensions.pano
       # gnomeExtensions.arcmenu
       # gnomeExtensions.battery-indicator-upower
-      gnomeExtensions.tray-icons-reloaded
+      # gnomeExtensions.tray-icons-reloaded
+      gnomeExtensions.topicons-plus
       # gnomeExtensions.removable-drive-menu
       # gnomeExtensions.dash-to-panel
       # gnomeExtensions.battery-indicator-upower
@@ -37,6 +39,11 @@ with lib.hm.gvariant;
 
       gnome3.gvfs
       gnome3.nautilus
+
+      # Others
+      gaphor
+      warp
+      curtail
     ];
     # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features
     sessionVariables = {
@@ -234,7 +241,7 @@ with lib.hm.gvariant;
     "org/gnome/desktop/peripherals/mouse" = {
       accel-profile = "adaptive";
       left-handed = false;
-      natural-scroll = true;
+      natural-scroll = false;
     };
 
     "org/gnome/desktop/peripherals/touchpad" = {
@@ -425,8 +432,8 @@ with lib.hm.gvariant;
       custom-keybindings = [ "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/" ];
     };
 
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-      binding = "<super>return";
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+      binding = "<ctrl><alt>t";
       command = "tilix";
       name = "open-terminal";
     };
