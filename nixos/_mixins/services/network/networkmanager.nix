@@ -13,10 +13,10 @@
       #---------------------------------------------------------------------
       # Prevent fragmentation and reassembly, which can improve network performance
       #---------------------------------------------------------------------
-      connectionConfig = {
-        "ethernet.mtu" = 1462;
-        "wifi.mtu" = 1462;
-      };
+      # connectionConfig = {
+      #   "ethernet.mtu" = 1462;
+      #   "wifi.mtu" = 1462;
+      # };
 
       # Use AdGuard Public DNS with ad/tracker blocking
       #  - https://adguard-dns.io/en/public-dns.html

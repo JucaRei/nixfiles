@@ -6,6 +6,7 @@ with lib.hm.gvariant;
       elementary-xfce-icon-theme
       gparted
       xfce.xfce4-pulseaudio-plugin
+      gnome.gnome-keyring
       # gthumb
       # networkmanagerapplet
       # xfce.catfish

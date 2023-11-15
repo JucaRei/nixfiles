@@ -102,7 +102,7 @@ in
   programs = {
     firefox = {
       enable = true;
-      package = pkgs.firefox;
+      package = pkgs.unstable.firefox;
       profiles = {
         juca = {
           id = 0;

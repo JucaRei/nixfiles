@@ -273,12 +273,12 @@
       #---------------------------------------------------------------------
       # Modify autoconnect priority of the connection of my home network
       #---------------------------------------------------------------------
-      modify-autoconnect-priority = {
-        description = "Modify autoconnect priority of Matrix_5g connection";
-        script = ''
-          nmcli connection modify Matrix_5g connection.autoconnect-priority 1
-        '';
-      };
+      # modify-autoconnect-priority = {
+      #   description = "Modify autoconnect priority of Matrix_5g connection";
+      #   script = ''
+      #     nmcli connection modify Matrix_5g connection.autoconnect-priority 1
+      #   '';
+      # };
 
       #---------------------------------------------------------------------
       # Make nixos boot a tad faster by turning these off during boot
