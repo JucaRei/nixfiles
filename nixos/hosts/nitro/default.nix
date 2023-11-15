@@ -93,8 +93,26 @@
       "zswap.zpool=z3fold"
       "mem_sleep_default=deep"
     ];
-    kernel.sysctl = {
+    kernel.sysctl = lib.mkForce {
       "net.ipv4.ip_unprivileged_port_start" = 80; # Podman access port 80
+      #---------------------------------------------------------------------
+      #   Network and memory-related optimizationss for desktop 16GB
+      #---------------------------------------------------------------------
+      "kernel.sysrq" = 1; # Enable SysRQ for rebooting the machine properly if it freezes. [Source](https://oglo.dev/tutorials/sysrq/index.html)
+      "net.core.netdev_max_backlog" = 30000; # Help prevent packet loss during high traffic periods.
+      "net.core.rmem_default" = 262144; # Default socket receive buffer size, improve network performance & applications that use sockets. Adjusted for 16GB RAM.
+      "net.core.rmem_max" = 33554432; # Maximum socket receive buffer size, determine the amount of data that can be buffered in memory for network operations. Adjusted for 16GB RAM.
+      "net.core.wmem_default" = 262144; # Default socket send buffer size, improve network performance & applications that use sockets. Adjusted for 16GB RAM.
+      "net.core.wmem_max" = 33554432; # Maximum socket send buffer size, determine the amount of data that can be buffered in memory for network operations. Adjusted for 16GB RAM.
+      "net.ipv4.ipfrag_high_threshold" = 5242880; # Reduce the chances of fragmentation. Adjusted for SSD.
+      "net.ipv4.tcp_keepalive_intvl" = 30; # TCP keepalive interval between probes to detect if a connection is still alive.
+      "net.ipv4.tcp_keepalive_probes" = 5; # TCP keepalive probes to detect if a connection is still alive.
+      "net.ipv4.tcp_keepalive_time" = 300; # TCP keepalive interval in seconds to detect if a connection is still alive.
+      "vm.dirty_background_bytes" = 134217728; # 128 MB
+      "vm.dirty_bytes" = 402653184; # 384 MB
+      "vm.min_free_kbytes" = 65536; # Minimum free memory for safety (in KB), helping prevent memory exhaustion situations. Adjusted for 16GB RAM.
+      "vm.swappiness" = 10; # Adjust how aggressively the kernel swaps data from RAM to disk. Lower values prioritize keeping data in RAM. Adjusted for 16GB RAM.
+      "vm.vfs_cache_pressure" = 90; # Adjust vfs_cache_pressure (0-1000) to manage memory used for caching filesystem objects. Adjusted for 16GB RAM.
     };
   };
 
@@ -281,6 +299,44 @@
     #     DEVICES_TO_DISABLE_ON_WWAN_CONNECT = "wifi";
     #   };
     # };
+
+    # Early OOM Killer
+
+    earlyoom = {
+      enable = true; # Enable the early OOM (Out Of Memory) killer service.
+
+      # Free Memory Threshold
+      # Sets the point at which earlyoom will intervene to free up memory.
+
+      # When free memory falls below 15%, earlyoom acts to prevent system slowdown or freezing.
+      freeMemThreshold = 15;
+
+      # Technical Explanation:
+      # The earlyoom service monitors system memory and intervenes when free memory drops below the specified threshold.
+      # It helps prevent system slowdowns and freezes by intelligently killing less important processes to free up memory.
+      # In this configuration, it triggers when free memory is only 15% of total RAM.
+      # Adjust the freeMemThreshold value based on your system's memory usage patterns.
+
+      # source:   https://github.com/rfjakob/earlyoom
+
+    };
+
+
+    #---------------------------------------------------------------------
+    # Provides a virtual file system for environment modules. Solution
+    # from NixOS forums to help shotwell to keep preference settings
+    #---------------------------------------------------------------------
+    envfs = {
+      enable = true;
+    };
+
+    #---------------------------------------------------------------------
+    # Activate the automatic trimming process for SSDs on the NixOS system
+    # Manual over-ride is sudo fstrim / -v
+    #---------------------------------------------------------------------
+    fstrim = {
+      enable = true;
+    };
   };
 
   ### Load z3fold and lz4

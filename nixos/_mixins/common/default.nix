@@ -163,6 +163,17 @@
       enable = true;
     };
 
+    udev = {
+      enable = true;
+
+      # enable high precision timers if they exist
+      # (https://gentoostudio.org/?page_id=420)
+      extraRules = ''
+        KERNEL=="rtc0", GROUP="audio"
+        KERNEL=="hpet", GROUP="audio"
+      '';
+    };
+
     # envfs.enable = true; # populate /usr/bin for non-nix binaries
   };
 

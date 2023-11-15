@@ -237,47 +237,37 @@
     #   enableSystemSlice = true;
     #   enableUserServices = true;
     # };
-  };
 
-  services = {
-    journald = {
-      extraConfig = lib.mkDefault ''
-        SystemMaxUse=100M
-        MaxFileSec=7day
-      '';
-    };
-    dbus = {
-      implementation = "broker";
-    };
+    services = {
+      # ---------------------------------------------------------------------
+      # Do not restart these, since it messes up the current session
+      # Idea's used from previous fedora woe's
+      # ---------------------------------------------------------------------
+      NetworkManager.restartIfChanged = false;
+      display-manager.restartIfChanged = false;
+      libvirtd.restartIfChanged = false;
+      polkit.restartIfChanged = false;
+      systemd-logind.restartIfChanged = false;
+      wpa_supplicant.restartIfChanged = false;
 
-    # ---------------------------------------------------------------------
-    # Do not restart these, since it messes up the current session
-    # Idea's used from previous fedora woe's
-    # ---------------------------------------------------------------------
-    NetworkManager.restartIfChanged = false;
-    display-manager.restartIfChanged = false;
-    libvirtd.restartIfChanged = false;
-    polkit.restartIfChanged = false;
-    systemd-logind.restartIfChanged = false;
-    wpa_supplicant.restartIfChanged = false;
+      lock-before-sleeping = {
+        restartIfChanged = false;
+        unitConfig = {
+          Description = "Helper service to bind locker to sleep.target";
+        };
 
-    lock-before-sleeping = {
-      restartIfChanged = false;
-      unitConfig = {
-        Description = "Helper service to bind locker to sleep.target";
-      };
+        serviceConfig = {
+          ExecStart = "${pkgs.slock}/bin/slock";
+          Type = "simple";
+        };
 
-      serviceConfig = {
-        ExecStart = "${pkgs.slock}/bin/slock";
-        Type = "simple";
-      };
+        before = [ "pre-sleep.service" ];
+        wantedBy = [ "pre-sleep.service" ];
 
-      before = [ "pre-sleep.service" ];
-      wantedBy = [ "pre-sleep.service" ];
-
-      environment = {
-        DISPLAY = ":0";
-        XAUTHORITY = "/home/${username}/.Xauthority";
+        environment = {
+          DISPLAY = ":0";
+          XAUTHORITY = "/home/${username}/.Xauthority";
+        };
       };
 
       #---------------------------------------------------------------------
@@ -301,5 +291,31 @@
       # systemd-user-sessions.enable = false;
     };
   };
+
+  services = {
+    journald = {
+      extraConfig = lib.mkDefault ''
+        SystemMaxUse=100M
+        MaxFileSec=7day
+      '';
+    };
+    dbus = {
+      # Enable the D-Bus service, which is a message bus system that allows
+      # communication between applications.
+      enable = true;
+      implementation = "broker";
+      packages = with pkgs; [
+        dconf
+        grc
+        udisks2
+      ];
+    };
+  };
+
+  # --------------------------------------------------------------------
+  # Permit Insecure Packages && Allow unfree packages
+  # --------------------------------------------------------------------
+  environment.sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
+
   hardware.enableRedistributableFirmware = true;
 }

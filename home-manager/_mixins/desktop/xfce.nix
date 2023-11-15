@@ -5,6 +5,7 @@ with lib.hm.gvariant;
     packages = with pkgs; [
       elementary-xfce-icon-theme
       gparted
+      xfce.xfce4-pulseaudio-plugin
       # gthumb
       # networkmanagerapplet
       # xfce.catfish
