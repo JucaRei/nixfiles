@@ -27,7 +27,8 @@ with lib.hm.gvariant;
       # gnomeExtensions.arcmenu
       # gnomeExtensions.battery-indicator-upower
       # gnomeExtensions.tray-icons-reloaded
-      gnomeExtensions.topicons-plus
+      gnomeExtensions.sound-output-device-chooser
+      gnome.gnome-weather
       # gnomeExtensions.removable-drive-menu
       # gnomeExtensions.dash-to-panel
       # gnomeExtensions.battery-indicator-upower
@@ -104,10 +105,24 @@ with lib.hm.gvariant;
     "com/mattjakeman/ExtensionManager" = {
       last-used-version = "0.4.0";
     };
+    "org/blueman/general" = {
+      window-properties = [ 586 350 710 390 ];
+    };
+
+    "org/blueman/plugins/powermanager" = {
+      auto-power-on = "@mb true";
+    };
+
+    "org/blueman/plugins/recentconns" = {
+      recent-connections = "[{'adapter': '80:32:53:97:77:90', 'address': '00:14:BE:00:EF:9B', 'alias': 'BW-FYE7 L', 'icon': 'audio-headset', 'name': 'Audio and input profiles', 'uuid': '00000000-0000-0000-0000-000000000000', 'time': '1699985933.5933514'}]";
+    };
 
     "org/gnome/Calls" = {
       auto-use-default-origins = true;
       country-code = "";
+    };
+    "org/gnome/Weather" = {
+      locations = "[<(uint32 2, <('São Paulo', 'SBMT', true, [(-0.41044326824509736, -0.8139052020289248)], [(-0.41073414481823473, -0.81361432545578749)])>)>]";
     };
 
     "org/gnome/calculator" = {
@@ -192,6 +207,9 @@ with lib.hm.gvariant;
 
     "org/gnome/desktop/notifications" = {
       application-children = [ "codium" "org-gnome-tweaks" "code" "org-gnome-fileroller" ];
+    };
+    "org/gnome/desktop/notifications/application/code-url-handler" = {
+      application-id = "code-url-handler.desktop";
     };
 
     "org/gnome/desktop/notifications/application/code" = {
@@ -450,17 +468,20 @@ with lib.hm.gvariant;
 
     "org/gnome/shell" = {
       app-picker-layout = "[{'com.hunterwittenborn.Celeste.desktop': <{'position': <0>}>, 'org.gnome.Weather.desktop': <{'position': <1>}>, 'ca.desrt.dconf-editor.desktop': <{'position': <2>}>, 'org.gnome.clocks.desktop': <{'position': <3>}>, 'emacs.desktop': <{'position': <4>}>, 'emacsclient.desktop': <{'position': <5>}>, 'org.gnome.Extensions.desktop': <{'position': <6>}>, 'org.gnome.Calculator.desktop': <{'position': <7>}>, 'firefox.desktop': <{'position': <8>}>, 'simple-scan.desktop': <{'position': <9>}>, 'gparted.desktop': <{'position': <10>}>, 'org.gnome.Settings.desktop': <{'position': <11>}>, 'gsmartcontrol.desktop': <{'position': <12>}>, 'org.gnome.gThumb.desktop': <{'position': <13>}>, 'htop.desktop': <{'position': <14>}>, 'Utilities': <{'position': <15>}>, 'maestral.desktop': <{'position': <16>}>, 'micro.desktop': <{'position': <17>}>, 'pavucontrol.desktop': <{'position': <18>}>, 'org.gnome.Software.desktop': <{'position': <19>}>}]";
-      disabled-extensions = [ "battery-indicator@jgotti.org" "launch-new-instance@gnome-shell-extensions.gcampax.github.com" "places-menu@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "workspace-indicator@gnome-shell-extensions.gcampax.github.com" ];
-      enabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "just-perfection-desktop@just-perfection" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "drive-menu@gnome-shell-extensions.gcampax.github.com" "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com" "Vitals@CoreCoding.com" "windowsNavigator@gnome-shell-extensions.gcampax.github.com" "caffeine@patapon.info" "appindicatorsupport@rgcjonas.gmail.com" "widgets@aylur" "logomenu@aryan_k" "space-bar@luchrioh" "top-bar-organizer@julian.gse.jsts.xyz" "rounded-window-corners@yilozt" "pop-shell@system76.com" "trayIconsReloaded@selfmade.pl" "gsconnect@andyholmes.github.io" "blur-my-shell@aunetx" "forge@jmmaranan.com" "bluetooth-quick-connect@bjarosze.gmail.com" ];
-      favorite-apps = [ "org.gnome.Calendar.desktop" "org.gnome.Photos.desktop" "org.gnome.Nautilus.desktop" "code.desktop" "brave-browser.desktop" "firefox.desktop" "com.gexperts.Tilix.desktop" ];
+      disabled-extensions = [ "battery-indicator@jgotti.org" "launch-new-instance@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "workspace-indicator@gnome-shell-extensions.gcampax.github.com" ];
+      enabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "just-perfection-desktop@just-perfection" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "drive-menu@gnome-shell-extensions.gcampax.github.com" "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com" "Vitals@CoreCoding.com" "windowsNavigator@gnome-shell-extensions.gcampax.github.com" "caffeine@patapon.info" "appindicatorsupport@rgcjonas.gmail.com" "widgets@aylur" "logomenu@aryan_k" "space-bar@luchrioh" "top-bar-organizer@julian.gse.jsts.xyz" "rounded-window-corners@yilozt" "pop-shell@system76.com" "trayIconsReloaded@selfmade.pl" "gsconnect@andyholmes.github.io" "blur-my-shell@aunetx" "forge@jmmaranan.com" "bluetooth-quick-connect@bjarosze.gmail.com" "pano@elhan.io" "places-menu@gnome-shell-extensions.gcampax.github.com" "user-theme@gnome-shell-extensions.gcampax.github.com" ];
+      favorite-apps = [ "firefox.desktop" "org.gnome.Photos.desktop" "code.desktop" "org.gnome.Nautilus.desktop" "com.gexperts.Tilix.desktop" ];
       last-selected-power-profile = "performance";
       welcome-dialog-last-shown-version = "44.2";
     };
 
     "org/gnome/shell/extensions/Logo-menu" = {
+      menu-button-extensions-app = "com.mattjakeman.ExtensionManager.desktop";
       menu-button-icon-image = 23;
       menu-button-icon-size = 20;
       menu-button-terminal = "tilix";
+      show-lockscreen = true;
+      show-power-options = false;
     };
 
     "org/gnome/shell/extensions/aylurs-widgets" = {
@@ -479,6 +500,8 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/appfolder" = {
+      customize = true;
+      sigma = 40;
       style-dialogs = 3;
     };
 
@@ -488,19 +511,26 @@ with lib.hm.gvariant;
       sigma = 64;
       style-dash-to-dock = 0;
     };
+    "org/gnome/shell/extensions/blur-my-shell/hidetopbar" = {
+      compatibility = false;
+    };
 
     "org/gnome/shell/extensions/blur-my-shell/overview" = {
       style-components = 2;
     };
 
     "org/gnome/shell/extensions/blur-my-shell/panel" = {
+      brightness = 0.6;
       customize = false;
+      noise-amount = 0.0;
+
       override-background-dynamically = false;
+      sigma = 80;
       style-panel = 3;
     };
 
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = 1;
+      indicator-position-max = 2;
     };
 
     "org/gnome/shell/extensions/clipboard-indicator" = {
@@ -524,6 +554,7 @@ with lib.hm.gvariant;
       max-alpha = 0.8;
       preferred-monitor = -2;
       preferred-monitor-by-connector = "eDP-1";
+      preview-size-scale = 0.2;
       running-indicator-style = "DASHES";
       show-apps-at-top = true;
       show-icons-notifications-counter = false;
@@ -532,8 +563,10 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/forge" = {
       css-last-update = mkUint32 37;
+      css-updated = "1700063342276";
+
       dnd-center-layout = "stacked";
-      tiling-mode-enabled = true;
+      tiling-mode-enabled = false;
       window-gap-hidden-on-single = true;
       window-gap-size = mkUint32 2;
       window-gap-size-increment = mkUint32 2;
@@ -624,11 +657,18 @@ with lib.hm.gvariant;
       global-rounded-corner-settings = "{'padding': <{'left': <uint32 1>, 'right': <uint32 1>, 'top': <uint32 1>, 'bottom': <uint32 1>}>, 'keep_rounded_corners': <{'maximized': <false>, 'fullscreen': <false>}>, 'border_radius': <uint32 12>, 'smoothing': <uint32 0>}";
       settings-version = mkUint32 5;
     };
+    "org/gnome/shell/extensions/sound-output-device-chooser" = {
+      icon-theme = "colored";
+    };
 
     "org/gnome/shell/extensions/top-bar-organizer" = {
       center-box-order = [ "Media Player" "dateMenu" ];
-      left-box-order = [ "menuButton" "Notifications" "Space Bar" "activities" "appMenu" ];
-      right-box-order = [ "ForgeExt" "workspace-indicator" "TrayIconsReloaded" "keyboard" "dwellClick" "screenRecording" "screenSharing" "drive-menu" "pop-shell" "vitalsMenu" "quickSettings" "a11y" ];
+      left-box-order = [ "menuButton" "Notifications" "Space Bar" "activities" "appMenu" "places-menu" ];
+      right-box-order = [ "pano@elhan.io" "ForgeExt" "workspace-indicator" "TrayIconsReloaded" "keyboard" "dwellClick" "screenRecording" "screenSharing" "drive-menu" "pop-shell" "vitalsMenu" "quickSettings" "a11y" ];
+    };
+
+    "org/gnome/shell/extensions/user-theme" = {
+      name = "Catppuccin-Frappe-Standard-Blue-Dark";
     };
 
     "org/gnome/shell/extensions/vitals" = {
@@ -642,13 +682,17 @@ with lib.hm.gvariant;
       update-time = 4;
       use-higher-precision = true;
     };
+    "org/gnome/shell/weather" = {
+      automatic-location = true;
+      locations = "[<(uint32 2, <('São Paulo', 'SBMT', true, [(-0.41044326824509736, -0.8139052020289248)], [(-0.41073414481823473, -0.81361432545578749)])>)>]";
+    };
 
     "org/gnome/shell/world-clocks" = {
       locations = "@av []";
     };
 
     "org/gnome/software" = {
-      check-timestamp = mkInt64 1699811139;
+      check-timestamp = mkInt64 1700075233;
       first-run = false;
       flatpak-purge-timestamp = mkInt64 1699822954;
     };
