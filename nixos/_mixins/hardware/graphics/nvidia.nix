@@ -61,40 +61,10 @@ in
     ];
     boot.kernelParams = [ "intel_iommu=igfx_off" ];
     specialisation = {
-      # nvidia-hybrid.configuration = lib.mkForce {
-      #   system.nixos.tags = [ "nvidia-hybrid" ];
-      #   boot = {
-      #     loader.grub.configurationName = lib.mkForce "Hybrid GPU";
-      #     blacklistedKernelModules = lib.mkForce [
-      #       "nouveau"
-      #       "rivafb"
-      #       "nvidiafb"
-      #       "rivatv"
-      #       "nv"
-      #       "uvcvideo"
-      #     ];
-      #   };
-      #   powerManagement.enable = true;
-      #   hardware = {
-      #     nvidia = {
-      #       package = nvidiaPkg;
-      #       prime = {
-      #         # offload.enable = true; # enable to use intel gpu (hybrid mode)
-      #         sync.enable = true; # enable to use nvidia gpu (discrete mode)
-
-      #         inherit intelBusId;
-      #         inherit nvidiaBusId;
-      #       };
-      #       modesetting = {
-      #         enable = true;
-      #       };
-      #     };
-      #   };
-      # };
-      nvidia-display.configuration = lib.mkDefault {
-        system.nixos.tags = [ "nvidia-display" ];
+      nvidia-opengl.configuration = lib.mkForce {
+        system.nixos.tags = [ "nvidia-opengl" ];
         boot = {
-          loader.grub.configurationName = lib.mkForce "Nvidia Power Mode";
+          loader.grub.configurationName = lib.mkForce "Nvidia Opengl";
           blacklistedKernelModules = lib.mkForce [
             "nouveau"
             "rivafb"
@@ -123,62 +93,224 @@ in
           kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
         };
         hardware = {
-          opengl = {
-            extraPackages = with pkgs; [
-              nvidia-vaapi-driver
-              # vaapiNvidia
-            ];
-          };
           nvidia = {
-            package = nvidiaPkg;
-            # package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
-            #open = true;
-            nvidiaSettings = lib.mkDefault true;
-            # nvidiaPersistenced = true;
-            prime = {
-              #   # offload = {
-              #   #   enable = lib.mkForce false;
-              #   #   enableOffloadCmd = lib.mkForce false;
-              inherit intelBusId;
-              inherit nvidiaBusId;
-              sync.enable = true;
-              #   # reverseSync.enable = lib.mkForce false;
+            # package = nvidiaPkg;
+            package = config.boot.kernelPackages.nvidiaPackages.beta;
+            modesetting = {
+              enable = true;
             };
-            # };
-            modesetting.enable = true;
-            # powerManagement = {
-            #   enable = lib.mkForce true;
-            #   finegrained = lib.mkForce false;
-            # };
-            # forceFullCompositionPipeline = true;
-          };
-
-        };
-        services = {
-          xserver = {
-            videoDrivers = [ "nvidia" ];
-            screenSection = ''
-              Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-              Option         "AllowIndirectGLXProtocol" "off"
-              Option         "TripleBuffer" "on"
-            '';
+            nvidiaPersistenced = true;
+            powerManagement.enable = true;
+            nvidiaSettings = true;
           };
         };
         environment = {
+          variables = lib.mkDefault {
+            GBM_BACKEND = "nvidia-drm";
+            LIBVA_DRIVER_NAME = "nvidia";
+            __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+          };
           systemPackages = with pkgs; [
-            # nvidia-offload
+            clinfo
+            virtualglLib
             vulkan-loader
-            # nvtop-nvidia
-            # vulkan-validation-layers
-            # vulkan-tools
-            # nvitop
+            vulkan-tools
           ];
-          variables = {
-            NVD_BACKEND = "direct";
+        };
+        services.xserver = {
+          videoDrivers = [ "nvidia" ];
+          screenSection = ''
+            Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+            Option         "AllowIndirectGLXProtocol" "off"
+            Option         "TripleBuffer" "on"
+          '';
+        };
+      };
+      nvidia-vulkan.configuration = lib.mkForce {
+        system.nixos.tags = [ "nvidia-vulkan" ];
+        boot = {
+          loader.grub.configurationName = lib.mkForce "Nvidia Vulkan";
+          blacklistedKernelModules = lib.mkForce [
+            "nouveau"
+            "rivafb"
+            "nvidiafb"
+            "rivatv"
+            "nv"
+            "uvcvideo"
+          ];
+          kernelModules = [
+            "clearcpuid=514" # Fixes certain wine games crash on launch
+            "nvidia"
+            "nvidia_modeset"
+            "nvidia_uvm"
+            "nvidia_drm"
+          ];
+          kernelParams = lib.mkDefault [
+            "nouveau.modeset=0"
+            "nohibernate"
+            "nvidia-drm.modeset=1"
+          ];
+          extraModprobeConfig = ''
+            options nvidia NVreg_UsePageAttributeTable=1
+            options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
+            options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
+          '';
+          kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
+        };
+        hardware = {
+          nvidia = {
+            # package = nvidiaPkg;
+            package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+            modesetting = {
+              enable = true;
+            };
+            nvidiaPersistenced = true;
+            powerManagement.enable = true;
+            nvidiaSettings = true;
           };
         };
-        virtualisation.podman.enableNvidia = true;
+        environment = {
+          variables = lib.mkDefault {
+            GBM_BACKEND = "nvidia-drm";
+            LIBVA_DRIVER_NAME = "nvidia";
+            __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+            NVD_BACKEND = "direct";
+          };
+          systemPackages = with pkgs; [
+            nvidia-vaapi-driver
+            clinfo
+            virtualglLib
+            vulkan-loader
+            vulkan-tools
+          ];
+        };
+        services.xserver = {
+          videoDrivers = [ "nvidia" ];
+          screenSection = ''
+            Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+            Option         "AllowIndirectGLXProtocol" "off"
+            Option         "TripleBuffer" "on"
+          '';
+        };
       };
+      nvidia-disabled.configuration = lib.mkForce {
+        boot = {
+          loader.grub.configurationName = lib.mkForce "Nvidia Disabled";
+          extraModprobeConfig = ''
+            blacklist nouveau
+            options nouveau modeset=0
+          '';
+        };
+        services.udev.extraRules = ''
+          # Remove NVIDIA USB xHCI Host Controller devices, if present
+          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{power/control}="auto", ATTR{remove}="1"
+
+          # Remove NVIDIA USB Type-C UCSI devices, if present
+          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c8000", ATTR{power/control}="auto", ATTR{remove}="1"
+
+          # Remove NVIDIA Audio devices, if present
+          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{power/control}="auto", ATTR{remove}="1"
+
+          # Remove NVIDIA VGA/3D controller devices
+          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{power/control}="auto", ATTR{remove}="1"
+        '';
+        boot.blacklistedKernelModules = [
+
+          "nouveau"
+          "nvidia"
+          "nvidia_drm"
+          "nvidia_modeset"
+
+        ];
+      };
+      # nvidia-display.configuration = lib.mkDefault {
+      #   system.nixos.tags = [ "nvidia-display" ];
+      #   boot = {
+      #     loader.grub.configurationName = lib.mkForce "Nvidia Power Mode";
+      #     blacklistedKernelModules = lib.mkForce [
+      #       "nouveau"
+      #       "rivafb"
+      #       "nvidiafb"
+      #       "rivatv"
+      #       "nv"
+      #       "uvcvideo"
+      #     ];
+      #     kernelModules = [
+      #       "clearcpuid=514" # Fixes certain wine games crash on launch
+      #       "nvidia"
+      #       "nvidia_modeset"
+      #       "nvidia_uvm"
+      #       "nvidia_drm"
+      #     ];
+      #     kernelParams = lib.mkDefault [
+      #       "nouveau.modeset=0"
+      #       "nohibernate"
+      #       "nvidia-drm.modeset=1"
+      #     ];
+      #     extraModprobeConfig = ''
+      #       options nvidia NVreg_UsePageAttributeTable=1
+      #       options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
+      #       options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
+      #     '';
+      #     kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
+      #   };
+      #   hardware = {
+      #     opengl = {
+      #       extraPackages = with pkgs; [
+      #         nvidia-vaapi-driver
+      #         # vaapiNvidia
+      #       ];
+      #     };
+      #     nvidia = {
+      #       package = nvidiaPkg;
+      #       # package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+      #       #open = true;
+      #       nvidiaSettings = lib.mkDefault true;
+      #       # nvidiaPersistenced = true;
+      #       prime = {
+      #         #   # offload = {
+      #         #   #   enable = lib.mkForce false;
+      #         #   #   enableOffloadCmd = lib.mkForce false;
+      #         inherit intelBusId;
+      #         inherit nvidiaBusId;
+      #         sync.enable = true;
+      #         #   # reverseSync.enable = lib.mkForce false;
+      #       };
+      #       # };
+      #       modesetting.enable = true;
+      #       # powerManagement = {
+      #       #   enable = lib.mkForce true;
+      #       #   finegrained = lib.mkForce false;
+      #       # };
+      #       # forceFullCompositionPipeline = true;
+      #     };
+
+      #   };
+      #   services = {
+      #     xserver = {
+      #       videoDrivers = [ "nvidia" ];
+      #       screenSection = ''
+      #         Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+      #         Option         "AllowIndirectGLXProtocol" "off"
+      #         Option         "TripleBuffer" "on"
+      #       '';
+      #     };
+      #   };
+      #   environment = {
+      #     systemPackages = with pkgs; [
+      #       # nvidia-offload
+      #       vulkan-loader
+      #       # nvtop-nvidia
+      #       # vulkan-validation-layers
+      #       # vulkan-tools
+      #       # nvitop
+      #     ];
+      #     variables = {
+      #       NVD_BACKEND = "direct";
+      #     };
+      #   };
+      #   virtualisation.podman.enableNvidia = true;
+      # };
       # nvidia-nouveau.configuration = {
       #   system.nixos.tags = [ "nvidia-nouveau" ];
       #   imports = [ inputs.nixos-hardware.nixosModules.common-gpu-nvidia ];

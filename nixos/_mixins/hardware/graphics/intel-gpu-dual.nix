@@ -7,6 +7,7 @@
     hardware = {
       opengl = {
         driSupport = true;
+        driSupport32Bit = true;
         extraPackages = [ ] ++ lib.optionals (pkgs.system == "x86_64-linux")
           (with pkgs; [
             (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)

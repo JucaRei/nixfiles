@@ -140,9 +140,12 @@
     };
   };
 
-  # programs = {
-  #   fish.enable = true;
-  # };
+  programs = {
+    #   fish.enable = true;
+    fuse = {
+      userAllowOther = true;
+    };
+  };
 
   # security.rtkit.enable = true;
 

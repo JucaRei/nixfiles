@@ -6,6 +6,8 @@ with lib.hm.gvariant;
       gnomeExtensions.logo-menu
       # gnomeExtensions.aylurs-widgets
       gnomeExtensions.rounded-window-corners
+      gnomeExtensions.appindicator
+      # gnomeExtensions.google-earth-wallpaper
       gnomeExtensions.vitals
       # gnomeExtensions.pop-shell
       gnomeExtensions.space-bar
@@ -27,7 +29,6 @@ with lib.hm.gvariant;
       # gnomeExtensions.arcmenu
       # gnomeExtensions.battery-indicator-upower
       # gnomeExtensions.tray-icons-reloaded
-      gnomeExtensions.sound-output-device-chooser
       gnome.gnome-weather
       # gnomeExtensions.removable-drive-menu
       # gnomeExtensions.dash-to-panel
@@ -49,6 +50,7 @@ with lib.hm.gvariant;
     # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features
     sessionVariables = {
       GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
+      GTK_THEME = "palenight";
     };
   };
 
@@ -62,16 +64,32 @@ with lib.hm.gvariant;
     theme = lib.mkDefault {
       # package = pkgs.whitesur-gtk-theme;
       # name = "WhiteSur-light-solid-pink";
-      package = pkgs.layan-gtk-theme;
-      name = "Layan-dark";
+      # package = pkgs.layan-gtk-theme;
+      # name = "Layan-dark";
+      name = "palenight";
+      package = pkgs.palenight-theme;
     };
     iconTheme = {
+      name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
-      name = "EPapirus-dark";
+    };
+    gtk2 = {
+      configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
+      extraConfig = ''
+        gtk-application-prefer-dark-theme=1
+      '';
+    };
+    gtk3 = {
+      extraConfig = {
+        gtk-application-prefer-dark-theme = 1;
+      };
+    };
+    gtk4 = {
+      extraConfig = {
+        gtk-application-prefer-dark-theme = 1;
+      };
     };
   };
-
-
 
   # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
   dconf.settings = {
@@ -199,8 +217,6 @@ with lib.hm.gvariant;
       font-hinting = "slight";
       font-name = "Inter 10";
       gtk-enable-primary-paste = false;
-      gtk-theme = lib.mkDefault "Layan-dark";
-      icon-theme = lib.mkDefault "ePapirus-Dark";
       locate-pointer = true;
       show-battery-percentage = true;
     };
@@ -448,12 +464,6 @@ with lib.hm.gvariant;
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = [ "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/" "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/" ];
-    };
-
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-      binding = "<ctrl><alt>t";
-      command = "tilix";
-      name = "open-terminal";
     };
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
@@ -798,6 +808,5 @@ with lib.hm.gvariant;
       scaling = 1;
       vm-window-size = mkTuple [ 1920 1149 ];
     };
-
   };
 }

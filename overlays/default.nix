@@ -13,7 +13,7 @@
     advcp = final.advmvcp;
     hacked-cursor = final.breeze-hacked-cursorr;
     clonegit = final.cloneit;
-    deezer-gui = final.deezer;
+    # deezer-gui = final.deezer;
     icloudpd = final.icloud-photo-downloader;
     nvchad = prev.nvchad;
     thorium = final.thorium-browser;

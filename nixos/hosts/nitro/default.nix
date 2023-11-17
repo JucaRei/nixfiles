@@ -262,6 +262,7 @@
           naturalScrolling = true;
           scrollMethod = "twofinger";
           disableWhileTyping = true;
+          sendEventsMode = "disabled-on-external-mouse";
           # clickMethod = "clickfinger";
         };
         mouse = {

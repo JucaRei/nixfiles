@@ -22,8 +22,11 @@ with lib.hm.gvariant;
     # icloudpd
     # vlc
     clonegit
-    deezer-gui
+    # deezer-gui
     fantezy
+    gcc
+    gnumake
+    neovim
     # autorandr
     # thorium
   ];
