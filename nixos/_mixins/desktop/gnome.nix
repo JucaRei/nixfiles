@@ -16,7 +16,7 @@
       package = pkgs.gnomeExtensions.gsconnect;
     };
     calls = {
-      enable = true;
+      enable = false;
     };
     gnupg.agent.pinentryFlavor = "gnome3";
   };
@@ -33,7 +33,7 @@
           settings = {
             greeter.IncludeAll = true;
           };
-          # wayland = false; #only x11
+          wayland = false; #only x11
         };
         defaultSession = "gnome";
       };
