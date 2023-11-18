@@ -39,7 +39,7 @@
       lxqt.lxqt-archiver
       # lxqt.compton-conf
       # libsForQt5.networkmanager-qt
-	  # libnma
+      # libnma
       # blueberry
       blueman
       networkmanagerapplet

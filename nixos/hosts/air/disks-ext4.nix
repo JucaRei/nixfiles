@@ -1,7 +1,9 @@
-_: let
-  defaultsBoot = ["defaults" "noatime" "nodiratime"];
-  defaultExtOpts = ["defaults" "data=writeback" "commit=60" "barrier=0" "discard" "noatime" "nodiratime"];
-in {
+_:
+let
+  defaultsBoot = [ "defaults" "noatime" "nodiratime" ];
+  defaultExtOpts = [ "defaults" "data=writeback" "commit=60" "barrier=0" "discard" "noatime" "nodiratime" ];
+in
+{
   disko.devices = {
     disk = {
       sda = {
@@ -34,7 +36,7 @@ in {
               size = "100%";
               content = {
                 type = "filesystem";
-                extraArgs = ["-f"];
+                extraArgs = [ "-f" ];
                 format = "ext4";
                 mountpoint = "/";
                 mountOptions = defaultExtOpts;

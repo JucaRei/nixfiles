@@ -20,6 +20,7 @@ in
       nil
       duf
       htop
+      dconf2nix
       nixpkgs-fmt
       neofetch
     ];

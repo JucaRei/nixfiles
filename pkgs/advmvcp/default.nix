@@ -1,8 +1,8 @@
-{
-  stdenv,
-  fetchurl,
-  fetchpatch,
-  upstream ? "coreutils",
+{ stdenv
+, fetchurl
+, fetchpatch
+, upstream ? "coreutils"
+,
 }:
 stdenv.mkDerivation rec {
   name = "advcp";

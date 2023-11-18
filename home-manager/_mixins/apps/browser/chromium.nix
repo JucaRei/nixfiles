@@ -1,6 +1,6 @@
 { pkgs, config, lib, params, ... }:
 # let
-  # ifDefault = lib.mkIf (builtins.elem params.browser [ "chromium" ]);
+# ifDefault = lib.mkIf (builtins.elem params.browser [ "chromium" ]);
 # in
 {
   programs = {
@@ -30,10 +30,10 @@
     };
   };
   # xdg = {
-    # mime.enable = ifDefault true;
-    # mimeApps = {
-      # enable = ifDefault true;
-      # defaultApplications = ifDefault (import ./default-browser.nix "chromium");
-    # };
+  # mime.enable = ifDefault true;
+  # mimeApps = {
+  # enable = ifDefault true;
+  # defaultApplications = ifDefault (import ./default-browser.nix "chromium");
+  # };
   # };
 }

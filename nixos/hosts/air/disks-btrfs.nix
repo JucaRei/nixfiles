@@ -1,7 +1,9 @@
-_: let
+_:
+let
   # "subvol=@"
-  options = ["rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:5" "space_cache=v2" "commit=120" "discard=async"];
-in {
+  options = [ "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:5" "space_cache=v2" "commit=120" "discard=async" ];
+in
+{
   disko.devices = {
     disk = {
       sda = {
@@ -20,7 +22,7 @@ in {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = ["defaults" "noatime" "nodiratime"];
+                mountOptions = [ "defaults" "noatime" "nodiratime" ];
               };
             };
             swap = {
@@ -36,30 +38,30 @@ in {
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = ["-f"]; # Override existing partition
+                extraArgs = [ "-f" ]; # Override existing partition
                 # Subvolumes must set a mountpoint in order to be mounted,
                 # unless their parent is mounted
                 subvolumes = {
                   # Subvolume name is different from mountpoint
                   "/rootfs" = {
                     mountpoint = "/";
-                    mountOptions = ["subvol=@" options];
+                    mountOptions = [ "subvol=@" options ];
                   };
                   # Subvolume name is the same as the mountpoint
                   "/home" = {
-                    mountOptions = ["subvol=@home" options];
+                    mountOptions = [ "subvol=@home" options ];
                     mountpoint = "/home";
                   };
                   "/.snapshots" = {
-                    mountOptions = ["subvol=@snapshots" options];
+                    mountOptions = [ "subvol=@snapshots" options ];
                     mountpoint = "/.snapshots";
                   };
                   "/tmp" = {
-                    mountOptions = ["subvol=@tmp" options];
+                    mountOptions = [ "subvol=@tmp" options ];
                     mountpoint = "/tmp";
                   };
                   "/nix" = {
-                    mountOptions = ["subvol=@nix" options];
+                    mountOptions = [ "subvol=@nix" options ];
                     mountpoint = "/nix";
                   };
                 };

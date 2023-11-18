@@ -1,6 +1,6 @@
 { pkgs, lib, params, ... }:
 # let
-  # ifDefault = lib.mkIf (builtins.elem params.browser == "vivaldi");
+# ifDefault = lib.mkIf (builtins.elem params.browser == "vivaldi");
 # in
 {
 
@@ -16,10 +16,10 @@
   };
 
   # xdg = {
-    # mime.enable = ifDefault true;
-    # mimeApps = {
-      # enable = ifDefault true;
-      # defaultApplications = ifDefault (import ./default-browser.nix "opera");
-    # };
+  # mime.enable = ifDefault true;
+  # mimeApps = {
+  # enable = ifDefault true;
+  # defaultApplications = ifDefault (import ./default-browser.nix "opera");
+  # };
   # };
 }

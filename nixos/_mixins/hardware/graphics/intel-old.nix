@@ -3,6 +3,7 @@
 { pkgs, config, lib, ... }: {
 
   config = {
+    boot.kernelParams = [ "intel_iommu=igfx_off" ];
     hardware = {
       opengl = {
         driSupport = true;

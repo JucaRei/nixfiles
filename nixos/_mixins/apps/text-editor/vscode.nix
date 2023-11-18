@@ -31,10 +31,10 @@
         unstable.vscode-extensions.mhutchie.git-graph
       ] ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         # {
-          # name = "bash-debug";
-          # publisher = "rogalmic";
-          # version = "0.3.9";
-          # sha256 = "sha256-f8FUZCvz/PonqQP9RCNbyQLZPnN5Oce0Eezm/hD19Fg=";
+        # name = "bash-debug";
+        # publisher = "rogalmic";
+        # version = "0.3.9";
+        # sha256 = "sha256-f8FUZCvz/PonqQP9RCNbyQLZPnN5Oce0Eezm/hD19Fg=";
         # }
         {
           name = "beardedicons";
@@ -55,10 +55,10 @@
         #   sha256 = "sha256-DrCaEVf1tnB/ccFTJ5HpJfTxe0npbXMjqGkyHNri+G8=";
         # }
         # {
-          # name = "font-switcher";
-          # publisher = "evan-buss";
-          # version = "4.1.0";
-          # sha256 = "sha256-KkXUfA/W73kRfs1TpguXtZvBXFiSMXXzU9AYZGwpVsY=";
+        # name = "font-switcher";
+        # publisher = "evan-buss";
+        # version = "4.1.0";
+        # sha256 = "sha256-KkXUfA/W73kRfs1TpguXtZvBXFiSMXXzU9AYZGwpVsY=";
         # }
         # {
         #   name = "grammarly";
@@ -73,10 +73,10 @@
         #   sha256 = "sha256-9dp8/gLAb8OJnmsLVbOAKAYZ5whavPW2Ak+WhLqEbJk=";
         # }
         # {
-          # name = "linux-desktop-file";
-          # publisher = "nico-castell";
-          # version = "0.0.21";
-          # sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
+        # name = "linux-desktop-file";
+        # publisher = "nico-castell";
+        # version = "0.0.21";
+        # sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
         # }
         {
           name = "non-breaking-space-highlighter";
@@ -141,11 +141,11 @@
           sha256 = "sha256-YT8g6hA4Cs0EGan+d3iIKVh/fZm10/DcOxYiiEXEeYc=";
         }
         # {
-          # name = "pork-and-beans";
-          # publisher = "HighSpeedDirt";
-          # version = "0.9.2";
-          # # sha256 = lib.fakeSha256;
-          # sha256 = "sha256-ErBbNPTxTbhQYkxuh3K9kEfkFvG35y/vuylsFPnlOtg=";
+        # name = "pork-and-beans";
+        # publisher = "HighSpeedDirt";
+        # version = "0.9.2";
+        # # sha256 = lib.fakeSha256;
+        # sha256 = "sha256-ErBbNPTxTbhQYkxuh3K9kEfkFvG35y/vuylsFPnlOtg=";
         # }
         {
           name = "red-theme";
@@ -155,18 +155,18 @@
           sha256 = "sha256-JLxVOPNJEythpA8K1aa/d1TcG1rWfV4yMl3bcXCu+KE=";
         }
         # {
-          # name = "gamberetti-reborn-theme";
-          # publisher = "dSyncro";
-          # version = "1.0.0";
-          # # sha256 = lib.fakeSha256;
-          # sha256 = "sha256-HTq5RpM2J1MfoKMm20sgdq3RNnPGaZ6Jwv9IFm0Ag0Q=";
+        # name = "gamberetti-reborn-theme";
+        # publisher = "dSyncro";
+        # version = "1.0.0";
+        # # sha256 = lib.fakeSha256;
+        # sha256 = "sha256-HTq5RpM2J1MfoKMm20sgdq3RNnPGaZ6Jwv9IFm0Ag0Q=";
         # }
         # {
-          # name = "catppuccin-perfect-icons";
-          # publisher = "thang-nm";
-          # version = "0.21.22";
-          # # sha256 = lib.fakeSha256;
-          # sha256 = "sha256-H2f4sJjbShEERBL9FGCkyhNgkYH1hI6/taDyaOuReyY=";
+        # name = "catppuccin-perfect-icons";
+        # publisher = "thang-nm";
+        # version = "0.21.22";
+        # # sha256 = lib.fakeSha256;
+        # sha256 = "sha256-H2f4sJjbShEERBL9FGCkyhNgkYH1hI6/taDyaOuReyY=";
         # }
         # {
         #   name = "Material Monokai Theme";

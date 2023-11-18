@@ -11,7 +11,7 @@
     # ../_mixins/apps/browser/opera.nix
   ];
   home = {
-    packages = with pkgs; [ 
+    packages = with pkgs; [
       # thorium 
     ];
     # shellAliases = {

@@ -6,6 +6,6 @@ with lib.hm.gvariant;
   programs = {
     dconf = {
       enable = true;
-    }; 
+    };
   };
 }

@@ -31,13 +31,13 @@
       # "pipewire/client-rt.conf.d/99-resample.conf".text =
       #   builtins.toJSON { "stream.properties"."resample.quality" = 15; };
       "pipewire/pipewire.conf.d/92-fix-resync.conf".text = ''
-      context.properties = {
-        default.clock.rate = 48000
-        default.clock.quantum = 1024
-        default.clock.min-quantum = 1024
-        default.clock.max-quantum = 1024
-      }
-    '';
+        context.properties = {
+          default.clock.rate = 48000
+          default.clock.quantum = 1024
+          default.clock.min-quantum = 1024
+          default.clock.max-quantum = 1024
+        }
+      '';
     };
   };
   #security.rtkit.enable = true;

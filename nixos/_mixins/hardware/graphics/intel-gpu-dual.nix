@@ -38,6 +38,9 @@
     };
 
     services.xserver.videoDrivers = [ "i915" ];
-    boot.initrd.kernelModules = [ "i915" ];
+    boot = {
+      initrd.kernelModules = [ "i915" ];
+      kernelParams = [ "intel_iommu=igfx_off" ];
+    };
   };
 }

@@ -58,8 +58,8 @@
     kernel.sysctl = lib.mkForce {
       # "vm.vfs_cache_pressure" = 400;
       "vm.swappiness" = 25;
-      "vm.dirty_bytes"= 335544320; #320M
-      "vm.dirty_background_bytes"=167772160; #160M
+      "vm.dirty_bytes" = 335544320; #320M
+      "vm.dirty_background_bytes" = 167772160; #160M
       # "vm.dirty_background_ratio" = 1;
       # "vm.dirty_ratio" = 50;
       "dev.i915.perf_stream_paranoid" = 0;

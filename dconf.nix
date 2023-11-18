@@ -1,107 +1,16 @@
-{ config, lib, pkgs, ... }:
+# Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
+{ lib, ... }:
+
 with lib.hm.gvariant;
+
 {
-  home = {
-    packages = with pkgs; [
-      gnomeExtensions.logo-menu
-      # gnomeExtensions.aylurs-widgets
-      gnomeExtensions.rounded-window-corners
-      gnomeExtensions.appindicator
-      # gnomeExtensions.google-earth-wallpaper
-      gnomeExtensions.vitals
-      # gnomeExtensions.pop-shell
-      gnomeExtensions.space-bar
-      gnomeExtensions.top-bar-organizer
-      gnomeExtensions.blur-my-shell
-      gnomeExtensions.just-perfection
-      # gnomeExtensions.clipboard-indicator
-      # gnomeExtensions.user-themes
-      # gnomeExtensions.hide-activities-button
-      gnomeExtensions.caffeine
-      # gnome.mutter
-      gnomeExtensions.bluetooth-quick-connect
-      gnome-extension-manager
-      # gnome.libgnome-keyring
-      gnomeExtensions.forge
-      # gnomeExtensions.gsconnect # kdeconnect enabled in default.nix
-      gnomeExtensions.dash-to-dock
-      gnomeExtensions.pano
-      # gnomeExtensions.arcmenu
-      # gnomeExtensions.battery-indicator-upower
-      # gnomeExtensions.tray-icons-reloaded
-      gnome.gnome-weather
-      deepin.deepin-gtk-theme
-      # gnomeExtensions.removable-drive-menu
-      # gnomeExtensions.dash-to-panel
-      # gnomeExtensions.battery-indicator-upower
-      # gnomeExtensions.workspace-indicator-2
-      # gnomeExtensions.pip-on-top
-      # gnomeExtensions.fullscreen-avoider
-      layan-gtk-theme
-
-
-      gnome3.gvfs
-      gnome3.nautilus
-
-      # Others
-      gaphor
-      warp
-      curtail
-    ];
-    # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features
-    sessionVariables = {
-      GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
-      # GTK_THEME = "palenight";
-      # GTK_THEME = "WhiteSur-light-solid-pink";
-      GTK_THEME = "Catppuccin-Frappe-Standard-Blue-Dark";
-
-    };
-  };
-
-  # GTK Configuration
-  gtk = {
-    enable = true;
-    # font = {
-    #   package = pkgs.fira;
-    #   name = "Fira 10";
-    # };
-    theme = lib.mkDefault {
-      # package = pkgs.whitesur-gtk-theme;
-      # name = "WhiteSur-light-solid-pink";
-      # package = pkgs.layan-gtk-theme;
-      # name = "Layan-dark";
-      # name = "palenight";
-      # package = pkgs.palenight-theme;
-      name = "Catppuccin-Frappe-Standard-Blue-Dark";
-      package = pkgs.catppuccin-gtk;
-    };
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
-    gtk2 = {
-      configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
-      extraConfig = "gtk-application-prefer-dark-theme = 1";
-    };
-    gtk3 = {
-      extraConfig = {
-        gtk-application-prefer-dark-theme = 1;
-      };
-    };
-    gtk4 = {
-      extraConfig = {
-        gtk-application-prefer-dark-theme = 1;
-      };
-    };
-  };
-
-  # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
   dconf.settings = {
     "ca/desrt/dconf-editor" = {
       show-warning = false;
     };
 
     "com/gexperts/Tilix" = {
+      app-title = "${appName}: ${hostname} (${terminalNumber})";
       background-image-mode = "stretch";
       control-scroll-zoom = true;
       copy-on-select = false;
@@ -152,6 +61,7 @@ with lib.hm.gvariant;
       palette = [ "#252525" "#FF5252" "#C3D82C" "#FFC135" "#42A5F5" "#D81B60" "#00ACC1" "#F5F5F5" "#708284" "#FF5252" "#C3D82C" "#FFC135" "#42A5F5" "#D81B60" "#00ACC1" "#F5F5F5" ];
       scrollback-unlimited = true;
       terminal-bell = "sound";
+      terminal-title = "${username}@${hostname}:${directory}";
       text-blink-mode = "always";
       use-theme-colors = false;
       visible-name = "Default";
@@ -165,13 +75,45 @@ with lib.hm.gvariant;
       auto-power-on = "@mb true";
     };
 
+    "org/gnome/Calls" = {
+      auto-use-default-origins = true;
+      country-code = "";
+    };
+
+    "org/gnome/control-center" = {
+      last-panel = "online-accounts";
+      window-state = mkTuple [ 980 640 ];
+    };
+
+    "org/gnome/desktop/app-folders" = {
+      folder-children = [ "Utilities" "YaST" ];
+    };
+
+    "org/gnome/desktop/app-folders/folders/Utilities" = {
+      apps = [ "gnome-abrt.desktop" "gnome-system-log.desktop" "nm-connection-editor.desktop" "org.gnome.baobab.desktop" "org.gnome.Connections.desktop" "org.gnome.DejaDup.desktop" "org.gnome.Dictionary.desktop" "org.gnome.DiskUtility.desktop" "org.gnome.eog.desktop" "org.gnome.Evince.desktop" "org.gnome.FileRoller.desktop" "org.gnome.fonts.desktop" "org.gnome.seahorse.Application.desktop" "org.gnome.tweaks.desktop" "org.gnome.Usage.desktop" "vinagre.desktop" ];
+      categories = [ "X-GNOME-Utilities" ];
+      name = "X-GNOME-Utilities.directory";
+      translate = true;
+    };
+
+    "org/gnome/desktop/app-folders/folders/YaST" = {
+      categories = [ "X-SuSE-YaST" ];
+      name = "suse-yast.directory";
+      translate = true;
+    };
+
     "org/gnome/desktop/background" = {
       color-shading-type = "solid";
       picture-options = "stretched";
-      picture-uri = "file://${../config/wallpapers/nix-asci.png}";
-      picture-uri-dark = "file://${../config/wallpapers/nix-asci.png}";
+      picture-uri = "file:///nix/store/680kp6qdak2ssj7f4pyga0kqnhqq5p91-nix-asci.png";
+      picture-uri-dark = "file:///nix/store/680kp6qdak2ssj7f4pyga0kqnhqq5p91-nix-asci.png";
       primary-color = "#ac5e0b";
       secondary-color = "#000000";
+    };
+
+    "org/gnome/desktop/input-sources" = {
+      sources = [ (mkTuple [ "xkb" "br" ]) ];
+      xkb-options = [ "grp:alt_shift_toggle" ];
     };
 
     "org/gnome/desktop/interface" = {
@@ -185,8 +127,14 @@ with lib.hm.gvariant;
       font-hinting = "slight";
       font-name = "Inter 10";
       gtk-enable-primary-paste = false;
+      gtk-theme = "palenight";
+      icon-theme = "Papirus-Dark";
       locate-pointer = true;
       show-battery-percentage = true;
+    };
+
+    "org/gnome/desktop/notifications" = {
+      application-children = [ "code" "org-gnome-software" "org-gnome-shell-extensions" ];
     };
 
     "org/gnome/desktop/notifications/application/code-url-handler" = {
@@ -221,6 +169,10 @@ with lib.hm.gvariant;
       application-id = "org.gnome.Settings.desktop";
     };
 
+    "org/gnome/desktop/notifications/application/org-gnome-shell-extensions" = {
+      application-id = "org.gnome.Shell.Extensions.desktop";
+    };
+
     "org/gnome/desktop/notifications/application/org-gnome-software" = {
       application-id = "org.gnome.Software.desktop";
     };
@@ -245,12 +197,26 @@ with lib.hm.gvariant;
       two-finger-scrolling-enabled = true;
     };
 
+    "org/gnome/desktop/privacy" = {
+      old-files-age = mkUint32 30;
+      recent-files-max-age = -1;
+    };
+
     "org/gnome/desktop/screensaver" = {
       color-shading-type = "solid";
       picture-options = "stretched";
       picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/truchet-l.webp";
       primary-color = "#ac5e0b";
       secondary-color = "#000000";
+    };
+
+    "org/gnome/desktop/search-providers" = {
+      disabled = [ ];
+      sort-order = [ "org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
+    };
+
+    "org/gnome/desktop/session" = {
+      idle-delay = mkUint32 600;
     };
 
     "org/gnome/desktop/sound" = {
@@ -286,6 +252,10 @@ with lib.hm.gvariant;
       workspace-names = [ "1" "2" "3" "4" "5" ];
     };
 
+    "org/gnome/evolution-data-server" = {
+      migrated = true;
+    };
+
     "org/gnome/file-roller/dialogs/extract" = {
       recreate-folders = true;
       skip-newer = false;
@@ -318,8 +288,55 @@ with lib.hm.gvariant;
       default-zoom-level = "small";
     };
 
+    "org/gnome/nautilus/preferences" = {
+      default-folder-viewer = "icon-view";
+      migrated-gtk-settings = true;
+      search-filter-time-type = "last_modified";
+    };
+
+    "org/gnome/nautilus/window-state" = {
+      initial-size = mkTuple [ 890 550 ];
+    };
+
+    "org/gnome/nm-applet/eap/0f8e205d-1069-3194-8488-72281b4e943a" = {
+      ignore-ca-cert = false;
+      ignore-phase2-ca-cert = false;
+    };
+
+    "org/gnome/nm-applet/eap/9716b150-c687-4e75-a6fb-aa79a6c4bdb3" = {
+      ignore-ca-cert = false;
+      ignore-phase2-ca-cert = false;
+    };
+
+    "org/gnome/nm-applet/eap/fb83512c-777e-4938-a353-6086feefa0f4" = {
+      ignore-ca-cert = false;
+      ignore-phase2-ca-cert = false;
+    };
+
     "org/gnome/portal/filechooser/com/visualstudio/code" = {
       last-folder-path = "/home/juca/.dotfiles/nixfiles";
+    };
+
+    "org/gnome/rhythmbox/plugins" = {
+      active-plugins = [ "rb" "power-manager" "mpris" "iradio" "generic-player" "audiocd" "android" ];
+    };
+
+    "org/gnome/rhythmbox/podcast" = {
+      download-interval = "manual";
+    };
+
+    "org/gnome/rhythmbox/rhythmdb" = {
+      locations = [ "file:///home/juca/Music" ];
+      monitor-library = true;
+    };
+
+    "org/gnome/rhythmbox/sources" = {
+      browser-views = "genres-artists-albums";
+      visible-columns = [ "post-time" "duration" "track-number" "album" "genre" "beats-per-minute" "play-count" "artist" ];
+    };
+
+    "org/gnome/settings-daemon/plugins/media-keys" = {
+      custom-keybindings = [ "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/" ];
     };
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
@@ -349,7 +366,8 @@ with lib.hm.gvariant;
       disabled-extensions = [ "battery-indicator@jgotti.org" "launch-new-instance@gnome-shell-extensions.gcampax.github.com" "window-list@gnome-shell-extensions.gcampax.github.com" "apps-menu@gnome-shell-extensions.gcampax.github.com" "workspace-indicator@gnome-shell-extensions.gcampax.github.com" ];
       enabled-extensions = [ "dash-to-dock@micxgx.gmail.com" "just-perfection-desktop@just-perfection" "native-window-placement@gnome-shell-extensions.gcampax.github.com" "drive-menu@gnome-shell-extensions.gcampax.github.com" "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com" "Vitals@CoreCoding.com" "windowsNavigator@gnome-shell-extensions.gcampax.github.com" "caffeine@patapon.info" "widgets@aylur" "logomenu@aryan_k" "space-bar@luchrioh" "top-bar-organizer@julian.gse.jsts.xyz" "rounded-window-corners@yilozt" "pop-shell@system76.com" "trayIconsReloaded@selfmade.pl" "gsconnect@andyholmes.github.io" "blur-my-shell@aunetx" "forge@jmmaranan.com" "bluetooth-quick-connect@bjarosze.gmail.com" "pano@elhan.io" "places-menu@gnome-shell-extensions.gcampax.github.com" "user-theme@gnome-shell-extensions.gcampax.github.com" "appindicatorsupport@rgcjonas.gmail.com" ];
       favorite-apps = [ "firefox.desktop" "code.desktop" "org.gnome.Nautilus.desktop" "com.gexperts.Tilix.desktop" ];
-      last-selected-power-profile = "balanced";
+      last-selected-power-profile = "power-saver";
+      welcome-dialog-last-shown-version = "44.2";
     };
 
     "org/gnome/shell/extensions/Logo-menu" = {
@@ -385,7 +403,7 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/caffeine" = {
-      indicator-position-max = 2;
+      indicator-position-max = 1;
     };
 
     "org/gnome/shell/extensions/clipboard-indicator" = {
@@ -414,11 +432,17 @@ with lib.hm.gvariant;
     };
 
     "org/gnome/shell/extensions/forge" = {
+      css-last-update = mkUint32 37;
       dnd-center-layout = "stacked";
       tiling-mode-enabled = false;
       window-gap-hidden-on-single = true;
       window-gap-size = mkUint32 2;
       window-gap-size-increment = mkUint32 2;
+    };
+
+    "org/gnome/shell/extensions/gsconnect" = {
+      id = "e7cd2d4c-5c43-4536-8c62-2064cc0c2f8a";
+      name = "nitro";
     };
 
     "org/gnome/shell/extensions/just-perfection" = {
@@ -455,7 +479,7 @@ with lib.hm.gvariant;
 
     "org/gnome/shell/extensions/top-bar-organizer" = {
       center-box-order = [ "Media Player" "dateMenu" ];
-      left-box-order = [ "menuButton" "Notifications" "Space Bar" "activities" "appMenu" "places-menu" ];
+      left-box-order = [ "menuButton" "Notifications" "Space Bar" "activities" "places-menu" "appMenu" ];
       right-box-order = [ "pano@elhan.io" "ForgeExt" "workspace-indicator" "TrayIconsReloaded" "keyboard" "dwellClick" "screenRecording" "screenSharing" "drive-menu" "pop-shell" "vitalsMenu" "quickSettings" "a11y" ];
     };
 
@@ -479,8 +503,18 @@ with lib.hm.gvariant;
       locations = "@av []";
     };
 
+    "org/gnome/software" = {
+      check-timestamp = mkInt64 1700317094;
+      first-run = false;
+    };
+
     "org/gnome/tweaks" = {
-      show-extensions-notice = true;
+      show-extensions-notice = false;
+    };
+
+    "org/gtk/gtk4/settings/color-chooser" = {
+      custom-colors = [ (mkTuple [ 0.9411764740943909 0.572549045085907 ]) (mkTuple [ 1.0 0.9647058844566345 ]) (mkTuple [ 0.7058823704719543 0.6549019813537598 ]) (mkTuple [ 0.9686274528503418 0.6352941393852234 ]) (mkTuple [ 6.666667014360428e-2 0.7803921699523926 ]) (mkTuple [ 0.9254902005195618 0.3686274588108063 ]) (mkTuple [ 0.9399999976158142 0.5734000205993652 ]) ];
+      selected-color = mkTuple [ true 0.5058823823928833 ];
     };
 
     "org/gtk/gtk4/settings/file-chooser" = {
@@ -501,10 +535,15 @@ with lib.hm.gvariant;
       date-format = "regular";
       location-mode = "path-bar";
       show-hidden = false;
+      show-size-column = true;
+      show-type-column = true;
+      sidebar-width = 156;
       sort-column = "name";
       sort-directories-first = true;
       sort-order = "ascending";
       type-format = "category";
+      window-position = mkTuple [ 0 32 ];
+      window-size = mkTuple [ 1096 822 ];
     };
 
     "org/virt-manager/virt-manager/confirm" = {
@@ -514,8 +553,8 @@ with lib.hm.gvariant;
     };
 
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = [ "qemu:///system" "qemu:///system" ];
+      uris = [ "qemu:///system" "qemu:///system" ];
     };
 
     "org/virt-manager/virt-manager/details" = {
@@ -530,5 +569,36 @@ with lib.hm.gvariant;
     "org/virt-manager/virt-manager/urls" = {
       isos = [ "/media/Data/System Images/Linux/NixOS/nixos-plasma5-23.05.4726.aeefe2054617-x86_64-linux.iso" "/media/Data/System Images/Linux/NixOS/nixos-gnome-23.05.1139.572d2693045-x86_64-linux.iso" "/media/Data/System Images/Linux/NixOS/nixos-minimal-23.05.4335.898cb2064b6e-x86_64-linux.iso" ];
     };
+
+    "org/virt-manager/virt-manager/vms/2a55b9f5e2b74b7bba734e84dccd98a9" = {
+      autoconnect = 1;
+      scaling = 1;
+      vm-window-size = mkTuple [ 1024 836 ];
+    };
+
+    "org/virt-manager/virt-manager/vms/7c8d5bb4f5d4471fa0351672aab23e3d" = {
+      autoconnect = 1;
+      scaling = 1;
+      vm-window-size = mkTuple [ 1024 808 ];
+    };
+
+    "org/virt-manager/virt-manager/vms/8460fedcda194d0fa76715a4f75b753e" = {
+      autoconnect = 1;
+      scaling = 1;
+      vm-window-size = mkTuple [ 1280 869 ];
+    };
+
+    "org/virt-manager/virt-manager/vms/cf1b3161c8be4be7a950746501099a54" = {
+      autoconnect = 1;
+      scaling = 1;
+      vm-window-size = mkTuple [ 1024 836 ];
+    };
+
+    "org/virt-manager/virt-manager/vms/eca5e1e7952e4744b82b8b6359a3ffbe" = {
+      autoconnect = 1;
+      scaling = 1;
+      vm-window-size = mkTuple [ 1024 808 ];
+    };
+
   };
 }
