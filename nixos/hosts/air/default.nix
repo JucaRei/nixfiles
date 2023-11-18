@@ -249,9 +249,11 @@
           Type = "simple";
         };
       };
+      # Limit resources used by nix-daemon.
       nix-daemon.serviceConfig = {
         MemoryMax = "1G";
         MemorySwapMax = "1G";
+        AllowedCPUs = "1-2";
       };
     };
   };

@@ -63,48 +63,21 @@ in
     boot = {
       blacklistedKernelModules = [
         "nouveau"
-        "rivafb"
         "nvidiafb"
-        "rivatv"
-        "nv"
-        "uvcvideo"
       ];
       kernelParams = lib.mkDefault [
         "nouveau.modeset=0"
       ];
-      kernelModules = [
-        "clearcpuid=514" # Fixes certain wine games crash on launch
-        "nvidia"
-        "nvidia_modeset"
-        "nvidia_uvm"
-        "nvidia_drm"
-      ];
-      extraModprobeConfig = ''
-        options nvidia NVreg_UsePageAttributeTable=1
-        options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
-        options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
-      '';
     };
     hardware = {
       nvidia = {
-        # package = nvidiaPkg;
-        package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
-        #open = true;
         prime = {
-          offload = {
-            enable = lib.mkForce false;
-            enableOffloadCmd = lib.mkForce false;
-          };
           inherit intelBusId;
           inherit nvidiaBusId;
-          reverseSync.enable = true;
         };
-        nvidiaSettings = lib.mkDefault true;
+        package = lib.mkDefault nvStable;
+        nvidiaSettings = lib.mkDefault false;
         modesetting.enable = true;
-        powerManagement = {
-          enable = lib.mkDefault false;
-          finegrained = lib.mkDefault false;
-        };
         forceFullCompositionPipeline = true;
         nvidiaPersistenced = true;
       };
@@ -112,42 +85,14 @@ in
     services = {
       xserver = {
         videoDrivers = [ "nvidia" ];
-        displayManager = {
-          # setupCommands = ''
-          #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
-          #   ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-          # '';
-          # ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-          #   # ${pkgs.xorg.xrandr}/bin/xrandr --auto
-          # sessionCommands = ''
-          #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-G0
-          #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
-          # '';
-          # ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-        };
       };
     };
     environment = {
       systemPackages = with pkgs; [
-        # displaySetupScript
-        # nvidia-offload
-        vulkan-loader
-        vulkan-validation-layers
-        vulkan-tools
         glxinfo
         inxi
-        nvtop-nvidia
         xorg.xdpyinfo
-        # nvtop-nvidia
-        # arandr
       ];
-      variables = lib.mkDefault {
-        "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
-        GBM_BACKEND = "nvidia-drm";
-        LIBVA_DRIVER_NAME = "nvidia";
-        __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-        NVD_BACKEND = "direct";
-      };
     };
 
     specialisation = {
@@ -173,7 +118,7 @@ in
           kernelParams = lib.mkDefault [
             "nouveau.modeset=0"
             "nohibernate"
-            # "nvidia-drm.modeset=1"
+            "nvidia-drm.modeset=1"
           ];
           extraModprobeConfig = ''
             options nvidia NVreg_UsePageAttributeTable=1
@@ -185,12 +130,21 @@ in
         hardware = {
           nvidia = {
             # package = nvidiaPkg;
-            package = config.boot.kernelPackages.nvidiaPackages.beta;
+            # package = nvStable;
             modesetting = {
               enable = true;
             };
+            prime = {
+              inherit intelBusId;
+              inherit nvidiaBusId;
+              reverseSync.enable = true;
+              allowExternalGpu = false;
+            };
             nvidiaPersistenced = true;
-            powerManagement.enable = true;
+            powerManagement = {
+              enable = false;
+              finegrained = false;
+            };
             nvidiaSettings = true;
           };
         };
@@ -199,6 +153,7 @@ in
             GBM_BACKEND = "nvidia-drm";
             LIBVA_DRIVER_NAME = "nvidia";
             __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+            NVD_BACKEND = "direct";
           };
           systemPackages = with pkgs; [
             clinfo
@@ -219,7 +174,7 @@ in
       nvidia-vulkan.configuration = lib.mkForce {
         system.nixos.tags = [ "nvidia-vulkan" ];
         boot = {
-          loader.grub.configurationName = lib.mkForce "Nvidia Vulkan";
+          loader.grub.configurationName = lib.mkForce "Nvidia ReverseSync Vulkan";
           blacklistedKernelModules = lib.mkForce [
             "nouveau"
             "rivafb"
@@ -237,8 +192,6 @@ in
           ];
           kernelParams = lib.mkDefault [
             "nouveau.modeset=0"
-            "nohibernate"
-            # "nvidia-drm.modeset=1"
           ];
           extraModprobeConfig = ''
             options nvidia NVreg_UsePageAttributeTable=1
@@ -249,30 +202,43 @@ in
         };
         hardware = {
           nvidia = {
-            # package = nvidiaPkg;
             package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+            prime = {
+              inherit intelBusId;
+              inherit nvidiaBusId;
+              sync.enable = true;
+            };
             modesetting = {
               enable = true;
             };
             nvidiaPersistenced = true;
-            powerManagement.enable = true;
+            powerManagement = {
+              enable = false;
+              finegrained = false;
+            };
             nvidiaSettings = true;
             forceFullCompositionPipeline = true;
           };
         };
         environment = {
           variables = lib.mkDefault {
+            "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
             GBM_BACKEND = "nvidia-drm";
             LIBVA_DRIVER_NAME = "nvidia";
             __GLX_VENDOR_LIBRARY_NAME = "nvidia";
             NVD_BACKEND = "direct";
           };
           systemPackages = with pkgs; [
-            nvidia-vaapi-driver
-            clinfo
-            virtualglLib
             vulkan-loader
+            vulkan-validation-layers
             vulkan-tools
+            glxinfo
+            inxi
+            # nvidia-vaapi-driver
+            # clinfo
+            # virtualglLib
+            # vulkan-loader
+            # vulkan-tools
           ];
         };
         services.xserver = {
@@ -284,38 +250,81 @@ in
           '';
         };
       };
-      nvidia-disabled.configuration = lib.mkForce {
+      nvidia-offload.configuration = lib.mkDefault {
+        system.nixos.tags = [ "Nvidia Offload" ];
         boot = {
-          loader.grub.configurationName = lib.mkForce "Nvidia Disabled";
-          extraModprobeConfig = ''
-            blacklist nouveau
-            options nouveau modeset=0
-          '';
+          blacklistedKernelModules = [
+            "nouveau"
+          ];
+          kernelParams = [
+            "nouveau.modeset=0"
+            "intel_iommu=on"
+          ];
+          # Disable Intel's stream-paranoid for gaming.
+          # (not working - see nixpkgs issue 139182)
+          kernel.sysctl."dev.i915.perf_stream_paranoid" = false;
         };
-        services.udev.extraRules = ''
-          # Remove NVIDIA USB xHCI Host Controller devices, if present
-          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{power/control}="auto", ATTR{remove}="1"
+        hardware = {
+          nvidia = {
+            forceFullCompositionPipeline = true;
+            prime = {
+              offload = {
+                enable = true;
+                enableOffloadCmd = true;
+              };
+              inherit nvidiaBusId;
+              inherit intelBusId;
+            };
+            modesetting.enable = true;
+            powerManagement = {
+              enable = true;
+              finegrained = true;
+            };
+          };
+        };
 
-          # Remove NVIDIA USB Type-C UCSI devices, if present
-          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c8000", ATTR{power/control}="auto", ATTR{remove}="1"
+        services = {
+          xserver = {
+            videoDrivers = [ "nvidia" ];
+            dpi = 96;
+            screenSection = lib.optionalString (config.hardware.nvidia.prime.sync.enable) ''
+              Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+              Option         "AllowIndirectGLXProtocol" "off"
+              Option         "TripleBuffer" "on"
+            '';
+            displayManager = {
+              setupCommands = "${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1-0 --primary --mode 1920x1080 --pos 0x0 --output eDP-1 --mode 1920x1080 --pos 1920x0";
+            };
+          };
+        };
 
-          # Remove NVIDIA Audio devices, if present
-          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{power/control}="auto", ATTR{remove}="1"
+        environment = {
+          systemPackages = with pkgs; [
+            nvidia-offload
+            glxinfo
+            inxi
+          ];
+          variables = {
+            "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+          };
+        };
+        #   services = {
+        #     xserver = {
+        #       videoDrivers = [ "nvidia" ];
+        #       displayManager = {
+        #         # setupCommands = ''
+        #         #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
+        #         #   ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+        #         # '';
+        #         # ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+        #         #   # ${pkgs.xorg.xrandr}/bin/xrandr --auto
+        #         # sessionCommands = ''
+        #         #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-G0
+        #         #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
 
-          # Remove NVIDIA VGA/3D controller devices
-          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{power/control}="auto", ATTR{remove}="1"
-        '';
-        boot.blacklistedKernelModules = [
-
-          "nouveau"
-          "nvidia"
-          "nvidia_drm"
-          "nvidia_modeset"
-
-        ];
       };
       # nvidia-display.configuration = lib.mkDefault {
-      #   system.nixos.tags = [ "nvidia-display" ];
+      # system.nixos.tags = [ "nvidia-display" ];
       #   boot = {
       #     loader.grub.configurationName = lib.mkForce "Nvidia Power Mode";
       #     blacklistedKernelModules = lib.mkForce [
@@ -440,88 +449,38 @@ in
       #   };
       #   services.xserver.videoDrivers = [ "nouveau" ];
       # };
-      # nvidia-Reverse.configuration = {
-      #   system.nixos.tags = [ "nvidia-Reverse" ];
-      #   boot = {
-      #     loader.grub.configurationName = lib.mkForce "Reverse sync";
-      #     # blacklistedKernelModules = lib.mkForce [
-      #     # "nouveau"
-      #     # "rivafb"
-      #     # "nvidiafb"
-      #     # "rivatv"
-      #     # "nv"
-      #     # "uvcvideo"
-      #     # ];
-      #     # kernelModules = [
-      #     # "clearcpuid=514" # Fixes certain wine games crash on launch
-      #     # "nvidia"
-      #     # "nvidia_modeset"
-      #     # "nvidia_uvm"
-      #     # "nvidia_drm"
-      #     # ];
-      #     # kernelParams = lib.mkDefault [
-      #     # "nouveau.modeset=0"
-      #     # ];
-      #     kernel.sysctl = lib.mkDefault { "vm.max_map_count" = 2147483642; };
-      #   };
-      #   hardware = {
-      #     nvidia = {
-      #       # package = nvidiaPkg;
-      #       package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
-      #       #open = true;
-      #       prime = {
-      #         offload = {
-      #           enable = lib.mkForce false;
-      #           enableOffloadCmd = lib.mkForce false;
-      #         };
-      #         inherit intelBusId;
-      #         inherit nvidiaBusId;
-      #         reverseSync.enable = true;
-      #       };
-      #       nvidiaSettings = lib.mkDefault true;
-      #       modesetting.enable = true;
-      #       powerManagement = {
-      #         enable = lib.mkDefault false;
-      #         finegrained = lib.mkDefault false;
-      #       };
-      #       # forceFullCompositionPipeline = true;
-      #       # nvidiaPersistenced = true;
+      #   disable.configuration = {
+      #     system.nixos.tags = [ "disable" ];
+      #     boot = {
+      #       loader.grub.configurationName = lib.mkForce "Nvidia-Disabled";
+      #       extraModprobeConfig = ''
+      #         blacklist nouveau
+      #         options nouveau modeset=0
+      #       '';
+      #       blacklistedKernelModules = [
+
+      #         "nouveau"
+      #         "nvidia"
+      #         "nvidia_drm"
+      #         "nvidia_modeset"
+
+      #       ];
       #     };
+      #     services.udev.extraRules = ''
+      #       # Remove NVIDIA USB xHCI Host Controller devices, if present
+      #       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{power/control}="auto", ATTR{remove}="1"
+
+      #       # Remove NVIDIA USB Type-C UCSI devices, if present
+      #       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c8000", ATTR{power/control}="auto", ATTR{remove}="1"
+
+      #       # Remove NVIDIA Audio devices, if present
+      #       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{power/control}="auto", ATTR{remove}="1"
+
+      #       # Remove NVIDIA VGA/3D controller devices
+      #       ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{power/control}="auto", ATTR{remove}="1"
+      #     '';
       #   };
-      #   services = {
-      #     xserver = {
-      #       videoDrivers = [ "nvidia" ];
-      #       displayManager = {
-      #         # setupCommands = ''
-      #         #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting
-      #         #   ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-      #         # '';
-      #         # ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-      #         #   # ${pkgs.xorg.xrandr}/bin/xrandr --auto
-      #         # sessionCommands = ''
-      #         #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-G0
-      #         #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
-      #         # '';
-      #         # ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-      #       };
-      #     };
-      #   };
-      #   environment = {
-      #     systemPackages = with pkgs; [
-      #       # displaySetupScript
-      #       # nvidia-offload
-      #       vulkan-loader
-      #       vulkan-validation-layers
-      #       vulkan-tools
-      #       # nvtop-nvidia
-      #       # arandr
-      #     ];
-      #     variables = {
-      #       "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
-      #     };
-      #   };
-      #   virtualisation.podman.enableNvidia = true;
-      # };
     };
+    virtualisation.podman.enableNvidia = true;
   };
 }
