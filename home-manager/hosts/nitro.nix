@@ -27,6 +27,7 @@ with lib.hm.gvariant;
     gcc
     gnumake
     neovim
+    tmux
     # autorandr
     # thorium
   ];
