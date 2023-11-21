@@ -13,7 +13,10 @@
 #   };
 # }
 
-{ ... }: {
+{ pkgs, nixvim, inputs, ... }: {
+  imports = [
+    inputs.nixvim.homeManagerModules.nixvim
+  ];
   programs = {
     nixvim = {
       enable = true;
@@ -31,7 +34,7 @@
         # smartindent = true;
 
         ### Search
-        incsearch = true; # incremental search
+        incsearch =2 true; # incremental search
         ignorecase = true;
         smartcase = true; # when use capitalization to detect
         hlsearch = false;
@@ -65,10 +68,10 @@
         onedark.enable = true;
       };
 
-      clipboard = {
-        register = "unnamedplus";
-        providers.wl-copy.enable = true;
-      };
+      # clipboard = {
+      #   register = "unnamedplus";
+      #   providers.wl-copy.enable = true;
+      # };
 
       globals = {
         mapleader = " ";

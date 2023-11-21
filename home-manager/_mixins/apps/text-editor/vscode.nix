@@ -25,6 +25,7 @@
         redhat.vscode-yaml
         ms-python.python
         ms-azuretools.vscode-docker
+        sumneko.lua
         # ms-vscode-remote.remote-containers
         # ms-vscode-remote.vscode-remote-extensionpack
       ]
@@ -48,6 +49,13 @@
           version = "1.1.3";
           # sha256 = lib.fakeSha256;
           sha256 = "sha256-2/x078M1wi4/F9aVpHQTgWKdDnEHqXKea+tsNw7YyBo=";
+        }
+        {
+          name = "vscode-lua";
+          publisher = "trixnz";
+          version = "0.12.4";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-cuXSsQlcvghylZamk4HajlAhrKZ8uRG3PBsA43dEBJg=";
         }
         {
           name = "color-picker";
