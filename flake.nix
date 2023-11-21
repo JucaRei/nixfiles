@@ -54,6 +54,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Neovim
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Gaming tweaks
     nix-gaming.url = "github:fufexan/nix-gaming";
 
@@ -128,6 +134,7 @@
     , disko
     , home-manager
     , nixgl
+    , nixvim
     , nix-formatter-pack
     , nixos-hardware
       # , fh

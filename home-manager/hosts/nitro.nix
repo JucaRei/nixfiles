@@ -2,7 +2,7 @@
 with lib.hm.gvariant;
 {
   imports = [
-    # ../_mixins/console/fish.nix
+    ../_mixins/console/neovim.nix
     ../_mixins/apps/video/mpv.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     ../_mixins/apps/text-editor/vscode.nix
@@ -26,7 +26,7 @@ with lib.hm.gvariant;
     fantezy
     gcc
     gnumake
-    neovim
+    # neovim
     tmux
     # autorandr
     # thorium
