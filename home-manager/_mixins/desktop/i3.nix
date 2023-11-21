@@ -15,7 +15,6 @@
       # Terminal
       any-nix-shell
       escrotum
-      fetchTree
       imagemagick
     ];
   };
