@@ -47,6 +47,7 @@ with lib.hm.gvariant;
       gaphor
       warp
       curtail
+      evince # document viewer
     ];
     # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features
     sessionVariables = {
