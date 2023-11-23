@@ -22,19 +22,19 @@
       };
     };
 
-    dbus = {
-      enable = true;
-      # Make the gnome keyring work properly
-      packages = with pkgs; [
-        dconf
-        gnome3.gnome-keyring
-        gcr
-      ];
-    };
+    # dbus = {
+    #   enable = true;
+    #   # Make the gnome keyring work properly
+    #   packages = with pkgs; [
+    #     dconf
+    #     gnome3.gnome-keyring
+    #     gcr
+    #   ];
+    # };
 
     gnome = {
       gnome-keyring.enable = true;
-      sushi.enable = true;
+      # sushi.enable = true;
     };
 
 
@@ -43,7 +43,7 @@
 
   environment = {
     systemPackages = with pkgs; [
-      wayland
+      # wayland
 
       ### Bars
       # eww
@@ -106,7 +106,7 @@
 
   hardware = lib.mkForce {
     opengl.enable = true; #Opengl
-    nvidia.modesetting.enable = true; # Most wayland compositors need this
+    # nvidia.modesetting.enable = true; # Most wayland compositors need this
   };
 
   xdg.portal = {

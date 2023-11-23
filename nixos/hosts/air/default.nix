@@ -218,9 +218,9 @@
       enable = true;
       aggressive = true;
     };
-    xserver.deviceSection = lib.mkDefault ''
-      Option "TearFree" "true"
-    '';
+    # xserver.deviceSection = lib.mkDefault ''
+    #   Option "TearFree" "true"
+    # '';
   };
 
   powerManagement.cpuFreqGovernor = "ondemand";
