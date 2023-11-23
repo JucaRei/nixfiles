@@ -93,7 +93,7 @@
       auto-optimise-store = true;
       experimental-features = [ "nix-command" "flakes" "repl-flake" ];
       # Allow to run nix
-      allowed-users = [ "${username}" "wheel" ];
+      allowed-users = [ "${username}" "wheel" "juca-nixfiles" ];
       builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
 
       substituters = [

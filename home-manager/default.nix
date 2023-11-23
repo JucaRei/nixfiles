@@ -111,7 +111,7 @@ in
       show-trace = true;
 
       # Allow to run nix
-      allowed-users = [ "${username}" "nixbld" "wheel" ];
+      allowed-users = [ "${username}" "nixbld" "wheel" "juca-nixfiles" ];
 
       substituters = [
         "https://nix-community.cachix.org"
