@@ -2,7 +2,7 @@
   programs = lib.mkDefault {
     hyprland = {
       enable = true;
-      nvidiaPatches = true;
+      # nvidiaPatches = true;
       xwayland = {
         enable = true;
       };
@@ -91,7 +91,7 @@
 
     sessionVariables = {
 
-      WLR_NO_HARDWARE_CURSORS = "1"; # If your cursor becomes invisible
+      # WLR_NO_HARDWARE_CURSORS = "1"; # If your cursor becomes invisible
       NIXOS_OZONE_WL = "1"; # Hint electron apps to use wayland
     };
   };
@@ -99,15 +99,15 @@
   security = {
     pam.services = {
       # swaylock = { };
-      gtklock = { };
-      login.enableGnomeKeyring = true;
+      # gtklock = { };
+      # login.enableGnomeKeyring = true;
     };
   };
 
-  hardware = lib.mkForce {
-    opengl.enable = true; #Opengl
-    # nvidia.modesetting.enable = true; # Most wayland compositors need this
-  };
+  # hardware = lib.mkForce {
+  #   opengl.enable = true; #Opengl
+  #   # nvidia.modesetting.enable = true; # Most wayland compositors need this
+  # };
 
   xdg.portal = {
     enable = true;

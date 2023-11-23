@@ -180,8 +180,16 @@
     # envfs.enable = true; # populate /usr/bin for non-nix binaries
   };
 
-  # Enables simultaneous use of processor threads.
-  security.allowSimultaneousMultithreading = true;
+  security = {
+    # Enables simultaneous use of processor threads.
+    allowSimultaneousMultithreading = true;
+
+    pam = {
+      mount = {
+        enable = true;
+      };
+    };
+  };
 
   systemd.services.disable-wifi-powersave = {
     wantedBy = [ "multi-user.target" ];
