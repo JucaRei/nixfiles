@@ -9,7 +9,7 @@
         driSupport = true;
         driSupport32Bit = true;
         extraPackages = with pkgs; [
-          #intel-media-driver # LIBVA_DRIVER_NAME=iHD
+          intel-media-driver # LIBVA_DRIVER_NAME=iHD
           vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
           vaapiVdpau
           libvdpau-va-gl
@@ -34,13 +34,13 @@
     # services.udev.extraRules = ''KERNEL=="hidraw*", ATTRS{idVendor}=="20d6", ATTRS{idProduct}=="a711", MODE="0660", TAG+="uaccess"'';
 
 
-    services.xserver.videoDrivers = [ "intel" "i965" ];
-    # services.xserver.videoDrivers = [ "intel" ];
+    # services.xserver.videoDrivers = [ "intel" "i965" ];
+    services.xserver.videoDrivers = [ "intel" ];
 
     ### INTEL FIX SCREEN TEARING ###
     environment = {
 
-      systemPackages = with pkgs; [ libva-utils ];
+      # systemPackages = with pkgs; [ libva-utils ];
 
       # etc."X11/xorg.conf.d/20-intel.conf" = {
       #   text = ''
@@ -58,13 +58,13 @@
       #   '';
       # };
 
-      variables = {
-        VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
-      };
+      # variables = {
+      #   VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+      # };
 
-      sessionVariables = {
-        LIBVA_DRIVER_NAME = "i965";
-      };
+      # sessionVariables = {
+      #   LIBVA_DRIVER_NAME = "i965";
+      # };
     };
 
   };
