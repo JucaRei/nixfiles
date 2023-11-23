@@ -297,7 +297,10 @@
       extraConfig = lib.mkDefault ''
         SystemMaxUse=100M
         MaxFileSec=7day
+        SystemMaxFiles=5
       '';
+      rateLimitBurst = 800;
+      rateLimiInterval = "5s";
     };
     dbus = {
       # Enable the D-Bus service, which is a message bus system that allows

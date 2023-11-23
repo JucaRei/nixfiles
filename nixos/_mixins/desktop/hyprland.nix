@@ -7,13 +7,29 @@
         enable = true;
       };
     };
+    dconf = {
+      enable = true;
+    };
   };
 
   services = {
+    xserver = {
+      displayManager = {
+        gdm = {
+          enable = true;
+          wayland = true;
+        };
+      };
+    };
+
     dbus = {
       enable = true;
       # Make the gnome keyring work properly
-      packages = [ pkgs.gnome3.gnome-keyring pkgs.gcr ];
+      packages = with pkgs; [
+        dconf
+        gnome3.gnome-keyring
+        gcr
+      ];
     };
 
     gnome = {
@@ -27,6 +43,8 @@
 
   environment = {
     systemPackages = with pkgs; [
+      wayland
+
       ### Bars
       # eww
       (waybar.overrideAttrs (oldAttrs: {
@@ -94,7 +112,7 @@
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk # provides a XDG Portals implementation.
+      xdg-desktop-portal-hyprland # provides a XDG Portals implementation.
     ];
   };
 }
