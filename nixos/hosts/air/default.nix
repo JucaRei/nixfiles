@@ -70,7 +70,7 @@
 
     plymouth = {
       theme = "breeze";
-      enable = true;
+      enable = false;
     };
   };
 
