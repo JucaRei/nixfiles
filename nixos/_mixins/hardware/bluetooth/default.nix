@@ -3,7 +3,7 @@
   hardware = {
     bluetooth = {
       enable = true;
-      package = pkgs.bluezFull;
+      package = pkgs.bluez;
 
       # battery info support
       # package = pkgs.bluez5-experimental;

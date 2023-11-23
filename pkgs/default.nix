@@ -1,7 +1,8 @@
 # Custom packages, that can be defined similarly to ones from nixpkgs
 # Build them using 'nix build .#example' or (legacy) 'nix-build -A example'
 
-{ pkgs ? (import ../nixpkgs.nix) { } }: {
+# { pkgs ? (import ../nixpkgs.nix) { } }: {
+{ pkgs ? (import ../default.nix) { } }: {
   # example = pkgs.callPackage ./example { };
   # apple-fonts = pkgs.callPackage ./apple-fonts { };
   cyberre-grub-theme = pkgs.callPackage ./cyberre-grub-theme { };

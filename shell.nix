@@ -1,7 +1,8 @@
 # Shell for bootstrapping flake-enabled nix and home-manager
 # Enter it through 'nix develop' or (legacy) 'nix-shell'
 
-{ pkgs ? (import ./nixpkgs.nix) { } }:
+# { pkgs ? (import ./nixpkgs.nix) { } }:
+{ pkgs ? (import ./default.nix) { } }:
 with pkgs; let
   nixBin = writeShellScriptBin "nix" ''
     ${nixVersions.stable}/bin/nix --option experimental-features "nix-command flakes" "$@"
