@@ -95,6 +95,9 @@
       # Allow to run nix
       allowed-users = [ "${username}" "wheel" ];
       builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
+
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
     extraOptions = ''
       log-lines = 15
