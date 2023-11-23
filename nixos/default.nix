@@ -300,7 +300,7 @@
         SystemMaxFiles=5
       '';
       rateLimitBurst = 800;
-      rateLimiInterval = "5s";
+      rateLimitInterval = "5s";
     };
     dbus = {
       # Enable the D-Bus service, which is a message bus system that allows
