@@ -1,8 +1,8 @@
-{ pkgs, username, lib, ... }: {
+{ pkgs, username, lib, hostname, ... }: {
   programs = lib.mkDefault {
     hyprland = {
       enable = true;
-      # nvidiaPatches = true;
+      nvidiaPatches = lib.mkIf (hostname != "air" || "pi") true;
       xwayland = {
         enable = true;
       };
@@ -54,8 +54,8 @@
       }))
 
       ### Notification daemon
-      dunst
-      libnotify
+      # dunst
+      # libnotify
 
       ### Wallpaper Daemon
       swww
@@ -71,27 +71,27 @@
       # st
 
       ### App launcher
-      rofi-wayland
+      # rofi-wayland
       # wofi # gtk rofi
       # bemenu
       # fuzzel
       # toffi
 
-      polkit_gnome
-      gnome.zenity
-      ranger
-      ueberzug
-      picom
-      rofi
-      dolphin
-      qutebrowser
-      light
-      shotman
+      # polkit_gnome
+      # gnome.zenity
+      # ranger
+      # ueberzug
+      # picom
+      # rofi
+      # dolphin
+      # qutebrowser
+      # light
+      # shotman
     ];
 
     sessionVariables = {
 
-      # WLR_NO_HARDWARE_CURSORS = "1"; # If your cursor becomes invisible
+      WLR_NO_HARDWARE_CURSORS = "1"; # If your cursor becomes invisible
       NIXOS_OZONE_WL = "1"; # Hint electron apps to use wayland
     };
   };

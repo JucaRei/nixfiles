@@ -56,8 +56,8 @@
       # "i915.force_probe=46a6"
     ];
     kernel.sysctl = lib.mkForce {
-      # "vm.vfs_cache_pressure" = 400;
-      "vm.swappiness" = 25;
+      "vm.vfs_cache_pressure" = 40;
+      "vm.swappiness" = 10;
       "vm.dirty_bytes" = 335544320; #320M
       "vm.dirty_background_bytes" = 167772160; #160M
       # "vm.dirty_background_ratio" = 1;
