@@ -26,7 +26,7 @@
       text =
         # shell
         ''
-          ${pkgs.skim}/bin/sk "$@"
+          ${pkgs.skim}/bin/sk "\$@"
         '';
     })
   ];

@@ -14,7 +14,7 @@
     ../console/git.nix
     ../console/micro.nix
     ../console/neofetch.nix
-    ../console/skim.nix
+    # ../console/skim.nix
     ../console/starship.nix
     ../console/yt-dlp.nix
     ./fonts.nix
