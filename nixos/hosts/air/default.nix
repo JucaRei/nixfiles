@@ -4,7 +4,7 @@
     inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
     inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     inputs.nixos-hardware.nixosModules.common-pc-ssd
-    (import ./disks.nix { })
+    (import ./disks1.nix { })
     # (import ./disks-btrfs.nix { })
     # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix

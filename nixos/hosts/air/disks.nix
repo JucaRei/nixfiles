@@ -81,52 +81,76 @@ in
               content = {
                 type = "btrfs";
                 extraArgs = [ "-f" ]; # Override existing partition
+                # subvolumes = {
+                #   # Subvolume name is different from mountpoint
+                #   "@rootfs" = {
+                #     mountpoint = "/";
+                #     #mountOptions = defaultBtrfsOpts;
+                #   };
+                #   # Mountpoints inferred from subvolume name
+                #   "@home" = {
+                #     mountOptions = defaultBtrfsOpts;
+                #     mountpoint = "/home";
+                #   };
+                #   "@nix" = {
+                #     mountOptions = defaultBtrfsOpts;
+                #     mountpoint = "/nix";
+                #   };
+                #   "@snaphots" = {
+                #     mountOptions = defaultBtrfsOpts;
+                #     mountpoint = "/.snashots";
+                #   };
+                #   "@tmp" = {
+                #     mountOptions = defaultBtrfsOpts;
+                #     mountpoint = "/var/tmp";
+                #   };
+                #   # "/swap" = {
+                #   #   mountOptions = [ "noatime" ];
+                #   #   #mount -t btrfs /dev/mapper/crypted /mnt
+                #   #   postCreateHook = ''
+                #   #     btrfs filesystem mkswapfile --size ${memory} /mnt/swap/swapfile
+                #   #     umount /mnt
+                #   #   '';
+                #   "@swap" = {
+                #     mountpoint = "/swap";
+                #     swap = {
+                #       swapfile.size = "3G";
+                #       swapfile2.size = "3G";
+                #       swapfile2.path = "rel-path";
+                #     };
+                #   };
+                # };
                 subvolumes = {
                   # Subvolume name is different from mountpoint
                   "@rootfs" = {
                     mountpoint = "/";
-                    #mountOptions = defaultBtrfsOpts;
                   };
-                  # Mountpoints inferred from subvolume name
+                  # Subvolume name is the same as the mountpoint
                   "@home" = {
                     mountOptions = defaultBtrfsOpts;
                     mountpoint = "/home";
                   };
+                  # Sub(sub)volume doesn't need a mountpoint as its parent is mounted
+                  "/home/juca" = { };
+                  # Parent is not mounted so the mountpoint must be set
                   "@nix" = {
                     mountOptions = defaultBtrfsOpts;
                     mountpoint = "/nix";
-                  };
-                  "@snaphots" = {
-                    mountOptions = defaultBtrfsOpts;
-                    mountpoint = "/.snashots";
                   };
                   "@tmp" = {
                     mountOptions = defaultBtrfsOpts;
                     mountpoint = "/var/tmp";
                   };
-                  # "/swap" = {
-                  #   mountOptions = [ "noatime" ];
-                  #   #mount -t btrfs /dev/mapper/crypted /mnt
-                  #   postCreateHook = ''
-                  #     btrfs filesystem mkswapfile --size ${memory} /mnt/swap/swapfile
-                  #     umount /mnt
-                  #   '';
+                  "@log" = {
+                    mountpoint = "/var/log";
+                    mountOptions = defaultBtrfsOpts;
+                  };
+                  # This subvolume will be created but not mounted
+                  "/test" = { };
+                  # Subvolume for the swapfile
                   "@swap" = {
                     mountpoint = "/.swapvol";
-                    swap = {
-                      swapfile.size = "3G";
-                      swapfile2.size = "3G";
-                      swapfile2.path = "rel-path";
-                    };
-                  };
-                };
-                mountpoint = "/partition-root";
-                swap = {
-                  swapfile = {
-                    size = "3G";
-                  };
-                  swapfile1 = {
-                    size = "3G";
+                    swap.swapfile.size = "6G";
                   };
                 };
               };
