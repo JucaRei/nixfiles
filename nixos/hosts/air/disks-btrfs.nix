@@ -15,7 +15,7 @@ in
             ESP = {
               priority = 1;
               name = "ESP";
-              start = 0;
+              start = "0";
               end = "512MiB";
               type = "EF00";
               content = {
@@ -27,7 +27,7 @@ in
             };
             swap = {
               start = "512MiB";
-              size = "6GiB";
+              size = "6G";
               content = {
                 type = "swap";
                 randomEncryption = true;
@@ -45,23 +45,23 @@ in
                   # Subvolume name is different from mountpoint
                   "/rootfs" = {
                     mountpoint = "/";
-                    mountOptions = [ "subvol=@" options ];
+                    mountOptions = [ "subvol=@" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
                   };
                   # Subvolume name is the same as the mountpoint
                   "/home" = {
-                    mountOptions = [ "subvol=@home" options ];
+                    mountOptions = [ "subvol=@home" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:5" "space_cache=v2" "commit=120" "discard=async" ];
                     mountpoint = "/home";
                   };
                   "/.snapshots" = {
-                    mountOptions = [ "subvol=@snapshots" options ];
+                    mountOptions = [ "subvol=@snapshots" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
                     mountpoint = "/.snapshots";
                   };
                   "/tmp" = {
-                    mountOptions = [ "subvol=@tmp" options ];
+                    mountOptions = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:5" "space_cache=v2" "commit=120" "discard=async" ];
                     mountpoint = "/tmp";
                   };
                   "/nix" = {
-                    mountOptions = [ "subvol=@nix" options ];
+                    mountOptions = [ "subvol=@nix" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
                     mountpoint = "/nix";
                   };
                 };

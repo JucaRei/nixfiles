@@ -1,6 +1,7 @@
 # { disks ? [ "/dev/sda1" "/dev/sda4" "/dev/sda5" ], ... }:
 # { disks ? [ "/dev/sda1" "/dev/sda4" ], ... }:
-{ disks ? [ "/dev/sda4" ], ... }:
+# { disks ? [ "/dev/sda4" ], ... }:
+{ disks ? [ "/dev/sda" ], ... }:
 let
   memory = "4G";
   defaultBtrfsOpts = [
@@ -60,31 +61,75 @@ in
       #    };
       #  };
       #};
-      sda4 = {
+      sda = {
         type = "disk";
         device = builtins.elemAt disks 0;
-        size = "100%";
+        # size = "100%";
         content = {
-          type = "btrfs";
-          extraArgs = [ "-f" ]; # Override existing partition
-          subvolumes = {
-            # Subvolume name is different from mountpoint
-            "/rootfs" = {
-              mountpoint = "/";
-              #mountOptions = defaultBtrfsOpts;
+          type = "gpt";
+          partitions = {
+            ESP = {
+              size = "512M";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot/efi";
+              };
             };
-            # Mountpoints inferred from subvolume name
-            "/home" = { mountOptions = defaultBtrfsOpts; };
-            "/nix" = { mountOptions = defaultBtrfsOpts; };
-            "/snaphots" = { mountOptions = defaultBtrfsOpts; };
-            "/tmp" = { mountOptions = defaultBtrfsOpts; };
-            "/swap" = {
-              mountOptions = [ "noatime" ];
-              #mount -t btrfs /dev/mapper/crypted /mnt
-              postCreateHook = ''
-                btrfs filesystem mkswapfile --size ${memory} /mnt/swap/swapfile
-                umount /mnt
-              '';
+            root = {
+              size = "100%";
+              content = {
+                type = "btrfs";
+                extraArgs = [ "-f" ]; # Override existing partition
+                subvolumes = {
+                  # Subvolume name is different from mountpoint
+                  "@rootfs" = {
+                    mountpoint = "/";
+                    #mountOptions = defaultBtrfsOpts;
+                  };
+                  # Mountpoints inferred from subvolume name
+                  "@home" = {
+                    mountOptions = defaultBtrfsOpts;
+                    mountpoint = "/home";
+                  };
+                  "@nix" = {
+                    mountOptions = defaultBtrfsOpts;
+                    mountpoint = "/nix";
+                  };
+                  "@snaphots" = {
+                    mountOptions = defaultBtrfsOpts;
+                    mountpoint = "/.snashots";
+                  };
+                  "@tmp" = {
+                    mountOptions = defaultBtrfsOpts;
+                    mountpoint = "/var/tmp";
+                  };
+                  # "/swap" = {
+                  #   mountOptions = [ "noatime" ];
+                  #   #mount -t btrfs /dev/mapper/crypted /mnt
+                  #   postCreateHook = ''
+                  #     btrfs filesystem mkswapfile --size ${memory} /mnt/swap/swapfile
+                  #     umount /mnt
+                  #   '';
+                  "@swap" = {
+                    mountpoint = "/.swapvol";
+                    swap = {
+                      swapfile.size = "3G";
+                      swapfile2.size = "3G";
+                      swapfile2.path = "rel-path";
+                    };
+                  };
+                };
+                mountpoint = "/partition-root";
+                swap = {
+                  swapfile = {
+                    size = "3G";
+                  };
+                  swapfile1 = {
+                    size = "3G";
+                  };
+                };
+              };
             };
           };
         };
