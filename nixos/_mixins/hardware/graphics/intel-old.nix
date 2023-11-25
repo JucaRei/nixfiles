@@ -8,6 +8,7 @@
       opengl = {
         driSupport = true;
         driSupport32Bit = true;
+        package = (pkgs.mesa.override { galliumDrivers = [ "crocus" "swrast" ]; });
         extraPackages = with pkgs; [
           # intel-media-driver # LIBVA_DRIVER_NAME=iHD
           vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
@@ -43,25 +44,25 @@
 
       systemPackages = with pkgs; [ libva-utils ];
 
-      # etc."X11/xorg.conf.d/20-intel.conf" = {
-      #   text = ''
-      #     Section         "Device"
-      #       Identifier    "Intel Graphics"
-      #       Option        "intel"
-      #       Option        "TearFree"          "true"
-      #       Option        "AccelMethod"       "sna"
-      #       Option        "SwapbuffersWait"   "true"
-      #       Option        "TripleBuffer"      "true"
-      #       Option        "VariableRefresh"   "true"
-      #       Option        "DRI"               "2"
-      #       # Option        "DRI"               "3"
-      #     EndSection
-      #   '';
-      # };
+      etc."X11/xorg.conf.d/20-intel.conf" = {
+        text = ''
+          Section         "Device"
+            Identifier    "Intel Graphics"
+            Option        "intel"
+            Option        "TearFree"          "true"
+            Option        "AccelMethod"       "sna"
+            Option        "SwapbuffersWait"   "true"
+            Option        "TripleBuffer"      "true"
+            Option        "VariableRefresh"   "true"
+            Option        "DRI"               "2"
+            # Option        "DRI"               "3"
+          EndSection
+        '';
+      };
 
-      # variables = {
-      #   VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
-      # };
+      variables = {
+        VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+      };
 
       sessionVariables = {
         LIBVA_DRIVER_NAME = "i965";
