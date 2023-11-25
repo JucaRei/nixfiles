@@ -1,4 +1,4 @@
-{
+{ disks ? [ "/dev/sda" ], ... }: {
   disko.devices =
     let
       defaultBtrfsOpts = [
@@ -29,8 +29,17 @@
                   mountpoint = "/boot/efi";
                 };
               };
+              swap = {
+                size = "6G";
+                content = {
+                  type = "swap";
+                  randomEncryption = true;
+                  resumeDevice = true; # resume from hiberation from this device
+                };
+              };
               root = {
                 size = "100%";
+                # end = "-6G";
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" ]; # Override existing partition
@@ -43,44 +52,60 @@
                     };
                     # Subvolume name is the same as the mountpoint
                     "@home" = {
-                      mountOptions = defaultBtrfsOpts;
+                      mountOptions = [
+                        "rw"
+                        "noatime"
+                        "ssd"
+                        "compress-force=zstd:15"
+                        "space_cache=v2"
+                        "nodatacow"
+                        "commit=120"
+                        "autodefrag"
+                        "discard=async"
+                      ];
                       mountpoint = "/home";
                     };
-                    # Sub(sub)volume doesn't need a mountpoint as its parent is mounted
-                    "/home/user" = { };
-                    # Parent is not mounted so the mountpoint must be set
                     "@nix" = {
-                      mountOptions = defaultBtrfsOpts;
+                      mountOptions = [
+                        "rw"
+                        "noatime"
+                        "ssd"
+                        "compress-force=zstd:15"
+                        "space_cache=v2"
+                        "nodatacow"
+                        "commit=120"
+                        "autodefrag"
+                        "discard=async"
+                      ];
                       mountpoint = "/nix";
                     };
                     "@tmp" = {
-                      mountOptions = defaultBtrfsOpts;
+                      mountOptions = [
+                        "rw"
+                        "noatime"
+                        "ssd"
+                        "compress-force=zstd:15"
+                        "space_cache=v2"
+                        "nodatacow"
+                        "commit=120"
+                        "autodefrag"
+                        "discard=async"
+                      ];
                       mountpoint = "/var/tmp";
                     };
                     "@log" = {
                       mountpoint = "/var/log";
-                      mountOptions = defaultBtrfsOpts;
-                    };
-                    # This subvolume will be created but not mounted
-                    "/test" = { };
-                    # Subvolume for the swapfile
-                    "/swap" = {
-                      mountpoint = "/.swapvol";
-                      swap = {
-                        swapfile.size = "3G";
-                        swapfile2.size = "3G";
-                        swapfile2.path = "rel-path";
-                      };
-                    };
-                  };
-
-                  mountpoint = "/.swapvol";
-                  swap = {
-                    swapfile = {
-                      size = "3G";
-                    };
-                    swapfile1 = {
-                      size = "3G";
+                      mountOptions = [
+                        "rw"
+                        "noatime"
+                        "ssd"
+                        "compress-force=zstd:15"
+                        "space_cache=v2"
+                        "nodatacow"
+                        "commit=120"
+                        "autodefrag"
+                        "discard=async"
+                      ];
                     };
                   };
                 };
