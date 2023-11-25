@@ -8,6 +8,8 @@
       rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles --show-trace";
       rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles --show-trace";
       dotsync = "pushd $HOME/.dotfiles/nixfiles && git pull && popd";
+      upgrade = "sudo nixos-rebuild --upgrade-all switch";
+      undo-build = "sudo nixos-rebuild --rollback";
       rebuild-iso-console = "sudo true && pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso-console.config.system.build.isoImage && set ISO (head -n1 result/nix-support/hydra-build-products | cut -d'/' -f6) && sudo cp result/iso/$ISO ~/Quickemu/nixos-console/nixos.iso && popd";
       rebuild-iso-desktop = "sudo true && pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso-desktop.config.system.build.isoImage && set ISO (head -n1 result/nix-support/hydra-build-products | cut -d'/' -f6) && sudo cp result/iso/$ISO ~/Quickemu/nixos-desktop/nixos.iso && popd";
       rebuild-iso-gpd-edp = "sudo true && pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso-gpd-edp.config.system.build.isoImage && set ISO (head -n1 result/nix-support/hydra-build-products | cut -d'/' -f6) && sudo cp result/iso/$ISO ~/Quickemu/nixos-gpd-edp.iso && popd";

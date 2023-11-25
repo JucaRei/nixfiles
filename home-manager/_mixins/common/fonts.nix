@@ -11,7 +11,7 @@
     noto-fonts-emoji
     fira-code
     fira-code-symbols
-    work-sans
+    # work-sans
     joypixels
     hack-font
     ubuntu_font_family
