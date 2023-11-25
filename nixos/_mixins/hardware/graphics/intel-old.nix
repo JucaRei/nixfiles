@@ -8,7 +8,7 @@
       opengl = {
         driSupport = true;
         driSupport32Bit = true;
-        package = (pkgs.mesa.override { galliumDrivers = [ "crocus" "swrast" ]; });
+        # package = (pkgs.mesa.override { galliumDrivers = [ "crocus" "swrast" ]; });
         extraPackages = with pkgs; [
           # intel-media-driver # LIBVA_DRIVER_NAME=iHD
           vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
@@ -37,7 +37,7 @@
 
 
     # services.xserver.videoDrivers = [ "intel" "i965" ];
-    # services.xserver.videoDrivers = [ "intel" ];
+    services.xserver.videoDrivers = [ "intel" ];
 
     ### INTEL FIX SCREEN TEARING ###
     environment = {
@@ -54,8 +54,8 @@
             Option        "SwapbuffersWait"   "true"
             Option        "TripleBuffer"      "true"
             Option        "VariableRefresh"   "true"
-            Option        "DRI"               "2"
-            # Option        "DRI"               "3"
+            # Option        "DRI"               "2"
+            Option        "DRI"               "3"
           EndSection
         '';
       };

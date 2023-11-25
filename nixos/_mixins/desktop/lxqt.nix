@@ -28,12 +28,13 @@
         # lxqt-globalkeys # LXQt service for global keyboard shortcuts registration
         # lxqt-runner # tool used to launch programs quickly by typing their names
         # obconf-qt # the Qt port of obconf, the Openbox configuration tool
-        qterminal # a lightweight Qt-based terminal emulator
+        # qterminal # a lightweight Qt-based terminal emulator
         # xscreensaver # a set of screensavers
       ];
     };
     systemPackages = with pkgs; [
-      alacritty
+      # alacritty
+      # libsForQt5.konsole
       lxappearance
       lxqt.lxqt-themes
       lxqt.lxqt-archiver

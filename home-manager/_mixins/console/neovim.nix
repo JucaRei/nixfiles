@@ -34,7 +34,7 @@
         # smartindent = true;
 
         ### Search
-        incsearch =2 true; # incremental search
+        incsearch = 2 true; # incremental search
         ignorecase = true;
         smartcase = true; # when use capitalization to detect
         hlsearch = false;

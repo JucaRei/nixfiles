@@ -14,6 +14,8 @@ in
     NIX_CONFIG = "experimental-features = nix-command flakes";
     nativeBuildInputs = with pkgs; [
       nix
+      jq
+      cachix
       home-manager
       # dropbear
       speedtest-cli

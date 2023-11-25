@@ -72,7 +72,7 @@
 
     plymouth = {
       theme = "breeze";
-      enable = false;
+      enable = true;
     };
   };
 
@@ -257,6 +257,12 @@
         MemorySwapMax = "1G";
         AllowedCPUs = "1-2";
       };
+    };
+  };
+
+  programs = {
+    kbdlight = {
+      enable = true;
     };
   };
 

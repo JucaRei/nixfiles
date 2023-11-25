@@ -1,11 +1,12 @@
 { pkgs, username, lib, hostname, ... }: {
   programs = lib.mkDefault {
     hyprland = {
+      # Wayland compositor
       enable = true;
       nvidiaPatches = lib.mkIf (hostname != "air" || "pi") true;
-      xwayland = {
-        enable = true;
-      };
+      # xwayland = {
+      #   enable = true;
+      # };
     };
     dconf = {
       enable = true;

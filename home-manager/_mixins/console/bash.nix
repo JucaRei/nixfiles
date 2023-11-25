@@ -60,15 +60,15 @@ in
       }
 
     '';
-          # skim-files () {
-      #   echo $(${skim-cmds.files})
-      # }
-      # skim-history () {
-      #   echo $(${skim-cmds.history})
-      # }
-      # skim-rg () {
-      #   echo $(${skim-cmds.rg})
-      # }
+    # skim-files () {
+    #   echo $(${skim-cmds.files})
+    # }
+    # skim-history () {
+    #   echo $(${skim-cmds.history})
+    # }
+    # skim-rg () {
+    #   echo $(${skim-cmds.rg})
+    # }
 
     bashrcExtra = ''
       parse_git_branch() {
