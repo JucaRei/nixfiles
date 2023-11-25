@@ -33,26 +33,27 @@
     #   ];
     # };
 
-    gnome = {
-      gnome-keyring.enable = true;
+    # gnome = {
+      # gnome-keyring.enable = true;
       # sushi.enable = true;
-    };
+    # };
 
 
-    gvfs.enable = true;
+    # gvfs.enable = true;
   };
 
   environment = {
     systemPackages = with pkgs; [
-      # wayland
+      unstable.wayland
+      unstable.hyprland
 
       ### Bars
       # eww
-      (waybar.overrideAttrs (oldAttrs: {
-        mesonFlags = oldAttrs.mesonFlags ++ [
-          "-Dexperimental=true"
-        ];
-      }))
+     # (waybar.overrideAttrs (oldAttrs: {
+     #   mesonFlags = oldAttrs.mesonFlags ++ [
+     #     "-Dexperimental=true"
+     #   ];
+     # }))
 
       ### Notification daemon
       # dunst
@@ -92,16 +93,16 @@
 
     sessionVariables = {
 
-      WLR_NO_HARDWARE_CURSORS = "1"; # If your cursor becomes invisible
+      #WLR_NO_HARDWARE_CURSORS = "1"; # If your cursor becomes invisible
       NIXOS_OZONE_WL = "1"; # Hint electron apps to use wayland
     };
   };
 
   security = {
     pam.services = {
-      # swaylock = { };
+      swaylock = { };
       # gtklock = { };
-      # login.enableGnomeKeyring = true;
+      login.enableGnomeKeyring = true;
     };
   };
 
@@ -112,8 +113,8 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland # provides a XDG Portals implementation.
-    ];
+    #extraPortals = with pkgs; [
+     # xdg-desktop-portal-hyprland # provides a XDG Portals implementation.
+   # ];
   };
 }

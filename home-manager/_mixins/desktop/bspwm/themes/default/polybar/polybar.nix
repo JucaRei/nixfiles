@@ -36,7 +36,7 @@
           tray-position = "right";
           # monitor = "eDP1";
           # monitor = "eDP-1";
-          monitor = "Virtual-1";
+          monitor = "eDP1";
           width = "100%";
           height = 18;
           padding-left = 1;
@@ -351,7 +351,10 @@
         "module/mem" = {
           type = "custom/script";
           # type = "internal/memory";
-          exec = "~/.local/polybar/scripts/mem.sh";
+          # exec = "~/.local/polybar/scripts/mem.sh";
+          exec = ''
+            free -m | sed -n 's/^Mem:\s\+[0-9]\+\s\+\([0-9]\+\)\s.\+/\1/p'
+          '';
           format = "<label>";
           interval = 2;
           format-prefix = " ";
@@ -434,8 +437,8 @@
         # };
         "module/battery" = {
           type = "internal/battery";
-          battery = "BAT1";
-          adapter = "AC0";
+          battery = "BAT0";
+          adapter = "ADP1";
           full-at = 98;
 
           format-charging = "<animation-charging> <label-charging>";

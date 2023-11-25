@@ -35,7 +35,7 @@ in
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-0' | awk '{print $1}')
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
         EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
