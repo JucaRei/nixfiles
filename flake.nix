@@ -202,23 +202,6 @@
       );
 
       homeConfigurations = let inherit (builtins.currentSystem) isDarwin; in {
-        # Servers
-        "juca@brix" = libx.mkHome { hostname = "brix"; username = "juca"; };
-        "juca@skull" = libx.mkHome { hostname = "skull"; username = "juca"; };
-        # "juca@vm-mini" = libx.mkHome { hostname = "vm-mini"; username = "juca"; };
-        # Steam Deck
-        "deck@steamdeck" = libx.mkHome { hostname = "steamdeck"; username = "deck"; };
-        # Workstations
-        "juca@designare" = libx.mkHome { hostname = "designare"; username = "juca"; desktop = "pantheon"; };
-        "juca@micropc" = libx.mkHome { hostname = "micropc"; username = "juca"; desktop = "pantheon"; };
-        "juca@p1" = libx.mkHome { hostname = "p1"; username = "juca"; desktop = "pantheon"; };
-        "juca@p2-max" = libx.mkHome { hostname = "p2-max"; username = "juca"; desktop = "pantheon"; };
-        "juca@ripper" = libx.mkHome { hostname = "ripper"; username = "juca"; desktop = "pantheon"; };
-        "juca@trooper" = libx.mkHome { hostname = "trooper"; username = "juca"; desktop = "pantheon"; };
-        "juca@win2" = libx.mkHome { hostname = "win2"; username = "juca"; desktop = "pantheon"; };
-        "juca@win-max" = libx.mkHome { hostname = "win-max"; username = "juca"; desktop = "pantheon"; };
-        "juca@zed" = libx.mkHome { hostname = "zed"; username = "juca"; desktop = "pantheon"; };
-        # LAPTOP
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # nix build .#homeConfigurations."juca@DietPi".activationPackage
@@ -258,21 +241,9 @@
         iso-micropc = libx.mkHost { hostname = "micropc"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"; desktop = "pantheon"; hostid = "05af8696"; };
         iso-win2 = libx.mkHost { hostname = "win2"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"; desktop = "pantheon"; hostid = "c8f5755d"; };
         iso-win-max = libx.mkHost { hostname = "iso-win-max"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"; desktop = "pantheon"; hostid = "7683ddba"; };
-        # Workstations
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles/nixfiles
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
-        designare = libx.mkHost { hostname = "designare"; username = "juca"; desktop = "pantheon"; hostid = "5588140b"; };
-        p1 = libx.mkHost { hostname = "p1"; username = "juca"; desktop = "pantheon"; hostid = "3fecbbf7"; };
-        p2-max = libx.mkHost { hostname = "p2-max"; username = "juca"; desktop = "pantheon"; hostid = "be5a26d8"; };
-        micropc = libx.mkHost { hostname = "micropc"; username = "juca"; desktop = "pantheon"; hostid = "85fc2935"; };
-        ripper = libx.mkHost { hostname = "ripper"; username = "juca"; desktop = "pantheon"; hostid = "3fba9116"; };
-        trooper = libx.mkHost { hostname = "trooper"; username = "juca"; desktop = "pantheon"; hostid = "267c28e2"; };
-        win2 = libx.mkHost { hostname = "win2"; username = "juca"; desktop = "pantheon"; hostid = "3cbc2743"; };
-        win-max = libx.mkHost { hostname = "win-max"; username = "juca"; desktop = "pantheon"; hostid = "9ff8f5c2"; };
-        zed = libx.mkHost { hostname = "zed"; username = "juca"; desktop = "pantheon"; hostid = "f2ab9451"; };
         # Servers
-        brix = libx.mkHost { hostname = "brix"; username = "juca"; };
-        skull = libx.mkHost { hostname = "skull"; username = "juca"; };
         # Laptop
         nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "gnome"; hostid = "ceafb566"; };
         air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "bspwm"; hostid = "718641c6"; };
