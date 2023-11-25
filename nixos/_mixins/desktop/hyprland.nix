@@ -3,7 +3,7 @@
     hyprland = {
       # Wayland compositor
       enable = true;
-      nvidiaPatches = lib.mkIf (hostname != "air" || "pi") true;
+      # nvidiaPatches = lib.mkIf (hostname == "nitro");
       # xwayland = {
       #   enable = true;
       # };
