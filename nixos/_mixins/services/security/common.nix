@@ -48,6 +48,7 @@ _: {
         });
       '';
     };
+    # For Flatpak
     unprivilegedUsernsClone = true;
     pam = {
       mount = {

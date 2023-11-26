@@ -9,6 +9,7 @@
     # ./_mixins/boxes
     # ./_mixins/users/root
     # ./_mixins/users/${username}
+    # inputs.home-manager.nixosModules.home-manager
     inputs.disko.nixosModules.disko
     inputs.vscode-server.nixosModules.default
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -214,7 +215,9 @@
     stateVersion = stateVersion;
 
     autoUpgrade = {
-      enable = true;
+      enable = false;
+      allowReboot = true;
+      channel = "https://nixos.org/channels/nixos-unstable";
       flake = inputs.self.outPath;
       flags = [
         "--update-input"
@@ -326,10 +329,36 @@
     };
   };
 
-  # --------------------------------------------------------------------
-  # Permit Insecure Packages && Allow unfree packages
-  # --------------------------------------------------------------------
-  environment.sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
+  environment = {
+    # --------------------------------------------------------------------
+    # Permit Insecure Packages && Allow unfree packages
+    # --------------------------------------------------------------------
+    sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
+
+    # Create file /etc/current-system-packages with List of all Packages
+    etc = {
+      "current-system-packages" = {
+        text =
+          let
+            packages = builtins.map (p: "${p.name}")
+              config.environment.systemPackages;
+            sortedUnique =
+              builtins.sort builtins.lessThan (lib.unique packages);
+            formatted = builtins.concatStringsSep "\n" sortedUnique;
+          in
+          formatted;
+      };
+    };
+  };
 
   hardware.enableRedistributableFirmware = true;
+
+  #############################################
+  ### Keep nixos and home-manager separated ###
+  #############################################
+  # User Specific home-manager Profile
+  # home-manager = {
+  #   useUserPackages = true;
+  #   useGlobalPkgs = true;
+  # };
 }

@@ -14,6 +14,8 @@ in
   users.users.juca = {
     description = "Reinaldo P Jr";
     extraGroups = [
+      "seat"
+      "seatd"
       "audio"
       "networkmanager"
       "users"
@@ -28,6 +30,7 @@ in
       "lxd"
       "wireshark"
       "storage"
+      "scanner"
       "libvirtd"
       "qemu-libvirtd"
       "kvm"

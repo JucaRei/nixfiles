@@ -74,6 +74,19 @@
         disk_size="20G"
         iso="nixos-desktop/nixos.iso"
       '';
+
+      # List home-manager packages
+      ".local/home-manager_packages.txt" = {
+        text =
+          let
+            packages = builtins.map (p: "${p.name}")
+              config.home.packages;
+            sortedUnique =
+              builtins.sort builtins.lessThan (lib.unique packages);
+            formatted = builtins.concatStringsSep "\n" sortedUnique;
+          in
+          "${formatted}";
+      };
     };
     # A Modern Unix experience
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
@@ -118,7 +131,7 @@
       # nodePackages.prettier # Code format
       # nurl # Nix URL fetcher
       # nyancat # Terminal rainbow spewing feline
-      speedtest-go # Terminal speedtest.net 
+      speedtest-go # Terminal speedtest.net
       # optipng # Terminal PNG optimizer
       # procs # Modern Unix `ps`
       # python310Packages.gpustat # Terminal GPU info
