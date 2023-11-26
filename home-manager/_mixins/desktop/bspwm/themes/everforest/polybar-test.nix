@@ -18,8 +18,10 @@
       # ".config/polybar".source = builtins.path {
       #   path = ../../../../config/polybar-everforest;
       # };
+        # link the configuration file in current directory to the specified location in home directory
       ".config/polybar" = {
         source = ../../../../config/polybar-everforest;
+        recursive = true;
       };
     };
   };
