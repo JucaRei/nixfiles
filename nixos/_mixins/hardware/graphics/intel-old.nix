@@ -3,7 +3,12 @@
 { pkgs, config, lib, ... }: {
 
   config = {
-    boot.kernelParams = [ "intel_iommu=igfx_off" ];
+    boot = {
+      initrd = {
+        kernelModules = [ "i915" ];
+      };
+      # kernelParams = [ "intel_iommu=igfx_off" ];
+    };
     hardware = {
       opengl = {
         driSupport = true;
@@ -11,9 +16,13 @@
         # package = (pkgs.mesa.override { galliumDrivers = [ "crocus" "swrast" ]; });
         extraPackages = with pkgs; [
           # intel-media-driver # LIBVA_DRIVER_NAME=iHD
-          vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-          vaapiVdpau
+          ## vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+          ## vaapiVdpau
+          ## libvdpau-va-gl
+
+          (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
           libvdpau-va-gl
+          intel-media-driver
         ];
 
         #driSupport32Bit = true;
@@ -21,8 +30,8 @@
           [
             #  intel-media-driver
             #    vaapiIntel
-            vaapiVdpau
-            #  libvdpau-va-gl
+            # vaapiVdpau
+            libvdpau-va-gl
             #  libva
           ];
       };
@@ -44,29 +53,29 @@
 
       systemPackages = with pkgs; [ libva-utils ];
 
-      etc."X11/xorg.conf.d/20-intel.conf" = {
-        text = ''
-          Section         "Device"
-            Identifier    "Intel Graphics"
-            Option        "intel"
-            Option        "TearFree"          "true"
-            Option        "AccelMethod"       "sna"
-            Option        "SwapbuffersWait"   "true"
-            Option        "TripleBuffer"      "true"
-            Option        "VariableRefresh"   "true"
-            # Option        "DRI"               "2"
-            Option        "DRI"               "3"
-          EndSection
-        '';
-      };
+      # etc."X11/xorg.conf.d/20-intel.conf" = {
+      #   text = ''
+      #     Section         "Device"
+      #       Identifier    "Intel Graphics"
+      #       Option        "intel"
+      #       Option        "TearFree"          "true"
+      #       Option        "AccelMethod"       "sna"
+      #       Option        "SwapbuffersWait"   "true"
+      #       Option        "TripleBuffer"      "true"
+      #       Option        "VariableRefresh"   "true"
+      #       # Option        "DRI"               "2"
+      #       Option        "DRI"               "3"
+      #     EndSection
+      #   '';
+      # };
 
       variables = {
         VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
       };
 
-      sessionVariables = {
-        LIBVA_DRIVER_NAME = "i965";
-      };
+      # sessionVariables = {
+      #   LIBVA_DRIVER_NAME = "i965";
+      # };
     };
 
   };

@@ -1,8 +1,8 @@
 { inputs, lib, pkgs, ... }:
 {
   imports = [
-    inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
-    inputs.nixos-hardware.nixosModules.apple-macbook-air-4
+    # inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
+    # inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     (import ./disks-1.nix { })
     # (import ./disks-btrfs.nix { })
@@ -21,12 +21,14 @@
   boot = {
     blacklistedKernelModules = lib.mkDefault [ "nvidia" "nouveau" ];
     initrd = {
-      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
+      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+      kernelModules = [ ];
       verbose = false;
       compressor = "zstd";
       supportedFilesystems = [ "btrfs" ];
     };
     kernelModules = [
+      "acpi_backlight=vendor"
       "kvm-intel"
       "applesmc"
       # "i915"
@@ -39,6 +41,7 @@
     ];
     kernelParams = [
       "hid_apple.iso_layout=0"
+      "i915.enable_rc6=7"
       "hid_apple.swap_opt_cmd=1" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
       "acpi_backlight=vendor"
       # "acpi_mask_gpe=0x15"
@@ -204,10 +207,10 @@
     # unstable.nvchad
     inxi
 
-    xorg.xbacklight
-    xorg.xrdb
+    # xorg.xbacklight
+    # xorg.xrdb
     cifs-utils
-    kodi
+    # kodi
   ];
 
   hardware = { };
@@ -220,9 +223,9 @@
       enable = true;
       aggressive = true;
     };
-    # xserver.deviceSection = lib.mkDefault ''
-    #   Option "TearFree" "true"
-    # '';
+    xserver.deviceSection = lib.mkDefault ''
+      Option "TearFree" "true"
+    '';
   };
 
   powerManagement.cpuFreqGovernor = "ondemand";

@@ -1,18 +1,5 @@
 { disks ? [ "/dev/sda" ], ... }: {
   disko.devices =
-    let
-      defaultBtrfsOpts = [
-        "rw"
-        "noatime"
-        "ssd"
-        "compress-force=zstd:15"
-        "space_cache=v2"
-        "nodatacow"
-        "commit=120"
-        "autodefrag"
-        "discard=async"
-      ];
-    in
     {
       disk = {
         vdb = {
@@ -30,7 +17,7 @@
                 };
               };
               swap = {
-                size = "6G";
+                size = "5.5G";
                 content = {
                   type = "swap";
                   randomEncryption = true;
@@ -56,7 +43,7 @@
                         "rw"
                         "noatime"
                         "ssd"
-                        "compress-force=zstd:15"
+                        "compress-force=zstd:3"
                         "space_cache=v2"
                         "nodatacow"
                         "commit=120"
@@ -84,7 +71,7 @@
                         "rw"
                         "noatime"
                         "ssd"
-                        "compress-force=zstd:15"
+                        "compress-force=zstd:3"
                         "space_cache=v2"
                         "nodatacow"
                         "commit=120"
@@ -99,7 +86,7 @@
                         "rw"
                         "noatime"
                         "ssd"
-                        "compress-force=zstd:15"
+                        "compress-force=zstd:3"
                         "space_cache=v2"
                         "nodatacow"
                         "commit=120"
