@@ -226,6 +226,10 @@
     xserver.deviceSection = lib.mkDefault ''
       Option "TearFree" "true"
     '';
+
+    fstrim = {
+      enable = lib.mkDefault true;
+    };
   };
 
   powerManagement.cpuFreqGovernor = "ondemand";
