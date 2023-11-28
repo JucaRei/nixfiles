@@ -142,7 +142,7 @@
     #   mesonFlags = [ "-DLEGACY_RENDERER:STRING=true" ];
     # });
     package = pkgs.unstable.hyprland.overrideAttrs (oldAttrs: {
-      mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" "-DLEGACY_RENDERER:STRING=true"  ];
+      mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
     });
     xwayland.enable = true;
   };
