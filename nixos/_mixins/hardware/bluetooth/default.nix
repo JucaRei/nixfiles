@@ -22,7 +22,7 @@
           #FastConnectable = true;
           #JustWorksRepairing = "always";
           #Privacy = "device";
-          #Experimental = true;
+          Experimental = true; # for gnome-bluetooth percentage
         };
       };
     };
