@@ -138,8 +138,11 @@
     enable = true;
     # package = inputs.hyprland.packages.${pkgs.system}.hyprland;
     # package = (inputs.hyprland.packages.${pkgs.system}.hyprland.override { legacyRenderer = true; });
-    package = pkgs.unstable.hyprland.overrideAttrs (_: {
-      mesonFlags = oldAttrs.mesonFlags ++ [ "-DLEGACY_RENDERER:STRING=true"  "-Dexperimental=true" ];
+    # package = pkgs.unstable.hyprland.overrideAttrs (_: {
+    #   mesonFlags = [ "-DLEGACY_RENDERER:STRING=true" ];
+    # });
+    package = pkgs.unstable.hyprland.overrideAttrs (oldAttrs: {
+      mesonFlags = oldAttrs.mesonFlags ++ [ "-DLEGACY_RENDERER:STRING=true" "-Dexperimental=true" ];
     });
     xwayland.enable = true;
   };
