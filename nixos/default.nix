@@ -10,7 +10,7 @@
     # ./_mixins/users/root
     # ./_mixins/users/${username}
     # inputs.home-manager.nixosModules.home-manager
-    inputs.disko.nixosModules.disko
+    # inputs.disko.nixosModules.disko
     inputs.vscode-server.nixosModules.default
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
