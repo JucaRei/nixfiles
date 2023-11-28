@@ -1,0 +1,16 @@
+name: Dead 😵 Nix ❄️ Analysis 🔍️
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deadnix:
+    name: Dead Nix Analysis
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v8
+      - uses: DeterminateSystems/magic-nix-cache-action@v2
+      - uses: astro/deadnix-action@v1
