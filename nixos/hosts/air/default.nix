@@ -4,7 +4,7 @@
     # inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
     # inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
-    (import ./disks-1.nix { })
+    # (import ./disks-1.nix { })
     # (import ./disks-btrfs.nix { })
     # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
@@ -201,6 +201,110 @@
   #   #size = (1024 * 2); # RAM size
   #   #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
   # }];
+
+  fileSystems."/" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
+
+  fileSystems."/home" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@home"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
+
+  fileSystems."/.snapshots" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@snapshots"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
+
+  fileSystems."/var/log" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@logs"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
+
+  fileSystems."/var/tmp" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@tmp"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
+
+  fileSystems."/nix" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@nix"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
+
+  fileSystems."/boot/efi" =
+    {
+      device = "/dev/disk/by-label/EFI";
+      fsType = "vfat";
+      options = [ "defaults" "noatime" "nodiratime" ];
+      noCheck = true;
+    };
+
+  swapDevices =
+    [{
+      device = "/dev/disk/by-label/NixSWAP";
+      options = [ "defaults" "noatime" ];
+    }];
 
   environment.systemPackages = with pkgs; [
     # unstable.tidal-dl
