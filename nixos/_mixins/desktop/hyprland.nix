@@ -4,9 +4,9 @@
       # Wayland compositor
       enable = true;
       # nvidiaPatches = lib.mkIf (hostname == "nitro");
-      # xwayland = {
-      #   enable = true;
-      # };
+      xwayland = {
+        enable = true;
+      };
     };
     dconf = {
       enable = true;
@@ -44,8 +44,8 @@
 
   environment = {
     systemPackages = with pkgs; [
-      wayland
-      hyprland
+      # wayland
+      # hyprland
 
       ### Bars
       # eww
