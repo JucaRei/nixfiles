@@ -51,8 +51,8 @@
     ### INTEL FIX SCREEN TEARING ###
     environment = {
 
-      systemPackages = with pkgs; [ 
-        libva-utils 
+      systemPackages = with pkgs; [
+        libva-utils
         inxi
         glxinfo
       ];
