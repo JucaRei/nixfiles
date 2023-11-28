@@ -34,8 +34,8 @@
     # };
 
     # gnome = {
-      # gnome-keyring.enable = true;
-      # sushi.enable = true;
+    # gnome-keyring.enable = true;
+    # sushi.enable = true;
     # };
 
 
@@ -44,16 +44,16 @@
 
   environment = {
     systemPackages = with pkgs; [
-      unstable.wayland
-      unstable.hyprland
+      wayland
+      hyprland
 
       ### Bars
       # eww
-     # (waybar.overrideAttrs (oldAttrs: {
-     #   mesonFlags = oldAttrs.mesonFlags ++ [
-     #     "-Dexperimental=true"
-     #   ];
-     # }))
+      # (waybar.overrideAttrs (oldAttrs: {
+      #   mesonFlags = oldAttrs.mesonFlags ++ [
+      #     "-Dexperimental=true"
+      #   ];
+      # }))
 
       ### Notification daemon
       # dunst
@@ -114,7 +114,7 @@
   xdg.portal = {
     enable = true;
     #extraPortals = with pkgs; [
-     # xdg-desktop-portal-hyprland # provides a XDG Portals implementation.
-   # ];
+    # xdg-desktop-portal-hyprland # provides a XDG Portals implementation.
+    # ];
   };
 }
