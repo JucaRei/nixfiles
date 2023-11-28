@@ -19,7 +19,7 @@
   ];
 
   boot = {
-    blacklistedKernelModules = lib.mkDefault [ "nvidia" "nouveau" ];
+    # blacklistedKernelModules = lib.mkDefault [ "nvidia" "nouveau" ];
     initrd = {
       availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
       kernelModules = [ ];
