@@ -69,8 +69,8 @@
       # "vm.dirty_ratio" = 50;
       "dev.i915.perf_stream_paranoid" = 0;
     };
-    # kernelPackages = pkgs.linuxPackages_lqx;
-    kernelPackages = pkgs.linuxPackages_5_10;
+    kernelPackages = pkgs.linuxPackages_lqx;
+    # kernelPackages = pkgs.linuxPackages_5_10;
     supportedFilesystems = [ "btrfs" ];
 
     plymouth = {
