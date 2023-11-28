@@ -14,14 +14,14 @@
   };
 
   services = {
-    xserver = {
-      displayManager = {
-        gdm = {
-          enable = true;
-          wayland = true;
-        };
-      };
-    };
+    # xserver = {
+    #   displayManager = {
+    #     gdm = {
+    #       enable = true;
+    #       wayland = true;
+    #     };
+    #   };
+    # };
 
     # dbus = {
     #   enable = true;
