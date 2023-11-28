@@ -4,7 +4,7 @@
       nix-gc-4d = "sudo nix-collect-garbage --delete-older-than 4d && nix-collect-garbage --delete-older-than 4d";
       system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
       # rebuild-all = "sudo nixos-rebuild switch --flake $HOME/Zero/nixfiles && home-manager switch -b backup --flake $HOME/Zero/nixfiles";
-      rebuild-all = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles | cachix push juca-nixfiles && systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=4000M -p CPUQuota=60% home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
+      rebuild-all = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles && systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=4000M -p CPUQuota=60% home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
       rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles --show-trace";
       rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles --show-trace";
       dotsync = "pushd $HOME/.dotfiles/nixfiles && git pull && popd";
