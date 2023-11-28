@@ -16,11 +16,11 @@
         # package = (pkgs.mesa.override { galliumDrivers = [ "crocus" "swrast" ]; });
         extraPackages = with pkgs; [
           # intel-media-driver # LIBVA_DRIVER_NAME=iHD
-          ## vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-          ## vaapiVdpau
+          vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+          vaapiVdpau
           ## libvdpau-va-gl
 
-          (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
+          # (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
           libvdpau-va-gl
           intel-media-driver
         ];
@@ -73,9 +73,9 @@
       #   '';
       # };
 
-      variables = {
-        VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
-      };
+      # variables = {
+      #   VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+      # };
 
       # sessionVariables = {
       #   LIBVA_DRIVER_NAME = "i965";

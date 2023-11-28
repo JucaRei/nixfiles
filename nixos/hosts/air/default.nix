@@ -44,8 +44,8 @@
       "i915.enable_rc6=7"
       "hid_apple.swap_opt_cmd=1" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
       "acpi_backlight=vendor"
-      # "acpi_mask_gpe=0x15"
-      # "i915.force_probe=0116" # Force enable my intel graphics
+      "acpi_mask_gpe=0x15"
+      "i915.force_probe=0116" # Force enable my intel graphics
       #"video=efifb:off" # Disable efifb driver, which crashes Xavier AGX/NX
       #"video=efifb"
       "zswap.enabled=1"
@@ -56,9 +56,9 @@
       "mitigations=off"
 
       # # Intel vm passthrought
-      # "intel_iommu=on"
-      # "i915.enable_guc=7"
-      # "i915.force_probe=46a6"
+      "intel_iommu=on"
+      "i915.enable_guc=7"
+      # "i915.force_probe=0116"
     ];
     kernel.sysctl = lib.mkForce {
       "vm.vfs_cache_pressure" = 40;
