@@ -16,13 +16,13 @@
         # package = (pkgs.mesa.override { galliumDrivers = [ "crocus" "swrast" ]; });
         extraPackages = with pkgs; [
           # intel-media-driver # LIBVA_DRIVER_NAME=iHD
-          vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+          # vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
           vaapiVdpau
           ## libvdpau-va-gl
 
           # (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
           libvdpau-va-gl
-          intel-media-driver
+          # intel-media-driver
         ];
 
         #driSupport32Bit = true;
@@ -34,6 +34,7 @@
         # libvdpau-va-gl
         #  libva
         # ];
+        setLdLibraryPath = true;
       };
       enableRedistributableFirmware = true;
     };
@@ -45,8 +46,8 @@
     # services.udev.extraRules = ''KERNEL=="hidraw*", ATTRS{idVendor}=="20d6", ATTRS{idProduct}=="a711", MODE="0660", TAG+="uaccess"'';
 
 
-    # services.xserver.videoDrivers = [ "intel" "i965" ];
-    services.xserver.videoDrivers = [ "intel" ];
+    services.xserver.videoDrivers = [ "intel" "i965" ];
+    # services.xserver.videoDrivers = [ "intel" ];
 
     ### INTEL FIX SCREEN TEARING ###
     environment = {
@@ -73,13 +74,13 @@
       #   '';
       # };
 
-      # variables = {
-      #   VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
-      # };
+      variables = {
+        VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+      };
 
-      # sessionVariables = {
-      #   LIBVA_DRIVER_NAME = "i965";
-      # };
+      sessionVariables = {
+        LIBVA_DRIVER_NAME = "i965";
+      };
     };
 
   };
