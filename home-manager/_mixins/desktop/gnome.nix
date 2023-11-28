@@ -179,7 +179,7 @@ with lib.hm.gvariant;
       clock-show-seconds = true;
       clock-show-weekday = true;
       color-scheme = "prefer-dark";
-      cursor-theme = "Breeze_Hacked";
+      # cursor-theme = "Breeze_Hacked";
       document-font-name = "FiraGO Medium 11";
       enable-animations = true;
       font-antialiasing = "grayscale";

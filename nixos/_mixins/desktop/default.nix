@@ -56,7 +56,7 @@
 
   environment = {
     systemPackages = with pkgs;[
-      hacked-cursor
+      # hacked-cursor
     ];
   };
 }

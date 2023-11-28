@@ -15,7 +15,7 @@ in
     nativeBuildInputs = with pkgs; [
       nix
       jq
-      cachix
+      # cachix
       home-manager
       # dropbear
       speedtest-cli

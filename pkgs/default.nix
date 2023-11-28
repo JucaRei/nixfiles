@@ -13,7 +13,7 @@
   nvchad = pkgs.callPackage ./nvchad { };
   # tidal-dl = pkgs.callPackage ./tidal-dl { };
   fantezy-font = pkgs.callPackage ./fantezy-font { };
-  breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
+  # breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
   advmvcp = pkgs.callPackage ./advmvcp { };
   icloud-photo-downloader = pkgs.callPackage ./icloud-photo-downloader { };
   thorium-browser = pkgs.callPackage ./thorium-browser { };
