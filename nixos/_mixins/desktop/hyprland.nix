@@ -136,8 +136,11 @@
   };
 
   xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+    # enable = true;
+    # extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
+    wlr = {
+      enable = true;
+    };
   };
 
   security = {
