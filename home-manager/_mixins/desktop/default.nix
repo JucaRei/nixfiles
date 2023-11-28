@@ -25,6 +25,7 @@
       font-manager
       dconf2nix
       hexchat
+      usbimager
     ];
     # sessionVariables = {
     #   XDG_DATA_DIRS = lib.mkDefault "$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share"; # lets flatpak work

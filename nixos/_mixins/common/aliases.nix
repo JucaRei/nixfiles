@@ -4,12 +4,12 @@
       nix-gc-4d = "sudo nix-collect-garbage --delete-older-than 4d && nix-collect-garbage --delete-older-than 4d";
       system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
       # rebuild-all = "sudo nixos-rebuild switch --flake $HOME/Zero/nixfiles && home-manager switch -b backup --flake $HOME/Zero/nixfiles";
-      rebuild-all = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles && systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=4000M -p CPUQuota=60% home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
-      rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles --show-trace";
-      rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles --show-trace";
+      rebuild-all = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles | cachix push juca-nixfiles && systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=4000M -p CPUQuota=60% home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles | cachix push juca-nixfiles";
+      rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles --show-trace | cachix push juca-nixfiles";
+      rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles --show-trace | cachix push juca-nixfiles";
       dotsync = "pushd $HOME/.dotfiles/nixfiles && git pull && popd";
-      upgrade = "sudo nixos-rebuild --upgrade-all switch";
-      undo-build = "sudo nixos-rebuild --rollback";
+      upgrade = "sudo nixos-rebuild --upgrade-all switch | cachix push juca-nixfiles";
+      undo-build = "sudo nixos-rebuild --rollback | cachix push juca-nixfiles";
       rebuild-iso-console = "sudo true && pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso-console.config.system.build.isoImage && set ISO (head -n1 result/nix-support/hydra-build-products | cut -d'/' -f6) && sudo cp result/iso/$ISO ~/Quickemu/nixos-console/nixos.iso && popd";
       rebuild-iso-desktop = "sudo true && pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso-desktop.config.system.build.isoImage && set ISO (head -n1 result/nix-support/hydra-build-products | cut -d'/' -f6) && sudo cp result/iso/$ISO ~/Quickemu/nixos-desktop/nixos.iso && popd";
       rebuild-iso-gpd-edp = "sudo true && pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso-gpd-edp.config.system.build.isoImage && set ISO (head -n1 result/nix-support/hydra-build-products | cut -d'/' -f6) && sudo cp result/iso/$ISO ~/Quickemu/nixos-gpd-edp.iso && popd";
