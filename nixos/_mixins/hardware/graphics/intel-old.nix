@@ -10,7 +10,7 @@
       # kernelParams = [ "intel_iommu=igfx_off" ];
     };
     hardware = {
-      opengl = {
+      opengl = lib.mkDefault {
         driSupport = true;
         driSupport32Bit = true;
         # package = (pkgs.mesa.override { galliumDrivers = [ "crocus" "swrast" ]; });
