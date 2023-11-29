@@ -124,9 +124,9 @@
   services = {
     xserver = {
       displayManager = {
-       gdm = {
+       sddm = {
           enable = true;
-         wayland = true;
+          wayland = true;
         };
       };
     };

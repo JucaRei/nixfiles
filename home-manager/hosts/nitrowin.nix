@@ -15,6 +15,7 @@ with lib.hm.gvariant;
   home = {
     packages = with pkgs; [
       util-linux
+      clonegit
     ];
   };
 }

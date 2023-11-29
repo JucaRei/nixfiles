@@ -112,8 +112,13 @@
       "vm.dirty_background_bytes" = 134217728; # 128 MB
       "vm.dirty_bytes" = 402653184; # 384 MB
       "vm.min_free_kbytes" = 65536; # Minimum free memory for safety (in KB), helping prevent memory exhaustion situations. Adjusted for 16GB RAM.
-      "vm.swappiness" = 10; # Adjust how aggressively the kernel swaps data from RAM to disk. Lower values prioritize keeping data in RAM. Adjusted for 16GB RAM.
+      "vm.swappiness" = 20; # Adjust how aggressively the kernel swaps data from RAM to disk. Lower values prioritize keeping data in RAM. Adjusted for 16GB RAM. 10
       "vm.vfs_cache_pressure" = 90; # Adjust vfs_cache_pressure (0-1000) to manage memory used for caching filesystem objects. Adjusted for 16GB RAM.
+      # With zstd, the decompression is so slow
+      # that that there's essentially zero throughput gain from readahead.
+      # Prevents uncompressing any more than you absolutely have to,
+      # with a minimal reduction to sequential throughput
+      "vm.page-cluster" = 0;
     };
   };
 
