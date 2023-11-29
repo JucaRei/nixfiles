@@ -71,7 +71,7 @@
     };
     kernelPackages = pkgs.linuxPackages_lqx;
     # kernelPackages = pkgs.linuxPackages_5_10;
-    supportedFilesystems = [ "btrfs" ];
+    supportedFilesystems = [ "cifs" "nfs" "btrfs" ];
 
     plymouth = {
       theme = "breeze";

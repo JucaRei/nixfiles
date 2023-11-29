@@ -4,6 +4,9 @@
 #   cfg = config.virtualization.firmware;
 # in
 {
+  imports = [
+
+  ];
 
   boot = {
     initrd = {

@@ -10,7 +10,7 @@
     # ./_mixins/users/root
     # ./_mixins/users/${username}
     # inputs.home-manager.nixosModules.home-manager
-    # inputs.disko.nixosModules.disko
+    inputs.disko.nixosModules.disko
     inputs.vscode-server.nixosModules.default
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
@@ -89,12 +89,13 @@
     optimise.automatic = true;
     package = pkgs.unstable.nix;
     settings = {
+      accept-flake-config = true;
       sandbox = "relaxed";
       show-trace = true;
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" "repl-flake" ];
+      experimental-features = [ "nix-command" "flakes" "repl-flake" "ca-derivations" ];
       # Allow to run nix
-      allowed-users = [ "${username}" "wheel" "juca-nixfiles" ];
+      allowed-users = [ "${username}" "wheel" ];
       builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
 
       # substituters = [
@@ -137,36 +138,6 @@
       192.168.1.228 rocinante
       192.168.1.230 air
       192.168.1.200 DietPi
-
-      # 192.168.2.1     router
-      # 192.168.2.8     ripper-wifi ripper
-      # 192.168.2.9     ripper-lan1
-      # 192.168.2.10    ripper-lan2
-      # 192.168.2.11    printer
-      # 192.168.2.15	  nuc
-      # 192.168.2.17    skull
-      # 192.168.2.20	  keylight-light key-left Elgato_Key_Light_Air_DAD4
-      # 192.168.2.21    keylight-right key-right Elgato_Key_Light_Air_EEE9
-      # 192.168.2.23    moodlamp
-      # 192.168.2.30    chimeraos-lan
-      # 192.168.2.31	  chimeraos-wifi chimeraos
-      # 192.168.2.58    vonage Vonage-HT801
-      # 192.168.2.184   lametric LaMetric-LM2144
-      # 192.168.2.250   hue-bridge
-
-      # 192.168.192.40  skull-zt
-      # 192.168.192.59  trooper trooper-zt
-      # 192.168.193.59  trooper-gaming
-      # 192.168.192.104 steamdeck-zt
-      # 192.168.193.104 steamdeck-gaming
-      # 192.168.192.181 zed-zt
-      # 192.168.192.220 ripper-zt
-      # 192.168.193.220 ripper-gaming
-      # 192.168.192.162 p1-zt
-      # 192.168.192.249 p2-max-zt
-      # 192.168.192.0   win2-zt
-      # 192.168.192.0   win-max-zt
-
     '';
     hostName = hostname;
     hostId = hostid;

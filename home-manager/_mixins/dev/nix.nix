@@ -2,6 +2,7 @@
   home = {
     packages = with pkgs;[
       # alejandra
+      cachix
       any-nix-shell
       cached-nix-shell
       deadnix

@@ -101,7 +101,7 @@ in
     package = lib.mkDefault pkgs.unstable.nix;
     settings = {
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [ "nix-command" "flakes" "ca-derivations" ];
       # Avoid unwanted garbage collection when using nix-direnv
       keep-outputs = true;
       keep-derivations = true;
@@ -112,7 +112,7 @@ in
       show-trace = true;
 
       # Allow to run nix
-      allowed-users = [ "${username}" "nixbld" "wheel" "juca-nixfiles" ];
+      allowed-users = [ "${username}" "nixbld" "wheel" ];
 
       # substituters = [
       #   "https://nix-community.cachix.org"
@@ -127,7 +127,7 @@ in
     };
     extraOptions = ''
       keep-outputs          = true
-      keep-derivations      = false
+      keep-derivations      = true
       connect-timeout = 5
       log-lines = 25
 

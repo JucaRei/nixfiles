@@ -1,6 +1,7 @@
 { hostid, hostname, lib, pkgs, ... }: {
   imports = [
     ./aliases.nix
+    ./aspell.nix
     ./console.nix
     ./locale.nix
     ./fonts.nix

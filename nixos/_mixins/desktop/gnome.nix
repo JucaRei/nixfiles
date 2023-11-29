@@ -44,9 +44,9 @@
         ];
       };
     };
-    # udev.packages = with pkgs; [
-    #   gnome.gnome-settings-daemon
-    # ];
+    udev.packages = with pkgs; [
+      gnome.gnome-settings-daemon
+    ];
     gnome = {
       gnome-user-share.enable = true;
       gnome-online-accounts.enable = false;
@@ -96,7 +96,9 @@
       evince # document viewer
       yelp # Help view
       gnome-characters
+      gnome-terminal
       gnome-disk-utility
+      gnome-calendar
       gnome-music
       gnome-system-monitor
       totem

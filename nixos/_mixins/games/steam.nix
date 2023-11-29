@@ -14,6 +14,8 @@
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
+    # On-demand system optimization for gaming
+    # gamemode.enable = true;
   };
   services = {
     jack.alsa.support32Bit = true;
@@ -70,6 +72,11 @@
       };
     })
   ];
+
+  ssbm = {
+    overlay.enable = true;
+    cache.enable = true;
+  };
 
   # nix-gaming cache
   nix.settings = {
