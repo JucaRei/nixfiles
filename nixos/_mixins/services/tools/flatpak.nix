@@ -1,19 +1,14 @@
 { pkgs, ... }: {
   services.flatpak = {
     enable = true;
-    systemd.services.configure-flathub-repo = {
-      wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.flatpak ];
-      script = ''
-        flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-      '';
-    };
-    update = {
-      auto = {
-        enable = true;
-        onCalendar = "weekly";
-      };
-    };
+  };
+
+  systemd.services.configure-flathub-repo = {
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.flatpak ];
+    script = ''
+      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    '';
   };
   xdg = {
     portal = {
