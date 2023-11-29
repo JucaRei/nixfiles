@@ -21,6 +21,7 @@
     ../../_mixins/virtualization/virt-manager.nix
     ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/apps/browser/firefox.nix
+    ../../_mixins/apps/browser/chromium.nix
   ];
   boot = {
     # extraModprobeConfig = ''

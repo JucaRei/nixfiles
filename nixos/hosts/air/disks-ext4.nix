@@ -1,7 +1,17 @@
 _:
 let
   defaultsBoot = [ "defaults" "noatime" "nodiratime" ];
-  defaultExtOpts = [ "defaults" "data=writeback" "commit=60" "barrier=0" "discard" "noatime" "nodiratime" ];
+  defaultExtOpts = [
+    "defaults"
+    "data=ordered"
+    "commit=60"
+    # "barrier=0"
+    "errors=remount-ro"
+    "discard"
+    # "noatime"
+    "relatime"
+    "nodiratime"
+  ];
 in
 {
   disko.devices = {

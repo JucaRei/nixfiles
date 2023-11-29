@@ -99,10 +99,10 @@
       interpreter = "${pkgs.appimage-run}/bin/appimage-run";
       recognitionType = "magic";
       offset = 0;
-      mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
-      # mask = "\\xff\\xff\\xff\\xff\\x00\\x00\\x00\\x00\\xff\\xff\\xff";
-      magicOrExtension = ''\x7fELF....AI\x02'';
-      # magicOrExtension = "\\x7fELF....AI\\x02";
+      # mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
+      mask = "\\xff\\xff\\xff\\xff\\x00\\x00\\x00\\x00\\xff\\xff\\xff";
+      magicOrExtension = "\\x7fELF....AI\\x02";
+      # magicOrExtension = ''\x7fELF....AI\x02'';
     };
 
   };
@@ -145,6 +145,40 @@
     #   fish.enable = true;
     fuse = {
       userAllowOther = true;
+    };
+
+    mtr = {
+      enable = true;
+    };
+
+    # Minimal
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+
+        curl
+        glib
+        glibc
+        icu
+        libsecret
+        libunwind
+        libuuid
+
+        # openssl
+        stdenv.cc.cc
+        util-linux
+        zlib
+
+        # graphical
+        freetype
+        libglvnd
+        libnotify
+        SDL2
+        vulkan-loader
+        gdk-pixbuf
+        xorg.libX11
+
+      ];
     };
   };
 
@@ -192,7 +226,7 @@
     };
   };
 
-  systemd = {
+  systemd = lib.mkDefault {
     services.disable-wifi-powersave = {
       wantedBy = [ "multi-user.target" ];
       path = [ pkgs.iw ];

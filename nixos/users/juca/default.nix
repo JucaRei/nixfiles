@@ -14,7 +14,7 @@ in
   users = {
     mutableUsers = false;
     users.juca = {
-      description = "Reinaldo P Jr";
+      description = "Reinaldo P. Jr";
       extraGroups = [
         "seat"
         "seatd"
@@ -29,6 +29,8 @@ in
         "adbusers"
         "dialout"
         "plugdev"
+        "systemd-journal"
+        "corectrl"
         "lxd"
         "wireshark"
         "storage"

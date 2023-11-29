@@ -49,6 +49,7 @@
     ];
     # Configure your nixpkgs instance
     config = {
+      allowBroken = true;
       # Disable if you don't want unfree packages
       allowUnfree = true;
       # Accept the joypixels license
@@ -57,6 +58,24 @@
       permittedInsecurePackages = [
         "openssl-1.1.1w"
       ];
+
+      # Workaround for https://github.com/nix-community/home-manager/issues/2942
+      # allowUnfreePredicate = _: true;
+
+      allowUnfreePredicate = pkg:
+        builtins.elem (lib.getName pkg) [
+          "nvidia-settings"
+          "nvidia-x11"
+          "spotify"
+          "steam"
+          "steam-original"
+          "steam-run"
+          "vscode"
+
+          # they got fossed recently so idk
+          "Anytype"
+
+        ];
     };
   };
 

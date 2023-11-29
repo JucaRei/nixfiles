@@ -1,5 +1,6 @@
 _: {
   boot = {
+    initrd.systemd.enable = true;
     loader = {
       efi = {
         #canTouchEfiVariables = true;
@@ -13,6 +14,10 @@ _: {
         memtest86.enable = true;
       };
       timeout = 5;
+    };
+    plymouth = {
+      enable = true;
+      theme = "breeze";
     };
   };
 }

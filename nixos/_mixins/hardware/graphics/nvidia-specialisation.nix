@@ -65,7 +65,7 @@ in
               };
               nvidiaPersistenced = true;
               powerManagement = {
-                enable = false;
+                enable = true;
                 finegrained = false;
               };
               nvidiaSettings = true;
@@ -79,6 +79,8 @@ in
               NVD_BACKEND = "direct";
             };
             systemPackages = with pkgs; [
+              gwe
+              nvtop-nvidia
               clinfo
               virtualglLib
               vulkan-loader

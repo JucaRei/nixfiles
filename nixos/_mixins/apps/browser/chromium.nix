@@ -1,7 +1,5 @@
 { pkgs, lib, params, ... }:
-let
-  ifDefault = lib.mkIf (params.browser == "chromium");
-in
+
 {
   environment.systemPackages = with pkgs.unstable; [
     chromium
@@ -30,10 +28,6 @@ in
     };
   };
   xdg = {
-    mime.enable = ifDefault true;
-    mimeApps = {
-      enable = ifDefault true;
-      defaultApplications = ifDefault (import ./default-browser.nix "chromium");
-    };
+    mime.enable = true;
   };
 }

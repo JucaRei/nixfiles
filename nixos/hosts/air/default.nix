@@ -41,6 +41,7 @@
     ];
     kernelParams = [
       "hid_apple.iso_layout=0"
+      # "intel_pstate=ondemand"
       "i915.enable_rc6=7"
       "hid_apple.swap_opt_cmd=1" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
       "acpi_backlight=vendor"
