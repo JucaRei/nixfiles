@@ -27,12 +27,6 @@
       };
       desktopManager.plasma5 = {
         enable = true; # Desktop Environment
-        excludePackages = with pkgs.libsForQt5; [
-          elisa
-          khelpcenter
-          # konsole
-          oxygen
-        ];
       };
       videoDrivers = [
         "fbdev" # The fbdev (Framebuffer Device) driver is a generic framebuffer driver that provides access to the frame buffer of the display hardware.
@@ -44,30 +38,38 @@
     };
   };
 
-  gtk = {
-    enable = true;
+  # gtk = lib.mkDefault {
+  #   enable = true;
 
-    iconTheme.package = pkgs.catppuccin-papirus-folders.override {
-      flavor = "mocha";
-      accent = "mauve";
-    };
-    iconTheme.name = "Papirus-Dark";
+  #   iconTheme.package = pkgs.catppuccin-papirus-folders.override {
+  #     flavor = "mocha";
+  #     accent = "mauve";
+  #   };
+  #   iconTheme.name = "Papirus-Dark";
 
-    theme.package = pkgs.catppuccin-gtk.override {
-      accents = [ "mauve" ];
-      size = "standard";
-      tweaks = [ "rimless" ];
-      variant = "mocha";
-    };
-    theme.name = "Catppuccin-Mocha-Standard-Mauve-dark";
+  #   theme.package = pkgs.catppuccin-gtk.override {
+  #     accents = [ "mauve" ];
+  #     size = "standard";
+  #     tweaks = [ "rimless" ];
+  #     variant = "mocha";
+  #   };
+  #   theme.name = "Catppuccin-Mocha-Standard-Mauve-dark";
 
-    cursorTheme.package = pkgs.catppuccin-cursors.mochaDark;
-    cursorTheme.name = "Catppuccin-Mocha-Dark-Cursors";
-    cursorTheme.size = 24;
+  #   cursorTheme.package = pkgs.catppuccin-cursors.mochaDark;
+  #   cursorTheme.name = "Catppuccin-Mocha-Dark-Cursors";
+  #   cursorTheme.size = 24;
 
-    font.name = "Iosevka Comfy";
-  };
+  #   font.name = "Iosevka Comfy";
+  # };
 
+  # qt = lib.mkDefault {
+  #   enable = true;
+  #   platformTheme = "gtk2";
+  #   # style = {
+  #   #   # name = "Adwaita-dark";
+  #   #   package = pkgs.adwaita-qt;
+  #   # };
+  # };
 
   environment = {
     systemPackages = (with pkgs.libsForQt5; [
@@ -131,6 +133,13 @@
       imagemagick # A software suite to create, edit, compose, or convert bitmap images
       deepin.deepin-calculator # An easy to use calculator for ordinary users
     ]);
+
+    plasma5.excludePackages = with pkgs.libsForQt5; [
+      elisa
+      khelpcenter
+      # konsole
+      oxygen
+    ];
   };
   xdg = lib.mkDefault {
     portal = {
