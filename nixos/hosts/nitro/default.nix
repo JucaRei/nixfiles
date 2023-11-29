@@ -177,7 +177,7 @@
   zramSwap = {
     enable = true;
     swapDevices = 4;
-    memoryPercent = 15;
+    memoryPercent = 20;
   };
 
   # # This allows you to dynamically switch between NVIDIA<->Intel using

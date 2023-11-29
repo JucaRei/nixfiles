@@ -75,10 +75,10 @@
     };
 
     # Neovim
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # nixvim = {
+    #   url = "github:nix-community/nixvim";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     # Gaming tweaks
     nix-gaming.url = "github:fufexan/nix-gaming";
