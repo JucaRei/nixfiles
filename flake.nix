@@ -246,7 +246,7 @@
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "gnome"; hostid = "ceafb566"; };
+        nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "kde"; hostid = "ceafb566"; };
         air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "hyprland"; hostid = "718641c6"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };

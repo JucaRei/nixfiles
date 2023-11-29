@@ -132,4 +132,11 @@
       deepin.deepin-calculator # An easy to use calculator for ordinary users
     ]);
   };
+  xdg = lib.mkDefault {
+    portal = {
+      extraPortals = pkgs.xdg-desktop-portal-kde;
+    };
+  };
+
+  sound.mediaKeys.enable = true;
 }
