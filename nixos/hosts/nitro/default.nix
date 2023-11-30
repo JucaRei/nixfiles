@@ -336,10 +336,6 @@
     #   };
     # };
 
-    oomd = {
-      enable = false;
-    };
-
     # Early OOM Killer
     earlyoom = {
       enable = true; # Enable the early OOM (Out Of Memory) killer service.
@@ -381,6 +377,9 @@
   ### Load z3fold and lz4
 
   systemd = {
+    oomd = {
+      enable = false;
+    };
     services = {
       zswap = {
         description = "Enable ZSwap, set to LZ4 and Z3FOLD";
