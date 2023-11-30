@@ -22,6 +22,7 @@
     ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/browser/chromium.nix
+    ../../_mixins/console/fish.nix
   ];
   boot = {
     # extraModprobeConfig = ''

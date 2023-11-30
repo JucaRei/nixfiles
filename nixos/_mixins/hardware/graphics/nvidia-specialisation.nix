@@ -44,7 +44,7 @@ in
             kernelParams = [
               "nouveau.modeset=0"
               "nohibernate"
-              # "nvidia-drm.modeset=1"
+              "nvidia-drm.modeset=1"
             ];
             extraModprobeConfig = ''
               options nvidia NVreg_UsePageAttributeTable=1
@@ -60,13 +60,14 @@ in
               prime = {
                 inherit intelBusId;
                 inherit nvidiaBusId;
-                reverseSync.enable = true;
+                # reverseSync.enable = true;
+                sync.enable = true;
                 # allowExternalGpu = false;
               };
               nvidiaPersistenced = true;
               powerManagement = {
                 enable = true;
-                finegrained = false;
+                finegrained = true;
               };
               nvidiaSettings = true;
             };

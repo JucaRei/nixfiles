@@ -19,6 +19,7 @@ in
       home-manager
       # dropbear
       speedtest-cli
+      direnv
       git
       nil
       duf

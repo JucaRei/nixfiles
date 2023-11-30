@@ -136,12 +136,12 @@
     hyprland-contrib.url = "github:hyprwm/contrib";
     hyprland-plugins.url = "github:hyprwm/hyprland-plugins";
 
-    #plasma-manager = {
-    #  # KDE Plasma user settings
-    #  url = "github:pjones/plasma-manager"; # Add "inputs.plasma-manager.homeManagerModules.plasma-manager" to the home-manager.users.${user}.imports
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #  inputs.home-manager.follows = "nixpkgs";
-    #};
+    plasma-manager = {
+      # KDE Plasma user settings
+      url = "github:pjones/plasma-manager"; # Add "inputs.plasma-manager.homeManagerModules.plasma-manager" to the home-manager.users.${user}.imports
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "nixpkgs";
+    };
 
     # budgie = {
     #   url = "github:FedericoSchonborn/budgie-nix";
@@ -155,13 +155,14 @@
     , disko
     , home-manager
     , nixgl
-    # , nixvim
     , nix-formatter-pack
     , nixos-hardware
-      # , fh
     , nix-gaming
-      # , eza
     , vscode-server
+    , plasma-manager
+    # , fh
+    # , eza
+    # , nixvim
     , ...
     } @ inputs:
     let
