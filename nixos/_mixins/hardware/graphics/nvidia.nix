@@ -138,12 +138,12 @@ in
               inherit intelBusId;
               inherit nvidiaBusId;
               reverseSync.enable = true;
-              allowExternalGpu = false;
+              # allowExternalGpu = false;
             };
             nvidiaPersistenced = true;
             powerManagement = {
-              enable = false;
-              finegrained = false;
+              enable = true;
+              finegrained = true;
             };
             nvidiaSettings = true;
           };
@@ -153,7 +153,7 @@ in
             GBM_BACKEND = "nvidia-drm";
             LIBVA_DRIVER_NAME = "nvidia";
             __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-            NVD_BACKEND = "direct";
+            # NVD_BACKEND = "direct";
           };
           systemPackages = with pkgs; [
             clinfo
@@ -213,8 +213,8 @@ in
             };
             nvidiaPersistenced = true;
             powerManagement = {
-              enable = false;
-              finegrained = false;
+              enable = true;
+              finegrained = true;
             };
             nvidiaSettings = true;
             forceFullCompositionPipeline = true;
@@ -226,7 +226,7 @@ in
             GBM_BACKEND = "nvidia-drm";
             LIBVA_DRIVER_NAME = "nvidia";
             __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-            NVD_BACKEND = "direct";
+            # NVD_BACKEND = "direct";
           };
           systemPackages = with pkgs; [
             vulkan-loader

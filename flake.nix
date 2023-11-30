@@ -155,7 +155,7 @@
     , disko
     , home-manager
     , nixgl
-    , nixvim
+    # , nixvim
     , nix-formatter-pack
     , nixos-hardware
       # , fh
