@@ -67,7 +67,7 @@ in
               nvidiaPersistenced = true;
               powerManagement = {
                 enable = true;
-                finegrained = true;
+                finegrained = false;
               };
               nvidiaSettings = true;
             };
@@ -136,6 +136,10 @@ in
                 inherit intelBusId;
                 inherit nvidiaBusId;
                 sync.enable = true;
+              };
+              powerManagement = {
+                enable = true;
+                finegrained = false;
               };
               modesetting.enable = true;
               nvidiaPersistenced = true;
