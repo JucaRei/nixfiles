@@ -82,6 +82,7 @@ in
               gwe
               nvtop-nvidia
               clinfo
+              glxinfo
               virtualglLib
               vulkan-loader
               vulkan-tools
