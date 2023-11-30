@@ -1,4 +1,4 @@
-{lib,...}:
+{ lib, ... }:
 with lib.hm.gvariant;
 {
   programs.plasma = {
@@ -11,16 +11,16 @@ with lib.hm.gvariant;
       "kcm_touchpad"."Enable Touchpad" = "Touchpad On";
       "kcm_touchpad"."Toggle Touchpad" = "Touchpad Toggle";
       "kded5"."Show System Activity" = "Ctrl+Esc";
-      "kded5"."display" = ["Display" "Meta+P"];
+      "kded5"."display" = [ "Display" "Meta+P" ];
       "khotkeys"."{d03619b6-9b3c-48cc-9d9c-a2aadb485550}" = [ ];
       "kmix"."decrease_microphone_volume" = "Microphone Volume Down";
       "kmix"."decrease_volume" = "Volume Down";
       "kmix"."increase_microphone_volume" = "Microphone Volume Up";
       "kmix"."increase_volume" = "Volume Up";
-      "kmix"."mic_mute" = ["Microphone Mute" "Meta+Volume Mute"];
+      "kmix"."mic_mute" = [ "Microphone Mute" "Meta+Volume Mute" ];
       "kmix"."mute" = "Volume Mute";
       "ksmserver"."Halt Without Confirmation" = [ ];
-      "ksmserver"."Lock Session" = ["Meta+L" "Screensaver"];
+      "ksmserver"."Lock Session" = [ "Meta+L" "Screensaver" ];
       "ksmserver"."Log Out" = "Ctrl+Alt+Del";
       "ksmserver"."Log Out Without Confirmation" = [ ];
       "ksmserver"."Reboot Without Confirmation" = [ ];
@@ -28,7 +28,7 @@ with lib.hm.gvariant;
       "kwin"."Decrease Opacity" = [ ];
       "kwin"."Edit Tiles" = "Meta+T";
       "kwin"."Expose" = "Ctrl+F9";
-      "kwin"."ExposeAll" = ["Ctrl+F10" "Launch (C)"];
+      "kwin"."ExposeAll" = [ "Ctrl+F10" "Launch (C)" ];
       "kwin"."ExposeClass" = "Ctrl+F7";
       "kwin"."ExposeClassCurrentDesktop" = [ ];
       "kwin"."Increase Opacity" = [ ];
@@ -177,7 +177,7 @@ with lib.hm.gvariant;
       "kwin"."Window to Screen 6" = [ ];
       "kwin"."Window to Screen 7" = [ ];
       "kwin"."view_actual_size" = "Meta+0";
-      "kwin"."view_zoom_in" = ["Meta++" "Meta+="];
+      "kwin"."view_zoom_in" = [ "Meta++" "Meta+=" ];
       "kwin"."view_zoom_out" = "Meta+-";
       "mediacontrol"."mediavolumedown" = [ ];
       "mediacontrol"."mediavolumeup" = [ ];
@@ -193,8 +193,8 @@ with lib.hm.gvariant;
       "org.kde.konsole.desktop"."NewWindow" = [ ];
       "org.kde.konsole.desktop"."_launch" = "Ctrl+Alt+T";
       "org.kde.krunner.desktop"."RunClipboard" = "Alt+Shift+F2";
-      "org.kde.krunner.desktop"."_launch" = ["Alt+Space" "Alt+F2" "Search"];
-      "org.kde.plasma.emojier.desktop"."_launch" = ["Meta+." "Meta+Ctrl+Alt+Shift+Space"];
+      "org.kde.krunner.desktop"."_launch" = [ "Alt+Space" "Alt+F2" "Search" ];
+      "org.kde.plasma.emojier.desktop"."_launch" = [ "Meta+." "Meta+Ctrl+Alt+Shift+Space" ];
       "org.kde.spectacle.desktop"."ActiveWindowScreenShot" = "Meta+Print";
       "org.kde.spectacle.desktop"."CurrentMonitorScreenShot" = [ ];
       "org.kde.spectacle.desktop"."FullScreenScreenShot" = "Shift+Print";
@@ -806,6 +806,68 @@ with lib.hm.gvariant;
       "plasma-localerc"."Formats"."LANG" = "en_US.utf8";
       "plasmarc"."Theme"."name" = "breeze-dark";
       "systemsettingsrc"."systemsettings_sidebar_mode"."HighlightNonDefaultSettings" = true;
+    };
+  };
+
+  xdg = {
+    mime = {
+      enable = true;
+    };
+    mimeApps = {
+      enable = true;
+      associations = {
+        defaultApplications = { };
+        added = {
+          "application/x-extension-htm" = [ "firefox.desktop" ];
+          "application/x-extension-html" = [ "firefox.desktop" ];
+          "application/x-extension-shtml" = [ "firefox.desktop" ];
+          "application/x-extension-xht" = [ "firefox.desktop" ];
+          "application/x-extension-xhtml" = [ "firefox.desktop" ];
+          "application/xhtml+xml" = [ "firefox.desktop" ];
+          "x-scheme-handler/http" = [ "firefox.desktop" ];
+          "x-scheme-handler/https" = [ "firefox.desktop" ];
+          "x-scheme-handler/unknown" = [ "firefox.desktop" ];
+          "x-scheme-handler/ftp" = [ "firefox.desktop" ];
+          "x-scheme-handler/about" = [ "firefox.desktop" ];
+          "x-scheme-handler/chrome" = [ "firefox.desktop" ];
+          "text/uri-list" = [ "firefox.desktop" ];
+          "application/x-ms-dos-executable" = [ "wine.desktop" ];
+          "x-scheme-handler/discord" = [ "discord.desktop" ];
+          "application/pdf" = [ "org.kde.okular.desktop" ];
+          "application/pgp-encrypted" = [ "org.kde.kgpg.desktop" ];
+          "application/vnd.ms-publisher" = [ "org.kde.kate.desktop" ];
+          "application/xml" = [ "org.kde.kate.desktop" ];
+          "text/markdown" = [ "org.kde.kate.desktop" ];
+          "text/plain" = [ "org.kde.kate.desktop" ];
+          "x-scheme-handler/geo" = [ "marble_geo.desktop" ];
+          "x-scheme-handler/mailto" = [ "org.kde.kmail2.desktop" ];
+          "x-scheme-handler/tel" = [ "org.kde.kdeconnect.handler.desktop" ];
+          "video/mp4" = [ "mpv.desktop" ];
+          "video/ogg" = [ "mpv.desktop" ];
+          "video/webm" = [ "mpv.desktop" ];
+          "video/x-flv" = [ "mpv.desktop" ];
+          "video/x-matroska" = [ "mpv.desktop" ];
+          "video/x-ms-wmv" = [ "mpv.desktop" ];
+          "video/x-ogm+ogg" = [ "mpv.desktop" ];
+          "video/x-theora+ogg" = [ "mpv.desktop" ];
+          "audio/aac" = [ "org.kde.elisa.desktop" ];
+          "audio/flac" = [ "org.kde.elisa.desktop" ];
+          "audio/mp4" = [ "org.kde.elisa.desktop" ];
+          "audio/mpeg" = [ "org.kde.elisa.desktop" ];
+          "audio/ogg" = [ "org.kde.elisa.desktop" ];
+          "audio/x-wav" = [ "org.kde.elisa.desktop" ];
+          "image/gif" = [ "org.kde.gwenview.desktop" ];
+          "image/jpeg" = [ "org.kde.gwenview.desktop" ];
+          "image/png" = [ "org.kde.gwenview.desktop" ];
+          "image/svg+xml" = [ "org.inkscape.Inkscape.desktop" ];
+          "image/vnd.adobe.photoshop" = [ "krita_psd.desktop" ];
+          "image/webp" = [ "org.kde.gwenview.desktop" ];
+          "image/x-eps" = [ "org.inkscape.Inkscape.desktop" ];
+          "image/x-xcf" = [ "gimp.desktop" ];
+          "inode/directory" = [ "org.kde.dolphin.desktop" ];
+        };
+        removed = { };
+      };
     };
   };
 }

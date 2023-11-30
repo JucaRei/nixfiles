@@ -319,6 +319,9 @@
         udisks2
       ];
     };
+    udev = {
+      enable = true;
+    };
   };
 
   environment = {

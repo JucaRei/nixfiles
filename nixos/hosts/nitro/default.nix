@@ -336,8 +336,11 @@
     #   };
     # };
 
-    # Early OOM Killer
+    oomd = {
+      enable = false;
+    };
 
+    # Early OOM Killer
     earlyoom = {
       enable = true; # Enable the early OOM (Out Of Memory) killer service.
 
