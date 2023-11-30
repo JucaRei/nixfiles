@@ -1,4 +1,4 @@
-{...}:
+{lib,...}:
 with lib.hm.gvariant;
 {
   programs.plasma = {
