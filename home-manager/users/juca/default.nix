@@ -20,6 +20,10 @@
       #   tab_width = 4
       #   [ALIASES]
       # ";
+      "${config.home.homeDirectory}/Pictures/wallpapers" =  {
+        source = ../../_mixins/config/wallpapers;
+        recursive = true;
+      };
       ".face".source = ./face.jpg;
       #file."Development/debian/.envrc".text = "export DEB_VENDOR=Debian";
       #file."Development/ubuntu/.envrc".text = "export DEB_VENDOR=Ubuntu";

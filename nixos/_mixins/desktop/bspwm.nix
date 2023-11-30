@@ -62,10 +62,10 @@
 
   environment = {
     systemPackages = with pkgs; [
-      xclip # Clipboard
+      # xclip # Clipboard
       # kitty
       pamixer
-      i3lock-fancy
+      # i3lock-fancy
       papirus-icon-theme
       # bsp-layout
       # betterlockscreen
