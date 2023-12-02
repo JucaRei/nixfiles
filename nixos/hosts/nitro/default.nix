@@ -174,7 +174,7 @@
       options = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:3" "space_cache=v2" "commit=120" "discard=async" ];
     };
 
-    fileSystems."/var/log" =
+  fileSystems."/var/log" =
     {
       device = "/dev/disk/by-label/Nitroux";
       fsType = "btrfs";

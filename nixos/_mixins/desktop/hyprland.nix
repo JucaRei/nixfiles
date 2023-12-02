@@ -124,7 +124,7 @@
   services = {
     xserver = {
       displayManager = {
-       sddm = {
+        sddm = {
           enable = true;
           wayland = true;
         };
@@ -190,7 +190,7 @@
       XDG_SESSION_DESKTOP = "Hyprland";
       GTK_USE_PORTAL = "1";
       NIXOS_XDG_OPEN_USE_PORTAL = "1";
-  }; 
+    };
   };
 
   systemd = {

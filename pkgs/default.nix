@@ -22,6 +22,15 @@
   phospor = pkgs.callPackage ./fonts/phospor.nix { };
   material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };
   lutgenn = pkgs.callPackage ./lutgen { };
-  phocus-gtk = pkgs.callPackage ./phocus { };
   spotdl = pkgs.callPackage ./spotify-dl { };
+
+  # GTK
+  phocus-gtk = pkgs.callPackage ./gtk/phocus { };
+  gruv = pkgs.callPackage ./gtk/gruvbox-dark { };
+  # Icons
+  colloid = pkgs.callPackage ./icons/colloid.nix { };
+  elementary = pkgs.callPackage ./icons/elementary.nix { };
+  fluent = pkgs.callPackage ./icons/fluent.nix { };
+  reversal = pkgs.callPackage ./icons/reversal.nix { };
+  whitesur = pkgs.callPackage ./icons/whitesur.nix { };
 }

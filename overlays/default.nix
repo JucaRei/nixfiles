@@ -41,6 +41,9 @@
       };
     });
 
+    gruvbox = final.gruv;
+    phocus = final.phocus-gtk; 
+
     steam = prev.steam.override {
       extraPkgs = pkgs:
         with pkgs; [

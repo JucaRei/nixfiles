@@ -20,7 +20,7 @@
       #   tab_width = 4
       #   [ALIASES]
       # ";
-      "${config.home.homeDirectory}/Pictures/wallpapers" =  {
+      "${config.home.homeDirectory}/Pictures/wallpapers" = {
         source = ../../_mixins/config/wallpapers;
         recursive = true;
       };

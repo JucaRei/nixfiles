@@ -83,7 +83,10 @@ buildPythonApplication rec {
   ];
 
   makeWrapperArgs = [
-    "--prefix" "PATH" ":" (lib.makeBinPath [ pkgs.ffmpeg ])
+    "--prefix"
+    "PATH"
+    ":"
+    (lib.makeBinPath [ pkgs.ffmpeg ])
   ];
   meta = with lib; {
     description = "Download your Spotify playlists and songs along with album art and metadata";

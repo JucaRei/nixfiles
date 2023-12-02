@@ -165,9 +165,9 @@
     , nix-gaming
     , vscode-server
     , plasma-manager
-    # , fh
-    # , eza
-    # , nixvim
+      # , fh
+      # , eza
+      # , nixvim
     , ...
     } @ inputs:
     let

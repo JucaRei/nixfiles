@@ -7,7 +7,8 @@ in
     fontDir.enable = true;
     ## nix 23.05
     # fonts = (with pkgs; [ 
-    packages = (with pkgs; [    # renamed on 23.11 
+    packages = (with pkgs; [
+      # renamed on 23.11 
       (nerdfonts.override { fonts = [ "FiraCode" "SourceCodePro" "UbuntuMono" ]; })
       fira
       fira-go
