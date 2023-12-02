@@ -26,6 +26,7 @@
     # example = prev.example.overrideAttrs (oldAttrs: rec {
     # ...
     # });
+    imgclr = final.image-colorizer;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

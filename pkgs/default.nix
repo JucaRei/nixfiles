@@ -19,4 +19,8 @@
   thorium-browser = pkgs.callPackage ./thorium-browser { };
   polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
   # nixos-change-summary = pkgs.callPackage ./nixos-change-summary { };
+
+  image-colorizer = prev.callPackage ./image-colorizer {
+    buildPythonPackage = prev.python310Packages.buildPythonPackage;
+  };
 }

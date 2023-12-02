@@ -243,6 +243,7 @@
       lm_sensors
       # nixos-summary
       # tidal
+      imgclr
     ];
     sessionVariables = {
       # LIBVA_DRIVER_NAME = "nvidia";
