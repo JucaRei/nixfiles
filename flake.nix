@@ -218,7 +218,7 @@
         "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
         "juca@rocinante-headless" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
         #"juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "mate"; platform = if isDarwin then "x86_64-darwin" else "x86_64-linux"; };
-        "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "bspwm"; };
+        "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "awesome"; };
         # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; };
         "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
         # Testing
@@ -253,7 +253,7 @@
         # Servers
         # Laptop
         nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "kde"; hostid = "ceafb566"; };
-        air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "bspwm"; hostid = "718641c6"; };
+        air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "awesome"; hostid = "718641c6"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines
