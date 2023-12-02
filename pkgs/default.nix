@@ -19,10 +19,12 @@
   thorium-browser = pkgs.callPackage ./thorium-browser { };
   polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
   # nixos-change-summary = pkgs.callPackage ./nixos-change-summary { };
-  phospor = pkgs.callPackage ./fonts/phospor.nix { };
-  material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };
   lutgenn = pkgs.callPackage ./lutgen { };
   spotdl = pkgs.callPackage ./spotify-dl { };
+  
+  # Font
+  phospor = pkgs.callPackage ./fonts/phospor.nix { };
+  material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };
 
   # GTK
   phocus-gtk = pkgs.callPackage ./gtk/phocus { };

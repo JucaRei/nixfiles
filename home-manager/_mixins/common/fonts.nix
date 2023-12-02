@@ -7,6 +7,8 @@
   };
 
   home.packages = with pkgs; [
+    phospor-ttf
+    material-symbols-ttf
     noto-fonts
     noto-fonts-emoji
     fira-code

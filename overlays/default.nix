@@ -41,6 +41,10 @@
       };
     });
 
+    phospor-ttf = final.phospor;
+    material-symbols-ttf = final.material-symbols;
+
+
     gruvbox = final.gruv;
     phocus = final.phocus-gtk; 
 
