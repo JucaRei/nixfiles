@@ -18,7 +18,7 @@
     nvchad = prev.nvchad;
     thorium = final.thorium-browser;
     pulseaudio-control = final.polybar-pulseaudio-control;
-    fantezy = final.fantezy-font;
+    # fantezy = final.fantezy-font;
     # nixos-summary = final.nixos-change-summary;
     # apple-font = final.apple-fonts;
     # tidal = final.tidal-dl;
@@ -29,6 +29,7 @@
     imgclr = prev.callPackage ../pkgs/image-colorizer {
       buildPythonPackage = prev.python310Packages.buildPythonPackage;
     };
+    lutgen = prev.lutgenn;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
