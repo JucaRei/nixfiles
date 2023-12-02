@@ -12,15 +12,13 @@
   firefox-csshacks = pkgs.callPackage ./firefox-csshacks { };
   nvchad = pkgs.callPackage ./nvchad { };
   # tidal-dl = pkgs.callPackage ./tidal-dl { };
-  fantezy-font = pkgs.callPackage ./fantezy-font { };
+  fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
   # breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
   advmvcp = pkgs.callPackage ./advmvcp { };
   icloud-photo-downloader = pkgs.callPackage ./icloud-photo-downloader { };
   thorium-browser = pkgs.callPackage ./thorium-browser { };
   polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
   # nixos-change-summary = pkgs.callPackage ./nixos-change-summary { };
-
-  image-colorizer = prev.callPackage ./image-colorizer {
-    buildPythonPackage = prev.python310Packages.buildPythonPackage;
-  };
+  phospor = pkgs.callPackage ./fonts/phospor.nix { };
+  material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };
 }

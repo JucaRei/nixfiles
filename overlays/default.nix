@@ -26,7 +26,9 @@
     # example = prev.example.overrideAttrs (oldAttrs: rec {
     # ...
     # });
-    imgclr = final.image-colorizer;
+    imgclr = prev.callPackage ../pkgs/image-colorizer {
+      buildPythonPackage = prev.python310Packages.buildPythonPackage;
+    };
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

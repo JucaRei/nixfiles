@@ -1,22 +1,9 @@
-{ inputs, outputs, stateVersion, nixgl, nixpkgs, ... }:
-# let
-#     forAllSystems = function:
-#       nixpkgs.lib.genAttrs [
-#         "x86_64-linux"
-#         "aarch64-linux"
-#         "i686-linux"
-#         "x86_64-linux"
-#         "x86_64-darwin"
-#         "aarch64-linux"
-#         "aarch64-darwin"
-#       ] (system: function nixpkgs.legacyPackages.${system});
-#   in 
+{ inputs, outputs, stateVersion, nixgl, ... }:
 {
   # Helper function for generating home-manager configs
   mkHome =
     ### TODO - add displays
     { hostname, username, desktop ? null, platform ? "x86_64-linux" }: inputs.home-manager.lib.homeManagerConfiguration {
-    # { hostname, username, desktop ? null, platform ? "${forAllSystems}" }: inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
         inherit inputs outputs desktop hostname platform username stateVersion nixgl;

@@ -64,6 +64,11 @@
     # };
     # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.2.0.tar.gz";
 
+    nixpkgs-f2k = {
+      url = "github:moni-dz/nixpkgs-f2k";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vscode-server = {
       url = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
