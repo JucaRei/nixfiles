@@ -22,4 +22,6 @@
   phospor = pkgs.callPackage ./fonts/phospor.nix { };
   material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };
   lutgenn = pkgs.callPackage ./lutgen { };
+  phocus-gtk = pkgs.callPackage ./phocus { };
+  spotdl = pkgs.callPackage ./spotify-dl { };
 }
