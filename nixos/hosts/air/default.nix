@@ -5,8 +5,8 @@
     # inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
-    (import ./disks-btrfs.nix { })
-    # (import ./disks-ext4.nix { })
+    # (import ./disks-btrfs.nix { })
+    (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/boot/no-hz.nix
     ../../_mixins/hardware/bluetooth
