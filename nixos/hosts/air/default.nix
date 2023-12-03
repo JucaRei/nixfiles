@@ -5,7 +5,7 @@
     # inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
-    # (import ./disks-btrfs.nix { })
+    (import ./disks-btrfs.nix { })
     # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/boot/no-hz.nix
@@ -25,10 +25,10 @@
       kernelModules = [ ];
       verbose = false;
       compressor = "zstd";
-      supportedFilesystems = [ "btrfs" ];
+      supportedFilesystems = [ "btrfs" "exfat"];
     };
     kernelModules = [
-      "acpi_backlight=vendor"
+      # "acpi_backlight=vendor"
       "kvm-intel"
       "applesmc"
       # "i915"
@@ -45,8 +45,8 @@
       "i915.enable_rc6=7"
       "hid_apple.swap_opt_cmd=1" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
       "acpi_backlight=vendor"
-      "acpi_mask_gpe=0x15"
-      "i915.force_probe=0116" # Force enable my intel graphics
+      # "acpi_mask_gpe=0x15"
+      # "i915.force_probe=0116" # Force enable my intel graphics
       #"video=efifb:off" # Disable efifb driver, which crashes Xavier AGX/NX
       #"video=efifb"
       "zswap.enabled=1"
@@ -59,7 +59,6 @@
       # # Intel vm passthrought
       "intel_iommu=on"
       "i915.enable_guc=7"
-      # "i915.force_probe=0116"
     ];
     kernel.sysctl = lib.mkForce {
       "vm.vfs_cache_pressure" = 40;
@@ -70,14 +69,14 @@
       # "vm.dirty_ratio" = 50;
       "dev.i915.perf_stream_paranoid" = 0;
     };
-    kernelPackages = pkgs.linuxPackages_lqx;
-    # kernelPackages = pkgs.linuxPackages_5_10;
+    # kernelPackages = pkgs.linuxPackages_lqx;
+    kernelPackages = pkgs.linuxPackages_5_10;
     supportedFilesystems = [ "cifs" "nfs" "btrfs" ];
 
-    plymouth = {
-      theme = "breeze";
-      enable = false;
-    };
+    # plymouth = {
+    #   theme = "breeze";
+    #   enable = false;
+    # };
   };
 
   ###################

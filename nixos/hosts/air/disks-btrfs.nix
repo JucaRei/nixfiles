@@ -21,12 +21,12 @@ in
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot";
+                mountpoint = "/boot/efi";
                 mountOptions = [ "defaults" "noatime" "nodiratime" ];
               };
             };
             swap = {
-              start = "512MiB";
+              # start = "512MiB";
               size = "6G";
               content = {
                 type = "swap";
@@ -45,7 +45,7 @@ in
                   # Subvolume name is different from mountpoint
                   "/rootfs" = {
                     mountpoint = "/";
-                    mountOptions = [ "subvol=@" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+                    mountOptions = [ "subvol=@rootfs" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
                   };
                   # Subvolume name is the same as the mountpoint
                   "/home" = {

@@ -235,6 +235,6 @@
       '';
     };
 
-    enableUnifiedCgroupHierarchy = true; #cgroupsv2
+    # enableUnifiedCgroupHierarchy = lib.mkForce true; #cgroupsv2
   };
 }

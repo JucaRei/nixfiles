@@ -5,7 +5,7 @@
   config = {
     boot = {
       initrd = {
-        kernelModules = [ "i915" ];
+        # kernelModules = [ "i915" ];
       };
       # kernelParams = [ "intel_iommu=igfx_off" ];
     };
@@ -20,7 +20,7 @@
           vaapiVdpau
           ## libvdpau-va-gl
 
-          # (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
+          (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
           libvdpau-va-gl
           # intel-media-driver
         ];
@@ -34,7 +34,7 @@
         # libvdpau-va-gl
         #  libva
         # ];
-        setLdLibraryPath = true;
+        # setLdLibraryPath = true;
       };
       enableRedistributableFirmware = true;
     };
