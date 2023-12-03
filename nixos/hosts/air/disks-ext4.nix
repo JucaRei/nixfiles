@@ -22,9 +22,9 @@ in
         content = {
           type = "gpt";
           partitions = {
-            ESP = {
+            EFIBOOT = {
               start = "0";
-              end = "300MiB";
+              end = "512MiB";
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -33,23 +33,26 @@ in
                 mountOptions = defaultsBoot;
               };
             };
-            swap = {
-              start = "300MiB";
-              end = "6GiB";
+            NixSystem = {
+              # size = "100%";
+              end = "-5G";
+              content = {
+                type = "filesystem";
+                # extraArgs = [ "-f" ];
+                format = "ext4";
+                mountpoint = "/";
+                mountOptions = defaultExtOpts;
+              };
+            };
+            SWAPNIX = {
+              # start = "512MiB";
+              # end = "6GiB";
+              size = "100%";
+              # size = "6GiB";
               content = {
                 type = "swap";
                 randomEncryption = true;
                 resumeDevice = true;
-              };
-            };
-            root = {
-              size = "100%";
-              content = {
-                type = "filesystem";
-                extraArgs = [ "-f" ];
-                format = "ext4";
-                mountpoint = "/";
-                mountOptions = defaultExtOpts;
               };
             };
           };

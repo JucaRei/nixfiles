@@ -6,7 +6,7 @@
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
     # (import ./disks-btrfs.nix { })
-    (import ./disks-ext4.nix { })
+    # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/boot/no-hz.nix
     ../../_mixins/hardware/bluetooth
@@ -42,7 +42,7 @@
     kernelParams = [
       "hid_apple.iso_layout=0"
       # "intel_pstate=ondemand"
-      "i915.enable_rc6=7"
+      # "i915.enable_rc6=7"
       "hid_apple.swap_opt_cmd=1" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
       "acpi_backlight=vendor"
       # "acpi_mask_gpe=0x15"
@@ -58,7 +58,7 @@
 
       # # Intel vm passthrought
       "intel_iommu=on"
-      "i915.enable_guc=7"
+      # "i915.enable_guc=7"
     ];
     kernel.sysctl = lib.mkForce {
       "vm.vfs_cache_pressure" = 40;
@@ -73,10 +73,10 @@
     kernelPackages = pkgs.linuxPackages_5_10;
     supportedFilesystems = [ "cifs" "nfs" "btrfs" ];
 
-    # plymouth = {
-    #   theme = "breeze";
-    #   enable = false;
-    # };
+    plymouth = {
+      theme = "breeze";
+      enable = false;
+    };
   };
 
   ###################
@@ -202,109 +202,109 @@
   #   #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
   # }];
 
-  # fileSystems."/" =
-  #   {
-  #     device = "/dev/disk/by-label/Nixsystem";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@"
-  #       "noatime"
-  #       "ssd"
-  #       "compress-force=zstd:3"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       "discard=async"
-  #     ];
-  #   };
+  fileSystems."/" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
 
-  # fileSystems."/home" =
-  #   {
-  #     device = "/dev/disk/by-label/Nixsystem";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@home"
-  #       "noatime"
-  #       "ssd"
-  #       "compress-force=zstd:3"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       "discard=async"
-  #     ];
-  #   };
+  fileSystems."/home" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@home"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
 
-  # fileSystems."/.snapshots" =
-  #   {
-  #     device = "/dev/disk/by-label/Nixsystem";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@snapshots"
-  #       "noatime"
-  #       "ssd"
-  #       "compress-force=zstd:15"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       "discard=async"
-  #     ];
-  #   };
+  fileSystems."/.snapshots" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@snapshots"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
 
-  # fileSystems."/var/log" =
-  #   {
-  #     device = "/dev/disk/by-label/Nixsystem";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@logs"
-  #       "noatime"
-  #       "ssd"
-  #       "compress-force=zstd:3"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       "discard=async"
-  #     ];
-  #   };
+  fileSystems."/var/log" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@logs"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
 
-  # fileSystems."/var/tmp" =
-  #   {
-  #     device = "/dev/disk/by-label/Nixsystem";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@tmp"
-  #       "noatime"
-  #       "ssd"
-  #       "compress-force=zstd:3"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       "discard=async"
-  #     ];
-  #   };
+  fileSystems."/var/tmp" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@tmp"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
 
-  # fileSystems."/nix" =
-  #   {
-  #     device = "/dev/disk/by-label/Nixsystem";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@nix"
-  #       "noatime"
-  #       "ssd"
-  #       "compress-force=zstd:15"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       "discard=async"
-  #     ];
-  #   };
+  fileSystems."/nix" =
+    {
+      device = "/dev/disk/by-label/Nixsystem";
+      fsType = "btrfs";
+      options = [
+        "subvol=@nix"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+    };
 
-  # fileSystems."/boot/efi" =
-  #   {
-  #     device = "/dev/disk/by-label/EFI";
-  #     fsType = "vfat";
-  #     options = [ "defaults" "noatime" "nodiratime" ];
-  #     noCheck = true;
-  #   };
+  fileSystems."/boot/efi" =
+    {
+      device = "/dev/disk/by-label/EFI";
+      fsType = "vfat";
+      options = [ "defaults" "noatime" "nodiratime" ];
+      noCheck = true;
+    };
 
-  # swapDevices =
-  #   [{
-  #     device = "/dev/disk/by-label/NixSWAP";
-  #     options = [ "defaults" "noatime" ];
-  #   }];
+  swapDevices =
+    [{
+      device = "/dev/disk/by-label/NixSWAP";
+      options = [ "defaults" "noatime" ];
+    }];
 
 
   environment.systemPackages = with pkgs; [
@@ -354,7 +354,7 @@
     };
   };
 
-  powerManagement.cpuFreqGovernor = "ondemand";
+  # powerManagement.cpuFreqGovernor = "ondemand";
 
   # Adjust MTU for Virgin Fibre
   # - https://search.nixos.org/options?channel=23.05&show=networking.networkmanager.connectionConfig&from=0&size=50&sort=relevance&type=packages&query=networkmanager
