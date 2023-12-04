@@ -1,4 +1,4 @@
-{ pkgs, lib, nixgl, config, specialArgs ... }:
+{ pkgs, lib, nixgl, config, specialArgs, ... }:
 let
   # ...
   # imports =[ nixgl ];
