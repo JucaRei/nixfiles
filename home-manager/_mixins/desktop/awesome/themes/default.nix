@@ -29,21 +29,21 @@
       redshift
       wezterm
     ];
-  };
 
-  file = {
-    ".config/awesome" = {
-      source = ./crystal;
-      recursive = true;
-    };
-    ".local/bin/lock" = {
-      executable = true;
-      text = ''
-        #!/bin/sh
-        playerctl pause
-        sleep 0.2
-        awesome-client "awesome.emit_signal('toggle::lock')"
-      '';
+    file = {
+      ".config/awesome" = {
+        source = ./crystal;
+        recursive = true;
+      };
+      ".local/bin/lock" = {
+        executable = true;
+        text = ''
+          #!/bin/sh
+          playerctl pause
+          sleep 0.2
+          awesome-client "awesome.emit_signal('toggle::lock')"
+        '';
+      };
     };
   };
 }
