@@ -54,6 +54,9 @@ in
       [
         # (import nixgl { inherit pkgs; }).nixGLIntel # OpenGL for GUI apps
         (import nixgl { inherit pkgs; }).nixVulkanIntel # OpenGL for GUI apps
+        nixGLVulkanMesaWrap
+        nixGLVulkanWrap
+        nixGLMesaWrap
         # (import nixgl { inherit pkgs.auto; }).nixGLDefault # OpenGL for GUI apps
         #.nixVulkanIntel
         pkgs.hello
@@ -96,8 +99,8 @@ in
           [ "/home/${username}/.nix-profile/share/applications" ];
     };
 
-  nixGLMesaWrap = nixGLMesaWrap;
-  nixGLVulkanWrap = nixGLVulkanWrap;
-  nixGLVulkanMesaWrap = nixGLVulkanMesaWrap;
+  # nixGLMesaWrap = nixGLMesaWrap;
+  # nixGLVulkanWrap = nixGLVulkanWrap;
+  # nixGLVulkanMesaWrap = nixGLVulkanMesaWrap;
 
 }
