@@ -15,11 +15,10 @@ let
   # ''; 
 
   inherit lib;
-  inherit config;
   inherit specialArgs;
   inherit pkgs;
   inherit nixgl;
-  
+
   in
 {
 #   home.packages = [
