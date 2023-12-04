@@ -23,13 +23,13 @@ with lib.hm.gvariant;
     # vlc
     clonegit
     # deezer-gui
-    fantezy
+    # fantezy
     gcc
     gnumake
     lua
     # neovim
     tmux
-    sniffnet
+    # sniffnet
     # autorandr
     # thorium
   ];

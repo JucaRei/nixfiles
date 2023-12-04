@@ -4,12 +4,13 @@
     windowManager = {
       awesome = {
         enable = true;
-        package = pkgs.awesome-git;
+        package = pkgs.awesome;
       };
     };
   };
   home = {
     packages = with pkgs; [
+      awesome-git
       lua5_4_compat
       gruvbox
       # phocus

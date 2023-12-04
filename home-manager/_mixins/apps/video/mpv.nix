@@ -9,7 +9,7 @@ with lib.hm.gvariant;
     package = pkgs.wrapMpv
       (pkgs.mpv-unwrapped.override {
         # webp support
-        ffmpeg_5 = pkgs.ffmpeg_5-full;
+        ffmpeg = pkgs.ffmpeg_5-full;
       })
       {
         scripts = with pkgs.mpvScripts; [
