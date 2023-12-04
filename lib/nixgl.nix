@@ -47,6 +47,7 @@ let
 
 in 
 {
+  nixGLMesaWrap = nixGLMesaWrap;
   fonts.fontconfig.enable = true;
   targets.genericLinux.enable = true;
   home = {
