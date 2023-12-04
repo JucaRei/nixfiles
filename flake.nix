@@ -37,7 +37,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.05";
+      url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -214,6 +214,7 @@
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # nix build .#homeConfigurations."juca@DietPi".activationPackage
         "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "gnome"; };
+        "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
         #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
         "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
         "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
@@ -226,7 +227,7 @@
         "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
         "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "gnome"; };
         "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; };
-        "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
+        "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "awesome"; };
         "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
         # Wsl
         "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; desktop = null; };

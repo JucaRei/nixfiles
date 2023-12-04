@@ -110,7 +110,11 @@ in
         {
           accept-flake-config = true;
           auto-optimise-store = true;
-          experimental-features = [ "nix-command" "flakes" "ca-derivations" ];
+          experimental-features = [
+            "nix-command"
+            "flakes"
+            "ca-derivations"
+          ];
           # Avoid unwanted garbage collection when using nix-direnv
           keep-outputs = true;
           keep-derivations = true;

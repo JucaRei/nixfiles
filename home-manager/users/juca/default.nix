@@ -135,7 +135,7 @@
       # nodePackages.prettier # Code format
       # nurl # Nix URL fetcher
       # nyancat # Terminal rainbow spewing feline
-      speedtest-go # Terminal speedtest.net
+      # speedtest-go # Terminal speedtest.net
       # optipng # Terminal PNG optimizer
       # procs # Modern Unix `ps`
       # python310Packages.gpustat # Terminal GPU info
@@ -148,7 +148,7 @@
       # tokei # Modern Unix `wc` for code
       # vdpauinfo # Terminal VDPAU info
       # wavemon # Terminal WiFi monitor
-      yq-go # Terminal `jq` for YAML
+      # yq-go # Terminal `jq` for YAML
       # nvchad
     ];
     # sessionVariables = {
@@ -198,6 +198,10 @@
     "d ${config.home.homeDirectory}/Documents/workspace/bitbucket 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Documents/workspace/gitlab 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Documents/workspace/scripts 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Downloads/Videos 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Downloads/Music 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Downloads/Torrents 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Downloads/Files 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Videos/Animes/movies 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Videos/Animes/series 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Videos/Animes/OVAs 0755 ${username} users - -"
