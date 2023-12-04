@@ -13,27 +13,21 @@ let
   #     chmod +x $wrapped_bin
   #   done
   # ''; 
-
-  inherit lib;
-  inherit config;
-  inherit specialArgs;
-  inherit pkgs;
-  inherit nixgl;
   
   in
 {
-#   home.packages = [
-#     nixgl.nixGLDefault
-#     (nixGLWrap pkgs.st)
-#     (nixGLWrap pkgs.firefox)
-#   ] ++ (with pkgs; [
-#     inxi
-#   ]);
+  home.packages = [
+    nixgl.nixGLDefault
+    (nixGLWrap pkgs.st)
+    (nixGLWrap pkgs.firefox)
+  ] ++ (with pkgs; [
+    inxi
+  ]);
 
-  home = {
-    packages = with pkgs; [
-      firefox
-      st
-    ];
-  };
+  # home = {
+  #   packages = with pkgs; [
+  #     firefox
+  #     st
+  #   ];
+  # };
 }
