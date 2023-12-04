@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs,  ... }:
 {
   xsession = {
     windowManager = {
@@ -12,7 +12,7 @@
     packages = with pkgs; [
       lua5_4_compat
       gruvbox
-      phocus
+      # phocus
       st
       mpd
       ncmpcpp

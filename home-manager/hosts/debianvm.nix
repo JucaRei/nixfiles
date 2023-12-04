@@ -1,7 +1,7 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, nixgl, ... }:
 let
   # ...
-  nixgl = import <nixgl> {} ;
+  # nixgl = import <nixgl> {} ;
   nixGLWrap = pkg: pkgs.runCommand "${pkg.name}-nixgl-wrapper" {} ''
     mkdir $out
     ln -s ${pkg}/* $out
