@@ -15,7 +15,7 @@ let
   in
 {
   home.packages = [
-    nixgl.auto.nixGLDefault
+    pkgs.nixgl.auto.nixGLDefault
     (nixGLWrap pkgs.st)
     (nixGLWrap pkgs.firefox)
   ] ++ (with pkgs; [
