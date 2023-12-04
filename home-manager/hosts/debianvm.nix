@@ -32,7 +32,7 @@ let
 
   home = {
     packages = with pkgs; [
-      (nixGLVulkanMesaWrap firefox)
+      firefox
       st
     ];
   };
