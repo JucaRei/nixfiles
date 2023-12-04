@@ -47,7 +47,7 @@ let
   in
 {
   home.packages = [
-    (nixGLVulkanMesaWrap pkgs.st)
+    # (nixGLVulkanMesaWrap pkgs.st)
     (nixGLVulkanMesaWrap pkgs.firefox)
   ] ++ (with pkgs; [
     inxi

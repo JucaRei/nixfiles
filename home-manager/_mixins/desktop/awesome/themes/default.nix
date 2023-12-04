@@ -23,7 +23,7 @@
       neofetch
       brightnessctl
       inotify-tools
-      uptime
+      # uptime
       brillo
       picom
       redshift
