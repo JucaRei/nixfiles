@@ -15,11 +15,11 @@ let
   ''; 
   in
 {
-  home = {
-    packages = with pkgs; [
-      st
-    ] ++ (nixgl.auto.nixGLDefault) (with nixGLWrap pkgs;[
-      firefox
-    ]);
-  };
+   home.packages = [
+    nixgl.auto.nixGLDefault
+    (nixGLWrap pkgs.st)
+    (nixGLWrap pkgs.firefox)
+  ] ++ (with pkgs; [
+    inxi
+  ]);
 }
