@@ -55,7 +55,7 @@ in
       [
         # (import nixgl { inherit pkgs; }).nixGLIntel # OpenGL for GUI apps
         # (import nixgl { inherit pkgs; }).nixVulkanIntel # OpenGL for GUI apps
-        ({inherit pkgs;}).nixGLVulkanMesaWrap
+        pkgs.nixGLVulkanMesaWrap
         # nixGLVulkanWrap
         # nixGLMesaWrap
         # (import nixgl { inherit pkgs.auto; }).nixGLDefault # OpenGL for GUI apps
