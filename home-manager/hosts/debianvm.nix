@@ -18,6 +18,7 @@ let
   inherit config;
   inherit specialArgs;
   inherit pkgs;
+  inherit nixgl;
   
   in
 {
