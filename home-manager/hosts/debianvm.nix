@@ -1,6 +1,7 @@
 { pkgs, lib, nixgl, ... }:
 let
   # ...
+  imports =[ nixgl ];
   nixGLWrap = pkg: pkgs.runCommand "${pkg.name}-nixgl-wrapper" {} ''
     mkdir $out
     ln -s ${pkg}/* $out
@@ -15,7 +16,7 @@ let
   in
 {
   home.packages = [
-    pkgs.nixgl.auto.nixGLDefault
+    nixgl.auto.nixGLDefault
     (nixGLWrap pkgs.st)
     (nixGLWrap pkgs.firefox)
   ] ++ (with pkgs; [
