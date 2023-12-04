@@ -6,8 +6,8 @@ in
   fonts = {
     fontDir.enable = true;
     ## nix 23.05
-    fonts = (with pkgs; [ 
-    # packages = (with pkgs; [
+    # fonts = (with pkgs; [ 
+    packages = (with pkgs; [
       # renamed on 23.11 
       (nerdfonts.override { fonts = [ "FiraCode" "SourceCodePro" "UbuntuMono" ]; })
       fira
@@ -46,8 +46,8 @@ in
     ]);
 
     ## Enable a basic set of fonts providing several font styles and families and reasonable coverage of Unicode.
-    enableDefaultFonts = false;
-    # enableDefaultPackages = false; # renamed on 23.11 
+    # enableDefaultFonts = false;
+    enableDefaultPackages = false; # renamed on 23.11 
 
     fontconfig = {
       antialias = true;
@@ -64,8 +64,8 @@ in
       hinting = {
         autohint = false;
         enable = true;
-        style = "hintslight";
-        # style = "slight";
+        # style = "hintslight";
+        style = "slight";
       };
       subpixel = {
         rgba = "rgb";

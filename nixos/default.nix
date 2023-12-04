@@ -57,6 +57,7 @@
       allowUnsupportedSystem = true;
       permittedInsecurePackages = [
         "openssl-1.1.1w"
+        "electron-19.1.9"
       ];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
