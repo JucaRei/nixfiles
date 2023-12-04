@@ -1,4 +1,4 @@
-{ pkgs, lib, nixgl, ... }:
+{ pkgs, lib, nixgl, config, specialArgs ... }:
 let
   # ...
   # imports =[ nixgl ];
@@ -15,10 +15,11 @@ let
   # ''; 
 
   inherit lib;
+  inherit config;
   inherit specialArgs;
   inherit pkgs;
   inherit nixgl;
-
+  
   in
 {
 #   home.packages = [
