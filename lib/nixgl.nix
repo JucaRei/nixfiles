@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, nixgl, username, specialArgs, ... }:
+{ config, inputs, lib, pkgs, nixgl, username, specialArgs, ... }:
 
 let
 
