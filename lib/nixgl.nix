@@ -1,5 +1,61 @@
-{ config, inputs, pkgs, nixgl, username, ... }:
+{ config, inputs, pkgs, nixgl, username, specialArgs, ... }:
 
+let
+
+  nixGLMesaWrap = pkg:
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
+      mkdir $out
+      ln -s ${pkg}/* $out
+      rm $out/bin
+      mkdir $out/bin
+      for bin in ${pkg}/bin/*; do
+       wrapped_bin=$out/bin/$(basename $bin)
+       echo "exec ${lib.getExe pkgs.nixgl.nixGLIntel} $bin \$@" > $wrapped_bin
+       chmod +x $wrapped_bin
+      done
+    '';
+
+  nixGLVulkanWrap = pkg:
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
+      mkdir $out
+      ln -s ${pkg}/* $out
+      rm $out/bin
+      mkdir $out/bin
+      for bin in ${pkg}/bin/*; do
+       wrapped_bin=$out/bin/$(basename $bin)
+       echo "exec ${
+         lib.getExe pkgs.nixgl.nixVulkanIntel
+       } $bin \$@" > $wrapped_bin
+       chmod +x $wrapped_bin
+      done
+    '';
+
+  nixGLVulkanMesaWrap = pkg:
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
+      mkdir $out
+      ln -s ${pkg}/* $out
+      rm $out/bin
+      mkdir $out/bin
+      for bin in ${pkg}/bin/*; do
+       wrapped_bin=$out/bin/$(basename $bin)
+       echo "${lib.getExe pkgs.nixgl.nixGLIntel} ${
+         lib.getExe pkgs.nixgl.nixVulkanIntel
+       } $bin \$@" > $wrapped_bin
+       chmod +x $wrapped_bin
+      done
+    '';
+
+  linkAppConfig = appConfig: {
+    home.file = {
+      ".config/${appConfig}" = {
+        source = config.lib.file.mkOutOfStoreSymlink
+          "${specialArgs.path_to_dotfiles}/.config/${appConfig}";
+        recursive = true;
+      };
+    };
+  };
+
+in 
 {
   fonts.fontconfig.enable = true;
   targets.genericLinux.enable = true;
@@ -7,8 +63,8 @@
     packages =
       [
         # (import nixgl { inherit pkgs; }).nixGLIntel # OpenGL for GUI apps
-        # (import nixgl { inherit pkgs; }).nixVulkanIntel # OpenGL for GUI apps
-        (import nixgl { inherit pkgs.auto; }).nixGLDefault # OpenGL for GUI apps
+        (import nixgl { inherit pkgs; }).nixVulkanIntel # OpenGL for GUI apps
+        # (import nixgl { inherit pkgs.auto; }).nixGLDefault # OpenGL for GUI apps
         #.nixVulkanIntel
         pkgs.hello
         # pkgs.sudo
@@ -49,4 +105,10 @@
         else
           [ "/home/${username}/.nix-profile/share/applications" ];
     };
+
+  nixGLMesaWrap = nixGLMesaWrap;
+  nixGLVulkanWrap = nixGLVulkanWrap;
+  nixGLVulkanMesaWrap = nixGLVulkanMesaWrap;
+  linkAppConfig = linkAppConfig;
+
 }
