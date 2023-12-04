@@ -13,6 +13,12 @@ let
   #     chmod +x $wrapped_bin
   #   done
   # ''; 
+
+  inherit lib;
+  inherit config;
+  inherit specialArgs;
+  inherit pkgs;
+  
   in
 {
 #   home.packages = [
