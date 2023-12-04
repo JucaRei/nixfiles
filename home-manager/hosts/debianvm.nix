@@ -53,10 +53,10 @@ let
     inxi
   ]);
 
-  home = {
-    packages = with pkgs; [
-      firefox
-      st
-    ];
-  };
+  # home = {
+  #   packages = with pkgs; [
+  #     firefox
+  #     st
+  #   ];
+  # };
 }
