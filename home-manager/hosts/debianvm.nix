@@ -16,18 +16,18 @@ let
   
   in
 {
-  home.packages = [
-    nixgl.auto.nixGLDefault
-    (nixGLVulkanMesaWrap pkgs.st)
-    (nixGLVulkanMesaWrap pkgs.firefox)
-  ] ++ (with pkgs; [
-    inxi
-  ]);
+  # home.packages = [
+  #   nixgl.auto.nixGLDefault
+  #   (nixGLVulkanMesaWrap pkgs.st)
+  #   (nixGLVulkanMesaWrap pkgs.firefox)
+  # ] ++ (with pkgs; [
+  #   inxi
+  # ]);
 
-  # home = {
-  #   packages = with pkgs; [
-  #     firefox
-  #     st
-  #   ];
-  # };
+  home = {
+    packages = with pkgs; [
+      firefox
+      st
+    ];
+  };
 }
