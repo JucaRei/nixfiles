@@ -60,7 +60,7 @@
           name = "bootstrap-product-icons";
           publisher = "RubenVerg";
           version = "1.0.2";
-          sha256 = lib.fakeSha256;
+          sha256 = "sha256-u7Vw+LJyHZ+ohC/R4ETmJD07/NEkNDUeQh8v5U1YAgk=";
         }
         {
           name = "material-product-icons";
