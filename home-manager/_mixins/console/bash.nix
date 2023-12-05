@@ -54,6 +54,7 @@ in
         bind 'set show-all-if-ambiguous on'
         bind 'TAB:menu-complete'
 
+      # "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
     '';
     # skim-files () {
     #   echo $(${skim-cmds.files})
@@ -75,7 +76,7 @@ in
         . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
         . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
         . /home/juca/.nix-profile/etc/profile.d/nix.sh
-        # . "/home/juca/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
         # . /home/$USER/.nix-profile/etc/profile.d/nix.sh
       fi
 
@@ -88,5 +89,8 @@ in
       eval "$(starship init bash)"
       eval "$(direnv hook bash)"
     '';
+    sessionVariables = {
+      TERM = "xterm";
+    };
   };
 }

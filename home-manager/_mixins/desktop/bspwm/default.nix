@@ -124,8 +124,12 @@ with lib.hm.gvariant;
       # gnome.file-roller
       # nautilus-open-any-terminal
       cinnamon.nemo
+      gnome.gvfs
       # cinnamon.nemo-with-extensions
       cinnamon.nemo-fileroller
+      gnome3.gvfs
+      gnome3.nautilus
+      cifs-utils
       jq
       nordic
       lm_sensors
@@ -201,6 +205,8 @@ with lib.hm.gvariant;
       GLFW_IM_MODULE = "ibus";
       LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
       QT_QPA_PLATFORMTHEME = "gtk3";
+      "TERM" = "xterm";
+      GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
     };
     sessionPath = [
       "$HOME/.local/bin"
