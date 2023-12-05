@@ -1,4 +1,4 @@
-{ pkgs,  ... }:
+{ pkgs, ... }:
 {
   xsession = {
     windowManager = {
@@ -10,8 +10,10 @@
   };
   home = {
     packages = with pkgs; [
-      awesome-git
+      # awesome-git
       lua5_4_compat
+      xorg.xorgserver
+      xorg.xinit
       gruvbox
       # phocus
       st

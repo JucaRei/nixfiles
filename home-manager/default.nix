@@ -58,7 +58,7 @@ in
         #   patches = [ ./change-hello-to-hi.patch ];
         # });
 
-        awesome-git = inputs.nixpkgs-f2k.packages.${pkgs.system}.awesome-git;
+        awesome = inputs.nixpkgs-f2k.packages.${pkgs.system}.awesome-git;
 
         # Patch Google Chrome Dark Mode
         google-chrome = prev.google-chrome.overrideAttrs (old: {

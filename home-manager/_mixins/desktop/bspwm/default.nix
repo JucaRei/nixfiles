@@ -1,9 +1,6 @@
 { config, lib, pkgs, username, ... }:
 with lib.hm.gvariant;
-let
-  browser = "brave-browser";
-  terminal = "alacritty";
-in
+
 {
   imports = [
     ./themes/default
@@ -151,6 +148,7 @@ in
       # glava
       tokyo-night-gtk
       lsof
+      st
       bc
       # pomodoro
       xdo
