@@ -126,7 +126,23 @@
     portal = {
       enable = true;
       xdgOpenUsePortal = true;
-      extraPortals = with pkgs; lib.mkForce [ xdg-desktop-portal-gnome ];
+      # extraPortals = with pkgs; lib.mkForce [ xdg-desktop-portal-gnome ];
+      config = {
+        common = {
+          default = [
+            "gnome"
+          ];
+        };
+        gnome = {
+          default = [
+            "gnome"
+            "gtk"
+          ];
+          "org.freedesktop.impl.portal.Secret" = [
+            "gnome-keyring"
+          ];
+        };
+      };
     };
   };
 }

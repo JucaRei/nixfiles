@@ -81,6 +81,7 @@
       kaccounts-providers
     ]) ++ (with pkgs; [
       libportal-qt5
+      plasma-overdose-kde-theme-unstable
 
       # Archive Utilities
       atool # apack arepack als adiff atool aunpack acat
@@ -149,7 +150,25 @@
   };
   xdg = lib.mkDefault {
     portal = {
-      extraPortals = pkgs.xdg-desktop-portal-kde;
+      # extraPortals = pkgs.xdg-desktop-portal-kde;
+      enable = true;
+      xdgOpenUsePortal = true;
+      config = {
+        common = {
+          default = [
+            "gtk"
+          ];
+        };
+        kde = {
+          default = [
+            "xdg-desktop-portal-kde"
+            "gtk"
+          ];
+          "org.freedesktop.impl.portal.Secret" = [
+            "xdg-desktop-portal-kde"
+          ];
+        };
+      };
     };
   };
 

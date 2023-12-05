@@ -73,12 +73,31 @@
   xdg = {
     portal = {
       enable = true;
-      extraPortals = [
-        (pkgs.xdg-desktop-portal-gtk.override {
-          # Use the upstream default so this won't conflict with the xapp portal.
-          buildPortalsInGnome = false;
-        })
-      ];
+      xdgOpenUsePortal = true;
+      ## 23.05
+      # extraPortals = [
+      #   (pkgs.xdg-desktop-portal-gtk.override {
+      #     # Use the upstream default so this won't conflict with the xapp portal.
+      #     buildPortalsInGnome = false;
+      #   })
+      # ];
+      ## 23.11
+      config = {
+        common = {
+          default = [
+            "xapp"
+          ];
+        };
+        cinnamon = {
+          default = [
+            "xapp"
+            "gtk"
+          ];
+          "org.freedesktop.impl.portal.Secret" = [
+            "xapp"
+          ];
+        };
+      };
     };
   };
 }

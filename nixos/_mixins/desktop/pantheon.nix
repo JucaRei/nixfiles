@@ -7,6 +7,7 @@
   # Exclude the elementary apps I don't use
   environment = {
     pantheon.excludePackages = with pkgs.pantheon; [
+      elementary-camera
       elementary-music
       elementary-photos
       elementary-videos
@@ -20,10 +21,12 @@
 
     # Add additional apps and include Yaru for syntax highlighting
     systemPackages = with pkgs; [
+      snapshot # camera
       appeditor # elementary OS menu editor
       # celluloid # Video Player
       formatter # elementary OS filesystem formatter
-      gthumb # Image Viewer
+      # gthumb # Image Viewer
+      loupe # Image viewer
       gnome.simple-scan # Scanning
       indicator-application-gtk3 # App Indicator
       pantheon.sideload # elementary OS Flatpak installer

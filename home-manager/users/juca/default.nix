@@ -115,6 +115,7 @@ in
       # dogdns # Modern Unix `dig`
       # dua # Modern Unix `du`
       duf # Modern Unix `df`
+      frogmouth # Terminal mardown viewer
       # du-dust # Modern Unix `du`
       # entr # Modern Unix `watch`
       # fast-cli # Terminal fast.com

@@ -115,9 +115,9 @@
         budgie = {
           enable = lib.mkDefault true;
           sessionPath = [ pkgs.budgie.budgie-desktop-view ];
-          extraGSettingsOverrides = ''          
-              [com.solus-project.icon-tasklist:Budgie]
-              pinned-launchers=["firefox.desktop", "nixos-manual.desktop", "mate-terminal.desktop", "nemo.desktop", "gparted.desktop", "io.calamares.calamares.desktop"] '';
+          extraGSettingsOverrides = ''
+            [com.solus-project.icon-tasklist:Budgie]
+            pinned-launchers=["firefox.desktop", "nixos-manual.desktop", "mate-terminal.desktop", "nemo.desktop", "gparted.desktop", "io.calamares.calamares.desktop"] '';
           extraGSettingsOverridePackages = [ ];
           extraPlugins = with pkgs; [ budgiePlugins.budgie-analogue-clock-applet ];
         };
@@ -133,8 +133,28 @@
   };
   xdg.portal = {
     enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk # provides a XDG Portals implementation.
-    ];
+    xdgOpenUsePortal = true;
+    ### Until 23.05
+    # extraPortals = with pkgs; [
+    #   xdg-desktop-portal-gtk # provides a XDG Portals implementation.
+    # ];
+
+    ## 23.11
+    config = {
+      common = {
+        default = [
+          "gtk"
+        ];
+      };
+      budgie = {
+        default = [
+          "gnome"
+          "gtk"
+        ];
+        "org.freedesktop.impl.portal.Secret" = [
+          "gnome-keyring"
+        ];
+      };
+    };
   };
 }
