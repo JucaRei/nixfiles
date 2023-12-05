@@ -57,6 +57,12 @@
           sha256 = "sha256-2/x078M1wi4/F9aVpHQTgWKdDnEHqXKea+tsNw7YyBo=";
         }
         {
+          name = "bootstrap-product-icons";
+          publisher = "RubenVerg";
+          version = "1.0.2";
+          sha256 = lib.fakeSha256;
+        }
+        {
           name = "material-product-icons";
           publisher = "PKief";
           version = "1.7.0";
