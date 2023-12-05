@@ -203,13 +203,6 @@
         #   version = "0.2.2";
         #   sha256 = "UxMjXwfL9YMb7nGH41LoAu9R3b4dWdK66+w0tfGy8Lk=";
         # }
-        {
-          publisher = "PKief";
-          name = "material-product-icons";
-          version = "1.6.0";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-IpGnfpGgQLpSGhfMvV5FW7ykXeK1QjfBq5dZw519BNg=";
-        }
       ];
 
     userSettings = {
