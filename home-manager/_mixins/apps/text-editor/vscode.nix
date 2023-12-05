@@ -44,11 +44,23 @@
         #   sha256 = "sha256-6PLn7g/znfc2uruYTqxQ96IwXxfz6Sbguua3YqZd64U=";
         # }
         {
+          name = "better-nix-syntax";
+          publisher = "jeff-hykin";
+          version = "1.0.7";
+          sha256 = "sha256-vqfhUIjFBf9JvmxB4QFrZH4KMhxamuYjs5n9VyW/BiI=";
+        }
+        {
           name = "color-highlight-css-color-4";
           publisher = "Yunduo";
           version = "1.1.3";
           # sha256 = lib.fakeSha256;
           sha256 = "sha256-2/x078M1wi4/F9aVpHQTgWKdDnEHqXKea+tsNw7YyBo=";
+        }
+        {
+          name = "material-product-icons";
+          publisher = "PKief";
+          version = "1.7.0";
+          sha256 = "sha256-F6sukBQ61pHoKTxx88aa8QMLDOm9ozPF9nonIH34C7Q=";
         }
         {
           name = "vscode-lua";
@@ -111,6 +123,12 @@
           publisher = "TalDennis-UnfoldAI-ChatGPT-Copilot";
           version = "0.2.6";
           sha256 = "sha256-W+glLyrRtdoxRnHRKIQftJBTT6GJZ1SemAYTgqgSXt4=";
+        }
+        {
+          name = "polacode-2019";
+          publisher = "jeff-hykin";
+          version = "0.6.1";
+          sha256 = "sha256-SbfsD28gaVHAmJskUuc1Q8kA47jrVa3OO5Ur7ULk3jI=";
         }
         {
           name = "remote-ssh";
