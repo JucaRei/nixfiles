@@ -61,6 +61,7 @@
         "aarch64-linux"
         "armv7l-linux"
         "armv6l-linux"
+        "x86_64-windows"
       ];
     };
   };

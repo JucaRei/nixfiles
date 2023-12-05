@@ -107,6 +107,12 @@
           sha256 = "sha256-sHeaMMr5hmQ0kAFZxxMiRk6f0mfjkg2XMnA4Gf+DHwA=";
         }
         {
+          name = "unfoldai";
+          publisher = "TalDennis-UnfoldAI-ChatGPT-Copilot";
+          version = "0.2.6";
+          sha256 = "sha256-W+glLyrRtdoxRnHRKIQftJBTT6GJZ1SemAYTgqgSXt4=";
+        }
+        {
           name = "remote-ssh";
           publisher = "ms-vscode-remote";
           version = "0.107.2023100615";

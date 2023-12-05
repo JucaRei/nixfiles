@@ -21,11 +21,14 @@
   ];
 
   home = {
+    # For all machines
     packages = with pkgs; [
       duf # Modern Unix `df`
       wget2 # Terminal downloader
       ncdu_1
       moar # Modern Unix `less`
+      coreutils
+      pandoc
     ];
 
     sessionVariables = {
