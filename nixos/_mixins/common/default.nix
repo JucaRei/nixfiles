@@ -226,8 +226,8 @@
     };
   };
 
-  # systemd = lib.mkDefault {
-  systemd = lib.mkOverride 20 {
+  systemd = lib.mkDefault {
+  # systemd = lib.mkOverride 20 {
     services.disable-wifi-powersave = {
       wantedBy = [ "multi-user.target" ];
       path = [ pkgs.iw ];
@@ -236,6 +236,6 @@
       '';
     };
 
-    enableUnifiedCgroupHierarchy = lib.mkForce true; #cgroupsv2
   };
+    # enableUnifiedCgroupHierarchy = lib.mkForce true; #cgroupsv2
 }
