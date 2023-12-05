@@ -316,7 +316,8 @@
         colorTheme = "RedCrafter07 Theme";
         # colorTheme = "Rainbow Extended";
         list.smoothScrolling = true;
-        productIconTheme = "material-product-icons";
+        # productIconTheme = "material-product-icons";
+        productIconTheme = "bootstrap-product-icons";
         # productIconTheme = "tabler-icons";
         smoothScrolling = true;
         tree = {
