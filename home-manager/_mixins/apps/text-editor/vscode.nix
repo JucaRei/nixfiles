@@ -19,12 +19,12 @@ in {
     enable = true;
     # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
-    package = nixGLVulkanMesaWrap pkgs.unstable.vscode.override {
+    package = (nixGLVulkanMesaWrap pkgs.unstable.vscode.override {
       commandLineArgs = builtins.concatStringsSep " " [
         "--enable-wayland-ime"
         "--ozone-platform-hint=auto"
       ];
-    };
+    });
 
     mutableExtensionsDir = true;
     enableUpdateCheck = false;
