@@ -1,35 +1,6 @@
 { pkgs, lib, ... }:
 let
-# For nixgl without having to always use nixgl.pkgs application before use it
-  nixGLMesaWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
-      mkdir $out
-      ln -s ${pkg}/* $out
-      rm $out/bin
-      mkdir $out/bin
-      for bin in ${pkg}/bin/*; do
-        wrapped_bin=$out/bin/$(basename $bin)
-        echo "exec ${lib.getExe pkgs.nixgl.nixGLIntel} $bin \$@" > $wrapped_bin
-        chmod +x $wrapped_bin
-      done
-    '';
-
-  nixGLVulkanWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
-      mkdir $out
-      ln -s ${pkg}/* $out
-      rm $out/bin
-      mkdir $out/bin
-      for bin in ${pkg}/bin/*; do
-        wrapped_bin=$out/bin/$(basename $bin)
-        echo "exec ${
-          lib.getExe pkgs.nixgl.nixVulkanIntel
-        } $bin \$@" > $wrapped_bin
-        chmod +x $wrapped_bin
-      done
-    '';
-
-  nixGLVulkanMesaWrap = pkg:
+nixGLVulkanMesaWrap = pkg:
     pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
       mkdir $out
       ln -s ${pkg}/* $out
@@ -46,7 +17,7 @@ let
 in {
   programs.vscode = {
     enable = true;
-    package = (nixGLVulkanMesaWrap pkgs.vscode);
+    # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
     # package =  pkgs.unstable.vscode.override {
     #   commandLineArgs = builtins.concatStringsSep " " [
