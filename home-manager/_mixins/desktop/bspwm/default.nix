@@ -4,8 +4,8 @@ with lib.hm.gvariant;
 {
   imports = [
     ### Import selected theme
-    ./themes/default
-    # ./themes/everforest
+    # ./themes/default
+    ./themes/everforest
 
     ### Keybindings for all
     ./sxhkd.nix
