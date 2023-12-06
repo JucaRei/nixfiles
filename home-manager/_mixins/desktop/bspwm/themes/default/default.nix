@@ -55,8 +55,8 @@
         workspaces() {
           name=1
           for monitor in `bspc query -M`; do
-            bspc monitor "$\{monitor}" -n "$name" -d '一' '二' '三' '四' '五' '六' '七'
-            # bspc monitor $\{monitor} -n "$name" -d I II III IV V VI VII VIII IX X
+            # bspc monitor "$\{monitor}" -n "$name" -d '一' '二' '三' '四' '五' '六' '七'
+            bspc monitor $\{monitor} -n "$name" -d I II III IV V VI VII VIII IX X
             let name++
           done
         }
