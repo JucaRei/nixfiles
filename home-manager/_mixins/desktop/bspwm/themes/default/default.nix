@@ -23,6 +23,7 @@
         # "picom --config $HOME/.config/picom/picom.conf"
         #"sleep 2s;polybar -q bar"        #"sleep 2s;polybar -q bar"
         "sleep 2s;polybar -q main"
+        "$HOME/.screenlayout/vm.sh"
       ];
       rules = {
         "nemo" = {
