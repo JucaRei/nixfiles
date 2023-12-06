@@ -21,8 +21,8 @@
         "dunst -config $HOME/.config/dunst/dunstrc"
         "nm-applet --indicator"
         # "picom --config $HOME/.config/picom/picom.conf"
-        #"sleep 2s;polybar -q bar"        #"sleep 2s;polybar -q bar"
-        "sleep 2s;polybar -q main"
+        # "sleep 2s;polybar -q bar"
+        # "sleep 2s;polybar -q main"
         "$HOME/.screenlayout/vm.sh"
         # "feh -g 1920x1080 -Z. $HOME/Pictures/wallpapers"
       ];
