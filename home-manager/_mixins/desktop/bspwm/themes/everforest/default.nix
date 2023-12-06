@@ -29,7 +29,7 @@
       "pgrep -x sxhkd > /dev/null || sxhkd"
       "xsetroot -cursor_name left_ptr"
       "dunst -config $HOME/.config/dunst/dunstrc"
-      "$HOME/.screenlayout/vm.sh"
+      # "$HOME/.screenlayout/vm.sh"
     ];
   };
   services = {
@@ -39,7 +39,7 @@
         "super + Return" = "st"; # terminal emulator
         "super + @space" = "rofi -show drun -show-icons"; # program launcher
         "super + Escape" = "pkill -USR1 -x sxhkd"; # make sxhkd reload its configuration files
-        "super + e" = "nemo";
+        "super + e" = "nautilus";
         "super + b" = "thorium";
       };
     };
