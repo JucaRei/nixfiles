@@ -46,17 +46,15 @@ let
 
 in
 {
-  config = {
-    imports = [
-      ../_mixins/apps/text-editor/vscode.nix
-    ];
-    home = {
-      packages = [
-        (nixGLVulkanMesaWrap pkgs.thorium)
-        (nixGLVulkanMesaWrap pkgs.unstable.vscode)
-      ] ++ (with pkgs;[
-        st
-      ]);
-    };
+  imports = [
+    ../_mixins/apps/text-editor/vscode.nix
+  ];
+  home = {
+    packages = [
+      (nixGLVulkanMesaWrap pkgs.thorium)
+      (nixGLVulkanMesaWrap pkgs.unstable.vscode)
+    ] ++ (with pkgs;[
+      st
+    ]);
   };
 }
