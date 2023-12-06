@@ -37,8 +37,8 @@
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-0' | awk '{print $1}')
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
         EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
             if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
@@ -53,8 +53,8 @@
         workspaces() {
           name=1
           for monitor in `bspc query -M`; do
-            #bspc monitor "$\{monitor}" -n "$name" -d '一' '二' '三' '四' '五' '六' '七'
-            bspc monitor $\{monitor} -n "$name" -d I II III IV V VI VII VIII IX X
+            bspc monitor "$\{monitor}" -n "$name" -d '一' '二' '三' '四' '五' '六' '七'
+            # bspc monitor $\{monitor} -n "$name" -d I II III IV V VI VII VIII IX X
             let name++
           done
         }
@@ -117,6 +117,7 @@
       bc
       tokyo-night-gtk
       st
+      arandr
       nordic
       yaru-theme
       playerctl
