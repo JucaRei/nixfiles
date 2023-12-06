@@ -48,13 +48,16 @@ in
 {
   imports = [
     ../_mixins/apps/text-editor/vscode.nix
+    # ../_mixins/apps/terminal/alacritty.nix
     inputs.vscode-server.nixosModules.default
   ];
   home = {
     packages = [
       (nixGLVulkanMesaWrap pkgs.thorium)
+      (nixGLVulkanMesaWrap pkgs.alacritty)
     ] ++ (with pkgs;[
       st
+      kbdlight
     ]);
   };
 }
