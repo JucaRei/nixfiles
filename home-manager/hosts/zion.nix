@@ -48,11 +48,12 @@ in
 {
   config = {
     imports = [
-      (nixGLVulkanMesaWrap ../_mixins/apps/text-editor/vscode.nix)
+      ../_mixins/apps/text-editor/vscode.nix
     ];
     home = {
       packages = [
         (nixGLVulkanMesaWrap pkgs.thorium)
+        (nixGLVulkanMesaWrap pkgs.unstable.vscode)
       ] ++ (with pkgs;[
         st
       ]);
