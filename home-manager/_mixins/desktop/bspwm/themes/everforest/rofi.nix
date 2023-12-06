@@ -13,11 +13,11 @@
       #   path = ../../../../config/polybar-everforest;
       # };
       ".config/rofi" = {
-        source = ../../../../config/rofi-everforest;
+        source = ../../../../config/rofi/everforest;
         recursive = true;
       };
       ".local/rofi" = {
-        source = ../../../../config/rofi-scripts;
+        source = ../../../../config/rofi/scripts;
         recursive = true;
         executable = true;
       };
