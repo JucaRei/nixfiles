@@ -52,7 +52,7 @@ in
   home = {
     packages = [
       (nixGLVulkanMesaWrap pkgs.thorium)
-      (nixGLVulkanMesaWrap pkgs.unstable.vscode)
+      # (nixGLVulkanMesaWrap pkgs.unstable.vscode)
     ] ++ (with pkgs;[
       st
     ]);
