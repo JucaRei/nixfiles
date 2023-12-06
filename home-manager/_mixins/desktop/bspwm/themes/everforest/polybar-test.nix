@@ -10,7 +10,7 @@
     polybar = {
       enable = true;
       package = pkgs.polybar;
-      script = "sleep 2s;polybar";
+      script = "polybar";
     };
   };
   home = {
