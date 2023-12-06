@@ -25,6 +25,7 @@
 
   xsession.windowManager.bspwm = {
     startupPrograms = [
+      "killall -9 picom sxhkd dunst xfce4-power-manager ksuperkey eww oneko sct"
       "pgrep -x sxhkd > /dev/null || sxhkd"
       "xsetroot -cursor_name left_ptr"
       "dunst -config $HOME/.config/dunst/dunstrc"
