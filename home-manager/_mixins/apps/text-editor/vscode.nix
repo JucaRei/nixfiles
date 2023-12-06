@@ -269,6 +269,8 @@
         tabsize = 2;
         quickSuggestionsdelay = 1;
         formatOnSave = true;
+        formatOnPaste = true;
+        formatOnType = false;
         guides = {
           bracketPairs = true;
           indentation = true;

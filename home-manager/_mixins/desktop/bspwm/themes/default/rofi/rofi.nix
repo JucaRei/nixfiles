@@ -10,28 +10,28 @@
   xdg = {
     configFile = {
       "rofi/colors.rasi" = {
-        text = builtins.readFile ./config/colors.rasi;
+        text = builtins.readFile ../../../../../config/rofi/default/colors.rasi;
       };
       "rofi/confirm.rasi" = {
-        text = builtins.readFile ./config/confirm.rasi;
+        text = builtins.readFile ../../../../../config/rofi/default/confirm.rasi;
       };
       "rofi/launcher.rasi" = {
-        text = builtins.readFile ./config/launcher.rasi;
+        text = builtins.readFile ../../../../../config/rofi/default/launcher.rasi;
       };
       "rofi/message.rasi" = {
-        text = builtins.readFile ./config/message.rasi;
+        text = builtins.readFile ../../../../../config/rofi/default/message.rasi;
       };
       "rofi/networkmenu.rasi" = {
-        text = builtins.readFile ./config/networkmenu.rasi;
+        text = builtins.readFile ../../../../../config/rofi/default/networkmenu.rasi;
       };
       "rofi/rofi-network-manager.rasi" = {
-        text = builtins.readFile ./config/rofi-network-manager.rasi;
+        text = builtins.readFile ../../../../../config/rofi/default/rofi-network-manager.rasi;
       };
       "rofi/powermenu.rasi" = {
-        text = builtins.readFile ./config/powermenu.rasi;
+        text = builtins.readFile ../../../../../config/rofi/default/powermenu.rasi;
       };
       "rofi/styles.rasi" = {
-        text = builtins.readFile ./config/styles.rasi;
+        text = builtins.readFile ../../../../../config/rofi/default/styles.rasi;
       };
       "rofi/bin/launcher.sh" = {
         executable = true;

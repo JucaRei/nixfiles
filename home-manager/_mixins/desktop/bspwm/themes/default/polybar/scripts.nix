@@ -2,7 +2,7 @@
   home = {
     file = {
       ".local/polybar/scripts" = {
-        source = ../../../../../config/polybar-scripts;
+        source = ../../../../../config/polybar/scripts;
         executable = true;
         recursive = true;
       };

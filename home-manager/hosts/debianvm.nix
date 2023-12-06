@@ -43,12 +43,16 @@ let
         chmod +x $wrapped_bin
       done
     '';
-  
+
   in
 {
+  imports = [
+
+  ];
   home.packages = [
     # (nixGLVulkanMesaWrap pkgs.st)
     (nixGLVulkanMesaWrap pkgs.firefox)
+    (nixGLVulkanMesaWrap pkgs.thorium)
   ] ++ (with pkgs; [
     inxi
   ]);
