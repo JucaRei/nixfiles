@@ -15,6 +15,7 @@
       '';
     };
     packages = with pkgs; [
+      st
       pulseaudio-control
       gnome.nautilus
       gnome.sushi
@@ -25,7 +26,7 @@
   xsession.windowManager.bspwm = {
     startupPrograms = [
       "pgrep -x sxhkd > /dev/null || sxhkd"
-      "sleep 2s;polybar -q main"
+      "sleep 2s;polybar -q default"
       "xsetroot -cursor_name left_ptr"
       "dunst -config $HOME/.config/dunst/dunstrc"
       "$HOME/.screenlayout/vm.sh"
