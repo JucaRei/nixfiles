@@ -24,7 +24,7 @@
         #"sleep 2s;polybar -q bar"        #"sleep 2s;polybar -q bar"
         "sleep 2s;polybar -q main"
         "$HOME/.screenlayout/vm.sh"
-        "feh -g 1920x1080 -Z. $HOME/Pictures/wallpapers"
+        # "feh -g 1920x1080 -Z. $HOME/Pictures/wallpapers"
       ];
       rules = {
         "nemo" = {
