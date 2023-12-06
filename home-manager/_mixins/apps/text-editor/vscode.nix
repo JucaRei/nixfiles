@@ -17,14 +17,14 @@ nixGLVulkanMesaWrap = pkg:
 in {
   programs.vscode = {
     enable = true;
-    package = pkgs.unstable.vscode;
+    # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
-    # package =  pkgs.unstable.vscode.override {
-    #   commandLineArgs = builtins.concatStringsSep " " [
-    #     "--enable-wayland-ime"
-    #     "--ozone-platform-hint=auto"
-    #   ];
-    # };
+    package =  pkgs.unstable.vscode.override {
+     commandLineArgs = builtins.concatStringsSep " " [
+        "--enable-wayland-ime"
+        "--ozone-platform-hint=auto"
+      ];
+    };
 
     mutableExtensionsDir = true;
     enableUpdateCheck = false;
