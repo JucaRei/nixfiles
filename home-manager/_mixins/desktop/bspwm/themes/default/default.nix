@@ -109,7 +109,7 @@
   home = {
     packages = with pkgs; [
       flameshot
-      cinnamon.nemo
+      # cinnamon.nemo
       cinnamon.nemo-fileroller
       cinnamon.nemo-with-extensions
       jq
