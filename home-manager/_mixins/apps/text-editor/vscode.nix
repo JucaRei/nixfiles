@@ -16,8 +16,8 @@ nixGLVulkanMesaWrap = pkg:
     '';
 in {
   programs.vscode = {
-    # enable = true;
-    # package = pkgs.unstable.vscode;
+    enable = true;
+    package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
     # package =  pkgs.unstable.vscode.override {
     #   commandLineArgs = builtins.concatStringsSep " " [

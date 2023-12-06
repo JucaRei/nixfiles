@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 let
   # For nixgl without having to always use nixgl.pkgs application before use it
   nixGLMesaWrap = pkg:
@@ -48,11 +48,11 @@ in
 {
   imports = [
     ../_mixins/apps/text-editor/vscode.nix
+    inputs.vscode-server.nixosModules.default
   ];
   home = {
     packages = [
       (nixGLVulkanMesaWrap pkgs.thorium)
-      (nixGLVulkanMesaWrap pkgs.unstable.vscode)
     ] ++ (with pkgs;[
       st
     ]);
