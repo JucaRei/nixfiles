@@ -14,12 +14,13 @@ nixGLVulkanMesaWrap = pkg:
         chmod +x $wrapped_bin
       done
     '';
+    code = (nixgl.auto.nixGLDefault pkgs.vscode);
 in {
   programs.vscode = {
     enable = true;
     # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
-    package = (nixgl.auto.nixGLDefault pkgs.unstable.vscode).override {
+    package = code.override {
     commandLineArgs = builtins.concatStringsSep " " [
         "--enable-wayland-ime"
         "--ozone-platform-hint=auto"

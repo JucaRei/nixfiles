@@ -1,4 +1,4 @@
-{ inputs, outputs, stateVersion, nixgl, nur, ... }:
+{ inputs, outputs, stateVersion, nixgl, ... }:
 {
   # Helper function for generating home-manager configs
   mkHome =
@@ -6,17 +6,13 @@
     { hostname, username, desktop ? null, platform ? "x86_64-linux" }: inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
-        inherit inputs outputs desktop hostname platform nur username stateVersion nixgl;
+        inherit inputs outputs desktop hostname platform username stateVersion nixgl;
       };
       modules =
         if platform != "aarch64-linux" || "aarch64-darwin" then [
-          nur.nixosModules.nur
           ./nixgl.nix
           ../home-manager
-        ] else [
-          ../home-manager
-          nur.nixosModules.nur
-        ];
+        ] else [ ../home-manager ];
     };
 
   # Helper function for generating host configs
