@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, nixgl, ... }:
 let
 nixGLVulkanMesaWrap = pkg:
     pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
@@ -19,8 +19,8 @@ in {
     enable = true;
     # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
-    package =  pkgs.unstable.vscode.override {
-     commandLineArgs = builtins.concatStringsSep " " [
+    package = (nixgl.auto.nixGLDefault pkgs.unstable.vscode).override {
+    commandLineArgs = builtins.concatStringsSep " " [
         "--enable-wayland-ime"
         "--ozone-platform-hint=auto"
       ];

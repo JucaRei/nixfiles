@@ -1,4 +1,10 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+let
+terminal = "st";
+file-manager = "nautilus";
+browser = "thorium";
+in
+{
   imports = [
     ./dunst.nix
     ./picom.nix
@@ -110,11 +116,11 @@
     sxhkd = {
       keybindings = {
         # Selected programs
-        "super + Return" = "st"; # terminal emulator
+        "super + Return" = "${terminal}"; # terminal emulator
         "super + @space" = "rofi -show drun -show-icons"; # program launcher
         "super + Escape" = "pkill -USR1 -x sxhkd"; # make sxhkd reload its configuration files
-        "super + e" = "nautilus";
-        "super + b" = "thorium";
+        "super + e" = "${file-manager}";
+        "super + b" = "${browser}";
       };
     };
   };

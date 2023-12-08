@@ -111,7 +111,9 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
-    nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
+    nur = {
+      url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
+    };
     picom.url = "github:yaocccc/picom";
     #spicetify-nix.url = "github:the-argus/spicetify-nix";
     # nixos-generators.url = "github:NixOS/nixos-hardware/master";
@@ -156,6 +158,7 @@
   outputs =
     { self
     , nixpkgs
+    , nur
     , disko
     , home-manager
     , nixgl
