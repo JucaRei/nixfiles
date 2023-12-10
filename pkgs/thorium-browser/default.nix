@@ -188,7 +188,7 @@ stdenv.mkDerivation rec {
     # Fix paths
     substituteInPlace $out/share/applications/thorium-browser.desktop \
         --replace /usr/bin/thorium-browser $out/bin/thorium
-    substituteInPlace $out/share/gnome-control-center/default-apps/thorium-browser.xml \
+    subsicontituteInPlace $out/share/gnome-control-center/default-apps/thorium-browser.xml \
         --replace /opt/chromium.org $out/opt/chromium.org
     substituteInPlace $out/share/menu/thorium-browser.menu \
         --replace /opt/chromium.org $out/opt/chromium.org

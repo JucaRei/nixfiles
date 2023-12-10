@@ -1,4 +1,4 @@
-{ pkgs, lib, nixgl, ... }:
+{ pkgs, lib ? pkgs.lib,... }:
 let
 nixGLVulkanMesaWrap = pkg:
     pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
@@ -14,13 +14,19 @@ nixGLVulkanMesaWrap = pkg:
         chmod +x $wrapped_bin
       done
     '';
-    code = (nixgl.auto.nixGLDefault pkgs.vscode);
+    # code = (nixgl.auto.nixGLDefault pkgs.vscode);
+
+    nixGL = (import (builtins.fetchGit {
+    url = "http://github.com/guibou/nixGL";
+    ref = "refs/heads/main";
+  }) { enable32bits = false; }).auto;
+
 in {
   programs.vscode = {
     enable = true;
     # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
-    package = code.override {
+    package = pkgs.vscode.override {
     commandLineArgs = builtins.concatStringsSep " " [
         "--enable-wayland-ime"
         "--ozone-platform-hint=auto"
@@ -285,6 +291,7 @@ in {
         cursorWidth = 2;
         tabsize = 2;
         quickSuggestionsdelay = 1;
+        formatOnSaveMode = "modificationsIfAvailable";
         formatOnSave = true;
         formatOnPaste = true;
         formatOnType = false;
@@ -459,9 +466,9 @@ in {
       # "vscode-neovim.useCtrlKeysForInsertMode" = false;
       "window.menuBarVisibility" = "toggle";
       "window.titleBarStyle" = "custom";
-      "workbench.enableExperiments" = false;
+      "workbench.enableExperiments" = true;
       # "workbench.colorTheme" = "Bearded Theme Monokai Stone";
-      "workbench.settings.enableNaturalLanguageSearch" = false;
+      "workbench.settings.enableNaturalLanguageSearch" = true;
       "git.enableSmartCommit" = true;
       "git.confirmSync" = false;
 
@@ -475,17 +482,17 @@ in {
   };
 
 
-  # xdg.desktopEntries = {
-  #   "code" = {
-  #     categories = [ "Utility" "TextEditor" "Development" "IDE" ];
-  #     comment = "Code Editing. Redefined.";
-  #     exec = "${pkgs.vscode}/bin/code %F";
-  #     genericName = "Text Editor";
-  #     icon = "code";
-  #     mimeType = [ "text/plain" "inode/directory" ];
-  #     name = "Visual Studio Code";
-  #     startupNotify = true;
-  #     type = "Application";
-  #   };
-  # };
+  xdg.desktopEntries = {
+    code = {
+      categories = [ "Utility" "TextEditor" "Development" "IDE" ];
+      comment = "Code Editing. Redefined.";
+      exec = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.vscode}/bin/code %F";
+      genericName = "Text Editor";
+      icon = "${pkgs.vscode}/share/code";
+      mimeType = [ "text/plain" "inode/directory" ];
+      name = "Visual Studio Code";
+      startupNotify = true;
+      type = "Application";
+    };
+  };
 }

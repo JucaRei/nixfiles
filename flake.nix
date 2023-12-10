@@ -125,6 +125,16 @@
     #  flake = false;
     #};
 
+    # nix-on-droid = {
+    #   url = "github:t184256/nix-on-droid";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #   };
+    # };
+
+      comma.url = "github:nix-community/comma/v1.4.1";
+
+
     #doom-emacs = {
     #  # Nix-community Doom Emacs
     #  url = "github:nix-community/nix-doom-emacs";

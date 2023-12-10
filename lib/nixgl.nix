@@ -1,6 +1,6 @@
 { config, inputs, lib, pkgs, nixgl, username, specialArgs, ... }:
 
-let
+# let
 
   # nixGLMesaWrap = pkg:
   #   pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
@@ -45,7 +45,7 @@ let
   #     done
   #   '';
 
-in
+# in
 {
   # nixGLMesaWrap = nixGLMesaWrap;
   fonts.fontconfig.enable = true;
@@ -61,6 +61,10 @@ in
         # (import nixgl { inherit pkgs; }).auto.nixGLDefault # OpenGL for GUI apps
         #.nixVulkanIntel
         pkgs.hello
+        pkgs.comma
+        pkgs.hostname
+        config.nix.package
+        pkgs.nixgl.auto.nixGLDefault
         # pkgs.sudo
       ];
 

@@ -41,7 +41,7 @@ in
 
   nixpkgs = {
     # You can add overlays here
-    overlays = [
+    overlays = with builtins; [
       # Add overlays your own flake exports (from overlays and pkgs dir):
       outputs.overlays.additions
       outputs.overlays.modifications
