@@ -46,7 +46,7 @@
 
 
     gruvbox = final.gruv;
-    phocus = final.phocus-gtk; 
+    phocus = final.phocus-gtk;
 
     steam = prev.steam.override {
       extraPkgs = pkgs:

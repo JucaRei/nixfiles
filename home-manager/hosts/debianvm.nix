@@ -1,6 +1,6 @@
 { pkgs, lib, nixgl, config, specialArgs, ... }:
 let
-# For nixgl without having to always use nixgl.pkgs application before use it
+  # For nixgl without having to always use nixgl.pkgs application before use it
   nixGLMesaWrap = pkg:
     pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
       mkdir $out
@@ -44,7 +44,7 @@ let
       done
     '';
 
-  in
+in
 {
   imports = [
 

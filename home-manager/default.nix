@@ -36,7 +36,7 @@ in
       NIX_PATH = (lib.concatStringsSep ":" (lib.mapAttrsToList (name: path: "${name}=${path.to.path}") config.nix.registry));
     };
     enableNixpkgsReleaseCheck = true;
-    packages = [ pkgs.nixgl.auto.nixGLDefault];
+    packages = [ pkgs.nixgl.auto.nixGLDefault ];
   };
 
   nixpkgs = {

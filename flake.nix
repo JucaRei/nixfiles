@@ -132,7 +132,7 @@
     #   };
     # };
 
-      comma.url = "github:nix-community/comma/v1.4.1";
+    comma.url = "github:nix-community/comma/v1.4.1";
 
 
     #doom-emacs = {

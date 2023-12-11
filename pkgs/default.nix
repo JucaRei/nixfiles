@@ -21,7 +21,7 @@
   # nixos-change-summary = pkgs.callPackage ./nixos-change-summary { };
   lutgenn = pkgs.callPackage ./lutgen { };
   spotdl = pkgs.callPackage ./spotify-dl { };
-  
+
   # Font
   phospor = pkgs.callPackage ./fonts/phospor.nix { };
   material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };
