@@ -3,6 +3,7 @@ let
 
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 
+  codegl = pkgs.unstable.vscode;
 
   # nixGLVulkanMesaWrap = pkg:
   #   pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
@@ -36,12 +37,13 @@ in
     enable = true;
     # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
-    package = (nixGL pkgs.vscode.override {
-      commandLineArgs = builtins.concatStringsSep " " [
-        "--enable-wayland-ime"
-        "--ozone-platform-hint=auto"
-      ];
-    });
+    # package = (nixGL pkgs.vscode.override {
+    #   commandLineArgs = builtins.concatStringsSep " " [
+    #     "--enable-wayland-ime"
+    #     "--ozone-platform-hint=auto"
+    #   ];
+    # });
+    package = (nixGL codegl);
 
     mutableExtensionsDir = true;
     enableUpdateCheck = false;
