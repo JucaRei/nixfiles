@@ -50,6 +50,7 @@ in
 {
   imports = [
     ../_mixins/apps/text-editor/vscode.nix
+    ../_mixins/apps/video/mpv.nix
     # ../_mixins/apps/terminal/alacritty.nix
     inputs.vscode-server.nixosModules.default
   ];

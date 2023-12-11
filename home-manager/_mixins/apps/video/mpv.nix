@@ -1,12 +1,9 @@
 { pkgs, lib, config, ... }:
 with lib.hm.gvariant;
-{
-  # home.packages = with pkgs; [ mpv ];
+let
+  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 
-  programs.mpv = {
-    enable = true;
-    # package = pkgs.mpv;
-    package = pkgs.wrapMpv
+  mpvgl = pkgs.wrapMpv
       (pkgs.mpv-unwrapped.override {
         # webp support
         ffmpeg = pkgs.ffmpeg_5-full;
@@ -20,6 +17,29 @@ with lib.hm.gvariant;
           sponsorblock
         ];
       };
+
+in
+{
+  # home.packages = with pkgs; [ mpv ];
+
+  programs.mpv = {
+    enable = true;
+    # package = pkgs.mpv;
+    # package = pkgs.wrapMpv
+    #   (pkgs.mpv-unwrapped.override {
+    #     # webp support
+    #     ffmpeg = pkgs.ffmpeg_5-full;
+    #   })
+    #   {
+    #     scripts = with pkgs.mpvScripts; [
+    #       thumbnail
+    #       mpris
+    #       acompressor
+    #       thumbfast
+    #       sponsorblock
+    #     ];
+    #   };
+    package = (nixGL mpvgl);
     config = {
       alang = "jp,jpn,ja,Japanese,japanese,en,eng,pt_BR";
       profile = "gpu-hq";
