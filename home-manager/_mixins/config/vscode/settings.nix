@@ -1,4 +1,5 @@
-args@{ pkgs, lib ? pkgs.lib, ... }: {
+{ pkgs, lib ? pkgs.lib, ... }@args:
+{
   programs.vscode = {
     userSettings = {
       update.mode = "none";

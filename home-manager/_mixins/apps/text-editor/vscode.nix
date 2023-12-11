@@ -25,7 +25,8 @@ let
 in
 {
   imports = [
-    ../../config/vscode/settings.nix
+    ### Enable immutable vscode settings
+    # ../../config/vscode/settings.nix
   ];
   programs.vscode = {
     enable = true;
@@ -44,7 +45,7 @@ in
     extensions =
       with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
-        brettm12345.nixfmt-vscode
+        # brettm12345.nixfmt-vscode
         oderwat.indent-rainbow
         # catppuccin.catppuccin-vsc-icons
         formulahendry.code-runner
