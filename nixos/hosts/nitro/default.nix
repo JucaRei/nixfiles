@@ -244,6 +244,7 @@
       # nixos-summary
       # tidal
       etcher
+      thorium
     ];
     sessionVariables = {
       # LIBVA_DRIVER_NAME = "nvidia";

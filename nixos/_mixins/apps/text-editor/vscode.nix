@@ -48,6 +48,20 @@
           version = "8.3.2";
           sha256 = "sha256-TwHuoXme0o6EeciA1lxhs5vmhGlDvaWlH8tjVmuSQH8";
         }
+        {
+          name = "remote-ssh";
+          publisher = "ms-vscode-remote";
+          version = "0.107.2023100615";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-pRdcEyApccS+A/8zgmzM3wSJcBx2P/BAK2ggbO2v4+A=";
+        }
+        {
+          name = "reload";
+          publisher = "natqe";
+          version = "0.0.6";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-bTFLk3sCJb7ztkC/Cxci6n7RbcyNjEYNKREUf9wDQRU=";
+        }
         # {
         #   name = "debian-vscode";
         #   publisher = "dawidd6";
