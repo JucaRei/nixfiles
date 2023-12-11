@@ -19,7 +19,7 @@
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
-    ../../_mixins/apps/text-editor/vscode.nix
+    # ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/browser/chromium.nix
     ../../_mixins/console/fish.nix
@@ -243,7 +243,7 @@
       lm_sensors
       # nixos-summary
       # tidal
-      etcher      
+      etcher
     ];
     sessionVariables = {
       # LIBVA_DRIVER_NAME = "nvidia";

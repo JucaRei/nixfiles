@@ -79,7 +79,7 @@
           # Add Packages To System Menu
           after = [ "writeBoundary" "createXdgUserDirectories" ];
           before = [ ];
-          data = "sudo --preserve-env=PATH  /usr/bin/update-desktop-database"; # Updates Database
+          data = "sudo --preserve-env=PATH env update-desktop-database"; # Updates Database
           # data = "doas --preserve-env=PATH /usr/bin/update-desktop-database"; # Updates Database
           # data = [ "${config.home.homeDirectory}/.nix-profile/share/applications"];
           # data = "/usr/bin/update-desktop-database";

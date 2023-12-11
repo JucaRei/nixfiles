@@ -81,7 +81,7 @@
       kaccounts-providers
     ]) ++ (with pkgs; [
       libportal-qt5
-      plasma-overdose-kde-theme-unstable
+      plasma-overdose-kde-theme
 
       # Archive Utilities
       atool # apack arepack als adiff atool aunpack acat

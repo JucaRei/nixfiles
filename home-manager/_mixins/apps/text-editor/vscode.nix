@@ -1,6 +1,6 @@
-{ pkgs, lib ? pkgs.lib,... }:
+args@{ pkgs, lib ? pkgs.lib, ... }:
 let
-nixGLVulkanMesaWrap = pkg:
+  nixGLVulkanMesaWrap = pkg:
     pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
       mkdir $out
       ln -s ${pkg}/* $out
@@ -14,20 +14,22 @@ nixGLVulkanMesaWrap = pkg:
         chmod +x $wrapped_bin
       done
     '';
-    # code = (nixgl.auto.nixGLDefault pkgs.vscode);
 
-    nixGL = (import (builtins.fetchGit {
-    url = "http://github.com/guibou/nixGL";
-    ref = "refs/heads/main";
-  }) { enable32bits = false; }).auto;
+  nixGL = (import
+    (builtins.fetchGit {
+      url = "http://github.com/guibou/nixGL";
+      ref = "refs/heads/main";
+    })
+    { enable32bits = false; }).auto;
 
-in {
+in
+{
   programs.vscode = {
     enable = true;
     # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
     package = pkgs.vscode.override {
-    commandLineArgs = builtins.concatStringsSep " " [
+      commandLineArgs = builtins.concatStringsSep " " [
         "--enable-wayland-ime"
         "--ozone-platform-hint=auto"
       ];
@@ -481,14 +483,14 @@ in {
     };
   };
 
-
-  xdg.desktopEntries = {
+  # Only if is non-nixos system
+  xdg.desktopEntries = lib.mkIf (args ? "nixosConfig") {
     code = {
       categories = [ "Utility" "TextEditor" "Development" "IDE" ];
       comment = "Code Editing. Redefined.";
       exec = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.vscode}/bin/code %F";
       genericName = "Text Editor";
-      icon = "${pkgs.vscode}/share/code";
+      icon = "${pkgs.vscode}/share/pixmaps/vscode.png";
       mimeType = [ "text/plain" "inode/directory" ];
       name = "Visual Studio Code";
       startupNotify = true;

@@ -29,7 +29,7 @@ with lib.hm.gvariant;
     gnumake
     lua
     # neovim
-    tmux
+    # tmux
     # sniffnet
     # autorandr
     # thorium
