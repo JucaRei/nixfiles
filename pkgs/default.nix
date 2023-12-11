@@ -22,6 +22,8 @@
   lutgenn = pkgs.callPackage ./lutgen { };
   spotdl = pkgs.callPackage ./spotify-dl { };
 
+  nix-inspect = pkgs.callPackage ./nix-inspect { };
+
   # Font
   phospor = pkgs.callPackage ./fonts/phospor.nix { };
   material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };

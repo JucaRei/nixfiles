@@ -26,6 +26,7 @@
     # example = prev.example.overrideAttrs (oldAttrs: rec {
     # ...
     # });
+    inspect = final.nix-inspect;
     imgclr = prev.callPackage ../pkgs/image-colorizer {
       buildPythonPackage = prev.python310Packages.buildPythonPackage;
     };

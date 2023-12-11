@@ -130,6 +130,7 @@
       duf
       htop
       lshw
+      inspect
       unstable.nix-index
       unstable.nix-prefetch-git
       # cifs-utils
