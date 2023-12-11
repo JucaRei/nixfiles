@@ -1,7 +1,7 @@
 args@{ pkgs, lib ? pkgs.lib, config, ... }:
 let
 
-  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 
 
   # nixGLVulkanMesaWrap = pkg:
