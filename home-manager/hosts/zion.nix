@@ -1,5 +1,7 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, inputs, config, ... }:
 let
+  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+
   # For nixgl without having to always use nixgl.pkgs application before use it
   nixGLMesaWrap = pkg:
     pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
@@ -53,8 +55,8 @@ in
   ];
   home = {
     packages = [
-      (nixGLVulkanMesaWrap pkgs.thorium)
-      (nixGLVulkanMesaWrap pkgs.alacritty)
+      (nixGL pkgs.thorium)
+      (nixGL pkgs.alacritty)
     ] ++ (with pkgs;[
       st
       kbdlight

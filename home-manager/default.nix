@@ -51,7 +51,7 @@ in
       # neovim-nightly-overlay.overlays.default
       inputs.agenix.overlays.default
 
-      nixgl.overlay
+      inputs.nixgl.overlays.default
 
       # Or define it inline, for example:
       (final: prev: {

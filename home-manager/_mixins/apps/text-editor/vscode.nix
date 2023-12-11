@@ -1,26 +1,30 @@
-args@{ pkgs, lib ? pkgs.lib, ... }:
+args@{ pkgs, lib ? pkgs.lib, config, ... }:
 let
-  nixGLVulkanMesaWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
-      mkdir $out
-      ln -s ${pkg}/* $out
-      rm $out/bin
-      mkdir $out/bin
-      for bin in ${pkg}/bin/*; do
-        wrapped_bin=$out/bin/$(basename $bin)
-        echo "${lib.getExe pkgs.nixgl.nixGLIntel} ${
-          lib.getExe pkgs.nixgl.nixVulkanIntel
-        } $bin \$@" > $wrapped_bin
-        chmod +x $wrapped_bin
-      done
-    '';
 
-  nixGL = (import
-    (builtins.fetchGit {
-      url = "http://github.com/guibou/nixGL";
-      ref = "refs/heads/main";
-    })
-    { enable32bits = false; }).auto;
+  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+
+
+  # nixGLVulkanMesaWrap = pkg:
+  #   pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
+  #     mkdir $out
+  #     ln -s ${pkg}/* $out
+  #     rm $out/bin
+  #     mkdir $out/bin
+  #     for bin in ${pkg}/bin/*; do
+  #       wrapped_bin=$out/bin/$(basename $bin)
+  #       echo "${lib.getExe pkgs.nixgl.nixGLIntel} ${
+  #         lib.getExe pkgs.nixgl.nixVulkanIntel
+  #       } $bin \$@" > $wrapped_bin
+  #       chmod +x $wrapped_bin
+  #     done
+  #   '';
+
+  # nixGL = (import
+  #   (builtins.fetchGit {
+  #     url = "http://github.com/guibou/nixGL";
+  #     ref = "refs/heads/main";
+  #   })
+  #   { enable32bits = false; }).auto;
 
 in
 {
@@ -32,12 +36,12 @@ in
     enable = true;
     # package = pkgs.unstable.vscode;
     # package = pkgs.vscodium-fhs;
-    package = pkgs.vscode.override {
+    package = (nixGL pkgs.vscode.override {
       commandLineArgs = builtins.concatStringsSep " " [
         "--enable-wayland-ime"
         "--ozone-platform-hint=auto"
       ];
-    };
+    });
 
     mutableExtensionsDir = true;
     enableUpdateCheck = false;
