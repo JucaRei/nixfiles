@@ -66,21 +66,6 @@
   security.pam.services.gdm.enableGnomeKeyring = true;
 
   environment = {
-    systemPackages = with pkgs; [
-      # Packages installed
-      gnome.dconf-editor
-      gnome.adwaita-icon-theme
-      gnome.gnome-tweaks
-      nautilus-open-any-terminal
-      # qogir-icon-theme
-      gnome.nautilus-python
-      libnotify
-      # yaru-theme
-      gthumb
-      gparted
-      gnomeExtensions.appindicator
-      gnomeExtensions.window-is-ready-remover
-    ];
     gnome.excludePackages = (with pkgs; [
       # Gnome ignored packages
       gnome-tour
@@ -90,15 +75,15 @@
       cheese # webcam tool
       gnome-music
       gnome-font-viewer
-      gedit # text editor
+      # gedit # text editor
       epiphany # web browser
       geary # email reader
-      evince # document viewer
+      # evince # document viewer
       yelp # Help view
       gnome-characters
       gnome-terminal
       gnome-disk-utility
-      gnome-calendar
+      # gnome-calendar
       gnome-music
       gnome-system-monitor
       totem

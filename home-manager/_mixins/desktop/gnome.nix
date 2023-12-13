@@ -3,52 +3,63 @@ with lib.hm.gvariant;
 {
   home = {
     packages = with pkgs; [
-      gnomeExtensions.logo-menu
-      # gnomeExtensions.aylurs-widgets
-      gnomeExtensions.rounded-window-corners
-      gnomeExtensions.appindicator
-      # gnomeExtensions.google-earth-wallpaper
-      gnomeExtensions.vitals
-      # gnomeExtensions.pop-shell
-      gnomeExtensions.space-bar
-      gnomeExtensions.top-bar-organizer
-      gnomeExtensions.blur-my-shell
-      gnomeExtensions.just-perfection
-      # gnomeExtensions.clipboard-indicator
-      # gnomeExtensions.user-themes
-      # gnomeExtensions.hide-activities-button
-      gnomeExtensions.caffeine
-      # gnome.mutter
-      gnomeExtensions.bluetooth-quick-connect
-      gnome-extension-manager
-      # gnome.libgnome-keyring
-      gnomeExtensions.forge
-      # gnomeExtensions.gsconnect # kdeconnect enabled in default.nix
-      gnomeExtensions.dash-to-dock
-      gnomeExtensions.pano
-      # gnomeExtensions.arcmenu
-      # gnomeExtensions.battery-indicator-upower
-      # gnomeExtensions.tray-icons-reloaded
-      gnome.gnome-weather
-      deepin.deepin-gtk-theme
-      # gnomeExtensions.removable-drive-menu
-      # gnomeExtensions.dash-to-panel
-      # gnomeExtensions.battery-indicator-upower
-      # gnomeExtensions.workspace-indicator-2
-      # gnomeExtensions.pip-on-top
-      # gnomeExtensions.fullscreen-avoider
       layan-gtk-theme
-
-
-      gnome3.gvfs
-      gnome3.nautilus
-
-      # Others
+      libnotify
+      gparted
       gaphor
       warp
       curtail
       evince # document viewer
-    ];
+      deepin.deepin-gtk-theme
+      # gthumb
+      # qogir-icon-theme
+      nautilus-open-any-terminal
+    ] ++ (with pkgs.gnomeExtensions; [
+      logo-menu
+      rounded-window-corners
+      window-is-ready-remover
+      custom-accent-colors
+      appindicator
+      vitals
+      space-bar
+      top-bar-organizer
+      blur-my-shell
+      just-perfection
+      caffeine
+      bluetooth-quick-connect
+      forge
+      dash-to-dock
+      pano
+      # aylurs-widgets
+      # google-earth-wallpaper
+      # pop-shell
+      # clipboard-indicator
+      # user-themes
+      # hide-activities-button
+      # mutter
+      # libgnome-keyring
+      # gsconnect
+      # arcmenu
+      # battery-indicator-upower
+      # tray-icons-reloaded
+      # removable-drive-menu
+      # dash-to-panel
+      # workspace-indicator-2
+      # pip-on-top
+      # fullscreen-avoider
+      # tailscale-qs
+      # tailscale-status
+    ]) ++ (with pkgs.gnome3; [
+      gvfs
+      nautilus
+    ]) ++ (with pkgs.gnome;[
+      dconf-editor
+      adwaita-icon-theme
+      gnome-tweaks
+      nautilus-python
+    ]);
+
+    # Others
     # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features
     sessionVariables = {
       GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";

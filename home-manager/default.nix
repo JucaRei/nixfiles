@@ -111,6 +111,7 @@ in
           daemonIOLowPriority = true;
         } else
         {
+          nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
           accept-flake-config = true;
           auto-optimise-store = true;
           experimental-features = [

@@ -399,10 +399,12 @@
         };
       };
 
-      ### Limit resources used by nix-daemon
-      nix-daemon.serviceConfig = {
-        MemoryMax = "4G";
-        MemorySwapMax = "4G";
+      nix-daemon = {
+        ### Limit resources used by nix-daemon
+        serviceConfig = {
+          MemoryMax = "4G";
+          MemorySwapMax = "4G";
+        };
       };
     };
 

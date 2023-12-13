@@ -233,11 +233,13 @@
         }
       );
 
+      ### Separated home-manager from nixos
+
       homeConfigurations = let inherit (builtins.currentSystem) isDarwin; in {
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # nix build .#homeConfigurations."juca@DietPi".activationPackage
-        "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
+        "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "kde"; };
         "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
         #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
         "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };

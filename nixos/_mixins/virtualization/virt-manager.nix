@@ -67,7 +67,12 @@
   };
 
   users.groups.libvirtd.members = [ "root" "${username}" ];
-
+  # nixos 23.11
+  programs = {
+    virt-manager = {
+      enable = true;
+    };
+  };
   virtualisation = {
     lxd = {
       enable = true;

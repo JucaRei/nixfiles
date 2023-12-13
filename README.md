@@ -1,4 +1,4 @@
-# Juca's [NixOS]  & [Home Manager] Configurations
+# Juca's [NixOS]  & [Home Manager] Bloated Configurations
 
 [NixOS]: https://nixos.org/
 [Home Manager]: https://github.com/nix-community/home-manager
@@ -109,7 +109,7 @@ sh <(curl -L https://nixos.org/nix/install) --no-daemon
 
 ```shell
 . ~/.nix-profile/etc/profile.d/nix.sh
- 
+
 echo ". $HOME/.nix-profile/etc/profile.d/nix.sh" >> ~/.profile
 echo ". $HOME/.nix-profile/etc/profile.d/nix.sh" >> ~/.bashrc
 echo ". $HOME/.nix-profile/etc/profile.d/nix.sh" >> ~/.zprofile
@@ -192,7 +192,7 @@ HOST=...  # set host variable to use proper configuration
 
 nix-shell
 git clone https://this.repo.url/ /etc/nixos # or $HOME/.setup
-cd /etc/nixos # or cd $HOME/.setup 
+cd /etc/nixos # or cd $HOME/.setup
 nixos-install -v --root /mnt --impure --flake .#$HOST
 nixos-install -v --root /mnt --impure --flake .#$HOST
 

@@ -28,6 +28,7 @@ in
       ++ ifExists [
         "adbusers"
         "dialout"
+        "render"
         "plugdev"
         "systemd-journal"
         "corectrl"

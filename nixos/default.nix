@@ -323,6 +323,9 @@
     udev = {
       enable = true;
     };
+    irqbalance = {
+      enable = true;
+    };
   };
 
   environment = {
