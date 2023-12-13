@@ -3,6 +3,7 @@ with lib.hm.gvariant;
 {
   home = {
     packages = with pkgs; [
+      nordic
       layan-gtk-theme
       libnotify
       gparted
