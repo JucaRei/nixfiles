@@ -1,9 +1,19 @@
-{ lib, params, pkgs, ... }:
+{ lib, params, pkgs, inputs, ... }:
 {
   home = {
-    packages = [ pkgs.brave ];
+    packages = [
+      # pkgs.brave
+      (inputs.wrapper-manager.lib.build
+        {
+          inherit pkgs;
+          modules = [
+            ./brave-x.nix
+          ];
+        })
+    ];
     sessionVariables = lib.mkDefault {
-      DEFAULT_BROWSER = "${pkgs.brave}/bin/brave";
+      # DEFAULT_BROWSER = "${pkgs.brave}/bin/brave";
+      DEFAULT_BROWSER = "${pkgs.bravex}/bin/brave";
     };
   };
 

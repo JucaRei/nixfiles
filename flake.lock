@@ -996,7 +996,8 @@
         "nur": "nur",
         "picom": "picom",
         "plasma-manager": "plasma-manager",
-        "vscode-server": "vscode-server"
+        "vscode-server": "vscode-server",
+        "wrapper-manager": "wrapper-manager"
       }
     },
     "rust-analyzer-src": {
@@ -1181,6 +1182,26 @@
         "repo": "wlroots",
         "rev": "47bf87ade2bd32395615a385ebde1fefbcdf79a2",
         "type": "gitlab"
+      }
+    },
+    "wrapper-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1702396227,
+        "narHash": "sha256-JTgwZK6m3Lt1LrjgWdl5+9RyDlAI9mzH3QHFMY8RwVY=",
+        "owner": "viperML",
+        "repo": "wrapper-manager",
+        "rev": "3a4c510ffb9f01fc7cab5e23f5ae818d72a66e1a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "viperML",
+        "repo": "wrapper-manager",
+        "type": "github"
       }
     },
     "xdph": {

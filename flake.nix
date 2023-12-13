@@ -134,6 +134,17 @@
 
     comma.url = "github:nix-community/comma/v1.4.1";
 
+    wrapper-manager = {
+      url = "github:viperML/wrapper-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # ttf-to-tty = {
+    #   url = "github:Sigmanificient/ttf_to_tty";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #   };
+    # };
 
     #doom-emacs = {
     #  # Nix-community Doom Emacs
@@ -172,6 +183,7 @@
     , disko
     , home-manager
     , nixgl
+    , wrapper-manager
     , nix-formatter-pack
     , nixos-hardware
     , nix-gaming
@@ -225,7 +237,7 @@
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # nix build .#homeConfigurations."juca@DietPi".activationPackage
-        "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "gnome"; };
+        "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
         "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
         #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
         "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
