@@ -27,6 +27,9 @@
   # Font
   phospor = pkgs.callPackage ./fonts/phospor.nix { };
   material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };
+  font-cairo = pkgs.callPackage ./fonts/cairo { };
+  font-dubai = pkgs.callPackage ./fonts/dubai { };
+  font-noto-sans-arabic = pkgs.callPackage ./fonts/noto-sans-arabic { };
 
   # GTK
   phocus-gtk = pkgs.callPackage ./gtk/phocus { };

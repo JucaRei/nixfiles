@@ -113,6 +113,8 @@
       simplescreenrecorder # ssr-glinject simplescreenrecorder
       video-trimmer # video-trimmer
 
+      qt6Packages.qtstyleplugin-kvantum
+
       # Miscellaneous:
       variety # A wallpaper manager for Linux systems
 

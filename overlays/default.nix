@@ -44,6 +44,9 @@
 
     phospor-ttf = final.phospor;
     material-symbols-ttf = final.material-symbols;
+    cairo-ttf = final.font-cairo;
+    dubai-ttf = final.font-dubai;
+    noto-sans-arabic-ttf = final.font-noto-sans-arabic;
 
 
     gruvbox = final.gruv;
