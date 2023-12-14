@@ -34,6 +34,8 @@
   # GTK
   phocus-gtk = pkgs.callPackage ./gtk/phocus { };
   gruv = pkgs.callPackage ./gtk/gruvbox-dark.nix { };
+  nautilus-annotations = pkgs.callPackage ./nautilus-annotations { };
+
   # Icons
   colloid = pkgs.callPackage ./icons/colloid.nix { };
   elementary = pkgs.callPackage ./icons/elementary.nix { };

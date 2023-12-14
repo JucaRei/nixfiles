@@ -163,6 +163,7 @@ in
     #   DEBSIGN_KEYID = "8F04688C17006782143279DA61DF940515E06DA3";
     #   PAGER = "moar";
     # };
+    extraOutputsToInstall = [ "info" "man" "share" "icons" "doc" ];
   };
   programs = {
     # git = {

@@ -4,19 +4,19 @@ let
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 
   mpvgl = pkgs.wrapMpv
-      (pkgs.mpv-unwrapped.override {
-        # webp support
-        ffmpeg = pkgs.ffmpeg_5-full;
-      })
-      {
-        scripts = with pkgs.mpvScripts; [
-          thumbnail
-          mpris
-          acompressor
-          thumbfast
-          sponsorblock
-        ];
-      };
+    (pkgs.mpv-unwrapped.override {
+      # webp support
+      ffmpeg = pkgs.ffmpeg_5-full;
+    })
+    {
+      scripts = with pkgs.mpvScripts; [
+        thumbnail
+        mpris
+        acompressor
+        thumbfast
+        sponsorblock
+      ];
+    };
 
 in
 {
@@ -53,6 +53,9 @@ in
       ytdl-format = "bestvideo[height<=?1080][vcodec!=?vp9]+bestaudio/best";
       save-position-on-quit = true;
       osd-font = "Bitstream Vera Sans";
+      osc = "no";
+      osd-bar = "no";
+      force-window = "yes";
 
       # Video Settings
       geometry = "50%:50%"; # force starting with centered window
@@ -88,49 +91,61 @@ in
 
     };
 
-    # bindings = {
-    #   # Basics
-    #   SPACE = "cycle pause";
-    #   "Alt+ENTER" = "cycle fullscreen";
-    #   "Alt+x" = "quit-watch-later";
-    #   "1" = "cycle border";
-    #   "Ctrl+a" = "cycle ontop";
-    #   n = ''show-text ''${media-title}'';
-    #   MBTN_LEFT = "cycle pause";
-    #   MBTN_LEFT_DBL = "cycle fullscreen";
-    #   MBTN_RIGHT = "ignore";
+    bindings = {
+      # Basics
+      "BS" = "cycle pause";
+      "SPACE" = "cycle pause";
+      "\\" = "set speed 1.0";
+      # "PGUP" = "add chapter -1";
+      # "PGDWN" = "add chapter 1";
+      "Alt+ENTER" = "cycle fullscreen";
+      "Alt+x" = "quit-watch-later";
+      "1" = "cycle border";
+      "Ctrl+a" = "cycle ontop";
+      n = ''show-text ''${media-title}'';
+      MBTN_LEFT = "cycle pause";
+      MBTN_LEFT_DBL = "cycle fullscreen";
+      MBTN_RIGHT = "ignore";
 
-    #   # Video
-    #   v = "cycle sub-visibility";
-    #   "Ctrl+LEFT" = "sub-seek -1";
-    #   "Ctrl+RIGHT" = "sub-seek 1";
-    #   PGUP = "playlist-next; write-watch-later-config";
-    #   PGDWN = "playlist-prev; write-watch-later-config";
-    #   "Alt+1" = "set window-scale 0.5";
-    #   "Alt+2" = "set window-scale 1.0";
-    #   "Alt+3" = "set window-scale 2.0";
-    #   "Alt+i" = "screenshot";
-    #   s = "ignore";
+      # Video
+      v = "cycle sub-visibility";
+      "Ctrl+LEFT" = "sub-seek -1";
+      "Ctrl+RIGHT" = "sub-seek 1";
+      PGUP = "playlist-next; write-watch-later-config";
+      PGDWN = "playlist-prev; write-watch-later-config";
+      "Alt+1" = "set window-scale 0.5";
+      "Alt+2" = "set window-scale 1.0";
+      "Alt+3" = "set window-scale 2.0";
+      "Alt+i" = "screenshot";
+      s = "ignore";
+      "Ctrl+h" = "add chapter -1";
+      "Ctrl+j" = "repeatable playlist-prev";
+      "Ctrl+k" = "repeatable playlist-next";
+      "Ctrl+l" = "add chapter 1";
+      "J" = "cycle sub";
+      "L" = "ab_loop";
 
-    #   # Audio
-    #   UP = "add volume +5";
-    #   DOWN = "add volume -5";
-    #   WHEEL_UP = "add volume +5";
-    #   WHEEL_DOWN = "add volume -5";
-    #   "+" = "add audio-delay 0.100";
-    #   "-" = "add audio-delay -0.100";
-    #   a = "cycle audio";
-    #   "Shift+a" = "cycle audio down";
-    #   "Ctrl+M" = "cycle mute";
-    #   "=" = ''af toggle "lavfi=[pan=1c|c0=0.5*c0+0.5*c1]" ; show-text "Audio mix set to Mono"'';
+      # Audio
+      UP = "add volume +2";
+      DOWN = "add volume -2";
+      WHEEL_UP = "add volume +2";
+      WHEEL_DOWN = "add volume -2";
+      "+" = "add audio-delay 0.100";
+      "-" = "add audio-delay -0.100";
+      a = "cycle audio";
+      "Shift+a" = "cycle audio down";
+      "Ctrl+M" = "cycle mute";
+      "=" = ''af toggle "lavfi=[pan=1c|c0=0.5*c0+0.5*c1]" ; show-text "Audio mix set to Mono"'';
 
-    #   # Frame-step
-    #   ">" = "frame-step";
-    #   "<" = "frame-back-step";
+      # Frame-step
+      ">" = "frame-step";
+      "<" = "frame-back-step";
 
-    #   # Seek to timestamp
-    #   "ctrl+t" = ''script-message-to console type "set time-pos "'';
-    # };
+      "O" = "cycle osc; cycle osd-bar";
+
+      # Seek to timestamp
+      "ctrl+t" = ''script-message-to console type "set time-pos "'';
+    };
   };
 
   xdg = {

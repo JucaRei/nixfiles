@@ -8,6 +8,7 @@
       deadnix
       nix-bash-completions
       nix-index
+      nix-melt
       nix-prefetch-git
       nix-du
       nixpkgs-fmt

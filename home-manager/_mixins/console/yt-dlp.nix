@@ -32,6 +32,9 @@
       yt-plHigh = "yt-dlp -f 'bestvideo[height<=1080][ext=mp4]+bestaudio/best[height<=1080][ext=m4a]' --merge-output-format mp4 --no-keep-video --embed-chapters --output '%(title)s.%(ext)s' ";
       #  # %(playlist_index)s
       #  # --parse-metadata "title:%(title)s | %(t1)s | %(t2)s | %(season)s | %(episode)s | %(t3)s" -o "MMPR_%(season)s%(episode)s_%(title)s.%(ext)s" --restrict-filenames
+
+      # Audio
+      ytmusic = "yt-dlp --no-overwrite --extract-audio --format bestaudio --audio-format aac --output '%(track_number,playlist_autonumber)d-%(track,title)s.%(ext)s' --download-archive archive --embed-thumbnail --add-metadata";
     };
   };
 }

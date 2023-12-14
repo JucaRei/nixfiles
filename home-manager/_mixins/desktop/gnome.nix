@@ -10,6 +10,7 @@ with lib.hm.gvariant;
       gaphor
       warp
       curtail
+      nautilus-ext
       evince # document viewer
       deepin.deepin-gtk-theme
       # gthumb

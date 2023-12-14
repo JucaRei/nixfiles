@@ -46,6 +46,8 @@ in
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
+      inputs.nixpkgs-f2k.overlays.stdenvs
+      inputs.nixpkgs-f2k.overlays.compositors
 
       # You can also add overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
@@ -111,7 +113,6 @@ in
           daemonIOLowPriority = true;
         } else
         {
-          nixPath = [ "nixpkgs=/run/current-system/nixpkgs" ];
           accept-flake-config = true;
           auto-optimise-store = true;
           experimental-features = [
