@@ -29,6 +29,8 @@
       moar # Modern Unix `less`
       coreutils
       pandoc
+      nixclean
+      nixwhereis
     ];
 
     sessionVariables = {

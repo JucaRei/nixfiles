@@ -3,26 +3,35 @@
 
 # { pkgs ? (import ../nixpkgs.nix) { } }: {
 { pkgs ? (import ../default.nix) { } }: {
-  # example = pkgs.callPackage ./example { };
-  # apple-fonts = pkgs.callPackage ./apple-fonts { };
-  cyberre-grub-theme = pkgs.callPackage ./cyberre-grub-theme { };
-  cloneit = pkgs.callPackage ./cloneit { };
-  # deezer = pkgs.callPackage ./deezer { };
-  plymouth-themes = pkgs.callPackage ./plymouth-themes { };
-  firefox-csshacks = pkgs.callPackage ./firefox-csshacks { };
-  nvchad = pkgs.callPackage ./nvchad { };
-  # tidal-dl = pkgs.callPackage ./tidal-dl { };
-  fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
-  # breeze-hacked-cursorr = pkgs.callPackage ./breeze-hacked-cursor { };
-  advmvcp = pkgs.callPackage ./advmvcp { };
-  icloud-photo-downloader = pkgs.callPackage ./icloud-photo-downloader { };
-  thorium-browser = pkgs.callPackage ./thorium-browser { };
-  polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
-  # nixos-change-summary = pkgs.callPackage ./nixos-change-summary { };
-  lutgenn = pkgs.callPackage ./lutgen { };
-  spotdl = pkgs.callPackage ./spotify-dl { };
+  # Music
+  # deezer = pkgs.callPackage ./music/deezer { };
+  # tidal-dl = pkgs.callPackage ./music/tidal-dl { };
+  # spotdl = pkgs.callPackage ./music/spotify-dl { };
 
-  nix-inspect = pkgs.callPackage ./nix-inspect { };
+  # Browsers
+  thorium-browser = pkgs.callPackage ./browsers/thorium-browser { };
+
+  cyberre-grub-theme = pkgs.callPackage ./grub/themes/cyberre-grub-theme { };
+  plymouth-themes = pkgs.callPackage ./plymouth-themes { };
+  firefox-csshacks = pkgs.callPackage ./browsers/firefox/firefox-csshacks { };
+  nvchad = pkgs.callPackage ./nvchad { };
+  fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
+  # breeze-hacked-cursorr = pkgs.callPackage ./themes/mouse/breeze-hacked-cursor { };
+  polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
+
+  # Scripts
+  nix-inspect = pkgs.callPackage ./scripts/nix-inspect { };
+  nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup { };
+  nix-whereis = pkgs.callPackage ./scripts/nix-whereis { };
+  # nixos-change-summary = pkgs.callPackage ./scripts/nixos-change-summary { };
+
+  # Utils
+  vv = pkgs.callPackage ./utils/vv { };
+  advmvcp = pkgs.callPackage ./utils/advmvcp { };
+  icloud-photo-downloader = pkgs.callPackage ./utils/icloud-photo-downloader { };
+  youtube_tui = pkgs.callPackage ./utils/youtube-tui { };
+  lutgenn = pkgs.callPackage ./utils/lutgen { };
+  cloneit = pkgs.callPackage ./utils/cloneit { };
 
   # mpv plugins
   mpv-anime4k = pkgs.callPackage ./mpv-ext/mpv-anime4k { };
@@ -39,10 +48,11 @@
   font-cairo = pkgs.callPackage ./fonts/cairo { };
   font-dubai = pkgs.callPackage ./fonts/dubai { };
   font-noto-sans-arabic = pkgs.callPackage ./fonts/noto-sans-arabic { };
+  # apple-fonts = pkgs.callPackage ./apple-fonts { };
 
   # GTK
-  phocus-gtk = pkgs.callPackage ./icons/phocus { };
-  gruv = pkgs.callPackage ./icons/gruvbox-dark.nix { };
+  phocus-gtk = pkgs.callPackage ./themes/gtk/phocus { };
+  gruv = pkgs.callPackage ./themes/gtk/gruvbox-dark.nix { };
   nautilus-annotations = pkgs.callPackage ./nautilus-annotations { };
 
   # Icons

@@ -31,6 +31,7 @@ with lib.hm.gvariant;
       gnumake
       lua
       fcitx5-with-addons
+      vt-view
       # neovim
       # tmux
       # sniffnet

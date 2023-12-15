@@ -22,7 +22,6 @@
     # fantezy = final.fantezy-font;
     # nixos-summary = final.nixos-change-summary;
     # apple-font = final.apple-fonts;
-    # tidal = final.tidal-dl;
     # mpvconf = prev.mpv;
     # example = prev.example.overrideAttrs (oldAttrs: rec {
     # ...
@@ -32,7 +31,7 @@
       buildPythonPackage = prev.python310Packages.buildPythonPackage;
     };
     lutgen = prev.lutgenn;
-
+    vt-view = final.vv;
     st = prev.st.overrideAttrs (oldAttrs: {
       buildInputs = oldAttrs.buildInputs ++ [ prev.harfbuzz ];
       src = prev.fetchFromGitHub {
@@ -42,6 +41,9 @@
         sha256 = "007pvimfpnmjz72is4y4g9a0vpq4sl1w6n9sdjq2xb2igys2jsyg";
       };
     });
+
+    # Music
+    # tidal = final.tidal-dl;
 
     phospor-ttf = final.phospor;
     material-symbols-ttf = final.material-symbols;
@@ -58,7 +60,12 @@
     subsearch = final.mpv-subsearch;
     thumbfast = final.mpv-thumbfast-osc;
 
+    # Utils
+    # youtube-tui = final.youtube_tui;
 
+    # Scripts
+    nixclean = final.nix-cleanup;
+    nixwhereis = final.nix-whereis;
 
     gruvbox = final.gruv;
     phocus = final.phocus-gtk;
