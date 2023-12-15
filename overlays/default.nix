@@ -49,6 +49,16 @@
     dubai-ttf = final.font-dubai;
     noto-sans-arabic-ttf = final.font-noto-sans-arabic;
 
+    # mpv plugins
+    anime4k = final.mpv-anime4k;
+    dynamic-crop = final.mpv-dynamic-crop;
+    modernx = final.mpv-modernx;
+    nextfile = final.mpv-nextfile;
+    subselect = final.mpv-sub-select;
+    subsearch = final.mpv-subsearch;
+    thumbfast = final.mpv-thumbfast-osc;
+
+
 
     gruvbox = final.gruv;
     phocus = final.phocus-gtk;

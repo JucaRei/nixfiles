@@ -23,8 +23,8 @@
       aliases = {
         lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
         unstage = "reset HEAD --";
-        quick-rebase = "rebase --interactive --autostash --committer-date-is-author-date";
-        quick-clone = "clone --depth=1 --recurse-submodules --shallow-submodules";
+        rbase = "rebase --interactive --autostash --committer-date-is-author-date";
+        clone = "clone --depth=1 --recurse-submodules --shallow-submodules";
       };
 
       extraConfig = {

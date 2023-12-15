@@ -15,7 +15,15 @@ let
         acompressor
         thumbfast
         sponsorblock
-      ];
+      ] ++ (with pkgs;[
+        anime4k
+        dynamic-crop
+        modernx
+        nextfile
+        subselect
+        subsearch
+        thumbfast
+      ]);
     };
 
 in
@@ -159,9 +167,9 @@ in
         "mpv/script-opts/console.conf".source = kvFormat.generate "mpv-script-opts-console" {
           font = font;
         };
-        "mpv/script-opts/osc.conf".source = kvFormat.generate "mpv-script-opts-osc" {
-          seekbarstyle = "diamond";
-        };
+        # "mpv/script-opts/osc.conf".source = kvFormat.generate "mpv-script-opts-osc" {
+        #   seekbarstyle = "diamond";
+        # };
         "mpv/script-opts/stats.conf".source = kvFormat.generate "mpv-script-opts-stats" {
           font = font;
           font_mono = font;

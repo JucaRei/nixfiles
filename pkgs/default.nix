@@ -24,7 +24,14 @@
 
   nix-inspect = pkgs.callPackage ./nix-inspect { };
 
-  mpv-patched = pkgs.callPackage ./mpv { };
+  # mpv plugins
+  mpv-anime4k = pkgs.callPackage ./mpv-ext/mpv-anime4k { };
+  mpv-dynamic-crop = pkgs.callPackage ./mpv-ext/mpv-dynamic-crop { };
+  mpv-modernx = pkgs.callPackage ./mpv-ext/mpv-modernx { } { };
+  mpv-nextfile = pkgs.callPackage ./mpv-ext/mpv-nextfile { };
+  mpv-sub-select = pkgs.callPackage ./mpv-ext/mpv-sub-select { };
+  mpv-subsearch = pkgs.callPackage ./mpv-ext/mpv-subsearch { };
+  mpv-thumbfast-osc = pkgs.callPackage ./mpv-ext/mpv-thumbfast-osc { };
 
   # Font
   phospor = pkgs.callPackage ./fonts/phospor.nix { };
