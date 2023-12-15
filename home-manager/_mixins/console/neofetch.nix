@@ -5,7 +5,7 @@
     ];
     file = {
       # "${config.xdg.configHome}/neofetch/config.conf".text = builtins.readFile ../config/neofetch/config.conf;
-      "${config.xdg.configHome}/neofetch/config.conf".text = builtins.readFile ../config/neofetch/eletric.conf;
+      "${config.xdg.configHome}/neofetch/config.conf".text = builtins.readFile ../config/neofetch/electric.conf;
     };
   };
 }

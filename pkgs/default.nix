@@ -32,8 +32,8 @@
   font-noto-sans-arabic = pkgs.callPackage ./fonts/noto-sans-arabic { };
 
   # GTK
-  phocus-gtk = pkgs.callPackage ./gtk/phocus { };
-  gruv = pkgs.callPackage ./gtk/gruvbox-dark.nix { };
+  phocus-gtk = pkgs.callPackage ./icons/phocus { };
+  gruv = pkgs.callPackage ./icons/gruvbox-dark.nix { };
   nautilus-annotations = pkgs.callPackage ./nautilus-annotations { };
 
   # Icons
