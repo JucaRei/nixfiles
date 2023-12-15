@@ -16,13 +16,13 @@ let
         thumbfast
         sponsorblock
       ] ++ (with pkgs;[
-        anime4k
+        # anime4k
         dynamic-crop
-        modernx
-        nextfile
-        subselect
-        subsearch
-        thumbfast
+        # modernx
+        # nextfile
+        # subselect
+        # subsearch
+        # thumbfast
       ]);
     };
 
