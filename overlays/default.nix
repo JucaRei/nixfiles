@@ -54,7 +54,7 @@
     dynamic-crop = final.mpv-dynamic-crop;
     modernx = final.mpv-modernx;
     nextfile = final.mpv-nextfile;
-    subselect = final.mpv-sub-select;
+    # subselect = final.mpv-sub-select;
     subsearch = final.mpv-subsearch;
     thumbfast = final.mpv-thumbfast-osc;
 

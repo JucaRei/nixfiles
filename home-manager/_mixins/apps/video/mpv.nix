@@ -22,7 +22,7 @@ let
         dynamic-crop
         modernx
         nextfile
-        subselect
+        # subselect
         subsearch
         thumbfast
       ]);
