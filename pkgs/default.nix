@@ -24,6 +24,8 @@
 
   nix-inspect = pkgs.callPackage ./nix-inspect { };
 
+  mpv-patched = pkgs.callPackage ./mpv { };
+
   # Font
   phospor = pkgs.callPackage ./fonts/phospor.nix { };
   material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };

@@ -139,6 +139,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # More up to date auto-cpufreq
+    auto-cpufreq = {
+      url = "github:AdnanHodzic/auto-cpufreq";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # ttf-to-tty = {
     #   url = "github:Sigmanificient/ttf_to_tty";
     #   inputs = {

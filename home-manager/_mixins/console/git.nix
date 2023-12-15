@@ -42,6 +42,8 @@
         url = {
           "https://github.com/".insteadOf = [ "gh:" "github:" ];
           "https://gitlab.com/".insteadOf = [ "gl:" "gitlab:" ];
+          "https://gist.github.com/".insteadOf = [ "gist:" ];
+          "https://bitbucket.org/".insteadOf = [ "bb:" ];
           "https://gitlab.gnome.org/".insteadOf = [ "gnome:" ];
           "https://invent.kde.org/".insteadOf = [ "kde:" ];
           "https://git.sr.ht/".insteadOf = [ "sh:" "sourcehut:" ];
@@ -56,12 +58,45 @@
       };
 
       ignores = [
+        # General:
+        "*.bloop"
+        "*.bsp"
+        "*.metals"
+        "*.metals.sbt"
+        "*metals.sbt"
+        "*.direnv"
+        "*.envrc"
+        "*hie.yaml"
+        "*.mill-version"
+        "*.jvmopts"
+
+        # Emacs:
+        "*~"
+        "*.*~"
+        "\\#*"
+        ".\\#*"
+
+        # OS-related:
+        ".DS_Store?"
+        ".DS_Store"
+        ".CFUserTextEncoding"
+        ".Trash"
+        ".Xauthority"
+        "thumbs.db"
+        "Thumbs.db"
+        "Icon?"
         "*.log"
         "*.out"
-        ".DS_Store"
         "bin/"
         "dist/"
         "result"
+
+        # Compiled residues:
+        "*.class"
+        "*.exe"
+        "*.o"
+        "*.pyc"
+        "*.elc"
       ];
     };
   };

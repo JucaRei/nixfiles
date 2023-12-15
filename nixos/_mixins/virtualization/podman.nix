@@ -38,11 +38,18 @@
     };
 
     podman = {
-      defaultNetwork.settings = {
-        dns_enabled = true; # Required for containers under podman-compose to be able to talk to each other.
+      defaultNetwork = {
+        settings = {
+          dns_enabled = true; # Required for containers under podman-compose to be able to talk to each other.
+        };
       };
       dockerSocket.enable = true;
-      #extraPackages = [ pkgs.zfs ];  # Using podman with ZFS
+      extraPackages = with pkgs; [
+        #zfs ## Using podman with ZFS
+        conmon
+        runc
+        skopeo
+      ];
       dockerCompat = true;
       enable = true;
       # enableNvidia = lib.elem (

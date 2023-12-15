@@ -8,7 +8,7 @@
         menuBarVisibility = "toggle";
         nativeTabs = true;
         # titleBarStyle = "custom";
-        # zoomLevel = 1;
+        zoomLevel = 1;
         zoomLevel = 0;
       };
       terminal.integrated = {
@@ -60,8 +60,6 @@
         quickSuggestionsdelay = 1;
         formatOnSaveMode = "modificationsIfAvailable";
         formatOnSave = true;
-        formatOnPaste = true;
-        formatOnType = false;
         guides = {
           bracketPairs = true;
           indentation = true;
@@ -79,6 +77,7 @@
 
       search = {
         smartCase = true;
+        followSymlinks = false;
         sortOrder = "default";
         searchEditor.doubleClickBehaviour = "goToLocation";
       };
@@ -153,6 +152,8 @@
           "**/.project" = true;
           "**/.settings" = true;
           "**/.classpath" = true;
+          "**/*.exe" = true;
+          "**/*.o" = true;
           "**/.direnv" = true;
           "**/.factorypath" = true;
         };
@@ -165,7 +166,8 @@
       };
 
       window = {
-        titleBarStyle = "custom";
+        # titleBarStyle = "custom";
+        menuBarVisibility = "toggle";
       };
 
       "editor.bracketPairColorization.enabled" = true;
@@ -173,6 +175,11 @@
       "editor.fontSize" = 21;
       "terminal.integrated.fontFamily" = "'FiraCode Nerd Font Mono', 'JetBrainsMono Nerd Font Mono SemiBold'";
       "terminal.integrated.fontSize" = 17;
+      "terminal.integrated.tabs.focusMode" = "singleClick";
+      "terminal.integrated.copyOnSelection" = true;
+      "terminal.integrated.scrollback" = 5000;
+      "terminal.integrated.persistentSessionScrollback" = 200;
+      "terminal.integrated.mouseWheelScrollSensitivity" = 2;
       "extensions.autoCheckUpdates" = false;
       "extensions.autoUpdate" = false;
       "extensions.ignoreRecommendations" = true;
@@ -181,6 +188,8 @@
       "files.trimFinalNewlines" = true;
       "files.trimTrailingWhitespace" = true;
       "lldb.suppressUpdateNotifications" = true;
+      "zenMode.hideLineNumbers" = false;
+
 
       markdown = {
         preview.typographer = true;
@@ -244,11 +253,11 @@
 
       "security.workspace.trust.enabled" = false;
       "update.mode" = "none";
+      "breadcrumbs.enabled" = true;
       "update.showReleaseNotes" = false;
       # "vscode-neovim.neovimClean" = true;
       # "vscode-neovim.useCtrlKeysForInsertMode" = false;
-      "window.menuBarVisibility" = "toggle";
-      "window.titleBarStyle" = "custom";
+      # "window.titleBarStyle" = "custom";
       "workbench.enableExperiments" = true;
       # "workbench.colorTheme" = "Bearded Theme Monokai Stone";
       "workbench.settings.enableNaturalLanguageSearch" = true;

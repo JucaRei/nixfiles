@@ -16,6 +16,7 @@
     # deezer-gui = final.deezer;
     icloudpd = final.icloud-photo-downloader;
     nvchad = prev.nvchad;
+    mpv = final.mpv-patched;
     nautilus-ext = final.nautilus-annotations;
     thorium = final.thorium-browser;
     pulseaudio-control = final.polybar-pulseaudio-control;

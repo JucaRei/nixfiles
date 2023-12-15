@@ -3,7 +3,8 @@ with lib.hm.gvariant;
 let
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 
-  mpvgl = pkgs.wrapMpv
+  # mpvgl = pkgs.wrapMpv
+  mpvgl = pkgs.mpv
     (pkgs.mpv-unwrapped.override {
       # webp support
       ffmpeg = pkgs.ffmpeg_5-full;
