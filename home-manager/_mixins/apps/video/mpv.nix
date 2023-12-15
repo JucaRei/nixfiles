@@ -3,21 +3,20 @@ with lib.hm.gvariant;
 let
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 
-  # mpvgl = pkgs.mpv-custom;
-  # mpvgl = pkgs.wrapMpv
-  #   (pkgs.mpv-unwrapped.override {
-  #     # webp support
-  #     ffmpeg = pkgs.ffmpeg_5-full;
-  #   })
-  #   {
-  #     scripts = with pkgs.mpvScripts; [
-  #       thumbnail
-  #       mpris
-  #       acompressor
-  #       thumbfast
-  #       sponsorblock
-  #     ];
-  #   };
+  mpvgl = pkgs.wrapMpv
+    (pkgs.mpv-unwrapped.override {
+      # webp support
+      ffmpeg = pkgs.ffmpeg_5-full;
+    })
+    {
+      scripts = with pkgs.mpvScripts; [
+        thumbnail
+        mpris
+        acompressor
+        thumbfast
+        sponsorblock
+      ];
+    };
 
 in
 {
@@ -40,8 +39,7 @@ in
     #       sponsorblock
     #     ];
     #   };
-    # package = (nixGL mpvgl);
-    package = pkgs.mpv-custom;
+    package = (nixGL mpvgl);
     config = {
       alang = "jp,jpn,ja,Japanese,japanese,en,eng,pt_BR";
       profile = "gpu-hq";
