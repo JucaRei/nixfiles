@@ -1,31 +1,34 @@
-{ lib
-, stdenvNoCC
-, source
-,
-}:
-stdenvNoCC.mkDerivation (
-  source
-    // {
-    version = "unstable-${source.date}";
+{ lib, stdenvNoCC, fetchgit }:
+stdenvNoCC.mkDerivation rec {
+  name = "mpv-thumbfast";
+  version = "1.0.0";
 
-    dontBuild = true;
+  src = fetchgit {
+    url = "https://github.com/po5/thumbfast.git";
+    rev = "03e93feee5a85bf7c65db953ada41b4826e9f905";
+    # sparseCheckout = ''
+    #   thumbfast.lua
+    # '';
+    sha256 = "0mzzf4ncnidzil6sqcri35zkwvl18hlvxzvsmr4jf4wfyl35dvp6";
+  };
 
-    installPhase = ''
-      runHook preInstall
+  dontBuild = true;
 
-      mkdir -p $out/share/mpv/scripts
-      cp player/lua/osc.lua $out/share/mpv/scripts/thumbfast-osc.lua
+  installPhase = ''
+    runHook preInstall
 
-      runHook postInstall
-    '';
+    mkdir -p $out/share/mpv/scripts
+    cp thumbfast.lua $out/share/mpv/scripts/thumbfast.lua
 
-    passthru.scriptName = "thumbfast-osc.lua";
+    runHook postInstall
+  '';
 
-    meta = {
-      description = "High-performance on-the-fly thumbnailer for mpv";
-      homepage = "https://github.com/po5/thumbfast/vanilla-osc";
-      license = lib.licenses.mpl20;
-      maintainers = [ lib.maintainers.iynaix ];
-    };
-  }
-)
+  passthru.scriptName = "thumbfast.lua";
+
+  meta = {
+    description = "High-performance on-the-fly thumbnailer for mpv";
+    homepage = "https://github.com/po5/thumbfast";
+    license = lib.licenses.mpl20;
+    maintainers = [ lib.maintainers.juca ];
+  };
+}
