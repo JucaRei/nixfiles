@@ -28,7 +28,7 @@ buildPythonApplication rec {
     rich
     rapidfuzz
     mutagen
-    ytmusicapi
+    autoconnect = [icapi
     pytube
     yt-dlp
     mutagen
