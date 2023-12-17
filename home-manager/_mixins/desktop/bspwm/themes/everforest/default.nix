@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  terminal = "st";
+  terminal = "alacritty";
   file-manager = "nautilus";
   browser = "thorium";
 in

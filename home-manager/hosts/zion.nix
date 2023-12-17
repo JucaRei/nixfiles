@@ -58,6 +58,7 @@ in
     packages = [
       (nixGL pkgs.thorium)
       (nixGL pkgs.alacritty)
+      (nixGL pkgs.vlc)
     ] ++ (with pkgs;[
       st
       kbdlight
