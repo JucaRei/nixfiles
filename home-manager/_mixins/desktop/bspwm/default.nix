@@ -8,7 +8,7 @@ with lib.hm.gvariant;
     ./themes/everforest
 
     ### Keybindings for all
-    ./sxhkd.nix
+    # ./sxhkd.nix
   ];
   xsession = {
     enable = true;

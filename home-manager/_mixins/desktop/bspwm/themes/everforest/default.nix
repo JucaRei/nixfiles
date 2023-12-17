@@ -11,6 +11,7 @@ in
     ./xresources.nix
     # ./polybar.nix
     ./polybar-test.nix
+    ./sxhkd_us-mac.nix
     ./rofi.nix
   ];
 
