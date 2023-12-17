@@ -125,6 +125,12 @@ in
           sha256 = "sha256-PrOakITVBJKaGqlhbWNSY2eh4R8fiBd2hEdWzN3lCjs=";
         }
         {
+          name = "projects";
+          publisher = "L13RARY.l13-projects";
+          version = "1.1.1";
+          sha256 = lib.fakeSha256;
+        }
+        {
           name = "vscode-status-bar-format-toggle";
           publisher = "tombonnike";
           version = "3.2.0";

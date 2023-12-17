@@ -38,6 +38,8 @@
       ytmusic2 = "yt-dlp --no-overwrite --extract-audio --format bestaudio --audio-format aac --output 'chapter:%(section_number)s %(section_title)s.%(ext)s' --download-archive archive --embed-thumbnail --add-metadata";
       ytmusic3 = "yt-dlp --no-overwrite --extract-audio --embed-thumbnail --format bestaudio --audio-format aac --split-chapters --parse-metadata 'title:%%(artist)s - %%(album)s' --parse-metadata 'section_number:%%(track)d' --parse-metadata 'section_title:%%(title)s'";
       ytmusic4 = "yt-dlp --no-overwrite --extract-audio --embed-thumbnail --format bestaudio --audio-format aac --split-chapters --parse-metadata 'section_number:%%(track)d' --parse-metadata 'section_title:%%(title)s'";
+      ytmusic5 = "yt-dlp --no-overwrite --extract-audio --embed-thumbnail --format bestaudio --audio-format aac --split-chapters --parse-metadata 'section_number:%%(track)d'";
+      ytmusic6 = "yt-dlp --no-overwrite --extract-audio --embed-thumbnail --format bestaudio --audio-format aac --add-metadata --split-chapters --parse-metadata 'title:%%(artist)s - %%(album)s' -o 'chapter_number:%%(section_number)s chapter:%%(section_title)s.%%(ext)s'";
     };
   };
 }

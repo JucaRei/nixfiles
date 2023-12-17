@@ -56,6 +56,14 @@
           sha256 = "sha256-pRdcEyApccS+A/8zgmzM3wSJcBx2P/BAK2ggbO2v4+A=";
         }
         {
+          # name = "vscode-projects";
+          name = "l13-projects";
+          publisher = "L13RARY";  #L13RARY.l13-projects
+          # publisher = "l13";
+          version = "1.1.1";
+          sha256 = "sha256-HVlnHzIxRZbTXu0zg9DXUAXaydmQaIt9H4ZYmmrniR0=";
+        }
+        {
           name = "reload";
           publisher = "natqe";
           version = "0.0.6";
@@ -153,6 +161,12 @@
           version = "1.0.2";
           # sha256 = lib.fakeSha256; ### if you trust
           sha256 = "sha256-YT8g6hA4Cs0EGan+d3iIKVh/fZm10/DcOxYiiEXEeYc=";
+        }
+        {
+          name = "hopscotch";
+          publisher = "idleberg";
+          version = "0.8.2";
+          sha256 = "sha256-4whH12NttCBOw4GPa95W6AvUK1JIJ3mLTFTAqk90jTc=";
         }
         # {
         # name = "pork-and-beans";

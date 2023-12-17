@@ -28,7 +28,8 @@ in
       # Stops sudo from timing out.
       extraConfig = ''
         # ${username} ALL=(ALL) NOPASSWD:ALL
-        ${username} ALL=(ALL) NOPASSWD: /bin/systemctl
+        ${username} ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemctl
+        ${username} ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemd-run
         Defaults env_reset,timestamp_timeout=-1
         Defaults 	insults
       '';
