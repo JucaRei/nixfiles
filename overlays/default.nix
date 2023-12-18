@@ -41,6 +41,8 @@
         sha256 = "007pvimfpnmjz72is4y4g9a0vpq4sl1w6n9sdjq2xb2igys2jsyg";
       };
     });
+    # distrobox-fix = prev.distrobox;
+
 
     # Music
     # tidal = final.tidal-dl;

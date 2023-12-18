@@ -61,6 +61,7 @@ in
         ms-python.python
         ms-azuretools.vscode-docker
         sumneko.lua
+        # hashicorp.terraform
         # ms-vscode-remote.remote-containers
         # ms-vscode-remote.vscode-remote-extensionpack
       ]

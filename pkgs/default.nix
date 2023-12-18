@@ -32,6 +32,7 @@
   youtube_tui = pkgs.callPackage ./utils/youtube-tui { };
   lutgenn = pkgs.callPackage ./utils/lutgen { };
   cloneit = pkgs.callPackage ./utils/cloneit { };
+  distrobox = pkgs.callPackage ./utils/distrobox { };
 
   # mpv plugins
   mpv-anime4k = pkgs.callPackage ./mpv-ext/mpv-anime4k { };

@@ -435,6 +435,7 @@ in
         impure_msg = "[impure](bold red)";
         pure_msg = "[pure](bold green)";
         symbol = mkDefault " ";
+        disabled = true;
       };
       nodejs = {
         format = "[$symbol($version )]($style)";
@@ -758,6 +759,8 @@ in
           "Pictures" = " ";
           "Important " = " ";
         };
+        truncate_to_repo = true;
+        truncation_symbol = "…/";
       };
       # Keep in mind that the order matters. For example:
       # "Important Documents" = "  "
@@ -907,7 +910,7 @@ in
       # };
 
       nix_shell = {
-        disabled = false;
+        # disabled = false;
         format = "[](fg:white)[ ](bg:white fg:black)[](fg:white) ";
       };
 

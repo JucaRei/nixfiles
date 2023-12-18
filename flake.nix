@@ -176,6 +176,8 @@
       inputs.home-manager.follows = "nixpkgs";
     };
 
+    devenv.url = "github:cachix/devenv";
+
     # budgie = {
     #   url = "github:FedericoSchonborn/budgie-nix";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -187,6 +189,7 @@
     , nixpkgs
     , nur
     , disko
+    , devenv
     , home-manager
     , nixgl
     , wrapper-manager
@@ -216,8 +219,10 @@
 
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
       devShells = libx.systems (system:
-        let pkgs = nixpkgs.legacyPackages.${system};
-        in import ./shell.nix {
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        import ./shell.nix {
           inherit pkgs;
           # node = pkgs.callPackage ./shells/node { };
         }

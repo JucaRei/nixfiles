@@ -51,17 +51,22 @@ in
   imports = [
     ../_mixins/apps/text-editor/vscode.nix
     ../_mixins/apps/video/mpv.nix
+    ../_mixins/apps/browser/librewolf.nix
     # ../_mixins/apps/terminal/alacritty.nix
     inputs.vscode-server.nixosModules.default
   ];
   home = {
     packages = [
-      (nixGL pkgs.thorium)
+      # (nixGL pkgs.thorium)
       (nixGL pkgs.alacritty)
       (nixGL pkgs.vlc)
     ] ++ (with pkgs;[
       st
+      flatpak
       kbdlight
     ]);
+    sessionVariables = {
+      XDG_DATA_DIRS = "$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share";
+    };
   };
 }

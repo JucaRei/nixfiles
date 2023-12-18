@@ -1,5 +1,9 @@
 # { config, lib, pkgs, wmType, font, params, ... }:
 { config, pkgs, ... }:
+  let
+  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+  librewolf = (nixGL pkgs.librewolf);
+  in
 {
   # Module installing librewolf as default browser
   # home.packages = [ pkgs.librewolf ];
@@ -7,6 +11,7 @@
   programs = {
     librewolf = {
       enable = true;
+      package = librewolf;
       settings = {
         "ui.use_activity_cursor" = true;
         "browser.toolbars.bookmarks.visibility" = "never";
@@ -22,7 +27,7 @@
     # else
     # { DEFAULT_BROWSER = "${pkgs.librewolf}/bin/librewolf"; };
     {
-      DEFAULT_BROWSER = "${pkgs.librewolf}/bin/librewolf";
+      DEFAULT_BROWSER = "${librewolf}/bin/librewolf";
     };
 
   # defaultPref("font.name.serif.x-western","'' + font + ''");
@@ -55,11 +60,16 @@
   '';
 
   xdg.mimeApps.defaultApplications = {
+    "application/x-extension-htm" = "librewolf.desktop";
+    "application/x-extension-html" = "librewolf.desktop";
+    "application/x-extension-shtml" = "librewolf.desktop";
+    "application/x-extension-xht" = "librewolf.desktop";
+    "application/x-extension-xhtml" = "librewolf.desktop";
+    "application/xhtml+xml" = "librewolf.desktop";
     "text/html" = "librewolf.desktop";
+    "x-scheme-handler/chrome" = "librewolf.desktop";
     "x-scheme-handler/http" = "librewolf.desktop";
     "x-scheme-handler/https" = "librewolf.desktop";
-    "x-scheme-handler/about" = "librewolf.desktop";
-    "x-scheme-handler/unknown" = "librewolf.desktop";
   };
 
 }

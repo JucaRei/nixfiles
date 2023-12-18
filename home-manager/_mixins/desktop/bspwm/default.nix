@@ -99,7 +99,7 @@ with lib.hm.gvariant;
       GLFW_IM_MODULE = "ibus";
       LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
       QT_QPA_PLATFORMTHEME = "gtk3";
-      "TERM" = "xterm";
+      TERM = "xterm";
       GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
     };
     sessionPath = [
