@@ -120,7 +120,7 @@ in
             "flakes"
             "ca-derivations"
             "auto-allocate-uids"
-            "configurable-impure-env"
+            #"configurable-impure-env"
           ];
           # Avoid unwanted garbage collection when using nix-direnv
           keep-outputs = true;
