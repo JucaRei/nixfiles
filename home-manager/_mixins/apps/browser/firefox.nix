@@ -122,22 +122,11 @@ in
       enable = true;
       # package = pkgs.unstable.firefox;
       package = with pkgs; wrapFirefox firefox-unwrapped {
-      # package = with pkgs; wrapFirefox librewolf-unwrapped {
         nativeMessagingHosts = with pkgs; [
           bukubrow
           tridactyl-native
           fx-cast-bridge
-        ] ++ (with config.nur.repos.rycee.firefox-addons; [
-          ublock-origin
-          return-youtube-dislikes
-          don-t-fuck-with-paste
-          noscript
-          search-by-image
-          sponsorblock
-        ]) ++ (with pkgs.FirefoxAddons; [
-          youtube-nonstop
-        ]);
-        # ++ (lib.optional config.programs.mpv.enable pkgs.ff2mpv);
+        ] ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
         profiles = {
           juca = {
             id = 0;
@@ -214,60 +203,160 @@ in
         };
       };
     };
+
+    # programs = {
+    #   firefox = {
+    #     enable = true;
+    #     # package = pkgs.unstable.firefox;
+    #     package = with pkgs; wrapFirefox firefox-unwrapped {
+    #     # package = with pkgs; wrapFirefox librewolf-unwrapped {
+    #       nativeMessagingHosts = with pkgs; [
+    #         bukubrow
+    #         tridactyl-native
+    #         fx-cast-bridge
+    #       ] ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
+    #       # ] ++ (with config.nur.repos.rycee.firefox-addons; [
+    #       #   ublock-origin
+    #       #   return-youtube-dislikes
+    #       #   don-t-fuck-with-paste
+    #       #   noscript
+    #       #   search-by-image
+    #       #   sponsorblock
+    #       # ]) ++ (with pkgs.FirefoxAddons; [
+    #       #   youtube-nonstop
+    #       # ]);
+    #       # ++ (lib.optional config.programs.mpv.enable pkgs.ff2mpv);
+    #       profiles = {
+    #         juca = {
+    #           id = 0;
+    #           settings = sharedSettings;
+    #           isDefault = true;
+    #           # extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
+    #           #   # Install extensions from NUR
+    #           #   decentraleyes
+    #           #   ublock-origin
+    #           #   clearurls
+    #           #   sponsorblock
+    #           #   darkreader
+    #           #   h264ify
+    #           #   df-youtube
+    #           # ];
+    #           search = {
+    #             engines = {
+    #               "NixOS Options" = {
+    #                 urls = [{
+    #                   template = "https://search.nixos.org/options";
+    #                   params = [
+    #                     { name = "type"; value = "packages"; }
+    #                     { name = "query"; value = "{searchTerms}"; }
+    #                   ];
+    #                 }];
+    #                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+    #                 definedAliases = [ "@no" ];
+    #               };
+    #               "Nix Packages" = {
+    #                 urls = [{
+    #                   template = "https://search.nixos.org/packages";
+    #                   params = [
+    #                     { name = "type"; value = "packages"; }
+    #                     { name = "query"; value = "{searchTerms}"; }
+    #                   ];
+    #                 }];
+    #                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+    #                 definedAliases = [ "@np" ];
+    #               };
+    #               "NixOS Wiki" = {
+    #                 urls = [{ template = "https://nixos.wiki/index.php?search={searchTerms}"; }];
+    #                 definedAliases = [ "@nw" ];
+    #               };
+    #               "Brave" = {
+    #                 urls = [{
+    #                   template = "https://search.brave.com/search";
+    #                   params = [
+    #                     { name = "type"; value = "search"; }
+    #                     { name = "q"; value = "{searchTerms}"; }
+    #                   ];
+    #                 }];
+
+    #                 icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
+    #                 definedAliases = [ "@brave" "@b" ];
+    #               };
+    #               "Bing".metaData.hidden = true;
+    #               "Google".metaData.alias = "@g";
+    #               "Wikipedia".metaData.alias = "@wiki";
+    #             };
+    #             default = "Google";
+    #             force = true;
+    #           };
+    #         };
+    #       };
+    #       policies = {
+    #         FirefoxHome = {
+    #           Highlights = false;
+    #           Pocket = false;
+    #           Snippets = false;
+    #           SponsporedPocket = false;
+    #           SponsporedTopSites = false;
+    #         };
+    #         EnableTrackingProtection = true;
+    #       };
+    #     };
+    #   };
+    # };
+
+
+    # home = {
+    #   sessionVariables = {
+    #     DEFAULT_BROWSER = "${pkgs.librewolf-unwrapped}/bin/librewolf";
+    #   };
+    # };
+
+    # xdg = {
+    #   mime.enable = ifDefault true;
+    #   mimeApps = {
+    #     enable = ifDefault true;
+    #     defaultApplications = ifDefault (import ./default-browser.nix "firefox");
+    #   };
+    # };
+
+    # home.packages =
+    #   let
+    #     makeFirefoxProfileBin = args @ { profile, ... }:
+    #       let
+    #         name = "firefox-${profile}";
+    #         scriptBin = pkgs.writeScriptBin name ''
+    #           firefox -P "${profile}" --name="${name}" $@
+    #         '';
+    #         desktopFile = pkgs.makeDesktopItem ((removeAttrs args [ "profile" ])
+    #           // {
+    #           inherit name;
+    #           exec = "${scriptBin}/bin/${name} %U";
+    #           extraConfig.StartupWMClass = name;
+    #           genericName = "Web Browser";
+    #           mimeTypes = [
+    #             "text/html"
+    #             "text/xml"
+    #             "application/xhtml+xml"
+    #             "application/vnd.mozilla.xul+xml"
+    #             "x-scheme-handler/http"
+    #             "x-scheme-handler/https"
+    #           ];
+    #           categories = [ "Network" "WebBrowser" ];
+    #         });
+    #       in
+    #       pkgs.runCommand name { } ''
+    #         mkdir -p $out/{bin,share}
+    #         cp -r ${scriptBin}/bin/${name} $out/bin/${name}
+    #         cp -r ${desktopFile}/share/applications $out/share/applications
+    #       '';
+    #   in
+    #   with pkgs; [
+    #     (tor-browser-bundle-bin.override { pulseaudioSupport = true; })
+    #     (makeFirefoxProfileBin {
+    #       profile = "work";
+    #       desktopName = "Firefox (Work)";
+    #       icon = "firefox";
+    #     })
+    #   ];
   };
-
-
-  home = {
-    sessionVariables = {
-      DEFAULT_BROWSER = "${pkgs.librewolf-unwrapped}/bin/librewolf";
-    };
-  };
-
-  # xdg = {
-  #   mime.enable = ifDefault true;
-  #   mimeApps = {
-  #     enable = ifDefault true;
-  #     defaultApplications = ifDefault (import ./default-browser.nix "firefox");
-  #   };
-  # };
-
-  # home.packages =
-  #   let
-  #     makeFirefoxProfileBin = args @ { profile, ... }:
-  #       let
-  #         name = "firefox-${profile}";
-  #         scriptBin = pkgs.writeScriptBin name ''
-  #           firefox -P "${profile}" --name="${name}" $@
-  #         '';
-  #         desktopFile = pkgs.makeDesktopItem ((removeAttrs args [ "profile" ])
-  #           // {
-  #           inherit name;
-  #           exec = "${scriptBin}/bin/${name} %U";
-  #           extraConfig.StartupWMClass = name;
-  #           genericName = "Web Browser";
-  #           mimeTypes = [
-  #             "text/html"
-  #             "text/xml"
-  #             "application/xhtml+xml"
-  #             "application/vnd.mozilla.xul+xml"
-  #             "x-scheme-handler/http"
-  #             "x-scheme-handler/https"
-  #           ];
-  #           categories = [ "Network" "WebBrowser" ];
-  #         });
-  #       in
-  #       pkgs.runCommand name { } ''
-  #         mkdir -p $out/{bin,share}
-  #         cp -r ${scriptBin}/bin/${name} $out/bin/${name}
-  #         cp -r ${desktopFile}/share/applications $out/share/applications
-  #       '';
-  #   in
-  #   with pkgs; [
-  #     (tor-browser-bundle-bin.override { pulseaudioSupport = true; })
-  #     (makeFirefoxProfileBin {
-  #       profile = "work";
-  #       desktopName = "Firefox (Work)";
-  #       icon = "firefox";
-  #     })
-  #   ];
 }
