@@ -120,7 +120,7 @@ let
       bukubrow
       tridactyl-native
       fx-cast-bridge
-    ] ++ (with pkgs.firefox-addons; [
+    ] ++ (with pkgs.nur.repos.rycee.firefox-addons; [
       ublock-origin
       return-youtube-dislikes
       don-t-fuck-with-paste
