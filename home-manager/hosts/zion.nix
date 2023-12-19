@@ -53,7 +53,7 @@ in
     ../_mixins/apps/video/mpv.nix
     ../_mixins/apps/browser/firefox.nix
     # ../_mixins/apps/terminal/alacritty.nix
-    inputs.vscode-server.nixosModules.default
+    # inputs.vscode-server.nixosModules.default
   ];
   home = {
     packages = [
