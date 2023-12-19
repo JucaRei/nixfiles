@@ -88,7 +88,8 @@ with lib.hm.gvariant;
       inter
       twemoji-color-font
       (nerdfonts.override {
-        fonts = [ "DroidSansMono" "LiberationMono" "Iosevka" "Hasklig" "JetBrainsMono" "FiraCode" ];
+        # fonts = [ "DroidSansMono" "LiberationMono" "Iosevka" "Hasklig" "JetBrainsMono" "FiraCode" ];
+        fonts = [ "DroidSansMono" "LiberationMono" "Hasklig" "JetBrainsMono" "FiraCode" ];
       })
     ];
 
