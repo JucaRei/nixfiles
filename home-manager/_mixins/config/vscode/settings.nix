@@ -9,7 +9,7 @@
         nativeTabs = true;
         # titleBarStyle = "custom";
         zoomLevel = 1;
-        zoomLevel = 0;
+        # zoomLevel = 0;
       };
       terminal.integrated = {
         shell.linux = "${pkgs.bash}/bin/bash";
@@ -46,8 +46,14 @@
         # cursorStyle = "block";
         lineHeight = 1.4;
         inlineSuggest.enabled = true;
+        find = {
+          autoFindInSelection = "multiline";
+        };
+        quickSuggestions = {
+          comments = "on";
+        };
         minimap.renderCharecters = false;
-        minimap.maxColumn = 80;
+        minimap.maxColumn = 90;
         minimap.autohide = true;
         roundedSelection = true;
         renderWhitespace = "trailing";
@@ -55,10 +61,12 @@
         lineNumbers = "on";
         cursorBlinking = "smooth";
         cursorSmoothCaretAnimation = "on";
+        cursorSurroundingLines = 2;
+        cursorSurroundingLinesStyle = "all";
         cursorWidth = 2;
         tabsize = 2;
         quickSuggestionsdelay = 1;
-        formatOnSaveMode = "modificationsIfAvailable";
+        formatOnPaste = true;
         formatOnSave = true;
         guides = {
           bracketPairs = true;
@@ -70,9 +78,20 @@
         };
         largeFileOptimizations = true;
         codeActionsOnSave.source = {
-          organizeImports = true;
-          #   fixAll.eslint = true;
+          organizeImports = "always";
+          fixAll = true;
         };
+        suggest.localityBonus = true;
+        wordWrap = "wordWrapColumn";
+        wrappingIndent = "indent";
+      };
+
+      diffEditor = {
+        codeLens = true;
+        experimental = {
+          showMoves = true;
+        };
+        hideUnchangedRegions.enabled = true;
       };
 
       search = {
@@ -137,6 +156,7 @@
       "[css]" = { editor.defaultFormatter = "MikeBovenlander.formate"; };
       files = {
         autoSave = "afterDelay";
+        autoGuessEnconding = true;
         eol = "\n";
         insertFinalNewline = true;
         trimTrailingWhitespace = true;
@@ -160,21 +180,17 @@
       };
 
       git = {
+        allowForcePush = true;
         autofetch = true;
         confirmSync = false;
         enableSmartCommit = true;
       };
 
-      window = {
-        # titleBarStyle = "custom";
-        menuBarVisibility = "toggle";
-      };
-
       "editor.bracketPairColorization.enabled" = true;
       "editor.fontFamily" = "Fira Code Retina";
-      "editor.fontSize" = 21;
+      "editor.fontSize" = 19;
       "terminal.integrated.fontFamily" = "'FiraCode Nerd Font Mono', 'JetBrainsMono Nerd Font Mono SemiBold'";
-      "terminal.integrated.fontSize" = 17;
+      "terminal.integrated.fontSize" = 16;
       "terminal.integrated.tabs.focusMode" = "singleClick";
       "terminal.integrated.copyOnSelection" = true;
       "terminal.integrated.scrollback" = 5000;

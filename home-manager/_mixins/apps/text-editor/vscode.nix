@@ -31,8 +31,10 @@ in
 {
   imports = [
     ### Enable immutable vscode settings
-    # ../../config/vscode/settings.nix
+    ../../config/vscode/settings.nix
+    "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
   ];
+  services.vscode-server.enable = true;
   programs.vscode = {
     enable = true;
     # package = pkgs.unstable.vscode;

@@ -6,9 +6,9 @@ with lib.hm.gvariant;
     ../_mixins/apps/video/mpv.nix
     ../_mixins/dev/nix.nix
     # ../_mixins/apps/text-editor/vscodium.nix
-    # ../_mixins/apps/text-editor/vscode.nix
+    ../_mixins/apps/text-editor/vscode.nix
     ../_mixins/apps/browser/brave.nix
-    ../_mixins/apps/browser/chromium.nix
+    # ../_mixins/apps/browser/chromium.nix
     # ../_mixins/apps/browser/firefox.nix
     # ../_mixins/apps/text-editor/sublime.nix
   ];
@@ -50,6 +50,6 @@ with lib.hm.gvariant;
         uris = [ "qemu:///system" ];
       };
     };
-    modules.desktop.browsers.chromium.enable = true;
+    # modules.desktop.browsers.chromium.enable = true;
   };
 }
