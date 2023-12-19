@@ -127,80 +127,80 @@ in
           tridactyl-native
           fx-cast-bridge
         ] ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
-        profiles = {
-          juca = {
-            id = 0;
-            settings = sharedSettings;
-            isDefault = true;
-            # extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
-            #   # Install extensions from NUR
-            #   decentraleyes
-            #   ublock-origin
-            #   clearurls
-            #   sponsorblock
-            #   darkreader
-            #   h264ify
-            #   df-youtube
-            # ];
-            search = {
-              engines = {
-                "NixOS Options" = {
-                  urls = [{
-                    template = "https://search.nixos.org/options";
-                    params = [
-                      { name = "type"; value = "packages"; }
-                      { name = "query"; value = "{searchTerms}"; }
-                    ];
-                  }];
-                  icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-                  definedAliases = [ "@no" ];
-                };
-                "Nix Packages" = {
-                  urls = [{
-                    template = "https://search.nixos.org/packages";
-                    params = [
-                      { name = "type"; value = "packages"; }
-                      { name = "query"; value = "{searchTerms}"; }
-                    ];
-                  }];
-                  icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-                  definedAliases = [ "@np" ];
-                };
-                "NixOS Wiki" = {
-                  urls = [{ template = "https://nixos.wiki/index.php?search={searchTerms}"; }];
-                  definedAliases = [ "@nw" ];
-                };
-                "Brave" = {
-                  urls = [{
-                    template = "https://search.brave.com/search";
-                    params = [
-                      { name = "type"; value = "search"; }
-                      { name = "q"; value = "{searchTerms}"; }
-                    ];
-                  }];
-
-                  icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
-                  definedAliases = [ "@brave" "@b" ];
-                };
-                "Bing".metaData.hidden = true;
-                "Google".metaData.alias = "@g";
-                "Wikipedia".metaData.alias = "@wiki";
+      };
+      profiles = {
+        juca = {
+          id = 0;
+          settings = sharedSettings;
+          isDefault = true;
+          # extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
+          #   # Install extensions from NUR
+          #   decentraleyes
+          #   ublock-origin
+          #   clearurls
+          #   sponsorblock
+          #   darkreader
+          #   h264ify
+          #   df-youtube
+          # ];
+          search = {
+            engines = {
+              "NixOS Options" = {
+                urls = [{
+                  template = "https://search.nixos.org/options";
+                  params = [
+                    { name = "type"; value = "packages"; }
+                    { name = "query"; value = "{searchTerms}"; }
+                  ];
+                }];
+                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+                definedAliases = [ "@no" ];
               };
-              default = "Google";
-              force = true;
+              "Nix Packages" = {
+                urls = [{
+                  template = "https://search.nixos.org/packages";
+                  params = [
+                    { name = "type"; value = "packages"; }
+                    { name = "query"; value = "{searchTerms}"; }
+                  ];
+                }];
+                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+                definedAliases = [ "@np" ];
+              };
+              "NixOS Wiki" = {
+                urls = [{ template = "https://nixos.wiki/index.php?search={searchTerms}"; }];
+                definedAliases = [ "@nw" ];
+              };
+              "Brave" = {
+                urls = [{
+                  template = "https://search.brave.com/search";
+                  params = [
+                    { name = "type"; value = "search"; }
+                    { name = "q"; value = "{searchTerms}"; }
+                  ];
+                }];
+
+                icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
+                definedAliases = [ "@brave" "@b" ];
+              };
+              "Bing".metaData.hidden = true;
+              "Google".metaData.alias = "@g";
+              "Wikipedia".metaData.alias = "@wiki";
             };
+            default = "Google";
+            force = true;
           };
         };
-        policies = {
-          FirefoxHome = {
-            Highlights = false;
-            Pocket = false;
-            Snippets = false;
-            SponsporedPocket = false;
-            SponsporedTopSites = false;
-          };
-          EnableTrackingProtection = true;
+      };
+      policies = {
+        FirefoxHome = {
+          Highlights = false;
+          Pocket = false;
+          Snippets = false;
+          SponsporedPocket = false;
+          SponsporedTopSites = false;
         };
+        EnableTrackingProtection = true;
       };
     };
 
