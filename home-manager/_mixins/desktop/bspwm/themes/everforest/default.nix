@@ -22,11 +22,29 @@ in
       '';
     };
     packages = with pkgs; [
-      st
+      # st
       pulseaudio-control
       gnome.nautilus
       gnome.sushi
       nautilus-open-any-terminal
+      gtk-engine-murrine
+
+      # Fonts
+      cascadia-code
+      hasklig
+      hack-font
+      inter
+      twemoji-color-font
+      (nerdfonts.override {
+        fonts = [
+          "DroidSansMono"
+          "LiberationMono"
+          # "Iosevka"
+          "Hasklig"
+          "JetBrainsMono"
+          "FiraCode"
+        ];
+      })
     ];
   };
 

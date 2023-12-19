@@ -9,7 +9,7 @@
       source = pkgs.writeText "sublime-settings.json" ''
 				{
 					"always_show_minimap_viewport": true,
-					"minimap_width": 12,
+					"minimap_width": "12",
 					"auto_complete": true,
 					"bold_folder_labels": true,
 					"convert_tabspaces_on_save": false,
@@ -19,7 +19,7 @@
 					"ensure_newline_at_eof_on_save": true,
 					"rulers":  [ "45", "90" ],
 					"spell_check": false,
-					"lsp_format_on_save": true;
+					"lsp_format_on_save": true,
 					"folder_exclude_patterns":
 					[
 						".svn",
@@ -29,10 +29,10 @@
 						"node_modules",
 						"bower_components",
 						"result",
-						"result-dev"
+						"result-dev",
 					],
 					"font_face": "FiraCode Nerd Font Retina",
-					"font_size": 14,
+					"font_size": "14",
 					"highlight_line": true,
 					"highlight_gutter": true,
 					"highlight_modified_tabs": true,
@@ -40,13 +40,13 @@
 					"ignored_packages":
 					[
 						"Vintage",
-						"InactivePanes"
+						"InactivePanes",
 					],
-					"skip_current_file": "true",
+					"skip_current_file": true,
 					"sort_on_load_save": false,
 					"translate_tabs_to_spaces": true,
 					"trim_trailing_white_space_on_save": true,
-					"update_check": false
+					"update_check": false,
 				}
 			'';
       };
@@ -78,7 +78,7 @@
 						"Package Control",
 						"SublimeLinter",
 						"Terminus",
-					]
+					],
 				}
 			'';
       };

@@ -1,14 +1,10 @@
 { config, lib, pkgs, username, ... }:
 with lib.hm.gvariant;
-
 {
   imports = [
     ### Import selected theme
     # ./themes/default
     ./themes/everforest
-
-    ### Keybindings for all
-    # ./sxhkd.nix
   ];
   xsession = {
     enable = true;
@@ -26,8 +22,8 @@ with lib.hm.gvariant;
   };
   home = {
     packages = with pkgs; [
+      # Default packages for ALL
       pamixer
-      # gnome.gvfs
       gnome3.gvfs
       cifs-utils
       lm_sensors
@@ -41,6 +37,7 @@ with lib.hm.gvariant;
       wmctrl
       mate.mate-polkit
       brillo
+      kbdlight
       acpi
 
       # i3lock-fancy
@@ -76,31 +73,13 @@ with lib.hm.gvariant;
       # rnnoise-plugin
       # jgmenu
       # maim
-
-      # Fonts
-      cantarell-fonts
-      cascadia-code
-      hasklig
-      inconsolata
-      meslo-lgs-nf
-      font-awesome
-      hack-font
-      inter
-      twemoji-color-font
-      (nerdfonts.override {
-        # fonts = [ "DroidSansMono" "LiberationMono" "Iosevka" "Hasklig" "JetBrainsMono" "FiraCode" ];
-        fonts = [ "DroidSansMono" "LiberationMono" "Hasklig" "JetBrainsMono" "FiraCode" ];
-      })
     ];
 
     sessionVariables = {
-      # EDITOR = "nvim";
-      # BROWSER = "${browser}";
-      # TERMINAL = "${terminal}";
       GLFW_IM_MODULE = "ibus";
       LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
       QT_QPA_PLATFORMTHEME = "gtk3";
-      TERM = "xterm";
+      "TERM" = "xterm";
       GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
     };
     sessionPath = [
@@ -125,11 +104,6 @@ with lib.hm.gvariant;
 
     Install = { WantedBy = [ "graphical-session.target" ]; };
   };
-  fonts = {
-    fontconfig = {
-      enable = true;
-    };
-  };
 
   dconf.settings = {
     "ca/desrt/dconf-editor" = {
@@ -148,5 +122,4 @@ with lib.hm.gvariant;
       two-finger-scrolling-enabled = true;
     };
   };
-
 }

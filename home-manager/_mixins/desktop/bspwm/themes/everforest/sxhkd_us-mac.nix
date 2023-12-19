@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: {
+_: {
   services = {
     sxhkd = {
       enable = true;

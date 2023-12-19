@@ -37,6 +37,9 @@ in
     };
     enableNixpkgsReleaseCheck = true;
     packages = [ pkgs.nixgl.auto.nixGLDefault ];
+    sessionVariables = {
+      NIXPKGS_ALLOW_UNFREE = "1";
+    };
   };
 
   nixpkgs = {
