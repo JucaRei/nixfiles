@@ -54,6 +54,7 @@ in
       inputs.agenix.overlays.default
 
       inputs.nixgl.overlays.default
+      nur.overlay
 
       # Or define it inline, for example:
       (final: prev: {
