@@ -142,7 +142,7 @@ in
           id = 0;
           settings = sharedSettings;
           isDefault = true;
-          extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
+          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
             #   # Install extensions from NUR
             #   decentraleyes
             ublock-origin
