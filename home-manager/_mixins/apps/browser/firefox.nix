@@ -127,9 +127,10 @@ let
       noscript
       search-by-image
       sponsorblock
-    ]) ++ (with pkgs.FirefoxAddons; [
-      youtube-nonstop
     ])
+    # ++ (with pkgs.FirefoxAddons; [
+    #   youtube-nonstop
+    # ])
     ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
   };
 in
