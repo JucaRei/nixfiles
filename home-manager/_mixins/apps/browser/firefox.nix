@@ -120,14 +120,7 @@ let
       bukubrow
       tridactyl-native
       fx-cast-bridge
-    ] ++ (with pkgs.nur.repos.rycee.firefox-addons; [
-      ublock-origin
-      return-youtube-dislikes
-      don-t-fuck-with-paste
-      noscript
-      search-by-image
-      sponsorblock
-    ])
+    ]
     # ++ (with pkgs.FirefoxAddons; [
     #   youtube-nonstop
     # ])
@@ -149,16 +142,20 @@ in
           id = 0;
           settings = sharedSettings;
           isDefault = true;
-          # extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
-          #   # Install extensions from NUR
-          #   decentraleyes
-          #   ublock-origin
-          #   clearurls
-          #   sponsorblock
-          #   darkreader
-          #   h264ify
-          #   df-youtube
-          # ];
+          extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
+            #   # Install extensions from NUR
+            #   decentraleyes
+            ublock-origin
+            return-youtube-dislikes
+            don-t-fuck-with-paste
+            noscript
+            search-by-image
+            #   clearurls
+            sponsorblock
+            #   darkreader
+            #   h264ify
+            #   df-youtube
+          ];
           search = {
             engines = {
               "NixOS Options" = {
@@ -187,18 +184,18 @@ in
                 urls = [{ template = "https://nixos.wiki/index.php?search={searchTerms}"; }];
                 definedAliases = [ "@nw" ];
               };
-              "Brave" = {
-                urls = [{
-                  template = "https://search.brave.com/search";
-                  params = [
-                    { name = "type"; value = "search"; }
-                    { name = "q"; value = "{searchTerms}"; }
-                  ];
-                }];
+              # "Brave" = {
+              #   urls = [{
+              #     template = "https://search.brave.com/search";
+              #     params = [
+              #       { name = "type"; value = "search"; }
+              #       { name = "q"; value = "{searchTerms}"; }
+              #     ];
+              #   }];
 
-                icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
-                definedAliases = [ "@brave" "@b" ];
-              };
+              #   icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
+              #   definedAliases = [ "@brave" "@b" ];
+              # };
               "Bing".metaData.hidden = true;
               "Google".metaData.alias = "@g";
               "Wikipedia".metaData.alias = "@wiki";
@@ -219,113 +216,6 @@ in
         EnableTrackingProtection = true;
       };
     };
-
-    # programs = {
-    #   firefox = {
-    #     enable = true;
-    #     # package = pkgs.unstable.firefox;
-    #     package = with pkgs; wrapFirefox firefox-unwrapped {
-    #     # package = with pkgs; wrapFirefox librewolf-unwrapped {
-    #       nativeMessagingHosts = with pkgs; [
-    #         bukubrow
-    #         tridactyl-native
-    #         fx-cast-bridge
-    #       ] ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
-    #       # ] ++ (with config.nur.repos.rycee.firefox-addons; [
-    #       #   ublock-origin
-    #       #   return-youtube-dislikes
-    #       #   don-t-fuck-with-paste
-    #       #   noscript
-    #       #   search-by-image
-    #       #   sponsorblock
-    #       # ]) ++ (with pkgs.FirefoxAddons; [
-    #       #   youtube-nonstop
-    #       # ]);
-    #       # ++ (lib.optional config.programs.mpv.enable pkgs.ff2mpv);
-    #       profiles = {
-    #         juca = {
-    #           id = 0;
-    #           settings = sharedSettings;
-    #           isDefault = true;
-    #           # extensions = with inputs.pkgs.nur.repos.rycee.firefox-addons; [
-    #           #   # Install extensions from NUR
-    #           #   decentraleyes
-    #           #   ublock-origin
-    #           #   clearurls
-    #           #   sponsorblock
-    #           #   darkreader
-    #           #   h264ify
-    #           #   df-youtube
-    #           # ];
-    #           search = {
-    #             engines = {
-    #               "NixOS Options" = {
-    #                 urls = [{
-    #                   template = "https://search.nixos.org/options";
-    #                   params = [
-    #                     { name = "type"; value = "packages"; }
-    #                     { name = "query"; value = "{searchTerms}"; }
-    #                   ];
-    #                 }];
-    #                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-    #                 definedAliases = [ "@no" ];
-    #               };
-    #               "Nix Packages" = {
-    #                 urls = [{
-    #                   template = "https://search.nixos.org/packages";
-    #                   params = [
-    #                     { name = "type"; value = "packages"; }
-    #                     { name = "query"; value = "{searchTerms}"; }
-    #                   ];
-    #                 }];
-    #                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-    #                 definedAliases = [ "@np" ];
-    #               };
-    #               "NixOS Wiki" = {
-    #                 urls = [{ template = "https://nixos.wiki/index.php?search={searchTerms}"; }];
-    #                 definedAliases = [ "@nw" ];
-    #               };
-    #               "Brave" = {
-    #                 urls = [{
-    #                   template = "https://search.brave.com/search";
-    #                   params = [
-    #                     { name = "type"; value = "search"; }
-    #                     { name = "q"; value = "{searchTerms}"; }
-    #                   ];
-    #                 }];
-
-    #                 icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
-    #                 definedAliases = [ "@brave" "@b" ];
-    #               };
-    #               "Bing".metaData.hidden = true;
-    #               "Google".metaData.alias = "@g";
-    #               "Wikipedia".metaData.alias = "@wiki";
-    #             };
-    #             default = "Google";
-    #             force = true;
-    #           };
-    #         };
-    #       };
-    #       policies = {
-    #         FirefoxHome = {
-    #           Highlights = false;
-    #           Pocket = false;
-    #           Snippets = false;
-    #           SponsporedPocket = false;
-    #           SponsporedTopSites = false;
-    #         };
-    #         EnableTrackingProtection = true;
-    #       };
-    #     };
-    #   };
-    # };
-
-
-    # home = {
-    #   sessionVariables = {
-    #     DEFAULT_BROWSER = "${pkgs.librewolf-unwrapped}/bin/librewolf";
-    #   };
-    # };
 
     # xdg = {
     #   mime.enable = ifDefault true;
