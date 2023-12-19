@@ -133,6 +133,9 @@ let
     # ])
     ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
   };
+
+  # browser = "firefox";
+  browser = "librewolf";
 in
 {
   programs = {
@@ -374,7 +377,20 @@ in
   };
   home = {
     sessionVariables = {
-      DEFAULT_BROWSER = "${librewolf}/bin/librewolf";
+      DEFAULT_BROWSER = "${pkgs.librewolf-unwrapped}/bin/librewolf";
     };
+  };
+
+  xdg.mimeApps.defaultApplications = {
+    "application/x-extension-htm" = "${browser}.desktop";
+    "application/x-extension-html" = "${browser}.desktop";
+    "application/x-extension-shtml" = "${browser}.desktop";
+    "application/x-extension-xht" = "${browser}.desktop";
+    "application/x-extension-xhtml" = "${browser}.desktop";
+    "application/xhtml+xml" = "${browser}.desktop";
+    "text/html" = "${browser}.desktop";
+    "x-scheme-handler/chrome" = "${browser}.desktop";
+    "x-scheme-handler/http" = "${browser}.desktop";
+    "x-scheme-handler/https" = "${browser}.desktop";
   };
 }
