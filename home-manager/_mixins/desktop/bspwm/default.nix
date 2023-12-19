@@ -40,7 +40,7 @@ with lib.hm.gvariant;
       xdo
       wmctrl
       mate.mate-polkit
-      brightnessctl
+      brillo
       acpi
 
       # i3lock-fancy
