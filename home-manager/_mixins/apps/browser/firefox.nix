@@ -115,19 +115,31 @@ let
     #"extensions.update.enabled" = false;
     #"extensions.update.autoUpdateDefault" = false;
   };
+  librewolf = with pkgs; wrapFirefox librewolf-unwrapped {
+    nativeMessagingHosts = with pkgs; [
+      bukubrow
+      tridactyl-native
+      fx-cast-bridge
+    ] ++ (with config.nur.repos.rycee.firefox-addons; [
+      ublock-origin
+      return-youtube-dislikes
+      don-t-fuck-with-paste
+      noscript
+      search-by-image
+      sponsorblock
+    ]) ++ (with pkgs.FirefoxAddons; [
+      youtube-nonstop
+    ])
+    ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
+  };
 in
 {
   programs = {
     firefox = {
       enable = true;
       # package = pkgs.unstable.firefox;
-      package = with pkgs; wrapFirefox firefox-unwrapped {
-        nativeMessagingHosts = with pkgs; [
-          bukubrow
-          tridactyl-native
-          fx-cast-bridge
-        ] ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
-      };
+      # package = with pkgs; wrapFirefox firefox-unwrapped {
+      package = librewolf;
       profiles = {
         juca = {
           id = 0;
@@ -358,5 +370,10 @@ in
     #       icon = "firefox";
     #     })
     #   ];
+  };
+  home = {
+    sessionVariables = {
+      DEFAULT_BROWSER = "${librewolf}/bin/librewolf";
+    };
   };
 }
