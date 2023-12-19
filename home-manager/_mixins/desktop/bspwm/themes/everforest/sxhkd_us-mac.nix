@@ -1,4 +1,4 @@
-{pkgs,...}: {
+{pkgs, lib,...}: {
   services = {
     sxhkd = {
       enable = true;
@@ -92,14 +92,14 @@
         "XF86AudioRaiseVolume" = "pactl -- set-sink-volume 0 +2%"; # Raise volume
         "XF86AudioLowerVolume" = "pactl -- set-sink-volume 0 -2%"; # Lower volume
         "XF86AudioMicMute" = "pactl set-source-mute 1 toggle"; # Toggle mute mic audio
-        "XF86KbdBrightnessUp" = "${pkgs.kbdlight} up 2";
-        "XF86KbdBrightnessDown" = "${pkgs.kbdlight} down 2";
+        "XF86KbdBrightnessUp" = "exec --no-startup-id ${lib.getExe pkgs.kbdlight} -e up 2";
+        "XF86KbdBrightnessDown" = "exec --no-startup-id ${lib.getExe pkgs.kbdlight} -e down 2";
         #"XF86MonBrightnessUp" = "xbacklight -inc 2"; # Brightness down
         #"XF86MonBrightnessDown" = "xbacklight -dec 2"; # Brightness down
         # "XF86MonBrightnessUp" = "light -A 2"; # Brightness up
         # "XF86MonBrightnessDown" = "light -U 2"; # Brightness down
-        "XF86MonBrightnessUp" = "${pkgs.brillo} -A 2"; # Brightness up
-        "XF86MonBrightnessDown" = "${pkgs.brillo} -U 2"; # Brightness down
+        "XF86MonBrightnessDown" = "exec --no-startup-id ${lib.getExe pkgs.brillo} -e -U 1";
+        "XF86MonBrightnessUp" = "exec --no-startup-id ${lib.getExe pkgs.brillo} -e -A 1";
         # "XF86MonBrightnessDown" = "light -U  5"; # Brightness down
         # "XF86MonBrightnessUp" = "light -A 5";
 
