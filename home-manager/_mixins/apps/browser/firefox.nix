@@ -121,8 +121,8 @@ in
     firefox = {
       enable = true;
       # package = pkgs.unstable.firefox;
-      # package = with pkgs; wrapFirefox firefox-unwrapped {
-      package = with pkgs; wrapLibreWolf librewolf-unwrapped {
+      package = with pkgs; wrapFirefox firefox-unwrapped {
+      # package = with pkgs; wrapFirefox librewolf-unwrapped {
         nativeMessagingHosts = with pkgs; [
           bukubrow
           tridactyl-native
