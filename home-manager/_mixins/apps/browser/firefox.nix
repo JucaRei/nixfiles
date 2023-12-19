@@ -115,7 +115,8 @@ let
     #"extensions.update.enabled" = false;
     #"extensions.update.autoUpdateDefault" = false;
   };
-  librewolf = with pkgs; wrapFirefox librewolf-unwrapped {
+  # librewolf = with pkgs; wrapFirefox librewolf-unwrapped {
+  firefox = with pkgs.unstable; wrapFirefox firefox-unwrapped {
     nativeMessagingHosts = with pkgs; [
       bukubrow
       tridactyl-native
@@ -127,16 +128,15 @@ let
     ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
   };
 
-  # browser = "firefox";
-  browser = "librewolf";
+  browser = "firefox";
+  # browser = "librewolf";
 in
 {
   programs = {
     firefox = {
       enable = true;
       # package = pkgs.unstable.firefox;
-      # package = with pkgs; wrapFirefox firefox-unwrapped {
-      package = librewolf;
+      package = firefox;
       profiles = {
         juca = {
           id = 0;
@@ -267,7 +267,7 @@ in
   };
   home = {
     sessionVariables = {
-      DEFAULT_BROWSER = "${pkgs.librewolf-unwrapped}/bin/librewolf";
+      DEFAULT_BROWSER = "${firefox}/bin/${browser}";
     };
   };
 
