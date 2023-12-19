@@ -127,8 +127,7 @@ in
           bukubrow
           tridactyl-native
           fx-cast-bridge
-        ] ++ (lib.optional config.programs.mpv.enable pkgs.ff2mpv)
-        ++ (with config.nur.repos.rycee.firefox-addons; [
+        ] ++ (with config.nur.repos.rycee.firefox-addons; [
           ublock-origin
           return-youtube-dislikes
           don-t-fuck-with-paste
@@ -138,6 +137,7 @@ in
         ]) ++ (with pkgs.FirefoxAddons; [
           youtube-nonstop
         ]);
+        # ++ (lib.optional config.programs.mpv.enable pkgs.ff2mpv);
         profiles = {
           juca = {
             id = 0;
