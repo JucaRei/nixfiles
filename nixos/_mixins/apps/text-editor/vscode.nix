@@ -58,7 +58,7 @@
         {
           # name = "vscode-projects";
           name = "l13-projects";
-          publisher = "L13RARY";  #L13RARY.l13-projects
+          publisher = "L13RARY"; #L13RARY.l13-projects
           # publisher = "l13";
           version = "1.1.1";
           sha256 = "sha256-HVlnHzIxRZbTXu0zg9DXUAXaydmQaIt9H4ZYmmrniR0=";

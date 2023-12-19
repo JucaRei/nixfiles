@@ -1,9 +1,9 @@
 # { config, lib, pkgs, wmType, font, params, ... }:
 { config, pkgs, ... }:
-  let
+let
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   librewolf = (nixGL pkgs.librewolf);
-  in
+in
 {
   # Module installing librewolf as default browser
   # home.packages = [ pkgs.librewolf ];
@@ -33,6 +33,10 @@
   # defaultPref("font.name.serif.x-western","'' + font + ''");
   # pref("font.name.serif.x-western","'' + font + ''");
 
+  # defaultPref("webgl.disabled",true);
+  # defaultPref("gfx.webrender.software.opengl",false);
+
+
   home.file.".librewolf/librewolf.overrides.cfg".text = ''
     defaultPref("font.name.serif.x-western");
 
@@ -44,9 +48,22 @@
     defaultPref("privacy.clearOnShutdown.history",false);
     defaultPref("privacy.clearOnShutdown.downloads",true);
     defaultPref("privacy.clearOnShutdown.cookies",false);
-    defaultPref("gfx.webrender.software.opengl",false);
-    defaultPref("webgl.disabled",true);
+    defaultPref("webgl.dxgl.enabled", true);
+    defaultPref("webgl.disabled", false);
     pref("font.name.serif.x-western");
+    defaultPref("webgl.enable-webgl2", true);
+    defaultPref("webgl.min_capability_mode", false);
+    defaultPref("webgl.disable-extensions", false);
+    defaultPref("webgl.disable-fail-if-major-performance-caveat", true);
+    defaultPref("webgl.enable-debug-renderer-info", true);
+
+    defaultPref("pdfjs.enableWebGL", true);
+
+    defaultPref("dom.event.clipboardevents.enabled", true);
+
+    defaultPref("dom.webaudio.enabled", true);
+
+    defaultPref("identity.fxaccounts.enabled", true);
 
     pref("font.size.variable.x-western",20);
     pref("browser.toolbars.bookmarks.visibility","always");
