@@ -419,6 +419,7 @@
   };
   specialisation."VM-passthrough".configuration = {
     system.nixos.tags = [ "VM-passthrough" ];
+    boot.loader.grub.configurationName = lib.mkOverride 40 "Pass-through Nvidia";
     vfio.enable = true;
   };
 }

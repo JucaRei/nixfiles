@@ -8,6 +8,7 @@
     ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/hardware/sound/pipewire.nix
     # ../../_mixins/hardware/bluetooth/default.nix
+    # ../../_mixins/hardware/graphics/default.nix
     ../../_mixins/sys/swapfile.nix
     # ../../_mixins/services/security/doas.nix
     ../../_mixins/services/security/sudo.nix
@@ -88,7 +89,10 @@
 
 
   services.xserver = {
-    videoDrivers = [ "qxl" ];
+    videoDrivers = [
+      "qxl"
+      "nvidia"
+    ];
     layout = lib.mkForce "br";
     exportConfiguration = true;
     virtualScreen = {
@@ -131,6 +135,9 @@
       # nixd
       unstable.nil
       nixpkgs-fmt
+
+      glxinfo
+      inxi
     ];
   };
   nixpkgs.hostPlatform = lib.mkDefault

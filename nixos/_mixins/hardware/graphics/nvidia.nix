@@ -453,7 +453,7 @@ in
       #     system.nixos.tags = [ "disable" ];
       #     boot = {
       #       loader.grub.configurationName = lib.mkForce "Nvidia-Disabled";
-      #       extraModprobeConfig = ''
+      #       extraModpr obeConfig = ''
       #         blacklist nouveau
       #         options nouveau modeset=0
       #       '';
