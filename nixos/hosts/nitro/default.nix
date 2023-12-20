@@ -19,6 +19,7 @@
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
+    ../../_mixins/virtualization/gpu_isolate.nix
     ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/browser/chromium.nix
@@ -90,6 +91,7 @@
     kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
     kernelParams = [
+      "intel_iommu=on"
       "mitigations=off"
       "zswap.enabled=1"
       "zswap.compressor=lz4hc"
@@ -414,5 +416,9 @@
       AllowSuspendThenHibernate=no
       AllowHybridSleep=no
     '';
+  };
+  specialisation."VM-passthrough".configuration = {
+    system.nixos.tags = [ "VM-passthrough" ];
+    vfio.enable = true;
   };
 }

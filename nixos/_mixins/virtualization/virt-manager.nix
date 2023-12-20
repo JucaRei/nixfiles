@@ -1,19 +1,64 @@
 { pkgs, config, username, lib, hostname, ... }:
-# let
-#   inherit (lib) mkIf mkOption types;
-#   cfg = config.virtualization.firmware;
-# in
-{
-  imports = [
+let
+  hugepage_handler = pkgs.writeShellScript "hp_handler.sh" ''
+    xml_file="/var/lib/libvirt/qemu/$1.xml"
 
-  ];
+    function extract_number() {
+        local xml_file=$1
+        local number=$(grep -oPm1 "(?<=<memory unit='KiB'>)[^<]+" $xml_file)
+        echo $((number/1024))
+    }
+
+    function prepare() {
+        # Calculate number of hugepages to allocate from memory (in MB)
+        HUGEPAGES="$(($1/$(($(grep Hugepagesize /proc/meminfo | ${pkgs.gawk}/bin/gawk '{print $2}')/1024))))"
+
+        echo "Allocating hugepages..."
+        echo $HUGEPAGES > /proc/sys/vm/nr_hugepages
+        ALLOC_PAGES=$(cat /proc/sys/vm/nr_hugepages)
+
+        TRIES=0
+        while (( $ALLOC_PAGES != $HUGEPAGES && $TRIES < 1000 ))
+        do
+            echo 1 > /proc/sys/vm/compact_memory
+            ## defrag ram
+            echo $HUGEPAGES > /proc/sys/vm/nr_hugepages
+            ALLOC_PAGES=$(cat /proc/sys/vm/nr_hugepages)
+            echo "Successfully allocated $ALLOC_PAGES / $HUGEPAGES"
+            let TRIES+=1
+        done
+
+        if [ "$ALLOC_PAGES" -ne "$HUGEPAGES" ]
+        then
+            echo "Not able to allocate all hugepages. Reverting..."
+            echo 0 > /proc/sys/vm/nr_hugepages
+            exit 1
+        fi
+    }
+
+    function release() {
+        echo 0 > /proc/sys/vm/nr_hugepages
+    }
+
+    case $2 in
+        prepare)
+            number=$(extract_number $xml_file)
+            prepare $number
+            ;;
+        release)
+            release
+            ;;
+    esac
+  '';
+in
+{
 
   boot = {
     initrd = {
       kernelModules = [
-        "vfio_pci"
-        "vfio"
-        "vfio_iommu_type1"
+        # "vfio_pci"
+        # "vfio"
+        # "vfio_iommu_type1"
         # "vfio_virqfd" ### already in path since kernel 6.2
         "virtio_balloon"
         "virtio_console"
@@ -51,11 +96,12 @@
     # kernelModules = [ "vfio_virqfd" "vfio_pci" "vfio_iommu_type1" "vfio" ];
 
     # Enable IOMMU
-    kernelParams = [
-      # Prevents Linux from touching devices which cannot be passed through
-      "iommu=pt" # (pass-through)
-      "intel_iommu=on" # needs to enable if on intel
-    ];
+    # kernelParams = [
+    #   # Prevents Linux from touching devices which cannot be passed through
+    #   "iommu=pt" # (pass-through)
+    #   "intel_iommu=on" # needs to enable if on intel
+    #   "vfio-pci.ids=10de:1c8d,10de:0fb9"
+    # ];
     binfmt = {
       emulatedSystems = [
         "aarch64-linux"
@@ -116,6 +162,9 @@
           package = pkgs.swtpm-tpm2;
         };
       };
+      hooks.qemu = {
+        hugepages_handler = "${hugepage_handler}";
+      };
       onShutdown = "suspend";
       onBoot = "ignore";
     };
@@ -131,6 +180,7 @@
       win-spice
       win-virtio
       swtpm # TPM
+      libhugetlbfs
       virglrenderer # Virtual OpenGL
       # virt-viewer # Remote VM/
       qemu # UEFI Firmware
