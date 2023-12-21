@@ -29,8 +29,10 @@
     };
 
     # Power management & Analyze power consumption on Intel-based laptops
-    power-profiles-daemon.enable = false;
-    upower = true;
+    power-profiles-daemon.enable = lib.mkForce false;
+    upower = {
+      enable = true;
+    };
   };
   powerManagement = {
     # Enable power management (do not disable this unless you have a reason to).

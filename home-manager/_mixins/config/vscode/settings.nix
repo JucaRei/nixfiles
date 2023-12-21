@@ -19,7 +19,7 @@
         cursorStyle = "line";
         cursorWidth = 2;
         fontFamily = "'UbuntuMono Nerd Font Mono Regular', 'monospace'";
-        fontSize = 16;
+        fontSize = 15;
         smoothScrolling = true;
         copyOnSelection = true;
         scrollback = 5000;
@@ -188,9 +188,9 @@
 
       "editor.bracketPairColorization.enabled" = true;
       "editor.fontFamily" = "Fira Code Retina";
-      "editor.fontSize" = 19;
+      "editor.fontSize" = 18;
       "terminal.integrated.fontFamily" = "'FiraCode Nerd Font Mono', 'JetBrainsMono Nerd Font Mono SemiBold'";
-      "terminal.integrated.fontSize" = 16;
+      # "terminal.integrated.fontSize" = 15;
       "terminal.integrated.tabs.focusMode" = "singleClick";
       "terminal.integrated.copyOnSelection" = true;
       "terminal.integrated.scrollback" = 5000;

@@ -262,7 +262,7 @@
     acpid = {
       enable = true;
     };
-    power-profiles-daemon.enable = lib.mkForce true;
+    power-profiles-daemon.enable = lib.mkDefault true;
     # upower.enable = true;
     # udev.extraRules = lib.mkMerge [
     # ''ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"'' # autosuspend USB devices
