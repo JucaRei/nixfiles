@@ -6,10 +6,10 @@ source $HOME/.aether-corevar
 rofi_command="rofi -theme themes/powermenu.rasi"
 
 # Options
-shutdown="/usr/sbin/shutdown"
-reboot="/usr/sbin/reboot"
+shutdown="exec systemctl poweroff -i"
+reboot="exec systemctl reboot"
 lock=" "
-suspend=""
+suspend="exec systemctl suspend"
 logout="bspcquit"
 
 # Variable passed to rofi

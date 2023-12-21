@@ -19,7 +19,7 @@
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
-    ../../_mixins/virtualization/gpu_isolate.nix
+    #../../_mixins/virtualization/gpu_isolate.nix
     ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/browser/chromium.nix
@@ -417,9 +417,9 @@
       AllowHybridSleep=no
     '';
   };
-  specialisation."VM-passthrough".configuration = {
-    system.nixos.tags = [ "VM-passthrough" ];
-    boot.loader.grub.configurationName = lib.mkOverride 40 "Pass-through Nvidia";
-    vfio.enable = true;
-  };
+  #specialisation."VM-passthrough".configuration = {
+  #  system.nixos.tags = [ "VM-passthrough" ];
+  #  boot.loader.grub.configurationName = lib.mkOverride 40 "Pass-through Nvidia";
+  #  vfio.enable = false;
+  #};
 }
