@@ -22,6 +22,7 @@ in
             "vfio_pci"
             "vfio"
             "vfio_iommu_type1"
+            "kvmfr"
             # "vfio_virqfd" ## already in path since kernel 6.2
 
             # "clearcpuid=514" # Fixes certain wine games crash on launch
@@ -31,11 +32,22 @@ in
             #"nvidia_drm"
           ];
           preDeviceCommands = ''
+            # PCI devices to not load and use vfio-pci insted for
+            #           gpu         gpu-audio
             DEVS="0000:01:00.0 0000:01:00.1"
             for DEV in $DEVS; do
               echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
             done
             modprobe -i vfio-pci
+
+            # from https://forums.unraid.net/topic/83680-solved-nvidia-gpu-pass-through-via-rom-edit-method/?do=findComment&comment=775838
+            #
+            # fixes: "vfio-pci 0000:0d:00.0: BAR 1: can't reserve [mem
+            # 0xb0000000-0xbfffffff 64bit pref]" error preventing video from being
+            # loaded in vm
+            echo 0 > /sys/class/vtconsole/vtcon0/bind
+            echo 0 > /sys/class/vtconsole/vtcon1/bind
+            echo efi-framebuffer.0 > /sys/bus/platform/drivers/efi-framebuffer/unbind
           '';
         };
         # kernelModules = [
@@ -50,7 +62,7 @@ in
         kernelParams = [
           # enable IOMMU
           "intel_iommu=on"
-          "iommu=pt"
+          "intel_iommu=pt"
           "pcie_aspm=off"
           "fbcon=map:1"
           "pci-stub.ids=10de:1c8d,10de:0fb9"
@@ -82,6 +94,7 @@ in
       environment.systemPackages = with pkgs; [
         virt-manager
         looking-glass-client
+        guestfs-tools
         # scream-receivers
         # gnome3.dconf # needed for saving settings in virt-manager
         libguestfs # needed to virt-sparsify qcow2 files

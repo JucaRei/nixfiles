@@ -22,6 +22,9 @@
 
       aliases = {
         lg = "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
+        lg2 = ''
+          log --graph --name-status --pretty=format:"%C(red)%h %C(reset)(%cd) %C(green)%an %Creset%s %C(yellow)%d%Creset" --date=relative'';
+
         unstage = "reset HEAD --";
         rbase = "rebase --interactive --autostash --committer-date-is-author-date";
         clone = "clone --depth=1 --recurse-submodules --shallow-submodules";

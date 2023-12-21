@@ -14,6 +14,7 @@
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/cpu/intel-cpu.nix
     ../../_mixins/hardware/boot/multiboot.nix
+    ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/virtualization
     ../../_mixins/virtualization/quickemu.nix
     ../../_mixins/services/security/sudo.nix

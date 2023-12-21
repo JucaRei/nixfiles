@@ -215,6 +215,19 @@ in
         };
         EnableTrackingProtection = true;
       };
+      extraPolicies = {
+        CaptivePortal = false;
+        DisableFirefoxStudies = true;
+        DisablePocket = true;
+        DisableFirefoxAccounts = true;
+        DisableFormHistory = true;
+        DisplayBookmarksToolbar = true;
+        DontCheckDefaultBrowser = true;
+        FirefoxHome = {
+          Pocket = false;
+          Snippets = false;
+        };
+      };
     };
 
     # xdg = {
