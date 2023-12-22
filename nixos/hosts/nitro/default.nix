@@ -92,11 +92,16 @@
     kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
     kernelParams = [
-      "intel_iommu=on"
+      "quiet"
+      "rd.plymouth=0"
+      "plymouth.enable=0"
+      "log-level=0"
+      "systemd.log_level=0"
+      "systemd.show_status=0"
       "mitigations=off"
       "zswap.enabled=1"
       "zswap.compressor=lz4hc"
-      "zswap.max_pool_percent=10"
+      "zswap.max_pool_percent=20"
       "zswap.zpool=z3fold"
       "mem_sleep_default=deep"
     ];

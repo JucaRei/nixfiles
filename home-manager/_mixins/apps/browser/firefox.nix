@@ -3,9 +3,26 @@ with lib;
 let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
 
+  csshacks = pkgs.fetchFromGitHub {
+    owner = "MrOtherGuy";
+    repo = "firefox-csshacks";
+    rev = "1ff9383984632fe91b8466730679e019de13c745";
+    sha256 = "sha256-KmkiSpxzlsPBWoX51o27l+X1IEh/Uv8RMkihGRxg98o=";
+  };
+
   # ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
 
   sharedSettings = {
+    policies = {
+      FirefoxHome = {
+        Highlights = false;
+        Pocket = false;
+        Snippets = false;
+        SponsporedPocket = false;
+        SponsporedTopSites = false;
+      };
+      EnableTrackingProtection = true;
+    };
     # Privacy & Security Improvements
     #"browser.contentblocking.category" = "strict";
     "browser.send_pings" = false;
@@ -114,9 +131,16 @@ let
     #"services.sync.engine.passwords" = false;
     #"extensions.update.enabled" = false;
     #"extensions.update.autoUpdateDefault" = false;
+
+    userChrome = builtins.concatStringsSep "\n" (builtins.map builtins.readFile [
+      "${csshacks}/chrome/hide_tabs_toolbar.css"
+      # Preferable, but there's too many bugs with menu dropdowns not dropping
+      # up when they're at the bottom of the screen
+      # "${csshacks}/chrome/navbar_below_content.css"
+    ]);
   };
   # librewolf = with pkgs; wrapFirefox librewolf-unwrapped {
-  firefox = with pkgs.unstable; wrapFirefox firefox-unwrapped {
+  firefox-gl = with pkgs.unstable; wrapFirefox firefox-unwrapped {
     nativeMessagingHosts = with pkgs; [
       bukubrow
       tridactyl-native
@@ -136,7 +160,7 @@ in
     firefox = {
       enable = true;
       # package = pkgs.unstable.firefox;
-      package = firefox;
+      package = firefox-gl;
       profiles = {
         juca = {
           id = 0;
@@ -204,29 +228,19 @@ in
             force = true;
           };
         };
-      };
-      policies = {
-        FirefoxHome = {
-          Highlights = false;
-          Pocket = false;
-          Snippets = false;
-          SponsporedPocket = false;
-          SponsporedTopSites = false;
-        };
-        EnableTrackingProtection = true;
-      };
-      extraPolicies = {
-        CaptivePortal = false;
-        DisableFirefoxStudies = true;
-        DisablePocket = true;
-        DisableFirefoxAccounts = true;
-        DisableFormHistory = true;
-        DisplayBookmarksToolbar = true;
-        DontCheckDefaultBrowser = true;
-        FirefoxHome = {
-          Pocket = false;
-          Snippets = false;
-        };
+        # extraPolicies = {
+        #   CaptivePortal = false;
+        #   DisableFirefoxStudies = true;
+        #   DisablePocket = true;
+        #   DisableFirefoxAccounts = true;
+        #   DisableFormHistory = true;
+        #   DisplayBookmarksToolbar = true;
+        #   DontCheckDefaultBrowser = true;
+        #   FirefoxHome = {
+        #     Pocket = false;
+        #     Snippets = false;
+        #   };
+        # };
       };
     };
 
@@ -280,7 +294,7 @@ in
   };
   home = {
     sessionVariables = {
-      DEFAULT_BROWSER = "${firefox}/bin/${browser}";
+      DEFAULT_BROWSER = "${firefox-gl}/bin/${browser}";
     };
   };
 

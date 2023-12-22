@@ -49,10 +49,10 @@
     kernelParams = [
       # The 'splash' arg is included by the plymouth option
       "boot.shell_on_fail"
-      "loglevel=3"
-      "rd.systemd.show_status=false"
-      "rd.udev.log_level=3"
-      "udev.log_priority=3"
+      # "loglevel=3"
+      # "rd.systemd.show_status=false"
+      # "rd.udev.log_level=3"
+      # "udev.log_priority=3"
       "vt.global_cursor_default=0"
       "mitigations=off"
     ];
@@ -139,6 +139,10 @@
       EDITOR = "micro";
       SYSTEMD_EDITOR = "micro";
       VISUAL = "micro";
+    };
+    etc = {
+      # Allow for dynamic hosts file override (by root)
+      hosts.mode = "0644";
     };
   };
 
@@ -239,4 +243,8 @@
 
   };
   # enableUnifiedCgroupHierarchy = lib.mkForce true; #cgroupsv2
+
+  # Controlling external screens
+  services.ddccontrol.enable = true;
+  hardware.i2c.enable = true;
 }

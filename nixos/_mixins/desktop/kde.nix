@@ -18,6 +18,9 @@
           enable = true; # Display Manager
           autoNumlock = true;
 
+          wayland = {
+            enable = true;
+          };
           settings = {
             Theme = {
               CursorTheme = "layan-border_cursors";

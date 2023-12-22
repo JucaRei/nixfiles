@@ -30,6 +30,7 @@ in
         "dialout"
         "render"
         "plugdev"
+        "i2c"
         "systemd-journal"
         "corectrl"
         "lxd"

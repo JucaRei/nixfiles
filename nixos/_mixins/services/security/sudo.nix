@@ -31,7 +31,7 @@ in
         ${username} ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemctl
         ${username} ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemd-run
         Defaults env_reset,timestamp_timeout=-1
-        Defaults 	insults
+        Defaults:insults,root,%wheel timestamp_timeout=30
       '';
       configFile = ''
         Defaults lecture = always
@@ -39,6 +39,18 @@ in
       '';
       execWheelOnly = false;
       wheelNeedsPassword = true;
+      extraRules = [
+        {
+          users = [ "${username}" ];
+          commands = [
+            { command = "${pkgs.tailscale}/bin/tailscale up --accept-routes --accept-dns=false"; options = [ "NOPASSWD" "SETENV" ]; }
+            { command = "${pkgs.tailscale}/bin/tailscale down"; options = [ "NOPASSWD" "SETENV" ]; }
+            { command = "/run/current-system/sw/bin/systemctl reboot"; options = [ "NOPASSWD" "SETENV" ]; }
+            { command = "/run/current-system/sw/bin/systemctl shutdown -r now"; options = [ "NOPASSWD" "SETENV" ]; }
+            { command = "/run/current-system/sw/bin/systemctl suspend"; options = [ "NOPASSWD" "SETENV" ]; }
+          ];
+        }
+      ];
     };
   };
 }

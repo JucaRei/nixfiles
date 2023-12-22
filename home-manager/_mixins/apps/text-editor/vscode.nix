@@ -150,6 +150,18 @@ in
         #   sha256 = "sha256-kfpRByJDcGY3W9+ELBzDOUMl06D/vyPlN//wPgQhByk=";
         # }
         {
+          name = "separators";
+          publisher = "alefragnani";
+          version = "2.5.0";
+          sha256 = "sha256-N3E1bzNEpqwDTGwPD0A/VGQnryDtHjEnRcKvwi1upp4=";
+        }
+        {
+          name = "workspace";
+          publisher = "Fooxly";
+          version = "1.3.0";
+          sha256 = "sha256-hpbuz8b3g9oCv6IRBcg+bdDPXbVvBqtkxgyD43QNI44=";
+        }
+        {
           name = "vscode-thunder-client";
           publisher = "rangav";
           version = "2.13.5";

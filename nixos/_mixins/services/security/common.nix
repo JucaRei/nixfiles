@@ -69,6 +69,8 @@ _: {
       mount = {
         enable = true;
       };
+      # Enable pam_systemd module to set dbus environment variable.
+      services.login.startSession = true;
     };
   };
 }

@@ -3,8 +3,6 @@
   # Only include desktop components if one is supplied.
   # - https://nixos.wiki/wiki/Nix_Language:_Tips_%26_Tricks#Coercing_a_relative_path_with_interpolated_variables_to_an_absolute_path_.28for_imports.29
   imports = [
-    # (./. + "/${hostname}/boot.nix")
-    # (./. + "/${hostname}/hardware.nix")
     # ./_mixins/base
     # ./_mixins/boxes
     # ./_mixins/users/root
@@ -46,6 +44,38 @@
       #     patches = [ ./change-hello-to-hi.patch ];
       #   });
       # })
+
+      ## Testing
+      (self: super: {
+        # libsForQt5 = super.libsForQt5.overrideScope (qt5self: qt5super: {
+        #   sddm = qt5super.sddm.overrideAttrs (old: {
+        #     patches = (old.patches or [ ]) ++ [
+        #       (pkgs.fetchpatch {
+        #         url =
+        #           "https://github.com/sddm/sddm/commit/1a78805be83449b1b9c354157320f7730fcc9f36.diff";
+        #         sha256 = "sha256-JNsVTJNZV6T+SPqPkaFf3wg8NDqXGx8NZ4qQfZWOli4=";
+        #       })
+        #     ];
+        #   });
+        # });
+
+        tor-browser-bundle-bin = super.symlinkJoin {
+          name = super.tor-browser-bundle-bin.name;
+          paths = [ super.tor-browser-bundle-bin ];
+          buildInputs = [ super.makeWrapper ];
+          postBuild = ''
+            wrapProgram "$out/bin/tor-browser" \
+              --set MOZ_ENABLE_WAYLAND 1
+          '';
+        };
+
+        mpv = super.mpv.override { scripts = with super.mpvScripts; [ mpris ]; };
+        # vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
+        deadbeef = super.deadbeef.override { wavpackSupport = true; };
+        deadbeef-with-plugins = super.deadbeef-with-plugins.override {
+          plugins = with super.deadbeefPlugins; [ mpris2 statusnotifier ];
+        };
+      })
     ];
     # Configure your nixpkgs instance
     config = {
@@ -113,7 +143,12 @@
       sandbox = "relaxed";
       show-trace = true;
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" "repl-flake" "ca-derivations" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+        "repl-flake"
+        "ca-derivations"
+      ];
       # Allow to run nix
       allowed-users = [ "${username}" "wheel" ];
       builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.

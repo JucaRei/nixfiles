@@ -81,6 +81,7 @@ with lib.hm.gvariant;
       QT_QPA_PLATFORMTHEME = "gtk3";
       "TERM" = "xterm";
       GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
+      "_JAVA_AWT_WM_NONREPARENTING" = "1";
     };
     sessionPath = [
       "$HOME/.local/bin"
