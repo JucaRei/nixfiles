@@ -82,7 +82,9 @@
           fixAll = true;
         };
         suggest.localityBonus = true;
-        wordWrap = "wordWrapColumn";
+        # wordWrap = "wordWrapColumn";
+        wordWrap = "bounded";
+        wordWrapColumn = 100;
         wrappingIndent = "indent";
       };
 
@@ -288,6 +290,4 @@
       };
     };
   };
-
-
 }

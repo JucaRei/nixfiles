@@ -6,59 +6,67 @@ in
   programs = {
     hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland.overrideAttrs
-        (oldAttrs: {
-          mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" "-DLEGACY_RENDERER:STRING=true" ];
-        })
-        {
-          enableXwayland = true; # whether to enable XWayland
-          legacyRenderer = if hostname == "nitro" then false else true; # false; # whether to use the legacy renderer (for old GPUs)
-          withSystemd = if hostname == "nitro" then true else false; # whether to build with systemd support
-        };
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
+        enableXWayland = true; # whether to enable XWayland
+        legacyRenderer = if hostname == "nitro" then false else true; # false; # whether to use the legacy renderer (for old GPUs)
+        withSystemd = if hostname == "nitro" then true else false; # whether to build with systemd support
+      };
 
+      ### It seen's it been removed
       # Check if it has nvidia and nvidia Driver installed
-      enableNvidiaPatches =
-        if nvidiaEnabled != true then
-          false else true;
+      # enableNvidiaPatches =
+      #   if nvidiaEnabled != true then
+      #     false else true;
 
-      extraConfig =
-        if nvidiaEnabled == true then
-          (lib.mkBefore ''
-            env = LIBVA_DRIVER_NAME,nvidia
-            env = XDG_SESSION_TYPE,wayland
-            env = GBM_BACKEND,nvidia-drm
-            env = __GLX_VENDOR_LIBRARY_NAME,nvidia
-            env = WLR_NO_HARDWARE_CURSORS,1
-          '') else "";
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+
+      # extraConfig =
+      #   if nvidiaEnabled == true then
+      #     (lib.mkBefore ''
+      #       env = LIBVA_DRIVER_NAME,nvidia
+      #       env = XDG_SESSION_TYPE,wayland
+      #       env = GBM_BACKEND,nvidia-drm
+      #       env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+      #       env = WLR_NO_HARDWARE_CURSORS,1
+      #     '') else "";
     };
   };
 
+
+
   services = {
-    xserver =
-      {
-        displayManager = {
-          sddm = {
+    xserver = {
+      enable = true;
+      displayManager = {
+        sddm = {
+          enable = true;
+          wayland = {
             enable = true;
-            wayland = true;
           };
         };
       };
+    };
   };
 
   environment = {
     sessionVariables = {
       # Hint electron apps to use wayland
       NIXOS_OZONE_WL = "1";
+      LIBVA_DRIVER_NAME = if hostname != "air" || "zion" then lib.mkForce "nvidia" else lib.mkDefault "";
+      XDG_SESSION_TYPE = "wayland";
+      GBM_BACKEND = "nvidia-drm";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      WLR_NO_HARDWARE_CURSORS = "1";
     };
     systemPackages = with pkgs; [
       gtk3
       libevdev
 
-      ### Change to home-manager latter
+      ### Change to home-manager later
       mako # notification daemon
       kitty
 
-      libs.ForQt5.polkit-kde-agent
+      libsForQt5.polkit-kde-agent
       # ${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1
       # (toString [
       #   "swayidle" "-w"
@@ -74,17 +82,17 @@ in
 
       hyprpaper
       swww
-      Wofi
-      Hyprpicker
+      wofi
+      hyprpicker
       wl-clip-persist
-      hyprsome
+      # hyprsome
 
       pipewire
       wireplumber
 
-      qt5-wayland
-      qt6-wayland
-      qt5ct
+      # qt5-wayland
+      # qt6-wayland
+      # qt5ct
 
     ];
   };
@@ -110,6 +118,12 @@ in
       };
       xdgOpenUsePortal = true;
     };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme = "gtk2";
+    style = "gtk2";
   };
 
   systemd = {
