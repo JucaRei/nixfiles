@@ -66,6 +66,11 @@
         ### Improve networking
         # https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
         "kernel.sysrq" = 1; # magic keyboard shortcuts
+        # TCP Fast Open is a TCP extension that reduces network latency by packing
+        # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
+        # both incoming and outgoing connections:
+        "net.ipv4.tcp_fastopen" = 3;
+        # Bufferbload mitigations + slight improvement in throughput & latency
         "net.ipv4.tcp_congestion_control" = "bbr";
         "net.core.default_qdisc" = "cake";
         #"net.core.default_qdisc" = "fq";
@@ -131,11 +136,13 @@
       htop
       lshw
       inspect
-      unstable.nix-index
-      unstable.nix-prefetch-git
+      #unstable.nix-index
+      #unstable.nix-prefetch-git
       # cifs-utils
     ];
     variables = {
+      # use Wayland where possible (electron)
+      NIXOS_OZONE_WL = "1";
       EDITOR = "micro";
       SYSTEMD_EDITOR = "micro";
       VISUAL = "micro";
@@ -246,5 +253,10 @@
 
   # Controlling external screens
   services.ddccontrol.enable = true;
-  hardware.i2c.enable = true;
+  hardware = {
+    i2c.enable = true;
+  };
+
+  # enable location service
+  location.provider = "geoclue2";
 }

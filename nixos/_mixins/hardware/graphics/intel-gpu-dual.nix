@@ -11,20 +11,20 @@
         extraPackages = [ ] ++ lib.optionals (pkgs.system == "x86_64-linux")
           (with pkgs; [
             (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
-            # intel-media-driver # LIBVA_DRIVER_NAME=iHD
+            intel-media-driver # LIBVA_DRIVER_NAME=iHD
             # vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
-            intel-media-driver
+            # intel-media-driver
             nvidia-vaapi-driver
             libvdpau
             libvdpau-va-gl
           ]);
-        #extraPackages32 = with pkgs.pkgsi686Linux; [
-        #  intel-media-driver
-        #  vaapiIntel
-        #  vaapiVdpau
-        #  libvdpau-va-gl
-        #  libva
-        #];
+        extraPackages32 = with pkgs.pkgsi686Linux; [
+          # intel-media-driver
+          #  vaapiIntel
+          vaapiVdpau
+          libvdpau-va-gl
+          #  libva
+        ];
       };
     };
 

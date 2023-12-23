@@ -13,6 +13,7 @@
       enable = true;
       # Append Cloudflare and Google DNS servers
       appendNameservers = [ "1.1.1.1" "8.8.8.8" ];
+      dns = "systemd-resolved";
 
       #---------------------------------------------------------------------
       # Prevent fragmentation and reassembly, which can improve network performance
@@ -70,6 +71,11 @@
   #   (lib.mkBefore [ "mdns_minimal [NOTFOUND=return]" ])
   #   (lib.mkAfter [ "mdns" ])
   # ];
+
+  services = {
+    # DNS resolver
+    resolved.enable = true;
+  };
 }
 
 

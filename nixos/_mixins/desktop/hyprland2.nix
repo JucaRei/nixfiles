@@ -1,4 +1,4 @@
-{ pkgs, config, lib, inputs, hostname, ... }:
+{ pkgs, config, lib, inputs, hostname, username, ... }:
 let
   nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
 in
@@ -10,13 +10,13 @@ in
         enableXWayland = true; # whether to enable XWayland
         legacyRenderer = if hostname == "nitro" then false else true; # false; # whether to use the legacy renderer (for old GPUs)
         withSystemd = if hostname == "nitro" then true else false; # whether to build with systemd support
-      };
 
-      ### It seen's it been removed
-      # Check if it has nvidia and nvidia Driver installed
-      # enableNvidiaPatches =
-      #   if nvidiaEnabled != true then
-      #     false else true;
+        ### It seen's it been removed
+        # Check if it has nvidia and nvidia Driver installed
+        #enableNvidiaPatches =
+        #  if nvidiaEnabled != true then
+        #    false else true;
+      };
 
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
 
@@ -35,28 +35,47 @@ in
 
 
   services = {
-    xserver = {
-      enable = true;
-      displayManager = {
-        sddm = {
-          enable = true;
-          wayland = {
-            enable = true;
-          };
+    #xserver = {
+    #  enable = true;
+    #  displayManager = {
+    #    sddm = {
+    #      enable = true;
+    #      wayland = {
+    #        enable = true;
+    #      };
+    #    };
+    #  };
+    #};
+
+    # greetd display manager
+    greetd =
+      let
+        session = {
+          command = "${lib.getExe config.programs.hyprland.package}";
+          user = "${username}";
+        };
+      in
+      {
+        enable = true;
+        settings = {
+          terminal.vt = 1;
+          default_session = session;
+          initial_session = session;
         };
       };
-    };
   };
 
   environment = {
     sessionVariables = {
       # Hint electron apps to use wayland
-      NIXOS_OZONE_WL = "1";
       LIBVA_DRIVER_NAME = if hostname != "air" || "zion" then lib.mkForce "nvidia" else lib.mkDefault "";
-      XDG_SESSION_TYPE = "wayland";
-      GBM_BACKEND = "nvidia-drm";
-      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      #GBM_BACKEND = "nvidia-drm";
+      #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
       WLR_NO_HARDWARE_CURSORS = "1";
+      #WLR_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
+      QT_QPA_PLATFORM = "wayland";
+      SDL_VIDEODRIVER = "wayland";
+      XDG_SESSION_TYPE = "wayland";
     };
     systemPackages = with pkgs; [
       gtk3
@@ -117,6 +136,9 @@ in
         };
       };
       xdgOpenUsePortal = true;
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+      ];
     };
   };
 
@@ -141,4 +163,7 @@ in
       };
     };
   };
+
+  # unlock GPG keyring on login
+  security.pam.services.greetd.enableGnomeKeyring = true;
 }

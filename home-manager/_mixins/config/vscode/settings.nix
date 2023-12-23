@@ -4,6 +4,7 @@
     userSettings = {
       update.mode = "none";
       window = {
+        titleBarStyle = "custom";  # for wayland
         title = "\${rootName}\${separator}\${profileName}\${separator}\${activeEditorShort}";
         menuBarVisibility = "toggle";
         nativeTabs = true;

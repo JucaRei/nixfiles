@@ -47,11 +47,34 @@
       '';
     };
     gvfs.enable = true;
+
+    clight = {
+      enable = true;
+      settings = {
+        verbose = true;
+        backlight.disabled = true;
+        dpms.timeouts = [ 900 300 ];
+        dimmer.timeouts = [ 870 270 ];
+        gamma.long_transitions = true;
+        screen.disabled = true;
+      };
+    };
+
+    # needed for GNOME services outside of GNOME Desktop
+    dbus.packages = [ pkgs.gcr ];
+
+    udev = {
+      packages = with pkgs; [ gnome.gnome-settings-daemon ];
+      extraRules = ''
+        # add my android device to adbusers
+        SUBSYSTEM=="usb", ATTR{idVendor}=="22d9", MODE="0666", GROUP="adbusers"
+      '';
+    };
   };
   # };
   hardware = {
     # smooth backlight control
-    # brillo.enable = true;
+    brillo.enable = true;
   };
 
   environment = {
@@ -59,5 +82,13 @@
       # hacked-cursor
       desktop-file-utils
     ];
+  };
+
+  security = {
+    # allow wayland lockers to unlock the screen
+    pam.services.swaylock.text = "auth include login";
+
+    # userland niceness
+    rtkit.enable = true;
   };
 }

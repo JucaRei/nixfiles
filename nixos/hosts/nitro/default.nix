@@ -7,8 +7,8 @@
     inputs.nixos-hardware.nixosModules.common-pc-hdd
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
-    # ../../_mixins/hardware/graphics/nvidia.nix
-    ../../_mixins/hardware/graphics/nvidia-specialisation.nix
+    ../../_mixins/hardware/graphics/nvidia.nix
+    # ../../_mixins/hardware/graphics/nvidia-specialisation.nix
     ../../_mixins/hardware/graphics/intel-gpu-dual.nix
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/boot/efi.nix
@@ -144,6 +144,41 @@
       "vm.dirty_ratio" = "80"; # Set the ratio of dirty memory at which a process is forced to write out dirty data (10%). Adjusted for SSD.
       "vm.dirty_time" = "0"; # Disable dirty time accounting.
       "vm.dirty_writeback_centisecs" = "300"; # Set the interval between two consecutive background writeback passes (500 centiseconds).
+
+      ## TCP hardening
+      # Prevent bogus ICMP errors from filling up logs.
+      "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
+      # Reverse path filtering causes the kernel to do source validation of
+      # packets received from all interfaces. This can mitigate IP spoofing.
+      "net.ipv4.conf.default.rp_filter" = 1;
+      "net.ipv4.conf.all.rp_filter" = 1;
+      # Do not accept IP source route packets (we're not a router)
+      "net.ipv4.conf.all.accept_source_route" = 0;
+      "net.ipv6.conf.all.accept_source_route" = 0;
+      # Don't send ICMP redirects (again, we're on a router)
+      "net.ipv4.conf.all.send_redirects" = 0;
+      "net.ipv4.conf.default.send_redirects" = 0;
+      # Refuse ICMP redirects (MITM mitigations)
+      "net.ipv4.conf.all.accept_redirects" = 0;
+      "net.ipv4.conf.default.accept_redirects" = 0;
+      "net.ipv4.conf.all.secure_redirects" = 0;
+      "net.ipv4.conf.default.secure_redirects" = 0;
+      "net.ipv6.conf.all.accept_redirects" = 0;
+      "net.ipv6.conf.default.accept_redirects" = 0;
+      # Protects against SYN flood attacks
+      "net.ipv4.tcp_syncookies" = 1;
+      # Incomplete protection again TIME-WAIT assassination
+      "net.ipv4.tcp_rfc1337" = 1;
+
+      ## TCP optimization
+      # TCP Fast Open is a TCP extension that reduces network latency by packing
+      # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
+      # both incoming and outgoing connections:
+      "net.ipv4.tcp_fastopen" = 3;
+      # Bufferbloat mitigations + slight improvement in throughput & latency
+      "net.ipv4.tcp_congestion_control" = "bbr";
+      "net.core.default_qdisc" = "cake";
+
     };
   };
 

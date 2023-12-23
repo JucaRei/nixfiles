@@ -143,7 +143,7 @@ in
             nvidiaPersistenced = true;
             powerManagement = {
               enable = true;
-              finegrained = true;
+              finegrained = false;
             };
             nvidiaSettings = true;
           };
@@ -214,7 +214,7 @@ in
             nvidiaPersistenced = true;
             powerManagement = {
               enable = true;
-              finegrained = true;
+              finegrained = false;
             };
             nvidiaSettings = true;
             forceFullCompositionPipeline = true;
@@ -251,7 +251,7 @@ in
         };
       };
       nvidia-offload.configuration = lib.mkDefault {
-        system.nixos.tags = [ "Nvidia Offload" ];
+        system.nixos.tags = [ "nvidia-offload" ];
         boot = {
           blacklistedKernelModules = [
             "nouveau"

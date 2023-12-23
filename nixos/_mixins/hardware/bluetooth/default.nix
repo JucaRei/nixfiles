@@ -17,14 +17,15 @@
           JustWorksRepairing = "always";
           MultiProfile = "multiple";
           # make Xbox Series X controller work
-          #Class = "0x000100";
-          #ControllerMode = "bredr";
-          #FastConnectable = true;
-          #JustWorksRepairing = "always";
-          #Privacy = "device";
+          Class = "0x000100";
+          ControllerMode = "bredr";
+          FastConnectable = true;
+          Privacy = "device";
           Experimental = true; # for gnome-bluetooth percentage
         };
       };
     };
   };
+  # https://github.com/NixOS/nixpkgs/issues/114222
+  systemd.user.services.telephony_client.enable = false;
 }

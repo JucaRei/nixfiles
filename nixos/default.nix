@@ -143,6 +143,13 @@
       sandbox = "relaxed";
       show-trace = true;
       auto-optimise-store = true;
+      flake-registry = "/etc/nix/registry.json";
+
+      # for direnv GC roots
+      keep-derivations = true;
+      keep-outputs = true;
+
+
       experimental-features = [
         "nix-command"
         "flakes"
@@ -367,8 +374,11 @@
     # --------------------------------------------------------------------
     # Permit Insecure Packages && Allow unfree packages
     # --------------------------------------------------------------------
-    sessionVariables.NIXPKGS_ALLOW_UNFREE = "1";
+    sessionVariables = {
+      NIXPKGS_ALLOW_UNFREE = "1";
 
+      FLAKE = "/home/${username}/.dotfiles/nixfiles";
+    };
     # Create file /etc/current-system-packages with List of all Packages
     etc = {
       "current-system-packages" = {
