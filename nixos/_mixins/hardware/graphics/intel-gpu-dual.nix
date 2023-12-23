@@ -13,10 +13,11 @@
             (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
             # intel-media-driver # LIBVA_DRIVER_NAME=iHD
             # vaapiIntel # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+            intel-media-driver
+            nvidia-vaapi-driver
             libvdpau
             libvdpau-va-gl
           ]);
-        #driSupport32Bit = true;
         #extraPackages32 = with pkgs.pkgsi686Linux; [
         #  intel-media-driver
         #  vaapiIntel

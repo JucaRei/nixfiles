@@ -83,6 +83,17 @@ in
 
     # Configure your nixpkgs instance
     config = {
+      # packagesOverrides = pkgs: {
+      #   # integrates nur within Home-Manager
+      #   nur =
+      #     import
+      #       (builtins.fetchTarball {
+      #         url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
+      #         sha256 = "0lk0fhdw2qfn3dfvdgld1zdgxf00cp3ksmqxfly8y7wwkmwjn6gc";
+      #       })
+      #       { inherit pkgs; };
+      # };
+
       # Allow unsupported packages to be built
       allowUnsupportedSystem = true;
       # Disable broken package
