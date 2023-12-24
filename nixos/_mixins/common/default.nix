@@ -139,7 +139,12 @@
       #unstable.nix-index
       #unstable.nix-prefetch-git
       # cifs-utils
-    ];
+    ] ++ (with pkgs.unstable; [
+      # Minimal for nix code
+      nil
+      nixpkgs-fmt
+      nixpkgs-lint
+    ]);
     variables = {
       # use Wayland where possible (electron)
       NIXOS_OZONE_WL = "1";

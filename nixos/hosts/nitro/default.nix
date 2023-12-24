@@ -93,6 +93,7 @@
 
     kernelParams = [
       "quiet"
+      "usbcore.autosuspend=-1"
       "rd.plymouth=0"
       "plymouth.enable=0"
       "log-level=0"

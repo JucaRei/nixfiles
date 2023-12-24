@@ -268,5 +268,6 @@
     },
     "workbench.enableExperiments": true,
     "workbench.settings.enableNaturalLanguageSearch": true,
-    "zenMode.hideLineNumbers": false
+    "zenMode.hideLineNumbers": false,
+    "window.titleBarStyle": "custom"
 }

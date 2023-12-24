@@ -76,16 +76,21 @@ in
       QT_QPA_PLATFORM = "wayland";
       SDL_VIDEODRIVER = "wayland";
       XDG_SESSION_TYPE = "wayland";
+      enable-features = "UseOzonePlatform,WaylandWindowDecorations";
+      # ozone-platform-hint = "auto";
+      ozone-platform = "wayland";
     };
     systemPackages = with pkgs; [
       gtk3
+      xdg-utils
+      libnotify
       libevdev
+      libsForQt5.libkscreen
 
       ### Change to home-manager later
       mako # notification daemon
-      kitty
+      alacritty
 
-      libsForQt5.polkit-kde-agent
       # ${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1
       # (toString [
       #   "swayidle" "-w"
@@ -113,7 +118,15 @@ in
       # qt6-wayland
       # qt5ct
 
-    ];
+    ] ++ (with pkgs.cinnamon; [
+      nemo-with-extensions
+      nemo-emblems
+      nemo-fileroller
+      folder-color-switcher
+    ]) ++ (with pkgs.libsForQt5;[
+      # dolphin
+      polkit-kde-agent
+    ]);
   };
 
   xdg = {
@@ -150,10 +163,12 @@ in
 
   systemd = {
     user.services.polkit-kde-authentication-agent-1 = {
-      after = [ "graphical-session.target" ];
+      # after = [ "graphical-session.target" ];
+      after = [ "NetworkManager.target" ];
       description = "polkit-kde-authentication-agent-1";
       wantedBy = [ "graphical-session.target" ];
-      wants = [ "graphical-session.target" ];
+      # wants = [ "graphical-session.target" ];
+      wants = [ "NetworkManager.target" ];
       serviceConfig = {
         Type = "simple";
         ExecStart = "${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1";

@@ -253,6 +253,7 @@ in
       nvidia-offload.configuration = lib.mkDefault {
         system.nixos.tags = [ "nvidia-offload" ];
         boot = {
+          loader.grub.configurationName = lib.mkForce "Nvidia Offload";
           blacklistedKernelModules = [
             "nouveau"
           ];

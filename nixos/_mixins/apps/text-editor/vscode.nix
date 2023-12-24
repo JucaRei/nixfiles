@@ -37,6 +37,18 @@
         # sha256 = "sha256-f8FUZCvz/PonqQP9RCNbyQLZPnN5Oce0Eezm/hD19Fg=";
         # }
         {
+          name = "color-highlight";
+          publisher = "naumovs";
+          version = "2.5.0";
+          sha256 = "sha256-dYMDV84LEGXUjt/fbsSy3BVM5SsBHcPaDDll8KjPIWY=";
+        }
+        {
+          name = "hypr-syntax";
+          publisher = "temu4";
+          version = "0.1.3";
+          sha256 = "sha256-88AIT1QYVplQfy5hCcMyQ2kiO8lI6HcZp2EfqPtnz1A=";
+        }
+        {
           name = "beardedicons";
           publisher = "beardedbear";
           version = "1.13.2";
