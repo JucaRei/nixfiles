@@ -1,4 +1,7 @@
 { pkgs, lib, config, inputs, hostname, ... }: {
+  imports = [
+    ./themes/m4l-theme
+  ];
   home = {
     packages = with pkgs; [
       kitty # terminal
@@ -7,6 +10,7 @@
       qalculate-gtk
       swaylock-effects
       bibata-cursors
+      lxqt.pavucontrol-qt
     ];
   };
   wayland =
@@ -16,7 +20,7 @@
     {
       windowManager = {
         hyprland = {
-          enable = true;
+          enable = if hostname != "zion" then true else false;
           # Check if it has nvidia and nvidia Driver installed
           enableNvidiaPatches = if nvidiaEnabled != true then false else true;
           package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
@@ -28,12 +32,14 @@
           # finalPackage = '''';
           # plugins = [];
           # settings = {};
-          systemd = {
-            enable = true;
-            # extraCommands = "";
-            # variable = [];
-          };
-          xwayland.enable = true;
+          systemd =
+            {
+              enable =
+                if hostname != "zion" then true else false;
+              # extraCommands = "";
+              # variable = [];
+            };
+          xwayland.enable = if hostname != "zion" then true else false;
         };
       };
     };

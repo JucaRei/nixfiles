@@ -27,13 +27,24 @@ in
     ./swaylock.nix
     ./xresources.nix
     ./rofi.nix
+    ./scripts
   ];
   wayland = {
     windowManager = {
       hyprland = {
-        enable = true;
-        systemd.enable = if hostname == "nitro" then true else false;
+        # "${pkgs.libsForQt5.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1 &"
+
+        # enable = true;
+        # systemd.enable = if hostname == "nitro" then true else false;
         extraConfig = ''
+          ###############################
+          ### Auto Start Applications ###
+          ###############################
+
+          exec-once = dunst
+          exec-once = hyprctl setcursor Bibata-Modern-Ice 24
+          exec-once = swww query || swww init
+
           #######################
           ### Monitor Configs ###
           #######################
@@ -155,7 +166,7 @@ in
           bind = $mainMod, F, fullscreen
           bind = $mainMod, E, exec, $\{filemanager}
           bind = $mainMod, T, togglefloating
-          bind = $mainMod SHIFT, T, exec, ~/dotfiles/hypr/scripts/toggleallfloat.sh
+          bind = $mainMod SHIFT, T, exec, ~/.config/hypr/scripts/toggleallfloat.sh
           bind = $mainMod, J, togglesplit
           bind = $mainMod, left, movefocus, l
           bind = $mainMod, right, movefocus, r
@@ -225,13 +236,36 @@ in
           bind = , XF86Lock, exec, swaylock
           bind = , XF86Tools, exec, alacritty --class dotfiles-floating -e ~/dotfiles/hypr/settings/settings.sh
 
-          # Passthrough SUPER KEY to Virtual Machine
+          ################################################
+          ### Passthrough SUPER KEY to Virtual Machine ###
+          ################################################
+
           bind = $mainMod, P, submap, passthru
           submap = passthru
           bind = SUPER, Escape, submap, reset
           submap = reset
+
+          # -----------------------------------------------------
+          # Window rules
+          # -----------------------------------------------------
+
+          windowrule = tile,^(Firefox)$
+          windowrule = tile,^(Brave-browser)$
+          windowrule = tile,^(Chromium)$
+          windowrule = float,^(pavucontrol)$
+          windowrule = float,^(blueman-manager)$
+
+          windowrulev2 = float,class:(dotfiles-floating)
         '';
       };
     };
   };
+  services.blueman-applet.enable = true;
+  home.packages = with pkgs; [
+    swww
+    grim
+    slurp
+    swappy
+    libnotify
+  ];
 }
