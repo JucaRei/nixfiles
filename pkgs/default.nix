@@ -24,7 +24,6 @@
   nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup { };
   nix-whereis = pkgs.callPackage ./scripts/nix-whereis { };
   # nixos-change-summary = pkgs.callPackage ./scripts/nixos-change-summary { };
-  screenshot-wayland = pkgs.callPackage ./scripts/screenshot-wayland { };
 
   # Utils
   vv = pkgs.callPackage ./utils/vv { };
