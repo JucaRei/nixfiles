@@ -12,12 +12,15 @@ with lib.hm.gvariant;
           general = "Alacritty";
         };
         padding = {
-          y = 5;
+          x = 15;
+          y = 15;
         };
         dimensions = {
           lines = 75;
           columns = 100;
         };
+
+        opacity = "0.7";
       };
 
       font = {

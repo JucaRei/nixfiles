@@ -22,6 +22,12 @@ let
   };
 in
 {
+  imports = [
+    ./dunst.nix
+    ./swaylock.nix
+    ./xresources.nix
+    ./rofi.nix
+  ];
   wayland = {
     windowManager = {
       hyprland = {
@@ -203,8 +209,10 @@ in
           bind = $mainMod CTRL, down, workspace, empty
 
           # Fn keys
-          bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
-          bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
+          # bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
+          # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
+          bind = , XF86MonBrightnessUp, exec, brillo -A 5
+          bind = , XF86MonBrightnessDown, exec, brillo -U 5
           bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
           bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
           bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle

@@ -4,6 +4,9 @@
       kitty # terminal
       mako # notification daemon
       libsForQt5.polkit-kde-agent # polkit agent
+      qalculate-gtk
+      swaylock-effects
+      bibata-cursors
     ];
   };
   wayland =
