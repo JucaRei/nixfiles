@@ -83,6 +83,7 @@
       gnome-characters
       gnome-terminal
       gnome-disk-utility
+      gnome-font-viewer
       # gnome-calendar
       gnome-music
       gnome-system-monitor

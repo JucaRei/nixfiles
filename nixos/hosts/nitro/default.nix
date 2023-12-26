@@ -7,9 +7,9 @@
     inputs.nixos-hardware.nixosModules.common-pc-hdd
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
-    ../../_mixins/hardware/graphics/nvidia.nix
+    ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     # ../../_mixins/hardware/graphics/nvidia-specialisation.nix
-    ../../_mixins/hardware/graphics/intel-gpu-dual.nix
+    ../../_mixins/hardware/graphics/intel/intel-gpu-dual.nix
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/cpu/intel-cpu.nix
@@ -282,13 +282,14 @@
       btrfs-progs
       compsize
       # sublime4
-      # clonegit
+      clonegit
       # unstable.stacer
       lm_sensors
       # nixos-summary
       # tidal
       etcher
       thorium
+      wayland-scr
     ];
     sessionVariables = {
       # LIBVA_DRIVER_NAME = "nvidia";

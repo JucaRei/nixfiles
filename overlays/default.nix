@@ -13,6 +13,7 @@
     advcp = final.advmvcp;
     # hacked-cursor = final.breeze-hacked-cursorr;
     clonegit = final.cloneit;
+    wayland-scr = final.screenshot-wayland;
     # deezer-gui = final.deezer;
     icloudpd = final.icloud-photo-downloader;
     nvchad = prev.nvchad;

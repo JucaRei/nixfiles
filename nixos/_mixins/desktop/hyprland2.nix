@@ -69,6 +69,7 @@ in
     sessionVariables = {
       # Hint electron apps to use wayland
       LIBVA_DRIVER_NAME = if hostname != "air" || "zion" then lib.mkForce "nvidia" else lib.mkDefault "";
+      NIXOS_OZONE_WL = "1";
       #GBM_BACKEND = "nvidia-drm";
       #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
       WLR_NO_HARDWARE_CURSORS = "1";
@@ -76,9 +77,9 @@ in
       QT_QPA_PLATFORM = "wayland";
       SDL_VIDEODRIVER = "wayland";
       XDG_SESSION_TYPE = "wayland";
-      enable-features = "UseOzonePlatform,WaylandWindowDecorations";
+      # "enable-features" = "UseOzonePlatform,WaylandWindowDecorations";
       # ozone-platform-hint = "auto";
-      ozone-platform = "wayland";
+      # "ozone-platform" = "wayland";
     };
     systemPackages = with pkgs; [
       gtk3
@@ -125,8 +126,10 @@ in
       folder-color-switcher
     ]) ++ (with pkgs.libsForQt5;[
       # dolphin
-      polkit-kde-agent
-    ]);
+      # polkit-kde-agent
+    ] ++ (with pkgs.lxqt; [
+      lxqt-policykit
+    ]));
   };
 
   xdg = {
@@ -135,6 +138,7 @@ in
       config = {
         common = {
           default = [
+            "xdph"
             "gtk"
           ];
         };
@@ -181,4 +185,8 @@ in
 
   # unlock GPG keyring on login
   security.pam.services.greetd.enableGnomeKeyring = true;
+
+  services.gnome = {
+    gnome-keyring.enable = true;
+  };
 }

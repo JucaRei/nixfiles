@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 let
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
     export __NV_PRIME_RENDER_OFFLOAD=1
@@ -28,12 +28,14 @@ in
       "nvidia_drm"
     ];
     kernelParams = [
-      "nvidia-drm.modeset=1"
+      "nvidia_drm.modeset=1"
       "nouveau.modeset=0"
     ];
     extraModprobeConfig = ''
       options nvidia NVreg_RegistryDwords="PowerMizerEnable=0x1; PerfLevelSrc=0x2222; PowerMizerLevel=0x3; PowerMizerDefault=0x3; PowerMizerDefaultAC=0x3"
       options nvidia NVreg_UsePageAttributeTable=1
+      options nvidia-drm modeset=1
+      options nvidia NVreg_PreserveVideoMemoryAllocations=1
       options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
       options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
     '';
@@ -46,7 +48,7 @@ in
   };
   hardware = {
     nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
       prime = {
         offload.enable = true;
         offload.enableOffloadCmd = true;
@@ -76,9 +78,15 @@ in
     variables = {
       "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
       GBM_BACKEND = "nvidia-drm";
-      LIBVA_DRIVER_NAME = "nvidia";
+	  # GBM_BACKEND = "nvidia";
+      LIBVA_DRIVER_NAME = lib.mkForce "nvidia-drm";
+      # LIBVA_DRIVER_NAME = lib.mkForce "nvidia";
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       NVD_BACKEND = "direct";
+      # WLR_RENDERER = "vulkan";
+      __GL_GSYNC_ALLOWED = "0";
+      __GL_VRR_ALLOWED = "0";
+      QT_QPA_PLATFORM = "wayland";
     };
     systemPackages = with pkgs; [
       vulkan-loader
