@@ -1,28 +1,32 @@
-{ pkgs, lib, config, inputs, hostname, ... }: {
+{ pkgs, lib, config, inputs, hostname, ... }:
+let
+  nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
+in
+{
   imports = [
     ./themes/m4l-theme
   ];
   home = {
     packages = with pkgs; [
       kitty # terminal
-      mako # notification daemon
+      # mako # notification daemon
       libsForQt5.polkit-kde-agent # polkit agent
       qalculate-gtk
-      swaylock-effects
+      # swaylock-effects
       bibata-cursors
       lxqt.pavucontrol-qt
+      nwg-look
     ];
   };
   wayland =
-    let
-      nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
-    in
     {
       windowManager = {
         hyprland = {
-          enable = if hostname != "zion" then true else false;
+          # enable = if hostname != "zion" then true else false;
+          enable = true;
           # Check if it has nvidia and nvidia Driver installed
-          enableNvidiaPatches = if nvidiaEnabled != true then false else true;
+          # enableNvidiaPatches = if nvidiaEnabled != true then false else true;
+          # enableNvidiaPatches = true;
           package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
             enableXWayland = true; # whether to enable XWayland
             legacyRenderer = if hostname == "nitro" then false else true; # false; # whether to use the legacy renderer (for old GPUs)

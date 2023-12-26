@@ -1,7 +1,7 @@
-_: {
+{ lib, ... }: {
   home = {
     file = {
-      ".Xresources" = {
+      ".Xresources" = lib.mkForce {
         text = "Xcursor.theme: Bibata-Modern-Ice";
       };
     };

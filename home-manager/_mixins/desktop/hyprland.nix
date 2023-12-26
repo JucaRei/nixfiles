@@ -12,6 +12,7 @@ in {
       wlsunset
       wl-clipboard
       hyprland
+      wlogout
     ];
 
     home.file.".config/hypr/hyprland.conf".source = ../config/hyprland/hyprland.conf;

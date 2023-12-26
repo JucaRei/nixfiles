@@ -34,7 +34,7 @@ in
           gap_size = 0;
           separator_color = "frame";
           sort = "yes";
-          font = "Fira Sans Semibold" 11;
+          font = "Fira Sans Semibold 11";
           line_height = 3;
           markup = "full";
           format = "<b>%s</b>\n%b";

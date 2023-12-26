@@ -1,24 +1,25 @@
-_: {
+{ pkgs, ... }: {
   programs = {
     swaylock = {
       enable = true;
-      swaylock.settings = {
-        ignore-empy-password = {
+      package = pkgs.swaylock-effects;
+      settings = {
+        ignore-empy-password = ''
           font = "Fira Sans Semibold";
-        };
-        clock = {
+        '';
+        clock = ''
           timestr = "%R";
           datestr = "%a, %e of %B";
-        };
-        screenshots = {
+        '';
+        screenshots = ''
           fade-in = 1;
           effect-blur = "5x2";
-        };
-        indicator = {
+        '';
+        indicator = ''
           indicator-radius = 200;
           indicator-thickness = 20;
-        };
-        indicator-caps-lock = {
+        '';
+        indicator-caps-lock = ''
           key-hl-color = "00000066";
           separator-color = "00000000";
 
@@ -48,10 +49,10 @@ _: {
           bs-hl-color = "ffffff";
           caps-lock-key-hl-color = "ffffffFF";
           caps-lock-bs-hl-color = "ffffffFF";
-        };
-        disable-caps-lock-text = {
+        '';
+        disable-caps-lock-text = ''
           text-caps-lock-color = "ffffff";
-        };
+        '';
       };
     };
   };
