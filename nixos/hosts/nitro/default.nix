@@ -289,7 +289,6 @@
       # tidal
       etcher
       thorium
-      wayland-scr
     ];
     sessionVariables = {
       # LIBVA_DRIVER_NAME = "nvidia";

@@ -26,7 +26,7 @@ in
     ./swaylock.nix
     # ./xresources.nix
     ./rofi.nix
-    ./waybar.nix
+    # ./waybar.nix
     ./wlogout
     # ./scripts
   ];
@@ -140,11 +140,11 @@ in
               # blurls = waybar
             }
             active_opacity = 1.0
-            inactive_opacity = 0.3
+            inactive_opacity = 0.9
             fullscreen_opacity = 1.0
 
             drop_shadow = true
-            shadow_range = 30
+            shadow_range = 20
             shadow_render_power = 3
             col.shadow = 0x66000000
           }
@@ -283,6 +283,26 @@ in
             animate_manual_resizes = true
             animate_mouse_windowdragging = true
           }
+
+          ##################
+          ### Animations ###
+          ##################
+
+          animations {
+            enabled = yes
+            bezier = wind, 0.05, 0.9, 0.1, 1.05
+            bezier = winIn, 0.1, 1.1, 0.1, 1.1
+            bezier = winOut, 0.3, -0.3, 0, 1
+            bezier = liner, 1, 1, 1, 1
+            animation = windows, 1, 6, wind, slide
+            animation = windowsIn, 1, 6, winIn, slide
+            animation = windowsOut, 1, 5, winOut, slide
+            animation = windowsMove, 1, 5, wind, slide
+            animation = border, 1, 1, liner
+            animation = borderangle, 1, 30, liner, loop
+            animation = fade, 1, 10, default
+            animation = workspaces, 1, 5, wind
+          }
         '';
       };
     };
@@ -303,7 +323,7 @@ in
       cliphist # Wayland clipboard history
       qalculate-gtk
       brillo
-      (if hostname != "nitro" then kbdlight else "")
+      # (if hostname != "nitro" then kbdlight else "")
       swaylock-effects
       wlogout # Wayland based logout menu
       wlr-randr # An xrandr clone for wlroots compositors

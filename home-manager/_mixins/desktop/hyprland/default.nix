@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    ./themes/m4l-theme
+    ./themes/my-theme
   ];
   home = {
     packages = with pkgs; [
