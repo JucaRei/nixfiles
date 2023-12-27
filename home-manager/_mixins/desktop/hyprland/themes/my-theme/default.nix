@@ -19,6 +19,13 @@ let
 
   # Apps
   filemanager = "${pkgs.xfce.thunar}";
+
+  waybar-custom = pkgs.writeShellScriptBin "waybar" ''
+    #!/bin/sh
+    killal ${pkgs.waybar}
+    sleep 1
+    waybar &
+  '';
 in
 {
   imports = [
@@ -28,6 +35,7 @@ in
     ./rofi.nix
     # ./waybar.nix
     ./wlogout
+    ./gtk.nix
     # ./scripts
   ];
   wayland = {
@@ -43,6 +51,7 @@ in
           ###############################
 
           exec-once = dunst
+          exec-once = waybar
           exec-once = hyprctl setcursor Bibata-Modern-Ice 24
           exec-once = swww query || swww init
 
@@ -78,7 +87,7 @@ in
             kb_options =
             kb_rules =
 
-            follow_mouse = 2 #1
+            follow_mouse = 1 #1
 
             touchpad {
               disable_while_typing = true
@@ -200,7 +209,7 @@ in
           bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
           bind = $mainMod, SPACE, exec, rofi -show drun
           bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
-          bind = $mainMod SHIFT, B, exec, ~/dotfiles/waybar/launch.sh
+          bind = $mainMod SHIFT, B, exec, ${waybar-custom}
           bind = $mainMod SHIFT, R, exec, $HOME/.config/hypr/scripts/loadconfig.sh
           bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
           bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
