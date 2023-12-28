@@ -13,7 +13,7 @@
         title = "foot";
         locked-title = "no";
         term = "xterm-256color";
-        font = "monospace:size=10.5";
+        font = "monospace:size=9.5";
         vertical-letter-offset = "-0.75";
         pad = "12x21 center";
         resize-delay-ms = 100;

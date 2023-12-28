@@ -15,7 +15,7 @@
     clonegit = final.cloneit;
     # deezer-gui = final.deezer;
     icloudpd = final.icloud-photo-downloader;
-    nvchad = prev.nvchad;
+    # nvchad = prev.nvchad;
     nautilus-ext = final.nautilus-annotations;
     thorium = final.thorium-browser;
     pulseaudio-control = final.polybar-pulseaudio-control;
@@ -47,6 +47,7 @@
     # Music
     # tidal = final.tidal-dl;
 
+    nvchad = final.nvim-chad;
     phospor-ttf = final.phospor;
     material-symbols-ttf = final.material-symbols;
     cairo-ttf = final.font-cairo;
