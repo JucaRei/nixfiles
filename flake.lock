@@ -713,6 +713,22 @@
         "type": "github"
       }
     },
+    "nixos-artwork": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1701990405,
+        "narHash": "sha256-QZrC1cSNThvQJymM7rRVXxpZ+rY+vOVm17P6vVVB6WM=",
+        "owner": "NixOS",
+        "repo": "nixos-artwork",
+        "rev": "e3a74d1c40086393f2b1b9f218497da2db0ff3ae",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixos-artwork",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1701598471,
@@ -1204,6 +1220,7 @@
         "nix-software-center": "nix-software-center",
         "nixd": "nixd",
         "nixgl": "nixgl",
+        "nixos-artwork": "nixos-artwork",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_8",
         "nixpkgs-f2k": "nixpkgs-f2k",

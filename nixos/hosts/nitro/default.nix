@@ -81,8 +81,9 @@
     ];
     plymouth = {
       enable = true;
-      themePackages = [ pkgs.adi1090x-plymouth-themes ];
-      theme = "deus_ex";
+      logo = "${inputs.nixos-artwork}/wallpapers/nix-wallpaper-watersplash.png";
+      # themePackages = [ pkgs.adi1090x-plymouth-themes ];
+      # theme = "deus_ex";
     };
 
     # Temporary workaround until mwprocapture 4328 patch is merged

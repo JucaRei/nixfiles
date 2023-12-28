@@ -8,13 +8,13 @@ in
   ];
   home = {
     packages = with pkgs; [
-      kitty # terminal
+      # kitty # terminal
       # mako # notification daemon
       libsForQt5.polkit-kde-agent # polkit agent
       qalculate-gtk
       # swaylock-effects
       bibata-cursors
-      lxqt.pavucontrol-qt
+      pavucontrol
       nwg-look
     ];
   };
@@ -38,8 +38,8 @@ in
           # settings = {};
           systemd =
             {
-              enable =
-                if hostname != "zion" then true else false;
+              enable = if hostname != "zion" then true else false;
+              # enable = false;
               # extraCommands = "";
               # variable = [];
             };
@@ -49,6 +49,7 @@ in
     };
   home = {
     sessionVariables = {
+      "DIRENV_LOG_FORMAT" = "";
       "LIBVA_DRIVE_NAME" = if (hostname != "zion" || "air") then "nvidia" else "iHD";
       "XDG_SESSION_TYPE" = "wayland";
       "GBM_BACKEND" = if (hostname == "nitro") then "nvidia-drm" else "";
@@ -92,7 +93,7 @@ in
       ##
       "CLUTTER_BACKEND" = "wayland";
       "CLUTTER_DEFAULT_FPS" = "60";
-      "GDK_BACKEND" = "wayland";
+      "GDK_BACKEND" = "wayland,x11";
       "GTK_IM_MODULE" = "ibus";
       "KITTY_ENABLE_WAYLAND" = "1";
       "QT_AUTO_SCREEN_SCALE_FACTOR" = "0";
@@ -100,7 +101,7 @@ in
       "QT_QPA_PLATFORMTHEME" = "qt5ct";
       "SDL_VIDEODRIVER" = "wayland";
       "XCURSOR_THEME" = "Adwaita";
-      "XCURSOR_SIZE" = "24";
+      # "XCURSOR_SIZE" = "24";
       "XMODIFIERS" = "@im=ibus";
     };
   };

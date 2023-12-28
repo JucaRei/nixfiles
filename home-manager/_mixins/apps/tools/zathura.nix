@@ -38,6 +38,7 @@
       index-active-fg = "#0ABDC6";
 
       window-title-basename = true;
+      smooth-scroll = true;
       statusbar-home-tilde = true;
     };
     extraConfig = ''

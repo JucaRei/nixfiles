@@ -32,6 +32,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Art
+    nixos-artwork = {
+      url = "github:NixOS/nixos-artwork";
+      flake = false;
+    };
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";

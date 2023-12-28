@@ -17,8 +17,8 @@ _: {
         }
         {
           "label" = "logout";
-          # "action" = "sleep 1; hyprctl dispatch exit";  # SDDM
-          "action" = "sleep 1; loginctl terminate-user $USER";
+          "action" = "sleep 1; hyprctl dispatch exit"; # SDDM
+          # "action" = "sleep 1; loginctl terminate-user $USER";
           "text" = "Exit";
           "keybind" = "e";
         }

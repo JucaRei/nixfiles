@@ -90,7 +90,7 @@ in
 
       ### Change to home-manager later
       mako # notification daemon
-      alacritty
+      # alacritty
 
       # ${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1
       # (toString [

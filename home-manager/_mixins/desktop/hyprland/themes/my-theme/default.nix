@@ -20,20 +20,56 @@ let
   # Apps
   filemanager = "${pkgs.xfce.thunar}";
 
-  waybar-custom = pkgs.writeShellScriptBin "waybar" ''
-    #!/bin/sh
-    killal ${pkgs.waybar}
-    sleep 1
-    waybar &
+  waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
+    #!/bin/bash
+
+    # start waybar if not started
+    if ! pgrep -x "${pkgs.waybar}/bin/waybar" > /dev/null; then
+    	waybar &
+    fi
+
+    # current checksums
+    current_checksum_config=$(md5sum ~/.config/waybar/config)
+    current_checksum_style=$(md5sum ~/.config/waybar/style.css)
+
+    # loop forever
+    while true; do
+    	# new checksums
+    	new_checksum_config=$(md5sum ~/.config/waybar/config)
+    	new_checksum_style=$(md5sum ~/.config/waybar/style.css)
+
+    	# if checksums are different
+    	if [ "$current_checksum_config" != "$new_checksum_config" ] || [ "$current_checksum_style" != "$new_checksum_style" ]; then
+    		# kill waybar
+    		killall ${pkgs.waybar}/bin/waybar
+
+    		# start waybar
+    		${pkgs.waybar}/bin/waybar &
+
+    		# update checksums
+    		current_checksum_config=$new_checksum_config
+    		current_checksum_style=$new_checksum_style
+    	fi
+    done
   '';
+
+  # waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
+  #   #!/bin/sh
+  #   # Quit running waybar instances
+  #   killall ${pkgs.waybar}/bin/waybar
+  #   # Load the configuration
+  #   sleep 1
+  #   ${pkgs.waybar}/bin/waybar &
+  # '';
 in
 {
   imports = [
+    ../../../../apps/terminal/foot.nix
     ./dunst.nix
     ./swaylock.nix
     # ./xresources.nix
     ./rofi.nix
-    # ./waybar.nix
+    ./waybar.nix
     ./wlogout
     ./gtk.nix
     # ./scripts
@@ -45,15 +81,43 @@ in
 
         # enable = true;
         # systemd.enable = if hostname == "nitro" then true else false;
+        settings = {
+          exec-once = [
+            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+            "dunst"
+            # "waybar"
+            "${waybar-reload}"
+            # "hyprctl setcursor Bibata-Modern-Ice 24"
+            "swww query || swww init"
+          ];
+          xwayland = {
+            force_zero_scaling = true;
+          };
+          misc = {
+            # disable redundant renders
+            disable_splash_rendering = true;
+            disable_hyprland_logo = false;
+            animate_manual_resizes = true;
+            animate_mouse_windowdragging = true;
+
+            vfr = true;
+
+            # dpms
+            mouse_move_enables_dpms = true; # enable dpms on mouse/touchpad action
+            key_press_enables_dpms = true; # enable dpms on keyboard action
+            # disable_autoreload = true; # autoreload is unnecessary on nixos, because the config is readonly anyway
+          };
+
+        };
         extraConfig = ''
           ###############################
           ### Auto Start Applications ###
           ###############################
 
-          exec-once = dunst
-          exec-once = waybar
-          exec-once = hyprctl setcursor Bibata-Modern-Ice 24
-          exec-once = swww query || swww init
+          #exec-once = dunst
+          #exec-once = waybar
+          #exec-once = hyprctl setcursor Bibata-Modern-Ice 24
+          #exec-once = swww query || swww init
 
           #######################
           ### Monitor Configs ###
@@ -87,7 +151,7 @@ in
             kb_options =
             kb_rules =
 
-            follow_mouse = 1 #1
+            follow_mouse = 2 #1
 
             touchpad {
               disable_while_typing = true
@@ -181,13 +245,14 @@ in
           $otherMod = ALT
 
           # Applications
-          bind = $otherMod, RETURN, exec, alacritty
+          # bind = $otherMod, RETURN, exec, alacritty
+          bind = $otherMod, RETURN, exec, foot
           bind = $mainMod, B, exec, firefox
 
           # Windows
           bind = $otherMod, Q, killactive
           bind = $mainMod, F, fullscreen
-          bind = $mainMod, E, exec, ${filemanager}
+          bind = $mainMod, E, exec, thunar
           bind = $mainMod, T, togglefloating
           bind = $mainMod SHIFT, T, exec, ~/.config/hypr/scripts/toggleallfloat.sh
           bind = $mainMod, J, togglesplit
@@ -209,13 +274,13 @@ in
           bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
           bind = $mainMod, SPACE, exec, rofi -show drun
           bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
-          bind = $mainMod SHIFT, B, exec, ${waybar-custom}
+          bind = $mainMod SHIFT, B, exec, ${waybar-reload}
           bind = $mainMod SHIFT, R, exec, $HOME/.config/hypr/scripts/loadconfig.sh
           bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
           bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
           bind = $mainMod, V, exec, ~/dotfiles/scripts/cliphist.sh
           bind = $mainMod CTRL, T, exec, $HOME/.config/waybar/scripts/themeswitcher.sh
-          bind = $mainMod CTRL, S, exec, alacritty --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
+          bind = $mainMod CTRL, S, exec, foot --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
 
           # Workspaces
           bind = $otherMod, 1, workspace, 1
@@ -286,12 +351,12 @@ in
           ### Misc Options ###
           ####################
 
-          Misc {
-            disable_hyprland_logo = false
-            disable_splash_rendering = false
-            animate_manual_resizes = true
-            animate_mouse_windowdragging = true
-          }
+          # Misc {
+          #   disable_hyprland_logo = false
+          #   disable_splash_rendering = false
+          #   animate_manual_resizes = true
+          #   animate_mouse_windowdragging = true
+          # }
 
           ##################
           ### Animations ###
@@ -328,7 +393,7 @@ in
       xautolock # Launch a given program when your X session has been idle for a given time
       blueman
       swayidle # Idle management daemon for Wayland
-      papirus-icon-theme
+      # papirus-icon-theme
       cliphist # Wayland clipboard history
       qalculate-gtk
       brillo

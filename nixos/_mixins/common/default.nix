@@ -197,6 +197,9 @@
 
       ];
     };
+
+    # type "fuck" to fix the last command that made you go "fuck"
+    thefuck.enable = true;
   };
 
   # security.rtkit.enable = true;
@@ -216,6 +219,12 @@
     # Keeps the system timezone up-to-date based on the current location
     automatic-timezoned = {
       enable = true;
+    };
+
+    # profile-sync-daemon
+    psd = {
+      enable = true;
+      resyncTimer = "10m";
     };
 
     udev = {
