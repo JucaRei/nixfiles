@@ -3,7 +3,6 @@ with lib.hm.gvariant;
 {
   imports = [
     # ../_mixins/console/neovim.nix
-    ../_mixins/console/nvchad.nix
     ../_mixins/apps/video/mpv.nix
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix

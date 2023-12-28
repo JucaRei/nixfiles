@@ -23,7 +23,6 @@
   nix-inspect = pkgs.callPackage ./scripts/nix-inspect { };
   nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup { };
   nix-whereis = pkgs.callPackage ./scripts/nix-whereis { };
-  nvim-chad = pkgs.callPackage ./scripts/nvchad { };
   # nixos-change-summary = pkgs.callPackage ./scripts/nixos-change-summary { };
 
   # Utils
