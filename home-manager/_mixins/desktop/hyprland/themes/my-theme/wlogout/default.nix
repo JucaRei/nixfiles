@@ -56,7 +56,7 @@ in
               button {
                   background-repeat: no-repeat;
                   background-position: center;
-                  background-size: 50%;
+                  background-size: 35%;
                   border: none;
                   background-color: rgba(0, 0, 0, 0);
                   margin: 5px;
