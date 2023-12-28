@@ -1,4 +1,9 @@
-_: {
+_:
+let
+  ui = import ./ui.nix { };
+in
+{
+  xdg.configFile."wlogout/icons".source = ./assets;
   programs = {
     wlogout = {
       enable = true;
@@ -17,8 +22,8 @@ _: {
         }
         {
           "label" = "logout";
-          "action" = "sleep 1; hyprctl dispatch exit"; # SDDM
-          # "action" = "sleep 1; loginctl terminate-user $USER";
+          # "action" = "sleep 1; hyprctl dispatch exit"; # SDDM
+          "action" = "sleep 1; loginctl terminate-user $USER";
           "text" = "Exit";
           "keybind" = "e";
         }
@@ -41,122 +46,56 @@ _: {
           "keybind" = "r";
         }
       ];
-      style = ''
-        /*
-                  _                         _
-        __      _| | ___   __ _  ___  _   _| |_
-        \ \ /\ / / |/ _ \ / _` |/ _ \| | | | __|
-         \ V  V /| | (_) | (_| | (_) | |_| | |_
-          \_/\_/ |_|\___/ \__, |\___/ \__,_|\__|
-                          |___/
-
-        */
-
-        /* -----------------------------------------------------
-         * Import Pywal colors
-         * ----------------------------------------------------- */
-        # @import '../../.cache/wal/colors-wlogout.css';
-
-        @define-color foreground #caccc9;
-        @define-color background #0B0C07;
-        @define-color cursor #caccc9;
-
-        @define-color color0 #0B0C07;
-        @define-color color1 #66605A;
-        @define-color color2 #6B6E66;
-        @define-color color3 #B03F41;
-        @define-color color4 #7B837B;
-        @define-color color5 #9F8182;
-        @define-color color6 #8A928B;
-        @define-color color7 #caccc9;
-        @define-color color8 #8d8e8c;
-        @define-color color9 #66605A;
-        @define-color color10 #6B6E66;
-        @define-color color11 #B03F41;
-        @define-color color12 #7B837B;
-        @define-color color13 #9F8182;
-        @define-color color14 #8A928B;
-        @define-color color15 #caccc9;
-
-        /* -----------------------------------------------------
-         * General
-         * ----------------------------------------------------- */
-
-        * {
-            font-family: "Fira Sans Semibold", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-        	background-image: none;
-        	transition: 20ms;
-        }
-
+      style = with ui; ''
         window {
-        	background-color: rgba(12, 12, 12, 0.1);
-        }
+                  font-family: ${font};
+                  font-size: 16px;
+                  color: #${foreground-color};
+                  background-color: rgba(0, 0, 0, 0.5);
+              }
+              button {
+                  background-repeat: no-repeat;
+                  background-position: center;
+                  background-size: 50%;
+                  border: none;
+                  background-color: rgba(0, 0, 0, 0);
+                  margin: 5px;
+                  border-radius: 0px;
+                  transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+              }
+              button:hover {
+                  background-color: #${colors.background};
+              }
+              button:focus {
+                  background-color: #${colors.background};
+                  border: ${toString border-size}px solid #${border-color};
+                  border-radius: ${toString border-radius}px;
+                  color: #${foreground-color};
+              }
+              /** ********** Icons ********** **/
+              #lock {
+                  background-image: image(url("icons/lock.png"), url("/usr/share/wlogout/icons/lock.png"));
+              }
 
-        button {
-        	color: #FFFFFF;
-            font-size:20px;
+              #logout {
+                  background-image: image(url("icons/logout.png"), url("/usr/share/wlogout/icons/logout.png"));
+              }
 
-            background-repeat: no-repeat;
-        	background-position: center;
-        	background-size: 25%;
+              #suspend {
+                  background-image: image(url("icons/suspend.png"), url("/usr/share/wlogout/icons/suspend.png"));
+              }
 
-        	border-style: solid;
-        	background-color: rgba(12, 12, 12, 0.3);
-        	border: 3px solid #FFFFFF;
+              #hibernate {
+                  background-image: image(url("icons/hibernate.png"), url("/usr/share/wlogout/icons/hibernate.png"));
+              }
 
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
+              #shutdown {
+                  background-image: image(url("icons/shutdown.png"), url("/usr/share/wlogout/icons/shutdown.png"));
+              }
 
-        button:focus,
-        button:active,
-        button:hover {
-            color: @color11;
-        	background-color: rgba(12, 12, 12, 0.5);
-        	border: 3px solid @color11;
-        }
-
-        /*
-        -----------------------------------------------------
-        Buttons
-        -----------------------------------------------------
-        */
-
-        #lock {
-        	margin: 10px;
-        	border-radius: 20px;
-        	background-image: image(url("icons/lock.png"));
-        }
-
-        #logout {
-        	margin: 10px;
-        	border-radius: 20px;
-        	background-image: image(url("icons/logout.png"));
-        }
-
-        #suspend {
-        	margin: 10px;
-        	border-radius: 20px;
-        	background-image: image(url("icons/suspend.png"));
-        }
-
-        #hibernate {
-        	margin: 10px;
-        	border-radius: 20px;
-        	background-image: image(url("icons/hibernate.png"));
-        }
-
-        #shutdown {
-        	margin: 10px;
-        	border-radius: 20px;
-        	background-image: image(url("icons/shutdown.png"));
-        }
-
-        #reboot {
-        	margin: 10px;
-        	border-radius: 20px;
-        	background-image: image(url("icons/reboot.png"));
-        }
-
+              #reboot {
+                  background-image: image(url("icons/reboot.png"), url("/usr/share/wlogout/icons/reboot.png"));
+              }
       '';
     };
   };

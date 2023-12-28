@@ -25,7 +25,7 @@ let
 
     # start waybar if not started
     if ! pgrep -x "${pkgs.waybar}/bin/waybar" > /dev/null; then
-    	waybar &
+    	${pkgs.waybar}/bin/waybar &
     fi
 
     # current checksums
@@ -89,6 +89,7 @@ in
             "${waybar-reload}"
             # "hyprctl setcursor Bibata-Modern-Ice 24"
             "swww query || swww init"
+            # "sleep 0.5 && swww init && sleep 0.5 && swaylock && notify-send 'Hey $USER, Welcome back' &"
           ];
           xwayland = {
             force_zero_scaling = true;
@@ -399,6 +400,7 @@ in
       brillo
       # (if hostname != "nitro" then kbdlight else "")
       swaylock-effects
+      playerctl
       wlogout # Wayland based logout menu
       wlr-randr # An xrandr clone for wlroots compositors
     ] ++ (with pkgs.xfce; [

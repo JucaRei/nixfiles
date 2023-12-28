@@ -4,7 +4,9 @@
       eza
     ];
     shellAliases = {
-      ls = "eza --icons -l -T -L=1";
+      ls = "eza --icons -l -T -h -L=1";
+      lt = "eza --icons -l --time-style long-iso -a -h";
+      lf = "eza --icons -l --time-style long-iso -a -h -f";
       # ls = "eza --icons -Slhga";
       l = "eza --icons -l --time-style long-iso -a -h";
       la = "eza --icons -l --time-style long-iso -a";
