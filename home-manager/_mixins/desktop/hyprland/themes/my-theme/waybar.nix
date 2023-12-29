@@ -239,8 +239,10 @@
             "format" = "{icon}";
             "tooltip" = false;
             "format-icons" = {
-              "activated" = "Auto lock OFF";
-              "deactivated" = "ON";
+              # "activated" = "Auto lock OFF";
+              # "deactivated" = "ON";
+              activated = "󰅶";
+              deactivated = "󰾪";
             };
           };
           #Cliphist

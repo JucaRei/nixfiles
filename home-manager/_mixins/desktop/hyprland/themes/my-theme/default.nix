@@ -20,64 +20,28 @@ let
   # Apps
   filemanager = "${pkgs.xfce.thunar}";
 
-  # waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
-  #   #!/bin/bash
-
-  #   # start waybar if not started
-  #   if ! pgrep -x "${pkgs.waybar}/bin/waybar" > /dev/null; then
-  #   	${pkgs.waybar}/bin/waybar &
-  #   fi
-
-  #   # current checksums
-  #   current_checksum_config=$(md5sum ~/.config/waybar/config)
-  #   current_checksum_style=$(md5sum ~/.config/waybar/style.css)
-
-  #   # loop forever
-  #   while true; do
-  #   	# new checksums
-  #   	new_checksum_config=$(md5sum ~/.config/waybar/config)
-  #   	new_checksum_style=$(md5sum ~/.config/waybar/style.css)
-
-  #   	# if checksums are different
-  #   	if [ "$current_checksum_config" != "$new_checksum_config" ] || [ "$current_checksum_style" != "$new_checksum_style" ]; then
-  #   		# kill waybar
-  #   		killall ${pkgs.waybar}/bin/waybar
-
-  #   		# start waybar
-  #   		${pkgs.waybar}/bin/waybar &
-
-  #   		# update checksums
-  #   		current_checksum_config=$new_checksum_config
-  #   		current_checksum_style=$new_checksum_style
-  #   	fi
-  #   done
-  # '';
-
-  waybar = pkgs.writeShellScript "waybar" ''
-    #!/bin/bash
-    # Kill and restart waybar whenever its config files change
-    CONFIG_FILES="$HOME/.config/waybar/config $HOME/.config/waybar/style.css"
-    trap "killall waybar" EXIT
-    while true; do
-        logger -i "$0: Starting waybar in the background..."
-      waybar &
-      logger -i "$0: Started waybar PID=$!. Waiting for modifications to ''${CONFIG_FILES}..."
-      inotifywait -e modify ''${CONFIG_FILES} 2>&1 | logger -i
-      logger -i "$0: inotifywait returned $?. Killing all waybar processes..."
-      killall waybar 2>&1 | logger -i
-      logger -i "$0: killall waybar returned $?, wait a sec..."
-      sleep 1
-    done
+  launch_waybar = pkgs.writeShellScriptBin "launch_waybar" ''
+    killall .waybar-wrapped
+    ${pkgs.waybar}/bin/waybar > /dev/null 2>&1 &
   '';
 
-  # waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
-  #   #!/bin/sh
-  #   # Quit running waybar instances
-  #   killall ${pkgs.waybar}/bin/waybar
-  #   # Load the configuration
-  #   sleep 1
-  #   ${pkgs.waybar}/bin/waybar &
-  # '';
+  myswaylock = pkgs.writeShellScriptBin "myswaylock" ''
+    ${pkgs.swaylock-effects}/bin/swaylock  \
+          --screenshots \
+          --clock \
+          --indicator \
+          --indicator-radius 100 \
+          --indicator-thickness 7 \
+          --effect-blur 7x5 \
+          --effect-vignette 0.5:0.5 \
+          --ring-color 3b4252 \
+          --key-hl-color 880033 \
+          --line-color 00000000 \
+          --inside-color 00000088 \
+          --separator-color 00000000 \
+          --grace 2 \
+          --fade-in 0.3
+  '';
 in
 {
   imports = [
@@ -96,17 +60,20 @@ in
       hyprland = {
         # "${pkgs.libsForQt5.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1 &"
 
+        # exec killall -SIGUSR1 .waybar-wrapped
+
         # enable = true;
         # systemd.enable = if hostname == "nitro" then true else false;
         settings = {
           exec-once = [
             "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
             "dunst"
-            # "waybar"
-            waybar
+            "${launch_waybar}/bin/launch_waybar"
             # "hyprctl setcursor Bibata-Modern-Ice 24"
             "swww query || swww init"
-            # "sleep 0.5 && swww init && sleep 0.5 && swaylock && notify-send 'Hey $USER, Welcome back' &"
+            "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+            "swayidle -w timeout 900 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
+            "notify-send 'Hey Junior, Welcome back' &"
           ];
           xwayland = {
             force_zero_scaling = true;
@@ -288,17 +255,22 @@ in
           # Actionsq
           bind = $mainMod, PRINT, exec, $HOME/.config/hypr/scripts/screenshot.sh
           bind = $mainMod CTRL, Q, exec, wlogout
+          bind=$mainMod SHIFT, X, exec, ${myswaylock}/bin/myswaylock
           bind = $mainMod SHIFT, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh
           bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
           bind = $mainMod, SPACE, exec, rofi -show drun
           bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
-          bind = $mainMod SHIFT, B, exec, ${waybar-reload}
+          # bind = $mainMod SHIFT, B, exec, ''${waybar-reload}
           bind = $mainMod SHIFT, R, exec, $HOME/.config/hypr/scripts/loadconfig.sh
           bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
           bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
           bind = $mainMod, V, exec, ~/dotfiles/scripts/cliphist.sh
           bind = $mainMod CTRL, T, exec, $HOME/.config/waybar/scripts/themeswitcher.sh
           bind = $mainMod CTRL, S, exec, foot --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
+
+          # Waybar toggle
+          bind = $mainMod, O, exec, killall -SIGUSR1 .waybar-wrapped
+
 
           # Workspaces
           bind = $otherMod, 1, workspace, 1
@@ -396,10 +368,47 @@ in
             animation = workspaces, 1, 5, wind
           }
         '';
+        # settings = {
+        #   bind = [
+        #     # Waybar toggle
+        #   ];
+        # };
+        settings = {
+          decoration = {
+            shadow_offset = "0 5";
+            "col.shadow" = "rgba(00000099)";
+          };
+          #---------------#
+          # resize window #
+          #---------------#
+          bind = [
+            "ALT, R, submap, resize"
+            ",escape,submap,reset"
+            "CTRL SHIFT, left, resizeactive,-15 0"
+            "CTRL SHIFT, right, resizeactive,15 0"
+            "CTRL SHIFT, up, resizeactive,0 -15"
+            "CTRL SHIFT, down, resizeactive,0 15"
+            "CTRL SHIFT, l, resizeactive, 15 0"
+            "CTRL SHIFT, h, resizeactive,-15 0"
+            "CTRL SHIFT, k, resizeactive, 0 -15"
+            "CTRL SHIFT, j, resizeactive, 0 15"
+          ];
+          submap = [ "resize" "reset" ];
+          binde = [
+            # ",right,resizeactive,15 0"
+            # ",left,resizeactive,-15 0"
+            # ",up,resizeactive,0 -15"
+            # ",down,resizeactive,0 15"
+            # ",l,resizeactive,15 0"
+            # ",h,resizeactive,-15 0"
+            # ",k,resizeactive,0 -15"
+            # ",j,resizeactive,0 15"
+          ];
+        };
       };
     };
   };
-  services.blueman-applet.enable = true;
+  # services.blueman-applet.enable = true;
   home = {
     packages = with pkgs; [
       libnotify
@@ -410,6 +419,7 @@ in
       figlet # Program for making large letters out of ordinary text
       xautolock # Launch a given program when your X session has been idle for a given time
       blueman
+      pkgs.polkit_gnome
       swayidle # Idle management daemon for Wayland
       # papirus-icon-theme
       cliphist # Wayland clipboard history
@@ -432,6 +442,12 @@ in
         recursive = true;
         executable = true;
       };
+    };
+  };
+
+  services = {
+    wlsunset = {
+      enable = false;
     };
   };
 }

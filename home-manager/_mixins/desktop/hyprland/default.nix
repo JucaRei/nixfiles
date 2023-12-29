@@ -10,12 +10,25 @@ in
     packages = with pkgs; [
       # kitty # terminal
       # mako # notification daemon
-      libsForQt5.polkit-kde-agent # polkit agent
+      # libsForQt5.polkit-kde-agent # polkit agent
       qalculate-gtk
       # swaylock-effects
       bibata-cursors
       pavucontrol
       nwg-look
+      qt6.qtwayland
+      libsForQt5.qt5.qtwayland
+      xdg-utils
+      libnotify
+      libevdev
+      gtk3
+      xdg-utils
+      wl-clip-persist
+      hyprpicker
+      swww
+      hyprpaper
+      xfce.tumbler
+
     ];
   };
   wayland =
@@ -49,6 +62,7 @@ in
     };
   home = {
     sessionVariables = {
+      POLKIT_AUTH_AGENT = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       "DIRENV_LOG_FORMAT" = "";
       "LIBVA_DRIVE_NAME" = if (hostname != "zion" || "air") then "nvidia" else "iHD";
       "XDG_SESSION_TYPE" = "wayland";
@@ -103,6 +117,44 @@ in
       "XCURSOR_THEME" = "Adwaita";
       # "XCURSOR_SIZE" = "24";
       "XMODIFIERS" = "@im=ibus";
+      "XDG_CURRENT_DESKTOP" = "Hyprland";
+      "XDG_SESSION_DESKTOP" = "Hyprland";
+      "GTK_USE_PORTAL" = "1";
+      "NIXOS_XDG_OPEN_USE_PORTAL" = "1";
     };
   };
+
+  # systemd = {
+  #   user.services.polkit-gnome-authentication-agent-1 = {
+  #     description = "polkit-gnome-authentication-agent-1";
+  #     wantedBy = [ "graphical-session.target" ];
+  #     wants = [ "graphical-session.target" ];
+  #     after = [ "graphical-session.target" ];
+  #     serviceConfig = {
+  #       Type = "simple";
+  #       ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+  #       Restart = "on-failure";
+  #       RestartSec = 1;
+  #       TimeoutStopSec = 10;
+  #     };
+  #   };
+  # };
+
+  # systemd = {
+  #   user.services.polkit-kde-authentication-agent-1 = {
+  #     # after = [ "graphical-session.target" ];
+  #     after = [ "NetworkManager.target" ];
+  #     description = "polkit-kde-authentication-agent-1";
+  #     wantedBy = [ "graphical-session.target" ];
+  #     # wants = [ "graphical-session.target" ];
+  #     wants = [ "NetworkManager.target" ];
+  #     serviceConfig = {
+  #       Type = "simple";
+  #       ExecStart = "${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1";
+  #       Restart = "on-failure";
+  #       RestartSec = 1;
+  #       TimeoutStopSec = 10;
+  #     };
+  #   };
+  # };
 }
