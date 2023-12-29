@@ -98,7 +98,7 @@
 
     kernelParams = [
       "quiet"
-      "usbcore.autosuspend=-1"
+      # "usbcore.autosuspend=-1"
       "rd.plymouth=0"
       "plymouth.enable=0"
       "log-level=0"
@@ -197,7 +197,18 @@
       device = "/dev/disk/by-label/Nitroux";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
-      options = [ "subvol=@rootfs" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:3" "space_cache=v2" "commit=120" "discard=async" ];
+      options = [
+        "subvol=@rootfs"
+        "rw"
+        "noatime"
+        "nodiratime"
+        "ssd"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+        "x-gvfs-hide" # hide from filemanager
+      ];
     };
 
   fileSystems."/home" =
@@ -243,7 +254,12 @@
       device = "/dev/disk/by-label/GRUB";
       # device = "/dev/disk/by-uuid/076D-BEC9";
       fsType = "vfat";
-      options = [ "defaults" "noatime" "nodiratime" ];
+      options = [
+        "defaults"
+        "noatime"
+        "nodiratime"
+        "x-gvfs-hide" # hide from filemanager
+      ];
       noCheck = true;
     };
 

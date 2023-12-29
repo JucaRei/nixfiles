@@ -1,4 +1,4 @@
-{ pkgs, lib, config, hostname, osConfig, inputs, ... }:
+{ pkgs, lib, config, hostname, osConfig, inputs, username, ... }:
 let
   scripts.wl-screenshot = {
     runtimeInputs = [ pkgs.grim pkgs.slurp pkgs.wl-clipboard pkgs.swayimg ];
@@ -60,6 +60,11 @@ in
     ./gtk.nix
     # ./scripts
   ];
+  home = {
+    packages = with pkgs; [
+      mpvpaper # Live wallpaper
+    ];
+  };
   wayland = {
     windowManager = {
       hyprland = {
@@ -79,6 +84,8 @@ in
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "swayidle -w timeout 900 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
             "notify-send 'Hey Junior, Welcome back' &"
+            "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/samurai-boss-fight-fantasy-dragon.mp4'"
+            # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
           ];
           xwayland = {
             force_zero_scaling = true;
@@ -268,7 +275,7 @@ in
           bind = $mainMod, SPACE, exec, rofi -show drun
           bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
           # bind = $mainMod SHIFT, B, exec, ''${waybar-reload}
-          bind = $mainMod SHIFT, R, exec, $HOME/.config/hypr/scripts/loadconfig.sh
+          bind = $mainMod SHIFT, R, exec, hyprctl reload
           bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
           bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
           bind = $mainMod, V, exec, ~/dotfiles/scripts/cliphist.sh

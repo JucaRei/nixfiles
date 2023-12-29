@@ -177,8 +177,14 @@
     #};
 
     hyprland.url = "github:hyprwm/Hyprland";
-    hyprland-contrib.url = "github:hyprwm/contrib";
-    hyprland-plugins.url = "github:hyprwm/hyprland-plugins";
+    hyprland-contrib = {
+      url = "github:hyprwm/contrib";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
 
     plasma-manager = {
       # KDE Plasma user settings

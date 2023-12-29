@@ -238,6 +238,11 @@
       '';
     };
 
+    # https://unix.stackexchange.com/a/175035
+    # acpid.acEventCommands = ''
+    #   echo -1 > /sys/module/usbcore/parameters/autosuspend
+    # '';
+
     # envfs.enable = true; # populate /usr/bin for non-nix binaries
   };
 

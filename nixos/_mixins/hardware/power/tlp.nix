@@ -25,6 +25,9 @@
         TPACPI_ENABLE = 1;
         TPSMAPI_ENABLE = 1;
         WOL_DISABLE = "Y";
+
+        # Prevents bluez from hanging:
+        USB_EXCLUDE_BTUSB = 1;
       };
     };
 
