@@ -60,11 +60,6 @@ in
     ./gtk.nix
     # ./scripts
   ];
-  home = {
-    packages = with pkgs; [
-      mpvpaper # Live wallpaper
-    ];
-  };
   wayland = {
     windowManager = {
       hyprland = {
@@ -84,7 +79,7 @@ in
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "swayidle -w timeout 900 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
             "notify-send 'Hey Junior, Welcome back' &"
-            "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/samurai-boss-fight-fantasy-dragon.mp4'"
+            "mpvpaper -o 'no-audio loop' 'vf=scale=w=-1:h=1080' eDP-1 '/home/${username}/Pictures/wallpapers/samurai-boss-fight-fantasy-dragon.mp4'"
             # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
           ];
           xwayland = {
@@ -441,6 +436,7 @@ in
       brillo
       # (if hostname != "nitro" then kbdlight else "")
       swaylock-effects
+      mpvpaper # Live wallpaper
       playerctl
       wlogout # Wayland based logout menu
       wlr-randr # An xrandr clone for wlroots compositors
