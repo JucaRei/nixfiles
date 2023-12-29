@@ -12,7 +12,8 @@
   thorium-browser = pkgs.callPackage ./browsers/thorium-browser { };
 
   cyberre-grub-theme = pkgs.callPackage ./grub/themes/cyberre-grub-theme { };
-  plymouth-themes = pkgs.callPackage ./plymouth-themes { };
+  plymouth-themes = pkgs.callPackage ./plymouth/plymouth-themes { };
+  catppuccin-plymouth = pkgs.callPackage ./plymouth/catppuccin-plymouth { };
   firefox-csshacks = pkgs.callPackage ./browsers/firefox/firefox-csshacks { };
   nvchad = pkgs.callPackage ./nvchad { };
   fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
@@ -24,6 +25,7 @@
   nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup { };
   nix-whereis = pkgs.callPackage ./scripts/nix-whereis { };
   # nixos-change-summary = pkgs.callPackage ./scripts/nixos-change-summary { };
+  repl-nix = pkgs.callPackage ./scripts/repl { };
 
   # Utils
   vv = pkgs.callPackage ./utils/vv { };

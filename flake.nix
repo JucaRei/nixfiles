@@ -145,6 +145,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    matugen = {
+      url = "github:InioX/matugen/module";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # More up to date auto-cpufreq
     auto-cpufreq = {
       url = "github:AdnanHodzic/auto-cpufreq";

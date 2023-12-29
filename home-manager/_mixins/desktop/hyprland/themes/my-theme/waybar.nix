@@ -239,10 +239,10 @@
             "format" = "{icon}";
             "tooltip" = false;
             "format-icons" = {
-              # "activated" = "Auto lock OFF";
-              # "deactivated" = "ON";
-              activated = "󰅶";
-              deactivated = "󰾪";
+              "activated" = "Auto lock OFF";
+              "deactivated" = "ON";
+              # activated = "󰅶";
+              # deactivated = "󰾪";
             };
           };
           #Cliphist
@@ -251,15 +251,15 @@
               cliphist = pkgs.writeShellScript "cliphist" ''
                 case $1 in
                     d) ${pkgs.cliphist}/bin/cliphist list | rofi -dmenu -replace -config ~/.config/rofi/config-cliphist.rasi | ${pkgs.cliphist}/bin/cliphist delete
-                       ;;
+                      ;;
 
                     w) if [ `echo -e "Clear\nCancel" | rofi -dmenu -config ~/.config/rofi/config-short.rasi` == "Clear" ] ; then
                             ${pkgs.cliphist}/bin/cliphist wipe
-                       fi
-                       ;;
+                      fi
+                      ;;
 
                     *) ${pkgs.cliphist}/bin/cliphist list | rofi -dmenu -replace -config ~/.config/rofi/config-cliphist.rasi | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
-                       ;;
+                      ;;
                 esac
               '';
             in

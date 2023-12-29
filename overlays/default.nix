@@ -66,6 +66,8 @@
     # Utils
     # youtube-tui = final.youtube_tui;
 
+    plymouth-catppuccin = final.catppuccin-plymouth;
+
     # Scripts
     nixclean = final.nix-cleanup;
     nixwhereis = final.nix-whereis;

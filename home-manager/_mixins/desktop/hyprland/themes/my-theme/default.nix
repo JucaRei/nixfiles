@@ -1,4 +1,4 @@
-{ pkgs, lib, config, hostname, osConfig, ... }:
+{ pkgs, lib, config, hostname, osConfig, inputs, ... }:
 let
   scripts.wl-screenshot = {
     runtimeInputs = [ pkgs.grim pkgs.slurp pkgs.wl-clipboard pkgs.swayimg ];
@@ -15,6 +15,8 @@ let
   variant = if hostname == "nitro" then "abnt2" else "mac";
   model = if hostname == "nitro" then "pc105" else "pc104";
 
+  grimblast = "${inputs.hyprwm-contrib.packages.${pkgs.system}.grimblast}/bin/grimblast";
+
   browser = "${pkgs.firefox}";
 
   # Apps
@@ -24,6 +26,9 @@ let
     killall .waybar-wrapped
     ${pkgs.waybar}/bin/waybar > /dev/null 2>&1 &
   '';
+
+  terminal = "foot";
+  terminal-spawn = cmd: "${terminal} $SHELL -i -c ${cmd}";
 
   myswaylock = pkgs.writeShellScriptBin "myswaylock" ''
     ${pkgs.swaylock-effects}/bin/swaylock  \
@@ -80,8 +85,10 @@ in
           };
           misc = {
             # disable redundant renders
+            disable_autoreload = false;
             disable_splash_rendering = true;
             disable_hyprland_logo = false;
+            enable_swallow = true;
             animate_manual_resizes = true;
             animate_mouse_windowdragging = true;
 
