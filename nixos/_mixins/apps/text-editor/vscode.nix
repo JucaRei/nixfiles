@@ -55,6 +55,13 @@
           sha256 = "sha256-PpIut/yhUNK1eTPRvVXONt06TOXpoGgmd6lrhFdADRQ";
         }
         {
+          name = "shell-format";
+          publisher = "foxundermoon";
+          version = "7.2.5";
+          # sha256 = lib.fakeSha256;
+          sha256 = "sha256-kfpRByJDcGY3W9+ELBzDOUMl06D/vyPlN//wPgQhByk=";
+        }
+        {
           name = "beardedtheme";
           publisher = "beardedbear";
           version = "8.3.2";

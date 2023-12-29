@@ -20,36 +20,53 @@ let
   # Apps
   filemanager = "${pkgs.xfce.thunar}";
 
-  waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
+  # waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
+  #   #!/bin/bash
+
+  #   # start waybar if not started
+  #   if ! pgrep -x "${pkgs.waybar}/bin/waybar" > /dev/null; then
+  #   	${pkgs.waybar}/bin/waybar &
+  #   fi
+
+  #   # current checksums
+  #   current_checksum_config=$(md5sum ~/.config/waybar/config)
+  #   current_checksum_style=$(md5sum ~/.config/waybar/style.css)
+
+  #   # loop forever
+  #   while true; do
+  #   	# new checksums
+  #   	new_checksum_config=$(md5sum ~/.config/waybar/config)
+  #   	new_checksum_style=$(md5sum ~/.config/waybar/style.css)
+
+  #   	# if checksums are different
+  #   	if [ "$current_checksum_config" != "$new_checksum_config" ] || [ "$current_checksum_style" != "$new_checksum_style" ]; then
+  #   		# kill waybar
+  #   		killall ${pkgs.waybar}/bin/waybar
+
+  #   		# start waybar
+  #   		${pkgs.waybar}/bin/waybar &
+
+  #   		# update checksums
+  #   		current_checksum_config=$new_checksum_config
+  #   		current_checksum_style=$new_checksum_style
+  #   	fi
+  #   done
+  # '';
+
+  waybar = pkgs.writeShellScript "waybar" ''
     #!/bin/bash
-
-    # start waybar if not started
-    if ! pgrep -x "${pkgs.waybar}/bin/waybar" > /dev/null; then
-    	${pkgs.waybar}/bin/waybar &
-    fi
-
-    # current checksums
-    current_checksum_config=$(md5sum ~/.config/waybar/config)
-    current_checksum_style=$(md5sum ~/.config/waybar/style.css)
-
-    # loop forever
+    # Kill and restart waybar whenever its config files change
+    CONFIG_FILES="$HOME/.config/waybar/config $HOME/.config/waybar/style.css"
+    trap "killall waybar" EXIT
     while true; do
-    	# new checksums
-    	new_checksum_config=$(md5sum ~/.config/waybar/config)
-    	new_checksum_style=$(md5sum ~/.config/waybar/style.css)
-
-    	# if checksums are different
-    	if [ "$current_checksum_config" != "$new_checksum_config" ] || [ "$current_checksum_style" != "$new_checksum_style" ]; then
-    		# kill waybar
-    		killall ${pkgs.waybar}/bin/waybar
-
-    		# start waybar
-    		${pkgs.waybar}/bin/waybar &
-
-    		# update checksums
-    		current_checksum_config=$new_checksum_config
-    		current_checksum_style=$new_checksum_style
-    	fi
+        logger -i "$0: Starting waybar in the background..."
+      waybar &
+      logger -i "$0: Started waybar PID=$!. Waiting for modifications to ''${CONFIG_FILES}..."
+      inotifywait -e modify ''${CONFIG_FILES} 2>&1 | logger -i
+      logger -i "$0: inotifywait returned $?. Killing all waybar processes..."
+      killall waybar 2>&1 | logger -i
+      logger -i "$0: killall waybar returned $?, wait a sec..."
+      sleep 1
     done
   '';
 
@@ -86,7 +103,7 @@ in
             "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
             "dunst"
             # "waybar"
-            "${waybar-reload}"
+            waybar
             # "hyprctl setcursor Bibata-Modern-Ice 24"
             "swww query || swww init"
             # "sleep 0.5 && swww init && sleep 0.5 && swaylock && notify-send 'Hey $USER, Welcome back' &"

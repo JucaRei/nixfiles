@@ -49,6 +49,7 @@
             "idle_inhibitor"
             # Start tray toogle
             "tray"
+            "backlight"
             # End tray toogle
             "custom/exit"
             "clock"
@@ -62,7 +63,7 @@
             "on-click" = "activate";
             "on-click-middle" = "close";
             "ignore-list" = [
-              "Alacritty"
+              "foot"
             ];
             "app_ids-mapping" = {
               "firefoxdeveloperedition" = "firefox-developer-edition";
@@ -503,8 +504,9 @@
 
         * {
             font-family: "Fira Sans Semibold", FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-            border: none;
-            border-radius: 0px;
+            border: 0.8px;
+            border-radius: 1px;
+            border-color: #B6BBC4;
         }
 
         window#waybar {
@@ -857,7 +859,7 @@
             font-size: 16px;
             color: @textcolor2;
             border-radius: 15px;
-            padding: 2px 15px 0px 10px;
+            padding: 2px 12px 0px 10px;
             margin: 8px 15px 8px 0px;
             opacity:0.8;
         }
@@ -909,7 +911,13 @@
         }
 
         #backlight {
-            background-color: #90b1b1;
+            background-color: @backgroundlight;
+            font-size: 16px;
+            color: #7E30E1;
+            border-radius: 8px;
+            padding: 2px 8px 0px 10px;
+            margin: 2px 4px 2px 0px;
+            opacity:0.8;
         }
 
         #network {
