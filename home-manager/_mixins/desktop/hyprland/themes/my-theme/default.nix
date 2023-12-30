@@ -1,5 +1,9 @@
 { pkgs, lib, config, hostname, osConfig, inputs, username, ... }:
 let
+  nixGL = import ../../../../../../lib/nixGL.nix { inherit config pkgs; };
+
+  mpvpaper-custom-custom = (nixGL pkgs.mpvpaper-custom);
+
   scripts.wl-screenshot = {
     runtimeInputs = [ pkgs.grim pkgs.slurp pkgs.wl-clipboard pkgs.swayimg ];
     text = ''
@@ -79,7 +83,7 @@ in
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "swayidle -w timeout 900 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
             "notify-send 'Hey Junior, Welcome back' &"
-            "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
+            "mpvpaper-custom -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
             # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
           ];
           xwayland = {
@@ -436,7 +440,7 @@ in
       brillo
       # (if hostname != "nitro" then kbdlight else "")
       swaylock-effects
-      mpvpaper # Live wallpaper
+      mpvpaper-custom # Live wallpaper
       playerctl
       wlogout # Wayland based logout menu
       wlr-randr # An xrandr clone for wlroots compositors
