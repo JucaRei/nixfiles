@@ -450,7 +450,6 @@ in
       brillo
       # (if hostname != "nitro" then kbdlight else "")
       swaylock-effects
-      kanagawa-gtk
       mpvpaper
       # (nixGL pkgs.mpvpaper) # Live wallpaper
       playerctl

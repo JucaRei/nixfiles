@@ -74,7 +74,6 @@
 
     gruvbox = final.gruv;
     phocus = final.phocus-gtk;
-    kanagawa-gtk = final.Kanagawa-GTK-Theme;
 
     steam = prev.steam.override {
       extraPkgs = pkgs:
