@@ -10,25 +10,23 @@ let
   inherit (builtins) toString;
   inherit (lib.trivial) checkListOfEnum;
 in
-checkListOfEnum "$Everforest: GTK Theme Variants" [
+checkListOfEnum "$Kanagawa: GTK Theme Variants" [
   "B"
   "B-LB"
-  "B-GS"
   "BL"
   "BL-LB"
-  "BL-GS"
 ]
   themeVariants
   stdenv.mkDerivation
 {
-  pname = "everforest-gtk";
-  version = "unstable-2023-12-30";
+  pname = "kanagawa-gtk";
+  version = "unstable-2023-07-04";
 
   src = fetchFromGitHub {
     owner = "Fausto-Korpsvart";
-    repo = "Everforest-GKT-Theme";
-    rev = "8481714cf9ed5148694f1916ceba8fe21e14937b";
-    hash = "sha256-NO12ku8wnW/qMHKxi5TL/dqBxH0+cZbe+fU0iicb9JU=";
+    repo = "Kanagawa-GKT-Theme";
+    rev = "35936a1e3bbd329339991b29725fc1f67f192c1e";
+    hash = "sha256-BZRmjVas8q6zsYbXFk4bCk5Ec/3liy9PQ8fqFGHAXe0";
   };
 
   nativeBuildInputs = [ jdupes ];
@@ -37,7 +35,7 @@ checkListOfEnum "$Everforest: GTK Theme Variants" [
 
   installPhase =
     let
-      gtkTheme = "Everforest-${toString themeVariants}";
+      gtkTheme = "Kanagawa-${toString themeVariants}";
     in
     ''
       runHook preInstall
@@ -45,7 +43,7 @@ checkListOfEnum "$Everforest: GTK Theme Variants" [
       mkdir -p $out/share/{icons,themes}
 
       cp -r $src/themes/${gtkTheme} $out/share/themes
-      cp -r $src/icons/Everforest $out/share/icons
+      cp -r $src/icons/Kanagawa $out/share/icons
 
       # Duplicate files -> hard-links = reduced install-size!
       jdupes -L -r $out/share
@@ -54,12 +52,10 @@ checkListOfEnum "$Everforest: GTK Theme Variants" [
     '';
 
   meta = with lib; {
-    description = "A GTK theme based on the Everforest colour palette";
-    homepage = "https://github.com/Fausto-Korpsvart/Everforest-GTK-Theme";
+    description = "A GTK theme based on the Kanagawa colour palette";
+    homepage = "https://github.com/Fausto-Korpsvart/Kanagawa-GTK-Theme";
     license = licenses.gpl3Only;
-    # maintainers = [ juca ];
+    # maintainers = [ Icy-Thought ];
     platforms = platforms.all;
   };
 }
-
-# nix-shell -p nix-prefetch-git --run 'nix-prefetch-git https://github.com/Fausto-Korpsvart/Everforest-GTK-Theme.git refs/heads/master'

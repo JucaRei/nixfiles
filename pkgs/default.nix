@@ -64,5 +64,5 @@
   fluent = pkgs.callPackage ./themes/icons/fluent.nix { };
   reversal = pkgs.callPackage ./themes/icons/reversal.nix { };
   whitesur = pkgs.callPackage ./themes/icons/whitesur.nix { };
-  Everforest-GTK-Theme = pkgs.callPackage ./themes/gtk/Everforest-GTK-Theme { };
+  Kanagawa-GTK-Theme = pkgs.callPackage ./themes/gtk/Kanagawa-GTK-Theme { };
 }
