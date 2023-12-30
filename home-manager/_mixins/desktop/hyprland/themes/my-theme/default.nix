@@ -59,6 +59,7 @@ in
     ../../../../apps/terminal/foot.nix
     ./dunst.nix
     ./swaylock.nix
+    ./eye-protection.nix
     # ./xresources.nix
     ./rofi.nix
     ./waybar.nix
@@ -84,7 +85,7 @@ in
             # "hyprctl setcursor Bibata-Modern-Ice 24"
             "swww query || swww init"
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-            "swayidle -w timeout 30 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
+            "swayidle -w timeout 300 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
             "notify-send 'Hey Junior, Welcome back' &"
             "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
             # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
