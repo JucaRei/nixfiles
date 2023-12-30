@@ -79,7 +79,7 @@ in
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "swayidle -w timeout 900 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
             "notify-send 'Hey Junior, Welcome back' &"
-            "mpvpaper -o 'no-audio loop' 'vf=scale=w=-1:h=1080' eDP-1 '/home/${username}/Pictures/wallpapers/samurai-boss-fight-fantasy-dragon.mp4'"
+            "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/winter-forest-snowfall.mp4'"
             # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
           ];
           xwayland = {
