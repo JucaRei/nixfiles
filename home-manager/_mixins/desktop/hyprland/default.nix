@@ -16,8 +16,9 @@ in
       bibata-cursors
       pavucontrol
       nwg-look
-      qt6.qtwayland
-      libsForQt5.qt5.qtwayland
+      qt6Packages.qtstyleplugin-kvantum
+      libsForQt5.qtstyleplugin-kvantum
+      libsForQt5.qt5ct
       xdg-utils
       libnotify
       libevdev
@@ -72,7 +73,6 @@ in
       "WLR_NO_HARDWARE_CURSORS" = "1";
       "__GL_GSYNC_ALLOWED" = "0";
       "__GL_VRR_ALLOWED" = "0";
-      "QT_QPA_PLATFORM" = "wayland";
       # "MOZ_DISABLE_RDD_SANDBOX" = "1";
       "MOZ_ENABLE_WAYLAND" = "1";
 
@@ -110,9 +110,7 @@ in
       "GDK_BACKEND" = "wayland,x11";
       "GTK_IM_MODULE" = "ibus";
       "KITTY_ENABLE_WAYLAND" = "1";
-      "QT_AUTO_SCREEN_SCALE_FACTOR" = "0";
       "QT_IM_MODULE" = "ibus";
-      "QT_QPA_PLATFORMTHEME" = "qt5ct";
       "SDL_VIDEODRIVER" = "wayland";
       "XCURSOR_THEME" = "Adwaita";
       # "XCURSOR_SIZE" = "24";
@@ -121,40 +119,52 @@ in
       "XDG_SESSION_DESKTOP" = "Hyprland";
       "GTK_USE_PORTAL" = "1";
       "NIXOS_XDG_OPEN_USE_PORTAL" = "1";
+
+      # increase priority
+      QT_STYLE_OVERRIDE = lib.mkForce "kvantum";
+      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+      # "QT_AUTO_SCREEN_SCALE_FACTOR" = "0";
+      QT_QPA_PLATFORM = "wayland;xcb";
+      # "QT_QPA_PLATFORM" = "wayland";
+      # "QT_QPA_PLATFORMTHEME" = "qt5ct";
+      QT_QPA_PLATFORMTHEME = lib.mkForce "qtct";
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+      # remain backwards compatible with qt5
+      DISABLE_QT_COMPAT = "0";
     };
   };
-
-  # systemd = {
-  #   user.services.polkit-gnome-authentication-agent-1 = {
-  #     description = "polkit-gnome-authentication-agent-1";
-  #     wantedBy = [ "graphical-session.target" ];
-  #     wants = [ "graphical-session.target" ];
-  #     after = [ "graphical-session.target" ];
-  #     serviceConfig = {
-  #       Type = "simple";
-  #       ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-  #       Restart = "on-failure";
-  #       RestartSec = 1;
-  #       TimeoutStopSec = 10;
-  #     };
-  #   };
-  # };
-
-  # systemd = {
-  #   user.services.polkit-kde-authentication-agent-1 = {
-  #     # after = [ "graphical-session.target" ];
-  #     after = [ "NetworkManager.target" ];
-  #     description = "polkit-kde-authentication-agent-1";
-  #     wantedBy = [ "graphical-session.target" ];
-  #     # wants = [ "graphical-session.target" ];
-  #     wants = [ "NetworkManager.target" ];
-  #     serviceConfig = {
-  #       Type = "simple";
-  #       ExecStart = "${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1";
-  #       Restart = "on-failure";
-  #       RestartSec = 1;
-  #       TimeoutStopSec = 10;
-  #     };
-  #   };
-  # };
 }
+
+# systemd = {
+#   user.services.polkit-gnome-authentication-agent-1 = {
+#     description = "polkit-gnome-authentication-agent-1";
+#     wantedBy = [ "graphical-session.target" ];
+#     wants = [ "graphical-session.target" ];
+#     after = [ "graphical-session.target" ];
+#     serviceConfig = {
+#       Type = "simple";
+#       ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+#       Restart = "on-failure";
+#       RestartSec = 1;
+#       TimeoutStopSec = 10;
+#     };
+#   };
+# };
+
+# systemd = {
+#   user.services.polkit-kde-authentication-agent-1 = {
+#     # after = [ "graphical-session.target" ];
+#     after = [ "NetworkManager.target" ];
+#     description = "polkit-kde-authentication-agent-1";
+#     wantedBy = [ "graphical-session.target" ];
+#     # wants = [ "graphical-session.target" ];
+#     wants = [ "NetworkManager.target" ];
+#     serviceConfig = {
+#       Type = "simple";
+#       ExecStart = "${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1";
+#       Restart = "on-failure";
+#       RestartSec = 1;
+#       TimeoutStopSec = 10;
+#     };
+#   };
+# };

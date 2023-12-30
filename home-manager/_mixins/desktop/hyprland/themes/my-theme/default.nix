@@ -2,7 +2,8 @@
 let
   nixGL = import ../../../../../../lib/nixGL.nix { inherit config pkgs; };
 
-  mpvpaper-custom-custom = (nixGL pkgs.mpvpaper-custom);
+  # mpvpaper-custom = (nixGL pkgs.mpvpaper); # Live wallpaper
+
 
   scripts.wl-screenshot = {
     runtimeInputs = [ pkgs.grim pkgs.slurp pkgs.wl-clipboard pkgs.swayimg ];
@@ -15,7 +16,8 @@ let
       grim -t png -g "$(slurp)" - | wl-copy -t image/png
     '';
   };
-  layout = if hostname == "nitro" then "br" else "us";
+  layout =
+    if hostname == "nitro" then "br" else "us";
   variant = if hostname == "nitro" then "abnt2" else "mac";
   model = if hostname == "nitro" then "pc105" else "pc104";
 
@@ -76,14 +78,15 @@ in
         settings = {
           exec-once = [
             "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+            "hyprctl setcursor Bibata-Modern-Ice 16"
             "dunst"
             "${launch_waybar}/bin/launch_waybar"
             # "hyprctl setcursor Bibata-Modern-Ice 24"
             "swww query || swww init"
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-            "swayidle -w timeout 900 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
+            "swayidle -w timeout 30 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
             "notify-send 'Hey Junior, Welcome back' &"
-            "mpvpaper-custom -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
+            "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
             # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
           ];
           xwayland = {
@@ -242,6 +245,12 @@ in
           $mainMod = SUPER
           $otherMod = ALT
 
+          #-------------------------------------------#
+          # switch between current and last workspace #
+          #-------------------------------------------#
+          #slash(/)
+          bindsym $mainMod+slash workspace back_and_forth
+
           # Applications
           # bind = $otherMod, RETURN, exec, alacritty
           bind = $otherMod, RETURN, exec, foot
@@ -354,12 +363,13 @@ in
           ### Misc Options ###
           ####################
 
-          # Misc {
+          Misc {
           #   disable_hyprland_logo = false
           #   disable_splash_rendering = false
           #   animate_manual_resizes = true
           #   animate_mouse_windowdragging = true
-          # }
+          default_floating_border pixel 3
+          }
 
           ##################
           ### Animations ###
@@ -440,7 +450,9 @@ in
       brillo
       # (if hostname != "nitro" then kbdlight else "")
       swaylock-effects
-      mpvpaper-custom # Live wallpaper
+      everforest-gtk
+      mpvpaper
+      # (nixGL pkgs.mpvpaper) # Live wallpaper
       playerctl
       wlogout # Wayland based logout menu
       wlr-randr # An xrandr clone for wlroots compositors
@@ -463,5 +475,8 @@ in
     wlsunset = {
       enable = false;
     };
+  };
+  programs = {
+    pywal.enable = true;
   };
 }

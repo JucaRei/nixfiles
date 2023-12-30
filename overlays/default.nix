@@ -74,6 +74,7 @@
 
     gruvbox = final.gruv;
     phocus = final.phocus-gtk;
+    everforest-gtk = final.Everforest-GTK-Theme;
 
     steam = prev.steam.override {
       extraPkgs = pkgs:

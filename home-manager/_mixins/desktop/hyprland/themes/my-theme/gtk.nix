@@ -2,9 +2,9 @@
   gtk = {
     enable = true;
     theme = {
-      # name = "Catppuccin-Mocha-Compact-Pink-Dark";
+      name = "Catppuccin-Mocha-Compact-Pink-Dark";
       # name = "Catppuccin-Mocha-Compact-Mauve-Dark";
-      name = "Catppuccin-Mocha-Compact-Maroon-Dark";
+      # name = "Catppuccin-Mocha-Compact-Maroon-Dark";
       package = pkgs.catppuccin-gtk.override {
         accents = [ "pink" ];
         # accents = [ "mauve" ];
@@ -17,7 +17,7 @@
 
     iconTheme = {
       package = pkgs.catppuccin-papirus-folders;
-      name = "Papirus";
+      name = "Papirus-Dark";
     };
     font = {
       name = "Lexend";
@@ -50,7 +50,8 @@
     ];
     pointerCursor = {
       package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
+      # name = "Bibata-Modern-Classic";
+      name = "Bibata-Modern-Ice";
       size = 16;
       gtk.enable = true;
       x11.enable = true;

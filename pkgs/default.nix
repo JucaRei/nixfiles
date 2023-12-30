@@ -59,9 +59,10 @@
   nautilus-annotations = pkgs.callPackage ./nautilus-annotations { };
 
   # Icons
-  colloid = pkgs.callPackage ./icons/colloid.nix { };
-  elementary = pkgs.callPackage ./icons/elementary.nix { };
-  fluent = pkgs.callPackage ./icons/fluent.nix { };
-  reversal = pkgs.callPackage ./icons/reversal.nix { };
-  whitesur = pkgs.callPackage ./icons/whitesur.nix { };
+  colloid = pkgs.callPackage ./themes/icons/colloid.nix { };
+  elementary = pkgs.callPackage ./themes/icons/elementary.nix { };
+  fluent = pkgs.callPackage ./themes/icons/fluent.nix { };
+  reversal = pkgs.callPackage ./themes/icons/reversal.nix { };
+  whitesur = pkgs.callPackage ./themes/icons/whitesur.nix { };
+  Everforest-GTK-Theme = pkgs.callPackage ./themes/gtk/Everforest-GTK-Theme { };
 }
