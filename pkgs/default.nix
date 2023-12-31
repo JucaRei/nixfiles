@@ -8,6 +8,8 @@
   # tidal-dl = pkgs.callPackage ./music/tidal-dl { };
   # spotdl = pkgs.callPackage ./music/spotify-dl { };
 
+  sddm-astronaut-theme = pkgs.callPackage ./sddm-theme/sddm-astronaut-theme.nix { };
+
   # Browsers
   thorium-browser = pkgs.callPackage ./browsers/thorium-browser { };
 

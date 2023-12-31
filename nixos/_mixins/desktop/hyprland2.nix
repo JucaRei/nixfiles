@@ -43,7 +43,10 @@ in
           wayland = {
             enable = true;
           };
+          theme = "sddm-astronaut-theme";
+          autoNumlock = true;
         };
+        defaultSession = "Hyprland";
       };
     };
     dbus.enable = true;
@@ -88,6 +91,7 @@ in
       # libnotify
       # libevdev
       # # libsForQt5.libkscreen
+      pkgs.sddm-astronaut
 
       ### Change to home-manager later
       # mako # notification daemon

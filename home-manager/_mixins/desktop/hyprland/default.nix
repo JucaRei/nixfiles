@@ -108,13 +108,10 @@ in
       "CLUTTER_BACKEND" = "wayland";
       "CLUTTER_DEFAULT_FPS" = "60";
       "GDK_BACKEND" = "wayland,x11";
-      "GTK_IM_MODULE" = "ibus";
       "KITTY_ENABLE_WAYLAND" = "1";
-      "QT_IM_MODULE" = "ibus";
       "SDL_VIDEODRIVER" = "wayland";
       "XCURSOR_THEME" = "Adwaita";
       # "XCURSOR_SIZE" = "24";
-      "XMODIFIERS" = "@im=ibus";
       "XDG_CURRENT_DESKTOP" = "Hyprland";
       "XDG_SESSION_DESKTOP" = "Hyprland";
       "GTK_USE_PORTAL" = "1";
@@ -131,6 +128,17 @@ in
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       # remain backwards compatible with qt5
       DISABLE_QT_COMPAT = "0";
+
+      # Input method framework
+      GTK_IM_MODULE = "fcitx";
+      # "GTK_IM_MODULE" = "ibus";
+      QT_IM_MODULE = "fcitx";
+      # "QT_IM_MODULE" = "ibus";
+      XMODIFIERS = "@im=fcitx";
+      # "XMODIFIERS" = "@im=ibus";
+      DefaultIMModule = "fcitx";
+      SDL_IM_MODULE = "fcitx";
+      GLFW_IM_MODULE = "ibus";
     };
   };
 }

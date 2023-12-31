@@ -13,7 +13,7 @@
     enable = true;
     # add a gammastep icon in the system tray
     # has problem with wayland, so disable it
-    tray = false;
+    tray = true;
     temperature = {
       day = 5700;
       night = 4000;

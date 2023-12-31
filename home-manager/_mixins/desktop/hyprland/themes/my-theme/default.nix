@@ -454,6 +454,7 @@ in
       mpvpaper
       # (nixGL pkgs.mpvpaper) # Live wallpaper
       playerctl
+      imv # simple image viewer
       wlogout # Wayland based logout menu
       wlr-randr # An xrandr clone for wlroots compositors
     ] ++ (with pkgs.xfce; [

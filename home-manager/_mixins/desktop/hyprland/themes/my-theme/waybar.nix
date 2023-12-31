@@ -16,6 +16,7 @@
             ## General Settings
             layer = "top";
             position = "top";
+            height = 24;
             margin-top = 0;
             margin-bottom = 0;
             margin-left = 0;
