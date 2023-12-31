@@ -46,7 +46,7 @@ in
           theme = "sddm-astronaut-theme";
           autoNumlock = true;
         };
-        defaultSession = "Hyprland";
+        defaultSession = "hyprland";
       };
     };
     dbus.enable = true;

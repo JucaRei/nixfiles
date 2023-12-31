@@ -22,6 +22,7 @@
     # ../services/tailscale.nix
     # ../services/zerotier.nix
     ../config/scripts/nixos-change-summary.nix
+    ../sys/check-updates.nix
   ];
 
   # don't install documentation i don't use

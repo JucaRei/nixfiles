@@ -1,8 +1,12 @@
 { lib
 , stdenv
 , fetchFromGitHub
-, qtgraphicaleffects
+, pkgs
 }:
+
+let
+  qtgraphicaleffects = pkgs.libsForQt5.qt5.qtgraphicaleffects;
+in
 
 stdenv.mkDerivation rec {
   pname = "sddm-astronaut-theme.nix";
