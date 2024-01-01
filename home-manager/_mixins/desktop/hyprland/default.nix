@@ -75,6 +75,11 @@ in
       "__GL_VRR_ALLOWED" = "0";
       # "MOZ_DISABLE_RDD_SANDBOX" = "1";
       "MOZ_ENABLE_WAYLAND" = "1";
+      disable-features = "WaylandOverlayDelegation";
+      enable-features = "UseOzonePlatform,WaylandWindowDecorations";
+      ozone-platform = "wayland";
+      ozone-platform-hint = "auto";
+      LIBSEAT_BACKEND = "logind";
 
       # nitro
       "VAAPI_MPEG4_ENABLED" = "true";

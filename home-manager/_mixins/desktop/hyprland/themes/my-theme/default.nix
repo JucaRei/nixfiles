@@ -25,6 +25,17 @@ let
 
   browser = "${pkgs.firefox}";
 
+  waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
+    #!/run/current-system/sw/bin/bash
+    source ~/.bashrc
+
+    if pgrep waybar > /dev/null; then
+        pkill waybar
+    else
+        waybar & disown
+    fi
+  '';
+
   # Apps
   filemanager = "${pkgs.xfce.thunar}";
 
@@ -283,7 +294,7 @@ in
           bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
           bind = $mainMod, SPACE, exec, rofi -show drun
           bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
-          # bind = $mainMod SHIFT, B, exec, ''${waybar-reload}
+          # bind = $mainMod SHIFT, B, exec, ${waybar-reload}
           bind = $mainMod SHIFT, R, exec, hyprctl reload
           bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
           bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
@@ -472,11 +483,6 @@ in
     };
   };
 
-  services = {
-    wlsunset = {
-      enable = false;
-    };
-  };
   programs = {
     pywal.enable = true;
   };

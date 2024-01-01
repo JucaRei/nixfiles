@@ -24,7 +24,6 @@ let
 
     if [ "$updates_available" -gt 0 ]; then
       echo "Updates are available. Run 'sudo nixos-rebuild switch' to apply them."
-      espeak -v en+m7 -s 165 "Updates! available! " --punct=","
       notify-send --icon=ktimetracker --app-name="Alert!" "UPDATES " "Updates available:
 
         (ツ)_/¯
@@ -33,7 +32,6 @@ let
 
     else
       echo "No updates available."
-      espeak -v en-swedish -s 165 "No! Updates! " --punct=","
       notify-send --icon=ktimetracker --app-name="Relax!" "Zero updates " "No updates available:
 
         (ツ)_/¯
