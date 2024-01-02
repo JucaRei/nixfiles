@@ -2,7 +2,7 @@
   programs = {
     waybar = {
       enable = true;
-      package = pkgs.waybar.override {
+      package = pkgs.unstable.waybar.override {
         hyprlandSupport = true;
         experimentalPatches = true;
       };
@@ -16,7 +16,7 @@
             ## General Settings
             layer = "top";
             position = "top";
-            height = 24;
+            height = 20;
             margin-top = 0;
             margin-bottom = 0;
             margin-left = 0;

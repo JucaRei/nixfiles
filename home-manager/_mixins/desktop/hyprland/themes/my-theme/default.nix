@@ -25,22 +25,20 @@ let
 
   browser = "${pkgs.firefox}";
 
-  waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
-    #!/run/current-system/sw/bin/bash
-    source ~/.bashrc
-
-    if pgrep waybar > /dev/null; then
-        pkill waybar
-    else
-        waybar & disown
-    fi
-  '';
-
   # Apps
   filemanager = "${pkgs.xfce.thunar}";
 
+  waybar-reload = pkgs.writeShellScriptBin "waybar-reload" ''
+    #!/bin/bash
+    killall -SIGUSR1 .waybar-wrapped
+    sleep 0.5
+    waybar &
+  '';
+
   launch_waybar = pkgs.writeShellScriptBin "launch_waybar" ''
-    killall .waybar-wrapped
+    # killall .waybar-wrapped
+    killall ${pkgs.waybar}/bin/waybar
+    sleep 0.5
     ${pkgs.waybar}/bin/waybar > /dev/null 2>&1 &
   '';
 
@@ -93,6 +91,7 @@ in
             "hyprctl setcursor Bibata-Modern-Ice 16"
             "dunst"
             "${launch_waybar}/bin/launch_waybar"
+            # "${waybar-reload}/bin/waybar-reload"
             # "hyprctl setcursor Bibata-Modern-Ice 24"
             "swww query || swww init"
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
@@ -294,7 +293,7 @@ in
           bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
           bind = $mainMod, SPACE, exec, rofi -show drun
           bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
-          # bind = $mainMod SHIFT, B, exec, ${waybar-reload}
+          bind= $mainMod SHIFT, B, exec, killall .waybar-wrapped && waybar & disown
           bind = $mainMod SHIFT, R, exec, hyprctl reload
           bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
           bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
