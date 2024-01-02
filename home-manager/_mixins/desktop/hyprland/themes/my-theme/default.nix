@@ -259,8 +259,6 @@ in
           #-------------------------------------------#
           # switch between current and last workspace #
           #-------------------------------------------#
-          #slash(/)
-          bindsym $mainMod+slash workspace back_and_forth
 
           # Applications
           # bind = $otherMod, RETURN, exec, alacritty

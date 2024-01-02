@@ -43,7 +43,7 @@ in
           wayland = {
             enable = true;
           };
-          theme = "sddm-astronaut-theme";
+          theme = "astronaut";
           autoNumlock = true;
         };
         defaultSession = "hyprland";

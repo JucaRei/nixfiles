@@ -1,12 +1,8 @@
 { lib
 , stdenv
 , fetchFromGitHub
-, pkgs
+, qtgraphicaleffects
 }:
-
-let
-  qtgraphicaleffects = pkgs.libsForQt5.qt5.qtgraphicaleffects;
-in
 
 stdenv.mkDerivation rec {
   pname = "sddm-astronaut-theme.nix";
@@ -38,11 +34,10 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "Sddm theme";
+    description = "Sddm theme for my dotfiles (v2).";
     homepage = src.meta.homepage;
     license = licenses.gpl3Only;
     platforms = platforms.all;
   };
 }
-
 # nix-shell -p nix-prefetch-git --run 'nix-prefetch-git https://github.com/JucaRei/sddm-astronaut-theme.git refs/heads/master'

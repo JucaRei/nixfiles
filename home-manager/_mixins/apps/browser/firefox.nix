@@ -140,7 +140,8 @@ let
     ]);
   };
   # librewolf = with pkgs; wrapFirefox librewolf-unwrapped {
-  firefox-gl = with pkgs.unstable; wrapFirefox firefox-unwrapped {
+  # firefox-gl = with pkgs.unstable; wrapFirefox firefox-unwrapped {
+  firefox-gl = with pkgs.unstable; wrapFirefox firefox-devedition-unwrapped {
     nativeMessagingHosts = with pkgs; [
       bukubrow
       tridactyl-native
