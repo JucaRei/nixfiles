@@ -128,7 +128,7 @@ let
 
   '';
 
-  wallpaper = pkgs.writeShellScript "wallpaper" ''
+  wallpaper-custom = pkgs.writeShellScriptBin "wallpaper-custom" ''
     # Cache file for holding the current wallpaper
     cache_file="$HOME/.cache/current_wallpaper"
     rasi_file="$HOME/.cache/current_wallpaper.rasi"
@@ -266,7 +266,7 @@ in
             "notify-send 'Hey Junior, Welcome back' &"
             # "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
             # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
-            "${pkgs.wallpaper}/bin/wallpaper"
+            "${pkgs.wallpaper}/bin/wallpaper-custom"
           ];
           xwayland = {
             force_zero_scaling = true;
