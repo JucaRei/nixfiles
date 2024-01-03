@@ -128,103 +128,6 @@ let
 
   '';
 
-  wallpaper-custom = pkgs.writeShellScriptBin "wallpaper-custom" ''
-    # Cache file for holding the current wallpaper
-    cache_file="$HOME/.cache/current_wallpaper"
-    rasi_file="$HOME/.cache/current_wallpaper.rasi"
-
-    # Create cache file if not exists
-    if [ ! -f $cache_file ] ;then
-        touch $cache_file
-        echo "/home/${username}/Pictures/wallpapers/default.jpg" > "$cache_file"
-    fi
-
-    # Create rasi file if not exists
-    if [ ! -f $rasi_file ] ;then
-        touch $rasi_file
-        echo "* { current-image: url(\"/home/${username}/Pictures/wallpapers/default.jpg\", height); }" > "$rasi_file"
-    fi
-
-    current_wallpaper=$(cat "$cache_file")
-
-    case $1 in
-
-        # Load wallpaper from .cache of last session
-        "init")
-            if [ -f $cache_file ]; then
-                wal -q -i $current_wallpaper
-            else
-                wal -q -i /home/${username}/Pictures/wallpapers/
-            fi
-        ;;
-
-        # Select wallpaper with rofi
-        "select")
-
-            selected=$( find "/home/${username}/Pictures/wallpapers" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) -exec basename {} \; | sort -R | while read rfile
-            do
-                echo -en "$rfile\x00icon\x1f/home/${username}/Pictures/wallpapers/''${rfile}\n"
-            done | rofi -dmenu -replace -config ~/.config/rofi/config-wallpaper.rasi)
-            if [ ! "$selected" ]; then
-                echo "No wallpaper selected"
-                exit
-            fi
-            wal -q -i /home/${username}/Pictures/wallpapers/$selected
-        ;;
-
-        # Randomly select wallpaper
-        *)
-            wal -q -i /home/${username}/Pictures/wallpapers/
-        ;;
-
-    esac
-
-    # -----------------------------------------------------
-    # Load current pywal color scheme
-    # -----------------------------------------------------
-    source "$HOME/.cache/wal/colors.sh"
-    echo "Wallpaper: $wallpaper"
-
-    # -----------------------------------------------------
-    # Write selected wallpaper into .cache files
-    # -----------------------------------------------------
-    echo "$wallpaper" > "$cache_file"
-    echo "* { current-image: url(\"$wallpaper\", height); }" > "$rasi_file"
-
-    # -----------------------------------------------------
-    # get wallpaper image name
-    # -----------------------------------------------------
-    newwall=$(echo $wallpaper | sed "s|/home/${username}/Pictures/wallpapers/||g")
-
-    # -----------------------------------------------------
-    # Reload waybar with new colors
-    # -----------------------------------------------------
-    ${pkgs.waybar}/bin/waybar
-
-    # -----------------------------------------------------
-    # Set the new wallpaper
-    # -----------------------------------------------------
-    transition_type="wipe"
-    # transition_type="outer"
-    # transition_type="random"
-
-    ${pkgs.swww}/bin/swww img $wallpaper \
-        --transition-bezier .43,1.19,1,.4 \
-        --transition-fps=60 \
-        --transition-type=$transition_type \
-        --transition-duration=0.7 \
-        --transition-pos "$( hyprctl cursorpos )"
-
-    # -----------------------------------------------------
-    # Send notification
-    # -----------------------------------------------------
-    sleep 1
-    notify-send "Colors and Wallpaper updated" "with image $newwall"
-
-    echo "DONE!"
-
-  '';
-
 in
 {
   imports = [
@@ -266,7 +169,7 @@ in
             "notify-send 'Hey Junior, Welcome back' &"
             # "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
             # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
-            "${pkgs.wallpaper}/bin/wallpaper-custom"
+            ".config/rofi/scripts/wallpaper.sh"
           ];
           xwayland = {
             force_zero_scaling = true;
@@ -651,6 +554,11 @@ in
     file = {
       ".config/hypr/scripts" = {
         source = ./scripts;
+        recursive = true;
+        executable = true;
+      };
+      ".config/rofi/scripts/wallpaper.sh" = {
+        source = ./rofi/wallpaper.sh;
         recursive = true;
         executable = true;
       };
