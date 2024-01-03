@@ -19,10 +19,10 @@
       package = pkgs.catppuccin-papirus-folders;
       name = "Papirus-Dark";
     };
-    font = {
-      name = "Lexend";
-      size = 11;
-    };
+    # font = {
+    #   name = "Lexend";
+    #   size = 11;
+    # };
     gtk3.extraConfig = {
       gtk-xft-antialias = 1;
       gtk-xft-hinting = 1;

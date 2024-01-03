@@ -16,7 +16,7 @@
             ## General Settings
             layer = "top";
             position = "top";
-            height = 20;
+            height = 18;
             margin-top = 0;
             margin-bottom = 0;
             margin-left = 0;
@@ -840,7 +840,8 @@
          #bluetooth, #bluetooth.on, #bluetooth.connected {
             background-color: @backgroundlight;
             font-size: 16px;
-            color: @textcolor2;
+            /* color: @textcolor2; */
+            color: #B4D4FF;
             border-radius: 15px;
             padding: 2px 10px 0px 10px;
             margin: 8px 15px 8px 0px;

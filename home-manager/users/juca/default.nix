@@ -228,6 +228,7 @@ in
     "d ${config.home.homeDirectory}/Pictures/family 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Pictures/backup 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Pictures/phones 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Pictures/screenshots 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Pictures/wallpapers 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Pictures/resources 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/.dotfiles 0755 ${username} users - -"

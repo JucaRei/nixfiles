@@ -344,7 +344,10 @@
   services = {
     journald = {
       extraConfig = lib.mkDefault ''
-        SystemMaxUse=100M
+        SystemMaxUse=50M
+        SystemMaxFileSize=10M
+        RuntimeMaxUse=50M
+        RuntimeMaxFileSize=10M
         MaxFileSec=7day
         SystemMaxFiles=5
       '';

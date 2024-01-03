@@ -16,7 +16,7 @@
         CPU_SCALING_GOVERNOR_ON_BAT = "schedutil"; # Adjust as needed
         NATACPI_ENABLE = 1;
         RUNTIME_PM_ON_AC = "on";
-        RUNTIME_PM_ON_BAT = "auto";
+        RUNTIME_PM_ON_BAT = "on";
         SCHED_POWERSAVE_ON_BAT = 1;
         SOUND_POWER_SAVE_ON_AC = 0;
         SOUND_POWER_SAVE_ON_BAT = 1;

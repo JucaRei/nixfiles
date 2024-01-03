@@ -19,6 +19,7 @@ in
       qt6Packages.qtstyleplugin-kvantum
       libsForQt5.qtstyleplugin-kvantum
       libsForQt5.qt5ct
+      xdg-desktop-portal-hyprland
       xdg-utils
       libnotify
       libevdev
@@ -75,10 +76,10 @@ in
       "__GL_VRR_ALLOWED" = "0";
       # "MOZ_DISABLE_RDD_SANDBOX" = "1";
       "MOZ_ENABLE_WAYLAND" = "1";
-      "disable-features" = "WaylandOverlayDelegation";
-      "enable-features" = "UseOzonePlatform,WaylandWindowDecorations";
-      "ozone-platform" = "wayland";
-      "ozone-platform-hint" = "auto";
+      "disable_features" = "WaylandOverlayDelegation";
+      "enable_features" = "UseOzonePlatform,WaylandWindowDecorations";
+      "ozone_platform" = "wayland";
+      "ozone_platform_hint" = "auto";
       "LIBSEAT_BACKEND" = "logind";
 
       # nitro

@@ -43,6 +43,12 @@
           sha256 = "sha256-dYMDV84LEGXUjt/fbsSy3BVM5SsBHcPaDDll8KjPIWY=";
         }
         {
+          name = "even-better-toml";
+          publisher = "tamasfe";
+          version = "0.19.2";
+          sha256 = "sha256-JKj6noi2dTe02PxX/kS117ZhW8u7Bhj4QowZQiJKP2E=";
+        }
+        {
           name = "hypr-syntax";
           publisher = "temu4";
           version = "0.1.3";
