@@ -37,18 +37,41 @@ in
         Defaults lecture = always
         Defaults lecture_file=/etc/sudoers.d/00-lecture.txt
       '';
-      execWheelOnly = false;
+      execWheelOnly = true;
       wheelNeedsPassword = true;
       extraRules = [
         {
           users = [ "${username}" ];
           commands = [
-            { command = "${pkgs.tailscale}/bin/tailscale up --accept-routes --accept-dns=false"; options = [ "NOPASSWD" "SETENV" ]; }
-            { command = "${pkgs.tailscale}/bin/tailscale down"; options = [ "NOPASSWD" "SETENV" ]; }
-            { command = "/run/current-system/sw/bin/systemctl reboot"; options = [ "NOPASSWD" "SETENV" ]; }
-            { command = "/run/current-system/sw/bin/systemctl shutdown -r now"; options = [ "NOPASSWD" "SETENV" ]; }
-            { command = "/run/current-system/sw/bin/systemctl suspend"; options = [ "NOPASSWD" "SETENV" ]; }
+            builtins.map
+            (command: {
+              command = "/run/current-system/sw/bin/${command}";
+              options = [ "NOPASSWD" ];
+            })
+            [ "poweroff" "reboot" "nixos-rebuild" "nix-env" "bandwhich" "mic-light-on" "mic-light-off" "systemctl" ]
+            # Tailscale
+            {
+              command = "${pkgs.tailscale}/bin/tailscale up --accept-routes --accept-dns=false";
+              options = [ "NOPASSWD" "SETENV" ];
+            }
+            {
+              command = "${pkgs.tailscale}/bin/tailscale down";
+              options = [ "NOPASSWD" "SETENV" ];
+            }
+            {
+              command = "/run/current-system/sw/bin/systemctl reboot";
+              options = [ "NOPASSWD" "SETENV" ];
+            }
+            {
+              command = "/run/current-system/sw/bin/systemctl shutdown -r now";
+              options = [ "NOPASSWD" "SETENV" ];
+            }
+            {
+              command = "/run/current-system/sw/bin/systemctl suspend";
+              options = [ "NOPASSWD" "SETENV" ];
+            }
           ];
+          groups = [ "wheel" ];
         }
       ];
     };

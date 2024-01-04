@@ -57,8 +57,9 @@ let
     sleep 1
   '';
 
+  # ${pkgs.unstable.swaylock-effects}/bin/swaylock  \
   myswaylock = pkgs.writeShellScriptBin "myswaylock" ''
-    ${pkgs.swaylock-effects}/bin/swaylock  \
+    ${pkgs.unstable.swaylock}/bin/swaylock  \
           --screenshots \
           --clock \
           --indicator \
@@ -78,9 +79,9 @@ let
   lockscreentime = pkgs.writeShellScriptBin "lockscreentime" ''
     timeswaylock=600
     timeoff=660
-    if [ -f "${pkgs.swayidle}/bin/swayidle" ]; then
+    if [ -f "${pkgs.unstable.swayidle}/bin/swayidle" ]; then
         echo "swayidle is installed."
-        ${pkgs.swayidle}/bin/swayidle -w timeout $timeswaylock '${myswaylock}/bin/myswaylock -f' timeout $timeoff 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on'
+        ${pkgs.unstable.swayidle}/bin/swayidle -w timeout $timeswaylock '${myswaylock}/bin/myswaylock -f' timeout $timeoff 'hyprctl dispatch dpms off' resume 'hyprctl dispatch dpms on'
     else
         echo "swayidle not installed."
     fi;
@@ -95,9 +96,9 @@ let
 
   launch_waybar = pkgs.writeShellScriptBin "launch_waybar" ''
     # killall .waybar-wrapped
-    killall ${pkgs.waybar}/bin/waybar
+    killall ${pkgs.unstable.waybar}/bin/waybar
     sleep 0.5
-    ${pkgs.waybar}/bin/waybar > /dev/null 2>&1 &
+    ${pkgs.unstable.waybar}/bin/waybar > /dev/null 2>&1 &
   '';
 
   terminal = "foot";
@@ -128,12 +129,21 @@ let
 
   '';
 
+  color-picker = pkgs.writeShellScriptBin "color-picker" ''
+    COLOR_OUTPUT=`grim -g "$(slurp -p)" -t ppm - | convert - -format '%[pixel:p{0,0}]' txt:-`
+    COLOR=`echo "$COLOR_OUTPUT" | tail -n1 | awk '{print $3}'`
+
+    echo "$COLOR_OUTPUT"
+    echo $COLOR | wl-copy
+    echo "Color $COLOR copied to clipboard"
+  '';
+
 in
 {
   imports = [
     ../../../../apps/terminal/foot.nix
     ./dunst.nix
-    ./swaylock.nix
+    # ./swaylock.nix
     ./eye-protection.nix
     # ./xresources.nix
     ./rofi.nix
@@ -260,9 +270,9 @@ in
 
           # See https://wiki.hyprland.org/Configuring/Variables/ for more
           general {
-            gaps_in = 4
-            gaps_out = 10
-            border_size = 2
+            gaps_in = 2
+            gaps_out = 6
+            border_size = 1
             col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
             col.inactive_border = rgba(595959aa)
 
@@ -288,27 +298,115 @@ in
           ###########################
 
           # See https://wiki.hyprland.org/Configuring/Variables/ for more
+          # name: "Rounding all Blur"
+
+          # decoration {
+          #   rounding = 10
+          #   blur {
+          #     enabled = true
+          #     size = 10
+          #     passes = 4
+          #     new_optimizations = on
+          #     ignore_opacity = true
+          #     xray = true
+          #     blurls = waybar
+          #   }
+          #   active_opacity = 0.95
+          #   inactive_opacity = 0.84
+          #   fullscreen_opacity = 0.95
+
+          #   drop_shadow = true
+          #   shadow_range = 30
+          #   shadow_render_power = 3
+          #   col.shadow = 0x66000000
+          # }
+
+          # name: "Rounding"
+          # decoration {
+          #     rounding = 10
+          #     blur {
+          #         enabled = true
+          #         size = 6
+          #         passes = 2
+          #         new_optimizations = on
+          #         ignore_opacity = true
+          #         xray = true
+          #         # blurls = waybar
+          #     }
+          #     active_opacity = 1.0
+          #     inactive_opacity = 0.8
+          #     fullscreen_opacity = 1.0
+
+          #     drop_shadow = true
+          #     shadow_range = 30
+          #     shadow_render_power = 3
+          #     col.shadow = 0x66000000
+          # }
+
+          # name: Default
+          # decoration {
+          #     rounding = 10
+          #     blur {
+          #         enabled = true
+          #         size = 4
+          #         passes = 2
+          #         new_optimizations = on
+          #         ignore_opacity = true
+          #         xray = true
+          #         # blurls = waybar
+          #     }
+          #     active_opacity = 1.0
+          #     inactive_opacity = 0.89
+          #     fullscreen_opacity = 1.0
+
+          #     drop_shadow = true
+          #     shadow_range = 30
+          #     shadow_render_power = 3
+          #     col.shadow = 0x66000000
+          # }
+
+          # name: "Rounding All Blur No Shadows"
+          # decoration {
+          #     rounding = 10
+          #     blur {
+          #         enabled = true
+          #         size = 12
+          #         passes = 4
+          #         new_optimizations = on
+          #         ignore_opacity = true
+          #         xray = true
+          #         blurls = waybar
+          #     }
+          #     active_opacity = 0.9
+          #     inactive_opacity = 0.6
+          #     fullscreen_opacity = 0.9
+
+          #     drop_shadow = false
+          #     shadow_range = 30
+          #     shadow_render_power = 3
+          #     col.shadow = 0x66000000
+          # }
+
           # name: "Rounding More Blur"
-
           decoration {
-            rounding = 10
-            blur {
-              enabled = true
-              size = 10
-              passes = 4
-              new_optimizations = on
-              ignore_opacity = true
-              xray = true
-              blurls = waybar
-            }
-            active_opacity = 0.9
-            inactive_opacity = 0.7
-            fullscreen_opacity = 0.9
+              rounding = 10
+              blur {
+                  enabled = true
+                  size = 12
+                  passes = 6
+                  new_optimizations = on
+                  ignore_opacity = true
+                  xray = true
+                  # blurls = waybar
+              }
+              active_opacity = 0.98
+              inactive_opacity = 0.7
+              fullscreen_opacity = 0.96
 
-            drop_shadow = true
-            shadow_range = 30
-            shadow_render_power = 3
-            col.shadow = 0x66000000
+              drop_shadow = true
+              shadow_range = 30
+              shadow_render_power = 3
+              col.shadow = 0x66000000
           }
 
           ################
@@ -520,7 +618,6 @@ in
   home = {
     packages = with pkgs; [
       cantarell-fonts
-      libnotify
       swww # wallpaper daemon for wayland, controlled at runtime
       grim # Grab images from a Wayland compositor
       swappy # screenshot resizer
@@ -536,13 +633,16 @@ in
       brillo
       random-wall
       # (if hostname != "nitro" then kbdlight else "")
-      swaylock-effects
       mpvpaper
       # (nixGL pkgs.mpvpaper) # Live wallpaper
       playerctl
       imv # simple image viewer
       wlogout # Wayland based logout menu
       wlr-randr # An xrandr clone for wlroots compositors
+      wl-clip-persist
+      wl-clipboard
+      imagemagick_light
+      color-picker
     ] ++ (with pkgs.xfce; [
       xfce4-power-manager
       thunar
@@ -561,6 +661,103 @@ in
         source = ./rofi/wallpaper.sh;
         recursive = true;
         executable = true;
+      };
+      #######################
+      ### Pywal templates ###
+      #######################
+      ".config/wal/templates/colors-hyprland.conf" = {
+        text = ''
+          $background = rgb({background.strip})
+          $foreground = rgb({foreground.strip})
+          $color0 = rgb({color0.strip})
+          $color1 = rgb({color1.strip})
+          $color2 = rgb({color2.strip})
+          $color3 = rgb({color3.strip})
+          $color4 = rgb({color4.strip})
+          $color5 = rgb({color5.strip})
+          $color6 = rgb({color6.strip})
+          $color7 = rgb({color7.strip})
+          $color8 = rgb({color8.strip})
+          $color9 = rgb({color9.strip})
+          $color10 = rgb({color10.strip})
+          $color11 = rgb({color11.strip})
+          $color12 = rgb({color12.strip})
+          $color13 = rgb({color13.strip})
+          $color14 = rgb({color14.strip})
+          $color15 = rgb({color15.strip})
+        '';
+      };
+      ".config/wal/templates/colors-rofi-pywal.rasi" = {
+        text = ''
+          * {{
+              background: rgba(0,0,1,0.5);
+              foreground: #FFFFFF;
+              color0:     {color0};
+              color1:     {color1};
+              color2:     {color2};
+              color3:     {color3};
+              color4:     {color4};
+              color5:     {color5};
+              color6:     {color6};
+              color7:     {color7};
+              color8:     {color8};
+              color9:     {color9};
+              color10:    {color10};
+              color11:    {color11};
+              color12:    {color12};
+              color13:    {color13};
+              color14:    {color14};
+              color15:    {color15};
+          }}
+        '';
+      };
+      ".config/wal/templates/colors-waybar.css" = {
+        text = ''
+          @define-color foreground {foreground};
+          @define-color background {background};
+          @define-color cursor {cursor};
+
+          @define-color color0 {color0};
+          @define-color color1 {color1};
+          @define-color color2 {color2};
+          @define-color color3 {color3};
+          @define-color color4 {color4};
+          @define-color color5 {color5};
+          @define-color color6 {color6};
+          @define-color color7 {color7};
+          @define-color color8 {color8};
+          @define-color color9 {color9};
+          @define-color color10 {color10};
+          @define-color color11 {color11};
+          @define-color color12 {color12};
+          @define-color color13 {color13};
+          @define-color color14 {color14};
+          @define-color color15 {color15};
+        '';
+      };
+      ".config/wal/templates/colors-wlogout.css" = {
+        text = ''
+          @define-color foreground {foreground};
+          @define-color background {background};
+          @define-color cursor {cursor};
+
+          @define-color color0 {color0};
+          @define-color color1 {color1};
+          @define-color color2 {color2};
+          @define-color color3 {color3};
+          @define-color color4 {color4};
+          @define-color color5 {color5};
+          @define-color color6 {color6};
+          @define-color color7 {color7};
+          @define-color color8 {color8};
+          @define-color color9 {color9};
+          @define-color color10 {color10};
+          @define-color color11 {color11};
+          @define-color color12 {color12};
+          @define-color color13 {color13};
+          @define-color color14 {color14};
+          @define-color color15 {color15};
+        '';
       };
     };
   };

@@ -79,7 +79,7 @@ newwall=$(echo $wallpaper | sed "s|$HOME/Pictures/wallpapers/||g")
 # -----------------------------------------------------
 # Reload waybar with new colors
 # -----------------------------------------------------
-~/dotfiles/waybar/launch.sh
+#~/dotfiles/waybar/launch.sh
 killall .waybar-wrapped
 sleep 0.2
 waybar > /dev/null 2>&1 &

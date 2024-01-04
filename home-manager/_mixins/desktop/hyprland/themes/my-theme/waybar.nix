@@ -499,7 +499,16 @@
         /* -----------------------------------------------------
          * Import Pywal colors
          * ----------------------------------------------------- */
-        /* @import 'style-light.css'; */
+        @import '/home/juca/.cache/wal/colors-waybar.css';
+        @define-color backgroundlight @color5;
+        @define-color backgrounddark @color11;
+        @define-color workspacesbackground1 @color5;
+        @define-color workspacesbackground2 @color11;
+        @define-color bordercolor @color11;
+        @define-color textcolor1 #FFFFFF;
+        @define-color textcolor2 #FFFFFF;
+        @define-color textcolor3 #FFFFFF;
+        @define-color iconcolor #FFFFFF;
 
         /* -----------------------------------------------------
          * General
@@ -586,7 +595,7 @@
 
         #window {
             background: @backgroundlight;
-            margin: 8px 15px 8px 0px;
+            margin: 8px 14px 8px 0px;
             padding: 2px 10px 0px 10px;
             border-radius: 12px;
             color:@textcolor2;
@@ -698,7 +707,7 @@
 
         #custom-appmenu {
             background-color: @backgrounddark;
-            font-size: 16px;
+            font-size: 15px;
             color: @textcolor1;
             border-radius: 15px;
             padding: 0px 10px 0px 10px;
@@ -715,7 +724,8 @@
             margin: 0px 20px 0px 0px;
             padding:0px;
             font-size:20px;
-            color: @iconcolor;
+            /* color: @iconcolor; */
+            color: #F05941;
         }
 
         /* -----------------------------------------------------
@@ -917,10 +927,10 @@
         #backlight {
             background-color: @backgroundlight;
             font-size: 16px;
-            color: #7E30E1;
-            border-radius: 8px;
-            padding: 2px 8px 0px 10px;
-            margin: 2px 4px 2px 0px;
+            color: #4942E4;
+            border-radius: 15px;
+            padding: 2px 12px 0px 10px;
+            margin: 8px 15px 8px 0px;
             opacity:0.8;
         }
 

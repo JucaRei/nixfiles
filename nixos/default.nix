@@ -32,6 +32,12 @@
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
 
+      # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
+      (_: super: {
+        makeModulesClosure = x:
+          super.makeModulesClosure (x // { allowMissing = true; });
+      })
+
       inputs.nixd.overlays.default
 
       # You can also add overlays exported from other flakes:

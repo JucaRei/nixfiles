@@ -12,7 +12,6 @@ in
       # mako # notification daemon
       # libsForQt5.polkit-kde-agent # polkit agent
       qalculate-gtk
-      # swaylock-effects
       bibata-cursors
       pavucontrol
       nwg-look
@@ -25,12 +24,7 @@ in
       libevdev
       gtk3
       xdg-utils
-      wl-clip-persist
-      hyprpicker
-      swww
-      hyprpaper
       xfce.tumbler
-
     ];
   };
   wayland =

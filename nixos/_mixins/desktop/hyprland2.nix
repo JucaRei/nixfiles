@@ -84,7 +84,13 @@ in
       # "enable-features" = "UseOzonePlatform,WaylandWindowDecorations";
       # ozone-platform-hint = "auto";
       # "ozone-platform" = "wayland";
+      _JAVA_AWT_WM_NONEREPARENTING = "1";
     };
+    loginShellInit = ''
+      dbus-update-activation-environment --systemd DISPLAY
+    '';
+    # eval $(gnome-keyring-daemon --start --components=ssh,secrets)
+    # eval $(ssh-agent)
     systemPackages = with pkgs; [
       # gtk3
       # xdg-utils
