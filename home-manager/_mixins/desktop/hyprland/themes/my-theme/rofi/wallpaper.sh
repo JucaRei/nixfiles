@@ -16,7 +16,7 @@ rasi_file="$HOME/.cache/current_wallpaper.rasi"
 # Create cache file if not exists
 if [ ! -f $cache_file ] ;then
     touch $cache_file
-    echo "$HOME/wallpaper/default.jpg" > "$cache_file"
+    echo "$HOME/Pictures/wallpapers/default.jpg" > "$cache_file"
 fi
 
 # Create rasi file if not exists
@@ -74,14 +74,14 @@ echo "* { current-image: url(\"$wallpaper\", height); }" > "$rasi_file"
 # -----------------------------------------------------
 # get wallpaper image name
 # -----------------------------------------------------
-newwall=$(echo $wallpaper | sed "s|$HOME//Pictures/wallpapers/||g")
+newwall=$(echo $wallpaper | sed "s|$HOME/Pictures/wallpapers/||g")
 
 # -----------------------------------------------------
 # Reload waybar with new colors
 # -----------------------------------------------------
 ~/dotfiles/waybar/launch.sh
 killall .waybar-wrapped
-sleep 0.5
+sleep 0.2
 waybar > /dev/null 2>&1 &
 # -----------------------
 ------------------------------
