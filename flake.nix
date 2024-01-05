@@ -20,7 +20,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     # You can access packages and modules from different nixpkgs revs at the
     # same time. See 'unstable-packages' overlay in 'overlays/default.nix'.
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     flake-compat = {
       url = "github:edolstra/flake-compat";
@@ -69,6 +70,11 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.2.0.tar.gz";
+    # nix-snapd = {
+    #   url = "https://flakehub.com/f/io12/nix-snapd/0.1.29.tar.gz";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+
 
     nixpkgs-f2k = {
       url = "github:moni-dz/nixpkgs-f2k";

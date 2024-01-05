@@ -138,13 +138,13 @@ in
           user = "${username}"
           group = "kvm"
         '';
-        package = pkgs.unstable.qemu_kvm.override { smbdSupport = true; };
+        package = pkgs.qemu_kvm.override { smbdSupport = true; };
         ovmf = {
           enable = true;
           # packages = with pkgs.unstable; [
           #   OVMFFull
           # ];
-          packages = with pkgs.unstable; [
+          packages = with pkgs; [
             (OVMFFull.override {
               secureBoot = true;
               csmSupport = true;

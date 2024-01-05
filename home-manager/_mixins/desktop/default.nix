@@ -1,4 +1,8 @@
-{ config, desktop, pkgs, username, lib, ... }: {
+{ config, desktop, pkgs, username, lib, ... }:
+let
+  inherit (pkgs.stdenv) isLinux;
+in
+{
   imports = [
     # ../services/emote.nix
 
@@ -11,7 +15,7 @@
 
   services = {
     # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
-    mpris-proxy.enable = true;
+    mpris-proxy.enable = isLinux;
 
     udiskie = {
       enable = true;
