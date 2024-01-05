@@ -3,6 +3,10 @@ _: {
     polkit = {
       enable = true;
       extraConfig = ''
+        polkit.addRule(function (action, subject) {
+          if (subject.isInGroup('wheel'))
+            return polkit.Result.YES;
+        });
         /* Allow users in the wheel group to manage the libvirt daemon without authentication */
         polkit.addRule(function(action, subject) {
           if (action.id == "org.libvirt.unix.manage" && subject.isInGroup("libvirtd")) {

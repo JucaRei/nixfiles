@@ -1,4 +1,8 @@
-{ config, ... }: {
+{ config, ... }:
+let
+  torrent = "transmission-gtk.desktop";
+in
+{
   # networking.firewall.allowedTCPPorts = [ 9091 ];
   services.transmission = {
     enable = true;
@@ -20,6 +24,14 @@
       rpc-port = 9091;
       # rpc-host-whitelist = "${config.networking.hostName}";
       rpc-whitelist = "10.100.0.*,10.0.0.*,192.168.100.*";
+    };
+  };
+
+  xdg.mimeApps = rec {
+    enable = true;
+    associations.added = defaultApplications;
+    defaultApplications = {
+      "x-scheme-handler/magnet" = torrent;
     };
   };
 }

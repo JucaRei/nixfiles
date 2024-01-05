@@ -64,7 +64,8 @@ in
         ytdl-format = "bestvideo[height<=?1080][vcodec!=?vp9]+bestaudio/best";
         save-position-on-quit = true;
         osd-font = "Bitstream Vera Sans";
-        # osc = "no";
+        osc = "no";
+        border = "no";
         # osd-bar = "no";
         force-window = "yes";
 

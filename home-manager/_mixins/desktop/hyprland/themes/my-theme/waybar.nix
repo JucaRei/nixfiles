@@ -317,12 +317,38 @@
             "spacing" = 10;
             "icon-size" = 21;
           };
+          # "clock" = {
+          #   # "timezone" = "America/Sao_Paulo";
+          #   "tooltip-format" = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+          #   # START CLOCK FORMAT
+          #   "format-alt" = "{:%Y-%m-%d}";
+          #   # END CLOCK FORMAT
+          # };
           "clock" = {
-            # "timezone" = "America/Sao_Paulo";
-            "tooltip-format" = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-            # START CLOCK FORMAT
-            "format-alt" = "{:%Y-%m-%d}";
-            # END CLOCK FORMAT
+            "format" = "{:%H:%M} ";
+            "format-alt" = "{:%A, %d de %B, %Y (%R)} ";
+            "tooltip-format" = "<tt><small>{calendar}</small></tt>";
+            "calendar" = {
+              "mode" = "year";
+              "mode-mon-col" = 3;
+              "weeks-pos" = "right";
+              "on-scroll" = 1;
+              "on-click-right" = "mode";
+              "format" = {
+                "months" = "<span color='#ffead3'><b>{}</b></span>";
+                "days" = "<span color='#ecc6d9'><b>{}</b></span>";
+                "weeks" = "<span color='#99ffdd'><b>W{}</b></span>";
+                "weekdays" = "<span color='#ffcc66'><b>{}</b></span>";
+                "today" = "<span color='#ff6699'><b><u>{}</u></b></span>";
+              };
+            };
+            "actions" = {
+              "on-click-right" = "mode";
+              "on-click-forward" = "tz_up";
+              "on-click-backward" = "tz_down";
+              "on-scroll-up" = "shift_up";
+              "on-scroll-down" = "shift_down";
+            };
           };
           "cpu" = {
             # "format" = "{usage}% ";

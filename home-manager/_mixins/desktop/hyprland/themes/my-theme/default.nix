@@ -623,6 +623,7 @@ in
   home = {
     packages = with pkgs; [
       cantarell-fonts
+      xarchiver
       swww # wallpaper daemon for wayland, controlled at runtime
       grim # Grab images from a Wayland compositor
       swappy # screenshot resizer
@@ -642,7 +643,7 @@ in
       mpvpaper
       # (nixGL pkgs.mpvpaper) # Live wallpaper
       playerctl
-      imv # simple image viewer
+      # imv # simple image viewer
       wlogout # Wayland based logout menu
       wlr-randr # An xrandr clone for wlroots compositors
       wl-clip-persist
@@ -651,7 +652,15 @@ in
       color-picker
     ] ++ (with pkgs.xfce; [
       xfce4-power-manager
-      thunar
+      exo #thunar "open terminal here"
+      thunar-archive-plugin
+      (thunar.override {
+        thunarPlugins = with pkgs.xfce; [
+          thunar-archive-plugin
+          thunar-volman
+          thunar-media-tags-plugin
+        ];
+      })
       mousepad
       tumbler
     ] ++ (with pkgs.unstable;[
