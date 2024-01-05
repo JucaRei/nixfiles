@@ -48,7 +48,6 @@
     # Music
     # tidal = final.tidal-dl;
 
-    night-pdf = final.nightpdf;
 
     nvchad = final.nvim-chad;
     phospor-ttf = final.phospor;
