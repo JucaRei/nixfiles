@@ -193,6 +193,7 @@ in
             animate_manual_resizes = true;
             animate_mouse_windowdragging = true;
 
+            vrr = 0;
             vfr = true;
 
             # dpms
@@ -222,8 +223,12 @@ in
           ### Monitor Configs ###
           #######################
 
-          monitor = eDP-1, 1920x1080@120, 0x0, 1
-          monitor = HDMI-A-1, 1920x1080@60, -1920x0, 1
+          monitor = eDP-1, 1920x1080@120, 1920x1080, 1
+          monitor = HDMI-A-1, 1920x1080@60, 0x1080, 1
+          # monitor = eDP-1, highres, highrr, auto, 1
+          # monitor = HDMI-A-1, highres, highrr, auto, 1
+          # monitor = eDP-1, highrr, auto, 1
+          # monitor = HDMI-A-1, highrr, auto, 1
 
           ##############################
           ### Environments Variables ###
@@ -400,8 +405,8 @@ in
                   # blurls = waybar
               }
               active_opacity = 0.98
-              inactive_opacity = 0.7
-              fullscreen_opacity = 0.96
+              inactive_opacity = 0.76
+              fullscreen_opacity = 0.95
 
               drop_shadow = true
               shadow_range = 30
@@ -625,6 +630,7 @@ in
       figlet # Program for making large letters out of ordinary text
       xautolock # Launch a given program when your X session has been idle for a given time
       blueman
+      wdisplays
       pkgs.polkit_gnome
       swayidle # Idle management daemon for Wayland
       # papirus-icon-theme

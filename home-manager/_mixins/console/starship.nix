@@ -44,6 +44,9 @@ in
         "\n$character"
       ];
 
+      # Timeout for commands executed by starship (ms)
+      command_timeout = 1000;
+
       aws = {
         format = "[$symbol($profile )(($region) )([$duration] )]($style)";
         # symbol = "🅰 ";

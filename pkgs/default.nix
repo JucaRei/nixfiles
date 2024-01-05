@@ -10,6 +10,8 @@
 
   sddm-astronaut-theme = pkgs.libsForQt5.callPackage ./sddm-theme/sddm-astronaut-theme.nix { };
 
+  nightpdf = pkgs.callPackage ./misc/nightpdf { };
+
   # Browsers
   thorium-browser = pkgs.callPackage ./browsers/thorium-browser { };
 

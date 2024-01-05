@@ -40,37 +40,21 @@ in
       execWheelOnly = true;
       wheelNeedsPassword = true;
       extraRules = [
+        # {
+        #   commands = [
+        #     { command = "${pkgs.tailscale}/bin/tailscale up --accept-routes --accept-dns=false"; options = [ "NOPASSWD" "SETENV" ]; }
+        #     { command = "${pkgs.tailscale}/bin/tailscale down"; options = [ "NOPASSWD" "SETENV" ]; }
+        #   ];
+        # }
         {
           users = [ "${username}" ];
-          commands = [
+          commands =
             builtins.map
-            (command: {
-              command = "/run/current-system/sw/bin/${command}";
-              options = [ "NOPASSWD" ];
-            })
-            [ "poweroff" "reboot" "nixos-rebuild" "nix-env" "bandwhich" "mic-light-on" "mic-light-off" "systemctl" ]
-            # Tailscale
-            {
-              command = "${pkgs.tailscale}/bin/tailscale up --accept-routes --accept-dns=false";
-              options = [ "NOPASSWD" "SETENV" ];
-            }
-            {
-              command = "${pkgs.tailscale}/bin/tailscale down";
-              options = [ "NOPASSWD" "SETENV" ];
-            }
-            {
-              command = "/run/current-system/sw/bin/systemctl reboot";
-              options = [ "NOPASSWD" "SETENV" ];
-            }
-            {
-              command = "/run/current-system/sw/bin/systemctl shutdown -r now";
-              options = [ "NOPASSWD" "SETENV" ];
-            }
-            {
-              command = "/run/current-system/sw/bin/systemctl suspend";
-              options = [ "NOPASSWD" "SETENV" ];
-            }
-          ];
+              (command: {
+                command = "/run/current-system/sw/bin/${command}";
+                options = [ "NOPASSWD" "SETENV" ];
+              })
+              [ "poweroff" "shutdown" "reboot" "nixos-rebuild" "nix-env" "bandwhich" "mic-light-on" "mic-light-off" "systemctl" ];
           groups = [ "wheel" ];
         }
       ];
