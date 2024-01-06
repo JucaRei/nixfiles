@@ -142,6 +142,7 @@ in
 {
   imports = [
     ../../../../apps/terminal/foot.nix
+    ../../../../apps/tools/imv.nix
     ./dunst.nix
     # ./swaylock.nix
     ./eye-protection.nix
@@ -167,6 +168,7 @@ in
             "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
             "hyprctl setcursor Bibata-Modern-Ice 16"
             "dunst"
+            "xfce4-power-manager"
             # Load cliphist history
             "wl-paste --watch cliphist store"
             "${launch_waybar}/bin/launch_waybar"
@@ -193,8 +195,8 @@ in
             animate_manual_resizes = true;
             animate_mouse_windowdragging = true;
 
-            vrr = 0;
-            vfr = true;
+            vrr = 2; # misc:vrr -> Adaptive sync of your monitor. 0 (off), 1 (on), 2 (fullscreen only). Default 0 to avoid white flashes on select hardware.
+            vfr = true; # misc:no_vfr -> misc:vfr. bool, heavily recommended to leave at default on. Saves on CPU usage.
 
             # dpms
             mouse_move_enables_dpms = true; # enable dpms on mouse/touchpad action
@@ -202,11 +204,20 @@ in
             # disable_autoreload = true; # autoreload is unnecessary on nixos, because the config is readonly anyway
           };
           dwindle = {
-            pseudotile = true;
+            no_gaps_when_only = false;
+            pseudotile = 0; # enable pseudotiling on dwindle
+            special_scale_factor = 0.9;
+            split_width_multiplier = 1.0;
+            use_active_for_splits = true;
+            force_split = 0;
             preserve_split = true;
+            default_split_ratio = 1.0;
           };
           master = {
             new_is_master = true;
+            orientation = "right";
+            special_scale_factor = 0.9;
+            no_gaps_when_only = false;
           };
         };
         extraConfig = ''
@@ -405,7 +416,7 @@ in
                   # blurls = waybar
               }
               active_opacity = 0.98
-              inactive_opacity = 0.76
+              inactive_opacity = 0.86
               fullscreen_opacity = 0.95
 
               drop_shadow = true
@@ -565,18 +576,29 @@ in
 
           animations {
             enabled = true
-            bezier = wind, 0.05, 0.9, 0.1, 1.05
-            bezier = winIn, 0.1, 1.1, 0.1, 1.1
-            bezier = winOut, 0.3, -0.3, 0, 1
-            bezier = liner, 1, 1, 1, 1
-            animation = windows, 1, 6, wind, slide
-            animation = windowsIn, 1, 6, winIn, slide
-            animation = windowsOut, 1, 5, winOut, slide
-            animation = windowsMove, 1, 5, wind, slide
-            animation = border, 1, 1, liner
-            animation = borderangle, 1, 30, liner, loop
-            animation = fade, 1, 10, default
-            animation = workspaces, 1, 5, wind
+            # bezier = wind, 0.05, 0.9, 0.1, 1.05
+            # bezier = winIn, 0.1, 1.1, 0.1, 1.1
+            # bezier = winOut, 0.3, -0.3, 0, 1
+            # bezier = liner, 1, 1, 1, 1
+            # animation = windows, 1, 6, wind, slide
+            # animation = windowsIn, 1, 6, winIn, slide
+            # animation = windowsOut, 1, 5, winOut, slide
+            # animation = windowsMove, 1, 5, wind, slide
+            # animation = border, 1, 1, liner
+            # animation = borderangle, 1, 30, liner, loop
+            # animation = fade, 1, 10, default
+            # animation = workspaces, 1, 5, wind
+
+            bezier=pace,0.46, 1, 0.29, 0.99
+            bezier=overshot,0.13,0.99,0.29,1.1
+            bezier = md3_decel, 0.05, 0.7, 0.1, 1
+            animation=windowsIn,1,6,md3_decel,slide
+            animation=windowsOut,1,6,md3_decel,slide
+            animation=windowsMove,1,6,md3_decel,slide
+            animation=fade,1,10,md3_decel
+            animation=workspaces,1,7,md3_decel,slide
+            animation=specialWorkspace,1,8,md3_decel,slide
+            animation=border,1,10,md3_decel
           }
         '';
         # settings = {
@@ -623,17 +645,18 @@ in
   home = {
     packages = with pkgs; [
       cantarell-fonts
-      xarchiver
+      xarchiver # compressed files using thunar
+      figlet # Program for making large letters out of ordinary text
+      slurp # Select a region in a Wayland compositor
       swww # wallpaper daemon for wayland, controlled at runtime
       grim # Grab images from a Wayland compositor
       swappy # screenshot resizer
-      slurp # Select a region in a Wayland compositor
+      swayidle # Idle management daemon for Wayland
       figlet # Program for making large letters out of ordinary text
       xautolock # Launch a given program when your X session has been idle for a given time
       blueman
       wdisplays
-      pkgs.polkit_gnome
-      swayidle # Idle management daemon for Wayland
+      polkit_gnome
       # papirus-icon-theme
       cliphist # Wayland clipboard history
       qalculate-gtk

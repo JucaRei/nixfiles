@@ -54,6 +54,6 @@ in {
   };
 
   systemd.user.services.swayidle.Install.WantedBy =
-    # lib.mkForce [ "hyprland-session.target" ];
-    lib.mkForce [ "graphical-session.target" ];
+    lib.mkForce [ "hyprland-session.target" ];
+  # lib.mkForce [ "graphical-session.target" ];
 }

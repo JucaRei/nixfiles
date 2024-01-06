@@ -339,7 +339,7 @@
                 "days" = "<span color='#ecc6d9'><b>{}</b></span>";
                 "weeks" = "<span color='#99ffdd'><b>W{}</b></span>";
                 "weekdays" = "<span color='#ffcc66'><b>{}</b></span>";
-                "today" = "<span color='#ff6699'><b><u>{}</u></b></span>";
+                "today" = "<span color='#EF6F6C'><b><u>{}</u></b></span>";
               };
             };
             "actions" = {

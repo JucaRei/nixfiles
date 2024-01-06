@@ -11,7 +11,7 @@ in
       # kitty # terminal
       # mako # notification daemon
       # libsForQt5.polkit-kde-agent # polkit agent
-      qalculate-gtk
+      libcamera
       bibata-cursors
       pavucontrol
       nwg-look
@@ -25,6 +25,7 @@ in
       gtk3
       xdg-utils
       xfce.tumbler
+      xfce.xfce4-power-manager
     ];
   };
   wayland =
