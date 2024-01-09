@@ -20,6 +20,15 @@ let
     swww img $wall &
   '';
 
+  font-search = pkgs.writeShellScriptBin "font-search" ''
+    fc-list \
+        | grep -ioE ": [^:]*$1[^:]+:" \
+        | sed -E 's/(^: |:)//g' \
+        | tr , \\n \
+        | sort \
+        | uniq
+  '';
+
   # hyprbars-button = rgba($COLOR), $SIZE, $ICON, hyprctl dispatch killactive
   # hyprbars-button = rgba($COLOR), $SIZE, $ICON, hyprctl dispatch fullscreen 1
   # hyprbars-button = rgba($COLOR), $SIZE, $ICON, hyprctl dispatch movetoworkspacesilent special:MinimizedApps
@@ -59,22 +68,74 @@ let
 
   # ${pkgs.unstable.swaylock-effects}/bin/swaylock  \
   myswaylock = pkgs.writeShellScriptBin "myswaylock" ''
-    ${pkgs.unstable.swaylock}/bin/swaylock  \
-          --screenshots \
-          --clock \
-          --indicator \
-          --indicator-radius 100 \
-          --indicator-thickness 7 \
-          --effect-blur 7x5 \
-          --effect-vignette 0.5:0.5 \
-          --ring-color 3b4252 \
-          --key-hl-color 880033 \
-          --line-color 00000000 \
-          --inside-color 00000088 \
-          --separator-color 00000000 \
-          --grace 2 \
-          --fade-in 0.3
+    ${pkgs.unstable.swaylock-effects}/bin/swaylock  \
+      --screenshots \
+      --clock \
+      --indicator \
+      --indicator-radius 100 \
+      --indicator-thickness 7 \
+      --effect-blur 7x5 \
+      --effect-vignette 0.5:0.5 \
+      --ring-color 3b4252 \
+      --key-hl-color 880033 \
+      --line-color 00000000 \
+      --inside-color 00000088 \
+      --separator-color 00000000 \
+      --grace 2 \
+      --fade-in 0.3
   '';
+  # --ignore-empty-password \
+  # --font="Fira Sans Semibold" \
+  # --clock \
+  # --timestr=%R \
+  # --datestr=%a, %e of %B \
+  # # Add current screenshot as wallpaper
+  # --screenshots \
+  # # Add an image as a background
+  # # image=~/.cache/current_wallpaper.jpg
+  # # Fade in time
+  # fade-in=1 \
+  # # Effect for background
+  # --effect-blur=5x2 \
+  # # effect-greyscale
+  # # effect-pixelate=5
+  # # Show/Hide indicator circle
+  # --indicator \
+  # # smaller indicator
+  # --indicator-radius=200 \
+  # # bigger indicator
+  # # indicator-radius=300
+  # --indicator-thickness=20 \
+  # --indicator-caps-lock \
+  # # Define all colors
+  # --key-hl-color=00000066 \
+  # --separator-color=00000000 \
+  # --inside-color=00000033 \
+  # --inside-clear-color=ffffff00 \
+  # --inside-caps-lock-color=ffffff00 \
+  # --inside-ver-color=ffffff00 \
+  # --inside-wrong-color=ffffff00 \
+  # --ring-color=ffffff \
+  # --ring-clear-color=ffffff \
+  # --ring-caps-lock-color=ffffff \
+  # --ring-ver-color=ffffff \
+  # --ring-wrong-color=ffffff \
+  # --line-color=00000000 \
+  # --line-clear-color=ffffffFF \
+  # --line-caps-lock-color=ffffffFF \
+  # --line-ver-color=ffffffFF \
+  # --line-wrong-color=ffffffFF \
+  # --text-color=ffffff \
+  # --text-clear-color=ffffff \
+  # --text-ver-color=ffffff \
+  # --text-wrong-color=ffffff \
+  # --bs-hl-color=ffffff \
+  # --caps-lock-key-hl-color=ffffffFF \
+  # --caps-lock-bs-hl-color=ffffffFF \
+  # --disable-caps-lock-text \
+  # --text-caps-lock-color=ffffff
+
+
 
   lockscreentime = pkgs.writeShellScriptBin "lockscreentime" ''
     timeswaylock=600
@@ -105,7 +166,7 @@ let
   terminal-spawn = cmd: "${terminal} $SHELL -i -c ${cmd}";
 
   screenshot = pkgs.writeShellScriptBin "screenshot" ''
-    DIR="/home/${username}/Pictures/screenshots/"
+    DIR="~/Pictures/screenshots/"
     NAME="screenshot_$(date +%d%m%Y_%H%M%S).png"
 
     option2="Selected area"
@@ -113,20 +174,19 @@ let
 
     options="$option2\n$option3"
 
-    choice=$(echo -e "$options" | ${pkgs.rofi}/bin/rofi -dmenu -replace -config ~/.config/rofi/config-screenshot.rasi -i -no-show-icons -l 2 -width 30 -p "Take Screenshot")
+    choice=$(echo -e "$options" | rofi -dmenu -replace -config ~/.config/rofi/config-screenshot.rasi -i -no-show-icons -l 2 -width 30 -p "Take Screenshot")
 
     case $choice in
         $option2)
-            ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.swappy}/bin/swappy -f -
+            grim -g "$(slurp)" - | swappy -f -
             notify-send "Screenshot created" "Mode: Selected area"
         ;;
         $option3)
             sleep 3
-            ${pkgs.grim}/bin/grim - | ${pkgs.swappy}/bin/swappy -f -
+            grim - | swappy -f -
             notify-send "Screenshot created" "Mode: Fullscreen"
         ;;
     esac
-
   '';
 
   color-picker = pkgs.writeShellScriptBin "color-picker" ''
@@ -178,10 +238,10 @@ in
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             # "swayidle -w timeout 300 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
             "${lockscreentime}/bin/lockscreentime"
-            "notify-send 'Hey Junior, Welcome back' &"
             # "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
             # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
             ".config/rofi/scripts/wallpaper.sh"
+            "notify-send 'Hey Junior, Welcome back' &"
           ];
           xwayland = {
             force_zero_scaling = true;
@@ -439,101 +499,11 @@ in
           #   force_zero_scaling = true
           # }
 
-          ########################
-          ### Keybindings Keys ###
-          ########################
+          ###############################
+          ### Load Keybindings config ###
+          ###############################
 
-          # Super Key
-          $mainMod = SUPER
-          $otherMod = ALT
-
-          #-------------------------------------------#
-          # switch between current and last workspace #
-          #-------------------------------------------#
-
-          # Applications
-          # bind = $otherMod, RETURN, exec, alacritty
-          bind = $otherMod, RETURN, exec, foot
-          bind = $mainMod, B, exec, firefox
-
-          # Windows
-          bind = $otherMod, Q, killactive
-          bind = $mainMod, F, fullscreen
-          bind = $mainMod, E, exec, thunar
-          bind = $mainMod, T, togglefloating
-
-          bind = $mainMod SHIFT, T, exec, hyprctl dispatch workspaceopt allfloat # Float ALL
-          bind = $otherMod, P, pseudo
-          bind = $mainMod, J, togglesplit
-          bind = $mainMod, left, movefocus, l
-          bind = $mainMod, right, movefocus, r
-          bind = $mainMod, up, movefocus, u
-          bind = $mainMod, down, movefocus, d
-          bindm = $mainMod, mouse:272, movewindow
-          bindm = $mainMod, mouse:273, resizewindow
-          bind = $mainMod SHIFT, right, resizeactive, 100 0
-          bind = $mainMod SHIFT, left, resizeactive, -100 0
-          bind = $mainMod SHIFT, up, resizeactive, 0 -100
-          bind = $mainMod SHIFT, down, resizeactive, 0 100
-
-          # Actionsq
-          bind = $mainMod, PRINT, exec, ${screenshot}/bin/screenshot
-          bind = $mainMod CTRL, Q, exec, wlogout
-          bind=$mainMod SHIFT, X, exec, ${myswaylock}/bin/myswaylock
-          bind = $mainMod SHIFT, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh
-          bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
-          bind = $mainMod, SPACE, exec, rofi -show drun
-          bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
-          bind= $mainMod SHIFT, B, exec, killall .waybar-wrapped && waybar & disown
-          bind = $mainMod SHIFT, R, exec, hyprctl reload
-          bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
-          bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
-          bind = $mainMod, V, exec, ~/dotfiles/scripts/cliphist.sh
-          bind = $mainMod CTRL, T, exec, $HOME/.config/waybar/scripts/themeswitcher.sh
-          bind = $mainMod CTRL, S, exec, foot --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
-
-
-          # Workspaces
-          bind = $otherMod, 1, workspace, 1
-          bind = $otherMod, 2, workspace, 2
-          bind = $otherMod, 3, workspace, 3
-          bind = $otherMod, 4, workspace, 4
-          bind = $otherMod, 5, workspace, 5
-          bind = $otherMod, 6, workspace, 6
-          bind = $otherMod, 7, workspace, 7
-          bind = $otherMod, 8, workspace, 8
-          bind = $otherMod, 9, workspace, 9
-          bind = $otherMod, 0, workspace, 10
-          bind = $otherMod SHIFT, 1, movetoworkspace, 1
-          bind = $otherMod SHIFT, 2, movetoworkspace, 2
-          bind = $otherMod SHIFT, 3, movetoworkspace, 3
-          bind = $otherMod SHIFT, 4, movetoworkspace, 4
-          bind = $otherMod SHIFT, 5, movetoworkspace, 5
-          bind = $otherMod SHIFT, 6, movetoworkspace, 6
-          bind = $otherMod SHIFT, 7, movetoworkspace, 7
-          bind = $otherMod SHIFT, 8, movetoworkspace, 8
-          bind = $otherMod SHIFT, 9, movetoworkspace, 9
-          bind = $otherMod SHIFT, 0, movetoworkspace, 10
-          bind = $otherMod, mouse_down, workspace, e+1
-          bind = $otherMod, mouse_up, workspace, e-1
-          bind = $otherMod CTRL, down, workspace, empty
-
-          # Fn keys
-          # bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
-          # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
-          bind = , XF86MonBrightnessUp, exec, brillo -A 5
-          bind = , XF86MonBrightnessDown, exec, brillo -U 5
-          bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
-          bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
-          bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-          bind = , XF86AudioPlay, exec, playerctl play-pause
-          bind = , XF86AudioPause, exec, playerctl pause
-          bind = , XF86AudioNext, exec, playerctl next
-          bind = , XF86AudioPrev, exec, playerctl previous
-          bind = , XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle
-          bind = , XF86Calculator, exec, qalculate-gtk
-          bind = , XF86Lock, exec, swaylock
-          bind = , XF86Tools, exec, alacritty --class dotfiles-floating -e ~/dotfiles/hypr/settings/settings.sh
+          source = ~/.config/hypr/keybindings.conf
 
           ################################################
           ### Passthrough SUPER KEY to Virtual Machine ###
@@ -646,15 +616,14 @@ in
     packages = with pkgs; [
       cantarell-fonts
       xarchiver # compressed files using thunar
-      figlet # Program for making large letters out of ordinary text
+      # figlet # Program for making large letters out of ordinary text
       slurp # Select a region in a Wayland compositor
       swww # wallpaper daemon for wayland, controlled at runtime
       grim # Grab images from a Wayland compositor
       swappy # screenshot resizer
       swayidle # Idle management daemon for Wayland
-      figlet # Program for making large letters out of ordinary text
-      xautolock # Launch a given program when your X session has been idle for a given time
       blueman
+      font-search
       wdisplays
       polkit_gnome
       # papirus-icon-theme
@@ -690,6 +659,105 @@ in
       # papirus-icon-theme
     ]));
     file = {
+      ".config/hypr/keybindings.conf" = {
+        text = ''
+          ########################
+          ### Keybindings Keys ###
+          ########################
+
+          # Super Key
+          $mainMod = SUPER
+          $otherMod = ALT
+
+          #-------------------------------------------#
+          # switch between current and last workspace #
+          #-------------------------------------------#
+
+          # Applications
+          # bind = $otherMod, RETURN, exec, alacritty
+          bind = $otherMod, RETURN, exec, foot
+          bind = $mainMod, B, exec, firefox
+
+          # Windows
+          bind = $otherMod, Q, killactive
+          bind = $mainMod, F, fullscreen
+          bind = $mainMod, E, exec, thunar
+          bind = $mainMod, T, togglefloating
+
+          bind = $mainMod SHIFT, T, exec, hyprctl dispatch workspaceopt allfloat # Float ALL
+          bind = $otherMod, P, pseudo
+          bind = $mainMod, J, togglesplit
+          bind = $mainMod, left, movefocus, l
+          bind = $mainMod, right, movefocus, r
+          bind = $mainMod, up, movefocus, u
+          bind = $mainMod, down, movefocus, d
+          bindm = $mainMod, mouse:272, movewindow
+          bindm = $mainMod, mouse:273, resizewindow
+          bind = $mainMod SHIFT, right, resizeactive, 100 0
+          bind = $mainMod SHIFT, left, resizeactive, -100 0
+          bind = $mainMod SHIFT, up, resizeactive, 0 -100
+          bind = $mainMod SHIFT, down, resizeactive, 0 100
+
+          # Actionsq
+          bind = $mainMod, PRINT, exec, ${screenshot}/bin/screenshot
+          bind = $mainMod CTRL, Q, exec, wlogout
+          bind=$mainMod SHIFT, X, exec, ${myswaylock}/bin/myswaylock
+          bind = $mainMod SHIFT, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh
+          bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
+          bind = $mainMod, SPACE, exec, rofi -show drun
+          bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
+          bind= $mainMod SHIFT, B, exec, killall .waybar-wrapped && waybar & disown
+          bind = $mainMod SHIFT, R, exec, hyprctl reload
+          bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
+          bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
+          bind = $mainMod, V, exec, ~/dotfiles/scripts/cliphist.sh
+          bind = $mainMod CTRL, T, exec, $HOME/.config/waybar/scripts/themeswitcher.sh
+          bind = $mainMod CTRL, S, exec, foot --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
+
+
+          # Workspaces
+          bind = $otherMod, 1, workspace, 1
+          bind = $otherMod, 2, workspace, 2
+          bind = $otherMod, 3, workspace, 3
+          bind = $otherMod, 4, workspace, 4
+          bind = $otherMod, 5, workspace, 5
+          bind = $otherMod, 6, workspace, 6
+          bind = $otherMod, 7, workspace, 7
+          bind = $otherMod, 8, workspace, 8
+          bind = $otherMod, 9, workspace, 9
+          bind = $otherMod, 0, workspace, 10
+          bind = $otherMod SHIFT, 1, movetoworkspace, 1
+          bind = $otherMod SHIFT, 2, movetoworkspace, 2
+          bind = $otherMod SHIFT, 3, movetoworkspace, 3
+          bind = $otherMod SHIFT, 4, movetoworkspace, 4
+          bind = $otherMod SHIFT, 5, movetoworkspace, 5
+          bind = $otherMod SHIFT, 6, movetoworkspace, 6
+          bind = $otherMod SHIFT, 7, movetoworkspace, 7
+          bind = $otherMod SHIFT, 8, movetoworkspace, 8
+          bind = $otherMod SHIFT, 9, movetoworkspace, 9
+          bind = $otherMod SHIFT, 0, movetoworkspace, 10
+          bind = $otherMod, mouse_down, workspace, e+1
+          bind = $otherMod, mouse_up, workspace, e-1
+          bind = $otherMod CTRL, down, workspace, empty
+
+          # Fn keys
+          # bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
+          # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
+          bind = , XF86MonBrightnessUp, exec, brillo -A 5
+          bind = , XF86MonBrightnessDown, exec, brillo -U 5
+          bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
+          bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
+          bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+          bind = , XF86AudioPlay, exec, playerctl play-pause
+          bind = , XF86AudioPause, exec, playerctl pause
+          bind = , XF86AudioNext, exec, playerctl next
+          bind = , XF86AudioPrev, exec, playerctl previous
+          bind = , XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle
+          bind = , XF86Calculator, exec, qalculate-gtk
+          bind = , XF86Lock, exec, swaylock
+          bind = , XF86Tools, exec, alacritty --class dotfiles-floating -e ~/dotfiles/hypr/settings/settings.sh
+        '';
+      };
       ".config/hypr/scripts" = {
         source = ./scripts;
         recursive = true;
@@ -797,6 +865,20 @@ in
           @define-color color15 {color15};
         '';
       };
+      ".config/swappy/config" = {
+        text = ''
+          [Default]
+          save_dir=$HOME/Pictures/screenshots
+          save_filename_format=screenshot_%d-%m-%Y_%H:%M:%S.png
+          show_panel=false
+          line_size=5
+          text_size=20
+          text_font=sans-serif
+          paint_mode=brush
+          early_exit=false
+          fill_shape=false
+        '';
+      };
     };
   };
 
@@ -812,6 +894,12 @@ in
         font-name = "Cantarell 11";
         color-scheme = "prefer-dark";
       };
+    };
+  };
+
+  services = {
+    swayosd = {
+      enable = true;
     };
   };
 }

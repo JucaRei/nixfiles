@@ -318,6 +318,18 @@
       #  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       #  WLR_NO_HARDWARE_CURSORS = "1";
     };
+
+    etc = {
+      "systemd/system-sleep/batenergy".source = pkgs.writeShellScript "batenergy" ''
+        PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.bc ]}
+        source ${pkgs.fetchFromGitHub {
+          owner = "equaeghe";
+          repo = "batenergy";
+          rev = "13c381f68f198af361c5bd682b32577131fbb60f";
+          hash = "sha256-4JQrSD8HuBDPbBGy2b/uzDvrBUZ8+L9lAnK95rLqASk=";
+        }}/batenergy.sh "$@"
+      '';
+    };
   };
 
   services = {

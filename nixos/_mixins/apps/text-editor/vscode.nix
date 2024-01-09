@@ -43,6 +43,18 @@
           sha256 = "sha256-dYMDV84LEGXUjt/fbsSy3BVM5SsBHcPaDDll8KjPIWY=";
         }
         {
+          name = "remotehub";
+          publisher = "GitHub";
+          version = "0.63.2023121101";
+          sha256 = "sha256-NvIe8dw9aI+OKcQdId9hhPPXIVQfgdE6mPgjUuVlkFo=";
+        }
+        {
+          name = "git-file-history";
+          publisher = "pomber";
+          version = "1.0.1";
+          sha256 = "sha256-cS7ChSIbWCT95tf9MMrqpw4EZT+dzvft3oveLeaYepQ=";
+        }
+        {
           name = "even-better-toml";
           publisher = "tamasfe";
           version = "0.19.2";

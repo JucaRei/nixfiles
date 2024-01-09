@@ -3,7 +3,7 @@ let ui = import ./wlogout/ui.nix { };
 in {
   programs.swaylock = {
     enable = true;
-    # package = pkgs.swaylock-effects;
+    # package = pkgs.unstable.swaylock-effects;
     package = pkgs.swaylock;
     settings = with ui; {
       clock = true;

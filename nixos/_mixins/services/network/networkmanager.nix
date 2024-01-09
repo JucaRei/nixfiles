@@ -76,6 +76,43 @@
     # DNS resolver
     resolved.enable = true;
   };
+
+  # networking packages
+  environment = {
+    systemPackages = with pkgs; [
+      traceroute
+      dnsutils
+      ldns
+      whois
+      nethogs
+      socat
+      rsync
+      iperf
+      (writeShellScriptBin "port" ''
+        usage() {
+          printf 'usage: %s open|close tcp|udp|both PORT[:PORT]\n' "''${0##*/}" >&2
+          exit "$@"
+        }
+        case $1 in
+          -h) usage;;
+          open) action=-I;;
+          close) action=-D;;
+          *) usage 1;;
+        esac
+        protocols=()
+        [[ $2 == @(tcp|both) ]] && protocols+=(tcp)
+        [[ $2 == @(udp|both) ]] && protocols+=(udp)
+        (( ''${#protocols[@]} )) || usage 1
+        port=$3
+        [[ $port ]] || usage 1
+        for proto in "''${protocols[@]}"; do
+          for iptables in iptables ip6tables; do
+            sudo "$iptables" "$action" nixos-fw -p "$proto" -m "$proto" --dport "$port" -j nixos-fw-accept
+          done
+        done
+      '')
+    ];
+  };
 }
 
 

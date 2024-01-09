@@ -78,7 +78,7 @@ in
     variables = {
       "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
       GBM_BACKEND = "nvidia-drm";
-	  # GBM_BACKEND = "nvidia";
+      # GBM_BACKEND = "nvidia";
       LIBVA_DRIVER_NAME = lib.mkForce "nvidia-drm";
       # LIBVA_DRIVER_NAME = lib.mkForce "nvidia";
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -96,4 +96,25 @@ in
       inxi
     ];
   };
+
+  # Set nvidia gpu power limit
+  #   systemd.services.nv-power-limit =
+  #     lib.mkIf config.hardware.gpu.nvidia.powerLimit.enable {
+  #       enable = true;
+  #       description = "Nvidia power limit control";
+  #       after = [ "syslog.target" "systemd-modules-load.service" ];
+
+  #       unitConfig = {
+  #         ConditionPathExists =
+  #           "${config.boot.kernelPackages.nvidia_x11.bin}/bin/nvidia-smi";
+  #       };
+
+  #       serviceConfig = {
+  #         User = "root";
+  #         ExecStart =
+  #           "${config.boot.kernelPackages.nvidia_x11.bin}/bin/nvidia-smi  --power-limit=${config.hardware.gpu.nvidia.powerLimit.value}";
+  #       };
+
+  #       wantedBy = [ "multi-user.target" ];
+  #     };
 }

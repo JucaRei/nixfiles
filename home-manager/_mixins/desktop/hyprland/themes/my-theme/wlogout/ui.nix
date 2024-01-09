@@ -1,4 +1,4 @@
-{ }:
+{}:
 let
   decay = {
     background = "101419";
@@ -67,7 +67,8 @@ let
     accent = "78dba9";
     gtk-theme = "Catppuccin-Mocha-Compact-Green-Dark";
   };
-in rec {
+in
+rec {
   colors = catppuccin;
   font = "JetBrains Mono";
   nerd-font = "JetBrainsMono Nerd Font";
