@@ -154,6 +154,7 @@
       # for direnv GC roots
       keep-derivations = true;
       keep-outputs = true;
+      keep-going = lib.mkForce true;
 
 
       experimental-features = [

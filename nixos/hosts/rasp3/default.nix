@@ -9,8 +9,8 @@
   boot = {
     # Make sure not to use the latest kernel because it is not supported on NixOS RPI
     # kernelPackages = lib.mkForce pkgs.linuxPackages;
-    # kernelPackages = pkgs.linuxPackages_rpi3;
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_rpi3;
+    # kernelPackages = pkgs.linuxPackages_latest;
     initrd = {
       availableKernelModules = [ ];
     };
@@ -28,7 +28,7 @@
       # NixOS wants to enable GRUB by default
       grub.enable = lib.mkForce false;
       generic-extlinux-compatible = {
-        enable = lib.mkOverride 5 true;
+        enable = lib.mkOverride 5 false;
       };
       raspberryPi = {
         enable = true;
