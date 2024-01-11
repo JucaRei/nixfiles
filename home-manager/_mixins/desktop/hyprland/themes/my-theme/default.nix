@@ -879,6 +879,33 @@ in
           fill_shape=false
         '';
       };
+      ".config/Thunar/uca.xml" = {
+        text = ''
+          <?xml version="1.0" encoding="UTF-8"?>
+          <actions>
+            <action>
+              <icon>xterm</icon>
+              <name>Open Terminal Here</name>
+              <unique-id>1612104464586264-1</unique-id>
+              <command>foot</command>
+              <description></description>
+              <patterns>*</patterns>
+              <startup-notify/>
+              <directories/>
+            </action>
+            <action>
+              <icon>code</icon>
+              <name>Open VSCode Here</name>
+              <unique-id>1612104464586265-1</unique-id>
+              <command>code %f</command>
+              <description></description>
+              <patterns>*</patterns>
+              <startup-notify/>
+              <directories/>
+            </action>
+          </actions>
+        '';
+      };
     };
   };
 
@@ -900,6 +927,23 @@ in
   services = {
     swayosd = {
       enable = true;
+    };
+  };
+
+  xfconf.settings = {
+    thunar = {
+      "/last-show-hidden" = true;
+      "/misc-date-style" = "THUNAR_DATE_STYLE_ISO";
+      "/misc-middle-click-in-tab" = false;
+      "/misc-single-click" = false;
+      "/misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_NEVER";
+      "/misc-volume-management" = false;
+    };
+    thunar-volman = {
+      "/autobrowse/enabled" = true;
+      "/automount-drives/enabled" = true;
+      "/automount-media/enabled" = true;
+      "/autorun/enabled" = false;
     };
   };
 }

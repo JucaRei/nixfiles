@@ -39,10 +39,12 @@
       "lz4hc_compress"
     ];
     kernelParams = [
-      "hid_apple.iso_layout=0"
+      # "hid_apple.iso_layout=0"
+      # "hid_apple.fnmode=1"
+      # "hid_apple.swap_fn_leftctrl=0"
+      # "hid_apple.swap_opt_cmd=0" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
       # "intel_pstate=ondemand"
       # "i915.enable_rc6=7"
-      "hid_apple.swap_opt_cmd=1" # This will switch the left Alt and Cmd key as well as the right Alt/AltGr and Cmd key.
       # "acpi_backlight=vendor"
       # "acpi_mask_gpe=0x15"
       # "i915.force_probe=0116" # Force enable my intel graphics
@@ -329,9 +331,23 @@
       enable = true;
       aggressive = true;
     };
-    xserver.deviceSection = lib.mkDefault ''
-      Option "TearFree" "true"
-    '';
+    xserver = {
+      xkb = {
+        # Configure the keyboard to use US international with dead keys. This allows
+        # to use tildes in Spanish while using the US layout. Also, always remap Caps
+        # Lock to Ctrl.
+        layout = "us";
+        variant = "intl";
+        options = [
+          "ctrl:nocaps"
+          "eurosign:e"
+        ];
+        model = "pc105";
+      };
+      deviceSection = lib.mkDefault ''
+        Option "TearFree" "true"
+      '';
+    };
 
     fstrim = {
       enable = lib.mkDefault true;
