@@ -7,7 +7,7 @@
       setLdLibraryPath = true;
       package = pkgs.mesa_drivers;
     };
-    hardware.raspberry-pi."3".fkms-3d.enable = true;
+    # hardware.raspberry-pi."3".fkms-3d.enable = true;
 
     system.build = {
       visualizer2Pkg = pkgs.visualizer2;

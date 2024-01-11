@@ -41,6 +41,7 @@
           avoid_warnings=1
         '';
         # gpu_mem=128
+        # hdmi_safe=1 # needed for the small portable HDMI display to work
       };
     };
   };
@@ -171,6 +172,16 @@
     Storage = volatile
     RuntimeMaxFileSize = 10M;
   '';
+
+  ## Enable X11 windowing system
+  # services.xserver.enable = true;
+  # services.xserver.videoDrivers = [ "modesetting" ];
+  ## Enable Kodi
+  # services.xserver.desktopManager.kodi.enable = true;
+  ## Enable slim autologin
+  # services.xserver.displayManager.lightdm.enable = true;
+  # services.xserver.displayManager.lightdm.autoLogin.enable = true;
+  # services.xserver.displayManager.lightdm.autoLogin.user = "kodi";
 
   nixpkgs = {
     # localSystem.system = "aarch64-linux";
