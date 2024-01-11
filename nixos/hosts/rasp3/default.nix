@@ -4,16 +4,17 @@
   imports = [
     "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
     ../../_mixins/services/security/sudo.nix
-    ../../_mixins/virtualization/docker.nix
+    # ../../_mixins/virtualization/docker.nix
   ];
   boot = {
     # Make sure not to use the latest kernel because it is not supported on NixOS RPI
     # kernelPackages = lib.mkForce pkgs.linuxPackages;
-    kernelPackages = pkgs.linuxPackages_rpi3;
-    # initrd = {
-    # availableKernelModules = [ ];
-    # };
-    # kernelModules = [ "ahci" ];
+    # kernelPackages = pkgs.linuxPackages_rpi3;
+    kernelPackages = pkgs.linuxPackages_latest;
+    initrd = {
+      availableKernelModules = [ ];
+    };
+    kernelModules = [ "ahci" ];
 
     # A bunch of boot parameters needed for optimal runtime on RPi 3b+
     kernelParams = [
@@ -25,14 +26,18 @@
     ];
     loader = {
       # NixOS wants to enable GRUB by default
-      grub.enable = false;
-      generic-extlinux-compatible = lib.mkForce true;
+      grub.enable = lib.mkForce false;
+      generic-extlinux-compatible = {
+        enable = lib.mkOverride 5 true;
+      };
       raspberryPi = {
         enable = true;
         version = 3;
-        uboot.enable = true;
+        uboot.enable = lib.mkForce true;
         firmwareConfig = ''
           gpu_mem=256
+          dtparam=audio=on
+          avoid_warnings=1
         '';
         # gpu_mem=128
       };
@@ -54,10 +59,32 @@
       options = [ "nofail" "noatime" "nodiratime" ];
     };
     "/" = {
-      device = "/dev/disk/by-label/NIXOS-SD";
+      device = lib.mkDefault "/dev/disk/by-label/NIXOS-SD";
       fsType = "ext4";
     };
   };
+
+  swapDevices = [{
+    device = "/swapfile";
+    size = 1024;
+  }];
+
+  systemd.services.btattach = {
+    before = [ "bluetooth.service" ];
+    after = [ "dev-ttyAMA0.device" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.bluez}/bin/btattach -B /dev/ttyAMA0 -P bcm -S 3000000";
+    };
+  };
+
+  # system.build.firmware = pkgs.runCommand "firmware" { } ''
+  #   mkdir firmware $out
+
+  #   ${config.sdImage.populateFirmwareCommands}
+
+  #   cp -r firmware/* $out
+  # '';
 
   # sdImage = lib.mkForce {
   #   populateFirmwareCommands =
