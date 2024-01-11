@@ -1,29 +1,42 @@
 { hostid, hostname, lib, pkgs, ... }: {
-  imports = [
-    ./aliases.nix
-    ./aspell.nix
-    ./console.nix
-    ./locale.nix
-    ./fonts.nix
-    # ./nano.nix
-    # ../config/qt/qt-style.nix
-    # ../console/fish.nix
-    # ../services/security/sudo.nix
-    # ../services/security/doas.nix
-    ../services/security/common.nix
-    ../services/network/avahi.nix
-    # ../services/security/detect-reboot-needed.nix
-    # ../services/power/powertop.nix
-    ../hardware/other/fwupd.nix
-    ../hardware/other/usb.nix
-    # ../virtualization/nix-ld.nix
-    # ../services/tools/fhs.nix
-    # ../services/openssh.nix
-    # ../services/tailscale.nix
-    # ../services/zerotier.nix
-    ../config/scripts/nixos-change-summary.nix
-    ../sys/check-updates.nix
-  ];
+  imports =
+    if (hostname != "rasp3") then [
+      ./aliases.nix
+      ./aspell.nix
+      ./console.nix
+      ./locale.nix
+      ./fonts.nix
+      ./appimage.nix
+      # ./nano.nix
+      # ../config/qt/qt-style.nix
+      # ../console/fish.nix
+      # ../services/security/sudo.nix
+      # ../services/security/doas.nix
+      ../services/security/common.nix
+      ../services/network/avahi.nix
+      # ../services/security/detect-reboot-needed.nix
+      # ../services/power/powertop.nix
+      ../hardware/other/fwupd.nix
+      ../hardware/other/usb.nix
+      # ../virtualization/nix-ld.nix
+      # ../services/tools/fhs.nix
+      # ../services/openssh.nix
+      # ../services/tailscale.nix
+      # ../services/zerotier.nix
+      ../config/scripts/nixos-change-summary.nix
+      ../sys/check-updates.nix
+    ] else [
+      ./aliases.nix
+      ./console.nix
+      ./locale.nix
+      ./fonts.nix
+      ../services/security/common.nix
+      # ../services/network/avahi.nix
+      # ../hardware/other/fwupd.nix
+      # ../hardware/other/usb.nix
+      ../config/scripts/nixos-change-summary.nix
+      ../sys/check-updates.nix
+    ];
 
   # don't install documentation i don't use
   documentation = {
@@ -97,20 +110,6 @@
       "exfat"
       "ntfs"
     ];
-
-    # Appimage Registration
-    binfmt.registrations.appimage = {
-      # make appImage work seamlessly
-      wrapInterpreterInShell = false;
-      interpreter = "${pkgs.appimage-run}/bin/appimage-run";
-      recognitionType = "magic";
-      offset = 0;
-      # mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
-      mask = "\\xff\\xff\\xff\\xff\\x00\\x00\\x00\\x00\\xff\\xff\\xff";
-      magicOrExtension = "\\x7fELF....AI\\x02";
-      # magicOrExtension = ''\x7fELF....AI\x02'';
-    };
-
   };
 
   ##############################
@@ -148,7 +147,7 @@
     ]);
     variables = {
       # use Wayland where possible (electron)
-      NIXOS_OZONE_WL = "1";
+      NIXOS_OZONE_WL = if hostname == "rasp3" then "" else "1";
       EDITOR = "micro";
       SYSTEMD_EDITOR = "micro";
       VISUAL = "micro";
@@ -171,7 +170,7 @@
 
     # Minimal
     nix-ld = {
-      enable = true;
+      enable = if hostname == "rasp3" then false else true;
       libraries = with pkgs; [
 
         curl
