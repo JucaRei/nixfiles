@@ -100,7 +100,7 @@ with lib.hm.gvariant;
       ExecStart = ''
         ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
       '';
-      # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=ja_JP.UTF-8" ];
+      # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
     };
 
     Install = { WantedBy = [ "graphical-session.target" ]; };
