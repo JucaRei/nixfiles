@@ -4,16 +4,19 @@
     tlp = lib.mkForce {
       enable = true;
       settings = {
+        TLP_ENABLE = 1;
+        TLP_DEFAULT_MODE = "BAT";
         AHCI_RUNTIME_PM_ON_BAT = "auto";
         CPU_BOOST_ON_AC = 1;
         CPU_BOOST_ON_BAT = 0;
         CPU_ENERGY_PERF_POLICY_ON_AC = "ondemand";
-        CPU_ENERGY_PERF_POLICY_ON_BAT = "ondemand";
-        CPU_MAX_PERF_ON_AC = 99;
+        # CPU_ENERGY_PERF_POLICY_ON_BAT = "ondemand";
+        CPU_ENERGY_PERF_POLICY_ON_BAT = "balance_power";
+        CPU_MAX_PERF_ON_AC = 90;
         CPU_MAX_PERF_ON_BAT = 75;
-        CPU_MIN_PERF_ON_BAT = 75;
+        CPU_MIN_PERF_ON_BAT = 60;
         CPU_SCALING_GOVERNOR_ON_AC = "schedutil"; # Adjust as needed
-        CPU_SCALING_GOVERNOR_ON_BAT = "schedutil"; # Adjust as needed
+        CPU_SCALING_GOVERNOR_ON_BAT = "powersave"; # Adjust as needed
         NATACPI_ENABLE = 1;
         RUNTIME_PM_ON_AC = "on";
         RUNTIME_PM_ON_BAT = "on";
@@ -25,6 +28,69 @@
         TPACPI_ENABLE = 1;
         TPSMAPI_ENABLE = 1;
         WOL_DISABLE = "Y";
+
+        START_CHARGE_THRESH_BAT0 = 80;
+        STOP_CHARGE_THRESH_BAT0 = 95;
+
+        # Restores radio device state (builtin Bluetooth, Wi-Fi, WWAN) from previous shutdown on boot.
+        # RESTORE_DEVICE_STATE_ON_STARTUP = 0;
+
+        DEVICES_TO_DISABLE_ON_STARTUP = "bluetooth wwan";
+        DEVICES_TO_ENABLE_ON_STARTUP = "wifi";
+
+        # has precedence
+        DEVICES_TO_ENABLE_ON_AC = "";
+        DEVICES_TO_DISABLE_ON_BAT = "";
+
+        DEVICES_TO_DISABLE_ON_BAT_NOT_IN_USE = "bluetooth wwan";
+
+        DEVICES_TO_DISABLE_ON_LAN_CONNECT = "wwan";
+        DEVICES_TO_DISABLE_ON_WIFI_CONNECT = "";
+        DEVICES_TO_DISABLE_ON_WWAN_CONNECT = "wifi";
+
+        DEVICES_TO_ENABLE_ON_LAN_DISCONNECT = "wifi";
+        DEVICES_TO_ENABLE_ON_WIFI_DISCONNECT = "";
+        DEVICES_TO_ENABLE_ON_WWAN_DISCONNECT = "";
+
+         DEVICES_TO_ENABLE_ON_DOCK = "wifi bluetooth";
+        # DEVICES_TO_DISABLE_ON_DOCK = "";
+
+        DEVICES_TO_ENABLE_ON_UNDOCK = "";
+        DEVICES_TO_DISABLE_ON_UNDOCK = "bluetooth";
+
+        # RUNTIME_PM_DENYLIST = "11:22.3 44:55.6";
+        RUNTIME_PM_DRIVER_DENYLIST = "mei_me nouveau radeon psmouse";
+
+        # PCIE_ASPM_ON_AC = "default";
+        PCIE_ASPM_ON_BAT = "powersupersave";
+
+        CPU_BOOST_ON_AC = 1;
+        CPU_BOOST_ON_BAT = 0;
+
+        # Restores radio device state (builtin Bluetooth, Wi-Fi, WWAN) from previous shutdown on boot.
+        # RESTORE_DEVICE_STATE_ON_STARTUP = 0;
+
+        # DEVICES_TO_DISABLE_ON_SHUTDOWN = "bluetooth wifi wwan";
+        # DEVICES_TO_ENABLE_ON_SHUTDOWN = "bluetooth wifi wwan";
+
+        # RUNTIME_PM_ON_AC = "on";
+        # RUNTIME_PM_ON_BAT = "auto";
+
+        # USB_AUTOSUSPEND = 1;
+        # USB_DENYLIST = "1111:2222 3333:4444";
+        # USB_EXCLUDE_AUDIO = 1;
+        # USB_EXCLUDE_BTUSB = 1;
+        # USB_EXCLUDE_PHONE = 1;
+        # USB_EXCLUDE_PRINTER = 1;
+        # USB_EXCLUDE_WWAN = 0;
+        # USB_ALLOWLIST="5555:6666 7777:8888";
+        # USB_AUTOSUSPEND_DISABLE_ON_SHUTDOWN = 0;
+
+        # Timeout (in seconds) for the audio power saving mode (supports Intel HDA, AC97).
+        # A value of 1 is recommended for Linux desktop environments with PulseAudio,
+        # systems without PulseAudio may require 10. The value 0 disables power save.
+        SOUND_POWER_SAVE_ON_AC = 10;
+        SOUND_POWER_SAVE_ON_BAT = 10;
 
         # Prevents bluez from hanging:
         USB_EXCLUDE_BTUSB = 1;
