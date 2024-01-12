@@ -4,7 +4,7 @@
   imports = [
     "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
     ../../_mixins/services/security/sudo.nix
-    ../../_mixins/hardware/graphics/open/gpu-rpi3.nix
+    # ../../_mixins/hardware/graphics/open/gpu-rpi3.nix
     # ../../_mixins/virtualization/docker.nix
   ];
   boot = {

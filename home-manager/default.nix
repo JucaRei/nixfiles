@@ -1,6 +1,7 @@
 { config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, nixgl, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv) isLinux;
 in
 {
   # Only import desktop configuration if the host is desktop enabled
@@ -135,9 +136,12 @@ in
             "flakes"
             "ca-derivations"
             "auto-allocate-uids"
+            "cgroups"
             #"configurable-impure-env"
           ];
           # Avoid unwanted garbage collection when using nix-direnv
+          auto-allocate-uids = true;
+          use-cgroups = if isLinux then true else false;
           keep-outputs = true;
           keep-derivations = true;
           build-users-group = "nixbld";

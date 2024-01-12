@@ -43,6 +43,18 @@
           sha256 = "sha256-dYMDV84LEGXUjt/fbsSy3BVM5SsBHcPaDDll8KjPIWY=";
         }
         {
+          name = "min-theme";
+          publisher = "miguelsolorio";
+          version = "1.5.0";
+          sha256 = "sha256-dYMDV84LEGXUjt/fbsSy3BVM5SsBHcPaDDll8KjPIWY=";
+        }
+        {
+          name = "symbols";
+          publisher = "miguelsolorio";
+          version = "0.0.16";
+          sha256 = "sha256-dYMDV84LEGXUjt/fbsSy3BVM5SsBHcPaDDll8KjPIWY=";
+        }
+        {
           name = "remotehub";
           publisher = "GitHub";
           version = "0.63.2023121101";

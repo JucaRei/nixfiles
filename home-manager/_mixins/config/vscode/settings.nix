@@ -4,10 +4,11 @@
     userSettings = {
       update.mode = "none";
       window = {
-        titleBarStyle = "custom";  # for wayland
+        titleBarStyle = "custom"; # for wayland
         title = "\${rootName}\${separator}\${profileName}\${separator}\${activeEditorShort}";
         menuBarVisibility = "toggle";
         nativeTabs = true;
+        commandCenter = false; #disable, just use ctrl + p
         # titleBarStyle = "custom";
         zoomLevel = 1;
         # zoomLevel = 0;
@@ -24,6 +25,7 @@
         smoothScrolling = true;
         copyOnSelection = true;
         scrollback = 5000;
+        showExitAlert = false;
       };
 
       explorer = {
@@ -31,21 +33,25 @@
         sortOrderLexicographicOptions = "default";
         incrementalNaming = "smart";
         confirmDragAndDrop = false;
-        confirmDelete = true;
+        confirmDelete = false;
+        compactFolders = false;
+        fileNesting = {
+          enabled = true;
+        };
       };
 
-
-
       editor = {
-        fontFamily = "'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono','JetbrainsMono Nerd Font'";
+        fontFamily = "'JetbrainsMono Nerd Font', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
         fontLigatures = true;
         scrollbar = {
           horizontal = "auto";
           vertical = "auto";
         };
+        rulers = [ "80" "120" ];
         cursorStyle = "line";
         # cursorStyle = "block";
-        lineHeight = 1.4;
+        lineHeight = 1.8;
+        suggestSelection = "first";
         inlineSuggest.enabled = true;
         find = {
           autoFindInSelection = "multiline";
@@ -124,6 +130,9 @@
         };
       };
       workbench = {
+        editor = {
+          labelFormat = "short";
+        };
         iconTheme = "vscode-icons";
         # iconTheme = "bearded-icons";
         # colorTheme = "GitHub Dark"; # Material Theme Ocean High Contrast
@@ -187,11 +196,12 @@
         autofetch = true;
         confirmSync = false;
         enableSmartCommit = true;
+        openRepositoryInParentFolders = "always";
       };
 
       "editor.bracketPairColorization.enabled" = true;
       "editor.fontFamily" = "Fira Code Retina";
-      "editor.fontSize" = 18;
+      "editor.fontSize" = 16;
       "terminal.integrated.fontFamily" = "'FiraCode Nerd Font Mono', 'JetBrainsMono Nerd Font Mono SemiBold'";
       # "terminal.integrated.fontSize" = 15;
       "terminal.integrated.tabs.focusMode" = "singleClick";
@@ -271,6 +281,7 @@
       # };
 
       "security.workspace.trust.enabled" = false;
+      "security.promptForLocalFileProtocolHandling" = false;
       "update.mode" = "none";
       "breadcrumbs.enabled" = true;
       "update.showReleaseNotes" = false;

@@ -29,11 +29,7 @@
       ./aliases.nix
       ./console.nix
       ./locale.nix
-      ./fonts.nix
       ../services/security/common.nix
-      # ../services/network/avahi.nix
-      # ../hardware/other/fwupd.nix
-      # ../hardware/other/usb.nix
       ../config/scripts/nixos-change-summary.nix
       ../sys/check-updates.nix
     ];
@@ -208,12 +204,12 @@
   services = {
     # Temperature management daemon
     thermald = {
-      enable = true;
+      enable = if hostname != "rasp3" then true else false;
     };
 
     # Auto Nice Daemon
     ananicy = {
-      enable = true;
+      enable = if hostname != "rasp3" then true else false;
       package = pkgs.ananicy-cpp;
     };
 
@@ -224,7 +220,7 @@
 
     # profile-sync-daemon
     psd = {
-      enable = true;
+      enable = if hostname != "rasp3" then true else false;
       resyncTimer = "10m";
     };
 
@@ -272,7 +268,7 @@
   # enableUnifiedCgroupHierarchy = lib.mkForce true; #cgroupsv2
 
   # Controlling external screens
-  services.ddccontrol.enable = true;
+  services.ddccontrol.enable = if hostname != "rasp3" then true else false;
   hardware = {
     i2c.enable = true;
   };

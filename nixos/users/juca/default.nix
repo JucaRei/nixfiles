@@ -9,6 +9,8 @@ in
     # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/apps/tools/filesync.nix
+  ] ++ lib.optionals (hostname == "rasp3") [
+    ../../_mixins/console/fish.nix
   ];
 
   users = {

@@ -1,4 +1,4 @@
-{ desktop, lib, pkgs, ... }:
+{ desktop, lib, pkgs, hostname, ... }:
 # with lib;
 # with builtins;
 # let
@@ -24,7 +24,7 @@
 
   boot = {
     # kernelParams = lib.mkDefault [ "quiet" ];
-    plymouth.enable = lib.mkDefault true;
+    plymouth.enable = if hostname != "rasp3" then lib.mkDefault true else false;
   };
 
   programs = {
@@ -41,15 +41,19 @@
       desktopManager.xterm.enable = false;
     };
     samba = {
-      enable = true;
+      enable = if hostname != "rasp3" then true else false;
+      package = pkgs.unstable.samba4Full;
       extraConfig = ''
         client min protocol = NT1
       '';
     };
-    gvfs.enable = true;
+    gvfs = {
+      package = pkgs.unstable.gvfs;
+      enable = true;
+    };
 
     clight = {
-      enable = true;
+      enable = if hostname != "rasp3" then true else false;
       settings = {
         verbose = true;
         backlight.disabled = true;
@@ -61,20 +65,21 @@
     };
 
     # needed for GNOME services outside of GNOME Desktop
-    dbus.packages = [ pkgs.gcr ];
+    dbus.packages = if hostname != "rasp3" then [ pkgs.gcr ] else "";
 
-    udev = {
-      packages = with pkgs; [ gnome.gnome-settings-daemon ];
-      extraRules = ''
-        # add my android device to adbusers
-        SUBSYSTEM=="usb", ATTR{idVendor}=="22d9", MODE="0666", GROUP="adbusers"
-      '';
-    };
+    udev =
+      if hostname != "rasp3" then {
+        packages = with pkgs; [ gnome.gnome-settings-daemon ];
+        extraRules = ''
+          # add my android device to adbusers
+          SUBSYSTEM=="usb", ATTR{idVendor}=="22d9", MODE="0666", GROUP="adbusers"
+        '';
+      } else "";
   };
   # };
   hardware = {
     # smooth backlight control
-    brillo.enable = true;
+    brillo.enable = if hostname != "rasp3" then true else false;
   };
 
   environment = {
