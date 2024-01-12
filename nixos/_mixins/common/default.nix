@@ -125,14 +125,21 @@
       pciutils
       psmisc
       unzip
-      usbutils
       binutils
       curl
       duf
       htop
       lshw
       inspect
-      libgcc
+
+      # Selection of sysadmin tools that can come in handy
+      dosfstools
+      gptfdisk
+      iputils
+      usbutils
+      utillinux
+
+      whois
       #unstable.nix-index
       #unstable.nix-prefetch-git
       # cifs-utils

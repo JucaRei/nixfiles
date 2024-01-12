@@ -320,7 +320,7 @@
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "hyprland2"; hostid = "ceafb566"; };
+        nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "hyprland"; hostid = "ceafb566"; };
         air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "awesome"; hostid = "718641c6"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
@@ -330,7 +330,6 @@
         vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
         # Raspberry
         rasp3 = libx.mkHost { hostname = "rasp3"; username = "juca"; hostid = "6f2efa55"; };
-        rasp3-headless = libx.mkHost { hostname = "rasp3-headless"; username = "juca"; hostid = "9be877f1"; };
       };
     };
 }

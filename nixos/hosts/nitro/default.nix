@@ -15,16 +15,16 @@
     ../../_mixins/hardware/cpu/intel-cpu.nix
     ../../_mixins/hardware/boot/multiboot.nix
     ../../_mixins/hardware/power/tlp.nix
-    ../../_mixins/virtualization
-    ../../_mixins/virtualization/quickemu.nix
+    # ../../_mixins/virtualization/quickemu.nix
+    # ../../_mixins/virtualization/podman.nix
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
     #../../_mixins/virtualization/gpu_isolate.nix
-    ../../_mixins/apps/text-editor/vscode.nix
+    # ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/apps/browser/firefox.nix
-    ../../_mixins/apps/browser/chromium.nix
-    ../../_mixins/console/fish.nix
+    # ../../_mixins/apps/browser/chromium.nix
+    # ../../_mixins/console/fish.nix
   ];
   boot = {
     # extraModprobeConfig = ''
