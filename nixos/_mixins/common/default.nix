@@ -136,6 +136,7 @@
       htop
       lshw
       inspect
+      libgcc
       #unstable.nix-index
       #unstable.nix-prefetch-git
       # cifs-utils

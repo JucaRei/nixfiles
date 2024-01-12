@@ -12,7 +12,6 @@
     inputs.vscode-server.nixosModules.default
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
-    ./_mixins/services/tools/kmscon.nix
     ./_mixins/services/network/openssh.nix
     ./_mixins/services/tools/smartmon.nix
     ./_mixins/common
@@ -21,7 +20,8 @@
   # ++ lib.optional (builtins.pathExists (./. + "/${hostname}/disks.nix")) ./${hostname}/disks.nix
   # ++ lib.optional (builtins.isString desktop) ./_mixins/desktop
   ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-  ++ lib.optional (desktop != null) ./_mixins/desktop;
+  ++ lib.optional (desktop != null) ./_mixins/desktop
+  ++ lib.optional (hostname != "rasp3") ./_mixins/services/tools/kmscon.nix;
 
 
   nixpkgs = {

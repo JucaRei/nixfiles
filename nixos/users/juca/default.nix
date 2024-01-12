@@ -8,7 +8,7 @@ in
   imports = [ ] ++ lib.optionals (desktop != null) [
     # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
-    ../../_mixins/apps/tools/filesync.nix
+    # ../../_mixins/apps/tools/filesync.nix
   ];
 
   users = {
@@ -53,7 +53,7 @@ in
       # ];
       packages = [ pkgs.home-manager ];
       # shell = pkgs.fish;
-      shell = pkgs.bash;
+      shell = if hostname == "rasp3" then pkgs.fish else pkgs.bash;
     };
   };
 }
