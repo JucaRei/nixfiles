@@ -46,13 +46,13 @@
           name = "min-theme";
           publisher = "miguelsolorio";
           version = "1.5.0";
-          sha256 = "sha256-dYMDV84LEGXUjt/fbsSy3BVM5SsBHcPaDDll8KjPIWY=";
+          sha256 = "sha256-DF/9OlWmjmnZNRBs2hk0qEWN38RcgacdVl9e75N8ZMY=";
         }
         {
           name = "symbols";
           publisher = "miguelsolorio";
           version = "0.0.16";
-          sha256 = "sha256-dYMDV84LEGXUjt/fbsSy3BVM5SsBHcPaDDll8KjPIWY=";
+          sha256 = "sha256-LGCeqleDGWveJ7KPYd6+ArynEpET4xrhvI2H4NPuCtQ=";
         }
         {
           name = "remotehub";

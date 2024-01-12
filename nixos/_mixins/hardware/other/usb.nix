@@ -1,9 +1,9 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   # USB auto-mount
   services = {
     gvfs = {
       enable = true;
-      package = pkgs.gnome.gvfs;
+      package = lib.mkDefault pkgs.unstable.gnome.gvfs;
     };
     udisks2 = {
       enable = true;
