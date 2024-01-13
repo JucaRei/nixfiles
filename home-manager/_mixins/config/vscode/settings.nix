@@ -2,52 +2,124 @@
 {
   programs.vscode = {
     userSettings = {
-      update.mode = "none";
-      window = {
-        titleBarStyle = "custom"; # for wayland
-        title = "\${rootName}\${separator}\${profileName}\${separator}\${activeEditorShort}";
-        menuBarVisibility = "toggle";
-        nativeTabs = true;
-        commandCenter = false; #disable, just use ctrl + p
-        # titleBarStyle = "custom";
-        zoomLevel = 1;
-        # zoomLevel = 0;
-      };
-      terminal.integrated = {
-        shell.linux = "${pkgs.bash}/bin/bash";
-        # shell.linux = "${pkgs.zsh}/bin/zsh";
-        # shell.linux = "${pkgs.fish}/bin/fish";
-        cursorBlinking = true;
-        cursorStyle = "line";
-        cursorWidth = 2;
-        fontFamily = "'UbuntuMono Nerd Font Mono Regular', 'monospace'";
-        fontSize = 15;
-        smoothScrolling = true;
-        copyOnSelection = true;
-        scrollback = 5000;
-        showExitAlert = false;
-      };
+      ##############
+      ### Update ###
+      ##############
+      "update.mode" = "none";
 
-      explorer = {
-        sortOrder = "default";
-        sortOrderLexicographicOptions = "default";
-        incrementalNaming = "smart";
-        confirmDragAndDrop = false;
-        confirmDelete = false;
-        compactFolders = false;
-        fileNesting = {
-          enabled = true;
-        };
+      ##############
+      ### Window ###
+      ##############
+      "window.titleBarStyle" = "custom"; # Wayland
+      "window.title" = "\${rootName}\${separator}\${profileName}\${separator}\${activeEditorShort}";
+      "window.menuBarVisibility" = "toggle";
+      # "window.nativeTabs" = "true";
+      "window.commandCenter" = false; #disable, just use ctrl + p
+      "window.zoomLevel" = 1;
+      "window.density.editorTabHeight" = "compact";
+
+      ################
+      ### Terminal ###
+      ################
+      "terminal.integrated.shell.linux" = "${pkgs.bash}/bin/bash";
+      # "terminal.integrated.shell.linux" = "${pkgs.zsh}/bin/zsh";
+      # "terminal.integrated.shell.linux" = "${pkgs.fish}/bin/fish";
+      "terminal.integrated.cursorBlinking" = true;
+      "terminal.integrated.cursorStyle" = "line";
+      "terminal.integrated.cursorWidth" = 2;
+      "terminal.integrated.fontFamily" = "'UbuntuMono Nerd Font Mono Regular', 'monospace'";
+      "terminal.integrated.smoothScrolling" = true;
+      "terminal.integrated.fontSize" = 15;
+      "terminal.integrated.scrollback" = 5000;
+      "terminal.integrated.copyOnSelection" = true;
+      "terminal.integrated.showExitAlert" = false;
+      "terminal.integrated.tabs.focusMode" = "singleClick";
+      "terminal.integrated.persistentSessionScrollback" = 200;
+      "terminal.integrated.mouseWheelScrollSensitivity" = 2;
+
+      ################
+      ### Explorer ###
+      ################
+      "explorer.sortOrder" = "default";
+      "explorer.sortOrderLexicographicOptions" = "default";
+      "explorer.incrementalNaming" = "smart";
+      "explorer.confirmDragAndDrop" = false;
+      "explorer.confirmDelete" = false;
+      "explorer.compactFolders" = false;
+      "explorer.fileNesting.enabled" = true;
+
+      #######################
+      ### Editor Settings ###
+      #######################
+      "editor.fontFamily" = "'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
+      "editor.fontLigatures" = true;
+      "editor.fontVariations" = true;
+      "editor.fontWeight" = 500;
+      "editor.scrollbar.horizontal" = "auto";
+      "editor.scrollbar.vertical" = "auto";
+      "editor.rulers" = [ 80 120 ];
+      "editor.cursorStyle" = "line";
+      "editor.lineHeight" = 1.8;
+      "editor.suggestSelection" = "first";
+      "editor.inlineSuggest.enabled" = true;
+      "editor.find.autoFindInSelection" = "multiline";
+      "editor.quickSuggestions.comments" = "on";
+      "editor.minimap.renderCharecters" = false;
+      "editor.minimap.maxColumn" = 90;
+      "editor.minimap.autohide" = true;
+      "editor.roundedSelection" = true;
+      "editor.renderWhitespace" = "trailing";
+      "editor.smoothScrolling" = true;
+      "editor.lineNumbers" = "on";
+      "editor.cursorBlinking" = "smooth";
+      "editor.cursorSmoothCaretAnimation" = "on";
+      "editor.cursorSurroundingLines" = 2;
+      "editor.cursorSurroundingLinesStyle" = "all";
+      "editor.cursorWidth" = 2;
+      "editor.tabsize" = 2;
+      "editor.quickSuggestionsdelay" = 1;
+      "editor.formatOnPaste" = true;
+      "editor.formatOnSave" = true;
+      "editor.guides.bracketPairs" = true;
+      "editor.guides.indentation" = true;
+      "editor.guides.bracketPairColorization.enabled" = true;
+      "editor.guides.bracketPairColorization.independentColorPoolPerBracketType" = true;
+      "editor.largeFileOptimizations" = true;
+      "editor.codeActionsOnSave.source.organizeImports" = "always";
+      "editor.codeActionsOnSave.source.fixAll" = true;
+      "editor.suggest.localityBonus" = true;
+      "editor.wordWrap" = "bounded";
+      "editor.wordWrapColumn" = 120;
+      "editor.wrappingIndent" = "indent";
+      ### Diff
+      "editor.diffEditor.codeLens" = true;
+      "editor.diffEditor.experimental.showMoves" = true;
+      "editor.diffEditor.hideUnchangedRegions.enabled" = true;
+      ### Search
+      "editor.search.smartCase" = true;
+      "editor.search.followSymlinks" = false;
+      "editor.search.sortOrder" = "default";
+      "editor.search.searchEditor.doubleClickBehaviour" = "goToLocation";
+
+      #######################
+      ### Podman | Docker ###
+      #######################
+      "docker.environment" = {
+        "DOCKER_HOST" = "unix:///run/user/1000/podman/podman.sock";
       };
+      "docker.composeCommand" = "podman-compose";
+      "docker.dockerPath" = "${pkgs.podman}/bin/podman";
 
       editor = {
-        fontFamily = "'JetbrainsMono Nerd Font', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
+        fontFamily = "'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
         fontLigatures = true;
+        fontVariations = true;
+        fontWeight = 500;
         scrollbar = {
           horizontal = "auto";
           vertical = "auto";
         };
-        rulers = [ "80" "120" ];
+        rulers = [ ''80 120'' ];
         cursorStyle = "line";
         # cursorStyle = "block";
         lineHeight = 1.8;
@@ -108,14 +180,6 @@
         followSymlinks = false;
         sortOrder = "default";
         searchEditor.doubleClickBehaviour = "goToLocation";
-      };
-
-      docker = {
-        environment = {
-          "DOCKER_HOST" = "unix:///run/user/1000/podman/podman.sock";
-        };
-        "composeCommand" = "podman-compose";
-        "dockerPath" = "${pkgs.podman}/bin/podman";
       };
 
       dev = {
@@ -200,15 +264,9 @@
       };
 
       "editor.bracketPairColorization.enabled" = true;
-      "editor.fontFamily" = "Fira Code Retina";
       "editor.fontSize" = 16;
-      "terminal.integrated.fontFamily" = "'FiraCode Nerd Font Mono', 'JetBrainsMono Nerd Font Mono SemiBold'";
-      # "terminal.integrated.fontSize" = 15;
-      "terminal.integrated.tabs.focusMode" = "singleClick";
-      "terminal.integrated.copyOnSelection" = true;
-      "terminal.integrated.scrollback" = 5000;
-      "terminal.integrated.persistentSessionScrollback" = 200;
-      "terminal.integrated.mouseWheelScrollSensitivity" = 2;
+
+
       "extensions.autoCheckUpdates" = false;
       "extensions.autoUpdate" = false;
       "extensions.ignoreRecommendations" = true;
@@ -282,7 +340,6 @@
 
       "security.workspace.trust.enabled" = false;
       "security.promptForLocalFileProtocolHandling" = false;
-      "update.mode" = "none";
       "breadcrumbs.enabled" = true;
       "update.showReleaseNotes" = false;
       # "vscode-neovim.neovimClean" = true;

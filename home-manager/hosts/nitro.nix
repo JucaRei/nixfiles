@@ -7,7 +7,7 @@ with lib.hm.gvariant;
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix
     # ../_mixins/apps/text-editor/vscodium.nix
-    # ../_mixins/apps/text-editor/vscode.nix
+    ../_mixins/apps/text-editor/vscode.nix
     ../_mixins/apps/browser/brave.nix
     # ../_mixins/apps/browser/chromium.nix
     # ../_mixins/apps/browser/firefox.nix
