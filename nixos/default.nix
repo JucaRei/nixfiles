@@ -182,7 +182,7 @@
       log-lines = 15
 
       # If set to true, Nix will fall back to building from source if a binary substitute fails.
-      fallback = true
+      #fallback = true
 
       # Free up to 4GiB whenever there is less than 2GiB left.
       min-free = ${toString (2048 * 1024 * 1024)}

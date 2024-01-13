@@ -1,38 +1,37 @@
 { hostid, hostname, lib, pkgs, ... }: {
-  imports =
-    if (hostname != "rasp3") then [
-      ./aliases.nix
-      ./aspell.nix
-      ./console.nix
-      ./locale.nix
-      ./fonts.nix
-      ./appimage.nix
-      # ./nano.nix
-      # ../config/qt/qt-style.nix
-      # ../console/fish.nix
-      # ../services/security/sudo.nix
-      # ../services/security/doas.nix
-      ../services/security/common.nix
-      ../services/network/avahi.nix
-      # ../services/security/detect-reboot-needed.nix
-      # ../services/power/powertop.nix
-      ../hardware/other/fwupd.nix
-      ../hardware/other/usb.nix
-      # ../virtualization/nix-ld.nix
-      # ../services/tools/fhs.nix
-      # ../services/openssh.nix
-      # ../services/tailscale.nix
-      # ../services/zerotier.nix
-      ../config/scripts/nixos-change-summary.nix
-      ../sys/check-updates.nix
-    ] else [
-      ./aliases.nix
-      ./console.nix
-      ./locale.nix
-      ../services/security/common.nix
-      ../config/scripts/nixos-change-summary.nix
-      ../sys/check-updates.nix
-    ];
+  imports = [ ] ++ lib.optionals (hostname != "rasp3") [
+    ./aliases.nix
+    ./aspell.nix
+    ./console.nix
+    ./locale.nix
+    ./fonts.nix
+    ./appimage.nix
+    # ./nano.nix
+    # ../config/qt/qt-style.nix
+    # ../console/fish.nix
+    # ../services/security/sudo.nix
+    # ../services/security/doas.nix
+    ../services/security/common.nix
+    ../services/network/avahi.nix
+    # ../services/security/detect-reboot-needed.nix
+    # ../services/power/powertop.nix
+    ../hardware/other/fwupd.nix
+    ../hardware/other/usb.nix
+    # ../virtualization/nix-ld.nix
+    # ../services/tools/fhs.nix
+    # ../services/openssh.nix
+    # ../services/tailscale.nix
+    # ../services/zerotier.nix
+    ../config/scripts/nixos-change-summary.nix
+    ../sys/check-updates.nix
+  ] ++ lib.optionals (hostname == "rasp3") [
+    ./aliases.nix
+    ./console.nix
+    ./locale.nix
+    ../services/security/common.nix
+    ../config/scripts/nixos-change-summary.nix
+    ../sys/check-updates.nix
+  ];
 
   # don't install documentation i don't use
   documentation = {
@@ -151,7 +150,7 @@
     ]);
     variables = {
       # use Wayland where possible (electron)
-      NIXOS_OZONE_WL = if hostname == "rasp3" then "" else "1";
+      NIXOS_OZONE_WL = "1";
       EDITOR = "micro";
       SYSTEMD_EDITOR = "micro";
       VISUAL = "micro";
