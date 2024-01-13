@@ -203,8 +203,9 @@
         "noatime"
         "nodiratime"
         "ssd"
-        "compress-force=zstd:3"
+        "compress-force=zstd:6"
         "space_cache=v2"
+        "nodatacow"
         "commit=120"
         "discard=async"
         "x-gvfs-hide" # hide from filemanager
@@ -224,14 +225,14 @@
       device = "/dev/disk/by-label/Nitroux";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
-      options = [ "subvol=@snapshots" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+      options = [ "subvol=@snapshots" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
     };
 
   fileSystems."/var/tmp" =
     {
       device = "/dev/disk/by-label/Nitroux";
       fsType = "btrfs";
-      options = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:3" "space_cache=v2" "commit=120" "discard=async" ];
+      options = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "nodatacow" "ssd" "compress-force=zstd:3" "space_cache=v2" "commit=120" "discard=async" ];
     };
 
   fileSystems."/var/log" =
@@ -251,7 +252,7 @@
 
   fileSystems."/boot/efi" =
     {
-      device = "/dev/disk/by-label/GRUB";
+      device = "/dev/disk/by-label/EFI";
       # device = "/dev/disk/by-uuid/076D-BEC9";
       fsType = "vfat";
       options = [
@@ -308,8 +309,8 @@
       lm_sensors
       # nixos-summary
       # tidal
-      etcher
-      thorium
+      #etcher
+      #thorium
     ];
     sessionVariables = {
       # LIBVA_DRIVER_NAME = "nvidia";
@@ -319,17 +320,17 @@
       #  WLR_NO_HARDWARE_CURSORS = "1";
     };
 
-    etc = {
-      "systemd/system-sleep/batenergy".source = pkgs.writeShellScript "batenergy" ''
-        PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.bc ]}
-        source ${pkgs.fetchFromGitHub {
-          owner = "equaeghe";
-          repo = "batenergy";
-          rev = "13c381f68f198af361c5bd682b32577131fbb60f";
-          hash = "sha256-4JQrSD8HuBDPbBGy2b/uzDvrBUZ8+L9lAnK95rLqASk=";
-        }}/batenergy.sh "$@"
-      '';
-    };
+    # etc = {
+    #   "systemd/system-sleep/batenergy".source = pkgs.writeShellScript "batenergy" ''
+    #     PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.bc ]}
+    #     source ${pkgs.fetchFromGitHub {
+    #       owner = "equaeghe";
+    #       repo = "batenergy";
+    #       rev = "13c381f68f198af361c5bd682b32577131fbb60f";
+    #       hash = "sha256-4JQrSD8HuBDPbBGy2b/uzDvrBUZ8+L9lAnK95rLqASk=";
+    #     }}/batenergy.sh "$@"
+    #   '';
+    # };
   };
 
   services = {

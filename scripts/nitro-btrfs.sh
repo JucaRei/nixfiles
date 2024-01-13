@@ -22,33 +22,40 @@
 # parted $BOOT_PARTITION -- set 1 esp on
 # sgdisk -p /dev/nvme0n1
 
-# mkfs.vfat -F32 $BOOT_PARTITION -n "GRUB"
+# EFI system partition
+
+# mkfs.vfat -F32 $BOOT_PARTITION -n "EFI"
 # mkfs.btrfs $ROOT_PARTITION -f -L "NIXOS"
-mkfs.btrfs /dev/nvme0n1p4 -f -L "NIXOS"
+mkfs.btrfs /dev/nvme0n1p2 -f -L "Nitroux"
 
 BTRFS_OPTS="rw,noatime,ssd,compress-force=zstd:15,space_cache=v2,nodatacow,commit=120,discard=async"
+BTRFS_OPTS2="rw,noatime,ssd,compress-force=zstd:3,space_cache=v2,nodatacow,commit=120,discard=async"
+BTRFS_OPTS3="rw,noatime,ssd,compress-force=zstd:6,space_cache=v2,nodatacow,commit=120,discard=async"
 # BTRFS_OPTS="rw,noatime,ssd,compress-force=zstd:15,space_cache=v2,commit=120,discard=async"
-mount -o $BTRFS_OPTS /dev/disk/by-label/NIXOS /mnt
-btrfs su cr /mnt/@root
+mount -o $BTRFS_OPTS /dev/disk/by-label/Nitroux /mnt
+btrfs su cr /mnt/@rootfs
 btrfs su cr /mnt/@home
 btrfs su cr /mnt/@nix
+btrfs su cr /mnt/@logs
+btrfs su cr /mnt/@tmp
 btrfs su cr /mnt/@snapshots
 # btrfs su cr /mnt/@swap
-umount -R /mnt
+umount -Rv /mnt
 
 # mount -o $BTRFS_OPTS,subvol=@root /dev/vda2 /mnt
-mount -o $BTRFS_OPTS,subvol=@root /dev/disk/by-label/NIXOS /mnt
-# mount -o $BTRFS_OPTS,subvol="@root" /dev/disk/by-partlabel/NIXOS /mnt
-mkdir -pv /mnt/{boot/efi,home,.snapshots,nix}
-mount -o $BTRFS_OPTS,subvol=@home /dev/disk/by-label/NIXOS /mnt/home
-# mount -o $BTRFS_OPTS,subvol="@home" /dev/disk/by-partlabel/NIXOS /mnt/home
-mount -o $BTRFS_OPTS,subvol=@snapshots /dev/disk/by-label/NIXOS /mnt/.snapshots
-# mount -o $BTRFS_OPTS,subvol="@snapshots" /dev/disk/by-partlabel/NIXOS /mnt/.snapshots
-mount -o $BTRFS_OPTS,subvol=@tmp /dev/disk/by-label/NIXOS /mnt/var/tmp
-# mount -o $BTRFS_OPTS,subvol="@tmp" /dev/disk/by-partlabel/NIXOS /mnt/var/tmp
-mount -o $BTRFS_OPTS,subvol=@nix /dev/disk/by-label/NIXOS /mnt/nix
-# mount -o $BTRFS_OPTS,subvol="@nix" /dev/disk/by-partlabel/NIXOS /mnt/nix
-mount -t vfat -o defaults,noatime,nodiratime /dev/disk/by-label/GRUB /mnt/boot/efi
+mount -o $BTRFS_OPTS3,subvol=@rootfs /dev/disk/by-label/Nitroux /mnt
+# mount -o $BTRFS_OPTS,subvol="@root" /dev/disk/by-partlabel/Nitroux /mnt
+mkdir -pv /mnt/{boot/efi,home,.snapshots,nix,var/log,var/tmp}
+mount -o $BTRFS_OPTS2,subvol=@home /dev/disk/by-label/Nitroux /mnt/home
+# mount -o $BTRFS_OPTS,subvol="@home" /dev/disk/by-partlabel/Nitroux /mnt/home
+mount -o $BTRFS_OPTS,subvol=@snapshots /dev/disk/by-label/Nitroux /mnt/.snapshots
+# mount -o $BTRFS_OPTS,subvol="@snapshots" /dev/disk/by-partlabel/Nitroux /mnt/.snapshots
+mount -o $BTRFS_OPTS2,subvol=@tmp /dev/disk/by-label/Nitroux /mnt/var/tmp
+# mount -o $BTRFS_OPTS,subvol="@tmp" /dev/disk/by-partlabel/Nitroux /mnt/var/tmp
+mount -o $BTRFS_OPTS,subvol=@nix /dev/disk/by-label/Nitroux /mnt/nix
+mount -o $BTRFS_OPTS,subvol=@logs /dev/disk/by-label/Nitroux /mnt/var/log
+# mount -o $BTRFS_OPTS,subvol="@nix" /dev/disk/by-partlabel/Nitroux /mnt/nix
+mount -t vfat -o defaults,noatime,nodiratime /dev/disk/by-label/EFI /mnt/boot/efi
 
 # for dir in dev proc sys run; do
 #    mount --rbind /$dir /mnt/$dir

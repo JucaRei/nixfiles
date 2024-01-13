@@ -21,10 +21,6 @@
         RUNTIME_PM_ON_AC = "on";
         RUNTIME_PM_ON_BAT = "on";
         SCHED_POWERSAVE_ON_BAT = 1;
-        SOUND_POWER_SAVE_ON_AC = 0;
-        SOUND_POWER_SAVE_ON_BAT = 1;
-        START_CHARGE_THRESH_BAT0 = 40;
-        STOP_CHARGE_THRESH_BAT0 = 80;
         TPACPI_ENABLE = 1;
         TPSMAPI_ENABLE = 1;
         WOL_DISABLE = "Y";
@@ -52,7 +48,7 @@
         DEVICES_TO_ENABLE_ON_WIFI_DISCONNECT = "";
         DEVICES_TO_ENABLE_ON_WWAN_DISCONNECT = "";
 
-         DEVICES_TO_ENABLE_ON_DOCK = "wifi bluetooth";
+        DEVICES_TO_ENABLE_ON_DOCK = "wifi bluetooth";
         # DEVICES_TO_DISABLE_ON_DOCK = "";
 
         DEVICES_TO_ENABLE_ON_UNDOCK = "";
@@ -63,9 +59,6 @@
 
         # PCIE_ASPM_ON_AC = "default";
         PCIE_ASPM_ON_BAT = "powersupersave";
-
-        CPU_BOOST_ON_AC = 1;
-        CPU_BOOST_ON_BAT = 0;
 
         # Restores radio device state (builtin Bluetooth, Wi-Fi, WWAN) from previous shutdown on boot.
         # RESTORE_DEVICE_STATE_ON_STARTUP = 0;
