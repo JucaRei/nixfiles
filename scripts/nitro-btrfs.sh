@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # export DRIVE="/dev/nvme0n1"
+DRIVE="/dev/nvme0n1p2"
 
 # sgdisk -Z /dev/${DRIVE}p2
 # sgdisk -Z /dev/${DRIVE}p3
@@ -26,7 +27,7 @@
 
 # mkfs.vfat -F32 $BOOT_PARTITION -n "EFI"
 # mkfs.btrfs $ROOT_PARTITION -f -L "NIXOS"
-mkfs.btrfs /dev/nvme0n1p2 -f -L "Nitroux"
+mkfs.btrfs ${DRIVE} -f -L "Nitroux"
 
 BTRFS_OPTS="rw,noatime,ssd,compress-force=zstd:15,space_cache=v2,nodatacow,commit=120,discard=async"
 BTRFS_OPTS2="rw,noatime,ssd,compress-force=zstd:3,space_cache=v2,nodatacow,commit=120,discard=async"
