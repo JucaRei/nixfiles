@@ -61,12 +61,12 @@ in
         editorconfig.editorconfig
         redhat.vscode-yaml
         ms-python.python
-        ms-azuretools.vscode-docker
         sumneko.lua
         # hashicorp.terraform
         # ms-vscode-remote.remote-containers
         # ms-vscode-remote.vscode-remote-extensionpack
       ]
+      # ++ pkgs.unstable.vscode-extensions [ ms-azuretools.vscode-docker ] ## Downgrade to 1.22
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         {
           name = "Rasi";
@@ -74,6 +74,16 @@ in
           version = "1.0.0";
           # sha256 = lib.fakeSha256;
           sha256 = "sha256-s60alej3cNAbSJxsRlIRE2Qha6oAsmcOBbWoqp+w6fk=";
+        }
+        {
+          # ms-azuretools.vscode-docker
+          # v1.22.2
+          name = "vscode-docker";
+          publisher = "ms-azuretools";
+          # version = "1.28.0";
+          # sha256 = "sha256-ACaVwRTN4lu97GDGzxyzX/O10p6fNT3FNLne/todrFo=";
+          version = "v1.22.2"; ### Downgrade make it work with podman
+          sha256 = "sha256-sRvd9M/gF4kh4qWxtS1xKKIvqg9hRJpRl/p/FYu2TI8=";
         }
         # {
         #   name = "codeium";

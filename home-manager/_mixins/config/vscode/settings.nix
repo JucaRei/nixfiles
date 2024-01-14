@@ -6,6 +6,7 @@
       ### Update ###
       ##############
       "update.mode" = "none";
+      "update.showReleaseNotes" = true;
 
       ##############
       ### Window ###
@@ -53,6 +54,8 @@
       #######################
       "editor.fontFamily" = "'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
       "editor.fontLigatures" = true;
+      "editor.bracketPairColorization.enabled" = true;
+      "editor.fontSize" = 16;
       "editor.fontVariations" = true;
       "editor.fontWeight" = 500;
       "editor.scrollbar.horizontal" = "auto";
@@ -101,6 +104,7 @@
       "editor.search.sortOrder" = "default";
       "editor.search.searchEditor.doubleClickBehaviour" = "goToLocation";
 
+
       #######################
       ### Podman | Docker ###
       #######################
@@ -110,178 +114,72 @@
       "docker.composeCommand" = "podman-compose";
       "docker.dockerPath" = "${pkgs.podman}/bin/podman";
 
-      editor = {
-        fontFamily = "'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
-        fontLigatures = true;
-        fontVariations = true;
-        fontWeight = 500;
-        scrollbar = {
-          horizontal = "auto";
-          vertical = "auto";
-        };
-        rulers = [ ''80 120'' ];
-        cursorStyle = "line";
-        # cursorStyle = "block";
-        lineHeight = 1.8;
-        suggestSelection = "first";
-        inlineSuggest.enabled = true;
-        find = {
-          autoFindInSelection = "multiline";
-        };
-        quickSuggestions = {
-          comments = "on";
-        };
-        minimap.renderCharecters = false;
-        minimap.maxColumn = 90;
-        minimap.autohide = true;
-        roundedSelection = true;
-        renderWhitespace = "trailing";
-        smoothScrolling = true;
-        lineNumbers = "on";
-        cursorBlinking = "smooth";
-        cursorSmoothCaretAnimation = "on";
-        cursorSurroundingLines = 2;
-        cursorSurroundingLinesStyle = "all";
-        cursorWidth = 2;
-        tabsize = 2;
-        quickSuggestionsdelay = 1;
-        formatOnPaste = true;
-        formatOnSave = true;
-        guides = {
-          bracketPairs = true;
-          indentation = true;
-        };
-        bracketPairColorization = {
-          enabled = true;
-          independentColorPoolPerBracketType = true;
-        };
-        largeFileOptimizations = true;
-        codeActionsOnSave.source = {
-          organizeImports = "always";
-          fixAll = true;
-        };
-        suggest.localityBonus = true;
-        # wordWrap = "wordWrapColumn";
-        wordWrap = "bounded";
-        wordWrapColumn = 100;
-        wrappingIndent = "indent";
+      ######################
+      ### Dev Containers ###
+      ######################
+      "dev.containers.runArgs" = [ "--userns=keep-id" ];
+      "dev.containers.containerEnv" = {
+        "HOME" = "home/node";
       };
 
-      diffEditor = {
-        codeLens = true;
-        experimental = {
-          showMoves = true;
-        };
-        hideUnchangedRegions.enabled = true;
-      };
+      #################
+      ### Workbench ###
+      #################
+      "workbench.editor.labelFormat" = "short";
+      "workbench.enableExperiments" = true;
+      # "workbench.colorTheme" = "Bearded Theme Monokai Stone";
+      # "workbench.colorTheme" = "GitHub Dark";
+      # "workbench.colorTheme" = "Material Theme Ocean High Contrast";
+      "workbench.colorTheme" = "RedCrafter07 Theme";
+      "workbench.iconTheme" = "vscode-icons";
+      "workbench.settings.enableNaturalLanguageSearch" = true;
+      "workbench.list.smoothScrolling" = true;
+      "workbench.smoothScrolling" = true;
+      "workbench.productIconTheme" = "bootstrap-product-icons";
+      "workbench.tree.indent" = 4;
+      "workbench.settings.editor" = "ui";
 
-      search = {
-        smartCase = true;
-        followSymlinks = false;
-        sortOrder = "default";
-        searchEditor.doubleClickBehaviour = "goToLocation";
-      };
-
-      dev = {
-        containers = {
-          # dockerPath = "${pkgs.podman}/bin/podman";
-          runArgs = [ "--userns=keep-id" ];
-          # containerUser = "juca";
-          # updateRemoteUserUID = true;
-          containerEnv = {
-            "HOME" = "home/node";
-          };
-        };
-      };
-      workbench = {
-        editor = {
-          labelFormat = "short";
-        };
-        iconTheme = "vscode-icons";
-        # iconTheme = "bearded-icons";
-        # colorTheme = "GitHub Dark"; # Material Theme Ocean High Contrast
-        colorTheme = "RedCrafter07 Theme";
-        # colorTheme = "Rainbow Extended";
-        list.smoothScrolling = true;
-        # productIconTheme = "material-product-icons";
-        productIconTheme = "bootstrap-product-icons";
-        # productIconTheme = "tabler-icons";
-        smoothScrolling = true;
-        tree = {
-          indent = 4;
-        };
-        settings = {
-          editor = "ui";
-        };
-      };
-
-      ocamlformat-vscode-extension = {
-        customOcamlformatPath = "ocamlformat";
-        ocamlformatOption = "--enable-outside-detected-project,--break-cases = fit-or-vertical,--cases-exp-indent=4,--if-then-else=k-r,--type-decl-indent=4";
-      };
-
-      #jupyter.widgetScriptSources = [ "jsdelivr.com" "unpkg.com" ]; # required by qgrid
-      jupyter.alwaysTrustNotebooks = true;
-      rust-client.rustupPath = "${pkgs.rustup}/bin/rustup";
-      latex-workshop.view.pdf.viewer = "tab";
-      cmake.configureOnOpen = false;
-      python.formatting.provider = "black";
-      #"[ocaml]" = {
-      #  editor.defaultFormatter = "hoddy3190.ocamlformat-vscode-extension";
-      #};
-      "[css]" = { editor.defaultFormatter = "MikeBovenlander.formate"; };
-      files = {
-        autoSave = "afterDelay";
-        autoGuessEnconding = true;
-        eol = "\n";
-        insertFinalNewline = true;
-        trimTrailingWhitespace = true;
-
-        exclude = {
-          "**/.git" = true;
-          "**/.svn" = true;
-          "**/.hg" = true;
-          "**/CVS" = true;
-          "**/.DS_Store" = true;
-          "**/Thumbs.db" = true;
-          "**/*.olean" = true;
-          "**/.project" = true;
-          "**/.settings" = true;
-          "**/.classpath" = true;
-          "**/*.exe" = true;
-          "**/*.o" = true;
-          "**/.direnv" = true;
-          "**/.factorypath" = true;
-        };
-      };
-
-      git = {
-        allowForcePush = true;
-        autofetch = true;
-        confirmSync = false;
-        enableSmartCommit = true;
-        openRepositoryInParentFolders = "always";
-      };
-
-      "editor.bracketPairColorization.enabled" = true;
-      "editor.fontSize" = 16;
-
-
-      "extensions.autoCheckUpdates" = false;
-      "extensions.autoUpdate" = false;
-      "extensions.ignoreRecommendations" = true;
-      "files.enableTrash" = false;
+      ######################
+      ### Files Settings ###
+      ######################
+      "files.autoSave" = "afterDelay";
+      "files.autoGuessEncoding" = true;
+      "files.eol" = "\n";
       "files.insertFinalNewline" = true;
+      "files.enableTrash" = false;
       "files.trimFinalNewlines" = true;
       "files.trimTrailingWhitespace" = true;
-      "lldb.suppressUpdateNotifications" = true;
-      "zenMode.hideLineNumbers" = false;
-
-
-      markdown = {
-        preview.typographer = true;
-        extension.print.theme = "dark";
+      "files.exclude" = {
+        "**/.git" = true;
+        "**/.svn" = true;
+        "**/.hg" = true;
+        "**/CVS" = true;
+        "**/.DS_Store" = true;
+        "**/Thumbs.db" = true;
+        "**/*.olean" = true;
+        "**/.project" = true;
+        "**/.settings" = true;
+        "**/.classpath" = true;
+        "**/*.exe" = true;
+        "**/*.o" = true;
+        "**/.direnv" = true;
+        "**/.factorypath" = true;
       };
+
+      ####################
+      ### Git Settings ###
+      ####################
+      "git.allowForcePush" = true;
+      "git.autofetch" = true;
+      "git.confirmSync" = true;
+      "git.enableSmartCommit" = true;
+      "git.openRepositoryInParentFolders" = "always";
+
+      ################
+      ### Markdown ###
+      ################
+      "markdown.preview.typographer" = true;
+      "markdown.extension.print.theme" = "dark";
       "markdownlint.config" = {
         "MD024"."siblings_only" = true;
         "MD028" = false;
@@ -289,24 +187,34 @@
         "MD041" = false;
       };
 
-      # Nil
-      # "nix.enableLanguageServer" = true;
-      # "nix.serverPath" = "${pkgs.nil}/bin/nil";
-      # "nix.serverSettings"."nil"."diagnostics"."ignored" = [ "unused_binding" "unused_with" ];
-      # "nix.serverSettings"."nil"."formatting"."command" = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
-
-      nix = {
-        enableLanguageServer = true;
-        serverPath = "${pkgs.nil}/bin/nil";
-        formatterPath = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
-        "serverSettings" = {
-          nil = {
-            diagnostics = {
-              ignored = [ "unused_binding" "unused_with" ];
-            };
-            formatting = {
-              command = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
-            };
+      ##################
+      ### Nix Config ###
+      ##################
+      "nix.enableLanguageServer" = true;
+      "nix.serverPath" = "${pkgs.nil}/bin/nil";
+      # "nix.serverPath" = "${pkgs.unstable.nixd}/bin/nixd";
+      "nix.formatterPath" = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+      "nix.serverSettings" = {
+        # "nixd" = {
+        #   "eval" = { };
+        #   "formatting" = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
+        #   "options" = {
+        #     "enable" = true;
+        #     "target" = {
+        #       "arg" = [ ];
+        #       # NixOS options
+        #       #           installable = "<flakeref>#nixosConfigurations.<name>.options";
+        #       # Home-manager options
+        #       #           # installable = "<flakeref>#homeConfigurations.<name>.options";
+        #     };
+        #   };
+        # };
+        "nil" = {
+          "diagnostics" = {
+            "ignored" = [ "unused_binding" "unused_with" ];
+          };
+          "formatting" = {
+            "command" = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
           };
         };
       };
@@ -314,49 +222,46 @@
         "editor.defaultFormatter" = "jnoortheen.nix-ide";
       };
 
-      # Nixd
-      # nix = {
-      #   serverPath = "${pkgs.unstable.nixd}/bin/nixd";
-      #   serverSettings = {
-      #     nixd = {
-      #       eval = { };
-      #       formatting = {
-      #         command = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt";
-      #       };
-      #       optios = {
-      #         enable = true;
-      #         target = {
-      #           arg = [ ];
-      #           # NixOS options
-      #           installable = "<flakeref>#nixosConfigurations.<name>.options";
-
-      #           # Home-manager options
-      #           # installable = "<flakeref>#homeConfigurations.<name>.options";
-      #         };
-      #       };
-      #     };
-      #   };
-      # };
-
+      ################
+      ### Security ###
+      ################
       "security.workspace.trust.enabled" = false;
       "security.promptForLocalFileProtocolHandling" = false;
-      "breadcrumbs.enabled" = true;
-      "update.showReleaseNotes" = false;
-      # "vscode-neovim.neovimClean" = true;
-      # "vscode-neovim.useCtrlKeysForInsertMode" = false;
-      # "window.titleBarStyle" = "custom";
-      "workbench.enableExperiments" = true;
-      # "workbench.colorTheme" = "Bearded Theme Monokai Stone";
-      "workbench.settings.enableNaturalLanguageSearch" = true;
-      "git.enableSmartCommit" = true;
-      "git.confirmSync" = false;
 
-      "[typescriptreact]" = {
-        "editor.defaultFormatter" = "esbenp.prettier-vscode";
-      };
-      "[typescript]" = {
-        "editor.defaultFormatter" = "esbenp.prettier-vscode";
-      };
+      ##############
+      ### Others ###
+      ##############
+      # "rust-client.rustupPath" = "${pkgs.rustup}/bin/rustup";
+      # "jupyter.alwaysTrustNotebooks" = true;
+      # "jupyter.widgetScriptSources" = [ "jsdelivr.com" "unpkg.com" ]; # required by qgrid
+      # "ocamlformat-vscode-extension" =
+      #   {
+      #     "customOcamlformatPath" = "ocamlformat";
+      #     "ocamlformatOption" = "--enable-outside-detected-project,--break-cases = fit-or-vertical,--cases-exp-indent=4,--if-then-else=k-r,--type-decl-indent=4";
+      #   };
+      # "latex-workshop.view.pdf.viewer" = "tab";
+      # "cmake.configureOnOpen" = false;
+      # "python.formatting.provider" = "black";
+      #"[ocaml]" = {
+      #  "editor.defaultFormatter" = "hoddy3190.ocamlformat-vscode-extension";
+      #};
+      # "[css]" = { "editor.defaultFormatter" = "MikeBovenlander.formate"; };
+      "extensions.autoCheckUpdates" = false;
+      "extensions.autoUpdate" = false;
+      "extensions.ignoreRecommendations" = true;
+      "lldb.suppressUpdateNotifications" = true;
+      "zenMode.hideLineNumbers" = false;
+      "breadcrumbs.enabled" = true;
+
+      ##################
+      ### Javascript ###
+      ##################
+      # "[typescriptreact]" = {
+      #   "editor.defaultFormatter" = "esbenp.prettier-vscode";
+      # };
+      # "[typescript]" = {
+      #   "editor.defaultFormatter" = "esbenp.prettier-vscode";
+      # };
     };
   };
 }
