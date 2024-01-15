@@ -10,13 +10,15 @@ let
     })
     {
       scripts = with pkgs.mpvScripts; [
-        thumbnail
+        # thumbnail
+        thumbfast # High-performance on-the-fly thumbnailer.
+        autoload #  Automatically load playlist entries before and after the currently playing file, by scanning the directory.
         mpris
-        uosc
+        uosc # Adds a minimalist but highly customisable GUI.
         acompressor
-        webtorrent-mpv-hook
+        webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
         inhibit-gnome
-        autodeint
+        autodeint #  Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
         # thumbfast
         sponsorblock
       ]
@@ -31,6 +33,19 @@ let
         # thumbfast
       ]);
     };
+
+  # nlmeans - Highly configurable and featureful denoiser.
+  # NVIDIA Image Sharpening - An adaptive-directional sharpening algorithm shaders.
+  # FidelityFX CAS - Sharpening shader that provides an even level of sharpness across the frame.
+  # FSRCNNX-TensorFlow - Very resource intensive upscaler that uses a neural network to upscale accurately.
+  # Anime4k - Shaders designed to scale and enhance anime. Includes shaders for line sharpening and upscaling.
+  # AMD FidelityFX Super Resolution EASU (FSR without RCAS) - A spatial upscaler which provides consistent upscaling quality regardless of whether the frame is in movement.
+  # mpv-prescalers - RAVU (Rapid and Accurate Video Upscaling) is a set of prescalers with an overall performance consumption design slightly higher than the built-in ewa scaler, while providing much better results.
+  # SSimDownscaler, SSimSuperRes, KrigBilateral, Adaptive Sharpen
+  # Adaptive Sharpen: Another sharpening shader.
+  # SSimDownscaler: Perceptually based downscaler.
+  # KrigBilateral: Chroma scaler that uses luma information for high quality upscaling.
+  # SSimSuperRes: Make corrections to the image upscaled by mpv built-in scaler (removes ringing artifacts and restores original sharpness).
 in
 {
   programs = {
@@ -65,6 +80,9 @@ in
               slang = "eng";
             }
           ];
+        };
+        ".config/mpv/script-opts/console.conf" = {
+          text = "font=JetBrains Mono";
         };
         ".config/mpv/script-opts/stats.conf" = {
           source = kvFormat.generate "mpv-script-opts-stats" {
@@ -286,6 +304,19 @@ in
         ".config/mpv/shaders" = {
           source = ../../config/mpv/shaders;
           recursive = true;
+        };
+        #### Scripts ###
+        ".config/scripts/evfast.lua" = {
+          # Fast-forwarding and seeking on a single key.
+          source = ../../config/mpv/scripts/evfast.lua;
+        };
+        ".config/scripts/memo.lua" = {
+          # Saves watch history, and displays it in a nice menu, integrated with uosc.
+          source = ../../config/mpv/scripts/memo.lua;
+        };
+        ".config/scripts/sview.lua" = {
+          # Show shaders currently running, triggered on shader activation or by key bind.
+          source = ../../config/mpv/scripts/sview.lua;
         };
       };
     };
