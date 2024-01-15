@@ -78,6 +78,9 @@ in
             plot_color = "D900EA";
           };
         };
+        ".config/mpv/input.conf" = {
+          source = ../../config/mpv/input/input.conf;
+        };
       };
     };
 
