@@ -288,13 +288,16 @@
               "warning" = 30;
               "critical" = 15;
             };
-            "format" = "{icon}   {capacity}%";
-            "format-charging" = "  {capacity}%";
-            "format-plugged" = "  {capacity}%";
-            "format-alt" = "{icon}  {time}";
+            "format" = "{icon} {capacity}%";
+            "format-charging" = "󰂄 {capacity}%";
+            "format-plugged" = "󱘖 {capacity}%";  # 
+            "format-alt" = "{icon} {time}";
             # "format-good"= ""; # An empty format will hide the module
             # "format-full"= "";
-            "format-icons" = [ " " " " " " " " " " ];
+            #  "format-icons" = [ " " " " " " " " " " ];
+            "format-icons" = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
+            "on-click" = "";
+            "tooltip" = false;
           };
           "battery#bat2" = {
             "bat" = "BAT2";
@@ -348,19 +351,19 @@
           };
           "pulseaudio" = {
             # "scroll-step": 1; ## %, can be a float
-            "format" = "{icon} {volume}%";
+            "format" = "{icon} {volume}% {format_source}";
             "format-bluetooth" = "{volume}% {icon} {format_source}";
-            "format-bluetooth-muted" = " {icon} {format_source}";
-            "format-muted" = " {format_source}";
-            "format-source" = "{volume}% ";
+            "format-bluetooth-muted" = " {icon} {format_source}";
+            "format-muted" = "󰗿 {format_source}";
+            "format-source" = " {volume}%";
             "format-source-muted" = "";
             "format-icons" = {
-              "headphone" = "";
-              "hands-free" = "";
-              "headset" = "";
-              "phone" = "";
-              "portable" = "";
-              "car" = "";
+              "headphone" = " ";
+              "hands-free" = "󰂰 ";
+              "headset" = "󰋎 ";
+              "phone" = "󰏳 ";
+              "portable" = " ";
+              "car" = " ";
               "default" = [ "" " " " " ];
             };
             "on-click" = "pavucontrol";
@@ -776,7 +779,7 @@
          * Bluetooth
          * ----------------------------------------------------- */
 
-         #bluetooth, #bluetooth.on, #bluetooth.connected {
+        #bluetooth, #bluetooth.on, #bluetooth.connected {
             background-color: @backgroundlight;
             font-size: 16px;
             /* color: @textcolor2; */
@@ -856,7 +859,8 @@
         #backlight {
             background-color: @backgroundlight;
             font-size: 16px;
-            color: #4942E4;
+            /* color: #39A7FF; */
+            color: #9400FF;
             border-radius: 15px;
             padding: 2px 12px 0px 10px;
             margin: 8px 15px 8px 0px;
