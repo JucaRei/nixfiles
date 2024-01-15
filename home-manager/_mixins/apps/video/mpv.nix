@@ -77,7 +77,7 @@ in
             }
             {
               alang = "*";
-              slang = "eng";
+              slang = "pt_BR,en,eng,de,deu,ger";
             }
           ];
         };
@@ -107,7 +107,8 @@ in
 
             ### Video ###
 
-            vo=gpu-next
+            # vo=gpu-next
+            vo=gpu
             gpu-api=auto
             priority=high
             gpu-context=auto
@@ -138,8 +139,9 @@ in
 
             ### Audio and Subtitles ###
 
-            slang=en,eng,English
+            slang=pt_BR,en,eng,de,deu,ger
             alang=ja,jp,jpn,jap,Japanese,en,eng,English
+            demuxer-mkv-subtitle-preroll = "yes"; #Forces showing subtitles while seeking through the video
 
             sub-blur=0.5
             sub-scale=0.7
@@ -156,6 +158,9 @@ in
             sub-fix-timing=yes
             audio-channels=auto
             blend-subtitles=yes
+            sub-gauss = '1.0'
+            sub-gray = yes
+            sub-ass-vsfilter-blur-compat = yes # Backward compatibility for vsfilter fansubs
             sub-ass-override=yes
             audio-file-auto=fuzzy
             audio-pitch-correction=yes
@@ -194,6 +199,9 @@ in
             geometry=50%:50%
             save-position-on-quit=yes
             watch-later-options-remove=pause
+            watch-later-directory = '~/.cache/mpv-watch-later'
+            cache-dir = '~/.cache/mpv'
+            save-position-on-quit = true
 
             ### OSD/OSC ###
 
@@ -203,6 +211,19 @@ in
             osd-bold=yes
             osd-font-size=32
             osd-font='JetBrains Mono'
+            # osd-font = 'Bitstream Vera Sans'
+
+            ### Screenshots
+            screenshot-directory = '~/Pictures/mpv-screenshots'
+            screenshot-format = 'png'
+
+            ### Audio ###
+            volume = 67
+            audio-channels = 'stereo,5.1,7.1'
+            subs-with-matching-audio = 'no' #Won't ignore subtitles tagged as "Forced"
+            audio-spdif = 'ac3,dts,eac3,dts-hd,truehd'
+            af = 'acompressor=ratio=4,loudnorm'
+            audio-delay = '+0.084' #Useful if you're watching with your headphones on PC, but output the video on your Television with a long HDMI cable (counter the delay)
           '';
         };
         ".config/mpv/profiles.conf" = {
@@ -441,7 +462,7 @@ in
             audio=no
 
             # Enable hardware decoding
-            hwdec=yes
+            hwdec=auto
 
             # Windows only: use native Windows API to write to pipe (requires LuaJIT)
             direct_io=no
@@ -785,3 +806,61 @@ in
     };
   };
 }
+
+#  bindings = {
+#         # Basics
+#         "BS" = "cycle pause";
+#         "SPACE" = "cycle pause";
+#         "\\" = "set speed 1.0";
+#         # "PGUP" = "add chapter -1";
+#         # "PGDWN" = "add chapter 1";
+#         "Alt+ENTER" = "cycle fullscreen";
+#         "Alt+x" = "quit-watch-later";
+#         "1" = "cycle border";
+#         "Ctrl+a" = "cycle ontop";
+#         n = ''show-text ''${media-title}'';
+#         MBTN_LEFT = "cycle pause";
+#         MBTN_LEFT_DBL = "cycle fullscreen";
+#         MBTN_RIGHT = "ignore";
+
+#         # Video
+#         v = "cycle sub-visibility";
+#         "Ctrl+LEFT" = "sub-seek -1";
+#         "Ctrl+RIGHT" = "sub-seek 1";
+#         PGUP = "playlist-next; write-watch-later-config";
+#         PGDWN = "playlist-prev; write-watch-later-config";
+#         "Alt+1" = "set window-scale 0.5";
+#         "Alt+2" = "set window-scale 1.0";
+#         "Alt+3" = "set window-scale 2.0";
+#         "Alt+i" = "screenshot";
+#         s = "ignore";
+#         "Ctrl+h" = "add chapter -1";
+#         "Ctrl+j" = "repeatable playlist-prev";
+#         "Ctrl+k" = "repeatable playlist-next";
+#         "Ctrl+l" = "add chapter 1";
+#         "J" = "cycle sub";
+#         "L" = "ab_loop";
+#         "shift+LEFT" = "script-binding previousfile";
+#         "shift+RIGHT" = "script-binding nextfile";
+
+#         # Audio
+#         UP = "add volume +2";
+#         DOWN = "add volume -2";
+#         WHEEL_UP = "add volume +2";
+#         WHEEL_DOWN = "add volume -2";
+#         "+" = "add audio-delay 0.100";
+#         "-" = "add audio-delay -0.100";
+#         a = "cycle audio";
+#         "Shift+a" = "cycle audio down";
+#         "Ctrl+M" = "cycle mute";
+#         "=" = ''af toggle "lavfi=[pan=1c|c0=0.5*c0+0.5*c1]" ; show-text "Audio mix set to Mono"'';
+
+#         # Frame-step
+#         ">" = "frame-step";
+#         "<" = "frame-back-step";
+
+#         "O" = "cycle osc; cycle osd-bar";
+
+#         # Seek to timestamp
+#         "ctrl+t" = ''script-message-to console type "set time-pos "'';
+#       };
