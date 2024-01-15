@@ -3,7 +3,7 @@ let
 
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 
-  codegl = pkgs.unstable.vscode;
+  codegl = pkgs.unstable.vscode-fhs;
 
   # nixGLVulkanMesaWrap = pkg:
   #   pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''

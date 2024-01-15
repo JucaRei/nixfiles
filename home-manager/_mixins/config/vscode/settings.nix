@@ -131,7 +131,8 @@
       # "workbench.colorTheme" = "GitHub Dark";
       # "workbench.colorTheme" = "Material Theme Ocean High Contrast";
       "workbench.colorTheme" = "RedCrafter07 Theme";
-      "workbench.iconTheme" = "vscode-icons";
+      # "workbench.iconTheme" = "vscode-icons";
+      "workbench.iconTheme" = "bearded-icons";
       "workbench.settings.enableNaturalLanguageSearch" = true;
       "workbench.list.smoothScrolling" = true;
       "workbench.smoothScrolling" = true;
