@@ -18,6 +18,8 @@ in
       qt6Packages.qtstyleplugin-kvantum
       libsForQt5.qtstyleplugin-kvantum
       libsForQt5.qt5ct
+      qt6.qtwayland
+      libsForQt5.qt5.qtwayland
       xdg-desktop-portal-hyprland
       xdg-utils
       libnotify

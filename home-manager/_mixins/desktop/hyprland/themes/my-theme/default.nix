@@ -548,18 +548,18 @@ in
             enabled = true
 
             # other one
-            # bezier = wind, 0.05, 0.9, 0.1, 1.05
-            # bezier = winIn, 0.1, 1.1, 0.1, 1.1
-            # bezier = winOut, 0.3, -0.3, 0, 1
-            # bezier = liner, 1, 1, 1, 1
-            # animation = windows, 1, 6, wind, slide
-            # animation = windowsIn, 1, 6, winIn, slide
-            # animation = windowsOut, 1, 5, winOut, slide
-            # animation = windowsMove, 1, 5, wind, slide
-            # animation = border, 1, 1, liner
-            # animation = borderangle, 1, 30, liner, loop
-            # animation = fade, 1, 10, default
-            # animation = workspaces, 1, 5, wind
+            bezier = wind, 0.05, 0.9, 0.1, 1.05
+            bezier = winIn, 0.1, 1.1, 0.1, 1.1
+            bezier = winOut, 0.3, -0.3, 0, 1
+            bezier = liner, 1, 1, 1, 1
+            animation = windows, 1, 6, wind, slide
+            animation = windowsIn, 1, 6, winIn, slide
+            animation = windowsOut, 1, 5, winOut, slide
+            animation = windowsMove, 1, 5, wind, slide
+            animation = border, 1, 1, liner
+            animation = borderangle, 1, 30, liner, loop
+            animation = fade, 1, 10, default
+            animation = workspaces, 1, 5, wind
 
             # default
             # bezier=pace,0.46, 1, 0.29, 0.99
@@ -574,17 +574,17 @@ in
             # animation=border,1,10,md3_decel
 
             # testing
-            bezier = overshot, 0.05, 0.9, 0.1, 1.05
-            bezier = smoothOut, 0.5, 0, 0.99, 0.99
-            bezier = smoothIn, 0.5, -0.5, 0.68, 1.5
-            animation = windows, 1, 5, overshot, slide
-            animation = windowsOut, 1, 3, smoothOut
-            animation = windowsIn, 1, 3, smoothOut
-            animation = windowsMove, 1, 4, smoothIn, slide
-            animation = border, 1, 5, default
-            animation = fade, 1, 5, smoothIn
-            animation = fadeDim, 1, 5, smoothIn
-            animation = workspaces, 1, 6, default
+            # bezier = overshot, 0.05, 0.9, 0.1, 1.05
+            # bezier = smoothOut, 0.5, 0, 0.99, 0.99
+            # bezier = smoothIn, 0.5, -0.5, 0.68, 1.5
+            # animation = windows, 1, 5, overshot, slide
+            # animation = windowsOut, 1, 3, smoothOut
+            # animation = windowsIn, 1, 3, smoothOut
+            # animation = windowsMove, 1, 4, smoothIn, slide
+            # animation = border, 1, 5, default
+            # animation = fade, 1, 5, smoothIn
+            # animation = fadeDim, 1, 5, smoothIn
+            # animation = workspaces, 1, 6, default
           }
         '';
         # settings = {
