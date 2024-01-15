@@ -106,6 +106,7 @@ in
         "electron-12.2.3"
         "openssl-1.1.1w"
         "electron-13.6.9"
+        # "mailspring-1.11.0"
       ];
       # Disable if you don't want unfree packages
       allowUnfree = true;

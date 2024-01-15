@@ -158,6 +158,7 @@
 
 
       experimental-features = [
+        "auto-allocate-uids"
         "nix-command"
         "flakes"
         "repl-flake"

@@ -203,6 +203,8 @@ in
   imports = [
     ../../../../apps/terminal/foot.nix
     ../../../../apps/tools/imv.nix
+    ../../../../apps/tools/zathura.nix
+    ../../../../apps/tools/mailspring.nix
     ./dunst.nix
     # ./swaylock.nix
     ./eye-protection.nix

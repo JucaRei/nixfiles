@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   programs.zathura = {
     enable = true;
     options = {
@@ -7,12 +7,15 @@
 
       # Appearance
       completion-bg = "#091833";
-      completion-fg = "#0ABDC6";
+      # completion-fg = "#0ABDC6";
+      completion-fg = "#FBFF00";
+      # completion-fg = "#FBFF00";
       # completion-group-bg = "";
       # completion-group-fg = "";
       completion-highlight-bg = "#711C91";
       completion-highlight-fg = "#0ABDC6";
       default-fg = "#0ABDC6";
+      # default-fg = "#FBFF00";
       default-bg = "#000B1E";
       font = "FiraCode Nerd Font 9";
       inputbar-bg = "#000B1E";
@@ -30,12 +33,14 @@
       highlight-fg = "#711C91";
       highlight-active-color = "#00FF00";
       highlight-transparency = "0.6";
-      recolor-darkcolor = "#0ABDC6";
+      # recolor-darkcolor = "#0ABDC6";
+      recolor-darkcolor = "#FBFF00";
       recolor-lightcolor = "#000B1E";
       index-bg = "#091833";
       index-fg = "#0ABDC6";
       index-active-bg = "#711c91";
-      index-active-fg = "#0ABDC6";
+      # index-active-fg = "#0ABDC6";
+      index-active-fg = "#FBFF00";
 
       window-title-basename = true;
       smooth-scroll = true;
@@ -110,5 +115,12 @@
 
       set selection-clipboard clipboard
     '';
+  };
+  xdg = {
+    mimeApps = {
+      defaultApplications = {
+        "application/pdf" = [ "org.pwmt.zathura.desktop" ];
+      };
+    };
   };
 }
