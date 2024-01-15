@@ -31,7 +31,7 @@
         # Restores radio device state (builtin Bluetooth, Wi-Fi, WWAN) from previous shutdown on boot.
         # RESTORE_DEVICE_STATE_ON_STARTUP = 0;
 
-        DEVICES_TO_DISABLE_ON_STARTUP = "bluetooth wwan";
+        DEVICES_TO_DISABLE_ON_STARTUP = "wwan";
         DEVICES_TO_ENABLE_ON_STARTUP = "wifi";
 
         # has precedence
