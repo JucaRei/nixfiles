@@ -783,7 +783,7 @@ in
       };
       ".config/rofi/scripts/wallpaper.sh" = {
         source = ./rofi/wallpaper.sh;
-        recursive = true;
+        # recursive = true;
         executable = true;
       };
       #######################

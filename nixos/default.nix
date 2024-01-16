@@ -290,7 +290,7 @@
     # Reduce default service stop timeouts for faster shutdown
     # Default timeout for stopping services managed by systemd to 10 seconds
     extraConfig = ''
-      DefaultTimeoutStopSec=15s
+      DefaultTimeoutStopSec=10s
       DefaultTimeoutAbortSec=8s
     '';
 
