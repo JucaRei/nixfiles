@@ -203,7 +203,7 @@ in
   imports = [
     ../../../../apps/terminal/foot.nix
     ../../../../apps/tools/imv.nix
-    ../../../../apps/tools/zathura.nix
+    # ../../../../apps/tools/zathura.nix
     ../../../../apps/tools/zathura2.nix
 
     ../../../../apps/tools/mailspring.nix
@@ -356,9 +356,9 @@ in
 
           # See https://wiki.hyprland.org/Configuring/Variables/ for more
           general {
-            gaps_in = 2
-            gaps_out = 6
-            border_size = 1
+            gaps_in = 4
+            gaps_out = 8
+            border_size = 2
             col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
             col.inactive_border = rgba(595959aa)
 

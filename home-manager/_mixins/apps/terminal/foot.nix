@@ -14,7 +14,7 @@
         locked-title = "no";
         term = "xterm-256color";
         # font = "monospace:size=11.5";
-        font = "UbuntuMono Nerd Font Mono:size=11.5";
+        font = "UbuntuMono Nerd Font Mono:size=10.9";
         vertical-letter-offset = "-0.75";
         pad = "12x21 center";
         resize-delay-ms = 100;
