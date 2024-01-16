@@ -1,5 +1,8 @@
 { config, lib, pkgs, ... }:
 {
+  imports = [
+    ./cloudflare-warp.nix
+  ];
   networking = {
     # Disabling DHCPCD in favor of NetworkManager
     dhcpcd = {
@@ -9,10 +12,16 @@
     #   allowedTCPPorts = [ 5355 ];
     #   allowedUDPPorts = [ 5353 5355 ];
     # };
+
+    nameservers = [ "1.1.1.1" ];
+
     networkmanager = {
       enable = true;
       # Append Cloudflare and Google DNS servers
-      appendNameservers = [ "1.1.1.1" "8.8.8.8" ];
+      # appendNameservers = [
+      # "1.1.1.1"
+      # "8.8.8.8"
+      # ];
       dns = "systemd-resolved";
 
       #---------------------------------------------------------------------

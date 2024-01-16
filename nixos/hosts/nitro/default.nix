@@ -369,7 +369,7 @@
           # horizontalScrolling = true;
           # tappingDragLock = false;
           tapping = true;
-          naturalScrolling = true;
+          naturalScrolling = false;
           scrollMethod = "twofinger";
           disableWhileTyping = true;
           sendEventsMode = "disabled-on-external-mouse";

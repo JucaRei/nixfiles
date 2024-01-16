@@ -21,27 +21,35 @@ with lib.hm.gvariant;
   # };
 
   config = {
-    home.packages = with pkgs; [
-      whatsapp-for-linux # Whatsapp desktop messaging app
-      # icloudpd
-      # vlc
-      clonegit
-      # deezer-gui
-      # fantezy
-      gcc
-      gnumake
-      transmission_4-gtk
-      lua
-      fcitx5-with-addons
-      vt-view
-      gparted
-      # neovim
-      # tmux
-      # sniffnet
-      # autorandr
-      # thorium
-    ];
+    home = {
+      packages = with pkgs; [
+        whatsapp-for-linux # Whatsapp desktop messaging app
+        # icloudpd
+        # vlc
+        clonegit
+        # deezer-gui
+        # fantezy
+        gcc
+        gnumake
+        transmission_4-gtk
+        lua
+        fcitx5-with-addons
+        vt-view
+        gparted
+        # neovim
+        # tmux
+        # sniffnet
+        # autorandr
+        # thorium
+      ];
 
+      keyboard = {
+        layout = "br";
+        model = "pc105";
+        options = "grp:alt_shift_toggle";
+        variant = "abnt2";
+      };
+    };
     dconf.settings = {
       # "org/gnome/desktop/interface" = {
       #   show-battery-percentage = true;
