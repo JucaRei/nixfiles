@@ -418,12 +418,26 @@
               };
               "on-click" = "pavucontrol";
             };
+            # "bluetooth" = {
+            #   "format" = " {status}";
+            #   "format-disabled" = "";
+            #   "format-off" = "";
+            #   "interval" = 30;
+            #   "on-click" = "blueman-manager";
+            # };
             "bluetooth" = {
-              "format" = " {status}";
-              "format-disabled" = "";
-              "format-off" = "";
-              "interval" = 30;
-              "on-click" = "blueman-manager";
+              "on-click" = "~/.config/rofi/bluetooth-control.sh";
+              "on-click-right" = "~/.config/rofi/rofi-bluetooth.sh";
+              "on-click-middle" = "~/.config/rofi/rofi-bluetooth.sh";
+              "format" = "{icon}";
+              "interval" = 15;
+              "format-icons" = {
+                "on" = "<span foreground='#88C0D0'></span>";
+                "off" = "<span foreground='#F38BA8'>󰂲</span>";
+                "disabled" = "󰂲";
+                "connected" = "";
+              };
+              "tooltip-format" = "{device_alias} {status}";
             };
             "custom/media" = {
               "format" = "{icon} {}";

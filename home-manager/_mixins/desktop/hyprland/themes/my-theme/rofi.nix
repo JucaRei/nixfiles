@@ -26,6 +26,14 @@
         '';
         executable = true;
       };
+      ".config/rofi/scripts/bluetooth-control.sh" = {
+        source = ./rofi/bluetooth-control.sh;
+        executable = true;
+      };
+      ".config/rofi/scripts/rofi-bluetooth.sh" = {
+        source = ./rofi/rofi-bluetooth.sh;
+        executable = true;
+      };
     };
   };
 }
