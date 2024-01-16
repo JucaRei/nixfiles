@@ -204,6 +204,8 @@ in
     ../../../../apps/terminal/foot.nix
     ../../../../apps/tools/imv.nix
     ../../../../apps/tools/zathura.nix
+    ../../../../apps/tools/zathura2.nix
+
     ../../../../apps/tools/mailspring.nix
     ./dunst.nix
     # ./swaylock.nix
@@ -264,7 +266,13 @@ in
             mouse_move_enables_dpms = true; # enable dpms on mouse/touchpad action
             key_press_enables_dpms = true; # enable dpms on keyboard action
             # disable_autoreload = true; # autoreload is unnecessary on nixos, because the config is readonly anyway
+            # Unfullscreen when opening something
+            new_window_takes_over_fullscreen = 2;
           };
+          # layerrule = [
+          #   "blur,waybar"
+          #   "ignorezero,waybar"
+          # ];
           dwindle = {
             no_gaps_when_only = false;
             pseudotile = 0; # enable pseudotiling on dwindle
@@ -477,7 +485,7 @@ in
                   xray = true
                   # blurls = waybar
               }
-              active_opacity = 0.98
+              active_opacity = 0.97
               inactive_opacity = 0.86
               fullscreen_opacity = 0.95
 

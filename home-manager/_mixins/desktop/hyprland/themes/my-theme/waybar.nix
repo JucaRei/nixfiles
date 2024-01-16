@@ -426,16 +426,16 @@
             #   "on-click" = "blueman-manager";
             # };
             "bluetooth" = {
-              "on-click" = "~/.config/rofi/bluetooth-control.sh";
-              "on-click-right" = "~/.config/rofi/rofi-bluetooth.sh";
-              "on-click-middle" = "~/.config/rofi/rofi-bluetooth.sh";
+              "on-click" = "~/.config/rofi/scripts/bluetooth-control.sh";
+              "on-click-right" = "~/.config/rofi/scripts/rofi-bluetooth.sh";
+              "on-click-middle" = "~/.config/rofi/scripts/rofi-bluetooth.sh";
               "format" = "{icon}";
               "interval" = 15;
               "format-icons" = {
                 "on" = "<span foreground='#88C0D0'></span>";
                 "off" = "<span foreground='#F38BA8'>󰂲</span>";
-                "disabled" = "󰂲";
-                "connected" = "";
+                "disabled" = "󰂲 OFF#";
+                "connected" = " ON";
               };
               "tooltip-format" = "{device_alias} {status}";
             };
