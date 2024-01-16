@@ -6,24 +6,12 @@
     file = {
       ".config/waybar/scripts/keybindings.sh" = {
         text = ''
-          #!/bin/sh
-          # Get keybindings location based on variation
-          config_file=$(cat ~/.config/hypr/keybindings.conf)
-          config_file=''${config_file/source = ~/}
-          config_file=''${config_file/source=~/}
+          #!/usr/bin/env bash
 
-          # Path to keybindings config file
-          config_file="/home/$USER$config_file"
-          echo "Reading from: $config_file"
-
-          # Parse keybindings
+          config_file=~/.config/hypr/keybindings.conf
           keybinds=$(grep -oP '(?<=bind = ).*' $config_file)
-          keybinds=$(echo "$keybinds" | sed 's/$mainMod/SUPER/g'|  sed 's/,\([^,]*\)$/ = \1/' | sed 's/, exec//g' | sed 's/^,//g')
-
-          # -----------------------------------------------------
-          # Show keybindings in rofi
-          # -----------------------------------------------------
-          rofi -dmenu -i -replace -p "Keybinds" -config ~/.config/rofi/config-compact.rasi <<< "$keybinds"
+          keybinds=$(echo "$keybinds" | sed 's/,\([^,]*\)$/ = \1/' | sed 's/, exec//g' | sed 's/^,//g')
+          rofi -dmenu -p "Keybinds" <<< "$keybinds"
         '';
         executable = true;
       };
@@ -90,16 +78,16 @@
               "pulseaudio"
               "bluetooth"
               "battery"
-              "custom/network_traffic"
               "group/hardware"
               "custom/cliphist"
               "idle_inhibitor"
+              # "custom/network_traffic"
               # Start tray toogle
               "tray"
               "backlight"
-              # End tray toogle
-              "custom/exit"
               "clock"
+              "custom/exit"
+              # End tray toogle
             ];
 
             ### Custom Modules
@@ -820,7 +808,7 @@
            * Hardware Group
            * ----------------------------------------------------- */
 
-           #disk,#memory,#cpu,#language {
+          #disk,#memory,#cpu,#language {
               margin:0px;
               padding:0px;
               font-size:16px;
@@ -974,7 +962,8 @@
               background-color: @backgroundlight;
               font-size: 16px;
               /* color: #39A7FF; */
-              color: #9400FF;
+              /* color: #9400FF; */
+              color: #6c07fa;
               border-radius: 15px;
               padding: 2px 12px 0px 10px;
               margin: 8px 15px 8px 0px;

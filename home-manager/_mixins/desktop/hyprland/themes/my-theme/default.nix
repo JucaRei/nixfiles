@@ -525,6 +525,45 @@ in
           windowrule = tile,^(Chromium)$
           windowrule = float,^(pavucontrol)$
           windowrule = float,^(blueman-manager)$
+          windowrule = float,title:^(Transmission)$
+          windowrule = float,title:^(Volume Control)$
+          windowrule = float,title:^(Firefox — Sharing Indicator)$
+          windowrule = float,audacious
+          windowrule = pin,rofi
+          windowrule = float,rofi
+          windowrule = move 0 0,title:^(Firefox — Sharing Indicator)$
+          windowrule = size 700 450,title:^(Volume Control)$
+          windowrule = move 40 55%,title:^(Volume Control)$
+          windowrulev2 = float, title:^(Picture-in-Picture)$
+          windowrulev2 = opacity 1.0 override 1.0 override, title:^(Picture-in-Picture)$
+          # windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*YouTube.*)$
+          windowrulev2 = pin, title:^(Picture-in-Picture)$
+          windowrule = float,imv
+          windowrule = center,imv
+          windowrule = size 1200 725,imv
+          windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*imv.*)$
+          windowrule = float,mpv
+          windowrule = center,mpv
+          windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*mpv.*)$
+          windowrule = size 1200 725,mpv
+          windowrulev2 = idleinhibit focus, class:^(mpv)$
+          windowrulev2 = idleinhibit fullscreen, class:^(firefox)$
+          windowrulev2 = float,class:^(pavucontrol)$
+          windowrulev2 = float,class:^(SoundWireServer)$
+          windowrulev2 = float,class:^(file_progress)$
+          windowrulev2 = float,class:^(confirm)$
+          windowrulev2 = float,class:^(dialog)$
+          windowrulev2 = float,class:^(download)$
+          windowrulev2 = float,class:^(notification)$
+          windowrulev2 = float,class:^(error)$
+          windowrulev2 = float,class:^(confirmreset)$
+          windowrulev2 = float,title:^(Open File)$
+          windowrulev2 = float,title:^(branchdialog)$
+          windowrulev2 = float,title:^(Confirm to replace files)$
+          windowrulev2 = float,title:^(File Operation Progress)$
+          windowrule = float,title:^(float_foot)$
+          windowrule = center,title:^(float_foot)$
+          windowrule = size 950 600,title:^(float_foot)$
 
           windowrulev2 = float,class:(dotfiles-floating)
           windowrulev2 = nomaximizerequest, class:.* # You'll probably like this.
@@ -549,19 +588,39 @@ in
           animations {
             enabled = true
 
+            bezier = fluent_decel, 0, 0.2, 0.4, 1
+            bezier = easeOutCirc, 0, 0.55, 0.45, 1
+            bezier = easeOutCubic, 0.33, 1, 0.68, 1
+            bezier = easeinoutsine, 0.37, 0, 0.63, 1
+
+            # Windows
+            animation = windowsIn, 1, 3, easeOutCubic, popin 30% # window open
+            animation = windowsOut, 1, 3, fluent_decel, popin 70% # window close.
+            animation = windowsMove, 1, 2, easeinoutsine, slide # everything in between, moving, dragging, resizing.
+
+            # Fade
+            animation = fadeIn, 1, 3, easeOutCubic  # fade in (open) -> layers and windows
+            animation = fadeOut, 1, 2, easeOutCubic # fade out (close) -> layers and windows
+            animation = fadeSwitch, 0, 1, easeOutCirc # fade on changing activewindow and its opacity
+            animation = fadeShadow, 1, 10, easeOutCirc # fade on changing activewindow for shadows
+            animation = fadeDim, 1, 4, fluent_decel # the easing of the dimming of inactive windows
+            animation = border, 1, 2.7, easeOutCirc # for animating the border's color switch speed
+            animation = borderangle, 1, 30, fluent_decel, once # for animating the border's gradient angle - styles: once (default), loop
+            animation = workspaces, 1, 4, easeOutCubic, fade # styles: slide, slidevert, fade, slidefade, slidefadevert
+
             # other one
-            bezier = wind, 0.05, 0.9, 0.1, 1.05
-            bezier = winIn, 0.1, 1.1, 0.1, 1.1
-            bezier = winOut, 0.3, -0.3, 0, 1
-            bezier = liner, 1, 1, 1, 1
-            animation = windows, 1, 6, wind, slide
-            animation = windowsIn, 1, 6, winIn, slide
-            animation = windowsOut, 1, 5, winOut, slide
-            animation = windowsMove, 1, 5, wind, slide
-            animation = border, 1, 1, liner
-            animation = borderangle, 1, 30, liner, loop
-            animation = fade, 1, 10, default
-            animation = workspaces, 1, 5, wind
+            # bezier = wind, 0.05, 0.9, 0.1, 1.05
+            # bezier = winIn, 0.1, 1.1, 0.1, 1.1
+            # bezier = winOut, 0.3, -0.3, 0, 1
+            # bezier = liner, 1, 1, 1, 1
+            # animation = windows, 1, 6, wind, slide
+            # animation = windowsIn, 1, 6, winIn, slide
+            # animation = windowsOut, 1, 5, winOut, slide
+            # animation = windowsMove, 1, 5, wind, slide
+            # animation = border, 1, 1, liner
+            # animation = borderangle, 1, 30, liner, loop
+            # animation = fade, 1, 10, default
+            # animation = workspaces, 1, 5, wind
 
             # default
             # bezier=pace,0.46, 1, 0.29, 0.99
