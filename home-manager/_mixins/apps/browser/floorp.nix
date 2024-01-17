@@ -3,7 +3,7 @@
   # Module installing  as default browser
   home = {
     packages = [
-      pkgs.floorp
+      pkgs.unstable.floorp
     ];
     # sessionVariables = {
     #   DEFAULT_BROWSER = "${pkgs.floorp}/bin/floorp";

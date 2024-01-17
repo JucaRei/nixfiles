@@ -11,7 +11,7 @@
   imports = [
     # ../apps/browser/chromium.nix
     # ../services/tools/cups.nix
-    ../services/tools/flatpak.nix
+    # ../services/tools/flatpak.nix # Use the home-manager version
     ../services/network/networkmanager.nix
     # ../services/printers/sane.nix
   ]

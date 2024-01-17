@@ -139,8 +139,9 @@ let
       # "${csshacks}/chrome/navbar_below_content.css"
     ]);
   };
-  # librewolf = with pkgs; wrapFirefox librewolf-unwrapped {
+  # librewolf-gl = with pkgs; wrapFirefox librewolf-unwrapped {
   firefox-gl = with pkgs.unstable; wrapFirefox firefox-unwrapped {
+    # floorp-gl = with pkgs.unstable; wrapFirefox floorp-unwrapped {
     # firefox-gl = with pkgs.unstable; wrapFirefox firefox-devedition-unwrapped {
     nativeMessagingHosts = with pkgs; [
       bukubrow
@@ -154,6 +155,7 @@ let
   };
 
   browser = "firefox";
+  # browser = "floorp";
   # browser = "librewolf";
 in
 {
@@ -162,6 +164,8 @@ in
       enable = true;
       # package = pkgs.unstable.firefox;
       package = firefox-gl;
+      # package = floorp-gl;
+      # package = librewolf-gl;
       profiles = {
         juca = {
           id = 0;
@@ -296,6 +300,8 @@ in
   home = {
     sessionVariables = {
       DEFAULT_BROWSER = "${firefox-gl}/bin/${browser}";
+      # DEFAULT_BROWSER = "${floorp-gl}/bin/${browser}";
+      # DEFAULT_BROWSER = "${librewolf-gl}/bin/${browser}";
     };
   };
 
