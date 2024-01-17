@@ -242,7 +242,7 @@ in
               "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               # "swayidle -w timeout 300 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
               "${lockscreentime}/bin/lockscreentime"
-              # "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
+              # "${pkgs.mpvpaper}/bin/mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
               # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
               ".config/rofi/scripts/wallpaper.sh"
               "notify-send 'Hey Junior, Welcome back' &"
@@ -709,7 +709,7 @@ in
         swayidle # Idle management daemon for Wayland
         # blueman
         font-search
-        wdisplays
+        # wdisplays
         polkit_gnome
         # papirus-icon-theme
         cliphist # Wayland clipboard history
@@ -717,7 +717,7 @@ in
         brillo
         random-wall
         # (if hostname != "nitro" then kbdlight else "")
-        mpvpaper
+        # mpvpaper
         # (nixGL pkgs.mpvpaper) # Live wallpaper
         playerctl
         # imv # simple image viewer

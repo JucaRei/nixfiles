@@ -37,7 +37,7 @@ with lib.hm.gvariant;
         lua
         fcitx5-with-addons
         vt-view
-        gparted
+        # gparted
         # neovim
         # tmux
         # sniffnet
