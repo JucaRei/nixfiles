@@ -8,7 +8,9 @@ with lib.hm.gvariant;
     ../_mixins/dev/nix.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     ../_mixins/apps/text-editor/vscode.nix
+    # ../_mixins/apps/terminal/urxvt.nix
     ../_mixins/apps/browser/brave.nix
+    ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix
     # ../_mixins/apps/browser/firefox.nix
     # ../_mixins/apps/text-editor/sublime.nix

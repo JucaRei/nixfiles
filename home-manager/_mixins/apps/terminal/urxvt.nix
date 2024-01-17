@@ -139,6 +139,14 @@ in
       "URxvt.keysym.Shift-M-C" = "perl:clipboard:copy";
       "URxvt.keysym.Shift-M-V" = "perl:clipboard:paste";
 
+      # Font-size
+      "URxvt.keysym.C-Up" = "perl:font-size:increase";
+      "URxvt.keysym.C-Down" = "perl:font-size:decrease";
+      "URxvt.keysym.C-S-Up" = "perl:font-size:incglobal";
+      "URxvt.keysym.C-S-Down" = "perl:font-size:decglobal";
+      "URxvt.keysym.C-equal" = "perl:font-size:reset";
+      "URxvt.keysym.C-slash" = "perl:font-size:show";
+
       # Hacks
       "URxvt*skipBuiltinGlyphs" = "true";
       "URxvt.scrollBar" = "false";

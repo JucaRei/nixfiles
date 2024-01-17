@@ -78,6 +78,7 @@
               "pulseaudio"
               "bluetooth"
               "battery"
+              "network"
               "group/hardware"
               "custom/cliphist"
               "idle_inhibitor"
@@ -304,7 +305,7 @@
               };
             };
             "cpu" = {
-              "format" = " {usage}% <span font='11'></span> ";
+              "format" = "{usage}% <span font='11'></span> ";
               "interval" = 1;
               # "format" = "{usage}% ";
               # "format" = "/c {usage}%";
@@ -318,7 +319,7 @@
               "on-click" = "foot -e htop";
             };
             "disk" = {
-              "format" = " {percentage_used}% <span font='11'></span> ";
+              "format" = "{percentage_used}% <span font='11'></span> ";
               "interval" = 30;
               # "format" = "D {percentage_used}% ";
               "path" = "/";
@@ -379,6 +380,7 @@
               };
               "modules" = [
                 "custom/system"
+                "temperature"
                 "disk"
                 "cpu"
                 "memory"
@@ -572,7 +574,7 @@
               color: @textcolor1;
               background: @workspacesbackground2;
               border-radius: 15px;
-              opacity:0.7;
+              opacity:0.75;
           }
 
           /* -----------------------------------------------------
@@ -691,6 +693,7 @@
             margin-right: 6px;
             font-size: 18px;
             font-weight: bold;
+            /* opacity: 0.8; */
             opacity: 0.8;
             color: @iconcolor;
             background-color: @backgroundlight;
@@ -703,7 +706,8 @@
             /* background: @backgroundlight; */
             background-color: @backgroundlight;
             font-weight: bold;
-          margin: 5px 0px;
+            margin: 5px 0px;
+            opacity: 0.9;
           }
           #custom-playerctl.backward,
           #custom-playerctl.play,
@@ -969,7 +973,7 @@
            * ----------------------------------------------------- */
 
           #tray {
-              padding: 0px 18px 0px 0px;
+              padding: 0px 10px 0px 0px;
           }
 
           #tray > .passive {
@@ -993,11 +997,12 @@
               font-size: 16px;
               /* color: #39A7FF; */
               /* color: #9400FF; */
-              color: #6c07fa;
+              /* color: #6c07fa; */
+              color: @textcolor2;
               border-radius: 15px;
-              padding: 2px 12px 0px 10px;
+              padding: 2px 10px 0px 10px;
               margin: 8px 15px 8px 0px;
-              opacity:0.8;
+              opacity:0.83;
           }
 
           #network {
@@ -1012,36 +1017,3 @@
       };
     };
 }
-
-# {
-#   mainBar = {
-#     layer = "top";
-#     position = "top";
-#     height = 30;
-#     output = [ "eDP-1" "HDMI-A-1" ];
-#     modules-left = [
-#       "sway/workspaces"
-#       "sway/mode"
-#       "wlr/taskbar"
-#     ];
-#     modules-center = [
-#       "sway/window"
-#       "custom/hello-from-waybar"
-#     ];
-#     modules-right = [
-#       "mpd"
-#       "custom/mymodule#with-css-id"
-#       "temperature"
-#     ];
-#     "sway/workspaces" = {
-#       disable-scroll = true;
-#       all-outputs = true;
-#     };
-#     "custom/hello-from-waybar" = {
-#       format = "hello {}";
-#       max-length = 40;
-#       interval = "once";
-#       exec = pkgs.writeShellScript "hello-from-waybar" ''        echo "from within waybar"      '';
-#     };
-#   };
-# }
