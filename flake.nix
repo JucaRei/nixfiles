@@ -39,6 +39,8 @@
       flake = false;
     };
 
+    flatpaks.url = "github:GermanBread/declarative-flatpak/stable";
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";

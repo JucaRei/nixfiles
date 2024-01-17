@@ -10,6 +10,7 @@
       };
       modules =
         if platform != "aarch64-linux" || "aarch64-darwin" then [
+          inputs.flatpaks.homeManagerModules.default
           ./nixgl.nix
           ../home-manager
         ] else [ ../home-manager ];

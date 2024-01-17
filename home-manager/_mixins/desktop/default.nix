@@ -8,6 +8,7 @@ in
 
     # (./. + "./${desktop}")
     # ../apps/documents/libreoffice.nix
+    ../services/flatpak.nix
   ]
   ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
   ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix")) ./${desktop}.nix
@@ -31,9 +32,6 @@ in
       hexchat
       usbimager
     ];
-    # sessionVariables = {
-    #   XDG_DATA_DIRS = lib.mkDefault "$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share"; # lets flatpak work
-    # };
   };
 
   # Low priority
