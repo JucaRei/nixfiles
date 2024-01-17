@@ -1,13 +1,39 @@
-{ inputs, ... }:
-# _:
+{ inputs, config, pkgs, username, ... }:
 {
-  imports = [
-    inputs.flatpaks.homeManagerModules.default
-  ];
-  # config.services.flatpak.enableModule.enable = true;
 
-  services.flatpak.enableModule = true;
-  # services.flatpak.enable = true;
+  # Flatpak declarative
+  services.flatpak = {
+    enableModule = true;
+    deduplicate = true;
+    state-dir = "${config.home.homeDirectory}/.local/state/flatpak-module";
+    target-dir = "${config.home.homeDirectory}/.local/share/flatpak";
+    packages = [
+      # "flathub:app/org.kde.index//stable"
+      # "flathub-beta:app/org.kde.kdenlive/x86_64/stable"
+
+      ## out-of-tree flatpaks can be installed like this (note: they can't be a URL because flatpak doesn't like that)
+      # ":${./foobar.flatpak}"
+      # "flathub:/root/testflatpak.flatpakref"
+
+      # <remote name>:<type>/<flatpak ref>/<arch>/<branch>:<commit>
+    ];
+    preInitCommand = "";
+    remotes = {
+      "flathub" = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+      "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
+    };
+    overrides = {
+      # sockets = [
+      # "!x11"
+      # "fallback-x11"
+      # ];
+    };
+  };
+
+  systemd.user.tmpfiles.rules = [
+    "d ${config.home.homeDirectory}/.local/share/flatpak 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/.local/state/flatpak-module 0755 ${username} users - -"
+  ];
 
   # home = {
   #   packages = [ pkgs.flatpak ];
