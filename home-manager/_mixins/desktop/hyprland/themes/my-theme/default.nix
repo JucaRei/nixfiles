@@ -135,8 +135,6 @@ let
   # --disable-caps-lock-text \
   # --text-caps-lock-color=ffffff
 
-
-
   lockscreentime = pkgs.writeShellScriptBin "lockscreentime" ''
     timeswaylock=600
     timeoff=660
@@ -217,818 +215,821 @@ in
     ./gtk.nix
     # ./scripts
   ];
-  wayland = {
-    windowManager = {
-      hyprland = {
-        # "${pkgs.libsForQt5.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1 &"
+  # get pkgs from home-manager modules
+  config = {
+    wayland = {
+      windowManager = {
+        hyprland = {
+          # "${pkgs.libsForQt5.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1 &"
 
-        # exec killall -SIGUSR1 .waybar-wrapped
+          # exec killall -SIGUSR1 .waybar-wrapped
 
-        # enable = true;
-        # systemd.enable = if hostname == "nitro" then true else false;
-        settings = {
-          exec-once = [
-            "${xdg}/bin/xdg"
-            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-            "hyprctl setcursor Bibata-Modern-Ice 16"
-            "dunst"
-            "xfce4-power-manager"
-            # Load cliphist history
-            "wl-paste --watch cliphist store"
-            "${launch_waybar}/bin/launch_waybar"
-            # "${waybar-reload}/bin/waybar-reload"
-            # "hyprctl setcursor Bibata-Modern-Ice 24"
-            "swww query || swww init"
-            "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-            # "swayidle -w timeout 300 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
-            "${lockscreentime}/bin/lockscreentime"
-            # "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
-            # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
-            ".config/rofi/scripts/wallpaper.sh"
-            "notify-send 'Hey Junior, Welcome back' &"
-          ];
-          xwayland = {
-            force_zero_scaling = true;
+          # enable = true;
+          # systemd.enable = if hostname == "nitro" then true else false;
+          settings = {
+            exec-once = [
+              "${xdg}/bin/xdg"
+              "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+              "hyprctl setcursor Bibata-Modern-Ice 16"
+              "dunst"
+              "xfce4-power-manager"
+              # Load cliphist history
+              "wl-paste --watch cliphist store"
+              "${launch_waybar}/bin/launch_waybar"
+              # "${waybar-reload}/bin/waybar-reload"
+              # "hyprctl setcursor Bibata-Modern-Ice 24"
+              "swww query || swww init"
+              "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+              # "swayidle -w timeout 300 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
+              "${lockscreentime}/bin/lockscreentime"
+              # "mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
+              # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
+              ".config/rofi/scripts/wallpaper.sh"
+              "notify-send 'Hey Junior, Welcome back' &"
+            ];
+            xwayland = {
+              force_zero_scaling = true;
+            };
+            misc = {
+              # disable redundant renders
+              disable_autoreload = false;
+              disable_splash_rendering = true;
+              disable_hyprland_logo = true;
+              enable_swallow = true;
+              animate_manual_resizes = true;
+              animate_mouse_windowdragging = true;
+
+              vrr = 2; # misc:vrr -> Adaptive sync of your monitor. 0 (off), 1 (on), 2 (fullscreen only). Default 0 to avoid white flashes on select hardware.
+              vfr = true; # misc:no_vfr -> misc:vfr. bool, heavily recommended to leave at default on. Saves on CPU usage.
+
+              # dpms
+              mouse_move_enables_dpms = true; # enable dpms on mouse/touchpad action
+              key_press_enables_dpms = true; # enable dpms on keyboard action
+              # disable_autoreload = true; # autoreload is unnecessary on nixos, because the config is readonly anyway
+              # Unfullscreen when opening something
+              new_window_takes_over_fullscreen = 2;
+            };
+            # layerrule = [
+            #   "blur,waybar"
+            #   "ignorezero,waybar"
+            # ];
+            dwindle = {
+              no_gaps_when_only = false;
+              pseudotile = 0; # enable pseudotiling on dwindle
+              special_scale_factor = 0.9;
+              split_width_multiplier = 1.0;
+              use_active_for_splits = true;
+              force_split = 0;
+              preserve_split = true;
+              default_split_ratio = 1.0;
+            };
+            master = {
+              new_is_master = true;
+              orientation = "right";
+              special_scale_factor = 0.9;
+              no_gaps_when_only = false;
+            };
           };
-          misc = {
-            # disable redundant renders
-            disable_autoreload = false;
-            disable_splash_rendering = true;
-            disable_hyprland_logo = true;
-            enable_swallow = true;
-            animate_manual_resizes = true;
-            animate_mouse_windowdragging = true;
+          extraConfig = ''
+            ###############################
+            ### Auto Start Applications ###
+            ###############################
 
-            vrr = 2; # misc:vrr -> Adaptive sync of your monitor. 0 (off), 1 (on), 2 (fullscreen only). Default 0 to avoid white flashes on select hardware.
-            vfr = true; # misc:no_vfr -> misc:vfr. bool, heavily recommended to leave at default on. Saves on CPU usage.
+            #exec-once = dunst
+            #exec-once = waybar
+            #exec-once = hyprctl setcursor Bibata-Modern-Ice 24
+            #exec-once = swww query || swww init
 
-            # dpms
-            mouse_move_enables_dpms = true; # enable dpms on mouse/touchpad action
-            key_press_enables_dpms = true; # enable dpms on keyboard action
-            # disable_autoreload = true; # autoreload is unnecessary on nixos, because the config is readonly anyway
-            # Unfullscreen when opening something
-            new_window_takes_over_fullscreen = 2;
-          };
-          # layerrule = [
-          #   "blur,waybar"
-          #   "ignorezero,waybar"
-          # ];
-          dwindle = {
-            no_gaps_when_only = false;
-            pseudotile = 0; # enable pseudotiling on dwindle
-            special_scale_factor = 0.9;
-            split_width_multiplier = 1.0;
-            use_active_for_splits = true;
-            force_split = 0;
-            preserve_split = true;
-            default_split_ratio = 1.0;
-          };
-          master = {
-            new_is_master = true;
-            orientation = "right";
-            special_scale_factor = 0.9;
-            no_gaps_when_only = false;
-          };
-        };
-        extraConfig = ''
-          ###############################
-          ### Auto Start Applications ###
-          ###############################
+            #######################
+            ### Monitor Configs ###
+            #######################
 
-          #exec-once = dunst
-          #exec-once = waybar
-          #exec-once = hyprctl setcursor Bibata-Modern-Ice 24
-          #exec-once = swww query || swww init
+            monitor = eDP-1, 1920x1080@120, 1920x1080, 1
+            monitor = HDMI-A-1, 1920x1080@60, 0x1080, 1
+            # monitor = eDP-1, highres, highrr, auto, 1
+            # monitor = HDMI-A-1, highres, highrr, auto, 1
+            # monitor = eDP-1, highrr, auto, 1
+            # monitor = HDMI-A-1, highrr, auto, 1
 
-          #######################
-          ### Monitor Configs ###
-          #######################
+            ##############################
+            ### Environments Variables ###
+            ##############################
 
-          monitor = eDP-1, 1920x1080@120, 1920x1080, 1
-          monitor = HDMI-A-1, 1920x1080@60, 0x1080, 1
-          # monitor = eDP-1, highres, highrr, auto, 1
-          # monitor = HDMI-A-1, highres, highrr, auto, 1
-          # monitor = eDP-1, highrr, auto, 1
-          # monitor = HDMI-A-1, highrr, auto, 1
+            env = XCURSOR_SIZE,24
+            env = WLR_DRM_NO_ATOMIC,1
+            env = QT_QPA_PLATFORM,wayland
+            env = ozone-platform-hint,auto
+            env = enable-features,UseOzonePlatform
+            env = ozone-platform,wayland
+            # env = GTK_THEME,Adwaita:dark
+            # env = WLR_NO_HARDWARE_CURSORS, 1
+            # env = WLR_RENDERER_ALLOW_SOFTWARE, 1
 
-          ##############################
-          ### Environments Variables ###
-          ##############################
+            #################################
+            ### Keyboard and other inputs ###
+            #################################
 
-          env = XCURSOR_SIZE,24
-          env = WLR_DRM_NO_ATOMIC,1
-          env = QT_QPA_PLATFORM,wayland
-          env = ozone-platform-hint,auto
-          env = enable-features,UseOzonePlatform
-          env = ozone-platform,wayland
-          # env = GTK_THEME,Adwaita:dark
-          # env = WLR_NO_HARDWARE_CURSORS, 1
-          # env = WLR_RENDERER_ALLOW_SOFTWARE, 1
+            input {
+              kb_layout = ${layout}
+              kb_variant = ${variant}
+              kb_model = ${model}
+              kb_options =
+              kb_rules =
 
-          #################################
-          ### Keyboard and other inputs ###
-          #################################
+              follow_mouse = 2 #1
 
-          input {
-            kb_layout = ${layout}
-            kb_variant = ${variant}
-            kb_model = ${model}
-            kb_options =
-            kb_rules =
+              touchpad {
+                disable_while_typing = true
+                natural_scroll = true
+                clickfinger_behavior = true
+                tap-and-drag = true
+              }
 
-            follow_mouse = 2 #1
-
-            touchpad {
-              disable_while_typing = true
-              natural_scroll = true
-              clickfinger_behavior = true
-              tap-and-drag = true
+              accel_profile = adaptive
+              numlock_by_default = true
+              sensitivity = 0.4 # -1.0 - 1.0, 0 means no modification.
             }
 
-            accel_profile = adaptive
-            numlock_by_default = true
-            sensitivity = 0.4 # -1.0 - 1.0, 0 means no modification.
-          }
+            #######################
+            ### General Configs ###
+            #######################
 
-          #######################
-          ### General Configs ###
-          #######################
+            # See https://wiki.hyprland.org/Configuring/Variables/ for more
+            general {
+              gaps_in = 4
+              gaps_out = 8
+              border_size = 2
+              col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
+              col.inactive_border = rgba(595959aa)
 
-          # See https://wiki.hyprland.org/Configuring/Variables/ for more
-          general {
-            gaps_in = 4
-            gaps_out = 8
-            border_size = 2
-            col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
-            col.inactive_border = rgba(595959aa)
+              layout = dwindle
 
-            layout = dwindle
+              # Please see https://wiki.hyprland.org/Configuring/Tearing/ before you turn this on
+              allow_tearing = false
+              cursor_inactive_timeout = 10
+              resize_on_border = true
+            }
 
-            # Please see https://wiki.hyprland.org/Configuring/Tearing/ before you turn this on
-            allow_tearing = false
-            cursor_inactive_timeout = 10
-            resize_on_border = true
-          }
+            ################
+            ### Gestures ###
+            ################
 
-          ################
-          ### Gestures ###
-          ################
+            Gestures {
+              workspace_swipe = true
+              workspace_swipe_fingers = 3
+            }
 
-          Gestures {
-            workspace_swipe = true
-            workspace_swipe_fingers = 3
-          }
+            ###########################
+            ### Decoration Settings ###
+            ###########################
 
-          ###########################
-          ### Decoration Settings ###
-          ###########################
+            # See https://wiki.hyprland.org/Configuring/Variables/ for more
+            # name: "Rounding all Blur"
 
-          # See https://wiki.hyprland.org/Configuring/Variables/ for more
-          # name: "Rounding all Blur"
+            # decoration {
+            #   rounding = 10
+            #   blur {
+            #     enabled = true
+            #     size = 10
+            #     passes = 4
+            #     new_optimizations = on
+            #     ignore_opacity = true
+            #     xray = true
+            #     blurls = waybar
+            #   }
+            #   active_opacity = 0.95
+            #   inactive_opacity = 0.84
+            #   fullscreen_opacity = 0.95
 
-          # decoration {
-          #   rounding = 10
-          #   blur {
-          #     enabled = true
-          #     size = 10
-          #     passes = 4
-          #     new_optimizations = on
-          #     ignore_opacity = true
-          #     xray = true
-          #     blurls = waybar
-          #   }
-          #   active_opacity = 0.95
-          #   inactive_opacity = 0.84
-          #   fullscreen_opacity = 0.95
+            #   drop_shadow = true
+            #   shadow_range = 30
+            #   shadow_render_power = 3
+            #   col.shadow = 0x66000000
+            # }
 
-          #   drop_shadow = true
-          #   shadow_range = 30
-          #   shadow_render_power = 3
-          #   col.shadow = 0x66000000
-          # }
+            # name: "Rounding"
+            # decoration {
+            #     rounding = 10
+            #     blur {
+            #         enabled = true
+            #         size = 6
+            #         passes = 2
+            #         new_optimizations = on
+            #         ignore_opacity = true
+            #         xray = true
+            #         # blurls = waybar
+            #     }
+            #     active_opacity = 1.0
+            #     inactive_opacity = 0.8
+            #     fullscreen_opacity = 1.0
 
-          # name: "Rounding"
-          # decoration {
-          #     rounding = 10
-          #     blur {
-          #         enabled = true
-          #         size = 6
-          #         passes = 2
-          #         new_optimizations = on
-          #         ignore_opacity = true
-          #         xray = true
-          #         # blurls = waybar
-          #     }
-          #     active_opacity = 1.0
-          #     inactive_opacity = 0.8
-          #     fullscreen_opacity = 1.0
+            #     drop_shadow = true
+            #     shadow_range = 30
+            #     shadow_render_power = 3
+            #     col.shadow = 0x66000000
+            # }
 
-          #     drop_shadow = true
-          #     shadow_range = 30
-          #     shadow_render_power = 3
-          #     col.shadow = 0x66000000
-          # }
+            # name: Default
+            # decoration {
+            #     rounding = 10
+            #     blur {
+            #         enabled = true
+            #         size = 4
+            #         passes = 2
+            #         new_optimizations = on
+            #         ignore_opacity = true
+            #         xray = true
+            #         # blurls = waybar
+            #     }
+            #     active_opacity = 1.0
+            #     inactive_opacity = 0.89
+            #     fullscreen_opacity = 1.0
 
-          # name: Default
-          # decoration {
-          #     rounding = 10
-          #     blur {
-          #         enabled = true
-          #         size = 4
-          #         passes = 2
-          #         new_optimizations = on
-          #         ignore_opacity = true
-          #         xray = true
-          #         # blurls = waybar
-          #     }
-          #     active_opacity = 1.0
-          #     inactive_opacity = 0.89
-          #     fullscreen_opacity = 1.0
+            #     drop_shadow = true
+            #     shadow_range = 30
+            #     shadow_render_power = 3
+            #     col.shadow = 0x66000000
+            # }
 
-          #     drop_shadow = true
-          #     shadow_range = 30
-          #     shadow_render_power = 3
-          #     col.shadow = 0x66000000
-          # }
+            # name: "Rounding All Blur No Shadows"
+            # decoration {
+            #     rounding = 10
+            #     blur {
+            #         enabled = true
+            #         size = 12
+            #         passes = 4
+            #         new_optimizations = on
+            #         ignore_opacity = true
+            #         xray = true
+            #         blurls = waybar
+            #     }
+            #     active_opacity = 0.9
+            #     inactive_opacity = 0.6
+            #     fullscreen_opacity = 0.9
 
-          # name: "Rounding All Blur No Shadows"
-          # decoration {
-          #     rounding = 10
-          #     blur {
-          #         enabled = true
-          #         size = 12
-          #         passes = 4
-          #         new_optimizations = on
-          #         ignore_opacity = true
-          #         xray = true
-          #         blurls = waybar
-          #     }
-          #     active_opacity = 0.9
-          #     inactive_opacity = 0.6
-          #     fullscreen_opacity = 0.9
+            #     drop_shadow = false
+            #     shadow_range = 30
+            #     shadow_render_power = 3
+            #     col.shadow = 0x66000000
+            # }
 
-          #     drop_shadow = false
-          #     shadow_range = 30
-          #     shadow_render_power = 3
-          #     col.shadow = 0x66000000
-          # }
+            # name: "Rounding More Blur"
+            decoration {
+                rounding = 10
+                blur {
+                    enabled = true
+                    size = 12
+                    passes = 6
+                    new_optimizations = on
+                    ignore_opacity = true
+                    xray = true
+                    # blurls = waybar
+                }
+                active_opacity = 0.97
+                inactive_opacity = 0.86
+                fullscreen_opacity = 0.95
 
-          # name: "Rounding More Blur"
-          decoration {
-              rounding = 10
-              blur {
-                  enabled = true
-                  size = 12
-                  passes = 6
-                  new_optimizations = on
-                  ignore_opacity = true
-                  xray = true
-                  # blurls = waybar
-              }
-              active_opacity = 0.97
-              inactive_opacity = 0.86
-              fullscreen_opacity = 0.95
+                drop_shadow = true
+                shadow_range = 30
+                shadow_render_power = 3
+                col.shadow = 0x66000000
+            }
 
-              drop_shadow = true
-              shadow_range = 30
-              shadow_render_power = 3
-              col.shadow = 0x66000000
-          }
+            ################
+            ### XWayland ###
+            ################
 
-          ################
-          ### XWayland ###
-          ################
+            # Add your additional Hyprland configurations here
+            #
+            # This is an additional key binding
+            # bind = $mainMod CTRL, up, workspace, empty
+            #
+            # Example for xwayland
+            # xwayland {
+            #   force_zero_scaling = true
+            # }
 
-          # Add your additional Hyprland configurations here
-          #
-          # This is an additional key binding
-          # bind = $mainMod CTRL, up, workspace, empty
-          #
-          # Example for xwayland
-          # xwayland {
-          #   force_zero_scaling = true
-          # }
+            ###############################
+            ### Load Keybindings config ###
+            ###############################
 
-          ###############################
-          ### Load Keybindings config ###
-          ###############################
+            source = ~/.config/hypr/keybindings.conf
 
-          source = ~/.config/hypr/keybindings.conf
+            ################################################
+            ### Passthrough SUPER KEY to Virtual Machine ###
+            ################################################
 
-          ################################################
-          ### Passthrough SUPER KEY to Virtual Machine ###
-          ################################################
+            #bind = $mainMod, P, submap, passthru
+            #submap = passthru
+            #bind = SUPER, Escape, submap, reset
+            #submap = reset
 
-          #bind = $mainMod, P, submap, passthru
-          #submap = passthru
-          #bind = SUPER, Escape, submap, reset
-          #submap = reset
+            ####################
+            ### Window rules ###
+            ####################
 
-          ####################
-          ### Window rules ###
-          ####################
+            windowrule = tile,^(Firefox)$
+            windowrule = tile,^(Brave-browser)$
+            windowrule = tile,^(Chromium)$
+            windowrule = float,^(pavucontrol)$
+            windowrule = float,^(blueman-manager)$
+            windowrule = float,title:^(Transmission)$
+            windowrule = float,title:^(Volume Control)$
+            windowrule = float,title:^(Firefox — Sharing Indicator)$
+            windowrule = float,audacious
+            windowrule = pin,rofi
+            windowrule = float,rofi
+            windowrule = move 0 0,title:^(Firefox — Sharing Indicator)$
+            windowrule = size 700 450,title:^(Volume Control)$
+            windowrule = move 40 55%,title:^(Volume Control)$
+            windowrulev2 = float, title:^(Picture-in-Picture)$
+            windowrulev2 = opacity 1.0 override 1.0 override, title:^(Picture-in-Picture)$
+            # windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*YouTube.*)$
+            windowrulev2 = pin, title:^(Picture-in-Picture)$
+            windowrule = float,imv
+            windowrule = center,imv
+            windowrule = size 1200 725,imv
+            windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*imv.*)$
+            windowrule = float,mpv
+            windowrule = center,mpv
+            windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*mpv.*)$
+            windowrule = size 1200 725,mpv
+            windowrulev2 = idleinhibit focus, class:^(mpv)$
+            windowrulev2 = idleinhibit fullscreen, class:^(firefox)$
+            windowrulev2 = float,class:^(pavucontrol)$
+            windowrulev2 = float,class:^(SoundWireServer)$
+            windowrulev2 = float,class:^(file_progress)$
+            windowrulev2 = float,class:^(confirm)$
+            windowrulev2 = float,class:^(dialog)$
+            windowrulev2 = float,class:^(download)$
+            windowrulev2 = float,class:^(notification)$
+            windowrulev2 = float,class:^(error)$
+            windowrulev2 = float,class:^(confirmreset)$
+            windowrulev2 = float,title:^(Open File)$
+            windowrulev2 = float,title:^(branchdialog)$
+            windowrulev2 = float,title:^(Confirm to replace files)$
+            windowrulev2 = float,title:^(File Operation Progress)$
+            windowrule = float,title:^(float_foot)$
+            windowrule = center,title:^(float_foot)$
+            windowrule = size 950 600,title:^(float_foot)$
 
-          windowrule = tile,^(Firefox)$
-          windowrule = tile,^(Brave-browser)$
-          windowrule = tile,^(Chromium)$
-          windowrule = float,^(pavucontrol)$
-          windowrule = float,^(blueman-manager)$
-          windowrule = float,title:^(Transmission)$
-          windowrule = float,title:^(Volume Control)$
-          windowrule = float,title:^(Firefox — Sharing Indicator)$
-          windowrule = float,audacious
-          windowrule = pin,rofi
-          windowrule = float,rofi
-          windowrule = move 0 0,title:^(Firefox — Sharing Indicator)$
-          windowrule = size 700 450,title:^(Volume Control)$
-          windowrule = move 40 55%,title:^(Volume Control)$
-          windowrulev2 = float, title:^(Picture-in-Picture)$
-          windowrulev2 = opacity 1.0 override 1.0 override, title:^(Picture-in-Picture)$
-          # windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*YouTube.*)$
-          windowrulev2 = pin, title:^(Picture-in-Picture)$
-          windowrule = float,imv
-          windowrule = center,imv
-          windowrule = size 1200 725,imv
-          windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*imv.*)$
-          windowrule = float,mpv
-          windowrule = center,mpv
-          windowrulev2 = opacity 1.0 override 1.0 override, title:^(.*mpv.*)$
-          windowrule = size 1200 725,mpv
-          windowrulev2 = idleinhibit focus, class:^(mpv)$
-          windowrulev2 = idleinhibit fullscreen, class:^(firefox)$
-          windowrulev2 = float,class:^(pavucontrol)$
-          windowrulev2 = float,class:^(SoundWireServer)$
-          windowrulev2 = float,class:^(file_progress)$
-          windowrulev2 = float,class:^(confirm)$
-          windowrulev2 = float,class:^(dialog)$
-          windowrulev2 = float,class:^(download)$
-          windowrulev2 = float,class:^(notification)$
-          windowrulev2 = float,class:^(error)$
-          windowrulev2 = float,class:^(confirmreset)$
-          windowrulev2 = float,title:^(Open File)$
-          windowrulev2 = float,title:^(branchdialog)$
-          windowrulev2 = float,title:^(Confirm to replace files)$
-          windowrulev2 = float,title:^(File Operation Progress)$
-          windowrule = float,title:^(float_foot)$
-          windowrule = center,title:^(float_foot)$
-          windowrule = size 950 600,title:^(float_foot)$
+            windowrulev2 = float,class:(dotfiles-floating)
+            windowrulev2 = nomaximizerequest, class:.* # You'll probably like this.
+            windowrulev2 = fakefullscreen, class:^(code-url-handler)$
 
-          windowrulev2 = float,class:(dotfiles-floating)
-          windowrulev2 = nomaximizerequest, class:.* # You'll probably like this.
-          windowrulev2 = fakefullscreen, class:^(code-url-handler)$
+            ####################
+            ### Misc Options ###
+            ####################
 
-          ####################
-          ### Misc Options ###
-          ####################
+            Misc {
+            #   disable_hyprland_logo = false
+            #   disable_splash_rendering = false
+            #   animate_manual_resizes = true
+            #   animate_mouse_windowdragging = true
+            default_floating_border pixel 3
+            }
 
-          Misc {
-          #   disable_hyprland_logo = false
-          #   disable_splash_rendering = false
-          #   animate_manual_resizes = true
-          #   animate_mouse_windowdragging = true
-          default_floating_border pixel 3
-          }
+            ##################
+            ### Animations ###
+            ##################
 
-          ##################
-          ### Animations ###
-          ##################
+            animations {
+              enabled = true
 
-          animations {
-            enabled = true
+              bezier = fluent_decel, 0, 0.2, 0.4, 1
+              bezier = easeOutCirc, 0, 0.55, 0.45, 1
+              bezier = easeOutCubic, 0.33, 1, 0.68, 1
+              bezier = easeinoutsine, 0.37, 0, 0.63, 1
 
-            bezier = fluent_decel, 0, 0.2, 0.4, 1
-            bezier = easeOutCirc, 0, 0.55, 0.45, 1
-            bezier = easeOutCubic, 0.33, 1, 0.68, 1
-            bezier = easeinoutsine, 0.37, 0, 0.63, 1
+              # Windows
+              animation = windowsIn, 1, 3, easeOutCubic, popin 30% # window open
+              animation = windowsOut, 1, 3, fluent_decel, popin 70% # window close.
+              animation = windowsMove, 1, 2, easeinoutsine, slide # everything in between, moving, dragging, resizing.
 
-            # Windows
-            animation = windowsIn, 1, 3, easeOutCubic, popin 30% # window open
-            animation = windowsOut, 1, 3, fluent_decel, popin 70% # window close.
-            animation = windowsMove, 1, 2, easeinoutsine, slide # everything in between, moving, dragging, resizing.
+              # Fade
+              animation = fadeIn, 1, 3, easeOutCubic  # fade in (open) -> layers and windows
+              animation = fadeOut, 1, 2, easeOutCubic # fade out (close) -> layers and windows
+              animation = fadeSwitch, 0, 1, easeOutCirc # fade on changing activewindow and its opacity
+              animation = fadeShadow, 1, 10, easeOutCirc # fade on changing activewindow for shadows
+              animation = fadeDim, 1, 4, fluent_decel # the easing of the dimming of inactive windows
+              animation = border, 1, 2.7, easeOutCirc # for animating the border's color switch speed
+              animation = borderangle, 1, 30, fluent_decel, once # for animating the border's gradient angle - styles: once (default), loop
+              animation = workspaces, 1, 4, easeOutCubic, fade # styles: slide, slidevert, fade, slidefade, slidefadevert
 
-            # Fade
-            animation = fadeIn, 1, 3, easeOutCubic  # fade in (open) -> layers and windows
-            animation = fadeOut, 1, 2, easeOutCubic # fade out (close) -> layers and windows
-            animation = fadeSwitch, 0, 1, easeOutCirc # fade on changing activewindow and its opacity
-            animation = fadeShadow, 1, 10, easeOutCirc # fade on changing activewindow for shadows
-            animation = fadeDim, 1, 4, fluent_decel # the easing of the dimming of inactive windows
-            animation = border, 1, 2.7, easeOutCirc # for animating the border's color switch speed
-            animation = borderangle, 1, 30, fluent_decel, once # for animating the border's gradient angle - styles: once (default), loop
-            animation = workspaces, 1, 4, easeOutCubic, fade # styles: slide, slidevert, fade, slidefade, slidefadevert
+              # other one
+              # bezier = wind, 0.05, 0.9, 0.1, 1.05
+              # bezier = winIn, 0.1, 1.1, 0.1, 1.1
+              # bezier = winOut, 0.3, -0.3, 0, 1
+              # bezier = liner, 1, 1, 1, 1
+              # animation = windows, 1, 6, wind, slide
+              # animation = windowsIn, 1, 6, winIn, slide
+              # animation = windowsOut, 1, 5, winOut, slide
+              # animation = windowsMove, 1, 5, wind, slide
+              # animation = border, 1, 1, liner
+              # animation = borderangle, 1, 30, liner, loop
+              # animation = fade, 1, 10, default
+              # animation = workspaces, 1, 5, wind
 
-            # other one
-            # bezier = wind, 0.05, 0.9, 0.1, 1.05
-            # bezier = winIn, 0.1, 1.1, 0.1, 1.1
-            # bezier = winOut, 0.3, -0.3, 0, 1
-            # bezier = liner, 1, 1, 1, 1
-            # animation = windows, 1, 6, wind, slide
-            # animation = windowsIn, 1, 6, winIn, slide
-            # animation = windowsOut, 1, 5, winOut, slide
-            # animation = windowsMove, 1, 5, wind, slide
-            # animation = border, 1, 1, liner
-            # animation = borderangle, 1, 30, liner, loop
-            # animation = fade, 1, 10, default
-            # animation = workspaces, 1, 5, wind
+              # default
+              # bezier=pace,0.46, 1, 0.29, 0.99
+              # bezier=overshot,0.13,0.99,0.29,1.1
+              # bezier = md3_decel, 0.05, 0.7, 0.1, 1
+              # animation=windowsIn,1,6,md3_decel,slide
+              # animation=windowsOut,1,6,md3_decel,slide
+              # animation=windowsMove,1,6,md3_decel,slide
+              # animation=fade,1,10,md3_decel
+              # animation=workspaces,1,7,md3_decel,slide
+              # animation=specialWorkspace,1,8,md3_decel,slide
+              # animation=border,1,10,md3_decel
 
-            # default
-            # bezier=pace,0.46, 1, 0.29, 0.99
-            # bezier=overshot,0.13,0.99,0.29,1.1
-            # bezier = md3_decel, 0.05, 0.7, 0.1, 1
-            # animation=windowsIn,1,6,md3_decel,slide
-            # animation=windowsOut,1,6,md3_decel,slide
-            # animation=windowsMove,1,6,md3_decel,slide
-            # animation=fade,1,10,md3_decel
-            # animation=workspaces,1,7,md3_decel,slide
-            # animation=specialWorkspace,1,8,md3_decel,slide
-            # animation=border,1,10,md3_decel
-
-            # testing
-            # bezier = overshot, 0.05, 0.9, 0.1, 1.05
-            # bezier = smoothOut, 0.5, 0, 0.99, 0.99
-            # bezier = smoothIn, 0.5, -0.5, 0.68, 1.5
-            # animation = windows, 1, 5, overshot, slide
-            # animation = windowsOut, 1, 3, smoothOut
-            # animation = windowsIn, 1, 3, smoothOut
-            # animation = windowsMove, 1, 4, smoothIn, slide
-            # animation = border, 1, 5, default
-            # animation = fade, 1, 5, smoothIn
-            # animation = fadeDim, 1, 5, smoothIn
-            # animation = workspaces, 1, 6, default
-          }
-        '';
-        # settings = {
-        #   bind = [
-        #     # Waybar toggle
-        #   ];
-        # };
-        settings = {
-          # decoration = {
-          #   shadow_offset = "0 5";
-          #   "col.shadow" = "rgba(00000099)";
+              # testing
+              # bezier = overshot, 0.05, 0.9, 0.1, 1.05
+              # bezier = smoothOut, 0.5, 0, 0.99, 0.99
+              # bezier = smoothIn, 0.5, -0.5, 0.68, 1.5
+              # animation = windows, 1, 5, overshot, slide
+              # animation = windowsOut, 1, 3, smoothOut
+              # animation = windowsIn, 1, 3, smoothOut
+              # animation = windowsMove, 1, 4, smoothIn, slide
+              # animation = border, 1, 5, default
+              # animation = fade, 1, 5, smoothIn
+              # animation = fadeDim, 1, 5, smoothIn
+              # animation = workspaces, 1, 6, default
+            }
+          '';
+          # settings = {
+          #   bind = [
+          #     # Waybar toggle
+          #   ];
           # };
-          #---------------#
-          # resize window #
-          #---------------#
-          bind = [
-            "ALT, R, submap, resize"
-            ",escape,submap,reset"
-            "CTRL SHIFT, left, resizeactive,-15 0"
-            "CTRL SHIFT, right, resizeactive,15 0"
-            "CTRL SHIFT, up, resizeactive,0 -15"
-            "CTRL SHIFT, down, resizeactive,0 15"
-            "CTRL SHIFT, l, resizeactive, 15 0"
-            "CTRL SHIFT, h, resizeactive,-15 0"
-            "CTRL SHIFT, k, resizeactive, 0 -15"
-            "CTRL SHIFT, j, resizeactive, 0 15"
-          ];
-          submap = [ "resize" "reset" ];
-          binde = [
-            # ",right,resizeactive,15 0"
-            # ",left,resizeactive,-15 0"
-            # ",up,resizeactive,0 -15"
-            # ",down,resizeactive,0 15"
-            # ",l,resizeactive,15 0"
-            # ",h,resizeactive,-15 0"
-            # ",k,resizeactive,0 -15"
-            # ",j,resizeactive,0 15"
-          ];
+          settings = {
+            # decoration = {
+            #   shadow_offset = "0 5";
+            #   "col.shadow" = "rgba(00000099)";
+            # };
+            #---------------#
+            # resize window #
+            #---------------#
+            bind = [
+              "ALT, R, submap, resize"
+              ",escape,submap,reset"
+              "CTRL SHIFT, left, resizeactive,-15 0"
+              "CTRL SHIFT, right, resizeactive,15 0"
+              "CTRL SHIFT, up, resizeactive,0 -15"
+              "CTRL SHIFT, down, resizeactive,0 15"
+              "CTRL SHIFT, l, resizeactive, 15 0"
+              "CTRL SHIFT, h, resizeactive,-15 0"
+              "CTRL SHIFT, k, resizeactive, 0 -15"
+              "CTRL SHIFT, j, resizeactive, 0 15"
+            ];
+            submap = [ "resize" "reset" ];
+            binde = [
+              # ",right,resizeactive,15 0"
+              # ",left,resizeactive,-15 0"
+              # ",up,resizeactive,0 -15"
+              # ",down,resizeactive,0 15"
+              # ",l,resizeactive,15 0"
+              # ",h,resizeactive,-15 0"
+              # ",k,resizeactive,0 -15"
+              # ",j,resizeactive,0 15"
+            ];
+          };
         };
       };
     };
-  };
-  # services.blueman-applet.enable = true;
-  home = {
-    packages = with pkgs; [
-      cantarell-fonts
-      xarchiver # compressed files using thunar
-      # figlet # Program for making large letters out of ordinary text
-      slurp # Select a region in a Wayland compositor
-      swww # wallpaper daemon for wayland, controlled at runtime
-      grim # Grab images from a Wayland compositor
-      swappy # screenshot resizer
-      swayidle # Idle management daemon for Wayland
-      blueman
-      font-search
-      wdisplays
-      polkit_gnome
-      # papirus-icon-theme
-      cliphist # Wayland clipboard history
-      qalculate-gtk
-      brillo
-      random-wall
-      # (if hostname != "nitro" then kbdlight else "")
-      mpvpaper
-      # (nixGL pkgs.mpvpaper) # Live wallpaper
-      playerctl
-      # imv # simple image viewer
-      wlogout # Wayland based logout menu
-      wlr-randr # An xrandr clone for wlroots compositors
-      wl-clip-persist
-      wl-clipboard
-      imagemagick_light
-      color-picker
-    ] ++ (with pkgs.xfce; [
-      xfce4-power-manager
-      exo #thunar "open terminal here"
-      thunar-archive-plugin
-      (thunar.override {
-        thunarPlugins = with pkgs.xfce; [
-          thunar-archive-plugin
-          thunar-volman
-          thunar-media-tags-plugin
-        ];
-      })
-      mousepad
-      tumbler
-    ] ++ (with pkgs.unstable;[
-      # papirus-icon-theme
-    ]));
-    file = {
-      ".config/hypr/keybindings.conf" = {
-        text = ''
-          ########################
-          ### Keybindings Keys ###
-          ########################
+    # services.blueman-applet.enable = true;
+    home = {
+      packages = with pkgs; [
+        cantarell-fonts
+        xarchiver # compressed files using thunar
+        # figlet # Program for making large letters out of ordinary text
+        slurp # Select a region in a Wayland compositor
+        swww # wallpaper daemon for wayland, controlled at runtime
+        grim # Grab images from a Wayland compositor
+        swappy # screenshot resizer
+        swayidle # Idle management daemon for Wayland
+        # blueman
+        font-search
+        wdisplays
+        polkit_gnome
+        # papirus-icon-theme
+        cliphist # Wayland clipboard history
+        qalculate-gtk
+        brillo
+        random-wall
+        # (if hostname != "nitro" then kbdlight else "")
+        mpvpaper
+        # (nixGL pkgs.mpvpaper) # Live wallpaper
+        playerctl
+        # imv # simple image viewer
+        wlogout # Wayland based logout menu
+        wlr-randr # An xrandr clone for wlroots compositors
+        wl-clip-persist
+        wl-clipboard
+        imagemagick_light
+        color-picker
+      ] ++ (with pkgs.xfce; [
+        xfce4-power-manager
+        exo #thunar "open terminal here"
+        thunar-archive-plugin
+        (thunar.override {
+          thunarPlugins = with pkgs.xfce; [
+            thunar-archive-plugin
+            thunar-volman
+            thunar-media-tags-plugin
+          ];
+        })
+        mousepad
+        tumbler
+      ] ++ (with pkgs.unstable;[
+        # papirus-icon-theme
+      ]));
+      file = {
+        ".config/hypr/keybindings.conf" = {
+          text = ''
+            ########################
+            ### Keybindings Keys ###
+            ########################
 
-          # Super Key
-          $mainMod = SUPER
-          $otherMod = ALT
+            # Super Key
+            $mainMod = SUPER
+            $otherMod = ALT
 
-          #-------------------------------------------#
-          # switch between current and last workspace #
-          #-------------------------------------------#
+            #-------------------------------------------#
+            # switch between current and last workspace #
+            #-------------------------------------------#
 
-          # Applications
-          # bind = $otherMod, RETURN, exec, alacritty
-          bind = $otherMod, RETURN, exec, foot
-          bind = $mainMod, B, exec, firefox
+            # Applications
+            # bind = $otherMod, RETURN, exec, alacritty
+            bind = $otherMod, RETURN, exec, foot
+            bind = $mainMod, B, exec, firefox
 
-          # Windows
-          bind = $otherMod, Q, killactive
-          bind = $mainMod, F, fullscreen
-          bind = $mainMod, E, exec, thunar
-          bind = $mainMod, T, togglefloating
+            # Windows
+            bind = $otherMod, Q, killactive
+            bind = $mainMod, F, fullscreen
+            bind = $mainMod, E, exec, thunar
+            bind = $mainMod, T, togglefloating
 
-          bind = $mainMod SHIFT, T, exec, hyprctl dispatch workspaceopt allfloat # Float ALL
-          bind = $otherMod, P, pseudo
-          bind = $mainMod, J, togglesplit
-          bind = $mainMod, left, movefocus, l
-          bind = $mainMod, right, movefocus, r
-          bind = $mainMod, up, movefocus, u
-          bind = $mainMod, down, movefocus, d
-          bindm = $mainMod, mouse:272, movewindow
-          bindm = $mainMod, mouse:273, resizewindow
-          bind = $mainMod SHIFT, right, resizeactive, 100 0
-          bind = $mainMod SHIFT, left, resizeactive, -100 0
-          bind = $mainMod SHIFT, up, resizeactive, 0 -100
-          bind = $mainMod SHIFT, down, resizeactive, 0 100
+            bind = $mainMod SHIFT, T, exec, hyprctl dispatch workspaceopt allfloat # Float ALL
+            bind = $otherMod, P, pseudo
+            bind = $mainMod, J, togglesplit
+            bind = $mainMod, left, movefocus, l
+            bind = $mainMod, right, movefocus, r
+            bind = $mainMod, up, movefocus, u
+            bind = $mainMod, down, movefocus, d
+            bindm = $mainMod, mouse:272, movewindow
+            bindm = $mainMod, mouse:273, resizewindow
+            bind = $mainMod SHIFT, right, resizeactive, 100 0
+            bind = $mainMod SHIFT, left, resizeactive, -100 0
+            bind = $mainMod SHIFT, up, resizeactive, 0 -100
+            bind = $mainMod SHIFT, down, resizeactive, 0 100
 
-          # Actionsq
-          bind = $mainMod, PRINT, exec, ${screenshot}/bin/screenshot
-          bind = $mainMod CTRL, Q, exec, wlogout
-          bind=$mainMod SHIFT, X, exec, ${myswaylock}/bin/myswaylock
-          bind = $mainMod SHIFT, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh
-          bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
-          bind = $mainMod, SPACE, exec, rofi -show drun
-          bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
-          bind= $mainMod SHIFT, B, exec, killall .waybar-wrapped && waybar & disown
-          bind = $mainMod SHIFT, R, exec, hyprctl reload
-          bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
-          bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
-          bind = $mainMod, V, exec, ~/dotfiles/scripts/cliphist.sh
-          bind = $mainMod CTRL, T, exec, $HOME/.config/waybar/scripts/themeswitcher.sh
-          bind = $mainMod CTRL, S, exec, foot --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
+            # Actionsq
+            bind = $mainMod, PRINT, exec, ${screenshot}/bin/screenshot
+            bind = $mainMod CTRL, Q, exec, wlogout
+            bind=$mainMod SHIFT, X, exec, ${myswaylock}/bin/myswaylock
+            bind = $mainMod SHIFT, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh
+            bind = $mainMod CTRL, W, exec, $HOME/.config/hypr/scripts/wallpaper.sh select
+            bind = $mainMod, SPACE, exec, rofi -show drun
+            bind = $mainMod CTRL, H, exec, $HOME/.config/hypr/scripts/keybindings.sh
+            bind= $mainMod SHIFT, B, exec, killall .waybar-wrapped && waybar & disown
+            bind = $mainMod SHIFT, R, exec, hyprctl reload
+            bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
+            bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
+            bind = $mainMod, V, exec, ~/dotfiles/scripts/cliphist.sh
+            bind = $mainMod CTRL, T, exec, $HOME/.config/waybar/scripts/themeswitcher.sh
+            bind = $mainMod CTRL, S, exec, foot --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
 
 
-          # Workspaces
-          bind = $otherMod, 1, workspace, 1
-          bind = $otherMod, 2, workspace, 2
-          bind = $otherMod, 3, workspace, 3
-          bind = $otherMod, 4, workspace, 4
-          bind = $otherMod, 5, workspace, 5
-          bind = $otherMod, 6, workspace, 6
-          bind = $otherMod, 7, workspace, 7
-          bind = $otherMod, 8, workspace, 8
-          bind = $otherMod, 9, workspace, 9
-          bind = $otherMod, 0, workspace, 10
-          bind = $otherMod SHIFT, 1, movetoworkspace, 1
-          bind = $otherMod SHIFT, 2, movetoworkspace, 2
-          bind = $otherMod SHIFT, 3, movetoworkspace, 3
-          bind = $otherMod SHIFT, 4, movetoworkspace, 4
-          bind = $otherMod SHIFT, 5, movetoworkspace, 5
-          bind = $otherMod SHIFT, 6, movetoworkspace, 6
-          bind = $otherMod SHIFT, 7, movetoworkspace, 7
-          bind = $otherMod SHIFT, 8, movetoworkspace, 8
-          bind = $otherMod SHIFT, 9, movetoworkspace, 9
-          bind = $otherMod SHIFT, 0, movetoworkspace, 10
-          bind = $otherMod, mouse_down, workspace, e+1
-          bind = $otherMod, mouse_up, workspace, e-1
-          bind = $otherMod CTRL, down, workspace, empty
+            # Workspaces
+            bind = $otherMod, 1, workspace, 1
+            bind = $otherMod, 2, workspace, 2
+            bind = $otherMod, 3, workspace, 3
+            bind = $otherMod, 4, workspace, 4
+            bind = $otherMod, 5, workspace, 5
+            bind = $otherMod, 6, workspace, 6
+            bind = $otherMod, 7, workspace, 7
+            bind = $otherMod, 8, workspace, 8
+            bind = $otherMod, 9, workspace, 9
+            bind = $otherMod, 0, workspace, 10
+            bind = $otherMod SHIFT, 1, movetoworkspace, 1
+            bind = $otherMod SHIFT, 2, movetoworkspace, 2
+            bind = $otherMod SHIFT, 3, movetoworkspace, 3
+            bind = $otherMod SHIFT, 4, movetoworkspace, 4
+            bind = $otherMod SHIFT, 5, movetoworkspace, 5
+            bind = $otherMod SHIFT, 6, movetoworkspace, 6
+            bind = $otherMod SHIFT, 7, movetoworkspace, 7
+            bind = $otherMod SHIFT, 8, movetoworkspace, 8
+            bind = $otherMod SHIFT, 9, movetoworkspace, 9
+            bind = $otherMod SHIFT, 0, movetoworkspace, 10
+            bind = $otherMod, mouse_down, workspace, e+1
+            bind = $otherMod, mouse_up, workspace, e-1
+            bind = $otherMod CTRL, down, workspace, empty
 
-          # Fn keys
-          # bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
-          # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
-          bind = , XF86MonBrightnessUp, exec, brillo -A 5
-          bind = , XF86MonBrightnessDown, exec, brillo -U 5
-          bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
-          bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
-          bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-          bind = , XF86AudioPlay, exec, playerctl play-pause
-          bind = , XF86AudioPause, exec, playerctl pause
-          bind = , XF86AudioNext, exec, playerctl next
-          bind = , XF86AudioPrev, exec, playerctl previous
-          bind = , XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle
-          bind = , XF86Calculator, exec, qalculate-gtk
-          bind = , XF86Lock, exec, swaylock
-          bind = , XF86Tools, exec, alacritty --class dotfiles-floating -e ~/dotfiles/hypr/settings/settings.sh
-        '';
-      };
-      ".config/hypr/scripts" = {
-        source = ./scripts;
-        recursive = true;
-        executable = true;
-      };
-      ".config/rofi/scripts/wallpaper.sh" = {
-        source = ./rofi/wallpaper.sh;
-        # recursive = true;
-        executable = true;
-      };
-      #######################
-      ### Pywal templates ###
-      #######################
-      ".config/wal/templates/colors-hyprland.conf" = {
-        text = ''
-          $background = rgb({background.strip})
-          $foreground = rgb({foreground.strip})
-          $color0 = rgb({color0.strip})
-          $color1 = rgb({color1.strip})
-          $color2 = rgb({color2.strip})
-          $color3 = rgb({color3.strip})
-          $color4 = rgb({color4.strip})
-          $color5 = rgb({color5.strip})
-          $color6 = rgb({color6.strip})
-          $color7 = rgb({color7.strip})
-          $color8 = rgb({color8.strip})
-          $color9 = rgb({color9.strip})
-          $color10 = rgb({color10.strip})
-          $color11 = rgb({color11.strip})
-          $color12 = rgb({color12.strip})
-          $color13 = rgb({color13.strip})
-          $color14 = rgb({color14.strip})
-          $color15 = rgb({color15.strip})
-        '';
-      };
-      ".config/wal/templates/colors-rofi-pywal.rasi" = {
-        text = ''
-          * {{
-              background: rgba(0,0,1,0.5);
-              foreground: #FFFFFF;
-              color0:     {color0};
-              color1:     {color1};
-              color2:     {color2};
-              color3:     {color3};
-              color4:     {color4};
-              color5:     {color5};
-              color6:     {color6};
-              color7:     {color7};
-              color8:     {color8};
-              color9:     {color9};
-              color10:    {color10};
-              color11:    {color11};
-              color12:    {color12};
-              color13:    {color13};
-              color14:    {color14};
-              color15:    {color15};
-          }}
-        '';
-      };
-      ".config/wal/templates/colors-waybar.css" = {
-        text = ''
-          @define-color foreground {foreground};
-          @define-color background {background};
-          @define-color cursor {cursor};
+            # Fn keys
+            # bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
+            # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
+            bind = , XF86MonBrightnessUp, exec, brillo -A 5
+            bind = , XF86MonBrightnessDown, exec, brillo -U 5
+            bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
+            bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
+            bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+            bind = , XF86AudioPlay, exec, playerctl play-pause
+            bind = , XF86AudioPause, exec, playerctl pause
+            bind = , XF86AudioNext, exec, playerctl next
+            bind = , XF86AudioPrev, exec, playerctl previous
+            bind = , XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle
+            bind = , XF86Calculator, exec, qalculate-gtk
+            bind = , XF86Lock, exec, swaylock
+            bind = , XF86Tools, exec, alacritty --class dotfiles-floating -e ~/dotfiles/hypr/settings/settings.sh
+          '';
+        };
+        ".config/hypr/scripts" = {
+          source = ./scripts;
+          recursive = true;
+          executable = true;
+        };
+        ".config/rofi/scripts/wallpaper.sh" = {
+          source = ./rofi/wallpaper.sh;
+          # recursive = true;
+          executable = true;
+        };
+        #######################
+        ### Pywal templates ###
+        #######################
+        ".config/wal/templates/colors-hyprland.conf" = {
+          text = ''
+            $background = rgb({background.strip})
+            $foreground = rgb({foreground.strip})
+            $color0 = rgb({color0.strip})
+            $color1 = rgb({color1.strip})
+            $color2 = rgb({color2.strip})
+            $color3 = rgb({color3.strip})
+            $color4 = rgb({color4.strip})
+            $color5 = rgb({color5.strip})
+            $color6 = rgb({color6.strip})
+            $color7 = rgb({color7.strip})
+            $color8 = rgb({color8.strip})
+            $color9 = rgb({color9.strip})
+            $color10 = rgb({color10.strip})
+            $color11 = rgb({color11.strip})
+            $color12 = rgb({color12.strip})
+            $color13 = rgb({color13.strip})
+            $color14 = rgb({color14.strip})
+            $color15 = rgb({color15.strip})
+          '';
+        };
+        ".config/wal/templates/colors-rofi-pywal.rasi" = {
+          text = ''
+            * {{
+                background: rgba(0,0,1,0.5);
+                foreground: #FFFFFF;
+                color0:     {color0};
+                color1:     {color1};
+                color2:     {color2};
+                color3:     {color3};
+                color4:     {color4};
+                color5:     {color5};
+                color6:     {color6};
+                color7:     {color7};
+                color8:     {color8};
+                color9:     {color9};
+                color10:    {color10};
+                color11:    {color11};
+                color12:    {color12};
+                color13:    {color13};
+                color14:    {color14};
+                color15:    {color15};
+            }}
+          '';
+        };
+        ".config/wal/templates/colors-waybar.css" = {
+          text = ''
+            @define-color foreground {foreground};
+            @define-color background {background};
+            @define-color cursor {cursor};
 
-          @define-color color0 {color0};
-          @define-color color1 {color1};
-          @define-color color2 {color2};
-          @define-color color3 {color3};
-          @define-color color4 {color4};
-          @define-color color5 {color5};
-          @define-color color6 {color6};
-          @define-color color7 {color7};
-          @define-color color8 {color8};
-          @define-color color9 {color9};
-          @define-color color10 {color10};
-          @define-color color11 {color11};
-          @define-color color12 {color12};
-          @define-color color13 {color13};
-          @define-color color14 {color14};
-          @define-color color15 {color15};
-        '';
-      };
-      ".config/wal/templates/colors-wlogout.css" = {
-        text = ''
-          @define-color foreground {foreground};
-          @define-color background {background};
-          @define-color cursor {cursor};
+            @define-color color0 {color0};
+            @define-color color1 {color1};
+            @define-color color2 {color2};
+            @define-color color3 {color3};
+            @define-color color4 {color4};
+            @define-color color5 {color5};
+            @define-color color6 {color6};
+            @define-color color7 {color7};
+            @define-color color8 {color8};
+            @define-color color9 {color9};
+            @define-color color10 {color10};
+            @define-color color11 {color11};
+            @define-color color12 {color12};
+            @define-color color13 {color13};
+            @define-color color14 {color14};
+            @define-color color15 {color15};
+          '';
+        };
+        ".config/wal/templates/colors-wlogout.css" = {
+          text = ''
+            @define-color foreground {foreground};
+            @define-color background {background};
+            @define-color cursor {cursor};
 
-          @define-color color0 {color0};
-          @define-color color1 {color1};
-          @define-color color2 {color2};
-          @define-color color3 {color3};
-          @define-color color4 {color4};
-          @define-color color5 {color5};
-          @define-color color6 {color6};
-          @define-color color7 {color7};
-          @define-color color8 {color8};
-          @define-color color9 {color9};
-          @define-color color10 {color10};
-          @define-color color11 {color11};
-          @define-color color12 {color12};
-          @define-color color13 {color13};
-          @define-color color14 {color14};
-          @define-color color15 {color15};
-        '';
-      };
-      ".config/swappy/config" = {
-        text = ''
-          [Default]
-          save_dir=$HOME/Pictures/screenshots
-          save_filename_format=screenshot_%d-%m-%Y_%H:%M:%S.png
-          show_panel=false
-          line_size=5
-          text_size=20
-          text_font=sans-serif
-          paint_mode=brush
-          early_exit=false
-          fill_shape=false
-        '';
-      };
-      ".config/Thunar/uca.xml" = {
-        text = ''
-          <?xml version="1.0" encoding="UTF-8"?>
-          <actions>
-            <action>
-              <icon>xterm</icon>
-              <name>Open Terminal Here</name>
-              <unique-id>1612104464586264-1</unique-id>
-              <command>foot</command>
-              <description></description>
-              <patterns>*</patterns>
-              <startup-notify/>
-              <directories/>
-            </action>
-            <action>
-              <icon>code</icon>
-              <name>Open VSCode Here</name>
-              <unique-id>1612104464586265-1</unique-id>
-              <command>code %f</command>
-              <description></description>
-              <patterns>*</patterns>
-              <startup-notify/>
-              <directories/>
-            </action>
-          </actions>
-        '';
-      };
-    };
-  };
-
-  programs = {
-    pywal.enable = true;
-  };
-
-  dconf = {
-    settings = {
-      "org/gnome/desktop/interface" = {
-        icon-theme = "Papirus-Dark";
-        cursor-theme = "Bibata-Modern-Ice";
-        font-name = "Cantarell 11";
-        color-scheme = "prefer-dark";
+            @define-color color0 {color0};
+            @define-color color1 {color1};
+            @define-color color2 {color2};
+            @define-color color3 {color3};
+            @define-color color4 {color4};
+            @define-color color5 {color5};
+            @define-color color6 {color6};
+            @define-color color7 {color7};
+            @define-color color8 {color8};
+            @define-color color9 {color9};
+            @define-color color10 {color10};
+            @define-color color11 {color11};
+            @define-color color12 {color12};
+            @define-color color13 {color13};
+            @define-color color14 {color14};
+            @define-color color15 {color15};
+          '';
+        };
+        ".config/swappy/config" = {
+          text = ''
+            [Default]
+            save_dir=$HOME/Pictures/screenshots
+            save_filename_format=screenshot_%d-%m-%Y_%H:%M:%S.png
+            show_panel=false
+            line_size=5
+            text_size=20
+            text_font=sans-serif
+            paint_mode=brush
+            early_exit=false
+            fill_shape=false
+          '';
+        };
+        ".config/Thunar/uca.xml" = {
+          text = ''
+            <?xml version="1.0" encoding="UTF-8"?>
+            <actions>
+              <action>
+                <icon>xterm</icon>
+                <name>Open Terminal Here</name>
+                <unique-id>1612104464586264-1</unique-id>
+                <command>foot</command>
+                <description></description>
+                <patterns>*</patterns>
+                <startup-notify/>
+                <directories/>
+              </action>
+              <action>
+                <icon>code</icon>
+                <name>Open VSCode Here</name>
+                <unique-id>1612104464586265-1</unique-id>
+                <command>code %f</command>
+                <description></description>
+                <patterns>*</patterns>
+                <startup-notify/>
+                <directories/>
+              </action>
+            </actions>
+          '';
+        };
       };
     };
-  };
 
-  services = {
-    swayosd = {
-      enable = true;
+    programs = {
+      pywal.enable = true;
     };
-  };
 
-  xfconf.settings = {
-    thunar = {
-      "/last-show-hidden" = true;
-      "/misc-date-style" = "THUNAR_DATE_STYLE_ISO";
-      "/misc-middle-click-in-tab" = false;
-      "/misc-single-click" = false;
-      "/misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_NEVER";
-      "/misc-volume-management" = false;
+    dconf = {
+      settings = {
+        "org/gnome/desktop/interface" = {
+          icon-theme = "Papirus-Dark";
+          cursor-theme = "Bibata-Modern-Ice";
+          font-name = "Cantarell 11";
+          color-scheme = "prefer-dark";
+        };
+      };
     };
-    thunar-volman = {
-      "/autobrowse/enabled" = true;
-      "/automount-drives/enabled" = true;
-      "/automount-media/enabled" = true;
-      "/autorun/enabled" = false;
+
+    services = {
+      swayosd = {
+        enable = true;
+      };
+    };
+
+    xfconf.settings = {
+      thunar = {
+        "/last-show-hidden" = true;
+        "/misc-date-style" = "THUNAR_DATE_STYLE_ISO";
+        "/misc-middle-click-in-tab" = false;
+        "/misc-single-click" = false;
+        "/misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_NEVER";
+        "/misc-volume-management" = false;
+      };
+      thunar-volman = {
+        "/autobrowse/enabled" = true;
+        "/automount-drives/enabled" = true;
+        "/automount-media/enabled" = true;
+        "/autorun/enabled" = false;
+      };
     };
   };
 }

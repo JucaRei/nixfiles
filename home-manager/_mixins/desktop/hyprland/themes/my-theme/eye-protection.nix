@@ -47,8 +47,8 @@
       longitude = "-46.652530";
       gamma = "0.9";
       temperature = {
-        day = 6300;
-        night = 4500;
+        day = 6500;
+        night = 4200;
       };
     };
   };

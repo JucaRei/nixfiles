@@ -205,103 +205,105 @@
   #   #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
   # }];
 
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-label/Nixsystem";
-      fsType = "btrfs";
-      options = [
-        "subvol=@"
-        "noatime"
-        "ssd"
-        "compress-force=zstd:3"
-        "space_cache=v2"
-        "commit=120"
-        "discard=async"
-      ];
-    };
+  fileSystems = {
+    "/" =
+      {
+        device = "/dev/disk/by-label/Nixsystem";
+        fsType = "btrfs";
+        options = [
+          "subvol=@"
+          "noatime"
+          "ssd"
+          "compress-force=zstd:3"
+          "space_cache=v2"
+          "commit=120"
+          "discard=async"
+        ];
+      };
 
-  fileSystems."/home" =
-    {
-      device = "/dev/disk/by-label/Nixsystem";
-      fsType = "btrfs";
-      options = [
-        "subvol=@home"
-        "noatime"
-        "ssd"
-        "compress-force=zstd:3"
-        "space_cache=v2"
-        "commit=120"
-        "discard=async"
-      ];
-    };
+    "/home" =
+      {
+        device = "/dev/disk/by-label/Nixsystem";
+        fsType = "btrfs";
+        options = [
+          "subvol=@home"
+          "noatime"
+          "ssd"
+          "compress-force=zstd:3"
+          "space_cache=v2"
+          "commit=120"
+          "discard=async"
+        ];
+      };
 
-  fileSystems."/.snapshots" =
-    {
-      device = "/dev/disk/by-label/Nixsystem";
-      fsType = "btrfs";
-      options = [
-        "subvol=@snapshots"
-        "noatime"
-        "ssd"
-        "compress-force=zstd:15"
-        "space_cache=v2"
-        "commit=120"
-        "discard=async"
-      ];
-    };
+    "/.snapshots" =
+      {
+        device = "/dev/disk/by-label/Nixsystem";
+        fsType = "btrfs";
+        options = [
+          "subvol=@snapshots"
+          "noatime"
+          "ssd"
+          "compress-force=zstd:15"
+          "space_cache=v2"
+          "commit=120"
+          "discard=async"
+        ];
+      };
 
-  fileSystems."/var/log" =
-    {
-      device = "/dev/disk/by-label/Nixsystem";
-      fsType = "btrfs";
-      options = [
-        "subvol=@logs"
-        "noatime"
-        "ssd"
-        "compress-force=zstd:3"
-        "space_cache=v2"
-        "commit=120"
-        "discard=async"
-      ];
-    };
+    "/var/log" =
+      {
+        device = "/dev/disk/by-label/Nixsystem";
+        fsType = "btrfs";
+        options = [
+          "subvol=@logs"
+          "noatime"
+          "ssd"
+          "compress-force=zstd:3"
+          "space_cache=v2"
+          "commit=120"
+          "discard=async"
+        ];
+      };
 
-  fileSystems."/var/tmp" =
-    {
-      device = "/dev/disk/by-label/Nixsystem";
-      fsType = "btrfs";
-      options = [
-        "subvol=@tmp"
-        "noatime"
-        "ssd"
-        "compress-force=zstd:3"
-        "space_cache=v2"
-        "commit=120"
-        "discard=async"
-      ];
-    };
+    "/var/tmp" =
+      {
+        device = "/dev/disk/by-label/Nixsystem";
+        fsType = "btrfs";
+        options = [
+          "subvol=@tmp"
+          "noatime"
+          "ssd"
+          "compress-force=zstd:3"
+          "space_cache=v2"
+          "commit=120"
+          "discard=async"
+        ];
+      };
 
-  fileSystems."/nix" =
-    {
-      device = "/dev/disk/by-label/Nixsystem";
-      fsType = "btrfs";
-      options = [
-        "subvol=@nix"
-        "noatime"
-        "ssd"
-        "compress-force=zstd:15"
-        "space_cache=v2"
-        "commit=120"
-        "discard=async"
-      ];
-    };
+    "/nix" =
+      {
+        device = "/dev/disk/by-label/Nixsystem";
+        fsType = "btrfs";
+        options = [
+          "subvol=@nix"
+          "noatime"
+          "ssd"
+          "compress-force=zstd:15"
+          "space_cache=v2"
+          "commit=120"
+          "discard=async"
+        ];
+      };
 
-  fileSystems."/boot/efi" =
-    {
-      device = "/dev/disk/by-label/EFI";
-      fsType = "vfat";
-      options = [ "defaults" "noatime" "nodiratime" ];
-      noCheck = true;
-    };
+    "/boot/efi" =
+      {
+        device = "/dev/disk/by-label/EFI";
+        fsType = "vfat";
+        options = [ "defaults" "noatime" "nodiratime" ];
+        noCheck = true;
+      };
+  };
 
   swapDevices =
     [{

@@ -68,23 +68,25 @@
       budgie.budgie-control-center
     ];
     blueman.enable = true;
-    gnome.gnome-keyring.enable = true;
-    gnome.gnome-settings-daemon.enable = lib.mkDefault true;
-    gnome.glib-networking.enable = lib.mkDefault true;
+
     geoclue2.enable = lib.mkDefault true; # for BCC's Privacy > Location Services panel.
     colord.enable = lib.mkDefault true; # for BCC's Color panel.
-    gnome.at-spi2-core.enable = lib.mkDefault true; # for BCC's A11y panel.
     accounts-daemon.enable = lib.mkDefault true; # for BCC's Users panel.
     fprintd.enable = lib.mkDefault true; # for BCC's Users panel.
-    # For BCC's Online Accounts panel.
-    gnome.gnome-online-accounts.enable = lib.mkDefault true;
-    gnome.gnome-online-miners.enable = true;
-
+    gnome = {
+      at-spi2-core.enable = lib.mkDefault true; # for BCC's A11y panel.
+      gnome-keyring.enable = true;
+      gnome-settings-daemon.enable = lib.mkDefault true;
+      glib-networking.enable = lib.mkDefault true;
+      # For BCC's Online Accounts panel.
+      gnome-online-accounts.enable = lib.mkDefault true;
+      gnome-online-miners.enable = true;
+      rygel.enable = lib.mkDefault true;
+      gnome-user-share.enable = lib.mkDefault true;
+    };
     # For BCC's Sharing panel.
     dleyna-renderer.enable = lib.mkDefault true;
     dleyna-server.enable = lib.mkDefault true;
-    gnome.gnome-user-share.enable = lib.mkDefault true;
-    gnome.rygel.enable = lib.mkDefault true;
 
     xserver = {
       enable = true;

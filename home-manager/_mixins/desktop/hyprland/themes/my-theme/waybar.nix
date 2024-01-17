@@ -202,7 +202,7 @@
             #Cliphist
             "custom/cliphist" =
               let
-                cliphist = pkgs.writeShellScriptBin "cliphist" ''
+                cliphist-custom = pkgs.writeShellScriptBin "cliphist-custom" ''
                   case $1 in
                       d) ${pkgs.cliphist}/bin/cliphist list | rofi -dmenu -replace -config ~/.config/rofi/config-cliphist.rasi | ${pkgs.cliphist}/bin/cliphist delete
                         ;;
@@ -219,9 +219,9 @@
               in
               {
                 "format" = "";
-                "on-click" = "sleep 0.1 && ${cliphist}";
-                "on-click-right" = "sleep 0.1 && ${cliphist} d";
-                "on-click-middle" = "sleep 0.1 && ${cliphist} w";
+                "on-click" = "sleep 0.1 && ${cliphist-custom}/bin/cliphist-custom";
+                "on-click-right" = "sleep 0.1 && ${cliphist-custom}/bin/cliphist-custom d";
+                "on-click-middle" = "sleep 0.1 && ${cliphist-custom}/bin/cliphist-custom w";
                 "tooltip" = "false";
               };
             "keyboard-state" = {

@@ -35,7 +35,9 @@ in
     #   XDG_DATA_DIRS = lib.mkDefault "$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share"; # lets flatpak work
     # };
   };
-  xresources.properties = {
+
+  # Low priority
+  xresources.properties = lib.mkOverride 1000 {
     "XTerm*background" = "#121214";
     "XTerm*foreground" = "#c8c8c8";
     "XTerm*cursorBlink" = true;
