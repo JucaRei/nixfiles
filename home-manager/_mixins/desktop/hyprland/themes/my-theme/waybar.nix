@@ -194,8 +194,10 @@
               "format" = "{icon}";
               "tooltip" = false;
               "format-icons" = {
-                "activated" = "Auto lock OFF";
-                "deactivated" = "ON";
+                # "activated" = "Auto lock OFF";
+                # "deactivated" = "ON";
+                "activated" = "   OFF";
+                "deactivated" = "";
                 # activated = "󰅶";
                 # deactivated = "󰾪";
               };
@@ -442,7 +444,7 @@
               "format-icons" = {
                 "on" = "<span foreground='#88C0D0'></span>";
                 "off" = "<span foreground='#F38BA8'>󰂲</span>";
-                "disabled" = "󰂲 OFF#";
+                "disabled" = "󰂲 OFF";
                 "connected" = " ON";
               };
               "tooltip-format" = "{device_alias} {status}";

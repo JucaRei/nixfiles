@@ -1,4 +1,5 @@
 { pkgs, ... }: {
+  imports = [ ../../../../config/rofi/scripts/rofi-networkmanager.nix ];
   programs = {
     rofi = {
       enable = true;

@@ -14,6 +14,7 @@ assert lib.asserts.assertOneOf "storageDriver" storageDriver [
       enable = true;
       # enableOnBoot = lib.mkDefault true;
       # enableNvidia = true;
+      # extraOptions = "--default-runtime=nvidia";
       rootless = {
         enable = true;
         setSocketVariable = true;
