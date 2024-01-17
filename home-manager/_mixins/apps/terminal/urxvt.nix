@@ -4,11 +4,11 @@ with lib;
 
 let
   termDesktop = pkgs.writeTextFile {
-    name = "terminal.desktop";
-    destination = "/share/applications/terminal.desktop";
+    name = "urxvt.desktop";
+    destination = "/share/applications/rxvt.desktop";
     text = ''
       [Desktop Entry]
-      Exec=/home/juca/bin/term
+      Exec=/home/juca/.local/bin/term
       Icon=utilities-terminal
       Name[en_US]=Terminal
       Name=Terminal
@@ -21,9 +21,7 @@ let
   cfg = config.within.urxvt;
 in
 {
-  options.within.urxvt.enable =
-    mkEnableOption "Enables urxvt as the default terminal";
-  config = mkIf cfg.enable {
+  config = {
     home.packages = with pkgs; [
       rxvt-unicode
       urxvt_font_size
@@ -36,7 +34,7 @@ in
       termDesktop
     ];
 
-    home.file."bin/term" = {
+    home.file.".local/bin/term" = {
       executable = true;
       text = ''
         #!/bin/sh
@@ -151,7 +149,7 @@ in
       "URxvt.background" = "[95]#32302f";
 
       # Font
-      "URxvt.font" = "xft:Hack:size=9";
+      "URxvt.font" = "xft:Hack:size=12";
     };
 
     systemd.user.services = {

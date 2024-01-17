@@ -304,18 +304,23 @@
               };
             };
             "cpu" = {
+              "format" = " {usage}% <span font='11'></span> ";
+              "interval" = 1;
               # "format" = "{usage}% ";
-              "format" = "/c {usage}%";
+              # "format" = "/c {usage}%";
               "on-click" = "foot -e htop";
               "tooltip" = false;
             };
             "memory" = {
-              "format" = "/ M {}% ";
+              # "format" = "/ M {}% ";
+              "format" = "{}% <span font='11'></span> ";
+              "interval" = 1;
               "on-click" = "foot -e htop";
             };
             "disk" = {
+              "format" = " {percentage_used}% <span font='11'></span> ";
               "interval" = 30;
-              "format" = "D {percentage_used}% ";
+              # "format" = "D {percentage_used}% ";
               "path" = "/";
               "on-click" = "foot -e htop";
             };
@@ -324,12 +329,13 @@
               #  "hwmon-path" = "/sys/class/hwmon/hwmon2/temp1_input";
               "critical-threshold" = 80;
               # "format-critical" = "{temperatureC}°C {icon}";
-              "format" = "{temperatureC}°C {icon}";
-              "format-icons" = [ "" "" "" ];
+              "format" = "{temperatureC}°C {icon} ";
+              "format-icons" = [ "" "" "" "" "" ];
             };
             "backlight" = {
               # "device" = "acpi_video1";
-              "format" = "{percent}% {icon}";
+              # "format" = "{percent}% {icon}";
+              "format" = "{percent}% <span font='11'>{icon}</span>";
               "format-icons" = [ "" "" "" "" "" "" "" "" "" ];
             };
             "battery" = {
@@ -822,12 +828,22 @@
            * Hardware Group
            * ----------------------------------------------------- */
 
+          /* #disk,#memory,#language { */
           #disk,#memory,#cpu,#language {
               margin:0px;
               padding:0px;
               font-size:16px;
               color:@iconcolor;
           }
+
+          /*
+          #cpu {
+            margin:0px;
+            padding:0px;
+            font-size:16px;
+            color:#e86489;
+          }
+          */
 
           #language {
               margin-right:10px;
