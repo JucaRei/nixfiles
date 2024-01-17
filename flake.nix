@@ -233,6 +233,7 @@
     , vscode-server
     , plasma-manager
     , fh
+    , flatpaks
       # , eza
       # , nixvim
     , ...
