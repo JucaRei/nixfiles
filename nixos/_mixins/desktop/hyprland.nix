@@ -191,6 +191,7 @@ in
       # ozone-platform-hint = "auto";
       # "ozone-platform" = "wayland";
       _JAVA_AWT_WM_NONEREPARENTING = "1";
+      XAUTHORITY = "$XDG_RUNTIME_DIR/Xauthority";
     };
     #loginShellInit = ''
     #  dbus-update-activation-environment --systemd DISPLAY
@@ -247,6 +248,12 @@ in
     ] ++ (with pkgs.lxqt; [
       # lxqt-policykit
     ]));
+
+    # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
+    extraInit = ''
+      export XAUTHORITY=/tmp/Xauthority
+      [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"
+    '';
   };
 
   xdg = {

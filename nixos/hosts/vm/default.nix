@@ -125,6 +125,7 @@
     loader = {
       grub = {
         gfxmodeEfi = lib.mkForce "1920x1080";
+        theme = pkgs.cyberre;
       };
     };
   };
