@@ -143,15 +143,25 @@ in
             alang=ja,jp,jpn,jap,Japanese,en,eng,English
             demuxer-mkv-subtitle-preroll = "yes"; #Forces showing subtitles while seeking through the video
 
-            sub-blur=0.5
-            sub-scale=0.7
-            sub-margin-y=60
-            sub-color='#d6ffffff'
-            sub-shadow-offset=5.0
-            sub-font=Clear Sans Bold
-            sub-back-color='#00000000'
-            sub-border-color='#266a678c'
-            sub-shadow-color='#00000000'
+            # sub-blur=0.5
+            # sub-scale=0.7
+            # sub-margin-y=60
+            # sub-color='#d6ffffff'
+            # sub-shadow-offset=5.0
+            # sub-font=Clear Sans Bold
+            # sub-back-color='#00000000'
+            # sub-border-color='#266a678c'
+            # sub-shadow-color='#00000000'
+
+            # the following options only apply to subtitles without own styling (i.e. not ASS but e.g. SRT)
+            sub-font="Roboto Condensed"
+            sub-font-size=38
+            sub-color="#FFFFFFFF"
+            sub-border-color="#7282D9"
+            sub-border-size=1
+            sub-shadow-offset=1
+            sub-shadow-color="#33000000"
+            sub-spacing=0.5
 
             sub-auto=fuzzy
             volume-max=150
