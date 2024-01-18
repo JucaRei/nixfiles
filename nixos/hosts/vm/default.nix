@@ -91,7 +91,7 @@
   services.xserver = {
     videoDrivers = [
       "qxl"
-      "nvidia"
+      # "nvidia"
     ];
     layout = lib.mkForce "br";
     exportConfiguration = true;

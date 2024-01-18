@@ -4,7 +4,6 @@ with lib.hm.gvariant;
   imports = [
     # ../_mixins/console/neovim.nix
     ../_mixins/apps/video/mpv.nix
-    ../_mixins/apps/tools/spacefm.nix
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix
     # ../_mixins/apps/text-editor/vscodium.nix

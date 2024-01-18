@@ -1,7 +1,10 @@
 { pkgs, ... }: {
   home = {
-    packages = pkgs.spaceFM;
+    packages = with pkgs; [
+      spaceFM
+    ];
 
+    # ${spaceFM}/bin/spacefm -d &
     file = {
       ".config/spacefm/spacefm.conf" = {
         text = ''
@@ -309,8 +312,8 @@
           book_single-b=1
           dev_newtab-b=1
           dev_single-b=1
-          su_command-s=/usr/bin/sudo
-          gsu_command-s=/usr/bin/sudo
+          su_command-s=${pkgs.sudo}/bin/sudo
+          gsu_command-s=${pkgs.sudo}/bin/sudo
           editor-s=nvim %F
           editor-b=1
           book_new-key=100
