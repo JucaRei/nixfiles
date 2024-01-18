@@ -181,14 +181,14 @@
           servers = {
             nil_ls.enable = true;
             svelte.enable = true;
-            html.enable = true;
+            # html.enable = true;
             cssls.enable = true;
             tsserver.enable = true;
             pyright.enable = true;
             tailwindcss = {
               enable = true;
               filetypes = [
-                "html"
+                # "html"
                 "js"
                 "ts"
                 "jsx"

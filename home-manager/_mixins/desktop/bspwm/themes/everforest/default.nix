@@ -55,22 +55,25 @@ in
       "xsetroot -cursor_name left_ptr"
       "dunst -config $HOME/.config/dunst/dunstrc"
       "sleep 2; polybar -q bar"
-      # "$HOME/.screenlayout/vm.sh"
     ];
+    rules = {
+      "mpv" = {
+        state = "floating";
+        center = true;
+      };
+    };
     extraConfig = ''
-      #!/bin/bash
-
       # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1' | awk '{print $1}')
-      # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-0' | awk '{print $1}')
+      EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-0' | awk '{print $1}')
       # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
-      EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
+      # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
       # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
-      # INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
-      INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
+      INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+      # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
       if [[ $1 == 0 ]]; then
           if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
-              bspc monitor "$EXTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8 9 0
-              bspc monitor "$INTERNAL_MONITOR" -d 10
+              bspc monitor "$EXTERNAL_MONITOR" -d 2 4 6 8 10
+              bspc monitor "$INTERNAL_MONITOR" -d 1 3 5 7 9
               bspc wm -O "$EXTERNAL_MONITOR" "$INTERNAL_MONITOR"
           else
               bspc monitor "$INTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8
@@ -87,8 +90,6 @@ in
       }
 
       workspaces
-
-      # bspc monitor -d 1 2 3 4 5 6 7 8
 
       bspc config border_width                3
       bspc config borderless_monocle          false

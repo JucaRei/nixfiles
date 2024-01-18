@@ -12,12 +12,6 @@ with lib.hm.gvariant;
     windowManager.bspwm = {
       enable = true;
       alwaysResetDesktops = true;
-      rules = {
-        "mpv" = {
-          state = "floating";
-          center = true;
-        };
-      };
     };
   };
   home = {
