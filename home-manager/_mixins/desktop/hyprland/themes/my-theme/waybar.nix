@@ -371,7 +371,7 @@
               "tooltip-format-ethernet" = "  {ifname} ({ipaddr}/{cidr})";
               "tooltip-format-disconnected" = "Disconnected";
               "max-length" = 50;
-              "on-click" = "foot -e nmtui";
+              "on-click" = "~/.config/rofi/scripts/rofi-nm.sh";
             };
             "group/hardware" = {
               "orientation" = "inherit";
