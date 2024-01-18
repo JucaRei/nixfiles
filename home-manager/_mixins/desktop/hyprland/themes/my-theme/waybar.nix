@@ -70,6 +70,7 @@
               "custom/playerctl#backward"
               "custom/playerctl#play"
               "custom/playerctl#foward"
+              "custom/weather"
             ];
             modules-center = [
               "hyprland/workspaces"
@@ -460,6 +461,11 @@
               "escape" = true;
               "exec" = "$HOME/.config/waybar/mediaplayer.py 2> /dev/null"; # Script in resources folder
               # "exec"= "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null"; # Filter player based on name
+            };
+            "custom/weather" = {
+              "exec" = "nix-shell ~/.config/waybar/scripts/weather.py";
+              "restart-interval" = 300;
+              "return-type" = "json";
             };
             "custom/browser" = {
               "format" = "";
@@ -1018,4 +1024,10 @@
         '';
       };
     };
+  home.file = {
+    ".config/waybar/scripts/weather.py" = {
+      source = ../../../../config/scripts/waybar-wttr.py;
+      executable = true;
+    };
+  };
 }
