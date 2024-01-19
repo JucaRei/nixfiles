@@ -173,6 +173,7 @@
         WantedBy = [ "graphical-session.target" ];
       };
       Service = {
+        # bat0 | bat1 | bat2
         ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
           #!/run/current-system/sw/bin/bash
           prev_val=100
@@ -182,8 +183,8 @@
               -h "int:value:$val" "Discharging" "$val%, $remaining"
           }
           while true; do
-            IFS=: read _ bat0 < <(${pkgs.acpi}/bin/acpi -b)
-            IFS=\ , read status val remaining <<<"$bat0"
+            IFS=: read _ bat2 < <(${pkgs.acpi}/bin/acpi -b)
+            IFS=\ , read status val remaining <<<"$bat2"
             val=''${val%\%}
             if [[ $status = Discharging ]]; then
               echo "$val%, $remaining"

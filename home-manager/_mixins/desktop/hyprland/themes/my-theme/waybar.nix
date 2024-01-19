@@ -43,7 +43,7 @@
           {
             mainBar = {
               ## General Settings
-              mode = "dock";
+              mode = "overlay";
               layer = "top";
               position = "top";
               height = 18;
