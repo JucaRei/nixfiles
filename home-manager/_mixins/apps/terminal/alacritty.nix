@@ -6,7 +6,7 @@ in
 {
   programs.alacritty = {
     enable = true;
-    packages = (nixGL pkgs.alacritty);
+    package = (nixGL pkgs.alacritty);
     settings = {
       window = {
         title = "Terminal";
