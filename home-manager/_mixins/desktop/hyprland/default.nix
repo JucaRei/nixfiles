@@ -60,8 +60,11 @@ in
                 "systemctl --user stop graphical-session.target"
                 "systemctl --user start hyprland-session.target"
               ];
+
+              variables = [ "--all" ];
             };
           xwayland.enable = if hostname != "zion" then true else false;
+          plugins = [ inputs.split-monitor-workspaces.packages.${pkgs.system}.split-monitor-workspaces ];
         };
       };
     };

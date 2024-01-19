@@ -183,8 +183,8 @@
               -h "int:value:$val" "Discharging" "$val%, $remaining"
           }
           while true; do
-            IFS=: read _ bat2 < <(${pkgs.acpi}/bin/acpi -b)
-            IFS=\ , read status val remaining <<<"$bat2"
+            IFS=: read _ bat1 < <(${pkgs.acpi}/bin/acpi -b)
+            IFS=\ , read status val remaining <<<"$bat1"
             val=''${val%\%}
             if [[ $status = Discharging ]]; then
               echo "$val%, $remaining"

@@ -79,7 +79,7 @@
   # };
   hardware = {
     # smooth backlight control
-    brillo.enable = if hostname != "rasp3" then true else false;
+    # brillo.enable = if hostname != "rasp3" then true else false;
   };
 
   environment = {

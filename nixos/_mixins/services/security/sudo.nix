@@ -54,7 +54,7 @@ in
                 command = "/run/current-system/sw/bin/${command}";
                 options = [ "NOPASSWD" "SETENV" ];
               })
-              [ "poweroff" "shutdown" "reboot" "nixos-rebuild" "nix-env" "bandwhich" "mic-light-on" "mic-light-off" "systemctl" ];
+              [ "poweroff" "shutdown" "reboot" "nixos-rebuild" "nix-env" "bandwhich" "mic-light-on" "mic-light-off" "systemctl" "brillo" ];
           groups = [ "wheel" ];
         }
       ];

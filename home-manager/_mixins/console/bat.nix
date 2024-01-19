@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   programs.bat = {
     enable = true;
     config = {
@@ -12,8 +12,10 @@
       # rose_pine_moon =
       #   builtins.readFile ../config/bat/themes/rose_pine_moon.tmTheme;
       tokyo_night =
-        builtins.readFile ../config/bat/themes/tokyo_night.tmTheme;
+        # builtins.readFile ../config/bat/themes/tokyo_night.tmTheme;
+        lib.fileContents ../config/bat/themes/tokyo_night.tmTheme;
     };
+
     extraPackages = with pkgs.bat-extras; [
       batdiff
       batgrep

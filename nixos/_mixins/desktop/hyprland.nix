@@ -252,8 +252,11 @@ in
 
     # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
     extraInit = ''
+      xhost +SI:localuser:root;
+
       export XAUTHORITY=/tmp/Xauthority
       [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"
+
     '';
 
     # fix root on wayland

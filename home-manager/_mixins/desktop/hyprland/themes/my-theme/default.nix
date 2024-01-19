@@ -289,6 +289,11 @@ in
               special_scale_factor = 0.9;
               no_gaps_when_only = false;
             };
+            plugin = {
+              split-monitor-workspaces = {
+                count = 5;
+              };
+            };
           };
           extraConfig = ''
             ###############################
@@ -672,14 +677,22 @@ in
             bind = [
               "ALT, R, submap, resize"
               ",escape,submap,reset"
-              "CTRL SHIFT, left, resizeactive,-15 0"
-              "CTRL SHIFT, right, resizeactive,15 0"
-              "CTRL SHIFT, up, resizeactive,0 -15"
-              "CTRL SHIFT, down, resizeactive,0 15"
-              "CTRL SHIFT, l, resizeactive, 15 0"
-              "CTRL SHIFT, h, resizeactive,-15 0"
-              "CTRL SHIFT, k, resizeactive, 0 -15"
-              "CTRL SHIFT, j, resizeactive, 0 15"
+              # "CTRL SHIFT, left, resizeactive,-15 0"
+              # "CTRL SHIFT, right, resizeactive,15 0"
+              # "CTRL SHIFT, up, resizeactive,0 -15"
+              # "CTRL SHIFT, down, resizeactive,0 15"
+              # "CTRL SHIFT, l, resizeactive, 15 0"
+              # "CTRL SHIFT, h, resizeactive,-15 0"
+              # "CTRL SHIFT, k, resizeactive, 0 -15"
+              # "CTRL SHIFT, j, resizeactive, 0 15"
+              "CTRL SUPER, left, resizeactive,-15 0"
+              "CTRL SUPER, right, resizeactive,15 0"
+              "CTRL SUPER, up, resizeactive,0 -15"
+              "CTRL SUPER, down, resizeactive,0 15"
+              "CTRL SUPER, l, resizeactive, 15 0"
+              "CTRL SUPER, h, resizeactive,-15 0"
+              "CTRL SUPER, k, resizeactive, 0 -15"
+              "CTRL SUPER, j, resizeactive, 0 15"
             ];
             submap = [ "resize" "reset" ];
             binde = [
@@ -719,10 +732,10 @@ in
         # (if hostname != "nitro" then kbdlight else "")
         # mpvpaper
         # (nixGL pkgs.mpvpaper) # Live wallpaper
-        playerctl
+        # playerctl
         # imv # simple image viewer
         wlogout # Wayland based logout menu
-        wlr-randr # An xrandr clone for wlroots compositors
+        # wlr-randr # An xrandr clone for wlroots compositors
         wl-clip-persist
         wl-clipboard
         imagemagick_light
@@ -796,31 +809,46 @@ in
             bind = $mainMod CTRL, F, exec, ~/dotfiles/scripts/filemanager.sh
             bind = $mainMod CTRL, C, exec, ~/dotfiles/scripts/cliphist.sh
             bind = $mainMod, V, exec, ~/dotfiles/scripts/cliphist.sh
-            bind = $mainMod CTRL, T, exec, $HOME/.config/waybar/scripts/themeswitcher.sh
-            bind = $mainMod CTRL, S, exec, foot --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
+            # bind = $mainMod CTRL, T, exec, $HOME/.config/waybar/scripts/themeswitcher.sh
+            # bind = $mainMod CTRL, S, exec, foot --class dotfiles-floating -e $HOME/.config/hypr/start-settings.sh
 
 
             # Workspaces
-            bind = $otherMod, 1, workspace, 1
-            bind = $otherMod, 2, workspace, 2
-            bind = $otherMod, 3, workspace, 3
-            bind = $otherMod, 4, workspace, 4
-            bind = $otherMod, 5, workspace, 5
-            bind = $otherMod, 6, workspace, 6
-            bind = $otherMod, 7, workspace, 7
-            bind = $otherMod, 8, workspace, 8
-            bind = $otherMod, 9, workspace, 9
-            bind = $otherMod, 0, workspace, 10
-            bind = $otherMod SHIFT, 1, movetoworkspace, 1
-            bind = $otherMod SHIFT, 2, movetoworkspace, 2
-            bind = $otherMod SHIFT, 3, movetoworkspace, 3
-            bind = $otherMod SHIFT, 4, movetoworkspace, 4
-            bind = $otherMod SHIFT, 5, movetoworkspace, 5
-            bind = $otherMod SHIFT, 6, movetoworkspace, 6
-            bind = $otherMod SHIFT, 7, movetoworkspace, 7
-            bind = $otherMod SHIFT, 8, movetoworkspace, 8
-            bind = $otherMod SHIFT, 9, movetoworkspace, 9
-            bind = $otherMod SHIFT, 0, movetoworkspace, 10
+            # Split-monitor-workspaces
+            # Switch workspaces with otherMod + [0-5]
+            bind = $otherMod, 1, split-workspace, 1
+            bind = $otherMod, 2, split-workspace, 2
+            bind = $otherMod, 3, split-workspace, 3
+            bind = $otherMod, 4, split-workspace, 4
+            bind = $otherMod, 5, split-workspace, 5
+
+            # Move active window to a workspace with otherMod + SHIFT + [0-5]
+            bind = $otherMod SHIFT, 1, split-movetoworkspacesilent, 1
+            bind = $otherMod SHIFT, 2, split-movetoworkspacesilent, 2
+            bind = $otherMod SHIFT, 3, split-movetoworkspacesilent, 3
+            bind = $otherMod SHIFT, 4, split-movetoworkspacesilent, 4
+            bind = $otherMod SHIFT, 5, split-movetoworkspacesilent, 5
+
+            # bind = $otherMod, 1, workspace, 1
+            # bind = $otherMod, 2, workspace, 2
+            # bind = $otherMod, 3, workspace, 3
+            # bind = $otherMod, 4, workspace, 4
+            # bind = $otherMod, 5, workspace, 5
+            # bind = $otherMod, 6, workspace, 6
+            # bind = $otherMod, 7, workspace, 7
+            # bind = $otherMod, 8, workspace, 8
+            # bind = $otherMod, 9, workspace, 9
+            # bind = $otherMod, 0, workspace, 10
+            # bind = $otherMod SHIFT, 1, movetoworkspace, 1
+            # bind = $otherMod SHIFT, 2, movetoworkspace, 2
+            # bind = $otherMod SHIFT, 3, movetoworkspace, 3
+            # bind = $otherMod SHIFT, 4, movetoworkspace, 4
+            # bind = $otherMod SHIFT, 5, movetoworkspace, 5
+            # bind = $otherMod SHIFT, 6, movetoworkspace, 6
+            # bind = $otherMod SHIFT, 7, movetoworkspace, 7
+            # bind = $otherMod SHIFT, 8, movetoworkspace, 8
+            # bind = $otherMod SHIFT, 9, movetoworkspace, 9
+            # bind = $otherMod SHIFT, 0, movetoworkspace, 10
             bind = $otherMod, mouse_down, workspace, e+1
             bind = $otherMod, mouse_up, workspace, e-1
             bind = $otherMod CTRL, down, workspace, empty
@@ -828,15 +856,15 @@ in
             # Fn keys
             # bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
             # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
-            bind = , XF86MonBrightnessUp, exec, brillo -A 5
-            bind = , XF86MonBrightnessDown, exec, brillo -U 5
+            bind = , XF86MonBrightnessUp, exec, ${pkgs.brillo}/bin/brillo -A 5
+            bind = , XF86MonBrightnessDown, exec, ${pkgs.brillo}/bin/brillo -U 5
             bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
             bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
             bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-            bind = , XF86AudioPlay, exec, playerctl play-pause
-            bind = , XF86AudioPause, exec, playerctl pause
-            bind = , XF86AudioNext, exec, playerctl next
-            bind = , XF86AudioPrev, exec, playerctl previous
+            bind = , XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause
+            bind = , XF86AudioPause, exec, ${pkgs.playerctl}/bin/playerctl pause
+            bind = , XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next
+            bind = , XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous
             bind = , XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle
             bind = , XF86Calculator, exec, qalculate-gtk
             bind = , XF86Lock, exec, swaylock
