@@ -96,7 +96,7 @@
 #   };
 # }
 
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   services.dunst = {
     enable = true;
     package = pkgs.dunst.overrideAttrs (_: {
@@ -172,32 +172,110 @@
         # wants = [ "display-manager.service" ];
         WantedBy = [ "graphical-session.target" ];
       };
-      Service = {
-        # bat0 | bat1 | bat2
-        ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
-          #!/run/current-system/sw/bin/bash
-          prev_val=100
-          check () { [[ $1 -ge $val ]] && [[ $1 -lt $prev_val ]]; }
-          notify () {
-            ${pkgs.libnotify}/bin/notify-send -a Battery "$@" \
-              -h "int:value:$val" "Discharging" "$val%, $remaining"
-          }
-          while true; do
-            IFS=: read _ bat1 < <(${pkgs.acpi}/bin/acpi -b)
-            IFS=\ , read status val remaining <<<"$bat1"
-            val=''${val%\%}
-            if [[ $status = Discharging ]]; then
-              echo "$val%, $remaining"
-              if check 30 || check 25 || check 20; then notify
-              elif check 15 || [[ $val -le 10 ]]; then notify -u critical
-              fi
-            fi
-            prev_val=$val
-            # Sleep longer when battery is high to save CPU
-            if [[ $val -gt 30 ]]; then ${pkgs.coreutils}/bin/sleep 10m; elif [[ $val -ge 20 ]]; then ${pkgs.coreutils}/bin/sleep 5m; else ${pkgs.coreutils}/bin/sleep 1m; fi
-          done
-        ''}";
-      };
+      Service =
+        let
+          # bat0 | bat1 | bat2
+          battery = builtins.replaceStrings [ "-" ] [ "2" ] "bat-";
+        in
+        {
+
+          #   ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
+          #   #!/run/current-system/sw/bin/bash
+          #   prev_val=100
+          #   check () { [[ $1 -ge $val ]] && [[ $1 -lt $prev_val ]]; }
+          #   notify () {
+          #     ${pkgs.libnotify}/bin/notify-send -a Battery "$@" \
+          #       -h "int:value:$val" "Discharging" "$val%, $remaining"
+          #   }
+          #   while true; do
+          #     IFS=: read _ bat2 < <(${pkgs.acpi}/bin/acpi -b)
+          #     IFS=\ , read status val remaining <<<"bat2"
+          #     val=''${val%\%}
+          #     if [[ $status = Discharging ]]; then
+          #       echo "$val%, $remaining"
+          #       if check 30 || check 25 || check 20; then notify
+          #       elif check 15 || [[ $val -le 10 ]]; then notify -u critical
+          #       fi
+          #     fi
+          #     prev_val=$val
+          #     # Sleep longer when battery is high to save CPU
+          #     if [[ $val -gt 30 ]]; then ${pkgs.coreutils}/bin/sleep 10m; elif [[ $val -ge 20 ]]; then ${pkgs.coreutils}/bin/sleep 5m; else ${pkgs.coreutils}/bin/sleep 1m; fi
+          #   done
+          # ''}";
+
+          ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
+          #!/bin/sh
+
+          # Send a notification if the laptop battery is either low
+          # or is fully charged.
+
+          export DISPLAY = :0
+          export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/1000/bus"
+
+          # Battery percentage at which to notify
+          WARNING_LEVEL=30
+          BATTERY_DISCHARGING=$(acpi -b | grep "Battery 0" | grep -c "Discharging")
+          BATTERY_LEVEL=$(acpi -b | grep "Battery 0" | grep -P -o '[0-9]+(?=%)')
+
+          # Use two files to store whether we've shown a notification or not (to prevent multiple notifications)
+          EMPTY_FILE=/tmp/batteryempty
+          FULL_FILE=/tmp/batteryfull
+
+          # Reset notifications if the computer is charging/discharging
+          if [ "$BATTERY_DISCHARGING" -eq 1 ] && [ -f $FULL_FILE ];
+            then
+              rm $FULL_FILE
+          elif [ "$BATTERY_DISCHARGING" -eq 0 ] && [ -f $EMPTY_FILE ]; then
+            rm $EMPTY_FILE
+          fi
+
+          # If the battery is charging and is full (and has not shown notification yet)
+          if [ "$BATTERY_LEVEL" -gt 95 ] && [ "$BATTERY_DISCHARGING" -eq 0 ] && [ ! -f $FULL_FILE ]; then
+          notify-send "Battery Charged" "Battery is fully charged." -i "battery" -r 9991
+          touch $FULL_FILE
+          # If the battery is low and is not charging (and has not shown notification yet)
+          elif [ "$BATTERY_LEVEL" -le $WARNING_LEVEL ] && [ "$BATTERY_DISCHARGING" -eq 1 ] && [ ! -f $EMPTY_FILE ]; then
+          notify-send "Low Battery" "$\{BATTERY_LEVEL}% of battery remaining." -u critical -i "battery-alert" -r 9991
+          touch $EMPTY_FILE
+          fi
+          ''}";
+        };
     };
+    # changebrightness = {
+    #   Unit = {
+    #     Description = ''
+    #       Change brightness notification (brillo)
+    #     '';
+    #   };
+    #   Install = {
+    #     WantedBy = [ "graphical-session.target" ];
+    #   };
+    #   Service = {
+    #     ExecStart = "${pkgs.writeShellScript "changebrightness"
+    #     ''
+    #     #!/bin/sh
+
+    #     # Use brillo to logarithmically adjust laptop screen brightness
+    #     # and send a notification displaying the current brightness level after.
+
+    #     send_notification() {
+    #     brightness=$(printf "%.0f\n" "$(${pkgs.brillo}/bin/brillo -Gq)")
+    #     ${pkgs.dunst}/bin/dunstify -a "changebrightness" -u low -r 9993 -h int:value:"$brightness" -i "brightness" "Brightness" "Currently at $brightness%" -t 2000
+    #     }
+
+    #     case $1 in
+    #     up)
+    #         ${pkgs.brillo}/bin/brillo -A 5 -q
+    #         send_notification "$1"
+    #         ;;
+    #     down)
+    #         ${pkgs.brillo}/bin/brillo -U 5 -q
+    #         send_notification "$1"
+    #         ;;
+    #     esac
+    #     ''
+    #     }";
+    #   };
+    # };
   };
 }

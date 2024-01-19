@@ -1,9 +1,12 @@
 { pkgs, lib, ... }:
 with lib.hm.gvariant;
+let
+  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+in
 {
   programs.alacritty = {
     enable = true;
-
+    packages = (nixGL pkgs.alacritty);
     settings = {
       window = {
         title = "Terminal";

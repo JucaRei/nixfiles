@@ -29,6 +29,28 @@ let
         | uniq
   '';
 
+  change-brightness = pkgs.writeShellScriptBin "change-brightness" ''
+    #!/bin/sh
+    # Use brillo to logarithmically adjust laptop screen brightness
+    # and send a notification displaying the current brightness level after.
+
+    send_notification() {
+    brightness=$(printf "%.0f\n" "$(${pkgs.brillo}/bin/brillo -Gq)")
+    ${pkgs.dunst}/bin/dunstify -a "changebrightness" -u low -r 9993 -h int:value:"$brightness" -i "brightness" "Brightness" "Currently at $brightness%" -t 2000
+    }
+
+    case $1 in
+    up)
+        ${pkgs.brillo}/bin/brillo -A 5 -q
+        send_notification "$1"
+        ;;
+    down)
+        ${pkgs.brillo}/bin/brillo -U 5 -q
+        send_notification "$1"
+        ;;
+    esac
+  '';
+
   # hyprbars-button = rgba($COLOR), $SIZE, $ICON, hyprctl dispatch killactive
   # hyprbars-button = rgba($COLOR), $SIZE, $ICON, hyprctl dispatch fullscreen 1
   # hyprbars-button = rgba($COLOR), $SIZE, $ICON, hyprctl dispatch movetoworkspacesilent special:MinimizedApps
@@ -732,7 +754,7 @@ in
         # (if hostname != "nitro" then kbdlight else "")
         # mpvpaper
         # (nixGL pkgs.mpvpaper) # Live wallpaper
-        # playerctl
+        playerctl
         # imv # simple image viewer
         wlogout # Wayland based logout menu
         # wlr-randr # An xrandr clone for wlroots compositors
@@ -856,8 +878,10 @@ in
             # Fn keys
             # bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
             # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
-            bind = , XF86MonBrightnessUp, exec, ${pkgs.brillo}/bin/brillo -A 5
-            bind = , XF86MonBrightnessDown, exec, ${pkgs.brillo}/bin/brillo -U 5
+            # bind = , XF86MonBrightnessUp, exec, ${pkgs.brillo}/bin/brillo -A 5
+            # bind = , XF86MonBrightnessDown, exec, ${pkgs.brillo}/bin/brillo -U 5
+            bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness
+            bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness
             bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
             bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
             bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
