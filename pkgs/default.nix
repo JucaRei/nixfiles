@@ -21,7 +21,7 @@
   nvchad = pkgs.callPackage ./nvchad { };
   fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
   # breeze-hacked-cursorr = pkgs.callPackage ./themes/mouse/breeze-hacked-cursor { };
-  polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { };
+  # polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { }; # now its on unstable channel
 
   # Scripts
   nix-inspect = pkgs.callPackage ./scripts/nix-inspect { };

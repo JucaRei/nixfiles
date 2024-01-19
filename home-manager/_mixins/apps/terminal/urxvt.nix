@@ -49,7 +49,7 @@ in
       '';
     };
 
-    xresources.extraConfig = lib.mkDefault ''
+    xresources.extraConfig = lib.mkForce ''
       ! -----------------------------------------------------------------------------
       ! File: gruvbox-urxvt256.xresources
       ! Description: Retro groove colorscheme generalized
@@ -89,7 +89,7 @@ in
       URxvt.color250: #d5c4a1
     '';
 
-    xresources.properties = lib.mkDefault {
+    xresources.properties = lib.mkForce {
       # colors
       "*background" = "#32302f";
       "*foreground" = "#ebdbb2";

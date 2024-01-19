@@ -20,7 +20,7 @@ with lib.hm.gvariant;
           columns = 100;
         };
 
-        opacity = "0.7";
+        opacity = 0.7;
       };
 
       font = {

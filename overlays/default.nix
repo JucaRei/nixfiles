@@ -19,7 +19,7 @@
     # nvchad = prev.nvchad;
     nautilus-ext = final.nautilus-annotations;
     thorium = final.thorium-browser;
-    pulseaudio-control = final.polybar-pulseaudio-control;
+    # pulseaudio-control = final.polybar-pulseaudio-control;
     # fantezy = final.fantezy-font;
     # nixos-summary = final.nixos-change-summary;
     # apple-font = final.apple-fonts;

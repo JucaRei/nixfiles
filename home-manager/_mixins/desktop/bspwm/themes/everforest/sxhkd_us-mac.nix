@@ -1,4 +1,4 @@
-_: {
+{ pkgs, ... }: {
   services = {
     sxhkd = {
       enable = true;
@@ -15,7 +15,7 @@ _: {
         "super + {_,shift +}{Left,Right,Up,Down}" = "bspc node -{f,s} {west,east,north,south}"; # Focus or move node in given direction
         "super + {t,h,f}" = "bspc node -t '~{tiled,floating,fullscreen}'"; # Toggle between initial state and new state
         # "alt + {F4, Shift + F4}" = "bspc node -{c,k}"; # close and kill
-        "super + w" = "bspc node -{c,k}"; # close and kill
+        "super + q" = "bspc node -{c,k}"; # close and kill
         "super + m" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
         "super + y" = "bspc node newest.marked.local -n newest.!automatic.local"; ## send the newest marked node to the newest preselected node
         "super + g" = "bspc node -s biggest.window"; # swap the current node and the biggest window
@@ -92,14 +92,14 @@ _: {
         "XF86AudioRaiseVolume" = "pactl -- set-sink-volume 0 +2%"; # Raise volume
         "XF86AudioLowerVolume" = "pactl -- set-sink-volume 0 -2%"; # Lower volume
         "XF86AudioMicMute" = "pactl set-source-mute 1 toggle"; # Toggle mute mic audio
-        "XF86KbdBrightnessUp" = "kbdlight up 2";
-        "XF86KbdBrightnessDown" = "kbdlight down 2";
+        "XF86KbdBrightnessUp" = "${pkgs.kbdlight}/bin/kdblight up 2";
+        "XF86KbdBrightnessDown" = "${pkgs.kbdlight}/bin/kdblight down 2";
         #"XF86MonBrightnessUp" = "xbacklight -inc 2"; # Brightness down
         #"XF86MonBrightnessDown" = "xbacklight -dec 2"; # Brightness down
         # "XF86MonBrightnessUp" = "light -A 2"; # Brightness up
         # "XF86MonBrightnessDown" = "light -U 2"; # Brightness down
-        "XF86MonBrightnessDown" = "brillo -U 1";
-        "XF86MonBrightnessUp" = "brillo -A 1";
+        "XF86MonBrightnessDown" = "${pkgs.brillo}/bin/brillo -U 2";
+        "XF86MonBrightnessUp" = "${pkgs.brillo}/bin/brillo -A 2";
         # "XF86MonBrightnessDown" = "light -U  5"; # Brightness down
         # "XF86MonBrightnessUp" = "light -A 5";
 

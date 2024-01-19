@@ -24,14 +24,14 @@ with lib.hm.gvariant;
       lxappearance
       archiver
       imagemagick
-      blueberry
+      # blueberry
       xclip
       lsof
       xdo
       wmctrl
       mate.mate-polkit
-      brillo
-      kbdlight
+      # brillo
+      # kbdlight
       acpi
 
       # i3lock-fancy

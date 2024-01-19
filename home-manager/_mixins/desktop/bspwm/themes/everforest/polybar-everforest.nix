@@ -9,7 +9,7 @@
   services = {
     polybar = {
       enable = true;
-      package = pkgs.polybar;
+      package = pkgs.unstable.polybarFull;
       script = "";
     };
   };

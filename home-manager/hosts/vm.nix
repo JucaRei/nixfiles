@@ -13,7 +13,7 @@
 
   home.packages = with pkgs; [
     # thorium
-    # clonegit
+    clonegit
     # deezer-gui
     advcp
     deepin.deepin-icon-theme
