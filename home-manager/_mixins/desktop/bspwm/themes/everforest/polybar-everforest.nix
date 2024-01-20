@@ -15,7 +15,7 @@
       };
     };
     home = {
-      packages = pkgs.unstable.polybarFull;
+      packages = with pkgs.unstable; [ polybarFull ];
       file = {
         # ".config/polybar".source = builtins.path {
         #   path = ../../../../config/polybar-everforest;
