@@ -72,10 +72,13 @@ in
     sessionVariables = {
       POLKIT_AUTH_AGENT = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       "DIRENV_LOG_FORMAT" = "";
-      "LIBVA_DRIVE_NAME" = if (hostname != "zion" || "air") then "nvidia" else "iHD";
+      # "LIBVA_DRIVE_NAME" = if (hostname != "zion" || "air") then "nvidia" else "iHD";
+      "LIBVA_DRIVE_NAME" = "nvidia";
       "XDG_SESSION_TYPE" = "wayland";
-      "GBM_BACKEND" = if (hostname == "nitro") then "nvidia-drm" else "";
-      "__GLX_VENDOR_LIBRARY" = if (hostname == "nitro" || "rocinante") then "nvidia" else "";
+      "GBM_BACKEND" = "nvidia-drm";
+      # "GBM_BACKEND" = if (hostname == "nitro") then "nvidia-drm" else "";
+      # "__GLX_VENDOR_LIBRARY" = if (hostname == "nitro" || "rocinante") then "nvidia" else "";
+      "__GLX_VENDOR_LIBRARY" = "nvidia";
       "WLR_RENDERER_ALLOW_SOFTWARE" = "1";
       "WLR_NO_HARDWARE_CURSORS" = "1";
       "__GL_GSYNC_ALLOWED" = "0";
@@ -120,9 +123,9 @@ in
       "CLUTTER_BACKEND" = "wayland";
       "CLUTTER_DEFAULT_FPS" = "60";
       "GDK_BACKEND" = "wayland,x11";
-      "KITTY_ENABLE_WAYLAND" = "1";
+      # "KITTY_ENABLE_WAYLAND" = "1";
       "SDL_VIDEODRIVER" = "wayland";
-      "XCURSOR_THEME" = "Adwaita";
+      # "XCURSOR_THEME" = "Adwaita";
       # "XCURSOR_SIZE" = "24";
       "XDG_CURRENT_DESKTOP" = "Hyprland";
       "XDG_SESSION_DESKTOP" = "Hyprland";
@@ -142,15 +145,15 @@ in
       DISABLE_QT_COMPAT = "0";
 
       # Input method framework
-      GTK_IM_MODULE = "fcitx";
+      # GTK_IM_MODULE = "fcitx";
       # "GTK_IM_MODULE" = "ibus";
-      QT_IM_MODULE = "fcitx";
+      # QT_IM_MODULE = "fcitx";
       # "QT_IM_MODULE" = "ibus";
-      XMODIFIERS = "@im=fcitx";
+      # XMODIFIERS = "@im=fcitx";
       # "XMODIFIERS" = "@im=ibus";
-      DefaultIMModule = "fcitx";
-      SDL_IM_MODULE = "fcitx";
-      GLFW_IM_MODULE = "ibus";
+      # DefaultIMModule = "fcitx";
+      # SDL_IM_MODULE = "fcitx";
+      # GLFW_IM_MODULE = "ibus";
     };
   };
 }

@@ -10,10 +10,10 @@ with lib.hm.gvariant;
   config = {
     xsession = {
       # Systemdless
-      enable = if (hostname != "zion" || "vm") then true else false;
+      enable = lib.mkIf (hostname != "zion" || "vm") true;
       numlock.enable = true;
       windowManager.bspwm = {
-        enable = if (hostname != "zion" || "vm") then true else false;
+        enable = lib.mkIf (hostname != "zion" || "vm") true;
         alwaysResetDesktops = true;
       };
     };

@@ -45,12 +45,12 @@ with lib.hm.gvariant;
         # thorium
       ];
 
-      keyboard = {
-        layout = "br";
-        model = "pc105";
-        options = "grp:alt_shift_toggle";
-        variant = "abnt2";
-      };
+      # keyboard = {
+      #   layout = "br";
+      #   model = "pc105";
+      #   options = "grp:alt_shift_toggle";
+      #   variant = "abnt2";
+      # };
     };
     dconf.settings = {
       # "org/gnome/desktop/interface" = {

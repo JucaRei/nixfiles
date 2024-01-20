@@ -192,77 +192,79 @@
   ### FILESYSTEM ###
   ##################
 
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-label/Nitroux";
-      # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-      fsType = "btrfs";
-      options = [
-        "subvol=@rootfs"
-        "rw"
-        "noatime"
-        "nodiratime"
-        "ssd"
-        "compress-force=zstd:6"
-        "space_cache=v2"
-        "nodatacow"
-        "commit=120"
-        "discard=async"
-        "x-gvfs-hide" # hide from filemanager
-      ];
-    };
+  fileSystems = {
+    "/" =
+      {
+        device = "/dev/disk/by-label/Nitroux";
+        # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
+        fsType = "btrfs";
+        options = [
+          "subvol=@rootfs"
+          "rw"
+          "noatime"
+          "nodiratime"
+          "ssd"
+          "compress-force=zstd:6"
+          "space_cache=v2"
+          "nodatacow"
+          "commit=120"
+          "discard=async"
+          "x-gvfs-hide" # hide from filemanager
+        ];
+      };
 
-  fileSystems."/home" =
-    {
-      device = "/dev/disk/by-label/Nitroux";
-      # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-      fsType = "btrfs";
-      options = [ "subvol=@home" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:3" "space_cache=v2" "commit=120" "discard=async" ];
-    };
+    "/home" =
+      {
+        device = "/dev/disk/by-label/Nitroux";
+        # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
+        fsType = "btrfs";
+        options = [ "subvol=@home" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:3" "space_cache=v2" "commit=120" "discard=async" ];
+      };
 
-  fileSystems."/.snapshots" =
-    {
-      device = "/dev/disk/by-label/Nitroux";
-      # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-      fsType = "btrfs";
-      options = [ "subvol=@snapshots" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
-    };
+    "/.snapshots" =
+      {
+        device = "/dev/disk/by-label/Nitroux";
+        # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
+        fsType = "btrfs";
+        options = [ "subvol=@snapshots" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+      };
 
-  fileSystems."/var/tmp" =
-    {
-      device = "/dev/disk/by-label/Nitroux";
-      fsType = "btrfs";
-      options = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "nodatacow" "ssd" "compress-force=zstd:3" "space_cache=v2" "commit=120" "discard=async" ];
-    };
+    "/var/tmp" =
+      {
+        device = "/dev/disk/by-label/Nitroux";
+        fsType = "btrfs";
+        options = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "nodatacow" "ssd" "compress-force=zstd:3" "space_cache=v2" "commit=120" "discard=async" ];
+      };
 
-  fileSystems."/var/log" =
-    {
-      device = "/dev/disk/by-label/Nitroux";
-      fsType = "btrfs";
-      options = [ "subvol=@logs" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
-    };
+    "/var/log" =
+      {
+        device = "/dev/disk/by-label/Nitroux";
+        fsType = "btrfs";
+        options = [ "subvol=@logs" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+      };
 
-  fileSystems."/nix" =
-    {
-      device = "/dev/disk/by-label/Nitroux";
-      # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-      fsType = "btrfs";
-      options = [ "subvol=@nix" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
-    };
+    "/nix" =
+      {
+        device = "/dev/disk/by-label/Nitroux";
+        # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
+        fsType = "btrfs";
+        options = [ "subvol=@nix" "rw" "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+      };
 
-  fileSystems."/boot/efi" =
-    {
-      device = "/dev/disk/by-label/EFI";
-      # device = "/dev/disk/by-uuid/076D-BEC9";
-      fsType = "vfat";
-      options = [
-        "defaults"
-        "noatime"
-        "nodiratime"
-        "x-gvfs-hide" # hide from filemanager
-      ];
-      noCheck = true;
-    };
+    "/boot/efi" =
+      {
+        device = "/dev/disk/by-label/EFI";
+        # device = "/dev/disk/by-uuid/076D-BEC9";
+        fsType = "vfat";
+        options = [
+          "defaults"
+          "noatime"
+          "nodiratime"
+          "x-gvfs-hide" # hide from filemanager
+        ];
+        noCheck = true;
+      };
+  };
 
   zramSwap = {
     enable = true;
@@ -360,9 +362,9 @@
       ### Xserver configs ###
       #######################
       layout = lib.mkForce "br";
-      # xkbVariant = "pc105";
+      xkbVariant = "abnt2";
       xkbModel = lib.mkForce "pc105";
-      xkbOptions = "grp:alt_shift_toggle";
+      # xkbOptions = "grp:alt_shift_toggle";
       libinput = {
         enable = true;
         touchpad = {

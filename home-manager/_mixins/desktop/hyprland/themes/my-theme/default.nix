@@ -226,7 +226,7 @@ in
     # ../../../../apps/tools/zathura.nix
     ../../../../apps/tools/zathura2.nix
 
-    ../../../../apps/tools/mailspring.nix
+    # ../../../../apps/tools/mailspring.nix
     ./dunst.nix
     # ./swaylock.nix
     ./eye-protection.nix
@@ -357,11 +357,14 @@ in
             #################################
 
             input {
-              kb_layout = ${layout}
-              kb_variant = ${variant}
-              kb_model = ${model}
-              kb_options =
-              kb_rules =
+              # kb_layout = ${layout}
+              # kb_variant = ${variant}
+              # kb_model = ${model}
+              kb_layout = br,us
+              kb_variant = abnt2,altgr-intl
+              kb_model = pc105
+              # kb_options =
+              kb_rules = evdev
 
               follow_mouse = 2 #1
 
@@ -891,8 +894,8 @@ in
             bind = , XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous
             bind = , XF86AudioMicMute, exec, pactl set-source-mute @DEFAULT_SOURCE@ toggle
             bind = , XF86Calculator, exec, qalculate-gtk
-            bind = , XF86Lock, exec, swaylock
-            bind = , XF86Tools, exec, alacritty --class dotfiles-floating -e ~/dotfiles/hypr/settings/settings.sh
+            # bind = , XF86Lock, exec, swaylock
+            # bind = , XF86Tools, exec, alacritty --class dotfiles-floating -e ~/dotfiles/hypr/settings/settings.sh
           '';
         };
         ".config/hypr/scripts" = {
