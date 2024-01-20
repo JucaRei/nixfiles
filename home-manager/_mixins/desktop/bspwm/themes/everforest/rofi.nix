@@ -1,16 +1,16 @@
 { pkgs, ... }: {
 
   config = {
-    programs = {
-      rofi = {
-        enable = true;
-        plugins = with pkgs; [
-          rofi-calc
-          rofi-screenshot
-          pinentry-rofi
-        ];
-      };
-    };
+    # programs = {
+    #   rofi = {
+    #     enable = true;
+    #     plugins = with pkgs; [
+    #       rofi-calc
+    #       rofi-screenshot
+    #       pinentry-rofi
+    #     ];
+    #   };
+    # };
 
     home = {
       packages = with pkgs; [
