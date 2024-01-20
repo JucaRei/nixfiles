@@ -35,7 +35,7 @@ in
     sessionVariables = {
       # only works for interactive shells, pam works for all kind of sessions
       NIX_PATH = (lib.concatStringsSep ":" (lib.mapAttrsToList (name: path: "${name}=${path.to.path}") config.nix.registry));
-      FLAKE = "$HOME/.dotfiles/nixfiles";
+      FLAKE = "/home/${username}/.dotfiles/nixfiles";
     };
     enableNixpkgsReleaseCheck = true;
     packages = [ pkgs.nixgl.auto.nixGLDefault ];
