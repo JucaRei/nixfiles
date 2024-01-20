@@ -1,11 +1,15 @@
-{ pkgs, ... }: {
+{ pkgs, lib, osConfig, config, ... }: {
   config = {
     home = {
-      packages = [ pkgs.libnotify ];
+      packages = with pkgs; [
+        libnotify
+        dunst
+        papirus-icon-theme
+      ];
     };
     services = {
       dunst = {
-        enable = true;
+        enable = lib.mkIf config.xsession.enable true;
         package = pkgs.dunst;
         iconTheme = {
           name = "Papirus Dark";

@@ -6,115 +6,121 @@ with lib.hm.gvariant;
     # ./themes/default
     ./themes/everforest
   ];
-  xsession = {
-    enable = true;
-    numlock.enable = true;
-    windowManager.bspwm = {
-      enable = true;
-      alwaysResetDesktops = true;
+
+  config = {
+    xsession = {
+      # Systemdless
+      enable = if (hostname != "zion" || "vm") then true else false;
+      numlock.enable = true;
+      windowManager.bspwm = {
+        enable = if (hostname != "zion" || "vm") then true else false;
+        alwaysResetDesktops = true;
+      };
     };
-  };
-  home = {
-    packages = with pkgs; [
-      # Default packages for ALL
-      pamixer
-      gnome3.gvfs
-      cifs-utils
-      lm_sensors
-      lxappearance
-      archiver
-      imagemagick
-      # blueberry
-      xclip
-      lsof
-      xdo
-      wmctrl
-      mate.mate-polkit
-      # brillo
-      # kbdlight
-      acpi
+    home = {
+      packages = with pkgs; [
+        # Default packages for ALL
+        bspwm
+        numlockx
+        pamixer
+        gnome3.gvfs
+        cifs-utils
+        lm_sensors
+        lxappearance
+        archiver
+        imagemagick
+        # blueberry
+        xclip
+        lsof
+        xdo
+        wmctrl
+        mate.mate-polkit
+        brillo
+        kbdlight
+        acpi
 
-      # i3lock-fancy
+        # i3lock-fancy
 
-      # kitty
-      # yad
-      # gnome.nautilus
-      # gnome.nautilus-python
-      # gnome.sushi
-      # gnome.file-roller
-      # nautilus-open-any-terminal
-      # cinnamon.nemo-with-extensions
-      # gnome3.nautilus
+        # kitty
+        # yad
+        # gnome.nautilus
+        # gnome.nautilus-python
+        # gnome.sushi
+        # gnome.file-roller
+        # nautilus-open-any-terminal
+        # cinnamon.nemo-with-extensions
+        # gnome3.nautilus
 
 
-      # gtk_engines
-      # gtk-engine-murrine
-      # parcellite
-      # gpick
-      # tint2
-      # moreutils
-      # xbindkeys-config
-      # recode
-      # plank
-      # redshift
-      # glava
-      # pomodoro
+        # gtk_engines
+        # gtk-engine-murrine
+        # parcellite
+        # gpick
+        # tint2
+        # moreutils
+        # xbindkeys-config
+        # recode
+        # plank
+        # redshift
+        # glava
+        # pomodoro
 
-      # i3lock-color
-      # networkmanager_dmenu
-      # conky
-      # zscroll
-      # rnnoise-plugin
-      # jgmenu
-      # maim
-    ];
+        # i3lock-color
+        # networkmanager_dmenu
+        # conky
+        # zscroll
+        # rnnoise-plugin
+        # jgmenu
+        # maim
+      ];
 
-    sessionVariables = {
-      GLFW_IM_MODULE = "ibus";
-      LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
-      QT_QPA_PLATFORMTHEME = "gtk3";
-      "TERM" = "xterm";
-      GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
-      "_JAVA_AWT_WM_NONREPARENTING" = "1";
-    };
-    sessionPath = [
-      "$HOME/.local/bin"
-    ];
-  };
-
-  systemd.user.services.polkit-agent = {
-    Unit = {
-      Description = "launch authentication-agent-1";
-      After = [ "graphical-session.target" ];
-      PartOf = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "simple";
-      Restart = "on-failure";
-      ExecStart = ''
-        ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-      '';
-      # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
+      sessionVariables = {
+        GLFW_IM_MODULE = "ibus";
+        LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
+        QT_QPA_PLATFORMTHEME = "gtk3";
+        "TERM" = "xterm";
+        GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
+        "_JAVA_AWT_WM_NONREPARENTING" = "1";
+      };
+      sessionPath = [
+        "$HOME/.local/bin"
+      ];
     };
 
-    Install = { WantedBy = [ "graphical-session.target" ]; };
-  };
+    systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
+      Unit = {
+        Description = "launch authentication-agent-1";
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = ''
+          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+        '';
+        # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
+      };
 
-  dconf.settings = {
-    "ca/desrt/dconf-editor" = {
-      show-warning = false;
+      Install = { WantedBy = [ "graphical-session.target" ]; };
     };
 
-    "org/gnome/desktop/peripherals/mouse" = {
-      accel-profile = "adaptive";
-      left-handed = false;
-      natural-scroll = false;
-    };
+    dconf.settings = {
+      "ca/desrt/dconf-editor" = {
+        show-warning = false;
+      };
 
-    "org/gnome/desktop/peripherals/touchpad" = {
-      natural-scroll = false;
-      tap-to-click = true;
-      two-finger-scrolling-enabled = true;
+      "org/gnome/desktop/peripherals/mouse" = {
+        accel-profile = "adaptive";
+        left-handed = false;
+        natural-scroll = false;
+      };
+
+      "org/gnome/desktop/peripherals/touchpad" = {
+        natural-scroll = false;
+        tap-to-click = true;
+        two-finger-scrolling-enabled = true;
+      };
     };
   };
 }
