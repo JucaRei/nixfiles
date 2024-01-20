@@ -1,4 +1,4 @@
-{ config, lib, pkgs, username, ... }:
+{ config, lib, pkgs, username, hostname, ... }:
 with lib.hm.gvariant;
 {
   imports = [
