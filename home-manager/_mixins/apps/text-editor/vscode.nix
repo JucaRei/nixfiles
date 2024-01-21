@@ -34,7 +34,8 @@ in
     ### Enable immutable vscode settings
     ../../config/vscode/settings.nix
     # "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
-    ./vscode-remote
+
+    # ./vscode-remote # import this if you want vscode server
   ];
 
   # enable vs-code remote

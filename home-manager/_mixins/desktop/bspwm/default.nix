@@ -10,10 +10,12 @@ with lib.hm.gvariant;
   config = {
     xsession = {
       # Systemdless
-      enable = lib.mkIf (hostname != "zion" || "vm") true;
+      # enable = lib.mkIf (hostname != "zion" || "vm") true;
+      enable = false;
       numlock.enable = true;
       windowManager.bspwm = {
-        enable = lib.mkIf (hostname != "zion" || "vm") true;
+        # enable = lib.mkIf (hostname != "zion" || "vm") true;
+        enable = false;
         alwaysResetDesktops = true;
       };
     };
@@ -85,6 +87,58 @@ with lib.hm.gvariant;
       sessionPath = [
         "$HOME/.local/bin"
       ];
+
+      # Without systemd (Voidlinux - Runit)
+      file = {
+        ".xinitrc" = {
+          text = ''
+            #!/bin/sh
+             ${pkgs.bspwm}/bin/bspwm -c /home/${username}/.config/bspwm/bspwmrc
+
+                #XDG DATA DIR
+                #  export XDG_DATA_DIRS="$HOME/.local/share/applications"
+
+                # XDG USER DIR
+                #  mkdir -p /tmp/$\{USER}-runtime && chmod -R 0700 /tmp/$\{USER}-runtime &
+                #  export XDG_RUNTIME_DIR=/tmp/$\{USER}-runtime
+                #  export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
+                #  export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
+
+                 exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
+          '';
+          executable = true;
+        };
+        ".startx" = {
+          text = ''
+            startx ~/.xinitrc session
+          '';
+          executable = true;
+        };
+      };
+
+        # ".xsession" = {
+        #   text = ''
+        #     ${pkgs.bspwm}/bin/bspwm -c /home/${username}/.config/bspwm/bspwmrc
+
+        #     #XDG DATA DIR
+        #     export XDG_DATA_DIRS="$HOME/.local/share/applications"
+
+        #     # XDG USER DIR
+        #     mkdir -p /tmp/$\{USER}-runtime && chmod -R 0700 /tmp/$\{USER}-runtime &
+        #     export XDG_RUNTIME_DIR=/tmp/$\{USER}-runtime
+        #     export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
+        #     export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
+
+        #     exec dbus-run-session bspwm
+        #   '';
+        #   executable = true;
+        # };
+        # ".dmrc" = {
+        #   text = ''
+        #     [Desktop]
+        #     Session=lightdm=xsession
+        #   '';
+        # };
     };
 
     systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
