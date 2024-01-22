@@ -11,9 +11,16 @@ with lib.hm.gvariant;
     xsession = {
       enable = true;
       numlock.enable = true;
-      windowManager.bspwm = {
-        enable = true;
-        alwaysResetDesktops = true;
+      windowManager = {
+        bspwm = {
+          enable = true;
+          alwaysResetDesktops = true;
+          # monitors = {
+          #   Virtual-1 = [ "1" "2" "3" "4" "5" "6" "7" "8" ];
+          #   eDP-1 = [ "1" "2" "3" "4" "5" "6" "7" "8" ];
+          #   eDP1 = [ "1" "2" "3" "4" "5" "6" "7" "8" ];
+          # };
+        };
       };
     };
     home = {
@@ -61,7 +68,7 @@ with lib.hm.gvariant;
       ];
 
       sessionVariables = {
-        GLFW_IM_MODULE = "ibus";
+        # GLFW_IM_MODULE = "ibus";
         LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
         QT_QPA_PLATFORMTHEME = "gtk3";
         "TERM" = "xterm";

@@ -34,6 +34,11 @@
         hasklig
         hack-font
         inter
+        maple-mono-SC-NF
+        sarasa-gothic
+        font-awesome
+        material-design-icons
+        meslo-lgs-nf
         twemoji-color-font
         (nerdfonts.override {
           fonts = [
@@ -182,8 +187,8 @@
 
     xsession.windowManager.bspwm = {
       startupPrograms = [
-        "killall -9 picom sxhkd dunst xfce4-power-manager ksuperkey eww oneko sct"
-        "sleep 1"
+        # "killall -9 picom sxhkd dunst xfce4-power-manager ksuperkey eww oneko sct"
+        # "sleep 1"
         "pgrep -x sxhkd > /dev/null || sxhkd"
         "xsetroot -cursor_name left_ptr"
         "dunst -config $HOME/.config/dunst/dunstrc"
@@ -228,8 +233,8 @@
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
-        # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
+        # INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
             if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
                 bspc monitor "$EXTERNAL_MONITOR" -d 2 4 6 8 10
