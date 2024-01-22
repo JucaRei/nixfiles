@@ -22,7 +22,7 @@ with lib.hm.gvariant;
     home = {
       packages = with pkgs; [
         # Default packages for ALL
-        bspwm
+        # bspwm
         numlockx
         pamixer
         gnome3.gvfs
