@@ -96,16 +96,16 @@ with lib.hm.gvariant;
 
             DEFAULT_SESSION="bspwm" &
 
-            # Redirect errors to a file in user's home directory if we can
-            # for errfile in "$HOME/.wm-errors" "${TMPDIR-/tmp}/wm-$USER" "/tmp/wm-$USER"
-            # do
-            #     if ( cp /dev/null "$errfile" 2> /dev/null )
-            #     then
-            #         chmod 600 "$errfile"
-            #         exec > "$errfile" 2>&1
-            #         break
-            #     fi
-            # done &
+            Redirect errors to a file in user's home directory if we can
+            for errfile in "$HOME/.wm-errors" "${TMPDIR-/tmp}/wm-$USER" "/tmp/wm-$USER"
+            do
+                if ( cp /dev/null "$errfile" 2> /dev/null )
+                then
+                    chmod 600 "$errfile"
+                    exec > "$errfile" 2>&1
+                    break
+                fi
+            done &
 
             # Define Xresources
             userresources=$HOME/.Xresources &
@@ -127,7 +127,6 @@ with lib.hm.gvariant;
               dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
             fi &
 
-            # exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
             exec bspwm
           '';
           executable = true;
@@ -142,7 +141,7 @@ with lib.hm.gvariant;
         ".xsession" = {
           text = ''
             #!/usr/bin/env bash
-            #     ${pkgs.bspwm}/bin/bspwm -c /home/${username}/.config/bspwm/bspwmrc
+            bspwm -c /home/${username}/.config/bspwm/bspwmrc
 
             #     #XDG DATA DIR
             #     export XDG_DATA_DIRS="$HOME/.local/share/applications"
@@ -153,7 +152,6 @@ with lib.hm.gvariant;
             #     export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
             #     export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
 
-            # exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
             exec dbus-run-session bspwm
           '';
           executable = true;
@@ -173,7 +171,6 @@ with lib.hm.gvariant;
                 dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
               fi &
 
-              # exec "${pkgs.bspwm}/bin/bspwm"
               exec bspwm
             '';
           executable = true;
