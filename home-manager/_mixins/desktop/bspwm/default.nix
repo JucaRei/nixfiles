@@ -215,5 +215,4 @@ with lib.hm.gvariant;
       two-finger-scrolling-enabled = true;
     };
   };
-};
 }
