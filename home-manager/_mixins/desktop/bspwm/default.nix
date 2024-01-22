@@ -142,41 +142,43 @@ with lib.hm.gvariant;
           # };
         };
       };
+    };
 
-      systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
-        Unit = {
-          Description = "launch authentication-agent-1";
-          After = [ "graphical-session.target" ];
-          PartOf = [ "graphical-session.target" ];
-        };
-        Service = {
-          Type = "simple";
-          Restart = "on-failure";
-          ExecStart = ''
-            ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-          '';
-          # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
-        };
 
-        Install = { WantedBy = [ "graphical-session.target" ]; };
+    systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
+      Unit = {
+        Description = "launch authentication-agent-1";
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = ''
+          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+        '';
+        # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
       };
 
-      dconf.settings = {
-        "ca/desrt/dconf-editor" = {
-          show-warning = false;
-        };
+      Install = { WantedBy = [ "graphical-session.target" ]; };
+    };
 
-        "org/gnome/desktop/peripherals/mouse" = {
-          accel-profile = "adaptive";
-          left-handed = false;
-          natural-scroll = false;
-        };
 
-        "org/gnome/desktop/peripherals/touchpad" = {
-          natural-scroll = false;
-          tap-to-click = true;
-          two-finger-scrolling-enabled = true;
-        };
+    dconf.settings = {
+      "ca/desrt/dconf-editor" = {
+        show-warning = false;
+      };
+
+      "org/gnome/desktop/peripherals/mouse" = {
+        accel-profile = "adaptive";
+        left-handed = false;
+        natural-scroll = false;
+      };
+
+      "org/gnome/desktop/peripherals/touchpad" = {
+        natural-scroll = false;
+        tap-to-click = true;
+        two-finger-scrolling-enabled = true;
       };
     };
   };
