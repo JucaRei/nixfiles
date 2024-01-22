@@ -94,7 +94,7 @@ with lib.hm.gvariant;
           text = ''
             #!/usr/bin/env bash
 
-            DEFAULT_SESSION="${pkgs.bspwm}/bin/bspwm" &
+            DEFAULT_SESSION="bspwm" &
 
             # Redirect errors to a file in user's home directory if we can
             # for errfile in "$HOME/.wm-errors" "${TMPDIR-/tmp}/wm-$USER" "/tmp/wm-$USER"
@@ -127,7 +127,8 @@ with lib.hm.gvariant;
               dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
             fi &
 
-            exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
+            # exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
+            exec bspwm
           '';
           executable = true;
         };
@@ -152,7 +153,8 @@ with lib.hm.gvariant;
             #     export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
             #     export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
 
-            exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
+            # exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
+            exec dbus-run-session bspwm
           '';
           executable = true;
           # };
@@ -171,7 +173,8 @@ with lib.hm.gvariant;
                 dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
               fi &
 
-              exec "${pkgs.bspwm}/bin/bspwm"
+              # exec "${pkgs.bspwm}/bin/bspwm"
+              exec bspwm
             '';
           executable = true;
         };
