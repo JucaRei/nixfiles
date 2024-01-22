@@ -140,6 +140,17 @@ with lib.hm.gvariant;
           #   '';
           # };
         };
+        ".xprofile" = {
+          text =
+            ''
+              if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+                export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+                dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
+              fi &
+
+              exec "${pkgs.bspwm}/bin/bspwm"
+            '';
+        };
       };
     };
 
