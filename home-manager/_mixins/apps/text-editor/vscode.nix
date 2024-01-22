@@ -42,7 +42,6 @@ in
 
   config = {
     # services.vscode-server.enable = true;
-    services.vscode-server.enable = true;
     programs.vscode = {
       enable = true;
       # package = pkgs.unstable.vscode;

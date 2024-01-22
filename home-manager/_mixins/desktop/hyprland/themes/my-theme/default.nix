@@ -883,8 +883,8 @@ in
             # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
             # bind = , XF86MonBrightnessUp, exec, ${pkgs.brillo}/bin/brillo -A 5
             # bind = , XF86MonBrightnessDown, exec, ${pkgs.brillo}/bin/brillo -U 5
-            bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness
-            bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness
+            bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness -U 5 -q
+            bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness -A 5 -q
             bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
             bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
             bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle

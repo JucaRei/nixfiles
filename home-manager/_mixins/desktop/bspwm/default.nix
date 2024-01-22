@@ -92,8 +92,8 @@ with lib.hm.gvariant;
       file = {
         ".xinitrc" = {
           text = ''
-            #!/bin/sh
-             ${pkgs.bspwm}/bin/bspwm -c /home/${username}/.config/bspwm/bspwmrc
+            #!/usr/bin/env base
+                #  ${pkgs.bspwm}/bin/bspwm -c /home/${username}/.config/bspwm/bspwmrc
 
                 #XDG DATA DIR
                 #  export XDG_DATA_DIRS="$HOME/.local/share/applications"
@@ -104,77 +104,79 @@ with lib.hm.gvariant;
                 #  export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
                 #  export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
 
-                 exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
+                exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
           '';
           executable = true;
         };
-        ".startx" = {
-          text = ''
-            startx ~/.xinitrc session
-          '';
-          executable = true;
-        };
-      };
-
-        # ".xsession" = {
+        # ".startx" = {
         #   text = ''
-        #     ${pkgs.bspwm}/bin/bspwm -c /home/${username}/.config/bspwm/bspwmrc
-
-        #     #XDG DATA DIR
-        #     export XDG_DATA_DIRS="$HOME/.local/share/applications"
-
-        #     # XDG USER DIR
-        #     mkdir -p /tmp/$\{USER}-runtime && chmod -R 0700 /tmp/$\{USER}-runtime &
-        #     export XDG_RUNTIME_DIR=/tmp/$\{USER}-runtime
-        #     export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
-        #     export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
-
-        #     exec dbus-run-session bspwm
+        #     startx ~/.xinitrc session
         #   '';
         #   executable = true;
         # };
-        # ".dmrc" = {
-        #   text = ''
-        #     [Desktop]
-        #     Session=lightdm=xsession
-        #   '';
         # };
+
+        ".xsession" = {
+          text = ''
+            #!/usr/bin/env bash
+            #     ${pkgs.bspwm}/bin/bspwm -c /home/${username}/.config/bspwm/bspwmrc
+
+            #     #XDG DATA DIR
+            #     export XDG_DATA_DIRS="$HOME/.local/share/applications"
+
+            #     # XDG USER DIR
+            #     mkdir -p /tmp/$\{USER}-runtime && chmod -R 0700 /tmp/$\{USER}-runtime &
+            #     export XDG_RUNTIME_DIR=/tmp/$\{USER}-runtime
+            #     export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
+            #     export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
+
+            exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
+          '';
+          executable = true;
+          # };
+          # ".dmrc" = {
+          #   text = ''
+          #     [Desktop]
+          #     Session=lightdm=xsession
+          #   '';
+          # };
+        };
+      };
+
+      systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
+        Unit = {
+          Description = "launch authentication-agent-1";
+          After = [ "graphical-session.target" ];
+          PartOf = [ "graphical-session.target" ];
+        };
+        Service = {
+          Type = "simple";
+          Restart = "on-failure";
+          ExecStart = ''
+            ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+          '';
+          # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
+        };
+
+        Install = { WantedBy = [ "graphical-session.target" ]; };
+      };
+
+      dconf.settings = {
+        "ca/desrt/dconf-editor" = {
+          show-warning = false;
+        };
+
+        "org/gnome/desktop/peripherals/mouse" = {
+          accel-profile = "adaptive";
+          left-handed = false;
+          natural-scroll = false;
+        };
+
+        "org/gnome/desktop/peripherals/touchpad" = {
+          natural-scroll = false;
+          tap-to-click = true;
+          two-finger-scrolling-enabled = true;
+        };
+      };
     };
-
-    systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
-      Unit = {
-        Description = "launch authentication-agent-1";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-      Service = {
-        Type = "simple";
-        Restart = "on-failure";
-        ExecStart = ''
-          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-        '';
-        # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
-      };
-
-      Install = { WantedBy = [ "graphical-session.target" ]; };
-    };
-
-    dconf.settings = {
-      "ca/desrt/dconf-editor" = {
-        show-warning = false;
-      };
-
-      "org/gnome/desktop/peripherals/mouse" = {
-        accel-profile = "adaptive";
-        left-handed = false;
-        natural-scroll = false;
-      };
-
-      "org/gnome/desktop/peripherals/touchpad" = {
-        natural-scroll = false;
-        tap-to-click = true;
-        two-finger-scrolling-enabled = true;
-      };
-    };
-  };
-}
+  }
