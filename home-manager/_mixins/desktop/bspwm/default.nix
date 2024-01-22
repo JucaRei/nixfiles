@@ -92,28 +92,51 @@ with lib.hm.gvariant;
       file = {
         ".xinitrc" = {
           text = ''
-            #!/usr/bin/env base
-                #  ${pkgs.bspwm}/bin/bspwm -c /home/${username}/.config/bspwm/bspwmrc
+            #!/usr/bin/env bash
 
-                #XDG DATA DIR
-                #  export XDG_DATA_DIRS="$HOME/.local/share/applications"
+            DEFAULT_SESSION="${pkgs.bspwm}/bin/bspwm" &
 
-                # XDG USER DIR
-                #  mkdir -p /tmp/$\{USER}-runtime && chmod -R 0700 /tmp/$\{USER}-runtime &
-                #  export XDG_RUNTIME_DIR=/tmp/$\{USER}-runtime
-                #  export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
-                #  export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
+            # Redirect errors to a file in user's home directory if we can
+            for errfile in "$HOME/.wm-errors" "${TMPDIR-/tmp}/wm-$USER" "/tmp/wm-$USER"
+            do
+                if ( cp /dev/null "$errfile" 2> /dev/null )
+                then
+                    chmod 600 "$errfile"
+                    exec > "$errfile" 2>&1
+                    break
+                fi
+            done &
 
-                exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
+            # Define Xresources
+            userresources=$HOME/.Xresources &
+
+            # Merge what is available
+            if [ -f "$userresources" ]; then
+                xrdb -merge "$userresources"
+            fi &
+
+            if [ -d /etc/X11/xinit/xinitrc.d ]; then
+              for f in /etc/X11/xinit/xinitrc.d/*; do
+                [ -x "$f" ] && . "$f"
+              done
+              unset f
+            fi &
+
+            if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+              export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+              dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
+            fi &
+
+            exec dbus-run-session ${pkgs.bspwm}/bin/bspwm
           '';
           executable = true;
         };
-        ".startx" = {
-          text = ''
-            startx ~/.xinitrc session
-          '';
-          executable = true;
-        };
+        # ".startx" = {
+        #   text = ''
+        #     startx ~/.xinitrc session
+        #   '';
+        #   executable = true;
+        # };
 
         ".xsession" = {
           text = ''
