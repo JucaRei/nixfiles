@@ -89,131 +89,131 @@ with lib.hm.gvariant;
       ];
 
       # Without systemd (Voidlinux - Runit)
-      file = {
-        ".xinitrc" = {
-          text = ''
-            #!/usr/bin/env bash
+      # file = {
+      #   ".xinitrc" = {
+      #     text = ''
+      #       #!/usr/bin/env bash
 
-            DEFAULT_SESSION="bspwm" &
+      #       DEFAULT_SESSION="bspwm" &
 
-            Redirect errors to a file in user's home directory if we can
-            for errfile in "$HOME/.wm-errors" "${TMPDIR-/tmp}/wm-$USER" "/tmp/wm-$USER"
-            do
-                if ( cp /dev/null "$errfile" 2> /dev/null )
-                then
-                    chmod 600 "$errfile"
-                    exec > "$errfile" 2>&1
-                    break
-                fi
-            done &
+      #       Redirect errors to a file in user's home directory if we can
+      #       for errfile in "$HOME/.wm-errors" "${TMPDIR-/tmp}/wm-$USER" "/tmp/wm-$USER"
+      #       do
+      #           if ( cp /dev/null "$errfile" 2> /dev/null )
+      #           then
+      #               chmod 600 "$errfile"
+      #               exec > "$errfile" 2>&1
+      #               break
+      #           fi
+      #       done &
 
-            # Define Xresources
-            userresources=$HOME/.Xresources &
+      #       # Define Xresources
+      #       userresources=$HOME/.Xresources &
 
-            # Merge what is available
-            if [ -f "$userresources" ]; then
-                xrdb -merge "$userresources"
-            fi &
+      #       # Merge what is available
+      #       if [ -f "$userresources" ]; then
+      #           xrdb -merge "$userresources"
+      #       fi &
 
-            if [ -d /etc/X11/xinit/xinitrc.d ]; then
-              for f in /etc/X11/xinit/xinitrc.d/*; do
-                [ -x "$f" ] && . "$f"
-              done
-              unset f
-            fi &
+      #       if [ -d /etc/X11/xinit/xinitrc.d ]; then
+      #         for f in /etc/X11/xinit/xinitrc.d/*; do
+      #           [ -x "$f" ] && . "$f"
+      #         done
+      #         unset f
+      #       fi &
 
-            if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
-              export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
-              dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
-            fi &
+      #       if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+      #         export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+      #         dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
+      #       fi &
 
-            exec bspwm
-          '';
-          executable = true;
-        };
-        # ".startx" = {
-        #   text = ''
-        #     startx ~/.xinitrc session
-        #   '';
-        #   executable = true;
-        # };
+      #       exec bspwm
+      #     '';
+      #     executable = true;
+      #   };
+      #   # ".startx" = {
+      #   #   text = ''
+      #   #     startx ~/.xinitrc session
+      #   #   '';
+      #   #   executable = true;
+      #   # };
 
-        ".xsession" = {
-          text = ''
-            #!/usr/bin/env bash
-            bspwm -c /home/${username}/.config/bspwm/bspwmrc
+      #   # ".xsession" = {
+      #   #   text = ''
+      #   #     #!/usr/bin/env bash
+      #   #     bspwm -c /home/${username}/.config/bspwm/bspwmrc
 
-            #     #XDG DATA DIR
-            #     export XDG_DATA_DIRS="$HOME/.local/share/applications"
+      #   #     #     #XDG DATA DIR
+      #   #     #     export XDG_DATA_DIRS="$HOME/.local/share/applications"
 
-            #     # XDG USER DIR
-            #     mkdir -p /tmp/$\{USER}-runtime && chmod -R 0700 /tmp/$\{USER}-runtime &
-            #     export XDG_RUNTIME_DIR=/tmp/$\{USER}-runtime
-            #     export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
-            #     export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
+      #   #     #     # XDG USER DIR
+      #   #     #     mkdir -p /tmp/$\{USER}-runtime && chmod -R 0700 /tmp/$\{USER}-runtime &
+      #   #     #     export XDG_RUNTIME_DIR=/tmp/$\{USER}-runtime
+      #   #     #     export XDG_RUNTIME_DIR="/var/lib/flatpak/exports/share"
+      #   #     #     export XDG_RUNTIME_DIR="/home/juca/.local/share/flatpak/exports/share"
 
-            exec dbus-run-session bspwm
-          '';
-          executable = true;
-          # };
-          # ".dmrc" = {
-          #   text = ''
-          #     [Desktop]
-          #     Session=lightdm=xsession
-          #   '';
-          # };
-        };
-        ".xprofile" = {
-          text =
-            ''
-              if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
-                export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
-                dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
-              fi &
+      #   #     exec dbus-run-session bspwm
+      #   #   '';
+      #   #   executable = true;
+      #   # };
+      #   # ".dmrc" = {
+      #   #   text = ''
+      #   #     [Desktop]
+      #   #     Session=lightdm=xsession
+      #   #   '';
+      #   # };
+      # };
+      # ".xprofile" = {
+      #   text =
+      #     ''
+      #       if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+      #         export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+      #         dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" &
+      #       fi &
 
-              exec bspwm
-            '';
-          executable = true;
-        };
-      };
-    };
-
-
-    systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
-      Unit = {
-        Description = "launch authentication-agent-1";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-      Service = {
-        Type = "simple";
-        Restart = "on-failure";
-        ExecStart = ''
-          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-        '';
-        # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
-      };
-
-      Install = { WantedBy = [ "graphical-session.target" ]; };
-    };
-
-
-    dconf.settings = {
-      "ca/desrt/dconf-editor" = {
-        show-warning = false;
-      };
-
-      "org/gnome/desktop/peripherals/mouse" = {
-        accel-profile = "adaptive";
-        left-handed = false;
-        natural-scroll = false;
-      };
-
-      "org/gnome/desktop/peripherals/touchpad" = {
-        natural-scroll = false;
-        tap-to-click = true;
-        two-finger-scrolling-enabled = true;
-      };
+      #       exec bspwm
+      #     '';
+      #   executable = true;
+      # };
     };
   };
+
+
+  systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
+    Unit = {
+      Description = "launch authentication-agent-1";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      Restart = "on-failure";
+      ExecStart = ''
+        ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+      '';
+      # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
+    };
+
+    Install = { WantedBy = [ "graphical-session.target" ]; };
+  };
+
+
+  dconf.settings = {
+    "ca/desrt/dconf-editor" = {
+      show-warning = false;
+    };
+
+    "org/gnome/desktop/peripherals/mouse" = {
+      accel-profile = "adaptive";
+      left-handed = false;
+      natural-scroll = false;
+    };
+
+    "org/gnome/desktop/peripherals/touchpad" = {
+      natural-scroll = false;
+      tap-to-click = true;
+      two-finger-scrolling-enabled = true;
+    };
+  };
+};
 }
