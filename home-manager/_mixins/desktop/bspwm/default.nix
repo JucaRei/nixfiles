@@ -9,21 +9,16 @@ with lib.hm.gvariant;
 
   config = {
     xsession = {
-      # Systemdless
-      # enable = lib.mkIf (hostname != "zion" || "vm") true;
-      enable = false;
+      enable = true;
       numlock.enable = true;
       windowManager.bspwm = {
-        # enable = lib.mkIf (hostname != "zion" || "vm") true;
-        enable = false;
+        enable = true;
         alwaysResetDesktops = true;
       };
     };
     home = {
       packages = with pkgs; [
         # Default packages for ALL
-        # bspwm
-        numlockx
         pamixer
         gnome3.gvfs
         cifs-utils
@@ -42,17 +37,6 @@ with lib.hm.gvariant;
         acpi
 
         # i3lock-fancy
-
-        # kitty
-        # yad
-        # gnome.nautilus
-        # gnome.nautilus-python
-        # gnome.sushi
-        # gnome.file-roller
-        # nautilus-open-any-terminal
-        # cinnamon.nemo-with-extensions
-        # gnome3.nautilus
-
 
         # gtk_engines
         # gtk-engine-murrine

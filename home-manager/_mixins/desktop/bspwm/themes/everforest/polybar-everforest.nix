@@ -7,7 +7,7 @@
     ../default/polybar/scripts.nix
   ];
   config = {
-    services = lib.mkIf config.xsession.enable {
+    services = {
       polybar = {
         enable = true;
         package = pkgs.unstable.polybarFull;
