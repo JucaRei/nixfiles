@@ -179,4 +179,5 @@ with lib.hm.gvariant;
         };
       };
     };
-  }
+  };
+}
