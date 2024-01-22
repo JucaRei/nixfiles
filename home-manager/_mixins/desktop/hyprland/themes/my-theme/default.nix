@@ -254,6 +254,7 @@ in
               "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
               "hyprctl setcursor Bibata-Modern-Ice 16"
               "dunst"
+              "${change-brightness}/bin/change-brightness"
               "xfce4-power-manager"
               # Load cliphist history
               "wl-paste --watch cliphist store"
@@ -626,25 +627,40 @@ in
             animations {
               enabled = true
 
-              bezier = fluent_decel, 0, 0.2, 0.4, 1
-              bezier = easeOutCirc, 0, 0.55, 0.45, 1
-              bezier = easeOutCubic, 0.33, 1, 0.68, 1
-              bezier = easeinoutsine, 0.37, 0, 0.63, 1
+              bezier = md3_standard, 0.2, 0, 0, 1
+              bezier = md3_decel, 0.05, 0.7, 0.1, 1
+              bezier = md3_accel, 0.3, 0, 0.8, 0.15
+              bezier = overshot, 0.05, 0.9, 0.1, 1.1
+              bezier = crazyshot, 0.1, 1.5, 0.76, 0.92
+              bezier = hyprnostretch, 0.05, 0.9, 0.1, 1.0
+              bezier = fluent_decel, 0.1, 1, 0, 1
+              # Animation configs
+              animation = windows, 1, 2, md3_decel, popin 80%
+              animation = border, 1, 10, default
+              animation = fade, 1, 2, default
+              animation = workspaces, 1, 3, md3_decel
+              animation = specialWorkspace, 1, 3, md3_decel, slidevert
 
-              # Windows
-              animation = windowsIn, 1, 3, easeOutCubic, popin 30% # window open
-              animation = windowsOut, 1, 3, fluent_decel, popin 70% # window close.
-              animation = windowsMove, 1, 2, easeinoutsine, slide # everything in between, moving, dragging, resizing.
+              ## Other
+              # bezier = fluent_decel, 0, 0.2, 0.4, 1
+              # bezier = easeOutCirc, 0, 0.55, 0.45, 1
+              # bezier = easeOutCubic, 0.33, 1, 0.68, 1
+              # bezier = easeinoutsine, 0.37, 0, 0.63, 1
 
-              # Fade
-              animation = fadeIn, 1, 3, easeOutCubic  # fade in (open) -> layers and windows
-              animation = fadeOut, 1, 2, easeOutCubic # fade out (close) -> layers and windows
-              animation = fadeSwitch, 0, 1, easeOutCirc # fade on changing activewindow and its opacity
-              animation = fadeShadow, 1, 10, easeOutCirc # fade on changing activewindow for shadows
-              animation = fadeDim, 1, 4, fluent_decel # the easing of the dimming of inactive windows
-              animation = border, 1, 2.7, easeOutCirc # for animating the border's color switch speed
-              animation = borderangle, 1, 30, fluent_decel, once # for animating the border's gradient angle - styles: once (default), loop
-              animation = workspaces, 1, 4, easeOutCubic, fade # styles: slide, slidevert, fade, slidefade, slidefadevert
+              # # Windows
+              # animation = windowsIn, 1, 3, easeOutCubic, popin 30% # window open
+              # animation = windowsOut, 1, 3, fluent_decel, popin 70% # window close.
+              # animation = windowsMove, 1, 2, easeinoutsine, slide # everything in between, moving, dragging, resizing.
+
+              # # Fade
+              # animation = fadeIn, 1, 3, easeOutCubic  # fade in (open) -> layers and windows
+              # animation = fadeOut, 1, 2, easeOutCubic # fade out (close) -> layers and windows
+              # animation = fadeSwitch, 0, 1, easeOutCirc # fade on changing activewindow and its opacity
+              # animation = fadeShadow, 1, 10, easeOutCirc # fade on changing activewindow for shadows
+              # animation = fadeDim, 1, 4, fluent_decel # the easing of the dimming of inactive windows
+              # animation = border, 1, 2.7, easeOutCirc # for animating the border's color switch speed
+              # animation = borderangle, 1, 30, fluent_decel, once # for animating the border's gradient angle - styles: once (default), loop
+              # animation = workspaces, 1, 4, easeOutCubic, fade # styles: slide, slidevert, fade, slidefade, slidefadevert
 
               # other one
               # bezier = wind, 0.05, 0.9, 0.1, 1.05
@@ -881,10 +897,10 @@ in
             # Fn keys
             # bind = , XF86MonBrightnessUp, exec, brightnessctl -q s +10%
             # bind = , XF86MonBrightnessDown, exec, brightnessctl -q s 10%-
-            # bind = , XF86MonBrightnessUp, exec, ${pkgs.brillo}/bin/brillo -A 5
-            # bind = , XF86MonBrightnessDown, exec, ${pkgs.brillo}/bin/brillo -U 5
-            bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness -U 5 -q
-            bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness -A 5 -q
+            bind = , XF86MonBrightnessUp, exec, ${pkgs.brillo}/bin/brillo -A 2
+            bind = , XF86MonBrightnessDown, exec, ${pkgs.brillo}/bin/brillo -U 2
+            # bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness -U 5 -q
+            # bind = , XF86MonBrightnessDown, exec, ${change-brightness}/bin/change-brightness -A 5 -q
             bind = , XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%
             bind = , XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%
             bind = , XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle

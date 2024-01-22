@@ -108,13 +108,12 @@ with lib.hm.gvariant;
           '';
           executable = true;
         };
-        # ".startx" = {
-        #   text = ''
-        #     startx ~/.xinitrc session
-        #   '';
-        #   executable = true;
-        # };
-        # };
+        ".startx" = {
+          text = ''
+            startx ~/.xinitrc session
+          '';
+          executable = true;
+        };
 
         ".xsession" = {
           text = ''
