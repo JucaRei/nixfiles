@@ -150,6 +150,7 @@ with lib.hm.gvariant;
 
               exec "${pkgs.bspwm}/bin/bspwm"
             '';
+          executable = true;
         };
       };
     };
