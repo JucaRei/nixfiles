@@ -97,15 +97,15 @@ with lib.hm.gvariant;
             DEFAULT_SESSION="${pkgs.bspwm}/bin/bspwm" &
 
             # Redirect errors to a file in user's home directory if we can
-            for errfile in "$HOME/.wm-errors" "${TMPDIR-/tmp}/wm-$USER" "/tmp/wm-$USER"
-            do
-                if ( cp /dev/null "$errfile" 2> /dev/null )
-                then
-                    chmod 600 "$errfile"
-                    exec > "$errfile" 2>&1
-                    break
-                fi
-            done &
+            # for errfile in "$HOME/.wm-errors" "${TMPDIR-/tmp}/wm-$USER" "/tmp/wm-$USER"
+            # do
+            #     if ( cp /dev/null "$errfile" 2> /dev/null )
+            #     then
+            #         chmod 600 "$errfile"
+            #         exec > "$errfile" 2>&1
+            #         break
+            #     fi
+            # done &
 
             # Define Xresources
             userresources=$HOME/.Xresources &
