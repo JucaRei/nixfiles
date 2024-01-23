@@ -1,7 +1,7 @@
 _:
 let
   # "subvol=@"
-  options = [ "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:5" "space_cache=v2" "commit=120" "discard=async" ];
+  options = [ "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
 in
 {
   disko.devices = {
@@ -32,6 +32,7 @@ in
                 type = "swap";
                 randomEncryption = true;
                 resumeDevice = true;
+                mountOptions = [ "defaults" "noatime" ];
               };
             };
             root = {
@@ -45,7 +46,19 @@ in
                   # Subvolume name is different from mountpoint
                   "/rootfs" = {
                     mountpoint = "/";
-                    mountOptions = [ "subvol=@rootfs" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+                    mountOptions = [
+                      "subvol=@rootfs"
+                      "rw"
+                      "noatime"
+                      "nodiratime"
+                      "ssd"
+                      "nodatacow"
+                      "compress-force=zstd:15"
+                      "space_cache=v2"
+                      "commit=120"
+                      "discard=async"
+                      "x-gvfs-hide" # hide from filemanager
+                    ];
                   };
                   # Subvolume name is the same as the mountpoint
                   "/home" = {

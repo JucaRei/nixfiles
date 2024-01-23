@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, hostname, ... }: {
   boot = {
     #tmp = {
     #useTmpfs = true;
@@ -6,7 +6,7 @@
     #};
     loader = {
       efi = {
-        canTouchEfiVariables = true;
+        canTouchEfiVariables = if hostname == "air" then false else true;
         efiSysMountPoint = "/boot/efi";
       };
       grub = {

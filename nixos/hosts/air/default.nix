@@ -5,14 +5,14 @@
     inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
-    # (import ./disks-btrfs.nix { })
+    (import ./disks-btrfs.nix { })
     # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/boot/no-hz.nix
     ../../_mixins/hardware/bluetooth
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/text-editor/vscode.nix
-    ../../_mixins/hardware/graphics/intel-old.nix
+    ../../_mixins/hardware/graphics/intel/intel-old.nix
     ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/services/security/doas.nix
     ../../_mixins/virtualization
@@ -71,15 +71,16 @@
       "dev.i915.perf_stream_paranoid" = 0;
     };
     # kernelPackages = pkgs.linuxPackages_lqx;
-    kernelPackages = pkgs.linuxPackages_xanmod_stable;
+    # kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
-    # kernelPackages = pkgs.linuxPackages_5_10;
+    kernelPackages = pkgs.linuxPackages_5_10;
     supportedFilesystems = [ "cifs" "nfs" "btrfs" ];
 
     plymouth = {
       theme = "breeze";
       enable = false;
     };
+    loader.efiInstallAsRemovable = lib.mkForce true;
   };
 
   ###################
@@ -328,6 +329,7 @@
   services = {
     hardware = {
       bolt.enable = true;
+      brillo.enable = true;
     };
     mbpfan = {
       enable = true;
