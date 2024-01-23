@@ -316,7 +316,8 @@
       # hostids are generated using `mkhostid` alias
       nixosConfigurations = {
         # .iso images
-        # - nix run github:numtide/nixos-anywhere -- --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
+        # - nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
+        # nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/.dotfiles/nixfiles#air root@192.168.1.76
         # - nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
         # nix build .#nixosConfigurations.iso.config.system.build.isoImage
 
