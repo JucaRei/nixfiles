@@ -29,7 +29,7 @@
       compressor = "zstd";
       supportedFilesystems = [ "btrfs" ];
     };
-    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+    # extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelModules = [
       # "acpi_backlight=vendor"
       # "applesmc"
