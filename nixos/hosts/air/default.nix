@@ -1,4 +1,4 @@
-{ inputs, lib, pkgs, ... }:
+{ inputs, lib, pkgs, config, ... }:
 {
   imports = [
     inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
@@ -8,15 +8,16 @@
     # (import ./disks-btrfs.nix { })
     (import ./btrfs.nix { })
     # (import ./disks-ext4.nix { })
-    ../../_mixins/hardware/boot/efi.nix
-    ../../_mixins/hardware/boot/no-hz.nix
+    # ../../_mixins/hardware/boot/efi.nix
+    ../../_mixins/hardware/boot/systemd-boot.nix
+    # ../../_mixins/hardware/boot/no-hz.nix
     ../../_mixins/hardware/bluetooth
-    ../../_mixins/apps/browser/firefox.nix
-    ../../_mixins/apps/text-editor/vscode.nix
+    # ../../_mixins/apps/browser/firefox.nix
+    # ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/hardware/graphics/intel/intel-old.nix
     ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/services/security/doas.nix
-    ../../_mixins/virtualization
+    # ../../_mixins/virtualization
   ];
 
   boot = {
@@ -28,9 +29,10 @@
       compressor = "zstd";
       supportedFilesystems = [ "btrfs" ];
     };
+    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelModules = [
       # "acpi_backlight=vendor"
-      "applesmc"
+      # "applesmc"
       # "i915"
       # "i965"
       "wl"
@@ -75,13 +77,17 @@
     # kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
     kernelPackages = pkgs.linuxPackages_5_10;
-    supportedFilesystems = [ "cifs" "nfs" "btrfs" ];
+    supportedFilesystems = [
+      # "cifs"
+      # "nfs"
+      "btrfs"
+    ];
 
     plymouth = {
       theme = "breeze";
-      enable = false;
+      enable = lib.mkDefault false;
     };
-    loader.efiInstallAsRemovable = lib.mkForce true;
+    # loader.grub.efiInstallAsRemovable = lib.mkForce true;
   };
 
   ###################
@@ -207,111 +213,112 @@
   #   #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
   # }];
 
-  fileSystems = {
-    "/" =
-      {
-        device = "/dev/disk/by-label/Nixsystem";
-        fsType = "btrfs";
-        options = [
-          "subvol=@"
-          "noatime"
-          "ssd"
-          "compress-force=zstd:3"
-          "space_cache=v2"
-          "commit=120"
-          "discard=async"
-        ];
-      };
+  # fileSystems = {
+  #   "/" =
+  #     {
+  #       device = "/dev/disk/by-label/Nixsystem";
+  #       fsType = "btrfs";
+  #       options = [
+  #         "subvol=@"
+  #         "noatime"
+  #         "ssd"
+  #         "compress-force=zstd:3"
+  #         "space_cache=v2"
+  #         "commit=120"
+  #         "discard=async"
+  #       ];
+  #     };
 
-    "/home" =
-      {
-        device = "/dev/disk/by-label/Nixsystem";
-        fsType = "btrfs";
-        options = [
-          "subvol=@home"
-          "noatime"
-          "ssd"
-          "compress-force=zstd:3"
-          "space_cache=v2"
-          "commit=120"
-          "discard=async"
-        ];
-      };
+  #   "/home" =
+  #     {
+  #       device = "/dev/disk/by-label/Nixsystem";
+  #       fsType = "btrfs";
+  #       options = [
+  #         "subvol=@home"
+  #         "noatime"
+  #         "ssd"
+  #         "compress-force=zstd:3"
+  #         "space_cache=v2"
+  #         "commit=120"
+  #         "discard=async"
+  #       ];
+  #     };
 
-    "/.snapshots" =
-      {
-        device = "/dev/disk/by-label/Nixsystem";
-        fsType = "btrfs";
-        options = [
-          "subvol=@snapshots"
-          "noatime"
-          "ssd"
-          "compress-force=zstd:15"
-          "space_cache=v2"
-          "commit=120"
-          "discard=async"
-        ];
-      };
+  #   "/.snapshots" =
+  #     {
+  #       device = "/dev/disk/by-label/Nixsystem";
+  #       fsType = "btrfs";
+  #       options = [
+  #         "subvol=@snapshots"
+  #         "noatime"
+  #         "ssd"
+  #         "compress-force=zstd:15"
+  #         "space_cache=v2"
+  #         "commit=120"
+  #         "discard=async"
+  #       ];
+  #     };
 
-    "/var/log" =
-      {
-        device = "/dev/disk/by-label/Nixsystem";
-        fsType = "btrfs";
-        options = [
-          "subvol=@logs"
-          "noatime"
-          "ssd"
-          "compress-force=zstd:3"
-          "space_cache=v2"
-          "commit=120"
-          "discard=async"
-        ];
-      };
+  #   "/var/log" =
+  #     {
+  #       device = "/dev/disk/by-label/Nixsystem";
+  #       fsType = "btrfs";
+  #       options = [
+  #         "subvol=@logs"
+  #         "noatime"
+  #         "ssd"
+  #         "compress-force=zstd:3"
+  #         "space_cache=v2"
+  #         "commit=120"
+  #         "discard=async"
+  #       ];
+  #     };
 
-    "/var/tmp" =
-      {
-        device = "/dev/disk/by-label/Nixsystem";
-        fsType = "btrfs";
-        options = [
-          "subvol=@tmp"
-          "noatime"
-          "ssd"
-          "compress-force=zstd:3"
-          "space_cache=v2"
-          "commit=120"
-          "discard=async"
-        ];
-      };
+  #   "/var/tmp" =
+  #     {
+  #       device = "/dev/disk/by-label/Nixsystem";
+  #       fsType = "btrfs";
+  #       options = [
+  #         "subvol=@tmp"
+  #         "noatime"
+  #         "ssd"
+  #         "compress-force=zstd:3"
+  #         "space_cache=v2"
+  #         "commit=120"
+  #         "discard=async"
+  #       ];
+  #     };
 
-    "/nix" =
-      {
-        device = "/dev/disk/by-label/Nixsystem";
-        fsType = "btrfs";
-        options = [
-          "subvol=@nix"
-          "noatime"
-          "ssd"
-          "compress-force=zstd:15"
-          "space_cache=v2"
-          "commit=120"
-          "discard=async"
-        ];
-      };
+  #   "/nix" =
+  #     {
+  #       device = "/dev/disk/by-label/Nixsystem";
+  #       fsType = "btrfs";
+  #       options = [
+  #         "subvol=@nix"
+  #         "noatime"
+  #         "ssd"
+  #         "compress-force=zstd:15"
+  #         "space_cache=v2"
+  #         "commit=120"
+  #         "discard=async"
+  #       ];
+  #     };
 
-    "/boot/efi" =
-      {
-        device = "/dev/disk/by-label/EFI";
-        fsType = "vfat";
-        options = [ "defaults" "noatime" "nodiratime" ];
-        noCheck = true;
-      };
-  };
+  #   "/boot/efi" =
+  #     {
+  #       device = "/dev/disk/by-label/EFI";
+  #       fsType = "vfat";
+  #       options = [ "defaults" "noatime" "nodiratime" ];
+  #       noCheck = true;
+  #     };
+  # };
 
-  swapDevices =
-    [{
-      device = "/dev/disk/by-label/NixSWAP";
-      options = [ "defaults" "noatime" ];
-    }];
+  # swapDevices =
+
+  #   [{
+  #     device = "/dev/disk/by-label/NixSWAP";
+  #     options = [ "defaults" "noatime" ];
+  #   }];
 
 
   environment.systemPackages = with pkgs; [
@@ -325,12 +332,13 @@
     # kodi
   ];
 
-  hardware = { };
+  hardware = {
+    brillo.enable = true;
+  };
 
   services = {
     hardware = {
       bolt.enable = true;
-      brillo.enable = true;
     };
     mbpfan = {
       enable = true;
@@ -343,10 +351,7 @@
         # Lock to Ctrl.
         layout = "us";
         variant = "intl";
-        options = [
-          "ctrl:nocaps"
-          "eurosign:e"
-        ];
+        options = "eurosign:e,ctrl:nocaps";
         model = "pc105";
       };
       deviceSection = lib.mkDefault ''
