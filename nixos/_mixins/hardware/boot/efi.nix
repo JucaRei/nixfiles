@@ -6,7 +6,8 @@
     };
     loader = {
       efi = {
-        canTouchEfiVariables = if hostname == "air" then false else true;
+        # canTouchEfiVariables = if hostname == "air" then false else true;
+        canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
         # efiSysMountPoint = "/boot";
       };
