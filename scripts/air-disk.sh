@@ -49,7 +49,7 @@ mkdir -pv /mnt/.snapshots
 mkdir -pv /mnt/nix
 mkdir -pv /mnt/var/log
 mkdir -pv /mnt/var/tmp
-mount -o $BTRFS_OPTS2,subvol=@home /dev/disk/by-label/NIXOS /mnt/home
+mount -o $BTRFS_OPTS,subvol=@home /dev/disk/by-label/NIXOS /mnt/home
 # mount -o $BTRFS_OPTS,subvol="@home" /dev/disk/by-partlabel/NIXOS /mnt/home
 mount -o $BTRFS_OPTS,subvol=@snapshots /dev/disk/by-label/NIXOS /mnt/.snapshots
 # mount -o $BTRFS_OPTS,subvol="@snapshots" /dev/disk/by-partlabel/NIXOS /mnt/.snapshots
