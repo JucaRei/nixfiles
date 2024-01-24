@@ -8,9 +8,9 @@ sgdisk -n 0:0:-5GiB ${DRIVE}
 sgdisk -n 0:0:0 ${DRIVE}
 
 sgdisk -t 1:EF00 ${DRIVE}
-sgdisk -c 1:"EFI FileSystem partition"
+sgdisk -c 1:"EFI FileSystem partition" ${DRIVE}
 sgdisk -t 2:8300 ${DRIVE}
-sgdisk -c 2:"Nixos FileSystem"
+sgdisk -c 2:"Nixos FileSystem" ${DRIVE}
 sgdisk -t 3:8200 ${DRIVE}
 sgdisk -c 3:"Nix Swap" ${DRIVE}
 parted ${DRIVE}1 -- set 1 esp on
@@ -24,7 +24,8 @@ SWAP_PARTITION="/dev/sda3"
 
 mkfs.vfat -F32 $BOOT_PARTITION -n "EFI"
 mkfs.btrfs $ROOT_PARTITION -f -L "NIXOS"
-mkfs.btrfs $ROOT_PARTITION -f -L "SWAP"
+mkswap $SWAP_PARTITION -L "SWAP"
+swapon /dev/disk/by-label/SWAP
 
 BTRFS_OPTS="rw,noatime,ssd,compress-force=zstd:15,space_cache=v2,nodatacow,commit=120,discard=async"
 BTRFS_OPTS2="rw,noatime,ssd,compress-force=zstd:3,space_cache=v2,nodatacow,commit=120,discard=async"
