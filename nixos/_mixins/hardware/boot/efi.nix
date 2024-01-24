@@ -1,9 +1,9 @@
 { lib, pkgs, hostname, ... }: {
   boot = {
-    #tmp = {
-    #useTmpfs = true;
-    #cleanOnBoot = true;
-    #};
+    tmp = {
+      #useTmpfs = true;
+      cleanOnBoot = true;
+    };
     loader = {
       efi = {
         canTouchEfiVariables = if hostname == "air" then false else true;

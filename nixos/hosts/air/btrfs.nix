@@ -1,4 +1,6 @@
-_:
+# _:
+{ disks ? [ "/dev/sda" ], ... }:
+
 let
   # "subvol=@"
   options = [ "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
@@ -8,7 +10,8 @@ in
     disk = {
       sda = {
         type = "disk";
-        device = "/dev/disk/by-id/ata-APPLE_SSD_TS064C_61UA30RXK6HK";
+        # device = "/dev/disk/by-id/ata-APPLE_SSD_TS064C_61UA30RXK6HK";
+        device = "/dev/sda";
         content = {
           type = "gpt";
           partitions = {
@@ -86,17 +89,17 @@ in
                 };
               };
             };
-            # SWAPNIX = {
-            #   # start = "512MiB";
-            #   # end = "6GiB";
-            #   size = "100%";
-            #   # size = "6GiB";
-            #   content = {
-            #     type = "swap";
-            #     randomEncryption = true;
-            #     resumeDevice = true;
-            #   };
-            # };
+            SWAPNIX = {
+              # start = "512MiB";
+              # end = "6GiB";
+              size = "100%";
+              # size = "6GiB";
+              content = {
+                type = "swap";
+                randomEncryption = false;
+                resumeDevice = true;
+              };
+            };
           };
         };
       };
