@@ -329,7 +329,7 @@
         # Servers
         # Laptop
         nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "hyprland"; hostid = "ceafb566"; };
-        air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "awesome"; hostid = "718641c6"; };
+        air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines

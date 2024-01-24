@@ -9,12 +9,13 @@
     (import ./btrfs.nix { })
     # (import ./disks-ext4.nix { })
     # ../../_mixins/hardware/boot/efi.nix
-    ../../_mixins/hardware/boot/systemd-boot.nix
+    # ../../_mixins/hardware/boot/systemd-boot.nix
+    ../../_mixins/hardware/boot/refind.nix
     # ../../_mixins/hardware/boot/no-hz.nix
     ../../_mixins/hardware/bluetooth
     # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
-    ../../_mixins/hardware/graphics/intel/intel-old.nix
+    # ../../_mixins/hardware/graphics/intel/intel-old.nix
     ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/services/security/doas.nix
     # ../../_mixins/virtualization
@@ -55,7 +56,7 @@
       #"video=efifb"
       "zswap.enabled=1"
       "zswap.compressor=lz4hc"
-      "zswap.max_pool_percent=25"
+      "zswap.max_pool_percent=20"
       "zswap.zpool=z3fold"
       "fs.inotify.max_user_watches=524288"
       "mitigations=off"
@@ -354,9 +355,9 @@
         options = "eurosign:e,ctrl:nocaps";
         model = "pc105";
       };
-      deviceSection = lib.mkDefault ''
-        Option "TearFree" "true"
-      '';
+      # deviceSection = lib.mkDefault ''
+      #   Option "TearFree" "true"
+      # '';
     };
 
     fstrim = {

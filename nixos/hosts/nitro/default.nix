@@ -78,6 +78,9 @@
       "crc32c-intel"
       "lz4hc"
       "lz4hc_compress"
+      "vhost_vsock"
+      # The 'splash' arg is included by the plymouth option
+      "boot.shell_on_fail"
     ];
     plymouth = {
       enable = true;
@@ -336,6 +339,7 @@
   };
 
   services = {
+    dbus.implementation = lib.mkForce "broker";
     acpid = {
       enable = true;
     };

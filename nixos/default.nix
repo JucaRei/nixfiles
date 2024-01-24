@@ -8,8 +8,8 @@
     # ./_mixins/users/root
     # ./_mixins/users/${username}
     # inputs.home-manager.nixosModules.home-manager
-    inputs.disko.nixosModules.disko
     inputs.vscode-server.nixosModules.default
+    inputs.disko.nixosModules.disko
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
     ./_mixins/services/network/openssh.nix
@@ -209,7 +209,7 @@
       192.168.1.35  nitro
       192.168.1.50  nitro
       192.168.1.45  rocinante
-      192.168.1.76  rocinante
+      192.168.1.76  dongle
       192.168.1.228 rocinante
       192.168.1.230 air
       192.168.1.200 DietPi
@@ -262,7 +262,7 @@
 
     autoUpgrade = {
       enable = false;
-      allowReboot = true;
+      allowReboot = false;
       channel = "https://nixos.org/channels/nixos-unstable";
       flake = inputs.self.outPath;
       flags = [
@@ -288,10 +288,12 @@
     ];
 
     # Reduce default service stop timeouts for faster shutdown
-    # Default timeout for stopping services managed by systemd to 10 seconds
+    # Default timeout for stopping services managed by systemd to 15 seconds
     extraConfig = ''
-      DefaultTimeoutStopSec=10s
-      DefaultTimeoutAbortSec=8s
+      DefaultTimeoutStartSec=15s
+      DefaultTimeoutStopSec=15s
+      DefaultDeviceTimeoutSec=15s
+      DefaultTimeoutAbortSec=15s
     '';
 
     # When a program crashes, systemd will create a core dump file, typically in the /var/lib/systemd/coredump/ directory.
@@ -361,9 +363,9 @@
   services = {
     journald = {
       extraConfig = lib.mkDefault ''
-        SystemMaxUse=50M
+        SystemMaxUse=10M
         SystemMaxFileSize=10M
-        RuntimeMaxUse=50M
+        RuntimeMaxUse=10M
         RuntimeMaxFileSize=10M
         MaxFileSec=7day
         SystemMaxFiles=5
@@ -375,7 +377,7 @@
       # Enable the D-Bus service, which is a message bus system that allows
       # communication between applications.
       enable = true;
-      implementation = "broker";
+      # implementation = "broker";
       packages = with pkgs; [
         dconf
         grc

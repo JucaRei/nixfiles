@@ -65,7 +65,7 @@
     };
 
     # needed for GNOME services outside of GNOME Desktop
-    dbus.packages = if hostname != "rasp3" then [ pkgs.gcr ] else "";
+    # dbus.packages = if hostname != "rasp3" then [ pkgs.gcr ] else "";
 
     udev =
       if hostname != "rasp3" then {
@@ -90,9 +90,6 @@
   };
 
   security = {
-    # allow wayland lockers to unlock the screen
-    pam.services.swaylock.text = "auth include login";
-
     # userland niceness
     rtkit.enable = true;
   };
