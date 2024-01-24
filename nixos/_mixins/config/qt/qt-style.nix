@@ -18,12 +18,12 @@
     enable = true;
     platformTheme = lib.mkDefault "gnome";
     # platformTheme = "qt5ct";
-    style = lib.mkDefault {
-      package = pkgs.adwaita-qt6;
-      name = "adwaita-dark";
-      # package = pkgs.utterly-nord-plasma;
-      # name = "Utterly Nord Plasma";
-    };
-
+    # style = lib.mkDefault {
+    #   package = pkgs.adwaita-qt6;
+    #   name = "adwaita-dark";
+    #   # package = pkgs.utterly-nord-plasma;
+    #   # name = "Utterly Nord Plasma";
+    # };
+    style = "adwaita-dark";
   };
 }

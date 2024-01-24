@@ -7,13 +7,13 @@
     loader = {
       efi = {
         canTouchEfiVariables = if hostname == "air" then false else true;
-        efiSysMountPoint = "/boot/efi";
+        efiSysMountPoint = "/boot";
       };
       grub = {
         enable = lib.mkForce true;
         devices = [ "nodev" ]; # "nodev" for efi only
         # device = "nodev"; # "nodev" for efi only
-        efiSupport = lib.mkDefault true;
+        efiSupport = lib.mkForce true;
         # efiInstallAsRemovable = true;   #  Don't depend on NVRAM state
         configurationLimit = 4;
         forceInstall = true;

@@ -8,9 +8,9 @@
     # (import ./disks-btrfs.nix { })
     (import ./btrfs.nix { })
     # (import ./disks-ext4.nix { })
-    # ../../_mixins/hardware/boot/efi.nix
+    ../../_mixins/hardware/boot/efi.nix
     # ../../_mixins/hardware/boot/systemd-boot.nix
-    ../../_mixins/hardware/boot/refind.nix
+    # ../../_mixins/hardware/boot/refind.nix
     # ../../_mixins/hardware/boot/no-hz.nix
     ../../_mixins/hardware/bluetooth
     # ../../_mixins/apps/browser/firefox.nix
@@ -22,6 +22,12 @@
   ];
 
   boot = {
+    loader = {
+      grub.copyKernels = true;
+      systemd-boot.enable = lib.mkForce false;
+      # grub.device = "nodev"; # or "nodev" for efi only
+    };
+
     # blacklistedKernelModules = lib.mkDefault [ "nvidia" "nouveau" ];
     initrd = {
       availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
@@ -86,7 +92,7 @@
 
     plymouth = {
       theme = "breeze";
-      enable = lib.mkDefault false;
+      enable = lib.mkForce false;
     };
     # loader.grub.efiInstallAsRemovable = lib.mkForce true;
   };

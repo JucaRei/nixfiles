@@ -16,7 +16,7 @@ in
               priority = 1;
               name = "ESP";
               start = "1M";
-              end = "512M";
+              end = "650M";
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -26,7 +26,8 @@ in
               };
             };
             root = {
-              size = "100%";
+              # size = "100%";
+              end = "-5G";
               content = {
                 type = "btrfs";
                 extraArgs = [ "-f" ]; # Override existing partition
@@ -73,15 +74,26 @@ in
                   # This subvolume will be created but not mounted
                   # "/test" = { };
                   # Subvolume for the swapfile
-                  "/swap" = {
-                    mountpoint = "/.swapvol";
-                    swap = {
-                      swapfile.size = "3G";
-                      swapfile2.size = "2G";
-                      swapfile2.path = "rel-path";
-                    };
-                  };
+                  # "/swap" = {
+                  #   mountpoint = "/.swapvol";
+                  #   swap = {
+                  #     swapfile.size = "3G";
+                  #     swapfile2.size = "2G";
+                  #     swapfile2.path = "rel-path";
+                  #   };
+                  # };
                 };
+              };
+            };
+            SWAPNIX = {
+              # start = "512MiB";
+              # end = "6GiB";
+              size = "100%";
+              # size = "6GiB";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+                resumeDevice = true;
               };
             };
           };

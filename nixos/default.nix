@@ -297,7 +297,7 @@
     '';
 
     # When a program crashes, systemd will create a core dump file, typically in the /var/lib/systemd/coredump/ directory.
-    coredump.enable = true;
+    # coredump.enable = true;
 
     # systemd's out-of-memory daemon
     # oomd = {
@@ -318,25 +318,25 @@
       systemd-logind.restartIfChanged = false;
       wpa_supplicant.restartIfChanged = false;
 
-      lock-before-sleeping = {
-        restartIfChanged = false;
-        unitConfig = {
-          Description = "Helper service to bind locker to sleep.target";
-        };
+      # lock-before-sleeping = {
+      #   restartIfChanged = false;
+      #   unitConfig = {
+      #     Description = "Helper service to bind locker to sleep.target";
+      #   };
 
-        serviceConfig = {
-          ExecStart = "${pkgs.slock}/bin/slock";
-          Type = "simple";
-        };
+      #   serviceConfig = {
+      #     ExecStart = "${pkgs.slock}/bin/slock";
+      #     Type = "simple";
+      #   };
 
-        before = [ "pre-sleep.service" ];
-        wantedBy = [ "pre-sleep.service" ];
+      #   before = [ "pre-sleep.service" ];
+      #   wantedBy = [ "pre-sleep.service" ];
 
-        environment = {
-          DISPLAY = ":0";
-          XAUTHORITY = "/home/${username}/.Xauthority";
-        };
-      };
+      #   environment = {
+      #     DISPLAY = ":0";
+      #     XAUTHORITY = "/home/${username}/.Xauthority";
+      #   };
+      # };
 
       #---------------------------------------------------------------------
       # Modify autoconnect priority of the connection of my home network
@@ -352,10 +352,10 @@
       # Make nixos boot a tad faster by turning these off during boot
       #---------------------------------------------------------------------
       # Workaround https://github.com/NixOS/nixpkgs/issues/180175
-      NetworkManager-wait-online.enable = false;
+      NetworkManager-wait-online.enable = lib.mkForce false;
       # Speed up boot
       # https://discourse.nixos.org/t/boot-faster-by-disabling-udev-settle-and-nm-wait-online/6339
-      systemd-udev-settle.enable = false;
+      systemd-udev-settle.enable = lib.mkForce false;
       # systemd-user-sessions.enable = false;
     };
   };
