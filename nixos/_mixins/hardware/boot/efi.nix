@@ -7,7 +7,8 @@
     loader = {
       efi = {
         canTouchEfiVariables = if hostname == "air" then false else true;
-        efiSysMountPoint = "/boot";
+        efiSysMountPoint = "/boot/efi";
+        # efiSysMountPoint = "/boot";
       };
       grub = {
         enable = lib.mkForce true;

@@ -327,6 +327,11 @@
   #     options = [ "defaults" "noatime" ];
   #   }];
 
+  swapDevices = [{
+    device = "/swap";
+    size = 5120;
+  }];
+
 
   environment.systemPackages = with pkgs; [
     # unstable.tidal-dl

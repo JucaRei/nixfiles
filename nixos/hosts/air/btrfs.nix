@@ -21,7 +21,8 @@ in
               content = {
                 type = "filesystem";
                 format = "vfat";
-                mountpoint = "/boot";
+                # mountpoint = "/boot";
+                mountpoint = "/boot/efi";
                 mountOptions = [ "defaults" "noatime" "nodiratime" ];
               };
             };
@@ -85,17 +86,17 @@ in
                 };
               };
             };
-            SWAPNIX = {
-              # start = "512MiB";
-              # end = "6GiB";
-              size = "100%";
-              # size = "6GiB";
-              content = {
-                type = "swap";
-                randomEncryption = true;
-                resumeDevice = true;
-              };
-            };
+            # SWAPNIX = {
+            #   # start = "512MiB";
+            #   # end = "6GiB";
+            #   size = "100%";
+            #   # size = "6GiB";
+            #   content = {
+            #     type = "swap";
+            #     randomEncryption = true;
+            #     resumeDevice = true;
+            #   };
+            # };
           };
         };
       };
