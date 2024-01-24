@@ -82,16 +82,6 @@ in
                     };
                   };
                 };
-
-                mountpoint = "/partition-root";
-                swap = {
-                  swapfile = {
-                    size = "3G";
-                  };
-                  swapfile1 = {
-                    size = "2G";
-                  };
-                };
               };
             };
           };
