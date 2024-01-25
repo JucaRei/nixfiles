@@ -41,7 +41,7 @@
       compressor = "zstd";
       supportedFilesystems = [ "btrfs" ];
     };
-    # extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+    extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelModules = [
       # "acpi_backlight=vendor"
       "applesmc"
@@ -63,8 +63,9 @@
       # "intel_pstate=ondemand"
       # "i915.enable_rc6=7"
       # "acpi_backlight=vendor"
+      "i915.enable_psr=0"
+      "i915.modeset=1"
       "acpi_mask_gpe=0x15"
-      "intel_idle.max_cstate=1"
       # "i915.force_probe=0116" # Force enable my intel graphics
       #"video=efifb:off" # Disable efifb driver, which crashes Xavier AGX/NX
       #"video=efifb"
@@ -74,6 +75,19 @@
       "zswap.zpool=z3fold"
       "fs.inotify.max_user_watches=524288"
       "mitigations=off"
+
+      "nowatchdog"
+      "msr.allow_writes=on"
+      "pcie_aspm=force"
+      "module.sig_unenforce"
+      "intel_idle.max_cstate=1"
+      "cryptomgr.notests"
+      "initcall_debug"
+      "no_timer_check"
+      "noreplace-smp"
+      "page_alloc.shuffle=1"
+      "rcupdate.rcu_expedited=1"
+      "tsc=reliable"
 
       # # Intel vm passthrought
       # "intel_iommu=on"
@@ -91,7 +105,8 @@
     # kernelPackages = pkgs.linuxPackages_lqx;
     # kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
-    kernelPackages = pkgs.linuxPackages_5_10;
+    # kernelPackages = pkgs.linuxPackages_5_10;
+    kernelPackages = pkgs.linuxPackages_5_10_hardened;
     supportedFilesystems = [
       # "cifs"
       # "nfs"
