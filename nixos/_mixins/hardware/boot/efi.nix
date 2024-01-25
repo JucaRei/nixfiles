@@ -13,8 +13,8 @@
       };
       grub = {
         enable = lib.mkForce true;
-        devices = [ "nodev" ]; # "nodev" for efi only
-        # device = "nodev"; # "nodev" for efi only
+        # devices = [ "nodev" ]; # "nodev" for efi only
+        device = "nodev"; # "nodev" for efi only
         efiSupport = lib.mkForce true;
         # efiInstallAsRemovable = true;   #  Don't depend on NVRAM state
         configurationLimit = 4;
@@ -34,7 +34,8 @@
         # copyKernels = true;
 
         # useOSProber = false;
-        fsIdentifier = "provided";
+        # fsIdentifier = "provided";
+        fsIdentifier = "label";
         gfxmodeEfi = "auto";
         #gfxmodeEfi = "1366x788";
         fontSize = 20;

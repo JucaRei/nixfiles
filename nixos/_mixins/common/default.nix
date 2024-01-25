@@ -16,7 +16,7 @@
     # ../services/security/detect-reboot-needed.nix
     # ../services/power/powertop.nix
     # ../hardware/other/fwupd.nix
-    ../hardware/other/usb.nix
+    # ../hardware/other/usb.nix
     # ../virtualization/nix-ld.nix
     # ../services/tools/fhs.nix
     # ../services/openssh.nix
@@ -30,7 +30,7 @@
     ./locale.nix
     ../services/security/common.nix
     ../config/scripts/nixos-change-summary.nix
-    ../sys/check-updates.nix
+    # ../sys/check-updates.nix
   ];
 
   # don't install documentation i don't use
@@ -49,7 +49,7 @@
     initrd = {
       verbose = lib.mkDefault true;
     };
-    consoleLogLevel = 0;
+    consoleLogLevel = 3;
     kernelModules = [
       "kvm-intel"
       "tcp_bbr"

@@ -15,6 +15,7 @@
     ../../_mixins/hardware/cpu/intel-cpu.nix
     ../../_mixins/hardware/boot/multiboot.nix
     ../../_mixins/hardware/power/tlp.nix
+    ../../_mixins/hardware/other/usb.nix
     # ../../_mixins/virtualization/quickemu.nix
     ../../_mixins/virtualization/podman.nix
     ../../_mixins/services/security/sudo.nix
@@ -24,6 +25,7 @@
     ../../_mixins/sys/psd.nix
     ../../_mixins/sys/dbus-broker.nix
     ../../_mixins/sys/irqbalance.nix
+    ../../_mixins/sys/fwupd.nix
     ../../_mixins/sys/thermald.nix
     #../../_mixins/virtualization/gpu_isolate.nix
     # ../../_mixins/apps/text-editor/vscode.nix
@@ -68,7 +70,9 @@
     initrd = {
       availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usb_storage" "usbhid" "sd_mod" "rtsx_pci_sdmmc" ];
       kernelModules = [ ];
+      verbose = lib.mkForce false;
     };
+    consoleLogLevel = lib.mkForce 0;
     tmp = {
       # useTmpfs = true;
       cleanOnBoot = true;
@@ -104,7 +108,7 @@
     # kernelPackages = pkgs.linuxPackages_lqx;
     kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
-    kernelParams = [
+    kernelParams = lib.mkForce [
       "quiet"
       "usbcore.autosuspend=-1" # Disable usb autosuspend
       "rd.plymouth=0"
