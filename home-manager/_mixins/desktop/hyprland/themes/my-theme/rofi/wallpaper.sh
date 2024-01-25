@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Cache file for holding the current wallpaper
 cache_file="$HOME/.cache/current_wallpaper"

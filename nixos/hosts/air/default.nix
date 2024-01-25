@@ -540,4 +540,9 @@
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+
+  system = {
+    # change nixos stateVersion
+    stateVersion = lib.mkForce "22.11";
+  };
 }

@@ -164,8 +164,12 @@
       userAllowOther = true;
     };
 
+    command-not-found = {
+      enable = lib.mkDefault false;
+    };
+
     mtr = {
-      enable = true;
+      enable = lib.mkDefault false;
     };
 
     # Minimal

@@ -12,6 +12,7 @@ in
       # mako # notification daemon
       # libsForQt5.polkit-kde-agent # polkit agent
       libcamera
+      dmenu
       bibata-cursors
       pavucontrol
       # nwg-look
