@@ -27,10 +27,10 @@
       "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
     };
     overrides = {
-      sockets = [
-        "!x11"
-        "fallback-x11"
-      ];
+      # sockets = [
+      #   "!x11"
+      #   "fallback-x11"
+      # ];
     };
   };
 
