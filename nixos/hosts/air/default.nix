@@ -16,7 +16,8 @@
     # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/hardware/graphics/intel/intel-old.nix
-    ../../_mixins/hardware/sound/pipewire.nix
+    # ../../_mixins/hardware/sound/pipewire.nix
+    ../../_mixins/hardware/sound/pulseaudio.nix
     ../../_mixins/services/security/doas.nix
     # ../../_mixins/sys/ananicy.nix
     # ../../_mixins/virtualization

@@ -17,6 +17,8 @@
       # ":${./foobar.flatpak}"
       # "flathub:/root/testflatpak.flatpakref"
 
+      "flathub:app/org.kde.isoimagewriter//stable"
+
       # <remote name>:<type>/<flatpak ref>/<arch>/<branch>:<commit>
     ];
     preInitCommand = "";
@@ -25,10 +27,10 @@
       "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
     };
     overrides = {
-      # sockets = [
-      # "!x11"
-      # "fallback-x11"
-      # ];
+      sockets = [
+        "!x11"
+        "fallback-x11"
+      ];
     };
   };
 
