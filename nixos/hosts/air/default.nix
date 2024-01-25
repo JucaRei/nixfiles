@@ -24,7 +24,10 @@
 
   boot = {
     loader = {
-      grub.copyKernels = true;
+      grub = {
+        copyKernels = true;
+        forcei686 = true;
+      };
       systemd-boot.enable = lib.mkForce false;
       # grub.device = "nodev"; # or "nodev" for efi only
     };
@@ -40,7 +43,7 @@
     # extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelModules = [
       # "acpi_backlight=vendor"
-      # "applesmc"
+      "applesmc"
       # "i915"
       # "i965"
       "wl"
@@ -48,6 +51,8 @@
       "z3fold"
       "lz4hc"
       "lz4hc_compress"
+      "boot.shell_on_fail"
+      "boot.panic_on_fail"
     ];
     kernelParams = [
       # "hid_apple.iso_layout=0"
@@ -57,7 +62,8 @@
       # "intel_pstate=ondemand"
       # "i915.enable_rc6=7"
       # "acpi_backlight=vendor"
-      # "acpi_mask_gpe=0x15"
+      "acpi_mask_gpe=0x15"
+      "intel_idle.max_cstate=1"
       # "i915.force_probe=0116" # Force enable my intel graphics
       #"video=efifb:off" # Disable efifb driver, which crashes Xavier AGX/NX
       #"video=efifb"
