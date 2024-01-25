@@ -1,16 +1,19 @@
 { inputs, config, pkgs, username, ... }:
 {
-
+  imports = [
+    # inputs.flatpaks.homeManagerModules.default
+  ];
   # Flatpak declarative
   services.flatpak = {
+    # enable = true;
     enableModule = true;
     deduplicate = true;
-    # state-dir = "${config.home.homeDirectory}/.local/state/flatpak-module";
-    # target-dir = "${config.home.homeDirectory}/.local/share/flatpak";
+    state-dir = "${config.home.homeDirectory}/.local/state/flatpak-module";
+    target-dir = "${config.home.homeDirectory}/.local/share/flatpak";
     packages = [
       # "flathub:app/org.kde.index//stable"
       # "flathub-beta:app/org.kde.kdenlive/x86_64/stable"
-      # "flathub:app/info.febvre.Komikku//stable"
+      "flathub:app/info.febvre.Komikku//stable"
       # "flathub:app/com.bitwarden.desktop//stable"
 
       ## out-of-tree flatpaks can be installed like this (note: they can't be a URL because flatpak doesn't like that)
@@ -27,10 +30,19 @@
       "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
     };
     overrides = {
-      # sockets = [
-      #   "!x11"
-      #   "fallback-x11"
-      # ];
+      "global" = {
+        filesystems = [
+          "home"
+          # "!~/Games/Heroic"
+        ];
+        environment = {
+          "MOZ_ENABLE_WAYLAND" = 1;
+        };
+        sockets = [
+          "!x11"
+          "fallback-x11"
+        ];
+      };
     };
   };
 

@@ -28,7 +28,7 @@
   zramSwap = {
     enable = true;
     swapDevices = 4;
-    memoryPercent = 15;
+    memoryPercent = 30;
   };
 
   # fileSystems."/mnt/nixos-nas/encrypted" = {

@@ -748,10 +748,12 @@ in
     desktopEntries.mpv = {
       type = "Application";
       name = "mpv";
-      genericName = "Video Player";
+      genericName = "Multimedia Player";
       # exec = "${pkgs.mpv}/bin/umpv %U";
       exec = "umpv %U";
-      categories = [ "Application" ];
+      icon = "mpv";
+      categories = [ "AudioVideo" "Audio" "Video" "Player" "TV" ];
+      comment = "Play movies and songs";
       mimeType = [ "video/mp4" ];
     };
     mimeApps = {
