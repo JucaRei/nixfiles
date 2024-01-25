@@ -21,7 +21,7 @@
   # ++ lib.optional (builtins.isString desktop) ./_mixins/desktop
   ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
   ++ lib.optional (desktop != null) ./_mixins/desktop
-  ++ lib.optional (hostname != "rasp3") ./_mixins/services/tools/kmscon.nix;
+  ++ lib.optional (hostname != "rasp3" || "air") ./_mixins/services/tools/kmscon.nix;
 
 
   nixpkgs = {
@@ -377,17 +377,9 @@
       # Enable the D-Bus service, which is a message bus system that allows
       # communication between applications.
       enable = true;
-      # implementation = "broker";
-      packages = with pkgs; [
-        dconf
-        grc
-        udisks2
-      ];
+      implementation = lib.mkDefault "dbus";
     };
     udev = {
-      enable = true;
-    };
-    irqbalance = {
       enable = true;
     };
   };

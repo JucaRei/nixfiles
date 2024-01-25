@@ -20,6 +20,11 @@
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
+    ../../_mixins/sys/ananicy.nix
+    ../../_mixins/sys/psd.nix
+    ../../_mixins/sys/dbus-broker.nix
+    ../../_mixins/sys/irqbalance.nix
+    ../../_mixins/sys/thermald.nix
     #../../_mixins/virtualization/gpu_isolate.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/apps/browser/firefox.nix

@@ -1,9 +1,9 @@
 { inputs, lib, pkgs, config, ... }:
 {
   imports = [
-    inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
     inputs.nixos-hardware.nixosModules.apple-macbook-air-4
-    inputs.nixos-hardware.nixosModules.common-pc-ssd
+    # inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
+    # inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
     # (import ./disks-btrfs.nix { })
     # (import ./btrfs.nix { })
@@ -18,6 +18,7 @@
     # ../../_mixins/hardware/graphics/intel/intel-old.nix
     ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/services/security/doas.nix
+    # ../../_mixins/sys/ananicy.nix
     # ../../_mixins/virtualization
   ];
 

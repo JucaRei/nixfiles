@@ -47,7 +47,7 @@
   ############################
   boot = {
     initrd = {
-      verbose = lib.mkDefault false;
+      verbose = lib.mkDefault true;
     };
     consoleLogLevel = 0;
     kernelModules = [
@@ -55,12 +55,12 @@
       "tcp_bbr"
     ];
     kernelParams = [
-      # "loglevel=3"
+      "loglevel=3"
       # "rd.systemd.show_status=false"
-      # "rd.udev.log_level=3"
-      # "udev.log_priority=3"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
       # "vt.global_cursor_default=0"
-      "mitigations=off"
+      # "mitigations=off"
     ];
     kernel = {
       sysctl = {
@@ -199,32 +199,16 @@
     };
 
     # type "fuck" to fix the last command that made you go "fuck"
-    thefuck.enable = true;
+    # thefuck.enable = true;
   };
 
   # security.rtkit.enable = true;
 
   services = {
-    # Temperature management daemon
-    thermald = {
-      enable = if hostname != "rasp3" then true else false;
-    };
-
-    # Auto Nice Daemon
-    ananicy = {
-      enable = if hostname != "rasp3" then true else false;
-      package = pkgs.ananicy-cpp;
-    };
 
     # Keeps the system timezone up-to-date based on the current location
-    # automatic-timezoned = {
-    #   enable = true;
-    # };
-
-    # profile-sync-daemon
-    psd = {
-      enable = if hostname != "rasp3" then true else false;
-      resyncTimer = "10m";
+    automatic-timezoned = {
+      enable = true;
     };
 
     udev = {
