@@ -7,7 +7,7 @@
     loader = {
       efi = {
         # canTouchEfiVariables = if hostname == "air" then false else true;
-        # canTouchEfiVariables = true;
+        canTouchEfiVariables = true;
         efiSysMountPoint = "/boot/efi";
         # efiSysMountPoint = "/boot";
       };
@@ -16,7 +16,7 @@
         # devices = [ "nodev" ]; # "nodev" for efi only
         device = "nodev"; # "nodev" for efi only
         efiSupport = lib.mkForce true;
-        efiInstallAsRemovable = true; #  Don't depend on NVRAM state
+        # efiInstallAsRemovable = true; #  Don't depend on NVRAM state
         configurationLimit = 4;
         forceInstall = true;
         #splashMode = "stretch";
