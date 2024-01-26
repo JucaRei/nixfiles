@@ -1,4 +1,4 @@
-_:
+{ pkgs, ... }:
 let
   ui = import ./ui.nix { };
 in
@@ -10,7 +10,8 @@ in
       layout = [
         {
           "label" = "lock";
-          "action" = "sleep 1; swaylock";
+          # "action" = "sleep 1; swaylock";
+          action = "${pkgs.lockman}/bin/lockman.sh";
           "text" = "Lock";
           "keybind" = "l";
         }
