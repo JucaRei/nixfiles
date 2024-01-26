@@ -5,7 +5,7 @@
     # inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
-    (import ./disks-btrfs.nix { })
+    # (import ./disks-btrfs.nix { })
     # (import ./btrfs.nix { })
     # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
@@ -124,127 +124,127 @@
   ### Hard drives ###
   ###################
 
-  # fileSystems = {
-  #   "/" = {
-  #     device = "/dev/disk/by-label/NIXOS";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@"
-  #       # "rw"
-  #       "noatime"
-  #       "nodiratime"
-  #       "ssd"
-  #       "nodatacow"
-  #       "compress-force=zstd:6"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       # "autodefrag"
-  #       "discard=async"
-  #     ];
-  #   };
-  #   "/home" = {
-  #     device = "/dev/disk/by-label/NIXOS";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@home"
-  #       "rw"
-  #       "noatime"
-  #       "nodiratime"
-  #       "ssd"
-  #       # "nodatacow"
-  #       "compress-force=zstd:15"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       # "autodefrag"
-  #       "discard=async"
-  #     ];
-  #   };
-  #   "/nix" = {
-  #     device = "/dev/disk/by-label/NIXOS";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@nix"
-  #       # "rw"
-  #       "noatime"
-  #       "nodiratime"
-  #       "ssd"
-  #       "nodatacow"
-  #       "compress-force=zstd:15"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       # "autodefrag"
-  #       "discard=async"
-  #     ];
-  #   };
-  #   "/var/log" = {
-  #     device = "/dev/disk/by-label/NIXOS";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@logs"
-  #       # "rw"
-  #       "noatime"
-  #       "nodiratime"
-  #       "ssd"
-  #       "nodatacow"
-  #       "compress-force=zstd:15"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       # "autodefrag"
-  #       "discard=async"
-  #     ];
-  #   };
-  #   "/var/tmp" = {
-  #     device = "/dev/disk/by-label/NIXOS";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@tmp"
-  #       # "rw"
-  #       "noatime"
-  #       "nodiratime"
-  #       "ssd"
-  #       "nodatacow"
-  #       "compress-force=zstd:3"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       # "autodefrag"
-  #       "discard=async"
-  #     ];
-  #   };
-  #   "/.snapshots" = {
-  #     device = "/dev/disk/by-label/NIXOS";
-  #     fsType = "btrfs";
-  #     options = [
-  #       "subvol=@snapshots"
-  #       # "rw"
-  #       "noatime"
-  #       "nodiratime"
-  #       "ssd"
-  #       "nodatacow"
-  #       "compress-force=zstd:15"
-  #       "space_cache=v2"
-  #       "commit=120"
-  #       # "autodefrag"
-  #       "discard=async"
-  #     ];
-  #   };
-  #   "/boot/efi" = {
-  #     device = "/dev/disk/by-label/EFI";
-  #     fsType = "vfat";
-  #     options = [ "defaults" "noatime" "nodiratime" ];
-  #     noCheck = true;
-  #   };
-  # };
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-label/NIXOS";
+      fsType = "btrfs";
+      options = [
+        "subvol=@"
+        # "rw"
+        "noatime"
+        "nodiratime"
+        "ssd"
+        "nodatacow"
+        "compress-force=zstd:6"
+        "space_cache=v2"
+        "commit=120"
+        # "autodefrag"
+        "discard=async"
+      ];
+    };
+    "/home" = {
+      device = "/dev/disk/by-label/NIXOS";
+      fsType = "btrfs";
+      options = [
+        "subvol=@home"
+        "rw"
+        "noatime"
+        "nodiratime"
+        "ssd"
+        # "nodatacow"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        # "autodefrag"
+        "discard=async"
+      ];
+    };
+    "/nix" = {
+      device = "/dev/disk/by-label/NIXOS";
+      fsType = "btrfs";
+      options = [
+        "subvol=@nix"
+        # "rw"
+        "noatime"
+        "nodiratime"
+        "ssd"
+        "nodatacow"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        # "autodefrag"
+        "discard=async"
+      ];
+    };
+    "/var/log" = {
+      device = "/dev/disk/by-label/NIXOS";
+      fsType = "btrfs";
+      options = [
+        "subvol=@logs"
+        # "rw"
+        "noatime"
+        "nodiratime"
+        "ssd"
+        "nodatacow"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        # "autodefrag"
+        "discard=async"
+      ];
+    };
+    "/var/tmp" = {
+      device = "/dev/disk/by-label/NIXOS";
+      fsType = "btrfs";
+      options = [
+        "subvol=@tmp"
+        # "rw"
+        "noatime"
+        "nodiratime"
+        "ssd"
+        "nodatacow"
+        "compress-force=zstd:3"
+        "space_cache=v2"
+        "commit=120"
+        # "autodefrag"
+        "discard=async"
+      ];
+    };
+    "/.snapshots" = {
+      device = "/dev/disk/by-label/NIXOS";
+      fsType = "btrfs";
+      options = [
+        "subvol=@snapshots"
+        # "rw"
+        "noatime"
+        "nodiratime"
+        "ssd"
+        "nodatacow"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        # "autodefrag"
+        "discard=async"
+      ];
+    };
+    "/boot/efi" = {
+      device = "/dev/disk/by-label/EFI";
+      fsType = "vfat";
+      options = [ "defaults" "noatime" "nodiratime" ];
+      noCheck = true;
+    };
+  };
 
-  # swapDevices = [{
-  #   device = "/dev/disk/by-label/SWAP";
-  #   options = [ "defaults" "noatime" ];
-  #   ### SWAPFILE
-  #   #device = "/swap/swapfile";
-  #   #size = 2 GiB;
-  #   #device = "/swap/swapfile";
-  #   #size = (1024 * 2); # RAM size
-  #   #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
-  # }];
+  swapDevices = [{
+    device = "/dev/disk/by-label/SWAP";
+    options = [ "defaults" "noatime" ];
+    ### SWAPFILE
+    #device = "/swap/swapfile";
+    #size = 2 GiB;
+    #device = "/swap/swapfile";
+    #size = (1024 * 2); # RAM size
+    #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
+  }];
 
 
   # swapDevices = [{

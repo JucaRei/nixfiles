@@ -26,8 +26,10 @@ in
               };
             };
             swap = {
-              # start = "512MiB";
-              size = "6G";
+              start = "512MiB";
+              end = "6GiB";
+              # size = "6G";
+              # size = "100%";
               content = {
                 type = "swap";
                 randomEncryption = true;
@@ -37,6 +39,7 @@ in
             };
             root = {
               size = "100%";
+              # size = "-5GiB";
               content = {
                 type = "btrfs";
                 extraArgs = [ "-f" ]; # Override existing partition
