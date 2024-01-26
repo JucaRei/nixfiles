@@ -41,7 +41,7 @@
       compressor = "zstd";
       supportedFilesystems = [ "btrfs" "vfat" ];
       systemd = {
-        enable = true;
+        enable = lib.mkForce true;
       };
     };
     # extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
