@@ -7,7 +7,7 @@
     # (import ./disks-1.nix { })
     # (import ./disks-btrfs.nix { })
     # (import ./btrfs.nix { })
-    # (import ./disks-ext4.nix { })
+    (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
     # ../../_mixins/hardware/boot/systemd-boot.nix
     # ../../_mixins/hardware/boot/refind.nix
@@ -124,135 +124,135 @@
   ### Hard drives ###
   ###################
 
-  fileSystems = {
-    "/" = {
-      # device = "/dev/disk/by-label/NIXOS";
-      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
-      fsType = "btrfs";
-      options = [
-        "subvol=@"
-        # "rw"
-        "noatime"
-        "nodiratime"
-        "ssd"
-        "nodatacow"
-        "compress-force=zstd:6"
-        "space_cache=v2"
-        "commit=120"
-        # "autodefrag"
-        "discard=async"
-      ];
-    };
-    "/home" = {
-      # device = "/dev/disk/by-label/NIXOS";
-      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
-      fsType = "btrfs";
-      options = [
-        "subvol=@home"
-        "rw"
-        "noatime"
-        "nodiratime"
-        "ssd"
-        # "nodatacow"
-        "compress-force=zstd:15"
-        "space_cache=v2"
-        "commit=120"
-        # "autodefrag"
-        "discard=async"
-      ];
-    };
-    "/nix" = {
-      # device = "/dev/disk/by-label/NIXOS";
-      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
-      fsType = "btrfs";
-      options = [
-        "subvol=@nix"
-        # "rw"
-        "noatime"
-        "nodiratime"
-        "ssd"
-        "nodatacow"
-        "compress-force=zstd:15"
-        "space_cache=v2"
-        "commit=120"
-        # "autodefrag"
-        "discard=async"
-      ];
-    };
-    "/var/log" = {
-      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
-      # device = "/dev/disk/by-label/NIXOS";
-      fsType = "btrfs";
-      options = [
-        "subvol=@logs"
-        # "rw"
-        "noatime"
-        "nodiratime"
-        "ssd"
-        "nodatacow"
-        "compress-force=zstd:15"
-        "space_cache=v2"
-        "commit=120"
-        # "autodefrag"
-        "discard=async"
-      ];
-    };
-    "/var/tmp" = {
-      # device = "/dev/disk/by-label/NIXOS";
-      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
-      fsType = "btrfs";
-      options = [
-        "subvol=@tmp"
-        # "rw"
-        "noatime"
-        "nodiratime"
-        "ssd"
-        "nodatacow"
-        "compress-force=zstd:3"
-        "space_cache=v2"
-        "commit=120"
-        # "autodefrag"
-        "discard=async"
-      ];
-    };
-    "/.snapshots" = {
-      # device = "/dev/disk/by-label/NIXOS";
-      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
-      fsType = "btrfs";
-      options = [
-        "subvol=@snapshots"
-        # "rw"
-        "noatime"
-        "nodiratime"
-        "ssd"
-        "nodatacow"
-        "compress-force=zstd:15"
-        "space_cache=v2"
-        "commit=120"
-        # "autodefrag"
-        "discard=async"
-      ];
-    };
-    "/boot/efi" = {
-      # device = "/dev/disk/by-label/EFI";
-      device = "/dev/disk/by-uuid/B005-A805";
-      fsType = "vfat";
-      options = [ "defaults" "noatime" "nodiratime" ];
-      noCheck = true;
-    };
-  };
+  # fileSystems = {
+  #   "/" = {
+  #     # device = "/dev/disk/by-label/NIXOS";
+  #     device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
+  #     fsType = "btrfs";
+  #     options = [
+  #       "subvol=@"
+  #       # "rw"
+  #       "noatime"
+  #       "nodiratime"
+  #       "ssd"
+  #       "nodatacow"
+  #       "compress-force=zstd:6"
+  #       "space_cache=v2"
+  #       "commit=120"
+  #       # "autodefrag"
+  #       "discard=async"
+  #     ];
+  #   };
+  #   "/home" = {
+  #     # device = "/dev/disk/by-label/NIXOS";
+  #     device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
+  #     fsType = "btrfs";
+  #     options = [
+  #       "subvol=@home"
+  #       "rw"
+  #       "noatime"
+  #       "nodiratime"
+  #       "ssd"
+  #       # "nodatacow"
+  #       "compress-force=zstd:15"
+  #       "space_cache=v2"
+  #       "commit=120"
+  #       # "autodefrag"
+  #       "discard=async"
+  #     ];
+  #   };
+  #   "/nix" = {
+  #     # device = "/dev/disk/by-label/NIXOS";
+  #     device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
+  #     fsType = "btrfs";
+  #     options = [
+  #       "subvol=@nix"
+  #       # "rw"
+  #       "noatime"
+  #       "nodiratime"
+  #       "ssd"
+  #       "nodatacow"
+  #       "compress-force=zstd:15"
+  #       "space_cache=v2"
+  #       "commit=120"
+  #       # "autodefrag"
+  #       "discard=async"
+  #     ];
+  #   };
+  #   "/var/log" = {
+  #     device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
+  #     # device = "/dev/disk/by-label/NIXOS";
+  #     fsType = "btrfs";
+  #     options = [
+  #       "subvol=@logs"
+  #       # "rw"
+  #       "noatime"
+  #       "nodiratime"
+  #       "ssd"
+  #       "nodatacow"
+  #       "compress-force=zstd:15"
+  #       "space_cache=v2"
+  #       "commit=120"
+  #       # "autodefrag"
+  #       "discard=async"
+  #     ];
+  #   };
+  #   "/var/tmp" = {
+  #     # device = "/dev/disk/by-label/NIXOS";
+  #     device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
+  #     fsType = "btrfs";
+  #     options = [
+  #       "subvol=@tmp"
+  #       # "rw"
+  #       "noatime"
+  #       "nodiratime"
+  #       "ssd"
+  #       "nodatacow"
+  #       "compress-force=zstd:3"
+  #       "space_cache=v2"
+  #       "commit=120"
+  #       # "autodefrag"
+  #       "discard=async"
+  #     ];
+  #   };
+  #   "/.snapshots" = {
+  #     # device = "/dev/disk/by-label/NIXOS";
+  #     device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
+  #     fsType = "btrfs";
+  #     options = [
+  #       "subvol=@snapshots"
+  #       # "rw"
+  #       "noatime"
+  #       "nodiratime"
+  #       "ssd"
+  #       "nodatacow"
+  #       "compress-force=zstd:15"
+  #       "space_cache=v2"
+  #       "commit=120"
+  #       # "autodefrag"
+  #       "discard=async"
+  #     ];
+  #   };
+  #   "/boot/efi" = {
+  #     # device = "/dev/disk/by-label/EFI";
+  #     device = "/dev/disk/by-uuid/B005-A805";
+  #     fsType = "vfat";
+  #     options = [ "defaults" "noatime" "nodiratime" ];
+  #     noCheck = true;
+  #   };
+  # };
 
-  swapDevices = [{
-    # device = "/dev/disk/by-label/SWAP";
-    device = "/dev/disk/by-uuid/b6036d8c-4016-4125-9e82-c237694d8173";
-    # options = [ "defaults" "noatime" ];
-    ### SWAPFILE
-    #device = "/swap/swapfile";
-    #size = 2 GiB;
-    #device = "/swap/swapfile";
-    #size = (1024 * 2); # RAM size
-    #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
-  }];
+  # swapDevices = [{
+  #   # device = "/dev/disk/by-label/SWAP";
+  #   device = "/dev/disk/by-uuid/b6036d8c-4016-4125-9e82-c237694d8173";
+  #   # options = [ "defaults" "noatime" ];
+  #   ### SWAPFILE
+  #   #device = "/swap/swapfile";
+  #   #size = 2 GiB;
+  #   #device = "/swap/swapfile";
+  #   #size = (1024 * 2); # RAM size
+  #   #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
+  # }];
 
 
   # swapDevices = [{
