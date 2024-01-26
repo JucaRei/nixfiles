@@ -46,9 +46,9 @@
     };
     # extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelModules = [
-      # "acpi_backlight=vendor"
+      "acpi_backlight=vendor"
       "applesmc"
-      # "i915"
+      "i915"
       # "i965"
       "wl"
       "crc32c-intel"
