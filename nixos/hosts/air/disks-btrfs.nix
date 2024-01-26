@@ -137,7 +137,7 @@ in
                   };
                   "/swap" = {
                     mountpoint = "/.swapvol";
-                    swap.swapfile.size = "8G";
+                    swap.swapfile.size = "5G";
                     mountOptions = [ "defaults" "noatime" ];
                   };
                 };
