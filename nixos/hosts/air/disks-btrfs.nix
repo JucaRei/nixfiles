@@ -47,8 +47,8 @@ in
               # size = "-5GiB";
               content = {
                 type = "btrfs";
-                # extraArgs = [ "-f" ]; # Override existing partition
-                extraArgs = [ "-L" "NIXOS" "-f" ];
+                extraArgs = [ "-f" ]; # Override existing partition
+                # extraArgs = [ "-L" "NIXOS" "-f" ];
                 # Subvolumes must set a mountpoint in order to be mounted,
                 # unless their parent is mounted
                 # postCreateHook = ''
@@ -138,6 +138,7 @@ in
                   "/swap" = {
                     mountpoint = "/.swapvol";
                     swap.swapfile.size = "8G";
+                    mountOptions = [ "defaults" "noatime" ];
                   };
                 };
               };
