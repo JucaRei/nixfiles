@@ -32,7 +32,7 @@ in
                 type = "swap";
                 randomEncryption = true;
                 resumeDevice = true;
-                mountOptions = [ "defaults" "noatime" ];
+                # mountOptions = [ "defaults" "noatime" ];
               };
             };
             root = {
@@ -44,10 +44,10 @@ in
                 # unless their parent is mounted
                 subvolumes = {
                   # Subvolume name is different from mountpoint
-                  "/rootfs" = {
+                  "/" = {
                     mountpoint = "/";
                     mountOptions = [
-                      "subvol=@rootfs"
+                      "subvol=@"
                       "rw"
                       "noatime"
                       "nodiratime"

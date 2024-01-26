@@ -5,9 +5,9 @@
     # inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
-    # (import ./disks-btrfs.nix { })
+    (import ./disks-btrfs.nix { })
     # (import ./btrfs.nix { })
-    (import ./disks-ext4.nix { })
+    # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
     # ../../_mixins/hardware/boot/systemd-boot.nix
     # ../../_mixins/hardware/boot/refind.nix
@@ -26,8 +26,8 @@
   boot = {
     loader = {
       grub = {
-        copyKernels = true;
-        forcei686 = true;
+        # copyKernels = true;
+        # forcei686 = true;
       };
       systemd-boot.enable = lib.mkForce false;
       # grub.device = "nodev"; # or "nodev" for efi only
