@@ -29,7 +29,7 @@
         copyKernels = true;
         # forcei686 = true;
       };
-      systemd-boot.enable = lib.mkForce true;
+      systemd-boot.enable = lib.mkForce false;
       # grub.device = "nodev"; # or "nodev" for efi only
     };
 
