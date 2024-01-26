@@ -19,6 +19,7 @@
     # nvchad = prev.nvchad;
     nautilus-ext = final.nautilus-annotations;
     thorium = final.thorium-browser;
+    hacked-cursor = final.breeze-hacked-cursor;
     # pulseaudio-control = final.polybar-pulseaudio-control;
     # fantezy = final.fantezy-font;
     # nixos-summary = final.nixos-change-summary;

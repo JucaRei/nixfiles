@@ -61,6 +61,9 @@
   gruv = pkgs.callPackage ./themes/gtk/gruvbox-dark.nix { };
   nautilus-annotations = pkgs.callPackage ./nautilus-annotations { };
 
+  # mouse
+  breeze-hacked-cursor = pkgs.callPackage ./themes/mouse/breeze-hacked-cursor { };
+
   # Icons
   colloid = pkgs.callPackage ./themes/icons/colloid.nix { };
   elementary = pkgs.callPackage ./themes/icons/elementary.nix { };

@@ -28,11 +28,11 @@ in
       package = pkgs.pulseaudioFull; # JACK support, Bluetooth
       # auto-switch to bluetooth headset
       extraConfig = lib.mkDefault "load-module module-switch-on-connect";
-    };
 
-    # Writes to /etc/pulse/daemon.conf
-    daemon.config = {
-      default-sample-rate = 48000;
+      # Writes to /etc/pulse/daemon.conf
+      daemon.config = {
+        default-sample-rate = 48000;
+      };
     };
   };
 
