@@ -126,7 +126,8 @@
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-label/NIXOS";
+      # device = "/dev/disk/by-label/NIXOS";
+      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
       fsType = "btrfs";
       options = [
         "subvol=@"
@@ -143,7 +144,8 @@
       ];
     };
     "/home" = {
-      device = "/dev/disk/by-label/NIXOS";
+      # device = "/dev/disk/by-label/NIXOS";
+      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
       fsType = "btrfs";
       options = [
         "subvol=@home"
@@ -160,7 +162,8 @@
       ];
     };
     "/nix" = {
-      device = "/dev/disk/by-label/NIXOS";
+      # device = "/dev/disk/by-label/NIXOS";
+      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
       fsType = "btrfs";
       options = [
         "subvol=@nix"
@@ -177,7 +180,8 @@
       ];
     };
     "/var/log" = {
-      device = "/dev/disk/by-label/NIXOS";
+      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
+      # device = "/dev/disk/by-label/NIXOS";
       fsType = "btrfs";
       options = [
         "subvol=@logs"
@@ -194,7 +198,8 @@
       ];
     };
     "/var/tmp" = {
-      device = "/dev/disk/by-label/NIXOS";
+      # device = "/dev/disk/by-label/NIXOS";
+      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
       fsType = "btrfs";
       options = [
         "subvol=@tmp"
@@ -211,7 +216,8 @@
       ];
     };
     "/.snapshots" = {
-      device = "/dev/disk/by-label/NIXOS";
+      # device = "/dev/disk/by-label/NIXOS";
+      device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
       fsType = "btrfs";
       options = [
         "subvol=@snapshots"
@@ -228,7 +234,8 @@
       ];
     };
     "/boot/efi" = {
-      device = "/dev/disk/by-label/EFI";
+      # device = "/dev/disk/by-label/EFI";
+      device = "/dev/disk/by-uuid/B005-A805";
       fsType = "vfat";
       options = [ "defaults" "noatime" "nodiratime" ];
       noCheck = true;
@@ -236,8 +243,9 @@
   };
 
   swapDevices = [{
-    device = "/dev/disk/by-label/SWAP";
-    options = [ "defaults" "noatime" ];
+    # device = "/dev/disk/by-label/SWAP";
+    device = "/dev/disk/by-uuid/b6036d8c-4016-4125-9e82-c237694d8173";
+    # options = [ "defaults" "noatime" ];
     ### SWAPFILE
     #device = "/swap/swapfile";
     #size = 2 GiB;
