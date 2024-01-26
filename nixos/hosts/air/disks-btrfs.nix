@@ -12,11 +12,16 @@ in
         content = {
           type = "gpt";
           partitions = {
+            # boot = {
+            #   size = "1M";
+            #   type = "EF02"; # for grub MBR
+            # };
             ESP = {
               priority = 1;
-              name = "ESP";
+              # name = "boot";
               start = "0";
               end = "512MiB";
+              # size = "512M";
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -25,37 +30,43 @@ in
                 mountOptions = [ "defaults" "noatime" "nodiratime" ];
               };
             };
-            swap = {
-              start = "512MiB";
-              end = "6GiB";
-              # size = "6G";
-              # size = "100%";
-              content = {
-                type = "swap";
-                randomEncryption = true;
-                resumeDevice = true;
-                # mountOptions = [ "defaults" "noatime" ];
-              };
-            };
+            # swap = {
+            #   start = "512MiB";
+            #   end = "6GiB";
+            #   # size = "6G";
+            #   # size = "100%";
+            #   content = {
+            #     type = "swap";
+            #     randomEncryption = true;
+            #     resumeDevice = true;
+            #     # mountOptions = [ "defaults" "noatime" ];
+            #   };
+            # };
             root = {
               size = "100%";
               # size = "-5GiB";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing partition
+                # extraArgs = [ "-f" ]; # Override existing partition
+                extraArgs = [ "-L" "NIXOS" "-f" ];
                 # Subvolumes must set a mountpoint in order to be mounted,
                 # unless their parent is mounted
+                # postCreateHook = ''
+                #   mount -t btrfs /dev/disk/by-label/NIXOS /mnt
+                #   btrfs subvolume snapshot -r /mnt /mnt/root-blank
+                #   umount /mnt
+                # '';
                 subvolumes = {
                   # Subvolume name is different from mountpoint
                   "/" = {
                     mountpoint = "/";
                     mountOptions = [
                       "subvol=@"
-                      "rw"
+                      # "rw"
                       "noatime"
                       "nodiratime"
                       "ssd"
-                      "nodatacow"
+                      # "nodatacow"
                       "compress-force=zstd:15"
                       "space_cache=v2"
                       "commit=120"
@@ -65,20 +76,68 @@ in
                   };
                   # Subvolume name is the same as the mountpoint
                   "/home" = {
-                    mountOptions = [ "subvol=@home" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:5" "space_cache=v2" "commit=120" "discard=async" ];
+                    mountOptions = [
+                      "subvol=@home"
+                      "rw"
+                      "noatime"
+                      "nodiratime"
+                      "ssd"
+                      "nodatacow"
+                      "compress-force=zstd:5"
+                      "space_cache=v2"
+                      "commit=120"
+                      "discard=async"
+                    ];
                     mountpoint = "/home";
                   };
                   "/.snapshots" = {
-                    mountOptions = [ "subvol=@snapshots" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+                    mountOptions = [
+                      "subvol=@snapshots"
+                      "rw"
+                      "noatime"
+                      "nodiratime"
+                      "ssd"
+                      "nodatacow"
+                      "compress-force=zstd:15"
+                      "space_cache=v2"
+                      "commit=120"
+                      "discard=async"
+                    ];
                     mountpoint = "/.snapshots";
                   };
                   "/tmp" = {
-                    mountOptions = [ "subvol=@tmp" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:5" "space_cache=v2" "commit=120" "discard=async" ];
+                    mountOptions = [
+                      "subvol=@tmp"
+                      "rw"
+                      "noatime"
+                      "nodiratime"
+                      "ssd"
+                      "nodatacow"
+                      "compress-force=zstd:5"
+                      "space_cache=v2"
+                      "commit=120"
+                      "discard=async"
+                    ];
                     mountpoint = "/tmp";
                   };
                   "/nix" = {
-                    mountOptions = [ "subvol=@nix" "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+                    mountOptions = [
+                      "subvol=@nix"
+                      # "rw"
+                      "noatime"
+                      "nodiratime"
+                      "ssd"
+                      "nodatacow"
+                      "compress-force=zstd:15"
+                      "space_cache=v2"
+                      "commit=120"
+                      "discard=async"
+                    ];
                     mountpoint = "/nix";
+                  };
+                  "/swap" = {
+                    mountpoint = "/.swapvol";
+                    swap.swapfile.size = "8G";
                   };
                 };
               };

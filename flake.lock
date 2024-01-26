@@ -1447,6 +1447,22 @@
         "type": "github"
       }
     },
+    "previous": {
+      "locked": {
+        "lastModified": 1688392541,
+        "narHash": "sha256-lHrKvEkCPTUO+7tPfjIcb7Trk6k31rz18vkyqmkeJfY=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-22.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -1476,6 +1492,7 @@
         "nur": "nur",
         "picom": "picom",
         "plasma-manager": "plasma-manager",
+        "previous": "previous",
         "split-monitor-workspaces": "split-monitor-workspaces",
         "unstable": "unstable",
         "vscode-server": "vscode-server",
