@@ -10,7 +10,9 @@
 , asciiquarium-transparent
 , cbonsai
 , pipes-rs
-, unimatrix
+  # , unimatrix
+, unstable
+, pkgs
 , ...
 }:
 let
@@ -48,7 +50,7 @@ writeShellApplication {
     cbonsai
     neofetch-wrapper # Workaround to pipe neofetch's output
     pipes-rs
-    unimatrix
+    pkgs.unstable.unimatrix
   ];
   text =
     let
