@@ -770,6 +770,7 @@ in
         qalculate-gtk
         brillo
         random-wall
+        hacked-cursor
         # (if hostname != "nitro" then kbdlight else "")
         # mpvpaper
         # (nixGL pkgs.mpvpaper) # Live wallpaper
