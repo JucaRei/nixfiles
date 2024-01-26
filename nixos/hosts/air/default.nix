@@ -273,6 +273,9 @@
     # xorg.xrdb
     cifs-utils
     # kodi
+
+    refind
+    efibootmgr
   ];
 
   hardware = {
