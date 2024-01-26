@@ -124,7 +124,7 @@
   ### Hard drives ###
   ###################
 
-  fileSystems = {
+  fileSystems = lib.mkForce {
     "/" = {
       device = "/dev/disk/by-label/NIXOS";
       # device = "/dev/disk/by-uuid/5a903c61-7dd4-47e8-9ab8-0ee4732d4f26";
