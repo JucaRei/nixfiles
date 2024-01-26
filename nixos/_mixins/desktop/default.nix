@@ -86,6 +86,7 @@
     systemPackages = with pkgs;[
       # hacked-cursor
       desktop-file-utils
+      usbimager
     ];
   };
 

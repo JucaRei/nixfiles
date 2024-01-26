@@ -30,7 +30,6 @@ in
       font-manager
       dconf2nix
       hexchat
-      usbimager
     ];
   };
 

@@ -29,7 +29,7 @@
         copyKernels = true;
         # forcei686 = true;
       };
-      systemd-boot.enable = lib.mkForce false;
+      systemd-boot.enable = lib.mkForce true;
       # grub.device = "nodev"; # or "nodev" for efi only
     };
 
@@ -39,7 +39,10 @@
       kernelModules = [ ];
       verbose = false;
       compressor = "zstd";
-      supportedFilesystems = [ "btrfs" ];
+      supportedFilesystems = [ "btrfs" "vfat" ];
+      systemd = {
+        enable = true;
+      };
     };
     # extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelModules = [
