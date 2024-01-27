@@ -107,7 +107,7 @@ in
             # data = "sudo --preserve-env=PATH env /usr/bin/update-desktop-database"; # Updates Database
             # data = ''sudo -E env "PATH=$PATH" update-desktop-database'';
             # data = ''"$(which sudo)" -s -E env "PATH=$PATH/bin/" update-desktop-database'';
-            data = "sudo /usr/bin/update-desktop-database"; # Updates Database
+            data = "sudo --preserve-env=PATH env update-desktop-database"; # Updates Database
             # data = "doas --preserve-env=PATH /usr/bin/update-desktop-database"; # Updates Database
             # data = [ "${config.home.homeDirectory}/.nix-profile/share/applications"];
             # data = "/usr/bin/update-desktop-database";

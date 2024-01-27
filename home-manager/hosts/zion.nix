@@ -67,3 +67,5 @@ in
     ]);
   };
 }
+
+# TMPDIR="/tmp" home-manager switch -b backup --impure --flake .#juca@zion --show-trace

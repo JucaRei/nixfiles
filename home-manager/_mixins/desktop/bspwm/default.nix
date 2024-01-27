@@ -15,11 +15,6 @@ with lib.hm.gvariant;
         bspwm = {
           enable = true;
           alwaysResetDesktops = true;
-          # monitors = {
-          #   Virtual-1 = [ "1" "2" "3" "4" "5" "6" "7" "8" ];
-          #   eDP-1 = [ "1" "2" "3" "4" "5" "6" "7" "8" ];
-          #   eDP1 = [ "1" "2" "3" "4" "5" "6" "7" "8" ];
-          # };
         };
       };
     };
@@ -33,7 +28,6 @@ with lib.hm.gvariant;
         lxappearance
         archiver
         imagemagick
-        # blueberry
         xclip
         lsof
         xdo
@@ -68,12 +62,16 @@ with lib.hm.gvariant;
       ];
 
       sessionVariables = {
-        # GLFW_IM_MODULE = "ibus";
+        GLFW_IM_MODULE = "ibus";
         LIBPROC_HIDE_KERNEL = "true"; # prevent display kernel threads in top
         QT_QPA_PLATFORMTHEME = "gtk3";
         "TERM" = "xterm";
         GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
         "_JAVA_AWT_WM_NONREPARENTING" = "1";
+        XDG_CACHE_HOME = "\${HOME}/.cache";
+        XDG_CONFIG_HOME = "\${HOME}/.config";
+        XDG_BIN_HOME = "\${HOME}/.local/bin";
+        XDG_DATA_HOME = "\${HOME}/.local/share";
       };
       sessionPath = [
         "$HOME/.local/bin"
@@ -181,7 +179,6 @@ with lib.hm.gvariant;
         ExecStart = ''
           ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
         '';
-        # Environment = [ "WAYLAND_DISPLAY=wayland-0" "LANG=pt_BR.UTF-8" ];
       };
 
       Install = { WantedBy = [ "graphical-session.target" ]; };

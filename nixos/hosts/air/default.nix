@@ -9,7 +9,7 @@
     # (import ./btrfs.nix { })
     # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
-    # ../../_mixins/hardware/boot/systemd-boot.nix
+    ../../_mixins/hardware/boot/systemd-boot.nix
     # ../../_mixins/hardware/boot/refind.nix
     # ../../_mixins/hardware/boot/no-hz.nix
     ../../_mixins/hardware/bluetooth
