@@ -6,7 +6,7 @@ in {
 
     # (./. + "./${desktop}")
     # ../apps/documents/libreoffice.nix
-    ../services/flatpak.nix
+    # ../services/flatpak.nix
   ] ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
     ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix"))
     ./${desktop}.nix ++ lib.optional

@@ -96,7 +96,7 @@ in {
       "ozone_platform_hint" = "auto";
       "LIBSEAT_BACKEND" = "logind";
 
-      WEBKIT_DISABLE_COMPOSITING_MODE = 1;
+      # WEBKIT_DISABLE_COMPOSITING_MODE = 1;
 
       # nitro
       "VAAPI_MPEG4_ENABLED" = "true";

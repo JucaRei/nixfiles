@@ -134,7 +134,7 @@ in {
         "flakes"
         "ca-derivations"
         "auto-allocate-uids"
-        "cgroups"
+        # "cgroups"
         #"configurable-impure-env"
       ];
       # Avoid unwanted garbage collection when using nix-direnv
@@ -153,19 +153,22 @@ in {
 
       # Allow to run nix
       allowed-users = [ "${username}" "nixbld" "wheel" ];
+      trusted-users = [ "root" "${username}" "wheel" ];
       connect-timeout = 5;
       http-connections = 0;
 
-      # substituters = [
-      #   "https://nix-community.cachix.org"
-      #   "https://hyprland.cachix.org"
-      #   "https://juca-nixfiles.cachix.org"
-      # ];
-      # trusted-public-keys = [
-      #   "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      #   "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      #   "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
-      # ];
+      substituters = [
+        "https://nix-community.cachix.org"
+        "https://hyprland.cachix.org"
+        "https://juca-nixfiles.cachix.org"
+        "https://nix-gaming.cachix.org"
+      ];
+      trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+        "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
+        "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
+      ];
     };
     extraOptions = ''
       keep-outputs          = true

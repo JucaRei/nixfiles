@@ -12,7 +12,7 @@ with lib.hm.gvariant; {
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix
     ../_mixins/apps/browser/firefox.nix
-    ../_mixins/services/flatpak.nix
+    # ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
   ];
   # dconf.settings = {

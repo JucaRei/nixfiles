@@ -3,14 +3,16 @@
 
   nixConfig = {
     extra-substituters = [
-      #     "https://nix-community.cachix.org"
-      #     "https://juca-nixfiles.cachix.org"
+      "https://nix-community.cachix.org"
+      "https://juca-nixfiles.cachix.org"
       "https://hyprland.cachix.org"
+      "https://nix-gaming.cachix.org"
     ];
     extra-trusted-public-keys = [
-      #     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      #     "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
     ];
   };
 
@@ -111,9 +113,6 @@
 
     nixd.url = "github:nix-community/nixd";
 
-    # Gaming tweaks
-    # nix-gaming.url = "github:fufexan/nix-gaming";
-
     # Use nix-index without having to generate the database locally
     # nix-index-database = {
     #   url = "github:Mic92/nix-index-database";
@@ -140,19 +139,17 @@
     #  flake = false;
     #};
 
-    # nix-on-droid = {
-    #   url = "github:t184256/nix-on-droid";
-    #   inputs = {
-    #     nixpkgs.follows = "nixpkgs";
-    #   };
-    # };
+    nix-on-droid = {
+      url = "github:t184256/nix-on-droid";
+      inputs = { nixpkgs.follows = "nixpkgs"; };
+    };
 
     comma.url = "github:nix-community/comma/v1.4.1";
 
-    # wrapper-manager = {
-    #   url = "github:viperML/wrapper-manager";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    wrapper-manager = {
+      url = "github:viperML/wrapper-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # matugen = {
     #   url = "github:InioX/matugen/module";
@@ -227,8 +224,7 @@
 
   outputs = { self, nixpkgs, nur, disko, devenv, home-manager, nixgl
     , wrapper-manager, nix-formatter-pack, nixos-hardware, nix-gaming
-    , vscode-server, plasma-manager, fh
-    # , flatpaks
+    , vscode-server, plasma-manager, fh, flatpaks
     # , eza
     # , nixvim
     , ... }@inputs:
