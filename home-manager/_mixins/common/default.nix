@@ -31,6 +31,7 @@
       pandoc
       nixclean
       nixwhereis
+      cachix
     ];
 
     sessionVariables = {

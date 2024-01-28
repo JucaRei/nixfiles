@@ -114,6 +114,7 @@
         htop
         lshw
         inspect
+        cachix
 
         # Selection of sysadmin tools that can come in handy
         dosfstools
