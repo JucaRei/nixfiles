@@ -162,6 +162,7 @@
         "flakes"
         "repl-flake"
         "ca-derivations"
+        "cgroups"
       ];
       # Allow to run nix
       allowed-users = [ "${username}" "wheel" ];
