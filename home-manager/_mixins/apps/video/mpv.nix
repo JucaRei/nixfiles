@@ -4,9 +4,16 @@ let
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 
   mpvgl = pkgs.wrapMpv (pkgs.mpv-unwrapped.override {
+    vapoursynthSupport = true;
     # webp support
     ffmpeg = pkgs.ffmpeg_5-full;
   }) {
+    extraMakeWrapperArgs = [
+      "--prefix"
+      "LD_LIBRARY_PATH"
+      ":"
+      "${pkgs.vapoursynth-mvtools}/lib/vapoursynth"
+    ];
     scripts = with pkgs.mpvScripts;
       [
         # thumbnail
@@ -47,10 +54,16 @@ let
   # KrigBilateral: Chroma scaler that uses luma information for high quality upscaling.
   # SSimSuperRes: Make corrections to the image upscaled by mpv built-in scaler (removes ringing artifacts and restores original sharpness).
 in {
+
   programs = {
     mpv = {
       enable = true;
       package = (nixGL mpvgl);
+      bindings = {
+        "CTRL+i" = "vf toggle vapoursynth=${
+            ../../config/mpv/vapoursynth/motion-based-interpolation.vpy
+          }";
+      };
     };
   };
 
@@ -59,6 +72,10 @@ in {
     font = "FiraCode Nerd Font";
   in {
     file = {
+      # ".config/mpv/motioninterpolation.py".source = pkgs.substituteAll {
+      #   src = ./motioninterpolation.py;
+      #   mvtoolslib = "${pkgs.vapoursynth-mvtools}/lib/vapoursynth/";
+      # };
       ".config/mpv/script-opts/chapterskip.conf" = {
         text = "categories=sponsorblock>SponsorBlock";
       };
