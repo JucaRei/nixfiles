@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{ lib, ... }: {
   imports = [
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/sound/pipewire.nix

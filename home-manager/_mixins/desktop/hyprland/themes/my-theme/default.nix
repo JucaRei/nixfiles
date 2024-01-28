@@ -59,7 +59,8 @@ let
   variant = if hostname == "nitro" then "abnt2" else "mac";
   model = if hostname == "nitro" then "pc105" else "pc104";
 
-  grimblast = "${inputs.hyprwm-contrib.packages.${pkgs.system}.grimblast}/bin/grimblast";
+  grimblast =
+    "${inputs.hyprwm-contrib.packages.${pkgs.system}.grimblast}/bin/grimblast";
 
   browser = "${pkgs.firefox}";
 
@@ -218,8 +219,7 @@ let
     echo "Color $COLOR copied to clipboard"
   '';
 
-in
-{
+in {
   imports = [
     ../../../../apps/terminal/foot.nix
     ../../../../apps/tools/imv.nix
@@ -270,9 +270,7 @@ in
               ".config/rofi/scripts/wallpaper.sh"
               "notify-send 'Hey Junior, Welcome back' &"
             ];
-            xwayland = {
-              force_zero_scaling = true;
-            };
+            xwayland = { force_zero_scaling = true; };
             misc = {
               # disable redundant renders
               disable_autoreload = false;
@@ -282,11 +280,14 @@ in
               animate_manual_resizes = true;
               animate_mouse_windowdragging = true;
 
-              vrr = 2; # misc:vrr -> Adaptive sync of your monitor. 0 (off), 1 (on), 2 (fullscreen only). Default 0 to avoid white flashes on select hardware.
-              vfr = true; # misc:no_vfr -> misc:vfr. bool, heavily recommended to leave at default on. Saves on CPU usage.
+              vrr =
+                2; # misc:vrr -> Adaptive sync of your monitor. 0 (off), 1 (on), 2 (fullscreen only). Default 0 to avoid white flashes on select hardware.
+              vfr =
+                true; # misc:no_vfr -> misc:vfr. bool, heavily recommended to leave at default on. Saves on CPU usage.
 
               # dpms
-              mouse_move_enables_dpms = true; # enable dpms on mouse/touchpad action
+              mouse_move_enables_dpms =
+                true; # enable dpms on mouse/touchpad action
               key_press_enables_dpms = true; # enable dpms on keyboard action
               # disable_autoreload = true; # autoreload is unnecessary on nixos, because the config is readonly anyway
               # Unfullscreen when opening something
@@ -312,11 +313,7 @@ in
               special_scale_factor = 0.9;
               no_gaps_when_only = false;
             };
-            plugin = {
-              split-monitor-workspaces = {
-                count = 5;
-              };
-            };
+            plugin = { split-monitor-workspaces = { count = 5; }; };
           };
           extraConfig = ''
             ###############################
@@ -752,52 +749,55 @@ in
     };
     # services.blueman-applet.enable = true;
     home = {
-      packages = with pkgs; [
-        cantarell-fonts
-        xarchiver # compressed files using thunar
-        # figlet # Program for making large letters out of ordinary text
-        slurp # Select a region in a Wayland compositor
-        swww # wallpaper daemon for wayland, controlled at runtime
-        grim # Grab images from a Wayland compositor
-        swappy # screenshot resizer
-        swayidle # Idle management daemon for Wayland
-        # blueman
-        font-search
-        # wdisplays
-        polkit_gnome
-        # papirus-icon-theme
-        cliphist # Wayland clipboard history
-        qalculate-gtk
-        brillo
-        random-wall
-        hacked-cursor
-        # (if hostname != "nitro" then kbdlight else "")
-        # mpvpaper
-        # (nixGL pkgs.mpvpaper) # Live wallpaper
-        playerctl
-        # imv # simple image viewer
-        wlogout # Wayland based logout menu
-        # wlr-randr # An xrandr clone for wlroots compositors
-        wl-clip-persist
-        wl-clipboard
-        imagemagick_light
-        color-picker
-      ] ++ (with pkgs.xfce; [
-        xfce4-power-manager
-        exo #thunar "open terminal here"
-        thunar-archive-plugin
-        (thunar.override {
-          thunarPlugins = with pkgs.xfce; [
+      packages = with pkgs;
+        [
+          cantarell-fonts
+          xarchiver # compressed files using thunar
+          # figlet # Program for making large letters out of ordinary text
+          slurp # Select a region in a Wayland compositor
+          swww # wallpaper daemon for wayland, controlled at runtime
+          grim # Grab images from a Wayland compositor
+          swappy # screenshot resizer
+          swayidle # Idle management daemon for Wayland
+          # blueman
+          font-search
+          # wdisplays
+          polkit_gnome
+          # papirus-icon-theme
+          cliphist # Wayland clipboard history
+          qalculate-gtk
+          brillo
+          random-wall
+          hacked-cursor
+          # (if hostname != "nitro" then kbdlight else "")
+          # mpvpaper
+          # (nixGL pkgs.mpvpaper) # Live wallpaper
+          playerctl
+          # imv # simple image viewer
+          wlogout # Wayland based logout menu
+          # wlr-randr # An xrandr clone for wlroots compositors
+          wl-clip-persist
+          wl-clipboard
+          imagemagick_light
+          color-picker
+        ] ++ (with pkgs.xfce;
+          [
+            xfce4-power-manager
+            exo # thunar "open terminal here"
             thunar-archive-plugin
-            thunar-volman
-            thunar-media-tags-plugin
-          ];
-        })
-        mousepad
-        tumbler
-      ] ++ (with pkgs.unstable;[
-        # papirus-icon-theme
-      ]));
+            (thunar.override {
+              thunarPlugins = with pkgs.xfce; [
+                thunar-archive-plugin
+                thunar-volman
+                thunar-media-tags-plugin
+              ];
+            })
+            mousepad
+            tumbler
+          ] ++ (with pkgs.unstable;
+            [
+              # papirus-icon-theme
+            ]));
       file = {
         ".config/hypr/keybindings.conf" = {
           text = ''
@@ -1066,9 +1066,7 @@ in
       };
     };
 
-    programs = {
-      pywal.enable = true;
-    };
+    programs = { pywal.enable = true; };
 
     dconf = {
       settings = {
@@ -1081,11 +1079,7 @@ in
       };
     };
 
-    services = {
-      swayosd = {
-        enable = true;
-      };
-    };
+    services = { swayosd = { enable = true; }; };
 
     xfconf.settings = {
       thunar = {

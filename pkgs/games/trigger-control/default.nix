@@ -1,22 +1,9 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, cmake
-, makeWrapper
-, pkg-config
-, SDL2
-, dbus
-, libdecor
-, libnotify
-, dejavu_fonts
-, gnome
-}:
+{ lib, stdenv, fetchFromGitHub, cmake, makeWrapper, pkg-config, SDL2, dbus
+, libdecor, libnotify, dejavu_fonts, gnome }:
 
-let
-  inherit (gnome) zenity;
-in
+let inherit (gnome) zenity;
 
-stdenv.mkDerivation rec {
+in stdenv.mkDerivation rec {
   pname = "trigger-control";
   version = "unstable-2023-06-18";
 
@@ -27,19 +14,10 @@ stdenv.mkDerivation rec {
     hash = "sha256-QWhUQ8xqS8oRVF0KUpEthlrOoXmhcfEkIHauDI1/5a8=";
   };
 
-  nativeBuildInputs = [
-    cmake
-    makeWrapper
-    pkg-config
-  ];
+  nativeBuildInputs = [ cmake makeWrapper pkg-config ];
 
-  buildInputs = [
-    SDL2
-    dbus
-    libnotify
-  ] ++ lib.optionals stdenv.isLinux [
-    libdecor
-  ];
+  buildInputs = [ SDL2 dbus libnotify ]
+    ++ lib.optionals stdenv.isLinux [ libdecor ];
 
   # The app crashes without a changed fontdir and upstream recommends dejavu as font
   postPatch = ''
@@ -60,7 +38,8 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "Control the dualsense's triggers on Linux (and Windows) with a gui and C++ api";
+    description =
+      "Control the dualsense's triggers on Linux (and Windows) with a gui and C++ api";
     homepage = "https://github.com/Etaash-mathamsetty/trigger-control";
     license = licenses.mit;
     maintainers = with maintainers; [ azuwis ];

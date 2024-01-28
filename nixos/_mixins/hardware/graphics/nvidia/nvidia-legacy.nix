@@ -6,8 +6,7 @@ let
     exit 0
   '';
   nvidiaBusId = "PCI:1:0:0";
-in
-{
+in {
   specialisation = {
     nvidia-legacy.configuration = {
       system.nixos.tags = [ "nvidia-legacy" ];
@@ -49,11 +48,7 @@ in
         };
       };
 
-      environment.systemPackages = with pkgs; [
-        glxinfo
-        sdlmame
-      ];
-
+      environment.systemPackages = with pkgs; [ glxinfo sdlmame ];
 
       boot = {
         loader.grub.configurationName = lib.mkForce "Nouveau Driver";
@@ -64,7 +59,8 @@ in
           options nouveau modeset=0
           options nvidia-drm modeset=1
         '';
-        extraModulePackages = [ config.boot.kernelPackages.nvidia_x11_legacy340 ];
+        extraModulePackages =
+          [ config.boot.kernelPackages.nvidia_x11_legacy340 ];
       };
 
       virtualisation.docker.enableNvidia = true;

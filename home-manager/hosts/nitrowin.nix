@@ -1,9 +1,6 @@
 { config, lib, pkgs, ... }:
-with lib.hm.gvariant;
-{
-  imports = [
-    ../_mixins/console/fish.nix
-  ];
+with lib.hm.gvariant; {
+  imports = [ ../_mixins/console/fish.nix ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {
   #     picture-options = "zoom";
@@ -12,10 +9,5 @@ with lib.hm.gvariant;
   # };
 
   targets.genericLinux.enable = true;
-  home = {
-    packages = with pkgs; [
-      util-linux
-      clonegit
-    ];
-  };
+  home = { packages = with pkgs; [ util-linux clonegit ]; };
 }

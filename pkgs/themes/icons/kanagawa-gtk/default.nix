@@ -1,24 +1,10 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, gtk-engine-murrine
-, jdupes
-, themeVariants ? [ ]
-,
+{ lib, stdenv, fetchFromGitHub, gtk-engine-murrine, jdupes, themeVariants ? [ ],
 }:
 let
   inherit (builtins) toString;
   inherit (lib.trivial) checkListOfEnum;
-in
-checkListOfEnum "$Kanagawa: GTK Theme Variants" [
-  "B"
-  "B-LB"
-  "BL"
-  "BL-LB"
-]
-  themeVariants
-  stdenv.mkDerivation
-{
+in checkListOfEnum "$Kanagawa: GTK Theme Variants" [ "B" "B-LB" "BL" "BL-LB" ]
+themeVariants stdenv.mkDerivation {
   pname = "kanagawa-gtk";
   version = "unstable-2023-07-04";
 
@@ -33,23 +19,20 @@ checkListOfEnum "$Kanagawa: GTK Theme Variants" [
 
   propagatedUserEnvPkgs = [ gtk-engine-murrine ];
 
-  installPhase =
-    let
-      gtkTheme = "Kanagawa-${toString themeVariants}";
-    in
-    ''
-      runHook preInstall
+  installPhase = let gtkTheme = "Kanagawa-${toString themeVariants}";
+  in ''
+    runHook preInstall
 
-      mkdir -p $out/share/{icons,themes}
+    mkdir -p $out/share/{icons,themes}
 
-      cp -r $src/themes/${gtkTheme} $out/share/themes
-      cp -r $src/icons/Kanagawa $out/share/icons
+    cp -r $src/themes/${gtkTheme} $out/share/themes
+    cp -r $src/icons/Kanagawa $out/share/icons
 
-      # Duplicate files -> hard-links = reduced install-size!
-      jdupes -L -r $out/share
+    # Duplicate files -> hard-links = reduced install-size!
+    jdupes -L -r $out/share
 
-      runHook postInstall
-    '';
+    runHook postInstall
+  '';
 
   meta = with lib; {
     description = "A GTK theme based on the Kanagawa colour palette";

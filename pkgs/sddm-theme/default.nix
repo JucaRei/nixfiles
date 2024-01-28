@@ -3,15 +3,15 @@
 { pkgs }:
 
 let
-  imgLink = "https://github.com/enchanted-coder/dotfiles/blob/main/hypr/wallpapers/finalizer.png";
+  imgLink =
+    "https://github.com/enchanted-coder/dotfiles/blob/main/hypr/wallpapers/finalizer.png";
 
   image = pkgs.fetchurl {
     url = imgLink;
     sha256 = "sha256-P03LPqsixglR+DmEdnBQMG50G+SxazH3Gy4PFh2Q3ec=";
   };
-in
 
-pkgs.stdenv.mkDerivation {
+in pkgs.stdenv.mkDerivation {
   name = "sddm-theme";
   src = pkgs.fetchFromGitHub {
     owner = "MarianArlt";

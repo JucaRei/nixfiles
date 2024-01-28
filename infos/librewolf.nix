@@ -1,13 +1,7 @@
-{ config
-, pkgs
-, lib
-, ...
-}:
+{ config, pkgs, lib, ... }:
 
 {
-  imports = [
-    ./gui.nix
-  ];
+  imports = [ ./gui.nix ];
   home.file.".mozilla/firefox/profiles.ini".target = ".librewolf/profiles.ini";
   programs.firefox = {
     enable = true;
@@ -56,23 +50,22 @@
           "browser.download.animateNotifications" = false;
         };
       }
-      (
-        let
-          concatFiles = dir:
-            builtins.concatStringsSep ""
-              (map
-                (k: lib.optionalString (!lib.hasInfix ".before-ff" k) (builtins.readFile "${dir}/${k}"))
-                (builtins.attrNames (builtins.readDir dir)));
-        in
-        lib.mkIf config.phone.enable {
-          userChrome =
-            concatFiles "${pkgs.mobile-config-firefox}/etc/mobile-config-firefox/common"
-            + concatFiles "${pkgs.mobile-config-firefox}/etc/mobile-config-firefox/userChrome";
-          userContent =
-            concatFiles "${pkgs.mobile-config-firefox}/etc/mobile-config-firefox/common"
-            + concatFiles "${pkgs.mobile-config-firefox}/etc/mobile-config-firefox/userContent";
-        }
-      )
+      (let
+        concatFiles = dir:
+          builtins.concatStringsSep "" (map (k:
+            lib.optionalString (!lib.hasInfix ".before-ff" k)
+            (builtins.readFile "${dir}/${k}"))
+            (builtins.attrNames (builtins.readDir dir)));
+      in lib.mkIf config.phone.enable {
+        userChrome = concatFiles
+          "${pkgs.mobile-config-firefox}/etc/mobile-config-firefox/common"
+          + concatFiles
+          "${pkgs.mobile-config-firefox}/etc/mobile-config-firefox/userChrome";
+        userContent = concatFiles
+          "${pkgs.mobile-config-firefox}/etc/mobile-config-firefox/common"
+          + concatFiles
+          "${pkgs.mobile-config-firefox}/etc/mobile-config-firefox/userContent";
+      })
     ];
   };
 }

@@ -66,13 +66,7 @@ let
         xml2
         zip
       ];
-    multiPkgs = pkgs:
-      with pkgs; [
-        zlib
-        ncurses5
-        libcxx
-        readline
-      ];
+    multiPkgs = pkgs: with pkgs; [ zlib ncurses5 libcxx readline ];
     runScript = "bash";
     profile = ''
       export USE_CCACHE=1
@@ -81,8 +75,7 @@ let
       export TMPDIR=/tmp
     '';
   };
-in
-pkgs.stdenv.mkDerivation {
+in pkgs.stdenv.mkDerivation {
   name = "android-env-shell";
   nativeBuildInputs = [ fhs ];
   shellHook = "exec android-env";

@@ -13,22 +13,28 @@
         text = builtins.readFile ../../../../../config/rofi/default/colors.rasi;
       };
       "rofi/confirm.rasi" = {
-        text = builtins.readFile ../../../../../config/rofi/default/confirm.rasi;
+        text =
+          builtins.readFile ../../../../../config/rofi/default/confirm.rasi;
       };
       "rofi/launcher.rasi" = {
-        text = builtins.readFile ../../../../../config/rofi/default/launcher.rasi;
+        text =
+          builtins.readFile ../../../../../config/rofi/default/launcher.rasi;
       };
       "rofi/message.rasi" = {
-        text = builtins.readFile ../../../../../config/rofi/default/message.rasi;
+        text =
+          builtins.readFile ../../../../../config/rofi/default/message.rasi;
       };
       "rofi/networkmenu.rasi" = {
-        text = builtins.readFile ../../../../../config/rofi/default/networkmenu.rasi;
+        text =
+          builtins.readFile ../../../../../config/rofi/default/networkmenu.rasi;
       };
       "rofi/rofi-network-manager.rasi" = {
-        text = builtins.readFile ../../../../../config/rofi/default/rofi-network-manager.rasi;
+        text = builtins.readFile
+          ../../../../../config/rofi/default/rofi-network-manager.rasi;
       };
       "rofi/powermenu.rasi" = {
-        text = builtins.readFile ../../../../../config/rofi/default/powermenu.rasi;
+        text =
+          builtins.readFile ../../../../../config/rofi/default/powermenu.rasi;
       };
       "rofi/styles.rasi" = {
         text = builtins.readFile ../../../../../config/rofi/default/styles.rasi;

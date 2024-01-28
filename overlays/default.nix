@@ -1,9 +1,7 @@
 # This file defines overlays
-{ inputs, ... }:
-{
+{ inputs, ... }: {
   # This one brings our custom packages from the 'pkgs' directory
   additions = final: _prev: import ../pkgs { pkgs = final; };
-
 
   # This one contains whatever you want to overlay
   # You can change versions, add patches, set compilation flags, anything really.
@@ -46,10 +44,8 @@
     });
     # distrobox-fix = prev.distrobox;
 
-
     # Music
     # tidal = final.tidal-dl;
-
 
     nvchad = final.nvim-chad;
     phospor-ttf = final.phospor;

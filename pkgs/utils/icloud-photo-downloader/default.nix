@@ -1,12 +1,8 @@
-{ pkgs
-, lib
-, ...
-}:
+{ pkgs, lib, ... }:
 let
   pname = "icloudpd";
   version = "1.16.0";
-in
-pkgs.python3Packages.buildPythonApplication {
+in pkgs.python3Packages.buildPythonApplication {
   inherit pname version;
   format = "pyproject";
 
@@ -49,7 +45,8 @@ pkgs.python3Packages.buildPythonApplication {
 
   meta = {
     description = "A command-line tool to download photos from iCloud";
-    homepage = "https://github.com/icloud-photos-downloader/icloud_photos_downloader";
+    homepage =
+      "https://github.com/icloud-photos-downloader/icloud_photos_downloader";
     license = lib.licenses.mit;
     maintainers = with lib.maintainers; [ jnsgruk ];
   };

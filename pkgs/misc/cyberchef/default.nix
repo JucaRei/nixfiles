@@ -1,21 +1,16 @@
-{ pkgs ? import <nixpkgs> { }
-, stdenv ? pkgs.stdenv
-, lib ? pkgs.lib
-, ...
-}:
+{ pkgs ? import <nixpkgs> { }, stdenv ? pkgs.stdenv, lib ? pkgs.lib, ... }:
 stdenv.mkDerivation rec {
   pname = "cyberchef";
   version = "10.5.2";
 
   src = pkgs.fetchzip {
-    url = "https://github.com/gchq/CyberChef/releases/download/v${version}/CyberChef_v${version}.zip";
+    url =
+      "https://github.com/gchq/CyberChef/releases/download/v${version}/CyberChef_v${version}.zip";
     sha256 = "sha256-BjdeOTVZUMitmInL/kE6a/aw/lH4YwKNWxdi0B51xzc=";
     stripRoot = false;
   };
 
-  nativeBuildInputs = [
-    pkgs.unzip
-  ];
+  nativeBuildInputs = [ pkgs.unzip ];
 
   phases = [ "installPhase" ];
 
@@ -26,7 +21,8 @@ stdenv.mkDerivation rec {
   '';
 
   meta = {
-    description = " The Cyber Swiss Army Knife - a web app for encryption, encoding, compression and data analysis";
+    description =
+      " The Cyber Swiss Army Knife - a web app for encryption, encoding, compression and data analysis";
     homepage = "https://gchq.github.io/CyberChef";
     license = lib.licenses.mit;
   };

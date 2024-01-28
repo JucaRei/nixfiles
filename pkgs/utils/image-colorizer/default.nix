@@ -16,9 +16,7 @@ buildPythonPackage rec {
     )
     EOF
   '';
-  propagatedBuildInputs = with pkgs;[
-    python310Packages.pillow
-  ];
+  propagatedBuildInputs = with pkgs; [ python310Packages.pillow ];
   src = fetchFromGitHub {
     repo = "ImageColorizer";
     owner = "kiddae";
@@ -26,7 +24,8 @@ buildPythonPackage rec {
     sha256 = "0ai4i3qmk55z3zc2gd8nicgx04pmfxl5wcq43ryy6l4c6gj2ik5r";
   };
   meta = {
-    description = "ImageColorizer is a Python module and a CLI tool that you can easily use to colorize wallpapers for them to fit a terminal colorscheme.";
+    description =
+      "ImageColorizer is a Python module and a CLI tool that you can easily use to colorize wallpapers for them to fit a terminal colorscheme.";
     homepage = "https://github.com/kiddae/ImageColorizer";
     license = lib.licenses.mit;
     platforms = lib.platforms.unix;

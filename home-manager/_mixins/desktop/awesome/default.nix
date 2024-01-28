@@ -1,5 +1,1 @@
-_: {
-  imports = [
-    ./themes
-  ];
-}
+_: { imports = [ ./themes ]; }

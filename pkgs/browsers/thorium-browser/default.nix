@@ -1,75 +1,29 @@
-{ lib
-, stdenv
-, fetchurl
-, wrapGAppsHook
-, makeWrapper
-, dpkg
-, alsa-lib
-, at-spi2-atk
-, at-spi2-core
-, atk
-, cairo
-, cups
-, dbus
-, expat
-, vivaldi-ffmpeg-codecs
-, fontconfig
-, freetype
-, gdk-pixbuf
-, glib
-, gnome
-, gsettings-desktop-schemas
-, gtk3
-, libuuid
-, libdrm
-, libX11
-, libXcomposite
-, libXcursor
-, libXdamage
-, libXext
-, libXfixes
-, libXi
-, libxkbcommon
-, libXrandr
-, libXrender
-, libXScrnSaver
-, libxshmfence
-, libXtst
-, mesa
-, nspr
-, nss
-, pango
-, pipewire
-, udev
-, wayland
-, xorg
-, zlib
-, xdg-utils
-, snappy
+{ lib, stdenv, fetchurl, wrapGAppsHook, makeWrapper, dpkg, alsa-lib, at-spi2-atk
+, at-spi2-core, atk, cairo, cups, dbus, expat, vivaldi-ffmpeg-codecs, fontconfig
+, freetype, gdk-pixbuf, glib, gnome, gsettings-desktop-schemas, gtk3, libuuid
+, libdrm, libX11, libXcomposite, libXcursor, libXdamage, libXext, libXfixes
+, libXi, libxkbcommon, libXrandr, libXrender, libXScrnSaver, libxshmfence
+, libXtst, mesa, nspr, nss, pango, pipewire, udev, wayland, xorg, zlib
+, xdg-utils, snappy
 
-  # command line arguments which are always set e.g "--disable-gpu"
+# command line arguments which are always set e.g "--disable-gpu"
 , commandLineArgs ? ""
 
   # Necessary for USB audio devices.
-, pulseSupport ? stdenv.isLinux
-, libpulseaudio
+, pulseSupport ? stdenv.isLinux, libpulseaudio
 
-  # For GPU acceleration support on Wayland (without the lib it doesn't seem to work)
+# For GPU acceleration support on Wayland (without the lib it doesn't seem to work)
 , libGL
 
-  # For video acceleration via VA-API (--enable-features=VaapiVideoDecoder,VaapiVideoEncoder)
-, libvaSupport ? stdenv.isLinux
-, libva
-, enableVideoAcceleration ? libvaSupport
+# For video acceleration via VA-API (--enable-features=VaapiVideoDecoder,VaapiVideoEncoder)
+, libvaSupport ? stdenv.isLinux, libva, enableVideoAcceleration ? libvaSupport
 
   # For Vulkan support (--enable-features=Vulkan); disabled by default as it seems to break VA-API
-, vulkanSupport ? false
-, addOpenGLRunpath
-, enableVulkan ? vulkanSupport
-}:
+, vulkanSupport ? false, addOpenGLRunpath, enableVulkan ? vulkanSupport }:
 
 let
-  inherit (lib) optional optionals makeLibraryPath makeSearchPathOutput makeBinPath
+  inherit (lib)
+    optional optionals makeLibraryPath makeSearchPathOutput makeBinPath
     optionalString strings escapeShellArg;
 
   deps = [
@@ -114,21 +68,21 @@ let
     zlib
     snappy
     stdenv.cc.cc.lib
-  ]
-  ++ optional pulseSupport libpulseaudio
-  ++ optional libvaSupport libva;
+  ] ++ optional pulseSupport libpulseaudio ++ optional libvaSupport libva;
 
   rpath = makeLibraryPath deps + ":" + makeSearchPathOutput "lib" "lib64" deps;
   binpath = makeBinPath deps;
 
-  enableFeatures = optionals enableVideoAcceleration [ "VaapiVideoDecoder" "VaapiVideoEncoder" ]
-    ++ optional enableVulkan "Vulkan";
+  enableFeatures = optionals enableVideoAcceleration [
+    "VaapiVideoDecoder"
+    "VaapiVideoEncoder"
+  ] ++ optional enableVulkan "Vulkan";
 
   # The feature disable is needed for VAAPI to work correctly: https://github.com/thorium/thorium-browser/issues/20935
-  disableFeatures = optional enableVideoAcceleration "UseChromeOSDirectVideoDecoder";
-in
+  disableFeatures =
+    optional enableVideoAcceleration "UseChromeOSDirectVideoDecoder";
 
-stdenv.mkDerivation rec {
+in stdenv.mkDerivation rec {
   pname = "thorium";
   # version = "113.0.5672.134";
   version = "117.0.5938.157";
@@ -136,7 +90,8 @@ stdenv.mkDerivation rec {
   src = fetchurl {
     #https://github.com/alex313031/thorium/releases/download/M112.0.5615.166/thorium-browser_112.0.5615.166-1_amd64.deb
     #https://github.com/alex313031/thorium/releases/download/M112.0.5615.166/thorium-browser_112.0.5615.166_amd64.deb
-    url = "https://github.com/alex313031/thorium/releases/download/M${version}/thorium-browser_${version}_amd64.deb";
+    url =
+      "https://github.com/alex313031/thorium/releases/download/M${version}/thorium-browser_${version}_amd64.deb";
     sha256 = "sha256-muNBYP6832PmP0et9ESaRpd/BIwYZmwdkHhsMNBLQE4=";
   };
 
@@ -145,10 +100,8 @@ stdenv.mkDerivation rec {
   dontPatchELF = true;
   doInstallCheck = true;
 
-  nativeBuildInputs = [
-    dpkg
-    (wrapGAppsHook.override { inherit makeWrapper; })
-  ];
+  nativeBuildInputs =
+    [ dpkg (wrapGAppsHook.override { inherit makeWrapper; }) ];
 
   buildInputs = [
     # needed for GSETTINGS_SCHEMAS_PATH
@@ -161,7 +114,8 @@ stdenv.mkDerivation rec {
     gnome.adwaita-icon-theme
   ];
 
-  unpackPhase = "dpkg-deb --fsys-tarfile $src | tar -x --no-same-permissions --no-same-owner";
+  unpackPhase =
+    "dpkg-deb --fsys-tarfile $src | tar -x --no-same-permissions --no-same-owner";
 
   installPhase = ''
     runHook preInstall
@@ -216,17 +170,27 @@ stdenv.mkDerivation rec {
     gappsWrapperArgs+=(
       --prefix LD_LIBRARY_PATH : ${rpath}
       --prefix PATH : ${binpath}
-      --suffix PATH : ${lib.makeBinPath [ xdg-utils vivaldi-ffmpeg-codecs]}
-      ${optionalString (enableFeatures != []) ''
-      --add-flags "--enable-features=${strings.concatStringsSep "," enableFeatures}"
-      ''}
-      ${optionalString (disableFeatures != []) ''
-      --add-flags "--disable-features=${strings.concatStringsSep "," disableFeatures}"
-      ''}
+      --suffix PATH : ${lib.makeBinPath [ xdg-utils vivaldi-ffmpeg-codecs ]}
+      ${
+        optionalString (enableFeatures != [ ]) ''
+          --add-flags "--enable-features=${
+            strings.concatStringsSep "," enableFeatures
+          }"
+        ''
+      }
+      ${
+        optionalString (disableFeatures != [ ]) ''
+          --add-flags "--disable-features=${
+            strings.concatStringsSep "," disableFeatures
+          }"
+        ''
+      }
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
-      ${optionalString vulkanSupport ''
-      --prefix XDG_DATA_DIRS  : "${addOpenGLRunpath.driverLink}/share"
-      ''}
+      ${
+        optionalString vulkanSupport ''
+          --prefix XDG_DATA_DIRS  : "${addOpenGLRunpath.driverLink}/share"
+        ''
+      }
       --add-flags ${escapeShellArg commandLineArgs}
     )
   '';
@@ -241,7 +205,9 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     homepage = "https://thorium.rocks/";
     description = "Thorium - The fastest browser on Earth (Based on chromium)";
-    changelog = "https://github.com/thorium/thorium-browser/blob/master/CHANGELOG_DESKTOP.md#" + replaceStrings [ "." ] [ "" ] version;
+    changelog =
+      "https://github.com/thorium/thorium-browser/blob/master/CHANGELOG_DESKTOP.md#"
+      + replaceStrings [ "." ] [ "" ] version;
     longDescription = ''
       Chromium fork for Linux, MacOS, Raspberry Pi, and Windows named after radioactive element No. 90.
     '';

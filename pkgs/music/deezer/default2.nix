@@ -2,18 +2,8 @@
 #
 # SPDX-License-Identifier: CC-BY-NC-SA-4.0
 
-{ copyDesktopItems
-, electron_13
-, fetchFromGitHub
-, fetchurl
-, lib
-, makeBinaryWrapper
-, makeDesktopItem
-, nodePackages
-, p7zip
-, stdenv
-, udev
-}:
+{ copyDesktopItems, electron_13, fetchFromGitHub, fetchurl, lib
+, makeBinaryWrapper, makeDesktopItem, nodePackages, p7zip, stdenv, udev }:
 let
   version = "5.30.670";
   aunetxVersion = "v5.30.660-1";
@@ -29,20 +19,16 @@ let
     owner = "aunetx";
     repo = "deezer-linux";
     rev = aunetxVersion;
-    sparseCheckout = [
-      "extra"
-      "icons"
-      "patches"
-    ];
+    sparseCheckout = [ "extra" "icons" "patches" ];
     sha256 = "sha256-I6v4dXh/ikq0B92WC7Y2zCcS5sxvPdo2WymHCGKIvlc=";
   };
-in
-stdenv.mkDerivation rec {
+in stdenv.mkDerivation rec {
   pname = "deezer-desktop";
   inherit version;
 
   src = fetchurl {
-    url = "https://www.deezer.com/desktop/download/artifact/win32/x86/${version}";
+    url =
+      "https://www.deezer.com/desktop/download/artifact/win32/x86/${version}";
     sha256 = "sha256-llSG2w1y0lYy8ipwPjMH7lbno42Xrl6wGwtQPqo6tao=";
   };
 

@@ -1,10 +1,4 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, pack ? 2
-, theme ? "green_blocks"
-, ...
-}:
+{ lib, stdenv, fetchFromGitHub, pack ? 2, theme ? "green_blocks", ... }:
 stdenv.mkDerivation rec {
   pname = "plymouth-themes";
   version = "1.0.0";

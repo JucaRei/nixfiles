@@ -1,17 +1,9 @@
 { pkgs ? import <nixpkgs> { } }:
-with pkgs; let
-  goVersion = "1_19";
-in
-mkShell {
-  buildInputs = [
-    go_1_19
-    golint
-    gofumpt
-    gotools
-    protobuf
-    protoc-gen-go
-    nodejs-slim
-  ];
+with pkgs;
+let goVersion = "1_19";
+in mkShell {
+  buildInputs =
+    [ go_1_19 golint gofumpt gotools protobuf protoc-gen-go nodejs-slim ];
 
   postBuild = ''
     # Run `go install` to install the `sqlc` tool

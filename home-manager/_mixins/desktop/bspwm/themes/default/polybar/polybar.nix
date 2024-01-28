@@ -1,7 +1,5 @@
 { pkgs, ... }: {
-  imports = [
-    ./scripts.nix
-  ];
+  imports = [ ./scripts.nix ];
   services = {
     polybar = {
       enable = true;
@@ -53,10 +51,12 @@
           line-size = 1;
           wm-restack = "bspwm";
 
-          modules-left = "menu sep round-left bspwm round-right empty-space round-left polywins round-right";
+          modules-left =
+            "menu sep round-left bspwm round-right empty-space round-left polywins round-right";
           modules-center = "nowplaying title";
           # modules-right = "disks temperature round-left cpu round-right mem xbacklight alsa pulseaudio bluetooth wlan eth updates round-left time round-right powermenu";
-          modules-right = "disks round-left cpu round-right mem pulseaudio wlan eth round-left time round-right battery powermenu";
+          modules-right =
+            "disks round-left cpu round-right mem pulseaudio wlan eth round-left time round-right battery powermenu";
           font-0 = "JetBrainsMono Nerd Font:style=Bold:pixelsize=9;3";
           font-1 = "JetBrainsMono Nerd Font:size=14;4";
           font-2 = "Material Design Icons:style=Bold:size=9;3";
@@ -272,7 +272,7 @@
           ws-icon-1 = "2;%{F#ff9b93}";
           ws-icon-2 = "3;%{F#95e1d3}󱂵";
           ws-icon-3 = "4;%{F#81A1C1}";
-          ws-icon-4 = "5;%{F#A3BE8C}"; #   󰇩 󰌔  
+          ws-icon-4 = "5;%{F#A3BE8C}"; #    󰇩 󰌔  
           ws-icon-5 = "6;%{F#EB721E}";
           ws-icon-6 = "7;%{F#6cb5ed}";
           ws-icon-7 = "8;%{F#545862}";
@@ -298,7 +298,6 @@
           label-empty-padding = 1;
           label-empty-background = "#2a2e36";
           label-empty-margin = 0;
-
 
           label-urgent = "%icon%";
           label-urgent-foreground = "#88C0D0";
@@ -385,7 +384,8 @@
           interval = 5;
           exec = "";
           # format-connected = "<label-connected>";
-          format-connected = "%{A1:$HOME/.config/rofi/bin/rofi-wifi.sh:}<ramp-signal> <label-connected>%{A}";
+          format-connected =
+            "%{A1:$HOME/.config/rofi/bin/rofi-wifi.sh:}<ramp-signal> <label-connected>%{A}";
           format-disconnected = "<label-disconnected>";
           label-disconnected = "%{F#F0C674}%ifname%%{F#707880} disconnected";
           # click-left = "~/.config/rofi/bin/rofi-wifi-menu.sh";
@@ -396,7 +396,8 @@
           interface-type = "wired";
           interval = 1;
           # label-connected = "%{F#F0C674}%ifname%%{F-} %local_ip%";
-          label-connected = "%{F#16ACE0} %{F#713ABE}%local_ip% %{F#2DFF02}%downspeed% %{F#F04F4C}%upspeed%";
+          label-connected =
+            "%{F#16ACE0} %{F#713ABE}%local_ip% %{F#2DFF02}%downspeed% %{F#F04F4C}%upspeed%";
           format-connected-background = "\${colors.background}";
           format-connected-foreground = "\${colors.foreground}";
           format-connected-padding = 1;
@@ -474,7 +475,6 @@
           animation-charging-3 = "  ";
           animation-charging-4 = "  ";
 
-
           animation-charging-foreground = "#DF8890";
           animation-charging-framerate = 750;
 
@@ -544,7 +544,7 @@
           type = "internal/cpu";
           interval = 2.0;
 
-          format-prefix = " "; #
+          format-prefix = " ";
           format = "<label>";
 
           # label = "CPU %percentage%%";

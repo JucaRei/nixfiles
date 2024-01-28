@@ -1,14 +1,9 @@
-{ desktop
-, lib
-, hostname
-, ...
-}: {
-  imports =
-    [
-      ./podman.nix
-      # ./distrobox.nix
-      # ./docker.nix
-    ];
+{ desktop, lib, hostname, ... }: {
+  imports = [
+    ./podman.nix
+    # ./distrobox.nix
+    # ./docker.nix
+  ];
   # ++ lib.optional
   #   (builtins.isString desktop && builtins.isString hostname != "vm")
   #   ./lxd.nix

@@ -6,9 +6,4 @@ let
     swww img $wall &
     wal -i $wall &&  reload &
   '';
-in
-{
-  home.packages = with pkgs; [
-    random-wall
-  ];
-}
+in { home.packages = with pkgs; [ random-wall ]; }

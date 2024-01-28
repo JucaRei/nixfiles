@@ -1,14 +1,12 @@
-{ stdenvNoCC
-, fetchzip
-, lib
-}:
+{ stdenvNoCC, fetchzip, lib }:
 
 stdenvNoCC.mkDerivation {
   pname = "cyberre-grub-theme";
   version = "1.0.0";
 
   src = fetchzip {
-    url = "https://github.com/alealexpro100/various_files/raw/master/Grub2-theme%20CyberRe%201.0.0.tar.gz";
+    url =
+      "https://github.com/alealexpro100/various_files/raw/master/Grub2-theme%20CyberRe%201.0.0.tar.gz";
     hash = "sha256-RWEQHqWjSZtDlFjJlsQBig/bBaZL/srfez1qTzE+Qrw=";
   };
 

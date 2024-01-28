@@ -1,15 +1,5 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, meson
-, ninja
-, pkg-config
-, vala
-, glib
-, libevdev
-, libgee
-, udev
-}:
+{ lib, stdenv, fetchFromGitHub, meson, ninja, pkg-config, vala, glib, libevdev
+, libgee, udev }:
 
 stdenv.mkDerivation {
   pname = "evdevhook2";
@@ -23,19 +13,9 @@ stdenv.mkDerivation {
     fetchSubmodules = true;
   };
 
-  nativeBuildInputs = [
-    meson
-    ninja
-    pkg-config
-    vala
-  ];
+  nativeBuildInputs = [ meson ninja pkg-config vala ];
 
-  buildInputs = [
-    glib
-    libevdev
-    libgee
-    udev
-  ];
+  buildInputs = [ glib libevdev libgee udev ];
 
   mesonBuildType = "release";
 

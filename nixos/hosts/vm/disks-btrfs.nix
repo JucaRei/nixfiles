@@ -1,8 +1,15 @@
 { disks ? [ "/dev/vda" ], ... }:
 let
-  defaultBtrfsOpts = [ "noatime" "nodiratime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
-in
-{
+  defaultBtrfsOpts = [
+    "noatime"
+    "nodiratime"
+    "ssd"
+    "compress-force=zstd:15"
+    "space_cache=v2"
+    "commit=120"
+    "discard=async"
+  ];
+in {
   # environment.etc = {
   #   "crypttab".text = ''
   #     data  /dev/disk/by-partlabel/data  /etc/data.keyfile
@@ -65,7 +72,13 @@ in
                   };
                   "@swap" = {
                     mountpoint = "/.swap";
-                    mountOptions = [ "defaults" "x-mount.mkdir" "ssd" "noatime" "nodiratime" ];
+                    mountOptions = [
+                      "defaults"
+                      "x-mount.mkdir"
+                      "ssd"
+                      "noatime"
+                      "nodiratime"
+                    ];
                   };
                 };
               };

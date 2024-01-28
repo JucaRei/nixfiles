@@ -16,8 +16,7 @@ let
   '';
   intelBusId = "PCI:0:2:0";
   nvidiaBusId = "PCI:1:0:0";
-in
-{
+in {
   config = {
     specialisation = {
       nvidia-opengl = {
@@ -26,14 +25,8 @@ in
           system.nixos.tags = [ "nvidia-opengl" ];
           boot = {
             loader.grub.configurationName = lib.mkForce "Nvidia OpenGL";
-            blacklistedKernelModules = [
-              "nouveau"
-              "rivafb"
-              "nvidiafb"
-              "rivatv"
-              "nv"
-              "uvcvideo"
-            ];
+            blacklistedKernelModules =
+              [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
             kernelModules = [
               "clearcpuid=514" # Fixes certain wine games crash on launch
               "nvidia"
@@ -41,11 +34,8 @@ in
               "nvidia_uvm"
               "nvidia_drm"
             ];
-            kernelParams = [
-              "nouveau.modeset=0"
-              "nohibernate"
-              "nvidia-drm.modeset=1"
-            ];
+            kernelParams =
+              [ "nouveau.modeset=0" "nohibernate" "nvidia-drm.modeset=1" ];
             extraModprobeConfig = ''
               options nvidia NVreg_UsePageAttributeTable=1
               options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
@@ -106,14 +96,8 @@ in
           system.nixos.tags = [ "nvidia-vulkan" ];
           boot = {
             loader.grub.configurationName = lib.mkForce "nvidia-vulkan";
-            blacklistedKernelModules = [
-              "nouveau"
-              "rivafb"
-              "nvidiafb"
-              "rivatv"
-              "nv"
-              "uvcvideo"
-            ];
+            blacklistedKernelModules =
+              [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
             kernelModules = [
               "clearcpuid=514" # Fixes certain wine games crash on launch
               "nvidia"
@@ -148,7 +132,8 @@ in
           };
           environment = {
             variables = lib.mkDefault {
-              "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+              "VK_ICD_FILENAMES" =
+                "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
               GBM_BACKEND = "nvidia-drm";
               LIBVA_DRIVER_NAME = "nvidia";
               __GLX_VENDOR_LIBRARY_NAME = "nvidia";

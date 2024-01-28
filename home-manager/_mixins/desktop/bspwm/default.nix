@@ -1,6 +1,5 @@
 { config, lib, pkgs, username, hostname, ... }:
-with lib.hm.gvariant;
-{
+with lib.hm.gvariant; {
   imports = [
     ### Import selected theme
     # ./themes/default
@@ -73,9 +72,7 @@ with lib.hm.gvariant;
         XDG_BIN_HOME = "\${HOME}/.local/bin";
         XDG_DATA_HOME = "\${HOME}/.local/share";
       };
-      sessionPath = [
-        "$HOME/.local/bin"
-      ];
+      sessionPath = [ "$HOME/.local/bin" ];
 
       # Without systemd (Voidlinux - Runit)
       # file = {
@@ -166,7 +163,6 @@ with lib.hm.gvariant;
       # };
     };
 
-
     systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
       Unit = {
         Description = "launch authentication-agent-1";
@@ -184,11 +180,8 @@ with lib.hm.gvariant;
       Install = { WantedBy = [ "graphical-session.target" ]; };
     };
 
-
     dconf.settings = {
-      "ca/desrt/dconf-editor" = {
-        show-warning = false;
-      };
+      "ca/desrt/dconf-editor" = { show-warning = false; };
 
       "org/gnome/desktop/peripherals/mouse" = {
         accel-profile = "adaptive";

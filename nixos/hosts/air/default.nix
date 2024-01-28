@@ -1,5 +1,4 @@
-{ inputs, lib, pkgs, config, ... }:
-{
+{ inputs, lib, pkgs, config, ... }: {
   imports = [
     inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     # inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
@@ -35,14 +34,13 @@
 
     # blacklistedKernelModules = lib.mkDefault [ "nvidia" "nouveau" ];
     initrd = {
-      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+      availableKernelModules =
+        [ "uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
       kernelModules = [ ];
       verbose = false;
       compressor = "zstd";
       supportedFilesystems = [ "btrfs" "vfat" ];
-      systemd = {
-        enable = lib.mkForce true;
-      };
+      systemd = { enable = lib.mkForce true; };
     };
     # extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelModules = [
@@ -99,8 +97,8 @@
     kernel.sysctl = lib.mkForce {
       "vm.vfs_cache_pressure" = 40;
       "vm.swappiness" = 10;
-      "vm.dirty_bytes" = 335544320; #320M
-      "vm.dirty_background_bytes" = 167772160; #160M
+      "vm.dirty_bytes" = 335544320; # 320M
+      "vm.dirty_background_bytes" = 167772160; # 160M
       # "vm.dirty_background_ratio" = 1;
       # "vm.dirty_ratio" = 50;
       "dev.i915.perf_stream_paranoid" = 0;
@@ -257,12 +255,10 @@
     #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
   }];
 
-
   # swapDevices = [{
   #   device = "/swap";
   #   size = 5120;
   # }];
-
 
   environment.systemPackages = with pkgs; [
     # unstable.tidal-dl
@@ -278,14 +274,10 @@
     efibootmgr
   ];
 
-  hardware = {
-    brillo.enable = true;
-  };
+  hardware = { brillo.enable = true; };
 
   services = {
-    hardware = {
-      bolt.enable = true;
-    };
+    hardware = { bolt.enable = true; };
     mbpfan = {
       enable = true;
       aggressive = true;
@@ -305,9 +297,7 @@
       # '';
     };
 
-    fstrim = {
-      enable = lib.mkDefault true;
-    };
+    fstrim = { enable = lib.mkDefault true; };
 
     xserver = {
       libinput = {
@@ -320,9 +310,7 @@
           disableWhileTyping = true;
           sendEventsMode = "disabled-on-external-mouse";
         };
-        mouse = {
-          scrollMethod = "button";
-        };
+        mouse = { scrollMethod = "button"; };
       };
     };
   };
@@ -344,11 +332,12 @@
         wantedBy = [ "basic.target" ];
         path = [ pkgs.bash ];
         serviceConfig = {
-          ExecStart = ''${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
-          echo 1 > enabled&& \
-          echo 25 > max_pool_percent&& \
-          echo lz4hc > compressor&& \
-          echo z3fold > zpool'
+          ExecStart = ''
+            ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
+                      echo 1 > enabled&& \
+                      echo 25 > max_pool_percent&& \
+                      echo lz4hc > compressor&& \
+                      echo z3fold > zpool'
           '';
           Type = "simple";
         };
@@ -362,11 +351,7 @@
     };
   };
 
-  programs = {
-    kbdlight = {
-      enable = true;
-    };
-  };
+  programs = { kbdlight = { enable = true; }; };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 

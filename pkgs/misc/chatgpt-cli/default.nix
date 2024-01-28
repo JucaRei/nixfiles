@@ -1,8 +1,4 @@
-{ lib
-, fetchFromGitHub
-, buildGoModule
-,
-}:
+{ lib, fetchFromGitHub, buildGoModule, }:
 buildGoModule rec {
   pname = "chatgpt";
   version = "1.2.0";

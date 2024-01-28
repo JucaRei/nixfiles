@@ -99,16 +99,17 @@ let
       8200
     ];
   };
-in
-{
+in {
   networking = {
     firewall = {
       allowPing = true;
       enable = true;
       allowedTCPPorts = [ ]
-        ++ lib.optionals (builtins.elem hostname syncthing.hosts) syncthing.tcpPorts;
+        ++ lib.optionals (builtins.elem hostname syncthing.hosts)
+        syncthing.tcpPorts;
       allowedUDPPorts = [ ]
-        ++ lib.optionals (builtins.elem hostname syncthing.hosts) syncthing.udpPorts;
+        ++ lib.optionals (builtins.elem hostname syncthing.hosts)
+        syncthing.udpPorts;
 
       #---------------------------------------------------------------------
       # Adding a rule to the iptables firewall to allow NetBIOS name

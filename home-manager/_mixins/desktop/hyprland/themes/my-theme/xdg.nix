@@ -6,8 +6,7 @@ let
   viewer = "imv.desktop";
   video = "umpv.desktop";
   audio = "org.gnome.Rhythmbox3.desktop";
-in
-{
+in {
   xdg = {
     enable = true;
     mime.enable = true;

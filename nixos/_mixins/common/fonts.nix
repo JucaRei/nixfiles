@@ -1,53 +1,54 @@
 { pkgs, lib, ... }:
-let
-  lotsOfFonts = true;
-in
-{
+let lotsOfFonts = true;
+in {
   fonts = {
     fontDir.enable = true;
     ## nix 23.05
     # fonts = (with pkgs; [ 
-    packages = (with pkgs; [
-      # renamed on 23.11 
-      (nerdfonts.override { fonts = [ "FiraCode" "SourceCodePro" "UbuntuMono" ]; })
-      fira
-      fira-go
-      joypixels
-      # liberation_ttf
-      gyre-fonts # TrueType substitutes for standard PostScript fonts
-      noto-fonts-emoji # emoji
-      source-serif
-      ubuntu_font_family
-      work-sans
-      # siji # https://github.com/stark/siji
-      source-code-pro
-      terminus_font
-      source-sans-pro
-      roboto
-      material-design-icons
-      font-awesome
-      inter
-      maple-mono
-      maple-mono-NF
-      maple-mono-SC-NF
-      meslo-lg
-      cozette
-    ] ++ lib.optionals lotsOfFonts [
-      # Japanese
-      ipafont # display jap symbols like シートベルツ in polybar
-      kochi-substitute
+    packages = (with pkgs;
+      [
+        # renamed on 23.11 
+        (nerdfonts.override {
+          fonts = [ "FiraCode" "SourceCodePro" "UbuntuMono" ];
+        })
+        fira
+        fira-go
+        joypixels
+        # liberation_ttf
+        gyre-fonts # TrueType substitutes for standard PostScript fonts
+        noto-fonts-emoji # emoji
+        source-serif
+        ubuntu_font_family
+        work-sans
+        # siji # https://github.com/stark/siji
+        source-code-pro
+        terminus_font
+        source-sans-pro
+        roboto
+        material-design-icons
+        font-awesome
+        inter
+        maple-mono
+        maple-mono-NF
+        maple-mono-SC-NF
+        meslo-lg
+        cozette
+      ] ++ lib.optionals lotsOfFonts [
+        # Japanese
+        ipafont # display jap symbols like シートベルツ in polybar
+        kochi-substitute
 
-      # Code/monospace and nsymbol fonts
-      fira-code
-      fira-code-symbols
-      mplus-outline-fonts.osdnRelease
-      dejavu_fonts
-      iosevka-bin
-    ]);
+        # Code/monospace and nsymbol fonts
+        fira-code
+        fira-code-symbols
+        mplus-outline-fonts.osdnRelease
+        dejavu_fonts
+        iosevka-bin
+      ]);
 
     ## Enable a basic set of fonts providing several font styles and families and reasonable coverage of Unicode.
     # enableDefaultFonts = false;
-    enableDefaultPackages = false; # renamed on 23.11 
+    enableDefaultPackages = false; # renamed on 23.11
 
     fontconfig = {
       antialias = true;

@@ -1,24 +1,28 @@
-{ lib
-, stdenvNoCC
-, fetchFromGitHub
-, gitUpdater
-, gtk3
-, hicolor-icon-theme
-, jdupes
-, schemeVariants ? [ ]
-, colorVariants ? [ ] # default is blue
+{ lib, stdenvNoCC, fetchFromGitHub, gitUpdater, gtk3, hicolor-icon-theme, jdupes
+, schemeVariants ? [ ], colorVariants ? [ ] # default is blue
 }:
 
-let
-  pname = "colloid-icon-theme";
+let pname = "colloid-icon-theme";
 
-in
-lib.checkListOfEnum "${pname}: scheme variants" [ "default" "nord" "dracula" "all" ] schemeVariants
-  lib.checkListOfEnum "${pname}: color variants" [ "default" "purple" "pink" "red" "orange" "yellow" "green" "teal" "grey" "all" ]
-  colorVariants
+in lib.checkListOfEnum "${pname}: scheme variants" [
+  "default"
+  "nord"
+  "dracula"
+  "all"
+] schemeVariants lib.checkListOfEnum "${pname}: color variants" [
+  "default"
+  "purple"
+  "pink"
+  "red"
+  "orange"
+  "yellow"
+  "green"
+  "teal"
+  "grey"
+  "all"
+] colorVariants
 
-  stdenvNoCC.mkDerivation
-rec {
+stdenvNoCC.mkDerivation rec {
   inherit pname;
   version = "2023-03-28";
 
@@ -29,14 +33,9 @@ rec {
     hash = "sha256-R7QKxZdcKUeTD6E9gj02Tu5tYv9JyqyH2sCsdOk9zTM=";
   };
 
-  nativeBuildInputs = [
-    gtk3
-    jdupes
-  ];
+  nativeBuildInputs = [ gtk3 jdupes ];
 
-  propagatedBuildInputs = [
-    hicolor-icon-theme
-  ];
+  propagatedBuildInputs = [ hicolor-icon-theme ];
 
   dontDropIconThemeCache = true;
 
@@ -53,8 +52,14 @@ rec {
     runHook preInstall
 
     name= ./install.sh \
-      ${lib.optionalString (schemeVariants != []) ("--scheme " + builtins.toString schemeVariants)} \
-      ${lib.optionalString (colorVariants != []) ("--theme " + builtins.toString colorVariants)} \
+      ${
+        lib.optionalString (schemeVariants != [ ])
+        ("--scheme " + builtins.toString schemeVariants)
+      } \
+      ${
+        lib.optionalString (colorVariants != [ ])
+        ("--theme " + builtins.toString colorVariants)
+      } \
       --dest $out/share/icons
 
     jdupes --quiet --link-soft --recurse $out/share

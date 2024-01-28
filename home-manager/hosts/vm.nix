@@ -14,14 +14,14 @@
   ];
 
   config = {
-  # services.vscode-server.enable = true;
-  home.packages = with pkgs; [
-    # thorium
-    clonegit
-    # deezer-gui
-    advcp
-    deepin.deepin-icon-theme
-    # emacs
-  ];
+    # services.vscode-server.enable = true;
+    home.packages = with pkgs; [
+      # thorium
+      clonegit
+      # deezer-gui
+      advcp
+      deepin.deepin-icon-theme
+      # emacs
+    ];
   };
 }

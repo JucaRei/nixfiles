@@ -1,13 +1,5 @@
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, installShellFiles
-, pkg-config
-, bluez
-, dbus
-, libpulseaudio
-,
-}:
+{ lib, rustPlatform, fetchFromGitHub, installShellFiles, pkg-config, bluez, dbus
+, libpulseaudio, }:
 rustPlatform.buildRustPackage rec {
   pname = "livebudscli";
   version = "0.1.9";
@@ -33,7 +25,8 @@ rustPlatform.buildRustPackage rec {
   '';
 
   meta = with lib; {
-    description = "A tool to control your Galaxy buds+, live and pro (beta) from linux";
+    description =
+      "A tool to control your Galaxy buds+, live and pro (beta) from linux";
     homepage = "https://github.com/JojiiOfficial/LiveBudsCli";
     license = licenses.gpl3Only;
     maintainers = with maintainers; [ Icy-Thought ];

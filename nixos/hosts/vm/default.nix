@@ -1,5 +1,4 @@
-{ lib, modulesPath, pkgs, ... }:
-{
+{ lib, modulesPath, pkgs, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     (import ./disks-btrfs.nix { })
@@ -87,7 +86,6 @@
   #   ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="zfs_member", ATTR{../queue/scheduler}="none"
   # '';
 
-
   services.xserver = {
     videoDrivers = [
       "qxl"
@@ -122,7 +120,8 @@
   };
 
   boot = {
-    initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
+    initrd.availableKernelModules =
+      [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
     kernelPackages = pkgs.linuxPackages_latest;
     # kernelPackages = pkgs.linuxKernel.packages.linux_5_15_hardened.system76;
 
@@ -131,8 +130,7 @@
         # gfxmodeEfi = lib.mkForce "3440x1440";
         gfxmodeEfi = lib.mkForce "1920x1080";
         theme = pkgs.cyberre;
-        extraFiles =
-          { "memtest.bin" = "${pkgs.memtest86plus}/memtest.bin"; };
+        extraFiles = { "memtest.bin" = "${pkgs.memtest86plus}/memtest.bin"; };
       };
     };
   };
@@ -148,6 +146,5 @@
       inxi
     ];
   };
-  nixpkgs.hostPlatform = lib.mkDefault
-    "x86_64-linux";
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

@@ -1,5 +1,4 @@
-{ pkgs, lib, params, ... }:
-{
+{ pkgs, lib, params, ... }: {
   programs = {
     firefox = {
       enable = true;
@@ -201,8 +200,10 @@
         #   /* some css */
         # '';
         # modified theme from https://github.com/Bali10050/FirefoxCSS
-        userChrome = builtins.readFile ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userChrome.css;
-        userContent = builtins.readFile ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userContent.css;
+        userChrome = builtins.readFile
+          ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userChrome.css;
+        userContent = builtins.readFile
+          ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userContent.css;
       };
     };
   };

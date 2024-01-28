@@ -1,7 +1,6 @@
 { desktop, lib, pkgs, ... }: {
-  environment.systemPackages = with pkgs; [ ] ++ lib.optionals (desktop != null) [
-    gnome.simple-scan
-  ];
+  environment.systemPackages = with pkgs;
+    [ ] ++ lib.optionals (desktop != null) [ gnome.simple-scan ];
 
   hardware = {
     sane = {

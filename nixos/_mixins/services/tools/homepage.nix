@@ -25,9 +25,10 @@ let
                 href: https://youtube.com/
     '';
   };
-in
-{
-  imports = [ "${inputs.nixpkgs-unstable}/nixos/modules/services/misc/homepage-dashboard.nix" ];
+in {
+  imports = [
+    "${inputs.nixpkgs-unstable}/nixos/modules/services/misc/homepage-dashboard.nix"
+  ];
 
   services.homepage-dashboard = {
     enable = true;

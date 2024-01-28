@@ -66,7 +66,7 @@ _: {
           # ; If unspecified, the application will pick the first one it finds.
           # ; $ polybar -m | cut -d ':' -f 1
           # ; $ xrandr -q | grep " connected" | cut -d ' ' -f1
-          monitor = "$\{env:MONITOR}";
+          monitor = "\${env:MONITOR}";
 
           # ; Use the specified monitor as a fallback if the main one is not found.
           monitor-fallback = "";
@@ -123,7 +123,6 @@ _: {
           # ;   {overline,underline}-color
           line-size = 2;
           line-color = "\${color.ACCENT}";
-
 
           "global/wm" = {
             margin-bottom = 0;
@@ -182,9 +181,11 @@ _: {
           # ;   modules-right = ipc clock
 
           # Default
-          modules-left = "LD menu RD dot-alt LD mod RD dot LD bspwm RD dot cpu dot used-memory";
+          modules-left =
+            "LD menu RD dot-alt LD mod RD dot LD bspwm RD dot cpu dot used-memory";
           modules-center = "LD date RD dot-alt LD mpd RD sep song";
-          modules-right = "volume dot bna dot bluetooth dot ethernet dot LD battery RD dot-alt LD sysmenu RD";
+          modules-right =
+            "volume dot bna dot bluetooth dot ethernet dot LD battery RD dot-alt LD sysmenu RD";
 
           # Alternate
           # ;modules-left = openbox 2LD cpu 3LD memory 4LD filesystem 5LD
@@ -863,7 +864,8 @@ _: {
 
           label = " %output% MB";
 
-          click-left = ''alacritty --class 'alacritty-float,alacritty-float' --config-file ~/.config/bspwm/alacritty/alacritty.yml -e "top" &'';
+          click-left = ''
+            alacritty --class 'alacritty-float,alacritty-float' --config-file ~/.config/bspwm/alacritty/alacritty.yml -e "top" &'';
 
           # ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
         };

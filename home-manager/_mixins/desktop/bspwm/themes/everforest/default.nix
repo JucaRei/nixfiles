@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
   imports = [
     ./dunst.nix
     ./picom.nix
@@ -19,40 +18,39 @@
           3901194171bca9e5e3236048e50eb1a5
         '';
       };
-      packages = with pkgs; [
-        # st
-        playerctl
-        pcmanfm
-        # pulseaudio-control
-        # gnome.nautilus
-        # gnome.sushi
-        # nautilus-open-any-terminal
-        gtk-engine-murrine
+      packages = with pkgs;
+        [
+          # st
+          playerctl
+          pcmanfm
+          # pulseaudio-control
+          # gnome.nautilus
+          # gnome.sushi
+          # nautilus-open-any-terminal
+          gtk-engine-murrine
 
-        # Fonts
-        cascadia-code
-        hasklig
-        hack-font
-        inter
-        maple-mono-SC-NF
-        sarasa-gothic
-        font-awesome
-        material-design-icons
-        meslo-lgs-nf
-        twemoji-color-font
-        (nerdfonts.override {
-          fonts = [
-            "DroidSansMono"
-            "LiberationMono"
-            # "Iosevka"
-            "Hasklig"
-            "JetBrainsMono"
-            "FiraCode"
-          ];
-        })
-      ] ++ (with pkgs.unstable; [
-        polybar-pulseaudio-control
-      ]);
+          # Fonts
+          cascadia-code
+          hasklig
+          hack-font
+          inter
+          maple-mono-SC-NF
+          sarasa-gothic
+          font-awesome
+          material-design-icons
+          meslo-lgs-nf
+          twemoji-color-font
+          (nerdfonts.override {
+            fonts = [
+              "DroidSansMono"
+              "LiberationMono"
+              # "Iosevka"
+              "Hasklig"
+              "JetBrainsMono"
+              "FiraCode"
+            ];
+          })
+        ] ++ (with pkgs.unstable; [ polybar-pulseaudio-control ]);
 
       # file = {
       #   ".config/bspwm/bspwmrc" = {
@@ -204,12 +202,8 @@
         #     #   state = "floating";
         #     #   center = true;
         #     # };
-        "Peek" = {
-          state = "floating";
-        };
-        "conky-manager2" = {
-          state = "floating";
-        };
+        "Peek" = { state = "floating"; };
+        "conky-manager2" = { state = "floating"; };
         "Plank" = {
           manage = false;
           border = false;

@@ -1,17 +1,15 @@
 { config, desktop, hostname, lib, pkgs, ... }:
 let
-  ifExists = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
-in
-{
+  ifExists = groups:
+    builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
+in {
   # Only include desktop components if one is supplied.
   # imports = [ ] ++ lib.optional (builtins.isString desktop) ./desktop.nix;
   imports = [ ] ++ lib.optionals (desktop != null) [
     # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/apps/tools/filesync.nix
-  ] ++ lib.optionals (hostname == "rasp3") [
-    ../../_mixins/console/fish.nix
-  ];
+  ] ++ lib.optionals (hostname == "rasp3") [ ../../_mixins/console/fish.nix ];
 
   users = {
     mutableUsers = false;
@@ -26,8 +24,7 @@ in
         "video"
         "wheel"
         "storage"
-      ]
-      ++ ifExists [
+      ] ++ ifExists [
         "adbusers"
         "dialout"
         "render"
@@ -47,7 +44,8 @@ in
         "podman"
       ];
       # mkpasswd -m sha-512
-      hashedPassword = "$6$ctL12VUZteSntuRd$X4US2tZSUYilPGG.gIAWOanHayBW8dGHy6Z1r8kLSxN6QdTomEUuM7ENIGT1uBeXDhhZvUWRscXGWrPKos7yG.";
+      hashedPassword =
+        "$6$ctL12VUZteSntuRd$X4US2tZSUYilPGG.gIAWOanHayBW8dGHy6Z1r8kLSxN6QdTomEUuM7ENIGT1uBeXDhhZvUWRscXGWrPKos7yG.";
       homeMode = "0755";
       isNormalUser = true;
       # openssh.authorizedKeys.keys = [
@@ -58,4 +56,5 @@ in
       shell = if hostname == "rasp3" then pkgs.fish else pkgs.bash;
     };
   };
+  environment.localBinInPath = true;
 }

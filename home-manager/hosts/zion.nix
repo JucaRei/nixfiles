@@ -46,8 +46,7 @@ let
       done
     '';
 
-in
-{
+in {
   imports = [
     ../_mixins/apps/text-editor/vscode.nix
     ../_mixins/apps/video/mpv.nix
@@ -60,11 +59,7 @@ in
       # (nixGL pkgs.thorium)
       # (nixGL pkgs.alacritty)
       (nixGL pkgs.vlc)
-    ] ++ (with pkgs;[
-      st
-      kbdlight
-      cloneit
-    ]);
+    ] ++ (with pkgs; [ st kbdlight cloneit ]);
   };
 }
 

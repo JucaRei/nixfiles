@@ -16,7 +16,6 @@
       #wheelNeedsPassword = false;
     };
   };
-  environment.systemPackages = [
-    (pkgs.writeScriptBin "sudo" ''exec doas "$@"'')
-  ];
+  environment.systemPackages =
+    [ (pkgs.writeScriptBin "sudo" ''exec doas "$@"'') ];
 }

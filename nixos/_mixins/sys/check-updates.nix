@@ -41,8 +41,7 @@ let
 
   '';
 
-in
-{
+in {
 
   #---------------------------------------------------------------------
   # Type: check-updates in terminal to execute the above bash script

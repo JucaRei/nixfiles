@@ -1,16 +1,5 @@
-{ lib
-, buildPythonPackage
-, buildPythonApplication
-, fetchPypi
-, mutagen
-, requests
-, colorama
-, prettytable
-, pycrypto
-, pydub
-, python3
-,
-}:
+{ lib, buildPythonPackage, buildPythonApplication, fetchPypi, mutagen, requests
+, colorama, prettytable, pycrypto, pydub, python3, }:
 let
   aigpy = buildPythonPackage rec {
     pname = "aigpy";
@@ -21,10 +10,10 @@ let
       sha256 = "sha256-1kQced6YdC/wvegqFVhZfej4+4aemGXvKysKjejP13w=";
     };
 
-    propagatedBuildInputs = [ mutagen requests colorama prettytable pycrypto pydub ];
+    propagatedBuildInputs =
+      [ mutagen requests colorama prettytable pycrypto pydub ];
   };
-in
-python3.pkgs.buildPythonApplication rec {
+in python3.pkgs.buildPythonApplication rec {
   pname = "tidal-dl";
   version = "2022.10.31.1";
 
@@ -37,11 +26,16 @@ python3.pkgs.buildPythonApplication rec {
 
   meta = with lib; {
     homepage = "https://github.com/yaronzz/Tidal-Media-Downloader";
-    description = "An application that lets you download videos and tracks from Tidal";
+    description =
+      "An application that lets you download videos and tracks from Tidal";
     license = licenses.asl20;
     maintainers = with maintainers; [ misterio77 ];
     platforms = platforms.all;
     #platforms =  ["x86_64-linux"];
-    badPlataforms = [ "x86_64-unknown-linux-gnu" "i686-unknown-linux-gnu" "aarch64-unknown-linux-gnu" ];
+    badPlataforms = [
+      "x86_64-unknown-linux-gnu"
+      "i686-unknown-linux-gnu"
+      "aarch64-unknown-linux-gnu"
+    ];
   };
 }

@@ -1,13 +1,9 @@
 { pkgs, lib, ... }:
 
 {
-  imports = [
-    ../apps/terminal/alacritty.nix
-  ];
+  imports = [ ../apps/terminal/alacritty.nix ];
   home = {
-    keyboard = {
-      layout = "br";
-    };
+    keyboard = { layout = "br"; };
     packages = with pkgs; [
       arandr
       tmate

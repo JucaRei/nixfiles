@@ -1,30 +1,15 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-, gtk-engine-murrine
-, jdupes
-, themeVariant ? [ ]
-, iconVariant ? [ ]
-,
-}:
+{ lib, stdenv, fetchFromGitHub, gtk-engine-murrine, jdupes, themeVariant ? [ ]
+, iconVariant ? [ ], }:
 let
   inherit (builtins) toString;
   inherit (lib.trivial) checkListOfEnum;
-in
-checkListOfEnum "$Rose-Pine: GTK Theme Variants" [
+in checkListOfEnum "$Rose-Pine: GTK Theme Variants" [
   "Main-B-LB"
   "Main-B"
   "Main-BL-LB"
   "Main-BL"
-]
-  themeVariant
-  checkListOfEnum "$RosePine: GTK Theme Variants" [
-  ""
-  "Moon"
-]
-  iconVariant
-  stdenv.mkDerivation
-{
+] themeVariant checkListOfEnum "$RosePine: GTK Theme Variants" [ "" "Moon" ]
+iconVariant stdenv.mkDerivation {
   pname = "rose-pine-gtk";
   version = "unstable-2023-02-20";
 
@@ -39,24 +24,22 @@ checkListOfEnum "$Rose-Pine: GTK Theme Variants" [
 
   propagatedUserEnvPkgs = [ gtk-engine-murrine ];
 
-  installPhase =
-    let
-      gtkTheme = "RosePine-${toString themeVariant}";
-      iconTheme = "Rose-Pine-${toString iconVariant}";
-    in
-    ''
-      runHook preInstall
+  installPhase = let
+    gtkTheme = "RosePine-${toString themeVariant}";
+    iconTheme = "Rose-Pine-${toString iconVariant}";
+  in ''
+    runHook preInstall
 
-      mkdir -p $out/share/{icons,themes}
+    mkdir -p $out/share/{icons,themes}
 
-      cp -r $src/themes/${gtkTheme} $out/share/themes
-      cp -r $src/icons/${iconTheme} $out/share/icons
+    cp -r $src/themes/${gtkTheme} $out/share/themes
+    cp -r $src/icons/${iconTheme} $out/share/icons
 
-      # Duplicate files -> hard-links = reduced install-size!
-      jdupes -L -r $out/share
+    # Duplicate files -> hard-links = reduced install-size!
+    jdupes -L -r $out/share
 
-      runHook postInstall
-    '';
+    runHook postInstall
+  '';
 
   meta = with lib; {
     description = "A GTK theme with the Rosé Pine colour palette.";

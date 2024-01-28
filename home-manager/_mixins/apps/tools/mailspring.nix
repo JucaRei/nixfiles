@@ -1,6 +1,3 @@
-{ pkgs, lib, inputs, ... }:
-{
-  home = {
-    packages = with pkgs.unstable; [ mailspring ];
-  };
+{ pkgs, lib, inputs, ... }: {
+  home = { packages = with pkgs.unstable; [ mailspring ]; };
 }

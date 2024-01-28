@@ -1,5 +1,4 @@
-{ inputs, lib, pkgs, ... }:
-{
+{ inputs, lib, pkgs, ... }: {
   imports = [
     inputs.nixos-hardware.nixosModules.common-cpu-intel
     inputs.nixos-hardware.nixosModules.common-gpu-intel
@@ -18,7 +17,8 @@
   }];
 
   boot = {
-    initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "uas" "sd_mod" "sdhci_pci" ];
+    initrd.availableKernelModules =
+      [ "xhci_pci" "ahci" "usbhid" "usb_storage" "uas" "sd_mod" "sdhci_pci" ];
     kernelModules = [ "kvm-intel" ];
     kernelPackages = pkgs.linuxPackages_latest;
   };
@@ -31,9 +31,7 @@
   '';
   services.xserver.layout = lib.mkForce "us";
 
-  environment.systemPackages = with pkgs; [
-    nvtop-amd
-  ];
+  environment.systemPackages = with pkgs; [ nvtop-amd ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

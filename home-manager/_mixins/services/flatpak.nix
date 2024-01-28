@@ -1,5 +1,4 @@
-{ inputs, config, pkgs, username, ... }:
-{
+{ inputs, config, pkgs, username, ... }: {
   imports = [
     # inputs.flatpaks.homeManagerModules.default
   ];
@@ -27,7 +26,8 @@
     preInitCommand = "";
     remotes = {
       "flathub" = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-      "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
+      "flathub-beta" =
+        "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
     };
     overrides = {
       "global" = {
@@ -35,13 +35,8 @@
           "home"
           # "!~/Games/Heroic"
         ];
-        environment = {
-          "MOZ_ENABLE_WAYLAND" = 1;
-        };
-        sockets = [
-          "!x11"
-          "fallback-x11"
-        ];
+        environment = { "MOZ_ENABLE_WAYLAND" = 1; };
+        sockets = [ "!x11" "fallback-x11" ];
       };
     };
   };

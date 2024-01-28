@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
-with lib.hm.gvariant;
-{
+with lib.hm.gvariant; {
   imports = [
     # ../_mixins/console/neovim.nix
     ../_mixins/apps/video/mpv.nix

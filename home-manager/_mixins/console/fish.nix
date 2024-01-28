@@ -35,22 +35,24 @@
         set -U fish_pager_color_progress brwhite '--background=cyan'
       '';
 
-
       shellAbbrs = {
         # mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
         # https://github.com/NixOS/nixpkgs/issues/191128#issuecomment-1246030417
         nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
         nix-gc = "sudo nix-collect-garbage --delete-older-than 5d";
-        rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
+        rebuild-home =
+          "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
         # rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles";
         # rebuild-lock = "pushd $HOME/.dotfiles/nixfiles && nix flake lock --recreate-lock-file && popd";
-        rebuild-iso = "pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso.config.system.build.isoImage && popd";
+        rebuild-iso =
+          "pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso.config.system.build.isoImage && popd";
       };
       shellAliases = {
         diff = "diffr";
         fast = "fast -u";
         glow = "glow --pager";
-        htop = "btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
+        htop =
+          "btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
         # ip = "ip --color --brief";
         open = "xdg-open";
         pubip = "curl -s ifconfig.me/ip";
@@ -59,7 +61,8 @@
         speedtest = "speedtest-go";
         wormhole = "wormhole-william";
         wttr = "curl -s wttr.in && curl -s v2.wttr.in";
-        wttr-nh = "curl -s wttr.in/Novo_Horizonte && curl -s v2.wttr.in/Novo_Horizonte";
+        wttr-nh =
+          "curl -s wttr.in/Novo_Horizonte && curl -s v2.wttr.in/Novo_Horizonte";
       };
     };
   };

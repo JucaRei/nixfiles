@@ -103,19 +103,22 @@
 #   };
 # }
 
-
 { pkgs, config, lib, inputs, hostname, username, ... }:
-let
-  nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
-in
-{
+let nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
+in {
   programs = {
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
         enableXWayland = true; # whether to enable XWayland
-        legacyRenderer = if hostname == "nitro" then false else true; # false; # whether to use the legacy renderer (for old GPUs)
-        withSystemd = if hostname == "nitro" then true else false; # whether to build with systemd support
+        legacyRenderer = if hostname == "nitro" then
+          false
+        else
+          true; # false; # whether to use the legacy renderer (for old GPUs)
+        withSystemd = if hostname == "nitro" then
+          true
+        else
+          false; # whether to build with systemd support
 
         ### It seen's it been removed
         # Check if it has nvidia and nvidia Driver installed
@@ -138,17 +141,13 @@ in
     };
   };
 
-
-
   services = {
     xserver = {
       enable = true;
       displayManager = {
         sddm = {
           enable = true;
-          wayland = {
-            enable = true;
-          };
+          wayland = { enable = true; };
           theme = "astronaut";
           autoNumlock = true;
         };
@@ -178,7 +177,10 @@ in
   environment = {
     sessionVariables = {
       # Hint electron apps to use wayland
-      LIBVA_DRIVER_NAME = if hostname != "air" || "zion" then lib.mkForce "nvidia" else lib.mkDefault "";
+      LIBVA_DRIVER_NAME = if hostname != "air" || "zion" then
+        lib.mkForce "nvidia"
+      else
+        lib.mkDefault "";
       NIXOS_OZONE_WL = "1";
       #GBM_BACKEND = "nvidia-drm";
       #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -199,56 +201,60 @@ in
     #'';
     # eval $(gnome-keyring-daemon --start --components=ssh,secrets)
     # eval $(ssh-agent)
-    systemPackages = with pkgs; [
-      # gtk3
-      # xdg-utils
-      # libnotify
-      # libevdev
-      # # libsForQt5.libkscreen
-      pkgs.sddm-astronaut
+    systemPackages = with pkgs;
+      [
+        # gtk3
+        # xdg-utils
+        # libnotify
+        # libevdev
+        # # libsForQt5.libkscreen
+        pkgs.sddm-astronaut
 
-      ### Change to home-manager later
-      # mako # notification daemon
-      # alacritty
+        ### Change to home-manager later
+        # mako # notification daemon
+        # alacritty
 
-      # ${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1
-      # (toString [
-      #   "swayidle" "-w"
-      #   "timeout" 300 "'loginctl lock-session'"
-      #   "timeout" 300 "'hyprctl dispatch dpms off'"
-      #   "resume" "'hyprctl dispatch dpms on'"
-      #   "before-sleep" "'loginctl lock-session'"
-      #   "lock" "'waylock'"
-      # ])
+        # ${pkgs.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1
+        # (toString [
+        #   "swayidle" "-w"
+        #   "timeout" 300 "'loginctl lock-session'"
+        #   "timeout" 300 "'hyprctl dispatch dpms off'"
+        #   "resume" "'hyprctl dispatch dpms on'"
+        #   "before-sleep" "'loginctl lock-session'"
+        #   "lock" "'waylock'"
+        # ])
 
-      # waybar
-      # eww-wayland
+        # waybar
+        # eww-wayland
 
-      # hyprpaper
-      # swww
-      # wofi
-      # hyprpicker
-      # wl-clip-persist
-      # hyprsome
+        # hyprpaper
+        # swww
+        # wofi
+        # hyprpicker
+        # wl-clip-persist
+        # hyprsome
 
-      # pipewire
-      # wireplumber
+        # pipewire
+        # wireplumber
 
-      # qt5-wayland
-      # qt6-wayland
-      # qt5ct
+        # qt5-wayland
+        # qt6-wayland
+        # qt5ct
 
-    ] ++ (with pkgs.cinnamon; [
-      # nemo-with-extensions
-      # nemo-emblems
-      # nemo-fileroller
-      # folder-color-switcher
-    ]) ++ (with pkgs.libsForQt5;[
-      # dolphin
-      # polkit-kde-agent
-    ] ++ (with pkgs.lxqt; [
-      # lxqt-policykit
-    ]));
+      ] ++ (with pkgs.cinnamon;
+        [
+          # nemo-with-extensions
+          # nemo-emblems
+          # nemo-fileroller
+          # folder-color-switcher
+        ]) ++ (with pkgs.libsForQt5;
+          [
+            # dolphin
+            # polkit-kde-agent
+          ] ++ (with pkgs.lxqt;
+            [
+              # lxqt-policykit
+            ]));
 
     # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
     extraInit = ''
@@ -270,26 +276,14 @@ in
       enable = true;
       wlr.enable = true;
       config = {
-        common = {
-          default = [
-            "xdph"
-            "gtk"
-          ];
-        };
+        common = { default = [ "xdph" "gtk" ]; };
         hyprland = {
-          default = [
-            "hyprland"
-            "gtk"
-          ];
-          "org.freedesktop.impl.portal.Secret" = [
-            "gnome-keyring"
-          ];
+          default = [ "hyprland" "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
         };
       };
       xdgOpenUsePortal = true;
-      extraPortals = [
-        pkgs.xdg-desktop-portal-gtk
-      ];
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
   };
 
@@ -311,7 +305,5 @@ in
       login.enableGnomeKeyring = true;
     };
   };
-  services.gnome = {
-    gnome-keyring.enable = true;
-  };
+  services.gnome = { gnome-keyring.enable = true; };
 }

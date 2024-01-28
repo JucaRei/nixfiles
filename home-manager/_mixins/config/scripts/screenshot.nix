@@ -1,5 +1,4 @@
-{ variables, config, pkgs, lib }:
-{
+{ variables, config, pkgs, lib }: {
   target = "${variables.homeDir}/bin/screenshot";
   source = pkgs.writeScript "screenshot.sh" ''
     #!${pkgs.stdenv.shell}

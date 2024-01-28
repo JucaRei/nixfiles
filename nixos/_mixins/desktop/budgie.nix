@@ -1,8 +1,5 @@
-{ pkgs, lib, inputs, username, ... }:
-{
-  imports = [
-    ../apps/terminal/tilix.nix
-  ];
+{ pkgs, lib, inputs, username, ... }: {
+  imports = [ ../apps/terminal/tilix.nix ];
 
   environment = {
     budgie.excludePackages = with pkgs; [
@@ -38,7 +35,6 @@
     ];
   };
 
-
   # Qt application style.
   qt = lib.mkForce {
     enable = true;
@@ -64,12 +60,11 @@
 
   # Enable services to round out the desktop
   services = {
-    dbus.packages = with pkgs; [
-      budgie.budgie-control-center
-    ];
+    dbus.packages = with pkgs; [ budgie.budgie-control-center ];
     blueman.enable = true;
 
-    geoclue2.enable = lib.mkDefault true; # for BCC's Privacy > Location Services panel.
+    geoclue2.enable =
+      lib.mkDefault true; # for BCC's Privacy > Location Services panel.
     colord.enable = lib.mkDefault true; # for BCC's Color panel.
     accounts-daemon.enable = lib.mkDefault true; # for BCC's Users panel.
     fprintd.enable = lib.mkDefault true; # for BCC's Users panel.
@@ -112,7 +107,6 @@
         };
       };
 
-
       desktopManager = {
         budgie = {
           enable = lib.mkDefault true;
@@ -121,7 +115,8 @@
             [com.solus-project.icon-tasklist:Budgie]
             pinned-launchers=["firefox.desktop", "nixos-manual.desktop", "mate-terminal.desktop", "nemo.desktop", "gparted.desktop", "io.calamares.calamares.desktop"] '';
           extraGSettingsOverridePackages = [ ];
-          extraPlugins = with pkgs; [ budgiePlugins.budgie-analogue-clock-applet ];
+          extraPlugins = with pkgs;
+            [ budgiePlugins.budgie-analogue-clock-applet ];
         };
       };
     };
@@ -143,19 +138,10 @@
 
     ## 23.11
     config = {
-      common = {
-        default = [
-          "gtk"
-        ];
-      };
+      common = { default = [ "gtk" ]; };
       budgie = {
-        default = [
-          "gnome"
-          "gtk"
-        ];
-        "org.freedesktop.impl.portal.Secret" = [
-          "gnome-keyring"
-        ];
+        default = [ "gnome" "gtk" ];
+        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
       };
     };
   };

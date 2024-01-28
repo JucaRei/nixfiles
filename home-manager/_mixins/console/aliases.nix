@@ -3,8 +3,10 @@
     ### Nix ###
     # rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
     # rebuild-home = if hostname != "zion" || "vm" then "systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=4000M -p CPUQuota=60% home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles" else "home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles";
-    rebuild-home = "home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles";
-    rebuild-lock = "pushd $HOME/.dotfiles/nixfiles && nix flake lock --recreate-lock-file && popd";
+    rebuild-home =
+      "home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles";
+    rebuild-lock =
+      "pushd $HOME/.dotfiles/nixfiles && nix flake lock --recreate-lock-file && popd";
     nix-clean = "nix-collect-garbage -d";
     sxorg = "export DISPLAY=:0.0";
     # nixos-rebuild = "systemd-run --no-ask-password --uid=0 --system --scope -p MemoryLimit=16000M -p CPUQuota=60% nixos-rebuild";
@@ -25,7 +27,8 @@
     wget = "wget2";
     jq = "jiq";
     gitpfolders = "for i in */.git; do ( echo $i; cd $i/..; git pull; ); done";
-    du = "ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
+    du =
+      "ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
     #htop = "btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
     # ls = "eza -Slhg";
     # lsa = "eza -Slhga";

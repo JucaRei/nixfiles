@@ -1,8 +1,6 @@
 { pkgs, ... }: {
   home = {
-    packages = with pkgs.unstable; [
-      eza
-    ];
+    packages = with pkgs.unstable; [ eza ];
     shellAliases = {
       ls = "eza --icons -l -T -h -L=1";
       lt = "eza --icons -l --time-style long-iso -a -h";

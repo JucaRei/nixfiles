@@ -1,17 +1,11 @@
 { pkgs, config, lib, ... }: {
   services.xserver = {
     enable = true;
-    desktopManager.lxqt = {
-      enable = true;
-    };
+    desktopManager.lxqt = { enable = true; };
     displayManager = {
-      sddm = {
-        enable = true;
-      };
+      sddm = { enable = true; };
       defaultSession = "lxqt";
-      autoLogin = {
-        enable = false;
-      };
+      autoLogin = { enable = false; };
     };
     # Packages providing GDK-Pixbuf modules, for cache generation.
     # Enables GTK applications to load SVG icons.

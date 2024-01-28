@@ -9,17 +9,10 @@ let
     export LIBVA_DRIVER_NAME="nvidia"
     exec "$@"
   '';
-in
-{
+in {
   boot = {
-    blacklistedKernelModules = [
-      "nouveau"
-      "rivafb"
-      "nvidiafb"
-      "rivatv"
-      "nv"
-      "uvcvideo"
-    ];
+    blacklistedKernelModules =
+      [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
     kernelModules = [
       "clearcpuid=514" # Fixes certain wine games crash on launch
       "nvidia"
@@ -27,10 +20,7 @@ in
       "nvidia_uvm"
       "nvidia_drm"
     ];
-    kernelParams = [
-      "nvidia_drm.modeset=1"
-      "nouveau.modeset=0"
-    ];
+    kernelParams = [ "nvidia_drm.modeset=1" "nouveau.modeset=0" ];
     extraModprobeConfig = ''
       options nvidia NVreg_RegistryDwords="PowerMizerEnable=0x1; PerfLevelSrc=0x2222; PowerMizerLevel=0x3; PowerMizerDefault=0x3; PowerMizerDefaultAC=0x3"
       options nvidia NVreg_UsePageAttributeTable=1
@@ -76,7 +66,8 @@ in
   };
   environment = {
     variables = {
-      "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+      "VK_ICD_FILENAMES" =
+        "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
       GBM_BACKEND = "nvidia-drm";
       # GBM_BACKEND = "nvidia";
       LIBVA_DRIVER_NAME = lib.mkForce "nvidia-drm";

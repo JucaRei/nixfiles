@@ -1,9 +1,7 @@
 { pkgs, lib, ... }:
 with lib.hm.gvariant;
-let
-  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
-in
-{
+let nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+in {
   programs.alacritty = {
     enable = true;
     package = (nixGL pkgs.alacritty);
@@ -83,9 +81,7 @@ in
           white = "0xFEFEF8";
         };
       };
-      scrolling = {
-        history = 10000;
-      };
+      scrolling = { history = 10000; };
     };
   };
 }

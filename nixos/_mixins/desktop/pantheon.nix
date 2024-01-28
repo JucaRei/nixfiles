@@ -1,8 +1,5 @@
 { inputs, lib, pkgs, ... }: {
-  imports = [
-    ../config/qt/qt-style.nix
-    ../apps/terminal/tilix.nix
-  ];
+  imports = [ ../config/qt/qt-style.nix ../apps/terminal/tilix.nix ];
 
   # Exclude the elementary apps I don't use
   environment = {
@@ -74,7 +71,8 @@
     wantedBy = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     serviceConfig = {
-      ExecStart = "${pkgs.indicator-application-gtk3}/libexec/indicator-application/indicator-application-service";
+      ExecStart =
+        "${pkgs.indicator-application-gtk3}/libexec/indicator-application/indicator-application-service";
     };
   };
 }

@@ -1,17 +1,5 @@
-{ stdenv
-, fetchurl
-, python
-, pkgconfig
-, zlib
-, glib
-, user_arch
-, flex
-, bison
-, makeStaticLibraries
-, glibc
-, qemu
-, fetchFromGitHub
-}:
+{ stdenv, fetchurl, python, pkgconfig, zlib, glib, user_arch, flex, bison
+, makeStaticLibraries, glibc, qemu, fetchFromGitHub }:
 
 let
   env2 = makeStaticLibraries stdenv;
@@ -31,8 +19,7 @@ let
     riscv64 = "x86_64";
     x86_64 = "x86_64";
   };
-in
-stdenv.mkDerivation rec {
+in stdenv.mkDerivation rec {
   name = "qemu-user-${user_arch}-${version}";
   version = "3.1.0";
   src = if is_riscv then riscv_src else qemu.src;
@@ -56,6 +43,8 @@ stdenv.mkDerivation rec {
   NIX_LDFLAGS = [ "-lglib-2.0" ];
   enableParallelBuilding = true;
   postInstall = ''
-    cc -static ${./qemu-wrap.c} -D QEMU_ARM_BIN="\"qemu-${user_arch}"\" -o $out/bin/qemu-wrap
+    cc -static ${
+      ./qemu-wrap.c
+    } -D QEMU_ARM_BIN="\"qemu-${user_arch}"\" -o $out/bin/qemu-wrap
   '';
 }

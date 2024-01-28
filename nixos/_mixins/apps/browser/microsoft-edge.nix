@@ -1,8 +1,6 @@
 { pkgs, params, lib, ... }:
 
 {
-  environment.systemPackages = with pkgs.unstable; [
-    microsoft-edge
-  ];
+  environment.systemPackages = with pkgs.unstable; [ microsoft-edge ];
 
 }

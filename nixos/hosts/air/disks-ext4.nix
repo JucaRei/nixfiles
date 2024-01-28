@@ -12,8 +12,7 @@ let
     "relatime"
     "nodiratime"
   ];
-in
-{
+in {
   disko.devices = {
     disk = {
       sda = {

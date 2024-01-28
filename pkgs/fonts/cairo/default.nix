@@ -1,13 +1,8 @@
-{ lib
-, stdenv
-, unzip
-, ...
-}:
+{ lib, stdenv, unzip, ... }:
 let
   pname = "cairo";
   version = "2023-02-11";
-in
-stdenv.mkDerivation {
+in stdenv.mkDerivation {
   name = "${pname}-${version}";
   src = ./Cairo-v2023-02-11.zip;
   buildInputs = [ unzip ];

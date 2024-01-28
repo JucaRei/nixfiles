@@ -219,10 +219,8 @@
 #           #
 #           # blur-background-frame = false;
 
-
 #           # Use fixed blur strength rather than adjusting according to window opacity.
 #           # blur-background-fixed = false;
-
 
 #           # Specify the blur convolution kernel, with the following format:
 #           # example:
@@ -269,7 +267,6 @@
 #           experimental-backends = true;
 #           # backend = "glx";
 #           backend = "xrender";
-
 
 #           # Enable/disable VSync.
 #           # vsync = false
@@ -476,8 +473,7 @@
 #   };
 # }
 
-{ config, pkgs, lib, ... }:
-{
+{ config, pkgs, lib, ... }: {
   config = lib.mkIf (config.xsession.enable) {
     services.picom = {
       enable = true;
@@ -544,8 +540,8 @@
         # fading
         fading = true;
         fade-delta = 2;
-        fade-in-step = 0.01;
-        fade-out-step = 0.01;
+        fade-in-step = 1.0e-2;
+        fade-out-step = 1.0e-2;
         fade-exclude = [
           "class_g *= 'fcitx'"
           "class_g = 'Rofi'"
@@ -579,11 +575,20 @@
           "name *? = 'Sunflower'"
           "class_g *= 'wemeetapp'"
         ];
-        wintypes =
-          {
-            tooltip = { fade = true; shadow = false; opacity = 0.85; focus = true; };
-            fullscreen = { fade = true; shadow = false; focus = true; opacity = 0.93; };
+        wintypes = {
+          tooltip = {
+            fade = true;
+            shadow = false;
+            opacity = 0.85;
+            focus = true;
           };
+          fullscreen = {
+            fade = true;
+            shadow = false;
+            focus = true;
+            opacity = 0.93;
+          };
+        };
       };
     };
   };

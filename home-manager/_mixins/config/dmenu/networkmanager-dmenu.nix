@@ -7,13 +7,13 @@
     [dmenu]
     dmenu_command = '' + dmenu_command + ''
 
-    compact = True
-    wifi_chars = ▂▄▆█
-    list_saved = True
+      compact = True
+      wifi_chars = ▂▄▆█
+      list_saved = True
 
-    [editor]
-    terminal = alacritty
-    # gui_if_available = <True or False> (Default: True)
-  '';
+      [editor]
+      terminal = alacritty
+      # gui_if_available = <True or False> (Default: True)
+    '';
 }
 

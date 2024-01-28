@@ -1,7 +1,8 @@
 { pkgs, lib, ... }:
 let
-  tm = dir: ''
-    env __NIX_DARWIN_SET_ENVIRONMENT_DONE="" tmux new-session -A -s $(basename "${dir}" | tr '.' '-') -c "${dir}"  ${dir}'';
+  tm = dir:
+    ''
+      env __NIX_DARWIN_SET_ENVIRONMENT_DONE="" tmux new-session -A -s $(basename "${dir}" | tr '.' '-') -c "${dir}"  ${dir}'';
   # skim-cmds = {
   #   projects = "fd '.git$' ~ -I -t d -t f -d 3 -H -x dirname | sk | tr -d '\n'";
   #   files = ''fd ".*" "." --hidden -E '.git*' | sk'';
@@ -9,33 +10,33 @@ let
   #   # rg = "sk --ansi -i -c 'rg --color=never --line-number \"{}\" .'";
   #   rg = ''sk --ansi -i -c "${pkgs.ripgrep} --color=never --line-number \'{}\' ."'';
   # };
-in
-{
+in {
   config = {
     programs.bash = {
       enable = true;
       enableCompletion = true;
       enableVteIntegration = true;
       historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
-      historyFile = "\$HOME/.bash_history";
+      historyFile = "$HOME/.bash_history";
       historyFileSize = 40000;
-      historyIgnore = [ "ls" "cd" "exit" "kill" "htop" "top" "btop" "btm" "neofetch" ];
+      historyIgnore =
+        [ "ls" "cd" "exit" "kill" "htop" "top" "btop" "btm" "neofetch" ];
 
-      shellAliases =
-        lib.optionalAttrs pkgs.stdenv.isDarwin { top = "${pkgs.htop}/bin/htop"; }
-        // {
-          g = "git";
-          vi = "nvim";
-          tm = tm "$PWD";
-          pb = "curl -F c=@- pb";
-          psg = "ps -eo pid,user,command | rg";
-          o = "xdg-open";
-          gc = "git commit -v -S";
-          gst = "git status --short";
-          ga = "git add";
-          gd = "git diff --minimal";
-          gl = "git log --oneline --decorate --graph";
-        };
+      shellAliases = lib.optionalAttrs pkgs.stdenv.isDarwin {
+        top = "${pkgs.htop}/bin/htop";
+      } // {
+        g = "git";
+        vi = "nvim";
+        tm = tm "$PWD";
+        pb = "curl -F c=@- pb";
+        psg = "ps -eo pid,user,command | rg";
+        o = "xdg-open";
+        gc = "git commit -v -S";
+        gst = "git status --short";
+        ga = "git add";
+        gd = "git diff --minimal";
+        gl = "git log --oneline --decorate --graph";
+      };
 
       shellOptions = [
         "histappend"
@@ -132,9 +133,7 @@ in
         eval "$(starship init bash)"
         eval "$(direnv hook bash)"
       '';
-      sessionVariables = {
-        TERM = "xterm";
-      };
+      sessionVariables = { TERM = "xterm"; };
     };
   };
 }

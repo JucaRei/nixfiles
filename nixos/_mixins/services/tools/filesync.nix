@@ -1,11 +1,6 @@
-{ desktop, lib, pkgs, ... }:
-{
-  environment.systemPackages = with pkgs; [
-    maestral
-  ] ++ lib.optionals (desktop != null) [
-    celeste
-    maestral-gui
-  ];
+{ desktop, lib, pkgs, ... }: {
+  environment.systemPackages = with pkgs;
+    [ maestral ] ++ lib.optionals (desktop != null) [ celeste maestral-gui ];
 
   systemd.user.services.maestral = {
     description = "Maestral";

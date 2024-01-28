@@ -63,8 +63,7 @@ let
 
   '';
 
-in
-{
+in {
   config = {
     system.activationScripts.createCustomDirectories = createCustomDirectories;
   };

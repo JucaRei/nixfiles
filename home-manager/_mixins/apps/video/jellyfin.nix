@@ -1,11 +1,7 @@
 { pkgs, lib, ... }:
 with lib.hm.gvariant; {
 
-  home.packages = with pkgs; ([
-    jellyfin
-    jellyfin-web
-    jellyfin-mpv-shim
-  ]);
+  home.packages = with pkgs; ([ jellyfin jellyfin-web jellyfin-mpv-shim ]);
 
   services.jellyfin = {
     enable = true;

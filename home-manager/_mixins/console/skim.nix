@@ -19,15 +19,16 @@
   };
 
   # Use skim as a drop-in replacement for fzf
-  home.packages = with pkgs; [
-    (writeShellApplication {
-      name = "fzf";
-      runtimeInputs = [ skim ];
-      text =
-        # shell
-        ''
-          ${pkgs.skim}/bin/sk "\$@"
-        '';
-    })
-  ];
+  home.packages = with pkgs;
+    [
+      (writeShellApplication {
+        name = "fzf";
+        runtimeInputs = [ skim ];
+        text =
+          # shell
+          ''
+            ${pkgs.skim}/bin/sk "\$@"
+          '';
+      })
+    ];
 }

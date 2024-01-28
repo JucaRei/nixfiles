@@ -4,8 +4,7 @@ let
   name = "qute-containers";
   version = "unstable";
   dmenu = dmenuCmd;
-in
-stdenv.mkDerivation {
+in stdenv.mkDerivation {
   inherit name version;
 
   src = fetchFromGitHub {
@@ -20,8 +19,9 @@ stdenv.mkDerivation {
   installPhase = ''
     mkdir -p $out $out/bin
     cp $src/* $out/bin
-    sed -i 's/DMENU=\"rofi -dmenu\"/DMENU=\"'' + dmenu + ''\"/g' $out/bin/containers_config
-      sed -i 's/DMENU_FLAGS//g' $out/bin/container-open
+    sed -i 's/DMENU=\"rofi -dmenu\"/DMENU=\"'' + dmenu + ''
+      \"/g' $out/bin/containers_config
+            sed -i 's/DMENU_FLAGS//g' $out/bin/container-open
     '';
 
   meta = {

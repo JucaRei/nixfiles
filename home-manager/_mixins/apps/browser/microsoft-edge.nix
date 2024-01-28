@@ -3,9 +3,7 @@
 # ifDefault = lib.mkIf (params.browser == "microsoft-edge");
 # in
 {
-  home.packages = with pkgs.unstable; [
-    microsoft-edge
-  ];
+  home.packages = with pkgs.unstable; [ microsoft-edge ];
   # xdg = {
   # mime.enable = ifDefault true;
   # mimeApps = {

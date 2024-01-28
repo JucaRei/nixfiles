@@ -1,8 +1,5 @@
 { inputs, lib, pkgs, ... }: {
-  imports = [
-    ../config/qt/qt-style.nix
-    ../apps/terminal/tilix.nix
-  ];
+  imports = [ ../config/qt/qt-style.nix ../apps/terminal/tilix.nix ];
 
   # Exclude MATE themes. Yaru will be used instead.
   # Don't install mate-netbook or caja-dropbox
@@ -85,9 +82,7 @@
         };
       };
 
-      desktopManager = {
-        mate.enable = true;
-      };
+      desktopManager = { mate.enable = true; };
     };
   };
   xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];

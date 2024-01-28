@@ -1,8 +1,9 @@
 { pkgs, ... }: {
-  home.packages = with pkgs; [
-    libsixel
-    # for displaying images
-  ];
+  home.packages = with pkgs;
+    [
+      libsixel
+      # for displaying images
+    ];
   programs.foot = {
     enable = true;
     # doesnt work properly
@@ -23,7 +24,7 @@
         # box-drawings-uses-font-glyphs = "yes";
         dpi-aware = "yes";
         bold-text-in-bright = "no";
-        word-delimiters = ",│`|:\"'()[]{}<>";
+        word-delimiters = '',│`|:"'()[]{}<>'';
       };
       cursor = {
         style = "beam";
@@ -46,7 +47,8 @@
         osc8-underline = "url-mode";
         protocols = "http, https, ftp, ftps, file, gemini, gopher, irc, ircs";
 
-        uri-characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.,~:;/?#@!$&%*+=\"'()[]";
+        uri-characters = ''
+          abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.,~:;/?#@!$&%*+="'()[]'';
       };
       colors = {
         alpha = "0.6";
@@ -71,9 +73,7 @@
         bright6 = "94e2d5";
         bright7 = "a6adc8";
       };
-      mouse = {
-        hide-when-typing = "yes";
-      };
+      mouse = { hide-when-typing = "yes"; };
       key-bindings = {
         show-urls-launch = "Control+Shift+u";
         unicode-input = "Control+Shift+i";

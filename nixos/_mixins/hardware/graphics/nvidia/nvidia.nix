@@ -8,10 +8,10 @@ let
 
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta;
-  nvidiaPkg =
-    if (lib.versionOlder nvBeta.version nvStable.version)
-    then config.boot.kernelPackages.nvidiaPackages.stable
-    else config.boot.kernelPackages.nvidiaPackages.beta;
+  nvidiaPkg = if (lib.versionOlder nvBeta.version nvStable.version) then
+    config.boot.kernelPackages.nvidiaPackages.stable
+  else
+    config.boot.kernelPackages.nvidiaPackages.beta;
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
     export __NV_PRIME_RENDER_OFFLOAD=1
     export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
@@ -39,8 +39,7 @@ let
   #   vaapiSupport = true;
   #   vdpauSupport = true;
   # };
-in
-{
+in {
   # sessionVariables.NIXOS_OZONE_WL = "1"; # Fix for electron apps with wayland
   # Wayland
   # variables = {
@@ -61,13 +60,8 @@ in
   config = {
     # Default config load
     boot = {
-      blacklistedKernelModules = [
-        "nouveau"
-        "nvidiafb"
-      ];
-      kernelParams = lib.mkDefault [
-        "nouveau.modeset=0"
-      ];
+      blacklistedKernelModules = [ "nouveau" "nvidiafb" ];
+      kernelParams = lib.mkDefault [ "nouveau.modeset=0" ];
     };
     hardware = {
       nvidia = {
@@ -82,17 +76,9 @@ in
         nvidiaPersistenced = true;
       };
     };
-    services = {
-      xserver = {
-        videoDrivers = [ "nvidia" ];
-      };
-    };
+    services = { xserver = { videoDrivers = [ "nvidia" ]; }; };
     environment = {
-      systemPackages = with pkgs; [
-        glxinfo
-        inxi
-        xorg.xdpyinfo
-      ];
+      systemPackages = with pkgs; [ glxinfo inxi xorg.xdpyinfo ];
     };
 
     specialisation = {
@@ -131,9 +117,7 @@ in
           nvidia = {
             # package = nvidiaPkg;
             # package = nvStable;
-            modesetting = {
-              enable = true;
-            };
+            modesetting = { enable = true; };
             prime = {
               inherit intelBusId;
               inherit nvidiaBusId;
@@ -174,7 +158,8 @@ in
       nvidia-vulkan.configuration = lib.mkForce {
         system.nixos.tags = [ "nvidia-vulkan" ];
         boot = {
-          loader.grub.configurationName = lib.mkForce "Nvidia ReverseSync Vulkan";
+          loader.grub.configurationName =
+            lib.mkForce "Nvidia ReverseSync Vulkan";
           blacklistedKernelModules = lib.mkForce [
             "nouveau"
             "rivafb"
@@ -190,9 +175,7 @@ in
             "nvidia_uvm"
             "nvidia_drm"
           ];
-          kernelParams = lib.mkDefault [
-            "nouveau.modeset=0"
-          ];
+          kernelParams = lib.mkDefault [ "nouveau.modeset=0" ];
           extraModprobeConfig = ''
             options nvidia NVreg_UsePageAttributeTable=1
             options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
@@ -208,9 +191,7 @@ in
               inherit nvidiaBusId;
               sync.enable = true;
             };
-            modesetting = {
-              enable = true;
-            };
+            modesetting = { enable = true; };
             nvidiaPersistenced = true;
             powerManagement = {
               enable = true;
@@ -222,7 +203,8 @@ in
         };
         environment = {
           variables = lib.mkDefault {
-            "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+            "VK_ICD_FILENAMES" =
+              "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
             GBM_BACKEND = "nvidia-drm";
             LIBVA_DRIVER_NAME = "nvidia";
             __GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -254,13 +236,8 @@ in
         system.nixos.tags = [ "nvidia-offload" ];
         boot = {
           loader.grub.configurationName = lib.mkForce "Nvidia Offload";
-          blacklistedKernelModules = [
-            "nouveau"
-          ];
-          kernelParams = [
-            "nouveau.modeset=0"
-            "intel_iommu=on"
-          ];
+          blacklistedKernelModules = [ "nouveau" ];
+          kernelParams = [ "nouveau.modeset=0" "intel_iommu=on" ];
           # Disable Intel's stream-paranoid for gaming.
           # (not working - see nixpkgs issue 139182)
           kernel.sysctl."dev.i915.perf_stream_paranoid" = false;
@@ -288,25 +265,24 @@ in
           xserver = {
             videoDrivers = [ "nvidia" ];
             dpi = 96;
-            screenSection = lib.optionalString (config.hardware.nvidia.prime.sync.enable) ''
-              Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-              Option         "AllowIndirectGLXProtocol" "off"
-              Option         "TripleBuffer" "on"
-            '';
+            screenSection =
+              lib.optionalString (config.hardware.nvidia.prime.sync.enable) ''
+                Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+                Option         "AllowIndirectGLXProtocol" "off"
+                Option         "TripleBuffer" "on"
+              '';
             displayManager = {
-              setupCommands = "${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1-0 --primary --mode 1920x1080 --pos 0x0 --output eDP-1 --mode 1920x1080 --pos 1920x0";
+              setupCommands =
+                "${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1-0 --primary --mode 1920x1080 --pos 0x0 --output eDP-1 --mode 1920x1080 --pos 1920x0";
             };
           };
         };
 
         environment = {
-          systemPackages = with pkgs; [
-            nvidia-offload
-            glxinfo
-            inxi
-          ];
+          systemPackages = with pkgs; [ nvidia-offload glxinfo inxi ];
           variables = {
-            "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+            "VK_ICD_FILENAMES" =
+              "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
           };
         };
         #   services = {

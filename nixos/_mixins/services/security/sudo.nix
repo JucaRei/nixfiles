@@ -13,8 +13,7 @@ let
       \033[00;31m  \\___/
     \033[0m
   '';
-in
-{
+in {
 
   # copied from this Gist https://gist.github.com/nikopol/9e9409b0d1a6cd2ed7e89be1849e0724
   environment.etc."sudoers.d/00-lecture.txt".source = pkgs.stdenv.mkDerivation {
@@ -48,13 +47,20 @@ in
         # }
         {
           users = [ "${username}" ];
-          commands =
-            builtins.map
-              (command: {
-                command = "/run/current-system/sw/bin/${command}";
-                options = [ "NOPASSWD" "SETENV" ];
-              })
-              [ "poweroff" "shutdown" "reboot" "nixos-rebuild" "nix-env" "bandwhich" "mic-light-on" "mic-light-off" "systemctl" ];
+          commands = builtins.map (command: {
+            command = "/run/current-system/sw/bin/${command}";
+            options = [ "NOPASSWD" "SETENV" ];
+          }) [
+            "poweroff"
+            "shutdown"
+            "reboot"
+            "nixos-rebuild"
+            "nix-env"
+            "bandwhich"
+            "mic-light-on"
+            "mic-light-off"
+            "systemctl"
+          ];
           groups = [ "wheel" ];
         }
       ];

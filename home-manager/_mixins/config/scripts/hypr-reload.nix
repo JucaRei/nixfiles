@@ -7,7 +7,4 @@ let
     pywalfox update &
     pkill mako && setsid mako -c /home/xenoxanite/.cache/wal/mako.conf &
   '';
-in
-{
-  home.packages = [ reload ];
-}
+in { home.packages = [ reload ]; }

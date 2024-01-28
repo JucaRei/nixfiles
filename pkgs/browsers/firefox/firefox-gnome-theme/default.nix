@@ -1,11 +1,7 @@
-{ lib
-, pkgs
-, ...
-}:
-with pkgs; let
-  metadata = import ./metadata.nix;
-in
-stdenv.mkDerivation rec {
+{ lib, pkgs, ... }:
+with pkgs;
+let metadata = import ./metadata.nix;
+in stdenv.mkDerivation rec {
   pname = "firefox-gnome-theme";
   version = metadata.rev;
 

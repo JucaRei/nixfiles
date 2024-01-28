@@ -3,9 +3,7 @@
 #   pulseaudio-control = "${pkgs.callPackage ../../../../config/polybar-scripts/pulseaudio-control.nix { } }/bin/pulseaudio-control";
 # in
 {
-  imports = [
-    ../default/polybar/scripts.nix
-  ];
+  imports = [ ../default/polybar/scripts.nix ];
   config = {
     services = {
       polybar = {

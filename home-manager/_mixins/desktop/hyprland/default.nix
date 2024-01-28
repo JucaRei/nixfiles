@@ -1,11 +1,7 @@
 { pkgs, lib, config, inputs, hostname, ... }:
-let
-  nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
-in
-{
-  imports = [
-    ./themes/my-theme
-  ];
+let nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
+in {
+  imports = [ ./themes/my-theme ];
   home = {
     packages = with pkgs; [
       # kitty # terminal
@@ -31,47 +27,54 @@ in
       xfce.xfce4-power-manager
     ];
   };
-  wayland =
-    {
-      windowManager = {
-        hyprland = {
-          # enable = if hostname != "zion" then true else false;
-          enable = true;
-          # Check if it has nvidia and nvidia Driver installed
-          # enableNvidiaPatches = if nvidiaEnabled != true then false else true;
-          # enableNvidiaPatches = true;
-          package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
-            enableXWayland = true; # whether to enable XWayland
-            legacyRenderer = if hostname == "nitro" then false else true; # false; # whether to use the legacy renderer (for old GPUs)
-            withSystemd = if hostname == "nitro" then true else false; # whether to build with systemd support
-          };
-          # extraConfig = '''';
-          # finalPackage = '''';
-          # plugins = [];
-          # settings = {};
-          systemd =
-            {
-              enable = if hostname != "zion" then true else false;
-              # enable = false;
-              # extraCommands = "";
-              # variable = [];
-
-              # Same as default, but stop graphical-session too
-              extraCommands = lib.mkBefore [
-                "systemctl --user stop graphical-session.target"
-                "systemctl --user start hyprland-session.target"
-              ];
-
-              variables = [ "--all" ];
-            };
-          xwayland.enable = if hostname != "zion" then true else false;
-          plugins = [ inputs.split-monitor-workspaces.packages.${pkgs.system}.split-monitor-workspaces ];
+  wayland = {
+    windowManager = {
+      hyprland = {
+        # enable = if hostname != "zion" then true else false;
+        enable = true;
+        # Check if it has nvidia and nvidia Driver installed
+        # enableNvidiaPatches = if nvidiaEnabled != true then false else true;
+        # enableNvidiaPatches = true;
+        package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
+          enableXWayland = true; # whether to enable XWayland
+          legacyRenderer = if hostname == "nitro" then
+            false
+          else
+            true; # false; # whether to use the legacy renderer (for old GPUs)
+          withSystemd = if hostname == "nitro" then
+            true
+          else
+            false; # whether to build with systemd support
         };
+        # extraConfig = '''';
+        # finalPackage = '''';
+        # plugins = [];
+        # settings = {};
+        systemd = {
+          enable = if hostname != "zion" then true else false;
+          # enable = false;
+          # extraCommands = "";
+          # variable = [];
+
+          # Same as default, but stop graphical-session too
+          extraCommands = lib.mkBefore [
+            "systemctl --user stop graphical-session.target"
+            "systemctl --user start hyprland-session.target"
+          ];
+
+          variables = [ "--all" ];
+        };
+        xwayland.enable = if hostname != "zion" then true else false;
+        plugins = [
+          inputs.split-monitor-workspaces.packages.${pkgs.system}.split-monitor-workspaces
+        ];
       };
     };
+  };
   home = {
     sessionVariables = {
-      POLKIT_AUTH_AGENT = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      POLKIT_AUTH_AGENT =
+        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       "DIRENV_LOG_FORMAT" = "";
       # "LIBVA_DRIVE_NAME" = if (hostname != "zion" || "air") then "nvidia" else "iHD";
       "LIBVA_DRIVE_NAME" = "nvidia";
@@ -95,7 +98,8 @@ in
       # nitro
       "VAAPI_MPEG4_ENABLED" = "true";
       "VDPAU_DRIVER" = "nvidia";
-      "GST_PLUGIN_FEATURE_RANK" = "nvmpegvideodec:MAX,nvmpeg2videodec:MAX,nvmpeg4videodec:MAX,nvh264sldec:MAX,nvh264dec:MAX,nvjpegdec:MAX,nvh265sldec:MAX,nvh265dec:MAX,nvvp9dec:MAX";
+      "GST_PLUGIN_FEATURE_RANK" =
+        "nvmpegvideodec:MAX,nvmpeg2videodec:MAX,nvmpeg4videodec:MAX,nvh264sldec:MAX,nvh264dec:MAX,nvjpegdec:MAX,nvh265sldec:MAX,nvh265dec:MAX,nvvp9dec:MAX";
       "GST_VAAPI_ALL_DRIVERS" = "1";
 
       # Gaming Parameters

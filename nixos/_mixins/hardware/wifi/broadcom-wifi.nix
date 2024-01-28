@@ -8,8 +8,6 @@
   };
   hardware = {
     enableAllFirmware = true;
-    firmware = [
-      pkgs.b43Firmware_5_1_138
-    ];
+    firmware = [ pkgs.b43Firmware_5_1_138 ];
   };
 }

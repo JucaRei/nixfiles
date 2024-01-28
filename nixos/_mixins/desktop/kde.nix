@@ -1,5 +1,4 @@
-{ config, lib, pkgs, username, ... }:
-{
+{ config, lib, pkgs, username, ... }: {
 
   programs = {
     kdeconnect = {
@@ -18,14 +17,8 @@
           enable = true; # Display Manager
           autoNumlock = true;
 
-          wayland = {
-            enable = true;
-          };
-          settings = {
-            Theme = {
-              CursorTheme = "layan-border_cursors";
-            };
-          };
+          wayland = { enable = true; };
+          settings = { Theme = { CursorTheme = "layan-border_cursors"; }; };
         };
         # defaultSession = "plasmawayland";
       };
@@ -159,19 +152,10 @@
       enable = true;
       xdgOpenUsePortal = true;
       config = {
-        common = {
-          default = [
-            "gtk"
-          ];
-        };
+        common = { default = [ "gtk" ]; };
         kde = {
-          default = [
-            "xdg-desktop-portal-kde"
-            "gtk"
-          ];
-          "org.freedesktop.impl.portal.Secret" = [
-            "xdg-desktop-portal-kde"
-          ];
+          default = [ "xdg-desktop-portal-kde" "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "xdg-desktop-portal-kde" ];
         };
       };
     };

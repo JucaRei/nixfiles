@@ -1,15 +1,11 @@
 import ./module.nix ({ name, description, serviceConfig }:
 
-{
-  systemd.user.services.${name} = {
-    Unit = {
-      Description = description;
-    };
+  {
+    systemd.user.services.${name} = {
+      Unit = { Description = description; };
 
-    Service = serviceConfig;
+      Service = serviceConfig;
 
-    Install = {
-      WantedBy = [ "default.target" ];
+      Install = { WantedBy = [ "default.target" ]; };
     };
-  };
-})
+  })

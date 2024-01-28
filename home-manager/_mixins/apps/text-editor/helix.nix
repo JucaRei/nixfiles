@@ -35,38 +35,19 @@
     };
     languages.language = lib.concatLists [
       # Languages that just need auto-format = true
-      (
-        map
-          (name: {
-            name = name;
-            auto-format = true;
-          })
-          [
-            "haskell"
-            "javascript"
-            "lua"
-            "nix"
-            "python"
-          ]
-      )
+      (map (name: {
+        name = name;
+        auto-format = true;
+      }) [ "haskell" "javascript" "lua" "nix" "python" ])
       # Languages that need auto-format and indent
-      (
-        map
-          (name: {
-            name = name;
-            auto-format = true;
-            indent = {
-              tab-width = 4;
-              unit = "    ";
-            };
-          })
-          [
-            "bash"
-            "c"
-            "cpp"
-            "unison"
-          ]
-      )
+      (map (name: {
+        name = name;
+        auto-format = true;
+        indent = {
+          tab-width = 4;
+          unit = "    ";
+        };
+      }) [ "bash" "c" "cpp" "unison" ])
       [
         {
           name = "bash";

@@ -1,9 +1,7 @@
 { pkgs, lib, ... }: {
   programs.bat = {
     enable = true;
-    config = {
-      theme = "tokyo_night";
-    };
+    config = { theme = "tokyo_night"; };
     themes = {
       # cyberpunk-neon =
       #   builtins.readFile ../config/bat/themes/cyberpunk-neon.tmTheme;

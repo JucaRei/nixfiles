@@ -15,8 +15,7 @@ let
     "autodefrag"
     "discard=async"
   ];
-in
-{
+in {
   disko.devices = {
     disk = {
       ### Dual boot mac, dont format mac EFI
@@ -122,9 +121,7 @@ in
                 # };
                 subvolumes = {
                   # Subvolume name is different from mountpoint
-                  "@rootfs" = {
-                    mountpoint = "/";
-                  };
+                  "@rootfs" = { mountpoint = "/"; };
                   # Subvolume name is the same as the mountpoint
                   "@home" = {
                     mountOptions = defaultBtrfsOpts;

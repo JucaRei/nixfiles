@@ -12,8 +12,7 @@ let
     ${profile}
     exec ${pkgs.fish}/bin/fish
   '';
-in
-stdenv.mkDerivation rec {
+in stdenv.mkDerivation rec {
   name = fullName;
   unpackPhase = "true";
   installPhase = ''

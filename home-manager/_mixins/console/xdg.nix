@@ -1,5 +1,4 @@
-{ config, lib, ... }:
-{
+{ config, lib, ... }: {
   xdg = {
     enable = true;
     configHome = config.home.homeDirectory + "/.config";
@@ -11,7 +10,8 @@
       enable = true;
       createDirectories = lib.mkDefault true;
       extraConfig = {
-        XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/Screenshots";
+        XDG_SCREENSHOTS_DIR =
+          "${config.home.homeDirectory}/Pictures/Screenshots";
       };
     };
   };

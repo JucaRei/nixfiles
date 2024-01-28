@@ -1,8 +1,4 @@
-{ lib
-, stdenvNoCC
-, fetchFromGitHub
-,
-}:
+{ lib, stdenvNoCC, fetchFromGitHub, }:
 stdenvNoCC.mkDerivation {
   pname = "catppuccin-plymouth";
   version = "unstable-2022-12-10";

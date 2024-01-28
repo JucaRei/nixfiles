@@ -38,7 +38,7 @@ let
     # "network.http.referer.XOriginPolicy" = 2;
     "network.http.referer.XOriginTrimmingPolicy" = 2;
     "network.IDN_show_punycode" = true;
-    "ui.systemUsesDarkTheme" = true; #1 Default to dark
+    "ui.systemUsesDarkTheme" = true; # 1 Default to dark
     "services.sync.prefs.sync.browser.uiCustomization.state" = true;
     # Enables userContent.css and userChrome.css for our theme modules
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
@@ -82,8 +82,7 @@ let
     # "geo.provider.use_gpsd" = false;
     # https://support.mozilla.org/en-US/kb/extension-recommendations
     "browser.newtabpage.activity-stream.asrouter.userprefs.cfr" = false;
-    "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" =
-      false;
+    "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" = false;
     "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features" =
       false;
     "extensions.htmlaboutaddons.recommendations.enabled" = false;
@@ -129,7 +128,6 @@ let
     # Disable DNS over HTTPS (done system-wide)
     #"network.trr.mode" = 5;
 
-
     # i18n
     "intl.accept_languages" = "en-GB, en, pt-BR";
     "intl.regional_prefs.use_os_locales" = true;
@@ -141,7 +139,8 @@ let
     # Disable Pocket
     "browser.newtabpage.activity-stream.feeds.discoverystreamfeed" = false;
     "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
-    "browser.newtabpage.activity-stream.section.highlights.includePocket" = false;
+    "browser.newtabpage.activity-stream.section.highlights.includePocket" =
+      false;
     "media.autoplay.enabled" = false;
 
     # Some privacy settings...
@@ -159,7 +158,6 @@ let
     "experiments.enabled" = false;
     "experiments.manifest.uri" = "";
     "browser.ping-centre.telemetry" = false;
-
 
     # Burn our own fingers.
     "privacy.resistFingerprinting" = true;
@@ -187,33 +185,35 @@ let
     #"extensions.update.enabled" = false;
     #"extensions.update.autoUpdateDefault" = false;
 
-    userChrome = builtins.concatStringsSep "\n" (builtins.map builtins.readFile [
-      "${csshacks}/chrome/hide_tabs_toolbar.css"
-      # Preferable, but there's too many bugs with menu dropdowns not dropping
-      # up when they're at the bottom of the screen
-      # "${csshacks}/chrome/navbar_below_content.css"
-    ]);
+    userChrome = builtins.concatStringsSep "\n" (builtins.map builtins.readFile
+      [
+        "${csshacks}/chrome/hide_tabs_toolbar.css"
+        # Preferable, but there's too many bugs with menu dropdowns not dropping
+        # up when they're at the bottom of the screen
+        # "${csshacks}/chrome/navbar_below_content.css"
+      ]);
   };
   # librewolf-gl = with pkgs; wrapFirefox librewolf-unwrapped {
-  firefox-gl = with pkgs.unstable; wrapFirefox firefox-unwrapped {
-    # floorp-gl = with pkgs.unstable; wrapFirefox floorp-unwrapped {
-    # firefox-gl = with pkgs.unstable; wrapFirefox firefox-devedition-unwrapped {
-    nativeMessagingHosts = with pkgs; [
-      bukubrow
-      tridactyl-native
-      fx-cast-bridge
-    ]
-    # ++ (with pkgs.FirefoxAddons; [
-    #   youtube-nonstop
-    # ])
-    ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
-  };
+  firefox-gl = with pkgs.unstable;
+    wrapFirefox firefox-unwrapped {
+      # floorp-gl = with pkgs.unstable; wrapFirefox floorp-unwrapped {
+      # firefox-gl = with pkgs.unstable; wrapFirefox firefox-devedition-unwrapped {
+      nativeMessagingHosts = with pkgs;
+        [
+          bukubrow
+          tridactyl-native
+          fx-cast-bridge
+        ]
+        # ++ (with pkgs.FirefoxAddons; [
+        #   youtube-nonstop
+        # ])
+        ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
+    };
 
   browser = "firefox";
   # browser = "floorp";
   # browser = "librewolf";
-in
-{
+in {
   programs = {
     firefox = {
       enable = true;
@@ -246,26 +246,43 @@ in
                 urls = [{
                   template = "https://search.nixos.org/options";
                   params = [
-                    { name = "type"; value = "packages"; }
-                    { name = "query"; value = "{searchTerms}"; }
+                    {
+                      name = "type";
+                      value = "packages";
+                    }
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
                   ];
                 }];
-                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+                icon =
+                  "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
                 definedAliases = [ "@no" ];
               };
               "Nix Packages" = {
                 urls = [{
                   template = "https://search.nixos.org/packages";
                   params = [
-                    { name = "type"; value = "packages"; }
-                    { name = "query"; value = "{searchTerms}"; }
+                    {
+                      name = "type";
+                      value = "packages";
+                    }
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
                   ];
                 }];
-                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+                icon =
+                  "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
                 definedAliases = [ "@np" ];
               };
               "NixOS Wiki" = {
-                urls = [{ template = "https://nixos.wiki/index.php?search={searchTerms}"; }];
+                urls = [{
+                  template =
+                    "https://nixos.wiki/index.php?search={searchTerms}";
+                }];
                 definedAliases = [ "@nw" ];
               };
               # "Brave" = {

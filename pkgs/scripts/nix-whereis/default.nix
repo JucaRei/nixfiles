@@ -1,7 +1,4 @@
-{ writeShellApplication
-, coreutils
-, which
-}:
+{ writeShellApplication, coreutils, which }:
 
 writeShellApplication {
   name = "nix-whereis";

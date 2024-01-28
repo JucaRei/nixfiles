@@ -1,13 +1,8 @@
-{ config, lib, pkgs, ... }:
-{
-  imports = [
-    ./cloudflare-warp.nix
-  ];
+{ config, lib, pkgs, ... }: {
+  imports = [ ./cloudflare-warp.nix ];
   networking = {
     # Disabling DHCPCD in favor of NetworkManager
-    dhcpcd = {
-      enable = false;
-    };
+    dhcpcd = { enable = false; };
     # firewall = {
     #   allowedTCPPorts = [ 5355 ];
     #   allowedUDPPorts = [ 5353 5355 ];
@@ -123,7 +118,6 @@
     ];
   };
 }
-
 
 ## DoH (DNS over HTTPS)
 # services.dnscrypt-proxy2 = {

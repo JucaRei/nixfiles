@@ -1,9 +1,7 @@
 { pkgs, lib, params, ... }:
 
 {
-  environment.systemPackages = with pkgs.unstable; [
-    chromium
-  ];
+  environment.systemPackages = with pkgs.unstable; [ chromium ];
 
   programs = {
     chromium = {
@@ -19,15 +17,10 @@
         "​ReportDeviceCrashReportInfo" = false;
         "PasswordManagerEnabled" = false;
         "​SpellcheckEnabled" = true;
-        "SpellcheckLanguage" = [
-          "en-GB"
-          "en-US"
-        ];
+        "SpellcheckLanguage" = [ "en-GB" "en-US" ];
         "VoiceInteractionHotwordEnabled" = false;
       };
     };
   };
-  xdg = {
-    mime.enable = true;
-  };
+  xdg = { mime.enable = true; };
 }

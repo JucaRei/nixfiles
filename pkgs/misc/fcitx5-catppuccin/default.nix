@@ -1,8 +1,4 @@
-{ lib
-, stdenv
-, fetchFromGitHub
-,
-}:
+{ lib, stdenv, fetchFromGitHub, }:
 stdenv.mkDerivation {
   pname = "fcitx5-catppuccin";
   version = "0.0.1";

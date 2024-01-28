@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{ lib, ... }: {
   # Pocket, Pocket 3, MicroPC, Win 3, TopJoy Falcon
   imports = [
     ../../_mixins/hardware/bluetooth

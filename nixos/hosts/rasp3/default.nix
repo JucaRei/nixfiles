@@ -12,9 +12,7 @@
     # kernelPackages = lib.mkForce pkgs.linuxPackages;
     kernelPackages = pkgs.linuxPackages_rpi3;
     # kernelPackages = pkgs.linuxPackages_latest;
-    initrd = {
-      availableKernelModules = [ ];
-    };
+    initrd = { availableKernelModules = [ ]; };
     kernelModules = [ "ahci" ];
 
     # A bunch of boot parameters needed for optimal runtime on RPi 3b+
@@ -28,9 +26,7 @@
     loader = {
       # NixOS wants to enable GRUB by default
       grub.enable = lib.mkForce false;
-      generic-extlinux-compatible = {
-        enable = lib.mkOverride 5 false;
-      };
+      generic-extlinux-compatible = { enable = lib.mkOverride 5 false; };
       raspberryPi = {
         enable = true;
         version = 3;
@@ -76,7 +72,8 @@
     after = [ "dev-ttyAMA0.device" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      ExecStart = "${pkgs.bluez}/bin/btattach -B /dev/ttyAMA0 -P bcm -S 3000000";
+      ExecStart =
+        "${pkgs.bluez}/bin/btattach -B /dev/ttyAMA0 -P bcm -S 3000000";
     };
   };
 

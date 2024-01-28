@@ -13,8 +13,8 @@
     mutableExtensionsDir = true;
     enableUpdateCheck = false;
 
-    extensions =
-      with pkgs.vscode-extensions; [
+    extensions = with pkgs.vscode-extensions;
+      [
         jnoortheen.nix-ide
         brettm12345.nixfmt-vscode
         oderwat.indent-rainbow
@@ -27,8 +27,7 @@
         ms-azuretools.vscode-docker
         # ms-vscode-remote.remote-containers
         # ms-vscode-remote.vscode-remote-extensionpack
-      ]
-      ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
+      ] ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         {
           name = "Rasi";
           publisher = "dlasagno";
@@ -195,7 +194,8 @@
       };
 
       editor = {
-        fontFamily = "'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono','JetbrainsMono Nerd Font'";
+        fontFamily =
+          "'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono','JetbrainsMono Nerd Font'";
         fontLigatures = true;
         cursorStyle = "line";
         # cursorStyle = "block";
@@ -240,9 +240,7 @@
           runArgs = [ "--userns=keep-id" ];
           # containerUser = "juca";
           # updateRemoteUserUID = true;
-          containerEnv = {
-            "HOME" = "home/node";
-          };
+          containerEnv = { "HOME" = "home/node"; };
         };
       };
       workbench = {
@@ -259,7 +257,8 @@
 
       ocamlformat-vscode-extension = {
         customOcamlformatPath = "ocamlformat";
-        ocamlformatOption = "--enable-outside-detected-project,--break-cases = fit-or-vertical,--cases-exp-indent=4,--if-then-else=k-r,--type-decl-indent=4";
+        ocamlformatOption =
+          "--enable-outside-detected-project,--break-cases = fit-or-vertical,--cases-exp-indent=4,--if-then-else=k-r,--type-decl-indent=4";
       };
 
       #jupyter.widgetScriptSources = [ "jsdelivr.com" "unpkg.com" ]; # required by qgrid
@@ -303,7 +302,8 @@
       "editor.bracketPairColorization.enabled" = true;
       "editor.fontFamily" = "Fira Code Retina";
       "editor.fontSize" = 21;
-      "terminal.integrated.fontFamily" = "'FiraCode Nerd Font Mono', 'JetBrainsMono Nerd Font Mono SemiBold'";
+      "terminal.integrated.fontFamily" =
+        "'FiraCode Nerd Font Mono', 'JetBrainsMono Nerd Font Mono SemiBold'";
       "terminal.integrated.fontSize" = 17;
       "extensions.autoCheckUpdates" = false;
       "extensions.autoUpdate" = false;
@@ -323,8 +323,10 @@
       # Nil
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = "${pkgs.nil}/bin/nil";
-      "nix.serverSettings"."nil"."diagnostics"."ignored" = [ "unused_binding" "unused_with" ];
-      "nix.serverSettings"."nil"."formatting"."command" = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
+      "nix.serverSettings"."nil"."diagnostics"."ignored" =
+        [ "unused_binding" "unused_with" ];
+      "nix.serverSettings"."nil"."formatting"."command" =
+        [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
 
       # Nixd
       # nix = {
@@ -350,9 +352,7 @@
       #   };
       # };
 
-      "[nix]" = {
-        editor.defaultFormatter = "jnoortheen.nix-ide";
-      };
+      "[nix]" = { editor.defaultFormatter = "jnoortheen.nix-ide"; };
       "security.workspace.trust.enabled" = false;
       "update.mode" = "none";
       "update.showReleaseNotes" = false;
@@ -374,7 +374,6 @@
       };
     };
   };
-
 
   # xdg.desktopEntries = {
   #   "code" = {

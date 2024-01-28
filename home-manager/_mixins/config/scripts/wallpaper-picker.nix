@@ -31,11 +31,6 @@ let
     $wallpaper_daemon $wallpaper_location
     wal -i $wallpaper_location && reload &
   '';
-in
-{
-  home.packages = with pkgs; [
-    wallpaper-picker-dmenu
-    wallpaper-picker
-    sxiv
-  ];
+in {
+  home.packages = with pkgs; [ wallpaper-picker-dmenu wallpaper-picker sxiv ];
 }

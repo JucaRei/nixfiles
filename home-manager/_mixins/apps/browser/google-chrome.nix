@@ -3,9 +3,7 @@
 # ifDefault = lib.mkIf (builtins.elem params.browser [ "chrome" "google-chrome" ]);
 # in
 {
-  home.packages = with pkgs.unstable; [
-    google-chrome
-  ];
+  home.packages = with pkgs.unstable; [ google-chrome ];
   # xdg = {
   # mime.enable = ifDefault true;
   # mimeApps = {

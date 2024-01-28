@@ -1,7 +1,4 @@
-{ stdenvNoCC
-, fetchFromGitHub
-, lib
-}:
+{ stdenvNoCC, fetchFromGitHub, lib }:
 
 stdenvNoCC.mkDerivation {
   pname = "candy-icons";

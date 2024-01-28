@@ -1,9 +1,6 @@
 { config, lib, pkgs, username, ... }:
-let
-  inherit (pkgs.stdenv) isLinux;
-in
-with lib.hm.gvariant;
-{
+let inherit (pkgs.stdenv) isLinux;
+in with lib.hm.gvariant; {
   imports = [
     # ../../_mixins/apps/audio/audio-recorder.nix
     # ../../_mixins/apps/audio/gnome-sound-recorder.nix

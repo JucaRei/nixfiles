@@ -1,9 +1,6 @@
 { lib, pkgs, ... }:
-with lib.hm.gvariant;
-{
-  home.packages = with pkgs; [
-    meld
-  ];
+with lib.hm.gvariant; {
+  home.packages = with pkgs; [ meld ];
 
   dconf.settings = {
     "org/gnome/meld" = {

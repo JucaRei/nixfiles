@@ -1,5 +1,4 @@
-{ config, lib, pkgs, ... }:
-{
+{ config, lib, pkgs, ... }: {
   config = lib.mkIf (config.xsession.enable) {
     # Only evaluate code if using X11
     services = {

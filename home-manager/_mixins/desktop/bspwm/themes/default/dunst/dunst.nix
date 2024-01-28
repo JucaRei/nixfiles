@@ -42,7 +42,9 @@
           sort = "yes";
           line_height = 0;
           markup = "full";
-          format = "<b>%s</b>\n%b";
+          format = ''
+            <b>%s</b>
+            %b'';
           alignment = "left";
           vertical_alignment = "center";
           show_age_threshold = 60;
@@ -71,9 +73,7 @@
           mouse_middle_click = "context";
           mouse_right_click = "do_action";
         };
-        experimental = {
-          per_monitor_dpi = false;
-        };
+        experimental = { per_monitor_dpi = false; };
         urgency_low = {
           background = "#1a1b26";
           foreground = "#c0caf5";

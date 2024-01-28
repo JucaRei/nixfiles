@@ -1,9 +1,7 @@
-{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, nixgl, ... }:
-let
-  inherit (pkgs.stdenv) isDarwin;
-  inherit (pkgs.stdenv) isLinux;
-in
-{
+{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion
+, username, hostname, nixgl, ... }:
+let inherit (pkgs.stdenv) isDarwin isLinux;
+in {
   # Only import desktop configuration if the host is desktop enabled
   # Only import user specific configuration if they have bespoke settings
   imports = [
@@ -20,28 +18,30 @@ in
   # ++ lib.optional (builtins.isString desktop) ./_mixins/desktop
   # ++ lib.optional (builtins.isPath (./. + "/_mixins/users/${username}")) ./_mixins/users/${username}
   # ++ lib.optional (builtins.pathExists (./. + "/users/${username}/hosts/${hostname}.nix")) ./users/${username}/hosts/${hostname}.nix
-  ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
-  ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix
-  ++ lib.optional (desktop != null) ./_mixins/desktop;
+    ++ lib.optional (builtins.isPath (./. + "/users/${username}"))
+    ./users/${username}
+    ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix"))
+    ./hosts/${hostname}.nix ++ lib.optional (desktop != null) ./_mixins/desktop;
 
   home = lib.mkDefault {
     activation.report-changes = config.lib.dag.entryAnywhere ''
       ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
     '';
-    homeDirectory = if isDarwin then "/Users/${username}" else "/home/${username}";
+    homeDirectory =
+      if isDarwin then "/Users/${username}" else "/home/${username}";
     sessionPath = [ "$HOME/.local/bin" ];
     inherit stateVersion;
     inherit username;
     sessionVariables = {
       # only works for interactive shells, pam works for all kind of sessions
-      NIX_PATH = (lib.concatStringsSep ":" (lib.mapAttrsToList (name: path: "${name}=${path.to.path}") config.nix.registry));
+      NIX_PATH = (lib.concatStringsSep ":"
+        (lib.mapAttrsToList (name: path: "${name}=${path.to.path}")
+          config.nix.registry));
       FLAKE = "/home/${username}/.dotfiles/nixfiles";
     };
     enableNixpkgsReleaseCheck = true;
     packages = [ pkgs.nixgl.auto.nixGLDefault ];
-    sessionVariables = {
-      NIXPKGS_ALLOW_UNFREE = "1";
-    };
+    sessionVariables = { NIXPKGS_ALLOW_UNFREE = "1"; };
   };
 
   nixpkgs = {
@@ -53,6 +53,7 @@ in
       outputs.overlays.unstable-packages
       inputs.nixpkgs-f2k.overlays.stdenvs
       inputs.nixpkgs-f2k.overlays.compositors
+      inputs.nixgl.overlay
 
       # You can also add overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
@@ -71,14 +72,12 @@ in
 
         # Patch Google Chrome Dark Mode
         google-chrome = prev.google-chrome.overrideAttrs (old: {
-          installPhase =
-            old.installPhase
-            + ''
-              fix=" --enable-features=WebUIDarkMode --force-dark-mode"
+          installPhase = old.installPhase + ''
+            fix=" --enable-features=WebUIDarkMode --force-dark-mode"
 
-              substituteInPlace $out/share/applications/google-chrome.desktop \
-                --replace $exe "$exe$fix"
-            '';
+            substituteInPlace $out/share/applications/google-chrome.desktop \
+              --replace $exe "$exe$fix"
+          '';
         });
       })
     ];
@@ -124,53 +123,50 @@ in
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
     package = lib.mkDefault pkgs.unstable.nix;
-    settings =
-      if isDarwin then
-        {
-          nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
-          daemonIOLowPriority = true;
-        } else
-        {
-          accept-flake-config = true;
-          auto-optimise-store = true;
-          experimental-features = [
-            "nix-command"
-            "flakes"
-            "ca-derivations"
-            "auto-allocate-uids"
-            "cgroups"
-            #"configurable-impure-env"
-          ];
-          # Avoid unwanted garbage collection when using nix-direnv
-          auto-allocate-uids = true;
-          use-cgroups = if isLinux then true else false;
-          keep-outputs = true;
-          keep-derivations = true;
-          build-users-group = "nixbld";
-          builders-use-substitutes = true;
-          sandbox = if isDarwin then true else false;
-          warn-dirty = false;
+    settings = if isDarwin then {
+      nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
+      daemonIOLowPriority = true;
+    } else {
+      accept-flake-config = true;
+      auto-optimise-store = true;
+      experimental-features = [
+        "nix-command"
+        "flakes"
+        "ca-derivations"
+        "auto-allocate-uids"
+        "cgroups"
+        #"configurable-impure-env"
+      ];
+      # Avoid unwanted garbage collection when using nix-direnv
+      auto-allocate-uids = true;
+      use-cgroups = if isLinux then true else false;
+      keep-outputs = true;
+      keep-derivations = true;
+      build-users-group = "nixbld";
+      builders-use-substitutes = true;
+      sandbox = if isDarwin then true else false;
+      warn-dirty = false;
 
-          # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
-          keep-going = false;
-          show-trace = true;
+      # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
+      keep-going = false;
+      show-trace = true;
 
-          # Allow to run nix
-          allowed-users = [ "${username}" "nixbld" "wheel" ];
-          connect-timeout = 5;
-          http-connections = 0;
+      # Allow to run nix
+      allowed-users = [ "${username}" "nixbld" "wheel" ];
+      connect-timeout = 5;
+      http-connections = 0;
 
-          # substituters = [
-          #   "https://nix-community.cachix.org"
-          #   "https://hyprland.cachix.org"
-          #   "https://juca-nixfiles.cachix.org"
-          # ];
-          # trusted-public-keys = [
-          #   "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-          #   "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-          #   "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
-          # ];
-        };
+      # substituters = [
+      #   "https://nix-community.cachix.org"
+      #   "https://hyprland.cachix.org"
+      #   "https://juca-nixfiles.cachix.org"
+      # ];
+      # trusted-public-keys = [
+      #   "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      #   "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      #   "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
+      # ];
+    };
     extraOptions = ''
       keep-outputs          = true
       keep-derivations      = true
@@ -191,5 +187,5 @@ in
   };
 
   # Nicely reload system units when changing configs
-  systemd.user.startServices = "sd-switch";
+  systemd.user.startServices = lib.mkIf isLinux "sd-switch";
 }

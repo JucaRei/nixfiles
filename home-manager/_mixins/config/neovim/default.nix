@@ -12,8 +12,7 @@ let
     ${pkgs.python39}/bin/python ${populateEnv} -o ${config.xdg.dataHome}/nvim/site/plugin
   '';
   # }}}
-in
-{
+in {
   # Neovim
   # https://rycee.gitlab.io/home-manager/options.html#opt-programs.neovim.enable
   programs.neovim.enable = true;
@@ -23,9 +22,7 @@ in
 
   # Config and plugins ------------------------------------------------------------------------- {{{
 
-  xdg.configFile."nvim" = {
-    source = "${pkgs.nvchad}";
-  };
+  xdg.configFile."nvim" = { source = "${pkgs.nvchad}"; };
 
   home.packages = with pkgs; [
     nvchad

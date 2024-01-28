@@ -44,8 +44,7 @@ let
       done
     '';
 
-in
-{
+in {
   imports = [
 
   ];
@@ -53,9 +52,7 @@ in
     # (nixGLVulkanMesaWrap pkgs.st)
     (nixGLVulkanMesaWrap pkgs.firefox)
     (nixGLVulkanMesaWrap pkgs.thorium)
-  ] ++ (with pkgs; [
-    inxi
-  ]);
+  ] ++ (with pkgs; [ inxi ]);
 
   # home = {
   #   packages = with pkgs; [

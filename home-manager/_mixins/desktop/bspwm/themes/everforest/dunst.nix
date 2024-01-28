@@ -163,7 +163,9 @@
             #   %n  progress value if set without any extra characters
             #   %%  Literal %
             # Markup is allowed
-            format = "<b>%s</b>\n%b";
+            format = ''
+              <b>%s</b>
+              %b'';
 
             # Alignment of message text.
             # Possible values are "left", "center" and "right".
@@ -271,7 +273,6 @@
             # layout changes.
             force_xinerama = false;
 
-
             ### mouse
 
             # Defines list of actions for each mouse event
@@ -303,9 +304,7 @@
             per_monitor_dpi = false;
           };
 
-          log_notifs = {
-            script = "~/.config/dunst/scripts/dunst_logger.sh";
-          };
+          log_notifs = { script = "~/.config/dunst/scripts/dunst_logger.sh"; };
 
           urgency_low = {
             # IMPORTANT: colors have to be defined in quotation marks.

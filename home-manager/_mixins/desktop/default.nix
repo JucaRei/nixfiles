@@ -1,18 +1,17 @@
 { config, desktop, pkgs, username, lib, ... }:
-let
-  inherit (pkgs.stdenv) isLinux;
-in
-{
+let inherit (pkgs.stdenv) isLinux;
+in {
   imports = [
     # ../services/emote.nix
 
     # (./. + "./${desktop}")
     # ../apps/documents/libreoffice.nix
     ../services/flatpak.nix
-  ]
-  ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-  ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix")) ./${desktop}.nix
-  ++ lib.optional (builtins.pathExists (./. + "/../../users/${username}/desktop.nix")) ../../users/${username}/desktop.nix;
+  ] ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+    ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix"))
+    ./${desktop}.nix ++ lib.optional
+    (builtins.pathExists (./. + "/../../users/${username}/desktop.nix"))
+    ../../users/${username}/desktop.nix;
 
   services = {
     # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
@@ -25,13 +24,7 @@ in
     };
   };
 
-  home = {
-    packages = with pkgs; [
-      font-manager
-      dconf2nix
-      hexchat
-    ];
-  };
+  home = { packages = with pkgs; [ font-manager dconf2nix hexchat ]; };
 
   # Low priority
   xresources.properties = lib.mkOverride 1000 {

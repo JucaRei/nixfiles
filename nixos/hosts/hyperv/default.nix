@@ -1,5 +1,4 @@
-{ lib, modulesPath, pkgs, inputs, ... }:
-{
+{ lib, modulesPath, pkgs, inputs, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     (import ./disks.nix { })
@@ -13,10 +12,7 @@
     isContainer = false;
 
     initrd = {
-      availableKernelModules = [
-        "sd_mod"
-        "sr_mod"
-      ];
+      availableKernelModules = [ "sd_mod" "sr_mod" ];
 
       ### kernel modules to be loaded in the second stage, that are needed to mount the root file system ###
       kernelModules = [
@@ -67,12 +63,8 @@
     algorithm = "zstd";
   };
 
-
   services.xserver = {
-    modules = with pkgs; [
-      xrdp
-      xorg.xf86videofbdev
-    ];
+    modules = with pkgs; [ xrdp xorg.xf86videofbdev ];
     videoDrivers = [ "hyperv_fb" ];
     layout = lib.mkForce "br";
     exportConfiguration = true;

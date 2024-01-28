@@ -1,5 +1,6 @@
 # shell.nix for Android
-with import <nixpkgs> { }; let
+with import <nixpkgs> { };
+let
   jdk = openjdk;
   node = nodejs-14_x;
   sdk = androidenv.androidsdk {
@@ -9,28 +10,23 @@ with import <nixpkgs> { }; let
     useExtraSupportLibs = false;
     useGooglePlayServices = false;
   };
-  unpatched-sdk =
-    let
-      version = "3859397";
-    in
-    stdenv.mkDerivation {
-      name = "unpatched-sdk";
-      src = fetchzip {
-        url = "https://dl.google.com/android/repository/sdk-tools-linux-${version}.zip";
-        sha256 = "03vh2w1i7sjgsh91bpw40ryhwmz46rv8b9mp7xzg89zs18021plr";
-      };
-      installPhase = ''
-        mkdir -p $out
-        cp -r * $out/
-      '';
-      dontPatchELF = true;
+  unpatched-sdk = let version = "3859397";
+  in stdenv.mkDerivation {
+    name = "unpatched-sdk";
+    src = fetchzip {
+      url =
+        "https://dl.google.com/android/repository/sdk-tools-linux-${version}.zip";
+      sha256 = "03vh2w1i7sjgsh91bpw40ryhwmz46rv8b9mp7xzg89zs18021plr";
     };
+    installPhase = ''
+      mkdir -p $out
+      cp -r * $out/
+    '';
+    dontPatchELF = true;
+  };
   run-android = pkgs.buildFHSUserEnv {
     name = "run-android";
-    targetPkgs = pkgs: [
-      node
-      zlib
-    ];
+    targetPkgs = pkgs: [ node zlib ];
     profile = ''
       export JAVA_HOME=${jdk.home}
       export ANDROID_HOME=$PWD/.android
@@ -38,18 +34,10 @@ with import <nixpkgs> { }; let
     '';
     runScript = "react-native run-android";
   };
-in
-stdenv.mkDerivation {
+in stdenv.mkDerivation {
   name = "react-native-android";
-  nativeBuildInputs = [
-    run-android
-  ];
-  buildInputs = [
-    coreutils
-    node
-    sdk
-    unpatched-sdk
-  ];
+  nativeBuildInputs = [ run-android ];
+  buildInputs = [ coreutils node sdk unpatched-sdk ];
   shellHook = ''
     export JAVA_HOME=${jdk}
     export ANDROID_HOME=$PWD/.android/sdk

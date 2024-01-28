@@ -1,10 +1,7 @@
 { lib, ... }:
-with lib.hm.gvariant;
-{
+with lib.hm.gvariant; {
   xdg = {
-    mime = {
-      enable = true;
-    };
+    mime = { enable = true; };
     mimeApps = {
       enable = true;
       defaultApplications = { };

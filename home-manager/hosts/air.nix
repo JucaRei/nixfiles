@@ -11,9 +11,10 @@
     # ../_mixins/apps/browser/opera.nix
   ];
   home = {
-    packages = with pkgs; [
-      # thorium 
-    ];
+    packages = with pkgs;
+      [
+        # thorium 
+      ];
     # shellAliases = {
     # sudo = "doas";
     # };

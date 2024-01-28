@@ -1,17 +1,10 @@
-{ desktop, hostname, lib, pkgs, ... }:
-{
-  environment.systemPackages = with pkgs; [
-    aria2
-    croc
-    unstable.maestral
-    rclone
-    wget2
-    wormhole-william
-    zsync
-  ] ++ lib.optionals (desktop != null) [
-    unstable.celeste
-    unstable.maestral-gui
-  ];
+{ desktop, hostname, lib, pkgs, ... }: {
+  environment.systemPackages = with pkgs;
+    [ aria2 croc unstable.maestral rclone wget2 wormhole-william zsync ]
+    ++ lib.optionals (desktop != null) [
+      unstable.celeste
+      unstable.maestral-gui
+    ];
 
   services = {
     aria2 = {

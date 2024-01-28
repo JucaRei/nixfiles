@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{ pkgs, ... }: {
   services.picom = {
     enable = true;
     package = pkgs.picom;
@@ -65,8 +64,8 @@
       # fading
       fading = true;
       fade-delta = 2;
-      fade-in-step = 0.01;
-      fade-out-step = 0.01;
+      fade-in-step = 1.0e-2;
+      fade-out-step = 1.0e-2;
       fade-exclude = [
         "class_g *= 'fcitx'"
         "class_g = 'Rofi'"
@@ -100,11 +99,20 @@
         "name *? = 'Sunflower'"
         "class_g *= 'wemeetapp'"
       ];
-      wintypes =
-        {
-          tooltip = { fade = true; shadow = false; opacity = 0.85; focus = true; };
-          fullscreen = { fade = true; shadow = false; focus = true; opacity = 0.93; };
+      wintypes = {
+        tooltip = {
+          fade = true;
+          shadow = false;
+          opacity = 0.85;
+          focus = true;
         };
+        fullscreen = {
+          fade = true;
+          shadow = false;
+          focus = true;
+          opacity = 0.93;
+        };
+      };
     };
   };
 }

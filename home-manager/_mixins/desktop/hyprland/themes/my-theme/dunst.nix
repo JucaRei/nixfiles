@@ -172,38 +172,36 @@
         # wants = [ "display-manager.service" ];
         WantedBy = [ "graphical-session.target" ];
       };
-      Service =
-        let
-          # bat0 | bat1 | bat2
-          battery = builtins.replaceStrings [ "-" ] [ "2" ] "bat-";
-        in
-        {
+      Service = let
+        # bat0 | bat1 | bat2
+        battery = builtins.replaceStrings [ "-" ] [ "2" ] "bat-";
+      in {
 
-          #   ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
-          #   #!/run/current-system/sw/bin/bash
-          #   prev_val=100
-          #   check () { [[ $1 -ge $val ]] && [[ $1 -lt $prev_val ]]; }
-          #   notify () {
-          #     ${pkgs.libnotify}/bin/notify-send -a Battery "$@" \
-          #       -h "int:value:$val" "Discharging" "$val%, $remaining"
-          #   }
-          #   while true; do
-          #     IFS=: read _ bat2 < <(${pkgs.acpi}/bin/acpi -b)
-          #     IFS=\ , read status val remaining <<<"bat2"
-          #     val=''${val%\%}
-          #     if [[ $status = Discharging ]]; then
-          #       echo "$val%, $remaining"
-          #       if check 30 || check 25 || check 20; then notify
-          #       elif check 15 || [[ $val -le 10 ]]; then notify -u critical
-          #       fi
-          #     fi
-          #     prev_val=$val
-          #     # Sleep longer when battery is high to save CPU
-          #     if [[ $val -gt 30 ]]; then ${pkgs.coreutils}/bin/sleep 10m; elif [[ $val -ge 20 ]]; then ${pkgs.coreutils}/bin/sleep 5m; else ${pkgs.coreutils}/bin/sleep 1m; fi
-          #   done
-          # ''}";
+        #   ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
+        #   #!/run/current-system/sw/bin/bash
+        #   prev_val=100
+        #   check () { [[ $1 -ge $val ]] && [[ $1 -lt $prev_val ]]; }
+        #   notify () {
+        #     ${pkgs.libnotify}/bin/notify-send -a Battery "$@" \
+        #       -h "int:value:$val" "Discharging" "$val%, $remaining"
+        #   }
+        #   while true; do
+        #     IFS=: read _ bat2 < <(${pkgs.acpi}/bin/acpi -b)
+        #     IFS=\ , read status val remaining <<<"bat2"
+        #     val=''${val%\%}
+        #     if [[ $status = Discharging ]]; then
+        #       echo "$val%, $remaining"
+        #       if check 30 || check 25 || check 20; then notify
+        #       elif check 15 || [[ $val -le 10 ]]; then notify -u critical
+        #       fi
+        #     fi
+        #     prev_val=$val
+        #     # Sleep longer when battery is high to save CPU
+        #     if [[ $val -gt 30 ]]; then ${pkgs.coreutils}/bin/sleep 10m; elif [[ $val -ge 20 ]]; then ${pkgs.coreutils}/bin/sleep 5m; else ${pkgs.coreutils}/bin/sleep 1m; fi
+        #   done
+        # ''}";
 
-          ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
+        ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
           #!/bin/sh
 
           # Send a notification if the laptop battery is either low
@@ -238,8 +236,8 @@
           notify-send "Low Battery" "$\{BATTERY_LEVEL}% of battery remaining." -u critical -i "battery-alert" -r 9991
           touch $EMPTY_FILE
           fi
-          ''}";
-        };
+        ''}";
+      };
     };
     # changebrightness = {
     #   Unit = {

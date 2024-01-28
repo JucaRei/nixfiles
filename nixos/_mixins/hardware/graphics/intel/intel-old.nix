@@ -20,7 +20,11 @@
           vaapiVdpau
           ## libvdpau-va-gl
 
-          (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
+          (if (lib.versionOlder (lib.versions.majorMinor lib.version)
+            "23.11") then
+            vaapiIntel
+          else
+            intel-vaapi-driver)
           libvdpau-va-gl
           # intel-media-driver
         ];
@@ -39,12 +43,9 @@
       enableRedistributableFirmware = true;
     };
 
-
-
     # services.hardware.bolt.enable = true;
     # # Allow usb controllers via HDMI
     # services.udev.extraRules = ''KERNEL=="hidraw*", ATTRS{idVendor}=="20d6", ATTRS{idProduct}=="a711", MODE="0660", TAG+="uaccess"'';
-
 
     services.xserver.videoDrivers = [ "intel" "i965" ];
     # services.xserver.videoDrivers = [ "intel" ];
@@ -52,11 +53,7 @@
     ### INTEL FIX SCREEN TEARING ###
     environment = {
 
-      systemPackages = with pkgs; [
-        libva-utils
-        inxi
-        glxinfo
-      ];
+      systemPackages = with pkgs; [ libva-utils inxi glxinfo ];
 
       # etc."X11/xorg.conf.d/20-intel.conf" = {
       #   text = ''
@@ -75,12 +72,11 @@
       # };
 
       variables = {
-        VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+        VDPAU_DRIVER =
+          lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
       };
 
-      sessionVariables = {
-        LIBVA_DRIVER_NAME = "i965";
-      };
+      sessionVariables = { LIBVA_DRIVER_NAME = "i965"; };
     };
 
   };

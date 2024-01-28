@@ -1,6 +1,5 @@
 { config, lib, ... }:
-with lib.hm.gvariant;
-{
+with lib.hm.gvariant; {
   imports = [
     # ../_mixins/dev/nix.nix
     # ../_mixins/dev/nixpkgs.nix

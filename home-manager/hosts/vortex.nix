@@ -1,9 +1,4 @@
 _: {
-  imports = [
-  ];
-  home = {
-    shellAliases = {
-      sudo = "doas";
-    };
-  };
+  imports = [ ];
+  home = { shellAliases = { sudo = "doas"; }; };
 }

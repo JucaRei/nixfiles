@@ -2,11 +2,7 @@
   services = {
     xserver = {
       enable = true;
-      windowManager = {
-        awesome = {
-          enable = true;
-        };
-      };
+      windowManager = { awesome = { enable = true; }; };
       displayManager = {
         defaultSession = "none+fake";
         session = [{
@@ -16,7 +12,8 @@
         }];
         lightdm = {
           enable = true;
-          background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
+          background =
+            pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
         };
       };
     };

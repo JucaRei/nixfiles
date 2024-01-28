@@ -1,8 +1,5 @@
 { inputs, lib, pkgs, config, ... }: {
-  imports = [
-    ../config/qt/qt-style.nix
-    ../apps/terminal/tilix.nix
-  ];
+  imports = [ ../config/qt/qt-style.nix ../apps/terminal/tilix.nix ];
 
   # Exclude MATE themes. Yaru will be used instead.
   # Don't install mate-netbook or caja-dropbox
@@ -40,9 +37,7 @@
       "/share/desktop-directories"
       "/share/gtksourceview-2.0"
     ];
-    variables.GIO_EXTRA_MODULES = [
-      "${pkgs.xfce.gvfs}/lib/gio/modules"
-    ];
+    variables.GIO_EXTRA_MODULES = [ "${pkgs.xfce.gvfs}/lib/gio/modules" ];
   };
 
   # Enable some programs to provide a complete desktop
@@ -58,9 +53,7 @@
     xfconf.enable = lib.mkDefault true;
     nm-applet.enable = true;
     seahorse.enable = true;
-    dconf = {
-      enable = lib.mkDefault false;
-    };
+    dconf = { enable = lib.mkDefault false; };
     # system-config-printer.enable = true;
   };
 
@@ -78,11 +71,7 @@
     # system-config-printer.enable = true;
     xserver = {
       enable = true;
-      libinput = {
-        touchpad = {
-          middleEmulation = true;
-        };
-      };
+      libinput = { touchpad = { middleEmulation = true; }; };
       displayManager = {
         lightdm.enable = true;
         lightdm.greeters.gtk = {
@@ -124,16 +113,12 @@
         };
       };
 
-      desktopManager = {
-        xfce.enable = true;
-      };
+      desktopManager = { xfce.enable = true; };
     };
   };
   sound = {
     enable = true;
-    mediaKeys = {
-      enable = true;
-    };
+    mediaKeys = { enable = true; };
   };
   # security.pam.services.gdm.enableGnomeKeyring = true;
   xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];

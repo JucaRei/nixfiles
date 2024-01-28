@@ -1,10 +1,5 @@
-{ stdenv
-, lib
-, fetchFromGitHub
-, alsaLib
-, pulseSupport ? true
-, libpulseaudio ? null
-}:
+{ stdenv, lib, fetchFromGitHub, alsaLib, pulseSupport ? true
+, libpulseaudio ? null }:
 
 stdenv.mkDerivation rec {
   pname = "scream-receivers";

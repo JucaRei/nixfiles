@@ -1,5 +1,4 @@
-{ config, pkgs, lib, ... }:
-{
+{ config, pkgs, lib, ... }: {
   imports = [ ./terminal.nix ];
   systemd.user.services.fcitx5-daemon = {
     Unit.After = "graphical-session-pre.target";
@@ -8,9 +7,16 @@
       RestartSec = 3;
     };
   };
-  i18n.inputMethod = let fcitx5-qt = pkgs.libsForQt5.fcitx5-qt; in {
+  i18n.inputMethod = let fcitx5-qt = pkgs.libsForQt5.fcitx5-qt;
+  in {
     enabled = "fcitx5";
-    fcitx5.addons = with pkgs; [ fcitx5-lua fcitx5-gtk fcitx5-mozc fcitx5-configtool fcitx5-qt ];
+    fcitx5.addons = with pkgs; [
+      fcitx5-lua
+      fcitx5-gtk
+      fcitx5-mozc
+      fcitx5-configtool
+      fcitx5-qt
+    ];
   };
   home.sessionVariables = {
     GTK_IM_MODULE = "fcitx";
@@ -34,21 +40,22 @@
     # a bad idea to set SDL_DYNAMIC_API globally
     SDL2_DYNAMIC_API = "${pkgs.SDL2}/lib/libSDL2.so";
   };
-  programs.nnn.extraPackages = with pkgs; [
-    # drag & drop
-    xdragon
-    # xembed
-    tabbed
-    # for preview
-    ffmpeg
-    ffmpegthumbnailer
-    nsxiv
-    imagemagick
-    zathura /*libreoffice*/
-    fontpreview
-    djvulibre
-    poppler_utils
-  ] ++ lib.optionals (!config.programs.mpv.enable) [ mpv ];
+  programs.nnn.extraPackages = with pkgs;
+    [
+      # drag & drop
+      xdragon
+      # xembed
+      tabbed
+      # for preview
+      ffmpeg
+      ffmpegthumbnailer
+      nsxiv
+      imagemagick
+      zathura # libreoffice
+      fontpreview
+      djvulibre
+      poppler_utils
+    ] ++ lib.optionals (!config.programs.mpv.enable) [ mpv ];
   xdg.configFile."alsoft.conf".text = ''
     [general]
     hrtf = true
@@ -185,32 +192,37 @@
       wayland-edge-pixels-touch = 0;
       screenshot-format = "webp";
       screenshot-webp-lossless = true;
-      screenshot-directory = "${config.home.homeDirectory}/Pictures/Screenshots/mpv";
+      screenshot-directory =
+        "${config.home.homeDirectory}/Pictures/Screenshots/mpv";
       screenshot-sw = true;
       cache-dir = "${config.xdg.cacheHome}/mpv";
       input-default-bindings = false;
     };
     # profiles = { };
-    package = pkgs.wrapMpv
-      ((pkgs.mpv-unwrapped.override {
-        # webp support
-        ffmpeg = pkgs.ffmpeg-custom;
-      }).overrideAttrs (old: {
-        patches = old.patches or [ ] ++ [
-          (pkgs.fetchpatch {
-            url = "https://github.com/mpv-player/mpv/pull/11648.patch";
-            hash = "sha256-rp5VxVD74dY3w5rKct1BwFbruxpHsGk8zwtkkhdJovM=";
-          })
-        ];
-      }))
-      {
-        scripts = with pkgs.mpvScripts; [
-          thumbnail
-          mpris
-          (subserv.override { port = 1337; secondary = false; })
-          (subserv.override { port = 1338; secondary = true; })
-        ];
-      };
+    package = pkgs.wrapMpv ((pkgs.mpv-unwrapped.override {
+      # webp support
+      ffmpeg = pkgs.ffmpeg-custom;
+    }).overrideAttrs (old: {
+      patches = old.patches or [ ] ++ [
+        (pkgs.fetchpatch {
+          url = "https://github.com/mpv-player/mpv/pull/11648.patch";
+          hash = "sha256-rp5VxVD74dY3w5rKct1BwFbruxpHsGk8zwtkkhdJovM=";
+        })
+      ];
+    })) {
+      scripts = with pkgs.mpvScripts; [
+        thumbnail
+        mpris
+        (subserv.override {
+          port = 1337;
+          secondary = false;
+        })
+        (subserv.override {
+          port = 1338;
+          secondary = true;
+        })
+      ];
+    };
   };
   services.gammastep.enable = true;
   fonts.fontconfig.enable = true;
@@ -227,9 +239,7 @@
       name = "Breeze-Dark";
     };
   };
-  programs.fzf = {
-    enable = true;
-  };
+  programs.fzf = { enable = true; };
 
   # i run this manually instead
   #services.nextcloud-client = {
@@ -250,15 +260,14 @@
     enable = true;
     network.startWhenNeeded = true;
   };
-  services.mpdris2 = {
-    enable = true;
-  };
-  systemd.user.services.kdeconnect = lib.mkIf config.services.kdeconnect.enable {
-    Service = {
-      Restart = lib.mkForce "always";
-      RestartSec = "30";
+  services.mpdris2 = { enable = true; };
+  systemd.user.services.kdeconnect =
+    lib.mkIf config.services.kdeconnect.enable {
+      Service = {
+        Restart = lib.mkForce "always";
+        RestartSec = "30";
+      };
     };
-  };
 
   # some packages require a pointer theme
   home.pointerCursor.gtk.enable = true;

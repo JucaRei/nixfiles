@@ -3,12 +3,12 @@
 
 { pkgs ? (import ./nixpkgs.nix) { } }:
 # { pkgs ? (import ./default.nix) { } }:
-with pkgs; let
+with pkgs;
+let
   nixBin = writeShellScriptBin "nix" ''
     ${nixVersions.stable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '';
-in
-{
+in {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
@@ -25,6 +25,7 @@ in
       duf
       htop
       nixpkgs-fmt
+      nixfmt
       # neofetch
     ];
     shellHook = ''

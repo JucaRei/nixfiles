@@ -13,7 +13,8 @@
         # setupCommands = '''';
         lightdm = {
           enable = true;
-          background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
+          background =
+            pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
           greeters = {
             # mini = {
             #   enable = true;
@@ -43,15 +44,22 @@
           disableWhileTyping = true;
           sendEventsMode = "disabled-on-external-mouse";
         };
-        mouse = {
-          scrollMethod = "button";
-        };
+        mouse = { scrollMethod = "button"; };
       };
 
       resolutions = [
-        { x = 1920; y = 1080; }
-        { x = 1600; y = 900; }
-        { x = 1366; y = 768; }
+        {
+          x = 1920;
+          y = 1080;
+        }
+        {
+          x = 1600;
+          y = 900;
+        }
+        {
+          x = 1366;
+          y = 768;
+        }
       ];
     };
 

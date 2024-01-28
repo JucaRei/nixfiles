@@ -40,7 +40,9 @@
           font = "JetBrains Mono 10";
           line_height = 2;
           markup = "full";
-          format = "%s\n%b";
+          format = ''
+            %s
+            %b'';
           alignment = "left";
           vertical_alignment = "center";
           show_age_threshold = 60;

@@ -6,7 +6,5 @@
     # rusty-man
     # surrealdb
   ];
-  home.sessionPath = [
-    "$HOME/.cargo/bin"
-  ];
+  home.sessionPath = [ "$HOME/.cargo/bin" ];
 }

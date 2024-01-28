@@ -19,8 +19,7 @@ let
   };
 
   cfg = config.within.urxvt;
-in
-{
+in {
   config = {
     home.packages = with pkgs; [
       rxvt-unicode

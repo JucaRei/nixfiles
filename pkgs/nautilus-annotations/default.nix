@@ -1,14 +1,5 @@
-{ stdenv
-, lib
-, fetchFromGitLab
-, glib
-, gnome
-, gtksourceview5
-, libadwaita
-, autoreconfHook
-, wrapGAppsHook
-, pkg-config
-}:
+{ stdenv, lib, fetchFromGitLab, glib, gnome, gtksourceview5, libadwaita
+, autoreconfHook, wrapGAppsHook, pkg-config }:
 
 stdenv.mkDerivation rec {
   pname = "nautilus-annotations";
@@ -22,18 +13,10 @@ stdenv.mkDerivation rec {
     hash = "sha256-BivnmsACnpxdd6FV+ncdDd5ZwtJSSzNExoiCXeXIFkA=";
   };
 
-  nativeBuildInputs = [
-    autoreconfHook
-    glib
-    gnome.nautilus
-    pkg-config
-    wrapGAppsHook
-  ];
+  nativeBuildInputs =
+    [ autoreconfHook glib gnome.nautilus pkg-config wrapGAppsHook ];
 
-  buildInputs = [
-    libadwaita
-    gtksourceview5
-  ];
+  buildInputs = [ libadwaita gtksourceview5 ];
 
   preConfigure = ''
     ./bootstrap

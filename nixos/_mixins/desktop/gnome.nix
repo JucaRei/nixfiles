@@ -1,12 +1,9 @@
-#
 # Gnome configuration
 #
 
 { config, lib, pkgs, ... }: {
 
-  imports = [
-    ../apps/terminal/tilix.nix
-  ];
+  imports = [ ../apps/terminal/tilix.nix ];
 
   programs = {
     dconf.enable = true;
@@ -15,9 +12,7 @@
       enable = true;
       package = pkgs.gnomeExtensions.gsconnect;
     };
-    calls = {
-      enable = false;
-    };
+    calls = { enable = false; };
     gnupg.agent.pinentryFlavor = "gnome3";
   };
 
@@ -30,36 +25,24 @@
       displayManager = {
         gdm = {
           enable = true; # Display Manager
-          settings = {
-            greeter.IncludeAll = true;
-          };
-          wayland = false; #only x11
+          settings = { greeter.IncludeAll = true; };
+          wayland = false; # only x11
         };
         defaultSession = "gnome";
       };
       desktopManager.gnome = {
         enable = true; # Window Manager
-        extraGSettingsOverridePackages = [
-          pkgs.nautilus-open-any-terminal
-        ];
+        extraGSettingsOverridePackages = [ pkgs.nautilus-open-any-terminal ];
       };
     };
-    udev.packages = with pkgs; [
-      gnome.gnome-settings-daemon
-    ];
+    udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
     gnome = {
       gnome-user-share.enable = true;
       gnome-online-accounts.enable = false;
       gnome-initial-setup.enable = false;
-      gnome-browser-connector = {
-        enable = false;
-      };
-      gnome-remote-desktop = {
-        enable = true;
-      };
-      sushi = {
-        enable = true;
-      };
+      gnome-browser-connector = { enable = false; };
+      gnome-remote-desktop = { enable = true; };
+      sushi = { enable = true; };
     };
   };
 
@@ -100,12 +83,11 @@
     ]);
 
     sessionVariables = {
-      NAUTILUS_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
+      NAUTILUS_EXTENSION_DIR =
+        "${config.system.path}/lib/nautilus/extensions-4";
     };
 
-    pathsToLink = [
-      "/share/nautilus-python/extensions"
-    ];
+    pathsToLink = [ "/share/nautilus-python/extensions" ];
   };
 
   xdg = {
@@ -114,19 +96,10 @@
       xdgOpenUsePortal = true;
       # extraPortals = with pkgs; lib.mkForce [ xdg-desktop-portal-gnome ];
       config = {
-        common = {
-          default = [
-            "gnome"
-          ];
-        };
+        common = { default = [ "gnome" ]; };
         gnome = {
-          default = [
-            "gnome"
-            "gtk"
-          ];
-          "org.freedesktop.impl.portal.Secret" = [
-            "gnome-keyring"
-          ];
+          default = [ "gnome" "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
         };
       };
     };

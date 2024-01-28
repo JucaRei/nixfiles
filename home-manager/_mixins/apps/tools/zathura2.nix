@@ -1,8 +1,4 @@
-{ pkgs
-, config
-, lib
-, ...
-}: {
+{ pkgs, config, lib, ... }: {
   programs.zathura = {
     enable = true;
     options = {
@@ -50,8 +46,6 @@
 
       # use CLIPBOARD, not PRIMARY
       selection-clipboard = "clipboard";
-
-
 
       # recolor-lightcolor = lib.mkForce "rgba(0,0,0,0)";
       # default-bg = lib.mkForce "rgba(0,0,0,0.7)";

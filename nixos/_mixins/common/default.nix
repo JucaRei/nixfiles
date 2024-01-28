@@ -46,14 +46,9 @@
   ### Default Boot Options ###
   ############################
   boot = {
-    initrd = {
-      verbose = lib.mkDefault true;
-    };
+    initrd = { verbose = lib.mkDefault true; };
     consoleLogLevel = 3;
-    kernelModules = [
-      "kvm-intel"
-      "tcp_bbr"
-    ];
+    kernelModules = [ "kvm-intel" "tcp_bbr" ];
     kernelParams = [
       "loglevel=3"
       # "rd.systemd.show_status=false"
@@ -96,12 +91,7 @@
         # "vm.dirty_ratio" = 40; # default 20, maximum ratio, block process when reached
       };
     };
-    supportedFilesystems = [
-      "ext4"
-      "btrfs"
-      "exfat"
-      "ntfs"
-    ];
+    supportedFilesystems = [ "ext4" "btrfs" "exfat" "ntfs" ];
   };
 
   ##############################
@@ -110,41 +100,38 @@
 
   environment = {
     # Eject nano and perl from the system
-    defaultPackages = with pkgs; lib.mkForce [
-      gitMinimal
-      home-manager
-      micro
-      rsync
-    ];
-    systemPackages = with pkgs; [
-      agenix
-      pciutils
-      psmisc
-      unzip
-      binutils
-      curl
-      duf
-      htop
-      lshw
-      inspect
+    defaultPackages = with pkgs;
+      lib.mkForce [ gitMinimal home-manager micro rsync ];
+    systemPackages = with pkgs;
+      [
+        agenix
+        pciutils
+        psmisc
+        unzip
+        binutils
+        curl
+        duf
+        htop
+        lshw
+        inspect
 
-      # Selection of sysadmin tools that can come in handy
-      dosfstools
-      gptfdisk
-      iputils
-      usbutils
-      utillinux
+        # Selection of sysadmin tools that can come in handy
+        dosfstools
+        gptfdisk
+        iputils
+        usbutils
+        utillinux
 
-      whois
-      #unstable.nix-index
-      #unstable.nix-prefetch-git
-      # cifs-utils
-    ] ++ (with pkgs.unstable; [
-      # Minimal for nix code
-      nil
-      nixpkgs-fmt
-      nixpkgs-lint
-    ]);
+        whois
+        #unstable.nix-index
+        #unstable.nix-prefetch-git
+        # cifs-utils
+      ] ++ (with pkgs.unstable; [
+        # Minimal for nix code
+        nil
+        nixpkgs-fmt
+        nixpkgs-lint
+      ]);
     variables = {
       # use Wayland where possible (electron)
       NIXOS_OZONE_WL = "1";
@@ -160,17 +147,11 @@
 
   programs = {
     #   fish.enable = true;
-    fuse = {
-      userAllowOther = true;
-    };
+    fuse = { userAllowOther = true; };
 
-    command-not-found = {
-      enable = lib.mkDefault false;
-    };
+    command-not-found = { enable = lib.mkDefault false; };
 
-    mtr = {
-      enable = lib.mkDefault false;
-    };
+    mtr = { enable = lib.mkDefault false; };
 
     # Minimal
     nix-ld = {
@@ -211,9 +192,7 @@
   services = {
 
     # Keeps the system timezone up-to-date based on the current location
-    automatic-timezoned = {
-      enable = true;
-    };
+    automatic-timezoned = { enable = true; };
 
     udev = {
       enable = true;
@@ -231,7 +210,6 @@
     #   echo -1 > /sys/module/usbcore/parameters/autosuspend
     # '';
 
-
     # broken
     envfs.enable = lib.mkForce false; # populate /usr/bin for non-nix binaries
   };
@@ -240,11 +218,7 @@
     # Enables simultaneous use of processor threads.
     allowSimultaneousMultithreading = true;
 
-    pam = {
-      mount = {
-        enable = true;
-      };
-    };
+    pam = { mount = { enable = true; }; };
   };
 
   systemd = lib.mkDefault {

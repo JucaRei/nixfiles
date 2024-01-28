@@ -28,8 +28,7 @@ let
   #   })
   #   { enable32bits = false; }).auto;
 
-in
-{
+in {
   imports = [
     ### Enable immutable vscode settings
     ../../config/vscode/settings.nix
@@ -57,8 +56,8 @@ in
       mutableExtensionsDir = true;
       enableUpdateCheck = false;
 
-      extensions =
-        with pkgs.vscode-extensions; [
+      extensions = with pkgs.vscode-extensions;
+        [
           jnoortheen.nix-ide
           # brettm12345.nixfmt-vscode
           oderwat.indent-rainbow
@@ -89,7 +88,7 @@ in
             publisher = "ms-azuretools";
             # version = "1.28.0";
             # sha256 = "sha256-ACaVwRTN4lu97GDGzxyzX/O10p6fNT3FNLne/todrFo=";
-            version = "v1.22.2"; ### Downgrade make it work with podman
+            version = "v1.22.2"; # ## Downgrade make it work with podman
             sha256 = "sha256-sRvd9M/gF4kh4qWxtS1xKKIvqg9hRJpRl/p/FYu2TI8=";
           }
           # {
@@ -147,7 +146,7 @@ in
           {
             # name = "vscode-projects";
             name = "l13-projects";
-            publisher = "L13RARY"; #L13RARY.l13-projects
+            publisher = "L13RARY"; # L13RARY.l13-projects
             # publisher = "l13";
             version = "1.1.1";
             sha256 = "sha256-HVlnHzIxRZbTXu0zg9DXUAXaydmQaIt9H4ZYmmrniR0=";

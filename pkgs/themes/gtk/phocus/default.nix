@@ -1,9 +1,4 @@
-{ stdenvNoCC
-, fetchFromGitHub
-, nodePackages
-, colors
-,
-}:
+{ stdenvNoCC, fetchFromGitHub, nodePackages, colors, }:
 stdenvNoCC.mkDerivation rec {
   pname = "phocus";
   version = "0cf0eb35a927bffcb797db8a074ce240823d92de";
@@ -15,11 +10,7 @@ stdenvNoCC.mkDerivation rec {
     sha256 = "sha256-URuoDJVRQ05S+u7mkz1EN5HWquhTC4OqY8MqAbl0crk=";
   };
 
-  patches = [
-    ./npm.diff
-    ./gradients.diff
-    ./substitute.diff
-  ];
+  patches = [ ./npm.diff ./gradients.diff ./substitute.diff ];
 
   postPatch = ''
     substituteInPlace scss/gtk-3.0/_colors.scss \

@@ -1,8 +1,8 @@
 _:
 let
-  defaultBtrfsOpts = [ "defaults" "compress=zstd:1" "ssd" "noatime" "nodiratime" ];
-in
-{
+  defaultBtrfsOpts =
+    [ "defaults" "compress=zstd:1" "ssd" "noatime" "nodiratime" ];
+in {
   environment.etc = {
     "crypttab".text = ''
       data  /dev/disk/by-partlabel/data  /etc/data.keyfile
@@ -65,7 +65,13 @@ in
                   };
                   "@swap" = {
                     mountpoint = "/.swap";
-                    mountOptions = [ "defaults" "x-mount.mkdir" "ssd" "noatime" "nodiratime" ];
+                    mountOptions = [
+                      "defaults"
+                      "x-mount.mkdir"
+                      "ssd"
+                      "noatime"
+                      "nodiratime"
+                    ];
                   };
                 };
               };

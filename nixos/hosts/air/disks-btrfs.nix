@@ -1,9 +1,18 @@
 _:
 let
   # "subvol=@"
-  options = [ "rw" "noatime" "nodiratime" "ssd" "nodatacow" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
-in
-{
+  options = [
+    "rw"
+    "noatime"
+    "nodiratime"
+    "ssd"
+    "nodatacow"
+    "compress-force=zstd:15"
+    "space_cache=v2"
+    "commit=120"
+    "discard=async"
+  ];
+in {
   disko.devices = {
     disk = {
       sda = {

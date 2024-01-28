@@ -1,4 +1,5 @@
-{ config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs, stateVersion, username, hostid, ... }: {
+{ config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs
+, stateVersion, username, hostid, ... }: {
   # Import host specific boot and hardware configurations.
   # Only include desktop components if one is supplied.
   # - https://nixos.wiki/wiki/Nix_Language:_Tips_%26_Tricks#Coercing_a_relative_path_with_interpolated_variables_to_an_absolute_path_.28for_imports.29
@@ -19,10 +20,10 @@
   ]
   # ++ lib.optional (builtins.pathExists (./. + "/${hostname}/disks.nix")) ./${hostname}/disks.nix
   # ++ lib.optional (builtins.isString desktop) ./_mixins/desktop
-  ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-  ++ lib.optional (desktop != null) ./_mixins/desktop
-  ++ lib.optional (hostname != "rasp3" || "air") ./_mixins/services/tools/kmscon.nix;
-
+    ++ lib.optional (builtins.pathExists (./. + "/users/${username}"))
+    ./users/${username} ++ lib.optional (desktop != null) ./_mixins/desktop
+    ++ lib.optional (hostname != "rasp3" || "air")
+    ./_mixins/services/tools/kmscon.nix;
 
   nixpkgs = {
     # You can add overlays here
@@ -75,7 +76,8 @@
           '';
         };
 
-        mpv = super.mpv.override { scripts = with super.mpvScripts; [ mpris ]; };
+        mpv =
+          super.mpv.override { scripts = with super.mpvScripts; [ mpris ]; };
         # vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
         deadbeef = super.deadbeef.override { wavpackSupport = true; };
         deadbeef-with-plugins = super.deadbeef-with-plugins.override {
@@ -91,10 +93,7 @@
       # Accept the joypixels license
       joypixels.acceptLicense = true;
       allowUnsupportedSystem = true;
-      permittedInsecurePackages = [
-        "openssl-1.1.1w"
-        "electron-19.1.9"
-      ];
+      permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" ];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       # allowUnfreePredicate = _: true;
@@ -140,7 +139,8 @@
 
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
+      config.nix.registry;
 
     optimise.automatic = true;
     package = pkgs.unstable.nix;
@@ -156,7 +156,6 @@
       keep-outputs = true;
       keep-going = lib.mkForce true;
 
-
       experimental-features = [
         "auto-allocate-uids"
         "nix-command"
@@ -166,7 +165,8 @@
       ];
       # Allow to run nix
       allowed-users = [ "${username}" "wheel" ];
-      builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
+      builders-use-substitutes =
+        true; # Avoid copying derivations unnecessary over SSH.
 
       substituters = [
         #   "https://nix-community.cachix.org"
@@ -217,11 +217,8 @@
     hostName = hostname;
     hostId = hostid;
     useDHCP = lib.mkDefault true;
-    firewall = {
-      enable = true;
-    };
+    firewall = { enable = true; };
   };
-
 
   system = {
     activationScripts = {
@@ -268,7 +265,7 @@
       flags = [
         "--update-input"
         "nixpkgs"
-        "-L" #print build logs
+        "-L" # print build logs
       ];
       dates = "monthly";
       randomizedDelaySec = "45min";
@@ -379,9 +376,7 @@
       enable = true;
       implementation = lib.mkDefault "dbus";
     };
-    udev = {
-      enable = true;
-    };
+    udev = { enable = true; };
   };
 
   environment = {
@@ -396,15 +391,12 @@
     # Create file /etc/current-system-packages with List of all Packages
     etc = {
       "current-system-packages" = {
-        text =
-          let
-            packages = builtins.map (p: "${p.name}")
-              config.environment.systemPackages;
-            sortedUnique =
-              builtins.sort builtins.lessThan (lib.unique packages);
-            formatted = builtins.concatStringsSep "\n" sortedUnique;
-          in
-          formatted;
+        text = let
+          packages =
+            builtins.map (p: "${p.name}") config.environment.systemPackages;
+          sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+          formatted = builtins.concatStringsSep "\n" sortedUnique;
+        in formatted;
       };
     };
   };

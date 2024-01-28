@@ -1,8 +1,7 @@
 # MacbookPro 4,1 early 2009
 # nvidia 8600 gt
 
-{ inputs, lib, pkgs, config, ... }:
-{
+{ inputs, lib, pkgs, config, ... }: {
   imports = [
     #inputs.nixos-hardware.nixosModules.common-cpu-intel
     #inputs.nixos-hardware.nixosModules.common-pc-laptop
@@ -31,7 +30,17 @@
 
   boot = {
     initrd = {
-      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ata_piix" "ahci" "firewire_ohci" "usbhid" "usb_storage" "sd_mod" "sr_mod" ];
+      availableKernelModules = [
+        "uhci_hcd"
+        "ehci_pci"
+        "ata_piix"
+        "ahci"
+        "firewire_ohci"
+        "usbhid"
+        "usb_storage"
+        "sd_mod"
+        "sr_mod"
+      ];
       # kernelModules = [ "b43" "bcm5974" ];
     };
     kernelModules = [ "kvm-intel" "applesmc" "bcm5974" ];
@@ -40,7 +49,11 @@
     # kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
     # kernelPackages = lib.mkDefault pkgs.linuxPackages_5_15;
     #kernelParams = [ "intel_idle.max_cstate=1" "hid_apple.iso_layout=0" "acpi_backlight=vendor" "acpi_mask_gpe=0x15" ];
-    kernelParams = [ "intel_idle.max_cstate=1" "acpi_backlight=vendor" "acpi_mask_gpe=0x15" ];
+    kernelParams = [
+      "intel_idle.max_cstate=1"
+      "acpi_backlight=vendor"
+      "acpi_mask_gpe=0x15"
+    ];
     loader.grub = {
       gfxpayloadBios = "1920x1200";
       theme = pkgs.cyberre;
@@ -99,7 +112,8 @@
 
   powerManagement.cpuFreqGovernor = "performance";
 
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode =
+    lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

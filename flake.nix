@@ -88,9 +88,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixgl = {
+    nixGL = {
       url = "github:guibou/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.flake-utils.follows = "agenix-cli/flake-utils";
     };
 
     # Neovim

@@ -3,8 +3,7 @@
 let
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   librewolf = (nixGL pkgs.librewolf);
-in
-{
+in {
   # Module installing librewolf as default browser
   # home.packages = [ pkgs.librewolf ];
 
@@ -35,7 +34,6 @@ in
 
   # defaultPref("webgl.disabled",true);
   # defaultPref("gfx.webrender.software.opengl",false);
-
 
   home.file.".librewolf/librewolf.overrides.cfg".text = ''
     defaultPref("font.name.serif.x-western");

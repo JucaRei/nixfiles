@@ -3,8 +3,7 @@
 let
   xacpi = "${acpi}/bin/acpi";
   notify = "${libnotify}/bin/notify-send";
-in
-writeShellScriptBin "battery-level-check" ''
+in writeShellScriptBin "battery-level-check" ''
   check_battery_level() {
     PERCENT=`${xacpi} | cut -d , -f2`
     PERCENT=''${PERCENT%\%}

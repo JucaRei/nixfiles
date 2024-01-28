@@ -8,8 +8,8 @@
   # tidal-dl = pkgs.callPackage ./music/tidal-dl { };
   # spotdl = pkgs.callPackage ./music/spotify-dl { };
 
-  sddm-astronaut-theme = pkgs.libsForQt5.callPackage ./sddm-theme/sddm-astronaut-theme.nix { };
-
+  sddm-astronaut-theme =
+    pkgs.libsForQt5.callPackage ./sddm-theme/sddm-astronaut-theme.nix { };
 
   # Browsers
   thorium-browser = pkgs.callPackage ./browsers/thorium-browser { };
@@ -33,7 +33,8 @@
   # Utils
   vv = pkgs.callPackage ./utils/vv { };
   advmvcp = pkgs.callPackage ./utils/advmvcp { };
-  icloud-photo-downloader = pkgs.callPackage ./utils/icloud-photo-downloader { };
+  icloud-photo-downloader =
+    pkgs.callPackage ./utils/icloud-photo-downloader { };
   youtube_tui = pkgs.callPackage ./utils/youtube-tui { };
   lutgenn = pkgs.callPackage ./utils/lutgen { };
   cloneit = pkgs.callPackage ./utils/cloneit { };
@@ -62,7 +63,8 @@
   nautilus-annotations = pkgs.callPackage ./nautilus-annotations { };
 
   # mouse
-  breeze-hacked-cursor = pkgs.callPackage ./themes/mouse/breeze-hacked-cursor { };
+  breeze-hacked-cursor =
+    pkgs.callPackage ./themes/mouse/breeze-hacked-cursor { };
 
   # Icons
   colloid = pkgs.callPackage ./themes/icons/colloid.nix { };

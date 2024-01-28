@@ -1,8 +1,6 @@
-{ desktop, pkgs, username, ... }:
-{
-  environment.systemPackages = with pkgs; [ ] ++ lib.optionals (desktop != null) [
-    polychromatic
-  ];
+{ desktop, pkgs, username, ... }: {
+  environment.systemPackages = with pkgs;
+    [ ] ++ lib.optionals (desktop != null) [ polychromatic ];
 
   hardware = {
     openrazer = {

@@ -8,12 +8,6 @@
         flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
       '';
     };
-    environment = {
-      sessionVariables = {
-        XDG_DATA_DIRS = [
-          "/usr/share"
-        ];
-      };
-    };
+    environment = { sessionVariables = { XDG_DATA_DIRS = [ "/usr/share" ]; }; };
   };
 }

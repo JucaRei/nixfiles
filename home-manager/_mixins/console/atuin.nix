@@ -4,9 +4,7 @@
     enableBashIntegration = true;
     enableFishIntegration = true;
     enableZshIntegration = true;
-    flags = [
-      "--disable-up-arrow"
-    ];
+    flags = [ "--disable-up-arrow" ];
     package = pkgs.unstable.atuin;
     settings = {
       auto_sync = true;

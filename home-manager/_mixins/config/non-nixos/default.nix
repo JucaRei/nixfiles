@@ -1,10 +1,8 @@
 { config, lib, pkgs, sources, nixpkgs, ... }:
 
 with lib;
-let
-  cfg = config.modules.nonNixOs;
-in
-{
+let cfg = config.modules.nonNixOs;
+in {
   options.modules.nonNixOs = {
     enable = mkOption {
       default = false;
@@ -27,12 +25,10 @@ in
       # tmux
     ];
 
-
     home.file.".config/nix/nix.conf".text = ''
       experimental-features = nix-command flakes
     '';
-    systemd.user.tmpfiles.rules = [
-      "L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}"
-    ];
+    systemd.user.tmpfiles.rules =
+      [ "L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}" ];
   };
 }

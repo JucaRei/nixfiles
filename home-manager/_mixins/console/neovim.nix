@@ -14,9 +14,7 @@
 # }
 
 { pkgs, nixvim, inputs, ... }: {
-  imports = [
-    inputs.nixvim.homeManagerModules.nixvim
-  ];
+  imports = [ inputs.nixvim.homeManagerModules.nixvim ];
   programs = {
     nixvim = {
       enable = true;
@@ -26,7 +24,8 @@
       options = {
         ### tab/indentation
         tabstop = 2; # sets the numbers of spaces of tab char
-        shiftwidth = 2; # set the numbers of spaces of each number of indentation
+        shiftwidth =
+          2; # set the numbers of spaces of each number of indentation
         expandtab = true; # convert tabs into spaces
         softtabstop = 2; # insert mode how many spaces are in tab
         wrap = false; # long lines of code
@@ -61,12 +60,11 @@
         iskeyword = ":append('-')"; # ignore - and get full keyword
         mouse = ":append('a')"; # mouse is always available
         modifiable = true; # can edit the buffer you are in
-        guicursor = "n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175";
+        guicursor =
+          "n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175";
       };
 
-      colorschemes = {
-        onedark.enable = true;
-      };
+      colorschemes = { onedark.enable = true; };
 
       # clipboard = {
       #   register = "unnamedplus";
@@ -159,9 +157,7 @@
           indent = true;
           incrementalSelection.enable = true;
         };
-        treesitter-refactor = {
-          enable = true;
-        };
+        treesitter-refactor = { enable = true; };
         nvim-colorizer.enable = true;
         neorg = {
           enable = true;

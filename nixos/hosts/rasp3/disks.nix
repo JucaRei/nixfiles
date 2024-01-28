@@ -4,8 +4,7 @@
 let
   #defaultXfsOpts = [ "defaults" "relatime" "nodiratime" ];
   defaultExt4Opts = [ "defaults" "noatime" "nodiratime" "commit=60" ];
-in
-{
+in {
   #device = "/dev/sda";
   #type = "msdos";
   #disko.devices = {

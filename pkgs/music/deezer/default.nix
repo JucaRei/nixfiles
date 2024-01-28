@@ -1,18 +1,7 @@
 # { stdenv, lib, pkgs, sources, fetchurl, fetchFromGitHub, udev, makeDesktopItem, makeBinaryWrapper, electron_13, ... }:
 
-{ copyDesktopItems
-, electron_13
-, fetchFromGitHub
-, fetchurl
-, pkgs
-, lib
-, makeBinaryWrapper
-, makeDesktopItem
-, nodePackages
-, p7zip
-, stdenv
-, udev
-}:
+{ copyDesktopItems, electron_13, fetchFromGitHub, fetchurl, pkgs, lib
+, makeBinaryWrapper, makeDesktopItem, nodePackages, p7zip, stdenv, udev }:
 # see:
 # - https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=deezer
 # - https://github.com/Shawn8901/nix-configuration/blob/main/packages/deezer/default.nix
@@ -38,13 +27,13 @@ let
       knownVulnerabilities = [ ];
     };
   });
-in
-stdenv.mkDerivation rec {
+in stdenv.mkDerivation rec {
   pname = "deezer-desktop";
   inherit version;
 
   src = fetchurl {
-    url = "https://www.deezer.com/desktop/download/artifact/win32/x86/${version}";
+    url =
+      "https://www.deezer.com/desktop/download/artifact/win32/x86/${version}";
     sha256 = "sha256-oUebThUpfI0poL65kG9kesarnGqOSQFycCgSYueVlQQ=";
   };
 
@@ -77,7 +66,7 @@ stdenv.mkDerivation rec {
     runHook preUnpack
 
     # Extract app from installer
-    7z x -so $src "\''$PLUGINSDIR/app-32.7z" > app-32.7z
+    7z x -so $src "\$PLUGINSDIR/app-32.7z" > app-32.7z
     # Extract app archive
     7z x -y -bsp0 -bso0 app-32.7z
 
@@ -113,7 +102,6 @@ stdenv.mkDerivation rec {
 
     runHook postBuild
   '';
-
 
   installPhase = ''
     runHook preInstall

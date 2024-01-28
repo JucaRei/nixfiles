@@ -1,5 +1,3 @@
 { pkgs, ... }:
 
-pkgs.mkShellNoCC {
-  nativeBuildInputs = with pkgs; [ nodejs ];
-}
+pkgs.mkShellNoCC { nativeBuildInputs = with pkgs; [ nodejs ]; }

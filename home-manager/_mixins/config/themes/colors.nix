@@ -23,12 +23,12 @@
 
     dracula = {
       scheme = "Dracula";
-      base00 = "282936"; #background
+      base00 = "282936"; # background
       base01 = "3a3c4e";
       base02 = "4d4f68";
       base03 = "626483";
       base04 = "62d6e8";
-      base05 = "e9e9f4"; #foreground
+      base05 = "e9e9f4"; # foreground
       base06 = "f1f2f8";
       base07 = "f7f7fb";
       base08 = "ea51b2";

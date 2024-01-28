@@ -38,8 +38,7 @@ let
     echo -e "\e[33m[\e[32m✔\e[33m] User profile pictures set\e[0m\n"
   '';
 
-in
-{
+in {
   config = {
     system.activationScripts.createProfilePictures = createProfilePictures;
 

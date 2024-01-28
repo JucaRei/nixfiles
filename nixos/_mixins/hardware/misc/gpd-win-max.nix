@@ -1,6 +1,7 @@
 { lib, ... }: {
   # Many GPD devices uses a tablet displays that are mounted rotated 90° counter-clockwise
-  boot.kernelParams = [ "fbcon=rotate:1" "video=eDP-1:panel_orientation=right_side_up" ];
+  boot.kernelParams =
+    [ "fbcon=rotate:1" "video=eDP-1:panel_orientation=right_side_up" ];
 
   # Required for grub to properly display the boot menu.
   boot.loader.grub.gfxmodeEfi = lib.mkDefault "800x1280x32";
