@@ -67,10 +67,10 @@ with lib.hm.gvariant; {
         "TERM" = "xterm";
         GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
         "_JAVA_AWT_WM_NONREPARENTING" = "1";
-        XDG_CACHE_HOME = "\${HOME}/.cache";
-        XDG_CONFIG_HOME = "\${HOME}/.config";
-        XDG_BIN_HOME = "\${HOME}/.local/bin";
-        XDG_DATA_HOME = "\${HOME}/.local/share";
+        # XDG_CACHE_HOME = "\${HOME}/.cache";
+        # XDG_CONFIG_HOME = "\${HOME}/.config";
+        # XDG_BIN_HOME = "\${HOME}/.local/bin";
+        # XDG_DATA_HOME = "\${HOME}/.local/share";
       };
       sessionPath = [ "$HOME/.local/bin" ];
 

@@ -59,11 +59,11 @@ in {
     mpv = {
       enable = true;
       package = (nixGL mpvgl);
-      bindings = {
-        "CTRL+i" = "vf toggle vapoursynth=${
-            ../../config/mpv/vapoursynth/motion-based-interpolation.vpy
-          }";
-      };
+      # bindings = {
+      #   "CTRL+i" = "vf toggle vapoursynth=${
+      #       ../../config/mpv/vapoursynth/motion-based-interpolation.vpy
+      #     }";
+      # };
     };
   };
 
@@ -241,6 +241,11 @@ in {
           audio-spdif = 'ac3,dts,eac3,dts-hd,truehd'
           af = 'acompressor=ratio=4,loudnorm'
           audio-delay = '+0.084' #Useful if you're watching with your headphones on PC, but output the video on your Television with a long HDMI cable (counter the delay)
+
+          ### Bindings
+          "CTRL+i" = "vf toggle vapoursynth=${
+            ../../config/mpv/vapoursynth/motion-based-interpolation.vpy
+          }"
         '';
       };
       ".config/mpv/profiles.conf" = {

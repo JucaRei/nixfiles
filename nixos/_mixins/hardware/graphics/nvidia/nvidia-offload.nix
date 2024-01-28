@@ -51,6 +51,7 @@ in {
         finegrained = true;
       };
     };
+    opengl.extraPackages = with pkgs; [ nvidia-vaapi-driver ];
   };
   services = {
     xserver = {
@@ -70,9 +71,11 @@ in {
         "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
       GBM_BACKEND = "nvidia-drm";
       # GBM_BACKEND = "nvidia";
-      LIBVA_DRIVER_NAME = lib.mkForce "nvidia-drm";
+      # LIBVA_DRIVER_NAME = lib.mkForce "nvidia-drm";
+      LIBVA_DRIVER_NAME = "nvidia";
       # LIBVA_DRIVER_NAME = lib.mkForce "nvidia";
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      WLR_NO_HARDWARE_CURSORS = "1";
       NVD_BACKEND = "direct";
       # WLR_RENDERER = "vulkan";
       __GL_GSYNC_ALLOWED = "0";

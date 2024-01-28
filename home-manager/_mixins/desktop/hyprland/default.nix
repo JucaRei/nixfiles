@@ -75,6 +75,7 @@ in {
     sessionVariables = {
       POLKIT_AUTH_AGENT =
         "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+
       "DIRENV_LOG_FORMAT" = "";
       # "LIBVA_DRIVE_NAME" = if (hostname != "zion" || "air") then "nvidia" else "iHD";
       "LIBVA_DRIVE_NAME" = "nvidia";
@@ -90,10 +91,12 @@ in {
       # "MOZ_DISABLE_RDD_SANDBOX" = "1";
       "MOZ_ENABLE_WAYLAND" = "1";
       "disable_features" = "WaylandOverlayDelegation";
-      "enable_features" = "UseOzonePlatform,WaylandWindowDecorations";
+      "enable_features" = "WaylandWindowDecorations";
       "ozone_platform" = "wayland";
       "ozone_platform_hint" = "auto";
       "LIBSEAT_BACKEND" = "logind";
+
+      WEBKIT_DISABLE_COMPOSITING_MODE = 1;
 
       # nitro
       "VAAPI_MPEG4_ENABLED" = "true";
