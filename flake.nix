@@ -67,10 +67,10 @@
     #   url = "https://flakehub.com/f/eza-community/eza/0.14.0.tar.gz";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    # fh = {
-    #   url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    fh = {
+      url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.2.0.tar.gz";
     # nix-snapd = {
     #   url = "https://flakehub.com/f/io12/nix-snapd/0.1.29.tar.gz";
