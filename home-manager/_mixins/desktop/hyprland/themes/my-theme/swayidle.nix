@@ -22,19 +22,23 @@ let
   '';
 in {
   config = {
-    xdg.configFile."swayidle/config".text = ''
-      timeout ${toString lockTime} '${actionLock}'
-    '' +
-      # After 10 seconds of locked, mute mic
-      (mkEvent 10 "${pactl} set-sink-mute @DEFAULT_SINK@ yes"
-        "${pactl} set-sink-mute @DEFAULT_SINK@ no") +
-      # Hyprland - Turn off screen (DPMS)
-      lib.optionalString config.wayland.windowManager.hyprland.enable
-      (mkEvent 40 "${hyprctl} dispatch dpms off" "${hyprctl} dispatch dpms on")
-      +
-      # Sway - Turn off screen (DPMS)
-      lib.optionalString config.wayland.windowManager.hyprland.enable
-      (mkEvent 40 "${swaymsg} 'output * dpms off'"
-        "${swaymsg} 'output * dpms on'");
+    xdg = {
+      configFile = {
+        "swayidle/config".text = ''
+          timeout ${toString lockTime} '${actionLock}'
+        '' +
+          # After 10 seconds of locked, mute mic
+          (mkEvent 10 "${pactl} set-sink-mute @DEFAULT_SINK@ yes"
+            "${pactl} set-sink-mute @DEFAULT_SINK@ no") +
+          # Hyprland - Turn off screen (DPMS)
+          # lib.optionalString config.wayland.windowManager.hyprland.enable
+          (mkEvent 40 "${hyprctl} dispatch dpms off"
+            "${hyprctl} dispatch dpms on") +
+          # Sway - Turn off screen (DPMS)
+          # lib.optionalString config.wayland.windowManager.hyprland.enable
+          (mkEvent 40 "${swaymsg} 'output * dpms off'"
+            "${swaymsg} 'output * dpms on'");
+      };
+    };
   };
 }

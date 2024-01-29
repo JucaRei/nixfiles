@@ -47,7 +47,7 @@
       gamma = "0.9";
       temperature = {
         day = 6500;
-        night = 4200;
+        night = 4000;
       };
     };
   };

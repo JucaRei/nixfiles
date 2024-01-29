@@ -30,6 +30,9 @@
       flake = false;
     };
 
+    # For accessing `deploy-rs`'s utility Nix functions
+    deploy-rs.url = "github:serokell/deploy-rs";
+
     agenix = {
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -223,7 +226,7 @@
   };
 
   outputs = { self, nixpkgs, nur, disko, devenv, home-manager, nixgl
-    , wrapper-manager, nix-formatter-pack, nixos-hardware, nix-gaming
+    , wrapper-manager, nix-formatter-pack, nixos-hardware, nix-gaming, deploy-rs
     , vscode-server, plasma-manager, fh, flatpaks
     # , eza
     # , nixvim

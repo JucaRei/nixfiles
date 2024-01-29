@@ -226,7 +226,8 @@ in {
     ../../../../apps/terminal/foot.nix
     ../../../../apps/tools/imv.nix
     # ../../../../apps/tools/zathura.nix
-    ../../../../apps/tools/zathura2.nix
+    ../../../../apps/documents/zathura.nix
+    # ../../../../apps/tools/zathura2.nix
 
     # ../../../../apps/tools/mailspring.nix
     ./dunst.nix
@@ -258,8 +259,7 @@ in {
               "dunst"
               "${change-brightness}/bin/change-brightness"
               "xfce4-power-manager"
-              # Load cliphist history
-              "wl-paste --watch cliphist store"
+              "wl-paste --watch cliphist store" # Load cliphist history
               "${launch_waybar}/bin/launch_waybar"
               # "${waybar-reload}/bin/waybar-reload"
               # "hyprctl setcursor Bibata-Modern-Ice 24"
@@ -761,7 +761,7 @@ in {
           swww # wallpaper daemon for wayland, controlled at runtime
           grim # Grab images from a Wayland compositor
           swappy # screenshot resizer
-          swayidle # Idle management daemon for Wayland
+          # swayidle # Idle management daemon for Wayland
           # blueman
           font-search
           # wdisplays
