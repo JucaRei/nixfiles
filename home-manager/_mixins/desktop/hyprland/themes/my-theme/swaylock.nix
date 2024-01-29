@@ -1,6 +1,7 @@
 { pkgs, lib, ... }:
 let ui = import ./wlogout/ui.nix { };
 in {
+  imports = [ ./swayidle.nix ];
   programs.swaylock = {
     enable = true;
     # package = pkgs.unstable.swaylock-effects;
@@ -29,29 +30,29 @@ in {
     };
   };
 
-  services.swayidle = {
-    enable = true;
-    events = [
-      {
-        event = "before-sleep";
-        command = "${pkgs.swaylock-effects}/bin/swaylock -fF";
-      }
-      {
-        event = "lock";
-        command = "${pkgs.swaylock-effects}/bin/swaylock -fF";
-      }
-    ];
-    timeouts = [
-      {
-        timeout = 30;
-        command = "swaylock";
-      }
-      {
-        timeout = 600;
-        command = "systemctl suspend";
-      }
-    ];
-  };
+  # services.swayidle = {
+  #   enable = true;
+  #   events = [
+  #     {
+  #       event = "before-sleep";
+  #       command = "${pkgs.swaylock-effects}/bin/swaylock -fF";
+  #     }
+  #     {
+  #       event = "lock";
+  #       command = "${pkgs.swaylock-effects}/bin/swaylock -fF";
+  #     }
+  #   ];
+  #   timeouts = [
+  #     {
+  #       timeout = 30;
+  #       command = "swaylock";
+  #     }
+  #     {
+  #       timeout = 600;
+  #       command = "systemctl suspend";
+  #     }
+  #   ];
+  # };
 
   # services.swayidle =
   #   let

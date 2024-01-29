@@ -219,6 +219,8 @@ let
     echo "Color $COLOR copied to clipboard"
   '';
 
+  swayidle = "${pkgs.swayidle}/bin/swayidle";
+
 in {
   imports = [
     ../../../../apps/terminal/foot.nix
@@ -264,7 +266,8 @@ in {
               "swww query || swww init"
               "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               # "swayidle -w timeout 300 'systemctl suspend' before-sleep '${myswaylock}/bin/myswaylock'"
-              "${lockscreentime}/bin/lockscreentime"
+              # "${lockscreentime}/bin/lockscreentime"
+              "${swayidle} -w"
               # "${pkgs.mpvpaper}/bin/mpvpaper -o 'no-audio loop' eDP-1 '/home/${username}/Pictures/wallpapers/fishing-in-the-cyberpunk-city.mp4'"
               # https://moewalls.com/fantasy/samurai-boss-fight-fantasy-dragon-live-wallpaper/
               ".config/rofi/scripts/wallpaper.sh"

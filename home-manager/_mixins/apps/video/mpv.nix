@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, username, ... }:
 with lib.hm.gvariant;
 let
   nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
@@ -110,7 +110,7 @@ in {
         text = ''
           ### Profile ###
 
-          include="/home/$USER/.config/mpv/profiles.conf"
+          include="/home/juca/.config/mpv/profiles.conf"
 
           ### Video ###
 
@@ -266,35 +266,35 @@ in {
 
           [Upscale-Q]
           glsl-shaders-clr
-          glsl-shaders="/home/$USER/.config/mpv/shaders/F8.glsl;/home/$USER/.config/mpv/shaders/krigbl.glsl;/home/$USER/.config/mpv/shaders/ssimsr.glsl;/home/$USER/.config/mpv/shaders/ssimds.glsl"
+          glsl-shaders="/home/${username}/.config/mpv/shaders/F8.glsl;/home/${username}/.config/mpv/shaders/krigbl.glsl;/home/${username}/.config/mpv/shaders/ssimsr.glsl;/home/${username}/.config/mpv/shaders/ssimds.glsl"
 
           linear-downscaling=no
 
           [Upscale-M]
           glsl-shaders-clr
-          glsl-shaders="/home/$USER/.config/mpv/shaders/ravu_Z_ar_r3.glsl;/home/$USER/.config/mpv/shaders/krigbl.glsl;/home/$USER/.config/mpv/shaders/ssimds.glsl"
+          glsl-shaders="/home/${username}/.config/mpv/shaders/ravu_Z_ar_r3.glsl;/home/${username}/.config/mpv/shaders/krigbl.glsl;/home/${username}/.config/mpv/shaders/ssimds.glsl"
 
           linear-downscaling=no
 
           [Upscale-P]
           glsl-shaders-clr
-          glsl-shaders="/home/$USER/.config/mpv/shaders/krigbl.glsl;/home/$USER/.config/mpv/shaders/FSR_EASU.glsl;/home/$USER/.config/mpv/shaders/ssimds.glsl"
+          glsl-shaders="/home/${username}/.config/mpv/shaders/krigbl.glsl;/home/${username}/.config/mpv/shaders/FSR_EASU.glsl;/home/${username}/.config/mpv/shaders/ssimds.glsl"
 
           linear-downscaling=no
 
           [Enhance-LA]
           glsl-shaders-clr
-          glsl-shaders="/home/$USER/.config/mpv/shaders/krigbl.glsl;/home/$USER/.config/mpv/shaders/A4K_Dark.glsl;/home/$USER/.config/mpv/shaders/A4K_Thin.glsl;/home/$USER/.config/mpv/shaders/adasharpA.glsl"
+          glsl-shaders="/home/${username}/.config/mpv/shaders/krigbl.glsl;/home/${username}/.config/mpv/shaders/A4K_Dark.glsl;/home/${username}/.config/mpv/shaders/A4K_Thin.glsl;/home/${username}/.config/mpv/shaders/adasharpA.glsl"
 
           [UpscaleLA-Q]
           glsl-shaders-clr
-          glsl-shaders="/home/$USER/.config/mpv/shaders/F8_LA.glsl;/home/$USER/.config/mpv/shaders/krigbl.glsl;/home/$USER/.config/mpv/shaders/ssimsr.glsl;/home/$USER/.config/mpv/shaders/ssimds.glsl"
+          glsl-shaders="/home/${username}/.config/mpv/shaders/F8_LA.glsl;/home/${username}/.config/mpv/shaders/krigbl.glsl;/home/${username}/.config/mpv/shaders/ssimsr.glsl;/home/${username}/.config/mpv/shaders/ssimds.glsl"
 
           linear-downscaling=no
 
           [UpscaleLA-M]
           glsl-shaders-clr
-          glsl-shaders="/home/$USER/.config/mpv/shaders/A4K_Upscale_L.glsl;/home/$USER/.config/mpv/shaders/krigbl.glsl;/home/$USER/.config/mpv/shaders/ssimsr.glsl;/home/$USER/.config/mpv/shaders/ssimds.glsl"
+          glsl-shaders="/home/${username}/.config/mpv/shaders/A4K_Upscale_L.glsl;/home/${username}/.config/mpv/shaders/krigbl.glsl;/home/${username}/.config/mpv/shaders/ssimsr.glsl;/home/${username}/.config/mpv/shaders/ssimds.glsl"
 
           linear-downscaling=no
 
@@ -304,7 +304,7 @@ in {
           profile-cond=(height >= 2160 or width >= 3840)
           profile-restore=copy-equal
           glsl-shaders-clr
-          glsl-shaders="/home/$USER/.config/mpv/shaders/krigbl.glsl;/home/$USER/.config/mpv/shaders/ssimds.glsl"
+          glsl-shaders="/home/${username}/.config/mpv/shaders/krigbl.glsl;/home/${username}/.config/mpv/shaders/ssimds.glsl"
 
           linear-downscaling=no
 
@@ -399,7 +399,7 @@ in {
       ".config/mpv/script-opts/memo.conf" = {
         text = ''
           # File path gets expanded, leave empty for in-memory history
-          history_path=/home/$USER/.config/mpv/script-opts/memo-history.log
+          history_path=/home/${username}/.config/mpv/script-opts/memo-history.log
 
           # How many entries to display in menu
           entries=10
@@ -717,7 +717,7 @@ in {
           # Localization language priority from highest to lowest.
           # Built in languages can be found in `uosc/intl`.
           # `slang` is a keyword to inherit values from `--slang` mpv config.
-          # Supports paths to custom json files: `languages=/home/$USER/.config/mpv/custom.json,slang,en`
+          # Supports paths to custom json files: `languages=/home/${username}/.config/mpv/custom.json,slang,en`
           languages=slang,en
 
           # A comma separated list of element IDs to disable. Available IDs:
@@ -769,7 +769,7 @@ in {
       mimeType = [ "video/mp4" ];
     };
     mimeApps = {
-      defaultApplications = {
+      defaultApplications = lib.mkForce {
         "application/mxf" = "mpv.desktop";
         "application/sdp" = "mpv.desktop";
         "application/smil" = "mpv.desktop";
