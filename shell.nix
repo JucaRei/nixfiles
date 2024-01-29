@@ -11,7 +11,8 @@ let
 in {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
-    NIX_CONFIG = "experimental-features = nix-command flakes";
+    NIX_CONFIG =
+      "experimental-features = nix-command flakes ca-derivations auto-allocate-uids cgroups";
     nativeBuildInputs = with pkgs; [
       nix
       # jq

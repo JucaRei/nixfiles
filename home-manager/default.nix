@@ -134,7 +134,7 @@ in {
         "flakes"
         "ca-derivations"
         "auto-allocate-uids"
-        # "cgroups"
+        "cgroups"
         #"configurable-impure-env"
       ];
       # Avoid unwanted garbage collection when using nix-direnv
