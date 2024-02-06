@@ -2,9 +2,12 @@
   home.shellAliases = {
     ### Nix ###
     # rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
-    # rebuild-home = if hostname != "zion" || "vm" then "systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=4000M -p CPUQuota=60% home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles" else "home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles";
-    rebuild-home =
+    rebuild-home = if (hostname != "zion" || "vm") then
+      "systemd-run --no-ask-password --uid=1000 --user --scope -p MemoryLimit=4000M -p CPUQuota=60% home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles"
+    else
       "home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles";
+    # rebuild-home =
+    # "home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles";
     rebuild-lock =
       "pushd $HOME/.dotfiles/nixfiles && nix flake lock --recreate-lock-file && popd";
     nix-clean = "nix-collect-garbage -d";

@@ -92,7 +92,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixGL = {
+    nixgl = {
       url = "github:guibou/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
       # inputs.flake-utils.follows = "agenix-cli/flake-utils";
@@ -225,12 +225,8 @@
     # };
   };
 
-  outputs = { self, nixpkgs, nur, disko, devenv, home-manager, nixgl
-    , wrapper-manager, nix-formatter-pack, nixos-hardware, nix-gaming, deploy-rs
-    , vscode-server, plasma-manager, fh, flatpaks
-    # , eza
-    # , nixvim
-    , ... }@inputs:
+  outputs = { self, ... }@inputs:
+    with inputs;
     let
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

@@ -25,17 +25,17 @@ with lib.hm.gvariant; {
   config = {
     home = {
       packages = with pkgs; [
-        whatsapp-for-linux # Whatsapp desktop messaging app
+        # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloudpd
         # vlc
         clonegit
         # deezer-gui
         # fantezy
-        gcc
-        gnumake
+        # gcc
+        # gnumake
         transmission_4-gtk
         lua
-        fcitx5-with-addons
+        # fcitx5-with-addons
         vt-view
         # gparted
         # neovim

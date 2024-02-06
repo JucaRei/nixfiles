@@ -1,4 +1,4 @@
-{ inputs, outputs, stateVersion, nixgl, ... }:
+{ inputs, outputs, stateVersion, ... }:
 let
   forEachSystem = inputs.nixpkgs.lib.genAttrs [
     "x86_64-darwin"
@@ -10,12 +10,11 @@ in {
   # Helper function for generating home-manager configs
   mkHome =
     ### TODO - add displays
-    { hostname, username, desktop ? null, platform ? forEachSystem }:
+    { hostname, username, desktop ? null, platform ? "x86_64-linux" }:
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
-        inherit inputs outputs desktop hostname platform username stateVersion
-          nixgl;
+        inherit inputs outputs desktop hostname platform username stateVersion;
       };
       modules = if platform != "aarch64-linux" || "aarch64-darwin" then [
         inputs.flatpaks.homeManagerModules.default

@@ -511,7 +511,13 @@
       # Sets the point at which earlyoom will intervene to free up memory.
 
       # When free memory falls below 15%, earlyoom acts to prevent system slowdown or freezing.
-      freeMemThreshold = 8;
+      freeSwapThreshold = 2;
+      freeMemThreshold = 2;
+      extraArgs = [
+        "-g"
+        "--avoid '^(X|plasma.*|konsole|kwin|foot)$'"
+        "--prefer '^(electron|libreoffice|gimp)$'"
+      ];
 
       # Technical Explanation:
       # The earlyoom service monitors system memory and intervenes when free memory drops below the specified threshold.
