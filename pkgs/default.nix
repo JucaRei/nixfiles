@@ -18,7 +18,7 @@
   plymouth-themes = pkgs.callPackage ./plymouth/plymouth-themes { };
   catppuccin-plymouth = pkgs.callPackage ./plymouth/catppuccin-plymouth { };
   firefox-csshacks = pkgs.callPackage ./browsers/firefox/firefox-csshacks { };
-  nvchad = pkgs.callPackage ./nvchad { };
+  # nvchad = pkgs.callPackage ./nvchad { };
   fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
   # breeze-hacked-cursorr = pkgs.callPackage ./themes/mouse/breeze-hacked-cursor { };
   # polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { }; # now its on unstable channel

@@ -107,6 +107,7 @@
           "steam-original"
           "steam-run"
           "vscode"
+          "dubai"
 
           # they got fossed recently so idk
           "Anytype"
