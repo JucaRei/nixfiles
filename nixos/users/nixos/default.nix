@@ -97,6 +97,7 @@ in {
     # ];
     packages = [ pkgs.home-manager ];
     shell = pkgs.fish;
+    ignoreShellProgramCheck = true;
   };
 
   config = {

@@ -1,8 +1,16 @@
-{ inputs, outputs, stateVersion, nixgl, ... }: {
+{ inputs, outputs, stateVersion, nixgl, ... }:
+let
+  forEachSystem = inputs.nixpkgs.lib.genAttrs [
+    "x86_64-darwin"
+    "i686-linux"
+    "aarch64-linux"
+    "x86_64-linux"
+  ];
+in {
   # Helper function for generating home-manager configs
   mkHome =
     ### TODO - add displays
-    { hostname, username, desktop ? null, platform ? "x86_64-linux" }:
+    { hostname, username, desktop ? null, platform ? forEachSystem }:
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {

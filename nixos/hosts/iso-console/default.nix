@@ -4,6 +4,6 @@
     ../../_mixins/hardware/sound/pipewire.nix
   ];
 
-  boot.zfs.enabled = lib.mkForce false;
+  # boot.zfs.enabled = lib.mkForce false;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

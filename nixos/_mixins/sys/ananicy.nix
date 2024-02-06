@@ -4,9 +4,9 @@
     ananicy = {
       enable = true;
       package = pkgs.ananicy-cpp;
-      rulesProvider = pkgs.ananicy-cpp-rules;
+      rulesProvider = pkgs.ananicy-rules-cachyos;
       settings = {
-        check_freq = 15;
+        check_freq = 10;
         cgroup_load = true;
         type_load = true;
         rule_load = true;

@@ -58,7 +58,7 @@
   # apple-fonts = pkgs.callPackage ./apple-fonts { };
 
   # GTK
-  phocus-gtk = pkgs.callPackage ./themes/gtk/phocus { };
+  # phocus-gtk = pkgs.callPackage ./themes/gtk/phocus { };
   gruv = pkgs.callPackage ./themes/gtk/gruvbox-dark.nix { };
   nautilus-annotations = pkgs.callPackage ./nautilus-annotations { };
 
@@ -74,5 +74,5 @@
   whitesur = pkgs.callPackage ./themes/icons/whitesur.nix { };
 
   # custom locking script
-  lockman-wayland = pkgs.callPackage ./misc/lockman { };
+  # lockman-wayland = pkgs.callPackage ./misc/lockman { };
 }

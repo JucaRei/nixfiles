@@ -1,7 +1,7 @@
 { writeShellApplication, coreutils, handlr-regex, hyprland, swaylock-effects
 , util-linux, wezterm, neofetch, pv, asciiquarium-transparent, cbonsai, pipes-rs
 # , unimatrix
-, unstable, pkgs, ... }:
+, pkgs, ... }:
 let
   scriptName = "lockman";
   # Workaround to infinitely loop programs
@@ -36,7 +36,7 @@ in writeShellApplication {
     cbonsai
     neofetch-wrapper # Workaround to pipe neofetch's output
     pipes-rs
-    pkgs.unstable.unimatrix
+    pkgs.unimatrix
   ];
   text = let
     scriptClass = "^(${scriptName})$";

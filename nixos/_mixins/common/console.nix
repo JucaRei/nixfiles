@@ -1,10 +1,10 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, hostname, ... }: {
   ###################
   ### Console tty ###
   ###################
 
   console = {
-    keyMap = if (builtins.isString == "nitro") then "br-abnt2" else "us";
+    keyMap = lib.mkForce (if (hostname == "nitro") then "br-abnt2" else "us");
     #earlySetup = true;
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
     colors = [
