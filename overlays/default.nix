@@ -48,7 +48,7 @@
     # tidal = final.tidal-dl;
 
     # nvchad = final.nvim-chad;
-    phospor-ttf = final.phospor;
+    # phospor-ttf = final.phospor;
     material-symbols-ttf = final.material-symbols;
     cairo-ttf = final.font-cairo;
     dubai-ttf = final.font-dubai;

@@ -50,7 +50,7 @@
   mpv-thumbfast-osc = pkgs.callPackage ./mpv-ext/mpv-thumbfast-osc { };
 
   # Font
-  phospor = pkgs.callPackage ./fonts/phospor.nix { };
+  # phospor = pkgs.callPackage ./fonts/phospor.nix { };
   material-symbols = pkgs.callPackage ./fonts/material-symbols.nix { };
   font-cairo = pkgs.callPackage ./fonts/cairo { };
   font-dubai = pkgs.callPackage ./fonts/dubai { };

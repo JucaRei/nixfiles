@@ -5,7 +5,7 @@
   fonts = { fontconfig.enable = true; };
 
   home.packages = with pkgs; [
-    phospor-ttf
+    # phospor-ttf
     material-symbols-ttf
     noto-fonts
     noto-fonts-emoji
