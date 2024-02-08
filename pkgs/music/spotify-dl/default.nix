@@ -94,4 +94,4 @@ buildPythonApplication rec {
     homepage = "https://github.com/spotDL/spotify-downloader";
     license = licenses.mit;
   };
-    }
+};

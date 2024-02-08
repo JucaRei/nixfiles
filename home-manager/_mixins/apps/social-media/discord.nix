@@ -43,9 +43,9 @@ let
     };
   };
 in {
-  home.packages = with pkgs; [ discord discocss ];
+    home.packages = with pkgs; [ discord discocss ];
 
-  xdg.configFile."discord/discocss/custom.css".text = ''
+    xdg.configFile."discord/discocss/custom.css".text = ''
     .theme-dark {
         --header-primary: #${scheme.dracula.base05};
         --header-secondary: #${scheme.dracula.base04};

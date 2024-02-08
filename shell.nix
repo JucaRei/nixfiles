@@ -14,13 +14,13 @@ in {
     NIX_CONFIG =
       "experimental-features = nix-command flakes ca-derivations auto-allocate-uids cgroups";
     nativeBuildInputs = with pkgs; [
-      nix
       # jq
       # cachix
       home-manager
       # dropbear
       # speedtest-cli
       direnv
+      zsh
       git
       nil
       duf

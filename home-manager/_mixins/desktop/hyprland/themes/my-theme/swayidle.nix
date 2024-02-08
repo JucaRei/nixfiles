@@ -41,4 +41,7 @@ in {
       };
     };
   };
+
+  # inssue swaylock
+  home.shellAliases = { kill-swaylock = "pkill -USR1 swaylock"; };
 }

@@ -223,8 +223,12 @@
     #   url = "github:FedericoSchonborn/budgie-nix";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-  };
 
+    # chaotic = {
+    #   url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    #   inputs.nixpkgs.follows = "unstable";
+    # };
+  };
   outputs = { self, ... }@inputs:
     with inputs;
     let
@@ -232,7 +236,9 @@
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       stateVersion = "23.11";
       # stateVersion = "23.05";
-      libx = import ./lib { inherit inputs outputs nixgl stateVersion; };
+      libx = import ./lib {
+        inherit inputs outputs nixgl stateVersion home-manager;
+      };
     in {
       # Custom packages; acessible via 'nix build', 'nix shell', etc
       packages = libx.systems (system:
