@@ -354,8 +354,8 @@
 
   zramSwap = {
     enable = true;
-    swapDevices = 6;
-    memoryPercent = 20;
+    swapDevices = 1;
+    memoryPercent = 150;
   };
 
   # # This allows you to dynamically switch between NVIDIA<->Intel using
@@ -567,8 +567,8 @@
       nix-daemon = {
         ### Limit resources used by nix-daemon
         serviceConfig = {
-          MemoryMax = "4G";
-          MemorySwapMax = "4G";
+          MemoryMax = "8G";
+          MemorySwapMax = "12G";
         };
       };
     };
