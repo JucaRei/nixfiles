@@ -22,6 +22,7 @@
           if platform != "aarch64-linux" || "aarch64-darwin"
           then [
             inputs.flatpaks.homeManagerModules.default
+            inputs.nur.overlay
             ../home-manager
           ]
           else [../home-manager];

@@ -35,7 +35,7 @@
   icloud-photo-downloader =
     pkgs.callPackage ./utils/icloud-photo-downloader {};
   youtube_tui = pkgs.callPackage ./utils/youtube-tui {};
-  lutgenn = pkgs.callPackage ./utils/lutgen {};
+  lutgen = pkgs.callPackage ./utils/lutgen {};
   cloneit = pkgs.callPackage ./utils/cloneit {};
   distrobox = pkgs.callPackage ./utils/distrobox {};
 

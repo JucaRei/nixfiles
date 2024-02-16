@@ -101,35 +101,18 @@
 
     cyberre-grub-theme = prev.cyberre-grub-theme;
     catppuccin-plymouth = prev.catppuccin-plymouth;
-
+    advmvcp = prev.advmvcp;
+    icloud-photo-downloader = prev.icloud-photo-downloader;
+    nautilus-annotations = prev.nautilus-annotations;
+    thorium-browser = prev.thorium-browser;
+    breeze-hacked-cursor = prev.breeze-hacked-cursor;
     sddm-astronaut-theme = prev.sddm-astronaut-theme;
-  };
-
-  packages = final: prev: {
-    cyberre = final.cyberre-grub-theme;
-    advcp = final.advmvcp;
-    # hacked-cursor = final.breeze-hacked-cursorr;
-    # deezer-gui = final.deezer;
-    icloudpd = final.icloud-photo-downloader;
-    # nvchad = prev.nvchad;
-    nautilus-ext = final.nautilus-annotations;
-    thorium = final.thorium-browser;
-    hacked-cursor = final.breeze-hacked-cursor;
-    # lockman = final.lockman-wayland;
-    # pulseaudio-control = final.polybar-pulseaudio-control;
-    # fantezy = final.fantezy-font;
-    # nixos-summary = final.nixos-change-summary;
-    # apple-font = final.apple-fonts;
-    # mpvconf = prev.mpv;
-    # example = prev.example.overrideAttrs (oldAttrs: rec {
-    # ...
-    # });
-    nix-cleanup = final.nix-cleanup;
-    imgclr = prev.callPackage ../pkgs/image-colorizer {
+    nix-cleanup = prev.nix-cleanup;
+    imgclr = prev.callPackage ../pkgs/utils/image-colorizer {
       buildPythonPackage = prev.python310Packages.buildPythonPackage;
     };
-    lutgen = prev.lutgenn;
-    vt-view = final.vv;
+    lutgen = prev.lutgen;
+    vv = prev.vv;
     st = prev.st.overrideAttrs (oldAttrs: {
       buildInputs = oldAttrs.buildInputs ++ [prev.harfbuzz];
       src = prev.fetchFromGitHub {
@@ -139,59 +122,29 @@
         sha256 = "007pvimfpnmjz72is4y4g9a0vpq4sl1w6n9sdjq2xb2igys2jsyg";
       };
     });
-    # distrobox-fix = prev.distrobox;
 
-    # Music
-    # tidal = final.tidal-dl;
-
-    # nvchad = final.nvim-chad;
-    # phospor-ttf = final.phospor;
-    # material-symbols-ttf = final.material-symbols;
-    cairo-ttf = final.font-cairo;
-    dubai-ttf = final.font-dubai;
-    noto-sans-arabic-ttf = final.font-noto-sans-arabic;
+    # fonts
+    font-cairo = prev.font-cairo;
+    font-dubai = prev.font-dubai;
+    font-noto-sans-arabic = prev.font-noto-sans-arabic;
 
     # mpv plugins
-    anime4k = final.mpv-anime4k;
-    dynamic-crop = final.mpv-dynamic-crop;
-    modernx = final.mpv-modernx;
-    nextfile = final.mpv-nextfile;
-    # subselect = final.mpv-sub-select;
-    subsearch = final.mpv-subsearch;
-    thumbfast = final.mpv-thumbfast-osc;
-
-    # Utils
-    # youtube-tui = final.youtube_tui;
-
-    # Scripts
-    nix-whereis = final.nix-whereis;
-
-    gruvbox = final.gruv;
-    # phocus = final.phocus-gtk;
-
-    steam = prev.steam.override {
-      extraPkgs = pkgs:
-        with pkgs; [
-          keyutils
-          libkrb5
-          libpng
-          libpulseaudio
-          libvorbis
-          stdenv.cc.cc.lib
-          xorg.libXcursor
-          xorg.libXi
-          xorg.libXinerama
-          xorg.libXScrnSaver
-        ];
-    };
+    mpv-anime4k = prev.mpv-anime4k;
+    mpv-dynamic-crop = prev.mpv-dynamic-crop;
+    mpv-modernx = prev.mpv-modernx;
+    mpv-nextfile = prev.mpv-nextfile;
+    mpv-subsearch = prev.mpv-subsearch;
+    mpv-sub-select = prev.mpv-sub-select;
+    mpv-thumbfast-osc = prev.mpv-thumbfast-osc;
+    # youtube_tui = prev.youtube_tui;
+    nix-whereis = prev.nix-whereis;
+    gruv = prev.gruv;
   };
 
-  # When applied, the unstable nixpkgs set (declared in the flake inputs) will
-  # be accessible through 'pkgs.unstable'
   unstable-packages = final: _prev: {
     # unstable = import inputs.nixpkgs-unstable {
-    unstable = import inputs.unstable {
-      system = final.system;
+    unstable = import inputs.nixpkgs-unstable {
+      inherit (final) system;
       config.allowUnfree = true;
     };
   };

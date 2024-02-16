@@ -31,7 +31,7 @@ with lib.hm.gvariant; {
     home = {
       packages = with pkgs; [
         # whatsapp-for-linux # Whatsapp desktop messaging app
-        # icloudpd
+        # icloud-photo-downloader
         # vlc
         cloneit
         # deezer-gui

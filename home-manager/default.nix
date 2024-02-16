@@ -14,6 +14,7 @@
 }:
 with lib; let
   inherit (pkgs.stdenv) isDarwin isLinux;
+  isLima = builtins.substring 0 5 hostname == "lima-";
 in {
   # Only import desktop configuration if the host is desktop enabled
   # Only import user specific configuration if they have bespoke settings
@@ -28,9 +29,6 @@ in {
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
     ]
-    # ++ lib.optional (builtins.isString desktop) ./_mixins/desktop
-    # ++ lib.optional (builtins.isPath (./. + "/_mixins/users/${username}")) ./_mixins/users/${username}
-    # ++ lib.optional (builtins.pathExists (./. + "/users/${username}/hosts/${hostname}.nix")) ./users/${username}/hosts/${hostname}.nix
     ++ lib.optional (builtins.isPath (./. + "/users/${username}"))
     ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix"))
@@ -38,17 +36,22 @@ in {
     ++ lib.optional (desktop != null) ./_mixins/desktop;
 
   config = {
-    home = lib.mkDefault {
+    home = {
       activation.report-changes = config.lib.dag.entryAnywhere ''
-        ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
+        if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
+          ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
+        fi
       '';
+
       homeDirectory =
         if isDarwin
         then "/Users/${username}"
+        else if isLima
+        then "/home/${username}.linux"
         else "/home/${username}";
-      sessionPath = ["$HOME/.local/bin"];
       inherit stateVersion;
       inherit username;
+
       sessionVariables = {
         # only works for interactive shells, pam works for all kind of sessions
         NIX_PATH =
@@ -65,6 +68,10 @@ in {
         NIXPKGS_ALLOW_UNFREE = "1";
       };
     };
+
+    # Workaround home-manager bug with flakes
+    # - https://github.com/nix-community/home-manager/issues/2033
+    news.display = "silent";
 
     xdg = {
       # Add Nix Packages to XDG_DATA_DIRS
@@ -91,10 +98,7 @@ in {
         # You can also add overlays exported from other flakes:
         # neovim-nightly-overlay.overlays.default
         inputs.agenix.overlays.default
-        inputs.nixgl.overlay
-
-        inputs.nixgl.overlays.default
-        inputs.nur.overlay
+        
 
         # Or define it inline, for example:
         (final: prev: {

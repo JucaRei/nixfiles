@@ -19,7 +19,7 @@
       # thorium
       cloneit
       # deezer-gui
-      advcp
+      advmvcp
       deepin.deepin-icon-theme
       # emacs
     ];
