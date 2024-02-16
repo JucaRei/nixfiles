@@ -1,7 +1,14 @@
-{ config, inputs, lib, pkgs, nixgl, username, specialArgs, ... }:
-
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  nixgl,
+  username,
+  specialArgs,
+  ...
+}:
 # let
-
 # nixGLMesaWrap = pkg:
 #   pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
 #     mkdir $out
@@ -14,7 +21,6 @@
 #      chmod +x $wrapped_bin
 #     done
 #   '';
-
 # nixGLVulkanWrap = pkg:
 #   pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
 #     mkdir $out
@@ -29,7 +35,6 @@
 #      chmod +x $wrapped_bin
 #     done
 #   '';
-
 # nixGLVulkanMesaWrap = pkg:
 #   pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
 #     mkdir $out
@@ -44,11 +49,8 @@
 #      chmod +x $wrapped_bin
 #     done
 #   '';
-
 # in
-
-with lib;
-let
+with lib; let
   cu = "${pkgs.coreutils}/bin";
   cfg = config.home.symlinks;
 
@@ -62,7 +64,7 @@ in {
     home.symlinks = mkOption {
       type = types.attrsOf (types.str);
       description = "A list of symlinks to create.";
-      default = { };
+      default = {};
     };
   };
 
@@ -94,18 +96,18 @@ in {
       activation = {
         # TODO Convert to config.lib.file.mkOutOfStoreSymlink ./path/to/file/to/link;
         # https://github.com/nix-community/home-manager/issues/257#issuecomment-831300021
-        symlinks = hm.dag.entryAfter [ "writeBoundary" ]
+        symlinks =
+          hm.dag.entryAfter ["writeBoundary"]
           (concatStringsSep "\n" (mapAttrsToList toSymlinkCmd cfg));
         # Rebuild Script
         linkDesktopApplications = {
           # Add Packages To System Menu
-          after = [ "writeBoundary" "createXdgUserDirectories" ];
-          before = [ ];
+          after = ["writeBoundary" "createXdgUserDirectories"];
+          before = [];
           # data = "sudo --preserve-env=PATH env /usr/bin/update-desktop-database"; # Updates Database
           # data = ''sudo -E env "PATH=$PATH" update-desktop-database'';
           # data = ''"$(which sudo)" -s -E env "PATH=$PATH/bin/" update-desktop-database'';
-          data =
-            "sudo --preserve-env=PATH env update-desktop-database"; # Updates Database
+          data = "sudo --preserve-env=PATH env update-desktop-database"; # Updates Database
           # data = "doas --preserve-env=PATH /usr/bin/update-desktop-database"; # Updates Database
           # data = [ "${config.home.homeDirectory}/.nix-profile/share/applications"];
           # data = "/usr/bin/update-desktop-database";
@@ -113,15 +115,16 @@ in {
       };
     };
 
-    xdg = let inherit (pkgs.stdenv) isDarwin;
+    xdg = let
+      inherit (pkgs.stdenv) isDarwin;
     in {
       # Add Nix Packages to XDG_DATA_DIRS
       enable = true;
-      mime = { enable = true; };
-      systemDirs.data = if isDarwin then
-        [ "/Users/${username}/.nix-profile/share/applications" ]
-      else
-        [ "/home/${username}/.nix-profile/share/applications" ];
+      mime = {enable = true;};
+      systemDirs.data =
+        if isDarwin
+        then ["/Users/${username}/.nix-profile/share/applications"]
+        else ["/home/${username}/.nix-profile/share/applications"];
     };
 
     # nixGLMesaWrap = nixGLMesaWrap;

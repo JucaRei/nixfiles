@@ -1,21 +1,18 @@
 # Shell for bootstrapping flake-enabled nix and home-manager
 # Enter it through 'nix develop' or (legacy) 'nix-shell'
-
-{ pkgs ? (import ./nixpkgs.nix) { } }:
-# { pkgs ? (import ./default.nix) { } }:
-with pkgs;
-let
+{pkgs ? (import ./nixpkgs.nix) {}}:
+with pkgs; let
   nixBin = writeShellScriptBin "nix" ''
     ${nixVersions.stable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '';
 in {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
-    NIX_CONFIG =
-      "experimental-features = nix-command flakes ca-derivations auto-allocate-uids cgroups";
+    NIX_CONFIG = "experimental-features = nix-command flakes";
     nativeBuildInputs = with pkgs; [
       # jq
-      # cachix
+      cachix
+      alejandra
       home-manager
       # dropbear
       # speedtest-cli
