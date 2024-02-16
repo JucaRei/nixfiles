@@ -95,14 +95,20 @@
       };
     });
 
+    nix-inspect = prev.nix-inspect;
+
+    cloneit = prev.cloneit;
+
     cyberre-grub-theme = prev.cyberre-grub-theme;
+    catppuccin-plymouth = prev.catppuccin-plymouth;
+
+    sddm-astronaut-theme = prev.sddm-astronaut-theme;
   };
 
   packages = final: prev: {
     cyberre = final.cyberre-grub-theme;
     advcp = final.advmvcp;
     # hacked-cursor = final.breeze-hacked-cursorr;
-    clonegit = final.cloneit;
     # deezer-gui = final.deezer;
     icloudpd = final.icloud-photo-downloader;
     # nvchad = prev.nvchad;
@@ -119,7 +125,6 @@
     # ...
     # });
     nix-cleanup = final.nix-cleanup;
-    inspect = final.nix-inspect;
     imgclr = prev.callPackage ../pkgs/image-colorizer {
       buildPythonPackage = prev.python310Packages.buildPythonPackage;
     };
@@ -157,9 +162,6 @@
 
     # Utils
     # youtube-tui = final.youtube_tui;
-
-    plymouth-catppuccin = final.catppuccin-plymouth;
-    sddm-astronaut = final.sddm-astronaut-theme;
 
     # Scripts
     nix-whereis = final.nix-whereis;

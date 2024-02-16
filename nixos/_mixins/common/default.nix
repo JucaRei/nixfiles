@@ -122,7 +122,7 @@
         duf
         htop
         lshw
-        inspect
+        nix-inspect
         cachix
 
         # Selection of sysadmin tools that can come in handy

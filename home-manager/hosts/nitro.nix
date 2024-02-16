@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib.hm.gvariant; {
   imports = [
     # ../_mixins/console/neovim.nix
@@ -28,7 +33,7 @@ with lib.hm.gvariant; {
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloudpd
         # vlc
-        clonegit
+        cloneit
         # deezer-gui
         # fantezy
         # gcc
@@ -59,8 +64,8 @@ with lib.hm.gvariant; {
 
       # Virtmanager
       "org/virt-manager/virt-manager/connections" = {
-        autoconnect = [ "qemu:///system" ];
-        uris = [ "qemu:///system" ];
+        autoconnect = ["qemu:///system"];
+        uris = ["qemu:///system"];
       };
     };
     # modules.desktop.browsers.chromium.enable = true;

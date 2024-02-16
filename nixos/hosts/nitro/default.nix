@@ -1,4 +1,10 @@
-{ config, lib, pkgs, inputs, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     # inputs.nixos-hardware.nixosModules.common-cpu-intel
     # inputs.nixos-hardware.nixosModules.common-gpu-intel
@@ -48,7 +54,7 @@
     loader = {
       # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
       grub = {
-        theme = pkgs.cyberre;
+        theme = pkgs.cyberre-grub-theme;
         ## Copy kernels to /boot
         # copyKernels = true;
 
@@ -77,7 +83,7 @@
         "sd_mod"
         "rtsx_pci_sdmmc"
       ];
-      kernelModules = [ ];
+      kernelModules = [];
       verbose = lib.mkForce false;
     };
     consoleLogLevel = lib.mkForce 0;
@@ -85,7 +91,7 @@
       # useTmpfs = true;
       cleanOnBoot = true;
     };
-    supportedFilesystems = [ "vfat" "btrfs" ];
+    supportedFilesystems = ["vfat" "btrfs"];
 
     kernelModules = [
       "kvm-intel"
@@ -104,7 +110,7 @@
       # logo = "${inputs.nixos-artwork}/wallpapers/nix-wallpaper-watersplash.png";
       themePackages = [
         # pkgs.adi1090x-plymouth-themes
-        pkgs.plymouth-catppuccin
+        pkgs.catppuccin-plymouth
       ];
       # theme = "deus_ex";
       theme = "catppuccin-macchiato";
@@ -182,15 +188,11 @@
       #---------------------------------------------------------------------
       #   SSD tweaks: Adjust settings for an SSD to optimize performance.
       #---------------------------------------------------------------------
-      "vm.dirty_background_ratio" =
-        "40"; # Set the ratio of dirty memory at which background writeback starts (5%). Adjusted for SSD.
-      "vm.dirty_expire_centisecs" =
-        "3000"; # Set the time at which dirty data is old enough to be eligible for writeout (6000 centiseconds). Adjusted for SSD.
-      "vm.dirty_ratio" =
-        "80"; # Set the ratio of dirty memory at which a process is forced to write out dirty data (10%). Adjusted for SSD.
+      "vm.dirty_background_ratio" = "40"; # Set the ratio of dirty memory at which background writeback starts (5%). Adjusted for SSD.
+      "vm.dirty_expire_centisecs" = "3000"; # Set the time at which dirty data is old enough to be eligible for writeout (6000 centiseconds). Adjusted for SSD.
+      "vm.dirty_ratio" = "80"; # Set the ratio of dirty memory at which a process is forced to write out dirty data (10%). Adjusted for SSD.
       "vm.dirty_time" = "0"; # Disable dirty time accounting.
-      "vm.dirty_writeback_centisecs" =
-        "300"; # Set the interval between two consecutive background writeback passes (500 centiseconds).
+      "vm.dirty_writeback_centisecs" = "300"; # Set the interval between two consecutive background writeback passes (500 centiseconds).
 
       ## TCP hardening
       # Prevent bogus ICMP errors from filling up logs.
@@ -225,7 +227,6 @@
       # Bufferbloat mitigations + slight improvement in throughput & latency
       "net.ipv4.tcp_congestion_control" = "bbr";
       "net.core.default_qdisc" = "cake";
-
     };
   };
 
@@ -392,7 +393,7 @@
       btrfs-progs
       compsize
       # sublime4
-      clonegit
+      cloneit
       # unstable.stacer
       lm_sensors
       # nixos-summary
@@ -423,7 +424,7 @@
 
   services = {
     dbus.implementation = lib.mkForce "broker";
-    acpid = { enable = true; };
+    acpid = {enable = true;};
     power-profiles-daemon.enable = lib.mkDefault true;
     # upower.enable = true;
     # udev.extraRules = lib.mkMerge [
@@ -526,32 +527,31 @@
       # Adjust the freeMemThreshold value based on your system's memory usage patterns.
 
       # source:   https://github.com/rfjakob/earlyoom
-
     };
 
     #---------------------------------------------------------------------
     # Provides a virtual file system for environment modules. Solution
     # from NixOS forums to help shotwell to keep preference settings
     #---------------------------------------------------------------------
-    envfs = { enable = true; };
+    envfs = {enable = true;};
 
     #---------------------------------------------------------------------
     # Activate the automatic trimming process for SSDs on the NixOS system
     # Manual over-ride is sudo fstrim / -v
     #---------------------------------------------------------------------
-    fstrim = { enable = true; };
+    fstrim = {enable = true;};
   };
 
   ### Load z3fold and lz4
 
   systemd = {
-    oomd = { enable = false; };
+    oomd = {enable = false;};
     services = {
       zswap = {
         description = "Enable ZSwap, set to LZ4 and Z3FOLD";
         enable = true;
-        wantedBy = [ "basic.target" ];
-        path = [ pkgs.bash ];
+        wantedBy = ["basic.target"];
+        path = [pkgs.bash];
         serviceConfig = {
           ExecStart = ''
             ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \

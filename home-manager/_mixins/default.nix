@@ -1,23 +1,23 @@
 {pkgs, ...}: {
   imports = [
-    ../config/scripts/home-manager_change_summary.nix
-    ../console/aliases.nix
-    ../console/bat.nix
-    ../console/bash.nix
-    # ../console/bottom.nix
-    ../console/dircolors.nix
-    ../console/direnv.nix
-    # ../console/eza.nix
-    ../console/eza1.nix
-    # ../console/exa.nix
-    ../console/htop.nix
-    ../console/git.nix
-    ../console/micro.nix
-    ../console/neofetch.nix
-    # ../console/skim.nix
-    ../console/starship.nix
-    ../console/yt-dlp.nix
-    ./fonts.nix
+    ./config/scripts/home-manager_change_summary.nix
+    ./console/aliases.nix
+    ./console/bat.nix
+    ./console/bash.nix
+    # ./console/bottom.nix
+    ./console/dircolors.nix
+    ./console/direnv.nix
+    # ./console/eza.nix
+    ./console/eza1.nix
+    # ./console/exa.nix
+    ./console/htop.nix
+    ./console/git.nix
+    ./console/micro.nix
+    ./console/neofetch.nix
+    # ./console/skim.nix
+    ./console/starship.nix
+    ./console/yt-dlp.nix
+    ./fonts
   ];
 
   home = {

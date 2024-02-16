@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     # ../_mixins/apps/text-editor/vscodium.nix
     # ../_mixins/apps/text-editor/vscode.nix
@@ -17,7 +17,7 @@
     # services.vscode-server.enable = true;
     home.packages = with pkgs; [
       # thorium
-      clonegit
+      cloneit
       # deezer-gui
       advcp
       deepin.deepin-icon-theme
