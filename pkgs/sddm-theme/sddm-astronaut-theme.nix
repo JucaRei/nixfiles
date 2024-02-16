@@ -1,5 +1,9 @@
-{ lib, stdenv, fetchFromGitHub, qtgraphicaleffects }:
-
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  qtgraphicaleffects,
+}:
 stdenv.mkDerivation rec {
   pname = "sddm-astronaut-theme.nix";
   version = "";
@@ -15,7 +19,7 @@ stdenv.mkDerivation rec {
   dontWrapQtApps = true;
   dontRewriteSymlinks = true;
 
-  propagatedBuildInputs = [ qtgraphicaleffects ];
+  propagatedBuildInputs = [qtgraphicaleffects];
 
   installPhase = ''
     mkdir -p $out/share/sddm/themes/astronaut
@@ -35,3 +39,4 @@ stdenv.mkDerivation rec {
   };
 }
 # nix-shell -p nix-prefetch-git --run 'nix-prefetch-git https://github.com/JucaRei/sddm-astronaut-theme.git refs/heads/master'
+# nix-shell -p nix-prefetch-git --run 'nix-prefetch-git http://download.nvidia.com/XFree86/Linux-x86_64/340.108/NVIDIA-Linux-x86_64-340.108.run'

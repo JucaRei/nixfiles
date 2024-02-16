@@ -27,17 +27,9 @@ in {
   config = mkIf cfg.enable {
     home = {
       packages = with pkgs; [
-        # nix
-        # niv
-        # nix
-        nix-index
-        nix-index-update
-        nixpkgs-fmt
-        # rnix-lsp
+        alejandra
         nil
-        # base-packages
-        fzf
-        # tmux
+        util-linux
       ];
       file.".config/nix/nix.conf".text = ''
         experimental-features = nix-command flakes

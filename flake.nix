@@ -284,6 +284,11 @@
           username = "juca";
           desktop = "bspwm";
         };
+        "juca@oldarch" = libx.mkHome {
+          hostname = "oldarch";
+          username = "juca";
+          # desktop = "bspwm";
+        };
         #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
         "juca@nitrovoid" = libx.mkHome {
           hostname = "nitrovoid";
