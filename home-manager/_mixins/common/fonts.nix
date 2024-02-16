@@ -1,12 +1,14 @@
 # Fonts!
-{ pkgs, config, ... }:
-
 {
-  fonts = { fontconfig.enable = true; };
+  pkgs,
+  config,
+  ...
+}: {
+  fonts = {fontconfig.enable = true;};
 
   home.packages = with pkgs; [
     # phospor-ttf
-    material-symbols-ttf
+    # material-symbols-ttf
     noto-fonts
     noto-fonts-emoji
     fira-code
@@ -20,8 +22,7 @@
 
     material-design-icons
     (nerdfonts.override {
-      fonts =
-        [ "FiraCode" "UbuntuMono" "Hack" "DroidSansMono" "JetBrainsMono" ];
+      fonts = ["FiraCode" "UbuntuMono" "Hack" "DroidSansMono" "JetBrainsMono"];
     })
   ];
 }

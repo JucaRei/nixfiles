@@ -30,6 +30,7 @@ in {
         alejandra
         nil
         util-linux
+        pkgs.nixgl.auto.nixGLDefault
       ];
       file.".config/nix/nix.conf".text = ''
         experimental-features = nix-command flakes

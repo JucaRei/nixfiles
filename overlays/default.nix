@@ -94,6 +94,8 @@
         sha256 = "sha256-KfJ/MEgQdvzAM+rnKGMsjnRrbFeFu6F8Or+rgFNLgFI=";
       };
     });
+
+    cyberre-grub-theme = prev.cyberre-grub-theme;
   };
 
   packages = final: prev: {
@@ -116,6 +118,7 @@
     # example = prev.example.overrideAttrs (oldAttrs: rec {
     # ...
     # });
+    nix-cleanup = final.nix-cleanup;
     inspect = final.nix-inspect;
     imgclr = prev.callPackage ../pkgs/image-colorizer {
       buildPythonPackage = prev.python310Packages.buildPythonPackage;
@@ -138,7 +141,7 @@
 
     # nvchad = final.nvim-chad;
     # phospor-ttf = final.phospor;
-    material-symbols-ttf = final.material-symbols;
+    # material-symbols-ttf = final.material-symbols;
     cairo-ttf = final.font-cairo;
     dubai-ttf = final.font-dubai;
     noto-sans-arabic-ttf = final.font-noto-sans-arabic;
@@ -159,8 +162,7 @@
     sddm-astronaut = final.sddm-astronaut-theme;
 
     # Scripts
-    nixclean = final.nix-cleanup;
-    nixwhereis = final.nix-whereis;
+    nix-whereis = final.nix-whereis;
 
     gruvbox = final.gruv;
     # phocus = final.phocus-gtk;

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ../config/scripts/home-manager_change_summary.nix
     ../console/aliases.nix
@@ -29,8 +29,8 @@
       moar # Modern Unix `less`
       coreutils
       pandoc
-      nixclean
-      nixwhereis
+      nix-cleanup
+      nix-whereis
       cachix
     ];
 

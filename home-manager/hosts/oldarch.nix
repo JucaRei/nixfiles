@@ -1,5 +1,5 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    vlc
+    (nixgl-legacy vlc)
   ];
 }

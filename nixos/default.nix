@@ -1,27 +1,41 @@
-{ config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs
-, stateVersion, username, hostid, ... }: {
+{
+  config,
+  desktop,
+  hostname,
+  inputs,
+  lib,
+  modulesPath,
+  outputs,
+  pkgs,
+  stateVersion,
+  username,
+  hostid,
+  ...
+}: {
   # Import host specific boot and hardware configurations.
   # Only include desktop components if one is supplied.
   # - https://nixos.wiki/wiki/Nix_Language:_Tips_%26_Tricks#Coercing_a_relative_path_with_interpolated_variables_to_an_absolute_path_.28for_imports.29
-  imports = [
-    # ./_mixins/base
-    # ./_mixins/boxes
-    # ./_mixins/users/root
-    # ./_mixins/users/${username}
-    # inputs.home-manager.nixosModules.home-manager
-    inputs.vscode-server.nixosModules.default
-    inputs.disko.nixosModules.disko
-    (modulesPath + "/installer/scan/not-detected.nix")
-    (./. + "/hosts/${hostname}")
-    ./_mixins/services/network/openssh.nix
-    ./_mixins/services/tools/smartmon.nix
-    ./_mixins/common
-    ./users/root
-  ]
-  # ++ lib.optional (builtins.pathExists (./. + "/${hostname}/disks.nix")) ./${hostname}/disks.nix
-  # ++ lib.optional (builtins.isString desktop) ./_mixins/desktop
+  imports =
+    [
+      # ./_mixins/base
+      # ./_mixins/boxes
+      # ./_mixins/users/root
+      # ./_mixins/users/${username}
+      # inputs.home-manager.nixosModules.home-manager
+      inputs.vscode-server.nixosModules.default
+      inputs.disko.nixosModules.disko
+      (modulesPath + "/installer/scan/not-detected.nix")
+      (./. + "/hosts/${hostname}")
+      ./_mixins/services/network/openssh.nix
+      ./_mixins/services/tools/smartmon.nix
+      ./_mixins/common
+      ./users/root
+    ]
+    # ++ lib.optional (builtins.pathExists (./. + "/${hostname}/disks.nix")) ./${hostname}/disks.nix
+    # ++ lib.optional (builtins.isString desktop) ./_mixins/desktop
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}"))
-    ./users/${username} ++ lib.optional (desktop != null) ./_mixins/desktop
+    ./users/${username}
+    ++ lib.optional (desktop != null) ./_mixins/desktop
     ++ lib.optional (hostname != "rasp3" || "air")
     ./_mixins/services/tools/kmscon.nix;
 
@@ -36,7 +50,7 @@
       # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
       (_: super: {
         makeModulesClosure = x:
-          super.makeModulesClosure (x // { allowMissing = true; });
+          super.makeModulesClosure (x // {allowMissing = true;});
       })
 
       inputs.nixd.overlays.default
@@ -68,8 +82,8 @@
 
         tor-browser-bundle-bin = super.symlinkJoin {
           name = super.tor-browser-bundle-bin.name;
-          paths = [ super.tor-browser-bundle-bin ];
-          buildInputs = [ super.makeWrapper ];
+          paths = [super.tor-browser-bundle-bin];
+          buildInputs = [super.makeWrapper];
           postBuild = ''
             wrapProgram "$out/bin/tor-browser" \
               --set MOZ_ENABLE_WAYLAND 1
@@ -77,11 +91,11 @@
         };
 
         mpv =
-          super.mpv.override { scripts = with super.mpvScripts; [ mpris ]; };
+          super.mpv.override {scripts = with super.mpvScripts; [mpris];};
         # vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
-        deadbeef = super.deadbeef.override { wavpackSupport = true; };
+        deadbeef = super.deadbeef.override {wavpackSupport = true;};
         deadbeef-with-plugins = super.deadbeef-with-plugins.override {
-          plugins = with super.deadbeefPlugins; [ mpris2 statusnotifier ];
+          plugins = with super.deadbeefPlugins; [mpris2 statusnotifier];
         };
       })
     ];
@@ -93,7 +107,7 @@
       # Accept the joypixels license
       joypixels.acceptLicense = true;
       allowUnsupportedSystem = true;
-      permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" ];
+      permittedInsecurePackages = ["openssl-1.1.1w" "electron-19.1.9"];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       # allowUnfreePredicate = _: true;
@@ -111,7 +125,6 @@
 
           # they got fossed recently so idk
           "Anytype"
-
         ];
     };
   };
@@ -136,11 +149,12 @@
 
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
 
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
+    nixPath =
+      lib.mapAttrsToList (key: value: "${key}=${value.to.path}")
       config.nix.registry;
 
     optimise.automatic = true;
@@ -166,11 +180,11 @@
         "cgroups"
       ];
       # Allow to run nix
-      allowed-users = [ "${username}" "wheel" ];
+      allowed-users = ["${username}" "wheel"];
       builders-use-substitutes =
         true; # Avoid copying derivations unnecessary over SSH.
 
-      trusted-users = [ "root" "${username}" ];
+      trusted-users = ["root" "${username}"];
       substituters = [
         "https://nix-community.cachix.org"
         "https://juca-nixfiles.cachix.org"
@@ -222,7 +236,7 @@
     hostName = hostname;
     hostId = hostid;
     useDHCP = lib.mkDefault true;
-    firewall = { enable = true; };
+    firewall = {enable = true;};
   };
 
   system = {
@@ -381,7 +395,7 @@
       enable = true;
       implementation = lib.mkDefault "dbus";
     };
-    udev = { enable = true; };
+    udev = {enable = true;};
   };
 
   environment = {
@@ -401,7 +415,8 @@
             builtins.map (p: "${p.name}") config.environment.systemPackages;
           sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
           formatted = builtins.concatStringsSep "\n" sortedUnique;
-        in formatted;
+        in
+          formatted;
       };
     };
   };

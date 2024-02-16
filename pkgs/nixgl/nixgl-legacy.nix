@@ -1,10 +1,10 @@
 {
   lib,
   fetchFromGitHub,
-  sources,
+  # sources,
 }:
 # TODO: Clean up this mess
-{nvidia ? false}: let
+let
   # nixpkgs = fetchFromGitHub {
   #   owner = "NixOS";
   #   repo = "nixpkgs";
@@ -32,14 +32,23 @@
         useGLVND = 0;
       });
   };
+  pkgs = import <nixpkgs> {};
 in
-  top
-  // (
-    if nvidiaVersion != null
-    then
-      top.nvidiaPackages {
-        version = nvidiaVersion;
-        sha256 = nvidiaHash;
-      }
-    else {}
-  )
+  pkgs.runCommand "build" {
+    nativeBuildInputs = [
+      pkgs.python3
+    ];
+  }
+  ''
+    ./nvidiaInstall.py ${nvidiaVersion} nixGLNvidia $out/bin
+  ''
+# top
+# // (
+#   if nvidiaVersion != null
+#   then
+#     top.nvidiaPackages {
+#       version = nvidiaVersion;
+#       sha256 = nvidiaHash;
+#     }
+#   else {}
+# )
