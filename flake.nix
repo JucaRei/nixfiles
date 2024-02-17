@@ -30,8 +30,14 @@
       flake = false;
     };
 
+    sddm-sugar-candy-nix = {
+      url = "gitlab:Zhaith-Izaliel/sddm-sugar-candy-nix";
+      # Optional, by default this flake follows nixpkgs-unstable.
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # For accessing `deploy-rs`'s utility Nix functions
-    deploy-rs.url = "github:serokell/deploy-rs";
+    # deploy-rs.url = "github:serokell/deploy-rs";
 
     agenix = {
       url = "github:ryantm/agenix";

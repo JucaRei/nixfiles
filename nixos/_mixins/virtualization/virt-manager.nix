@@ -1,5 +1,11 @@
-{ pkgs, config, username, lib, hostname, ... }:
-let
+{
+  pkgs,
+  config,
+  username,
+  lib,
+  hostname,
+  ...
+}: let
   hugepage_handler = pkgs.writeShellScript "hp_handler.sh" ''
     xml_file="/var/lib/libvirt/qemu/$1.xml"
 
@@ -51,7 +57,6 @@ let
     esac
   '';
 in {
-
   boot = {
     initrd = {
       kernelModules = [
@@ -63,8 +68,7 @@ in {
         "virtio_console"
         "virtio_rng"
       ];
-      availableKernelModules =
-        [ "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" ];
+      availableKernelModules = ["virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi"];
       postDeviceCommands = ''
         # Set the system time from the hardware clock to work around a
         # bug in qemu-kvm > 1.5.2 (where the VM clock is initialised
@@ -96,16 +100,15 @@ in {
     #   "vfio-pci.ids=10de:1c8d,10de:0fb9"
     # ];
     binfmt = {
-      emulatedSystems =
-        [ "aarch64-linux" "armv7l-linux" "armv6l-linux" "x86_64-windows" ];
+      emulatedSystems = ["aarch64-linux" "armv7l-linux" "armv6l-linux" "x86_64-windows"];
     };
   };
 
-  users.groups.libvirtd.members = [ "root" "${username}" ];
+  users.groups.libvirtd.members = ["root" "${username}"];
   # nixos 23.11
-  programs = { virt-manager = { enable = true; }; };
+  programs = {virt-manager = {enable = true;};};
   virtualisation = {
-    lxd = { enable = true; };
+    lxd = {enable = true;};
     libvirtd = {
       enable = true;
       extraConfig = ''
@@ -121,22 +124,22 @@ in {
           user = "${username}"
           group = "kvm"
         '';
-        package = pkgs.qemu_kvm.override { smbdSupport = true; };
+        package = pkgs.qemu_kvm.override {smbdSupport = true;};
         ovmf = {
           enable = true;
           # packages = with pkgs.unstable; [
           #   OVMFFull
           # ];
-          packages = with pkgs;
-            [
-              (OVMFFull.override {
-                secureBoot = true;
-                csmSupport = true;
-                httpSupport = true;
-                tpmSupport = true;
-              }).fd
-              # pkgsCross.aarch64-multiplatform.OVMF.fd
-            ];
+          packages = with pkgs; [
+            (OVMFFull.override {
+              secureBoot = true;
+              csmSupport = true;
+              httpSupport = true;
+              tpmSupport = true;
+            })
+            .fd
+            # pkgsCross.aarch64-multiplatform.OVMF.fd
+          ];
         };
         # runAsRoot = false;
         runAsRoot = true;
@@ -146,7 +149,7 @@ in {
           package = pkgs.swtpm-tpm2;
         };
       };
-      hooks.qemu = { hugepages_handler = "${hugepage_handler}"; };
+      hooks.qemu = {hugepages_handler = "${hugepage_handler}";};
       onShutdown = "suspend";
       onBoot = "ignore";
     };
@@ -154,6 +157,9 @@ in {
   };
 
   environment = {
+    sessionVariables = {
+      LIBVIRT_DEFAULT_URI = ["qemu:///system"];
+    };
     systemPackages = with pkgs; [
       qemu # A generic and open source machine emulator and virtualizer
       virt-manager # Desktop user interface for managing virtual machines
@@ -202,7 +208,6 @@ in {
     #   DEVPATH=="/devices/pci0000:00/0000:00:1f.2/host4/*", ENV{UDISKS_SYSTEM}="0"
     #   ENV{ID_SERIAL_SHORT}=="WDC_WD10SPZX-21Z10T0_WD-WX61AA92ZH86", ENV{UDISKS_AUTO}="1", ENV{UDISKS_SYSTEM}="0"
     # '';
-    qemuGuest = { enable = true; };
-
+    qemuGuest = {enable = true;};
   };
 }
