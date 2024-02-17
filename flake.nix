@@ -233,7 +233,7 @@
       stateVersion = "23.11";
       # stateVersion = "23.05";
       libx = import ./lib {
-        inherit inputs outputs stateVersion home-manager;
+        inherit inputs outputs stateVersion home-manager lib;
       };
     in {
       # Custom packages; acessible via 'nix build', 'nix shell', etc
