@@ -19,6 +19,8 @@
       };
     });
 
+    waybar = prev.waybar {};
+
     pythonPackagesExtensions =
       prev.pythonPackagesExtensions
       ++ [
