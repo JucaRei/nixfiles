@@ -79,17 +79,17 @@
       };
     });
 
-    nixGL-legacy = inputs.nixpkgs.callPackage "${builtins.fetchTarball {
-      url = "https://github.com/guibou/nixGL/archive/9e33a6ecb11551b88a95ab134dc4600003330405.tar.gz";
-      #sha256 = pkgs.lib.fakeSha256;
-      sha256 = "0f10mazqf2fm01sx8ai699xccy0pcabw60n8k3bna7ryijgwy7jq";
-      buildInputs = [prev.python3];
-      installPhase = ''
-        mkdir -p $out/bin
-          ./nvidiaInstall.py 340.108 nixGLNvidia
-          cp result/bin/nixGLNvidia $out/bin
-      '';
-    }}/default.nix" {};
+    # nixGL-legacy = inputs.nixpkgs.callPackage "${builtins.fetchTarball {
+    #   url = "https://github.com/guibou/nixGL/archive/9e33a6ecb11551b88a95ab134dc4600003330405.tar.gz";
+    #   #sha256 = pkgs.lib.fakeSha256;
+    #   sha256 = "0f10mazqf2fm01sx8ai699xccy0pcabw60n8k3bna7ryijgwy7jq";
+    #   buildInputs = [prev.python3];
+    #   installPhase = ''
+    #     mkdir -p $out/bin
+    #       ./nvidiaInstall.py 340.108 nixGLNvidia
+    #       cp result/bin/nixGLNvidia $out/bin
+    #   '';
+    # }}/default.nix" {};
 
     librist = prev.librist.overrideAttrs (_old: rec {
       pname = "librist";
@@ -144,15 +144,15 @@
     };
     lutgen = prev.lutgen;
     vv = prev.vv;
-    st = prev.st.overrideAttrs (oldAttrs: {
-      buildInputs = oldAttrs.buildInputs ++ [prev.harfbuzz];
-      src = prev.fetchFromGitHub {
-        owner = "chadcat7";
-        repo = "st";
-        rev = "3d9eb51d43981963638a1b5a8a6aa1ace4b90fbb";
-        sha256 = "007pvimfpnmjz72is4y4g9a0vpq4sl1w6n9sdjq2xb2igys2jsyg";
-      };
-    });
+    # st = prev.st.overrideAttrs (oldAttrs: {
+    #   buildInputs = oldAttrs.buildInputs ++ [prev.harfbuzz];
+    #   src = prev.fetchFromGitHub {
+    #     owner = "chadcat7";
+    #     repo = "st";
+    #     rev = "3d9eb51d43981963638a1b5a8a6aa1ace4b90fbb";
+    #     sha256 = "007pvimfpnmjz72is4y4g9a0vpq4sl1w6n9sdjq2xb2igys2jsyg";
+    #   };
+    # });
 
     # fonts
     font-cairo = prev.font-cairo;
