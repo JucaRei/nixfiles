@@ -61,7 +61,6 @@
   upowerSupport ? true,
   wireplumberSupport ? true,
   withMediaPlayer ? mprisSupport && false,
-  sources,
 }: let
   sources = import ./generated.nix;
 

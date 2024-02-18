@@ -76,5 +76,5 @@
   # lockman-wayland = pkgs.callPackage ./misc/lockman { };
   waybar = pkgs.callPackage ./misc/waybar {};
 
-  nixgl-legacy = pkgs.callPackage ./nixgl/nixgl-legacy.nix {};
+  # nixgl-legacy = pkgs.callPackage ./nixgl/nixgl-legacy.nix {};
 }
