@@ -24,13 +24,8 @@
       ++ [
         (
           python-final: python-prev: {
-            ceph = python-prev.ceph.overridePythonAttrs (oldAttrs: {
-              patches = [./cepth.patch];
-              #  # disabledTestPaths = [
-    #           # "this/greenio_test.py"
-    #           # "tests/greenio_test.py"
-    #           # ];
-    #           # disabledTests = ["greenio_test"];
+            default = python-prev.default.overridePythonAttrs (oldAttrs: {
+              patches = [./ceph.patch ];
             });
           }
         )

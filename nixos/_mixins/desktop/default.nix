@@ -38,7 +38,7 @@
     };
     samba = {
       enable = if hostname != "rasp3" then true else false;
-      package = pkgs.unstable.samba4Full;
+      #package = pkgs.unstable.samba4Full; # samba4Full broken
       extraConfig = ''
         client min protocol = NT1
       '';
