@@ -19,24 +19,24 @@
       };
     });
 
-    waybar = prev.waybar {};
+    # waybar = prev.waybar;
 
-    pythonPackagesExtensions =
-      prev.pythonPackagesExtensions
-      ++ [
-        (
-          python-final: python-prev: {
-            fix = python-prev.fix.overridePythonAttrs (oldAttrs: {
-              patches = [./fix.patch];
-              # disabledTestPaths = [
-              # "this/greenio_test.py"
-              # "tests/greenio_test.py"
-              # ];
-              # disabledTests = ["greenio_test"];
-            });
-          }
-        )
-      ];
+    # pythonPackagesExtensions =
+    #   prev.pythonPackagesExtensions
+    #   ++ [
+    #     (
+    #       python-final: python-prev: {
+    #         fix = python-prev.fix.overridePythonAttrs (oldAttrs: {
+    #           patches = [./fix.patch];
+    #           # disabledTestPaths = [
+    #           # "this/greenio_test.py"
+    #           # "tests/greenio_test.py"
+    #           # ];
+    #           # disabledTests = ["greenio_test"];
+    #         });
+    #       }
+    #     )
+    #   ];
 
     # nixgl-legacy = prev.nixgl-legacy;
 
