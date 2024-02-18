@@ -19,6 +19,9 @@ in {
         deepin.deepin-gtk-theme
         # gthumb
         # qogir-icon-theme
+
+        # Nautilus extensions
+        nautilus-annotations
         nautilus-open-any-terminal
       ] ++ (with pkgs.gnomeExtensions; [
         logo-menu

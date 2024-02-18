@@ -134,7 +134,8 @@
     # };
 
     nur = {
-      url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
+      url =
+        "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
     };
     picom.url = "github:yaocccc/picom";
     #spicetify-nix.url = "github:the-argus/spicetify-nix";
@@ -149,7 +150,7 @@
 
     nix-on-droid = {
       url = "github:t184256/nix-on-droid";
-      inputs = {nixpkgs.follows = "nixpkgs";};
+      inputs = { nixpkgs.follows = "nixpkgs"; };
     };
 
     comma.url = "github:nix-community/comma/v1.4.1";
@@ -205,7 +206,8 @@
     };
     split-monitor-workspaces = {
       url = "github:Duckonaut/split-monitor-workspaces";
-      inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
+      inputs.hyprland.follows =
+        "hyprland"; # <- make sure this line is present for the plugin to work as intended
     };
 
     nixpkgs-wayland = {
@@ -215,7 +217,8 @@
 
     plasma-manager = {
       # KDE Plasma user settings
-      url = "github:pjones/plasma-manager"; # Add "inputs.plasma-manager.homeManagerModules.plasma-manager" to the home-manager.users.${user}.imports
+      url =
+        "github:pjones/plasma-manager"; # Add "inputs.plasma-manager.homeManagerModules.plasma-manager" to the home-manager.users.${user}.imports
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "nixpkgs";
     };
@@ -232,38 +235,30 @@
     #   inputs.nixpkgs.follows = "unstable";
     # };
   };
-  outputs = {self, ...} @ inputs:
-    with inputs; let
+  outputs = { self, ... }@inputs:
+    with inputs;
+    let
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       stateVersion = "23.11";
       # stateVersion = "23.05";
-      libx = import ./lib {
-        inherit
-          inputs
-          outputs
-          stateVersion
-          lib
-          ;
-      };
+      libx = import ./lib { inherit inputs outputs stateVersion lib; };
     in {
       # Custom packages; acessible via 'nix build', 'nix shell', etc
-      packages = libx.systems (system: let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-        import ./pkgs {inherit pkgs;});
+      packages = libx.systems (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in import ./pkgs { inherit pkgs; });
 
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
-      devShells = libx.systems (system: let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-        import ./shell.nix {
+      devShells = libx.systems (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in import ./shell.nix {
           inherit pkgs;
           # node = pkgs.callPackage ./shells/node { };
         });
 
       # Custom packages and modifications, exported as overlays
-      overlays = import ./overlays {inherit inputs;};
+      overlays = import ./overlays { inherit inputs; };
 
       # nix fmt
       formatter = libx.systems (system:
@@ -279,8 +274,7 @@
 
       ### Separated home-manager from nixos
 
-      homeConfigurations = let
-        inherit (builtins.currentSystem) isDarwin;
+      homeConfigurations = let inherit (builtins.currentSystem) isDarwin;
       in {
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
@@ -381,16 +375,14 @@
         iso-console = libx.mkHost {
           hostname = "iso-console";
           username = "nixos";
-          installer =
-            nixpkgs
+          installer = nixpkgs
             + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix";
           hostid = "ed12be2d";
         };
         iso-desktop = libx.mkHost {
           hostname = "iso-desktop";
           username = "nixos";
-          installer =
-            nixpkgs
+          installer = nixpkgs
             + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix";
           desktop = "pantheon";
           hostid = "6ade8560";
