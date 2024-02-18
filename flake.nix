@@ -243,8 +243,7 @@
           inputs
           outputs
           stateVersion
-          # lib
-          
+          lib
           ;
       };
     in {

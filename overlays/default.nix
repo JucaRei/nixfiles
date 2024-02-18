@@ -19,8 +19,6 @@
       };
     });
 
-    # waybar = prev.waybar;
-
     # pythonPackagesExtensions =
     #   prev.pythonPackagesExtensions
     #   ++ [
@@ -125,6 +123,8 @@
         sha256 = "sha256-KfJ/MEgQdvzAM+rnKGMsjnRrbFeFu6F8Or+rgFNLgFI=";
       };
     });
+
+    waybar = prev.waybar;
 
     nix-inspect = prev.nix-inspect;
 

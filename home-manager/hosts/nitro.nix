@@ -41,7 +41,7 @@ with lib.hm.gvariant; {
         transmission_4-gtk
         lua
         # fcitx5-with-addons
-        vt-view
+        vv
         # gparted
         # neovim
         # tmux
