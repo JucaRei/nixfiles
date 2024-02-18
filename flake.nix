@@ -288,7 +288,8 @@
         "juca@nitro" = libx.mkHome {
           hostname = "nitro";
           username = "juca";
-          desktop = "hyprland";
+          # desktop = "hyprland";
+          desktop = "pantheon";
         };
         "juca@zion" = libx.mkHome {
           hostname = "zion";
@@ -401,7 +402,8 @@
         nitro = libx.mkHost {
           hostname = "nitro";
           username = "juca";
-          desktop = "hyprland";
+          desktop = "pantheon";
+          # desktop = "hyprland";
           hostid = "ceafb566";
         };
         air = libx.mkHost {
