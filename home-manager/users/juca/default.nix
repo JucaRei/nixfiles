@@ -1,8 +1,16 @@
-{ config, lib, hostname, pkgs, username, nixpkgs, ... }:
-let inherit (pkgs.stdenv) isLinux;
+{
+  config,
+  lib,
+  hostname,
+  pkgs,
+  username,
+  nixpkgs,
+  ...
+}: let
+  inherit (pkgs.stdenv) isLinux;
 in {
   imports = [
-    ../../_mixins/common/fonts.nix
+    ../../_mixins/fonts
     # ../../_mixins/services/keybase.nix
     # ../../_mixins/services/syncthing.nix
   ];
@@ -158,7 +166,7 @@ in {
     #   DEBSIGN_KEYID = "8F04688C17006782143279DA61DF940515E06DA3";
     #   PAGER = "moar";
     # };
-    extraOutputsToInstall = [ "info" "man" "share" "icons" "doc" ];
+    extraOutputsToInstall = ["info" "man" "share" "icons" "doc"];
   };
   programs = {
     # git = {

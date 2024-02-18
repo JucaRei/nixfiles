@@ -94,7 +94,7 @@ in {
         outputs.overlays.unstable-packages
         inputs.nixpkgs-f2k.overlays.stdenvs
         inputs.nixpkgs-f2k.overlays.compositors
-        inputs.nixgl.overlay
+        # inputs.nixgl.overlay
 
         # You can also add overlays exported from other flakes:
         # neovim-nightly-overlay.overlays.default
