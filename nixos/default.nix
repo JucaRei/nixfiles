@@ -167,13 +167,13 @@
         "https://nix-community.cachix.org"
         "https://juca-nixfiles.cachix.org"
         "https://hyprland.cachix.org"
-        "https://nix-gaming.cachix.org"
+        # "https://nix-gaming.cachix.org"
       ];
       trusted-public-keys = [
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
+        # "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
       ];
     };
     extraOptions = ''
@@ -319,7 +319,7 @@
       libvirtd.restartIfChanged = false;
       polkit.restartIfChanged = false;
       systemd-logind.restartIfChanged = false;
-      wpa_supplicant.restartIfChanged = false;
+      # wpa_supplicant.restartIfChanged = false;
 
       # lock-before-sleeping = {
       #   restartIfChanged = false;
@@ -380,9 +380,8 @@
       # Enable the D-Bus service, which is a message bus system that allows
       # communication between applications.
       enable = true;
-      implementation = lib.mkDefault "dbus";
+      implementation = if hostname == "nitro" then "broker" else "dbus";
     };
-    udev = { enable = true; };
   };
 
   environment = {
