@@ -397,6 +397,7 @@
           desktop = "pantheon";
           # desktop = "hyprland";
           hostid = "ceafb566";
+          isNixOS = true;
         };
         air = libx.mkHost {
           hostname = "air";

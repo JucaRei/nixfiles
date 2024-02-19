@@ -8,6 +8,8 @@ in {
     # ../apps/documents/libreoffice.nix
     # ../services/flatpak.nix
     ../console/properties.nix
+    ../apps/browser/brave
+    ../fonts
   ] ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
     ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix"))
     ./${desktop}.nix ++ lib.optional
@@ -26,10 +28,11 @@ in {
   };
 
   home = {
-    packages = with pkgs; [
-      # font-manager
-      dconf2nix
-      hexchat
-    ];
+    packages = with pkgs;
+      [
+        # font-manager
+        # dconf2nix
+        hexchat
+      ];
   };
 }

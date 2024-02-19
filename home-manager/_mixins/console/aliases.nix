@@ -21,9 +21,9 @@
     mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
     mkdir = "mkdir -pv";
     cat = "${pkgs.bat}/bin/bat --paging=never";
-    diff = "diffr";
+    diff = "${pkgs.diffr}/bin/diffr";
     # glow = "glow --pager";
-    ip = "ip --color --brief";
+    ip = "${pkgs.iproute2}/bin/ip --color --brief";
     less = "${pkgs.bat}/bin/bat --paging=always";
     more = "${pkgs.bat}/bin/bat --paging=always";
     top =

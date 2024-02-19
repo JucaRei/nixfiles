@@ -17,7 +17,6 @@
     # ./console/skim.nix
     ./console/starship.nix
     ./console/yt-dlp.nix
-    ./fonts
   ];
 
   home = {
@@ -25,10 +24,9 @@
     packages = with pkgs; [
       duf # Modern Unix `df`
       wget2 # Terminal downloader
-      ncdu_1
       moar # Modern Unix `less`
-      coreutils
-      pandoc
+      # coreutils
+      # pandoc
       nix-cleanup
       nix-whereis
       cachix
