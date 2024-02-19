@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   programs.btop = {
     enable = true;
     settings = {
@@ -217,5 +217,5 @@
   };
 
   xdg.configFile."btop/themes/cyberpunk_neon.theme".source =
-    ../config/btop/themes/cyberpunk_neon.theme;
+    ./themes/cyberpunk_neon.theme;
 }

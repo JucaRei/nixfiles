@@ -1,10 +1,15 @@
-{ lib, stdenv, fetchFromGitHub, pkgs, dmenuCmd ? "rofi -dmenu", ... }:
-
+{ lib
+, stdenv
+, fetchFromGitHub
+, dmenuCmd ? "rofi -dmenu"
+, ...
+}:
 let
   name = "qute-containers";
   version = "unstable";
   dmenu = dmenuCmd;
-in stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   inherit name version;
 
   src = fetchFromGitHub {
@@ -16,10 +21,13 @@ in stdenv.mkDerivation {
 
   phases = "installPhase";
 
-  installPhase = ''
-    mkdir -p $out $out/bin
-    cp $src/* $out/bin
-    sed -i 's/DMENU=\"rofi -dmenu\"/DMENU=\"'' + dmenu + ''
+  installPhase =
+    ''
+      mkdir -p $out $out/bin
+      cp $src/* $out/bin
+      sed -i 's/DMENU=\"rofi -dmenu\"/DMENU=\"''
+    + dmenu
+    + ''
       \"/g' $out/bin/containers_config
             sed -i 's/DMENU_FLAGS//g' $out/bin/container-open
     '';

@@ -1,4 +1,4 @@
-{ lib, config, hostname, ... }: {
+{ lib, config, hostname, pkgs, ... }: {
   home.shellAliases = {
     ### Nix ###
     # rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
@@ -20,18 +20,19 @@
     search = "nix search nixpkgs";
     mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
     mkdir = "mkdir -pv";
-    cat = "bat --paging=never";
+    cat = "${pkgs.bat}/bin/bat --paging=never";
     diff = "diffr";
     # glow = "glow --pager";
     ip = "ip --color --brief";
-    less = "bat --paging=always";
-    more = "bat --paging=always";
-    top = "btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
-    wget = "wget2";
-    jq = "jiq";
+    less = "${pkgs.bat}/bin/bat --paging=always";
+    more = "${pkgs.bat}/bin/bat --paging=always";
+    top =
+      "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
+    wget = "${pkgs.wget2}/bin/wget2";
+    jq = "${pkgs.jiq}/bin/jiq";
     gitpfolders = "for i in */.git; do ( echo $i; cd $i/..; git pull; ); done";
     du =
-      "ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
+      "${pkgs.ncdu_1}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
     #htop = "btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
     # ls = "eza -Slhg";
     # lsa = "eza -Slhga";

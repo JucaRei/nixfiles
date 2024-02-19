@@ -1,8 +1,8 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./config/scripts/home-manager_change_summary.nix
     ./console/aliases.nix
-    ./console/bat.nix
+    ./console/bat
     ./console/bash.nix
     # ./console/bottom.nix
     ./console/dircolors.nix

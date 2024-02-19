@@ -1,4 +1,6 @@
-{ pkgs, lib, params, ... }:
+{ pkgs
+, ...
+}:
 # let
 # ifDefault = lib.mkIf (builtins.elem params.browser [ "chrome" "google-chrome" ]);
 # in

@@ -1,4 +1,8 @@
-{ lib, params, pkgs, inputs, ... }: {
+{ lib
+, pkgs
+, inputs
+, ...
+}: {
   home = {
     packages = [
       # pkgs.brave

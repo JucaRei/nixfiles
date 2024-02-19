@@ -13,6 +13,7 @@ in {
 
     # Or modules exported from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModules.default
+    inputs.nix-index-database.hmModules.nix-index
 
     # You can also split up your configuration and import pieces of it here:
     ./_mixins
@@ -43,13 +44,12 @@ in {
         NIX_PATH = lib.concatStringsSep "-"
           (lib.mapAttrsToList (name: path: "${name}=${path.to.path}")
             config.nix.registry);
-        FLAKE = "/home/${username}/.dotfiles/nixfiles";
+
+        NIXPKGS_ALLOW_UNFREE = "1";
+        NIXPKGS_ALLOW_INSECURE = "1";
+        # FLAKE = "/home/${username}/.dotfiles/nixfiles";
       };
       enableNixpkgsReleaseCheck = false;
-      packages = [
-        # pkgs.nixgl.auto.nixGLDefault
-      ];
-      sessionVariables = { NIXPKGS_ALLOW_UNFREE = "1"; };
     };
 
     # Workaround home-manager bug with flakes
@@ -104,16 +104,6 @@ in {
 
       # Configure your nixpkgs instance
       config = {
-        # packagesOverrides = pkgs: {
-        #   # integrates nur within Home-Manager
-        #   nur =
-        #     import
-        #       (builtins.fetchTarball {
-        #         url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
-        #         sha256 = "0lk0fhdw2qfn3dfvdgld1zdgxf00cp3ksmqxfly8y7wwkmwjn6gc";
-        #       })
-        #       { inherit pkgs; };
-        # };
 
         # Allow unsupported packages to be built
         allowUnsupportedSystem = true;
@@ -131,8 +121,7 @@ in {
         # Disable if you don't want unfree packages
         allowUnfree = true;
         # Workaround for https://github.com/nix-community/home-manager/issues/2942
-        # allowUnfreePredicate = (_: true);
-        allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "dubai" ];
+        allowUnfreePredicate = (_: true);
         # Accept the joypixels license
         joypixels.acceptLicense = true;
       };
@@ -153,14 +142,14 @@ in {
         experimental-features = [
           "nix-command"
           "flakes"
-          "ca-derivations"
-          "auto-allocate-uids"
-          "cgroups"
+          # "ca-derivations"
+          # "auto-allocate-uids"
+          # "cgroups"
           #"configurable-impure-env"
         ];
         # Avoid unwanted garbage collection when using nix-direnv
-        auto-allocate-uids = true;
-        use-cgroups = if isLinux then true else false;
+        # auto-allocate-uids = true;
+        # use-cgroups = if isLinux then true else false;
         keep-outputs = true;
         keep-derivations = true;
         build-users-group = "nixbld";
@@ -169,12 +158,12 @@ in {
         warn-dirty = false;
 
         # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
-        keep-going = false;
+        keep-going = true;
         show-trace = true;
 
         # Allow to run nix
-        allowed-users = [ "${username}" "nixbld" "wheel" ];
-        trusted-users = [ "root" "${username}" "wheel" ];
+        allowed-users = [ "${username}" "nixbld" "@wheel" ];
+        trusted-users = [ "root" "${username}" "@wheel" ];
         connect-timeout = 5;
         http-connections = 0;
 
@@ -182,13 +171,13 @@ in {
           "https://nix-community.cachix.org"
           "https://hyprland.cachix.org"
           "https://juca-nixfiles.cachix.org"
-          "https://nix-gaming.cachix.org"
+          # "https://nix-gaming.cachix.org"
         ];
         trusted-public-keys = [
           "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
           "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
           "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
-          "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
+          # "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
         ];
       };
       extraOptions = ''

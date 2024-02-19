@@ -4,14 +4,14 @@
     config = { theme = "tokyo_night"; };
     themes = {
       # cyberpunk-neon =
-      #   builtins.readFile ../config/bat/themes/cyberpunk-neon.tmTheme;
+      #   builtins.readFile ./themes/cyberpunk-neon.tmTheme;
       # Catppuccin-mocha =
-      #   builtins.readFile ../config/bat/themes/Catppuccin-mocha.tmTheme;
+      #   builtins.readFile ./themes/Catppuccin-mocha.tmTheme;
       # rose_pine_moon =
-      #   builtins.readFile ../config/bat/themes/rose_pine_moon.tmTheme;
+      #   builtins.readFile ./themes/rose_pine_moon.tmTheme;
       tokyo_night =
-        # builtins.readFile ../config/bat/themes/tokyo_night.tmTheme;
-        lib.fileContents ../config/bat/themes/tokyo_night.tmTheme;
+        # builtins.readFile ./themes/tokyo_night.tmTheme;
+        lib.fileContents ./themes/tokyo_night.tmTheme;
     };
 
     extraPackages = with pkgs.bat-extras; [

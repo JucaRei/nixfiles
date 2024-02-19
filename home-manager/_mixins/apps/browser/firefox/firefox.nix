@@ -1,11 +1,9 @@
-{
-  pkgs,
-  config,
-  lib,
-  params,
-  inputs,
-  nur,
-  ...
+{ pkgs
+, config
+, lib
+, params
+, nur
+, ...
 }:
 with lib; let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
@@ -220,7 +218,8 @@ with lib; let
   browser = "firefox";
   # browser = "floorp";
   # browser = "librewolf";
-in {
+in
+{
   programs = {
     firefox = {
       enable = true;
@@ -266,7 +265,7 @@ in {
                   }
                 ];
                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-                definedAliases = ["@no"];
+                definedAliases = [ "@no" ];
               };
               "Nix Packages" = {
                 urls = [
@@ -285,7 +284,7 @@ in {
                   }
                 ];
                 icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-                definedAliases = ["@np"];
+                definedAliases = [ "@np" ];
               };
               "NixOS Wiki" = {
                 urls = [
@@ -293,7 +292,7 @@ in {
                     template = "https://nixos.wiki/index.php?search={searchTerms}";
                   }
                 ];
-                definedAliases = ["@nw"];
+                definedAliases = [ "@nw" ];
               };
               # "Brave" = {
               #   urls = [{

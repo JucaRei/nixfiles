@@ -12,7 +12,7 @@
         package = pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; };
       }];
       extraConfig = ''
-        font-size=16
+        font-size=18
         xkb-layout=us
       '';
     };

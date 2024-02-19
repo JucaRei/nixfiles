@@ -1,9 +1,13 @@
 # { config, lib, pkgs, wmType, font, params, ... }:
-{ config, pkgs, ... }:
+{ config
+, pkgs
+, ...
+}:
 let
-  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
-  librewolf = (nixGL pkgs.librewolf);
-in {
+  nixGL = import ../../../lib/nixGL.nix { inherit config pkgs; };
+  librewolf = nixGL pkgs.librewolf;
+in
+{
   # Module installing librewolf as default browser
   # home.packages = [ pkgs.librewolf ];
 
@@ -86,5 +90,4 @@ in {
     "x-scheme-handler/http" = "librewolf.desktop";
     "x-scheme-handler/https" = "librewolf.desktop";
   };
-
 }

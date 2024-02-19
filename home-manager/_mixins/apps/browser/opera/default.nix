@@ -1,4 +1,6 @@
-{ pkgs, lib, params, ... }:
+{ pkgs
+, ...
+}:
 # let
 # ifDefault = lib.mkIf (params.browser == "opera");
 # in
