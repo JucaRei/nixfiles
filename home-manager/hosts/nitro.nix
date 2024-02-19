@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib.hm.gvariant; {
   imports = [
     # ../_mixins/console/neovim.nix
@@ -13,10 +8,10 @@ with lib.hm.gvariant; {
     # ../_mixins/apps/text-editor/vscodium.nix
     ../_mixins/apps/text-editor/vscode.nix
     # ../_mixins/apps/terminal/urxvt.nix
-    ../_mixins/apps/browser/brave.nix
+    ../_mixins/apps/browser/brave
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix
-    ../_mixins/apps/browser/firefox.nix
+    ../_mixins/apps/browser/firefox/librewolf.nix
     # ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
   ];
@@ -64,8 +59,8 @@ with lib.hm.gvariant; {
 
       # Virtmanager
       "org/virt-manager/virt-manager/connections" = {
-        autoconnect = ["qemu:///system"];
-        uris = ["qemu:///system"];
+        autoconnect = [ "qemu:///system" ];
+        uris = [ "qemu:///system" ];
       };
     };
     # modules.desktop.browsers.chromium.enable = true;

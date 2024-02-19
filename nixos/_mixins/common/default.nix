@@ -1,46 +1,38 @@
-{
-  hostid,
-  hostname,
-  lib,
-  pkgs,
-  ...
-}: {
-  imports =
-    []
-    ++ lib.optionals (hostname != "rasp3") [
-      ./aliases.nix
-      ./aspell.nix
-      ./console.nix
-      ./locale.nix
-      ./fonts.nix
-      ./appimage.nix
-      # ./nano.nix
-      # ../config/qt/qt-style.nix
-      # ../console/fish.nix
-      # ../services/security/sudo.nix
-      # ../services/security/doas.nix
-      ../services/security/common.nix
-      # ../services/network/avahi.nix
-      # ../services/security/detect-reboot-needed.nix
-      # ../services/power/powertop.nix
-      # ../hardware/other/fwupd.nix
-      # ../hardware/other/usb.nix
-      # ../virtualization/nix-ld.nix
-      # ../services/tools/fhs.nix
-      # ../services/openssh.nix
-      # ../services/tailscale.nix
-      # ../services/zerotier.nix
-      ../config/scripts/nixos-change-summary.nix
-      # ../sys/check-updates.nix
-    ]
-    ++ lib.optionals (hostname == "rasp3") [
-      ./aliases.nix
-      ./console.nix
-      ./locale.nix
-      ../services/security/common.nix
-      ../config/scripts/nixos-change-summary.nix
-      # ../sys/check-updates.nix
-    ];
+{ hostid, hostname, lib, pkgs, ... }: {
+  imports = [ ] ++ lib.optionals (hostname != "rasp3") [
+    ./aliases.nix
+    ./aspell.nix
+    ./console.nix
+    ./keyboard.nix
+    ./locale.nix
+    ./fonts.nix
+    ./appimage.nix
+    # ./nano.nix
+    # ../config/qt/qt-style.nix
+    # ../console/fish.nix
+    # ../services/security/sudo.nix
+    # ../services/security/doas.nix
+    ../services/security/common.nix
+    # ../services/network/avahi.nix
+    # ../services/security/detect-reboot-needed.nix
+    # ../services/power/powertop.nix
+    # ../hardware/other/fwupd.nix
+    # ../hardware/other/usb.nix
+    # ../virtualization/nix-ld.nix
+    # ../services/tools/fhs.nix
+    # ../services/openssh.nix
+    # ../services/tailscale.nix
+    # ../services/zerotier.nix
+    ../config/scripts/nixos-change-summary.nix
+    # ../sys/check-updates.nix
+  ] ++ lib.optionals (hostname == "rasp3") [
+    ./aliases.nix
+    ./console.nix
+    ./locale.nix
+    ../services/security/common.nix
+    ../config/scripts/nixos-change-summary.nix
+    # ../sys/check-updates.nix
+  ];
 
   # don't install documentation i don't use
   documentation = {
@@ -55,9 +47,9 @@
   ### Default Boot Options ###
   ############################
   boot = {
-    initrd = {verbose = lib.mkDefault true;};
-    consoleLogLevel = 3;
-    kernelModules = ["kvm-intel" "tcp_bbr"];
+    initrd = { verbose = lib.mkDefault false; };
+    consoleLogLevel = 0;
+    kernelModules = [ "kvm-intel" "tcp_bbr" ];
     kernelParams = [
       "loglevel=3"
       # "rd.systemd.show_status=false"
@@ -100,7 +92,7 @@
         # "vm.dirty_ratio" = 40; # default 20, maximum ratio, block process when reached
       };
     };
-    supportedFilesystems = ["ext4" "btrfs" "exfat" "ntfs"];
+    supportedFilesystems = [ "ext4" "btrfs" "exfat" "ntfs" ];
   };
 
   ##############################
@@ -110,7 +102,7 @@
   environment = {
     # Eject nano and perl from the system
     defaultPackages = with pkgs;
-      lib.mkForce [gitMinimal home-manager micro rsync];
+      lib.mkForce [ gitMinimal home-manager micro rsync ];
     systemPackages = with pkgs;
       [
         agenix
@@ -136,11 +128,11 @@
         #unstable.nix-index
         #unstable.nix-prefetch-git
         # cifs-utils
-      ]
-      ++ (with pkgs.unstable; [
+      ] ++ (with pkgs.unstable; [
         # Minimal for nix code
         nil
-        nixpkgs-fmt
+        # nixpkgs-fmt
+        nixfmt
         nixpkgs-lint
       ]);
     variables = {
@@ -158,18 +150,15 @@
 
   programs = {
     #   fish.enable = true;
-    fuse = {userAllowOther = true;};
+    fuse = { userAllowOther = true; };
 
-    command-not-found = {enable = lib.mkDefault false;};
+    command-not-found = { enable = lib.mkDefault false; };
 
-    mtr = {enable = lib.mkDefault false;};
+    mtr = { enable = lib.mkDefault false; };
 
     # Minimal
     nix-ld = {
-      enable =
-        if hostname == "rasp3"
-        then false
-        else true;
+      enable = if hostname == "rasp3" then false else true;
       libraries = with pkgs; [
         curl
         glib
@@ -203,7 +192,7 @@
 
   services = {
     # Keeps the system timezone up-to-date based on the current location
-    automatic-timezoned = {enable = true;};
+    automatic-timezoned = { enable = true; };
 
     udev = {
       enable = true;
@@ -235,14 +224,14 @@
     # Enables simultaneous use of processor threads.
     allowSimultaneousMultithreading = true;
 
-    pam = {mount = {enable = true;};};
+    pam = { mount = { enable = true; }; };
   };
 
   systemd = lib.mkDefault {
     # systemd = lib.mkOverride 20 {
     services.disable-wifi-powersave = {
-      wantedBy = ["multi-user.target"];
-      path = [pkgs.iw];
+      wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.iw ];
       script = ''
         iw dev wlan0 set power_save off
       '';
@@ -254,13 +243,11 @@
     services = {
       "mglru" = {
         enable = true;
-        wantedBy = ["basic.target"];
+        wantedBy = [ "basic.target" ];
         script = ''
           ${pkgs.coreutils-full}/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms
         '';
-        serviceConfig = {
-          Type = "oneshot";
-        };
+        serviceConfig = { Type = "oneshot"; };
         unitConfig = {
           ConditionPathExists = "/sys/kernel/mm/lru_gen/enabled";
           Description = "Configure Enable Multi-Gen LRU";

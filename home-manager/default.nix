@@ -13,7 +13,7 @@ in {
 
     # Or modules exported from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModules.default
-    inputs.nix-index-database.hmModules.nix-index
+    # inputs.nix-index-database.hmModules.nix-index
 
     # You can also split up your configuration and import pieces of it here:
     ./_mixins

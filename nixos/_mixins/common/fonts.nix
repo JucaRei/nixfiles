@@ -4,10 +4,10 @@ in {
   fonts = {
     fontDir.enable = true;
     ## nix 23.05
-    # fonts = (with pkgs; [ 
+    # fonts = (with pkgs; [
     packages = (with pkgs;
       [
-        # renamed on 23.11 
+        # renamed on 23.11
         (nerdfonts.override {
           fonts = [ "FiraCode" "SourceCodePro" "UbuntuMono" ];
         })
@@ -18,18 +18,18 @@ in {
         gyre-fonts # TrueType substitutes for standard PostScript fonts
         noto-fonts-emoji # emoji
         source-serif
-        ubuntu_font_family
+        # ubuntu_font_family
         work-sans
         # siji # https://github.com/stark/siji
-        source-code-pro
+        # source-code-pro
         terminus_font
-        source-sans-pro
+        # source-sans-pro
         roboto
         material-design-icons
         font-awesome
         inter
-        maple-mono
-        maple-mono-NF
+        # maple-mono
+        # maple-mono-NF
         maple-mono-SC-NF
         meslo-lg
         cozette
@@ -43,7 +43,7 @@ in {
         fira-code-symbols
         mplus-outline-fonts.osdnRelease
         dejavu_fonts
-        iosevka-bin
+        # iosevka-bin
       ]);
 
     ## Enable a basic set of fonts providing several font styles and families and reasonable coverage of Unicode.

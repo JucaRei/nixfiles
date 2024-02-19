@@ -13,8 +13,8 @@
     inputs.nixos-hardware.nixosModules.common-pc-hdd
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
-    ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
-    # ../../_mixins/hardware/graphics/nvidia-specialisation.nix
+    #../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
+    ../../_mixins/hardware/graphics/nvidia/nvidia-specialisation.nix
     ../../_mixins/hardware/graphics/intel/intel-gpu-dual.nix
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/boot/efi.nix

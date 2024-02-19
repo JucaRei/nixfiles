@@ -1,13 +1,9 @@
 # { config, lib, pkgs, wmType, font, params, ... }:
-{ config
-, pkgs
-, ...
-}:
+{ config, pkgs, ... }:
 let
-  nixGL = import ../../../lib/nixGL.nix { inherit config pkgs; };
+  nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
   librewolf = nixGL pkgs.librewolf;
-in
-{
+in {
   # Module installing librewolf as default browser
   # home.packages = [ pkgs.librewolf ];
 
