@@ -9,7 +9,7 @@
     # ../_mixins/apps/social-media/discord.nix
     # ../_mixins/console/neovim.nix
     # ../_mixins/apps/browser/brave.nix
-    ../_mixins/apps/browser/firefox.nix
+    ../_mixins/apps/browser/firefox/firefox.nix
     # ../_mixins/apps/terminal/alacritty.nix
   ];
 
