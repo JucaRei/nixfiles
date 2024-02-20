@@ -1,7 +1,8 @@
 { lib, modulesPath, pkgs, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    (import ./disks-btrfs.nix { })
+    # (import ./disks-btrfs.nix { })
+    (import ./disks.nix { })
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/text-editor/vscode.nix
@@ -27,7 +28,7 @@
   zramSwap = {
     enable = true;
     swapDevices = 4;
-    memoryPercent = 30;
+    memoryPercent = 20;
   };
 
   # fileSystems."/mnt/nixos-nas/encrypted" = {
