@@ -330,7 +330,7 @@
         "juca@vm" = libx.mkHome {
           hostname = "vm";
           username = "juca";
-          desktop = "bspwm";
+          desktop = "awesome";
         };
         "juca@voidvm" = libx.mkHome {
           hostname = "voidvm";
