@@ -58,7 +58,7 @@
 
   # GTK
   # phocus-gtk = pkgs.callPackage ./themes/gtk/phocus { };
-  gruv = pkgs.callPackage ./themes/gtk/gruvbox-dark.nix { };
+  gruvbox-dark = pkgs.callPackage ./themes/gtk/gruvbox-dark.nix { };
   nautilus-annotations = pkgs.callPackage ./nautilus-annotations { };
 
   # mouse

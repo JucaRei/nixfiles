@@ -159,7 +159,7 @@
     mpv-thumbfast-osc = prev.mpv-thumbfast-osc;
     # youtube_tui = prev.youtube_tui;
     nix-whereis = prev.nix-whereis;
-    gruv = prev.gruv;
+    gruvbox-dark = prev.gruvbox-dark;
   };
 
   unstable-packages = final: _prev: {

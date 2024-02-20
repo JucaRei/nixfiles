@@ -279,7 +279,7 @@
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
         # nix build .#homeConfigurations."juca@DietPi".activationPackage
-        # nom build .#homeConfigurations."juca@vm".activationPackage
+        # nom build .#homeConfigurations."juca@vm".activationPackage --impure
         "juca@nitro" = libx.mkHome {
           hostname = "nitro";
           username = "juca";
