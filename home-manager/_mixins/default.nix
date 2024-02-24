@@ -3,20 +3,19 @@
     ./config/scripts/home-manager_change_summary.nix
     ./console/aliases.nix
     ./console/bat
-    ./console/bash.nix
+    # ./console/bash.nix
+    ./console/fish
     # ./console/bottom.nix
     ./console/dircolors.nix
     ./console/direnv.nix
     # ./console/eza.nix
-    ./console/eza1.nix
-    # ./console/exa.nix
-    ./console/htop.nix
+    ./console/eza.nix
+    ./console/htop
     ./console/git.nix
     ./console/micro.nix
     ./console/neofetch.nix
     # ./console/skim.nix
     ./console/starship.nix
-    ./console/yt-dlp.nix
   ];
 
   home = {
@@ -25,19 +24,18 @@
       duf # Modern Unix `df`
       wget2 # Terminal downloader
       moar # Modern Unix `less`
-      # coreutils
-      # pandoc
       nix-cleanup
       nix-whereis
       cachix
     ];
 
-    sessionVariables = {
-      EDITOR = "micro";
+    sessionVariables = let editor = "micro"; # change for whatever you want
+    in {
+      EDITOR = "${editor}";
       MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
       PAGER = "moar";
-      SYSTEMD_EDITOR = "micro";
-      VISUAL = "micro";
+      SYSTEMD_EDITOR = "${editor}";
+      VISUAL = "${editor}";
     };
   };
 
