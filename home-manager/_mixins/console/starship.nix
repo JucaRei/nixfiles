@@ -839,7 +839,7 @@ in {
       # };
     };
     enableBashIntegration = true;
-    enableZshInstegration = false;
+    enableZshIntegration = false;
     enableFishIntegration = false;
     enableIonIntegration = false;
     enableNushellIntegration = false;
