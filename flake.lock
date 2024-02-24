@@ -921,6 +921,26 @@
         "type": "github"
       }
     },
+    "nix-index-database": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1708225687,
+        "narHash": "sha256-NJBDfvknI26beOFmjO2coeJMTTUCCtw2Iu+rvJ1Zb9k=",
+        "owner": "Mic92",
+        "repo": "nix-index-database",
+        "rev": "17352eb241a8d158c4ac523b19d8d2a6c8efe127",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nix-index-database",
+        "type": "github"
+      }
+    },
     "nix-on-droid": {
       "inputs": {
         "home-manager": "home-manager_3",
@@ -1578,6 +1598,7 @@
         "hyprpicker": "hyprpicker",
         "nix-formatter-pack": "nix-formatter-pack",
         "nix-gaming": "nix-gaming",
+        "nix-index-database": "nix-index-database",
         "nix-on-droid": "nix-on-droid",
         "nixd": "nixd",
         "nixgl": "nixgl",

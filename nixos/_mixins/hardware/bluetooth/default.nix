@@ -3,10 +3,10 @@
   hardware = {
     bluetooth = {
       enable = true;
-      package = pkgs.bluez;
+      # package = pkgs.bluez;
 
       # battery info support
-      # package = pkgs.bluez5-experimental;
+      package = pkgs.bluez5-experimental;
 
       powerOnBoot = false;
       disabledPlugins = [ "sap" ];
