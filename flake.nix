@@ -376,6 +376,7 @@
         # nix run github:numtide/nixos-anywhere -- --flake /home/juca/.dotfiles/nixfiles#air root@192.168.1.76
         # - nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
         # nix build .#nixosConfigurations.iso.config.system.build.isoImage
+        # nom build .#nixosConfigurations.nitro.config.system.build.toplevel
 
         # ISO
         iso-console = libx.mkHost {

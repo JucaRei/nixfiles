@@ -3,7 +3,7 @@
     ./aliases.nix
     ./aspell.nix
     ./console.nix
-    ./keyboard.nix
+    # ./keyboard.nix
     ./locale.nix
     ./fonts.nix
     ./appimage.nix
