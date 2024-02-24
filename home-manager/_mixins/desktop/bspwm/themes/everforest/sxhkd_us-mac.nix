@@ -1,7 +1,7 @@
 { pkgs, config, lib, ... }:
 let
   terminal = "alacritty";
-  file-manager = "pcmanfm";
+  file-manager = "thunar";
   browser = "firefox";
 in {
   config = lib.mkIf (config.xsession.enable) {
@@ -57,8 +57,8 @@ in {
           "Super + {grave,Tab}" =
             "bspc {node,desktop} -f last"; # focus the last node/desktop
           "Super + {o,i}" = ''
-            bspc wm -h off; 
-             bspc node {older,newer} -f; 
+            bspc wm -h off;
+             bspc node {older,newer} -f;
              bspc wm -h on''; # focus the older or newer node in the focus history
           # "Super + {_,shift + }{1-9,0}" = "bspc {desktop -f,node -d} '^{1-9,10}'"; # focus or send to the given desktop
 

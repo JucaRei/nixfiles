@@ -36,8 +36,8 @@
         # EXTERNAL_MONITOR=$(xrandr | grep 'HDMI-1-1' | awk '{print $1}')
         EXTERNAL_MONITOR=$(xrandr | grep 'HDMI' | awk '{print $1}')
         # INTERNAL_MONITOR=$(xrandr | grep 'eDP1' | awk '{print $1}')
-        INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
-        # INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
+        # INTERNAL_MONITOR=$(xrandr | grep 'Virtual-1' | awk '{print $1}')
+        INTERNAL_MONITOR=$(xrandr | grep 'eDP-1' | awk '{print $1}')
         if [[ $1 == 0 ]]; then
             if [[ $(xrandr -q | grep "$\{EXTERNAL_MONITOR} connected") ]]; then
                 bspc monitor "$EXTERNAL_MONITOR" -d 1 2 3 4 5 6 7 8 9 0

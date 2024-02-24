@@ -4,9 +4,10 @@
   ###################
 
   console = {
-    keyMap = lib.mkForce (if (hostname == "nitro") then "br" else "us");
+    # keyMap = lib.mkForce (if (hostname == "nitro") then "br" else "us");
     #earlySetup = true;
-    font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
+    font = lib.mkForce
+      "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
     colors = [
       "1b161f"
       "ff5555"
