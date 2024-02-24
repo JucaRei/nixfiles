@@ -436,56 +436,56 @@
         interval = "weekly";
       };
     };
-    xserver = {
-      # videoDrivers = [ "i915" ];
-      # displayManager.sessionCommands = ''
-      #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource 1 0
-      #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
-      # '';
-      #######################
-      ### Xserver configs ###
-      #######################
-      layout = lib.mkForce "br";
-      xkbVariant = "abnt2";
-      xkbModel = lib.mkForce "pc105";
-      # xkbOptions = "grp:alt_shift_toggle";
-      libinput = {
-        enable = true;
-        touchpad = {
-          # horizontalScrolling = true;
-          # tappingDragLock = false;
-          tapping = true;
-          naturalScrolling = false;
-          scrollMethod = "twofinger";
-          disableWhileTyping = true;
-          sendEventsMode = "disabled-on-external-mouse";
-          # clickMethod = "clickfinger";
-        };
-        mouse = {
-          naturalScrolling = false;
-          disableWhileTyping = true;
-          accelProfile = "flat";
-        };
-      };
-      # xrandrHeads = [
-      #   {
-      #     output = "HDMI-1-0";
-      #     primary = true;
-      #     monitorConfig = ''
-      #       Modeline "1920x1080_60.00"
-      #     '';
-      #   }
-      #   {
-      #     output = "eDP";
-      #     primary = false;
-      #     monitorConfig = ''
-      #       Option "PreferredMode" "1920x1080"
-      #       Option "Position" "0 0"
-      #     '';
-      #   }
-      # ];
-      exportConfiguration = true;
-    };
+    # xserver = {
+    # videoDrivers = [ "i915" ];
+    # displayManager.sessionCommands = ''
+    #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource 1 0
+    #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
+    # '';
+    #######################
+    ### Xserver configs ###
+    #######################
+    # layout = lib.mkForce "br";
+    # xkbVariant = "abnt2";
+    # xkbModel = lib.mkForce "pc105";
+    # xkbOptions = "grp:alt_shift_toggle";
+    # libinput = {
+    #   enable = true;
+    #   touchpad = {
+    #     # horizontalScrolling = true;
+    #     # tappingDragLock = false;
+    #     tapping = true;
+    #     naturalScrolling = false;
+    #     scrollMethod = "twofinger";
+    #     disableWhileTyping = true;
+    #     sendEventsMode = "disabled-on-external-mouse";
+    #     # clickMethod = "clickfinger";
+    #   };
+    #   mouse = {
+    #     naturalScrolling = false;
+    #     disableWhileTyping = true;
+    #     accelProfile = "flat";
+    #   };
+    # };
+    # xrandrHeads = [
+    #   {
+    #     output = "HDMI-1-0";
+    #     primary = true;
+    #     monitorConfig = ''
+    #       Modeline "1920x1080_60.00"
+    #     '';
+    #   }
+    #   {
+    #     output = "eDP";
+    #     primary = false;
+    #     monitorConfig = ''
+    #       Option "PreferredMode" "1920x1080"
+    #       Option "Position" "0 0"
+    #     '';
+    #   }
+    # ];
+    # exportConfiguration = true;
+    # };
     # power-profiles-daemon.enable = lib.mkForce false;
     # tlp = {
     #   enable = true;

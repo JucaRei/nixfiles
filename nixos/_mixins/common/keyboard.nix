@@ -1,18 +1,20 @@
 { hostname, lib, ... }: {
-  services.xserver = if (hostname == "nitro") then {
-    xkb = {
-      layout = "br";
-      variant = "abnt2";
-      model = "pc105";
-      options = "grp:alt_shift_toggle,caps:none";
-    };
-  } else {
-    xkb = {
-      layout = "us";
-      variant = "mac";
-      model = "pc105";
-      options = "grp:alt_shift_toggle,caps:none";
-    };
+  # services.xserver = if (hostname == "nitro") then {
+  services.xserver = {
+    #   xkb = {
+    #     layout = "br";
+    #     variant = "abnt2";
+    #     model = "pc105";
+    #     options = "grp:alt_shift_toggle,caps:none";
+    #     # options = "eurosign:e";
+    #   };
+    # } else {
+    #   xkb = {
+    #     layout = "us";
+    #     variant = "mac";
+    #     model = "pc105";
+    #     options = "grp:alt_shift_toggle,caps:none";
+    #   };
     libinput = {
       enable = true;
       touchpad = {
@@ -32,5 +34,10 @@
       };
     };
     exportConfiguration = true;
+  };
+
+  console = {
+    keyMap = if hostname == "nitro" then "br-abnt2" else "us-mac";
+    font = lib.mkDefault "Lat2-Terminus16";
   };
 }
