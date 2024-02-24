@@ -3,7 +3,7 @@ _: {
     direnv = {
       enable = true;
       enableBashIntegration = true;
-      enableFishIntegration = true;
+      # enableFishIntegration = true;
       enableZshIntegration = true;
       enableNushellIntegration = true;
       nix-direnv = { enable = true; };
