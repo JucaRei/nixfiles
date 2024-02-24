@@ -2,7 +2,7 @@
 { config, pkgs, ... }:
 let
   nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
-  librewolf = nixGL pkgs.librewolf;
+  librewolf-custom = nixGL pkgs.librewolf;
 in {
   # Module installing librewolf as default browser
   # home.packages = [ pkgs.librewolf ];
@@ -10,7 +10,7 @@ in {
   programs = {
     librewolf = {
       enable = true;
-      package = librewolf;
+      package = librewolf-custom;
       settings = {
         "ui.use_activity_cursor" = true;
         "browser.toolbars.bookmarks.visibility" = "never";
@@ -26,7 +26,7 @@ in {
     # else
     # { DEFAULT_BROWSER = "${pkgs.librewolf}/bin/librewolf"; };
     {
-      DEFAULT_BROWSER = "${librewolf}/bin/librewolf";
+      DEFAULT_BROWSER = "${librewolf-custom}/bin/librewolf";
     };
 
   # defaultPref("font.name.serif.x-western","'' + font + ''");
