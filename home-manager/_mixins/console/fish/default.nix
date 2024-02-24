@@ -22,7 +22,7 @@ in {
         make-lima-builder = "lima-create builder";
         make-lima-default = "lima-create default";
         moon = "${pkgs.curlMinimal}/bin/curl -s wttr.in/Moon";
-        more = "${pkgs.bat}/bin/bat";
+        # more = "${pkgs.bat}/bin/bat";
         checkip = "${pkgs.curlMinimal}/bin/curl -s ifconfig.me/ip";
         parrot =
           "${pkgs.terminal-parrot}/bin/terminal-parrot -delay 50 -loops 7";
