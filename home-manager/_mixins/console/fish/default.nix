@@ -33,7 +33,7 @@ in {
           "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
         top =
           "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
-        tree = "${pkgs.eza}/bin/eza --tree";
+        # tree = "${pkgs.eza}/bin/eza --tree";
         wormhole = "${pkgs.wormhole-william}/bin/wormhole-william";
         weather = "${pkgs.wthrr}/bin/wthrr auto -u f,24h,c,mph -f d,w";
         weather-home =
