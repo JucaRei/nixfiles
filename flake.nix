@@ -123,10 +123,10 @@
     nixd.url = "github:nix-community/nixd";
 
     # Use nix-index without having to generate the database locally
-    # nix-index-database = {
-    #   url = "github:Mic92/nix-index-database";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # darwin = {
     #   url = "github:lnl7/nix-darwin/master"; # MacOS Package Management
