@@ -838,7 +838,7 @@ in {
       #   command_timeout = 1000;
       # };
     };
-    enableBashInstegration = true;
+    enableBashIntegration = true;
     enableZshInstegration = false;
     enableFishInstegration = false;
     enableIonIntegration = false;
