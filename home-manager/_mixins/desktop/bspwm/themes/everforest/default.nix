@@ -6,7 +6,6 @@
     # ./polybar.nix
     ../../../../apps/terminal/alacritty.nix
     ../../../../apps/file-managers/thunar.nix
-    ./polybar-everforest.nix
     ./sxhkd_us-mac.nix
     ./rofi.nix
   ];
