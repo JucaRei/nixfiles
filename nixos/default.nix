@@ -230,11 +230,19 @@
     activationScripts = {
       diff = {
         supportsDryActivation = true;
+        # text = ''
+        #   if [[ -e /run/current-system ]]; then
+        #     echo "--- changed packages"
+        #     ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
+        #     echo "---"
+        #   fi
+        # '';
+
         text = ''
           if [[ -e /run/current-system ]]; then
-            echo "--- changed packages"
-            ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
-            echo "---"
+            echo -e "\n***            ***          ***           ***           ***\n"
+            ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
+            echo -e "\n***            ***          ***           ***           ***\n"
           fi
         '';
       };
