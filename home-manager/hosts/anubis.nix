@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   imports = [
     # ../_mixins/apps/music/rhythmbox.nix
     ../_mixins/apps/text-editor/vscode.nix
@@ -11,4 +11,10 @@
     # ../_mixins/desktop/bspwm/themes/default
     # ../_mixins/apps/browser/opera.nix
   ];
+  config = {
+    nix = { substituters = [ "https://juca-nixfiles.cachix.org" ]; };
+    trusted-public-keys = [
+      "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
+    ];
+  };
 }
