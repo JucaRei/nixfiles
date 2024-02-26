@@ -12,8 +12,8 @@ with lib.hm.gvariant; {
   # };
   config = {
     nix.settings = {
-      substituters = [ "https://nitro.cachix.org" ];
-      trusted-public-keys =
+      extra-substituters = [ "https://nitro.cachix.org" ];
+      extra-trusted-public-keys =
         [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
     };
   };

@@ -13,8 +13,8 @@
   ];
   config = {
     nix.settings = {
-      substituters = [ "https://anubis.cachix.org" ];
-      trusted-public-keys =
+      extra-substituters = [ "https://anubis.cachix.org" ];
+      extra-trusted-public-keys =
         [ "anubis.cachix.org-1:p6q0lqdZcE9UrkmFonRSlRPAPADFnZB1atSgp6tbF3U=" ];
     };
   };

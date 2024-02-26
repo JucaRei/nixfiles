@@ -8,7 +8,7 @@ with lib.hm.gvariant; {
   ];
 
   config = {
-    options.bspwm-xs.enable = true;
+    modules.bspwm-xs.enable = true;
     home = {
       packages = with pkgs; [
         # Default packages for ALL
