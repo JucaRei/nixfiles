@@ -30,8 +30,6 @@ DRIVE="/dev/nvme0n1p2"
 mkfs.btrfs ${DRIVE} -f -L "Nitroux"
 
 BTRFS_OPTS="rw,noatime,ssd,compress-force=zstd:15,space_cache=v2,nodatacow,commit=120,discard=async"
-BTRFS_OPTS2="rw,noatime,ssd,compress-force=zstd:3,space_cache=v2,nodatacow,commit=120,discard=async"
-BTRFS_OPTS3="rw,noatime,ssd,compress-force=zstd:6,space_cache=v2,nodatacow,commit=120,discard=async"
 # BTRFS_OPTS="rw,noatime,ssd,compress-force=zstd:15,space_cache=v2,commit=120,discard=async"
 mount -o $BTRFS_OPTS /dev/disk/by-label/Nitroux /mnt
 btrfs su cr /mnt/@rootfs
@@ -40,13 +38,14 @@ btrfs su cr /mnt/@nix
 btrfs su cr /mnt/@logs
 btrfs su cr /mnt/@tmp
 btrfs su cr /mnt/@snapshots
-# btrfs su cr /mnt/@swap
+btrfs su cr /mnt/@swap
 umount -Rv /mnt
 
 # mount -o $BTRFS_OPTS,subvol=@root /dev/vda2 /mnt
 mount -o $BTRFS_OPTS3,subvol=@rootfs /dev/disk/by-label/Nitroux /mnt
 # mount -o $BTRFS_OPTS,subvol="@root" /dev/disk/by-partlabel/Nitroux /mnt
-mkdir -pv /mnt/{boot/efi,home,.snapshots,nix,var/log,var/tmp}
+# mkdir -pv /mnt/{boot/efi,home,.snapshots,nix,var/log,var/tmp,var/swap}
+mkdir -pv /mnt/{boot/efi,home,.snapshots,nix,var/{swap,tmp,log}}
 mount -o $BTRFS_OPTS2,subvol=@home /dev/disk/by-label/Nitroux /mnt/home
 # mount -o $BTRFS_OPTS,subvol="@home" /dev/disk/by-partlabel/Nitroux /mnt/home
 mount -o $BTRFS_OPTS,subvol=@snapshots /dev/disk/by-label/Nitroux /mnt/.snapshots

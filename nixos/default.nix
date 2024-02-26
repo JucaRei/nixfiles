@@ -32,11 +32,10 @@
           super.makeModulesClosure (x // { allowMissing = true; });
       })
 
-      inputs.nixd.overlays.default
-
       # You can also add overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
       inputs.agenix.overlays.default
+      inputs.nixd.overlays.default
 
       # Or define it inline, for example:
       # (final: prev: {
@@ -89,22 +88,22 @@
       permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" ];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
-      # allowUnfreePredicate = _: true;
+      allowUnfreePredicate = _: true;
 
-      allowUnfreePredicate = pkg:
-        builtins.elem (lib.getName pkg) [
-          "nvidia-settings"
-          "nvidia-x11"
-          "spotify"
-          "steam"
-          "steam-original"
-          "steam-run"
-          "vscode"
-          "dubai"
+      # allowUnfreePredicate = pkg:
+      #   builtins.elem (lib.getName pkg) [
+      #     "nvidia-settings"
+      #     "nvidia-x11"
+      #     "spotify"
+      #     "steam"
+      #     "steam-original"
+      #     "steam-run"
+      #     "vscode"
+      #     # "dubai"
 
-          # they got fossed recently so idk
-          "Anytype"
-        ];
+      #     # they got fossed recently so idk
+      #     "Anytype"
+      #   ];
     };
   };
 
@@ -145,36 +144,24 @@
       flake-registry = "/etc/nix/registry.json";
 
       # for direnv GC roots
-      keep-derivations = true;
+      keep-derivations = false;
       keep-outputs = true;
-      keep-going = lib.mkForce true;
+      keep-going = lib.mkForce false;
 
       experimental-features = [
-        "auto-allocate-uids"
+        # "auto-allocate-uids"
         "nix-command"
         "flakes"
         "repl-flake"
-        "ca-derivations"
-        "cgroups"
+        # "ca-derivations"
+        # "cgroups"
       ];
       # Allow to run nix
-      allowed-users = [ "${username}" "wheel" ];
+      allowed-users = [ "root" "@wheel" ];
       builders-use-substitutes =
         true; # Avoid copying derivations unnecessary over SSH.
 
-      trusted-users = [ "root" "${username}" ];
-      # substituters = [
-      #   "https://nix-community.cachix.org"
-      #   "https://juca-nixfiles.cachix.org"
-      #   "https://hyprland.cachix.org"
-      #   # "https://nix-gaming.cachix.org"
-      # ];
-      # trusted-public-keys = [
-      #   "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      #   "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
-      #   "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      #   # "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
-      # ];
+      trusted-users = [ "root" "@wheel" ];
 
       substituters = [
         "https://cache.nixos.org"
