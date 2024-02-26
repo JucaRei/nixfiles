@@ -63,5 +63,10 @@ with lib.hm.gvariant; {
       };
     };
     # modules.desktop.browsers.chromium.enable = true;
+    nix.settings = {
+      substituters = [ "https://nitro.cachix.org" ];
+      trusted-public-keys =
+        [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+    };
   };
 }

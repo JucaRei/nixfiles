@@ -13,10 +13,9 @@
   ];
   config = {
     nix.settings = {
-      substituters = [ "https://juca-nixfiles.cachix.org" ];
-      trusted-public-keys = [
-        "juca-nixfiles.cachix.org-1:HN1wk6GxLI1ZPr3bN2RNa+a4jXwLGUPJG6zXKqDZ/Kc="
-      ];
+      substituters = [ "https://anubis.cachix.org" ];
+      trusted-public-keys =
+        [ "anubis.cachix.org-1:p6q0lqdZcE9UrkmFonRSlRPAPADFnZB1atSgp6tbF3U=" ];
     };
   };
 }

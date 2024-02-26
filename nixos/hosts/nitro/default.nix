@@ -583,4 +583,10 @@
   #  boot.loader.grub.configurationName = lib.mkOverride 40 "Pass-through Nvidia";
   #  vfio.enable = false;
   #};
+
+  nix.settings = {
+    substituters = [ "https://nitro.cachix.org" ];
+    trusted-public-keys =
+      [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+  };
 }

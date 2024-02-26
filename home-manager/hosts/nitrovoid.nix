@@ -10,5 +10,11 @@ with lib.hm.gvariant; {
   #     # picture-uri = "file://${config.home.homeDirectory}/Pictures/Determinate/DeterminateColorway-3440x1440.png";
   #   };
   # };
-  targets.genericLinux.enable = true;
+  config = {
+    nix.settings = {
+      substituters = [ "https://nitro.cachix.org" ];
+      trusted-public-keys =
+        [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+    };
+  };
 }
