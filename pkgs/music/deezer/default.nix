@@ -1,13 +1,19 @@
-# { stdenv, lib, pkgs, sources, fetchurl, fetchFromGitHub, udev, makeDesktopItem, makeBinaryWrapper, electron_13, ... }:
-
-{ copyDesktopItems, electron_13, fetchFromGitHub, fetchurl, pkgs, lib
-, makeBinaryWrapper, makeDesktopItem, nodePackages, p7zip, stdenv, udev }:
-# see:
-# - https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=deezer
-# - https://github.com/Shawn8901/nix-configuration/blob/main/packages/deezer/default.nix
-
+{ lib
+, stdenv
+, fetchurl
+, fetchzip
+, makeDesktopItem
+, copyDesktopItems
+, makeWrapper
+, writeScript
+, imagemagick
+, p7zip
+, nodePackages
+, electron_13
+,
+}:
 let
-  desktop = pkgs.makeDesktopItem {
+  desktopItem = makeDesktopItem {
     name = "deezer";
     desktopName = "Deezer";
     comment = "Deezer audio streaming service";
@@ -17,74 +23,64 @@ let
     mimeTypes = [ "x-scheme-handler/deezer" ];
     startupWMClass = "deezer";
     exec = "deezer %u";
-    terminal = false;
     startupNotify = true;
   };
-  version = "5.30.580";
-  electron = electron_13.overrideAttrs (old: {
-    meta = old.meta // {
-      # Ignore EOL for old Electron versions.
-      knownVulnerabilities = [ ];
-    };
-  });
-in stdenv.mkDerivation rec {
-  pname = "deezer-desktop";
-  inherit version;
+  shortenVersion = v:
+    lib.concatStringsSep "." (lib.sublist 0 3 (lib.splitVersion v));
 
-  src = fetchurl {
+in
+stdenv.mkDerivation (finalAttrs: {
+
+  version = "6.0.70";
+  pname = "deezer";
+
+  src = fetchzip {
     url =
-      "https://www.deezer.com/desktop/download/artifact/win32/x86/${version}";
-    sha256 = "sha256-oUebThUpfI0poL65kG9kesarnGqOSQFycCgSYueVlQQ=";
+      "https://github.com/SibrenVasse/${finalAttrs.pname}/archive/refs/tags/v${finalAttrs.version}.tar.gz";
+    hash = "sha256-A3ibtwJczq8fZxj9PvqYWI3+TQN/XsfvXoZst3oTdnM=";
   };
 
-  meta = with lib; {
-    description = "Online music streaming service";
-    license = licenses.unfree;
-    homepage = "https://www.deezer.com";
-    platforms = platforms.linux;
+  # this is a nasty workaround to trick nix-update to update your hash, whilst having src on the github repo
+  # that is providing patches, whilst also updating a second hash
+  go-modules = fetchurl {
+    url = "https://www.deezer.com/desktop/download/artifact/win32/x86/${
+        shortenVersion finalAttrs.version
+      }";
+    hash = "sha256-kOE/3Nh3bpRj/Po9q35YAcPuHYBa5pQv9+MqKGgAscM=";
   };
 
-  buildInputs = with pkgs; [
+  patches = [
+    "${finalAttrs.src}/remove-kernel-version-from-user-agent.patch"
+    "${finalAttrs.src}/avoid-change-default-texthtml-mime-type.patch"
+    "${finalAttrs.src}/start-hidden-in-tray.patch"
+    "${finalAttrs.src}/quit.patch"
+  ];
+
+  nativeBuildInputs = [
     copyDesktopItems
-    makeBinaryWrapper
-    imagemagick
     makeWrapper
+    p7zip
     nodePackages.asar
     nodePackages.prettier
-    p7zip
-  ];
-  patches = [
-    ./avoid-change-default-texthtml-mime-type.patch
-    ./fix-isDev-usage.patch
-    ./quit.patch
-    ./remove-kernel-version-from-user-agent.patch
-    ./start-hidden-in-tray.patch
-    # ./systray-buttons-fix.patch
+    imagemagick
   ];
 
-  unpackPhase = ''
-    runHook preUnpack
+  dontConfigure = true;
 
-    # Extract app from installer
-    7z x -so $src "\$PLUGINSDIR/app-32.7z" > app-32.7z
-    # Extract app archive
+  prePatch = ''
+    7z x -so ${finalAttrs.go-modules} "\$PLUGINSDIR/app-32.7z" > app-32.7z
     7z x -y -bsp0 -bso0 app-32.7z
 
-    cd resources/
+    cd resources
     asar extract app.asar app
-
     prettier --write "app/build/*.js"
 
-    substituteInPlace app/build/main.js --replace \
-      "return external_path_default().join(process.resourcesPath, appIcon);" \
+    substituteInPlace app/build/main.js \
+      --replace "return external_path_default().join(process.resourcesPath, appIcon);" \
       "return external_path_default().join('$out', 'share/deezer/', appIcon);"
 
     cd ..
 
-    runHook postUnpack
-  '';
-
-  prePatch = ''
     cd resources/app
   '';
 
@@ -95,9 +91,11 @@ in stdenv.mkDerivation rec {
   buildPhase = ''
     runHook preBuild
 
-    cd resources/
-    convert win/app.ico win/deezer.png
+    cd resources
+
     asar pack app app.asar
+    cp app/build/main.js .
+
     cd ..
 
     runHook postBuild
@@ -106,15 +104,13 @@ in stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p "$out/share/deezer/linux"
-    mkdir -p "$out/share/applications"
-    mkdir -p "$out/bin/"
+    mkdir -p "$out/share/deezer" "$out/share/deezer/linux" "$out/share/applications" "$out/bin/"  $out/app
+
     for size in 16 32 48 64 128 256; do
       mkdir -p "$out/share/icons/hicolor/''${size}x''${size}/apps/"
     done
 
-    install -Dm644 resources/app.asar "$out/share/deezer/"
-    install -Dm644 resources/win/systray.png "$out/share/deezer/linux/"
+    convert resources/win/app.ico resources/win/deezer.png
     install -Dm644 resources/win/deezer-0.png "$out/share/icons/hicolor/16x16/apps/deezer.png"
     install -Dm644 resources/win/deezer-1.png "$out/share/icons/hicolor/32x32/apps/deezer.png"
     install -Dm644 resources/win/deezer-2.png "$out/share/icons/hicolor/48x48/apps/deezer.png"
@@ -122,12 +118,23 @@ in stdenv.mkDerivation rec {
     install -Dm644 resources/win/deezer-4.png "$out/share/icons/hicolor/128x128/apps/deezer.png"
     install -Dm644 resources/win/deezer-5.png "$out/share/icons/hicolor/256x256/apps/deezer.png"
 
-    install -Dm644 ${desktop}/share/applications/deezer.desktop "$out/share/applications/deezer.desktop"
+    install -m644 resources/app.asar "$out/share/deezer/"
+    install -m644 resources/win/systray.png "$out/share/deezer/linux/"
 
-    makeWrapper ${pkgs.electron_13}/bin/electron $out/bin/deezer \
+    makeWrapper ${electron_13}/bin/electron $out/bin/deezer \
       --add-flags $out/share/deezer/app.asar \
       --chdir $out/share/deezer
 
     runHook postInstall
   '';
-}
+
+  desktopItems = [ desktopItem ];
+
+  passthru.runUpdate = true;
+
+  meta = with lib; {
+    maintainers = with maintainers; [ shawn8901 ];
+    license = lib.licenses.unfree;
+    platforms = [ "x86_64-linux" ];
+  };
+})
