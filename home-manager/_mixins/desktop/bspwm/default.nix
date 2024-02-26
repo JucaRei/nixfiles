@@ -4,19 +4,11 @@ with lib.hm.gvariant; {
     ### Import selected theme
     # ./themes/default
     ./themes/everforest
+    ./xsession.nix
   ];
 
   config = {
-    xsession = {
-      enable = true;
-      numlock.enable = true;
-      windowManager = {
-        bspwm = {
-          enable = true;
-          alwaysResetDesktops = true;
-        };
-      };
-    };
+    options.bspwm-xs.enable = true;
     home = {
       packages = with pkgs; [
         # Default packages for ALL
@@ -45,23 +37,6 @@ with lib.hm.gvariant; {
         "_JAVA_AWT_WM_NONREPARENTING" = "1";
       };
       sessionPath = [ "$HOME/.local/bin" ];
-    };
-
-    systemd.user.services.polkit-agent = lib.mkIf config.xsession.enable {
-      Unit = {
-        Description = "launch authentication-agent-1";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-      Service = {
-        Type = "simple";
-        Restart = "on-failure";
-        ExecStart = ''
-          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-        '';
-      };
-
-      Install = { WantedBy = [ "graphical-session.target" ]; };
     };
 
     dconf.settings = {
