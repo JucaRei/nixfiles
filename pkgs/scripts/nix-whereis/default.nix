@@ -20,3 +20,5 @@ writeShellApplication {
 
   runtimeInputs = [ coreutils which ];
 }
+
+# nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'

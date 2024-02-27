@@ -6,7 +6,8 @@ let
   nixBin = writeShellScriptBin "nix" ''
     ${nixVersions.stable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '';
-in {
+in
+{
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
@@ -15,8 +16,8 @@ in {
       cachix
       alejandra
       home-manager
-      # dropbear
-      # speedtest-cli
+      dropbear
+      speedtest-cli
       direnv
       zsh
       git
@@ -26,10 +27,11 @@ in {
       nixpkgs-fmt
       nixfmt
       nix-output-monitor
+      #fira-code-nerdfont
       # neofetch
     ];
     shellHook = ''
-      # alias ssh=dbclient
+      alias ssh=dbclient
       export FLAKE="$(pwd)"
       export PATH="$FLAKE/bin:${nixBin}/bin:$PATH"
       echo "
