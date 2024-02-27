@@ -89,7 +89,7 @@
         rev = "v${version}";
         hash = "sha256-8N4wQXxjNZuNGx/c7WVAV5QS48Bff5G3t11UkihT+K0=";
       };
-      patches = [ ./darwin.patch ];
+      patches = [ ./patches/darwin.patch ];
     });
 
     nelua = prev.nelua.overrideAttrs (_old: {
@@ -162,9 +162,9 @@
     gruvbox-dark = prev.gruvbox-dark;
   };
 
+  # accessible through 'pkgs.unstable'
   unstable-packages = final: _prev: {
-    # unstable = import inputs.nixpkgs-unstable {
-    unstable = import inputs.unstable {
+    unstable = import inputs.nixpkgs-unstable {
       inherit (final) system;
       config.allowUnfree = true;
     };

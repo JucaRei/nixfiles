@@ -24,9 +24,9 @@ in {
 
   home = {
     activation.report-changes = config.lib.dag.entryAnywhere ''
-      if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
-          ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
-        fi
+      if [[ -n "$oldGenPath" && -n "$newGenPath" ]]; then
+        ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
+      fi
     '';
 
     homeDirectory = if isDarwin then
@@ -42,7 +42,6 @@ in {
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
     };
-    enableNixpkgsReleaseCheck = false;
   };
 
   # Workaround home-manager bug with flakes
@@ -115,7 +114,11 @@ in {
     # To make nix3 commands consistent with your flake
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
-    package = lib.mkDefault pkgs.unstable.nix;
+    # Add nixpkgs input to NIX_PATH
+    # This lets nix2 commands still use <nixpkgs>
+    nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
+
+    package = pkgs.unstable.nix;
     settings = if isDarwin then {
       nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
       daemonIOLowPriority = true;
