@@ -1,13 +1,12 @@
 # This file defines overlays
-{ inputs, ... }: {
+{inputs, ...}: {
   # This one brings our custom packages from the 'pkgs' directory
-  additions = final: _prev: import ../pkgs { pkgs = final; };
+  additions = final: _prev: import ../pkgs {pkgs = final;};
 
   # This one contains whatever you want to overlay
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
   modifications = _final: prev: {
-
     # https://github.com/NixOS/nixpkgs/issues/278277#issuecomment-1878292158
     keybase = prev.keybase.overrideAttrs (_old: rec {
       pname = "keybase";
@@ -20,12 +19,15 @@
       };
     });
 
-    pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
-      (python-final: python-prev: {
-        default = python-prev.default.overridePythonAttrs
-          (oldAttrs: { patches = [ ./ceph.patch ]; });
-      })
-    ];
+    pythonPackagesExtensions =
+      prev.pythonPackagesExtensions
+      ++ [
+        (python-final: python-prev: {
+          default =
+            python-prev.default.overridePythonAttrs
+            (oldAttrs: {patches = [./ceph.patch];});
+        })
+      ];
 
     # nixgl-legacy = prev.nixgl-legacy;
 
@@ -46,12 +48,14 @@
     };
 
     google-chrome = prev.google-chrome.overrideAttrs (old: {
-      installPhase = old.installPhase + ''
-        fix=" --enable-features=WebUIDarkMode --force-dark-mode"
+      installPhase =
+        old.installPhase
+        + ''
+          fix=" --enable-features=WebUIDarkMode --force-dark-mode"
 
-        substituteInPlace $out/share/applications/google-chrome.desktop \
-          --replace $exe "$exe$fix"
-      '';
+          substituteInPlace $out/share/applications/google-chrome.desktop \
+            --replace $exe "$exe$fix"
+        '';
     });
 
     keybase-gui = prev.keybase-gui.overrideAttrs (_old: rec {
@@ -59,10 +63,9 @@
       version = "6.2.4";
       versionSuffix = "20240101011938.ae7e4a1c15";
       src = prev.fetchurl {
-        url =
-          "https://s3.amazonaws.com/prerelease.keybase.io/linux_binaries/deb/keybase_${
-            version + "-" + versionSuffix
-          }_amd64.deb";
+        url = "https://s3.amazonaws.com/prerelease.keybase.io/linux_binaries/deb/keybase_${
+          version + "-" + versionSuffix
+        }_amd64.deb";
         hash = "sha256-XyGb9F83z8+OSjxOaO5k+h2qIY78ofS/ZfTXki54E5Q=";
       };
     });
@@ -89,7 +92,7 @@
         rev = "v${version}";
         hash = "sha256-8N4wQXxjNZuNGx/c7WVAV5QS48Bff5G3t11UkihT+K0=";
       };
-      patches = [ ./patches/darwin.patch ];
+      patches = [./patches/darwin.patch];
     });
 
     nelua = prev.nelua.overrideAttrs (_old: {
@@ -148,6 +151,8 @@
     font-cairo = prev.font-cairo;
     font-dubai = prev.font-dubai;
     font-noto-sans-arabic = prev.font-noto-sans-arabic;
+    iosevka-q = prev.iosevka-q;
+    serasa-gothic = prev.serasa-gothic;
 
     # mpv plugins
     mpv-anime4k = prev.mpv-anime4k;

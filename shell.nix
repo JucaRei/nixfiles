@@ -1,13 +1,11 @@
 # Shell for bootstrapping flake-enabled nix and home-manager
 # Enter it through 'nix develop' or (legacy) 'nix-shell'
-{ pkgs ? (import ./nixpkgs.nix) { } }:
-with pkgs;
-let
+{pkgs ? (import ./nixpkgs.nix) {}}:
+with pkgs; let
   nixBin = writeShellScriptBin "nix" ''
     ${nixVersions.stable}/bin/nix --option experimental-features "nix-command flakes" "$@"
   '';
-in
-{
+in {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
@@ -18,6 +16,7 @@ in
       home-manager
       dropbear
       speedtest-cli
+      # (bash import ./home-manager/_mixins/console/bash.nix {inherit pkgs config;})
       direnv
       zsh
       git
