@@ -1,4 +1,10 @@
-{ lib, brightnessctl, libnotify, makeWrapper, stdenvNoCC }:
+{
+  lib,
+  brightnessctl,
+  libnotify,
+  makeWrapper,
+  stdenvNoCC,
+}:
 stdenvNoCC.mkDerivation rec {
   pname = "change-backlight";
   version = "0.1.0";
@@ -34,9 +40,9 @@ stdenvNoCC.mkDerivation rec {
       A script to change a screen's brightness and notify about it
     '';
     homepage = "https://git.belanyi.fr/ambroisie/nix-config";
-    license = with licenses; [ mit ];
+    license = with licenses; [mit];
     mainProgram = "change-backlight";
-    maintainers = with maintainers; [ ambroisie ];
+    maintainers = with maintainers; [ambroisie];
     platforms = platforms.linux;
   };
 }

@@ -1,5 +1,4 @@
-{ disks ? [ "/dev/vda" ], ... }:
-let
+{disks ? ["/dev/vda"], ...}: let
   defaultBtrfsOpts = [
     "noatime"
     "nodiratime"
@@ -48,7 +47,7 @@ in {
               content = {
                 type = "btrfs";
                 # Override existing partition
-                extraArgs = [ "-f" ];
+                extraArgs = ["-f"];
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";

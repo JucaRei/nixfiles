@@ -1,4 +1,4 @@
-{fetchgit}:{
+{fetchgit}: {
   waybar = {
     pname = "waybar";
     version = "3cd311819be3af40f3aaec76917018a93d18c70f";

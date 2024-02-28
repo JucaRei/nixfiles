@@ -1,8 +1,12 @@
-{ pkgs, lib, username, ... }:
+{
+  pkgs,
+  lib,
+  username,
+  ...
+}:
 with lib.hm.gvariant; {
-
   home.packages = with pkgs;
-    ([ kodi ]) ++ (with kodiPackages; [ trakt youtube jellyfin ]);
+    [kodi] ++ (with kodiPackages; [trakt youtube jellyfin]);
 
   # programs = {
   #     jellyfin = {

@@ -1,6 +1,15 @@
-{ lib, rustPlatform, fetchFromGitHub, pkg-config, openssl, xorg, stdenv, darwin
-, python3, libsixel }:
-
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  openssl,
+  xorg,
+  stdenv,
+  darwin,
+  python3,
+  libsixel,
+}:
 rustPlatform.buildRustPackage rec {
   pname = "youtube-tui";
   version = "0.7.2";
@@ -14,9 +23,10 @@ rustPlatform.buildRustPackage rec {
 
   cargoHash = "sha256-TUq/Kix+Z+rELN7x3/gmFOtpa1bj/xakiYDYSyVtA/s=";
 
-  nativeBuildInputs = [ pkg-config python3 ];
+  nativeBuildInputs = [pkg-config python3];
 
-  buildInputs = [ openssl xorg.libxcb libsixel ]
+  buildInputs =
+    [openssl xorg.libxcb libsixel]
     ++ lib.optionals stdenv.isDarwin [
       darwin.apple_sdk.frameworks.CoreFoundation
       darwin.apple_sdk.frameworks.Security
@@ -26,6 +36,6 @@ rustPlatform.buildRustPackage rec {
     description = "An aesthetically pleasing YouTube TUI written in Rust";
     homepage = "https://siriusmart.github.io/youtube-tui";
     license = licenses.gpl3Only;
-    maintainers = with maintainers; [ Ruixi-rebirth ];
+    maintainers = with maintainers; [Ruixi-rebirth];
   };
 }

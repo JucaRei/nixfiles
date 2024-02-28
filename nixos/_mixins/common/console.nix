@@ -1,4 +1,9 @@
-{ pkgs, lib, hostname, ... }: {
+{
+  pkgs,
+  lib,
+  hostname,
+  ...
+}: {
   ###################
   ### Console tty ###
   ###################
@@ -6,7 +11,8 @@
   console = {
     # keyMap = lib.mkForce (if (hostname == "nitro") then "br" else "us");
     #earlySetup = true;
-    font = lib.mkForce
+    font =
+      lib.mkForce
       "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
     colors = [
       "1b161f"
@@ -27,7 +33,7 @@
       "9aedfe"
       "e6e6e6"
     ];
-    packages = with pkgs; [ tamzen ];
+    packages = with pkgs; [tamzen];
   };
 
   services.getty.greetingLine = lib.mkForce "\\l";
@@ -60,5 +66,4 @@
     .      . . .   .  .  . ... :..:.."(  ..)"
      .   .       .      :  .   .: ::/  .  .::\
   '';
-
 }

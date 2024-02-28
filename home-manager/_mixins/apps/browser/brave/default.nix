@@ -1,14 +1,15 @@
-{ lib
-, pkgs
-, inputs
-, ...
+{
+  lib,
+  pkgs,
+  inputs,
+  ...
 }: {
   home = {
     packages = [
       # pkgs.brave
       (inputs.wrapper-manager.lib.build {
         inherit pkgs;
-        modules = [ ./brave-x.nix ];
+        modules = [./brave-x.nix];
       })
     ];
     sessionVariables = lib.mkDefault {
@@ -18,7 +19,7 @@
   };
 
   xdg = {
-    mime = { enable = true; };
+    mime = {enable = true;};
 
     mimeApps = {
       enable = true;
@@ -28,7 +29,7 @@
         "x-scheme-handler/https" = "brave-browser.desktop";
         "x-scheme-handler/about" = "brave-browser.desktop";
         "x-scheme-handler/unknown" = "brave-browser.desktop";
-        "applications/x-www-browser" = [ "brave-browser.desktop" ];
+        "applications/x-www-browser" = ["brave-browser.desktop"];
       };
     };
 
@@ -39,7 +40,7 @@
         name = "Brave Browser";
         comment = "Access the Internet";
         genericName = "Web Browser";
-        categories = [ "Network" "WebBrowser" ];
+        categories = ["Network" "WebBrowser"];
         icon = "brave-browser";
         mimeType = [
           "application/pdf"

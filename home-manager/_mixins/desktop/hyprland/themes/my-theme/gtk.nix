@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   gtk = {
     enable = true;
     theme = {
@@ -6,10 +6,10 @@
       # name = "Catppuccin-Mocha-Compact-Mauve-Dark";
       # name = "Catppuccin-Mocha-Compact-Maroon-Dark";
       package = pkgs.catppuccin-gtk.override {
-        accents = [ "pink" ];
+        accents = ["pink"];
         # accents = [ "mauve" ];
         # accents = [ "maroon" ];
-        tweaks = [ "rimless" ];
+        tweaks = ["rimless"];
         size = "compact";
         variant = "mocha";
       };
@@ -69,8 +69,8 @@
       name = "Catppuccin-Mocha-Dark";
       package = pkgs.catppuccin-kde.override {
         # flavour = [ "latte" ];
-        flavour = [ "mocha" ];
-        accents = [ "pink" ];
+        flavour = ["mocha"];
+        accents = ["pink"];
         # accents = [ "mauve" ];
         # accents = [ "maroon" ];
       };
@@ -78,13 +78,11 @@
   };
   xdg.configFile = {
     "Kvantum/catppuccin/catppuccin.kvconfig".source = builtins.fetchurl {
-      url =
-        "https://raw.githubusercontent.com/catppuccin/Kvantum/main/src/Catppuccin-Mocha-Green/Catppuccin-Mocha-Green.kvconfig";
+      url = "https://raw.githubusercontent.com/catppuccin/Kvantum/main/src/Catppuccin-Mocha-Green/Catppuccin-Mocha-Green.kvconfig";
       sha256 = "16ry4k09nf5w1gyawwz2ny14zn6infqk40l35lqlg30lhgbdmr5f";
     };
     "Kvantum/catppuccin/catppuccin.svg".source = builtins.fetchurl {
-      url =
-        "https://raw.githubusercontent.com/catppuccin/Kvantum/main/src/Catppuccin-Mocha-Green/Catppuccin-Mocha-Green.svg";
+      url = "https://raw.githubusercontent.com/catppuccin/Kvantum/main/src/Catppuccin-Mocha-Green/Catppuccin-Mocha-Green.svg";
       sha256 = "1djh625qag34rjsp7y67nzbi9nbmiwgq63ydfizsh65n3fyfakf1";
     };
     "Kvantum/kvantum.kvconfig".text = ''

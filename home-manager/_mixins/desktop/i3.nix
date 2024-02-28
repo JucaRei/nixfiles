@@ -1,9 +1,11 @@
-{ pkgs, lib, ... }:
-
 {
-  imports = [ ../apps/terminal/alacritty.nix ];
+  pkgs,
+  lib,
+  ...
+}: {
+  imports = [../apps/terminal/alacritty.nix];
   home = {
-    keyboard = { layout = "br"; };
+    keyboard = {layout = "br";};
     packages = with pkgs; [
       arandr
       tmate
@@ -22,7 +24,7 @@
 
       config = rec {
         modifier = "Mod4";
-        bars = [ ];
+        bars = [];
 
         window.border = 0;
 

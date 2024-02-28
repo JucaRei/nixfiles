@@ -1,6 +1,10 @@
-{ config, lib, pkgs, ... }:
-with lib;
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   nvidia-offload = pkgs.writeShellScriptBin "nvidia-offload" ''
     __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia "$@"
     exit 0
@@ -9,7 +13,7 @@ let
 in {
   specialisation = {
     nvidia-legacy.configuration = {
-      system.nixos.tags = [ "nvidia-legacy" ];
+      system.nixos.tags = ["nvidia-legacy"];
       hardware = {
         nvidia = {
           # package = config.boot.linuxKernel.packages.linux_xanmod_stable.nvidia_x11_legacy340;
@@ -48,29 +52,28 @@ in {
         };
       };
 
-      environment.systemPackages = with pkgs; [ glxinfo sdlmame ];
+      environment.systemPackages = with pkgs; [glxinfo sdlmame];
 
       boot = {
         loader.grub.configurationName = lib.mkForce "Nouveau Driver";
         # blacklistedKernelModules = [ "nouveau" "i915" ];
-        kernelParams = [ "nvidia" ];
+        kernelParams = ["nvidia"];
         extraModprobeConfig = ''
           blacklist nouveau
           options nouveau modeset=0
           options nvidia-drm modeset=1
         '';
-        extraModulePackages =
-          [ config.boot.kernelPackages.nvidia_x11_legacy340 ];
+        extraModulePackages = [config.boot.kernelPackages.nvidia_x11_legacy340];
       };
 
       virtualisation.docker.enableNvidia = true;
     };
     noveau-driver.configuration = {
-      system.nixos.tags = [ "noveau-driver" ];
+      system.nixos.tags = ["noveau-driver"];
       boot.loader.grub.configurationName = lib.mkForce "Nouveau Driver";
       services = {
         xserver = {
-          videoDrivers = [ "nouveau" ];
+          videoDrivers = ["nouveau"];
           # screenSection = ''
           #   Option     "CurrentMetaMode" "1920 x 1200+0+0 {ForceFullCompositionPipeline=On}
           # '';

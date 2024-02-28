@@ -1,5 +1,5 @@
-{ pkgs, ... }: {
-  home.packages = with pkgs; [ nano ];
+{pkgs, ...}: {
+  home.packages = with pkgs; [nano];
   programs.nano = {
     syntaxHighlight = true;
     nanorc = ''

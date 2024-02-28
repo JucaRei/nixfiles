@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{lib, ...}: {
   programs.helix = {
     enable = true;
     settings = {
@@ -38,7 +38,7 @@
       (map (name: {
         name = name;
         auto-format = true;
-      }) [ "haskell" "javascript" "lua" "nix" "python" ])
+      }) ["haskell" "javascript" "lua" "nix" "python"])
       # Languages that need auto-format and indent
       (map (name: {
         name = name;
@@ -47,7 +47,7 @@
           tab-width = 4;
           unit = "    ";
         };
-      }) [ "bash" "c" "cpp" "unison" ])
+      }) ["bash" "c" "cpp" "unison"])
       [
         {
           name = "bash";
@@ -65,13 +65,13 @@
           name = "unison";
           scope = "scope.unison";
           injection-regex = "unison";
-          file-types = [ "u" ];
-          shebangs = [ ];
-          roots = [ ];
+          file-types = ["u"];
+          shebangs = [];
+          roots = [];
           comment-token = "--";
           language-server = {
             command = "netcat";
-            args = [ "localhost" "5757" ];
+            args = ["localhost" "5757"];
           };
         }
       ]
@@ -81,11 +81,11 @@
         attribute = "pink";
         keyword = {
           fg = "pink";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         "keyword.directive" = {
           fg = "pink";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         }; # -- preprocessor comments (#if in C)
         namespace = "pink";
         punctuation = "purple";
@@ -96,19 +96,19 @@
         variable = "cyan";
         # variable = "almond" # TODO: metavariables only
         # "variable.parameter" = { fg = "lavender", modifiers = ["underlined"] }
-        "variable.parameter" = { fg = "cyan"; };
+        "variable.parameter" = {fg = "cyan";};
         "variable.builtin" = "cyan";
         type = "cyan";
         "type.builtin" = {
           fg = "pink";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         }; # TODO: distinguish?
         constructor = "pink";
         function = "pink";
         "function.macro" = "orange";
         "function.builtin" = {
           fg = "cyan";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         tag = "cyan";
         comment = "light-blue";
@@ -121,11 +121,11 @@
         label = "orange";
 
         "markup.heading" = "pink";
-        "markup.bold" = { modifiers = [ "bold" ]; };
-        "markup.italic" = { modifiers = [ "italic" ]; };
+        "markup.bold" = {modifiers = ["bold"];};
+        "markup.italic" = {modifiers = ["italic"];};
         "markup.link.url" = {
           fg = "pink";
-          modifiers = [ "underlined" ];
+          modifiers = ["underlined"];
         };
         "markup.link.text" = "orange";
         "markup.raw" = "cyan";
@@ -137,13 +137,13 @@
         # TODO: diferentiate doc comment
         # concat (ERROR) @error.syntax and "MISSING ;" selectors for errors
 
-        "ui.background" = { bg = "dark-blue"; };
-        "ui.background.separator" = { fg = "light-blue"; };
-        "ui.linenr" = { fg = "cyan"; };
+        "ui.background" = {bg = "dark-blue";};
+        "ui.background.separator" = {fg = "light-blue";};
+        "ui.linenr" = {fg = "cyan";};
         "ui.linenr.selected" = {
           fg = "cyan";
           bg = "semi-dark-blue";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         "ui.statusline" = {
           fg = "cyan";
@@ -153,7 +153,7 @@
           fg = "purple";
           bg = "dark-blue";
         };
-        "ui.statusline.separator" = { fg = "cyan"; };
+        "ui.statusline.separator" = {fg = "cyan";};
         "ui.statusline.select" = {
           fg = "dark-blue";
           bg = "purple";
@@ -175,22 +175,22 @@
           bg = "light-blue";
         };
 
-        "ui.text" = { fg = "cyan"; };
-        "ui.text.focus" = { fg = "pink"; };
+        "ui.text" = {fg = "cyan";};
+        "ui.text.focus" = {fg = "pink";};
         "ui.text.inactive" = "purple";
-        "ui.virtual" = { fg = "light-blue"; };
+        "ui.virtual" = {fg = "light-blue";};
 
-        "ui.virtual.indent-guide" = { fg = "light-blue"; };
+        "ui.virtual.indent-guide" = {fg = "light-blue";};
 
         "ui.selection" = {
           fg = "white";
           bg = "trans-blue";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         "ui.selection.primary" = {
           fg = "white";
           bg = "trans-purple";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         # TODO: namespace ui.cursor as ui.selection.cursor?
         "ui.cursor.select" = {
@@ -205,10 +205,10 @@
           fg = "dark-blue";
           bg = "purple";
         };
-        "ui.cursor" = { modifiers = [ "bold" "reversed" ]; };
+        "ui.cursor" = {modifiers = ["bold" "reversed"];};
         "ui.cursorline.primary" = {
           bg = "semi-dark-blue";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         "ui.highlight" = {
           fg = "dark-blue";
@@ -222,7 +222,7 @@
         "ui.menu.selected" = {
           fg = "cyan";
           bg = "trans-purple";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         "ui.menu.scroll" = {
           fg = "light-blue";
@@ -256,15 +256,15 @@
 
         warning = {
           fg = "yellow";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         error = {
           fg = "red";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         info = {
           fg = "pink";
-          modifiers = [ "bold" ];
+          modifiers = ["bold"];
         };
         hint = "pink";
 

@@ -1,6 +1,11 @@
-{ config, lib, pkgs, hostname, desktop, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  hostname,
+  desktop,
+  ...
+}: {
   #https://nixos.wiki/wiki/Podman
 
   environment.systemPackages = with pkgs;
@@ -16,7 +21,8 @@
       #conmon           # Container monitoring
       #skopeo           # Container registry utility
       #syft             # Container SBOM generator
-    ] ++ lib.optionals (desktop != null) [
+    ]
+    ++ lib.optionals (desktop != null) [
       distrobox
       # unstable.pods
       xorg.xhost
@@ -81,7 +87,7 @@
 
       containersConf.settings = {
         containers = {
-          dns_servers = [ "8.8.8.8" "8.8.4.4" ];
+          dns_servers = ["8.8.8.8" "8.8.4.4"];
           userns = "auto"; # Create unique User Namespace for the container
         };
       };
@@ -117,15 +123,19 @@
     users."containers" = {
       isSystemUser = true;
       group = "containers";
-      subUidRanges = [{
-        startUid = 60100000;
-        count = 60000000;
-      }];
-      subGidRanges = [{
-        startGid = 60100000;
-        count = 60000000;
-      }];
+      subUidRanges = [
+        {
+          startUid = 60100000;
+          count = 60000000;
+        }
+      ];
+      subGidRanges = [
+        {
+          startGid = 60100000;
+          count = 60000000;
+        }
+      ];
     };
-    groups.containers = { };
+    groups.containers = {};
   };
 }

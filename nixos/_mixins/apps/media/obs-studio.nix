@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   # https://nixos.wiki/wiki/OBS_Studio
   environment.systemPackages = [
     pkgs.unstable.obs-studio

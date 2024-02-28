@@ -1,5 +1,5 @@
-{ config, ... }:
-let torrent = "transmission-gtk.desktop";
+{config, ...}: let
+  torrent = "transmission-gtk.desktop";
 in {
   # networking.firewall.allowedTCPPorts = [ 9091 ];
   services.transmission = {
@@ -28,6 +28,6 @@ in {
   xdg.mimeApps = rec {
     enable = true;
     associations.added = defaultApplications;
-    defaultApplications = { "x-scheme-handler/magnet" = torrent; };
+    defaultApplications = {"x-scheme-handler/magnet" = torrent;};
   };
 }

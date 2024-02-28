@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./rofi/rofi.nix
     ./polybar/polybar.nix
@@ -141,8 +141,7 @@
         # Selected programs
         "super + Return" = "st"; # terminal emulator
         "super + @space" = "rofi -show drun -show-icons"; # program launcher
-        "super + Escape" =
-          "pkill -USR1 -x sxhkd"; # make sxhkd reload its configuration files
+        "super + Escape" = "pkill -USR1 -x sxhkd"; # make sxhkd reload its configuration files
         "super + e" = "nemo";
         "super + b" = "thorium";
       };

@@ -1,5 +1,11 @@
-{ pkgs, git, findutils, ... }: pkgs.writeShellApplication {
+{
+  pkgs,
+  git,
+  findutils,
+  ...
+}:
+pkgs.writeShellApplication {
   name = "git-refresh";
-  runtimeInputs = [ git findutils ];
+  runtimeInputs = [git findutils];
   text = builtins.readFile ./script.sh;
 }

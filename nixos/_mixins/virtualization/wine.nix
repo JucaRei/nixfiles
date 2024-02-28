@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     # support both 32- and 64-bit applications
     wineWowPackages.stable
@@ -7,7 +7,7 @@
     wine
 
     # support 64-bit only
-    (wine.override { wineBuild = "wine64"; })
+    (wine.override {wineBuild = "wine64";})
 
     # wine-staging (version with experimental features)
     wineWowPackages.staging

@@ -1,4 +1,8 @@
-{ lib, stdenvNoCC, fetchgit }:
+{
+  lib,
+  stdenvNoCC,
+  fetchgit,
+}:
 stdenvNoCC.mkDerivation rec {
   name = "mpv-nextfile";
   version = "1.0.0";
@@ -23,10 +27,9 @@ stdenvNoCC.mkDerivation rec {
   passthru.scriptName = "nextfile.lua";
 
   meta = {
-    description =
-      "Force open next or previous file in the currently playing files directory";
+    description = "Force open next or previous file in the currently playing files directory";
     homepage = "https://github.com/jonniek/mpv-nextfile";
     license = lib.licenses.unlicense;
-    maintainers = [ lib.maintainers.juca ];
+    maintainers = [lib.maintainers.juca];
   };
 }

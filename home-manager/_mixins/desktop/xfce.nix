@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib.hm.gvariant; {
   home = {
     packages = with pkgs; [
@@ -26,7 +31,7 @@ with lib.hm.gvariant; {
       # xsel
       zuki-themes
     ];
-    sessionVariables = { GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules"; };
+    sessionVariables = {GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";};
   };
   # services = {
   # blueman-applet.enable = true;
@@ -56,10 +61,10 @@ with lib.hm.gvariant; {
 
   ### Xfconf not working
   xfconf.settings = {
-    xfce4-session = { }; # xfce4-session
+    xfce4-session = {}; # xfce4-session
     xfwm4 = {
       "general/workspace_count" = 4;
-      "general/workspace_names" = [ "1" "2" "3" "4" ];
+      "general/workspace_names" = ["1" "2" "3" "4"];
       "general/borderless_maximize" = true;
       "general/click_to_focus" = false;
       "general/cycle_apps_only" = false;
@@ -71,8 +76,7 @@ with lib.hm.gvariant; {
       "general/cycle_raise" = false;
       "general/cycle_tabwin_mode" = 0;
       "general/cycle_workspaces" = false;
-      "general/double_click_action" =
-        "maximize"; # Window Manager -> Advanced -> Double click action
+      "general/double_click_action" = "maximize"; # Window Manager -> Advanced -> Double click action
       "general/double_click_distance" = 5;
       "general/double_click_time" = 250;
       "general/easy_click" = "Alt";
@@ -141,7 +145,7 @@ with lib.hm.gvariant; {
       "/screensavers/xfce-personal-slideshow/location" = "month";
     }; # xfce4-screensaver
 
-    xfce4-appfinder = { }; # xfce4-appfinder
+    xfce4-appfinder = {}; # xfce4-appfinder
 
     xsettings = {
       # "/Gdk/WindowScalingFactor" = 1;
@@ -321,8 +325,7 @@ with lib.hm.gvariant; {
       "/plugins/plugin-11/labels/label0" = 3;
       "/plugins/plugin-11/location/latitude" = "'36.538778'";
       "/plugins/plugin-11/location/longitude" = "' - 4.623335'";
-      "/plugins/plugin-11/location/name" =
-        "'Fuengirola, Costa del Sol Occidental'";
+      "/plugins/plugin-11/location/name" = "'Fuengirola, Costa del Sol Occidental'";
       "/plugins/plugin-11/msl" = 8;
       "/plugins/plugin-11/offset" = "'+02:00'";
       "/plugins/plugin-11/power-saving" = true;
@@ -334,8 +337,7 @@ with lib.hm.gvariant; {
       "/plugins/plugin-11/scrollbox/use-color" = false;
       "/plugins/plugin-11/show-label" = true;
       "/plugins/plugin-11/single-row" = true;
-      "/plugins/plugin-11/theme-dir" =
-        "'/usr/share/xfce4/weather/icons/simplistic'";
+      "/plugins/plugin-11/theme-dir" = "'/usr/share/xfce4/weather/icons/simplistic'";
       "/plugins/plugin-11/timezone" = "'Europe/Madrid'";
       "/plugins/plugin-11/tooltip-style" = 1;
       "/plugins/plugin-11/units/altitude" = 0;
@@ -346,8 +348,7 @@ with lib.hm.gvariant; {
       "/plugins/plugin-11/units/windspeed" = 0;
       "/plugins/plugin-13" = "'pulseaudio'";
       "/plugins/plugin-13/enable-keyboard-shortcuts" = true;
-      "/plugins/plugin-13/mpris-players" =
-        "'chromium.instance2513;firefox.instance1730'";
+      "/plugins/plugin-13/mpris-players" = "'chromium.instance2513;firefox.instance1730'";
       "/plugins/plugin-16" = "'separator'";
       "/plugins/plugin-16/style" = "uint32 0";
       "/plugins/plugin-17" = "'separator'";
@@ -377,8 +378,7 @@ with lib.hm.gvariant; {
       "/plugins/plugin-5/scrollbox/show" = true;
       "/plugins/plugin-5/scrollbox/use-color" = false;
       "/plugins/plugin-5/single-row" = true;
-      "/plugins/plugin-5/theme-dir" =
-        "'/usr/share/xfce4/weather/icons/simplistic'";
+      "/plugins/plugin-5/theme-dir" = "'/usr/share/xfce4/weather/icons/simplistic'";
       "/plugins/plugin-5/tooltip-style" = 1;
       "/plugins/plugin-5/units/altitude" = 0;
       "/plugins/plugin-5/units/apparent-temperature" = 0;
@@ -388,12 +388,9 @@ with lib.hm.gvariant; {
       "/plugins/plugin-5/units/windspeed" = 0;
       "/plugins/plugin-6" = "'notification-plugin'";
       "/plugins/plugin-8" = "'systray'";
-      "/plugins/plugin-8/known-items" =
-        "[<'steam'>, <'redshift'>, <'blueman'>, <'com.leinardi.gwe'>, <'discord1'>]";
-      "/plugins/plugin-8/known-legacy-items" =
-        "[<'steam'>, <'xfce4-power-manager'>, <'notas'>, <'redshift-gtk'>, <'bluetooth activado'>, <'discord'>, <'pamac-tray'>, <'syncthing'>, <'portapapeles'>, <'miniaplicación gestor de la red'>]";
-      "/plugins/plugin-8/names-ordered" =
-        "[<'miniaplicación gestor de la red'>, <'syncthing'>, <'notas'>, <'portapapeles'>, <'pamac-tray'>, <'discord'>, <'redshift-gtk'>, <'gwe'>, <'bluetooth activado'>]";
+      "/plugins/plugin-8/known-items" = "[<'steam'>, <'redshift'>, <'blueman'>, <'com.leinardi.gwe'>, <'discord1'>]";
+      "/plugins/plugin-8/known-legacy-items" = "[<'steam'>, <'xfce4-power-manager'>, <'notas'>, <'redshift-gtk'>, <'bluetooth activado'>, <'discord'>, <'pamac-tray'>, <'syncthing'>, <'portapapeles'>, <'miniaplicación gestor de la red'>]";
+      "/plugins/plugin-8/names-ordered" = "[<'miniaplicación gestor de la red'>, <'syncthing'>, <'notas'>, <'portapapeles'>, <'pamac-tray'>, <'discord'>, <'redshift-gtk'>, <'gwe'>, <'bluetooth activado'>]";
       "/plugins/plugin-8/square-icons" = true;
       "/plugins/plugin-9" = "'actions'";
     };
@@ -464,10 +461,9 @@ with lib.hm.gvariant; {
       "/xfce4-power-manager/lid-action-on-ac" = 0; # just blank screen
       "/xfce4-power-manager/logind-handle-lid-switch" = false;
       "/xfce4-power-manager/critical-power-action" = 3; # Ask
-
     }; # xfce4-power-manager
 
-    xfce4-mime-settings = { }; # xfce4-mime-settings
+    xfce4-mime-settings = {}; # xfce4-mime-settings
 
     xfce4-mixer = {
       # 2023-07-29: MUST have leading slashes

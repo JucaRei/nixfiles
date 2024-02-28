@@ -1,6 +1,8 @@
-{ config, lib, ... }:
-let
-
+{
+  config,
+  lib,
+  ...
+}: let
   createCustomDirectories = ''
     echo ""
     for user_home in /home/*; do
@@ -62,7 +64,6 @@ let
     echo -e "\n\e[34m[\e[32m✔\e[34m] User directories created, switching back into: \e[32m$HOME\e[34m"
 
   '';
-
 in {
   config = {
     system.activationScripts.createCustomDirectories = createCustomDirectories;

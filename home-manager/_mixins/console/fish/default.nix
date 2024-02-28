@@ -1,12 +1,18 @@
-{ pkgs, lib, config, ... }:
-let inherit (pkgs.stdenv) isLinux;
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
+  inherit (pkgs.stdenv) isLinux;
 in {
   programs = {
     fish = {
       enable = true;
       shellAliases = {
         banner = lib.mkIf isLinux "${pkgs.figlet}/bin/figlet";
-        banner-color = lib.mkIf isLinux
+        banner-color =
+          lib.mkIf isLinux
           "${pkgs.figlet}/bin/figlet $argv | ${pkgs.dotacat}/bin/dotacat";
         brg = "${pkgs.bat-extras.batgrep}/bin/batgrep";
         cat = "${pkgs.bat}/bin/bat --paging=never";
@@ -24,20 +30,16 @@ in {
         moon = "${pkgs.curlMinimal}/bin/curl -s wttr.in/Moon";
         # more = "${pkgs.bat}/bin/bat";
         checkip = "${pkgs.curlMinimal}/bin/curl -s ifconfig.me/ip";
-        parrot =
-          "${pkgs.terminal-parrot}/bin/terminal-parrot -delay 50 -loops 7";
+        parrot = "${pkgs.terminal-parrot}/bin/terminal-parrot -delay 50 -loops 7";
         ruler = ''${pkgs.hr}/bin/hr "╭─³⁴⁵⁶⁷⁸─╮"'';
         screenfetch = "${pkgs.fastfetch}/bin/fastfetch";
         speedtest = "${pkgs.speedtest-go}/bin/speedtest-go";
-        store-path =
-          "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
-        top =
-          "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
+        store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+        top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
         # tree = "${pkgs.eza}/bin/eza --tree";
         wormhole = "${pkgs.wormhole-william}/bin/wormhole-william";
         weather = "${pkgs.wthrr}/bin/wthrr auto -u f,24h,c,mph -f d,w";
-        weather-home =
-          "${pkgs.wthrr}/bin/wthrr basingstoke -u f,24h,c,mph -f d,w";
+        weather-home = "${pkgs.wthrr}/bin/wthrr basingstoke -u f,24h,c,mph -f d,w";
       };
     };
   };

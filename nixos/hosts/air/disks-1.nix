@@ -1,4 +1,4 @@
-{ disks ? [ "/dev/sda" ], ... }: {
+{disks ? ["/dev/sda"], ...}: {
   disko.devices = {
     disk = {
       vdb = {
@@ -28,12 +28,12 @@
               # end = "-6G";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing partition
+                extraArgs = ["-f"]; # Override existing partition
                 # Subvolumes must set a mountpoint in order to be mounted,
                 # unless their parent is mounted
                 subvolumes = {
                   # Subvolume name is different from mountpoint
-                  "@rootfs" = { mountpoint = "/"; };
+                  "@rootfs" = {mountpoint = "/";};
                   # Subvolume name is the same as the mountpoint
                   "@home" = {
                     mountOptions = [

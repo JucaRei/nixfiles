@@ -1,6 +1,10 @@
-{ config, lib, pkgs, ... }:
-with lib.hm.gvariant;
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib.hm.gvariant; let
   # Assuming extensionUuid is unique to Gnome extensions
   extensions = builtins.filter (p: p ? "extensionUuid") config.home.packages;
 in {
@@ -23,7 +27,8 @@ in {
         # Nautilus extensions
         nautilus-annotations
         nautilus-open-any-terminal
-      ] ++ (with pkgs.gnomeExtensions; [
+      ]
+      ++ (with pkgs.gnomeExtensions; [
         logo-menu
         rounded-window-corners
         window-is-ready-remover
@@ -58,7 +63,9 @@ in {
         # fullscreen-avoider
         # tailscale-qs
         # tailscale-status
-      ]) ++ (with pkgs.gnome3; [ gvfs nautilus ]) ++ (with pkgs.gnome; [
+      ])
+      ++ (with pkgs.gnome3; [gvfs nautilus])
+      ++ (with pkgs.gnome; [
         dconf-editor
         adwaita-icon-theme
         gnome-tweaks
@@ -72,7 +79,6 @@ in {
       # GTK_THEME = "palenight";
       # GTK_THEME = "WhiteSur-light-solid-pink";
       GTK_THEME = "Catppuccin-Frappe-Standard-Blue-Dark";
-
     };
   };
 
@@ -101,13 +107,13 @@ in {
       configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
       extraConfig = "gtk-application-prefer-dark-theme = 1";
     };
-    gtk3 = { extraConfig = { gtk-application-prefer-dark-theme = 1; }; };
-    gtk4 = { extraConfig = { gtk-application-prefer-dark-theme = 1; }; };
+    gtk3 = {extraConfig = {gtk-application-prefer-dark-theme = 1;};};
+    gtk4 = {extraConfig = {gtk-application-prefer-dark-theme = 1;};};
   };
 
   # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
   dconf.settings = {
-    "ca/desrt/dconf-editor" = { show-warning = false; };
+    "ca/desrt/dconf-editor" = {show-warning = false;};
 
     "com/gexperts/Tilix" = {
       background-image-mode = "stretch";
@@ -139,7 +145,7 @@ in {
     };
 
     "com/gexperts/Tilix/profiles" = {
-      list = [ "2b7c4080-0ddd-46c5-8f23-563fd3ba789d" ];
+      list = ["2b7c4080-0ddd-46c5-8f23-563fd3ba789d"];
     };
 
     "com/gexperts/Tilix/profiles/2b7c4080-0ddd-46c5-8f23-563fd3ba789d" = {
@@ -182,9 +188,9 @@ in {
       visible-name = "Default";
     };
 
-    "com/mattjakeman/ExtensionManager" = { last-used-version = "0.4.0"; };
+    "com/mattjakeman/ExtensionManager" = {last-used-version = "0.4.0";};
 
-    "org/blueman/plugins/powermanager" = { auto-power-on = "@mb true"; };
+    "org/blueman/plugins/powermanager" = {auto-power-on = "@mb true";};
 
     "org/gnome/desktop/background" = {
       color-shading-type = "solid";
@@ -250,7 +256,7 @@ in {
       application-id = "org.gnome.tweaks.desktop";
     };
 
-    "org/gnome/desktop/peripherals/keyboard" = { numlock-state = true; };
+    "org/gnome/desktop/peripherals/keyboard" = {numlock-state = true;};
 
     "org/gnome/desktop/peripherals/mouse" = {
       accel-profile = "adaptive";
@@ -267,41 +273,40 @@ in {
     "org/gnome/desktop/screensaver" = {
       color-shading-type = "solid";
       picture-options = "stretched";
-      picture-uri =
-        "file:///run/current-system/sw/share/backgrounds/gnome/truchet-l.webp";
+      picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/truchet-l.webp";
       primary-color = "#ac5e0b";
       secondary-color = "#000000";
     };
 
-    "org/gnome/desktop/sound" = { allow-volume-above-100-percent = true; };
+    "org/gnome/desktop/sound" = {allow-volume-above-100-percent = true;};
 
     "org/gnome/desktop/wm/keybindings" = {
-      close = [ "<super>q" "<alt>f4" ];
-      maximize = [ "@as []" ];
-      move-to-monitor-left = [ "<super>left" ];
-      move-to-monitor-right = [ "<super>right" ];
-      move-to-workspace-1 = [ "<shift><alt>1" ];
-      move-to-workspace-2 = [ "<shift><alt>2" ];
-      move-to-workspace-3 = [ "<shift><alt>3" ];
-      move-to-workspace-4 = [ "<shift><alt>4" ];
-      move-to-workspace-5 = [ "<shift><alt>5" ];
-      move-to-workspace-left = [ "<shift><alt>left" ];
-      move-to-workspace-right = [ "<shift><alt>right" ];
-      switch-to-workspace-1 = [ "<alt>1" ];
-      switch-to-workspace-2 = [ "<alt>2" ];
-      switch-to-workspace-3 = [ "<alt>3" ];
-      switch-to-workspace-4 = [ "<alt>4" ];
-      switch-to-workspace-5 = [ "<alt>5" ];
-      switch-to-workspace-left = [ "<alt>left" ];
-      switch-to-workspace-right = [ "<alt>right" ];
-      toggle-fullscreen = [ "<super>f" ];
-      unmaximize = [ "@as []" ];
+      close = ["<super>q" "<alt>f4"];
+      maximize = ["@as []"];
+      move-to-monitor-left = ["<super>left"];
+      move-to-monitor-right = ["<super>right"];
+      move-to-workspace-1 = ["<shift><alt>1"];
+      move-to-workspace-2 = ["<shift><alt>2"];
+      move-to-workspace-3 = ["<shift><alt>3"];
+      move-to-workspace-4 = ["<shift><alt>4"];
+      move-to-workspace-5 = ["<shift><alt>5"];
+      move-to-workspace-left = ["<shift><alt>left"];
+      move-to-workspace-right = ["<shift><alt>right"];
+      switch-to-workspace-1 = ["<alt>1"];
+      switch-to-workspace-2 = ["<alt>2"];
+      switch-to-workspace-3 = ["<alt>3"];
+      switch-to-workspace-4 = ["<alt>4"];
+      switch-to-workspace-5 = ["<alt>5"];
+      switch-to-workspace-left = ["<alt>left"];
+      switch-to-workspace-right = ["<alt>right"];
+      toggle-fullscreen = ["<super>f"];
+      unmaximize = ["@as []"];
     };
 
     "org/gnome/desktop/wm/preferences" = {
       button-layout = "appmenu:minimize,maximize,close";
       num-workspaces = 5;
-      workspace-names = [ "1" "2" "3" "4" "5" ];
+      workspace-names = ["1" "2" "3" "4" "5"];
     };
 
     "org/gnome/file-roller/dialogs/extract" = {
@@ -324,38 +329,35 @@ in {
     };
 
     "org/gnome/mutter/keybindings" = {
-      toggle-tiled-left = [ "@as []" ];
-      toggle-tiled-right = [ "@as []" ];
+      toggle-tiled-left = ["@as []"];
+      toggle-tiled-right = ["@as []"];
     };
 
-    "org/gnome/nautilus/compression" = { default-compression-format = "zip"; };
+    "org/gnome/nautilus/compression" = {default-compression-format = "zip";};
 
-    "org/gnome/nautilus/icon-view" = { default-zoom-level = "small"; };
+    "org/gnome/nautilus/icon-view" = {default-zoom-level = "small";};
 
     "org/gnome/portal/filechooser/com/visualstudio/code" = {
       last-folder-path = "/home/juca/.dotfiles/nixfiles";
     };
 
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
-      {
-        binding = "<Super>Return";
-        command = "tilix";
-        name = "open-terminal";
-      };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+      binding = "<Super>Return";
+      command = "tilix";
+      name = "open-terminal";
+    };
 
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" =
-      {
-        binding = "<super>e";
-        command = "nautilus";
-        name = "open-file-browser";
-      };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
+      binding = "<super>e";
+      command = "nautilus";
+      name = "open-file-browser";
+    };
 
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3" =
-      {
-        binding = "<Super>Return";
-        command = "tilix";
-        name = "Tilix";
-      };
+    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3" = {
+      binding = "<Super>Return";
+      command = "tilix";
+      name = "Tilix";
+    };
 
     "org/gnome/settings-daemon/plugins/power" = {
       sleep-inactive-ac-type = "nothing";
@@ -414,9 +416,9 @@ in {
       sigma = 59;
     };
 
-    "org/gnome/shell/extensions/caffeine" = { indicator-position-max = 2; };
+    "org/gnome/shell/extensions/caffeine" = {indicator-position-max = 2;};
 
-    "org/gnome/shell/extensions/clipboard-indicator" = { display-mode = 0; };
+    "org/gnome/shell/extensions/clipboard-indicator" = {display-mode = 0;};
 
     "org/gnome/shell/extensions/dash-to-dock" = {
       apply-custom-theme = false;
@@ -475,13 +477,12 @@ in {
 
     "org/gnome/shell/extensions/rounded-window-corners" = {
       custom-rounded-corner-settings = "@a{sv} {}";
-      global-rounded-corner-settings =
-        "{'padding': <{'left': <uint32 1>, 'right': <uint32 1>, 'top': <uint32 1>, 'bottom': <uint32 1>}>, 'keep_rounded_corners': <{'maximized': <false>, 'fullscreen': <false>}>, 'border_radius': <uint32 12>, 'smoothing': <uint32 0>}";
+      global-rounded-corner-settings = "{'padding': <{'left': <uint32 1>, 'right': <uint32 1>, 'top': <uint32 1>, 'bottom': <uint32 1>}>, 'keep_rounded_corners': <{'maximized': <false>, 'fullscreen': <false>}>, 'border_radius': <uint32 12>, 'smoothing': <uint32 0>}";
       settings-version = mkUint32 5;
     };
 
     "org/gnome/shell/extensions/top-bar-organizer" = {
-      center-box-order = [ "Media Player" "dateMenu" ];
+      center-box-order = ["Media Player" "dateMenu"];
       left-box-order = [
         "menuButton"
         "Notifications"
@@ -523,9 +524,9 @@ in {
       use-higher-precision = true;
     };
 
-    "org/gnome/shell/world-clocks" = { locations = "@av []"; };
+    "org/gnome/shell/world-clocks" = {locations = "@av []";};
 
-    "org/gnome/tweaks" = { show-extensions-notice = true; };
+    "org/gnome/tweaks" = {show-extensions-notice = true;};
 
     "org/gtk/gtk4/settings/file-chooser" = {
       date-format = "regular";
@@ -558,11 +559,11 @@ in {
     };
 
     "org/virt-manager/virt-manager/connections" = {
-      autoconnect = [ "qemu:///system" ];
-      uris = [ "qemu:///system" ];
+      autoconnect = ["qemu:///system"];
+      uris = ["qemu:///system"];
     };
 
-    "org/virt-manager/virt-manager/details" = { show-toolbar = true; };
+    "org/virt-manager/virt-manager/details" = {show-toolbar = true;};
 
     "org/virt-manager/virt-manager/paths" = {
       image-default = "/media/Shared/virtualmachines/Virt-manager";

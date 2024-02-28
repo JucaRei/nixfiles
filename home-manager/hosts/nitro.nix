@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib.hm.gvariant; {
   imports = [
     # ../_mixins/console/neovim.nix
@@ -58,15 +63,14 @@ with lib.hm.gvariant; {
 
       # Virtmanager
       "org/virt-manager/virt-manager/connections" = {
-        autoconnect = [ "qemu:///system" ];
-        uris = [ "qemu:///system" ];
+        autoconnect = ["qemu:///system"];
+        uris = ["qemu:///system"];
       };
     };
     # modules.desktop.browsers.chromium.enable = true;
     nix.settings = {
-      extra-substituters = [ "https://nitro.cachix.org" ];
-      extra-trusted-public-keys =
-        [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+      extra-substituters = ["https://nitro.cachix.org"];
+      extra-trusted-public-keys = ["nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U="];
     };
   };
 }

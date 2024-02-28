@@ -1,14 +1,12 @@
-{ pkgs
-, ...
-}:
+{pkgs, ...}:
 # let
 # ifDefault = lib.mkIf (builtins.elem params.browser == "vivaldi");
 # in
 {
   # Module installing vivaldi as default browser
   home = {
-    packages = with pkgs.unstable; [ vivaldi vivaldi-ffmpeg-codecs ];
-    sessionVariables = { DEFAULT_BROWSER = "${pkgs.vivaldi}/bin/vivaldi"; };
+    packages = with pkgs.unstable; [vivaldi vivaldi-ffmpeg-codecs];
+    sessionVariables = {DEFAULT_BROWSER = "${pkgs.vivaldi}/bin/vivaldi";};
   };
 
   # xdg = {

@@ -1,1 +1,1 @@
-_: { virtualisation.anbox = { enable = true; }; }
+_: {virtualisation.anbox = {enable = true;};}

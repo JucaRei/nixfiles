@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   config = {
     hardware.opengl = {
       enable = true;
@@ -16,8 +18,8 @@
 
     nixpkgs.overlays = [
       (final: prev: {
-        mesa = (prev.mesa.override {
-          eglPlatforms = [ "x11" "wayland" ];
+        mesa = prev.mesa.override {
+          eglPlatforms = ["x11" "wayland"];
           galliumDrivers = [
             "swrast"
             "virgl"
@@ -26,9 +28,9 @@
             "v3d"
             "zink"
           ];
-          vulkanDrivers = [ "swrast" "broadcom" ];
-          vulkanLayers = [ "device-select" ];
-        });
+          vulkanDrivers = ["swrast" "broadcom"];
+          vulkanLayers = ["device-select"];
+        };
       })
     ];
     environment.systemPackages = with pkgs; [

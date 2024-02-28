@@ -1,15 +1,25 @@
-{ stdenv, lib, fetchFromGitHub, coreutils, gawk, gnugrep, gnused, libnotify
-, pulseaudio }:
-
+{
+  stdenv,
+  lib,
+  fetchFromGitHub,
+  coreutils,
+  gawk,
+  gnugrep,
+  gnused,
+  libnotify,
+  pulseaudio,
+}:
 stdenv.mkDerivation rec {
   name = "polybar-pulseaudio-control";
   version = "3.1.1";
-  src = fetchFromGitHub {
-    owner = "marioortizmanero";
-    repo = name;
-    rev = "v${version}";
-    hash = "sha256-egCBCnhnmHHKFeDkpaF9Upv/oZ0K3XGyutnp4slq9Vc=";
-  } + "/pulseaudio-control.bash";
+  src =
+    fetchFromGitHub {
+      owner = "marioortizmanero";
+      repo = name;
+      rev = "v${version}";
+      hash = "sha256-egCBCnhnmHHKFeDkpaF9Upv/oZ0K3XGyutnp4slq9Vc=";
+    }
+    + "/pulseaudio-control.bash";
 
   preferLocalBuild = true;
 

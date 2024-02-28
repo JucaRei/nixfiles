@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   xsession = {
     windowManager = {
       awesome = {

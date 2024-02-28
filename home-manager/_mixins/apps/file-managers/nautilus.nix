@@ -1,9 +1,13 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  ...
+}:
 with lib.hm.gvariant; {
   home = {
     packages = with pkgs;
-      [ nautilus-open-any-terminal ]
-      ++ (with pkgs.gnome; [ nautilus gvfs sushi ]);
+      [nautilus-open-any-terminal]
+      ++ (with pkgs.gnome; [nautilus gvfs sushi]);
 
     # Installing Nautilus directly from Nixpkgs in Non-NixOS systems have no support for mounting sftps and other features
 

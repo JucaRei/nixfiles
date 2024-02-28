@@ -1,7 +1,7 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   # Module installing  as default browser
   home = {
-    packages = [ pkgs.unstable.floorp ];
+    packages = [pkgs.unstable.floorp];
     # sessionVariables = {
     #   DEFAULT_BROWSER = "${pkgs.floorp}/bin/floorp";
     # };

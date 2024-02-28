@@ -1,10 +1,14 @@
-{ pkgs, config, ... }: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   services.tailscale.enable = true;
   networking = {
     firewall = {
       checkReversePath = "loose";
-      allowedUDPPorts = [ config.services.tailscale.port ];
-      trustedInterfaces = [ "tailscale0" ];
+      allowedUDPPorts = [config.services.tailscale.port];
+      trustedInterfaces = ["tailscale0"];
     };
   };
 
@@ -18,11 +22,11 @@
       fi
     '';
 
-    ensure-env-var = var:
-      let v = "$" + "${var}";
-      in ''
-        [ -z "${v}" ] && echo "${var} is not set" && exit 1
-      '';
+    ensure-env-var = var: let
+      v = "$" + "${var}";
+    in ''
+      [ -z "${v}" ] && echo "${var} is not set" && exit 1
+    '';
   in {
     tailscale-ip = ''
       ${shebang}

@@ -1,1 +1,1 @@
-_: { security = { rtkit = { enable = true; }; }; }
+_: {security = {rtkit = {enable = true;};};}

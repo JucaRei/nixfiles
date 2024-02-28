@@ -1,6 +1,12 @@
-{ config, lib, pkgs, username, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 with lib.hm.gvariant; {
-  home.packages = with pkgs; [ gnome.gnome-sound-recorder ];
+  home.packages = with pkgs; [gnome.gnome-sound-recorder];
 
   dconf.settings = {
     "org/gnome/SoundRecorder" = {

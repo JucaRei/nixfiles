@@ -1,5 +1,9 @@
-{ config, pkgs, ... }: {
-  home = { packages = with pkgs; [ cava mpc-cli go-musicfox ]; };
+{
+  config,
+  pkgs,
+  ...
+}: {
+  home = {packages = with pkgs; [cava mpc-cli go-musicfox];};
   programs = {
     ncmpcpp = {
       enable = true;

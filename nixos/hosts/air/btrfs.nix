@@ -1,6 +1,5 @@
 _:
 # { disks ? [ "/dev/sda" ], ... }:
-
 let
   # "subvol=@"
   options = [
@@ -60,7 +59,7 @@ in {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot/efi";
-                mountOptions = [ "defaults" "noatime" "nodiratime" ];
+                mountOptions = ["defaults" "noatime" "nodiratime"];
               };
             };
             root = {
@@ -69,7 +68,7 @@ in {
               content = {
                 type = "btrfs";
                 # Override existing partition
-                extraArgs = [ "-f" ];
+                extraArgs = ["-f"];
 
                 subvolumes = {
                   "@" = {

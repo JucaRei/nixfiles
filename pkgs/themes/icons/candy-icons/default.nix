@@ -1,5 +1,8 @@
-{ stdenvNoCC, fetchFromGitHub, lib }:
-
+{
+  stdenvNoCC,
+  fetchFromGitHub,
+  lib,
+}:
 stdenvNoCC.mkDerivation {
   pname = "candy-icons";
   version = "unstable-2023-5-8";
@@ -35,7 +38,7 @@ stdenvNoCC.mkDerivation {
     homepage = "https://github.com/EliverLara/candy-icons";
     description = "Sweet gradient icons";
     license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ juca ];
+    maintainers = with maintainers; [juca];
     platforms = platforms.linux;
   };
 }

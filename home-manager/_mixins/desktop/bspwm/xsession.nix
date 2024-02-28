@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   cfg = config.modules.bspwm-xs;
   inherit (lib) mkIf mkOption types;
 in {
@@ -28,8 +31,8 @@ in {
     systemd.user.services.polkit-agent = {
       Unit = {
         Description = "launch authentication-agent-1";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
+        After = ["graphical-session.target"];
+        PartOf = ["graphical-session.target"];
       };
       Service = {
         Type = "simple";
@@ -39,7 +42,7 @@ in {
         '';
       };
 
-      Install = { WantedBy = [ "graphical-session.target" ]; };
+      Install = {WantedBy = ["graphical-session.target"];};
     };
   };
 }

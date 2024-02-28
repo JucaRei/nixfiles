@@ -1,4 +1,5 @@
-let version = "master";
+let
+  version = "master";
 in {
   version = "master";
   repo = "https://github.com/rafaelmardojai/firefox-gnome-theme";

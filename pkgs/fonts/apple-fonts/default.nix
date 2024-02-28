@@ -1,24 +1,26 @@
-{ lib, stdenv, fetchurl, unzip, p7zip }:
-
+{
+  lib,
+  stdenv,
+  fetchurl,
+  unzip,
+  p7zip,
+}:
 stdenv.mkDerivation rec {
   pname = "apple-fonts";
   version = "1";
 
   pro = fetchurl {
-    url =
-      "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg";
+    url = "https://devimages-cdn.apple.com/design/resources/download/SF-Pro.dmg";
     sha256 = "sha256-g/SzgU3vOzm8uRuA6AN/N8Tnrl2Vpya58hx99dGfecI=";
   };
 
   compact = fetchurl {
-    url =
-      "https://devimages-cdn.apple.com/design/resources/download/SF-Compact.dmg";
+    url = "https://devimages-cdn.apple.com/design/resources/download/SF-Compact.dmg";
     sha256 = "sha256-SIht9sqmeijEeU4uLwm+tlZtFlTnD/G5GH8haUL6dlU=";
   };
 
   mono = fetchurl {
-    url =
-      "https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg";
+    url = "https://devimages-cdn.apple.com/design/resources/download/SF-Mono.dmg";
     sha256 = "sha256-pqkYgJZttKKHqTYobBUjud0fW79dS5tdzYJ23we9TW4=";
   };
 
@@ -27,7 +29,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-XOiWc4c7Yah+mM7axk8g1gY12vXamQF78Keqd3/0/cE=";
   };
 
-  nativeBuildInputs = [ p7zip ];
+  nativeBuildInputs = [p7zip];
 
   sourceRoot = ".";
 

@@ -1,5 +1,10 @@
-{ lib, python3, pkgs, fetchurl, ... }:
-
+{
+  lib,
+  python3,
+  pkgs,
+  fetchurl,
+  ...
+}:
 python3.pkgs.buildPythonPackage {
   pname = "textual-fastdatatable";
   version = "0.6.1";

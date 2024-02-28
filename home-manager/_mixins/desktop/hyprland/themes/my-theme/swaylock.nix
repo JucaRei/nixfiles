@@ -1,7 +1,11 @@
-{ pkgs, lib, ... }:
-let ui = import ./wlogout/ui.nix { };
+{
+  pkgs,
+  lib,
+  ...
+}: let
+  ui = import ./wlogout/ui.nix {};
 in {
-  imports = [ ./swayidle.nix ];
+  imports = [./swayidle.nix];
   programs.swaylock = {
     enable = true;
     # package = pkgs.unstable.swaylock-effects;
@@ -94,6 +98,6 @@ in {
   #   };
 
   systemd.user.services.swayidle.Install.WantedBy =
-    lib.mkForce [ "hyprland-session.target" ];
+    lib.mkForce ["hyprland-session.target"];
   # lib.mkForce [ "graphical-session.target" ];
 }

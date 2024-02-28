@@ -1,4 +1,8 @@
-{ lib, stdenv, ... }:
+{
+  lib,
+  stdenv,
+  ...
+}:
 stdenv.mkDerivation {
   pname = "fantezy";
   version = "0.0.1";

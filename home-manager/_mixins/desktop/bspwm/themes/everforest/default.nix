@@ -1,4 +1,10 @@
-{ pkgs, osConfig, config, lib, ... }: {
+{
+  pkgs,
+  osConfig,
+  config,
+  lib,
+  ...
+}: {
   imports = [
     ./dunst.nix
     ./picom.nix
@@ -108,7 +114,8 @@
               "FiraCode"
             ];
           })
-        ] ++ (with pkgs.unstable; [ polybar-pulseaudio-control ]);
+        ]
+        ++ (with pkgs.unstable; [polybar-pulseaudio-control]);
 
       # file = {
       #   ".config/bspwm/bspwmrc" = {
@@ -260,8 +267,8 @@
         #     #   state = "floating";
         #     #   center = true;
         #     # };
-        "Peek" = { state = "floating"; };
-        "conky-manager2" = { state = "floating"; };
+        "Peek" = {state = "floating";};
+        "conky-manager2" = {state = "floating";};
         "Plank" = {
           manage = false;
           border = false;

@@ -1,4 +1,8 @@
-{ lib, stdenvNoCC, fetchgit }:
+{
+  lib,
+  stdenvNoCC,
+  fetchgit,
+}:
 stdenvNoCC.mkDerivation rec {
   name = "mpv-Subsearch";
   version = "1.0.0";
@@ -25,6 +29,6 @@ stdenvNoCC.mkDerivation rec {
   meta = {
     description = "Search for a phrase in subtitles and skip to it";
     homepage = "https://github.com/kelciour/mpv-scripts";
-    maintainers = [ lib.maintainers.juca ];
+    maintainers = [lib.maintainers.juca];
   };
 }

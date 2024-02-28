@@ -1,4 +1,8 @@
-{ pkgs, lib ? pkgs.lib, ... }@args: {
+{
+  pkgs,
+  lib ? pkgs.lib,
+  ...
+} @ args: {
   programs.vscode = {
     userSettings = {
       ##############
@@ -11,8 +15,7 @@
       ### Window ###
       ##############
       "window.titleBarStyle" = "custom"; # Wayland
-      "window.title" =
-        "\${rootName}\${separator}\${profileName}\${separator}\${activeEditorShort}";
+      "window.title" = "\${rootName}\${separator}\${profileName}\${separator}\${activeEditorShort}";
       "window.menuBarVisibility" = "toggle";
       # "window.nativeTabs" = "true";
       "window.commandCenter" = false; # disable, just use ctrl + p
@@ -28,8 +31,7 @@
       "terminal.integrated.cursorBlinking" = true;
       "terminal.integrated.cursorStyle" = "line";
       "terminal.integrated.cursorWidth" = 2;
-      "terminal.integrated.fontFamily" =
-        "'UbuntuMono Nerd Font Mono Regular', 'monospace'";
+      "terminal.integrated.fontFamily" = "'UbuntuMono Nerd Font Mono Regular', 'monospace'";
       "terminal.integrated.smoothScrolling" = true;
       "terminal.integrated.fontSize" = 15;
       "terminal.integrated.scrollback" = 5000;
@@ -53,8 +55,7 @@
       #######################
       ### Editor Settings ###
       #######################
-      "editor.fontFamily" =
-        "'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
+      "editor.fontFamily" = "'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
       "editor.fontLigatures" = true;
       "editor.bracketPairColorization.enabled" = true;
       "editor.fontSize" = 16;
@@ -62,7 +63,7 @@
       "editor.fontWeight" = 500;
       "editor.scrollbar.horizontal" = "auto";
       "editor.scrollbar.vertical" = "auto";
-      "editor.rulers" = [ 80 120 ];
+      "editor.rulers" = [80 120];
       "editor.cursorStyle" = "line";
       "editor.lineHeight" = 1.8;
       "editor.suggestSelection" = "first";
@@ -119,8 +120,8 @@
       ######################
       ### Dev Containers ###
       ######################
-      "dev.containers.runArgs" = [ "--userns=keep-id" ];
-      "dev.containers.containerEnv" = { "HOME" = "home/node"; };
+      "dev.containers.runArgs" = ["--userns=keep-id"];
+      "dev.containers.containerEnv" = {"HOME" = "home/node";};
 
       #################
       ### Workbench ###
@@ -212,14 +213,14 @@
         #   };
         # };
         "nil" = {
-          "diagnostics" = { "ignored" = [ "unused_binding" "unused_with" ]; };
+          "diagnostics" = {"ignored" = ["unused_binding" "unused_with"];};
           "formatting" = {
             # "command" = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
-            "command" = [ "${pkgs.nixfmt}/bin/nixfmt" ];
+            "command" = ["${pkgs.nixfmt}/bin/nixfmt"];
           };
         };
       };
-      "[nix]" = { "editor.defaultFormatter" = "jnoortheen.nix-ide"; };
+      "[nix]" = {"editor.defaultFormatter" = "jnoortheen.nix-ide";};
 
       ################
       ### Security ###

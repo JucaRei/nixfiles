@@ -1,6 +1,23 @@
-{ lib, fetchFromGitHub, stdenv, rustPlatform, cargo, rustc, meson, ninja
-, pkg-config, wrapGAppsHook4, desktop-file-utils, appstream-glib
-, blueprint-compiler, dbus, gtk4, libadwaita, bluez, libpulseaudio, }:
+{
+  lib,
+  fetchFromGitHub,
+  stdenv,
+  rustPlatform,
+  cargo,
+  rustc,
+  meson,
+  ninja,
+  pkg-config,
+  wrapGAppsHook4,
+  desktop-file-utils,
+  appstream-glib,
+  blueprint-compiler,
+  dbus,
+  gtk4,
+  libadwaita,
+  bluez,
+  libpulseaudio,
+}:
 stdenv.mkDerivation (finalAttrs: {
   pname = "overskride";
   version = "0.5.6+date=2023-11-20";
@@ -31,21 +48,19 @@ stdenv.mkDerivation (finalAttrs: {
     rustc
   ];
 
-  buildInputs = [ dbus gtk4 libadwaita bluez libpulseaudio ];
+  buildInputs = [dbus gtk4 libadwaita bluez libpulseaudio];
 
   preFixup = ''
     glib-compile-schemas $out/share/gsettings-schemas/${finalAttrs.pname}-${finalAttrs.version}/glib-2.0/schemas
   '';
 
   meta = with lib; {
-    description =
-      "A Bluetooth and Obex client that is straight to the point, DE/WM agnostic, and beautiful";
+    description = "A Bluetooth and Obex client that is straight to the point, DE/WM agnostic, and beautiful";
     homepage = "https://github.com/kaii-lb/overskride";
-    changelog =
-      "https://github.com/kaii-lb/overskride/blob/v${finalAttrs.version}/CHANGELOG.md";
+    changelog = "https://github.com/kaii-lb/overskride/blob/v${finalAttrs.version}/CHANGELOG.md";
     license = licenses.gpl3Only;
     mainProgram = pname;
-    maintainers = with maintainers; [ mrcjkb ];
+    maintainers = with maintainers; [mrcjkb];
     platforms = platforms.linux;
   };
 })

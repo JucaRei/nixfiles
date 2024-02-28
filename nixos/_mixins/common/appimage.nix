@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   boot = {
     # Appimage Registration
     binfmt.registrations.appimage = {

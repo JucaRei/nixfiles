@@ -1,6 +1,5 @@
-_:
-let
-  defaultsBoot = [ "defaults" "noatime" "nodiratime" ];
+_: let
+  defaultsBoot = ["defaults" "noatime" "nodiratime"];
   defaultExtOpts = [
     "defaults"
     "data=ordered"

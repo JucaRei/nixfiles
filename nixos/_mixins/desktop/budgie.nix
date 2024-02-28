@@ -1,5 +1,11 @@
-{ pkgs, lib, inputs, username, ... }: {
-  imports = [ ../apps/terminal/tilix.nix ];
+{
+  pkgs,
+  lib,
+  inputs,
+  username,
+  ...
+}: {
+  imports = [../apps/terminal/tilix.nix];
 
   environment = {
     budgie.excludePackages = with pkgs; [
@@ -22,7 +28,7 @@
       qogir-theme
 
       # Required by the Budgie Desktop session.
-      (gnome.gnome-session.override { gnomeShellSupport = false; })
+      (gnome.gnome-session.override {gnomeShellSupport = false;})
 
       # Required by Budgie Menu.
       gnome-menus
@@ -60,7 +66,7 @@
 
   # Enable services to round out the desktop
   services = {
-    dbus.packages = with pkgs; [ budgie.budgie-control-center ];
+    dbus.packages = with pkgs; [budgie.budgie-control-center];
     blueman.enable = true;
 
     geoclue2.enable =
@@ -94,9 +100,9 @@
           enable = true;
           greeters.slick = {
             enable = true;
-            theme = lib.mkDefault { name = "Qogir"; };
-            iconTheme = lib.mkDefault { name = "Qogir"; };
-            cursorTheme = lib.mkDefault { name = "Qogir"; };
+            theme = lib.mkDefault {name = "Qogir";};
+            iconTheme = lib.mkDefault {name = "Qogir";};
+            cursorTheme = lib.mkDefault {name = "Qogir";};
           };
         };
         autoLogin = {
@@ -110,21 +116,19 @@
       desktopManager = {
         budgie = {
           enable = lib.mkDefault true;
-          sessionPath = [ pkgs.budgie.budgie-desktop-view ];
+          sessionPath = [pkgs.budgie.budgie-desktop-view];
           extraGSettingsOverrides = ''
             [com.solus-project.icon-tasklist:Budgie]
             pinned-launchers=["firefox.desktop", "nixos-manual.desktop", "mate-terminal.desktop", "nemo.desktop", "gparted.desktop", "io.calamares.calamares.desktop"] '';
-          extraGSettingsOverridePackages = [ ];
-          extraPlugins = with pkgs;
-            [ budgiePlugins.budgie-analogue-clock-applet ];
+          extraGSettingsOverridePackages = [];
+          extraPlugins = with pkgs; [budgiePlugins.budgie-analogue-clock-applet];
         };
       };
     };
-
   };
   security = {
     # xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gnome ];
-    pam.services = { budgie-screensaver.allowNullPassword = true; };
+    pam.services = {budgie-screensaver.allowNullPassword = true;};
     # Required by Budgie's Polkit Dialog.
     polkit.enable = lib.mkDefault true;
   };
@@ -138,10 +142,10 @@
 
     ## 23.11
     config = {
-      common = { default = [ "gtk" ]; };
+      common = {default = ["gtk"];};
       budgie = {
-        default = [ "gnome" "gtk" ];
-        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        default = ["gnome" "gtk"];
+        "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
       };
     };
   };

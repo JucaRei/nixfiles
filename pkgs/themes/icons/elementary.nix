@@ -1,6 +1,17 @@
-{ lib, stdenv, fetchFromGitHub, pkg-config, gdk-pixbuf, optipng, librsvg, gtk3
-, pantheon, gnome, gnome-icon-theme, hicolor-icon-theme }:
-
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  pkg-config,
+  gdk-pixbuf,
+  optipng,
+  librsvg,
+  gtk3,
+  pantheon,
+  gnome,
+  gnome-icon-theme,
+  hicolor-icon-theme,
+}:
 stdenv.mkDerivation rec {
   pname = "elementary-xfce-icon-theme";
   version = "0.17";
@@ -12,7 +23,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-9WdVUCwHFX6wlu3++QqzV0RgTDYDnUYqK7yUl83liko=";
   };
 
-  nativeBuildInputs = [ pkg-config gdk-pixbuf librsvg optipng gtk3 ];
+  nativeBuildInputs = [pkg-config gdk-pixbuf librsvg optipng gtk3];
 
   propagatedBuildInputs = [
     pantheon.elementary-icon-theme
@@ -37,6 +48,6 @@ stdenv.mkDerivation rec {
     license = licenses.gpl2;
     # darwin cannot deal with file names differing only in case
     platforms = platforms.linux;
-    maintainers = with maintainers; [ ] ++ teams.xfce.members;
+    maintainers = with maintainers; [] ++ teams.xfce.members;
   };
 }

@@ -1,5 +1,10 @@
-{ lib, python3, pkgs, fetchurl, ... }:
-
+{
+  lib,
+  python3,
+  pkgs,
+  fetchurl,
+  ...
+}:
 python3.pkgs.buildPythonPackage {
   pname = "harlequin-mysql";
   version = "0.1.0";

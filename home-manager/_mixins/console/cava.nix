@@ -1,5 +1,5 @@
-{ pkgs, ... }:
-let inherit (pkgs.stdenv) isLinux;
+{pkgs, ...}: let
+  inherit (pkgs.stdenv) isLinux;
 in {
   programs = {
     cava = {

@@ -1,4 +1,8 @@
-{ lib, stdenvNoCC, fetchgit }:
+{
+  lib,
+  stdenvNoCC,
+  fetchgit,
+}:
 stdenvNoCC.mkDerivation rec {
   name = "mpv-thumbfast";
   version = "1.0.0";
@@ -29,6 +33,6 @@ stdenvNoCC.mkDerivation rec {
     description = "High-performance on-the-fly thumbnailer for mpv";
     homepage = "https://github.com/po5/thumbfast";
     license = lib.licenses.mpl20;
-    maintainers = [ lib.maintainers.juca ];
+    maintainers = [lib.maintainers.juca];
   };
 }

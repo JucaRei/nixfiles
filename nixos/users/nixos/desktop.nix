@@ -1,9 +1,16 @@
-{ config, desktop, lib, pkgs, username, ... }: {
+{
+  config,
+  desktop,
+  lib,
+  pkgs,
+  username,
+  ...
+}: {
   imports = [
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/text-editor/vscode.nix
   ];
-  config.environment.systemPackages = with pkgs; [ gparted ];
+  config.environment.systemPackages = with pkgs; [gparted];
   config.systemd.tmpfiles.rules = [
     "d /home/${username}/Desktop 0755 ${username} users"
     "L+ /home/${username}/Desktop/gparted.desktop - - - - ${pkgs.gparted}/share/applications/gparted.desktop"

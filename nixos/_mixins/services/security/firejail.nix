@@ -1,7 +1,10 @@
-{ config, lib, pkgs, ... }:
-
 {
-  environment.systemPackages = with pkgs; [ firejail ];
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  environment.systemPackages = with pkgs; [firejail];
   programs.firejail.enable = true;
   programs.firejail.wrappedBinaries = {
     prismlauncher = {

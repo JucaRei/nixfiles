@@ -1,4 +1,9 @@
-{ stdenvNoCC, makeFontsConf, lib, fetchgit, }:
+{
+  stdenvNoCC,
+  makeFontsConf,
+  lib,
+  fetchgit,
+}:
 stdenvNoCC.mkDerivation rec {
   name = "mpv-modernx";
   version = "0.6.0";
@@ -30,15 +35,14 @@ stdenvNoCC.mkDerivation rec {
   passthru.extraWrapperArgs = [
     "--set"
     "FONTCONFIG_FILE"
-    (toString (makeFontsConf { fontDirectories = [ "/share/fonts" ]; }))
+    (toString (makeFontsConf {fontDirectories = ["/share/fonts"];}))
   ];
 
   meta = {
-    description =
-      "An MPV OSC script based on mpv-osc-modern that aims to mirror the functionality of MPV's stock OSC while with a more modern-looking interface.";
+    description = "An MPV OSC script based on mpv-osc-modern that aims to mirror the functionality of MPV's stock OSC while with a more modern-looking interface.";
     homepage = "https://github.com/cyl0/ModernX";
-    maintainers = [ lib.maintainers.iynaix ];
+    maintainers = [lib.maintainers.iynaix];
   };
 }
-
 # nix-shell -p nix-prefetch-git --run 'nix-prefetch-git https://github.com/cyl0/ModernX.git refs/heads/main'
+

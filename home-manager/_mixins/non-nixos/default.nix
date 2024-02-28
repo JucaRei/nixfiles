@@ -1,6 +1,11 @@
-{ config, lib, pkgs, nixpkgs, ... }:
-with lib;
-let
+{
+  config,
+  lib,
+  pkgs,
+  nixpkgs,
+  ...
+}:
+with lib; let
   inherit (pkgs.stdenv) isDarwin isLinux;
   cfg = config.modules.nonNixOs;
 in {
@@ -14,11 +19,11 @@ in {
   config = mkIf cfg.enable {
     xdg = {
       enable = true;
-      mime = { enable = true; };
-      systemDirs.data = if isDarwin then
-        [ "/Users/${username}/.nix-profile/share/applications" ]
-      else
-        [ "/home/${username}/.nix-profile/share/applications" ];
+      mime = {enable = true;};
+      systemDirs.data =
+        if isDarwin
+        then ["/Users/${username}/.nix-profile/share/applications"]
+        else ["/home/${username}/.nix-profile/share/applications"];
     };
     home = {
       packages = with pkgs; [
@@ -39,8 +44,7 @@ in {
         experimental-features = nix-command flakes
       '';
     };
-    systemd.user.tmpfiles.rules =
-      [ "L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}" ];
+    systemd.user.tmpfiles.rules = ["L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}"];
     targets.genericLinux.enable = true;
   };
 }

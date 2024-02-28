@@ -1,5 +1,8 @@
-{ lib, stdenv, fetchFromGitHub }:
-
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+}:
 stdenv.mkDerivation rec {
   pname = "gruvbox-dark-gtk";
   version = "1.0.2";
@@ -23,6 +26,6 @@ stdenv.mkDerivation rec {
 
     license = licenses.gpl3Only;
     platforms = platforms.unix;
-    maintainers = [ maintainers.nomisiv ];
+    maintainers = [maintainers.nomisiv];
   };
 }

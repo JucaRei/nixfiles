@@ -1,5 +1,8 @@
-{ inputs, pkgs, ... }:
-let
+{
+  inputs,
+  pkgs,
+  ...
+}: let
   homepage-bookmarks = pkgs.writeTextFile {
     name = "bookmarks.yaml";
     executable = false;
@@ -36,5 +39,5 @@ in {
     openFirewall = true;
   };
 
-  environment.systemPackages = [ homepage-bookmarks ];
+  environment.systemPackages = [homepage-bookmarks];
 }

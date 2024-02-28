@@ -1,4 +1,8 @@
-{ lib, pkgs, ... }: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   services = {
     # Enable TLP for better power management with Schedutil governor
     tlp = lib.mkForce {
@@ -92,13 +96,13 @@
 
     # Power management & Analyze power consumption on Intel-based laptops
     power-profiles-daemon.enable = lib.mkForce false;
-    upower = { enable = true; };
+    upower = {enable = true;};
   };
   powerManagement = {
     # Enable power management (do not disable this unless you have a reason to).
     # Likely to cause problems on laptops and with screen tearing if disabled.
     enable = true;
-    powertop = { enable = true; };
+    powertop = {enable = true;};
   };
 
   environment = {
@@ -181,5 +185,4 @@
   #'';
 
   #environment.systemPackages = [ tpacpi-bat ];
-
 }

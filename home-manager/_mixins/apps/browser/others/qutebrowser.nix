@@ -1,12 +1,13 @@
-{ config
-, lib
-, pkgs
-, font
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  font,
+  ...
 }: {
   home.packages = [
     pkgs.qutebrowser
-    (pkgs.callPackage ./qute-containers.nix { dmenuCmd = "fuzzel -d"; })
+    (pkgs.callPackage ./qute-containers.nix {dmenuCmd = "fuzzel -d";})
   ];
   home.sessionVariables = {
     DEFAULT_BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser";

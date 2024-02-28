@@ -1,1 +1,1 @@
-{ ... }: { home.file.".face".source = ./face.png; }
+{...}: {home.file.".face".source = ./face.png;}

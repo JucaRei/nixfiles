@@ -1,5 +1,10 @@
-{ lib, python3, pkgs, fetchurl, ... }:
-
+{
+  lib,
+  python3,
+  pkgs,
+  fetchurl,
+  ...
+}:
 python3.pkgs.buildPythonPackage {
   pname = "harlequin-postgres";
   version = "0.2.1";

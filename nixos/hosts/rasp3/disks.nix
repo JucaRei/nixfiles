@@ -1,9 +1,8 @@
 # Example to create a bios compatible gpt partition
 #{ disks ? [ "/dev/sda" ], ... }:
-{ ... }:
-let
+{...}: let
   #defaultXfsOpts = [ "defaults" "relatime" "nodiratime" ];
-  defaultExt4Opts = [ "defaults" "noatime" "nodiratime" "commit=60" ];
+  defaultExt4Opts = ["defaults" "noatime" "nodiratime" "commit=60"];
 in {
   #device = "/dev/sda";
   #type = "msdos";
@@ -85,7 +84,7 @@ in {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                extraArgs = [ "-n BOOT" ];
+                extraArgs = ["-n BOOT"];
               };
             }
             {
@@ -99,7 +98,7 @@ in {
                 format = "ext4";
                 mountpoint = "/";
                 mountOptions = defaultExt4Opts;
-                extraArgs = [ "-L NIXOS-SD" ];
+                extraArgs = ["-L NIXOS-SD"];
               };
             }
           ];

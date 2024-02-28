@@ -1,5 +1,10 @@
-{ pkgs, lib, config, username, ... }:
-let
+{
+  pkgs,
+  lib,
+  config,
+  username,
+  ...
+}: let
   # GTX 1050
   gpuIDs = [
     "10de:1c8d" # Graphics
@@ -13,7 +18,8 @@ in {
       default = true;
     };
 
-  config = let cfg = config.vfio;
+  config = let
+    cfg = config.vfio;
   in {
     boot = {
       initrd = {
@@ -58,18 +64,20 @@ in {
       #   "nvidia_drm"
       # ];
 
-      kernelParams = [
-        # enable IOMMU
-        "intel_iommu=on"
-        "intel_iommu=pt"
-        "pcie_aspm=off"
-        "fbcon=map:1"
-        "pci-stub.ids=10de:1c8d,10de:0fb9"
-        "kvm.ignore_msrs=1"
-        "kvm.report_ignored_msrs=0"
-        "vfio_iommu_type1.allow_unsafe_interrupts=1"
-        # "amd_iommu=on"
-      ] ++ lib.optional cfg.enable
+      kernelParams =
+        [
+          # enable IOMMU
+          "intel_iommu=on"
+          "intel_iommu=pt"
+          "pcie_aspm=off"
+          "fbcon=map:1"
+          "pci-stub.ids=10de:1c8d,10de:0fb9"
+          "kvm.ignore_msrs=1"
+          "kvm.report_ignored_msrs=0"
+          "vfio_iommu_type1.allow_unsafe_interrupts=1"
+          # "amd_iommu=on"
+        ]
+        ++ lib.optional cfg.enable
         # isolate the GPU
         ("vfio-pci.ids=" + lib.concatStringsSep "," gpuIDs);
       extraModprobeConfig = ''
@@ -78,9 +86,9 @@ in {
       '';
 
       blacklistedKernelModules =
-        lib.mkForce [ "nvidia" "nouveau" "nvidia_drm" "nvidia_modeset" ];
+        lib.mkForce ["nvidia" "nouveau" "nvidia_drm" "nvidia_modeset"];
 
-      kernelModules = [ "pci_stub" ];
+      kernelModules = ["pci_stub"];
     };
 
     # VFIO Packages installed
@@ -145,8 +153,8 @@ in {
           ExecStart = "${pkgs.scream}/bin/scream-ivshmem-pulse /dev/shm/scream";
           Restart = "always";
         };
-        wantedBy = [ "multi-user.target" ];
-        requires = [ "pulseaudio.service" ];
+        wantedBy = ["multi-user.target"];
+        requires = ["pulseaudio.service"];
       };
     };
   };
@@ -154,3 +162,4 @@ in {
 # https://alexbakker.me/post/nixos-pci-passthrough-qemu-vfio.html
 # https://astrid.tech/2022/09/22/0/nixos-gpu-vfio/
 # https://gist.github.com/CRTified/43b7ce84cd238673f7f24652c85980b3
+

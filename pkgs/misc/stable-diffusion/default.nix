@@ -1,5 +1,4 @@
-{ pkgs ? import <nixpkgs> { }, ... }:
-
+{pkgs ? import <nixpkgs> {}, ...}:
 pkgs.python3Packages.buildPythonApplication {
   pname = "stable-diffusion";
   version = "0.1.0-dev0";
@@ -17,7 +16,7 @@ pkgs.python3Packages.buildPythonApplication {
     setuptools_scm
   ];
 
-  importChecks = [ "main" ];
+  importChecks = ["main"];
 
   propagatedBuildInputs = with pkgs.python3Packages; [
     accelerate

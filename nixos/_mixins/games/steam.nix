@@ -1,5 +1,10 @@
-{ inputs, pkgs, config, lib, ... }:
-let
+{
+  inputs,
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
   cfg = config.mine.games.steam;
   inherit (lib) mkIf mkOption types;
 in {
@@ -20,7 +25,7 @@ in {
       steam-hardware.enable = true;
       opengl = {
         driSupport32Bit = true;
-        extraPackages = with pkgs; [ vulkan-validation-layers ];
+        extraPackages = with pkgs; [vulkan-validation-layers];
       };
     };
     programs = {
@@ -76,7 +81,7 @@ in {
     };
 
     # improve wine performance
-    environment.sessionVariables = { WINEDEBUG = "-all"; };
+    environment.sessionVariables = {WINEDEBUG = "-all";};
 
     # Adds Proton GE to Steam
     # Does not work in main overlay
@@ -85,8 +90,8 @@ in {
       (_: prev: {
         steam = prev.steam.override {
           extraProfile = "export STEAM_EXTRA_COMPAT_TOOLS_PATHS='${
-              inputs.nix-gaming.packages.${pkgs.system}.proton-ge
-            }'";
+            inputs.nix-gaming.packages.${pkgs.system}.proton-ge
+          }'";
         };
       })
     ];
@@ -98,7 +103,7 @@ in {
 
     # nix-gaming cache
     nix.settings = {
-      extra-substituters = [ "https://nix-gaming.cachix.org" ];
+      extra-substituters = ["https://nix-gaming.cachix.org"];
       extra-trusted-public-keys = [
         "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
       ];
@@ -107,11 +112,13 @@ in {
     # https://github.com/NixOS/nixpkgs/issues/45492
     # Set limits for esync.
     systemd.extraConfig = "DefaultLimitNOFILE=1048576";
-    security.pam.loginLimits = [{
-      domain = "*";
-      type = "hard";
-      item = "nofile";
-      value = "1048576";
-    }];
+    security.pam.loginLimits = [
+      {
+        domain = "*";
+        type = "hard";
+        item = "nofile";
+        value = "1048576";
+      }
+    ];
   };
 }

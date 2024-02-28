@@ -1,20 +1,50 @@
-{ config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs
-, stateVersion, username, hostid, ... }: {
+{
+  config,
+  desktop,
+  hostname,
+  inputs,
+  lib,
+  modulesPath,
+  outputs,
+  pkgs,
+  stateVersion,
+  username,
+  hostid,
+  ...
+}: let
+  notVM =
+    if (hostname == "minimech" || hostname == "scrubber" || builtins.substring 0 5 hostname == "lima-")
+    then false
+    else true;
+  # Create some variable to control what doesn't get installed/enabled
+  isInstall =
+    if (builtins.substring 0 4 hostname != "iso-")
+    then true
+    else false;
+  isWorkstation =
+    if (desktop != null)
+    then true
+    else false;
+  # Firewall configuration variable for syncthing
+in {
   # Import host specific boot and hardware configurations.
   # Only include desktop components if one is supplied.
   # - https://nixos.wiki/wiki/Nix_Language:_Tips_%26_Tricks#Coercing_a_relative_path_with_interpolated_variables_to_an_absolute_path_.28for_imports.29
-  imports = [
-    # inputs.home-manager.nixosModules.home-manager
-    inputs.vscode-server.nixosModules.default
-    inputs.disko.nixosModules.disko
-    (modulesPath + "/installer/scan/not-detected.nix")
-    (./. + "/hosts/${hostname}")
-    ./_mixins/services/network/openssh.nix
-    ./_mixins/services/tools/smartmon.nix
-    ./_mixins/common
-    ./users/root
-  ] ++ lib.optional (builtins.pathExists (./. + "/users/${username}"))
-    ./users/${username} ++ lib.optional (desktop != null) ./_mixins/desktop
+  imports =
+    [
+      # inputs.home-manager.nixosModules.home-manager
+      inputs.vscode-server.nixosModules.default
+      inputs.disko.nixosModules.disko
+      (modulesPath + "/installer/scan/not-detected.nix")
+      (./. + "/hosts/${hostname}")
+      ./_mixins/services/network/openssh.nix
+      ./_mixins/services/tools/smartmon.nix
+      ./_mixins/common
+      ./users/root
+    ]
+    ++ lib.optional (builtins.pathExists (./. + "/users/${username}"))
+    ./users/${username}
+    ++ lib.optional (desktop != null) ./_mixins/desktop
     ++ lib.optional (hostname != "rasp3" || "air")
     ./_mixins/services/tools/kmscon.nix;
 
@@ -29,7 +59,7 @@
       # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
       (_: super: {
         makeModulesClosure = x:
-          super.makeModulesClosure (x // { allowMissing = true; });
+          super.makeModulesClosure (x // {allowMissing = true;});
       })
 
       # You can also add overlays exported from other flakes:
@@ -60,8 +90,8 @@
 
         tor-browser-bundle-bin = super.symlinkJoin {
           name = super.tor-browser-bundle-bin.name;
-          paths = [ super.tor-browser-bundle-bin ];
-          buildInputs = [ super.makeWrapper ];
+          paths = [super.tor-browser-bundle-bin];
+          buildInputs = [super.makeWrapper];
           postBuild = ''
             wrapProgram "$out/bin/tor-browser" \
               --set MOZ_ENABLE_WAYLAND 1
@@ -69,11 +99,11 @@
         };
 
         mpv =
-          super.mpv.override { scripts = with super.mpvScripts; [ mpris ]; };
+          super.mpv.override {scripts = with super.mpvScripts; [mpris];};
         # vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
-        deadbeef = super.deadbeef.override { wavpackSupport = true; };
+        deadbeef = super.deadbeef.override {wavpackSupport = true;};
         deadbeef-with-plugins = super.deadbeef-with-plugins.override {
-          plugins = with super.deadbeefPlugins; [ mpris2 statusnotifier ];
+          plugins = with super.deadbeefPlugins; [mpris2 statusnotifier];
         };
       })
     ];
@@ -85,7 +115,7 @@
       # Accept the joypixels license
       joypixels.acceptLicense = true;
       allowUnsupportedSystem = true;
-      permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" ];
+      permittedInsecurePackages = ["openssl-1.1.1w" "electron-19.1.9"];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       allowUnfreePredicate = _: true;
@@ -127,7 +157,7 @@
 
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
 
@@ -136,7 +166,7 @@
 
     # Add nixpkgs input to NIX_PATH
     # This lets nix2 commands still use <nixpkgs>
-    nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
+    nixPath = ["nixpkgs=${inputs.nixpkgs.outPath}"];
 
     optimise.automatic = true;
     package = pkgs.unstable.nix;
@@ -161,18 +191,17 @@
         # "cgroups"
       ];
       # Allow to run nix
-      allowed-users = [ "root" "@wheel" ];
+      allowed-users = ["root" "@wheel"];
       builders-use-substitutes =
         true; # Avoid copying derivations unnecessary over SSH.
 
-      trusted-users = [ "root" "@wheel" ];
+      trusted-users = ["root" "@wheel"];
 
       substituters = [
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
         "https://hyprland.cachix.org"
         "https://cachix.cachix.org"
-
       ];
 
       trusted-public-keys = [
@@ -228,7 +257,7 @@
     hostName = hostname;
     hostId = hostid;
     useDHCP = lib.mkDefault true;
-    firewall = { enable = true; };
+    firewall = {enable = true;};
   };
 
   system = {
@@ -393,7 +422,10 @@
       # Enable the D-Bus service, which is a message bus system that allows
       # communication between applications.
       enable = true;
-      implementation = if hostname == "nitro" then "broker" else "dbus";
+      implementation =
+        if hostname == "nitro"
+        then "broker"
+        else "dbus";
     };
   };
 
@@ -415,11 +447,11 @@
             builtins.map (p: "${p.name}") config.environment.systemPackages;
           sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
           formatted = builtins.concatStringsSep "\n" sortedUnique;
-        in formatted;
+        in
+          formatted;
       };
     };
   };
 
   hardware.enableRedistributableFirmware = true;
-
 }

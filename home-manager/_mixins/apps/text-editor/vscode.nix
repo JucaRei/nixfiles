@@ -1,11 +1,13 @@
-args@{ pkgs, lib ? pkgs.lib, config, ... }:
-let
-
-  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+args @ {
+  pkgs,
+  lib ? pkgs.lib,
+  config,
+  ...
+}: let
+  nixGL = import ../../../../lib/nixGL.nix {inherit config pkgs;};
 
   # codegl = pkgs.unstable.vscode-fhs;
   codegl = pkgs.unstable.vscode;
-
   # nixGLVulkanMesaWrap = pkg:
   #   pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
   #     mkdir $out
@@ -20,14 +22,12 @@ let
   #       chmod +x $wrapped_bin
   #     done
   #   '';
-
   # nixGL = (import
   #   (builtins.fetchGit {
   #     url = "http://github.com/guibou/nixGL";
   #     ref = "refs/heads/main";
   #   })
   #   { enable32bits = false; }).auto;
-
 in {
   imports = [
     ### Enable immutable vscode settings
@@ -51,7 +51,7 @@ in {
       #     "--ozone-platform-hint=auto"
       #   ];
       # });
-      package = (nixGL codegl);
+      package = nixGL codegl;
 
       mutableExtensionsDir = true;
       enableUpdateCheck = false;
@@ -293,12 +293,12 @@ in {
     # Only if is non-nixos system
     xdg.desktopEntries = lib.mkIf (args ? "nixosConfig") {
       code = {
-        categories = [ "Utility" "TextEditor" "Development" "IDE" ];
+        categories = ["Utility" "TextEditor" "Development" "IDE"];
         comment = "Code Editing. Redefined.";
         exec = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.vscode}/bin/code %F";
         genericName = "Text Editor";
         icon = "${pkgs.vscode}/share/pixmaps/vscode.png";
-        mimeType = [ "text/plain" "inode/directory" ];
+        mimeType = ["text/plain" "inode/directory"];
         name = "Visual Studio Code";
         startupNotify = true;
         type = "Application";

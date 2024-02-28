@@ -1,8 +1,13 @@
-{ pkgs, lib, params, ... }: {
+{
+  pkgs,
+  lib,
+  params,
+  ...
+}: {
   programs = {
     firefox = {
       enable = true;
-      languagePacks = [ "en-GB" "pt-BR" ];
+      languagePacks = ["en-GB" "pt-BR"];
       package = pkgs.unstable.firefox;
       policies = {
         CaptivePortal = false;
@@ -28,34 +33,37 @@
         };
         search.engines = {
           "Nix Packages" = {
-            urls = [{
-              template = "https://search.nixos.org/packages";
-              params = [
-                {
-                  name = "type";
-                  value = "packages";
-                }
-                {
-                  name = "query";
-                  value = "{searchTerms}";
-                }
-              ];
-            }];
+            urls = [
+              {
+                template = "https://search.nixos.org/packages";
+                params = [
+                  {
+                    name = "type";
+                    value = "packages";
+                  }
+                  {
+                    name = "query";
+                    value = "{searchTerms}";
+                  }
+                ];
+              }
+            ];
 
-            icon =
-              "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-            definedAliases = [ "@np" ];
+            icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+            definedAliases = ["@np"];
           };
         };
 
         search.force = true;
 
-        bookmarks = [{
-          name = "wikipedia";
-          tags = [ "wiki" ];
-          keyword = "wiki";
-          url = "https://en.wikipedia.org/wiki/Special:Search?search=%s&go=Go";
-        }];
+        bookmarks = [
+          {
+            name = "wikipedia";
+            tags = ["wiki"];
+            keyword = "wiki";
+            url = "https://en.wikipedia.org/wiki/Special:Search?search=%s&go=Go";
+          }
+        ];
         SearchBar = "unified";
         SearchSuggestEnabled = true;
         ShowHomeButton = true;
@@ -110,8 +118,7 @@
           "plugins.enumerable_names" = "";
 
           # Use Mozilla instead of Google here.
-          "geo.provider.network.url" =
-            "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%";
+          "geo.provider.network.url" = "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%";
 
           # No speculative content when searching.
           # "browser.urlbar.speculativeConnect.enabled" = false;
@@ -200,9 +207,11 @@
         #   /* some css */
         # '';
         # modified theme from https://github.com/Bali10050/FirefoxCSS
-        userChrome = builtins.readFile
+        userChrome =
+          builtins.readFile
           ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userChrome.css;
-        userContent = builtins.readFile
+        userContent =
+          builtins.readFile
           ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userContent.css;
       };
     };

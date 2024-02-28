@@ -1,5 +1,5 @@
-{ pkgs, ... }: {
-  imports = [ ./scripts.nix ];
+{pkgs, ...}: {
+  imports = [./scripts.nix];
   services = {
     polybar = {
       enable = true;
@@ -51,12 +51,10 @@
           line-size = 1;
           wm-restack = "bspwm";
 
-          modules-left =
-            "menu sep round-left bspwm round-right empty-space round-left polywins round-right";
+          modules-left = "menu sep round-left bspwm round-right empty-space round-left polywins round-right";
           modules-center = "nowplaying title";
           # modules-right = "disks temperature round-left cpu round-right mem xbacklight alsa pulseaudio bluetooth wlan eth updates round-left time round-right powermenu";
-          modules-right =
-            "disks round-left cpu round-right mem pulseaudio wlan eth round-left time round-right battery powermenu";
+          modules-right = "disks round-left cpu round-right mem pulseaudio wlan eth round-left time round-right battery powermenu";
           font-0 = "JetBrainsMono Nerd Font:style=Bold:pixelsize=9;3";
           font-1 = "JetBrainsMono Nerd Font:size=14;4";
           font-2 = "Material Design Icons:style=Bold:size=9;3";
@@ -255,7 +253,6 @@
 
           click-left = "~/.config/bspwm/scripts/rofi_launcher";
           click-right = "~/.config/bspwm/scripts/rofi_runner";
-
         };
         "module/bspwm" = {
           type = "internal/bspwm";
@@ -384,8 +381,7 @@
           interval = 5;
           exec = "";
           # format-connected = "<label-connected>";
-          format-connected =
-            "%{A1:$HOME/.config/rofi/bin/rofi-wifi.sh:}<ramp-signal> <label-connected>%{A}";
+          format-connected = "%{A1:$HOME/.config/rofi/bin/rofi-wifi.sh:}<ramp-signal> <label-connected>%{A}";
           format-disconnected = "<label-disconnected>";
           label-disconnected = "%{F#F0C674}%ifname%%{F#707880} disconnected";
           # click-left = "~/.config/rofi/bin/rofi-wifi-menu.sh";
@@ -396,8 +392,7 @@
           interface-type = "wired";
           interval = 1;
           # label-connected = "%{F#F0C674}%ifname%%{F-} %local_ip%";
-          label-connected =
-            "%{F#16ACE0} %{F#713ABE}%local_ip% %{F#2DFF02}%downspeed% %{F#F04F4C}%upspeed%";
+          label-connected = "%{F#16ACE0} %{F#713ABE}%local_ip% %{F#2DFF02}%downspeed% %{F#F04F4C}%upspeed%";
           format-connected-background = "\${colors.background}";
           format-connected-foreground = "\${colors.foreground}";
           format-connected-padding = 1;

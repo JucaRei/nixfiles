@@ -1,4 +1,10 @@
-{ pkgs, lib, osConfig, config, ... }: {
+{
+  pkgs,
+  lib,
+  osConfig,
+  config,
+  ...
+}: {
   config = {
     # home = {
     #   packages = with pkgs; [
@@ -304,7 +310,7 @@
             per_monitor_dpi = false;
           };
 
-          log_notifs = { script = "~/.config/dunst/scripts/dunst_logger.sh"; };
+          log_notifs = {script = "~/.config/dunst/scripts/dunst_logger.sh";};
 
           urgency_low = {
             # IMPORTANT: colors have to be defined in quotation marks.

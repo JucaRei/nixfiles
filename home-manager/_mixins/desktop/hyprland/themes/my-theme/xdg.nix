@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   file-manager = "thunar.desktop";
   compressed = "xarchiver.desktop";
   browser = "firefox.desktop";

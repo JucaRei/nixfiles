@@ -1,8 +1,12 @@
-{ stdenvNoCC, lib, fetchFromGitHub, makeWrapper, wget }:
-
+{
+  stdenvNoCC,
+  lib,
+  fetchFromGitHub,
+  makeWrapper,
+  wget,
+}:
 # https://github.com/NixOS/nixpkgs/pull/268800
 # https://github.com/89luca89/distrobox/pull/1080
-
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "distrobox";
   version = "1.6.0.1";
@@ -17,7 +21,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   dontConfigure = true;
   dontBuild = true;
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [makeWrapper];
   installPhase = ''
     runHook preInstall
 
@@ -32,12 +36,11 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   # https://github.com/89luca89/distrobox/issues/407
   postFixup = ''
     wrapProgram "$out/bin/distrobox-generate-entry" \
-      --prefix PATH ":" ${lib.makeBinPath [ wget ]}
+      --prefix PATH ":" ${lib.makeBinPath [wget]}
   '';
 
   meta = with lib; {
-    description =
-      "Wrapper around podman or docker to create and start containers";
+    description = "Wrapper around podman or docker to create and start containers";
     longDescription = ''
       Use any linux distribution inside your terminal. Enable both backward and
       forward compatibility with software and freedom to use whatever distribution
@@ -46,6 +49,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     homepage = "https://distrobox.privatedns.org/";
     license = licenses.gpl3Only;
     platforms = platforms.linux;
-    maintainers = with maintainers; [ atila ];
+    maintainers = with maintainers; [atila];
   };
 })

@@ -14,14 +14,17 @@
 # You can now flash the image to your SD card!
 # Example with `dd`:
 # `sudo dd bs=4M if=nixos-sd-image-21.03pre262561.581232454fd-aarch64-linux.img of=/dev/mmcblk0 conv=fsync`
-
-{ lib, pkgs, config, ... }: {
-  imports = [ <nixpkgs/nixos/modules/installer/cd-dvd/sd-image-aarch64.nix> ];
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}: {
+  imports = [<nixpkgs/nixos/modules/installer/cd-dvd/sd-image-aarch64.nix>];
 
   # Since the latest kernel can't boot on RPI 3B+
   boot.kernelPackages = pkgs.linuxPackages_rpi3;
 
   # Authorized SSH keys to access the root user at boot
-  users.extraUsers.root.openssh.authorizedKeys.keys =
-    [ "ssh-rsa .... user@host" ];
+  users.extraUsers.root.openssh.authorizedKeys.keys = ["ssh-rsa .... user@host"];
 }

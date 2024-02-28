@@ -1,8 +1,10 @@
-{ config, pkgs, lib, ... }:
-
-with lib;
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
   termDesktop = pkgs.writeTextFile {
     name = "urxvt.desktop";
     destination = "/share/applications/rxvt.desktop";
@@ -166,9 +168,9 @@ in {
           Documentation = "man:urxvtd(1) man:urxvt(1)";
         };
 
-        Service = { ExecStart = [ "${pkgs.rxvt-unicode}/bin/urxvtd -o -q" ]; };
+        Service = {ExecStart = ["${pkgs.rxvt-unicode}/bin/urxvtd -o -q"];};
 
-        Install = { WantedBy = [ "default.target" ]; };
+        Install = {WantedBy = ["default.target"];};
       };
     };
   };

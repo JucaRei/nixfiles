@@ -76,7 +76,7 @@
 
   # custom locking script
   # lockman-wayland = pkgs.callPackage ./misc/lockman { };
-  # waybar = pkgs.callPackage ./misc/waybar {};
+  waybar = pkgs.callPackage ./wayland/waybar {};
 
   # nixgl-legacy = pkgs.callPackage ./nixgl/nixgl-legacy.nix {};
 }

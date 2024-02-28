@@ -1,6 +1,13 @@
-{ stdenv, lib, pkgs, sources, name, targetPkgs, profile ? "", ... }:
-
-let
+{
+  stdenv,
+  lib,
+  pkgs,
+  sources,
+  name,
+  targetPkgs,
+  profile ? "",
+  ...
+}: let
   fullName = "${name}-shell";
   env = pkgs.buildEnv {
     name = fullName;
@@ -12,11 +19,12 @@ let
     ${profile}
     exec ${pkgs.fish}/bin/fish
   '';
-in stdenv.mkDerivation rec {
-  name = fullName;
-  unpackPhase = "true";
-  installPhase = ''
-    mkdir -p $out/bin
-    ln -s ${script}/bin/${fullName} $out/bin/
-  '';
-}
+in
+  stdenv.mkDerivation rec {
+    name = fullName;
+    unpackPhase = "true";
+    installPhase = ''
+      mkdir -p $out/bin
+      ln -s ${script}/bin/${fullName} $out/bin/
+    '';
+  }

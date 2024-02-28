@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{lib, ...}: {
   xdg = {
     configFile = {
       ".Xresources" = lib.mkForce {

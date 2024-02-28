@@ -1,5 +1,10 @@
-{ stdenvNoCC, fetchFromGitHub, python3, config, ... }:
-
+{
+  stdenvNoCC,
+  fetchFromGitHub,
+  python3,
+  config,
+  ...
+}:
 stdenvNoCC.mkDerivation rec {
   name = "adwaita-for-steam";
   version = "1.15";
@@ -13,9 +18,9 @@ stdenvNoCC.mkDerivation rec {
 
   preferLocalBuild = true;
 
-  nativeBuildInputs = [ python3 ];
+  nativeBuildInputs = [python3];
 
-  patches = [ ./install.patch ];
+  patches = [./install.patch];
 
   installPhase = ''
     mkdir -p $out/build

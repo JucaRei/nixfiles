@@ -1,9 +1,12 @@
-{ pkgs, username, ... }: {
-
+{
+  pkgs,
+  username,
+  ...
+}: {
   programs = {
     rofi = {
       enable = true;
-      plugins = [ pkgs.rofi-calc ];
+      plugins = [pkgs.rofi-calc];
       # terminal = "\${pkgs.kitty}/bin/kitty";
     };
   };

@@ -1,4 +1,9 @@
-{ lib, pkgs, hostname, ... }: {
+{
+  lib,
+  pkgs,
+  hostname,
+  ...
+}: {
   boot = {
     tmp = {
       #useTmpfs = true;

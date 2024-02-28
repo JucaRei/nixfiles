@@ -1,6 +1,6 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   home = {
-    packages = with pkgs; [ spaceFM ];
+    packages = with pkgs; [spaceFM];
 
     # ${spaceFM}/bin/spacefm -d &
     file = {

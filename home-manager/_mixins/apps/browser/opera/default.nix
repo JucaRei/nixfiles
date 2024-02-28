@@ -1,11 +1,9 @@
-{ pkgs
-, ...
-}:
+{pkgs, ...}:
 # let
 # ifDefault = lib.mkIf (params.browser == "opera");
 # in
 {
-  home.packages = with pkgs.unstable; [ opera ];
+  home.packages = with pkgs.unstable; [opera];
   # xdg = {
   # mime.enable = ifDefault true;
   # mimeApps = {

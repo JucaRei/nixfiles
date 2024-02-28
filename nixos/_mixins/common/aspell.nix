@@ -1,11 +1,10 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     aspellDicts.en
     aspellDicts.en-computers
     aspellDicts.pt_BR
     hunspellDicts.en_US
     hunspellDicts.pt_BR
-
   ];
 
   # Configure aspell system wide

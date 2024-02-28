@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.bottom = {
     enable = true;
     settings = {
@@ -9,7 +9,7 @@
       };
       disk_filter = {
         is_list_ignored = true;
-        list = [ "/dev/loop" ];
+        list = ["/dev/loop"];
         regex = true;
         case_sensitive = false;
         whole_word = false;

@@ -1,16 +1,17 @@
 # Taken from https://github.com/LunNova/nixos-configs
 # 💖 Thank you!
-
-{ lib, writeShellScriptBin, glib, ... }:
-
-let
+{
+  lib,
+  writeShellScriptBin,
+  glib,
+  ...
+}: let
   inherit (lib.campground) override-meta;
 
   new-meta = with lib; {
-    description =
-      "A replacement for the default xdg-open program which correctly handles portals.";
+    description = "A replacement for the default xdg-open program which correctly handles portals.";
     license = licenses.asl20;
-    maintainers = with maintainers; [ jakehamilton ];
+    maintainers = with maintainers; [jakehamilton];
   };
 
   # TODO can this maybe suck less
@@ -51,5 +52,5 @@ let
         "" "$targetFile" {}
     fi
   '';
-in override-meta new-meta package
-
+in
+  override-meta new-meta package

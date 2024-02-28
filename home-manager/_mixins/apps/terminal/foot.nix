@@ -1,9 +1,8 @@
-{ pkgs, ... }: {
-  home.packages = with pkgs;
-    [
-      libsixel
-      # for displaying images
-    ];
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    libsixel
+    # for displaying images
+  ];
   programs.foot = {
     enable = true;
     # doesnt work properly
@@ -73,7 +72,7 @@
         bright6 = "94e2d5";
         bright7 = "a6adc8";
       };
-      mouse = { hide-when-typing = "yes"; };
+      mouse = {hide-when-typing = "yes";};
       key-bindings = {
         show-urls-launch = "Control+Shift+u";
         unicode-input = "Control+Shift+i";

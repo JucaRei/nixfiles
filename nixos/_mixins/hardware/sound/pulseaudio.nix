@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   ### Tiling window managers
   sound-volume-up = pkgs.writeScriptBin "sound-volume-up" ''
     #!${pkgs.stdenv.shell}
@@ -29,7 +33,7 @@ in {
       extraConfig = lib.mkDefault "load-module module-switch-on-connect";
 
       # Writes to /etc/pulse/daemon.conf
-      daemon.config = { default-sample-rate = 48000; };
+      daemon.config = {default-sample-rate = 48000;};
     };
   };
 

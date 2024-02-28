@@ -1,4 +1,12 @@
-{ lib, rustPlatform, fetchFromGitHub, pkg-config, stdenv, openssl, ... }:
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  stdenv,
+  openssl,
+  ...
+}:
 rustPlatform.buildRustPackage rec {
   pname = "cloneit";
   version = "0.1.0";
@@ -12,9 +20,9 @@ rustPlatform.buildRustPackage rec {
 
   cargoSha256 = "zhsFIU7gmP4gR5NhrFslFSvYIXH1fxJLZU8nV67PluQ=";
 
-  nativeBuildInputs = [ pkg-config ];
+  nativeBuildInputs = [pkg-config];
 
-  buildInputs = [ openssl ];
+  buildInputs = [openssl];
 
   meta = with lib; {
     mainProgram = "cloneit";

@@ -1,6 +1,10 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  ...
+}:
 with lib.hm.gvariant; {
-  home.packages = with pkgs; [ rhythmbox ];
+  home.packages = with pkgs; [rhythmbox];
 
   dconf.settings = {
     "org/gnome/rhythmbox/plugins" = {
@@ -15,7 +19,7 @@ with lib.hm.gvariant; {
       ];
     };
 
-    "org/gnome/rhythmbox/podcast" = { download-interval = "manual"; };
+    "org/gnome/rhythmbox/podcast" = {download-interval = "manual";};
 
     "org/gnome/rhythmbox/sources" = {
       browser-views = "genres-artists-albums";

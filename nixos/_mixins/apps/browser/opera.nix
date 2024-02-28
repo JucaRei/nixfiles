@@ -1,5 +1,8 @@
-{ pkgs, params, lib, ... }:
-
 {
-  environment.systemPackages = with pkgs.unstable; [ opera ];
+  pkgs,
+  params,
+  lib,
+  ...
+}: {
+  environment.systemPackages = with pkgs.unstable; [opera];
 }

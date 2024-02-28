@@ -1,5 +1,10 @@
-{ lib, python3, pkgs, fetchurl, ... }:
-
+{
+  lib,
+  python3,
+  pkgs,
+  fetchurl,
+  ...
+}:
 python3.pkgs.buildPythonPackage {
   pname = "shandy-sqlfmt";
   version = "0.21.1";

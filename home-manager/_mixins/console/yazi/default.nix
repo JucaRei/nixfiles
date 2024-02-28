@@ -1,4 +1,4 @@
-{ config, ... }: {
+{config, ...}: {
   programs = {
     yazi = {
       enable = false;

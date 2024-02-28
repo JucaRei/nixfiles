@@ -1,7 +1,14 @@
-{ pkgs, lib, config, inputs, hostname, ... }:
-let nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
+{
+  pkgs,
+  lib,
+  config,
+  inputs,
+  hostname,
+  ...
+}: let
+  nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in {
-  imports = [ ./themes/my-theme ];
+  imports = [./themes/my-theme];
   home = {
     packages = with pkgs; [
       # kitty # terminal
@@ -37,21 +44,24 @@ in {
         # enableNvidiaPatches = true;
         package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
           enableXWayland = true; # whether to enable XWayland
-          legacyRenderer = if hostname == "nitro" then
-            false
-          else
-            true; # false; # whether to use the legacy renderer (for old GPUs)
-          withSystemd = if hostname == "nitro" then
-            true
-          else
-            false; # whether to build with systemd support
+          legacyRenderer =
+            if hostname == "nitro"
+            then false
+            else true; # false; # whether to use the legacy renderer (for old GPUs)
+          withSystemd =
+            if hostname == "nitro"
+            then true
+            else false; # whether to build with systemd support
         };
         # extraConfig = '''';
         # finalPackage = '''';
         # plugins = [];
         # settings = {};
         systemd = {
-          enable = if hostname != "zion" then true else false;
+          enable =
+            if hostname != "zion"
+            then true
+            else false;
           # enable = false;
           # extraCommands = "";
           # variable = [];
@@ -62,9 +72,12 @@ in {
             "systemctl --user start hyprland-session.target"
           ];
 
-          variables = [ "--all" ];
+          variables = ["--all"];
         };
-        xwayland.enable = if hostname != "zion" then true else false;
+        xwayland.enable =
+          if hostname != "zion"
+          then true
+          else false;
         plugins = [
           inputs.split-monitor-workspaces.packages.${pkgs.system}.split-monitor-workspaces
         ];
@@ -73,8 +86,7 @@ in {
   };
   home = {
     sessionVariables = {
-      POLKIT_AUTH_AGENT =
-        "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      POLKIT_AUTH_AGENT = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
 
       "DIRENV_LOG_FORMAT" = "";
       # "LIBVA_DRIVE_NAME" = if (hostname != "zion" || "air") then "nvidia" else "iHD";
@@ -101,8 +113,7 @@ in {
       # nitro
       "VAAPI_MPEG4_ENABLED" = "true";
       "VDPAU_DRIVER" = "nvidia";
-      "GST_PLUGIN_FEATURE_RANK" =
-        "nvmpegvideodec:MAX,nvmpeg2videodec:MAX,nvmpeg4videodec:MAX,nvh264sldec:MAX,nvh264dec:MAX,nvjpegdec:MAX,nvh265sldec:MAX,nvh265dec:MAX,nvvp9dec:MAX";
+      "GST_PLUGIN_FEATURE_RANK" = "nvmpegvideodec:MAX,nvmpeg2videodec:MAX,nvmpeg4videodec:MAX,nvh264sldec:MAX,nvh264dec:MAX,nvjpegdec:MAX,nvh265sldec:MAX,nvh265dec:MAX,nvvp9dec:MAX";
       "GST_VAAPI_ALL_DRIVERS" = "1";
 
       # Gaming Parameters
@@ -165,7 +176,6 @@ in {
     };
   };
 }
-
 # systemd = {
 #   user.services.polkit-gnome-authentication-agent-1 = {
 #     description = "polkit-gnome-authentication-agent-1";
@@ -181,7 +191,6 @@ in {
 #     };
 #   };
 # };
-
 # systemd = {
 #   user.services.polkit-kde-authentication-agent-1 = {
 #     # after = [ "graphical-session.target" ];
@@ -199,3 +208,4 @@ in {
 #     };
 #   };
 # };
+

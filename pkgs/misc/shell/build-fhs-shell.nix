@@ -1,5 +1,13 @@
-{ stdenv, lib, pkgs, sources, name, targetPkgs, profile ? "", ... }:
-
+{
+  stdenv,
+  lib,
+  pkgs,
+  sources,
+  name,
+  targetPkgs,
+  profile ? "",
+  ...
+}:
 pkgs.buildFHSUserEnv {
   name = "${name}-shell";
   targetPkgs = pkgs: targetPkgs;

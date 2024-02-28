@@ -1,1 +1,1 @@
-_: { imports = [ ./nix.nix ./nixpkgs.nix ]; }
+_: {imports = [./nix.nix ./nixpkgs.nix];}

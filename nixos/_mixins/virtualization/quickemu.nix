@@ -1,3 +1,3 @@
-{ pkgs, ... }: {
-  environment.systemPackages = with pkgs; [ unstable.quickemu ];
+{pkgs, ...}: {
+  environment.systemPackages = with pkgs; [unstable.quickemu];
 }

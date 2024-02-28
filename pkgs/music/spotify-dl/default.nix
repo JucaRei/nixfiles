@@ -1,5 +1,10 @@
-{ lib, buildPythonApplication, fetchFromGitHub, pkgs, ... }:
-
+{
+  lib,
+  buildPythonApplication,
+  fetchFromGitHub,
+  pkgs,
+  ...
+}:
 buildPythonApplication rec {
   pname = "spotdl";
   version = "4.1.3";
@@ -28,7 +33,7 @@ buildPythonApplication rec {
     rich
     rapidfuzz
     mutagen
-    autoconnect = [
+    autoconnect
     icapi
     pytube
     yt-dlp
@@ -46,17 +51,17 @@ buildPythonApplication rec {
     platformdirs
   ];
 
-    checkInputs = with pkgs.python311Packages; [
+  checkInputs = with pkgs.python311Packages; [
     pytest-subprocess
   ];
 
-    # requires networking
-    doCheck = false;
-    preCheck = ''
+  # requires networking
+  doCheck = false;
+  preCheck = ''
     export HOME=$TMPDIR
   '';
 
-    disabledTestPaths = [
+  disabledTestPaths = [
     # require networking
     "tests/test_init.py"
     "tests/test_matching.py"
@@ -65,7 +70,7 @@ buildPythonApplication rec {
     "tests/utils/test_search.py"
   ];
 
-    disabledTests = [
+  disabledTests = [
     # require networking
     "test_album_from_string"
     "test_album_from_url"
@@ -83,15 +88,15 @@ buildPythonApplication rec {
     "test_song_from_url"
   ];
 
-    makeWrapperArgs = [
+  makeWrapperArgs = [
     "--prefix"
     "PATH"
     ":"
-    (lib.makeBinPath [ pkgs.ffmpeg ])
+    (lib.makeBinPath [pkgs.ffmpeg])
   ];
-    meta = with lib; {
+  meta = with lib; {
     description = "Download your Spotify playlists and songs along with album art and metadata";
     homepage = "https://github.com/spotDL/spotify-downloader";
     license = licenses.mit;
   };
-};
+}

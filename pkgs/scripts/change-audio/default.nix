@@ -1,4 +1,10 @@
-{ lib, libnotify, makeWrapper, pamixer, stdenvNoCC }:
+{
+  lib,
+  libnotify,
+  makeWrapper,
+  pamixer,
+  stdenvNoCC,
+}:
 stdenvNoCC.mkDerivation rec {
   pname = "change-audio";
   version = "0.3.0";
@@ -34,9 +40,9 @@ stdenvNoCC.mkDerivation rec {
       A script to change the volume and notify about it
     '';
     homepage = "https://git.belanyi.fr/ambroisie/nix-config";
-    license = with licenses; [ mit ];
+    license = with licenses; [mit];
     mainProgram = "change-audio";
-    maintainers = with maintainers; [ ambroisie ];
+    maintainers = with maintainers; [ambroisie];
     platforms = platforms.linux;
   };
 }

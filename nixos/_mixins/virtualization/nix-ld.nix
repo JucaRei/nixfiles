@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   # Enable nix ld
   programs.nix-ld = {
     # create a link-loader for non-nix binaries

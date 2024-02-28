@@ -1,8 +1,8 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   services.picom = {
     enable = true;
     package = pkgs.picom;
-    extraArgs = [ "--experimental-backends" ];
+    extraArgs = ["--experimental-backends"];
     settings = {
       # base
       backend = "glx";
@@ -14,7 +14,7 @@
       dbe = false;
       detect-transient = true;
       detect-client-leader = true;
-      invert-color-include = [ ];
+      invert-color-include = [];
       glx-copy-from-front = false;
       #round corner
       corner-radius = 0;

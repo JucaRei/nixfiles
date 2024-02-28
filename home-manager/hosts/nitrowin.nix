@@ -1,6 +1,11 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib.hm.gvariant; {
-  imports = [ ../_mixins/console/fish.nix ];
+  imports = [../_mixins/console/fish.nix];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {
   #     picture-options = "zoom";
@@ -9,11 +14,10 @@ with lib.hm.gvariant; {
   # };
 
   config = {
-    home = { packages = with pkgs; [ util-linux cloneit ]; };
+    home = {packages = with pkgs; [util-linux cloneit];};
     nix.settings = {
-      extra-substituters = [ "https://nitro.cachix.org" ];
-      extra-trusted-public-keys =
-        [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+      extra-substituters = ["https://nitro.cachix.org"];
+      extra-trusted-public-keys = ["nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U="];
     };
   };
 }

@@ -1,6 +1,6 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   home = {
-    packages = [ pkgs.libnotify ]; # Depency
+    packages = [pkgs.libnotify]; # Depency
   };
   services = {
     dunst = {

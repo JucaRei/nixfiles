@@ -1,12 +1,14 @@
-{ stdenvNoCC, fetchzip, lib }:
-
+{
+  stdenvNoCC,
+  fetchzip,
+  lib,
+}:
 stdenvNoCC.mkDerivation {
   pname = "cyberre-grub-theme";
   version = "1.0.0";
 
   src = fetchzip {
-    url =
-      "https://github.com/alealexpro100/various_files/raw/master/Grub2-theme%20CyberRe%201.0.0.tar.gz";
+    url = "https://github.com/alealexpro100/various_files/raw/master/Grub2-theme%20CyberRe%201.0.0.tar.gz";
     hash = "sha256-RWEQHqWjSZtDlFjJlsQBig/bBaZL/srfez1qTzE+Qrw=";
   };
 
@@ -24,8 +26,8 @@ stdenvNoCC.mkDerivation {
   meta = with lib; {
     homepage = "https://www.opendesktop.org/s/Gnome/p/1420727";
     description = "CyberRe Grub theme";
-    maintainers = with maintainers; [ anomalocaris ];
+    maintainers = with maintainers; [anomalocaris];
     platforms = platforms.linux;
-    badPlatforms = [ "x86_64-apple-darwin" ];
+    badPlatforms = ["x86_64-apple-darwin"];
   };
 }

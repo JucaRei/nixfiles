@@ -1,8 +1,7 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   environment = {
-    systemPackages = with pkgs;
-      [
-        tilix # Tiling terminal emulator
-      ];
+    systemPackages = with pkgs; [
+      tilix # Tiling terminal emulator
+    ];
   };
 }

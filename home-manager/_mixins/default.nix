@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./config/scripts/home-manager_change_summary.nix
     ./console/aliases.nix
@@ -29,7 +29,8 @@
       cachix
     ];
 
-    sessionVariables = let editor = "micro"; # change for whatever you want
+    sessionVariables = let
+      editor = "micro"; # change for whatever you want
     in {
       EDITOR = "${editor}";
       MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";

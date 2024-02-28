@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{lib, ...}: {
   # Pocket 2, Win 2, Win Max
   imports = [
     ../../_mixins/hardware/bluetooth

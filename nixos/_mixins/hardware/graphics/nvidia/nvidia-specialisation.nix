@@ -1,5 +1,10 @@
-{ pkgs, config, lib, inputs, ... }:
-let
+{
+  pkgs,
+  config,
+  lib,
+  inputs,
+  ...
+}: let
   # Nvidia Packages
   production = config.boot.kernelPackages.nvidiaPackages.production;
   vulkan = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
@@ -22,11 +27,10 @@ in {
       nvidia-opengl = {
         # inheritParentConfig = false;
         configuration = {
-          system.nixos.tags = [ "nvidia-opengl" ];
+          system.nixos.tags = ["nvidia-opengl"];
           boot = {
             loader.grub.configurationName = lib.mkForce "Nvidia OpenGL";
-            blacklistedKernelModules =
-              [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
+            blacklistedKernelModules = ["nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo"];
             kernelModules = [
               "clearcpuid=514" # Fixes certain wine games crash on launch
               "nvidia"
@@ -34,14 +38,13 @@ in {
               "nvidia_uvm"
               "nvidia_drm"
             ];
-            kernelParams =
-              [ "nouveau.modeset=0" "nohibernate" "nvidia-drm.modeset=1" ];
+            kernelParams = ["nouveau.modeset=0" "nohibernate" "nvidia-drm.modeset=1"];
             extraModprobeConfig = ''
               options nvidia NVreg_UsePageAttributeTable=1
               options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
               options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
             '';
-            kernel.sysctl = { "vm.max_map_count" = 2147483642; };
+            kernel.sysctl = {"vm.max_map_count" = 2147483642;};
           };
           hardware = {
             nvidia = {
@@ -81,7 +84,7 @@ in {
           };
           services = {
             xserver = {
-              videoDrivers = [ "nvidia" ];
+              videoDrivers = ["nvidia"];
               screenSection = ''
                 Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
                 Option         "AllowIndirectGLXProtocol" "off"
@@ -93,11 +96,10 @@ in {
       };
       nvidia-vulkan = {
         configuration = {
-          system.nixos.tags = [ "nvidia-vulkan" ];
+          system.nixos.tags = ["nvidia-vulkan"];
           boot = {
             loader.grub.configurationName = lib.mkForce "nvidia-vulkan";
-            blacklistedKernelModules =
-              [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
+            blacklistedKernelModules = ["nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo"];
             kernelModules = [
               "clearcpuid=514" # Fixes certain wine games crash on launch
               "nvidia"
@@ -105,13 +107,13 @@ in {
               "nvidia_uvm"
               "nvidia_drm"
             ];
-            kernelParams = [ "nouveau.modeset=0" ];
+            kernelParams = ["nouveau.modeset=0"];
             extraModprobeConfig = ''
               options nvidia NVreg_UsePageAttributeTable=1
               options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
               options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
             '';
-            kernel.sysctl = { "vm.max_map_count" = 2147483642; };
+            kernel.sysctl = {"vm.max_map_count" = 2147483642;};
           };
           hardware = {
             nvidia = {
@@ -132,8 +134,7 @@ in {
           };
           environment = {
             variables = lib.mkDefault {
-              "VK_ICD_FILENAMES" =
-                "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+              "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
               GBM_BACKEND = "nvidia-drm";
               LIBVA_DRIVER_NAME = "nvidia";
               __GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -148,7 +149,7 @@ in {
             ];
           };
           services.xserver = {
-            videoDrivers = [ "nvidia" ];
+            videoDrivers = ["nvidia"];
             screenSection = ''
               Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
               Option         "AllowIndirectGLXProtocol" "off"

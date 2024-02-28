@@ -1,4 +1,8 @@
-{ lib, stdenvNoCC, fetchgit }:
+{
+  lib,
+  stdenvNoCC,
+  fetchgit,
+}:
 stdenvNoCC.mkDerivation rec {
   name = "mpv-sub-select";
   version = "1.0.0";
@@ -26,8 +30,8 @@ stdenvNoCC.mkDerivation rec {
   meta = {
     description = "Automatically skip chapters based on title";
     homepage = "https://github.com/CogentRedTester/mpv-sub-select";
-    maintainers = [ lib.maintainers.juca ];
+    maintainers = [lib.maintainers.juca];
   };
 }
-
 # nix-shell -p nix-prefetch-git --run 'nix-prefetch-git https://github.com/CogentRedTester/mpv-sub-select refs/heads/master'
+

@@ -1,5 +1,10 @@
-{ inputs, lib, pkgs, ... }: {
-  imports = [ ../config/qt/qt-style.nix ../apps/terminal/tilix.nix ];
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [../config/qt/qt-style.nix ../apps/terminal/tilix.nix];
 
   # Exclude the elementary apps I don't use
   environment = {
@@ -14,7 +19,7 @@
     # App indicator
     # - https://discourse.nixos.org/t/anyone-with-pantheon-de/28422
     # - https://github.com/NixOS/nixpkgs/issues/144045#issuecomment-992487775
-    pathsToLink = [ "/libexec" ];
+    pathsToLink = ["/libexec"];
 
     # Add additional apps and include Yaru for syntax highlighting
     systemPackages = with pkgs; [
@@ -68,11 +73,10 @@
   # - https://github.com/NixOS/nixpkgs/issues/144045#issuecomment-992487775
   systemd.user.services.indicatorapp = {
     description = "indicator-application-gtk3";
-    wantedBy = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
+    wantedBy = ["graphical-session.target"];
+    partOf = ["graphical-session.target"];
     serviceConfig = {
-      ExecStart =
-        "${pkgs.indicator-application-gtk3}/libexec/indicator-application/indicator-application-service";
+      ExecStart = "${pkgs.indicator-application-gtk3}/libexec/indicator-application/indicator-application-service";
     };
   };
 }

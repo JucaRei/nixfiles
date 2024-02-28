@@ -2,14 +2,14 @@
   description = "Juca's NixOS and Home Manager Configuration";
 
   inputs = {
-    nixpkgs-attic = "github:nixos/nixpkgs/nixos-23.05";
+    #nixpkgs-attic = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs-previous.url = "github:nixos/nixpkgs/nixos-22.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     attic = {
       url = "github:zhaofengli/attic";
-      inputs.nixpkgs.follows = "nixpkgs-attic"; # 23.05
+      inputs.nixpkgs.follows = "nixpkgs"; # 23.05
     };
 
     flake-compat = {
@@ -214,10 +214,10 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
-    # chaotic = {
-    #   url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    #   inputs.nixpkgs.follows = "unstable";
-    # };
+    chaotic = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
   outputs = {self, ...} @ inputs:
     with inputs; let
