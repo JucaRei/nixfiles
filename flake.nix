@@ -6,10 +6,19 @@
     nixpkgs-previous.url = "github:nixos/nixpkgs/nixos-22.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # chaotic = {
+    #   url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    #   inputs.chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    # };
 
     attic = {
       url = "github:zhaofengli/attic";
       inputs.nixpkgs.follows = "nixpkgs"; # 23.05
+    };
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     flake-compat = {
@@ -60,21 +69,30 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    ## FlakeHub
+    ################
+    ### FlakeHub ###
+    ################
+
     # eza = {
     #   url = "https://flakehub.com/f/eza-community/eza/0.14.0.tar.gz";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    antsy-alien-attack-pico = {
+      url = "https://flakehub.com/f/wimpysworld/antsy-alien-attack-pico/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     fh = {
       url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.2.0.tar.gz";
-    # nix-snapd = {
-    #   url = "https://flakehub.com/f/io12/nix-snapd/0.1.29.tar.gz";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-
+    crafts-flake = {
+      url = "https://flakehub.com/f/jnsgruk/crafts-flake/=0.4.3.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-snapd = {
+      url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs-f2k = {
       url = "github:moni-dz/nixpkgs-f2k";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -123,7 +141,7 @@
     nur = {
       url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
     };
-    picom.url = "github:yaocccc/picom";
+    # picom.url = "github:yaocccc/picom";
     #spicetify-nix.url = "github:the-argus/spicetify-nix";
     # nixos-generators.url = "github:NixOS/nixos-hardware/master";
     # robotnix.url = "github:danielfullmer/robotnix";
@@ -213,11 +231,6 @@
     #   url = "github:FedericoSchonborn/budgie-nix";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-
-    chaotic = {
-      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
   };
   outputs = {self, ...} @ inputs:
     with inputs; let
