@@ -1,46 +1,34 @@
 # Shell for bootstrapping flake-enabled nix and home-manager
 # Enter it through 'nix develop' or (legacy) 'nix-shell'
-{pkgs ? (import ./nixpkgs.nix) {}}:
-with pkgs; let
-  nixBin = writeShellScriptBin "nix" ''
-    ${nixVersions.stable}/bin/nix --option experimental-features "nix-command flakes" "$@"
-  '';
-in {
+
+{ pkgs ? (import ./nixpkgs.nix) { } }: {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
     nativeBuildInputs = with pkgs; [
-      # jq
-      cachix
-      alejandra
-      home-manager
-      dropbear
-      speedtest-cli
-      # (bash import ./home-manager/_mixins/console/bash.nix {inherit pkgs config;})
-      direnv
-      zsh
-      git
-      nil
-      duf
-      htop
-      nixpkgs-fmt
-      nixfmt
-      nix-output-monitor
-      #fira-code-nerdfont
-      # neofetch
+      nix # nix
+      nil # lsp server
+      nixpkgs-fmt # formatter 
+      home-manager # manage dots
+      git # versioning
+      nix-output-monitor # better output from builds
+      duf # check space
+      cachix # build and share cache
+      neofetch # check system
+      speedtest-cli # test connection speed
+      dropbear # ssh 
+      nix-direnv # A shell extension that manages your environment for nix
     ];
     shellHook = ''
-      alias ssh=dbclient
-      export FLAKE="$(pwd)"
-      export PATH="$FLAKE/bin:${nixBin}/bin:$PATH"
+      alias ssh="dbclient"
       echo "
-      . _____   _           _
-      |  ____| | |         | |
-      | |__    | |   __ _  | | __   ___   ___
-      |  __|   | |  / _\` | | |/ /  / _ \ / __|
-      | |      | | | (_| | |   <  |  __/ \\__ \\
-      |_|      |_|  \__,_| |_|\_\  \___| |___/
-          "
+        . _____   _           _
+        |  ____| | |         | |
+        | |__    | |   __ _  | | __   ___   ___
+        |  __|   | |  / _\` | | |/ /  / _ \ / __|
+        | |      | | | (_| | |   <  |  __/ \\__ \\
+        |_|      |_|  \__,_| |_|\_\  \___| |___/
+      "
     '';
   };
 }

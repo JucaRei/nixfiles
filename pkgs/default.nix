@@ -1,82 +1,105 @@
 # Custom packages, that can be defined similarly to ones from nixpkgs
 # Build them using 'nix build .#example' or (legacy) 'nix-build -A example'
-# { pkgs ? (import ../nixpkgs.nix) { } }: {
-{pkgs ? (import ../default.nix) {}}: {
-  # Music
-  # deezer = pkgs.callPackage ./music/deezer { };
-  # tidal-dl = pkgs.callPackage ./music/tidal-dl { };
-  # spotdl = pkgs.callPackage ./music/spotify-dl { };
 
-  sddm-astronaut-theme =
-    pkgs.libsForQt5.callPackage ./sddm-theme/sddm-astronaut-theme.nix {};
+{ pkgs ? (import ../nixpkgs.nix) { } }: {
 
-  # Browsers
-  thorium-browser = pkgs.callPackage ./browsers/thorium-browser {};
+  #############
+  ### Tools ###
+  #############
+  gitkraken = pkgs.callPackage ./tools/gitkraken { };
+  qrcodegencpp = pkgs.callPackage ./tools/qrcodegencpp { };
+  obs-studio = pkgs.callPackage ./tools/obs-studio { };
+  obs-studio-plugins = pkgs.callPackage ./tools/obs-studio/plugins { };
+  libdatachannel = pkgs.callPackage ./tools/libdatachannel { };
+  smartmon-script = pkgs.callPackage ./tools/smartmon-script { };
 
-  cyberre-grub-theme = pkgs.callPackage ./grub/themes/cyberre-grub-theme {};
-  plymouth-themes = pkgs.callPackage ./plymouth/plymouth-themes {};
-  catppuccin-plymouth = pkgs.callPackage ./plymouth/catppuccin-plymouth {};
-  firefox-csshacks = pkgs.callPackage ./browsers/firefox/firefox-csshacks {};
-  # nvchad = pkgs.callPackage ./nvchad { };
-  fantezy-font = pkgs.callPackage ./fonts/fantezy-font {};
-  # breeze-hacked-cursorr = pkgs.callPackage ./themes/mouse/breeze-hacked-cursor { };
-  # polybar-pulseaudio-control = pkgs.callPackage ./polybar-pulseaudio-control { }; # now its on unstable channel
+  ####################
+  ### Applications ###
+  ####################
+  halloy = pkgs.callPackage ./applications/messaging/halloy { };
+  lazy-desktop = pkgs.callPackage ./applications/scripts/lazy-desktop { };
 
-  # Scripts
-  nix-inspect = pkgs.callPackage ./scripts/nix-inspect {};
-  nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup {};
-  nix-whereis = pkgs.callPackage ./scripts/nix-whereis {};
-  # nixos-change-summary = pkgs.callPackage ./scripts/nixos-change-summary { };
-  repl-nix = pkgs.callPackage ./scripts/repl {};
+  ################
+  ### Browsers ###
+  ################
+  thorium = pkgs.callPackage ./applications/browser/thorium { }; 
+  firefox-csshacks = pkgs.callPackage ./applications/browser/firefox/firefox-csshacks { }; 
+  firefox-gnome-theme = pkgs.callPackage ./applications/browser/firefox/firefox-gnome-theme { }; 
 
-  # Utils
-  vv = pkgs.callPackage ./utils/vv {};
-  advmvcp = pkgs.callPackage ./utils/advmvcp {};
-  icloud-photo-downloader =
-    pkgs.callPackage ./utils/icloud-photo-downloader {};
-  youtube_tui = pkgs.callPackage ./utils/youtube-tui {};
-  lutgen = pkgs.callPackage ./utils/lutgen {};
-  cloneit = pkgs.callPackage ./utils/cloneit {};
-  distrobox = pkgs.callPackage ./utils/distrobox {};
+  ##############
+  ### Gaming ###
+  ##############
+  dsdrv-cemuhook = pkgs.callPackage ./applications/gaming/dsdrv-cemuhook { };
+  dualsensectl = pkgs.callPackage ./applications/gaming/dualsensectl { };
+  evdevhook = pkgs.callPackage ./applications/gaming/evdevhook { };
+  evdevhook2 = pkgs.callPackage ./applications/gaming/evdevhook2 { };
+  trigger-control = pkgs.callPackage ./applications/gaming/trigger-control { };
 
-  # mpv plugins
-  mpv-anime4k = pkgs.callPackage ./mpv-ext/mpv-anime4k {};
-  mpv-dynamic-crop = pkgs.callPackage ./mpv-ext/mpv-dynamic-crop {};
-  mpv-modernx = pkgs.callPackage ./mpv-ext/mpv-modernx {};
-  mpv-nextfile = pkgs.callPackage ./mpv-ext/mpv-nextfile {};
-  mpv-sub-select = pkgs.callPackage ./mpv-ext/mpv-sub-select {};
-  mpv-subsearch = pkgs.callPackage ./mpv-ext/mpv-subsearch {};
-  mpv-thumbfast-osc = pkgs.callPackage ./mpv-ext/mpv-thumbfast-osc {};
+  ########################
+  ### Virtual-Machines ###
+  ########################
+  lima-bin = pkgs.callPackage ./virtual/lima-bin { };
+  
+  #############
+  ### Video ###
+  #############
+  
+  #############
+  ### Fonts ###
+  #############
+  apple-fonts = pkgs.callPackage ./fonts/apple-fonts { };
+  cairo = pkgs.callPackage ./fonts/cairo { };
+  century-gothic = pkgs.callPackage ./fonts/century-gothic { };
+  dubai = pkgs.callPackage ./fonts/dubai { };
+  fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
+  iosevka-q = pkgs.callPackage ./fonts/iosevka-q { };
+  material-symbols = pkgs.callPackage ./fonts/material-symbols { };
+  nf-iosevka = pkgs.callPackage ./fonts/nf-iosevka { };
+  nf-victormono = pkgs.callPackage ./fonts/nf-victormono { };
+  noto-sans-arabic = pkgs.callPackage ./fonts/noto-sans-arabic { };
+  phospor = pkgs.callPackage ./fonts/phospor { };
+  pragmasevka = pkgs.callPackage ./fonts/pragmasevka { };
+  pragmatapro = pkgs.callPackage ./fonts/pragmatapro { };
+  sarasa-gothic = pkgs.callPackage ./fonts/sarasa-gothic { };
+  twilio-sans-mono-nerd-font = pkgs.callPackage ./fonts/twilio-sans-mono-nerd-font { };
 
-  # Font
-  # phospor = pkgs.callPackage ./fonts/phospor.nix { };
-  material-symbols = pkgs.callPackage ./fonts/material-symbols.nix {};
-  font-cairo = pkgs.callPackage ./fonts/cairo {};
-  font-dubai = pkgs.callPackage ./fonts/dubai {};
-  font-noto-sans-arabic = pkgs.callPackage ./fonts/noto-sans-arabic {};
-  # apple-fonts = pkgs.callPackage ./apple-fonts { };
-  iosevka-q = pkgs.callPackage ./fonts/iosevka-q {};
-  serasa-gothic = pkgs.callPackage ./fonts/serasa-gothic {};
+  ###################
+  ### Grub Themes ###
+  ###################
+  catppuccin = pkgs.callPackage ./system/grub/themes/catppuccin { };
+  cyberre = pkgs.callPackage ./system/grub/themes/cyberre { };
 
-  # GTK
-  # phocus-gtk = pkgs.callPackage ./themes/gtk/phocus { };
-  gruvbox-dark = pkgs.callPackage ./themes/gtk/gruvbox-dark.nix {};
-  nautilus-annotations = pkgs.callPackage ./nautilus-annotations {};
+  ##############
+  ### Themes ###
+  ##############
+  adwaita-for-steam = pkgs.callPackage ./system/themes/steam/adwaita-for-steam { };
 
-  # mouse
-  breeze-hacked-cursor =
-    pkgs.callPackage ./themes/mouse/breeze-hacked-cursor {};
+  ################
+  ### Plymouth ###
+  ################
+  plymouth-catppuccin = pkgs.callPackage ./system/plymouth/plymouth-catppuccin { };
+  plymouth-themes = pkgs.callPackage ./system/plymouth/plymouth-themes { };
 
-  # Icons
-  colloid = pkgs.callPackage ./themes/icons/colloid.nix {};
-  elementary = pkgs.callPackage ./themes/icons/elementary.nix {};
-  fluent = pkgs.callPackage ./themes/icons/fluent.nix {};
-  reversal = pkgs.callPackage ./themes/icons/reversal.nix {};
-  whitesur = pkgs.callPackage ./themes/icons/whitesur.nix {};
+  ##################
+  ### Misc Tools ###
+  ##################
+  cyberchef = pkgs.callPackage ./tools/misc/cyberchef { };
+  # displaylink = pkgs.callPackage ./tools/misc/displaylink { };
+  headscale-ui = pkgs.callPackage ./tools/misc/headscale-ui { };
+  ladder = pkgs.callPackage ./tools/misc/ladder { };
 
-  # custom locking script
-  # lockman-wayland = pkgs.callPackage ./misc/lockman { };
-  waybar = pkgs.callPackage ./wayland/waybar {};
+  ###############
+  ### Wayland ###
+  ###############
+  idlehack = pkgs.callPackage ./system/wayland/idlehack { };
 
-  # nixgl-legacy = pkgs.callPackage ./nixgl/nixgl-legacy.nix {};
+  #################
+  ### Cli tools ###
+  #################
+  livebudscli = pkgs.callPackage ./cli/livebudscli { };
+  cloneit = pkgs.callPackage ./cli/cloneit { };
+  icloud-photo-downloader = pkgs.callPackage ./cli/icloud-photo-downloader { };
 }
+
+# nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+# nom-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
