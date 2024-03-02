@@ -118,12 +118,9 @@
     });
 
     waybar = prev.waybar;
-
     nix-inspect = prev.nix-inspect;
-
     cloneit = prev.cloneit;
-
-    cyberre-grub-theme = prev.cyberre-grub-theme;
+    cyberre = prev.cyberre;
     catppuccin-plymouth = prev.catppuccin-plymouth;
     advmvcp = prev.advmvcp;
     icloud-photo-downloader = prev.icloud-photo-downloader;
@@ -155,13 +152,13 @@
     serasa-gothic = prev.serasa-gothic;
 
     # mpv plugins
-    mpv-anime4k = prev.mpv-anime4k;
-    mpv-dynamic-crop = prev.mpv-dynamic-crop;
-    mpv-modernx = prev.mpv-modernx;
-    mpv-nextfile = prev.mpv-nextfile;
-    mpv-subsearch = prev.mpv-subsearch;
-    mpv-sub-select = prev.mpv-sub-select;
-    mpv-thumbfast-osc = prev.mpv-thumbfast-osc;
+    # mpv-anime4k = prev.mpv-anime4k;
+    # mpv-dynamic-crop = prev.mpv-dynamic-crop;
+    # mpv-modernx = prev.mpv-modernx;
+    # mpv-nextfile = prev.mpv-nextfile;
+    # mpv-subsearch = prev.mpv-subsearch;
+    # mpv-sub-select = prev.mpv-sub-select;
+    # mpv-thumbfast-osc = prev.mpv-thumbfast-osc;
     # youtube_tui = prev.youtube_tui;
     nix-whereis = prev.nix-whereis;
     gruvbox-dark = prev.gruvbox-dark;
