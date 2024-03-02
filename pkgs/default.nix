@@ -111,7 +111,7 @@
   ###################
   ### Sddm Themes ###
   ###################
-  astronaut-sddm = pkgs.callPackage ./system/themes/sddm/astronaut-sddm { };
+  astronaut-sddm = pkgs.libsForQt5.callPackage ./system/themes/sddm/astronaut-sddm { };
   simple-sddm = pkgs.callPackage ./system/themes/sddm/simple-sddm { };
 
 
@@ -140,9 +140,9 @@
   ### System ###
   ##############
   xanmod-custom = pkgs.callPackage ./system/kernel/xanmod { };
-  bt-overskride = ./system/bluetooth/overskride { };
-  nautilus-annotations = ./system/gnome/file-manager/nautilus-ext/nautilus-annotations { };
-  wallpaper-engine-plasma-plugin = ./system/plasma/wallpaper-engine-plasma-plugin { };
+  bt-overskride = pkgs.callPackage ./system/bluetooth/overskride { };
+  nautilus-annotations = pkgs.callPackage ./system/gnome/file-manager/nautilus-ext/nautilus-annotations { };
+  wallpaper-engine-plasma-plugin = pkgs.callPackage ./system/plasma/wallpaper-engine-plasma-plugin { };
 
   #################
   ### Cli tools ###
