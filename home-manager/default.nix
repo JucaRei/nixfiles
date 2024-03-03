@@ -84,25 +84,25 @@ in
         awesome = inputs.nixpkgs-f2k.packages.${pkgs.system}.awesome-git;
 
         # Patch Google Chrome Dark Mode
-        google-chrome = prev.google-chrome.overrideAttrs (old: {
-          installPhase =
-            old.installPhase
-            + ''
-              fix=" --enable-features=WebUIDarkMode --force-dark-mode"
+        # google-chrome = prev.google-chrome.overrideAttrs (old: {
+        #   installPhase =
+        #     old.installPhase
+        #     + ''
+        #       fix=" --enable-features=WebUIDarkMode --force-dark-mode"
 
-              substituteInPlace $out/share/applications/google-chrome.desktop \
-                --replace $exe "$exe$fix"
-            '';
-        });
+        #       substituteInPlace $out/share/applications/google-chrome.desktop \
+        #         --replace $exe "$exe$fix"
+        #     '';
+        # });
       })
     ];
 
     # Configure your nixpkgs instance
     config = {
       # Allow unsupported packages to be built
-      # allowUnsupportedSystem = true;
+      allowUnsupportedSystem = true;
       # Disable broken package
-      # allowBroken = false;
+      allowBroken = false;
       ### Allow old broken electron
       permittedInsecurePackages = [
         # Workaround for https://github.com/nix-community/home-manager/issues/2942

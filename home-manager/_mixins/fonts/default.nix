@@ -18,14 +18,14 @@
     # apple-font
 
     material-design-icons
-    (nerdfonts.override {
-      fonts = [
-        # "FiraCode"
-        # "UbuntuMono"
-        # "Hack"
-        # "DroidSansMono"
-        # "JetBrainsMono"
-      ];
-    })
+    # (nerdfonts.override {
+    # fonts = [
+    # "FiraCode"
+    # "UbuntuMono"
+    # "Hack"
+    # "DroidSansMono"
+    # "JetBrainsMono"
+    # ];
+    # })
   ];
 }

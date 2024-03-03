@@ -1,6 +1,8 @@
 { pkgs, ... }: {
+  imports = [ ../_mixins/non-nixos ];
   config = {
     home.packages = with pkgs; [ ];
+    services.nonNixOs.enable = true;
     nix.settings = {
       extra-substituters = [ "https://juca-nixfiles.cachix.org" ];
       extra-trusted-public-keys = [
