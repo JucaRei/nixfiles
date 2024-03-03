@@ -1,14 +1,8 @@
-{
-  config,
-  lib,
-  hostname,
-  pkgs,
-  username,
-  nixpkgs,
-  ...
-}: let
+{ config, lib, hostname, pkgs, username, ... }:
+let
   inherit (pkgs.stdenv) isLinux;
-in {
+in
+{
   imports = [
     ../../_mixins/fonts
     # ../../_mixins/services/keybase.nix
@@ -91,11 +85,13 @@ in {
 
       # List home-manager packages
       ".local/home-manager_packages.txt" = {
-        text = let
-          packages = builtins.map (p: "${p.name}") config.home.packages;
-          sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-          formatted = builtins.concatStringsSep "\n" sortedUnique;
-        in "${formatted}";
+        text =
+          let
+            packages = builtins.map (p: "${p.name}") config.home.packages;
+            sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+            formatted = builtins.concatStringsSep "\n" sortedUnique;
+          in
+          "${formatted}";
       };
     };
     # A Modern Unix experience
@@ -166,7 +162,7 @@ in {
     #   DEBSIGN_KEYID = "8F04688C17006782143279DA61DF940515E06DA3";
     #   PAGER = "moar";
     # };
-    extraOutputsToInstall = ["info" "man" "share" "icons" "doc"];
+    extraOutputsToInstall = [ "info" "man" "share" "icons" "doc" ];
   };
   programs = {
     # git = {

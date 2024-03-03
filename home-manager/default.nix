@@ -1,21 +1,23 @@
-{
-  config,
-  desktop,
-  inputs,
-  lib,
-  outputs,
-  pkgs,
-  modulesPath,
-  stateVersion,
-  username,
-  hostname,
-  nixgl,
-  ...
+{ config
+, desktop
+, inputs
+, lib
+, outputs
+, pkgs
+, modulesPath
+, stateVersion
+, username
+, hostname
+, nixgl
+, ...
 }:
 with lib; let
   inherit (pkgs.stdenv) isDarwin isLinux;
   isLima = builtins.substring 0 5 hostname == "lima-";
-in {
+  isWorkstation = if (desktop != null) then true else false;
+  isServer = if (hostname == "phasma" || hostname == "vader") then true else false;
+in
+{
   # Only import desktop configuration if the host is desktop enabled
   # Only import user specific configuration if they have bespoke settings
   imports =
@@ -25,32 +27,27 @@ in {
 
       # Or modules exported from other flakes (such as nix-colors):
       # inputs.nix-colors.homeManagerModules.default
+      # inputs.sops-nix.homeManagerModules.sops
       inputs.nix-index-database.hmModules.nix-index
 
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
     ]
     ++ lib.optional (builtins.isPath (./. + "/users/${username}"))
-    ./users/${username}
+      ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix"))
-    ./hosts/${hostname}.nix
+      ./hosts/${hostname}.nix
     ++ lib.optional (desktop != null) ./_mixins/desktop;
 
   home = {
+    inherit username;
+    inherit stateVersion;
     activation.report-changes = config.lib.dag.entryAnywhere ''
       if [[ -n "$oldGenPath" && -n "$newGenPath" ]]; then
         ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
       fi
     '';
-
-    homeDirectory =
-      if isDarwin
-      then "/Users/${username}"
-      else if isLima
-      then "/home/${username}.linux"
-      else "/home/${username}";
-    inherit stateVersion;
-    inherit username;
+    homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
     sessionVariables = {
       NIXPKGS_ALLOW_UNFREE = "1";
@@ -103,9 +100,9 @@ in {
     # Configure your nixpkgs instance
     config = {
       # Allow unsupported packages to be built
-      allowUnsupportedSystem = true;
+      # allowUnsupportedSystem = true;
       # Disable broken package
-      allowBroken = false;
+      # allowBroken = false;
       ### Allow old broken electron
       permittedInsecurePackages = [
         # Workaround for https://github.com/nix-community/home-manager/issues/2942
@@ -120,24 +117,19 @@ in {
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       allowUnfreePredicate = _: true;
       # Accept the joypixels license
-      joypixels.acceptLicense = true;
     };
   };
 
   nix = {
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
-
-    # Add nixpkgs input to NIX_PATH
-    # This lets nix2 commands still use <nixpkgs>
-    nixPath = ["nixpkgs=${inputs.nixpkgs.outPath}"];
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
     package = pkgs.unstable.nix;
     settings =
       if isDarwin
       then {
-        nixPath = ["nixpkgs=/run/current-system/sw/nixpkgs"];
+        # nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
         daemonIOLowPriority = true;
       }
       else {
@@ -151,26 +143,27 @@ in {
           # "cgroups"
           #"configurable-impure-env"
         ];
-        # Avoid unwanted garbage collection when using nix-direnv
         # auto-allocate-uids = true;
         # use-cgroups = if isLinux then true else false;
-        keep-outputs = true;
-        keep-derivations = true;
         build-users-group = "nixbld";
         builders-use-substitutes = true;
         sandbox =
           if isDarwin
           then true
           else false;
-        warn-dirty = false;
 
+        # Avoid unwanted garbage collection when using nix-direnv
         # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
         keep-going = true;
         show-trace = true;
+        keep-outputs = true;
+        keep-derivations = true;
+        warn-dirty = false;
+        allow-dirty = true;
 
         # Allow to run nix
-        allowed-users = ["${username}" "nixbld" "@wheel"];
-        trusted-users = ["root" "${username}" "@wheel"];
+        allowed-users = [ "nixbld" "@wheel" ];
+        trusted-users = [ "root" "@wheel" ];
         connect-timeout = 5;
         http-connections = 0;
 

@@ -1,9 +1,8 @@
-{
-  lib,
-  config,
-  hostname,
-  pkgs,
-  ...
+{ lib
+, config
+, hostname
+, pkgs
+, ...
 }: {
   home.shellAliases = {
     ### Nix ###
@@ -34,7 +33,6 @@
     top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
     wget = "${pkgs.wget2}/bin/wget2";
     jq = "${pkgs.jiq}/bin/jiq";
-    gitpfolders = "for i in */.git; do ( echo $i; cd $i/..; git pull; ); done";
     du = "${pkgs.ncdu_1}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
     #htop = "btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
     # ls = "eza -Slhg";

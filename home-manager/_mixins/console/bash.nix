@@ -1,14 +1,14 @@
-{pkgs, ...}: {
-  imports = [./starship.nix];
+{ pkgs, ... }: {
+  imports = [ ./starship.nix ];
   programs = {
     bash = {
       enable = true;
       enableCompletion = true;
       enableVteIntegration = true;
-      historyControl = ["erasedups" "ignoredups" "ignorespace"];
+      historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
       historyFile = "$HOME/.bash_history";
       historyFileSize = 10000;
-      historyIgnore = ["ls" "cd" "exit" "kill" "htop" "top" "btop" "btm" "neofetch"];
+      historyIgnore = [ "ls" "cd" "exit" "kill" "htop" "top" "btop" "btm" "neofetch" ];
       shellOptions = [
         "histappend"
         "autocd"
@@ -23,6 +23,9 @@
         # "histreedit"
         "nocasematch"
       ];
+      shellAliases = {
+        gitpfolders = "for i in */.git; do ( echo $i; cd $i/..; git pull; ); done";
+      };
       initExtra = ''
         # Zsh-like completion
         # General
@@ -94,7 +97,7 @@
         eval "$(starship init bash)"
         eval "$(direnv hook bash)"
       '';
-      sessionVariables = {TERM = "xterm";};
+      sessionVariables = { TERM = "xterm"; };
     };
   };
 }
