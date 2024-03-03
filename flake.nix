@@ -285,71 +285,70 @@
           # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
-          "juca@nitro" = libx.mkHome {
-            hostname = "nitro";
-            username = "juca"; # desktop = "hyprland"; desktop = "pantheon"; };
-            "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
-            "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
-            "juca@oldarch" = libx.mkHome {
-              hostname = "oldarch";
-              username = "juca"; # desktop = "bspwm"; };
-              #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
-              "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
-              "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
-              "juca@rocinante-headless" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
-              #"juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "mate"; platform = if isDarwin then "x86_64-darwin" else "x86_64-linux"; };
-              "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "awesome"; };
-              # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; };
-              "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
-              # Testing
-              "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
-              "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "awesome"; };
-              "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; };
-              "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
-              "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
-              # Wsl
-              "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; desktop = null; };
-              # Raspberry 3
-              "juca@DietPi" = libx.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
-              # Iso
-              # "juca@iso-console" = libx.mkHome { hostname = "iso-console"; username = "nixos"; };
-              # "juca@iso-desktop" = libx.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
-            };
-            # hostids are generated using `mkhostid` alias
-            nixosConfigurations = {
-              # .iso images
-              # - nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
-              # nix run github:numtide/nixos-anywhere -- --flake /home/juca/.dotfiles/nixfiles#air root@192.168.1.76
-              # - nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
-              # nix build .#nixosConfigurations.iso.config.system.build.isoImage
-              # nom build .#nixosConfigurations.nitro.config.system.build.toplevel
-
-              # ISO
-              iso-console = libx.mkHost { hostname = "iso-console"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"; hostid = null; };
-              iso-desktop = libx.mkHost { hostname = "iso-desktop"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"; desktop = "pantheon"; hostid = "6ade8560"; };
-              #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles/nixfiles
-              #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
-              # Servers
-              # Laptop
-              nitro = libx.mkHost {
-                hostname = "nitro";
-                username = "juca";
-                desktop = "pantheon";
-                # desktop = "hyprland";
-                hostid = "ceafb566";
-                isNixOS = true;
-              };
-              air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; };
-              rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
-              rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
-              # Virtual Machines
-              vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "bspwm"; hostid = "6f2efa51"; };
-              hyperv = libx.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
-              vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
-              # Raspberry
-              rasp3 = libx.mkHost { hostname = "rasp3"; username = "juca"; hostid = "6f2efa55"; };
-            };
+          "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "hyprland"; };
+          "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
+          "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
+          "juca@oldarch" = libx.mkHome {
+            hostname = "oldarch";
+            username = "juca";
+            # desktop = "bspwm"; 
           };
+          #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
+          "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
+          "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
+          "juca@rocinante-headless" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
+          #"juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "mate"; platform = if isDarwin then "x86_64-darwin" else "x86_64-linux"; };
+          "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "awesome"; };
+          # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; };
+          "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
+          # Testing
+          "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
+          "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "awesome"; };
+          "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; };
+          "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
+          "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
+          # Wsl
+          "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; desktop = null; };
+          # Raspberry 3
+          "juca@DietPi" = libx.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
+          # Iso
+          # "juca@iso-console" = libx.mkHome { hostname = "iso-console"; username = "nixos"; };
+          # "juca@iso-desktop" = libx.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
         };
+      # hostids are generated using `mkhostid` alias
+      nixosConfigurations = {
+        # .iso images
+        # - nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
+        # nix run github:numtide/nixos-anywhere -- --flake /home/juca/.dotfiles/nixfiles#air root@192.168.1.76
+        # - nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
+        # nix build .#nixosConfigurations.iso.config.system.build.isoImage
+        # nom build .#nixosConfigurations.nitro.config.system.build.toplevel
+
+        # ISO
+        iso-console = libx.mkHost { hostname = "iso-console"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"; hostid = null; };
+        iso-desktop = libx.mkHost { hostname = "iso-desktop"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"; desktop = "pantheon"; hostid = "6ade8560"; };
+        #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles/nixfiles
+        #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
+        # Servers
+        # Laptop
+        nitro = libx.mkHost {
+          hostname = "nitro";
+          username = "juca";
+          desktop = "pantheon";
+          # desktop = "hyprland";
+          hostid = "ceafb566";
+          isNixOS = true;
+        };
+        air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; };
+        rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
+        rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
+        # Virtual Machines
+        vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "bspwm"; hostid = "6f2efa51"; };
+        hyperv = libx.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
+        vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
+        # Raspberry
+        rasp3 = libx.mkHost { hostname = "rasp3"; username = "juca"; hostid = "6f2efa55"; };
+      };
     };
 }
+
