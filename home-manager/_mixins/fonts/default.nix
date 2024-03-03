@@ -1,8 +1,5 @@
 # Fonts!
-{ pkgs
-, config
-, ...
-}: {
+{ pkgs, config, ... }: {
   fonts = { fontconfig.enable = true; };
 
   home.packages = with pkgs; [
@@ -15,13 +12,20 @@
     # work-sans
     joypixels
     hack-font
+    cairo
     ubuntu_font_family
     font-awesome
     # apple-font
 
     material-design-icons
     (nerdfonts.override {
-      fonts = [ "FiraCode" "UbuntuMono" "Hack" "DroidSansMono" "JetBrainsMono" ];
+      fonts = [
+        # "FiraCode"
+        # "UbuntuMono"
+        # "Hack"
+        # "DroidSansMono"
+        # "JetBrainsMono"
+      ];
     })
   ];
 }

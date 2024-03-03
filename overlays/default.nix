@@ -1,7 +1,7 @@
 # This file defines overlays
-{inputs, ...}: {
+{ inputs, ... }: {
   # This one brings our custom packages from the 'pkgs' directory
-  additions = final: _prev: import ../pkgs {pkgs = final;};
+  additions = final: _prev: import ../pkgs { pkgs = final; };
 
   # This one contains whatever you want to overlay
   # You can change versions, add patches, set compilation flags, anything really.
@@ -25,7 +25,7 @@
         (python-final: python-prev: {
           default =
             python-prev.default.overridePythonAttrs
-            (oldAttrs: {patches = [./ceph.patch];});
+              (oldAttrs: { patches = [ ./ceph.patch ]; });
         })
       ];
 
@@ -92,7 +92,7 @@
         rev = "v${version}";
         hash = "sha256-8N4wQXxjNZuNGx/c7WVAV5QS48Bff5G3t11UkihT+K0=";
       };
-      patches = [./patches/darwin.patch];
+      patches = [ ./patches/darwin.patch ];
     });
 
     nelua = prev.nelua.overrideAttrs (_old: {
@@ -145,9 +145,9 @@
     # });
 
     # fonts
-    font-cairo = prev.font-cairo;
-    font-dubai = prev.font-dubai;
-    font-noto-sans-arabic = prev.font-noto-sans-arabic;
+    cairo = prev.cairo;
+    dubai = prev.dubai;
+    noto-sans-arabic = prev.font-noto-sans-arabic;
     iosevka-q = prev.iosevka-q;
     serasa-gothic = prev.serasa-gothic;
 
