@@ -291,7 +291,8 @@
           "juca@oldarch" = libx.mkHome {
             hostname = "oldarch";
             username = "juca";
-            # desktop = "bspwm"; 
+            # desktop = "bspwm";
+            stateVersion = "22.11";
           };
           #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
           "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
