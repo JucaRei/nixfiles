@@ -1,15 +1,10 @@
-{ config
-, lib
-, pkgs
-, nixpkgs
-, ...
-}:
+{ config, lib, pkgs, username, ... }:
 with lib; let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  cfg = config.modules.nonNixOs;
+  cfg = config.services.nonNixOs;
 in
 {
-  options.modules.nonNixOs = {
+  options.services.nonNixOs = {
     enable = mkOption {
       default = false;
       type = types.bool;
