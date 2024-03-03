@@ -125,7 +125,7 @@
     advmvcp = prev.advmvcp;
     icloud-photo-downloader = prev.icloud-photo-downloader;
     nautilus-annotations = prev.nautilus-annotations;
-    thorium-browser = prev.thorium-browser;
+    thorium = prev.thorium;
     breeze-hacked-cursor = prev.breeze-hacked-cursor;
     sddm-astronaut-theme = prev.sddm-astronaut-theme;
     nix-cleanup = prev.nix-cleanup;

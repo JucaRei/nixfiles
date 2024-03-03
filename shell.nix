@@ -18,6 +18,8 @@
       speedtest-cli # test connection speed
       dropbear # ssh 
       nix-direnv # A shell extension that manages your environment for nix
+      bash-completion # completion for bash
+      nix-bash-completions # complitions for nix
     ];
     shellHook = ''
       alias ssh="dbclient"
