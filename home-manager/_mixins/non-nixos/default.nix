@@ -25,7 +25,6 @@ in
         # niv
         # nix
         nix-index
-        nix-index-update
         nixpkgs-fmt
         alejandra
         nil
@@ -35,11 +34,11 @@ in
         # tmux
       ];
 
-      file.".config/nix/nix.conf".text = ''
-        experimental-features = nix-command flakes
-      '';
+      # file.".config/nix/nix.conf".text = ''
+      #   experimental-features = nix-command flakes
+      # '';
     };
-    systemd.user.tmpfiles.rules = [ "L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}" ];
+    # systemd.user.tmpfiles.rules = [ "L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}" ];
     targets.genericLinux.enable = true;
   };
 }
