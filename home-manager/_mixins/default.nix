@@ -12,7 +12,7 @@
     ./console/eza.nix
     ./console/htop
     ./console/git.nix
-    ./console/gpg.nix
+    # ./console/gpg.nix
     ./console/ripgrep.nix
     ./console/micro.nix
     ./console/neofetch.nix
