@@ -1,5 +1,5 @@
 # This file defines overlays
-{ inputs, ... }: {
+{ inputs, lib, ... }: {
   # This one brings our custom packages from the 'pkgs' directory
   additions = final: _prev: import ../pkgs { pkgs = final; };
 
@@ -7,6 +7,12 @@
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
   modifications = _final: prev: {
+
+    channels = lib.genAttrs [
+      "hyprland-contrib"
+    ]
+      (name: inputs.${name}.packages.${prev.system});
+
     # https://github.com/NixOS/nixpkgs/issues/278277#issuecomment-1878292158
     keybase = prev.keybase.overrideAttrs (_old: rec {
       pname = "keybase";

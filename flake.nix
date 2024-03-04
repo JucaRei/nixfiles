@@ -21,24 +21,21 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
-    };
-
     sddm-sugar-candy-nix = {
       url = "gitlab:Zhaith-Izaliel/sddm-sugar-candy-nix";
       # Optional, by default this flake follows nixpkgs-unstable.
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # For accessing `deploy-rs`'s utility Nix functions
-    # deploy-rs.url = "github:serokell/deploy-rs";
-
-    agenix = {
-      url = "github:ryantm/agenix";
+    cachix-deploy-flake = {
+      url = "github:cachix/cachix-deploy-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # agenix = {
+    #   url = "github:ryantm/agenix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     # Art
     # nixos-artwork = {
@@ -47,6 +44,11 @@
     # };
 
     flatpaks.url = "github:GermanBread/declarative-flatpak/stable";
+
+    pinix = {
+      url = "github:remi-dupre/pinix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     disko = {
       url = "github:nix-community/disko";
@@ -77,10 +79,10 @@
     #   url = "https://flakehub.com/f/eza-community/eza/0.14.0.tar.gz";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    antsy-alien-attack-pico = {
-      url = "https://flakehub.com/f/wimpysworld/antsy-alien-attack-pico/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # antsy-alien-attack-pico = {
+    #   url = "https://flakehub.com/f/wimpysworld/antsy-alien-attack-pico/*.tar.gz";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     fh = {
       url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -125,7 +127,10 @@
     #   flake = false;
     # };
 
-    nixd.url = "github:nix-community/nixd";
+    nixd = {
+      url = "github:nix-community/nixd";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # Use nix-index without having to generate the database locally
     nix-index-database = {
@@ -232,6 +237,21 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
   };
+
+  nixConfig = {
+    extra-substituters = [
+      "https://cache.nixos.org"
+      "https://cachix.cachix.org"
+      "https://hyprland.cachix.org"
+      "https://nix-community.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
+  };
+
   outputs = { self, ... } @ inputs:
     with inputs; let
       inherit (self) outputs;

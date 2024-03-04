@@ -1,17 +1,17 @@
-{
-  config,
-  desktop,
-  hostname,
-  inputs,
-  lib,
-  modulesPath,
-  outputs,
-  pkgs,
-  stateVersion,
-  username,
-  hostid,
-  ...
-}: let
+{ config
+, desktop
+, hostname
+, inputs
+, lib
+, modulesPath
+, outputs
+, pkgs
+, stateVersion
+, username
+, hostid
+, ...
+}:
+let
   notVM =
     if (hostname == "minimech" || hostname == "scrubber" || builtins.substring 0 5 hostname == "lima-")
     then false
@@ -26,7 +26,8 @@
     then true
     else false;
   # Firewall configuration variable for syncthing
-in {
+in
+{
   # Import host specific boot and hardware configurations.
   # Only include desktop components if one is supplied.
   # - https://nixos.wiki/wiki/Nix_Language:_Tips_%26_Tricks#Coercing_a_relative_path_with_interpolated_variables_to_an_absolute_path_.28for_imports.29
@@ -43,10 +44,10 @@ in {
       ./users/root
     ]
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}"))
-    ./users/${username}
+      ./users/${username}
     ++ lib.optional (desktop != null) ./_mixins/desktop
     ++ lib.optional (hostname != "rasp3" || "air")
-    ./_mixins/services/tools/kmscon.nix;
+      ./_mixins/services/tools/kmscon.nix;
 
   nixpkgs = {
     # You can add overlays here
@@ -59,7 +60,7 @@ in {
       # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
       (_: super: {
         makeModulesClosure = x:
-          super.makeModulesClosure (x // {allowMissing = true;});
+          super.makeModulesClosure (x // { allowMissing = true; });
       })
 
       # You can also add overlays exported from other flakes:
@@ -90,8 +91,8 @@ in {
 
         tor-browser-bundle-bin = super.symlinkJoin {
           name = super.tor-browser-bundle-bin.name;
-          paths = [super.tor-browser-bundle-bin];
-          buildInputs = [super.makeWrapper];
+          paths = [ super.tor-browser-bundle-bin ];
+          buildInputs = [ super.makeWrapper ];
           postBuild = ''
             wrapProgram "$out/bin/tor-browser" \
               --set MOZ_ENABLE_WAYLAND 1
@@ -99,11 +100,11 @@ in {
         };
 
         mpv =
-          super.mpv.override {scripts = with super.mpvScripts; [mpris];};
+          super.mpv.override { scripts = with super.mpvScripts; [ mpris ]; };
         # vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
-        deadbeef = super.deadbeef.override {wavpackSupport = true;};
+        deadbeef = super.deadbeef.override { wavpackSupport = true; };
         deadbeef-with-plugins = super.deadbeef-with-plugins.override {
-          plugins = with super.deadbeefPlugins; [mpris2 statusnotifier];
+          plugins = with super.deadbeefPlugins; [ mpris2 statusnotifier ];
         };
       })
     ];
@@ -115,7 +116,7 @@ in {
       # Accept the joypixels license
       joypixels.acceptLicense = true;
       allowUnsupportedSystem = true;
-      permittedInsecurePackages = ["openssl-1.1.1w" "electron-19.1.9"];
+      permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" ];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       allowUnfreePredicate = _: true;
@@ -157,7 +158,7 @@ in {
 
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: {flake = value;}) inputs;
+    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     # This will additionally add your inputs to the system's legacy channels
     # Making legacy nix commands consistent as well, awesome!
 
@@ -166,7 +167,7 @@ in {
 
     # Add nixpkgs input to NIX_PATH
     # This lets nix2 commands still use <nixpkgs>
-    nixPath = ["nixpkgs=${inputs.nixpkgs.outPath}"];
+    nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
 
     optimise.automatic = true;
     package = pkgs.unstable.nix;
@@ -191,24 +192,11 @@ in {
         # "cgroups"
       ];
       # Allow to run nix
-      allowed-users = ["root" "@wheel"];
+      allowed-users = [ "root" "@wheel" ];
       builders-use-substitutes =
         true; # Avoid copying derivations unnecessary over SSH.
 
-      trusted-users = ["root" "@wheel"];
-
-      substituters = [
-        "https://cache.nixos.org"
-        "https://nix-community.cachix.org"
-        "https://hyprland.cachix.org"
-        "https://cachix.cachix.org"
-      ];
-
-      trusted-public-keys = [
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-        "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
-      ];
+      trusted-users = [ "root" "@wheel" ];
     };
     extraOptions = ''
       log-lines = 15
@@ -257,7 +245,7 @@ in {
     hostName = hostname;
     hostId = hostid;
     useDHCP = lib.mkDefault true;
-    firewall = {enable = true;};
+    firewall = { enable = true; };
   };
 
   system = {
@@ -442,12 +430,13 @@ in {
     # Create file /etc/current-system-packages with List of all Packages
     etc = {
       "current-system-packages" = {
-        text = let
-          packages =
-            builtins.map (p: "${p.name}") config.environment.systemPackages;
-          sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-          formatted = builtins.concatStringsSep "\n" sortedUnique;
-        in
+        text =
+          let
+            packages =
+              builtins.map (p: "${p.name}") config.environment.systemPackages;
+            sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+            formatted = builtins.concatStringsSep "\n" sortedUnique;
+          in
           formatted;
       };
     };
