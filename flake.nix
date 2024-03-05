@@ -194,12 +194,6 @@
     #  inputs.emacs-overlay.follows = "emacs-overlay";
     #};
 
-    #hyprland = {
-    #  # Official Hyprland flake
-    #  url = "github:vaxerski/Hyprland"; # Add "hyprland.nixosModules.default" to the host modules
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
-
     hyprland.url = "github:hyprwm/Hyprland";
     hyprland-contrib = {
       url = "github:hyprwm/contrib";
@@ -239,7 +233,7 @@
   };
 
   nixConfig = {
-    extra-substituters = [
+    extra-trusted-substituters = [
       "https://cache.nixos.org"
       "https://cachix.cachix.org"
       "https://nix-community.cachix.org"

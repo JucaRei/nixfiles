@@ -1,21 +1,9 @@
-{ config
-, desktop
-, inputs
-, lib
-, outputs
-, pkgs
-, modulesPath
-, stateVersion
-, username
-, hostname
-, nixgl
-, ...
-}:
-with lib; let
+{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, nixgl, ... }:
+let
   inherit (pkgs.stdenv) isDarwin isLinux;
   isLima = builtins.substring 0 5 hostname == "lima-";
   isWorkstation = if (desktop != null) then true else false;
-  isServer = if (hostname == "phasma" || hostname == "vader") then true else false;
+  isStreamstation = if (hostname == "phasma" || hostname == "vader") then true else false;
 in
 {
   # Only import desktop configuration if the host is desktop enabled
@@ -27,7 +15,7 @@ in
 
       # Or modules exported from other flakes (such as nix-colors):
       # inputs.nix-colors.homeManagerModules.default
-      # inputs.sops-nix.homeManagerModules.sops
+      inputs.sops-nix.homeManagerModules.sops
       inputs.nix-index-database.hmModules.nix-index
 
       # You can also split up your configuration and import pieces of it here:

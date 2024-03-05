@@ -7,12 +7,6 @@
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
   modifications = _final: prev: {
-
-    channels = lib.genAttrs [
-      "hyprland-contrib"
-    ]
-      (name: inputs.${name}.packages.${prev.system});
-
     # https://github.com/NixOS/nixpkgs/issues/278277#issuecomment-1878292158
     keybase = prev.keybase.overrideAttrs (_old: rec {
       pname = "keybase";
@@ -31,7 +25,7 @@
         (python-final: python-prev: {
           default =
             python-prev.default.overridePythonAttrs
-              (oldAttrs: { patches = [ ./ceph.patch ]; });
+              (oldAttrs: { patches = [ ./patches/ceph.patch ]; });
         })
       ];
 
@@ -53,16 +47,16 @@
         ];
     };
 
-    google-chrome = prev.google-chrome.overrideAttrs (old: {
-      installPhase =
-        old.installPhase
-        + ''
-          fix=" --enable-features=WebUIDarkMode --force-dark-mode"
+    # google-chrome = prev.google-chrome.overrideAttrs (old: {
+    #   installPhase =
+    #     old.installPhase
+    #     + ''
+    #       fix=" --enable-features=WebUIDarkMode --force-dark-mode"
 
-          substituteInPlace $out/share/applications/google-chrome.desktop \
-            --replace $exe "$exe$fix"
-        '';
-    });
+    #       substituteInPlace $out/share/applications/google-chrome.desktop \
+    #         --replace $exe "$exe$fix"
+    #     '';
+    # });
 
     keybase-gui = prev.keybase-gui.overrideAttrs (_old: rec {
       pname = "keybase-gui";
