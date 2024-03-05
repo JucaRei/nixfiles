@@ -1,5 +1,6 @@
 # ssh-agent
 
+ssh-keygen -p -f id_ed25519 # new passphrase
 echo $SSH_AUTH_SOCK
 eval $(ssh-agent) > .profile
 
@@ -22,6 +23,18 @@ Host github
     Identity file /my/personal/file
     IdentitiesOnly yes
 
+nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt
+nix shell nixpkgs#age -c age-keygen -o ~/.config/sops/age/keys.txt
+nix shell nixpkgs#age -c age-keygen -y ~/.config/sops/age/keys.txt
+
+AGE-SECRET-KEY-1A630E2Z8WDHTF7VMKMZJXFFT6GQGF8SJLZFWAM8V9WJ89RJZ5FHSK2RHEE
+age1sysky3n2s94nghsf5wg9ljvt7hvr3s3tr4s5euv5kejv4yn5j33sqhasqn
+
+age16q6rhd994jruz4e8j5zg6qk2y62z8sydk3wy3qr8sny2y5td94qqsxzjve
+
+
+nix-shell -p gnupg -p ssh-to-pgp --run "ssh-to-pgp -private-key -i $HOME/.ssh/id_ed25519 | gpg --import --quiet"
+2504791468b153b8a3963cc97ba53d1919c5dfd4
 # ~/.gitconfig.user
 [user]
     name = Reinaldo P Jr
