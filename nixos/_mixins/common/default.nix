@@ -1,20 +1,20 @@
-{
-  hostid,
-  hostname,
-  lib,
-  pkgs,
-  ...
+{ hostid
+, hostname
+, lib
+, pkgs
+, ...
 }: {
   imports =
-    []
+    [ ]
     ++ lib.optionals (hostname != "rasp3") [
       ./aliases.nix
-      ./aspell.nix
+      ./nano.nix
       ./console.nix
       ./keyboard.nix
       ./locale.nix
       ./fonts.nix
       ./appimage.nix
+      # ./nix.nix
       # ./nano.nix
       # ../config/qt/qt-style.nix
       # ../console/fish.nix
@@ -57,9 +57,9 @@
   ### Default Boot Options ###
   ############################
   boot = {
-    initrd = {verbose = lib.mkDefault false;};
+    initrd = { verbose = lib.mkDefault false; };
     consoleLogLevel = 0;
-    kernelModules = ["kvm-intel" "tcp_bbr"];
+    kernelModules = [ "kvm-intel" "tcp_bbr" ];
     kernelParams = [
       "loglevel=3"
       # "rd.systemd.show_status=false"
@@ -102,7 +102,7 @@
         # "vm.dirty_ratio" = 40; # default 20, maximum ratio, block process when reached
       };
     };
-    supportedFilesystems = ["ext4" "btrfs" "exfat" "ntfs"];
+    supportedFilesystems = [ "ext4" "btrfs" "exfat" "ntfs" ];
   };
 
   ##############################
@@ -112,7 +112,7 @@
   environment = {
     # Eject nano and perl from the system
     defaultPackages = with pkgs;
-      lib.mkForce [gitMinimal home-manager micro rsync];
+      lib.mkForce [ gitMinimal home-manager micro rsync ];
     systemPackages = with pkgs;
       [
         agenix
@@ -161,11 +161,11 @@
 
   programs = {
     #   fish.enable = true;
-    fuse = {userAllowOther = true;};
+    fuse = { userAllowOther = true; };
 
-    command-not-found = {enable = lib.mkDefault false;};
+    command-not-found = { enable = lib.mkDefault false; };
 
-    mtr = {enable = lib.mkDefault false;};
+    mtr = { enable = lib.mkDefault false; };
 
     # Minimal
     nix-ld = {
@@ -206,7 +206,7 @@
 
   services = {
     # Keeps the system timezone up-to-date based on the current location
-    automatic-timezoned = {enable = true;};
+    automatic-timezoned = { enable = true; };
 
     udev = {
       enable = true;
@@ -238,14 +238,14 @@
     # Enables simultaneous use of processor threads.
     allowSimultaneousMultithreading = true;
 
-    pam = {mount = {enable = true;};};
+    pam = { mount = { enable = true; }; };
   };
 
   systemd = lib.mkDefault {
     # systemd = lib.mkOverride 20 {
     services.disable-wifi-powersave = {
-      wantedBy = ["multi-user.target"];
-      path = [pkgs.iw];
+      wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.iw ];
       script = ''
         iw dev wlan0 set power_save off
       '';
@@ -257,11 +257,11 @@
     services = {
       "mglru" = {
         enable = true;
-        wantedBy = ["basic.target"];
+        wantedBy = [ "basic.target" ];
         script = ''
           ${pkgs.coreutils-full}/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms
         '';
-        serviceConfig = {Type = "oneshot";};
+        serviceConfig = { Type = "oneshot"; };
         unitConfig = {
           ConditionPathExists = "/sys/kernel/mm/lru_gen/enabled";
           Description = "Configure Enable Multi-Gen LRU";

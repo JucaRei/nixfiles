@@ -6,20 +6,14 @@
   # Helper function for generating home-manager configs
   mkHome =
     ### TODO - add displays
-    { hostname
-    , username
-    , desktop ? null
-    , stateVersion ? "23.11"
-    , platform ? "x86_64-linux"
-    ,
-    }:
+    { hostname, username, desktop ? null, stateVersion ? "23.11", platform ? "x86_64-linux" }:
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
         inherit inputs outputs desktop hostname platform username stateVersion;
       };
       modules =
-        if platform != "aarch64-linux" || "aarch64-darwin"
+        if (platform != "aarch64-linux" || "x86_64-darwin")
         then [
           inputs.flatpaks.homeManagerModules.default
           inputs.nur.hmModules.nur
@@ -30,42 +24,27 @@
 
   # Helper function for generating host configs
   mkHost =
-    { hostname
-    , username
-    , desktop ? null
-    , hostid ? null
-    , installer ? null
-    , stateVersion ? "23.11"
-      # , isNixOS ? true
-    ,
-    }:
+    { hostname, username, desktop ? null, hostid ? null, platform ? "x86_64-linux", stateVersion ? "23.11" }:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs outputs desktop hostname username hostid stateVersion;
       };
       modules =
-        # if isNixOS
-        # then
-        #   [
-        #     ../nixos
-        #     inputs.home-manager.nixosModules.home-manager
-        #     {
-        #       home-manager.useGlobalPkgs = true;
-        #       home-manager.useUserPackages = true;
-        #       # (import ../home-manager)
-        #     }
-        #   ]
-        #   ++ (inputs.nixpkgs.lib.optionals (installer != null) [ installer ])
-        # else
-        [ ../nixos ]
-        ++ (inputs.nixpkgs.lib.optionals (installer != null) [ installer ]);
+        let
+          isISO = if (builtins.substring 0 4 hostname == "iso-") then true else false;
+          cd-dvd = if (desktop == null) then inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix" else inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix";
+        in
+        [
+          ../nixos
+        ]
+        ++ (inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ]);
     };
 
   systems = inputs.nixpkgs.lib.genAttrs [
-    # "i686-linux"
     "x86_64-linux"
-    # "x86_64-darwin"
     "aarch64-linux"
+    # "i686-linux"
+    # "x86_64-darwin"
     # "aarch64-darwin"
   ];
 }

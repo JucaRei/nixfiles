@@ -1,0 +1,94 @@
+# ssh-agent
+
+echo $SSH_AUTH_SOCK
+eval $(ssh-agent) > .profile
+
+ssh-add ~/.ssh/id_ed25519
+
+ssh-add -d PATH_TO_KEY
+ssh -T git@github.com
+git config --global gpg.format ssh
+git config --global user.signingkey ~/.ssh/id_ed25519.pub
+git config --global commit.gpgsign true
+git commit -S -m "YOUR_COMMIT_MESSAGE"
+
+git config --global gpg.ssh.allowedSignersFile "~/.config/git/allowed_signers"
+
+# .ssh/config
+Host github
+    HostName github.com
+    User git
+    AddKeysToAgent yes
+    Identity file /my/personal/file
+    IdentitiesOnly yes
+
+# ~/.gitconfig.user
+[user]
+    name = Reinaldo P Jr
+    email = reinaldo.develop@gmail.com
+    signinkey =  reinaldo.develop@gmail.com
+
+[commit]
+    gpgsign = true
+
+[tag]
+    gpgsign = true
+
+#####################################
+
+gpg --list-keys
+gpg --full-generate-key
+
+gpg --edit-key reinaldo.develop@gmail.com
+gpg --passwd reinaldo.develop@gmail.com
+
+# backup
+gpg --export-secret-keys --output reinaldo.develop@gmail.com --armor reinaldo.develop@gmail.com
+
+# export pub key
+gpg --export --armor reinaldo.develop@gmail.com
+gpg --export --armor --output nitro.gpg.pub reinaldo.develop@gmail.com
+
+# searcg
+gpg --search-keys reinaldo.develop@gmail.com
+gpg --recv-keys 
+gpg --delete-keys
+gpg --send-keys CC41F8F23BA45892
+gpg --list-keys --keyid-format LONG reinaldo.develop@gmail.com
+
+CC41F8F23BA45892
+
+gpg --import
+
+# ~/.gnupg/gpg-agent.conf
+default-cache-ttl 604800
+max-cache-ttl 604800
+
+
+# -------------------- ~/.ssh/config
+Host github
+    HostName github.com
+    User git
+    PubkeyAuthentication yes
+    IdentityFile ~/.ssh/id_ed25519
+
+Host bitbucket
+    HostName bitbucket.com
+    User git
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+
+
+Host gitlab
+    HostName gitlab.com
+    User git
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_ed25519
+
+Host DietPi
+    Hostname dietpi
+    User dietpi
+
+Host Anubis
+    Hostname anubis
+    User juca
