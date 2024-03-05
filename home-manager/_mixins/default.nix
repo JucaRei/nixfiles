@@ -14,7 +14,7 @@
     # ./console/gpg.nix
     ./console/ripgrep.nix
     ./console/micro.nix
-    ./console/neofetch.nix
+    # ./console/neofetch.nix
     # ./console/skim.nix
     ./console/starship.nix
   ];

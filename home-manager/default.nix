@@ -15,17 +15,16 @@ in
 
       # Or modules exported from other flakes (such as nix-colors):
       # inputs.nix-colors.homeManagerModules.default
-      inputs.sops-nix.homeManagerModules.sops
+      # inputs.sops-nix.homeManagerModules.sops
       inputs.nix-index-database.hmModules.nix-index
 
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
     ]
-    ++ lib.optional (builtins.isPath (./. + "/users/${username}"))
-      ./users/${username}
-    ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix"))
-      ./hosts/${hostname}.nix
-    ++ lib.optional (desktop != null) ./_mixins/desktop;
+    # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
+    ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
+    ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix
+    ++ lib.optional (isWorkstation) ./_mixins/desktop;
 
   home = {
     inherit username;
@@ -54,14 +53,14 @@ in
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
-      inputs.nixpkgs-f2k.overlays.stdenvs
-      inputs.nixpkgs-f2k.overlays.compositors
+      # inputs.nixpkgs-f2k.overlays.stdenvs
+      # inputs.nixpkgs-f2k.overlays.compositors
       inputs.nixgl.overlay
       inputs.nur.overlay
 
       # You can also add overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
-      inputs.agenix.overlays.default
+      # inputs.agenix.overlays.default
 
       # Or define it inline, for example:
       (final: prev: {
@@ -69,28 +68,16 @@ in
         #   patches = [ ./change-hello-to-hi.patch ];
         # });
 
-        awesome = inputs.nixpkgs-f2k.packages.${pkgs.system}.awesome-git;
-
-        # Patch Google Chrome Dark Mode
-        # google-chrome = prev.google-chrome.overrideAttrs (old: {
-        #   installPhase =
-        #     old.installPhase
-        #     + ''
-        #       fix=" --enable-features=WebUIDarkMode --force-dark-mode"
-
-        #       substituteInPlace $out/share/applications/google-chrome.desktop \
-        #         --replace $exe "$exe$fix"
-        #     '';
-        # });
+        # awesome = inputs.nixpkgs-f2k.packages.${pkgs.system}.awesome-git;
       })
     ];
 
     # Configure your nixpkgs instance
     config = {
       # Allow unsupported packages to be built
-      allowUnsupportedSystem = true;
+      # allowUnsupportedSystem = true;
       # Disable broken package
-      allowBroken = false;
+      # allowBroken = false;
       ### Allow old broken electron
       permittedInsecurePackages = [
         # Workaround for https://github.com/nix-community/home-manager/issues/2942
@@ -116,13 +103,12 @@ in
 
     package = pkgs.unstable.nix;
     settings =
-      if isDarwin
-      then {
-        # nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
+      if isDarwin then {
+        nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
         daemonIOLowPriority = true;
       }
       else {
-        accept-flake-config = true;
+        # accept-flake-config = true;
         auto-optimise-store = true;
         experimental-features = [
           "nix-command"
@@ -134,16 +120,17 @@ in
         ];
         # auto-allocate-uids = true;
         # use-cgroups = if isLinux then true else false;
-        build-users-group = "nixbld";
+        # build-users-group = "nixbld";
         builders-use-substitutes = true;
-        sandbox =
-          if isDarwin
-          then true
-          else false;
+        # sandbox =
+        #   if isDarwin
+        #   then true
+        #   else false; #relaxed
+        sandbox = true;
 
         # Avoid unwanted garbage collection when using nix-direnv
         # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
-        keep-going = true;
+        # keep-going = true;
         show-trace = true;
         keep-outputs = true;
         keep-derivations = true;
@@ -151,7 +138,7 @@ in
         allow-dirty = true;
 
         # Allow to run nix
-        allowed-users = [ "nixbld" "@wheel" ];
+        # allowed-users = [ "nixbld" "@wheel" ];
         trusted-users = [ "root" "@wheel" ];
         connect-timeout = 5;
         http-connections = 0;
@@ -159,12 +146,9 @@ in
       };
     extraOptions =
       ''
-        keep-outputs          = true
-        keep-derivations      = true
-        connect-timeout = 5
-        log-lines = 25
+        log-lines = 15
 
-        fallback = true
+        # fallback = true
 
         # Free up to 1GiB whenever there is less than 100MiB left.
         # min-free = ${toString (100 * 1024 * 1024)}

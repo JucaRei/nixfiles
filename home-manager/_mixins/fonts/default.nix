@@ -10,11 +10,10 @@
     fira-code
     fira-code-symbols
     # work-sans
-    joypixels
+    # joypixels
     hack-font
     cairo
     ubuntu_font_family
-    font-awesome
     # apple-font
 
     material-design-icons

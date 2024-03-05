@@ -1,10 +1,5 @@
 # { inputs, outputs, stateVersion, nixgl, pkgs, ... }:
-{ inputs
-, outputs
-, stateVersion
-, lib
-, ...
-}:
+{ inputs, outputs, stateVersion, lib, ... }:
 let
   helpers =
     import ./helpers.nix { inherit inputs outputs stateVersion; };

@@ -26,6 +26,7 @@ in
       (./. + "/hosts/${hostname}")
       ./_mixins/services/network/openssh.nix
       ./_mixins/services/tools/smartmon.nix
+      ./_mixins/config/scripts
       ./_mixins/common
       ./users
     ]

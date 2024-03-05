@@ -1,12 +1,22 @@
 # This file defines overlays
-{ inputs, lib, ... }: {
+{ inputs, ... }: {
   # This one brings our custom packages from the 'pkgs' directory
   additions = final: _prev: import ../pkgs { pkgs = final; };
 
   # This one contains whatever you want to overlay
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
+  # https://github.com/NixOS/nixpkgs/issues/278277#issuecomment-1878292158
   modifications = _final: prev: {
+    clamav = prev.clamav.overrideAttrs (_old: rec {
+      pname = "clamav";
+      version = "1.3.0";
+      src = prev.fetchurl {
+        url = "https://www.clamav.net/downloads/production/${pname}-${version}.tar.gz";
+        sha256 = "sha256-CoamSWMg2RV2A3szEBEZr2/Y1bkQYM0xajqcIp6WBKo=";
+      };
+    });
+
     # https://github.com/NixOS/nixpkgs/issues/278277#issuecomment-1878292158
     keybase = prev.keybase.overrideAttrs (_old: rec {
       pname = "keybase";
@@ -19,15 +29,15 @@
       };
     });
 
-    pythonPackagesExtensions =
-      prev.pythonPackagesExtensions
-      ++ [
-        (python-final: python-prev: {
-          default =
-            python-prev.default.overridePythonAttrs
-              (oldAttrs: { patches = [ ./patches/ceph.patch ]; });
-        })
-      ];
+    # pythonPackagesExtensions =
+    #   prev.pythonPackagesExtensions
+    #   ++ [
+    #     (python-final: python-prev: {
+    #       default =
+    #         python-prev.default.overridePythonAttrs
+    #           (oldAttrs: { patches = [ ./patches/ceph.patch ]; });
+    #     })
+    #   ];
 
     # nixgl-legacy = prev.nixgl-legacy;
 
@@ -63,9 +73,7 @@
       version = "6.2.4";
       versionSuffix = "20240101011938.ae7e4a1c15";
       src = prev.fetchurl {
-        url = "https://s3.amazonaws.com/prerelease.keybase.io/linux_binaries/deb/keybase_${
-          version + "-" + versionSuffix
-        }_amd64.deb";
+        url = "https://s3.amazonaws.com/prerelease.keybase.io/linux_binaries/deb/keybase_${version + "-" + versionSuffix}_amd64.deb";
         hash = "sha256-XyGb9F83z8+OSjxOaO5k+h2qIY78ofS/ZfTXki54E5Q=";
       };
     });
@@ -95,7 +103,7 @@
       patches = [ ./patches/darwin.patch ];
     });
 
-    nelua = prev.nelua.overrideAttrs (_old: {
+    nelua = prev.nelua.overrideAttrs (_old: rec {
       pname = "nelua";
       version = "unstable-2023-11-19";
       src = prev.fetchFromGitHub {
@@ -114,6 +122,15 @@
         repo = "syncthingtray";
         rev = "v${version}";
         sha256 = "sha256-KfJ/MEgQdvzAM+rnKGMsjnRrbFeFu6F8Or+rgFNLgFI=";
+      };
+    });
+
+    wavebox = prev.wavebox.overrideAttrs (_old: rec {
+      pname = "wavebox";
+      version = "10.121.6-2";
+      src = prev.fetchurl {
+        url = "https://download.wavebox.app/stable/linux/tar/Wavebox_${version}.tar.gz";
+        sha256 = "sha256-UxUhGWXjOo/Yjzh3FihLhZDWg3RbLuIc88TqKuDfzhU=";
       };
     });
 
