@@ -57,6 +57,7 @@ gpg --send-keys CC41F8F23BA45892
 gpg --list-keys --keyid-format LONG reinaldo.develop@gmail.com
 
 CC41F8F23BA45892
+export GPG_TTY=$(tty)
 
 gpg --import
 
