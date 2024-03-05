@@ -51,6 +51,7 @@ nix-shell -p gnupg -p ssh-to-pgp --run "ssh-to-pgp -private-key -i $HOME/.ssh/id
 
 gpg --list-keys
 gpg --full-generate-key
+teste
 
 gpg --edit-key reinaldo.develop@gmail.com
 gpg --passwd reinaldo.develop@gmail.com
