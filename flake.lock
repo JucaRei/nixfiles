@@ -758,7 +758,9 @@
       "inputs": {
         "hyprland-protocols": "hyprland-protocols",
         "hyprlang": "hyprlang",
-        "nixpkgs": "nixpkgs_4",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "systems": "systems_2",
         "wlroots": "wlroots",
         "xdph": "xdph"
@@ -779,9 +781,7 @@
     },
     "hyprland-contrib": {
       "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "nixpkgs": "nixpkgs_4"
       },
       "locked": {
         "lastModified": 1709391291,
@@ -932,6 +932,22 @@
       "original": {
         "owner": "martinvonz",
         "repo": "jj",
+        "type": "github"
+      }
+    },
+    "lf-icons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1709620776,
+        "narHash": "sha256-h9GhUkM/wyvNzU1jpgoBYdB8Z9u7sd/TWXozFhUMsho=",
+        "owner": "gokcehan",
+        "repo": "lf",
+        "rev": "d89afb8c7dc0d30e289af850e4cd708da598f8c0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gokcehan",
+        "repo": "lf",
         "type": "github"
       }
     },
@@ -1677,11 +1693,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1708807242,
-        "narHash": "sha256-sRTRkhMD4delO/hPxxi+XwLqPn8BuUq6nnj4JqLwOu0=",
+        "lastModified": 1709479366,
+        "narHash": "sha256-n6F0n8UV6lnTZbYPl1A9q1BS0p4hduAv1mGAP17CVd0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "73de017ef2d18a04ac4bfd0c02650007ccb31c2a",
+        "rev": "b8697e57f10292a6165a20f03d2f42920dfaf973",
         "type": "github"
       },
       "original": {
@@ -1923,6 +1939,7 @@
         "hyprland-contrib": "hyprland-contrib",
         "hyprland-plugins": "hyprland-plugins",
         "hyprpicker": "hyprpicker",
+        "lf-icons": "lf-icons",
         "nix-formatter-pack": "nix-formatter-pack_2",
         "nix-gaming": "nix-gaming",
         "nix-index-database": "nix-index-database",
