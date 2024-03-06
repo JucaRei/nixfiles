@@ -1,7 +1,5 @@
-_:
-let
-  defaultBtrfsOpts =
-    [ "defaults" "compress=zstd:1" "ssd" "noatime" "nodiratime" ];
+_: let
+  defaultBtrfsOpts = ["defaults" "compress=zstd:1" "ssd" "noatime" "nodiratime"];
 in {
   environment.etc = {
     "crypttab".text = ''
@@ -41,7 +39,7 @@ in {
               content = {
                 type = "btrfs";
                 # Override existing partition
-                extraArgs = [ "-f" ];
+                extraArgs = ["-f"];
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";
@@ -87,34 +85,36 @@ in {
         content = {
           type = "table";
           format = "gpt";
-          partitions = [{
-            name = "data";
-            start = "0%";
-            end = "100%";
-            content = {
-              type = "luks";
+          partitions = [
+            {
               name = "data";
-              extraOpenArgs = [ "--allow-discards" ];
-              # Make sure there is no trailing newline in keyfile if used for interactive unlock.
-              # Use `echo -n "password" > /tmp/secret.key`
-              keyFile = "/tmp/data.keyfile";
-
-              # Don't try to unlock this drive early in the boot.
-              initrdUnlock = false;
-
+              start = "0%";
+              end = "100%";
               content = {
-                type = "btrfs";
-                # Override existing partition
-                extraArgs = [ "-f" ];
-                subvolumes = {
-                  "@data" = {
-                    mountpoint = "/data";
-                    mountOptions = defaultBtrfsOpts;
+                type = "luks";
+                name = "data";
+                extraOpenArgs = ["--allow-discards"];
+                # Make sure there is no trailing newline in keyfile if used for interactive unlock.
+                # Use `echo -n "password" > /tmp/secret.key`
+                keyFile = "/tmp/data.keyfile";
+
+                # Don't try to unlock this drive early in the boot.
+                initrdUnlock = false;
+
+                content = {
+                  type = "btrfs";
+                  # Override existing partition
+                  extraArgs = ["-f"];
+                  subvolumes = {
+                    "@data" = {
+                      mountpoint = "/data";
+                      mountOptions = defaultBtrfsOpts;
+                    };
                   };
                 };
               };
-            };
-          }];
+            }
+          ];
         };
       };
     };

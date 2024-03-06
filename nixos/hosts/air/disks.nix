@@ -1,8 +1,7 @@
 # { disks ? [ "/dev/sda1" "/dev/sda4" "/dev/sda5" ], ... }:
 # { disks ? [ "/dev/sda1" "/dev/sda4" ], ... }:
 # { disks ? [ "/dev/sda4" ], ... }:
-{ disks ? [ "/dev/sda" ], ... }:
-let
+{disks ? ["/dev/sda"], ...}: let
   memory = "4G";
   defaultBtrfsOpts = [
     "rw"
@@ -79,7 +78,7 @@ in {
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing partition
+                extraArgs = ["-f"]; # Override existing partition
                 # subvolumes = {
                 #   # Subvolume name is different from mountpoint
                 #   "@rootfs" = {
@@ -121,14 +120,14 @@ in {
                 # };
                 subvolumes = {
                   # Subvolume name is different from mountpoint
-                  "@rootfs" = { mountpoint = "/"; };
+                  "@rootfs" = {mountpoint = "/";};
                   # Subvolume name is the same as the mountpoint
                   "@home" = {
                     mountOptions = defaultBtrfsOpts;
                     mountpoint = "/home";
                   };
                   # Sub(sub)volume doesn't need a mountpoint as its parent is mounted
-                  "/home/juca" = { };
+                  "/home/juca" = {};
                   # Parent is not mounted so the mountpoint must be set
                   "@nix" = {
                     mountOptions = defaultBtrfsOpts;
@@ -143,7 +142,7 @@ in {
                     mountOptions = defaultBtrfsOpts;
                   };
                   # This subvolume will be created but not mounted
-                  "/test" = { };
+                  "/test" = {};
                   # Subvolume for the swapfile
                   "@swap" = {
                     mountpoint = "/.swapvol";

@@ -1,5 +1,9 @@
-{ desktop, lib, ... }: {
-  imports = [ ] ++ lib.optionals (desktop != null) [ ./keybase-gui.nix ];
+{
+  desktop,
+  lib,
+  ...
+}: {
+  imports = [] ++ lib.optionals (desktop != null) [./keybase-gui.nix];
 
   services = {
     kbfs = {

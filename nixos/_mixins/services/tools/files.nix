@@ -1,4 +1,8 @@
-{ pkgs, config, ... }: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   # Set up for https://www.files.gallery
   services = {
     nginx = {
@@ -31,5 +35,5 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [ ffmpeg ];
+  environment.systemPackages = with pkgs; [ffmpeg];
 }

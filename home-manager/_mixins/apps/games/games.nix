@@ -1,8 +1,12 @@
-{ config, pkgs, lib, ... }:
-let
-  myRetroarch = (pkgs.retroarch.override {
-    cores = with pkgs.libretro; [ mgba desmume dolphin citra genesis-plus-gx ];
-  });
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
+  myRetroarch = pkgs.retroarch.override {
+    cores = with pkgs.libretro; [mgba desmume dolphin citra genesis-plus-gx];
+  };
 in {
   home.packages = with pkgs; [
     # Games
@@ -18,8 +22,7 @@ in {
   # and retroarch core info directory to ~/.local/share/libretro/info
   home.file.".local/bin/libretro".source = "${myRetroarch}/lib/retroarch/cores";
   home.file.".local/share/libretro/info".source = fetchTarball {
-    url =
-      "https://github.com/libretro/libretro-core-info/archive/refs/tags/v1.15.0.tar.gz";
+    url = "https://github.com/libretro/libretro-core-info/archive/refs/tags/v1.15.0.tar.gz";
     sha256 = "004kgbsgbk7hn1v01jg3vj4b6dfb2cp3kcp5hgjyl030wqg1r22q";
   };
   # To get steam to import into gamehub, first install it as a flatpak, then

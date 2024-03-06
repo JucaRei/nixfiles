@@ -1,7 +1,8 @@
-{ config, pkgs, ... }:
-
-let
-
+{
+  config,
+  pkgs,
+  ...
+}: let
   nixos-check-updates = pkgs.writeScriptBin "nixos-check-updates" ''
     #!/bin/bash
 
@@ -40,12 +41,10 @@ let
     fi
 
   '';
-
 in {
-
   #---------------------------------------------------------------------
   # Type: check-updates in terminal to execute the above bash script
   #---------------------------------------------------------------------
 
-  environment.systemPackages = [ nixos-check-updates ];
+  environment.systemPackages = [nixos-check-updates];
 }

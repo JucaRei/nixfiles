@@ -29,7 +29,12 @@
 # [drm:amdgpu_device_init.cold [amdgpu]] *ERROR* sw_init of IP block <gmc_v10_0> failed -17
 # [drm:amdgpu_ttm_init.cold [amdgpu]] *ERROR* Failed initializing PREEMPT heap.
 # [drm:amdgpu_preempt_mgr_init [amdgpu]] *ERROR* Failed to create device file mem_info_preempt_used
-{ lib, pkgs, username, ... }: {
+{
+  lib,
+  pkgs,
+  username,
+  ...
+}: {
   # Check if vfio is loaded with:
   # dmesg | grep -i vfio
   # boot.kernelModules = ["kvm-intel" "vfio" "vfio_pci"];
@@ -57,12 +62,12 @@
     group = "kvm-windows";
     description = "Qemu KVM Windows client";
   };
-  users.groups.kvm-windows = { };
+  users.groups.kvm-windows = {};
 
   security.sudo.extraConfig = ''
-    
-        ${username} ALL=NOPASSWD: ${pkgs.systemd}/bin/systemctl start windows.service
-        ${username} ALL=NOPASSWD: ${pkgs.systemd}/bin/systemctl stop windows.service
+
+    ${username} ALL=NOPASSWD: ${pkgs.systemd}/bin/systemctl start windows.service
+    ${username} ALL=NOPASSWD: ${pkgs.systemd}/bin/systemctl stop windows.service
   '';
 
   systemd.services.windows = let
@@ -78,8 +83,7 @@
       ProtectKernelModules = true;
       ProtectControlGroups = true;
       ProtectKernelLogs = true;
-      ProtectSystem =
-        "full"; # makes /boot, /etc, and /usr directories read-only
+      ProtectSystem = "full"; # makes /boot, /etc, and /usr directories read-only
       ProtectHome = "tmpfs"; # hides /home, /root and /run/user
       BindPaths = "/keep/data/qemu";
       PrivateTmp = true; # makes /tmp and /var/tmp private
@@ -88,7 +92,7 @@
       #Restart = "on-failure";
     };
 
-    path = with pkgs; [ kmod qemu procps ];
+    path = with pkgs; [kmod qemu procps];
 
     environment = {
       TMPDIR = "/keep/data/tmp";
@@ -101,61 +105,61 @@
       GPU_AUDIO_HOST = gpu_audio;
     };
 
-    wantedBy = lib.mkForce [ ];
+    wantedBy = lib.mkForce [];
 
     script = builtins.readFile ./script.sh;
 
     # MAN: https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-bus-pci
     # EXAMPLE: https://github.com/joeknock90/Single-GPU-Passthrough
     preStart = ''
-      
-               #set -euxo pipefail
-               set -x
-      
-               pkill sway
-      
-               modprobe -i vfio_pci vfio vfio_iommu_type1 vfio_virqfd
-      
-               # DISABLE VTCONSOLE
-               echo 0 > /sys/class/vtconsole/vtcon0/bind
-               echo 0 > /sys/class/vtconsole/vtcon1/bind
-      
-               # UNBIND DEVICES
-               echo ${gpu} > /sys/bus/pci/devices/${gpu}/driver/unbind
-               echo ${gpu_audio} > /sys/bus/pci/devices/${gpu_audio}/driver/unbind
-      
-               # OVERRIDE DRIVER WITH VFIO
-              echo "vfio-pci" > /sys/bus/pci/devices/${gpu}/driver_override
-              echo "vfio-pci" > /sys/bus/pci/devices/${gpu_audio}/driver_override
-      
-               # BIND DEVICES TO VFIO
-               echo ${gpu} > /sys/bus/pci/drivers/vfio-pci/bind
-               echo ${gpu_audio} > /sys/bus/pci/drivers/vfio-pci/bind
+
+       #set -euxo pipefail
+       set -x
+
+       pkill sway
+
+       modprobe -i vfio_pci vfio vfio_iommu_type1 vfio_virqfd
+
+       # DISABLE VTCONSOLE
+       echo 0 > /sys/class/vtconsole/vtcon0/bind
+       echo 0 > /sys/class/vtconsole/vtcon1/bind
+
+       # UNBIND DEVICES
+       echo ${gpu} > /sys/bus/pci/devices/${gpu}/driver/unbind
+       echo ${gpu_audio} > /sys/bus/pci/devices/${gpu_audio}/driver/unbind
+
+       # OVERRIDE DRIVER WITH VFIO
+      echo "vfio-pci" > /sys/bus/pci/devices/${gpu}/driver_override
+      echo "vfio-pci" > /sys/bus/pci/devices/${gpu_audio}/driver_override
+
+       # BIND DEVICES TO VFIO
+       echo ${gpu} > /sys/bus/pci/drivers/vfio-pci/bind
+       echo ${gpu_audio} > /sys/bus/pci/drivers/vfio-pci/bind
     '';
 
     # BUG: https://gitlab.freedesktop.org/drm/amd/-/issues/1836
     postStop = ''
-      
-               #set -euxo pipefail
-               set -x
-      
-               # UNBIND VFIO
-               echo ${gpu} > /sys/bus/pci/drivers/vfio-pci/unbind
-               echo ${gpu_audio} > /sys/bus/pci/drivers/vfio-pci/unbind
-      
-               # RESET DRIVER OVERRIDE
-              echo > /sys/bus/pci/devices/${gpu}/driver_override
-              echo > /sys/bus/pci/devices/${gpu_audio}/driver_override
-      
-               modprobe -i vfio_pci vfio vfio_iommu_type1 vfio_virqfd
-      
-               # BIND DEVICES TO ORIGINAL DRIVERS
-               echo ${gpu} > /sys/bus/pci/drivers/amdgpu/bind
-               echo ${gpu_audio} > /sys/bus/pci/drivers/snd_hda_intel/bind
-      
-               # ENABLE VTCONSOLE
-               echo 1 > /sys/class/vtconsole/vtcon0/bind
-               echo 1 > /sys/class/vtconsole/vtcon1/bind
+
+       #set -euxo pipefail
+       set -x
+
+       # UNBIND VFIO
+       echo ${gpu} > /sys/bus/pci/drivers/vfio-pci/unbind
+       echo ${gpu_audio} > /sys/bus/pci/drivers/vfio-pci/unbind
+
+       # RESET DRIVER OVERRIDE
+      echo > /sys/bus/pci/devices/${gpu}/driver_override
+      echo > /sys/bus/pci/devices/${gpu_audio}/driver_override
+
+       modprobe -i vfio_pci vfio vfio_iommu_type1 vfio_virqfd
+
+       # BIND DEVICES TO ORIGINAL DRIVERS
+       echo ${gpu} > /sys/bus/pci/drivers/amdgpu/bind
+       echo ${gpu_audio} > /sys/bus/pci/drivers/snd_hda_intel/bind
+
+       # ENABLE VTCONSOLE
+       echo 1 > /sys/class/vtconsole/vtcon0/bind
+       echo 1 > /sys/class/vtconsole/vtcon1/bind
     '';
   };
 }

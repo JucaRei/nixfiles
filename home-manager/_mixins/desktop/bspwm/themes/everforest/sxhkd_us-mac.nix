@@ -1,7 +1,11 @@
-{ pkgs, config, lib, ... }:
-let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
   terminal = "alacritty";
-  file-manager = "pcmanfm";
+  file-manager = "thunar";
   browser = "firefox";
 in {
   config = lib.mkIf (config.xsession.enable) {
@@ -18,56 +22,40 @@ in {
 
           # Bspwm hotkeys
           "Super + crtl + {q,r}" = "bspc {quit,wm -r}"; # quit/restart
-          "Super + {_,shift +}{Left,Right,Up,Down}" =
-            "bspc node -{f,s} {west,east,north,south}"; # Focus or move node in given direction
-          "Super + shift + {t,h,f}" =
-            "bspc node -t '~{tiled,floating,fullscreen}'"; # Toggle between initial state and new state
+          "Super + {_,shift +}{Left,Right,Up,Down}" = "bspc node -{f,s} {west,east,north,south}"; # Focus or move node in given direction
+          "Super + shift + {t,h,f}" = "bspc node -t '~{tiled,floating,fullscreen}'"; # Toggle between initial state and new state
           "alt + shift + g" = "bspc config window_gap 5";
           "alt + g" = "bspc config window_gap 0";
           "Super + q" = "bspc node -{c,k}"; # close and kill
-          "Super + k" =
-            "bspc desktop -l next"; # alternate between the tiled and monocle layout
-          "Super + y" =
-            "bspc node newest.marked.local -n newest.!automatic.local"; # # send the newest marked node to the newest preselected node
-          "Super + g" =
-            "bspc node -s biggest.window"; # swap the current node and the biggest window
+          "Super + k" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
+          "Super + y" = "bspc node newest.marked.local -n newest.!automatic.local"; # # send the newest marked node to the newest preselected node
+          "Super + g" = "bspc node -s biggest.window"; # swap the current node and the biggest window
 
           # Alt - Move workspaces
-          "Super + {Left,Right}" =
-            "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
-          "Super + {_,shift +}{1-9,0}" =
-            "bspc {desktop -f,node -d} '{1-9,10}'"; # Focus or send to the given desktop
-          "Super + shift + {Left,Right}" =
-            "bspc node -d {prev,next}.local --follow"; # Send and follow to previous or next desktop
+          "Super + {Left,Right}" = "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
+          "Super + {_,shift +}{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'"; # Focus or send to the given desktop
+          "Super + shift + {Left,Right}" = "bspc node -d {prev,next}.local --follow"; # Send and follow to previous or next desktop
 
           # State/flags
           # "Super + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,fullscreen}"; # set the window state
-          "Super + ctrl + {m,x,y,z}" =
-            "bspc node -g {marked,locked,sticky,private}"; # set the node flags
+          "Super + ctrl + {m,x,y,z}" = "bspc node -g {marked,locked,sticky,private}"; # set the node flags
 
           # Focus/Swap
-          "Super + {_,shift + }{h,j,k,l}" =
-            "bspc node -{f,s} {west,south,north,east}"; # focus the node in the given direction
-          "Super + {p,b,comma,period}" =
-            "bspc node -f @{parent,brother,first,second}"; # focus the node for the given path jump
-          "Super + {_,shift + }c" =
-            "bspc node -f {next,prev}.local.!hidden.window"; # focus the next/previous window in the current desktop
-          "Super + bracket{left,right}" =
-            "bspc desktop -f {prev,next}.local"; # focus the next/previous desktop in the current monitor
-          "Super + {grave,Tab}" =
-            "bspc {node,desktop} -f last"; # focus the last node/desktop
+          "Super + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}"; # focus the node in the given direction
+          "Super + {p,b,comma,period}" = "bspc node -f @{parent,brother,first,second}"; # focus the node for the given path jump
+          "Super + {_,shift + }c" = "bspc node -f {next,prev}.local.!hidden.window"; # focus the next/previous window in the current desktop
+          "Super + bracket{left,right}" = "bspc desktop -f {prev,next}.local"; # focus the next/previous desktop in the current monitor
+          "Super + {grave,Tab}" = "bspc {node,desktop} -f last"; # focus the last node/desktop
           "Super + {o,i}" = ''
-            bspc wm -h off; 
-             bspc node {older,newer} -f; 
+            bspc wm -h off;
+             bspc node {older,newer} -f;
              bspc wm -h on''; # focus the older or newer node in the focus history
           # "Super + {_,shift + }{1-9,0}" = "bspc {desktop -f,node -d} '^{1-9,10}'"; # focus or send to the given desktop
 
           # Preselect
-          "Super + ctrl + {h,j,k,l}" =
-            "bspc node -p {west,south,north,east}"; # preselect the direction
+          "Super + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}"; # preselect the direction
           "Super + ctrl + {1-9}" = "bspc node -o 0.{1-9}"; # preselect the ratio
-          "Super + ctrl + space" =
-            "bspc node -p cancel"; # cancel the preselection for the focused node
+          "Super + ctrl + space" = "bspc node -p cancel"; # cancel the preselection for the focused node
           # "super + ctrl + shift + space" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel"; # cancel the preselection for the focused desktop
 
           # Move/Resize
@@ -105,8 +93,7 @@ in {
           "super + shift + f" = "$HOME/Pictures/Screenshots --full-cb";
 
           # Switch windows
-          "alt + Tab" =
-            "bash ~/.config/rofi/window-switcher/window-switcher.sh";
+          "alt + Tab" = "bash ~/.config/rofi/window-switcher/window-switcher.sh";
 
           # Save screenshot to file with clipboard
           # "ctrl + shift + Print" = "$HOME/Pictures/Screenshots --full";
@@ -118,14 +105,10 @@ in {
           "super + shift + e" = "$HOME/Pictures/Screenshots - -area";
 
           # XF86 Keys
-          "XF86AudioMute" =
-            "pactl list sinks | grep -q Mute:.no && pactl set-sink-mute 0 1 || pactl set-sink-mute 0 0"; # Toggle mute audio
-          "XF86AudioRaiseVolume" =
-            "pactl -- set-sink-volume 0 +2%"; # Raise volume
-          "XF86AudioLowerVolume" =
-            "pactl -- set-sink-volume 0 -2%"; # Lower volume
-          "XF86AudioMicMute" =
-            "pactl set-source-mute 1 toggle"; # Toggle mute mic audio
+          "XF86AudioMute" = "pactl list sinks | grep -q Mute:.no && pactl set-sink-mute 0 1 || pactl set-sink-mute 0 0"; # Toggle mute audio
+          "XF86AudioRaiseVolume" = "pactl -- set-sink-volume 0 +2%"; # Raise volume
+          "XF86AudioLowerVolume" = "pactl -- set-sink-volume 0 -2%"; # Lower volume
+          "XF86AudioMicMute" = "pactl set-source-mute 1 toggle"; # Toggle mute mic audio
           "XF86KbdBrightnessUp" = "${pkgs.kbdlight}/bin/kdblight up 2";
           "XF86KbdBrightnessDown" = "${pkgs.kbdlight}/bin/kdblight down 2";
           #"XF86MonBrightnessUp" = "xbacklight -inc 2"; # Brightness down

@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   wallpaper-picker-dmenu = pkgs.writeShellScriptBin "wallpaper-picker-dmenu" ''
     launcher="rofi -dmenu"
     # launcher="sxiv -tio"
@@ -32,5 +31,5 @@ let
     wal -i $wallpaper_location && reload &
   '';
 in {
-  home.packages = with pkgs; [ wallpaper-picker-dmenu wallpaper-picker sxiv ];
+  home.packages = with pkgs; [wallpaper-picker-dmenu wallpaper-picker sxiv];
 }

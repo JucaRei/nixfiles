@@ -1,6 +1,5 @@
 # ## NixOS module that provides hourly notifications when a reboot is needed for a kernel, initrd, or kernel-module upgrade
-{ pkgs, ... }:
-let
+{pkgs, ...}: let
   readlink = "${pkgs.coreutils}/bin/readlink";
   notify-send = "${pkgs.libnotify}/bin/notify-send";
 in {
@@ -17,11 +16,11 @@ in {
         ${notify-send} --urgency=low --icon=system-reboot "Reboot is needed for a NixOS upgrade."
       fi
     '';
-    serviceConfig = { Type = "oneshot"; };
+    serviceConfig = {Type = "oneshot";};
   };
   systemd.user.timers.detect-reboot-for-upgrade = {
-    wantedBy = [ "timers.target" ];
-    partOf = [ "detect-reboot-for-upgrade.service" ];
+    wantedBy = ["timers.target"];
+    partOf = ["detect-reboot-for-upgrade.service"];
     timerConfig = {
       OnCalendar = "hourly";
       Unit = "detect-reboot-for-upgrade.service";

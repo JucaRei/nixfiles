@@ -1,21 +1,28 @@
-{ lib, modulesPath, pkgs, inputs, ... }: {
+{
+  lib,
+  modulesPath,
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    (import ./disks.nix { })
+    (import ./disks.nix {})
     inputs.nixos-hardware.nixosModules.microsoft-hyper-v
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/services/security/sudo.nix
   ];
 
   boot = {
-
     isContainer = false;
+    blacklistedKernelModules = ["hyperv_fb"];
 
     initrd = {
-      availableKernelModules = [ "sd_mod" "sr_mod" ];
+      availableKernelModules = ["sd_mod" "sr_mod"];
 
       ### kernel modules to be loaded in the second stage, that are needed to mount the root file system ###
       kernelModules = [
+        "dm-snapshot"
         # "zswap.compressor=z3fold"
         # "z3fold"
         # "crc32c-intel"
@@ -26,10 +33,10 @@
         #"kvm-intel"
       ];
       checkJournalingFS = false; # for vm
-      supportedFilesystems = [ "xfs" ];
+      supportedFilesystems = ["xfs"];
       verbose = false;
     };
-    kernelPackages = pkgs.linuxPackages_6_1;
+    kernelPackages = pkgs.linuxPackages_lqx;
 
     kernel.sysctl = {
       "vm.vfs_cache_pressure" = 500;
@@ -56,27 +63,33 @@
     };
   };
 
+  # ----- Hyper-V Guest support ----- #
+  virtualisation.hypervGuest = {
+    enable = true;
+    videoMode = "1920x1080";
+  };
+
   zramSwap = {
     enable = true;
     swapDevices = 5;
-    memoryPercent = 125; # 20% of total memory
+    memoryPercent = 20; # 20% of total memory
     algorithm = "zstd";
   };
 
-  services.xserver = {
-    modules = with pkgs; [ xrdp xorg.xf86videofbdev ];
-    videoDrivers = [ "hyperv_fb" ];
-    layout = lib.mkForce "br";
-    exportConfiguration = true;
-    dpi = 96;
-    logFile = "/var/log/Xorg.0.log";
-  };
+  # services.xserver = {
+  #   modules = with pkgs; [xrdp xorg.xf86videofbdev];
+  #   videoDrivers = ["hyperv_fb"];
+  #   layout = lib.mkForce "br";
+  #   exportConfiguration = true;
+  #   dpi = 96;
+  #   logFile = "/var/log/Xorg.0.log";
+  # };
 
   environment.systemPackages = with pkgs; [
     #linuxKernel.packages.linux_6_1.vm-tools
     powershell
-    python3Full
-    #python.pkgs.pip
+    # python3Full
+    # python.pkgs.pip
     #terminus-nerdfont
   ];
 

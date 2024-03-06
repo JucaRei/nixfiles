@@ -1,10 +1,10 @@
-_:
-let image-viewer = "imv.desktop";
+_: let
+  image-viewer = "imv.desktop";
 in {
   programs = {
     imv = {
       enable = true;
-      settings = { };
+      settings = {};
     };
   };
 

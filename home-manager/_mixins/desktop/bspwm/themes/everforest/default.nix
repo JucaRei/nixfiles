@@ -1,33 +1,97 @@
-{ pkgs, ... }: {
+{
+  pkgs,
+  osConfig,
+  config,
+  lib,
+  ...
+}: {
   imports = [
     ./dunst.nix
     ./picom.nix
     # ./xresources.nix
     # ./polybar.nix
     ../../../../apps/terminal/alacritty.nix
-    # ../../../../apps/tools/spacefm.nix
-    ./polybar-everforest.nix
+    ../../../../apps/file-managers/thunar.nix
     ./sxhkd_us-mac.nix
     ./rofi.nix
   ];
 
   config = {
     home = {
-      file.".owm-key" = {
-        text = ''
-          3901194171bca9e5e3236048e50eb1a5
-        '';
+      file = {
+        ".owm-key" = {
+          text = ''
+            3901194171bca9e5e3236048e50eb1a5
+          '';
+        };
+        ###############
+        ### Polybar ###
+        ###############
+        ".config/polybar" = {
+          source = ./config/polybar;
+          recursive = true;
+        };
+        ".local/polybar/scripts" = {
+          source = ../../../../config/polybar/scripts;
+          recursive = true;
+          executable = true;
+        };
+        ".local/polybar/scripts/pipewire.sh" = {
+          executable = true;
+          text = ''
+            #!${pkgs.bash}/bin/bash
+
+            getDefaultSink() {
+              defaultSink=$(${pkgs.pulseaudio}/bin/pactl info | ${pkgs.gawk}/bin/awk -F : '/Default Sink:/{print $2}')
+              description=$(${pkgs.pulseaudio}/bin/pactl list sinks | ${pkgs.gnused}/bin/sed -n "/''${defaultSink}/,/Description/p; /Description/q" | ${pkgs.gnused}/bin/sed -n 's/^.*Description: \(.*\)$/\1/p')
+              echo "''${description}"
+            }
+
+            getDefaultSource() {
+              defaultSource=$(${pkgs.pulseaudio}/bin/pactl info | ${pkgs.gawk}/bin/awk -F : '/Default Source:/{print $2}')
+              description=$(${pkgs.pulseaudio}/bin/pactl list sources | ${pkgs.gnused}/bin/sed -n "/''${defaultSource}/,/Description/p; /Description/q" | ${pkgs.gnused}/bin/sed -n 's/^.*Description: \(.*\)$/\1/p')
+              echo "''${description}"
+            }
+
+            function main() {
+                DEFAULT_SOURCE=$(getDefaultSource)
+                DEFAULT_SINK=$(getDefaultSink)
+                VOLUME=$(${pkgs.pulseaudio}/bin/pactl list sinks | ${pkgs.gnused}/bin/sed -n "/Sink #''${DEFAULT_SINK_ID}/,/Volume/ s!^[[:space:]]\+Volume:.* \([[:digit:]]\+\)%.*!\1!p" | ${pkgs.coreutils}/bin/head -n1)
+                IS_MUTED=$(${pkgs.pulseaudio}/bin/pactl list sinks | ${pkgs.gnused}/bin/sed -n "/Sink #''${DEFAULT_SINK_ID}/,/Mute/ s/Mute: \(yes\)/\1/p")
+
+                action=$1
+                if [ "''${action}" == "up" ]; then
+                    ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%
+                elif [ "''${action}" == "down" ]; then
+                    ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%
+                elif [ "''${action}" == "mute" ]; then
+                    ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle
+                else
+                    if [ "''${IS_MUTED}" != "" ]; then
+                        echo " ''${DEFAULT_SOURCE} | ﱝ ''${VOLUME}% ''${DEFAULT_SINK}"
+                    else
+                        echo " ''${DEFAULT_SOURCE} | 墳 ''${VOLUME}% ''${DEFAULT_SINK}"
+                    fi
+                fi
+            }
+
+            main "$@"
+
+          '';
+        };
       };
       packages = with pkgs;
         [
           # st
           playerctl
-          pcmanfm
+          polybar
           # pulseaudio-control
           # gnome.nautilus
           # gnome.sushi
           # nautilus-open-any-terminal
           gtk-engine-murrine
+          xorg.xprop
+          xorg.xrandr
 
           # Fonts
           cascadia-code
@@ -50,7 +114,8 @@
               "FiraCode"
             ];
           })
-        ] ++ (with pkgs.unstable; [ polybar-pulseaudio-control ]);
+        ]
+        ++ (with pkgs.unstable; [polybar-pulseaudio-control]);
 
       # file = {
       #   ".config/bspwm/bspwmrc" = {
@@ -202,8 +267,8 @@
         #     #   state = "floating";
         #     #   center = true;
         #     # };
-        "Peek" = { state = "floating"; };
-        "conky-manager2" = { state = "floating"; };
+        "Peek" = {state = "floating";};
+        "conky-manager2" = {state = "floating";};
         "Plank" = {
           manage = false;
           border = false;

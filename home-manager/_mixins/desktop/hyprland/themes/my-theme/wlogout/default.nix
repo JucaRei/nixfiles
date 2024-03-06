@@ -1,5 +1,5 @@
-{ pkgs, ... }:
-let ui = import ./ui.nix { };
+{pkgs, ...}: let
+  ui = import ./ui.nix {};
 in {
   xdg.configFile."wlogout/icons".source = ./assets;
   programs = {

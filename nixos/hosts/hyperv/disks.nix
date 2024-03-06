@@ -1,5 +1,5 @@
-{ disks ? [ "/dev/sda" ], ... }:
-let defaultXfsOpts = [ "defaults" "relatime" "nodiratime" ];
+{disks ? ["/dev/sda"], ...}: let
+  defaultXfsOpts = ["defaults" "relatime" "nodiratime"];
 in {
   disko.devices = {
     disk = {
@@ -16,7 +16,7 @@ in {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot/efi";
-                mountOptions = [ "defaults" "noatime" "nodiratime" ];
+                mountOptions = ["defaults" "noatime" "nodiratime"];
               };
             };
             root = {
@@ -24,7 +24,7 @@ in {
               content = {
                 type = "filesystem";
                 # Overwirte the existing filesystem
-                extraArgs = [ "-f" ];
+                extraArgs = ["-f"];
                 format = "xfs";
                 mountpoint = "/";
                 mountOptions = defaultXfsOpts;

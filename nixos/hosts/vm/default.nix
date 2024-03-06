@@ -1,14 +1,20 @@
-{ lib, modulesPath, pkgs, ... }: {
+{
+  lib,
+  modulesPath,
+  pkgs,
+  ...
+}: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    (import ./disks-btrfs.nix { })
+    # (import ./disks-btrfs.nix { })
+    (import ./disks.nix {})
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/hardware/sound/pipewire.nix
     # ../../_mixins/hardware/bluetooth/default.nix
     # ../../_mixins/hardware/graphics/default.nix
-    ../../_mixins/sys/swapfile.nix
+    # ../../_mixins/sys/swapfile.nix
     # ../../_mixins/services/security/doas.nix
     ../../_mixins/services/security/sudo.nix
     ../../_mixins/virtualization/podman.nix
@@ -19,15 +25,15 @@
   #   size = 2 * 1024;
   # }];
 
-  swapDevices = [{
-    device = "/.swap/swapfile";
-    size = 2048;
-  }];
+  # swapDevices = [{
+  #   device = "/.swap/swapfile";
+  #   size = 2048;
+  # }];
 
   zramSwap = {
     enable = true;
     swapDevices = 4;
-    memoryPercent = 30;
+    memoryPercent = 20;
   };
 
   # fileSystems."/mnt/nixos-nas/encrypted" = {
@@ -120,8 +126,7 @@
   };
 
   boot = {
-    initrd.availableKernelModules =
-      [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
+    initrd.availableKernelModules = ["ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk"];
     kernelPackages = pkgs.linuxPackages_latest;
     # kernelPackages = pkgs.linuxKernel.packages.linux_5_15_hardened.system76;
 
@@ -129,8 +134,8 @@
       grub = {
         # gfxmodeEfi = lib.mkForce "3440x1440";
         gfxmodeEfi = lib.mkForce "1920x1080";
-        theme = pkgs.cyberre;
-        extraFiles = { "memtest.bin" = "${pkgs.memtest86plus}/memtest.bin"; };
+        theme = pkgs.cyberre-grub-theme;
+        extraFiles = {"memtest.bin" = "${pkgs.memtest86plus}/memtest.bin";};
       };
     };
   };

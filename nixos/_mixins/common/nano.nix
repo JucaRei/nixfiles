@@ -1,5 +1,5 @@
-{ pkgs, ... }: {
-  environment.systemPackages = with pkgs; [ nano ];
+{pkgs, ...}: {
+  environment.systemPackages = with pkgs; [nano];
   programs.nano.syntaxHighlight = true;
   programs.nano.nanorc = ''
     set autoindent   # Auto indent

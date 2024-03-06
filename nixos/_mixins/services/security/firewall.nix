@@ -1,5 +1,8 @@
-{ lib, hostname, ... }:
-let
+{
+  lib,
+  hostname,
+  ...
+}: let
   # Firewall configuration variable for syncthing
   syncthing = {
     hosts = [
@@ -104,10 +107,12 @@ in {
     firewall = {
       allowPing = true;
       enable = true;
-      allowedTCPPorts = [ ]
+      allowedTCPPorts =
+        []
         ++ lib.optionals (builtins.elem hostname syncthing.hosts)
         syncthing.tcpPorts;
-      allowedUDPPorts = [ ]
+      allowedUDPPorts =
+        []
         ++ lib.optionals (builtins.elem hostname syncthing.hosts)
         syncthing.udpPorts;
 
@@ -116,8 +121,7 @@ in {
       # resolution traffic on UDP port 137
       #---------------------------------------------------------------------
 
-      extraCommands =
-        "iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns";
+      extraCommands = "iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns";
     };
   };
 }

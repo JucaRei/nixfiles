@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 percent=$(
 df -H / | grep -vE '^Filesystem' | awk '{print $5}'

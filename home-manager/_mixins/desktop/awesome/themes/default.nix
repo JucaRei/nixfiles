@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   xsession = {
     windowManager = {
       awesome = {
@@ -13,7 +13,7 @@
       lua5_4_compat
       xorg.xorgserver
       xorg.xinit
-      gruvbox
+      gruvbox-dark
       # phocus
       st
       mpd

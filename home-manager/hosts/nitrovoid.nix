@@ -1,4 +1,8 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 with lib.hm.gvariant; {
   imports = [
     # ../_mixins/dev/nix.nix
@@ -10,5 +14,10 @@ with lib.hm.gvariant; {
   #     # picture-uri = "file://${config.home.homeDirectory}/Pictures/Determinate/DeterminateColorway-3440x1440.png";
   #   };
   # };
-  targets.genericLinux.enable = true;
+  config = {
+    nix.settings = {
+      extra-substituters = ["https://nitro.cachix.org"];
+      extra-trusted-public-keys = ["nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U="];
+    };
+  };
 }

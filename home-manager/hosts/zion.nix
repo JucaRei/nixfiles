@@ -1,10 +1,15 @@
-{ pkgs, lib, inputs, config, ... }:
-let
-  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+{
+  pkgs,
+  lib,
+  inputs,
+  config,
+  ...
+}: let
+  nixGL = import ../../lib/nixGL.nix {inherit config pkgs;};
 
   # For nixgl without having to always use nixgl.pkgs application before use it
   nixGLMesaWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" {} ''
       mkdir $out
       ln -s ${pkg}/* $out
       rm $out/bin
@@ -17,7 +22,7 @@ let
     '';
 
   nixGLVulkanWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" {} ''
       mkdir $out
       ln -s ${pkg}/* $out
       rm $out/bin
@@ -25,14 +30,14 @@ let
       for bin in ${pkg}/bin/*; do
         wrapped_bin=$out/bin/$(basename $bin)
         echo "exec ${
-          lib.getExe pkgs.nixgl.nixVulkanIntel
-        } $bin \$@" > $wrapped_bin
+        lib.getExe pkgs.nixgl.nixVulkanIntel
+      } $bin \$@" > $wrapped_bin
         chmod +x $wrapped_bin
       done
     '';
 
   nixGLVulkanMesaWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" {} ''
       mkdir $out
       ln -s ${pkg}/* $out
       rm $out/bin
@@ -40,12 +45,11 @@ let
       for bin in ${pkg}/bin/*; do
         wrapped_bin=$out/bin/$(basename $bin)
         echo "${lib.getExe pkgs.nixgl.nixGLIntel} ${
-          lib.getExe pkgs.nixgl.nixVulkanIntel
-        } $bin \$@" > $wrapped_bin
+        lib.getExe pkgs.nixgl.nixVulkanIntel
+      } $bin \$@" > $wrapped_bin
         chmod +x $wrapped_bin
       done
     '';
-
 in {
   imports = [
     ../_mixins/apps/text-editor/vscode.nix
@@ -55,12 +59,14 @@ in {
     # inputs.vscode-server.nixosModules.default
   ];
   home = {
-    packages = [
-      # (nixGL pkgs.thorium)
-      # (nixGL pkgs.alacritty)
-      (nixGL pkgs.vlc)
-    ] ++ (with pkgs; [ st kbdlight cloneit ]);
+    packages =
+      [
+        # (nixGL pkgs.thorium)
+        # (nixGL pkgs.alacritty)
+        (nixGL pkgs.vlc)
+      ]
+      ++ (with pkgs; [st kbdlight cloneit]);
   };
 }
+# TMPDIR="/tmp" home-manager switch -b backup --impure --flake .#juca@zion --show-trace | nom && fish
 
-# TMPDIR="/tmp" home-manager switch -b backup --impure --flake .#juca@zion --show-trace

@@ -1,15 +1,22 @@
-{ username, pkgs, config, lib, ... }: {
-
+{
+  username,
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
   services = {
     xserver = {
       enable = true;
       displayManager = {
         defaultSession = "none+fake";
-        session = [{
-          name = "fake";
-          manage = "window";
-          start = "bspwm";
-        }];
+        session = [
+          {
+            name = "fake";
+            manage = "window";
+            start = "bspwm";
+          }
+        ];
         # setupCommands = '''';
         lightdm = {
           enable = true;
@@ -44,7 +51,7 @@
           disableWhileTyping = true;
           sendEventsMode = "disabled-on-external-mouse";
         };
-        mouse = { scrollMethod = "button"; };
+        mouse = {scrollMethod = "button";};
       };
 
       resolutions = [

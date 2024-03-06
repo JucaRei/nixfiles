@@ -1,36 +1,41 @@
-{ pkgs, lib, config, username, ... }:
-with lib.hm.gvariant;
-let
-  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+{
+  pkgs,
+  lib,
+  config,
+  username,
+  ...
+}:
+with lib.hm.gvariant; let
+  nixGL = import ../../../../lib/nixGL.nix {inherit config pkgs;};
 
-  mpvgl = pkgs.wrapMpv (pkgs.mpv-unwrapped.override {
-    vapoursynthSupport = true;
-    # webp support
-    ffmpeg = pkgs.ffmpeg_5-full;
-  }) {
-    extraMakeWrapperArgs = [
-      "--prefix"
-      "LD_LIBRARY_PATH"
-      ":"
-      "${pkgs.vapoursynth-mvtools}/lib/vapoursynth"
-    ];
-    scripts = with pkgs.mpvScripts;
-      [
-        # thumbnail
-        thumbfast # High-performance on-the-fly thumbnailer.
-        autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
-        mpris
-        uosc # Adds a minimalist but highly customisable GUI.
-        acompressor
-        webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
-        inhibit-gnome
-        autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
-        # thumbfast
-        sponsorblock
-      ]
-      # Custom scripts
-      ++ (with pkgs;
+  mpvgl =
+    pkgs.wrapMpv (pkgs.mpv-unwrapped.override {
+      vapoursynthSupport = true;
+      # webp support
+      ffmpeg = pkgs.ffmpeg_5-full;
+    }) {
+      extraMakeWrapperArgs = [
+        "--prefix"
+        "LD_LIBRARY_PATH"
+        ":"
+        "${pkgs.vapoursynth-mvtools}/lib/vapoursynth"
+      ];
+      scripts = with pkgs.mpvScripts;
         [
+          # thumbnail
+          thumbfast # High-performance on-the-fly thumbnailer.
+          autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
+          mpris
+          uosc # Adds a minimalist but highly customisable GUI.
+          acompressor
+          webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
+          inhibit-gnome
+          autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
+          # thumbfast
+          sponsorblock
+        ]
+        # Custom scripts
+        ++ (with pkgs; [
           # anime4k
           # dynamic-crop
           # modernx
@@ -39,8 +44,7 @@ let
           # subsearch
           # thumbfast
         ]);
-  };
-
+    };
   # nlmeans - Highly configurable and featureful denoiser.
   # NVIDIA Image Sharpening - An adaptive-directional sharpening algorithm shaders.
   # FidelityFX CAS - Sharpening shader that provides an even level of sharpness across the frame.
@@ -54,11 +58,10 @@ let
   # KrigBilateral: Chroma scaler that uses luma information for high quality upscaling.
   # SSimSuperRes: Make corrections to the image upscaled by mpv built-in scaler (removes ringing artifacts and restores original sharpness).
 in {
-
   programs = {
     mpv = {
       enable = true;
-      package = (nixGL mpvgl);
+      package = nixGL mpvgl;
       # bindings = {
       #   "CTRL+i" = "vf toggle vapoursynth=${
       #       ../../config/mpv/vapoursynth/motion-based-interpolation.vpy
@@ -68,7 +71,7 @@ in {
   };
 
   home = let
-    kvFormat = pkgs.formats.keyValue { };
+    kvFormat = pkgs.formats.keyValue {};
     font = "FiraCode Nerd Font";
   in {
     file = {
@@ -81,7 +84,7 @@ in {
       };
       ".config/mpv/script-opts/sub-select.json" = {
         text = builtins.toJSON [
-          { blacklist = [ "signs" "songs" "translation only" "forced" ]; }
+          {blacklist = ["signs" "songs" "translation only" "forced"];}
           {
             alang = "*";
             slang = "pt_BR,en,eng,de,deu,ger";
@@ -243,9 +246,7 @@ in {
           audio-delay = '+0.084' #Useful if you're watching with your headphones on PC, but output the video on your Television with a long HDMI cable (counter the delay)
 
           ### Bindings
-          "CTRL+i" = "vf toggle vapoursynth=${
-            ../../config/mpv/vapoursynth/motion-based-interpolation.vpy
-          }"
+          "CTRL+i" = "vf toggle vapoursynth=${../../config/mpv/vapoursynth/motion-based-interpolation.vpy}"
         '';
       };
       ".config/mpv/profiles.conf" = {
@@ -764,9 +765,9 @@ in {
       # exec = "${pkgs.mpv}/bin/umpv %U";
       exec = "umpv %U";
       icon = "mpv";
-      categories = [ "AudioVideo" "Audio" "Video" "Player" "TV" ];
+      categories = ["AudioVideo" "Audio" "Video" "Player" "TV"];
       comment = "Play movies and songs";
-      mimeType = [ "video/mp4" ];
+      mimeType = ["video/mp4"];
     };
     mimeApps = {
       defaultApplications = lib.mkForce {
@@ -830,7 +831,6 @@ in {
     };
   };
 }
-
 #  bindings = {
 #         # Basics
 #         "BS" = "cycle pause";
@@ -846,7 +846,6 @@ in {
 #         MBTN_LEFT = "cycle pause";
 #         MBTN_LEFT_DBL = "cycle fullscreen";
 #         MBTN_RIGHT = "ignore";
-
 #         # Video
 #         v = "cycle sub-visibility";
 #         "Ctrl+LEFT" = "sub-seek -1";
@@ -866,7 +865,6 @@ in {
 #         "L" = "ab_loop";
 #         "shift+LEFT" = "script-binding previousfile";
 #         "shift+RIGHT" = "script-binding nextfile";
-
 #         # Audio
 #         UP = "add volume +2";
 #         DOWN = "add volume -2";
@@ -878,13 +876,11 @@ in {
 #         "Shift+a" = "cycle audio down";
 #         "Ctrl+M" = "cycle mute";
 #         "=" = ''af toggle "lavfi=[pan=1c|c0=0.5*c0+0.5*c1]" ; show-text "Audio mix set to Mono"'';
-
 #         # Frame-step
 #         ">" = "frame-step";
 #         "<" = "frame-back-step";
-
 #         "O" = "cycle osc; cycle osd-bar";
-
 #         # Seek to timestamp
 #         "ctrl+t" = ''script-message-to console type "set time-pos "'';
 #       };
+

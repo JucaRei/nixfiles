@@ -12,9 +12,13 @@
 #     extraPackages = with pkgs; [ ];
 #   };
 # }
-
-{ pkgs, nixvim, inputs, ... }: {
-  imports = [ inputs.nixvim.homeManagerModules.nixvim ];
+{
+  pkgs,
+  nixvim,
+  inputs,
+  ...
+}: {
+  imports = [inputs.nixvim.homeManagerModules.nixvim];
   programs = {
     nixvim = {
       enable = true;
@@ -46,7 +50,7 @@
         signcolumn = "yes"; # for debug
         cmdheight = 1;
         scrolloff = 10;
-        completeopt = [ "menu" "menuone" "noselect" "noinsert" ];
+        completeopt = ["menu" "menuone" "noselect" "noinsert"];
 
         ### Behaviour
         hidden = true; # change buffers without saving
@@ -60,11 +64,10 @@
         iskeyword = ":append('-')"; # ignore - and get full keyword
         mouse = ":append('a')"; # mouse is always available
         modifiable = true; # can edit the buffer you are in
-        guicursor =
-          "n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175";
+        guicursor = "n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175";
       };
 
-      colorschemes = { onedark.enable = true; };
+      colorschemes = {onedark.enable = true;};
 
       # clipboard = {
       #   register = "unnamedplus";
@@ -157,16 +160,16 @@
           indent = true;
           incrementalSelection.enable = true;
         };
-        treesitter-refactor = { enable = true; };
+        treesitter-refactor = {enable = true;};
         nvim-colorizer.enable = true;
         neorg = {
           enable = true;
           modules = {
-            "core.defaults" = { };
+            "core.defaults" = {};
             "core.dirman".config.workspaces.home = "~/Documents/workspace";
             "core.completion".config.engine = "nvim-cmp";
-            "core.norg.concealer" = { };
-            "core.norg.journal" = { };
+            "core.norg.concealer" = {};
+            "core.norg.journal" = {};
           };
         };
         # emmet.enable = true;
@@ -217,24 +220,24 @@
             "<C-Space>" = "cmp.mapping.complete()";
             "<C-e>" = "cmp.mapping.close()";
             "<Tab>" = {
-              modes = [ "i" "s" ];
+              modes = ["i" "s"];
               action = "cmp.mapping.select_next_item()";
             };
             "<S-Tab>" = {
-              modes = [ "i" "s" ];
+              modes = ["i" "s"];
               action = "cmp.mapping.select_prev_item()";
             };
             "<CR>" = "cmp.mapping.confirm({ select = true })";
           };
           sources = [
-            { name = "path"; }
-            { name = "nvim_lsp"; }
-            { name = "luasnip"; }
+            {name = "path";}
+            {name = "nvim_lsp";}
+            {name = "luasnip";}
             {
               name = "buffer";
               option.get_bufnrs.__raw = "vim.api.nvim_list_bufs";
             }
-            { name = "neorg"; }
+            {name = "neorg";}
           ];
         };
       };

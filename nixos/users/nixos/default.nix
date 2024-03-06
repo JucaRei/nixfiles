@@ -1,7 +1,7 @@
-{ config, desktop, lib, pkgs, username, ... }:
+{ config, hostname, lib, pkgs, username, ... }:
 let
-  ifExists = groups:
-    builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
+  isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
+  isISO = !isInstall;
   install-system = pkgs.writeScriptBin "install-system" ''
     #!${pkgs.stdenv.shell}
 
@@ -9,99 +9,166 @@ let
 
     TARGET_HOST="''${1:-}"
     TARGET_USER="''${2:-juca}"
+    TARGET_BRANCH="''${3:-main}"
 
-    if [ "$(id -u)" -eq 0 ]; then
-      echo "ERROR! $(basename "$0") should be run as a regular user"
+    function run_disko() {
+      local DISKO_CONFIG="$1"
+      local DISKO_MODE="$2"
+      local REPLY="n"
+
+      # If the requested config doesn't exist, skip it.
+      if [ ! -e "$DISKO_CONFIG" ]; then
+        return
+      fi
+
+      # If the requested mode is not mount, ask for confirmation.
+      if [ "$DISKO_MODE" != "mount" ]; then
+        ${pkgs.coreutils-full}/bin/echo "ALERT! Found $DISKO_CONFIG"
+        ${pkgs.coreutils-full}/bin/echo "       Do you want to format the disks in $DISKO_CONFIG"
+        ${pkgs.coreutils-full}/bin/echo "       This is a destructive operation!"
+        ${pkgs.coreutils-full}/bin/echo
+        read -p "Proceed with $DISKO_CONFIG format? [y/N]" -n 1 -r
+        ${pkgs.coreutils-full}/bin/echo
+      else
+        REPLY="y"
+      fi
+
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
+        sudo true
+        # Workaround for mounting encrypted bcachefs filesystems.
+        # - https://nixos.wiki/wiki/Bcachefs#NixOS_installation_on_bcachefs
+        # - https://github.com/NixOS/nixpkgs/issues/32279
+        sudo ${pkgs.keyutils}/bin/keyctl link @u @s
+        sudo nix run github:nix-community/disko \
+          --extra-experimental-features "nix-command flakes" \
+          --no-write-lock-file \
+          -- \
+          --mode $DISKO_MODE \
+          "$DISKO_CONFIG"
+      fi
+    }
+
+    if [ "$(${pkgs.coreutils-full}/bin/id -u)" -eq 0 ]; then
+      ${pkgs.coreutils-full}/bin/echo "ERROR! $(${pkgs.coreutils}/bin/basename "$0") should be run as a regular user"
       exit 1
     fi
 
-    if [ ! -d "$HOME/.dotfiles/nixfiles/nixfiles/.git" ]; then
-      # git clone https://github.com/JucaRei/nixfiles.git "$HOME/.dotfiles/nixfiles/nixfiles"
-      git clone http://192.168.1.200/juca/nixfiles.git "$HOME/.dotfiles/nixfiles/nixfiles"
+    if [ ! -d "$HOME/.dotfiles/nixfiles/.git" ]; then
+      ${pkgs.git}/bin/git clone https://github.com/JucaRei/nixfiles.git "$HOME/.dotfiles/nixfiles"
     fi
 
-    pushd "$HOME/.dotfiles/nixfiles/nixfiles"
+    pushd "$HOME/.dotfiles/nixfiles"
+
+    if [[ -n "$TARGET_BRANCH" ]]; then
+      ${pkgs.git}/bin/git checkout "$TARGET_BRANCH"
+    fi
 
     if [[ -z "$TARGET_HOST" ]]; then
-      echo "ERROR! $(basename "$0") requires a hostname as the first argument"
-      echo "       The following hosts are available"
-      ls -1 nixos/hosts/*/default.nix | cut -d'/' -f3 | grep -v iso
+      ${pkgs.coreutils-full}/bin/echo "ERROR! $(basename "$0") requires a hostname as the first argument"
+      ${pkgs.coreutils-full}/bin/echo "       The following hosts are available"
+      ${pkgs.coreutils-full}/bin/ls -1 nixos/hosts/*/default.nix | ${pkgs.coreutils-full}/bin/cut -d'/' -f2 | ${pkgs.gnugrep}/bin/grep -v iso
       exit 1
     fi
 
     if [[ -z "$TARGET_USER" ]]; then
-      echo "ERROR! $(basename "$0") requires a username as the second argument"
-      echo "       The following users are available"
-      ls -1 nixos/users/ | grep -v -E "nixos|root"
+      ${pkgs.coreutils-full}/bin/echo "ERROR! $(basename "$0") requires a username as the second argument"
+      ${pkgs.coreutils-full}/bin/echo "       The following users are available"
+      ${pkgs.coreutils-full}/bin/ls -1 nixos/users/ | ${pkgs.gnugrep}/bin/grep -v -E "nixos|root"
       exit 1
     fi
 
-    if [ ! -e "nixos/$TARGET_HOST/disks.nix" ]; then
-      echo "ERROR! $(basename "$0") could not find the required nixos/$TARGET_HOST/disks.nix"
+    if [ ! -e "$HOME/.config/sops/age/keys.txt" ]; then
+      ${pkgs.coreutils-full}/bin/echo "WARNING! sops keys.txt was not found."
+      ${pkgs.coreutils-full}/bin/echo "         Do you want to continue without it?"
+      ${pkgs.coreutils-full}/bin/echo
+      read -p "Are you sure? [y/N]" -n 1 -r
+      ${pkgs.coreutils-full}/bin/echo
+      if [[ $REPLY =~ ^[Nn]$ ]]; then
+        IP=$(${pkgs.iproute2}/bin/ip route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $7}' | ${pkgs.coreutils-full}/bin/head -n 1)
+        ${pkgs.coreutils-full}/bin/mkdir -p "$HOME/.config/sops/age"
+        ${pkgs.coreutils-full}/bin/echo "From a trusted host run:"
+        ${pkgs.coreutils-full}/bin/echo "scp ~/.config/sops/age/keys.txt $USER@$IP:.config/sops/age/keys.txt"
+        exit
+      fi
+    fi
+
+    if [ -x "nixos/hosts/$TARGET_HOST/disks.sh" ]; then
+      if ! sudo nixos/hosts/$TARGET_HOST/disks.sh "$TARGET_USER"; then
+        ${pkgs.coreutils-full}/bin/echo "ERROR! Failed to prepare disks; stopping here!"
+        exit 1
+      fi
+    else
+      if [ ! -e "nixos/hosts/$TARGET_HOST/disks.nix" ]; then
+        ${pkgs.coreutils-full}/bin/echo "ERROR! $(basename "$0") could not find the required nixos/hosts/$TARGET_HOST/disks.nix"
+        exit 1
+      fi
+
+      # Check if the machine we're provisioning expects a keyfile to unlock a disk.
+      # If it does, generate a new key, and write to a known location.
+      if ${pkgs.gnugrep}/bin/grep -q "data.keyfile" "nixos/hosts/$TARGET_HOST/disks.nix"; then
+        ${pkgs.coreutils-full}/bin/echo -n "$(head -c32 /dev/random | base64)" > /tmp/data.keyfile
+      fi
+
+      run_disko "nixos/hosts/$TARGET_HOST/disks.nix" "disko"
+
+      # If the main configuration was denied, make sure the root partition is mounted.
+      if ! ${pkgs.util-linux}/bin/mountpoint -q /mnt; then
+        run_disko "nixos/hosts/$TARGET_HOST/disks.nix" "mount"
+      fi
+
+      for CONFIG in $(${pkgs.findutils}/bin/find "nixos/hosts/$TARGET_HOST" -name "disks-*.nix" | ${pkgs.coreutils-full}/bin/sort); do
+        run_disko "$CONFIG" "disko"
+        run_disko "$CONFIG" "mount"
+      done
+    fi
+
+    if ! ${pkgs.util-linux}/bin/mountpoint -q /mnt; then
+      ${pkgs.coreutils-full}/bin/echo "ERROR! /mnt is not mounted; make sure the disk preparation was successful."
       exit 1
     fi
 
-    # Check if the machine we're provisioning expects a keyfile to unlock a disk.
-    # If it does, generate a new key, and write to a known location.
-    if grep -q "data.keyfile" "nixos/$TARGET_HOST/disks.nix"; then
-      echo -n "$(head -c32 /dev/random | base64)" > /tmp/data.keyfile
-    fi
-
-    echo "WARNING! The disks in $TARGET_HOST are about to get wiped"
-    echo "         NixOS will be re-installed"
-    echo "         This is a destructive operation"
-    echo
+    ${pkgs.coreutils-full}/bin/echo "WARNING! NixOS will be re-installed"
+    ${pkgs.coreutils-full}/bin/echo "         This is a destructive operation!"
+    ${pkgs.coreutils-full}/bin/echo
     read -p "Are you sure? [y/N]" -n 1 -r
-    echo
+    ${pkgs.coreutils-full}/bin/echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-      sudo true
-
-      sudo nix run github:nix-community/disko \
-        --extra-experimental-features "nix-command flakes" \
-        --no-write-lock-file \
-        -- \
-        --mode zap_create_mount \
-        "nixos/hosts/$TARGET_HOST/disks.nix"
-
+      # Copy the sops keys.txt to the target install
       sudo nixos-install --no-root-password --flake ".#$TARGET_HOST"
 
       # Rsync nix-config to the target install and set the remote origin to SSH.
-      rsync -a --delete "$HOME/.dotfiles/" "/mnt/home/$TARGET_USER/.dotfiles/"
-      pushd "/mnt/home/$TARGET_USER/.dotfiles/nixfiles/nixfiles"
-      # git remote set-url origin git@github.com:JucaRei/nixfiles.git
-      git remote set-url origin git@192.168.1.200:juca/nixfiles.git
-      popd
+      ${pkgs.rsync}/bin/rsync -a --delete "$HOME/.dotfiles/" "/mnt/home/$TARGET_USER/.dotfiles/"
+      if [ "$TARGET_HOST" != "minimech" ] && [ "$TARGET_HOST" != "scrubber" ]; then
+        pushd "/mnt/home/$TARGET_USER/.dotfiles/nix-config"
+        ${pkgs.git}/bin/git remote set-url origin git@github.com:JucaRei/nixfiles.git
+        popd
+      fi
+
+      # Copy the sops keys.txt to the target install
+      if [ -e "$HOME/.config/sops/age/keys.txt" ]; then
+        ${pkgs.coreutils-full}/bin/mkdir -p /mnt/home/$TARGET_USER/.config/sops/age
+        ${pkgs.coreutils-full}/bin/cp "$HOME/.config/sops/age/keys.txt" /mnt/home/$TARGET_USER/.config/sops/age/keys.txt
+        ${pkgs.coreutils-full}/bin/chmod 600 /mnt/home/$TARGET_USER/.config/sops/age/keys.txt
+      fi
+
+      # Enter to the new install and apply the home-manager configuration.
+      sudo nixos-enter --root /mnt --command "${pkgs.coreutils-full}/bin/chown -R $TARGET_USER:users /home/$TARGET_USER"
+      sudo nixos-enter --root /mnt --command "cd /home/$TARGET_USER/.dotfiles/nixfiles; env USER=$TARGET_USER HOME=/home/$TARGET_USER ${pkgs.home-manager}/bin/home-manager switch --flake \".#$TARGET_USER@$TARGET_HOST\""
+      sudo nixos-enter --root /mnt --command "${pkgs.coreutils-full}/bin/chown -R $TARGET_USER:users /home/$TARGET_USER"
 
       # If there is a keyfile for a data disk, put copy it to the root partition and
       # ensure the permissions are set appropriately.
       if [[ -f "/tmp/data.keyfile" ]]; then
-        sudo cp /tmp/data.keyfile /mnt/etc/data.keyfile
-        sudo chmod 0400 /mnt/etc/data.keyfile
+        sudo ${pkgs.coreutils-full}/bin/cp /tmp/data.keyfile /mnt/etc/data.keyfile
+        sudo ${pkgs.coreutils-full}/bin/chmod 0400 /mnt/etc/data.keyfile
       fi
     fi
   '';
-in {
-  # Only include desktop components if one is supplied.
-  imports = [ ] ++ lib.optional (desktop != null) ./desktop.nix;
-
-  config.users.users.nixos = {
-    description = "NixOS";
-    extraGroups = [ "audio" "networkmanager" "users" "video" "wheel" ]
-      ++ ifExists [ "docker" "podman" ];
-    homeMode = "0755";
-    # 123456
-    hashedPassword =
-      "$6$rpbK9Tpj5n/BqN6F$vCsD8jbsxGH9kgWIUDrwUEeUaFsX./pydnxOlEMD8cgR.dIDP4Bc9S38nJYpVhl3t92UUIqzf7syZw0R1micO/";
-    # openssh.authorizedKeys.keys = [
-    # "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAywaYwPN4LVbPqkc+kUc7ZVazPBDy4LCAud5iGJdr7g9CwLYoudNjXt/98Oam5lK7ai6QPItK6ECj5+33x/iFpWb3Urr9SqMc/tH5dU1b9N/9yWRhE2WnfcvuI0ms6AXma8QGp1pj/DoLryPVQgXvQlglHaDIL1qdRWFqXUO2u30X5tWtDdOoR02UyAtYBttou4K0rG7LF9rRaoLYP9iCBLxkMJbCIznPD/pIYa6Fl8V8/OVsxYiFy7l5U0RZ7gkzJv8iNz+GG8vw2NX4oIJfAR4oIk3INUvYrKvI2NSMSw5sry+z818fD1hK+soYLQ4VZ4hHRHcf4WV4EeVa5ARxdw== Martin Wimpress"
-    # ];
-    packages = [ pkgs.home-manager ];
-    shell = pkgs.fish;
-  };
-
-  config = {
-    system.stateVersion = lib.mkForce lib.trivial.release;
-    environment.systemPackages = [ install-system ];
-    services.kmscon.autologinUser = "${username}";
+in
+{
+  config.environment.systemPackages = lib.optionals (isISO) [ install-system ];
+  config.users.users.nixos.description = "NixOS";
+  config.system = lib.mkIf (isISO) {
+    stateVersion = lib.mkForce lib.trivial.release;
   };
 }

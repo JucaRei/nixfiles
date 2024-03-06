@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   home = {
     packages = with pkgs; [
       # alejandra
@@ -11,6 +11,7 @@
       nix-melt
       nix-prefetch-git
       nix-du
+      nix-tree
       nixpkgs-fmt
       nurl
       nil

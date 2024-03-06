@@ -1,5 +1,10 @@
-{ config, pkgs, lib, ... }: {
-  imports = [ ../config/qt/qt-style.nix ];
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
+  imports = [../config/qt/qt-style.nix];
   services = {
     xserver = {
       enable = true;
@@ -15,7 +20,7 @@
           };
         };
       };
-      desktopManager = { cinnamon = { enable = true; }; };
+      desktopManager = {cinnamon = {enable = true;};};
     };
     redshift = {
       enable = true;
@@ -26,32 +31,34 @@
     };
     geoclue2.enable = true;
     cinnamon.apps.enable = true;
-    gnome = { evolution-data-server = { enable = lib.mkDefault false; }; };
+    gnome = {evolution-data-server = {enable = lib.mkDefault false;};};
   };
   environment = {
-    systemPackages = (with pkgs; [ blueberry ]) ++ (with pkgs.cinnamon; [
-      nemo
-      nemo-with-extensions
-      nemo-python
-      nemo-fileroller
-      warpinator
-      mint-y-icons
-      mint-x-icons
-      mint-artwork
-      cinnamon-common
-      cinnamon-session
-      cinnamon-screensaver
-      cinnamon-menus
-      cinnamon-gsettings-overrides
-      cinnamon-desktop
-    ]);
-    cinnamon.excludePackages = (with pkgs; [ orca xplayer ])
-      ++ (with pkgs.cinnamon; [ cinnamon-translations pix ])
-      ++ (with pkgs.gnome;
-        [
-          geary
-          # gnome-disk-utility
-        ]);
+    systemPackages =
+      (with pkgs; [blueberry])
+      ++ (with pkgs.cinnamon; [
+        nemo
+        nemo-with-extensions
+        nemo-python
+        nemo-fileroller
+        warpinator
+        mint-y-icons
+        mint-x-icons
+        mint-artwork
+        cinnamon-common
+        cinnamon-session
+        cinnamon-screensaver
+        cinnamon-menus
+        cinnamon-gsettings-overrides
+        cinnamon-desktop
+      ]);
+    cinnamon.excludePackages =
+      (with pkgs; [orca xplayer])
+      ++ (with pkgs.cinnamon; [cinnamon-translations pix])
+      ++ (with pkgs.gnome; [
+        geary
+        # gnome-disk-utility
+      ]);
   };
   xdg = {
     portal = {
@@ -66,10 +73,10 @@
       # ];
       ## 23.11
       config = {
-        common = { default = [ "xapp" ]; };
+        common = {default = ["xapp"];};
         cinnamon = {
-          default = [ "xapp" "gtk" ];
-          "org.freedesktop.impl.portal.Secret" = [ "xapp" ];
+          default = ["xapp" "gtk"];
+          "org.freedesktop.impl.portal.Secret" = ["xapp"];
         };
       };
     };

@@ -34,8 +34,7 @@
 
     # blacklistedKernelModules = lib.mkDefault [ "nvidia" "nouveau" ];
     initrd = {
-      availableKernelModules =
-        [ "uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
       kernelModules = [ ];
       verbose = false;
       compressor = "zstd";
@@ -120,6 +119,8 @@
     };
     # loader.grub.efiInstallAsRemovable = lib.mkForce true;
   };
+
+  chaotic.mesa-git.enable = true;
 
   ###################
   ### Hard drives ###
@@ -243,17 +244,19 @@
     };
   };
 
-  swapDevices = [{
-    device = "/dev/disk/by-label/SWAP";
-    # device = "/dev/disk/by-uuid/b6036d8c-4016-4125-9e82-c237694d8173";
-    # options = [ "defaults" "noatime" ];
-    ### SWAPFILE
-    #device = "/swap/swapfile";
-    #size = 2 GiB;
-    #device = "/swap/swapfile";
-    #size = (1024 * 2); # RAM size
-    #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
-  }];
+  swapDevices = [
+    {
+      device = "/dev/disk/by-label/SWAP";
+      # device = "/dev/disk/by-uuid/b6036d8c-4016-4125-9e82-c237694d8173";
+      # options = [ "defaults" "noatime" ];
+      ### SWAPFILE
+      #device = "/swap/swapfile";
+      #size = 2 GiB;
+      #device = "/swap/swapfile";
+      #size = (1024 * 2); # RAM size
+      #size = (1024 * 16) + (1024 * 2); # RAM size + 2 GB
+    }
+  ];
 
   # swapDevices = [{
   #   device = "/swap";
@@ -360,3 +363,6 @@
     stateVersion = lib.mkForce "22.11";
   };
 }
+
+
+# nix-instantiate --strict "<nixpkgs/nixos>" -A air

@@ -1,4 +1,8 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   home = {
     file = {
       ".local/polybar/scripts" = {
@@ -88,7 +92,6 @@
     };
   };
 }
-
 # xdg = {
 #     configFile = {
 #       "polybar/scripts/bluetooth" = {
@@ -96,3 +99,4 @@
 #         executable = true;
 #         # recursive = true;
 #       };
+

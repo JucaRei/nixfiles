@@ -95,8 +95,11 @@
 #     };
 #   };
 # }
-
-{ pkgs, lib, ... }: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   services.dunst = {
     enable = true;
     package = pkgs.dunst.overrideAttrs (_: {
@@ -170,13 +173,12 @@
       };
       Install = {
         # wants = [ "display-manager.service" ];
-        WantedBy = [ "graphical-session.target" ];
+        WantedBy = ["graphical-session.target"];
       };
       Service = let
         # bat0 | bat1 | bat2
-        battery = builtins.replaceStrings [ "-" ] [ "2" ] "bat-";
+        battery = builtins.replaceStrings ["-"] ["2"] "bat-";
       in {
-
         #   ExecStart = "${pkgs.writeShellScript "battery_monitor.sh " ''
         #   #!/run/current-system/sw/bin/bash
         #   prev_val=100

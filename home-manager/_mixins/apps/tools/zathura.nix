@@ -1,19 +1,18 @@
-{pkgs,...}:
-let
-windowsize = pkgs.writeShellScriptBin "windowsize" ''
-#!/bin/sh
-${pkgs.zathura}/bin/zathura "$@" & PID="$!"
+{pkgs, ...}: let
+  windowsize = pkgs.writeShellScriptBin "windowsize" ''
+    #!/bin/sh
+    ${pkgs.zathura}/bin/zathura "$@" & PID="$!"
 
-while true; do
-  window_id="$(${pkgs.xdotool}/bin/xdotool search --onlyvisible --pid "$PID")"
-  if [ -n "$window_id" ]; then
-    ${pkgs.xdotool}/bin/xdotool windowactivate --sync "$window_id" windowfocus --sync "$window_id" \
-      key s key --delay 0 g g
-    break
-  fi
-done
-'';
-in  {
+    while true; do
+      window_id="$(${pkgs.xdotool}/bin/xdotool search --onlyvisible --pid "$PID")"
+      if [ -n "$window_id" ]; then
+        ${pkgs.xdotool}/bin/xdotool windowactivate --sync "$window_id" windowfocus --sync "$window_id" \
+          key s key --delay 0 g g
+        break
+      fi
+    done
+  '';
+in {
   programs.zathura = {
     enable = true;
     options = {
@@ -65,7 +64,7 @@ in  {
       smooth-scroll = true;
       statusbar-home-tilde = true;
     };
-     extraConfig = ''
+    extraConfig = ''
       # Zathura configuration file
       # See man `man zathurarc'
 
@@ -138,7 +137,7 @@ in  {
   xdg = {
     mimeApps = {
       defaultApplications = {
-        "application/pdf" = [ "org.pwmt.zathura.desktop" ];
+        "application/pdf" = ["org.pwmt.zathura.desktop"];
       };
     };
   };

@@ -1,4 +1,8 @@
-{ pkgs, lib, ... }: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   # Adjust the color temperature(& brightness) of your screen according to
   # your surroundings. This may help your eyes hurt less if you are
   # working in front of the screen at night.

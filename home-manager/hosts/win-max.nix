@@ -1,10 +1,13 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 with lib.hm.gvariant; {
   dconf.settings = {
     "org/gnome/desktop/background" = {
       picture-options = "zoom";
-      picture-uri =
-        "file://${config.home.homeDirectory}/Pictures/Determinate/DeterminateColorway-1280x800.png";
+      picture-uri = "file://${config.home.homeDirectory}/Pictures/Determinate/DeterminateColorway-1280x800.png";
     };
   };
 }

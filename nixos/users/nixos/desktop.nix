@@ -1,44 +1,87 @@
-{ config, desktop, lib, pkgs, username, ... }: {
-  imports = [
-    ../../_mixins/apps/browser/firefox.nix
-    ../../_mixins/apps/text-editor/vscode.nix
-  ];
-  config.environment.systemPackages = with pkgs; [ gparted ];
-  config.systemd.tmpfiles.rules = [
-    "d /home/${username}/Desktop 0755 ${username} users"
-    "L+ /home/${username}/Desktop/gparted.desktop - - - - ${pkgs.gparted}/share/applications/gparted.desktop"
-    "L+ /home/${username}/Desktop/io.elementary.terminal.desktop - - - - ${pkgs.pantheon.elementary-terminal}/share/applications/io.elementary.terminal.desktop"
-    "L+ /home/${username}/Desktop/io.calamares.calamares.desktop - - - - ${pkgs.calamares-nixos}/share/applications/io.calamares.calamares.desktop"
-  ];
+{ config, desktop, lib, pkgs, username, hostname, ... }:
+let
+  isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
+  isISO = !isInstall;
+in
+{
   config = {
-    isoImage.edition = lib.mkForce "${desktop}";
-    services = {
-      xserver = {
-        displayManager.autoLogin.user = "${username}";
-        libinput = {
-          enable = true;
-          touchpad = {
-            # horizontalScrolling = true;
-            naturalScrolling = false;
-            tapping = true;
-            tappingDragLock = false;
+    environment = {
+      etc = lib.mkIf (isISO) {
+        "firefox.dockitem".source = pkgs.writeText "firefox.dockitem" ''
+          [PlankDockItemPreferences]
+          Launcher=file:///run/current-system/sw/share/applications/firefox.desktop
+        '';
+        "firefox.dockitem".target = "/plank/firefox.dockitem";
+
+        "io.elementary.files.dockitem".source = pkgs.writeText "io.elementary.files.dockitem" ''
+          [PlankDockItemPreferences]
+          Launcher=file:///run/current-system/sw/share/applications/io.elementary.files.desktop
+        '';
+        "io.elementary.files.dockitem".target = "/plank/io.elementary.files.dockitem";
+
+        "io.elementary.terminal.dockitem".source = pkgs.writeText "io.elementary.terminal.dockitem" ''
+          [PlankDockItemPreferences]
+          Launcher=file:///run/current-system/sw/share/applications/io.elementary.terminal.desktop
+        '';
+        "io.elementary.terminal.dockitem".target = "/plank/io.elementary.terminal.dockitem";
+
+        "gparted.dockitem".source = pkgs.writeText "gparted.dockitem" ''
+          [PlankDockItemPreferences]
+          Launcher=file:///run/current-system/sw/share/applications/gparted.desktop
+        '';
+        "gparted.dockitem".target = "/plank/gparted.dockitem";
+      };
+      systemPackages = lib.optionals (isISO) [
+        pkgs.gparted
+      ];
+    };
+
+    isoImage.edition = lib.mkIf (isISO) {
+      editions = lib.mkForce "${desktop}";
+    };
+
+    programs = {
+      dconf.profiles.user.databases = [{
+        settings = with lib.gvariant; lib.mkIf (isISO) {
+          "net/launchpad/plank/docks/dock1" = {
+            dock-items = [ "firefox.dockitem" "io.elementary.files.dockitem" "io.elementary.terminal.dockitem" "gparted.dockitem" ];
+          };
+
+          "org/gnome/shell" = {
+            disabled-extensions = mkEmptyArray type.string;
+            favorite-apps = [ "firefox.desktop" "org.gnome.Nautilus.desktop" "org.gnome.Console.desktop" "io.calamares.calamares.desktop" "gparted.desktop" ];
+            welcome-dialog-last-shown-version = "9999999999";
           };
         };
+      }];
+    };
+
+    # Create desktop shortcuts and dock items for the live media
+    systemd.tmpfiles = lib.mkIf (isISO) {
+      rules = [
+        "d /home/${username}/Desktop 0755 ${username} users"
+        "d /home/${username}/.config 0755 ${username} users"
+        "d /home/${username}/.config/plank 0755 ${username} users"
+        "d /home/${username}/.config/plank/dock1 0755 ${username} users"
+        "d /home/${username}/.config/plank/dock1/launchers 0755 ${username} users"
+        "L+ /home/${username}/.config/plank/dock1/launchers/firefox.dockitem - - - - /etc/plank/firefox.dockitem"
+        "L+ /home/${username}/.config/plank/dock1/launchers/io.elementary.files.dockitem - - - - /etc/plank/io.elementary.files.dockitem"
+        "L+ /home/${username}/.config/plank/dock1/launchers/io.elementary.terminal.dockitem - - - - /etc/plank/io.elementary.terminal.dockitem"
+        "L+ /home/${username}/.config/plank/dock1/launchers/gparted.dockitem - - - - /etc/plank/gparted.dockitem"
+        "L+ /home/${username}/Desktop/firefox.desktop - - - - ${pkgs.firefox}/share/applications/firefox.desktop"
+        "L+ /home/${username}/Desktop/io.calamares.calamares.desktop - - - - ${pkgs.calamares-nixos}/share/applications/io.calamares.calamares.desktop"
+        "L+ /home/${username}/Desktop/gparted.desktop - - - - ${pkgs.gparted}/share/applications/gparted.desktop"
+      ] ++ lib.optionals (isISO && desktop == "mate") [
+        "L+ /home/${username}/Desktop/caja.desktop - - - - ${pkgs.mate.caja}/share/applications/caja.desktop"
+        "L+ /home/${username}/Desktop/mate-terminal.desktop - - - - ${pkgs.mate.mate-terminal}/share/applications/mate-terminal.desktop"
+      ];
+    };
+    services = {
+      xserver = {
+        displayManager.autoLogin = lib.mkIf (isISO) {
+          user = "${username}";
+        };
       };
-      kmscon.autologinUser = lib.mkForce null;
     };
   };
-
-  #environment.variables = {
-  #  # Firefox fixes
-  #  MOZ_X11_EGL = "1";
-  #  MOZ_USE_XINPUT2 = "1";
-  #  MOZ_DISABLE_RDD_SANDBOX = "1";
-
-  #  # SDL Soundfont
-  #  SDL_SOUNDFONTS = LT.constants.soundfontPath pkgs;
-
-  #  # Webkit2gtk fixes
-  #  WEBKIT_DISABLE_COMPOSITING_MODE = "1";
-  #};
 }

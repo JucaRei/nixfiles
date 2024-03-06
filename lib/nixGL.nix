@@ -1,9 +1,10 @@
 # Call once on import to load global context
-{ pkgs, config }:
-
+{
+  pkgs,
+  config,
+}:
 # Wrap a single package
 pkg:
-
 #if config.nixGLPrefix == "" then
 #  pkg
 #else
@@ -15,13 +16,14 @@ pkg:
     set -eo pipefail
 
     ${
-    # Heavily inspired by https://stackoverflow.com/a/68523368/6259505
-    pkgs.lib.concatStringsSep "\n" (map (outputName: ''
-      echo "Copying output ${outputName}"
-      set -x
-      cp -rs --no-preserve=mode "${pkg.${outputName}}" "''$${outputName}"
-      set +x
-    '') (old.outputs or [ "out" ]))}
+      # Heavily inspired by https://stackoverflow.com/a/68523368/6259505
+      pkgs.lib.concatStringsSep "\n" (map (outputName: ''
+        echo "Copying output ${outputName}"
+        set -x
+        cp -rs --no-preserve=mode "${pkg.${outputName}}" "''$${outputName}"
+        set +x
+      '') (old.outputs or ["out"]))
+    }
 
     rm -rf $out/bin/*
     shopt -s nullglob # Prevent loop from running if no files

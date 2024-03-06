@@ -1,37 +1,48 @@
-{ hostid, hostname, lib, pkgs, ... }: {
-  imports = [ ] ++ lib.optionals (hostname != "rasp3") [
-    ./aliases.nix
-    ./aspell.nix
-    ./console.nix
-    ./locale.nix
-    ./fonts.nix
-    ./appimage.nix
-    # ./nano.nix
-    # ../config/qt/qt-style.nix
-    # ../console/fish.nix
-    # ../services/security/sudo.nix
-    # ../services/security/doas.nix
-    ../services/security/common.nix
-    # ../services/network/avahi.nix
-    # ../services/security/detect-reboot-needed.nix
-    # ../services/power/powertop.nix
-    # ../hardware/other/fwupd.nix
-    # ../hardware/other/usb.nix
-    # ../virtualization/nix-ld.nix
-    # ../services/tools/fhs.nix
-    # ../services/openssh.nix
-    # ../services/tailscale.nix
-    # ../services/zerotier.nix
-    ../config/scripts/nixos-change-summary.nix
-    # ../sys/check-updates.nix
-  ] ++ lib.optionals (hostname == "rasp3") [
-    ./aliases.nix
-    ./console.nix
-    ./locale.nix
-    ../services/security/common.nix
-    ../config/scripts/nixos-change-summary.nix
-    # ../sys/check-updates.nix
-  ];
+{ hostid
+, hostname
+, lib
+, pkgs
+, ...
+}: {
+  imports =
+    [ ]
+    ++ lib.optionals (hostname != "rasp3") [
+      ./aliases.nix
+      ./nano.nix
+      ./console.nix
+      ./keyboard.nix
+      ./locale.nix
+      ./fonts.nix
+      ./appimage.nix
+      # ./nix.nix
+      # ./nano.nix
+      # ../config/qt/qt-style.nix
+      # ../console/fish.nix
+      # ../services/security/sudo.nix
+      # ../services/security/doas.nix
+      ../services/security/common.nix
+      # ../services/network/avahi.nix
+      # ../services/security/detect-reboot-needed.nix
+      # ../services/power/powertop.nix
+      # ../hardware/other/fwupd.nix
+      # ../hardware/other/usb.nix
+      # ../virtualization/nix-ld.nix
+      # ../services/tools/fhs.nix
+      # ../services/openssh.nix
+      # ../services/tailscale.nix
+      # ../services/zerotier.nix
+      ../config/scripts/nixos-change-summary.nix
+      # ../sys/check-updates.nix
+      ../sys/sysctl.nix
+    ]
+    ++ lib.optionals (hostname == "rasp3") [
+      ./aliases.nix
+      ./console.nix
+      ./locale.nix
+      ../services/security/common.nix
+      ../config/scripts/nixos-change-summary.nix
+      # ../sys/check-updates.nix
+    ];
 
   # don't install documentation i don't use
   documentation = {
@@ -46,8 +57,8 @@
   ### Default Boot Options ###
   ############################
   boot = {
-    initrd = { verbose = lib.mkDefault true; };
-    consoleLogLevel = 3;
+    initrd = { verbose = lib.mkDefault false; };
+    consoleLogLevel = 0;
     kernelModules = [ "kvm-intel" "tcp_bbr" ];
     kernelParams = [
       "loglevel=3"
@@ -113,7 +124,7 @@
         duf
         htop
         lshw
-        inspect
+        nix-inspect
         cachix
 
         # Selection of sysadmin tools that can come in handy
@@ -127,10 +138,12 @@
         #unstable.nix-index
         #unstable.nix-prefetch-git
         # cifs-utils
-      ] ++ (with pkgs.unstable; [
+      ]
+      ++ (with pkgs.unstable; [
         # Minimal for nix code
         nil
-        nixpkgs-fmt
+        # nixpkgs-fmt
+        nixfmt
         nixpkgs-lint
       ]);
     variables = {
@@ -156,9 +169,11 @@
 
     # Minimal
     nix-ld = {
-      enable = if hostname == "rasp3" then false else true;
+      enable =
+        if hostname == "rasp3"
+        then false
+        else true;
       libraries = with pkgs; [
-
         curl
         glib
         glibc
@@ -180,7 +195,6 @@
         vulkan-loader
         gdk-pixbuf
         xorg.libX11
-
       ];
     };
 
@@ -191,7 +205,6 @@
   # security.rtkit.enable = true;
 
   services = {
-
     # Keeps the system timezone up-to-date based on the current location
     automatic-timezoned = { enable = true; };
 
@@ -238,6 +251,23 @@
       '';
     };
 
+    # Enable Multi-Gen LRU:
+    # - https://docs.kernel.org/next/admin-guide/mm/multigen_lru.html
+    # - Inspired by: https://github.com/hakavlad/mg-lru-helper
+    services = {
+      "mglru" = {
+        enable = true;
+        wantedBy = [ "basic.target" ];
+        script = ''
+          ${pkgs.coreutils-full}/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms
+        '';
+        serviceConfig = { Type = "oneshot"; };
+        unitConfig = {
+          ConditionPathExists = "/sys/kernel/mm/lru_gen/enabled";
+          Description = "Configure Enable Multi-Gen LRU";
+        };
+      };
+    };
   };
   # enableUnifiedCgroupHierarchy = lib.mkForce true; #cgroupsv2
 

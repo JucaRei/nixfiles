@@ -1,6 +1,11 @@
-{ desktop, pkgs, username, ... }: {
+{
+  desktop,
+  pkgs,
+  username,
+  ...
+}: {
   environment.systemPackages = with pkgs;
-    [ ] ++ lib.optionals (desktop != null) [ polychromatic ];
+    [] ++ lib.optionals (desktop != null) [polychromatic];
 
   hardware = {
     openrazer = {
@@ -9,7 +14,7 @@
       keyStatistics = true;
       mouseBatteryNotifier = true;
       syncEffectsEnabled = true;
-      users = [ "${username}" ];
+      users = ["${username}"];
     };
   };
 }

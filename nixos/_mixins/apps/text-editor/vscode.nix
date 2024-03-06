@@ -1,9 +1,9 @@
-{ pkgs, ... }: {
-  environment.systemPackages = with pkgs;
-    [
-      (vscode-with-extensions.override {
-        vscode = unstable.vscode;
-        vscodeExtensions = [
+{pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    (vscode-with-extensions.override {
+      vscode = unstable.vscode;
+      vscodeExtensions =
+        [
           # unstable.vscode-extensions.coolbear.systemd-unit-file
           # unstable.vscode-extensions.dart-code.flutter
           # unstable.vscode-extensions.dart-code.dart-code
@@ -30,7 +30,8 @@
           unstable.vscode-extensions.vscode-icons-team.vscode-icons
           unstable.vscode-extensions.yzhang.markdown-all-in-one
           unstable.vscode-extensions.mhutchie.git-graph
-        ] ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
+        ]
+        ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
           # {
           # name = "bash-debug";
           # publisher = "rogalmic";
@@ -266,8 +267,8 @@
           #   #  sha256 = "sha256-/Glcaj8K28ccB16WLJqs5+l5j3ROQnRli6oooVIvLqg=";
           # }
         ];
-      })
-    ];
+    })
+  ];
 
   services.vscode-server.enable = true;
   # May require the service to be enable/started for the user

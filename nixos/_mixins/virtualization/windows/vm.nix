@@ -5,8 +5,7 @@ lib.makeWindowsImage {
   windowsImage = pkgs.requireFile rec {
     name = "Win11_22H2_English_x64.iso";
     sha256 = "08mbppsm1naf73z8fjyqkf975nbls7xj9n4fq0yp802dv1rz3whd";
-    message =
-      "Get ${name} from https://www.microsoft.com/en-us/software-download/windows11";
+    message = "Get ${name} from https://www.microsoft.com/en-us/software-download/windows11";
   };
 
   # User Accounts
@@ -15,7 +14,7 @@ lib.makeWindowsImage {
       password = "1234567";
       description = "Default User";
       displayName = "Windows";
-      groups = [ "Administrators" ];
+      groups = ["Administrators"];
     };
   };
 
@@ -28,10 +27,9 @@ lib.makeWindowsImage {
   organization = "ms";
 
   # Imperative Installation Commands
-  installCommands = with lib.layers;
-    [
-      (collapseLayers [ disable-autosleep disable-autolock disable-firewall ])
-    ];
+  installCommands = with lib.layers; [
+    (collapseLayers [disable-autosleep disable-autolock disable-firewall])
+  ];
 
   # License
   # imageSelection = "Windows 10 Pro";

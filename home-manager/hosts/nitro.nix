@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib.hm.gvariant; {
   imports = [
     # ../_mixins/console/neovim.nix
@@ -8,10 +13,9 @@ with lib.hm.gvariant; {
     # ../_mixins/apps/text-editor/vscodium.nix
     ../_mixins/apps/text-editor/vscode.nix
     # ../_mixins/apps/terminal/urxvt.nix
-    ../_mixins/apps/browser/brave.nix
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix
-    ../_mixins/apps/browser/firefox.nix
+    ../_mixins/apps/browser/firefox/librewolf.nix
     # ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
   ];
@@ -25,18 +29,18 @@ with lib.hm.gvariant; {
   config = {
     home = {
       packages = with pkgs; [
-        whatsapp-for-linux # Whatsapp desktop messaging app
-        # icloudpd
+        # whatsapp-for-linux # Whatsapp desktop messaging app
+        # icloud-photo-downloader
         # vlc
-        clonegit
+        cloneit
         # deezer-gui
         # fantezy
-        gcc
-        gnumake
+        # gcc
+        # gnumake
         transmission_4-gtk
         lua
-        fcitx5-with-addons
-        vt-view
+        # fcitx5-with-addons
+        vv
         # gparted
         # neovim
         # tmux
@@ -59,10 +63,14 @@ with lib.hm.gvariant; {
 
       # Virtmanager
       "org/virt-manager/virt-manager/connections" = {
-        autoconnect = [ "qemu:///system" ];
-        uris = [ "qemu:///system" ];
+        autoconnect = ["qemu:///system"];
+        uris = ["qemu:///system"];
       };
     };
     # modules.desktop.browsers.chromium.enable = true;
+    nix.settings = {
+      extra-substituters = ["https://nitro.cachix.org"];
+      extra-trusted-public-keys = ["nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U="];
+    };
   };
 }

@@ -1,19 +1,27 @@
-{ pkgs, config, lib, inputs, hostname, username, ... }:
-let nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
+{
+  pkgs,
+  config,
+  lib,
+  inputs,
+  hostname,
+  username,
+  ...
+}: let
+  nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in {
   programs = {
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
         enableXWayland = true; # whether to enable XWayland
-        legacyRenderer = if hostname == "nitro" then
-          false
-        else
-          true; # false; # whether to use the legacy renderer (for old GPUs)
-        withSystemd = if hostname == "nitro" then
-          true
-        else
-          false; # whether to build with systemd support
+        legacyRenderer =
+          if hostname == "nitro"
+          then false
+          else true; # false; # whether to use the legacy renderer (for old GPUs)
+        withSystemd =
+          if hostname == "nitro"
+          then true
+          else false; # whether to build with systemd support
 
         ### It seen's it been removed
         # Check if it has nvidia and nvidia Driver installed
@@ -42,7 +50,7 @@ in {
       displayManager = {
         sddm = {
           enable = true;
-          wayland = { enable = true; };
+          wayland = {enable = true;};
           theme = "astronaut";
           autoNumlock = true;
         };
@@ -72,10 +80,10 @@ in {
   environment = {
     sessionVariables = {
       # Hint electron apps to use wayland
-      LIBVA_DRIVER_NAME = if hostname != "air" || "zion" then
-        lib.mkForce "nvidia"
-      else
-        lib.mkDefault "";
+      LIBVA_DRIVER_NAME =
+        if hostname != "air" || "zion"
+        then lib.mkForce "nvidia"
+        else lib.mkDefault "";
       NIXOS_OZONE_WL = "1";
       #GBM_BACKEND = "nvidia-drm";
       #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -101,7 +109,7 @@ in {
         # libnotify
         # libevdev
         # # libsForQt5.libkscreen
-        pkgs.sddm-astronaut
+        pkgs.sddm-astronaut-theme
 
         ### Change to home-manager later
         # mako # notification daemon
@@ -133,35 +141,35 @@ in {
         # qt5-wayland
         # qt6-wayland
         # qt5ct
-
-      ] ++ (with pkgs.cinnamon;
+      ]
+      ++ (with pkgs.cinnamon; [
+        # nemo-with-extensions
+        # nemo-emblems
+        # nemo-fileroller
+        # folder-color-switcher
+      ])
+      ++ (with pkgs.libsForQt5;
         [
-          # nemo-with-extensions
-          # nemo-emblems
-          # nemo-fileroller
-          # folder-color-switcher
-        ]) ++ (with pkgs.libsForQt5;
-          [
-            # dolphin
-            # polkit-kde-agent
-          ] ++ (with pkgs.lxqt;
-            [
-              # lxqt-policykit
-            ]));
+          # dolphin
+          # polkit-kde-agent
+        ]
+        ++ (with pkgs.lxqt; [
+          # lxqt-policykit
+        ]));
   };
 
   xdg = {
     portal = {
       enable = true;
       config = {
-        common = { default = [ "xdph" "gtk" ]; };
+        common = {default = ["xdph" "gtk"];};
         hyprland = {
-          default = [ "hyprland" "gtk" ];
-          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          default = ["hyprland" "gtk"];
+          "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
         };
       };
       xdgOpenUsePortal = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      extraPortals = [pkgs.xdg-desktop-portal-gtk];
     };
   };
 
@@ -183,5 +191,5 @@ in {
       login.enableGnomeKeyring = true;
     };
   };
-  services.gnome = { gnome-keyring.enable = true; };
+  services.gnome = {gnome-keyring.enable = true;};
 }

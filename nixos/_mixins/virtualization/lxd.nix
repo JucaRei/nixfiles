@@ -25,7 +25,7 @@ _: {
     # This sets up a bridge called "mylxdbr0".  This is used to provide NAT'd
     # internet to the guest.  This bridge is manipulated directly by lxd, so we
     # don't need to specify any bridged interfaces here.
-    bridges = { mylxdbr0.interfaces = [ ]; };
+    bridges = {mylxdbr0.interfaces = [];};
 
     # Add an IP address to the bridge interface.
     localCommands = ''
@@ -56,6 +56,6 @@ _: {
     };
 
     # kernel module for forwarding to work
-    kernelModules = [ "nf_nat_ftp" ];
+    kernelModules = ["nf_nat_ftp"];
   };
 }

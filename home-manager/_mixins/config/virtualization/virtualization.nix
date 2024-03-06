@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   # Various packages related to virtualization, compatability and sandboxing
   home.packages = with pkgs; [
     # Virtual Machines and wine

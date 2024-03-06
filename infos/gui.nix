@@ -1,5 +1,10 @@
-{ config, pkgs, lib, ... }: {
-  imports = [ ./terminal.nix ];
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
+  imports = [./terminal.nix];
   systemd.user.services.fcitx5-daemon = {
     Unit.After = "graphical-session-pre.target";
     Service = {
@@ -7,7 +12,8 @@
       RestartSec = 3;
     };
   };
-  i18n.inputMethod = let fcitx5-qt = pkgs.libsForQt5.fcitx5-qt;
+  i18n.inputMethod = let
+    fcitx5-qt = pkgs.libsForQt5.fcitx5-qt;
   in {
     enabled = "fcitx5";
     fcitx5.addons = with pkgs; [
@@ -55,7 +61,8 @@
       fontpreview
       djvulibre
       poppler_utils
-    ] ++ lib.optionals (!config.programs.mpv.enable) [ mpv ];
+    ]
+    ++ lib.optionals (!config.programs.mpv.enable) [mpv];
   xdg.configFile."alsoft.conf".text = ''
     [general]
     hrtf = true
@@ -78,7 +85,7 @@
 
   programs.mpv = {
     enable = true;
-    defaultProfiles = [ "gpu-hq" ];
+    defaultProfiles = ["gpu-hq"];
     bindings = rec {
       MBTN_LEFT_DBL = "cycle fullscreen";
       MBTN_RIGHT = "cycle pause";
@@ -192,24 +199,27 @@
       wayland-edge-pixels-touch = 0;
       screenshot-format = "webp";
       screenshot-webp-lossless = true;
-      screenshot-directory =
-        "${config.home.homeDirectory}/Pictures/Screenshots/mpv";
+      screenshot-directory = "${config.home.homeDirectory}/Pictures/Screenshots/mpv";
       screenshot-sw = true;
       cache-dir = "${config.xdg.cacheHome}/mpv";
       input-default-bindings = false;
     };
     # profiles = { };
     package = pkgs.wrapMpv ((pkgs.mpv-unwrapped.override {
-      # webp support
-      ffmpeg = pkgs.ffmpeg-custom;
-    }).overrideAttrs (old: {
-      patches = old.patches or [ ] ++ [
-        (pkgs.fetchpatch {
-          url = "https://github.com/mpv-player/mpv/pull/11648.patch";
-          hash = "sha256-rp5VxVD74dY3w5rKct1BwFbruxpHsGk8zwtkkhdJovM=";
-        })
-      ];
-    })) {
+        # webp support
+        ffmpeg = pkgs.ffmpeg-custom;
+      })
+      .overrideAttrs (old: {
+        patches =
+          old.patches
+          or []
+          ++ [
+            (pkgs.fetchpatch {
+              url = "https://github.com/mpv-player/mpv/pull/11648.patch";
+              hash = "sha256-rp5VxVD74dY3w5rKct1BwFbruxpHsGk8zwtkkhdJovM=";
+            })
+          ];
+      })) {
       scripts = with pkgs.mpvScripts; [
         thumbnail
         mpris
@@ -239,7 +249,7 @@
       name = "Breeze-Dark";
     };
   };
-  programs.fzf = { enable = true; };
+  programs.fzf = {enable = true;};
 
   # i run this manually instead
   #services.nextcloud-client = {
@@ -260,14 +270,13 @@
     enable = true;
     network.startWhenNeeded = true;
   };
-  services.mpdris2 = { enable = true; };
-  systemd.user.services.kdeconnect =
-    lib.mkIf config.services.kdeconnect.enable {
-      Service = {
-        Restart = lib.mkForce "always";
-        RestartSec = "30";
-      };
+  services.mpdris2 = {enable = true;};
+  systemd.user.services.kdeconnect = lib.mkIf config.services.kdeconnect.enable {
+    Service = {
+      Restart = lib.mkForce "always";
+      RestartSec = "30";
     };
+  };
 
   # some packages require a pointer theme
   home.pointerCursor.gtk.enable = true;
@@ -298,7 +307,7 @@
     noto-fonts-cjk-serif
     noto-fonts-emoji
     noto-fonts-extra
-    (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+    (nerdfonts.override {fonts = ["NerdFontsSymbolsOnly"];})
     # might check out some day (tm)
     # nyxt qutebrowser
 

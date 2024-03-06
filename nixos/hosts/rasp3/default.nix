@@ -1,6 +1,10 @@
-{ config, pkgs, modulesPath, lib, ... }:
-
 {
+  config,
+  pkgs,
+  modulesPath,
+  lib,
+  ...
+}: {
   imports = [
     "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
     ../../_mixins/services/security/sudo.nix
@@ -12,8 +16,8 @@
     # kernelPackages = lib.mkForce pkgs.linuxPackages;
     kernelPackages = pkgs.linuxPackages_rpi3;
     # kernelPackages = pkgs.linuxPackages_latest;
-    initrd = { availableKernelModules = [ ]; };
-    kernelModules = [ "ahci" ];
+    initrd = {availableKernelModules = [];};
+    kernelModules = ["ahci"];
 
     # A bunch of boot parameters needed for optimal runtime on RPi 3b+
     kernelParams = [
@@ -26,7 +30,7 @@
     loader = {
       # NixOS wants to enable GRUB by default
       grub.enable = lib.mkForce false;
-      generic-extlinux-compatible = { enable = lib.mkOverride 5 false; };
+      generic-extlinux-compatible = {enable = lib.mkOverride 5 false;};
       raspberryPi = {
         enable = true;
         version = 3;
@@ -54,7 +58,7 @@
     "/boot" = {
       device = "/dev/disk/by-label/BOOT";
       fsType = "vfat";
-      options = [ "nofail" "noatime" "nodiratime" ];
+      options = ["nofail" "noatime" "nodiratime"];
     };
     "/" = {
       device = lib.mkDefault "/dev/disk/by-label/NIXOS-SD";
@@ -62,18 +66,19 @@
     };
   };
 
-  swapDevices = [{
-    device = "/swapfile";
-    size = 1024;
-  }];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 1024;
+    }
+  ];
 
   systemd.services.btattach = {
-    before = [ "bluetooth.service" ];
-    after = [ "dev-ttyAMA0.device" ];
-    wantedBy = [ "multi-user.target" ];
+    before = ["bluetooth.service"];
+    after = ["dev-ttyAMA0.device"];
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
-      ExecStart =
-        "${pkgs.bluez}/bin/btattach -B /dev/ttyAMA0 -P bcm -S 3000000";
+      ExecStart = "${pkgs.bluez}/bin/btattach -B /dev/ttyAMA0 -P bcm -S 3000000";
     };
   };
 

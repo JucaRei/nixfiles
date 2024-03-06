@@ -1,7 +1,12 @@
-{ config, lib, pkgs, sources, ... }:
-
-with lib;
-let cfg = config.modules.apx;
+{
+  config,
+  lib,
+  pkgs,
+  sources,
+  ...
+}:
+with lib; let
+  cfg = config.modules.apx;
 in {
   options.modules.apx = {
     enable = mkOption {
@@ -11,7 +16,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-
     environment.etc."apx/config.json".text = ''
       {
         "containername": "apx_managed",
@@ -21,6 +25,6 @@ in {
       }
     '';
 
-    environment.systemPackages = with pkgs; [ apx distrobox ];
+    environment.systemPackages = with pkgs; [apx distrobox];
   };
 }

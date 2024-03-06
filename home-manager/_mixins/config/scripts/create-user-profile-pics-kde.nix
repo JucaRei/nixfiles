@@ -1,6 +1,8 @@
-{ config, lib, ... }:
-let
-
+{
+  config,
+  lib,
+  ...
+}: let
   createProfilePictures = ''
     # Create profile picture directory
     # ------------------------------------------------------------------
@@ -37,10 +39,8 @@ let
     # ------------------------------------------------------------------
     echo -e "\e[33m[\e[32m✔\e[33m] User profile pictures set\e[0m\n"
   '';
-
 in {
   config = {
     system.activationScripts.createProfilePictures = createProfilePictures;
-
   };
 }

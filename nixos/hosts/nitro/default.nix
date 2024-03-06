@@ -1,4 +1,9 @@
-{ config, lib, pkgs, inputs, ... }: {
+{ config
+, lib
+, pkgs
+, inputs
+, ...
+}: {
   imports = [
     # inputs.nixos-hardware.nixosModules.common-cpu-intel
     # inputs.nixos-hardware.nixosModules.common-gpu-intel
@@ -7,8 +12,8 @@
     inputs.nixos-hardware.nixosModules.common-pc-hdd
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
-    ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
-    # ../../_mixins/hardware/graphics/nvidia-specialisation.nix
+    #../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
+    ../../_mixins/hardware/graphics/nvidia/nvidia-specialisation.nix
     ../../_mixins/hardware/graphics/intel/intel-gpu-dual.nix
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/boot/efi.nix
@@ -48,7 +53,7 @@
     loader = {
       # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
       grub = {
-        theme = pkgs.cyberre;
+        theme = pkgs.cyberre-grub-theme;
         ## Copy kernels to /boot
         # copyKernels = true;
 
@@ -99,15 +104,28 @@
       # The 'splash' arg is included by the plymouth option
       "boot.shell_on_fail"
     ];
-    plymouth = {
+    # plymouth = {
+    # enable = true;
+    # logo = "${inputs.nixos-artwork}/wallpapers/nix-wallpaper-watersplash.png";
+    # themePackages = [
+    # pkgs.adi1090x-plymouth-themes
+    # pkgs.catppuccin-plymouth
+    # ];
+    # theme = "deus_ex";
+    # theme = "catppuccin-macchiato";
+    # };
+    plymouth = rec {
       enable = true;
-      # logo = "${inputs.nixos-artwork}/wallpapers/nix-wallpaper-watersplash.png";
-      themePackages = [
-        # pkgs.adi1090x-plymouth-themes
-        pkgs.plymouth-catppuccin
+      # black_hud circle_hud cross_hud square_hud
+      # circuit connect cuts_alt seal_2 seal_3
+      theme = "connect";
+      themePackages = with pkgs; [
+        (
+          adi1090x-plymouth-themes.override {
+            selected_themes = [ theme ];
+          }
+        )
       ];
-      # theme = "deus_ex";
-      theme = "catppuccin-macchiato";
     };
 
     # Temporary workaround until mwprocapture 4328 patch is merged
@@ -182,15 +200,11 @@
       #---------------------------------------------------------------------
       #   SSD tweaks: Adjust settings for an SSD to optimize performance.
       #---------------------------------------------------------------------
-      "vm.dirty_background_ratio" =
-        "40"; # Set the ratio of dirty memory at which background writeback starts (5%). Adjusted for SSD.
-      "vm.dirty_expire_centisecs" =
-        "3000"; # Set the time at which dirty data is old enough to be eligible for writeout (6000 centiseconds). Adjusted for SSD.
-      "vm.dirty_ratio" =
-        "80"; # Set the ratio of dirty memory at which a process is forced to write out dirty data (10%). Adjusted for SSD.
+      "vm.dirty_background_ratio" = "40"; # Set the ratio of dirty memory at which background writeback starts (5%). Adjusted for SSD.
+      "vm.dirty_expire_centisecs" = "3000"; # Set the time at which dirty data is old enough to be eligible for writeout (6000 centiseconds). Adjusted for SSD.
+      "vm.dirty_ratio" = "80"; # Set the ratio of dirty memory at which a process is forced to write out dirty data (10%). Adjusted for SSD.
       "vm.dirty_time" = "0"; # Disable dirty time accounting.
-      "vm.dirty_writeback_centisecs" =
-        "300"; # Set the interval between two consecutive background writeback passes (500 centiseconds).
+      "vm.dirty_writeback_centisecs" = "300"; # Set the interval between two consecutive background writeback passes (500 centiseconds).
 
       ## TCP hardening
       # Prevent bogus ICMP errors from filling up logs.
@@ -225,7 +239,6 @@
       # Bufferbloat mitigations + slight improvement in throughput & latency
       "net.ipv4.tcp_congestion_control" = "bbr";
       "net.core.default_qdisc" = "cake";
-
     };
   };
 
@@ -354,8 +367,8 @@
 
   zramSwap = {
     enable = true;
-    swapDevices = 6;
-    memoryPercent = 20;
+    swapDevices = 1;
+    memoryPercent = 150;
   };
 
   # # This allows you to dynamically switch between NVIDIA<->Intel using
@@ -392,7 +405,7 @@
       btrfs-progs
       compsize
       # sublime4
-      clonegit
+      cloneit
       # unstable.stacer
       lm_sensors
       # nixos-summary
@@ -437,56 +450,56 @@
         interval = "weekly";
       };
     };
-    xserver = {
-      # videoDrivers = [ "i915" ];
-      # displayManager.sessionCommands = ''
-      #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource 1 0
-      #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
-      # '';
-      #######################
-      ### Xserver configs ###
-      #######################
-      layout = lib.mkForce "br";
-      xkbVariant = "abnt2";
-      xkbModel = lib.mkForce "pc105";
-      # xkbOptions = "grp:alt_shift_toggle";
-      libinput = {
-        enable = true;
-        touchpad = {
-          # horizontalScrolling = true;
-          # tappingDragLock = false;
-          tapping = true;
-          naturalScrolling = false;
-          scrollMethod = "twofinger";
-          disableWhileTyping = true;
-          sendEventsMode = "disabled-on-external-mouse";
-          # clickMethod = "clickfinger";
-        };
-        mouse = {
-          naturalScrolling = false;
-          disableWhileTyping = true;
-          accelProfile = "flat";
-        };
-      };
-      # xrandrHeads = [
-      #   {
-      #     output = "HDMI-1-0";
-      #     primary = true;
-      #     monitorConfig = ''
-      #       Modeline "1920x1080_60.00"
-      #     '';
-      #   }
-      #   {
-      #     output = "eDP";
-      #     primary = false;
-      #     monitorConfig = ''
-      #       Option "PreferredMode" "1920x1080"
-      #       Option "Position" "0 0"
-      #     '';
-      #   }
-      # ];
-      exportConfiguration = true;
-    };
+    # xserver = {
+    # videoDrivers = [ "i915" ];
+    # displayManager.sessionCommands = ''
+    #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource 1 0
+    #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
+    # '';
+    #######################
+    ### Xserver configs ###
+    #######################
+    # layout = lib.mkForce "br";
+    # xkbVariant = "abnt2";
+    # xkbModel = lib.mkForce "pc105";
+    # xkbOptions = "grp:alt_shift_toggle";
+    # libinput = {
+    #   enable = true;
+    #   touchpad = {
+    #     # horizontalScrolling = true;
+    #     # tappingDragLock = false;
+    #     tapping = true;
+    #     naturalScrolling = false;
+    #     scrollMethod = "twofinger";
+    #     disableWhileTyping = true;
+    #     sendEventsMode = "disabled-on-external-mouse";
+    #     # clickMethod = "clickfinger";
+    #   };
+    #   mouse = {
+    #     naturalScrolling = false;
+    #     disableWhileTyping = true;
+    #     accelProfile = "flat";
+    #   };
+    # };
+    # xrandrHeads = [
+    #   {
+    #     output = "HDMI-1-0";
+    #     primary = true;
+    #     monitorConfig = ''
+    #       Modeline "1920x1080_60.00"
+    #     '';
+    #   }
+    #   {
+    #     output = "eDP";
+    #     primary = false;
+    #     monitorConfig = ''
+    #       Option "PreferredMode" "1920x1080"
+    #       Option "Position" "0 0"
+    #     '';
+    #   }
+    # ];
+    # exportConfiguration = true;
+    # };
     # power-profiles-daemon.enable = lib.mkForce false;
     # tlp = {
     #   enable = true;
@@ -511,7 +524,13 @@
       # Sets the point at which earlyoom will intervene to free up memory.
 
       # When free memory falls below 15%, earlyoom acts to prevent system slowdown or freezing.
-      freeMemThreshold = 8;
+      freeSwapThreshold = 2;
+      freeMemThreshold = 2;
+      extraArgs = [
+        "-g"
+        "--avoid '^(X|plasma.*|konsole|kwin|foot)$'"
+        "--prefer '^(electron|libreoffice|gimp)$'"
+      ];
 
       # Technical Explanation:
       # The earlyoom service monitors system memory and intervenes when free memory drops below the specified threshold.
@@ -520,7 +539,6 @@
       # Adjust the freeMemThreshold value based on your system's memory usage patterns.
 
       # source:   https://github.com/rfjakob/earlyoom
-
     };
 
     #---------------------------------------------------------------------
@@ -561,8 +579,8 @@
       nix-daemon = {
         ### Limit resources used by nix-daemon
         serviceConfig = {
-          MemoryMax = "4G";
-          MemorySwapMax = "4G";
+          MemoryMax = "8G";
+          MemorySwapMax = "12G";
         };
       };
     };
@@ -579,4 +597,9 @@
   #  boot.loader.grub.configurationName = lib.mkOverride 40 "Pass-through Nvidia";
   #  vfio.enable = false;
   #};
+
+  nix.settings = {
+    extra-substituters = [ "https://nitro.cachix.org" ];
+    extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+  };
 }

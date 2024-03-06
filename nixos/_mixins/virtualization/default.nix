@@ -1,4 +1,9 @@
-{ desktop, lib, hostname, ... }: {
+{
+  desktop,
+  lib,
+  hostname,
+  ...
+}: {
   imports = [
     ./podman.nix
     # ./distrobox.nix

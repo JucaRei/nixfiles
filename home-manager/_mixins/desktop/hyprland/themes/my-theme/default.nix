@@ -1,10 +1,18 @@
-{ pkgs, lib, config, hostname, osConfig, inputs, username, ... }:
-let
-  nixGL = import ../../../../../../lib/nixGL.nix { inherit config pkgs; };
+{
+  pkgs,
+  lib,
+  config,
+  hostname,
+  osConfig,
+  inputs,
+  username,
+  ...
+}: let
+  nixGL = import ../../../../../../lib/nixGL.nix {inherit config pkgs;};
 
   # mpvpaper-custom = (nixGL pkgs.mpvpaper); # Live wallpaper
   scripts.wl-screenshot = {
-    runtimeInputs = [ pkgs.grim pkgs.slurp pkgs.wl-clipboard pkgs.swayimg ];
+    runtimeInputs = [pkgs.grim pkgs.slurp pkgs.wl-clipboard pkgs.swayimg];
     text = ''
       # ideas stolen from https://github.com/emersion/slurp/issues/104#issuecomment-1381110649
 
@@ -55,12 +63,20 @@ let
   # hyprbars-button = rgba($COLOR), $SIZE, $ICON, hyprctl dispatch fullscreen 1
   # hyprbars-button = rgba($COLOR), $SIZE, $ICON, hyprctl dispatch movetoworkspacesilent special:MinimizedApps
 
-  layout = if hostname == "nitro" then "br" else "us";
-  variant = if hostname == "nitro" then "abnt2" else "mac";
-  model = if hostname == "nitro" then "pc105" else "pc104";
+  layout =
+    if hostname == "nitro"
+    then "br"
+    else "us";
+  variant =
+    if hostname == "nitro"
+    then "abnt2"
+    else "mac";
+  model =
+    if hostname == "nitro"
+    then "pc105"
+    else "pc104";
 
-  grimblast =
-    "${inputs.hyprwm-contrib.packages.${pkgs.system}.grimblast}/bin/grimblast";
+  grimblast = "${inputs.hyprwm-contrib.packages.${pkgs.system}.grimblast}/bin/grimblast";
 
   browser = "${pkgs.firefox}";
 
@@ -220,7 +236,6 @@ let
   '';
 
   swayidle = "${pkgs.swayidle}/bin/swayidle";
-
 in {
   imports = [
     ../../../../apps/terminal/foot.nix
@@ -273,7 +288,7 @@ in {
               ".config/rofi/scripts/wallpaper.sh"
               "notify-send 'Hey Junior, Welcome back' &"
             ];
-            xwayland = { force_zero_scaling = true; };
+            xwayland = {force_zero_scaling = true;};
             misc = {
               # disable redundant renders
               disable_autoreload = false;
@@ -316,7 +331,7 @@ in {
               special_scale_factor = 0.9;
               no_gaps_when_only = false;
             };
-            plugin = { split-monitor-workspaces = { count = 5; }; };
+            plugin = {split-monitor-workspaces = {count = 5;};};
           };
           extraConfig = ''
             ###############################
@@ -735,7 +750,7 @@ in {
               "CTRL SUPER, k, resizeactive, 0 -15"
               "CTRL SUPER, j, resizeactive, 0 15"
             ];
-            submap = [ "resize" "reset" ];
+            submap = ["resize" "reset"];
             binde = [
               # ",right,resizeactive,15 0"
               # ",left,resizeactive,-15 0"
@@ -771,7 +786,7 @@ in {
           qalculate-gtk
           brillo
           random-wall
-          hacked-cursor
+          # hacked-cursor
           # (if hostname != "nitro" then kbdlight else "")
           # mpvpaper
           # (nixGL pkgs.mpvpaper) # Live wallpaper
@@ -783,7 +798,8 @@ in {
           wl-clipboard
           imagemagick_light
           color-picker
-        ] ++ (with pkgs.xfce;
+        ]
+        ++ (with pkgs.xfce;
           [
             xfce4-power-manager
             exo # thunar "open terminal here"
@@ -797,10 +813,10 @@ in {
             })
             mousepad
             tumbler
-          ] ++ (with pkgs.unstable;
-            [
-              # papirus-icon-theme
-            ]));
+          ]
+          ++ (with pkgs.unstable; [
+            # papirus-icon-theme
+          ]));
       file = {
         ".config/hypr/keybindings.conf" = {
           text = ''
@@ -1069,7 +1085,7 @@ in {
       };
     };
 
-    programs = { pywal.enable = true; };
+    programs = {pywal.enable = true;};
 
     dconf = {
       settings = {
@@ -1082,7 +1098,7 @@ in {
       };
     };
 
-    services = { swayosd = { enable = true; }; };
+    services = {swayosd = {enable = true;};};
 
     xfconf.settings = {
       thunar = {

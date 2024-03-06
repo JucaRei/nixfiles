@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   services = {
     # Use kmscon as the virtual console instead of gettys.
     # kmscon is a kms/dri-based userspace virtual terminal implementation.
@@ -7,12 +7,14 @@
     kmscon = {
       enable = true;
       hwRender = true;
-      fonts = [{
-        name = "FiraCode Nerd Font Mono";
-        package = pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; };
-      }];
+      fonts = [
+        {
+          name = "FiraCode Nerd Font Mono";
+          package = pkgs.nerdfonts.override {fonts = ["FiraCode"];};
+        }
+      ];
       extraConfig = ''
-        font-size=16
+        font-size=18
         xkb-layout=us
       '';
     };

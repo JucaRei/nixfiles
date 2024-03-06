@@ -1,6 +1,10 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  ...
+}:
 with lib.hm.gvariant; {
-  home = { packages = with pkgs; ([ aria2 ]); };
+  home = {packages = with pkgs; [aria2];};
   programs.aria2 = {
     enable = true;
     settings = {
@@ -9,4 +13,3 @@ with lib.hm.gvariant; {
     };
   };
 }
-

@@ -1,5 +1,4 @@
-{ }:
-let
+{}: let
   decay = {
     background = "101419";
     contrast = "0e1217";
@@ -32,7 +31,6 @@ let
     lavender = "a9acdb";
     accent = "78dba9";
     gtk-theme = "Dark-decay";
-
   };
   catppuccin = {
     background = "1E1E2E";

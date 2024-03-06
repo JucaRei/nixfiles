@@ -1,16 +1,15 @@
-moduleConfig:
-{ lib, pkgs, ... }:
-
-with lib;
-
-{
+moduleConfig: {
+  lib,
+  pkgs,
+  ...
+}:
+with lib; {
   options.services.vscode-server.enable = with types;
     mkEnableOption "VS Code Server";
 
   config = moduleConfig rec {
     name = "auto-fix-vscode-server";
-    description =
-      "Automatically fix the VS Code server used by the remote SSH extension";
+    description = "Automatically fix the VS Code server used by the remote SSH extension";
     serviceConfig = {
       # When a monitored directory is deleted, it will stop being monitored.
       # Even if it is later recreated it will not restart monitoring it.
@@ -20,7 +19,7 @@ with lib;
       RestartSec = 0;
       ExecStart = "${pkgs.writeShellScript "${name}.sh" ''
         set -euo pipefail
-        PATH=${makeBinPath (with pkgs; [ coreutils findutils inotify-tools ])}
+        PATH=${makeBinPath (with pkgs; [coreutils findutils inotify-tools])}
         bin_dir=~/.vscode-server/bin
 
         # Fix any existing symlinks before we enter the inotify loop.

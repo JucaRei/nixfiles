@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 # Let-In ----------------------------------------------------------------------------------------{{{
 let
   inherit (lib) concatStringsSep optional;
@@ -22,7 +27,7 @@ in {
 
   # Config and plugins ------------------------------------------------------------------------- {{{
 
-  xdg.configFile."nvim" = { source = "${pkgs.nvchad}"; };
+  xdg.configFile."nvim" = {source = "${pkgs.nvchad}";};
 
   home.packages = with pkgs; [
     nvchad
@@ -36,7 +41,7 @@ in {
     '')
   ];
 
-  home.activation.neovim = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.neovim = lib.hm.dag.entryAfter ["writeBoundary"] ''
     echo "Populating neovim env..."
     ${populateEnvScript}
   '';
@@ -51,7 +56,8 @@ in {
 
   # Required packages -------------------------------------------------------------------------- {{{
 
-  programs.neovim.extraPackages = with pkgs; [ ];
+  programs.neovim.extraPackages = with pkgs; [];
   # }}}
 }
 # vim: foldmethod=marker
+

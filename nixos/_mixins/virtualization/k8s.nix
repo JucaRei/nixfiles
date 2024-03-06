@@ -1,6 +1,13 @@
-{ pkgs, options, config, lib, username, ... }:
-with lib;
-let cfg = config.modules.services.k8s;
+{
+  pkgs,
+  options,
+  config,
+  lib,
+  username,
+  ...
+}:
+with lib; let
+  cfg = config.modules.services.k8s;
 in {
   options.modules.services.k8s = {
     enable = mkOption {

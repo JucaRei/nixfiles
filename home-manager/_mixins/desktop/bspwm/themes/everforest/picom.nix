@@ -10,7 +10,6 @@
 #           ###############
 #           ### Corners ###
 #           ###############
-
 #           corner-radius = 8;
 #           rounded-corners-exclude = [
 #             #"window_type = 'normal'"
@@ -58,26 +57,20 @@
 #           shadow-radius = 7;
 #           # The opacity of shadows. (0.0 - 1.0, defaults to 0.75)
 #           # shadow-opacity = .75
-
 #           # The left offset for shadows, in pixels. (defaults to -15)
 #           # shadow-offset-x = -15
 #           shadow-offset-x = -7;
-
 #           # The top offset for shadows, in pixels. (defaults to -15)
 #           # shadow-offset-y = -15
 #           shadow-offset-y = -7;
 #           # Red color value of shadow (0.0 - 1.0, defaults to 0).
 #           # shadow-red = 0
-
 #           # Green color value of shadow (0.0 - 1.0, defaults to 0).
 #           # shadow-green = 0
-
 #           # Blue color value of shadow (0.0 - 1.0, defaults to 0).
 #           # shadow-blue = 0
-
 #           # Hex string color value of shadow (#000000 - #FFFFFF, defaults to #000000). This option will override options set shadow-(red/green/blue)
 #           # shadow-color = "#000000"
-
 #           # Specify a list of conditions of windows that should have no shadow.
 #           #
 #           # examples:
@@ -99,64 +92,48 @@
 #           # for example, if the 10 pixels on the bottom of the screen should not have shadows painted on.
 #           #
 #           # shadow-exclude-reg = ""
-
 #           # Crop shadow of a window fully on a particular Xinerama screen to the screen.
 #           # xinerama-shadow-crop = false
-
 #           ##############
 #           ### Fading ###
 #           ##############
-
 #           # Fade windows in/out when opening/closing and when opacity changes,
 #           #  unless no-fading-openclose is used.
 #           fading = true;
 #           #fading = true;
-
 #           # Opacity change between steps while fading in. (0.01 - 1.0, defaults to 0.028)
 #           # fade-in-step = 0.028
 #           fade-in-step = 0.07;
-
 #           # Opacity change between steps while fading out. (0.01 - 1.0, defaults to 0.03)
 #           # fade-out-step = 0.03
 #           fade-out-step = 0.07;
-
 #           # The time between steps in fade step, in milliseconds. (> 0, defaults to 10)
 #           # fade-delta = 10
-
 #           # Specify a list of conditions of windows that should not be faded.
 #           # don't need this, we disable fading for all normal windows with wintypes: {}
 #           fade-exclude = [
 #             "class_g = 'slop'" # maim
 #           ];
-
 #           # Do not fade on window open/close.
 #           # no-fading-openclose = false
-
 #           # Do not fade destroyed ARGB windows with WM frame. Workaround of bugs in Openbox, Fluxbox, etc.
 #           # no-fading-destroyed-argb = false
-
 #           ################################
 #           ### Transparency / Opacity   ###
 #           ################################
-
 #           # Opacity of inactive windows. (0.1 - 1.0, defaults to 1.0)
 #           # inactive-opacity = 1
 #           inactive-opacity = 0.8;
-
 #           # Opacity of window titlebars and borders. (0.1 - 1.0, disabled by default)
 #           # frame-opacity = 1.0
 #           frame-opacity = 0.7;
-
 #           # Let inactive opacity set by -i override the '_NET_WM_OPACITY' values of windows.
 #           # inactive-opacity-override = true
 #           inactive-opacity-override = false;
-
 #           # Default opacity for active windows. (0.0 - 1.0, defaults to 1.0)
 #           active-opacity = 1.0;
-
 #           # Dim inactive windows. (0.0 - 1.0, defaults to 0.0)
 #           # inactive-dim = 0.0
-
 #           # Specify a list of conditions of windows that should always be considered focused.
 #           # focus-exclude = []
 #           focus-exclude = [
@@ -164,10 +141,8 @@
 #             #  "class_g = 'Bar'",                    # lemonbar
 #             "class_g = 'slop'" # maim
 #           ];
-
 #           # Use fixed inactive dim value, instead of adjusting according to window opacity.
 #           # inactive-dim-fixed = 1.0
-
 #           # Specify a list of opacity rules, in the format `PERCENT:PATTERN`,
 #           # like `50:name *= "Firefox"`. picom-trans is recommended over this.
 #           # Note we don't make any guarantee about possible conflicts with other
@@ -205,23 +180,19 @@
 #           # blur-deviation = false
 #           #
 #           # blur-strength = 5
-
 #           # Blur background of semi-transparent / ARGB windows.
 #           # Bad in performance, with driver-dependent behavior.
 #           # The name of the switch may change without prior notifications.
 #           #
 #           # blur-background = true;
-
 #           # Blur background of windows when the window frame is not opaque.
 #           # Implies:
 #           #    blur-background
 #           # Bad in performance, with driver-dependent behavior. The name may change.
 #           #
 #           # blur-background-frame = false;
-
 #           # Use fixed blur strength rather than adjusting according to window opacity.
 #           # blur-background-fixed = false;
-
 #           # Specify the blur convolution kernel, with the following format:
 #           # example:
 #           #   blur-kern = "5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
@@ -240,7 +211,6 @@
 #             background-fixed = false;
 #             kern = "3x3box";
 #           };
-
 #           # Exclude conditions for background blur.
 #           blur-background-exclude = [
 #             #"window_type = 'dock'",
@@ -253,86 +223,69 @@
 #             "class_g = 'slop'"
 #             "_GTK_FRAME_EXTENTS@:c"
 #           ];
-
 #           #################################
 #           #       General Settings        #
 #           #################################
-
 #           # Daemonize process. Fork to background after initialization. Causes issues with certain (badly-written) drivers.
 #           # daemon = false
-
 #           # Specify the backend to use: `xrender`, `glx`, or `xr_glx_hybrid`.
 #           # `xrender` is the default one.
 #           #
 #           experimental-backends = true;
 #           # backend = "glx";
 #           backend = "xrender";
-
 #           # Enable/disable VSync.
 #           # vsync = false
 #           # vsync = true;
-
 #           # Enable remote control via D-Bus. See the *D-BUS API* section below for more details.
 #           # dbus = false
-
 #           # Try to detect WM windows (a non-override-redirect window with no
 #           # child that has 'WM_STATE') and mark them as active.
 #           #
 #           # mark-wmwin-focused = false
 #           mark-wmwin-focused = true;
-
 #           # Mark override-redirect windows that doesn't have a child window with 'WM_STATE' focused.
 #           # mark-ovredir-focused = false
 #           mark-ovredir-focused = true;
-
 #           # Try to detect windows with rounded corners and don't consider them
 #           # shaped windows. The accuracy is not very high, unfortunately.
 #           #
 #           # detect-rounded-corners = false
 #           detect-rounded-corners = true;
-
 #           # Detect '_NET_WM_OPACITY' on client windows, useful for window managers
 #           # not passing '_NET_WM_OPACITY' of client windows to frame windows.
 #           #
 #           # detect-client-opacity = false
 #           detect-client-opacity = true;
-
 #           # Specify refresh rate of the screen. If not specified or 0, picom will
 #           # try detecting this with X RandR extension.
 #           #
 #           # refresh-rate = 60
-
 #           # Use EWMH '_NET_ACTIVE_WINDOW' to determine currently focused window,
 #           # rather than listening to 'FocusIn'/'FocusOut' event. Might have more accuracy,
 #           # provided that the WM supports it.
 #           #
 #           # use-ewmh-active-win = false
-
 #           # Unredirect all windows if a full-screen opaque window is detected,
 #           # to maximize performance for full-screen windows. Known to cause flickering
 #           # when redirecting/unredirecting windows.
 #           #
 #           # unredir-if-possible = false
-
 #           # Delay before unredirecting the window, in milliseconds. Defaults to 0.
 #           # unredir-if-possible-delay = 0
-
 #           # Conditions of windows that shouldn't be considered full-screen for unredirecting screen.
 #           # unredir-if-possible-exclude = []
-
 #           # Use 'WM_TRANSIENT_FOR' to group windows, and consider windows
 #           # in the same group focused at the same time.
 #           #
 #           # detect-transient = false
 #           detect-transient = true;
-
 #           # Use 'WM_CLIENT_LEADER' to group windows, and consider windows in the same
 #           # group focused at the same time. 'WM_TRANSIENT_FOR' has higher priority if
 #           # detect-transient is enabled, too.
 #           #
 #           # detect-client-leader = false
 #           detect-client-leader = true;
-
 #           # Resize damaged region by a specific number of pixels.
 #           # A positive value enlarges it while a negative one shrinks it.
 #           # If the value is positive, those additional pixels will not be actually painted
@@ -345,26 +298,22 @@
 #           # May or may not work with *--glx-no-stencil*. Shrinking doesn't function correctly.
 #           #
 #           # resize-damage = 1
-
 #           # Specify a list of conditions of windows that should be painted with inverted color.
 #           # Resource-hogging, and is not well tested.
 #           #
 #           # invert-color-include = []
-
 #           # GLX backend: Avoid using stencil buffer, useful if you don't have a stencil buffer.
 #           # Might cause incorrect opacity when rendering transparent content (but never
 #           # practically happened) and may not work with blur-background.
 #           # My tests show a 15% performance boost. Recommended.
 #           #
 #           # glx-no-stencil = false
-
 #           # GLX backend: Avoid rebinding pixmap on window damage.
 #           # Probably could improve performance on rapid window content changes,
 #           # but is known to break things on some drivers (LLVMpipe, xf86-video-intel, etc.).
 #           # Recommended if it works.
 #           #
 #           # glx-no-rebind-pixmap = false
-
 #           # Disable the use of damage information.
 #           # This cause the whole screen to be redrawn everytime, instead of the part of the screen
 #           # has actually changed. Potentially degrades the performance, but might fix some artifacts.
@@ -372,41 +321,34 @@
 #           #
 #           # no-use-damage = false
 #           use-damage = true;
-
 #           # Use X Sync fence to sync clients' draw calls, to make sure all draw
 #           # calls are finished before picom starts drawing. Needed on nvidia-drivers
 #           # with GLX backend for some users.
 #           #
 #           # xrender-sync-fence = false
-
 #           # GLX backend: Use specified GLSL fragment shader for rendering window contents.
 #           # See `compton-default-fshader-win.glsl` and `compton-fake-transparency-fshader-win.glsl`
 #           # in the source tree for examples.
 #           #
 #           # glx-fshader-win = ""
-
 #           # Force all windows to be painted with blending. Useful if you
 #           # have a glx-fshader-win that could turn opaque pixels transparent.
 #           #
 #           # force-win-blend = false
-
 #           # Do not use EWMH to detect fullscreen windows.
 #           # Reverts to checking if a window is fullscreen based only on its size and coordinates.
 #           #
 #           # no-ewmh-fullscreen = false
-
 #           # Dimming bright windows so their brightness doesn't exceed this set value.
 #           # Brightness of a window is estimated by averaging all pixels in the window,
 #           # so this could comes with a performance hit.
 #           # Setting this to 1.0 disables this behaviour. Requires --use-damage to be disabled. (default: 1.0)
 #           #
 #           # max-brightness = 1.0
-
 #           # Make transparent windows clip other windows like non-transparent windows do,
 #           # instead of blending on top of them.
 #           #
 #           # transparent-clipping = false
-
 #           # Set the log level. Possible values are:
 #           #  "trace", "debug", "info", "warn", "error"
 #           # in increasing level of importance. Case doesn't matter.
@@ -422,13 +364,10 @@
 #           # When setting this option from the config file, it is recommended to use an absolute path.
 #           #
 #           # log-file = "/path/to/your/log/file"
-
 #           # Show all X errors (for debugging)
 #           # show-all-xerrors = false
-
 #           # Write process ID to a file.
 #           # write-pid-path = "/path/to/your/log/file"
-
 #           # Window type settings
 #           #
 #           # 'WINDOW_TYPE' is one of the 15 window types defined in EWMH standard:
@@ -472,13 +411,17 @@
 #     };
 #   };
 # }
-
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   config = lib.mkIf (config.xsession.enable) {
     services.picom = {
       enable = true;
       package = pkgs.picom;
-      extraArgs = [ "--experimental-backends" ];
+      extraArgs = ["--experimental-backends"];
       settings = {
         # base
         backend = "glx";
@@ -490,7 +433,7 @@
         dbe = false;
         detect-transient = true;
         detect-client-leader = true;
-        invert-color-include = [ ];
+        invert-color-include = [];
         glx-copy-from-front = false;
         #round corner
         corner-radius = 0;

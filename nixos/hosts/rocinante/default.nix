@@ -1,12 +1,17 @@
 # MacbookPro 4,1 early 2009
 # nvidia 8600 gt
-
-{ inputs, lib, pkgs, config, ... }: {
+{
+  inputs,
+  lib,
+  pkgs,
+  config,
+  ...
+}: {
   imports = [
     #inputs.nixos-hardware.nixosModules.common-cpu-intel
     #inputs.nixos-hardware.nixosModules.common-pc-laptop
     #inputs.nixos-hardware.nixosModules.common-pc-ssd
-    (import ./disks.nix { })
+    (import ./disks.nix {})
     ../../_mixins/hardware/boot/bios.nix
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/cpu/intel-cpu.nix
@@ -23,10 +28,12 @@
   #  options = [ "defaults" "noatime" "nodiratime" ];
   #};
 
-  swapDevices = [{
-    device = "/swap";
-    size = 2048;
-  }];
+  swapDevices = [
+    {
+      device = "/swap";
+      size = 2048;
+    }
+  ];
 
   boot = {
     initrd = {
@@ -43,7 +50,7 @@
       ];
       # kernelModules = [ "b43" "bcm5974" ];
     };
-    kernelModules = [ "kvm-intel" "applesmc" "bcm5974" ];
+    kernelModules = ["kvm-intel" "applesmc" "bcm5974"];
     kernelPackages = lib.mkDefault pkgs.linuxPackages_6_1;
     # kernelPackages = lib.mkDefault pkgs.linuxPackages_5_4;
     # kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
@@ -56,7 +63,7 @@
     ];
     loader.grub = {
       gfxpayloadBios = "1920x1200";
-      theme = pkgs.cyberre;
+      theme = pkgs.cyberre-grub-theme;
     };
     #extraModprobeConfig = ''
     #  options bcm5974

@@ -1,4 +1,9 @@
-{ writeShellApplication, lib, pciutils, ... }:
+{
+  writeShellApplication,
+  lib,
+  pciutils,
+  ...
+}:
 writeShellApplication {
   name = "list-iommu";
 
@@ -9,9 +14,10 @@ writeShellApplication {
 
   checkPhase = "";
 
-  runtimeInputs = [ pciutils ];
+  runtimeInputs = [pciutils];
 
-  text = # bash
+  text =
+    # bash
     ''
       shopt -s nullglob
 

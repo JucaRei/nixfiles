@@ -1,5 +1,13 @@
-{ config, desktop, hostname, lib, pkgs, username, ... }: {
-  imports = [ ] ++ lib.optionals (desktop != null) [ ./syncthing-tray.nix ];
+{
+  config,
+  desktop,
+  hostname,
+  lib,
+  pkgs,
+  username,
+  ...
+}: {
+  imports = [] ++ lib.optionals (desktop != null) [./syncthing-tray.nix];
 
   services.syncthing = {
     enable = true;

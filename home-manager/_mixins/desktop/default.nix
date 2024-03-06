@@ -1,69 +1,48 @@
 { config, desktop, pkgs, username, lib, ... }:
-let inherit (pkgs.stdenv) isLinux;
-in {
-  imports = [
-    # ../services/emote.nix
-
-    # (./. + "./${desktop}")
-    # ../apps/documents/libreoffice.nix
-    # ../services/flatpak.nix
-  ] ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-    ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix"))
-    ./${desktop}.nix ++ lib.optional
-    (builtins.pathExists (./. + "/../../users/${username}/desktop.nix"))
-    ../../users/${username}/desktop.nix;
+let
+  inherit (pkgs.stdenv) isDarwin isLinux;
+in
+{
+  imports =
+    [
+      # ../services/emote.nix
+      # (./. + "./${desktop}")
+      # ../apps/documents/libreoffice.nix
+      # ../services/flatpak.nix
+      ../console/properties.nix
+      ../apps/browser/brave
+      ../fonts
+    ]
+    ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+    ++ lib.optional
+      (builtins.pathExists (./. + "/../../users/${username}/desktop.nix"))
+      ../../users/${username}/desktop.nix;
 
   services = {
     # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
     mpris-proxy.enable = isLinux;
-
-    udiskie = {
-      enable = true;
-      tray = "auto";
-      automount = true;
-    };
   };
 
-  home = { packages = with pkgs; [ font-manager dconf2nix hexchat ]; };
-
-  # Low priority
-  xresources.properties = lib.mkOverride 1000 {
-    "XTerm*background" = "#121214";
-    "XTerm*foreground" = "#c8c8c8";
-    "XTerm*cursorBlink" = true;
-    "XTerm*cursorColor" = "#FFC560";
-    "XTerm*boldColors" = false;
-
-    #Black + DarkGrey
-    "*color0" = "#141417";
-    "*color8" = "#434345";
-    #DarkRed + Red
-    "*color1" = "#D62C2C";
-    "*color9" = "#DE5656";
-    #DarkGreen + Green
-    "*color2" = "#42DD76";
-    "*color10" = "#A1EEBB";
-    #DarkYellow + Yellow
-    "*color3" = "#FFB638";
-    "*color11" = "#FFC560";
-    #DarkBlue + Blue
-    "*color4" = "#28A9FF";
-    "*color12" = "#94D4FF";
-    #DarkMagenta + Magenta
-    "*color5" = "#E66DFF";
-    "*color13" = "#F3B6FF";
-    #DarkCyan + Cyan
-    "*color6" = "#14E5D4";
-    "*color14" = "#A1F5EE";
-    #LightGrey + White
-    "*color7" = "#c8c8c8";
-    "*color15" = "#e9e9e9";
-    "XTerm*faceName" = "FiraCode Nerd Font:size=13:style=Medium:antialias=true";
-    "XTerm*boldFont" = "FiraCode Nerd Font:size=13:style=Bold:antialias=true";
-    "XTerm*geometry" = "132x50";
-    "XTerm.termName" = "xterm-256color";
-    "XTerm*locale" = false;
-    "XTerm*utf8" = true;
-    # "Xcursor.theme" = lib.mkDefault "Breeze Hacked";
+  home = {
+    # Authrorize X11 access in Distrobox
+    file.".distroboxrc" = lib.mkIf isLinux {
+      text = ''
+        ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
+      '';
+    };
+    packages = with pkgs; [
+      black # Code format Python
+      nodePackages.prettier # Code format
+      shellcheck # Code lint Shell
+      shfmt # Code format Shell
+      # font-manager
+      dconf2nix
+      hexchat
+    ] ++ lib.optionals (isDarwin) [
+      # macOS apps
+      iterm2
+      pika
+      utm
+    ];
   };
 }

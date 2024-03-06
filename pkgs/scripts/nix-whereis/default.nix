@@ -1,5 +1,8 @@
-{ writeShellApplication, coreutils, which }:
-
+{
+  writeShellApplication,
+  coreutils,
+  which,
+}:
 writeShellApplication {
   name = "nix-whereis";
 
@@ -7,7 +10,7 @@ writeShellApplication {
     readonly program_name="''${1:-}"
 
     if [[ -z "$program_name" ]]; then
-       cat <<EOF
+        cat <<EOF
     usage: $(basename "$0") <name>
 
     Get where in /nix/store a program is located.
@@ -18,5 +21,7 @@ writeShellApplication {
     readlink -f "$(which "$program_name")"
   '';
 
-  runtimeInputs = [ coreutils which ];
+  runtimeInputs = [coreutils which];
 }
+# nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+

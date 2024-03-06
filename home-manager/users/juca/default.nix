@@ -1,8 +1,10 @@
-{ config, lib, hostname, pkgs, username, nixpkgs, ... }:
-let inherit (pkgs.stdenv) isLinux;
-in {
+{ config, lib, hostname, pkgs, username, ... }:
+let
+  inherit (pkgs.stdenv) isLinux;
+in
+{
   imports = [
-    ../../_mixins/common/fonts.nix
+    ../../_mixins/fonts
     # ../../_mixins/services/keybase.nix
     # ../../_mixins/services/syncthing.nix
   ];
@@ -83,11 +85,13 @@ in {
 
       # List home-manager packages
       ".local/home-manager_packages.txt" = {
-        text = let
-          packages = builtins.map (p: "${p.name}") config.home.packages;
-          sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-          formatted = builtins.concatStringsSep "\n" sortedUnique;
-        in "${formatted}";
+        text =
+          let
+            packages = builtins.map (p: "${p.name}") config.home.packages;
+            sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+            formatted = builtins.concatStringsSep "\n" sortedUnique;
+          in
+          "${formatted}";
       };
     };
     # A Modern Unix experience

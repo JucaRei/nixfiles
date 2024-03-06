@@ -1,6 +1,9 @@
-{ pkgs, lib, config, ... }:
-
-let
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
   swaylock = "${pkgs.swaylock-effects}/bin/swaylock";
   pactl = "${pkgs.pulseaudio}/bin/pactl";
   pgrep = "${pkgs.procps}/bin/pgrep";
@@ -24,16 +27,20 @@ in {
   config = {
     xdg = {
       configFile = {
-        "swayidle/config".text = ''
-          timeout ${toString lockTime} '${actionLock}'
-        '' +
+        "swayidle/config".text =
+          ''
+            timeout ${toString lockTime} '${actionLock}'
+          ''
+          +
           # After 10 seconds of locked, mute mic
           (mkEvent 10 "${pactl} set-sink-mute @DEFAULT_SINK@ yes"
-            "${pactl} set-sink-mute @DEFAULT_SINK@ no") +
+            "${pactl} set-sink-mute @DEFAULT_SINK@ no")
+          +
           # Hyprland - Turn off screen (DPMS)
           # lib.optionalString config.wayland.windowManager.hyprland.enable
           (mkEvent 40 "${hyprctl} dispatch dpms off"
-            "${hyprctl} dispatch dpms on") +
+            "${hyprctl} dispatch dpms on")
+          +
           # Sway - Turn off screen (DPMS)
           # lib.optionalString config.wayland.windowManager.hyprland.enable
           (mkEvent 40 "${swaymsg} 'output * dpms off'"
@@ -41,4 +48,7 @@ in {
       };
     };
   };
+
+  # inssue swaylock
+  home.shellAliases = {kill-swaylock = "pkill -USR1 swaylock";};
 }

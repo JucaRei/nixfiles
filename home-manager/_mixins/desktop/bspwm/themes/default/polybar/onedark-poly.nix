@@ -181,11 +181,9 @@ _: {
           # ;   modules-right = ipc clock
 
           # Default
-          modules-left =
-            "LD menu RD dot-alt LD mod RD dot LD bspwm RD dot cpu dot used-memory";
+          modules-left = "LD menu RD dot-alt LD mod RD dot LD bspwm RD dot cpu dot used-memory";
           modules-center = "LD date RD dot-alt LD mpd RD sep song";
-          modules-right =
-            "volume dot bna dot bluetooth dot ethernet dot LD battery RD dot-alt LD sysmenu RD";
+          modules-right = "volume dot bna dot bluetooth dot ethernet dot LD battery RD dot-alt LD sysmenu RD";
 
           # Alternate
           # ;modules-left = openbox 2LD cpu 3LD memory 4LD filesystem 5LD
@@ -435,7 +433,6 @@ _: {
           label-separator-foreground = "\${color.ALTBACKGROUND}";
 
           # ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
         };
         "module/mod" = {
           type = "internal/bspwm";

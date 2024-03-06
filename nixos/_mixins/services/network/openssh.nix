@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{lib, ...}: {
   services = {
     openssh = {
       enable = true;
@@ -20,7 +20,7 @@
       # commands:
       #   - lpwd & pwd = print (local) parent working directory
       #   - put/get <filename> = send or receive file
-      ports = [ 22 ];
+      ports = [22];
       startWhenNeeded =
         true; # systemd will start an instance for each incoming connection.
       # public:
@@ -101,5 +101,5 @@
     # Enable mosh
     #mosh.enable = true;
   };
-  networking.firewall.allowedTCPPorts = [ 22 ];
+  networking.firewall.allowedTCPPorts = [22];
 }

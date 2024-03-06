@@ -1,5 +1,4 @@
-{ pkgs, ... }: {
-
+{pkgs, ...}: {
   config = {
     # programs = {
     #   rofi = {
@@ -13,7 +12,7 @@
     # };
 
     home = {
-      packages = with pkgs; [ rofi rofi-calc rofi-screenshot pinentry-rofi ];
+      packages = with pkgs; [rofi rofi-calc rofi-screenshot pinentry-rofi];
       file = {
         # ".config/polybar".source = builtins.path {
         #   path = ../../../../config/polybar-everforest;
@@ -26,8 +25,7 @@
         ".config/rofi/powermenu.sh" = {
           # source = ../../../../config/rofi/everforest;
           executable = true;
-          text =
-            "rofi -show p -modi p:~/.config/rofi/off.sh -theme ~/.config/rofi/powermenu_theme.rasi";
+          text = "rofi -show p -modi p:~/.config/rofi/off.sh -theme ~/.config/rofi/powermenu_theme.rasi";
         };
         "config/rofi/powermenu_theme.rasi" = {
           text = ''

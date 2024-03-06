@@ -12,7 +12,6 @@
 #     dbus.enable = true;
 #     tumbler.enable = true;
 #   };
-
 #   programs.hyprland = {
 #     enable = true;
 #     # package = inputs.hyprland.packages.${pkgs.system}.hyprland;
@@ -26,7 +25,6 @@
 #     });
 #     xwayland.enable = true;
 #   };
-
 #   xdg.portal = {
 #     # enable = true;
 #     # extraPortals = [ pkgs.xdg-desktop-portal-gnome ];
@@ -34,11 +32,9 @@
 #       enable = true;
 #     };
 #   };
-
 #   security = {
 #     polkit.enable = true;
 #   };
-
 #   environment = {
 #     systemPackages = with pkgs.gnome; [
 #       adwaita-icon-theme
@@ -71,7 +67,6 @@
 #       NIXOS_XDG_OPEN_USE_PORTAL = "1";
 #     };
 #   };
-
 #   systemd = {
 #     user.services.polkit-gnome-authentication-agent-1 = {
 #       description = "polkit-gnome-authentication-agent-1";
@@ -87,7 +82,6 @@
 #       };
 #     };
 #   };
-
 #   services = {
 #     gvfs.enable = true;
 #     devmon.enable = true;
@@ -102,42 +96,27 @@
 #     };
 #   };
 # }
-
-{ pkgs, config, lib, inputs, hostname, username, ... }:
-let nvidiaEnabled = (lib.elem "nvidia" config.services.xserver.videoDrivers);
-in {
+{ pkgs
+, config
+, lib
+, inputs
+, hostname
+, username
+, ...
+}:
+let
+  nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
+in
+{
   programs = {
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
         enableXWayland = true; # whether to enable XWayland
-        legacyRenderer = if hostname == "nitro" then
-          false
-        else
-          true; # false; # whether to use the legacy renderer (for old GPUs)
-        withSystemd = if hostname == "nitro" then
-          true
-        else
-          false; # whether to build with systemd support
-
-        ### It seen's it been removed
-        # Check if it has nvidia and nvidia Driver installed
-        #enableNvidiaPatches =
-        #  if nvidiaEnabled != true then
-        #    false else true;
+        legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
+        withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
       };
-
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
-
-      # extraConfig =
-      #   if nvidiaEnabled == true then
-      #     (lib.mkBefore ''
-      #       env = LIBVA_DRIVER_NAME,nvidia
-      #       env = XDG_SESSION_TYPE,wayland
-      #       env = GBM_BACKEND,nvidia-drm
-      #       env = __GLX_VENDOR_LIBRARY_NAME,nvidia
-      #       env = WLR_NO_HARDWARE_CURSORS,1
-      #     '') else "";
     };
   };
 
@@ -177,10 +156,10 @@ in {
   environment = {
     sessionVariables = {
       # Hint electron apps to use wayland
-      LIBVA_DRIVER_NAME = if hostname != "air" || "zion" then
-        lib.mkForce "nvidia"
-      else
-        lib.mkDefault "";
+      LIBVA_DRIVER_NAME =
+        if hostname != "air" || "zion"
+        then lib.mkForce "nvidia"
+        else lib.mkDefault "";
       NIXOS_OZONE_WL = "1";
       #GBM_BACKEND = "nvidia-drm";
       #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -208,7 +187,7 @@ in {
         # libnotify
         # libevdev
         # # libsForQt5.libkscreen
-        pkgs.sddm-astronaut
+        pkgs.sddm-astronaut-theme
 
         ### Change to home-manager later
         # mako # notification daemon
@@ -240,21 +219,21 @@ in {
         # qt5-wayland
         # qt6-wayland
         # qt5ct
-
-      ] ++ (with pkgs.cinnamon;
-        [
-          # nemo-with-extensions
-          # nemo-emblems
-          # nemo-fileroller
-          # folder-color-switcher
-        ]) ++ (with pkgs.libsForQt5;
-          [
-            # dolphin
-            # polkit-kde-agent
-          ] ++ (with pkgs.lxqt;
-            [
-              # lxqt-policykit
-            ]));
+      ]
+      ++ (with pkgs.cinnamon; [
+        # nemo-with-extensions
+        # nemo-emblems
+        # nemo-fileroller
+        # folder-color-switcher
+      ])
+      ++ (with pkgs.libsForQt5;
+      [
+        # dolphin
+        # polkit-kde-agent
+      ]
+      ++ (with pkgs.lxqt; [
+        # lxqt-policykit
+      ]));
 
     # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
     extraInit = ''
@@ -306,5 +285,4 @@ in {
     };
   };
   services.gnome = { gnome-keyring.enable = true; };
-
 }

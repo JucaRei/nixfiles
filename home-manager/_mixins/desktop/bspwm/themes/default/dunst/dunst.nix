@@ -1,6 +1,6 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   home = {
-    packages = [ pkgs.libnotify ]; # Depency
+    packages = [pkgs.libnotify]; # Depency
   };
   services = {
     dunst = {
@@ -73,7 +73,7 @@
           mouse_middle_click = "context";
           mouse_right_click = "do_action";
         };
-        experimental = { per_monitor_dpi = false; };
+        experimental = {per_monitor_dpi = false;};
         urgency_low = {
           background = "#1a1b26";
           foreground = "#c0caf5";

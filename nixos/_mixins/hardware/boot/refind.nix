@@ -1,15 +1,22 @@
-{ config, pkgs, ... }: {
-  assertions = [{
-    assertion = config.boot.loader.grub.efiSupport
-      -> config.boot.systemd-boot.enable;
-    message = "rEFInd is only compatible with EFI boot!";
-  }];
+{
+  config,
+  pkgs,
+  ...
+}: {
+  assertions = [
+    {
+      assertion =
+        config.boot.loader.grub.efiSupport
+        -> config.boot.systemd-boot.enable;
+      message = "rEFInd is only compatible with EFI boot!";
+    }
+  ];
 
-  environment.systemPackages = with pkgs; [ refind efibootmgr ];
+  environment.systemPackages = with pkgs; [refind efibootmgr];
 
   system.activationScripts = {
     refind-install = {
-      deps = [ ];
+      deps = [];
       text = ''
         if [ -s /run/current-system/sw/bin/refind-install ];then
           if [ ! -s /boot/EFI/refind/refind_x64.efi ]; then

@@ -1,5 +1,5 @@
-{ disks ? [ "/dev/vda" ], ... }:
-let defaultXfsOpts = [ "defaults" "relatime" "nodiratime" ];
+{disks ? ["/dev/vda"], ...}: let
+  defaultXfsOpts = ["defaults" "relatime" "nodiratime"];
 in {
   disko.devices = {
     disk = {
@@ -14,14 +14,14 @@ in {
               name = "boot";
               start = "0%";
               end = "1M";
-              flags = [ "bios_grub" ];
+              flags = ["bios_grub"];
             }
             {
               name = "ESP";
               start = "1M";
               end = "550MiB";
               bootable = true;
-              flags = [ "esp" ];
+              flags = ["esp"];
               fs-type = "fat32";
               content = {
                 type = "filesystem";
@@ -36,7 +36,7 @@ in {
               content = {
                 type = "filesystem";
                 # Overwirte the existing filesystem
-                extraArgs = [ "-f" ];
+                extraArgs = ["-f"];
                 format = "xfs";
                 mountpoint = "/";
                 mountOptions = defaultXfsOpts;

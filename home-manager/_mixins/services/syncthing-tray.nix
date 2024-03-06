@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   services.syncthing = {
     tray = {
       enable = true;

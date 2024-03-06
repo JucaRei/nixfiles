@@ -1,7 +1,11 @@
 # Taken from Colemickens
 # https://github.com/colemickens/nixcfg/blob/93e3d13b42e2a0a651ec3fbe26f3b98ddfdd7ab9/mixins/gfx-intel.nix
-{ pkgs, config, lib, ... }: {
-
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
   config = {
     boot = {
       initrd = {
@@ -20,11 +24,13 @@
           vaapiVdpau
           ## libvdpau-va-gl
 
-          (if (lib.versionOlder (lib.versions.majorMinor lib.version)
-            "23.11") then
-            vaapiIntel
-          else
-            intel-vaapi-driver)
+          (
+            if
+              (lib.versionOlder (lib.versions.majorMinor lib.version)
+                "23.11")
+            then vaapiIntel
+            else intel-vaapi-driver
+          )
           libvdpau-va-gl
           # intel-media-driver
         ];
@@ -47,13 +53,12 @@
     # # Allow usb controllers via HDMI
     # services.udev.extraRules = ''KERNEL=="hidraw*", ATTRS{idVendor}=="20d6", ATTRS{idProduct}=="a711", MODE="0660", TAG+="uaccess"'';
 
-    services.xserver.videoDrivers = [ "intel" "i965" ];
+    services.xserver.videoDrivers = ["intel" "i965"];
     # services.xserver.videoDrivers = [ "intel" ];
 
     ### INTEL FIX SCREEN TEARING ###
     environment = {
-
-      systemPackages = with pkgs; [ libva-utils inxi glxinfo ];
+      systemPackages = with pkgs; [libva-utils inxi glxinfo];
 
       # etc."X11/xorg.conf.d/20-intel.conf" = {
       #   text = ''
@@ -76,8 +81,7 @@
           lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
       };
 
-      sessionVariables = { LIBVA_DRIVER_NAME = "i965"; };
+      sessionVariables = {LIBVA_DRIVER_NAME = "i965";};
     };
-
   };
 }

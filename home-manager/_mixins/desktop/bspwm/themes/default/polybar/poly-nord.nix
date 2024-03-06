@@ -1,5 +1,5 @@
-{ pkgs, ... }: {
-  imports = [ ./scripts.nix ];
+{pkgs, ...}: {
+  imports = [./scripts.nix];
   services = {
     polybar = {
       enable = true;

@@ -1,5 +1,4 @@
-_:
-let
+_: let
   # "subvol=@"
   options = [
     "rw"
@@ -36,7 +35,7 @@ in {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot/efi";
-                mountOptions = [ "defaults" "noatime" "nodiratime" ];
+                mountOptions = ["defaults" "noatime" "nodiratime"];
               };
             };
             # swap = {
@@ -56,7 +55,7 @@ in {
               # size = "-5GiB";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing partition
+                extraArgs = ["-f"]; # Override existing partition
                 # extraArgs = [ "-L" "NIXOS" "-f" ];
                 # Subvolumes must set a mountpoint in order to be mounted,
                 # unless their parent is mounted
@@ -147,7 +146,7 @@ in {
                   "/swap" = {
                     mountpoint = "/.swapvol";
                     swap.swapfile.size = "5G";
-                    mountOptions = [ "defaults" "noatime" ];
+                    mountOptions = ["defaults" "noatime"];
                   };
                 };
               };

@@ -1,6 +1,10 @@
 # Screen color temperature changer
 #
-{ config, lib, ... }: {
+{
+  config,
+  lib,
+  ...
+}: {
   config = lib.mkIf config.xsession.enable {
     # Only evaluate code if using X11
     services = {
