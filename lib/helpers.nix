@@ -36,6 +36,7 @@
         in
         [
           ../nixos
+          inputs.chaotic.nixosModules.default # DEFAULT MODULE
         ]
         ++ (inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ]);
     };

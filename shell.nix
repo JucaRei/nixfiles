@@ -7,24 +7,25 @@
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
+    packages = with pkgs; [
+      bash-completion # completion for bash
+      nix-direnv # A shell extension that manages your environment for nix
+      neofetch # check system
+      duf # check space
+      nix-bash-completions # complitions for nix
+      speedtest-cli # test connection speed
+    ];
     nativeBuildInputs = with pkgs; [
       nix # nix
       nil # lsp server
-      nixpkgs-fmt # formatter 
+      nixpkgs-fmt # formatter
       home-manager # manage dots
       git # versioning
       nix-output-monitor # better output from builds
-      duf # check space
       cachix # build and share cache
-      neofetch # check system
-      speedtest-cli # test connection speed
       dropbear # ssh 
-      nix-direnv # A shell extension that manages your environment for nix
-      bash-completion # completion for bash
-      nix-bash-completions # complitions for nix
-    ]
-      # ++ inputs.pkgs.legacyPackages.${system}.pinix
-    ;
+    ];
+    # ++ inputs.pkgs.legacyPackages.${system}.pinix
     shellHook = ''
       alias ssh="dbclient"
       echo "

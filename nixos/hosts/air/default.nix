@@ -1,16 +1,10 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  config,
-  ...
-}: {
+{ inputs, lib, pkgs, config, ... }: {
   imports = [
     inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     # inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
-    (import ./disks-btrfs.nix {})
+    (import ./disks-btrfs.nix { })
     # (import ./btrfs.nix { })
     # (import ./disks-ext4.nix { })
     ../../_mixins/hardware/boot/efi.nix
@@ -40,12 +34,12 @@
 
     # blacklistedKernelModules = lib.mkDefault [ "nvidia" "nouveau" ];
     initrd = {
-      availableKernelModules = ["uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod"];
-      kernelModules = [];
+      availableKernelModules = [ "uhci_hcd" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+      kernelModules = [ ];
       verbose = false;
       compressor = "zstd";
-      supportedFilesystems = ["btrfs" "vfat"];
-      systemd = {enable = lib.mkForce true;};
+      supportedFilesystems = [ "btrfs" "vfat" ];
+      systemd = { enable = lib.mkForce true; };
     };
     # extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
     kernelModules = [
@@ -125,6 +119,8 @@
     };
     # loader.grub.efiInstallAsRemovable = lib.mkForce true;
   };
+
+  chaotic.mesa-git.enable = true;
 
   ###################
   ### Hard drives ###
@@ -243,7 +239,7 @@
       device = "/dev/disk/by-label/EFI";
       # device = "/dev/disk/by-uuid/B005-A805";
       fsType = "vfat";
-      options = ["defaults" "noatime" "nodiratime"];
+      options = [ "defaults" "noatime" "nodiratime" ];
       noCheck = true;
     };
   };
@@ -281,10 +277,10 @@
     efibootmgr
   ];
 
-  hardware = {brillo.enable = true;};
+  hardware = { brillo.enable = true; };
 
   services = {
-    hardware = {bolt.enable = true;};
+    hardware = { bolt.enable = true; };
     mbpfan = {
       enable = true;
       aggressive = true;
@@ -304,7 +300,7 @@
       # '';
     };
 
-    fstrim = {enable = lib.mkDefault true;};
+    fstrim = { enable = lib.mkDefault true; };
 
     xserver = {
       libinput = {
@@ -317,7 +313,7 @@
           disableWhileTyping = true;
           sendEventsMode = "disabled-on-external-mouse";
         };
-        mouse = {scrollMethod = "button";};
+        mouse = { scrollMethod = "button"; };
       };
     };
   };
@@ -336,8 +332,8 @@
       zswap = {
         description = "Enable ZSwap, set to LZ4 and Z3FOLD";
         enable = true;
-        wantedBy = ["basic.target"];
-        path = [pkgs.bash];
+        wantedBy = [ "basic.target" ];
+        path = [ pkgs.bash ];
         serviceConfig = {
           ExecStart = ''
             ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
@@ -358,7 +354,7 @@
     };
   };
 
-  programs = {kbdlight = {enable = true;};};
+  programs = { kbdlight = { enable = true; }; };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
@@ -367,3 +363,6 @@
     stateVersion = lib.mkForce "22.11";
   };
 }
+
+
+# nix-instantiate --strict "<nixpkgs/nixos>" -A air
