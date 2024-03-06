@@ -4,7 +4,7 @@
     ./console/aliases.nix
     ./console/bat
     ./console/bash.nix
-    ./console/fish
+    # ./console/fish
     # ./console/bottom.nix
     ./console/dircolors.nix
     ./console/direnv.nix

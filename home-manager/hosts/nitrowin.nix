@@ -5,7 +5,9 @@
   ...
 }:
 with lib.hm.gvariant; {
-  imports = [../_mixins/console/fish.nix];
+  imports = [
+    # ../_mixins/console/fish
+  ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {
   #     picture-options = "zoom";

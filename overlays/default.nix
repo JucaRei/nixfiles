@@ -17,6 +17,7 @@
       };
     });
 
+
     # https://github.com/NixOS/nixpkgs/issues/278277#issuecomment-1878292158
     keybase = prev.keybase.overrideAttrs (_old: rec {
       pname = "keybase";
@@ -162,7 +163,7 @@
     # });
 
     # fonts
-    cairo = prev.cairo;
+    # cairo = prev.cairo;
     dubai = prev.dubai;
     noto-sans-arabic = prev.font-noto-sans-arabic;
     iosevka-q = prev.iosevka-q;

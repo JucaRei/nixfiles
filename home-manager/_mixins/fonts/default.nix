@@ -4,7 +4,7 @@
     fontconfig.enable = true;
   };
 
-  home.packages = with pkgs; [
+  home.packages = with pkgs.unstable; [
     # phospor-ttf
     # material-symbols-ttf
     noto-fonts
@@ -19,8 +19,8 @@
     material-design-icons
     (nerdfonts.override {
       fonts = [
-        "FiraCode"
-        "NerdFontsSymbolsOnly"
+        # "FiraCode"
+        # "NerdFontsSymbolsOnly"
         # "UbuntuMono"
         # "Hack"
         # "DroidSansMono"
