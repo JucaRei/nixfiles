@@ -83,12 +83,6 @@
     # Gaming tweaks
     nix-gaming.url = "github:fufexan/nix-gaming";
 
-    # ags.url = "github:Aylur/ags";
-    # lf-icons = {
-    #   url = "https://raw.githubusercontent.com/gokcehan/lf/master/etc/icons.example";
-    #   flake = false;
-    # };
-
     nixd.url = "github:nix-community/nixd";
     nixd.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
@@ -122,9 +116,6 @@
     wrapper-manager.url = "github:viperML/wrapper-manager";
     wrapper-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # matugen.url = "github:InioX/matugen/module";
-    # matugen.inputs.nixpkgs.follows = "nixpkgs";
-
     # More up to date auto-cpufreq
     # auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
     # auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs";
@@ -141,25 +132,29 @@
 
     # Hyprland
     hyprland.url = "github:hyprwm/Hyprland";
-    hyprland-contrib = {
-      url = "github:hyprwm/contrib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
-      inputs.hyprland.follows = "hyprland";
-    };
-    hyprpicker = {
-      url = "github:hyprwm/hyprpicker";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    split-monitor-workspaces = {
-      url = "github:Duckonaut/split-monitor-workspaces";
-      inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
-    };
-    nixpkgs-wayland = {
-      url = "github:nix-community/nixpkgs-wayland";
-      inputs.nixpkgs.follows = "nixpkgs";
+    hyprland-contrib.url = "github:hyprwm/contrib";
+    hyprland.inputs.nixpkgs.follows = "nixpkgs";
+    hyprland-plugins.url = "github:hyprwm/hyprland-plugins";
+    hyprland-plugins.inputs.hyprland.follows = "hyprland";
+    hyprpicker.url = "github:hyprwm/hyprpicker";
+    hyprpicker.inputs.nixpkgs.follows = "nixpkgs";
+    split-monitor-workspaces.url = "github:Duckonaut/split-monitor-workspaces";
+    split-monitor-workspaces.inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
+    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
+    nixpkgs-wayland.inputs.nixpkgs.follows = "nixpkgs";
+
+    # matugen.url = "github:InioX/matugen";
+    # matugen.inputs.nixpkgs.follows = "nixpkgs";
+    # ags.url = "github:Aylur/ags";
+    # ags.inputs.nixpkgs.follows = "nixpkgs";
+    # astal.url = "github:Aylur/astal";
+    # astal.inputs.nixpkgs.follows = "github:Aylur/astal";
+    # stm.url = "github:Aylur/stm";
+    # stm.inputs.nixpkgs.follows = "github:Aylur/stm";
+
+    lf-icons = {
+      url = "github:gokcehan/lf";
+      flake = false;
     };
 
     plasma-manager = {

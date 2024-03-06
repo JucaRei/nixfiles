@@ -96,49 +96,27 @@
 #     };
 #   };
 # }
-{
-  pkgs,
-  config,
-  lib,
-  inputs,
-  hostname,
-  username,
-  ...
-}: let
+{ pkgs
+, config
+, lib
+, inputs
+, hostname
+, username
+, ...
+}:
+let
   nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
-in {
+in
+{
   programs = {
     hyprland = {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
         enableXWayland = true; # whether to enable XWayland
-        legacyRenderer =
-          if hostname == "nitro"
-          then false
-          else true; # false; # whether to use the legacy renderer (for old GPUs)
-        withSystemd =
-          if hostname == "nitro"
-          then true
-          else false; # whether to build with systemd support
-
-        ### It seen's it been removed
-        # Check if it has nvidia and nvidia Driver installed
-        #enableNvidiaPatches =
-        #  if nvidiaEnabled != true then
-        #    false else true;
+        legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
+        withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
       };
-
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
-
-      # extraConfig =
-      #   if nvidiaEnabled == true then
-      #     (lib.mkBefore ''
-      #       env = LIBVA_DRIVER_NAME,nvidia
-      #       env = XDG_SESSION_TYPE,wayland
-      #       env = GBM_BACKEND,nvidia-drm
-      #       env = __GLX_VENDOR_LIBRARY_NAME,nvidia
-      #       env = WLR_NO_HARDWARE_CURSORS,1
-      #     '') else "";
     };
   };
 
@@ -148,7 +126,7 @@ in {
       displayManager = {
         sddm = {
           enable = true;
-          wayland = {enable = true;};
+          wayland = { enable = true; };
           theme = "astronaut";
           autoNumlock = true;
         };
@@ -249,13 +227,13 @@ in {
         # folder-color-switcher
       ])
       ++ (with pkgs.libsForQt5;
-        [
-          # dolphin
-          # polkit-kde-agent
-        ]
-        ++ (with pkgs.lxqt; [
-          # lxqt-policykit
-        ]));
+      [
+        # dolphin
+        # polkit-kde-agent
+      ]
+      ++ (with pkgs.lxqt; [
+        # lxqt-policykit
+      ]));
 
     # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
     extraInit = ''
@@ -277,14 +255,14 @@ in {
       enable = true;
       wlr.enable = true;
       config = {
-        common = {default = ["xdph" "gtk"];};
+        common = { default = [ "xdph" "gtk" ]; };
         hyprland = {
-          default = ["hyprland" "gtk"];
-          "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
+          default = [ "hyprland" "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
         };
       };
       xdgOpenUsePortal = true;
-      extraPortals = [pkgs.xdg-desktop-portal-gtk];
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
   };
 
@@ -306,5 +284,5 @@ in {
       login.enableGnomeKeyring = true;
     };
   };
-  services.gnome = {gnome-keyring.enable = true;};
+  services.gnome = { gnome-keyring.enable = true; };
 }

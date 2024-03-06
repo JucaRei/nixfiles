@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  inputs,
-  ...
+{ config
+, lib
+, pkgs
+, inputs
+, ...
 }: {
   imports = [
     # inputs.nixos-hardware.nixosModules.common-cpu-intel
@@ -83,7 +82,7 @@
         "sd_mod"
         "rtsx_pci_sdmmc"
       ];
-      kernelModules = [];
+      kernelModules = [ ];
       verbose = lib.mkForce false;
     };
     consoleLogLevel = lib.mkForce 0;
@@ -91,7 +90,7 @@
       # useTmpfs = true;
       cleanOnBoot = true;
     };
-    supportedFilesystems = ["vfat" "btrfs"];
+    supportedFilesystems = [ "vfat" "btrfs" ];
 
     kernelModules = [
       "kvm-intel"
@@ -105,15 +104,28 @@
       # The 'splash' arg is included by the plymouth option
       "boot.shell_on_fail"
     ];
-    plymouth = {
+    # plymouth = {
+    # enable = true;
+    # logo = "${inputs.nixos-artwork}/wallpapers/nix-wallpaper-watersplash.png";
+    # themePackages = [
+    # pkgs.adi1090x-plymouth-themes
+    # pkgs.catppuccin-plymouth
+    # ];
+    # theme = "deus_ex";
+    # theme = "catppuccin-macchiato";
+    # };
+    plymouth = rec {
       enable = true;
-      # logo = "${inputs.nixos-artwork}/wallpapers/nix-wallpaper-watersplash.png";
-      themePackages = [
-        # pkgs.adi1090x-plymouth-themes
-        pkgs.catppuccin-plymouth
+      # black_hud circle_hud cross_hud square_hud
+      # circuit connect cuts_alt seal_2 seal_3
+      theme = "connect";
+      themePackages = with pkgs; [
+        (
+          adi1090x-plymouth-themes.override {
+            selected_themes = [ theme ];
+          }
+        )
       ];
-      # theme = "deus_ex";
-      theme = "catppuccin-macchiato";
     };
 
     # Temporary workaround until mwprocapture 4328 patch is merged
@@ -424,7 +436,7 @@
 
   services = {
     dbus.implementation = lib.mkForce "broker";
-    acpid = {enable = true;};
+    acpid = { enable = true; };
     power-profiles-daemon.enable = lib.mkDefault true;
     # upower.enable = true;
     # udev.extraRules = lib.mkMerge [
@@ -533,25 +545,25 @@
     # Provides a virtual file system for environment modules. Solution
     # from NixOS forums to help shotwell to keep preference settings
     #---------------------------------------------------------------------
-    envfs = {enable = true;};
+    envfs = { enable = true; };
 
     #---------------------------------------------------------------------
     # Activate the automatic trimming process for SSDs on the NixOS system
     # Manual over-ride is sudo fstrim / -v
     #---------------------------------------------------------------------
-    fstrim = {enable = true;};
+    fstrim = { enable = true; };
   };
 
   ### Load z3fold and lz4
 
   systemd = {
-    oomd = {enable = false;};
+    oomd = { enable = false; };
     services = {
       zswap = {
         description = "Enable ZSwap, set to LZ4 and Z3FOLD";
         enable = true;
-        wantedBy = ["basic.target"];
-        path = [pkgs.bash];
+        wantedBy = [ "basic.target" ];
+        path = [ pkgs.bash ];
         serviceConfig = {
           ExecStart = ''
             ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
@@ -587,7 +599,7 @@
   #};
 
   nix.settings = {
-    extra-substituters = ["https://nitro.cachix.org"];
-    extra-trusted-public-keys = ["nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U="];
+    extra-substituters = [ "https://nitro.cachix.org" ];
+    extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
   };
 }
