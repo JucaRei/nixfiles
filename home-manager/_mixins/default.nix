@@ -23,7 +23,7 @@
     # For all machines
     packages = with pkgs; [
       duf # Modern Unix `df`
-      wget2 # Terminal downloader
+      # wget2 # Terminal downloader
       moar # Modern Unix `less`
       nix-cleanup
       nix-whereis

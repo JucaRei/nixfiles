@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    ../../_mixins/fonts
+    # ../../_mixins/fonts
     # ../../_mixins/services/keybase.nix
     # ../../_mixins/services/syncthing.nix
   ];
@@ -24,11 +24,6 @@ in
       #   tab_width = 4
       #   [ALIASES]
       # ";
-      "${config.home.homeDirectory}/Pictures/wallpapers" = {
-        source = ../../_mixins/config/wallpapers;
-        recursive = true;
-      };
-      ".face".source = ./face.jpg;
       #file."Development/debian/.envrc".text = "export DEB_VENDOR=Debian";
       #file."Development/ubuntu/.envrc".text = "export DEB_VENDOR=Ubuntu";
       ".ssh/config".text = ''
@@ -114,7 +109,7 @@ in
         # dogdns # Modern Unix `dig`
         # dua # Modern Unix `du`
         duf # Modern Unix `df`
-        frogmouth # Terminal mardown viewer
+        # frogmouth # Terminal mardown viewer
         # du-dust # Modern Unix `du`
         # entr # Modern Unix `watch`
         # fast-cli # Terminal fast.com
@@ -132,14 +127,14 @@ in
         # libva-utils # Terminal VAAPI info
         # lurk # Modern Unix `strace`
         # mdp # Terminal Markdown presenter
-        moar # Modern Unix `less`
+        # moar # Modern Unix `less`
         # mtr # Modern Unix `traceroute`
         # netdiscover # Modern Unix `arp`
         # nethogs # Modern Unix `iftop`
         # nodePackages.prettier # Code format
         # nurl # Nix URL fetcher
         # nyancat # Terminal rainbow spewing feline
-        # speedtest-go # Terminal speedtest.net
+        speedtest-go # Terminal speedtest.net
         # optipng # Terminal PNG optimizer
         # procs # Modern Unix `ps`
         # python310Packages.gpustat # Terminal GPU info
@@ -176,15 +171,15 @@ in
 
     home-manager = lib.mkDefault {
       enable = true;
-      path = "${config.home.homeDirectory}/home-manager";
+      # path = "${config.home.homeDirectory}/home-manager";
     };
   };
 
   services = {
     home-manager = {
       autoUpgrade = {
-        enable = true;
-        frequency = "weekly";
+        enable = false;
+        # frequency = "weekly";
       };
     };
   };

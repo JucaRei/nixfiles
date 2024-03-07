@@ -253,7 +253,7 @@
           "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
           "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
           # Wsl
-          "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; desktop = null; };
+          "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; desktop = null; stateVersion = "22.11"; };
           # Raspberry 3
           "juca@DietPi" = libx.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
           # Iso
