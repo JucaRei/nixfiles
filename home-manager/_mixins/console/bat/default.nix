@@ -1,11 +1,7 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ pkgs, lib, ... }: {
   programs.bat = {
     enable = true;
-    config = {theme = "tokyo_night";};
+    config = { theme = "tokyo_night"; };
     themes = {
       # cyberpunk-neon =
       #   builtins.readFile ./themes/cyberpunk-neon.tmTheme;
@@ -33,6 +29,6 @@
       Type = "oneshot";
       ExecStart = "${pkgs.bat}/bin/bat cache --build";
     };
-    Install.WantedBy = ["default.target"];
+    Install.WantedBy = [ "default.target" ];
   };
 }

@@ -1,12 +1,7 @@
-{ pkgs
-, lib
-, config
-, inputs
-, hostname
-, ...
-}:
+{ pkgs, lib, config, inputs, hostname, ... }:
 let
   nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
+  isSystemd = if ("${pkgs.toybox}/bin/ps -p 1 -o comm=" == "systemd") then true else false;
 in
 {
   imports = [ ./themes/my-theme ];
@@ -40,7 +35,7 @@ in
       windowManager = {
         hyprland = {
           # enable = if hostname != "zion" then true else false;
-          enable = true;
+          enable = isSystemd;
           # Check if it has nvidia and nvidia Driver installed
           # enableNvidiaPatches = if nvidiaEnabled != true then false else true;
           # enableNvidiaPatches = true;

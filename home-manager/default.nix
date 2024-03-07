@@ -1,4 +1,4 @@
-{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, nixgl, ... }:
+{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   isLima = builtins.substring 0 5 hostname == "lima-";
@@ -27,8 +27,8 @@ in
     ++ lib.optional (isWorkstation) ./_mixins/desktop;
 
   home = {
-    inherit username;
     inherit stateVersion;
+    inherit username;
     activation.report-changes = config.lib.dag.entryAnywhere ''
       if [[ -n "$oldGenPath" && -n "$newGenPath" ]]; then
         ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
