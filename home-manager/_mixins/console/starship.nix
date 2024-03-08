@@ -834,10 +834,10 @@ in {
       #   command_timeout = 1000;
       # };
     };
-    enableBashIntegration = true;
-    enableZshIntegration = false;
-    enableFishIntegration = false;
-    enableIonIntegration = false;
-    enableNushellIntegration = false;
+    # enableBashIntegration = true;
+    # enableZshIntegration = false;
+    # enableFishIntegration = false;
+    # enableIonIntegration = false;
+    # enableNushellIntegration = false;
   };
 }

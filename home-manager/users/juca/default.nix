@@ -104,13 +104,13 @@ in
         # curlie # Terminal HTTP client
         # dconf2nix # Nix code from Dconf files
         # debootstrap # Terminal Debian installer
-        diffr # Modern Unix `diff`
+        # diffr # Modern Unix `diff`
         # difftastic # Modern Unix `diff`
         # dogdns # Modern Unix `dig`
         # dua # Modern Unix `du`
-        duf # Modern Unix `df`
+        # duf # Modern Unix `df`
         # frogmouth # Terminal mardown viewer
-        # du-dust # Modern Unix `du`
+        du-dust # Modern Unix `du`
         # entr # Modern Unix `watch`
         # fast-cli # Terminal fast.com
         # fd # Modern Unix `find`

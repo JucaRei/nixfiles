@@ -80,10 +80,10 @@ in
       ### Allow old broken electron
       permittedInsecurePackages = [
         # Workaround for https://github.com/nix-community/home-manager/issues/2942
-        "electron-21.4.0"
-        "electron-12.2.3"
-        "openssl-1.1.1w"
-        "electron-13.6.9"
+        # "electron-21.4.0"
+        # "electron-12.2.3"
+        # "openssl-1.1.1w"
+        # "electron-13.6.9"
         # "mailspring-1.11.0"
       ];
       # Disable if you don't want unfree packages

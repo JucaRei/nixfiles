@@ -8,7 +8,8 @@
     # ./console/bottom.nix
     ./console/dircolors.nix
     ./console/direnv.nix
-    ./console/eza.nix
+    # ./console/eza.nix
+    ./lsd
     ./console/htop
     ./console/git.nix
     # ./console/gpg.nix
@@ -27,7 +28,7 @@
       moar # Modern Unix `less`
       nix-cleanup
       nix-whereis
-      cachix
+      # cachix
     ];
 
     sessionVariables =
