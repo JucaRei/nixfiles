@@ -368,3 +368,18 @@ MATE Desktop 🧉 and Pantheon 🏛️ are the two desktop options available. Th
 
 
 ## Inspirations 🧑‍🏫
+
+ai-ri
+arikak
+Baitinq
+Brenix
+Cnteng
+dixslyf
+Emergent Mind
+erahal
+Gerschili
+hmjad3011
+IogaMaster
+inayxi
+lilystart
+ryan
