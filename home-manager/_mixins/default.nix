@@ -9,7 +9,7 @@
     ./console/dircolors.nix
     ./console/direnv.nix
     # ./console/eza.nix
-    ./lsd
+    ./console/lsd
     ./console/htop
     ./console/git.nix
     # ./console/gpg.nix
