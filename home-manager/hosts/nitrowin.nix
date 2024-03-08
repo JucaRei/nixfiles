@@ -5,7 +5,7 @@
 }:
 with lib.hm.gvariant; {
   imports = [
-    # ../_mixins/console/fish
+    ../_mixins/non-nixos
   ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {
@@ -21,6 +21,7 @@ with lib.hm.gvariant; {
         cloneit
       ];
     };
+    services.nonNixOs.enable = true;
     nix.settings = {
       extra-substituters = [ "https://nitro.cachix.org" ];
       extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
