@@ -27,10 +27,10 @@
     # nixos-artwork.url = "github:NixOS/nixos-artwork";
     # nixos-artwork.flake = false;
 
-    flatpaks.url = "github:GermanBread/declarative-flatpak/stable";
+    # flatpaks.url = "github:GermanBread/declarative-flatpak/stable";
 
-    pinix.url = "github:remi-dupre/pinix";
-    pinix.inputs.nixpkgs.follows = "nixpkgs";
+    # pinix.url = "github:remi-dupre/pinix";
+    # pinix.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -243,17 +243,17 @@
           "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
           "juca@rocinante-headless" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
           #"juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "mate"; platform = if isDarwin then "x86_64-darwin" else "x86_64-linux"; };
-          "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "awesome"; };
+          # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "awesome"; };
           # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; };
           "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
           # Testing
           "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
-          "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "awesome"; };
+          # "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "awesome"; };
           "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; };
           "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
           "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
           # Wsl
-          "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; desktop = null; stateVersion = "22.11"; };
+          "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; stateVersion = "23.11"; };
           # Raspberry 3
           "juca@DietPi" = libx.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
           # Iso

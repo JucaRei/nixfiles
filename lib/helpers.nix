@@ -15,7 +15,7 @@
       modules =
         if (platform != "aarch64-linux" || "x86_64-darwin")
         then [
-          inputs.flatpaks.homeManagerModules.default
+          # inputs.flatpaks.homeManagerModules.default
           inputs.nur.hmModules.nur
           ../home-manager
         ]
