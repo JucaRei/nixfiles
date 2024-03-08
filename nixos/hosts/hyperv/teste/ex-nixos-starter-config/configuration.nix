@@ -41,11 +41,11 @@
 
   users.users = {
     # password: temp a
-    root.initialHashedPassword = "$6$FRmKgElD/80xQiXn$aF.tKv0VOLj9D3aUJjoYsj3AzSj1rq5fVooE7tgtNuTawt8ZWgaRyUUxsikX5whbna4jrzXrDZmVFqik.kyc2/";
+    root.initialHashedPassword = "$6$iXUPCNyNN2.ulexC$k3IQgaw55qIKv2DNtOHMfICl7w5XolNwYN8j9RE16bIR7nqPd7uOndGQ00zJqAcfvxpP4NIUtNpgxunDidpVA/";
 
     juca = {
       # password: temp b
-      initialHashedPassword = "$6$iLmo7C9VoAnJZ6v1$qCSORkbiY44IbcrrF1DcTnJtpOkqeD2tGgUoaDgtzPdFqKWKJ28AhJqmuOf8IWoSNu2DQJM.QlWO1Ok05kFgp0";
+      initialHashedPassword = "$6$iXUPCNyNN2.ulexC$k3IQgaw55qIKv2DNtOHMfICl7w5XolNwYN8j9RE16bIR7nqPd7uOndGQ00zJqAcfvxpP4NIUtNpgxunDidpVA/";
       extraGroups = [ "wheel" ];
       isNormalUser = true;
       shell = pkgs.zsh;
@@ -56,7 +56,7 @@
 
   # Enables copy / paste when running in a KVM with spice.
   #services.spice-vdagentd.enable = true;
- 
+
   virtualisation.hypervGuest.enable = true;
 
   services.xserver = {

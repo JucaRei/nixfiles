@@ -21,15 +21,15 @@
 
     "/boot" =
       {
-        # device = "/dev/disk/by-uuid/8F58-CB45";
-        device = "/dev/disk/by-label/boot";
+        device = "/dev/disk/by-uuid/CAAA-44EA";
+        # device = "/dev/disk/by-label/boot";
         fsType = "vfat";
       };
 
     "/nix" =
       {
-        # device = "/dev/disk/by-uuid/3d947e79-04db-4dca-a59c-47ad148ad10e";
-        device = "/dev/disk/by-label/nixos";
+        device = "/dev/disk/by-uuid/ce51df6f-a7e4-49bc-b092-43a525cdc727";
+        # device = "/dev/disk/by-label/nixos";
         fsType = "ext4";
       };
 
@@ -48,13 +48,13 @@
       };
   };
 
-  # boot.initrd.luks.devices."crypted".device = "/dev/disk/by-uuid/b8f1c914-d48e-43f4-a56b-091b1950aa4e";
-  boot.initrd.luks.devices."crypted".device = "/dev/disk/by-label/nixos";
+  boot.initrd.luks.devices."crypted".device = "/dev/disk/by-uuid/4e6d5789-9e6e-4861-b254-279bf47f199e";
+  # boot.initrd.luks.devices."crypted".device = "/dev/disk/by-label/nixos";
 
   swapDevices =
     [{
-      # device = "/dev/disk/by-uuid/0251adc3-e3a9-46c1-9988-b7c74569038f";
-      device = "/dev/disk/by-label/swap";
+      device = "/dev/disk/by-partuuid/88eee38c-6ea3-461b-b760-f10529c714c0";
+      # device = "/dev/disk/by-label/swap";
       randomEncryption.enable = true;
     }];
 

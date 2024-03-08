@@ -110,8 +110,8 @@ nixos-generate-config --root /mnt && cd /mnt/etc/nixos
 #   ./hardware-configuration.nix && \
 #   nix-shell -p nixpkgs-fmt --run 'nixpkgs-fmt .'
 
-cat <<EOF >~/encrypted-swap.sh
-#!/usr/bin/env bash
+# cat <<EOF >~/encrypted-swap.sh
+###  !/usr/bin/env bash
 
 for i in {1..3}; do
   export "PART$i"=$(lsblk -lp | grep part | grep ${DISK} | awk -v line=$i 'NR==line{print $1}')
@@ -148,6 +148,11 @@ main() {
 cp $hwConfig $backupHwConfig
 trap 'cp $backupHwConfig $hwConfig' ERR
 main
-EOF
+# EOF
 
-chmod u+x ~/encrypt-swap.sh && ~/encrypt-swap.sh
+# chmod u+x ~/encrypt-swap.sh && ~/encrypt-swap.sh
+
+# nix-shell --run 'mkpasswd -m SHA-512 -s' -p mkpasswd
+
+# NIX_CONFIG="experimental-features = nix-command flakes" \
+# sudo nixos-install --flake .#hyperv
