@@ -172,17 +172,17 @@
     # };
   };
 
-  nixConfig = {
-    extra-trusted-substituters = [
-      "https://cache.nixos.org"
-      "https://cachix.cachix.org"
-      "https://nix-community.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-    ];
-  };
+  # nixConfig = {
+  #   extra-trusted-substituters = [
+  #     "https://cache.nixos.org"
+  #     "https://cachix.cachix.org"
+  #     "https://nix-community.cachix.org"
+  #   ];
+  #   extra-trusted-public-keys = [
+  #     "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM="
+  #     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+  #   ];
+  # };
 
   outputs = { self, ... } @ inputs:
     with inputs; let

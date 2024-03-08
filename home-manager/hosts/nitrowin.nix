@@ -22,9 +22,9 @@ with lib.hm.gvariant; {
       ];
     };
     services.nonNixOs.enable = true;
-    nix.settings = {
-      extra-substituters = [ "https://nitro.cachix.org" ];
-      extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
-    };
+    # nix.settings = {
+    #   extra-substituters = [ "https://nitro.cachix.org" ];
+    #   extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+    # };
   };
 }
