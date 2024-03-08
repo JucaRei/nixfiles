@@ -1,9 +1,8 @@
-{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, ... }:
+{ config, desktop, inputs, lib, outputs, pkgs, stateVersion, username, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   isLima = builtins.substring 0 5 hostname == "lima-";
   isWorkstation = if (desktop != null) then true else false;
-  isStreamstation = if (hostname == "phasma" || hostname == "vader") then true else false;
 in
 {
   # Only import desktop configuration if the host is desktop enabled
@@ -16,7 +15,7 @@ in
       # Or modules exported from other flakes (such as nix-colors):
       # inputs.nix-colors.homeManagerModules.default
       # inputs.sops-nix.homeManagerModules.sops
-      inputs.nix-index-database.hmModules.nix-index
+      # inputs.nix-index-database.hmModules.nix-index
 
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
@@ -63,7 +62,7 @@ in
       # inputs.agenix.overlays.default
 
       # Or define it inline, for example:
-      (final: prev: {
+      (_final: _prev: {
         # hi = final.hello.overrideAttrs (oldAttrs: {
         #   patches = [ ./change-hello-to-hi.patch ];
         # });
@@ -148,7 +147,7 @@ in
       ''
         log-lines = 15
 
-        # fallback = true
+        fallback = true
 
         # Free up to 1GiB whenever there is less than 100MiB left.
         # min-free = ${toString (100 * 1024 * 1024)}

@@ -179,7 +179,7 @@
     # mpv-thumbfast-osc = prev.mpv-thumbfast-osc;
     # youtube_tui = prev.youtube_tui;
     nix-whereis = prev.nix-whereis;
-    gruvbox-dark = prev.gruvbox-dark;
+    gruvbox-dark-gtk = prev.gruvbox-dark-gtk;
   };
 
   # accessible through 'pkgs.unstable'

@@ -50,6 +50,5 @@
       enable = true;
       package = pkgs.jiq;
     };
-    home-manager.enable = true;
   };
 }
