@@ -1,9 +1,5 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{ config, pkgs, lib, ... }:
+let
   scheme = {
     doom = {
       scheme = "Doom One Dark";
@@ -46,8 +42,9 @@
       base0F = "00f769";
     };
   };
-in {
-  home.packages = with pkgs; [discord discocss];
+in
+{
+  home.packages = with pkgs; [ discord discocss ];
 
   xdg.configFile."discord/discocss/custom.css".text = ''
     .theme-dark {

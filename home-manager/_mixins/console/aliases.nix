@@ -12,6 +12,7 @@
     sxorg = "export DISPLAY=:0.0";
     # rebuild-iso-console = "pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso-console.config.system.build.isoImage && popd";
     # rebuild-iso-desktop = "pushd $HOME/.dotfiles/nixfiles && nix build .#nixosConfigurations.iso-desktop.config.system.build.isoImage && popd";
+    ping = "gping";
     nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
     search = "nix search nixpkgs";
     mkhostid = "head -c4 /dev/urandom | od -A none -t x4";

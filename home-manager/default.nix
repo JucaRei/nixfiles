@@ -111,7 +111,7 @@ in
         daemonIOLowPriority = true;
       }
       else {
-        # accept-flake-config = true;
+        accept-flake-config = true;
         auto-optimise-store = true;
         experimental-features = [
           "nix-command"
