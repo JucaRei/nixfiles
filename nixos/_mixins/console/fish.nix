@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, lib, hostname, ... }:
+let
+  isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
+in
+{
   programs = {
     fish = {
       enable = true;
@@ -34,13 +38,13 @@
         set -U fish_pager_color_prefix white --bold --underline
         set -U fish_pager_color_progress brwhite '--background=cyan'
       '';
-      shellAbbrs = {
+      shellAbbrs = lib.mkIf (isInstall) {
         captive-portal = "${pkgs.xdg-utils}/bin/xdg-open http://$(${pkgs.iproute2}/bin/ip --oneline route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $3}'";
         nix-gc = "sudo nix-collect-garbage --delete-older-than 10d && nix-collect-garbage --delete-older-than 10d";
-        update-lock = "pushd $HOME/Zero/nix-config && nix flake update && popd";
+        update-lock = "pushd $HOME/.dotfiles/nixfiles && nix flake update && popd";
       };
       shellAliases = {
-        # nano = "micro";
+        nano = "micro";
       };
     };
   };
