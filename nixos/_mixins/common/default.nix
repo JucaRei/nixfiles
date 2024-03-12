@@ -33,7 +33,7 @@
       # ../services/zerotier.nix
       ../config/scripts/nixos-change-summary.nix
       # ../sys/check-updates.nix
-      ../sys/sysctl.nix
+      # ../sys/sysctl.nix
     ]
     ++ lib.optionals (hostname == "rasp3") [
       ./aliases.nix
@@ -115,7 +115,7 @@
       lib.mkForce [ gitMinimal home-manager micro rsync ];
     systemPackages = with pkgs;
       [
-        agenix
+        # agenix
         pciutils
         psmisc
         unzip

@@ -89,6 +89,7 @@
     # chatgpt-cli = prev.chatgpt-cli;
     nix-cleanup = prev.nix-cleanup;
     nix-whereis = prev.nix-whereis;
+    nix-inspect = prev.nix-inspect;
     sarasa-gothic = prev.sarasa-gothic;
     iosevka-q = prev.iosevka-q;
   };

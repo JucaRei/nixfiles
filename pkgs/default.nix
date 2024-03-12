@@ -104,6 +104,7 @@
   # list-iommu = pkgs.callPackage ./scripts/list-iommu { };
   nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup { };
   nix-whereis = pkgs.callPackage ./scripts/nix-whereis { };
+  nix-inspect = pkgs.callPackage ./scripts/nix-inspect { };
   nixos-change-summary = pkgs.callPackage ./scripts/nixos-change-summary { };
   # oom-test = pkgs.callPackage ./scripts/oom-test { };
   # paper = pkgs.callPackage ./scripts/paper { };
