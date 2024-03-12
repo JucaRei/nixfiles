@@ -1,7 +1,6 @@
-{
-  hostname,
-  lib,
-  ...
+{ hostname
+, lib
+, ...
 }: {
   # services.xserver = if (hostname == "nitro") then {
   services.xserver = {
@@ -44,7 +43,7 @@
     keyMap =
       if hostname == "nitro"
       then "br-abnt2"
-      else "us-mac";
+      else "us";
     font = lib.mkDefault "Lat2-Terminus16";
   };
 }
