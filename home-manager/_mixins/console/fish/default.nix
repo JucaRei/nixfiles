@@ -3,6 +3,10 @@ let
   inherit (pkgs.stdenv) isLinux;
 in
 {
+  imports = [
+    ../powerline-go.nix
+    ../zoxide.nix
+  ];
   programs = {
     fish = {
       enable = true;

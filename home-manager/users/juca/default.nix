@@ -93,62 +93,6 @@ in
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
     packages = with pkgs;
       lib.mkDefault [
-        # asciinema # Terminal recorder
-        # black # Code format Python
-        # bmon # Modern Unix `iftop`
-        # breezy # Terminal bzr client
-        # butler # Terminal Itch.io API client
-        # chafa # Terminal image viewer
-        # chroma # Code syntax highlighter
-        # clinfo # Terminal OpenCL info
-        # curlie # Terminal HTTP client
-        # dconf2nix # Nix code from Dconf files
-        # debootstrap # Terminal Debian installer
-        # diffr # Modern Unix `diff`
-        # difftastic # Modern Unix `diff`
-        # dogdns # Modern Unix `dig`
-        # dua # Modern Unix `du`
-        # duf # Modern Unix `df`
-        # frogmouth # Terminal mardown viewer
-        du-dust # Modern Unix `du`
-        # entr # Modern Unix `watch`
-        # fast-cli # Terminal fast.com
-        # fd # Modern Unix `find`
-        # glow # Terminal Markdown renderer
-        # gping # Modern Unix `ping`
-        # hexyl # Modern Unix `hexedit`
-        # httpie # Terminal HTTP client
-        # hyperfine # Terminal benchmarking
-        # iperf3 # Terminal network benchmarking
-        # iw # Terminal WiFi info
-        # jpegoptim # Terminal JPEG optimizer
-        # jiq # Modern Unix `jq`
-        # lazygit # Terminal Git client
-        # libva-utils # Terminal VAAPI info
-        # lurk # Modern Unix `strace`
-        # mdp # Terminal Markdown presenter
-        # moar # Modern Unix `less`
-        # mtr # Modern Unix `traceroute`
-        # netdiscover # Modern Unix `arp`
-        # nethogs # Modern Unix `iftop`
-        # nodePackages.prettier # Code format
-        # nurl # Nix URL fetcher
-        # nyancat # Terminal rainbow spewing feline
-        speedtest-go # Terminal speedtest.net
-        # optipng # Terminal PNG optimizer
-        # procs # Modern Unix `ps`
-        # python310Packages.gpustat # Terminal GPU info
-        # quilt # Terminal patch manager
-        ripgrep # Modern Unix `grep`
-        # rustfmt # Code format Rust
-        # shellcheck # Code lint Shell
-        # shfmt # Code format Shell
-        # tldr # Modern Unix `man`
-        # tokei # Modern Unix `wc` for code
-        # vdpauinfo # Terminal VDPAU info
-        # wavemon # Terminal WiFi monitor
-        # yq-go # Terminal `jq` for YAML
-        # nvchad
       ];
     # sessionVariables = {
     #   BZR_EMAIL = "Reinaldo P Jr <code@wimpress.io>";

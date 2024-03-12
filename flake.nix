@@ -32,6 +32,9 @@
     # pinix.url = "github:remi-dupre/pinix";
     # pinix.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Handles Flatpaks.
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
+
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -243,13 +246,9 @@
           "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
           "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
           "juca@rocinante-headless" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
-          #"juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "mate"; platform = if isDarwin then "x86_64-darwin" else "x86_64-linux"; };
-          # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "awesome"; };
-          # "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; };
           "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
           # Testing
           "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
-          # "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "awesome"; };
           "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; };
           "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
           "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
@@ -257,6 +256,12 @@
           "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; stateVersion = "23.11"; };
           # Raspberry 3
           "juca@DietPi" = libx.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
+          # VMs
+          "juca@minimech" = libx.mkHome { hostname = "minimech"; username = "juca"; };
+          "juca@scrubber" = libx.mkHome { hostname = "scrubber"; username = "juca"; desktop = "pantheon"; };
+          "juca@lima-builder" = libx.mkHome { hostname = "lima-builder"; username = "juca"; };
+          "juca@lima-default" = libx.mkHome { hostname = "lima-default"; username = "juca"; };
+          # "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "awesome"; };
           # Iso
           # "juca@iso-console" = libx.mkHome { hostname = "iso-console"; username = "nixos"; };
           # "juca@iso-desktop" = libx.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
@@ -271,8 +276,11 @@
         # nom build .#nixosConfigurations.nitro.config.system.build.toplevel
 
         # ISO
-        iso-console = libx.mkHost { hostname = "iso-console"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"; hostid = null; };
-        iso-desktop = libx.mkHost { hostname = "iso-desktop"; username = "nixos"; installer = nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"; desktop = "pantheon"; hostid = "6ade8560"; };
+        iso-console = libx.mkHost { hostname = "iso-console"; username = "nixos"; };
+        iso-gnome = libx.mkHost { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+        iso-mate = libx.mkHost { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        iso-pantheon = libx.mkHost { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+        # Workstations
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles/nixfiles
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
@@ -297,4 +305,3 @@
       };
     };
 }
-
