@@ -93,7 +93,6 @@ in
       # upterm # Terminal sharing
       # wget # Terminal HTTP client
       wget2 # Terminal HTTP client
-      halloy
       wthrr # Modern Unix weather
       wormhole-william # Terminal file transfer
       # yq-go # Terminal `jq` for YAML
@@ -137,11 +136,6 @@ in
         SYSTEMD_EDITOR = "${editor}";
         VISUAL = "${editor}";
       };
-
-    file = {
-      "${config.xdg.configHome}/halloy/themes/harmony-dark.yaml".text = builtins.readFile ./config/halloy/harmony-dark.yaml;
-    };
-
   };
 
   programs = {
