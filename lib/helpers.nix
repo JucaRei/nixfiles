@@ -2,20 +2,18 @@
   # Helper function for generating home-manager configs
   mkHome =
     ### TODO - add displays
-    { hostname, username, desktop ? null, stateVersion ? "23.11", platform ? "x86_64-linux" }:
+    { hostname, username, desktop ? null, stateVersion ? "23.11", platform ? "x86_64-linux", extraModules ? [ ] }:
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
         inherit inputs outputs desktop hostname platform username stateVersion;
       };
-      modules =
-        if (platform != "aarch64-linux" || "x86_64-darwin")
-        then [
-          # inputs.flatpaks.homeManagerModules.default
-          inputs.nur.hmModules.nur
-          ../home-manager
-        ]
-        else [ ../home-manager ];
+      modules = [
+        ({ ... }: { })
+        # inputs.flatpaks.homeManagerModules.default
+        inputs.nur.hmModules.nur
+        ../home-manager
+      ];
     };
 
   # Helper function for generating host configs
@@ -23,7 +21,7 @@
     { hostname, username, desktop ? null, hostid ? null, platform ? "x86_64-linux", stateVersion ? "23.11" }:
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
-        inherit inputs outputs desktop hostname username hostid stateVersion;
+        inherit inputs outputs desktop hostname platform username hostid stateVersion;
       };
       modules =
         let
