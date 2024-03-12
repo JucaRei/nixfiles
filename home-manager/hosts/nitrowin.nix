@@ -19,6 +19,13 @@ with lib.hm.gvariant; {
       packages = with pkgs; [
         util-linux
         cloneit
+         unstable.nix
+      nixpkgs-fmt
+      nil
+      deadnix
+      nix-direnv
+      nix-output-monitor
+      cachix
       ];
     };
     services.nonNixOs.enable = true;

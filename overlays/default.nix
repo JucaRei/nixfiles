@@ -87,6 +87,8 @@
 
     cloneit = prev.cloneit;
     # chatgpt-cli = prev.chatgpt-cli;
+    nix-cleanup = prev.nix-cleanup;
+    nix-whereis = prev.nix-whereis;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

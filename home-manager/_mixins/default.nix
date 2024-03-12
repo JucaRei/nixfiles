@@ -3,8 +3,8 @@
     ./config/scripts/home-manager_change_summary.nix
     ./console/aliases.nix
     ./console/bat
-    ./console/bash.nix
-    # ./console/fish
+    # ./console/bash.nix
+    ./console/fish
     # ./console/bottom.nix
     ./console/dircolors.nix
     ./console/direnv.nix

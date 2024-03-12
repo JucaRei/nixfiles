@@ -1,11 +1,8 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}: let
+{ pkgs, lib, config, ... }:
+let
   inherit (pkgs.stdenv) isLinux;
-in {
+in
+{
   programs = {
     fish = {
       enable = true;
@@ -13,7 +10,7 @@ in {
         banner = lib.mkIf isLinux "${pkgs.figlet}/bin/figlet";
         banner-color =
           lib.mkIf isLinux
-          "${pkgs.figlet}/bin/figlet $argv | ${pkgs.dotacat}/bin/dotacat";
+            "${pkgs.figlet}/bin/figlet $argv | ${pkgs.dotacat}/bin/dotacat";
         brg = "${pkgs.bat-extras.batgrep}/bin/batgrep";
         cat = "${pkgs.bat}/bin/bat --paging=never";
         dadjoke = ''
@@ -22,7 +19,7 @@ in {
         neofetch = "${pkgs.fastfetch}/bin/fastfetch";
         glow = "${pkgs.glow}/bin/glow --pager";
         hr = ''${pkgs.hr}/bin/hr "─━"'';
-        ip = "${pkgs.iproute2}/bin/ip --color --brief";
+        # ip = "${pkgs.iproute2}/bin/ip --color --brief";
         # less = "${pkgs.bat}/bin/bat";
         lolcat = "${pkgs.dotacat}/bin/dotacat";
         make-lima-builder = "lima-create builder";
@@ -46,18 +43,18 @@ in {
 
   home.file = {
     "${config.xdg.configHome}/fish/functions/build-home.fish".text =
-      builtins.readFile ./build-home.fish;
+      builtins.readFile ../../config/fish/build-home.fish;
     "${config.xdg.configHome}/fish/functions/switch-home.fish".text =
-      builtins.readFile ./switch-home.fish;
+      builtins.readFile ../../config/fish/switch-home.fish;
     "${config.xdg.configHome}/fish/functions/help.fish".text =
-      builtins.readFile ./help.fish;
+      builtins.readFile ../../config/fish/help.fish;
     "${config.xdg.configHome}/fish/functions/h.fish".text =
-      builtins.readFile ./h.fish;
+      builtins.readFile ../../config/fish/h.fish;
     "${config.xdg.configHome}/fish/functions/lima-create.fish".text =
-      builtins.readFile ./lima-create.fish;
+      builtins.readFile ../../config/fish/lima-create.fish;
     "${config.xdg.configHome}/fish/functions/gpg-restore.fish".text =
-      builtins.readFile ./gpg-restore.fish;
+      builtins.readFile ../../config/fish/gpg-restore.fish;
     "${config.xdg.configHome}/fish/functions/get-nix-hash.fish".text =
-      builtins.readFile ./get-nix-hash.fish;
+      builtins.readFile ../../config/fish/get-nix-hash.fish;
   };
 }

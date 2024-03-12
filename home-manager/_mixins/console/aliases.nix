@@ -20,7 +20,8 @@
     # diff = "${pkgs.diffr}/bin/diffr";
     # glow = "glow --pager";
     # ip = "${pkgs.iproute2}/bin/ip --color --brief";
-    ip = "ip --color --brief";
+    ip = "${pkgs.iproute2}/bin/ip --color --brief";
+
     less = "${pkgs.bat}/bin/bat --paging=always";
     more = "${pkgs.bat}/bin/bat --paging=always";
     top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";

@@ -102,8 +102,8 @@
   # git-stats = pkgs.callPackage ./scripts/git-stats { };
   # list-extensions = pkgs.callPackage ./scripts/list-extensions { };
   # list-iommu = pkgs.callPackage ./scripts/list-iommu { };
-  # nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup { };
-  # nix-whereis = pkgs.callPackage ./scripts/nix-whereis { };
+  nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup { };
+  nix-whereis = pkgs.callPackage ./scripts/nix-whereis { };
   nixos-change-summary = pkgs.callPackage ./scripts/nixos-change-summary { };
   # oom-test = pkgs.callPackage ./scripts/oom-test { };
   # paper = pkgs.callPackage ./scripts/paper { };
