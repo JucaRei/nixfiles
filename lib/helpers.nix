@@ -1,8 +1,4 @@
-{ inputs
-, outputs
-, stateVersion
-, ...
-}: {
+{ inputs, outputs, stateVersion, ... }: {
   # Helper function for generating home-manager configs
   mkHome =
     ### TODO - add displays

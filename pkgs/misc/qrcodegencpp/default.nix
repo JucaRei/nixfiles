@@ -1,4 +1,7 @@
-{ lib , stdenv, qrcodegen}:
+{ lib
+, stdenv
+, qrcodegen
+}:
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "qrcodegencpp";

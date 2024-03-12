@@ -1,4 +1,4 @@
-{
+{ 
   "application/mxf" = "${video}";
   "application/sdp" = "${video}";
   "application/smil" = "${video}";

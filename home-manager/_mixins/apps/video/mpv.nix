@@ -883,4 +883,3 @@ in {
 #         # Seek to timestamp
 #         "ctrl+t" = ''script-message-to console type "set time-pos "'';
 #       };
-
