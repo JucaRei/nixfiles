@@ -277,7 +277,7 @@
 
         # ISO
         iso-console = libx.mkHost { hostname = "iso-console"; username = "nixos"; };
-        iso-gnome = libx.mkHost { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+        iso-gnome = libx.mkHost { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; hostid = "f4173273"; };
         iso-mate = libx.mkHost { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
         iso-pantheon = libx.mkHost { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations

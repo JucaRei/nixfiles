@@ -89,6 +89,8 @@
     # chatgpt-cli = prev.chatgpt-cli;
     nix-cleanup = prev.nix-cleanup;
     nix-whereis = prev.nix-whereis;
+    sarasa-gothic = prev.sarasa-gothic;
+    iosevka-q = prev.iosevka-q;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

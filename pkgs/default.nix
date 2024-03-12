@@ -131,7 +131,8 @@
   # century-gothic = pkgs.callPackage ./fonts/century-gothic { };
   # dubai = pkgs.callPackage ./fonts/dubai { };
   # fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
-  # iosevka-q = pkgs.callPackage ./fonts/iosevka-q { };
+  iosevka-q = pkgs.callPackage ./fonts/iosevka-q { };
+  sarasa-gothic = pkgs.callPackage ./fonts/sarasa-gothic { };
   # material-symbols = pkgs.callPackage ./fonts/material-symbols { };
   # nf-iosevka = pkgs.callPackage ./fonts/nf-iosevka { };
   # nf-victormono = pkgs.callPackage ./fonts/nf-victormono { };
@@ -139,7 +140,6 @@
   # phospor = pkgs.callPackage ./fonts/phospor { };
   # pragmasevka = pkgs.callPackage ./fonts/pragmasevka { };
   # pragmatapro = pkgs.callPackage ./fonts/pragmatapro { };
-  # sarasa-gothic = pkgs.callPackage ./fonts/sarasa-gothic { };
   # twilio-sans-mono-nerd-font = pkgs.callPackage ./fonts/twilio-sans-mono-nerd-font { };
 
 

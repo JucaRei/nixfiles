@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     (vscode-with-extensions.override {
       vscode = unstable.vscode;
@@ -270,7 +270,7 @@
     })
   ];
 
-  services.vscode-server.enable = true;
+  # services.vscode-server.enable = true;
   # May require the service to be enable/started for the user
   # - systemctl --user enable auto-fix-vscode-server.service --now
 }

@@ -208,7 +208,7 @@ in
   programs = {
     command-not-found.enable = false;
     dconf.enable = true;
-    fish = import ./_mixins/console/fish.nix;
+    # fish = import ./_mixins/console/fish.nix;
     # nano.enable = false;
     nix-index-database.comma.enable = isInstall;
     nix-ld = lib.mkIf (isInstall) {
