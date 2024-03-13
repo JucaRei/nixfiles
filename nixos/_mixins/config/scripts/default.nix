@@ -13,6 +13,7 @@ let
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
 in
 {
+  imports = [ ./nixos-change-summary.nix ];
   environment.systemPackages = [
     build-all
     build-host

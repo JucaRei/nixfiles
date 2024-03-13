@@ -1,10 +1,4 @@
-{
-  desktop,
-  lib,
-  pkgs,
-  hostname,
-  ...
-}:
+{ desktop, lib, pkgs, hostname, ... }:
 # with lib;
 # with builtins;
 # let
@@ -23,10 +17,10 @@
       # ../services/printers/sane.nix
     ]
     ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix"))
-    ./${desktop}.nix;
+      ./${desktop}.nix;
 
   # Fix issue with java applications and tiling window managers.
-  environment.sessionVariables = {"_JAVA_AWT_WM_NONREPARENTING" = "1";};
+  environment.sessionVariables = { "_JAVA_AWT_WM_NONREPARENTING" = "1"; };
 
   boot = {
     # kernelParams = lib.mkDefault [ "quiet" ];
@@ -36,7 +30,7 @@
       else false;
   };
 
-  programs = {dconf.enable = true;};
+  programs = { dconf.enable = true; };
 
   # Accept the joypixels license
   nixpkgs.config.joypixels.acceptLicense = true;
@@ -44,7 +38,7 @@
   services = {
     # Disable xterm
     xserver = {
-      excludePackages = [pkgs.xterm];
+      excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
     };
     samba = {
@@ -70,8 +64,8 @@
       settings = {
         verbose = true;
         backlight.disabled = true;
-        dpms.timeouts = [900 300];
-        dimmer.timeouts = [870 270];
+        dpms.timeouts = [ 900 300 ];
+        dimmer.timeouts = [ 870 270 ];
         gamma.long_transitions = true;
         screen.disabled = true;
       };
@@ -99,7 +93,7 @@
     udev =
       if hostname != "rasp3"
       then {
-        packages = with pkgs; [gnome.gnome-settings-daemon];
+        packages = with pkgs; [ gnome.gnome-settings-daemon ];
         extraRules = ''
           # add my android device to adbusers
           SUBSYSTEM=="usb", ATTR{idVendor}=="22d9", MODE="0666", GROUP="adbusers"

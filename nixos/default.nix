@@ -5,15 +5,6 @@ let
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
   isWorkstation = if (desktop != null) then true else false;
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
-  # Firewall configuration variable for syncthing
-  syncthing = {
-    hosts = [
-      "nitro"
-      "DietPi"
-    ];
-    tcpPorts = [ 22000 ];
-    udpPorts = [ 22000 21027 ];
-  };
 in
 {
   imports =
@@ -31,9 +22,7 @@ in
       ./users
     ]
     # ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (desktop != null) ./_mixins/desktop
-    ++ lib.optional (hostname != "rasp3" || "air")
-      ./_mixins/services/tools/kmscon.nix;
+    ++ lib.optional (desktop != null) ./_mixins/desktop;
 
 
   #########################################################
@@ -296,10 +285,10 @@ in
     # Reduce default service stop timeouts for faster shutdown
     # Default timeout for stopping services managed by systemd to 15 seconds
     extraConfig = ''
-      DefaultTimeoutStartSec=15s
-      DefaultTimeoutStopSec=15s
-      DefaultDeviceTimeoutSec=15s
-      DefaultTimeoutAbortSec=15s
+      DefaultTimeoutStartSec=10s
+      DefaultTimeoutStopSec=10s
+      DefaultDeviceTimeoutSec=10s
+      DefaultTimeoutAbortSec=10s
     '';
 
     # When a program crashes, systemd will create a core dump file, typically in the /var/lib/systemd/coredump/ directory.
@@ -323,36 +312,6 @@ in
       polkit.restartIfChanged = false;
       systemd-logind.restartIfChanged = false;
       # wpa_supplicant.restartIfChanged = false;
-
-      # lock-before-sleeping = {
-      #   restartIfChanged = false;
-      #   unitConfig = {
-      #     Description = "Helper service to bind locker to sleep.target";
-      #   };
-
-      #   serviceConfig = {
-      #     ExecStart = "${pkgs.slock}/bin/slock";
-      #     Type = "simple";
-      #   };
-
-      #   before = [ "pre-sleep.service" ];
-      #   wantedBy = [ "pre-sleep.service" ];
-
-      #   environment = {
-      #     DISPLAY = ":0";
-      #     XAUTHORITY = "/home/${username}/.Xauthority";
-      #   };
-      # };
-
-      #---------------------------------------------------------------------
-      # Modify autoconnect priority of the connection of my home network
-      #---------------------------------------------------------------------
-      # modify-autoconnect-priority = {
-      #   description = "Modify autoconnect priority of Matrix_5g connection";
-      #   script = ''
-      #     nmcli connection modify Matrix_5g connection.autoconnect-priority 1
-      #   '';
-      # };
 
       #---------------------------------------------------------------------
       # Make nixos boot a tad faster by turning these off during boot
