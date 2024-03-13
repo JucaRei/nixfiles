@@ -13,9 +13,6 @@ let
     tcpPorts = [ 22000 ];
     udpPorts = [ 22000 21027 ];
   };
-
-  grub = import ./_mixins/hardware/boot/efi.nix;
-  systemd-boot = import ./_mixins/hardware/boot/systemd-boot.nix;
 in
 {
   imports =
@@ -31,10 +28,16 @@ in
       ./_mixins/config/scripts
       ./_mixins/services/network/networkmanager.nix
       ./_mixins/services/network/openssh.nix
+      ./_mixins/console/fish.nix
       ./users
     ]
     # ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (isWorkstation) ./_mixins/desktop;
+    ++ lib.optional (isWorkstation) ./_mixins/desktop
+    ++ lib.optional (isInstall) [
+      ./_mixins/hardware/boot/efi.nix
+      ./_mixins/virtualization/lxd.nix
+      ./_mixins/virtualization/podman.nix
+    ];
 
   ######################
   ### Documentations ###
@@ -210,7 +213,6 @@ in
   ############################
 
   # Only enable the grub on installs, not live media (.ISO images)
-  grub = lib.mkIf (isInstall);
 
   boot = with lib; {
     initrd = {
@@ -261,7 +263,146 @@ in
       };
     };
     supportedFilesystems = [ "ext4" "btrfs" "exfat" "ntfs" ];
+
+    binfmt.registrations.appImage = mkIf (isWorkstation) {
+      # make appImage work seamlessly
+      wrapInterpreterInShell = false;
+      interpreter = "${pkgs.appimage-run}/bin/appimage-run";
+      recognitionType = "magic";
+      offset = 0;
+      # mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
+      mask = "\\xff\\xff\\xff\\xff\\x00\\x00\\x00\\x00\\xff\\xff\\xff";
+      magicOrExtension = "\\x7fELF....AI\\x02";
+      # magicOrExtension = ''\x7fELF....AI\x02'';
+    };
   };
+
+  #####################
+  ### Default Fonts ###
+  #####################
+  fonts =
+    let
+      lotsOfFonts = true;
+    in
+    {
+      fontDir.enable = true;
+      packages = lib.attrValues
+        {
+          inherit (inputs.self.packages.${pkgs.system}) sarasa-gothic iosevka-q;
+          inherit (pkgs) material-design-icons noto-fonts-emoji symbola;
+          nerdfonts = pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; };
+        } ++ (with pkgs; [
+        # (nerdfonts.override {
+        #   fonts = ["FiraCode" "SourceCodePro" "UbuntuMono"];
+        # })
+        # joypixels
+        # liberation_ttf
+        # noto-fonts-emoji # emoji
+        # source-serif
+        # ubuntu_font_family
+        # siji # https://github.com/stark/siji
+        # source-code-pro
+        # source-sans-pro
+        # material-design-icons
+        # font-awesome
+        # maple-mono
+        # maple-mono-NF
+        # meslo-lg
+        # cozette
+        # maple-mono-SC-NF
+        fira
+        fira-go
+        work-sans
+        inter
+        gyre-fonts # TrueType substitutes for standard PostScript fonts
+        roboto
+      ] ++ lib.optionals lotsOfFonts [
+        # Japanese
+        # ipafont # display jap symbols like シートベルツ in polybar
+        # kochi-substitute
+
+        # Code/monospace and nsymbol fonts
+        # fira-code
+        # fira-code-symbols
+        # mplus-outline-fonts.osdnRelease
+        # dejavu_fonts
+        # iosevka-bin
+      ]);
+
+      # use fonts specified by user rather than default ones
+      enableDefaultPackages = false;
+      fontconfig = {
+        antialias = true;
+        allowBitmaps = true;
+        cache32Bit = true;
+        useEmbeddedBitmaps = true;
+        defaultFonts = {
+          # serif = ["Source Serif"];
+          serif = [
+            "SF Pro"
+            "Sarasa Gothic J"
+            "Sarasa Gothic K"
+            "Sarasa Gothic SC"
+            "Sarasa Gothic TC"
+            "Sarasa Gothic HC"
+            "Sarasa Gothic CL"
+            "Symbola"
+          ];
+          # sansSerif = ["Work Sans" "Fira Sans" "FiraGO"];
+          sansSerif = [
+            "SF Pro"
+            "Sarasa Gothic J"
+            "Sarasa Gothic K"
+            "Sarasa Gothic SC"
+            "Sarasa Gothic TC"
+            "Sarasa Gothic HC"
+            "Sarasa Gothic CL"
+            "Symbola"
+          ];
+          # monospace = ["FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono"];
+          monospace = [
+            "SF Pro Rounded"
+            "Sarasa Mono J"
+            "Sarasa Mono K"
+            "Sarasa Mono SC"
+            "Sarasa Mono TC"
+            "Sarasa Mono HC"
+            "Sarasa Mono CL"
+            "Symbola"
+          ];
+          emoji = [
+            "Noto Color Emoji"
+            "Material Design Icons"
+            "Symbola"
+          ];
+        };
+        enable = true;
+        hinting = {
+          autohint = false;
+          enable = true;
+          # style = "hintslight";
+          style = "slight";
+        };
+        subpixel = {
+          rgba = "rgb";
+          lcdfilter = "light";
+        };
+      };
+
+      # # Lucida -> iosevka as no free Lucida font available and it's used widely
+      fontconfig.localConf = lib.mkIf lotsOfFonts ''
+        <?xml version="1.0"?>
+        <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+        <fontconfig>
+          <match target="pattern">
+            <test name="family" qual="any"><string>Lucida</string></test>
+            <edit name="family" mode="assign">
+              <string>iosevka</string>
+            </edit>
+          </match>
+        </fontconfig>
+      '';
+    };
 
   ###################
   ### Console tty ###
@@ -302,7 +443,7 @@ in
     timeZone = "America/Sao_Paulo";
 
     ### For dual boot
-    hardwareClockInLocalTime = lib.mkIf (isWorkstation && hostname == "nitro");
+    hardwareClockInLocalTime = if (isWorkstation && hostname == "nitro") then true else false;
   };
 
   #########################
@@ -376,12 +517,28 @@ in
           formatted;
       };
     };
+
+    shellAliases = {
+      system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
+      sxorg = "export DISPLAY=:0.0";
+      du = "${pkgs.ncdu_1}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
+      drivers = "lspci -v | grep -B8 -v 'Kernel modules: [a-z0-9]+'";
+      r = "rsync -ra --info=progress2";
+      fd = "fd --hidden --exclude .git";
+      search = "nix search nixpkgs";
+
+      ### NIX
+      inspect-store = "nix path-info -rSh /run/current-system | sort -k2h ";
+      # Print timestamp along with cmd output
+      # Example: cmd | ts
+      ts = "gawk '{ print strftime(\"[%Y-%m-%d %H:%M:%S]\"), $0 }'";
+    };
   };
 
   programs = {
+    fuse.userAllowOther = isWorkstation;
     command-not-found.enable = false;
     dconf.enable = true;
-    fish-terminal = import ./_mixins/console/fish.nix;
     nano.enable = false;
     nix-index-database.comma.enable = isInstall;
     nix-ld = lib.mkIf (isInstall) {
@@ -392,6 +549,8 @@ in
       ];
     };
     ssh.startAgent = true;
+    # type "fuck" to fix the last command that made you go "fuck"
+    thefuck.enable = true;
   };
 
   system = {
@@ -433,6 +592,7 @@ in
     };
   };
 
+  # systemd = lib.mkOverride 20 {
   systemd = {
     user = {
       extraConfig = ''
@@ -452,6 +612,31 @@ in
     '';
 
     services = {
+      # disable-wifi-powersave = {
+      #   wantedBy = [ "multi-user.target" ];
+      #   path = [ pkgs.iw ];
+      #   script = ''
+      #     iw dev wlan0 set power_save off
+      #   '';
+      # };
+
+
+      # Enable Multi-Gen LRU:
+      # - https://docs.kernel.org/next/admin-guide/mm/multigen_lru.html
+      # - Inspired by: https://github.com/hakavlad/mg-lru-helper
+      "mglru" = {
+        enable = true;
+        wantedBy = [ "basic.target" ];
+        script = ''
+          ${pkgs.coreutils-full}/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms
+        '';
+        serviceConfig = { Type = "oneshot"; };
+        unitConfig = {
+          ConditionPathExists = "/sys/kernel/mm/lru_gen/enabled";
+          Description = "Configure Enable Multi-Gen LRU";
+        };
+      };
+
       # Workaround https://github.com/NixOS/nixpkgs/issues/180175
       NetworkManager-wait-online.enable = lib.mkForce false;
       # Speed up boot
@@ -462,6 +647,28 @@ in
   };
 
   services = {
+    xserver = {
+      libinput = {
+        enable = true;
+        touchpad = {
+          # horizontalScrolling = true;
+          # tappingDragLock = false;
+          tapping = true;
+          naturalScrolling = true;
+          scrollMethod = "twofinger";
+          disableWhileTyping = true;
+          sendEventsMode = "disabled-on-external-mouse";
+          # clickMethod = "clickfinger";
+        };
+        mouse = {
+          naturalScrolling = false;
+          disableWhileTyping = true;
+          accelProfile = "flat";
+        };
+      };
+      exportConfiguration = true;
+    };
+
     journald = {
       extraConfig = lib.mkDefault ''
         SystemMaxUse=10M
@@ -514,15 +721,49 @@ in
              .   .       .      :  .   .: ::/  .  .::\
       '';
     };
+
+    # Keeps the system timezone up-to-date based on the current location
+    automatic-timezoned = {
+      enable = true;
+    };
+
+    udev = lib.mkIf (isWorkstation) {
+      enable = true;
+
+      # enable high precision timers if they exist
+      # (https://gentoostudio.org/?page_id=420)
+      # enable high precision timers if they exist && set I/O scheduler to NONE for ssd/nvme
+      # autosuspend USB devices && autosuspend PCI devices
+      # (https://gentoostudio.org/?page_id=420)
+      extraRules = ''
+        KERNEL=="rtc0", GROUP="audio"
+        KERNEL=="hpet", GROUP="audio"
+        ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="ext4", ATTR{../queue/scheduler}="kyber"
+        ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"cl
+        ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"
+      '';
+    };
+
+    # broken
+    # envfs.enable = lib.mkForce false; # populate /usr/bin for non-nix binaries
   };
 
-  ############
-  ### Virt ###
-  ############
+  security = {
+    # Enables simultaneous use of processor threads.
+    allowSimultaneousMultithreading = true;
 
-  virtualisation = lib.mkIf (isInstall) import [
-    ./_mixins/virtualization/podman.nix
-    ./_mixins/virtualization/lxd.nix
-  ];
-  hardware.enableRedistributableFirmware = true;
+    polkit = {
+      enable = true;
+      extraConfig = ''
+        polkit.addRule(function (action, subject) {
+          if (subject.isInGroup('wheel'))
+            return polkit.Result.YES;
+        });
+      '';
+    };
+  };
+
+  hardware = {
+    enableRedistributableFirmware = true;
+  };
 }
