@@ -1,9 +1,4 @@
-{
-  lib,
-  pkgs,
-  hostname,
-  ...
-}: {
+{ lib, pkgs, hostname, ... }: {
   boot = {
     tmp = {
       #useTmpfs = true;
@@ -17,10 +12,10 @@
         # efiSysMountPoint = "/boot";
       };
       grub = {
-        enable = lib.mkForce true;
+        enable = true;
         # devices = [ "nodev" ]; # "nodev" for efi only
         device = "nodev"; # "nodev" for efi only
-        efiSupport = lib.mkForce true;
+        efiSupport = true;
         # efiInstallAsRemovable = true; #  Don't depend on NVRAM state
         configurationLimit = 4;
         forceInstall = true;
@@ -39,8 +34,8 @@
         # copyKernels = true;
 
         # useOSProber = false;
-        # fsIdentifier = "provided";
-        fsIdentifier = "label";
+        fsIdentifier = "provided";
+        # fsIdentifier = "label";
         gfxmodeEfi = "auto";
         #gfxmodeEfi = "1366x788";
         fontSize = 20;

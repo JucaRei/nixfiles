@@ -242,6 +242,13 @@
     };
   };
 
+  ### For services ###
+  location = {
+    provider = "manual";
+    latitude = -23.53938;
+    longitude = -46.65253;
+  };
+
   ##################
   ### FILESYSTEM ###
   ##################

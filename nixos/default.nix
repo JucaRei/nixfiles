@@ -5,6 +5,17 @@ let
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
   isWorkstation = if (desktop != null) then true else false;
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+  syncthing = {
+    hosts = [
+      "nitro"
+      "DietPi"
+    ];
+    tcpPorts = [ 22000 ];
+    udpPorts = [ 22000 21027 ];
+  };
+
+  grub = import ./_mixins/hardware/boot/efi.nix;
+  systemd-boot = import ./_mixins/hardware/boot/systemd-boot.nix;
 in
 {
   imports =
@@ -18,16 +29,26 @@ in
       ./_mixins/services/network/openssh.nix
       ./_mixins/services/tools/smartmon.nix
       ./_mixins/config/scripts
-      ./_mixins/common
       ./users
     ]
     # ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (desktop != null) ./_mixins/desktop;
+    ++ lib.optional (isWorkstation) ./_mixins/desktop;
 
+  ######################
+  ### Documentations ###
+  ######################
 
-  #########################################################
-  ### Use passed hostname to configure basic networking ###
-  #########################################################
+  documentation = {
+    enable = true; # documentation of packages
+    nixos.enable = false; # nixos documentation
+    man.enable = true; # manual pages and the man command
+    info.enable = false; # info pages and the info command
+    doc.enable = false; # documentation distributed in packages' /share/doc
+  };
+
+  ###################
+  ### Nix Configs ###
+  ###################
 
   nix = {
     # 🍑 smooth rebuilds
@@ -41,7 +62,7 @@ in
     gc = {
       automatic = true;
       dates = "weekly";
-      options = "--delete-older-than 10d";
+      options = "--delete-older-than 7d";
     };
 
     # distributedBuilds = true;
@@ -49,9 +70,6 @@ in
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-
-    # This will additionally add your inputs to the system's legacy channels
-    # Making legacy nix commands consistent as well, awesome!
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
     optimise.automatic = true;
@@ -60,9 +78,12 @@ in
       sandbox = true; #"relaxed"
       # extra-sandbox-paths = [ ];
       auto-optimise-store = true;
-      # experimental-features = ["nix-command" "flakes" "repl-flake"];
-      experimental-features = "nix-command flakes repl-flake ca-derivations recursive-nix impure-derivations";
-      # allowed-users = [ "root" "@wheel" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+        "repl-flake"
+      ];
+      allowed-users = [ "root" "@wheel" ];
       # trusted-users = [ "root" "@wheel" ];
       # builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
 
@@ -88,6 +109,10 @@ in
     #builders-use-substitutes = true
   };
 
+  ################
+  ### Nixpkgs ####
+  ################
+
   nixpkgs = {
     hostPlatform = lib.mkDefault "${platform}";
 
@@ -103,34 +128,14 @@ in
 
 
       # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
-      # (_: super: {
-      #   makeModulesClosure = x:
-      #     super.makeModulesClosure (x // { allowMissing = true; });
-      # })
+      (_: super: {
+        makeModulesClosure = x:
+          super.makeModulesClosure (x // { allowMissing = true; });
+      })
 
       ## Testing
       # (self: super: {
-      #   # libsForQt5 = super.libsForQt5.overrideScope (qt5self: qt5super: {
-      #   #   sddm = qt5super.sddm.overrideAttrs (old: {
-      #   #     patches = (old.patches or [ ]) ++ [
-      #   #       (pkgs.fetchpatch {
-      #   #         url =
-      #   #           "https://github.com/sddm/sddm/commit/1a78805be83449b1b9c354157320f7730fcc9f36.diff";
-      #   #         sha256 = "sha256-JNsVTJNZV6T+SPqPkaFf3wg8NDqXGx8NZ4qQfZWOli4=";
-      #   #       })
-      #   #     ];
-      #   #   });
-      #   # });
 
-      #   tor-browser-bundle-bin = super.symlinkJoin {
-      #     name = super.tor-browser-bundle-bin.name;
-      #     paths = [ super.tor-browser-bundle-bin ];
-      #     buildInputs = [ super.makeWrapper ];
-      #     postBuild = ''
-      #       wrapProgram "$out/bin/tor-browser" \
-      #         --set MOZ_ENABLE_WAYLAND 1
-      #     '';
-      #   };
 
       #   mpv =
       #     super.mpv.override { scripts = with super.mpvScripts; [ mpris ]; };
@@ -152,7 +157,7 @@ in
       # permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" ];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
-      # allowUnfreePredicate = _: true;
+      allowUnfreePredicate = _: true;
       # allowUnfreePredicate = pkg:
       #   builtins.elem (lib.getName pkg) [
       #     "nvidia-settings"
@@ -169,6 +174,10 @@ in
       #   ];
     };
   };
+
+  #############
+  ### Hosts ###
+  #############
 
   networking = {
     extraHosts = ''
@@ -191,6 +200,153 @@ in
       allowedUDPPorts = [ ]
         ++ lib.optionals (builtins.elem hostname syncthing.hosts) syncthing.udpPorts;
       trustedInterfaces = lib.mkIf (isInstall) [ "lxdbr0" ];
+    };
+  };
+
+  ############################
+  ### Default Boot Options ###
+  ############################
+
+  # Only enable the grub on installs, not live media (.ISO images)
+  grub = lib.mkIf (isInstall);
+
+  boot = with lib; {
+    initrd = {
+      verbose = mkDefault false;
+    };
+    consoleLogLevel = mkDefault 0;
+    kernelModules = [ "vhost_vsock" "tcp_bbr" ];
+    kernelParams = [
+      "boot.shell_on_fail"
+      "loglevel=3"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+    ];
+    kernel = {
+      sysctl = {
+        "net.ipv4.ip_forward" = 1;
+        "net.ipv6.conf.all.forwarding" = 1;
+        # Keep zram swap (lz4) latency in check
+        "vm.page-cluster" = 1;
+        # "vm.nr_hugepages" = lib.mkDefault "0"; # disabled is better for DBs
+        ### Improve networking
+        # https://www.kernel.org/doc/html/latest/admin-guide/sysrq.html
+        "kernel.sysrq" = 1; # magic keyboard shortcuts
+        # TCP Fast Open is a TCP extension that reduces network latency by packing
+        # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
+        # both incoming and outgoing connections:
+        "net.ipv4.tcp_fastopen" = 3;
+        # Bufferbload mitigations + slight improvement in throughput & latency
+        "net.ipv4.tcp_congestion_control" = "bbr";
+        "net.core.default_qdisc" = "cake";
+        #"net.core.default_qdisc" = "fq";
+
+        # Bypass hotspot restrictions for certain ISPs
+        "net.ipv4.ip_default_ttl" = 65;
+
+        # "vm.swappiness" = 30; # default 60, between 0 to 100. 10 means try to not swap
+        # "vm.vfs_cache_pressure" = 200; # default 100, recommended between 50 to 500. 500 means less file cache for less swapping
+        # TODO: the higher default of 10% of RAM would be better here,
+        # but it makes removable storage dangerous as it's a system wide setting
+        # and there's no way to make the limit smaller for removable storeage
+        # I also haven't found an easy way to make removeable storage mount with sync option
+        # "vm.dirty_bytes" = 1024 * 1024 * 512;
+        # "vm.dirty_background_bytes" = 1024 * 1024 * 32;
+        # "vm.dirty_background_ratio" = 10; # default 10, start writting dirty pages at this ratio
+        # "vm.dirty_ratio" = 40; # default 20, maximum ratio, block process when reached
+      };
+    };
+    supportedFilesystems = [ "ext4" "btrfs" "exfat" "ntfs" ];
+  };
+
+  ###################
+  ### Console tty ###
+  ###################
+  console = {
+    font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
+    keyMap = if (hostname == "nitro") then "br" else "us";
+    packages = with pkgs; [ tamzen ];
+  };
+
+  ###############
+  ### Locales ###
+  ###############
+
+  i18n = {
+    defaultLocale = lib.mkForce "en_US.utf8";
+    extraLocaleSettings = lib.mkDefault {
+      #LC_CTYPE = lib.mkDefault "pt_BR.UTF-8"; # Fix ç in us-intl.
+      LC_ADDRESS = "pt_BR.UTF-8";
+      LC_IDENTIFICATION = "pt_BR.UTF-8";
+      LC_MEASUREMENT = "pt_BR.UTF-8";
+      LC_MONETARY = "pt_BR.UTF-8";
+      LC_NAME = "pt_BR.UTF-8";
+      LC_NUMERIC = "pt_BR.UTF-8";
+      LC_PAPER = "pt_BR.UTF-8";
+      LC_TELEPHONE = "pt_BR.UTF-8";
+      LC_TIME = "pt_BR.UTF-8";
+      #LC_COLLATE = "pt_BR.UTF-8";
+      #LC_MESSAGES = "pt_BR.UTF-8";
+    };
+  };
+
+  ########################
+  ### Default Timezone ###
+  ########################
+
+  time = lib.mkDefault {
+    timeZone = "America/Sao_Paulo";
+
+    ### For dual boot
+    hardwareClockInLocalTime = lib.mkIf (isWorkstation && hostname == "nitro");
+  };
+
+  #########################
+  ### Defaults Packages ###
+  #########################
+
+  environment = {
+    # Eject nano and perl from the system
+    defaultPackages = with pkgs; lib.mkForce [
+      coreutils-full
+      micro
+    ];
+
+    systemPackages = with pkgs; [
+      git
+    ] ++ lib.optionals (isInstall) [
+      inputs.crafts-flake.packages.${platform}.snapcraft
+      inputs.fh.packages.${platform}.default
+      inputs.nixos-needtoreboot.packages.${platform}.default
+      clinfo
+      unstable.distrobox
+      flyctl
+      fuse-overlayfs
+      libva-utils
+      nvme-cli
+      #https://nixos.wiki/wiki/Podman
+      podman-compose
+      podman-tui
+      podman
+      smartmontools
+      sops
+      ssh-to-age
+    ] ++ lib.optionals (isInstall && isWorkstation) [
+      pods
+    ] ++ lib.optionals (isInstall && isWorkstation && notVM) [
+      quickemu
+    ] ++ lib.optionals (isInstall && hasNvidia) [
+      nvtop
+      vdpauinfo
+    ] ++ lib.optionals (isInstall && !hasNvidia) [
+      nvtop-amd
+    ];
+
+    variables = {
+      EDITOR = "micro";
+      SYSTEMD_EDITOR = "micro";
+      VISUAL = "micro";
     };
   };
 
@@ -322,54 +478,86 @@ in
       # https://discourse.nixos.org/t/boot-faster-by-disabling-udev-settle-and-nm-wait-online/6339
       systemd-udev-settle.enable = lib.mkForce false;
       # systemd-user-sessions.enable = false;
-    };
-  };
 
-  services = {
-    journald = {
-      extraConfig = lib.mkDefault ''
-        SystemMaxUse=10M
-        SystemMaxFileSize=10M
-        RuntimeMaxUse=10M
-        RuntimeMaxFileSize=10M
-        MaxFileSec=7day
-        SystemMaxFiles=5
-      '';
-      rateLimitBurst = 800;
-      rateLimitInterval = "5s";
-    };
-    dbus = {
-      # Enable the D-Bus service, which is a message bus system that allows
-      # communication between applications.
-      enable = true;
-      implementation = if (hostname == "nitro") then "broker" else "dbus";
-    };
-  };
+      journald = {
+        extraConfig = lib.mkDefault ''
+          SystemMaxUse=10M
+          SystemMaxFileSize=10M
+          RuntimeMaxUse=10M
+          RuntimeMaxFileSize=10M
+          MaxFileSec=7day
+          SystemMaxFiles=5
+        '';
+        rateLimitBurst = 800;
+        rateLimitInterval = "5s";
+      };
 
-  environment = {
-    # --------------------------------------------------------------------
-    # Permit Insecure Packages && Allow unfree packages
-    # --------------------------------------------------------------------
-    sessionVariables = {
-      NIXPKGS_ALLOW_UNFREE = "1";
-      NIXPKGS_ALLOW_INSECURE = "1";
+      dbus = {
+        # Enable the D-Bus service, which is a message bus system that allows
+        # communication between applications.
+        enable = true;
+        implementation = if (hostname == "nitro") then "broker" else "dbus";
+      };
 
-      FLAKE = "/home/${username}/.dotfiles/nixfiles";
-    };
-    # Create file /etc/current-system-packages with List of all Packages
-    etc = {
-      "current-system-packages" = {
-        text =
-          let
-            packages =
-              builtins.map (p: "${p.name}") config.environment.systemPackages;
-            sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-            formatted = builtins.concatStringsSep "\n" sortedUnique;
-          in
-          formatted;
+      getty = {
+        greetingLine = "\\l";
+        helpLine = ''
+          Type `i' to print system information.
+
+              .     .       .  .   . .   .   . .    +  .
+                .     .  :     .    .. :. .___---------___.
+                     .  .   .    .  :.:. _".^ .^ ^.  '.. :"-_. .
+                  .  :       .  .  .:../:            . .^  :.:\.
+                      .   . :: +. :.:/: .   .    .        . . .:\
+               .  :    .     . _ :::/:               .  ^ .  . .:\
+                .. . .   . - : :.:./.                        .  .:\
+                .      .     . :..|:                    .  .  ^. .:|
+                  .       . : : ..||        .                . . !:|
+                .     . . . ::. ::\(                           . :)/
+               .   .     : . : .:.|. ######              .#######::|
+                :.. .  :-  : .:  ::|.#######           ..########:|
+               .  .  .  ..  .  .. :\ ########          :######## :/
+                .        .+ :: : -.:\ ########       . ########.:/
+                  .  .+   . . . . :.:\. #######       #######..:/
+                    :: . . . . ::.:..:.\           .   .   ..:/
+                 .   .   .  .. :  -::::.\.       | |     . .:/
+                    .  :  .  .  .-:.":.::.\             ..:/
+               .      -.   . . . .: .:::.:.\.           .:/
+              .   .   .  :      : ....::_:..:\   ___.  :/
+                 .   .  .   .:. .. .  .: :.:.:\       :/
+                   +   .   .   : . ::. :.:. .:.|\  .:/|
+                   .         +   .  .  ...:: ..|  --.:|
+              .      . . .   .  .  . ... :..:.."(  ..)"
+               .   .       .      :  .   .: ::/  .  .::\
+        '';
       };
     };
-  };
 
-  hardware.enableRedistributableFirmware = true;
+    environment = {
+      # --------------------------------------------------------------------
+      # Permit Insecure Packages && Allow unfree packages
+      # --------------------------------------------------------------------
+      sessionVariables = {
+        NIXPKGS_ALLOW_UNFREE = "1";
+        NIXPKGS_ALLOW_INSECURE = "1";
+
+        FLAKE = "/home/${username}/.dotfiles/nixfiles";
+      };
+      # Create file /etc/current-system-packages with List of all Packages
+      etc = {
+        "current-system-packages" = {
+          text =
+            let
+              packages =
+                builtins.map (p: "${p.name}") config.environment.systemPackages;
+              sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+              formatted = builtins.concatStringsSep "\n" sortedUnique;
+            in
+            formatted;
+        };
+      };
+    };
+
+    hardware.enableRedistributableFirmware = true;
+  };
 }
