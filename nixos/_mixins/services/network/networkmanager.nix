@@ -1,20 +1,20 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
-  imports = [./cloudflare-warp.nix];
+{ config, lib, pkgs, ... }: {
+  imports = [
+    # ./cloudflare-warp.nix
+    ./exclusive-lan.nix
+  ];
   networking = {
     # Disabling DHCPCD in favor of NetworkManager
-    dhcpcd = {enable = false;};
+    dhcpcd = {
+      enable = false;
+    };
     # firewall = {
     #   allowedTCPPorts = [ 5355 ];
     #   allowedUDPPorts = [ 5353 5355 ];
     # };
 
-    nameservers = ["1.1.1.1"];
-    timeServers = ["192.168.1.1" "time.google.com" "time.cloudflare.com"];
+    nameservers = [ "1.1.1.1" ];
+    timeServers = [ "192.168.1.1" "time.google.com" "time.cloudflare.com" ];
 
     networkmanager = {
       enable = true;
@@ -28,10 +28,10 @@
       #---------------------------------------------------------------------
       # Prevent fragmentation and reassembly, which can improve network performance
       #---------------------------------------------------------------------
-      # connectionConfig = {
-      #   "ethernet.mtu" = 1462;
-      #   "wifi.mtu" = 1462;
-      # };
+      connectionConfig = {
+        "ethernet.mtu" = 1462;
+        "wifi.mtu" = 1462;
+      };
 
       # Use AdGuard Public DNS with ad/tracker blocking
       #  - https://adguard-dns.io/en/public-dns.html
@@ -147,4 +147,3 @@
 #     # server_names = [ ... ];
 #   };
 # };
-

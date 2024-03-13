@@ -1,6 +1,6 @@
 { lib, pkgs, ... }: {
   imports = [
-    ../../_mixins/hardware/bluetooth
+    # ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/virtualization/podman.nix
@@ -9,7 +9,7 @@
   boot = {
     kernelPackages = lib.mkOverride 0 pkgs.linuxPackages_latest;
     supportedFilesystems = [ "bcachefs" ];
-    kernelParams = [ "nomodeset" ];
+    # kernelParams = [ "nomodeset" ];
   };
 
   environment.systemPackages = with pkgs; [

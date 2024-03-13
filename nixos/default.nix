@@ -29,6 +29,8 @@ in
       ./_mixins/services/network/openssh.nix
       ./_mixins/services/tools/smartmon.nix
       ./_mixins/config/scripts
+      ./_mixins/services/network/networkmanager.nix
+      ./_mixins/services/network/openssh.nix
       ./users
     ]
     # ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
@@ -223,6 +225,7 @@ in
       "rd.udev.log_level=3"
       "udev.log_priority=3"
     ];
+    kernelPackages = mkDefault pkgs.linuxPackages_latest;
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;
@@ -348,13 +351,38 @@ in
       SYSTEMD_EDITOR = "micro";
       VISUAL = "micro";
     };
+
+    sessionVariables = {
+      NIXPKGS_ALLOW_UNFREE = "1";
+      NIXPKGS_ALLOW_INSECURE = "1";
+
+      FLAKE = "/home/${username}/.dotfiles/nixfiles";
+    };
+
+    # --------------------------------------------------------------------
+    # Permit Insecure Packages && Allow unfree packages
+    # --------------------------------------------------------------------
+
+    # Create file /etc/nixos-current-system-packages with List of all Packages
+    etc = {
+      "nixos-current-system-packages" = {
+        text =
+          let
+            packages =
+              builtins.map (p: "${p.name}") config.environment.systemPackages;
+            sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+            formatted = builtins.concatStringsSep "\n" sortedUnique;
+          in
+          formatted;
+      };
+    };
   };
 
   programs = {
     command-not-found.enable = false;
     dconf.enable = true;
-    # fish = import ./_mixins/console/fish.nix;
-    # nano.enable = false;
+    fish-terminal = import ./_mixins/console/fish.nix;
+    nano.enable = false;
     nix-index-database.comma.enable = isInstall;
     nix-ld = lib.mkIf (isInstall) {
       enable = true;
@@ -368,14 +396,13 @@ in
 
   system = {
     activationScripts = {
-      diff = {
+      diff = lib.mkIf (isInstall) {
         supportsDryActivation = true;
         # text = ''
-        #   if [[ -e /run/current-system ]]; then
-        #     echo "--- changed packages"
+        #   if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
         #     ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
-        #     echo "---"
         #   fi
+        #   /run/current-system/sw/bin/nixos-reedsreboot
         # '';
 
         text = ''
@@ -384,38 +411,18 @@ in
             ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
             echo -e "\n***            ***          ***           ***           ***\n"
           fi
+          /run/current-system/sw/bin/nixos-reedsreboot
         '';
       };
-      # Write out a warning if kernel version has changed.
-      requires-reboot = {
-        supportsDryActivation = true;
-        text = ''
-          if [[ -e /run/current-system ]]; then
-            var1="`realpath /run/booted-system/{initrd,kernel,kernel-modules}`"
-            var2="`realpath $systemConfig/{initrd,kernel,kernel-modules}`"
-
-            if [[ $var1 != $var2 ]]; then
-              >&2 echo "WARN: Kernel version has changed, system should be rebooted!"
-            fi
-          fi
-        '';
-      };
-      fixboot.text = ''
-        ln -sfn "$(readlink -f "$systemConfig")" /run/current-system
-      '';
     };
 
-    extraSystemBuilderCmds = ''
-      ln -sv ${pkgs.path} $out/nixpkgs
-    '';
-
+    nixos.label = lib.mkIf (isInstall) "-";
     stateVersion = stateVersion;
 
     autoUpgrade = {
       enable = false;
       allowReboot = false;
       channel = "https://nixos.org/channels/nixos-unstable";
-      flake = inputs.self.outPath;
       flags = [
         "--update-input"
         "nixpkgs"
@@ -435,11 +442,8 @@ in
     };
     tmpfiles.rules = [
       "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
-      "d /mnt/snapshot/${username} 0755 ${username} users"
     ];
 
-    # Reduce default service stop timeouts for faster shutdown
-    # Default timeout for stopping services managed by systemd to 15 seconds
     extraConfig = ''
       DefaultTimeoutStartSec=10s
       DefaultTimeoutStopSec=10s
@@ -447,117 +451,78 @@ in
       DefaultTimeoutAbortSec=10s
     '';
 
-    # When a program crashes, systemd will create a core dump file, typically in the /var/lib/systemd/coredump/ directory.
-    # coredump.enable = true;
-
-    # systemd's out-of-memory daemon
-    # oomd = {
-    #   enable = lib.mkDefault true;
-    #   enableSystemSlice = true;
-    #   enableUserServices = true;
-    # };
-
     services = {
-      # ---------------------------------------------------------------------
-      # Do not restart these, since it messes up the current session
-      # Idea's used from previous fedora woe's
-      # ---------------------------------------------------------------------
-      NetworkManager.restartIfChanged = false;
-      display-manager.restartIfChanged = false;
-      libvirtd.restartIfChanged = false;
-      polkit.restartIfChanged = false;
-      systemd-logind.restartIfChanged = false;
-      # wpa_supplicant.restartIfChanged = false;
-
-      #---------------------------------------------------------------------
-      # Make nixos boot a tad faster by turning these off during boot
-      #---------------------------------------------------------------------
       # Workaround https://github.com/NixOS/nixpkgs/issues/180175
       NetworkManager-wait-online.enable = lib.mkForce false;
       # Speed up boot
       # https://discourse.nixos.org/t/boot-faster-by-disabling-udev-settle-and-nm-wait-online/6339
       systemd-udev-settle.enable = lib.mkForce false;
       # systemd-user-sessions.enable = false;
-
-      journald = {
-        extraConfig = lib.mkDefault ''
-          SystemMaxUse=10M
-          SystemMaxFileSize=10M
-          RuntimeMaxUse=10M
-          RuntimeMaxFileSize=10M
-          MaxFileSec=7day
-          SystemMaxFiles=5
-        '';
-        rateLimitBurst = 800;
-        rateLimitInterval = "5s";
-      };
-
-      dbus = {
-        # Enable the D-Bus service, which is a message bus system that allows
-        # communication between applications.
-        enable = true;
-        implementation = if (hostname == "nitro") then "broker" else "dbus";
-      };
-
-      getty = {
-        greetingLine = "\\l";
-        helpLine = ''
-          Type `i' to print system information.
-
-              .     .       .  .   . .   .   . .    +  .
-                .     .  :     .    .. :. .___---------___.
-                     .  .   .    .  :.:. _".^ .^ ^.  '.. :"-_. .
-                  .  :       .  .  .:../:            . .^  :.:\.
-                      .   . :: +. :.:/: .   .    .        . . .:\
-               .  :    .     . _ :::/:               .  ^ .  . .:\
-                .. . .   . - : :.:./.                        .  .:\
-                .      .     . :..|:                    .  .  ^. .:|
-                  .       . : : ..||        .                . . !:|
-                .     . . . ::. ::\(                           . :)/
-               .   .     : . : .:.|. ######              .#######::|
-                :.. .  :-  : .:  ::|.#######           ..########:|
-               .  .  .  ..  .  .. :\ ########          :######## :/
-                .        .+ :: : -.:\ ########       . ########.:/
-                  .  .+   . . . . :.:\. #######       #######..:/
-                    :: . . . . ::.:..:.\           .   .   ..:/
-                 .   .   .  .. :  -::::.\.       | |     . .:/
-                    .  :  .  .  .-:.":.::.\             ..:/
-               .      -.   . . . .: .:::.:.\.           .:/
-              .   .   .  :      : ....::_:..:\   ___.  :/
-                 .   .  .   .:. .. .  .: :.:.:\       :/
-                   +   .   .   : . ::. :.:. .:.|\  .:/|
-                   .         +   .  .  ...:: ..|  --.:|
-              .      . . .   .  .  . ... :..:.."(  ..)"
-               .   .       .      :  .   .: ::/  .  .::\
-        '';
-      };
     };
-
-    environment = {
-      # --------------------------------------------------------------------
-      # Permit Insecure Packages && Allow unfree packages
-      # --------------------------------------------------------------------
-      sessionVariables = {
-        NIXPKGS_ALLOW_UNFREE = "1";
-        NIXPKGS_ALLOW_INSECURE = "1";
-
-        FLAKE = "/home/${username}/.dotfiles/nixfiles";
-      };
-      # Create file /etc/current-system-packages with List of all Packages
-      etc = {
-        "current-system-packages" = {
-          text =
-            let
-              packages =
-                builtins.map (p: "${p.name}") config.environment.systemPackages;
-              sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-              formatted = builtins.concatStringsSep "\n" sortedUnique;
-            in
-            formatted;
-        };
-      };
-    };
-
-    hardware.enableRedistributableFirmware = true;
   };
+
+  services = {
+    journald = {
+      extraConfig = lib.mkDefault ''
+        SystemMaxUse=10M
+        SystemMaxFileSize=10M
+        RuntimeMaxUse=10M
+        RuntimeMaxFileSize=10M
+        MaxFileSec=7day
+        SystemMaxFiles=5
+      '';
+      rateLimitBurst = 800;
+      rateLimitInterval = "5s";
+    };
+
+    dbus = {
+      # Enable the D-Bus service, which is a message bus system that allows
+      # communication between applications.
+      enable = true;
+      implementation = if (hostname == "nitro") then "broker" else "dbus";
+    };
+
+    getty = {
+      greetingLine = "\\l";
+      helpLine = ''
+        Type `i' to print system information.
+
+            .     .       .  .   . .   .   . .    +  .
+              .     .  :     .    .. :. .___---------___.
+                   .  .   .    .  :.:. _".^ .^ ^.  '.. :"-_. .
+                .  :       .  .  .:../:            . .^  :.:\.
+                    .   . :: +. :.:/: .   .    .        . . .:\
+             .  :    .     . _ :::/:               .  ^ .  . .:\
+              .. . .   . - : :.:./.                        .  .:\
+              .      .     . :..|:                    .  .  ^. .:|
+                .       . : : ..||        .                . . !:|
+              .     . . . ::. ::\(                           . :)/
+             .   .     : . : .:.|. ######              .#######::|
+              :.. .  :-  : .:  ::|.#######           ..########:|
+             .  .  .  ..  .  .. :\ ########          :######## :/
+              .        .+ :: : -.:\ ########       . ########.:/
+                .  .+   . . . . :.:\. #######       #######..:/
+                  :: . . . . ::.:..:.\           .   .   ..:/
+               .   .   .  .. :  -::::.\.       | |     . .:/
+                  .  :  .  .  .-:.":.::.\             ..:/
+             .      -.   . . . .: .:::.:.\.           .:/
+            .   .   .  :      : ....::_:..:\   ___.  :/
+               .   .  .   .:. .. .  .: :.:.:\       :/
+                 +   .   .   : . ::. :.:. .:.|\  .:/|
+                 .         +   .  .  ...:: ..|  --.:|
+            .      . . .   .  .  . ... :..:.."(  ..)"
+             .   .       .      :  .   .: ::/  .  .::\
+      '';
+    };
+  };
+
+  ############
+  ### Virt ###
+  ############
+
+  virtualisation = lib.mkIf (isInstall) import [
+    ./_mixins/virtualization/podman.nix
+    ./_mixins/virtualization/lxd.nix
+  ];
+  hardware.enableRedistributableFirmware = true;
 }

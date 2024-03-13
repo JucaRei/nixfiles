@@ -1,11 +1,8 @@
+{ config, lib, pkgs, hostname, desktop, ... }:
+let
+  hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+in
 {
-  config,
-  lib,
-  pkgs,
-  hostname,
-  desktop,
-  ...
-}: {
   #https://nixos.wiki/wiki/Podman
 
   environment.systemPackages = with pkgs;
@@ -59,17 +56,7 @@
       ];
       dockerCompat = true;
       enable = true;
-      # enableNvidia = lib.elem (
-      #   if builtins.isString hostname != "air"
-      #   then "nvidia" config.services.xserver.videoDrivers
-      #   else false
-      # );
-      # enableNvidia = true;
-      # autoPrune = {
-      #   enable = true;
-      #   dates = "04:30:00";
-      #   flags = [ "--all" "--filter" "until=${builtins.toString (7*24)}h" ];
-      # };
+      enableNvidia = hasNvidia;
     };
     containers = {
       registries.search = [
@@ -87,7 +74,7 @@
 
       containersConf.settings = {
         containers = {
-          dns_servers = ["8.8.8.8" "8.8.4.4"];
+          dns_servers = [ "8.8.8.8" "8.8.4.4" ];
           userns = "auto"; # Create unique User Namespace for the container
         };
       };
@@ -136,6 +123,6 @@
         }
       ];
     };
-    groups.containers = {};
+    groups.containers = { };
   };
 }
