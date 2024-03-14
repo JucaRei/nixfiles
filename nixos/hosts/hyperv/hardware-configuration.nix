@@ -11,52 +11,110 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
+  # fileSystems = {
+  #   "/" =
+  #     {
+  #       device = "none";
+  #       fsType = "tmpfs";
+  #       options = [ "defaults" "size=25%" "mode=755" ];
+  #     };
+
+  #   "/boot" =
+  #     {
+  #       # device = "/dev/disk/by-uuid/8F58-CB45";
+  #       device = "/dev/disk/by-label/boot";
+  #       fsType = "vfat";
+  #     };
+
+  #   "/nix" =
+  #     {
+  #       # device = "/dev/disk/by-uuid/3d947e79-04db-4dca-a59c-47ad148ad10e";
+  #       device = "/dev/disk/by-label/nixos";
+  #       fsType = "ext4";
+  #     };
+
+  #   "/etc/nixos" =
+  #     {
+  #       device = "/nix/persist/etc/nixos";
+  #       fsType = "none";
+  #       options = [ "bind" ];
+  #     };
+
+  #   "/var/log" =
+  #     {
+  #       device = "/nix/persist/var/log";
+  #       fsType = "none";
+  #       options = [ "bind" ];
+  #     };
+  # };
+
   fileSystems = {
     "/" =
       {
-        device = "none";
-        fsType = "tmpfs";
-        options = [ "defaults" "size=25%" "mode=755" ];
+        device = "/dev/disk/by-uuid/73a0fc6d-67d9-44e0-961c-e66a0ac53993";
+        fsType = "btrfs";
+        options = [ "subvol=@" ];
       };
 
-    "/boot" =
+    "/home" =
       {
-        # device = "/dev/disk/by-uuid/8F58-CB45";
-        device = "/dev/disk/by-label/boot";
-        fsType = "vfat";
+        device = "/dev/disk/by-uuid/73a0fc6d-67d9-44e0-961c-e66a0ac53993";
+        fsType = "btrfs";
+        options = [ "subvol=@home" ];
       };
 
     "/nix" =
       {
-        # device = "/dev/disk/by-uuid/3d947e79-04db-4dca-a59c-47ad148ad10e";
-        device = "/dev/disk/by-label/nixos";
-        fsType = "ext4";
+        device = "/dev/disk/by-uuid/73a0fc6d-67d9-44e0-961c-e66a0ac53993";
+        fsType = "btrfs";
+        options = [ "subvol=@nix" ];
       };
 
-    "/etc/nixos" =
+    "/persist" =
       {
-        device = "/nix/persist/etc/nixos";
-        fsType = "none";
-        options = [ "bind" ];
+        device = "/dev/disk/by-uuid/73a0fc6d-67d9-44e0-961c-e66a0ac53993";
+        fsType = "btrfs";
+        options = [ "subvol=@persist" ];
       };
 
     "/var/log" =
       {
-        device = "/nix/persist/var/log";
-        fsType = "none";
-        options = [ "bind" ];
+        device = "/dev/disk/by-uuid/73a0fc6d-67d9-44e0-961c-e66a0ac53993";
+        fsType = "btrfs";
+        options = [ "subvol=@log" ];
+      };
+
+    "/var/swap" =
+      {
+        device = "/dev/disk/by-uuid/73a0fc6d-67d9-44e0-961c-e66a0ac53993";
+        fsType = "btrfs";
+        options = [ "subvol=@swap" ];
+      };
+
+    "/boot" =
+      {
+        device = "/dev/disk/by-uuid/ED20-04C5";
+        fsType = "vfat";
       };
   };
 
-  # boot.initrd.luks.devices."crypted".device = "/dev/disk/by-uuid/b8f1c914-d48e-43f4-a56b-091b1950aa4e";
-  boot.initrd.luks.devices."crypted".device = "/dev/disk/by-label/nixos";
+  swapDevices = [
+    {
+      device = "/var/swap/swapfile";
+      # size = 5;
+      # options = [ "subvol=@swap" ];
+    }
+  ];
 
-  swapDevices =
-    [{
-      # device = "/dev/disk/by-uuid/0251adc3-e3a9-46c1-9988-b7c74569038f";
-      device = "/dev/disk/by-label/swap";
-      randomEncryption.enable = true;
-    }];
+  # boot.initrd.luks.devices."crypted".device = "/dev/disk/by-uuid/b8f1c914-d48e-43f4-a56b-091b1950aa4e";
+  # boot.initrd.luks.devices."crypted".device = "/dev/disk/by-label/nixos";
+
+  # swapDevices =
+  #   [{
+  #     # device = "/dev/disk/by-uuid/0251adc3-e3a9-46c1-9988-b7c74569038f";
+  #     device = "/dev/disk/by-label/swap";
+  #     randomEncryption.enable = true;
+  #   }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

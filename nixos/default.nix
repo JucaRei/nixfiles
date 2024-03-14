@@ -15,7 +15,7 @@ let
   };
 in
 {
-  imports =
+  imports = with lib;
     [
       inputs.disko.nixosModules.disko
       inputs.nix-index-database.nixosModules.nix-index
@@ -31,15 +31,8 @@ in
       ./_mixins/console/fish.nix
       ./users
     ]
-    # ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (isWorkstation) [
-      ./_mixins/desktop
-      ./_mixins/hardware/boot/efi.nix
-    ]
-    ++ lib.optional (isInstall) [
-      ./_mixins/virtualization/lxd.nix
-      ./_mixins/virtualization/podman.nix
-    ];
+    # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
+    ++ optional (isWorkstation) ./_mixins/desktop;
 
   ######################
   ### Documentations ###

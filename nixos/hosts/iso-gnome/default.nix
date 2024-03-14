@@ -4,6 +4,7 @@
     ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/apps/text-editor/vscode.nix
     ../../_mixins/virtualization/podman.nix
+    ../../_mixins/virtualization/lxd.nix
   ];
 
   boot = {
