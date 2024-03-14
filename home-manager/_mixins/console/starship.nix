@@ -1,6 +1,8 @@
-{lib, ...}: let
+{ lib, ... }:
+let
   inherit (lib) mkDefault;
-in {
+in
+{
   programs.starship = {
     enable = true;
     settings = {
@@ -68,9 +70,9 @@ in {
         symbol = "";
         style = "fg:pink bg:dark-blue";
         disabled = false;
-        detect_extensions = [];
-        detect_files = ["buf.yaml" "buf.gen.yaml" "buf.work.yaml"];
-        detect_folders = [];
+        detect_extensions = [ ];
+        detect_files = [ "buf.yaml" "buf.gen.yaml" "buf.work.yaml" ];
+        detect_folders = [ ];
       };
       battery.full_symbol = mkDefault "";
       battery.charging_symbol = mkDefault "";
@@ -87,8 +89,8 @@ in {
         #   "c"
         #   "h"
         # ];
-        detect_files = [];
-        detect_folders = [];
+        detect_files = [ ];
+        detect_folders = [ ];
         # commands = [
         #   [
         #     "cc"
@@ -110,9 +112,9 @@ in {
         symbol = mkDefault "△ ";
         style = "fg:pink bg:dark-blue";
         disabled = false;
-        detect_extensions = [];
-        detect_files = ["CMakeLists.txt" "CMakeCache.txt"];
-        detect_folders = [];
+        detect_extensions = [ ];
+        detect_files = [ "CMakeLists.txt" "CMakeCache.txt" ];
+        detect_folders = [ ];
       };
       conda = {
         truncation_length = 1;
@@ -134,9 +136,9 @@ in {
         symbol = mkDefault "🔮 ";
         style = "bold red";
         disabled = false;
-        detect_extensions = ["cr"];
-        detect_files = ["shard.yml"];
-        detect_folders = [];
+        detect_extensions = [ "cr" ];
+        detect_files = [ "shard.yml" ];
+        detect_folders = [ ];
       };
       dart = {
         symbol = mkDefault " ";
@@ -145,9 +147,9 @@ in {
         version_format = "v$raw";
         style = "fg:pink bg:dark-blue";
         disabled = false;
-        detect_extensions = ["dart"];
-        detect_files = ["pubspec.yaml" "pubspec.yml" "pubspec.lock"];
-        detect_folders = [".dart_tool"];
+        detect_extensions = [ "dart" ];
+        detect_files = [ "pubspec.yaml" "pubspec.yml" "pubspec.lock" ];
+        detect_folders = [ ".dart_tool" ];
       };
       deno = {
         format = "[$symbol($version )]($style)";
@@ -155,9 +157,9 @@ in {
         symbol = "🦕 ";
         style = "green bold";
         disabled = false;
-        detect_extensions = [];
-        detect_files = ["deno.json" "deno.jsonc" "mod.ts" "deps.ts" "mod.js" "deps.js"];
-        detect_folders = [];
+        detect_extensions = [ ];
+        detect_files = [ "deno.json" "deno.jsonc" "mod.ts" "deps.ts" "mod.js" "deps.js" ];
+        detect_folders = [ ];
       };
       #directory.read_only = mkDefault " ";
       docker_context = {
@@ -166,9 +168,9 @@ in {
         style = "blue bold bg:0x06969A";
         only_with_files = true;
         disabled = false;
-        detect_extensions = [];
-        detect_files = ["docker-compose.yml" "docker-compose.yaml" "Dockerfile"];
-        detect_folders = [];
+        detect_extensions = [ ];
+        detect_files = [ "docker-compose.yml" "docker-compose.yaml" "Dockerfile" ];
+        detect_folders = [ ];
       };
       dotnet = {
         format = "[$symbol($version )( $tfm )]($style)";
@@ -177,7 +179,7 @@ in {
         style = "blue bold";
         heuristic = true;
         disabled = false;
-        detect_extensions = ["csproj" "fsproj" "xproj"];
+        detect_extensions = [ "csproj" "fsproj" "xproj" ];
         detect_files = [
           "global.json"
           "project.json"
@@ -185,16 +187,16 @@ in {
           "Directory.Build.targets"
           "Packages.props"
         ];
-        detect_folders = [];
+        detect_folders = [ ];
       };
       elixir = {
         format = "[$symbol($version (OTP $otp_version) )]($style)";
         style = "bold purple bg:0x86BBD8";
         symbol = mkDefault " ";
         disabled = false;
-        detect_extensions = [];
-        detect_files = ["mix.exs"];
-        detect_folders = [];
+        detect_extensions = [ ];
+        detect_files = [ "mix.exs" ];
+        detect_folders = [ ];
       };
       elm = {
         format = "[$symbol($version )]($style)";
@@ -202,11 +204,11 @@ in {
         style = "cyan bold bg:0x86BBD8";
         symbol = mkDefault " ";
         disabled = false;
-        detect_extensions = ["elm"];
-        detect_files = ["elm.json" "elm-package.json" ".elm-version"];
-        detect_folders = ["elm-stuff"];
+        detect_extensions = [ "elm" ];
+        detect_files = [ "elm.json" "elm-package.json" ".elm-version" ];
+        detect_folders = [ "elm-stuff" ];
       };
-      env_var = {};
+      env_var = { };
       env_var.SHELL = {
         format = "[$symbol($env_value )]($style)";
         style = "grey bold italic dimmed";
@@ -228,9 +230,9 @@ in {
         symbol = mkDefault " ";
         style = "bold red";
         disabled = false;
-        detect_extensions = [];
-        detect_files = ["rebar.config" "erlang.mk"];
-        detect_folders = [];
+        detect_extensions = [ ];
+        detect_files = [ "rebar.config" "erlang.mk" ];
+        detect_folders = [ ];
       };
       fill = {
         style = "bold black";
@@ -244,8 +246,8 @@ in {
         style = "fg:pink bg:dark-blue";
         disabled = false;
       };
-      gcloud.project_aliases = {};
-      gcloud.region_aliases = {};
+      gcloud.project_aliases = { };
+      gcloud.region_aliases = { };
       #git_branch.symbol = mkDefault " ";
       git_commit.tag_symbol = mkDefault " ";
       #git_status.format = mkDefault "([$all_status$ahead_behind]($style) )";
@@ -265,7 +267,7 @@ in {
         symbol = mkDefault " ";
         style = "bold cyan bg:0x86BBD8";
         disabled = false;
-        detect_extensions = ["go"];
+        detect_extensions = [ "go" ];
         detect_files = [
           "go.mod"
           "go.sum"
@@ -274,7 +276,7 @@ in {
           "Gopkg.lock"
           ".go-version"
         ];
-        detect_folders = ["Godeps"];
+        detect_folders = [ "Godeps" ];
       };
       haskell = {
         format = "[$symbol($version )]($style)";
@@ -282,9 +284,9 @@ in {
         symbol = mkDefault "λ ";
         style = "bold purple bg:0x86BBD8";
         disabled = false;
-        detect_extensions = ["hs" "cabal" "hs-boot"];
-        detect_files = ["stack.yaml" "cabal.project"];
-        detect_folders = [];
+        detect_extensions = [ "hs" "cabal" "hs-boot" ];
+        detect_files = [ "stack.yaml" "cabal.project" ];
+        detect_folders = [ ];
       };
       helm = {
         format = "[$symbol($version )]($style)";
@@ -292,9 +294,9 @@ in {
         symbol = mkDefault "⎈ ";
         style = "bold white";
         disabled = false;
-        detect_extensions = [];
-        detect_files = ["helmfile.yaml" "Chart.yaml"];
-        detect_folders = [];
+        detect_extensions = [ ];
+        detect_files = [ "helmfile.yaml" "Chart.yaml" ];
+        detect_folders = [ ];
       };
       hg_branch = {
         symbol = " ";
@@ -310,7 +312,7 @@ in {
         style = "red dimmed bg:0x86BBD8";
         symbol = mkDefault " ";
         version_format = "v$raw";
-        detect_extensions = ["java" "class" "jar" "gradle" "clj" "cljc"];
+        detect_extensions = [ "java" "class" "jar" "gradle" "clj" "cljc" ];
         detect_files = [
           "pom.xml"
           "build.gradle.kts"
@@ -320,7 +322,7 @@ in {
           "project.clj"
           "build.boot"
         ];
-        detect_folders = [];
+        detect_folders = [ ];
       };
       julia = {
         disabled = false;
@@ -328,9 +330,9 @@ in {
         style = "bold purple bg:0x86BBD8";
         symbol = mkDefault " ";
         version_format = "v$raw";
-        detect_extensions = ["jl"];
-        detect_files = ["Project.toml" "Manifest.toml"];
-        detect_folders = [];
+        detect_extensions = [ "jl" ];
+        detect_files = [ "Project.toml" "Manifest.toml" ];
+        detect_folders = [ ];
       };
       kotlin = {
         format = "[$symbol($version )]($style)";
@@ -340,9 +342,9 @@ in {
         style = "fg:pink bg:dark-blue";
         kotlin_binary = "kotlin";
         disabled = false;
-        detect_extensions = ["kt" "kts"];
-        detect_files = [];
-        detect_folders = [];
+        detect_extensions = [ "kt" "kts" ];
+        detect_files = [ ];
+        detect_folders = [ ];
       };
       kubernetes = {
         disabled = false;
@@ -350,7 +352,7 @@ in {
         symbol = mkDefault "☸ ";
         style = "cyan bold";
       };
-      kubernetes.context_aliases = {};
+      kubernetes.context_aliases = { };
       lua = {
         format = "[$symbol($version )]($style)";
         version_format = "v$raw";
@@ -359,9 +361,9 @@ in {
         style = "fg:pink bg:dark-blue";
         lua_binary = "lua";
         disabled = false;
-        detect_extensions = ["lua"];
-        detect_files = [".lua-version"];
-        detect_folders = ["lua"];
+        detect_extensions = [ "lua" ];
+        detect_files = [ ".lua-version" ];
+        detect_folders = [ "lua" ];
       };
       memory_usage.symbol = mkDefault " ";
       nim = {
@@ -370,9 +372,9 @@ in {
         symbol = mkDefault " ";
         version_format = "v$raw";
         disabled = false;
-        detect_extensions = ["nim" "nims" "nimble"];
-        detect_files = ["nim.cfg"];
-        detect_folders = [];
+        detect_extensions = [ "nim" "nims" "nimble" ];
+        detect_files = [ "nim.cfg" ];
+        detect_folders = [ ];
       };
       nix_shell = {
         impure_msg = "[impure](bold red)";
@@ -387,9 +389,9 @@ in {
         symbol = " ";
         version_format = "v$raw";
         disabled = false;
-        detect_extensions = ["js" "mjs" "cjs" "ts" "mts" "cts"];
-        detect_files = ["package.json" ".node-version" ".nvmrc"];
-        detect_folders = ["node_modules"];
+        detect_extensions = [ "js" "mjs" "cjs" "ts" "mts" "cts" ];
+        detect_files = [ "package.json" ".node-version" ".nvmrc" ];
+        detect_folders = [ "node_modules" ];
       };
       ocaml = {
         format = "[$symbol($version )(($switch_indicator$switch_name) )]($style)";
@@ -399,9 +401,9 @@ in {
         symbol = "🐫 ";
         version_format = "v$raw";
         disabled = false;
-        detect_extensions = ["opam" "ml" "mli" "re" "rei"];
-        detect_files = ["dune" "dune-project" "jbuild" "jbuild-ignore" ".merlin"];
-        detect_folders = ["_opam" "esy.lock"];
+        detect_extensions = [ "opam" "ml" "mli" "re" "rei" ];
+        detect_files = [ "dune" "dune-project" "jbuild" "jbuild-ignore" ".merlin" ];
+        detect_folders = [ "_opam" "esy.lock" ];
       };
       openstack = {
         format = "[$symbol$cloud(($project))]($style) ";
@@ -423,7 +425,7 @@ in {
         symbol = mkDefault " ";
         style = "149 bold";
         disabled = false;
-        detect_extensions = ["pl" "pm" "pod"];
+        detect_extensions = [ "pl" "pm" "pod" ];
         detect_files = [
           "Makefile.PL"
           "Build.PL"
@@ -433,7 +435,7 @@ in {
           "META.yml"
           ".perl-version"
         ];
-        detect_folders = [];
+        detect_folders = [ ];
       };
       php = {
         format = "[$symbol($version )]($style)";
@@ -441,9 +443,9 @@ in {
         style = "147 bold";
         symbol = mkDefault " ";
         disabled = false;
-        detect_extensions = ["php"];
-        detect_files = ["composer.json" ".php-version"];
-        detect_folders = [];
+        detect_extensions = [ "php" ];
+        detect_files = [ "composer.json" ".php-version" ];
+        detect_folders = [ ];
       };
       pulumi = {
         format = "[$symbol($username@)$stack]($style) ";
@@ -458,20 +460,20 @@ in {
         symbol = "<=> ";
         style = "bold white";
         disabled = false;
-        detect_extensions = ["purs"];
-        detect_files = ["spago.dhall"];
-        detect_folders = [];
+        detect_extensions = [ "purs" ];
+        detect_files = [ "spago.dhall" ];
+        detect_folders = [ ];
       };
       python = {
         format = "[$symbol$pyenv_prefix($version )(($virtualenv) )]($style)";
-        python_binary = ["python" "python3" "python2"];
+        python_binary = [ "python" "python3" "python2" ];
         pyenv_prefix = "pyenv ";
         pyenv_version_name = true;
         style = "yellow bold";
         symbol = mkDefault " ";
         version_format = "v$raw";
         disabled = false;
-        detect_extensions = ["py"];
+        detect_extensions = [ "py" ];
         detect_files = [
           "requirements.txt"
           ".python-version"
@@ -481,7 +483,7 @@ in {
           "setup.py"
           "__init__.py"
         ];
-        detect_folders = [];
+        detect_folders = [ ];
       };
       red = {
         format = "[$symbol($version )]($style)";
@@ -489,9 +491,9 @@ in {
         symbol = "🔺 ";
         style = "red bold";
         disabled = false;
-        detect_extensions = ["red" "reds"];
-        detect_files = [];
-        detect_folders = [];
+        detect_extensions = [ "red" "reds" ];
+        detect_files = [ ];
+        detect_folders = [ ];
       };
       rlang = {
         format = "[$symbol($version )]($style)";
@@ -499,9 +501,9 @@ in {
         style = "blue bold";
         symbol = "📐 ";
         disabled = false;
-        detect_extensions = ["R" "Rd" "Rmd" "Rproj" "Rsx"];
-        detect_files = [".Rprofile"];
-        detect_folders = [".Rproj.user"];
+        detect_extensions = [ "R" "Rd" "Rmd" "Rproj" "Rsx" ];
+        detect_files = [ ".Rprofile" ];
+        detect_folders = [ ".Rproj.user" ];
       };
       ruby = {
         format = "[$symbol($version )]($style)";
@@ -509,10 +511,10 @@ in {
         symbol = mkDefault " ";
         style = "bold red";
         disabled = false;
-        detect_extensions = ["rb"];
-        detect_files = ["Gemfile" ".ruby-version"];
-        detect_folders = [];
-        detect_variables = ["RUBY_VERSION" "RBENV_VERSION"];
+        detect_extensions = [ "rb" ];
+        detect_files = [ "Gemfile" ".ruby-version" ];
+        detect_folders = [ ];
+        detect_variables = [ "RUBY_VERSION" "RBENV_VERSION" ];
       };
       swift = {
         format = "[$symbol($version )]($style)";
@@ -520,9 +522,9 @@ in {
         symbol = mkDefault " ";
         style = "bold 202";
         disabled = false;
-        detect_extensions = ["swift"];
-        detect_files = ["Package.swift"];
-        detect_folders = [];
+        detect_extensions = [ "swift" ];
+        detect_files = [ "Package.swift" ];
+        detect_folders = [ ];
       };
       sudo = {
         format = "[as $symbol]($style)";
@@ -538,9 +540,9 @@ in {
         symbol = mkDefault "𝗧 ";
         style = "bold 105";
         disabled = false;
-        detect_extensions = ["tf" "tfplan" "tfstate"];
-        detect_files = [];
-        detect_folders = [".terraform"];
+        detect_extensions = [ "tf" "tfplan" "tfstate" ];
+        detect_files = [ ];
+        detect_folders = [ ".terraform" ];
       };
       vagrant = {
         format = "[$symbol($version )]($style)";
@@ -548,9 +550,9 @@ in {
         # symbol = "⍱ ";
         style = "cyan bold";
         disabled = false;
-        detect_extensions = [];
-        detect_files = ["Vagrantfile"];
-        detect_folders = [];
+        detect_extensions = [ ];
+        detect_files = [ "Vagrantfile" ];
+        detect_folders = [ ];
         symbol = mkDefault "𝗩 ";
       };
       vlang = {
@@ -559,9 +561,9 @@ in {
         symbol = "V ";
         style = "blue bold";
         disabled = false;
-        detect_extensions = ["v"];
-        detect_files = ["v.mod" "vpkg.json" ".vpkg-lock.json"];
-        detect_folders = [];
+        detect_extensions = [ "v" ];
+        detect_files = [ "v.mod" "vpkg.json" ".vpkg-lock.json" ];
+        detect_folders = [ ];
       };
       zig = {
         format = "[$symbol($version )]($style)";
@@ -569,9 +571,9 @@ in {
         symbol = mkDefault "↯ ";
         style = "bold yellow";
         disabled = false;
-        detect_extensions = ["zig"];
-        detect_files = [];
-        detect_folders = [];
+        detect_extensions = [ "zig" ];
+        detect_files = [ ];
+        detect_folders = [ ];
         # symbol = mkDefault " ";
       };
 
@@ -658,7 +660,7 @@ in {
         truncation_symbol = "…";
         only_attached = false;
         always_show_remote = false;
-        ignore_branches = [];
+        ignore_branches = [ ];
         disabled = false;
       };
 
@@ -705,9 +707,9 @@ in {
         style = "fg:pink bg:dark-blue";
         format = "[ $symbol ($version) ]($style)";
         disabled = false;
-        detect_extensions = ["rs"];
-        detect_files = ["Cargo.toml"];
-        detect_folders = [];
+        detect_extensions = [ "rs" ];
+        detect_files = [ "Cargo.toml" ];
+        detect_folders = [ ];
       };
 
       scala = {
@@ -716,9 +718,9 @@ in {
         disabled = false;
         style = "red bold";
         symbol = "🆂 ";
-        detect_extensions = ["sbt" "scala"];
-        detect_files = [".scalaenv" ".sbtenv" "build.sbt"];
-        detect_folders = [".metals"];
+        detect_extensions = [ "sbt" "scala" ];
+        detect_files = [ ".scalaenv" ".sbtenv" "build.sbt" ];
+        detect_folders = [ ".metals" ];
       };
 
       shell = {
@@ -766,9 +768,9 @@ in {
         symbol = "⚙️ ";
         style = "fg:pink bg:dark-blue";
         disabled = false;
-        detect_extensions = ["cbl" "cob" "CBL" "COB"];
-        detect_files = [];
-        detect_folders = [];
+        detect_extensions = [ "cbl" "cob" "CBL" "COB" ];
+        detect_files = [ ];
+        detect_folders = [ ];
       };
 
       # Upper right
@@ -834,7 +836,7 @@ in {
       #   command_timeout = 1000;
       # };
     };
-    # enableBashIntegration = true;
+    enableBashIntegration = true;
     # enableZshIntegration = false;
     # enableFishIntegration = false;
     # enableIonIntegration = false;

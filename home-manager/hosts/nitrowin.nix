@@ -6,6 +6,7 @@
 with lib.hm.gvariant; {
   imports = [
     ../_mixins/non-nixos
+    ../_mixins/console/fish
   ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {

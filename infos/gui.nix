@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: {
+{ config,pkgs,lib,...}: {
   imports = [./terminal.nix];
   systemd.user.services.fcitx5-daemon = {
     Unit.After = "graphical-session-pre.target";

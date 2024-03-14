@@ -1,4 +1,5 @@
 { pkgs, ... }: {
+  imports = [ ./starship.nix ];
   programs = {
     bash = {
       enable = true;

@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, inputs, ... }: {
   imports = [
     # ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/sound/pipewire.nix
@@ -7,8 +7,9 @@
   ];
 
   boot = {
-    kernelPackages = lib.mkOverride 0 pkgs.linuxPackages_latest;
-    supportedFilesystems = [ "bcachefs" ];
+    # kernelPackages = lib.mkOverride 0 pkgs.linuxPackages_latest;
+    kernelPackages = lib.mkOverride 0 inputs.chaotic.packages.${pkgs.system}.linuxPackages_cachyos;
+    supportedFilesystems = [ "bcachefs" "zfs" "btrfs" ];
     # kernelParams = [ "nomodeset" ];
   };
 
