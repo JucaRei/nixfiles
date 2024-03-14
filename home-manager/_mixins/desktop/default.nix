@@ -1,6 +1,11 @@
 { config, desktop, pkgs, username, lib, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
+  walls = pkgs.fetchgit {
+    url = "https://github.com/D3Ext/aesthetic-wallpapers";
+    rev = "060c580dcc11afea2f77f9073bd8710920e176d8";
+    sha256 = "5MnW630EwjKOeOCIAJdSFW0fcSSY4xmfuW/w7WyIovI=";
+  };
 in
 {
   imports =
@@ -25,10 +30,13 @@ in
 
   home = {
     # Authrorize X11 access in Distrobox
-    file.".distroboxrc" = lib.mkIf isLinux {
-      text = ''
-        ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
-      '';
+    file = {
+      ".distroboxrc" = lib.mkIf isLinux {
+        text = ''
+          ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
+        '';
+      };
+      "Pictures/wallpapers".source = "${walls}/images";
     };
     packages = with pkgs; [
       black # Code format Python
