@@ -23,7 +23,7 @@
       git # versioning
       nix-output-monitor # better output from builds
       cachix # build and share cache
-      dropbear # ssh 
+      dropbear # ssh
     ];
     # ++ inputs.pkgs.legacyPackages.${system}.pinix
     shellHook = ''

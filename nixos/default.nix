@@ -32,9 +32,11 @@ in
       ./users
     ]
     # ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (isWorkstation) ./_mixins/desktop
-    ++ lib.optional (isInstall) [
+    ++ lib.optional (isWorkstation) [
+      ./_mixins/desktop
       ./_mixins/hardware/boot/efi.nix
+    ]
+    ++ lib.optional (isInstall) [
       ./_mixins/virtualization/lxd.nix
       ./_mixins/virtualization/podman.nix
     ];
@@ -546,6 +548,53 @@ in
       libraries = with pkgs; [
         # Add any missing dynamic libraries for unpackaged
         # programs here, NOT in environment.systemPackages
+        stdenv.cc.cc
+        fuse3
+        alsa-lib
+        at-spi2-atk
+        at-spi2-core
+        atk
+        cairo
+        cups
+        curl
+        dbus
+        expat
+        fontconfig
+        freetype
+        gdk-pixbuf
+        glib
+        gtk3
+        libGL
+        libappindicator-gtk3
+        libdrm
+        libnotify
+        libpulseaudio
+        libuuid
+        libusb1
+        xorg.libxcb
+        libxkbcommon
+        mesa
+        nspr
+        nss
+        pango
+        pipewire
+        systemd
+        icu
+        openssl
+        xorg.libX11
+        xorg.libXScrnSaver
+        xorg.libXcomposite
+        xorg.libXcursor
+        xorg.libXdamage
+        xorg.libXext
+        xorg.libXfixes
+        xorg.libXi
+        xorg.libXrandr
+        xorg.libXrender
+        xorg.libXtst
+        xorg.libxkbfile
+        xorg.libxshmfence
+        zlib
       ];
     };
     ssh.startAgent = true;
@@ -561,7 +610,7 @@ in
         #   if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
         #     ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
         #   fi
-        #   /run/current-system/sw/bin/nixos-reedsreboot
+        #   /run/current-system/sw/bin/nixos-needsreboot
         # '';
 
         text = ''
@@ -570,7 +619,7 @@ in
             ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
             echo -e "\n***            ***          ***           ***           ***\n"
           fi
-          /run/current-system/sw/bin/nixos-reedsreboot
+          /run/current-system/sw/bin/nixos-needsreboot
         '';
       };
     };
@@ -752,7 +801,7 @@ in
     # Enables simultaneous use of processor threads.
     allowSimultaneousMultithreading = true;
 
-    polkit = {
+    polkit = lib.mkIf (isInstall) {
       enable = true;
       extraConfig = ''
         polkit.addRule(function (action, subject) {
@@ -765,5 +814,16 @@ in
 
   hardware = {
     enableRedistributableFirmware = true;
+
+    bluetooth = lib.mkIf (isInstall) {
+      enable = true;
+      package = pkgs.bluez;
+      settings = {
+        General = {
+          Enable = "Source,Sink,Media,Socket";
+          Experimental = true;
+        };
+      };
+    };
   };
 }

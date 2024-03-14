@@ -198,22 +198,20 @@
     },
     "crafts-flake": {
       "inputs": {
-        "nix-formatter-pack": "nix-formatter-pack",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
+        "nixos-2311": "nixos-2311",
+        "unstable": "unstable"
       },
       "locked": {
-        "lastModified": 1702039845,
-        "narHash": "sha256-mz+rc9bsnp/5JTSHPXZ8TUzHQstqTclMAXFmoZ19Ggc=",
-        "rev": "0c620d88c97cacf5bb00d7f564bb1a7b9f5e65d5",
-        "revCount": 96,
+        "lastModified": 1710158143,
+        "narHash": "sha256-Cuz6x1cS6YcJd+3BN83cehwnI1HKGfZZ48mI2d2Zqpg=",
+        "rev": "1b5be1d8b997e0848ac206612fc6bc4f34401598",
+        "revCount": 152,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/jnsgruk/crafts-flake/0.4.3/018c4980-5584-7a44-b6e4-f62a1731354e/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/jnsgruk/crafts-flake/0.6.3/018e2d5f-0e2e-74dc-be65-1fda5a484c31/source.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://flakehub.com/f/jnsgruk/crafts-flake/%3D0.4.3.tar.gz"
+        "url": "https://flakehub.com/f/jnsgruk/crafts-flake/0.6.%2A.tar.gz"
       }
     },
     "crane": {
@@ -1131,33 +1129,10 @@
     "nix-formatter-pack": {
       "inputs": {
         "nixpkgs": [
-          "crafts-flake",
           "nixpkgs"
         ],
         "nmd": "nmd",
         "nmt": "nmt"
-      },
-      "locked": {
-        "lastModified": 1709879831,
-        "narHash": "sha256-PZFXvKm929A3waipt2prRKYlNJvGQiBxWPDn/MIOKWo=",
-        "owner": "Gerschtli",
-        "repo": "nix-formatter-pack",
-        "rev": "2499f41a01f1154c5a3b967aabe37d94e6b6d18b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Gerschtli",
-        "repo": "nix-formatter-pack",
-        "type": "github"
-      }
-    },
-    "nix-formatter-pack_2": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "nmd": "nmd_2",
-        "nmt": "nmt_2"
       },
       "locked": {
         "lastModified": 1709879831,
@@ -1335,6 +1310,22 @@
         "type": "github"
       }
     },
+    "nixos-2311": {
+      "locked": {
+        "lastModified": 1710283656,
+        "narHash": "sha256-nI+AOy4uK6jLGBi9nsbHjL1EdSIzoo8oa+9oeVhbyFc=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "51063ed4f2343a59fdeebb279bb81d87d453942b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-23.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixos-anywhere": {
       "inputs": {
         "disko": [
@@ -1404,6 +1395,26 @@
       "original": {
         "owner": "nix-community",
         "repo": "nixos-images",
+        "type": "github"
+      }
+    },
+    "nixos-needtoreboot": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1709963535,
+        "narHash": "sha256-xQE+05FPr7ZmN9DxlO80LSbvRkPpX0hGyRTpBY6fL3Y=",
+        "owner": "thefossguy",
+        "repo": "nixos-needsreboot",
+        "rev": "5542f9ea8d86329561d7de091a326215b07a9135",
+        "type": "github"
+      },
+      "original": {
+        "owner": "thefossguy",
+        "repo": "nixos-needsreboot",
         "type": "github"
       }
     },
@@ -1780,39 +1791,7 @@
         "type": "gitlab"
       }
     },
-    "nmd_2": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1666190571,
-        "narHash": "sha256-Z1hc7M9X6L+H83o9vOprijpzhTfOBjd0KmUTnpHAVjA=",
-        "owner": "rycee",
-        "repo": "nmd",
-        "rev": "b75d312b4f33bd3294cd8ae5c2ca8c6da2afc169",
-        "type": "gitlab"
-      },
-      "original": {
-        "owner": "rycee",
-        "repo": "nmd",
-        "type": "gitlab"
-      }
-    },
     "nmt": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1648075362,
-        "narHash": "sha256-u36WgzoA84dMVsGXzml4wZ5ckGgfnvS0ryzo/3zn/Pc=",
-        "owner": "rycee",
-        "repo": "nmt",
-        "rev": "d83601002c99b78c89ea80e5e6ba21addcfe12ae",
-        "type": "gitlab"
-      },
-      "original": {
-        "owner": "rycee",
-        "repo": "nmt",
-        "type": "gitlab"
-      }
-    },
-    "nmt_2": {
       "flake": false,
       "locked": {
         "lastModified": 1648075362,
@@ -1900,13 +1879,14 @@
         "hyprpicker": "hyprpicker",
         "lf-icons": "lf-icons",
         "nix-flatpak": "nix-flatpak",
-        "nix-formatter-pack": "nix-formatter-pack_2",
+        "nix-formatter-pack": "nix-formatter-pack",
         "nix-gaming": "nix-gaming",
         "nix-index-database": "nix-index-database",
         "nix-snapd": "nix-snapd",
         "nixd": "nixd",
         "nixgl": "nixgl",
         "nixos-hardware": "nixos-hardware",
+        "nixos-needtoreboot": "nixos-needtoreboot",
         "nixpkgs": "nixpkgs_6",
         "nixpkgs-f2k": "nixpkgs-f2k",
         "nixpkgs-previous": "nixpkgs-previous",
@@ -2161,6 +2141,22 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "unstable": {
+      "locked": {
+        "lastModified": 1710272261,
+        "narHash": "sha256-g0bDwXFmTE7uGDOs9HcJsfLFhH7fOsASbAuOzDC+fhQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "0ad13a6833440b8e238947e47bea7f11071dc2b2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },

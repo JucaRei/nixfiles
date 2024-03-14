@@ -7,8 +7,8 @@
   ];
 
   boot = {
-    # kernelPackages = lib.mkOverride 0 pkgs.linuxPackages_latest;
-    kernelPackages = lib.mkOverride 0 inputs.chaotic.packages.${pkgs.system}.linuxPackages_cachyos;
+    kernelPackages = lib.mkOverride 0 pkgs.linuxPackages_latest;
+    # kernelPackages = lib.mkOverride 0 inputs.chaotic.packages.${pkgs.system}.linuxPackages_cachyos;
     supportedFilesystems = [ "bcachefs" "zfs" "btrfs" ];
     # kernelParams = [ "nomodeset" ];
   };
@@ -32,8 +32,10 @@
     })
   ];
 
-  nix.settings = {
-    extra-substituters = [ "https://nyx.chaotic.cx/" ];
-    extra-trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];
-  };
+  # nix.settings = {
+  #   extra-substituters = [ "https://nyx.chaotic.cx/" ];
+  #   extra-trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];
+  # };
 }
+
+# nom build .#nixosConfigurations.iso-gnome.config.system.build.isoImage --option 'extra-substituters' 'https://nyx.chaotic.cx/' --option extra-trusted-public-keys "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="

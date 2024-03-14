@@ -31,5 +31,18 @@
     # du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
     cp = "${pkgs.unstable.advcpmv}/bin/advcp -rvi";
     mv = "${pkgs.unstable.advcpmv}/bin/advmv -vi";
+    audio = "${pkgs.inxi}/bin/inxi -A";
+    battery = "${pkgs.inxi}/bin/inxi -B -xxx";
+    bluetooth = "${pkgs.inxi}/bin/inxi -E";
+    graphics = "${pkgs.inxi}/bin/inxi -G";
+    macros = "${pkgs.libcpp}/bin/cpp -dM /dev/null";
+    pci = "sudo ${pkgs.inxi}/bin/inxi --slots";
+    process = "${pkgs.inxi}/bin/inxi --processes";
+    partitions = "${pkgs.inxi}/bin/inxi -P";
+    repos = "${pkgs.inxi}/bin/inxi -r";
+    sockets = "${pkgs.iproute2}/bin/ss -lp";
+    system = "${pkgs.inxi}/bin/inxi -Fazy";
+    usb = "${pkgs.inxi}/bin/inxi -J";
+    wifi = "${pkgs.inxi}/bin/inxi -n";
   };
 }

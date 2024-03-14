@@ -60,7 +60,7 @@
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
     fh.inputs.nixpkgs.follows = "nixpkgs";
 
-    crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/=0.4.3.tar.gz";
+    crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.6.*.tar.gz";
     crafts-flake.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
@@ -132,6 +132,9 @@
     #  inputs.nixpkgs.follows = "nixpkgs";
     #  inputs.emacs-overlay.follows = "emacs-overlay";
     #};
+
+    nixos-needtoreboot.url = github:thefossguy/nixos-needsreboot;
+    nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
 
     # Hyprland
     hyprland.url = "github:hyprwm/Hyprland";
