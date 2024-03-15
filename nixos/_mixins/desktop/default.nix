@@ -1,5 +1,5 @@
 { desktop, lib, pkgs, hostname, username, ... }:
-# with lib;
+with lib;
 # with builtins;
 let
   #   xorg = (elem "xorg" config.sys.hardware.graphics.desktopProtocols);
@@ -47,14 +47,19 @@ in
       ./${desktop}.nix;
 
   # Conditionally set Public DNS based on username, defaulting if user not matched
-  networking.networkmanager.insertNameservers =
-    if builtins.hasAttr username userDnsSettings then
-      userDnsSettings.${username}
-    else
-      defaultDns;
-  wifi = {
-    backend = "iwd";
-    powersave = saveBattery;
+  networking = {
+    networkmanager = {
+      # Conditionally set Public DNS based on username, defaulting if user not matched
+      insertNameservers =
+        if builtins.hasAttr username userDnsSettings then
+          userDnsSettings.${username}
+        else
+          defaultDns;
+      wifi = {
+        backend = "iwd";
+        powersave = saveBattery;
+      };
+    };
   };
 
   # Fix issue with java applications and tiling window managers.
@@ -175,6 +180,9 @@ in
     xserver = {
       excludePackages = [ pkgs.xterm ];
       desktopManager.xterm.enable = false;
+      # Disable autoSuspend; my Pantheon session kept auto-suspending
+      # - https://discourse.nixos.org/t/why-is-my-new-nixos-install-suspending/19500
+      displayManager.gdm.autoSuspend = if (desktop == "pantheon") then true else false;
     };
     samba = {
       enable =
@@ -235,6 +243,25 @@ in
         '';
       }
       else "";
+
+    flatpak = lib.mkIf (isInstall) {
+      enable = true;
+    };
+
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = isGamestation;
+      jack.enable = false;
+      pulse.enable = true;
+      wireplumber.enable = true;
+    };
+
+    printing = lib.mkIf (isInstall) {
+      enable = true;
+      drivers = with pkgs; [ gutenprint hplip ];
+    };
+    system-config-printer.enable = isInstall;
   };
   # };
 
@@ -242,7 +269,7 @@ in
   hardware = {
     # smooth backlight control
     brillo.enable =
-      if hostname != "rasp3"
+      if hostname == "air"
       then true
       else false;
     opengl = {
@@ -267,10 +294,185 @@ in
             #  libva
           ]) else "";
     };
+
+    # openrazer = lib.mkIf (hasRazerPeripherals) {
+    #   enable = true;
+    #   devicesOffOnScreensaver = false;
+    #   keyStatistics = true;
+    #   mouseBatteryNotifier = true;
+    #   syncEffectsEnabled = true;
+    #   users = [ "${username}" ];
+    # };
+
+    pulseaudio.enable = lib.mkForce false;
+    sane = lib.mkIf (isInstall) {
+      enable = true;
+      #extraBackends = with pkgs; [ hplipWithPlugin sane-airscan ];
+      extraBackends = with pkgs; [ sane-airscan ];
+    };
   };
 
   security = {
+    # Allow members of the "audio" group to set RT priorities
+    # Inspired by musnix: https://github.com/musnix/musnix/blob/master/modules/base.nix#L87
+    pam.loginLimits = [
+      { domain = "@audio"; item = "memlock"; type = "-"; value = "unlimited"; }
+      { domain = "@audio"; item = "rtprio"; type = "-"; value = "99"; }
+      { domain = "@audio"; item = "nofile"; type = "soft"; value = "99999"; }
+      { domain = "@audio"; item = "nofile"; type = "hard"; value = "99999"; }
+    ];
+
     # userland niceness
     rtkit.enable = true;
   };
+
+  systemd = {
+    services = {
+      configure-flathub-repo = lib.mkIf (isInstall) {
+        wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.flatpak ];
+        script = ''
+          flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+        '';
+      };
+      configure-appcenter-repo = lib.mkIf (isInstall && desktop == "pantheon") {
+        wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.flatpak ];
+        script = ''
+          flatpak remote-add --if-not-exists appcenter https://flatpak.elementary.io/repo.flatpakrepo
+        '';
+      };
+      disable-wifi-powersave = lib.mkIf (!saveBattery) {
+        wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.iw ];
+        script = ''
+          iw dev wlan0 set power_save off
+        '';
+      };
+    };
+  };
+
+  xdg.portal = mkDefault {
+    config = {
+      common = {
+        default = [
+          "gtk"
+        ];
+      };
+    };
+    enable = true;
+    xdgOpenUsePortal = true;
+  };
+
+  fonts =
+    let
+      lotsOfFonts = true;
+    in
+    {
+      # Enable a basic set of fonts providing several font styles and families and reasonable coverage of Unicode.
+      enableDefaultPackages = false;
+      fontDir.enable = true;
+      packages =
+        lib.attrValues
+          {
+            # inherit (inputs.self.packages.${pkgs.system}) sarasa-gothic iosevka-q;
+            # inherit (pkgs) material-design-icons noto-fonts-emoji symbola;
+            # nerdfonts = pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; };
+          } ++
+        (with pkgs; [
+          (nerdfonts.override { fonts = [ "FiraCode" "NerdFontsSymbolsOnly" ]; })
+          fira
+          liberation_ttf
+          # noto-fonts-emoji
+          source-serif
+          inter
+          roboto
+          # twitter-color-emoji
+          work-sans
+        ] ++ lib.optionals (isInstall) [
+          ubuntu_font_family
+        ] ++ lib.optionals lotsOfFonts [
+          # Japanese
+          # ipafont # display jap symbols like シートベルツ in polybar
+          # kochi-substitute
+
+          # Code/monospace and nsymbol fonts
+          fira-code
+          # fira-code-symbols
+          # mplus-outline-fonts.osdnRelease
+          # dejavu_fonts
+          # iosevka-bin
+        ]);
+
+      fontconfig = {
+        antialias = true;
+        cache32Bit = isGamestation;
+        defaultFonts = {
+          serif = [ "Source Serif" ];
+          # serif = [
+          # "SF Pro"
+          # "Sarasa Gothic J"
+          # "Sarasa Gothic K"
+          # "Sarasa Gothic SC"
+          # "Sarasa Gothic TC"
+          # "Sarasa Gothic HC"
+          # "Sarasa Gothic CL"
+          # "Symbola"
+          # ];
+          sansSerif = [ "Inter" "Work Sans" "Fira Sans" ];
+          # sansSerif = [
+          #   "SF Pro"
+          #   "Sarasa Gothic J"
+          #   "Sarasa Gothic K"
+          #   "Sarasa Gothic SC"
+          #   "Sarasa Gothic TC"
+          #   "Sarasa Gothic HC"
+          #   "Sarasa Gothic CL"
+          #   "Symbola"
+          # ];
+          # monospace = ["FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono"];
+          # monospace = [
+          #   "SF Pro Rounded"
+          #   "Sarasa Mono J"
+          #   "Sarasa Mono K"
+          #   "Sarasa Mono SC"
+          #   "Sarasa Mono TC"
+          #   "Sarasa Mono HC"
+          #   "Sarasa Mono CL"
+          #   "Symbola"
+          # ];
+          # emoji = [
+          #   "Noto Color Emoji"
+          #   "Material Design Icons"
+          #   "Symbola"
+          # ];
+          monospace = [ "FiraCode Nerd Font Mono" "Symbols Nerd Font Mono" ];
+          emoji = [ "Noto Color Emoji" "Twitter Color Emoji" ];
+        };
+        enable = true;
+        hinting = {
+          autohint = false;
+          enable = true;
+          style = "slight";
+        };
+        subpixel = {
+          rgba = "rgb";
+          lcdfilter = "light";
+        };
+      };
+
+      # # Lucida -> iosevka as no free Lucida font available and it's used widely
+      fontconfig.localConf = lib.mkIf lotsOfFonts ''
+        <?xml version="1.0"?>
+        <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+        <fontconfig>
+          <match target="pattern">
+            <test name="family" qual="any"><string>Lucida</string></test>
+            <edit name="family" mode="assign">
+              <string>iosevka</string>
+            </edit>
+          </match>
+        </fontconfig>
+      '';
+    };
 }

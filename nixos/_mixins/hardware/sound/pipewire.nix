@@ -1,10 +1,9 @@
-{
-  desktop,
-  lib,
-  pkgs,
-  ...
+{ desktop
+, lib
+, pkgs
+, ...
 }: {
-  imports = [../../services/security/rtkit.nix];
+  imports = [ ../../services/security/rtkit.nix ];
   environment = {
     systemPackages = with pkgs;
       [
@@ -17,7 +16,7 @@
       ];
     etc = {
       "pipewire/pipewire.conf.d/99-allowed-rates.conf".text = builtins.toJSON {
-        "context.properties"."default.clock.allowed-rates" = [44100 48000 88200 96000 176400 192000 358000 384000 716000 768000];
+        "context.properties"."default.clock.allowed-rates" = [ 44100 48000 88200 96000 176400 192000 358000 384000 716000 768000 ];
       };
       # "pipewire/pipewire-pulse.conf.d/99-resample.conf".text =
       #   builtins.toJSON { "stream.properties"."resample.quality" = 15; };
@@ -36,25 +35,24 @@
     };
   };
   #security.rtkit.enable = true;
-  services = {
-    pipewire = {
+  services = with lib; {
+    pipewire = mkDefault {
       enable = true;
-      alsa.enable = true;
+      alsa.enable = mkDefault true;
       #alsa.support32Bit = true;
-      jack.enable = true;
-      pulse.enable = true;
-      wireplumber.enable = true;
+      jack.enable = mkDefault true;
+      pulse.enable = mkDefault true;
+      wireplumber.enable = mkDefault true;
       #lowLatency = {
       ## enable this module
       #enable = true;
       ## defaults (no need to be set unless modified)
       #quantum = 64;
       #rate = 48000;
-      socketActivation = true;
     };
   };
   hardware = {
-    pulseaudio.enable = lib.mkForce false;
+    pulseaudio.enable = lib.mkDefault false;
     #extraConfig = "\n    load-module module-switch-on-connect\n  ";
   };
   # Recent fix for pipewire-pulse breakage

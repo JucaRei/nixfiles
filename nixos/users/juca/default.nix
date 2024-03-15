@@ -19,7 +19,7 @@ in
       gnome-text-editor
     ]) ++
     (with pkgs.gnome; [
-      epiphany.geary
+      geary
       gnome-music
       yelp
       gnome-terminal
@@ -87,7 +87,7 @@ in
     "d /mnt/snapshot/${username} 0755 ${username} users"
   ];
 
-  programs.dconf.user.databases = [{
+  programs.dconf.profiles.user.databases = [{
     settings = with lib.gvariant; lib.mkIf (isWorkstation) { };
   }];
 }

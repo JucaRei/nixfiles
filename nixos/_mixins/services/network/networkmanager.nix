@@ -36,9 +36,9 @@
       # Use AdGuard Public DNS with ad/tracker blocking
       #  - https://adguard-dns.io/en/public-dns.html
       # insertNameservers = [ "94.140.14.14" "94.140.15.15" ];
-      wifi = {
-        backend = "iwd";
-        powersave = false;
+      wifi = with lib; {
+        backend = mkDefault "iwd";
+        powersave = mkDefault false;
         #macAddress = "random";
         #scanRandMacAddress = true;
       };
