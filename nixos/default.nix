@@ -404,7 +404,7 @@ in
   ###################
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    keyMap = if (hostname == "nitro") then "br" else "us";
+    keyMap = if (hostname == "nitro") then "br-abnt2" else "us";
     packages = with pkgs; [ tamzen ];
   };
 
