@@ -1,6 +1,6 @@
-{pkgs, ...}: {
+{pkgs, lib, ...}: {
   # https://nixos.wiki/wiki/Bluetooth
-  hardware = {
+  hardware = lib.mkForce {
     bluetooth = {
       enable = true;
       # package = pkgs.bluez;

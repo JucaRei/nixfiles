@@ -133,7 +133,7 @@ in {
           packages = with pkgs; [
             (OVMFFull.override {
               secureBoot = true;
-              csmSupport = true;
+              # csmSupport = true;
               httpSupport = true;
               tpmSupport = true;
             })

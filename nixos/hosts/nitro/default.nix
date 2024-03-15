@@ -12,7 +12,7 @@
     inputs.nixos-hardware.nixosModules.common-pc-hdd
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
-    #../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
+    ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     # ../../_mixins/hardware/graphics/nvidia/nvidia-specialisation.nix
     # ../../_mixins/hardware/graphics/intel/intel-gpu-dual.nix
     ../../_mixins/hardware/bluetooth
@@ -265,7 +265,7 @@
         "noatime"
         "nodiratime"
         "ssd"
-        "compress-force=zstd:6"
+        "compress-force=zstd:15"
         "space_cache=v2"
         "nodatacow"
         "commit=120"
@@ -284,7 +284,7 @@
         "noatime"
         "nodiratime"
         "ssd"
-        "compress-force=zstd:3"
+        "compress-force=zstd:15"
         "space_cache=v2"
         "commit=120"
         "discard=async"
@@ -319,7 +319,7 @@
         "nodiratime"
         "nodatacow"
         "ssd"
-        "compress-force=zstd:3"
+        "compress-force=zstd:15"
         "space_cache=v2"
         "commit=120"
         "discard=async"
@@ -367,6 +367,11 @@
         "commit=120"
         "discard=async"
       ];
+    };
+
+    "/boot" = { 
+      device = "/dev/disk/by-label/BOOT";
+      fsType = "ext4";
     };
 
     "/boot/efi" = {
@@ -420,7 +425,7 @@
       driSupport32Bit = true;
       extraPackages = with pkgs; [
         intel-media-driver
-        nvidia-vaapi-driver
+        # nvidia-vaapi-driver
         libvdpau
         libvdpau-va-gl
       ];
@@ -434,19 +439,19 @@
         ];
     };
 
-    nvidia = {
-      package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
-      prime = {
-        intelBusId = "PCI:0:2:0";
-        nvidiaBusId = "PCI:1:0:0";
+    # nvidia = {
+    #   package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
+    #   prime = {
+    #     intelBusId = "PCI:0:2:0";
+    #     nvidiaBusId = "PCI:1:0:0";
         # Make the intel igpu default. The NVIDIA is for CUDA/NVENC
         # reverseSync.enable = true;
 
-        sync.enable = true;
-      };
-      nvidiaSettings = false;
+        # sync.enable = true;
+      # };
+      # nvidiaSettings = false;
       # forceFullCompositionPipeline = true;
-    };
+    # };
   };
 
   nixpkgs = {

@@ -1,7 +1,8 @@
 #!/bin/sh
 
 # export DRIVE="/dev/nvme0n1"
-DRIVE="/dev/nvme0n1p2"
+# DRIVE="/dev/nvme0n1p2"
+DRIVE="/dev/nvme0n1p4"
 
 # sgdisk -Z /dev/${DRIVE}p2
 # sgdisk -Z /dev/${DRIVE}p3
@@ -56,6 +57,8 @@ mount -o $BTRFS_OPTS,subvol=@nix /dev/disk/by-label/Nitroux /mnt/nix
 mount -o $BTRFS_OPTS,subvol=@logs /dev/disk/by-label/Nitroux /mnt/var/log
 mount -o $BTRFS_OPTS,subvol=@swap /dev/disk/by-label/Nitroux /mnt/var/swap
 # mount -o $BTRFS_OPTS,subvol="@nix" /dev/disk/by-partlabel/Nitroux /mnt/nix
+mount /dev/disk/by-label/BOOT /mnt/boot
+mkdir -pv /mnt/boot/efi
 mount -t vfat -o defaults,noatime,nodiratime /dev/disk/by-label/EFI /mnt/boot/efi
 
 touch /mnt/var/swap/swapfile

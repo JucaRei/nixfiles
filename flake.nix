@@ -241,7 +241,7 @@
           # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
-          "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "hyprland"; };
+          "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "gnome"; };
           "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
           "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
           "juca@oldarch" = libx.mkHome { hostname = "oldarch"; username = "juca"; stateVersion = "22.11"; };
@@ -291,10 +291,10 @@
         nitro = libx.mkHost {
           hostname = "nitro";
           username = "juca";
-          desktop = "budgie";
+          desktop = "gnome";
           # desktop = "hyprland";
           hostid = "ceafb566";
-          isNixOS = true;
+          # isNixOS = true;
         };
         air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };

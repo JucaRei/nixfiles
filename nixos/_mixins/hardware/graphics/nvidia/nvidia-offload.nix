@@ -18,20 +18,20 @@ in {
     blacklistedKernelModules = ["nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo"];
     kernelModules = [
       "clearcpuid=514" # Fixes certain wine games crash on launch
-      "nvidia"
-      "nvidia_modeset"
-      "nvidia_uvm"
-      "nvidia_drm"
+      # "nvidia"
+      # "nvidia_modeset"
+      # "nvidia_uvm"
+      # "nvidia_drm"
     ];
-    kernelParams = ["nvidia_drm.modeset=1" "nouveau.modeset=0"];
-    extraModprobeConfig = ''
-      options nvidia NVreg_RegistryDwords="PowerMizerEnable=0x1; PerfLevelSrc=0x2222; PowerMizerLevel=0x3; PowerMizerDefault=0x3; PowerMizerDefaultAC=0x3"
-      options nvidia NVreg_UsePageAttributeTable=1
-      options nvidia-drm modeset=1
-      options nvidia NVreg_PreserveVideoMemoryAllocations=1
-      options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
-      options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
-    '';
+    # kernelParams = ["nvidia_drm.modeset=1" "nouveau.modeset=0"];
+    # extraModprobeConfig = ''
+    #   options nvidia NVreg_RegistryDwords="PowerMizerEnable=0x1; PerfLevelSrc=0x2222; PowerMizerLevel=0x3; PowerMizerDefault=0x3; PowerMizerDefaultAC=0x3"
+    #   options nvidia NVreg_UsePageAttributeTable=1
+    #   options nvidia-drm modeset=1
+    #   options nvidia NVreg_PreserveVideoMemoryAllocations=1
+    #   options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
+    #   options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
+    # '';
     # env = LIBVA_DRIVER_NAME,nvidia
     # env = XDG_SESSION_TYPE,wayland
     # env = GBM_BACKEND,nvidia-drm
@@ -41,7 +41,7 @@ in {
   };
   hardware = {
     nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.latest;
+      package = config.boot.kernelPackages.nvidiaPackages.production;
       prime = {
         offload.enable = true;
         offload.enableOffloadCmd = true;
@@ -61,11 +61,11 @@ in {
       videoDrivers = ["nvidia"];
       # Comment this for AMD GPU
       # This helps fix tearing of windows for Nvidia cards
-      screenSection = ''
-        Option       "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-        Option       "AllowIndirectGLXProtocol" "off"
-        Option       "TripleBuffer" "on"
-      '';
+      # screenSection = ''
+      #   Option       "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+      #   Option       "AllowIndirectGLXProtocol" "off"
+      #   Option       "TripleBuffer" "on"
+      # '';
     };
   };
   environment = {
@@ -82,7 +82,7 @@ in {
       # WLR_RENDERER = "vulkan";
       __GL_GSYNC_ALLOWED = "0";
       __GL_VRR_ALLOWED = "0";
-      QT_QPA_PLATFORM = "wayland";
+      # QT_QPA_PLATFORM = "wayland";
     };
     systemPackages = with pkgs; [
       vulkan-loader

@@ -11,7 +11,6 @@ in
         createHome = true;
         description = "Reinaldo P Jr";
         extraGroups = [ "whell" ];
-        groups = "users";
         uid = 1000;
         linger = true;
         autoSubUidGidRange = true;
