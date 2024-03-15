@@ -10,6 +10,7 @@
     packages = with pkgs; [
       bash-completion # completion for bash
       nix-direnv # A shell extension that manages your environment for nix
+      direnv
       neofetch # check system
       duf # check space
       nix-bash-completions # complitions for nix

@@ -1,4 +1,4 @@
-{ lib, ... }: with lib.gvariant;
+{ lib, pkgs, ... }: with lib.gvariant;
 let
   extensions = with pkgs; with gnomeExtensions; [
     user-themes
@@ -71,7 +71,7 @@ in
       clock-format = "24h";
       clock-show-weekday = true;
       color-scheme = "prefer-dark";
-      cursor-size = mkInt32 32;
+      cursor-size = 24;
       cursor-theme = "Adwaita";
       document-font-name = "Work Sans 12";
       enable-hot-corners = false;

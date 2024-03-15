@@ -35,7 +35,7 @@
     battery = "${pkgs.inxi}/bin/inxi -B -xxx";
     bluetooth = "${pkgs.inxi}/bin/inxi -E";
     graphics = "${pkgs.inxi}/bin/inxi -G";
-    macros = "${pkgs.libcpp}/bin/cpp -dM /dev/null";
+    macros = "cpp -dM /dev/null";
     pci = "sudo ${pkgs.inxi}/bin/inxi --slots";
     process = "${pkgs.inxi}/bin/inxi --processes";
     partitions = "${pkgs.inxi}/bin/inxi -P";

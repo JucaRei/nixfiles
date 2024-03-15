@@ -41,9 +41,9 @@ with lib.hm.gvariant; {
         xhost +si:localuser:$USER
       '';
     };
-    "${config.home.homeDirectory}/Pictures/wallpapers" = {
-      source = ../../_mixins/config/wallpapers;
-      recursive = true;
-    };
+    # "${config.home.homeDirectory}/Pictures/wallpapers" = lib.mkDefault {
+    #   source = ../../_mixins/config/wallpapers;
+    #   recursive = true;
+    # };
   };
 }

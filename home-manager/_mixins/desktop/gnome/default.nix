@@ -11,11 +11,6 @@ in
     ./settings.nix
   ];
 
-  font = {
-    name = "Work Sans 12";
-    package = pkgs.work-sans;
-  };
-
   home = {
     packages = with pkgs; [
 

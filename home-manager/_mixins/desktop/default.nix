@@ -36,7 +36,7 @@ in
           ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
         '';
       };
-      "Pictures/wallpapers".source = "${walls}/images";
+      "Pictures/wallpapers".source = lib.mkForce "${walls}/images";
     };
     packages = with pkgs; [
       black # Code format Python

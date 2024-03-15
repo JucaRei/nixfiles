@@ -11,7 +11,7 @@ with lib.hm.gvariant; {
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix
     # ../_mixins/apps/text-editor/vscodium.nix
-    ../_mixins/apps/text-editor/vscode.nix
+    #../_mixins/apps/text-editor/vscode.nix
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix
@@ -33,6 +33,7 @@ with lib.hm.gvariant; {
         # icloud-photo-downloader
         # vlc
         cloneit
+        vscode-fhs
         # deezer-gui
         # fantezy
         # gcc
@@ -40,7 +41,7 @@ with lib.hm.gvariant; {
         transmission_4-gtk
         lua
         # fcitx5-with-addons
-        vv
+        # vv
         # gparted
         # neovim
         # tmux
