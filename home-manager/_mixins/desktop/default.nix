@@ -46,6 +46,7 @@ in
       # font-manager
       dconf2nix
       hexchat
+      distrobox
     ] ++ lib.optionals (isDarwin) [
       # macOS apps
       iterm2
