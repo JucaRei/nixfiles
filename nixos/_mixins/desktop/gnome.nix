@@ -27,7 +27,9 @@
       displayManager = {
         gdm = {
           enable = true; # Display Manager
-          settings = { greeter.IncludeAll = true; };
+          settings = {
+            greeter.IncludeAll = true;
+          };
           wayland = false; # only x11
         };
         defaultSession = "gnome";
@@ -42,9 +44,15 @@
       gnome-user-share.enable = true;
       gnome-online-accounts.enable = false;
       gnome-initial-setup.enable = false;
-      gnome-browser-connector = { enable = false; };
-      gnome-remote-desktop = { enable = true; };
-      sushi = { enable = true; };
+      gnome-browser-connector = {
+        enable = false;
+      };
+      gnome-remote-desktop = {
+        enable = true;
+      };
+      sushi = {
+        enable = true;
+      };
     };
   };
 

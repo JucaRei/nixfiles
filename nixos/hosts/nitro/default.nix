@@ -5,16 +5,16 @@
 , ...
 }: {
   imports = [
-    # inputs.nixos-hardware.nixosModules.common-cpu-intel
-    # inputs.nixos-hardware.nixosModules.common-gpu-intel
-    # inputs.nixos-hardware.nixosModules.common-gpu-nvidia
+    inputs.nixos-hardware.nixosModules.common-cpu-intel
+    inputs.nixos-hardware.nixosModules.common-gpu-intel
+    inputs.nixos-hardware.nixosModules.common-gpu-nvidia
     inputs.nixos-hardware.nixosModules.common-pc-laptop
     inputs.nixos-hardware.nixosModules.common-pc-hdd
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
     #../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
-    ../../_mixins/hardware/graphics/nvidia/nvidia-specialisation.nix
-    ../../_mixins/hardware/graphics/intel/intel-gpu-dual.nix
+    # ../../_mixins/hardware/graphics/nvidia/nvidia-specialisation.nix
+    # ../../_mixins/hardware/graphics/intel/intel-gpu-dual.nix
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/cpu/intel-cpu.nix
@@ -53,7 +53,8 @@
     loader = {
       # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
       grub = {
-        theme = pkgs.cyberre-grub-theme;
+        # theme = pkgs.cyberre-grub-theme;
+        theme = pkgs.catppuccin-grub;
         ## Copy kernels to /boot
         # copyKernels = true;
 
@@ -100,9 +101,9 @@
       "crc32c-intel"
       "lz4hc"
       "lz4hc_compress"
-      "vhost_vsock"
+      # "vhost_vsock"
       # The 'splash' arg is included by the plymouth option
-      "boot.shell_on_fail"
+      # "boot.shell_on_fail"
     ];
     # plymouth = {
     # enable = true;
@@ -341,6 +342,16 @@
       ];
     };
 
+    "/var/swap" = {
+      device = "/dev/disk/by-label/Nitroux";
+      fsType = "btrfs";
+      options = [
+        "subvol=@swap"
+        "defaults"
+        "noatime"
+      ];
+    };
+
     "/nix" = {
       device = "/dev/disk/by-label/Nitroux";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
@@ -372,11 +383,18 @@
     };
   };
 
-  zramSwap = {
-    enable = true;
-    swapDevices = 1;
-    memoryPercent = 150;
-  };
+  swapDevices = [
+    {
+      device = "/var/swap/swapfile";
+      # size = "20G";
+    }
+  ];
+
+  # zramSwap = {
+  #   enable = true;
+  #   swapDevices = 1;
+  #   memoryPercent = 150;
+  # };
 
   # # This allows you to dynamically switch between NVIDIA<->Intel using
   # # nvidia-offload script
@@ -396,6 +414,39 @@
   hardware = {
     cpu.intel.updateMicrocode =
       lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+    opengl = {
+      driSupport = true;
+      driSupport32Bit = true;
+      extraPackages = with pkgs; [
+        intel-media-driver
+        nvidia-vaapi-driver
+        libvdpau
+        libvdpau-va-gl
+      ];
+      extraPackages32 = with pkgs.pkgsi686Linux;
+        [
+          # intel-media-driver
+          #  vaapiIntel
+          vaapiVdpau
+          libvdpau-va-gl
+          #  libva
+        ];
+    };
+
+    nvidia = {
+      package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
+      prime = {
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+        # Make the intel igpu default. The NVIDIA is for CUDA/NVENC
+        # reverseSync.enable = true;
+
+        sync.enable = true;
+      };
+      nvidiaSettings = false;
+      # forceFullCompositionPipeline = true;
+    };
   };
 
   nixpkgs = {

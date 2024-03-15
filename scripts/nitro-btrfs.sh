@@ -54,8 +54,19 @@ mount -o $BTRFS_OPTS2,subvol=@tmp /dev/disk/by-label/Nitroux /mnt/var/tmp
 # mount -o $BTRFS_OPTS,subvol="@tmp" /dev/disk/by-partlabel/Nitroux /mnt/var/tmp
 mount -o $BTRFS_OPTS,subvol=@nix /dev/disk/by-label/Nitroux /mnt/nix
 mount -o $BTRFS_OPTS,subvol=@logs /dev/disk/by-label/Nitroux /mnt/var/log
+mount -o $BTRFS_OPTS,subvol=@swap /dev/disk/by-label/Nitroux /mnt/var/swap
 # mount -o $BTRFS_OPTS,subvol="@nix" /dev/disk/by-partlabel/Nitroux /mnt/nix
 mount -t vfat -o defaults,noatime,nodiratime /dev/disk/by-label/EFI /mnt/boot/efi
+
+touch /mnt/var/swap/swapfile
+chmod 600 /mnt/var/swap/swapfile
+chattr +C /mnt/var/swap/swapfile
+lsattr /mnt/var/swap/swapfile
+dd if=/dev/zero of=/mnt/var/swap/swapfile bs=1M count=20480 status=progress
+mkswap /mnt/var/swap/swapfile
+swapon /mnt/var/swap/swapfile
+
+
 
 # for dir in dev proc sys run; do
 #    mount --rbind /$dir /mnt/$dir

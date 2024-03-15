@@ -92,6 +92,7 @@
     nix-inspect = prev.nix-inspect;
     sarasa-gothic = prev.sarasa-gothic;
     iosevka-q = prev.iosevka-q;
+    catppuccin-grub = prev.catppuccin-grub;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
