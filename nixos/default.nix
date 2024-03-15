@@ -215,16 +215,16 @@ in
     };
     consoleLogLevel = mkDefault 0;
     # Only enable the systemd-boot on installs, not live media (.ISO images)
-    loader = mkIf (isInstall) {
+    loader = mkDefault (mkIf (isInstall) {
       efi.canTouchEfiVariables = true;
       systemd-boot = {
         configurationLimit = 6;
         consoleMode = "max";
-        enable = true;
+        # enable = true;
         memtest86.enable = true;
-        timeout = 10;
       };
-    };
+      # timeout = 5;
+    });
     kernelModules = [ "vhost_vsock" "tcp_bbr" ];
     kernelParams = [
       "boot.shell_on_fail"
@@ -468,7 +468,7 @@ in
       git
     ] ++ lib.optionals (isInstall) [
       # inputs.crafts-flake.packages.${platform}.snapcraft
-      inputs.fh.packages.${platform}.default
+      # inputs.fh.packages.${platform}.default
       inputs.nixos-needtoreboot.packages.${platform}.default
       clinfo
       unstable.distrobox
