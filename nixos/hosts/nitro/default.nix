@@ -419,25 +419,6 @@
     cpu.intel.updateMicrocode =
       lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-    opengl = {
-      driSupport = true;
-      driSupport32Bit = true;
-      extraPackages = with pkgs; [
-        intel-media-driver
-        # nvidia-vaapi-driver
-        libvdpau
-        libvdpau-va-gl
-      ];
-      extraPackages32 = with pkgs.pkgsi686Linux;
-        [
-          # intel-media-driver
-          #  vaapiIntel
-          vaapiVdpau
-          libvdpau-va-gl
-          #  libva
-        ];
-    };
-
     # nvidia = {
     #   package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
     #   prime = {
@@ -466,13 +447,9 @@
       btdu
       btrfs-progs
       compsize
-      # sublime4
       cloneit
       # unstable.stacer
       lm_sensors
-      # nixos-summary
-      # tidal
-      #etcher
       #thorium
     ];
     sessionVariables = {

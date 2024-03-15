@@ -58,49 +58,6 @@
 
   security.pam.services.gdm.enableGnomeKeyring = true;
 
-  environment = {
-    gnome.excludePackages =
-      (with pkgs; [
-        # Gnome ignored packages
-        gnome-tour
-        gnome-console
-        gnome-text-editor
-      ])
-      ++ (with pkgs.gnome; [
-        cheese # webcam tool
-        gnome-music
-        gnome-font-viewer
-        # gedit # text editor
-        epiphany # web browser
-        geary # email reader
-        # evince # document viewer
-        yelp # Help view
-        gnome-characters
-        gnome-terminal
-        gnome-disk-utility
-        gnome-font-viewer
-        # gnome-calendar
-        gnome-music
-        gnome-system-monitor
-        totem
-        gnome-characters
-        tali # poker game
-        iagno # go game
-        hitori # sudoku game
-        atomix # puzzle game
-        yelp # Help view
-        gnome-contacts
-        gnome-maps
-        gnome-initial-setup
-      ]);
-
-    sessionVariables = {
-      NAUTILUS_EXTENSION_DIR = "${config.system.path}/lib/nautilus/extensions-4";
-    };
-
-    pathsToLink = [ "/share/nautilus-python/extensions" ];
-  };
-
   xdg = {
     portal = {
       enable = true;
