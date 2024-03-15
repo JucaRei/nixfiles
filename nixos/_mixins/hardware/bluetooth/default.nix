@@ -1,4 +1,4 @@
-{pkgs, lib, ...}: {
+{ pkgs, lib, ... }: {
   # https://nixos.wiki/wiki/Bluetooth
   hardware = lib.mkForce {
     bluetooth = {
@@ -9,7 +9,7 @@
       package = pkgs.bluez5-experimental;
 
       powerOnBoot = false;
-      disabledPlugins = ["sap"];
+      disabledPlugins = [ "sap" ];
       hsphfpd.enable = false;
       settings = {
         General = {

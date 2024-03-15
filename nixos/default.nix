@@ -15,7 +15,7 @@ let
   };
 in
 {
-  imports = with lib;
+  imports =
     [
       inputs.disko.nixosModules.disko
       inputs.nix-index-database.nixosModules.nix-index
@@ -23,6 +23,8 @@ in
       # inputs.sops-nix.nixosModules.sops
       (modulesPath + "/installer/scan/not-detected.nix")
       (./. + "/hosts/${hostname}")
+      (if notVM then ./_mixins/virtualization/podman.nix else "")
+      (if notVM then ./_mixins/virtualization/lxd.nix else "")
       ./_mixins/services/network/openssh.nix
       ./_mixins/services/tools/smartmon.nix
       ./_mixins/config/scripts
@@ -32,7 +34,7 @@ in
       ./users
     ]
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ optional (isWorkstation) ./_mixins/desktop;
+    ++ lib.optional (isWorkstation) ./_mixins/desktop;
 
   ######################
   ### Documentations ###
@@ -318,7 +320,7 @@ in
         # cozette
         # maple-mono-SC-NF
         fira
-        fira-go
+        # fira-go
         work-sans
         inter
         # gyre-fonts # TrueType substitutes for standard PostScript fonts
@@ -329,7 +331,7 @@ in
         # kochi-substitute
 
         # Code/monospace and nsymbol fonts
-        # fira-code
+        fira-code
         # fira-code-symbols
         # mplus-outline-fonts.osdnRelease
         # dejavu_fonts
@@ -473,14 +475,7 @@ in
       clinfo
       unstable.distrobox
       flyctl
-      fuse-overlayfs
       libva-utils
-      nvme-cli
-      #https://nixos.wiki/wiki/Podman
-      podman-compose
-      podman-tui
-      podman
-      smartmontools
       sops
       ssh-to-age
     ] ++ lib.optionals (isInstall && isWorkstation) [
@@ -500,6 +495,10 @@ in
       VISUAL = "micro";
     };
 
+    # --------------------------------------------------------------------
+    # Permit Insecure Packages && Allow unfree packages
+    # --------------------------------------------------------------------
+
     sessionVariables = {
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
@@ -507,23 +506,6 @@ in
       FLAKE = "/home/${username}/.dotfiles/nixfiles";
     };
 
-    # --------------------------------------------------------------------
-    # Permit Insecure Packages && Allow unfree packages
-    # --------------------------------------------------------------------
-
-    # Create file /etc/nixos-current-system-packages with List of all Packages
-    etc = {
-      "nixos-current-system-packages" = {
-        text =
-          let
-            packages =
-              builtins.map (p: "${p.name}") config.environment.systemPackages;
-            sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-            formatted = builtins.concatStringsSep "\n" sortedUnique;
-          in
-          formatted;
-      };
-    };
 
     shellAliases = {
       system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
@@ -539,6 +521,20 @@ in
       # Print timestamp along with cmd output
       # Example: cmd | ts
       ts = "gawk '{ print strftime(\"[%Y-%m-%d %H:%M:%S]\"), $0 }'";
+    };
+
+    # Create file /etc/nixos-current-system-packages with List of all Packages
+    etc = {
+      "nixos-current-system-packages" = {
+        text =
+          let
+            packages =
+              builtins.map (p: "${p.name}") config.environment.systemPackages;
+            sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+            formatted = builtins.concatStringsSep "\n" sortedUnique;
+          in
+          formatted;
+      };
     };
   };
 
@@ -615,15 +611,15 @@ in
         #   if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
         #     ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
         #   fi
-        #   /run/current-system/sw/bin/nixos-needsreboot
+        # /run/current-system/sw/bin/nixos-needsreboot
         # '';
 
         text = ''
-          if [[ -e /run/current-system ]]; then
-            echo -e "\n***            ***          ***           ***           ***\n"
-            ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
-            echo -e "\n***            ***          ***           ***           ***\n"
-          fi
+            if [[ -e /run/current-system ]]; then
+              echo -e "\n***            ***          ***           ***           ***\n"
+              ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
+              echo -e "\n***            ***          ***           ***           ***\n"
+            fi
           /run/current-system/sw/bin/nixos-needsreboot
         '';
       };
@@ -648,12 +644,14 @@ in
 
   # systemd = lib.mkOverride 20 {
   systemd = {
+
     user = {
       extraConfig = ''
         DefaultTimeoutStopSec=15s
         DefaultTimeoutAbortSec=8s
       '';
     };
+
     tmpfiles.rules = [
       "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
     ];
@@ -698,9 +696,46 @@ in
       systemd-udev-settle.enable = lib.mkForce false;
       # systemd-user-sessions.enable = false;
     };
+
+    targets = lib.mkIf (isInstall) {
+      hibernate.enable = false;
+      hybrid-sleep.enable = false;
+    };
+  };
+
+  zramSwap = lib.mkIf (isInstall) {
+    algorithm = "lz4";
+    memoryPercent = 75;
+    enable = true;
   };
 
   services = {
+    avahi = {
+      enable = true;
+      nssmdns = true;
+      # Only open the avahi firewall ports on servers
+      openFirewall = isWorkstation;
+      publish = {
+        addresses = true;
+        enable = true;
+        workstation = isWorkstation;
+      };
+    };
+    fwupd.enable = isInstall;
+    kmscon = lib.mkIf (isInstall) {
+      enable = true;
+      hwRender = true;
+      fonts = [{
+        name = "FiraCode Nerd Font Mono";
+        package = pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; };
+      }];
+      extraConfig = ''
+        font-size=14
+        xkb-layout=gb
+      '';
+    };
+    # snap.enable = isInstall;
+
     xserver = {
       libinput = {
         enable = true;
@@ -820,20 +855,41 @@ in
         });
       '';
     };
+    rtkit = lib.mkIf (isWorkstation) {
+      enable = true;
+    };
   };
 
   hardware = {
     enableRedistributableFirmware = true;
 
-    bluetooth = lib.mkIf (isInstall) {
-      enable = true;
-      package = pkgs.bluez;
-      settings = {
-        General = {
-          Enable = "Source,Sink,Media,Socket";
-          Experimental = true;
+    bluetooth =
+      if (isWorkstation) then {
+        enable = true;
+        # package = pkgs.unstable.bluez5-experimental;
+        package = pkgs.unstable.bluez-experimental;
+        settings = {
+          General = {
+            Enable = "Source,Sink,Media,Socket";
+            JustWorksRepairing = "always";
+            MultiProfile = "multiple";
+            # make Xbox Series X controller work
+            Class = "0x000100";
+            ControllerMode = "bredr";
+            FastConnectable = true;
+            Privacy = "device";
+            Experimental = true;
+          };
+        };
+      } else {
+        enable = true;
+        package = pkgs.bluez;
+        settings = {
+          General = {
+            Enable = "Source,Sink,Media,Socket";
+            Experimental = true;
+          };
         };
       };
-    };
   };
 }

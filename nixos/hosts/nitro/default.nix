@@ -18,7 +18,6 @@
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/cpu/intel-cpu.nix
-    ../../_mixins/hardware/boot/multiboot.nix
     ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
     # ../../_mixins/virtualization/quickemu.nix
@@ -369,7 +368,7 @@
       ];
     };
 
-    "/boot" = { 
+    "/boot" = {
       device = "/dev/disk/by-label/BOOT";
       fsType = "ext4";
     };
@@ -444,13 +443,13 @@
     #   prime = {
     #     intelBusId = "PCI:0:2:0";
     #     nvidiaBusId = "PCI:1:0:0";
-        # Make the intel igpu default. The NVIDIA is for CUDA/NVENC
-        # reverseSync.enable = true;
+    # Make the intel igpu default. The NVIDIA is for CUDA/NVENC
+    # reverseSync.enable = true;
 
-        # sync.enable = true;
-      # };
-      # nvidiaSettings = false;
-      # forceFullCompositionPipeline = true;
+    # sync.enable = true;
+    # };
+    # nvidiaSettings = false;
+    # forceFullCompositionPipeline = true;
     # };
   };
 
