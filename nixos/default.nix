@@ -19,7 +19,7 @@ in
     [
       inputs.disko.nixosModules.disko
       inputs.nix-index-database.nixosModules.nix-index
-      inputs.nix-snapd.nixosModules.default
+      # inputs.nix-snapd.nixosModules.default
       # inputs.sops-nix.nixosModules.sops
       (modulesPath + "/installer/scan/not-detected.nix")
       (./. + "/hosts/${hostname}")
@@ -214,6 +214,17 @@ in
       verbose = mkDefault false;
     };
     consoleLogLevel = mkDefault 0;
+    # Only enable the systemd-boot on installs, not live media (.ISO images)
+    loader = mkIf (isInstall) {
+      efi.canTouchEfiVariables = true;
+      systemd-boot = {
+        configurationLimit = 6;
+        consoleMode = "max";
+        enable = true;
+        memtest86.enable = true;
+        timeout = 10;
+      };
+    };
     kernelModules = [ "vhost_vsock" "tcp_bbr" ];
     kernelParams = [
       "boot.shell_on_fail"
@@ -283,10 +294,11 @@ in
       fontDir.enable = true;
       packages = lib.attrValues
         {
-          inherit (inputs.self.packages.${pkgs.system}) sarasa-gothic iosevka-q;
-          inherit (pkgs) material-design-icons noto-fonts-emoji symbola;
-          nerdfonts = pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; };
-        } ++ (with pkgs; [
+          # inherit (inputs.self.packages.${pkgs.system}) sarasa-gothic iosevka-q;
+          # inherit (pkgs) material-design-icons noto-fonts-emoji symbola;
+          # nerdfonts = pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; };
+        }
+      ++ (with pkgs; [
         # (nerdfonts.override {
         #   fonts = ["FiraCode" "SourceCodePro" "UbuntuMono"];
         # })
@@ -309,7 +321,7 @@ in
         fira-go
         work-sans
         inter
-        gyre-fonts # TrueType substitutes for standard PostScript fonts
+        # gyre-fonts # TrueType substitutes for standard PostScript fonts
         roboto
       ] ++ lib.optionals lotsOfFonts [
         # Japanese
@@ -332,44 +344,44 @@ in
         cache32Bit = true;
         useEmbeddedBitmaps = true;
         defaultFonts = {
-          # serif = ["Source Serif"];
-          serif = [
-            "SF Pro"
-            "Sarasa Gothic J"
-            "Sarasa Gothic K"
-            "Sarasa Gothic SC"
-            "Sarasa Gothic TC"
-            "Sarasa Gothic HC"
-            "Sarasa Gothic CL"
-            "Symbola"
-          ];
-          # sansSerif = ["Work Sans" "Fira Sans" "FiraGO"];
-          sansSerif = [
-            "SF Pro"
-            "Sarasa Gothic J"
-            "Sarasa Gothic K"
-            "Sarasa Gothic SC"
-            "Sarasa Gothic TC"
-            "Sarasa Gothic HC"
-            "Sarasa Gothic CL"
-            "Symbola"
-          ];
+          serif = [ "Source Serif" ];
+          # serif = [
+          # "SF Pro"
+          # "Sarasa Gothic J"
+          # "Sarasa Gothic K"
+          # "Sarasa Gothic SC"
+          # "Sarasa Gothic TC"
+          # "Sarasa Gothic HC"
+          # "Sarasa Gothic CL"
+          # "Symbola"
+          # ];
+          sansSerif = [ "Inter" "Work Sans" "Fira Sans" "FiraGO" ];
+          # sansSerif = [
+          #   "SF Pro"
+          #   "Sarasa Gothic J"
+          #   "Sarasa Gothic K"
+          #   "Sarasa Gothic SC"
+          #   "Sarasa Gothic TC"
+          #   "Sarasa Gothic HC"
+          #   "Sarasa Gothic CL"
+          #   "Symbola"
+          # ];
           # monospace = ["FiraCode Nerd Font Mono" "SauceCodePro Nerd Font Mono"];
-          monospace = [
-            "SF Pro Rounded"
-            "Sarasa Mono J"
-            "Sarasa Mono K"
-            "Sarasa Mono SC"
-            "Sarasa Mono TC"
-            "Sarasa Mono HC"
-            "Sarasa Mono CL"
-            "Symbola"
-          ];
-          emoji = [
-            "Noto Color Emoji"
-            "Material Design Icons"
-            "Symbola"
-          ];
+          # monospace = [
+          #   "SF Pro Rounded"
+          #   "Sarasa Mono J"
+          #   "Sarasa Mono K"
+          #   "Sarasa Mono SC"
+          #   "Sarasa Mono TC"
+          #   "Sarasa Mono HC"
+          #   "Sarasa Mono CL"
+          #   "Symbola"
+          # ];
+          # emoji = [
+          #   "Noto Color Emoji"
+          #   "Material Design Icons"
+          #   "Symbola"
+          # ];
         };
         enable = true;
         hinting = {
@@ -455,7 +467,7 @@ in
     systemPackages = with pkgs; [
       git
     ] ++ lib.optionals (isInstall) [
-      inputs.crafts-flake.packages.${platform}.snapcraft
+      # inputs.crafts-flake.packages.${platform}.snapcraft
       inputs.fh.packages.${platform}.default
       inputs.nixos-needtoreboot.packages.${platform}.default
       clinfo
@@ -707,6 +719,11 @@ in
           disableWhileTyping = true;
           accelProfile = "flat";
         };
+      };
+      xkb = {
+        layout = if hostname == "nitro" then "br" else "us";
+        model = if hostname == "nitro" then "pc105" else "pc104";
+        variant = if hostname == "nitro" then "abnt2" else "mac";
       };
       exportConfiguration = true;
     };

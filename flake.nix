@@ -57,17 +57,17 @@
     #   url = "https://flakehub.com/f/wimpysworld/antsy-alien-attack-pico/*.tar.gz";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
-    fh.inputs.nixpkgs.follows = "nixpkgs";
+    # fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
+    # fh.inputs.nixpkgs.follows = "nixpkgs";
 
-    crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.6.*.tar.gz";
-    crafts-flake.inputs.nixpkgs.follows = "nixpkgs";
+    # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.6.*.tar.gz";
+    # crafts-flake.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
-    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
+    # nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
+    # nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixpkgs-f2k.url = "github:moni-dz/nixpkgs-f2k";
-    nixpkgs-f2k.inputs.nixpkgs.follows = "nixpkgs";
+    # nixpkgs-f2k.url = "github:moni-dz/nixpkgs-f2k";
+    # nixpkgs-f2k.inputs.nixpkgs.follows = "nixpkgs";
 
     # vscode-server.url = "github:nix-community/nixos-vscode-server";
     # vscode-server.inputs.nixpkgs.follows = "nixpkgs";
@@ -133,7 +133,7 @@
     #  inputs.emacs-overlay.follows = "emacs-overlay";
     #};
 
-    nixos-needtoreboot.url = github:thefossguy/nixos-needsreboot;
+    nixos-needtoreboot.url = "github:thefossguy/nixos-needsreboot";
     nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
 
     # Hyprland
