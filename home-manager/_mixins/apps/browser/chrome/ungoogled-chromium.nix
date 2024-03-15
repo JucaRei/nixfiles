@@ -9,7 +9,9 @@ in
     let
       inherit (lib.options) mkEnableOption;
     in
-    { enable = mkEnableOption "Google-free chromium"; };
+    {
+      enable = mkEnableOption "Google-free chromium";
+    };
 
   config = mkIf config.modules.desktop.browsers.chromium.enable {
     home.packages =

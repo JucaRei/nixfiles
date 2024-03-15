@@ -19,7 +19,7 @@ in
     [
       inputs.disko.nixosModules.disko
       inputs.nix-index-database.nixosModules.nix-index
-      # inputs.nix-snapd.nixosModules.default
+      inputs.nix-snapd.nixosModules.default
       # inputs.sops-nix.nixosModules.sops
       (modulesPath + "/installer/scan/not-detected.nix")
       (./. + "/hosts/${hostname}")
