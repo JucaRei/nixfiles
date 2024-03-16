@@ -1,29 +1,43 @@
 { config, lib, pkgs, hostname, desktop, ... }:
 let
-  hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+  # hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
   dockerEnabled = config.virtualisation.docker.enable;
 in
 {
   #https://nixos.wiki/wiki/Podman
 
-  environment.systemPackages = with pkgs;
-    [
-      # buildah # Container build tool
-      # podman-tui
-      podman
-      podman-compose
-      podman-tui
-      # aardvark-dns
-      # conmon # Container monitoring
-      # runc
-      # skopeo # Container registry utility
-      fuse-overlayfs # Container overlay+shiftfs
-      #dive             # Container analyzer
-      #grype            # Container vulnerability scanner
-      #conmon           # Container monitoring
-      #skopeo           # Container registry utility
-      #syft             # Container SBOM generator
-    ];
+  environment = {
+    systemPackages = with pkgs;
+      [
+        # buildah # Container build tool
+        # podman-tui
+        podman
+        podman-compose
+        podman-tui
+        # aardvark-dns
+        # conmon # Container monitoring
+        # runc
+        # skopeo # Container registry utility
+        fuse-overlayfs # Container overlay+shiftfs
+        #dive             # Container analyzer
+        #grype            # Container vulnerability scanner
+        #conmon           # Container monitoring
+        #skopeo           # Container registry utility
+        #syft             # Container SBOM generator
+      ];
+    etc = {
+      "containers/registries.conf".text = lib.mkForce ''
+        unqualified-search-registries = ['docker.io']
+
+        [[registry]]
+        prefix="docker.io"
+        location="docker.io"
+
+        [[registry.mirror]]
+        location="mirror.gcr.io"
+      '';
+    };
+  };
 
   ### podman-shell.nix /examples_helper/shells/podman-shell.nix
 
@@ -50,7 +64,8 @@ in
       dockerCompat = !dockerEnabled;
       dockerSocket.enable = !dockerEnabled;
       enable = true;
-      enableNvidia = hasNvidia;
+      enableNvidia = builtins.any (driver: driver == "nvidia") config.services.xserver.videoDrivers;
+
     };
     containers = {
       containersConf.settings = {
@@ -70,6 +85,29 @@ in
         #     # "registry.access.redhat.com"
         #     # "registry.centos.org"
         #   ];
+      };
+    };
+  };
+
+  # Fix for docker compat (vscode)
+  systemd.user = {
+    services = {
+      "podman-prune" = {
+        description = "Cleanup podman images";
+        requires = [ "podman.socket" ];
+        after = [ "podman.socket" ];
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${lib.getExe pkgs.podman} image prune --all --external --force";
+        };
+      };
+    };
+    timers."podman-prune" = {
+      partOf = [ "podman-prune.service" ];
+      timerConfig = {
+        OnCalendar = "weekly";
+        RandomizedDelaySec = "900";
+        Persistent = "true";
       };
     };
   };

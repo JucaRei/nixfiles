@@ -1,7 +1,4 @@
 { lib, pkgs, hostname, ... }:
-let
-  isNitro = (hostname == "nitro");
-in
 {
   boot = with lib;{
     tmp = {

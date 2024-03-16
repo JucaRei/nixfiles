@@ -77,7 +77,7 @@ in
     optimise.automatic = true;
     package = lib.mkIf (isInstall) pkgs.unstable.nix;
     settings = {
-      sandbox = true; #"relaxed"
+      sandbox = "relaxed"; # true
       # extra-sandbox-paths = [ ];
       auto-optimise-store = true;
       experimental-features = [
@@ -573,12 +573,6 @@ in
       hibernate.enable = false;
       hybrid-sleep.enable = false;
     };
-  };
-
-  zramSwap = lib.mkIf (isInstall) {
-    algorithm = "lz4";
-    memoryPercent = 75;
-    enable = true;
   };
 
   services = {

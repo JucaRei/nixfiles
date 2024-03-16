@@ -15,7 +15,7 @@ in
       # ../apps/documents/libreoffice.nix
       # ../services/flatpak.nix
       ../console/properties.nix
-      ../apps/browser/brave
+      # ../apps/browser/brave
       ../fonts
     ]
     ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}

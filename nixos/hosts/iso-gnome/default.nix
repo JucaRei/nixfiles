@@ -33,6 +33,12 @@
     })
   ];
 
+  zramSwap = {
+    algorithm = "lz4";
+    memoryPercent = 75;
+    enable = true;
+  };
+
   # nix.settings = {
   #   extra-substituters = [ "https://nyx.chaotic.cx/" ];
   #   extra-trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];

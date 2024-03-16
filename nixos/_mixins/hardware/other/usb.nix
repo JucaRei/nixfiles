@@ -1,7 +1,6 @@
-{
-  pkgs,
-  lib,
-  ...
+{ pkgs
+, lib
+, ...
 }: {
   # USB auto-mount
   services = {
@@ -29,7 +28,10 @@
 
         # fix NTFS mount, from https://wiki.archlinux.org/title/NTFS#udisks_support
         "mount_options.conf" = {
-          defaults = {ntfs_defaults = "uid=$UID,gid=$GID,noatime,prealloc";};
+          defaults = {
+            # ntfs_defaults = "uid=$UID,gid=$GID,noatime,prealloc";
+            ntfs_defaults = "uid=$UID,gid=$GID,noatime";
+          };
         };
       };
     };

@@ -16,7 +16,7 @@ with lib.hm.gvariant; {
     ../../_mixins/apps/music/rhythmbox.nix
     ../../_mixins/fonts
     # ../../_mixins/apps/video/mpv.nix
-    ../../_mixins/apps/tools/dconf-editor.nix
+    # ../../_mixins/apps/tools/dconf-editor.nix
     # ../../_mixins/apps/tools/gitkraken.nix
     # ../../_mixins/apps/tools/meld.nix
     # ../../_mixins/apps/terminal/sakura.nix
