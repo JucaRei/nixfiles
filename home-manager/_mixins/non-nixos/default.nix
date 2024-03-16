@@ -24,13 +24,13 @@ in
       packages = with pkgs; [
         # niv
         # nix
-        nix-index
+        nix-output-monitor
         nixpkgs-fmt
-        alejandra
         nil
+        # alejandra
         # rnix-lsp
         # base-packages
-        fzf
+        # fzf
         # tmux
       ];
 
