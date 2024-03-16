@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{ config, pkgs, ... }: {
   assertions = [
     {
       assertion =
@@ -12,11 +8,11 @@
     }
   ];
 
-  environment.systemPackages = with pkgs; [refind efibootmgr];
+  environment.systemPackages = with pkgs; [ refind efibootmgr ];
 
   system.activationScripts = {
     refind-install = {
-      deps = [];
+      deps = [ ];
       text = ''
         if [ -s /run/current-system/sw/bin/refind-install ];then
           if [ ! -s /boot/EFI/refind/refind_x64.efi ]; then

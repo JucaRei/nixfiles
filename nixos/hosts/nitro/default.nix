@@ -12,12 +12,9 @@
     inputs.nixos-hardware.nixosModules.common-pc-hdd
     inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
-    ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
+    # ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     # ../../_mixins/hardware/graphics/nvidia/nvidia-specialisation.nix
-    # ../../_mixins/hardware/graphics/intel/intel-gpu-dual.nix
-    ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/boot/grub.nix
-    ../../_mixins/hardware/cpu/intel-cpu.nix
     ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
     # ../../_mixins/virtualization/quickemu.nix
@@ -81,8 +78,12 @@
         "usbhid"
         "sd_mod"
         "rtsx_pci_sdmmc"
+        # "aesni_intel"
+        # "cryptd"
       ];
-      kernelModules = [ ];
+      kernelModules = [
+      ];
+      systemd.enable = true;
       verbose = lib.mkForce false;
     };
     consoleLogLevel = lib.mkForce 0;
@@ -100,9 +101,6 @@
       "crc32c-intel"
       "lz4hc"
       "lz4hc_compress"
-      # "vhost_vsock"
-      # The 'splash' arg is included by the plymouth option
-      # "boot.shell_on_fail"
     ];
     # plymouth = {
     # enable = true;
@@ -136,7 +134,8 @@
 
     kernelParams = lib.mkForce [
       "quiet"
-      "usbcore.autosuspend=-1" # Disable usb autosuspend
+      # "nosgx"
+      # "usbcore.autosuspend=-1" # Disable usb autosuspend
       "rd.plymouth=0"
       "plymouth.enable=0"
       "log-level=0"
@@ -154,8 +153,6 @@
       #---------------------------------------------------------------------
       #   Network and memory-related optimizationss for desktop 16GB
       #---------------------------------------------------------------------
-      "kernel.sysrq" =
-        1; # Enable SysRQ for rebooting the machine properly if it freezes. [Source](https://oglo.dev/tutorials/sysrq/index.html)
       "net.core.netdev_max_backlog" =
         30000; # Help prevent packet loss during high traffic periods.
       "net.core.rmem_default" =
@@ -242,7 +239,10 @@
     };
   };
 
+  ####################
   ### For services ###
+  ####################
+
   location = {
     provider = "manual";
     latitude = -23.53938;
@@ -394,11 +394,6 @@
     }
   ];
 
-  # zramSwap = {
-  #   enable = true;
-  #   swapDevices = 1;
-  #   memoryPercent = 150;
-  # };
 
   # # This allows you to dynamically switch between NVIDIA<->Intel using
   # # nvidia-offload script
@@ -415,29 +410,44 @@
   #   };
   # };
 
+  ######################
+  ### Intel & Nvidia ###
+  ######################
+
   hardware = {
     cpu.intel.updateMicrocode =
       lib.mkDefault config.hardware.enableRedistributableFirmware;
 
-    # nvidia = {
-    #   package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
-    #   prime = {
-    #     intelBusId = "PCI:0:2:0";
-    #     nvidiaBusId = "PCI:1:0:0";
-    # Make the intel igpu default. The NVIDIA is for CUDA/NVENC
-    # reverseSync.enable = true;
+    ### Intel
+    opengl = {
+      driSupport = true;
+      driSupport32Bit = true;
+      extraPackages = with pkgs; [
+        nvidia-vaapi-driver
+      ];
+    };
 
-    # sync.enable = true;
-    # };
-    # nvidiaSettings = false;
-    # forceFullCompositionPipeline = true;
-    # };
+
+    nvidia = {
+      package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
+      prime = {
+        intelBusId = "PCI:0:2:0";
+        nvidiaBusId = "PCI:1:0:0";
+        # Make the intel igpu default. The NVIDIA is for CUDA/NVENC
+        # reverseSync.enable = true;
+
+        # sync.enable = true;
+      };
+      nvidiaSettings = false;
+      # forceFullCompositionPipeline = true;
+    };
   };
 
   nixpkgs = {
-    # config.packageOverrides = pkgs: {
-    #   vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-    # };
+    ### Intel
+    config.packageOverrides = pkgs: {
+      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+    };
 
     hostPlatform = lib.mkDefault "x86_64-linux";
   };
@@ -451,31 +461,20 @@
       # unstable.stacer
       lm_sensors
       #thorium
+      libva-utils
     ];
-    sessionVariables = {
-      # LIBVA_DRIVER_NAME = "nvidia";
-      #  # maybe causes firefox crashed?
-      #  GBM_BACKEND = "nvidia-drm";
-      #  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      #  WLR_NO_HARDWARE_CURSORS = "1";
-    };
+    sessionVariables = { };
 
-    # etc = {
-    #   "systemd/system-sleep/batenergy".source = pkgs.writeShellScript "batenergy" ''
-    #     PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.bc ]}
-    #     source ${pkgs.fetchFromGitHub {
-    #       owner = "equaeghe";
-    #       repo = "batenergy";
-    #       rev = "13c381f68f198af361c5bd682b32577131fbb60f";
-    #       hash = "sha256-4JQrSD8HuBDPbBGy2b/uzDvrBUZ8+L9lAnK95rLqASk=";
-    #     }}/batenergy.sh "$@"
-    #   '';
-    # };
+    # Intel
+    variables = {
+      VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+    };
   };
 
   services = {
-    dbus.implementation = lib.mkForce "broker";
-    acpid = { enable = true; };
+    acpid = {
+      enable = true;
+    };
     power-profiles-daemon.enable = lib.mkDefault true;
     # upower.enable = true;
     # udev.extraRules = lib.mkMerge [
@@ -625,10 +624,10 @@
     };
 
     sleep.extraConfig = ''
-      AllowHibernation=no
+      AllowHibernation=yes
       AllowSuspend=yes
-      AllowSuspendThenHibernate=no
-      AllowHybridSleep=no
+      AllowSuspendThenHibernate=yes
+      AllowHybridSleep=yes
     '';
   };
   #specialisation."VM-passthrough".configuration = {

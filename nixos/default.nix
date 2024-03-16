@@ -212,9 +212,6 @@ in
   # Only enable the grub on installs, not live media (.ISO images)
 
   boot = with lib; {
-    initrd = {
-      verbose = mkDefault false;
-    };
     consoleLogLevel = mkDefault 0;
     # Only enable the systemd-boot on installs, not live media (.ISO images)
     loader = mkDefault (mkIf (isInstall) {
@@ -270,7 +267,7 @@ in
         # "vm.dirty_ratio" = 40; # default 20, maximum ratio, block process when reached
       };
     };
-    supportedFilesystems = [ "ext4" "btrfs" "exfat" "ntfs" ];
+    supportedFilesystems = [ "ext4" "btrfs" "exfat" "ntfs" "bcachefs" ];
 
     binfmt.registrations.appImage = mkIf (isWorkstation) {
       # make appImage work seamlessly
@@ -726,11 +723,15 @@ in
   hardware = {
     enableRedistributableFirmware = true;
 
+    # https://nixos.wiki/wiki/Bluetooth
     bluetooth =
       if (isWorkstation) then {
         enable = true;
         # package = pkgs.unstable.bluez5-experimental;
         package = pkgs.unstable.bluez-experimental;
+        powerOnBoot = false;
+        # hsphfpd.enable = false;
+        # disabledPlugins = [ "sap" ];
         settings = {
           General = {
             Enable = "Source,Sink,Media,Socket";
