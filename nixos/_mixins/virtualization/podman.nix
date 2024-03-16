@@ -1,6 +1,7 @@
 { config, lib, pkgs, hostname, desktop, ... }:
 let
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+  dockerEnabled = config.virtualisation.docker.enable;
 in
 {
   #https://nixos.wiki/wiki/Podman
@@ -46,23 +47,30 @@ in
             true; # Required for containers under podman-compose to be able to talk to each other.
         };
       };
-      dockerCompat = true;
+      dockerCompat = !dockerEnabled;
+      dockerSocket.enable = !dockerEnabled;
       enable = true;
       enableNvidia = hasNvidia;
     };
     containers = {
+      containersConf.settings = {
+        containers.dns_servers = [
+          "8.8.8.8"
+          "8.8.4.4"
+        ];
+      };
       registries = {
         search = [
           "docker.io"
-        ];
-        insecure = [
-          "registry.fedoraproject.org"
           "quay.io"
-          # "registry.access.redhat.com"
-          # "registry.centos.org"
         ];
+        #   insecure = [
+        #     "registry.fedoraproject.org"
+        #     "quay.io"
+        #     # "registry.access.redhat.com"
+        #     # "registry.centos.org"
+        #   ];
       };
-
     };
   };
 }

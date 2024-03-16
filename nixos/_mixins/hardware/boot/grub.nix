@@ -1,5 +1,9 @@
-{ lib, pkgs, hostname, ... }: {
-  boot = {
+{ lib, pkgs, hostname, ... }:
+let
+  isNitro = (hostname == "nitro");
+in
+{
+  boot = with lib;{
     tmp = {
       #useTmpfs = true;
       cleanOnBoot = true;
@@ -12,6 +16,7 @@
         # efiSysMountPoint = "/boot";
       };
       grub = {
+        useOSProber = if (hostname == "nitro") then true else false;
         enable = true;
         # devices = [ "nodev" ]; # "nodev" for efi only
         device = "nodev"; # "nodev" for efi only
@@ -51,4 +56,6 @@
       };
     };
   };
+
+  environment.systemPackages = if (hostname == "nitro") then with pkgs;[ os-prober ] else "";
 }

@@ -16,7 +16,7 @@
     # ../../_mixins/hardware/graphics/nvidia/nvidia-specialisation.nix
     # ../../_mixins/hardware/graphics/intel/intel-gpu-dual.nix
     ../../_mixins/hardware/bluetooth
-    ../../_mixins/hardware/boot/efi.nix
+    ../../_mixins/hardware/boot/grub.nix
     ../../_mixins/hardware/cpu/intel-cpu.nix
     ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
