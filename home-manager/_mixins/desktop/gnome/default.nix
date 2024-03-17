@@ -2,7 +2,11 @@
 with lib.hm.gvariant;
 let
   # Assuming extensionUuid is unique to Gnome extensions
-  extensions = builtins.filter (p: p ? "extensionUuid") config.home.packages;
+  # extensions = builtins.filter (p: p ? "extensionUuid") config.home.packages;
+  extensions = with pkgs; with gnomeExtensions; [
+    user-themes
+    night-theme-switcher
+  ];
 in
 {
 
@@ -10,12 +14,6 @@ in
     ./theme.nix
     ./settings.nix
   ];
-
-  home = {
-    packages = with pkgs; [
-
-    ];
-  };
 
   services = {
     gpg-agent.pinentryFlavor = lib.mkForce "gnome3";

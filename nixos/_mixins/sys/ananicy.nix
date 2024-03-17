@@ -1,9 +1,10 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
+  # chaotic.ananicy-cpp.enable = true;
   services = {
     # Auto Nice Daemon
     ananicy = {
       enable = true;
-      package = pkgs.ananicy-cpp;
+      package = pkgs.ananicy-cpp-rules;
       rulesProvider = pkgs.ananicy-rules-cachyos;
       settings = {
         check_freq = 2;

@@ -14,7 +14,7 @@
       nix-tree
       nixpkgs-fmt
       nurl
-      # nil
+      nil
       # nixd
       # rnix-lsp
       # statix

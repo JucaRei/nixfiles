@@ -55,6 +55,11 @@ let
   ];
 in
 {
+  home = {
+    packages = with pkgs; [
+      extensions
+    ];
+  };
   dconf.settings = {
     "ca/desrt/dconf-editor" = { show-warning = false; };
 
@@ -131,6 +136,7 @@ in
       # unmaximize = ["@as []"];
     };
 
+
     "org/gnome/desktop/wm/preferences" = {
       audible-bell = false;
       button-layout = ":minimize,maximize,close";
@@ -142,7 +148,8 @@ in
     };
 
     "org/gnome/mutter" = {
-      dynamic-workspaces = false;
+      # dynamic-workspaces = false;
+      dynamic-workspaces = true;
       workspaces-only-on-primary = false;
     };
 
@@ -151,7 +158,10 @@ in
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
-      home = "[ <Super>e ]";
+      home = "[ <Alt>e ]";
+      search="[ <Alt>space ]";
+      www="[ <Alt>b ]";
+      calculator="[ <Alt>c ]";
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
@@ -189,10 +199,17 @@ in
     };
 
     "org/gnome/shell" = {
-      enabled-extensions = builtins.map (p: p.extensionUuid) extensions ++ [
-        "appindicatorsupport@rgcjonas.gmail.com"
-        "dash-to-dock@micxgx.gmail.com"
-      ];
+      disable-user-extensions = false;
+        enabled-extensions = builtins.map (p: p.extensionUuid) extensions;
+        "favorite-apps" = [ "librewolf.desktop"  ];
+      };
+    };
+
+    "org/gnome/settings-daemon/plugins/color" = {
+    night-light-enabled=true;
+night-light-schedule-automatic=false;
+night-light-schedule-from=19.499999999999972;
+night-light-schedule-to=7.0;
     };
 
     "org/gnome/shell/extensions/dash-to-dock" = {

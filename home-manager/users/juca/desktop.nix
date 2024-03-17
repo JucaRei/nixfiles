@@ -1,9 +1,4 @@
-{ config
-, lib
-, pkgs
-, username
-, ...
-}:
+{ config , lib, pkgs, username, ...}:
 let
   inherit (pkgs.stdenv) isLinux;
 in
@@ -25,13 +20,6 @@ with lib.hm.gvariant; {
     # ../../_mixins/services/localsend.nix
     # ../../_mixins/apps/video/celluloid.nix
   ];
-
-  dconf.settings = {
-    "org/gnome/rhythmbox/rhythmdb" = {
-      locations = [ "file://${config.home.homeDirectory}/Music" ];
-      monitor-library = true;
-    };
-  };
 
   # Authrorize X11 access in Distrobox
   home.file = {

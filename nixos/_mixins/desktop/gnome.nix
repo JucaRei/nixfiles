@@ -5,10 +5,11 @@
 , pkgs
 , ...
 }: {
-  imports = [ ../apps/terminal/tilix.nix ];
+  imports = [ 
+    # ../apps/terminal/tilix.nix 
+  ];
 
   programs = {
-    dconf.enable = true;
     kdeconnect = {
       # For GSConnect
       enable = true;

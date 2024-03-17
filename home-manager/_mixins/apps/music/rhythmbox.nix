@@ -1,12 +1,13 @@
-{
-  lib,
-  pkgs,
-  ...
-}:
+{ lib,pkgs, config,...}:
 with lib.hm.gvariant; {
   home.packages = with pkgs; [rhythmbox];
 
   dconf.settings = {
+    "org/gnome/rhythmbox/rhythmdb" = {
+      locations = [ "file://${config.home.homeDirectory}/Music" ];
+      monitor-library = true;
+    };
+
     "org/gnome/rhythmbox/plugins" = {
       active-plugins = [
         "rb"
