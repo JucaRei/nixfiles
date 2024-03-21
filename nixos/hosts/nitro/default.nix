@@ -134,7 +134,7 @@
     kernelParams = lib.mkForce [
       "quiet"
       # "nosgx"
-      # "usbcore.autosuspend=-1" # Disable usb autosuspend
+      "usbcore.autosuspend=-1" # Disable usb autosuspend
       "rd.plymouth=0"
       "plymouth.enable=0"
       "log-level=0"

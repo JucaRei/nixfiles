@@ -32,7 +32,8 @@ with lib.hm.gvariant; {
         # icloud-photo-downloader
         # vlc
         cloneit
-        vscode-fhs
+        unstable.vscode-fhs
+        #unstable.vscode-with-extensions
         # deezer-gui
         # fantezy
         # gcc
