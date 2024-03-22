@@ -14,7 +14,8 @@
       };
       grub = {
         useOSProber = if (hostname == "nitro") then true else false;
-        enable = true;
+        enable = !config.boot.isContainer;
+        default = "saved";
         # devices = [ "nodev" ]; # "nodev" for efi only
         device = "nodev"; # "nodev" for efi only
         efiSupport = true;

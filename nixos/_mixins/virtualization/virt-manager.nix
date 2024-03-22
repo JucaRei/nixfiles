@@ -1,76 +1,6 @@
 { pkgs, config, username, lib, hostname, ... }:
-let
-  hugepage_handler = pkgs.writeShellScript "hp_handler.sh" ''
-    xml_file="/var/lib/libvirt/qemu/$1.xml"
-
-    function extract_number() {
-        local xml_file=$1
-        local number=$(grep -oPm1 "(?<=<memory unit='KiB'>)[^<]+" $xml_file)
-        echo $((number/1024))
-    }
-
-    function prepare() {
-        # Calculate number of hugepages to allocate from memory (in MB)
-        HUGEPAGES="$(($1/$(($(grep Hugepagesize /proc/meminfo | ${pkgs.gawk}/bin/gawk '{print $2}')/1024))))"
-
-        echo "Allocating hugepages..."
-        echo $HUGEPAGES > /proc/sys/vm/nr_hugepages
-        ALLOC_PAGES=$(cat /proc/sys/vm/nr_hugepages)
-
-        TRIES=0
-        while (( $ALLOC_PAGES != $HUGEPAGES && $TRIES < 1000 ))
-        do
-            echo 1 > /proc/sys/vm/compact_memory
-            ## defrag ram
-            echo $HUGEPAGES > /proc/sys/vm/nr_hugepages
-            ALLOC_PAGES=$(cat /proc/sys/vm/nr_hugepages)
-            echo "Successfully allocated $ALLOC_PAGES / $HUGEPAGES"
-            let TRIES+=1
-        done
-
-        if [ "$ALLOC_PAGES" -ne "$HUGEPAGES" ]
-        then
-            echo "Not able to allocate all hugepages. Reverting..."
-            echo 0 > /proc/sys/vm/nr_hugepages
-            exit 1
-        fi
-    }
-
-    function release() {
-        echo 0 > /proc/sys/vm/nr_hugepages
-    }
-
-    case $2 in
-        prepare)
-            number=$(extract_number $xml_file)
-            prepare $number
-            ;;
-        release)
-            release
-            ;;
-    esac
-  '';
-in
 {
   boot = {
-    initrd = {
-      kernelModules = [
-        # "vfio_pci"
-        # "vfio"
-        # "vfio_iommu_type1"
-        # "vfio_virqfd" ### already in path since kernel 6.2
-        "virtio_balloon"
-        "virtio_console"
-        "virtio_rng"
-      ];
-      availableKernelModules = [ "virtio_net" "virtio_pci" "virtio_mmio" "virtio_blk" "virtio_scsi" ];
-      # postDeviceCommands = ''
-      #   # Set the system time from the hardware clock to work around a
-      #   # bug in qemu-kvm > 1.5.2 (where the VM clock is initialised
-      #   # to the *boot time* of the host).
-      #   hwclock -s
-      # '';
-    };
     extraModprobeConfig = ''
       # Needed to run OSX-KVM
       options kvm_intel nested=1
@@ -78,22 +8,6 @@ in
       options kvm ignore_nsrs=Y
       options kvm report_ignored_msrs=N
     '';
-
-    # #Load VFIO related modules
-    # options vfio-pci
-    # ids=10de:1c8d,10de:0fb9 #grep PCI_ID /sys/bus/pci/devices/*/uevent
-    # Nvidia == ids=10de:1C8D,10de:0FB9  | Intel == ids=8086:3e9b,8086:a348
-
-    # Load VFIO related modules
-    # kernelModules = [ "vfio_virqfd" "vfio_pci" "vfio_iommu_type1" "vfio" ];
-
-    # Enable IOMMU
-    # kernelParams = [
-    #   # Prevents Linux from touching devices which cannot be passed through
-    #   "iommu=pt" # (pass-through)
-    #   "intel_iommu=on" # needs to enable if on intel
-    #   "vfio-pci.ids=10de:1c8d,10de:0fb9"
-    # ];
     binfmt = {
       emulatedSystems = [ "aarch64-linux" "armv7l-linux" "armv6l-linux" "x86_64-windows" ];
     };
@@ -104,9 +18,13 @@ in
     "${username}"
   ];
   # nixos 23.11
-  programs = { virt-manager = { enable = true; }; };
+  programs = {
+    virt-manager = { enable = true; };
+  };
   virtualisation = {
-    lxd = { enable = true; };
+    lxd = {
+      enable = true;
+    };
     libvirtd = {
       enable = true;
       extraConfig = ''
@@ -122,7 +40,9 @@ in
           user = "${username}"
           group = "kvm"
         '';
-        package = pkgs.qemu_kvm.override { smbdSupport = true; };
+        package = pkgs.qemu_kvm.override {
+          smbdSupport = true;
+        };
         ovmf = {
           enable = true;
           # packages = with pkgs.unstable; [
@@ -145,9 +65,6 @@ in
           enable = true;
           package = pkgs.swtpm-tpm2;
         };
-      };
-      hooks.qemu = {
-        hugepages_handler = "${hugepage_handler}";
       };
       onShutdown = "suspend";
       onBoot = "ignore";
@@ -184,17 +101,6 @@ in
       # gvfs
       virtiofsd
     ];
-
-    # etc = {
-    #   "ovmf/edk2-x86_64-secure-code.fd" = {
-    #     source =
-    #       config.virtualisation.libvirtd.qemu.package
-    #       + "/share/qemu/edk2-x86_64-secure-code.fd";
-    #   };
-    # "ovmf/OVMF_VARS.fd".source = (ovmfPackage.fd) + /FV/OVMF_VARS.fd;
-    # "ovmf/OVMF_CODE.fd".source = (ovmfPackage.fd) + /FV/OVMF_CODE.fd;
-    # "ovmf/OVMF.fd".source = (ovmfPackage.fd) + /FV/OVMF.fd;
-    # };
   };
   services = {
     spice-vdagentd.enable = true;

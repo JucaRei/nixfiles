@@ -16,6 +16,7 @@
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
+    ../../_mixins/virtualization/passthrought.nix
     ../../_mixins/sys/ananicy.nix
     ../../_mixins/sys/psd.nix
     ../../_mixins/sys/dbus-broker.nix
@@ -79,6 +80,8 @@
         kernelModules = [
         ];
         systemd.enable = true;
+        compressor = "zstd";
+        compressorArgs = [ "-19" "-T0" ];
         verbose = lib.mkForce false;
       };
       consoleLogLevel = lib.mkForce 0;
@@ -90,7 +93,6 @@
 
       kernelModules = [
         "kvm-intel"
-        #"i915"
         "z3fold"
         #"hdapsd"
         "crc32c-intel"
@@ -423,7 +425,7 @@
       };
 
 
-      nvidia = {
+      nvidia = lib.mkDefault {
         package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
         prime = {
           intelBusId = "PCI:0:2:0";
@@ -636,85 +638,85 @@
       extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
     };
 
-    specialisation = {
-      nvidia-passthrough = lib.mkForce {
-        configuration = {
-          system.nixos.tags = [ "nvidia-passthrough" ];
-          boot = {
-            loader.grub.configurationName = lib.mkForce "Nvidia Passthrough";
-            kernelModules = [ "vfio-pci" ];
-            extraModprobeConfig = ''
-              # Change to your GPU's vendor ID and device ID
-              options vfio-pci ids=10de:1c8d,10de:0fb9
-            '';
-            blacklistedKernelModules = [ "nouveau" "nvidiafb" "nvidia" "nvidia-uvm" "nvidia-drm" "nvidia-modeset" ];
-          };
-          environment = {
-            systemPackages = with pkgs; [
-              looking-glass-client
-              guestfs-tools
-              scream
-              libguestfs # needed to virt-sparsify qcow2 files
-            ];
-          };
-          # Add binaries to path so that hooks can use it
-          systemd = {
-            tmpfiles.rules = [
-              "f /dev/shm/scream 0660 ${username} qemu-libvirtd -"
-              "f /dev/shm/looking-glass 0660 ${username} qemu-libvirtd -"
-            ];
-            # services.libvirtd = {
-            #   path =
-            #     let
-            #       env = pkgs.buildEnv {
-            #         name = "qemu-hook-env";
-            #         paths = with pkgs; [
-            #           bash
-            #           libvirt
-            #           kmod
-            #           systemd
-            #           ripgrep
-            #           sd
-            #         ];
-            #       };
-            #     in
-            #     [ env ];
+    # specialisation = {
+    #   nvidia-passthrough = lib.mkForce {
+    #     configuration = {
+    #       system.nixos.tags = [ "nvidia-passthrough" ];
+    #       boot = {
+    #         loader.grub.configurationName = lib.mkForce "Nvidia Passthrough";
+    #         kernelModules = [ "vfio-pci" ];
+    #         extraModprobeConfig = ''
+    #           # Change to your GPU's vendor ID and device ID
+    #           options vfio-pci ids=10de:1c8d,10de:0fb9
+    #         '';
+    #         blacklistedKernelModules = [ "nouveau" "nvidiafb" "nvidia" "nvidia-uvm" "nvidia-drm" "nvidia-modeset" ];
+    #       };
+    #       environment = {
+    #         systemPackages = with pkgs; [
+    #           looking-glass-client
+    #           guestfs-tools
+    #           scream
+    #           libguestfs # needed to virt-sparsify qcow2 files
+    #         ];
+    #       };
+    #       # Add binaries to path so that hooks can use it
+    #       systemd = {
+    #         tmpfiles.rules = [
+    #           "f /dev/shm/scream 0660 ${username} qemu-libvirtd -"
+    #           "f /dev/shm/looking-glass 0660 ${username} qemu-libvirtd -"
+    #         ];
+    #         # services.libvirtd = {
+    #         #   path =
+    #         #     let
+    #         #       env = pkgs.buildEnv {
+    #         #         name = "qemu-hook-env";
+    #         #         paths = with pkgs; [
+    #         #           bash
+    #         #           libvirt
+    #         #           kmod
+    #         #           systemd
+    #         #           ripgrep
+    #         #           sd
+    #         #         ];
+    #         #       };
+    #         #     in
+    #         #     [ env ];
 
-            #   #   preStart =
-            #   #     ''
-            #   #       mkdir -p /var/lib/libvirt/hooks
-            #   #       mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin
-            #   #       mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/release/end
-            #   #       mkdir -p /var/lib/libvirt/vgabios
+    #         #   #   preStart =
+    #         #   #     ''
+    #         #   #       mkdir -p /var/lib/libvirt/hooks
+    #         #   #       mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin
+    #         #   #       mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/release/end
+    #         #   #       mkdir -p /var/lib/libvirt/vgabios
 
-            #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/qemu /var/lib/libvirt/hooks/qemu
-            #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/kvm.conf /var/lib/libvirt/hooks/kvm.conf
-            #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/start.sh /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
-            #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/stop.sh /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
-            #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/patched.rom /var/lib/libvirt/vgabios/patched.rom
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/qemu /var/lib/libvirt/hooks/qemu
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/kvm.conf /var/lib/libvirt/hooks/kvm.conf
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/start.sh /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/stop.sh /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/patched.rom /var/lib/libvirt/vgabios/patched.rom
 
-            #   #       chmod +x /var/lib/libvirt/hooks/qemu
-            #   #       chmod +x /var/lib/libvirt/hooks/kvm.conf
-            #   #       chmod +x /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
-            #   #       chmod +x /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
-            #   #     '';
-            #   # };
-            # };
+    #         #   #       chmod +x /var/lib/libvirt/hooks/qemu
+    #         #   #       chmod +x /var/lib/libvirt/hooks/kvm.conf
+    #         #   #       chmod +x /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
+    #         #   #       chmod +x /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
+    #         #   #     '';
+    #         #   # };
+    #         # };
 
-            ### Home manager
-            user.services.scream-ivshmem = {
-              enable = true;
-              description = "Scream IVSHMEM";
-              serviceConfig = {
-                ExecStart = "${pkgs.scream}/bin/scream-ivshmem-pulse /dev/shm/scream";
-                Restart = "always";
-              };
-              wantedBy = [ "multi-user.target" ];
-              requires = [ "pulseaudio.service" ];
-            };
-          };
-        };
-      };
-    };
+    #         ### Home manager
+    #         user.services.scream-ivshmem = {
+    #           enable = true;
+    #           description = "Scream IVSHMEM";
+    #           serviceConfig = {
+    #             ExecStart = "${pkgs.scream}/bin/scream-ivshmem-pulse /dev/shm/scream";
+    #             Restart = "always";
+    #           };
+    #           wantedBy = [ "multi-user.target" ];
+    #           requires = [ "pulseaudio.service" ];
+    #         };
+    #       };
+    #     };
+    #   };
+    # };
   };
 }
