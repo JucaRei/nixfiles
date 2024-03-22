@@ -1,6 +1,13 @@
 { lib, pkgs, ... }: with lib.gvariant;
 let
   extensions = with pkgs; with gnomeExtensions; [
+    ### Maclike
+    app-menu-is-back
+    quick-settings-tweaker
+    logo-menu0
+    app-icons-taskbar
+
+    ### Others
     user-themes
     # logo-menu
     emoji-copy
@@ -9,13 +16,12 @@ let
     night-theme-switcher
     wifi-qrcode
     workspace-switcher-manager
-    # logo-menu
     # blur-my-shell
     # pano
     # desktop-cube
     # desktop-clock
     # pop-shell
-    # vitals
+    vitals
     # docker
     # unblank
     # custom-accent-colors
@@ -77,8 +83,8 @@ in
     "com/raggesilver/BlackBox" = {
       theme-dark = "Dracula";
       was-maximized = false;
-      window-height = uint32 576;
-      window-width = uint32 1068;
+      window-height = "uint32 576";
+      window-width = "uint32 1068";
     };
 
     "org/gnome/clocks" = {
@@ -96,8 +102,6 @@ in
       document-font-name = "Work Sans 12";
       enable-hot-corners = false;
       font-name = "Work Sans 12";
-      gtk-theme = "Adwaita";
-      icon-theme = "Adwaita";
       monospace-font-name = "FiraCode Nerd Font Mono Medium 13";
       show-battery-percentage = true;
       text-scaling-factor = mkDouble 1.0;
@@ -114,7 +118,7 @@ in
     };
 
     "org/gnome/desktop/session" = {
-      idle-delay = mkInt32 900;
+      idle-delay = "mkInt32 900";
     };
 
     "org/gnome/desktop/sound" = {
@@ -200,11 +204,11 @@ in
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
-      home = "[ <Alt>e ]";
-      search = "[ <Alt>space ]";
+      home = [ "<Alt>e" ];
+      search = [ "<Alt>space" ];
       control-center = [ "<Control><Alt>s" ];
-      www = "[ <Alt>b ]";
-      calculator = "[ <Alt>c ]";
+      www = [ "<Alt>b" ];
+      calculator = [ "<Alt>c" ];
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
       ];
@@ -226,20 +230,20 @@ in
       show-map = true;
       show-right-margin = true;
       style-scheme = "builder-dark";
-      tab-width = mkInt32 4;
+      tab-width = "mkInt32 4";
       use-system-font = false;
     };
 
     "org/gnome/settings-daemon/plugins/power" = {
       power-button-action = "interactive";
-      sleep-inactive-ac-timeout = mkInt32 0;
+      sleep-inactive-ac-timeout = "mkInt32 0";
       sleep-inactive-ac-type = "nothing";
     };
 
     "org/gnome/shell" = {
       disable-user-extensions = false;
       enabled-extensions = builtins.map (p: p.extensionUuid) extensions;
-      "favorite-apps" = [ "librewolf.desktop" ];
+      "favorite-apps" = [ "librewolf.desktop" "code.desktop" ];
     };
 
     ########################
@@ -293,12 +297,6 @@ in
         dynamic-keybinding-behavior = 1;
         import-layout-examples = false;
         last-version-installed = 44;
-        overridden-settings =
-          {
-            "org.gnome.mutter.edge-tiling" = "<@mb nothing>";
-            "org.gnome.mutter.keybindings.toggle-tiled-left" = "<@mb nothing>";
-            "org.gnome.mutter.keybindings.toggle-tiled-right" = "<@mb nothing>";
-          };
         restore-window = [ "<Super>Down" ];
         search-popup-layout = "@as []";
         tile-bottom-half = [ "<Super>KP_2" ];
