@@ -16,7 +16,7 @@
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
     ../../_mixins/virtualization/virt-manager.nix
-    # ../../_mixins/virtualization/passthrought.nix
+    ../../_mixins/virtualization/passthrought.nix
     ../../_mixins/sys/ananicy.nix
     ../../_mixins/sys/psd.nix
     ../../_mixins/sys/dbus-broker.nix
@@ -31,7 +31,6 @@
   ];
   config = {
     boot = {
-      extraModulePackages = lib.mkIf config.services.tlp.enable (with config.boot.kernelPackages; [ acpi_call ]);
       # extraModprobeConfig = ''
       #   options vfio-pci ids=10de:1c8d,10de:0fb9 softdep nvidia pre: vfio-pci
       # '';
@@ -83,9 +82,7 @@
         "crc32c-intel"
         "lz4hc"
         "lz4hc_compress"
-      ] ++ (lib.mkIf lib.mkIf config.services.tlp.enable [
-        "acpi_call"
-      ]);
+      ];
       # plymouth = {
       # enable = true;
       # logo = "${inputs.nixos-artwork}/wallpapers/nix-wallpaper-watersplash.png";
@@ -419,287 +416,287 @@
     #   nvidiaSettings = false;
     #   # forceFullCompositionPipeline = true;
     # };
-  };
 
-  nixpkgs = {
-    ### Intel
-    # config.packageOverrides = pkgs: {
-    #   vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-    # };
+    nixpkgs = {
+      ### Intel
+      # config.packageOverrides = pkgs: {
+      #   vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+      # };
 
-    hostPlatform = lib.mkDefault "x86_64-linux";
-  };
-
-  environment = {
-    systemPackages = with pkgs; [
-      btdu
-      btrfs-progs
-      compsize
-      cloneit
-      # unstable.stacer
-      lm_sensors
-      #thorium
-      libva-utils
-    ];
-    sessionVariables = { };
-
-    # Intel
-    # variables = {
-    #   VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
-    # };
-  };
-
-  services = {
-    acpid = {
-      enable = true;
+      hostPlatform = lib.mkDefault "x86_64-linux";
     };
-    power-profiles-daemon.enable = lib.mkDefault true;
-    # upower.enable = true;
-    # udev.extraRules = lib.mkMerge [
-    # ''ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"'' # autosuspend USB devices
-    # ''ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"'' # autosuspend PCI devices
-    # ''ACTION=="add", SUBSYSTEM=="net", NAME=="enp*", RUN+="${pkgs.ethtool}/sbin/ethtool -s $name wol d"'' # disable Ethernet Wake-on-LAN
-    # ];
-    btrfs = {
-      autoScrub = {
-        enable = true;
-        interval = "weekly";
-      };
-    };
-    # xserver = {
-    # videoDrivers = [ "i915" ];
-    # displayManager.sessionCommands = ''
-    #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource 1 0
-    #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
-    # '';
-    #######################
-    ### Xserver configs ###
-    #######################
-    # layout = lib.mkForce "br";
-    # xkbVariant = "abnt2";
-    # xkbModel = lib.mkForce "pc105";
-    # xkbOptions = "grp:alt_shift_toggle";
-    # libinput = {
-    #   enable = true;
-    #   touchpad = {
-    #     # horizontalScrolling = true;
-    #     # tappingDragLock = false;
-    #     tapping = true;
-    #     naturalScrolling = false;
-    #     scrollMethod = "twofinger";
-    #     disableWhileTyping = true;
-    #     sendEventsMode = "disabled-on-external-mouse";
-    #     # clickMethod = "clickfinger";
-    #   };
-    #   mouse = {
-    #     naturalScrolling = false;
-    #     disableWhileTyping = true;
-    #     accelProfile = "flat";
-    #   };
-    # };
-    # xrandrHeads = [
-    #   {
-    #     output = "HDMI-1-0";
-    #     primary = true;
-    #     monitorConfig = ''
-    #       Modeline "1920x1080_60.00"
-    #     '';
-    #   }
-    #   {
-    #     output = "eDP";
-    #     primary = false;
-    #     monitorConfig = ''
-    #       Option "PreferredMode" "1920x1080"
-    #       Option "Position" "0 0"
-    #     '';
-    #   }
-    # ];
-    # exportConfiguration = true;
-    # };
-    # power-profiles-daemon.enable = lib.mkForce false;
-    # tlp = {
-    #   enable = true;
-    #   settings = lib.mkDefault {
-    #     PCIE_ASPM_ON_BAT = "powersupersave";
-    #     RUNTIME_PM_ON_AC = "auto";
-    #     # Operation mode when no power supply can be detected: AC, BAT.
-    #     TLP_DEFAULT_MODE = "BAT";
-    #     # Operation mode select: 0=depend on power source, 1=always use TLP_DEFAULT_MODE
-    #     TLP_PERSISTENT_DEFAULT = "1";
-    #     DEVICES_TO_DISABLE_ON_LAN_CONNECT = "wifi wwan";
-    #     DEVICES_TO_DISABLE_ON_WIFI_CONNECT = "wwan";
-    #     DEVICES_TO_DISABLE_ON_WWAN_CONNECT = "wifi";
-    #   };
-    # };
 
-    # Early OOM Killer
-    earlyoom = {
-      enable = true; # Enable the early OOM (Out Of Memory) killer service.
-
-      # Free Memory Threshold
-      # Sets the point at which earlyoom will intervene to free up memory.
-
-      # When free memory falls below 15%, earlyoom acts to prevent system slowdown or freezing.
-      freeSwapThreshold = 2;
-      freeMemThreshold = 2;
-      extraArgs = [
-        "-g"
-        "--avoid '^(X|plasma.*|konsole|kwin|foot)$'"
-        "--prefer '^(electron|libreoffice|gimp)$'"
+    environment = {
+      systemPackages = with pkgs; [
+        btdu
+        btrfs-progs
+        compsize
+        cloneit
+        # unstable.stacer
+        lm_sensors
+        #thorium
+        libva-utils
       ];
+      sessionVariables = { };
 
-      # Technical Explanation:
-      # The earlyoom service monitors system memory and intervenes when free memory drops below the specified threshold.
-      # It helps prevent system slowdowns and freezes by intelligently killing less important processes to free up memory.
-      # In this configuration, it triggers when free memory is only 15% of total RAM.
-      # Adjust the freeMemThreshold value based on your system's memory usage patterns.
-
-      # source:   https://github.com/rfjakob/earlyoom
+      # Intel
+      # variables = {
+      #   VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+      # };
     };
 
-    #---------------------------------------------------------------------
-    # Provides a virtual file system for environment modules. Solution
-    # from NixOS forums to help shotwell to keep preference settings
-    #---------------------------------------------------------------------
-    envfs = { enable = true; };
-
-    #---------------------------------------------------------------------
-    # Activate the automatic trimming process for SSDs on the NixOS system
-    # Manual over-ride is sudo fstrim / -v
-    #---------------------------------------------------------------------
-    fstrim = { enable = true; };
-
-    # Hard disk protection if the laptop falls
-    hdapsd.enable = lib.mkDefault true;
-  };
-
-  ### Load z3fold and lz4
-
-  systemd = {
-    oomd = { enable = false; };
     services = {
-      zswap = {
-        description = "Enable ZSwap, set to LZ4 and Z3FOLD";
+      acpid = {
         enable = true;
-        wantedBy = [ "basic.target" ];
-        path = [ pkgs.bash ];
-        serviceConfig = {
-          ExecStart = ''
-            ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
-                  echo 1 > enabled&& \
-                  echo 20 > max_pool_percent&& \
-                  echo lz4hc > compressor&& \
-                  echo z3fold > zpool'
-          '';
-          Type = "simple";
+      };
+      power-profiles-daemon.enable = lib.mkDefault true;
+      # upower.enable = true;
+      # udev.extraRules = lib.mkMerge [
+      # ''ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"'' # autosuspend USB devices
+      # ''ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"'' # autosuspend PCI devices
+      # ''ACTION=="add", SUBSYSTEM=="net", NAME=="enp*", RUN+="${pkgs.ethtool}/sbin/ethtool -s $name wol d"'' # disable Ethernet Wake-on-LAN
+      # ];
+      btrfs = {
+        autoScrub = {
+          enable = true;
+          interval = "weekly";
         };
+      };
+      # xserver = {
+      # videoDrivers = [ "i915" ];
+      # displayManager.sessionCommands = ''
+      #   ${pkgs.xorg.xrandr}/bin/xrandr --setprovideroutputsource 1 0
+      #   ${pkgs.xorg.xrandr}/bin/xrandr --auto
+      # '';
+      #######################
+      ### Xserver configs ###
+      #######################
+      # layout = lib.mkForce "br";
+      # xkbVariant = "abnt2";
+      # xkbModel = lib.mkForce "pc105";
+      # xkbOptions = "grp:alt_shift_toggle";
+      # libinput = {
+      #   enable = true;
+      #   touchpad = {
+      #     # horizontalScrolling = true;
+      #     # tappingDragLock = false;
+      #     tapping = true;
+      #     naturalScrolling = false;
+      #     scrollMethod = "twofinger";
+      #     disableWhileTyping = true;
+      #     sendEventsMode = "disabled-on-external-mouse";
+      #     # clickMethod = "clickfinger";
+      #   };
+      #   mouse = {
+      #     naturalScrolling = false;
+      #     disableWhileTyping = true;
+      #     accelProfile = "flat";
+      #   };
+      # };
+      # xrandrHeads = [
+      #   {
+      #     output = "HDMI-1-0";
+      #     primary = true;
+      #     monitorConfig = ''
+      #       Modeline "1920x1080_60.00"
+      #     '';
+      #   }
+      #   {
+      #     output = "eDP";
+      #     primary = false;
+      #     monitorConfig = ''
+      #       Option "PreferredMode" "1920x1080"
+      #       Option "Position" "0 0"
+      #     '';
+      #   }
+      # ];
+      # exportConfiguration = true;
+      # };
+      # power-profiles-daemon.enable = lib.mkForce false;
+      # tlp = {
+      #   enable = true;
+      #   settings = lib.mkDefault {
+      #     PCIE_ASPM_ON_BAT = "powersupersave";
+      #     RUNTIME_PM_ON_AC = "auto";
+      #     # Operation mode when no power supply can be detected: AC, BAT.
+      #     TLP_DEFAULT_MODE = "BAT";
+      #     # Operation mode select: 0=depend on power source, 1=always use TLP_DEFAULT_MODE
+      #     TLP_PERSISTENT_DEFAULT = "1";
+      #     DEVICES_TO_DISABLE_ON_LAN_CONNECT = "wifi wwan";
+      #     DEVICES_TO_DISABLE_ON_WIFI_CONNECT = "wwan";
+      #     DEVICES_TO_DISABLE_ON_WWAN_CONNECT = "wifi";
+      #   };
+      # };
+
+      # Early OOM Killer
+      earlyoom = {
+        enable = true; # Enable the early OOM (Out Of Memory) killer service.
+
+        # Free Memory Threshold
+        # Sets the point at which earlyoom will intervene to free up memory.
+
+        # When free memory falls below 15%, earlyoom acts to prevent system slowdown or freezing.
+        freeSwapThreshold = 2;
+        freeMemThreshold = 2;
+        extraArgs = [
+          "-g"
+          "--avoid '^(X|plasma.*|konsole|kwin|foot)$'"
+          "--prefer '^(electron|libreoffice|gimp)$'"
+        ];
+
+        # Technical Explanation:
+        # The earlyoom service monitors system memory and intervenes when free memory drops below the specified threshold.
+        # It helps prevent system slowdowns and freezes by intelligently killing less important processes to free up memory.
+        # In this configuration, it triggers when free memory is only 15% of total RAM.
+        # Adjust the freeMemThreshold value based on your system's memory usage patterns.
+
+        # source:   https://github.com/rfjakob/earlyoom
       };
 
-      nix-daemon = {
-        ### Limit resources used by nix-daemon
-        serviceConfig = {
-          MemoryMax = "8G";
-          MemorySwapMax = "12G";
-        };
-      };
+      #---------------------------------------------------------------------
+      # Provides a virtual file system for environment modules. Solution
+      # from NixOS forums to help shotwell to keep preference settings
+      #---------------------------------------------------------------------
+      envfs = { enable = true; };
+
+      #---------------------------------------------------------------------
+      # Activate the automatic trimming process for SSDs on the NixOS system
+      # Manual over-ride is sudo fstrim / -v
+      #---------------------------------------------------------------------
+      fstrim = { enable = true; };
+
+      # Hard disk protection if the laptop falls
+      hdapsd.enable = lib.mkDefault true;
     };
 
-    sleep.extraConfig = ''
-      AllowHibernation=yes
-      AllowSuspend=yes
-      AllowSuspendThenHibernate=yes
-      AllowHybridSleep=yes
-    '';
+    ### Load z3fold and lz4
+
+    systemd = {
+      oomd = { enable = false; };
+      services = {
+        zswap = {
+          description = "Enable ZSwap, set to LZ4 and Z3FOLD";
+          enable = true;
+          wantedBy = [ "basic.target" ];
+          path = [ pkgs.bash ];
+          serviceConfig = {
+            ExecStart = ''
+              ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
+                    echo 1 > enabled&& \
+                    echo 20 > max_pool_percent&& \
+                    echo lz4hc > compressor&& \
+                    echo z3fold > zpool'
+            '';
+            Type = "simple";
+          };
+        };
+
+        nix-daemon = {
+          ### Limit resources used by nix-daemon
+          serviceConfig = {
+            MemoryMax = "8G";
+            MemorySwapMax = "12G";
+          };
+        };
+      };
+
+      sleep.extraConfig = ''
+        AllowHibernation=yes
+        AllowSuspend=yes
+        AllowSuspendThenHibernate=yes
+        AllowHybridSleep=yes
+      '';
+    };
+    #specialisation."VM-passthrough".configuration = {
+    #  system.nixos.tags = [ "VM-passthrough" ];
+    #  boot.loader.grub.configurationName = lib.mkOverride 40 "Pass-through Nvidia";
+    #  vfio.enable = false;
+    #};
+
+    nix.settings = {
+      extra-substituters = [ "https://nitro.cachix.org" ];
+      extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+    };
+
+    # specialisation = {
+    #   nvidia-passthrough = lib.mkForce {
+    #     configuration = {
+    #       system.nixos.tags = [ "nvidia-passthrough" ];
+    #       boot = {
+    #         loader.grub.configurationName = lib.mkForce "Nvidia Passthrough";
+    #         kernelModules = [ "vfio-pci" ];
+    #         extraModprobeConfig = ''
+    #           # Change to your GPU's vendor ID and device ID
+    #           options vfio-pci ids=10de:1c8d,10de:0fb9
+    #         '';
+    #         blacklistedKernelModules = [ "nouveau" "nvidiafb" "nvidia" "nvidia-uvm" "nvidia-drm" "nvidia-modeset" ];
+    #       };
+    #       environment = {
+    #         systemPackages = with pkgs; [
+    #           looking-glass-client
+    #           guestfs-tools
+    #           scream
+    #           libguestfs # needed to virt-sparsify qcow2 files
+    #         ];
+    #       };
+    #       # Add binaries to path so that hooks can use it
+    #       systemd = {
+    #         tmpfiles.rules = [
+    #           "f /dev/shm/scream 0660 ${username} qemu-libvirtd -"
+    #           "f /dev/shm/looking-glass 0660 ${username} qemu-libvirtd -"
+    #         ];
+    #         # services.libvirtd = {
+    #         #   path =
+    #         #     let
+    #         #       env = pkgs.buildEnv {
+    #         #         name = "qemu-hook-env";
+    #         #         paths = with pkgs; [
+    #         #           bash
+    #         #           libvirt
+    #         #           kmod
+    #         #           systemd
+    #         #           ripgrep
+    #         #           sd
+    #         #         ];
+    #         #       };
+    #         #     in
+    #         #     [ env ];
+
+    #         #   #   preStart =
+    #         #   #     ''
+    #         #   #       mkdir -p /var/lib/libvirt/hooks
+    #         #   #       mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin
+    #         #   #       mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/release/end
+    #         #   #       mkdir -p /var/lib/libvirt/vgabios
+
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/qemu /var/lib/libvirt/hooks/qemu
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/kvm.conf /var/lib/libvirt/hooks/kvm.conf
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/start.sh /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/stop.sh /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
+    #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/patched.rom /var/lib/libvirt/vgabios/patched.rom
+
+    #         #   #       chmod +x /var/lib/libvirt/hooks/qemu
+    #         #   #       chmod +x /var/lib/libvirt/hooks/kvm.conf
+    #         #   #       chmod +x /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
+    #         #   #       chmod +x /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
+    #         #   #     '';
+    #         #   # };
+    #         # };
+
+    #         ### Home manager
+    #         user.services.scream-ivshmem = {
+    #           enable = true;
+    #           description = "Scream IVSHMEM";
+    #           serviceConfig = {
+    #             ExecStart = "${pkgs.scream}/bin/scream-ivshmem-pulse /dev/shm/scream";
+    #             Restart = "always";
+    #           };
+    #           wantedBy = [ "multi-user.target" ];
+    #           requires = [ "pulseaudio.service" ];
+    #         };
+    #       };
+    #     };
+    #   };
+    # };
   };
-  #specialisation."VM-passthrough".configuration = {
-  #  system.nixos.tags = [ "VM-passthrough" ];
-  #  boot.loader.grub.configurationName = lib.mkOverride 40 "Pass-through Nvidia";
-  #  vfio.enable = false;
-  #};
-
-  nix.settings = {
-    extra-substituters = [ "https://nitro.cachix.org" ];
-    extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
-  };
-
-  # specialisation = {
-  #   nvidia-passthrough = lib.mkForce {
-  #     configuration = {
-  #       system.nixos.tags = [ "nvidia-passthrough" ];
-  #       boot = {
-  #         loader.grub.configurationName = lib.mkForce "Nvidia Passthrough";
-  #         kernelModules = [ "vfio-pci" ];
-  #         extraModprobeConfig = ''
-  #           # Change to your GPU's vendor ID and device ID
-  #           options vfio-pci ids=10de:1c8d,10de:0fb9
-  #         '';
-  #         blacklistedKernelModules = [ "nouveau" "nvidiafb" "nvidia" "nvidia-uvm" "nvidia-drm" "nvidia-modeset" ];
-  #       };
-  #       environment = {
-  #         systemPackages = with pkgs; [
-  #           looking-glass-client
-  #           guestfs-tools
-  #           scream
-  #           libguestfs # needed to virt-sparsify qcow2 files
-  #         ];
-  #       };
-  #       # Add binaries to path so that hooks can use it
-  #       systemd = {
-  #         tmpfiles.rules = [
-  #           "f /dev/shm/scream 0660 ${username} qemu-libvirtd -"
-  #           "f /dev/shm/looking-glass 0660 ${username} qemu-libvirtd -"
-  #         ];
-  #         # services.libvirtd = {
-  #         #   path =
-  #         #     let
-  #         #       env = pkgs.buildEnv {
-  #         #         name = "qemu-hook-env";
-  #         #         paths = with pkgs; [
-  #         #           bash
-  #         #           libvirt
-  #         #           kmod
-  #         #           systemd
-  #         #           ripgrep
-  #         #           sd
-  #         #         ];
-  #         #       };
-  #         #     in
-  #         #     [ env ];
-
-  #         #   #   preStart =
-  #         #   #     ''
-  #         #   #       mkdir -p /var/lib/libvirt/hooks
-  #         #   #       mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin
-  #         #   #       mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/release/end
-  #         #   #       mkdir -p /var/lib/libvirt/vgabios
-
-  #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/qemu /var/lib/libvirt/hooks/qemu
-  #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/kvm.conf /var/lib/libvirt/hooks/kvm.conf
-  #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/start.sh /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
-  #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/stop.sh /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
-  #         #   #       ln -sf /home/owner/Desktop/Sync/Files/Linux_Config/symlinks/patched.rom /var/lib/libvirt/vgabios/patched.rom
-
-  #         #   #       chmod +x /var/lib/libvirt/hooks/qemu
-  #         #   #       chmod +x /var/lib/libvirt/hooks/kvm.conf
-  #         #   #       chmod +x /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
-  #         #   #       chmod +x /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
-  #         #   #     '';
-  #         #   # };
-  #         # };
-
-  #         ### Home manager
-  #         user.services.scream-ivshmem = {
-  #           enable = true;
-  #           description = "Scream IVSHMEM";
-  #           serviceConfig = {
-  #             ExecStart = "${pkgs.scream}/bin/scream-ivshmem-pulse /dev/shm/scream";
-  #             Restart = "always";
-  #           };
-  #           wantedBy = [ "multi-user.target" ];
-  #           requires = [ "pulseaudio.service" ];
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
 }

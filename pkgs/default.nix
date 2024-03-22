@@ -42,7 +42,7 @@
   ### Grub Themes ###
   ###################
   catppuccin-grub = pkgs.callPackage ./system/grub/themes/catppuccin { };
-  # cyberre = pkgs.callPackage ./system/grub/themes/cyberre { };
+  cyberre-grub-theme = pkgs.callPackage ./system/grub/themes/cyberre { };
 
   ##############
   ### Themes ###

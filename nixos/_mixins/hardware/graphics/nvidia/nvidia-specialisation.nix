@@ -30,14 +30,16 @@ in
             opengl.extraPackages = with pkgs; [
               vaapiVdpau
             ];
-            nvidia.prime = {
-              offload = {
-                enable = lib.mkOverride 990 true;
-                enableOffloadCmd = lib.mkIf config.hardware.nvidia.prime.offload.enable true; # Provides `nvidia-offload` command.
+            nvidia = {
+              prime = {
+                offload = {
+                  enable = lib.mkOverride 990 true;
+                  enableOffloadCmd = lib.mkIf config.hardware.nvidia.prime.offload.enable true; # Provides `nvidia-offload` command.
+                };
+                # Hardware should specify the bus ID for intel/nvidia devices
+                intelBusId = "PCI:0:2:0";
+                nvidiaBusId = "PCI:1:0:0";
               };
-              # Hardware should specify the bus ID for intel/nvidia devices
-              intelBusId = "PCI:0:2:0";
-              nvidiaBusId = "PCI:1:0:0";
               powerManagement = {
                 enable = true;
                 finegrained = true;
@@ -187,161 +189,161 @@ in
           };
         };
       };
-      nvidia-reversesync = {
-        # inheritParentConfig = false;
-        configuration = {
-          system.nixos.tags = [ "nvidia-reversesync" ];
-          boot = {
-            loader.grub.configurationName = lib.mkForce "Nvidia OpenGL";
-            blacklistedKernelModules = [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
-            kernelModules = [
-              "clearcpuid=514" # Fixes certain wine games crash on launch
-              # "nvidia"
-              # "nvidia_modeset"
-              # "nvidia_uvm"
-              # "nvidia_drm"
-            ];
-            kernelParams = [
-              "nohibernate"
-              "intel_iommu=igfx_off"
-            ];
-            initrd.kernelModules = [ "i915" ];
-            kernel.sysctl = { "vm.max_map_count" = 2147483642; };
-          };
-          hardware = {
-            nvidia = {
-              package = production;
-              modesetting.enable = true;
-              prime = {
-                inherit intelBusId;
-                inherit nvidiaBusId;
-                reverseSync.enable = true;
-                # sync.enable = true;
-                # allowExternalGpu = false;
-              };
-              nvidiaPersistenced = true;
-              powerManagement = {
-                enable = true;
-                finegrained = true;
-              };
-              nvidiaSettings = false;
-            };
-            opengl = {
-              driSupport = true;
-              driSupport32Bit = true;
-              extraPackages = with pkgs; [
-                (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
-                libvdpau-va-gl
-                intel-media-driver
-                nvidia-vaapi-driver
-              ];
-            };
-          };
-          environment = {
-            # variables = lib.mkDefault {
-            # GBM_BACKEND = "nvidia-drm";
-            # LIBVA_DRIVER_NAME = "nvidia";
-            # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-            # NVD_BACKEND = "direct";
-            # };
-            variables = {
-              VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
-            };
-            systemPackages = with pkgs; [
-              glxinfo
-              vulkan-loader
-            ];
-          };
-          services = {
-            xserver = {
-              videoDrivers = [ "nvidia" "i915" ];
-              # screenSection = ''
-              #   Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-              #   Option         "AllowIndirectGLXProtocol" "off"
-              #   Option         "TripleBuffer" "on"
-              # '';
-            };
-          };
-          nixpkgs.config.packageOverrides = pkgs: {
-            vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-          };
-        };
-      };
-      nvidia-vulkansync = {
-        configuration = {
-          system.nixos.tags = [ "nvidia-vulkansync" ];
-          boot = {
-            loader.grub.configurationName = lib.mkForce "nvidia-vulkansync";
-            blacklistedKernelModules = [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
-            kernelModules = [
-              "clearcpuid=514" # Fixes certain wine games crash on launch
-            ];
-            kernelParams = [
-              "nohibernate"
-              "intel_iommu=igfx_off"
-            ];
-            extraModprobeConfig = ''
-              options nvidia NVreg_UsePageAttributeTable=1
-              options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
-              options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
-            '';
-            kernel.sysctl = { "vm.max_map_count" = 2147483642; };
-          };
-          hardware = {
-            nvidia = {
-              package = vulkan;
-              prime = {
-                inherit intelBusId;
-                inherit nvidiaBusId;
-                sync.enable = true;
-              };
-              powerManagement = {
-                enable = true;
-                finegrained = false;
-              };
-              modesetting.enable = true;
-              nvidiaPersistenced = true;
-              forceFullCompositionPipeline = true;
-            };
-            opengl = {
-              driSupport = true;
-              driSupport32Bit = true;
-              extraPackages = with pkgs; [
-                (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
-                libvdpau-va-gl
-                intel-media-driver
-                nvidia-vaapi-driver
-              ];
-            };
-          };
-          environment = {
-            variables = lib.mkDefault {
-              "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
-              VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
-              # GBM_BACKEND = "nvidia-drm";
-              # LIBVA_DRIVER_NAME = "nvidia";
-              # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-              # NVD_BACKEND = "direct";
-            };
-            systemPackages = with pkgs; [
-              vulkan-loader
-              glxinfo
-              inxi
-            ];
-          };
-          services.xserver = {
-            videoDrivers = [ "nvidia" "i915" ];
-            # screenSection = ''
-            #   Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-            #   Option         "AllowIndirectGLXProtocol" "off"
-            #   Option         "TripleBuffer" "on"
-            # '';
-          };
-        };
-        nixpkgs.config.packageOverrides = pkgs: {
-          vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-        };
-      };
+      # nvidia-reversesync = {
+      #   # inheritParentConfig = false;
+      #   configuration = {
+      #     system.nixos.tags = [ "nvidia-reversesync" ];
+      #     boot = {
+      #       loader.grub.configurationName = lib.mkForce "Nvidia OpenGL";
+      #       blacklistedKernelModules = [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
+      #       kernelModules = [
+      #         "clearcpuid=514" # Fixes certain wine games crash on launch
+      #         # "nvidia"
+      #         # "nvidia_modeset"
+      #         # "nvidia_uvm"
+      #         # "nvidia_drm"
+      #       ];
+      #       kernelParams = [
+      #         "nohibernate"
+      #         "intel_iommu=igfx_off"
+      #       ];
+      #       initrd.kernelModules = [ "i915" ];
+      #       kernel.sysctl = { "vm.max_map_count" = 2147483642; };
+      #     };
+      #     hardware = {
+      #       nvidia = {
+      #         package = production;
+      #         modesetting.enable = true;
+      #         prime = {
+      #           inherit intelBusId;
+      #           inherit nvidiaBusId;
+      #           reverseSync.enable = true;
+      #           # sync.enable = true;
+      #           # allowExternalGpu = false;
+      #         };
+      #         nvidiaPersistenced = true;
+      #         powerManagement = {
+      #           enable = true;
+      #           finegrained = true;
+      #         };
+      #         nvidiaSettings = false;
+      #       };
+      #       opengl = {
+      #         driSupport = true;
+      #         driSupport32Bit = true;
+      #         extraPackages = with pkgs; [
+      #           (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
+      #           libvdpau-va-gl
+      #           intel-media-driver
+      #           nvidia-vaapi-driver
+      #         ];
+      #       };
+      #     };
+      #     environment = {
+      #       # variables = lib.mkDefault {
+      #       # GBM_BACKEND = "nvidia-drm";
+      #       # LIBVA_DRIVER_NAME = "nvidia";
+      #       # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      #       # NVD_BACKEND = "direct";
+      #       # };
+      #       variables = {
+      #         VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+      #       };
+      #       systemPackages = with pkgs; [
+      #         glxinfo
+      #         vulkan-loader
+      #       ];
+      #     };
+      #     services = {
+      #       xserver = {
+      #         videoDrivers = [ "nvidia" "i915" ];
+      #         # screenSection = ''
+      #         #   Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+      #         #   Option         "AllowIndirectGLXProtocol" "off"
+      #         #   Option         "TripleBuffer" "on"
+      #         # '';
+      #       };
+      #     };
+      #     nixpkgs.config.packageOverrides = pkgs: {
+      #       vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+      #     };
+      #   };
+      # };
+      # nvidia-vulkansync = {
+      #   configuration = {
+      #     system.nixos.tags = [ "nvidia-vulkansync" ];
+      #     boot = {
+      #       loader.grub.configurationName = lib.mkForce "nvidia-vulkansync";
+      #       blacklistedKernelModules = [ "nouveau" "rivafb" "nvidiafb" "rivatv" "nv" "uvcvideo" ];
+      #       kernelModules = [
+      #         "clearcpuid=514" # Fixes certain wine games crash on launch
+      #       ];
+      #       kernelParams = [
+      #         "nohibernate"
+      #         "intel_iommu=igfx_off"
+      #       ];
+      #       extraModprobeConfig = ''
+      #         options nvidia NVreg_UsePageAttributeTable=1
+      #         options nvidia NVreg_RegistryDwords="OverrideMaxPerf=0x1"
+      #         options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp
+      #       '';
+      #       kernel.sysctl = { "vm.max_map_count" = 2147483642; };
+      #     };
+      #     hardware = {
+      #       nvidia = {
+      #         package = vulkan;
+      #         prime = {
+      #           inherit intelBusId;
+      #           inherit nvidiaBusId;
+      #           sync.enable = true;
+      #         };
+      #         powerManagement = {
+      #           enable = true;
+      #           finegrained = false;
+      #         };
+      #         modesetting.enable = true;
+      #         nvidiaPersistenced = true;
+      #         forceFullCompositionPipeline = true;
+      #       };
+      #       opengl = {
+      #         driSupport = true;
+      #         driSupport32Bit = true;
+      #         extraPackages = with pkgs; [
+      #           (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
+      #           libvdpau-va-gl
+      #           intel-media-driver
+      #           nvidia-vaapi-driver
+      #         ];
+      #       };
+      #     };
+      #     environment = {
+      #       variables = lib.mkDefault {
+      #         "VK_ICD_FILENAMES" = "/run/opengl-driver/share/vulkan/icd.d/intel_icd.x86_64.json:/run/opengl-driver-32/share/vulkan/icd.d/intel_icd.i686.json";
+      #         VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+      #         # GBM_BACKEND = "nvidia-drm";
+      #         # LIBVA_DRIVER_NAME = "nvidia";
+      #         # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      #         # NVD_BACKEND = "direct";
+      #       };
+      #       systemPackages = with pkgs; [
+      #         vulkan-loader
+      #         glxinfo
+      #         inxi
+      #       ];
+      #     };
+      #     services.xserver = {
+      #       videoDrivers = [ "nvidia" "i915" ];
+      #       # screenSection = ''
+      #       #   Option         "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+      #       #   Option         "AllowIndirectGLXProtocol" "off"
+      #       #   Option         "TripleBuffer" "on"
+      #       # '';
+      #     };
+      #     nixpkgs.config.packageOverrides = pkgs: {
+      #       vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+      #     };
+      #   };
+      # };
       nvidia-vulkanReverse = {
         configuration = {
           system.nixos.tags = [ "nvidia-vulkanReverse" ];
@@ -407,9 +409,9 @@ in
             #   Option         "TripleBuffer" "on"
             # '';
           };
-        };
-        nixpkgs.config.packageOverrides = pkgs: {
-          vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+          nixpkgs.config.packageOverrides = pkgs: {
+            vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+          };
         };
       };
     };
