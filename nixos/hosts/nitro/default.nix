@@ -420,24 +420,24 @@
         driSupport = true;
         driSupport32Bit = true;
         extraPackages = with pkgs; [
-          nvidia-vaapi-driver
+          # nvidia-vaapi-driver
         ];
       };
 
 
-      nvidia = lib.mkDefault {
-        package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
-        prime = {
-          intelBusId = "PCI:0:2:0";
-          nvidiaBusId = "PCI:1:0:0";
-          # Make the intel igpu default. The NVIDIA is for CUDA/NVENC
-          # reverseSync.enable = true;
+      # nvidia = lib.mkDefault {
+      #   package = lib.mkForce config.boot.kernelPackages.nvidiaPackages.production;
+      #   prime = {
+      #     intelBusId = "PCI:0:2:0";
+      #     nvidiaBusId = "PCI:1:0:0";
+      #     # Make the intel igpu default. The NVIDIA is for CUDA/NVENC
+      #     # reverseSync.enable = true;
 
-          # sync.enable = true;
-        };
-        nvidiaSettings = false;
-        # forceFullCompositionPipeline = true;
-      };
+      #     # sync.enable = true;
+      #   };
+      #   nvidiaSettings = false;
+      #   # forceFullCompositionPipeline = true;
+      # };
     };
 
     nixpkgs = {
