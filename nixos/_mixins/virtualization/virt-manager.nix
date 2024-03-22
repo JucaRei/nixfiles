@@ -1,10 +1,14 @@
 { pkgs, config, username, lib, hostname, ... }:
+let
+  # Change this to match your system's CPU.
+  platform = "intel";
+in
 {
   boot = {
     extraModprobeConfig = ''
       # Needed to run OSX-KVM
-      options kvm_intel nested=1
-      options kvm_intel emulate_invalid_guest_state=0
+      options kvm_${platform} nested=1
+      options kvm_${platform} emulate_invalid_guest_state=0
       options kvm ignore_nsrs=Y
       options kvm report_ignored_msrs=N
     '';
@@ -13,10 +17,13 @@
     };
   };
 
-  users.groups.libvirtd.members = [
-    "root"
-    "${username}"
-  ];
+  users = {
+    groups.libvirtd.members = [
+      "root"
+      "${username}"
+    ];
+    users.${username}.extraGroups = [ "qemu-libvirtd" "libvirtd" "disk" ];
+  };
   # nixos 23.11
   programs = {
     virt-manager = { enable = true; };
@@ -28,6 +35,7 @@
     libvirtd = {
       enable = true;
       extraConfig = ''
+        user="${username}"
         unix_sock_group = "libvirtd"
 
         # Needed for virtio-fs
@@ -36,9 +44,7 @@
       qemu = {
         verbatimConfig = ''
           namespaces = []
-          nographics_allow_host_audio = 1
-          user = "${username}"
-          group = "kvm"
+          user = "+${builtins.toString config.users.users.${username}.uid}"
         '';
         package = pkgs.qemu_kvm.override {
           smbdSupport = true;
@@ -66,7 +72,9 @@
           package = pkgs.swtpm-tpm2;
         };
       };
-      onShutdown = "suspend";
+      # Stop all running VMs on shutdown.
+      onShutdown = "shutdown"; #suspend
+      # Don't start any VMs automatically on boot.
       onBoot = "ignore";
     };
     spiceUSBRedirection.enable = true; # USB redirection in virtual machine

@@ -1,4 +1,4 @@
-{ lib, pkgs, hostname, ... }:
+{ lib, pkgs, hostname, config, ... }:
 {
   boot = with lib;{
     tmp = {

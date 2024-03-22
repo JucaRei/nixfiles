@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, username, ... }:
 with lib;
 let
   hugepage_handler = pkgs.writeShellScript "hp_handler.sh" ''
@@ -51,43 +51,53 @@ let
             ;;
     esac
   '';
+
+  # Change this to match your system's CPU.
+  platform = "intel";
+  # Change this to specify the IOMMU ids you wrote down earlier.
+  vfioIds = [
+    ### grep PCI_ID /sys/bus/pci/devices/*/uevent
+
+    # Nvidia
+    "10de:1c8d" # 01:00.0   video
+    "10de:0fb9" # 01:00.1   audio
+
+    # Intel
+    # 8086:3e9b   # 00:02.0  video
+    # 8086:a348   # 00:02.1  audio
+  ];
 in
 {
   boot = {
+    # Configure kernel options to make sure IOMMU & KVM support is on.
     kernelModules = mkForce [
+      "kvm-${platform}"
+      "vfio_virqfd"
       "vfio_pci"
+      "vfio_iommu_type1"
+      "vfio"
+    ];
+
+    kernelParams = mkForce [
+      "${platform}_iommu=on"
+      "${platform}_iommu=pt"
+      "kvm.ignore_msrs=1"
     ];
 
     ### For intel-gpu dGPU
     # kernelParams = [
-    #   "iommu=pt" # (pass-through)
     #   "i915.enable_gvt=1"
-    #   "kvm.ignore_msrs=1"
-    #   "intel_iommu=on"
     # ];
     extraModprobeConfig = mkForce ''
-      # Change to your GPU's vendor ID and device ID
-      # options vfio-pci ids=10de:1c8d,10de:0fb9
-      options vfio-pci ids=10de:1c8d
+      options vfio-pci ids=${builtins.concatStringsSep "," vfioIds}
+      softdep nvidia pre: vfio-pci
     '';
-    ### grep PCI_ID /sys/bus/pci/devices/*/uevent
-    #Nvidia-video = 10de:1c8d   01:00.0
-    #Nvidia-audio = 10de:0fb9   01:00.1
-    #Intel-video = 8086:3e9b    00:02.0
-    #Intel-audio = 18086:a348   00:02.1
 
     blacklistedKernelModules = mkForce [ "nouveau" "nvidiafb" "nvidia" "nvidia-uvm" "nvidia-drm" "nvidia-modeset" ];
 
     # Kernel modules required by QEMU (KVM) virtual machine
     initrd = mkForce {
-      postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable) ''
-        # Set the system time from the hardware clock to work around a
-        # bug in qemu-kvm > 1.5.2 (where the VM clock is initialised
-        # to the *boot time* of the host).
-        hwclock -s
-      '';
-
-      availableKernelModules = mkForce [
+      availableKernelModules = [
         "virtio_net"
         "virtio_pci"
         "virtio_mmio"
@@ -95,13 +105,37 @@ in
         "virtio_scsi"
       ];
 
-      kernelModules = mkForce [
+      kernelModules = [
         "virtio_balloon"
         "virtio_console"
         "virtio_rng"
       ];
+
+      # postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable) ''
+      #   # Set the system time from the hardware clock to work around a
+      #   # bug in qemu-kvm > 1.5.2 (where the VM clock is initialised
+      #   # to the *boot time* of the host).
+      #   hwclock -s
+      # '';
     };
   };
+
+  # Add a file for looking-glass to use later. This will allow for viewing the guest VM's screen in a
+  # performant way.
+  systemd.tmpfiles.rules = [
+    "f /dev/shm/looking-glass 0660 ${username} qemu-libvirtd -"
+  ];
+
+  environment = {
+    systemPackages = with pkgs; [
+      looking-glass-client
+    ];
+
+    shellAliases = {
+      vm-pci = ''lspci -k | grep -E "vfio-pci|NVIDIA"'';
+    };
+  };
+
   virtualisation.libvirtd.hooks.qemu = {
     hugepages_handler = "${hugepage_handler}";
   };
