@@ -1,10 +1,4 @@
-{ pkgs
-, config
-, username
-, lib
-, hostname
-, ...
-}:
+{ pkgs, config, username, lib, hostname, ... }:
 let
   hugepage_handler = pkgs.writeShellScript "hp_handler.sh" ''
     xml_file="/var/lib/libvirt/qemu/$1.xml"
@@ -164,6 +158,7 @@ in
   environment = {
     sessionVariables = {
       LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
+      LIBVIRT_DEFAULT_AUTOCONNECT = [ "qemu:///system" ];
     };
     systemPackages = with pkgs; [
       qemu # A generic and open source machine emulator and virtualizer
@@ -199,10 +194,6 @@ in
     # "ovmf/OVMF_VARS.fd".source = (ovmfPackage.fd) + /FV/OVMF_VARS.fd;
     # "ovmf/OVMF_CODE.fd".source = (ovmfPackage.fd) + /FV/OVMF_CODE.fd;
     # "ovmf/OVMF.fd".source = (ovmfPackage.fd) + /FV/OVMF.fd;
-    # };
-
-    # sessionVariables = {
-    #   LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
     # };
   };
   services = {

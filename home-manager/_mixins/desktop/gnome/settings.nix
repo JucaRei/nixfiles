@@ -4,7 +4,7 @@ let
     ### Maclike
     app-menu-is-back
     quick-settings-tweaker
-    logo-menu0
+    logo-menu
     app-icons-taskbar
 
     ### Others
@@ -31,13 +31,12 @@ let
     # window-is-ready-remover
     # custom-accent-colors
     # appindicator
-    # vitals
-    # space-bar
+    space-bar
     # top-bar-organizer
     # caffeine
     # bluetooth-quick-connect
     # forge
-    # dash-to-dock
+    dash-to-dock
     # pano
     # # aylurs-widgets
     # # google-earth-wallpaper
@@ -47,10 +46,10 @@ let
     # # hide-activities-button
     # # mutter
     # # libgnome-keyring
-    # # gsconnect
+    gsconnect
     # # arcmenu
     # # battery-indicator-upower
-    # # tray-icons-reloaded
+    tray-icons-reloaded
     # # removable-drive-menu
     # # dash-to-panel
     # # workspace-indicator-2
@@ -74,11 +73,24 @@ in
       exec-arg = "-e";
     };
 
+    "org/gnome/desktop/default-applications/terminal" = {
+      exec = "blackbox";
+      exec-arg = "-e";
+    };
+
+    "org/gnome/Contacts" = {
+      did-inital-setup = true;
+      window-fullscreen = false;
+      window-height = 600;
+      window-maximized = false;
+      window-width = 800;
+    };
+
     "org/gnome/desktop/input-sources" = {
-      mru-sources = [ "('xkb', 'us')" ];
+      mru-sources = [ "('xkb', 'br+abnt2')" ];
       per-window = false;
-      sources = [ "('xkb', 'br')" ];
-      xkb-options = [ "'terminate:ctrl_alt_bksp', 'lv3:ralt_switch'" ];
+      sources = [ "(xkb', 'br)" ];
+      xkb-options = [ "terminate:ctrl_alt_bksp" "lv3:ralt_switch" ];
     };
     "com/raggesilver/BlackBox" = {
       theme-dark = "Dracula";
@@ -99,11 +111,13 @@ in
       cursor-size = 24;
       cursor-theme = "Adwaita";
       enable-animations = true;
+      locate-pointer = true;
       document-font-name = "Work Sans 12";
       enable-hot-corners = false;
       font-name = "Work Sans 12";
       monospace-font-name = "FiraCode Nerd Font Mono Medium 13";
       show-battery-percentage = true;
+      toolbar-icons-size = "small";
       text-scaling-factor = mkDouble 1.0;
     };
 
@@ -121,8 +135,19 @@ in
       idle-delay = "mkInt32 900";
     };
 
+    # "org/gnome/system/location" = {
+    #   enabled = true;
+    # };
+
+    "org/gnome/Weather/locations" = {
+      locations = ''
+        [<(uint32 2, <('São Paulo', 'SBMT', true, [(-0.41044326824509736, -0.8139052020289248)], [(-0.41073414481823473, -0.81361432545578749)])>)>]
+      '';
+    };
+
     "org/gnome/desktop/sound" = {
       theme-name = "freedesktop";
+      allow-volume-above-100-percent = true;
     };
 
     "org/gnome/desktop/wm/keybindings" = {
@@ -243,7 +268,7 @@ in
     "org/gnome/shell" = {
       disable-user-extensions = false;
       enabled-extensions = builtins.map (p: p.extensionUuid) extensions;
-      "favorite-apps" = [ "librewolf.desktop" "code.desktop" ];
+      "favorite-apps" = [ "librewolf.desktop" "code.desktop" "org.gnome.Rhythmbox3.desktop" "io.github.mimbrero.WhatsAppDesktop.desktop" "org.gnome.Nautilus.desktop" ];
     };
 
     ########################
@@ -273,6 +298,22 @@ in
       workspace-background-corner-size = 0;
       workspace-popup = true;
       workspaces-in-app-grid = true;
+    };
+
+    "org/gnome/shell/extensions/nightthemeswitcher" = {
+      # gtk-variants = {
+      #   day = "Adwaita";
+      #   enabled = false;
+      #   night = "Adwaita-dark";
+      # };
+      # shell-variants = {
+      #   day = "";
+      #   enabled = false;
+      # };
+      # time = {
+      #   manual-schedule = true;
+      #   nightthemeswitcher-ondemand-keybinding = [ "<Shift><Super>t" ];
+      # };
     };
 
     "org/gnome/shell/extensions/nightthemeswitcher/gtk-variants" = {
@@ -332,6 +373,19 @@ in
       hide-icons = false;
       menu-centered = false;
       use-higher-precision = true;
+    };
+
+    "org/gnome/shell/extensions/gsconnect/device/44912cba_4e5a_4ffd_a358_ba5dd18ebe27org/gnome/shell/extensions/gsconnect/device/44912cba_4e5a_4ffd_a358_ba5dd18ebe27" = {
+      certificate-pem = ''
+        -----BEGIN CERTIFICATE-----\nMIIBkzCCATmgAwIBAgIBATAKBggqhkjOPQQDBDBTMS0wKwYDVQQDDCQ0NDkxMmNi\nYV80ZTVhXzRmZmRfYTM1OF9iYTVkZDE4ZWJlMjcxFDASBgNVBAsMC0tERSBDb25u\nZWN0MQwwCgYDVQQKDANLREUwHhcNMjMwMzIxMDMwMDAwWhcNMzMwMzIxMDMwMDAw\nWjBTMS0wKwYDVQQDDCQ0NDkxMmNiYV80ZTVhXzRmZmRfYTM1OF9iYTVkZDE4ZWJl\nMjcxFDASBgNVBAsMC0tERSBDb25uZWN0MQwwCgYDVQQKDANLREUwWTATBgcqhkjO\nPQIBBggqhkjOPQMBBwNCAATe2oDgaASiCWkYHsCFKHzPUKABRJ7oa5xnKO59wy0G\nrS/hkI8Nz72mYn09qU03mF+WPW8tcttuNCbUozx9WftbMAoGCCqGSM49BAMEA0gA\nMEUCIQDUnveAz1AgasaRTGm2PDy3/vSCmAxG65aXBBkPJ+Wl5gIgBK/Nej0NPecJ\nnXuAM2e/ZHoCDdgIXL93jSzRBwVFT/Y=\n-----END CERTIFICATE-----\n
+      '';
+      incoming-capabilities = [ "kdeconnect.battery" "kdeconnect.bigscreen.stt" "kdeconnect.clipboard" "kdeconnect.clipboard.connect" "kdeconnect.contacts.request_all_uids_timestamps" "kdeconnect.contacts.request_vcards_by_uid" "kdeconnect.findmyphone.request" "kdeconnect.mousepad.keyboardstate" "kdeconnect.mousepad.request" "kdeconnect.mpris" "kdeconnect.mpris.request" "kdeconnect.notification" "kdeconnect.notification.action" "kdeconnect.notification.reply" "kdeconnect.notification.request" "kdeconnect.ping" "kdeconnect.runcommand" "kdeconnect.sftp.request" "kdeconnect.share.request" "kdeconnect.share.request.update" "kdeconnect.sms.request" "kdeconnect.sms.request_attachment" "kdeconnect.sms.request_conversation" "kdeconnect.sms.request_conversations" "kdeconnect.systemvolume" "kdeconnect.telephony.request" "kdeconnect.telephony.request_mute" ];
+      last-connection = "lan://192.168.1.6:1716";
+      name = "Galaxy Note8";
+      outgoing-capabilities = [ "kdeconnect.battery" "kdeconnect.bigscreen.stt" "kdeconnect.clipboard" "kdeconnect.clipboard.connect" "kdeconnect.connectivity_report" "kdeconnect.contacts.response_uids_timestamps" "kdeconnect.contacts.response_vcards" "kdeconnect.findmyphone.request" "kdeconnect.mousepad.echo" "kdeconnect.mousepad.keyboardstate" "kdeconnect.mousepad.request" "kdeconnect.mpris" "kdeconnect.mpris.request" "kdeconnect.notification" "kdeconnect.notification.request" "kdeconnect.ping" "kdeconnect.presenter" "kdeconnect.runcommand.request" "kdeconnect.sftp" "kdeconnect.share.request" "kdeconnect.sms.attachment_file" "kdeconnect.sms.messages" "kdeconnect.systemvolume.request" "kdeconnect.telephony" ];
+      paired = true;
+      supported-plugins = [ "battery" "clipboard" "connectivity_report" "contacts" "findmyphone" "mousepad" "mpris" "notification" "ping" "presenter" "runcommand" "sftp" "share" "sms" "systemvolume" "telephony" ];
+      type = "phone";
     };
   };
 

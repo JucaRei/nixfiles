@@ -637,7 +637,7 @@
     };
 
     specialisation = {
-      nvidia-passthrough = {
+      nvidia-passthrough = lib.mkForce {
         configuration = {
           system.nixos.tags = [ "nvidia-passthrough" ];
           boot = {
@@ -653,7 +653,7 @@
             systemPackages = with pkgs; [
               looking-glass-client
               guestfs-tools
-              scream-receivers
+              scream
               libguestfs # needed to virt-sparsify qcow2 files
             ];
           };
