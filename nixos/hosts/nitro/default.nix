@@ -10,7 +10,7 @@
     # ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     ./nvidia-specialisation.nix
     ../../_mixins/hardware/boot/grub.nix
-    ../../_mixins/hardware/power/tlp.nix
+    # ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
     # ../../_mixins/virtualization/quickemu.nix
     ../../_mixins/services/security/sudo.nix
@@ -44,8 +44,8 @@
       loader = {
         # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
         grub = {
-          theme = pkgs.cyberre-grub-theme;
-          # theme = pkgs.catppuccin-grub;
+          # theme = pkgs.cyberre-grub-theme;
+          theme = pkgs.catppuccin-grub;
         };
       };
       initrd = {
@@ -109,23 +109,16 @@
       # Temporary workaround until mwprocapture 4328 patch is merged
       # - https://github.com/NixOS/nixpkgs/pull/221209
       # kernelPackages = pkgs.linuxPackages_zen;
-      # kernelPackages = pkgs.linuxPackages_lqx;
-      kernelPackages = pkgs.linuxPackages_xanmod_stable;
+      kernelPackages = pkgs.linuxPackages_lqx;
+      # kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
       kernelParams = lib.mkForce [
-        "quiet"
         "nosgx"
         "usbcore.autosuspend=-1" # Disable usb autosuspend
-        "rd.plymouth=0"
-        "plymouth.enable=0"
-        "log-level=0"
-        "systemd.log_level=0"
-        "systemd.show_status=0"
-        "mitigations=off"
         "zswap.enabled=1"
-        "zswap.compressor=lz4hc"
-        "zswap.max_pool_percent=20"
-        "zswap.zpool=z3fold"
+        # "zswap.compressor=lz4hc"
+        # "zswap.max_pool_percent=20"
+        # "zswap.zpool=z3fold"
         "mem_sleep_default=deep"
       ];
       kernel.sysctl = lib.mkForce {

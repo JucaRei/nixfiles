@@ -46,7 +46,7 @@ umount -Rv /mnt
 mount -o $BTRFS_OPTS3,subvol=@rootfs /dev/disk/by-label/Nitroux /mnt
 # mount -o $BTRFS_OPTS,subvol="@root" /dev/disk/by-partlabel/Nitroux /mnt
 # mkdir -pv /mnt/{boot/efi,home,.snapshots,nix,var/log,var/tmp,var/swap}
-mkdir -pv /mnt/{boot/efi,home,.snapshots,nix,var/{swap,tmp,log}}
+mkdir -pv /mnt/{boot,home,.snapshots,nix,var/{swap,tmp,log}}
 mount -o $BTRFS_OPTS2,subvol=@home /dev/disk/by-label/Nitroux /mnt/home
 # mount -o $BTRFS_OPTS,subvol="@home" /dev/disk/by-partlabel/Nitroux /mnt/home
 mount -o $BTRFS_OPTS,subvol=@snapshots /dev/disk/by-label/Nitroux /mnt/.snapshots
