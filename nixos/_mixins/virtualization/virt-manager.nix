@@ -93,27 +93,27 @@ in
       # LIBVIRT_DEFAULT_AUTOCONNECT = [ "qemu:///system" ];
     };
     systemPackages = with pkgs; [
-      # qemu # A generic and open source machine emulator and virtualizer
+      qemu # A generic and open source machine emulator and virtualizer
       virt-manager # Desktop user interface for managing virtual machines
       vde2 # Virtual Distributed Ethernet, an Ethernet compliant virtual network
       spice-gtk
       spice
-      # spice-protocol
+      spice-protocol
       win-spice
       win-virtio
       pciutils # A collection of programs for inspecting and manipulating configuration of PCI devices
-      # OVMF # Sample UEFI firmware for QEMU and KVM
-      # seabios # Open source implementation of a 16bit X86 BIOS
-      # libguestfs # Tools for accessing and modifying virtual machine disk images
+      OVMF # Sample UEFI firmware for QEMU and KVM
+      seabios # Open source implementation of a 16bit X86 BIOS
+      libguestfs # Tools for accessing and modifying virtual machine disk images
       libvirt # /A toolkit to interact with the virtualization capabilities of recent versions of Linux (and other OSes)
       virt-viewer # A viewer for remote virtual machines
       bridge-utils
       swtpm # TPM
       libhugetlbfs
       virglrenderer # Virtual OpenGL
-      # virt-viewer # Remote VM/
-      # OVMFFull
-      # gvfs
+      virt-viewer # Remote VM/
+      OVMFFull
+      gvfs
       virtiofsd
     ];
   };
