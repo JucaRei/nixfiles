@@ -56,6 +56,7 @@ in
           boot = {
             initrd.kernelModules = [ "i915" ];
             loader.grub.configurationName = lib.mkForce "Nvidia disabled, only Intel GPU";
+            kernelParams = [ "i915.enable_fbc=1" "i915.enable_guc=3" ];
             extraModprobeConfig = ''
               blacklist nouveau
               options nouveau modeset=0
@@ -101,7 +102,12 @@ in
           nixpkgs.config.packageOverrides = pkgs: {
             vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
           };
-          services.xserver.videoDrivers = [ "i915" ];
+          services.xserver.videoDrivers = [
+            "i915"
+
+            # Optional: Enable VA-API (Video Acceleration API) for better video playback performance
+            "modesetting"
+          ];
         };
       };
       nvidia-sync = {
@@ -429,7 +435,18 @@ in
           # Configure Xorg to use the Nouveau driver
           services.xserver = {
             enable = true;
-            videoDrivers = [ "nouveau" "i915" ];
+            videoDrivers = [
+              "nouveau"
+
+              # Optional: Enable VA-API (Video Acceleration API) for better video playback performance
+              # "modesetting"
+
+              # Enable the X11 windowing system with Intel drivers
+              # "intel"
+
+              # "Intel GPU support via the i915 driver for optimal performance and feature set"
+              # "i915"
+            ];
 
             # Optional: Configure display settings, if necessary
             # displayManager = {
@@ -441,36 +458,38 @@ in
           };
 
           # Enable hardware acceleration for Nouveau
-          hardware.opengl = {
-            enable = true;
-            driSupport = true;
-            driSupport32Bit = true;
-            extraPackages = with pkgs; [
-              # Add packages needed for Nouveau acceleration here
-              # For example, Mesa for OpenGL:
-              mesa
-              mesa.drivers
+          hardware = {
+            opengl = {
+              enable = true;
+              # driSupport = true;
+              # driSupport32Bit = true;
+              extraPackages = with pkgs; [
+                # Add packages needed for Nouveau acceleration here
+                # For example, Mesa for OpenGL:
+                mesa
+                mesa.drivers
 
-              (
-                if
-                  (lib.versionOlder (lib.versions.majorMinor lib.version)
-                    "23.11")
-                then vaapiIntel
-                else intel-vaapi-driver
-              )
-              intel-media-driver
-              libvdpau
-              libvdpau-va-gl
-            ];
+                # (
+                  # if
+                    # (lib.versionOlder (lib.versions.majorMinor lib.version)
+                      # "23.11")
+                  # then vaapiIntel
+                  # else intel-vaapi-driver
+                # )
+                # intel-media-driver
+                # libvdpau
+                # libvdpau-va-gl
+              ];
+            };
           };
           # Additional configurations if required
           # For example, to manage power settings for Nouveau:
           # environment.etc."modprobe.d/nouveau.conf".text = ''
           #   options nouveau modeset=1
           # '';
-          nixpkgs.config.packageOverrides = pkgs: {
-            vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-          };
+          # nixpkgs.config.packageOverrides = pkgs: {
+            # vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+          # };
         };
       };
     };
