@@ -75,22 +75,7 @@ in
           system.nixos.tags = [ vm-passthrought ];
           boot = {
             loader.grub.configurationName = lib.mkForce "VM Passthrought";
-            hardware = {
-              opengl = {
-                driSupport = true;
-                driSupport32Bit = true;
-                extraPackages = with pkgs; [
-                  (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
-                  libvdpau-va-gl
-                  intel-media-driver
-                ];
-              };
-            };
 
-            services.xserver.videoDrivers = [ "i915" ];
-            nixpkgs.config.packageOverrides = pkgs: {
-              vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-            };
 
             # Configure kernel options to make sure IOMMU & KVM support is on.
             kernelModules = mkForce [
@@ -99,12 +84,19 @@ in
               "vfio_pci"
               "vfio_iommu_type1"
               "vfio"
+
+              "nvidia"
+              "nvidia_modeset"
+              "nvidia_uvm"
+              "nvidia_drm"
             ];
 
             kernelParams = mkForce [
               "${platform}_iommu=on"
               "${platform}_iommu=pt"
-              "kvm.ignore_msrs=1"
+              "vfio-pci.ids=${concatStringsSep "," vfioIds}"
+              # "kvm.ignore_msrs=1"
+              "video=efifb:off"
             ];
 
             ### For intel-gpu dGPU
@@ -112,27 +104,43 @@ in
             #   "i915.enable_gvt=1"
             # ];
             extraModprobeConfig = mkForce ''
-              options vfio-pci ids=${builtins.concatStringsSep "," vfioIds}
-              softdep nvidia pre: vfio-pci
+              # options vfio-pci ids=${builtins.concatStringsSep "," vfioIds}
+              # softdep nvidia pre: vfio-pci
+              softdep drm pre: vfio-pci
+              options kvm ignore_msrs=1 # # This prevents certain (BSOD) crashes in Windows guests.
+              options kvmfr static_size_mb=32
+              options snd_hda_intel power_save=0
             '';
 
-            blacklistedKernelModules = mkForce [ "nouveau" "nvidiafb" "nvidia" "nvidia-uvm" "nvidia-drm" "nvidia-modeset" ];
+            # blacklistedKernelModules = mkForce [
+            #   "nouveau"
+            #   "nvidiafb"
+            #   "nvidia"
+            #   "nvidia-uvm"
+            #   "nvidia-drm"
+            #   "nvidia-modeset"
+            # ];
 
             # Kernel modules required by QEMU (KVM) virtual machine
             initrd = mkForce {
-              availableKernelModules = [
-                "virtio_net"
-                "virtio_pci"
-                "virtio_mmio"
-                "virtio_blk"
-                "virtio_scsi"
-              ];
+              # availableKernelModules = [
+              # "virtio_net"
+              # "virtio_pci"
+              # "virtio_mmio"
+              # "virtio_blk"
+              # "virtio_scsi"
+              #   "vfio_pci"
+              #   "vfio"
+              #   "vfio_iommu_type1"
+              #   "kvmfr"
+              # ];
 
-              kernelModules = [
-                "virtio_balloon"
-                "virtio_console"
-                "virtio_rng"
-              ];
+              # kernelModules = [
+              #   "virtio_balloon"
+              #   "virtio_console"
+              #   "virtio_rng"
+              #   "kvmfr"
+              # ];
 
               # postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable) ''
               #   # Set the system time from the hardware clock to work around a
@@ -143,15 +151,43 @@ in
             };
           };
 
+          hardware = {
+            opengl = {
+              driSupport = true;
+              driSupport32Bit = true;
+              extraPackages = with pkgs; [
+                (if (lib.versionOlder (lib.versions.majorMinor lib.version) "23.11") then vaapiIntel else intel-vaapi-driver)
+                libvdpau-va-gl
+                intel-media-driver
+              ];
+            };
+          };
+
+          services = {
+            xserver.videoDrivers = [ "i915" ];
+
+            udev.extraRules = ''
+              SUBSYSTEM=="kvmfr", KERNEL=="kvmfr0", OWNER="${username}", GROUP="kvm", MODE="0660"
+            '';
+          };
+          nixpkgs.config.packageOverrides = pkgs: {
+            vaapiIntel = pkgs.vaapiIntel.override {
+              enableHybridCodec = true;
+            };
+          };
+
           # Add a file for looking-glass to use later. This will allow for viewing the guest VM's screen in a
           # performant way.
           systemd.tmpfiles.rules = [
             "f /dev/shm/looking-glass 0660 ${username} qemu-libvirtd -"
+            "f /dev/shm/scream 0660 ${username} qemu-libvirtd -"
           ];
 
           environment = {
             systemPackages = with pkgs; [
               looking-glass-client
+              guestfs-tools
+              pciutils
 
               glxinfo
             ];
@@ -160,12 +196,19 @@ in
               vm-pci = ''lspci -k | grep -E "vfio-pci|NVIDIA"'';
             };
 
-            VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+            variables = {
+              VDPAU_DRIVER = lib.mkIf config.hardware.opengl.enable (lib.mkDefault "va_gl");
+            };
           };
 
           virtualisation.libvirtd.hooks.qemu = {
             hugepages_handler = "${hugepage_handler}";
           };
+
+          # GPU passthrough with vfio need memlock
+          security.pam.loginLimits = [
+            { domain = "*"; type = "-"; item = "memlock"; value = "infinity"; }
+          ];
         };
       };
     };

@@ -45,6 +45,13 @@ in
         verbatimConfig = ''
           namespaces = []
           user = "+${builtins.toString config.users.users.${username}.uid}"
+          cgroup_device_acl = [
+              "/dev/kvmfr0",
+              "/dev/vfio/vfio", "/dev/vfio/11", "/dev/vfio/12",
+              "/dev/null", "/dev/full", "/dev/zero",
+              "/dev/random", "/dev/urandom",
+              "/dev/ptmx", "/dev/kvm"
+            ]
         '';
         package = pkgs.qemu_kvm.override {
           smbdSupport = true;
@@ -83,7 +90,7 @@ in
   environment = {
     sessionVariables = {
       LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
-      LIBVIRT_DEFAULT_AUTOCONNECT = [ "qemu:///system" ];
+      # LIBVIRT_DEFAULT_AUTOCONNECT = [ "qemu:///system" ];
     };
     systemPackages = with pkgs; [
       qemu # A generic and open source machine emulator and virtualizer
@@ -91,13 +98,13 @@ in
       vde2 # Virtual Distributed Ethernet, an Ethernet compliant virtual network
       spice-gtk
       spice
-      spice-protocol
+      # spice-protocol
       win-spice
       win-virtio
       pciutils # A collection of programs for inspecting and manipulating configuration of PCI devices
       OVMF # Sample UEFI firmware for QEMU and KVM
-      seabios # Open source implementation of a 16bit X86 BIOS
-      libguestfs # Tools for accessing and modifying virtual machine disk images
+      # seabios # Open source implementation of a 16bit X86 BIOS
+      # libguestfs # Tools for accessing and modifying virtual machine disk images
       libvirt # A toolkit to interact with the virtualization capabilities of recent versions of Linux (and other OSes)
       virt-viewer # A viewer for remote virtual machines
       bridge-utils
@@ -105,7 +112,7 @@ in
       libhugetlbfs
       virglrenderer # Virtual OpenGL
       # virt-viewer # Remote VM/
-      OVMFFull
+      # OVMFFull
       # gvfs
       virtiofsd
     ];
