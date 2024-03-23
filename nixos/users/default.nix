@@ -24,7 +24,7 @@ in
       "lxd"
       "podman"
       "rtkit"
-      "qemu-libvirtd"
+      # "qemu-libvirtd"
       "kvm"
       "adbusers"
     ];

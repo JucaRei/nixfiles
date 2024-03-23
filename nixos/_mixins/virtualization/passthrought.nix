@@ -96,7 +96,7 @@ in
               "${platform}_iommu=pt"
               "vfio-pci.ids=${concatStringsSep "," vfioIds}"
               # "kvm.ignore_msrs=1"
-              "video=efifb:off"
+              # "video=efifb:off"
             ];
 
             ### For intel-gpu dGPU
@@ -123,24 +123,24 @@ in
 
             # Kernel modules required by QEMU (KVM) virtual machine
             initrd = mkForce {
-              # availableKernelModules = [
-              # "virtio_net"
-              # "virtio_pci"
-              # "virtio_mmio"
-              # "virtio_blk"
-              # "virtio_scsi"
-              #   "vfio_pci"
-              #   "vfio"
-              #   "vfio_iommu_type1"
-              #   "kvmfr"
-              # ];
+              availableKernelModules = [
+                "virtio_net"
+                "virtio_pci"
+                "virtio_mmio"
+                "virtio_blk"
+                "virtio_scsi"
+                #   "vfio_pci"
+                #   "vfio"
+                #   "vfio_iommu_type1"
+                #   "kvmfr"
+              ];
 
-              # kernelModules = [
-              #   "virtio_balloon"
-              #   "virtio_console"
-              #   "virtio_rng"
-              #   "kvmfr"
-              # ];
+              kernelModules = [
+                "virtio_balloon"
+                "virtio_console"
+                "virtio_rng"
+                "kvmfr"
+              ];
 
               # postDeviceCommands = lib.mkIf (!config.boot.initrd.systemd.enable) ''
               #   # Set the system time from the hardware clock to work around a

@@ -22,7 +22,11 @@ in
       "root"
       "${username}"
     ];
-    users.${username}.extraGroups = [ "qemu-libvirtd" "libvirtd" "disk" ];
+    users.${username}.extraGroups = [
+      "qemu-libvirtd"
+      "libvirtd"
+      # "disk"
+    ];
   };
   # nixos 23.11
   programs = {
