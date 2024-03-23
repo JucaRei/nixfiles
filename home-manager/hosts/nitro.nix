@@ -9,6 +9,7 @@ with lib.hm.gvariant; {
     ../_mixins/apps/video/mpv.nix
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix
+    ../_mixins/console/yt-dlp.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
     # ../_mixins/apps/terminal/urxvt.nix
