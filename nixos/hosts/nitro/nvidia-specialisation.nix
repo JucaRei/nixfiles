@@ -414,6 +414,65 @@ in
           };
         };
       };
+      nouveau-drivers = {
+        configuration = {
+          system.nixos.tags = [ "nouveau-drivers" ];
+          boot = {
+            loader.grub.configurationName = lib.mkForce "Nouveau Graphics";
+            # Ensure the Nouveau module is loaded
+            kernelModules = [ "nouveau" ];
+
+            # Blacklist the proprietary NVIDIA driver, if needed
+            blacklistedKernelModules = [ "nvidia" "nvidia_uvm" "nvidia_drm" "nvidia_modeset" ];
+          };
+
+          # Configure Xorg to use the Nouveau driver
+          services.xserver = {
+            enable = true;
+            videoDrivers = [ "nouveau" "i915" ];
+
+            # Optional: Configure display settings, if necessary
+            # displayManager = {
+            #   ...
+            # };
+            # desktopManager = {
+            #   ...
+            # };
+          };
+
+          # Enable hardware acceleration for Nouveau
+          hardware.opengl = {
+            enable = true;
+            driSupport = true;
+            driSupport32Bit = true;
+            extraPackages = with pkgs; [
+              # Add packages needed for Nouveau acceleration here
+              # For example, Mesa for OpenGL:
+              mesa
+              mesa.drivers
+
+              (
+                if
+                  (lib.versionOlder (lib.versions.majorMinor lib.version)
+                    "23.11")
+                then vaapiIntel
+                else intel-vaapi-driver
+              )
+              intel-media-driver
+              libvdpau
+              libvdpau-va-gl
+            ];
+          };
+          # Additional configurations if required
+          # For example, to manage power settings for Nouveau:
+          # environment.etc."modprobe.d/nouveau.conf".text = ''
+          #   options nouveau modeset=1
+          # '';
+          nixpkgs.config.packageOverrides = pkgs: {
+            vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+          };
+        };
+      };
     };
   };
 }

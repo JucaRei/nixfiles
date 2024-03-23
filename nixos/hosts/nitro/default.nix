@@ -8,7 +8,7 @@
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
     # ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
-    ../../_mixins/hardware/graphics/nvidia/nvidia-specialisation.nix
+    ./nvidia-specialisation.nix
     ../../_mixins/hardware/boot/grub.nix
     ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
@@ -23,7 +23,6 @@
     ../../_mixins/sys/irqbalance.nix
     ../../_mixins/sys/fwupd.nix
     ../../_mixins/sys/thermald.nix
-    #../../_mixins/virtualization/gpu_isolate.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/browser/chromium.nix
