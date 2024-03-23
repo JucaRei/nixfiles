@@ -5,19 +5,9 @@
 , pkgs
 , ...
 }: {
-  imports = [ 
-    # ../apps/terminal/tilix.nix 
+  imports = [
+    # ../apps/terminal/tilix.nix
   ];
-
-  programs = {
-    kdeconnect = {
-      # For GSConnect
-      enable = true;
-      package = pkgs.gnomeExtensions.gsconnect;
-    };
-    calls = { enable = false; };
-    gnupg.agent.pinentryFlavor = "gnome3";
-  };
 
   services = {
     xserver = {
@@ -45,9 +35,9 @@
       gnome-user-share.enable = true;
       gnome-online-accounts.enable = false;
       gnome-initial-setup.enable = false;
-      gnome-browser-connector = {
-        enable = false;
-      };
+      # gnome-browser-connector = {
+      #   enable = false;
+      # };
       gnome-remote-desktop = {
         enable = true;
       };

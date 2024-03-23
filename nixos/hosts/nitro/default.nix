@@ -427,6 +427,7 @@
 
     environment = {
       systemPackages = with pkgs; [
+        vscode-fhs
         librewolf
         btdu
         btrfs-progs
