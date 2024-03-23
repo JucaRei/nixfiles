@@ -427,6 +427,7 @@
 
     environment = {
       systemPackages = with pkgs; [
+        librewolf
         btdu
         btrfs-progs
         compsize

@@ -291,7 +291,7 @@
         nitro = libx.mkHost {
           hostname = "nitro";
           username = "juca";
-          desktop = "gnome";
+          desktop = "budgie";
           # desktop = "hyprland";
           hostid = "ceafb566";
           # isNixOS = true;
