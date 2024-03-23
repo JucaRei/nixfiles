@@ -426,7 +426,7 @@ in
           boot = {
             loader.grub.configurationName = lib.mkForce "Nouveau Graphics";
             # Ensure the Nouveau module is loaded
-            kernelModules = [ "nouveau" ];
+            # kernelModules = [ "nouveau" ];
 
             # Blacklist the proprietary NVIDIA driver, if needed
             blacklistedKernelModules = [ "nvidia" "nvidia_uvm" "nvidia_drm" "nvidia_modeset" ];
@@ -436,7 +436,7 @@ in
           services.xserver = {
             enable = true;
             videoDrivers = [
-              "nouveau"
+              # "nouveau"
 
               # Optional: Enable VA-API (Video Acceleration API) for better video playback performance
               # "modesetting"
