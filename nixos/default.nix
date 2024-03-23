@@ -352,7 +352,7 @@ in
     ] ++ lib.optionals (isInstall && isWorkstation && notVM) [
       quickemu
     ] ++ lib.optionals (isInstall && hasNvidia) [
-      nvtop
+      # unstable.nvtop
       vdpauinfo
     ] ++ lib.optionals (isInstall && !hasNvidia) [
       nvtop-amd

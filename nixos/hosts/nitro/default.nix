@@ -109,8 +109,8 @@
       # Temporary workaround until mwprocapture 4328 patch is merged
       # - https://github.com/NixOS/nixpkgs/pull/221209
       # kernelPackages = pkgs.linuxPackages_zen;
-      kernelPackages = pkgs.linuxPackages_lqx;
-      # kernelPackages = pkgs.linuxPackages_xanmod_stable;
+      # kernelPackages = pkgs.linuxPackages_lqx;
+      kernelPackages = pkgs.linuxPackages_xanmod_latest;
 
       kernelParams = lib.mkForce [
         "nosgx"
