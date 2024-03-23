@@ -87,9 +87,9 @@ in
     };
 
     "org/gnome/desktop/input-sources" = {
-      mru-sources = [ "('xkb', 'br+abnt2')" ];
+      # mru-sources = [ "('xkb', 'br+abnt2')" ];
       per-window = false;
-      sources = [ "(xkb', 'br)" ];
+      sources = "[('xkb', 'br')]";
       xkb-options = [ "terminate:ctrl_alt_bksp" "lv3:ralt_switch" ];
     };
     "com/raggesilver/BlackBox" = {
@@ -151,11 +151,18 @@ in
     };
 
     "org/gnome/desktop/wm/keybindings" = {
-      activate-window-menu = "@as []";
+      # activate-window-menu = "@as []";
+      activate-window-menu = "<Super>space";
       close = [ "<Alt>q" ];
       switch-to-workspace-1 = [ "<Alt>1" "<Control><Alt>Home" "<Super>Home" ];
       maximize = "@as []";
       unmaximize = "@as []";
+      cycle-group = "<Super>F6";
+      cycle-group-backward = "<Shift><Super>F6";
+      cycle-panels = "<Control><Alt>Escape";
+      cycle-panels-backward = "<Shift><Control><Alt>Escape";
+      cycle-windows = "<Super>Escape";
+      cycle-windows-backward = "<Shift><Super>Escape";
       switch-to-workspace-2 = [ "<Alt>2" ];
       switch-to-workspace-3 = [ "<Alt>3" ];
       switch-to-workspace-4 = [ "<Alt>4" ];
@@ -163,12 +170,12 @@ in
       switch-to-workspace-6 = [ "<Alt>6" ];
       switch-to-workspace-7 = [ "<Alt>7" ];
       switch-to-workspace-8 = [ "<Alt>8" ];
-      switch-to-workspace-down = [ "<Alt>Down" ];
-      switch-to-workspace-last = [ "<Alt>End" "<Super>End" ];
-      switch-to-workspace-left = [ "<Alt>Left" "<Super>Page_Up" ];
-      switch-to-workspace-right = [ "<Alt>Right" "<Super>Page_Down" ];
+      switch-to-workspace-down = [ "<Super>Down" ];
+      switch-to-workspace-last = [ "<Super>End" "<Super>End" ];
+      switch-to-workspace-left = [ "<Super>Left" "<Super>Page_Up" ];
+      switch-to-workspace-right = [ "<Super>Right" "<Super>Page_Down" ];
       toggle-fullscreen = [ "<Alt>f" ];
-      switch-to-workspace-up = [ "<Alt>Up" ];
+      switch-to-workspace-up = [ "<Super>Up" ];
       move-to-workspace-1 = [ "<Shift><Alt>1" ];
       move-to-workspace-2 = [ "<Shift><Alt>2" ];
       move-to-workspace-3 = [ "<Shift><Alt>3" ];
@@ -177,11 +184,11 @@ in
       move-to-workspace-6 = [ "<Shift><Alt>6" ];
       move-to-workspace-7 = [ "<Shift><Alt>7" ];
       move-to-workspace-8 = [ "<Shift><Alt>8" ];
-      move-to-workspace-down = [ "<Shift><Alt>Down" ];
-      move-to-workspace-last = [ "<Shift><Alt>End" ];
-      move-to-workspace-left = [ "<Shift><Alt>Left" "<Shift><Alt>Page_Up" ];
-      move-to-workspace-right = [ "<Alt>Right" "<Shift>Page_Down" ];
-      move-to-workspace-up = [ "<Alt>Up" ];
+      move-to-workspace-down = [ "<Shift><Super>Down" ];
+      move-to-workspace-last = [ "<Shift><Super>End" ];
+      move-to-workspace-left = [ "<Shift><Super>Left" "<Shift><Super>Page_Up" ];
+      move-to-workspace-right = [ "<Super>Right" "<Super>Page_Down" ];
+      move-to-workspace-up = [ "<Super>Up" ];
       # Disable maximise/unmaximise because tiling-assistant extension handles it
       # toggle-fullscreen = ["<super>f"];
       # unmaximize = ["@as []"];
@@ -229,11 +236,11 @@ in
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
-      home = [ "<Alt>e" ];
-      search = [ "<Alt>space" ];
-      control-center = [ "<Control><Alt>s" ];
-      www = [ "<Alt>b" ];
-      calculator = [ "<Alt>c" ];
+      home = [ "<Super>e" ];
+      search = [ "<Super>space" ];
+      control-center = [ "<Super>s" ];
+      www = [ "<Super>b" ];
+      calculator = [ "<Super>c" ];
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
       ];
@@ -322,48 +329,48 @@ in
       night = "Adwaita-dark";
     };
 
-    "org/gnome/shell/extensions/tiling-assistant" =
-      {
-        activate-layout0 = "@as [ ]";
-        activate-layout1 = "@as []";
-        activate-layout2 = "@as []";
-        activate-layout3 = "@as []";
-        active-window-hint = 1;
-        active-window-hint-color = "rgb(53,132,228)";
-        auto-tile = "@as []";
-        center-window = "@as []";
-        debugging-free-rects = "@as []";
-        debugging-show-tiled-rects = "@as []";
-        default-move-mode = 0;
-        dynamic-keybinding-behavior = 1;
-        import-layout-examples = false;
-        last-version-installed = 44;
-        restore-window = [ "<Super>Down" ];
-        search-popup-layout = "@as []";
-        tile-bottom-half = [ "<Super>KP_2" ];
-        tile-bottom-half-ignore-ta = "@as []";
-        tile-bottomleft-quarter = [ "<Super>KP_1" ];
-        tile-bottomleft-quarter-ignore-ta = "@as []";
-        tile-bottomright-quarter = [ "<Super>KP_3" ];
-        tile-bottomright-quarter-ignore-ta = "@as []";
-        tile-edit-mode = "@as []";
-        tile-left-half = [ "<Super>Left" "<Super>KP_4" ];
-        tile-left-half-ignore-ta = "@as []";
-        tile-maximize = [ "<Super>Up" "<Super>KP_5" ];
-        tile-maximize-horizontally = "@as []";
-        tile-maximize-vertically = "@as []";
-        tile-right-half = [ "<Super>Right" "<Super>KP_6" ];
-        tile-right-half-ignore-ta = "@as []";
-        tile-top-half = [ "<Super>KP_8" ];
-        tile-top-half-ignore-ta = "@as []";
-        tile-topleft-quarter = [ "<Super>KP_7" ];
-        tile-topleft-quarter-ignore-ta = "@as []";
-        tile-topright-quarter = [ "<Super>KP_9" ];
-        tile-topright-quarter-ignore-ta = "@as []";
-        tiling-popup-all-workspace = false;
-        toggle-always-on-top = "@as []";
-        toggle-tiling-popup = "@as []";
-      };
+    # "org/gnome/shell/extensions/tiling-assistant" =
+    #   {
+    #     activate-layout0 = "@as [ ]";
+    #     activate-layout1 = "@as []";
+    #     activate-layout2 = "@as []";
+    #     activate-layout3 = "@as []";
+    #     active-window-hint = 1;
+    #     active-window-hint-color = "rgb(53,132,228)";
+    #     auto-tile = "@as []";
+    #     center-window = "@as []";
+    #     debugging-free-rects = "@as []";
+    #     debugging-show-tiled-rects = "@as []";
+    #     default-move-mode = 0;
+    #     dynamic-keybinding-behavior = 1;
+    #     import-layout-examples = false;
+    #     last-version-installed = 44;
+    #     restore-window = [ "<Super>Down" ];
+    #     search-popup-layout = "@as []";
+    #     tile-bottom-half = [ "<Super>KP_2" ];
+    #     tile-bottom-half-ignore-ta = "@as []";
+    #     tile-bottomleft-quarter = [ "<Super>KP_1" ];
+    #     tile-bottomleft-quarter-ignore-ta = "@as []";
+    #     tile-bottomright-quarter = [ "<Super>KP_3" ];
+    #     tile-bottomright-quarter-ignore-ta = "@as []";
+    #     tile-edit-mode = "@as []";
+    #     tile-left-half = [ "<Super>Left" "<Super>KP_4" ];
+    #     tile-left-half-ignore-ta = "@as []";
+    #     tile-maximize = [ "<Super>Up" "<Super>KP_5" ];
+    #     tile-maximize-horizontally = "@as []";
+    #     tile-maximize-vertically = "@as []";
+    #     tile-right-half = [ "<Super>Right" "<Super>KP_6" ];
+    #     tile-right-half-ignore-ta = "@as []";
+    #     tile-top-half = [ "<Super>KP_8" ];
+    #     tile-top-half-ignore-ta = "@as []";
+    #     tile-topleft-quarter = [ "<Super>KP_7" ];
+    #     tile-topleft-quarter-ignore-ta = "@as []";
+    #     tile-topright-quarter = [ "<Super>KP_9" ];
+    #     tile-topright-quarter-ignore-ta = "@as []";
+    #     tiling-popup-all-workspace = false;
+    #     toggle-always-on-top = "@as []";
+    #     toggle-tiling-popup = "@as []";
+    #   };
 
     "org/gnome/shell/extensions/user-theme" = {
       name = "Nordic-bluish-accent";
