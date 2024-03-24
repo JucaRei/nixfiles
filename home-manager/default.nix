@@ -125,11 +125,10 @@ in
         # use-cgroups = if isLinux then true else false;
         # build-users-group = "nixbld";
         builders-use-substitutes = true;
-        # sandbox =
-        #   if isDarwin
-        #   then true
-        #   else false; #relaxed
-        sandbox = true;
+        sandbox =
+          if isDarwin
+          then true
+          else false; #relaxed
 
         # Avoid unwanted garbage collection when using nix-direnv
         # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
