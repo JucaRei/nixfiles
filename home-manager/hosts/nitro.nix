@@ -1,8 +1,4 @@
-{ config
-, lib
-, pkgs
-, ...
-}:
+{ config, lib, pkgs, test ? import ../_mixins/config/testing/test.nix, ... }:
 with lib.hm.gvariant; {
   imports = [
     # ../_mixins/console/neovim.nix
@@ -59,7 +55,12 @@ with lib.hm.gvariant; {
       #   options = "grp:alt_shift_toggle";
       #   variant = "abnt2";
       # };
+
+      file.".config/testingFOLDER/testing.txt".text = ''
+        ${test.name}
+      '';
     };
+
     dconf.settings = {
       # "org/gnome/desktop/interface" = {
       #   show-battery-percentage = true;
