@@ -1,11 +1,4 @@
 { pkgs, lib, config, ... }@args:
-let
-  inherit (config.colorScheme) palette;
-  _ = lib.getExe;
-  launcher = "${_ pkgs.fuzzel}";
-  powermenu = "${_ pkgs.wlogout}";
-in
-
 {
   imports = [
     ### Enable immutable vscode settings
@@ -24,7 +17,7 @@ in
       mutableExtensionsDir = true;
       enableUpdateCheck = false;
 
-      userSettings = import ../../../config/vscode/settings-test.nix args;
+      userSettings = import ../../../config/vscode/settings.nix args;
 
       extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
