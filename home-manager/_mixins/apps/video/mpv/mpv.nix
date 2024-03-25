@@ -2,7 +2,7 @@
 
 {
   imports = [ ./mpv-config.nix ];
-  home.packages = pkgs.mpv;
+  home.packages = with pkgs; [ mpv ];
 
   # Xdg entries
   xdg = {

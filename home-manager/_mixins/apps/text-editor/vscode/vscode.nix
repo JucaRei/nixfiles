@@ -54,7 +54,7 @@ in
           name = "better-nix-syntax";
           publisher = "jeff-hykin";
           version = "1.1.5";
-          sha256 = "sha256-vqfhUIjFBf9JvmxB4QFrZH4KMhxamuYjs5n9VyW/BiI=";
+          sha256 = "sha256-9V+ziWk9V4LyQiVNSC6DniJDun+EvcK30ykPjyNsvp0=";
         }
         {
           name = "color-highlight-css-color-4";
@@ -67,7 +67,7 @@ in
           name = "macos-modern-theme";
           publisher = "davidbwaters";
           version = "2.3.19";
-          sha256 = "sha256-2/x078M1wi4/F9aVpHQTgWKdDnEHqXKea+tsNw7YyBo=";
+          sha256 = "sha256-/gpGu3vvomQA0TC+TBJkBe2AFWimIyiMM5fndYF8G/A=";
         }
         {
           name = "color-picker";
@@ -80,7 +80,7 @@ in
           name = "simple-icons";
           publisher = "Comdec";
           version = "0.1.6";
-          sha256 = "sha256-28tSGWdtQVu0I34DQBl1CicEqQHP37dS//FH9sTaECY=";
+          sha256 = "sha256-OSsVdJyG7Mi4ltza40LvmyDZF/hMmVZENfJkaBzVcWw=";
         }
         {
           # name = "vscode-projects";
@@ -108,21 +108,21 @@ in
           name = "separators";
           publisher = "alefragnani";
           version = "2.6.1";
-          sha256 = "sha256-N3E1bzNEpqwDTGwPD0A/VGQnryDtHjEnRcKvwi1upp4=";
+          sha256 = "sha256-JTFD6TGt4C3ctm+2ckTzqje2M/SiK7xshr1Hf9rQkFA=";
         }
         {
           name = "vscode-thunder-client";
           publisher = "rangav";
           version = "2.20.0";
           # sha256 = lib.fakeSha256;
-          sha256 = "sha256-EkwhzeNVOsaXv3Fmox3yGacw0PxlfHVysWyTG7iPRrg=";
+          sha256 = "sha256-JIf065o7oL51L19DdkFa/brQyDQU76AwlzbkIC911tU=";
         }
         {
           name = "reload";
           publisher = "natqe";
           version = "0.0.7";
           # sha256 = lib.fakeSha256;
-          sha256 = "sha256-bTFLk3sCJb7ztkC/Cxci6n7RbcyNjEYNKREUf9wDQRU=";
+          sha256 = "sha256-j0Dj7YiawhPAMHe8wk8Ph4vo26IneidoGJ4C9O7Z/64=";
         }
         {
           name = "git-graph";
@@ -135,28 +135,28 @@ in
           name = "codesnap";
           publisher = "adpyke";
           version = "1.3.4";
-          sha256 = "sha256-SbfsD28gaVHAmJskUuc1Q8kA47jrVa3OO5Ur7ULk3jI=";
+          sha256 = "sha256-dR6qODSTK377OJpmUqG9R85l1sf9fvJJACjrYhSRWgQ=";
         }
         {
           name = "remote-ssh";
           publisher = "ms-vscode-remote";
           version = "0.111.2024032515";
           # sha256 = lib.fakeSha256;
-          sha256 = "sha256-pRdcEyApccS+A/8zgmzM3wSJcBx2P/BAK2ggbO2v4+A=";
+          sha256 = "sha256-MZ0ntoB20xTum+WQSwc29JS1UINoxImyU0orGzN0IP0=";
         }
         {
           name = "remote-containers";
           publisher = "ms-vscode-remote";
           version = "0.352.0";
           # sha256 = lib.fakeSha256;
-          sha256 = "sha256-mhNp7mAxcf/3wMeMTMiYyEtlY+KgSx9BZutTdtgB5dY=";
+          sha256 = "sha256-bLkMJcC4IS9fAIzEKBtjUkqAzKQUGrGpp/LR1Ak81A4=";
         }
         {
           name = "vscode-remote-extensionpack";
           publisher = "ms-vscode-remote";
           version = "0.25.0";
           # sha256 = lib.fakeSha256;
-          sha256 = "sha256-6v4JWpyMxqTDIjEOL3w25bdTN+3VPFH7HdaSbgIlCmo=";
+          sha256 = "sha256-CleLZvH40gidW6fqonZv/E/VO8IDI+QU4Zymo0n35Ns=";
         }
         {
           name = "darker-plus-material-red";
@@ -169,7 +169,7 @@ in
           name = "beardedicons";
           publisher = "beardedbear";
           version = "1.18.0";
-          sha256 = "sha256-PpIut/yhUNK1eTPRvVXONt06TOXpoGgmd6lrhFdADRQ";
+          sha256 = "sha256-m8utv500Xk6jLI5ndNfiOoPZfyJcLC2XuNwLdC9J+6w=";
         }
         {
           name = "linux-desktop-file";
@@ -182,7 +182,7 @@ in
           publisher = "RedCrafter07";
           version = "0.0.3";
           # sha256 = lib.fakeSha256;
-          sha256 = "sha256-JLxVOPNJEythpA8K1aa/d1TcG1rWfV4yMl3bcXCu+KE=";
+          sha256 = "sha256-zGQaQDusiEhuvqGd5AqSpTYKpuaGR2WJr5XpPbESzeU=";
         }
       ];
     };

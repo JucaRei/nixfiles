@@ -10,7 +10,7 @@
     "--userns=keep-id"
   ],
   "docker.composeCommand": "podman-compose",
-  "docker.dockerPath": "/nix/store/8cwdz6lf63qk0aryxfv0zc9vbm54g2a8-podman-4.7.2/bin/podman",
+  "docker.dockerPath": "podman",
   "docker.environment": {
     "DOCKER_HOST": "unix:///run/user/1000/podman/podman.sock"
   },
@@ -116,8 +116,8 @@
     "MD041": false
   },
   "nix.enableLanguageServer": true,
-  "nix.formatterPath": "/nix/store/g7iw89kgcf1y1cy6ilwhbn38l91mm95a-nixpkgs-fmt-1.3.0/bin/nixpkgs-fmt",
-  "nix.serverPath": "/nix/store/id7c0a8ximrcm9p8gxcc0yqsgkmjawg2-nil-2023-08-09/bin/nil",
+  "nix.formatterPath": "nixpkgs-fmt",
+  "nix.serverPath": "nil",
   "nix.serverSettings": {
     "nil": {
       "diagnostics": {
@@ -128,7 +128,7 @@
       },
       "formatting": {
         "command": [
-          "/nix/store/g7iw89kgcf1y1cy6ilwhbn38l91mm95a-nixpkgs-fmt-1.3.0/bin/nixpkgs-fmt"
+          "nixpkgs-fmt"
         ]
       }
     }

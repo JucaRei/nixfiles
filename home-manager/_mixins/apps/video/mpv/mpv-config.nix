@@ -107,7 +107,7 @@
             g cycle interpolation                                                                       #! Video > Interpolation
             # script-binding uosc/video                                                                 #! Video > Select Video Track
 
-            F1 af toggle "lavfi=[loudnorm=I=-14:TP=-3:LRA=4]" ; show-text "${af}"                       #! Audio > Dialogue
+            F1 af toggle "lavfi=[loudnorm=I=-14:TP=-3:LRA=4]" ; show-text "$\{af}"                       #! Audio > Dialogue
             # af clr ""                                                                                 #! Audio > Clear Filters
             # script-binding afilter/toggle-eqr                                                         #! Audio > Toggle Equalizer
             a cycle audio-normalize-downmix                                                             #! Audio > Toggle Normalize
