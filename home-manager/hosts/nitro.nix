@@ -6,16 +6,17 @@
 with lib.hm.gvariant; {
   imports = [
     # ../_mixins/console/neovim.nix
-    ../_mixins/apps/video/mpv.nix
+    ../_mixins/apps/video/mpv/mpv.nix
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix
     ../_mixins/console/yt-dlp.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
+    ../_mixins/apps/text-editor/vscode/vscode.nix
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix
-    ../_mixins/apps/browser/firefox/librewolf.nix
+    # ../_mixins/apps/browser/firefox/librewolf.nix
     # ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
   ];
@@ -32,15 +33,15 @@ with lib.hm.gvariant; {
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
         # vlc
-        cloneit
-        unstable.vscode-fhs
+        # cloneit
+        # unstable.vscode-fhs
         #unstable.vscode-with-extensions
         # deezer-gui
         # fantezy
         # gcc
         # gnumake
-        transmission_4-gtk
-        lua
+        # transmission_4-gtk
+        # lua
         # fcitx5-with-addons
         # vv
         # gparted
