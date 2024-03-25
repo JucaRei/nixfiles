@@ -18,7 +18,7 @@ in
   "window.menuBarVisibility" = "toggle";
   # "window.nativeTabs" = "true";
   "window.commandCenter" = false; # disable, just use ctrl + p
-  "window.zoomLevel" = 1;
+  "window.zoomLevel" = 0.3;
   "window.density.editorTabHeight" = "compact";
 
   ################
@@ -78,7 +78,7 @@ in
   "editor.lineNumbers" = "on";
   "editor.cursorBlinking" = "smooth";
   "editor.cursorSmoothCaretAnimation" = "on";
-  "editor.cursorSurroundingLines" = 1.4;
+  "editor.cursorSurroundingLines" = "1.4";
   "editor.cursorSurroundingLinesStyle" = "all";
   "editor.cursorWidth" = 2;
   "editor.tabsize" = 1.5;
@@ -110,11 +110,11 @@ in
   #######################
   ### Podman | Docker ###
   #######################
-  "docker.environment" = {
-    "DOCKER_HOST" = "unix:///run/user/1000/podman/podman.sock";
-  };
-  "docker.composeCommand" = "podman-compose";
-  "docker.dockerPath" = "${_ pkgs.podman}";
+  # "docker.environment" = {
+  #   "DOCKER_HOST" = "unix:///run/user/1000/podman/podman.sock";
+  # };
+  # "docker.composeCommand" = "podman-compose";
+  # "docker.dockerPath" = "${_ pkgs.podman}";
 
   ######################
   ### Dev Containers ###
