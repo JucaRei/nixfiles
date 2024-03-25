@@ -24,9 +24,9 @@
       ################
       ### Terminal ###
       ################
-      "terminal.integrated.shell.linux" = "${pkgs.bash}/bin/bash";
+      # "terminal.integrated.shell.linux" = "${pkgs.bash}/bin/bash";
       # "terminal.integrated.shell.linux" = "${pkgs.zsh}/bin/zsh";
-      # "terminal.integrated.shell.linux" = "${pkgs.fish}/bin/fish";
+      "terminal.integrated.shell.linux" = "${pkgs.fish}/bin/fish";
       "terminal.integrated.cursorBlinking" = true;
       "terminal.integrated.cursorStyle" = "line";
       "terminal.integrated.cursorWidth" = 2;
@@ -70,7 +70,7 @@
       "editor.find.autoFindInSelection" = "multiline";
       "editor.quickSuggestions.comments" = "on";
       "editor.minimap.renderCharecters" = false;
-      "editor.minimap.maxColumn" = 90;
+      "editor.minimap.maxColumn" = 100;
       "editor.minimap.autohide" = true;
       "editor.roundedSelection" = true;
       "editor.renderWhitespace" = "trailing";
@@ -136,7 +136,7 @@
       "workbench.settings.enableNaturalLanguageSearch" = true;
       "workbench.list.smoothScrolling" = true;
       "workbench.smoothScrolling" = true;
-      "workbench.productIconTheme" = "bootstrap-product-icons";
+      "workbench.productIconTheme" = "macos-modern";
       "workbench.tree.indent" = 4;
       "workbench.settings.editor" = "ui";
 

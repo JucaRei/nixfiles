@@ -1,8 +1,5 @@
-moduleConfig: {
-  lib,
-  pkgs,
-  ...
-}:
+moduleConfig: { lib, pkgs, ... }:
+
 with lib; {
   options.services.vscode-server.enable = with types;
     mkEnableOption "VS Code Server";

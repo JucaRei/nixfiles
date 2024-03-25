@@ -1,9 +1,15 @@
+{ config, lib, pkgs, ... }:
+with lib; let
+  cfg = config.services.flameshot;
+in
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+  options.services.flameshot = {
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+    };
+  };
+
   config = lib.mkIf (config.xsession.enable) {
     # Only evaluate code if using X11
     services = {

@@ -13,7 +13,7 @@ with lib.hm.gvariant;
     # ../_mixins/apps/terminal/alacritty.nix
     ../_mixins/console/bash.nix
     # ../_mixins/apps/browser/firefox/librewolf.nix
-    ../_mixins/apps/video/mpv.nix
+    ../_mixins/apps/video/mpv/mpv-config.nix
     ../_mixins/non-nixos
     # ../_mixins/apps/tools/zathura.nix
     # ../_mixins/desktop/bspwm/themes/default

@@ -1,8 +1,17 @@
-{ config, ... }:
+{ config, lib, ... }:
+with lib;
 let
   torrent = "transmission-gtk.desktop";
+  cfg = config.services.transmission;
 in
 {
+  options.services.nonNixOs = {
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+    };
+  };
+
   config = {
     # networking.firewall.allowedTCPPorts = [ 9091 ];
     services.transmission = {

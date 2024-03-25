@@ -1,9 +1,4 @@
-{ lib
-, config
-, hostname
-, pkgs
-, ...
-}: {
+{ lib, pkgs, ... }: {
   home.shellAliases = {
     ### Nix ###
     # rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
