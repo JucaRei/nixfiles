@@ -30,6 +30,7 @@ with lib.hm.gvariant; {
   config = {
     home = {
       packages = with pkgs; [
+        spotdl
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
         # vlc

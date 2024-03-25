@@ -94,6 +94,9 @@
     iosevka-q = prev.iosevka-q;
     catppuccin-grub = prev.catppuccin-grub;
     cyberre-grub-theme = prev.cyberre-grub-theme;
+    spotdl = prev.spotdl {
+      buildPythonApplication = prev.python311Packages.buildPythonApplication;
+    };
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

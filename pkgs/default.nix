@@ -24,6 +24,7 @@
   # uxplay = pkgs.callPackage ./tools/uxplay { };
   # altserver-linux = pkgs.callPackage ./tools/altserver-linux { };
   # smartmon-script = pkgs.callPackage ./scripts/smartmon-script { };
+  spotdl = pkgs.callPackage ./tools/spotdl { };
 
   ################
   ### AI Tools ###
