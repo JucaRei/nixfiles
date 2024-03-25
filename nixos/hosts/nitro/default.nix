@@ -72,8 +72,6 @@
         # useTmpfs = true;
         cleanOnBoot = true;
       };
-      supportedFilesystems = [ "vfat" "btrfs" ];
-
       kernelModules = [
         "kvm-intel"
         "z3fold"

@@ -17,11 +17,14 @@ in
       baobab
       gnome-console
       gnome-text-editor
+      evolutionWithPlugins
     ]) ++
     (with pkgs.gnome; [
+      gnome-maps
       geary
       gnome-music
       yelp
+      gnome-characters
       gnome-terminal
       gnome-disk-utility
       gnome-system-monitor
@@ -34,6 +37,7 @@ in
       atomix # puzzle game
       gnome-initial-setup
       totem
+    ]) ++ (with pkgs; [
     ]);
 
     mate.excludePackages = with pkgs.mate; [
@@ -72,13 +76,13 @@ in
       ] ++ lib.optionals (isWorkstation && desktop == "gnome") [
         blackbox-terminal
         gnome-extension-manager
-        gnomeExtensions.start-overlay-in-application-view
-        gnomeExtensions.tiling-assistant
+        # gnomeExtensions.start-overlay-in-application-view
+        # gnomeExtensions.tiling-assistant
         gnomeExtensions.vitals
       ]) ++ (with pkgs.unstable; lib.optionals
         (isWorkstation) [
-        fractal
-        pika-backup
+        # fractal
+        # pika-backup
         # telegram-desktop
       ]);
   };

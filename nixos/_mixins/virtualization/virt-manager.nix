@@ -25,7 +25,7 @@ in
     users.${username}.extraGroups = [
       "qemu-libvirtd"
       "libvirtd"
-      # "disk"
+      "disk"
     ];
   };
   # nixos 23.11
@@ -129,8 +129,8 @@ in
     #   DEVPATH=="/devices/pci0000:00/0000:00:1f.2/host4/*", ENV{UDISKS_SYSTEM}="0"
     #   ENV{ID_SERIAL_SHORT}=="WDC_WD10SPZX-21Z10T0_WD-WX61AA92ZH86", ENV{UDISKS_AUTO}="1", ENV{UDISKS_SYSTEM}="0"
     # '';
-    qemuGuest = {
-      enable = true;
-    };
+    # qemuGuest = {
+    #   enable = true;
+    # };
   };
 }

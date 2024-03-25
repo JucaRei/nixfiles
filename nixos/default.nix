@@ -287,7 +287,8 @@ in
   ###################
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    keyMap = if (hostname == "nitro") then "br-abnt2" else "us";
+    # keyMap = if (hostname == "nitro") then "br-abnt2" else "us";
+    keyMap = if (hostname == "nitro") then "br" else "us";
     packages = with pkgs; [ tamzen ];
   };
 
@@ -378,6 +379,8 @@ in
 
     shellAliases = {
       system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
+      rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles --show-trace -L";
+      rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles --show-trace -L";
       sxorg = "export DISPLAY=:0.0";
       du = "${pkgs.ncdu_1}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
       drivers = "lspci -v | grep -B8 -v 'Kernel modules: [a-z0-9]+'";

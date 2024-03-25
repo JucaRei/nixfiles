@@ -1,7 +1,6 @@
-{
-  pkgs,
-  lib ? pkgs.lib,
-  ...
+{ pkgs
+, lib ? pkgs.lib
+, ...
 } @ args: {
   programs.vscode = {
     userSettings = {
@@ -63,7 +62,7 @@
       "editor.fontWeight" = 500;
       "editor.scrollbar.horizontal" = "auto";
       "editor.scrollbar.vertical" = "auto";
-      "editor.rulers" = [80 120];
+      "editor.rulers" = [ 80 120 ];
       "editor.cursorStyle" = "line";
       "editor.lineHeight" = 1.8;
       "editor.suggestSelection" = "first";
@@ -120,8 +119,8 @@
       ######################
       ### Dev Containers ###
       ######################
-      "dev.containers.runArgs" = ["--userns=keep-id"];
-      "dev.containers.containerEnv" = {"HOME" = "home/node";};
+      "dev.containers.runArgs" = [ "--userns=keep-id" ];
+      "dev.containers.containerEnv" = { "HOME" = "home/node"; };
 
       #################
       ### Workbench ###
@@ -213,14 +212,14 @@
         #   };
         # };
         "nil" = {
-          "diagnostics" = {"ignored" = ["unused_binding" "unused_with"];};
+          "diagnostics" = { "ignored" = [ "unused_binding" "unused_with" ]; };
           "formatting" = {
             # "command" = [ "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt" ];
-            "command" = ["${pkgs.nixfmt}/bin/nixfmt"];
+            "command" = [ "${pkgs.nixfmt}/bin/nixfmt" ];
           };
         };
       };
-      "[nix]" = {"editor.defaultFormatter" = "jnoortheen.nix-ide";};
+      "[nix]" = { "editor.defaultFormatter" = "jnoortheen.nix-ide"; };
 
       ################
       ### Security ###

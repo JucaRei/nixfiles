@@ -87,10 +87,10 @@ in
     };
 
     "org/gnome/desktop/input-sources" = {
-      # mru-sources = [ "('xkb', 'br+abnt2')" ];
+      mru-sources = [ (mkTuple [ "xkb" "br+abnt2" ]) ];
       per-window = false;
-      sources = "[('xkb', 'br')]";
-      xkb-options = [ "terminate:ctrl_alt_bksp" "lv3:ralt_switch" ];
+      sources = [ (mkTuple [ "xkb" "br" ]) ];
+      xkb-options = [ "terminate:ctrl_alt_bksp" ];
     };
     "com/raggesilver/BlackBox" = {
       theme-dark = "Dracula";
@@ -132,7 +132,7 @@ in
     };
 
     "org/gnome/desktop/session" = {
-      idle-delay = "mkInt32 900";
+      idle-delay = mkInt32 "900";
     };
 
     # "org/gnome/system/location" = {
@@ -264,7 +264,7 @@ in
       show-map = true;
       show-right-margin = true;
       style-scheme = "builder-dark";
-      tab-width = "mkInt32 4";
+      tab-width = mkInt32 "4";
       use-system-font = false;
     };
 
