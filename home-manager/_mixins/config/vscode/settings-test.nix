@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib ? pkgs.lib, ... }:
 let
   _ = lib.getExe;
   terminal = "${_ pkgs.fish}";
