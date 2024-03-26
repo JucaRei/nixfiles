@@ -1,10 +1,6 @@
 # Gnome configuration
 #
-{ config
-, lib
-, pkgs
-, ...
-}: {
+{ config, lib, pkgs, ... }: {
   imports = [
     # ../apps/terminal/tilix.nix
   ];
@@ -46,6 +42,8 @@
       };
     };
   };
+
+  programs.evolution.enable = false;
 
   security.pam.services.gdm.enableGnomeKeyring = true;
 

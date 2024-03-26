@@ -1,4 +1,3 @@
-{}:
 rec {
   name = "testing CHECK???";
 }

@@ -1,4 +1,4 @@
-{ test ? import ./test.nix, ... }:
+{ test }:
 with test;
 {
   home.file.text = ''

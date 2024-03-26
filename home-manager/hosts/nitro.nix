@@ -1,5 +1,10 @@
-{ config, lib, pkgs, test ? import ../_mixins/config/testing/test.nix, ... }:
-with lib.hm.gvariant; {
+{ config, lib, pkgs, ... }:
+with lib.hm.gvariant;
+let
+  testing = import ../_mixins/config/testing/test.nix { name = "iT Works"; };
+in
+with test;
+{
   imports = [
     # ../_mixins/console/neovim.nix
     ../_mixins/apps/video/mpv/mpv.nix
@@ -26,7 +31,7 @@ with lib.hm.gvariant; {
   config = {
     home = {
       packages = with pkgs; [
-        spotdl
+        # spotdl
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
         # vlc
@@ -56,9 +61,9 @@ with lib.hm.gvariant; {
       #   variant = "abnt2";
       # };
 
-      file.".config/testingFOLDER/testing.txt".text = ''
-        ${test.name}
-      '';
+      # file.".config/testingFOLDER/testing.txt".text = ''
+      #   ${testing}
+      # '';
     };
 
     dconf.settings = {

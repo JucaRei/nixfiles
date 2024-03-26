@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }: {
   home = {
     packages = with pkgs; [
       # alejandra
@@ -13,6 +13,7 @@
       nix-du
       nix-tree
       nixpkgs-fmt
+      # inputs.chaotic.packages.${pkgs.system}.nixfmt_rfc166
       nurl
       nil
       # nixd
