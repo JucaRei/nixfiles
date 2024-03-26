@@ -43,7 +43,7 @@
     };
   };
 
-  programs.evolution.enable = false;
+  programs.evolution.enable = lib.mkForce false;
 
   security.pam.services.gdm.enableGnomeKeyring = true;
 

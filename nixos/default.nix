@@ -86,7 +86,7 @@ in
         "repl-flake"
       ];
       allowed-users = [ "root" "@wheel" ];
-      # trusted-users = [ "root" "@wheel" ];
+      trusted-users = [ "root" "@wheel" ];
       # builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
 
       # Avoid unwanted garbage collection when using nix-direnv
@@ -721,6 +721,22 @@ in
         });
       '';
     };
+
+    # Increase open file limit for sudoers
+    pam.loginLimits = [
+      {
+        domain = "@wheel";
+        item = "nofile";
+        type = "soft";
+        value = "524288";
+      }
+      {
+        domain = "@wheel";
+        item = "nofile";
+        type = "hard";
+        value = "1048576";
+      }
+    ];
   };
 
   hardware = {
