@@ -275,15 +275,14 @@ in
       driSupport = true;
       driSupport32Bit = if (hostname == "nitro") then true else false;
       extraPackages =
-        if (hostname == "nitro") then
-          (with pkgs; [
-            intel-media-driver
-            # nvidia-vaapi-driver
-            libvdpau
-            libvdpau-va-gl
-          ]) else "";
+        lib.mkIf (hostname == "nitro") (with pkgs; [
+          intel-media-driver
+          # nvidia-vaapi-driver
+          libvdpau
+          libvdpau-va-gl
+        ]);
       extraPackages32 =
-        if (hostname == "nitro") then
+        lib.mkIf (hostname == "nitro")
           (with pkgs.pkgsi686Linux;
           [
             # intel-media-driver
@@ -291,7 +290,7 @@ in
             vaapiVdpau
             libvdpau-va-gl
             #  libva
-          ]) else "";
+          ]);
     };
 
     # openrazer = lib.mkIf (hasRazerPeripherals) {
