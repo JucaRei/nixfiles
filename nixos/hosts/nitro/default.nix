@@ -425,6 +425,7 @@
         btrfs-progs
         compsize
         cloneit
+        gparted
         # unstable.stacer
         lm_sensors
         #thorium

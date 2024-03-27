@@ -100,14 +100,14 @@ in
       warn-dirty = false;
     };
 
-    system-features = [
-      # Allows building v3/v4 packages
-      # "gccarch-x86-64-v3"
-      # "gccarch-x86-64-v4"
-      "kvm"
-      "big-parallel"
-      "nixos-test"
-    ];
+    # system-features = [
+    ## Allows building v3/v4 packages
+    # "gccarch-x86-64-v3"
+    # "gccarch-x86-64-v4"
+    # "kvm"
+    # "big-parallel"
+    # "nixos-test"
+    # ];
 
     extraOptions =
       ''
