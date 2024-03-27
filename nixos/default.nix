@@ -639,9 +639,9 @@ in
         };
       };
       xkb = {
-        layout = if hostname == "nitro" then "br" else "us";
-        model = if hostname == "nitro" then "pc105" else "pc104";
-        variant = if hostname == "nitro" then "abnt2" else "mac";
+        layout = if (hostname == "nitro") then "br" else "us";
+        model = if (hostname == "nitro") then "pc105" else "pc104";
+        variant = if (hostname == "nitro") then "abnt2" else "mac";
       };
       exportConfiguration = true;
     };
