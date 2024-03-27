@@ -15,8 +15,9 @@
     # ../../_mixins/virtualization/quickemu.nix
     ../../_mixins/services/security/sudo.nix
     # ../../_mixins/virtualization/k8s.nix
-    ../../_mixins/virtualization/virt-manager.nix
-    ../../_mixins/virtualization/passthrought.nix
+    # ../../_mixins/virtualization/virt-manager.nix
+    # ../../_mixins/virtualization/passthrought.nix
+    ../../_mixins/virtualization/virtual-manager/testing.nix
     ../../_mixins/sys/ananicy.nix
     ../../_mixins/sys/psd.nix
     ../../_mixins/sys/dbus-broker.nix
@@ -438,6 +439,8 @@
     };
 
     services = {
+      virtualisation.kvm.enable = true;
+
       acpid = {
         enable = true;
       };

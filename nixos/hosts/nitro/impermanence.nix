@@ -1,8 +1,4 @@
-{ config
-, lib
-, inputs
-, ...
-}:
+{ config, lib, inputs, ... }:
 {
   imports = [ inputs.impermanence.nixosModules.impermanence ];
 
@@ -23,8 +19,22 @@
       ++ lib.optionals config.virtualisation.podman.enable [ "/var/lib/podman" ]
       ++ lib.optionals config.mine.dnscrypt.enable [ "/var/lib/dnscrypt-proxy2" ]
       ++ lib.optionals config.services.jellyfin.enable [ "/var/lib/jellyfin" ]
-      ++ lib.optionals config.mine.greetd.enable [ "/var/cache/regreet" ];
-    files = [ "/etc/machine-id" ];
+      ++ lib.optionals config.mine.greetd.enable [ "/var/cache/regreet" ]
+      ++ lib.optionals config.networking.networkmanager.enable [
+        "/etc/NetworkManager/system-connections"
+        "/var/lib/NetworkManager"
+      ]
+      ++ lib.optionals config.services.openssh.enable [
+        # keep ssh fingerprints stable
+        /etc/ssh/ssh_host_ed25519_key
+        /etc/ssh/ssh_host_ed25519_key.pub
+        /etc/ssh/ssh_host_rsa_key
+        /etc/ssh/ssh_host_rsa_key.pub
+      ];
+    files = [
+      "/etc/machine-id"
+      "/etc/adjtime"
+    ];
   };
 
   systemd.tmpfiles.rules = [

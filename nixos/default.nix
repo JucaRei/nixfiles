@@ -72,7 +72,11 @@ in
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+    # nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+
+    # Add nixpkgs input to NIX_PATH
+    # This lets nix2 commands still use <nixpkgs>
+    nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
 
     optimise.automatic = true;
     package = lib.mkIf (isInstall) pkgs.unstable.nix;
@@ -95,6 +99,15 @@ in
       # keep-going = false;
       warn-dirty = false;
     };
+
+    system-features = [
+      # Allows building v3/v4 packages
+      # "gccarch-x86-64-v3"
+      # "gccarch-x86-64-v4"
+      "kvm"
+      "big-parallel"
+      "nixos-test"
+    ];
 
     extraOptions =
       ''
@@ -232,7 +245,11 @@ in
       "rd.udev.log_level=3"
       "udev.log_priority=3"
     ];
-    kernelPackages = mkDefault pkgs.linuxPackages_latest;
+    kernelPackages =
+      #        default = 1000
+      #   this default = 1250
+      # option default = 1500
+      mkOverride 1250 pkgs.linuxPackages_latest;
     kernel = {
       sysctl = {
         "net.ipv4.ip_forward" = 1;

@@ -96,14 +96,7 @@
 #     };
 #   };
 # }
-{ pkgs
-, config
-, lib
-, inputs
-, hostname
-, username
-, ...
-}:
+{ pkgs, config, lib, inputs, hostname, username, ... }:
 let
   nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in
@@ -160,7 +153,13 @@ in
         if hostname != "air" || "zion"
         then lib.mkForce "nvidia"
         else lib.mkDefault "";
-      NIXOS_OZONE_WL = "1";
+
+
+      # override the setting in hyprland module
+      # priority of mkDefault is 1000
+      # default priority is 100
+      NIXOS_OZONE_WL = lib.mkOverride 990 "";
+      # NIXOS_OZONE_WL = "1";
       #GBM_BACKEND = "nvidia-drm";
       #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
       WLR_NO_HARDWARE_CURSORS = "1";

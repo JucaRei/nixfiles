@@ -40,6 +40,10 @@
       sushi = {
         enable = true;
       };
+
+      # disabled
+      # install extensions declaratively with home-manager dconf options
+      # gnome-browser-connector.enable = false;
     };
   };
 
