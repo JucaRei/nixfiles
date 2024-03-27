@@ -163,7 +163,7 @@ in
       };
 
     systemPackages = with pkgs; lib.optionals (isInstall) [
-      appimage-run
+      # appimage-run
       pavucontrol
       pulseaudio
       wmctrl
@@ -233,7 +233,7 @@ in
     # dbus.packages = if hostname != "rasp3" then [ pkgs.gcr ] else "";
 
     udev =
-      if hostname != "rasp3"
+      if (hostname != "rasp3")
       then {
         packages = with pkgs; [ gnome.gnome-settings-daemon ];
         extraRules = ''

@@ -110,13 +110,17 @@ in
       #   withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
       # };
 
-      # package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-
-      package = pkgs.unstable.hyprland.override {
-        enableXWayland = true; # whether to enable XWayland
-        legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
-        withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
+        legacyRenderer = true;
+        mesa = pkgs.mesa;
       };
+      xwayland.enable = true;
+
+      # package = pkgs.unstable.hyprland.override {
+      #   enableXWayland = true; # whether to enable XWayland
+      #   legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
+      #   withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
+      # };
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
     };
   };
