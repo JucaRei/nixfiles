@@ -104,12 +104,14 @@ in
   programs = {
     hyprland = {
       enable = true;
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
-        enableXWayland = true; # whether to enable XWayland
-        legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
-        withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
-      };
-      # portalPackage = pkgs.xdg-desktop-portal-hyprland;
+      # package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
+      #   enableXWayland = true; # whether to enable XWayland
+      #   legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
+      #   withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
+      # };
+
+      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+      portalPackage = pkgs.xdg-desktop-portal-hyprland;
     };
   };
 
