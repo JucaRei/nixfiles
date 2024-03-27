@@ -116,7 +116,7 @@
   ###################
   ### Sddm Themes ###
   ###################
-  # astronaut-sddm = pkgs.libsForQt5.callPackage ./system/themes/sddm/astronaut-sddm { };
+  astronaut-sddm = pkgs.libsForQt5.callPackage ./system/themes/sddm/astronaut-sddm { };
   # simple-sddm = pkgs.callPackage ./system/themes/sddm/simple-sddm { };
 
   ################

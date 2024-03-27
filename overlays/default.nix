@@ -94,6 +94,7 @@
     iosevka-q = prev.iosevka-q;
     catppuccin-grub = prev.catppuccin-grub;
     cyberre-grub-theme = prev.cyberre-grub-theme;
+    astronaut-sddm = prev.astronaut-sddm;
     # spotdl = prev.callPackage ../pkgs/tools/spotdl {
     #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
     # };

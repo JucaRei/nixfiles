@@ -186,7 +186,7 @@ in
         # libnotify
         # libevdev
         # # libsForQt5.libkscreen
-        pkgs.sddm-astronaut-theme
+        pkgs.astronaut-sddm
 
         ### Change to home-manager later
         # mako # notification daemon
