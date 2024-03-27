@@ -73,3 +73,12 @@
     };
   };
 }
+
+
+# sudo nix run github:nix-community/disko \
+#     --extra-experimental-features "nix-command flakes" \
+#     --no-write-lock-file \
+#     -- \
+#     --mode zap_create_mount \
+#     "nixos/hosts/$TARGET_HOST/disks.nix" \
+#     --arg device '"/dev/vda"'

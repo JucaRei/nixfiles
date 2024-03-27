@@ -1,4 +1,8 @@
-{ pkgs, lib, config, inputs, username, ... }: {
+{ pkgs, lib, config, inputs, username, modulesPath, ... }: {
+  imports =
+    [
+      (modulesPath + "/profiles/qemu-guest.nix")
+    ];
   boot.loader.systemd-boot.enable = true;
   boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" ];
   boot.loader.efi.canTouchEfiVariables = true;
