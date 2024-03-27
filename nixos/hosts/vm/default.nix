@@ -65,7 +65,7 @@
   # boot.initrd.postDeviceCommands =
   #   lib.mkAfter "	zfs rollback -r rpool/local/root@blank\n";
 
-  boot.loader.efi.efiSysMountPoint = "/boot";
+  boot.loader.efi.efiSysMountPoint = lib.mkForce "/boot";
   # boot.loader.generationsDir.copyKernels = true;
   # boot.loader.grub = {
   #   enable = true;
