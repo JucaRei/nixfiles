@@ -32,6 +32,11 @@
     # pinix.url = "github:remi-dupre/pinix";
     # pinix.inputs.nixpkgs.follows = "nixpkgs";
 
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Handles Flatpaks.
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
@@ -300,6 +305,7 @@
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines
         vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "bspwm"; hostid = "6f2efa51"; };
+        scrubber = libx.mkHost { hostname = "scrubber"; username = "juca"; desktop = "mate"; };
         hyperv = libx.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
         vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
         # Raspberry
