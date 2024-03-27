@@ -109,7 +109,7 @@ in
         legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
         withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
       };
-      portalPackage = pkgs.xdg-desktop-portal-hyprland;
+      # portalPackage = pkgs.xdg-desktop-portal-hyprland;
     };
   };
 
