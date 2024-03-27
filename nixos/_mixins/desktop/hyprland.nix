@@ -149,10 +149,10 @@ in
   environment = {
     sessionVariables = {
       # Hint electron apps to use wayland
-      LIBVA_DRIVER_NAME =
-        if hostname != "air" || "zion"
-        then lib.mkForce "nvidia"
-        else lib.mkDefault "";
+      # LIBVA_DRIVER_NAME =
+      #   if hostname != "air" || "zion"
+      #   then lib.mkForce "nvidia"
+      #   else lib.mkDefault "";
 
 
       # override the setting in hyprland module
@@ -235,13 +235,13 @@ in
       ]));
 
     # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
-    extraInit = ''
-      xhost +SI:localuser:root;
+    # extraInit = ''
+    #   xhost +SI:localuser:root;
 
-      export XAUTHORITY=/tmp/Xauthority
-      [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"
+    #   export XAUTHORITY=/tmp/Xauthority
+    #   [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"
 
-    '';
+    # '';
 
     # fix root on wayland
     # extraInit = ''
