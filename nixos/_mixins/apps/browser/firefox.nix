@@ -1,13 +1,12 @@
-{
-  pkgs,
-  lib,
-  params,
-  ...
+{ pkgs
+, lib
+, params
+, ...
 }: {
   programs = {
     firefox = {
       enable = true;
-      languagePacks = ["en-GB" "pt-BR"];
+      languagePacks = [ "en-GB" "pt-BR" ];
       package = pkgs.unstable.firefox;
       policies = {
         CaptivePortal = false;
@@ -50,7 +49,7 @@
             ];
 
             icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-            definedAliases = ["@np"];
+            definedAliases = [ "@np" ];
           };
         };
 
@@ -59,7 +58,7 @@
         bookmarks = [
           {
             name = "wikipedia";
-            tags = ["wiki"];
+            tags = [ "wiki" ];
             keyword = "wiki";
             url = "https://en.wikipedia.org/wiki/Special:Search?search=%s&go=Go";
           }
@@ -118,7 +117,7 @@
           "plugins.enumerable_names" = "";
 
           # Use Mozilla instead of Google here.
-          "geo.provider.network.url" = "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%";
+          # "geo.provider.network.url" = "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%";
 
           # No speculative content when searching.
           # "browser.urlbar.speculativeConnect.enabled" = false;
@@ -209,10 +208,10 @@
         # modified theme from https://github.com/Bali10050/FirefoxCSS
         userChrome =
           builtins.readFile
-          ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userChrome.css;
+            ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userChrome.css;
         userContent =
           builtins.readFile
-          ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userContent.css;
+            ../../../../home-manager/_mixins/config/firefox/FirefoxCSS/userContent.css;
       };
     };
   };
