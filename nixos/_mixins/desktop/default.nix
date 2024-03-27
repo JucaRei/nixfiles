@@ -6,6 +6,8 @@ let
   #   wayland = (elem "wayland" config.sys.hardware.graphics.desktopProtocols);
   #   desktopMode = xorg || wayland;
 
+  notVM = if (hostname == "minimech" || hostname == "scrubber" || hostname == "vm" || builtins.substring 0 5 hostname == "lima-" || hostname == "rasp3") then false else true;
+
   defaultDns = [ "1.1.1.1" "1.0.0.1" ];
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
   needsLowLatencyPipewire = if (hostname == "vm" || hostname == "scrubber") then true else false;
@@ -200,10 +202,7 @@ in
     };
 
     clight = {
-      enable =
-        if hostname != "rasp3"
-        then true
-        else false;
+      enable = notVM;
       settings = {
         verbose = true;
         backlight.disabled = false;
