@@ -65,7 +65,6 @@
   # boot.initrd.postDeviceCommands =
   #   lib.mkAfter "	zfs rollback -r rpool/local/root@blank\n";
 
-  boot.loader.efi.efiSysMountPoint = lib.mkForce "/boot";
   # boot.loader.generationsDir.copyKernels = true;
   # boot.loader.grub = {
   #   enable = true;
@@ -126,6 +125,7 @@
     # kernelPackages = pkgs.linuxKernel.packages.linux_5_15_hardened.system76;
 
     loader = {
+      efi.efiSysMountPoint = lib.mkForce "/boot";
       grub = {
         # gfxmodeEfi = lib.mkForce "3440x1440";
         gfxmodeEfi = lib.mkForce "1920x1080";
