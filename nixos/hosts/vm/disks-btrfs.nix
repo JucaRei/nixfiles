@@ -1,4 +1,5 @@
-{disks ? ["/dev/vda"], ...}: let
+{ disks ? [ "/dev/vda" ], ... }:
+let
   defaultBtrfsOpts = [
     "noatime"
     "nodiratime"
@@ -8,7 +9,8 @@
     "commit=120"
     "discard=async"
   ];
-in {
+in
+{
   # environment.etc = {
   #   "crypttab".text = ''
   #     data  /dev/disk/by-partlabel/data  /etc/data.keyfile
@@ -47,7 +49,7 @@ in {
               content = {
                 type = "btrfs";
                 # Override existing partition
-                extraArgs = ["-f"];
+                extraArgs = [ "-f" ];
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";
@@ -70,7 +72,7 @@ in {
                     mountOptions = defaultBtrfsOpts;
                   };
                   "@swap" = {
-                    mountpoint = "/.swap";
+                    mountpoint = "/var/swap";
                     mountOptions = [
                       "defaults"
                       "x-mount.mkdir"

@@ -1,8 +1,8 @@
 { lib, modulesPath, pkgs, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    # (import ./disks-btrfs.nix { })
-    (import ./disks.nix { })
+    (import ./disks-btrfs.nix { })
+    # (import ./disks.nix { })
     ../../_mixins/hardware/boot/grub.nix
     ../../_mixins/apps/browser/firefox.nix
     ../../_mixins/apps/text-editor/vscode.nix
@@ -15,21 +15,21 @@
     ../../_mixins/virtualization/podman.nix
   ];
 
-  # swapDevices = [{
-  #   device = "/var/lib/swapfile";
-  #   size = 2 * 1024;
-  # }];
+  swapDevices = [{
+    device = "/var/swap/swapfile";
+    size = 4 * 1024;
+  }];
 
   # swapDevices = [{
   #   device = "/.swap/swapfile";
   #   size = 2048;
   # }];
 
-  zramSwap = {
-    enable = true;
-    swapDevices = 4;
-    memoryPercent = 20;
-  };
+  # zramSwap = {
+  #   enable = true;
+  #   swapDevices = 4;
+  #   memoryPercent = 20;
+  # };
 
   # fileSystems."/mnt/nixos-nas/encrypted" = {
   #   device = "10.42.0.1:/export/encrypted";
