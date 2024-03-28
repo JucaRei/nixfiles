@@ -1,14 +1,10 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+{ pkgs, lib, ... }: {
   programs = lib.mkIf pkgs.stdenv.isLinux {
     gpg = {
       enable = true;
       # package = pkgs.gnupg;
       mutableKeys = true;
-      publicKeys = [{}];
+      # publicKeys = [{ }];
       settings = {
         # https://github.com/drduh/config/blob/master/gpg.conf
         # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Configuration-Options.html
@@ -52,18 +48,19 @@
         use-agent = "";
       };
     };
-    gpg-agent = {
-      enable = true;
-      enableBashIntegration = true;
-      enableSshSupport = true;
-      defaultCacheTtl = 34560000;
-      maxCacheTtl = 34560000;
-    };
     git = {
-      signing = {
-        key = "";
-        gpgPath = "";
-      };
+      # signing = {
+      # key = "";
+      # gpgPath = "";
+      # };
     };
+  };
+
+  services.gpg-agent = {
+    enable = true;
+    enableBashIntegration = true;
+    enableSshSupport = true;
+    defaultCacheTtl = 34560000;
+    maxCacheTtl = 34560000;
   };
 }

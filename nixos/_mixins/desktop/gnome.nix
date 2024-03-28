@@ -47,7 +47,10 @@
     };
   };
 
-  programs.evolution.enable = lib.mkForce false;
+  programs = {
+    evolution.enable = lib.mkForce false;
+    gnupg.agent.pinentryFlavor = "gnome3";
+  };
 
   security.pam.services.gdm.enableGnomeKeyring = true;
 

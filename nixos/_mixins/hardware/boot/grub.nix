@@ -55,5 +55,7 @@
     };
   };
 
-  environment.systemPackages = lib.mkIf (hostname == "nitro") pkgs.os-prober;
+  environment = lib.mkIf (hostname == "nitro") {
+    systemPackages = with pkgs;[ os-prober ];
+  };
 }

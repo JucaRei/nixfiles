@@ -211,6 +211,8 @@
       };
     };
 
+    programs.gnupg.agent.enable = true;
+
     ####################
     ### For services ###
     ####################

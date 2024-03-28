@@ -19,6 +19,7 @@ in
 
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
+      ./common
     ]
     # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
