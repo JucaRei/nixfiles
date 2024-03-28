@@ -12,7 +12,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     programs = {
       cava = {
         enable = isLinux;

@@ -10,7 +10,7 @@ in
       type = types.bool;
     };
   };
-  config = {
+  config = mkIf cfg.enable {
     programs.btop = {
       enable = true;
       settings = {

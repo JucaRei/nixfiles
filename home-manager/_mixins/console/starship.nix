@@ -12,7 +12,7 @@ in
         type = types.bool;
       };
     };
-  config = {
+  config = mkIf cfg.enable {
     programs.starship = {
       enable = true;
       settings = {

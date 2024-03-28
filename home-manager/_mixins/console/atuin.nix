@@ -11,7 +11,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     programs = {
       atuin = {
         enable = true;

@@ -10,7 +10,7 @@ in
       type = types.bool;
     };
   };
-  config = {
+  config = mkIf cfg.enable {
     services = {
       mpd = {
         enable = true;

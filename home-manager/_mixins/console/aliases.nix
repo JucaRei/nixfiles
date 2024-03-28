@@ -11,7 +11,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     home.shellAliases = {
       ### Nix ###
       # rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";

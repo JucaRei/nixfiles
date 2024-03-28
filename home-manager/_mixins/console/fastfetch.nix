@@ -11,7 +11,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     home = {
       packages = with pkgs; [ fastfetch ];
       file = {

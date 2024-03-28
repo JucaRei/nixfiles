@@ -10,7 +10,7 @@ in
       type = types.bool;
     };
   };
-  config = {
+  config = mkIf cfg.enable {
     programs.skim = rec {
       enable = true;
       defaultCommand = "fd --type f --hidden --exclude '.git'";

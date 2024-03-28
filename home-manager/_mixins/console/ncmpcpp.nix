@@ -10,7 +10,7 @@ in
       type = types.bool;
     };
   };
-  config = {
+  config = mkIf cfg.enable {
     home = { packages = with pkgs; [ cava mpc-cli go-musicfox ]; };
     programs = {
       ncmpcpp = {

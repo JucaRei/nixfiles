@@ -38,7 +38,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     programs.man.enable = true;
     programs.man.generateCaches = false;
 

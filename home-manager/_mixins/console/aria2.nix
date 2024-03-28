@@ -12,7 +12,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     programs.aria2 = {
       enable = true;
       settings = {

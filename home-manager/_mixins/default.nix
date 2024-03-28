@@ -1,4 +1,4 @@
-{ pkgs, config, desktop, hostname, ... }:
+{ pkgs, config, desktop, hostname, lib, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   isLima = builtins.substring 0 5 hostname == "lima-";
@@ -125,28 +125,30 @@ in
         };
     };
 
-    programs = {
+    programs = with lib;{
       command-not-found.enable = false;
       info.enable = true;
       jq = {
         enable = true;
         package = pkgs.jiq;
       };
-      mpd.enable = false;
+      mpd.enable = mkForce false;
     };
 
-    services = {
-      aliases.enable = true;
-      bat.enable = true;
-      dircolors.enable = true;
-      fish.enable = true;
-      fastfetch.enable = true;
-      direnv.enable = true;
-      eza.enable = true;
-      git.enable = true;
-      micro.enable = true;
-      gpg.enable = true;
-      ssh.enable = true;
-    };
+    services =
+      with lib; {
+        aliases.enable = true;
+        bat.enable = true;
+        dircolors.enable = true;
+        fish.enable = true;
+        fastfetch.enable = true;
+        direnv.enable = true;
+        eza.enable = true;
+        git.enable = true;
+        micro.enable = true;
+        ncmpcpp.enable = mkForce false;
+        gpg.enable = true;
+        ssh.enable = true;
+      };
   };
 }

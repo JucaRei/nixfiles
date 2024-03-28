@@ -13,7 +13,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     programs = {
       bash = {
         enable = true;

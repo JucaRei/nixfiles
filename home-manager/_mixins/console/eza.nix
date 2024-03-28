@@ -12,7 +12,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     home = {
       # packages = with inputs; [
       #   fh.packages.${platform}.default

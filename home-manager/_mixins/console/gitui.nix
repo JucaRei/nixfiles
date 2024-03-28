@@ -10,7 +10,7 @@ in
       type = types.bool;
     };
   };
-  config = {
+  config = mkIf cfg.enable {
     programs = {
       gitui = {
         enable = true;

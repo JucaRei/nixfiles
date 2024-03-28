@@ -11,7 +11,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     programs.lsd = {
       enable = true;
       settings = {

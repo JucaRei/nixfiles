@@ -11,7 +11,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     programs = lib.mkIf pkgs.stdenv.isLinux {
       gpg = {
         enable = true;
