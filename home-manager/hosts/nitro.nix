@@ -42,7 +42,7 @@ with test;
         # fantezy
         # gcc
         # gnumake
-        # transmission_4-gtk
+        transmission_4-gtk
         # lua
         # fcitx5-with-addons
         # vv
