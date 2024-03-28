@@ -1,8 +1,10 @@
 { pkgs, config, lib, params, nur, ... }:
-with lib; let
+with config;
+with lib;
+let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
 
-  cfg = config.programs.firefox;
+  cfg = config.services.firefox;
 
   csshacks = pkgs.fetchFromGitHub {
     owner = "MrOtherGuy";
@@ -217,7 +219,7 @@ with lib; let
 in
 {
 
-  options.programs.firefox = {
+  options.services.firefox = {
     enable = mkOption {
       default = false;
       type = types.bool;
@@ -228,7 +230,7 @@ in
       firefox = {
         enable = true;
         # package = pkgs.unstable.firefox;
-        package = if (cfg.services.nonNixOs.enable) then firefox-gl else pkgs.firefox;
+        package = if (cfg.nonNixOs.enable) then firefox-gl else pkgs.firefox;
         # package = floorp-gl;
         # package = librewolf-gl;
         profiles = {

@@ -8,7 +8,7 @@ in
   options.services.starship =
     {
       enable = mkOption {
-        default = true;
+        default = false;
         type = types.bool;
       };
     };

@@ -1,5 +1,6 @@
 { config, lib, pkgs, username, ... }:
-with lib; let
+with lib;
+let
   inherit (pkgs.stdenv) isDarwin isLinux;
   cfg = config.services.nonNixOs;
 in

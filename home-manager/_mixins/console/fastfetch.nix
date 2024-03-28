@@ -18,7 +18,9 @@ in
         "${config.xdg.configHome}/fastfetch/config.jsonc".text =
           builtins.readFile ../config/fastfetch/fastfetch.jsonc;
       };
-      shellAliases = { neofetch = lib.mkForce "${pkgs.fastfetch}"; };
+      shellAliases = {
+        neofetch = lib.mkForce "${pkgs.fastfetch}/bin/fastfetch";
+      };
     };
   };
 }

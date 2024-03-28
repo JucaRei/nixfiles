@@ -11,6 +11,7 @@ with test;
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix
     ../_mixins/console/gpg.nix
+    ../_mixins/console/bash.nix
     ../_mixins/console/yt-dlp.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
@@ -18,6 +19,7 @@ with test;
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix
+    ../_mixins/apps/browser/firefox/firefox.nix
     # ../_mixins/apps/browser/firefox/librewolf.nix
     # ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
@@ -67,6 +69,10 @@ with test;
       # '';
     };
 
+    services = {
+      bash.enable = false;
+      firefox.enable = false;
+    };
     dconf.settings = {
       # "org/gnome/desktop/interface" = {
       #   show-battery-percentage = true;
