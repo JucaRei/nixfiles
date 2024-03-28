@@ -24,9 +24,9 @@ _: {
     ./micro.nix
     ./mpd.nix
     ./ncmpcpp.nix
-    ./nano.nix
+    # ./nano.nix
     ./neofetch.nix
-    ./neovim.nix
+    # ./neovim.nix
     ./ripgrep.nix
     ./skim.nix
     ./ssh.nix

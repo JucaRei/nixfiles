@@ -12,7 +12,7 @@ in
   };
 
   config = {
-    program = {
+    programs = {
       atuin = {
         enable = true;
         enableBashIntegration = true;
@@ -22,8 +22,8 @@ in
         package = pkgs.atuin;
         settings = {
           auto_sync = true;
-          dialect = "uk";
-          key_path = config.sops.secrets.atuin_key.path;
+          dialect = "us";
+          # key_path = config.sops.secrets.atuin_key.path;
           show_preview = true;
           style = "compact";
           sync_frequency = "1h";

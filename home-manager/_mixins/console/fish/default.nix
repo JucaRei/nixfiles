@@ -31,7 +31,7 @@ in
           dadjoke = ''
             ${pkgs.curlMinimal}/bin/curl --header "Accept: text/plain" https://icanhazdadjoke.com/'';
           dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
-          neofetch = "${pkgs.fastfetch}/bin/fastfetch";
+          # neofetch = "${pkgs.fastfetch}/bin/fastfetch";
           glow = "${pkgs.glow}/bin/glow --pager";
           hr = ''${pkgs.hr}/bin/hr "─━"'';
           # ip = "${pkgs.iproute2}/bin/ip --color --brief";
