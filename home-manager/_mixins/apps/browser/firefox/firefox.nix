@@ -1,13 +1,8 @@
-{
-  pkgs,
-  config,
-  lib,
-  params,
-  nur,
-  ...
-}:
+{ pkgs, config, lib, params, nur, ... }:
 with lib; let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
+
+  cfg = config.programs.firefox;
 
   csshacks = pkgs.fetchFromGitHub {
     owner = "MrOtherGuy";
@@ -219,183 +214,193 @@ with lib; let
   browser = "firefox";
   # browser = "floorp";
   # browser = "librewolf";
-in {
-  programs = {
-    firefox = {
-      enable = true;
-      # package = pkgs.unstable.firefox;
-      package = firefox-gl;
-      # package = floorp-gl;
-      # package = librewolf-gl;
-      profiles = {
-        juca = {
-          id = 0;
-          settings = sharedSettings;
-          isDefault = true;
-          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-            #   # Install extensions from NUR
-            #   decentraleyes
-            ublock-origin
-            return-youtube-dislikes
-            don-t-fuck-with-paste
-            noscript
-            search-by-image
-            #   clearurls
-            sponsorblock
-            #   darkreader
-            #   h264ify
-            #   df-youtube
-          ];
-          search = {
-            engines = {
-              "NixOS Options" = {
-                urls = [
-                  {
-                    template = "https://search.nixos.org/options";
-                    params = [
-                      {
-                        name = "type";
-                        value = "packages";
-                      }
-                      {
-                        name = "query";
-                        value = "{searchTerms}";
-                      }
-                    ];
-                  }
-                ];
-                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-                definedAliases = ["@no"];
-              };
-              "Nix Packages" = {
-                urls = [
-                  {
-                    template = "https://search.nixos.org/packages";
-                    params = [
-                      {
-                        name = "type";
-                        value = "packages";
-                      }
-                      {
-                        name = "query";
-                        value = "{searchTerms}";
-                      }
-                    ];
-                  }
-                ];
-                icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-                definedAliases = ["@np"];
-              };
-              "NixOS Wiki" = {
-                urls = [
-                  {
-                    template = "https://nixos.wiki/index.php?search={searchTerms}";
-                  }
-                ];
-                definedAliases = ["@nw"];
-              };
-              # "Brave" = {
-              #   urls = [{
-              #     template = "https://search.brave.com/search";
-              #     params = [
-              #       { name = "type"; value = "search"; }
-              #       { name = "q"; value = "{searchTerms}"; }
-              #     ];
-              #   }];
+in
+{
 
-              #   icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
-              #   definedAliases = [ "@brave" "@b" ];
-              # };
-              "Bing".metaData.hidden = true;
-              "Google".metaData.alias = "@g";
-              "Wikipedia".metaData.alias = "@wiki";
+  options.programs.firefox = {
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+    };
+  };
+  config = mkIf cfg.enable {
+    programs = {
+      firefox = {
+        enable = true;
+        # package = pkgs.unstable.firefox;
+        package = if (cfg.services.nonNixOs.enable) then firefox-gl else pkgs.firefox;
+        # package = floorp-gl;
+        # package = librewolf-gl;
+        profiles = {
+          juca = {
+            id = 0;
+            settings = sharedSettings;
+            isDefault = true;
+            extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+              #   # Install extensions from NUR
+              #   decentraleyes
+              ublock-origin
+              return-youtube-dislikes
+              don-t-fuck-with-paste
+              noscript
+              search-by-image
+              #   clearurls
+              sponsorblock
+              #   darkreader
+              #   h264ify
+              #   df-youtube
+            ];
+            search = {
+              engines = {
+                "NixOS Options" = {
+                  urls = [
+                    {
+                      template = "https://search.nixos.org/options";
+                      params = [
+                        {
+                          name = "type";
+                          value = "packages";
+                        }
+                        {
+                          name = "query";
+                          value = "{searchTerms}";
+                        }
+                      ];
+                    }
+                  ];
+                  icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+                  definedAliases = [ "@no" ];
+                };
+                "Nix Packages" = {
+                  urls = [
+                    {
+                      template = "https://search.nixos.org/packages";
+                      params = [
+                        {
+                          name = "type";
+                          value = "packages";
+                        }
+                        {
+                          name = "query";
+                          value = "{searchTerms}";
+                        }
+                      ];
+                    }
+                  ];
+                  icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+                  definedAliases = [ "@np" ];
+                };
+                "NixOS Wiki" = {
+                  urls = [
+                    {
+                      template = "https://nixos.wiki/index.php?search={searchTerms}";
+                    }
+                  ];
+                  definedAliases = [ "@nw" ];
+                };
+                # "Brave" = {
+                #   urls = [{
+                #     template = "https://search.brave.com/search";
+                #     params = [
+                #       { name = "type"; value = "search"; }
+                #       { name = "q"; value = "{searchTerms}"; }
+                #     ];
+                #   }];
+
+                #   icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
+                #   definedAliases = [ "@brave" "@b" ];
+                # };
+                "Bing".metaData.hidden = true;
+                "Google".metaData.alias = "@g";
+                "Wikipedia".metaData.alias = "@wiki";
+              };
+              default = "Google";
+              force = true;
             };
-            default = "Google";
-            force = true;
           };
+          # extraPolicies = {
+          #   CaptivePortal = false;
+          #   DisableFirefoxStudies = true;
+          #   DisablePocket = true;
+          #   DisableFirefoxAccounts = true;
+          #   DisableFormHistory = true;
+          #   DisplayBookmarksToolbar = true;
+          #   DontCheckDefaultBrowser = true;
+          #   FirefoxHome = {
+          #     Pocket = false;
+          #     Snippets = false;
+          #   };
+          # };
         };
-        # extraPolicies = {
-        #   CaptivePortal = false;
-        #   DisableFirefoxStudies = true;
-        #   DisablePocket = true;
-        #   DisableFirefoxAccounts = true;
-        #   DisableFormHistory = true;
-        #   DisplayBookmarksToolbar = true;
-        #   DontCheckDefaultBrowser = true;
-        #   FirefoxHome = {
-        #     Pocket = false;
-        #     Snippets = false;
-        #   };
-        # };
+      };
+
+      # xdg = {
+      #   mime.enable = ifDefault true;
+      #   mimeApps = {
+      #     enable = ifDefault true;
+      #     defaultApplications = ifDefault (import ./default-browser.nix "firefox");
+      #   };
+      # };
+
+      # home.packages =
+      #   let
+      #     makeFirefoxProfileBin = args @ { profile, ... }:
+      #       let
+      #         name = "firefox-${profile}";
+      #         scriptBin = pkgs.writeScriptBin name ''
+      #           firefox -P "${profile}" --name="${name}" $@
+      #         '';
+      #         desktopFile = pkgs.makeDesktopItem ((removeAttrs args [ "profile" ])
+      #           // {
+      #           inherit name;
+      #           exec = "${scriptBin}/bin/${name} %U";
+      #           extraConfig.StartupWMClass = name;
+      #           genericName = "Web Browser";
+      #           mimeTypes = [
+      #             "text/html"
+      #             "text/xml"
+      #             "application/xhtml+xml"
+      #             "application/vnd.mozilla.xul+xml"
+      #             "x-scheme-handler/http"
+      #             "x-scheme-handler/https"
+      #           ];
+      #           categories = [ "Network" "WebBrowser" ];
+      #         });
+      #       in
+      #       pkgs.runCommand name { } ''
+      #         mkdir -p $out/{bin,share}
+      #         cp -r ${scriptBin}/bin/${name} $out/bin/${name}
+      #         cp -r ${desktopFile}/share/applications $out/share/applications
+      #       '';
+      #   in
+      #   with pkgs; [
+      #     (tor-browser-bundle-bin.override { pulseaudioSupport = true; })
+      #     (makeFirefoxProfileBin {
+      #       profile = "work";
+      #       desktopName = "Firefox (Work)";
+      #       icon = "firefox";
+      #     })
+      #   ];
+    };
+    home = {
+      sessionVariables = {
+        DEFAULT_BROWSER = "${firefox-gl}/bin/${browser}";
+        # DEFAULT_BROWSER = "${floorp-gl}/bin/${browser}";
+        # DEFAULT_BROWSER = "${librewolf-gl}/bin/${browser}";
       };
     };
 
-    # xdg = {
-    #   mime.enable = ifDefault true;
-    #   mimeApps = {
-    #     enable = ifDefault true;
-    #     defaultApplications = ifDefault (import ./default-browser.nix "firefox");
-    #   };
-    # };
-
-    # home.packages =
-    #   let
-    #     makeFirefoxProfileBin = args @ { profile, ... }:
-    #       let
-    #         name = "firefox-${profile}";
-    #         scriptBin = pkgs.writeScriptBin name ''
-    #           firefox -P "${profile}" --name="${name}" $@
-    #         '';
-    #         desktopFile = pkgs.makeDesktopItem ((removeAttrs args [ "profile" ])
-    #           // {
-    #           inherit name;
-    #           exec = "${scriptBin}/bin/${name} %U";
-    #           extraConfig.StartupWMClass = name;
-    #           genericName = "Web Browser";
-    #           mimeTypes = [
-    #             "text/html"
-    #             "text/xml"
-    #             "application/xhtml+xml"
-    #             "application/vnd.mozilla.xul+xml"
-    #             "x-scheme-handler/http"
-    #             "x-scheme-handler/https"
-    #           ];
-    #           categories = [ "Network" "WebBrowser" ];
-    #         });
-    #       in
-    #       pkgs.runCommand name { } ''
-    #         mkdir -p $out/{bin,share}
-    #         cp -r ${scriptBin}/bin/${name} $out/bin/${name}
-    #         cp -r ${desktopFile}/share/applications $out/share/applications
-    #       '';
-    #   in
-    #   with pkgs; [
-    #     (tor-browser-bundle-bin.override { pulseaudioSupport = true; })
-    #     (makeFirefoxProfileBin {
-    #       profile = "work";
-    #       desktopName = "Firefox (Work)";
-    #       icon = "firefox";
-    #     })
-    #   ];
-  };
-  home = {
-    sessionVariables = {
-      DEFAULT_BROWSER = "${firefox-gl}/bin/${browser}";
-      # DEFAULT_BROWSER = "${floorp-gl}/bin/${browser}";
-      # DEFAULT_BROWSER = "${librewolf-gl}/bin/${browser}";
+    xdg.mimeApps.defaultApplications = {
+      "application/x-extension-htm" = "${browser}.desktop";
+      "application/x-extension-html" = "${browser}.desktop";
+      "application/x-extension-shtml" = "${browser}.desktop";
+      "application/x-extension-xht" = "${browser}.desktop";
+      "application/x-extension-xhtml" = "${browser}.desktop";
+      "application/xhtml+xml" = "${browser}.desktop";
+      "text/html" = "${browser}.desktop";
+      "x-scheme-handler/chrome" = "${browser}.desktop";
+      "x-scheme-handler/http" = "${browser}.desktop";
+      "x-scheme-handler/https" = "${browser}.desktop";
     };
-  };
-
-  xdg.mimeApps.defaultApplications = {
-    "application/x-extension-htm" = "${browser}.desktop";
-    "application/x-extension-html" = "${browser}.desktop";
-    "application/x-extension-shtml" = "${browser}.desktop";
-    "application/x-extension-xht" = "${browser}.desktop";
-    "application/x-extension-xhtml" = "${browser}.desktop";
-    "application/xhtml+xml" = "${browser}.desktop";
-    "text/html" = "${browser}.desktop";
-    "x-scheme-handler/chrome" = "${browser}.desktop";
-    "x-scheme-handler/http" = "${browser}.desktop";
-    "x-scheme-handler/https" = "${browser}.desktop";
   };
 }

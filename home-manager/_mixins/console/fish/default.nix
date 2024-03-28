@@ -6,8 +6,8 @@ let
 in
 {
   imports = [
-    ../powerline-go.nix
-    ../zoxide.nix
+    # ../powerline-go.nix
+    # ../zoxide.nix
   ];
 
   options.services.fish = {

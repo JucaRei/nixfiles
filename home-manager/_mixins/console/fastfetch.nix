@@ -1,7 +1,7 @@
 { pkgs, config, lib, ... }:
 with lib;
 let
-  cfg = options.services.fastfetch;
+  cfg = config.services.fastfetch;
 in
 {
   options.services.fastfetch = {

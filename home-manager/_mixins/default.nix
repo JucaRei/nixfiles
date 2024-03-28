@@ -142,6 +142,7 @@ in
         dircolors.enable = true;
         fish.enable = true;
         fastfetch.enable = true;
+        htop.enable = true;
         direnv.enable = true;
         eza.enable = true;
         git.enable = true;

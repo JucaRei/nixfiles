@@ -19,7 +19,6 @@ in
 
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
-      ./common
     ]
     # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
@@ -127,9 +126,9 @@ in
         # build-users-group = "nixbld";
         builders-use-substitutes = true;
         sandbox =
-          if isDarwin
+          if (isDarwin)
           then true
-          else false; #relaxed
+          else "relaxed"; #false
 
         # Avoid unwanted garbage collection when using nix-direnv
         # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html

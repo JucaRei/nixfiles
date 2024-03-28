@@ -1,19 +1,26 @@
 { config, options, lib, pkgs, ... }:
+with lib;
 let
-  inherit (builtins) toString;
-  inherit (lib.modules) mkIf;
-  inherit (lib.strings) concatStringsSep;
+  cfg = config.programs.ungoogled;
 in
 {
-  options.modules.desktop.browsers.chromium =
-    let
-      inherit (lib.options) mkEnableOption;
-    in
-    {
-      enable = mkEnableOption "Google-free chromium";
-    };
+  # options.modules.desktop.browsers.chromium =
+  #   let
+  #     inherit (lib.options) mkEnableOption;
+  #   in
+  #   {
+  #     enable = mkEnableOption "Google-free chromium";
+  #   };
 
-  config = mkIf config.modules.desktop.browsers.chromium.enable {
+  options.programs.ungoogled = {
+    enable = mkEnableOption "Google-free chromium" {
+      default = false;
+      type = types.bool;
+    };
+  };
+
+  # config = mkIf config.modules.desktop.browsers.chromium.enable {
+  config = mkIf cfg.enable {
     home.packages =
       let
         inherit (pkgs) makeDesktopItem ungoogled-chromium;

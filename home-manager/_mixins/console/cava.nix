@@ -2,7 +2,7 @@
 with lib;
 let
   inherit (pkgs.stdenv) isLinux;
-  cfg = options.services.cava;
+  cfg = config.services.cava;
 in
 {
   options.services.cava = {
