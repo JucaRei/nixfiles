@@ -8,23 +8,7 @@ in
 {
   imports = [
     # ./config/scripts/home-manager_change_summary.nix
-    ./console/aliases.nix
-    ./console/bat
-    # ./console/bash.nix
-    ./console/fish
-    # ./console/bottom.nix
-    ./console/dircolors.nix
-    ./console/direnv.nix
-    ./console/eza.nix
-    # ./console/lsd
-    ./console/htop
-    ./console/git.nix
-    # ./console/gpg.nix
-    ./console/ripgrep.nix
-    ./console/micro.nix
-    # ./console/neofetch.nix
-    # ./console/skim.nix
-    # ./console/starship.nix
+    ./console
   ];
 
   config = {
@@ -148,10 +132,21 @@ in
         enable = true;
         package = pkgs.jiq;
       };
+      mpd.enable = false;
     };
 
     services = {
+      aliases.enable = true;
       bat.enable = true;
+      dircolors.enable = true;
+      fish.enable = true;
+      fastfetch.enable = true;
+      direnv.enable = true;
+      eza.enable = true;
+      git.enable = true;
+      micro.enable = true;
+      gpg.enable = true;
+      ssh.enable = true;
     };
   };
 }

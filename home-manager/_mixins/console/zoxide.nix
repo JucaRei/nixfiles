@@ -1,8 +1,22 @@
-_: {
-  programs.zoxide = {
-    enable = true;
-    enableBashIntegration = true;
-    enableFishIntegration = true;
-    enableZshIntegration = true;
+{ pkgs, lib, config, ... }:
+with lib;
+let
+  cfg = config.services.zoxide;
+in
+{
+  options.services.zoxide = {
+    enable = mkOption {
+      default = true;
+      type = types.bool;
+    };
+
+    config = {
+      programs.zoxide = {
+        enable = true;
+        enableBashIntegration = true;
+        enableFishIntegration = true;
+        enableZshIntegration = true;
+      };
+    };
   };
 }

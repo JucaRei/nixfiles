@@ -1,10 +1,8 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{ config, pkgs, lib, ... }:
+with lib;
+let
   user = config.home.username;
+  cfg = config.services.man;
   man_color_args = lib.strings.concatStringsSep " " [
     "-DP+k-" # Prompt = formatted bold Black on normal
     "-DE+kr" # Error/Info = formatted bold Black on Red
@@ -31,13 +29,23 @@
 
     less --use-color ${man_color_args} "$@"
   '';
-in {
-  programs.man.enable = true;
-  programs.man.generateCaches = false;
-
-  home.sessionVariables = {
-    MANROFFOPT = "-c";
-    MANPAGER = "manpager";
+in
+{
+  options.services.man = {
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+    };
   };
-  home.packages = [manpager];
+
+  config = {
+    programs.man.enable = true;
+    programs.man.generateCaches = false;
+
+    home.sessionVariables = {
+      MANROFFOPT = "-c";
+      MANPAGER = "manpager";
+    };
+    home.packages = [ manpager ];
+  };
 }

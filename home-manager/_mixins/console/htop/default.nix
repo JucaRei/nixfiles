@@ -1,12 +1,22 @@
+{ pkgs, config, lib, ... }:
+with lib;
+let
+  cfg = config.services.htop;
+in
 {
-  pkgs,
-  config,
-  ...
-}: {
-  home = {
-    packages = [pkgs.htop];
-    file = {
-      "${config.xdg.configHome}/htop/htoprc".text = builtins.readFile ./htoprc;
+  options.services.htop = {
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+    };
+  };
+
+  config = {
+    home = {
+      packages = [ pkgs.htop ];
+      file = {
+        "${config.xdg.configHome}/htop/htoprc".text = builtins.readFile ./htoprc;
+      };
     };
   };
 }

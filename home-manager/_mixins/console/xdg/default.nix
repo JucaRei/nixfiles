@@ -1,8 +1,4 @@
-{
-  config,
-  lib,
-  ...
-}: {
+{ config, lib, ... }: {
   xdg = {
     enable = true;
     configHome = config.home.homeDirectory + "/.config";
