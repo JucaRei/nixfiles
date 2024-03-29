@@ -9,14 +9,14 @@ in
       default = false;
       type = types.bool;
     };
+  };
 
-    config = mkIf cfg.enable {
-      programs.zoxide = {
-        enable = true;
-        enableBashIntegration = true;
-        enableFishIntegration = true;
-        enableZshIntegration = true;
-      };
+  config = mkIf cfg.enable {
+    programs.zoxide = {
+      enable = true;
+      enableBashIntegration = true;
+      enableFishIntegration = true;
+      enableZshIntegration = true;
     };
   };
 }
