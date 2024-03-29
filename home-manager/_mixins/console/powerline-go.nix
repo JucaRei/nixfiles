@@ -4,7 +4,7 @@ let
   cfg = config.services.powerline-go;
 in
 {
-  options = {
+  options.services.powerline-go = {
     enable = mkOption {
       default = false;
       type = types.bool;
