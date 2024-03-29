@@ -6,9 +6,9 @@ let
 in
 {
   imports = [
-    ../starship.nix
-    # ../powerline-go.nix
-    # ../zoxide.nix
+    # ../starship.nix
+    ../powerline-go.nix
+    ../zoxide.nix
   ];
 
   options.services.fish = {
@@ -19,7 +19,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.starship.enable = false;
+    services = {
+      starship.enable = false;
+      powerline-go.enable = true;
+      zoxide.enable = true;
+    };
     programs = {
       fish = {
         enable = true;

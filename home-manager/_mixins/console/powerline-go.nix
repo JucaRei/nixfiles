@@ -6,7 +6,7 @@ in
 {
   options = {
     enable = mkOption {
-      default = true;
+      default = false;
       type = types.bool;
     };
   };
