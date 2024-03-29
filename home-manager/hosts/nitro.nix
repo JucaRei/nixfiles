@@ -21,7 +21,7 @@ with test;
     # ../_mixins/apps/browser/chromium.nix
     ../_mixins/apps/browser/firefox/firefox.nix
     # ../_mixins/apps/browser/firefox/librewolf.nix
-    # ../_mixins/services/flatpak.nix
+    ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
   ];
   # dconf.settings = {
@@ -72,6 +72,7 @@ with test;
     services = {
       bash.enable = false;
       firefox.enable = false;
+      flatpak-nix.enable = true;
     };
     dconf.settings = {
       # "org/gnome/desktop/interface" = {

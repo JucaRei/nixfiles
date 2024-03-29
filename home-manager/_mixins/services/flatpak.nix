@@ -14,7 +14,7 @@ in
     # Flatpak declarative
     services.flatpak = {
       # enable = true;
-      enableModule = true;
+      enableModule = mkForce true;
       deduplicate = true;
       state-dir = "${config.home.homeDirectory}/.local/state/flatpak-module";
       target-dir = "${config.home.homeDirectory}/.local/share/flatpak";
@@ -34,7 +34,7 @@ in
 
         # <remote name>:<type>/<flatpak ref>/<arch>/<branch>:<commit>
       ];
-      preInitCommand = "";
+      # preInitCommand = "";
       remotes = {
         "flathub" = "https://dl.flathub.org/repo/flathub.flatpakrepo";
         "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
