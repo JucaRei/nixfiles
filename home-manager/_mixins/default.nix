@@ -21,15 +21,15 @@ in
         #   "NerdFontsSymbolsOnly" ]; })
         # ubuntu_font_family
         work-sans
-        asciicam # Terminal webcam
+        # asciicam # Terminal webcam
         # asciinema-agg # Convert asciinema to .gif
         # asciinema # Terminal recorder
-        bandwhich # Modern Unix `iftop`
+        # bandwhich # Modern Unix `iftop`
         # bmon # Modern Unix `iftop`
         # breezy # Terminal bzr client
         # butler # Terminal Itch.io API client
         # chafa # Terminal image viewer
-        chroma # Code syntax highlighter
+        # chroma # Code syntax highlighter
         clinfo # Terminal OpenCL info
         # cpufetch # Terminal CPU info
         # croc # Terminal file transfer

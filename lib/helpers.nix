@@ -10,7 +10,7 @@
       };
       modules = [
         ({ ... }: { })
-        # inputs.flatpaks.homeManagerModules.default
+        inputs.flatpaks.homeManagerModules.default
         inputs.nur.hmModules.nur
         ../home-manager
       ];

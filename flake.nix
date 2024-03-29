@@ -38,7 +38,7 @@
     };
 
     # Handles Flatpaks.
-    nix-flatpak.url = "github:gmodena/nix-flatpak";
+    flatpaks.url = "github:GermanBread/declarative-flatpak/stable"; #dev
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
