@@ -24,14 +24,13 @@ let
           webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
           inhibit-gnome
           autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
-          # thumbfast
           sponsorblock
         ];
     };
 in
 {
   imports = [ ./mpv-config.nix ];
-  home.packages = mpvgl;
+  home.packages = with pkgs;  [ mpvgl ];
 
   # Xdg entries
   xdg = {
