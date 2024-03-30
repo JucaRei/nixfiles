@@ -11,7 +11,7 @@ in
     };
   };
   config = mkIf cfg.enable {
-    services = {
+    programs = {
       yt-dlp = {
         enable = true;
         package = pkgs.unstable.yt-dlp;
@@ -34,7 +34,7 @@ in
         '';
       };
     };
-    home = {
+    home = mkIf cfg.enable {
       shellAliases = {
         makeplay = ''
           find -type f -iname "*.mp3" -or -iname "*.flac" -or -iname "*.m4a" > playlist.m3u
