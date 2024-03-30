@@ -13,7 +13,7 @@ in
   config = mkIf cfg.enable {
     # Flatpak declarative
     services.flatpak = {
-      # enable = true;
+      enable = true;
       enableModule = mkForce true;
       deduplicate = true;
       state-dir = "${config.home.homeDirectory}/.local/state/flatpak-module";
@@ -21,7 +21,8 @@ in
       packages = [
         # "flathub:app/org.kde.index//stable"
         # "flathub-beta:app/org.kde.kdenlive/x86_64/stable"
-        "flathub:app/info.febvre.Komikku//stable"
+        "flathub:app/info.febvre.Komikku/x86_64/stable"
+        "flathub:app/com.ktechpit.whatsie/x86_64/stable"
         # "flathub:app/com.bitwarden.desktop//stable"
 
         ## out-of-tree flatpaks can be installed like this (note: they can't be a URL because flatpak doesn't like that)
@@ -36,9 +37,9 @@ in
       ];
       # preInitCommand = "";
       remotes = {
-        "flathub" = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-        "flathub-beta" = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
-        "gnome-nightly" = "https://nightly.gnome.org/gnome-nightly.flatpakrepo";
+        flathub = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+        flathub-beta = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
+        gnome-nightly = "https://nightly.gnome.org/gnome-nightly.flatpakrepo";
       };
       overrides = {
         "global" = {

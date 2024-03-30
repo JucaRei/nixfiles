@@ -38,12 +38,13 @@
     };
 
     # Handles Flatpaks.
-    flatpaks.url = "github:GermanBread/declarative-flatpak"; #dev
+    # flatpaks.url = "github:GermanBread/declarative-flatpak"; #dev
+    declarative-flatpak.url = "github:GermanBread/declarative-flatpak/stable";
 
-    nbfc = {
-      url = "github:nbfc-linux/nbfc-linux";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # nbfc = {
+    #   url = "github:nbfc-linux/nbfc-linux";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
