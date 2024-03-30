@@ -255,6 +255,26 @@
         "type": "github"
       }
     },
+    "declarative-flatpak": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_4",
+        "utils": "utils_2"
+      },
+      "locked": {
+        "lastModified": 1707326266,
+        "narHash": "sha256-vRVih6iltuyLdj305Pj236BfhzFaOkAbHg3r5VsFdxs=",
+        "owner": "GermanBread",
+        "repo": "declarative-flatpak",
+        "rev": "efe7897ddcfbca085fba0690b3094e7f8e8911dd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "GermanBread",
+        "ref": "stable",
+        "repo": "declarative-flatpak",
+        "type": "github"
+      }
+    },
     "devshell": {
       "inputs": {
         "flake-utils": "flake-utils_5",
@@ -598,7 +618,7 @@
     },
     "flake-utils_4": {
       "inputs": {
-        "systems": "systems_5"
+        "systems": "systems_4"
       },
       "locked": {
         "lastModified": 1709126324,
@@ -616,7 +636,7 @@
     },
     "flake-utils_5": {
       "inputs": {
-        "systems": "systems_6"
+        "systems": "systems_5"
       },
       "locked": {
         "lastModified": 1701680307,
@@ -634,7 +654,7 @@
     },
     "flake-utils_6": {
       "inputs": {
-        "systems": "systems_7"
+        "systems": "systems_6"
       },
       "locked": {
         "lastModified": 1710146030,
@@ -647,25 +667,6 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flatpaks": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_4",
-        "utils": "utils_2"
-      },
-      "locked": {
-        "lastModified": 1707326266,
-        "narHash": "sha256-vRVih6iltuyLdj305Pj236BfhzFaOkAbHg3r5VsFdxs=",
-        "owner": "GermanBread",
-        "repo": "declarative-flatpak",
-        "rev": "efe7897ddcfbca085fba0690b3094e7f8e8911dd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "GermanBread",
-        "repo": "declarative-flatpak",
         "type": "github"
       }
     },
@@ -1024,27 +1025,6 @@
         "owner": "nix-community",
         "ref": "master",
         "repo": "naersk",
-        "type": "github"
-      }
-    },
-    "nbfc": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "utils": "utils_3"
-      },
-      "locked": {
-        "lastModified": 1710950033,
-        "narHash": "sha256-nbDqCFH5zqFXNBWm4J0jBiBYTEPwWT2L21Y7Rs2dEfA=",
-        "owner": "nbfc-linux",
-        "repo": "nbfc-linux",
-        "rev": "29d287e45eeaec361eabd37077b315851654e162",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nbfc-linux",
-        "repo": "nbfc-linux",
         "type": "github"
       }
     },
@@ -1820,8 +1800,8 @@
         "cachix-deploy-flake": "cachix-deploy-flake",
         "chaotic": "chaotic",
         "comma": "comma",
+        "declarative-flatpak": "declarative-flatpak",
         "disko": "disko_2",
-        "flatpaks": "flatpaks",
         "home-manager": "home-manager_3",
         "hyprland": "hyprland",
         "hyprland-contrib": "hyprland-contrib",
@@ -1829,7 +1809,6 @@
         "hyprpicker": "hyprpicker",
         "impermanence": "impermanence",
         "lf-icons": "lf-icons",
-        "nbfc": "nbfc",
         "nix-formatter-pack": "nix-formatter-pack",
         "nix-gaming": "nix-gaming",
         "nix-index-database": "nix-index-database",
@@ -2046,21 +2025,6 @@
         "type": "github"
       }
     },
-    "systems_7": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
@@ -2130,24 +2094,6 @@
         "owner": "numtide",
         "repo": "flake-utils",
         "rev": "1ef2e671c3b0c19053962c07dbda38332dcebf26",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "utils_3": {
-      "inputs": {
-        "systems": "systems_4"
-      },
-      "locked": {
-        "lastModified": 1681202837,
-        "narHash": "sha256-H+Rh19JDwRtpVPAWp64F+rlEtxUWBAQW28eAi3SRSzg=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "cfacdce06f30d2b68473a46042957675eebb3401",
         "type": "github"
       },
       "original": {

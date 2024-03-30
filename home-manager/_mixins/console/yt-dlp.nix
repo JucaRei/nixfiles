@@ -1,17 +1,17 @@
 { config, pkgs, lib, ... }:
 with lib;
 let
-  cfg = config.services.yt-dlp;
+  cfg = config.services.yt-dlp-custom;
 in
 {
-  options.services.yt-dlp = {
+  options.services.yt-dlp-custom = {
     enable = mkOption {
       default = false;
       type = types.bool;
     };
   };
   config = mkIf cfg.enable {
-    programs = {
+    services = {
       yt-dlp = {
         enable = true;
         package = pkgs.unstable.yt-dlp;
