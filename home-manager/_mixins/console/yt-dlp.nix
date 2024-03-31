@@ -37,7 +37,7 @@ in
     home = mkIf cfg.enable {
       shellAliases = {
         makeplay = ''
-          find -type f -iname "*.mp3" -or -iname "*.flac" -or -iname "*.m4a" > playlist.m3u
+          find -type f -iname "*.mp3" -or -iname "*.ogg" -or -iname "*.flac" -or -iname "*.m4a" > playlist.m3u
         '';
         yta-aac = "yt-dlp --extract-audio --audio-format aac ";
         #  yta-best = "yt-dlp --extract-audio --audio-format best --output '%(title)s.%(ext)s' --no-keep-video ";
