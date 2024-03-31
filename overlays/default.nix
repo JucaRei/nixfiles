@@ -76,6 +76,36 @@
       };
     });
 
+    mpv = prev.mpv.override {
+      extraPkgs = pkgs:
+        pkgs.unstable.wrapMpv
+          (pkgs.mpv-unwrapped.override {
+            vapoursynthSupport = true;
+            # webp support
+            ffmpeg = pkgs.ffmpeg_5-full;
+          })
+          {
+            extraMakeWrapperArgs = [
+              "--prefix"
+              "LD_LIBRARY_PATH"
+              ":"
+              "${pkgs.vapoursynth-mvtools}/lib/vapoursynth"
+            ];
+            scripts = with pkgs.unstable.mpvScripts;[
+              # thumbnail
+              thumbfast # High-performance on-the-fly thumbnailer.
+              autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
+              mpris
+              uosc # Adds a minimalist but highly customisable GUI.
+              acompressor
+              webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
+              inhibit-gnome
+              autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
+              sponsorblock
+            ];
+          };
+    };
+
     wavebox = prev.wavebox.overrideAttrs (_old: rec {
       pname = "wavebox";
       version = "10.121.6-2";

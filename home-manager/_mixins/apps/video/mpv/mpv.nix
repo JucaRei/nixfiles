@@ -30,7 +30,8 @@ let
 in
 {
   imports = [ ./mpv-config.nix ];
-  home.packages = with pkgs;  [ mpvgl ];
+  # home.packages = with pkgs;  [ mpvgl ];
+  home.packages = with pkgs;  [ mpv ];
 
   # Xdg entries
   xdg = {
