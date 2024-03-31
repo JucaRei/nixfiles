@@ -42,7 +42,8 @@ in
   programs = {
     mpv = {
       enable = true;
-      package = nixGL mpvgl;
+      # package = nixGL mpvgl;
+      package = nixGL mpv;
     };
   };
 

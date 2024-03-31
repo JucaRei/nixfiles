@@ -76,7 +76,9 @@
       };
     });
 
-    mpv = prev.pkgs.unstable.wrapMpv
+    # mpv 0.36
+    mpv = prev.pkgs.wrapMpv
+      # (prev.pkgs.unstable.mpv-unwrapped.override { # mpv 0.37
       (prev.pkgs.mpv-unwrapped.override {
         vapoursynthSupport = true;
         # webp support

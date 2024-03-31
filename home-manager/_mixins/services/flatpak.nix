@@ -19,9 +19,9 @@ in
       state-dir = "${config.home.homeDirectory}/.local/state/flatpak-module";
       target-dir = "${config.home.homeDirectory}/.local/share/flatpak";
       packages = [
-        # "flathub:app/org.kde.index//stable"
-        # "flathub-beta:app/org.kde.kdenlive/x86_64/stable"
-        # "flathub:app/com.bitwarden.desktop//stable"
+        "flathub:app/info.febvre.Komikku/x86_64/stable"
+        "flathub:app/com.ktechpit.whatsie/x86_64/stable"
+        "flathub:app/io.bassi.Amberol/x86_64/stable"
 
         ## out-of-tree flatpaks can be installed like this (note: they can't be a URL because flatpak doesn't like that)
         # ":${./foobar.flatpak}"

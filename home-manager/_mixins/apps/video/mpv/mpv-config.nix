@@ -19,21 +19,6 @@
       font = "FiraCode Nerd Font";
     in
     {
-      packages = with pkgs.mpvScripts;
-        [
-
-          # thumbnail
-          thumbfast # High-performance on-the-fly thumbnailer.
-          autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
-          mpris
-          uosc # Adds a minimalist but highly customisable GUI.
-          acompressor
-          webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
-          inhibit-gnome
-          autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
-          # thumbfast
-          sponsorblock
-        ];
 
       file = {
         # ".config/mpv/motioninterpolation.py".source = pkgs.substituteAll {

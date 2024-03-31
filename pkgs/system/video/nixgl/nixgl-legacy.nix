@@ -1,7 +1,6 @@
-{
-  lib,
-  fetchFromGitHub,
-  # sources,
+{ lib
+, fetchFromGitHub
+, # sources,
 }:
 # TODO: Clean up this mess
 let
@@ -15,30 +14,31 @@ let
   nvidiaVersion = "340.108";
   nvidiaHash = "10kjccrkdn360035lh985cadhwy6lk9xrw3wlmww2wqfaa25f775";
   top = rec {
-    pkgs = import <nixpkgs> {config.allowUnfree = true;};
+    pkgs = import <nixpkgs> { config.allowUnfree = true; };
     nvidiaVersion = "340.108";
     nvidiaLibs =
       (pkgs.linuxPackages.nvidia_x11.override {
         libsOnly = true;
         kernel = null;
-      })
-      .overrideAttrs
-      (oldAttrs: rec {
-        name = "nvidia-${nvidiaVersion}";
-        src = pkgs.fetchurl {
-          url = "http://download.nvidia.com/XFree86/Linux-x86_64/${nvidiaVersion}/NVIDIA-Linux-x86_64-${nvidiaVersion}.run";
-          sha256 = "10kjccrkdn360035lh985cadhwy6lk9xrw3wlmww2wqfaa25f775";
-        };
-        useGLVND = 0;
-      });
+      }).overrideAttrs
+        (oldAttrs: rec {
+          name = "nvidia-${nvidiaVersion}";
+          src = pkgs.fetchurl {
+            url = "http://download.nvidia.com/XFree86/Linux-x86_64/${nvidiaVersion}/NVIDIA-Linux-x86_64-${nvidiaVersion}.run";
+            sha256 = "10kjccrkdn360035lh985cadhwy6lk9xrw3wlmww2wqfaa25f775";
+          };
+          # useGLVND = 0;
+          useGLVND = false;
+        });
   };
-  pkgs = import <nixpkgs> {};
+  pkgs = import <nixpkgs> { };
 in
-  pkgs.runCommand "build" {
-    nativeBuildInputs = [
-      pkgs.python3
-    ];
-  }
+pkgs.runCommand "build"
+{
+  nativeBuildInputs = [
+    pkgs.python3
+  ];
+}
   ''
     ./nvidiaInstall.py ${nvidiaVersion} nixGLNvidia $out/bin
   ''
@@ -52,4 +52,3 @@ in
 #     }
 #   else {}
 # )
-

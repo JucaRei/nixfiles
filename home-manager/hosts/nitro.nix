@@ -74,11 +74,6 @@ with test;
       bash.enable = false;
       firefox.enable = false;
       flatpak-nix.enable = true;
-      flatpak.packages = [
-        "flathub:app/info.febvre.Komikku/x86_64/stable"
-        "flathub:app/com.ktechpit.whatsie/x86_64/stable"
-        "flathub:app/io.bassi.Amberol/x86_64/stable"
-      ];
       yt-dlp-custom.enable = true;
     };
 
