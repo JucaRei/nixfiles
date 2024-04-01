@@ -206,7 +206,7 @@
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       # stateVersion = "23.11";
-      libx = import ./lib { inherit inputs outputs stateVersion lib; };
+      libx = import ./lib { inherit inputs outputs stateVersion lib pkgs; };
     in
     {
       # Custom packages; acessible via 'nix build', 'nix shell', etc

@@ -22,6 +22,9 @@ in
           embed-metadata = true;
           embed-subs = true;
           embed-thumbnail = true;
+          write-sub = true;
+          # write-auto-sub = true;
+          sub-lang = "en";
           remux-video = "aac>m4a/mov>mp4/mkv";
           sponsorblock-mark = "sponsor";
           sub-langs = "all";

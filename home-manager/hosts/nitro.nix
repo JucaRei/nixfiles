@@ -3,7 +3,8 @@ with lib.hm.gvariant;
 let
   testing = import ../_mixins/config/testing/test.nix { name = "iT Works"; };
 in
-with test;
+# with test;
+with lib;
 {
   imports = [
     # ../_mixins/console/neovim.nix
@@ -37,7 +38,7 @@ with test;
         # spotdl
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
-        # vlc
+        (wrapProgram vlc)
         # cloneit
         # unstable.vscode-fhs
         #unstable.vscode-with-extensions
