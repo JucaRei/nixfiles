@@ -2,7 +2,7 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks-btrfs.nix { })
-    (import ./disks.nix { })
+    (import ./bcachefs.nix { })
     ../../_mixins/hardware/boot/grub.nix
     # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix

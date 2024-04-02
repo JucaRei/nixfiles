@@ -274,7 +274,7 @@
           "juca@scrubber" = libx.mkHome { hostname = "scrubber"; username = "juca"; desktop = "pantheon"; };
           "juca@lima-builder" = libx.mkHome { hostname = "lima-builder"; username = "juca"; };
           "juca@lima-default" = libx.mkHome { hostname = "lima-default"; username = "juca"; };
-          # "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "awesome"; };
+          "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; isNixOS = true; };
           # Iso
           # "juca@iso-console" = libx.mkHome { hostname = "iso-console"; username = "nixos"; };
           # "juca@iso-desktop" = libx.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
@@ -310,7 +310,7 @@
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines
-        vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "mate"; isNixOS = true; };
+        vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "mate"; };
         scrubber = libx.mkHost { hostname = "scrubber"; username = "juca"; desktop = "mate"; };
         hyperv = libx.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
         vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };

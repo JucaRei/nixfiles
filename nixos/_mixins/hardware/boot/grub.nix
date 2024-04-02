@@ -9,7 +9,7 @@
       efi = {
         # canTouchEfiVariables = if hostname == "air" then false else true;
         canTouchEfiVariables = true;
-        efiSysMountPoint = mkDefault "/boot/efi";
+        # efiSysMountPoint = mkDefault "/boot/efi";
         # efiSysMountPoint = "/boot";
       };
       grub = {
