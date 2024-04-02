@@ -1,10 +1,9 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     # ../_mixins/apps/text-editor/vscodium.nix
     # ../_mixins/apps/text-editor/vscode.nix
     # ../_mixins/apps/text-editor/sublime.nix
-    ../_mixins/apps/video/mpv.nix
-    ../_mixins/apps/text-editor/vscode.nix
+    ../_mixins/apps/text-editor/vscode/vscode.nix
     # ../_mixins/apps/text-editor/vscode-remote
     # ../_mixins/apps/social-media/discord.nix
     # ../_mixins/console/neovim.nix
