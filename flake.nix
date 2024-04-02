@@ -310,7 +310,7 @@
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines
-        vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "mate"; };
+        vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "mate"; isNixOS = true; };
         scrubber = libx.mkHost { hostname = "scrubber"; username = "juca"; desktop = "mate"; };
         hyperv = libx.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
         vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
