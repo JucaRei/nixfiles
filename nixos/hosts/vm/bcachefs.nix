@@ -23,7 +23,8 @@
               end = "-0";
               content = {
                 mountpoint = "/";
-                extraArgs = [ "-f" "--compression=lz4" "--discard" "--encrypted" ];
+                # extraArgs = [ "-f" "--compression=lz4" "--discard" "--encrypted" ];
+                extraArgs = [ "-f" "--compression=lz4" "--discard" ];
                 mountOptions = [ "defaults" "compression=lz4" "discard" "relatime" "nodiratime" ];
                 type = "filesystem";
                 format = "bcachefs";
