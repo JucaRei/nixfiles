@@ -2,7 +2,7 @@
   # Helper function for generating home-manager configs
   mkHome =
     ### TODO - add displays
-    { hostname, username, desktop ? null, stateVersion ? "23.11", platform ? "x86_64-linux", isNixOS ? false }:
+    { hostname, username, desktop ? null, stateVersion ? "23.11", platform ? "x86_64-linux" }:
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
@@ -31,15 +31,15 @@
         [
           ../nixos
           inputs.chaotic.nixosModules.default # DEFAULT MODULE
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.${username} = import ../home-manager;
+          # inputs.home-manager.nixosModules.home-manager
+          # {
+          #   home-manager.useGlobalPkgs = true;
+          #   home-manager.useUserPackages = true;
+          #   home-manager.users.${username} = import ../home-manager;
 
-            # Optionally, use home-manager.extraSpecialArgs to pass
-            # arguments to home.nix
-          }
+          #   # Optionally, use home-manager.extraSpecialArgs to pass
+          #   # arguments to home.nix
+          # }
         ]
         ++ (inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ]);
     };
@@ -47,8 +47,8 @@
   systems = inputs.nixpkgs.lib.genAttrs [
     "x86_64-linux"
     "aarch64-linux"
-    # "i686-linux"
-    # "x86_64-darwin"
-    # "aarch64-darwin"
+    "i686-linux"
+    "x86_64-darwin"
+    "aarch64-darwin"
   ];
 }

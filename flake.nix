@@ -274,7 +274,7 @@
           "juca@scrubber" = libx.mkHome { hostname = "scrubber"; username = "juca"; desktop = "pantheon"; };
           "juca@lima-builder" = libx.mkHome { hostname = "lima-builder"; username = "juca"; };
           "juca@lima-default" = libx.mkHome { hostname = "lima-default"; username = "juca"; };
-          "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; isNixOS = true; };
+          "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
           # Iso
           # "juca@iso-console" = libx.mkHome { hostname = "iso-console"; username = "nixos"; };
           # "juca@iso-desktop" = libx.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
