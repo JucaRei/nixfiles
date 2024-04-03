@@ -545,21 +545,21 @@ in
     activationScripts = {
       diff = lib.mkIf (isInstall) {
         supportsDryActivation = true;
-        # text = ''
-        #   if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
-        #     ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
-        #   fi
-        # /run/current-system/sw/bin/nixos-needsreboot
-        # '';
-
         text = ''
-            if [[ -e /run/current-system ]]; then
-              echo -e "\n***            ***          ***           ***           ***\n"
-              ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
-              echo -e "\n***            ***          ***           ***           ***\n"
+            if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
+              ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
             fi
           /run/current-system/sw/bin/nixos-needsreboot
         '';
+
+        # text = ''
+        #     if [[ -e /run/current-system ]]; then
+        #       echo -e "\n***            ***          ***           ***           ***\n"
+        #       ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
+        #       echo -e "\n***            ***          ***           ***           ***\n"
+        #     fi
+        #   /run/current-system/sw/bin/nixos-needsreboot
+        # '';
       };
     };
 
