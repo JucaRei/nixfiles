@@ -13,7 +13,7 @@ in
       '';
     };
   };
-  config = mkif cfg.enable {
+  config = mkIf cfg.enable {
     boot = with lib;{
       tmp = {
         #useTmpfs = true;
