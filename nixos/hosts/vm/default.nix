@@ -131,7 +131,7 @@
       # kernelPackages = pkgs.linuxKernel.packages.linux_5_15_hardened.system76;
 
       loader = {
-        # efi.efiSysMountPoint = lib.mkForce "/boot";
+        efi.efiSysMountPoint = lib.mkForce "/boot/efi";
         # grub = {
         #   # gfxmodeEfi = lib.mkForce "3440x1440";
         #   gfxmodeEfi = lib.mkForce "1920x1080";
