@@ -6,7 +6,7 @@
     ../../_mixins/hardware/boot/grub.nix
     ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
-    ../../_mixins/hardware/sound/pipewire.nix
+    # ../../_mixins/hardware/sound/pipewire.nix
     # ../../_mixins/hardware/bluetooth/default.nix
     # ../../_mixins/hardware/graphics/default.nix
     # ../../_mixins/sys/swapfile.nix
