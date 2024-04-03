@@ -1,8 +1,4 @@
-{ inputs
-, lib
-, pkgs
-, ...
-}: {
+{ inputs, lib, pkgs, ... }: {
   imports = [
     ../config/qt/qt-style.nix
   ];

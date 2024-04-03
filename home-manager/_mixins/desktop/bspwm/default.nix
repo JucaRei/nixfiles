@@ -1,11 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  username,
-  hostname,
-  ...
-}:
+{ config, lib, pkgs, username, hostname, ... }:
 with lib.hm.gvariant; {
   imports = [
     ### Import selected theme
@@ -43,11 +36,11 @@ with lib.hm.gvariant; {
         GIO_EXTRA_MODULES = "${pkgs.gnome.gvfs}/lib/gio/modules";
         "_JAVA_AWT_WM_NONREPARENTING" = "1";
       };
-      sessionPath = ["$HOME/.local/bin"];
+      sessionPath = [ "$HOME/.local/bin" ];
     };
 
     dconf.settings = {
-      "ca/desrt/dconf-editor" = {show-warning = false;};
+      "ca/desrt/dconf-editor" = { show-warning = false; };
 
       "org/gnome/desktop/peripherals/mouse" = {
         accel-profile = "adaptive";

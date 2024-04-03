@@ -9,7 +9,7 @@
           {
             name = "fake";
             manage = "window";
-            start = "bspwm";
+            start = "awesome";
           }
         ];
         lightdm = {

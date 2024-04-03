@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 with lib.hm.gvariant; {
   home.packages = with pkgs; [
     xfce.mousepad
@@ -16,9 +11,9 @@ with lib.hm.gvariant; {
       custom-font = "Work Sans 10";
     };
 
-    "desktop/ibus/panel/emoji" = {font = "JoyPixels 14";};
+    "desktop/ibus/panel/emoji" = { font = "JoyPixels 14"; };
 
-    "io/elementary/code/saved-state" = {outline-visible = true;};
+    "io/elementary/code/saved-state" = { outline-visible = true; };
 
     "io/elementary/code/settings" = {
       strip-trailing-on-save = true;
@@ -28,20 +23,20 @@ with lib.hm.gvariant; {
       prefer-dark-style = true;
     };
 
-    "io/elementary/desktop/agent-geoclue2" = {location-enabled = true;};
+    "io/elementary/desktop/agent-geoclue2" = { location-enabled = true; };
 
-    "io/elementary/desktop/wingpanel/datetime" = {clock-format = "24h";};
+    "io/elementary/desktop/wingpanel/datetime" = { clock-format = "24h"; };
 
-    "io/elementary/desktop/wingpanel/sound" = {max-volume = 130.0;};
+    "io/elementary/desktop/wingpanel/sound" = { max-volume = 130.0; };
 
-    "io/elementary/files/preferences" = {singleclick-select = true;};
+    "io/elementary/files/preferences" = { singleclick-select = true; };
 
     "io/elementary/notifications/applications/gala-other" = {
       remember = false;
       sounds = false;
     };
 
-    "io/elementary/settings-daemon/datetime" = {show-weeks = true;};
+    "io/elementary/settings-daemon/datetime" = { show-weeks = true; };
 
     "io/elementary/settings-daemon/housekeeping" = {
       cleanup-downloads-folder = false;
@@ -76,10 +71,10 @@ with lib.hm.gvariant; {
       position = "left";
       theme = "Transparent";
     };
-    "org/gnome/desktop/datetime" = {automatic-timezone = true;};
+    "org/gnome/desktop/datetime" = { automatic-timezone = true; };
 
     "org/gnome/desktop/input-sources" = {
-      xkb-options = ["grp:alt_shift_toggle" "caps:none"];
+      xkb-options = [ "grp:alt_shift_toggle" "caps:none" ];
     };
 
     "org/gnome/desktop/interface" = {
@@ -102,11 +97,11 @@ with lib.hm.gvariant; {
       idle-delay = lib.hm.gvariant.mkUint32 7200;
     };
 
-    "org/gnome/desktop/sound" = {theme-name = "elementary";};
+    "org/gnome/desktop/sound" = { theme-name = "elementary"; };
 
     "org/gnome/desktop/wm/keybindings" = {
-      switch-to-workspace-left = ["<Primary><Alt>Left"];
-      switch-to-workspace-right = ["<Primary><Alt>Right"];
+      switch-to-workspace-left = [ "<Primary><Alt>Left" ];
+      switch-to-workspace-right = [ "<Primary><Alt>Right" ];
     };
 
     "org/gnome/desktop/wm/preferences" = {
@@ -115,11 +110,11 @@ with lib.hm.gvariant; {
       titlebar-font = "Work Sans Semi-Bold 12";
     };
 
-    "org/gnome/GWeather" = {temperature-unit = "centigrade";};
+    "org/gnome/GWeather" = { temperature-unit = "centigrade"; };
 
     "org/gnome/mutter/keybindings" = {
-      toggle-tiled-left = ["<Super>Left"];
-      toggle-tiled-right = ["<Super>Right"];
+      toggle-tiled-left = [ "<Super>Left" ];
+      toggle-tiled-right = [ "<Super>Right" ];
     };
 
     "org/gnome/settings-daemon/plugins/media-keys" = {
@@ -128,7 +123,7 @@ with lib.hm.gvariant; {
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
       ];
-      terminal = [""];
+      terminal = [ "" ];
     };
 
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
@@ -159,9 +154,9 @@ with lib.hm.gvariant; {
     #  overrides = "{\'Gtk/DialogsUseHeader\': <0>, \'Gtk/ShellShowsAppMenu\': <0>, \'Gtk/EnablePrimaryPaste\': <1>, \'Gtk/DecorationLayout\': <\':minimize,maximize,close,menu\'>, \'Gtk/ShowUnicodeMenu\': <0>}";
     #};
 
-    "org/gtk/gtk4/Settings/FileChooser" = {clock-format = "24h";};
+    "org/gtk/gtk4/Settings/FileChooser" = { clock-format = "24h"; };
 
-    "org/gtk/Settings/FileChooser" = {clock-format = "24h";};
+    "org/gtk/Settings/FileChooser" = { clock-format = "24h"; };
 
     "org/pantheon/desktop/gala/appearance" = {
       button-layout = ":minimize,maximize,close";
@@ -171,7 +166,7 @@ with lib.hm.gvariant; {
       overlay-action = "io.elementary.wingpanel --toggle-indicator=app-launcher";
     };
 
-    "org/pantheon/desktop/gala/mask-corners" = {enable = false;};
+    "org/pantheon/desktop/gala/mask-corners" = { enable = false; };
   };
 
   gtk = {
@@ -194,9 +189,9 @@ with lib.hm.gvariant; {
       '';
     };
 
-    gtk3 = {extraConfig = {gtk-application-prefer-dark-theme = 1;};};
+    gtk3 = { extraConfig = { gtk-application-prefer-dark-theme = 1; }; };
 
-    gtk4 = {extraConfig = {gtk-application-prefer-dark-theme = 1;};};
+    gtk4 = { extraConfig = { gtk-application-prefer-dark-theme = 1; }; };
 
     iconTheme = {
       name = "elementary";
@@ -212,7 +207,7 @@ with lib.hm.gvariant; {
   home.pointerCursor = {
     package = pkgs.pantheon.elementary-icon-theme;
     name = "elementary";
-    size = 20;
+    size = 24;
     gtk.enable = true;
     x11.enable = true;
   };

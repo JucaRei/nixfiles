@@ -1,10 +1,4 @@
-{
-  username,
-  pkgs,
-  config,
-  lib,
-  ...
-}: {
+{ username, pkgs, config, lib, ... }: {
   services = {
     xserver = {
       enable = true;
@@ -51,7 +45,7 @@
           disableWhileTyping = true;
           sendEventsMode = "disabled-on-external-mouse";
         };
-        mouse = {scrollMethod = "button";};
+        mouse = { scrollMethod = "button"; };
       };
 
       resolutions = [
