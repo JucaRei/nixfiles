@@ -237,7 +237,7 @@ in
       };
       # timeout = 5;
     };
-    kernelModules = [ "vhost_vsock" "tcp_bbr" ];
+    kernelModules = mkIf (notVM) [ "vhost_vsock" "tcp_bbr" ];
     kernelParams = [
       "boot.shell_on_fail"
       "loglevel=3"
@@ -251,7 +251,7 @@ in
       # option default = 1500
       mkOverride 1250 pkgs.linuxPackages_latest;
     kernel = {
-      sysctl = {
+      sysctl = mkIf (notVM) {
         "net.ipv4.ip_forward" = 1;
         "net.ipv6.conf.all.forwarding" = 1;
         # Keep zram swap (lz4) latency in check
@@ -713,7 +713,7 @@ in
       # Enable the D-Bus service, which is a message bus system that allows
       # communication between applications.
       enable = true;
-      implementation = lib.mkIf (isWorkstation) "broker";
+      implementation = if (isWorkstation && notVM) then "broker" else "dbus";
     };
 
     getty = {
