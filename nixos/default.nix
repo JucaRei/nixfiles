@@ -23,8 +23,6 @@ in
       # inputs.sops-nix.nixosModules.sops
       (modulesPath + "/installer/scan/not-detected.nix")
       (./. + "/hosts/${hostname}")
-      (if notVM then ./_mixins/virtualization/podman.nix else "")
-      (if notVM then ./_mixins/virtualization/lxd.nix else "")
       ./_mixins/services/network/openssh.nix
       ./_mixins/services/tools/smartmon.nix
       ./_mixins/config/scripts
@@ -33,7 +31,9 @@ in
       ./users
     ]
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (isWorkstation) ./_mixins/desktop;
+    ++ lib.optional (isWorkstation) ./_mixins/desktop
+    ++ lib.optional (notVM) ./_mixins/virtualization/podman.nix
+    ++ lib.optional (notVM) ./_mixins/virtualization/lxd.nix;
 
   ######################
   ### Documentations ###
@@ -340,12 +340,13 @@ in
   ### Default Timezone ###
   ########################
 
-  time = lib.mkDefault {
-    timeZone = "America/Sao_Paulo";
+  time = lib.mkDefault
+    {
+      timeZone = "America/Sao_Paulo";
 
-    ### For dual boot
-    hardwareClockInLocalTime = if (isWorkstation && hostname == "nitro") then true else false;
-  };
+      ### For dual boot
+      hardwareClockInLocalTime = if (isWorkstation && hostname == "nitro") then true else false;
+    };
 
   #########################
   ### Defaults Packages ###
