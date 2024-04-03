@@ -3,7 +3,7 @@ let
   notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
   # Create some variable to control what doesn't get installed/enabled
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
-  isWorkstation = if (desktop != null && notVM) then true else false;
+  isWorkstation = if (desktop != null) then true else false;
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
   syncthing = {
     hosts = [
