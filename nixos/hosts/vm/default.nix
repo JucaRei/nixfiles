@@ -142,6 +142,16 @@
           #   theme = pkgs.cyberre-grub-theme;
           #   extraFiles = { "memtest.bin" = "${pkgs.memtest86plus}/memtest.bin"; };
         };
+        systemd-boot = {
+          enable = true;
+          configurationLimit = 5;
+          consoleMode = "max";
+          editor = false;
+          graceful = true;
+          # enable = true;
+          memtest86.enable = true;
+        };
+        timeout = 7;
       };
 
       ### Change grub to systemd, for testing
