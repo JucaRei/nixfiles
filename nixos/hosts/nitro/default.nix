@@ -44,6 +44,9 @@
       # '';
       loader = {
         # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
+        efi = {
+          efiSysMountPoint = lib.mkForce "/boot/efi";
+        };
         grub = {
           # theme = pkgs.cyberre-grub-theme;
           theme = pkgs.catppuccin-grub;
