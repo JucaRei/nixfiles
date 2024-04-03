@@ -16,10 +16,10 @@ in
   config = mkIf cfg.enable {
     boot =
       {
-        initrd = {
-          systemd.enable = true;
-          verbose = false;
-        };
+        # initrd = {
+        #   systemd.enable = true;
+        #   verbose = false;
+        # };
         kernelParams = [
           "quiet"
           "splash"
