@@ -1,6 +1,6 @@
 { config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs, stateVersion, username, hostid, platform, ... }:
 let
-  notVM = if (hostname == "minimech" || hostname == "scrubber" || builtins.substring 0 5 hostname == "lima-") then false else true;
+  notVM = if (hostname == "minimech" || hostname == "scrubber" || hostname == "vm" || builtins.substring 0 5 hostname == "lima-") then false else true;
   # Create some variable to control what doesn't get installed/enabled
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
   isWorkstation = if (desktop != null) then true else false;
@@ -227,7 +227,7 @@ in
   boot = with lib; {
     consoleLogLevel = mkDefault 0;
     # Only enable the systemd-boot on installs, not live media (.ISO images)
-    loader = mkDefault (mkIf (isInstall) {
+    loader = mkIf (isInstall) {
       efi.canTouchEfiVariables = true;
       systemd-boot = {
         configurationLimit = 6;
@@ -236,7 +236,7 @@ in
         memtest86.enable = true;
       };
       # timeout = 5;
-    });
+    };
     kernelModules = [ "vhost_vsock" "tcp_bbr" ];
     kernelParams = [
       "boot.shell_on_fail"
@@ -284,7 +284,13 @@ in
         # "vm.dirty_ratio" = 40; # default 20, maximum ratio, block process when reached
       };
     };
-    supportedFilesystems = [ "ext4" "btrfs" "exfat" "ntfs" "bcachefs" ];
+    supportedFilesystems = [
+      # "ext4"
+      "btrfs"
+      "exfat"
+      "ntfs"
+      # "bcachefs"
+    ];
 
     binfmt.registrations.appImage = mkIf (isWorkstation) {
       # make appImage work seamlessly
@@ -490,6 +496,49 @@ in
     ssh.startAgent = true;
     # type "fuck" to fix the last command that made you go "fuck"
     thefuck.enable = true;
+    fish = {
+      enable = true;
+      interactiveShellInit = ''
+        set fish_cursor_default block blink
+        set fish_cursor_insert line blink
+        set fish_cursor_replace_one underscore blink
+        set fish_cursor_visual block
+        set -U fish_color_autosuggestion brblack
+        set -U fish_color_cancel -r
+        set -U fish_color_command green
+        set -U fish_color_comment brblack
+        set -U fish_color_cwd brgreen
+        set -U fish_color_cwd_root brred
+        set -U fish_color_end brmagenta
+        set -U fish_color_error red
+        set -U fish_color_escape brcyan
+        set -U fish_color_history_current --bold
+        set -U fish_color_host normal
+        set -U fish_color_match --background=brblue
+        set -U fish_color_normal normal
+        set -U fish_color_operator cyan
+        set -U fish_color_param blue
+        set -U fish_color_quote yellow
+        set -U fish_color_redirection magenta
+        set -U fish_color_search_match bryellow '--background=brblack'
+        set -U fish_color_selection white --bold '--background=brblack'
+        set -U fish_color_status red
+        set -U fish_color_user brwhite
+        set -U fish_color_valid_path --underline
+        set -U fish_pager_color_completion normal
+        set -U fish_pager_color_description yellow
+        set -U fish_pager_color_prefix white --bold --underline
+        set -U fish_pager_color_progress brwhite '--background=cyan'
+      '';
+      shellAbbrs = lib.mkIf (isInstall) {
+        captive-portal = "${pkgs.xdg-utils}/bin/xdg-open http://$(${pkgs.iproute2}/bin/ip --oneline route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $3}'";
+        nix-gc = "sudo nix-collect-garbage --delete-older-than 10d && nix-collect-garbage --delete-older-than 10d";
+        update-lock = "pushd $HOME/Zero/nix-config && nix flake update && popd";
+      };
+      shellAliases = {
+        nano = "micro";
+      };
+    };
   };
 
   system = {
