@@ -28,14 +28,14 @@ in
           graceful = true;
           #consoleMode = "max";
           memtest86.enable = true;
-          extraEntries = ''
-            menuentry "Reboot" {
-              reboot
-            }
-            menuentry "Poweroff" {
-              halt
-            }
-          '';
+          # extraEntries = ''
+          #   menuentry "Reboot" {
+          #     reboot
+          #   }
+          #   menuentry "Poweroff" {
+          #     halt
+          #   }
+          # '';
         };
         timeout = 5;
       };
