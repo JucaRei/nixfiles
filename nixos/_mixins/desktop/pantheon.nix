@@ -3,7 +3,9 @@
 , pkgs
 , ...
 }: {
-  imports = [ ../config/qt/qt-style.nix ../apps/terminal/tilix.nix ];
+  imports = [
+    ../config/qt/qt-style.nix
+  ];
 
   # Exclude the elementary apps I don't use
   environment = {
@@ -26,6 +28,7 @@
       torrential # elementary OS torrent client
       yaru-theme
       usbimager
+      tilix
       # inputs.nix-software-center.packages.${system}.nix-software-center
       # hacked-cursor
     ];

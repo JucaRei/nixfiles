@@ -1,10 +1,4 @@
-{ pkgs
-, lib
-, inputs
-, username
-, ...
-}: {
-  imports = [ ../apps/terminal/tilix.nix ];
+{ pkgs, lib, inputs, username, ... }: {
 
   environment = {
     budgie.excludePackages = with pkgs; [
@@ -25,6 +19,7 @@
       budgie.budgie-desktop-view
       budgie.budgie-screensaver
       qogir-theme
+      tilix
 
       # Required by the Budgie Desktop session.
       (gnome.gnome-session.override { gnomeShellSupport = false; })
