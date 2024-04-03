@@ -9,7 +9,8 @@
     ../../_mixins/hardware/sound/pipewire.nix
     # ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     ./nvidia-specialisation.nix
-    ../../_mixins/hardware/boot/grub.nix
+    ../../_mixins/hardware/boot/efi.nix
+    ../../_mixins/hardware/boot/plymouth.nix
     # ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
     # ../../_mixins/virtualization/quickemu.nix
@@ -84,29 +85,6 @@
         "lz4hc"
         "lz4hc_compress"
       ];
-      # plymouth = {
-      # enable = true;
-      # logo = "${inputs.nixos-artwork}/wallpapers/nix-wallpaper-watersplash.png";
-      # themePackages = [
-      # pkgs.adi1090x-plymouth-themes
-      # pkgs.catppuccin-plymouth
-      # ];
-      # theme = "deus_ex";
-      # theme = "catppuccin-macchiato";
-      # };
-      plymouth = rec {
-        enable = true;
-        # black_hud circle_hud cross_hud square_hud
-        # circuit connect cuts_alt seal_2 seal_3
-        theme = "connect";
-        themePackages = with pkgs; [
-          (
-            adi1090x-plymouth-themes.override {
-              selected_themes = [ theme ];
-            }
-          )
-        ];
-      };
 
       # Temporary workaround until mwprocapture 4328 patch is merged
       # - https://github.com/NixOS/nixpkgs/pull/221209

@@ -233,18 +233,17 @@ in
       systemd-boot = {
         configurationLimit = 5;
         consoleMode = "max";
+        editor = false;
+        graceful = true;
         # enable = true;
         memtest86.enable = true;
       };
-      # timeout = 5;
+      timeout = 7;
     };
     kernelModules = mkIf (notVM) [ "vhost_vsock" "tcp_bbr" ];
     kernelParams = [
       "boot.shell_on_fail"
       "loglevel=3"
-      "rd.systemd.show_status=false"
-      "rd.udev.log_level=3"
-      "udev.log_priority=3"
     ];
     kernelPackages =
       #        default = 1000
