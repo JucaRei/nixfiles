@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# low-end flash device (“low-end”, as of 2011/2012)
+#  should use 4MiB-aligned partitions
+parted -s /dev/sdX -- mklabel msdos \
+mkpart primary fat32 64s 4MiB \
+mkpart primary fat32 4MiB -1s
+
 # Micro SD 32gb
 export DISK=/dev/disk/by-id/mmc-SC32G_0x78fe3e2e
 parted $DISK mklabel msdos

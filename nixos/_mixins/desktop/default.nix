@@ -14,6 +14,7 @@ let
   saveBattery = if (hostname != "scrubber" && hostname != "vader") then true else false;
   hasRazerPeripherals = if (hostname == "phasma" || hostname == "vader") then true else false;
   isGamestation = if (hostname == "phasma" || hostname == "vader") && (desktop != null) then true else false;
+  isNitro = if (hostname == "nitro") then true else false;
 
   # Define DNS settings for specific users
   # - https://cleanbrowsing.org/filters/
@@ -160,9 +161,15 @@ in
             },
           }
         '';
+      } // lib.optionalAttrs (isNitro) {
+        "aspell.conf".text = ''
+          master en_US
+          add-extra-dicts en-computers.rws
+          add-extra-dicts pt_BR.rws
+        '';
       };
 
-    systemPackages = with pkgs; lib.optionals (isInstall) [
+    systemPackages = with pkgs; (lib.optionals (isInstall) [
       # appimage-run
       pavucontrol
       pulseaudio
@@ -173,7 +180,13 @@ in
       #   mangohud
       # ] ++ lib.optionals (isInstall && hasRazerPeripherals) [
       #   polychromatic
-    ];
+    ] ++ lib.optionals (isNitro) [
+      aspellDicts.en
+      aspellDicts.en-computers
+      aspellDicts.pt_BR
+      hunspellDicts.en_US
+      hunspellDicts.pt_BR
+    ]);
   };
 
 
