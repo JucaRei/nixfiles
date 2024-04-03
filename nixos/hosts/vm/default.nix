@@ -3,7 +3,7 @@
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks-btrfs.nix { })
     (import ./bcachefs.nix { })
-    ../../_mixins/hardware/boot/grub.nix
+    ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/hardware/sound/pipewire.nix
@@ -122,6 +122,7 @@
     };
 
     boot = {
+      mode.efi.enable = true;
       initrd = {
         availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" "bcache" ];
         supportedFilesystems = [ "bcachefs" ]; # make bcachefs work

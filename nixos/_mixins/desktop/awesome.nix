@@ -1,8 +1,8 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   services = {
     xserver = {
       enable = true;
-      windowManager = {awesome = {enable = true;};};
+      windowManager = { awesome = { enable = true; }; };
       displayManager = {
         defaultSession = "none+fake";
         session = [

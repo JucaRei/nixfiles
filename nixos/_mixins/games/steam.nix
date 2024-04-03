@@ -1,14 +1,10 @@
+{ inputs, pkgs, config, lib, ... }:
+with lib;
+let
+  cfg = config.services.steam;
+in
 {
-  inputs,
-  pkgs,
-  config,
-  lib,
-  ...
-}: let
-  cfg = config.mine.games.steam;
-  inherit (lib) mkIf mkOption types;
-in {
-  options.mine.games.steam = {
+  options.services.steam = {
     enable = mkOption {
       type = types.bool;
       default = false;
@@ -25,7 +21,7 @@ in {
       steam-hardware.enable = true;
       opengl = {
         driSupport32Bit = true;
-        extraPackages = with pkgs; [vulkan-validation-layers];
+        extraPackages = with pkgs; [ vulkan-validation-layers ];
       };
     };
     programs = {
@@ -81,7 +77,7 @@ in {
     };
 
     # improve wine performance
-    environment.sessionVariables = {WINEDEBUG = "-all";};
+    environment.sessionVariables = { WINEDEBUG = "-all"; };
 
     # Adds Proton GE to Steam
     # Does not work in main overlay
@@ -103,7 +99,7 @@ in {
 
     # nix-gaming cache
     nix.settings = {
-      extra-substituters = ["https://nix-gaming.cachix.org"];
+      extra-substituters = [ "https://nix-gaming.cachix.org" ];
       extra-trusted-public-keys = [
         "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
       ];
