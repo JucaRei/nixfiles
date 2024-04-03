@@ -4,7 +4,7 @@
     # (import ./disks-btrfs.nix { })
     (import ./bcachefs.nix { })
     ../../_mixins/hardware/boot/plymouth.nix
-    ../../_mixins/hardware/boot/efi.nix
+    # ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/hardware/sound/pipewire.nix
@@ -135,16 +135,6 @@
 
       loader = {
         efi.efiSysMountPoint = lib.mkForce "/boot";
-        efi.canTouchEfiVariables = true;
-        systemd-boot = {
-          configurationLimit = 5;
-          consoleMode = "max";
-          editor = false;
-          graceful = true;
-          # enable = true;
-          memtest86.enable = true;
-        };
-        timeout = 7;
         # grub = {
         #   # gfxmodeEfi = lib.mkForce "3440x1440";
         #   gfxmodeEfi = lib.mkForce "1920x1080";
