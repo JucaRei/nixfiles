@@ -20,15 +20,13 @@ in
           systemd.enable = true;
           verbose = false;
         };
-        loader = {
-          kernelParams = [
-            "quiet"
-            "splash"
-            "rd.systemd.show_status=false"
-            "rd.udev.log_level=3"
-            "udev.log_priority=3"
-          ];
-        };
+        kernelParams = [
+          "quiet"
+          "splash"
+          "rd.systemd.show_status=false"
+          "rd.udev.log_level=3"
+          "udev.log_priority=3"
+        ];
         plymouth = rec {
           enable = true;
           # black_hud circle_hud cross_hud square_hud
