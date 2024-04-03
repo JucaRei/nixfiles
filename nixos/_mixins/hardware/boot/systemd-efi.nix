@@ -15,7 +15,7 @@ in
   };
   config = mkIf cfg.enable {
     boot = {
-      initrd.systemd.enable = true;
+      # initrd.systemd.enable = true;
       loader = {
         efi = {
           canTouchEfiVariables = true;
