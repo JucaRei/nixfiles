@@ -229,7 +229,9 @@ in
     consoleLogLevel = mkDefault 0;
     # Only enable the systemd-boot on installs, not live media (.ISO images)
     loader = mkIf (isInstall) {
-      efi.canTouchEfiVariables = true;
+      efi = {
+        canTouchEfiVariables = true;
+      };
       systemd-boot = {
         configurationLimit = 5;
         consoleMode = "max";

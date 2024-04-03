@@ -135,12 +135,13 @@
 
       loader = {
         efi.efiSysMountPoint = lib.mkForce "/boot";
-        # grub = {
-        #   # gfxmodeEfi = lib.mkForce "3440x1440";
-        #   gfxmodeEfi = lib.mkForce "1920x1080";
-        #   theme = pkgs.cyberre-grub-theme;
-        #   extraFiles = { "memtest.bin" = "${pkgs.memtest86plus}/memtest.bin"; };
-        # };
+        grub = {
+          enable = false;
+          #   # gfxmodeEfi = lib.mkForce "3440x1440";
+          #   gfxmodeEfi = lib.mkForce "1920x1080";
+          #   theme = pkgs.cyberre-grub-theme;
+          #   extraFiles = { "memtest.bin" = "${pkgs.memtest86plus}/memtest.bin"; };
+        };
       };
 
       ### Change grub to systemd, for testing
