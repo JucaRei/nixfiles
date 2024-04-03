@@ -3,7 +3,7 @@
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks-btrfs.nix { })
     (import ./bcachefs.nix { })
-    ../../_mixins/hardware/boot/systemd-efi.nix
+    ../../_mixins/hardware/boot/plymouth.nix
     ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/hardware/sound/pipewire.nix
@@ -88,41 +88,43 @@
     #   ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="zfs_member", ATTR{../queue/scheduler}="none"
     # '';
 
-    services.xserver = {
-      # videoDrivers = [
-      #   # "qxl"
-      #   # "nvidia"
-      # ];
-      layout = lib.mkForce "br";
-      exportConfiguration = true;
-      virtualScreen = {
-        x = 1920;
-        y = 1080;
-      };
-      resolutions = [
-        {
+    services = {
+      plymouth.enable = true;
+      xserver = {
+        # videoDrivers = [
+        #   # "qxl"
+        #   # "nvidia"
+        # ];
+        layout = lib.mkForce "br";
+        exportConfiguration = true;
+        virtualScreen = {
           x = 1920;
           y = 1080;
-        }
-        {
-          x = 1600;
-          y = 1200;
-        }
-        {
-          x = 1600;
-          y = 1050;
-        }
-        {
-          x = 1366;
-          y = 768;
-        }
-      ];
-      dpi = 96;
-      logFile = "/var/log/Xorg.0.log";
+        };
+        resolutions = [
+          {
+            x = 1920;
+            y = 1080;
+          }
+          {
+            x = 1600;
+            y = 1200;
+          }
+          {
+            x = 1600;
+            y = 1050;
+          }
+          {
+            x = 1366;
+            y = 768;
+          }
+        ];
+        dpi = 96;
+        logFile = "/var/log/Xorg.0.log";
+      };
     };
 
     boot = {
-      mode.systemd-efi.enable = true;
       initrd = {
         availableKernelModules = [ "ahci" "xhci_pci" "virtio_pci" "sr_mod" "virtio_blk" "bcache" ];
         supportedFilesystems = [ "bcachefs" ]; # make bcachefs work
@@ -145,20 +147,6 @@
       # export NIXOS_INSTALL_BOOTLOADER=1
       # nixos-rebuild switch ...
 
-
-      plymouth = rec {
-        enable = true;
-        # black_hud circle_hud cross_hud square_hud
-        # circuit connect cuts_alt seal_2 seal_3
-        theme = "connect";
-        themePackages = with pkgs; [
-          (
-            adi1090x-plymouth-themes.override {
-              selected_themes = [ theme ];
-            }
-          )
-        ];
-      };
     };
 
     environment = {
