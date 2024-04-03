@@ -33,7 +33,8 @@ in
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (isWorkstation) ./_mixins/desktop
     ++ lib.optional (notVM) ./_mixins/virtualization/podman.nix
-    ++ lib.optional (notVM) ./_mixins/virtualization/lxd.nix;
+    ++ lib.optional (notVM) ./_mixins/virtualization/lxd.nix
+    ++ lib.optional (isWorkstation) ./_mixins/sys;
 
   ######################
   ### Documentations ###
@@ -712,7 +713,7 @@ in
       # Enable the D-Bus service, which is a message bus system that allows
       # communication between applications.
       enable = true;
-      implementation = if (hostname == "nitro") then "broker" else "dbus";
+      implementation = lib.mkIf (isWorkstation) "broker";
     };
 
     getty = {

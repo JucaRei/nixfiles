@@ -1,1 +1,5 @@
-_: {services = {irqbalance = {enable = true;};};}
+_: {
+  services = {
+    irqbalance = { enable = true; };
+  };
+}
