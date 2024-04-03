@@ -5,6 +5,7 @@ let
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
   isWorkstation = if (desktop != null) then true else false;
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+  isVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then true else false;
   syncthing = {
     hosts = [
       "nitro"
@@ -230,7 +231,7 @@ in
     loader = mkIf (isInstall) {
       efi.canTouchEfiVariables = true;
       systemd-boot = {
-        configurationLimit = 6;
+        configurationLimit = 5;
         consoleMode = "max";
         # enable = true;
         memtest86.enable = true;
