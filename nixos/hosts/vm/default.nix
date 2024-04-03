@@ -12,7 +12,7 @@
     # ../../_mixins/sys/swapfile.nix
     # ../../_mixins/services/security/doas.nix
     ../../_mixins/services/security/sudo.nix
-    ../../_mixins/virtualization/podman.nix
+    # ../../_mixins/virtualization/podman.nix
   ];
 
   # swapDevices = [{
