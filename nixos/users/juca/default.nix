@@ -48,6 +48,7 @@ in
       mate-icon-theme
       mate-backgrounds
       mate-icon-theme-faenza
+      mate-terminal
     ];
 
     pantheon.excludePackages = with pkgs.pantheon; [

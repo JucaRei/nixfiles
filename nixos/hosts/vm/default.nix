@@ -140,6 +140,12 @@
         # };
       };
 
+      ### Change grub to systemd, for testing
+      # sudo -s
+      # export NIXOS_INSTALL_BOOTLOADER=1
+      # nixos-rebuild switch ...
+
+
       plymouth = rec {
         enable = true;
         # black_hud circle_hud cross_hud square_hud
