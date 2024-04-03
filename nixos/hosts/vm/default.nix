@@ -161,6 +161,7 @@
         # nixd
         unstable.nil
         nixpkgs-fmt
+        nix-whereis
 
         glxinfo
         inxi
