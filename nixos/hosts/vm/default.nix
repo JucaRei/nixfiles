@@ -30,7 +30,7 @@
 
   config = {
 
-    modules.apx.enable = true;
+    modules.apx.enable = false;
 
     zramSwap = {
       enable = true;
