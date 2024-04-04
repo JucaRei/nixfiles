@@ -1,10 +1,4 @@
-{
-  lib,
-  pkgs,
-  hostname,
-  storageDriver ? null,
-  ...
-}:
+{ lib, pkgs, hostname, storageDriver ? null, ... }:
 assert lib.asserts.assertOneOf "storageDriver" storageDriver [
   null
   "aufs"

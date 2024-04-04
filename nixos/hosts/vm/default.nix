@@ -4,6 +4,8 @@
     # (import ./disks-btrfs.nix { })
     (import ./bcachefs.nix { })
     ../../_mixins/hardware/boot/plymouth.nix
+    ../../_mixins/virtualization/docker.nix
+    # ../../_mixins/virtualization/docker.nix
     # ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
