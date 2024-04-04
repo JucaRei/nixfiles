@@ -19,12 +19,6 @@
     # ../../_mixins/virtualization/virt-manager.nix
     # ../../_mixins/virtualization/passthrought.nix
     ../../_mixins/virtualization/virtual-manager/testing.nix
-    ../../_mixins/sys/ananicy.nix
-    ../../_mixins/sys/psd.nix
-    ../../_mixins/sys/dbus-broker.nix
-    ../../_mixins/sys/irqbalance.nix
-    ../../_mixins/sys/fwupd.nix
-    ../../_mixins/sys/thermald.nix
     # ../../_mixins/apps/text-editor/vscode.nix
     # ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/browser/chromium.nix
@@ -43,6 +37,7 @@
       # done
       # modprobe -i vfio-pci
       # '';
+      mode.efi.enable = true;
       loader = {
         # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
         efi = {
@@ -423,6 +418,7 @@
     };
 
     services = {
+      plymouth.enable = true;
       virtualisation.kvm.enable = true;
 
       acpid = {
