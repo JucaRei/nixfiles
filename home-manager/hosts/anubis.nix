@@ -1,10 +1,10 @@
 { pkgs, config, lib, username, ... }:
 with lib.hm.gvariant;
-# let
-# nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
-# mpv-custom = import ../_mixins/apps/video/mpv.nix;
+let
+  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+  # mpv-custom = import ../_mixins/apps/video/mpv.nix;
 
-# in
+in
 {
   imports = [
     # ../_mixins/apps/music/rhythmbox.nix
@@ -32,6 +32,7 @@ with lib.hm.gvariant;
     home = {
       packages = with pkgs; [
         docker-client
+        (nixGL vivaldi.override { proprietaryCodecs = true; enableWidevine = true; qt = qt6; })
       ];
       file = {
         "bin/create-docker" = {
