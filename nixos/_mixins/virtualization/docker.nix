@@ -1,14 +1,16 @@
-{ lib, pkgs, hostname, storageDriver ? null, username, ... }:
+# { lib, pkgs, hostname, storageDriver ? null, username, ... }:
 
-assert lib.asserts.assertOneOf "storageDriver" storageDriver [
-  null
-  "aufs"
-  "btrfs"
-  "devicemapper"
-  "overlay"
-  "overlay2"
-  "zfs"
-];
+# assert lib.asserts.assertOneOf "storageDriver" storageDriver [
+#   null
+#   "aufs"
+#   "btrfs"
+#   "devicemapper"
+#   "overlay"
+#   "overlay2"
+#   "zfs"
+# ];
+
+{ lib, pkgs, hostname, username, ... }:
 
 {
   virtualisation = {
@@ -31,7 +33,7 @@ assert lib.asserts.assertOneOf "storageDriver" storageDriver [
 
       # https://docs.docker.com/build/buildkit/
       #daemon.settings = { "features" = { "buildkit" = true; }; };
-      storageDriver = storageDriver;
+      storageDriver = "overlay2";
       logDriver = "json-file";
     };
   };
