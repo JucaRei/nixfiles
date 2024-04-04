@@ -5,7 +5,7 @@
     (import ./bcachefs.nix { })
     ../../_mixins/hardware/boot/plymouth.nix
     ../../_mixins/virtualization/docker.nix
-    # ../../_mixins/virtualization/docker.nix
+    ../../_mixins/services/tools/apx.nix
     # ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/apps/browser/firefox.nix
     # ../../_mixins/apps/text-editor/vscode.nix
@@ -29,6 +29,8 @@
   # }];
 
   config = {
+
+    modules.apx.enable = true;
 
     zramSwap = {
       enable = true;
