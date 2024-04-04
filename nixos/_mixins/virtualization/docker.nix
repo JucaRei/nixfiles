@@ -1,4 +1,5 @@
-{ lib, pkgs, hostname, storageDriver ? null, ... }:
+{ lib, pkgs, hostname, storageDriver ? null, username, ... }:
+
 assert lib.asserts.assertOneOf "storageDriver" storageDriver [
   null
   "aufs"
@@ -7,7 +8,9 @@ assert lib.asserts.assertOneOf "storageDriver" storageDriver [
   "overlay"
   "overlay2"
   "zfs"
-]; {
+];
+
+{
   virtualisation = {
     # oci-containers.backend = "docker";
     docker = {
@@ -32,6 +35,8 @@ assert lib.asserts.assertOneOf "storageDriver" storageDriver [
       logDriver = "json-file";
     };
   };
+
+  users.users.${username}.extraGroups = [ "docker" ];
 
   # https://rootlesscontaine.rs/getting-started/common/cgroup2/#enabling-cpu-cpuset-and-io-delegation
   # For minikube
