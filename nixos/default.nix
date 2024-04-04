@@ -782,29 +782,52 @@ in
 
     polkit = lib.mkIf (isInstall) {
       enable = true;
+      debug = lib.mkDefault true;
+
+      # the below configuration depends on security.polkit.debug being set to true
+      # so we have it written only if debugging is enabled
       extraConfig = ''
         polkit.addRule(function (action, subject) {
           if (subject.isInGroup('wheel'))
             return polkit.Result.YES;
         });
+      '' + ''
+        /* Log authorization checks. */
+        polkit.addRule(function(action, subject) {
+          polkit.log("user " +  subject.user + " is attempting action " + action.id + " from PID " + subject.pid);
+        });
       '';
     };
 
     # Increase open file limit for sudoers
-    pam.loginLimits = [
-      {
-        domain = "@wheel";
-        item = "nofile";
-        type = "soft";
-        value = "524288";
-      }
-      {
-        domain = "@wheel";
-        item = "nofile";
-        type = "hard";
-        value = "1048576";
-      }
-    ];
+    pam = {
+      # fix "too many files open" errors while writing a lot of data at once
+      # (e.g. when building a large package)
+      # if this, somehow, doesn't meet your requirements you may just bump the numbers up
+      loginLimits = [
+        {
+          domain = "@wheel";
+          item = "nofile";
+          type = "soft";
+          value = "524288";
+        }
+        {
+          domain = "@wheel";
+          item = "nofile";
+          type = "hard";
+          value = "1048576";
+        }
+      ];
+      # allow screen lockers to also unlock the screen
+      # (e.g. swaylock, gtklock)
+      services = {
+        swaylock.text = "auth include login";
+        gtklock.text = "auth include login";
+      };
+
+      # Enable pam_systemd module to set dbus environment variable.
+      services.login.startSession = true;
+    };
   };
 
   hardware = {

@@ -93,6 +93,7 @@ in
     # required by podman to run containers in rootless mode.
     unprivilegedUsernsClone = config.virtualisation.containers.enable;
   };
+
   # Fix for docker compat (vscode)
   systemd.user = {
     services = {

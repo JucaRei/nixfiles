@@ -49,6 +49,8 @@ in
         verbatimConfig = ''
           namespaces = []
           user = "+${builtins.toString config.users.users.${username}.uid}"
+          # Whether libvirt should dynamically change file ownership
+          dynamic_ownership = 0
           cgroup_device_acl = [
               "/dev/kvmfr0",
               "/dev/vfio/vfio", "/dev/vfio/11", "/dev/vfio/12",
@@ -133,4 +135,11 @@ in
     #   enable = true;
     # };
   };
+
+  # this allows libvirt to use pulseaudio socket
+  # which is useful for virt-manager
+  hardware.pulseaudio.extraConfig = ''
+    load-module module-native-protocol-unix auth-group=qemu-libvirtd socket=/tmp/pulse-socket
+  '';
+
 }

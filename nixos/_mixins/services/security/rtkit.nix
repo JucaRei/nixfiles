@@ -1,1 +1,3 @@
-_: {security = {rtkit = {enable = true;};};}
+_: {
+  
+}

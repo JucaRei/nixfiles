@@ -1,9 +1,4 @@
-{ desktop
-, lib
-, pkgs
-, ...
-}: {
-  imports = [ ../../services/security/rtkit.nix ];
+{ desktop, lib, pkgs, ... }: {
   environment = {
     systemPackages = with pkgs;
       [
@@ -57,4 +52,10 @@
   };
   # Recent fix for pipewire-pulse breakage
   #systemd.user.services.pipewire-pulse.path = [pkgs.pulseaudio];
+
+  security = {
+    rtkit = {
+      enable = true;
+    };
+  };
 }

@@ -1,8 +1,5 @@
-{
-  lib,
-  hostname,
-  ...
-}: let
+{ lib, hostname, ... }:
+let
   # Firewall configuration variable for syncthing
   syncthing = {
     hosts = [
@@ -102,19 +99,20 @@
       8200
     ];
   };
-in {
+in
+{
   networking = {
     firewall = {
       allowPing = true;
       enable = true;
       allowedTCPPorts =
-        []
+        [ ]
         ++ lib.optionals (builtins.elem hostname syncthing.hosts)
-        syncthing.tcpPorts;
+          syncthing.tcpPorts;
       allowedUDPPorts =
-        []
+        [ ]
         ++ lib.optionals (builtins.elem hostname syncthing.hosts)
-        syncthing.udpPorts;
+          syncthing.udpPorts;
 
       #---------------------------------------------------------------------
       # Adding a rule to the iptables firewall to allow NetBIOS name

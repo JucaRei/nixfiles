@@ -1,9 +1,4 @@
-{
-  username,
-  pkgs,
-  config,
-  ...
-}: {
+{ username, pkgs, config, ... }: {
   security = {
     sudo.enable = false; # Disable sudo
 
@@ -14,7 +9,7 @@
       # '';
       extraRules = [
         {
-          users = ["${username}"];
+          users = [ "${username}" ];
           noPass = true;
           keepEnv = true;
           # persist = true;
@@ -23,5 +18,5 @@
       #wheelNeedsPassword = false;
     };
   };
-  environment.systemPackages = [(pkgs.writeScriptBin "sudo" ''exec doas "$@"'')];
+  environment.systemPackages = [ (pkgs.writeScriptBin "sudo" ''exec doas "$@"'') ];
 }
