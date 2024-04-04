@@ -8,9 +8,9 @@ pkgs.writeScriptBin "build-host" ''
     build_cores=$(${pkgs.uutils-coreutils-noprefix}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
     pushd $HOME/.dotfiles/nixfiles 2>&1 > /dev/null
     echo "Building Home-manager nix with $build_cores cores"
-    home-manager switch -b backup --flake .# -L --impure --cores $build_cores
+    home-manager switch -b backup --flake .# --impure --cores $build_cores
     popd 2>&1 > /dev/null
   else
-    ${pkgs.coreutils-full}/bin/echo "ERROR! No nix-config found in $HOME/.dotfiles/nixfiles"
+    ${pkgs.coreutils-full}/bin/echo "ERROR! No nixfiles found in $HOME/.dotfiles/nixfiles"
   fi
 ''

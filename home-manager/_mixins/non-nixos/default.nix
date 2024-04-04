@@ -16,10 +16,10 @@ in
     xdg = lib.mkForce {
       enable = true;
       mime = { enable = true; };
-      # systemDirs.data =
-      #   if isDarwin
-      #   then [ "/Users/${username}/.nix-profile/share/applications" ]
-      #   else [ "/home/${username}/.nix-profile/share/applications" ];
+      systemDirs.data =
+        if isDarwin
+        then [ "/Users/${username}/.nix-profile/share/applications" ]
+        else [ "/home/${username}/.nix-profile/share/applications" ];
     };
     home = {
       packages = with pkgs; [
