@@ -1,4 +1,8 @@
-_: {
+{ pkgs, ... }:
+let
+  build-home = import ../config/scripts/build-home.nix { inherit pkgs; };
+in
+{
   imports = [
     ./bat
     ./btop
@@ -31,5 +35,9 @@ _: {
     ./skim.nix
     ./ssh.nix
     ./yt-dlp.nix
+  ];
+
+  home.packages = with pkgs; [
+    build-home
   ];
 }

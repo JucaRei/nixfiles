@@ -16,10 +16,10 @@ in
     xdg = lib.mkForce {
       enable = true;
       mime = { enable = true; };
-      # systemDirs.data =
-      #   if isDarwin
-      #   then [ "/Users/${username}/.nix-profile/share/applications" ]
-      #   else [ "/home/${username}/.nix-profile/share/applications" ];
+      systemDirs.data =
+        if isDarwin
+        then [ "/Users/${username}/.nix-profile/share/applications" ]
+        else [ "/home/${username}/.nix-profile/share/applications" ];
     };
     home = {
       packages = with pkgs; [
@@ -38,6 +38,11 @@ in
       # file.".config/nix/nix.conf".text = ''
       #   experimental-features = nix-command flakes
       # '';
+      extraProfileCommands = ''
+        if [[ -d "$out/share/applications" ]] ; then
+          ${pkgs.desktop-file-utils}/bin/update-desktop-database $out/share/applications
+        fi
+      '';
     };
     # systemd.user.tmpfiles.rules = [ "L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}" ];
     targets.genericLinux.enable = true;

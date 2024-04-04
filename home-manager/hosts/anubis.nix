@@ -1,10 +1,15 @@
 { pkgs, config, lib, username, ... }:
 with lib.hm.gvariant;
-# let
-# nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
-# mpv-custom = import ../_mixins/apps/video/mpv.nix;
+let
+  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+  # mpv-custom = import ../_mixins/apps/video/mpv.nix;
+  vivaldi-custom = pkgs.vivaldi.override {
+    proprietaryCodecs = true;
+    enableWidevine = false;
+    # qt = "qt6";
+  };
 
-# in
+in
 {
   imports = [
     # ../_mixins/apps/music/rhythmbox.nix
@@ -27,11 +32,14 @@ with lib.hm.gvariant;
       extra-trusted-public-keys = [ "anubis.cachix.org-1:p6q0lqdZcE9UrkmFonRSlRPAPADFnZB1atSgp6tbF3U=" ];
     };
 
-    services.nonNixOs.enable = true;
-
+    services = {
+      bash.enable = true;
+      nonNixOs.enable = true;
+    };
     home = {
       packages = with pkgs; [
         docker-client
+        (nixGL vivaldi-custom)
       ];
       file = {
         "bin/create-docker" = {
