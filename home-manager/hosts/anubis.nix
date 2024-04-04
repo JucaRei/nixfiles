@@ -3,6 +3,7 @@ with lib.hm.gvariant;
 let
   nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
   # mpv-custom = import ../_mixins/apps/video/mpv.nix;
+  vivaldi-custom = pkgs.vivaldi.override { proprietaryCodecs = true; enableWidevine = true; qt = qt6; };
 
 in
 {
@@ -32,7 +33,7 @@ in
     home = {
       packages = with pkgs; [
         docker-client
-        (nixGL vivaldi.override { proprietaryCodecs = true; enableWidevine = true; qt = qt6; })
+        (nixGL vivaldi-custom)
       ];
       file = {
         "bin/create-docker" = {
