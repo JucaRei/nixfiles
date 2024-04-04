@@ -9,16 +9,14 @@ in
   environment = {
     systemPackages = with pkgs;
       [
-        # buildah # Container build tool
-        # podman-tui
         podman
         podman-compose
         podman-tui
-        # aardvark-dns
-        # conmon # Container monitoring
-        # runc
-        # skopeo # Container registry utility
+        aardvark-dns
+        conmon # Container monitoring
+        runc
         fuse-overlayfs # Container overlay+shiftfs
+        #buildah          # Container build tool
         #dive             # Container analyzer
         #grype            # Container vulnerability scanner
         #conmon           # Container monitoring
@@ -68,6 +66,7 @@ in
 
     };
     containers = {
+      enable = true;
       containersConf.settings = {
         containers.dns_servers = [
           "8.8.8.8"
@@ -89,6 +88,11 @@ in
     };
   };
 
+  security = {
+    # Disable unprivileged user namespaces, unless containers are enabled
+    # required by podman to run containers in rootless mode.
+    unprivilegedUsernsClone = config.virtualisation.containers.enable;
+  };
   # Fix for docker compat (vscode)
   systemd.user = {
     services = {

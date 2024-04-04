@@ -226,7 +226,6 @@ in
   # Only enable the grub on installs, not live media (.ISO images)
 
   boot = with lib; {
-    consoleLogLevel = mkDefault 0;
     # Only enable the systemd-boot on installs, not live media (.ISO images)
     loader = mkIf (isInstall) {
       efi = {
