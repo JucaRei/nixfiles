@@ -20,6 +20,7 @@
       userSettings = import ../../../config/vscode/settings.nix args;
 
       extensions = with pkgs.vscode-extensions; [
+        bbenoist.nix
         jnoortheen.nix-ide
         oderwat.indent-rainbow
         formulahendry.code-runner
@@ -31,7 +32,11 @@
         # ms-vscode-remote.remote-containers
         # ms-vscode-remote.vscode-remote-extensionpack
       ]
-      # ++ pkgs.unstable.vscode-extensions [ ms-azuretools.vscode-docker ] ## Downgrade to 1.22
+      ++ pkgs.unstable.vscode-extensions.ms-vscode-remote [
+        #ms-azuretools.vscode-docker ## Downgrade to 1.22
+        remote-ssh
+        remote-containers
+      ]
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         {
           # ms-azuretools.vscode-docker
@@ -130,27 +135,27 @@
           version = "1.3.4";
           sha256 = "sha256-dR6qODSTK377OJpmUqG9R85l1sf9fvJJACjrYhSRWgQ=";
         }
-        {
-          name = "remote-ssh";
-          publisher = "ms-vscode-remote";
-          version = "0.111.2024032515";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-MZ0ntoB20xTum+WQSwc29JS1UINoxImyU0orGzN0IP0=";
-        }
-        {
-          name = "remote-containers";
-          publisher = "ms-vscode-remote";
-          version = "0.352.0";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-bLkMJcC4IS9fAIzEKBtjUkqAzKQUGrGpp/LR1Ak81A4=";
-        }
-        {
-          name = "vscode-remote-extensionpack";
-          publisher = "ms-vscode-remote";
-          version = "0.25.0";
-          # sha256 = lib.fakeSha256;
-          sha256 = "sha256-CleLZvH40gidW6fqonZv/E/VO8IDI+QU4Zymo0n35Ns=";
-        }
+        # {
+        #   name = "remote-ssh";
+        #   publisher = "ms-vscode-remote";
+        #   version = "0.111.2024032515";
+        #   # sha256 = lib.fakeSha256;
+        #   sha256 = "sha256-MZ0ntoB20xTum+WQSwc29JS1UINoxImyU0orGzN0IP0=";
+        # }
+        # {
+        #   name = "remote-containers";
+        #   publisher = "ms-vscode-remote";
+        #   version = "0.352.0";
+        #   # sha256 = lib.fakeSha256;
+        #   sha256 = "sha256-bLkMJcC4IS9fAIzEKBtjUkqAzKQUGrGpp/LR1Ak81A4=";
+        # }
+        # {
+        #   name = "vscode-remote-extensionpack";
+        #   publisher = "ms-vscode-remote";
+        #   version = "0.25.0";
+        #   # sha256 = lib.fakeSha256;
+        #   sha256 = "sha256-CleLZvH40gidW6fqonZv/E/VO8IDI+QU4Zymo0n35Ns=";
+        # }
         {
           name = "darker-plus-material-red";
           publisher = "chireia";
