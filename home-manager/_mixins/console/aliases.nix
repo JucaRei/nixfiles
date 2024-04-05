@@ -36,7 +36,7 @@ in
       top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
       wget = "${pkgs.wget2}/bin/wget2";
       # jq = "${pkgs.jiq}/bin/jiq";
-      # du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
+      du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
       # cp = "${pkgs.unstable.advcpmv}/bin/advcp -rvi";
       # mv = "${pkgs.unstable.advcpmv}/bin/advmv -vi";
       cp = "${pkgs.unstable.advcpmv}/bin/advcp -R --progress-bar";

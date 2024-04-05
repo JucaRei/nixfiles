@@ -31,6 +31,8 @@ in
           lm_sensors
         ];
 
+        # sudo apt-get reinstall lxsession;sudo apt install --reinstall lightdm;sudo systemctl enable lightdm
+
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
           GIO_EXTRA_MODULES = "${gio}/lib/gio/modules";

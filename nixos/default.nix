@@ -407,7 +407,7 @@ in
       rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles --show-trace -L";
       rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles --show-trace -L";
       sxorg = "export DISPLAY=:0.0";
-      du = "${pkgs.ncdu_1}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
+      # du = "${pkgs.ncdu_1}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
       drivers = "lspci -v | grep -B8 -v 'Kernel modules: [a-z0-9]+'";
       r = "rsync -ra --info=progress2";
       fd = "fd --hidden --exclude .git";
