@@ -12,7 +12,7 @@ in
       {
         packages = with pkgs; [
           ### Window
-          bpswm
+          bspwm
           wmname
           sxhkd
           dunst
