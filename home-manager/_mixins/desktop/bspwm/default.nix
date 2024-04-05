@@ -20,6 +20,7 @@ in
           sxhkd
           dunst
           rofi
+          polybar
 
           ### Theme
           lxappearance-gtk2
