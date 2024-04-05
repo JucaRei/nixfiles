@@ -10,14 +10,14 @@ in
         gio = pkgs.gnome.gvfs;
       in
       {
-        packages = with pkgs; (nixgl [
+        packages = with pkgs; [
           ### Window
-          bspwm
+          (nixgl bspwm)
           wmname
-          sxhkd
-          dunst
-          rofi
-          polybar
+          (nixgl sxhkd)
+          (nixgl dunst)
+          (nixgl rofi)
+          (nixgl polybar)
 
           ### Theme
           lxappearance-gtk2
@@ -30,7 +30,7 @@ in
           pamixer # Pulseaudio command line mixer
           imagemagick
           lm_sensors
-        ]);
+        ];
 
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
