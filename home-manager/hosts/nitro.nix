@@ -38,7 +38,7 @@ with lib;
         # spotdl
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
-        (wrapProgram vlc)
+        # (wrapProgram vlc)
         # cloneit
         # unstable.vscode-fhs
         #unstable.vscode-with-extensions

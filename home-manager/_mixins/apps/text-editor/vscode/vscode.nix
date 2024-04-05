@@ -19,7 +19,7 @@
 
       userSettings = import ../../../config/vscode/settings.nix args;
 
-      extensions = with pkgs.vscode-extensions; [
+      extensions = with pkgs.unstable.vscode-extensions; [
         bbenoist.nix
         jnoortheen.nix-ide
         oderwat.indent-rainbow
@@ -31,12 +31,13 @@
         sumneko.lua
         # ms-vscode-remote.remote-containers
         # ms-vscode-remote.vscode-remote-extensionpack
+
+        ms-vscode-remote.remote-ssh
+        ms-vscode-remote.remote-containers
       ]
-      ++ pkgs.unstable.vscode-extensions.ms-vscode-remote [
-        #ms-azuretools.vscode-docker ## Downgrade to 1.22
-        remote-ssh
-        remote-containers
-      ]
+      # ++ pkgs.unstable.vscode-extensions.ms-vscode-remote [
+      #ms-azuretools.vscode-docker ## Downgrade to 1.22
+      # ]
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         {
           # ms-azuretools.vscode-docker
