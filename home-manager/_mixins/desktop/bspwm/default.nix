@@ -43,7 +43,7 @@ in
     xsession.windowManager = {
       bspwm = {
         enable = true;
-        package = nixgl pkgs.bspwm-unstable;
+        package = nixgl pkgs.unstable.bspwm;
 
         startupPrograms = [ ];
       };
