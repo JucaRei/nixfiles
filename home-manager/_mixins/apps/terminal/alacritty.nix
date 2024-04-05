@@ -4,7 +4,7 @@
 # in
 {
   programs.alacritty = {
-    enable = true;
+    # enable = true;
     # package = pkgs.alacritty;
     settings = {
       window = {
