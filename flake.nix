@@ -271,7 +271,7 @@
           "juca@DietPi" = libx.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
           # VMs
           "juca@minimech" = libx.mkHome { hostname = "minimech"; username = "juca"; };
-          "juca@scrubber" = libx.mkHome { hostname = "scrubber"; username = "juca"; desktop = "pantheon"; };
+          "juca@scrubber" = libx.mkHome { hostname = "scrubber"; username = "juca"; desktop = "bspwm"; };
           "juca@lima-builder" = libx.mkHome { hostname = "lima-builder"; username = "juca"; };
           "juca@lima-default" = libx.mkHome { hostname = "lima-default"; username = "juca"; };
           "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };

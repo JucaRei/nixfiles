@@ -2,8 +2,6 @@
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   alacrity = ../../apps/terminal/alacritty.nix { inherit config; };
-
-
 in
 {
 
