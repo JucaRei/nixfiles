@@ -2,6 +2,9 @@
 with lib;
 let
   cfg = config.services.yt-dlp-custom;
+
+  # mypython = with pkgs; python310;
+  mypython = (pkgs.python310.withPackages (pythonPackages: with pythonPackages; [ ]));
 in
 {
   options.services.yt-dlp-custom = {
@@ -67,6 +70,10 @@ in
         ytmusic5 = "yt-dlp --no-overwrite --extract-audio --embed-thumbnail --format bestaudio --audio-format aac --split-chapters --parse-metadata 'section_number:%%(track)d'";
         ytmusic6 = "yt-dlp --no-overwrite --extract-audio --embed-thumbnail --format bestaudio --audio-format aac --add-metadata --split-chapters --parse-metadata 'title:%%(artist)s - %%(album)s' -o 'chapter_number:%%(section_number)s chapter:%%(section_title)s.%%(ext)s'";
       };
+
+      packages = with pkgs; [
+        (writeScriptBin "youtube_channel_archiver" ("#!${mypython}/bin/python3\n" + (builtins.readFile ../config/yt-dlp-scripts/youtube_channel_archiver.py)))
+      ];
     };
   };
 }
