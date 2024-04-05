@@ -10,7 +10,7 @@ in
         gio = pkgs.gnome.gvfs;
       in
       {
-        packages = with pkgs; [
+        packages = with pkgs; (nixgl [
           ### Window
           bspwm
           wmname
@@ -30,7 +30,7 @@ in
           pamixer # Pulseaudio command line mixer
           imagemagick
           lm_sensors
-        ];
+        ]);
 
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
