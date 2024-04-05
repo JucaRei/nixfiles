@@ -9,6 +9,12 @@ with lib.hm.gvariant;
     services = {
       nonNixOs.enable = true;
     };
+
+    home = {
+      packages = with pkgs;[
+        nix-whereis
+      ];
+    };
   };
 }
 
