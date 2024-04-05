@@ -12,7 +12,6 @@ in
       {
         packages = with pkgs; [
           ### Window
-          (nixgl bspwm)
           wmname
           (nixgl sxhkd)
           (nixgl dunst)
@@ -41,6 +40,14 @@ in
       };
 
     dconf.settings = { };
+    xsession.windowManager = {
+      bspwm = {
+        enable = true;
+        package = nixgl pkgs.bspwm-unstable;
+
+        startupPrograms = [ ];
+      };
+    };
 
     programs = {
       alacritty = {
