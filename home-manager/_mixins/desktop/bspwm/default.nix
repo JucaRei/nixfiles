@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }@args:
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
 in
@@ -46,7 +46,7 @@ in
       alacritty = {
         enable = true;
         package = nixgl pkgs.alacritty;
-        settings = import ../../apps/terminal/alacritty.nix { inherit config; };
+        settings = import ../../apps/terminal/alacritty.nix args;
       };
     };
   };
