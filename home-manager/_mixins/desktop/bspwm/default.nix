@@ -14,8 +14,8 @@ in
           ### Window
           wmname
           sxhkd
-          dunst
-          rofi
+          # dunst
+          # rofi
           # polybar
           xfce.thunar
 
