@@ -56,7 +56,6 @@ in
           monitors = {
             eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" ];
           };
-          border = true;
           extraConfig = import ./bspwm.nix { inherit config; } args;
         };
       };
