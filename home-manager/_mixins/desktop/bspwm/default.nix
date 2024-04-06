@@ -102,9 +102,9 @@ in
             # "Kupfer.py" = {
             #   focus = "on";
             # };
-            "Screenkey" = {
-              manage = "off";
-            };
+            # "Screenkey" = {
+            #   manage = "off";
+            # };
           };
           # bspc rule -a Chromium desktop='^2'
           # bspc rule -a Blueman-manager state=floating center=true
