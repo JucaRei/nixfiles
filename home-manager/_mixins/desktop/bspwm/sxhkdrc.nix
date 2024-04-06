@@ -6,9 +6,7 @@ let
   mod = "super";
 in
 {
-  keybindings = {
-    "${mod} + Return" = "${terminal}";
-  };
+  "${mod} + Return" = "${terminal}";
   # keybindings = ''
   #   #! =================================================================== !#
   #   #!                               general                               !#
