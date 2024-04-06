@@ -117,10 +117,10 @@ in
     };
 
     services = {
-      polybar = {
-        enable = true;
-        package = nixgl pkgs.unstable.polybar;
-      };
+      # polybar = {
+      #   enable = true;
+      #   package = nixgl pkgs.unstable.polybar;
+      # };
 
       sxhkd = {
         enable = true;
