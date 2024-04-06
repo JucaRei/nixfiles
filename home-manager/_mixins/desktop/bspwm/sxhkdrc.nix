@@ -1,7 +1,9 @@
 { pkgs, config, lib, ... }:
 let
   _ = lib.getExe;
-  terminal = "${_ pkgs.alacritty}";
+  nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+  alacritty-custom = nixgl pkgs.alacritty;
+  terminal = "${_ alacritty-custom}";
   filemanager = "thunar";
   mod = "super";
   browser = "vivaldi";
