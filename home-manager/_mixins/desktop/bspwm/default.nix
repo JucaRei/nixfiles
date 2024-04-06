@@ -124,7 +124,7 @@ in
 
       sxhkd = {
         enable = true;
-        keybindings = import ./sxhkdrc.nix { inherit config lib pkgs; } args;
+        keybindings = import ./sxhkdrc.nix args;
       };
     };
 
