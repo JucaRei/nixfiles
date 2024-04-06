@@ -99,9 +99,9 @@ in
               # "mplayer2"
               state = "floating";
             };
-            "Kupfer.py" = {
-              focus = "on";
-            };
+            # "Kupfer.py" = {
+            #   focus = "on";
+            # };
             "Screenkey" = {
               manage = "off";
             };
