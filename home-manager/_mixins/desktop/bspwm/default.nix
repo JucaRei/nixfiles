@@ -29,6 +29,9 @@ in
           pamixer # Pulseaudio command line mixer
           imagemagick
           lm_sensors
+
+          # Polkit
+          mate.mate-polkit
         ];
 
         # sudo apt-get reinstall lxsession;sudo apt install --reinstall lightdm;sudo systemctl enable lightdm
@@ -49,7 +52,25 @@ in
           enable = true;
           package = nixgl pkgs.unstable.bspwm;
           # startupPrograms = [ ];
+          alwaysResetDesktops = true;
+          monitors = {
+            eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" ];
+          };
+          border = true;
+          extraConfig = import ./bspwm.nix { inherit config; } args;
         };
+      };
+    };
+
+    services = {
+      polybar = {
+        enable = true;
+        package = nixgl pkgs.unstable.polybar;
+      };
+
+      sxhkd = {
+        enable = true;
+        extraConfig = import ./sxhkdrc.nix { inherit config pkgs; } args;
       };
     };
 
@@ -60,5 +81,23 @@ in
         settings = import ../../apps/terminal/alacritty.nix args;
       };
     };
+
+    systemd.user.services.polkit-agent = {
+      Unit = {
+        Description = "launch authentication-agent-1";
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = ''
+          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+        '';
+      };
+
+      Install = { WantedBy = [ "graphical-session.target" ]; };
+    };
   };
+
 }
