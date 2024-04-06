@@ -2,7 +2,7 @@
 let
   _ = lib.getExe;
   terminal = "${_ pkgs.alacritty}";
-  filemanager = "${_ pkgs.thunar}";
+  filemanager = "${_ pkgs.xfce.thunar}";
   mod = "super";
   browser = "vivaldi";
 in
