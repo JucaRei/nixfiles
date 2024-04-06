@@ -42,12 +42,14 @@ in
       };
 
     dconf.settings = { };
-    xsession.windowManager = {
-      bspwm = {
-        enable = true;
-        package = nixgl pkgs.unstable.bspwm;
-
-        startupPrograms = [ ];
+    xsession = {
+      enable = true;
+      windowManager = {
+        bspwm = {
+          enable = true;
+          package = nixgl pkgs.unstable.bspwm;
+          # startupPrograms = [ ];
+        };
       };
     };
 
