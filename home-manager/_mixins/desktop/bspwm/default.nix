@@ -16,7 +16,7 @@ in
           sxhkd
           dunst
           rofi
-          polybar
+          # polybar
           xfce.thunar
 
           ### Theme
