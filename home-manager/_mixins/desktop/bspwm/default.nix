@@ -17,6 +17,7 @@ in
           dunst
           rofi
           polybar
+          xfce.thunar
 
           ### Theme
           lxappearance-gtk2
