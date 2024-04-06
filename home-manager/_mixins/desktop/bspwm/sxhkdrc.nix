@@ -112,8 +112,8 @@ in
   XF86AudioMute = "pamixer -t";
   XF86AudioRaiseVolume = "pamixer -i 2";
   XF86AudioLowerVolume = "pamixer -d 2";
-  XF86MonBrightnessUp = "${pkgs.xbacklight}/bin/xbacklight + 5";
-  XF86MonBrightnessDown = "${pkgs.xbacklight}/bin/xbacklight - 5";
+  XF86MonBrightnessUp = "${pkgs.xorg.xbacklight}/bin/xbacklight + 5";
+  XF86MonBrightnessDown = "${pkgs.xorg.xbacklight}/bin/xbacklight - 5";
 
   ##################
   ### Screenshot ###
