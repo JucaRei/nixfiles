@@ -99,7 +99,7 @@ in
 
       sxhkd = {
         enable = true;
-        extraConfig = import ./sxhkdrc.nix { inherit config lib pkgs; } args;
+        keybindings = import ./sxhkdrc.nix { inherit config lib pkgs; } args;
       };
     };
 
