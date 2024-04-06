@@ -51,7 +51,7 @@ in
       windowManager = {
         bspwm = {
           enable = true;
-          package = nixgl pkgs.unstable.bspwm;
+          package = (nixgl pkgs.unstable.bspwm);
           # startupPrograms = [ ];
           alwaysResetDesktops = true;
           monitors = {

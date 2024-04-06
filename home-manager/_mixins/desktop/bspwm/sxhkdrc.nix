@@ -87,7 +87,7 @@ in
   "${mod} + ctrl + space" = "bspc node -p cancel";
 
   # cancel the preselection for the focused desktop
-  "${mod} + ctrl + shift + space" = ''bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel'';
+  "${mod} + ctrl + shift + space" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
 
   ###################
   ### Move/Resize ###
