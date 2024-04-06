@@ -13,10 +13,10 @@ in
         packages = with pkgs; [
           ### Window
           wmname
-          (nixgl sxhkd)
-          (nixgl dunst)
-          (nixgl rofi)
-          (nixgl polybar)
+          sxhkd
+          dunst
+          rofi
+          polybar
 
           ### Theme
           lxappearance-gtk2
