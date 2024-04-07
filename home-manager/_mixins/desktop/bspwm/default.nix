@@ -122,7 +122,7 @@ in
       polybar = {
         enable = true;
         package = nixgl pkgs.unstable.polybarFull;
-        settings = import ./polybar.nix args { inherit config pkgs; };
+        config = import ./polybar.nix args { inherit config pkgs; };
       };
       sxhkd = {
         enable = true;
