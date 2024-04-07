@@ -6,7 +6,7 @@ stdenvNoCC.mkDerivation rec {
   name = "juca-avatar";
   phases = [ "installPhase" "fixupPhase" ];
 
-  src = ./face.jpg;
+  src = ./juca.jpg;
 
   installPhase = ''
     mkdir -p "$out/share/faces" "$out/share/sddm/faces"
