@@ -119,7 +119,7 @@ in
     };
 
     services = {
-      polybar = import ./polybar args;
+      polybar = import ./polybar.nix args { inherit config pkgs; };
 
       sxhkd = {
         enable = true;
