@@ -395,7 +395,7 @@ in
         cursor-click = "pointer";
         cursor-scroll = "ns-resize";
       };
-      settings = {
+      "settings" = {
 
         screenchange-reload = false;
 
@@ -408,5 +408,4 @@ in
         pseudo-transparency = false;
       };
     };
-};
 }
