@@ -1,5 +1,10 @@
 # This file defines overlays
 { inputs, ... }:
+let
+  polybar-scripts = inputs.polybar-scripts // {
+    version = "git-" + builtins.substring 0 7 inputs.polybar-scripts.rev;
+  };
+in
 {
   # This one brings our custom packages from the 'pkgs' directory
   additions = final: _prev: import ../pkgs { pkgs = final; };
@@ -130,17 +135,11 @@
     #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
     # };
 
-    player-mpris-tail =
-      let
-        polybar-scripts = inputs.polybar-scripts // {
-          version = "git-" + builtins.substring 0 7 inputs.polybar-scripts.rev;
-        };
-      in
-      prev.player-mpris-tail {
-        inherit polybar-scripts;
-        inherit (prev) stdenv;
-        inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
-      };
+    player-mpris-tail = prev.pkgs.callPackage ./scripts/polybar-scripts/player-mpris-tail {
+      inherit polybar-scripts;
+      inherit (prev) stdenv;
+      inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
+    };
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
