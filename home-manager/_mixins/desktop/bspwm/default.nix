@@ -122,8 +122,9 @@ in
       polybar = {
         enable = true;
         package = nixgl pkgs.unstable.polybarFull;
-        config = import ./polybar.nix args { inherit config pkgs; };
+        settings = import ./polybar.nix args { inherit config pkgs; };
       };
+      script = "polybar bar/pam1 &";
       sxhkd = {
         enable = true;
         keybindings = import ./sxhkdrc.nix args;
