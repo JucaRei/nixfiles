@@ -16,6 +16,12 @@ with lib.hm.gvariant;
       packages = with pkgs;[
         nix-whereis
       ];
+      file = {
+        ".face" = {
+          # source = ./face.jpg;
+          source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+        };
+      };
     };
   };
 }
