@@ -9,9 +9,11 @@ let
   alert = cyan;
   dim = grey;
 
+  # --icon-playing "${okay ""}"
+
   player-mpris-tail = pkgs.writeShellScriptBin "player-mpris-tail" ''
     ${pkgs.player-mpris-tail}/bin/player-mpris-tail \
-      # --icon-playing #A7C080 "" \
+      --icon-playing #A7C080 "" \
       --icon-paused #A7C080 "" \
       --icon-stopped #D83F31 "" \
       --icon-none "" \
