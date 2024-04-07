@@ -22,6 +22,7 @@ in
         "flathub:app/info.febvre.Komikku/x86_64/stable"
         "flathub:app/com.ktechpit.whatsie/x86_64/stable"
         "flathub:app/io.bassi.Amberol/x86_64/stable"
+        "flathub:app/io.typora.Typora/x86_64/stable"
 
         ## out-of-tree flatpaks can be installed like this (note: they can't be a URL because flatpak doesn't like that)
         # ":${./foobar.flatpak}"
