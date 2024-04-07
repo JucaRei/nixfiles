@@ -1,4 +1,4 @@
-{ config , lib, pkgs, username, ...}:
+{ config, lib, pkgs, username, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
 in
@@ -23,7 +23,10 @@ with lib.hm.gvariant; {
 
   # Authrorize X11 access in Distrobox
   home.file = {
-    ".face".source = ./face.jpg;
+    ".face" = {
+      # source = ./face.jpg;
+      source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+    };
     ".distroboxrc" = lib.mkIf isLinux {
       text = ''
         xhost +si:localuser:$USER

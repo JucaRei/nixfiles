@@ -134,6 +134,7 @@ in
     # spotdl = prev.callPackage ../pkgs/tools/spotdl {
     #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
     # };
+    juca-avatar = prev.juca-avatar;
 
     player-mpris-tail = prev.pkgs.callPackage ../pkgs/scripts/polybar-scripts/player-mpris-tail {
       inherit polybar-scripts;

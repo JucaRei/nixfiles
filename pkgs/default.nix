@@ -96,6 +96,7 @@
   ###############
   ### Scripts ###
   ###############
+  juca-avatar = pkgs.callPackage ./scripts/juca-avatar { };
   # change-audio = pkgs.callPackage ./scripts/change-audio { };
   # change-backlight = pkgs.callPackage ./scripts/change-backlight { };
   # dkcompose = pkgs.callPackage ./scripts/dkcompose { };
