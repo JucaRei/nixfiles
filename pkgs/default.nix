@@ -136,7 +136,7 @@
   iosevka-q = pkgs.callPackage ./fonts/iosevka-q { };
   sarasa-gothic = pkgs.callPackage ./fonts/sarasa-gothic { };
   # material-symbols = pkgs.callPackage ./fonts/material-symbols { };
-  # nf-iosevka = pkgs.callPackage ./fonts/nf-iosevka { };
+  nf-iosevka = pkgs.callPackage ./fonts/nf-iosevka { };
   # nf-victormono = pkgs.callPackage ./fonts/nf-victormono { };
   # noto-sans-arabic = pkgs.callPackage ./fonts/noto-sans-arabic { };
   # phospor = pkgs.callPackage ./fonts/phospor { };

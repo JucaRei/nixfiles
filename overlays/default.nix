@@ -122,6 +122,7 @@
     nix-inspect = prev.nix-inspect;
     sarasa-gothic = prev.sarasa-gothic;
     iosevka-q = prev.iosevka-q;
+    nf-iosevka = prev.nf-iosevka;
     catppuccin-grub = prev.catppuccin-grub;
     cyberre-grub-theme = prev.cyberre-grub-theme;
     astronaut-sddm = prev.astronaut-sddm;

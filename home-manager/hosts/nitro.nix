@@ -48,6 +48,7 @@ with lib;
         # gnumake
         transmission_4-gtk
         nix-whereis
+        nf-iosevka
         # lua
         # fcitx5-with-addons
         # vv

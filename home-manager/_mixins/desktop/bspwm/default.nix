@@ -55,7 +55,8 @@ in
           # startupPrograms = [ ];
           alwaysResetDesktops = true;
           monitors = {
-            eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" ];
+            # eDP-1
+            default = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
           extraConfigEarly = ''
@@ -69,11 +70,11 @@ in
           settings = {
             pointer_modifier = "mod4";
             pointer_action1 = "move";
-            # pointer_action2 = "resize_side";
-            pointer_action2 = "resize_corner";
+            pointer_action2 = "resize_side";
+            pointer_action3 = "resize_corner";
 
             border_width = 2;
-            window_gap = 10;
+            window_gap = 12;
 
             split_ratio = 0.52;
             borderless_monocle = true;
@@ -118,10 +119,7 @@ in
     };
 
     services = {
-      # polybar = {
-      #   enable = true;
-      #   package = nixgl pkgs.unstable.polybar;
-      # };
+      polybar = import ./polybar args;
 
       sxhkd = {
         enable = true;
