@@ -4,8 +4,8 @@ let
 in
 {
 
+  imports = [ ./polybar.nix ];
   config = {
-    imports = [ ./polybar.nix ];
     home =
       let
         gio = pkgs.gnome.gvfs;
