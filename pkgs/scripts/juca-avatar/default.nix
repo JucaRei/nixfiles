@@ -1,5 +1,4 @@
 { stdenvNoCC
-, fetchurl
 , imagemagick
 }:
 
