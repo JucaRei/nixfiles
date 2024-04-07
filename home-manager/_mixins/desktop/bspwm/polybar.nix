@@ -3,33 +3,59 @@ let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   fonts = import ./fonts.nix { inherit pkgs; };
 
+  okay = green;
+  warn = orange;
+  fail = red;
+  alert = cyan;
+  dim = grey;
+
+  player-mpris-tail = pkgs.writeShellScriptBin "player-mpris-tail" ''
+    ${pkgs.player-mpris-tail}/bin/player-mpris-tail \
+      --icon-playing "${okay ""}" \
+      --icon-paused "${okay ""}" \
+      --icon-stopped "${dim ""}" \
+      --icon-none "" \
+      --format "{icon} {artist} - {title} ({album})" \
+      --blacklist vlc \
+      "$@"
+  '';
+
+  ##################
+  ### Colors.ini ###
+  ##################
+
   ### Colors
   # ;; Dark Add FC at the beginning #FC1E1F29 for 99 transparency
-  bg = "#2f354b";
+  bg = "#2D353B";
   bg-alt = "#BF1D1F28";
-  fg = "#FDFDFD";
+  fg = "#d3c6aa";
+  mb = "#2D353B";
 
   trans = "#00000000";
   white = "#FFFFFF";
   black = "#000000";
 
-  # ;; Colors
+  blue-arch = "#0A9CF5";
+  amber = "#FBC02D";
+  sapphire = "#74c7ec";
 
-  red = "#F37F97";
+  red = "#E67E80";
+  orange = "#E69875";
+  yellow = "#DBBC7F";
+  green = "#A7C080";
+  aqua = "#83C092";
+  blue = "#7FBBB3";
+  purple = "#D699B6";
   pink = "#EC407A";
-  purple = "#C574DD";
-  blue = "#8897F4";
   cyan = "#79E6F3";
   teal = "#00B19F";
-  green = "#5ADECD";
   lime = "#B9C244";
-  yellow = "#F2A272";
-  amber = "#FBC02D";
-  orange = "#E57C46";
   brown = "#AC8476";
   grey = "#8C8C8C";
   indigo = "#6C77BB";
   blue-gray = "#6D8895";
+
+  pallete = "#D83F31";
 in
 
 {
@@ -39,9 +65,13 @@ in
       package = nixgl pkgs.unstable.polybarFull;
       script = "polybar bar/pam1 &";
       settings = {
-        ##############
-        ### System ###
-        ##############
+        ##################
+        ### System.ini ###
+        ##################
+        # ; When some modules in the polybar doesn't show up.
+        # ; Look for battery/adapter: "ls -l /sys/class/power_supply"
+        # ; Look for backlight: "ls -l /sys/class/backlight"
+        # ; Look for network: "ls -l /sys/class/net"
         "system" = {
           adapter = "AC";
           battery = "BAT1";
@@ -49,17 +79,22 @@ in
           network_interface = "wlan0";
         };
 
-        ##############
-        ### Config ###
-        ##############
+        # https://github.com/polybar/polybar-scripts/tree/master/polybar-scripts/player-mpris-tail
+        "module/mpris" = {
+          type = "custom/script";
+          exec = "${player-mpris-tail}/bin/player-mpris-tail";
+          tail = true;
+        };
+        ##################
+        ### Config.ini ###
+        ##################
         "global/wm" = {
           margin-bottom = 0;
           margin-top = 0;
         };
 
-        ## ----------------------------------  [bar/pam1] ---------------------------------- ##
-
-        "bar/pam1" = {
+        "default" = {
+          module-foreground = "${bg}";
           monitor = "";
           monitor-fallback = "";
           monitor-strict = false;
@@ -397,18 +432,8 @@ in
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";
         };
-        "settings" = {
 
-          screenchange-reload = false;
-
-          compositing-background = "source";
-          compositing-foreground = "over";
-          compositing-overline = "over";
-          compositing-underline = "over";
-          compositing-border = "over";
-
-          pseudo-transparency = false;
-        };
+        "system" = { };
       };
     };
   };

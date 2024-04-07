@@ -102,6 +102,7 @@
   # git-refresh = pkgs.callPackage ./scripts/git-refresh { };
   # git-stats = pkgs.callPackage ./scripts/git-stats { };
   # list-extensions = pkgs.callPackage ./scripts/list-extensions { };
+  player-mpris-tail = pkgs.callPackage ./scripts/polybar-scripts/player-mpris-tail { };
   list-iommu = pkgs.callPackage ./scripts/list-iommu { };
   nix-cleanup = pkgs.callPackage ./scripts/nix-cleanup { };
   nix-whereis = pkgs.callPackage ./scripts/nix-whereis { };

@@ -129,6 +129,18 @@
     # spotdl = prev.callPackage ../pkgs/tools/spotdl {
     #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
     # };
+
+    player-mpris-tail =
+      let
+        polybar-scripts = inputs.polybar-scripts // {
+          version = "git-" + builtins.substring 0 7 inputs.polybar-scripts.rev;
+        };
+      in
+      prev.player-mpris-tail {
+        inherit polybar-scripts;
+        inherit (prev) stdenv;
+        inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
+      };
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

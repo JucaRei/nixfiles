@@ -90,6 +90,11 @@
       # inputs.flake-utils.follows = "agenix-cli/flake-utils";
     };
 
+    polybar-scripts = {
+      url = "github:polybar/polybar-scripts";
+      flake = false;
+    };
+
     # Neovim
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
