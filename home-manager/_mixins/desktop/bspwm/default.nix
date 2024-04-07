@@ -5,6 +5,7 @@ in
 {
 
   config = {
+    imports = [ ./polybar.nix ];
     home =
       let
         gio = pkgs.gnome.gvfs;
@@ -119,12 +120,6 @@ in
     };
 
     services = {
-      polybar = {
-        enable = true;
-        package = nixgl pkgs.unstable.polybarFull;
-        settings = import ./polybar.nix args { inherit config pkgs; };
-        script = "polybar bar/pam1 &";
-      };
       sxhkd = {
         enable = true;
         keybindings = import ./sxhkdrc.nix args;
