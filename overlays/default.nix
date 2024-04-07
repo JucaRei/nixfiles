@@ -135,7 +135,7 @@ in
     #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
     # };
 
-    player-mpris-tail = prev.pkgs.callPackage ./scripts/polybar-scripts/player-mpris-tail {
+    player-mpris-tail = prev.pkgs.callPackage ../pkgs/scripts/polybar-scripts/player-mpris-tail {
       inherit polybar-scripts;
       inherit (prev) stdenv;
       inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
