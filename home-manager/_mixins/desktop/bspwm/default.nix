@@ -119,8 +119,11 @@ in
     };
 
     services = {
-      polybar = import ./polybar.nix args { inherit config pkgs; };
-
+      polybar = {
+        enable = true;
+        package = nixgl pkgs.unstable.polybarFull;
+        settings = import ./polybar.nix args { inherit config pkgs; };
+      };
       sxhkd = {
         enable = true;
         keybindings = import ./sxhkdrc.nix args;

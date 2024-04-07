@@ -2,410 +2,405 @@
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   fonts = import ./fonts.nix { inherit pkgs; };
+
+  ### Colors
+  # ;; Dark Add FC at the beginning #FC1E1F29 for 99 transparency
+  bg = "#2f354b";
+  bg-alt = "#BF1D1F28";
+  fg = "#FDFDFD";
+
+  trans = "#00000000";
+  white = "#FFFFFF";
+  black = "#000000";
+
+  # ;; Colors
+
+  red = "#F37F97";
+  pink = "#EC407A";
+  purple = "#C574DD";
+  blue = "#8897F4";
+  cyan = "#79E6F3";
+  teal = "#00B19F";
+  green = "#5ADECD";
+  lime = "#B9C244";
+  yellow = "#F2A272";
+  amber = "#FBC02D";
+  orange = "#E57C46";
+  brown = "#AC8476";
+  grey = "#8C8C8C";
+  indigo = "#6C77BB";
+  blue-gray = "#6D8895";
 in
+
 {
-  enable = true;
-  package = nixgl pkgs.unstable.polybarFull;
-  settings =
-    let
-      ### Colors
-      # ;; Dark Add FC at the beginning #FC1E1F29 for 99 transparency
-      bg = "#2f354b";
-      bg-alt = "#BF1D1F28";
-      fg = "#FDFDFD";
+  ##############
+  ### System ###
+  ##############
+  "system" = {
+    adapter = "AC";
+    battery = "BAT1";
+    graphics_card = "intelgpu";
+    network_interface = "wlan0";
+  };
 
-      trans = "#00000000";
-      white = "#FFFFFF";
-      black = "#000000";
+  ##############
+  ### Config ###
+  ##############
+  "global/wm" = {
+    margin-bottom = 0;
+    margin-top = 0;
+  };
 
-      # ;; Colors
+  ## ----------------------------------  [bar/pam1] ---------------------------------- ##
 
-      red = "#F37F97";
-      pink = "#EC407A";
-      purple = "#C574DD";
-      blue = "#8897F4";
-      cyan = "#79E6F3";
-      teal = "#00B19F";
-      green = "#5ADECD";
-      lime = "#B9C244";
-      yellow = "#F2A272";
-      amber = "#FBC02D";
-      orange = "#E57C46";
-      brown = "#AC8476";
-      grey = "#8C8C8C";
-      indigo = "#6C77BB";
-      blue-gray = "#6D8895";
-    in
-    {
-      ##############
-      ### System ###
-      ##############
-      "system" = {
-        adapter = "AC";
-        battery = "BAT1";
-        graphics_card = "intelgpu";
-        network_interface = "wlan0";
-      };
+  "bar/pam1" = {
+    monitor = "";
+    monitor-fallback = "";
+    monitor-strict = false;
 
-      ##############
-      ### Config ###
-      ##############
-      "global/wm" = {
-        margin-bottom = 0;
-        margin-top = 0;
-      };
+    override-redirect = false;
+    fixed-center = true;
 
-      ## ----------------------------------  [bar/pam1] ---------------------------------- ##
+    width = "2.5%";
+    height = 40;
 
-      "bar/pam1" = {
-        monitor = "";
-        monitor-fallback = "";
-        monitor-strict = false;
+    offset-x = "2%";
+    offset-y = 10;
 
-        override-redirect = false;
-        fixed-center = true;
+    background = "${bg-alt}";
+    foreground = "${fg}";
 
-        width = "2.5%";
-        height = 40;
+    radius = 6;
 
-        offset-x = "2%";
-        offset-y = 10;
+    line-size = 2;
+    line-color = "${blue}";
 
-        background = "${bg-alt}";
-        foreground = "${fg}";
+    padding = 0;
 
-        radius = 6;
+    module-margin-left = 0;
+    module-margin-right = 0;
 
-        line-size = 2;
-        line-color = "${blue}";
+    # font-0 = "${pkgs.iosevka}/share/fonts/truetype/Iosevka-Regular.ttf";
+    font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
+    font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
+    font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
+    font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
+    font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
+    font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
 
-        padding = 0;
+    modules-left = "";
+    modules-center = "xdomenu";
+    modules-right = "";
 
-        module-margin-left = 0;
-        module-margin-right = 0;
+    separator = "";
+    dim-value = "1.0";
 
-        # font-0 = "${pkgs.iosevka}/share/fonts/truetype/Iosevka-Regular.ttf";
-        font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-        font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-        font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-        font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-        font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-        font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
+    wm-restack = "bspwm";
+    enable-ipc = true;
 
-        modules-left = "";
-        modules-center = "xdomenu";
-        modules-right = "";
+    cursor-click = "pointer";
+    cursor-scroll = "ns-resize";
+  };
 
-        separator = "";
-        dim-value = "1.0";
+  ## ----------------------------------  [bar/pam2] ---------------------------------- ##
 
-        wm-restack = "bspwm";
-        enable-ipc = true;
+  "bar/pam2" = {
+    monitor = "";
+    monitor-fallback = "";
+    monitor-strict = false;
 
-        cursor-click = "pointer";
-        cursor-scroll = "ns-resize";
-      };
+    override-redirect = false;
 
-      ## ----------------------------------  [bar/pam2] ---------------------------------- ##
+    bottom = false;
+    fixed-center = true;
 
-      "bar/pam2" = {
-        monitor = "";
-        monitor-fallback = "";
-        monitor-strict = false;
+    width = "17%";
+    height = 40;
 
-        override-redirect = false;
+    offset-x = "5%";
+    offset-y = 10;
 
-        bottom = false;
-        fixed-center = true;
+    background = "${bg-alt}";
+    foreground = "${fg}";
 
-        width = "17%";
-        height = 40;
+    radius = 6;
 
-        offset-x = "5%";
-        offset-y = 10;
+    line-size = 2;
+    line-color = "${blue}";
 
-        background = "${bg-alt}";
-        foreground = "${fg}";
+    border-size = 2;
+    border-color = "${bg}";
 
-        radius = 6;
+    padding = 1;
 
-        line-size = 2;
-        line-color = "${blue}";
+    module-margin-left = 0;
+    module-margin-right = 0;
 
-        border-size = 2;
-        border-color = "${bg}";
+    font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
+    font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
+    font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
+    font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
+    font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
+    font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
+    font-6 = with fonts.polybar-6; "${ftname};${toString offset}";
 
-        padding = 1;
+    modules-left = "title space bspwm";
+    modules-center = "";
+    modules-right = "";
 
-        module-margin-left = 0;
-        module-margin-right = 0;
+    separator = "";
+    dim-value = "1.0";
 
-        font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-        font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-        font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-        font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-        font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-        font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
-        font-6 = with fonts.polybar-6; "${ftname};${toString offset}";
+    wm-restack = "bspwm";
+    enable-ipc = true;
 
-        modules-left = "title space bspwm";
-        modules-center = "";
-        modules-right = "";
+    cursor-click = "pointer";
+    cursor-scroll = "ns-resize";
+  };
 
-        separator = "";
-        dim-value = "1.0";
+  ## ----------------------------------  [bar/pam3] ---------------------------------- ##
+  "bar/pam3" = {
+    monitor = "";
+    monitor-fallback = "";
+    monitor-strict = false;
 
-        wm-restack = "bspwm";
-        enable-ipc = true;
+    override-redirect = false;
 
-        cursor-click = "pointer";
-        cursor-scroll = "ns-resize";
-      };
+    bottom = false;
+    fixed-center = true;
 
-      ## ----------------------------------  [bar/pam3] ---------------------------------- ##
-      "bar/pam3" = {
-        monitor = "";
-        monitor-fallback = "";
-        monitor-strict = false;
+    width = "21.5%";
+    height = 40;
 
-        override-redirect = false;
+    offset-x = "43.5%";
+    offset-y = 10;
 
-        bottom = false;
-        fixed-center = true;
+    background = "${bg-alt}";
+    foreground = "${fg}";
 
-        width = "21.5%";
-        height = 40;
+    radius = 6;
 
-        offset-x = "43.5%";
-        offset-y = 10;
+    line-size = 2;
+    line-color = "${blue}";
 
-        background = "${bg-alt}";
-        foreground = "${fg}";
+    border-size = 2;
+    border-color = "${bg}";
 
-        radius = 6;
+    padding = 1;
 
-        line-size = 2;
-        line-color = "${blue}";
-
-        border-size = 2;
-        border-color = "${bg}";
-
-        padding = 1;
-
-        module-margin-left = 0;
-        module-margin-right = 0;
+    module-margin-left = 0;
+    module-margin-right = 0;
 
 
 
-        font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-        font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-        font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-        font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-        font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-        font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
-        font-6 = with fonts.polybar-5; "${ftname};${toString offset}";
+    font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
+    font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
+    font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
+    font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
+    font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
+    font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
+    font-6 = with fonts.polybar-5; "${ftname};${toString offset}";
 
-        modules-left = "volume space cpu space cpuTemp space updates-pacman space notification-github space battery";
-        modules-center = "";
-        modules-right = "";
+    modules-left = "volume space cpu space cpuTemp space updates-pacman space notification-github space battery";
+    modules-center = "";
+    modules-right = "";
 
-        separator = "";
-        dim-value = "";
+    separator = "";
+    dim-value = "";
 
-        wm-restack = "bspwm";
-        enable-ipc = true;
+    wm-restack = "bspwm";
+    enable-ipc = true;
 
-        cursor-click = "
+    cursor-click = "
           pointer ";
-        cursor-scroll = "
+    cursor-scroll = "
           ns-resize ";
-      };
+  };
 
-      ## ----------------------------------  [bar/pam4] ---------------------------------- ##
-      "bar/pam4" = {
-        monitor = "";
-        monitor-fallback = "";
-        monitor-strict = false;
+  ## ----------------------------------  [bar/pam4] ---------------------------------- ##
+  "bar/pam4" = {
+    monitor = "";
+    monitor-fallback = "";
+    monitor-strict = false;
 
-        override-redirect = false;
+    override-redirect = false;
 
-        bottom = false;
-        fixed-center = true;
+    bottom = false;
+    fixed-center = true;
 
-        width = "20%";
-        height = 40;
+    width = "20%";
+    height = 40;
 
-        offset-x = "65.5%";
-        offset-y = 10;
+    offset-x = "65.5%";
+    offset-y = 10;
 
-        background = "${bg-alt}";
-        foreground = "${fg}";
+    background = "${bg-alt}";
+    foreground = "${fg}";
 
-        radius = 6;
+    radius = 6;
 
-        line-size = 2;
-        line-color = "${blue}";
+    line-size = 2;
+    line-color = "${blue}";
 
-        border-size = 2;
-        border-color = "${bg}";
+    border-size = 2;
+    border-color = "${bg}";
 
-        padding = 1;
+    padding = 1;
 
-        module-margin-left = 0;
-        module-margin-right = 0;
+    module-margin-left = 0;
+    module-margin-right = 0;
 
-        font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-        font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-        font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-        font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-        font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-        font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
+    font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
+    font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
+    font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
+    font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
+    font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
+    font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
 
-        modules-left = "themes space brightness space network space mod";
-        modules-center = "";
-        modules-right = "";
+    modules-left = "themes space brightness space network space mod";
+    modules-center = "";
+    modules-right = "";
 
-        separator = "";
-        dim-value = "1.0";
+    separator = "";
+    dim-value = "1.0";
 
-        wm-restack = "bspwm";
-        enable-ipc = true;
+    wm-restack = "bspwm";
+    enable-ipc = true;
 
-        cursor-click = "pointer";
-        cursor-scroll = "ns-resize";
+    cursor-click = "pointer";
+    cursor-scroll = "ns-resize";
 
-      };
+  };
 
-      ## ----------------------------------  [bar/pam5] ---------------------------------- ##
+  ## ----------------------------------  [bar/pam5] ---------------------------------- ##
 
-      "bar/pam5" = {
-        monitor = "";
-        monitor-fallback = "";
-        monitor-strict = false;
+  "bar/pam5" = {
+    monitor = "";
+    monitor-fallback = "";
+    monitor-strict = false;
 
-        override-redirect = false;
+    override-redirect = false;
 
-        bottom = false;
-        fixed-center = false;
+    bottom = false;
+    fixed-center = false;
 
-        width = "11.5%";
-        height = 40;
+    width = "11.5%";
+    height = 40;
 
-        offset-x = "86%";
-        offset-y = 10;
+    offset-x = "86%";
+    offset-y = 10;
 
-        background = "${bg-alt}";
-        foreground = "${fg}";
+    background = "${bg-alt}";
+    foreground = "${fg}";
 
-        radius = 6;
+    radius = 6;
 
-        line-size = 2;
-        line-color = "${blue}";
+    line-size = 2;
+    line-color = "${blue}";
 
-        border-size = 2;
-        border-color = "${bg}";
+    border-size = 2;
+    border-color = "${bg}";
 
-        padding = 1;
+    padding = 1;
 
-        module-margin-left = 0;
-        module-margin-right = 0;
+    module-margin-left = 0;
+    module-margin-right = 0;
 
-        font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-        font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-        font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-        font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-        font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-        font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
+    font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
+    font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
+    font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
+    font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
+    font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
+    font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
 
-        modules-left = "sysmenu space date";
-        modules-center = "";
-        modules-right = "";
+    modules-left = "sysmenu space date";
+    modules-center = "";
+    modules-right = "";
 
-        separator = "";
-        dim-value = "1.0";
+    separator = "";
+    dim-value = "1.0";
 
-        tray-position = "right";
-        tray-detached = true;
-        tray-maxsize = 16;
-        tray-background = "${bg-alt}";
-        tray-offset-x = 0;
-        tray-offset-y = 0;
-        tray-padding = 0;
-        tray-scale = "1.0";
+    tray-position = "right";
+    tray-detached = true;
+    tray-maxsize = 16;
+    tray-background = "${bg-alt}";
+    tray-offset-x = 0;
+    tray-offset-y = 0;
+    tray-padding = 0;
+    tray-scale = "1.0";
 
-        wm-restack = "bspwm";
-        enable-ipc = true;
+    wm-restack = "bspwm";
+    enable-ipc = true;
 
-        cursor-click = "pointer";
-        cursor-scroll = "ns-resize";
-      };
+    cursor-click = "pointer";
+    cursor-scroll = "ns-resize";
+  };
 
-      ## ----------------------------------  [bar/pam6] ---------------------------------- ##
+  ## ----------------------------------  [bar/pam6] ---------------------------------- ##
 
-      "bar/pam6" = {
-        monitor = "";
-        monitor-fallback = "";
-        monitor-strict = false;
+  "bar/pam6" = {
+    monitor = "";
+    monitor-fallback = "";
+    monitor-strict = false;
 
-        override-redirect = false;
+    override-redirect = false;
 
-        bottom = false;
-        fixed-center = true;
+    bottom = false;
+    fixed-center = true;
 
-        width = "20.5%";
-        height = 40;
+    width = "20.5%";
+    height = 40;
 
-        offset-x = "22.5%";
-        offset-y = 10;
+    offset-x = "22.5%";
+    offset-y = 10;
 
-        background = "${bg-alt}";
-        foreground = "${fg}";
+    background = "${bg-alt}";
+    foreground = "${fg}";
 
-        radius = 6;
+    radius = 6;
 
-        line-size = 2;
-        line-color = "${blue}";
+    line-size = 2;
+    line-color = "${blue}";
 
-        border-size = 2;
-        border-color = "${bg}";
+    border-size = 2;
+    border-color = "${bg}";
 
-        padding = 2;
+    padding = 2;
 
-        module-margin-left = 0;
-        module-margin-right = 0;
+    module-margin-left = 0;
+    module-margin-right = 0;
 
-        font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-        font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-        font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-        font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-        font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-        font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
+    font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
+    font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
+    font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
+    font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
+    font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
+    font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
 
 
-        modules-left = "song";
-        modules-center = "info-cava";
-        modules-right = "mpd";
+    modules-left = "song";
+    modules-center = "info-cava";
+    modules-right = "mpd";
 
-        separator = "";
-        dim-value = "1.0";
+    separator = "";
+    dim-value = "1.0";
 
-        wm-restack = "bspwm";
-        enable-ipc = true;
+    wm-restack = "bspwm";
+    enable-ipc = true;
 
-        cursor-click = "pointer";
-        cursor-scroll = "ns-resize";
-      };
-      "settings" = {
+    cursor-click = "pointer";
+    cursor-scroll = "ns-resize";
+  };
+  "settings" = {
 
-        screenchange-reload = false;
+    screenchange-reload = false;
 
-        compositing-background = "source";
-        compositing-foreground = "over";
-        compositing-overline = "over";
-        compositing-underline = "over";
-        compositing-border = "over";
+    compositing-background = "source";
+    compositing-foreground = "over";
+    compositing-overline = "over";
+    compositing-underline = "over";
+    compositing-border = "over";
 
-        pseudo-transparency = false;
-      };
-    };
+    pseudo-transparency = false;
+  };
 }
