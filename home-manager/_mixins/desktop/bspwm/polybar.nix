@@ -224,269 +224,67 @@ in
 
             pseudo-transparency = true;
           };
-
-          #################
-          ### decor.ini ###
-          #################
-          "module/spacing" = {
-            type = "custom/text";
-            content = " ";
-            content-background = "${bg}";
-          };
-          # https://github.com/polybar/polybar-scripts/tree/master/polybar-scripts/player-mpris-tail
-          "module/mpris" = {
-            type = "custom/script";
-            exec = "${player-mpris-tail}/bin/player-mpris-tail";
-            tail = true;
-          };
-          "module/sep" = {
-            type = "custom/text";
-            # content = "" ;
-            content = " ";
-            content-font = 5;
-            content-background = "${bg}";
-            content-foreground = "${bg-alt}";
-            content-padding = 2;
-          };
         };
-
       };
 
-
-      ## ----------------------------------  [bar/pam3] ---------------------------------- ##
-      # "bar/pam3" = {
-      #   monitor = "";
-      #   monitor-fallback = "";
-      #   monitor-strict = false;
-
-      #   override-redirect = false;
-
-      #   bottom = false;
-      #   fixed-center = true;
-
-      #   width = "21.5%";
-      #   height = 40;
-
-      #   offset-x = "43.5%";
-      #   offset-y = 10;
-
-      #   background = "${bg-alt}";
-      #   foreground = "${fg}";
-
-      #   radius = 6;
-
-      #   line-size = 2;
-      #   line-color = "${blue}";
-
-      #   border-size = 2;
-      #   border-color = "${bg}";
-
-      #   padding = 1;
-
-      #   module-margin-left = 0;
-      #   module-margin-right = 0;
-
-
-
-      #   font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-      #   font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-      #   font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-      #   font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-      #   font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-      #   font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
-      #   font-6 = with fonts.polybar-5; "${ftname};${toString offset}";
-
-      #   modules-left = "volume space cpu space cpuTemp space updates-pacman space notification-github space battery";
-      #   modules-center = "";
-      #   modules-right = "";
-
-      #   separator = "";
-      #   dim-value = "";
-
-      #   wm-restack = "bspwm";
-      #   enable-ipc = true;
-
-      #   cursor-click = "
-      #     pointer ";
-      #   cursor-scroll = "
-      #     ns-resize ";
-      # };
-
-      ## ----------------------------------  [bar/pam4] ---------------------------------- ##
-      # "bar/pam4" = {
-      #   monitor = "";
-      #   monitor-fallback = "";
-      #   monitor-strict = false;
-
-      #   override-redirect = false;
-
-      #   bottom = false;
-      #   fixed-center = true;
-
-      #   width = "20%";
-      #   height = 40;
-
-      #   offset-x = "65.5%";
-      #   offset-y = 10;
-
-      #   background = "${bg-alt}";
-      #   foreground = "${fg}";
-
-      #   radius = 6;
-
-      #   line-size = 2;
-      #   line-color = "${blue}";
-
-      #   border-size = 2;
-      #   border-color = "${bg}";
-
-      #   padding = 1;
-
-      #   module-margin-left = 0;
-      #   module-margin-right = 0;
-
-      #   font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-      #   font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-      #   font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-      #   font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-      #   font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-      #   font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
-
-      #   modules-left = "themes space brightness space network space mod";
-      #   modules-center = "";
-      #   modules-right = "";
-
-      #   separator = "";
-      #   dim-value = "1.0";
-
-      #   wm-restack = "bspwm";
-      #   enable-ipc = true;
-
-      #   cursor-click = "pointer";
-      #   cursor-scroll = "ns-resize";
-
-      # };
-
-      ## ----------------------------------  [bar/pam5] ---------------------------------- ##
-
-      # "bar/pam5" = {
-      #   monitor = "";
-      #   monitor-fallback = "";
-      #   monitor-strict = false;
-
-      #   override-redirect = false;
-
-      #   bottom = false;
-      #   fixed-center = false;
-
-      #   width = "11.5%";
-      #   height = 40;
-
-      #   offset-x = "86%";
-      #   offset-y = 10;
-
-      #   background = "${bg-alt}";
-      #   foreground = "${fg}";
-
-      #   radius = 6;
-
-      #   line-size = 2;
-      #   line-color = "${blue}";
-
-      #   border-size = 2;
-      #   border-color = "${bg}";
-
-      #   padding = 1;
-
-      #   module-margin-left = 0;
-      #   module-margin-right = 0;
-
-      #   font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-      #   font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-      #   font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-      #   font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-      #   font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-      #   font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
-
-      #   modules-left = "sysmenu space date";
-      #   modules-center = "";
-      #   modules-right = "";
-
-      #   separator = "";
-      #   dim-value = "1.0";
-
-      #   tray-position = "right";
-      #   tray-detached = true;
-      #   tray-maxsize = 16;
-      #   tray-background = "${bg-alt}";
-      #   tray-offset-x = 0;
-      #   tray-offset-y = 0;
-      #   tray-padding = 0;
-      #   tray-scale = "1.0";
-
-      #   wm-restack = "bspwm";
-      #   enable-ipc = true;
-
-      #   cursor-click = "pointer";
-      #   cursor-scroll = "ns-resize";
-      # };
-
-      ## ----------------------------------  [bar/pam6] ---------------------------------- ##
-
-      # "bar/pam6" = {
-      #   monitor = "";
-      #   monitor-fallback = "";
-      #   monitor-strict = false;
-
-      #   override-redirect = false;
-
-      #   bottom = false;
-      #   fixed-center = true;
-
-      #   width = "20.5%";
-      #   height = 40;
-
-      #   offset-x = "22.5%";
-      #   offset-y = 10;
-
-      #   background = "${bg-alt}";
-      #   foreground = "${fg}";
-
-      #   radius = 6;
-
-      #   line-size = 2;
-      #   line-color = "${blue}";
-
-      #   border-size = 2;
-      #   border-color = "${bg}";
-
-      #   padding = 2;
-
-      #   module-margin-left = 0;
-      #   module-margin-right = 0;
-
-      #   font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-      #   font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-      #   font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-      #   font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-      #   font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-      #   font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
-
-
-      #   modules-left = "song";
-      #   modules-center = "info-cava";
-      #   modules-right = "mpd";
-
-      #   separator = "";
-      #   dim-value = "1.0";
-
-      #   wm-restack = "bspwm";
-      #   enable-ipc = true;
-
-      #   cursor-click = "pointer";
-      #   cursor-scroll = "ns-resize";
-      # };
-
+      config = {
+        #################
+        ### decor.ini ###
+        #################
+        "module/spacing" = {
+          type = "custom/text";
+          content = " ";
+          content-background = "${bg}";
+        };
+        # https://github.com/polybar/polybar-scripts/tree/master/polybar-scripts/player-mpris-tail
+        "module/mpris" = {
+          type = "custom/script";
+          exec = "${player-mpris-tail}/bin/player-mpris-tail";
+          tail = true;
+        };
+        "module/sep" = {
+          type = "custom/text";
+          # content = "" ;
+          content = " ";
+          content-font = 5;
+          content-background = "${bg}";
+          content-foreground = "${bg-alt}";
+          content-padding = 2;
+        };
+        "module/LD" = {
+          type = custom/text;
+          content = "%{T3}%{T-}";
+          content-background = "${bg}";
+          content-foreground = "${blue}";
+        };
+        "module/RD" = {
+          type = custom/text;
+          content = "%{T3}%{T-}";
+          content-background = "${black}";
+          content-foreground = "${blue}";
+        };
+        "module/RLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${red}";
+        };
+        "module/BRLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${red}";
+        };
+        "module/RRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${red}";
+        };
+      };
     };
   };
 }
