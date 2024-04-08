@@ -353,6 +353,119 @@ in
           bar-used-empty = "$\{bar.empty}";
           bar-used-empty-foreground = "${fg}";
         };
+        "module/temperature2" = {
+          type = "internal/temperature";
+          thermal-zone = 0;
+          warn-temperature = 70;
+          format = "<ramp> <label>";
+          format-warn = "<ramp> <label-warn>";
+          format-padding = 1;
+          label = "%temperature%";
+          label-warn = "%temperature%";
+          ramp-0 = "󰜗";
+          ramp-font = 3;
+          ramp-foreground = "#a4ebf3";
+        };
+        "module/temperature" = {
+          type = internal/temperature;
+          # ; Seconds to sleep between updates
+          # ; Default: 1
+          interval = "0.5";
+          # ; Thermal zone to use
+          # ; To list all the zone types, run
+          # ; $ for i in /sys/class/thermal/thermal_zone*; do echo "$i: $(<$i/type)"; done
+          # ; Default: 0
+          thermal-zone = "0";
+          # ; Full path of temperature sysfs path
+          # ; Use `sensors` to find preferred temperature source, then run
+          # ; $ for i in /sys/class/hwmon/hwmon*/temp*_input; do echo "$(<$(dirname $i)/name): $(cat ${i%_*}_label 2>/dev/null || echo $(basename ${i%_*})) $(readlink -f $i)"; done
+          # ; to find path to desired file
+          # ; Default reverts to thermal zone setting
+          hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
+          # ; Base temperature for where to start the ramp (in degrees celsius)
+          # ; Default: 0
+          base-temperature = 20;
+          # ; Threshold temperature to display warning label (in degrees celsius)
+          # ; Default: 80
+          warn-temperature = 60;
+          # ; Whether or not to show units next to the temperature tokens (°C, °F)
+          # ; Default: true
+          units = false;
+          # ; Available tags:
+          # ;   <label> (default)
+          # ;   <ramp>
+          format = "<ramp> <label>";
+          # ; Available tags:
+          # ;   <label-warn> (default)
+          # ;   <ramp>
+          format-warn = "<ramp> <label-warn>";
+          # ; Available tokens:
+          # ;   %temperature% (deprecated)
+          # ;   %temperature-c%   (default, temperature in °C)
+          # ;   %temperature-f%   (temperature in °F)
+          label = "TEMP %temperature-c%";
+          # ; Available tokens:
+          # ;   %temperature% (deprecated)
+          # ;   %temperature-c%   (default, temperature in °C)
+          # ;   %temperature-f%   (temperature in °F)
+          label-warn = "TEMP %temperature-c%";
+          label-warn-foreground = "${red}";
+          # ; Requires the <ramp> tag
+          # ; The icon selection will range from `base-temperature` to `warn-temperature`,
+          # ; temperatures at and above `warn-temperature` will use the last icon
+          # ; and temperatures at and below `base-temperature` will use `ramp-0`.
+          # ; All other icons are distributed evenly between the two temperatures.
+          ramp-0 = "A";
+          ramp-1 = "B";
+          ramp-2 = "C";
+          ramp-foreground = "";
+        };
+        "module/network" = {
+          type = "internal/network";
+          interface = "wlan0";
+          interval = "3.0";
+          accumulate-stats = true;
+          unknown-as-up = true;
+          format-connected = "<label-connected>";
+          format-connected-prefix = "";
+          format-connected-background = "${mb}";
+          format-connected-foreground = "${green}";
+          speed-unit = "";
+          label-connected = " %{A1:def-nmdmenu &:}%essid%%{A}";
+          label-connected-background = "${mb}";
+          label-connected-foreground = "${fg}";
+          format-disconnected = "<label-disconnected>";
+          format-disconnected-prefix = "󰌙";
+          format-disconnected-background = "${mb}";
+          format-disconnected-foreground = "${red}";
+          label-disconnected = " not connected";
+          label-disconnected-foreground = "${red}";
+        };
+        "module/audio" = {
+          type = "internal/alsa";
+          use-ui-max = true;
+          interval = 2;
+          format-volume = "<ramp-volume><label-volume>";
+          format-volume-prefix = "";
+          format-volume-background = "${mb}";
+          format-volume-foreground = " ${purple}";
+          label-volume = " %percentage%%";
+          label-volume-background = "${mb}";
+          label-volume-foreground = "${fg}";
+          format-muted = "<label-muted>";
+          format-muted-prefix = "";
+          format-muted-foreground = "${red}";
+          format-muted-background = "${mb}";
+          label-muted = " Muted";
+          label-muted-foreground = "${red}";
+          label-muted-background = "${mb}";
+          ramp-volume-0 = "󰕿";
+          ramp-volume-1 = "󰖀";
+          ramp-volume-2 = "󰕾";
+          ramp-volume-3 = "󰕾";
+          ramp-volume-4 = "󱄡";
+          ramp-volume-font = 4;
+        };
       };
       extraConfig = ''
         ### Decor.ini
