@@ -367,7 +367,7 @@ in
           ramp-foreground = "#a4ebf3";
         };
         "module/temperature" = {
-          type = internal/temperature;
+          type = "internal/temperature";
           # ; Seconds to sleep between updates
           # ; Default: 1
           interval = "0.5";
