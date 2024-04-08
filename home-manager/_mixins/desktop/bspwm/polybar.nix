@@ -63,9 +63,9 @@ in
 {
   home = {
     file = {
-      ".config/polybar/scripts/polywins.sh" = {
+      "/home/${username}/.config/polybar/scripts/polywins.sh" = {
         executable = true;
-        source = builtins.readFile ../../config/polybar/scripts/polywins;
+        text = builtins.readFile ../../config/polybar/scripts/polywins;
       };
     };
   };
