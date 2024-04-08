@@ -31,6 +31,8 @@ in
           pamixer # Pulseaudio command line mixer
           imagemagick
           lm_sensors
+          xorg.xprop
+          xorg.xrandr
 
           # Polkit
           mate.mate-polkit
