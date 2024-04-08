@@ -36,11 +36,9 @@ in
           ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
         '';
       };
-      file = {
-        ".face" = {
-          # source = ./face.jpg;
-          source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
-        };
+      ".face" = {
+        # source = ./face.jpg;
+        source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
       };
       # "Pictures/wallpapers".source = lib.mkForce "${walls}/images";
     };
