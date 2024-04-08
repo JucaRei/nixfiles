@@ -65,7 +65,7 @@ in
           startupPrograms = [
             "pgrep -x sxhkd > /dev/null || sxhkd"
             "xsetroot -cursor_name left_ptr"
-            "sleep 2; polybar -q everforest &"
+            "sleep 2; polybar -q everforest"
           ];
           alwaysResetDesktops = true;
           monitors = {
