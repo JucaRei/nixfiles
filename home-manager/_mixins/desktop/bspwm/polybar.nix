@@ -269,6 +269,39 @@ in
           full-at = 100;
           battery = "$\{system.battery}";
           adapter = "$\{system.adapter}";
+          poll-interval = 2;
+          time-format = "%H:%M";
+          format-charging = "<animation-charging><label-charging>";
+          format-charging-prefix = "";
+          format-discharging = "<ramp-capacity><label-discharging>";
+          format-full = "<label-full>";
+          format-full-prefix = " ";
+          format-full-prefix-font = 2;
+          format-full-prefix-foreground = "${fg}";
+          format-full-prefix-background = "${mb}";
+
+          label-charging = "%percentage%%";
+          label-discharging = "%percentage%%";
+          label-full = "%percentage%%";
+
+          label-charging-background = "${mb}";
+          label-discharging-background = "${mb}";
+          label-full-background = "${mb}";
+
+          label-charging-foreground = "${fg}";
+          label-discharging-foreground = "${fg}";
+          label-full-foreground = "${fg}";
+          ramp-capacity = [ " " " " " " " " " " ];
+
+          ramp-capacity-font = 2;
+          ramp-capacity-foreground = "${green}";
+          ramp-capacity-background = "${mb}";
+
+          animation-charging = [ " " " " " " " " " " " " ];
+          animation-charging-font = 2;
+          animation-charging-foreground = "${orange}";
+          animation-charging-background = "${mb}";
+          animation-charging-framerate = "750;";
         };
       };
       extraConfig = ''
