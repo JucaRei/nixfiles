@@ -192,7 +192,7 @@ in
           font-6 = with fonts.polybar-6; "${ftname};${toString offset}";
 
           modules-left = "sep launcher blok bspwm round-left polywins round-right";
-          # modules-center =
+          modules-center = "";
           # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
           # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
           modules-right = "sep temperature blok2 filesystem blok2 memory_bar blok2 cpu_bar blok pulseaudio-control-output blok date blok2 battery blok powermenu sep";
