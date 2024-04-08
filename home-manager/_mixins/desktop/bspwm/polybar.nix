@@ -520,15 +520,15 @@ in
         };
         "module/blok2" = {
           type = "custom/text";
-          content = " |";
-          content-foreground = "${fg}";
-          content-background = "${bg}";
+          format = " |";
+          format-foreground = "${fg}";
+          format-background = "${bg}";
         };
         "module/blok" = {
           type = "custom/text";
-          content = " | ";
-          content-foreground = "${fg}";
-          content-background = "${bg}";
+          format = " | ";
+          format-foreground = "${fg}";
+          format-background = "${bg}";
         };
         "module/nowplaying" = {
           type = "custom/script";
