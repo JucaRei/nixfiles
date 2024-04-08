@@ -68,21 +68,6 @@ in
       script = "polybar bar/everforest &";
       settings = {
         "bar/everforest" = {
-
-          ##################
-          ### System.ini ###
-          ##################
-          # ; When some modules in the polybar doesn't show up.
-          # ; Look for battery/adapter: "ls -l /sys/class/power_supply"
-          # ; Look for backlight: "ls -l /sys/class/backlight"
-          # ; Look for network: "ls -l /sys/class/net"
-          "system" = {
-            adapter = "AC";
-            battery = "BAT1";
-            graphics_card = "intelgpu";
-            network_interface = "wlan0";
-          };
-
           ##################
           ### Config.ini ###
           ##################
@@ -228,6 +213,19 @@ in
       };
 
       config = {
+        ##################
+        ### System.ini ###
+        ##################
+        # ; When some modules in the polybar doesn't show up.
+        # ; Look for battery/adapter: "ls -l /sys/class/power_supply"
+        # ; Look for backlight: "ls -l /sys/class/backlight"
+        # ; Look for network: "ls -l /sys/class/net"
+        "system" = {
+          adapter = "AC";
+          battery = "BAT1";
+          graphics_card = "intelgpu";
+          network_interface = "wlan0";
+        };
         #################
         ### decor.ini ###
         #################
