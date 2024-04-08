@@ -71,6 +71,7 @@ in
           monitors = {
             # eDP-1
             default = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
+            Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
           extraConfigEarly = ''
