@@ -87,7 +87,7 @@ in
     polybar = {
       enable = true;
       package = nixgl pkgs.unstable.polybarFull;
-      script = "polybar bar/everforest &";
+      script = "";
       settings = {
         "bar/everforest" = {
           ##################
