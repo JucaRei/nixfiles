@@ -29,7 +29,7 @@ let
   ### Colors
   # ;; Dark Add FC at the beginning #FC1E1F29 for 99 transparency
   bg = "#2D353B";
-  bg-alt = "#BF1D1F28";
+  bg-alt = "#1e1e2e";
   fg = "#d3c6aa";
   mb = "#2D353B";
 
@@ -40,6 +40,10 @@ let
   blue-arch = "#0A9CF5";
   amber = "#FBC02D";
   sapphire = "#74c7ec";
+  rosewater = "#f5e0dc";
+  flamingo = "#f2cdcd";
+  # pink = "#f5c2e7";
+  mauve = "#cba6f7";
 
   red = "#E67E80";
   orange = "#E69875";
@@ -47,15 +51,17 @@ let
   green = "#A7C080";
   aqua = "#83C092";
   blue = "#7FBBB3";
+  teal = "#94e2d5";
+  lavender = "#b4befe";
   purple = "#D699B6";
   pink = "#EC407A";
   cyan = "#79E6F3";
-  teal = "#00B19F";
   lime = "#B9C244";
   brown = "#AC8476";
   grey = "#8C8C8C";
   indigo = "#6C77BB";
   blue-gray = "#6D8895";
+  sky = "#89dceb";
 
   pallete = "#D83F31";
 in
@@ -63,9 +69,17 @@ in
 {
   home = {
     file = {
-      "/home/${username}/.config/polybar/scripts/polywins.sh" = {
+      "/home/${username}/.config/polybar/scripts/polywins" = {
         executable = true;
         text = builtins.readFile ../../config/polybar/scripts/polywins;
+      };
+      "/home/${username}/.config/rofi/scripts/powermenu" = {
+        executable = true;
+        text = builtins.readFile ../../config/rofi/scripts/powermenu.sh;
+      };
+      "/home/${username}/.config/rofi/scripts/promptmenu" = {
+        executable = true;
+        text = builtins.readFile ../../config/rofi/scripts/promptmenu.sh;
       };
     };
   };
@@ -257,7 +271,7 @@ in
         };
         "module/polywins" = {
           type = "custom/script";
-          exec = "/home/${username}/.config/polybar/scripts/polywins.sh";
+          exec = "/home/${username}/.config/polybar/scripts/polywins";
           format = "<label>";
           format-background = "#2E4374";
           label = "%output%";
@@ -497,6 +511,114 @@ in
           label-empty-foreground = "${purple}";
           label-empty-padding = 1;
           label-empty-background = "${mb}";
+        };
+        "module/launcher" = {
+          type = "custom/text";
+          content = "";
+          content-foreground = "${blue-arch}";
+          content-font = 4;
+          click-left = "${pkgs.rofi}/bin/rofi -no-lazy-grab -show drun";
+        };
+        "module/blok2" = {
+          type = "custom/text";
+          content = " |";
+          content-foreground = "${fg}";
+          content-background = "${bg}";
+        };
+        "module/blok" = {
+          type = "custom/text";
+          content = " | ";
+          content-foreground = "${fg}";
+          content-background = "${bg}";
+        };
+        "module/nowplaying" = {
+          type = "custom/script";
+          tail = true;
+          interval = 1;
+          format = "󰫔 <label> "; # 󰷞 󰽴 󰽱 󱂵
+          exec = ''${pkgs.playerctl}/bin/playerctl metadata --format "{{ artist }} - {{ title }}"'';
+          label-maxlen = "20..";
+        };
+        "module/dots" = {
+          type = "custom/text";
+          content = " 󰇙 ";
+          content-foreground = "${purple}";
+        };
+        "module/title" = {
+          type = "internal/xwindow";
+          format = "<label>";
+          format-foreground = "#99CEF0";
+          label = "  %title%";
+          label-maxlen = "25 ...";
+        };
+        "module/cpu_bar" = {
+          type = "internal/cpu";
+          interval = "2.0";
+          format = "<label>";
+          format-prefix = " "; #" "
+          format-prefix-background = "${mb}";
+          format-prefix-foreground = "${red}";
+        };
+        "module/memory_bar" = {
+          type = "internal/memory";
+          interval = 3;
+          format = "<label>";
+          format-prefix = " ";
+          format-prefix-background = "${mb}";
+          format-prefix-foreground = "${aqua}";
+          label = "%used%";
+          label-background = "${mb}";
+        };
+        "module/mpd_control" = {
+          type = "internal/mpd";
+          host = "127.0.0.1";
+          port = "6600";
+          interval = 2;
+          format-online = "<icon-prev><toggle><icon-next>";
+          format-offline = "<label-offline>";
+          label-offline = "󰝛 No music";
+          icon-play = " %{T3} ";
+          icon-pause = " %{T3} ";
+          icon-stop = " %{T3} ";
+          icon-prev = "%{T3} ";
+          icon-next = " %{T3}";
+          format-offline-background = "${mb}";
+          format-offline-foreground = "${grey}";
+          icon-play-background = "${mb}";
+          icon-pause-background = "${mb}";
+          icon-stop-background = "${mb}";
+          icon-prev-background = "${mb}";
+          icon-next-background = "${mb}";
+          icon-repeat-background = "${mb}";
+          icon-play-foreground = "${green}";
+          icon-pause-foreground = "${green}";
+          icon-stop-foreground = "${green}";
+          icon-prev-foreground = "${sky}";
+          icon-next-foreground = "${sky}";
+          toggle-on-foreground = "${green}";
+          toggle-off-foreground = "${red}";
+        };
+        "module/mpd" = {
+          type = "internal/mpd";
+          host = "127.0.0.1";
+          port = "6600";
+          interval = 2;
+          format-online = ''<icon-repeat> %{F#9ece6a}[%{F-} %{A1:bspc rule -a org.wezfurlong.wezterm -o state=floating follow=on center=true && wezterm start -- " ${pkgs.ncmpcpp}/bin/ncmpcpp ":}<label-song>%{A} %{F#9ece6a}]%{F-}'';
+          format-offline = "";
+          label-song = "%title%";
+          label-song-maxlen = 21;
+          icon-repeat = "";
+          icon-repeat-background = "${bg}";
+          toggle-on-foreground = "${green}";
+          toggle-off-foreground = "${red}";
+        };
+        "module/powermenu" = {
+          type = "custom/text";
+          content = "⏻";
+          content-background = "${mb}";
+          content-foreground = "${red}";
+          click-left = " ~/.config/rofi/scripts/powermenu";
+          click-right = " ~/.config/rofi/scripts/powermenu";
         };
       };
       extraConfig = ''
