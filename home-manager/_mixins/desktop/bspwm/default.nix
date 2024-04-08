@@ -38,7 +38,6 @@ in
           # fonts
           maple-mono
           font-awesome
-          material-design-icons
           meslo-lgs-nf
           maple-mono-SC-NF
           unstable.sarasa-gothic
