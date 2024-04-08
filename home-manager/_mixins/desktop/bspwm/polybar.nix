@@ -282,6 +282,223 @@ in
           content-background = "${black}";
           content-foreground = "${red}";
         };
+        "module/BRRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${red}";
+        };
+        "module/WLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${white}";
+        };
+        "module/WRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${white}";
+        };
+        "module/CLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${aqua}";
+        };
+        "module/CRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${aqua}";
+        };
+        "module/MLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${purple}";
+        };
+        "module/MRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${purple}";
+        };
+        "module/BMLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${purple}";
+        };
+        "module/BMRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${purple}";
+        };
+        "module/YLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${yellow}";
+        };
+        "module/YRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${yellow}";
+        };
+        "module/OLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${orange}";
+        };
+        "module/BOLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${orange}";
+        };
+        "module/ORD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${orange}";
+        };
+        "module/BORD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${orange}";
+        };
+        "module/PLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${pink}";
+        };
+        "module/BPLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${pink}";
+        };
+        "module/PRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${pink}";
+        };
+        "module/BPRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${pink}";
+        };
+        "module/GLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${green}";
+        };
+        "module/BGLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${green}";
+        };
+        "module/GRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${green}";
+        };
+        "module/BGRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${green}";
+        };
+        "module/BLD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${black}";
+        };
+        "module/BRD" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${bg}";
+          content-foreground = "${black}";
+        };
+        "module/YPL" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${black}";
+        };
+        "module/CPL" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${black}";
+        };
+        "module/GPL" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${black}";
+          content-foreground = "${black}";
+        };
+        "module/RPL" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${red}";
+          content-foreground = "${red}";
+        };
+        "module/MPL" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${green}";
+          content-foreground = "${red}";
+        };
+        "module/GMPL" = {
+          type = "custom/text";
+          content = "%{T3}%{T-}";
+          content-font = 3;
+          content-background = "${red}";
+          content-foreground = "${green}";
+        };
       };
     };
   };
