@@ -465,6 +465,38 @@ in
           ramp-volume-3 = "󰕾";
           ramp-volume-4 = "󱄡";
           ramp-volume-font = 4;
+          click-right = "bspc rule -a Pavucontrol -o state=floating follow=on center=true && ${pkgs.pavucontrol}/bin/pavucontrol";
+        };
+        "module/bspwm" = {
+          type = "internal/bspwm";
+          enable-click = true;
+          enable-scroll = true;
+          reverse-scroll = true;
+          pin-workspaces = true;
+          occupied-scroll = false;
+          background = "${pallete}";
+          format = "%{T4}<label-state>%{T-}";
+          format-background = ''$\{self."${bg}"}'';
+          format-prefix = "$\{default.triangle-left}";
+          format-prefix-foreground = ''$\{self."${bg}"}'';
+          format-prefix-background = ''$\{root."${bg}"}'';
+          format-suffix = "$\{default.triangle-right}";
+          format-suffix-background = ''$\{root."${bg}"}'';
+          format-suffix-foreground = ''$\{self."${bg}"}'';
+          label-focused = "󰮯";
+          label-focused-background = "${mb}";
+          label-focused-padding = 1;
+          label-focused-foreground = "${yellow}";
+          label-occupied = "󰊠";
+          label-occupied-padding = 1;
+          label-occupied-background = "${mb}";
+          label-occupied-foreground = "${blue}";
+          label-urgent = "%icon%";
+          label-urgent-padding = 0;
+          label-empty = "󰑊";
+          label-empty-foreground = "${purple}";
+          label-empty-padding = 1;
+          label-empty-background = "${mb}";
         };
       };
       extraConfig = ''
