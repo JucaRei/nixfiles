@@ -58,11 +58,11 @@ in
             "xsetroot -cursor_name left_ptr"
           ];
           alwaysResetDesktops = true;
-          monitors = {
-            # eDP-1
-            default = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
-            # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
-          };
+          # monitors = {
+          # eDP-1
+          # default = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
+          # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
+          # };
           extraConfigEarly = ''
             xsetroot -cursor_name left_ptr
 
