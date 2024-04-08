@@ -291,343 +291,392 @@ in
           label-charging-foreground = "${fg}";
           label-discharging-foreground = "${fg}";
           label-full-foreground = "${fg}";
-          ramp-capacity = [ " " " " " " " " " " ];
 
+          ramp-capacity-0 = " ";
+          ramp-capacity-1 = " ";
+          ramp-capacity-2 = " ";
+          ramp-capacity-3 = " ";
+          ramp-capacity-4 = " ";
           ramp-capacity-font = 2;
           ramp-capacity-foreground = "${green}";
           ramp-capacity-background = "${mb}";
 
-          animation-charging = [ " " " " " " " " " " " " ];
+          animation-charging-0 = " ";
+          animation-charging-1 = " ";
+          animation-charging-2 = " ";
+          animation-charging-3 = " ";
+          animation-charging-4 = " ";
           animation-charging-font = 2;
           animation-charging-foreground = "${orange}";
           animation-charging-background = "${mb}";
           animation-charging-framerate = "750;";
         };
+        "module/date" = {
+          type = "internal/date";
+          interval = 1.0;
+          time = "%H:%M";
+          format-background = "${mb}";
+          format-foreground = "${fg}";
+          date-alt = " %A, %d %B %Y";
+          format = "<label>";
+          format-prefix = "";
+          format-prefix-background = "${mb}";
+          format-prefix-foreground = "${amber}";
+          label = "%date% %time%";
+        };
+        "module/filesystem" = {
+          type = "internal/fs";
+          mount-0 = "/";
+          interval = 60;
+          # ; fixed-values = true;
+          fixed-values = false;
+          format-mounted = "<label-mounted>";
+          format-mounted-prefix = "󰋊 ";
+          format-mounted-prefix-background = "${mb}";
+          format-mounted-prefix-foreground = "${yellow}";
+          format-unmounted = "<label-unmounted>";
+          format-unmounted-prefix = "󰋊 ";
+          # ; label-mounted = "%used%";
+          label-mounted = "%percentage_used%%";
+          # ; label-mounted = "%{F#F0C674}%mountpoint%%{F-} %percentage_used%%"
+          label-mounted-background = "${mb}";
+          label-unmounted = "%mountpoint%: not mounted";
+          label-unmounted-foreground = "$\{disabled}";
+          bar-used-width = 6;
+          bar-used-gradient = false;
+          bar-used-indicator = "$\{bar.indicator}";
+          bar-used-indicator-foreground = "${fg}";
+          bar-used-fill = "$\{bar.fill}";
+          bar-used-foreground-0 = "${fg}";
+          bar-used-foreground-1 = "${fg}";
+          bar-used-foreground-2 = "${fg}";
+          bar-used-empty = "$\{bar.empty}";
+          bar-used-empty-foreground = "${fg}";
+        };
+        extraConfig = ''
+          ### Decor.ini
+
+          [module/round-left]
+          type = "custom/text"
+          content = "%{T3}%{T-}"
+          # content = "%{T3}%{T-}";
+          content-foreground = #2E4374
+
+          [module/round-right]
+          type = "custom/text"
+          content = "%{T5}%{T-}"
+          # content = "%{T3}%{T-}";
+          content-foreground = #2E4374
+
+          [module/bi]
+          type                        = custom/text
+          content                     = "%{T5}%{T-}"
+          content-foreground          = ${mb}
+          content-background          = ${bg}
+
+          ## bylo mb bg
+
+          [module/bd]
+          type                        = custom/text
+          content                     = "%{T5}%{T-}"
+          content-foreground          = ${mb}
+          content-background          = ${bg}
+
+          [module/spacing]
+          type = custom/text
+          content = " "
+          content-background = ${bg}
+
+          [module/sep]
+          type = custom/text
+          ;content = 
+          content = " "
+
+          content-font = 5
+          content-background = ${bg}
+          content-foreground = ${bg-alt}
+          content-padding = 2
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+          [module/LD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-background = ${bg}
+          content-foreground = ${blue}
+
+          [module/RD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-background = ${black}
+          content-foreground = ${blue}
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+          [module/RLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${red}
+
+          [module/BRLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${red}
+
+          [module/RRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${red}
+
+          [module/BRRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${red}
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+          [module/WLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${white}
+
+          [module/WRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${white}
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+          [module/CLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${aqua}
+
+          [module/CRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${aqua}
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+          [module/MLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${purple}
+
+          [module/MRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${purple}
+
+          [module/BMLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${purple}
+
+          [module/BMRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${purple}
+
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+          [module/YLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${yellow}
+
+          [module/YRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${yellow}
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+          [module/OLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${orange}
+
+          [module/BOLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${orange}
+
+          [module/ORD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${orange}
+
+          [module/BORD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${orange}
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+          [module/PLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${pink}
+
+          [module/BPLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${pink}
+
+          [module/PRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${pink}
+
+          [module/BPRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${pink}
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+
+          [module/GLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${green}
+
+          [module/BGLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${green}
+
+          [module/GRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${green}
+
+          [module/BGRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${green}
+
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+          [module/BLD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${black}
+
+          [module/BRD]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${bg}
+          content-foreground = ${black}
+
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+
+          [module/YPL]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${black}
+
+          [module/CPL]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${black}
+
+          [module/GPL]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${black}
+          content-foreground = ${black}
+
+          [module/RPL]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${red}
+          content-foreground = ${red}
+
+          [module/MPL]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${green}
+          content-foreground = ${red}
+
+          [module/GMPL]
+          type = custom/text
+          content = "%{T3}%{T-}"
+          content-font = 3
+          content-background = ${red}
+          content-foreground = ${green}
+          ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
+        '';
       };
-      extraConfig = ''
-        ### Decor.ini
-
-        [module/round-left]
-        type = "custom/text"
-        content = "%{T3}%{T-}"
-        # content = "%{T3}%{T-}";
-        content-foreground = #2E4374
-
-        [module/round-right]
-        type = "custom/text"
-        content = "%{T5}%{T-}"
-        # content = "%{T3}%{T-}";
-        content-foreground = #2E4374
-
-        [module/bi]
-        type                        = custom/text
-        content                     = "%{T5}%{T-}"
-        content-foreground          = ${mb}
-        content-background          = ${bg}
-
-        ## bylo mb bg
-
-        [module/bd]
-        type                        = custom/text
-        content                     = "%{T5}%{T-}"
-        content-foreground          = ${mb}
-        content-background          = ${bg}
-
-        [module/spacing]
-        type = custom/text
-        content = " "
-        content-background = ${bg}
-
-        [module/sep]
-        type = custom/text
-        ;content = 
-        content = " "
-
-        content-font = 5
-        content-background = ${bg}
-        content-foreground = ${bg-alt}
-        content-padding = 2
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/LD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-background = ${bg}
-        content-foreground = ${blue}
-
-        [module/RD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-background = ${black}
-        content-foreground = ${blue}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/RLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${red}
-
-        [module/BRLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${red}
-
-        [module/RRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${red}
-
-        [module/BRRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${red}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/WLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${white}
-
-        [module/WRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${white}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/CLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${aqua}
-
-        [module/CRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${aqua}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/MLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${purple}
-
-        [module/MRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${purple}
-
-        [module/BMLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${purple}
-
-        [module/BMRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${purple}
-
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/YLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${yellow}
-
-        [module/YRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${yellow}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/OLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${orange}
-
-        [module/BOLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${orange}
-
-        [module/ORD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${orange}
-
-        [module/BORD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${orange}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/PLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${pink}
-
-        [module/BPLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${pink}
-
-        [module/PRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${pink}
-
-        [module/BPRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${pink}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/GLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${green}
-
-        [module/BGLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${green}
-
-        [module/GRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${green}
-
-        [module/BGRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${green}
-
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/BLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${black}
-
-        [module/BRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${black}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/YPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${black}
-
-        [module/CPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${black}
-
-        [module/GPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${black}
-
-        [module/RPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${red}
-        content-foreground = ${red}
-
-        [module/MPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${green}
-        content-foreground = ${red}
-
-        [module/GMPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${red}
-        content-foreground = ${green}
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-      '';
     };
-  };
-}
+  }
