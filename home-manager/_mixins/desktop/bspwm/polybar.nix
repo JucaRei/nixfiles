@@ -252,13 +252,13 @@ in
           content-padding = 2;
         };
         "module/LD" = {
-          type = custom/text;
+          type = "custom/text";
           content = "%{T3}%{T-}";
           content-background = "${bg}";
           content-foreground = "${blue}";
         };
         "module/RD" = {
-          type = custom/text;
+          type = "custom/text";
           content = "%{T3}%{T-}";
           content-background = "${black}";
           content-foreground = "${blue}";
