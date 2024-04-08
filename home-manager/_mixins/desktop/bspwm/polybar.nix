@@ -1,4 +1,4 @@
-{ pkgs, config, lib ? pkgs.lib, ... }:
+{ pkgs, config, lib ? pkgs.lib, username, ... }:
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   fonts = import ./fonts.nix { inherit pkgs; };
@@ -61,6 +61,14 @@ let
 in
 
 {
+  home = {
+    file = {
+      "/home/${username}/.config/polybar/scripts/polywins.sh" = {
+        executable = true;
+        source = builtins.readFile ../../config/polybar/scripts/polywins;
+      };
+    };
+  };
   services = {
     polybar = {
       enable = true;
@@ -246,6 +254,15 @@ in
           scroll-up = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --volume-max 130 up";
           scroll-down = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --volume-max 130 down";
           label-foreground = "${fg}";
+        };
+        "module/polywins" = {
+          type = "custom/script";
+          exec = "/home/${username}/.config/polybar/scripts/polywins.sh";
+          format = "<label>";
+          format-background = "#2E4374";
+          label = "%output%";
+          label-padding = 0;
+          tail = true;
         };
       };
       extraConfig = ''
