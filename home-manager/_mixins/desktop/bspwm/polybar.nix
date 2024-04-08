@@ -313,7 +313,7 @@ in
         };
         "module/date" = {
           type = "internal/date";
-          interval = 1.0;
+          interval = 1;
           time = "%H:%M";
           format-background = "${mb}";
           format-foreground = "${fg}";
