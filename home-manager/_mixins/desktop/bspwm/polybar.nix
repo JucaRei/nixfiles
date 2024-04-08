@@ -264,9 +264,27 @@ in
           label-padding = 0;
           tail = true;
         };
+        "module/battery" = {
+          type = "internal/battery";
+          full-at = 100;
+          battery = "$\{system.battery}";
+          adapter = "$\{system.adapter}";
+        };
       };
       extraConfig = ''
         ### Decor.ini
+
+        [module/round-left]
+        type = "custom/text"
+        content = "%{T3}%{T-}"
+        # content = "%{T3}%{T-}";
+        content-foreground = #2E4374
+
+        [module/round-right]
+        type = "custom/text"
+        content = "%{T5}%{T-}"
+        # content = "%{T3}%{T-}";
+        content-foreground = #2E4374
 
         [module/bi]
         type                        = custom/text
