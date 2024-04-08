@@ -87,7 +87,7 @@ in
     polybar = {
       enable = true;
       package = nixgl pkgs.unstable.polybarFull;
-      script = "sleep 1; polybar -q bar/everforest &";
+      script = "sleep 1; polybar -q everforest &";
       settings = {
         ##################
         ### Config.ini ###
