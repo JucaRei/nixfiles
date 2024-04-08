@@ -63,7 +63,7 @@ in
 {
   home = {
     file = {
-      "/home/${username}/.config/polybar/scripts/polywins.sh" = {
+      ".config/polybar/scripts/polywins.sh" = {
         executable = true;
         source = builtins.readFile ../../config/polybar/scripts/polywins;
       };
