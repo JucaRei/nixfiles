@@ -30,11 +30,17 @@ in
 
   home = {
     # Authrorize X11 access in Distrobox
-    file = {
-      ".distroboxrc" = lib.mkIf isLinux {
+    file = lib.mkIf isLinux {
+      ".distroboxrc" = {
         text = ''
           ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
         '';
+      };
+      file = {
+        ".face" = {
+          # source = ./face.jpg;
+          source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+        };
       };
       # "Pictures/wallpapers".source = lib.mkForce "${walls}/images";
     };

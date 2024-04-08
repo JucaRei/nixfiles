@@ -1766,6 +1766,22 @@
         "type": "github"
       }
     },
+    "polybar-scripts": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1712485498,
+        "narHash": "sha256-Sa2dNOJWQNMJwnPifBnFMY9QknyHs4vHxrr3iv34LQo=",
+        "owner": "polybar",
+        "repo": "polybar-scripts",
+        "rev": "5a4dd9b1e7bba8fed012b3287e19c55b583042ec",
+        "type": "github"
+      },
+      "original": {
+        "owner": "polybar",
+        "repo": "polybar-scripts",
+        "type": "github"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat_6",
@@ -1823,6 +1839,7 @@
         "nixvim": "nixvim",
         "nur": "nur",
         "plasma-manager": "plasma-manager",
+        "polybar-scripts": "polybar-scripts",
         "sddm-sugar-candy-nix": "sddm-sugar-candy-nix",
         "sops-nix": "sops-nix",
         "split-monitor-workspaces": "split-monitor-workspaces",

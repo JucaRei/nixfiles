@@ -34,12 +34,6 @@ with lib;
 
   config = {
     home = {
-      file = {
-        ".face" = {
-          # source = ./face.jpg;
-          source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
-        };
-      };
       packages = with pkgs; [
         # spotdl
         # whatsapp-for-linux # Whatsapp desktop messaging app

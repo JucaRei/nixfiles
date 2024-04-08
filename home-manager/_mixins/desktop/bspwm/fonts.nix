@@ -7,54 +7,54 @@
   # font-5 = "Iosevka:style=bold:size=18;4"
 
   polybar-0 = {
-    package = pkgs.iosevka;
-    name = "Iosevka Nerd Font";
+    package = pkgs.maple-mono;
+    name = "Maple Mono";
     # ftname = "Iosevka Nerd Font:style=Regular:size=10";
-    ftname = "Iosevka:style=Regular:size=10";
-    offset = 3; # Offset for Polybar.
+    ftname = "Maple Mono:style=Regular:size=11";
+    offset = 2; # Offset for Polybar.
   };
 
   polybar-1 = {
-    package = pkgs.iosevka;
-    name = "Iosevka Nerd Font";
+    package = pkgs.font-awesome;
+    name = "Font Awesome 6 Free Solid";
     # ftname = "Iosevka Nerd Font:style=Regular:size=10";
-    ftname = "Iosevka:style=Regular:size=10";
+    ftname = "Font Awesome 6 Free Solid:size=11";
     offset = 3; # Offset for Polybar.
   };
 
   polybar-2 = {
     package = pkgs.material-design-icons;
-    name = "google";
-    ftname = "google\-mdi:size=12";
+    name = "Material Design Icons Desktop";
+    ftname = "Material Design Icons Desktop:size=12";
     offset = 3; # Offset for Polybar.
   };
 
   polybar-3 = {
-    package = pkgs.iosevka;
-    name = "Iosevka";
-    ftname = "Iosevka:style=bold:size=12";
+    package = pkgs.material-design-icons;
+    name = "Material Design Icons Desktop";
+    ftname = "material-design-icons:size=12";
     offset = 3; # Offset for Polybar.
   };
 
   polybar-4 = {
-    package = pkgs.iosevka;
-    name = "Iosevka Nerd Font";
+    package = pkgs.meslo-lgs-nf;
+    name = "MesloLGS NF";
     # ftname = "Iosevka Nerd Font:style=Regular:size=10";
-    ftname = "Iosevka:style=Regular:size=18";
+    ftname = "MesloLGS NF:style=Regular:size=15";
     offset = 4; # Offset for Polybar.
   };
 
   polybar-5 = {
-    package = pkgs.iosevka;
-    name = "Iosevka";
-    ftname = "Iosevka:style=bold:size=18";
-    offset = 4; # Offset for Polybar.
+    package = pkgs.maple-mono-SC-NF;
+    name = "Maple Mono SC NF";
+    ftname = "Maple Mono SC NF:size=11";
+    offset = 2; # Offset for Polybar.
   };
 
   polybar-6 = {
-    package = pkgs.material-design-icons;
-    name = "Material Design Icons";
-    ftname = "Material Design Icons:style=Bold:size18";
+    package = pkgs.unstable.sarasa-gothic;
+    name = "Sarasa Mono CL Nerd Font";
+    ftname = "Sarasa Mono CL Nerd Font:size2";
     offset = 4;
   };
 }
