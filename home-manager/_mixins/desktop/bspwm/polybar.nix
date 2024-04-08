@@ -129,7 +129,7 @@ in
 
           };
 
-          "bar/bar" = {
+          "bar" = {
             # monitor = "";
             # monitor-fallback = "";
             monitor-strict = false;
