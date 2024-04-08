@@ -34,6 +34,14 @@ in
 
           # Polkit
           mate.mate-polkit
+
+          # fonts
+          maple-mono
+          font-awesome
+          material-design-icons
+          meslo-lgs-nf
+          maple-mono-SC-NF
+          unstable.sarasa-gothic
         ];
 
         # sudo apt-get reinstall lxsession;sudo apt install --reinstall lightdm;sudo systemctl enable lightdm
