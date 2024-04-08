@@ -327,7 +327,7 @@ in
         "module/filesystem" = {
           type = "internal/fs";
           mount-0 = "/";
-          interval = 60;
+          interval = "60";
           # ; fixed-values = true;
           fixed-values = false;
           format-mounted = "<label-mounted>";
@@ -342,7 +342,7 @@ in
           label-mounted-background = "${mb}";
           label-unmounted = "%mountpoint%: not mounted";
           label-unmounted-foreground = "$\{disabled}";
-          bar-used-width = 6;
+          bar-used-width = "6";
           bar-used-gradient = false;
           bar-used-indicator = "$\{bar.indicator}";
           bar-used-indicator-foreground = "${fg}";
