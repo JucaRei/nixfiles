@@ -516,6 +516,21 @@ in
           label-foreground = "${fg}";
         };
       };
+      extraConfig = ''
+        [module/bi]
+        type                        = custom/text
+        content                     = "%{T5}%{T-}"
+        content-foreground          = ${mb}
+        content-background          = ${bg}
+
+        ## bylo mb bg
+
+        [module/bd]
+        type                        = custom/text
+        content                     = "%{T5}%{T-}"
+        content-foreground          = ${mb}
+        content-background          = ${bg}
+      '';
     };
   };
 }
