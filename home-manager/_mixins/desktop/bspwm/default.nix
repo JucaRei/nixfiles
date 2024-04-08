@@ -53,7 +53,10 @@ in
         bspwm = {
           enable = true;
           package = (nixgl pkgs.unstable.bspwm);
-          # startupPrograms = [ ];
+          startupPrograms = [
+            "pgrep -x sxhkd > /dev/null || sxhkd"
+            "xsetroot -cursor_name left_ptr"
+          ];
           alwaysResetDesktops = true;
           monitors = {
             # eDP-1

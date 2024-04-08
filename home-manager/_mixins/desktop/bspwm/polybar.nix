@@ -617,8 +617,14 @@ in
           content = "⏻";
           content-background = "${mb}";
           content-foreground = "${red}";
-          click-left = " ~/.config/rofi/scripts/powermenu";
-          click-right = " ~/.config/rofi/scripts/powermenu";
+          click-left = "~/.config/rofi/scripts/powermenu";
+          click-right = "~/.config/rofi/scripts/powermenu";
+        };
+        "module/weather" = {
+          type = "custom/script";
+          exec = "~/.config/polybar/scripts/weather-plugin";
+          tail = false;
+          interval = 960;
         };
       };
       extraConfig = ''
