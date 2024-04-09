@@ -13,7 +13,7 @@ in
   #   };
 
   options.programs.ungoogled = {
-    enable = mkEnableOption "Google-free chromium" {
+    enable = mkOption {
       default = false;
       type = types.bool;
     };
