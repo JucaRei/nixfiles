@@ -4,8 +4,7 @@ let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   alacritty-custom = nixgl pkgs.alacritty;
   terminal = "${_ alacritty-custom}";
-  browser-custom = import ../../apps/browser/chrome/ungoogled-chromium.nix args;
-  browser = "${_ browser-custom}";
+  browser = "chromium-browser";
   filemanager = "thunar";
   mod = "super";
   # browser = "vivaldi";
