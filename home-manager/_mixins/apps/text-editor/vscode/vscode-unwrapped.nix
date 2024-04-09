@@ -185,7 +185,7 @@ in
             name = "codesnap";
             publisher = "adpyke";
             version = "1.3.4";
-            sha256 = "sha256-SbfsD28gaVHAmJskUuc1Q8kA47jrVa3OO5Ur7ULk3jI=";
+            sha256 = "sha256-dR6qODSTK377OJpmUqG9R85l1sf9fvJJACjrYhSRWgQ=";
           }
           {
             name = "remote-ssh";
