@@ -38,6 +38,7 @@ in
         };
       };
     };
+    programs.ungoogled.enable = true;
   };
 }
 
