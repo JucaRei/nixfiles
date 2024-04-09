@@ -239,7 +239,7 @@ in
             publisher = "RedCrafter07";
             version = "0.0.3";
             # sha256 = lib.fakeSha256;
-            sha256 = "sha256-JLxVOPNJEythpA8K1aa/d1TcG1rWfV4yMl3bcXCu+KE=";
+            sha256 = "sha256-zGQaQDusiEhuvqGd5AqSpTYKpuaGR2WJr5XpPbESzeU=";
           }
           #   {
           #     name = "gamberetti-reborn-theme";
