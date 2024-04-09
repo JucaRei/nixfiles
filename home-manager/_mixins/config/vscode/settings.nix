@@ -56,7 +56,7 @@ in
   #######################
   "editor.fontFamily" = "'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'";
   "editor.fontLigatures" = true;
-  "editor.bracketPairColorization.independentColorPoolPerBracketType" = true;
+  # "editor.bracketPairColorization.independentColorPoolPerBracketType" = true;
   "editor.fontSize" = 18;
   "editor.fontVariations" = true;
   "editor.fontWeight" = 500;
