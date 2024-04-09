@@ -66,7 +66,7 @@ in
             name = "better-nix-syntax";
             publisher = "jeff-hykin";
             version = "1.1.5";
-            sha256 = "sha256-vqfhUIjFBf9JvmxB4QFrZH4KMhxamuYjs5n9VyW/BiI=";
+            sha256 = "sha256-9V+ziWk9V4LyQiVNSC6DniJDun+EvcK30ykPjyNsvp0=";
           }
           {
             name = "color-highlight-css-color-4";
