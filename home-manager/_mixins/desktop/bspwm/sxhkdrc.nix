@@ -4,13 +4,16 @@ let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   alacritty-custom = nixgl pkgs.alacritty;
   terminal = "${_ alacritty-custom}";
+  ungoogled-chromium = ../../apps/browser/ungoogled-chromium.nix { inherit pkgs config; };
+  browser = "${_ ungoogled-chromium}";
   filemanager = "thunar";
   mod = "super";
-  browser = "vivaldi";
+  # browser = "vivaldi";
 in
 {
   # Terminal
   "${mod} + Return" = "${terminal}";
+  "${mod} + shift + Return" = "${terminal} --class='termfloat'";
 
   # web-browser
   "${mod} + w" = "${browser}";
