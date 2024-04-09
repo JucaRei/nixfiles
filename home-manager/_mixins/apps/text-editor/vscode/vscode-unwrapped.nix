@@ -1,7 +1,7 @@
 args @ { pkgs, lib ? pkgs.lib, config, ... }:
 let
   nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
-  codegl = pkgs.unstable.vscode;
+  codegl = nixGL pkgs.unstable.vscode;
 in
 {
   imports = [
@@ -24,7 +24,7 @@ in
       #     "--ozone-platform-hint=auto"
       #   ];
       # });
-      package = pkgs.unstable.vscode;
+      package = codegl;
 
       mutableExtensionsDir = true;
       enableUpdateCheck = false;

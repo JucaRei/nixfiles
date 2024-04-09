@@ -14,12 +14,15 @@ in
   imports = [
     ../_mixins/non-nixos
     ../_mixins/console/yt-dlp.nix
+    ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
+    ../_mixins/apps/browser/chrome/ungoogled-chromium.nix
   ];
 
   config = {
     services = {
       nonNixOs.enable = true;
       yt-dlp-custom.enable = true;
+      vscode-server.enable = true;
     };
 
     home = {
