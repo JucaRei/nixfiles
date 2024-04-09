@@ -206,7 +206,7 @@ in
             publisher = "ms-vscode-remote";
             version = "0.25.0";
             # sha256 = lib.fakeSha256;
-            sha256 = "sha256-6v4JWpyMxqTDIjEOL3w25bdTN+3VPFH7HdaSbgIlCmo=";
+            sha256 = "sha256-CleLZvH40gidW6fqonZv/E/VO8IDI+QU4Zymo0n35Ns=";
           }
           {
             name = "darker-plus-material-red";
