@@ -6,8 +6,8 @@ in
 {
   imports = [
     ### Enable immutable vscode settings
-    ../../../config/vscode/settings.nix
-    # ./vscode-remote # import this if you want vscode server
+    # ../../../config/vscode/settings.nix
+    ./vscode-remote # import this if you want vscode server
   ];
 
   # enable vs-code remote
@@ -25,6 +25,8 @@ in
       #   ];
       # });
       package = codegl;
+
+      userSettings = import ../../../config/vscode/settings.nix args;
 
       mutableExtensionsDir = true;
       enableUpdateCheck = false;
