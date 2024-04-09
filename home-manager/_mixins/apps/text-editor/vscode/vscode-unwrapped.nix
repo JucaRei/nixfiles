@@ -219,7 +219,7 @@ in
             name = "beardedicons";
             publisher = "beardedbear";
             version = "1.18.0";
-            sha256 = "sha256-PpIut/yhUNK1eTPRvVXONt06TOXpoGgmd6lrhFdADRQ";
+            sha256 = "sha256-m8utv500Xk6jLI5ndNfiOoPZfyJcLC2XuNwLdC9J+6w=";
           }
           {
             name = "linux-desktop-file";
