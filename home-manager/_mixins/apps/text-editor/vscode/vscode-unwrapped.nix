@@ -111,7 +111,7 @@ in
             name = "simple-icons";
             publisher = "Comdec";
             version = "0.1.6";
-            sha256 = "sha256-28tSGWdtQVu0I34DQBl1CicEqQHP37dS//FH9sTaECY=";
+            sha256 = "sha256-OSsVdJyG7Mi4ltza40LvmyDZF/hMmVZENfJkaBzVcWw=";
           }
           # {
           #   name = "vscode-icons";
