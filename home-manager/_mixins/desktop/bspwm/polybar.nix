@@ -68,6 +68,10 @@ in
 
 {
   home = {
+    packages = with pkgs; [
+      # Packages for scripts
+      wmctrl
+    ];
     file = {
       "/home/${username}/.config/polybar/scripts/polywins" = {
         executable = true;
