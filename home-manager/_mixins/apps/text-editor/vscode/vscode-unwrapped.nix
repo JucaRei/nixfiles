@@ -166,7 +166,7 @@ in
             publisher = "natqe";
             version = "0.0.7";
             # sha256 = lib.fakeSha256;
-            sha256 = "sha256-bTFLk3sCJb7ztkC/Cxci6n7RbcyNjEYNKREUf9wDQRU=";
+            sha256 = "sha256-j0Dj7YiawhPAMHe8wk8Ph4vo26IneidoGJ4C9O7Z/64=";
           }
           {
             name = "git-graph";
