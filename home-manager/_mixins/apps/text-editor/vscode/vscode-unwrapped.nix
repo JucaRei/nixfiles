@@ -146,7 +146,7 @@ in
             name = "separators";
             publisher = "alefragnani";
             version = "2.6.1";
-            sha256 = "sha256-N3E1bzNEpqwDTGwPD0A/VGQnryDtHjEnRcKvwi1upp4=";
+            sha256 = "sha256-JTFD6TGt4C3ctm+2ckTzqje2M/SiK7xshr1Hf9rQkFA=";
           }
           # {
           #   name = "workspace";
