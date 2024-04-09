@@ -119,8 +119,8 @@ in
   ######################
   ### Dev Containers ###
   ######################
-  "dev.containers.runArgs" = [ "--userns=keep-id" ];
-  "dev.containers.containerEnv" = { "HOME" = "home/node"; };
+  # "dev.containers.runArgs" = [ "--userns=keep-id" ];
+  # "dev.containers.containerEnv" = { "HOME" = "home/node"; };
 
   #################
   ### Workbench ###
