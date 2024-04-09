@@ -26,6 +26,12 @@ in
     };
 
     home = {
+      keyboard = {
+        layout = "br";
+        model = "pc105";
+        options = "grp:alt_shift_toggle";
+        variant = "abnt2";
+      };
       packages = with pkgs;[
         nix-whereis
         font-search
