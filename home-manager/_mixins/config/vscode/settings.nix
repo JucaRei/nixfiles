@@ -218,8 +218,9 @@ in
       };
     };
   };
-  # "[nix]" = "editor.defaultFormatter" = "jnoortheen.nix-ide";
-
+  "nix" = {
+    "editor.defaultFormatter" = "jnoortheen.nix-ide";
+  };
 
   ################
   ### Security ###
