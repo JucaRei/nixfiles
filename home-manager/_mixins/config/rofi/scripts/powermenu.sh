@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Load Global Variable
-source $HOME/.aether-corevar
+# source $HOME/.aether-corevar
 
 rofi_command="rofi -theme themes/powermenu.rasi"
 

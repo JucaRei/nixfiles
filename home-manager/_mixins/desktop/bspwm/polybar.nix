@@ -86,7 +86,7 @@ in
   services = {
     polybar = {
       enable = true;
-      package = nixgl pkgs.unstable.polybarFull;
+      package = nixgl pkgs.polybarFull;
       script = "";
       settings = {
         ##################
