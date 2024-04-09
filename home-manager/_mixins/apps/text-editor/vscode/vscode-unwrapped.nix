@@ -199,7 +199,7 @@ in
             publisher = "ms-vscode-remote";
             version = "0.352.0";
             # sha256 = lib.fakeSha256;
-            sha256 = "sha256-mhNp7mAxcf/3wMeMTMiYyEtlY+KgSx9BZutTdtgB5dY=";
+            sha256 = "sha256-bLkMJcC4IS9fAIzEKBtjUkqAzKQUGrGpp/LR1Ak81A4=";
           }
           {
             name = "vscode-remote-extensionpack";
