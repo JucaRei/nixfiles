@@ -1,11 +1,11 @@
-{ pkgs, config, lib, ... }:
+args@{ pkgs, config, lib, ... }:
 let
   _ = lib.getExe;
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   alacritty-custom = nixgl pkgs.alacritty;
   terminal = "${_ alacritty-custom}";
-  ungoogled-chromium = ../../apps/browser/ungoogled-chromium.nix { inherit pkgs config; };
-  browser = "${_ ungoogled-chromium}";
+  browser-custom = import ../../apps/browser/chrome/ungoogled-chromium.nix args;
+  browser = "${_ browser-custom}";
   filemanager = "thunar";
   mod = "super";
   # browser = "vivaldi";
