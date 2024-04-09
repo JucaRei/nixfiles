@@ -79,7 +79,7 @@ in
             name = "macos-modern-theme";
             publisher = "davidbwaters";
             version = "2.3.19";
-            sha256 = "sha256-2/x078M1wi4/F9aVpHQTgWKdDnEHqXKea+tsNw7YyBo=";
+            sha256 = "sha256-/gpGu3vvomQA0TC+TBJkBe2AFWimIyiMM5fndYF8G/A=";
           }
           # {
           #   name = "bootstrap-product-icons";
