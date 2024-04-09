@@ -29,7 +29,7 @@ in
       keyboard = {
         layout = "br";
         model = "pc105";
-        options = "grp:alt_shift_toggle";
+        options = [ "grp:alt_shift_toggle" ];
         variant = "abnt2";
       };
       packages = with pkgs;[
