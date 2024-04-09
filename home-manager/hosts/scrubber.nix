@@ -29,6 +29,7 @@ in
       packages = with pkgs;[
         nix-whereis
         font-search
+        stacer
       ];
       file = {
         ".face" = {
