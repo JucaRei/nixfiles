@@ -251,7 +251,7 @@ in
   "extensions.ignoreRecommendations" = true;
   "lldb.suppressUpdateNotifications" = true;
   "zenMode.hideLineNumbers" = false;
-  "breadcrumbs.enabled" = true;
+  # "breadcrumbs.enabled" = true;
 
   ##################
   ### Javascript ###
