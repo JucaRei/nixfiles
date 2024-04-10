@@ -19,9 +19,14 @@ in
           # rofi
           # polybar
           xfce.thunar
+          xfce.xfce4-power-manager
+          xfce.tumbler
+          xfce.exo
 
           ### Theme
           lxappearance-gtk2
+          papirus-icon-theme
+          papirus-folders
 
           ### File Manager
           gio # Virtual Filesystem support library
@@ -29,10 +34,14 @@ in
 
           # Utils
           pamixer # Pulseaudio command line mixer
+          # nitrogen
+          feh
           imagemagick
+          xclip
           lm_sensors
           xorg.xprop
           xorg.xrandr
+          gnome.gnome-disk-utility
 
           # Polkit
           mate.mate-polkit
@@ -53,6 +62,11 @@ in
         };
 
         sessionPath = [ "$HOME/.local/bin" ];
+
+        file = {
+          ".config/Thunar/accels.scm" = lib.fileContents ../../config/thunar/accels.scm;
+          ".config/Thunar/uca.xml" = lib.fileContents ../../config/thunar/uca.xml;
+        };
       };
 
     dconf.settings = { };
@@ -65,6 +79,7 @@ in
           startupPrograms = [
             "pgrep -x sxhkd > /dev/null || sxhkd"
             "xsetroot -cursor_name left_ptr"
+            # "nitrogen --restore"
             "sleep 2; polybar -q everforest"
           ];
           alwaysResetDesktops = true;
@@ -87,16 +102,20 @@ in
             pointer_action2 = "resize_side";
             pointer_action3 = "resize_corner";
 
-            border_width = 2;
-            window_gap = 12;
+            border_width = 3;
+            window_gap = 10;
+            split_ratio = 0.50;
 
-            split_ratio = 0.52;
+            single_monocle = true;
             borderless_monocle = true;
-            gapless_monocle = true;
+            gapless_monocle = false;
+            paddingless_mono = true;
 
-            normal_border_color = "#1E1F29";
-            focused_border_color = "#BD93F9";
-            presel_border_color = "#FF79C6";
+            normal_border_color = "#343c40"; # "#1E1F29";
+            active_border_color = "#DBBC7F";
+            focused_border_color = "#DBBC7F"; # "#BD93F9";
+            presel_border_color = "#343c40"; #"#FF79C6";
+
           };
 
           rules = {
@@ -114,6 +133,8 @@ in
             "Mpv" = {
               # "mplayer2"
               state = "floating";
+              rectangle = "1200x700+360+190";
+              desktop = "^6";
             };
             # "Kupfer.py" = {
             #   focus = "on";
@@ -129,6 +150,28 @@ in
           # bspc rule -a Kupfer.py focus=on
           # bspc rule -a Screenkey manage=off
         };
+      };
+    };
+
+    gtk = {
+      enable = true;
+      iconTheme = {
+        name = "Qogir-manjaro-dark";
+        package = pkgs.qogir-icon-theme;
+      };
+      theme = {
+        name = "zukitre-dark";
+        package = pkgs.zuki-themes;
+      };
+      gtk3.extraConfig = {
+        Settings = ''
+          gtk-application-prefer-dark-theme=1
+        '';
+      };
+      gtk4.extraConfig = {
+        Settings = ''
+          gtk-application-prefer-dark-theme=1
+        '';
       };
     };
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+    <action>
+        <icon>xterm</icon>
+        <name>Open Terminal Here</name>
+        <unique-id>1612104464586264-1</unique-id>
+        <command>exo-open --working-directory %f --launch TerminalEmulator</command>
+        <command>foot</command>
+        <description>Example for a custom action</description>
+        <patterns>*</patterns>
+        <startup-notify/>
+        <directories/>
+    </action>
+    <action>
+        <icon>code</icon>
+        <name>Open VSCode Here</name>
+        <unique-id>1612104464586265-1</unique-id>
+        <command>code %f</command>
+        <description></description>
+        <patterns>*</patterns>
+        <startup-notify/>
+        <directories/>
+    </action>
+    <action>
+        <icon>bcompare</icon>
+        <name>Compare</name>
+        <submenu></submenu>
+        <unique-id>1622791692322694-4</unique-id>
+        <command>meld %F</command>
+        <description>Compare files and directories with  meld</description>
+        <range></range>
+        <patterns>*</patterns>
+        <directories/>
+        <text-files/>
+    </action>
+</actions>

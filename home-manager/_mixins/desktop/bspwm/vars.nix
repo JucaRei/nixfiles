@@ -63,6 +63,6 @@ in
     offset = 4;
   };
 
-  mod = "Super"; # alt
+  mod = "super"; # alt
   alacritty-custom = nixgl pkgs.alacritty;
 }

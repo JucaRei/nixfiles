@@ -27,15 +27,24 @@ in
   "${modkey} + m" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
   "${modkey} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
   "${modkey} + {_,shift + }q" = "bspc node -{c,k}"; # Close and kill
+  "${modkey} + k" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
+  "alt + shift + g" = "bspc config window_gap 5";
+  "alt + g" = "bspc config window_gap 0";
   "${modkey} + y" = "bspc node newest.marked.local -n newest.!automatic.local"; # send the newest marked node to the newest preselected node
   "${modkey} + g" = "bspc node -s biggest"; # Swap the current node and the biggest node
+
+  # Alt - Move workspaces
+  # "${modkey} + {Left,Right}" = "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
+  # "${modkey} + {_,shift +}{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'"; # Focus or send to the given desktop
+  "${modkey} + shift + {Left,Right}" = "bspc node -d {prev,next}.local --follow"; # Send and follow to previous or next desktop
 
   ####################
   ### States flags ###
   ####################
 
-  # "${modkey} + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,fullscreen}";
+  "${modkey} + shift + {t,h,f}" = "bspc node -t '~{tiled,pseudo_tiled,floating,fullscreen}'";
   "alt + f" = ''bspc node -t "~"{floating,tiled}'';
+  "${modkey} + ctrl + {m,x,y,z}" = "bspc node -g {marked,locked,sticky,private}"; # set the node flags
 
   # set the node flags
   "${modkey} + ctrl + {x,y,z}" = "bspc node -g {locked,sticky,private}";
