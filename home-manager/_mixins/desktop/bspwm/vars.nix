@@ -1,6 +1,7 @@
 { pkgs, config }:
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+  chromium-browser = import ../../apps/browser/chrome/ungoogled-chromium.nix { inherit pkgs config; };
 in
 {
   # font-0 = "Iosevka Nerd Font:size=10;3"
