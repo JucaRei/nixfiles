@@ -26,7 +26,7 @@ in
     };
 
     home = {
-      keyboard = {
+      keyboard = lib.mkForce {
         layout = "br";
         model = "pc105";
         options = [ "grp:alt_shift_toggle" ];

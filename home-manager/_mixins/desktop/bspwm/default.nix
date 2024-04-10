@@ -43,7 +43,6 @@ in
           # Utils
           pamixer # Pulseaudio command line mixer
           # nitrogen
-          feh
           cava
           font-manager
           imagemagick
@@ -244,7 +243,7 @@ in
         enable = true;
         keybindings = import ./sxhkdrc.nix args;
       };
-      fusuma.enable = true;
+      # fusuma.enable = true;
     };
 
     programs = {
@@ -256,17 +255,17 @@ in
       rofi = import ./rofi.nix args;
       feh = {
         enable = true;
-        packages = pkgs.feh;
-        keybindings = "";
-        buttons = "";
+        package = pkgs.feh;
+        # keybindings = "";
+        # buttons = "";
       };
     };
 
     i18n = {
-      glibcLocales = pkgs.glibcLocales.override {
-        allLocales = false;
-        locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
-      };
+      # glibcLocales = pkgs.glibcLocales.override {
+      #   allLocales = false;
+      #   locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
+      # };
       inputMethod = {
         enabled = "fcitx5";
         fcitx5.addons = with pkgs; [
