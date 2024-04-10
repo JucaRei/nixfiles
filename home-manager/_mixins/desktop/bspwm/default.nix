@@ -1,6 +1,8 @@
 { pkgs, config, lib, ... }@args:
 let
+  _ = lib.getExe;
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+  vars = import ./vars.nix { inherit pkgs config; };
 in
 {
 
@@ -37,6 +39,7 @@ in
           # nitrogen
           feh
           imagemagick
+          meld
           xclip
           lm_sensors
           xorg.xprop
@@ -64,8 +67,45 @@ in
         sessionPath = [ "$HOME/.local/bin" ];
 
         file = {
-          ".config/Thunar/accels.scm" = lib.fileContents ../../config/thunar/accels.scm;
-          ".config/Thunar/uca.xml" = lib.fileContents ../../config/thunar/uca.xml;
+          ".config/Thunar/accels.scm".text = lib.fileContents ../../config/thunar/accels.scm;
+          ".config/Thunar/uca.xml".text = ''
+            <?xml version="1.0" encoding="UTF-8"?>
+            <actions>
+                <action>
+                    <icon>xterm</icon>
+                    <name>Open Terminal Here</name>
+                    <unique-id>1612104464586264-1</unique-id>
+                    <command>exo-open --working-directory %f --launch "${_ vars.alacritty-custom}"</command>
+                    <command>"${vars.alacritty-custom}/bin/alacritty"</command>
+                    <description>Example for a custom action</description>
+                    <patterns>*</patterns>
+                    <startup-notify/>
+                    <directories/>
+                </action>
+                <action>
+                    <icon>code</icon>
+                    <name>Open VSCode Here</name>
+                    <unique-id>1612104464586265-1</unique-id>
+                    <command>code %f</command>
+                    <description></description>
+                    <patterns>*</patterns>
+                    <startup-notify/>
+                    <directories/>
+                </action>
+                <action>
+                    <icon>bcompare</icon>
+                    <name>Compare</name>
+                    <submenu></submenu>
+                    <unique-id>1622791692322694-4</unique-id>
+                    <command>${pkgs.meld}/bin/meld %F</command>
+                    <description>Compare files and directories with  meld</description>
+                    <range></range>
+                    <patterns>*</patterns>
+                    <directories/>
+                    <text-files/>
+                </action>
+            </actions>
+          '';
         };
       };
 

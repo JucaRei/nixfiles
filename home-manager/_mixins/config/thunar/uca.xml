@@ -4,7 +4,7 @@
         <icon>xterm</icon>
         <name>Open Terminal Here</name>
         <unique-id>1612104464586264-1</unique-id>
-        <command>exo-open --working-directory %f --launch TerminalEmulator</command>
+        <command>exo-open --working-directory %f --launch alacritty</command>
         <command>foot</command>
         <description>Example for a custom action</description>
         <patterns>*</patterns>
