@@ -145,6 +145,7 @@ in
         package = nixgl pkgs.alacritty;
         settings = import ../../apps/terminal/alacritty.nix args;
       };
+      rofi = import ./rofi.nix args;
     };
 
     systemd.user.services.polkit-agent = {

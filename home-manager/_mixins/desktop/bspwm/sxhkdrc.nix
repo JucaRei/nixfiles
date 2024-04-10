@@ -14,13 +14,14 @@ in
   "${mod} + Return" = "${terminal}";
   "${mod} + shift + Return" = "${terminal} --class='termfloat'";
 
-  # web-browser
-  "${mod} + w" = "${browser}";
 
-  "${mod} + f" = "${filemanager}";
+  # web-browser
+  "${mod} + b" = "${browser}";
+
+  "${mod} + e" = "${filemanager}";
 
   # program launcher
-  "${mod} + @space" = "rofi_run -r";
+  "${mod} + @space" = "rofi -show drun -show-icons";
   "alt + p" = "rofi_run -r";
 
   #to change tabs ig
@@ -28,10 +29,10 @@ in
   "alt + Tab" = "bspc node -f last.local";
 
   # make sxhkd reload its configuration files:
-  "${mod} + shift + r" = "pkill -USR1 -x sxhkd";
+  "${mod} + Escape" = "${pkgs.procps}/bin/pkill -USER1 -x ${pkgs.sxhkd}/bin/sxhkd";
 
-  # quit bspwm normally
-  "${mod} + x" = "rofi_run -l";
+  # Bspwm hotkeys
+  "${mod} + ctrl + {q,r}" = "bspc {quit,wm -r}"; # quit | restart
 
   # Send the window to another edge of the screen
   "${mod} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}";
@@ -87,8 +88,11 @@ in
 
   # preselect the direction
   "${mod} + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+
   # preselect the ratio
-  "${mod} + ctrl + space" = "bspc node -p cancel";
+  "${mod} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
+
+  "${mod} + shift + Escape" = "bspc node -p cancel"; # cancel the preselection for the focused node
 
   # cancel the preselection for the focused desktop
   "${mod} + ctrl + shift + space" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
@@ -98,7 +102,15 @@ in
   ###################
 
   # expand a window by moving one of its side outward
-  "space + shift + {Left,Down,Up,Right}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+  "ctrl + alt +  {Left,Down,Up,Right}" = ''
+    bspc node -z {left -20 0 || bspc node -z right -20 0, \
+      bottom 0 20 || bspc node -z top 0 20,\
+      top 0 -20 || bspc node -z bottom 0 -20,\
+      right 20 0 || bspc node -z left 20 0}
+  '';
+
+  "alt + o" = "polybar-msg cmd toggle";
+  "alt + shift +x" = "i3lock-fancy -p";
 
   # contract a window by moving one of its side inward
   "${mod} + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
@@ -109,15 +121,19 @@ in
   ## Move floating windows
   "alt + shift + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
 
-  ###########################
-  ### Volume Control Keys ###
-  ###########################
+  ####################
+  ### Control Keys ###
+  ####################
 
-  XF86AudioMute = "pamixer -t";
-  XF86AudioRaiseVolume = "pamixer -i 2";
-  XF86AudioLowerVolume = "pamixer -d 2";
-  XF86MonBrightnessUp = "${pkgs.xorg.xbacklight}/bin/xbacklight + 5";
-  XF86MonBrightnessDown = "${pkgs.xorg.xbacklight}/bin/xbacklight - 5";
+  XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
+  XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
+  XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2";
+  XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";
+  XF86MonBrightnessDown = "${_ pkgs.xorg.xbacklight}/bin/xbacklight - 5";
+  XF86AudioPlay = "${_ pkgs.playerctl}/bin/playerctl play";
+  XF86AudioPause = "${_ pkgs.playerctl}/bin/playerctl pause";
+  XF86AudioNext = "${_ pkgs.playerctl}/bin/playerctl next";
+  XF86AudioPrev = "${_ pkgs.playerctl}/bin/playerctl previous";
 
   ##################
   ### Screenshot ###
