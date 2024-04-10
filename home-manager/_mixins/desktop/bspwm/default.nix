@@ -3,6 +3,10 @@ let
   _ = lib.getExe;
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   vars = import ./vars.nix { inherit pkgs config; };
+  thunar-with-plugins = with pkgs.xfce; (thunar.override {
+    thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
+  });
+
 in
 {
 
@@ -20,7 +24,7 @@ in
           # dunst
           # rofi
           # polybar
-          xfce.thunar
+          thunar-with-plugins
           xfce.xfce4-power-manager
           xfce.tumbler
           xfce.exo
@@ -29,6 +33,8 @@ in
           lxappearance-gtk2
           papirus-icon-theme
           papirus-folders
+          materia-theme
+          gnome3.adwaita-icon-theme
 
           ### File Manager
           gio # Virtual Filesystem support library
@@ -38,13 +44,22 @@ in
           pamixer # Pulseaudio command line mixer
           # nitrogen
           feh
+          cava
+          font-manager
+          imagemagick
+          libinput-gestures
           imagemagick
           meld
           xclip
           lm_sensors
           xorg.xprop
           xorg.xrandr
-          gnome.gnome-disk-utility
+          # gnome.gnome-disk-utility
+          gparted
+          ntfsprogs
+          pavucontrol
+          udiskie
+          udisks
 
           # Polkit
           mate.mate-polkit
@@ -75,7 +90,7 @@ in
                     <icon>xterm</icon>
                     <name>Open Terminal Here</name>
                     <unique-id>1612104464586264-1</unique-id>
-                    <command>exo-open --working-directory %f --launch "${_ vars.alacritty-custom}"</command>
+                    <command>${pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch "${_ vars.alacritty-custom}"</command>
                     <command>"${vars.alacritty-custom}/bin/alacritty"</command>
                     <description>Example for a custom action</description>
                     <patterns>*</patterns>
@@ -105,6 +120,10 @@ in
                     <text-files/>
                 </action>
             </actions>
+          '';
+          "${config.xdg.configHome}/libinput-gestures.conf".text = ''
+            gesture swipe right 3 bspc desktop -f next.local
+            gesture swipe left 3 bspc desktop -f prev.local
           '';
         };
       };
@@ -159,8 +178,9 @@ in
           };
 
           rules = {
-            "Chromium" = {
-              desktop = "^2";
+            "chromium" = {
+              desktop = "^3";
+              focus = true;
             };
             "Blueman-manager" = {
               state = "floating";
@@ -170,11 +190,12 @@ in
               state = "pseudo_tiled";
               center = true;
             };
-            "Mpv" = {
+            "mpv" = {
               # "mplayer2"
               state = "floating";
-              rectangle = "1200x700+360+190";
-              desktop = "^6";
+              # rectangle = "1200x700+360+190";
+              # desktop = "^6";
+              sticky = true;
             };
             # "Kupfer.py" = {
             #   focus = "on";
@@ -182,6 +203,9 @@ in
             # "Screenkey" = {
             #   manage = "off";
             # };
+            "Pavucontrol" = {
+              state = "floating";
+            };
           };
           # bspc rule -a Chromium desktop='^2'
           # bspc rule -a Blueman-manager state=floating center=true
@@ -220,6 +244,7 @@ in
         enable = true;
         keybindings = import ./sxhkdrc.nix args;
       };
+      fusuma.enable = true;
     };
 
     programs = {
@@ -229,6 +254,25 @@ in
         settings = import ../../apps/terminal/alacritty.nix args;
       };
       rofi = import ./rofi.nix args;
+      feh = {
+        enable = true;
+        packages = pkgs.feh;
+        keybindings = "";
+        buttons = "";
+      };
+    };
+
+    i18n = {
+      glibcLocales = pkgs.glibcLocales.override {
+        allLocales = false;
+        locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
+      };
+      inputMethod = {
+        enabled = "fcitx5";
+        fcitx5.addons = with pkgs; [
+          fcitx5-rime
+        ];
+      };
     };
 
     systemd.user.services.polkit-agent = {
@@ -248,5 +292,4 @@ in
       Install = { WantedBy = [ "graphical-session.target" ]; };
     };
   };
-
 }
