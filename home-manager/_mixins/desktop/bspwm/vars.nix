@@ -1,4 +1,8 @@
-{ pkgs }: {
+{ pkgs, config, lib }:
+let
+  nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+in
+{
   # font-0 = "Iosevka Nerd Font:size=10;3"
   # font-1 = "Iosevka Nerd Font:size=12;3"
   # font-2 = "google\-mdi:size=12;3"
@@ -57,4 +61,7 @@
     ftname = "Sarasa Mono CL Nerd Font:size2";
     offset = 4;
   };
+
+  mod = "Super"; # alt
+  alacritty-custom = nixgl pkgs.alacritty;
 }

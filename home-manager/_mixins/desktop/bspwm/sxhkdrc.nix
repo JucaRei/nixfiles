@@ -1,101 +1,88 @@
 args@{ pkgs, config, lib, ... }:
 let
   _ = lib.getExe;
-  nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
-  alacritty-custom = nixgl pkgs.alacritty;
-  terminal = "${_ alacritty-custom}";
+  # alacritty-custom = nixgl pkgs.alacritty;
+  terminal = "${_ vars.alacritty-custom}";
   browser = "chromium-browser";
+  vars = import ./vars.nix { inherit pkgs config lib; };
   filemanager = "thunar";
-  mod = "super";
+  modkey = vars.mod;
   # browser = "vivaldi";
 in
 {
-  # Terminal
-  "${mod} + Return" = "${terminal}";
-  "${mod} + shift + Return" = "${terminal} --class='termfloat'";
-
-
-  # web-browser
-  "${mod} + b" = "${browser}";
-
-  "${mod} + e" = "${filemanager}";
-
-  # program launcher
-  "${mod} + @space" = "rofi -show drun -show-icons";
-  "alt + p" = "rofi_run -r";
-
+  "${modkey} + Return" = "${terminal}"; # Terminal
+  "${modkey} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
+  "${modkey} + b" = "${browser}"; # web-browser
+  "${modkey} + shift + b" = "${browser} --new-window https://youtube.com/"; # web-browser
+  "${modkey} + shift + p" = "${browser} --private-window"; # web-browser
+  "${modkey} + e" = "${filemanager}";
+  "${modkey} + @space" = "rofi -show drun -show-icons"; # program launcher
+  # make sxhkd reload its configuration files:
+  "${modkey} + Escape" = "${pkgs.procps}/bin/pkill -USER1 -x ${pkgs.sxhkd}/bin/sxhkd";
+  ### Bspwm hotkeys
   #to change tabs ig
   # Switch to recent window
   "alt + Tab" = "bspc node -f last.local";
-
-  # make sxhkd reload its configuration files:
-  "${mod} + Escape" = "${pkgs.procps}/bin/pkill -USER1 -x ${pkgs.sxhkd}/bin/sxhkd";
-
-  # Bspwm hotkeys
-  "${mod} + ctrl + {q,r}" = "bspc {quit,wm -r}"; # quit | restart
-
-  # Send the window to another edge of the screen
-  "${mod} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}";
-
-  # Close and kill
-  "${mod} + {_,shift + }q" = "bspc node -{c,k}";
-
-  # Swap the current node and the biggest node
-  "${mod} + g" = "bspc node -s biggest";
+  "${modkey} + ctrl + {q,r}" = "bspc {quit,wm -r}"; # quit | restart
+  "${modkey} + m" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
+  "${modkey} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
+  "${modkey} + {_,shift + }q" = "bspc node -{c,k}"; # Close and kill
+  "${modkey} + y" = "bspc node newest.marked.local -n newest.!automatic.local"; # send the newest marked node to the newest preselected node
+  "${modkey} + g" = "bspc node -s biggest"; # Swap the current node and the biggest node
 
   ####################
   ### States flags ###
   ####################
 
-  # "${mod} + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,fullscreen}";
+  # "${modkey} + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,fullscreen}";
   "alt + f" = ''bspc node -t "~"{floating,tiled}'';
 
   # set the node flags
-  "${mod} + ctrl + {x,y,z}" = "bspc node -g {locked,sticky,private}";
+  "${modkey} + ctrl + {x,y,z}" = "bspc node -g {locked,sticky,private}";
 
   ##################
   ### Focus/swap ###
   ##################
 
   # focus the node in the given direction
-  "${mod} + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
+  "${modkey} + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
 
   # focus the node for the given path jump
-  "${mod} + {p,b,comma,period}" = "bspc node -f @{parent,brother,first,second}";
+  "${modkey} + {p,b,comma,period}" = "bspc node -f @{parent,brother,first,second}";
 
   # focus the next/previous node in the current desktop
-  "${mod} + {_,shift + }c" = "bspc node -f {prev,next}.local";
+  "${modkey} + {_,shift + }c" = "bspc node -f {prev,next}.local";
 
   # focus the next/previous desktop in the current monitor
-  "${mod} + bracket{left,right}" = "bspc desktop -f {prev,next}.local";
+  "${modkey} + bracket{left,right}" = "bspc desktop -f {prev,next}.local";
 
   # focus the last node/desktop
-  "${mod} + {grave,Tab}" = "bspc {node,desktop} -f last";
+  "${modkey} + {grave,Tab}" = "bspc {node,desktop} -f last";
 
   # focus the older or newer node in the focus history
-  "${mod} + {o,i}" = ''
+  "${modkey} + {o,i}" = ''
     bspc wm -h off; \
     bspc node {older,newer} -f; \
     bspc wm -h on
   '';
 
   # focus or send to the given desktop
-  "${mod} + {_,shift + }{1-9,0}" = '' "bspc {desktop -f,node -d}" '^{1-9,10}' '';
+  "${modkey} + {_,shift + }{1-9,0}" = '' "bspc {desktop -f,node -d}" '^{1-9,10}' '';
 
   #################
   ### Preselect ###
   #################
 
   # preselect the direction
-  "${mod} + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+  "${modkey} + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
 
   # preselect the ratio
-  "${mod} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
+  "${modkey} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
 
-  "${mod} + shift + Escape" = "bspc node -p cancel"; # cancel the preselection for the focused node
+  "${modkey} + shift + Escape" = "bspc node -p cancel"; # cancel the preselection for the focused node
 
   # cancel the preselection for the focused desktop
-  "${mod} + ctrl + shift + space" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
+  "${modkey} + ctrl + shift + space" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
 
   ###################
   ### Move/Resize ###
@@ -113,10 +100,10 @@ in
   "alt + shift +x" = "i3lock-fancy -p";
 
   # contract a window by moving one of its side inward
-  "${mod} + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
+  "${modkey} + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
 
   # move a floating window
-  #"${mod} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}"
+  #"${modkey} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}"
 
   ## Move floating windows
   "alt + shift + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
@@ -245,13 +232,9 @@ in
 #   super + {_,shift + }w
 #   	bspc node -{c,k}
 
-#   # alternate between the tiled and monocle layout
-#   super + m
-#   	bspc desktop -l next
 
-#   # send the newest marked node to the newest preselected node
-#   super + y
-#   	bspc node newest.marked.local -n newest.!automatic.local
+
+
 
 
 #   #* =========================== states/flags ========================== *#

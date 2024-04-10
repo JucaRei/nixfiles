@@ -1,7 +1,7 @@
 { pkgs, config, lib ? pkgs.lib, username, ... }:
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
-  fonts = import ./fonts.nix { inherit pkgs; };
+  vars = import ./vars.nix { inherit pkgs config; };
 
   okay = green;
   warn = orange;
@@ -144,13 +144,13 @@ in
           # module-margin-right = 0;
 
           # font-0 = "${pkgs.iosevka}/share/fonts/truetype/Iosevka-Regular.ttf";
-          font-0 = with fonts.polybar-0;
+          font-0 = with vars.polybar-0;
             "${ftname};${toString offset}";
-          font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-          font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-          font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-          font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-          font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
+          font-1 = with vars.polybar-1; "${ftname};${toString offset}";
+          font-2 = with vars.polybar-2; "${ftname};${toString offset}";
+          font-3 = with vars.polybar-3; "${ftname};${toString offset}";
+          font-4 = with vars.polybar-4; "${ftname};${toString offset}";
+          font-5 = with vars.polybar-5; "${ftname};${toString offset}";
 
         };
 
@@ -187,13 +187,13 @@ in
           module-margin-left = 0;
           module-margin-right = 0;
 
-          font-0 = with fonts.polybar-0; "${ftname};${toString offset}";
-          font-1 = with fonts.polybar-1; "${ftname};${toString offset}";
-          font-2 = with fonts.polybar-2; "${ftname};${toString offset}";
-          font-3 = with fonts.polybar-3; "${ftname};${toString offset}";
-          font-4 = with fonts.polybar-4; "${ftname};${toString offset}";
-          font-5 = with fonts.polybar-5; "${ftname};${toString offset}";
-          font-6 = with fonts.polybar-6; "${ftname};${toString offset}";
+          font-0 = with vars.polybar-0; "${ftname};${toString offset}";
+          font-1 = with vars.polybar-1; "${ftname};${toString offset}";
+          font-2 = with vars.polybar-2; "${ftname};${toString offset}";
+          font-3 = with vars.polybar-3; "${ftname};${toString offset}";
+          font-4 = with vars.polybar-4; "${ftname};${toString offset}";
+          font-5 = with vars.polybar-5; "${ftname};${toString offset}";
+          font-6 = with vars.polybar-6; "${ftname};${toString offset}";
 
           modules-left = "sep launcher blok bspwm round-left polywins round-right";
           modules-center = "";
