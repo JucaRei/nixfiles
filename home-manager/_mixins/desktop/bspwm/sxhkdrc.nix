@@ -4,7 +4,7 @@ let
   # alacritty-custom = nixgl pkgs.alacritty;
   terminal = "${_ vars.alacritty-custom}";
   browser = "chromium-browser";
-  vars = import ./vars.nix { inherit pkgs config lib; };
+  vars = import ./vars.nix { inherit pkgs config; };
   filemanager = "thunar";
   modkey = vars.mod;
   # browser = "vivaldi";
