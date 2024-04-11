@@ -151,7 +151,7 @@ in
           font-3 = with vars.polybar-3; "${ftname};${toString offset}";
           font-4 = with vars.polybar-4; "${ftname};${toString offset}";
           font-5 = with vars.polybar-5; "${ftname};${toString offset}";
-          font-6 = with vars.batman-0; "${ftname};${toString offset}";
+          font-6 = with vars.polybar-6; "${ftname};${toString offset}";
 
         };
 
@@ -196,11 +196,11 @@ in
           font-5 = with vars.polybar-5; "${ftname};${toString offset}";
           font-6 = with vars.polybar-6; "${ftname};${toString offset}";
 
-          modules-left = "sep launcher blok bspwm round-left polywins round-right";
+          modules-left = "launcher blok bspwm round-left polywins round-right";
           modules-center = "";
           # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
           # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
-          modules-right = "sep temperature blok2 filesystem blok2 memory_bar blok2 cpu_bar blok pulseaudio-control-output blok date blok2 battery blok powermenu sep";
+          modules-right = "sep temperature blok2 filesystem blok2 memory_bar blok2 cpu_bar blok pulseaudio-control-output blok date blok2 battery blok powermenu";
 
           spacing = 0;
           # separator =
@@ -214,7 +214,7 @@ in
           tray-background = "${sapphire}";
           tray-offset-x = 0;
           tray-offset-y = 0;
-          tray-padding = 0;
+          tray-padding = 9;
           tray-scale = 1.0;
 
           wm-restack = "bspwm";

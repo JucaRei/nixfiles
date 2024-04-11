@@ -683,7 +683,7 @@ in
           # Create scroll handlers used to cycle desktops
           # ; Default: true
           enable-scroll = true;
-          "icon-[0-9]+" = "<desktop-name>";
+          # "icon-[0-9]" = "<desktop-name>";
           # <icon>
           # ; NOTE: The desktop name needs to match the name configured by the WM
           # ; You can get a list of the defined desktops using:

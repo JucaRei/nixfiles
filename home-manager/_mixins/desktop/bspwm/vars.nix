@@ -2,6 +2,9 @@
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   chromium-browser = import ../../apps/browser/chrome/ungoogled-chromium.nix { inherit pkgs config; };
+  nerdPatched = with pkgs; [
+    (pkgs.nerdfonts.override { fonts = [ "Iosevka" "JetBrainsMono" ]; })
+  ];
 in
 {
   # font-0 = "Iosevka Nerd Font:size=10;3"
@@ -72,14 +75,14 @@ in
   ##############
 
   batman-0 = {
-    package = (pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; });
+    package = nerdPatched;
     name = "Iosevka Nerd Font";
     ftname = "Iosevka Nerd Font:style=Bold:size=8";
     offset = 2;
   };
 
   batman-1 = {
-    package = (pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; });
+    package = nerdPatched;
     name = "Iosevka Nerd Font";
     ftname = "Iosevka Nerd Font:style=Medium:size=13";
     offset = 2;
@@ -93,7 +96,7 @@ in
   };
 
   batman-3 = {
-    package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; });
+    package = nerdPatched;
     name = "JetBrainsMono Nerd Font";
     ftname = "JetBrainsMono Nerd Font:style=Medium:size=11";
     offset = 3;
@@ -114,7 +117,7 @@ in
   };
 
   batman-6 = {
-    package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; });
+    package = nerdPatched;
     name = "JetBrainsMono Nerd Font";
     ftname = "JetBrainsMono Nerd Font:style=Medium:size=8";
     offset = 2;

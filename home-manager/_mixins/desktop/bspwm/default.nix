@@ -11,8 +11,8 @@ in
 {
 
   imports = [
-    # ./polybar-everforest.nix
-    ./polybar-batman.nix
+    ./polybar-everforest.nix
+    # ./polybar-batman.nix
   ];
   config = {
     home =
