@@ -366,7 +366,7 @@ in
           format-prefix = " ";
           format-prefix-font = 8;
           format-prefix-foreground = "${indigoLight}";
-          format-prefix-background = ${bg1};
+          format-prefix-background = "${bg1}";
           format-background = "${bg1}";
           format-foreground = "${indigoLight}";
           format-padding = 0;
@@ -715,8 +715,8 @@ in
           label-active = "  ";
           label-active-font = 8;
           label-active-underline = "${blue}";
-          label-active-background = "${bg1}"
-            label-active-foreground = "${yellow}";
+          label-active-background = "${bg1}";
+          label-active-foreground = "${yellow}";
           # ${color.foreground-alt}
           # ; Available tokens:
           # ;   %name%
@@ -724,7 +724,7 @@ in
           # ;   %index%
           # ; Default: %icon%  %name%
           label-occupied = "  ";
-          label-occupied = "  ";
+          # label-occupied = "  ";
           label-occupied-font = 8;
           label-occupied-foreground = "${green}";
           label-occupied-background = "${bg1}";
