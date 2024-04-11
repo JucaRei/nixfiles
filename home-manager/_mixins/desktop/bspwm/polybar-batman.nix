@@ -3,11 +3,6 @@ let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   vars = import ./vars.nix { inherit pkgs config; };
 
-  okay = green;
-  warn = orange;
-  fail = red;
-  alert = cyan;
-  dim = grey;
 
   # --icon-playing "${okay ""}"
 
@@ -25,45 +20,33 @@ let
   ##################
   ### Colors.ini ###
   ##################
+  alpha = "#0000ffff";
+  bg = "#960000";
+  bg1 = "#141a21";
+  bg2 = "#081F2D";
+  fg = "#D3EBE9";
+  fg1 = "#D3EBE9";
+  shade2 = "#720e9e";
+  shade3 = "#FF033E";
+  shade7 = "#FF03A3";
 
-  ### Colors
-  # ;; Dark Add FC at the beginning #FC1E1F29 for 99 transparency
-  bg = "#2D353B";
-  bg-alt = "#1e1e2e";
-  fg = "#d3c6aa";
-  mb = "#2D353B";
+  # for 50% transparent
+  trans1 = "#80000000";
+  # for 100% transparent
+  trans2 = "#00";
 
-  trans = "#00000000";
-  white = "#FFFFFF";
-  black = "#000000";
-
-  blue-arch = "#0A9CF5";
-  amber = "#FBC02D";
-  sapphire = "#74c7ec";
-  rosewater = "#f5e0dc";
-  flamingo = "#f2cdcd";
-  # pink = "#f5c2e7";
-  mauve = "#cba6f7";
-
-  red = "#E67E80";
-  orange = "#E69875";
-  yellow = "#DBBC7F";
-  green = "#A7C080";
-  aqua = "#83C092";
-  blue = "#7FBBB3";
-  teal = "#94e2d5";
-  lavender = "#b4befe";
-  purple = "#D699B6";
-  pink = "#EC407A";
-  cyan = "#79E6F3";
-  lime = "#B9C244";
-  brown = "#AC8476";
-  grey = "#8C8C8C";
-  indigo = "#6C77BB";
-  blue-gray = "#6D8895";
-  sky = "#89dceb";
-
-  pallete = "#D83F31";
+  black = "#0A0F14";
+  red = "#C33027";
+  green = "#26A98B";
+  yellow = "#EDB54B";
+  blue = "#33859D";
+  purple = "#888BA5";
+  indigo = "#093748";
+  indigoLight = "#195465";
+  cyan = "#91D1CE";
+  white = "#ECEFF4";
+  teal = "#599CAA";
+  gray = "#4E5165";
 in
 
 {
@@ -100,61 +83,7 @@ in
           margin-bottom = 0;
           margin-top = 0;
         };
-
-        "default" = {
-          module-foreground = "${bg}";
-          module-background = "${red}";
-
-          triangle-right = "%{T2} %{T-}";
-          triangle-left = "%{T2} %{T-}";
-
-          #triangle-right = %{T2}█ %{T-}
-          #triangle-left = %{T2} █%{T-}
-
-          #triangle-right = %{T2} %{T-}
-          #triangle-left = %{T2} %{T-}
-
-          #triangle-right = %{T2}%{T-}
-          #triangle-left = %{T2}%{T-}
-
-          # monitor = "";
-          # monitor-fallback = "";
-          # monitor-strict = false;
-
-          # override-redirect = false;
-          # fixed-center = true;
-
-          # width = "2.5%";
-          # height = 40;
-
-          # offset-x = "2%";
-          # offset-y = 10;
-
-          # background = "${bg-alt}";
-          # foreground = "${fg}";
-
-          # radius = 6;
-
-          # line-size = 2;
-          # line-color = "${blue}";
-
-          # padding = 0;
-
-          # module-margin-left = 0;
-          # module-margin-right = 0;
-
-          # font-0 = "${pkgs.iosevka}/share/fonts/truetype/Iosevka-Regular.ttf";
-          font-0 = with vars.polybar-0;
-            "${ftname};${toString offset}";
-          font-1 = with vars.polybar-1; "${ftname};${toString offset}";
-          font-2 = with vars.polybar-2; "${ftname};${toString offset}";
-          font-3 = with vars.polybar-3; "${ftname};${toString offset}";
-          font-4 = with vars.polybar-4; "${ftname};${toString offset}";
-          font-5 = with vars.polybar-5; "${ftname};${toString offset}";
-
-        };
-
-        "bar/everforest" = {
+        "bar/batman" = {
           # monitor = "";
           # monitor-fallback = "";
           monitor-strict = false;
@@ -165,55 +94,57 @@ in
           bottom = false;
           fixed-center = true;
 
-          width = "99%";
-          height = 24;
+          width = "100%";
+          height = 20;
 
-          offset-x = "0.5%";
-          # offset-y = 10;
+          offset-x = "0%";
+          offset-y = "0%";
 
           background = "${bg}";
           foreground = "${fg}";
 
-          radius = "4.0";
+          radius-top = "0.0";
+          radius-bottom = "0.0";
 
-          line-size = 2;
-          line-color = "${blue}";
+          underline-size = 1;
+          underline-color = "${fg}";
 
-          border-size = "1.4px";
+          border-size = 0;
+          border-top-size = 2;
+          border-botto0-size = 2;
           border-color = "${bg}";
 
-          padding = "0.2";
+          padding-left = 1;
+          padding-top = 2;
 
           module-margin-left = 0;
           module-margin-right = 0;
 
-          font-0 = with vars.polybar-0; "${ftname};${toString offset}";
-          font-1 = with vars.polybar-1; "${ftname};${toString offset}";
-          font-2 = with vars.polybar-2; "${ftname};${toString offset}";
-          font-3 = with vars.polybar-3; "${ftname};${toString offset}";
-          font-4 = with vars.polybar-4; "${ftname};${toString offset}";
-          font-5 = with vars.polybar-5; "${ftname};${toString offset}";
-          font-6 = with vars.polybar-6; "${ftname};${toString offset}";
+          font-0 = with vars.batman-0; "${ftname};${toString offset}";
+          font-1 = with vars.batman-1; "${ftname};${toString offset}";
+          font-2 = with vars.batman-2; "${ftname};${toString offset}";
+          font-3 = with vars.batman-3; "${ftname};${toString offset}";
+          font-4 = with vars.batman-4; "${ftname};${toString offset}";
+          font-5 = with vars.batman-5; "${ftname};${toString offset}";
+          font-6 = with vars.batman-6; "${ftname};${toString offset}";
 
-          modules-left = "sep launcher blok bspwm round-left polywins round-right";
-          modules-center = "";
-          # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
-          # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
-          modules-right = "sep temperature blok2 filesystem blok2 memory_bar blok2 cpu_bar blok pulseaudio-control-output blok date blok2 battery blok powermenu sep";
 
-          spacing = 0;
+          modules-left = "arch sep left workspaces right sepr left title right sepr left backlight battery temperature right";
+          modules-center = "sepr left date right sepr";
+          modules-right = "left memory right sepr left cpu right sepr left net right sepr left network right sepr left vol right sep left alsa right";
+
           # separator =
           dim-value = 1.0;
 
           locale = "pt_BR.UTF-8";
 
-          tray-position = "none";
+          tray-position = "right";
           tray-detached = false;
-          tray-maxsize = 16;
-          tray-background = "${sapphire}";
+          tray-maxsize = 12;
+          tray-background = "${bg}";
           tray-offset-x = 0;
           tray-offset-y = 0;
-          tray-padding = 0;
+          tray-padding = 9;
           tray-scale = 1.0;
 
           wm-restack = "bspwm";
@@ -222,738 +153,821 @@ in
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";
         };
-
         "settings" = {
-          screenchange-reload = true;
-
+          throttle-output = 5;
+          throttle-output-for = 10;
+          screenchange-reload = false;
           compositing-background = "source";
           compositing-foreground = "over";
           compositing-overline = "over";
           compositing-underline = "over";
           compositing-border = "over";
-
-          pseudo-transparency = true;
-        };
-
-      };
-
-      config = {
-        ##################
-        ### System.ini ###
-        ##################
-        # ; When some modules in the polybar doesn't show up.
-        # ; Look for battery/adapter: "ls -l /sys/class/power_supply"
-        # ; Look for backlight: "ls -l /sys/class/backlight"
-        # ; Look for network: "ls -l /sys/class/net"
-        "system" = {
-          adapter = "AC";
-          battery = "BAT1";
-          graphics_card = "intelgpu";
-          network_interface = "wlan0";
+          pseudo-transparency = false;
         };
         ###################
         ### Modules.ini ###
         ###################
-        # https://github.com/polybar/polybar-scripts/tree/master/polybar-scripts/player-mpris-tail
-        "module/mpris" = {
-          type = "custom/script";
-          exec = "${player-mpris-tail}/bin/player-mpris-tail";
-          tail = true;
+        "module/alsa" = {
+          type = "internal/alsa";
+          master-soundcard = "default";
+          speaker-soundcard = "default";
+          headphone-soundcard = "default";
+          master-mixer = "Master";
+          interval = 5;
+          format-volume = "<bar-volume>";
+          format-volume-background = "${bg1}";
+          format-volume-padding = 0;
+          format-muted = "<label-muted>";
+          format-muted-background = "${bg1}";
+          format-muted-padding = 0;
+          bar-volume-width = 10;
+          bar-volume-foreground-0 = "${blue}";
+          bar-volume-foreground-1 = "${blue}";
+          bar-volume-foreground-2 = "${blue}";
+          bar-volume-foreground-3 = "${blue}";
+          bar-volume-foreground-4 = "${blue}";
+          bar-volume-foreground-5 = "${yellow}";
+          bar-volume-foreground-6 = "${yellow}";
+          bar-volume-foreground-7 = "${yellow}";
+          bar-volume-foreground-8 = "${red}";
+          bar-volume-foreground-9 = "${red}";
+          bar-volume-fill = "";
+          bar-volume-fill-font = 1;
+          bar-volume-fill-background = "${bg1}";
+          bar-volume-empty = "";
+          bar-volume-empty-font = 1;
+          bar-volume-empty-foreground = "${bg}";
+          bar-volume-empty-background = "${bg1}";
+          bar-volume-indicator = "雷";
+          bar-volume-indicator-foreground = "${cyan}";
+          bar-volume-indicator-background = "${bg1}";
+          bar-volume-indicator-font = 1;
+          label-muted = "Muted";
+          label-muted-foreground = "${fg}";
+          label-muted-background = "${bg1}";
+          ramp-volume-0 = "";
+          ramp-volume-1 = "";
+          ramp-volume-2 = "";
+          ramp-volume-3 = "";
+          ramp-volume-4 = "";
+          ramp-volume-5 = "";
+          ramp-volume-foreground = "${purple}";
+          ramp-volume-background = "${bg1}";
+          ramp-volume-font = 3;
         };
-        "module/pulseaudio-control-output" = {
-          type = "custom/script";
-          tail = true;
-          exec = ''
-            ${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --icons-volume " , " --icon-muted " " --node-nicknames-from "device.description" --node-nickname "alsa_output.pci-0000_00_1b.0.analog-stereo:  Speakers" --node-nickname "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.analog-stereo:  Headphones" listen
-          '';
-          click-right = "exec ${pkgs.pavucontrol}bin/pavucontrol &";
-          click-middle = ''${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --node-blacklist "alsa_output.pci-0000_01_00.1.hdmi-stereo-extra2" next-node'';
-          scroll-up = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --volume-max 130 up";
-          scroll-down = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --volume-max 130 down";
-          label-foreground = "${fg}";
+        "module/vol" = {
+          type = "internal/alsa";
+          master-soundcard = "default";
+          speaker-soundcard = "default";
+          headphone-soundcard = "default";
+          master-mixer = "Master";
+          interval = 5;
+          format-volume = "<label-volume>";
+          format-volume-background = "${bg1}";
+          format-volume-padding = 0;
+          format-muted = "<label-muted>";
+          label-volume = "";
+          label-volume-font = 3;
+          label-volume-foreground = "${purple}";
+          label-volume-background = "${bg1}";
+          label-muted = "";
+          label-muted-font = 3;
+          label-muted-foreground = "${purple}";
+          label-muted-background = "${bg1}";
+          ramp-volume-0 = "";
+          ramp-volume-1 = "";
+          ramp-volume-2 = "";
+          ramp-volume-3 = "";
+          ramp-volume-4 = "";
+          ramp-volume-5 = "";
+          ramp-volume-foreground = "${purple}";
+          ramp-volume-background = "${bg1}";
+          ramp-volume-font = 3;
+          ramp-headphones-0 = " ";
         };
-        "module/polywins" = {
-          type = "custom/script";
-          exec = "/home/${username}/.config/polybar/scripts/polywins";
-          format = "<label>";
-          format-background = "#2E4374";
-          label = "%output%";
-          label-padding = 0;
-          tail = true;
+        "module/backlight" = {
+          type = "internal/backlight";
+          card = "intel_backlight";
+          enable-scroll = true;
+          use-actual-brightness = true;
+          format = "<ramp><label>";
+          format-background = "${bg1}";
+          format-padding = 0;
+          label = " %percentage%% ";
+          label-foreground = "${fg1}";
+          label-background = "${bg1}";
+          ramp-0 = "";
+          ramp-1 = "";
+          ramp-2 = "";
+          ramp-3 = "";
+          ramp-4 = "";
+          ramp-foreground = "${blue}";
+          ramp-background = "${bg1}";
+          ramp-font = 3;
         };
         "module/battery" = {
           type = "internal/battery";
-          full-at = 100;
-          battery = "$\{system.battery}";
-          adapter = "$\{system.adapter}";
+          full-at = 99;
+          battery = "BAT0";
+          adapter = "ACAD";
           poll-interval = 2;
           time-format = "%H:%M";
           format-charging = "<animation-charging><label-charging>";
-          format-charging-prefix = "";
-          format-discharging = "<ramp-capacity><label-discharging>";
+          format-charging-prefix = "";
+          format-charging-prefix-font = 3;
+          format-charging-prefix-foreground = "${yellow}";
+          format-charging-background = "${bg1}";
+          format-discharging = "<label-discharging>";
+          format-discharging-prefix = "";
+          format-discharging-prefix-font = 3;
+          format-discharging-prefix-foreground = "${red}";
+          format-discharging-prefix-background = "${bg1}";
+          format-discharging-background = "${bg1}";
           format-full = "<label-full>";
-          format-full-prefix = " ";
-          format-full-prefix-font = 2;
-          format-full-prefix-foreground = "${fg}";
-          format-full-prefix-background = "${mb}";
-
-          label-charging = "%percentage%%";
-          label-discharging = "%percentage%%";
-          label-full = "%percentage%%";
-
-          label-charging-background = "${mb}";
-          label-discharging-background = "${mb}";
-          label-full-background = "${mb}";
-
+          format-full-prefix = "";
+          format-full-prefix-font = 3;
+          format-full-prefix-foreground = "${red}";
+          format-full-background = "${bg1}";
+          label-charging = "%percentage%% ";
           label-charging-foreground = "${fg}";
+          label-charging-background = "${bg1}";
+          label-discharging = " %percentage%% ";
           label-discharging-foreground = "${fg}";
+          label-discharging-background = "${bg1}";
+          label-full = " %percentage%% ";
           label-full-foreground = "${fg}";
-
-          ramp-capacity-0 = " ";
-          ramp-capacity-1 = " ";
-          ramp-capacity-2 = " ";
-          ramp-capacity-3 = " ";
-          ramp-capacity-4 = " ";
-          ramp-capacity-font = 2;
+          label-full-background = "${bg1}";
+          ramp-capacity-0 = "  ";
+          ramp-capacity-1 = "  ";
+          ramp-capacity-2 = "  ";
+          ramp-capacity-3 = "  ";
+          ramp-capacity-4 = "  ";
           ramp-capacity-foreground = "${green}";
-          ramp-capacity-background = "${mb}";
-
-          animation-charging-0 = " ";
-          animation-charging-1 = " ";
-          animation-charging-2 = " ";
-          animation-charging-3 = " ";
-          animation-charging-4 = " ";
-          animation-charging-font = 2;
-          animation-charging-foreground = "${orange}";
-          animation-charging-background = "${mb}";
-          animation-charging-framerate = "750;";
+          ramp-capacity-background = "${bg1}";
+          ramp-capacity-font = 7;
+          animation-charging-0 = "  ";
+          animation-charging-1 = "  ";
+          animation-charging-2 = "  ";
+          animation-charging-3 = "  ";
+          animation-charging-4 = "  ";
+          animation-charging-foreground = "${green}";
+          animation-charging-background = "${bg1}";
+          animation-charging-font = 7;
+          animation-charging-framerate = 700;
+        };
+        "module/cpu" = {
+          type = "internal/cpu";
+          interval = 1;
+          format = "<label>";
+          format-prefix = "";
+          format-prefix-font = 3;
+          format-prefix-foreground = "${blue}";
+          format-prefix-background = "${bg1}";
+          format-padding = 0;
+          label = " CPU %percentage%%";
+          label-foreground = "${blue}";
+          label-background = "${bg1}";
         };
         "module/date" = {
           type = "internal/date";
-          interval = "1.0";
-          time = "%H:%M";
-          format-background = "${mb}";
-          format-foreground = "${fg}";
-          date-alt = " %A, %d %B %Y";
+          interval = 1.0;
+          date = " %a, %d %b %Y";
+          time = " %I:%M %p";
           format = "<label>";
-          format-prefix = "";
-          format-prefix-background = "${mb}";
-          format-prefix-foreground = "${amber}";
+          format-prefix = "";
+          format-prefix-font = 3;
+          format-prefix-foreground = "${gray}";
+          format-prefix-background = "${bg1}";
+          format-background = "${bg1}";
+          format-foreground = "${gray}";
+          format-padding = 0;
           label = "%date% %time%";
         };
         "module/filesystem" = {
           type = "internal/fs";
           mount-0 = "/";
-          interval = "60";
-          # ; fixed-values = true;
-          fixed-values = false;
+          interval = 30;
+          fixed-values = true;
           format-mounted = "<label-mounted>";
-          format-mounted-prefix = "󰋊 ";
-          format-mounted-prefix-background = "${mb}";
-          format-mounted-prefix-foreground = "${yellow}";
+          format-mounted-prefix = "";
+          format-mounted-background = "${shade2}";
+          format-mounted-padding = 2;
           format-unmounted = "<label-unmounted>";
-          format-unmounted-prefix = "󰋊 ";
-          # ; label-mounted = "%used%";
-          label-mounted = "%percentage_used%%";
-          # ; label-mounted = "%{F#F0C674}%mountpoint%%{F-} %percentage_used%%"
-          label-mounted-background = "${mb}";
-          label-unmounted = "%mountpoint%: not mounted";
-          label-unmounted-foreground = "$\{disabled}";
-          bar-used-width = "6";
-          bar-used-gradient = false;
-          bar-used-indicator = "$\{bar.indicator}";
-          bar-used-indicator-foreground = "${fg}";
-          bar-used-fill = "$\{bar.fill}";
-          bar-used-foreground-0 = "${fg}";
-          bar-used-foreground-1 = "${fg}";
-          bar-used-foreground-2 = "${fg}";
-          bar-used-empty = "$\{bar.empty}";
-          bar-used-empty-foreground = "${fg}";
+          format-unmounted-prefix = "";
+          format-unmounted-background = "${shade2}";
+          format-unmounted-padding = 2;
+          label-mounted = " %free%";
+          label-unmounted = " %mountpoint%: not mounted";
         };
-        "module/temperature2" = {
-          type = "internal/temperature";
-          thermal-zone = 0;
-          warn-temperature = 70;
-          format = "<ramp> <label>";
-          format-warn = "<ramp> <label-warn>";
-          format-padding = 1;
-          label = "%temperature%";
-          label-warn = "%temperature%";
-          ramp-0 = "󰜗";
-          ramp-font = 3;
-          ramp-foreground = "#a4ebf3";
+        "module/memory" = {
+          type = "internal/memory";
+          interval = 1;
+          format = "<label>";
+          format-prefix = " ";
+          format-prefix-font = 8;
+          format-prefix-foreground = "${indigoLight}";
+          format-prefix-background = ${bg1};
+          format-background = "${bg1}";
+          format-foreground = "${indigoLight}";
+          format-padding = 0;
+          label = " %mb_used%";
         };
-        "module/temperature" = {
-          type = "internal/temperature";
-          # ; Seconds to sleep between updates
-          # ; Default: 1
-          interval = "0.5";
-          # ; Thermal zone to use
-          # ; To list all the zone types, run
-          # ; $ for i in /sys/class/thermal/thermal_zone*; do echo "$i: $(<$i/type)"; done
-          # ; Default: 0
-          thermal-zone = "0";
-          # ; Full path of temperature sysfs path
-          # ; Use `sensors` to find preferred temperature source, then run
-          # ; $ for i in /sys/class/hwmon/hwmon*/temp*_input; do echo "$(<$(dirname $i)/name): $(cat ${i%_*}_label 2>/dev/null || echo $(basename ${i%_*})) $(readlink -f $i)"; done
-          # ; to find path to desired file
-          # ; Default reverts to thermal zone setting
-          hwmon-path = "/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input";
-          # ; Base temperature for where to start the ramp (in degrees celsius)
-          # ; Default: 0
-          base-temperature = 20;
-          # ; Threshold temperature to display warning label (in degrees celsius)
-          # ; Default: 80
-          warn-temperature = 60;
-          # ; Whether or not to show units next to the temperature tokens (°C, °F)
-          # ; Default: true
-          units = false;
-          # ; Available tags:
-          # ;   <label> (default)
-          # ;   <ramp>
-          format = "<ramp> <label>";
-          # ; Available tags:
-          # ;   <label-warn> (default)
-          # ;   <ramp>
-          format-warn = "<ramp> <label-warn>";
-          # ; Available tokens:
-          # ;   %temperature% (deprecated)
-          # ;   %temperature-c%   (default, temperature in °C)
-          # ;   %temperature-f%   (temperature in °F)
-          label = "TEMP %temperature-c%";
-          # ; Available tokens:
-          # ;   %temperature% (deprecated)
-          # ;   %temperature-c%   (default, temperature in °C)
-          # ;   %temperature-f%   (temperature in °F)
-          label-warn = "TEMP %temperature-c%";
-          label-warn-foreground = "${red}";
-          # ; Requires the <ramp> tag
-          # ; The icon selection will range from `base-temperature` to `warn-temperature`,
-          # ; temperatures at and above `warn-temperature` will use the last icon
-          # ; and temperatures at and below `base-temperature` will use `ramp-0`.
-          # ; All other icons are distributed evenly between the two temperatures.
-          ramp-0 = "A";
-          ramp-1 = "B";
-          ramp-2 = "C";
-          ramp-foreground = "";
+        "module/mpd" = {
+          type = "internal/mpd";
+          interval = 2;
+          format-online = "<label-song><icon-prev><toggle><icon-next>";
+          format-online-foreground = "${fg}";
+          format-online-background = "${bg1}";
+          format-online-prefix = " ";
+          format-online-prefix-font = 3;
+          format-online-prefix-foreground = "${purple}";
+          format-online-prefix-background = "${bg1}";
+          format-playing = "$\{self.format-online}";
+          format-paused = "$\{self.format-online}";
+          format-stopped = "$\{self.format-online}";
+          format-offline = "<label-offline>";
+          format-offline-foreground = "${fg}";
+          format-offline-background = "${bg1}";
+          format-offline-prefix = "";
+          format-offline-prefix-font = 3;
+          format-offline-prefix-foreground = "${purple}";
+          format-offline-prefix-background = "${bg1}";
+          label-song = "%artist% - %title% ";
+          label-song-foreground = "${fg}";
+          label-song-background = "${bg1}";
+          label-song-maxlen = 25;
+          label-song-ellipsis = true;
+          label-offline = " Offline";
+          icon-play = "";
+          icon-play-foreground = "${green}";
+          icon-play-background = "${bg1}";
+          icon-pause = "";
+          icon-pause-foreground = "${green}";
+          icon-pause-background = "${bg1}";
+          icon-stop = "栗";
+          icon-stop-foreground = "${green}";
+          icon-stop-background = "${bg1}";
+          icon-prev = "";
+          icon-prev-foreground = "${blue}";
+          icon-prev-background = "${bg1}";
+          icon-next = " ";
+          icon-next-foreground = "${blue}";
+          icon-next-background = "${bg1}";
+          toggle-on-foreground = "${fg}";
+          toggle-off-foreground = "${fg}";
+        };
+        "module/wired-network" = {
+          type = "internal/network";
+          interface = "eth0";
+          interval = 1.0;
+          accumulate-stats = true;
+          unknown-as-up = true;
+          format-connected = "<ramp-signal> <label-connected>";
+          format-connected-background = "${shade3}";
+          format-connected-padding = 1;
+          format-disconnected = "<label-disconnected>";
+          format-disconnected-prefix = "睊 ";
+          format-disconnected-prefix-font = 1;
+          format-disconnected-prefix-foreground = "${fg}";
+          format-disconnected-foreground = "${fg}";
+          format-disconnected-background = "${shade3}";
+          format-disconnected-padding = 1;
+          label-connected = "%{A1:${pkgs.networkmanager_dmenu}/bin/networkmanager_dmenu &:}%essid% %{A}";
+          label-disconnected = "%{A1:${pkgs.networkmanager_dmenu}/bin/networkmanager_dmenu &:}Offline%{A}";
+          ramp-signal-0 = "直";
+          ramp-signal-1 = "直";
+          ramp-signal-2 = "直";
+          ramp-signal-foreground = "${fg}";
+          ramp-signal-font = 1;
+        };
+        "module/wireless-network" = {
+          type = "internal/network";
+          interface = "wlan0";
+          interval = 1.0;
+          accumulate-stats = true;
+          unknown-as-up = true;
+          format-connected = "<ramp-signal> <label-connected>";
+          format-connected-background = "${shade3}";
+          format-connected-padding = 1;
+          format-disconnected = "<label-disconnected>";
+          format-disconnected-prefix = "";
+          format-disconnected-prefix-font = 1;
+          format-disconnected-prefix-foreground = "${fg}";
+          format-disconnected-foreground = "${fg}";
+          format-disconnected-background = "${shade3}";
+          format-disconnected-padding = 1;
+          label-connected = "%{A1:${pkgs.networkmanager_dmenu}/bin/networkmanager_dmenu &:}%essid% %{A}";
+          label-disconnected = "%{A1:${pkgs.networkmanager_dmenu}/bin/networkmanager_dmenu &:}Offline%{A}";
+          ramp-signal-0 = "";
+          ramp-signal-1 = "";
+          ramp-signal-2 = "";
+          ramp-signal-foreground = "${fg}";
+          ramp-signal-font = 1;
         };
         "module/network" = {
           type = "internal/network";
           interface = "wlan0";
-          interval = "3.0";
+          interval = 1.0;
           accumulate-stats = true;
           unknown-as-up = true;
           format-connected = "<label-connected>";
-          format-connected-prefix = "";
-          format-connected-background = "${mb}";
-          format-connected-foreground = "${green}";
-          speed-unit = "";
-          label-connected = " %{A1:def-nmdmenu &:}%essid%%{A}";
-          label-connected-background = "${mb}";
-          label-connected-foreground = "${fg}";
           format-disconnected = "<label-disconnected>";
-          format-disconnected-prefix = "󰌙";
-          format-disconnected-background = "${mb}";
-          format-disconnected-foreground = "${red}";
-          label-disconnected = " not connected";
-          label-disconnected-foreground = "${red}";
+          label-connected = "%{A1:${pkgs.networkmanager_dmenu}/bin/networkmanager_dmenu &:}%essid%%{A}";
+          label-connected-foreground = "${fg}";
+          label-connected-background = "${bg1}";
+          label-disconnected = "%{A1:${pkgs.networkmanager_dmenu}/bin/networkmanager_dmenu &:}Offline%{A}";
+          label-disconnected-foreground = "${fg}";
+          label-disconnected-background = "${bg1}";
+          ramp-signal-0 = "";
+          ramp-signal-1 = "";
+          ramp-signal-2 = "";
+          ramp-signal-foreground = "${fg}";
+          ramp-signal-background = "${bg1}";
+          ramp-signal-font = 3;
         };
-        "module/audio" = {
-          type = "internal/alsa";
-          use-ui-max = true;
-          interval = 2;
-          format-volume = "<ramp-volume><label-volume>";
-          format-volume-prefix = "";
-          format-volume-background = "${mb}";
-          format-volume-foreground = " ${purple}";
-          label-volume = " %percentage%%";
-          label-volume-background = "${mb}";
-          label-volume-foreground = "${fg}";
+        "module/net" = {
+          type = "internal/network";
+          interface = "wlan0";
+          accumulate-stats = true;
+          unknown-as-up = true;
+          format-connected = "<ramp-signal>";
+          format-disconnected = "<label-disconnected>";
+          label-disconnected = "";
+          label-disconnected-font = 3;
+          label-disconnected-foreground = "${green}";
+          label-disconnected-background = "${bg1}";
+          ramp-signal-0 = "";
+          ramp-signal-1 = "";
+          ramp-signal-2 = "";
+          ramp-signal-foreground = "${green}";
+          ramp-signal-background = "${bg1}";
+          ramp-signal-font = 3;
+        };
+        "module/pulseaudio" = {
+          type = "internal/pulseaudio";
+          # ; Sink to be used, if it exists (find using `pacmd list-sinks`, name field)
+          # ; If not, uses default sink
+          sink = "alsa_output.pci-0000_03_00.6.analog-stereo";
+          # ; Use PA_VOLUME_UI_MAX (~153%) if true, or PA_VOLUME_NORM (100%) if false
+          # ; Default: true
+          use-ui-max = false;
+          # ; Interval for volume increase/decrease (in percent points)
+          # ; Default: 5
+          interval = 5;
+          # ; Available tags:
+          # ;   <label-volume> (default)
+          # ;   <ramp-volume>
+          # ;   <bar-volume>
+          format-volume = "<ramp-volume> <label-volume>";
+          format-volume-background = "${shade3}";
+          format-volume-padding = 1;
+          # Available tags:
+          # ;   <label-muted> (default)
+          # ;   <ramp-volume>
+          # ;   <bar-volume>
           format-muted = "<label-muted>";
-          format-muted-prefix = "";
-          format-muted-foreground = "${red}";
-          format-muted-background = "${mb}";
-          label-muted = " Muted";
-          label-muted-foreground = "${red}";
-          label-muted-background = "${mb}";
-          ramp-volume-0 = "󰕿";
-          ramp-volume-1 = "󰖀";
-          ramp-volume-2 = "󰕾";
-          ramp-volume-3 = "󰕾";
-          ramp-volume-4 = "󱄡";
-          ramp-volume-font = 4;
-          click-right = "bspc rule -a Pavucontrol -o state=floating follow=on center=true && ${pkgs.pavucontrol}/bin/pavucontrol";
+          format-muted-prefix = "婢";
+          format-muted-background = "${shade3}";
+          format-muted-padding = 1;
+          # ; Available tokens:
+          # ;   %percentage% (default)
+          label-volume = "%percentage%% ";
+          # ; Available tokens:
+          # ;   %percentage% (default
+          label-muted = " Muted ";
+          label-muted-foreground = "${fg}";
+
+          # ; Only applies if <ramp-volume> is used
+          ramp-volume-0 = "奄";
+          ramp-volume-1 = "奔";
+          ramp-volume-2 = "墳";
+
         };
-        "module/bspwm" = {
-          type = "internal/bspwm";
-          enable-click = true;
-          enable-scroll = true;
-          reverse-scroll = true;
-          pin-workspaces = true;
-          occupied-scroll = false;
-          background = "${pallete}";
-          format = "%{T4}<label-state>%{T-}";
-          format-background = "$\{self.${bg}}";
-          format-prefix = "$\{default.triangle-left}";
-          format-prefix-foreground = "$\{self.${bg}}";
-          format-prefix-background = "$\{root.${bg}}";
-          format-suffix = "$\{default.triangle-right}";
-          format-suffix-background = "$\{root.${bg}}";
-          format-suffix-foreground = "$\{self.${bg}}";
-          label-focused = "󰮯";
-          label-focused-background = "${mb}";
-          label-focused-padding = 1;
-          label-focused-foreground = "${yellow}";
-          label-occupied = "󰊠";
-          label-occupied-padding = 1;
-          label-occupied-background = "${mb}";
-          label-occupied-foreground = "${blue}";
-          label-urgent = "%icon%";
-          label-urgent-padding = 0;
-          label-empty = "󰑊";
-          label-empty-foreground = "${purple}";
-          label-empty-padding = 1;
-          label-empty-background = "${mb}";
-        };
-        "module/launcher" = {
-          type = "custom/text";
-          content = "";
-          content-foreground = "${blue-arch}";
-          content-font = 4;
-          click-left = "${pkgs.rofi}/bin/rofi -no-lazy-grab -show drun";
-        };
-        "module/blok2" = {
-          type = "custom/text";
-          format = " |";
+        "module/temperature" = {
+          type = "internal/temperature";
+          # Seconds to sleep between updates
+          # ; Default: 1
+          interval = 0.5;
+          # Thermal zone to use
+          # ; To list all the zone types, run
+          # ; $ for i in /sys/class/thermal/thermal_zone*; do echo "$i: $(<$i/type)"; done
+          # ; Default: 0
+          thermal-zone = 0;
+          # Full path of temperature sysfs path
+          # ; Use `sensors` to find preferred temperature source, then run
+          # ; $ for i in /sys/class/hwmon/hwmon*/temp*_input; do echo "$(<$(dirname $i)/name): $(cat ${i%_*}_label 2>/dev/null || echo $(basename ${i%_*})) $(readlink -f $i)"; done
+          # ; to find path to desired file
+          # ; Default reverts to thermal zone setting
+          # ;;hwmon-path = /sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input
+          # ;
+          hwmon-path = "/sys/devices/pci0000:00/0000:00:01.3/0000:01:00.0/hwmon/hwmon0/temp1_input";
+          # Threshold temperature to display warning label (in degrees celsius)
+          # ; Default: 80
+          warn-temperature = 85;
+          # Whether or not to show units next to the temperature tokens (°C, °F)
+          # ; Default: true
+          units = true;
+          # Available tags:
+          # ;   <label> (default)
+          # ;   <ramp>
+          # ;format = <ramp> <label>
+          format = "<ramp><label>";
+          format-prefix = "";
+          format-prefix-font = 3;
+          format-prefix-foreground = "${blue}";
+          format-prefix-background = "${bg}";
           format-foreground = "${fg}";
-          format-background = "${bg}";
+          format-background = "${bg1}";
+          format-padding = 1;
+          # Available tags:
+          # ;   <label-warn> (default)
+          # ;   <ramp>
+          # ;format-warn = "<ramp> <label-warn>";
+          format-warn = "<ramp><label-warn>";
+          format-warn-prefix = "";
+          format-warn-prefix-font = 3;
+          format-warn-prefix-foreground = "${blue}";
+          format-warn-prefix-background = "${bg}";
+          format-warn-background = "${bg1}";
+          format-warn-foreground = "${red}";
+          format-warn-padding = 1;
+          # Available tokens:
+          # ;   %temperature% (deprecated)
+          # ;   %temperature-c%   (default, temperature in °C)
+          # ;   %temperature-f%   (temperature in °F)
+          label = " %temperature-c%";
+          label-foreground = "${fg}";
+          label-background = "${bg1}";
+          # Available tokens:
+          # ;   %temperature% (deprecated)
+          # ;   %temperature-c%   (default, temperature in °C)
+          # ;   %temperature-f%   (temperature in °F)
+          label-warn = " %temperature-c%";
+          label-warn-foreground = "${red}";
+          label-warn-background = "${bg1}";
+          # Requires the <ramp> tag
+          # ; The icon selection will range from 0 to `warn-temperature`
+          # ; with the current temperature as index.
+          ramp-0 = "";
+          ramp-0-foreground = "${cyan}";
+          ramp-1 = "";
+          ramp-1-foreground = "${cyan}";
+          ramp-2 = "";
+          ramp-2-foreground = "${cyan}";
+          ramp-3 = "";
+          ramp-3-foreground = "${yellow}";
+          ramp-4 = "";
+          ramp-4-foreground = "${red}";
+          ramp-font = 3;
+          ramp-background = "${bg1}";
         };
-        "module/blok" = {
-          type = "custom/text";
-          format = " | ";
-          format-foreground = "${fg}";
-          format-background = "${bg}";
-        };
-        "module/nowplaying" = {
-          type = "custom/script";
-          tail = true;
-          interval = 1;
-          format = "󰫔 <label> "; # 󰷞 󰽴 󰽱 󱂵
-          exec = ''${pkgs.playerctl}/bin/playerctl metadata --format "{{ artist }} - {{ title }}"'';
-          label-maxlen = "20..";
-        };
-        "module/dots" = {
-          type = "custom/text";
-          content = " 󰇙 ";
-          content-foreground = "${purple}";
+        "module/keyboard" = {
+          type = "internal/xkeyboard";
+          # ; List of indicators to ignore
+          blacklist-0 = "num lock";
+          blacklist-1 = "scroll lock";
+          # ; Available tags:
+          # ;   <label-layout> (default)
+          # ;   <label-indicator> (default)
+          format = "<label-layout> <label-indicator>";
+          format-prefix = "";
+          format-background = "${shade7}";
+          format-padding = 1;
+          # ; Available tokens:
+          # ;   %layout%
+          # ;   %name%
+          # ;   %number%
+          # ; Default: %layout%
+          label-layout = " %layout%";
+          # ; Available tokens:
+          # ;   %name%
+          # ; Default: %name%
+          label-indicator-on = "%name%";
+          label-indicator-on-foreground = "${fg}";
         };
         "module/title" = {
           type = "internal/xwindow";
+          # Available tags:
+          # ;   <label> (default)
           format = "<label>";
-          format-foreground = "#99CEF0";
-          label = "  %title%";
-          label-maxlen = "25 ...";
+          format-prefix = "  ";
+          format-prefix-font = 8;
+          # format-prefix-foreground = "${gray}";
+          format-prefix-background = "${bg1}";
+          format-background = "${bg1}";
+          format-foreground = "${fg1}";
+          format-prefix-foreground = "${indigo}";
+          format-padding = 0;
+          # Available tokens:
+          # ;   %title%
+          # ; Default: %title%
+          label = " %title%";
+          label-maxlen = 30;
+          # ; Used instead of label when there is no window title
+          label-empty = " Juca's BSPWM";
+          label-empty-foreground = "${fg1}";
+          label-empty-background = "${bg1}";
         };
-        "module/cpu_bar" = {
-          type = "internal/cpu";
-          interval = "2.0";
-          format = "<label>";
-          format-prefix = " "; #" "
-          format-prefix-background = "${mb}";
-          format-prefix-foreground = "${red}";
+        "module/workspaces" = {
+          type = "internal/xworkspaces";
+          # Only show workspaces defined on the same output as the bar
+          # ;
+          # ; Useful if you want to show monitor specific workspaces
+          # ; on different bars
+          # ;
+          # ; Default: false
+          pin-workspaces = true;
+          # Create click handler used to focus desktop
+          # ; Default: true
+          enable-click = true;
+          # Create scroll handlers used to cycle desktops
+          # ; Default: true
+          enable-scroll = true;
+          "icon-[0-9]+" = "<desktop-name>";
+          # <icon>
+          # ; NOTE: The desktop name needs to match the name configured by the WM
+          # ; You can get a list of the defined desktops using:
+          # ; $ xprop -root _NET_DESKTOP_NAMES
+          icon-0 = "I;% {F#5E6483}";
+          icon-1 = "II;% {F#5E6483}";
+          icon-2 = "III;% {F#5E6483}";
+          # ; icon-3 = 4;
+          # ; icon-4 = 5;
+          icon-default = " ";
+          icon-font = 5;
+          # Available tags:
+          # ;   <label-monitor>
+          # ;   <label-state> - gets replaced with <label-(active|urgent|occupied|empty)>
+          # ; Default: <label-state>
+          format = "<label-state>";
+          format-padding = 0;
+          format-background = "${yellow}";
+          # Available tokens:
+          # ;   %name%
+          # ; Default: %name%
+          label-monitor = "%name%";
+          # Available tokens:
+          # ;   %name%
+          # ;   %icon%
+          # ;   %index%
+          # ; Default: %icon%  %name%
+          # ;label-active = %icon%
+          label-active = "  ";
+          label-active-font = 8;
+          label-active-underline = "${blue}";
+          label-active-background = "${bg1}"
+            label-active-foreground = "${yellow}";
+          # ${color.foreground-alt}
+          # ; Available tokens:
+          # ;   %name%
+          # ;   %icon%
+          # ;   %index%
+          # ; Default: %icon%  %name%
+          label-occupied = "  ";
+          label-occupied = "  ";
+          label-occupied-font = 8;
+          label-occupied-foreground = "${green}";
+          label-occupied-background = "${bg1}";
+          # ${color.foreground-alt}
+          # ; Available tokens:
+          # ;   %name%
+          # ;   %icon%
+          # ;   %index%
+          # ; Default: %icon%  %name%
+          label-urgent = "  ";
+          # ;label-urgent = %icon%
+          label-urgent-font = 4;
+          label-urgent-foreground = "${red}";
+          label-urgent-background = "${bg1}";
+          # ; Available tokens:
+          # ;   %name%
+          # ;   %icon%
+          # ;   %index%
+          # ; Default: %icon%  %name%
+          # label-empty = "  ";
+          # ;label-empty = "  ";
+          # ;label-empty = "%icon%";
+          label-empty-font = 8;
+          label-empty-background = "${bg1}";
+          label-empty-foreground = "${gray}";
+          label-active-padding = 0;
+          label-urgent-padding = 0;
+          label-occupied-padding = 0;
+          label-empty-padding = 0;
         };
-        "module/memory_bar" = {
-          type = "internal/memory";
-          interval = 3;
-          format = "<label>";
-          format-prefix = " ";
-          format-prefix-background = "${mb}";
-          format-prefix-foreground = "${aqua}";
-          label = "%used%";
-          label-background = "${mb}";
+        "module/bspwm" = {
+          type = "internal/bspwm";
+          format = "<label-state>";
+          format-padding = 0;
+          format-background = "${shade2}";
+          pin-workspaces = false;
+          inline-mode = false;
+          enable-scroll = false;
+          label-empty = "";
+          # label-empty-foreground =
+          label-focused = "";
+          label-focused-underline = "${fg}";
+          label-focused-foreground = "#ffffff";
+          label-focused-padding = 1;
+          label-occupied = "";
+          label-occupied-underline = "${fg}";
+          label-occupied-foreground = "#ffffff";
+          label-occupied-padding = 1;
+          label-urgent = "";
+          label-urgent-foreground = "#ffffff";
+          label-urgent-underline = "${fg}";
+          label-urgent-padding = 1;
         };
-        "module/mpd_control" = {
-          type = "internal/mpd";
-          host = "127.0.0.1";
-          port = "6600";
-          interval = 2;
-          format-online = "<icon-prev><toggle><icon-next>";
-          format-offline = "<label-offline>";
-          label-offline = "󰝛 No music";
-          icon-play = " %{T3} ";
-          icon-pause = " %{T3} ";
-          icon-stop = " %{T3} ";
-          icon-prev = "%{T3} ";
-          icon-next = " %{T3}";
-          format-offline-background = "${mb}";
-          format-offline-foreground = "${grey}";
-          icon-play-background = "${mb}";
-          icon-pause-background = "${mb}";
-          icon-stop-background = "${mb}";
-          icon-prev-background = "${mb}";
-          icon-next-background = "${mb}";
-          icon-repeat-background = "${mb}";
-          icon-play-foreground = "${green}";
-          icon-pause-foreground = "${green}";
-          icon-stop-foreground = "${green}";
-          icon-prev-foreground = "${sky}";
-          icon-next-foreground = "${sky}";
-          toggle-on-foreground = "${green}";
-          toggle-off-foreground = "${red}";
-        };
-        "module/mpd" = {
-          type = "internal/mpd";
-          host = "127.0.0.1";
-          port = "6600";
-          interval = 2;
-          format-online = ''<icon-repeat> %{F#9ece6a}[%{F-} %{A1:bspc rule -a org.wezfurlong.wezterm -o state=floating follow=on center=true && wezterm start -- " ${pkgs.ncmpcpp}/bin/ncmpcpp ":}<label-song>%{A} %{F#9ece6a}]%{F-}'';
-          format-offline = "";
-          label-song = "%title%";
-          label-song-maxlen = 21;
-          icon-repeat = "";
-          icon-repeat-background = "${bg}";
-          toggle-on-foreground = "${green}";
-          toggle-off-foreground = "${red}";
-        };
-        "module/powermenu" = {
+        "module/sep" = {
           type = "custom/text";
-          content = "⏻";
-          content-background = "${mb}";
-          content-foreground = "${red}";
-          click-left = "~/.config/rofi/scripts/powermenu";
-          click-right = "~/.config/rofi/scripts/powermenu";
+          content = " ";
         };
-        "module/weather" = {
-          type = "custom/script";
-          exec = "~/.config/polybar/scripts/weather-plugin";
-          tail = false;
-          interval = 960;
+        "module/sepr" = {
+          type = "custom/text";
+          content = "  ";
+          content-foreground = "${bg1}";
+          content-background = "${bg}";
+        };
+        "module/arch" = {
+          type = "custom/text";
+          content = "%{T5}   ";
+          content-foreground = "${blue}";
+          content-background = "${bg}";
+        };
+        "module/links" = {
+          type = "custom/text";
+          content-padding = 0;
+        };
+        "module/telegram" = {
+          type = "custom/text";
+          exec = "${pkgs.telegram-desktop}/bin/telegram-desktop";
+          click-left = "${pkgs.telegram-desktop}/bin/telegram-desktop &";
+          content = "  ";
+          content-padding = 0;
+          content-font = 7;
+          # ;content-underline = "${blue}";
+          content-foreground = "${yellow}";
+          content-background = "${bg1}";
+        };
+        "module/google" = {
+          "inherit" = "module/links";
+          content = " ";
+          content-padding = 0;
+          content-font = 7;
+          # ;content-underline = ${yellow}
+          content-foreground = "${red}";
+          content-background = "${bg1}";
+          click-left = "${pkgs.xfce.exo}/bin/exo-open https://www.google.com/ &";
+        };
+        "module/github" = {
+          "inherit" = "module/links";
+          content = "  ";
+          content-padding = 0;
+          content-font = 7;
+          # ;content-underline = ${color.green}
+          content-foreground = "${green}";
+          content-background = "${bg1}";
+          click-left = "${pkgs.xfce.exo}/bin/exo-open https://www.github.com/ &";
+        };
+        "glyph" = {
+          gleft = "";
+          gright = "";
+        };
+        "module/left" = {
+          type = "custom/text";
+          # ;content-background = ${BG1}
+          content-foreground = "${bg1}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/left1" = {
+          type = "custom/text";
+          # ;content-background = "${bg1}";
+          content-foreground = "${red}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/left2" = {
+          type = "custom/text";
+          # ;content-background = "${bg1}";
+          content-foreground = "${green}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/left3" = {
+          type = "custom/text";
+          # ;content-background = "${bg1}";
+          content-foreground = "${yellow}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/left4" = {
+          type = "custom/text";
+          # ;content-background = "${bg1}";
+          content-foreground = "${blue}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/left5" = {
+          type = "custom/text";
+          # ;content-background = "${bg1}";
+          content-foreground = "${purple}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/left6" = {
+          type = "custom/text";
+          # ;content-background = "${bg1}";
+          content-foreground = "${cyan}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/left7" = {
+          type = "custom/text";
+          # ;content-background = "${bg1}";
+          content-foreground = "${fg1}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/left8" = {
+          type = "custom/text";
+          # ;content-background = "${bg1}";
+          content-foreground = "${indigo}";
+          content = "$\{glyph.gleft}";
+          content-font = 4;
+        };
+        "module/right" = {
+          type = "custom/text";
+          # ;content-background = ${color.BG1};
+          content-foreground = "${bg1}";
+          content = "$\{glyph.gright}";
+          # ;content-padding = 20
+          content-font = 4;
+        };
+        "module/right1" = {
+          type = "custom/text";
+          # ;content-background = ${color.BG1};
+          content-foreground = "${red}";
+          content = "$\{glyph.gright}";
+          # ;content-padding = 20
+          content-font = 4;
+        };
+        "module/right2" = {
+          type = "custom/text";
+          # ;content-background = ${color.BG1};
+          content-foreground = "${green}";
+          content = "$\{glyph.gright}";
+          # ;content-padding = 20
+          content-font = 4;
+        };
+        "module/right3" = {
+          type = "custom/text";
+          # ;content-background = ${color.BG1};
+          content-foreground = "${yellow}";
+          content = "$\{glyph.gright}";
+          # ;content-padding = 20
+          content-font = 4;
+        };
+        "module/right4" = {
+          type = "custom/text";
+          # ;content-background = ${color.BG1};
+          content-foreground = "${blue}";
+          content = "$\{glyph.gright}";
+          # ;content-padding = 20
+          content-font = 4;
+        };
+        "module/right5" = {
+          type = "custom/text";
+          # ;content-background = ${color.BG1};
+          content-foreground = "${purple}";
+          content = "$\{glyph.gright}";
+          # ;content-padding = 20
+          content-font = 4;
+        };
+        "module/right6" = {
+          type = "custom/text";
+          # ;content-background = ${color.BG1};
+          content-foreground = "${cyan}";
+          content = "$\{glyph.gright}";
+          # ;content-padding = 20
+          content-font = 4;
+        };
+        "module/right7" = {
+          type = "custom/text";
+          # ;content-background = ${color.BG1};
+          content-foreground = "${fg1}";
+          content = "$\{glyph.gright}";
+          # ;content-padding = 20
+          content-font = 4;
+        };
+        "module/right8" = {
+          type = "custom/text";
+          content-background = "${bg}";
+          content-foreground = "${indigoLight}";
+          content = "$\{glyph.gright}";
+          content-font = 4;
         };
       };
-      extraConfig = ''
-        ### Decor.ini
-
-        [module/round-left]
-        type = "custom/text"
-        content = "%{T3}%{T-}"
-        # content = "%{T3}%{T-}";
-        content-foreground = #2E4374
-
-        [module/round-right]
-        type = "custom/text"
-        content = "%{T5}%{T-}"
-        # content = "%{T3}%{T-}";
-        content-foreground = #2E4374
-
-        [module/bi]
-        type                        = custom/text
-        content                     = "%{T5}%{T-}"
-        content-foreground          = ${mb}
-        content-background          = ${bg}
-
-        ## bylo mb bg
-
-        [module/bd]
-        type                        = custom/text
-        content                     = "%{T5}%{T-}"
-        content-foreground          = ${mb}
-        content-background          = ${bg}
-
-        [module/spacing]
-        type = custom/text
-        content = " "
-        content-background = ${bg}
-
-        [module/sep]
-        type = custom/text
-        ;content = 
-        content = " "
-
-        content-font = 5
-        content-background = ${bg}
-        content-foreground = ${bg-alt}
-        content-padding = 2
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/LD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-background = ${bg}
-        content-foreground = ${blue}
-
-        [module/RD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-background = ${black}
-        content-foreground = ${blue}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/RLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${red}
-
-        [module/BRLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${red}
-
-        [module/RRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${red}
-
-        [module/BRRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${red}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/WLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${white}
-
-        [module/WRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${white}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/CLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${aqua}
-
-        [module/CRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${aqua}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/MLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${purple}
-
-        [module/MRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${purple}
-
-        [module/BMLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${purple}
-
-        [module/BMRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${purple}
-
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/YLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${yellow}
-
-        [module/YRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${yellow}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/OLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${orange}
-
-        [module/BOLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${orange}
-
-        [module/ORD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${orange}
-
-        [module/BORD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${orange}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/PLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${pink}
-
-        [module/BPLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${pink}
-
-        [module/PRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${pink}
-
-        [module/BPRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${pink}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/GLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${green}
-
-        [module/BGLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${green}
-
-        [module/GRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${green}
-
-        [module/BGRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${green}
-
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/BLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${black}
-
-        [module/BRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${bg}
-        content-foreground = ${black}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/YPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${black}
-
-        [module/CPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${black}
-
-        [module/GPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${black}
-        content-foreground = ${black}
-
-        [module/RPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${red}
-        content-foreground = ${red}
-
-        [module/MPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${green}
-        content-foreground = ${red}
-
-        [module/GMPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = ${red}
-        content-foreground = ${green}
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-      '';
     };
   };
 }

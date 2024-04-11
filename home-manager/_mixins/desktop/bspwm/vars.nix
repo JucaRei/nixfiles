@@ -11,6 +11,10 @@ in
   # font-4 = "Iosevka Nerd Font:size=18;4"
   # font-5 = "Iosevka:style=bold:size=18;4"
 
+  ##################
+  ### Everforest ###
+  ##################
+
   polybar-0 = {
     package = pkgs.maple-mono;
     name = "Maple Mono";
@@ -63,10 +67,56 @@ in
     offset = 4;
   };
 
+  ##############
+  ### Batman ###
+  ##############
+
   batman-0 = {
-    package = (pkgs.nerdfonts.iosevka.override { fonts = [ "Iosevka" ]; });
+    package = (pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; });
     name = "Iosevka Nerd Font";
     ftname = "Iosevka Nerd Font:style=Bold:size=8";
+    offset = 2;
+  };
+
+  batman-1 = {
+    package = (pkgs.nerdfonts.override { fonts = [ "Iosevka" ]; });
+    name = "Iosevka Nerd Font";
+    ftname = "Iosevka Nerd Font:style=Medium:size=13";
+    offset = 2;
+  };
+
+  batman-2 = {
+    package = pkgs.material-icons;
+    name = "Material Icons";
+    ftname = "Material Icons:style=Bold:size=10";
+    offset = 4;
+  };
+
+  batman-3 = {
+    package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; });
+    name = "JetBrainsMono Nerd Font";
+    ftname = "JetBrainsMono Nerd Font:style=Medium:size=11";
+    offset = 3;
+  };
+
+  batman-4 = {
+    package = pkgs.material-design-icons;
+    name = "Material Design Icons Desktop";
+    ftname = "Material Design Icons Desktop:style=Design-Iconic-Font:size=8";
+    offset = 2;
+  };
+
+  batman-5 = {
+    package = pkgs.maple-mono-SC-NF;
+    name = "Maple Mono SC NF";
+    ftname = "Maple Mono SC NF:style=Regular:size=15";
+    offset = 4; # Offset for Polybar.
+  };
+
+  batman-6 = {
+    package = (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; });
+    name = "JetBrainsMono Nerd Font";
+    ftname = "JetBrainsMono Nerd Font:style=Medium:size=8";
     offset = 2;
   };
 

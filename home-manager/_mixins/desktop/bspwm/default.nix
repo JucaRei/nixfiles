@@ -10,7 +10,10 @@ let
 in
 {
 
-  imports = [ ./polybar-everforest.nix ];
+  imports = [
+    ./polybar-everforest.nix
+    ./polybar-batman.nix
+  ];
   config = {
     home =
       let
@@ -138,7 +141,7 @@ in
             "pgrep -x sxhkd > /dev/null || sxhkd"
             "xsetroot -cursor_name left_ptr"
             # "nitrogen --restore"
-            "sleep 2; polybar -q everforest"
+            "sleep 2; polybar -q batman"
           ];
           alwaysResetDesktops = true;
           monitors = {
