@@ -63,6 +63,13 @@ in
     offset = 4;
   };
 
+  batman-0 = {
+    package = (pkgs.nerdfonts.iosevka.override { fonts = [ "Iosevka" ]; });
+    name = "Iosevka Nerd Font";
+    ftname = "Iosevka Nerd Font:style=Bold:size=8";
+    offset = 2;
+  };
+
   mod = "super"; # alt
   alacritty-custom = nixgl pkgs.alacritty;
 }

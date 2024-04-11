@@ -27,10 +27,10 @@ in
 
     home = {
       keyboard = lib.mkForce {
-        layout = "br";
+        layout = "br,us";
         model = "pc105";
-        options = [ "grp:alt_shift_toggle" ];
-        variant = "abnt2";
+        options = [ "grp:shifts_toggle" ];
+        variant = "abnt2,intl";
       };
       packages = with pkgs;[
         nix-whereis

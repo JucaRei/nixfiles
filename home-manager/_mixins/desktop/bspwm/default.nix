@@ -10,7 +10,7 @@ let
 in
 {
 
-  imports = [ ./polybar.nix ];
+  imports = [ ./polybar-everforest.nix ];
   config = {
     home =
       let
@@ -143,6 +143,7 @@ in
           alwaysResetDesktops = true;
           monitors = {
             Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
+            HDMI-1-0 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
             eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
@@ -262,10 +263,10 @@ in
     };
 
     i18n = {
-      # glibcLocales = pkgs.glibcLocales.override {
-      #   allLocales = false;
-      #   locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
-      # };
+      glibcLocales = pkgs.glibcLocales.override {
+        allLocales = false;
+        locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
+      };
       inputMethod = {
         enabled = "fcitx5";
         fcitx5.addons = with pkgs; [
