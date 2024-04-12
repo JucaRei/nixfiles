@@ -636,7 +636,7 @@ in
 
         [module/round-left]
         type = "custom/text"
-        content = "%{T3}%{T-}"
+        content = "%{T2}%{T-}"
         # content = "%{T3}%{T-}";
         content-foreground = #2E4374
 

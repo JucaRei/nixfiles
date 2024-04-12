@@ -141,8 +141,7 @@ in
             "pgrep -x sxhkd > /dev/null || sxhkd"
             "xsetroot -cursor_name left_ptr"
             # "nitrogen --restore"
-            "killall -q polybar"
-            "sleep 1; polybar -q everforest"
+            "sleep 2; polybar -q everforest"
           ];
           alwaysResetDesktops = true;
           monitors = {
@@ -161,12 +160,12 @@ in
           '';
           extraConfig = ''
             # Wait for the network to be up
-            notify-send 'Waiting for network...'
-            while ! systemctl is-active --quiet network-online.target; do sleep 1; done
-            notify-send 'Network found.'
+            # ${pkgs.libnotify}/bin/notify-send 'Waiting for network...'
+            # while ! systemctl is-active --quiet network-online.target; do sleep 1; done
+            # notify-send 'Network found.'
 
             # Set background and top bar
-            ${pkgs.feh}/bin/feh --bg-scale $HOME/.local/share/img/wallpaper/active
+            # ${pkgs.feh}/bin/feh --bg-scale $HOME/.local/share/img/wallpaper/active
           '';
           settings = {
             pointer_modifier = "mod4";
@@ -276,10 +275,10 @@ in
     };
 
     i18n = {
-      glibcLocales = pkgs.glibcLocales.override {
-        allLocales = false;
-        locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
-      };
+      # glibcLocales = pkgs.glibcLocales.override {
+      #   allLocales = false;
+      #   locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
+      # };
       inputMethod = {
         enabled = "fcitx5";
         fcitx5.addons = with pkgs; [

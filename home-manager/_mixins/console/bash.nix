@@ -14,7 +14,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.starship.enable = true;
+    services.starship.enable = lib.mkDefault true;
     programs = {
       bash = {
         enable = true;

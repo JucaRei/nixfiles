@@ -20,7 +20,7 @@ in
 
   config = mkIf cfg.enable {
     services = {
-      starship.enable = false;
+      starship.enable = lib.mkForce false;
       powerline-go.enable = true;
       zoxide.enable = true;
     };
