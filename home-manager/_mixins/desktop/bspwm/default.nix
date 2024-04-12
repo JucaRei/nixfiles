@@ -20,6 +20,7 @@ in
         gio = pkgs.gnome.gvfs;
       in
       {
+        # zsh-history-substring-search zsh-syntax-highlighting
         packages = with pkgs; [
           ### Window
           wmname
@@ -31,6 +32,46 @@ in
           xfce.xfce4-power-manager
           xfce.tumbler
           xfce.exo
+
+          xorg.xdpyinfo
+          xorg.xkill
+          xorg.xprop
+          xorg.xrandr
+          xorg.xsetroot
+          xorg.xwininfo
+          mpc-cli
+          brightnessctl
+          feh
+          (geany-with-vte.override {
+            packages = with  pkgs; [
+              file
+              gtk3
+              hicolor-icon-theme
+              intltool
+              libintl
+              which
+              wrapGAppsHook
+              pkg-config
+              automake
+              autoreconfHook
+              docutils
+              geany.all
+            ];
+          })
+          libwebp
+          papirus-icon-theme
+          playerctl
+          imagemagick
+          jq
+          jgmenu
+          maim
+          physlock
+          xdo
+          xdottool
+          webp-pixbuf-loader
+          xclip
+          xdg-user-dirs
+          polkit_gnome
 
           ### Theme
           lxappearance-gtk2
@@ -48,7 +89,6 @@ in
           # nitrogen
           cava
           font-manager
-          imagemagick
           libinput-gestures
           imagemagick
           meld
@@ -141,6 +181,7 @@ in
             "pgrep -x sxhkd > /dev/null || sxhkd"
             "xsetroot -cursor_name left_ptr"
             # "nitrogen --restore"
+            "${_ pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "sleep 2; polybar -q everforest"
           ];
           alwaysResetDesktops = true;
@@ -152,11 +193,18 @@ in
           };
           extraConfigEarly = ''
             xsetroot -cursor_name left_ptr
-
             # picom
             pkill picom
             picom -b &
             #picom --expiremental-backends --no-use-damage &
+
+            ### Only have workspaces for primary monitor
+            export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
+            export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
+            MONITOR=$\{MONITOR:-$\{MONITORS[0]}}
+
+            bspc config remove_disabled_monitors true
+            bspc config remove_unplugged_monitors true
           '';
           extraConfig = ''
             # Wait for the network to be up
@@ -268,7 +316,7 @@ in
       rofi = import ./rofi.nix args;
       feh = {
         enable = true;
-        package = pkgs.feh;
+        # package = pkgs.feh;
         # keybindings = "";
         # buttons = "";
       };
@@ -287,21 +335,33 @@ in
       };
     };
 
-    systemd.user.services.polkit-agent = {
-      Unit = {
-        Description = "launch authentication-agent-1";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
+    systemd.user.services.polkit-gnome-authentication-agent-1 = {
+      Unit.Description = "polkit-gnome-authentication-agent-1";
+      Install.WantedBy = [ "graphical-session.target" ];
       Service = {
         Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
         Restart = "on-failure";
-        ExecStart = ''
-          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-        '';
+        RestartSec = 1;
+        TimeoutStopSec = 10;
       };
-
-      Install = { WantedBy = [ "graphical-session.target" ]; };
     };
+
+    # systemd.user.services.polkit-agent = {
+    #   Unit = {
+    #     Description = "launch authentication-agent-1";
+    #     After = [ "graphical-session.target" ];
+    #     PartOf = [ "graphical-session.target" ];
+    #   };
+    #   Service = {
+    #     Type = "simple";
+    #     Restart = "on-failure";
+    #     ExecStart = ''
+    #       ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+    #     '';
+    #   };
+
+    #   Install = { WantedBy = [ "graphical-session.target" ]; };
+    # };
   };
 }

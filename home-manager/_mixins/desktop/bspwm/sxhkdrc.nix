@@ -148,14 +148,20 @@ in
   ####################
 
   XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
-  XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
-  XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2";
-  XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";
-  XF86MonBrightnessDown = "${_ pkgs.xorg.xbacklight}/bin/xbacklight - 5";
+  XF86AudioRaiseVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+  XF86AudioLowerVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+  XF86MonBrightnessUp = "exec --no-startup-id ${_ pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
+  XF86MonBrightnessDown = "exec --no-startup-id ${_ pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
+  # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
+  # XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2";
+  # XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";
+  # XF86MonBrightnessDown = "${_ pkgs.xorg.xbacklight}/bin/xbacklight - 5";
   XF86AudioPlay = "${_ pkgs.playerctl}/bin/playerctl play";
   XF86AudioPause = "${_ pkgs.playerctl}/bin/playerctl pause";
   XF86AudioNext = "${_ pkgs.playerctl}/bin/playerctl next";
   XF86AudioPrev = "${_ pkgs.playerctl}/bin/playerctl previous";
+  # "${modkey} + l" = "exec ${_ pkgs.systemd}/bin/loginctl lock-session";
+  "${modkey} + n" = "exec ${_ pkgs.xdg-utils}/bin/xdg-open http://";
 
   ##################
   ### Screenshot ###
