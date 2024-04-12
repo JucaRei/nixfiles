@@ -7,6 +7,8 @@ let
     thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
   });
 
+  yaml = pkgs.formats.yaml { };
+
 in
 {
 
@@ -35,29 +37,28 @@ in
 
           xorg.xdpyinfo
           xorg.xkill
-          xorg.xprop
           xorg.xrandr
           xorg.xsetroot
           xorg.xwininfo
           mpc-cli
           brightnessctl
           feh
-          (geany-with-vte.override {
-            packages = with  pkgs; [
-              file
-              gtk3
-              hicolor-icon-theme
-              intltool
-              libintl
-              which
-              wrapGAppsHook
-              pkg-config
-              automake
-              autoreconfHook
-              docutils
-              geany.all
-            ];
-          })
+          # (geany-with-vte.override {
+          #   packages = with  pkgs; [
+          #     file
+          #     gtk3
+          #     hicolor-icon-theme
+          #     intltool
+          #     libintl
+          #     which
+          #     wrapGAppsHook
+          #     pkg-config
+          #     automake
+          #     autoreconfHook
+          #     docutils
+          #     geany.all
+          #   ];
+          # })
           libwebp
           papirus-icon-theme
           playerctl
@@ -66,12 +67,15 @@ in
           jgmenu
           maim
           physlock
-          xdo
-          xdottool
           webp-pixbuf-loader
           xclip
           xdg-user-dirs
           polkit_gnome
+          picom
+          playerctl
+          xclip
+          polkit_gnome
+
 
           ### Theme
           lxappearance-gtk2
@@ -85,14 +89,12 @@ in
           cifs-utils # Tools for managing Linux CIFS client filesystems
 
           # Utils
-          pamixer # Pulseaudio command line mixer
+          # pamixer # Pulseaudio command line mixer
           # nitrogen
           cava
           font-manager
-          libinput-gestures
-          imagemagick
+          # libinput-gestures
           meld
-          xclip
           lm_sensors
           xorg.xprop
           xorg.xrandr
@@ -102,9 +104,6 @@ in
           pavucontrol
           udiskie
           udisks
-
-          # Polkit
-          mate.mate-polkit
 
           # fonts
           maple-mono
@@ -163,10 +162,10 @@ in
                 </action>
             </actions>
           '';
-          "${config.xdg.configHome}/libinput-gestures.conf".text = ''
-            gesture swipe right 3 bspc desktop -f next.local
-            gesture swipe left 3 bspc desktop -f prev.local
-          '';
+          # "${config.xdg.configHome}/libinput-gestures.conf".text = ''
+          #   gesture swipe right 3 bspc desktop -f next.local
+          #   gesture swipe left 3 bspc desktop -f prev.local
+          # '';
         };
       };
 
@@ -267,12 +266,6 @@ in
               state = "floating";
             };
           };
-          # bspc rule -a Chromium desktop='^2'
-          # bspc rule -a Blueman-manager state=floating center=true
-          # bspc rule -a kitty state=pseudo_tiled center=true
-          # bspc rule -a mplayer2 state=floating
-          # bspc rule -a Kupfer.py focus=on
-          # bspc rule -a Screenkey manage=off
         };
       };
     };
@@ -280,23 +273,25 @@ in
     gtk = {
       enable = true;
       iconTheme = {
-        name = "Qogir-manjaro-dark";
-        package = pkgs.qogir-icon-theme;
+        name = "Papirus-Dark";
+        package = pkgs.papirus-icon-theme;
       };
       theme = {
-        name = "zukitre-dark";
-        package = pkgs.zuki-themes;
+        package = pkgs.solarc-gtk-theme;
+        name = "SolArc";
+        # name = "zukitre-dark";
+        # package = pkgs.zuki-themes;
       };
-      gtk3.extraConfig = {
-        Settings = ''
-          gtk-application-prefer-dark-theme=1
-        '';
-      };
-      gtk4.extraConfig = {
-        Settings = ''
-          gtk-application-prefer-dark-theme=1
-        '';
-      };
+      # gtk3.extraConfig = {
+      #   Settings = ''
+      #     gtk-application-prefer-dark-theme=1
+      #   '';
+      # };
+      # gtk4.extraConfig = {
+      #   Settings = ''
+      #     gtk-application-prefer-dark-theme=1
+      #   '';
+      # };
     };
 
     services = {
@@ -304,64 +299,110 @@ in
         enable = true;
         keybindings = import ./sxhkdrc.nix args;
       };
-      # fusuma.enable = true;
-    };
-
-    programs = {
-      alacritty = {
+      fusuma = {
         enable = true;
-        package = nixgl pkgs.alacritty;
-        settings = import ../../apps/terminal/alacritty.nix args;
-      };
-      rofi = import ./rofi.nix args;
-      feh = {
-        enable = true;
-        # package = pkgs.feh;
-        # keybindings = "";
-        # buttons = "";
-      };
-    };
-
-    i18n = {
-      # glibcLocales = pkgs.glibcLocales.override {
-      #   allLocales = false;
-      #   locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
-      # };
-      inputMethod = {
-        enabled = "fcitx5";
-        fcitx5.addons = with pkgs; [
-          fcitx5-rime
-        ];
-      };
-    };
-
-    systemd.user.services.polkit-gnome-authentication-agent-1 = {
-      Unit.Description = "polkit-gnome-authentication-agent-1";
-      Install.WantedBy = [ "graphical-session.target" ];
-      Service = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
+        extraPackages = with pkgs;[ xdo xdotool coreutils xorg.xprop ];
+        settings = {
+          swipe = {
+            "3" = {
+              left = {
+                # GNOME: Switch to left workspace
+                # command = "xdotool key shift+l"; # "xdotool key ctrl+alt+Right";
+                command = "bspc desktop -f {prev}.local";
+                # left:
+                #     command: exec i3 focus left
+                # right:
+                #     command: exec i3 focus right
+                # up:
+                #     command: exec i3 focus down
+                # down:
+              };
+              right = {
+                # command = "xdotool key shift+h";
+                command = "bspc desktop -f {next}.local";
+              };
+            };
+            # "4" = {
+            #   left = {
+            #     command = "i3-msg 'workspace prev";
+            #   };
+            #   right = {
+            #     command = "i3-msg 'workspace next";
+            #   };
+          };
+        };
       };
     };
-
-    # systemd.user.services.polkit-agent = {
-    #   Unit = {
-    #     Description = "launch authentication-agent-1";
-    #     After = [ "graphical-session.target" ];
-    #     PartOf = [ "graphical-session.target" ];
-    #   };
-    #   Service = {
-    #     Type = "simple";
-    #     Restart = "on-failure";
-    #     ExecStart = ''
-    #       ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-    #     '';
-    #   };
-
-    #   Install = { WantedBy = [ "graphical-session.target" ]; };
-    # };
   };
+
+  programs = {
+    alacritty = {
+      enable = true;
+      package = nixgl pkgs.alacritty;
+      settings = import ../../apps/terminal/alacritty.nix args;
+    };
+    rofi = import ./rofi.nix args;
+    feh = {
+      enable = true;
+      # package = pkgs.feh;
+      # keybindings = "";
+      # buttons = "";
+    };
+  };
+
+  i18n = {
+    # glibcLocales = pkgs.glibcLocales.override {
+    #   allLocales = false;
+    #   locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
+    # };
+    inputMethod = {
+      enabled = "fcitx5";
+      fcitx5.addons = with pkgs; [
+        fcitx5-rime
+      ];
+    };
+  };
+
+  systemd.user.services.polkit-gnome-authentication-agent-1 = {
+    Unit.Description = "polkit-gnome-authentication-agent-1";
+    Install.WantedBy = [ "graphical-session.target" ];
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+      RestartSec = 1;
+      TimeoutStopSec = 10;
+    };
+  };
+
+  # systemd.user.services.polkit-agent = {
+  #   Unit = {
+  #     Description = "launch authentication-agent-1";
+  #     After = [ "graphical-session.target" ];
+  #     PartOf = [ "graphical-session.target" ];
+  #   };
+  #   Service = {
+  #     Type = "simple";
+  #     Restart = "on-failure";
+  #     ExecStart = ''
+  #       ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+  #     '';
+  #   };
+
+  #   Install = { WantedBy = [ "graphical-session.target" ]; };
+  # };
+
+  xdg.configFile = {
+    "fusuma/config.yml".text = ''
+      {
+        swipe = {
+          "3" = {
+            left.command = "xdotool key shift+l";
+            right.command = "xdotool key shift+h";
+          };
+        };
+      }
+    '';
+  };
+};
 }

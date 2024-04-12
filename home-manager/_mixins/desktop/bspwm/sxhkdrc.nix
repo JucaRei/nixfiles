@@ -147,9 +147,11 @@ in
   ### Control Keys ###
   ####################
 
-  XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
+  XF86AudioMute = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
   XF86AudioRaiseVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
   XF86AudioLowerVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+  XF86AudioMicMute = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
+  # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
   XF86MonBrightnessUp = "exec --no-startup-id ${_ pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
   XF86MonBrightnessDown = "exec --no-startup-id ${_ pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
   # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";

@@ -253,6 +253,7 @@ in
       mkOverride 1250 pkgs.linuxPackages_latest;
     kernel = {
       sysctl = mkIf (notVM) {
+        "vt.cur_default=0x700010";
         "net.ipv4.ip_forward" = 1;
         "net.ipv6.conf.all.forwarding" = 1;
         # Keep zram swap (lz4) latency in check

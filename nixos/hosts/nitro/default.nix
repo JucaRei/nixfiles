@@ -89,6 +89,7 @@
 
       kernelParams = lib.mkForce [
         "nosgx"
+        # "button.lid_init_state=open"
         "usbcore.autosuspend=-1" # Disable usb autosuspend
         "zswap.enabled=1"
         # "zswap.compressor=lz4hc"
