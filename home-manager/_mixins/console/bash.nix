@@ -40,6 +40,9 @@ in
         ];
         shellAliases = {
           gitpfolders = "for i in */.git; do ( echo $i; cd $i/..; git pull; ); done";
+          search = ''
+            "${pkgs.ripgrep}/bin/rg -p --glob "!node_modules/*" --glob "!vendor/*" "$@"'"
+          '';
         };
         initExtra = ''
           # Zsh-like completion
@@ -55,6 +58,11 @@ in
           # fix ctrl+l not working when using vim keybinds
           bind -m vi-command 'Control-l: clear-screen'
           bind -m vi-insert 'Control-l: clear-screen'
+
+          if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+            . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+            . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
+          fi
 
           # ex = Extractor for all kinds of archives
           # =============================================

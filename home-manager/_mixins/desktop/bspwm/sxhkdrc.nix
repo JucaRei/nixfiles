@@ -24,14 +24,22 @@ in
   # Switch to recent window
   "alt + Tab" = "bspc node -f last.local";
   "${modkey} + ctrl + {q,r}" = "bspc {quit,wm -r}"; # quit | restart
-  "${modkey} + m" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
+  "${modkey} + m" = "bspc desktop -l next"; # Alternate between the tiled and monocle layout
+  "${modkey} + {_, alt + }m" = "bspc node -f {next, prev}.local.!hidden.window";
   "${modkey} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
+  "${modkey} + equal" = "bspc node @/ --equalize"; # Make split ratios equal
+  "${modkey} + minus" = "bspc node @/ --balance"; # Make split ratios balanced
+  "${modkey} + d" = ''
+    bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
+        bspc node --state \~$state
+  '';
+  "${modkey} + f" = "bspc node --state \~fullscreen"; # Toggle fullscreen of window
   "${modkey} + {_,shift + }q" = "bspc node -{c,k}"; # Close and kill
   "${modkey} + k" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
   "alt + shift + g" = "bspc config window_gap 5";
   "alt + g" = "bspc config window_gap 0";
-  "${modkey} + y" = "bspc node newest.marked.local -n newest.!automatic.local"; # send the newest marked node to the newest preselected node
-  "${modkey} + g" = "bspc node -s biggest"; # Swap the current node and the biggest node
+  "${modkey} + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
+  "${modkey} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
 
   # Alt - Move workspaces
   # "${modkey} + {Left,Right}" = "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
@@ -62,6 +70,17 @@ in
   # focus the next/previous node in the current desktop
   "${modkey} + {_,shift + }c" = "bspc node -f {prev,next}.local";
 
+  # Focus left/right occupied desktop
+  "${modkey} + {Left,Right}" = "bspc desktop --focus {prev,next}.occupied";
+
+  # Focus left/right desktop
+  "ctrl + alt + {Left,Right}" = "bspc desktop --focus {prev,next}";
+
+  # Focus left/right desktop
+  "ctrl + alt + {Up, Down}" = "bspc desktop --focus {prev,next}";
+
+  # Focus left/right occupied desktop
+  "${modkey} + {Up,Down}" = "bspc desktop --focus {prev,next}.occupied";
   # focus the next/previous desktop in the current monitor
   "${modkey} + bracket{left,right}" = "bspc desktop -f {prev,next}.local";
 
@@ -75,23 +94,30 @@ in
     bspc wm -h on
   '';
 
-  # focus or send to the given desktop
-  "${modkey} + {_,shift + }{1-9,0}" = '' "bspc {desktop -f,node -d}" '^{1-9,10}' '';
+  # Focus or send to the given desktop
+  "${modkey} + {_,shift + }{1-9,0}" = '' bspc {desktop -f,node -d} '^{1-9,10}' '';
 
   #################
   ### Preselect ###
   #################
 
   # preselect the direction
-  "${modkey} + ctrl + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+  "${modkey} + alt + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
 
   # preselect the ratio
   "${modkey} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
 
+  # Cancel the preselect
+  # For context on syntax: https://github.com/baskerville/bspwm/issues/344
+  "${modkey} + alt + {_,shift + }Escape" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
+
   "${modkey} + shift + Escape" = "bspc node -p cancel"; # cancel the preselection for the focused node
 
-  # cancel the preselection for the focused desktop
-  "${modkey} + ctrl + shift + space" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
+  # Set the node flags
+  "${modkey} + ctrl + {m,x,s,p}" = "bspc node -g {marked,locked,sticky,private}";
+
+  # Send the newest marked node to the newest preselected node
+  "${modkey} + y" = "bspc node newest.marked.local -n newest.!automatic.local";
 
   ###################
   ### Move/Resize ###

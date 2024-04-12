@@ -518,7 +518,7 @@ in
         };
         "module/launcher" = {
           type = "custom/text";
-          content = "";
+          content = " ";
           content-foreground = "${blue-arch}";
           content-font = 4;
           click-left = "${pkgs.rofi}/bin/rofi -no-lazy-grab -show drun";
@@ -618,7 +618,7 @@ in
         };
         "module/powermenu" = {
           type = "custom/text";
-          content = "⏻";
+          content = "⏻ ";
           content-background = "${mb}";
           content-foreground = "${red}";
           click-left = "~/.config/rofi/scripts/powermenu";

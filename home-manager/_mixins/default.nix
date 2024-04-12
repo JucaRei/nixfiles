@@ -98,6 +98,7 @@ in
         # figlet # Terminal ASCII banners
         iw # Terminal WiFi info
         # lurk # Modern Unix `strace`
+        psmisc # a set of small utils like killall, fuser, pstree
         pciutils # Terminal PCI info
         # psmisc # Traditional `ps`
         ramfetch # Terminal system info

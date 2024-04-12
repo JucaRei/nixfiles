@@ -249,7 +249,6 @@
         });
 
       ### Separated home-manager from nixos
-
       homeConfigurations =
         {
           # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles

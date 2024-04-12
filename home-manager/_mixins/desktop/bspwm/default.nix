@@ -141,7 +141,8 @@ in
             "pgrep -x sxhkd > /dev/null || sxhkd"
             "xsetroot -cursor_name left_ptr"
             # "nitrogen --restore"
-            "sleep 2; polybar -q batman"
+            "killall -q polybar"
+            "sleep 1; polybar -q everforest"
           ];
           alwaysResetDesktops = true;
           monitors = {
@@ -157,6 +158,15 @@ in
             pkill picom
             picom -b &
             #picom --expiremental-backends --no-use-damage &
+          '';
+          extraConfig = ''
+            # Wait for the network to be up
+            notify-send 'Waiting for network...'
+            while ! systemctl is-active --quiet network-online.target; do sleep 1; done
+            notify-send 'Network found.'
+
+            # Set background and top bar
+            ${pkgs.feh}/bin/feh --bg-scale $HOME/.local/share/img/wallpaper/active
           '';
           settings = {
             pointer_modifier = "mod4";

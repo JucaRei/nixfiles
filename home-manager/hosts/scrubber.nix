@@ -14,6 +14,7 @@ in
   imports = [
     ../_mixins/non-nixos
     ../_mixins/console/yt-dlp.nix
+    ../_mixins/console/bash.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
     ../_mixins/apps/browser/chrome/ungoogled-chromium.nix
   ];
@@ -23,6 +24,7 @@ in
       nonNixOs.enable = true;
       yt-dlp-custom.enable = true;
       vscode-server.enable = true;
+      services.bash.enable = true;
     };
 
     home = {
