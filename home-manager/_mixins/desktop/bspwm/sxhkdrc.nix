@@ -8,6 +8,12 @@ let
   filemanager = "thunar";
   modkey = vars.mod;
   # browser = "vivaldi";
+
+  sxhkd_helper = pkgs.writeScriptBin "sxhkd_helper" ''
+    #!${pkgs.stdenv.shell}
+    ${pkgs.gawk}/bin/awk '/^[a-z]/ && last {print "<small>",$0,"\t",last,"</small>"} {last=""} /^#/{last=$0}' ~/.config/sxhkd/sxhkdrc |
+    column -t -s $'\t' |
+    ${pkgs.rofi}/bin/rofi -dmenu -i -markup-rows -no-show-icons'';
 in
 {
   "${modkey} + Return" = "${terminal}"; # Terminal
@@ -17,8 +23,22 @@ in
   "${modkey} + shift + p" = "${browser} --private-window"; # web-browser
   "${modkey} + e" = "${filemanager}";
   "${modkey} + @space" = "rofi -show drun -show-icons"; # program launcher
+  "alt + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
+
   # make sxhkd reload its configuration files:
-  "${modkey} + Escape" = "${pkgs.procps}/bin/pkill -USER1 -x ${pkgs.sxhkd}/bin/sxhkd";
+  "ctrl + alt + escape" = ''
+    pkill -USR1 -x sxhkd; \
+    bspc wm -r; \
+    polybar-msg cmd restart; \
+    dunstify "Reload all configuration." -u low
+  '';
+
+  # quit bspwm
+  "${modkey} + alt + q" = ''
+    systemctl --user stop bspwm-session.target; \
+    bspc quit
+  '';
+
   ### Bspwm hotkeys
   #to change tabs ig
   # Switch to recent window

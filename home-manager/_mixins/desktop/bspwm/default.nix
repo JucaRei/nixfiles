@@ -42,6 +42,7 @@ in
           xorg.xwininfo
           mpc-cli
           brightnessctl
+          dunst
           feh
           # (geany-with-vte.override {
           #   packages = with  pkgs; [
@@ -74,7 +75,8 @@ in
           picom
           playerctl
           xclip
-          polkit_gnome
+          dialog
+
 
 
           ### Theme
@@ -175,12 +177,13 @@ in
       windowManager = {
         bspwm = {
           enable = true;
-          package = (nixgl pkgs.unstable.bspwm);
+          # package = (nixgl pkgs.unstable.bspwm);
+          package = pkgs.bspwm;
           startupPrograms = [
             "pgrep -x sxhkd > /dev/null || sxhkd"
             "xsetroot -cursor_name left_ptr"
             # "nitrogen --restore"
-            "${_ pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+            "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "sleep 2; polybar -q everforest"
           ];
           alwaysResetDesktops = true;
@@ -191,11 +194,13 @@ in
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
           extraConfigEarly = ''
+            wmname LG3D
             xsetroot -cursor_name left_ptr
             # picom
             pkill picom
             picom -b &
             #picom --expiremental-backends --no-use-damage &
+            systemctl --user start bspwm-session.target
 
             ### Only have workspaces for primary monitor
             export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
