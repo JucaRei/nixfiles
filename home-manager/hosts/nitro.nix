@@ -49,6 +49,7 @@ with lib;
         transmission_4-gtk
         nix-whereis
         nf-iosevka
+        gedit
         # lua
         # fcitx5-with-addons
         # vv

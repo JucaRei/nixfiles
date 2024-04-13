@@ -257,7 +257,7 @@
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
           "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
           "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
-          "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; };
+          "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "hyprland"; };
           "juca@oldarch" = libx.mkHome { hostname = "oldarch"; username = "juca"; stateVersion = "22.11"; };
           #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
           "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
