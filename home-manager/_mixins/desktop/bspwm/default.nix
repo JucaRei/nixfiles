@@ -333,76 +333,62 @@ in
         };
       };
     };
-  };
 
-  programs = {
-    alacritty = {
-      enable = true;
-      package = nixgl pkgs.alacritty;
-      settings = import ../../apps/terminal/alacritty.nix args;
+    programs = {
+      alacritty = {
+        enable = true;
+        package = nixgl pkgs.alacritty;
+        settings = import ../../apps/terminal/alacritty.nix args;
+      };
+      rofi = import ./rofi.nix args;
+      feh = {
+        enable = true;
+        # package = pkgs.feh;
+        # keybindings = "";
+        # buttons = "";
+      };
     };
-    rofi = import ./rofi.nix args;
-    feh = {
-      enable = true;
-      # package = pkgs.feh;
-      # keybindings = "";
-      # buttons = "";
-    };
-  };
 
-  i18n = {
-    # glibcLocales = pkgs.glibcLocales.override {
-    #   allLocales = false;
-    #   locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
+    i18n = {
+      # glibcLocales = pkgs.glibcLocales.override {
+      #   allLocales = false;
+      #   locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
+      # };
+      inputMethod = {
+        enabled = "fcitx5";
+        fcitx5.addons = with pkgs; [
+          fcitx5-rime
+        ];
+      };
+    };
+
+    systemd.user.services.polkit-gnome-authentication-agent-1 = {
+      Unit.Description = "polkit-gnome-authentication-agent-1";
+      Install.WantedBy = [ "graphical-session.target" ];
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+        Restart = "on-failure";
+        RestartSec = 1;
+        TimeoutStopSec = 10;
+      };
+    };
+
+    # systemd.user.services.polkit-agent = {
+    #   Unit = {
+    #     Description = "launch authentication-agent-1";
+    #     After = [ "graphical-session.target" ];
+    #     PartOf = [ "graphical-session.target" ];
+    #   };
+    #   Service = {
+    #     Type = "simple";
+    #     Restart = "on-failure";
+    #     ExecStart = ''
+    #       ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+    #     '';
+    #   };
+
+    #   Install = { WantedBy = [ "graphical-session.target" ]; };
     # };
-    inputMethod = {
-      enabled = "fcitx5";
-      fcitx5.addons = with pkgs; [
-        fcitx5-rime
-      ];
-    };
   };
-
-  systemd.user.services.polkit-gnome-authentication-agent-1 = {
-    Unit.Description = "polkit-gnome-authentication-agent-1";
-    Install.WantedBy = [ "graphical-session.target" ];
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
-    };
-  };
-
-  # systemd.user.services.polkit-agent = {
-  #   Unit = {
-  #     Description = "launch authentication-agent-1";
-  #     After = [ "graphical-session.target" ];
-  #     PartOf = [ "graphical-session.target" ];
-  #   };
-  #   Service = {
-  #     Type = "simple";
-  #     Restart = "on-failure";
-  #     ExecStart = ''
-  #       ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-  #     '';
-  #   };
-
-  #   Install = { WantedBy = [ "graphical-session.target" ]; };
-  # };
-
-  xdg.configFile = {
-    "fusuma/config.yml".text = ''
-      {
-        swipe = {
-          "3" = {
-            left.command = "xdotool key shift+l";
-            right.command = "xdotool key shift+h";
-          };
-        };
-      }
-    '';
-  };
-};
 }
