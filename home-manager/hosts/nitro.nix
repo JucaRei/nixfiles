@@ -78,6 +78,9 @@ with lib;
       firefox.enable = false;
       flatpak-nix.enable = true;
       yt-dlp-custom.enable = true;
+      flatpak.packages = [
+        "flathub:app/dev.aunetx.deezer/x86_64/stable"
+      ];
     };
 
     programs = {
