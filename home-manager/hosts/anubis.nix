@@ -42,16 +42,16 @@ in
         (nixGL vivaldi-custom)
       ];
       file = {
-        "bin/create-docker" = {
-          enable = true;
-          executable = true;
-          text = ''
-            #!/usr/bin/env bash
-            ${pkgs.lima}/bin/limactl list | grep default | grep -q Running || ${pkgs.lima}/bin/limactl start --name=default template://docker # Start/create default lima instance if not running/created
-            ${pkgs.docker-client}/bin/docker context create lima-default --docker "host=unix:///Users/${username}/.lima/default/sock/docker.sock"
-            ${pkgs.docker-client}/bin/docker context use lima-default
-          '';
-        };
+        # "bin/create-docker" = {
+        #   enable = true;
+        #   executable = true;
+        #   text = ''
+        #     #!/usr/bin/env bash
+        #     ${pkgs.lima}/bin/limactl list | grep default | grep -q Running || ${pkgs.lima}/bin/limactl start --name=default template://docker # Start/create default lima instance if not running/created
+        #     ${pkgs.docker-client}/bin/docker context create lima-default --docker "host=unix:///Users/${username}/.lima/default/sock/docker.sock"
+        #     ${pkgs.docker-client}/bin/docker context use lima-default
+        #   '';
+        # };
         # "bin/home-switch" = {
         #   enable = true;
         #   executable = true;

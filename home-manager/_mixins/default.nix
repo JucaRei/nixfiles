@@ -120,7 +120,7 @@ in
         {
           EDITOR = "${editor}";
           MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
-          PAGER = "moar";
+          PAGER = "${pkgs.moar}/bin/moar";
           SYSTEMD_EDITOR = "${editor}";
           VISUAL = "${editor}";
         };
