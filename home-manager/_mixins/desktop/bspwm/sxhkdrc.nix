@@ -19,12 +19,17 @@ let
 in
 {
   "${modkey} + Return" = "${terminal}"; # Terminal
-  "${modkey} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
+  # "${modkey} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
+  "${modkey} + shift + Return" = "${terminal} --class='Alacritty','floating'"; # Terminal
   "${modkey} + b" = "${browser}"; # web-browser
   "${modkey} + shift + b" = "${browser} --new-window https://youtube.com/"; # web-browser
   "${modkey} + shift + p" = "${browser} --private-window"; # web-browser
   "${modkey} + e" = "${filemanager}";
-  "${modkey} + @space" = "rofi -show drun -show-icons"; # program launcher
+  "${modkey} + @space" = "rofi -show drun"; # program launcher
+  # calculator
+  "F1" = "rofi -show calc -modi calc --no-show-match --no-sort -lines 2";
+  # emoji
+  "F2" = "rofi -show emoji -modi emoji";
   "alt + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
 
   # make sxhkd reload its configuration files:
@@ -56,11 +61,15 @@ in
     bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
         bspc node --state \~$state
   '';
+  # rotate
+  "${modkey} + r" = "bspc node @/ -R 90";
   "${modkey} + f" = "bspc node --state \~fullscreen"; # Toggle fullscreen of window
   "${modkey} + {_,shift + }q" = "bspc node -{c,k}"; # Close and kill
   "${modkey} + k" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
   "alt + shift + g" = "bspc config window_gap 5";
   "alt + g" = "bspc config window_gap 0";
+  # change window gap
+  "${modkey} + {minus,equal}" = "bspc config -d focused window_gap $((`bspc config -d focused window_gap` {+,-} 2 ))";
   "${modkey} + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
   "${modkey} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
 
@@ -153,6 +162,9 @@ in
       top 0 -20 || bspc node -z bottom 0 -20,\
       right 20 0 || bspc node -z left 20 0}
   '';
+
+  # move a floating window
+  "${modkey} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
 
   "alt + o" = "polybar-msg cmd toggle";
   "alt + shift +x" = "i3lock-fancy -p";
