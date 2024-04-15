@@ -1,11 +1,11 @@
 { pkgs, config, lib, ... }:
 let
-  nixGL = (import
-    (builtins.fetchGit {
-      url = "http://github.com/guibou/nixGL";
-      ref = "refs/heads/backport/noGLVND";
-    })
-    { enable32bits = true; }).auto;
+  # nixGL = (import
+  #   (builtins.fetchGit {
+  #     url = "http://github.com/guibou/nixGL";
+  #     ref = "refs/heads/backport/noGLVND";
+  #   })
+  #   { enable32bits = true; }).auto;
   nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
 in
 {
@@ -15,7 +15,7 @@ in
   ];
   config = {
     home.packages = with pkgs; [
-      (nixGL (config.programs.firefox.package))
+      (nixGL-old (config.programs.firefox.package))
     ];
     services.nonNixOs.enable = true;
     nix.settings = {

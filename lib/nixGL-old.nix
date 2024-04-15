@@ -8,8 +8,8 @@ let
     (builtins.fetchGit {
       url = "http://github.com/guibou/nixGL";
       ref = "refs/heads/backport/noGLVND";
-    })).auto;
-  # { enable32bits = false; }).auto;
+    })
+    { enable32bits = false; }).auto;
   # ).auto;
 in
 # Wrap a single package
