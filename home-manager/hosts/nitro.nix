@@ -86,6 +86,7 @@ with lib;
 
     programs = {
       # yt-dlp.enable = true;
+      brave.enable = true;
     };
     dconf.settings = {
       # "org/gnome/desktop/interface" = {
