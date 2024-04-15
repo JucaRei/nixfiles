@@ -4,6 +4,8 @@ with lib;
 let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
 
+  nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
+
   cfg = config.services.firefox;
 
   csshacks = pkgs.fetchFromGitHub {
@@ -12,6 +14,8 @@ let
     rev = "1ff9383984632fe91b8466730679e019de13c745";
     sha256 = "sha256-KmkiSpxzlsPBWoX51o27l+X1IEh/Uv8RMkihGRxg98o=";
   };
+
+  nonNix = if (config.services.nonNixOs.enable) then (nixGL pkgs.firefox) else pkgs.firefox;
 
   # ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
 
@@ -210,7 +214,7 @@ in
       firefox = {
         enable = true;
         # package = pkgs.unstable.firefox;
-        package = if (cfg.nonNixOs.enable) then firefox-gl else pkgs.firefox;
+        package = nonNix;
         # package = floorp-gl;
         # package = librewolf-gl;
         policies = {

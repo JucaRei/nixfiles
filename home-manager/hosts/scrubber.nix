@@ -17,6 +17,7 @@ in
     ../_mixins/console/bash.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
     ../_mixins/apps/browser/chrome/ungoogled-chromium.nix
+    ../_mixins/apps/browser/firefox/firefox.nix
   ];
 
   config = {
