@@ -9,8 +9,8 @@ let
       url = "http://github.com/guibou/nixGL";
       ref = "refs/heads/backport/noGLVND";
     })
-    # { enable32bits = true; }).auto;
-  ).auto;
+    { enable32bits = false; }).auto;
+  # ).auto;
 in
 # Wrap a single package
 pkg:
