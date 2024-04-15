@@ -6,7 +6,7 @@ let
   #     ref = "refs/heads/backport/noGLVND";
   #   })
   #   { enable32bits = true; }).auto;
-  nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs lib; };
+  nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
 in
 {
   imports = [
