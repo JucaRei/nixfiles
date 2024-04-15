@@ -13,11 +13,12 @@ in
 {
   imports = [
     ../_mixins/non-nixos
-    ../_mixins/apps/browser/firefox/firefox.nix
+    # ../_mixins/apps/browser/firefox/firefox.nix
   ];
   config = {
     home.packages = with pkgs; [
-      (nixGL (config.programs.firefox.package))
+      # (nixGL (config.programs.firefox.package))
+      (nixGL vlc)
     ];
     services.nonNixOs.enable = true;
     nix.settings = {
