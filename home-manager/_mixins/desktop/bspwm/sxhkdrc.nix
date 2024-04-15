@@ -44,7 +44,8 @@ in
   ### Bspwm hotkeys
   #to change tabs ig
   # Switch to recent window
-  "alt + Tab" = "bspc node -f last.local";
+  # "alt + Tab" = "bspc node -f last.local";
+  "${modkey},alt + {_,shift + }Tab" = "bspc node -f {next,prev}.local";
   "${modkey} + ctrl + {q,r}" = "bspc {quit,wm -r}"; # quit | restart
   "${modkey} + m" = "bspc desktop -l next"; # Alternate between the tiled and monocle layout
   "${modkey} + {_, alt + }m" = "bspc node -f {next, prev}.local.!hidden.window";

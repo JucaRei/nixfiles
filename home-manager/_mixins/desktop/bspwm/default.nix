@@ -185,6 +185,8 @@ in
             # "nitrogen --restore"
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "sleep 2; polybar -q everforest"
+            # "${pkgs.flameshot}/bin/flameshot"
+            # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
           ];
           alwaysResetDesktops = true;
           monitors = {
@@ -220,29 +222,35 @@ in
             # ${pkgs.feh}/bin/feh --bg-scale $HOME/.local/share/img/wallpaper/active
           '';
           settings = {
+            remove_disabled_monitors = true;
+            remove_unplugged_monitors = true;
             pointer_modifier = "mod4";
             pointer_action1 = "move";
             pointer_action2 = "resize_side";
             pointer_action3 = "resize_corner";
-
-            border_width = 3;
+            click_to_focus = "button1";
+            focus_follows_pointer = true;
+            border_width = 2;
             window_gap = 10;
-            split_ratio = 0.50;
-
+            automatic_scheme = "tiling";
+            initial_polarity = "first_child";
+            split_ratio = 0.52;
             single_monocle = true;
             borderless_monocle = true;
             gapless_monocle = false;
             paddingless_mono = true;
-
             normal_border_color = "#343c40"; # "#1E1F29";
             active_border_color = "#DBBC7F";
             focused_border_color = "#DBBC7F"; # "#BD93F9";
             presel_border_color = "#343c40"; #"#FF79C6";
-
           };
 
           rules = {
             "chromium" = {
+              desktop = "^3";
+              focus = true;
+            };
+            "firefox" = {
               desktop = "^3";
               focus = true;
             };
@@ -253,6 +261,15 @@ in
             "Alacritty" = {
               state = "pseudo_tiled";
               center = true;
+            };
+            "Alacritty:floating" = {
+              state = "floating";
+            };
+            "join*" = {
+              state = "floating";
+            };
+            "st:floating" = {
+              state = "floating";
             };
             "mpv" = {
               # "mplayer2"
