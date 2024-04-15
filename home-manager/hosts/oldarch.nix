@@ -16,11 +16,9 @@ in
     # ../_mixins/apps/browser/firefox/firefox.nix
   ];
   config = {
-    home.packages = (with pkgs; [
-
-    ]) ++ lib.mkIf non-nixos.enable (with pkgs;[
-      (nixGL firefox)
-    ]);
+    home.packages = with pkgs; [
+      (nixGL vlc)
+    ];
     services.nonNixOs.enable = true;
     nix.settings = {
       extra-substituters = [ "https://juca-nixfiles.cachix.org" ];
