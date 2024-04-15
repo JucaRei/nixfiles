@@ -17,7 +17,7 @@ in
   ];
   config = {
     home.packages = with pkgs; [
-      (nixGL vlc)
+      (nixGL.override { useGLVND = false; } vlc)
     ];
     services.nonNixOs.enable = true;
     nix.settings = {
