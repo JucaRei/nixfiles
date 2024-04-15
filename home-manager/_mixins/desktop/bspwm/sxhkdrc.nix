@@ -182,23 +182,24 @@ in
   ### Control Keys ###
   ####################
 
-  XF86AudioMute = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
-  XF86AudioRaiseVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-  XF86AudioLowerVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-  XF86AudioMicMute = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
+  XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
+  # XF86AudioRaiseVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+  # XF86AudioLowerVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+  "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ 2%{+,-}";
+  XF86AudioMicMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
   # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
-  XF86MonBrightnessUp = "exec --no-startup-id ${_ pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
-  XF86MonBrightnessDown = "exec --no-startup-id ${_ pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
+  XF86MonBrightnessUp = "exec --no-startup-id ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
+  XF86MonBrightnessDown = "exec --no-startup-id ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
   # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
   # XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2";
   # XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";
   # XF86MonBrightnessDown = "${_ pkgs.xorg.xbacklight}/bin/xbacklight - 5";
-  XF86AudioPlay = "${_ pkgs.playerctl}/bin/playerctl play";
-  XF86AudioPause = "${_ pkgs.playerctl}/bin/playerctl pause";
-  XF86AudioNext = "${_ pkgs.playerctl}/bin/playerctl next";
-  XF86AudioPrev = "${_ pkgs.playerctl}/bin/playerctl previous";
+  XF86AudioPlay = "${pkgs.playerctl}/bin/playerctl play";
+  XF86AudioPause = "${pkgs.playerctl}/bin/playerctl pause";
+  XF86AudioNext = "${pkgs.playerctl}/bin/playerctl next";
+  XF86AudioPrev = "${pkgs.playerctl}/bin/playerctl previous";
   # "${modkey} + l" = "exec ${_ pkgs.systemd}/bin/loginctl lock-session";
-  "${modkey} + n" = "exec ${_ pkgs.xdg-utils}/bin/xdg-open http://";
+  "${modkey} + n" = "exec ${pkgs.xdg-utils}/bin/xdg-open http://";
 
   ##################
   ### Screenshot ###
