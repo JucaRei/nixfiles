@@ -18,8 +18,8 @@ in
   config = {
     home.packages = with pkgs; [
 
-    ] ++ (lib.mkIf non-nixos.enable (with pkgs.nixGL;[
-      firefox
+    ] ++ (lib.mkIf non-nixos.enable (with pkgs;[
+      (nixGL firefox)
     ]));
     services.nonNixOs.enable = true;
     nix.settings = {
