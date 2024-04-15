@@ -3,7 +3,8 @@ let
   _ = lib.getExe;
   # alacritty-custom = nixgl pkgs.alacritty;
   terminal = "${_ vars.alacritty-custom}";
-  browser = "chromium-browser";
+  # browser = "chromium-browser";
+  browser = "${config.programs.chromium.package}/bin/chromium-browser";
   vars = import ./vars.nix { inherit pkgs config; };
   filemanager = "thunar";
   modkey = vars.mod;

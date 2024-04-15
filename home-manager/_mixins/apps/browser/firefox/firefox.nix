@@ -16,16 +16,6 @@ let
   # ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
 
   sharedSettings = {
-    policies = {
-      FirefoxHome = {
-        Highlights = false;
-        Pocket = false;
-        Snippets = false;
-        SponsporedPocket = false;
-        SponsporedTopSites = false;
-      };
-      EnableTrackingProtection = true;
-    };
     # Privacy & Security Improvements
     #"browser.contentblocking.category" = "strict";
     "browser.urlbar.speculativeConnect.enabled" = true;
@@ -201,16 +191,6 @@ let
     wrapFirefox firefox-unwrapped {
       # floorp-gl = with pkgs.unstable; wrapFirefox floorp-unwrapped {
       # firefox-gl = with pkgs.unstable; wrapFirefox firefox-devedition-unwrapped {
-      nativeMessagingHosts = with pkgs;
-        [
-          bukubrow
-          tridactyl-native
-          fx-cast-bridge
-        ]
-        # ++ (with pkgs.FirefoxAddons; [
-        #   youtube-nonstop
-        # ])
-        ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
     };
 
   browser = "firefox";
@@ -233,6 +213,48 @@ in
         package = if (cfg.nonNixOs.enable) then firefox-gl else pkgs.firefox;
         # package = floorp-gl;
         # package = librewolf-gl;
+        policies = {
+          FirefoxHome = {
+            Highlights = false;
+            Pocket = false;
+            Snippets = false;
+            Search = true;
+            SponsporedPocket = false;
+            SponsporedTopSites = false;
+            TopSites = false;
+          };
+          CaptivePortal = false;
+          DisableFirefoxAccounts = false;
+          DisableFirefoxStudies = true;
+          DisableTelemetry = true;
+          NoDefaultBookmarks = true;
+          PasswordManagerEnabled = true;
+          DontCheckDefaultBrowser = true;
+          EnableTrackingProtection = true;
+          SearchBar = "unified";
+          SearchSuggestEnabled = true;
+          ShowHomeButton = true;
+          SanitizeOnShutdown = {
+            Cache = true;
+            Downloads = true;
+            #FormData = true;
+            History = false;
+            #Locked = true;
+          };
+          UserMessaging = {
+            WhatsNew = false;
+            ExtensionRecommendations = false;
+            FeatureRecommendations = false;
+            #UrlbarInterventions = false;
+            SkipOnboarding = true;
+            MoreFromMozilla = false;
+          };
+        };
+        nativeMessagingHosts = with pkgs; [
+          bukubrow
+          tridactyl-native
+          fx-cast-bridge
+        ] ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
         profiles = {
           juca = {
             id = 0;
@@ -300,18 +322,18 @@ in
                   ];
                   definedAliases = [ "@nw" ];
                 };
-                # "Brave" = {
-                #   urls = [{
-                #     template = "https://search.brave.com/search";
-                #     params = [
-                #       { name = "type"; value = "search"; }
-                #       { name = "q"; value = "{searchTerms}"; }
-                #     ];
-                #   }];
+                "Brave" = {
+                  urls = [{
+                    template = "https://search.brave.com/search";
+                    params = [
+                      { name = "type"; value = "search"; }
+                      { name = "q"; value = "{searchTerms}"; }
+                    ];
+                  }];
+                  icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
+                  definedAliases = [ "@brave" "@b" ];
+                };
 
-                #   icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
-                #   definedAliases = [ "@brave" "@b" ];
-                # };
                 "Bing".metaData.hidden = true;
                 "Google".metaData.alias = "@g";
                 "Wikipedia".metaData.alias = "@wiki";
@@ -319,71 +341,51 @@ in
               default = "Google";
               force = true;
             };
+            bookmarks = [
+              {
+                name = "BJ-Share";
+                url = "https://bj-share.info/";
+              }
+              {
+                name = "kernel.org";
+                url = "https://www.kernel.org";
+              }
+              {
+                name = "Sourcegraph";
+                tags = [ "code" "wiki" ];
+                url = "https://www.sourcegraph.com/search";
+              }
+              {
+                name = "Nix sites";
+                toolbar = true;
+                bookmarks = [
+                  {
+                    name = "homepage";
+                    url = "https://nixos.org/";
+                  }
+                  {
+                    name = "wiki";
+                    tags = [ "wiki" "nix" ];
+                    url = "https://nixos.wiki/";
+                  }
+                  {
+                    name = "home-manager options";
+                    tags = [ "wiki" "nix" "home-manager" ];
+                    url = "https://home-manager-options.extranix.com/";
+                  }
+                  {
+                    name = "Mynixos";
+                    tags = [ "wiki" "nix" "nix-modules" ];
+                    url = "https://mynixos.com/";
+                  }
+                ];
+              }
+            ];
           };
-          # extraPolicies = {
-          #   CaptivePortal = false;
-          #   DisableFirefoxStudies = true;
-          #   DisablePocket = true;
-          #   DisableFirefoxAccounts = true;
-          #   DisableFormHistory = true;
-          #   DisplayBookmarksToolbar = true;
-          #   DontCheckDefaultBrowser = true;
-          #   FirefoxHome = {
-          #     Pocket = false;
-          #     Snippets = false;
-          #   };
-          # };
         };
       };
-
-      # xdg = {
-      #   mime.enable = ifDefault true;
-      #   mimeApps = {
-      #     enable = ifDefault true;
-      #     defaultApplications = ifDefault (import ./default-browser.nix "firefox");
-      #   };
-      # };
-
-      # home.packages =
-      #   let
-      #     makeFirefoxProfileBin = args @ { profile, ... }:
-      #       let
-      #         name = "firefox-${profile}";
-      #         scriptBin = pkgs.writeScriptBin name ''
-      #           firefox -P "${profile}" --name="${name}" $@
-      #         '';
-      #         desktopFile = pkgs.makeDesktopItem ((removeAttrs args [ "profile" ])
-      #           // {
-      #           inherit name;
-      #           exec = "${scriptBin}/bin/${name} %U";
-      #           extraConfig.StartupWMClass = name;
-      #           genericName = "Web Browser";
-      #           mimeTypes = [
-      #             "text/html"
-      #             "text/xml"
-      #             "application/xhtml+xml"
-      #             "application/vnd.mozilla.xul+xml"
-      #             "x-scheme-handler/http"
-      #             "x-scheme-handler/https"
-      #           ];
-      #           categories = [ "Network" "WebBrowser" ];
-      #         });
-      #       in
-      #       pkgs.runCommand name { } ''
-      #         mkdir -p $out/{bin,share}
-      #         cp -r ${scriptBin}/bin/${name} $out/bin/${name}
-      #         cp -r ${desktopFile}/share/applications $out/share/applications
-      #       '';
-      #   in
-      #   with pkgs; [
-      #     (tor-browser-bundle-bin.override { pulseaudioSupport = true; })
-      #     (makeFirefoxProfileBin {
-      #       profile = "work";
-      #       desktopName = "Firefox (Work)";
-      #       icon = "firefox";
-      #     })
-      #   ];
     };
+
     home = {
       sessionVariables = {
         DEFAULT_BROWSER = "${firefox-gl}/bin/${browser}";

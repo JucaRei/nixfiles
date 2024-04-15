@@ -38,6 +38,7 @@ in
         nix-whereis
         font-search
         stacer
+        cachix
       ];
       file = {
         ".face" = {

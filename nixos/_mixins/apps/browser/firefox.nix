@@ -1,8 +1,4 @@
-{ pkgs
-, lib
-, params
-, ...
-}: {
+{ pkgs, lib, params, ... }: {
   programs = {
     firefox = {
       enable = true;
