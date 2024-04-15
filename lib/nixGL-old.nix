@@ -11,7 +11,7 @@ let
     })
     # { enable32bits = false; }).auto;
     # ).auto;
-  ).auto;
+  ).nixGLNvidia;
 in
 # Wrap a single package
 pkg:
@@ -39,7 +39,7 @@ pkg:
     shopt -s nullglob # Prevent loop from running if no files
     for file in ${pkg.out}/bin/*; do
       echo "#!${pkgs.bash}/bin/bash" > "$out/bin/$(basename $file)"
-      echo "exec -a \"\$0\" ${pkgs.nvidiaGL.auto}/bin/nixGLNvidia $file \"\$@\"" >> "$out/bin/$(basename $file)"
+      echo "exec -a \"\$0\" ${pkgs.nvidiaGL}/bin/nixGLNvidia $file \"\$@\"" >> "$out/bin/$(basename $file)"
       chmod +x "$out/bin/$(basename $file)"
     done
     shopt -u nullglob # Revert nullglob back to its normal default state
