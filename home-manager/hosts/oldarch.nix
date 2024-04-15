@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, lib, ... }:
 let
   nixGL = (import
     (builtins.fetchGit {
