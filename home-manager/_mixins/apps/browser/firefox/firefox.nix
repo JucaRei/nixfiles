@@ -15,7 +15,7 @@ let
     sha256 = "sha256-KmkiSpxzlsPBWoX51o27l+X1IEh/Uv8RMkihGRxg98o=";
   };
 
-  nonNix = if (config.services.nonNixOs.enable) then (nixGL pkgs.firefox) else pkgs.firefox;
+  nonNix = if (config.services.nonNixOs) then nixGL pkgs.firefox else pkgs.firefox;
 
   # ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
 
@@ -254,11 +254,12 @@ in
             MoreFromMozilla = false;
           };
         };
-        nativeMessagingHosts = with pkgs; [
-          bukubrow
-          tridactyl-native
-          fx-cast-bridge
-        ] ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
+        # nativeMessagingHosts = with pkgs; [
+        #   bukubrow
+        #   tridactyl-native
+        #   fx-cast-bridge
+        # ];
+        # ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
         profiles = {
           juca = {
             id = 0;
