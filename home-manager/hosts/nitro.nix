@@ -76,7 +76,7 @@ with lib;
 
     services = {
       bash.enable = false;
-      firefox.enable = false;
+      # firefox.enable = false;
       flatpak-nix.enable = true;
       yt-dlp-custom.enable = true;
       flatpak.packages = [
