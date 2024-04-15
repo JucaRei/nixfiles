@@ -182,11 +182,13 @@ in
   ### Control Keys ###
   ####################
 
-  XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
+  # XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
+  XF86AudioMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle%";
   # XF86AudioRaiseVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
   # XF86AudioLowerVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-  "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ 2%{+,-}";
-  XF86AudioMicMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
+  "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
+  # XF86AudioMicMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
+  XF86AudioMicMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-source-mute 0 toggle%";
   # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
   XF86MonBrightnessUp = "exec --no-startup-id ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
   XF86MonBrightnessDown = "exec --no-startup-id ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
