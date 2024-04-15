@@ -1,7 +1,21 @@
-{ pkgs, ... }: {
-  imports = [ ../_mixins/non-nixos ];
+{ pkgs, ... }:
+let
+  nixGL = (import
+    (builtins.fetchGit {
+      url = "http://github.com/guibou/nixGL";
+      ref = "refs/heads/backport/noGLVND";
+    })
+    { enable32bits = true; }).auto;
+in
+{
+  imports = [
+    ../_mixins/non-nixos
+    ../_mixins/apps/browser/firefox/firefox.nix
+  ];
   config = {
-    home.packages = with pkgs; [ ];
+    home.packages = with pkgs; [
+      (nixGL (config.programs.firefox.package))
+    ];
     services.nonNixOs.enable = true;
     nix.settings = {
       extra-substituters = [ "https://juca-nixfiles.cachix.org" ];

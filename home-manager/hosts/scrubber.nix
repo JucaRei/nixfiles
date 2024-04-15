@@ -10,7 +10,6 @@ let
         | sort \
         | uniq
   '';
-  firefox-exe = _ pkgs.firefox;
   nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
 in
 {
@@ -43,7 +42,7 @@ in
         font-search
         stacer
         cachix
-        (nixGL firefox-exe)
+        (nixGL (config.programs.firefox.package))
       ];
       file = {
         ".face" = {
