@@ -1,7 +1,9 @@
 args @ { pkgs, lib ? pkgs.lib, config, ... }:
+with lib;
 let
   nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
   codegl = nixGL pkgs.unstable.vscode;
+  cfg = config.services.vscode;
 in
 {
   imports = [
@@ -10,14 +12,21 @@ in
     ./vscode-remote # import this if you want vscode server
   ];
 
+  options.services.vscode = {
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+    };
+  };
   # enable vs-code remote
-
-  config = {
+  config = mkIf cfg.enable {
     custom.programs.vscode.packages = [
       pkgs.nixpkgs-fmt
+      pkgs.nil
     ];
 
     services.vscode-server.enable = false; # true
+
     home = {
       packages = [
         (config.lib.custom.wrapProgram {

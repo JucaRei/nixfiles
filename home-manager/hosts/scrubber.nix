@@ -24,6 +24,7 @@ in
     services = {
       nonNixOs.enable = true;
       yt-dlp-custom.enable = true;
+      vscode.enable = true;
       vscode-server.enable = true;
       bash.enable = true;
     };
