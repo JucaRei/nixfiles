@@ -1,8 +1,23 @@
 # Brave on XWayland, because of Nvidia
-{pkgs, ...}: {
+{ pkgs, ... }: {
   wrappers.bravex = {
     basePackage = pkgs.brave;
-    flags = ["--enable-features=WebUIDarkMode" "--no-default-browser-check"];
+    flags = [
+      "--force-dark-mode"
+      "--enable-features=VaapiVideoEncoder,VaapiVideoDecoder,CanvasOopRasterization,TouchpadOverscrollHistoryNavigation,WebUIDarkMode"
+      "--enable-zero-copy"
+      "--use-gl=desktop"
+      "--ignore-gpu-blocklist"
+      "--enable-oop-rasterization"
+      "--enable-raw-draw"
+      "--enable-gpu-compositing"
+      "--enable-gpu-rasterization"
+      "--enable-native-gpu-memory-buffers"
+      "--use-vulkan"
+      "--disable-features=UseChromeOSDirectVideoDecoder"
+      "--enable-features=WebUIDarkMode"
+      "--no-default-browser-check"
+    ];
     # extraWrapperFlags = "--unset WAYLAND_DISPLAY --unset NIXOS_OZONE_WL";
   };
 }

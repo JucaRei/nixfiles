@@ -15,7 +15,8 @@ let
     sha256 = "sha256-KmkiSpxzlsPBWoX51o27l+X1IEh/Uv8RMkihGRxg98o=";
   };
 
-  nonNix = if (config.services.nonNixOs) then nixGL pkgs.firefox else pkgs.firefox;
+  nonNix = if (config.services.nonNixOs == true) then true else false;
+  check = if (nonNix == true) then nixgl pkgs.firefox else pkgs.firefox;
 
   # ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
 
@@ -214,7 +215,7 @@ in
       firefox = {
         enable = true;
         # package = pkgs.unstable.firefox;
-        package = nonNix;
+        package = check;
         # package = floorp-gl;
         # package = librewolf-gl;
         policies = {

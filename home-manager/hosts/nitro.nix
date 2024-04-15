@@ -20,7 +20,8 @@ with lib;
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix
-    ../_mixins/apps/browser/firefox/firefox.nix
+    # ../_mixins/apps/browser/firefox/firefox.nix
+    ../_mixins/apps/browser/brave
     # ../_mixins/apps/browser/firefox/librewolf.nix
     ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
