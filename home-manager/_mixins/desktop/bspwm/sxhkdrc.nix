@@ -19,8 +19,8 @@ let
 in
 {
   "${modkey} + Return" = "${terminal}"; # Terminal
-  # "${modkey} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
-  "${modkey} + shift + Return" = "${terminal} --class='Alacritty','floating'"; # Terminal
+  "${modkey} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
+  "alt + shift + Return" = "${terminal} --class='Alacritty','floating'"; # Terminal
   "${modkey} + b" = "${browser}"; # web-browser
   "${modkey} + shift + b" = "${browser} --new-window https://youtube.com/"; # web-browser
   "${modkey} + shift + p" = "${browser} --private-window"; # web-browser
