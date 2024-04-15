@@ -86,7 +86,7 @@
 
     nixgl = {
       url = "github:nix-community/nixGL";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable"; # "nixpkgs";
       # inputs.flake-utils.follows = "agenix-cli/flake-utils";
     };
 
