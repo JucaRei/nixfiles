@@ -4,14 +4,13 @@
 ,
 }:
 let
-  nvidiaGL = (import
-    (builtins.fetchGit {
-      url = "http://github.com/guibou/nixGL";
-      ref = "refs/heads/backport/noGLVND";
-    })
+  nixGL = (import (builtins.fetchGit {
+    url = "http://github.com/guibou/nixGL";
+    ref = "refs/heads/backport/noGLVND";
+  })
     # { enable32bits = false; }).auto;
-    # ).auto;
-  ).nixGLNvidia;
+  ).auto;
+  # ).nixGLNvidia;
 in
 # Wrap a single package
 pkg:
@@ -39,7 +38,7 @@ pkg:
     shopt -s nullglob # Prevent loop from running if no files
     for file in ${pkg.out}/bin/*; do
       echo "#!${pkgs.bash}/bin/bash" > "$out/bin/$(basename $file)"
-      echo "exec -a \"\$0\" ${nvidiaGL}/bin/nixGLNvidia $file \"\$@\"" >> "$out/bin/$(basename $file)"
+      echo "exec -a \"\$0\" ${nixGL.nixGLDefault}/bin/nixGLNvidia $file \"\$@\"" >> "$out/bin/$(basename $file)"
       chmod +x "$out/bin/$(basename $file)"
     done
     shopt -u nullglob # Revert nullglob back to its normal default state
