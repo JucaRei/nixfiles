@@ -1,10 +1,10 @@
 { lib, pkgs, inputs, config, ... }:
 with lib;
 let
-  cfg = config.programs.brave;
+  cfg = config.services.brave;
 in
 {
-  options.programs.brave = {
+  options.services.brave = {
     enable = mkOption {
       default = false;
       type = types.bool;
@@ -43,6 +43,8 @@ in
 
       desktopEntries = {
         brave-browser = {
+          # exec = ''
+          #   ${pkgs.unstable.brave}/bin/brave --enable-features="VaapiVideoDecoder,VaapiVideoEncoder" --enable-raw-draw %U'';
           exec = ''
             ${pkgs.unstable.brave}/bin/brave --enable-features="VaapiVideoDecoder,VaapiVideoEncoder" --enable-raw-draw %U'';
           name = "Brave Browser";

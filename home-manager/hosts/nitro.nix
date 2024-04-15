@@ -81,12 +81,12 @@ with lib;
       yt-dlp-custom.enable = true;
       flatpak.packages = [
         "flathub:app/dev.aunetx.deezer/x86_64/stable"
+      brave.enable = true;
       ];
     };
 
     programs = {
       # yt-dlp.enable = true;
-      brave.enable = true;
     };
     dconf.settings = {
       # "org/gnome/desktop/interface" = {

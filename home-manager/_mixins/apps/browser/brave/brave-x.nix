@@ -9,7 +9,6 @@
       "--use-gl=desktop"
       "--ignore-gpu-blocklist"
       "--enable-oop-rasterization"
-      "--enable-raw-draw"
       "--enable-gpu-compositing"
       "--enable-gpu-rasterization"
       "--enable-native-gpu-memory-buffers"
