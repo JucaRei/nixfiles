@@ -8,7 +8,7 @@ let
   #   { enable32bits = true; }).auto;
   nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
   nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
-
+  non-nixos = config.services.nonNixOs;
 in
 {
   imports = [
@@ -17,10 +17,10 @@ in
   ];
   config = {
     home.packages = with pkgs; [
-      # (nixGL (config.programs.firefox.package))
-      # (nixGL vlc)
-      nixGL.auto.nixGLNvidia
-    ];
+
+    ] ++ (lib.mkIf non-nixos.enable (with pkgs.nixGL;[
+      config.programs.firefox.package
+    ]));
     services.nonNixOs.enable = true;
     nix.settings = {
       extra-substituters = [ "https://juca-nixfiles.cachix.org" ];
