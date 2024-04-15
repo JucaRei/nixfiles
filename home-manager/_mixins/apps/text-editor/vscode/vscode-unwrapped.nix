@@ -13,7 +13,24 @@ in
   # enable vs-code remote
 
   config = {
+    custom.programs.vscode.packages = [
+      pkgs.nixpkgs-fmt
+    ];
+
     services.vscode-server.enable = false; # true
+    home = {
+      packages = [
+        (config.lib.custom.wrapProgram {
+          inherit (cfg) packages;
+          name = "code";
+          source = pkgs.vscode;
+          path = "/bin/code";
+        })
+      ];
+
+      # used by svelte inspector via https://github.com/yyx990803/launch-editor
+      sessionVariables.LAUNCH_EDITOR = "code";
+    };
     programs.vscode = {
       enable = true;
       # package = pkgs.unstable.vscode;
@@ -24,7 +41,8 @@ in
       #     "--ozone-platform-hint=auto"
       #   ];
       # });
-      package = codegl;
+      # package = codegl;
+
 
       userSettings = import ../../../config/vscode/settings.nix args;
 

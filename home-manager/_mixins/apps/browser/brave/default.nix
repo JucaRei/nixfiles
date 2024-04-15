@@ -22,7 +22,8 @@ in
       ];
       sessionVariables = lib.mkDefault {
         # DEFAULT_BROWSER = "${pkgs.brave}/bin/brave";
-        DEFAULT_BROWSER = "${pkgs.bravex}/bin/brave";
+        BROWSER = "${pkgs.bravex}/bin/brave";    # for xdg-open
+        CHROME_EXECUTABLE = "${pkgs.bravex}/bin/brave";  # for flutter
       };
     };
 
