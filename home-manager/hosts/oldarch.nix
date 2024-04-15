@@ -16,9 +16,9 @@ in
     # ../_mixins/apps/browser/firefox/firefox.nix
   ];
   config = {
-    home.packages = with pkgs; [
+    home.packages = (with pkgs; [
 
-    ] ++ lib.mkIf non-nixos.enable (with pkgs;[
+    ]) ++ lib.mkIf non-nixos.enable (with pkgs;[
       (nixGL firefox)
     ]);
     services.nonNixOs.enable = true;
