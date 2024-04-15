@@ -42,6 +42,8 @@ in
         font-search
         stacer
         cachix
+        docker
+        docker-compose
         (nixGL (config.programs.firefox.package))
       ];
       file = {

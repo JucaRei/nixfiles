@@ -25,6 +25,7 @@ in
       # search = "nix search nixpkgs";
       mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
       mkdir = "mkdir -pv";
+      bios = "sudo --preserve-env=PATH ${pkgs.dmidecode}/bin/dmidecode -t bios";
       cat = "${pkgs.bat}/bin/bat --paging=never";
       # diff = "${pkgs.diffr}/bin/diffr";
       # glow = "glow --pager";
