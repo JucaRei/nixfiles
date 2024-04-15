@@ -18,7 +18,8 @@ in
   config = {
     home.packages = with pkgs; [
       # (nixGL (config.programs.firefox.package))
-      (nixGL vlc)
+      # (nixGL vlc)
+      nixGL.auto.nixGLNvidia
     ];
     services.nonNixOs.enable = true;
     nix.settings = {
