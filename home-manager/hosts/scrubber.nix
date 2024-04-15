@@ -1,6 +1,7 @@
 { lib, pkgs, config, ... }:
 with lib.hm.gvariant;
 let
+  _ = lib.getExe;
   font-search = pkgs.writeShellScriptBin "font-search" ''
     fc-list \
         | grep -ioE ": [^:]*$1[^:]+:" \
@@ -9,6 +10,8 @@ let
         | sort \
         | uniq
   '';
+  firefox-exe = _ pkgs.firefox;
+  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
 in
 {
   imports = [
@@ -40,6 +43,7 @@ in
         font-search
         stacer
         cachix
+        (nixGL firefox-exe)
       ];
       file = {
         ".face" = {

@@ -4,7 +4,7 @@ with lib;
 let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
 
-  nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
+  # nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
 
   cfg = config.services.firefox;
 
@@ -214,8 +214,8 @@ in
     programs = {
       firefox = {
         enable = true;
-        # package = pkgs.unstable.firefox;
-        package = check;
+        package = pkgs.unstable.firefox;
+        # package = check;
         # package = floorp-gl;
         # package = librewolf-gl;
         policies = {
