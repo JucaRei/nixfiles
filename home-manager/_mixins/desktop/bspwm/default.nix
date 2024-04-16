@@ -143,12 +143,10 @@ in
           };
           extraConfigEarly = ''
             wmname LG3D
-            xsetroot -cursor_name left_ptr
             # picom
             pkill picom
             picom -b &
             #picom --expiremental-backends --no-use-damage &
-            systemctl --user start bspwm-session.target
 
             ### Only have workspaces for primary monitor
             export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
@@ -159,6 +157,11 @@ in
             bspc config remove_unplugged_monitors true
           '';
           extraConfig = ''
+            ${pkgs.systemd}/bin/systemctl --user start bspwm-session.target
+
+            # ${pkgs.autorandr}/bin/autorandr --change
+
+            ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name left_ptr
             # Wait for the network to be up
             # ${pkgs.libnotify}/bin/notify-send 'Waiting for network...'
             # while ! systemctl is-active --quiet network-online.target; do sleep 1; done
