@@ -72,8 +72,12 @@ in
   "alt + g" = "bspc config window_gap 0";
   # change window gap
   "${modkey} + {minus,equal}" = "bspc config -d focused window_gap $((`bspc config -d focused window_gap` {+,-} 2 ))";
-  "${modkey} + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
-  "${modkey} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
+  # "${modkey} + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
+  # "${modkey} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
+
+  "${modkey} + g" = "if [ \"$(bspc config window_gap)\" -eq 0 ]; then bspc config window_gap 12; bspc config border_width 2; else bspc config window_gap 0; bspc config border_width 0; fi";
+
+  "${modkey} + {_,shift} + {u,i}" = "bspc {monitor -f,node -m} {prev,next}"; # focus or send to the next monitor
 
   # Alt - Move workspaces
   # "${modkey} + {Left,Right}" = "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
@@ -84,7 +88,7 @@ in
   ### States flags ###
   ####################
 
-  "${modkey} + shift + {t,h,f}" = "bspc node -t '~{tiled,pseudo_tiled,floating,fullscreen}'";
+  "${modkey} + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,\~fullscreen}";
   "alt + f" = ''bspc node -t "~"{floating,tiled}'';
   "${modkey} + ctrl + {m,x,y,z}" = "bspc node -g {marked,locked,sticky,private}"; # set the node flags
 
@@ -129,14 +133,15 @@ in
   '';
 
   # Focus or send to the given desktop
-  "${modkey} + {_,shift + }{1-9,0}" = '' bspc {desktop -f,node -d} '^{1-9,10}' '';
+  # "${modkey} + {_,shift + }{1-9,0}" = '' bspc {desktop -f,node -d} '^{1-9,10}' '';
+  "${modkey} + {1-9,0} + {_,shift}" = ''num={1-9,10}; if [ $(bspc query -D -d focused --names | cut -c 2) != "$num" ]; then bspc {desktop -f,node -d} focused:^"$num"; fi''
 
-  #################
-  ### Preselect ###
-  #################
+    #################
+    ### Preselect ###
+    #################
 
-  # preselect the direction
-  "${modkey} + alt + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+    # preselect the direction
+    "${modkey} + alt + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
 
   # preselect the ratio
   "${modkey} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
@@ -184,8 +189,8 @@ in
   ### Control Keys ###
   ####################
 
-  XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
   # XF86AudioMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle%";
+  XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
   XF86AudioRaiseVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
   XF86AudioLowerVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
   # "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";

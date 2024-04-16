@@ -332,15 +332,26 @@ in
       };
     };
 
-    systemd.user.services.polkit-gnome-authentication-agent-1 = {
-      Unit.Description = "polkit-gnome-authentication-agent-1";
-      Install.WantedBy = [ "graphical-session.target" ];
-      Service = {
-        Type = "simple";
-        ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-        Restart = "on-failure";
-        RestartSec = 1;
-        TimeoutStopSec = 10;
+    systemd.user = {
+      targets.bspwm-session = {
+        Unit = {
+          Description = "Bspwm session";
+          BindsTo = [ "graphical-session.target" ];
+          Wants = [ "graphical-session-pre.target" ];
+          After = [ "graphical-session-pre.target" ];
+        };
+      };
+
+      services.polkit-gnome-authentication-agent-1 = {
+        Unit.Description = "polkit-gnome-authentication-agent-1";
+        Install.WantedBy = [ "graphical-session.target" ];
+        Service = {
+          Type = "simple";
+          ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+          Restart = "on-failure";
+          RestartSec = 1;
+          TimeoutStopSec = 10;
+        };
       };
     };
 
