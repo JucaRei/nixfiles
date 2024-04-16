@@ -30,6 +30,11 @@ _: {
         use-ewmh-active-win = true;
         unredir-if-possible = true;
       };
+      vSync = false;
+      extraArgs = [
+        "--legacy-backends"
+        "--use-damage"
+      ];
     };
   };
 }
