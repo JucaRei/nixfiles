@@ -8,7 +8,7 @@ let
   vars = import ./vars.nix { inherit pkgs config; };
   # filemanager = "thunar";
   thunar-custom = import ../../apps/file-managers/thunar.nix { inherit pkgs config; };
-  filemanager = "${_ thunar-custom.config.home.packages}";
+  filemanager = "${_ thunar-custom.config.package}";
   modkey = vars.mod;
   # browser = "vivaldi";
 
