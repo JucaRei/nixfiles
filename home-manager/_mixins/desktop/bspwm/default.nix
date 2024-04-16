@@ -14,6 +14,7 @@ in
     ./polybar-everforest.nix
     ../../apps/file-managers/thunar.nix
     # ./polybar-batman.nix
+    ./picom.nix
   ];
   config = {
     home =
