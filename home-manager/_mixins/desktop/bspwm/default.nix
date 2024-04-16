@@ -3,17 +3,16 @@ let
   _ = lib.getExe;
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   vars = import ./vars.nix { inherit pkgs config; };
-  thunar-with-plugins = with pkgs.xfce; (thunar.override {
-    thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
-  });
-
-  yaml = pkgs.formats.yaml { };
+  # thunar-with-plugins = with pkgs.xfce; (thunar.override {
+  #   thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
+  # });
 
 in
 {
 
   imports = [
     ./polybar-everforest.nix
+    ../../apps/file-managers/thunar.nix
     # ./polybar-batman.nix
   ];
   config = {
@@ -24,26 +23,41 @@ in
       {
         # zsh-history-substring-search zsh-syntax-highlighting
         packages = with pkgs; [
-          ### Window
           wmname
           sxhkd
-          # dunst
-          # rofi
-          # polybar
-          thunar-with-plugins
+          # thunar-with-plugins
+          # xfce.tumbler
+          # xfce.exo
+          gnome.nautilus
+          gnome.file-roller
           xfce.xfce4-power-manager
-          xfce.tumbler
-          xfce.exo
-
           xorg.xdpyinfo
           xorg.xkill
           xorg.xrandr
           xorg.xsetroot
           xorg.xwininfo
+          xorg.xprop
+          xorg.xrandr
           mpc-cli
           brightnessctl
           dunst
           feh
+          gtk-engine-murrine
+          gtk_engines
+          # pamixer # Pulseaudio command line mixer
+          # nitrogen
+          cava
+          font-manager
+          # libinput-gestures
+          meld
+          lm_sensors
+          lxappearance-gtk2
+          gparted
+          ntfsprogs
+          pavucontrol
+          udiskie
+          udisks
+          blueberry
           # (geany-with-vte.override {
           #   packages = with  pkgs; [
           #     file
@@ -64,9 +78,11 @@ in
           papirus-icon-theme
           playerctl
           imagemagick
+          parcellite
           jq
           jgmenu
           maim
+          gpick
           physlock
           webp-pixbuf-loader
           xclip
@@ -80,7 +96,6 @@ in
 
 
           ### Theme
-          lxappearance-gtk2
           papirus-icon-theme
           papirus-folders
           materia-theme
@@ -91,21 +106,7 @@ in
           cifs-utils # Tools for managing Linux CIFS client filesystems
 
           # Utils
-          # pamixer # Pulseaudio command line mixer
-          # nitrogen
-          cava
-          font-manager
-          # libinput-gestures
-          meld
-          lm_sensors
-          xorg.xprop
-          xorg.xrandr
-          # gnome.gnome-disk-utility
-          gparted
-          ntfsprogs
-          pavucontrol
-          udiskie
-          udisks
+
 
           # fonts
           maple-mono
@@ -125,45 +126,6 @@ in
         sessionPath = [ "$HOME/.local/bin" ];
 
         file = {
-          ".config/Thunar/accels.scm".text = lib.fileContents ../../config/thunar/accels.scm;
-          ".config/Thunar/uca.xml".text = ''
-            <?xml version="1.0" encoding="UTF-8"?>
-            <actions>
-                <action>
-                    <icon>xterm</icon>
-                    <name>Open Terminal Here</name>
-                    <unique-id>1612104464586264-1</unique-id>
-                    <command>${pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch "${_ vars.alacritty-custom}"</command>
-                    <command>"${vars.alacritty-custom}/bin/alacritty"</command>
-                    <description>Example for a custom action</description>
-                    <patterns>*</patterns>
-                    <startup-notify/>
-                    <directories/>
-                </action>
-                <action>
-                    <icon>code</icon>
-                    <name>Open VSCode Here</name>
-                    <unique-id>1612104464586265-1</unique-id>
-                    <command>code %f</command>
-                    <description></description>
-                    <patterns>*</patterns>
-                    <startup-notify/>
-                    <directories/>
-                </action>
-                <action>
-                    <icon>bcompare</icon>
-                    <name>Compare</name>
-                    <submenu></submenu>
-                    <unique-id>1622791692322694-4</unique-id>
-                    <command>${pkgs.meld}/bin/meld %F</command>
-                    <description>Compare files and directories with  meld</description>
-                    <range></range>
-                    <patterns>*</patterns>
-                    <directories/>
-                    <text-files/>
-                </action>
-            </actions>
-          '';
           # "${config.xdg.configHome}/libinput-gestures.conf".text = ''
           #   gesture swipe right 3 bspc desktop -f next.local
           #   gesture swipe left 3 bspc desktop -f prev.local

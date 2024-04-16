@@ -81,6 +81,17 @@ in
       };
     });
 
+    gnome = prev.gnome.overrideScope' (gself: gsuper: {
+      nautilus = gsuper.nautilus.overrideAttrs (nsuper: {
+        buildInputs =
+          nsuper.buildInputs
+          ++ (with prev.gst_all_1; [
+            gst-plugins-good
+            gst-plugins-bad
+          ]);
+      });
+    });
+
     # mpv 0.36
     mpv = prev.pkgs.wrapMpv
       # (prev.pkgs.unstable.mpv-unwrapped.override { # mpv 0.37
