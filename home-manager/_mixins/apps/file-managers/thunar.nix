@@ -81,7 +81,7 @@ in
                 <icon>catfish</icon>
                 <name>Search with catfish</name>
                 <unique-id>1489089852658523-2</unique-id>
-                <command>${pkgs.catfish}/bin/catfish --path=$f$d</command>
+                <command>${pkgs.xfce.catfish}/bin/catfish --path=$f$d</command>
                 <description></description>
                 <patterns>*</patterns>
                 <directories/>
