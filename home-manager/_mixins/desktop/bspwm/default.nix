@@ -22,10 +22,6 @@ in
         packages = with pkgs; [
           wmname
           sxhkd
-          # thunar-with-plugins
-          # xfce.tumbler
-          # xfce.exo
-          gnome.nautilus
           gnome.file-roller
           xfce.xfce4-power-manager
           xorg.xdpyinfo
@@ -46,14 +42,13 @@ in
           cava
           font-manager
           # libinput-gestures
-          meld
           lm_sensors
           lxappearance-gtk2
           gparted
           ntfsprogs
           pavucontrol
           udiskie
-          udisks
+          # udisks
           blueberry
           # (geany-with-vte.override {
           #   packages = with  pkgs; [
@@ -81,7 +76,6 @@ in
           maim
           gpick
           physlock
-          webp-pixbuf-loader
           xclip
           xdg-user-dirs
           polkit_gnome
@@ -136,7 +130,7 @@ in
             # "nitrogen --restore"
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "sleep 2; polybar -q everforest"
-            # "thunar --daemon"
+            "thunar --daemon"
             # "${pkgs.flameshot}/bin/flameshot"
             # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
           ];
