@@ -7,7 +7,7 @@ let
   browser = "${config.programs.chromium.package}/bin/chromium-browser";
   vars = import ./vars.nix { inherit pkgs config; };
   # filemanager = "thunar";
-  filemanager = _ import ../../apps/file-managers/thunar.nix { inherit pkgs config; };
+  filemanager = _ (import ../../apps/file-managers/thunar.nix { inherit pkgs config; });
   modkey = vars.mod;
   # browser = "vivaldi";
 
