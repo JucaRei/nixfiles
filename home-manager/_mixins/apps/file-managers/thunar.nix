@@ -35,6 +35,10 @@ in
             ffmpegthumbnailer # videos
           ]);
 
+        sessionVariables = {
+          GIO_EXTRA_MODULES = "${gio}/lib/gio/modules";
+        };
+
         file = {
           ".config/Thunar/accels.scm".text = lib.fileContents ../../config/thunar/accels.scm;
 

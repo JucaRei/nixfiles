@@ -110,7 +110,6 @@ in
 
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
-          GIO_EXTRA_MODULES = "${gio}/lib/gio/modules";
         };
 
         sessionPath = [ "$HOME/.local/bin" ];
