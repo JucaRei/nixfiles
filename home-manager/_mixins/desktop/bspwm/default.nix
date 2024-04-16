@@ -17,9 +17,6 @@ in
   ];
   config = {
     home =
-      let
-        gio = pkgs.gnome.gvfs;
-      in
       {
         # zsh-history-substring-search zsh-syntax-highlighting
         packages = with pkgs; [
@@ -93,20 +90,13 @@ in
           xclip
           dialog
 
-
-
           ### Theme
           papirus-icon-theme
           papirus-folders
           materia-theme
           gnome3.adwaita-icon-theme
 
-          ### File Manager
-          gio # Virtual Filesystem support library
-          cifs-utils # Tools for managing Linux CIFS client filesystems
-
           # Utils
-
 
           # fonts
           maple-mono
