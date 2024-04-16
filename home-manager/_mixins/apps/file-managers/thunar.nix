@@ -33,7 +33,7 @@ in
                 <icon>xterm</icon>
                 <name>Open Terminal Here</name>
                 <unique-id>1612104464586264-1</unique-id>
-                <command>exo-open --working-directory %f --launch ${_ vars.alacritty-custom}</command>
+                <command>exo-open --working-directory %f --launch alacritty</command>
                 <description>Example for a custom action</description>
                 <patterns>*</patterns>
                 <startup-notify/>
