@@ -1,8 +1,10 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 let
   thunar-with-plugins = with pkgs.xfce; (thunar.override {
     thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
   });
+  vars = import ../../desktop/bspwm/vars.nix { inherit pkgs config; };
+  _ = lib.getExe;
 in
 {
   home = {
@@ -31,7 +33,7 @@ in
                 <icon>xterm</icon>
                 <name>Open Terminal Here</name>
                 <unique-id>1612104464586264-1</unique-id>
-                <command>${pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch TerminalEmulator</command>
+                <command>${pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch ${_ vars.alacritty-custom}</command>
                 <description>Example for a custom action</description>
                 <patterns>*</patterns>
                 <startup-notify/>
