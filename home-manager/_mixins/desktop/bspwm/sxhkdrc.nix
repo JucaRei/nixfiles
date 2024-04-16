@@ -134,14 +134,14 @@ in
 
   # Focus or send to the given desktop
   # "${modkey} + {_,shift + }{1-9,0}" = '' bspc {desktop -f,node -d} '^{1-9,10}' '';
-  "${modkey} + {1-9,0} + {_,shift}" = ''num={1-9,10}; if [ $(bspc query -D -d focused --names | cut -c 2) != "$num" ]; then bspc {desktop -f,node -d} focused:^"$num"; fi''
+  "${modkey} + {1-9,0} + {_,shift}" = ''num={1-9,10}; if [ $(bspc query -D -d focused --names | cut -c 2) != "$num" ]; then bspc {desktop -f,node -d} focused:^"$num"; fi'';
 
-    #################
-    ### Preselect ###
-    #################
+  #################
+  ### Preselect ###
+  #################
 
-    # preselect the direction
-    "${modkey} + alt + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+  # preselect the direction
+  "${modkey} + alt + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
 
   # preselect the ratio
   "${modkey} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
