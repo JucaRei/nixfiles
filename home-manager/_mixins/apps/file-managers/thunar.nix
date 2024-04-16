@@ -5,6 +5,7 @@ let
   });
   vars = import ../../desktop/bspwm/vars.nix { inherit pkgs config; };
   _ = lib.getExe;
+  finalThunar = thunar-with-plugins;
 in
 {
   config = {
@@ -12,16 +13,22 @@ in
       packages = with pkgs.xfce;
         [
           exo
-          thunar-with-plugins
+          finalThunar
           tumbler # file thumbnails
           catfish # search tool
         ]
         ++ (with pkgs; [
           mate.engrampa # archiver
+          webp-pixbuf-loader # .webp
+          gvfs
+          gnome.gvfs
           zip
           unzip
-          libgsf
-          ffmpegthumbnailer
+          poppler # .pdf .ps
+          libgsf # .odf
+          freetype # fonts
+          libgepub # .epub
+          ffmpegthumbnailer # videos
         ]);
 
       file = {
@@ -110,6 +117,26 @@ in
         "misc-open-new-window-as-tab" = true;
         "misc-single-click" = false;
         "misc-volume-management" = false;
+      };
+    };
+
+    xdg.mimeApps = {
+      defaultApplications = { "inode/directory" = [ "thunar.desktop" ]; };
+      associations.added = { "inode/directory" = [ "thunar.desktop" ]; };
+    };
+
+    systemd.user.services.thunar = {
+      Unit = {
+        Description = "Thunar file manager";
+        Documentation = "man:Thunar(1)";
+      };
+      Service = {
+        Type = "dbus";
+        ExecStart = "${finalThunar}/bin/Thunar --daemon";
+        BusName = "org.xfce.FileManager";
+        KillMode = "process";
+        # NOTE: PATH is necessary for when thunar is launched by browsers
+        PassEnvironment = [ "PATH" ];
       };
     };
   };

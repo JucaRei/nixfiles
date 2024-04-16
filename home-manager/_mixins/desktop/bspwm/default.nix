@@ -147,6 +147,7 @@ in
             # "nitrogen --restore"
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
             "sleep 2; polybar -q everforest"
+            # "thunar --daemon"
             # "${pkgs.flameshot}/bin/flameshot"
             # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
           ];
