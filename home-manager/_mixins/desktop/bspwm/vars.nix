@@ -124,5 +124,6 @@ in
   };
 
   mod = "super"; # alt
-  alacritty-custom = nixgl pkgs.alacritty;
+  # alacritty-custom = nixgl pkgs.alacritty;
+  alacritty-custom = nixgl (import ../../apps/file-managers/thunar.nix { inherit pkgs config; });
 }
