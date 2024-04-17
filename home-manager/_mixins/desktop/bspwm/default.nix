@@ -79,6 +79,7 @@ in
           physlock
           xclip
           xdg-user-dirs
+          xdg-desktop-portal-gtk
           polkit_gnome
           picom
           playerctl

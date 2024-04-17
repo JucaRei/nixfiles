@@ -3,8 +3,6 @@ let
   thunar-with-plugins = with pkgs.xfce; (thunar.override {
     thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
   });
-  vars = import ../../desktop/bspwm/vars.nix { inherit pkgs config; };
-  _ = lib.getExe;
   finalThunar = thunar-with-plugins;
 in
 {
@@ -56,7 +54,7 @@ in
                   <directories/>
               </action>
               <action>
-                  <icon>${lib.getExe pkgs.vscode}/share/pixmaps/vscode.png</icon>
+                  <icon>${pkgs.vscode}/share/pixmaps/vscode.png</icon>
                   <name>Open VSCode Here</name>
                   <unique-id>1612104464586265-1</unique-id>
                   <command>code %f</command>
@@ -148,43 +146,3 @@ in
     };
   };
 }
-
-
-# ".config/Thunar/uca.xml".text = ''
-#             <?xml version="1.0" encoding="UTF-8"?>
-#             <actions>
-#                 <action>
-#                     <icon>xterm</icon>
-#                     <name>Open Terminal Here</name>
-#                     <unique-id>1612104464586264-1</unique-id>
-#                     <command>${pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch "${_ vars.alacritty-custom}"</command>
-#                     <command>"${vars.alacritty-custom}/bin/alacritty"</command>
-#                     <description>Example for a custom action</description>
-#                     <patterns>*</patterns>
-#                     <startup-notify/>
-#                     <directories/>
-#                 </action>
-#                 <action>
-#                     <icon>code</icon>
-#                     <name>Open VSCode Here</name>
-#                     <unique-id>1612104464586265-1</unique-id>
-#                     <command>code %f</command>
-#                     <description></description>
-#                     <patterns>*</patterns>
-#                     <startup-notify/>
-#                     <directories/>
-#                 </action>
-#                 <action>
-#                     <icon>bcompare</icon>
-#                     <name>Compare</name>
-#                     <submenu></submenu>
-#                     <unique-id>1622791692322694-4</unique-id>
-#                     <command>${pkgs.meld}/bin/meld %F</command>
-#                     <description>Compare files and directories with  meld</description>
-#                     <range></range>
-#                     <patterns>*</patterns>
-#                     <directories/>
-#                     <text-files/>
-#                 </action>
-#             </actions>
-#           '';

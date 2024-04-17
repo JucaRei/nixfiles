@@ -1,17 +1,12 @@
 args@{ pkgs, config, lib, ... }:
 let
   _ = lib.getExe;
-  # alacritty-custom = nixgl pkgs.alacritty;
   terminal = "${_ vars.alacritty-custom}";
   # browser = "chromium-browser";
   browser = "${config.programs.chromium.package}/bin/chromium-browser";
-  vars = import ./vars.nix { inherit pkgs config; };
-  # filemanager = "thunar";
-  # thunar-custom = import ../../apps/file-managers/thunar.nix { inherit pkgs config; };
-  # filemanager = "${_ config.thunar-custom.package}";
-  filemanager = "thunar";
-  modkey = vars.mod;
-  # browser = "vivaldi";
+  vars = import ./vars.nix { inherit pkgs config lib; };
+  filemanager = vars.filemanager;
+
 
   sxhkd_helper = pkgs.writeScriptBin "sxhkd_helper" ''
     #!${pkgs.stdenv.shell}
@@ -20,22 +15,22 @@ let
     ${pkgs.rofi}/bin/rofi -dmenu -i -markup-rows -no-show-icons'';
 in
 {
-  "${modkey} + Return" = "${terminal}"; # Terminal
-  "${modkey} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
-  "alt + shift + Return" = "${terminal} --class='Alacritty','floating'"; # Terminal
-  "${modkey} + b" = "${browser}"; # web-browser
-  "${modkey} + shift + b" = "${browser} --new-window https://youtube.com/"; # web-browser
-  "${modkey} + shift + p" = "${browser} --private-window"; # web-browser
-  "${modkey} + e" = "${filemanager}";
-  "${modkey} + @space" = "rofi -show drun"; # program launcher
+  "${vars.mod} + Return" = "${terminal}"; # Terminal
+  "${vars.mod} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
+  "${vars.modAlt} + shift + Return" = "${terminal} --class='Alacritty','floating'"; # Terminal
+  "${vars.mod} + b" = "${browser}"; # web-browser
+  "${vars.mod} + shift + b" = "${browser} --new-window https://youtube.com/"; # web-browser
+  "${vars.mod} + shift + p" = "${browser} --private-window"; # web-browser
+  "${vars.mod} + e" = "${filemanager}";
+  "${vars.mod} + @space" = "rofi -show drun"; # program launcher
   # calculator
   "F1" = "rofi -show calc -modi calc --no-show-match --no-sort -lines 2";
   # emoji
   "F2" = "rofi -show emoji -modi emoji";
-  "alt + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
+  "${vars.modAlt} + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
 
   # make sxhkd reload its configuration files:
-  "ctrl + alt + escape" = ''
+  "ctrl + ${vars.modAlt} + escape" = ''
     pkill -USR1 -x sxhkd; \
     bspc wm -r; \
     polybar-msg cmd restart; \
@@ -43,7 +38,7 @@ in
   '';
 
   # quit bspwm
-  "${modkey} + alt + q" = ''
+  "${vars.mod} + ${vars.modAlt} + q" = ''
     systemctl --user stop bspwm-session.target; \
     bspc quit
   '';
@@ -51,119 +46,119 @@ in
   ### Bspwm hotkeys
   #to change tabs ig
   # Switch to recent window
-  # "alt + Tab" = "bspc node -f last.local";
-  "${modkey},alt + {_,shift + }Tab" = "bspc node -f {next,prev}.local";
-  "${modkey} + ctrl + {q,r}" = "bspc {quit,wm -r}"; # quit | restart
-  "${modkey} + m" = "bspc desktop -l next"; # Alternate between the tiled and monocle layout
-  "${modkey} + {_, alt + }m" = "bspc node -f {next, prev}.local.!hidden.window";
-  "${modkey} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
-  "${modkey} + equal" = "bspc node @/ --equalize"; # Make split ratios equal
-  "${modkey} + minus" = "bspc node @/ --balance"; # Make split ratios balanced
-  "${modkey} + d" = ''
+  # "${vars.modAlt} + Tab" = "bspc node -f last.local";
+  "${vars.mod},${vars.modAlt} + {_,shift + }Tab" = "bspc node -f {next,prev}.local";
+  "${vars.mod} + ctrl + {q,r}" = "bspc {quit,wm -r}"; # quit | restart
+  "${vars.mod} + m" = "bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
+  "${vars.mod} + {_, ${vars.modAlt} + }m" = "bspc node -f {next, prev}.local.!hidden.window";
+  "${vars.mod} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
+  "${vars.mod} + equal" = "bspc node @/ --equalize"; # Make split ratios equal
+  "${vars.mod} + minus" = "bspc node @/ --balance"; # Make split ratios balanced
+  "${vars.mod} + d" = ''
     bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
         bspc node --state \~$state
   '';
   # rotate
-  "${modkey} + r" = "bspc node @/ -R 90";
-  "${modkey} + f" = "bspc node --state \~fullscreen"; # Toggle fullscreen of window
-  "${modkey} + {_,shift + }q" = "bspc node -{c,k}"; # Close and kill
-  "${modkey} + k" = "bspc desktop -l next"; # alternate between the tiled and monocle layout
-  "alt + shift + g" = "bspc config window_gap 5";
-  "alt + g" = "bspc config window_gap 0";
+  "${vars.mod} + r" = "bspc node @/ -R 90";
+  "${vars.mod} + f" = "bspc node --state \~fullscreen"; # Toggle fullscreen of window
+  "${vars.mod} + {_,shift + }q" = "bspc node -{c,k}"; # Close and kill
+  "${vars.mod} + k" = "bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
+  "${vars.modAlt} + shift + g" = "bspc config window_gap 5";
+  "${vars.modAlt} + g" = "bspc config window_gap 0";
   # change window gap
-  "${modkey} + {minus,equal}" = "bspc config -d focused window_gap $((`bspc config -d focused window_gap` {+,-} 2 ))";
-  # "${modkey} + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
-  # "${modkey} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
+  "${vars.mod} + {minus,equal}" = "bspc config -d focused window_gap $((`bspc config -d focused window_gap` {+,-} 2 ))";
+  # "${vars.mod} + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
+  # "${vars.mod} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
 
-  "${modkey} + g" = "if [ \"$(bspc config window_gap)\" -eq 0 ]; then bspc config window_gap 12; bspc config border_width 2; else bspc config window_gap 0; bspc config border_width 0; fi";
+  "${vars.mod} + g" = "if [ \"$(bspc config window_gap)\" -eq 0 ]; then bspc config window_gap 12; bspc config border_width 2; else bspc config window_gap 0; bspc config border_width 0; fi";
 
-  "${modkey} + {_,shift} + {u,i}" = "bspc {monitor -f,node -m} {prev,next}"; # focus or send to the next monitor
+  "${vars.mod} + {_,shift} + {u,i}" = "bspc {monitor -f,node -m} {prev,next}"; # focus or send to the next monitor
 
-  # Alt - Move workspaces
-  # "${modkey} + {Left,Right}" = "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
-  # "${modkey} + {_,shift +}{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'"; # Focus or send to the given desktop
-  "${modkey} + shift + {Left,Right}" = "bspc node -d {prev,next}.local --follow"; # Send and follow to previous or next desktop
+  # ${vars.modAlt} - Move workspaces
+  # "${vars.mod} + {Left,Right}" = "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
+  # "${vars.mod} + {_,shift +}{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'"; # Focus or send to the given desktop
+  "${vars.mod} + shift + {Left,Right}" = "bspc node -d {prev,next}.local --follow"; # Send and follow to previous or next desktop
 
   ####################
   ### States flags ###
   ####################
 
-  "${modkey} + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,\~fullscreen}";
-  "alt + f" = ''bspc node -t "~"{floating,tiled}'';
-  "${modkey} + ctrl + {m,x,y,z}" = "bspc node -g {marked,locked,sticky,private}"; # set the node flags
+  "${vars.mod} + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,\~fullscreen}";
+  "${vars.modAlt} + f" = ''bspc node -t "~"{floating,tiled}'';
+  "${vars.mod} + ctrl + {m,x,y,z}" = "bspc node -g {marked,locked,sticky,private}"; # set the node flags
 
   # set the node flags
-  "${modkey} + ctrl + {x,y,z}" = "bspc node -g {locked,sticky,private}";
+  "${vars.mod} + ctrl + {x,y,z}" = "bspc node -g {locked,sticky,private}";
 
   ##################
   ### Focus/swap ###
   ##################
 
   # focus the node in the given direction
-  "${modkey} + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
+  "${vars.mod} + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
 
   # focus the node for the given path jump
-  "${modkey} + {p,b,comma,period}" = "bspc node -f @{parent,brother,first,second}";
+  "${vars.mod} + {p,b,comma,period}" = "bspc node -f @{parent,brother,first,second}";
 
   # focus the next/previous node in the current desktop
-  "${modkey} + {_,shift + }c" = "bspc node -f {prev,next}.local";
+  "${vars.mod} + {_,shift + }c" = "bspc node -f {prev,next}.local";
 
   # Focus left/right occupied desktop
-  "${modkey} + {Left,Right}" = "bspc desktop --focus {prev,next}.occupied";
+  "${vars.mod} + {Left,Right}" = "bspc desktop --focus {prev,next}.occupied";
 
   # Focus left/right desktop
-  "ctrl + alt + {Left,Right}" = "bspc desktop --focus {prev,next}";
+  "ctrl + ${vars.modAlt} + {Left,Right}" = "bspc desktop --focus {prev,next}";
 
   # Focus left/right desktop
-  "ctrl + alt + {Up, Down}" = "bspc desktop --focus {prev,next}";
+  "ctrl + ${vars.modAlt} + {Up, Down}" = "bspc desktop --focus {prev,next}";
 
   # Focus left/right occupied desktop
-  "${modkey} + {Up,Down}" = "bspc desktop --focus {prev,next}.occupied";
+  "${vars.mod} + {Up,Down}" = "bspc desktop --focus {prev,next}.occupied";
   # focus the next/previous desktop in the current monitor
-  "${modkey} + bracket{left,right}" = "bspc desktop -f {prev,next}.local";
+  "${vars.mod} + bracket{left,right}" = "bspc desktop -f {prev,next}.local";
 
   # focus the last node/desktop
-  "${modkey} + {grave,Tab}" = "bspc {node,desktop} -f last";
+  "${vars.mod} + {grave,Tab}" = "bspc {node,desktop} -f last";
 
   # focus the older or newer node in the focus history
-  "${modkey} + {o,i}" = ''
+  "${vars.mod} + {o,i}" = ''
     bspc wm -h off; \
     bspc node {older,newer} -f; \
     bspc wm -h on
   '';
 
   # Focus or send to the given desktop
-  # "${modkey} + {_,shift + }{1-9,0}" = '' bspc {desktop -f,node -d} '^{1-9,10}' '';
-  "${modkey} + {1-9,0} + {_,shift}" = ''num={1-9,10}; if [ $(bspc query -D -d focused --names | cut -c 2) != "$num" ]; then bspc {desktop -f,node -d} focused:^"$num"; fi'';
+  # "${vars.mod} + {_,shift + }{1-9,0}" = '' bspc {desktop -f,node -d} '^{1-9,10}' '';
+  "${vars.mod} + {1-9,0} + {_,shift}" = ''num={1-9,10}; if [ $(bspc query -D -d focused --names | cut -c 2) != "$num" ]; then bspc {desktop -f,node -d} focused:^"$num"; fi'';
 
   #################
   ### Preselect ###
   #################
 
   # preselect the direction
-  "${modkey} + alt + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+  "${vars.mod} + ${vars.modAlt} + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
 
   # preselect the ratio
-  "${modkey} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
+  "${vars.mod} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
 
   # Cancel the preselect
   # For context on syntax: https://github.com/baskerville/bspwm/issues/344
-  "${modkey} + alt + {_,shift + }Escape" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
+  "${vars.mod} + ${vars.modAlt} + {_,shift + }Escape" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
 
-  "${modkey} + shift + Escape" = "bspc node -p cancel"; # cancel the preselection for the focused node
+  "${vars.mod} + shift + Escape" = "bspc node -p cancel"; # cancel the preselection for the focused node
 
   # Set the node flags
-  "${modkey} + ctrl + {m,x,s,p}" = "bspc node -g {marked,locked,sticky,private}";
+  "${vars.mod} + ctrl + {m,x,s,p}" = "bspc node -g {marked,locked,sticky,private}";
 
   # Send the newest marked node to the newest preselected node
-  "${modkey} + y" = "bspc node newest.marked.local -n newest.!automatic.local";
+  "${vars.mod} + y" = "bspc node newest.marked.local -n newest.!automatic.local";
 
   ###################
   ### Move/Resize ###
   ###################
 
   # expand a window by moving one of its side outward
-  "ctrl + alt +  {Left,Down,Up,Right}" = ''
+  "ctrl + ${vars.modAlt} +  {Left,Down,Up,Right}" = ''
     bspc node -z {left -20 0 || bspc node -z right -20 0, \
       bottom 0 20 || bspc node -z top 0 20,\
       top 0 -20 || bspc node -z bottom 0 -20,\
@@ -171,19 +166,19 @@ in
   '';
 
   # move a floating window
-  "${modkey} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
+  "${vars.mod} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
 
-  "alt + o" = "polybar-msg cmd toggle";
-  "alt + shift +x" = "i3lock-fancy -p";
+  "${vars.modAlt} + o" = "polybar-msg cmd toggle";
+  "${vars.modAlt} + shift +x" = "i3lock-fancy -p";
 
   # contract a window by moving one of its side inward
-  "${modkey} + alt + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
+  "${vars.mod} + ${vars.modAlt} + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
 
   # move a floating window
-  #"${modkey} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}"
+  #"${vars.mod} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}"
 
   ## Move floating windows
-  "alt + shift + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
+  "${vars.modAlt} + shift + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
 
   ####################
   ### Control Keys ###
@@ -191,8 +186,8 @@ in
 
   # XF86AudioMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle%";
   XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
-  XF86AudioRaiseVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-  XF86AudioLowerVolume = "exec --no-startup-id ${_ pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+  XF86AudioRaiseVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+  XF86AudioLowerVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
   # "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
   XF86AudioMicMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
   # XF86AudioMicMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-source-mute 0 toggle%";
@@ -207,8 +202,8 @@ in
   XF86AudioPause = "${pkgs.playerctl}/bin/playerctl pause";
   XF86AudioNext = "${pkgs.playerctl}/bin/playerctl next";
   XF86AudioPrev = "${pkgs.playerctl}/bin/playerctl previous";
-  # "${modkey} + l" = "exec ${_ pkgs.systemd}/bin/loginctl lock-session";
-  "${modkey} + n" = "exec ${pkgs.xdg-utils}/bin/xdg-open http://";
+  # "${vars.mod} + l" = "exec ${_ pkgs.systemd}/bin/loginctl lock-session";
+  "${vars.mod} + n" = "exec ${pkgs.xdg-utils}/bin/xdg-open http://";
 
   ##################
   ### Screenshot ###
@@ -270,13 +265,13 @@ in
 #   # alacritty
 #   super + Return
 #   	${terminal}
-#   super + alt + m
+#   super + ${vars.modAlt} + m
 #   	${terminal} ${pkgs.cmus}/bin/cmus
 
 #   # file managment
 #   super + e
 #   	${filemanager}
-#   super + alt + e
+#   super + ${vars.modAlt} + e
 #   	${filemanager} smb://192.168.1.207/
 
 #   # file editor
@@ -298,15 +293,15 @@ in
 #   # browser
 #   super + b
 #   	microsoft-edge-dev
-#   super + alt + b
+#   super + ${vars.modAlt} + b
 #   	brave
 #   super + i
 #   	gtk-launch msedge-bdinhfjgphhmaolbmhcmidoadmkngbng-Default.desktop
-#   super + alt + g
+#   super + ${vars.modAlt} + g
 #   	microsoft-edge-dev github.com/druxorey
-#   super + alt + y
+#   super + ${vars.modAlt} + y
 #   	microsoft-edge-dev youtube.com
-#   super + alt + w
+#   super + ${vars.modAlt} + w
 #   	microsoft-edge-dev web.whatsapp.com
 
 #   #! =================================================================== !#
@@ -328,7 +323,7 @@ in
 #   #* =========================== states/flags ========================== *#
 
 #   # set the window state
-#   super + alt + {7,8,9,0}
+#   super + ${vars.modAlt} + {7,8,9,0}
 #   	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 #   # set the node flags
@@ -382,11 +377,11 @@ in
 #   #* =========================== move/resize =========================== *#
 
 #   # expand a window by moving one of its side outward
-#   super + alt + {h,j,k,l}
+#   super + ${vars.modAlt} + {h,j,k,l}
 #   	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
 #   # contract a window by moving one of its side inward
-#   super + alt + shift + {h,j,k,l}
+#   super + ${vars.modAlt} + shift + {h,j,k,l}
 #   	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
 
 #   # move a floating window

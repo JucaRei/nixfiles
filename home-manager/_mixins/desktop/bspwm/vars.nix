@@ -124,5 +124,7 @@ in
   };
 
   mod = "super"; # alt
+  modAlt = "alt"; # alt
   alacritty-custom = nixgl pkgs.alacritty;
+  filemanager = "thunar";
 }
