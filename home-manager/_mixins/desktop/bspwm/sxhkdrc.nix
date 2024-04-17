@@ -4,7 +4,7 @@ let
   terminal = "${_ vars.alacritty-custom}";
   # browser = "chromium-browser";
   browser = "${config.programs.chromium.package}/bin/chromium-browser";
-  vars = import ./vars.nix { inherit pkgs config lib; };
+  vars = import ./vars.nix { inherit pkgs config; };
   filemanager = vars.filemanager;
 
 
@@ -70,7 +70,7 @@ in
   # "${vars.mod} + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
   # "${vars.mod} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
 
-  "${vars.mod} + g" = "if [ \"$(bspc config window_gap)\" -eq 0 ]; then bspc config window_gap 12; bspc config border_width 2; else bspc config window_gap 0; bspc config border_width 0; fi";
+  "${vars.mod} + g" = ''if [ \"$(bspc config window_gap)\" -eq 0 ]; then bspc config window_gap 12; bspc config border_width 2; else bspc config window_gap 0; bspc config border_width 0; fi'';
 
   "${vars.mod} + {_,shift} + {u,i}" = "bspc {monitor -f,node -m} {prev,next}"; # focus or send to the next monitor
 
@@ -129,7 +129,7 @@ in
 
   # Focus or send to the given desktop
   # "${vars.mod} + {_,shift + }{1-9,0}" = '' bspc {desktop -f,node -d} '^{1-9,10}' '';
-  "${vars.mod} + {1-9,0} + {_,shift}" = ''num={1-9,10}; if [ $(bspc query -D -d focused --names | cut -c 2) != "$num" ]; then bspc {desktop -f,node -d} focused:^"$num"; fi'';
+  "${vars.mod} + {_,shift} + {1-9,0}" = ''num={1-9,10}; if [ $(bspc query -D -d focused --names | cut -c 2) != "$num" ]; then bspc {desktop -f,node -d} focused:^"$num"; fi'';
 
   #################
   ### Preselect ###
