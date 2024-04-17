@@ -12,7 +12,7 @@ _: {
       inactiveOpacity = 0.75;
       settings = {
         blur = {
-          # method = "dual_kawase";
+          method = "dual_kawase";
           size = 24;
           strenght = 12;
           deviation = 5.0;

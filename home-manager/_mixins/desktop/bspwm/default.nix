@@ -144,8 +144,8 @@ in
           extraConfigEarly = ''
             wmname LG3D
             # picom
-            pkill picom
-            picom -b &
+            # pkill picom
+            picom -b --legacy-backends --no-use-damage &
             #picom --expiremental-backends --no-use-damage &
 
             ### Only have workspaces for primary monitor
