@@ -5,6 +5,7 @@ let
   windowMan = "${_ config.xsession.windowManager.bspwm.package}/bin/bspwm";
 in
 {
+  # config.lib.file.mkOutOfStoreSymlink
   config = {
     home = {
       packages = with pkgs; [
@@ -19,7 +20,7 @@ in
         xorg.xrandr
         xfce.xfce4-terminal
       ];
-      file = config.lib.file.mkOutOfStoreSymlink {
+      file = lib.file.mkOutOfStoreSymlink {
         ".xinitrc" = {
           executable = true;
           text = ''
