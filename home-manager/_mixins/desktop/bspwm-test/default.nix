@@ -19,8 +19,8 @@ in
         xorg.xrandr
         xfce.xfce4-terminal
       ];
-      file = {
-        ".xinitrc" = config.lib.file.mkOutOfStoreSymlink {
+      file = config.lib.file.mkOutOfStoreSymlink {
+        ".xinitrc" = {
           executable = true;
           text = ''
             #!/bin/sh
