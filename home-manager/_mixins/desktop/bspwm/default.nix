@@ -1,4 +1,5 @@
 { pkgs, config, lib, ... }@args:
+with lib;
 let
   _ = lib.getExe;
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
@@ -7,7 +8,8 @@ let
   #   thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
   # });
   windowMan = "${_ config.xsession.windowManager.bspwm.package}";
-
+  isSystemd = if ("${pkgs.toybox}/bin/ps -p 1 -o comm=" == "systemd") then true else false;
+  notSystemd = if ("${pkgs.toybox}/bin/ps -p 1 -o comm=" == "systemd") then false else true;
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
@@ -31,8 +33,8 @@ in
           xorg.xrandr
           xorg.xsetroot
           xorg.xwininfo
-          xorg.xprop
           xorg.xrandr
+          (nixgl alacritty) # terminal, #show on rofi applications
           mpc-cli
           brightnessctl
           dunst
@@ -87,14 +89,6 @@ in
           xclip
           dialog
 
-          ### Theme
-          papirus-icon-theme
-          papirus-folders
-          materia-theme
-          gnome3.adwaita-icon-theme
-
-          # Utils
-
           # fonts
           maple-mono
           font-awesome
@@ -114,7 +108,7 @@ in
           "$HOME/.local/share/applications"
         ];
 
-        file = {
+        file = mkIf (notSystemd) {
           ".local/share/applications/bspwm.desktop" = {
             text = ''
               [Desktop Entry]
@@ -129,7 +123,7 @@ in
           #   gesture swipe left 3 bspc desktop -f prev.local
           # '';
 
-          ".xinitrc" = {
+          ".xinitrc" = mkIf (notSystemd) {
             executable = true;
             text = ''
               #!${pkgs.stdenv.shell}
@@ -187,7 +181,7 @@ in
 
     dconf.settings = { };
     xsession = {
-      enable = true;
+      enable = isSystemd;
       # initExtra = "exec ${windowMan} &";
       windowManager = {
         # command = "exec ${windowMan} &";
@@ -318,21 +312,21 @@ in
         package = pkgs.papirus-icon-theme;
       };
       theme = {
-        package = pkgs.solarc-gtk-theme;
-        name = "SolArc";
-        # name = "zukitre-dark";
-        # package = pkgs.zuki-themes;
+        # package = pkgs.solarc-gtk-theme;
+        # name = "SolArc";
+        name = "zukitre-dark";
+        package = pkgs.zuki-themes;
       };
-      # gtk3.extraConfig = {
-      #   Settings = ''
-      #     gtk-application-prefer-dark-theme=1
-      #   '';
-      # };
-      # gtk4.extraConfig = {
-      #   Settings = ''
-      #     gtk-application-prefer-dark-theme=1
-      #   '';
-      # };
+      gtk3.extraConfig = {
+        Settings = ''
+          gtk-application-prefer-dark-theme=1
+        '';
+      };
+      gtk4.extraConfig = {
+        Settings = ''
+          gtk-application-prefer-dark-theme=1
+        '';
+      };
     };
 
     services = {
@@ -376,11 +370,11 @@ in
     };
 
     programs = {
-      alacritty = {
-        enable = true;
-        package = nixgl pkgs.alacritty;
-        settings = import ../../apps/terminal/alacritty.nix args;
-      };
+      # alacritty = {
+      #   enable = true;
+      #   package = nixgl pkgs.alacritty;
+      #   settings = import ../../apps/terminal/alacritty.nix args;
+      # };
       rofi = import ./rofi.nix args;
       feh = {
         enable = true;
