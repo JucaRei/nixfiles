@@ -20,7 +20,7 @@ in
         xorg.xrandr
         xfce.xfce4-terminal
       ];
-      file = lib.file.mkOutOfStoreSymlink {
+      file = lib.mkOutOfStoreSymlink {
         ".xinitrc" = {
           executable = true;
           text = ''
