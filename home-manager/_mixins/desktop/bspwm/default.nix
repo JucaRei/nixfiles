@@ -109,9 +109,21 @@ in
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
         };
 
-        sessionPath = [ "$HOME/.local/bin" ];
+        sessionPath = [
+          "$HOME/.local/bin"
+          "$HOME/.local/share/applications"
+        ];
 
         file = {
+          ".local/share/applications/bspwm.desktop" = {
+            text = ''
+              [Desktop Entry]
+              Name=bspwm
+              Comment=Binary space partitioning window manager
+              Exec=${windowMan}
+              Type=Application
+            '';
+          };
           # "${config.xdg.configHome}/libinput-gestures.conf".text = ''
           #   gesture swipe right 3 bspc desktop -f next.local
           #   gesture swipe left 3 bspc desktop -f prev.local
@@ -149,7 +161,7 @@ in
       enable = true;
       # initExtra = "exec ${windowMan} &";
       windowManager = {
-        command = "exec ${windowMan} &";
+        # command = "exec ${windowMan} &";
         bspwm = {
           enable = true;
           # package = (nixgl pkgs.unstable.bspwm);
