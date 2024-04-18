@@ -2,7 +2,7 @@
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   _ = lib.getExe;
-  windowMan = "${_ config.xsession.windowManager.bspwm.package}/bin/bspwm";
+  windowMan = "${_ config.xsession.windowManager.bspwm.package}";
 in
 {
   # config.lib.file.mkOutOfStoreSymlink

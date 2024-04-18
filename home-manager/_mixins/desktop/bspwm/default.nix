@@ -6,6 +6,7 @@ let
   # thunar-with-plugins = with pkgs.xfce; (thunar.override {
   #   thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
   # });
+  windowMan = "${_ config.xsession.windowManager.bspwm.package}";
 
 in
 {
@@ -147,6 +148,7 @@ in
     dconf.settings = { };
     xsession = {
       enable = true;
+      initExtra = "exec ${windowMan} &";
       windowManager = {
         bspwm = {
           enable = true;
