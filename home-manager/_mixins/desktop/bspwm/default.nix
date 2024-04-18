@@ -10,7 +10,7 @@ let
 
 in
 {
-
+  #config.lib.file.mkOutOfStoreSymlink
   imports = [
     ./polybar-everforest.nix
     ../../apps/file-managers/thunar.nix
@@ -114,7 +114,7 @@ in
           "$HOME/.local/share/applications"
         ];
 
-        file = config.lib.file.mkOutOfStoreSymlink {
+        file = {
           ".local/share/applications/bspwm.desktop" = {
             text = ''
               [Desktop Entry]
