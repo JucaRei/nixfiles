@@ -20,7 +20,7 @@ in
         xorg.xrandr
         xfce.xfce4-terminal
       ];
-      file = lib.mkOutOfStoreSymlink {
+      file = {
         ".xinitrc" = {
           executable = true;
           text = ''
@@ -49,6 +49,15 @@ in
                 ${pkgs.xorg.xmodmap}/bin/xmodmap "$usermodmap"
             fi
 
+            if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+              eval $(dbus-launch --exit-with-session --sh-syntax)
+            fi
+            systemctl --user import-environment DISPLAY XAUTHORITY
+
+            if command -v dbus-update-activation-environment > /dev/null 2>&1; then
+              dbus-update-activation-environment DISPLAY XAUTHORITY
+            fi
+
             # start some nice programs
 
             if [ -d /etc/X11/xinit/xinitrc.d ] ; then
@@ -58,7 +67,7 @@ in
              unset f
             fi
 
-            exec ${windowMan}
+            exec ${windowMan} &
           '';
         };
       };
