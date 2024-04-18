@@ -148,8 +148,8 @@ in
     xsession = {
       enable = true;
       # initExtra = "exec ${windowMan} &";
-      command = "exec ${windowMan} &";
       windowManager = {
+        command = "exec ${windowMan} &";
         bspwm = {
           enable = true;
           # package = (nixgl pkgs.unstable.bspwm);
