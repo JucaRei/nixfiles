@@ -20,7 +20,7 @@ in
         xfce.xfce4-terminal
       ];
       file = {
-        ".xinitrc" = {
+        ".xinitrc" = config.lib.file.mkOutOfStoreSymlink {
           executable = true;
           text = ''
             #!/bin/sh

@@ -29,6 +29,7 @@
               nvidia-vaapi-driver
               libvdpau
               libvdpau-va-gl
+              intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
             ]);
         extraPackages32 = with pkgs.pkgsi686Linux; [
           # intel-media-driver
