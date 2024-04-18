@@ -131,7 +131,7 @@ in
 
           ".xinitrc" = {
             executable = true;
-            text = ''
+            text = config.lib.file.mkOutOfStoreSymlink ''
               #!${pkgs.stdenv.shell}
 
               userresources=$HOME/.Xresources
