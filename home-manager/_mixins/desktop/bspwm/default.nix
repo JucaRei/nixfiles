@@ -114,7 +114,7 @@ in
           "$HOME/.local/share/applications"
         ];
 
-        file = {
+        file = config.lib.file.mkOutOfStoreSymlink {
           ".local/share/applications/bspwm.desktop" = {
             text = ''
               [Desktop Entry]
@@ -131,7 +131,7 @@ in
 
           ".xinitrc" = {
             executable = true;
-            text = config.lib.file.mkOutOfStoreSymlink ''
+            text = ''
               #!${pkgs.stdenv.shell}
 
               userresources=$HOME/.Xresources
