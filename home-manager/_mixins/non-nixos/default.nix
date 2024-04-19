@@ -25,7 +25,7 @@ in
       packages = with pkgs; [
         # niv
         # nix
-        nixgl.auto.nixGLDefault
+        # nixgl.auto.nixGLDefault
         nix-output-monitor
         nixpkgs-fmt
         nil

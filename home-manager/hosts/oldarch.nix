@@ -1,15 +1,15 @@
 { pkgs, config, lib, ... }:
-let
-  # nixGL = (import
-  #   (builtins.fetchGit {
-  #     url = "http://github.com/guibou/nixGL";
-  #     ref = "refs/heads/backport/noGLVND";
-  #   })
-  #   { enable32bits = true; }).auto;
-  nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
-  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
-  non-nixos = config.services.nonNixOs;
-in
+# let
+# nixGL = (import
+#   (builtins.fetchGit {
+#     url = "http://github.com/guibou/nixGL";
+#     ref = "refs/heads/backport/noGLVND";
+#   })
+#   { enable32bits = true; }).auto;
+# nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
+# nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+# non-nixos = config.services.nonNixOs;
+# in
 {
   imports = [
     ../_mixins/non-nixos

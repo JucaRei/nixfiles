@@ -255,6 +255,7 @@
           # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
+          # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
           "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
           "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
           "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
