@@ -38,24 +38,24 @@
       font = {
         normal = {
           family = "JetbrainsMono Nerd Font";
-          # style = "Regular";
+          style = "Regular";
           # family = "FiraCode Nerd Font Mono";
           # style = "Retina";
         };
         italic = {
           family = "JetbrainsMono Nerd Font";
           #   family = "FiraCode Nerd Font Mono";
-          #   style = "MediumItalic";
+          style = "Medium Italic";
         };
         bold = {
           family = "JetbrainsMono Nerd Font";
           #   family = "FiraCode Nerd Font Mono";
-          #   style = "Bold";
+          style = "Bold";
         };
         bold_italic = {
           family = "JetbrainsMono Nerd Font";
           #   family = "FiraCode Nerd Font Mono";
-          #   style = "BoldItalic";
+          style = "Bold Italic";
         };
         size = 12.0;
       };
@@ -167,6 +167,7 @@
           shape = "Block";
           blinking = "On";
         };
+        blink_interval = 500;
         unfocused_hollow = false;
       };
     };

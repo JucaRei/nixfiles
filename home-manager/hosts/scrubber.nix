@@ -38,6 +38,7 @@ in
         variant = "abnt2,intl";
       };
       packages = with pkgs;[
+        cloneit
         nix-whereis
         font-search
         stacer

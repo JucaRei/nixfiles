@@ -4,12 +4,9 @@ let
   _ = lib.getExe;
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   vars = import ./vars.nix { inherit pkgs config; };
-  # thunar-with-plugins = with pkgs.xfce; (thunar.override {
-  #   thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
-  # });
   windowMan = "${_ config.xsession.windowManager.bspwm.package}";
-  isSystemd = if ("${pkgs.toybox}/bin/ps -p 1 -o comm=" == "systemd") then true else false;
-  notSystemd = if ("${pkgs.toybox}/bin/ps -p 1 -o comm=" == "systemd") then false else true;
+  isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true;
+  isGeneric = if (config.targets.genericLinux.enable) then true else false;
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
@@ -18,6 +15,7 @@ in
     ../../apps/file-managers/thunar.nix
     # ./polybar-batman.nix
     ./picom.nix
+    ./dunst.nix
   ];
   config = {
     home =
@@ -27,14 +25,15 @@ in
           wmname
           sxhkd
           gnome.file-roller
-          xfce.xfce4-power-manager
+          # xfce.xfce4-power-manager
           xorg.xdpyinfo
           xorg.xkill
-          xorg.xrandr
           xorg.xsetroot
           xorg.xwininfo
+          xorg.arandr
           xorg.xrandr
           (nixgl alacritty) # terminal, #show on rofi applications
+          (nixgl i3lock-color)
           mpc-cli
           brightnessctl
           dunst
@@ -51,7 +50,6 @@ in
           gparted
           ntfsprogs
           pavucontrol
-          udiskie
           # udisks
           blueberry
           # (geany-with-vte.override {
@@ -75,19 +73,27 @@ in
           playerctl
           imagemagick
           parcellite
+
+          # utils
           jq
           jgmenu
           maim
           gpick
           physlock
+          killall
           xclip
-          xdg-user-dirs
-          xdg-desktop-portal-gtk
-          polkit_gnome
           picom
-          playerctl
           xclip
           dialog
+
+          # system
+          xdg-utils
+          gtk-layer-shell
+          gtk3
+          xdg-user-dirs
+          xdg-desktop-portal-gtk
+          udiskie
+
 
           # fonts
           maple-mono
@@ -108,8 +114,8 @@ in
           "$HOME/.local/share/applications"
         ];
 
-        file = mkIf (notSystemd) {
-          ".local/share/applications/bspwm.desktop" = {
+        file = {
+          ".local/share/applications/bspwm.desktop" = mkIf (!isSystemd) {
             text = ''
               [Desktop Entry]
               Name=bspwm
@@ -123,7 +129,7 @@ in
           #   gesture swipe left 3 bspc desktop -f prev.local
           # '';
 
-          ".xinitrc" = mkIf (notSystemd) {
+          ".xinitrc" = mkIf (!isSystemd) {
             executable = true;
             text = ''
               #!${pkgs.stdenv.shell}
@@ -181,14 +187,14 @@ in
 
     dconf.settings = { };
     xsession = {
-      enable = isSystemd;
+      enable = true;
       # initExtra = "exec ${windowMan} &";
       windowManager = {
         # command = "exec ${windowMan} &";
         bspwm = {
-          enable = true;
+          enable = isSystemd;
           # package = (nixgl pkgs.unstable.bspwm);
-          package = nixgl pkgs.bspwm;
+          package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
           startupPrograms = [
             "pgrep -x sxhkd > /dev/null || sxhkd"
             # "nitrogen --restore"
