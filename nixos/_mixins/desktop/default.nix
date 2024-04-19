@@ -75,7 +75,7 @@ in
     # - Inpired by: https://github.com/musnix/musnix/blob/master/modules/base.nix#L56
     kernelParams = lib.mkDefault [ "quiet" "vt.global_cursor_default=0" "mitigations=off" "threadirqs" ];
     plymouth.enable =
-      if hostname != "rasp3"
+      if (hostname != "rasp3")
       then lib.mkDefault true
       else false;
   };
@@ -171,11 +171,11 @@ in
 
     systemPackages = with pkgs; (lib.optionals (isInstall) [
       # appimage-run
-      pavucontrol
-      pulseaudio
-      wmctrl
-      xdotool
-      ydotool
+      # pavucontrol
+      # pulseaudio
+      # wmctrl
+      # xdotool
+      # ydotool
       # ] ++ lib.optionals (isGamestation) [
       #   mangohud
       # ] ++ lib.optionals (isInstall && hasRazerPeripherals) [

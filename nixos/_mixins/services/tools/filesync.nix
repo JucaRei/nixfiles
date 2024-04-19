@@ -1,18 +1,21 @@
+{ desktop, lib, pkgs, ... }:
+let
+  isWorkstation = if (desktop != null) then true else false;
+in
 {
-  desktop,
-  lib,
-  pkgs,
-  ...
-}: {
-  environment.systemPackages = with pkgs;
-    [maestral] ++ lib.optionals (desktop != null) [celeste maestral-gui];
+  environment.systemPackages = with pkgs; [
+    maestral
+  ] ++ lib.optionals (isWorkstation) [
+    celeste
+    maestral-gui
+  ];
 
   systemd.user.services.maestral = {
     description = "Maestral";
-    wantedBy = ["default.target"];
+    wantedBy = [ "default.target" ];
     serviceConfig = {
       ExecStart = "${pkgs.maestral}/bin/maestral start";
-      ExecReload = "/run/current-system/sw/bin/kill $MAINPID";
+      ExecReload = "${pkgs.util-linux}/bin/kill $MAINPID";
       KillMode = "process";
       Restart = "on-failure";
     };

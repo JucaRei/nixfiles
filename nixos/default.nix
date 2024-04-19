@@ -5,7 +5,6 @@ let
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
   isWorkstation = if (desktop != null) then true else false;
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
-  isVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then true else false;
   syncthing = {
     hosts = [
       "nitro"
@@ -19,6 +18,7 @@ in
   imports =
     [
       inputs.disko.nixosModules.disko
+      inputs.nh.nixosModules.default
       inputs.nix-index-database.nixosModules.nix-index
       # inputs.nix-snapd.nixosModules.default
       # inputs.sops-nix.nixosModules.sops
@@ -369,11 +369,20 @@ in
       # inputs.fh.packages.${platform}.default
       inputs.nixos-needtoreboot.packages.${platform}.default
       clinfo
-      unstable.distrobox
+      distrobox
       flyctl
+      fuse-overlayfs
       libva-utils
-      sops
-      ssh-to-age
+      nix-output-monitor
+      nvd
+      nvme-cli
+      #https://nixos.wiki/wiki/Podman
+      podman-compose
+      podman-tui
+      podman
+      smartmontools
+      # sops
+      # ssh-to-age
     ] ++ lib.optionals (isInstall && isWorkstation) [
       pods
     ] ++ lib.optionals (isInstall && isWorkstation && notVM) [
@@ -544,43 +553,40 @@ in
     };
   };
 
-  system = {
-    activationScripts = {
-      diff = lib.mkIf (isInstall) {
-        supportsDryActivation = true;
-        text = ''
-            if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
-              ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
-            fi
-          /run/current-system/sw/bin/nixos-needsreboot
-        '';
-
-        # text = ''
-        #     if [[ -e /run/current-system ]]; then
-        #       echo -e "\n***            ***          ***           ***           ***\n"
-        #       ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
-        #       echo -e "\n***            ***          ***           ***           ***\n"
-        #     fi
-        #   /run/current-system/sw/bin/nixos-needsreboot
-        # '';
-      };
+  nh = {
+    clean = {
+      enable = true;
+      extraArgs = "--keep-since 10d --keep 5";
     };
+    enable = true;
+    flake = "/home/${username}/.dotfiles/nixfiles";
+  };
+
+
+  system = {
+    # activationScripts = {
+    #   diff = lib.mkIf (isInstall) {
+    #     supportsDryActivation = true;
+    #     text = ''
+    #         if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
+    #           ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
+    #         fi
+    #       /run/current-system/sw/bin/nixos-needsreboot
+    #     '';
+
+    # text = ''
+    #     if [[ -e /run/current-system ]]; then
+    #       echo -e "\n***            ***          ***           ***           ***\n"
+    #       ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
+    #       echo -e "\n***            ***          ***           ***           ***\n"
+    #     fi
+    #   /run/current-system/sw/bin/nixos-needsreboot
+    # '';
+    #   };
+    # };
 
     nixos.label = lib.mkIf (isInstall) "-";
     stateVersion = stateVersion;
-
-    autoUpgrade = {
-      enable = false;
-      allowReboot = false;
-      channel = "https://nixos.org/channels/nixos-unstable";
-      flags = [
-        "--update-input"
-        "nixpkgs"
-        "-L" # print build logs
-      ];
-      dates = "monthly";
-      randomizedDelaySec = "45min";
-    };
   };
 
   # systemd = lib.mkOverride 20 {

@@ -21,6 +21,7 @@ in
         #   "NerdFontsSymbolsOnly" ]; })
         # ubuntu_font_family
         work-sans
+        nix-whereis
         # asciicam # Terminal webcam
         # asciinema-agg # Convert asciinema to .gif
         # asciinema # Terminal recorder

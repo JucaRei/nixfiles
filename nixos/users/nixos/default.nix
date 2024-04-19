@@ -51,7 +51,7 @@ let
     fi
 
     if [ ! -d "$HOME/.dotfiles/nixfiles/.git" ]; then
-      ${pkgs.git}/bin/git clone https://github.com/wimpysworld/nix-config.git "$HOME/.dotfiles/nixfiles"
+      ${pkgs.git}/bin/git clone https://github.com/JucaRei/nixfiles.git "$HOME/.dotfiles/nixfiles"
     fi
 
     pushd "$HOME/.dotfiles/nixfiles"
@@ -155,7 +155,7 @@ let
       sudo nixos-install --no-root-password --flake ".#$TARGET_HOST"
 
       # Rsync nix-config to the target install and set the remote origin to SSH.
-      ${pkgs.rsync}/bin/rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
+      ${pkgs.rsync}/bin/rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/.dotfiles/"
       if [ "$TARGET_HOST" != "minimech" ] && [ "$TARGET_HOST" != "scrubber" ]; then
         pushd "/mnt/home/$TARGET_USER/.dotfiles/nixfiles"
         ${pkgs.git}/bin/git remote set-url origin git@github.com:JucaRei/nixfiles.git
@@ -171,7 +171,7 @@ let
 
       # Enter to the new install and apply the home-manager configuration.
       sudo nixos-enter --root /mnt --command "${pkgs.coreutils-full}/bin/chown -R $TARGET_USER:users /home/$TARGET_USER"
-      sudo nixos-enter --root /mnt --command "cd /home/$TARGET_USER/.dotfiles/nixfiles; env USER=$TARGET_USER HOME=/home/$TARGET_USER ${pkgs.home-manager}/bin/home-manager switch --flake \".#$TARGET_USER@$TARGET_HOST\""
+      sudo nixos-enter --root /mnt --command "cd /home/$TARGET_USER/.dotfiles/nixfiles; env USER=$TARGET_USER HOME=/home/$TARGET_USER ${pkgs.home-manager}/bin/home-manager switch --impure --flake \".#$TARGET_USER@$TARGET_HOST\""
       sudo nixos-enter --root /mnt --command "${pkgs.coreutils-full}/bin/chown -R $TARGET_USER:users /home/$TARGET_USER"
 
       # If there is a keyfile for a data disk, put copy it to the root partition and
@@ -193,11 +193,11 @@ in
 
   config.environment = {
     etc = lib.mkIf (isWorkstationISO) {
-      "firefox.dockitem".source = pkgs.writeText "librewolf.dockitem" ''
+      "firefox.dockitem".source = pkgs.writeText "firefox.dockitem" ''
         [PlankDockItemPreferences]
-        Launcher=file:///run/current-system/sw/share/applications/librewolf.desktop
+        Launcher=file:///run/current-system/sw/share/applications/firefox.desktop
       '';
-      "librewolf.dockitem".target = "/plank/librewolf.dockitem";
+      "firefox.dockitem".target = "/plank/firefox.dockitem";
 
       "io.elementary.files.dockitem".source = pkgs.writeText "io.elementary.files.dockitem" ''
         [PlankDockItemPreferences]
@@ -222,7 +222,6 @@ in
       inputs.disko.packages.${platform}.default
     ] ++ lib.optionals (isWorkstationISO) [
       pkgs.gparted
-      pkgs.librewolf
     ];
   };
 
@@ -235,11 +234,11 @@ in
     dconf.profiles.user.databases = [{
       settings = with lib.gvariant; lib.mkIf (isWorkstationISO) {
         "net/launchpad/plank/docks/dock1" = {
-          dock-items = [ "librewolf.dockitem" "io.elementary.files.dockitem" "io.elementary.terminal.dockitem" "gparted.dockitem" ];
+          dock-items = [ "firefox.dockitem" "io.elementary.files.dockitem" "io.elementary.terminal.dockitem" "gparted.dockitem" ];
         };
         "org/gnome/shell" = {
           disabled-extensions = mkEmptyArray type.string;
-          favorite-apps = [ "librewolf.desktop" "org.gnome.Nautilus.desktop" "org.gnome.Console.desktop" "io.calamares.calamares.desktop" "gparted.desktop" ];
+          favorite-apps = [ "firefox.desktop" "org.gnome.Nautilus.desktop" "org.gnome.Console.desktop" "io.calamares.calamares.desktop" "gparted.desktop" ];
           welcome-dialog-last-shown-version = "9999999999";
         };
         "org/gnome/desktop/background" = {
@@ -268,11 +267,11 @@ in
       "d /home/${username}/.config/plank 0755 ${username} users"
       "d /home/${username}/.config/plank/dock1 0755 ${username} users"
       "d /home/${username}/.config/plank/dock1/launchers 0755 ${username} users"
-      "L+ /home/${username}/.config/plank/dock1/launchers/firefox.dockitem - - - - /etc/plank/librewolf.dockitem"
+      "L+ /home/${username}/.config/plank/dock1/launchers/firefox.dockitem - - - - /etc/plank/firefox.dockitem"
       "L+ /home/${username}/.config/plank/dock1/launchers/io.elementary.files.dockitem - - - - /etc/plank/io.elementary.files.dockitem"
       "L+ /home/${username}/.config/plank/dock1/launchers/io.elementary.terminal.dockitem - - - - /etc/plank/io.elementary.terminal.dockitem"
       "L+ /home/${username}/.config/plank/dock1/launchers/gparted.dockitem - - - - /etc/plank/gparted.dockitem"
-      "L+ /home/${username}/Desktop/librewolf.desktop - - - - ${pkgs.librewolf}/share/applications/librewolf.desktop"
+      "L+ /home/${username}/Desktop/firefox.desktop - - - - ${pkgs.firefox}/share/applications/firefox.desktop"
       "L+ /home/${username}/Desktop/io.calamares.calamares.desktop - - - - ${pkgs.calamares-nixos}/share/applications/io.calamares.calamares.desktop"
       "L+ /home/${username}/Desktop/gparted.desktop - - - - ${pkgs.gparted}/share/applications/gparted.desktop"
     ] ++ lib.optionals (isWorkstationISO && desktop == "mate") [

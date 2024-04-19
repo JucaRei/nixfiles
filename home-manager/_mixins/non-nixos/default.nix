@@ -13,14 +13,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    xdg = lib.mkForce {
-      enable = true;
-      mime = { enable = true; };
-      systemDirs.data =
-        if isDarwin
-        then [ "/Users/${username}/.nix-profile/share/applications" ]
-        else [ "/home/${username}/.nix-profile/share/applications" ];
-    };
     home = {
       packages = with pkgs; [
         # niv
@@ -45,7 +37,6 @@ in
       #   fi
       # '';
     };
-    # systemd.user.tmpfiles.rules = [ "L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}" ];
     targets.genericLinux.enable = true;
   };
 }

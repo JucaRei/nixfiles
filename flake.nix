@@ -135,6 +135,9 @@
     wrapper-manager.url = "github:viperML/wrapper-manager";
     wrapper-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    nh.url = "github:viperML/nh/v3.5.10";
+    nh.inputs.nixpkgs.follows = "nixpkgs";
+
     # More up to date auto-cpufreq
     # auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
     # auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs";
@@ -149,7 +152,7 @@
     #  inputs.emacs-overlay.follows = "emacs-overlay";
     #};
 
-    nixos-needtoreboot.url = "github:thefossguy/nixos-needsreboot";
+    nixos-needtoreboot.url = github:thefossguy/nixos-needsreboot;
     nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
 
     # Hyprland

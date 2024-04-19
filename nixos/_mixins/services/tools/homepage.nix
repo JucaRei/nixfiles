@@ -1,8 +1,5 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: let
+{ pkgs, ... }:
+let
   homepage-bookmarks = pkgs.writeTextFile {
     name = "bookmarks.yaml";
     executable = false;
@@ -28,16 +25,13 @@
                 href: https://youtube.com/
     '';
   };
-in {
-  imports = [
-    "${inputs.nixpkgs-unstable}/nixos/modules/services/misc/homepage-dashboard.nix"
-  ];
-
+in
+{
   services.homepage-dashboard = {
     enable = true;
-    package = pkgs.unstable.homepage-dashboard;
+    package = pkgs.homepage-dashboard;
     openFirewall = true;
   };
 
-  environment.systemPackages = [homepage-bookmarks];
+  environment.systemPackages = [ homepage-bookmarks ];
 }

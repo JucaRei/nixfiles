@@ -5,11 +5,9 @@ pkgs.writeScriptBin "build-host" ''
 
   if [ -e $HOME/.dotfiles/nixfiles ]; then
     all_cores=$(nproc)
-    build_cores=$(${pkgs.uutils-coreutils-noprefix}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
-    pushd $HOME/.dotfiles/nixfiles 2>&1 > /dev/null
+    build_cores=$(printf "%.0f" $(echo "$all_cores * 0.75" | bc))
     echo "Building NixOS with $build_cores cores"
-    nixos-rebuild build --flake .# -L --impure --cores $build_cores
-    popd 2>&1 > /dev/null
+    nh os switch --ask ~/.dotfiles/nixfiles/ -- --cores $build_cores
   else
     ${pkgs.coreutils-full}/bin/echo "ERROR! No nix-config found in $HOME/.dotfiles/nixfiles"
   fi

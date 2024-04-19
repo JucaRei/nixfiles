@@ -1,15 +1,25 @@
 { pkgs, config, lib, ... }:
-# let
-# nixGL = (import
-#   (builtins.fetchGit {
-#     url = "http://github.com/guibou/nixGL";
-#     ref = "refs/heads/backport/noGLVND";
-#   })
-#   { enable32bits = true; }).auto;
-# nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
-# nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
-# non-nixos = config.services.nonNixOs;
-# in
+let
+  # nixGL = (import
+  #   (builtins.fetchGit {
+  #     url = "http://github.com/guibou/nixGL";
+  #     ref = "refs/heads/backport/noGLVND";
+  #   })
+  #   { enable32bits = true; }).auto;
+  # nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
+  # nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+  # non-nixos = config.services.nonNixOs;
+
+  font-search = pkgs.writeShellScriptBin "font-search" ''
+    fc-list \
+        | grep -ioE ": [^:]*$1[^:]+:" \
+        | sed -E 's/(^: |:)//g' \
+        | tr , \\n \
+        | sort \
+        | uniq
+  '';
+
+in
 {
   imports = [
     ../_mixins/non-nixos
@@ -20,6 +30,7 @@
     home.packages = with pkgs; [
       # (nixGL.override { useGLVND = false; } vlc)
       cloneit
+      font-search
     ];
     services = {
       nonNixOs.enable = true;

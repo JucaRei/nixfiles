@@ -1,11 +1,7 @@
 # Shell for bootstrapping flake-enabled nix and home-manager
 # Enter it through 'nix develop' or (legacy) 'nix-shell'
 
-{
-  pkgs ? (import ./nixpkgs.nix) { },
-  ...
-}:
-
+{ pkgs ? (import ./nixpkgs.nix) { }, ... }:
 {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
@@ -13,20 +9,20 @@
     packages = with pkgs; [
       bash-completion # completion for bash
       nix-direnv # A shell extension that manages your environment for nix
-      direnv
+      # direnv
       neofetch # check system
       duf # check space
       nix-bash-completions # complitions for nix
       speedtest-cli # test connection speed
+      home-manager # manage dots
+      cachix # build and share cache
     ];
     nativeBuildInputs = with pkgs; [
       nix # nix
       nil # lsp server
       nixpkgs-fmt # formatter
-      home-manager # manage dots
       git # versioning
       nix-output-monitor # better output from builds
-      cachix # build and share cache
       dropbear # ssh
     ];
     # ++ inputs.pkgs.legacyPackages.${system}.pinix

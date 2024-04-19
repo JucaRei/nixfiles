@@ -66,7 +66,6 @@ in
       ] ++ lib.optionals (isWorkstation) [
         _1password-gui
         gnome.dconf-editor
-        libreoffice
         usbimager
         yaru-theme
       ] ++ lib.optionals (isWorkstation && (desktop == "gnome" || desktop == "pantheon")) [
