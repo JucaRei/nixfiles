@@ -14,12 +14,17 @@ in
   imports = [
     ../_mixins/non-nixos
     # ../_mixins/apps/browser/firefox/firefox.nix
+    ../_mixins/console/bash.nix
   ];
   config = {
     home.packages = with pkgs; [
-      (nixGL.override { useGLVND = false; } vlc)
+      # (nixGL.override { useGLVND = false; } vlc)
+      cloneit
     ];
-    services.nonNixOs.enable = true;
+    services = {
+      nonNixOs.enable = true;
+      bash.enable = true;
+    };
     nix.settings = {
       extra-substituters = [ "https://juca-nixfiles.cachix.org" ];
       extra-trusted-public-keys = [
