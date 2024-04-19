@@ -30,8 +30,8 @@ in
           xorg.xkill
           xorg.xsetroot
           xorg.xwininfo
-          xorg.arandr
           xorg.xrandr
+          arandr
           (nixgl alacritty) # terminal, #show on rofi applications
           (nixgl i3lock-color)
           mpc-cli

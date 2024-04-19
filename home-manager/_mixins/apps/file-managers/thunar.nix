@@ -17,7 +17,7 @@ in
           finalThunar
           tumbler # file thumbnails
           catfish # search tool
-          xfconf
+          # xfconf
         ]
         ++ (with pkgs; [
           mate.engrampa # archiver
