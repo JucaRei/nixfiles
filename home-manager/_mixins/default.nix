@@ -4,6 +4,8 @@ let
   isLima = builtins.substring 0 5 hostname == "lima-";
   isWorkstation = if (desktop != null) then true else false;
   isStreamstation = if (hostname == "phasma" || hostname == "vader") then true else false;
+  home-man-build = import ./config/scripts/home-man-build.nix { inherit pkgs; };
+
 in
 {
   imports = [
@@ -16,6 +18,7 @@ in
       # A Modern Unix experience
       # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
       packages = with pkgs; [
+        home-man-build
         # (nerdfonts.override { fonts = [
         #   # "FiraCode"
         #   "NerdFontsSymbolsOnly" ]; })

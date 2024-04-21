@@ -38,6 +38,7 @@ in
     sessionVariables = {
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
+      FLAKE = "/home/${username}/.dotfiles/nixfiles";
     };
 
     file = {
