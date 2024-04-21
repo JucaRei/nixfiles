@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  build-home = import ../config/scripts/build-home.nix { inherit pkgs; };
+  # build-home = import ../config/scripts/build-home.nix { inherit pkgs; };
 in
 {
   imports = [
@@ -38,6 +38,6 @@ in
   ];
 
   home.packages = with pkgs; [
-    build-home
+    # build-home
   ];
 }

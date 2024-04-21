@@ -7,7 +7,7 @@ pkgs.writeScriptBin "home-man-build" ''
     all_cores=$(nproc)
     build_cores=$(printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
     echo "Building Nix Home-manager with $build_cores cores"
-    ${pkgs.nh}/bin/nh os switch --ask ~/.dotfiles/nixfiles/ -- --cores $build_cores
+    ${pkgs.unstable.nh}/bin/nh home switch --ask ~/.dotfiles/nixfiles/ -- --cores $build_cores
   else
     ${pkgs.coreutils-full}/bin/echo "ERROR! No nix-config found in $HOME/.dotfiles/nixfiles"
   fi

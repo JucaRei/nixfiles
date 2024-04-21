@@ -27,11 +27,11 @@ with lib.hm.gvariant; {
       # source = ./face.jpg;
       source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
     };
-    ".distroboxrc" = lib.mkIf isLinux {
-      text = ''
-        xhost +si:localuser:$USER
-      '';
-    };
+    # ".distroboxrc" = lib.mkIf isLinux {
+    #   text = ''
+    #     xhost +si:localuser:$USER
+    #   '';
+    # };
     # "${config.home.homeDirectory}/Pictures/wallpapers" = lib.mkDefault {
     #   source = ../../_mixins/config/wallpapers;
     #   recursive = true;

@@ -25,6 +25,10 @@ in
     ../_mixins/non-nixos
     # ../_mixins/apps/browser/firefox/firefox.nix
     ../_mixins/console/bash.nix
+    ../_mixins/console/yt-dlp.nix
+    ../_mixins/services/podman.nix
+    ../_mixins/services/virt.nix
+
   ];
   config = {
     home.packages = with pkgs; [
@@ -35,7 +39,10 @@ in
     ];
     services = {
       nonNixOs.enable = true;
+      yt-dlp-custom.enable = true;
       bash.enable = true;
+      podman.enable = true;
+      virt.libvirt.enable = true;
     };
     nix.settings = {
       extra-substituters = [ "https://juca-nixfiles.cachix.org" ];

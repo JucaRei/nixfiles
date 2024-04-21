@@ -23,14 +23,25 @@ in
           audio-quality = 0;
           embed-chapters = true;
           embed-metadata = true;
-          embed-subs = true;
           embed-thumbnail = true;
-          write-sub = true;
-          # write-auto-sub = true;
-          sub-lang = "en";
           remux-video = "aac>m4a/mov>mp4/mkv";
           sponsorblock-mark = "sponsor";
           sub-langs = "all";
+          # Metadata
+          add-metadata = true;
+          embed-subs = true;
+          xattrs = true;
+          # Subtitles
+          # write-auto-sub = true;
+          write-sub = true;
+          sub-format = "best";
+          sub-lang = "en,br";
+          # Downloader
+          downloader = "${pkgs.aria2}/bin/aria2c";
+          downloader-args = "aria2c:'--async-dns=false --max-download-limit=6M --min-split-size=1M --max-connection-per-server=4 --split=4'";
+          # Other
+          no-overwrites = true;
+          no-call-home = true;
         };
         extraConfig = ''
           --ignore-errors

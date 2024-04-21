@@ -3,8 +3,8 @@
     enable = true;
 
     theme = {
-      # name = "Adwaita";
-      package = pkgs.deepin.deepin-icon-theme;
+      name = "spacx-gtk-theme palenight";
+      package = pkgs.spacx-gtk-theme;
     };
 
     cursorTheme = {
@@ -14,8 +14,8 @@
     };
 
     iconTheme = {
-      name = "Tela-icon-theme";
-      package = pkgs.tela-icon-theme;
+      name = "Papirus Nord";
+      package = pkgs.papirus-nord;
     };
 
     gtk2 = {
@@ -24,13 +24,19 @@
     };
 
     gtk3 = {
-      extraConfig = ''gtk-can-change-accels = 1'';
-      extraCss = '''';
+      extraConfig = {
+        gtk-cursor-blink = false;
+        gtk-recent-files-limit = 20;
+      };
+      # extraCss = '''';
     };
 
     gtk4 = {
-      extraConfig = ''gtk-can-change-accels = 1'';
-      extraCss = '''';
+      extraConfig = {
+        gtk-cursor-blink = false;
+        gtk-recent-files-limit = 20;
+      };
+      # extraCss = '''';
     };
   };
 
