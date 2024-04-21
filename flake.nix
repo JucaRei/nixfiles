@@ -262,7 +262,7 @@
           "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
           "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
           "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
-          "juca@oldarch" = libx.mkHome { hostname = "oldarch"; username = "juca"; stateVersion = "23.05"; };
+          "juca@oldarch" = libx.mkHome { hostname = "oldarch"; username = "juca"; desktop = "xfce"; stateVersion = "23.05"; };
           #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
           "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
           "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };

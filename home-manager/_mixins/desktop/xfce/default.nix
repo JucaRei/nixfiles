@@ -1,15 +1,14 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
+{ config
+, pkgs
+, lib
+, ...
 }:
 with lib.hm.gvariant; {
   home = {
     packages = with pkgs; [
       elementary-xfce-icon-theme
       gparted
-      xfce.xfce4-pulseaudio-plugin
+      # xfce.xfce4-pulseaudio-plugin
       gnome.gnome-keyring
       # gthumb
       # networkmanagerapplet
@@ -31,7 +30,7 @@ with lib.hm.gvariant; {
       # xsel
       zuki-themes
     ];
-    sessionVariables = {GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";};
+    sessionVariables = { GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules"; };
   };
   # services = {
   # blueman-applet.enable = true;
@@ -61,10 +60,10 @@ with lib.hm.gvariant; {
 
   ### Xfconf not working
   xfconf.settings = {
-    xfce4-session = {}; # xfce4-session
+    xfce4-session = { }; # xfce4-session
     xfwm4 = {
       "general/workspace_count" = 4;
-      "general/workspace_names" = ["1" "2" "3" "4"];
+      "general/workspace_names" = [ "1" "2" "3" "4" ];
       "general/borderless_maximize" = true;
       "general/click_to_focus" = false;
       "general/cycle_apps_only" = false;
@@ -145,7 +144,7 @@ with lib.hm.gvariant; {
       "/screensavers/xfce-personal-slideshow/location" = "month";
     }; # xfce4-screensaver
 
-    xfce4-appfinder = {}; # xfce4-appfinder
+    xfce4-appfinder = { }; # xfce4-appfinder
 
     xsettings = {
       # "/Gdk/WindowScalingFactor" = 1;
@@ -463,7 +462,7 @@ with lib.hm.gvariant; {
       "/xfce4-power-manager/critical-power-action" = 3; # Ask
     }; # xfce4-power-manager
 
-    xfce4-mime-settings = {}; # xfce4-mime-settings
+    xfce4-mime-settings = { }; # xfce4-mime-settings
 
     xfce4-mixer = {
       # 2023-07-29: MUST have leading slashes

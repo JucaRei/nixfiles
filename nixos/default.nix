@@ -92,7 +92,7 @@ in
       ];
       allowed-users = [ "root" "@wheel" ];
       trusted-users = [ "root" "@wheel" ];
-      # builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
+      builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
 
       # Avoid unwanted garbage collection when using nix-direnv
       keep-outputs = true;
@@ -101,14 +101,14 @@ in
       warn-dirty = false;
     };
 
-    # system-features = [
-    ## Allows building v3/v4 packages
-    # "gccarch-x86-64-v3"
-    # "gccarch-x86-64-v4"
-    # "kvm"
-    # "big-parallel"
-    # "nixos-test"
-    # ];
+    system-features = [
+      ## Allows building v3/v4 packages
+      "gccarch-x86-64-v3"
+      "gccarch-x86-64-v4"
+      "kvm"
+      "big-parallel"
+      "nixos-test"
+    ];
 
     extraOptions =
       ''
@@ -119,10 +119,9 @@ in
         connect-timeout = 10
       '';
     # Free up to 4GiB whenever there is less than 512MiB left.
-    #min-free = ${toString (512 * 1024 * 1024)}
+    # min-free = ${toString (512 * 1024 * 1024)}
     #min-free = 1073741824 # 1GiB
-    #max-free = 4294967296 # 4GiB
-    #builders-use-substitutes = true
+    # max-free = 4294967296 # 4GiB
   };
 
   ################
@@ -153,8 +152,6 @@ in
       # (self: super: {
 
 
-      #   mpv =
-      #     super.mpv.override { scripts = with super.mpvScripts; [ mpris ]; };
       #   # vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
       #   deadbeef = super.deadbeef.override { wavpackSupport = true; };
       #   deadbeef-with-plugins = super.deadbeef-with-plugins.override {
@@ -293,18 +290,6 @@ in
       "ntfs"
       # "bcachefs"
     ];
-
-    binfmt.registrations.appImage = mkIf (isWorkstation) {
-      # make appImage work seamlessly
-      wrapInterpreterInShell = false;
-      interpreter = "${pkgs.appimage-run}/bin/appimage-run";
-      recognitionType = "magic";
-      offset = 0;
-      # mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
-      mask = "\\xff\\xff\\xff\\xff\\x00\\x00\\x00\\x00\\xff\\xff\\xff";
-      magicOrExtension = "\\x7fELF....AI\\x02";
-      # magicOrExtension = ''\x7fELF....AI\x02'';
-    };
   };
 
   ###################
@@ -451,60 +436,6 @@ in
     dconf.enable = true;
     nano.enable = false;
     nix-index-database.comma.enable = isInstall;
-    nix-ld = lib.mkIf (isInstall) {
-      enable = true;
-      libraries = with pkgs; [
-        # Add any missing dynamic libraries for unpackaged
-        # programs here, NOT in environment.systemPackages
-        stdenv.cc.cc
-        fuse3
-        alsa-lib
-        at-spi2-atk
-        at-spi2-core
-        atk
-        cairo
-        cups
-        curl
-        dbus
-        expat
-        fontconfig
-        freetype
-        gdk-pixbuf
-        glib
-        gtk3
-        libGL
-        libappindicator-gtk3
-        libdrm
-        libnotify
-        libpulseaudio
-        libuuid
-        libusb1
-        xorg.libxcb
-        libxkbcommon
-        mesa
-        nspr
-        nss
-        pango
-        pipewire
-        systemd
-        icu
-        openssl
-        xorg.libX11
-        xorg.libXScrnSaver
-        xorg.libXcomposite
-        xorg.libXcursor
-        xorg.libXdamage
-        xorg.libXext
-        xorg.libXfixes
-        xorg.libXi
-        xorg.libXrandr
-        xorg.libXrender
-        xorg.libXtst
-        xorg.libxkbfile
-        xorg.libxshmfence
-        zlib
-      ];
-    };
     ssh.startAgent = true;
     # type "fuck" to fix the last command that made you go "fuck"
     thefuck.enable = true;
@@ -824,6 +755,14 @@ in
           type = "hard";
           value = "1048576";
         }
+
+        # GPU passthrough with vfio need memlock
+        # {
+        #   domain = "*";
+        #   type = "-";
+        #   item = "memlock";
+        #   value = "infinity";
+        # }
       ];
       # allow screen lockers to also unlock the screen
       # (e.g. swaylock, gtklock)

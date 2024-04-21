@@ -1,5 +1,7 @@
 _: {
   services = {
-    irqbalance = { enable = true; };
+    irqbalance = {
+      enable = true;
+    };
   };
 }

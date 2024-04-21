@@ -1028,6 +1028,27 @@
         "type": "github"
       }
     },
+    "nh": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1712645404,
+        "narHash": "sha256-uEVd15WsX+Wti9PXW724puFcsFO72VTiJyBwW2WXT9M=",
+        "owner": "viperML",
+        "repo": "nh",
+        "rev": "fe4a96a0b0b0662dba7c186b4a1746c70bbcad03",
+        "type": "github"
+      },
+      "original": {
+        "owner": "viperML",
+        "ref": "v3.5.10",
+        "repo": "nh",
+        "type": "github"
+      }
+    },
     "niri": {
       "inputs": {
         "crane": [
@@ -1825,6 +1846,7 @@
         "hyprpicker": "hyprpicker",
         "impermanence": "impermanence",
         "lf-icons": "lf-icons",
+        "nh": "nh",
         "nix-formatter-pack": "nix-formatter-pack",
         "nix-gaming": "nix-gaming",
         "nix-index-database": "nix-index-database",

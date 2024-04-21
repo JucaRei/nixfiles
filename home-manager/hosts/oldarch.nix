@@ -31,6 +31,7 @@ in
       # (nixGL.override { useGLVND = false; } vlc)
       cloneit
       font-search
+      vimix-gtk-themes
     ];
     services = {
       nonNixOs.enable = true;
