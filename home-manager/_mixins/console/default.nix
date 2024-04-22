@@ -11,7 +11,7 @@ in
     ./lsd
     ./yazi
     # ./aliases.nix
-    ./aliases2.nix
+    ./alias_core.nix
     ./aria2.nix
     ./atuin.nix
     ./bash.nix
