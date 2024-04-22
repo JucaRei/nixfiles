@@ -198,7 +198,7 @@ in
           startupPrograms = [
             "pgrep -x sxhkd > /dev/null || sxhkd"
             # "nitrogen --restore"
-            "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+            "${pkgs.polkit_gnome} /libexec/polkit-gnome-authentication-agent-1"
             "sleep 2; polybar -q everforest"
             # "thunar --daemon"
             # "${pkgs.flameshot}/bin/flameshot"

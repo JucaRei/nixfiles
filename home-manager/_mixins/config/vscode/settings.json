@@ -3,9 +3,9 @@
     "editor.defaultFormatter": "jnoortheen.nix-ide"
   },
   "breadcrumbs.enabled": true,
-  "dev.containers.containerEnv": {
-    "HOME": "home/node"
-  },
+  // "dev.containers.containerEnv": {
+  //   "HOME": "home/node"
+  // },
   "dev.containers.runArgs": [
     "--userns=keep-id"
   ],
@@ -156,10 +156,10 @@
   "window.title": "${rootName}${separator}${profileName}${separator}${activeEditorShort}",
   "window.titleBarStyle": "custom",
   "window.zoomLevel": 0.3,
-  "workbench.colorTheme": "RedCrafter07 Theme",
+  // "workbench.colorTheme": "RedCrafter07 Theme",
   "workbench.editor.labelFormat": "short",
   "workbench.enableExperiments": true,
-  "workbench.iconTheme": "bearded-icons",
+  // "workbench.iconTheme": "bearded-icons",
   "workbench.list.smoothScrolling": true,
   "workbench.productIconTheme": "macos-modern",
   "workbench.settings.editor": "ui",

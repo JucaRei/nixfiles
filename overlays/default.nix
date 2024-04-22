@@ -146,6 +146,7 @@ in
     #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
     # };
     juca-avatar = prev.juca-avatar;
+    polywins = prev.polywins;
 
     player-mpris-tail = prev.pkgs.callPackage ../pkgs/scripts/polybar-scripts/player-mpris-tail {
       inherit polybar-scripts;

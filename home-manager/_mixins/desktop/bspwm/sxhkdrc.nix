@@ -22,7 +22,8 @@ in
   "${vars.mod} + shift + b" = "${browser} --new-window https://youtube.com/"; # web-browser
   "${vars.mod} + shift + p" = "${browser} --private-window"; # web-browser
   "${vars.mod} + e" = "${filemanager}";
-  "${vars.mod} + @space" = "rofi -show drun"; # program launcher
+  # "${vars.mod} + @space" = "rofi -show drun"; # program launcher
+  "${vars.mod} + @space" = "rofi -show drun -no-lazy-grab -lines 15 -width 40"; # program launcher
   # calculator
   "F1" = "rofi -show calc -modi calc --no-show-match --no-sort -lines 2";
   # emoji
@@ -31,11 +32,13 @@ in
 
   # make sxhkd reload its configuration files:
   "ctrl + ${vars.modAlt} + escape" = ''
-    pkill -USR1 -x sxhkd; \
-    bspc wm -r; \
-    polybar-msg cmd restart; \
-    dunstify "Reload all configuration." -u low
+    pkill -USR1 -x sxhkd;
   '';
+
+  #   bspc wm -r; \
+  #   polybar-msg cmd restart; \
+  #   dunstify "Reload all configuration." -u low
+  # '';
 
   # quit bspwm
   "${vars.mod} + ${vars.modAlt} + q" = ''
@@ -59,7 +62,6 @@ in
         bspc node --state \~$state
   '';
   # rotate
-  "${vars.mod} + r" = "bspc node @/ -R 90";
   "${vars.mod} + f" = "bspc node --state \~fullscreen"; # Toggle fullscreen of window
   "${vars.mod} + {_,shift + }q" = "bspc node -{c,k}"; # Close and kill
   "${vars.mod} + k" = "bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
@@ -127,9 +129,18 @@ in
     bspc wm -h on
   '';
 
-  # Focus or send to the given desktop
-  # "${vars.mod} + {_,shift + }{1-9,0}" = '' bspc {desktop -f,node -d} '^{1-9,10}' '';
-  "${vars.mod} + {_,shift} + {1-9,0}" = ''num={1-9,10}; if [ $(bspc query -D -d focused --names | cut -c 2) != "$num" ]; then bspc {desktop -f,node -d} focused:^"$num"; fi'';
+  # Switch to different workspaces with back-and-forth support
+  "${vars.mod} + {1-9,0}" = ''
+    desktop='^{1-9,10}'; \
+          bspc query -D -d "$desktop.focused" && bspc desktop -f last || bspc desktop -f "$desktop"
+  '';
+
+  # Scratchpad
+  "${vars.mod} + z" = "bspc node focused -t floating; bspc node -d '^12'";
+  "alt + Tab" = "rofi -show window -window-thumbnail";
+
+  # Move windows to different workspaces
+  "${vars.mod} + shift + {1-9,0}" = "bspc node -d ^{1-9,10}";
 
   #################
   ### Preselect ###
@@ -150,8 +161,18 @@ in
   # Set the node flags
   "${vars.mod} + ctrl + {m,x,s,p}" = "bspc node -g {marked,locked,sticky,private}";
 
+  "${vars.mod} + y" = "bspc node @parent -R 90";
+  "${vars.mod} + r" = "bspc node @focused:/ --rotate 90";
+  "${vars.mod} + shift + r" = "bspc node @focused:/ --rotate 180";
+
   # Send the newest marked node to the newest preselected node
-  "${vars.mod} + y" = "bspc node newest.marked.local -n newest.!automatic.local";
+  "${vars.mod} + shift + y" = "bspc node newest.marked.local -n newest.!automatic.local";
+
+  "${vars.mod} + s : {h,j,k,l}" = ''
+    STEP=30; SELECTION={1,2,3,4}; \
+    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
+  '';
 
   ###################
   ### Move/Resize ###

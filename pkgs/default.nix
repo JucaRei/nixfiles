@@ -112,8 +112,12 @@
   # oom-test = pkgs.callPackage ./scripts/oom-test { };
   # paper = pkgs.callPackage ./scripts/paper { };
   # repl = pkgs.callPackage ./scripts/repl { };
-  nixGLNvidia-legacy = pkgs.callPackage ./scripts/nixGLNvidia-legacy { };
+  # nixGLNvidia-legacy = pkgs.callPackage ./scripts/nixGLNvidia-legacy { };
 
+  #####################
+  ### Bspwm Scripts ###
+  #####################
+  polywins = pkgs.callPackage ./scripts/bspwm/polywins { };
 
   ###################
   ### Sddm Themes ###
