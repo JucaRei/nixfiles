@@ -20,6 +20,7 @@
           wayland = false; # only x11
         };
         defaultSession = "gnome";
+        hiddenUsers = [ "nobody" ];
       };
       desktopManager.gnome = {
         enable = true; # Window Manager

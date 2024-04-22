@@ -90,8 +90,10 @@ in
         "flakes"
         "repl-flake"
       ];
-      allowed-users = [ "root" "@wheel" ];
-      trusted-users = [ "root" "@wheel" ];
+      # allowed-users = [ "root" "@wheel" ];
+      # trusted-users = [ "root" "@wheel" ];
+      allowed-users = [ "@wheel" ];
+      trusted-users = [ "@wheel" ];
       builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
 
       # Avoid unwanted garbage collection when using nix-direnv
@@ -396,6 +398,8 @@ in
       FLAKE = "/home/${username}/.dotfiles/nixfiles";
     };
 
+    homeBinInPath = true;
+    localBinInPath = true;
 
     shellAliases = {
       system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
@@ -614,6 +618,7 @@ in
         touchpad = {
           # horizontalScrolling = true;
           # tappingDragLock = false;
+          accelProfile = "flat";
           tapping = true;
           naturalScrolling = true;
           scrollMethod = "twofinger";

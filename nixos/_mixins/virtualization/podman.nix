@@ -77,6 +77,7 @@ in
         search = [
           "docker.io"
           "quay.io"
+          "ghcr.io"
         ];
         #   insecure = [
         #     "registry.fedoraproject.org"

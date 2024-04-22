@@ -174,15 +174,15 @@ in
       # NIXOS_OZONE_WL = "1";
       #GBM_BACKEND = "nvidia-drm";
       #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      WLR_NO_HARDWARE_CURSORS = "1";
       #WLR_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
-      QT_QPA_PLATFORM = "wayland";
       SDL_VIDEODRIVER = "wayland";
+      QT_QPA_PLATFORM = "wayland-egl";
+      WLR_NO_HARDWARE_CURSORS = "1";
       XDG_SESSION_TYPE = "wayland";
+      # DCONF_PROFILE = "sway";
       # "enable-features" = "UseOzonePlatform,WaylandWindowDecorations";
       # ozone-platform-hint = "auto";
       # "ozone-platform" = "wayland";
-      _JAVA_AWT_WM_NONEREPARENTING = "1";
 
       XAUTHORITY = "$XDG_RUNTIME_DIR/Xauthority";
     };

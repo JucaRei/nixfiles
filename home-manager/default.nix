@@ -100,70 +100,85 @@ in
     };
   };
 
-  nix = {
-    # This will add each flake input as a registry
-    # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-
-    package = pkgs.unstable.nix;
-    settings =
-      if isDarwin then {
-        nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
-        daemonIOLowPriority = true;
-      }
-      else {
-        accept-flake-config = true;
-        auto-optimise-store = true;
-        experimental-features = [
-          "nix-command"
-          "flakes"
-          # "ca-derivations"
-          # "auto-allocate-uids"
-          # "cgroups"
-          #"configurable-impure-env"
-        ];
-        # auto-allocate-uids = true;
-        # use-cgroups = if isLinux then true else false;
-        # build-users-group = "nixbld";
-        builders-use-substitutes = true;
-        sandbox =
-          if (isDarwin)
-          then true
-          else "relaxed"; #false
-
-        # Avoid unwanted garbage collection when using nix-direnv
-        # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
-        # keep-going = true;
-        show-trace = true;
-        keep-outputs = true;
-        keep-derivations = true;
-        warn-dirty = false;
-        allow-dirty = true;
-
-        # Allow to run nix
-        # allowed-users = [ "nixbld" "@wheel" ];
-        # trusted-users = [ "root" "@wheel" ];
-        connect-timeout = 5;
-        http-connections = 0;
-
+  nix =
+    let
+      nixDiffCommands = {
+        builtin = "nix store diff-closures";
+        nvd = "nvd diff";
+        nix-diff = "nix-diff";
       };
-    extraOptions =
-      ''
-        log-lines = 15
+    in
+    {
+      # This will add each flake input as a registry
+      # To make nix3 commands consistent with your flake
+      registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
-        fallback = true
+      package = pkgs.unstable.nix;
 
-        # Free up to 1GiB whenever there is less than 100MiB left.
-        # min-free = ${toString (100 * 1024 * 1024)}
-        # max-free = ${toString (1024 * 1024 * 1024)}
-        # Free up to 2GiB whenever there is less than 1GiB left.
-        min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
-        max-free = ${toString (2 * 1024 * 1024 * 1024)}    # 2 GiB
-      ''
-      + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
-        extra-platforms = x86_64-darwin
-      '';
-  };
+      diffProgram = lib.mkOption {
+        type = lib.types.enum (builtins.attrNames nixDiffCommands);
+
+        default = assert builtins.hasAttr "builtin" nixDiffCommands; "builtin";
+      };
+
+      settings =
+        if isDarwin then {
+          nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
+          daemonIOLowPriority = true;
+        }
+        else {
+          accept-flake-config = true;
+          auto-optimise-store = true;
+          experimental-features = [
+            "nix-command"
+            "flakes"
+            # "ca-derivations"
+            # "auto-allocate-uids"
+            # "cgroups"
+            #"configurable-impure-env"
+          ];
+          # auto-allocate-uids = true;
+          # use-cgroups = if isLinux then true else false;
+          # build-users-group = "nixbld";
+          builders-use-substitutes = true;
+          sandbox =
+            if (isDarwin)
+            then true
+            else "relaxed"; #false
+
+          # Avoid unwanted garbage collection when using nix-direnv
+          # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
+          # keep-going = true;
+          show-trace = true;
+          keep-outputs = true;
+          keep-derivations = true;
+          warn-dirty = false;
+          allow-dirty = true;
+
+          # Allow to run nix
+          # allowed-users = [ "nixbld" "@wheel" ];
+          # trusted-users = [ "root" "@wheel" ];
+          connect-timeout = 5;
+          http-connections = 0;
+
+        };
+      extraOptions =
+        ''
+          log-lines = 15
+
+          fallback = true
+
+          # Free up to 1GiB whenever there is less than 100MiB left.
+          # min-free = ${toString (100 * 1024 * 1024)}
+          # max-free = ${toString (1024 * 1024 * 1024)}
+          # Free up to 2GiB whenever there is less than 1GiB left.
+          min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
+          max-free = ${toString (2 * 1024 * 1024 * 1024)}    # 2 GiB
+        ''
+        + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
+          extra-platforms = x86_64-darwin
+        '';
+    };
 
   systemd.user = {
     # Nicely reload system units when changing configs
