@@ -17,6 +17,7 @@ in
       podman
       podman-compose
       skopeo
+      shadow
     ];
 
     xdg.configFile = {
