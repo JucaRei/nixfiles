@@ -163,13 +163,10 @@ let
 in
 {
   options.services.aliases = {
-    enable = mkOption {
-      default = false;
-      type = types.bool;
-    };
+    enable = lib.mkEnableOption "Enable core configuration packages" // { default = true; };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf cfg.enable (lib.mkMerge {
     home = {
       shellAliases = {
         inherit (cfg.systemd) shellAliases;
@@ -217,5 +214,5 @@ in
         wifi = "${pkgs.inxi}/bin/inxi -n";
       };
     };
-  };
+  });
 }
