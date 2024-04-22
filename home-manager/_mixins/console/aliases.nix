@@ -163,7 +163,7 @@ let
 in
 {
   options.services.aliases = {
-    enable = mkEnableOption "Enable Aliases" {
+    enable = mkOption {
       default = false;
       type = types.bool;
     };
