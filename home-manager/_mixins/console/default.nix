@@ -20,7 +20,7 @@ in
     ./dircolors.nix
     ./direnv.nix
     ./eza.nix
-    # ./fastfetch.nix
+    ./fastfetch.nix
     ./git.nix
     ./github-cli.nix
     ./gitui.nix
