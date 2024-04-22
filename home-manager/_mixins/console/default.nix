@@ -10,7 +10,8 @@ in
     ./htop
     ./lsd
     ./yazi
-    ./aliases.nix
+    # ./aliases.nix
+    ./aliases2.nix
     ./aria2.nix
     ./atuin.nix
     ./bash.nix
@@ -19,7 +20,7 @@ in
     ./dircolors.nix
     ./direnv.nix
     ./eza.nix
-    ./fastfetch.nix
+    # ./fastfetch.nix
     ./git.nix
     ./github-cli.nix
     ./gitui.nix
@@ -29,7 +30,7 @@ in
     ./mpd.nix
     ./ncmpcpp.nix
     # ./nano.nix
-    ./neofetch.nix
+    # ./neofetch.nix
     # ./neovim.nix
     ./ripgrep.nix
     ./skim.nix

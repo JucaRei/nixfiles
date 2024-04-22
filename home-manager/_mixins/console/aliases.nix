@@ -166,10 +166,9 @@ in
     enable = lib.mkEnableOption "Enable core configuration packages" // { default = true; };
   };
 
-  config = mkIf cfg.enable (lib.mkMerge {
+  config = mkIf cfg.enable {
     home = {
       shellAliases = {
-        inherit (cfg.systemd) shellAliases;
         ### Nix ###
         # rebuild-home = "home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles";
         rebuild-home = "home-manager switch -b backup --impure --flake $HOME/.dotfiles/nixfiles";
@@ -214,5 +213,5 @@ in
         wifi = "${pkgs.inxi}/bin/inxi -n";
       };
     };
-  });
+  };
 }
