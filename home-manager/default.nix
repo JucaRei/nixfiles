@@ -143,6 +143,8 @@ in
 
         # Allow to run nix
         # allowed-users = [ "nixbld" "@wheel" ];
+        allowed-users = [ "@wheel" ];
+        trusted-users = [ "@wheel" ];
         # trusted-users = [ "root" "@wheel" ];
         connect-timeout = 5;
         http-connections = 0;
