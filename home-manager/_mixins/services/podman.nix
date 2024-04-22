@@ -61,7 +61,10 @@ in
       };
 
       "containers/policy.json".source = mkJson "policy.json" {
-        default = [{ type = "reject"; }];
+        default = [{
+          # type = "reject";
+          type = "insecureAcceptAnything";
+        }];
 
         transports = {
           dir."" = [{ type = "insecureAcceptAnything"; }];
@@ -72,7 +75,10 @@ in
           oci-archive."" = [{ type = "insecureAcceptAnything"; }];
 
           docker = {
-            "" = [{ type = "reject"; }];
+            "" = [{
+              # type = "reject";
+              type = "insecureAcceptAnything";
+            }];
             "docker.io/library" = [{ type = "insecureAcceptAnything"; }];
             "docker.io/nixos" = [{ type = "insecureAcceptAnything"; }];
             "docker.io/fireflyiii" = [{ type = "insecureAcceptAnything"; }];
