@@ -25,6 +25,7 @@ in
           wmname
           sxhkd
           gnome.file-roller
+          # unstable.polywins
           # xfce.xfce4-power-manager
           xorg.xdpyinfo
           xorg.xkill

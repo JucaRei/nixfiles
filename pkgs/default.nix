@@ -117,7 +117,7 @@
   #####################
   ### Bspwm Scripts ###
   #####################
-  polywins = pkgs.callPackage ./scripts/bspwm/polywins { };
+  polywins = pkgs.python3Packages.callPackage ./scripts/bspwm/polywins { };
 
   ###################
   ### Sddm Themes ###
