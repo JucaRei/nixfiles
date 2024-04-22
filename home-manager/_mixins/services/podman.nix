@@ -70,6 +70,7 @@ in
       };
 
       "containers/containers.conf.d/001-home-manager.conf".source = mkToml "001-home-manager.conf" {
+        # Managed with Home Manager
         containers = {
           pids_limit = 0;
         };
