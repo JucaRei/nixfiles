@@ -35,7 +35,7 @@ in
 
           init = true;
           init_path = lib.getExe pkgs.catatonit;
-          ipcns = "private"; # Why is "sharable" the default???
+          # ipcns = "private"; # Why is "sharable" the default???
           seccomp_profile = config.xdg.configFile."containers/seccomp.json".source.outPath;
           tz = "local";
           # userns = "private";
