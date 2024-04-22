@@ -29,6 +29,7 @@ in
       yt-dlp-custom.enable = true;
       vscode-server.enable = true;
       bash.enable = true;
+      podman.enable = true;
     };
 
     home = {
