@@ -114,11 +114,6 @@
   # repl = pkgs.callPackage ./scripts/repl { };
   # nixGLNvidia-legacy = pkgs.callPackage ./scripts/nixGLNvidia-legacy { };
 
-  #####################
-  ### Bspwm Scripts ###
-  #####################
-  polywins = pkgs.python3Packages.callPackage ./scripts/bspwm/polywins { };
-
   ###################
   ### Sddm Themes ###
   ###################

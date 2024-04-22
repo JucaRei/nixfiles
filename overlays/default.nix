@@ -146,13 +146,14 @@ in
     #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
     # };
     juca-avatar = prev.juca-avatar;
-    polywins = prev.polywins;
 
     player-mpris-tail = prev.pkgs.callPackage ../pkgs/scripts/polybar-scripts/player-mpris-tail {
       inherit polybar-scripts;
       inherit (prev) stdenv;
       inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
     };
+
+    polywins = prev.pkgs.callPackage ../pkgs/scripts/bspwm/polywins { };
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
