@@ -15,6 +15,7 @@ in
 {
   imports = [
     ../_mixins/non-nixos
+    ../_mixins/services/podman.nix
     ../_mixins/console/yt-dlp.nix
     ../_mixins/console/bash.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
