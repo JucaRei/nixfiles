@@ -63,7 +63,14 @@ in
       };
 
       "containers/registries.conf".source = mkToml "registries.conf" {
-        registries.search.registries = [ "docker.io" "quay.io" "ghcr.io" ];
+        registries.search.registries = [
+          unqualified-search-registries
+          [
+            "docker.io"
+            "quay.io"
+            "ghcr.io"
+          ]
+        ];
       };
 
       "containers/policy.json".source = mkJson "policy.json" {
