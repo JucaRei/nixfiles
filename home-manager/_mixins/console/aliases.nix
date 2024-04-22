@@ -169,7 +169,7 @@ in
     };
   };
 
-  config = mkIf cfg.enable (lib.mkMerge {
+  config = mkIf cfg.enable {
     home = {
       shellAliases = {
         inherit (cfg.systemd) shellAliases;
@@ -217,5 +217,5 @@ in
         wifi = "${pkgs.inxi}/bin/inxi -n";
       };
     };
-  });
+  };
 }
