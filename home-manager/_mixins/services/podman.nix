@@ -14,7 +14,12 @@ in
     home.packages = with pkgs; [
       buildah
       cosign
-      podman
+      (podman.override {
+        extraPackages = [
+          # setuid shadow ## fix for debian
+          "/run/wrappers"
+        ];
+      })
       podman-compose
       skopeo
       shadow
