@@ -18,11 +18,11 @@ in
         extraPackages = [
           # setuid shadow ## fix for debian
           "/run/wrappers"
+          pkgs.shadow
         ];
       })
       podman-compose
       skopeo
-      shadow
     ];
 
     xdg.configFile = {
