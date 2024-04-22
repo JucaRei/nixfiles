@@ -201,12 +201,138 @@ in
         Create Aliases for systemd tools.
       '';
     };
+
+    process = {
+      packages = lib.mkOption {
+        type = with lib.types; listOf package;
+
+        default = with pkgs; [
+          nodePackages.fkill-cli
+          procs
+          strace
+        ];
+
+        description = ''
+          Packages for process management.
+        '';
+      };
+
+      htopIntegration = lib.mkEnableOption "htop configuration" // { default = true; };
+    };
+
+    nix = {
+      enable = lib.mkEnableOption "Nix config management" // { default = true; };
+      package = lib.mkPackageOption pkgs "nixUnstable" { };
+
+      diffProgram = lib.mkOption {
+        type = lib.types.enum (builtins.attrNames nixDiffCommands);
+
+        default = assert builtins.hasAttr "builtin" nixDiffCommands; "builtin";
+      };
+    };
   };
 
-  config = lib.mkIf cfg.enable
+  config = lib.mkIf cfg.enable (lib.mkMerge [
     {
       home = {
         inherit (cfg.systemd) shellAliases;
+
+        packages = lib.flatten [
+          cfg.process.packages
+        ];
       };
-    };
+    }
+
+    (lib.mkIf cfg.nix.enable {
+      home = {
+        packages = [ pkgs.comma ]
+          ++ lib.optional (cfg.nix.diffProgram != "builtin") [ pkgs.${cfg.nix.diffProgram} ]
+          # ++ lib.optional cfg.nix.cachix.enable [ cfg.nix.cachix.package ]
+        ;
+
+        shellAliases = {
+          ### Nix Aliases
+          # TODO: Make this a separate like OMZ module?
+          #
+          "n" = "nix";
+
+          "nb" = "nix build";
+          "nbr" = "nix build --rebuild";
+
+          "nd" = builtins.getAttr cfg.nix.diffProgram nixDiffCommands; # TODO: Make diff
+
+          "ndev" = "nix develop";
+
+          "ne" = "nix edit";
+
+          "nf" = "nix flake";
+          "nfc" = "nix flake check";
+          "nfcl" = "nix flake clone";
+          "nfi" = "nix flake init";
+          "nfl" = "nix flake lock";
+          "nfm" = "nix flake metadata";
+          "nfs" = "nix flake show";
+          "nfu" = "nix flake update";
+          "nfuc" = "nix flake update && nix flake check";
+
+          "nfmt" = "nix fmt";
+
+          "nlog" = "nix log";
+
+          "np" = "nix profile";
+          "nph" = "nix profile history";
+          "npi" = "nix profile install";
+          "npl" = "nix profile list";
+          "npu" = "nix profile upgrade";
+          "nprm" = "nix profile remove";
+          "nprb" = "nix profile rollback";
+          "npw" = "nix profile wipe-history";
+
+          "npath" = "nix path-info";
+
+          "nr" = "nix run";
+
+          "nrepl" = "nix repl";
+
+          "nreg" = "nix registry";
+          "nregls" = "nix registry list";
+
+          "ns" = "nix search";
+          "nsn" = "nix search nixpkgs";
+          "nsu" = "nix search nixpkgs-unstable";
+
+          "nsh" = "nix shell";
+          # TODO: Replace w/ working function
+          # "nshn" = "nix shell nixpkgs";
+
+          "nsd" = "nix show-derivation";
+
+          "nst" = "nix store";
+        } // (if builtins.hasAttr "ON_NIXOS" config.home.sessionVariables then {
+          "nos" = "nixos-rebuild";
+          "nosb" = "nixos-rebuild build";
+          "nosbf" = "nixos-rebuild build --flake .";
+          "nosc" = "nixos-container";
+          "nosg" = "nixos-generate-config";
+          "nosp" = "read-link '/nix/var/nix/profiles/system'";
+          "nospl" = "ls -r '/nix/var/nix/profiles/system-*'";
+          "nossw" = "nixos-rebuild switch --use-remote-sudo";
+          "nosswf" = "nixos-rebuild switch --use-remote-sudo --flake .";
+          "nosswfc" = "nix flake check && nixos-rebuild switch --use-remote-sudo --flake .";
+          "nosswfuc" = "nix flake update && nix flake check && nixos-rebuild switch --use-remote-sudo --flake .";
+          "nosswrb" = "nixos-rebuild switch --use-remote-sudo --rollback";
+          "nosv" = "nixos-version";
+        } else {
+          "nos" = "home-manager";
+          "nosb" = "home-manager build";
+          "nosbf" = "home-manager build --flake .#`hostname`";
+          "nossw" = "home-manager switch";
+          "nosswf" = "home-manager switch --flake .#`hostname` -b '.bak'";
+          "nosswfc" = "nix flake check && home-manager switch --flake .#`hostname` -b '.bak'";
+          "nosswfuc" = "nix flake update && nix flake check && home-manager switch --flake .#`hostname` -b '.bak'";
+          # "nosswrb" = "home-manager switch --rollback"; # FIXME: Find a workaround?
+        });
+      };
+    })
+  ]);
 }
