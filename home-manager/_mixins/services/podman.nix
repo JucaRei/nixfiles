@@ -75,8 +75,8 @@ in
       "containers/containers.conf.d/001-home-manager.conf".source = mkToml "001-home-manager.conf" {
         # Managed with Home Manager
         containers = {
-          pids_limit = 0;
         };
+          pids_limit = 0;
       };
 
       "containers/policy.json".source = mkJson "policy.json" {
