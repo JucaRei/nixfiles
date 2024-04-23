@@ -48,7 +48,8 @@ in
         docker
         docker-compose
         (nixGL (config.programs.firefox.package))
-        unstable.lima-bin
+        (nixGL vlc)
+        # unstable.lima-bin
       ];
       file = {
         ".face" = {

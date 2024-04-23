@@ -5,8 +5,8 @@ let
 
   nixDiffCommands = {
     builtin = "nix store diff-closures";
-    nvd = "nvd diff";
-    nix-diff = "nix-diff";
+    nvd = "${pkgs.nvd}/bin/nvd diff";
+    nix-diff = "${pkgs.nix-diff}/bin/nix-diff";
   };
 in
 {
@@ -163,7 +163,7 @@ in
           rc-log-level = "resolvectl log-level";
 
           # Systemd nspawn
-          nspawn = "systemd-nspawn";
+          nspawn = "${pkgs.systemdMinimal}/bin/systemd-nspawn";
 
           # Others
           sxorg = "export DISPLAY=:0.0";

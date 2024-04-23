@@ -1,7 +1,7 @@
 { pkgs, config, lib ? pkgs.lib, username, ... }:
 let
-  nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
-  vars = import ./vars.nix { inherit pkgs config; };
+  nixgl = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
+  vars = import ../vars.nix { inherit pkgs config; };
 
   okay = green;
   warn = orange;
@@ -71,19 +71,25 @@ in
     packages = with pkgs; [
       # Packages for scripts
       wmctrl
+      # fonts
+      maple-mono
+      font-awesome
+      meslo-lgs-nf
+      maple-mono-SC-NF
+      unstable.sarasa-gothic
     ];
     file = {
       "/home/${username}/.config/polybar/scripts/polywins" = {
         executable = true;
-        text = builtins.readFile ../../config/polybar/scripts/polywins;
+        text = builtins.readFile ../../../config/polybar/scripts/polywins;
       };
       "/home/${username}/.config/rofi/scripts/powermenu" = {
         executable = true;
-        text = builtins.readFile ../../config/rofi/scripts/powermenu.sh;
+        text = builtins.readFile ../../../config/rofi/scripts/powermenu.sh;
       };
       "/home/${username}/.config/rofi/scripts/promptmenu" = {
         executable = true;
-        text = builtins.readFile ../../config/rofi/scripts/promptmenu.sh;
+        text = builtins.readFile ../../../config/rofi/scripts/promptmenu.sh;
       };
     };
   };
@@ -144,14 +150,14 @@ in
           # module-margin-right = 0;
 
           # font-0 = "${pkgs.iosevka}/share/fonts/truetype/Iosevka-Regular.ttf";
-          font-0 = with vars.polybar-0;
+          font-0 = with vars.everforest-0;
             "${ftname};${toString offset}";
-          font-1 = with vars.polybar-1; "${ftname};${toString offset}";
-          font-2 = with vars.polybar-2; "${ftname};${toString offset}";
-          font-3 = with vars.polybar-3; "${ftname};${toString offset}";
-          font-4 = with vars.polybar-4; "${ftname};${toString offset}";
-          font-5 = with vars.polybar-5; "${ftname};${toString offset}";
-          font-6 = with vars.polybar-6; "${ftname};${toString offset}";
+          font-1 = with vars.everforest-1; "${ftname};${toString offset}";
+          font-2 = with vars.everforest-2; "${ftname};${toString offset}";
+          font-3 = with vars.everforest-3; "${ftname};${toString offset}";
+          font-4 = with vars.everforest-4; "${ftname};${toString offset}";
+          font-5 = with vars.everforest-5; "${ftname};${toString offset}";
+          font-6 = with vars.everforest-6; "${ftname};${toString offset}";
 
         };
 
@@ -188,13 +194,13 @@ in
           module-margin-left = 0;
           module-margin-right = 0;
 
-          font-0 = with vars.polybar-0; "${ftname};${toString offset}";
-          font-1 = with vars.polybar-1; "${ftname};${toString offset}";
-          font-2 = with vars.polybar-2; "${ftname};${toString offset}";
-          font-3 = with vars.polybar-3; "${ftname};${toString offset}";
-          font-4 = with vars.polybar-4; "${ftname};${toString offset}";
-          font-5 = with vars.polybar-5; "${ftname};${toString offset}";
-          font-6 = with vars.polybar-6; "${ftname};${toString offset}";
+          font-0 = with vars.everforest-0; "${ftname};${toString offset}";
+          font-1 = with vars.everforest-1; "${ftname};${toString offset}";
+          font-2 = with vars.everforest-2; "${ftname};${toString offset}";
+          font-3 = with vars.everforest-3; "${ftname};${toString offset}";
+          font-4 = with vars.everforest-4; "${ftname};${toString offset}";
+          font-5 = with vars.everforest-5; "${ftname};${toString offset}";
+          font-6 = with vars.everforest-6; "${ftname};${toString offset}";
 
           modules-left = "launcher blok bspwm round-left polywins round-right";
           modules-center = "";

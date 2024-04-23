@@ -11,11 +11,11 @@ in
 {
   #config.lib.file.mkOutOfStoreSymlink
   imports = [
-    ./polybar-everforest.nix
+    ./everforest/polybar-everforest.nix
     ../../apps/file-managers/thunar.nix
     # ./polybar-batman.nix
-    ./picom.nix
-    ./dunst.nix
+    ./everforest/picom.nix
+    ./everforest/dunst.nix
   ];
   config = {
     home =
@@ -94,14 +94,6 @@ in
           xdg-user-dirs
           xdg-desktop-portal-gtk
           udiskie
-
-
-          # fonts
-          maple-mono
-          font-awesome
-          meslo-lgs-nf
-          maple-mono-SC-NF
-          unstable.sarasa-gothic
         ];
 
         # sudo apt-get reinstall lxsession;sudo apt install --reinstall lightdm;sudo systemctl enable lightdm
@@ -382,7 +374,7 @@ in
       #   package = nixgl pkgs.alacritty;
       #   settings = import ../../apps/terminal/alacritty.nix args;
       # };
-      rofi = import ./rofi.nix args;
+      rofi = import ./everforest/rofi.nix args;
       feh = {
         enable = true;
         # package = pkgs.feh;

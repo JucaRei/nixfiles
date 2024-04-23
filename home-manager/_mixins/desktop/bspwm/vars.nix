@@ -18,7 +18,7 @@ in
   ### Everforest ###
   ##################
 
-  polybar-0 = {
+  everforest-0 = {
     package = pkgs.maple-mono;
     name = "Maple Mono";
     # ftname = "Iosevka Nerd Font:style=Regular:size=10";
@@ -26,7 +26,7 @@ in
     offset = 2; # Offset for Polybar.
   };
 
-  polybar-1 = {
+  everforest-1 = {
     package = pkgs.font-awesome;
     name = "Font Awesome 6 Free Solid";
     # ftname = "Iosevka Nerd Font:style=Regular:size=10";
@@ -34,21 +34,21 @@ in
     offset = 3; # Offset for Polybar.
   };
 
-  polybar-2 = {
+  everforest-2 = {
     package = pkgs.material-design-icons;
     name = "Material Design Icons Desktop";
     ftname = "Material Design Icons Desktop:size=12";
     offset = 3; # Offset for Polybar.
   };
 
-  polybar-3 = {
+  everforest-3 = {
     package = pkgs.material-design-icons;
     name = "Material Design Icons Desktop";
     ftname = "material-design-icons:size=12";
     offset = 3; # Offset for Polybar.
   };
 
-  polybar-4 = {
+  everforest-4 = {
     package = pkgs.meslo-lgs-nf;
     name = "MesloLGS NF";
     # ftname = "Iosevka Nerd Font:style=Regular:size=10";
@@ -56,19 +56,23 @@ in
     offset = 4; # Offset for Polybar.
   };
 
-  polybar-5 = {
+  everforest-5 = {
     package = pkgs.maple-mono-SC-NF;
     name = "Maple Mono SC NF";
     ftname = "Maple Mono SC NF:size=11";
     offset = 2; # Offset for Polybar.
   };
 
-  polybar-6 = {
+  everforest-6 = {
     package = pkgs.unstable.sarasa-gothic;
     name = "Sarasa Mono CL Nerd Font";
     ftname = "Sarasa Mono CL Nerd Font:size2";
     offset = 4;
   };
+
+  #################
+  ### Catpuccin ###
+  #################
 
   ##############
   ### Batman ###
