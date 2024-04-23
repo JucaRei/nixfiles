@@ -11,19 +11,22 @@ in
   options.services.podman.enable = mkEnableOption "Configure podman for rootless container use";
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      buildah
-      cosign
-      (podman.override {
-        extraPackages = [
-          # setuid shadow ## fix for debian
-          "/run/wrappers"
-          pkgs.shadow
-        ];
-      })
-      podman-compose
-      skopeo
-    ];
+    home.packages =
+      let
+        extraPackages = [ pkgs.shadow ];
+      in
+      with pkgs; [
+        buildah
+        cosign
+        (podman.override {
+          extraPackages = extraPackages ++ [
+            # setuid shadow ## fix for debian
+            "/run/wrappers"
+          ];
+        })
+        podman-compose
+        skopeo
+      ];
 
     xdg.configFile = {
       "containers/containers.conf".source = mkToml "containers.conf" {
@@ -64,8 +67,8 @@ in
 
       "containers/registries.conf".source = mkToml "registries.conf" {
         registries.search = {
-          unqualified-search-registries = [ "docker.io" "ghcr.io" ];
-          registries = [ "quay.io" ];
+          unqualified-search-registries = [ "quay.io" "ghcr.io" ];
+          registries = [ "docker.io" ];
         };
       };
 
@@ -104,3 +107,8 @@ in
     };
   };
 }
+
+# sudo chmod 4755 /usr/bin/newuidmap
+# lib.getExe ${pkgs.shadow}/bin/newuidmap
+# sudo chmod 4755 /usr/bin/newgidmap
+# lib.getExe ${pkgs.shadow}/bin/newgidmap
