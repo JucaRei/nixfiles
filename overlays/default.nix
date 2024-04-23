@@ -132,6 +132,7 @@ in
     });
 
     cloneit = prev.cloneit;
+    lima-bin = prev.lima-bin;
     # chatgpt-cli = prev.chatgpt-cli;
     nix-cleanup = prev.nix-cleanup;
     nix-whereis = prev.nix-whereis;
@@ -153,7 +154,6 @@ in
       inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
     };
 
-    polywins = prev.pkgs.callPackage ../pkgs/scripts/bspwm/polywins { };
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

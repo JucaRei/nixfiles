@@ -275,8 +275,7 @@ in
         };
         "module/polywins" = {
           type = "custom/script";
-          # exec = "/home/${username}/.config/polybar/scripts/polywins";
-          exec = "${pkgs.unstable.polywins}/bin/polywins";
+          exec = "/home/${username}/.config/polybar/scripts/polywins";
           format = "<label>";
           format-background = "#2E4374";
           label = "%output%";
