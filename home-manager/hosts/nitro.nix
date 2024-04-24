@@ -17,6 +17,7 @@ with lib;
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
     ../_mixins/apps/text-editor/vscode/vscode.nix
+    ../_mixins/apps/documents/zathura.nix
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/chromium.nix

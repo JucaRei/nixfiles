@@ -22,11 +22,8 @@ in
       {
         # zsh-history-substring-search zsh-syntax-highlighting
         packages = with pkgs; [
-          wmname
           sxhkd
           gnome.file-roller
-          # unstable.polywins
-          # xfce.xfce4-power-manager
           xorg.xdpyinfo
           xorg.xkill
           xorg.xsetroot
@@ -34,10 +31,7 @@ in
           xorg.xrandr
           arandr
           (nixgl alacritty) # terminal, #show on rofi applications
-          (nixgl i3lock-color)
-          mpc-cli
-          brightnessctl
-          dunst
+          # (nixgl i3lock-color)
           feh
           gtk-engine-murrine
           gtk_engines
@@ -48,8 +42,6 @@ in
           # libinput-gestures
           lm_sensors
           lxappearance-gtk2
-          gparted
-          ntfsprogs
           pavucontrol
           # udisks
           blueberry
@@ -172,7 +164,7 @@ in
                unset f
               fi
 
-              exec ${windowMan} &
+              exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan} &
             '';
           };
         };
@@ -205,7 +197,7 @@ in
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
           extraConfigEarly = ''
-            wmname LG3D
+            ${pkgs.wmname}/bin/wmname LG3D
             # picom
             # pkill picom
             picom -b --legacy-backends --no-use-damage &
