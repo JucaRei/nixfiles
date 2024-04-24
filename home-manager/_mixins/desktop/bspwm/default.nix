@@ -280,11 +280,15 @@ in
             focus_follows_pointer = true;
             border_width = 2;
             window_gap = 10;
+            top_monocle_padding = 6;
+            right_monocle_padding = 4;
+            left_monocle_padding = 4;
+            bottom_monocle_padding = 2;
             automatic_scheme = "tiling";
             initial_polarity = "first_child";
             split_ratio = 0.52;
             single_monocle = true;
-            borderless_monocle = true;
+            borderless_monocle = false;
             gapless_monocle = false;
             paddingless_mono = true;
             normal_border_color = "#343c40"; # "#1E1F29";

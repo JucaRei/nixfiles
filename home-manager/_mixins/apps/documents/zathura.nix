@@ -116,7 +116,7 @@ _: {
         scroll-step = 50;
         zoom-min = 10;
         guioptions = "";
-        "set render-loading" = "false";
+        # "render-loading" = "false";
         unmap = "f";
         "map f" = "toggle_fullscreen";
         "map [fullscreen] f" = "toggle_fullscreen";
