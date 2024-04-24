@@ -24,12 +24,37 @@ in
         packages = with pkgs; [
           sxhkd
           gnome.file-roller
+          feh # image viewer
+          betterlockscreen # lockscreen
+          xclip
+          xdotool
+          xorg.xinit
+          xorg.libXcomposite
+          xorg.libXinerama
+          xorg.libxcb
           xorg.xdpyinfo
           xorg.xkill
           xorg.xsetroot
           xorg.xwininfo
           xorg.xrandr
+          sqlite # database
+          usbutils # usb utilities
+          xdg-user-dirs # create xdg user dirs
+          picom # compositor
+          flameshot # cool utility for taking screen shots
+          pkg-config # a tool for pkgs to find info about other pkgs
+          lxde.lxsession # lightweight session manager
+          qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
+          libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
+          dialog # display dialog boxes from shell
           arandr
+          xfce.ristretto # photo viewer
+          qbittorrent # torrent downloader utility
+          notepadqq # notepad++ but for linux
+          xfce.xfce4-settings # setting manager
+          gnome.pomodoro # pomodor style timer for taking breaks
+          xfce.exo # this is for xfce shortcuts like open terminal
+          libsForQt5.ark # imo best linux archive manager
           (nixgl alacritty) # terminal, #show on rofi applications
           # (nixgl i3lock-color)
           feh
@@ -79,6 +104,12 @@ in
           xclip
           dialog
 
+          # compression
+          lzop
+          p7zip
+          unrar
+          zip
+
           # system
           xdg-utils
           gtk-layer-shell
@@ -92,6 +123,10 @@ in
 
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
+          # Try really hard to get QT to respect my GTK theme.
+          GTK_DATA_PREFIX = [ "${config.system.path}" ];
+          QT_QPA_PLATFORMTHEME = "gnome";
+          QT_STYLE_OVERRIDE = "kvantum";
         };
 
         sessionPath = [
@@ -181,19 +216,28 @@ in
           # package = (nixgl pkgs.unstable.bspwm);
           package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
           startupPrograms = [
+            "bspc desktop -f ^1"
             "pgrep -x sxhkd > /dev/null || sxhkd"
             # "nitrogen --restore"
+            # "lxpolkit" # prompt to enter sudo password daemon
+            # "flameshot"
             "${pkgs.polkit_gnome} /libexec/polkit-gnome-authentication-agent-1"
             "sleep 2; polybar -q everforest"
+            # "tmux new-session -d -s main" # for fast attach to tmux session
+            # "tmux new-session -d -s code" # for fast attach to tmux session
             # "thunar --daemon"
             # "${pkgs.flameshot}/bin/flameshot"
             # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
+            # run this last so it doesn't interupt other stuff.
+            # "lxappearance" & # Fix cursor not showing on desktop (background)
+            # "sleep 3"
+            # "pkill lxappearance" # Fix cursor not showing on desktop (background)
           ];
           alwaysResetDesktops = true;
           monitors = {
-            Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
-            HDMI-1-0 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
-            eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" ];
+            Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+            HDMI-1-0 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+            eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
           extraConfigEarly = ''
@@ -258,6 +302,102 @@ in
               desktop = "^3";
               focus = true;
             };
+            "librewolf" = {
+              desktop = "^3";
+              follow = "on";
+            };
+            "Thunar" = {
+              desktop = "^2";
+              follow = "on";
+            };
+            "Lxappearance" = {
+              desktop = "^10";
+              follow = "off";
+            };
+            "xst" = {
+              desktop = "^1";
+              follow = "on";
+            };
+            "alacritty" = {
+              desktop = "^1";
+              follow = "on";
+            };
+            "Bitwarden" = {
+              desktop = "^8";
+              follow = "on";
+            };
+            "Lutris" = {
+              desktop = "^4";
+              follow = "on";
+            };
+            "Postman" = {
+              desktop = "^9";
+              follow = "on";
+            };
+            "Notepadqq" = {
+              desktop = "^2";
+              follow = "on";
+            };
+            ".gimp-2.10-wrapped_" = {
+              desktop = "^5";
+              follow = "on";
+            };
+            "BleachBit" = {
+              desktop = "^10";
+              follow = "on";
+            };
+            "Clementine" = {
+              desktop = "^5";
+              follow = "on";
+            };
+            "haruna" = {
+              desktop = "^5";
+              follow = "on";
+            };
+            "GParted" = {
+              desktop = "^10";
+              follow = "on";
+            };
+            "Nvidia-settings" = {
+              desktop = "^10";
+              follow = "on";
+            };
+            "Ristretto" = {
+              desktop = "^5";
+              follow = "on";
+            };
+            "steam" = {
+              desktop = "^4";
+              follow = "on";
+            };
+            "Virt-manager" = {
+              desktop = "^5";
+              follow = "on";
+            };
+            "ark" = {
+              desktop = "^7";
+              follow = "on";
+            };
+            "Audacity" = {
+              desktop = "^5";
+              follow = "on";
+            };
+            "bottles" = {
+              desktop = "^4";
+              follow = "on";
+            };
+            "krita" = {
+              desktop = "^5";
+              follow = "on";
+            };
+            "Inkscape" = {
+              desktop = "^5";
+              follow = "on";
+            };
+            "Gnome-pomodoro" = {
+              desktop = "^1";
+              follow = "off";
+            };
             "Blueman-manager" = {
               state = "floating";
               center = true;
@@ -290,6 +430,8 @@ in
             # };
             "Pavucontrol" = {
               state = "floating";
+              desktop = "^10";
+              follow = "on";
             };
           };
         };

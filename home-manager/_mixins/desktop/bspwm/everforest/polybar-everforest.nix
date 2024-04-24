@@ -96,7 +96,10 @@ in
   services = {
     polybar = {
       enable = true;
-      package = nixgl pkgs.polybarFull;
+      package = nixgl pkgs.polybar.override {
+        pulseSupport = true;
+        nlSupport = true;
+      };
       script = "";
       settings = {
         ##################

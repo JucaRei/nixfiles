@@ -11,27 +11,32 @@
             start = "bspwm";
           }
         ];
+        sessionCommands = ''
+          # GTK2_RC_FILES must be available to the display manager.
+          export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+        '';
+
         # setupCommands = '''';
         lightdm = {
           enable = true;
-          background =
-            pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
+          background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
           greeters = {
-            # mini = {
-            #   enable = true;
-            # };
-            gtk = {
-              theme = {
-                name = "Dracula";
-                # package = pkgs.dracula-theme;
-                package = pkgs.tokyo-night-gtk;
-              };
-              cursorTheme = {
-                name = "Dracula-cursors";
-                package = pkgs.dracula-theme;
-                size = 16;
-              };
+            mini = {
+              enable = true;
+              user = "${username}";
             };
+            # gtk = {
+            #   theme = {
+            #     name = "Dracula";
+            #     # package = pkgs.dracula-theme;
+            #     package = pkgs.tokyo-night-gtk;
+            #   };
+            #   cursorTheme = {
+            #     name = "Dracula-cursors";
+            #     package = pkgs.dracula-theme;
+            #     size = 16;
+            #   };
+            # };
           };
         };
       };
@@ -47,6 +52,8 @@
         };
         mouse = { scrollMethod = "button"; };
       };
+
+      windowManager.bspwm.enable = true;
 
       resolutions = [
         {
@@ -67,6 +74,8 @@
     # getty = {
     #   autologinUser = "${username}";
     # };
+
+    tumbler.enable = true; # get thumbnails in ristretto
   };
 
   environment = {
@@ -104,4 +113,7 @@
     #   ];
     # };
   };
+
+  # this may be needed in some cases
+  programs.dconf.enable = true;
 }

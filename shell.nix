@@ -2,6 +2,12 @@
 # Enter it through 'nix develop' or (legacy) 'nix-shell'
 
 { pkgs ? (import ./nixpkgs.nix) { }, ... }:
+
+# with pkgs; let
+#   nixBin = writeShellScriptBin "nix" ''
+#     ${nixVersions.stable}/bin/nix --option experimental-features "nix-command flakes" "$@"
+#   '';
+# in
 {
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
@@ -26,6 +32,7 @@
       dropbear # ssh
     ];
     # ++ inputs.pkgs.legacyPackages.${system}.pinix
+
     shellHook = ''
       alias ssh="dbclient"
       echo "
@@ -37,5 +44,10 @@
         |_|      |_|  \__,_| |_|\_\  \___| |___/
       "
     '';
+    #   shellHook = ''
+    #     export FLAKE="$(pwd)"
+    #     export PATH="$FLAKE/bin:${nixBin}/bin:$PATH"
+    #   '';
+    # }
   };
 }
