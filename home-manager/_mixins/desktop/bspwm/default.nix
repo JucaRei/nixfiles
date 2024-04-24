@@ -124,7 +124,7 @@ in
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
           # Try really hard to get QT to respect my GTK theme.
-          GTK_DATA_PREFIX = [ "${config.system.path}" ];
+          # GTK_DATA_PREFIX = [ "${config.system.path}" ];
           QT_QPA_PLATFORMTHEME = "gnome";
           QT_STYLE_OVERRIDE = "kvantum";
         };
