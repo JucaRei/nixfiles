@@ -14,6 +14,7 @@ in
     ./everforest/polybar-everforest.nix
     ../../apps/file-managers/thunar.nix
     # ./polybar-batman.nix
+    ./dark
     ./everforest/picom.nix
     ./everforest/dunst.nix
   ];
@@ -55,6 +56,7 @@ in
           gnome.pomodoro # pomodor style timer for taking breaks
           xfce.exo # this is for xfce shortcuts like open terminal
           libsForQt5.ark # imo best linux archive manager
+          fluent
           (nixgl alacritty) # terminal, #show on rofi applications
           # (nixgl i3lock-color)
           feh
@@ -442,29 +444,29 @@ in
       };
     };
 
-    gtk = {
-      enable = true;
-      iconTheme = {
-        name = "Papirus-Dark";
-        package = pkgs.papirus-icon-theme;
-      };
-      theme = {
-        # package = pkgs.solarc-gtk-theme;
-        # name = "SolArc";
-        name = "zukitre-dark";
-        package = pkgs.zuki-themes;
-      };
-      gtk3.extraConfig = {
-        Settings = ''
-          gtk-application-prefer-dark-theme=1
-        '';
-      };
-      gtk4.extraConfig = {
-        Settings = ''
-          gtk-application-prefer-dark-theme=1
-        '';
-      };
-    };
+    # gtk = {
+    #   enable = true;
+    #   iconTheme = {
+    #     name = "Papirus-Dark";
+    #     package = pkgs.papirus-icon-theme;
+    #   };
+    #   theme = {
+    #     # package = pkgs.solarc-gtk-theme;
+    #     # name = "SolArc";
+    #     name = "zukitre-dark";
+    #     package = pkgs.zuki-themes;
+    #   };
+    #   gtk3.extraConfig = {
+    #     Settings = ''
+    #       gtk-application-prefer-dark-theme=1
+    #     '';
+    #   };
+    #   gtk4.extraConfig = {
+    #     Settings = ''
+    #       gtk-application-prefer-dark-theme=1
+    #     '';
+    #   };
+    # };
 
     services = {
       sxhkd = {
@@ -512,7 +514,7 @@ in
       #   package = nixgl pkgs.alacritty;
       #   settings = import ../../apps/terminal/alacritty.nix args;
       # };
-      rofi = import ./everforest/rofi.nix args;
+      # rofi = import ./everforest/rofi.nix args;
       feh = {
         enable = true;
         # package = pkgs.feh;

@@ -56,7 +56,7 @@
   # candy-icons = pkgs.callPackage ./system/themes/icons/candy-icons { };
   # colloid = pkgs.callPackage ./system/themes/icons/colloid { };
   # elementary = pkgs.callPackage ./system/themes/icons/elementary { };
-  # fluent = pkgs.callPackage ./system/themes/icons/fluent { };
+  fluent = pkgs.callPackage ./system/themes/icons/fluent { };
   # reversal = pkgs.callPackage ./system/themes/icons/reversal { };
   # rose-pine = pkgs.callPackage ./system/themes/icons/rose-pine { };
   # whitesur = pkgs.callPackage ./system/themes/icons/whitesur { };

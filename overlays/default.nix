@@ -133,6 +133,7 @@ in
 
     cloneit = prev.cloneit;
     lima-bin = prev.lima-bin;
+    fluent = prev.fluent;
     # chatgpt-cli = prev.chatgpt-cli;
     nix-cleanup = prev.nix-cleanup;
     nix-whereis = prev.nix-whereis;
