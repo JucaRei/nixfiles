@@ -316,7 +316,7 @@ in
             };
             "Lxappearance" = {
               desktop = "^10";
-              follow = "off";
+              follow = false;
             };
             "xst" = {
               desktop = "^1";
@@ -342,10 +342,10 @@ in
               desktop = "^2";
               follow = true;
             };
-            # ".gimp-2.10-wrapped_" = {
-            #   desktop = "^5";
-            #   follow = true;
-            # };
+            ".gimp-2.10-wrapped_" = {
+              desktop = "^5";
+              follow = true;
+            };
             "BleachBit" = {
               desktop = "^10";
               follow = true;
@@ -400,7 +400,7 @@ in
             };
             "Gnome-pomodoro" = {
               desktop = "^1";
-              follow = "off";
+              follow = false;
             };
             "Blueman-manager" = {
               state = "floating";
