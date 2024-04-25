@@ -308,11 +308,11 @@ in
             };
             "librewolf" = {
               desktop = "^3";
-              follow = "on";
+              follow = true;
             };
             "Thunar" = {
               desktop = "^2";
-              follow = "on";
+              follow = true;
             };
             "Lxappearance" = {
               desktop = "^10";
@@ -320,83 +320,83 @@ in
             };
             "xst" = {
               desktop = "^1";
-              follow = "on";
+              follow = true;
             };
             "alacritty" = {
               desktop = "^1";
-              follow = "on";
+              follow = true;
             };
             "Bitwarden" = {
               desktop = "^8";
-              follow = "on";
+              follow = true;
             };
             "Lutris" = {
               desktop = "^4";
-              follow = "on";
+              follow = true;
             };
             "Postman" = {
               desktop = "^9";
-              follow = "on";
+              follow = true;
             };
             "Notepadqq" = {
               desktop = "^2";
-              follow = "on";
+              follow = true;
             };
             # ".gimp-2.10-wrapped_" = {
             #   desktop = "^5";
-            #   follow = "on";
+            #   follow = true;
             # };
             "BleachBit" = {
               desktop = "^10";
-              follow = "on";
+              follow = true;
             };
             "Clementine" = {
               desktop = "^5";
-              follow = "on";
+              follow = true;
             };
             "haruna" = {
               desktop = "^5";
-              follow = "on";
+              follow = true;
             };
             "GParted" = {
               desktop = "^10";
-              follow = "on";
+              follow = true;
             };
             "Nvidia-settings" = {
               desktop = "^10";
-              follow = "on";
+              follow = true;
             };
             "Ristretto" = {
               desktop = "^5";
-              follow = "on";
+              follow = true;
             };
             "steam" = {
               desktop = "^4";
-              follow = "on";
+              follow = true;
             };
             "Virt-manager" = {
               desktop = "^5";
-              follow = "on";
+              follow = true;
             };
             "ark" = {
               desktop = "^7";
-              follow = "on";
+              follow = true;
             };
             "Audacity" = {
               desktop = "^5";
-              follow = "on";
+              follow = true;
             };
             "bottles" = {
               desktop = "^4";
-              follow = "on";
+              follow = true;
             };
             "krita" = {
               desktop = "^5";
-              follow = "on";
+              follow = true;
             };
             "Inkscape" = {
               desktop = "^5";
-              follow = "on";
+              follow = true;
             };
             "Gnome-pomodoro" = {
               desktop = "^1";
@@ -427,7 +427,7 @@ in
               sticky = true;
             };
             # "Kupfer.py" = {
-            #   focus = "on";
+            #   focus = true;
             # };
             # "Screenkey" = {
             #   manage = "off";
@@ -435,7 +435,7 @@ in
             "Pavucontrol" = {
               state = "floating";
               desktop = "^10";
-              follow = "on";
+              follow = true;
             };
           };
         };
