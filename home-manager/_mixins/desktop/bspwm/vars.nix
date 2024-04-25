@@ -1,4 +1,4 @@
-{ pkgs, config }:
+{ pkgs, config, hostname }:
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   chromium-browser = import ../../apps/browser/chrome/ungoogled-chromium.nix { inherit pkgs config; };
@@ -127,8 +127,8 @@ in
     offset = 2;
   };
 
-  mod = "super"; # alt
-  modAlt = "alt"; # alt
+  mod = if (hostname == "nitro") then "alt" else "super"; # alt
+  modAlt = if (hostname == "nitro") then "super" else "alt"; # alt
   alacritty-custom = (nixgl config.programs.alacritty.package);
   filemanager = "thunar";
 }

@@ -14,7 +14,6 @@ in
     ./everforest/polybar-everforest.nix
     ../../apps/file-managers/thunar.nix
     # ./polybar-batman.nix
-    ./dark
     ./everforest/picom.nix
     ./everforest/dunst.nix
   ];
@@ -444,29 +443,180 @@ in
       };
     };
 
-    # gtk = {
-    #   enable = true;
-    #   iconTheme = {
-    #     name = "Papirus-Dark";
-    #     package = pkgs.papirus-icon-theme;
-    #   };
-    #   theme = {
-    #     # package = pkgs.solarc-gtk-theme;
-    #     # name = "SolArc";
-    #     name = "zukitre-dark";
-    #     package = pkgs.zuki-themes;
-    #   };
-    #   gtk3.extraConfig = {
-    #     Settings = ''
-    #       gtk-application-prefer-dark-theme=1
-    #     '';
-    #   };
-    #   gtk4.extraConfig = {
-    #     Settings = ''
-    #       gtk-application-prefer-dark-theme=1
-    #     '';
-    #   };
+    gtk = {
+      enable = true;
+      gtk2 = {
+        configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
+        extraConfig = "gtk-theme-name=Fluent-Dark\ngtk-icon-theme-name=Papirus-Dark\ngtk-font-name=Fira Sans";
+      };
+      # gtk3 = {
+      #   "gtk-theme-name" = "Fluent-Dark";
+      #   "gtk-icon-theme-name" = "Papirus-Dark";
+      #   "gtk-cursor-theme-name" = "volantes_cursors";
+      #   "gtk-fallback-icon-theme" = "gnome";
+      #   # "gtk-application-prefer-dark-theme" = "true";
+      #   "gtk-xft-hinting" = 1;
+      #   "gtk-xft-hintstyle" = "hintfull";
+      #   "gtk-xft-rgba" = "none";
+      # };
+      # gtk4 = {
+      #   gtk-theme-name = "Fluent-Dark";
+      #   gtk-icon-theme-name = "Papirus-Dark";
+      #   gtk-cursor-theme-name = "volantes_cursors";
+      # };
+      iconTheme = {
+        name = "Papirus-Dark";
+        package = pkgs.papirus-icon-theme;
+      };
+      theme = {
+        name = "Fluent-Dark";
+        package = pkgs.fluent;
+      };
+      cursorTheme = {
+        name = "volantes_cursors";
+        package = pkgs.volantes-cursors;
+        size = 24;
+      };
+      font = {
+        name = "Fira Code";
+        package = pkgs.fira-code;
+      };
+    };
+
+    # qt = {
+    # enable = true;
+    # platformTheme = lib.mkForce "gtk";
+    # style = "gtk2";
     # };
+
+    xdg = {
+      configFile = {
+        ".Xresources" = lib.mkForce {
+          text = ''
+            !! urxvt
+            URxvt*depth:                   32
+            URxvt*.borderless:             1
+            URxvt*.buffered:               true
+            URxvt*.cursorBlink:            true
+            URxvt*.font:                   xft:monospace:pixelsize=12
+            URxvt*.internalBorder:         10
+            URxvt*.letterSpace:            0
+            URxvt*.lineSpace:              0
+            URxvt*.loginShell:             false
+            URxvt*.matcher.button:         1
+            URxvt*.matcher.rend.0:         Uline Bold fg5
+            URxvt*.saveLines:              5000
+            URxvt*.scrollBar:              false
+            URxvt*.underlineColor:         grey
+            URxvt.clipboard.autocopy:      true
+            URxvt.iso14755:                false
+            URxvt.iso14755_52:             false
+            URxvt.perl-ext-common:         default,matcher
+
+            !! st
+            Xft.antialias:	1
+            Xft.hinting:	1
+            Xft.autohint:	0
+            Xft.hintstyle:	hintslight
+            Xft.rgba:	rgb
+            Xft.lcdfilter:	lcddefault
+
+            st.font: FiraCode Nerd Font Mono:style=Medium,Regular:pixelsize=21.34:antialias=true
+
+            ! window padding
+            st.borderpx: 20
+
+            ! Set to a non-zero value to disable window decorations (titlebar, etc) and go borderless.
+            st.borderless:        1
+
+            st.disablebold:         1
+            st.disableitalics:         1
+            st.disableroman:         1
+
+            ! Amount of lines scrolled
+            st.scrollrate:  5
+
+            ! Kerning / character bounding-box height multiplier
+            st.chscale:           1.0
+
+            ! Kerning / character bounding-box width multiplier
+            st.cwscale:           1.0
+
+            ! Available cursor values: 2 4 6 7 = █ _ | ☃ ( 1 3 5 are blinking versions)
+            st.cursorshape:       6
+
+            ! thickness of underline and bar cursors
+            st.cursorthickness:   2
+
+            ! 1: render most of the lines/blocks characters without using the font for
+            ! perfect alignment between cells (U2500 - U259F except dashes/diagonals).
+            ! Bold affects lines thickness if boxdraw_bold is not 0. Italic is ignored.
+            ! 0: disable (render all U25XX glyphs normally from the font).
+            st.boxdraw: 0
+
+            ! (0|1) boxdraw(bold) enable toggle
+            st.boxdraw_bold: 0
+
+            ! braille (U28XX):  1: render as adjacent "pixels",  0: use font
+            st.boxdraw_braille: 0
+
+            ! set this to a non-zero value to force window depth
+            st.depth: 0
+
+            ! opacity==255 means what terminal will be not transparent, 0 - fully transparent
+            ! (float values in range 0 to 1.0 may also be used)
+            st.opacity:      0.5
+
+            st.background: #181f21
+            st.foreground: #dadada
+
+            ! Black + DarkGrey
+            st.color0:  #151515
+            st.color8:  #505050
+
+            ! DarkRed + Red
+            st.color1:  #ac4142
+            st.color9:  #ac4142
+
+            ! DarkGreen + Green
+            st.color2:  #7e8d50
+            st.color10: #7e8d50
+
+            ! DarkYellow + Yellow
+            st.color3:  #e5b566
+            st.color11: #e5b566
+
+            ! DarkBlue + Blue
+            st.color4:  #6c99ba
+            st.color12: #6c99ba
+
+            ! DarkMagenta + Magenta
+            st.color5:  #9e4e85
+            st.color13: #9e4e85
+
+            ! DarkCyan + Cyan
+            st.color6:  #7dd5cf
+            st.color14: #7dd5cf
+
+            ! LightGrey + White
+            st.color7:  #d0d0d0
+            st.color15: #f5f5f5
+          '';
+        };
+        "Fluent-Dark-kvantum" = {
+          recursive = true;
+          target = "Kvantum/Fluent-Dark";
+          source = ../../config/kvantum/Fluent-Dark;
+        };
+        "kvantum.kvconfig" = {
+          text = ''
+            [General]
+            theme=Fluent-Dark
+          '';
+          target = "Kvantum/kvantum.kvconfig";
+        };
+      };
+    };
 
     services = {
       sxhkd = {

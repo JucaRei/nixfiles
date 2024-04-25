@@ -129,10 +129,10 @@ in
     };
 
     home.file = {
-      "${config.xdg.configHome}/fish/functions/build-home.fish".text =
-        builtins.readFile ../../config/fish/build-home.fish;
-      "${config.xdg.configHome}/fish/functions/switch-home.fish".text =
-        builtins.readFile ../../config/fish/switch-home.fish;
+      # "${config.xdg.configHome}/fish/functions/build-home.fish".text =
+      # builtins.readFile ../../config/fish/build-home.fish;
+      # "${config.xdg.configHome}/fish/functions/switch-home.fish".text =
+      # builtins.readFile ../../config/fish/switch-home.fish;
       "${config.xdg.configHome}/fish/functions/help.fish".text =
         builtins.readFile ../../config/fish/help.fish;
       "${config.xdg.configHome}/fish/functions/h.fish".text =
