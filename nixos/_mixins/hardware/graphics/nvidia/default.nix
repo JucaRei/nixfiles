@@ -1,7 +1,4 @@
-{ config
-, pkgs
-, ...
-}:
+{ config, pkgs, ... }:
 let
   gpu-on = pkgs.writeScriptBin "gpu-on" ''
     #!/bin/sh
