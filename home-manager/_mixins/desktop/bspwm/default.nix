@@ -1,9 +1,9 @@
-{ pkgs, config, lib, ... }@args:
+{ pkgs, config, lib, hostname, ... }@args:
 with lib;
 let
   _ = lib.getExe;
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
-  vars = import ./vars.nix { inherit pkgs config; };
+  vars = import ./vars.nix { inherit pkgs config hostname; };
   windowMan = "${_ config.xsession.windowManager.bspwm.package}";
   isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true;
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
@@ -279,6 +279,9 @@ in
             pointer_action3 = "resize_corner";
             click_to_focus = "button1";
             focus_follows_pointer = true;
+            top_padding = 2;
+            left_padding = 1;
+            right_padding = 1;
             border_width = 2;
             window_gap = 10;
             top_monocle_padding = 6;
@@ -292,9 +295,9 @@ in
             borderless_monocle = false;
             gapless_monocle = false;
             paddingless_mono = true;
-            normal_border_color = "#343c40"; # "#1E1F29";
+            normal_border_color = "#b8bfe5"; # "#343c40"; # "#1E1F29"
             active_border_color = "#DBBC7F";
-            focused_border_color = "#DBBC7F"; # "#BD93F9";
+            focused_border_color = "#81ae5f"; # "#BD93F9";
             presel_border_color = "#343c40"; #"#FF79C6";
           };
 

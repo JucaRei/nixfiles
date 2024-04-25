@@ -1,7 +1,7 @@
-{ pkgs, config, lib ? pkgs.lib, username, ... }:
+{ pkgs, config, lib ? pkgs.lib, username, hostname, ... }:
 let
   nixgl = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
-  vars = import ../vars.nix { inherit pkgs config; };
+  vars = import ../vars.nix { inherit pkgs config hostname; };
 
   okay = green;
   warn = orange;
@@ -209,7 +209,7 @@ in
           modules-center = "";
           # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
           # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
-          modules-right = "sep temperature blok2 filesystem blok2 memory_bar blok2 cpu_bar blok pulseaudio-control-output blok date blok2 battery blok powermenu";
+          modules-right = "sep temperature filesystem memory_bar  cpu_bar pulseaudio-control-output date  battery powermenu";
 
           spacing = 0;
           # separator =
@@ -217,14 +217,14 @@ in
 
           locale = "pt_BR.UTF-8";
 
-          tray-position = "none";
-          tray-detached = false;
-          tray-maxsize = 16;
-          tray-background = "${sapphire}";
-          tray-offset-x = 0;
-          tray-offset-y = 0;
-          tray-padding = 9;
-          tray-scale = 1.0;
+          # tray-position = "none";
+          # tray-detached = false;
+          # tray-maxsize = 16;
+          # tray-background = "${sapphire}";
+          # tray-offset-x = 0;
+          # tray-offset-y = 0;
+          # tray-padding = 9;
+          # tray-scale = 1.0;
 
           wm-restack = "bspwm";
           enable-ipc = true;
@@ -350,6 +350,17 @@ in
           format-prefix-background = "${mb}";
           format-prefix-foreground = "${amber}";
           label = "%date% %time%";
+        };
+        "module/tray" = {
+          type = "internal/tray";
+
+          format = "<tray>";
+          format-background = "${bg}";
+          tray-background = "${bg}";
+          tray-foreground = "${fg}";
+          tray-spacing = "7px";
+          tray-padding = "0px";
+          tray-size = "40%";
         };
         "module/filesystem" = {
           type = "internal/fs";
@@ -502,7 +513,7 @@ in
           pin-workspaces = true;
           occupied-scroll = false;
           background = "${pallete}";
-          format = "%{T4}<label-state>%{T-}";
+          format = "%{T3}<label-state>%{T-}";
           format-background = "$\{self.${bg}}";
           format-prefix = "$\{default.triangle-left}";
           format-prefix-foreground = "$\{self.${bg}}";
@@ -527,7 +538,7 @@ in
         };
         "module/launcher" = {
           type = "custom/text";
-          content = " ";
+          content = "  ";
           content-foreground = "${blue-arch}";
           content-font = 4;
           click-left = "${pkgs.rofi}/bin/rofi -no-lazy-grab -show drun";
@@ -654,6 +665,18 @@ in
         content = "%{T5}%{T-}"
         # content = "%{T3}%{T-}";
         content-foreground = #2E4374
+
+        [module/round-left2]
+        type = "custom/text"
+        content = "%{T2}%{T-}"
+        # content = "%{T3}%{T-}";
+        content-foreground = #5755FE
+
+        [module/round-right2]
+        type = "custom/text"
+        content = "%{T5}%{T-}"
+        # content = "%{T3}%{T-}";
+        content-foreground = #5755FE
 
         [module/bi]
         type                        = custom/text

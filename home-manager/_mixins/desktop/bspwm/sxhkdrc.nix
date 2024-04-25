@@ -1,10 +1,10 @@
-args@{ pkgs, config, lib, ... }:
+args@{ pkgs, config, lib, hostname, ... }:
 let
   _ = lib.getExe;
   terminal = "${_ vars.alacritty-custom}";
   # browser = "chromium-browser";
   browser = "${config.programs.chromium.package}/bin/chromium-browser";
-  vars = import ./vars.nix { inherit pkgs config; };
+  vars = import ./vars.nix { inherit pkgs config hostname; };
   filemanager = vars.filemanager;
 
 
