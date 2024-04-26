@@ -130,13 +130,15 @@ in
   '';
 
   # Switch to different workspaces with back-and-forth support
-  "${vars.mod} + {1-9,0}" = ''
+  "${vars.modAlt} + {1-9,0}" = ''
     desktop='^{1-9,10}'; \
           bspc query -D -d "$desktop.focused" && bspc desktop -f last || bspc desktop -f "$desktop"
   '';
 
   # Scratchpad
   "${vars.mod} + z" = "bspc node focused -t floating; bspc node -d '^12'";
+  # Scratchpad
+  # "super + alt + o" = "${pkgs.tdrop}/bin/tdrop -a -w 70% -h 35% -y 0 -x 15%  --class scratch alacritty --class=scratch";
   "alt + Tab" = "rofi -show window -window-thumbnail";
 
   # Move windows to different workspaces
@@ -205,16 +207,16 @@ in
   ### Control Keys ###
   ####################
 
-  # XF86AudioMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle%";
-  XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
-  XF86AudioRaiseVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-  XF86AudioLowerVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-  # "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
-  XF86AudioMicMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
+  # XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
+  # XF86AudioRaiseVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+  # XF86AudioLowerVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+  XF86AudioMute = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle%";
+  "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
+  XF86AudioMicMute = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
   # XF86AudioMicMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-source-mute 0 toggle%";
   # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
-  XF86MonBrightnessUp = "exec --no-startup-id ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
-  XF86MonBrightnessDown = "exec --no-startup-id ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
+  XF86MonBrightnessUp = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
+  XF86MonBrightnessDown = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
   # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
   # XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2";
   # XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";

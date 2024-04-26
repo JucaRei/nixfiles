@@ -116,15 +116,15 @@ in
       };
     };
 
-  xfconf.settings = {
-    thunar = {
-      "default-view" = "ThunarDetailsView";
-      "misc-middle-click-in-tab" = true;
-      "misc-open-new-window-as-tab" = true;
-      "misc-single-click" = false;
-      "misc-volume-management" = false;
-    };
-  };
+  # xfconf.settings = {
+  #   thunar = {
+  #     "default-view" = "ThunarDetailsView";
+  #     "misc-middle-click-in-tab" = true;
+  #     "misc-open-new-window-as-tab" = true;
+  #     "misc-single-click" = false;
+  #     "misc-volume-management" = false;
+  #   };
+  # };
 
   xdg.mimeApps = {
     defaultApplications = { "inode/directory" = [ "thunar.desktop" ]; };

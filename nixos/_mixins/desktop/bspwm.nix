@@ -3,10 +3,12 @@
     xserver = {
       enable = true;
       displayManager = {
-        defaultSession = "none+fake";
+        # defaultSession = "none+fake";
+        defaultSession = "none+bspwm";
         session = [
           {
-            name = "fake";
+            # name = "fake";
+            name = "bspwm";
             manage = "window";
             start = "bspwm";
           }
@@ -40,19 +42,6 @@
           };
         };
       };
-      libinput = {
-        enable = true;
-        touchpad = {
-          tapping = lib.mkDefault true;
-          scrollMethod = "twofinger";
-          # naturalScrolling = false;
-          # accelProfile = "adaptive";
-          disableWhileTyping = true;
-          sendEventsMode = "disabled-on-external-mouse";
-        };
-        mouse = { scrollMethod = "button"; };
-      };
-
       windowManager.bspwm.enable = true;
 
       resolutions = [

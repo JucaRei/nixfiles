@@ -152,7 +152,7 @@
     #  inputs.emacs-overlay.follows = "emacs-overlay";
     #};
 
-    nixos-needtoreboot.url = github:thefossguy/nixos-needsreboot;
+    nixos-needtoreboot.url = "github:thefossguy/nixos-needsreboot";
     nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
 
     # Hyprland

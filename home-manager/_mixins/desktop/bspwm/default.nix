@@ -630,7 +630,7 @@ in
         keybindings = import ./sxhkdrc.nix args;
       };
       fusuma = {
-        enable = true;
+        enable = false;
         extraPackages = with pkgs;[ xdo xdotool libinput coreutils xorg.xprop ];
         settings = {
           swipe = {
