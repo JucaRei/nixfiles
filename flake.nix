@@ -259,7 +259,7 @@
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
           # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
-          "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
+          "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "bspwm"; };
           "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
           "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
           "juca@oldarch" = libx.mkHome { hostname = "oldarch"; username = "juca"; desktop = "xfce"; stateVersion = "23.05"; };
@@ -309,7 +309,7 @@
         nitro = libx.mkHost {
           hostname = "nitro";
           username = "juca";
-          desktop = "gnome";
+          desktop = "bspwm";
           # desktop = "hyprland";
           hostid = "ceafb566";
           # isNixOS = true;

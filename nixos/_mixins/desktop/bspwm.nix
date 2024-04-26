@@ -25,18 +25,18 @@
               enable = true;
               user = "${username}";
             };
-            # gtk = {
-            #   theme = {
-            #     name = "Dracula";
-            #     # package = pkgs.dracula-theme;
-            #     package = pkgs.tokyo-night-gtk;
-            #   };
-            #   cursorTheme = {
-            #     name = "Dracula-cursors";
-            #     package = pkgs.dracula-theme;
-            #     size = 16;
-            #   };
-            # };
+            gtk = {
+              theme = {
+                name = "Dracula";
+                package = pkgs.dracula-theme;
+                # package = pkgs.tokyo-night-gtk;
+              };
+              cursorTheme = {
+                name = "Dracula-cursors";
+                package = pkgs.dracula-theme;
+                size = 16;
+              };
+            };
           };
         };
       };
