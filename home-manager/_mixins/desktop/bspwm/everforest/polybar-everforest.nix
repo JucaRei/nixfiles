@@ -9,6 +9,11 @@ let
   alert = cyan;
   dim = grey;
 
+  polybar-custom = (pkgs.polybar.override {
+    pulseSupport = true;
+    nlSupport = true;
+  });
+
   # --icon-playing "${okay ""}"
 
   player-mpris-tail = pkgs.writeShellScriptBin "player-mpris-tail" ''
@@ -96,10 +101,7 @@ in
   services = {
     polybar = {
       enable = true;
-      package = (nixgl (pkgs.polybar.override {
-        pulseSupport = true;
-        nlSupport = true;
-      }));
+      package = polybar-custom;
       script = "";
       settings = {
         ##################

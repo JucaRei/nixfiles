@@ -56,7 +56,7 @@ in
           xfce.exo # this is for xfce shortcuts like open terminal
           libsForQt5.ark # imo best linux archive manager
           fluent
-          (nixgl alacritty) # terminal, #show on rofi applications
+          # (nixgl alacritty) # terminal, #show on rofi applications
           # (nixgl i3lock-color)
           feh
           gtk-engine-murrine
