@@ -43,7 +43,7 @@ in
           picom # compositor
           flameshot # cool utility for taking screen shots
           # pkg-config # a tool for pkgs to find info about other pkgs
-          lxde.lxsession # lightweight session manager
+          # lxde.lxsession # lightweight session manager
           qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
           libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
           dialog # display dialog boxes from shell
