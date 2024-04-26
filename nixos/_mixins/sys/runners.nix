@@ -27,7 +27,7 @@ in
       interpreter = "/run/current-system/sw/bin/appimage-run";
     });
 
-    nix-ld = mkIf (isInstall) {
+    programs.nix-ld = mkIf (isInstall) {
       enable = true;
       libraries = with pkgs; [
         # Add any missing dynamic libraries for unpackaged
