@@ -45,8 +45,8 @@
         touchpad = {
           tapping = lib.mkDefault true;
           scrollMethod = "twofinger";
-          naturalScrolling = false;
-          accelProfile = "adaptive";
+          # naturalScrolling = false;
+          # accelProfile = "adaptive";
           disableWhileTyping = true;
           sendEventsMode = "disabled-on-external-mouse";
         };
@@ -114,6 +114,23 @@
     # };
   };
 
+  xdg = {
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      # extraPortals = with pkgs; lib.mkForce [ xdg-desktop-portal-gnome ];
+      config = {
+        common = { default = [ "gtk" ]; };
+        gnome = {
+          default = [ "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        };
+      };
+    };
+  };
+
   # this may be needed in some cases
   programs.dconf.enable = true;
+
+  services.gnome.gnome-keyring.enable = true;
 }

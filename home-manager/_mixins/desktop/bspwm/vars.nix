@@ -129,6 +129,6 @@ in
 
   mod = if (hostname == "nitro") then "alt" else "super"; # alt
   modAlt = if (hostname == "nitro") then "super" else "alt"; # alt
-  alacritty-custom = (nixgl config.programs.alacritty.package);
+  alacritty-custom = if (hostname != "nitro") then (nixgl config.programs.alacritty.package) else (config.programs.alacritty.package);
   filemanager = "thunar";
 }
