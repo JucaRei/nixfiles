@@ -102,14 +102,14 @@ in
       # keep-going = false;
       warn-dirty = false;
 
-      system-features = [
-        ## Allows building v3/v4 packages
-        "gccarch-x86-64-v3"
-        "gccarch-x86-64-v4"
-        "kvm"
-        "big-parallel"
-        "nixos-test"
-      ];
+      # system-features = [
+      #   ## Allows building v3/v4 packages
+      #   "gccarch-x86-64-v3"
+      #   "gccarch-x86-64-v4"
+      #   "kvm"
+      #   "big-parallel"
+      #   "nixos-test"
+      # ];
 
     };
 
@@ -615,7 +615,7 @@ in
 
     xserver = {
       libinput = {
-        enable = true;
+        enable = lib.mkForce true;
         touchpad = {
           # horizontalScrolling = true;
           # tappingDragLock = false;
@@ -625,7 +625,8 @@ in
           scrollMethod = "twofinger";
           disableWhileTyping = true;
           # sendEventsMode = "disabled-on-external-mouse";
-          # clickMethod = "clickfinger";
+          sendEventsMode = lib.mkForce "enabled";
+          clickMethod = "clickfinger";
         };
         mouse = {
           naturalScrolling = false;
