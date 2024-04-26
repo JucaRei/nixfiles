@@ -35,8 +35,10 @@ let
   # ;; Dark Add FC at the beginning #FC1E1F29 for 99 transparency
   bg = "#2D353B";
   bg-alt = "#1e1e2e";
-  fg = "#d3c6aa";
-  mb = "#2D353B";
+  fg = "#d3c6aa"; # "#c5c9c5"
+  # fg = "#c5c9c5";
+  mb = "#2D353B"; #"#242121"
+  # mb = "#242121";
 
   trans = "#00000000";
   white = "#FFFFFF";
@@ -59,6 +61,7 @@ let
   teal = "#94e2d5";
   lavender = "#b4befe";
   purple = "#D699B6";
+  purple-1 = "#938AA9";
   pink = "#EC407A";
   cyan = "#79E6F3";
   lime = "#B9C244";
@@ -175,7 +178,7 @@ in
           override-redirect = false;
 
           bottom = false;
-          fixed-center = true;
+          fixed-center = false;
 
           width = "99%";
           height = 24;
@@ -207,8 +210,8 @@ in
           font-5 = with vars.everforest-5; "${ftname};${toString offset}";
           font-6 = with vars.everforest-6; "${ftname};${toString offset}";
 
-          modules-left = "launcher blok bspwm round-left polywins round-right";
-          modules-center = "";
+          modules-left = "launcher bspwm round-left polywins round-right";
+          modules-center = "title";
           # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
           # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
           modules-right = "sep temperature filesystem memory_bar  cpu_bar pulseaudio-control-output date  battery powermenu";
@@ -259,9 +262,9 @@ in
         # ; Look for network: "ls -l /sys/class/net"
         "system" = {
           adapter = "AC";
-          battery = "BAT1";
-          graphics_card = "intelgpu";
-          network_interface = "wlan0";
+          battery = if (hostname == "nitro") then "BAT1" else "BAT0";
+          graphics_card = "intel_backlight";
+          network_interface = if (hostname == "nitro") then "enp7s0f1" else "wlan0";
         };
         ###################
         ### Modules.ini ###
@@ -373,7 +376,7 @@ in
           format-mounted = "<label-mounted>";
           format-mounted-prefix = "󰋊 ";
           format-mounted-prefix-background = "${mb}";
-          format-mounted-prefix-foreground = "${yellow}";
+          format-mounted-prefix-foreground = "${purple-1}";
           format-unmounted = "<label-unmounted>";
           format-unmounted-prefix = "󰋊 ";
           # ; label-mounted = "%used%";
@@ -530,7 +533,7 @@ in
           label-occupied = "󰊠";
           label-occupied-padding = 1;
           label-occupied-background = "${mb}";
-          label-occupied-foreground = "${blue}";
+          label-occupied-foreground = "${pallete}";
           label-urgent = "%icon%";
           label-urgent-padding = 0;
           label-empty = "󰑊";
@@ -542,6 +545,7 @@ in
           type = "custom/text";
           content = "  ";
           content-foreground = "${blue-arch}";
+          # content-background = "${lavender}";
           content-font = 4;
           click-left = "${pkgs.rofi}/bin/rofi -no-lazy-grab -show drun";
         };
@@ -575,7 +579,7 @@ in
           format = "<label>";
           format-foreground = "#99CEF0";
           label = "  %title%";
-          label-maxlen = "25 ...";
+          label-maxlen = "20...";
         };
         "module/cpu_bar" = {
           type = "internal/cpu";
@@ -652,13 +656,31 @@ in
           tail = false;
           interval = 960;
         };
+        "module/brightness" = {
+          type = "internal/backlight";
+          card = "$\{system.sys_graphics_card}";
+          enable-scroll = false;
+          format = "<ramp><label>";
+          label = "%percentage%% ";
+          ramp-0 = "󰃚";
+          ramp-1 = "󰃚";
+          ramp-2 = "󰃝";
+          ramp-3 = "󰃝";
+          ramp-4 = "󰃟";
+          ramp-5 = "󰃟";
+          ramp-6 = "󰃠";
+          ramp-7 = "󰃠";
+          ramp-font = 2;
+          ramp-padding = "3pt";
+          ramp-foreground = "${yellow}";
+        };
       };
       extraConfig = ''
         ### Decor.ini
 
         [module/round-left]
         type = "custom/text"
-        content = "%{T2}%{T-}"
+        content = "%{T3}%{T-}"
         # content = "%{T3}%{T-}";
         content-foreground = #2E4374
 
@@ -682,7 +704,7 @@ in
 
         [module/bi]
         type                        = custom/text
-        content                     = "%{T5}%{T-}"
+        content                     = "%{T4}%{T-}"
         content-foreground          = ${mb}
         content-background          = ${bg}
 
@@ -690,7 +712,7 @@ in
 
         [module/bd]
         type                        = custom/text
-        content                     = "%{T5}%{T-}"
+        content                     = "%{T4}%{T-}"
         content-foreground          = ${mb}
         content-background          = ${bg}
 

@@ -631,7 +631,7 @@ in
       };
       fusuma = {
         enable = true;
-        extraPackages = with pkgs;[ xdo xdotool coreutils xorg.xprop ];
+        extraPackages = with pkgs;[ xdo xdotool libinput coreutils xorg.xprop ];
         settings = {
           swipe = {
             "3" = {
