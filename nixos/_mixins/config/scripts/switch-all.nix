@@ -5,7 +5,7 @@ pkgs.writeScriptBin "switch-all" ''
 
   if [ -e $HOME/.dotfiles/nixfiles ]; then
     all_cores=$(nproc)
-    build_cores=$(printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
+    build_cores=$(${pkgs.coreutils-full}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
     echo "Switching NixOS with $build_cores cores"
     ${pkgs.unstable.nh}/bin/nh os switch ~/.dotfiles/nixfiles -- --cores $build_cores
     echo "Switching Home Manager with $build_cores cores"

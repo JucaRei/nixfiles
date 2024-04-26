@@ -42,17 +42,12 @@ with lib;
         # icloud-photo-downloader
         # (wrapProgram vlc)
         # cloneit
-        # unstable.vscode-fhs
-        #unstable.vscode-with-extensions
         # deezer-gui
         # fantezy
-        # gcc
-        # gnumake
         transmission_4-gtk
         nix-whereis
         nf-iosevka
         gedit
-        # lua
         # fcitx5-with-addons
         # vv
         # gparted
@@ -63,12 +58,18 @@ with lib;
         # thorium
       ];
 
-      # keyboard = {
-      #   layout = "br";
-      #   model = "pc105";
-      #   options = "grp:alt_shift_toggle";
-      #   variant = "abnt2";
-      # };
+      keyboard = lib.mkForce {
+        # layout = "br,us";
+        layout = "br";
+        model = "abnt2";
+        # model = "abnt2,altgr-intl";
+        options = [
+          "grp:shifts_toggle"
+          # "eurosign:e"
+        ];
+        # variant = "nodeadkeys";
+        # variant = "nativo";
+      };
 
       # file.".config/testingFOLDER/testing.txt".text = ''
       #   ${testing}

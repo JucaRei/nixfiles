@@ -7,6 +7,7 @@ let
   windowMan = "${_ config.xsession.windowManager.bspwm.package}";
   isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true;
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
+  # startPolybar = pkgs.writeShellScriptBin
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
@@ -22,10 +23,7 @@ in
       {
         # zsh-history-substring-search zsh-syntax-highlighting
         packages = with pkgs; [
-          sxhkd
-          gnome.file-roller
-          feh # image viewer
-          betterlockscreen # lockscreen
+          ### Utils
           xclip
           xdotool
           xorg.xinit
@@ -37,6 +35,11 @@ in
           xorg.xsetroot
           xorg.xwininfo
           xorg.xrandr
+
+          sxhkd
+          gnome.file-roller
+          feh # image viewer
+          betterlockscreen # lockscreen
           sqlite # database
           usbutils # usb utilities
           xdg-user-dirs # create xdg user dirs
@@ -278,7 +281,7 @@ in
             pointer_action2 = "resize_side";
             pointer_action3 = "resize_corner";
             click_to_focus = "button1";
-            focus_follows_pointer = true;
+            focus_follows_pointer = false;
             top_padding = 2;
             left_padding = 1;
             right_padding = 1;

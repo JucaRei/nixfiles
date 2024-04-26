@@ -9,7 +9,7 @@ pkgs.writeScriptBin "build-iso" ''
 
   if [ -e $HOME/.dotfiles/nixfiles ]; then
     all_cores=$(nproc)
-    build_cores=$(printf "%.0f" $(echo "$all_cores * 0.75" | bc))
+    build_cores=$(${pkgs.coreutils-full}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | bc))
     pushd $HOME/.dotfiles/nixfiles 2>&1 > /dev/null
     echo "Building ISO ($1) with $build_cores cores"
     ${pkgs.nix-output-monitor}/bin/nom build .#nixosConfigurations.iso-$1.config.system.build.isoImage -L --cores $build_cores
