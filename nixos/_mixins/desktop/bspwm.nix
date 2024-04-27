@@ -121,5 +121,12 @@
   # this may be needed in some cases
   programs.dconf.enable = true;
 
-  services.gnome.gnome-keyring.enable = true;
+  services = {
+    gnome.gnome-keyring.enable = true;
+    # udev = {
+    #   extraRules = ''
+    #     ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video %S%p/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w %S%p/brightness"
+    #   '';
+    # };
+  };
 }

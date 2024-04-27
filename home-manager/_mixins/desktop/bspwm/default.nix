@@ -95,6 +95,9 @@ in
           playerctl
           imagemagick
           parcellite
+          rofi
+          libnotify
+          dunst
 
           # utils
           jq
@@ -129,8 +132,13 @@ in
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
           # Try really hard to get QT to respect my GTK theme.
           # GTK_DATA_PREFIX = [ "${config.system.path}" ];
-          QT_QPA_PLATFORMTHEME = "gnome";
+          # QT_QPA_PLATFORMTHEME = "gnome";
           QT_STYLE_OVERRIDE = "kvantum";
+          QT_QPA_PLATFORMTHEME = "gtk3";
+          EDITOR = "micro";
+          BROWSER = "firefox";
+          TERMINAL = "alacritty";
+          GLFW_IM_MODULE = "ibus";
         };
 
         sessionPath = [
@@ -453,12 +461,15 @@ in
       enable = true;
       gtk2 = {
         configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
-        extraConfig = "gtk-theme-name=Fluent-Dark\ngtk-icon-theme-name=Papirus-Dark\ngtk-font-name=Fira Sans";
-      };
+        extraConfig = "gtk-theme-name=Yaru-purple-dark\ngtk-icon-theme-name=Papirus-Dark\ngtk-font-name=Fira\ Sans";
+      }; #Fluent-Dark
       # gtk3 = {
       #   "gtk-theme-name" = "Fluent-Dark";
-      #   "gtk-icon-theme-name" = "Papirus-Dark";
-      #   "gtk-cursor-theme-name" = "volantes_cursors";
+      # gtk-icon-theme-name = "ePapirus-Dark";
+      # gtk-theme-name = "Yaru-purple-dark";
+      # gtk-cursor-theme-name = "volantes_cursors";
+      # gtk-cursor-theme-size = "24";
+      # gtk-font-name = "Fira Sans";
       #   "gtk-fallback-icon-theme" = "gnome";
       #   # "gtk-application-prefer-dark-theme" = "true";
       #   "gtk-xft-hinting" = 1;
@@ -466,17 +477,24 @@ in
       #   "gtk-xft-rgba" = "none";
       # };
       # gtk4 = {
+      # gtk-icon-theme-name = "ePapirus-Dark";
+      # gtk-theme-name = "Yaru-purple-dark";
+      # gtk-cursor-theme-name = "volantes_cursors";
+      # gtk-cursor-theme-size = "24";
+      # gtk-font-name = "Fira Sans";
       #   gtk-theme-name = "Fluent-Dark";
       #   gtk-icon-theme-name = "Papirus-Dark";
       #   gtk-cursor-theme-name = "volantes_cursors";
       # };
       iconTheme = {
-        name = "Papirus-Dark";
+        name = "ePapirus-Dark";
         package = pkgs.papirus-icon-theme;
       };
       theme = {
-        name = "Fluent-Dark";
-        package = pkgs.fluent;
+        # name = "Fluent-Dark";
+        # package = pkgs.fluent;
+        name = "Yaru-purple-dark";
+        package = pkgs.yaru-theme;
       };
       cursorTheme = {
         name = "volantes_cursors";

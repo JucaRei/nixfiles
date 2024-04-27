@@ -2,22 +2,21 @@ args@{ pkgs, config, lib, hostname, ... }:
 let
   _ = lib.getExe;
   terminal = "${_ vars.alacritty-custom}";
-  # browser = "chromium-browser";
-  browser = "${config.programs.chromium.package}/bin/chromium-browser";
+  browser = "brave";
+  # browser = "${config.programs.chromium.package}/bin/chromium-browser";
   vars = import ./vars.nix { inherit pkgs config hostname; };
   filemanager = vars.filemanager;
 
-
-  sxhkd_helper = pkgs.writeScriptBin "sxhkd_helper" ''
-    #!${pkgs.stdenv.shell}
-    ${pkgs.gawk}/bin/awk '/^[a-z]/ && last {print "<small>",$0,"\t",last,"</small>"} {last=""} /^#/{last=$0}' ~/.config/sxhkd/sxhkdrc |
-    column -t -s $'\t' |
-    ${pkgs.rofi}/bin/rofi -dmenu -i -markup-rows -no-show-icons'';
+  #!${pkgs.stdenv.shell}
+  # sxhkd_helper = pkgs.writeScriptBin "sxhkd_helper" ''
+  #   ${pkgs.awk}/bin/awk '/^[a-z]/ && last {print "<small>",$0,"\t",last,"</small>"} {last=""} /^#/{last=$0}' ~/.config/sxhkd/sxhkdrc |
+  #       column -t -s $'\t' |
+  #       ${pkgs.rofi}/bin/rofi -dmenu -i -markup-rows -no-show-icons -width 1000 -lines 15 -yoffset 40
+  # '';
 in
 {
   "${vars.mod} + Return" = "${terminal}"; # Terminal
   "${vars.mod} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
-  "${vars.modAlt} + shift + Return" = "${terminal} --class='Alacritty','floating'"; # Terminal
   "${vars.mod} + b" = "${browser}"; # web-browser
   "${vars.mod} + shift + b" = "${browser} --new-window https://youtube.com/"; # web-browser
   "${vars.mod} + shift + p" = "${browser} --private-window"; # web-browser
@@ -28,7 +27,7 @@ in
   "F1" = "rofi -show calc -modi calc --no-show-match --no-sort -lines 2";
   # emoji
   "F2" = "rofi -show emoji -modi emoji";
-  "${vars.modAlt} + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
+  # "${vars.modAlt} + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
 
   # make sxhkd reload its configuration files:
   "ctrl + ${vars.modAlt} + escape" = ''
@@ -73,6 +72,9 @@ in
   # "${vars.mod} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
 
   "${vars.mod} + g" = ''if [ \"$(bspc config window_gap)\" -eq 0 ]; then bspc config window_gap 12; bspc config border_width 2; else bspc config window_gap 0; bspc config border_width 0; fi'';
+
+  # Move current window to a pre-selected space
+  "${vars.mod} + shift + m" = "bspc node -n last.!automatic";
 
   "${vars.mod} + {_,shift} + {u,i}" = "bspc {monitor -f,node -m} {prev,next}"; # focus or send to the next monitor
 
@@ -130,10 +132,7 @@ in
   '';
 
   # Switch to different workspaces with back-and-forth support
-  "${vars.modAlt} + {1-9,0}" = ''
-    desktop='^{1-9,10}'; \
-          bspc query -D -d "$desktop.focused" && bspc desktop -f last || bspc desktop -f "$desktop"
-  '';
+  "${vars.modAlt} + {1-9,0}" = "bspc {desktop -f,node -d} '{1-9,0}'";
 
   # Scratchpad
   "${vars.mod} + z" = "bspc node focused -t floating; bspc node -d '^12'";
@@ -142,7 +141,10 @@ in
   "alt + Tab" = "rofi -show window -window-thumbnail";
 
   # Move windows to different workspaces
-  "${vars.mod} + shift + {1-9,0}" = "bspc node -d ^{1-9,10}";
+  "${vars.mod} + shift + {1-9,0}" = "bspc node -d '^{1-9,10}' --follow";
+
+  # Send to monitor
+  "${vars.mod} + shift + equal" = "bspc node -m last --follow";
 
   #################
   ### Preselect ###
@@ -166,6 +168,9 @@ in
   "${vars.mod} + y" = "bspc node @parent -R 90";
   "${vars.mod} + r" = "bspc node @focused:/ --rotate 90";
   "${vars.mod} + shift + r" = "bspc node @focused:/ --rotate 180";
+
+  # Rotate tree
+  "${vars.mod} + shift + {d,a}" = "bspc node @/ -C {forward,backward}";
 
   # Send the newest marked node to the newest preselected node
   "${vars.mod} + shift + y" = "bspc node newest.marked.local -n newest.!automatic.local";
@@ -211,12 +216,14 @@ in
   # XF86AudioRaiseVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
   # XF86AudioLowerVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
   XF86AudioMute = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle%";
-  "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
+  "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
   XF86AudioMicMute = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
   # XF86AudioMicMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-source-mute 0 toggle%";
   # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
-  XF86MonBrightnessUp = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
-  XF86MonBrightnessDown = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
+  # XF86MonBrightnessUp = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
+  # XF86MonBrightnessDown = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
+  XF86MonBrightnessUp = "exec ${pkgs.brillo}/bin/brillo -e -A 0.5";
+  XF86MonBrightnessDown = "exec ${pkgs.brillo}/bin/brillo -e -U 0.5";
   # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
   # XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2";
   # XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";

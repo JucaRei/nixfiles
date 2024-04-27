@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./rofi/rofi.nix
     ./polybar/polybar.nix
