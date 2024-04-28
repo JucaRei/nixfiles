@@ -33,7 +33,6 @@ in
             lib.mkIf isLinux
               "${pkgs.figlet}/bin/figlet $argv | ${pkgs.dotacat}/bin/dotacat";
           brg = "${pkgs.bat-extras.batgrep}/bin/batgrep";
-          cat = "${pkgs.bat}/bin/bat --paging=never";
           dadjoke = ''
             ${pkgs.curlMinimal}/bin/curl --header "Accept: text/plain" https://icanhazdadjoke.com/'';
           dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";

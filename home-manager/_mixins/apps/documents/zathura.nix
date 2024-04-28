@@ -109,7 +109,7 @@ _: {
         ### Catpuccin ###
         #################
         selection-clipboard = "clipboard";
-        adjust-open = "width";
+        adjust-open = "width"; # best-fit
         pages-per-row = 1;
         scroll-page-aware = true;
         scroll-full-overlap = "0.01";

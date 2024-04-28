@@ -9,6 +9,19 @@ let
   alert = cyan;
   dim = grey;
 
+  # services.polybar = {
+  #   script = ''
+  #     polybar main &
+
+  #     MONITOR_COUNT=$(${pkgs.xorg.xrandr}/bin/xrandr | ${pkgs.ripgrep}/bin/rg ' connected' | ${pkgs.coreutils}/bin/wc -l)
+
+  #     if test "$MONITOR_COUNT" = "2"; then
+  #       polybar secondary &
+  #     fi
+  #   '';
+
+  hwmonPath = "/sys/devices/platform/coretemp.0/hwmon/hwmon6/temp1_input";
+
   polybar-custom = (pkgs.polybar.override {
     pulseSupport = true;
     nlSupport = true;
@@ -26,6 +39,66 @@ let
       --blacklist vlc \
       "$@"
   '';
+
+  # dracula theme
+  # standard colours
+  # bg = "#282a36";
+  # bg-alt = "#44475a";
+  # fg = "#f8f8f2";
+  # fg-alt = "#6272a4";
+  # blue = "#6272a4";
+  # cyan = "#8be9fd";
+  # green = "#50fa7b";
+  # orange = "#ffb86c";
+  # pink = "#ff79c6";
+  # purple = "#bd93f9";
+  # red = "#ff5555";
+  # yellow = "#f1fa8c";
+
+  # xresources colours
+  # color0 = "#000000";
+  # color8 = "#4d4d4d";
+  # color1 = "#ff5555";
+  # color9 = "#ff6e67";
+  # color2 = "#50fa7b";
+  # color10 = "#5af78e";
+  # color3 = "#f1fa8c";
+  # color11 = "#f4f99d";
+  # color4 = "#bd93f9";
+  # color12 = "#caa9fa";
+  # color5 = "#ff79c6";
+  # color13 = "#ff92d0";
+  # color6 = "#8be9fd";
+  # color14 = "#9aedfe";
+  # color7 = "#bfbfbf";
+  # color15 = "#e6e6e6";
+
+  # one-dark theme
+  # bg = "#282c34";
+  # bg-alt = "#21242b";
+  # base0 = "#1B2229";
+  # base1 = "#1c1f24";
+  # base2 = "#202328";
+  # base3 = "#23272e";
+  # base4 = "#3f444a";
+  # base5 = "#5B6268";
+  # base6 = "#73797e";
+  # base7 = "#9ca0a4";
+  # base8 = "#DFDFDF";
+  # fg = "#bbc2cf";
+  # fg-alt = "#5B6268";
+  # grey = base4;
+  # red = "#ff6c6b";
+  # orange = "#da8548";
+  # green = "#98be65";
+  # teal = "#4db5bd";
+  # yellow = "#ECBE7B";
+  # blue = "#51afef";
+  # dark-blue = "#2257A0";
+  # magenta = "#c678dd";
+  # violet = "#a9a1e1";
+  # cyan = "#46D9FF";
+  # dark-cyan = "#5699AF";
 
   ##################
   ### Colors.ini ###
@@ -214,7 +287,7 @@ in
           modules-center = "title";
           # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
           # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
-          modules-right = "sep temperature filesystem memory_bar  cpu_bar pulseaudio-control-output date  battery powermenu";
+          modules-right = "sep temperature filesystem memory_bar  cpu_bar pulseaudio-control-output date brightness battery powermenu";
 
           spacing = 0;
           # separator =
@@ -281,7 +354,7 @@ in
           exec = ''
             ${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --icons-volume " , " --icon-muted " " --node-nicknames-from "device.description" --node-nickname "alsa_output.pci-0000_00_1b.0.analog-stereo:  Speakers" --node-nickname "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.analog-stereo:  Headphones" listen
           '';
-          click-right = "exec ${pkgs.pavucontrol}bin/pavucontrol &";
+          click-right = "${pkgs.pavucontrol}bin/pavucontrol";
           click-middle = ''${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --node-blacklist "alsa_output.pci-0000_01_00.1.hdmi-stereo-extra2" next-node'';
           scroll-up = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --volume-max 130 up";
           scroll-down = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --volume-max 130 down";
@@ -289,7 +362,8 @@ in
         };
         "module/polywins" = {
           type = "custom/script";
-          exec = "/home/${username}/.config/polybar/scripts/polywins";
+          # exec = "/home/${username}/.config/polybar/scripts/polywins";
+          exec = "${pkgs.polywins}/bin/polywins eDP-1";
           format = "<label>";
           format-background = "#2E4374";
           label = "%output%";
@@ -647,8 +721,10 @@ in
           content = "⏻ ";
           content-background = "${mb}";
           content-foreground = "${red}";
-          click-left = "~/.config/rofi/scripts/powermenu";
-          click-right = "~/.config/rofi/scripts/powermenu";
+          # click-left = "~/.config/rofi/scripts/powermenu";
+          # click-right = "~/.config/rofi/scripts/powermenu";
+          click-left = "${pkgs.powermenu}/bin/powermenu";
+          click-right = "${pkgs.powermenu}/bin/powermenu";
         };
         "module/weather" = {
           type = "custom/script";
@@ -658,8 +734,8 @@ in
         };
         "module/brightness" = {
           type = "internal/backlight";
-          card = "$\{system.sys_graphics_card}";
-          enable-scroll = false;
+          card = "intel_backlight";
+          enable-scroll = true;
           format = "<ramp><label>";
           label = "%percentage%% ";
           ramp-0 = "󰃚";
@@ -680,7 +756,7 @@ in
 
         [module/round-left]
         type = "custom/text"
-        content = "%{T3}%{T-}"
+        content = "%{T5}%{T-}"
         # content = "%{T3}%{T-}";
         content-foreground = #2E4374
 
@@ -712,7 +788,7 @@ in
 
         [module/bd]
         type                        = custom/text
-        content                     = "%{T4}%{T-}"
+        content                     = "%{ T4 }%{T-}"
         content-foreground          = ${mb}
         content-background          = ${bg}
 

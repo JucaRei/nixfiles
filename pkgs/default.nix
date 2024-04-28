@@ -183,6 +183,19 @@
   ### Terminal ###
   ################
   # st-snazzy = pkgs.callPackage ./applications/terminal/st { };
+
+  #####################
+  ### BSPWM Scripts ###
+  #####################
+  pipewire-control = pkgs.callPackage ./scripts/bspwm/pipewire-control { };
+  pipewire-output-tail = pkgs.callPackage ./scripts/bspwm/pipewire-output-tail { };
+  player-mpris-tail = pkgs.callPackage ./scripts/bspwm/player-mpris-tail { };
+  polywins = pkgs.callPackage ./scripts/bspwm/polywins { };
+  resize-aspect = pkgs.callPackage ./scripts/bspwm/resize-aspect { };
+  weather-bar = pkgs.callPackage ./scripts/bspwm/weather-bar { };
+  powermenu = pkgs.callPackage ./scripts/bspwm/powermenu { };
+  rofi-screenshot = pkgs.callPackage ./scripts/bspwm/rofi-screenshot { };
+
 }
 
 # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'

@@ -19,13 +19,16 @@ in
         enable = true;
         package = pkgs.unstable.yt-dlp;
         settings = {
+          output = "'%(creator)s - %(title)s.%(ext)s'";
           audio-format = "best";
           audio-quality = 0;
           embed-chapters = true;
           embed-metadata = true;
           embed-thumbnail = true;
+          embed-info-json = true;
           remux-video = "aac>m4a/mov>mp4/mkv";
-          sponsorblock-mark = "sponsor";
+          # sponsorblock-mark = "sponsor";
+          sponsorblock-mark = "all";
           sub-langs = "all";
           # Metadata
           add-metadata = true;
@@ -33,10 +36,14 @@ in
           xattrs = true;
           # Subtitles
           # write-auto-sub = true;
-          write-sub = true;
+          write-thumbnail = true;
+          audio-multistreams = true;
+          prefer-free-formats = true;
+          write-subs = true;
           sub-format = "best";
           sub-lang = "en,br";
           # Downloader
+          concurrent-fragments = 5;
           downloader = "${pkgs.aria2}/bin/aria2c";
           downloader-args = "aria2c:'--async-dns=false --max-download-limit=6M --min-split-size=1M --max-connection-per-server=4 --split=4'";
           # Other

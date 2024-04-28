@@ -30,9 +30,7 @@ in
   # "${vars.modAlt} + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
 
   # make sxhkd reload its configuration files:
-  "ctrl + ${vars.modAlt} + escape" = ''
-    pkill -USR1 -x sxhkd;
-  '';
+  "${vars.modAlt} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd; ${pkgs.libnotify}/bin/notify-send 'sxhkd' 'Reloaded config'";
 
   #   bspc wm -r; \
   #   polybar-msg cmd restart; \
@@ -56,7 +54,7 @@ in
   "${vars.mod} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
   "${vars.mod} + equal" = "bspc node @/ --equalize"; # Make split ratios equal
   "${vars.mod} + minus" = "bspc node @/ --balance"; # Make split ratios balanced
-  "${vars.mod} + d" = ''
+  "${vars.modAlt} + d" = ''
     bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
         bspc node --state \~$state
   '';
@@ -119,7 +117,9 @@ in
   # Focus left/right occupied desktop
   "${vars.mod} + {Up,Down}" = "bspc desktop --focus {prev,next}.occupied";
   # focus the next/previous desktop in the current monitor
-  "${vars.mod} + bracket{left,right}" = "bspc desktop -f {prev,next}.local";
+  # "${vars.mod} + bracket{left,right}" = "bspc desktop -f {prev,next}.local";
+  "${vars.mod} + Left" = "bspc desktop -f prev.local";
+  "${vars.mod} + Right" = "bspc desktop -f next.local";
 
   # focus the last node/desktop
   "${vars.mod} + {grave,Tab}" = "bspc {node,desktop} -f last";
@@ -132,7 +132,10 @@ in
   '';
 
   # Switch to different workspaces with back-and-forth support
-  "${vars.modAlt} + {1-9,0}" = "bspc {desktop -f,node -d} '{1-9,0}'";
+  "${vars.mod} + {1-9,0}" = "bspc desktop -f '^{1-9,10}'";
+
+  # alternate between the tiled and monocle layout
+  "${vars.modAlt} + m" = "bspc desktop -l next";
 
   # Scratchpad
   "${vars.mod} + z" = "bspc node focused -t floating; bspc node -d '^12'";
@@ -215,9 +218,9 @@ in
   # XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
   # XF86AudioRaiseVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
   # XF86AudioLowerVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-  XF86AudioMute = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle%";
+  XF86AudioMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
   "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
-  XF86AudioMicMute = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute 0 toggle%";
+  XF86AudioMicMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
   # XF86AudioMicMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-source-mute 0 toggle%";
   # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
   # XF86MonBrightnessUp = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
@@ -238,5 +241,6 @@ in
   ##################
   ### Screenshot ###
   ##################
-  "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+  # "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+  "Print" = "${pkgs.rofi-screenshot}/bin/rofi-screenshot";
 }

@@ -154,7 +154,13 @@ in
       inherit (prev) stdenv;
       inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
     };
-
+    polywins = prev.polywins;
+    pipewire-control = prev.pipewire-control;
+    pipewire-output-tail = prev.pipewire-output-tail;
+    resize-aspect = prev.resize-aspect;
+    weather-bar = prev.weather-bar;
+    powermenu = prev.powermenu;
+    rofi-screenshot = prev.rofi-screenshot;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

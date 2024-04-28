@@ -1,6 +1,15 @@
 { pkgs, lib ? pkgs.lib, ... }:
 
 {
+  home.packages = with pkgs; [
+    (nerdfonts.override
+      {
+        fonts = [
+          # Characters
+          "JetBrainsMono"
+        ];
+      })
+  ];
   programs.alacritty = {
     enable = true;
     package = pkgs.alacritty;

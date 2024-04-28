@@ -14,6 +14,7 @@ in
   imports = [
     ./everforest/polybar-everforest.nix
     ../../apps/file-managers/thunar.nix
+    ../../apps/terminal/alacritty.nix
     # ./polybar-batman.nix
     ./everforest/picom.nix
     ./everforest/dunst.nix
@@ -97,7 +98,6 @@ in
           parcellite
           rofi
           libnotify
-          dunst
 
           # utils
           jq
@@ -250,6 +250,7 @@ in
             Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             HDMI-1-0 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+            eDP1-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
           extraConfigEarly = ''
@@ -461,7 +462,7 @@ in
       enable = true;
       gtk2 = {
         configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
-        extraConfig = "gtk-theme-name=Yaru-purple-dark\ngtk-icon-theme-name=Papirus-Dark\ngtk-font-name=Fira\ Sans";
+        extraConfig = "gtk-theme-name=Yaru-purple-dark\ngtk-icon-theme-name=Papirus-Dark\ngtk-font-name=Fira Sans";
       }; #Fluent-Dark
       # gtk3 = {
       #   "gtk-theme-name" = "Fluent-Dark";
@@ -648,15 +649,17 @@ in
         keybindings = import ./sxhkdrc.nix args;
       };
       fusuma = {
-        enable = false;
-        extraPackages = with pkgs;[ xdo xdotool libinput coreutils xorg.xprop ];
+        enable = true;
+        extraPackages = with pkgs;[ xdo xdotool coreutils xorg.xprop ];
         settings = {
+          threshold = { swipe = 0.1; };
+          interval = { swipe = 0.7; };
           swipe = {
             "3" = {
               left = {
                 # GNOME: Switch to left workspace
-                # command = "xdotool key shift+l"; # "xdotool key ctrl+alt+Right";
-                command = "bspc desktop -f {prev}.local";
+                command = "xdotool key alt+Right"; # "xdotool key ctrl+alt+Right";
+                # command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {prev}.local";
                 # left:
                 #     command: exec i3 focus left
                 # right:
@@ -667,7 +670,8 @@ in
               };
               right = {
                 # command = "xdotool key shift+h";
-                command = "bspc desktop -f {next}.local";
+                command = "xdotool key alt+Left";
+                # command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {next}.local";
               };
             };
             # "4" = {

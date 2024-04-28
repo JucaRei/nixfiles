@@ -171,7 +171,9 @@ in
           mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
           mkdir = "mkdir -pv";
           ios = "sudo --preserve-env=PATH ${pkgs.dmidecode}/bin/dmidecode -t bios";
-          cat = "${pkgs.bat}/bin/bat --paging=never";
+          # cat = "${pkgs.bat}/bin/bat --paging=never";
+          cat = ''bat --paging=never --theme=tokyo_night --style="numbers,changes" --italic-text=always''; # bat (cat)
+          ct = ''bat --paging=never --theme=tokyo_night --style="plain" --italic-text=always''; # bat (cat)
           ip = "${pkgs.iproute2}/bin/ip --color --brief";
           less = "${pkgs.bat}/bin/bat --paging=always";
           more = "${pkgs.bat}/bin/bat --paging=always";
@@ -179,6 +181,7 @@ in
           wget = "${pkgs.wget2}/bin/wget2";
           du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
           cp = "${pkgs.unstable.advcpmv}/bin/advcp -R --progress-bar";
+          cd = "z"; #zoxide (cd)
           mv = "${pkgs.unstable.advcpmv}/bin/advmv --progress-bar";
           audio = "${pkgs.inxi}/bin/inxi -A";
           battery = "${pkgs.inxi}/bin/inxi -B -xxx";
