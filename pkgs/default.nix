@@ -191,6 +191,7 @@
   polywins = pkgs.callPackage ./scripts/bspwm/polywins { };
   weather-bar = pkgs.callPackage ./scripts/bspwm/weather-bar { };
   cava-polybar = pkgs.callPackage ./scripts/bspwm/cava-polybar { };
+  xqp = pkgs.callPackage ./scripts/bspwm/xqp { };
 
 }
 

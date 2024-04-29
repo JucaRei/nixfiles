@@ -157,6 +157,7 @@ in
     polywins = prev.polywins;
     weather-bar = prev.weather-bar;
     cava-polybar = prev.cava-polybar;
+    xqp = prev.xqp;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

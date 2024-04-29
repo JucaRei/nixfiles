@@ -9,7 +9,7 @@ _: {
       ];
       fade = true;
       fadeDelta = 5;
-      inactiveOpacity = 0.75;
+      inactiveOpacity = 0.95;
       settings = {
         blur = {
           method = "dual_kawase";
@@ -22,7 +22,7 @@ _: {
             "_GTK_FRAME_EXTENTS@:c"
           ];
         };
-        corner-radius = 8;
+        corner-radius = 10;
         rounded-corners-exclude = [
           "window_type = 'dock'"
           "window_type = 'desktop'"

@@ -184,6 +184,17 @@ in
     bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
   '';
 
+  ##############
+  ### Helper ###
+  ##############
+  #Show keybind cheatsheet";
+
+  "${vars.modAlt} + F1" = "${config.programs.rofi.package}/bin/rofi  -dmenu -i -p 'Hotkeys 󰄾' < ${config.xdg.configHome}/sxhkd/sxhkdrc | ${pkgs.choose}/bin/choose -f ' => ' 2 | ${pkgs.bash}/bin/bash";
+
+  ##############
+  ### jgmenu ###
+  ##############
+  "~button3" = "${pkgs.xqp}/bin/xqp 0 $(${pkgs.xdo}/bin/xdo id -N Bspwm -n root) && ${pkgs.jgmenu}/bin/jgmenu --csv-file=~/.config/jgmenu/scripts/menu.txt --config-file=~/.config/jgmenu/jgmenurc";
   ###################
   ### Move/Resize ###
   ###################

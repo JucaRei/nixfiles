@@ -9,3 +9,6 @@
 # anubis (air)
 # cachix authtoken eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI3MjdiYWE1NC1hMDliLTQxMDktODVlNi0wYWI1MTAzYWFhY2YiLCJzY29wZXMiOiJjYWNoZSJ9.Wj_7y1rlm5ltqsXIm-WKjlsdacOPEZUla8ffzR-_-Rs
 # agent eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxMjhiMzYyMS04NzRiLTRiMTYtYTE5MS0xNjYzZGJkMDgwNGQiLCJzY29wZXMiOiJhZ2VudCJ9.wJqjDfg50coRmyVtRZRhvXXrpRoznIqz8bTjxw2Mlg8
+
+# config.xdg.configHome = .config
+# config.xdg.dataHome = .local/share
