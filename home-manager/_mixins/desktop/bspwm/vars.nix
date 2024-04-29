@@ -3,7 +3,7 @@ let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   chromium-browser = import ../../apps/browser/chrome/ungoogled-chromium.nix { inherit pkgs config; };
   nerdPatched = with pkgs; [
-    (pkgs.nerdfonts.override { fonts = [ "Iosevka" "JetBrainsMono" ]; })
+    (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
 in
 {
@@ -78,54 +78,6 @@ in
   ### Batman ###
   ##############
 
-  batman-0 = {
-    package = nerdPatched;
-    name = "Iosevka Nerd Font";
-    ftname = "Iosevka Nerd Font:style=Bold:size=8";
-    offset = 2;
-  };
-
-  batman-1 = {
-    package = nerdPatched;
-    name = "Iosevka Nerd Font";
-    ftname = "Iosevka Nerd Font:style=Medium:size=13";
-    offset = 2;
-  };
-
-  batman-2 = {
-    package = pkgs.material-icons;
-    name = "Material Icons";
-    ftname = "Material Icons:style=Bold:size=10";
-    offset = 4;
-  };
-
-  batman-3 = {
-    package = nerdPatched;
-    name = "JetBrainsMono Nerd Font";
-    ftname = "JetBrainsMono Nerd Font:style=Medium:size=11";
-    offset = 3;
-  };
-
-  batman-4 = {
-    package = pkgs.material-design-icons;
-    name = "Material Design Icons Desktop";
-    ftname = "Material Design Icons Desktop:style=Design-Iconic-Font:size=8";
-    offset = 2;
-  };
-
-  batman-5 = {
-    package = pkgs.maple-mono-SC-NF;
-    name = "Maple Mono SC NF";
-    ftname = "Maple Mono SC NF:style=Regular:size=15";
-    offset = 4; # Offset for Polybar.
-  };
-
-  batman-6 = {
-    package = nerdPatched;
-    name = "JetBrainsMono Nerd Font";
-    ftname = "JetBrainsMono Nerd Font:style=Medium:size=8";
-    offset = 2;
-  };
 
   mod = if (hostname == "nitro") then "alt" else "super"; # alt
   modAlt = if (hostname == "nitro") then "super" else "alt"; # alt

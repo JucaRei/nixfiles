@@ -47,7 +47,7 @@ with lib;
         # fantezy
         transmission_4-gtk
         nix-whereis
-        nf-iosevka
+        # nf-iosevka
         gedit
         # fcitx5-with-addons
         # vv
