@@ -241,6 +241,6 @@ in
   ##################
   ### Screenshot ###
   ##################
-  # "Print" = "${pkgs.flameshot}/bin/flameshot gui";
-  "Print" = "${pkgs.rofi-screenshot}/bin/rofi-screenshot";
+  "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+  # "Print" = "${pkgs.rofi-screenshot}/bin/rofi-screenshot";
 }

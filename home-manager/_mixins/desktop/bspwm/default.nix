@@ -50,16 +50,17 @@ in
           # lxde.lxsession # lightweight session manager
           qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
           libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
+          qt5.qttools
+          qt6Packages.qtstyleplugin-kvantum
+          libsForQt5.qt5ct
           dialog # display dialog boxes from shell
           arandr
           xfce.ristretto # photo viewer
-          qbittorrent # torrent downloader utility
-          notepadqq # notepad++ but for linux
+          # notepadqq # notepad++ but for linux
           xfce.xfce4-settings # setting manager
           gnome.pomodoro # pomodor style timer for taking breaks
-          xfce.exo # this is for xfce shortcuts like open terminal
-          libsForQt5.ark # imo best linux archive manager
-          fluent
+          # libsForQt5.ark # imo best linux archive manager
+          # fluent
           # (nixgl alacritty) # terminal, #show on rofi applications
           # (nixgl i3lock-color)
           feh
@@ -71,7 +72,7 @@ in
           font-manager
           # libinput-gestures
           lm_sensors
-          lxappearance-gtk2
+          # lxappearance-gtk2
           pavucontrol
           # udisks
           blueberry
@@ -92,7 +93,6 @@ in
           #   ];
           # })
           libwebp
-          papirus-icon-theme
           playerctl
           imagemagick
           parcellite
@@ -130,15 +130,12 @@ in
 
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
-          # Try really hard to get QT to respect my GTK theme.
-          # GTK_DATA_PREFIX = [ "${config.system.path}" ];
-          # QT_QPA_PLATFORMTHEME = "gnome";
-          QT_STYLE_OVERRIDE = "kvantum";
-          QT_QPA_PLATFORMTHEME = "gtk3";
           EDITOR = "micro";
           BROWSER = "firefox";
           TERMINAL = "alacritty";
           GLFW_IM_MODULE = "ibus";
+          XCURSOR_SIZE = "16";
+          GTK_USE_PORTAL = "1";
         };
 
         sessionPath = [
@@ -214,6 +211,14 @@ in
               exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan} &
             '';
           };
+        };
+
+        pointerCursor = {
+          package = pkgs.bibata-cursors;
+          name = "Bibata-Modern-Classic";
+          size = 16;
+          gtk.enable = true;
+          x11.enable = true;
         };
       };
 
@@ -366,6 +371,9 @@ in
               desktop = "^10";
               follow = true;
             };
+            "Zathura" = {
+              state = "tiled";
+            };
             "Clementine" = {
               desktop = "^5";
               follow = true;
@@ -462,40 +470,52 @@ in
       enable = true;
       gtk2 = {
         configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
-        extraConfig = "gtk-theme-name=Yaru-purple-dark\ngtk-icon-theme-name=Papirus-Dark\ngtk-font-name=Fira Sans";
+        # extraConfig = "gtk-theme-name=Yaru-purple-dark\ngtk-icon-theme-name=Papirus-Dark\ngtk-font-name=Fira Sans";
+        extraConfig = ''
+          gtk-xft-antialias=1
+          gtk-xft-hinting=1
+          gtk-xft-hintstyle="hintslight"
+          gtk-xft-rgba="rgb"
+        '';
       }; #Fluent-Dark
-      # gtk3 = {
-      #   "gtk-theme-name" = "Fluent-Dark";
-      # gtk-icon-theme-name = "ePapirus-Dark";
-      # gtk-theme-name = "Yaru-purple-dark";
-      # gtk-cursor-theme-name = "volantes_cursors";
-      # gtk-cursor-theme-size = "24";
-      # gtk-font-name = "Fira Sans";
-      #   "gtk-fallback-icon-theme" = "gnome";
-      #   # "gtk-application-prefer-dark-theme" = "true";
-      #   "gtk-xft-hinting" = 1;
-      #   "gtk-xft-hintstyle" = "hintfull";
-      #   "gtk-xft-rgba" = "none";
-      # };
-      # gtk4 = {
-      # gtk-icon-theme-name = "ePapirus-Dark";
-      # gtk-theme-name = "Yaru-purple-dark";
-      # gtk-cursor-theme-name = "volantes_cursors";
-      # gtk-cursor-theme-size = "24";
-      # gtk-font-name = "Fira Sans";
-      #   gtk-theme-name = "Fluent-Dark";
-      #   gtk-icon-theme-name = "Papirus-Dark";
-      #   gtk-cursor-theme-name = "volantes_cursors";
-      # };
+      gtk3 = {
+        extraConfig = {
+          gtk-xft-antialias = 1;
+          gtk-xft-hinting = 1;
+          gtk-xft-hintstyle = "hintslight";
+          gtk-xft-rgba = "rgb";
+          gtk-application-prefer-dark-theme = 1;
+        };
+      };
+      gtk4 = {
+        # gtk-icon-theme-name = "ePapirus-Dark";
+        # gtk-theme-name = "Yaru-purple-dark";
+        # gtk-cursor-theme-name = "volantes_cursors";
+        # gtk-cursor-theme-size = "24";
+        # gtk-font-name = "Fira Sans";
+        #   gtk-theme-name = "Fluent-Dark";
+        #   gtk-icon-theme-name = "Papirus-Dark";
+        #   gtk-cursor-theme-name = "volantes_cursors";
+        extraConfig.gtk-application-prefer-dark-theme = 1;
+      };
       iconTheme = {
-        name = "ePapirus-Dark";
-        package = pkgs.papirus-icon-theme;
+        # name = "ePapirus-Dark";
+        # package = pkgs.papirus-icon-theme;
+        package = pkgs.catppuccin-papirus-folders;
+        name = "Papirus";
       };
       theme = {
         # name = "Fluent-Dark";
         # package = pkgs.fluent;
-        name = "Yaru-purple-dark";
-        package = pkgs.yaru-theme;
+        # name = "Yaru-purple-dark";
+        # package = pkgs.yaru-theme;
+        name = "Catppuccin-Frappe-Compact-Pink-Dark";
+        package = pkgs.catppuccin-gtk.override {
+          accents = [ "pink" ];
+          tweaks = [ "rimless" ];
+          size = "compact";
+          variant = "frappe";
+        };
       };
       cursorTheme = {
         name = "volantes_cursors";
@@ -503,16 +523,25 @@ in
         size = 24;
       };
       font = {
-        name = "Fira Code";
-        package = pkgs.fira-code;
+        # name = "Fira Code";
+        # package = pkgs.fira-code;
+        name = "Lexend";
+        size = 11;
+        package = pkgs.lexend;
       };
     };
 
-    # qt = {
-    # enable = true;
-    # platformTheme = lib.mkForce "gtk";
-    # style = "gtk2";
-    # };
+    qt = {
+      enable = true;
+      platformTheme = lib.mkForce "qtct";
+      style = {
+        name = "Catppuccin-Frappe-Dark";
+        package = pkgs.catppuccin-kde.override {
+          flavour = [ "frappe" ];
+          accents = [ "pink" ];
+        };
+      };
+    };
 
     xdg = {
       configFile = {
@@ -628,18 +657,33 @@ in
             st.color15: #f5f5f5
           '';
         };
-        "Fluent-Dark-kvantum" = {
-          recursive = true;
-          target = "Kvantum/Fluent-Dark";
-          source = ../../config/kvantum/Fluent-Dark;
+        # "Fluent-Dark-kvantum" = {
+        #   recursive = true;
+        #   target = "Kvantum/Fluent-Dark";
+        #   source = ../../config/kvantum/Fluent-Dark;
+        # };
+        # "kvantum.kvconfig" = {
+        #   text = ''
+        #     [General]
+        #     theme=Fluent-Dark
+        #   '';
+        #   target = "Kvantum/kvantum.kvconfig";
+        # };
+        "Kvantum/catppuccin/catppuccin.kvconfig".source = builtins.fetchurl {
+          url = "https://raw.githubusercontent.com/catppuccin/Kvantum/main/src/Catppuccin-Frappe-Pink/Catppuccin-Frappe-Pink.kvconfig";
+          sha256 = "0pl936nchif2zsgzy4asrlc3gvv4fv2ln2myrqx13r6xra1vkcqs";
         };
-        "kvantum.kvconfig" = {
-          text = ''
-            [General]
-            theme=Fluent-Dark
-          '';
-          target = "Kvantum/kvantum.kvconfig";
+        "Kvantum/catppuccin/catppuccin.svg".source = builtins.fetchurl {
+          url = "https://raw.githubusercontent.com/catppuccin/Kvantum/main/src/Catppuccin-Frappe-Pink/Catppuccin-Frappe-Pink.svg";
+          sha256 = "1b92j0gb65l2pvrf90inskr507a1kwin1zy0grwcsdyjmrm5yjrv";
         };
+        "Kvantum/kvantum.kvconfig".text = ''
+          [General]
+          theme=catppuccin
+
+          [Applications]
+          catppuccin=qt5ct, org.qbittorrent.qBittorrent, hyprland-share-picker
+        '';
       };
     };
 

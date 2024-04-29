@@ -189,6 +189,8 @@
       };
     };
 
+    console.keyMap = lib.mkForce "br";
+
     programs.gnupg.agent.enable = true;
 
     ####################

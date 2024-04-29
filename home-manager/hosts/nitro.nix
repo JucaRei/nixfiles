@@ -14,6 +14,7 @@ with lib;
     ../_mixins/console/gpg.nix
     ../_mixins/console/bash.nix
     ../_mixins/console/yt-dlp.nix
+    # ../_mixins/console/aria2.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
     ../_mixins/apps/text-editor/vscode/vscode.nix
@@ -60,13 +61,14 @@ with lib;
 
       keyboard = lib.mkForce {
         # layout = "br,us";
-        layout = "br";
-        model = "abnt2";
+        layout = lib.mkForce "br";
+        model = lib.mkForce "abnt2";
         # model = "abnt2,altgr-intl";
         options = [
           "grp:shifts_toggle"
           # "eurosign:e"
         ];
+        variant = "abnt2";
         # variant = "nodeadkeys";
         # variant = "nativo";
       };
@@ -82,6 +84,7 @@ with lib;
       flatpak-nix.enable = true;
       yt-dlp-custom.enable = true;
       brave.enable = true;
+      # aria2.enable = true;
       flatpak.packages = [
         "flathub:app/dev.aunetx.deezer/x86_64/stable"
       ];

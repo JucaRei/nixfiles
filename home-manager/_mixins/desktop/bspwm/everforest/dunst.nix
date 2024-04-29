@@ -12,8 +12,9 @@
         class = "Dunst";
         monitor = 0;
         follow = "mouse";
-        width = 300;
-        height = 300;
+        # width = 300;
+        # height = 300;
+        geometry = "250x50-30+58";
         origin = "top-right";
         offset = "10x32";
         indicate_hidden = "yes";

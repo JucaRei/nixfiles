@@ -300,8 +300,8 @@ in
   ###################
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    # keyMap = if (hostname == "nitro") then "br-abnt2" else "us";
-    keyMap = if (hostname == "nitro") then "br" else "us";
+    keyMap = lib.mkDefault "us";
+    # keyMap = if (hostname == "nitro") then "br" else "us";
     packages = with pkgs; [ tamzen ];
   };
 
@@ -310,7 +310,7 @@ in
   ###############
 
   i18n = {
-    defaultLocale = lib.mkForce "en_US.utf8";
+    defaultLocale = lib.mkDefault "en_US.utf8";
     extraLocaleSettings = lib.mkDefault {
       #LC_CTYPE = lib.mkDefault "pt_BR.UTF-8"; # Fix ç in us-intl.
       LC_ADDRESS = "pt_BR.UTF-8";

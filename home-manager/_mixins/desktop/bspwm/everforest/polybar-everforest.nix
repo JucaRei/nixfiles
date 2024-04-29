@@ -284,7 +284,7 @@ in
           font-6 = with vars.everforest-6; "${ftname};${toString offset}";
 
           modules-left = "launcher bspwm round-left polywins round-right";
-          modules-center = "title";
+          modules-center = "title cava";
           # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
           # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
           modules-right = "sep temperature filesystem memory_bar  cpu_bar pulseaudio-control-output date brightness battery powermenu";
@@ -723,14 +723,22 @@ in
           content-foreground = "${red}";
           # click-left = "~/.config/rofi/scripts/powermenu";
           # click-right = "~/.config/rofi/scripts/powermenu";
-          click-left = "${pkgs.powermenu}/bin/powermenu";
-          click-right = "${pkgs.powermenu}/bin/powermenu";
+          # click-left = "${pkgs.powermenu}/bin/powermenu";
+          # click-right = "${pkgs.powermenu}/bin/powermenu";
         };
         "module/weather" = {
           type = "custom/script";
           exec = "~/.config/polybar/scripts/weather-plugin";
           tail = false;
           interval = 960;
+        };
+        "module/cava" = {
+          type = "custom/script";
+          tail = true;
+          exec = "${pkgs.cava-polybar}/bin/cava-polybar";
+          format = "<label>";
+          format-font = 5;
+          label = "%output%";
         };
         "module/brightness" = {
           type = "internal/backlight";

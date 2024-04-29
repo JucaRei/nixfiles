@@ -36,6 +36,8 @@ in
     homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
     sessionVariables = {
+      # libstdc++.so.6 => not found
+      # LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
       FLAKE = "/home/${username}/.dotfiles/nixfiles";
