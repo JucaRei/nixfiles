@@ -278,12 +278,12 @@
 
           # Simple script to get playerctl status
 
-          PCTL=$(${pkgs.playerctl}/bin/playerctl status)
+          PCTL=$(playerctl status)
 
           if [[ $\{PCTL} == "" ]]; then
           	echo "No Music Played"
           else
-          	${pkgs.playerctl}/bin/playerctl metadata xesam:title
+          	playerctl metadata xesam:title
           fi
 
           exit
