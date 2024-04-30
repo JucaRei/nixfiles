@@ -55,8 +55,7 @@ in
   "${vars.mod} + equal" = "bspc node @/ --equalize"; # Make split ratios equal
   "${vars.mod} + minus" = "bspc node @/ --balance"; # Make split ratios balanced
   "${vars.modAlt} + d" = ''
-    bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
-        bspc node --state \~$state
+    bspc node focused -t \~floating
   '';
   # rotate
   "${vars.mod} + f" = "bspc node --state \~fullscreen"; # Toggle fullscreen of window

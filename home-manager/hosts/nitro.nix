@@ -62,15 +62,15 @@ with lib;
       keyboard = lib.mkForce {
         # layout = "br,us";
         layout = lib.mkForce "br";
-        model = lib.mkForce "abnt2";
-        # model = "abnt2,altgr-intl";
-        options = [
-          "grp:shifts_toggle"
-          # "eurosign:e"
-        ];
-        variant = "abnt2";
-        # variant = "nodeadkeys";
-        # variant = "nativo";
+        model = lib.mkForce "pc105"; # "pc104alt";
+        # options = [
+        # "grp:shifts_toggle"
+        # "eurosign:e"
+        # ];
+        # variant = "abnt2";
+        # variant = "nodeadkeys"; # "nodeadkeys";
+        # variant = # "intl"/ "alt-intl" / "altgr-intl"
+        #/ "mac" / # "mac_nodeadkeys"
       };
 
       # file.".config/testingFOLDER/testing.txt".text = ''
