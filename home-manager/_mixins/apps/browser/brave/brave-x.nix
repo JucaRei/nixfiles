@@ -1,7 +1,7 @@
 # Brave on XWayland, because of Nvidia
 { pkgs, ... }: {
   wrappers.bravex = {
-    basePackage = pkgs.brave;
+    basePackage = pkgs.unstable.brave;
     flags = [
       "--force-dark-mode"
       "--enable-features=VaapiVideoEncoder,VaapiVideoDecoder,CanvasOopRasterization,TouchpadOverscrollHistoryNavigation,WebUIDarkMode"
