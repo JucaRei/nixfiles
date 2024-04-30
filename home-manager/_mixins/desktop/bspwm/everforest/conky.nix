@@ -5,6 +5,7 @@
       conky
       lua
       jq
+      wirelesstools
 
       #Fonts
       dosis
