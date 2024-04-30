@@ -180,9 +180,9 @@ in
           top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
           wget = "${pkgs.wget2}/bin/wget2";
           du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
-          cp = "${pkgs.unstable.advcpmv}/bin/advcp -R --progress-bar";
+          cp = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
           cd = "z"; #zoxide (cd)
-          mv = "${pkgs.unstable.advcpmv}/bin/advmv --progress-bar";
+          mv = "${pkgs.advmvcp}/bin/advmv --progress-bar";
           audio = "${pkgs.inxi}/bin/inxi -A";
           battery = "${pkgs.inxi}/bin/inxi -B -xxx";
           bluetooth = "${pkgs.inxi}/bin/inxi -E";

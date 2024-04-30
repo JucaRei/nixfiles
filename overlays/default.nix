@@ -135,6 +135,7 @@ in
     lima-bin = prev.lima-bin;
     fluent = prev.fluent;
     # chatgpt-cli = prev.chatgpt-cli;
+    advmvcp = prev.advmvcp;
     nix-cleanup = prev.nix-cleanup;
     nix-whereis = prev.nix-whereis;
     nix-inspect = prev.nix-inspect;

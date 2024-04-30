@@ -81,7 +81,7 @@
   ### Cli tools ###
   #################
   # livebudscli = pkgs.callPackage ./cli/livebudscli { };
-  # advmvcp = pkgs.callPackage ./cli/advmvcp { };
+  advmvcp = pkgs.callPackage ./cli/advmvcp { };
   cloneit = pkgs.callPackage ./cli/cloneit { };
   # chatgpt-cli = pkgs.callPackage ./cli/chatgpt-cli { };
   # harlequin-db = pkgs.callPackage ./cli/harlequin { };
