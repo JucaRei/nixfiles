@@ -136,6 +136,9 @@
   # fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
   iosevka-q = pkgs.callPackage ./fonts/iosevka-q { };
   sarasa-gothic = pkgs.callPackage ./fonts/sarasa-gothic { };
+  bebasNeue = pkgs.callPackage ./fonts/bebasNeue { };
+  feather = pkgs.callPackage ./fonts/feather { };
+  abel = pkgs.callPackage ./fonts/abel { };
   # material-symbols = pkgs.callPackage ./fonts/material-symbols { };
   nf-iosevka = pkgs.callPackage ./fonts/nf-iosevka { };
   # nf-victormono = pkgs.callPackage ./fonts/nf-victormono { };

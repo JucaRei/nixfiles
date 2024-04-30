@@ -17,6 +17,7 @@ in
     ../../apps/terminal/alacritty.nix
     ./everforest/picom.nix
     ./everforest/dunst.nix
+    ./everforest/conky.nix
   ];
   config = {
     home =
@@ -99,7 +100,6 @@ in
           libnotify
 
           # utils
-          jq
           jgmenu
           maim
           gpick

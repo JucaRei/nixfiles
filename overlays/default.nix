@@ -141,6 +141,9 @@ in
     sarasa-gothic = prev.sarasa-gothic;
     iosevka-q = prev.iosevka-q;
     nf-iosevka = prev.nf-iosevka;
+    bebasNeue = prev.bebasNeue;
+    feather = prev.feather;
+    abel = prev.abel;
     catppuccin-grub = prev.catppuccin-grub;
     cyberre-grub-theme = prev.cyberre-grub-theme;
     astronaut-sddm = prev.astronaut-sddm;
