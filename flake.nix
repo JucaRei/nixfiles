@@ -17,8 +17,8 @@
     sddm-sugar-candy-nix.url = "gitlab:Zhaith-Izaliel/sddm-sugar-candy-nix";
     sddm-sugar-candy-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
-    cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
-    cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
+    # cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
+    # cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
 
     # agenix.url = "github:ryantm/agenix";
     # agenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -32,10 +32,10 @@
     # pinix.url = "github:remi-dupre/pinix";
     # pinix.inputs.nixpkgs.follows = "nixpkgs";
 
-    impermanence = {
-      url = "github:nix-community/impermanence";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # impermanence = {
+    #   url = "github:nix-community/impermanence";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     # Handles Flatpaks.
     # flatpaks.url = "github:GermanBread/declarative-flatpak"; #dev
