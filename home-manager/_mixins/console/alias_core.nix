@@ -183,6 +183,7 @@ in
           cp = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
           cd = "z"; #zoxide (cd)
           mv = "${pkgs.advmvcp}/bin/advmv --progress-bar";
+          sk = ''"${pkgs.skim}/bin/sk --ansi -c 'grep -rI --color=always --line-number "{}" .'"'';
           audio = "${pkgs.inxi}/bin/inxi -A";
           battery = "${pkgs.inxi}/bin/inxi -B -xxx";
           bluetooth = "${pkgs.inxi}/bin/inxi -E";

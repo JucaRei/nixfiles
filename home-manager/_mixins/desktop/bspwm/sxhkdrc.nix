@@ -7,12 +7,76 @@ let
   vars = import ./vars.nix { inherit pkgs config hostname; };
   filemanager = vars.filemanager;
 
-  #!${pkgs.stdenv.shell}
-  # sxhkd_helper = pkgs.writeScriptBin "sxhkd_helper" ''
-  #   ${pkgs.awk}/bin/awk '/^[a-z]/ && last {print "<small>",$0,"\t",last,"</small>"} {last=""} /^#/{last=$0}' ~/.config/sxhkd/sxhkdrc |
-  #       column -t -s $'\t' |
-  #       ${pkgs.rofi}/bin/rofi -dmenu -i -markup-rows -no-show-icons -width 1000 -lines 15 -yoffset 40
-  # '';
+  orpheus_lower-volume = pkgs.writeShellScriptBin "orpheus_lower-volume" ''
+    #!${pkgs.stdenv.shell}
+    DSINK="@DEFAULT_SINK@"
+    ID=9932
+    MSG=""
+
+    getcurrvol() {
+      ${pkgs.pulseaudio}/bin/pactl get-sink-volume $DSINK | awk '{print $5;exit}'
+    }
+
+    CURR=$(getcurrvol) # get value
+
+    if [ $CURR = '0%' ]; then
+      MSG='  '
+    else
+      ${pkgs.pulseaudio}/bin/pactl set-sink-volume $DSINK -2%
+      MSG=" 󰝞 $(getcurrvol)"
+    fi
+
+    ${pkgs.dunst}/bin/dunstify -a 'orpheus' -r $ID $MSG
+
+      ""
+  '';
+  orpheus_raise-volume = pkgs.writeShellScriptBin "orpheus_raise-volume" ''
+    #!${pkgs.stdenv.shell}
+    DSINK="@DEFAULT_SINK@"
+    MAX=65536
+    NINEPER=58982
+    ID=9932
+    MSG=""
+
+    getcurrvol() {
+      ${pkgs.pulseaudio}/bin/pactl get-sink-volume $DSINK | awk '{print $5;exit}'
+    }
+    getcurrvolint() {
+      ${pkgs.pulseaudio}/bin/pactl get-sink-volume $DSINK | awk '{print $3;exit}'
+    }
+
+    if (($(getcurrvolint) >= $MAX)); then
+      MSG=' 󰕾 '
+    elif (($(getcurrvolint) >= $NINEPER)); then
+      ${pkgs.pulseaudio}/bin/pactl set-sink-volume $DSINK 150%
+      MSG=" 󰝝 $(getcurrvol)"
+    else
+      ${pkgs.pulseaudio}/bin/pactl set-sink-volume $DSINK +2%
+      MSG=" 󰝝 $(getcurrvol)"
+    fi
+
+    ${pkgs.dunst}/bin/dunstify -a 'orpheus' -r $ID $MSG
+
+    ""
+  '';
+  orpheus_mute = pkgs.writeShellScriptBin "orpheus_mute" ''
+    #!${pkgs.stdenv.shell}
+    DSINK="@DEFAULT_SINK@"
+    ID=9932
+    MSG=""
+
+    ${pkgs.pulseaudio}/bin/pactl set-sink-mute $DSINK toggle
+    IS_MUTED=$(${pkgs.pulseaudio}/bin/pactl get-sink-mute $DSINK | awk '{print $2}')
+
+    if [ $IS_MUTED = 'no' ]; then
+      MSG='  '
+    else
+      MSG='  '
+    fi
+
+    ${pkgs.dunst}/bin/dunstify -a 'orpheus' -r $ID $MSG
+
+  '';
 in
 {
   "${vars.mod} + Return" = "${terminal}"; # Terminal
@@ -22,7 +86,7 @@ in
   "${vars.mod} + shift + p" = "${browser} --private-window"; # web-browser
   "${vars.mod} + e" = "${filemanager}";
   # "${vars.mod} + @space" = "rofi -show drun"; # program launcher
-  "${vars.mod} + @space" = "rofi -show drun -no-lazy-grab -lines 15 -width 40"; # program launcher
+  "${vars.mod} + @space" = "rofi -show drun -show-icons -no-lazy-grab -lines 15 -width 40"; # program launcher
   # calculator
   "F1" = "rofi -show calc -modi calc --no-show-match --no-sort -lines 2";
   # emoji
@@ -228,9 +292,15 @@ in
   # XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
   # XF86AudioRaiseVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
   # XF86AudioLowerVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
-  XF86AudioMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-  "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
-  XF86AudioMicMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+  # XF86AudioMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+  # "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
+  # XF86AudioMicMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+
+  XF86AudioRaiseVolume = "${orpheus_raise-volume}/bin/orpheus_raise-volume";
+  XF86AudioLowerVolume = "${orpheus_lower-volume}/bin/orpheus_lower-volume";
+  XF86AudioMute = "${orpheus_mute}/bin/orpheus_mute";
+
+
   # XF86AudioMicMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-source-mute 0 toggle%";
   # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
   # XF86MonBrightnessUp = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";

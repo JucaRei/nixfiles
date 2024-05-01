@@ -2,6 +2,14 @@
 with lib.hm.gvariant;
 let
   testing = import ../_mixins/config/testing/test.nix { name = "iT Works"; };
+  font-search = pkgs.writeShellScriptBin "font-search" ''
+    fc-list \
+        | grep -ioE ": [^:]*$1[^:]+:" \
+        | sed -E 's/(^: |:)//g' \
+        | tr , \\n \
+        | sort \
+        | uniq
+  '';
 in
 # with test;
 with lib;
@@ -49,6 +57,7 @@ with lib;
         nix-whereis
         # nf-iosevka
         gedit
+        font-search
         # fcitx5-with-addons
         # vv
         # gparted

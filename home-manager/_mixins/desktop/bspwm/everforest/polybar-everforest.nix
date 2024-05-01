@@ -308,10 +308,10 @@ in
           font-6 = with vars.everforest-6; "${ftname};${toString offset}";
 
           modules-left = "launcher bspwm round-left polywins round-right";
-          modules-center = "round-left2 title sep cava round-right";
+          modules-center = "title";
           # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
           # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
-          modules-right = "weather sep filesystem sep bluetooth sep pulseaudio-control-output sep date brightness sep battery sep powermenu";
+          modules-right = "filesystem sep bluetooth sep pulseaudio-control-output sep date brightness sep battery sep powermenu";
 
           spacing = 0;
           # separator =

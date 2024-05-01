@@ -44,7 +44,7 @@ in
           sqlite # database
           usbutils # usb utilities
           xdg-user-dirs # create xdg user dirs
-          picom # compositor
+          (picom) # compositor
           flameshot # cool utility for taking screen shots
           # pkg-config # a tool for pkgs to find info about other pkgs
           # lxde.lxsession # lightweight session manager
@@ -106,7 +106,6 @@ in
           physlock
           killall
           xclip
-          picom
           xclip
           dialog
 
@@ -125,6 +124,10 @@ in
           udiskie
         ];
 
+        shellAliases = {
+          is_picom_on = "pgrep -x 'picom' > /dev/null && echo 'on' || echo 'off'";
+        };
+
         # sudo apt-get reinstall lxsession;sudo apt install --reinstall lightdm;sudo systemctl enable lightdm
 
         sessionVariables = {
@@ -133,6 +136,9 @@ in
           BROWSER = "firefox";
           TERMINAL = "alacritty";
           GLFW_IM_MODULE = "ibus";
+          #GDK_SCALE = 2;
+          #GDK_DPI_SCALE = 0.5;
+          #QT_AUTO_SCREEN_SCALE_FACTOR = 1;
           # XCURSOR_SIZE = "16";
           # GTK_USE_PORTAL = "1";
         };
@@ -235,24 +241,30 @@ in
           enable = isSystemd;
           # package = (nixgl pkgs.unstable.bspwm);
           package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
-          startupPrograms = [
-            "bspc desktop -f ^1"
-            "pgrep -x sxhkd > /dev/null || sxhkd"
-            # "nitrogen --restore"
-            # "lxpolkit" # prompt to enter sudo password daemon
-            # "flameshot"
-            "${pkgs.polkit_gnome} /libexec/polkit-gnome-authentication-agent-1"
-            "sleep 2; polybar -q everforest"
-            # "tmux new-session -d -s main" # for fast attach to tmux session
-            # "tmux new-session -d -s code" # for fast attach to tmux session
-            # "thunar --daemon"
-            # "${pkgs.flameshot}/bin/flameshot"
-            # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
-            # run this last so it doesn't interupt other stuff.
-            # "lxappearance" & # Fix cursor not showing on desktop (background)
-            # "sleep 3"
-            # "pkill lxappearance" # Fix cursor not showing on desktop (background)
-          ];
+          startupPrograms =
+            let
+              random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/";
+            in
+            [
+              "bspc desktop -f ^1"
+              "pgrep -x sxhkd > /dev/null || sxhkd"
+              # "nitrogen --restore"
+              # "lxpolkit" # prompt to enter sudo password daemon
+              # "flameshot"
+              "${pkgs.polkit_gnome} /libexec/polkit-gnome-authentication-agent-1"
+              "sleep 2; polybar -q everforest"
+              "sleep3; conky -c ~/.config/conky/Regulus/Regulus.conf"
+              random-unsplash
+              # "tmux new-session -d -s main" # for fast attach to tmux session
+              # "tmux new-session -d -s code" # for fast attach to tmux session
+              # "thunar --daemon"
+              # "${pkgs.flameshot}/bin/flameshot"
+              # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
+              # run this last so it doesn't interupt other stuff.
+              # "lxappearance" & # Fix cursor not showing on desktop (background)
+              # "sleep 3"
+              # "pkill lxappearance" # Fix cursor not showing on desktop (background)
+            ];
           alwaysResetDesktops = true;
           monitors = {
             Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
@@ -446,9 +458,20 @@ in
             "st:floating" = {
               state = "floating";
             };
+            "GLava" = {
+              border = false;
+              center = true;
+              focus = true;
+              follow = false;
+              layer = "below";
+              locked = true;
+              state = "floating";
+              stick = true;
+            };
             "mpv" = {
               # "mplayer2"
               state = "floating";
+              center = true;
               # rectangle = "1200x700+360+190";
               # desktop = "^6";
               # sticky = true;

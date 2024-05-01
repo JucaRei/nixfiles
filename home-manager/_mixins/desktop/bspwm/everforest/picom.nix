@@ -1,8 +1,14 @@
-_: {
+{ config, pkgs, ... }:
+let
+  isGeneric = if (config.targets.genericLinux.enable) then true else false;
+  nixgl = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
+in
+{
   services = {
     picom = {
       enable = true;
-      backend = "glx";
+      package = if (isGeneric) then (nixgl pkgs.picom) else pkgs.picom;
+      backend = "xrender"; # "glx";
       shadow = true;
       shadowExclude = [
         "_GTK_FRAME_EXTENTS@:c"
@@ -18,7 +24,9 @@ _: {
           deviation = 5.0;
           backround-exclude = [
             "window_type = 'dock'"
+            "window_type = 'conky'"
             "window_type = 'desktop'"
+            "class_g = 'slop'"
             "_GTK_FRAME_EXTENTS@:c"
           ];
         };
@@ -26,14 +34,15 @@ _: {
         rounded-corners-exclude = [
           "window_type = 'dock'"
           "window_type = 'desktop'"
+		  "window_type = 'conky'"
         ];
         use-ewmh-active-win = true;
-        unredir-if-possible = true;
+        unredir-if-possible = false; # true;
       };
       vSync = false;
       extraArgs = [
         "--legacy-backends"
-        "--use-damage"
+        # "--use-damage"
       ];
     };
   };

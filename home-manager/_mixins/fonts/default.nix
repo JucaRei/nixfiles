@@ -1,9 +1,5 @@
 # Fonts!
-{ pkgs, config, ... }: {
-  fonts = {
-    fontconfig.enable = true;
-  };
-
+{ pkgs, config, lib, ... }: {
   home.packages = with pkgs.unstable; [
 
     # phospor-ttf
@@ -31,4 +27,8 @@
       ];
     })
   ];
+
+  fonts = {
+    fontconfig.enable = lib.mkForce true;
+  };
 }
