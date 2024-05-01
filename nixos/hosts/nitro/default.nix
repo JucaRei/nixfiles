@@ -7,8 +7,8 @@
     # inputs.nixos-hardware.nixosModules.common-pc-hdd
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     ../../_mixins/hardware/sound/pipewire.nix
-    # ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
-    ./nvidia-specialisation.nix
+    ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
+    # ./nvidia-specialisation.nix
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/boot/plymouth.nix
     # ../../_mixins/hardware/power/tlp.nix

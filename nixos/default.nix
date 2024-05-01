@@ -336,7 +336,7 @@ in
       timeZone = "America/Sao_Paulo";
 
       ### For dual boot
-      hardwareClockInLocalTime = if (isWorkstation && hostname == "nitro") then true else false;
+      hardwareClockInLocalTime = isWorkstation;
     };
 
   #########################
@@ -443,7 +443,7 @@ in
     nix-index-database.comma.enable = isInstall;
     ssh.startAgent = true;
     # type "fuck" to fix the last command that made you go "fuck"
-    thefuck.enable = true;
+    # thefuck.enable = true;
     fish = {
       enable = true;
       interactiveShellInit = ''

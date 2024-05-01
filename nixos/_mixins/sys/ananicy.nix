@@ -4,7 +4,7 @@
     # Auto Nice Daemon
     ananicy = {
       enable = true;
-      package = pkgs.ananicy-cpp-rules;
+      package = pkgs.ananicy-rules-cachyos;
       rulesProvider = pkgs.ananicy-rules-cachyos;
       settings = {
         check_freq = 2;

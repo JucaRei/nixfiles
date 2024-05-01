@@ -30,7 +30,7 @@
         in
         [
           ../nixos
-          inputs.chaotic.nixosModules.default # DEFAULT MODULE
+          # inputs.chaotic.nixosModules.default # DEFAULT MODULE
           # inputs.home-manager.nixosModules.home-manager
           # {
           #   home-manager.useGlobalPkgs = true;

@@ -311,8 +311,6 @@
           username = "juca";
           desktop = "bspwm";
           # desktop = "hyprland";
-          hostid = "ceafb566";
-          # isNixOS = true;
         };
         air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
