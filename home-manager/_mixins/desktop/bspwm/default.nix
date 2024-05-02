@@ -44,7 +44,6 @@ in
           sqlite # database
           usbutils # usb utilities
           xdg-user-dirs # create xdg user dirs
-          (picom) # compositor
           flameshot # cool utility for taking screen shots
           # pkg-config # a tool for pkgs to find info about other pkgs
           # lxde.lxsession # lightweight session manager
@@ -813,7 +812,7 @@ in
             "3" = {
               left = {
                 # GNOME: Switch to left workspace
-                command = "xdotool key alt+Right"; # "xdotool key ctrl+alt+Right";
+                command = "xdotool key ${vars.mod}+Right"; # "xdotool key ctrl+alt+Right";
                 # command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {prev}.local";
                 # left:
                 #     command: exec i3 focus left
@@ -825,7 +824,7 @@ in
               };
               right = {
                 # command = "xdotool key shift+h";
-                command = "xdotool key alt+Left";
+                command = "xdotool key ${vars.mod}+Left";
                 # command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {next}.local";
               };
             };

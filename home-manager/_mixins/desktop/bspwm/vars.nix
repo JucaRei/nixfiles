@@ -2,6 +2,7 @@
 let
   nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   chromium-browser = import ../../apps/browser/chrome/ungoogled-chromium.nix { inherit pkgs config; };
+  isGeneric = if (config.targets.genericLinux.enable) then true else false;
   nerdPatched = with pkgs; [
     (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
   ];
@@ -81,6 +82,7 @@ in
 
   mod = if (hostname == "nitro") then "alt" else "super"; # alt
   modAlt = if (hostname == "nitro") then "super" else "alt"; # alt
-  alacritty-custom = if (hostname != "nitro") then (nixgl config.programs.alacritty.package) else (config.programs.alacritty.package);
+  # alacritty-custom = if (hostname != "nitro") then (nixgl config.programs.alacritty.package) else (config.programs.alacritty.package);
+  alacritty-custom = if (isGeneric) then (nixgl config.programs.alacritty.package) else (config.programs.alacritty.package);
   filemanager = "thunar";
 }
