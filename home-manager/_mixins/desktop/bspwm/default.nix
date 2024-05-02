@@ -253,6 +253,7 @@ in
               "${pkgs.polkit_gnome} /libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
               "sleep3; conky -c ~/.config/conky/Regulus/Regulus.conf"
+              "${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
               random-unsplash
               # "tmux new-session -d -s main" # for fast attach to tmux session
               # "tmux new-session -d -s code" # for fast attach to tmux session

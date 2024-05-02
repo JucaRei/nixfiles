@@ -84,5 +84,6 @@ in
   modAlt = if (hostname == "nitro") then "super" else "alt"; # alt
   # alacritty-custom = if (hostname != "nitro") then (nixgl config.programs.alacritty.package) else (config.programs.alacritty.package);
   alacritty-custom = if (isGeneric) then (nixgl config.programs.alacritty.package) else (config.programs.alacritty.package);
+  picom-custom = "${config.services.picom.package}/bin/picom";
   filemanager = "thunar";
 }
