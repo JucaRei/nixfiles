@@ -95,7 +95,6 @@ in
           playerctl
           imagemagick
           parcellite
-          rofi
           libnotify
 
           # utils
@@ -234,6 +233,7 @@ in
     xsession = {
       enable = true;
       # initExtra = "exec ${windowMan} &";
+      numlock.enable = if (hostname == "nitro") then true else false;
       windowManager = {
         # command = "exec ${windowMan} &";
         bspwm = {
@@ -253,7 +253,7 @@ in
               "${pkgs.polkit_gnome} /libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
               "sleep3; conky -c ~/.config/conky/Regulus/Regulus.conf"
-              "${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
+              "${vars.picom-custom} --experimental-backends --no-use-damage --config $HOME/.config/picom/picom.conf"
               random-unsplash
               # "tmux new-session -d -s main" # for fast attach to tmux session
               # "tmux new-session -d -s code" # for fast attach to tmux session
@@ -277,8 +277,8 @@ in
             ${pkgs.wmname}/bin/wmname LG3D
             # picom
             # pkill picom
-            picom -b --legacy-backends --no-use-damage &
-            #picom --expiremental-backends --no-use-damage &
+            # picom -b --legacy-backends --no-use-damage &
+            # picom --experimental-backends --no-use-damage &
 
             ### Only have workspaces for primary monitor
             export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
@@ -544,9 +544,11 @@ in
         };
       };
       cursorTheme = {
-        name = "volantes_cursors";
-        package = pkgs.volantes-cursors;
-        size = 24;
+        # name = "volantes_cursors";
+        # package = pkgs.volantes-cursors;
+        package = pkgs.bibata-cursors;
+        name = "Bibata-Modern-Classic";
+        size = 16;
       };
       font = {
         # name = "Fira Code";
@@ -847,7 +849,7 @@ in
       #   package = nixgl pkgs.alacritty;
       #   settings = import ../../apps/terminal/alacritty.nix args;
       # };
-      # rofi = import ./everforest/rofi.nix args;
+      rofi = import ./everforest/rofi.nix args;
       feh = {
         enable = true;
         # package = pkgs.feh;

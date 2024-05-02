@@ -67,7 +67,7 @@ in
   everforest-6 = {
     package = pkgs.unstable.sarasa-gothic;
     name = "Sarasa Mono CL Nerd Font";
-    ftname = "Sarasa Mono CL Nerd Font:size2";
+    ftname = "Sarasa Mono CL Nerd Font:size=2";
     offset = 4;
   };
 

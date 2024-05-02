@@ -34,7 +34,7 @@ in
         rounded-corners-exclude = [
           "window_type = 'dock'"
           "window_type = 'desktop'"
-          "window_type = 'conky'"
+          # "window_type = 'conky'"
         ];
         use-ewmh-active-win = true;
         unredir-if-possible = false; # true;
