@@ -6,7 +6,6 @@ let
   isStreamstation = if (hostname == "phasma" || hostname == "vader") then true else false;
   home-build = import ./config/scripts/home-build.nix { inherit pkgs; };
   home-switch = import ./config/scripts/home-switch.nix { inherit pkgs; };
-
 in
 {
   imports = [

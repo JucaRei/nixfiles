@@ -8,7 +8,14 @@ let
     enableWidevine = false;
     # qt = "qt6";
   };
-
+  font-search = pkgs.writeShellScriptBin "font-search" ''
+    fc-list \
+        | grep -ioE ": [^:]*$1[^:]+:" \
+        | sed -E 's/(^: |:)//g' \
+        | tr , \\n \
+        | sort \
+        | uniq
+  '';
 in
 {
   imports = [
@@ -18,8 +25,8 @@ in
     # ../_mixins/apps/terminal/alacritty.nix
     ../_mixins/console/bash.nix
     # ../_mixins/apps/browser/firefox/librewolf.nix
-    ../_mixins/apps/video/mpv/mpv-config.nix
-    ../_mixins/apps/text-editor/vscode/vscode-config.nix
+    ../_mixins/apps/video/mpv/mpv-unwrapped.nix
+    ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
     ../_mixins/non-nixos
     # ../_mixins/apps/tools/zathura.nix
     # ../_mixins/desktop/bspwm/themes/default
@@ -39,6 +46,7 @@ in
     home = {
       packages = with pkgs; [
         docker-client
+        font-search
         (nixGL vivaldi-custom)
       ];
       file = {

@@ -308,7 +308,7 @@ in
           font-5 = with vars.everforest-5; "${ftname};${toString offset}";
           font-6 = with vars.everforest-6; "${ftname};${toString offset}";
 
-          modules-left = "launcher bspwm round-left2 polywins round-right2";
+          modules-left = "launcher bspwm polywins";
           modules-center = "title";
           # ; modules-right = sep network blok2 weather blok audio blok memory_bar blok battery blok date blok powermenu sep;
           # modules-right = sep weather blok audio blok memory_bar blok cpu_bar blok date blok powermenu sep pulseaudio-control-output
@@ -376,14 +376,34 @@ in
         "module/pulseaudio-control-output" = {
           type = "custom/script";
           tail = true;
+          # exec = ''
+          #   ${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --icons-volume " , " --icon-muted " " --node-nicknames-from "device.description" --node-nickname "alsa_output.pci-0000_00_1b.0.analog-stereo:  Speakers" --node-nickname "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.analog-stereo:  Headphones" listen
+          # '';
           exec = ''
             ${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --icons-volume " , " --icon-muted " " --node-nicknames-from "device.description" --node-nickname "alsa_output.pci-0000_00_1b.0.analog-stereo:  Speakers" --node-nickname "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.analog-stereo:  Headphones" listen
           '';
           click-right = "pavucontrol &";
           click-middle = ''${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --node-blacklist "alsa_output.pci-0000_01_00.1.hdmi-stereo-extra2" next-node'';
+          click-left = ''${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --node-type input togmute'';
           scroll-up = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --volume-max 150 up";
           scroll-down = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --volume-max 150 down";
           label-foreground = "$\{colors.fg}";
+        };
+        "module/pulseaudio-control-input" = {
+          type = "custom/script";
+          tail = true;
+          format = "$\{colors.cyan}";
+          # format-underline = "$\{colors.cyan}";
+          # label-padding = 2;
+          label-foreground = "$\{colors.fg}";
+
+          # Use --node-blacklist to remove the unwanted PulseAudio .monitor that are child of sinks
+          exec = ''${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control  --node-type input --icons-volume "" --icon-muted "" --node-nickname "alsa_output.pci-0000_0c_00.3.analog-stereo:  Webcam" --node-nickname "alsa_output.usb-Kingston_HyperX_Virtual_Surround_Sound_00000000-00.analog-stereo:  Headphones" --node-blacklist "*.monitor" listen'';
+          click-right = "exec pavucontrol &";
+          click-left = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --node-type input togmute";
+          click-middle = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --node-type input next-node";
+          scroll-up = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --node-type input --volume-max 130 up";
+          scroll-down = "${pkgs.unstable.polybar-pulseaudio-control}/bin/pulseaudio-control --node-type input --volume-max 130 down";
         };
         "module/polywins" = {
           type = "custom/script";
@@ -1154,6 +1174,23 @@ in
           interval = 1;
           click-left = "${pkgs.rofi-bluetooth}/bin/rofi-bluetooth";
         };
+
+        #################
+        ### Decor.ini ###
+        #################
+
+        "module/round-left" = {
+          type = "custom/text";
+          content = "%{T5}%{T-}";
+          # content = "%{T3}%{T-}";
+          content-foreground = "$\{colors.blue-indigo}";
+        };
+        "module/round-right" = {
+          type = "custom/text";
+          content = "%{T5}%{T-}";
+          # content = "%{T3}%{T-}";
+          content-foreground = "$\{colors.blue-indigo}";
+        };
         "module/round-left2" = {
           type = "custom/text";
           content = "%{T6}%{T-}";
@@ -1166,336 +1203,29 @@ in
           # content = "%{T3}%{T-}";
           content-foreground = "$\{colors.blue-bright}";
         };
+        "module/bi" = {
+          type = "custom/text";
+          content = "%{T4}%{T-}";
+          content-foreground = "$\{colors.mb}";
+          content-background = "$\{colors.bg}";
+        };
+        "module/bd" = {
+          type = "custom/text";
+          content = "%{ T4 }%{T-}";
+          content-foreground = "$\{colors.mb}";
+          content-background = "$\{colors.bg}";
+        };
+        "module/spacing" = {
+          type = "custom/text";
+          content = " ";
+          content-background = "$\{colors.bg}";
+        };
+        "module/sep" = {
+          type = "custom/text";
+          label = " ";
+          label-foreground = "$\{colors.bg}";
+        };
       };
-      extraConfig = ''
-        ### Decor.ini
-
-        [module/round-left]
-        type = "custom/text"
-        content = "%{T5}%{T-}"
-        # content = "%{T3}%{T-}";
-        content-foreground = $'{colors.blue-indigo}
-
-        [module/round-right]
-        type = "custom/text"
-        content = "%{T5}%{T-}"
-        # content = "%{T3}%{T-}";
-        content-foreground = $'{colors.blue-indigo}
-
-        [module/bi]
-        type                        = custom/text
-        content                     = "%{T4}%{T-}"
-        content-foreground          = $'{colors.mb}
-        content-background          = $'{colors.bg}
-
-        ## bylo mb bg
-
-        [module/bd]
-        type                        = custom/text
-        content                     = "%{ T4 }%{T-}"
-        content-foreground          = $'{colors.mb}
-        content-background          = $'{colors.bg}
-
-        [module/spacing]
-        type = custom/text
-        content = " "
-        content-background = $'{colors.bg}
-
-        # [module/sep]
-        # type = custom/text
-        # ;content = 
-        # content = " "
-
-        # content-font = 5
-        # content-background = $'{colors.bg}
-        # content-foreground = $'{colors.bg-alt}
-        # content-padding = 2
-
-        [module/sep]
-        type = custom/text
-        label = " "
-        label-foreground = $'{colors.bg}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/LD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.blue}
-
-        [module/RD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.blue}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/RLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.red}
-
-        [module/BRLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.red}
-
-        [module/RRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.red}
-
-        [module/BRRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.red}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/WLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.white}
-
-        [module/WRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.white}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/CLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.aqua}
-
-        [module/CRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.aqua}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/MLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.purple}
-
-        [module/MRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.purple}
-
-        [module/BMLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $\{colors.bg}
-        content-foreground = $\{colors.purple}
-
-        [module/BMRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.purple}
-
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/YLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.yellow}
-
-        [module/YRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.yellow}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/OLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.orange}
-
-        [module/BOLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.orange}
-
-        [module/ORD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.orange}
-
-        [module/BORD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.orange}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/PLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.pink}
-
-        [module/BPLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.pink}
-
-        [module/PRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.pink}
-
-        [module/BPRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.pink}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-
-        [module/GLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.green}
-
-        [module/BGLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.green}
-
-        [module/GRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.green}
-
-        [module/BGRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.green}
-
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/BLD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.black}
-
-        [module/BRD]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.bg}
-        content-foreground = $'{colors.black}
-
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-
-        [module/YPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.black}
-
-        [module/CPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.black}
-
-        [module/GPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.black}
-        content-foreground = $'{colors.black}
-
-        [module/RPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.red}
-        content-foreground = $'{colors.red}
-
-        [module/MPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.green}
-        content-foreground = $'{colors.red}
-
-        [module/GMPL]
-        type = custom/text
-        content = "%{T3}%{T-}"
-        content-font = 3
-        content-background = $'{colors.red}
-        content-foreground = $'{colors.green}
-        ;; _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_
-      '';
     };
   };
 }
