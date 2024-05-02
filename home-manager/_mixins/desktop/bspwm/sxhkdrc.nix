@@ -96,7 +96,7 @@ in
   # make sxhkd reload its configuration files:
   "${vars.modAlt} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd; ${pkgs.libnotify}/bin/notify-send 'sxhkd' 'Reloaded config'";
 
-  #   bspc wm -r; \
+  #   ${config.xsession.windowManager.bspwm.package}/bin/bspc wm -r; \
   #   polybar-msg cmd restart; \
   #   dunstify "Reload all configuration." -u low
   # '';
@@ -104,147 +104,146 @@ in
   # quit bspwm
   "${vars.mod} + ${vars.modAlt} + q" = ''
     systemctl --user stop bspwm-session.target; \
-    bspc quit
+    ${config.xsession.windowManager.bspwm.package}/bin/bspc quit
   '';
 
   ### Bspwm hotkeys
   #to change tabs ig
   # Switch to recent window
-  # "${vars.modAlt} + Tab" = "bspc node -f last.local";
-  "${vars.mod},${vars.modAlt} + {_,shift + }Tab" = "bspc node -f {next,prev}.local";
-  "${vars.mod} + ctrl + {q,r}" = "bspc {quit,wm -r}"; # quit | restart
-  "${vars.mod} + m" = "bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
-  "${vars.mod} + {_, ${vars.modAlt} + }m" = "bspc node -f {next, prev}.local.!hidden.window";
-  "${vars.mod} + {_,shift + }{Left,Down,Up,Right}" = "bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
-  "${vars.mod} + equal" = "bspc node @/ --equalize"; # Make split ratios equal
-  "${vars.mod} + minus" = "bspc node @/ --balance"; # Make split ratios balanced
-  "${vars.modAlt} + d" = ''
-    bspc node focused -t \~floating
-  '';
+  # "${vars.modAlt} + Tab" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -f last.local";
+  "${vars.mod},${vars.modAlt} + {_,shift + }Tab" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -f {next,prev}.local";
+  "${vars.mod} + ctrl + {q,r}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc {quit,wm -r}"; # quit | restart
+  "${vars.mod} + m" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
+  "${vars.mod} + {_, ${vars.modAlt} + }m" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -f {next, prev}.local.!hidden.window";
+  "${vars.mod} + {_,shift + }{Left,Down,Up,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
+  "${vars.mod} + equal" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node @/ --equalize"; # Make split ratios equal
+  "${vars.mod} + minus" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node @/ --balance"; # Make split ratios balanced
+  "${vars.modAlt} + d" = "bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
+	bspc node --state \~$state";
   # rotate
-  "${vars.mod} + f" = "bspc node --state \~fullscreen"; # Toggle fullscreen of window
-  "${vars.mod} + {_,shift + }q" = "bspc node -{c,k}"; # Close and kill
-  "${vars.mod} + k" = "bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
-  "${vars.modAlt} + shift + g" = "bspc config window_gap 5";
-  "${vars.modAlt} + g" = "bspc config window_gap 0";
+  "${vars.mod} + f" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node --state \~fullscreen"; # Toggle fullscreen of window
+  "${vars.mod} + {_,shift + }q" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -{c,k}"; # Close and kill
+  "${vars.mod} + k" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
+  "${vars.modAlt} + shift + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 5";
+  "${vars.modAlt} + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 0";
   # change window gap
-  "${vars.mod} + {minus,equal}" = "bspc config -d focused window_gap $((`bspc config -d focused window_gap` {+,-} 2 ))";
-  # "${vars.mod} + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
-  # "${vars.mod} + shift + g" = "bspc node -s biggest.window"; # Swap the current node and the biggest node
+  "${vars.mod} + {minus,equal}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config -d focused window_gap $((`${config.xsession.windowManager.bspwm.package}/bin/bspc config -d focused window_gap` {+,-} 2 ))";
+  # "${vars.mod} + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -s biggest.window"; # Swap the current node and the biggest node
+  # "${vars.mod} + shift + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -s biggest.window"; # Swap the current node and the biggest node
 
-  "${vars.mod} + g" = ''if [ \"$(bspc config window_gap)\" -eq 0 ]; then bspc config window_gap 12; bspc config border_width 2; else bspc config window_gap 0; bspc config border_width 0; fi'';
+  "${vars.mod} + g" = ''if [ \"$(${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap)\" -eq 0 ]; then ${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 12; ${config.xsession.windowManager.bspwm.package}/bin/bspc config border_width 2; else ${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 0; ${config.xsession.windowManager.bspwm.package}/bin/bspc config border_width 0; fi'';
 
   # Move current window to a pre-selected space
-  "${vars.mod} + shift + m" = "bspc node -n last.!automatic";
+  "${vars.mod} + shift + m" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -n last.!automatic";
 
-  "${vars.mod} + {_,shift} + {u,i}" = "bspc {monitor -f,node -m} {prev,next}"; # focus or send to the next monitor
+  "${vars.mod} + {_,shift} + {u,i}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc {monitor -f,node -m} {prev,next}"; # focus or send to the next monitor
 
   # ${vars.modAlt} - Move workspaces
-  # "${vars.mod} + {Left,Right}" = "bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
-  # "${vars.mod} + {_,shift +}{1-9,0}" = "bspc {desktop -f,node -d} '{1-9,10}'"; # Focus or send to the given desktop
-  "${vars.mod} + shift + {Left,Right}" = "bspc node -d {prev,next}.local --follow"; # Send and follow to previous or next desktop
+  # "${vars.mod} + {Left,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {prev,next}.local"; # Focus the next/previous desktop in the current monitor
+  # "${vars.mod} + {_,shift +}{1-9,0}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc {desktop -f,node -d} '{1-9,10}'"; # Focus or send to the given desktop
+  "${vars.mod} + shift + {Left,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -d {prev,next}.local --follow"; # Send and follow to previous or next desktop
 
   ####################
   ### States flags ###
   ####################
 
-  "${vars.mod} + {t,shift + t,s,f}" = "bspc node -t {tiled,pseudo_tiled,floating,\~fullscreen}";
-  "${vars.modAlt} + f" = ''bspc node -t "~"{floating,tiled}'';
-  "${vars.mod} + ctrl + {m,x,y,z}" = "bspc node -g {marked,locked,sticky,private}"; # set the node flags
+  "${vars.mod} + {t,shift + t,s,f}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -t {tiled,pseudo_tiled,floating,\~fullscreen}";
+  "${vars.modAlt} + f" = ''${config.xsession.windowManager.bspwm.package}/bin/bspc node -t "~"{floating,tiled}'';
+  "${vars.mod} + ctrl + {m,x,y,z}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -g {marked,locked,sticky,private}"; # set the node flags
 
   # set the node flags
-  "${vars.mod} + ctrl + {x,y,z}" = "bspc node -g {locked,sticky,private}";
+  "${vars.mod} + ctrl + {x,y,z}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -g {locked,sticky,private}";
 
   ##################
   ### Focus/swap ###
   ##################
 
   # focus the node in the given direction
-  "${vars.mod} + {_,shift + }{h,j,k,l}" = "bspc node -{f,s} {west,south,north,east}";
+  "${vars.mod} + {_,shift + }{h,j,k,l}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -{f,s} {west,south,north,east}";
 
   # focus the node for the given path jump
-  "${vars.mod} + {p,b,comma,period}" = "bspc node -f @{parent,brother,first,second}";
+  "${vars.mod} + {p,b,comma,period}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -f @{parent,brother,first,second}";
 
   # focus the next/previous node in the current desktop
-  "${vars.mod} + {_,shift + }c" = "bspc node -f {prev,next}.local";
+  "${vars.mod} + {_,shift + }c" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -f {prev,next}.local";
 
   # Focus left/right occupied desktop
-  "${vars.mod} + {Left,Right}" = "bspc desktop --focus {prev,next}.occupied";
+  "${vars.mod} + {Left,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop --focus {prev,next}.occupied";
 
   # Focus left/right desktop
-  "ctrl + ${vars.modAlt} + {Left,Right}" = "bspc desktop --focus {prev,next}";
+  "ctrl + ${vars.modAlt} + {Left,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop --focus {prev,next}";
 
   # Focus left/right desktop
-  "ctrl + ${vars.modAlt} + {Up, Down}" = "bspc desktop --focus {prev,next}";
+  "ctrl + ${vars.modAlt} + {Up, Down}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop --focus {prev,next}";
 
   # Focus left/right occupied desktop
-  "${vars.mod} + {Up,Down}" = "bspc desktop --focus {prev,next}.occupied";
+  "${vars.mod} + {Up,Down}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop --focus {prev,next}.occupied";
   # focus the next/previous desktop in the current monitor
-  # "${vars.mod} + bracket{left,right}" = "bspc desktop -f {prev,next}.local";
-  "${vars.mod} + Left" = "bspc desktop -f prev.local";
-  "${vars.mod} + Right" = "bspc desktop -f next.local";
+  # "${vars.mod} + bracket{left,right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {prev,next}.local";
+  "${vars.mod} + Left" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f prev.local";
+  "${vars.mod} + Right" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f next.local";
 
   # focus the last node/desktop
-  "${vars.mod} + {grave,Tab}" = "bspc {node,desktop} -f last";
+  "${vars.mod} + {grave,Tab}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc {node,desktop} -f last";
 
   # focus the older or newer node in the focus history
   "${vars.mod} + {o,i}" = ''
-    bspc wm -h off; \
-    bspc node {older,newer} -f; \
-    bspc wm -h on
+    ${config.xsession.windowManager.bspwm.package}/bin/bspc wm -h off; \
+    ${config.xsession.windowManager.bspwm.package}/bin/bspc node {older,newer} -f; \
+    ${config.xsession.windowManager.bspwm.package}/bin/bspc wm -h on
   '';
 
   # Switch to different workspaces with back-and-forth support
-  "${vars.mod} + {1-9,0}" = "bspc desktop -f '^{1-9,10}'";
+  "${vars.mod} + {1-9,0}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f '^{1-9,10}'";
 
   # alternate between the tiled and monocle layout
-  "${vars.modAlt} + m" = "bspc desktop -l next";
+  "${vars.modAlt} + m" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -l next";
 
   # Scratchpad
-  "${vars.mod} + z" = "bspc node focused -t floating; bspc node -d '^12'";
+  "${vars.mod} + z" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node focused -t floating; ${config.xsession.windowManager.bspwm.package}/bin/bspc node -d '^12'";
   # Scratchpad
   # "super + alt + o" = "${pkgs.tdrop}/bin/tdrop -a -w 70% -h 35% -y 0 -x 15%  --class scratch alacritty --class=scratch";
   "alt + Tab" = "rofi -show window -window-thumbnail";
 
   # Move windows to different workspaces
-  "${vars.mod} + shift + {1-9,0}" = "bspc node -d '^{1-9,10}' --follow";
+  "${vars.mod} + shift + {1-9,0}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -d '^{1-9,10}' --follow";
 
   # Send to monitor
-  "${vars.mod} + shift + equal" = "bspc node -m last --follow";
+  "${vars.mod} + shift + equal" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -m last --follow";
 
   #################
   ### Preselect ###
   #################
 
   # preselect the direction
-  "${vars.mod} + ${vars.modAlt} + {h,j,k,l}" = "bspc node -p {west,south,north,east}";
+  "${vars.mod} + ${vars.modAlt} + {h,j,k,l}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -p {west,south,north,east}";
 
   # preselect the ratio
-  "${vars.mod} + ctrl + {1-9}" = "bspc node -o 0.{1-9}";
+  "${vars.mod} + ctrl + {1-9}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -o 0.{1-9}";
 
   # Cancel the preselect
   # For context on syntax: https://github.com/baskerville/bspwm/issues/344
-  "${vars.mod} + ${vars.modAlt} + {_,shift + }Escape" = "bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel";
+  "${vars.mod} + ${vars.modAlt} + {_,shift + }Escape" = "${config.xsession.windowManager.bspwm.package}/bin/bspc query -N -d | xargs -I id -n 1 ${config.xsession.windowManager.bspwm.package}/bin/bspc node id -p cancel";
 
-  "${vars.mod} + shift + Escape" = "bspc node -p cancel"; # cancel the preselection for the focused node
+  "${vars.mod} + shift + Escape" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -p cancel"; # cancel the preselection for the focused node
 
   # Set the node flags
-  "${vars.mod} + ctrl + {m,x,s,p}" = "bspc node -g {marked,locked,sticky,private}";
+  "${vars.mod} + ctrl + {m,x,s,p}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -g {marked,locked,sticky,private}";
 
-  "${vars.mod} + y" = "bspc node @parent -R 90";
-  "${vars.mod} + r" = "bspc node @focused:/ --rotate 90";
-  "${vars.mod} + shift + r" = "bspc node @focused:/ --rotate 180";
+  "${vars.mod} + y" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node @parent -R 90";
+  "${vars.mod} + r" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node @focused:/ --rotate 90";
+  "${vars.mod} + shift + r" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node @focused:/ --rotate 180";
 
   # Rotate tree
-  "${vars.mod} + shift + {d,a}" = "bspc node @/ -C {forward,backward}";
+  "${vars.mod} + shift + {d,a}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node @/ -C {forward,backward}";
 
   # Send the newest marked node to the newest preselected node
-  "${vars.mod} + shift + y" = "bspc node newest.marked.local -n newest.!automatic.local";
+  "${vars.mod} + shift + y" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node newest.marked.local -n newest.!automatic.local";
 
   "${vars.mod} + s : {h,j,k,l}" = ''
     STEP=30; SELECTION={1,2,3,4}; \
-    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
-    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
+    ${config.xsession.windowManager.bspwm.package}/bin/bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+    ${config.xsession.windowManager.bspwm.package}/bin/bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
   '';
 
   ##############
@@ -264,26 +263,26 @@ in
 
   # expand a window by moving one of its side outward
   "ctrl + ${vars.modAlt} +  {Left,Down,Up,Right}" = ''
-    bspc node -z {left -20 0 || bspc node -z right -20 0, \
-      bottom 0 20 || bspc node -z top 0 20,\
-      top 0 -20 || bspc node -z bottom 0 -20,\
-      right 20 0 || bspc node -z left 20 0}
+    ${config.xsession.windowManager.bspwm.package}/bin/bspc node -z {left -20 0 || ${config.xsession.windowManager.bspwm.package}/bin/bspc node -z right -20 0, \
+      bottom 0 20 || ${config.xsession.windowManager.bspwm.package}/bin/bspc node -z top 0 20,\
+      top 0 -20 || ${config.xsession.windowManager.bspwm.package}/bin/bspc node -z bottom 0 -20,\
+      right 20 0 || ${config.xsession.windowManager.bspwm.package}/bin/bspc node -z left 20 0}
   '';
 
   # move a floating window
-  "${vars.mod} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
+  "${vars.mod} + {Left,Down,Up,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -v {-20 0,0 20,0 -20,20 0}";
 
   "${vars.modAlt} + o" = "polybar-msg cmd toggle";
   "${vars.modAlt} + shift +x" = "i3lock-fancy -p";
 
   # contract a window by moving one of its side inward
-  "${vars.mod} + ${vars.modAlt} + shift + {h,j,k,l}" = "bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
+  "${vars.mod} + ${vars.modAlt} + shift + {h,j,k,l}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}";
 
   # move a floating window
-  #"${vars.mod} + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}"
+  #"${vars.mod} + {Left,Down,Up,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -v {-20 0,0 20,0 -20,20 0}"
 
   ## Move floating windows
-  "${vars.modAlt} + shift + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
+  "${vars.modAlt} + shift + {Left,Down,Up,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -v {-20 0,0 20,0 -20,20 0}";
 
   ####################
   ### Control Keys ###

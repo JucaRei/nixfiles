@@ -152,15 +152,15 @@ in
       })
 
       ## Testing
-      # (self: super: {
+      (self: super: {
 
 
-      #   # vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
-      #   deadbeef = super.deadbeef.override { wavpackSupport = true; };
-      #   deadbeef-with-plugins = super.deadbeef-with-plugins.override {
-      #     plugins = with super.deadbeefPlugins; [ mpris2 statusnotifier ];
-      #   };
-      # })
+        vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
+        #   deadbeef = super.deadbeef.override { wavpackSupport = true; };
+        #   deadbeef-with-plugins = super.deadbeef-with-plugins.override {
+        #     plugins = with super.deadbeefPlugins; [ mpris2 statusnotifier ];
+        #   };
+      })
     ];
 
     config = {
@@ -378,9 +378,11 @@ in
     ] ++ lib.optionals (isInstall && hasNvidia) [
       # unstable.nvtop
       vdpauinfo
-    ] ++ lib.optionals (isInstall && !hasNvidia) [
-      nvtop-amd
-    ];
+    ]
+      # ++ lib.optionals (isInstall && !hasNvidia) [
+      #   nvtop-amd
+      # ]
+    ;
 
     variables = {
       EDITOR = "micro";
@@ -438,7 +440,6 @@ in
   programs = {
     fuse.userAllowOther = isWorkstation;
     command-not-found.enable = false;
-    dconf.enable = true;
     nano.enable = false;
     nix-index-database.comma.enable = isInstall;
     ssh.startAgent = true;
@@ -500,32 +501,10 @@ in
 
 
   system = {
-    # activationScripts = {
-    #   diff = lib.mkIf (isInstall) {
-    #     supportsDryActivation = true;
-    #     text = ''
-    #         if [ -e /run/current-system/boot.json ] && ! ${pkgs.gnugrep}/bin/grep -q "LABEL=nixos-minimal" /run/current-system/boot.json; then
-    #           ${pkgs.nvd}/bin/nvd --nix-bin-dir=${pkgs.nix}/bin diff /run/current-system "$systemConfig"
-    #         fi
-    #       /run/current-system/sw/bin/nixos-needsreboot
-    #     '';
-
-    # text = ''
-    #     if [[ -e /run/current-system ]]; then
-    #       echo -e "\n***            ***          ***           ***           ***\n"
-    #       ${pkgs.nix}/bin/nix store diff-closures /run/current-system "$systemConfig" | grep -w "→" | grep -w "KiB" | column --table --separator " ,:" | ${pkgs.choose}/bin/choose 0:1 -4:-1 | ${pkgs.gawk}/bin/awk '{s=$0; gsub(/\033\[[ -?]*[@-~]/,"",s); print s "\t" $0}' | sort -k5,5gr | ${pkgs.choose}/bin/choose 6:-1 | column --table
-    #       echo -e "\n***            ***          ***           ***           ***\n"
-    #     fi
-    #   /run/current-system/sw/bin/nixos-needsreboot
-    # '';
-    #   };
-    # };
-
     nixos.label = lib.mkIf (isInstall) "-";
     stateVersion = stateVersion;
   };
 
-  # systemd = lib.mkOverride 20 {
   systemd = {
 
     user = {
@@ -615,7 +594,7 @@ in
 
     xserver = {
       libinput = {
-        enable = lib.mkForce true;
+        enable = lib.Default true;
         touchpad = {
           # horizontalScrolling = true;
           # tappingDragLock = false;
@@ -625,7 +604,7 @@ in
           scrollMethod = "twofinger";
           disableWhileTyping = true;
           # sendEventsMode = "disabled-on-external-mouse";
-          sendEventsMode = lib.mkForce "enabled";
+          sendEventsMode = lib.Default "enabled";
           clickMethod = "clickfinger";
         };
         mouse = {
@@ -634,17 +613,11 @@ in
           accelProfile = "flat";
         };
       };
-      # xkb = {
-      #   layout = if (hostname == "nitro") then "br" else "us";
-      #   model = if (hostname == "nitro") then "pc105" else "pc104";
-      #   variant = if (hostname == "nitro") then "abnt2" else "mac";
-      # };
-      # exportConfiguration = true;
     };
 
     journald = {
       extraConfig = lib.mkDefault ''
-        SystemMaxUse=10M
+        SystemMaxUse=100M
         SystemMaxFileSize=10M
         RuntimeMaxUse=10M
         RuntimeMaxFileSize=10M
