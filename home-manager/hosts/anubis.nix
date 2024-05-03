@@ -42,6 +42,10 @@ in
     services = {
       bash.enable = true;
       nonNixOs.enable = true;
+      udiskie = {
+      	enable = true;
+      	automount = true;
+      };
     };
     home = {
       packages = with pkgs; [

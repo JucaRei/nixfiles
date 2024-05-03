@@ -86,7 +86,7 @@ in
   "${vars.mod} + shift + p" = "${browser} --private-window"; # web-browser
   "${vars.mod} + e" = "${filemanager}";
   # "${vars.mod} + @space" = "rofi -show drun"; # program launcher
-  "${vars.mod} + @space" = "rofi -show drun -show-icons -no-lazy-grab -lines 15 -width 40"; # program launcher
+  "${vars.modAlt} + @space" = "rofi -show drun -show-icons -no-lazy-grab -lines 15 -width 40"; # program launcher
   # calculator
   "F1" = "rofi -show calc -modi calc --no-show-match --no-sort -lines 2";
   # emoji
@@ -124,8 +124,8 @@ in
   "${vars.mod} + f" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node --state \~fullscreen"; # Toggle fullscreen of window
   "${vars.mod} + {_,shift + }q" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -{c,k}"; # Close and kill
   "${vars.mod} + k" = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
-  "${vars.modAlt} + shift + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 5";
-  "${vars.modAlt} + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 0";
+  # "${vars.modAlt} + shift + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 5";
+  # "${vars.modAlt} + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 0";
   # change window gap
   "${vars.mod} + {minus,equal}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config -d focused window_gap $((`${config.xsession.windowManager.bspwm.package}/bin/bspc config -d focused window_gap` {+,-} 2 ))";
   # "${vars.mod} + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -s biggest.window"; # Swap the current node and the biggest node

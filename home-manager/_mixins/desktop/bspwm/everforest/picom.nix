@@ -114,8 +114,8 @@ in
         # has actually changed. Potentially degrades the performance, but might fix some artifacts.
         # The opposing option is use-damage
         #
-        # no-use-damage = false
-        use-damage = true;
+        no-use-damage = true;
+        # use-damage = true;
         # Use X Sync fence to sync clients' draw calls, to make sure all draw
         # calls are finished before picom starts drawing. Needed on nvidia-drivers
         # with GLX backend for some users.
@@ -240,7 +240,7 @@ in
 
         # Opacity of window titlebars and borders. (0.1 - 1.0, disabled by default)
         # frame-opacity = 1.0
-        # frame-opacity = 0.7;
+        frame-opacity = 0.7;
 
         # Let inactive opacity set by -i override the '_NET_WM_OPACITY' values of windows.
         inactive-opacity-override = true; # this fixed opacity for me. Not sure what is setting _NET_WM_OPACITY
@@ -380,8 +380,9 @@ in
       };
       vSync = false;
       extraArgs = [
-        "--legacy-backends"
-        "--use-damage"
+        "--experimental-backends"
+        # "--legacy-backends"
+        # "--use-damage"
       ];
     };
   };
