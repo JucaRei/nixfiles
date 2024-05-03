@@ -5,8 +5,7 @@
 , ...
 }:
 with lib.hm.gvariant; let
-  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
-
+  nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
   mpvgl =
     pkgs.wrapMpv
       (pkgs.mpv-unwrapped.override {
@@ -43,7 +42,7 @@ in
     mpv = {
       enable = true;
       # package = nixGL mpvgl;
-      package = nixGL mpv;
+      package = nixGL pkgs.mpv;
     };
   };
 

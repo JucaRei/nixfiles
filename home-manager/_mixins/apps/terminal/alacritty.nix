@@ -99,7 +99,7 @@
       ## All key-value pairs in the [env] section will be added as environment variables for any process spawned
       ## by Alacritty, including its shell. Some entries may override variables set by alacritty itself.
       env = {
-        TERM = "alacritty";
+        TERM = "xterm-256color"; #"alacritty";
         WINIT_X11_SCALE_FACTOR = "1.0";
       };
 
