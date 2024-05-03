@@ -299,13 +299,15 @@ in
   XF86AudioLowerVolume = "${orpheus_lower-volume}/bin/orpheus_lower-volume";
   XF86AudioMute = "${orpheus_mute}/bin/orpheus_mute";
 
+  XF86KbdBrightnessUp = "exec ${pkgs.kbdlight}/bin/kbdlight up 5";
+  XF86KbdBrightnessDown = "exec ${pkgs.kbdlight}/bin/kbdlight down 5";
 
   # XF86AudioMicMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-source-mute 0 toggle%";
   # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
   # XF86MonBrightnessUp = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
   # XF86MonBrightnessDown = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
-  XF86MonBrightnessUp = "exec ${pkgs.brillo}/bin/brillo -e -A 0.5";
-  XF86MonBrightnessDown = "exec ${pkgs.brillo}/bin/brillo -e -U 0.5";
+  XF86MonBrightnessUp = "exec ${pkgs.brillo}/bin/brillo -e -A 0.2";
+  XF86MonBrightnessDown = "exec ${pkgs.brillo}/bin/brillo -e -U 0.2";
   # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
   # XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2";
   # XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";
