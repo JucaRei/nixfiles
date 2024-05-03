@@ -143,6 +143,13 @@ in
         executable = true;
         text = builtins.readFile ../../../config/rofi/scripts/powermenu.sh;
       };
+      "/home/${username}/.config/rofi/themes/powermenu.rasi" = {
+        text = builtins.readFile ../../../config/rofi/everforest/powermenu.rasi;
+      };
+      "/home/${username}/.config/rofi/images" = {
+        recursive = true;
+        source = ../../../config/rofi/everforest/images;
+      };
       "/home/${username}/.config/rofi/scripts/promptmenu" = {
         executable = true;
         text = builtins.readFile ../../../config/rofi/scripts/promptmenu.sh;
@@ -1128,7 +1135,7 @@ in
           content = "⏻ ";
           content-background = "$\{colors.mb}";
           content-foreground = "$\{colors.red}";
-          # click-left = "~/.config/rofi/scripts/powermenu";
+          click-left = "~/.config/rofi/scripts/powermenu";
           # click-right = "~/.config/rofi/scripts/powermenu";
           # click-left = "${pkgs.powermenu}/bin/powermenu";
           # click-right = "${pkgs.powermenu}/bin/powermenu";

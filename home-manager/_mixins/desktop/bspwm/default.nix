@@ -15,6 +15,7 @@ in
     ./everforest/polybar-everforest.nix
     ../../apps/file-managers/thunar.nix
     ../../apps/terminal/alacritty.nix
+    ../../apps/documents/zathura.nix # pdf
     ./everforest/picom.nix
     ./everforest/dunst.nix
     ./everforest/conky.nix

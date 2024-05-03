@@ -205,9 +205,39 @@ in
         then true
         else false;
       #package = pkgs.unstable.samba4Full; # samba4Full broken
+      # securityType = "user";
+      # openFirewall = true;
       extraConfig = ''
         client min protocol = NT1
       '';
+      ### --------------------------------------------------------- ###
+      #   shares = {
+      #     home = {
+      #       path = "/home/${username}";
+      #       browseable = "yes";
+      #       writeable = "yes";
+      #       "acl allow execute always" = true;
+      #       "read only" = "no";
+      #       "valid users" = "${username}";
+      #       "create mask" = "0644";
+      #       "directory mask" = "0755";
+      #       "force user" = "${username}";
+      #       "force group" = "users";
+      #     };
+      #     #### ----------------------------------------------------- ####
+      #     media = {
+      #       path = "/run/media/${username}";
+      #       browseable = "yes";
+      #       writeable = "yes";
+      #       "acl allow execute always" = true;
+      #       "read only" = "no";
+      #       "valid users" = "${username}";
+      #       "create mask" = "0644";
+      #       "directory mask" = "0755";
+      #       "force user" = "${username}";
+      #       "force group" = "users";
+      #     };
+      #   };
     };
     gvfs = {
       package = pkgs.unstable.gvfs;

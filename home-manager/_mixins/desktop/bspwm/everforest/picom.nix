@@ -26,9 +26,9 @@ in
 
         # Try to detect WM windows (a non-override-redirect window with no
         # child that has 'WM_STATE') and mark them as active.
-        mark-wmwin-focused = false;
+        mark-wmwin-focused = true; # false;
         # Mark override-redirect windows that doesn't have a child window with 'WM_STATE' focused.
-        # mark-ovredir-focused = true;
+        mark-ovredir-focused = true;
 
         # Try to detect windows with rounded corners and don't consider them
         # shaped windows. The accuracy is not very high, unfortunately.
@@ -213,6 +213,9 @@ in
           dock = {
             shadow = false;
           };
+          dnd = {
+            shadow = false;
+          };
           popup_menu = {
             opacity = 0.9;
             shadow = true;
@@ -251,7 +254,9 @@ in
         # inactive-dim = 0.8
 
         # Specify a list of conditions of windows that should always be considered focused.
-        focus-exclude = [ ];
+        focus-exclude = [
+          "class_g = 'Cairo-clock'"
+        ];
 
         # Use fixed inactive dim value, instead of adjusting according to window opacity.
         # inactive-dim-fixed = 1.0
@@ -264,6 +269,10 @@ in
         #    opacity-rule = [ "80:class_g = 'URxvt'" ];
         #
         opacity-rule = [
+          "90:class_g = 'Alacritty'"
+          "90:class_g = 'URxvt'"
+          "97:class_g = 'Anki'"
+          "70:class_g = 'i3bar'"
           # make windows that are behind others completely transparent
           # "0:_NET_WM_STATE@:32a *= '_NET_WM_STATE_HIDDEN'",
           # "0:_NET_WM_STATE@[0]:32a *= '_NET_WM_STATE_HIDDEN'",
@@ -283,7 +292,7 @@ in
         # Opacity change between steps while fading out. (0.01 - 1.0, defaults to 0.03)
         fade-out-step = 0.01;
         # The time between steps in fade step, in milliseconds. (> 0, defaults to 10)
-        fade-delta = 3; # 5;
+        fade-delta = 4; # 5;
         # Specify a list of conditions of windows that should not be faded.
         fade-exclude = [
           "class_g = 'Rofi'"
@@ -305,9 +314,9 @@ in
         # The opacity of shadows. (0.0 - 1.0, defaults to 0.75)
         shadow-opacity = .75;
         # The left offset for shadows, in pixels. (defaults to -15)
-        shadow-offset-x = 0;
+        shadow-offset-x = -3; # 0;
         # The top offset for shadows, in pixels. (defaults to -15)
-        shadow-offset-y = 10;
+        shadow-offset-y = -3; # 10;
         # The blur radius for shadows, in pixels. (defaults to 12)
         shadow-radius = 20;
 
