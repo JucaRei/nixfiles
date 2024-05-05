@@ -949,8 +949,7 @@ in
               	--date-str="$date_str"
             '';
           in
-
-          "${pkgs.i3lock}/bin/i3lock -n -c 000000";
+          "${i3locker}/bin/i3locker";
       };
     };
 
