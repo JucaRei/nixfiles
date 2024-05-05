@@ -117,8 +117,8 @@ in
           }
 
           # -------===[ External Plugins ]===------- #
-          eval "$(starship init bash)"
-          eval "$(direnv hook bash)"
+          #eval "$(starship init bash)"
+          #eval "$(direnv hook bash)"
         '';
         sessionVariables = { TERM = "xterm"; };
       };

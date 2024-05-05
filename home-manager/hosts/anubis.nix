@@ -16,6 +16,13 @@ let
         | sort \
         | uniq
   '';
+
+  file-manager = "thunar.desktop";
+  compressed = "engrampa.desktop";
+  browser = "vivaldi-stable.desktop";
+  viewer = "org.xfce.ristretto.desktop";
+  video = "umpv.desktop";
+  audio = "org.gnome.Rhythmbox3.desktop";
 in
 {
   imports = [
@@ -27,6 +34,8 @@ in
     # ../_mixins/apps/browser/firefox/librewolf.nix
     ../_mixins/apps/video/mpv/mpv-unwrapped.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
+    ../_mixins/services/podman.nix
+    ../_mixins/console/yt-dlp.nix
     ../_mixins/non-nixos
     # ../_mixins/apps/tools/zathura.nix
     # ../_mixins/desktop/bspwm/themes/default
@@ -43,14 +52,18 @@ in
       bash.enable = true;
       nonNixOs.enable = true;
       udiskie = {
-      	enable = true;
-      	automount = true;
+        enable = true;
+        automount = true;
       };
+      podman.enable = false;
+      yt-dlp-custom.enable = true;
     };
     home = {
       packages = with pkgs; [
         docker-client
         font-search
+        cloneit
+        podman-compose
         (nixGL vivaldi-custom)
       ];
       file = {
@@ -88,6 +101,48 @@ in
         #     nix --extra-experimental-features 'nix-command flakes' run "$HOME/opt/nixos-configs#homeConfigurations.heywoodlh.activationPackage" --impure $EXTRA_ARGS
         #   '';
         # };
+      };
+    };
+    xdg = {
+      mimeApps = {
+        defaultApplications = {
+          "inode/directory" = file-manager;
+          "text/html" = browser;
+          "x-scheme-handler/http" = browser;
+          "x-scheme-handler/https" = browser;
+          "x-scheme-handler/mailto" = browser; # TODO
+          "x-scheme-handler/chrome" = browser;
+          "application/x-extension-htm" = browser;
+          "application/x-extension-html" = browser;
+          "application/x-extension-shtml" = browser;
+          "application/xhtml+xml" = browser;
+          "application/x-extension-xhtml" = browser;
+          "application/x-extension-xht" = browser;
+
+          # Compression
+          "application/bzip2" = compressed;
+          "application/gzip" = compressed;
+          "application/vnd.rar" = compressed;
+          "application/x-7z-compressed" = compressed;
+          "application/x-7z-compressed-tar" = compressed;
+          "application/x-bzip" = compressed;
+          "application/x-bzip-compressed-tar" = compressed;
+          "application/x-compress" = compressed;
+          "application/x-compressed-tar" = compressed;
+          "application/x-cpio" = compressed;
+          "application/x-gzip" = compressed;
+          "application/x-lha" = compressed;
+          "application/x-lzip" = compressed;
+          "application/x-lzip-compressed-tar" = compressed;
+          "application/x-lzma" = compressed;
+          "application/x-lzma-compressed-tar" = compressed;
+          "application/x-tar" = compressed;
+          "application/x-tarz" = compressed;
+          "application/x-xar" = compressed;
+          "application/x-xz" = compressed;
+          "application/x-xz-compressed-tar" = compressed;
+          "application/zip" = compressed;
+        };
       };
     };
   };
