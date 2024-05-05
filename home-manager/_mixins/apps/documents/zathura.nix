@@ -118,8 +118,6 @@ _: {
         guioptions = "";
         # "render-loading" = "false";
         unmap = "f";
-        "map f" = "toggle_fullscreen";
-        "map [fullscreen] f" = "toggle_fullscreen";
 
         notification-error-bg = "#1d2021"; # bg
         notification-error-fg = "#fb4934"; # bright:red
@@ -164,6 +162,28 @@ _: {
 
         continuous-hist-save = true;
       };
+      extraConfig = ''
+        map f set 'toggle_fullscreen'
+        map [fullscreen] f set 'toggle_fullscreen'
+
+        # Color Schemes
+        map <A-F1> set 'recolor-lightcolor "#2c333d"'
+        map <A-F2> set 'recolor-darkcolor "#FFFFFF"'
+        map <A-F3> set 'recolor-lightcolor "#d8cfbf"'
+        map <A-F4> set 'recolor-darkcolor "#000000"'
+        map <A-F5> set 'recolor-lightcolor "#181E27"'
+        map <A-F6> set 'recolor-darkcolor "#EFE7DD"'
+        set recolor-keephue true
+
+        # Keybinds for Colorschemes
+        map <F1> feedkeys "<A-F1><A-F2>"
+        map <F2> feedkeys "<A-F3><A-F4>"
+        map <F3> feedkeys "<A-F5><A-F6>"
+        map i recolor
+
+
+        set page-padding 5
+      '';
     };
   };
 }

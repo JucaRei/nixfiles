@@ -11,10 +11,10 @@ let
 
     if ${pkgs.procps}/bin/pgrep -x "picom" > /dev/null
     then
-    	${pkgs.killall}/bin/killall ${config.services.picom.package}/bin/picom
+    	${pkgs.killall}/bin/killall picom
     	${pkgs.libnotify}/bin/notify-send picom "compositing disabled"
     else
-    	${config.services.picom.package}/bin/picom -b
+    	picom -b
     	${pkgs.libnotify}/bin/notify-send picom "compositing enabled"
     fi
   '';
