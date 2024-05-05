@@ -6,6 +6,19 @@ let
   vars = import ./vars.nix { inherit pkgs config hostname; };
   filemanager = vars.filemanager;
 
+  picom-toggle = pkgs.writeShellScriptBin "picom-toggle" ''
+    #!${pkgs.stdenv.shell}
+
+    if ${pkgs.procps}/bin/pgrep -x "picom" > /dev/null
+    then
+    	${pkgs.killall}/bin/killall ${config.services.picom.package}/bin/picom
+    	${pkgs.libnotify}/bin/notify-send picom "compositing disabled"
+    else
+    	${config.services.picom.package}/bin/picom -b
+    	${pkgs.libnotify}/bin/notify-send picom "compositing enabled"
+    fi
+  '';
+
   orpheus_lower-volume = pkgs.writeShellScriptBin "orpheus_lower-volume" ''
     #!${pkgs.stdenv.shell}
     DSINK="@DEFAULT_SINK@"
@@ -84,6 +97,9 @@ in
   "${vars.mod} + shift + b" = "${vars.browser} --new-window https://youtube.com/"; # web-browser
   "${vars.mod} + shift + p" = "${vars.browser} --private-window"; # web-browser
   "${vars.mod} + e" = "${filemanager}";
+
+  "${vars.modAlt} + shift + p" = "${picom-toggle}/bin/picom-toggle";
+
   # "${vars.mod} + @space" = "rofi -show drun"; # program launcher
   "${vars.modAlt} + @space" = "rofi -show drun -show-icons -no-lazy-grab -lines 15 -width 40"; # program launcher
   # calculator
