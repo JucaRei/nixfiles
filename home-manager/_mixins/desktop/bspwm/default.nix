@@ -38,7 +38,6 @@ in
           xorg.xwininfo
           xorg.xrandr
 
-          sxhkd
           gnome.file-roller
           feh # image viewer
           betterlockscreen # lockscreen
@@ -104,8 +103,6 @@ in
           gpick
           physlock
           killall
-          xclip
-          xclip
           dialog
 
           # compression
@@ -805,6 +802,7 @@ in
     services = {
       sxhkd = {
         enable = true;
+        package = pkgs.sxhkd;
         keybindings = import ./sxhkdrc.nix args;
       };
       fusuma = {

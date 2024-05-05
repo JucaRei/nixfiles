@@ -2,7 +2,6 @@ args@{ pkgs, config, lib, hostname, ... }:
 let
   _ = lib.getExe;
   terminal = "${_ vars.alacritty-custom}";
-  browser = "brave";
   # browser = "${config.programs.chromium.package}/bin/chromium-browser";
   vars = import ./vars.nix { inherit pkgs config hostname; };
   filemanager = vars.filemanager;
@@ -81,9 +80,9 @@ in
 {
   "${vars.mod} + Return" = "${terminal}"; # Terminal
   "${vars.mod} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
-  "${vars.mod} + b" = "${browser}"; # web-browser
-  "${vars.mod} + shift + b" = "${browser} --new-window https://youtube.com/"; # web-browser
-  "${vars.mod} + shift + p" = "${browser} --private-window"; # web-browser
+  "${vars.mod} + b" = "${vars.browser}"; # web-browser
+  "${vars.mod} + shift + b" = "${vars.browser} --new-window https://youtube.com/"; # web-browser
+  "${vars.mod} + shift + p" = "${vars.browser} --private-window"; # web-browser
   "${vars.mod} + e" = "${filemanager}";
   # "${vars.mod} + @space" = "rofi -show drun"; # program launcher
   "${vars.modAlt} + @space" = "rofi -show drun -show-icons -no-lazy-grab -lines 15 -width 40"; # program launcher
@@ -256,7 +255,7 @@ in
   ##############
   ### jgmenu ###
   ##############
-  "~button3" = "${pkgs.xqp}/bin/xqp 0 $(${pkgs.xdo}/bin/xdo id -N Bspwm -n root) && ${pkgs.jgmenu}/bin/jgmenu --csv-file=~/.config/jgmenu/scripts/menu.txt --config-file=~/.config/jgmenu/jgmenurc";
+  "~button3" = "${pkgs.xqp}/bin/xqp 0 $(${pkgs.xdo}/bin/xdo id -N Bspwm -n root) && ${pkgs.jgmenu}/bin/jgmenu --csv-file=$HOME/.config/jgmenu/scripts/menu.txt --config-file=$HOME/.config/jgmenu/jgmenurc";
   ###################
   ### Move/Resize ###
   ###################
@@ -288,30 +287,51 @@ in
   ### Control Keys ###
   ####################
 
+  ### PulseAudio ###
+
   # XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
   # XF86AudioRaiseVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
   # XF86AudioLowerVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+
+  ### Wireplumber ###
+
   # XF86AudioMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
   # "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
   # XF86AudioMicMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+
+  ### Script ###
 
   XF86AudioRaiseVolume = "${orpheus_raise-volume}/bin/orpheus_raise-volume";
   XF86AudioLowerVolume = "${orpheus_lower-volume}/bin/orpheus_lower-volume";
   XF86AudioMute = "${orpheus_mute}/bin/orpheus_mute";
 
+  ### Mac backlight ###
   XF86KbdBrightnessUp = "exec ${pkgs.kbdlight}/bin/kbdlight up 5";
   XF86KbdBrightnessDown = "exec ${pkgs.kbdlight}/bin/kbdlight down 5";
 
-  # XF86AudioMicMute = "exec --no-startup-id ${pkgs.wireplumber}/bin/wpctl set-source-mute 0 toggle%";
+  ### Pamixer cmdline ###
+
   # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
+  # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
+  # XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2"
+
+  ### Acpilight ###
+
   # XF86MonBrightnessUp = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
   # XF86MonBrightnessDown = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
+
+  ### Brillo ###
+
   XF86MonBrightnessUp = "exec ${pkgs.brillo}/bin/brillo -e -A 0.2";
   XF86MonBrightnessDown = "exec ${pkgs.brillo}/bin/brillo -e -U 0.2";
-  # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
-  # XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2";
+
+  ### Xbacklight ###
+
   # XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";
   # XF86MonBrightnessDown = "${_ pkgs.xorg.xbacklight}/bin/xbacklight - 5";
+
+  ### PlayerCtl ###
+
   XF86AudioPlay = "${pkgs.playerctl}/bin/playerctl play";
   XF86AudioPause = "${pkgs.playerctl}/bin/playerctl pause";
   XF86AudioNext = "${pkgs.playerctl}/bin/playerctl next";
