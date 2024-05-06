@@ -19,6 +19,8 @@ let
     fi
   '';
 
+  isNitro = if (hostname == "nitro") then "1920x1080" else "1366x768";
+
   orpheus_lower-volume = pkgs.writeShellScriptBin "orpheus_lower-volume" ''
     #!${pkgs.stdenv.shell}
     DSINK="@DEFAULT_SINK@"
@@ -358,6 +360,7 @@ in
   ##################
   ### Screenshot ###
   ##################
-  "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+  "Print" = "${screenshooter}/bin/screenshooter";
+  # "Print" = "${pkgs.flameshot}/bin/flameshot gui";
   # "Print" = "${pkgs.rofi-screenshot}/bin/rofi-screenshot";
 }

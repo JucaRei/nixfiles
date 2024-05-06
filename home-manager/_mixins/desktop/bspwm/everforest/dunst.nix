@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   services.dunst = {
     enable = true;
     iconTheme = {
@@ -18,8 +18,9 @@
         origin = "top-right";
         # offset = "10x32";
         offset = "10x42";
-        indicate_hidden = "yes";
-        shrink = "yes";
+        indicate_hidden = true;
+        shrink = true;
+        dmenu = "${config.programs.rofi.package}/bin/rofi -dmenu -p dunst";
 
         progress_bar = true;
         progress_bar_height = 80;
@@ -52,13 +53,13 @@
 
         idle_threshold = 120;
         show_age_threshold = 60;
-        sort = "yes"; # "no";
-        word_wrap = "yes";
-        ignore_newline = "no";
+        sort = true; # "no";
+        word_wrap = true;
+        ignore_newline = false;
         stack_duplicates = true; # false;
-        hide_duplicate_count = "yes";
-        show_indicators = "no";
-        sticky_history = "no"; # yes
+        hide_duplicate_count = false;
+        show_indicators = false;
+        sticky_history = true; # no
         history_length = 20;
         always_run_script = true;
         corner_radius = 4;
@@ -70,6 +71,9 @@
         mouse_left_click = "close_current";
         mouse_middle_click = "do_action, close_current";
         mouse_right_click = "close_all";
+      };
+      frame = {
+        width = 1;
       };
 
       urgency_low = {

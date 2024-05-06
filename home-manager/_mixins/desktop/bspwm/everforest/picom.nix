@@ -12,6 +12,14 @@ in
       shadow = true;
       shadowExclude = [
         "_GTK_FRAME_EXTENTS@:c"
+        "class_g = 'Cairo-clock'"
+        "class_g = 'Conky'"
+        "class_g = 'firefox' && argb"
+        "class_g ?= 'Notify-osd'"
+        "class_g ?= 'plasmashell'"
+        "class_g *= 'slop'"
+        "class_g ?= 'VirtualBoxVM'"
+        "name = 'Notification'"
       ];
       # ''_BSPWM_TAGS@:s != 'floating' && name != 'Dunst' && window_type != 'popup_menu' && window_type != 'dropdown_menu' && class_g != 'Rofi'"
       #   "class_g ?= 'peek'" ''
@@ -88,7 +96,7 @@ in
         # with a 5x5 one you use `--resize-damage 2`, and so on).
         # May or may not work with *--glx-no-stencil*. Shrinking doesn't function correctly.
         #
-        # resize-damage = 1
+        resize-damage = 1;
 
         # Specify a list of conditions of windows that should be painted with inverted color.
         # Resource-hogging, and is not well tested.
@@ -100,14 +108,14 @@ in
         # practically happened) and may not work with blur-background.
         # My tests show a 15% performance boost. Recommended.
         #
-        # glx-no-stencil = false
+        glx-no-stencil = true;
 
         # GLX backend: Avoid rebinding pixmap on window damage.
         # Probably could improve performance on rapid window content changes,
         # but is known to break things on some drivers (LLVMpipe, xf86-video-intel, etc.).
         # Recommended if it works.
         #
-        # glx-no-rebind-pixmap = false
+        glx-no-rebind-pixmap = true;
 
         # Disable the use of damage information.
         # This cause the whole screen to be redrawn everytime, instead of the part of the screen
@@ -120,7 +128,7 @@ in
         # calls are finished before picom starts drawing. Needed on nvidia-drivers
         # with GLX backend for some users.
         #
-        xrender-sync-fence = true;
+        # xrender-sync-fence = true;
 
         # GLX backend: Use specified GLSL fragment shader for rendering window contents.
         # See `compton-default-fshader-win.glsl` and `compton-fake-transparency-fshader-win.glsl`
@@ -210,6 +218,7 @@ in
             focus = true;
             full-shadow = false;
           };
+          #normal = { fade = false; shadow = false; };
           dock = {
             shadow = false;
           };
@@ -248,14 +257,19 @@ in
         # Let inactive opacity set by -i override the '_NET_WM_OPACITY' values of windows.
         inactive-opacity-override = true; # this fixed opacity for me. Not sure what is setting _NET_WM_OPACITY
         # Default opacity for active windows. (0.0 - 1.0, defaults to 1.0)
-        # active-opacity = 0.1
+        active-opacity = 1.0;
 
         # Dim inactive windows. (0.0 - 1.0, defaults to 0.0)
         # inactive-dim = 0.8
 
         # Specify a list of conditions of windows that should always be considered focused.
         focus-exclude = [
+          "class_g = 'Polybar'"
           "class_g = 'Cairo-clock'"
+          "class_g = 'Bar'" # lemonbar
+          "class_g = 'slop'" # maim
+          "class_i = 'Toolkit'" # Firefox PIP
+          "class_g = 'zoom'" # Zoom meetings
         ];
 
         # Use fixed inactive dim value, instead of adjusting according to window opacity.
@@ -269,10 +283,19 @@ in
         #    opacity-rule = [ "80:class_g = 'URxvt'" ];
         #
         opacity-rule = [
+          "80:class_g     = 'Bar'" # lemonbar
+          "100:class_g    = 'slop'" # maim
           "90:class_g = 'Alacritty'"
+          "100:class_g = 'code-oss'"
+          "100:class_g = 'Meld'"
+          "90:class_g     = 'Joplin'"
           "90:class_g = 'URxvt'"
           "97:class_g = 'Anki'"
           "70:class_g = 'i3bar'"
+          #"100:class_g    = 'XTerm'",
+          #"100:class_g    = 'URxvt'",
+          #"10:class_g    = 'kitty'",
+          #"100:class_g    = 'Alacritty'",
           # make windows that are behind others completely transparent
           # "0:_NET_WM_STATE@:32a *= '_NET_WM_STATE_HIDDEN'",
           # "0:_NET_WM_STATE@[0]:32a *= '_NET_WM_STATE_HIDDEN'",
@@ -288,15 +311,16 @@ in
         #  unless no-fading-openclose is used.
         # Opacity change between steps while fading in. (0.01 - 1.0, defaults to 0.028)
 
-        fade-in-step = 0.01;
+        fade-in-step = 0.03;
         # Opacity change between steps while fading out. (0.01 - 1.0, defaults to 0.03)
-        fade-out-step = 0.01;
+        fade-out-step = 0.03;
         # The time between steps in fade step, in milliseconds. (> 0, defaults to 10)
         fade-delta = 4; # 5;
         # Specify a list of conditions of windows that should not be faded.
         fade-exclude = [
           "class_g = 'Rofi'"
           "class_g ?= 'peek'"
+          "class_g = 'slop'" # maim
         ];
         # Do not fade on window open/close.
         # no-fading-openclose = false
@@ -312,14 +336,30 @@ in
         # unless explicitly requested using the wintypes option.
         shadow = true;
         # The opacity of shadows. (0.0 - 1.0, defaults to 0.75)
+
         shadow-opacity = .75;
         # The left offset for shadows, in pixels. (defaults to -15)
         shadow-offset-x = -3; # 0;
         # The top offset for shadows, in pixels. (defaults to -15)
         shadow-offset-y = -3; # 10;
+
+        # shadowOffsets = [ (-7) (-7) ];
+        # shadowOpacity = 0.9;
+
         # The blur radius for shadows, in pixels. (defaults to 12)
         shadow-radius = 20;
 
+        shadow-exclude = [
+          "name = 'Notification'"
+          "window_type = 'notification'"
+          "class_g = 'Conky'"
+          "class_g ?= 'Notify-osd'"
+          "class_g = 'Cairo-clock'"
+          "class_g = 'slop'"
+          "class_g = 'Polybar'"
+          "_GTK_FRAME_EXTENTS@:c"
+          "(class_g = 'Firefox' || class_g = 'firefox-default') && (window_type = 'utility' || window_type = 'popup_menu') && argb"
+        ];
 
         # Specify a X geometry that describes the region in which shadow should not
         # be painted in, such as a dock window region. Use
@@ -360,10 +400,15 @@ in
         blur = {
           method = "dual_kawase";
           size = 20; # 24;
-          strenght = 12;
-          deviation = 5.0;
+          strenght = 7;
+          # deviation = 5.0;
+          # deviation = 1.0;
+          # kernel = "11x11gaussian";
           # Exclude conditions for background blur.
           # blur-background-exclude = []
+          background-frame = false;
+          background-fixed = false;
+          kern = "3x3box";
           backround-exclude = [
             "window_type = 'dock'"
             "window_type = 'conky'"
@@ -371,6 +416,7 @@ in
             "class_g = 'slop'"
             "class_g ?= 'peek'"
             "_GTK_FRAME_EXTENTS@:c"
+            "(class_g = 'Firefox' || class_g = 'firefox-default') && (window_type = 'utility' || window_type = 'popup_menu') && argb"
           ];
         };
 
@@ -378,10 +424,18 @@ in
         #       Corner Settings         #
         #################################
         corner-radius = 10;
+        round-borders = 0;
         rounded-corners-exclude = [
           "window_type = 'dock'"
           "window_type = 'desktop'"
           "class_g = 'Rofi'"
+          "class_g = 'URxvt'"
+          "class_g = 'XTerm'"
+          "class_g = 'kitty'"
+          "class_g = 'Alacritty'"
+          "class_g = 'Polybar'"
+          "class_g = 'code-oss'"
+          "class_g = 'code'"
           # "window_type = 'conky'"
         ];
         use-ewmh-active-win = false; # true;
@@ -390,9 +444,11 @@ in
       vSync = false;
       extraArgs = [
         "--experimental-backends"
+        "--daemon"
         # "--legacy-backends"
         # "--use-damage"
       ];
     };
   };
+  systemd.user.services.picom.Service.Type = "forking";
 }

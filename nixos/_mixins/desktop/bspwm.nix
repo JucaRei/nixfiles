@@ -26,6 +26,16 @@
             mini = {
               enable = true;
               user = "${username}";
+              extraConfig = ''
+                font-size = 1.0em
+                font = "Iosevka"
+
+                [greeter]
+                show-password-label = false
+                password-label-text = ""
+                password-input-width = 30
+                password-alignment = left
+              '';
             };
             gtk = {
               theme = {
