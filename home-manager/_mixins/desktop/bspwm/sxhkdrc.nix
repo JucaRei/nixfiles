@@ -360,7 +360,6 @@ in
   ##################
   ### Screenshot ###
   ##################
-  "Print" = "${screenshooter}/bin/screenshooter";
   # "Print" = "${pkgs.flameshot}/bin/flameshot gui";
   # "Print" = "${pkgs.rofi-screenshot}/bin/rofi-screenshot";
 }
