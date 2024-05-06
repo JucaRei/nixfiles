@@ -68,6 +68,9 @@ in
         podman-compose
         (nixGL vivaldi-custom)
       ];
+      sessionVariables = {
+        BROWSER = "vivaldi";
+      };
       file = {
         # "bin/create-docker" = {
         #   enable = true;

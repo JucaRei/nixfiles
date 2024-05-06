@@ -112,7 +112,6 @@ in
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
           EDITOR = "micro";
-          BROWSER = "firefox";
           TERMINAL = "alacritty";
           GLFW_IM_MODULE = "ibus";
           TERM = "xterm-256color";
