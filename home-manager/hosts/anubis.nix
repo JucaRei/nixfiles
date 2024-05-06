@@ -62,6 +62,7 @@ in
       packages = with pkgs; [
         docker-client
         font-search
+        guvcview
         cloneit
         podman-compose
         (nixGL vivaldi-custom)
