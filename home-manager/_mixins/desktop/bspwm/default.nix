@@ -18,6 +18,7 @@ in
     ../../apps/file-managers/thunar.nix
     ../../apps/terminal/alacritty.nix
     ../../apps/documents/zathura.nix # pdf
+    ./everforest/rofi.nix
     ./everforest/picom.nix
     ./everforest/dunst.nix
     ./everforest/conky.nix
@@ -29,7 +30,6 @@ in
         packages = with pkgs; [
           ### Utils
           xclip
-          xdotool
           xorg.xinit
           xorg.libXcomposite
           xorg.libXinerama
@@ -40,43 +40,26 @@ in
           xorg.xwininfo
           xorg.xrandr
 
-          gnome.file-roller
           feh # image viewer
-          betterlockscreen # lockscreen
-          sqlite # database
           usbutils # usb utilities
           xdg-user-dirs # create xdg user dirs
           flameshot # cool utility for taking screen shots
-          # pkg-config # a tool for pkgs to find info about other pkgs
-          # lxde.lxsession # lightweight session manager
           qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
           libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
           qt5.qttools
           qt6Packages.qtstyleplugin-kvantum
           libsForQt5.qt5ct
           dialog # display dialog boxes from shell
-          arandr
           xfce.ristretto # photo viewer
-          # notepadqq # notepad++ but for linux
-          xfce.xfce4-settings # setting manager
           gnome.pomodoro # pomodor style timer for taking breaks
-          # libsForQt5.ark # imo best linux archive manager
-          # fluent
-          # (nixgl alacritty) # terminal, #show on rofi applications
-          # (nixgl i3lock-color)
-          feh
           gtk-engine-murrine
           gtk_engines
-          # pamixer # Pulseaudio command line mixer
-          # nitrogen
           cava
           font-manager
-          # libinput-gestures
           lm_sensors
-          # lxappearance-gtk2
+          lxappearance-gtk2
           pavucontrol
-          # udisks
-          blueberry
+          # blueberry
           # (geany-with-vte.override {
           #   packages = with  pkgs; [
           #     file
@@ -96,14 +79,13 @@ in
           libwebp
           playerctl
           imagemagick
-          parcellite
-          libnotify
+          # parcellite
 
           # utils
           jgmenu
-          maim
-          gpick
-          physlock
+          maim # command-line screenshot utility
+          # gpick
+          # physlock
           killall
           dialog
 
@@ -119,7 +101,6 @@ in
           gtk3
           xdg-user-dirs
           xdg-desktop-portal-gtk
-          udiskie
         ];
 
         shellAliases = {
@@ -959,12 +940,7 @@ in
     };
 
     programs = {
-      # alacritty = {
-      #   enable = true;
-      #   package = nixgl pkgs.alacritty;
-      #   settings = import ../../apps/terminal/alacritty.nix args;
-      # };
-      rofi = import ./everforest/rofi.nix args;
+      # rofi = import ./everforest/rofi.nix args;
       feh = {
         enable = true;
         # package = pkgs.feh;

@@ -20,6 +20,64 @@ let
   '';
 
   isNitro = if (hostname == "nitro") then "1920x1080" else "1366x768";
+  screenshooter = pkgs.writeShellScriptBin "screenshooter" ''
+    #!/usr/bin/env sh
+
+    # Save Screenshots here
+    screenshotdir=$HOME/Pictures/screenshots
+    # file name
+    file=$screenshotdir/$(date '+%y%m%d-%H%M-%S').png
+    # icon for notification
+    icon=${pkgs.papirus-icon-theme}/share/icons/Papirus/48x48/apps/deepin-camera.svg
+    # rofi config
+    roficonfig=$HOME/.config/rofi/configurations/screenshot.rasi
+    #make sure you have directory
+    [ -d "$screenshotdir" ] || mkdir -pv "$screenshotdir"
+
+    # ┬─┐┌─┐┌─┐┬
+    # ├┬┘│ │├┤ │
+    # ┴└─└─┘└  ┴
+
+    area=""
+    cwin=""
+    full=""
+    copy=""
+    save=""
+
+    rofiopt="$area\n$cwin\n$full"
+    rofi=$(${pkgs.coreutils}/bin/printf "$rofiopt" | ${config.programs.rofi.package}/bin/rofi -config $roficonfig -dmenu -i )
+    [ -z "$rofi" ] && ${pkgs.execline}/bin/exit
+    option="$save\n$copy"
+    saveopt=$(${pkgs.coreutils}/bin/printf "$option" | ${config.programs.rofi.package}/bin/rofi -config $roficonfig -dmenu -i )
+
+    case $rofi in
+    	"$area")
+    	if [ "$saveopt" = "$copy" ]; then
+    	${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Select Area'
+    	${pkgs.maim}/bin/maim -u -m 5 -s | xclip -selection clipboard -t image/png && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot copied' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
+      elif [ "$saveopt" = "$save" ]; then
+    	${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Select Area'
+    	${pkgs.maim}/bin/maim -u -m 5 -s $file && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot Taken' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
+    	fi
+    	;;
+    	"$cwin")
+    	if [ "$saveopt" = "$copy" ]; then
+    	${pkgs.maim}/bin/maim -u -m 5 -i "$(${pkgs.xdotool}/bin/xdotool getactivewindow)" | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot copied' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
+      elif [ "$saveopt" = "$save" ]; then
+    	${pkgs.maim}/bin/maim -u -m 5 -i "$(${pkgs.xdotool}/bin/xdotool getactivewindow)" $file && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot Taken' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
+    	fi
+    	;;
+    	"$full")
+    	if [ "$saveopt" = "$copy" ]; then
+        sleep 2
+    	${pkgs.maim}/bin/maim -u -m 5 | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot copied' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
+      elif [ "$saveopt" = "$save" ]; then
+        sleep 2
+    	${pkgs.maim}/bin/maim -u -m 5 $file && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot Taken' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
+    	fi
+    	;;
+    esac
+  '';
 
   orpheus_lower-volume = pkgs.writeShellScriptBin "orpheus_lower-volume" ''
     #!${pkgs.stdenv.shell}
@@ -360,6 +418,7 @@ in
   ##################
   ### Screenshot ###
   ##################
+  "Print" = "${screenshooter}/bin/screenshooter";
   # "Print" = "${pkgs.flameshot}/bin/flameshot gui";
   # "Print" = "${pkgs.rofi-screenshot}/bin/rofi-screenshot";
 }
