@@ -33,6 +33,7 @@ in
     ../_mixins/console/bash.nix
     # ../_mixins/apps/browser/firefox/librewolf.nix
     ../_mixins/apps/video/mpv/mpv-unwrapped.nix
+    ../_mixins/apps/documents/libreoffice.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
     ../_mixins/services/podman.nix
     ../_mixins/console/yt-dlp.nix
