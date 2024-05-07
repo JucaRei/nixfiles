@@ -192,6 +192,11 @@ in
                unset f
               fi
 
+              eval "$(gnome-keyring-daemon --start)"
+              export SSH_AUTH_SOCK
+              dbus-update-activation-environment DISPLAY XAUTHORITY
+
+
               exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan} &
             '';
           };
@@ -823,6 +828,30 @@ in
           };
         };
       };
+      # betterlockscreen = {
+      #   enable = true;
+      #   inactiveInterval = 5;
+      #   arguments = [
+      #     # configuration file for betterlockscreen
+      #     "insidecolor=00000000"
+      #     "ringcolor=00000000"
+      #     "keyhlcolor=d23c3dff"
+      #     "bshlcolor=d23c3dff"
+      #     "separatorcolor=00000000"
+      #     "insidevercolor=00000000"
+      #     "insidewrongcolor=d23c3dff"
+      #     "ringvercolor=00000000"
+      #     "ringwrongcolor=d23c3dff"
+      #     "verifcolor=ffffffff"
+      #     "timecolor=ffffffff"
+      #     "datecolor=ffffffff"
+      #     "llayoutcolor=00000000"
+      #     "oginbox=00000066"
+      #     ''locktext="Type password to unlock..."''
+      #     ''verif_text=""''
+      #     "quiet=true"
+      #   ];
+      # };
       # screen-locker = {
       #   enable = true;
       #   inactiveInterval = 2; # minutes

@@ -113,6 +113,7 @@ in
         defaultApplications = {
           "inode/directory" = file-manager;
           "text/html" = browser;
+          "text/xml" = browser;
           "x-scheme-handler/http" = browser;
           "x-scheme-handler/https" = browser;
           "x-scheme-handler/mailto" = browser; # TODO

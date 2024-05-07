@@ -109,15 +109,20 @@ _: {
         ### Catpuccin ###
         #################
         selection-clipboard = "clipboard";
-        adjust-open = "width"; # best-fit
+        adjust-open = "best-fit"; # "width";
         pages-per-row = 1;
+        smooth-scroll = true;
         scroll-page-aware = true;
         scroll-full-overlap = "0.01";
         scroll-step = 50;
         zoom-min = 10;
+        window-title-home-tilde = true;
+        statusbar-home-tilde = true;
         guioptions = "";
         # "render-loading" = "false";
         unmap = "f";
+        # font = "DaddyTimeMono Nerd Font 15";
+        font = "RobotoMono Nerd Font 12";
 
         notification-error-bg = "#1d2021"; # bg
         notification-error-fg = "#fb4934"; # bright:red
@@ -163,6 +168,10 @@ _: {
         continuous-hist-save = true;
       };
       extraConfig = ''
+        set adjust-open width
+
+        map <C-Tab> toggle_statusbar
+
         map f set 'toggle_fullscreen'
         map [fullscreen] f set 'toggle_fullscreen'
 
@@ -183,7 +192,18 @@ _: {
 
 
         set page-padding 5
+
+        # Open document in fit-width mode by default
+        # set adjust-open "best-fit"
+        # set windowsize
       '';
+    };
+  };
+  xdg = {
+    mimeApps = {
+      defaultApplications = {
+        "application/pdf" = [ "org.pwmt.zathura.desktop" ];
+      };
     };
   };
 }

@@ -19,6 +19,55 @@ let
     fi
   '';
 
+  dunst-light = pkgs.writeShellScriptBin "dunst-light" ''
+    #!/usr/bin/env bash
+    #
+    # You can call this script like this:
+    # $ ./brightnessdunst.sh up
+    # $ ./brightnessdunst.sh down
+
+    # ICON="preferences-system-brightness-lock"
+    NOTIFICATION_ID="5555"
+    INCREMENT="0.5%"
+
+    get_brightness() {
+      awk -v current="$(${pkgs.brillo}/bin/brillo -b)" -v max="$(${pkgs.brillo}/bin/brillo -m)" 'BEGIN { printf "%.0f\n", (current / max) * 100 }'
+    }
+
+    send_notification() {
+      brightness="$1"
+      progressbar "$brightness"
+      ${pkgs.dunst}/bin/dunstify -r "$NOTIFICATION_ID" -u normal -t 1 ""
+    }
+
+    increase_brightness() {
+      ${pkgs.brillo}/bin/brillo -e -A "$INCREMENT"
+    }
+
+    decrease_brightness() {
+      ${pkgs.brillo}/bin/brillo -e -U "$INCREMENT"
+    }
+
+    # Main
+    case $1 in
+    up)
+      increase_brightness
+      ;;
+    down)
+      decrease_brightness
+      ;;
+    toggle-auto)
+      auto_brightness_toggle
+      ;;
+    *)
+      echo "Invalid argument. Usage: $0 [up|down|toggle-auto]"
+      exit 1
+      ;;
+    esac
+
+    send_notification "$(get_brightness)"
+  '';
+
   isNitro = if (hostname == "nitro") then "1920x1080" else "1366x768";
   screenshooter = pkgs.writeShellScriptBin "screenshooter" ''
     #!/usr/bin/env sh
@@ -169,7 +218,20 @@ in
   # "${vars.modAlt} + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
 
   # make sxhkd reload its configuration files:
-  "${vars.modAlt} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd; ${pkgs.libnotify}/bin/notify-send 'sxhkd' 'Reloaded config'";
+  "${vars.modAlt} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd;
+    ${pkgs.libnotify}/bin/notify-send 'sxhkd' 'Reloaded config'";
+
+  # "${vars.modAlt} + Escape" =
+  #   ''
+  #     ${pkgs.procps}/bin/pkill -USR1 -x sxhkd; \
+  #     ${config.xsession.windowManager.bspwm.package}/bin/bspc wm -r; \
+  #     ${config.services.polybar.package}/bin/polybar-msg cmd restart; \
+  #     ${pkgs.dunst}/bin/dunstify 'Reload all configuration.' -u low
+  #   '';
+
+  # bspc wm -r; \
+  # polybar-msg cmd restart; \
+  # dunstify "Reload all configuration." -u low
 
   #   ${config.xsession.windowManager.bspwm.package}/bin/bspc wm -r; \
   #   polybar-msg cmd restart; \
@@ -398,8 +460,10 @@ in
 
   ### Brillo ###
 
-  XF86MonBrightnessUp = "exec ${pkgs.brillo}/bin/brillo -e -A 0.2";
-  XF86MonBrightnessDown = "exec ${pkgs.brillo}/bin/brillo -e -U 0.2";
+  XF86MonBrightnessUp = "exec ${dunst-light}/bin/dunst-light up";
+  XF86MonBrightnessDown = "exec ${dunst-light}/bin/dunst-light down";
+  # XF86MonBrightnessUp = "exec ${pkgs.brillo}/bin/brillo -e -A 0.2";
+  # XF86MonBrightnessDown = "exec ${pkgs.brillo}/bin/brillo -e -U 0.2";
 
   ### Xbacklight ###
 

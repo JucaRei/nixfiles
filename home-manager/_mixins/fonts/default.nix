@@ -1,32 +1,35 @@
 # Fonts!
 { pkgs, config, lib, ... }: {
-  home.packages = with pkgs.unstable; [
+  home = {
+    packages = with pkgs.unstable; [
 
-    # phospor-ttf
-    # material-symbols-ttf
-    # noto-fonts
-    # noto-fonts-emoji
-    # work-sans
-    # joypixels
-    hack-font
-    cairo
-    ubuntu_font_family
-    work-sans
-    # ubuntu_font_family
-    # apple-font
+      # phospor-ttf
+      # material-symbols-ttf
+      # noto-fonts
+      # noto-fonts-emoji
+      # work-sans
+      # joypixels
+      hack-font
+      cairo
+      ubuntu_font_family
+      work-sans
+      # ubuntu_font_family
+      # apple-font
 
-    material-design-icons
-    (nerdfonts.override {
-      fonts = [
-        "FiraCode"
-        "NerdFontsSymbolsOnly"
-        # "UbuntuMono"
-        # "Hack"
-        # "DroidSansMono"
-        # "JetBrainsMono"
-      ];
-    })
-  ];
+      material-design-icons
+      (nerdfonts.override {
+        fonts = [
+          "FiraCode"
+          "RobotoMono"
+          "NerdFontsSymbolsOnly"
+          # "UbuntuMono"
+          # "Hack"
+          # "DroidSansMono"
+          # "JetBrainsMono"
+        ];
+      })
+    ];
+  };
 
   fonts = {
     fontconfig.enable = lib.mkForce true;
