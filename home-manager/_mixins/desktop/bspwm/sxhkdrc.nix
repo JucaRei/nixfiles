@@ -480,7 +480,9 @@ in
   ##################
   ### Screenshot ###
   ##################
-  "Print" = "${screenshooter}/bin/screenshooter";
+  "Print" = "~/.config/rofi/configurations/scripts/screenshots.sh";
+  "super + shift + 4" = "~/.config/rofi/configurations/scripts/screenshots.sh";
+  # "Print" = "${screenshooter}/bin/screenshooter";
   # "Print" = "${pkgs.flameshot}/bin/flameshot gui";
   # "Print" = "${pkgs.rofi-screenshot}/bin/rofi-screenshot";
 }

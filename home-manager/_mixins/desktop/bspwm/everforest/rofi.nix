@@ -753,6 +753,319 @@ in
             text-color:                  var(background);
         }
       '';
+      "${config.xdg.configHome}/rofi/configurations/scripts/screenshots.sh" = {
+        executable = true;
+        text = ''
+          #!${pkgs.stdenv.shell}
+
+          # Import Current Theme
+          source "$HOME"/.config/rofi/configurations/applets/theme.bash
+          theme="$type/$style"
+
+          # Theme Elements
+          prompt='Screenshot'
+          mesg="DIR: `xdg-user-dir PICTURES`/Pictures/screenshots"
+
+          if [[ "$theme" == *'type-1'* ]]; then
+          	list_col='1'
+          	list_row='5'
+          	win_width='400px'
+          elif [[ "$theme" == *'type-3'* ]]; then
+          	list_col='1'
+          	list_row='5'
+          	win_width='120px'
+          elif [[ "$theme" == *'type-5'* ]]; then
+          	list_col='1'
+          	list_row='5'
+          	win_width='520px'
+          elif [[ ( "$theme" == *'type-2'* ) || ( "$theme" == *'type-4'* ) ]]; then
+          	list_col='5'
+          	list_row='1'
+          	win_width='670px'
+          fi
+
+          # Options
+          layout=`cat $theme | grep 'USE_ICON' | cut -d'=' -f2`
+          if [[ "$layout" == 'NO' ]]; then
+          	option_1=" Capture Desktop"
+          	option_2=" Capture Area"
+          	option_3=" Capture Window"
+          	option_4=" Capture in 5s"
+          	option_5=" Capture in 10s"
+          else
+          	option_1=""
+          	option_2=""
+          	option_3=""
+          	option_4=""
+          	option_5=""
+          fi
+
+          # Rofi CMD
+          rofi_cmd() {
+          	${config.programs.rofi.package}/bin/rofi -theme-str "window {width: $win_width;}" \
+          		-theme-str "listview {columns: $list_col; lines: $list_row;}" \
+          		-theme-str 'textbox-prompt-colon {str: "";}' \
+          		-dmenu \
+          		-p "$prompt" \
+          		-mesg "$mesg" \
+          		-markup-rows \
+          		-theme $theme
+          }
+
+          # Pass variables to rofi dmenu
+          run_rofi() {
+          	echo -e "$option_1\n$option_2\n$option_3\n$option_4\n$option_5" | rofi_cmd
+          }
+
+          # Screenshot
+          time=`${pkgs.coreutils}/bin/date +%Y-%m-%d-%H-%M-%S`
+          geometry=`${pkgs.xorg.xrandr}/bin/xrandr | grep 'current' | head -n1 | cut -d',' -f2 | tr -d '[:blank:],current'`
+          dir="`xdg-user-dir PICTURES`/Pictures/screenshots"
+          file="Screenshot_$time_$geometry.png"
+
+          if [[ ! -d "$dir" ]]; then
+          	mkdir -p "$dir"
+          fi
+
+          # notify and view screenshot
+          notify_view() {
+          	notify_cmd_shot='${pkgs.dunst}/bin/dunstify -u low --replace=699'
+          	$notify_cmd_shot "Copied to clipboard."
+          	${pkgs.viewnior}/bin/viewnior $dir/"$file"
+          	if [[ -e "$dir/$file" ]]; then
+          		$notify_cmd_shot "Screenshot Saved."
+          	else
+          		$notify_cmd_shot "Screenshot Deleted."
+          	fi
+          }
+
+          # Copy screenshot to clipboard
+          copy_shot () {
+          	tee "$file" | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png
+          }
+
+          # countdown
+          countdown () {
+          	for sec in `seq $1 -1 1`; do
+          		${pkgs.dunst}/bin/dunstify -t 1000 --replace=699 "Taking shot in : $sec"
+          		${pkgs.coreutils}/bin/sleep 1
+          	done
+          }
+
+          # take shots
+          shotnow () {
+          	cd $dir && ${pkgs.coreutils}/bin/sleep 0.5 && ${pkgs.maim}/bin/maim -u -f png | copy_shot
+          	notify_view
+          }
+
+          shot5 () {
+          	countdown '5'
+          	${pkgs.coreutils}/bin/sleep 1 && cd $dir && ${pkgs.maim}/bin/maim -u -f png | copy_shot
+          	notify_view
+          }
+
+          shot10 () {
+          	countdown '10'
+          	${pkgs.coreutils}/bin/sleep 1 && cd $dir && ${pkgs.maim}/bin/maim -u -f png | copy_shot
+          	notify_view
+          }
+
+          shotwin () {
+          	cd $dir && ${pkgs.maim}/bin/maim -u -f png -i `${pkgs.xdotool}/bin/xdotool getactivewindow` | copy_shot
+          	notify_view
+          }
+
+          shotarea () {
+          	cd $dir && ${pkgs.maim}/bin/maim -u -f png -s -b 2 -c 0.35,0.55,0.85,0.25 -l | copy_shot
+          	notify_view
+          }
+
+          # Execute Command
+          run_cmd() {
+          	if [[ "$1" == '--opt1' ]]; then
+          		shotnow
+          	elif [[ "$1" == '--opt2' ]]; then
+          		shotarea
+          	elif [[ "$1" == '--opt3' ]]; then
+          		shotwin
+          	elif [[ "$1" == '--opt4' ]]; then
+          		shot5
+          	elif [[ "$1" == '--opt5' ]]; then
+          		shot10
+          	fi
+          }
+
+          # Actions
+          chosen="$(run_rofi)"
+          case $chosen in
+              $option_1)
+          		run_cmd --opt1
+                  ;;
+              $option_2)
+          		run_cmd --opt2
+                  ;;
+              $option_3)
+          		run_cmd --opt3
+                  ;;
+              $option_4)
+          		run_cmd --opt4
+                  ;;
+              $option_5)
+          		run_cmd --opt5
+                  ;;
+          esac
+        '';
+      };
+      "${config.xdg.configHome}/rofi/configurations/applets/theme.bash".text = ''
+        ## Current Theme
+
+        type="$HOME/.config/rofi/configurations/applets/type-1"
+        style='style-1.rasi'
+      '';
+      "${config.xdg.configHome}/rofi/configurations/applets/type-1/style-1.rasi".text = ''
+        /*****----- Configuration -----*****/
+        configuration {
+            show-icons:                 false;
+        }
+
+        /*****----- Global Properties -----*****/
+        @import                          "../../Themes/Forest/colors.rasi"
+
+        /*
+        USE_ICON=NO
+        */
+
+        /*****----- Main Window -----*****/
+        window {
+            transparency:                "real";
+            location:                    center;
+            anchor:                      center;
+            fullscreen:                  false;
+            width:                       400px;
+            x-offset:                    0px;
+            y-offset:                    0px;
+            margin:                      0px;
+            padding:                     0px;
+            border:                      1px solid;
+            border-radius:               12px;
+            border-color:                @selected;
+            cursor:                      "default";
+            background-color:            @background;
+        }
+
+        /*****----- Main Box -----*****/
+        mainbox {
+            enabled:                     true;
+            spacing:                     10px;
+            margin:                      0px;
+            padding:                     20px;
+            background-color:            transparent;
+            children:                    [ "inputbar", "message", "listview" ];
+        }
+
+        /*****----- Inputbar -----*****/
+        inputbar {
+            enabled:                     true;
+            spacing:                     10px;
+            padding:                     0px;
+            border:                      0px;
+            border-radius:               0px;
+            border-color:                @selected;
+            background-color:            transparent;
+            text-color:                  @foreground;
+            children:                    [ "textbox-prompt-colon", "prompt"];
+        }
+
+        textbox-prompt-colon {
+            enabled:                     true;
+            expand:                      false;
+            str:                         "";
+            padding:                     10px 13px;
+            border-radius:               12px;
+            background-color:            @urgent;
+            text-color:                  @background;
+        }
+        prompt {
+            enabled:                     true;
+            padding:                     10px;
+            border-radius:               12px;
+            background-color:            @active;
+            text-color:                  @background;
+        }
+
+        /*****----- Message -----*****/
+        message {
+            enabled:                     true;
+            margin:                      0px;
+            padding:                     10px;
+            border:                      0px solid;
+            border-radius:               12px;
+            border-color:                @selected;
+            background-color:            @background-alt;
+            text-color:                  @foreground;
+        }
+        textbox {
+            background-color:            inherit;
+            text-color:                  inherit;
+            vertical-align:              0.5;
+            horizontal-align:            0.0;
+        }
+
+        /*****----- Listview -----*****/
+        listview {
+            enabled:                     true;
+            columns:                     1;
+            lines:                       6;
+            cycle:                       true;
+            scrollbar:                   false;
+            layout:                      vertical;
+
+            spacing:                     5px;
+            background-color:            transparent;
+            cursor:                      "default";
+        }
+
+        /*****----- Elements -----*****/
+        element {
+            enabled:                     true;
+            padding:                     10px;
+            border:                      0px solid;
+            border-radius:               12px;
+            border-color:                @selected;
+            background-color:            transparent;
+            text-color:                  @foreground;
+            cursor:                      pointer;
+        }
+        element-text {
+            background-color:            transparent;
+            text-color:                  inherit;
+            cursor:                      inherit;
+            vertical-align:              0.5;
+            horizontal-align:            0.0;
+        }
+
+        element normal.normal,
+        element alternate.normal {
+            background-color:            var(background);
+            text-color:                  var(foreground);
+        }
+        element normal.urgent,
+        element alternate.urgent,
+        element selected.active {
+            background-color:            var(urgent);
+            text-color:                  var(background);
+        }
+        element normal.active,
+        element alternate.active,
+        element selected.urgent {
+            background-color:            var(active);
+            text-color:                  var(background);
+        }
+        element selected.normal {
+            background-color:            var(selected);
+            text-color:                  var(background);
+        }
+      '';
     };
   };
   programs.rofi = {
