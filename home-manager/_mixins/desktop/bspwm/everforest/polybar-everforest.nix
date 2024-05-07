@@ -136,24 +136,24 @@ in
     file = {
       "/home/${username}/.config/polybar/scripts/polywins" = {
         executable = true;
-        # text = builtins.readFile ../../../config/polybar/scripts/polywins;
-        text = builtins.readFile ../../../config/polybar/scripts/polywins2;
+        text = builtins.readFile ../../../config/polybar/scripts/polywins;
+        # text = builtins.readFile ../../../config/polybar/scripts/polywins2;
       };
-      "/home/${username}/.config/rofi/scripts/powermenu" = {
-        executable = true;
-        text = builtins.readFile ../../../config/rofi/scripts/powermenu.sh;
-      };
-      "/home/${username}/.config/rofi/themes/powermenu.rasi" = {
-        text = builtins.readFile ../../../config/rofi/everforest/powermenu.rasi;
-      };
-      "/home/${username}/.config/rofi/images" = {
-        recursive = true;
-        source = ../../../config/rofi/everforest/images;
-      };
-      "/home/${username}/.config/rofi/scripts/promptmenu" = {
-        executable = true;
-        text = builtins.readFile ../../../config/rofi/scripts/promptmenu.sh;
-      };
+      # "/home/${username}/.config/rofi/scripts/powermenu" = {
+      #   executable = true;
+      #   text = builtins.readFile ../../../config/rofi/scripts/powermenu.sh;
+      # };
+      # "/home/${username}/.config/rofi/themes/powermenu.rasi" = {
+      #   text = builtins.readFile ../../../config/rofi/everforest/powermenu.rasi;
+      # };
+      # "/home/${username}/.config/rofi/images" = {
+      #   recursive = true;
+      #   source = ../../../config/rofi/everforest/images;
+      # };
+      # "/home/${username}/.config/rofi/scripts/promptmenu" = {
+      #   executable = true;
+      #   text = builtins.readFile ../../../config/rofi/scripts/promptmenu.sh;
+      # };
     };
   };
   services = {
@@ -670,13 +670,10 @@ in
         };
         "module/launcher" = {
           type = "custom/text";
-          # content = "  ";
-          # content-foreground = "$\{colors.blue-arch}";
-          # content-font = 4;
           label = "  ";
           label-foreground = "$\{colors.blue-arch}";
           label-font = 4;
-          click-left = "${pkgs.rofi}/bin/rofi -show drun -show-icons -no-lazy-grab -lines 15 -width 40";
+          click-left = "${config.programs.rofi.package}/bin/rofi -show drun -show-icons -theme $HOME/.config/rofi/configurations/Themes/Forest/launcher-polybar.rasi";
         };
         "module/blok2" = {
           type = "custom/text";
@@ -1135,7 +1132,7 @@ in
           content = "⏻ ";
           content-background = "$\{colors.mb}";
           content-foreground = "$\{colors.red}";
-          click-left = "~/.config/rofi/scripts/powermenu";
+          click-left = "~/.config/rofi/configurations/scripts/powermenu.sh";
           # click-right = "~/.config/rofi/scripts/powermenu";
           # click-left = "${pkgs.powermenu}/bin/powermenu";
           # click-right = "${pkgs.powermenu}/bin/powermenu";

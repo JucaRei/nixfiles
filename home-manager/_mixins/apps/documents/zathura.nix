@@ -114,11 +114,14 @@ _: {
         smooth-scroll = true;
         scroll-page-aware = true;
         scroll-full-overlap = "0.01";
-        scroll-step = 50;
+        scroll-step = 40;
+        scroll-hstep = 5;
+        first-page-column = "1:2:1:2:1:2";
         zoom-min = 10;
         window-title-home-tilde = true;
         statusbar-home-tilde = true;
-        guioptions = "";
+        incremental-search = true;
+        guioptions = "n"; #none
         # "render-loading" = "false";
         unmap = "f";
         # font = "DaddyTimeMono Nerd Font 15";
@@ -165,12 +168,24 @@ _: {
         recolor = true;
         # recolor-keephue             true      # keep original color
 
+        n-completion-items = 25;
         continuous-hist-save = true;
       };
       extraConfig = ''
         set adjust-open width
 
         map <C-Tab> toggle_statusbar
+        map <C-i> zoom in
+        map <C-o> zoom out
+        map [normal] l jumplist backward
+        map [normal] L jumplist forward
+
+        map <C-1> feedkeys ":set pages-per-row 1"<Return>
+        map <C-2> feedkeys ":set pages-per-row 2"<Return>
+        map <C-3> feedkeys ":set pages-per-row 3"<Return>
+        map <C-4> feedkeys ":set pages-per-row 4"<Return>
+        map t toggle_page_mode
+        map T feedkeys ":set pages-per-row "
 
         map f set 'toggle_fullscreen'
         map [fullscreen] f set 'toggle_fullscreen'

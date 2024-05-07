@@ -210,16 +210,15 @@ in
   "${vars.modAlt} + shift + p" = "${picom-toggle}/bin/picom-toggle";
 
   # "${vars.mod} + @space" = "rofi -show drun"; # program launcher
-  "${vars.modAlt} + @space" = "rofi -show drun -show-icons -no-lazy-grab -lines 15 -width 40"; # program launcher
-  # calculator
+  "${vars.modAlt} + @space" = "rofi -config -no-lazy-grab -show drun -modi drun -theme $HOME/.config/rofi/configurations/Themes/Forest/launcher.rasi"; # program launcher
+  # calculator    rofi -config -no-lazy-grab -show drun -modi drun -theme
   "F1" = "rofi -show calc -modi calc --no-show-match --no-sort -lines 2";
   # emoji
   "F2" = "rofi -show emoji -modi emoji";
   # "${vars.modAlt} + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
 
   # make sxhkd reload its configuration files:
-  "${vars.modAlt} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd;
-    ${pkgs.libnotify}/bin/notify-send 'sxhkd' 'Reloaded config'";
+  "${vars.modAlt} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd; ${config.xsession.windowManager.bspwm.package}/bin/bspc wm -r; ${pkgs.libnotify}/bin/notify-send 'Sxhkd & Polybar' 'Reloaded config'";
 
   # "${vars.modAlt} + Escape" =
   #   ''
@@ -255,8 +254,7 @@ in
   "${vars.mod} + {_,shift + }{Left,Down,Up,Right}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
   "${vars.mod} + equal" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node @/ --equalize"; # Make split ratios equal
   "${vars.mod} + minus" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node @/ --balance"; # Make split ratios balanced
-  "${vars.modAlt} + d" = "bspc query --nodes -n focused.tiled && state=floating || state=tiled; \
-	bspc node --state \~$state";
+  "${vars.modAlt} + d" = "bspc query --nodes -n focused.tiled && state=floating || state=tiled; bspc node --state \~$state";
   # rotate
   "${vars.mod} + f" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node --state \~fullscreen"; # Toggle fullscreen of window
   "${vars.mod} + {_,shift + }q" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -{c,k}"; # Close and kill
@@ -265,10 +263,10 @@ in
   # "${vars.modAlt} + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 0";
   # change window gap
   "${vars.mod} + {minus,equal}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc config -d focused window_gap $((`${config.xsession.windowManager.bspwm.package}/bin/bspc config -d focused window_gap` {+,-} 2 ))";
-  # "${vars.mod} + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -s biggest.window"; # Swap the current node and the biggest node
-  # "${vars.mod} + shift + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -s biggest.window"; # Swap the current node and the biggest node
+  "${vars.mod} + g" = "${config.xsession.windowManager.bspwm.package}/bin/ bspc node -s biggest.window"; # Swap the current node and the biggest window
+  "${vars.mod} + shift + g" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -s biggest.window"; # Swap the current node and the smallest window
 
-  "${vars.mod} + g" = ''if [ \"$(${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap)\" -eq 0 ]; then ${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 12; ${config.xsession.windowManager.bspwm.package}/bin/bspc config border_width 2; else ${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 0; ${config.xsession.windowManager.bspwm.package}/bin/bspc config border_width 0; fi'';
+  # "${vars.mod} + g" = ''if [ \"$(${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap)\" -eq 0 ]; then ${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 12; ${config.xsession.windowManager.bspwm.package}/bin/bspc config border_width 2; else ${config.xsession.windowManager.bspwm.package}/bin/bspc config window_gap 0; ${config.xsession.windowManager.bspwm.package}/bin/bspc config border_width 0; fi'';
 
   # Move current window to a pre-selected space
   "${vars.mod} + shift + m" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -n last.!automatic";
@@ -289,7 +287,7 @@ in
   "${vars.mod} + ctrl + {m,x,y,z}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -g {marked,locked,sticky,private}"; # set the node flags
 
   # set the node flags
-  "${vars.mod} + ctrl + {x,y,z}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -g {locked,sticky,private}";
+  # "${vars.mod} + ctrl + {x,y,z}" = "${config.xsession.windowManager.bspwm.package}/bin/bspc node -g {locked,sticky,private}";
 
   ##################
   ### Focus/swap ###

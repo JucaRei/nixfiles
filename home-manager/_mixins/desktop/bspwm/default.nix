@@ -174,13 +174,14 @@ in
                   ${pkgs.xorg.xmodmap}/bin/xmodmap "$usermodmap"
               fi
 
+              # ↓ https://nixos.wiki/wiki/Using_X_without_a_Display_Manager
               if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
-                eval $(dbus-launch --exit-with-session --sh-syntax)
+                eval $(${pkgs.dbus}/bin/dbus-launch --exit-with-session --sh-syntax)
               fi
-              systemctl --user import-environment DISPLAY XAUTHORITY
+              ${pkgs.systemdMinimal}/bin/systemctl --user import-environment DISPLAY XAUTHORITY
 
-              if command -v dbus-update-activation-environment > /dev/null 2>&1; then
-                dbus-update-activation-environment DISPLAY XAUTHORITY
+              if command -v ${pkgs.dbus}/bin/dbus-update-activation-environment > /dev/null 2>&1; then
+                ${pkgs.dbus}/bin/dbus-update-activation-environment DISPLAY XAUTHORITY
               fi
 
               # start some nice programs
@@ -194,8 +195,7 @@ in
 
               eval "$(gnome-keyring-daemon --start)"
               export SSH_AUTH_SOCK
-              dbus-update-activation-environment DISPLAY XAUTHORITY
-
+              ${pkgs.dbus}/bin/dbus-update-activation-environment DISPLAY XAUTHORITY
 
               exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan} &
             '';
@@ -292,7 +292,8 @@ in
             remove_disabled_monitors = true;
             remove_unplugged_monitors = true;
             pointer_modifier = "mod1";
-            pointer_action1 = "move";
+            pointer_action1 = "move"; # Move floating windows
+            # Resize floating windows
             pointer_action2 = "resize_side";
             pointer_action3 = "resize_corner";
             click_to_focus = "button1";
