@@ -61,10 +61,7 @@ with lib;
         # fcitx5-with-addons
         # vv
         # gparted
-        # neovim
         # tmux
-        # sniffnet
-        # autorandr
         # thorium
       ];
 

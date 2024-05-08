@@ -3,6 +3,7 @@ with lib;
 with lib.hm.gvariant;
 let
   cfg = config.services.aria2;
+  configDownloads = config.home.homeDirectory + "/Downloads";
 in
 {
   options.services.aria2 = {
@@ -20,6 +21,23 @@ in
     programs.aria2 = {
       enable = true;
       settings = {
+        # Download directory
+        dir = "${configDownloads}/aria";
+        check-integrity = true;
+
+        ## General optimization
+        # Don't download files if they're already in the download directory
+        conditional-get = true;
+        # file-allocation = "falloc"; # Assume ext4, this is faster there
+        optimize-concurrent-downloads = true;
+        disk-cache = "512M"; # In-memory cache to avoid fragmentation
+
+        ## Torrent options
+        bt-force-encryption = true;
+        bt-detach-seed-only = true; # Don't block downloads when seeding
+        seed-ratio = 2;
+        seed-time = 60;
+
         listen-port = "6881-6999";
         dht-listen-port = "6881-6999";
         rpcListenPort = 6881;

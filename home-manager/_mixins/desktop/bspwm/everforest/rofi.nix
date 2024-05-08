@@ -554,7 +554,7 @@ in
           			if [[ "$DESKTOP_SESSION" == 'openbox' ]]; then
           				openbox --exit
           			elif [[ "$DESKTOP_SESSION" == 'bspwm' ]]; then
-          				${config.xsession.windowManager.bspwm.package}/bin/bspc quit
+          				bspc quit
           			elif [[ "$DESKTOP_SESSION" == 'i3' ]]; then
           				i3-msg exit
           			elif [[ "$DESKTOP_SESSION" == 'plasma' ]]; then
@@ -1076,8 +1076,6 @@ in
       rofimoji
       rofi-calc
       rofi-bluetooth
-      rofi-power-menu
-      rofi-screenshot
       pinentry-rofi
     ];
     pass = {
@@ -1088,104 +1086,88 @@ in
         help_color="#FF0000"'';
     };
     terminal = "${_ vars.alacritty-custom}";
-    # extraConfig = ''
-    #   configuration {
-    #   	/*---------- General setting ----------*/
-    #   	modi: "drun,run,filebrowser,window";
-    #   	case-sensitive: false;
-    #   	cycle: true;
-    #   	filter: "";
-    #   	scroll-method: 0;
-    #   	normalize-match: true;
-    #   	show-icons: true;
-    #   	icon-theme: "${pkgs.papirus-icon-theme}/share/icons/Papirus";
-    #   /*	cache-dir: ;*/
-    #   	steal-focus: false;
-    #   /*	dpi: -1;*/
+    extraConfig = {
+      modi = "drun,run,filebrowser,window";
+      case-sensitive = false;
+      cycle = true;
+      filter = "";
+      scroll-method = 0;
+      normalize-match = true;
+      show-icons = true;
+      icon-theme = "${pkgs.papirus-icon-theme}/share/icons/Papirus";
 
-    #   	/*---------- Matching setting ----------*/
-    #   	matching: "normal";
-    #   	tokenize: true;
+      # Matching setting
+      matching = "normal";
+      tokenize = true;
 
-    #   	/*---------- SSH settings ----------*/
-    #   	ssh-client: "ssh";
-    #   	ssh-command: "{terminal} -e {ssh-client} {host} [-p {port}]";
-    #   	parse-hosts: true;
-    #   	parse-known-hosts: true;
+      #   SSH settings
+      ssh-client = "ssh";
+      ssh-command = "{terminal} -e {ssh-client} {host} [-p {port}]";
+      parse-hosts = true;
+      parse-known-hosts = true;
 
-    #   	/*---------- Drun settings ----------*/
-    #   	drun-categories: "";
-    #   	drun-match-fields: "name,generic,exec,categories,keywords";
-    #   	drun-display-format: "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
-    #   	drun-show-actions: false;
-    #   	drun-url-launcher: "${pkgs.xdg-utils}/bin/xdg-open";
-    #   	drun-use-desktop-cache: false;
-    #   	drun-reload-desktop-cache: false;
-    #   	drun {
-    #   		/** Parse user desktop files. */
-    #   		parse-user:   true;
-    #   		/** Parse system desktop files. */
-    #   		parse-system: true;
-    #       }
+      #   Drun settings
+      drun-categories = "";
+      drun-match-fields = "name,generic,exec,categories,keywords";
+      drun-display-format = "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
+      drun-show-actions = false;
+      drun-url-launcher = "${pkgs.xdg-utils}/bin/xdg-open";
+      drun-use-desktop-cache = false;
+      drun-parse-user = true; #Parse user desktop files.
+      drun-parse-system = true; #Parse system desktop files.
 
-    #   	/*---------- Run settings ----------*/
-    #   	run-command: "{cmd}";
-    #   	run-list-command: "";
-    #   	run-shell-command: "{terminal} -e {cmd}";
+      #   Run settings
+      run-command = "{cmd}";
+      run-list-command = "";
+      run-shell-command = "{terminal} -e {cmd}";
 
-    #   	/*---------- Fallback Icon ----------*/
-    #   	run,drun {
-    #   		fallback-icon: "application-x-addon";
-    #   	}
+      #   Fallback Icon
+      run-fallback-icon = "application-x-addon";
+      drun-fallback-icon = "application-x-addon";
 
-    #   	/*---------- Window switcher settings ----------*/
-    #   	window-match-fields: "title,class,role,name,desktop";
-    #   	window-command: "${pkgs.wmctrl}/bin/wmctrl -i -R {window}";
-    #   	window-format: "{w} - {c} - {t:0}";
-    #   	window-thumbnail: false;
+      #   Window switcher settings
+      window-match-fields = "title,class,role,name,desktop";
+      window-command = "${pkgs.wmctrl}/bin/wmctrl -i -R {window}";
+      window-format = "{w} - {c} - {t:0}";
+      window-thumbnail = false;
 
-    #   	/*---------- Combi settings ----------*/
-    #   /*	combi-modi: "window,run";*/
-    #   /*	combi-hide-mode-prefix: false;*/
-    #   /*	combi-display-format: "{mode} {text}";*/
+      # Combi settings
+      # 	combi-modi = "window,run";
+      #   combi-hide-mode-prefix = false;
+      #   combi-display-format = "{mode} {text}";
 
-    #   	/*---------- History and Sorting ----------*/
-    #   	disable-history: false;
-    #   	sorting-method: "normal";
-    #   	max-history-size: 25;
+      #   History and Sorting
+      disable-history = false;
+      sorting-method = "normal";
+      max-history-size = 25;
 
-    #   	/*---------- Display setting ----------*/
-    #   	display-window: "Windows";
-    #   	display-windowcd: "Window CD";
-    #   	display-run: "Run";
-    #   	display-ssh: "SSH";
-    #   	display-drun: "Apps";
-    #   	display-combi: "Combi";
-    #   	display-keys: "Keys";
-    #   	display-filebrowser: "Files";
+      #   Display settings
+      display-window = "Windows";
+      display-windowcd = "Window CD";
+      display-run = "Run";
+      display-ssh = "SSH";
+      display-drun = "Apps";
+      display-combi = "Combi";
+      display-keys = "Keys";
+      display-filebrowser = "Files";
 
-    #   	/*---------- Misc setting ----------*/
-    #   	terminal: "rofi-sensible-terminal";
-    #   	font: "Mono 12";
-    #   	sort: false;
-    #   	threads: 0;
-    #   	click-to-exit: true;
-    #   /*	ignored-prefixes: "";*/
-    #   /*	pid: "/run/user/1000/rofi.pid";*/
+      #   Misc setting
+      terminal = "rofi-sensible-terminal";
+      #   font= "Mono 12";
+      #   sort= false;
+      #   threads= 0;
+      #   click-to-exit = true;
+      #   ignored-prefixes: "";
+      #   pid= "/run/user/1000/rofi.pid";
 
-    #   	/*---------- File browser settings ----------*/
-    #       filebrowser {
-    #   /*	  directory: "/home";*/
-    #         directories-first: true;
-    #         sorting-method:    "name";
-    #       }
+      #   File browser settings
+      #   filebrowser-directories-first = true;
+      filebrowser-directory = "/home";
+      filebrowser-sorting-method = "name";
 
-    #   	/*---------- Other settings ----------*/
-    #       timeout {
-    #         action: "kb-cancel";
-    #         delay:  0;
-    #       }
-    #   }
-    # '';
+      #   Other settings
+      timeout-action = "kb-cancel";
+      timeout-delay = 0;
+    };
   };
 }

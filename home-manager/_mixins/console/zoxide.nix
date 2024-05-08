@@ -17,6 +17,9 @@ in
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableZshIntegration = true;
+      options = [
+        "--hook pwd"
+      ];
     };
   };
 }

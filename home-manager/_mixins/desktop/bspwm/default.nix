@@ -43,14 +43,14 @@ in
           feh # image viewer
           usbutils # usb utilities
           xdg-user-dirs # create xdg user dirs
-          flameshot # cool utility for taking screen shots
+          # flameshot # cool utility for taking screen shots
           qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
           libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
           qt5.qttools
           qt6Packages.qtstyleplugin-kvantum
           libsForQt5.qt5ct
           dialog # display dialog boxes from shell
-          xfce.ristretto # photo viewer
+          # xfce.ristretto # photo viewer
           gnome.pomodoro # pomodor style timer for taking breaks
           gtk-engine-murrine
           gtk_engines
@@ -79,13 +79,9 @@ in
           libwebp
           playerctl
           imagemagick
-          # parcellite
 
           # utils
           jgmenu
-          maim # command-line screenshot utility
-          # gpick
-          # physlock
           killall
           dialog
 
@@ -98,6 +94,7 @@ in
           # system
           xdg-utils
           gtk-layer-shell
+          gnome.gnome-keyring
           gtk3
           xdg-user-dirs
           xdg-desktop-portal-gtk
@@ -107,19 +104,12 @@ in
           is_picom_on = "pgrep -x 'picom' > /dev/null && echo 'on' || echo 'off'";
         };
 
-        # sudo apt-get reinstall lxsession;sudo apt install --reinstall lightdm;sudo systemctl enable lightdm
-
         sessionVariables = {
           "_JAVA_AWT_WM_NONREPARENTING" = "1";
           EDITOR = "micro";
           TERMINAL = "alacritty";
           GLFW_IM_MODULE = "ibus";
           TERM = "xterm-256color";
-          #GDK_SCALE = 2;
-          #GDK_DPI_SCALE = 0.5;
-          #QT_AUTO_SCREEN_SCALE_FACTOR = 1;
-          # XCURSOR_SIZE = "16";
-          # GTK_USE_PORTAL = "1";
         };
 
         sessionPath = [
@@ -236,7 +226,7 @@ in
               # "nitrogen --restore"
               # "lxpolkit" # prompt to enter sudo password daemon
               # "flameshot"
-              "${pkgs.polkit_gnome} /libexec/polkit-gnome-authentication-agent-1"
+              "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
               # "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
               # "${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
