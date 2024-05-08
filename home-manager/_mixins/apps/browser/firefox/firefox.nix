@@ -4,7 +4,7 @@ with lib;
 let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
 
-  # nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
+  nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
 
   cfg = config.services.firefox;
 
@@ -15,10 +15,7 @@ let
     sha256 = "sha256-KmkiSpxzlsPBWoX51o27l+X1IEh/Uv8RMkihGRxg98o=";
   };
 
-  nonNix = if (config.services.nonNixOs == true) then true else false;
-  check = if (nonNix == true) then nixgl pkgs.firefox else pkgs.firefox;
-
-  # ifDefault = lib.mkIf (builtins.elem params.browser [ "firefox" ]);
+  isGeneric = if (config.targets.genericLinux.enable) then true else false;
 
   sharedSettings = {
     # Privacy & Security Improvements
@@ -191,16 +188,10 @@ let
         # "${csshacks}/chrome/navbar_below_content.css"
       ]);
   };
-  # librewolf-gl = with pkgs; wrapFirefox librewolf-unwrapped {
   firefox-gl = with pkgs.unstable;
-    wrapFirefox firefox-unwrapped {
-      # floorp-gl = with pkgs.unstable; wrapFirefox floorp-unwrapped {
-      # firefox-gl = with pkgs.unstable; wrapFirefox firefox-devedition-unwrapped {
-    };
+    wrapFirefox firefox-unwrapped { };
 
   browser = "firefox";
-  # browser = "floorp";
-  # browser = "librewolf";
 in
 {
 
@@ -214,7 +205,8 @@ in
     programs = {
       firefox = {
         enable = true;
-        package = pkgs.unstable.firefox;
+        package =
+          if (isGeneric) then (nixGL pkgs.unstable.firefox) else pkgs.unstable.firefox;
         # package = check;
         # package = floorp-gl;
         # package = librewolf-gl;

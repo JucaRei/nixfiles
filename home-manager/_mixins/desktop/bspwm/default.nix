@@ -8,8 +8,6 @@ let
   isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true;
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
   # startPolybar = pkgs.writeShellScriptBin
-
-
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
@@ -84,6 +82,7 @@ in
           jgmenu
           killall
           dialog
+          at-spi2-atk
 
           # compression
           lzop
@@ -246,6 +245,7 @@ in
             Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             HDMI-1-0 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+            eDP1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             eDP1-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };

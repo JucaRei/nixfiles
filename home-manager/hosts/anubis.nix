@@ -19,7 +19,8 @@ let
 
   file-manager = "thunar.desktop";
   compressed = "engrampa.desktop";
-  browser = "vivaldi-stable.desktop";
+  # browser = "vivaldi-stable.desktop";
+  browser = "firefox.desktop";
   viewer = "org.xfce.ristretto.desktop";
   video = "umpv.desktop";
   audio = "org.gnome.Rhythmbox3.desktop";
@@ -32,6 +33,7 @@ in
     # ../_mixins/apps/terminal/alacritty.nix
     ../_mixins/console/bash.nix
     # ../_mixins/apps/browser/firefox/librewolf.nix
+    ../_mixins/apps/browser/firefox/firefox.nix
     ../_mixins/apps/video/mpv/mpv-unwrapped.nix
     ../_mixins/apps/documents/libreoffice.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
@@ -56,20 +58,23 @@ in
         enable = true;
         automount = true;
       };
+      firefox.enable = true;
       podman.enable = false;
       yt-dlp-custom.enable = true;
     };
     home = {
       packages = with pkgs; [
-        docker-client
+        # docker-client
         font-search
         guvcview
         cloneit
         podman-compose
-        (nixGL vivaldi-custom)
+        # (nixGL vivaldi-custom)
+        (nixGL thorium)
       ];
       sessionVariables = {
-        BROWSER = "vivaldi";
+        BROWSER = "firefox";
+        NO_AT_BRIDGE = 1; # at-spi2-core
       };
       file = {
         # "bin/create-docker" = {

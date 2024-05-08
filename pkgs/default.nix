@@ -163,7 +163,7 @@
   ################
   ### Browsers ###
   ################
-  # thorium = pkgs.callPackage ./applications/browser/thorium { };
+  thorium = pkgs.callPackage ./applications/browser/thorium { };
   # firefox-csshacks = pkgs.callPackage ./applications/browser/firefox/firefox-csshacks { };
   # firefox-gnome-theme = pkgs.callPackage ./applications/browser/firefox/firefox-gnome-theme { };
 

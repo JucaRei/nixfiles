@@ -133,6 +133,7 @@ in
 
     cloneit = prev.cloneit;
     lima-bin = prev.lima-bin;
+    thorium = prev.thorium;
     fluent = prev.fluent;
     # chatgpt-cli = prev.chatgpt-cli;
     advmvcp = prev.advmvcp;
