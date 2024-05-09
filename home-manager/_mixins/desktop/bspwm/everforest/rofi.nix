@@ -554,7 +554,8 @@ in
           			if [[ "$DESKTOP_SESSION" == 'openbox' ]]; then
           				openbox --exit
           			elif [[ "$DESKTOP_SESSION" == 'bspwm' ]]; then
-          				bspc quit
+          				#bspc quit
+                  ${pkgs.elogind}/bin/loginctl terminate-session $XDG_SESSION_ID
           			elif [[ "$DESKTOP_SESSION" == 'i3' ]]; then
           				i3-msg exit
           			elif [[ "$DESKTOP_SESSION" == 'plasma' ]]; then

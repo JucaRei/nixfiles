@@ -72,6 +72,7 @@ in
         # (nixGL vivaldi-custom)
         (nixGL thorium)
       ];
+
       sessionVariables = {
         BROWSER = "firefox";
         NO_AT_BRIDGE = 1; # at-spi2-core
@@ -158,3 +159,6 @@ in
     };
   };
 }
+
+# echo ~/.nix-profile/bin/fish | sudo tee -a /etc/shells
+# usermod -s ~/.nix-profile/bin/fish $USER

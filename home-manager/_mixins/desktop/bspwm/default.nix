@@ -93,7 +93,7 @@ in
           # system
           xdg-utils
           gtk-layer-shell
-          gnome.gnome-keyring
+          # gnome.gnome-keyring
           gtk3
           xdg-user-dirs
           xdg-desktop-portal-gtk
@@ -225,7 +225,7 @@ in
               # "nitrogen --restore"
               # "lxpolkit" # prompt to enter sudo password daemon
               # "flameshot"
-              "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+              # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
               # "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
               # "${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
@@ -969,10 +969,10 @@ in
     };
 
     i18n = {
-      # glibcLocales = pkgs.glibcLocales.override {
-      #   allLocales = false;
-      #   locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
-      # };
+      glibcLocales = pkgs.glibcLocales.override {
+        allLocales = false;
+        locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
+      };
       inputMethod = {
         enabled = "fcitx5";
         fcitx5.addons = with pkgs; [
@@ -991,16 +991,21 @@ in
         };
       };
 
-      services.polkit-gnome-authentication-agent-1 = {
-        Unit.Description = "polkit-gnome-authentication-agent-1";
-        Install.WantedBy = [ "graphical-session.target" ];
-        Service = {
-          Type = "simple";
-          ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-          Restart = "on-failure";
-          RestartSec = 1;
-          TimeoutStopSec = 10;
+      services.bspwm-polkit-authentication-agent = {
+        Unit = {
+          Description = "Bspwm Polkit authentication agent";
+          Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
+          After = [ "graphical-session-pre.target" ];
+          PartOf = [ "graphical-session.target" ];
         };
+
+        Service = {
+          ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+          Restart = "always";
+          BusName = "org.freedesktop.PolicyKit1.Authority";
+        };
+
+        Install.WantedBy = [ "graphical-session.target" ];
       };
     };
 
