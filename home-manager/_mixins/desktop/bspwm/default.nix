@@ -31,6 +31,7 @@ in
           xorg.xinit
           xorg.libXcomposite
           xorg.libXinerama
+          xorg.xprop
           xorg.libxcb
           xorg.xdpyinfo
           xorg.xkill
@@ -68,7 +69,7 @@ in
           #     which
           #     wrapGAppsHook
           #     pkg-config
-          #     automake
+          #     automake       %
           #     autoreconfHook
           #     docutils
           #     geany.all
