@@ -22,7 +22,7 @@ in
         nix-output-monitor
         nixpkgs-fmt
         nil
-        inputs.nixgl.auto.nixGLDefault # OpenGL for GUI apps
+        nixgl.auto.nixGLDefault # OpenGL for GUI apps
         # alejandra
         # rnix-lsp
         # base-packages
