@@ -39,7 +39,7 @@ in
           xorg.xwininfo
           xorg.xrandr
 
-          nixgl.auto.nixGLDefault
+          nixgl.nixGLDefault
 
           feh # image viewer
           usbutils # usb utilities
