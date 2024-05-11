@@ -22,7 +22,7 @@ in
         nix-output-monitor
         nixpkgs-fmt
         nil
-        # nixgl.nixGLIntel # OpenGL for GUI apps
+        nixgl.auto.nixGLDefault # OpenGL for GUI apps
         # alejandra
         # rnix-lsp
         # base-packages
@@ -38,7 +38,30 @@ in
       #     ${pkgs.desktop-file-utils}/bin/update-desktop-database $out/share/applications
       #   fi
       # '';
+
+      activation = {
+        linkDesktopApplications = {
+          # Add Packages To System Menu by updating database
+          after = [ "writeBoundary" "createXdgUserDirectories" ];
+          before = [ ];
+          data = "sudo --path /usr/bin/update-desktop-database";
+        };
+      };
     };
     targets.genericLinux.enable = true;
+
+    # Attempt to work around dbus user service not including ~/.nix-profile/share
+    # in XDG_DATA_DIRS
+    xdg = {
+      systemDirs.data = [ "/home/${username}/.nix-profile/share" ]; # Add Nix Packages to XDG_DATA_DIRS
+
+      configFile.dbus-xdg-data-dir-env-override = {
+        target = "systemd/user/dbus.service.d/override.conf";
+        text = ''
+          [Service]
+          Environment="XDG_DATA_DIRS=/home/${config.home.username}/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/home/${config.home.username}/.nix-profile/share:/etc/profiles/per-user/${config.home.username}/share:/nix/var/nix/profiles/default/share:/run/current-system/sw/share"
+        '';
+      };
+    };
   };
 }
