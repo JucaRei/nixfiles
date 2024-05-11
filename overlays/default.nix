@@ -131,6 +131,8 @@ in
       };
     });
 
+    nixGL = prev.inputs.nixgl.overlay;
+
     cloneit = prev.cloneit;
     lima-bin = prev.lima-bin;
     thorium = prev.thorium;

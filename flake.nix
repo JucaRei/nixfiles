@@ -222,7 +222,6 @@
       packages = libx.systems (system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
-          overlays = [ nixgl.overlay ];
         in
         import ./pkgs { inherit pkgs; });
 
