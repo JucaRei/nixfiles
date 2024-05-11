@@ -1,4 +1,4 @@
-{ config, lib, pkgs, username, ... }:
+{ config, lib, pkgs, username, nixgl, ... }:
 with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
@@ -21,6 +21,7 @@ in
         nix-output-monitor
         nixpkgs-fmt
         nil
+        (import nixgl { inherit pkgs; }).nixGLIntel # OpenGL for GUI apps
         # alejandra
         # rnix-lsp
         # base-packages
