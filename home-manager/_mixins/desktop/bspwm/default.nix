@@ -39,6 +39,8 @@ in
           xorg.xwininfo
           xorg.xrandr
 
+          nixgl.auto.nixGLDefault
+
           feh # image viewer
           usbutils # usb utilities
           xdg-user-dirs # create xdg user dirs
