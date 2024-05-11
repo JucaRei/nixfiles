@@ -1,12 +1,9 @@
-{ config, lib, pkgs, username, nixgl, nixpkgs, ... }:
+{ config, lib, pkgs, username, inputs, ... }:
 with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   cfg = config.services.nonNixOs;
-  pkgs = import nixpkgs {
-    system = "x86_64-linux";
-    overlays = [ nixgl.overlay ];
-  };
+
 in
 {
   options.services.nonNixOs = {
@@ -25,7 +22,7 @@ in
         nix-output-monitor
         nixpkgs-fmt
         nil
-        nixGL.auto.nixGLDefault # OpenGL for GUI apps
+        inputs.nixgl.auto.nixGLDefault # OpenGL for GUI apps
         # alejandra
         # rnix-lsp
         # base-packages
