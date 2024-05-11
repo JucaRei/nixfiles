@@ -1,4 +1,4 @@
-{ config, lib, pkgs, username, nixgl, ... }:
+{ config, lib, pkgs, username, inputs, nixgl, ... }:
 with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
