@@ -1,8 +1,12 @@
-{ config, lib, pkgs, username, ... }:
+{ config, lib, pkgs, username, nixgl, nixpkgs, ... }:
 with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   cfg = config.services.nonNixOs;
+  pkgs = import nixpkgs {
+    system = "x86_64-linux";
+    overlays = [ nixgl.overlay ];
+  };
 in
 {
   options.services.nonNixOs = {
