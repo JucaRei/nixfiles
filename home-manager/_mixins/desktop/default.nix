@@ -40,7 +40,7 @@ in
         # source = ./face.jpg;
         source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
       };
-      # "Pictures/wallpapers".source = lib.mkForce "${walls}/images";
+      "Pictures/wallpapers".source = lib.mkForce "${walls}/images";
     };
     packages = with pkgs; [
       black # Code format Python

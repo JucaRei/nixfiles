@@ -95,9 +95,9 @@ in
 
           # system
           xdg-utils
-          gtk-layer-shell
+          # gtk-layer-shell
           # gnome.gnome-keyring
-          gtk3
+          # gtk3
           xdg-user-dirs
           xdg-desktop-portal-gtk
         ];
@@ -207,7 +207,7 @@ in
         };
       };
 
-    dconf.settings = { };
+    # dconf.settings = { };
     xsession = {
       enable = true;
       # initExtra = "exec ${windowMan} &";
@@ -228,8 +228,8 @@ in
               # "nitrogen --restore"
               # "lxpolkit" # prompt to enter sudo password daemon
               # "flameshot"
-              "${pkgs.lxde.lxsession}/bin/lxsession"
-              "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
+              # "${pkgs.lxde.lxsession}/bin/lxsession"
+              # "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
               # "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
               # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
@@ -245,7 +245,6 @@ in
               # "lxappearance" & # Fix cursor not showing on desktop (background)
               # "sleep 3"
               # "pkill lxappearance" # Fix cursor not showing on desktop (background)
-              "exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan}"
             ];
           alwaysResetDesktops = true;
           monitors = {
@@ -318,6 +317,7 @@ in
           };
 
           rules = {
+            ### browser ###
             "chromium" = {
               desktop = "^3";
               focus = true;
@@ -326,25 +326,33 @@ in
               desktop = "^3";
               focus = true;
             };
+
             "librewolf" = {
               desktop = "^3";
               follow = true;
             };
             "Thunar" = {
-              desktop = "^2";
+              desktop = "^5";
+              follow = true;
+            };
+            "Thorium-browser" = {
+              desktop = "^3";
               follow = true;
             };
             "Lxappearance" = {
               desktop = "^10";
               follow = false;
             };
+
+            ### terminal ###
             "xst" = {
               desktop = "^1";
               follow = true;
             };
-            "alacritty" = {
+            "Alacritty" = {
               desktop = "^1";
               follow = true;
+              state = "floating";
             };
             "Bitwarden" = {
               desktop = "^8";
@@ -429,10 +437,10 @@ in
               state = "floating";
               center = true;
             };
-            "Alacritty" = {
-              state = "pseudo_tiled";
-              center = true;
-            };
+            # "Alacritty" = {
+            #   state = "pseudo_tiled";
+            #   center = true;
+            # };
             "Alacritty:floating" = {
               state = "floating";
             };
@@ -1004,21 +1012,21 @@ in
     #  };
     #};
 
-    # systemd.user.services.polkit-agent = {
-    #   Unit = {
-    #     Description = "launch authentication-agent-1";
-    #     After = [ "graphical-session.target" ];
-    #     PartOf = [ "graphical-session.target" ];
-    #   };
-    #   Service = {
-    #     Type = "simple";
-    #     Restart = "on-failure";
-    #     ExecStart = ''
-    #       ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-    #     '';
-    #   };
+    systemd.user.services.polkit-agent = {
+      Unit = {
+        Description = "launch authentication-agent-1";
+        After = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "simple";
+        Restart = "on-failure";
+        ExecStart = ''
+          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+        '';
+      };
 
-    #   Install = { WantedBy = [ "graphical-session.target" ]; };
-    # };
+      Install = { WantedBy = [ "graphical-session.target" ]; };
+    };
   };
 }
