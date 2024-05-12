@@ -54,6 +54,8 @@ in
           gtk-engine-murrine
           gtk_engines
           cava
+          # lxde.lxmenu-data # required to discover applications
+          # lxde.lxsession # just needed for lxpolkit (an authentication agent)
           font-manager
           lm_sensors
           lxappearance-gtk2
@@ -226,6 +228,9 @@ in
               # "nitrogen --restore"
               # "lxpolkit" # prompt to enter sudo password daemon
               # "flameshot"
+              "${pkgs.lxde.lxsession}/bin/lxsession"
+              "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
+              # "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
               # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
               # "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
@@ -240,6 +245,7 @@ in
               # "lxappearance" & # Fix cursor not showing on desktop (background)
               # "sleep 3"
               # "pkill lxappearance" # Fix cursor not showing on desktop (background)
+              "exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan}"
             ];
           alwaysResetDesktops = true;
           monitors = {
@@ -969,46 +975,34 @@ in
       };
     };
 
-    i18n = {
-      glibcLocales = pkgs.glibcLocales.override {
-        allLocales = false;
-        locales = [ "en_US.UTF-8/UTF-8" "pt_BR.UTF-8/UTF-8" ];
-      };
-      inputMethod = {
-        enabled = "fcitx5";
-        fcitx5.addons = with pkgs; [
-          fcitx5-rime
-        ];
-      };
-    };
+    #systemd.user = {
+    #  targets.bspwm-session = {
+    #    Unit = {
+    #      Description = "Bspwm session";
+    #      BindsTo = [ "graphical-session.target" ];
+    #      Wants = [ "graphical-session-pre.target" ];
+    #      After = [ "graphical-session-pre.target" ];
+    #    };
+    #  };
 
-    systemd.user = {
-      targets.bspwm-session = {
-        Unit = {
-          Description = "Bspwm session";
-          BindsTo = [ "graphical-session.target" ];
-          Wants = [ "graphical-session-pre.target" ];
-          After = [ "graphical-session-pre.target" ];
-        };
-      };
+    #  services.bspwm-polkit-authentication-agent = {
+    #    Unit = {
+    #      Description = "Bspwm Polkit authentication agent";
+    #      Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
+    #      After = [ "graphical-session-pre.target" ];
+    #      PartOf = [ "graphical-session.target" ];
+    #    };
 
-      services.bspwm-polkit-authentication-agent = {
-        Unit = {
-          Description = "Bspwm Polkit authentication agent";
-          Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
-          After = [ "graphical-session-pre.target" ];
-          PartOf = [ "graphical-session.target" ];
-        };
+    #    Service = {
+    #      ExecStart = "${pkgs.lxde.lxsession}/bin/lxpolkit";
+    #      # ExecStart = "${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1";
+    #      Restart = "always";
+    #      BusName = "org.freedesktop.PolicyKit1.Authority";
+    #    };
 
-        Service = {
-          ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-          Restart = "always";
-          BusName = "org.freedesktop.PolicyKit1.Authority";
-        };
-
-        Install.WantedBy = [ "graphical-session.target" ];
-      };
-    };
+    #    Install.WantedBy = [ "graphical-session.target" ];
+    #  };
+    #};
 
     # systemd.user.services.polkit-agent = {
     #   Unit = {

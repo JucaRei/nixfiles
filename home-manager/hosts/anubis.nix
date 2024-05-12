@@ -20,7 +20,8 @@ let
   file-manager = "thunar.desktop";
   compressed = "engrampa.desktop";
   # browser = "vivaldi-stable.desktop";
-  browser = "firefox.desktop";
+  # browser = "firefox.desktop";
+  browser = "thorium-browser.desktop";
   viewer = "org.xfce.ristretto.desktop";
   video = "umpv.desktop";
   audio = "org.gnome.Rhythmbox3.desktop";
@@ -62,10 +63,30 @@ in
       podman.enable = false;
       yt-dlp-custom.enable = true;
     };
+
+    i18n = {
+      glibcLocales = pkgs.glibcLocales.override {
+        allLocales = false;
+        locales = [
+          "en_US.UTF-8/UTF-8"
+          "pt_BR.UTF-8/UTF-8"
+        ];
+
+      };
+      inputMethod = {
+        enabled = "fcitx5";
+        fcitx5.addons = with pkgs; [
+          fcitx5-rime
+        ];
+      };
+    };
+
     home = {
+
       packages = with pkgs; [
         # docker-client
         font-search
+        libva-utils
         guvcview
         cloneit
         podman-compose
@@ -74,9 +95,25 @@ in
       ];
 
       sessionVariables = {
-        BROWSER = "firefox";
+        BROWSER = "thorium"; # "firefox";
         NO_AT_BRIDGE = 1; # at-spi2-core
       };
+
+      keyboard = {
+        # layout = "br,us";
+        layout = "us";
+        model = "pc105"; # "pc104alt";
+        variant = "mac";
+        # options = [
+        # "grp:shifts_toggle"
+        # "eurosign:e"
+        # ];
+        # variant = "abnt2";
+        # variant = "nodeadkeys"; # "nodeadkeys";
+        # variant = # "intl"/ "alt-intl" / "altgr-intl"
+        #/ "mac" / # "mac_nodeadkeys"
+      };
+
       file = {
         # "bin/create-docker" = {
         #   enable = true;

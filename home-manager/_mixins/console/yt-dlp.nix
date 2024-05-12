@@ -47,6 +47,7 @@ in
           downloader = "${pkgs.aria2}/bin/aria2c";
           downloader-args = "aria2c:'--async-dns=false --max-download-limit=6M --min-split-size=1M --max-connection-per-server=4 --split=4'";
           # Other
+          download-archive = "archive.log"; # Log of archives
           no-overwrites = true;
           no-call-home = true;
         };
