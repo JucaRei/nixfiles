@@ -6,7 +6,7 @@ in
 {
   services = {
     picom = {
-      enable = false;
+      enable = true;
       package = if (isGeneric) then (nixgl pkgs.picom) else pkgs.picom;
       backend = "xrender"; # "glx";
       shadow = true;

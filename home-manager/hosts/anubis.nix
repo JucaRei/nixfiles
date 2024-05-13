@@ -60,7 +60,7 @@ in
         automount = true;
       };
       firefox.enable = true;
-      podman.enable = false;
+      podman.enable = true;
       yt-dlp-custom.enable = true;
     };
 

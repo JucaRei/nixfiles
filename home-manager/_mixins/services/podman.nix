@@ -11,22 +11,27 @@ in
   options.services.podman.enable = mkEnableOption "Configure podman for rootless container use";
 
   config = mkIf cfg.enable {
-    home.packages =
-      let
-        extraPackages = [ pkgs.shadow ];
-      in
-      with pkgs; [
-        buildah
-        cosign
-        (podman.override {
-          extraPackages = extraPackages ++ [
-            # setuid shadow ## fix for debian
-            "/run/wrappers"
-          ];
-        })
-        podman-compose
-        skopeo
-      ];
+    home = {
+      packages =
+        let
+          extraPackages = [ pkgs.shadow ];
+        in
+        with pkgs; [
+          buildah
+          cosign
+          (podman.override {
+            extraPackages = extraPackages ++ [
+              # setuid shadow ## fix for debian
+              "/run/wrappers"
+            ];
+          })
+          podman-compose
+          skopeo
+        ];
+      shellAliases = {
+        docker = "podman";
+      };
+    };
 
     xdg.configFile = {
       "containers/containers.conf".source = mkToml "containers.conf" {
@@ -74,9 +79,8 @@ in
 
       "containers/containers.conf.d/001-home-manager.conf".source = mkToml "001-home-manager.conf" {
         # Managed with Home Manager
-        containers = {
-        };
-          pids_limit = 0;
+        containers = { };
+        pids_limit = 0;
       };
 
       "containers/policy.json".source = mkJson "policy.json" {
@@ -112,3 +116,4 @@ in
 # lib.getExe ${pkgs.shadow}/bin/newuidmap
 # sudo chmod 4755 /usr/bin/newgidmap
 # lib.getExe ${pkgs.shadow}/bin/newgidmap
+# chown $USER -R '/var/tmp'

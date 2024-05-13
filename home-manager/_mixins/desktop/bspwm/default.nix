@@ -41,7 +41,6 @@ in
 
           feh # image viewer
           usbutils # usb utilities
-          xdg-user-dirs # create xdg user dirs
           # flameshot # cool utility for taking screen shots
           qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
           libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
@@ -60,23 +59,6 @@ in
           lm_sensors
           lxappearance-gtk2
           pavucontrol
-          # blueberry
-          # (geany-with-vte.override {
-          #   packages = with  pkgs; [
-          #     file
-          #     gtk3
-          #     hicolor-icon-theme
-          #     intltool
-          #     libintl
-          #     which
-          #     wrapGAppsHook
-          #     pkg-config
-          #     automake       %
-          #     autoreconfHook
-          #     docutils
-          #     geany.all
-          #   ];
-          # })
           libwebp
           playerctl
           imagemagick
@@ -98,7 +80,7 @@ in
           # gtk-layer-shell
           # gnome.gnome-keyring
           # gtk3
-          xdg-user-dirs
+          xdg-user-dirs # create xdg user dirs
           xdg-desktop-portal-gtk
         ];
 
@@ -220,7 +202,8 @@ in
           package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
           startupPrograms =
             let
-              random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/";
+              # random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/";
+              random-unsplash = "${pkgs.procps}/bin/watch -n 600 ${pkgs.feh}/bin/feh --randomize --bg-fill '$HOME/Pictures/wallpapers/*'";
             in
             [
               "bspc desktop -f ^1"
@@ -350,7 +333,7 @@ in
               follow = true;
             };
             "Alacritty" = {
-              desktop = "^1";
+              # desktop = "^1";
               follow = true;
               state = "floating";
             };
