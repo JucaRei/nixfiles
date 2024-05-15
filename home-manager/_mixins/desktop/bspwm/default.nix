@@ -783,7 +783,7 @@ in
       };
       fusuma = {
         enable = true;
-        extraPackages = with pkgs;[ xdo xdotool coreutils xorg.xprop ];
+        extraPackages = with pkgs;[ xdo xdotool bspwm coreutils xorg.xprop ];
         settings = {
           threshold = { swipe = 0.1; };
           interval = { swipe = 0.7; };
@@ -791,8 +791,8 @@ in
             "3" = {
               left = {
                 # GNOME: Switch to left workspace
-                command = "xdotool key ${vars.mod}+Right"; # "xdotool key ctrl+alt+Right";
-                # command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {prev}.local";
+                # command = "xdotool key ${vars.mod}+Right"; # "xdotool key ctrl+alt+Right";
+                command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {prev}.local";
                 # left:
                 #     command: exec i3 focus left
                 # right:
@@ -803,8 +803,8 @@ in
               };
               right = {
                 # command = "xdotool key shift+h";
-                command = "xdotool key ${vars.mod}+Left";
-                # command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {next}.local";
+                # command = "xdotool key ${vars.mod}+Left";
+                command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {next}.local";
               };
             };
             # "4" = {

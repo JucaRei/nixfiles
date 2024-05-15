@@ -238,7 +238,10 @@
         });
 
       # Custom packages and modifications, exported as overlays
-      overlays = import ./overlays { inherit inputs; };
+      overlays = import ./overlays {
+        inherit inputs;
+        nixgl = nixgl.overlay;
+      };
 
       # nix fmt
       formatter = libx.systems (system:
