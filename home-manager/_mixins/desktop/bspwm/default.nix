@@ -38,6 +38,8 @@ in
           xorg.xsetroot
           xorg.xwininfo
           xorg.xrandr
+          # dconf
+          # gnome.dconf-editor
 
           feh # image viewer
           usbutils # usb utilities
@@ -171,6 +173,7 @@ in
               export SSH_AUTH_SOCK
               ${pkgs.dbus}/bin/dbus-update-activation-environment DISPLAY XAUTHORITY
 
+              # exec ${pkgs.dbus}/bin/dbus-launch --autolaunch=$(cat /var/lib/dbus/machine-id) bspwm
               exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan} &
             '';
           };

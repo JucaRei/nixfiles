@@ -374,6 +374,24 @@ in
         ###################
         ### Modules.ini ###
         ###################
+        "module/polypomo" =
+          let
+            polypomo = pkgs.writeShellScriptBin "polypomo"
+              ''
+                ${builtins.readFile ../../../config/polybar/scripts/polypomo}
+              '';
+          in
+          {
+            type = "custom/script";
+            exec = "${polypomo}/bin/polypomo";
+            tail = true;
+            label = "%output%";
+            click-left = "${polypomo}/bin/polypomo toggle";
+            click-right = "${polypomo}/bin/polypomo end";
+            click-middle = "${polypomo}/bin/polypomo lock";
+            scroll-up = "${polypomo}/bin/polypomo time +60";
+            scroll-down = "${polypomo}/bin/polypomo time -60";
+          };
         # https://github.com/polybar/polybar-scripts/tree/master/polybar-scripts/player-mpris-tail
         "module/mpris" = {
           type = "custom/script";
