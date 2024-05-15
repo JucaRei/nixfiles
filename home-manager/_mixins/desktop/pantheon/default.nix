@@ -5,6 +5,22 @@ with lib.hm.gvariant; {
     # breeze-hacked-cursor
   ];
   dconf.settings = {
+    "ca/desrt/dconf-editor" = {
+      show-warning = false;
+    };
+
+    "org/gnome/desktop/peripherals/mouse" = {
+      accel-profile = "adaptive";
+      left-handed = false;
+      natural-scroll = false;
+    };
+
+    "org/gnome/desktop/peripherals/touchpad" = {
+      natural-scroll = true;
+      tap-to-click = true;
+      two-finger-scrolling-enabled = true;
+    };
+
     "desktop/ibus/panel" = {
       show-icon-on-systray = false;
       use-custom-font = true;

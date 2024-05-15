@@ -216,8 +216,8 @@ in
               # "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
               # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
-              # "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
-              # "${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
+              "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
+              # "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
               random-unsplash
               # "tmux new-session -d -s main" # for fast attach to tmux session
               # "tmux new-session -d -s code" # for fast attach to tmux session
@@ -783,7 +783,7 @@ in
       };
       fusuma = {
         enable = true;
-        extraPackages = with pkgs;[ xdo xdotool bspwm coreutils xorg.xprop ];
+        extraPackages = with pkgs;[ xdo xdotool coreutils xorg.xprop ];
         settings = {
           threshold = { swipe = 0.1; };
           interval = { swipe = 0.7; };
@@ -791,8 +791,7 @@ in
             "3" = {
               left = {
                 # GNOME: Switch to left workspace
-                # command = "xdotool key ${vars.mod}+Right"; # "xdotool key ctrl+alt+Right";
-                command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {prev}.local";
+                command = "xdotool key ${vars.mod}+Right"; # "xdotool key ctrl+alt+Right";
                 # left:
                 #     command: exec i3 focus left
                 # right:
@@ -803,8 +802,7 @@ in
               };
               right = {
                 # command = "xdotool key shift+h";
-                # command = "xdotool key ${vars.mod}+Left";
-                command = "${config.xsession.windowManager.bspwm.package}/bin/bspc desktop -f {next}.local";
+                command = "xdotool key ${vars.mod}+Left";
               };
             };
             # "4" = {
