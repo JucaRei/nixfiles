@@ -18,6 +18,7 @@ in
       enableFishIntegration = true;
       enableZshIntegration = true;
       options = [
+        "--cmd cd"
         "--hook pwd"
       ];
     };

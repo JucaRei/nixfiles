@@ -17,6 +17,7 @@ in
       settings = {
         autoclose = true;
         autoindent = true;
+        autosu = true;
         comment = true;
         colorscheme = "monokai";
         diffgutter = true;
@@ -57,6 +58,7 @@ in
         savehistory = true;
         scrollmargin = 3;
         scrollspeed = 2;
+        scrollbarchar = "•";
         smartpaste = true;
         softwrap = false;
         splitbottom = true;
