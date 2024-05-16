@@ -44,7 +44,8 @@ in
           # Add Packages To System Menu by updating database
           after = [ "writeBoundary" "createXdgUserDirectories" ];
           before = [ ];
-          data = "sudo --preserve-env=PATH env /usr/bin/update-desktop-database";
+          # data = "sudo --preserve-env=PATH env /usr/bin/update-desktop-database";
+          data = "sudo 'PATH=$PATH' env /usr/bin/update-desktop-database";
         };
       };
     };

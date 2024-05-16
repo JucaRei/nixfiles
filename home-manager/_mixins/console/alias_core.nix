@@ -180,16 +180,15 @@ in
           top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
           wget = "${pkgs.wget2}/bin/wget2";
           du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
-          cp = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
-          cd = "z"; #zoxide (cd)
-          mv = "${pkgs.advmvcp}/bin/advmv --progress-bar";
+          cpa = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
+          mva = "${pkgs.advmvcp}/bin/advmv --progress-bar";
           sk = ''"${pkgs.skim}/bin/sk --ansi -c 'grep -rI --color=always --line-number "{}" .'"'';
           audio = "${pkgs.inxi}/bin/inxi -A";
           battery = "${pkgs.inxi}/bin/inxi -B -xxx";
           bluetooth = "${pkgs.inxi}/bin/inxi -E";
           graphics = "${pkgs.inxi}/bin/inxi -G";
-          macros = "cpp -dM /dev/null";
-          pci = "sudo ${pkgs.inxi}/bin/inxi --slots";
+          macros = "${pkgs.llvmPackages_9.clangNoLibc}/bin/cpp -dM /dev/null";
+          pci = "sudo 'PATH=$PATH' env ${pkgs.inxi}/bin/inxi --slots";
           process = "${pkgs.inxi}/bin/inxi --processes";
           partitions = "${pkgs.inxi}/bin/inxi -P";
           repos = "${pkgs.inxi}/bin/inxi -r";
