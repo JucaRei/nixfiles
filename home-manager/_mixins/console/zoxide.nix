@@ -18,7 +18,7 @@ in
       enableFishIntegration = true;
       enableZshIntegration = true;
       options = [
-        "--cmd cd" # Replace cd with z and add cdi to access zi
+        "--cmd cd"
         "--hook pwd"
       ];
     };

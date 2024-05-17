@@ -97,6 +97,9 @@ in
       # (prev.pkgs.unstable.mpv-unwrapped.override { # mpv 0.37
       (prev.pkgs.mpv-unwrapped.override {
         vapoursynthSupport = true;
+        cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
+        waylandSupport = true;
+        jackaudioSupport = true; # Add jack support to mpv.
         # webp support
         ffmpeg = prev.pkgs.ffmpeg_5-full;
       })

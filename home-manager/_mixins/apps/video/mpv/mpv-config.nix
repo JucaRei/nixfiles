@@ -124,8 +124,10 @@
             Z add sub-delay  0.1                                                                        #! Subtitles > Increase Sub Delay
 
             ### Audio
-            Ctrl+up add volume +2
-            Ctrl+down add volume -2
+            WHEEL_UP add volume 2
+            WHEEL_DOWN add volume -2
+            #Ctrl+up add volume +2
+            #Ctrl+down add volume -2
             + add audio-delay 0.100
             - add audio-delay -0.100
           '';
