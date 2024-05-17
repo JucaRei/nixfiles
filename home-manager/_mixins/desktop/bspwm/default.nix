@@ -394,6 +394,7 @@ in
             "Virt-manager" = {
               desktop = "^5";
               follow = true;
+              state = "floating";
             };
             "ark" = {
               desktop = "^7";
