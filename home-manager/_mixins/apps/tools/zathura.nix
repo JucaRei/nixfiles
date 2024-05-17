@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, lib, ... }:
+let
   windowsize = pkgs.writeShellScriptBin "windowsize" ''
     #!/bin/sh
     ${pkgs.zathura}/bin/zathura "$@" & PID="$!"
@@ -12,7 +13,8 @@
       fi
     done
   '';
-in {
+in
+{
   programs.zathura = {
     enable = true;
     options = {
@@ -136,8 +138,8 @@ in {
   };
   xdg = {
     mimeApps = {
-      defaultApplications = {
-        "application/pdf" = ["org.pwmt.zathura.desktop"];
+      defaultApplications = lib.mkForce {
+        "application/pdf" = [ "org.pwmt.zathura.desktop" ];
       };
     };
   };

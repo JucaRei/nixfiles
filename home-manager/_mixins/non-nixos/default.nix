@@ -45,7 +45,13 @@ in
           after = [ "writeBoundary" "createXdgUserDirectories" ];
           before = [ ];
           # data = "sudo --preserve-env=PATH env /usr/bin/update-desktop-database";
-          data = "sudo 'PATH=$PATH' env /usr/bin/update-desktop-database";
+          # data = "${pkgs.desktop-file-utils}/bin/update-desktop-database";
+          data = "sudo /usr/bin/update-desktop-database";
+          # data = ''
+          #   rm -rf ${config.xdg.dataHome}/"applications/home-manager"
+          #   mkdir -p ${config.xdg.dataHome}/"applications/home-manager"
+          #   cp -Lr ${config.home.homeDirectory}/.nix-profile/share/applications/* ${config.xdg.dataHome}/"applications/home-manager/"
+          # '';
         };
       };
     };
