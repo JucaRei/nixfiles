@@ -594,7 +594,7 @@ in
 
     xserver = {
       libinput = {
-        enable = lib.Default true;
+        enable = lib.mkDefault true;
         touchpad = {
           # horizontalScrolling = true;
           # tappingDragLock = false;
