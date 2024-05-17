@@ -604,7 +604,7 @@ in
           scrollMethod = "twofinger";
           disableWhileTyping = true;
           # sendEventsMode = "disabled-on-external-mouse";
-          sendEventsMode = lib.Default "enabled";
+          sendEventsMode = lib.mkDefault "enabled";
           clickMethod = "clickfinger";
         };
         mouse = {
