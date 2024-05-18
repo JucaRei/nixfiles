@@ -66,7 +66,7 @@ in
         automount = true;
       };
       firefox.enable = true;
-      podman.enable = true;
+      podman.enable = false;
       yt-dlp-custom.enable = true;
     };
 
@@ -95,7 +95,7 @@ in
         libva-utils
         guvcview
         cloneit
-        podman-compose
+        docker-compose
         xfce.mousepad
         # (nixGL vivaldi-custom)
         (nixGL thorium)

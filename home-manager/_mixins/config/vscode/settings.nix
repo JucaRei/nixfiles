@@ -30,7 +30,7 @@ in
   "terminal.integrated.cursorBlinking" = true;
   "terminal.integrated.cursorStyle" = "line";
   "terminal.integrated.cursorWidth" = 1.8;
-  "terminal.integrated.fontFamily" = "'UbuntuMono Nerd Font Mono Regular', 'monospace'";
+  "terminal.integrated.fontFamily" = "'FiraCode Nerd Font Mono Ret', 'monospace'";
   "terminal.integrated.smoothScrolling" = true;
   "terminal.integrated.fontSize" = 16;
   "terminal.integrated.scrollback" = 5000;
