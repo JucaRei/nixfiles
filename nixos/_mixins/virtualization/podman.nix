@@ -1,4 +1,4 @@
-{ config, lib, pkgs, hostname, desktop, ... }:
+pi{ config, lib, pkgs, hostname, desktop, ... }:
 let
   # hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
   dockerEnabled = config.virtualisation.docker.enable;

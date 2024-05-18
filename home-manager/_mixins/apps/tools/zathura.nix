@@ -63,8 +63,21 @@ in
       index-active-fg = "#FBFF00";
 
       window-title-basename = true;
+      window-title-home-tilde = true;
+      window-title-page = true;
+      window-icon = "";
       smooth-scroll = true;
       statusbar-home-tilde = true;
+
+      database = "sqlite";
+      incremental-search = true;
+      abort-clear-search = true;
+      dbus-service = false;
+      show-recent = 10;
+      show-hidden = true;
+      link-zoom = true;
+      link-hadjust = true;
+      show-directories = true;
     };
     extraConfig = ''
       # Zathura configuration file

@@ -16,7 +16,7 @@ let
     	${pkgs.killall}/bin/killall picom
     	${pkgs.libnotify}/bin/notify-send picom "compositing disabled"
     else
-    	picom -b
+    	picom -b --corner-radius 10
     	${pkgs.libnotify}/bin/notify-send picom "compositing enabled"
     fi
   '';
@@ -30,7 +30,7 @@ let
 
     # ICON="preferences-system-brightness-lock"
     NOTIFICATION_ID="5555"
-    INCREMENT="0.5%"
+    INCREMENT="0.2%"
 
     get_brightness() {
       awk -v current="$(${pkgs.brillo}/bin/brillo -b)" -v max="$(${pkgs.brillo}/bin/brillo -m)" 'BEGIN { printf "%.0f\n", (current / max) * 100 }'
@@ -250,7 +250,16 @@ in
   # Switch to recent window
   # "${vars.modAlt} + Tab" = "${bspwm-conf}//bspc node -f last.local";
   "${vars.mod},${vars.modAlt} + {_,shift + }Tab" = "${bspwm-conf}/bspc node -f {next,prev}.loca+l";
-  "${vars.mod} + ctrl + {q,r}" = "${bspwm-conf}/bspc {quit,wm -r}"; # quit | restart
+  "${vars.mod} + ctrl + q" =
+    let
+      quit = ''
+          ${pkgs.systemdMinimal}/bin/systemctl --user stop bspwm-session.target; \
+        	${bspwm-conf}/bspc quit
+      '';
+    in
+    "${quit}";
+
+  "${vars.mod} + ctrl + r" = "${bspwm-conf}/bspc wm -r"; # quit | restart
   "${vars.mod} + m" = "${bspwm-conf}/bspc desktop -l next"; # ${vars.modAlt}ernate between the tiled and monocle layout
   "${vars.mod} + {_, ${vars.modAlt} + }m" = "${bspwm-conf}/bspc node -f {next, prev}.local.!hidden.window";
   "${vars.mod} + {_,shift + }{Left,Down,Up,Right}" = "${bspwm-conf}/bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen

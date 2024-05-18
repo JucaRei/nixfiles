@@ -96,6 +96,7 @@ in
           TERMINAL = "alacritty";
           GLFW_IM_MODULE = "ibus";
           TERM = "xterm-256color";
+          QT_STYLE_OVERRIDE = mkDefault ""; # fix qt-override
         };
 
         sessionPath = [
@@ -219,6 +220,7 @@ in
               # "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
               # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
+              "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
               "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
               # "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
               random-unsplash
@@ -968,50 +970,55 @@ in
       };
     };
 
-    #systemd.user = {
-    #  targets.bspwm-session = {
-    #    Unit = {
-    #      Description = "Bspwm session";
-    #      BindsTo = [ "graphical-session.target" ];
-    #      Wants = [ "graphical-session-pre.target" ];
-    #      After = [ "graphical-session-pre.target" ];
-    #    };
-    #  };
-
-    #  services.bspwm-polkit-authentication-agent = {
-    #    Unit = {
-    #      Description = "Bspwm Polkit authentication agent";
-    #      Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
-    #      After = [ "graphical-session-pre.target" ];
-    #      PartOf = [ "graphical-session.target" ];
-    #    };
-
-    #    Service = {
-    #      ExecStart = "${pkgs.lxde.lxsession}/bin/lxpolkit";
-    #      # ExecStart = "${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1";
-    #      Restart = "always";
-    #      BusName = "org.freedesktop.PolicyKit1.Authority";
-    #    };
-
-    #    Install.WantedBy = [ "graphical-session.target" ];
-    #  };
-    #};
-
-    systemd.user.services.polkit-agent = {
-      Unit = {
-        Description = "launch authentication-agent-1";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
-      };
-      Service = {
-        Type = "simple";
-        Restart = "on-failure";
-        ExecStart = ''
-          ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-        '';
+    systemd.user = {
+      targets.bspwm-session = {
+        Unit = {
+          Description = "Bspwm session";
+          BindsTo = [ "graphical-session.target" ];
+          Wants = [ "graphical-session-pre.target" ];
+          After = [ "graphical-session-pre.target" ];
+        };
       };
 
-      Install = { WantedBy = [ "graphical-session.target" ]; };
+      #  services.bspwm-polkit-authentication-agent = {
+      #    Unit = {
+      #      Description = "Bspwm Polkit authentication agent";
+      #      Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
+      #      After = [ "graphical-session-pre.target" ];
+      #      PartOf = [ "graphical-session.target" ];
+      #    };
+
+      #    Service = {
+      #      ExecStart = "${pkgs.lxde.lxsession}/bin/lxpolkit";
+      #      # ExecStart = "${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1";
+      #      Restart = "always";
+      #      BusName = "org.freedesktop.PolicyKit1.Authority";
+      #    };
+
+      #    Install.WantedBy = [ "graphical-session.target" ];
+      #  };
+
+      # services.polkit-agent = {
+      services.lxpolkit = {
+        Unit = {
+          # Description = "launch authentication-agent-1";
+          Description = "launch lxpolkit";
+          After = [ "graphical-session.target" ];
+          PartOf = [ "graphical-session.target" ];
+        };
+        Service = {
+          Type = "simple";
+          Restart = "on-failure";
+          RestartSec = 1;
+          # exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+          # exec export DISPLAY=:0
+          # exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY"
+          ExecStart = getExe pkgs.lxqt.lxqt-policykit;
+          TimeoutStopSec = 10;
+        };
+
+        Install = { WantedBy = [ "graphical-session.target" ]; };
+      };
     };
   };
 }

@@ -59,16 +59,16 @@ in
 
     # Attempt to work around dbus user service not including ~/.nix-profile/share
     # in XDG_DATA_DIRS
-    xdg = {
-      systemDirs.data = [ "/home/${username}/.nix-profile/share" ]; # Add Nix Packages to XDG_DATA_DIRS
+    # xdg = {
+    #   systemDirs.data = [ "/home/${username}/.nix-profile/share" ]; # Add Nix Packages to XDG_DATA_DIRS
 
-      configFile.dbus-xdg-data-dir-env-override = {
-        target = "systemd/user/dbus.service.d/override.conf";
-        text = ''
-          [Service]
-          Environment="XDG_DATA_DIRS=/home/${config.home.username}/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/home/${config.home.username}/.nix-profile/share:/etc/profiles/per-user/${config.home.username}/share:/nix/var/nix/profiles/default/share:/run/current-system/sw/share"
-        '';
-      };
-    };
+    #   configFile.dbus-xdg-data-dir-env-override = {
+    #     target = "systemd/user/dbus.service.d/override.conf";
+    #     text = ''
+    #       [Service]
+    #       Environment="XDG_DATA_DIRS=/home/${config.home.username}/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/home/${config.home.username}/.nix-profile/share:/etc/profiles/per-user/${config.home.username}/share:/nix/var/nix/profiles/default/share:/run/current-system/sw/share"
+    #     '';
+    #   };
+    # };
   };
 }
