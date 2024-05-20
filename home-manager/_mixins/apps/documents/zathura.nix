@@ -214,11 +214,29 @@ _: {
       '';
     };
   };
-  xdg = {
-    mimeApps = {
-      defaultApplications = {
-        "application/pdf" = [ "org.pwmt.zathura.desktop" ];
+  xdg =
+    let
+      application = "org.pwmt.zathura.desktop";
+    in
+    {
+      mimeApps = {
+        defaultApplications = {
+          "application/pdf" = application;
+          "application/oxps" = application;
+          "application/epub+zip" = application;
+          "application/x-fictionbook" = application;
+          "image/vnd.djvu" = application;
+          "image/vnd.djvu+multipage" = application;
+          "application/postscript" = application;
+          "application/eps" = application;
+          "application/x-eps" = application;
+          "image/eps" = application;
+          "image/x-eps" = application;
+          "application/x-cbr" = application;
+          "application/x-cbz" = application;
+          "application/x-cb7" = application;
+          "application/x-cbt" = application;
+        };
       };
     };
-  };
 }
