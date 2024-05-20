@@ -1,4 +1,4 @@
-{ pkgs, config, lib, hostname, ... }@args:
+{ pkgs, config, lib, hostname, username, ... }@args:
 with lib;
 let
   _ = lib.getExe;
@@ -37,6 +37,7 @@ in
           xorg.xkill
           xorg.xsetroot
           xorg.xwininfo
+          bc
           xorg.xrandr
           # dconf
           # gnome.dconf-editor
@@ -487,12 +488,31 @@ in
       }; #Fluent-Dark
       gtk3 = {
         extraConfig = {
+          gtk-xft-rgba = "rgb";
+          gtk-button-images = 1;
+          gtk-menu-images = 1;
+          gtk-enable-event-sounds = 1;
+          gtk-enable-input-feedback-sounds = 1;
           gtk-xft-antialias = 1;
           gtk-xft-hinting = 1;
-          gtk-xft-hintstyle = "hintslight";
-          gtk-xft-rgba = "rgb";
+          gtk-xft-hintstyle = "hintfull"; #"hintslight";
+          gtk-cursor-blink = true;
+          gtk-recent-files-limit = 20;
           gtk-application-prefer-dark-theme = 1;
         };
+        extraCss = "
+        VteTerminal, vte-terminal {
+          padding: 13px;
+        }";
+        bookmarks = [
+          "file:///home/${username}/Documents"
+          "file:///home/${username}/Downloads"
+          "file:///home/${username}/Pictures"
+          "file:///home/${username}/Music"
+          "file:///home/${username}/Videos"
+          "smb://192.168.1.207/volume_1/"
+          "smb://192.168.1.207/volume_2/Transmission/complete"
+        ];
       };
       gtk4 = {
         # gtk-icon-theme-name = "ePapirus-Dark";
@@ -512,17 +532,17 @@ in
         name = "Papirus";
       };
       theme = {
-        # name = "Fluent-Dark";
-        # package = pkgs.fluent;
-        # name = "Yaru-purple-dark";
-        # package = pkgs.yaru-theme;
-        name = "Catppuccin-Frappe-Compact-Pink-Dark";
-        package = pkgs.catppuccin-gtk.override {
-          accents = [ "pink" ];
-          tweaks = [ "rimless" ];
-          size = "compact";
-          variant = "frappe";
-        };
+        # Catppuccin
+        # name = "Catppuccin-Frappe-Compact-Pink-Dark";
+        # package = pkgs.catppuccin-gtk.override {
+        #   accents = [ "pink" ];
+        #   tweaks = [ "rimless" ];
+        #   size = "compact";
+        #   variant = "frappe";
+        # };
+
+        name = "Tokyonight-Dark-BL";
+        package = pkgs.tokyo-night-gtk;
       };
       cursorTheme = {
         # name = "volantes_cursors";
@@ -999,26 +1019,26 @@ in
       #  };
 
       # services.polkit-agent = {
-      services.lxpolkit = {
-        Unit = {
-          # Description = "launch authentication-agent-1";
-          Description = "launch lxpolkit";
-          After = [ "graphical-session.target" ];
-          PartOf = [ "graphical-session.target" ];
-        };
-        Service = {
-          Type = "simple";
-          Restart = "on-failure";
-          RestartSec = 1;
-          # exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-          # exec export DISPLAY=:0
-          # exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY"
-          ExecStart = getExe pkgs.lxqt.lxqt-policykit;
-          TimeoutStopSec = 10;
-        };
+      # services.lxpolkit = {
+      #   Unit = {
+      #     # Description = "launch authentication-agent-1";
+      #     Description = "launch lxpolkit";
+      #     After = [ "graphical-session.target" ];
+      #     PartOf = [ "graphical-session.target" ];
+      #   };
+      #   Service = {
+      #     Type = "simple";
+      #     Restart = "on-failure";
+      #     RestartSec = 1;
+      #     # exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+      #     # exec export DISPLAY=:0
+      #     # exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY"
+      #     ExecStart = getExe pkgs.lxqt.lxqt-policykit;
+      #     TimeoutStopSec = 10;
+      #   };
 
-        Install = { WantedBy = [ "graphical-session.target" ]; };
-      };
+      #   Install = { WantedBy = [ "graphical-session.target" ]; };
+      # };
     };
   };
 }

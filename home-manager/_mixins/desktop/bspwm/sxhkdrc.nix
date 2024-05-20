@@ -211,6 +211,10 @@ in
 
   "${vars.modAlt} + shift + p" = "${picom-toggle}/bin/picom-toggle";
 
+  #Bsp-layout
+  "${vars.modAlt} + shift + v" = "${pkgs.bsp-layout}/bin/bsp-layout next";
+  "${vars.modAlt} + shift + b" = "${pkgs.bsp-layout}/bin/bsp-layout previous";
+
   # "${vars.mod} + @space" = "rofi -show drun"; # program launcher
   "${vars.modAlt} + @space" = "rofi -config -no-lazy-grab -show drun -modi drun -theme $HOME/.config/rofi/configurations/Themes/Forest/launcher.rasi"; # program launcher
   # calculator    rofi -config -no-lazy-grab -show drun -modi drun -theme

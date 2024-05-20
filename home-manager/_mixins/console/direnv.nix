@@ -21,7 +21,15 @@ in
         nix-direnv = {
           enable = true;
         };
+        config = {
+          whitelist = {
+            prefix = [
+              "${config.home.homeDirectory}/code"
+            ];
+          };
+        };
       };
+      git.ignores = [ ".direnv" ];
     };
   };
 }

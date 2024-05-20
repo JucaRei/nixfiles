@@ -45,6 +45,7 @@ in
     ../_mixins/apps/documents/libreoffice.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
     ../_mixins/services/podman.nix
+    ../_mixins/services/polkit-agent.nix
     ../_mixins/console/yt-dlp.nix
     ../_mixins/non-nixos
     # ../_mixins/apps/tools/zathura.nix
@@ -65,6 +66,7 @@ in
         enable = true;
         automount = true;
       };
+      polkit-agent.enable = true;
       firefox.enable = true;
       podman.enable = false;
       yt-dlp-custom.enable = true;
