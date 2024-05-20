@@ -4,7 +4,7 @@
       inherit (lib) mkEnableOption mkOption types;
     in
     {
-      service.polkit-agent = {
+      services.polkit-agent = {
         enable = mkEnableOption "Service polkit agent";
         package = mkOption {
           type = types.package;
@@ -31,7 +31,7 @@
 
   config =
     let
-      cfg = config.service.polkit-agent;
+      cfg = config.services.polkit-agent;
       inherit (lib) mkIf;
     in
     mkIf cfg.enable {
