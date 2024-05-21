@@ -40,12 +40,15 @@
       systemd.user.services.polkit-agent = {
         Unit = {
           Description = "Polkit agent";
+          Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
           PartOf = [ cfg.systemd.target ];
           After = [ cfg.systemd.target ];
         };
 
         Service = {
           ExecStart = "${cfg.package}/${cfg.executablePath}";
+          Restart = "always";
+          BusName = "org.freedesktop.PolicyKit1.Authority";
         };
 
         Install = { WantedBy = [ cfg.systemd.target ]; };

@@ -370,6 +370,11 @@ in
             "Zathura" = {
               state = "tiled";
             };
+            "Guvcview" = {
+              desktop = "^9";
+              follow = true;
+              state = "floating";
+            };
             "Clementine" = {
               desktop = "^5";
               follow = true;
@@ -533,16 +538,16 @@ in
       };
       theme = {
         # Catppuccin
-        # name = "Catppuccin-Frappe-Compact-Pink-Dark";
-        # package = pkgs.catppuccin-gtk.override {
-        #   accents = [ "pink" ];
-        #   tweaks = [ "rimless" ];
-        #   size = "compact";
-        #   variant = "frappe";
-        # };
+        name = "Catppuccin-Frappe-Compact-Pink-Dark";
+        package = pkgs.catppuccin-gtk.override {
+          accents = [ "pink" ];
+          tweaks = [ "rimless" ];
+          size = "compact";
+          variant = "frappe";
+        };
 
-        name = "Tokyonight-Dark-BL";
-        package = pkgs.tokyo-night-gtk;
+        # name = "Tokyonight-Dark-BL";
+        # package = pkgs.tokyo-night-gtk;
       };
       cursorTheme = {
         # name = "volantes_cursors";

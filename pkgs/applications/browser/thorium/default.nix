@@ -142,13 +142,14 @@ stdenv.mkDerivation rec {
   # version = "113.0.5672.134";
   # version = "117.0.5938.157";
   # version = "122.0.6261.132";
-  version = "123.0.6312.133";
+  # version = "123.0.6312.133";
+  version = "124.0.6367.218";
 
   src = fetchurl {
     #https://github.com/alex313031/thorium/releases/download/M112.0.5615.166/thorium-browser_112.0.5615.166-1_amd64.deb
     # url = "https://github.com/alex313031/thorium/releases/download/M${version}/thorium-browser_${version}_amd64.deb";
     url = "https://github.com/alex313031/thorium/releases/download/M${version}/thorium-browser_${version}_AVX.deb";
-    sha256 = "sha256-27mSpjc4/pIsa3CEaTO62bhYEmVfHe5Awks7FSegf1Q=";
+    sha256 = "sha256-Q3XJyaCWbKMwbqfytFX1+2AknOtWvtcUrxFpb+oE9Yc=";
   };
 
   dontConfigure = true;
