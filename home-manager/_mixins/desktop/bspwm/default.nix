@@ -221,7 +221,7 @@ in
               # "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
               # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               "sleep 2; polybar -q everforest"
-              "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
+              # "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
               "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
               "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
               random-unsplash
@@ -236,28 +236,31 @@ in
               # "pkill lxappearance" # Fix cursor not showing on desktop (background)
             ];
           alwaysResetDesktops = true;
-          monitors = {
-            Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
-            HDMI-1-0 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
-            eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
-            eDP1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
-            eDP1-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
-            # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
-          };
+          # monitors = {
+          #   Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+          #   HDMI-1-0 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+          #   eDP-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+          #   eDP1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+          #   eDP1-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+          #   # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
+          # };
           extraConfigEarly =
             let
-              monitors = pkgs.writeShellScriptBin "monitors" ''
-                #/usr/bin/env bash
-                  if [[ $HOSTNAME == nitro ]]; then
-                      bspc monitor eDP1 -d I II III IV V VI VII VIII IX X
-                  elif [[ $HOSTNAME == anubis ]]; then
-                      bspc wm -O VGA-0 VGA-1
-                      bspc monitor VGA-0 -d I II III IV V
-                      bspc monitor VGA-1 -d VI VII VIII IX X
-                  elif [[ $HOSTNAME == oldarch ]]; then
-                      bspc wm -O DVI-I-2 DVI-I-3
-                      bspc monitor DVI-I-3 -d VI VII VIII IX X
-                      bspc monitor DVI-I-2 -d I II III IV V
+              bspc-bin = "${config.xsession.windowManager.bspwm.package}/bin/bspc";
+              dual-workspace = pkgs.writeShellScriptBin "dual-workspace" ''
+                #!/usr/bin/env bash
+
+                  external=$(${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^HDMI-1-0 connected')
+                  if [[ $HOSTNAME == nitro && $external = *\ connected* ]]; then
+                          ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+                          ${bspc-bin} monitor HDMI-1-0 -d I III V VII IX
+                          ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
+                  elif  [[ $HOSTNAME == anubis && $external = *\ connected* ]]; then
+                          ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1366x768 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+                          ${bspc-bin} monitor HDMI-1-0 -d I III V VII IX
+                          ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
+                  else
+                          ${bspc-bin} monitor -d I II III IV V VI VII VIII IX X
                   fi
               '';
             in
@@ -269,12 +272,13 @@ in
               # picom --experimental-backends --no-use-damage &
 
               ### Only have workspaces for primary monitor
-              export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
-              export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
-              MONITOR=$\{MONITOR:-$\{MONITORS[0]}}
+              # export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
+              # export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
+              # MONITOR=$\{MONITOR:-$\{MONITORS[0]}}
 
               bspc config remove_disabled_monitors true
               bspc config remove_unplugged_monitors true
+              ${dual-workspace}/bin/dual-workspace
             '';
           extraConfig = ''
             ${pkgs.systemd}/bin/systemctl --user start bspwm-session.target

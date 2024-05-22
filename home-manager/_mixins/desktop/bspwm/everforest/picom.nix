@@ -9,7 +9,7 @@ in
       enable = true;
       package = if (isGeneric) then (nixgl pkgs.picom) else pkgs.picom;
       # Specify the backend to use: `xrender`, `glx`, or `xr_glx_hybrid`.
-      backend = if (hostname == "anubis") then "glx" else "xrender";
+      backend = "glx";
       shadow = true;
       shadowExclude = [
         "window_type = 'menu'"
@@ -274,7 +274,7 @@ in
 
         # Opacity of window titlebars and borders. (0.1 - 1.0, disabled by default)
         # frame-opacity = 1.0
-        frame-opacity = 0.9;
+        frame-opacity = 0.8;
 
         # Let inactive opacity set by -i override the '_NET_WM_OPACITY' values of windows.
         inactive-opacity-override = true; # this fixed opacity for me. Not sure what is setting _NET_WM_OPACITY
@@ -307,6 +307,8 @@ in
         opacity-rule = [
           "80:class_g     = 'Bar'" # lemonbar
           "100:class_g    = 'slop'" # maim
+          "95:class_g *?= 'chatterino'"
+          "95:class_g *?= 'dunst'"
           "90:class_g = 'Alacritty'"
           "100:class_g = 'code-oss'"
           "100:class_g = 'Meld'"
@@ -346,7 +348,7 @@ in
           "class_g = 'slop'" # maim
         ];
         # Do not fade on window open/close.
-        # no-fading-openclose = false
+        no-fading-openclose = false;
 
         # Do not fade destroyed ARGB windows with WM frame. Workaround of bugs in Openbox, Fluxbox, etc.
         # no-fading-destroyed-argb = false
@@ -382,13 +384,21 @@ in
         shadow-radius = 25;
 
         shadow-exclude = [
+          "bounding_shaped && !rounded_corners"
           "name = 'Notification'"
           "window_type = 'notification'"
+          "window_type = 'desktop'"
+          "window_type = 'utility'"
+          "window_type = 'splash'"
+          "window_type = 'tooltip'"
+          "window_type *= 'menu'"
+          "window_type != 'dock' && BSPWM_TILED@:c = 1"
           "class_g = 'Conky'"
           "class_g ?= 'Notify-osd'"
           "class_g = 'Cairo-clock'"
           "class_g = 'slop'"
           "class_g = 'Polybar'"
+          "class_g *?= 'activate-linux'"
           "_GTK_FRAME_EXTENTS@:c"
           "(class_g = 'Firefox' || class_g = 'firefox-default') && (window_type = 'utility' || window_type = 'popup_menu') && argb"
         ];
@@ -438,13 +448,17 @@ in
           # kernel = "11x11gaussian";
           # Exclude conditions for background blur.
           # blur-background-exclude = []
-          background-frame = false;
-          background-fixed = false;
+          background-frame = true;
+          background-fixed = true;
           kern = "3x3box";
           backround-exclude = [
             "window_type = 'dock'"
             "window_type = 'conky'"
             "window_type = 'menu'"
+            "window_type = 'desktop'"
+            "window_type = 'utility'"
+            "window_type = 'tooltip'"
+            "window_type = 'splash'"
             "class_g ~= '^((?!eww-powermenu).)eww-*$'"
             "window_type = 'desktop'"
             "class_g = 'activate-linux'"
@@ -467,6 +481,10 @@ in
           "window_type = 'dock'"
           "window_type = 'tooltip'"
           "window_type = 'desktop'"
+          "window_type = 'dropdown_menu'"
+          "window_type = 'popup_menu'"
+          "window_type = 'utility'"
+          "window_type = 'splash'"
           /* "class_g = 'shutter'", */
           /* "class_g = 'eww-*'", */
           /* "class_g = 'activate-linux'", */
@@ -483,6 +501,8 @@ in
           "class_g = 'code-oss'"
           "class_g = 'code'"
           "_GTK_FRAME_EXTENTS@:c"
+          "BSPWM_TILED@:c = 1"
+          "_NET_WM_STATE@[*]:32a = '_NET_WM_STATE_FULLSCREEN'"
           # "window_type = 'conky'"
           /* "class_g = 'Bar'", */
           /* "class_g = 'eww-background-closer'", */

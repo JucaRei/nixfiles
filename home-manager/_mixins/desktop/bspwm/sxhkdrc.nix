@@ -71,6 +71,7 @@ let
   '';
 
   isNitro = if (hostname == "nitro") then "1920x1080" else "1366x768";
+  isNitrO = if (hostname == "nitro") then "${vars.mod}" else "${vars.modAlt}";
   screenshooter = pkgs.writeShellScriptBin "screenshooter" ''
     #!/usr/bin/env sh
 
@@ -269,7 +270,8 @@ in
   "${vars.mod} + {_,shift + }{Left,Down,Up,Right}" = "${bspwm-conf}/bspc node -{f,s} {west, south,north,east}"; # Send the window to another edge of the screen
   "${vars.mod} + equal" = "${bspwm-conf}/bspc node @/ --equalize"; # Make split ratios equal
   "${vars.mod} + minus" = "${bspwm-conf}/bspc node @/ --balance"; # Make split ratios balanced
-  "${vars.modAlt} + d" = "bspc query --nodes -n focused.tiled && state=floating || state=tiled; bspc node --state \~$state";
+
+  "${isNitrO} + d" = "bspc query --nodes -n focused.tiled && state=floating || state=tiled; bspc node --state \~$state";
   # rotate
   "${vars.mod} + f" = "${bspwm-conf}/bspc node --state \~fullscreen"; # Toggle fullscreen of window
   "${vars.mod} + {_,shift + }q" = "${bspwm-conf}/bspc node -{c,k}"; # Close and kill
