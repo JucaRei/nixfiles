@@ -223,7 +223,7 @@ in
               "sleep 2; polybar -q everforest"
               "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
               "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
-              # "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
+              "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
               random-unsplash
               # "tmux new-session -d -s main" # for fast attach to tmux session
               # "tmux new-session -d -s code" # for fast attach to tmux session
@@ -244,21 +244,38 @@ in
             eDP1-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
             # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
-          extraConfigEarly = ''
-            ${pkgs.wmname}/bin/wmname LG3D
-            # picom
-            # pkill picom
-            # picom -b --legacy-backends --no-use-damage &
-            # picom --experimental-backends --no-use-damage &
+          extraConfigEarly =
+            let
+              monitors = pkgs.writeShellScriptBin "monitors" ''
+                #/usr/bin/env bash
+                  if [[ $HOSTNAME == nitro ]]; then
+                      bspc monitor eDP1 -d I II III IV V VI VII VIII IX X
+                  elif [[ $HOSTNAME == anubis ]]; then
+                      bspc wm -O VGA-0 VGA-1
+                      bspc monitor VGA-0 -d I II III IV V
+                      bspc monitor VGA-1 -d VI VII VIII IX X
+                  elif [[ $HOSTNAME == oldarch ]]; then
+                      bspc wm -O DVI-I-2 DVI-I-3
+                      bspc monitor DVI-I-3 -d VI VII VIII IX X
+                      bspc monitor DVI-I-2 -d I II III IV V
+                  fi
+              '';
+            in
+            ''
+              ${pkgs.wmname}/bin/wmname LG3D
+              # picom
+              # pkill picom
+              # picom -b --legacy-backends --no-use-damage &
+              # picom --experimental-backends --no-use-damage &
 
-            ### Only have workspaces for primary monitor
-            export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
-            export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
-            MONITOR=$\{MONITOR:-$\{MONITORS[0]}}
+              ### Only have workspaces for primary monitor
+              export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
+              export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
+              MONITOR=$\{MONITOR:-$\{MONITORS[0]}}
 
-            bspc config remove_disabled_monitors true
-            bspc config remove_unplugged_monitors true
-          '';
+              bspc config remove_disabled_monitors true
+              bspc config remove_unplugged_monitors true
+            '';
           extraConfig = ''
             ${pkgs.systemd}/bin/systemctl --user start bspwm-session.target
 

@@ -66,6 +66,7 @@ in
         enable = true;
         automount = true;
       };
+      skim.enable = true;
       polkit-agent.enable = true;
       firefox.enable = true;
       podman.enable = false;

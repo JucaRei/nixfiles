@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, hostname, ... }:
 let
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
   nixgl = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
@@ -8,17 +8,26 @@ in
     picom = {
       enable = true;
       package = if (isGeneric) then (nixgl pkgs.picom) else pkgs.picom;
-      backend = "xrender"; # "glx";
+      # Specify the backend to use: `xrender`, `glx`, or `xr_glx_hybrid`.
+      backend = if (hostname == "anubis") then "glx" else "xrender";
       shadow = true;
       shadowExclude = [
+        "window_type = 'menu'"
         "_GTK_FRAME_EXTENTS@:c"
+        "class_g = 'Plank'"
         "class_g = 'Cairo-clock'"
         "class_g = 'Conky'"
-        "class_g = 'firefox' && argb"
+        "class_g = 'firefox'"
         "class_g ?= 'Notify-osd'"
+        "class_g = 'GLava'"
+        "class_g = 'eww-visualizer'"
+        "class_g = 'eww-lyrics'"
+        "class_g = 'eww-volume-indicator'"
+        "class_g = 'eww-brightness-indicator'"
         "class_g ?= 'plasmashell'"
         "class_g *= 'slop'"
         "class_g ?= 'VirtualBoxVM'"
+        "class_g ?= 'Virtmanager'"
         "name = 'Notification'"
       ];
       # ''_BSPWM_TAGS@:s != 'floating' && name != 'Dunst' && window_type != 'popup_menu' && window_type != 'dropdown_menu' && class_g != 'Rofi'"
@@ -26,6 +35,19 @@ in
       fade = true;
       inactiveOpacity = 0.9; # 0.95;
       settings = {
+        ###############
+        #  Animations #
+        ###############
+        animations = true;
+        animation-stiffness = 200;
+        animation-window-mass = 0.4;
+        animation-dampening = 20;
+        animation-clamping = false;
+        animation-for-open-window = "zoom"; #open window
+        animation-for-unmap-window = "zoom"; #minimize window
+        animation-for-workspace-switch-in = "slide-down"; #the windows in the workspace that is coming in
+        animation-for-workspace-switch-out = "zoom"; #the windows in the workspace that are coming out
+        animation-for-transient-window = "slide-up"; #popup windows
         #################################
         #       General Settings        #
         #################################
@@ -122,7 +144,7 @@ in
         # has actually changed. Potentially degrades the performance, but might fix some artifacts.
         # The opposing option is use-damage
         #
-        no-use-damage = true;
+        no-use-damage = false; # true;
         # use-damage = true;
         # Use X Sync fence to sync clients' draw calls, to make sure all draw
         # calls are finished before picom starts drawing. Needed on nvidia-drivers
@@ -213,28 +235,28 @@ in
         wintypes = {
           tooltip = {
             fade = true;
-            shadow = true;
-            opacity = 0.75;
-            focus = true;
-            full-shadow = false;
+            # shadow = true;
+            # opacity = 0.75;
+            # focus = true;
+            # full-shadow = false;
           };
           #normal = { fade = false; shadow = false; };
           dock = {
-            shadow = false;
+            shadow = true; # false;
           };
           dnd = {
-            shadow = false;
+            shadow = true; # false;
           };
           popup_menu = {
             opacity = 0.9;
-            shadow = true;
+            # shadow = true;
           };
           dropdown_menu = {
             opacity = 0.8;
-            shadow = true;
+            # shadow = true;
           };
           dialog = {
-            shadow = true;
+            # shadow = true;
           };
         };
         #################################
@@ -248,11 +270,11 @@ in
         #   Transparency / Opacity      #
         #################################
         # Opacity of inactive windows. (0.1 - 1.0, defaults to 1.0)
-        # inactive-opacity = 1
+        inactive-opacity = 1.0;
 
         # Opacity of window titlebars and borders. (0.1 - 1.0, disabled by default)
         # frame-opacity = 1.0
-        frame-opacity = 0.7;
+        frame-opacity = 0.9;
 
         # Let inactive opacity set by -i override the '_NET_WM_OPACITY' values of windows.
         inactive-opacity-override = true; # this fixed opacity for me. Not sure what is setting _NET_WM_OPACITY
@@ -310,6 +332,7 @@ in
         # Fade windows in/out when opening/closing and when opacity changes,
         #  unless no-fading-openclose is used.
         # Opacity change between steps while fading in. (0.01 - 1.0, defaults to 0.028)
+        fading = true;
 
         fade-in-step = 0.03;
         # Opacity change between steps while fading out. (0.01 - 1.0, defaults to 0.03)
@@ -337,17 +360,26 @@ in
         shadow = true;
         # The opacity of shadows. (0.0 - 1.0, defaults to 0.75)
 
-        shadow-opacity = .75;
+        # Avoid drawing shadows on dock/panel windows. This option is deprecated,
+        # you should use the *wintypes* option in your config file instead.
+        #
+        dock-shadow = true;
+
+        # shadow-opacity = .75;
+        shadow-opacity = .50;
         # The left offset for shadows, in pixels. (defaults to -15)
-        shadow-offset-x = -3; # 0;
+        # shadow-offset-x = -3; # 0;
+        shadow-offset-x = -25;
         # The top offset for shadows, in pixels. (defaults to -15)
-        shadow-offset-y = -3; # 10;
+        # shadow-offset-y = -3; # 10;
+        shadow-offset-y = -25;
 
         # shadowOffsets = [ (-7) (-7) ];
         # shadowOpacity = 0.9;
 
         # The blur radius for shadows, in pixels. (defaults to 12)
-        shadow-radius = 20;
+        # shadow-radius = 20;
+        shadow-radius = 25;
 
         shadow-exclude = [
           "name = 'Notification'"
@@ -412,8 +444,14 @@ in
           backround-exclude = [
             "window_type = 'dock'"
             "window_type = 'conky'"
+            "window_type = 'menu'"
+            "class_g ~= '^((?!eww-powermenu).)eww-*$'"
             "window_type = 'desktop'"
+            "class_g = 'activate-linux'"
+            "class_g = 'escrotum'"
+            "class_g = 'Peek'"
             "class_g = 'slop'"
+            "class_g = 'Slop'"
             "class_g ?= 'peek'"
             "_GTK_FRAME_EXTENTS@:c"
             "(class_g = 'Firefox' || class_g = 'firefox-default') && (window_type = 'utility' || window_type = 'popup_menu') && argb"
@@ -427,7 +465,15 @@ in
         round-borders = 0;
         rounded-corners-exclude = [
           "window_type = 'dock'"
+          "window_type = 'tooltip'"
           "window_type = 'desktop'"
+          /* "class_g = 'shutter'", */
+          /* "class_g = 'eww-*'", */
+          /* "class_g = 'activate-linux'", */
+          /* "class_g = 'escrotum'", */
+          /* "class_g = 'Peek'", */
+          /* "class_g = 'firefox'", */
+          "class_g = 'dunst'"
           "class_g = 'Rofi'"
           "class_g = 'URxvt'"
           "class_g = 'XTerm'"
@@ -436,12 +482,15 @@ in
           "class_g = 'Polybar'"
           "class_g = 'code-oss'"
           "class_g = 'code'"
+          "_GTK_FRAME_EXTENTS@:c"
           # "window_type = 'conky'"
+          /* "class_g = 'Bar'", */
+          /* "class_g = 'eww-background-closer'", */
         ];
         use-ewmh-active-win = false; # true;
         unredir-if-possible = false; # true;
       };
-      vSync = false;
+      vSync = true; #false;
       extraArgs = [
         "--experimental-backends"
         "--daemon"
