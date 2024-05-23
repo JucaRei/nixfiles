@@ -92,12 +92,6 @@ in
         dialog
         at-spi2-atk
 
-        # compression
-        lzop
-        p7zip
-        unrar
-        zip
-
         # system
         xdg-utils
         # gtk-layer-shell

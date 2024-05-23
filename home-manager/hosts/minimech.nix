@@ -32,18 +32,20 @@ in
 
     home = {
       keyboard = lib.mkForce {
-        layout = "br,us";
+        # layout = "br,us";
+        layout = "br";
         model = "pc105";
         options = [ "grp:shifts_toggle" ];
-        variant = "abnt2,intl";
+        # variant = "abnt2,intl";
+        variant = "abnt2";
       };
       packages = with pkgs;[
         nix-whereis
         font-search
         stacer
         cachix
-        docker
-        docker-compose
+        # docker
+        # docker-compose
         (nixGL (config.programs.firefox.package))
       ];
       file = {
