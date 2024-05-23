@@ -8,6 +8,27 @@ let
   isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true;
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
   # startPolybar = pkgs.writeShellScriptBin
+
+  # random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/";
+  random-walls = "${pkgs.procps}/bin/watch -n 600 ${pkgs.feh}/bin/feh --randomize --bg-fill '$HOME/Pictures/wallpapers/*'";
+
+  bspc-bin = "${config.xsession.windowManager.bspwm.package}/bin/bspc";
+  dual-workspace = pkgs.writeShellScriptBin "dual-workspace" ''
+    #!/usr/bin/env bash
+
+      external=$(${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^HDMI-1-0 connected')
+      if [[ $HOSTNAME == nitro && $external = *\ connected* ]]; then
+              ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+              ${bspc-bin} monitor HDMI-1-0 -d I III V VII IX
+              ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
+      elif  [[ $HOSTNAME == anubis && $external = *\ connected* ]]; then
+              ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1366x768 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+              ${bspc-bin} monitor HDMI-1-0 -d I III V VII IX
+              ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
+      else
+              ${bspc-bin} monitor -d I II III IV V VI VII VIII IX X
+      fi
+  '';
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
@@ -22,177 +43,176 @@ in
     ./everforest/conky.nix
   ];
   config = {
-    home =
-      {
-        # zsh-history-substring-search zsh-syntax-highlighting
-        packages = with pkgs; [
-          ### Utils
-          xclip
-          xorg.xinit
-          xorg.libXcomposite
-          xorg.libXinerama
-          xorg.xprop
-          xorg.libxcb
-          xorg.xdpyinfo
-          xorg.xkill
-          xorg.xsetroot
-          xorg.xwininfo
-          bc
-          xorg.xrandr
-          # dconf
-          # gnome.dconf-editor
+    home = {
+      # zsh-history-substring-search zsh-syntax-highlighting
+      packages = with pkgs; [
+        ### Utils
+        xclip
+        xorg.xinit
+        xorg.libXcomposite
+        xorg.libXinerama
+        xorg.xprop
+        xorg.libxcb
+        xorg.xdpyinfo
+        xorg.xkill
+        xorg.xsetroot
+        xorg.xwininfo
+        bc
+        xorg.xrandr
+        # dconf
+        # gnome.dconf-editor
 
-          feh # image viewer
-          usbutils # usb utilities
-          # flameshot # cool utility for taking screen shots
-          qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
-          libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
-          qt5.qttools
-          qt6Packages.qtstyleplugin-kvantum
-          libsForQt5.qt5ct
-          dialog # display dialog boxes from shell
-          # xfce.ristretto # photo viewer
-          gnome.pomodoro # pomodor style timer for taking breaks
-          gtk-engine-murrine
-          gtk_engines
-          cava
-          # lxde.lxmenu-data # required to discover applications
-          # lxde.lxsession # just needed for lxpolkit (an authentication agent)
-          font-manager
-          lm_sensors
-          lxappearance-gtk2
-          pavucontrol
-          libwebp
-          playerctl
-          imagemagick
+        feh # image viewer
+        usbutils # usb utilities
+        # flameshot # cool utility for taking screen shots
+        qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
+        libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
+        qt5.qttools
+        qt6Packages.qtstyleplugin-kvantum
+        libsForQt5.qt5ct
+        dialog # display dialog boxes from shell
+        # xfce.ristretto # photo viewer
+        gnome.pomodoro # pomodor style timer for taking breaks
+        gtk-engine-murrine
+        gtk_engines
+        cava
+        # lxde.lxmenu-data # required to discover applications
+        # lxde.lxsession # just needed for lxpolkit (an authentication agent)
+        font-manager
+        lm_sensors
+        lxappearance-gtk2
+        pavucontrol
+        libwebp
+        playerctl
+        imagemagick
 
-          # utils
-          jgmenu
-          killall
-          dialog
-          at-spi2-atk
+        # utils
+        jgmenu
+        killall
+        dialog
+        at-spi2-atk
 
-          # compression
-          lzop
-          p7zip
-          unrar
-          zip
+        # compression
+        lzop
+        p7zip
+        unrar
+        zip
 
-          # system
-          xdg-utils
-          # gtk-layer-shell
-          # gnome.gnome-keyring
-          # gtk3
-          xdg-user-dirs # create xdg user dirs
-          xdg-desktop-portal-gtk
-        ];
+        # system
+        xdg-utils
+        # gtk-layer-shell
+        # gnome.gnome-keyring
+        # gtk3
+        xdg-user-dirs # create xdg user dirs
+        xdg-desktop-portal-gtk
+      ];
 
-        shellAliases = {
-          is_picom_on = "pgrep -x 'picom' > /dev/null && echo 'on' || echo 'off'";
+      shellAliases = {
+        is_picom_on = "pgrep -x 'picom' > /dev/null && echo 'on' || echo 'off'";
+      };
+
+      sessionVariables = {
+        "_JAVA_AWT_WM_NONREPARENTING" = "1";
+        EDITOR = "micro";
+        TERMINAL = "alacritty";
+        GLFW_IM_MODULE = "ibus";
+        TERM = "xterm-256color";
+        QT_STYLE_OVERRIDE = mkDefault ""; # fix qt-override
+      };
+
+      sessionPath = [
+        "$HOME/.local/bin"
+        "$HOME/.local/share/applications"
+      ];
+
+      file = {
+        ".local/share/applications/bspwm.desktop" = mkIf (!isSystemd) {
+          text = ''
+            [Desktop Entry]
+            Name=bspwm
+            Comment=Binary space partitioning window manager
+            Exec=${windowMan}
+            Type=Application
+          '';
         };
+        # "${config.xdg.configHome}/libinput-gestures.conf".text = ''
+        #   gesture swipe right 3 bspc desktop -f next.local
+        #   gesture swipe left 3 bspc desktop -f prev.local
+        # '';
 
-        sessionVariables = {
-          "_JAVA_AWT_WM_NONREPARENTING" = "1";
-          EDITOR = "micro";
-          TERMINAL = "alacritty";
-          GLFW_IM_MODULE = "ibus";
-          TERM = "xterm-256color";
-          QT_STYLE_OVERRIDE = mkDefault ""; # fix qt-override
-        };
+        ".xinitrc" = mkIf (!isSystemd) {
+          executable = true;
+          text = ''
+            #!${pkgs.stdenv.shell}
 
-        sessionPath = [
-          "$HOME/.local/bin"
-          "$HOME/.local/share/applications"
-        ];
+            userresources=$HOME/.Xresources
+            usermodmap=$HOME/.Xmodmap
+            sysresources=/etc/X11/xinit/.Xresources
+            sysmodmap=/etc/X11/xinit/.Xmodmap
 
-        file = {
-          ".local/share/applications/bspwm.desktop" = mkIf (!isSystemd) {
-            text = ''
-              [Desktop Entry]
-              Name=bspwm
-              Comment=Binary space partitioning window manager
-              Exec=${windowMan}
-              Type=Application
-            '';
-          };
-          # "${config.xdg.configHome}/libinput-gestures.conf".text = ''
-          #   gesture swipe right 3 bspc desktop -f next.local
-          #   gesture swipe left 3 bspc desktop -f prev.local
-          # '';
+            # Make sure this is before the 'exec' command or it won't be sourced.
+            [ -f /etc/xprofile ] && . /etc/xprofile
+            [ -f ~/.xprofile ] && . ~/.xprofile
 
-          ".xinitrc" = mkIf (!isSystemd) {
-            executable = true;
-            text = ''
-              #!${pkgs.stdenv.shell}
+            # merge in defaults and keymaps
 
-              userresources=$HOME/.Xresources
-              usermodmap=$HOME/.Xmodmap
-              sysresources=/etc/X11/xinit/.Xresources
-              sysmodmap=/etc/X11/xinit/.Xmodmap
+            if [ -f $sysresources ]; then
+                ${pkgs.xorg.xrdb}/bin/xrdb -merge $sysresources
+            fi
 
-              # Make sure this is before the 'exec' command or it won't be sourced.
-              [ -f /etc/xprofile ] && . /etc/xprofile
-              [ -f ~/.xprofile ] && . ~/.xprofile
+            if [ -f $sysmodmap ]; then
+                ${pkgs.xorg.xmodmap}/bin/xmodmap $sysmodmap
+            fi
 
-              # merge in defaults and keymaps
+            if [ -f "$userresources" ]; then
+                ${pkgs.xorg.xrdb}/bin/xrdb -merge "$userresources"
+            fi
 
-              if [ -f $sysresources ]; then
-                  ${pkgs.xorg.xrdb}/bin/xrdb -merge $sysresources
-              fi
+            if [ -f "$usermodmap" ]; then
+                ${pkgs.xorg.xmodmap}/bin/xmodmap "$usermodmap"
+            fi
 
-              if [ -f $sysmodmap ]; then
-                  ${pkgs.xorg.xmodmap}/bin/xmodmap $sysmodmap
-              fi
+            # ↓ https://nixos.wiki/wiki/Using_X_without_a_Display_Manager
+            if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+              eval $(${pkgs.dbus}/bin/dbus-launch --exit-with-session --sh-syntax)
+            fi
+            ${pkgs.systemdMinimal}/bin/systemctl --user import-environment DISPLAY XAUTHORITY
 
-              if [ -f "$userresources" ]; then
-                  ${pkgs.xorg.xrdb}/bin/xrdb -merge "$userresources"
-              fi
-
-              if [ -f "$usermodmap" ]; then
-                  ${pkgs.xorg.xmodmap}/bin/xmodmap "$usermodmap"
-              fi
-
-              # ↓ https://nixos.wiki/wiki/Using_X_without_a_Display_Manager
-              if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
-                eval $(${pkgs.dbus}/bin/dbus-launch --exit-with-session --sh-syntax)
-              fi
-              ${pkgs.systemdMinimal}/bin/systemctl --user import-environment DISPLAY XAUTHORITY
-
-              if command -v ${pkgs.dbus}/bin/dbus-update-activation-environment > /dev/null 2>&1; then
-                ${pkgs.dbus}/bin/dbus-update-activation-environment DISPLAY XAUTHORITY
-              fi
-
-              # start some nice programs
-
-              if [ -d /etc/X11/xinit/xinitrc.d ] ; then
-               for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
-                [ -x "$f" ] && . "$f"
-               done
-               unset f
-              fi
-
-              eval "$(gnome-keyring-daemon --start)"
-              export SSH_AUTH_SOCK
+            if command -v ${pkgs.dbus}/bin/dbus-update-activation-environment > /dev/null 2>&1; then
               ${pkgs.dbus}/bin/dbus-update-activation-environment DISPLAY XAUTHORITY
+            fi
 
-              # exec ${pkgs.dbus}/bin/dbus-launch --autolaunch=$(cat /var/lib/dbus/machine-id) bspwm
-              exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan} &
-            '';
-          };
+            # start some nice programs
 
-          ".config/polybar/openweathermap.txt".text = ''
-            3901194171bca9e5e3236048e50eb1a5
+            if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+             for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+              [ -x "$f" ] && . "$f"
+             done
+             unset f
+            fi
+
+            eval "$(gnome-keyring-daemon --start)"
+            export SSH_AUTH_SOCK
+            ${pkgs.dbus}/bin/dbus-update-activation-environment DISPLAY XAUTHORITY
+
+            # exec ${pkgs.dbus}/bin/dbus-launch --autolaunch=$(cat /var/lib/dbus/machine-id) bspwm
+            exec ${pkgs.dbus}/bin/dbus-launch --exit-with-session ${windowMan} &
           '';
         };
 
-        pointerCursor = {
-          package = pkgs.bibata-cursors;
-          name = "Bibata-Modern-Classic";
-          size = 16;
-          gtk.enable = true;
-          x11.enable = true;
-        };
+        ".config/polybar/openweathermap.txt".text = ''
+          3901194171bca9e5e3236048e50eb1a5
+        '';
       };
+
+      pointerCursor = {
+        package = pkgs.bibata-cursors;
+        name = "Bibata-Modern-Classic";
+        size = 16;
+        gtk.enable = true;
+        x11.enable = true;
+      };
+    };
 
     # dconf.settings = { };
     xsession = {
@@ -205,36 +225,30 @@ in
           enable = isSystemd;
           # package = (nixgl pkgs.unstable.bspwm);
           package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
-          startupPrograms =
-            let
-              # random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/";
-              random-unsplash = "${pkgs.procps}/bin/watch -n 600 ${pkgs.feh}/bin/feh --randomize --bg-fill '$HOME/Pictures/wallpapers/*'";
-            in
-            [
-              "bspc desktop -f ^1"
-              "pgrep -x sxhkd > /dev/null || sxhkd"
-              # "nitrogen --restore"
-              # "lxpolkit" # prompt to enter sudo password daemon
-              # "flameshot"
-              # "${pkgs.lxde.lxsession}/bin/lxsession"
-              # "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
-              # "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
-              # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-              "sleep 2; polybar -q everforest"
-              # "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
-              "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
-              "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
-              random-unsplash
-              # "tmux new-session -d -s main" # for fast attach to tmux session
-              # "tmux new-session -d -s code" # for fast attach to tmux session
-              # "thunar --daemon"
-              # "${pkgs.flameshot}/bin/flameshot"
-              # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
-              # run this last so it doesn't interupt other stuff.
-              # "lxappearance" & # Fix cursor not showing on desktop (background)
-              # "sleep 3"
-              # "pkill lxappearance" # Fix cursor not showing on desktop (background)
-            ];
+          startupPrograms = [
+            "bspc desktop -f ^1"
+            "pgrep -x sxhkd > /dev/null || sxhkd"
+            # "nitrogen --restore"
+            # "flameshot"
+            # "${pkgs.lxde.lxsession}/bin/lxsession"
+            # "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
+            # "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
+            # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+            "sleep 2; polybar -q everforest"
+            # "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
+            "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
+            "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
+            random-walls
+            # "tmux new-session -d -s main" # for fast attach to tmux session
+            # "tmux new-session -d -s code" # for fast attach to tmux session
+            # "thunar --daemon"
+            # "${pkgs.flameshot}/bin/flameshot"
+            # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
+            # run this last so it doesn't interupt other stuff.
+            # "lxappearance" & # Fix cursor not showing on desktop (background)
+            # "sleep 3"
+            # "pkill lxappearance" # Fix cursor not showing on desktop (background)
+          ];
           alwaysResetDesktops = true;
           # monitors = {
           #   Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
@@ -244,42 +258,22 @@ in
           #   eDP1-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
           #   # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           # };
-          extraConfigEarly =
-            let
-              bspc-bin = "${config.xsession.windowManager.bspwm.package}/bin/bspc";
-              dual-workspace = pkgs.writeShellScriptBin "dual-workspace" ''
-                #!/usr/bin/env bash
+          extraConfigEarly = ''
+            ${pkgs.wmname}/bin/wmname LG3D
+            # picom
+            # pkill picom
+            # picom -b --legacy-backends --no-use-damage &
+            # picom --experimental-backends --no-use-damage &
 
-                  external=$(${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^HDMI-1-0 connected')
-                  if [[ $HOSTNAME == nitro && $external = *\ connected* ]]; then
-                          ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-                          ${bspc-bin} monitor HDMI-1-0 -d I III V VII IX
-                          ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
-                  elif  [[ $HOSTNAME == anubis && $external = *\ connected* ]]; then
-                          ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1366x768 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-                          ${bspc-bin} monitor HDMI-1-0 -d I III V VII IX
-                          ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
-                  else
-                          ${bspc-bin} monitor -d I II III IV V VI VII VIII IX X
-                  fi
-              '';
-            in
-            ''
-              ${pkgs.wmname}/bin/wmname LG3D
-              # picom
-              # pkill picom
-              # picom -b --legacy-backends --no-use-damage &
-              # picom --experimental-backends --no-use-damage &
+            ### Only have workspaces for primary monitor
+            # export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
+            # export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
+            # MONITOR=$\{MONITOR:-$\{MONITORS[0]}}
 
-              ### Only have workspaces for primary monitor
-              # export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
-              # export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
-              # MONITOR=$\{MONITOR:-$\{MONITORS[0]}}
-
-              bspc config remove_disabled_monitors true
-              bspc config remove_unplugged_monitors true
-              ${dual-workspace}/bin/dual-workspace
-            '';
+            bspc config remove_disabled_monitors true
+            bspc config remove_unplugged_monitors true
+            ${dual-workspace}/bin/dual-workspace
+          '';
           extraConfig = ''
             ${pkgs.systemd}/bin/systemctl --user start bspwm-session.target
 
@@ -1025,46 +1019,6 @@ in
           After = [ "graphical-session-pre.target" ];
         };
       };
-
-      #  services.bspwm-polkit-authentication-agent = {
-      #    Unit = {
-      #      Description = "Bspwm Polkit authentication agent";
-      #      Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
-      #      After = [ "graphical-session-pre.target" ];
-      #      PartOf = [ "graphical-session.target" ];
-      #    };
-
-      #    Service = {
-      #      ExecStart = "${pkgs.lxde.lxsession}/bin/lxpolkit";
-      #      # ExecStart = "${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1";
-      #      Restart = "always";
-      #      BusName = "org.freedesktop.PolicyKit1.Authority";
-      #    };
-
-      #    Install.WantedBy = [ "graphical-session.target" ];
-      #  };
-
-      # services.polkit-agent = {
-      # services.lxpolkit = {
-      #   Unit = {
-      #     # Description = "launch authentication-agent-1";
-      #     Description = "launch lxpolkit";
-      #     After = [ "graphical-session.target" ];
-      #     PartOf = [ "graphical-session.target" ];
-      #   };
-      #   Service = {
-      #     Type = "simple";
-      #     Restart = "on-failure";
-      #     RestartSec = 1;
-      #     # exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
-      #     # exec export DISPLAY=:0
-      #     # exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY"
-      #     ExecStart = getExe pkgs.lxqt.lxqt-policykit;
-      #     TimeoutStopSec = 10;
-      #   };
-
-      #   Install = { WantedBy = [ "graphical-session.target" ]; };
-      # };
     };
   };
 }

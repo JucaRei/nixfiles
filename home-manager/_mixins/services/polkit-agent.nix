@@ -55,3 +55,43 @@
       };
     };
 }
+
+#  services.bspwm-polkit-authentication-agent = {
+#    Unit = {
+#      Description = "Bspwm Polkit authentication agent";
+#      Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
+#      After = [ "graphical-session-pre.target" ];
+#      PartOf = [ "graphical-session.target" ];
+#    };
+
+#    Service = {
+#      ExecStart = "${pkgs.lxde.lxsession}/bin/lxpolkit";
+#      # ExecStart = "${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1";
+#      Restart = "always";
+#      BusName = "org.freedesktop.PolicyKit1.Authority";
+#    };
+
+#    Install.WantedBy = [ "graphical-session.target" ];
+#  };
+
+# services.polkit-agent = {
+# services.lxpolkit = {
+#   Unit = {
+#     # Description = "launch authentication-agent-1";
+#     Description = "launch lxpolkit";
+#     After = [ "graphical-session.target" ];
+#     PartOf = [ "graphical-session.target" ];
+#   };
+#   Service = {
+#     Type = "simple";
+#     Restart = "on-failure";
+#     RestartSec = 1;
+#     # exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1
+#     # exec export DISPLAY=:0
+#     # exec "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY"
+#     ExecStart = getExe pkgs.lxqt.lxqt-policykit;
+#     TimeoutStopSec = 10;
+#   };
+
+#   Install = { WantedBy = [ "graphical-session.target" ]; };
+# };
