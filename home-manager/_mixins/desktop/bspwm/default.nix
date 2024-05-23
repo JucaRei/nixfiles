@@ -47,7 +47,6 @@ in
       # zsh-history-substring-search zsh-syntax-highlighting
       packages = with pkgs; [
         ### Utils
-        xclip
         xorg.xinit
         xorg.libXcomposite
         xorg.libXinerama
@@ -57,8 +56,10 @@ in
         xorg.xkill
         xorg.xsetroot
         xorg.xwininfo
-        bc
         xorg.xrandr
+        xclip
+        bc
+
         # dconf
         # gnome.dconf-editor
 
