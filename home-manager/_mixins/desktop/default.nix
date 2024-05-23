@@ -57,6 +57,10 @@ in
       pika
       utm
     ];
+    sessionVariables = {
+      # Enable icons in tooling since we have nerdfonts.
+      # LOG_ICONS = "true";
+    };
   };
   dconf.settings = {
     "ca/desrt/dconf-editor" = {

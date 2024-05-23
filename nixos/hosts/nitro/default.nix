@@ -88,6 +88,10 @@
       kernelPackages = pkgs.linuxPackages_xanmod_latest;
 
       kernelParams = lib.mkForce [
+        # intel cpu
+        "i915.fastboot=1"
+        "enable_gvt=1"
+
         "nosgx"
         # "acpi_backlight=vendor"
         # "button.lid_init_state=open"
