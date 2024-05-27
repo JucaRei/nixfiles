@@ -98,6 +98,7 @@ in
         libva-utils
         guvcview
         cloneit
+        neovim
         docker-compose
         xfce.mousepad
         # (nixGL vivaldi-custom)

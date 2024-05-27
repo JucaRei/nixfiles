@@ -9,18 +9,18 @@ with lib; {
         enable = mkEnableOption "Service polkit agent";
         package = mkOption {
           type = types.package;
-          # default = pkgs.pantheon.pantheon-agent-polkit;
-          default = pkgs.lxqt.lxqt-policykit;
-          # defaultText = literalExample "pkgs.pantheon.pantheon-agent-polkit";
-          defaultText = literalExample "pkgs.lxqt.lxqt-policykit";
+          default = pkgs.pantheon.pantheon-agent-polkit;
+          # default = pkgs.lxqt.lxqt-policykit;
+          defaultText = literalExample "pkgs.pantheon.pantheon-agent-polkit";
+          # defaultText = literalExample "pkgs.lxqt.lxqt-policykit";
           description = ''
             The Polkit agent package to use.
           '';
         };
         executablePath = mkOption {
           type = types.str;
-          # default = "libexec/policykit-1-pantheon/io.elementary.desktop.agent-polkit";
-          default = "bin/lxqt-policykit-agent";
+          default = "libexec/policykit-1-pantheon/io.elementary.desktop.agent-polkit";
+          # default = "bin/lxqt-policykit-agent";
           description = ''
             The path to the Polkit agent executable within `package`.
           '';
@@ -45,13 +45,14 @@ with lib; {
         Unit = {
           Description = "Polkit agent";
           Documentation = "https://gitlab.freedesktop.org/polkit/polkit/";
-          After = [ "graphical-session-pre.target" ];
+          # After = [ "graphical-session-pre.target" ];
           PartOf = [ cfg.systemd.target ];
+          After = [ cfg.systemd.target ];
         };
 
         Service = {
           ExecStart = "${cfg.package}/${cfg.executablePath}";
-          Restart = "always";
+          # Restart = "always";
           BusName = "org.freedesktop.PolicyKit1.Authority";
         };
 
