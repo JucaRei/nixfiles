@@ -57,6 +57,7 @@ with lib;
         nix-whereis
         # nf-iosevka
         gedit
+        neovim
         font-search
         # fcitx5-with-addons
         # vv

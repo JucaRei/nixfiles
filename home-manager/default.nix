@@ -33,7 +33,8 @@ in
         ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
       fi
     '';
-    homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
+    # homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
+    homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else builtins.getEnv "HOME";
 
     sessionVariables = {
       # libstdc++.so.6 => not found
@@ -47,6 +48,18 @@ in
       ".hidden".text = ''snap'';
     };
   };
+
+  # Home Manager can also manage your environment variables through
+  # 'home.sessionVariables'. If you don't want to manage your shell through Home
+  # Manager then you have to manually source 'hm-session-vars.sh' located at
+  # either
+  #
+  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
+  #
+  # or
+  #
+  #  /etc/profiles/per-user/jenni/etc/profile.d/hm-session-vars.sh
+  #
 
   # Workaround home-manager bug with flakes
   # - https://github.com/nix-community/home-manager/issues/2033
