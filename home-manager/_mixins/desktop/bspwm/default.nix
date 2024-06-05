@@ -336,7 +336,6 @@ in
               desktop = "^3";
               focus = true;
             };
-
             "librewolf" = {
               desktop = "^3";
               follow = true;
@@ -457,6 +456,9 @@ in
             #   state = "pseudo_tiled";
             #   center = true;
             # };
+            "Engrampa" = {
+              state = "floating";
+            };
             "Alacritty:floating" = {
               state = "floating";
             };

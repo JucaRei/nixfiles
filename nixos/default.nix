@@ -604,7 +604,7 @@ in
           scrollMethod = "twofinger";
           disableWhileTyping = true;
           # sendEventsMode = "disabled-on-external-mouse";
-          sendEventsMode = lib.mkOverride 1250 "enabled";
+          # sendEventsMode = lib.mkOverride 1250 "enabled";
           clickMethod = "clickfinger";
           # https://github.com/NixOS/nixpkgs/issues/75007
           naturalScrolling = true;
