@@ -86,6 +86,13 @@ in
         json = pkgs.formats.json { };
       in
       {
+
+        # Allow mounting FUSE filesystems as a user.
+        # https://discourse.nixos.org/t/fusermount-systemd-service-in-home-manager/5157
+        "fuse.conf".text = ''
+          user_allow_other
+        '';
+
         "backgrounds/DeterminateColorway-1920x1080.png".source = ../config/backgrounds/DeterminateColorway-1920x1080.png;
         "backgrounds/DeterminateColorway-1920x1200.png".source = ../config/backgrounds/DeterminateColorway-1920x1200.png;
         "backgrounds/DeterminateColorway-2560x1440.png".source = ../config/backgrounds/DeterminateColorway-2560x1440.png;

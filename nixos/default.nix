@@ -217,6 +217,8 @@ in
         ++ lib.optionals (builtins.elem hostname syncthing.hosts) syncthing.udpPorts;
       trustedInterfaces = lib.mkIf (isInstall) [ "lxdbr0" ];
     };
+
+    usePredictableInterfaceNames = true;
   };
 
   ############################
@@ -600,12 +602,17 @@ in
           # tappingDragLock = false;
           accelProfile = "flat";
           tapping = true;
-          naturalScrolling = true;
           scrollMethod = "twofinger";
           disableWhileTyping = true;
           # sendEventsMode = "disabled-on-external-mouse";
           sendEventsMode = lib.mkDefault "enabled";
           clickMethod = "clickfinger";
+          # https://github.com/NixOS/nixpkgs/issues/75007
+          naturalScrolling = true;
+          # natural scrolling for touchpad only, not mouse
+          additionalOptions = ''
+            MatchIsTouchpad "on"
+          '';
         };
         mouse = {
           naturalScrolling = false;
@@ -627,6 +634,13 @@ in
       rateLimitBurst = 800;
       rateLimitInterval = "5s";
     };
+
+    # to prevent nix-shell complaining about no space left
+    # default value is 10% of total RAM
+    # writes to: /etc/systemd/logind.conf
+    logind.extraConfig = ''
+      RuntimeDirectorySize=2G
+    '';
 
     dbus = {
       # Enable the D-Bus service, which is a message bus system that allows

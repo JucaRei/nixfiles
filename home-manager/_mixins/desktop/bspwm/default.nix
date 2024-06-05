@@ -29,6 +29,15 @@ let
               ${bspc-bin} monitor -d I II III IV V VI VII VIII IX X
       fi
   '';
+
+  runOnce = cmd: "! pgrep -f ${lib.head (lib.splitString " " cmd)} && ${cmd}";
+  runOnceF = cmd: "! pgrep ${lib.head (lib.splitString " " cmd)} && ${cmd}";
+  runOnceDesktop = cmd:
+    "! pgrep -f ${cmd} && dex ${config.xdg.dataHome}/applications/${cmd}.desktop";
+  runWithRule = { cmd, window, rule }:
+    "${pkgs.bspwm}/bin/bspc rule -a ${window} -o ${rule} && ${cmd}";
+  runOnceWeekend = cmd:
+    "test $(${pkgs.coreutils}/bin/date +%u) -lt 5 && " + runOnce cmd;
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
@@ -210,7 +219,7 @@ in
     };
 
     # dconf.settings = { };
-    xsession = {
+    xsession = with builtins; {
       enable = true;
       # initExtra = "exec ${windowMan} &";
       numlock.enable = if (hostname == "nitro") then true else false;
@@ -243,6 +252,8 @@ in
             # "lxappearance" & # Fix cursor not showing on desktop (background)
             # "sleep 3"
             # "pkill lxappearance" # Fix cursor not showing on desktop (background)
+          ] ++ map runOnce [
+            "${pkgs.xfce.thunar}/bin/thunar --daemon"
           ];
           alwaysResetDesktops = true;
           # monitors = {
