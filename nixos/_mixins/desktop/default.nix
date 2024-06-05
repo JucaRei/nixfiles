@@ -65,11 +65,6 @@ in
     };
   };
 
-  # Fix issue with java applications and tiling window managers.
-  environment.sessionVariables = {
-    "_JAVA_AWT_WM_NONREPARENTING" = "1";
-  };
-
   boot = {
     # Enable the threadirqs kernel parameter to reduce audio latency
     # - Inpired by: https://github.com/musnix/musnix/blob/master/modules/base.nix#L56
@@ -81,100 +76,26 @@ in
   };
 
   environment = {
-    etc =
-      let
-        json = pkgs.formats.json { };
-      in
-      {
+    etc = {
 
-        # Allow mounting FUSE filesystems as a user.
-        # https://discourse.nixos.org/t/fusermount-systemd-service-in-home-manager/5157
-        "fuse.conf".text = ''
-          user_allow_other
-        '';
+      # Allow mounting FUSE filesystems as a user.
+      # https://discourse.nixos.org/t/fusermount-systemd-service-in-home-manager/5157
+      "fuse.conf".text = ''
+        user_allow_other
+      '';
 
-        "backgrounds/DeterminateColorway-1920x1080.png".source = ../config/backgrounds/DeterminateColorway-1920x1080.png;
-        "backgrounds/DeterminateColorway-1920x1200.png".source = ../config/backgrounds/DeterminateColorway-1920x1200.png;
-        "backgrounds/DeterminateColorway-2560x1440.png".source = ../config/backgrounds/DeterminateColorway-2560x1440.png;
-        "backgrounds/DeterminateColorway-3440x1440.png".source = ../config/backgrounds/DeterminateColorway-3440x1440.png;
-        "backgrounds/DeterminateColorway-3840x2160.png".source = ../config/backgrounds/DeterminateColorway-3840x2160.png;
-      } // lib.optionalAttrs (needsLowLatencyPipewire) {
-        # Change this to use: services.pipewire.extraConfig.pipewire
-        # https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-PipeWire#quantum-ranges
-        "pipewire/pipewire.conf.d/92-low-latency.conf".text = ''
-          context.properties = {
-            default.clock.rate          = 48000
-            default.clock.allowed-rates = [ 48000 ]
-            default.clock.quantum       = 64
-            default.clock.min-quantum   = 64
-            default.clock.max-quantum   = 64
-          }
-          context.modules = [
-            {
-              name = libpipewire-module-rt
-              args = {
-                nice.level = -11
-                rt.prio = 88
-              }
-            }
-          ]
-        '';
-        # Change this to use: services.pipewire.extraConfig.pipewire-pulse
-        "pipewire/pipewire-pulse.d/92-low-latency.conf".source = json.generate "92-low-latency.conf" {
-          context.modules = [
-            {
-              name = "libpipewire-module-protocol-pulse";
-              args = {
-                pulse.min.req = "64/48000";
-                pulse.default.req = "64/48000";
-                pulse.max.req = "64/48000";
-                pulse.min.quantum = "64/48000";
-                pulse.max.quantum = "64/48000";
-              };
-            }
-          ];
-          stream.properties = {
-            node.latency = "64/48000";
-            resample.quality = 4;
-          };
-        };
-        # https://stackoverflow.com/questions/24040672/the-meaning-of-period-in-alsa
-        # https://pipewire.pages.freedesktop.org/wireplumber/daemon/configuration/alsa.html#alsa-buffer-properties
-        # https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/3241
-        # cat /nix/store/*-wireplumber-*/share/wireplumber/main.lua.d/50-alsa-config.lua
-        "wireplumber/main.lua.d/92-low-latency.lua".text = ''
-          alsa_monitor.rules = {
-            {
-              matches = {
-                {
-                  -- Matches all sources.
-                  { "node.name", "matches", "alsa_input.*" },
-                },
-                {
-                  -- Matches all sinks.
-                  { "node.name", "matches", "alsa_output.*" },
-                },
-              },
-              apply_properties = {
-                ["audio.rate"] = "48000",
-                ["api.alsa.headroom"] = 128,             -- Default: 0
-                ["api.alsa.period-num"] = 2,             -- Default: 2
-                ["api.alsa.period-size"] = 512,          -- Default: 1024
-                ["api.alsa.disable-batch"] = false,      -- generally, USB soundcards use the batch mode
-                ["resample.quality"] = 4,
-                ["resample.disable"] = false,
-                ["session.suspend-timeout-seconds"] = 0,
-              },
-            },
-          }
-        '';
-      } // lib.optionalAttrs (isNitro) {
-        "aspell.conf".text = ''
-          master en_US
-          add-extra-dicts en-computers.rws
-          add-extra-dicts pt_BR.rws
-        '';
-      };
+      "backgrounds/DeterminateColorway-1920x1080.png".source = ../config/backgrounds/DeterminateColorway-1920x1080.png;
+      "backgrounds/DeterminateColorway-1920x1200.png".source = ../config/backgrounds/DeterminateColorway-1920x1200.png;
+      "backgrounds/DeterminateColorway-2560x1440.png".source = ../config/backgrounds/DeterminateColorway-2560x1440.png;
+      "backgrounds/DeterminateColorway-3440x1440.png".source = ../config/backgrounds/DeterminateColorway-3440x1440.png;
+      "backgrounds/DeterminateColorway-3840x2160.png".source = ../config/backgrounds/DeterminateColorway-3840x2160.png;
+    } // lib.optionalAttrs (isNitro) {
+      "aspell.conf".text = ''
+        master en_US
+        add-extra-dicts en-computers.rws
+        add-extra-dicts pt_BR.rws
+      '';
+    };
 
     systemPackages = with pkgs; (lib.optionals (isInstall) [
       # appimage-run
@@ -303,7 +224,72 @@ in
       alsa.support32Bit = isGamestation;
       jack.enable = false;
       pulse.enable = true;
-      wireplumber.enable = true;
+      wireplumber = {
+        enable = true;
+        # https://stackoverflow.com/questions/24040672/the-meaning-of-period-in-alsa
+        # https://pipewire.pages.freedesktop.org/wireplumber/daemon/configuration/alsa.html#alsa-buffer-properties
+        # cat /nix/store/*-wireplumber-*/share/wireplumber/main.lua.d/99-alsa-lowlatency.lua
+        # cat /nix/store/*-wireplumber-*/share/wireplumber/wireplumber.conf.d/99-alsa-lowlatency.conf
+        configPackages = lib.mkIf (needsLowLatencyPipewire) [
+          (pkgs.writeTextDir "share/wireplumber/main.lua.d/99-alsa-lowlatency.lua" ''
+            alsa_monitor.rules = {
+              {
+                matches = {{{ "node.name", "matches", "*_*put.*" }}};
+                apply_properties = {
+                  ["audio.format"] = "S16LE",
+                  ["audio.rate"] = 48000,
+                  -- api.alsa.headroom: defaults to 0
+                  ["api.alsa.headroom"] = 128,
+                  -- api.alsa.period-num: defaults to 2
+                  ["api.alsa.period-num"] = 2,
+                  -- api.alsa.period-size: defaults to 1024, tweak by trial-and-error
+                  ["api.alsa.period-size"] = 512,
+                  -- api.alsa.disable-batch: USB audio interface typically use the batch mode
+                  ["api.alsa.disable-batch"] = false,
+                  ["resample.quality"] = 4,
+                  ["resample.disable"] = false,
+                  ["session.suspend-timeout-seconds"] = 0,
+                },
+              },
+            }
+          '')
+        ];
+      };
+      # https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-PipeWire#quantum-ranges
+      extraConfig.pipewire."92-low-latency" = lib.mkIf (needsLowLatencyPipewire) {
+        "context.properties" = {
+          "default.clock.rate" = 48000;
+          "default.clock.quantum" = 64;
+          "default.clock.min-quantum" = 64;
+          "default.clock.max-quantum" = 64;
+        };
+        "context.modules" = [{
+          name = "libpipewire-module-rt";
+          args = {
+            "nice.level" = -11;
+            "rt.prio" = 88;
+          };
+        }];
+      };
+      extraConfig.pipewire-pulse."92-low-latency" = lib.mkIf (needsLowLatencyPipewire) {
+        "pulse.properties" = {
+          "pulse.default.format" = "S16";
+          "pulse.fix.format" = "S16LE";
+          "pulse.fix.rate" = "48000";
+          "pulse.min.frag" = "64/48000"; # 1.3ms
+          "pulse.min.req" = "64/48000"; # 1.3ms
+          "pulse.default.frag" = "64/48000"; # 1.3ms
+          "pulse.default.req" = "64/48000"; # 1.3ms
+          "pulse.max.req" = "64/48000"; # 1.3ms
+          "pulse.min.quantum" = "64/48000"; # 1.3ms
+          "pulse.max.quantum" = "64/48000"; # 1.3ms
+        };
+        "stream.properties" = {
+          "node.latency" = "64/48000"; # 1.3ms
+          "resample.quality" = 4;
+          "resample.disable" = false;
+        };
+      };
     };
 
     printing = lib.mkIf (isInstall) {

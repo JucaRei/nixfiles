@@ -28,7 +28,6 @@ in
       ./_mixins/services/tools/smartmon.nix
       ./_mixins/config/scripts
       ./_mixins/services/network/networkmanager.nix
-      ./_mixins/services/network/openssh.nix
       ./users
     ]
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
