@@ -271,7 +271,9 @@ in
   "${vars.mod} + equal" = "${bspwm-conf}/bspc node @/ --equalize"; # Make split ratios equal
   "${vars.mod} + minus" = "${bspwm-conf}/bspc node @/ --balance"; # Make split ratios balanced
 
-  "${isNitrO} + shift + d" = "bspc query --nodes -n focused.tiled && state=floating || state=tiled; bspc node --state \~$state";
+  # Fish shell dont accept "="
+  "${isNitrO} + shift + d" = if (hostname != "nitro") then "bspc query --nodes -n focused.tiled && state=floating || state=tiled; bspc node --state \~$state" else "bspc query --nodes -n focused.tiled && set state floating || set state tiled; bspc node --state \~$state";
+
   # rotate
   "${vars.mod} + f" = "${bspwm-conf}/bspc node --state \~fullscreen"; # Toggle fullscreen of window
   "${vars.mod} + {_,shift + }q" = "${bspwm-conf}/bspc node -{c,k}"; # Close and kill

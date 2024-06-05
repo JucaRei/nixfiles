@@ -187,6 +187,7 @@ in
         "video/mp4v-es" = "mpv.desktop";
         "video/mpeg" = "mpv.desktop";
         "video/msvideo" = "mpv.desktop";
+        "video/ts" = "mpv.desktop";
         "video/ogg" = "mpv.desktop";
         "video/quicktime" = "mpv.desktop";
         "video/vnd.divx" = "mpv.desktop";
