@@ -212,7 +212,7 @@ in
       pointerCursor = {
         package = pkgs.bibata-cursors;
         name = "Bibata-Modern-Classic";
-        size = 16;
+        size = 24;
         gtk.enable = true;
         x11.enable = true;
       };
@@ -575,7 +575,7 @@ in
         # package = pkgs.volantes-cursors;
         package = pkgs.bibata-cursors;
         name = "Bibata-Modern-Classic";
-        size = 16;
+        size = 24;
       };
       font = {
         # name = "Fira Code";

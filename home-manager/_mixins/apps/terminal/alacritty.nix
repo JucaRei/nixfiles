@@ -142,26 +142,26 @@
         semantic_escape_chars = ",│`|:\"' ()[]{}<>";
       };
 
-      url = {
-        # URL launcher
-        #
-        # This program is executed when clicking on a text which is recognized as a URL.
-        # The URL is always added to the command as the last parameter.
-        #
-        # When set to `None`, URL launching will be disabled completely.
-        #
-        # Default:
-        #   - (macOS) open
-        #   - (Linux) xdg-open
-        #   - (Windows) explorer
-        #launcher: xdg-open
+      # url = {
+      # URL launcher
+      #
+      # This program is executed when clicking on a text which is recognized as a URL.
+      # The URL is always added to the command as the last parameter.
+      #
+      # When set to `None`, URL launching will be disabled completely.
+      #
+      # Default:
+      #   - (macOS) open
+      #   - (Linux) xdg-open
+      #   - (Windows) explorer
+      #launcher: xdg-open
 
-        # URL modifiers
-        #
-        # These are the modifiers that need to be held down for opening URLs when clicking
-        # on them. The available modifiers are documented in the key binding section.
-        modifiers = "None";
-      };
+      # URL modifiers
+      #
+      # These are the modifiers that need to be held down for opening URLs when clicking
+      # on them. The available modifiers are documented in the key binding section.
+      #   modifiers = "None";
+      # };
 
       font = {
         normal = {
@@ -211,13 +211,14 @@
       };
 
       # If `true`, bold text is drawn using the bright color variants.
-      draw_bold_text_with_bright_colors = true;
+      # draw_bold_text_with_bright_colors = true; #deprecated
       live_config_reload = true;
       ipc_socket = true;
 
-      window_opacity = 0.3;
+      # window_opacity = 0.3;
 
       colors = {
+        draw_bold_text_with_bright_colors = true;
         primary = {
           # background = "0x000000";
           # foreground = "0xEBEBEB";
@@ -297,14 +298,14 @@
           matches = {
             foreground = "#24273A"; # base
             background = "#A5ADCB"; # subtext0
-            focused_match = {
-              foreground = "#24273A"; # base
-              background = "#A6DA95"; # green
-            };
-            footer_bar = {
-              foreground = "#24273A"; # base
-              background = "#A5ADCB"; # subtext0
-            };
+            # focused_match = {
+            #   foreground = "#24273A"; # base
+            #   background = "#A6DA95"; # green
+            # };
+            # footer_bar = {
+            #   foreground = "#24273A"; # base
+            #   background = "#A5ADCB"; # subtext0
+            # };
           };
         };
 
@@ -354,8 +355,8 @@
         # The `double_click` and `triple_click` settings control the time
         # alacritty should wait for accepting multiple clicks as one double
         # or triple click.
-        double_click = { threshold = 300; };
-        triple_click = { threshold = 300; };
+        # double_click = { threshold = 300; };
+        # triple_click = { threshold = 300; };
         hide_when_typing = false;
       };
 
@@ -388,9 +389,7 @@
         persist = false;
         mouse.enabled = true;
         binding = { key = "U"; mods = "Control|Shift"; };
-        regex = ''
-          (ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\'\\s{-}\\^⟨⟩‘]+
-        '';
+        # regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\'\\s{-}\\^⟨⟩‘]+";
       }];
 
       # Shell
@@ -415,7 +414,7 @@
       #
       # Alacritty will fall back to the WinPTY automatically if the ConPTY
       # backend cannot be initialized.
-      enable_experimental_conpty_backend = false;
+      # enable_experimental_conpty_backend = false;
 
       # Send ESC (\x1b) before characters when alt is pressed.
       # alt_send_esc = true;

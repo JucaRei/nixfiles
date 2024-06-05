@@ -187,7 +187,7 @@ in
           battery = "${pkgs.inxi}/bin/inxi -B -xxx";
           bluetooth = "${pkgs.inxi}/bin/inxi -E";
           graphics = "${pkgs.inxi}/bin/inxi -G";
-          macros = "${pkgs.llvmPackages_9.clangNoLibc}/bin/cpp -dM /dev/null";
+          macros = "${pkgs.llvmPackages.clangNoLibc}/bin/cpp -dM /dev/null";
           pci = "sudo 'PATH=$PATH' env ${pkgs.inxi}/bin/inxi --slots";
           process = "${pkgs.inxi}/bin/inxi --processes";
           partitions = "${pkgs.inxi}/bin/inxi -P";
