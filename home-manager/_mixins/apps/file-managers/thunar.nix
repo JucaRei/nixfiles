@@ -38,6 +38,10 @@ in
       };
 
       file = {
+        ".config/xfce4/helpers.rc".text = ''
+          TerminalEmulator=${config.programs.alacritty.package}/bin/alacritty
+          TerminalEmulatorDismissed=true
+        '';
         ".config/Thunar/accels.scm".text = lib.fileContents ../../config/thunar/accels.scm;
 
         ".config/Thunar/uca.xml".text = ''
@@ -47,7 +51,7 @@ in
                   <icon>xterm</icon>
                   <name>Open Terminal Here</name>
                   <unique-id>1612104464586264-1</unique-id>
-                  <command>exo-open --working-directory %f --launch alacritty</command>
+                  <command>${pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch TerminalEmulator</command>
                   <description>Example for a custom action</description>
                   <patterns>*</patterns>
                   <startup-notify/>
@@ -79,7 +83,7 @@ in
                   <icon>system-file-manager-root</icon>
                   <name>Open folder as root</name>
                   <unique-id>1493475601060449-3</unique-id>
-                  <command>pkexec thunar %f</command>
+                  <command>${pkgs.polkit}/bin/pkexec ${finalThunar}/bin/thunar %f</command>
                   <description></description>
                   <patterns>*</patterns>
                   <directories/>

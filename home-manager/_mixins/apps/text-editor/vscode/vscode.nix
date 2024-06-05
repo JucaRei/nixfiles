@@ -112,7 +112,7 @@
         {
           name = "vscode-thunder-client";
           publisher = "rangav";
-          version = "2.20.0";
+          version = "2.24.11";
           # sha256 = lib.fakeSha256;
           sha256 = "sha256-JIf065o7oL51L19DdkFa/brQyDQU76AwlzbkIC911tU=";
         }

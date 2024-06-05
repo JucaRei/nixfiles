@@ -82,7 +82,7 @@ in
         libsForQt5.qt5ct
         dialog # display dialog boxes from shell
         # xfce.ristretto # photo viewer
-        gnome.pomodoro # pomodor style timer for taking breaks
+        # gnome.pomodoro # pomodor style timer for taking breaks
         gtk-engine-murrine
         gtk_engines
         cava
@@ -212,7 +212,7 @@ in
       pointerCursor = {
         package = pkgs.bibata-cursors;
         name = "Bibata-Modern-Classic";
-        size = 24;
+        size = 22;
         gtk.enable = true;
         x11.enable = true;
       };
@@ -575,7 +575,7 @@ in
         # package = pkgs.volantes-cursors;
         package = pkgs.bibata-cursors;
         name = "Bibata-Modern-Classic";
-        size = 24;
+        size = 22;
       };
       font = {
         # name = "Fira Code";
