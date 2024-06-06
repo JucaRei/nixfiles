@@ -26,7 +26,6 @@ in
       "rtkit"
       # "qemu-libvirtd"
       "kvm"
-      "adbusers"
     ];
     homeMode = "0755";
     isNormalUser = true;

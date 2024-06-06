@@ -1,14 +1,8 @@
-{
-  pkgs,
-  options,
-  config,
-  lib,
-  username,
-  ...
-}:
+{ pkgs, options, config, lib, username, ... }:
 with lib; let
   cfg = config.modules.services.k8s;
-in {
+in
+{
   options.modules.services.k8s = {
     enable = mkOption {
       default = true;
@@ -39,7 +33,7 @@ in {
 
     # Source a bunch of aliases for handling K8s without getting finger cramps
     # modules.shell.zsh.rcFiles = [ "../../../home-manager/_mixins/config/zsh/kubectl.zsh" ];
-    programs.bash = {
+    environment = {
       shellAliases = {
         # This command is used a LOT both below and in daily life
         k = "kubectl";

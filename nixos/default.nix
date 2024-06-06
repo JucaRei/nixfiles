@@ -567,6 +567,10 @@ in
   };
 
   services = {
+    ### My modules
+    nm-manager.enable = true;
+    #########################
+
     avahi = {
       enable = true;
       nssmdns = true;

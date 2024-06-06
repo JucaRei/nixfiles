@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, username, ... }:
 with lib;
 let
   cfg = config.services.yt-dlp-custom;
@@ -18,7 +18,7 @@ in
       aria2 = {
         enable = true;
         settings = {
-          dir = "$HOME/Downloads"; # The directory to store the downloaded file.
+          dir = "/home/${username}/Videos/Youtube"; # The directory to store the downloaded file.
           # input-file = "$HOME/.config/aria2/aria2.session"; # Downloads the URIs listed in FILE.
           # Default = 0; # Save error/unfinished downloads to a file specified by --save-session option every SEC seconds. If 0 is given, file will be saved only when aria2 exits.
           save-session-interval = 60;
@@ -146,10 +146,10 @@ in
           # Metadata
           add-metadata = true;
           embed-subs = true;
-          xattrs = true;
+          # xattrs = true;
           # Subtitles
           # write-auto-sub = true;
-          write-thumbnail = true;
+          # write-thumbnail = true;
           audio-multistreams = true;
           prefer-free-formats = true;
           write-subs = true;

@@ -426,6 +426,7 @@
     };
 
     services = {
+
       plymouth.enable = true;
       virtualisation.kvm.enable = true;
 
