@@ -152,7 +152,8 @@ in
         aliases.enable = true;
         bat.enable = true;
         dircolors.enable = true;
-        fish.enable = true;
+        fish.enable = if (hostname == "vm") then false else true;
+        bash.enable = if (hostname == "vm") then true else false;
         fastfetch.enable = true;
         htop.enable = true;
         direnv.enable = true;
