@@ -211,11 +211,11 @@ in
   ## Only enable the grub on installs, not live media (.ISO images)
   boot = with lib; {
     # Only enable the systemd-boot on installs, not live media (.ISO images)
-    loader = mkIf (isInstall) {
+    loader = mkIf (notVM) {
       efi = {
         canTouchEfiVariables = true;
       };
-      systemd-boot = {
+      systemd-boot = mkIf (isInstall) {
         configurationLimit = 5;
         consoleMode = "max";
         editor = false;
