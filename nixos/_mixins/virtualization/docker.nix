@@ -11,6 +11,9 @@
 # ];
 
 { lib, pkgs, hostname, username, ... }:
+let
+  dk-machine = pkgs.previous.docker-machine;
+in
 
 {
   virtualisation = {
@@ -48,8 +51,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    prev.docker-machine
     docker-compose
     lazydocker
-  ];
+  ] ++ dk-machine;
 }

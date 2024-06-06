@@ -180,7 +180,7 @@ in
   };
 
   previous-package = final: _prev: {
-    prev = import inputs.nixpkgs-previous {
+    previous = import inputs.nixpkgs-previous {
       inherit (final) system;
       config.allowUnfree = true;
     };
