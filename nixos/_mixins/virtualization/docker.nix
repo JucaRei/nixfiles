@@ -48,7 +48,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    docker-machine
+    prev.docker-machine
     docker-compose
     lazydocker
   ];

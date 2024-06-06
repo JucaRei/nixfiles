@@ -28,12 +28,13 @@ in
       ./_mixins/services/tools/smartmon.nix
       ./_mixins/config/scripts
       ./_mixins/services/network/networkmanager.nix
+      ./_mixins/services/security/firewall.nix
       ./users
     ]
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (isWorkstation) ./_mixins/desktop
     ++ lib.optional (notVM) ./_mixins/virtualization/podman.nix
     ++ lib.optional (notVM) ./_mixins/virtualization/lxd.nix
+    ++ lib.optional (isWorkstation) ./_mixins/desktop
     ++ lib.optional (isWorkstation) ./_mixins/sys;
 
   ######################
@@ -53,31 +54,26 @@ in
   ###################
 
   nix = {
-    # 🍑 smooth rebuilds
+    # smooth rebuilds
     # give nix-daemon the lowest priority
     # Reduce disk usage
     daemonIOSchedClass = "idle";
     # Leave nix builds as a background task
     daemonCPUSchedPolicy = "idle";
     daemonIOSchedPriority = 7; # only used by "best-effort"
-
     gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
-
     # distributedBuilds = true;
-
-    # This will add each flake input as a registry
-    # To make nix3 commands consistent with your flake
+    ### This will add each flake input as a registry
+    ### To make nix3 commands consistent with your flake
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     # nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
-
-    # Add nixpkgs input to NIX_PATH
-    # This lets nix2 commands still use <nixpkgs>
+    ### Add nixpkgs input to NIX_PATH
+    ### This lets nix2 commands still use <nixpkgs>
     nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
-
     optimise.automatic = true;
     package = lib.mkIf (isInstall) pkgs.unstable.nix;
     settings = {
@@ -94,13 +90,11 @@ in
       allowed-users = [ "@wheel" ];
       trusted-users = [ "@wheel" ];
       builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
-
-      # Avoid unwanted garbage collection when using nix-direnv
+      ### Avoid unwanted garbage collection when using nix-direnv
       keep-outputs = true;
       keep-derivations = true;
       # keep-going = false;
       warn-dirty = false;
-
       # system-features = [
       #   ## Allows building v3/v4 packages
       #   "gccarch-x86-64-v3"
@@ -109,9 +103,7 @@ in
       #   "big-parallel"
       #   "nixos-test"
       # ];
-
     };
-
     extraOptions =
       ''
         log-lines = 15
@@ -183,7 +175,6 @@ in
       #     "steam-run"
       #     "vscode"
       #     # "dubai"
-
       #     # they got fossed recently so idk
       #     "Anytype"
       #   ];
@@ -207,16 +198,7 @@ in
 
     hostName = hostname;
     hostId = hostid;
-    useDHCP = lib.mkDefault true;
-    firewall = {
-      enable = true;
-      allowedTCPPorts = [ 22 ]
-        ++ lib.optionals (builtins.elem hostname syncthing.hosts) syncthing.tcpPorts;
-      allowedUDPPorts = [ ]
-        ++ lib.optionals (builtins.elem hostname syncthing.hosts) syncthing.udpPorts;
-      trustedInterfaces = lib.mkIf (isInstall) [ "lxdbr0" ];
-    };
-
+    # useDHCP = lib.mkDefault true;
     usePredictableInterfaceNames = true;
   };
 
@@ -224,8 +206,7 @@ in
   ### Default Boot Options ###
   ############################
 
-  # Only enable the grub on installs, not live media (.ISO images)
-
+  ## Only enable the grub on installs, not live media (.ISO images)
   boot = with lib; {
     # Only enable the systemd-boot on installs, not live media (.ISO images)
     loader = mkIf (isInstall) {
@@ -301,9 +282,27 @@ in
   ###################
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    keyMap = lib.mkDefault "us";
-    # keyMap = if (hostname == "nitro") then "br" else "us";
+    # keyMap = lib.mkDefault "us";
+    keyMap = if (hostname == "nitro") then "br-abnt2" else "br-latin1-us";
     packages = with pkgs; [ tamzen ];
+    colors = [
+      "000000"
+      "ff5370"
+      "c3e88d"
+      "ffcb6b"
+      "82aaff"
+      "c792ea"
+      "89ddff"
+      "ffffff"
+      "545454"
+      "ff5370"
+      "c3e88d"
+      "ffcb6b"
+      "82aaff"
+      "c792ea"
+      "89ddff"
+      "ffffff"
+    ];
   };
 
   ###############
@@ -569,6 +568,7 @@ in
   services = {
     ### My modules
     nm-manager.enable = true;
+    firewall.enable = isWorkstation;
     #########################
 
     avahi = {
