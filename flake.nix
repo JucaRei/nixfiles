@@ -2,7 +2,8 @@
   description = "Juca's NixOS and Home Manager Configuration";
 
   inputs = {
-    nixpkgs-previous.url = "github:nixos/nixpkgs/nixos-22.11";
+    nixpkgs-legacy.url = "github:nixos/nixpkgs/nixos-22.11";
+    nixpkgs-previous.url = "github:nixos/nixpkgs/nixos-23.05";
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     # You can access packages and modules from different nixpkgs revs at the same time.

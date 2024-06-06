@@ -131,6 +131,7 @@ in
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
       outputs.overlays.previous-packages
+      outputs.overlays.legacy-packages
       # Add overlays exported from other flakes:
 
       # inputs.nixd.overlays.default

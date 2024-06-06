@@ -185,4 +185,11 @@ in
       config.allowUnfree = true;
     };
   };
+
+  legacy-packages = final: _prev: {
+    legacy = import inputs.nixpkgs-legacy {
+      inherit (final) system;
+      config.allowUnfree = true;
+    };
+  };
 }
