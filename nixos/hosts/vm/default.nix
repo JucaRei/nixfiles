@@ -153,7 +153,7 @@
           editor = false;
           graceful = true;
           # enable = true;
-          memtest86.enable = true;
+          # memtest86.enable = true;
         };
         timeout = 7;
       };
