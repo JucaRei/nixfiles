@@ -56,6 +56,9 @@
     home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    home-manager-unstable.url = "github:nix-community/home-manager/master";
+    home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     # nix-software-center.url = "github:vlinkz/nix-software-center";
@@ -269,6 +272,7 @@
           # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
           "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; };
           "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
+          "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; };
           "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
           "juca@oldarch" = libx.mkHome { hostname = "oldarch"; username = "juca"; desktop = "xfce"; stateVersion = "23.05"; };
           #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
