@@ -12,7 +12,7 @@ let
       "minimech"
       "scrubber"
     ];
-    tcpPorts = [ 22000 ];
+    tcpPorts = [ 22000 443 22 2375 9091 ];
     udpPorts = [ 22000 21027 53 5353 ];
     allowedTCPPorts = [
       21 # FTP
@@ -78,11 +78,15 @@ in
         allowPing = true;
         enable = true;
         allowedTCPPorts =
-          [ ]
+          [
+            # syncthing.allowedTCPPorts
+          ]
           ++ lib.optionals (builtins.elem hostname syncthing.hosts)
             syncthing.tcpPorts;
         allowedUDPPorts =
-          [ ]
+          [
+            # syncthing.allowedUDPPorts
+          ]
           ++ lib.optionals (builtins.elem hostname syncthing.hosts)
             syncthing.udpPorts;
 
