@@ -114,7 +114,7 @@
           publisher = "rangav";
           version = "2.24.11";
           # sha256 = lib.fakeSha256;
-          sha256 = "sha256-JIf065o7oL51L19DdkFa/brQyDQU76AwlzbkIC911tU=";
+          sha256 = "sha256-peHWih/LtMRqjkqW6ObFRpOy2YzgjPSC+nhCtDS3B9A=";
         }
         {
           name = "reload";
