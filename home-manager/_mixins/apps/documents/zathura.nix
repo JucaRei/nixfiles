@@ -1,4 +1,20 @@
-_: {
+{ pkgs, lib, ... }:
+let
+  windowsize = pkgs.writeShellScriptBin "windowsize" ''
+    #!/bin/sh
+    ${pkgs.zathura}/bin/zathura "$@" & PID="$!"
+
+    while true; do
+      window_id="$(${pkgs.xdotool}/bin/xdotool search --onlyvisible --pid "$PID")"
+      if [ -n "$window_id" ]; then
+        ${pkgs.xdotool}/bin/xdotool windowactivate --sync "$window_id" windowfocus --sync "$window_id" \
+          key s key --delay 0 g g
+        break
+      fi
+    done
+  '';
+in
+{
   programs = {
     zathura = {
       enable = true;
@@ -118,9 +134,11 @@ _: {
         scroll-hstep = 5;
         first-page-column = "1:2:1:2:1:2";
         zoom-min = 10;
+        window-title-basename = true;
         window-title-home-tilde = true;
+        window-title-page = true;
+        # window-icon = "";
         statusbar-home-tilde = true;
-        incremental-search = true;
         guioptions = "n"; #none
         # "render-loading" = "false";
         unmap = "f";
@@ -153,7 +171,7 @@ _: {
         statusbar-bg = "#504945"; # bg2
         statusbar-fg = "#ebdbb2"; # fg
 
-        highlight-color = "#fabd2f"; # bright:yellow
+        highlight-color = "#96cdfb"; # "#fabd2f"; # bright:yellow
         highlight-active-color = "#fe8019"; # bright:orange
 
         default-bg = "#1d2021"; # bg
@@ -168,11 +186,23 @@ _: {
         recolor = true;
         # recolor-keephue             true      # keep original color
 
+        # sandbox = "none";
+
+        database = "sqlite";
+        incremental-search = true;
+        abort-clear-search = true;
+        dbus-service = false;
+        show-recent = 10;
+        show-hidden = true;
+        link-zoom = true;
+        link-hadjust = true;
+        show-directories = true;
+
         n-completion-items = 25;
         continuous-hist-save = true;
       };
       extraConfig = ''
-        set adjust-open width
+        # set adjust-open width
 
         map <C-Tab> toggle_statusbar
         map <C-i> zoom in
@@ -205,12 +235,19 @@ _: {
         map <F3> feedkeys "<A-F5><A-F6>"
         map i recolor
 
+        # One page per row by default
+        set pages-per-row 1
+
+        # stop at page boundries
+        set scroll-page-aware "true"
+        set scroll-full-overlap 0.01
+        set scroll-step 50 # 100
 
         set page-padding 5
 
         # Open document in fit-width mode by default
         # set adjust-open "best-fit"
-        # set windowsize
+        set ${windowsize}/bin/windowsize
       '';
     };
   };
@@ -220,7 +257,7 @@ _: {
     in
     {
       mimeApps = {
-        defaultApplications = {
+        defaultApplications = lib.mkForce {
           "application/pdf" = application;
           "application/oxps" = application;
           "application/epub+zip" = application;

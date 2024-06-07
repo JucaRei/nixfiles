@@ -1,19 +1,18 @@
 { pkgs, lib, config, ... }:
 with lib;
 let
-  cfg = config.services.nano;
+  cfg = config.programs.nano;
 in
 {
-  options.services.nano = {
+  options.programs.nano = {
     enable = mkOption {
       default = false;
       type = types.bool;
     };
   };
   config = mkIf cfg.enable {
-    programs.nano = {
-      syntaxHighlight = true;
-      nanorc = ''
+    home.file = {
+      ".nanorc".text = ''
         set autoindent   # Auto indent
         set constantshow # Show cursor position at the bottom of the screen
         set fill 78      # Justify command (Ctrl+j) wraps at 78 columns

@@ -4,7 +4,7 @@ let
   cfg = config.services.bash;
 in
 {
-  imports = [ ./starship.nix ];
+  # imports = [ ./starship ];
 
   options.services.bash = {
     enable = mkOption {
@@ -14,7 +14,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    services.starship.enable = lib.mkDefault true;
+    # services.starship.enable = lib.mkDefault true;
     programs = {
       bash = {
         enable = true;

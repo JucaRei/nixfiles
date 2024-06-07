@@ -130,7 +130,7 @@ in
         in
         {
           EDITOR = "${editor}";
-          MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
+          # MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
           PAGER = "${pkgs.moar}/bin/moar";
           SYSTEMD_EDITOR = "${editor}";
           VISUAL = "${editor}";
@@ -144,25 +144,6 @@ in
         enable = true;
         package = pkgs.jiq;
       };
-      mpd.enable = mkForce false;
     };
-
-    services =
-      with lib; {
-        aliases.enable = true;
-        bat.enable = true;
-        dircolors.enable = true;
-        fish.enable = if (hostname == "vm") then false else true;
-        bash.enable = if (hostname == "vm") then true else false;
-        fastfetch.enable = true;
-        htop.enable = true;
-        direnv.enable = true;
-        eza.enable = true;
-        git.enable = true;
-        micro.enable = true;
-        ncmpcpp.enable = mkForce false;
-        gpg.enable = true;
-        ssh.enable = true;
-      };
   };
 }

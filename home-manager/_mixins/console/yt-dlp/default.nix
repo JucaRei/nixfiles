@@ -204,9 +204,9 @@ in
       };
 
       packages = with pkgs; [
-        (writeScriptBin "youtube_channel_archiver" ("#!${mypython}/bin/python3\n" + (builtins.readFile ../config/yt-dlp-scripts/youtube_channel_archiver.py)))
+        (writeScriptBin "youtube_channel_archiver" ("#!${mypython}/bin/python3\n" + (builtins.readFile ../../config/yt-dlp-scripts/youtube_channel_archiver.py)))
 
-        (writeScriptBin "single_song_downloader" (builtins.readFile ../config/yt-dlp-scripts/single_song_downloader.sh))
+        (writeScriptBin "single_song_downloader" (builtins.readFile ../../config/yt-dlp-scripts/single_song_downloader.sh))
       ];
     };
   };

@@ -221,7 +221,7 @@ in
   # calculator    rofi -config -no-lazy-grab -show drun -modi drun -theme
   "F1" = "rofi -show calc -modi calc --no-show-match --no-sort -lines 2";
   # emoji
-  "F2" = "rofi -show emoji -modi emoji";
+  "F3" = "rofi -show emoji -modi emoji";
   # "${vars.modAlt} + @slash" = "${sxhkd_helper}/bin/sxhkd_helper";
 
   # make sxhkd reload its configuration files:

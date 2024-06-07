@@ -10,6 +10,21 @@ let
         | sort \
         | uniq
   '';
+
+  file-manager = "thunar.desktop";
+  compressed = "engrampa.desktop";
+  # browser = "vivaldi-stable.desktop";
+  # browser = "firefox.desktop";
+  browser = "brave-browser.desktop";
+  viewer = "org.xfce.ristretto.desktop";
+  pdf = "org.pwmt.zathura.desktop";
+  video = "umpv.desktop";
+  audio = "org.gnome.Rhythmbox3.desktop";
+  text = "org.xfce.mousepad.desktop";
+  image = "feh.desktop";
+  word = "writer.desktop";
+  excel = "calc.desktop";
+  powerpoint = "impress.desktop";
 in
 # with test;
 with lib;
@@ -19,9 +34,6 @@ with lib;
     ../_mixins/apps/video/mpv/mpv.nix
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix
-    ../_mixins/console/gpg.nix
-    ../_mixins/console/bash.nix
-    ../_mixins/console/yt-dlp.nix
     # ../_mixins/console/aria2.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
@@ -86,12 +98,14 @@ with lib;
       # '';
     };
 
-    services = {
-      bash.enable = false;
+    services = mkForce {
+      bash.enable = true;
+      starship.enable = true;
       # firefox.enable = false;
       flatpak-nix.enable = true;
       yt-dlp-custom.enable = true;
       brave.enable = true;
+
       # aria2.enable = true;
       flatpak.packages = [
         "flathub:app/dev.aunetx.deezer/x86_64/stable"

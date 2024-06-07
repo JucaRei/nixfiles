@@ -1,7 +1,6 @@
 { config, pkgs, lib, ... }:
 with lib;
 let
-  user = config.home.username;
   cfg = config.services.man;
   man_color_args = lib.strings.concatStringsSep " " [
     "-DP+k-" # Prompt = formatted bold Black on normal

@@ -22,8 +22,8 @@ in
       ];
       sessionVariables = lib.mkDefault {
         # DEFAULT_BROWSER = "${pkgs.brave}/bin/brave";
-        BROWSER = "${pkgs.bravex}/bin/brave";    # for xdg-open
-        CHROME_EXECUTABLE = "${pkgs.bravex}/bin/brave";  # for flutter
+        BROWSER = "${pkgs.bravex}/bin/brave"; # for xdg-open
+        CHROME_EXECUTABLE = "${pkgs.bravex}/bin/brave"; # for flutter
       };
     };
 
@@ -55,6 +55,7 @@ in
           icon = "brave-browser";
           mimeType = [
             "application/pdf"
+            "application/x-www-browser"
             "application/rdf+xml"
             "application/rss+xml"
             "application/xhtml+xml"
@@ -66,6 +67,8 @@ in
             "image/webp"
             "text/html"
             "text/xml"
+            "x-scheme-handler/unknown"
+            "x-scheme-handler/about"
             "x-scheme-handler/http"
             "x-scheme-handler/https"
             "x-scheme-handler/ipfs"
