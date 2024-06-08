@@ -25,6 +25,10 @@
       desktopManager.gnome = {
         enable = true; # Window Manager
         extraGSettingsOverridePackages = [ pkgs.nautilus-open-any-terminal ];
+        extraGSettingsOverrides = ''
+          [org.gnome.desktop.peripherals.touchpad]
+          tap-to-click=true
+        '';
       };
     };
     udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];

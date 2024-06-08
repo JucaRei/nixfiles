@@ -66,9 +66,17 @@ in
   };
 
   boot = {
-    # Enable the threadirqs kernel parameter to reduce audio latency
+    # Enable the threadirqs kernel parameter to reduce audio latency & Quiet Boot
     # - Inpired by: https://github.com/musnix/musnix/blob/master/modules/base.nix#L56
-    kernelParams = lib.mkDefault [ "quiet" "vt.global_cursor_default=0" "mitigations=off" "threadirqs" ];
+    kernelParams = lib.mkDefault [
+      "quiet"
+      "vt.global_cursor_default=0"
+      "systemd.show_status=auto"
+      "udev.log_level=3"
+      "rd.udev.log_level=3"
+      "mitigations=off"
+      "threadirqs"
+    ];
     plymouth.enable =
       if (hostname != "rasp3")
       then lib.mkDefault true

@@ -25,6 +25,7 @@ in
           "quiet"
           "splash"
           "vga=current"
+          "systemd.show_status=auto"
           "rd.systemd.show_status=false"
           "rd.udev.log_level=3"
           "udev.log_priority=3"

@@ -101,6 +101,8 @@ with lib;
     services = mkForce {
       bash.enable = true;
       starship.enable = true;
+      eza.enable = false;
+      lsd.enable = true;
       # firefox.enable = false;
       flatpak-nix.enable = true;
       yt-dlp-custom.enable = true;
