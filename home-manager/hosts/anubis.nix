@@ -117,7 +117,8 @@ in
       };
 
       keyboard =
-        if (isNull != true) then {
+        # if (isNull != true) then {
+        if ("${pkgs.xorg.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep '^Virtual-1 connected'" != true) then {
           # layout = "br,us";
           layout = "us";
           model = "pc105"; # "pc104alt";
