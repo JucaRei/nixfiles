@@ -67,6 +67,7 @@ with lib;
         # fantezy
         transmission_4-gtk
         nix-whereis
+        spotube
         # nf-iosevka
         gedit
         neovim
