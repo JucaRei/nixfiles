@@ -38,7 +38,6 @@ in
     # ../_mixins/apps/text-editor/vscode.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     # ../_mixins/apps/terminal/alacritty.nix
-    ../_mixins/console/bash.nix
     # ../_mixins/apps/browser/firefox/librewolf.nix
     ../_mixins/apps/browser/firefox/firefox.nix
     ../_mixins/apps/video/mpv/mpv-unwrapped.nix
@@ -46,7 +45,6 @@ in
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
     ../_mixins/services/podman.nix
     ../_mixins/services/polkit-agent.nix
-    ../_mixins/console/yt-dlp.nix
     ../_mixins/non-nixos
     # ../_mixins/apps/tools/zathura.nix
     # ../_mixins/desktop/bspwm/themes/default
