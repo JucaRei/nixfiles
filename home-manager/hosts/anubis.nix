@@ -33,8 +33,11 @@ let
   powerpoint = "impress.desktop";
 
   isVM = pkgs.writeShellScriptBin "isVM" ''
-    ${pkgs.procps}/bin/pgrep -f "${pkgs.xorg.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep '^Virtual-1 connected'" > /dev/null && echo 'true' || echo 'false'
+    !#/usr/bin/env bash
+
+    pgrep -f "${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'"
   '';
+  # ${pkgs.procps}/bin/pgrep -f "${pkgs.xorg.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep '^Virtual-1 connected'" > /dev/null && echo 'true' || echo 'false'
 in
 {
   imports = [
