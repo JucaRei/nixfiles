@@ -71,22 +71,23 @@ in
       yt-dlp-custom.enable = true;
     };
 
-    i18n = {
-      glibcLocales = pkgs.glibcLocales.override {
-        allLocales = false;
-        locales = [
-          "en_US.UTF-8/UTF-8"
-          "pt_BR.UTF-8/UTF-8"
-        ];
+    i18n =
+      if ("${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'" != true) then {
+        glibcLocales = pkgs.glibcLocales.override {
+          allLocales = false;
+          locales = [
+            "en_US.UTF-8/UTF-8"
+            "pt_BR.UTF-8/UTF-8"
+          ];
 
-      };
-      # inputMethod = {
-      #   enabled = "fcitx5";
-      #   fcitx5.addons = with pkgs; [
-      #     fcitx5-rime
-      #   ];
-      # };
-    };
+        };
+        # inputMethod = {
+        #   enabled = "fcitx5";
+        #   fcitx5.addons = with pkgs; [
+        #     fcitx5-rime
+        #   ];
+        # };
+      } else "";
 
     home = {
 
