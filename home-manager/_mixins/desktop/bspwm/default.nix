@@ -12,6 +12,8 @@ let
   # random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/";
   random-walls = "${pkgs.procps}/bin/watch -n 600 ${pkgs.feh}/bin/feh --randomize --bg-fill '$HOME/Pictures/wallpapers/*'";
 
+  isVirtualMan = "${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'";
+
   bspc-bin = "${config.xsession.windowManager.bspwm.package}/bin/bspc";
   dual-workspace = pkgs.writeShellScriptBin "dual-workspace" ''
     #!/usr/bin/env bash
@@ -234,7 +236,7 @@ in
           package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
           startupPrograms =
             let
-              virtual = if ("${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'" != true) then "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf" else "";
+              virtual = if (isVirtualMan != true) then "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf" else "";
             in
             [
               "bspc desktop -f ^1"
@@ -274,11 +276,6 @@ in
           # };
           extraConfigEarly = ''
             ${pkgs.wmname}/bin/wmname LG3D
-            # picom
-            # pkill picom
-            # picom -b --legacy-backends --no-use-damage &
-            # picom --experimental-backends --no-use-damage &
-
             ### Only have workspaces for primary monitor
             # export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
             # export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
