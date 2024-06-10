@@ -234,7 +234,7 @@ in
           package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
           startupPrograms =
             let
-              virtual = if ("${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'" != true) then ("sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf") else "";
+              virtual = if ("${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'" != true) then "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf" else "";
             in
             [
               "bspc desktop -f ^1"
