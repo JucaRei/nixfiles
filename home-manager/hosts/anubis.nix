@@ -31,6 +31,10 @@ let
   word = "writer.desktop";
   excel = "calc.desktop";
   powerpoint = "impress.desktop";
+
+  isVM = pkgs.writeShellScriptBin "isVM" ''
+    ${pkgs.procps}/bin/pgrep -f "${pkgs.xorg.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep '^Virtual-1 connected'" > /dev/null && echo 'true' || echo 'false'
+  '';
 in
 {
   imports = [
@@ -109,20 +113,25 @@ in
         NO_AT_BRIDGE = 1; # at-spi2-core
       };
 
-      keyboard = {
-        # layout = "br,us";
-        layout = "us";
-        model = "pc105"; # "pc104alt";
-        variant = "mac";
-        # options = [
-        # "grp:shifts_toggle"
-        # "eurosign:e"
-        # ];
-        # variant = "abnt2";
-        # variant = "nodeadkeys"; # "nodeadkeys";
-        # variant = # "intl"/ "alt-intl" / "altgr-intl"
-        #/ "mac" / # "mac_nodeadkeys"
-      };
+      keyboard =
+        if (isNull != true) then {
+          # layout = "br,us";
+          layout = "us";
+          model = "pc105"; # "pc104alt";
+          variant = "mac";
+          # options = [
+          # "grp:shifts_toggle"
+          # "eurosign:e"
+          # ];
+          # variant = "abnt2";
+          # variant = "nodeadkeys"; # "nodeadkeys";
+          # variant = # "intl"/ "alt-intl" / "altgr-intl"
+          #/ "mac" / # "mac_nodeadkeys"
+        } else {
+          layout = "br";
+          model = "pc105";
+          variant = "abnt2";
+        };
 
       file = {
         # "bin/create-docker" = {
