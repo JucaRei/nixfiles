@@ -67,12 +67,13 @@ in
     services = {
       bash.enable = true;
       nonNixOs.enable = true;
+      eza.enable = true;
       udiskie = {
         enable = true;
         automount = true;
       };
       skim.enable = true;
-      polkit-agent.enable = true;
+      polkit-agent.enable = false; # true;
       firefox.enable = true;
       podman.enable = false;
       yt-dlp-custom.enable = true;
@@ -106,7 +107,9 @@ in
         cloneit
         neovim
         docker-compose
+        obsidian
         xfce.mousepad
+        spotube
         # (nixGL vivaldi-custom)
         (nixGL thorium)
       ];

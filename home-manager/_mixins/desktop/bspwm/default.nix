@@ -246,7 +246,7 @@ in
               # "flameshot"
               # "${pkgs.lxde.lxsession}/bin/lxsession"
               # "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
-              # "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
+              "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
               # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
               virtual
               "sleep 2; polybar -q everforest"
@@ -875,6 +875,11 @@ in
           };
         };
       };
+      gnome-keyring = {
+        enable = true;
+        # I use gpg-agent for ssh and gpg, so only use it for secrets
+        components = [ "secrets" ];
+      };
       # betterlockscreen = {
       #   enable = true;
       #   inactiveInterval = 5;
@@ -1027,7 +1032,7 @@ in
     systemd.user = {
       targets.bspwm-session = {
         Unit = {
-          Description = "Bspwm session";
+          Description = "Bspwm Session";
           BindsTo = [ "graphical-session.target" ];
           Wants = [ "graphical-session-pre.target" ];
           After = [ "graphical-session-pre.target" ];
