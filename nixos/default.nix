@@ -85,10 +85,8 @@ in
         "flakes"
         "repl-flake"
       ];
-      # allowed-users = [ "root" "@wheel" ];
-      # trusted-users = [ "root" "@wheel" ];
-      allowed-users = [ "@wheel" ];
-      trusted-users = [ "@wheel" ];
+      allowed-users = [ "root" "@wheel" ];
+      trusted-users = [ "root" "@wheel" ];
       builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
       ### Avoid unwanted garbage collection when using nix-direnv
       keep-outputs = true;
@@ -114,7 +112,7 @@ in
       '';
     # Free up to 4GiB whenever there is less than 512MiB left.
     # min-free = ${toString (512 * 1024 * 1024)}
-    #min-free = 1073741824 # 1GiB
+    # min-free = 1073741824 # 1GiB
     # max-free = 4294967296 # 4GiB
   };
 

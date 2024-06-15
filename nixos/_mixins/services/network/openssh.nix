@@ -1,12 +1,25 @@
-{ lib, ... }: {
+{ lib, config ... }:
+with lib;
+let
+  cfg = config.modules.openssh;
+in
+{
+  options.modules.openssh = {
+    enable = mkOption {
+      default = true;
+      type = types.bool;
+    };
+  };
+
+  config = mkIf cfg.enable {
   services = {
     openssh = {
       enable = true;
-      # openFirewall = true;
+      openFirewall = true;
       settings = {
         PasswordAuthentication = true;
-        # PermitRootLogin = lib.mkDefault "no";
-        # X11Forwarding = true; # enable X11 forwarding
+        PermitRootLogin = lib.mkDefault "no";
+        X11Forwarding = true; # enable X11 forwarding
         #KbdInteractiveAuthentication = false;
       };
       # hostKeys = [{
@@ -72,13 +85,14 @@
       #   ];
       # };
     };
-    # sshguard = {
-    #   enable = true;
-    #   whitelist = [
-    #     "192.168.2.0/24"
-    #     "192.168.192.0/24"
-    #   ];
-    # };
+    sshguard = {
+      enable = true;
+      whitelist = [
+        "192.168.2.0/24"
+        "192.168.192.0/24"
+        "192.168.122.0/24"
+      ];
+    };
   };
   programs = {
     ssh = {
@@ -102,4 +116,5 @@
     #mosh.enable = true;
   };
   networking.firewall.allowedTCPPorts = [ 22 ];
+  };
 }
