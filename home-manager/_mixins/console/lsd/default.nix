@@ -187,7 +187,7 @@ in
     home.shellAliases = {
       ls = "lsd -l -t -h";
       l = "lsd -l";
-      la = "lsd -a'";
+      la = "lsd -a";
       lla = "lsd -la";
       lt = "lsd --tree";
     };
