@@ -19,30 +19,45 @@ in
         user = 159;
         group = 231;
         permission = {
-          read = 183;
-          write = 212;
-          exec = 159;
-          exec-sticky = 159;
-          no-access = 210;
+          # read = 183;
+          # write = 212;
+          # exec = 159;
+          # exec-sticky = 159;
+          # no-access = 210;
+          read = 77; #limegreen
+          write = 216; #orange
+          exec = 204; #crimson
+          exec-sticky = 163; #crimson
+          no-access = 195; #lavender
+          octal = 0;
+          acl = 0;
+          context = 0;
         };
         date = {
-          hour-old = 146;
-          day-old = 103;
-          older = 60;
+          # hour-old = 146;
+          # day-old = 103;
+          # older = 60;
+          hour-old = 39; #lightseagreen
+          day-old = 45; #darkcyan
+          older = 117; #mediumturquoise
         };
         size = {
-          none = 60;
-          small = 120;
-          medium = 222;
-          large = 210;
+          # none = 60;
+          # small = 120;
+          # medium = 222;
+          # large = 210;
+          none = 195; #lavender
+          small = 223; #burlywood
+          medium = 215; #sandybrown
+          large = 202; #orange
         };
         inode = {
           valid = 231;
           invalid = 210;
         };
         links = {
-          valid = 159;
-          invalid = 210;
+          valid = 9; # cyan # 159;
+          invalid = 14; # red # 210;
         };
         tree-edge = 183;
       };
@@ -63,7 +78,9 @@ in
         # accepts an strftime like string.
         # When "classic" is set, this is set to "date".
         # Possible values: date, relative, +<date_format>
-        date = "relative";
+        # `date_format` will be a `strftime` formatted value. e.g. `date: '+%d %b %y %X'` will give you a date like this: 17 Jun 21 20:14:55
+        date = "+%y/%m-%d %H:%M"; # "relative";
+
 
         # == Dereference ==
         # Whether to dereference symbolic links.
@@ -135,7 +152,11 @@ in
           "name"
         ];
         permission = "rwx";
-        hyperlink = "never";
+
+        # == Hyperlink ==
+        # Attach hyperlink to filenames
+        # Possible values: always, auto, never
+        hyperlink = "auto"; # "never";
 
         # == No Symlink ==
         # Whether to omit showing symlink targets
@@ -150,7 +171,39 @@ in
         # Whether to display the total size of directories.
         # Possible values: false, true
         total-size = false;
+
+        # == Truncate owner ==
+        # How to truncate the username and group names for a file if they exceed a certain
+        # number of characters.
+        truncate-owner = {
+          # Number of characters to keep. By default, no truncation is done (empty value).
+          after = 10;
+          # String to be appended to a name if truncated.
+          marker = "*";
+        };
+
+        tree-edge = 245;
+        git-status = {
+          default = 245;
+          unmodified = 245;
+          ignored = 245;
+          new-in-index = "dark_green";
+          new-in-workdir = "dark_green";
+          typechange = "dark_yellow";
+          deleted = "dark_red";
+          renamed = "dark_green";
+          modified = "dark_yellow";
+          conflicted = "dark_red";
+        };
       };
+    };
+
+    home.shellAliases = {
+      ls = "lsd";
+      l = "ls -l";
+      la = "ls -a'";
+      lla = "ls -la";
+      lt = "ls --tree";
     };
   };
 }
