@@ -181,8 +181,6 @@ in
           # String to be appended to a name if truncated.
           marker = "*";
         };
-
-        tree-edge = 245;
       };
     };
 
