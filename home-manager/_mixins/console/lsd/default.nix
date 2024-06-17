@@ -91,7 +91,7 @@ in
         # Which layout to use. "oneline" might be a bit confusing here and should be
         # called "one-per-line". It might be changed in the future.
         # Possible values: grid, tree, oneline
-        layout = grid;
+        layout = "grid";
 
 
         # == Recursion ==
