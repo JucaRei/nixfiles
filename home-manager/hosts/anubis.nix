@@ -105,7 +105,7 @@ in
         libva-utils
         guvcview
         cloneit
-        neovim
+        # neovim
         docker-compose
         obsidian
         xfce.mousepad

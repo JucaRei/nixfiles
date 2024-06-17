@@ -262,4 +262,8 @@ in
   # "[typescript]" = {
   #   "editor.defaultFormatter" = "esbenp.prettier-vscode";
   # };
+
+  "[lua]" = {
+    "editor.defaultFormatter" = "yinfei.luahelper";
+  };
 }

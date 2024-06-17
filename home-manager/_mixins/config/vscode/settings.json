@@ -167,5 +167,8 @@
   "workbench.smoothScrolling": true,
   "workbench.tree.indent": 4,
   "zenMode.hideLineNumbers": false,
-  "symbols.hidesExplorerArrows": false
+  "symbols.hidesExplorerArrows": false,
+  "[lua]": {
+    "editor.defaultFormatter": "yinfei.luahelper"
+  }
 }

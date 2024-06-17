@@ -181,7 +181,7 @@ in
     };
 
     clight = {
-      enable = notVM;
+      enable = if (hostname == "anubis") then true else false; #  notVM;
       settings = {
         verbose = true;
         backlight.disabled = false;
