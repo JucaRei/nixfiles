@@ -79,7 +79,7 @@ in
         # When "classic" is set, this is set to "date".
         # Possible values: date, relative, +<date_format>
         # `date_format` will be a `strftime` formatted value. e.g. `date: '+%d %b %y %X'` will give you a date like this: 17 Jun 21 20:14:55
-        date = "+%y/%m-%d %H:%M"; # "relative";
+        date = "+%d-%m/%y %H:%M"; # "relative";
 
 
         # == Dereference ==
@@ -185,11 +185,11 @@ in
     };
 
     home.shellAliases = {
-      ls = "lsd";
-      l = "ls -l";
-      la = "ls -a'";
-      lla = "ls -la";
-      lt = "ls --tree";
+      ls = "lsd -l -t -h";
+      l = "lsd -l";
+      la = "lsd -a'";
+      lla = "lsd -la";
+      lt = "lsd --tree";
     };
   };
 }
