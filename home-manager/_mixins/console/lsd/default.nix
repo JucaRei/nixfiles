@@ -185,11 +185,12 @@ in
     };
 
     home.shellAliases = {
-      ls = "lsd -l -t -h";
-      l = "lsd -l";
-      la = "lsd -a";
-      lla = "lsd -la";
+      ls = "lsd --header -l -t -h";
+      l = "lsd --header -l";
+      la = "lsd --header -lha";
+      lla = "lsd --header -la";
       lt = "lsd --tree";
+      ltt = "lsd --tree --directory-only";
     };
   };
 }
