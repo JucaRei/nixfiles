@@ -156,7 +156,7 @@ in
         # == Hyperlink ==
         # Attach hyperlink to filenames
         # Possible values: always, auto, never
-        hyperlink = "auto"; # "never";
+        hyperlink = "never";
 
         # == No Symlink ==
         # Whether to omit showing symlink targets
