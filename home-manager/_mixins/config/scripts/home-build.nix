@@ -1,6 +1,6 @@
 { pkgs }:
 
-pkgs.writeScriptBin "home-build" ''
+pkgs.writeScriptBin /*bash*/ "home-build" ''
   #!${pkgs.stdenv.shell}
 
   if [ -e $HOME/.dotfiles/nixfiles ]; then

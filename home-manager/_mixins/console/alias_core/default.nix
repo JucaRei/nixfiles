@@ -196,6 +196,11 @@ in
           system = "${pkgs.inxi}/bin/inxi -Fazy";
           usb = "${pkgs.inxi}/bin/inxi -J";
           wifi = "${pkgs.inxi}/bin/inxi -n";
+          dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
+
+          # Nix
+          store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+
         };
 
       description = ''

@@ -358,27 +358,32 @@
         # double_click = { threshold = 300; };
         # triple_click = { threshold = 300; };
         hide_when_typing = false;
+
+        # Mouse bindings
+        #
+        # Available fields:
+        #   - mouse
+        #   - action
+        #   - mods (optional)
+        #
+        # Values for `mouse`:
+        #   - Middle
+        #   - Left
+        #   - Right
+        #   - Numeric identifier such as `5`
+        #
+        # All available `mods` and `action` values are documented in the key binding
+        # section.
+        # mouse_bindings = {
+        #   mouse = "Middle";
+        #   action = "PasteSelection";
+        # };
+        bindings = [{
+          mouse = "Middle";
+          action = "Paste";
+        }];
       };
 
-      # Mouse bindings
-      #
-      # Available fields:
-      #   - mouse
-      #   - action
-      #   - mods (optional)
-      #
-      # Values for `mouse`:
-      #   - Middle
-      #   - Left
-      #   - Right
-      #   - Numeric identifier such as `5`
-      #
-      # All available `mods` and `action` values are documented in the key binding
-      # section.
-      # mouse_bindings = {
-      #   mouse = "Middle";
-      #   action = "PasteSelection";
-      # };
 
 
       ## HINTS ----------------------------------------------------------

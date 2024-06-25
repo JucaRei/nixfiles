@@ -6,26 +6,52 @@ let
   isStreamstation = if (hostname == "phasma" || hostname == "vader") then true else false;
   home-build = import ./config/scripts/home-build.nix { inherit pkgs; };
   home-switch = import ./config/scripts/home-switch.nix { inherit pkgs; };
+  gen-ssh-key = import ./config/scripts/gen-ssh-key.nix { inherit pkgs; };
+  home-manager_change_summary = import ./config/scripts/home-manager_change_summary.nix { inherit pkgs; };
+  samba = import ./config/scripts/samba.nix { inherit pkgs; };
+
 in
 {
   imports = [
     # ./config/scripts/home-manager_change_summary.nix
     ./console
-  ];
+  ]
+  ++ lib.optional (isWorkstation) ./desktop;
+
 
   config = {
     home = {
       # A Modern Unix experience
       # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
       packages = with pkgs; [
+        # Custom Scripts
         home-build
         home-switch
+        gen-ssh-key
+        home-manager_change_summary
+        # samba
+
+        wormhole-william # Terminal file transfer
+        work-sans
+        nix-whereis
+        duf # Modern Unix `df`
+        fd # Modern Unix `find`
+        hr # Terminal horizontal rule
+        netdiscover # Modern Unix `arp`
+        nixpkgs-review # Nix code review
+        nix-prefetch-scripts # Nix code fetcher
+        nurl # Nix URL fetcher
+        optipng # Terminal PNG optimizer
+        procs # Modern Unix `ps`
+        speedtest-go # Terminal speedtest.net
+        rsync # Traditional `rsync`
+        wget2 # Terminal HTTP client
+        # clinfo # Terminal OpenCL info
+        # gping # Modern Unix `ping`
         # (nerdfonts.override { fonts = [
         #   # "FiraCode"
         #   "NerdFontsSymbolsOnly" ]; })
         # ubuntu_font_family
-        work-sans
-        nix-whereis
         # asciicam # Terminal webcam
         # asciinema-agg # Convert asciinema to .gif
         # asciinema # Terminal recorder
@@ -35,7 +61,6 @@ in
         # butler # Terminal Itch.io API client
         # chafa # Terminal image viewer
         # chroma # Code syntax highlighter
-        clinfo # Terminal OpenCL info
         # cpufetch # Terminal CPU info
         # croc # Terminal file transfer
         # curlie # Terminal HTTP client
@@ -44,17 +69,13 @@ in
         # dogdns # Modern Unix `dig`
         # dotacat # Modern Unix lolcat
         # dua # Modern Unix `du`
-        duf # Modern Unix `df`
         # du-dust # Modern Unix `du`
         # editorconfig-core-c # EditorConfig Core
         # entr # Modern Unix `watch`
-        fd # Modern Unix `find`
         # frogmouth # Terminal mardown viewer
         # glow # Terminal Markdown renderer
-        gping # Modern Unix `ping`
         # h # Modern Unix autojump for git projects
         # hexyl # Modern Unix `hexedit`
-        hr # Terminal horizontal rule
         # httpie # Terminal HTTP client
         # hyperfine # Terminal benchmarking
         # iperf3 # Terminal network benchmarking
@@ -64,19 +85,11 @@ in
         # mdp # Terminal Markdown presenter
         # mtr # Modern Unix `traceroute`
         # neo-cowsay # Terminal ASCII cows
-        netdiscover # Modern Unix `arp`
-        nixpkgs-review # Nix code review
-        nix-prefetch-scripts # Nix code fetcher
-        nurl # Nix URL fetcher
         # nyancat # Terminal rainbow spewing feline
         # onefetch # Terminal git project info
-        optipng # Terminal PNG optimizer
-        procs # Modern Unix `ps`
         # quilt # Terminal patch manager
         # rclone # Modern Unix `rsync`
-        rsync # Traditional `rsync`
         # sd # Modern Unix `sed`
-        speedtest-go # Terminal speedtest.net
         # terminal-parrot # Terminal ASCII parrot
         # tldr # Modern Unix `man`
         # tokei # Modern Unix `wc` for code
@@ -84,9 +97,7 @@ in
         # unzip # Terminal ZIP extractor
         # upterm # Terminal sharing
         # wget # Terminal HTTP client
-        wget2 # Terminal HTTP client
         # wthrr # Modern Unix weather
-        wormhole-william # Terminal file transfer
         # yq-go # Terminal `jq` for YAML
       ] ++ lib.optionals (isStreamstation) [
         # Deckmaster and the utilities I bind to the Stream Deck

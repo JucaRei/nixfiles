@@ -16,14 +16,19 @@ in
       # inputs.nix-colors.homeManagerModules.default
       # inputs.sops-nix.homeManagerModules.sops
       inputs.nix-index-database.hmModules.nix-index
+      inputs.catppuccin.homeManagerModules.catppuccin
 
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
     ]
     # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix
-    ++ lib.optional (isWorkstation) ./_mixins/desktop;
+    ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
+
+  catppuccin = {
+    accent = "lavender";
+    flavor = "frappe";
+  };
 
   home = {
     inherit stateVersion;
@@ -33,7 +38,6 @@ in
         ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
       fi
     '';
-    # homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
     homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else builtins.getEnv "HOME";
 
     sessionVariables = {
@@ -72,6 +76,9 @@ in
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
+      outputs.overlays.previous-packages
+      outputs.overlays.legacy-packages
+
       # inputs.nixpkgs-f2k.overlays.stdenvs
       # inputs.nixpkgs-f2k.overlays.compositors
       inputs.nixgl.overlay
@@ -93,12 +100,10 @@ in
 
     # Configure your nixpkgs instance
     config = {
-      # Allow unsupported packages to be built
-      # allowUnsupportedSystem = true;
-      # Disable broken package
-      # allowBroken = false;
-      ### Allow old broken electron
+      # allowUnsupportedSystem = true; # Allow unsupported packages to be built
+      # allowBroken = false; # Disable broken package
       permittedInsecurePackages = [
+        ### Allow old broken electron
         # Workaround for https://github.com/nix-community/home-manager/issues/2942
         # "electron-21.4.0"
         # "electron-12.2.3"
@@ -158,9 +163,8 @@ in
 
         # Allow to run nix
         # allowed-users = [ "nixbld" "@wheel" ];
-        allowed-users = [ "@wheel" ];
-        trusted-users = [ "@wheel" ];
-        # trusted-users = [ "root" "@wheel" ];
+        allowed-users = [ "root" "@wheel" ];
+        trusted-users = [ "root" "@wheel" ];
         connect-timeout = 5;
         http-connections = 0;
 
