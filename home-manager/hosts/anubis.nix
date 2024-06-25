@@ -47,6 +47,7 @@ in
     # ../_mixins/apps/terminal/alacritty.nix
     # ../_mixins/apps/browser/firefox/librewolf.nix
     ../_mixins/apps/browser/firefox/firefox.nix
+    ../_mixins/apps/browser/opera
     ../_mixins/apps/video/mpv/mpv-unwrapped.nix
     ../_mixins/apps/documents/libreoffice.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
@@ -110,6 +111,7 @@ in
         obsidian
         xfce.mousepad
         spotube
+        transmission_4-gtk
         # (nixGL vivaldi-custom)
         (nixGL thorium)
       ];
