@@ -1,4 +1,12 @@
 { pkgs, lib, config, ... }@args:
+with lib;
+let
+  nixgl = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
+  codegl = nixGL pkgs.unstable.vscode;
+  cfg = config.services.vscode;
+
+  isGeneric = if (config.targets.genericLinux.enable) then true else false;
+in
 {
   imports = [
     ### Enable immutable vscode settings
@@ -12,7 +20,8 @@
     services.vscode-server.enable = false; # true
     programs.vscode = {
       enable = true;
-      package = pkgs.unstable.vscode;
+      # package = pkgs.unstable.vscode;
+      package = if (isGeneric) then (nixgl pkgs.unstable.vscode) else pkgs.unstable.vscode;
 
       mutableExtensionsDir = true;
       enableUpdateCheck = false;
@@ -39,16 +48,16 @@
       #ms-azuretools.vscode-docker ## Downgrade to 1.22
       # ]
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
-        {
+        # {
           # ms-azuretools.vscode-docker
           # v1.22.2
-          name = "vscode-docker";
-          publisher = "ms-azuretools";
+          # name = "vscode-docker";
+          # publisher = "ms-azuretools";
           # version = "1.28.0";
           # sha256 = "sha256-ACaVwRTN4lu97GDGzxyzX/O10p6fNT3FNLne/todrFo=";
-          version = "v1.22.2"; # ## Downgrade make it work with podman
-          sha256 = "sha256-sRvd9M/gF4kh4qWxtS1xKKIvqg9hRJpRl/p/FYu2TI8=";
-        }
+          # version = "v1.22.2"; # ## Downgrade make it work with podman
+          # sha256 = "sha256-sRvd9M/gF4kh4qWxtS1xKKIvqg9hRJpRl/p/FYu2TI8=";
+        # }
         {
           name = "better-nix-syntax";
           publisher = "jeff-hykin";

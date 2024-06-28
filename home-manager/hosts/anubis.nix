@@ -50,7 +50,7 @@ in
     ../_mixins/apps/browser/opera
     ../_mixins/apps/video/mpv/mpv-unwrapped.nix
     ../_mixins/apps/documents/libreoffice.nix
-    ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
+    ../_mixins/apps/text-editor/vscode/vscode.nix
     ../_mixins/services/podman.nix
     ../_mixins/services/polkit-agent.nix
     ../_mixins/non-nixos
