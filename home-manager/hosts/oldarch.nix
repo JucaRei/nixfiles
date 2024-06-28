@@ -24,8 +24,8 @@ in
   imports = [
     ../_mixins/non-nixos
     # ../_mixins/apps/browser/firefox/firefox.nix
-    ../_mixins/console/bash.nix
-    ../_mixins/console/yt-dlp.nix
+    ../_mixins/console/bash
+    ../_mixins/console/yt-dlp
     ../_mixins/services/podman.nix
     ../_mixins/services/virt.nix
 
@@ -41,8 +41,8 @@ in
       nonNixOs.enable = true;
       yt-dlp-custom.enable = true;
       bash.enable = true;
-      podman.enable = true;
-      virt.libvirt.enable = true;
+      podman.enable = false;
+      virt.libvirt.enable = false;
     };
     nix.settings = {
       extra-substituters = [ "https://juca-nixfiles.cachix.org" ];

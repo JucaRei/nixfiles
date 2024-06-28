@@ -68,6 +68,7 @@ with lib;
         transmission_4-gtk
         nix-whereis
         spotube
+        libreoffice-fresh
         # nf-iosevka
         gedit
         neovim
