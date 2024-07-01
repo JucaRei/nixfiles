@@ -818,7 +818,7 @@ in
           }
 
           # Screenshot
-          time=`${pkgs.coreutils}/bin/date +%Y-%m-%d-%H-%M-%S`
+          time=`date +%Y-%m-%d-%H-%M-%S`
           geometry=`${pkgs.xorg.xrandr}/bin/xrandr | grep 'current' | head -n1 | cut -d',' -f2 | tr -d '[:blank:],current'`
           dir="`xdg-user-dir PICTURES`/Pictures/screenshots"
           file="Screenshot_$time_$geometry.png"

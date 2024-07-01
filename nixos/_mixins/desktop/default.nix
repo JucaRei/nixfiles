@@ -105,7 +105,13 @@ in
       '';
     };
 
-    systemPackages = with pkgs; (lib.optionals (isInstall) [
+    # Eject nano and perl from the system
+    defaultPackages = with pkgs; mkForce [
+      coreutils-full
+      micro
+    ];
+
+    systemPackages = with pkgs; (optionals (isInstall) [
       # appimage-run
       # pavucontrol
       # pulseaudio

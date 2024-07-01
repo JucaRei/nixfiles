@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 with lib.hm.gvariant;
 let
-  testing = import ../_mixins/config/testing/test.nix { name = "iT Works"; };
   font-search = pkgs.writeShellScriptBin "font-search" ''
     fc-list \
         | grep -ioE ": [^:]*$1[^:]+:" \
@@ -75,6 +74,7 @@ with lib;
         font-search
         unstable.obsidian
         # fcitx5-with-addons
+        firefox
         # vv
         # gparted
         # tmux

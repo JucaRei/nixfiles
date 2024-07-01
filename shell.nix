@@ -12,20 +12,12 @@
   default = pkgs.mkShell {
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
-    packages = with pkgs; [
-      bash-completion # completion for bash
-      nix-direnv # A shell extension that manages your environment for nix
-      # direnv
-      neofetch # check system
-      duf # check space
-      nix-bash-completions # complitions for nix
-      speedtest-cli # test connection speed
-      home-manager # manage dots
-      cachix # build and share cache
-    ];
     nativeBuildInputs = with pkgs; [
       nix # nix
       nil # lsp server
+      nix-direnv # A shell extension that manages your environment for nix
+      home-manager # manage dots
+      duf # check space
       nixpkgs-fmt # formatter
       git # versioning
       nix-output-monitor # better output from builds

@@ -84,8 +84,8 @@
     # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.6.*.tar.gz";
     # crafts-flake.inputs.nixpkgs.follows = "nixpkgs";
 
-    # nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
-    # nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
+    nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
+    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
 
     # nixpkgs-f2k.url = "github:moni-dz/nixpkgs-f2k";
     # nixpkgs-f2k.inputs.nixpkgs.follows = "nixpkgs";
@@ -219,7 +219,8 @@
     ];
   };
 
-  outputs = { self, ... } @ inputs:
+  # inputs@  deconstructed function args
+  outputs = inputs@{ self, ... }:
     with inputs; let
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
@@ -321,12 +322,7 @@
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = libx.mkHost {
-          hostname = "nitro";
-          username = "juca";
-          desktop = "bspwm";
-          # desktop = "hyprland";
-        };
+        nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
         air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
         rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };

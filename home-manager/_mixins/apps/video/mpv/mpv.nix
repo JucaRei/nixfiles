@@ -3,16 +3,19 @@ let
   kvFormat = pkgs.formats.keyValue { };
   font = "FiraCode Nerd Font";
 
-  mpv-unstable = pkgs.unstable.wrapMpv
-    (pkgs.unstable.mpv-unwrapped.override {
-      vapoursynthSupport = true;
-      cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
-      waylandSupport = true;
-      jackaudioSupport = true; # Add jack support to mpv.
-      # webp support
-      ffmpeg = pkgs.unstable.ffmpeg_5-full;
-    })
+  # mpv-unstable = pkgs.unstable.wrapMpv
+  mpv-unstable = pkgs.unstable.mpv-unwrapped.wrapper
     {
+      mpv = pkgs.unstable.mpv-unwrapped.override
+        {
+          vapoursynthSupport = true;
+          cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
+          waylandSupport = true;
+          jackaudioSupport = true; # Add jack support to mpv.
+          # webp support
+          ffmpeg = pkgs.unstable.ffmpeg_5-full;
+        };
+      youtubeSupport = true;
       extraMakeWrapperArgs = [
         "--prefix"
         "LD_LIBRARY_PATH"

@@ -33,7 +33,7 @@ in
     ./nano
     ./ncmpcpp
     ./neofetch
-    ./neovim
+    # ./neovim
     ./powerline-go
     ./properties
     ./ripgrep
@@ -81,7 +81,7 @@ in
     micro.enable = true;
     man.enable = true;
     mpd.enable = false;
-    neovim.enable = false;
+    # neovim.enable = false;
     neofetch.enable = true;
     ncmpcpp.enable = false;
     starship.enable = false;
