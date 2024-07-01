@@ -98,87 +98,99 @@ in
         # };
       } else "";
 
-    home = {
+    home =
+      let
+        thorium-va = pkgs.thorium.override
+          {
+            # enable hardware accerlation with vaapi
+            commandLineArgs = [
+              "--enable-features=VaapiVideoEncoder,VaapiVideoDecoder"
+              "--enable-chrome-browser-cloud-management"
+            ];
+          };
+      in
+      {
 
-      packages = with pkgs; [
-        # docker-client
-        font-search
-        libva-utils
-        guvcview
-        cloneit
-        # neovim
-        docker-compose
-        obsidian
-        xfce.mousepad
-        spotube
-        transmission_4-gtk
-        # (nixGL vivaldi-custom)
-        (nixGL thorium)
-      ];
+        packages = with pkgs;
+          [
+            # docker-client
+            font-search
+            libva-utils
+            guvcview
+            cloneit
+            # neovim
+            docker-compose
+            obsidian
+            xfce.mousepad
+            spotube
+            transmission_4-gtk
+            # (nixGL vivaldi-custom)
+            # (nixGL thorium-va)
+          ];
 
-      sessionVariables = {
-        BROWSER = "thorium"; # "firefox";
-        NO_AT_BRIDGE = 1; # at-spi2-core
-      };
-
-      keyboard =
-        # if (isNull != true) then {
-        if ("${pkgs.xorg.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep '^Virtual-1 connected'" != true) then {
-          # layout = "br,us";
-          layout = "us";
-          model = "pc105"; # "pc104alt";
-          variant = "mac";
-          # options = [
-          # "grp:shifts_toggle"
-          # "eurosign:e"
-          # ];
-          # variant = "abnt2";
-          # variant = "nodeadkeys"; # "nodeadkeys";
-          # variant = # "intl"/ "alt-intl" / "altgr-intl"
-          #/ "mac" / # "mac_nodeadkeys"
-        } else {
-          layout = "br";
-          model = "pc105";
-          variant = "abnt2";
+        sessionVariables = {
+          BROWSER = "firefox"; # "thorium";
+          NO_AT_BRIDGE = 1; # at-spi2-core
         };
 
-      file = {
-        # "bin/create-docker" = {
-        #   enable = true;
-        #   executable = true;
-        #   text = ''
-        #     #!/usr/bin/env bash
-        #     ${pkgs.lima}/bin/limactl list | grep default | grep -q Running || ${pkgs.lima}/bin/limactl start --name=default template://docker # Start/create default lima instance if not running/created
-        #     ${pkgs.docker-client}/bin/docker context create lima-default --docker "host=unix:///Users/${username}/.lima/default/sock/docker.sock"
-        #     ${pkgs.docker-client}/bin/docker context use lima-default
-        #   '';
-        # };
-        # "bin/home-switch" = {
-        #   enable = true;
-        #   executable = true;
-        #   text = ''
-        #     #!/usr/bin/env bash
-        #     # git clone --depth=1 -b cleanup https://github.com/JucaRei/nixfiles ~/opt/nixos-configs &>/dev/null || true
-        #     git clone --depth=1 -b cleanup https://github.com/JucaRei/nixfiles ~/.dotfiles/nixfiles &>/dev/null || true
-        #     # git -C ~/opt/nixos-configs pull origin master --rebase
-        #     ## OS-specific support (mostly, Ubuntu vs anything else)
-        #     ## Anything else will use nixpkgs-unstable
-        #     EXTRA_ARGS=""
-        #     if grep -iq Ubuntu /etc/os-release
-        #     then
-        #       version="$(grep VERSION_ID /etc/os-release | cut -d'=' -f2 | tr -d '"')"
-        #       ## Support for Ubuntu 22.04
-        #       if [[ "$version" == "22.04" ]]
-        #       then
-        #         EXTRA_ARGS="--override-input nixpkgs-lts github:nixos/nixpkgs/nixos-22.05"
-        #       fi
-        #       ## TODO: Support Ubuntu 24.04 when released
-        #     fi
-        #     nix --extra-experimental-features 'nix-command flakes' run "$HOME/opt/nixos-configs#homeConfigurations.heywoodlh.activationPackage" --impure $EXTRA_ARGS
-        #   '';
-        # };
+        keyboard =
+          # if (isNull != true) then {
+          if ("${pkgs.xorg.xrandr}/bin/xrandr --query | ${pkgs.gnugrep}/bin/grep '^Virtual-1 connected'" != true) then {
+            # layout = "br,us";
+            layout = "us";
+            model = "pc105"; # "pc104alt";
+            variant = "mac";
+            # options = [
+            # "grp:shifts_toggle"
+            # "eurosign:e"
+            # ];
+            # variant = "abnt2";
+            # variant = "nodeadkeys"; # "nodeadkeys";
+            # variant = # "intl"/ "alt-intl" / "altgr-intl"
+            #/ "mac" / # "mac_nodeadkeys"
+          } else {
+            layout = "br";
+            model = "pc105";
+            variant = "abnt2";
+          };
+
+        file = {
+          # "bin/create-docker" = {
+          #   enable = true;
+          #   executable = true;
+          #   text = ''
+          #     #!/usr/bin/env bash
+          #     ${pkgs.lima}/bin/limactl list | grep default | grep -q Running || ${pkgs.lima}/bin/limactl start --name=default template://docker # Start/create default lima instance if not running/created
+          #     ${pkgs.docker-client}/bin/docker context create lima-default --docker "host=unix:///Users/${username}/.lima/default/sock/docker.sock"
+          #     ${pkgs.docker-client}/bin/docker context use lima-default
+          #   '';
+          # };
+          # "bin/home-switch" = {
+          #   enable = true;
+          #   executable = true;
+          #   text = ''
+          #     #!/usr/bin/env bash
+          #     # git clone --depth=1 -b cleanup https://github.com/JucaRei/nixfiles ~/opt/nixos-configs &>/dev/null || true
+          #     git clone --depth=1 -b cleanup https://github.com/JucaRei/nixfiles ~/.dotfiles/nixfiles &>/dev/null || true
+          #     # git -C ~/opt/nixos-configs pull origin master --rebase
+          #     ## OS-specific support (mostly, Ubuntu vs anything else)
+          #     ## Anything else will use nixpkgs-unstable
+          #     EXTRA_ARGS=""
+          #     if grep -iq Ubuntu /etc/os-release
+          #     then
+          #       version="$(grep VERSION_ID /etc/os-release | cut -d'=' -f2 | tr -d '"')"
+          #       ## Support for Ubuntu 22.04
+          #       if [[ "$version" == "22.04" ]]
+          #       then
+          #         EXTRA_ARGS="--override-input nixpkgs-lts github:nixos/nixpkgs/nixos-22.05"
+          #       fi
+          #       ## TODO: Support Ubuntu 24.04 when released
+          #     fi
+          #     nix --extra-experimental-features 'nix-command flakes' run "$HOME/opt/nixos-configs#homeConfigurations.heywoodlh.activationPackage" --impure $EXTRA_ARGS
+          #   '';
+          # };
+        };
       };
-    };
     xdg = {
       # force overwrite of mimeapps.list, since it will be manipulated by some desktop apps without asking
       configFile."mimeapps.list".force = true;

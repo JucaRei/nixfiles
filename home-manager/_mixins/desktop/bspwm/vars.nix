@@ -77,5 +77,6 @@ in
   alacritty-custom = if (isGeneric) then (nixgl config.programs.alacritty.package) else (config.programs.alacritty.package);
   picom-custom = "${config.services.picom.package}/bin/picom";
   filemanager = "thunar";
-  browser = if (hostname == "nitro") then "brave" else "thorium";
+  # browser = if (hostname == "nitro") then "brave" else "thorium";
+  browser = if (hostname == "nitro") then "brave" else "firefox";
 }

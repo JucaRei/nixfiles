@@ -16,7 +16,7 @@ let
 
   bspc-bin = "${config.xsession.windowManager.bspwm.package}/bin/bspc";
   dual-workspace = pkgs.writeShellScriptBin "dual-workspace" ''
-    #!/usr/bin/env bash
+    #!${pkgs.stdenv.shell}
 
       external=$(${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^HDMI-1-0 connected')
       vm=$(${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected')
