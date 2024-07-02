@@ -5,192 +5,36 @@ let
   inherit (pkgs.nur.repos.rycee) firefox-addons;
 
   nixGL = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
+  _ = lib.getExe;
 
   cfg = config.services.firefox;
-
-  csshacks = pkgs.fetchFromGitHub {
-    owner = "MrOtherGuy";
-    repo = "firefox-csshacks";
-    rev = "1ff9383984632fe91b8466730679e019de13c745";
-    sha256 = "sha256-KmkiSpxzlsPBWoX51o27l+X1IEh/Uv8RMkihGRxg98o=";
-  };
 
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
 
   sharedSettings = {
-    # Privacy & Security Improvements
-    #"browser.contentblocking.category" = "strict";
-    "browser.urlbar.speculativeConnect.enabled" = true;
-    "browser.search.openintab" = true;
-    "browser.search.hiddenOneOffs" = "Google,Yahoo, Bing,Amazon.com,Twitter";
-    "dom.security.https_only_mode" = true;
-    "dom.event.clipboardevents.enabled" = true;
-    "media.eme.enabled" = false; # disables DRM
-    "media.navigator.enabled" = false;
-    "network.cookie.cookieBehavior" = 1;
-    # causes CORS error on waves.exchange when set to 2
-    "network.http.referer.XOriginPolicy" = 1;
-    # "network.http.referer.XOriginPolicy" = 2;
-    "network.http.referer.XOriginTrimmingPolicy" = 2;
-    "network.IDN_show_punycode" = true;
-    "ui.systemUsesDarkTheme" = true; # 1 Default to dark
-    "services.sync.prefs.sync.browser.uiCustomization.state" = true;
-    # Enables userContent.css and userChrome.css for our theme modules
-    "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-    # Disables Activity Stream
-    # forces ui.systemUsesDarkTheme to false
-    # "privacy.resistFingerprinting" = true;
-    # "webgl.disabled" = true;
-
-    # Disable Telemetry
-    "browser.newtabpage.activity-stream.feeds.telemetry" = false;
-    "browser.newtabpage.activity-stream.enabled" = false;
-    "browser.newtabpage.activity-stream.telemetry" = false;
-    "toolkit.telemetry.bhrPing.enabled" = false;
-    "toolkit.telemetry.firstShutdownPing.enabled" = false;
-    "toolkit.telemetry.hybridContent.enabled" = false;
-    "toolkit.telemetry.newProfilePing.enabled" = false;
-    "toolkit.telemetry.reportingpolicy.firstRun" = false;
-    "toolkit.telemetry.shutdownPingSender.enabled" = false;
-    "toolkit.telemetry.updatePing.enabled" = false;
-    "datareporting.healthreport.uploadEnabled" = false;
-    "datareporting.healthreport.service.enabled" = false;
-    "datareporting.policy.dataSubmissionEnabled" = false;
-    # Prevents search terms from being sent to ISP
-    "browser.urlbar.dnsResolveSingleWordsAfterSearch" = 0;
-    # Disables sponsored search results
-    "browser.urlbar.suggest.quicksuggest.nonsponsored" = false;
-    "browser.urlbar.suggest.quicksuggest.sponsored" = false;
-    # Shows whole URL in address bar
-    # "browser.urlbar.trimURLs" = false;
-    # Disables non-useful funcionality of certain features
-    # "browser.disableResetPrompt" = true;
-    # "browser.onboarding.enabled" = false;
-    # "media.videocontrols.picture-in-picture.video-toggle.enabled" = false;
-    "extensions.pocket.enabled" = false;
-    # "extensions.shield-recipe-client.enabled" = false;
-    # "reader.parse-on-load.enabled" = false;
-    # Allow seperate search-engine usage in private mode!
-    "browser.search.separatePrivateDefault.ui.enabled" = true;
-    # Uses Mozilla geolocation service instead of Google if given permission
-    # "geo.provider.network.url" = "https://location.services.mozilla.com/v1/geolocate?key=%MOZILLA_API_KEY%";
-    # "geo.provider.use_gpsd" = false;
-    # https://support.mozilla.org/en-US/kb/extension-recommendations
-    "browser.newtabpage.activity-stream.asrouter.userprefs.cfr" = false;
-    "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons" = false;
-    "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features" =
-      false;
-    "extensions.htmlaboutaddons.recommendations.enabled" = false;
-    "extensions.htmlaboutaddons.discover.enabled" = false;
-    "extensions.getAddons.showPane" = false; # Uses Google Analytics
-    # "browser.discovery.enabled" = false;
-    # Reduces File IO / SSD abuse, 15 seconds -> 30 minutes
-    # "browser.sessionstore.interval" = "1800000";
-    # Disables battery API
-    "dom.battery.enabled" = false;
-    # Disables "beacon" asynchronous HTTP transfers (used for analytics)
-    "beacon.enabled" = false;
-    # Disables pinging URIs specified in HTML <a> ping= attributes
-    # Disables gamepad API to prevent USB device enumeration
-    "dom.gamepad.enabled" = false;
-    # Prevents guessing domain names on invalid entry in URL-bar
-    # "browser.fixup.alternate.enabled" = false;
-    # https://mozilla.github.io/normandy/
-    # "app.normandy.api_url" = "";
-    # Disables health reports (basically more telemetry)
-    # Disables crash reports
-    "breakpad.reportURL" = "";
-    "browser.tabs.crashReporting.sendReport" = false;
-    # Prevents the submission of backlogged reports
     "browser.crashReports.unsubmittedCheck.autoSubmit2" = false;
-
-    # Disable Personalisation & Sponsored Content
-    #"browser.discovery.enabled" = false;
-    "browser.newtabpage.activity-stream.showSponsored" = false;
-    "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
-    "browser.newtabpage.activity-stream.feeds.snippets" = false;
-
-    # Disable Experiments & Studies
-    "experiments.activeExperiment" = false;
-    "network.allow-experiments" = false;
-    "app.normandy.enabled" = false;
-    "app.shield.optoutstudies.enabled" = false;
-
-    # Search
-    #"browser.search.defaultenginename" = "DuckDuckGo";
-    #"browser.search.selectedEngine" = "DuckDuckGo";
-
-    # Disable DNS over HTTPS (done system-wide)
-    #"network.trr.mode" = 5;
-
-    # i18n
-    "intl.accept_languages" = "en-GB, en, pt-BR";
-    "intl.regional_prefs.use_os_locales" = true;
-
-    # dev tools
-    "devtools.inspector.color-scheme-simulation.enabled" = true;
-    "devtools.inspector.showAllAnonymousContent" = true;
-
-    # Disable Pocket
-    "browser.newtabpage.activity-stream.feeds.discoverystreamfeed" = false;
-    "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
-    "browser.newtabpage.activity-stream.section.highlights.includePocket" =
-      false;
-    "media.autoplay.enabled" = false;
-
-    # Some privacy settings...
-    "privacy.donottrackheader.enabled" = true;
-
-    # Disables telemetry settings
-    "toolkit.telemetry.unified" = false;
-    "toolkit.telemetry.enabled" = false;
-    "toolkit.telemetry.server" = "data:,";
-    "toolkit.telemetry.archive.enabled" = false;
-    "toolkit.telemetry.coverage.opt-out" = true;
-    "toolkit.coverage.opt-out" = true;
-    "toolkit.coverage.endpoint.base" = "";
-    "experiments.supported" = false;
-    "experiments.enabled" = false;
-    "experiments.manifest.uri" = "";
-    "browser.ping-centre.telemetry" = false;
-
-    # Burn our own fingers.
-    "privacy.resistFingerprinting" = true;
-    "privacy.fingerprintingProtection" = true;
-    "privacy.fingerprintingProtection.pbmode" = true;
-
-    "privacy.query_stripping.enabled" = true;
-    "privacy.query_stripping.enabled.pbmode" = true;
-
-    "dom.security.https_first" = true;
-    "dom.security.https_first_pbm" = true;
-
-    "privacy.firstparty.isolate" = true;
-
-    # Harden SSL
-    "security.ssl.require_safe_negotiation" = true;
-
-    # Other
-    "browser.uitour.enabled" = false;
-    "browser.startup.page" = 3;
-    "browser.toolbars.bookmarks.visibility" = "newtab";
-    "browser.tabs.drawInTitlebar" = true;
-    "signon.rememberSignons" = false;
-    #"services.sync.engine.passwords" = false;
-    #"extensions.update.enabled" = false;
-    #"extensions.update.autoUpdateDefault" = false;
-
-    userChrome = builtins.concatStringsSep "\n" (builtins.map builtins.readFile
-      [
-        "${csshacks}/chrome/hide_tabs_toolbar.css"
-        # Preferable, but there's too many bugs with menu dropdowns not dropping
-        # up when they're at the bottom of the screen
-        # "${csshacks}/chrome/navbar_below_content.css"
-      ]);
+    "browser.crashReports.unsubmittedCheck.enabled" = false;
+    "browser.fixup.dns_first_for_single_words" = false;
+    "browser.newtab.extensionControlled" = true;
+    "browser.search.update" = true;
+    "browser.tabs.crashReporting.sendReport" = false;
+    "browser.urlbar.suggest.bookmark" = false;
+    "browser.urlbar.suggest.history" = true;
+    "browser.urlbar.suggest.openpage" = false;
+    "browser.tabs.warnOnClose" = false;
+    "browser.urlbar.update2.engineAliasRefresh" = true;
+    "datareporting.policy.dataSubmissionPolicyBypassNotification" = true;
+    "dom.disable_window_flip" = true;
+    "dom.disable_window_move_resize" = false;
+    "dom.event.contextmenu.enabled" = true;
+    "dom.reporting.crash.enabled" = false;
+    "extensions.getAddons.showPane" = false;
+    "media.gmp-gmpopenh264.enabled" = true;
+    "media.gmp-widevinecdm.enabled" = true;
+    "places.history.enabled" = true;
+    "security.ssl.errorReporting.enabled" = false;
+    "widget.use-xdg-desktop-portal.file-picker" = 1;
   };
-  firefox-gl = with pkgs.unstable;
-    wrapFirefox firefox-unwrapped { };
-
   browser = "firefox";
 in
 {
@@ -205,14 +49,30 @@ in
     programs = {
       firefox = {
         enable = true;
-        package =
-          if (isGeneric) then (nixGL pkgs.unstable.firefox) else pkgs.unstable.firefox;
-        # package = check;
-        # package = floorp-gl;
-        # package = librewolf-gl;
+        package = if (isGeneric) then (nixGL pkgs.unstable.firefox) else pkgs.unstable.firefox;
         policies = {
+          AutofillAddressEnabled = false;
+          AutofillCreditCardEnabled = false;
+          Cookies = {
+            AcceptThirdParty = "from-visited";
+            Behavior = "reject-tracker";
+            BehaviorPrivateBrowsing = "reject-tracker";
+            RejectTracker = true;
+          };
+          DisableAppUpdate = true;
+          DisableDefaultBrowserAgent = true;
+          DisableFormHistory = true;
+          DisablePocket = true;
+          DisableSetDesktopBackground = true;
+          DisplayBookmarksToolbar = "never";
+          DisplayMenuBar = "default-off";
+          DNSOverHTTPS = {
+            Enabled = false;
+          };
+          # DisableProfileImport = true;
           FirefoxHome = {
             Highlights = false;
+            Locked = true;
             Pocket = false;
             Snippets = false;
             Search = true;
@@ -220,6 +80,30 @@ in
             SponsporedTopSites = false;
             TopSites = false;
           };
+          FirefoxSuggest = {
+            WebSuggestions = false;
+            SponsoredSuggestions = false;
+            ImproveSuggest = false;
+            Locked = true;
+          };
+          FlashPlugin = {
+            Default = false;
+          };
+          Homepage = {
+            Locked = false;
+            StartPage = "previous-session";
+          };
+          NetworkPrediction = false;
+          PopupBlocking = {
+            Default = true;
+          };
+          PromptForDownloadLocation = true;
+          SearchBar = "unified";
+          OfferToSaveLogins = true;
+          OverrideFirstRunPage = "";
+          OverridePostUpdatePage = "";
+          NewTabPage = true;
+          HardwareAcceleration = true;
           CaptivePortal = false;
           DisableFirefoxAccounts = false;
           DisableFirefoxStudies = true;
@@ -227,13 +111,23 @@ in
           NoDefaultBookmarks = true;
           PasswordManagerEnabled = true;
           DontCheckDefaultBrowser = true;
-          EnableTrackingProtection = true;
-          SearchBar = "unified";
+          EnableTrackingProtection = {
+            Value = false;
+            Locked = false;
+            Cryptomining = true;
+            EmailTracking = true;
+            Fingerprinting = true;
+          };
+          EncryptedMediaExtensions = {
+            Enabled = true;
+            Locked = true;
+          };
           SearchSuggestEnabled = true;
           ShowHomeButton = true;
+          StartDownloadsInTempDirectory = true;
           SanitizeOnShutdown = {
-            Cache = true;
-            Downloads = true;
+            Cache = false;
+            Downloads = false;
             #FormData = true;
             History = false;
             #Locked = true;
@@ -242,19 +136,21 @@ in
             WhatsNew = false;
             ExtensionRecommendations = false;
             FeatureRecommendations = false;
-            #UrlbarInterventions = false;
+            UrlbarInterventions = false;
             SkipOnboarding = true;
             MoreFromMozilla = false;
+            Locked = false;
           };
+          UseSystemPrintDialog = true;
         };
-        # nativeMessagingHosts = with pkgs; [
-        #   bukubrow
-        #   tridactyl-native
-        #   fx-cast-bridge
-        # ];
+        nativeMessagingHosts = with pkgs; [
+          #   bukubrow
+          #   tridactyl-native
+          fx-cast-bridge
+        ];
         # ++ lib.optional config.programs.mpv.enable pkgs.ff2mpv;
         profiles = {
-          juca = {
+          Juca = {
             id = 0;
             settings = sharedSettings;
             isDefault = true;
@@ -386,9 +282,7 @@ in
 
     home = {
       sessionVariables = {
-        DEFAULT_BROWSER = "${firefox-gl}/bin/${browser}";
-        # DEFAULT_BROWSER = "${floorp-gl}/bin/${browser}";
-        # DEFAULT_BROWSER = "${librewolf-gl}/bin/${browser}";
+        DEFAULT_BROWSER = "${_ config.programs.firefox.package}";
       };
     };
 
