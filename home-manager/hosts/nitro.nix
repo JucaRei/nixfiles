@@ -109,7 +109,8 @@ with lib;
 
       # aria2.enable = true;
       flatpak.packages = [
-        "flathub:app/dev.aunetx.deezer/x86_64/stable"
+        # "flathub:app/dev.aunetx.deezer/x86_64/stable"
+        "flathub:app/com.rtosta.zapzap/x86_64/stable"
       ];
     };
 

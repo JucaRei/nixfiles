@@ -18,6 +18,7 @@ let
     "general.useragent.compatMode.firefox" = true;
     "browser.tabs.tabMinWidth" = 16;
     "browser.toolbars.bookmarks.visibility" = "never";
+    "browser.search.openintab" = true;
     "browser.startup.page" = 3; # Restore previous tabs
     "browser.uiCustomization.state" = ''
       {
@@ -415,17 +416,12 @@ in
                   "Sourcegraph" =
                     let
                       # search repos without nixos and home-manager repo
-                      nix-search = "context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs$+-repo:^github\.com/nix-community/home-manager$";
+                      nix-search = "context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs%24+-repo:^github\.com/nix-community/home-manager%24+content:";
                     in
                     {
-                      urls = [{
-                        template = "https://www.sourcegraph.com/";
-                        params = [
-                          { name = "type"; value = "search"; }
-                          { name = "q"; value = "${nix-search}+{searchTerms}"; }
-                        ];
-                      }];
-                      definedAliases = [ "@sc" ];
+                      name = "Sourcegraph";
+                      keyword = "@sc";
+                      search = "https://sourcegraph.com/search/?q=${nix-search}{searchTerms}";
                     };
                   "Bing".metaData = {
                     hidden = false;
