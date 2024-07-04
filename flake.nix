@@ -224,7 +224,7 @@
     with inputs; let
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-      # stateVersion = "23.11";
+      # stateVersion = "23.11"; # default
       libx = import ./lib { inherit inputs outputs stateVersion lib pkgs; };
 
     in

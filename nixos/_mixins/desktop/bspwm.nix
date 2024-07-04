@@ -32,20 +32,20 @@
           enable = true;
           background = pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath;
           greeters = {
-            mini = {
-              enable = true;
-              user = "${username}";
-              extraConfig = ''
-                font-size = 1.0em
-                font = "Iosevka"
+            # mini = {
+            #   enable = true;
+            #   user = "${username}";
+            #   extraConfig = ''
+            #     font-size = 1.0em
+            #     font = "Iosevka"
 
-                [greeter]
-                show-password-label = false
-                password-label-text = ""
-                password-input-width = 30
-                password-alignment = left
-              '';
-            };
+            #     [greeter]
+            #     show-password-label = false
+            #     password-label-text = ""
+            #     password-input-width = 30
+            #     password-alignment = left
+            #   '';
+            # };
             gtk = {
               theme = {
                 name = "Dracula";
@@ -57,6 +57,35 @@
                 package = pkgs.dracula-theme;
                 size = 16;
               };
+              iconTheme.name = lib.mkDefault "Yaru-magenta-dark";
+              iconTheme.package = pkgs.yaru-theme;
+              indicators = [
+                "~session"
+                "~host"
+                "~spacer"
+                "~clock"
+                "~spacer"
+                "~a11y"
+                "~power"
+              ];
+              # https://github.com/Xubuntu/lightdm-gtk-greeter/blob/master/data/lightdm-gtk-greeter.conf
+              extraConfig = ''
+                # background = Background file to use, either an image path or a color (e.g. #772953)
+                font-name = Work Sans 12
+                xft-antialias = true
+                xft-dpi = 96
+                xft-hintstyle = slight
+                xft-rgba = rgb
+
+                active-monitor = #cursor
+                # position = x y ("50% 50%" by default)  Login window position
+                # default-user-image = Image used as default user icon, path or #icon-name
+                hide-user-image = false
+                round-user-image = false
+                highlight-logged-user = true
+                panel-position = top
+                clock-format = %a, %b %d  %H:%M
+              '';
             };
           };
         };
@@ -88,23 +117,8 @@
 
   environment = {
     systemPackages = with pkgs; [
-      # xclip # Clipboard
-      # kitty
       pamixer
-      # i3lock-fancy
       papirus-icon-theme
-      # bsp-layout
-      # betterlockscreen
-      # gamemode
-      # gnomeExtensions.gamemode
-      # xorg.xev # Event Viewer
-      # xorg.xkill # Process Killer
-      # xorg.xrandr # Monitor Settings
-      # xorg.xinit
-      # xorg.xsetroot
-      # python311Packages.xdg
-      # python311Packages.pytz
-      # xfce.xfce4-settings
       xfce.xfce4-power-manager
     ];
 
@@ -117,9 +131,6 @@
       XDG_STATE_HOME = "$HOME/.local/state";
       # Not officially in the specification
       XDG_BIN_HOME = "$HOME/.local/bin";
-      PATH = [
-        "$\{XDG_BIN_HOME}"
-      ];
     };
   };
 
@@ -128,12 +139,19 @@
     portal = {
       enable = true;
       xdgOpenUsePortal = true;
-      # extraPortals = with pkgs; lib.mkForce [ xdg-desktop-portal-gnome ];
       config = {
-        common = { default = [ "gtk" ]; };
+        common = {
+          default = [
+            "gtk"
+          ];
+        };
         gnome = {
-          default = [ "gtk" ];
-          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          default = [
+            "gtk"
+          ];
+          "org.freedesktop.impl.portal.Secret" = [
+            "gnome-keyring"
+          ];
         };
       };
     };

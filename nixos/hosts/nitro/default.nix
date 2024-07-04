@@ -406,7 +406,7 @@
     environment = {
       systemPackages = with pkgs; [
         # vscode-fhs
-        librewolf
+        # librewolf
         btdu
         btrfs-progs
         compsize
