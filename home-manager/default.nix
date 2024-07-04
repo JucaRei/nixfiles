@@ -16,7 +16,7 @@ in
       # inputs.nix-colors.homeManagerModules.default
       # inputs.sops-nix.homeManagerModules.sops
       inputs.nix-index-database.hmModules.nix-index
-      inputs.catppuccin.homeManagerModules.catppuccin
+      # inputs.catppuccin.homeManagerModules.catppuccin
 
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
@@ -25,10 +25,10 @@ in
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
 
-  catppuccin = {
-    accent = "lavender";
-    flavor = "frappe";
-  };
+  # catppuccin = {
+  #   accent = "lavender";
+  #   flavor = "frappe";
+  # };
 
   home = {
     inherit stateVersion;

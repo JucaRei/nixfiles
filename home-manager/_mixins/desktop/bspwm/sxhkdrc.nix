@@ -1,4 +1,5 @@
 args@{ pkgs, config, lib, hostname, ... }:
+with lib;
 let
   _ = lib.getExe;
   terminal = "${_ vars.alacritty-custom}";
@@ -203,12 +204,12 @@ let
   '';
 in
 {
-  "${vars.mod} + Return" = "${terminal}"; # Terminal
-  "${vars.mod} + shift + Return" = "${terminal} --class='termfloat'"; # Terminal
-  "${vars.mod} + b" = "${vars.browser}"; # web-browser
-  "${vars.mod} + shift + b" = "${vars.browser} --new-window https://youtube.com/"; # web-browser
-  "${vars.mod} + shift + p" = "${vars.browser} --private-window"; # web-browser
-  "${vars.mod} + e" = "${filemanager}";
+  "${vars.mod} + Return" = mkDefault "${terminal}"; # Terminal
+  "${vars.mod} + shift + Return" = mkDefault "${terminal} --class='termfloat'"; # Terminal
+  "${vars.mod} + b" = mkDefault "${vars.browser}"; # web-browser
+  "${vars.mod} + shift + b" = mkDefault "${vars.browser} --new-window https://youtube.com/"; # web-browser
+  "${vars.mod} + shift + p" = mkDefault "${vars.browser} --private-window"; # web-browser
+  "${vars.mod} + e" = mkDefault "${filemanager}";
 
   "${vars.modAlt} + shift + p" = "${picom-toggle}/bin/picom-toggle";
 

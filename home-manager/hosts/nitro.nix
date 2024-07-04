@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 with lib.hm.gvariant;
 let
   font-search = pkgs.writeShellScriptBin "font-search" ''
@@ -40,8 +40,7 @@ with lib;
     ../_mixins/apps/documents/zathura.nix
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
-    # ../_mixins/apps/browser/chromium.nix
-    # ../_mixins/apps/browser/firefox/firefox.nix
+    ../_mixins/apps/browser/firefox/firefox.nix
     ../_mixins/apps/browser/brave
     # ../_mixins/apps/browser/firefox/librewolf.nix
     ../_mixins/services/flatpak.nix
@@ -66,7 +65,7 @@ with lib;
         # fantezy
         transmission_4-gtk
         nix-whereis
-        spotube
+        unstable.spotube
         libreoffice-fresh
         # nf-iosevka
         gedit
@@ -74,11 +73,9 @@ with lib;
         font-search
         unstable.obsidian
         # fcitx5-with-addons
-        firefox
         # vv
         # gparted
         # tmux
-        # thorium
       ];
 
       keyboard = lib.mkForce {
@@ -105,7 +102,7 @@ with lib;
       starship.enable = true;
       eza.enable = false;
       lsd.enable = true;
-      # firefox.enable = false;
+      firefox.enable = true;
       flatpak-nix.enable = true;
       yt-dlp-custom.enable = true;
       brave.enable = true;
