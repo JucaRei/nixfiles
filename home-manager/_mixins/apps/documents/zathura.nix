@@ -207,8 +207,16 @@ in
         map <C-Tab> toggle_statusbar
         map <C-i> zoom in
         map <C-o> zoom out
-        map [normal] l jumplist backward
-        map [normal] L jumplist forward
+        # map [normal] l jumplist backward
+        # map [normal] L jumplist forward
+
+        map H navigate previous
+        map [fullscreen] H navigate previous
+        map L navigate next
+        map [fullscreen] L navigate next
+        map D toggle_page_mode
+        map r reload
+        map R rotate
 
         map <C-1> feedkeys ":set pages-per-row 1"<Return>
         map <C-2> feedkeys ":set pages-per-row 2"<Return>
@@ -217,8 +225,10 @@ in
         map t toggle_page_mode
         map T feedkeys ":set pages-per-row "
 
-        map f set 'toggle_fullscreen'
-        map [fullscreen] f set 'toggle_fullscreen'
+        # map f set 'toggle_fullscreen'
+        # map [fullscreen] f set 'toggle_fullscreen'
+        map F toggle_fullscreen
+        map [fullscreen] F toggle_fullscreen
 
         # Color Schemes
         map <A-F1> set 'recolor-lightcolor "#2c333d"'

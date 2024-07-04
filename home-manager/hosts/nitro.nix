@@ -106,6 +106,7 @@ with lib;
       flatpak-nix.enable = true;
       yt-dlp-custom.enable = true;
       brave.enable = true;
+      # properties.enable = false;
 
       # aria2.enable = true;
       flatpak.packages = [

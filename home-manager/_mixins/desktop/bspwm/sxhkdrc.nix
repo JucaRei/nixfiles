@@ -107,7 +107,7 @@ let
     	"$area")
     	if [ "$saveopt" = "$copy" ]; then
     	${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Select Area'
-    	${pkgs.maim}/bin/maim -u -m 5 -s | xclip -selection clipboard -t image/png && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot copied' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
+    	${pkgs.maim}/bin/maim -u -m 5 -s | ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot copied' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
       elif [ "$saveopt" = "$save" ]; then
     	${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Select Area'
     	${pkgs.maim}/bin/maim -u -m 5 -s $file && ${pkgs.libnotify}/bin/notify-send -i $icon --urgency low 'Screenshot Taken' || ${pkgs.libnotify}/bin/notify-send -i $icon 'failed to take screenshot'
