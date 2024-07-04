@@ -407,13 +407,28 @@ in
                     }];
                     definedAliases = [ "@yt" ];
                   };
-                  DuckDuckGo = {
+                  "DuckDuckGo" = {
                     name = "DuckDuckGo";
                     keyword = "@ddg";
                     search = "https://duckduckgo.com/?q={searchTerms}";
                   };
+                  "Sourcegraph" =
+                    let
+                      # search repos without nixos and home-manager repo
+                      nix-search = "context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs$+-repo:^github\.com/nix-community/home-manager$";
+                    in
+                    {
+                      urls = [{
+                        template = "https://www.sourcegraph.com/";
+                        params = [
+                          { name = "type"; value = "search"; }
+                          { name = "q"; value = "${nix-search}+{searchTerms}"; }
+                        ];
+                      }];
+                      definedAliases = [ "@sc" ];
+                    };
                   "Bing".metaData = {
-                    hidden = true;
+                    hidden = false;
                     alias = "@b";
                   };
                   "Google".metaData.alias = "@g";

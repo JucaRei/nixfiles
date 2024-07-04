@@ -236,7 +236,7 @@
         in
         import ./pkgs { inherit pkgs; });
 
-      # # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+      ## nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
 
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
       devShells = libx.systems (system:
@@ -246,7 +246,8 @@
         import ./shell.nix {
           inherit pkgs;
           # node = pkgs.callPackage ./shells/node { };
-        });
+        }
+      );
 
       # Custom packages and modifications, exported as overlays
       overlays = import ./overlays {
