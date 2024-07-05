@@ -195,15 +195,15 @@ let
     };
     DisableAppUpdate = true;
     DisableDefaultBrowserAgent = true;
-    DisableFormHistory = true;
+    DisableFormHistory = false;
     DisablePocket = true;
-    DisableSetDesktopBackground = true;
+    DisableSetDesktopBackground = false;
     DisplayBookmarksToolbar = "never";
     DisplayMenuBar = "default-off";
     DNSOverHTTPS = {
       Enabled = false;
     };
-    # DisableProfileImport = true;
+    DisableProfileImport = false;
     FirefoxHome = {
       Highlights = false;
       Locked = true;
@@ -220,9 +220,9 @@ let
       ImproveSuggest = false;
       Locked = true;
     };
-    # FlashPlugin = {
-    #   Default = false;
-    # };
+    FlashPlugin = {
+      Default = false;
+    };
     Homepage = {
       Locked = false;
       StartPage = "previous-session";
@@ -242,7 +242,7 @@ let
     DisableFirefoxAccounts = false;
     DisableFirefoxStudies = true;
     DisableTelemetry = true;
-    NoDefaultBookmarks = true;
+    NoDefaultBookmarks = false;
     PasswordManagerEnabled = true;
     DontCheckDefaultBrowser = true;
     EnableTrackingProtection = {
@@ -258,7 +258,7 @@ let
     };
     SearchSuggestEnabled = true;
     ShowHomeButton = true;
-    StartDownloadsInTempDirectory = false;
+    StartDownloadsInTempDirectory = true;
     SanitizeOnShutdown = {
       Cache = false;
       Downloads = false;
@@ -391,9 +391,9 @@ in
                   };
                   "Sourcegraph" =
                     {
-                      name = "Sourcegraph";
-                      keyword = "@sc";
-                      search = "https://sourcegraph.com/search/?q=context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs%24+-repo:^github\.com/nix-community/home-manager%24+content:{searchTerms}";
+                      urls = [{
+                        template = "https://sourcegraph.com/search/?q=context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs%24+-repo:^github\.com/nix-community/home-manager%24+content:{searchTerms}";
+                      }];
                       definedAliases = [ "@sc" ];
                     };
                   "Brave" = {

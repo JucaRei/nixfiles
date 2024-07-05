@@ -91,8 +91,8 @@ in
           "file:///home/${username}/Music"
           "file:///home/${username}/Videos"
           "file:///home/${username}/Documents/lab"
-          "/mnt/sharecenter/volume_1"
-          "/mnt/sharecenter/volume_2"
+          "file:///mnt/sharecenter/volume_1"
+          "file:///mnt/sharecenter/volume_2"
         ];
     };
   };
