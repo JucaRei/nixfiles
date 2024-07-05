@@ -515,7 +515,6 @@ in
       enable = true;
       gtk2 = {
         configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
-        # extraConfig = "gtk-theme-name=Yaru-purple-dark\ngtk-icon-theme-name=Papirus-Dark\ngtk-font-name=Fira Sans";
         extraConfig = ''
           gtk-xft-antialias=1
           gtk-xft-hinting=1
@@ -537,19 +536,6 @@ in
           gtk-recent-files-limit = 20;
           gtk-application-prefer-dark-theme = 1;
         };
-        extraCss = "
-        VteTerminal, vte-terminal {
-          padding: 13px;
-        }";
-        bookmarks = [
-          "file:///home/${username}/Documents"
-          "file:///home/${username}/Downloads"
-          "file:///home/${username}/Pictures"
-          "file:///home/${username}/Music"
-          "file:///home/${username}/Videos"
-          "smb://192.168.1.207/volume_1/"
-          "smb://192.168.1.207/volume_2/Transmission/complete"
-        ];
       };
       gtk4 = {
         # gtk-icon-theme-name = "ePapirus-Dark";
@@ -692,6 +678,7 @@ in
             Neovim,OpenApps --nvim,nvim
             # Firefox,OpenApps --browser,brave
             Brave,brave ,brave
+            Firefox,firefox ,firefox
             Retroarch,retroarch,${pkgs.papirus-icon-theme}/share/icons/Papirus/32x32/apps/retroarch.svg
 
             ^tag(wg)

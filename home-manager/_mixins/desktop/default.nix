@@ -1,4 +1,4 @@
-{ config, desktop, pkgs, username, lib, ... }:
+{ config, desktop, pkgs, username, lib, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   walls = pkgs.fetchgit {
@@ -61,6 +61,39 @@ in
   dconf.settings = {
     "ca/desrt/dconf-editor" = {
       show-warning = false;
+    };
+  };
+
+  gtk = {
+    gtk3 = {
+      extraCss = "
+        VteTerminal, vte-terminal {
+          padding: 13px;
+        }";
+      bookmarks =
+        if hostname == "nitro" then [
+          "file:///home/${username}/Documents"
+          "file:///home/${username}/Documents/Virtualmachines"
+          "file:///home/${username}/Documents/docker"
+          "file:///home/${username}/Downloads"
+          "file:///home/${username}/Pictures"
+          "file:///home/${username}/Music"
+          "file:///home/${username}/Videos"
+          "file:///home/${username}/Documents/lab"
+          "smb://192.168.1.207/volume_1/"
+          "smb://192.168.1.207/volume_2/Transmission/complete"
+        ] else [
+          "file:///home/${username}/Documents"
+          "file:///home/${username}/Documents/Virtualmachines"
+          "file:///home/${username}/Documents/docker"
+          "file:///home/${username}/Downloads"
+          "file:///home/${username}/Pictures"
+          "file:///home/${username}/Music"
+          "file:///home/${username}/Videos"
+          "file:///home/${username}/Documents/lab"
+          "/mnt/sharecenter/volume_1"
+          "/mnt/sharecenter/volume_2"
+        ];
     };
   };
 }

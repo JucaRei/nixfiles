@@ -18,7 +18,9 @@ let
     "general.useragent.compatMode.firefox" = true;
     "browser.tabs.tabMinWidth" = 16;
     "browser.toolbars.bookmarks.visibility" = "never";
-    "browser.search.openintab" = true;
+    "browser.download.always_ask_before_handling_new_types" = true;
+    "browser.download.sanitize_non_media_extensions" = false;
+    "browser.search.openintab" = false;
     "browser.startup.page" = 3; # Restore previous tabs
     "browser.uiCustomization.state" = ''
       {
@@ -45,7 +47,7 @@ let
                   "newElementCount":3
             }
     '';
-    "browser.disableResetPrompt" = true;
+    "browser.disableResetPrompt" = false;
     "browser.download.panel.shown" = true;
     "browser.startup.homepage" = "https://www.uol.com.br/";
     "browser.shell.checkDefaultBrowser" = false;
@@ -57,7 +59,7 @@ let
     "browser.fixup.dns_first_for_single_words" = false;
     "browser.newtab.extensionControlled" = true;
     "browser.search.update" = true;
-    "browser.urlbar.suggest.bookmark" = false;
+    "browser.urlbar.suggest.bookmark" = true;
     "browser.urlbar.suggest.history" = true;
     "browser.urlbar.suggest.openpage" = false;
     "browser.tabs.warnOnClose" = false;
@@ -70,9 +72,9 @@ let
     "extensions.getAddons.showPane" = false;
     "media.gmp-gmpopenh264.enabled" = true;
     "media.gmp-widevinecdm.enabled" = true;
-    "media.ffvpx.enabled" = false;
+    # "media.ffvpx.enabled" = false;
     # disable av1, vaapi on old hardware does not support av1
-    "media.av1.enabled" = false;
+    # "media.av1.enabled" = false;
     "media.ffmpeg.vaapi.enabled" = true;
     "places.history.enabled" = true;
     "security.ssl.errorReporting.enabled" = false;
@@ -84,7 +86,7 @@ let
     "experiments.manifest.uri" = "";
     "datareporting.healthreport.service.enabled" = false;
     # privacy tweaks
-    "browser.contentblocking.category" = "strict";
+    # "browser.contentblocking.category" = "strict";
     "intl.accept_languages" = "en-US, en";
     "javascript.use_us_english_locale" = true;
     "privacy.clearOnShutdown.cache" = false;
@@ -134,9 +136,9 @@ let
     "permissions.default.geo" = 2;
     "permissions.default.camera" = 2;
     "permissions.default.microphone" = 0;
-    "permissions.default.desktop-notification" = 2;
+    "permissions.default.desktop-notification" = 0;
     "permissions.default.xr" = 2; # Virtual Reality
-    "browser.discovery.enabled" = false;
+    # "browser.discovery.enabled" = false;
     "datareporting.healthreport.uploadEnabled" = false;
     "datareporting.policy.dataSubmissionEnabled" = false;
     "app.shield.optoutstudies.enabled" = false;
@@ -144,7 +146,7 @@ let
     "app.normandy.api_url" = "";
 
     # Tweaks from archwiki
-    "browser.cache.disk.enable" = false;
+    "browser.cache.disk.enable" = true;
     "browser.cache.memory.enable" = true;
     "browser.cache.memory.capacity" = -1;
     "browser.aboutConfig.showWarning" = false;
@@ -218,9 +220,9 @@ let
       ImproveSuggest = false;
       Locked = true;
     };
-    FlashPlugin = {
-      Default = false;
-    };
+    # FlashPlugin = {
+    #   Default = false;
+    # };
     Homepage = {
       Locked = false;
       StartPage = "previous-session";
@@ -256,7 +258,7 @@ let
     };
     SearchSuggestEnabled = true;
     ShowHomeButton = true;
-    StartDownloadsInTempDirectory = true;
+    StartDownloadsInTempDirectory = false;
     SanitizeOnShutdown = {
       Cache = false;
       Downloads = false;
@@ -387,6 +389,13 @@ in
                     urls = [{ template = "https://rycee.gitlab.io/home-manager/options.html"; }];
                     definedAliases = [ "@hm-docs" ];
                   };
+                  "Sourcegraph" =
+                    {
+                      name = "Sourcegraph";
+                      keyword = "@sc";
+                      search = "https://sourcegraph.com/search/?q=context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs%24+-repo:^github\.com/nix-community/home-manager%24+content:{searchTerms}";
+                      definedAliases = [ "@sc" ];
+                    };
                   "Brave" = {
                     urls = [{
                       template = "https://search.brave.com/search";
@@ -413,16 +422,6 @@ in
                     keyword = "@ddg";
                     search = "https://duckduckgo.com/?q={searchTerms}";
                   };
-                  "Sourcegraph" =
-                    let
-                      # search repos without nixos and home-manager repo
-                      nix-search = "context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs%24+-repo:^github\.com/nix-community/home-manager%24+content:";
-                    in
-                    {
-                      name = "Sourcegraph";
-                      keyword = "@sc";
-                      search = "https://sourcegraph.com/search/?q=${nix-search}{searchTerms}";
-                    };
                   "Bing".metaData = {
                     hidden = false;
                     alias = "@b";
