@@ -244,7 +244,6 @@ in
             # "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
             "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
             # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-            virtual
             "sleep 2; polybar -q everforest"
             # "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
             "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
