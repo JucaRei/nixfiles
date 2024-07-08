@@ -1,20 +1,16 @@
 { pkgs, config, lib, hostname, username, ... }@args:
 with lib;
 let
-  _ = lib.getExe;
-  nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
-  vars = import ./vars.nix { inherit pkgs config hostname; };
-  windowMan = "${_ config.xsession.windowManager.bspwm.package}";
-  isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true;
-  isVirtualMachine = if ("${pkgs.dmidecode}/bin/dmidecode -s system-manufacturer" == "QEMU") then false else true;
-  # isVirtualMachine = if ("${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'") then false else true;
-  isGeneric = if (config.targets.genericLinux.enable) then true else false;
-  # startPolybar = pkgs.writeShellScriptBin
+  _ = lib.getExe; # Get executable path
+  nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; }; # if is non-nixos system
+  vars = import ./vars.nix { inherit pkgs config hostname; }; # vars for better check
+  windowMan = "${_ config.xsession.windowManager.bspwm.package}"; # get bspwm executable path
+  isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true; # check if is systemd system or not
+  isVirtualMachine = if ("${pkgs.dmidecode}/bin/dmidecode -s system-manufacturer" == "QEMU") then false else true; # check if is running on VM
+  isGeneric = if (config.targets.genericLinux.enable) then true else false; # Enables this module when not nixos system
 
-  # random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/";
-  random-walls = "${pkgs.procps}/bin/watch -n 600 ${pkgs.feh}/bin/feh --randomize --bg-fill '$HOME/Pictures/wallpapers/*'";
-
-  isVirtualMan = "${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'";
+  # random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/"; # random-wall from unsplash
+  random-walls = "${pkgs.procps}/bin/watch -n 600 ${pkgs.feh}/bin/feh --randomize --bg-fill '$HOME/Pictures/wallpapers/*'"; # wallpapers from system
 
   bspc-bin = "${config.xsession.windowManager.bspwm.package}/bin/bspc";
   dual-workspace = pkgs.writeShellScriptBin "dual-workspace" ''
@@ -54,26 +50,13 @@ let
     random-walls
     # "tmux new-session -d -s main" # for fast attach to tmux session
     # "tmux new-session -d -s code" # for fast attach to tmux session
-    # "thunar --daemon"
-    # "${pkgs.flameshot}/bin/flameshot"
+    "thunar --daemon"
     # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
     # run this last so it doesn't interupt other stuff.
     # "lxappearance" & # Fix cursor not showing on desktop (background)
     # "sleep 3"
     # "pkill lxappearance" # Fix cursor not showing on desktop (background)
-  ]
-  ++ map runOnce [
-    "${pkgs.xfce.thunar}/bin/thunar --daemon"
   ];
-
-  runOnce = cmd: "! pgrep -f ${lib.head (lib.splitString " " cmd)} && ${cmd}";
-  runOnceF = cmd: "! pgrep ${lib.head (lib.splitString " " cmd)} && ${cmd}";
-  runOnceDesktop = cmd:
-    "! pgrep -f ${cmd} && dex ${config.xdg.dataHome}/applications/${cmd}.desktop";
-  runWithRule = { cmd, window, rule }:
-    "${pkgs.bspwm}/bin/bspc rule -a ${window} -o ${rule} && ${cmd}";
-  runOnceWeekend = cmd:
-    "test $(${pkgs.coreutils}/bin/date +%u) -lt 5 && " + runOnce cmd;
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
@@ -253,7 +236,6 @@ in
       };
     };
 
-    # dconf.settings = { };
     xsession = with builtins; {
       enable = true;
       # initExtra = "exec ${windowMan} &";
@@ -276,10 +258,6 @@ in
           # };
           extraConfigEarly = ''
             ${pkgs.wmname}/bin/wmname LG3D
-            ### Only have workspaces for primary monitor
-            # export MONITOR=$(xrandr -q | grep primary | cut -d' ' -f1)
-            # export MONITORS=( $(xrandr -q | grep ' connected' | cut -d' ' -f1) )
-            # MONITOR=$\{MONITOR:-$\{MONITORS[0]}}
 
             bspc config remove_disabled_monitors true
             bspc config remove_unplugged_monitors true
@@ -287,17 +265,7 @@ in
           '';
           extraConfig = ''
             ${pkgs.systemd}/bin/systemctl --user start bspwm-session.target
-
-            # ${pkgs.autorandr}/bin/autorandr --change
-
             ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name left_ptr
-            # Wait for the network to be up
-            # ${pkgs.libnotify}/bin/notify-send 'Waiting for network...'
-            # while ! systemctl is-active --quiet network-online.target; do sleep 1; done
-            # notify-send 'Network found.'
-
-            # Set background and top bar
-            # ${pkgs.feh}/bin/feh --bg-scale $HOME/.local/share/img/wallpaper/active
           '';
           settings = {
             remove_disabled_monitors = true;
@@ -483,19 +451,12 @@ in
               stick = true;
             };
             "mpv" = {
-              # "mplayer2"
               state = "floating";
               center = true;
               # rectangle = "1200x700+360+190";
               # desktop = "^6";
               # sticky = true;
             };
-            # "Kupfer.py" = {
-            #   focus = true;
-            # };
-            # "Screenkey" = {
-            #   manage = "off";
-            # };
             "Pavucontrol" = {
               state = "floating";
               desktop = "^10";
@@ -758,143 +719,6 @@ in
         # I use gpg-agent for ssh and gpg, so only use it for secrets
         components = [ "secrets" ];
       };
-      # betterlockscreen = {
-      #   enable = true;
-      #   inactiveInterval = 5;
-      #   arguments = [
-      #     # configuration file for betterlockscreen
-      #     "insidecolor=00000000"
-      #     "ringcolor=00000000"
-      #     "keyhlcolor=d23c3dff"
-      #     "bshlcolor=d23c3dff"
-      #     "separatorcolor=00000000"
-      #     "insidevercolor=00000000"
-      #     "insidewrongcolor=d23c3dff"
-      #     "ringvercolor=00000000"
-      #     "ringwrongcolor=d23c3dff"
-      #     "verifcolor=ffffffff"
-      #     "timecolor=ffffffff"
-      #     "datecolor=ffffffff"
-      #     "llayoutcolor=00000000"
-      #     "oginbox=00000066"
-      #     ''locktext="Type password to unlock..."''
-      #     ''verif_text=""''
-      #     "quiet=true"
-      #   ];
-      # };
-      # screen-locker = {
-      #   enable = true;
-      #   inactiveInterval = 2; # minutes
-      #   xautolock = {
-      #     enable = true;
-      #     extraOptions = [ "-secure" "-lockaftersleep" ];
-      #   };
-      # lockCmd =
-      #   let
-      #     i3locker = pkgs.writeShellScriptBin "i3locker" ''
-      #       #!/usr/bin/env bash
-
-      #       # dependencies:
-      #       # i3lock-color
-
-      #       dark_shade='#000000dd'
-      #       darker_shade='#000000dd'
-      #       green='#a9b665'
-      #       yellow='#d8a657'
-      #       red='#ea6962'
-      #       white='#d4be98'
-      #       black='#3c3836'
-      #       blacker='#282828'
-
-      #       font='JetBrainsMono Nerd Font'
-      #       font_size=32
-      #       font_size_small=17
-
-      #       time_str='%H:%M:%S'
-      #       date_str='%d %b %Y'
-
-      #       modif_pos='ix:iy-50'
-      #       time_pos='ix:iy'
-      #       status_pos='ix:iy'
-      #       date_pos='ix:iy+40'
-
-      #       one_word_args=(
-      #       	'--nofork'
-      #       	'--ignore-empty-password'
-
-      #       	'--indicator'
-      #       	'--clock'
-
-      #       	'--blur 10'
-      #       	'--radius 120'
-      #       	'--ring-width 12.0'
-
-      #       	# the idle color for the interior circle and ring
-      #       	"--inside-color=$dark_shade"
-      #       	"--ring-color=$green"
-
-      #       	# the interior circle and ring color while the
-      #       	# password is being verified
-      #       	"--insidever-color=$dark_shade"
-      #       	"--ringver-color=$yellow"
-
-      #       	# the interior circle and ring color for during
-      #       	# incorrect password flashes.
-      #       	"--insidewrong-color=$dark_shade"
-      #       	"--ringwrong-color=$red"
-
-      #       	# the color for the line separating the inside circle
-      #       	# and the outer ring.
-      #       	"--line-color=$darker_shade"
-
-      #       	# the color of highlight arcs on the ring upon
-      #       	# keypress and backspace.
-      #       	"--keyhl-color=$white"
-      #       	"--bshl-color=$black"
-
-      #       	# the color of the seperators at both ends of the
-      #       	# highlight arcs on the ring.
-      #       	"--separator-color=$blacker"
-
-      #       	# the color of the status text while verifying and
-      #       	# when password is wrong and others.
-      #       	"--verif-color=$white"
-      #       	"--wrong-color=$white"
-      #       	"--modif-color=$white"
-      #       	"--layout-color=$white"
-      #       	"--time-color=$white"
-      #       	"--date-color=$white"
-      #       	"--greeter-color=$white"
-
-      #       	# set font sizes"
-      #       	"--time-size=$font_size"
-      #       	"--layout-size=$font_size"
-      #       	"--verif-size=$font_size"
-      #       	"--wrong-size=$font_size"
-      #       	"--greeter-size=$font_size"
-      #       	"--date-size=$font_size_small"
-
-      #       	# set positions
-      #       	"--time-pos=$time_pos"
-      #       	"--date-pos=$date_pos"
-      #       	"--status-pos=$status_pos"
-      #       	"--modif-pos=$modif_pos"
-      #       )
-
-      #       ${pkgs.i3lock-color}/bin/i3lock $\{one_word_args[@]} \
-      #       	--time-font="$font" \
-      #       	--date-font="$font" \
-      #       	--layout-font="$font" \
-      #       	--verif-font="$font" \
-      #       	--wrong-font="$font" \
-      #       	--greeter-font="$font" \
-      #       	\
-      #       	--time-str="$time_str" \
-      #       	--date-str="$date_str"
-      #     '';
-      #   in
-      #   "${i3locker}/bin/i3locker";
-      # };
     };
 
     programs = {
