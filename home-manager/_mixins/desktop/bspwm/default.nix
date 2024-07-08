@@ -36,7 +36,30 @@ let
   '';
 
   startUP =
-    if (isVirtualMachine == true) then
+    if (isVirtualMachine == false) then
+      [
+        "bspc desktop -f ^1"
+        "pgrep -x sxhkd > /dev/null || sxhkd"
+        # "nitrogen --restore"
+        # "flameshot"
+        # "${pkgs.lxde.lxsession}/bin/lxsession"
+        # "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
+        "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
+        # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+        "sleep 2; polybar -q everforest"
+        # "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
+        "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
+        "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
+        random-walls
+        # "tmux new-session -d -s main" # for fast attach to tmux session
+        # "tmux new-session -d -s code" # for fast attach to tmux session
+        "thunar --daemon"
+        # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
+        # run this last so it doesn't interupt other stuff.
+        # "lxappearance" & # Fix cursor not showing on desktop (background)
+        # "sleep 3"
+        # "pkill lxappearance" # Fix cursor not showing on desktop (background)
+      ] else
       [
         "bspc desktop -f ^1"
         "pgrep -x sxhkd > /dev/null || sxhkd"
@@ -45,29 +68,7 @@ let
         "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
         random-walls
         "thunar --daemon"
-      ] else [
-      "bspc desktop -f ^1"
-      "pgrep -x sxhkd > /dev/null || sxhkd"
-      # "nitrogen --restore"
-      # "flameshot"
-      # "${pkgs.lxde.lxsession}/bin/lxsession"
-      # "sleep 1; exec --no-startup-id ${pkgs.mate.mate-polkit}/libexec/polkit-mate-authentication-agent-1"
-      "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
-      # "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-      "sleep 2; polybar -q everforest"
-      # "${pkgs.systemdMinimal}/bin/systemctl --user start lxpolkit"
-      "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
-      "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf"
-      random-walls
-      # "tmux new-session -d -s main" # for fast attach to tmux session
-      # "tmux new-session -d -s code" # for fast attach to tmux session
-      "thunar --daemon"
-      # "${pkgs.feh}/bin/feh --bg-scale ${config.my.settings.wallpaper}"
-      # run this last so it doesn't interupt other stuff.
-      # "lxappearance" & # Fix cursor not showing on desktop (background)
-      # "sleep 3"
-      # "pkill lxappearance" # Fix cursor not showing on desktop (background)
-    ];
+      ];
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
