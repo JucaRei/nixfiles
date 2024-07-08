@@ -57,7 +57,7 @@ let
     # "pkill lxappearance" # Fix cursor not showing on desktop (background)
   ];
 
-  picom-conf = [ "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf" ];
+  picom-conf = "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf";
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
@@ -247,7 +247,7 @@ in
           enable = isSystemd;
           # package = (nixgl pkgs.unstable.bspwm);
           package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
-          startupPrograms = if (isVirtualMachine == false) then (startUP ++ picom-conf) else (startUP) ;
+          startupPrograms = if (isVirtualMachine == false) then (startUP ++ [ picom-conf ]) else (startUP);
           alwaysResetDesktops = true;
           # monitors = {
           #   Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
