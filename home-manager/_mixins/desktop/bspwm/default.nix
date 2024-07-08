@@ -6,7 +6,8 @@ let
   vars = import ./vars.nix { inherit pkgs config hostname; }; # vars for better check
   windowMan = "${_ config.xsession.windowManager.bspwm.package}"; # get bspwm executable path
   isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true; # check if is systemd system or not
-  isVirtualMachine = if ("${pkgs.dmidecode}/bin/dmidecode -s system-manufacturer" == "QEMU") then false else true; # check if is running on VM
+  # isVirtualMachine = if ("${pkgs.dmidecode}/bin/dmidecode -s system-manufacturer" == "QEMU") then false else true; # check if is running on VM
+  isVirtualMachine = if ("${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'") then false else true; # check if is running on VM
   isGeneric = if (config.targets.genericLinux.enable) then true else false; # Enables this module when not nixos system
 
   # random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/"; # random-wall from unsplash
@@ -67,8 +68,6 @@ let
       random-walls
       "thunar --daemon"
     ];
-
-  picom-conf = [ "sleep 2; ${vars.picom-custom} --config $HOME/.config/picom/picom.conf" ];
 in
 {
   #config.lib.file.mkOutOfStoreSymlink
