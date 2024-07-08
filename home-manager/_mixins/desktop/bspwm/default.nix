@@ -7,7 +7,7 @@ let
   windowMan = "${_ config.xsession.windowManager.bspwm.package}"; # get bspwm executable path
   isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true; # check if is systemd system or not
   # isVirtualMachine = if ("${pkgs.dmidecode}/bin/dmidecode -s system-manufacturer" == "QEMU") then false else true; # check if is running on VM
-  isVirtualMachine = if ("${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected'") then false else true; # check if is running on VM
+  isVirtualMachine = if ("${pkgs.uutils-coreutils-noprefix}/bin/cat /sys/devices/virtual/dmi/id/sys_vendor" == "QEMU") then false else true; # check if is running on VM
   isGeneric = if (config.targets.genericLinux.enable) then true else false; # Enables this module when not nixos system
 
   # random-unsplash = "${pkgs.feh}/bin/feh --bg-scale 'https://source.unsplash.com/random/1920x1080/?nature' --keep-http --output-dir /tmp/"; # random-wall from unsplash
@@ -36,7 +36,16 @@ let
   '';
 
   startUP =
-    if (isVirtualMachine == false) then [
+    if (isVirtualMachine) then
+      [
+        "bspc desktop -f ^1"
+        "pgrep -x sxhkd > /dev/null || sxhkd"
+        "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
+        "sleep 2; polybar -q everforest"
+        "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
+        random-walls
+        "thunar --daemon"
+      ] else [
       "bspc desktop -f ^1"
       "pgrep -x sxhkd > /dev/null || sxhkd"
       # "nitrogen --restore"
@@ -58,15 +67,6 @@ let
       # "lxappearance" & # Fix cursor not showing on desktop (background)
       # "sleep 3"
       # "pkill lxappearance" # Fix cursor not showing on desktop (background)
-    ]
-    else [
-      "bspc desktop -f ^1"
-      "pgrep -x sxhkd > /dev/null || sxhkd"
-      "sleep 1; exec --no-startup-id ${pkgs.lxde.lxsession}/bin/lxpolkit"
-      "sleep 2; polybar -q everforest"
-      "sleep3; conky -c $HOME/.config/conky/Regulus/Regulus.conf"
-      random-walls
-      "thunar --daemon"
     ];
 in
 {
