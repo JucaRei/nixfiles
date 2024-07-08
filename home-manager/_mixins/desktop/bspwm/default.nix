@@ -36,7 +36,7 @@ let
   '';
 
   startUP =
-    if (isVirtualMachine) then
+    if (isVirtualMachine == true) then
       [
         "bspc desktop -f ^1"
         "pgrep -x sxhkd > /dev/null || sxhkd"
