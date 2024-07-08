@@ -247,7 +247,7 @@ in
           enable = isSystemd;
           # package = (nixgl pkgs.unstable.bspwm);
           package = if (isGeneric) then (nixgl pkgs.bspwm) else pkgs.bspwm;
-          startupPrograms = startUP ++ mkIf (!isVirtualMachine) picom-conf;
+          startupPrograms = startUP ++ mkIf (!isVirtualMachine) [ picom-conf ];
           alwaysResetDesktops = true;
           # monitors = {
           #   Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
