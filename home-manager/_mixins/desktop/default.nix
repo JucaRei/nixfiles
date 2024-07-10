@@ -57,7 +57,19 @@ in
       # Enable icons in tooling since we have nerdfonts.
       # LOG_ICONS = "true";
     };
+    sessionPath = [
+      "$HOME/.local/bin"
+      "$HOME/.local/share/applications"
+    ];
+    pointerCursor = {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      size = 22;
+      gtk.enable = true;
+      x11.enable = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
+    };
   };
+
   dconf.settings = {
     "ca/desrt/dconf-editor" = {
       show-warning = false;
@@ -65,7 +77,30 @@ in
   };
 
   gtk = {
+    enable = true;
+    gtk2 = {
+      configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
+      extraConfig = ''
+        gtk-xft-antialias=1
+        gtk-xft-hinting=1
+        gtk-xft-hintstyle="hintslight"
+        gtk-xft-rgba="rgb"
+      '';
+    }; #Fluent-Dark
     gtk3 = {
+      extraConfig = {
+        gtk-xft-rgba = "rgb";
+        gtk-button-images = 1;
+        gtk-menu-images = 1;
+        gtk-enable-event-sounds = 1;
+        gtk-enable-input-feedback-sounds = 1;
+        gtk-xft-antialias = 1;
+        gtk-xft-hinting = 1;
+        gtk-xft-hintstyle = "hintfull"; #"hintslight";
+        gtk-cursor-blink = true;
+        gtk-recent-files-limit = 20;
+        gtk-application-prefer-dark-theme = 1;
+      };
       extraCss = "
         VteTerminal, vte-terminal {
           padding: 13px;
@@ -94,6 +129,49 @@ in
           "file:///mnt/sharecenter/volume_1"
           "file:///mnt/sharecenter/volume_2"
         ];
+    };
+    gtk4 = {
+      # gtk-icon-theme-name = "ePapirus-Dark";
+      # gtk-theme-name = "Yaru-purple-dark";
+      # gtk-cursor-theme-name = "volantes_cursors";
+      # gtk-cursor-theme-size = "24";
+      # gtk-font-name = "Fira Sans";
+      #   gtk-theme-name = "Fluent-Dark";
+      #   gtk-icon-theme-name = "Papirus-Dark";
+      #   gtk-cursor-theme-name = "volantes_cursors";
+      extraConfig.gtk-application-prefer-dark-theme = 1;
+    };
+    iconTheme = {
+      # name = "ePapirus-Dark";
+      # package = pkgs.papirus-icon-theme;
+      package = pkgs.catppuccin-papirus-folders;
+      name = "Papirus";
+    };
+    theme = {
+      # Catppuccin
+      name = "Catppuccin-Frappe-Compact-Pink-Dark";
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "pink" ];
+        tweaks = [ "rimless" ];
+        size = "compact";
+        variant = "frappe";
+      };
+      # name = "Tokyonight-Dark-BL";
+      # package = pkgs.tokyo-night-gtk;
+    };
+    cursorTheme = {
+      # name = "volantes_cursors";
+      # package = pkgs.volantes-cursors;
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      size = 22;
+    };
+    font = {
+      # name = "Fira Code";
+      # package = pkgs.fira-code;
+      name = "Lexend";
+      size = 11;
+      package = pkgs.lexend;
     };
   };
 }
