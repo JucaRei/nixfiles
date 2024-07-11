@@ -255,6 +255,6 @@
       hostPlatform = lib.mkDefault "x86_64-linux";
     };
     console.keyMap = lib.mkForce "br";
-    systemd.enableUnifiedCgroupHierarchy = true;
+    systemd.enableUnifiedCgroupHierarchy = lib.mkForce true;
   };
 }
