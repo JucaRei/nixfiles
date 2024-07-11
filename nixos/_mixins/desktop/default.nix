@@ -78,7 +78,7 @@ in
       "threadirqs"
     ];
     plymouth.enable =
-      if (hostname != "rasp3")
+      if (hostname != "rasp3" || "soyo")
       then lib.mkDefault true
       else false;
   };
@@ -143,7 +143,7 @@ in
     };
     samba = {
       enable =
-        if hostname != "rasp3"
+        if (hostname != "rasp3")
         then true
         else false;
       #package = pkgs.unstable.samba4Full; # samba4Full broken
@@ -218,7 +218,7 @@ in
     # dbus.packages = if hostname != "rasp3" then [ pkgs.gcr ] else "";
 
     udev =
-      if (hostname != "rasp3")
+      if (hostname != "rasp3" || "soyo")
       then {
         packages = with pkgs; [ gnome.gnome-settings-daemon ];
         extraRules = ''

@@ -5,14 +5,6 @@ let
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
   isWorkstation = if (desktop != null) then true else false;
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
-  syncthing = {
-    hosts = [
-      "nitro"
-      "DietPi"
-    ];
-    tcpPorts = [ 22000 ];
-    udpPorts = [ 22000 21027 ];
-  };
 in
 {
   imports =
@@ -286,7 +278,7 @@ in
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
     # keyMap = lib.mkDefault "us";
-    keyMap = if (hostname == "nitro") then "br-abnt2" else "br-latin1-us";
+    keyMap = if (hostname == "nitro" || "soyo") then "br-abnt2" else "br-latin1-us";
     packages = with pkgs; [ tamzen ];
     colors = [
       "000000"

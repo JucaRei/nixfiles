@@ -10,6 +10,7 @@ let
       "nitro"
       "vm"
       "minimech"
+      "soyo"
       "scrubber"
     ];
     tcpPorts = [ 22000 443 22 2375 9091 ];
