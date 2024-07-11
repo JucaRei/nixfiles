@@ -152,15 +152,15 @@
           "discard=async"
         ];
       };
-      "/var/swap" = {
-        device = "/dev/disk/by-label/Soyos";
-        fsType = "btrfs";
-        options = [
-          "subvol=@swap"
-          "defaults"
-          "noatime"
-        ];
-      };
+      # "/var/swap" = {
+      #   device = "/dev/disk/by-label/Soyos";
+      #   fsType = "btrfs";
+      #   options = [
+      #     "subvol=@swap"
+      #     "defaults"
+      #     "noatime"
+      #   ];
+      # };
       "/nix" = {
         device = "/dev/disk/by-label/Soyos";
         fsType = "btrfs";
@@ -176,10 +176,10 @@
           "discard=async"
         ];
       };
-      "/boot" = {
-        device = "/dev/disk/by-label/BOOT";
-        fsType = "ext4";
-      };
+      # "/boot" = {
+      #   device = "/dev/disk/by-label/BOOT";
+      #   fsType = "ext4";
+      # };
       "/boot/efi" = {
         device = "/dev/disk/by-label/EFI";
         # device = "/dev/disk/by-uuid/076D-BEC9";
@@ -195,7 +195,8 @@
     };
     swapDevices = [
       {
-        device = "/var/swap/swapfile";
+        device = "/dev/disk/by-label/SWAP";
+        # device = "/var/swap/swapfile";
         # size = "20G";
       }
     ];
