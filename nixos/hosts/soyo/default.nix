@@ -49,7 +49,8 @@
         enable = true;
         extraPackages = with pkgs; [
           # Quick Sync Video
-          vpl-gpu-rt # or intel-media-sdk for QSV
+          # vpl-gpu-rt # or intel-media-sdk for QSV
+          intel-media-sdk
 
           # Accelerated Video Playback
           intel-media-driver # LIBVA_DRIVER_NAME=iHD
