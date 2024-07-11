@@ -69,13 +69,26 @@ in
     optimise.automatic = true;
     package = lib.mkIf (isInstall) pkgs.unstable.nix;
     settings = {
+      # Tell nix to use the xdg spec for base directories
+      # while transitioning, any state must be carried over
+      # manually, as Nix won't do it for us.
+      use-xdg-base-directories = true;
+
+      # Always build inside sandboxed environments
+      # sandbox = true;
+      sandbox-fallback = false;
       sandbox = "relaxed"; # true
+
       # extra-sandbox-paths = [ ];
       auto-optimise-store = true;
       experimental-features = [
         "nix-command"
         "flakes"
         "repl-flake"
+        "recursive-nix" # let nix invoke itself
+        "ca-derivations" # content addressed nix
+        "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
+        "cgroups" # allow nix to execute builds inside cgroups
       ];
       allowed-users = [ "root" "@wheel" ];
       trusted-users = [ "root" "@wheel" ];
@@ -83,16 +96,19 @@ in
       ### Avoid unwanted garbage collection when using nix-direnv
       keep-outputs = true;
       keep-derivations = true;
-      # keep-going = false;
+      keep-going = true;
       warn-dirty = false;
-      # system-features = [
-      #   ## Allows building v3/v4 packages
-      #   "gccarch-x86-64-v3"
-      #   "gccarch-x86-64-v4"
-      #   "kvm"
-      #   "big-parallel"
-      #   "nixos-test"
-      # ];
+      # execute builds inside cgroups
+      use-cgroups = true;
+      system-features = [
+        #   ## Allows building v3/v4 packages
+        #   "gccarch-x86-64-v3"
+        #   "gccarch-x86-64-v4"
+        "kvm"
+        "recursive-nix"
+        "big-parallel"
+        "nixos-test"
+      ];
     };
     extraOptions =
       ''
@@ -501,6 +517,16 @@ in
   };
 
   systemd = {
+
+    # By default nix-gc makes no effort to respect battery life by avoding
+    # GC runs on battery and fully commits a few cores to collecting garbage.
+    # This will drain the battery faster than you can say "Nix, what the hell?"
+    # and contribute heavily to you wanting to get a new desktop.
+    # For those curious (such as myself) desktops are always seen as "AC powered"
+    # so the system will not fail to fire if you are on a desktop system.
+    services.nix-gc = {
+      unitConfig.ConditionACPower = true;
+    };
 
     user = {
       extraConfig = ''
