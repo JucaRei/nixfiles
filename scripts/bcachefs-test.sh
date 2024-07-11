@@ -16,7 +16,7 @@ parted --script --align optimal --fix -- $DRIVE mkpart primary linux-swap -4GiB 
 
 # parted --script align-check 1 $DRIVE
 
-sgdisk -Z ${DRIVE}
+# sgdisk -Z ${DRIVE}
 
 sgdisk -c 1:"EFI FileSystem partition" ${DRIVE}
 sgdisk -c 2:"Archlinux FileSystem" ${DRIVE}

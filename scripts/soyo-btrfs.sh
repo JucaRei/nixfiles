@@ -2,33 +2,28 @@
 
 # export DRIVE="/dev/nvme0n1"
 # DRIVE="/dev/nvme0n1p2"
-DRIVE="/dev/sda"
+DRIVE="/dev/mmcblk0"
 
-# sgdisk -Z /dev/${DRIVE}p2
-# sgdisk -Z /dev/${DRIVE}p3
-# sgdisk -n 0:0:512MiB /dev/vda
-# sgdisk -n 0:0:0 /dev/vda
+sgdisk -Z ${DRIVE}
+parted --script --fix --align optimal $DRIVE mklabel gpt
+parted --script --fix --align optimal $DRIVE mkpart primary fat32 1MiB 512MiB
+parted --script $DRIVE -- set 1 boot on
+parted --script --align optimal --fix -- $DRIVE mkpart primary 512MiB -6GiB
+parted --script --align optimal --fix -- $DRIVE mkpart primary linux-swap -6GiB 100%
 
-# export BOOT_PARTITION="${DRIVE}p2"
-# export ROOT_PARTITION="${DRIVE}p3"
+sgdisk -c 1:"EFI FileSystem partition" ${DRIVE}
+sgdisk -c 2:"NixOS FileSystem" ${DRIVE}
+sgdisk -c 3:"NixOS Swap" ${DRIVE}
+sgdisk -p ${DRIVE}
 
-# sgdisk -Z /dev/$ROOT_PARTITION
-# sgdisk -t 1:0C01 /dev/nvme01n1
-# sgdisk -c 1:"Microsoft reserved partition"
-# sgdisk -t 2:0700 /dev/nvme01n1
-# sgdisk -c 2:"Basic data partition"
-# sgdisk -t 3:ef00 /dev/nvme01n1
-# sgdisk -c 3:"EFI" /dev/nvme01n1
-# sgdisk -t 4:8300 /dev/nvme01n1
-# sgdisk -c 4:"Shared Filesystem" /dev/nvme01n1
-# parted $BOOT_PARTITION -- set 1 esp on
-# sgdisk -p /dev/nvme0n1
+BOOT_PARTITION="${DRIVE}p1"
+ROOT_PARTITION="${DRIVE}p2"
+SWAP_PARTITION="${DRIVE}p3"
 
-# EFI system partition
-
-# mkfs.vfat -F32 $BOOT_PARTITION -n "EFI"
-# mkfs.btrfs $ROOT_PARTITION -f -L "NIXOS"
-mkfs.btrfs ${DRIVE} -f -L "Soyos"
+mkfs.vfat -F32 $BOOT_PARTITION -n "EFI"
+mkfs.btrfs $ROOT_PARTITION -f -L "Soyos"
+mkswap $SWAP_PARTITION -L "SWAP"
+swapon /dev/disk/by-label/SWAP
 
 BTRFS_OPTS="rw,noatime,ssd,compress-force=zstd:15,space_cache=v2,nodatacow,commit=120,discard=async"
 BTRFS_OPTS2="rw,noatime,ssd,compress-force=zstd:3,space_cache=v2,nodatacow,commit=120,discard=async"
