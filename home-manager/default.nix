@@ -38,7 +38,7 @@ in
         ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
       fi
     '';
-    homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else builtins.getEnv "HOME";
+    homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
     sessionVariables = {
       # libstdc++.so.6 => not found

@@ -128,8 +128,7 @@ in
     };
   };
 
-  # systemd.user.tmpfiles.rules = lib.mkIf isLinux [
-  systemd.user.tmpfiles.rules = [
+  systemd.user.tmpfiles.rules = lib.mkIf isLinux [
     "d ${config.home.homeDirectory}/Scripts 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Studio/OBS/config/obs-studio/ 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Documents/workspace/linux 0755 ${username} users - -"
