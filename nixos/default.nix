@@ -278,7 +278,7 @@ in
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
     # keyMap = lib.mkDefault "us";
-    keyMap = if (hostname == "nitro" || "soyo") then "br-abnt2" else "br-latin1-us";
+    keyMap = if (hostname == "nitro") then "br-abnt2" else "br-latin1-us";
     packages = with pkgs; [ tamzen ];
     colors = [
       "000000"
