@@ -1,14 +1,13 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  ...
+{ inputs
+, lib
+, pkgs
+, ...
 }: {
   imports = [
     inputs.nixos-hardware.nixosModules.common-cpu-intel
     inputs.nixos-hardware.nixosModules.common-gpu-intel
     inputs.nixos-hardware.nixosModules.gpd-win-2
-    (import ./disks.nix {})
+    (import ./disks.nix { })
     ../../_mixins/hardware/boot/systemd-boot.nix
     ../../_mixins/hardware/bluetooth
     ../../_mixins/hardware/sound/pipewire.nix
@@ -24,8 +23,8 @@
   ];
 
   boot = {
-    initrd.availableKernelModules = ["xhci_pci" "ahci" "usbhid" "usb_storage" "uas" "sd_mod" "sdhci_pci"];
-    kernelModules = ["kvm-intel"];
+    initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "uas" "sd_mod" "sdhci_pci" ];
+    kernelModules = [ "kvm-intel" ];
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
@@ -37,7 +36,7 @@
   '';
   services.xserver.layout = lib.mkForce "us";
 
-  environment.systemPackages = with pkgs; [nvtop-amd];
+  environment.systemPackages = with pkgs; [ nvtop-amd ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }
