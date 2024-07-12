@@ -12,6 +12,7 @@
         ({ ... }: { })
         inputs.declarative-flatpak.homeManagerModules.default
         inputs.nur.hmModules.nur
+        inputs.vscode-server.homeModules.default
         ../home-manager
       ];
     };
