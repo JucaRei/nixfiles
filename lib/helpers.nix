@@ -9,10 +9,15 @@
         inherit inputs outputs desktop hostname platform username stateVersion;
       };
       modules = [
-        ({ ... }: { })
+        ({ config, pkgs, ... }: {
+          services.vscode-server = {
+            enable = lib.mkDefault false;
+          };
+        })
         inputs.declarative-flatpak.homeManagerModules.default
         inputs.nur.hmModules.nur
         inputs.vscode-server.homeModules.default
+        # inputs.vscode-server.nixosModules.home
         ../home-manager
       ];
     };
