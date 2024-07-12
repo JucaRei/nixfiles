@@ -17,7 +17,7 @@ in
   # enable vs-code remote
 
   config = {
-    services.vscode-server.enable = false; # true
+    services.vscode-server.enable = lib.mkDefault false; # true
     programs.vscode = {
       enable = true;
       # package = pkgs.unstable.vscode;
@@ -49,14 +49,14 @@ in
       # ]
       ++ pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
         # {
-          # ms-azuretools.vscode-docker
-          # v1.22.2
-          # name = "vscode-docker";
-          # publisher = "ms-azuretools";
-          # version = "1.28.0";
-          # sha256 = "sha256-ACaVwRTN4lu97GDGzxyzX/O10p6fNT3FNLne/todrFo=";
-          # version = "v1.22.2"; # ## Downgrade make it work with podman
-          # sha256 = "sha256-sRvd9M/gF4kh4qWxtS1xKKIvqg9hRJpRl/p/FYu2TI8=";
+        # ms-azuretools.vscode-docker
+        # v1.22.2
+        # name = "vscode-docker";
+        # publisher = "ms-azuretools";
+        # version = "1.28.0";
+        # sha256 = "sha256-ACaVwRTN4lu97GDGzxyzX/O10p6fNT3FNLne/todrFo=";
+        # version = "v1.22.2"; # ## Downgrade make it work with podman
+        # sha256 = "sha256-sRvd9M/gF4kh4qWxtS1xKKIvqg9hRJpRl/p/FYu2TI8=";
         # }
         {
           name = "better-nix-syntax";
