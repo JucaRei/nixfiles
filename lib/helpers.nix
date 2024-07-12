@@ -11,7 +11,7 @@
       modules = [
         ({ config, pkgs, ... }: {
           services.vscode-server = {
-            enable = lib.mkDefault false;
+            enable = false;
           };
         })
         inputs.declarative-flatpak.homeManagerModules.default
