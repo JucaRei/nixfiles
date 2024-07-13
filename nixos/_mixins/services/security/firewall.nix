@@ -73,10 +73,10 @@ let
 in
 {
   options.services.firewall.enable = mkEnableOption "Weather enable or not Firewall";
-
   config = mkIf cfg.enable {
     networking = {
       firewall = {
+        interfaces."podman[0-9]+".allowedUDPPorts = [ 53 ];
         allowPing = true;
         enable = true;
         allowedTCPPorts =
