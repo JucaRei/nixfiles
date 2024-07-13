@@ -13,8 +13,8 @@ let
       "soyo"
       "scrubber"
     ];
-    tcpPorts = [ 22000 443 22 2375 9091 51413 ];
-    udpPorts = [ 22000 21027 53 5353 51413 ];
+    tcpPorts = [ 22000 443 22 2375 9091 ];
+    udpPorts = [ 22000 21027 53 5353 ];
     allowedTCPPorts = [
       21 # FTP
       53 # DNS
@@ -34,7 +34,7 @@ let
       2375 # Docker
       22000 # Syncthing port
       9091 # Transmission
-      60450 # Transmission
+      51413 # Transmission
       80 # For gnomecast server
       8010 # For gnomecast server
       8888 # For gnomecast server
@@ -54,6 +54,7 @@ let
       137 # NetBIOS Name Service
       138 # NetBIOS Datagram Service
       3702 # wsdd : samba
+      51413 # Transmission
       5353 # For device discovery
       21027 # Syncthing port
       # Teamviewer
