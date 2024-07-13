@@ -23,11 +23,11 @@ in
       # enableOnBoot = lib.mkDefault true;
       # enableNvidia = true;
       # extraOptions = "--default-runtime=nvidia";
-      rootless = {
-        enable = false; # true;
-        # setSocketVariable = true;
-        # package = pkgs.docker;
-      };
+      # rootless = {
+      #   enable = false; # true;
+      #   setSocketVariable = true;
+      #   package = pkgs.docker;
+      # };
       # autoPrune = {
       #   enable = true;
       #   dates = "monthly";
@@ -46,12 +46,14 @@ in
   # https://rootlesscontaine.rs/getting-started/common/cgroup2/#enabling-cpu-cpuset-and-io-delegation
   # For minikube
   # Writes to /etc/systemd/system/user@.service.d/overrides.conf
-  systemd.services."user@".serviceConfig = {
-    Delegate = "cpu cpuset io memory pids";
-  };
+  # systemd.services."user@".serviceConfig = {
+  #   Delegate = "cpu cpuset io memory pids";
+  # };
 
   environment.systemPackages = with pkgs; [
     docker-compose
     lazydocker
-  ] ++ dk-machine;
+  ]
+  ++ dk-machine
+  ;
 }
