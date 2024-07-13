@@ -13,8 +13,8 @@ let
       "soyo"
       "scrubber"
     ];
-    tcpPorts = [ 22000 443 22 2375 9091 ];
-    udpPorts = [ 22000 21027 53 5353 ];
+    tcpPorts = [ 22000 443 22 2375 9091 51413 ];
+    udpPorts = [ 22000 21027 53 5353 51413 ];
     allowedTCPPorts = [
       21 # FTP
       53 # DNS
