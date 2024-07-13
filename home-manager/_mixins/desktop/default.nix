@@ -1,4 +1,5 @@
 { config, desktop, pkgs, username, lib, hostname, ... }:
+with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   walls = pkgs.fetchgit {
@@ -14,8 +15,8 @@ in
       # ../services/flatpak.nix
       ../fonts
     ]
-    ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-    ++ lib.optional
+    ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+    ++ optional
       (builtins.pathExists (./. + "/../../users/${username}/desktop.nix"))
       ../../users/${username}/desktop.nix;
 
@@ -26,7 +27,7 @@ in
 
   home = {
     # Authrorize X11 access in Distrobox
-    file = lib.mkIf isLinux {
+    file = mkIf isLinux {
       ".distroboxrc" = {
         text = ''
           ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
@@ -36,7 +37,7 @@ in
         # source = ./face.jpg;
         source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
       };
-      "Pictures/wallpapers".source = lib.mkForce "${walls}/images";
+      "Pictures/wallpapers".source = mkForce "${walls}/images";
     };
     packages = with pkgs; [
       black # Code format Python
@@ -61,7 +62,7 @@ in
       "$HOME/.local/bin"
       "$HOME/.local/share/applications"
     ];
-    pointerCursor = {
+    pointerCursor = mkDefault {
       package = pkgs.bibata-cursors;
       name = "Bibata-Modern-Classic";
       size = 22;
@@ -76,7 +77,7 @@ in
     };
   };
 
-  gtk = {
+  gtk = mkDefault {
     enable = true;
     gtk2 = {
       configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";

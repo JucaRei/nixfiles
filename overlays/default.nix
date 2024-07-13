@@ -136,6 +136,7 @@ in
 
     # nixGL = prev.inputs.nixgl.overlay;
 
+    nixLegacyGLNvidia = prev.nixLegacyGLNvidia;
     cloneit = prev.cloneit;
     lima-bin = prev.lima-bin;
     thorium = prev.thorium;
