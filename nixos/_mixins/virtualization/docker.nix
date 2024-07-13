@@ -17,7 +17,7 @@ in
 
 {
   virtualisation = {
-    oci-containers.backend = "docker";
+    # oci-containers.backend = "docker";
     docker = {
       enable = true;
       # enableOnBoot = lib.mkDefault true;

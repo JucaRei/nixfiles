@@ -20,11 +20,12 @@ in
       ./_mixins/services/tools/smartmon.nix
       ./_mixins/config/scripts
       ./_mixins/services/network/networkmanager.nix
-      # ./_mixins/services/security/firewall.nix
+      ./_mixins/services/security/firewall.nix
       ./users
     ]
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (notVM) ./_mixins/virtualization/podman.nix
+    # ++ lib.optional (notVM) ./_mixins/virtualization/podman.nix # podman not connecting to internet
+    ++ lib.optional (notVM) ./_mixins/virtualization/docker.nix
     ++ lib.optional (notVM) ./_mixins/virtualization/lxd.nix
     ++ lib.optional (isWorkstation) ./_mixins/desktop
     ++ lib.optional (isWorkstation) ./_mixins/sys;
@@ -589,7 +590,7 @@ in
   services = {
     ### My modules
     nm-manager.enable = true;
-    # firewall.enable = isWorkstation;
+    firewall.enable = isWorkstation;
     #########################
 
     snap.enable = notVM;
