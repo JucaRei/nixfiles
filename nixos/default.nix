@@ -20,7 +20,7 @@ in
       ./_mixins/services/tools/smartmon.nix
       ./_mixins/config/scripts
       ./_mixins/services/network/networkmanager.nix
-      ./_mixins/services/security/firewall.nix
+      # ./_mixins/services/security/firewall.nix
       ./users
     ]
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
@@ -589,7 +589,7 @@ in
   services = {
     ### My modules
     nm-manager.enable = true;
-    firewall.enable = isWorkstation;
+    # firewall.enable = isWorkstation;
     #########################
 
     snap.enable = notVM;

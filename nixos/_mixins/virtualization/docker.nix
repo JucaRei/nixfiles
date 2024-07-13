@@ -17,15 +17,15 @@ in
 
 {
   virtualisation = {
-    # oci-containers.backend = "docker";
+    oci-containers.backend = "docker";
     docker = {
       enable = true;
       # enableOnBoot = lib.mkDefault true;
       # enableNvidia = true;
       # extraOptions = "--default-runtime=nvidia";
       rootless = {
-        enable = true;
-        setSocketVariable = true;
+        enable = false; # true;
+        # setSocketVariable = true;
         # package = pkgs.docker;
       };
       # autoPrune = {
