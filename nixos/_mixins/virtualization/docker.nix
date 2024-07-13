@@ -54,6 +54,6 @@ in
     docker-compose
     lazydocker
   ]
-  ++ dk-machine
+    # ++ dk-machine
   ;
 }
