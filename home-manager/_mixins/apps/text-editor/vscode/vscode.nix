@@ -11,13 +11,13 @@ in
   imports = [
     ### Enable immutable vscode settings
     # ../../../config/vscode/settings.nix
-    ./vscode-remote # import this if you want vscode server
+    # ./vscode-remote # import this if you want vscode server
   ];
 
   # enable vs-code remote
 
   config = {
-    services.vscode-server.enable = lib.mkDefault false; # true
+    # services.vscode-server.enable = lib.mkDefault false; # true
     programs.vscode = {
       enable = true;
       # package = pkgs.unstable.vscode;

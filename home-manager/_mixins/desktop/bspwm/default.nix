@@ -28,7 +28,7 @@ let
               ${bspc-bin} monitor -d I II III IV V VI VII VIII IX X
       elif  [[ $HOSTNAME == anubis && $external = *\ connected* ]]; then
               ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1366x768 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-              ${bspc-bin} monitor HDMI-1-0 -d I III V VII IX
+              ${bspc-bin} monitor HDMI-1 -d I III V VII IX
               ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
       else
               ${bspc-bin} monitor -d I II III IV V VI VII VIII IX X

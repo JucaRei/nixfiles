@@ -63,9 +63,9 @@ in
       "$HOME/.local/share/applications"
     ];
     pointerCursor = mkDefault {
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
-      size = 22;
+      package = mkDefault pkgs.bibata-cursors;
+      name = mkDefault "Bibata-Modern-Classic";
+      size = mkDefault 22;
       gtk.enable = true;
       x11.enable = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
     };
@@ -145,8 +145,8 @@ in
     iconTheme = {
       # name = "ePapirus-Dark";
       # package = pkgs.papirus-icon-theme;
-      package = pkgs.catppuccin-papirus-folders;
-      name = "Papirus";
+      package = mkDefault pkgs.catppuccin-papirus-folders;
+      name = mkDefault "Papirus";
     };
     theme = {
       # Catppuccin
@@ -163,9 +163,9 @@ in
     cursorTheme = {
       # name = "volantes_cursors";
       # package = pkgs.volantes-cursors;
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
-      size = 22;
+      # package = mkDefault pkgs.bibata-cursors;
+      # name = mkDefault "Bibata-Modern-Classic";
+      # size = mkDefault 22;
     };
     font = {
       # name = "Fira Code";

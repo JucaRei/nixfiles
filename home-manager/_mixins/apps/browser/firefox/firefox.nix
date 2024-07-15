@@ -18,8 +18,8 @@ let
     "general.useragent.compatMode.firefox" = true;
     "browser.tabs.tabMinWidth" = 16;
     "browser.toolbars.bookmarks.visibility" = "never";
-    "browser.download.always_ask_before_handling_new_types" = true;
-    "browser.download.sanitize_non_media_extensions" = false;
+    # "browser.download.always_ask_before_handling_new_types" = true;
+    # "browser.download.sanitize_non_media_extensions" = false;
     "browser.search.openintab" = false;
     "browser.startup.page" = 3; # Restore previous tabs
     "browser.uiCustomization.state" = ''
@@ -74,7 +74,7 @@ let
     "media.gmp-widevinecdm.enabled" = true;
     # "media.ffvpx.enabled" = false;
     # disable av1, vaapi on old hardware does not support av1
-    # "media.av1.enabled" = false;
+    "media.av1.enabled" = true;
     "media.ffmpeg.vaapi.enabled" = true;
     "places.history.enabled" = true;
     "security.ssl.errorReporting.enabled" = false;
@@ -148,7 +148,7 @@ let
     # Tweaks from archwiki
     "browser.cache.disk.enable" = true;
     "browser.cache.memory.enable" = true;
-    "browser.cache.memory.capacity" = -1;
+    # "browser.cache.memory.capacity" = -1;
     "browser.aboutConfig.showWarning" = false;
     "browser.preferences.defaultPerformanceSettings.enabled" = false;
     "middlemouse.paste" = false;
@@ -215,7 +215,7 @@ let
       TopSites = false;
     };
     FirefoxSuggest = {
-      WebSuggestions = false;
+      WebSuggestions = true;
       SponsoredSuggestions = false;
       ImproveSuggest = false;
       Locked = true;
@@ -227,7 +227,7 @@ let
       Locked = false;
       StartPage = "previous-session";
     };
-    NetworkPrediction = false;
+    NetworkPrediction = true;
     PopupBlocking = {
       Default = true;
     };
@@ -319,7 +319,7 @@ in
                 # noscript
                 search-by-image
                 #   clearurls
-                sponsorblock
+                # sponsorblock
                 #   darkreader
                 #   h264ify
                 #   df-youtube
