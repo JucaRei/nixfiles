@@ -226,12 +226,12 @@
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       # stateVersion = "23.11"; # default
-      libx = import ./lib { inherit inputs outputs stateVersion lib pkgs; };
+      helper = import ./lib { inherit inputs outputs stateVersion lib pkgs; };
 
     in
     {
       # Custom packages; acessible via 'nix build', 'nix shell', etc
-      packages = libx.systems (system:
+      packages = helper.systems (system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
         in
@@ -240,7 +240,7 @@
       ## nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
 
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
-      devShells = libx.systems (system:
+      devShells = helper.systems (system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
         in
@@ -257,7 +257,7 @@
       };
 
       # nix fmt
-      formatter = libx.systems (system:
+      formatter = helper.systems (system:
         nix-formatter-pack.lib.mkFormatter {
           pkgs = nixpkgs.legacyPackages.${system};
           config.tools = {
@@ -276,35 +276,35 @@
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
           # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
-          "juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; };
-          "juca@zion" = libx.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
-          "juca@air" = libx.mkHome { hostname = "air"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; };
-          "juca@anubis" = libx.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
-          "juca@oldarch" = libx.mkHome { hostname = "oldarch"; username = "juca"; desktop = "xfce"; stateVersion = "23.05"; };
-          #"juca@nitro" = libx.mkHome { hostname = "nitro"; username = "juca"; };
-          "juca@nitrovoid" = libx.mkHome { hostname = "nitrovoid"; username = "juca"; };
-          "juca@soyo" = libx.mkHome { hostname = "soyo"; username = "juca"; stateVersion = "24.05"; };
-          "juca@rocinante" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
-          "juca@rocinante-headless" = libx.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
-          "juca@vortex" = libx.mkHome { hostname = "vortex"; username = "juca"; };
+          "juca@nitro" = helper.mkHome { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@zion" = helper.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
+          "juca@air" = helper.mkHome { hostname = "air"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@anubis" = helper.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
+          "juca@oldarch" = helper.mkHome { hostname = "oldarch"; username = "juca"; desktop = "xfce"; stateVersion = "23.05"; };
+          #"juca@nitro" = helper.mkHome { hostname = "nitro"; username = "juca"; };
+          "juca@nitrovoid" = helper.mkHome { hostname = "nitrovoid"; username = "juca"; };
+          "juca@soyo" = helper.mkHome { hostname = "soyo"; username = "juca"; stateVersion = "24.05"; };
+          "juca@rocinante" = helper.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
+          "juca@rocinante-headless" = helper.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
+          "juca@vortex" = helper.mkHome { hostname = "vortex"; username = "juca"; };
           # Testing
-          "juca@hyperv" = libx.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
-          "juca@voidvm" = libx.mkHome { hostname = "voidvm"; username = "juca"; };
-          "juca@debianvm" = libx.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
-          "juca@vm-headless" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
+          "juca@hyperv" = helper.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
+          "juca@voidvm" = helper.mkHome { hostname = "voidvm"; username = "juca"; };
+          "juca@debianvm" = helper.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
+          "juca@vm-headless" = helper.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
           # Wsl
-          "juca@nitrowin" = libx.mkHome { hostname = "nitrowin"; username = "juca"; stateVersion = "23.11"; };
+          "juca@nitrowin" = helper.mkHome { hostname = "nitrowin"; username = "juca"; stateVersion = "23.11"; };
           # Raspberry 3
-          "juca@DietPi" = libx.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
+          "juca@DietPi" = helper.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
           # VMs
-          "juca@minimech" = libx.mkHome { hostname = "minimech"; username = "juca"; desktop = "bspwm"; };
-          "juca@scrubber" = libx.mkHome { hostname = "scrubber"; username = "juca"; desktop = "bspwm"; };
-          "juca@lima-builder" = libx.mkHome { hostname = "lima-builder"; username = "juca"; };
-          "juca@lima-default" = libx.mkHome { hostname = "lima-default"; username = "juca"; };
-          "juca@vm" = libx.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
+          "juca@minimech" = helper.mkHome { hostname = "minimech"; username = "juca"; desktop = "bspwm"; };
+          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; username = "juca"; desktop = "bspwm"; };
+          "juca@lima-builder" = helper.mkHome { hostname = "lima-builder"; username = "juca"; };
+          "juca@lima-default" = helper.mkHome { hostname = "lima-default"; username = "juca"; };
+          "juca@vm" = helper.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
           # Iso
-          # "juca@iso-console" = libx.mkHome { hostname = "iso-console"; username = "nixos"; };
-          # "juca@iso-desktop" = libx.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
+          # "juca@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
+          # "juca@iso-desktop" = helper.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
         };
       # hostids are generated using `mkhostid` alias
       nixosConfigurations = {
@@ -316,27 +316,27 @@
         # nom build .#nixosConfigurations.nitro.config.system.build.toplevel
 
         # ISO
-        iso-console = libx.mkHost { hostname = "iso-console"; username = "nixos"; };
-        iso-gnome = libx.mkHost { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; hostid = "f4173273"; };
-        iso-mate = libx.mkHost { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        iso-pantheon = libx.mkHost { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+        iso-console = helper.mkHost { hostname = "iso-console"; username = "nixos"; };
+        iso-gnome = helper.mkHost { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; hostid = "f4173273"; };
+        iso-mate = helper.mkHost { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        iso-pantheon = helper.mkHost { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles/nixfiles
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = libx.mkHost { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
-        air = libx.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
-        soyo = libx.mkHost { hostname = "soyo"; username = "juca"; stateVersion = "24.05"; };
-        rocinante = libx.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
-        rocinante-headless = libx.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
+        nitro = helper.mkHost { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
+        air = helper.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
+        soyo = helper.mkHost { hostname = "soyo"; username = "juca"; stateVersion = "24.05"; };
+        rocinante = helper.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
+        rocinante-headless = helper.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines
-        vm = libx.mkHost { hostname = "vm"; username = "juca"; desktop = "mate"; };
-        scrubber = libx.mkHost { hostname = "scrubber"; username = "juca"; desktop = "mate"; };
-        hyperv = libx.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
-        vm-headless = libx.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
+        vm = helper.mkHost { hostname = "vm"; username = "juca"; desktop = "mate"; };
+        scrubber = helper.mkHost { hostname = "scrubber"; username = "juca"; desktop = "mate"; };
+        hyperv = helper.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
+        vm-headless = helper.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
         # Raspberry
-        rasp3 = libx.mkHost { hostname = "rasp3"; username = "juca"; hostid = "6f2efa55"; };
+        rasp3 = helper.mkHost { hostname = "rasp3"; username = "juca"; hostid = "6f2efa55"; };
       };
     };
 }

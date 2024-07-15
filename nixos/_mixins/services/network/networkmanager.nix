@@ -71,22 +71,6 @@ in
         wireless.iwd.package = pkgs.unstable.iwd;
       };
 
-      # services = {
-      #   resolved = {
-      #     enable = true;
-      #     dnssec = "allow-downgrade";
-      #     fallbackDns = [
-      #       "1.1.1.1"
-      #       "8.8.8.8"
-      #     ];
-      #     llmnr = "true";
-      #     extraConfig = ''
-      #       Domains=~.
-      #       MulticastDNS=true
-      #     '';
-      #   };
-      # };
-
       # system.nssDatabases.hosts = lib.mkMerge [
       #   (lib.mkBefore [ "mdns_minimal [NOTFOUND=return]" ])
       #   (lib.mkAfter [ "mdns" ])
@@ -94,7 +78,19 @@ in
 
       services = {
         # DNS resolver
-        resolved.enable = true;
+        resolved = {
+          enable = true;
+          # dnssec = "allow-downgrade";
+          # fallbackDns = [
+          #   "1.1.1.1"
+          #   "8.8.8.8"
+          # ];
+          # llmnr = "true";
+          # extraConfig = ''
+          #   Domains=~.
+          #   MulticastDNS=true
+          # '';
+        };
       };
 
       # networking packages
