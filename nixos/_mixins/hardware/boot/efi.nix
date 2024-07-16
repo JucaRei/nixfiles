@@ -2,6 +2,7 @@
 with lib;
 let
   cfg = config.boot.mode.efi;
+  isNitro = if (hostname == "nitro") then true else false;
 in
 {
   options.boot.mode.efi = {
@@ -27,7 +28,7 @@ in
           # efiSysMountPoint = "/boot";
         };
         grub = {
-          useOSProber = if (hostname == "nitro") then true else false;
+          useOSProber = isNitro;
           enable = !config.boot.isContainer;
           default = "saved";
           # devices = [ "nodev" ]; # "nodev" for efi only
@@ -51,7 +52,7 @@ in
           # copyKernels = true;
 
           # useOSProber = false;
-          fsIdentifier = "provided";
+          fsIdentifier = mkIf (isNitro) "provided";
           # fsIdentifier = "label";
           gfxmodeEfi = "auto";
           #gfxmodeEfi = "1366x788";
@@ -69,7 +70,7 @@ in
       };
     };
 
-    environment = mkIf (hostname == "nitro") {
+    environment = mkIf (isNitro) {
       systemPackages = with pkgs;[ os-prober ];
     };
   };
