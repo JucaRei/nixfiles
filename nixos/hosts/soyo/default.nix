@@ -193,6 +193,19 @@
         ];
         noCheck = true;
       };
+
+      # Smb folders
+      "/mnt/sharecenter/volume_1" = {
+        device = "//192.168.1.207/volume_1";
+        fsType = "cifs";
+        options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+      };
+
+      "/mnt/sharecenter/volume_2" = {
+        device = "//192.168.1.207/volume_2/Transmission/complete";
+        fsType = "cifs";
+        options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+      };
     };
     swapDevices = [
       {

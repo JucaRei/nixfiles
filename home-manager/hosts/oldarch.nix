@@ -1,11 +1,12 @@
-{ pkgs, config, lib, ... }:
+{ pkgs, config, lib, system, ... }:
 let
-  # nixGL = (import
-  #   (builtins.fetchGit {
-  #     url = "http://github.com/guibou/nixGL";
-  #     ref = "refs/heads/backport/noGLVND";
-  #   })
-  #   { enable32bits = true; }).auto;
+  nixGL = (import
+    (builtins.fetchGit {
+      url = "http://github.com/guibou/nixGL";
+      ref = "refs/heads/backport/noGLVND";
+    })).auto;
+  # })
+  # { enable32bits = true; }).auto;
   # nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
   # nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
   # non-nixos = config.services.nonNixOs;
@@ -19,6 +20,30 @@ let
         | uniq
   '';
 
+  oldGL = import ../../lib/oldGL.nix { inherit config pkgs; };
+
+
+  nixGLWrapper = package: pkgs.stdenvNoCC.mkDerivation {
+    inherit (package) pname version meta;
+    doCheck = false;
+    dontUnpack = true;
+    dontBuild = true;
+    installPhase =
+      let
+        script = ''
+          #!/bin/sh
+          exec ${nixGL.packages.${system}.nixGLNvidia}/bin/nixGLNvidia ${package}/bin/${package.pname} "$@"
+        '';
+      in
+      ''
+        mkdir -p $out/bin
+        printf '${script}' > $out/bin/${package.pname}
+        chmod +x $out/bin/${package.pname}
+        mkdir -p $out/share
+        ${pkgs.xorg.lndir}/bin/lndir -silent ${package}/share $out/share
+      '';
+  };
+
 in
 {
   imports = [
@@ -26,7 +51,7 @@ in
     # ../_mixins/apps/browser/firefox/firefox.nix
     ../_mixins/console/bash
     ../_mixins/console/yt-dlp
-    ../_mixins/services/podman.nix
+    # ../_mixins/services/podman.nix
     ../_mixins/services/virt.nix
 
   ];
@@ -36,12 +61,13 @@ in
       cloneit
       font-search
       vimix-gtk-themes
+      # (oldGL thorium)
     ];
     services = {
       nonNixOs.enable = true;
       yt-dlp-custom.enable = true;
       bash.enable = true;
-      podman.enable = false;
+      # podman.enable = false;
       virt.libvirt.enable = false;
     };
     nix.settings = {

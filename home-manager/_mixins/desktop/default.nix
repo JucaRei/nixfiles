@@ -1,4 +1,5 @@
 { config, desktop, pkgs, username, lib, hostname, ... }:
+with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   walls = pkgs.fetchgit {
@@ -14,8 +15,8 @@ in
       # ../services/flatpak.nix
       ../fonts
     ]
-    ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-    ++ lib.optional
+    ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+    ++ optional
       (builtins.pathExists (./. + "/../../users/${username}/desktop.nix"))
       ../../users/${username}/desktop.nix;
 
@@ -26,7 +27,7 @@ in
 
   home = {
     # Authrorize X11 access in Distrobox
-    file = lib.mkIf isLinux {
+    file = mkIf isLinux {
       ".distroboxrc" = {
         text = ''
           ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
@@ -36,7 +37,7 @@ in
         # source = ./face.jpg;
         source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
       };
-      "Pictures/wallpapers".source = lib.mkForce "${walls}/images";
+      "Pictures/wallpapers".source = mkForce "${walls}/images";
     };
     packages = with pkgs; [
       black # Code format Python
@@ -61,10 +62,10 @@ in
       "$HOME/.local/bin"
       "$HOME/.local/share/applications"
     ];
-    pointerCursor = {
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
-      size = 22;
+    pointerCursor = mkDefault {
+      package = mkDefault pkgs.bibata-cursors;
+      name = mkDefault "Bibata-Modern-Classic";
+      size = mkDefault 22;
       gtk.enable = true;
       x11.enable = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
     };
@@ -76,7 +77,7 @@ in
     };
   };
 
-  gtk = {
+  gtk = mkDefault {
     enable = true;
     gtk2 = {
       configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
@@ -144,8 +145,8 @@ in
     iconTheme = {
       # name = "ePapirus-Dark";
       # package = pkgs.papirus-icon-theme;
-      package = pkgs.catppuccin-papirus-folders;
-      name = "Papirus";
+      package = mkDefault pkgs.catppuccin-papirus-folders;
+      name = mkDefault "Papirus";
     };
     theme = {
       # Catppuccin
@@ -162,9 +163,9 @@ in
     cursorTheme = {
       # name = "volantes_cursors";
       # package = pkgs.volantes-cursors;
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Classic";
-      size = 22;
+      # package = mkDefault pkgs.bibata-cursors;
+      # name = mkDefault "Bibata-Modern-Classic";
+      # size = mkDefault 22;
     };
     font = {
       # name = "Fira Code";

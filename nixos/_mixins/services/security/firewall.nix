@@ -34,7 +34,7 @@ let
       2375 # Docker
       22000 # Syncthing port
       9091 # Transmission
-      60450 # Transmission
+      51413 # Transmission
       80 # For gnomecast server
       8010 # For gnomecast server
       8888 # For gnomecast server
@@ -54,6 +54,7 @@ let
       137 # NetBIOS Name Service
       138 # NetBIOS Datagram Service
       3702 # wsdd : samba
+      51413 # Transmission
       5353 # For device discovery
       21027 # Syncthing port
       # Teamviewer
@@ -72,10 +73,10 @@ let
 in
 {
   options.services.firewall.enable = mkEnableOption "Weather enable or not Firewall";
-
   config = mkIf cfg.enable {
     networking = {
       firewall = {
+        interfaces."podman[0-9]+".allowedUDPPorts = [ 53 ];
         allowPing = true;
         enable = true;
         allowedTCPPorts =

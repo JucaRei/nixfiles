@@ -1,9 +1,9 @@
-{ config, lib, pkgs, username, inputs, ... }:
+{ config, lib, pkgs, hostname, username, inputs, ... }:
 with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   cfg = config.services.nonNixOs;
-
+  isOld = if (hostname == "oldarch") then false else true;
 in
 {
   options.services.nonNixOs = {
@@ -22,13 +22,14 @@ in
         nix-output-monitor
         nixpkgs-fmt
         nil
-        nixgl.auto.nixGLDefault # OpenGL for GUI apps
         # alejandra
         # rnix-lsp
         # base-packages
         # fzf
         # tmux
-      ];
+      ] ++ (with pkgs; optionals (isOld) [ nixgl.auto.nixGLDefault ]);
+      # OpenGL for GUI apps
+
 
       # file.".config/nix/nix.conf".text = ''
       #   experimental-features = nix-command flakes

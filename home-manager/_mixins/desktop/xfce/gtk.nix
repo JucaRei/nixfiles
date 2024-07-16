@@ -1,19 +1,21 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, lib, ... }:
+with lib;
+{
   gtk = {
     enable = true;
 
-    theme = {
+    theme = mkForce {
       name = "spacx-gtk-theme palenight";
       package = pkgs.spacx-gtk-theme;
     };
 
-    cursorTheme = {
+    cursorTheme = mkForce {
       name = "Breeze_Hacked";
       package = pkgs.unstable.breeze-hacked-cursor-theme;
       size = 24;
     };
 
-    iconTheme = {
+    iconTheme = mkForce {
       name = "Papirus Nord";
       package = pkgs.papirus-nord;
     };
@@ -41,7 +43,7 @@
   };
 
   home = {
-    pointerCursor = {
+    pointerCursor = mkForce {
       gtk.enable = true;
       x11.enable = true;
       package = pkgs.unstable.breeze-hacked-cursor-theme;
