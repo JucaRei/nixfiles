@@ -288,16 +288,16 @@
       };
 
       # Set up tmpfs for /run with a fixed size
-      "/run" = {
-        device = "tmpfs";
-        options = [ "size=5G" ];
-      };
+      # "/run" = {
+      #   device = "tmpfs";
+      #   options = [ "size=5G" ];
+      # };
 
       # Set up tmpfs for /tmp with a fixed size
-      "/tmp" = {
-        device = "tmpfs";
-        options = [ "size=5G" ];
-      };
+      # "/tmp" = {
+      #   device = "tmpfs";
+      #   options = [ "size=5G" ];
+      # };
 
       # Smb folders
       "/mnt/sharecenter/volume_1" = {
