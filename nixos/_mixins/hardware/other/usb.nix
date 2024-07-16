@@ -1,7 +1,4 @@
-{ pkgs
-, lib
-, ...
-}: {
+{ pkgs, lib, ... }: {
   # USB auto-mount
   services = {
     gvfs = {

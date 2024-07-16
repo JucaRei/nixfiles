@@ -1,7 +1,7 @@
-_: {
+{ config, ... }: {
   services = {
     irqbalance = {
-      enable = true;
+      enable = !config.boot.isContainer;
     };
   };
 }

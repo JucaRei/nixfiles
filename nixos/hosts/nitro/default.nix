@@ -557,32 +557,61 @@
 
     systemd = {
       oomd = { enable = false; };
-      services = {
-        zswap = {
-          description = "Enable ZSwap, set to LZ4 and Z3FOLD";
-          enable = true;
-          wantedBy = [ "basic.target" ];
-          path = [ pkgs.bash ];
-          serviceConfig = {
-            ExecStart = ''
-              ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
-                    echo 1 > enabled&& \
-                    echo 20 > max_pool_percent&& \
-                    echo lz4hc > compressor&& \
-                    echo z3fold > zpool'
-            '';
-            Type = "simple";
-          };
-        };
+      services =
+        let
+          # Mount details
+          description1 = "Volume_1";
+          description2 = "Volume_1";
+          device1 = "//192.168.1.207/volume_1";
+          device2 = "//192.168.1.207/volume_2/Transmission/complete";
+          protocol = "smb:";
 
-        nix-daemon = {
-          ### Limit resources used by nix-daemon
-          serviceConfig = {
-            MemoryMax = "8G";
-            MemorySwapMax = "12G";
+          bookmarks = "${protocol}${device1} ${description1}\n${protocol}${device2} ${description2}";
+        in
+        {
+          addBookmark = {
+            description = "Add SMB bookmark to GTK 3.0 bookmarks"; # Description of the systemd service
+
+            # Add the bookmark entry only if it doesn't already exist
+            script = ''
+              bookmark="${bookmarks}"
+              bookmark_file=${config.users.users.${username}.home}/.config/gtk-3.0/bookmarks
+              if ! grep -Fxq "$bookmarks" "$bookmark_file"; then
+                echo "$bookmark" >> "$bookmark_file"
+              fi
+            '';
+
+            wantedBy = [ "multi-user.target" ]; # Target to start the service
+            serviceConfig = {
+              Type = "oneshot"; # systemd service (one-shot)
+            };
+          };
+
+          zswap = {
+            description = "Enable ZSwap, set to LZ4 and Z3FOLD";
+            enable = true;
+            wantedBy = [ "basic.target" ];
+            path = [ pkgs.bash ];
+            serviceConfig = {
+              ExecStart = ''
+                ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
+                      echo 1 > enabled&& \
+                      echo 20 > max_pool_percent&& \
+                      echo lz4hc > compressor&& \
+                      echo z3fold > zpool'
+              '';
+              Type = "simple";
+            };
+          };
+
+          nix-daemon = {
+            ### Limit resources used by nix-daemon
+            serviceConfig = {
+              MemoryMax = "8G";
+              MemorySwapMax = "12G";
+            };
           };
         };
-      };
 
       sleep.extraConfig = ''
         AllowHibernation=yes

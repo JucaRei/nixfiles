@@ -140,6 +140,12 @@ in
       # Disable autoSuspend; my Pantheon session kept auto-suspending
       # - https://discourse.nixos.org/t/why-is-my-new-nixos-install-suspending/19500
       # displayManager.gdm.autoSuspend = if (desktop == "pantheon") then true else false;
+
+      displayManager = {
+        sessionCommands = ''
+          ${pkgs.numlockx}/bin/numlockx on
+        '';
+      };
     };
     samba = {
       enable =

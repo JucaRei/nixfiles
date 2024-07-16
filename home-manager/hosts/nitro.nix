@@ -108,7 +108,7 @@ with lib;
       brave.enable = true;
       # properties.enable = false;
       vscode-server = {
-        enable = lib.mkForce true;
+        # enable = lib.mkForce true;
         enableFHS = lib.mkForce true;
         nodejsPackage = pkgs.nodejs-18_x;
         # extraRuntimeDependencies = pkgs: with pkgs; [
