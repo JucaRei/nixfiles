@@ -274,7 +274,7 @@ in
           "nfi" = "nix flake init";
           "nfl" = "nix flake lock";
           "nfm" = "nix flake metadata";
-          "nfs" = "nix flake show";
+          # "nfs" = "nix flake show";
           "nfu" = "nix flake update";
           "nfuc" = "nix flake update && nix flake check";
 

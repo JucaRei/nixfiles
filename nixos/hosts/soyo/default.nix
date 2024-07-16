@@ -299,6 +299,30 @@
       #   options = [ "size=5G" ];
       # };
 
+      # alias volume2="sudo mount -t nfs 192.168.1.207:/mnt/HD/HD_a2 /mnt/sharecenter/volume_1 -o nolock"
+      # alias volume1="sudo mount -t nfs 192.168.1.207:/mnt/HD/HD_b2 /mnt/sharecenter/volume_2 -o nolock"
+
+      "/mnt/sharecenter/volume_1" = {
+        device = "10.42.0.1:/export/encrypted";
+        fsType = "nfs";
+        #options = [ "nfsvers=4.2" ];
+        options = [
+          "proto=tcp"
+          "mountproto=tcp" # NFSv3 only
+          "soft" # return errors to client when access is lost, instead of waiting indefinitely
+          "softreval" # use cache even when access is lost
+          "timeo=100"
+          "noatime"
+          "nodiratime"
+          "noauto" # don't mount until needed
+          #"x-systemd.requires=example.service"
+          "x-systemd.automount" # mount when accessed
+          "_netdev" # wait for network
+          "x-systemd.mount-timeout=5"
+          "x-systemd.idle-timeout=3600"
+        ];
+      };
+
       ### Smb folders
       # "/mnt/sharecenter/volume_1" = {
       #   device = "//192.168.1.207/volume_1";
