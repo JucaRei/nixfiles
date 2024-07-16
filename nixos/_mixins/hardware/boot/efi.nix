@@ -30,7 +30,7 @@ in
         grub = {
           useOSProber = isNitro;
           enable = !config.boot.isContainer;
-          default = "saved";
+          default = mkIf (isNitro) "saved";
           # devices = [ "nodev" ]; # "nodev" for efi only
           device = "nodev"; # "nodev" for efi only
           efiSupport = true;
@@ -52,7 +52,7 @@ in
           # copyKernels = true;
 
           # useOSProber = false;
-          fsIdentifier = mkIf (isNitro) "provided";
+          fsIdentifier = "provided";
           # fsIdentifier = "label";
           gfxmodeEfi = "auto";
           #gfxmodeEfi = "1366x788";
