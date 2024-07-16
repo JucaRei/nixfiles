@@ -107,6 +107,20 @@ with lib;
       yt-dlp-custom.enable = true;
       brave.enable = true;
       # properties.enable = false;
+      vscode-server = {
+        enable = lib.mkForce true;
+        enableFHS = lib.mkForce true;
+        nodejsPackage = pkgs.nodejs-18_x;
+        # extraRuntimeDependencies = pkgs: with pkgs; [
+        #   nixpkgs-fmt # formatter
+        #   nix-output-monitor # better output from builds
+        #   nil # lsp server
+        #   nix-direnv # A shell extension that manages your environment for nix
+        #   git # versioning
+        #   wget
+        #   curl
+        # ];
+      };
 
       # aria2.enable = true;
       flatpak.packages = [
