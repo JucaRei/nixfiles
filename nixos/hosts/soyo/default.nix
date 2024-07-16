@@ -312,6 +312,8 @@
           "nfsvers=3"
           # "no_root_squash"
           "nolock"
+          "uid=1000"
+          "gid=1000"
           "soft" # return errors to client when access is lost, instead of waiting indefinitely
           # "softreval" # use cache even when access is lost
           "noexec" # Prevents execution of binaries on mounted file systems. This is useful if the system is mounting a non-Linux file system via NFS containing incompatible binaries.
@@ -338,6 +340,8 @@
           "nfsvers=3"
           # "no_root_squash"
           "nolock"
+          "uid=1000"
+          "gid=1000"
           "soft" # return errors to client when access is lost, instead of waiting indefinitely
           # "softreval" # use cache even when access is lost
           "noexec" # Prevents execution of binaries on mounted file systems. This is useful if the system is mounting a non-Linux file system via NFS containing incompatible binaries.
