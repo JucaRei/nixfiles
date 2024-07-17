@@ -676,7 +676,8 @@ in
         touchpad = {
           # horizontalScrolling = true;
           # tappingDragLock = false;
-          accelProfile = "flat";
+          accelProfile = "adaptive";
+          accelSpeed = "0.5";
           tapping = true;
           scrollMethod = "twofinger";
           disableWhileTyping = true;
@@ -845,38 +846,6 @@ in
         #   item = "memlock";
         #   value = "infinity";
         # }
-
-        # Audio realtime processes have higher priority than normal processes
-        {
-          domain = "@audio";
-          type = "-";
-          item = "rtprio";
-          value = 99;
-        }
-        {
-          domain = "@audio";
-          type = "-";
-          item = "memlock";
-          value = "unlimited";
-        }
-        {
-          domain = "@audio";
-          type = "-";
-          item = "nice";
-          value = -11;
-        }
-        {
-          domain = "@audio";
-          item = "nofile";
-          type = "soft";
-          value = "99999";
-        }
-        {
-          domain = "@audio";
-          item = "nofile";
-          type = "hard";
-          value = "524288";
-        }
       ];
       # allow screen lockers to also unlock the screen
       # (e.g. swaylock, gtklock)
