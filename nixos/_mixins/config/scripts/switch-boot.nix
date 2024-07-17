@@ -1,6 +1,6 @@
 { pkgs }:
 
-pkgs.writeScriptBin "switch-host" ''
+pkgs.writeScriptBin "switch-boot" ''
   #!${pkgs.stdenv.shell}
 
   if [ -e $HOME/.dotfiles/nixfiles ]; then
