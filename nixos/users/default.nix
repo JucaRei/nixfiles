@@ -19,7 +19,6 @@ in
       group = "${username}";
     };
     users.${username} = {
-      description = "${username}";
       extraGroups = [
         "audio"
         "input"
