@@ -54,7 +54,7 @@ in
     daemonIOSchedPriority = 7; # Set I/O scheduling priority for daemon processes to 7
     gc = {
       automatic = true;
-      dates = "daily 20:00"; # Schedule the task to run weekly / daily and 24hr time
+      dates = "20:00"; # Schedule the task to run weekly / daily and 24hr time
       options = "--delete-older-than 10d"; # Specify options for the task: delete files older than 10 days
       randomizedDelaySec = "14m";
     };
