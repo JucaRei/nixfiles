@@ -162,6 +162,8 @@
         compsize
         cloneit
         lm_sensors
+
+        nixos-tweaker
       ];
     };
     ##################

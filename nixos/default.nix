@@ -47,23 +47,21 @@ in
   ###################
 
   nix = {
-    # smooth rebuilds
     # give nix-daemon the lowest priority
-    # Reduce disk usage
-    daemonIOSchedClass = "idle";
+    daemonIOSchedClass = "idle"; # Reduce disk usage
     # Leave nix builds as a background task
-    daemonCPUSchedPolicy = "idle";
-    daemonIOSchedPriority = 7; # only used by "best-effort"
+    daemonCPUSchedPolicy = "idle"; # Set CPU scheduling policy for daemon processes to idle
+    daemonIOSchedPriority = 7; # Set I/O scheduling priority for daemon processes to 7
     gc = {
       automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
+      dates = "daily 20:00"; # Schedule the task to run weekly / daily and 24hr time
+      options = "--delete-older-than 10d"; # Specify options for the task: delete files older than 10 days
+      randomizedDelaySec = "14m";
     };
     # distributedBuilds = true;
     ### This will add each flake input as a registry
     ### To make nix3 commands consistent with your flake
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-    # nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
     ### Add nixpkgs input to NIX_PATH
     ### This lets nix2 commands still use <nixpkgs>
     nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
@@ -99,10 +97,10 @@ in
       keep-derivations = true;
       keep-going = true;
       warn-dirty = false;
-      # execute builds inside cgroups
-      use-cgroups = true;
+      tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
+      use-cgroups = true; # execute builds inside cgroups
       system-features = [
-        #   ## Allows building v3/v4 packages
+        ## Allows building v3/v4 packages
         "gccarch-x86-64-v3"
         "gccarch-x86-64-v4"
         "kvm"
@@ -639,6 +637,14 @@ in
 
     snap.enable = notVM;
 
+    # Enable GEO location
+    geoclue2 = {
+      enable = true;
+    };
+
+    # Timesyncd: Synchronizes system time with network time servers
+    timesyncd.enable = true;
+
     avahi = {
       enable = true;
       nssmdns = true;
@@ -708,9 +714,20 @@ in
     # to prevent nix-shell complaining about no space left
     # default value is 10% of total RAM
     # writes to: /etc/systemd/logind.conf
-    logind.extraConfig = ''
-      RuntimeDirectorySize=2G
-    '';
+    logind = {
+      extraConfig = ''
+        # Set the maximum size of runtime directories to 100%
+        RuntimeDirectorySize=100%
+
+        # Set the maximum number of inodes in runtime directories to 1048576
+        RuntimeDirectoryInodesMax=1048576
+
+        # to prevent nix-shell complaining about no space left
+        # default value is 10% of total RAM
+        # writes to: /etc/systemd/logind.conf
+        RuntimeDirectorySize=2G
+      '';
+    };
 
     dbus = {
       # Enable the D-Bus service, which is a message bus system that allows

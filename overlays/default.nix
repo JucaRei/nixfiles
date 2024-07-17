@@ -146,6 +146,7 @@ in
     nix-cleanup = prev.nix-cleanup;
     nix-whereis = prev.nix-whereis;
     nix-inspect = prev.nix-inspect;
+    nixos-tweaker = prev.nixos-tweaker;
     sarasa-gothic = prev.sarasa-gothic;
     iosevka-q = prev.iosevka-q;
     nf-iosevka = prev.nf-iosevka;

@@ -23,16 +23,16 @@ in
         #   allowedUDPPorts = [ 5353 5355 ];
         # };
 
-        nameservers = [ "1.1.1.1" ];
+        # nameservers = [ "1.1.1.1" ];
         timeServers = [ "192.168.1.1" "time.google.com" "time.cloudflare.com" ];
 
         networkmanager = {
           enable = true;
           # Append Cloudflare and Google DNS servers
-          # appendNameservers = [
-          # "1.1.1.1"
-          # "8.8.8.8"
-          # ];
+          appendNameservers = [
+            "1.1.1.1"
+            "8.8.8.8"
+          ];
           dns = "systemd-resolved";
 
           #---------------------------------------------------------------------

@@ -63,8 +63,6 @@
     dbus.packages = with pkgs; [ budgie.budgie-control-center ];
     blueman.enable = true;
 
-    geoclue2.enable =
-      lib.mkDefault true; # for BCC's Privacy > Location Services panel.
     colord.enable = lib.mkDefault true; # for BCC's Color panel.
     accounts-daemon.enable = lib.mkDefault true; # for BCC's Users panel.
     fprintd.enable = lib.mkDefault true; # for BCC's Users panel.
