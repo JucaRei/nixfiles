@@ -103,8 +103,8 @@ in
       use-cgroups = true;
       system-features = [
         #   ## Allows building v3/v4 packages
-        #   "gccarch-x86-64-v3"
-        #   "gccarch-x86-64-v4"
+        "gccarch-x86-64-v3"
+        "gccarch-x86-64-v4"
         "kvm"
         "recursive-nix"
         "big-parallel"
