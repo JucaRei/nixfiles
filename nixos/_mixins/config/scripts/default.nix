@@ -7,7 +7,7 @@ let
   purge-gpu-caches = import ./purge-gpu-caches.nix { inherit pkgs; };
   simple-password = import ./simple-password.nix { inherit pkgs; };
   switch-all = import ./switch-all.nix { inherit pkgs; };
-  boot-host = import ./boot-host.nix { inherit pkgs; };
+  # boot-host = import ./boot-host.nix { inherit pkgs; };
   switch-host = import ./switch-host.nix { inherit pkgs; };
   switch-boot = import ./switch-boot.nix { inherit pkgs; };
   unroll-url = import ./unroll-url.nix { inherit pkgs; };
@@ -22,7 +22,7 @@ in
     purge-gpu-caches
     simple-password
     switch-all
-    boot-host
+    # boot-host
     switch-boot
     switch-host
     unroll-url
