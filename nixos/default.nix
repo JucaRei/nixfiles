@@ -544,20 +544,9 @@ in
   };
 
   systemd = {
-
-    # By default nix-gc makes no effort to respect battery life by avoding
-    # GC runs on battery and fully commits a few cores to collecting garbage.
-    # This will drain the battery faster than you can say "Nix, what the hell?"
-    # and contribute heavily to you wanting to get a new desktop.
-    # For those curious (such as myself) desktops are always seen as "AC powered"
-    # so the system will not fail to fire if you are on a desktop system.
-    services.nix-gc = {
-      unitConfig.ConditionACPower = true;
-    };
-
     user = {
       extraConfig = ''
-        DefaultTimeoutStopSec=15s
+        DefaultTimeoutStopSec=10s
         DefaultTimeoutAbortSec=8s
       '';
     };
@@ -567,13 +556,23 @@ in
     ];
 
     extraConfig = ''
-      DefaultTimeoutStartSec=10s
+      DefaultTimeoutStartSec=8s
       DefaultTimeoutStopSec=10s
-      DefaultDeviceTimeoutSec=10s
+      DefaultDeviceTimeoutSec=8s
       DefaultTimeoutAbortSec=10s
     '';
 
     services = {
+
+      # By default nix-gc makes no effort to respect battery life by avoding
+      # GC runs on battery and fully commits a few cores to collecting garbage.
+      # This will drain the battery faster than you can say "Nix, what the hell?"
+      # and contribute heavily to you wanting to get a new desktop.
+      # For those curious (such as myself) desktops are always seen as "AC powered"
+      # so the system will not fail to fire if you are on a desktop system.
+      nix-gc = {
+        unitConfig.ConditionACPower = true;
+      };
       # disable-wifi-powersave = {
       #   wantedBy = [ "multi-user.target" ];
       #   path = [ pkgs.iw ];
@@ -582,6 +581,17 @@ in
       #   '';
       # };
 
+      # ---------------------------------------------------------------------
+      # Do not restart these, since it messes up the current session
+      # ---------------------------------------------------------------------
+      NetworkManager.restartIfChanged = true;
+      configure-flathub-repo.restartIfChanged = true;
+      display-manager.restartIfChanged = false;
+      libvirtd.restartIfChanged = false;
+      openssh.restartIfChanged = true;
+      polkit.restartIfChanged = true;
+      systemd-logind.restartIfChanged = false;
+      # wpa_supplicant.restartIfChanged = false;
 
       # Enable Multi-Gen LRU:
       # - https://docs.kernel.org/next/admin-guide/mm/multigen_lru.html
@@ -605,6 +615,14 @@ in
       # https://discourse.nixos.org/t/boot-faster-by-disabling-udev-settle-and-nm-wait-online/6339
       systemd-udev-settle.enable = lib.mkForce false;
       # systemd-user-sessions.enable = false;
+
+      # Modify autoconnect priority of the connection to my home network
+      # modify-autoconnect-priority = {
+      #   description = "Modify autoconnect priority of OPTUS_B27161 connection";
+      #   script = ''
+      #     nmcli connection modify OPTUS_B27161 connection.autoconnect-priority 1
+      #   '';
+      # };
     };
 
     targets = lib.mkIf (isInstall) {
@@ -698,7 +716,7 @@ in
       # Enable the D-Bus service, which is a message bus system that allows
       # communication between applications.
       enable = true;
-      implementation = if (isWorkstation && notVM) then "broker" else "dbus";
+      implementation = if (isWorkstation && notVM && hostname != "soyo") then "broker" else "dbus";
     };
 
     getty = {
