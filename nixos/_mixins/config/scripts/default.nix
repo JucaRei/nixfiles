@@ -9,6 +9,7 @@ let
   switch-all = import ./switch-all.nix { inherit pkgs; };
   boot-host = import ./boot-host.nix { inherit pkgs; };
   switch-host = import ./switch-host.nix { inherit pkgs; };
+  switch-boot = import ./switch-boot.nix { inherit pkgs; };
   unroll-url = import ./unroll-url.nix { inherit pkgs; };
   isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
 in
@@ -22,6 +23,7 @@ in
     simple-password
     switch-all
     boot-host
+    switch-boot
     switch-host
     unroll-url
   ] ++ lib.optionals (isInstall) [
