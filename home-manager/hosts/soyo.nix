@@ -20,7 +20,8 @@
         #   curl
         # ];
       };
-      eza.enable = true;
+      eza.enable = false;
+      lsd.enable = true;
       yt-dlp-custom.enable = true;
     };
   };
