@@ -783,6 +783,7 @@ in
       # autosuspend USB devices && autosuspend PCI devices
       # (https://gentoostudio.org/?page_id=420)
       extraRules = ''
+        KERNEL=="cpu_dma_latency", GROUP="audio"
         KERNEL=="rtc0", GROUP="audio"
         KERNEL=="hpet", GROUP="audio"
         ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="ext4", ATTR{../queue/scheduler}="kyber"
@@ -844,6 +845,38 @@ in
         #   item = "memlock";
         #   value = "infinity";
         # }
+
+        # Audio realtime processes have higher priority than normal processes
+        {
+          domain = "@audio";
+          type = "-";
+          item = "rtprio";
+          value = 99;
+        }
+        {
+          domain = "@audio";
+          type = "-";
+          item = "memlock";
+          value = "unlimited";
+        }
+        {
+          domain = "@audio";
+          type = "-";
+          item = "nice";
+          value = -11;
+        }
+        {
+          domain = "@audio";
+          item = "nofile";
+          type = "soft";
+          value = "99999";
+        }
+        {
+          domain = "@audio";
+          item = "nofile";
+          type = "hard";
+          value = "524288";
+        }
       ];
       # allow screen lockers to also unlock the screen
       # (e.g. swaylock, gtklock)
