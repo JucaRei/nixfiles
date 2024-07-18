@@ -52,7 +52,9 @@
       ];
       kernelParams = [
         # intel cpu
-        "i915.fastboot=1"
+        # "i915.fastboot=1"
+        "i965" # Kernel module for Intel integrated graphics.
+        # "i965.modeset=1" # Enables modesetting for the Intel i915 driver.
         "enable_gvt=1"
         "mem_sleep_default=deep"
         "quiet"
@@ -129,11 +131,19 @@
           "fs.aio-max-nr" = 524288; # Increase maximum number of asynchronous I/O requests for faster file I/O.
           "fs.inotify.max_user_watches" = 1048576; # Increase maximum number of file system watches for better file system monitoring.
 
+          "dev.i915.perf_stream_paranoid" = 0; # Enable performance support
+
           # Nobara Tweaks
           "kernel.panic" = 5; # Reboot after 5 seconds on kernel panic.
         };
       };
       extraModulePackages = [ ];
+      extraModprobeConfig = lib.mkMerge [
+        "options i965 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=1 disable_power_well=1" # Configuration for Intel integrated graphics.
+        # "options iwlmvm power_scheme=3" # Sets a power-saving scheme for Intel Wi-Fi drivers.
+        # "options iwlwifi power_save=1 uapsd_disable=1 power_level=5" # Manages power-saving features for Intel Wi-Fi drivers.
+        "options snd_hda_intel power_save=1 power_save_controller=Y" # Configures power-saving for Intel High Definition Audio (HDA) hardware.
+      ];
       blacklistedKernelModules = [ "nouveau" "nvidia" ];
     };
 
@@ -147,15 +157,17 @@
           intel-media-sdk
 
           # Accelerated Video Playback
-          intel-media-driver # LIBVA_DRIVER_NAME=iHD
-          # intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
+          # intel-media-driver # LIBVA_DRIVER_NAME=iHD
+          intel-vaapi-driver # LIBVA_DRIVER_NAME=i965 (older but works better for Firefox/Chromium)
           vaapiIntel
           libvdpau-va-gl
         ];
       };
     };
     environment = {
-      sessionVariables = { LIBVA_DRIVER_NAME = "iHD"; }; # Force intel-media-driver
+      # sessionVariables = {
+      #   LIBVA_DRIVER_NAME = "iHD";
+      # }; # Force intel-media-driver
       systemPackages = with pkgs; [
         btdu
         btrfs-progs
