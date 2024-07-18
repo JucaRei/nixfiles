@@ -1,8 +1,6 @@
-{ pkgs, config, desktop, hostname, lib, ... }:
+{ pkgs, config, desktop, hostname, lib, isLima, isWorkstation, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  isLima = builtins.substring 0 5 hostname == "lima-";
-  isWorkstation = if (desktop != null) then true else false;
   isStreamstation = if (hostname == "phasma" || hostname == "vader") then true else false;
   home-build = import ./config/scripts/home-build.nix { inherit pkgs; };
   home-switch = import ./config/scripts/home-switch.nix { inherit pkgs; };
@@ -15,6 +13,7 @@ in
   imports = [
     # ./config/scripts/home-manager_change_summary.nix
     ./console
+    # ./config/scripts/nh-home
   ]
   ++ lib.optional (isWorkstation) ./desktop;
 
@@ -154,6 +153,19 @@ in
       jq = {
         enable = true;
         package = pkgs.jiq;
+      };
+    };
+
+    xdg = {
+      enable = isLinux;
+      userDirs = {
+        # Do not create XDG directories for LIMA; it is confusing
+        enable = isLinux && !isLima;
+        createDirectories = lib.mkDefault true;
+        extraConfig = {
+          XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/screenshots";
+        };
+
       };
     };
   };

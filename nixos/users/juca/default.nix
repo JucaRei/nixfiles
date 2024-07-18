@@ -1,6 +1,5 @@
-{ config, desktop, hostname, inputs, lib, pkgs, platform, username, ... }:
+{ config, desktop, hostname, inputs, lib, pkgs, platform, isWorkstation, username, ... }:
 let
-  isWorkstation = if (desktop != null) then true else false;
   isServer = if (hostname == "DietPi") then true else false;
 in
 {

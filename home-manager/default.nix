@@ -1,8 +1,6 @@
-{ config, desktop, inputs, lib, outputs, pkgs, stateVersion, username, hostname, ... }:
+{ config, desktop, inputs, lib, outputs, pkgs, stateVersion, username, hostname, isWorkstation, isLima, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  isLima = builtins.substring 0 5 hostname == "lima-";
-  isWorkstation = if (desktop != null) then true else false;
 in
 {
   # Only import desktop configuration if the host is desktop enabled

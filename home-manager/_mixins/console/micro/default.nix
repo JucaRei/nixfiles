@@ -25,6 +25,7 @@ in
         savecursor = true;
         saveundo = true;
         scrollbar = true;
+        scrollbarchar = "░";
         backup = true;
         basename = false;
         colorcolumn = 0;
@@ -58,7 +59,6 @@ in
         savehistory = true;
         scrollmargin = 3;
         scrollspeed = 2;
-        scrollbarchar = "•";
         smartpaste = true;
         softwrap = false;
         splitbottom = true;

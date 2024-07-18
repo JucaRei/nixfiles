@@ -326,6 +326,14 @@ in
               ];
               search = {
                 engines = {
+                  "NixOS Wiki" = {
+                    urls = [
+                      {
+                        template = "https://nixos.wiki/index.php?search={searchTerms}";
+                      }
+                    ];
+                    definedAliases = [ "@nw" ];
+                  };
                   "NixOS Options" = {
                     urls = [
                       {
@@ -372,13 +380,12 @@ in
                     icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
                     definedAliases = [ "@np" ];
                   };
-                  "NixOS Wiki" = {
-                    urls = [
-                      {
-                        template = "https://nixos.wiki/index.php?search={searchTerms}";
-                      }
-                    ];
-                    definedAliases = [ "@nw" ];
+                  "NixOS Discourse" = {
+                    urls = [{
+                      template = "https://discourse.nixos.org/search?q={searchTerms}";
+                    }];
+                    icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+                    definedAliases = [ "@nd" ];
                   };
                   "Home Manager Options" = {
                     urls = [{ template = "https://home-manager-options.extranix.com/?query={searchTerms}&release = master "; }];
@@ -462,6 +469,12 @@ in
                   name = "Nix sites";
                   toolbar = true;
                   bookmarks = [
+                    {
+                      name = "NixOS Discourse";
+                      keyword = "nd";
+                      tags = [ "nix" "forum" "blog" ];
+                      url = "https://discourse.nixos.org";
+                    }
                     {
                       name = "Nix Package";
                       keyword = "np";
