@@ -26,7 +26,7 @@ in
     # ++ lib.optional (notVM) ./_mixins/virtualization/podman.nix # podman not connecting to internet
     ++ lib.optional (notVM && hostname != "soyo") ./_mixins/services/tools/smartmon.nix
     ++ lib.optional (notVM) ./_mixins/virtualization/docker.nix
-    ++ lib.optional (notVM) ./_mixins/virtualization/lxd.nix
+    ++ lib.optional (notVM && hostname != "soyo") ./_mixins/virtualization/lxd.nix
     ++ lib.optional (isWorkstation) ./_mixins/desktop
     ++ lib.optional (isWorkstation) ./_mixins/sys;
 
