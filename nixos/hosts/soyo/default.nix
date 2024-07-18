@@ -59,6 +59,7 @@
         "mem_sleep_default=deep"
         "quiet"
 
+        "pcie_aspm=force" # pcie active state power management
         "elevator=kyber" # Change IO scheduler to Kyber
         "fbcon=nodefer" # Prevent the kernel from blanking plymouth out of the framebuffer
         "intel_iommu=on" # Enable IOMMU
@@ -139,7 +140,7 @@
       };
       extraModulePackages = [ ];
       extraModprobeConfig = lib.mkMerge [
-        "options i965 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=1 disable_power_well=1" # Configuration for Intel integrated graphics.
+        "options i965 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=2 disable_power_well=1" # Configuration for Intel integrated graphics.
         # "options iwlmvm power_scheme=3" # Sets a power-saving scheme for Intel Wi-Fi drivers.
         # "options iwlwifi power_save=1 uapsd_disable=1 power_level=5" # Manages power-saving features for Intel Wi-Fi drivers.
         "options snd_hda_intel power_save=1 power_save_controller=Y" # Configures power-saving for Intel High Definition Audio (HDA) hardware.
@@ -170,6 +171,16 @@
       # sessionVariables = {
       #   LIBVA_DRIVER_NAME = "iHD";
       # }; # Force intel-media-driver
+
+      # Disable X11 libraries on headless systems to save as much space as we possibly can.
+      # Settings this to true generally breaks a lot of GUI and non-GUI packages that, for
+      # some reason, depend on xlibs. If this is true, said packages may also need to be
+      # put into overlays. See `./nix.nix` for an example for Nginx.
+      # noXlibs = false;
+
+      # On servers, print the URL instead of trying to open them with a browser.
+      # variables.BROWSER = "echo";
+
       systemPackages = with pkgs; [
         btdu
         btrfs-progs
@@ -443,7 +454,13 @@
           };
         };
       };
+
+      sleep.extraConfig = lib.mkForce ''
+        AllowSuspend=no
+        AllowHibernation=no
+      '';
     };
+    powerManagement.cpuFreqGovernor = lib.mkForce "schedutil";
     nixpkgs = {
       hostPlatform = lib.mkDefault "x86_64-linux";
     };
