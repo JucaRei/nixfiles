@@ -9,7 +9,7 @@
       enable = true;
       user = "kodi";
       # program = "${pkgs.kodi-wayland}/bin/kodi-standalone";
-      program = "${pkgs.kodi-wayland}/bin/kodi-standalone";
+      program = "${pkgs.kodi}/bin/kodi-standalone";
       environment = {
         # TODO does this suppport layout switching? try out
         # XKB_DEFAULT_LAYOUT = "br,en";
@@ -25,6 +25,6 @@
   environment.systemPackages = with pkgs; [
     # for manual usage if needed
     pkgs.cage
-    pkgs.kodi-wayland
+    pkgs.kodi
   ];
 }
