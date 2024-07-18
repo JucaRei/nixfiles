@@ -1,4 +1,4 @@
-{ desktop, lib, pkgs, hostname, username, ... }:
+{ desktop, lib, pkgs, hostname, username, isInstall, ... }:
 with lib;
 # with builtins;
 let
@@ -9,7 +9,6 @@ let
   notVM = if (hostname == "minimech" || hostname == "scrubber" || hostname == "vm" || builtins.substring 0 5 hostname == "lima-" || hostname == "rasp3") then false else true;
 
   defaultDns = [ "1.1.1.1" "1.0.0.1" ];
-  isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
   needsLowLatencyPipewire = if (hostname == "vm" || hostname == "scrubber") then true else false;
   saveBattery = if (hostname != "scrubber" && hostname != "vader") then true else false;
   hasRazerPeripherals = if (hostname == "phasma" || hostname == "vader") then true else false;
@@ -135,13 +134,13 @@ in
   services = {
     # Disable xterm
     xserver = {
-      excludePackages = [ pkgs.xterm ];
-      desktopManager.xterm.enable = false;
+      excludePackages = lib.mkIf (hostname != "soyo") [ pkgs.xterm ];
+      desktopManager.xterm.enable = lib.mkIf (hostname != "soyo") false;
       # Disable autoSuspend; my Pantheon session kept auto-suspending
       # - https://discourse.nixos.org/t/why-is-my-new-nixos-install-suspending/19500
       # displayManager.gdm.autoSuspend = if (desktop == "pantheon") then true else false;
 
-      displayManager = {
+      displayManager = lib.mkIf (hostname != "soyo") {
         sessionCommands = ''
           ${pkgs.numlockx}/bin/numlockx on
         '';
@@ -246,7 +245,7 @@ in
       enable = true;
     };
 
-    pipewire = {
+    pipewire = lib.mkIf (hostname != "soyo") {
       enable = true;
       alsa.enable = true;
       alsa.support32Bit = isGamestation;
@@ -302,7 +301,7 @@ in
     #   users = [ "${username}" ];
     # };
 
-    pulseaudio.enable = lib.mkForce false;
+    pulseaudio.enable = lib.mkIf (hostname == "soyo");
     sane = lib.mkIf (isInstall) {
       enable = true;
       #extraBackends = with pkgs; [ hplipWithPlugin sane-airscan ];

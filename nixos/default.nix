@@ -1,9 +1,7 @@
-{ config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs, stateVersion, username, hostid, platform, ... }:
+{ config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs, stateVersion, username, hostid, platform, isWorkstation, isInstall, ... }:
 let
   notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
   # Create some variable to control what doesn't get installed/enabled
-  isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
-  isWorkstation = if (desktop != null) then true else false;
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in
 {
@@ -410,7 +408,7 @@ in
       # ssh-to-age
     ] ++ lib.optionals (isInstall && isWorkstation) [
       pods
-    ] ++ lib.optionals (isInstall && isWorkstation && notVM) [
+    ] ++ lib.optionals (isInstall && isWorkstation && notVM && hostname != "soyo") [
       quickemu
     ] ++ lib.optionals (isInstall && hasNvidia) [
       # unstable.nvtop
@@ -633,7 +631,7 @@ in
   services = {
     ### My modules
     nm-manager.enable = true;
-    firewall.enable = isWorkstation;
+    firewall.enable = isWorkstation && hostname != "soyo";
     #########################
 
     snap.enable = notVM;
@@ -650,11 +648,11 @@ in
       enable = true;
       nssmdns = true;
       # Only open the avahi firewall ports on servers
-      openFirewall = isWorkstation;
+      openFirewall = isWorkstation && hostname != "soyo";
       publish = {
         addresses = true;
         enable = true;
-        workstation = isWorkstation;
+        workstation = isWorkstation && hostname != "soyo";
       };
     };
     fwupd.enable = isInstall;
@@ -856,7 +854,7 @@ in
       };
 
       # Enable pam_systemd module to set dbus environment variable.
-      services.login.startSession = true;
+      services.login.startSession = isWorkstation;
     };
   };
 
