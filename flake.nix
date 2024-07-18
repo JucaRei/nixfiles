@@ -327,7 +327,7 @@
         # Laptop
         nitro = helper.mkHost { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
         air = helper.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
-        soyo = helper.mkHost { hostname = "soyo"; username = "juca"; stateVersion = "24.05"; };
+        soyo = helper.mkHost { hostname = "soyo"; username = "juca"; stateVersion = "24.05"; desktop = "kodi"; };
         rocinante = helper.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
         rocinante-headless = helper.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
         # Virtual Machines

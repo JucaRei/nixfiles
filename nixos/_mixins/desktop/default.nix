@@ -301,7 +301,7 @@ in
     #   users = [ "${username}" ];
     # };
 
-    pulseaudio.enable = lib.mkIf (hostname == "soyo");
+    pulseaudio.enable = if (hostname == "soyo") then true else false;
     sane = lib.mkIf (isInstall) {
       enable = true;
       #extraBackends = with pkgs; [ hplipWithPlugin sane-airscan ];
