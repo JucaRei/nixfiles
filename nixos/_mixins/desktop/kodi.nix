@@ -21,8 +21,8 @@
     };
   };
   networking.firewall.allowedTCPPorts = [ 8080 ]; # for web interface / remote control
-
-  environment.systemPackages = [
+  xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+  environment.systemPackages = with pkgs; [
     # for manual usage if needed
     pkgs.cage
     pkgs.kodi-wayland
