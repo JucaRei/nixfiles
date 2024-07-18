@@ -63,7 +63,7 @@ let
     "browser.urlbar.suggest.history" = true;
     "browser.urlbar.suggest.openpage" = false;
     "browser.tabs.warnOnClose" = false;
-    "browser.urlbar.update2.engineAliasRefresh" = true;
+    # "browser.urlbar.update2.engineAliasRefresh" = true;
     "datareporting.policy.dataSubmissionPolicyBypassNotification" = true;
     "dom.disable_window_flip" = true;
     "dom.disable_window_move_resize" = false;
@@ -72,9 +72,9 @@ let
     "extensions.getAddons.showPane" = false;
     "media.gmp-gmpopenh264.enabled" = true;
     "media.gmp-widevinecdm.enabled" = true;
-    # "media.ffvpx.enabled" = false;
+    "media.ffvpx.enabled" = false;
     # disable av1, vaapi on old hardware does not support av1
-    "media.av1.enabled" = true;
+    "media.av1.enabled" = false;
     "media.ffmpeg.vaapi.enabled" = true;
     "places.history.enabled" = true;
     "security.ssl.errorReporting.enabled" = false;
@@ -94,7 +94,7 @@ let
     "privacy.clearOnShutdown.downloads" = false;
     "privacy.clearOnShutdown.formdata" = false;
     "privacy.clearOnShutdown.history" = false;
-    "privacy.clearOnShutdown.offlineApps" = false;
+    "privacy.clearOnShutdown.offlineApps" = true;
     "privacy.clearOnShutdown.sessions" = false;
     "privacy.fingerprintingProtection" = true;
     "privacy.trackingprotection.enabled" = true;
@@ -142,8 +142,8 @@ let
     "datareporting.healthreport.uploadEnabled" = false;
     "datareporting.policy.dataSubmissionEnabled" = false;
     "app.shield.optoutstudies.enabled" = false;
-    "app.normandy.enabled" = false;
-    "app.normandy.api_url" = "";
+    # "app.normandy.enabled" = false;
+    # "app.normandy.api_url" = "";
 
     # Tweaks from archwiki
     "browser.cache.disk.enable" = true;
@@ -203,10 +203,10 @@ let
     DNSOverHTTPS = {
       Enabled = false;
     };
-    DisableProfileImport = false;
+    DisableProfileImport = mkForce false;
     FirefoxHome = {
       Highlights = false;
-      Locked = true;
+      Locked = false;
       Pocket = false;
       Snippets = false;
       Search = true;
@@ -220,9 +220,9 @@ let
       ImproveSuggest = false;
       Locked = true;
     };
-    FlashPlugin = {
-      Default = false;
-    };
+    # FlashPlugin = {
+    #   Default = false;
+    # };
     Homepage = {
       Locked = false;
       StartPage = "previous-session";
@@ -231,7 +231,7 @@ let
     PopupBlocking = {
       Default = true;
     };
-    PromptForDownloadLocation = true;
+    PromptForDownloadLocation = mkDefault true;
     SearchBar = "unified";
     OfferToSaveLogins = true;
     OverrideFirstRunPage = "";
@@ -239,10 +239,10 @@ let
     NewTabPage = true;
     HardwareAcceleration = true;
     CaptivePortal = false;
-    DisableFirefoxAccounts = false;
-    DisableFirefoxStudies = true;
-    DisableTelemetry = true;
-    NoDefaultBookmarks = false;
+    DisableFirefoxAccounts = mkForce false;
+    DisableFirefoxStudies = mkForce true;
+    DisableTelemetry = mkForce true;
+    NoDefaultBookmarks = mkDefault true;
     PasswordManagerEnabled = true;
     DontCheckDefaultBrowser = true;
     EnableTrackingProtection = {
@@ -260,7 +260,7 @@ let
     ShowHomeButton = true;
     StartDownloadsInTempDirectory = true;
     SanitizeOnShutdown = {
-      Cache = false;
+      Cache = true;
       Downloads = false;
       #FormData = true;
       History = false;
