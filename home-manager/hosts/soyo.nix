@@ -25,13 +25,13 @@
       yt-dlp-custom.enable = true;
     };
 
-    home.file.widevine-lib = {
-      source = "${pkgs.unfree.widevine-cdm}/share/google/chrome/WidevineCdm/_platform_specific/linux_x64/libwidevinecdm.so";
-      target = ".kodi/cdm/libwidevinecdm.so";
-    };
-    home.file.widevine-manifest = {
-      source = "${pkgs.unfree.widevine-cdm}/share/google/chrome/WidevineCdm/manifest.json";
-      target = ".kodi/cdm/manifest.json";
-    };
+    # home.file.widevine-lib = {
+    #   source = "${pkgs.unfree.widevine-cdm}/share/google/chrome/WidevineCdm/_platform_specific/linux_x64/libwidevinecdm.so";
+    #   target = ".kodi/cdm/libwidevinecdm.so";
+    # };
+    # home.file.widevine-manifest = {
+    #   source = "${pkgs.unfree.widevine-cdm}/share/google/chrome/WidevineCdm/manifest.json";
+    #   target = ".kodi/cdm/manifest.json";
+    # };
   };
 }
