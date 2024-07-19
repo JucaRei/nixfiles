@@ -16,8 +16,6 @@
         displayManager.lightdm.autoLogin.timeout = 3;
       };
     };
-    # Define a user account
-    users.extraUsers.kodi.isNormalUser = true;
 
     # cage is compositor and "login manager" that starts a single program: Kodi
     # cage = {
