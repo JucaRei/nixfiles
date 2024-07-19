@@ -87,8 +87,8 @@ in
         "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
         "cgroups" # allow nix to execute builds inside cgroups
       ];
-      allowed-users = [ "root" "@wheel" ];
-      trusted-users = [ "root" "@wheel" ];
+      allowed-users = [ "root" "${username}" ];
+      trusted-users = [ "root" "${username}" ];
       builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
       ### Avoid unwanted garbage collection when using nix-direnv
       keep-outputs = true;
@@ -167,26 +167,11 @@ in
       joypixels.acceptLicense = true;
       allowUnsupportedSystem = true;
       permittedInsecurePackages = [
-        # "openssl-1.1.1w"
-        # "electron-19.1.9"
         "python3.11-youtube-dl-2021.12.17"
       ];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       allowUnfreePredicate = _: true;
-      # allowUnfreePredicate = pkg:
-      #   builtins.elem (lib.getName pkg) [
-      #     "nvidia-settings"
-      #     "nvidia-x11"
-      #     "spotify"
-      #     "steam"
-      #     "steam-original"
-      #     "steam-run"
-      #     "vscode"
-      #     # "dubai"
-      #     # they got fossed recently so idk
-      #     "Anytype"
-      #   ];
     };
   };
 
@@ -238,13 +223,9 @@ in
       cleanOnBoot = mkDefault true;
       tmpfsSize = "25%"; # 30% for 27GB system - else "25%"; # 25% for 8GB system
     };
-    kernelModules = mkIf (notVM) [ "vhost_vsock" "tcp_bbr" ];
+    kernelModules = mkIf (notVM) [ "vhost_vsock" ];
     kernelParams = [
-      "boot.shell_on_fail"
-      "loglevel=3"
-      "vt.default_red=30,243,166,249,137,245,148,186,88,243,166,249,137,245,148,166"
-      "vt.default_grn=30,139,227,226,180,194,226,194,91,139,227,226,180,194,226,173"
-      "vt.default_blu=46,168,161,175,250,231,213,222,112,168,161,175,250,231,213,200"
+      "udev.log_priority=3"
     ];
     kernelPackages =
       #        default = 1000
@@ -393,7 +374,7 @@ in
       git
     ] ++ lib.optionals (isInstall) [
       # inputs.crafts-flake.packages.${platform}.snapcraft
-      # inputs.fh.packages.${platform}.default
+      inputs.fh.packages.${platform}.default
       inputs.nixos-needtoreboot.packages.${platform}.default
       clinfo
       distrobox

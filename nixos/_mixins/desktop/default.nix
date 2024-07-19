@@ -74,7 +74,6 @@ in
       "udev.log_level=3"
       "rd.udev.log_level=3"
       "mitigations=off"
-      "threadirqs"
     ];
     plymouth.enable =
       if (hostname != "rasp3" || "soyo")
@@ -132,6 +131,7 @@ in
 
 
   services = {
+    usbmuxd.enable = true;
     # Disable xterm
     xserver = {
       excludePackages = lib.mkIf (hostname != "soyo") [ pkgs.xterm ];

@@ -5,6 +5,12 @@
     ../../_mixins/services/security/sudo.nix
   ];
 
+  # Intel Celeron n4000 dual-core
+  # 6 GiB RAM
+  # Integrated GPU Intel UHD 600 GminiLake
+  # network controller RTL8821CE Wireless
+  # RTL8111/8168/8211/8411 Gigabit Ethernet
+
   config = {
     boot = {
       mode.efi.enable = true;
@@ -26,7 +32,7 @@
           "uas" # Enables the USB Attached SCSI (UAS) driver, which provides a faster and more efficient way to access USB storage devices.
           "sdhci_pci"
         ];
-        kernelModules = [ ];
+        kernelModules = [ "tcp_bbr" ];
         systemd.enable = true;
         compressor = "zstd";
         compressorArgs = [ "-19" "-T0" ];
@@ -55,9 +61,14 @@
         # "i915.fastboot=1"
         "i965" # Kernel module for Intel integrated graphics.
         # "i965.modeset=1" # Enables modesetting for the Intel i915 driver.
-        "enable_gvt=1"
+        "enable_gvt=1" # enable GPU virtualization
         "mem_sleep_default=deep"
         "quiet"
+        "boot.shell_on_fail"
+        # "loglevel=3"
+        "vt.default_red=30,243,166,249,137,245,148,186,88,243,166,249,137,245,148,166"
+        "vt.default_grn=30,139,227,226,180,194,226,194,91,139,227,226,180,194,226,173"
+        "vt.default_blu=46,168,161,175,250,231,213,222,112,168,161,175,250,231,213,200"
 
         "pcie_aspm=force" # pcie active state power management
         "elevator=kyber" # Change IO scheduler to Kyber
@@ -73,7 +84,6 @@
         "nmi-watchdog=0" # Disable the non-maskable interrupt (NMI) watchdog
         "noirqdebug" # Disable IRQ debugging
         "rootdelay=0" # No delay when mounting root filesystem
-        "threadirqs" # Enable threaded interrupt handling
         "video.allow_duplicates=1" # Allow duplicate frames or similar, helps smooth video playback
         "zswap.max_pool_percent=10" # Set zswap maximum pool percentage to 10%
         "zswap.compressor=lz4" # Set zswap compressor to lz4
