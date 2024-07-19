@@ -1,49 +1,13 @@
-{ pkgs, lib, desktop, hostname, config, ... }:
+{ pkgs, lib, desktop, hostname, config, isWorkstation, ... }:
 with lib;
 let
-  # build-home = import ../config/scripts/build-home.nix { inherit pkgs; };
-  isWorkstation = if (desktop != null) then true else false;
+  currentDir = ./.; # Represents the current directory
+  isDirectoryAndNotTemplate = name: type: type == "directory";
+  directories = lib.filterAttrs isDirectoryAndNotTemplate (builtins.readDir currentDir);
+  importDirectory = name: import (currentDir + "/${name}");
 in
 {
-  imports = [
-    ./alias_core
-    ./aria2
-    ./atuin
-    ./bash
-    ./bat
-    ./bottom
-    ./btop
-    ./cava
-    ./dircolors
-    ./direnv
-    ./eza
-    ./fastfetch
-    ./fish
-    ./fzf
-    ./git
-    ./github-cli
-    ./gitUI
-    ./glow
-    ./gpg
-    ./htop
-    ./lsd
-    ./man
-    ./micro
-    ./mpd
-    ./nano
-    ./ncmpcpp
-    ./neofetch
-    # ./neovim
-    ./powerline-go
-    ./properties
-    ./ripgrep
-    ./skim
-    ./ssh
-    ./starship
-    ./yazi
-    ./yt-dlp
-    ./zoxide
-  ];
+  imports = lib.mapAttrsToList (name: _: importDirectory name) directories;
 
   home.packages = with pkgs; [
     # build-home
@@ -81,7 +45,6 @@ in
     micro.enable = true;
     man.enable = true;
     mpd.enable = false;
-    # neovim.enable = false;
     neofetch.enable = true;
     ncmpcpp.enable = false;
     starship.enable = false;
