@@ -1,15 +1,32 @@
 { pkgs, lib, ... }: {
-  users.users.kodi.isNormalUser = true;
+  users.users.kodi = {
+    isNormalUser = true;
+    extraGroups = [ "video" ];
+    description = "Kodi Media Center";
+    hashedPassword = "$6$A5gukqBVeM3eJblr$K6L1kxSDvJJjy6.LVx78d1QojtmGJBwpI3MPvc52h8H/Avg0KQW/uG6QazLiuoC2vGZ79nq3czvj96hEdSLUf1";
+  };
   services = {
     # disable greetd, as cage starts directly
     # greetd.enable = lib.mkForce false;
     xserver = {
       enable = true;
-      desktopManager.kodi.enable = true;
+      desktopManager.kodi = {
+        enable = true;
+        package = pkgs.kodi.withPackages (p: with p; [
+          # kodi-platform
+          youtube
+          inputstream-adaptive
+          # vfs-sftp
+          sponsorblock
+          # invidious
+          # joystick
+          sendtokodi
+        ]);
+      };
       displayManager = {
         autoLogin = {
           enable = true;
-          user = "kodi";
+          user = lib.mkForce "kodi";
         };
         # This may be needed to force Lightdm into 'autologin' mode.
         # Setting an integer for the amount of time lightdm will wait
@@ -44,4 +61,5 @@
   #   pkgs.kodi-wayland
   # ];
   nixpkgs.config.kodi.enableAdvancedLauncher = true;
+  sound.enable = true;
 }
