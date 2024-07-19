@@ -37,7 +37,7 @@
     allowedTCPPorts = [ 8080 ]; # for web interface / remote control
     allowedUDPPorts = [ 8080 ];
   };
-  # xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
+  xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
   # environment.systemPackages = with pkgs; [
   #   # for manual usage if needed
   #   pkgs.cage
