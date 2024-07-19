@@ -7,7 +7,46 @@ let
   importDirectory = name: import (currentDir + "/${name}");
 in
 {
-  imports = lib.mapAttrsToList (name: _: importDirectory name) directories;
+  # imports = lib.mapAttrsToList (name: _: importDirectory name) directories;
+
+  imports = [
+    ./alias_core
+    ./aria2
+    ./atuin
+    ./bash
+    ./bat
+    ./bottom
+    ./btop
+    ./cava
+    ./dircolors
+    ./direnv
+    ./eza
+    ./fastfetch
+    ./fish
+    ./fzf
+    ./git
+    ./github-cli
+    ./gitUI
+    ./glow
+    ./gpg
+    ./htop
+    ./lsd
+    ./man
+    ./micro
+    ./mpd
+    ./nano
+    ./ncmpcpp
+    ./neofetch
+    ./powerline-go
+    ./properties
+    ./ripgrep
+    ./skim
+    ./ssh
+    ./starship
+    ./yazi
+    ./yt-dlp
+    ./zoxide
+  ];
 
   home.packages = with pkgs; [
     # build-home
