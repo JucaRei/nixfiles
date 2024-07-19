@@ -7,13 +7,14 @@
       enable = true;
       desktopManager.kodi.enable = true;
       displayManager = {
-        autoLogin.enable = true;
-        displayManager.autoLogin.user = "kodi";
-
+        autoLogin = {
+          enable = true;
+          user = "kodi";
+        };
         # This may be needed to force Lightdm into 'autologin' mode.
         # Setting an integer for the amount of time lightdm will wait
         # between attempts to try to autologin again.
-        displayManager.lightdm.autoLogin.timeout = 3;
+        lightdm.autoLogin.timeout = 3;
       };
     };
 
