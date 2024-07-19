@@ -166,7 +166,11 @@ in
       # Accept the joypixels license
       joypixels.acceptLicense = true;
       allowUnsupportedSystem = true;
-      # permittedInsecurePackages = [ "openssl-1.1.1w" "electron-19.1.9" ];
+      permittedInsecurePackages = [
+        # "openssl-1.1.1w"
+        # "electron-19.1.9"
+        "python3.11-youtube-dl-2021.12.17"
+      ];
 
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
       allowUnfreePredicate = _: true;
