@@ -92,11 +92,6 @@
       ];
       kernel = {
         sysctl = lib.mkForce {
-          "vt.cur_default" = "0x700010";
-          "net.ipv4.ip_forward" = 1;
-          "net.ipv6.conf.all.forwarding" = 1;
-          "vm.page-cluster" = 1; # Keep zram swap (lz4) latency in check
-
           # Kernel Settings
           "kernel.pty.max" = 24000; # Maximum number of pseudo-terminal (pty) devices.
           "kernel.sched_autogroup_enabled" = 0; # Disable automatic grouping of tasks in the scheduler.
