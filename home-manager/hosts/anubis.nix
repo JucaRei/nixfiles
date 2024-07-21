@@ -3,7 +3,7 @@ with lib.hm.gvariant;
 let
   nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
   # mpv-custom = import ../_mixins/apps/video/mpv.nix;
-  vivaldi-custom = pkgs.vivaldi.override {
+  vivaldi-custom = pkgs.unstable.vivaldi.override {
     proprietaryCodecs = true;
     enableWidevine = false;
     # qt = "qt6";
@@ -124,7 +124,7 @@ in
             xfce.mousepad
             spotube
             transmission_4-gtk
-            # (nixGL vivaldi-custom)
+            (nixGL vivaldi-custom)
             # (nixGL thorium-va)
           ];
 
