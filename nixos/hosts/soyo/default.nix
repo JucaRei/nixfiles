@@ -418,7 +418,7 @@ in
         xkb = {
           layout = "${variables.layout}";
           variant = "${variables.variant}";
-          xkboptions = "${variables.xkboptions}";
+          xkbOptions = "${variables.xkboptions}";
           model = "${variables.model}";
         };
       };
