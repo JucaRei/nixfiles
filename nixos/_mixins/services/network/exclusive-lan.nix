@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  exclusive-lan = pkgs.writeShellScriptBin "70-wifi-wired-exclusive.sh" ''
+  exclusive-lan = pkgs.writeShellScriptBin "70-wifi-wired-exclusive" ''
     # From example 14:
     # https://manpages.ubuntu.com/manpages/focal/man7/nmcli-examples.7.html
 
@@ -10,6 +10,7 @@ let
     # 70-wifi-wired-exclusive.sh and put it into /etc/NetworkManager/dispatcher.d/ directory.
     # See NetworkManager(8) manual page for more information about NetworkManager dispatcher
     # scripts.
+    #!${pkgs.stdenv.shell}
 
     NMCLI=${pkgs.networkmanager}/bin/nmcli
     GREP=${pkgs.gnugrep}/bin/grep
@@ -42,7 +43,7 @@ in
       dispatcherScripts = [
         {
           # source = ./nm-dispatcher-scripts/70-wifi-wired-exclusive.sh;
-          source = "${exclusive-lan}/bin/70-wifi-wired-exclusive.sh";
+          source = "${exclusive-lan}/bin/70-wifi-wired-exclusive";
         }
       ];
     };

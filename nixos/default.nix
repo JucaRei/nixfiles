@@ -63,7 +63,10 @@ in
     ### Add nixpkgs input to NIX_PATH
     ### This lets nix2 commands still use <nixpkgs>
     nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
-    optimise.automatic = true;
+    optimise = {
+      automatic = true;
+      dates = [ "14:00" ];
+    };
     package = lib.mkIf (isInstall) pkgs.unstable.nix;
     settings = {
       # Tell nix to use the xdg spec for base directories
@@ -75,13 +78,14 @@ in
       # sandbox = true;
       sandbox-fallback = false;
       sandbox = "relaxed"; # true
+      # extra-sandbox-paths = [ "/opt" ];
 
       # extra-sandbox-paths = [ ];
       auto-optimise-store = true;
       experimental-features = [
         "nix-command"
         "flakes"
-        "repl-flake"
+        "repl-flake" # repl to inspect a flake
         "recursive-nix" # let nix invoke itself
         "ca-derivations" # content addressed nix
         "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
@@ -182,7 +186,6 @@ in
   networking = {
     extraHosts = ''
       192.168.1.35  nitro
-      192.168.1.50  nitro
       192.168.1.45  rocinante
       192.168.1.76  dongle
       192.168.1.228 rocinante
@@ -327,7 +330,6 @@ in
       # inputs.crafts-flake.packages.${platform}.snapcraft
       inputs.fh.packages.${platform}.default
       inputs.nixos-needtoreboot.packages.${platform}.default
-      clinfo
       distrobox
       flyctl
       fuse-overlayfs
@@ -340,8 +342,8 @@ in
       podman-tui
       podman
       smartmontools
-      # sops
-      # ssh-to-age
+      sops
+      ssh-to-age
     ] ++ lib.optionals (isInstall && isWorkstation) [
       pods
     ] ++ lib.optionals (isInstall && isWorkstation && notVM && hostname != "soyo") [

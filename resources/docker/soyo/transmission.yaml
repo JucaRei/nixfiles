@@ -1,0 +1,98 @@
+---
+version: "3.7"
+services:
+  transmission:
+    image: linuxserver/transmission:latest
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+#       - TRANSMISSION_WEB_HOME= #optional
+      - USER=juca
+      - PASS=200291
+#       - WHITELIST= #optional
+#       - PEERPORT= #optional
+#       - HOST_WHITELIST= #optional
+    volumes:
+      - /home/juca/Documents/docker/docker-configs/resources/transmission:/config
+      - /home/juca/Downloads/Torrents:/watch
+      - /home/juca/Downloads/Files:/downloads
+      - nas_downloads2:/downloads2
+      - /home/juca/Videos/Animes:/animes
+      - nas2_tvshow:/tvshows
+      - nas1_tvshow:/tvshows1
+      - nas2_movies:/movies
+      - nas2_animes:/animes2
+    mem_limit: 300M
+    mem_reservation: 100M
+    cpus: 1.0
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+volumes:
+    # nas1_movies:
+    #     driver_opts:
+    #         type: cifs
+    #         device: //192.168.1.207/volume_1/Movies
+    #         o: "username=juca,password=200291,vers=1.0,uid=1000,gid=100"
+    nas1_tvshow:
+    #     driver_opts:
+    #         type: cifs
+    #         device: //192.168.1.207/volume_1/TvShows
+    #         o: "username=juca,password=200291,vers=1.0,uid=1000,gid=100"
+        driver_opts:
+            type: nfs
+            device: ":/mnt/HD/HD_b2/TvShows"
+            o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+    # nas1_animes:
+    #     driver_opts:
+    #         type: cifs
+    #         device: //192.168.1.207/volume_1/Animes
+    #         o: "username=juca,password=200291,vers=1.0,uid=1000,gid=100"
+    nas2_movies:
+        driver_opts:
+            # type: cifs
+            # device: //192.168.1.207/volume_2/Transmission/complete/Filmes
+            # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+            type: nfs
+            device: ":/mnt/HD/HD_a2/Transmission/complete/Filmes"
+            o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+            # o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid"
+    nas2_tvshow:
+        driver_opts:
+            # type: cifs
+            # device: //192.168.1.207/volume_2/Transmission/complete/Series
+            # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+            type: nfs
+            device: ":/mnt/HD/HD_a2/Transmission/complete/Series"
+            o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+            # o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid"
+    nas2_animes:
+        driver_opts:
+            # type: cifs
+            # device: //192.168.1.207/volume_2/Transmission/complete/Animes
+            # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+            type: nfs
+            device: ":/mnt/HD/HD_a2/Transmission/complete/Animes"
+            o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+    nas_downloads2:
+        driver_opts:
+            # type: cifs
+            # device: //192.168.1.207/volume_2/Transmission/complete/Downloads
+            # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+            type: nfs
+            device: ":/mnt/HD/HD_a2/Transmission/complete/Downloads"
+            o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+# networks:
+#   default:
+#     driver: bridge
+#     # name: duckdns
+#     name: media
+#     external: true
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.12.0.0/16
