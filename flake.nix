@@ -78,8 +78,8 @@
     #   url = "https://flakehub.com/f/wimpysworld/antsy-alien-attack-pico/*.tar.gz";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    # fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
-    # fh.inputs.nixpkgs.follows = "nixpkgs";
+    fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
+    fh.inputs.nixpkgs.follows = "nixpkgs";
 
     # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.6.*.tar.gz";
     # crafts-flake.inputs.nixpkgs.follows = "nixpkgs";
