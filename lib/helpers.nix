@@ -15,7 +15,7 @@
         inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation;
       };
       modules = [
-        ({ config, pkgs, ... }: {
+        ({ config, pkgs, lib, ... }: {
           # Shared Between all users
           services.vscode-server = {
             enable = lib.mkDefault false;
