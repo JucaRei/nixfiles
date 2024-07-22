@@ -20,6 +20,7 @@ in
           conmon # Container monitoring
           runc
           fuse-overlayfs # Container overlay+shiftfs
+          flyctl
           #buildah          # Container build tool
           #dive             # Container analyzer
           #grype            # Container vulnerability scanner

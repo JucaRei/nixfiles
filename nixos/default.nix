@@ -1,8 +1,10 @@
-{ config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs, stateVersion, username, hostid, platform, isWorkstation, isInstall, ... }:
+{ config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs, stateVersion, username, hostid, platform, isWorkstation, isInstall, isISO, ... }:
 let
   notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
   # Create some variable to control what doesn't get installed/enabled
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+
+  variables = import ./hosts/${hostname}/variables.nix { inherit config; }; # vars for better check
 in
 {
   imports =
@@ -322,45 +324,48 @@ in
     defaultPackages = with pkgs; lib.mkForce [
       coreutils-full
       micro
+      nix-output-monitor
     ];
 
-    systemPackages = with pkgs; [
+    systemPackages = with pkgs lib; [
       git
-    ] ++ lib.optionals (isInstall) [
-      # inputs.crafts-flake.packages.${platform}.snapcraft
-      # inputs.fh.packages.${platform}.default
+    ] ++ optionals (isISO) [
       inputs.nixos-needtoreboot.packages.${platform}.default
+      inputs.crafts-flake.packages.${platform}.snapcraft
       distrobox
-      flyctl
-      fuse-overlayfs
-      libva-utils
-      nix-output-monitor
-      nvd
-      nvme-cli
       #https://nixos.wiki/wiki/Podman
       podman-compose
       podman-tui
       podman
+      flyctl
+      fuse-overlayfs
+    ] ++ optionals (isInstall || isWorkstation) [
+      # inputs.crafts-flake.packages.${platform}.snapcraft
+      # inputs.fh.packages.${platform}.default
+      inputs.nixos-needtoreboot.packages.${platform}.default
+      libva-utils
+      nvd
+      nvme-cli
       smartmontools
       sops
       ssh-to-age
-    ] ++ lib.optionals (isInstall && isWorkstation) [
+    ] ++ optionals (isInstall && isWorkstation) [
       pods
-    ] ++ lib.optionals (isInstall && isWorkstation && notVM && hostname != "soyo") [
+    ] ++ optionals (isInstall && isWorkstation && notVM && hostname != "soyo") [
       quickemu
-    ] ++ lib.optionals (isInstall && hasNvidia) [
+    ] ++ optionals (isInstall && hasNvidia) [
       # unstable.nvtop
       vdpauinfo
     ]
-      # ++ lib.optionals (isInstall && !hasNvidia) [
+      # ++ optionals (isInstall && !hasNvidia) [
       #   nvtop-amd
       # ]
     ;
 
     variables = {
-      EDITOR = "micro";
-      SYSTEMD_EDITOR = "micro";
-      VISUAL = "micro";
+      EDITOR = "${variables.defaultEditor}";
+      SYSTEMD_EDITOR = "${variables.defaultEditor}";
+      VISUAL = "${variables.defaultEditor}";
     };
 
     # --------------------------------------------------------------------

@@ -22,6 +22,7 @@
           };
           home.packages = with pkgs; [
             nixpkgs-fmt
+            nix-output-monitor
           ];
         })
         inputs.declarative-flatpak.homeManagerModules.default
