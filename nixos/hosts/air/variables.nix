@@ -7,9 +7,9 @@
   keymap = "br-abnt2";
 
   # Keyboard
-  layout = "br";
-  variant = "abnt2";
-  xkboptions = "terminate:ctrl_alt_bksp";
+  layout = "us";
+  variant = "mac";
+  xkboptions = "terminate:win_alt_del";
   model = "pc105";
 
   timezone = "America/Sao_Paulo";
