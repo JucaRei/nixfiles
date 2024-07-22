@@ -260,7 +260,7 @@ in
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
     # keyMap = lib.mkDefault "us";
-    keyMap = "${variables.keymap}";
+    keyMap = mkForce "${variables.keymap}";
     packages = with pkgs; [ tamzen ];
     colors = [
       "000000"
