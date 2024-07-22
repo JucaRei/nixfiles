@@ -18,7 +18,7 @@
         ({ config, pkgs, ... }: {
           # Shared Between all users
           services.vscode-server = {
-            enable = false;
+            enable = lib.mkDefault false;
           };
           home.packages = with pkgs; [
             nixpkgs-fmt

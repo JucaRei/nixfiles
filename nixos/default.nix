@@ -260,26 +260,8 @@ in
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
     # keyMap = lib.mkDefault "us";
-    keyMap = mkForce "${variables.keymap}";
+    keyMap = mkIf (config.console.font != null) "${variables.keymap}";
     packages = with pkgs; [ tamzen ];
-    colors = [
-      "000000"
-      "ff5370"
-      "c3e88d"
-      "ffcb6b"
-      "82aaff"
-      "c792ea"
-      "89ddff"
-      "ffffff"
-      "545454"
-      "ff5370"
-      "c3e88d"
-      "ffcb6b"
-      "82aaff"
-      "c792ea"
-      "89ddff"
-      "ffffff"
-    ];
   };
 
   ###############
