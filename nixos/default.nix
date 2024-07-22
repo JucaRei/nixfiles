@@ -1,10 +1,11 @@
 { config, desktop, hostname, inputs, lib, modulesPath, outputs, pkgs, stateVersion, username, hostid, platform, isWorkstation, isInstall, isISO, ... }:
+with lib;
 let
   notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
   # Create some variable to control what doesn't get installed/enabled
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
 
-  variables = import ./hosts/${hostname}/variables.nix { inherit config; }; # vars for better check
+  variables = import ./hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
 in
 {
   imports =
@@ -61,7 +62,7 @@ in
     # distributedBuilds = true;
     ### This will add each flake input as a registry
     ### To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    registry = mapAttrs (_: value: { flake = value; }) inputs;
     ### Add nixpkgs input to NIX_PATH
     ### This lets nix2 commands still use <nixpkgs>
     nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
@@ -69,7 +70,7 @@ in
       automatic = true;
       dates = [ "14:00" ];
     };
-    package = lib.mkIf (isInstall) pkgs.unstable.nix;
+    package = mkIf (isInstall) pkgs.unstable.nix;
     settings = {
       # Tell nix to use the xdg spec for base directories
       # while transitioning, any state must be carried over
@@ -132,7 +133,7 @@ in
   ################
 
   nixpkgs = {
-    hostPlatform = lib.mkDefault "${platform}";
+    hostPlatform = mkDefault "${platform}";
 
     overlays = [
       # Add overlays your own flake exports (from overlays and pkgs dir):
@@ -206,7 +207,7 @@ in
   ############################
 
   ## Only enable the grub on installs, not live media (.ISO images)
-  boot = with lib; {
+  boot = {
     initrd.verbose = mkDefault false;
     # Only enable the systemd-boot on installs, not live media (.ISO images)
     loader = mkIf (notVM) {
@@ -259,7 +260,7 @@ in
   console = {
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
     # keyMap = lib.mkDefault "us";
-    keyMap = if (hostname == "nitro") then "br-abnt2" else "br-latin1-us";
+    keyMap = "${variables.keymap}";
     packages = with pkgs; [ tamzen ];
     colors = [
       "000000"
@@ -286,20 +287,20 @@ in
   ###############
 
   i18n = {
-    defaultLocale = lib.mkDefault "en_US.utf8";
-    extraLocaleSettings = lib.mkDefault {
-      #LC_CTYPE = lib.mkDefault "pt_BR.UTF-8"; # Fix ç in us-intl.
-      LC_ADDRESS = "pt_BR.UTF-8";
-      LC_IDENTIFICATION = "pt_BR.UTF-8";
-      LC_MEASUREMENT = "pt_BR.UTF-8";
-      LC_MONETARY = "pt_BR.UTF-8";
-      LC_NAME = "pt_BR.UTF-8";
-      LC_NUMERIC = "pt_BR.UTF-8";
-      LC_PAPER = "pt_BR.UTF-8";
-      LC_TELEPHONE = "pt_BR.UTF-8";
-      LC_TIME = "pt_BR.UTF-8";
-      #LC_COLLATE = "pt_BR.UTF-8";
-      #LC_MESSAGES = "pt_BR.UTF-8";
+    defaultLocale = mkDefault "${variables.df-locale}";
+    extraLocaleSettings = mkDefault {
+      #LC_CTYPE = mkDefault "pt_BR.UTF-8"; # Fix ç in us-intl.
+      LC_ADDRESS = "${variables.extra-locale}";
+      LC_IDENTIFICATION = "${variables.extra-locale}";
+      LC_MEASUREMENT = "${variables.extra-locale}";
+      LC_MONETARY = "${variables.extra-locale}";
+      LC_NAME = "${variables.extra-locale}";
+      LC_NUMERIC = "${variables.extra-locale}";
+      LC_PAPER = "${variables.extra-locale}";
+      LC_TELEPHONE = "${variables.extra-locale}";
+      LC_TIME = "${variables.extra-locale}";
+      #LC_COLLATE = "${variables.extra-locale}";
+      #LC_MESSAGES = "${variables.extra-locale}";
     };
   };
 
@@ -309,7 +310,7 @@ in
 
   time = lib.mkDefault
     {
-      timeZone = "America/Sao_Paulo";
+      timeZone = "${variables.timezone}";
 
       ### For dual boot
       hardwareClockInLocalTime = isWorkstation;
@@ -376,7 +377,7 @@ in
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
 
-      FLAKE = "/home/${username}/.dotfiles/nixfiles";
+      FLAKE = "${variables.flake-path}";
     };
 
     homeBinInPath = true;
@@ -384,8 +385,6 @@ in
 
     shellAliases = {
       system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
-      rebuild-host = "sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles --show-trace -L";
-      rebuild-boot = "sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles --show-trace -L";
       sxorg = "export DISPLAY=:0.0";
       # du = "${pkgs.ncdu_1}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
       drivers = "lspci -v | grep -B8 -v 'Kernel modules: [a-z0-9]+'";
@@ -460,11 +459,10 @@ in
       '';
       shellAbbrs = lib.mkIf (isInstall) {
         captive-portal = "${pkgs.xdg-utils}/bin/xdg-open http://$(${pkgs.iproute2}/bin/ip --oneline route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $3}'";
-        nix-gc = "sudo nix-collect-garbage --delete-older-than 10d && nix-collect-garbage --delete-older-than 10d";
         update-lock = "pushd $HOME/Zero/nix-config && nix flake update && popd";
       };
       shellAliases = {
-        nano = "micro";
+        nano = "${variables.defaultEditor}";
       };
     };
   };
@@ -475,7 +473,7 @@ in
       extraArgs = "--keep-since 10d --keep 5";
     };
     enable = true;
-    flake = "/home/${username}/.dotfiles/nixfiles";
+    flake = "${variables.flake-path}";
   };
 
 
@@ -559,7 +557,7 @@ in
   services = {
     ### My modules
     nm-manager.enable = true;
-    firewall.enable = isWorkstation && hostname != "soyo";
+    firewall.enable = isWorkstation;
     #########################
 
     snap.enable = notVM;
@@ -576,11 +574,11 @@ in
       enable = true;
       nssmdns = true;
       # Only open the avahi firewall ports on servers
-      openFirewall = isWorkstation && hostname != "soyo";
+      openFirewall = isWorkstation;
       publish = {
         addresses = true;
         enable = true;
-        workstation = isWorkstation && hostname != "soyo";
+        workstation = isWorkstation;
       };
     };
     fwupd.enable = isInstall;
@@ -661,7 +659,7 @@ in
       # Enable the D-Bus service, which is a message bus system that allows
       # communication between applications.
       enable = true;
-      implementation = if (isWorkstation && notVM && hostname != "soyo") then "broker" else "dbus";
+      implementation = "${variables.dbus-type}";
     };
 
     getty = {
