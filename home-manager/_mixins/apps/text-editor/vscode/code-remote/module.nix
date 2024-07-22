@@ -1,7 +1,7 @@
 moduleConfig: { lib, pkgs, ... }:
 
 with lib; {
-  options.services.vscode-server.enable = with types;
+  options.services.code-server.enable = with types;
     mkEnableOption "VS Code Server";
 
   config = moduleConfig rec {
