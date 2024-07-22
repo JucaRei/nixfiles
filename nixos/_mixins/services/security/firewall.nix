@@ -95,8 +95,8 @@ in
         #---------------------------------------------------------------------
         # Adding a rule to the iptables firewall to allow NetBIOS name
         # resolution traffic on UDP port 137
+        # network discovery
         #---------------------------------------------------------------------
-
         extraCommands = "iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns";
       };
     };
