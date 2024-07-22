@@ -411,6 +411,7 @@ in
   };
 
   programs = {
+    nix-ld.enable = isWorkstation;
     fuse.userAllowOther = isWorkstation;
     command-not-found.enable = false;
     nano.enable = false;
