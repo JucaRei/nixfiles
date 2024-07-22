@@ -33,7 +33,7 @@ with lib; {
             # Create a trigger to know when their node is being created and replace it for our symlink.
             touch "$bin_dir/node"
             inotifywait -qq -e DELETE_SELF "$bin_dir/node"
-            ln -sfT ${pkgs.nodejs-16_x}/bin/node "$bin_dir/node"
+            ln -sfT ${pkgs.nodejs-20_x}/bin/node "$bin_dir/node"
             ln -sfT ${pkgs.ripgrep}/bin/rg "$bin_dir/node_modules/@vscode/ripgrep/bin/rg"
           # The monitored directory is deleted, e.g. when "Uninstall VS Code Server from Host" has been run.
           elif [[ $event == DELETE_SELF ]]; then
