@@ -319,7 +319,7 @@ in
   ### Defaults Packages ###
   #########################
 
-  environment = {
+  environment = with lib; {
     # Eject nano and perl from the system
     defaultPackages = with pkgs; lib.mkForce [
       coreutils-full
@@ -327,7 +327,7 @@ in
       nix-output-monitor
     ];
 
-    systemPackages = with pkgs lib; [
+    systemPackages = with pkgs; [
       git
     ] ++ optionals (isISO) [
       inputs.nixos-needtoreboot.packages.${platform}.default
