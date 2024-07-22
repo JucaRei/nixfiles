@@ -1,9 +1,12 @@
-{ config, lib, pkgs, modulesPath, username, ... }: {
-  imports = [
+{ config, lib, pkgs, modulesPath, username, ... }:
+let
+  variables = import ./variables.nix { inherit config username; }
+    in {
+    imports = [
     ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/other/usb.nix
     ../../_mixins/services/security/sudo.nix
-  ];
+    ];
 
   # Intel Celeron n4000 dual-core
   # 6 GiB RAM
@@ -410,6 +413,14 @@
       }
     ];
     services = {
+      xserver = {
+        xkb = {
+          layout = "${variables.layout}";
+          variant = "${variables.variant}";
+          xkboptions = "${variables.xkboptions}";
+          model = "${variables.model}";
+        };
+      };
       acpid = {
         enable = true;
       };
@@ -472,4 +483,4 @@
     console.keyMap = lib.mkForce "br";
     systemd.enableUnifiedCgroupHierarchy = lib.mkForce true;
   };
-}
+  }
