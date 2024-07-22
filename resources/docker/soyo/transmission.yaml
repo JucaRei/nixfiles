@@ -58,7 +58,7 @@ volumes:
             # device: //192.168.1.207/volume_2/Transmission/complete/Filmes
             # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
             type: nfs
-            device: ":/mnt/HD/HD_a2/Transmission/complete/Filmes"
+            device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Filmes"
             o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
             # o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid"
     nas2_tvshow:
@@ -67,7 +67,7 @@ volumes:
             # device: //192.168.1.207/volume_2/Transmission/complete/Series
             # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
             type: nfs
-            device: ":/mnt/HD/HD_a2/Transmission/complete/Series"
+            device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Series"
             o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
             # o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid"
     nas2_animes:
@@ -76,7 +76,7 @@ volumes:
             # device: //192.168.1.207/volume_2/Transmission/complete/Animes
             # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
             type: nfs
-            device: ":/mnt/HD/HD_a2/Transmission/complete/Animes"
+            device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes"
             o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
     nas_downloads2:
         driver_opts:
@@ -84,7 +84,7 @@ volumes:
             # device: //192.168.1.207/volume_2/Transmission/complete/Downloads
             # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
             type: nfs
-            device: ":/mnt/HD/HD_a2/Transmission/complete/Downloads"
+            device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Downloads"
             o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
 # networks:
 #   default:

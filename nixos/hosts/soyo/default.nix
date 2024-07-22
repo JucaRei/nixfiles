@@ -336,7 +336,7 @@
       # alias volume1="sudo mount -t nfs 192.168.1.207:/mnt/HD/HD_b2/ /home/juca/Documents/nfs2 -o nolock"
 
       # "/mnt/sharecenter/volume_2" = {
-      #   device = "192.168.1.207:/mnt/HD/HD_a2/Transmission/complete";
+      #   device = "192.168.1.207:/mnt/HD/HD_a2/Transmission/Volume_2";
       #   fsType = "nfs";
       #   #options = [ "nfsvers=4.2" ];
       #   options = [
