@@ -21,7 +21,7 @@ with lib; {
 
         # Fix any existing symlinks before we enter the inotify loop.
         if [[ -e $bin_dir ]]; then
-          find "$bin_dir" -mindepth 2 -maxdepth 2 -name node -exec ln -sfT ${pkgs.nodejs-16_x}/bin/node {} \;
+          find "$bin_dir" -mindepth 2 -maxdepth 2 -name node -exec ln -sfT ${pkgs.nodejs-20_x}/bin/node {} \;
           find "$bin_dir" -path '*/@vscode/ripgrep/bin/rg' -exec ln -sfT ${pkgs.ripgrep}/bin/rg {} \;
         else
           mkdir -p "$bin_dir"
