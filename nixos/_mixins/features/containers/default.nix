@@ -4,7 +4,8 @@ let
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
   dockerEnabled = config.virtualisation.docker.enable;
 in
-lib.mkIf (lib.elem "${username}" installFor) {
+# lib.mkIf (lib.elem "${username}" installFor) {
+{
   config =
     ### Podman
     if (isWorkstation && hostname != "soyo") then {
