@@ -63,8 +63,8 @@ in
       kernelParams = [
         # intel cpu
         # "i915.fastboot=1"
-        # "i965" # Kernel module for Intel integrated graphics.
-        "i915" # i915 kernel module
+        "i965" # Kernel module for Intel integrated graphics.
+        # "i915" # i915 kernel module
         # "i965.modeset=1" # Enables modesetting for the Intel i915 driver.
         "enable_gvt=1" # enable GPU virtualization
         "mem_sleep_default=deep"
@@ -179,9 +179,9 @@ in
       };
     };
     environment = {
-      sessionVariables = {
-        LIBVA_DRIVER_NAME = "iHD";
-      }; # Force intel-media-driver
+      # sessionVariables = {
+      #   LIBVA_DRIVER_NAME = "iHD";
+      # }; # Force intel-media-driver
 
       # Disable X11 libraries on headless systems to save as much space as we possibly can.
       # Settings this to true generally breaks a lot of GUI and non-GUI packages that, for
