@@ -74,21 +74,8 @@
     ### FlakeHub ###
     ################
 
-    # antsy-alien-attack-pico = {
-    #   url = "https://flakehub.com/f/wimpysworld/antsy-alien-attack-pico/*.tar.gz";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*.tar.gz";
-    # fh.inputs.nixpkgs.follows = "nixpkgs";
-
-    # crafts-flake.url = "https://flakehub.com/f/jnsgruk/crafts-flake/0.6.*.tar.gz";
-    # crafts-flake.inputs.nixpkgs.follows = "nixpkgs";
-
     nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
     nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
-
-    # nixpkgs-f2k.url = "github:moni-dz/nixpkgs-f2k";
-    # nixpkgs-f2k.inputs.nixpkgs.follows = "nixpkgs";
 
     vscode-server.url = "github:nix-community/nixos-vscode-server/hm-module-import";
     # vscode-server.url = "github:nix-community/nixos-vscode-server";
@@ -98,7 +85,6 @@
     nixgl = {
       url = "github:nix-community/nixGL";
       inputs.nixpkgs.follows = "nixpkgs-unstable"; # "nixpkgs";
-      # inputs.flake-utils.follows = "agenix-cli/flake-utils";
     };
 
     polybar-scripts = {
@@ -276,32 +262,32 @@
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
           # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
-          "juca@nitro" = helper.mkHome { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; };
-          "juca@zion" = helper.mkHome { hostname = "zion"; username = "juca"; desktop = "bspwm"; };
-          "juca@air" = helper.mkHome { hostname = "air"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; };
-          "juca@anubis" = helper.mkHome { hostname = "anubis"; username = "juca"; desktop = "bspwm"; };
-          "juca@oldarch" = helper.mkHome { hostname = "oldarch"; username = "juca"; desktop = "xfce"; stateVersion = "23.05"; };
-          #"juca@nitro" = helper.mkHome { hostname = "nitro"; username = "juca"; };
-          "juca@nitrovoid" = helper.mkHome { hostname = "nitrovoid"; username = "juca"; };
-          "juca@soyo" = helper.mkHome { hostname = "soyo"; username = "juca"; stateVersion = "24.05"; };
-          "juca@rocinante" = helper.mkHome { hostname = "rocinante"; username = "juca"; desktop = "mate"; };
-          "juca@rocinante-headless" = helper.mkHome { hostname = "rocinante"; username = "juca"; desktop = null; };
-          "juca@vortex" = helper.mkHome { hostname = "vortex"; username = "juca"; };
+          "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@zion" = helper.mkHome { hostname = "zion"; desktop = "bspwm"; };
+          "juca@air" = helper.mkHome { hostname = "air"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; };
+          "juca@oldarch" = helper.mkHome { hostname = "oldarch"; desktop = "xfce"; stateVersion = "23.05"; };
+          #"juca@nitro" = helper.mkHome { hostname = "nitro"; };
+          "juca@nitrovoid" = helper.mkHome { hostname = "nitrovoid"; };
+          "juca@soyo" = helper.mkHome { hostname = "soyo"; stateVersion = "24.05"; };
+          "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "mate"; };
+          "juca@rocinante-headless" = helper.mkHome { hostname = "rocinante"; desktop = null; };
+          "juca@vortex" = helper.mkHome { hostname = "vortex"; };
           # Testing
-          "juca@hyperv" = helper.mkHome { hostname = "hyperv"; username = "juca"; desktop = "mate"; };
-          "juca@voidvm" = helper.mkHome { hostname = "voidvm"; username = "juca"; };
-          "juca@debianvm" = helper.mkHome { hostname = "debianvm"; username = "juca"; desktop = "bspwm"; };
-          "juca@vm-headless" = helper.mkHome { hostname = "vm"; username = "juca"; desktop = null; };
+          "juca@hyperv" = helper.mkHome { hostname = "hyperv"; desktop = "mate"; };
+          "juca@voidvm" = helper.mkHome { hostname = "voidvm"; };
+          "juca@debianvm" = helper.mkHome { hostname = "debianvm"; desktop = "bspwm"; };
+          "juca@vm-headless" = helper.mkHome { hostname = "vm"; desktop = null; };
           # Wsl
-          "juca@nitrowin" = helper.mkHome { hostname = "nitrowin"; username = "juca"; stateVersion = "23.11"; };
+          "juca@nitrowin" = helper.mkHome { hostname = "nitrowin"; stateVersion = "23.11"; };
           # Raspberry 3
-          "juca@DietPi" = helper.mkHome { hostname = "DietPi"; username = "juca"; desktop = null; platform = "aarch64-linux"; };
+          "juca@DietPi" = helper.mkHome { hostname = "DietPi"; desktop = null; platform = "aarch64-linux"; };
           # VMs
-          "juca@minimech" = helper.mkHome { hostname = "minimech"; username = "juca"; desktop = "bspwm"; };
-          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; username = "juca"; desktop = "bspwm"; };
-          "juca@lima-builder" = helper.mkHome { hostname = "lima-builder"; username = "juca"; };
-          "juca@lima-default" = helper.mkHome { hostname = "lima-default"; username = "juca"; };
-          "juca@vm" = helper.mkHome { hostname = "vm"; username = "juca"; desktop = "mate"; };
+          "juca@minimech" = helper.mkHome { hostname = "minimech"; desktop = "bspwm"; };
+          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "bspwm"; };
+          "juca@lima-builder" = helper.mkHome { hostname = "lima-builder"; };
+          "juca@lima-default" = helper.mkHome { hostname = "lima-default"; };
+          "juca@vm" = helper.mkHome { hostname = "vm"; desktop = "mate"; };
           # Iso
           # "juca@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
           # "juca@iso-desktop" = helper.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
@@ -325,18 +311,18 @@
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = helper.mkHost { hostname = "nitro"; username = "juca"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
-        air = helper.mkHost { hostname = "air"; username = "juca"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
-        soyo = helper.mkHost { hostname = "soyo"; username = "juca"; stateVersion = "24.05"; desktop = "kodi"; };
-        rocinante = helper.mkHost { hostname = "rocinante"; username = "juca"; desktop = "mate"; hostid = "f4173273"; };
-        rocinante-headless = helper.mkHost { hostname = "rocinante"; username = "juca"; hostid = "836715d7"; };
+        nitro = helper.mkHost { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
+        air = helper.mkHost { hostname = "air"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
+        soyo = helper.mkHost { hostname = "soyo"; stateVersion = "24.05"; desktop = "kodi"; };
+        rocinante = helper.mkHost { hostname = "rocinante"; desktop = "mate"; hostid = "f4173273"; };
+        rocinante-headless = helper.mkHost { hostname = "rocinante"; hostid = "836715d7"; };
         # Virtual Machines
-        vm = helper.mkHost { hostname = "vm"; username = "juca"; desktop = "mate"; };
-        scrubber = helper.mkHost { hostname = "scrubber"; username = "juca"; desktop = "mate"; };
-        hyperv = helper.mkHost { hostname = "hyperv"; username = "juca"; desktop = "mate"; hostid = "6f2efa51"; };
-        vm-headless = helper.mkHost { hostname = "vm"; username = "juca"; hostid = "04feccb5"; };
+        vm = helper.mkHost { hostname = "vm"; desktop = "mate"; };
+        scrubber = helper.mkHost { hostname = "scrubber"; desktop = "mate"; };
+        hyperv = helper.mkHost { hostname = "hyperv"; desktop = "mate"; hostid = "6f2efa51"; };
+        vm-headless = helper.mkHost { hostname = "vm"; hostid = "04feccb5"; };
         # Raspberry
-        rasp3 = helper.mkHost { hostname = "rasp3"; username = "juca"; hostid = "6f2efa55"; };
+        rasp3 = helper.mkHost { hostname = "rasp3"; hostid = "6f2efa55"; };
       };
     };
 }
