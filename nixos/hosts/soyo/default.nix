@@ -177,9 +177,9 @@ in
       };
     };
     environment = {
-      # sessionVariables = {
-      #   LIBVA_DRIVER_NAME = "iHD";
-      # }; # Force intel-media-driver
+      sessionVariables = {
+        LIBVA_DRIVER_NAME = "iHD";
+      }; # Force intel-media-driver
 
       # Disable X11 libraries on headless systems to save as much space as we possibly can.
       # Settings this to true generally breaks a lot of GUI and non-GUI packages that, for
