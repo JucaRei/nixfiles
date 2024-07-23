@@ -6,6 +6,7 @@ let
 in
 lib.mkIf (lib.elem "${username}" installFor) {
   config =
+    ### Podman
     if (isWorkstation && hostname != "soyo") then {
       boot.kernel.sysctl = {
         "net.ipv4.ip_unprivileged_port_start" = 80; # Podman access port 80
@@ -20,7 +21,7 @@ lib.mkIf (lib.elem "${username}" installFor) {
             fuse-overlayfs # Container overlay+shiftfs
             flyctl
           ]
-          ++ lib.optionals (isWorkstation && hostname != "soyo") [
+          ++ lib.optionals isWorkstation [
             boxbuddy
             pods
             podman-compose
@@ -94,6 +95,7 @@ lib.mkIf (lib.elem "${username}" installFor) {
 
       users.users.${username}.extraGroups = lib.optional config.virtualisation.podman.enable "podman";
     } else {
+      ### Docker
       virtualisation = {
         docker = {
           enable = true;
