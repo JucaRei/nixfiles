@@ -63,7 +63,8 @@ in
       kernelParams = [
         # intel cpu
         # "i915.fastboot=1"
-        "i965" # Kernel module for Intel integrated graphics.
+        # "i965" # Kernel module for Intel integrated graphics.
+        "i915" # i915 kernel module
         # "i965.modeset=1" # Enables modesetting for the Intel i915 driver.
         "enable_gvt=1" # enable GPU virtualization
         "mem_sleep_default=deep"
@@ -159,6 +160,7 @@ in
 
     # Intel GPU
     hardware = {
+
       opengl = {
         enable = true;
         extraPackages = with pkgs; [
@@ -174,6 +176,8 @@ in
           vaapiVdpau
           libvdpau-va-gl
         ];
+        driSupport = true;
+        driSupport32Bit = true;
       };
     };
     environment = {
@@ -421,6 +425,10 @@ in
           options = "${variables.xkboptions}";
           model = "${variables.model}";
         };
+        videoDrivers = [
+          # "intel"
+          "modesetting" # we enable modesetting since this is recomeneded for intel gpus
+        ];
       };
       acpid = {
         enable = true;

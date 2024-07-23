@@ -38,18 +38,18 @@ in
             # aardvark-dns
           ];
 
-        etc = {
-          "containers/registries.conf".text = lib.mkForce ''
-            unqualified-search-registries = ['docker.io']
+        # etc = {
+        #   "containers/registries.conf".text = lib.mkForce ''
+        #     unqualified-search-registries = ['docker.io']
 
-            [[registry]]
-            prefix="docker.io"
-            location="docker.io"
+        #     [[registry]]
+        #     prefix="docker.io"
+        #     location="docker.io"
 
-            [[registry.mirror]]
-            location="mirror.gcr.io"
-          '';
-        };
+        #     [[registry.mirror]]
+        #     location="mirror.gcr.io"
+        #   '';
+        # };
       };
 
       hardware.nvidia-container-toolkit.enable = hasNvidiaGPU;
@@ -63,19 +63,18 @@ in
             #   "8.8.4.4"
             # ];
           };
-          # registries = {
-          #   search = [
-          #     "docker.io"
-          #     "quay.io"
-          #     "ghcr.io"
-          #   ];
-          #   #   insecure = [
-          #   #     "registry.fedoraproject.org"
-          #   #     "quay.io"
-          #   #     # "registry.access.redhat.com"
-          #   #     # "registry.centos.org"
-          #   #   ];
-          # };
+          registries = {
+            search = [
+              "docker.io"
+              "ghcr.io"
+            ];
+              insecure = [
+                "registry.fedoraproject.org"
+                "quay.io"
+                "registry.access.redhat.com"
+                "registry.centos.org"
+              ];
+          };
         };
         podman = {
           defaultNetwork.settings = {
