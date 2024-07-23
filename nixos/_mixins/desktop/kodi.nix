@@ -1,8 +1,8 @@
-{ pkgs, lib, ... }: {
-  users.users.kodi = {
+{ pkgs, lib, username, ... }: {
+  users.users.${username} = {
     isNormalUser = true;
     extraGroups = [ "video" ];
-    description = "Kodi Media Center";
+    description = "${username} Media Center";
     hashedPassword = "$6$A5gukqBVeM3eJblr$K6L1kxSDvJJjy6.LVx78d1QojtmGJBwpI3MPvc52h8H/Avg0KQW/uG6QazLiuoC2vGZ79nq3czvj96hEdSLUf1";
   };
   services = {
@@ -26,7 +26,7 @@
       displayManager = {
         autoLogin = {
           enable = true;
-          user = lib.mkForce "kodi";
+          user = lib.mkForce "${username}";
         };
 
         #disable blank screen
