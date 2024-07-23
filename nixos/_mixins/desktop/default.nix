@@ -241,7 +241,7 @@ in
       }
       else "";
 
-    flatpak = lib.mkIf (isInstall) {
+    flatpak = lib.mkIf (isInstall && hostname != "soyo") {
       enable = true;
     };
 
