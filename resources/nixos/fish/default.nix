@@ -1,6 +1,6 @@
 { lib, pkgs, isInstall, hostname, config, username }:
 let
-  variables = import ./hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
+  variables = import ../../nixos/hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
 in
 {
   interactiveShellInit = ''
