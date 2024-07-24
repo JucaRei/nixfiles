@@ -167,6 +167,7 @@ in
           # Quick Sync Video
           # vpl-gpu-rt # or intel-media-sdk for QSV
           intel-media-sdk
+          intel-media-driver
 
           # Accelerated Video Playback
           # intel-media-driver # LIBVA_DRIVER_NAME=iHD

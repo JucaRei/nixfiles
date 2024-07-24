@@ -10,6 +10,14 @@
     # - https://github.com/NixOS/nixpkgs/issues/144045#issuecomment-992487775
     pathsToLink = [ "/libexec" ];
 
+    pantheon.excludePackages = with pkgs.pantheon; [
+      elementary-code
+      elementary-music
+      elementary-photos
+      elementary-videos
+      epiphany
+    ];
+
     # Add additional apps and include Yaru for syntax highlighting
     systemPackages = with pkgs; [
       snapshot # camera
@@ -21,7 +29,8 @@
       gnome.simple-scan # Scanning
       indicator-application-gtk3 # App Indicator
       pantheon.sideload # elementary OS Flatpak installer
-      torrential # elementary OS torrent client
+      # torrential # elementary OS torrent client
+      gnome.dconf-editor
       yaru-theme
       usbimager
       tilix

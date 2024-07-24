@@ -21,8 +21,6 @@ in
             distrobox
             fuse-overlayfs # Container overlay+shiftfs
             flyctl
-          ]
-          ++ lib.optionals isWorkstation [
             boxbuddy
             pods
             podman-compose
@@ -93,7 +91,7 @@ in
         unprivilegedUsernsClone = config.virtualisation.containers.enable;
       };
 
-      users.users.${username}.extraGroups = lib.optional config.virtualisation.podman.enable "podman";
+      users.users.${username}.extraGroups = "podman";
     } else {
       ### Docker
       virtualisation = {
