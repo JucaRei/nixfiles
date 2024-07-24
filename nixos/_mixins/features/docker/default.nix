@@ -8,7 +8,7 @@ in
 {
   config =
     ### Podman
-    if (hostname != "soyo") then {
+    if (isWorkstation && hostname != "soyo") then {
       boot.kernel.sysctl = {
         "net.ipv4.ip_unprivileged_port_start" = 80; # Podman access port 80
       };
