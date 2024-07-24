@@ -1,0 +1,36 @@
+Include local.d/*
+Host *.lan
+LogLevel quiet
+Stricthostkeychecking no
+Userknownhostsfile /dev/null
+Host 127.*.*.* 192.168.*.* 10.*.*.* 172.16.*.* 172.17.*.* 172.18.*.* 172.19.*.* 172.2?.*.* 172.30.*.* 172.31.*.*
+LogLevel quiet
+Stricthostkeychecking no
+Userknownhostsfile /dev/null
+Host git.sr.ht
+IdentityFile /home/juca/.ssh/sourcehut
+Host github.com
+User Reinaldo
+IdentityFile /home/juca/.ssh/github
+Host gitlab.com
+User Reinaldo
+IdentityFile /home/juca/.ssh/gitlab
+
+Host *
+ForwardAgent yes
+AddKeysToAgent no
+Compression yes
+ServerAliveInterval 300
+ServerAliveCountMax 2
+HashKnownHosts no
+UserKnownHostsFile ~/.ssh/known_hosts
+ControlMaster no
+ControlPath ~/.ssh/master-%r@%n:%p
+ControlPersist no
+
+AddKeysToAgent yes
+
+
+Host github.com
+HostName github.com
+User git
