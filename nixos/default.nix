@@ -9,7 +9,7 @@ let
 in
 {
   imports =
-    [about:blank#blocked
+    [
       inputs.disko.nixosModules.disko
       inputs.nh.nixosModules.default
       inputs.nix-index-database.nixosModules.nix-index
