@@ -25,7 +25,7 @@ in
     ]
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
     # ++ lib.optional (notVM) ./_mixins/virtualization/podman.nix # podman not connecting to internet
-    ++ lib.optional (notVM && hostname != "soyo") ./_mixins/services/tools/smartmon.nix
+    ++ lib.optional (notVM && hostname != "soyo") ./_mixins/features/smartd
     ++ lib.optional (notVM) ./_mixins/features/docker
     ++ lib.optional (notVM && hostname != "soyo") ./_mixins/virtualization/lxd.nix
     ++ lib.optional (isWorkstation) ./_mixins/desktop

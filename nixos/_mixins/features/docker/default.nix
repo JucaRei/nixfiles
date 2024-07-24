@@ -66,12 +66,12 @@ in
               "docker.io"
               "ghcr.io"
             ];
-              insecure = [
-                "registry.fedoraproject.org"
-                "quay.io"
-                "registry.access.redhat.com"
-                "registry.centos.org"
-              ];
+            insecure = [
+              "registry.fedoraproject.org"
+              "quay.io"
+              "registry.access.redhat.com"
+              "registry.centos.org"
+            ];
           };
         };
         podman = {
@@ -91,7 +91,7 @@ in
         unprivilegedUsernsClone = config.virtualisation.containers.enable;
       };
 
-      users.users.${username}.extraGroups = "podman";
+      users.users.${username}.extraGroups = [ "podman" ];
     } else {
       ### Docker
       virtualisation = {
