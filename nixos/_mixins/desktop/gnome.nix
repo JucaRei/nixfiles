@@ -1,9 +1,43 @@
-# Gnome configuration
-#
 { config, lib, pkgs, ... }: {
-  imports = [
-    # ../apps/terminal/tilix.nix
-  ];
+
+  environment = {
+    ### Exclude Packages
+    gnome.excludePackages = with pkgs; ([
+      gnome-tour
+      baobab
+      gnome-console
+      gnome-text-editor
+      evolutionWithPlugins
+    ])
+    ++ (with pkgs.gnome;[
+      gnome-maps
+      geary
+      gnome-music
+      yelp
+      gnome-characters
+      gnome-terminal
+      gnome-disk-utility
+      gnome-system-monitor
+      epiphany # web browser
+      gnome-music
+      gnome-system-monitor
+      tali # poker game
+      iagno # go game
+      hitori # sudoku game
+      atomix # puzzle game
+      gnome-initial-setup
+      totem
+    ]);
+
+    systemPackages = with pkgs; [
+      gnome.dconf-editor
+      usbimager
+      yaru-theme
+      loupe
+      marker
+      blackbox-terminal
+    ];
+  };
 
   services = {
     xserver = {
@@ -72,10 +106,5 @@
         };
       };
     };
-  };
-  location = {
-    provider = "manual";
-    latitude = -23.53938;
-    longitude = -46.65253;
   };
 }

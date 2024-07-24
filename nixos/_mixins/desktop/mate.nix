@@ -14,12 +14,14 @@
       mate-icon-theme
       mate-backgrounds
       mate-icon-theme-faenza
+      mate-terminal
     ];
 
     # Add some packages to complete the MATE desktop
     systemPackages = with pkgs; [
       celluloid
       tilix
+      usbimager
       gnome.gucharmap
       gnome-firmware
       gnome.simple-scan
