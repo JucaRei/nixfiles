@@ -9,8 +9,7 @@
     # ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     # ./nvidia-specialisation.nix
-    ../../_mixins/hardware/boot/efi.nix
-    ../../_mixins/hardware/boot/plymouth.nix
+    # ../../_mixins/hardware/boot/plymouth.nix
     # ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
     # ../../_mixins/virtualization/quickemu.nix
@@ -25,6 +24,7 @@
     # ../../_mixins/console/fish.nix
   ];
   config = {
+
     boot = {
       # extraModprobeConfig = ''
       #   options vfio-pci ids=10de:1c8d,10de:0fb9 softdep nvidia pre: vfio-pci
@@ -37,9 +37,12 @@
       # done
       # modprobe -i vfio-pci
       # '';
-      mode.efi.enable = true;
+      mode = {
+        systemd-boot.enable = lib.mkForce false;
+        plymouth.enable = lib.mkForce true;
+        efi.enable = lib.mkForce true;
+      };
       loader = {
-        # generationsDir.copyKernels = true;  ## Copy kernel files into /boot so /nix/store isn't needed
         efi = {
           efiSysMountPoint = lib.mkForce "/boot/efi";
         };
@@ -88,11 +91,15 @@
       kernelPackages = pkgs.linuxPackages_xanmod_latest;
 
       kernelParams = lib.mkForce [
+        # NixOS produces many wakeups per second, which is bad for battery life.
+        # This kernel parameter disables the timer tick on the last 4 cores
+        "nohz_full=4-7"
+
         # intel cpu
         "i915.fastboot=1"
         "enable_gvt=1"
 
-        "nosgx"
+        # "nosgx"
         # "acpi_backlight=vendor"
         # "button.lid_init_state=open"
         "usbcore.autosuspend=-1" # Disable usb autosuspend
@@ -103,7 +110,6 @@
         "mem_sleep_default=deep"
       ];
       kernel.sysctl = lib.mkForce {
-        "net.ipv4.ip_unprivileged_port_start" = 80; # Podman access port 80
         #---------------------------------------------------------------------
         #   Network and memory-related optimizationss for desktop 16GB
         #---------------------------------------------------------------------
@@ -426,8 +432,6 @@
     };
 
     services = {
-
-      plymouth.enable = true;
       virtualisation.kvm.enable = true;
 
       acpid = {
@@ -511,31 +515,6 @@
       #     DEVICES_TO_DISABLE_ON_WWAN_CONNECT = "wifi";
       #   };
       # };
-
-      # Early OOM Killer
-      earlyoom = {
-        enable = true; # Enable the early OOM (Out Of Memory) killer service.
-
-        # Free Memory Threshold
-        # Sets the point at which earlyoom will intervene to free up memory.
-
-        # When free memory falls below 15%, earlyoom acts to prevent system slowdown or freezing.
-        freeSwapThreshold = 2;
-        freeMemThreshold = 2;
-        extraArgs = [
-          "-g"
-          "--avoid '^(X|plasma.*|konsole|kwin|foot)$'"
-          "--prefer '^(electron|libreoffice|gimp)$'"
-        ];
-
-        # Technical Explanation:
-        # The earlyoom service monitors system memory and intervenes when free memory drops below the specified threshold.
-        # It helps prevent system slowdowns and freezes by intelligently killing less important processes to free up memory.
-        # In this configuration, it triggers when free memory is only 15% of total RAM.
-        # Adjust the freeMemThreshold value based on your system's memory usage patterns.
-
-        # source:   https://github.com/rfjakob/earlyoom
-      };
 
       #---------------------------------------------------------------------
       # Provides a virtual file system for environment modules. Solution

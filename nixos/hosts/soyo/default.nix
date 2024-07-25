@@ -105,6 +105,10 @@ in
           "kernel.pid_max" = 131072; # Maximum number of processes and threads.
           "net.ipv4.ip_unprivileged_port_start" = 80; # Podman access port 80
 
+          # Headscale
+          "net.ipv4.ip_forward" = 1;
+          "net.ipv6.conf.all.forwarding" = 1;
+
           # Network Settings
           # "net.core.default_qdisc" = "fq"; # Use Fair Queueing (FQ) as default queuing discipline for reduced latency.
           "net.core.default_qdisc" = "cake";

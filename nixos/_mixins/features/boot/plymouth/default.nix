@@ -7,7 +7,7 @@ in
   options.boot.mode.plymouth = {
     enable = mkOption {
       type = types.bool;
-      default = false;
+      default = true;
       description = ''
         Enable plymouth animation for boot start.
       '';
@@ -21,7 +21,7 @@ in
           systemd.enable = true;
           verbose = false;
         };
-        kernelParams = mkForce [
+        kernelParams = [
           "quiet"
           "splash"
           "vga=current"
@@ -39,15 +39,15 @@ in
           "rootflags=noatime"
 
           # prevent the kernel from blanking plymouth out of the fb
-          "fbcon=nodefer"
+          # "fbcon=nodefer"
         ];
         kernel = {
           sysctl = {
-            "kernel.printk" = "3 3 3 3"; # "4 4 1 7";
+            # "kernel.printk" = "3 3 3 3"; # "4 4 1 7";
 
             # Hide kptrs even for processes with CAP_SYSLOG
             # also prevents printing kernel pointers
-            "kernel.kptr_restrict" = 2;
+            # "kernel.kptr_restrict" = 2;
 
             # Disable ftrace debugging
             "kernel.ftrace_enabled" = false;
