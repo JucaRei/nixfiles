@@ -21,13 +21,14 @@ in
       ./_mixins/config/scripts
       ./_mixins/services/network/networkmanager.nix
       ./_mixins/services/security/firewall.nix
+      ./_mixins/features/boot
       ./users
     ]
     # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
     # ++ lib.optional (notVM) ./_mixins/virtualization/podman.nix # podman not connecting to internet
     ++ lib.optional (notVM && hostname != "soyo") ./_mixins/features/smartd
     ++ lib.optional (notVM) ./_mixins/features/docker
-    ++ lib.optional (notVM && hostname != "soyo") ./_mixins/virtualization/lxd.nix
+    ++ lib.optional (notVM && hostname != "soyo") ./_mixins/features/lxd
     ++ lib.optional (isWorkstation) ./_mixins/desktop
     ++ lib.optional (isWorkstation) ./_mixins/sys
     ++ lib.optional (hostname == "nitro") ./_mixins/features/nix-ld
@@ -212,19 +213,11 @@ in
   boot = {
     initrd.verbose = mkDefault false;
     # Only enable the systemd-boot on installs, not live media (.ISO images)
-    loader = mkIf (notVM) {
-      efi = {
-        canTouchEfiVariables = true;
-      };
-      systemd-boot = mkIf (isInstall) {
-        configurationLimit = 5;
-        consoleMode = "max";
-        editor = false;
-        graceful = true;
-        # enable = true;
-        memtest86.enable = true;
-      };
-      timeout = 7;
+
+    mode = {
+      ### plymouth and systemd-boot is default
+      # systemd-boot.enable = mkOverride 1250 true; # Last priority
+      # plymouth.enable = mkDefault true;
     };
     consoleLogLevel = 3; # Silence ACPI "errors" at boot shown before NixOS stage 1 output (default is 4)
     tmp = {

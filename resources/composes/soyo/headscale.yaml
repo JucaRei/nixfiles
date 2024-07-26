@@ -1,1 +1,12 @@
 version: '3.5'
+services:
+  headscale:
+    container_name: headscale
+    image: headscale/headscale:0.23.0-beta1
+    volumes:
+      - /home/juca/Documents/docker/docker-configs/resources/headscale/config:/etc/headscale # Configuration files
+      - /home/juca/Documents/docker/docker-configs/resources/headscale/data:/var/lib/headscale # Data persistence
+    ports:
+      - "27896:8080" # Exposes Headscale on port 27896 of the host
+    command: headscale serve
+    restart: unless-stopped

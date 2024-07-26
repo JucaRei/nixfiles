@@ -4,7 +4,7 @@
   # this helps avoid having to shut down forcefully when we OOM
   services.earlyoom = {
     enable = true;
-    enableNotifications = true; # annoying, but we want to know what's killed
+    enableNotifications = false; # true; # annoying, but we want to know what's killed
     freeSwapThreshold = 2;
     freeMemThreshold = 2;
     extraArgs = [
