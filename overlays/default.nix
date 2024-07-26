@@ -1,12 +1,19 @@
 # This file defines overlays
-{ inputs, ... }: {
+{ inputs, ... }:
+let
+  polybar-scripts = inputs.polybar-scripts // {
+    version = "git-" + builtins.substring 0 7 inputs.polybar-scripts.rev;
+  };
+in
+{
   # This one brings our custom packages from the 'pkgs' directory
   additions = final: _prev: import ../pkgs { pkgs = final; };
 
   # This one contains whatever you want to overlay
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
-  # https://github.com/NixOS/nixpkgs/issues/278277#issuecomment-1878292158
+  # Get 1.3.0 to addres infinite loop:
+  # - https://github.com/Cisco-Talos/clamav/pull/1047
   modifications = _final: prev: {
     clamav = prev.clamav.overrideAttrs (_old: rec {
       pname = "clamav";
@@ -16,7 +23,6 @@
         sha256 = "sha256-CoamSWMg2RV2A3szEBEZr2/Y1bkQYM0xajqcIp6WBKo=";
       };
     });
-
 
     # https://github.com/NixOS/nixpkgs/issues/278277#issuecomment-1878292158
     keybase = prev.keybase.overrideAttrs (_old: rec {
@@ -30,45 +36,6 @@
       };
     });
 
-    # pythonPackagesExtensions =
-    #   prev.pythonPackagesExtensions
-    #   ++ [
-    #     (python-final: python-prev: {
-    #       default =
-    #         python-prev.default.overridePythonAttrs
-    #           (oldAttrs: { patches = [ ./patches/ceph.patch ]; });
-    #     })
-    #   ];
-
-    # nixgl-legacy = prev.nixgl-legacy;
-
-    steam = prev.steam.override {
-      extraPkgs = pkgs:
-        with pkgs; [
-          keyutils
-          libkrb5
-          libpng
-          libpulseaudio
-          libvorbis
-          stdenv.cc.cc.lib
-          xorg.libXcursor
-          xorg.libXi
-          xorg.libXinerama
-          xorg.libXScrnSaver
-        ];
-    };
-
-    # google-chrome = prev.google-chrome.overrideAttrs (old: {
-    #   installPhase =
-    #     old.installPhase
-    #     + ''
-    #       fix=" --enable-features=WebUIDarkMode --force-dark-mode"
-
-    #       substituteInPlace $out/share/applications/google-chrome.desktop \
-    #         --replace $exe "$exe$fix"
-    #     '';
-    # });
-
     keybase-gui = prev.keybase-gui.overrideAttrs (_old: rec {
       pname = "keybase-gui";
       version = "6.2.4";
@@ -78,18 +45,6 @@
         hash = "sha256-XyGb9F83z8+OSjxOaO5k+h2qIY78ofS/ZfTXki54E5Q=";
       };
     });
-
-    # nixGL-legacy = inputs.nixpkgs.callPackage "${builtins.fetchTarball {
-    #   url = "https://github.com/guibou/nixGL/archive/9e33a6ecb11551b88a95ab134dc4600003330405.tar.gz";
-    #   #sha256 = pkgs.lib.fakeSha256;
-    #   sha256 = "0f10mazqf2fm01sx8ai699xccy0pcabw60n8k3bna7ryijgwy7jq";
-    #   buildInputs = [prev.python3];
-    #   installPhase = ''
-    #     mkdir -p $out/bin
-    #       ./nvidiaInstall.py 340.108 nixGLNvidia
-    #       cp result/bin/nixGLNvidia $out/bin
-    #   '';
-    # }}/default.nix" {};
 
     librist = prev.librist.overrideAttrs (_old: rec {
       pname = "librist";
@@ -101,7 +56,7 @@
         rev = "v${version}";
         hash = "sha256-8N4wQXxjNZuNGx/c7WVAV5QS48Bff5G3t11UkihT+K0=";
       };
-      patches = [ ./patches/darwin.patch ];
+      patches = [ ./patchs/darwin.patch ];
     });
 
     nelua = prev.nelua.overrideAttrs (_old: rec {
@@ -126,6 +81,50 @@
       };
     });
 
+    gnome = prev.gnome.overrideScope' (gself: gsuper: {
+      nautilus = gsuper.nautilus.overrideAttrs (nsuper: {
+        buildInputs =
+          nsuper.buildInputs
+          ++ (with prev.gst_all_1; [
+            gst-plugins-good
+            gst-plugins-bad
+          ]);
+      });
+    });
+
+    # mpv 0.36
+    mpv = prev.pkgs.wrapMpv
+      # (prev.pkgs.unstable.mpv-unwrapped.override { # mpv 0.37
+      (prev.pkgs.mpv-unwrapped.override {
+        vapoursynthSupport = true;
+        cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
+        waylandSupport = true;
+        jackaudioSupport = true; # Add jack support to mpv.
+        # webp support
+        ffmpeg = prev.pkgs.ffmpeg_5-full;
+      })
+      {
+        extraMakeWrapperArgs = [
+          "--prefix"
+          "LD_LIBRARY_PATH"
+          ":"
+          "${prev.pkgs.vapoursynth-mvtools}/lib/vapoursynth"
+        ];
+        scripts = with prev.pkgs.mpvScripts;
+          [
+            # thumbnail
+            thumbfast # High-performance on-the-fly thumbnailer.
+            autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
+            mpris
+            uosc # Adds a minimalist but highly customisable GUI.
+            acompressor
+            webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
+            inhibit-gnome
+            autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
+            sponsorblock
+          ];
+      };
+
     wavebox = prev.wavebox.overrideAttrs (_old: rec {
       pname = "wavebox";
       version = "10.121.6-2";
@@ -135,56 +134,62 @@
       };
     });
 
-    waybar = prev.waybar;
-    nix-inspect = prev.nix-inspect;
+    # nixGL = prev.inputs.nixgl.overlay;
+
+    nixLegacyGLNvidia = prev.nixLegacyGLNvidia;
     cloneit = prev.cloneit;
-    cyberre = prev.cyberre;
-    catppuccin-plymouth = prev.catppuccin-plymouth;
-    advmvcp = prev.advmvcp;
-    icloud-photo-downloader = prev.icloud-photo-downloader;
-    nautilus-annotations = prev.nautilus-annotations;
+    lima-bin = prev.lima-bin;
     thorium = prev.thorium;
-    breeze-hacked-cursor = prev.breeze-hacked-cursor;
-    sddm-astronaut-theme = prev.sddm-astronaut-theme;
+    fluent = prev.fluent;
+    # chatgpt-cli = prev.chatgpt-cli;
+    advmvcp = prev.advmvcp;
     nix-cleanup = prev.nix-cleanup;
-    imgclr = prev.callPackage ../pkgs/utils/image-colorizer {
-      buildPythonPackage = prev.python310Packages.buildPythonPackage;
-    };
-    lutgen = prev.lutgen;
-    vv = prev.vv;
-    # st = prev.st.overrideAttrs (oldAttrs: {
-    #   buildInputs = oldAttrs.buildInputs ++ [prev.harfbuzz];
-    #   src = prev.fetchFromGitHub {
-    #     owner = "chadcat7";
-    #     repo = "st";
-    #     rev = "3d9eb51d43981963638a1b5a8a6aa1ace4b90fbb";
-    #     sha256 = "007pvimfpnmjz72is4y4g9a0vpq4sl1w6n9sdjq2xb2igys2jsyg";
-    #   };
-    # });
-
-    # fonts
-    # cairo = prev.cairo;
-    dubai = prev.dubai;
-    noto-sans-arabic = prev.font-noto-sans-arabic;
-    iosevka-q = prev.iosevka-q;
-    serasa-gothic = prev.serasa-gothic;
-
-    # mpv plugins
-    # mpv-anime4k = prev.mpv-anime4k;
-    # mpv-dynamic-crop = prev.mpv-dynamic-crop;
-    # mpv-modernx = prev.mpv-modernx;
-    # mpv-nextfile = prev.mpv-nextfile;
-    # mpv-subsearch = prev.mpv-subsearch;
-    # mpv-sub-select = prev.mpv-sub-select;
-    # mpv-thumbfast-osc = prev.mpv-thumbfast-osc;
-    # youtube_tui = prev.youtube_tui;
     nix-whereis = prev.nix-whereis;
-    gruvbox-dark = prev.gruvbox-dark;
+    nix-inspect = prev.nix-inspect;
+    nixos-tweaker = prev.nixos-tweaker;
+    sarasa-gothic = prev.sarasa-gothic;
+    iosevka-q = prev.iosevka-q;
+    nf-iosevka = prev.nf-iosevka;
+    bebasNeue = prev.bebasNeue;
+    feather = prev.feather;
+    abel = prev.abel;
+    catppuccin-grub = prev.catppuccin-grub;
+    cyberre-grub-theme = prev.cyberre-grub-theme;
+    astronaut-sddm = prev.astronaut-sddm;
+    # spotdl = prev.callPackage ../pkgs/tools/spotdl {
+    #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
+    # };
+    juca-avatar = prev.juca-avatar;
+
+    player-mpris-tail = prev.pkgs.callPackage ../pkgs/scripts/polybar-scripts/player-mpris-tail {
+      inherit polybar-scripts;
+      inherit (prev) stdenv;
+      inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
+    };
+    polywins = prev.polywins;
+    weather-bar = prev.weather-bar;
+    cava-polybar = prev.cava-polybar;
+    xqp = prev.xqp;
   };
 
-  # accessible through 'pkgs.unstable'
+  # When applied, the unstable nixpkgs set (declared in the flake inputs) will
+  # be accessible through 'pkgs.unstable'
   unstable-packages = final: _prev: {
     unstable = import inputs.nixpkgs-unstable {
+      inherit (final) system;
+      config.allowUnfree = true;
+    };
+  };
+
+  previous-packages = final: _prev: {
+    previous = import inputs.nixpkgs-previous {
+      inherit (final) system;
+      config.allowUnfree = true;
+    };
+  };
+
+  legacy-packages = final: _prev: {
+    legacy = import inputs.nixpkgs-legacy {
       inherit (final) system;
       config.allowUnfree = true;
     };

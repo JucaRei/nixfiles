@@ -3,24 +3,24 @@
     "editor.defaultFormatter": "jnoortheen.nix-ide"
   },
   "breadcrumbs.enabled": true,
-  "dev.containers.containerEnv": {
-    "HOME": "home/node"
-  },
+  // "dev.containers.containerEnv": {
+  //   "HOME": "home/node"
+  // },
   "dev.containers.runArgs": [
     "--userns=keep-id"
   ],
-  "docker.composeCommand": "podman-compose",
-  "docker.dockerPath": "/nix/store/8cwdz6lf63qk0aryxfv0zc9vbm54g2a8-podman-4.7.2/bin/podman",
-  "docker.environment": {
-    "DOCKER_HOST": "unix:///run/user/1000/podman/podman.sock"
-  },
+  // "docker.composeCommand": "podman-compose",
+  // "docker.dockerPath": "/nix/store/zym2zvmpk1fc888k3123k1dkb9j82vpw-podman-4.7.2/bin/podman",
+  // "docker.environment": {
+  //   "DOCKER_HOST": "unix:///run/user/1000/podman/podman.sock"
+  // },
   "editor.bracketPairColorization.enabled": true,
   "editor.codeActionsOnSave.source.fixAll": true,
   "editor.codeActionsOnSave.source.organizeImports": "always",
   "editor.cursorBlinking": "smooth",
   "editor.cursorSmoothCaretAnimation": "on",
   "editor.cursorStyle": "line",
-  "editor.cursorSurroundingLines": 2,
+  "editor.cursorSurroundingLines": "1.4",
   "editor.cursorSurroundingLinesStyle": "all",
   "editor.cursorWidth": 2,
   "editor.diffEditor.codeLens": true,
@@ -40,10 +40,10 @@
   "editor.guides.indentation": true,
   "editor.inlineSuggest.enabled": true,
   "editor.largeFileOptimizations": true,
-  "editor.lineHeight": 1.8,
+  "editor.lineHeight": 1.3,
   "editor.lineNumbers": "on",
   "editor.minimap.autohide": true,
-  "editor.minimap.maxColumn": 90,
+  "editor.minimap.maxColumn": 100,
   "editor.minimap.renderCharecters": false,
   "editor.quickSuggestions.comments": "on",
   "editor.quickSuggestionsdelay": 1,
@@ -62,7 +62,7 @@
   "editor.smoothScrolling": true,
   "editor.suggest.localityBonus": true,
   "editor.suggestSelection": "first",
-  "editor.tabsize": 2,
+  "editor.tabsize": 1.5,
   "editor.wordWrap": "bounded",
   "editor.wordWrapColumn": 120,
   "editor.wrappingIndent": "indent",
@@ -116,8 +116,8 @@
     "MD041": false
   },
   "nix.enableLanguageServer": true,
-  "nix.formatterPath": "/nix/store/g7iw89kgcf1y1cy6ilwhbn38l91mm95a-nixpkgs-fmt-1.3.0/bin/nixpkgs-fmt",
-  "nix.serverPath": "/nix/store/id7c0a8ximrcm9p8gxcc0yqsgkmjawg2-nil-2023-08-09/bin/nil",
+  "nix.formatterPath": "nixpkgs-fmt",
+  "nix.serverPath": "nil",
   "nix.serverSettings": {
     "nil": {
       "diagnostics": {
@@ -128,7 +128,7 @@
       },
       "formatting": {
         "command": [
-          "/nix/store/g7iw89kgcf1y1cy6ilwhbn38l91mm95a-nixpkgs-fmt-1.3.0/bin/nixpkgs-fmt"
+          "nixpkgs-fmt"
         ]
       }
     }
@@ -144,7 +144,7 @@
   "terminal.integrated.mouseWheelScrollSensitivity": 2,
   "terminal.integrated.persistentSessionScrollback": 200,
   "terminal.integrated.scrollback": 5000,
-  "terminal.integrated.shell.linux": "/nix/store/q1c2flcykgr4wwg5a6h450hxbk4ch589-bash-5.2-p15/bin/bash",
+  "terminal.integrated.shell.linux": "fish",
   "terminal.integrated.showExitAlert": false,
   "terminal.integrated.smoothScrolling": true,
   "terminal.integrated.tabs.focusMode": "singleClick",
@@ -155,16 +155,20 @@
   "window.menuBarVisibility": "toggle",
   "window.title": "${rootName}${separator}${profileName}${separator}${activeEditorShort}",
   "window.titleBarStyle": "custom",
-  "window.zoomLevel": 1,
-  "workbench.colorTheme": "RedCrafter07 Theme",
+  "window.zoomLevel": 0.3,
+  // "workbench.colorTheme": "RedCrafter07 Theme",
   "workbench.editor.labelFormat": "short",
   "workbench.enableExperiments": true,
-  "workbench.iconTheme": "bearded-icons",
+  // "workbench.iconTheme": "bearded-icons",
   "workbench.list.smoothScrolling": true,
-  "workbench.productIconTheme": "bootstrap-product-icons",
+  "workbench.productIconTheme": "macos-modern",
   "workbench.settings.editor": "ui",
   "workbench.settings.enableNaturalLanguageSearch": true,
   "workbench.smoothScrolling": true,
   "workbench.tree.indent": 4,
-  "zenMode.hideLineNumbers": false
+  "zenMode.hideLineNumbers": false,
+  "symbols.hidesExplorerArrows": false,
+  "[lua]": {
+    "editor.defaultFormatter": "yinfei.luahelper"
+  }
 }

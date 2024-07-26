@@ -6,12 +6,12 @@ _: {
       "netrom"
       "rose"
     ];
-    kernelModules = ["tcp_bbr"];
+    kernelModules = [ "tcp_bbr" ];
     kernel.sysctl = {
       # The Magic SysRq key is a key combo that allows users connected to the
       # system console of a Linux kernel to perform some low-level commands.
       # Disable it, since we don't need it, and is a potential security concern.
-      "kernel.sysrq" = 0;
+      # "kernel.sysrq" = 0;
 
       # Disable NMI watchdog
       "kernel.nmi_watchdog" = 0;
@@ -54,7 +54,7 @@ _: {
       "net.ipv4.tcp_fastopen" = 3;
       # Bufferbloat mitigations + slight improvement in throughput & latency
       "net.ipv4.tcp_congestion_control" = "bbr";
-      "net.core.default_qdisc" = "cake";
+      # "net.core.default_qdisc" = "cake";
     };
   };
 }

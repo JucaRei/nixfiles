@@ -1,15 +1,9 @@
-{ lib
-, stdenv
-, makeWrapper
-, libvirt
-, writeShellScript
-, ...
-}:
+{ lib, stdenv, makeWrapper, libvirt, writeShellScript, ... }:
 
 let
   iommuManipulation = writeShellScript "iommu-manipulation.sh" ''
     DIR="$(dirname -- $0)"
-  
+
     if [ "$1" == "list" ]; then
         bash "$DIR/list-iommu-groups.sh"
         exit 0
@@ -58,7 +52,7 @@ stdenv.mkDerivation rec {
     cp $src $out/share/list-iommu-groups.sh
     cp ${iommuManipulation} $out/share/iommu-manipulation.sh
     chmod +x $out/share/iommu-manipulation.sh
-    
+
     makeWrapper $out/share/iommu-manipulation.sh $out/bin/iommu-groups
   '';
 }

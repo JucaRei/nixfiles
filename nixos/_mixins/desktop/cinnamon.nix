@@ -1,10 +1,9 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
+{ config
+, pkgs
+, lib
+, ...
 }: {
-  imports = [../config/qt/qt-style.nix];
+  imports = [ ../config/qt/qt-style.nix ];
   services = {
     xserver = {
       enable = true;
@@ -20,7 +19,7 @@
           };
         };
       };
-      desktopManager = {cinnamon = {enable = true;};};
+      desktopManager = { cinnamon = { enable = true; }; };
     };
     redshift = {
       enable = true;
@@ -29,13 +28,12 @@
         night = 3000;
       };
     };
-    geoclue2.enable = true;
     cinnamon.apps.enable = true;
-    gnome = {evolution-data-server = {enable = lib.mkDefault false;};};
+    gnome = { evolution-data-server = { enable = lib.mkDefault false; }; };
   };
   environment = {
     systemPackages =
-      (with pkgs; [blueberry])
+      (with pkgs; [ blueberry ])
       ++ (with pkgs.cinnamon; [
         nemo
         nemo-with-extensions
@@ -53,8 +51,8 @@
         cinnamon-desktop
       ]);
     cinnamon.excludePackages =
-      (with pkgs; [orca xplayer])
-      ++ (with pkgs.cinnamon; [cinnamon-translations pix])
+      (with pkgs; [ orca xplayer ])
+      ++ (with pkgs.cinnamon; [ cinnamon-translations pix ])
       ++ (with pkgs.gnome; [
         geary
         # gnome-disk-utility
@@ -73,10 +71,10 @@
       # ];
       ## 23.11
       config = {
-        common = {default = ["xapp"];};
+        common = { default = [ "xapp" ]; };
         cinnamon = {
-          default = ["xapp" "gtk"];
-          "org.freedesktop.impl.portal.Secret" = ["xapp"];
+          default = [ "xapp" "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "xapp" ];
         };
       };
     };

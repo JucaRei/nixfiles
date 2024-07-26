@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Load Global Variable
-source $HOME/.aether-corevar
+# source $HOME/.aether-corevar
 
-rofi_command="rofi -theme themes/powermenu.rasi"
+rofi_command="rofi -theme $HOME/.config/rofi/themes/powermenu.rasi"
 
 # Options
 shutdown="exec systemctl poweroff -i"

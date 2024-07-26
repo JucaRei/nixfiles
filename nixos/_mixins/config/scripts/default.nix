@@ -1,4 +1,4 @@
-{ hostname, lib, pkgs, ... }:
+{ hostname, lib, pkgs, isInstall, config, ... }:
 let
   build-all = import ./build-all.nix { inherit pkgs; };
   build-host = import ./build-host.nix { inherit pkgs; };
@@ -7,12 +7,13 @@ let
   purge-gpu-caches = import ./purge-gpu-caches.nix { inherit pkgs; };
   simple-password = import ./simple-password.nix { inherit pkgs; };
   switch-all = import ./switch-all.nix { inherit pkgs; };
-  boot-host = import ./boot-host.nix { inherit pkgs; };
+  # boot-host = import ./boot-host.nix { inherit pkgs; };
   switch-host = import ./switch-host.nix { inherit pkgs; };
+  switch-boot = import ./switch-boot.nix { inherit pkgs; };
   unroll-url = import ./unroll-url.nix { inherit pkgs; };
-  isInstall = if (builtins.substring 0 4 hostname != "iso-") then true else false;
 in
 {
+  imports = [ ./nixos-change-summary.nix ];
   environment.systemPackages = [
     build-all
     build-host
@@ -20,10 +21,11 @@ in
     purge-gpu-caches
     simple-password
     switch-all
-    boot-host
+    # boot-host
+    switch-boot
     switch-host
     unroll-url
-  ] ++ lib.optionals (isInstall) [
+  ] ++ lib.optionals (isInstall && config.services.flatpak.enable) [
     flatpak-theme
   ];
 }

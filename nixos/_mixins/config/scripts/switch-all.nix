@@ -1,15 +1,16 @@
 { pkgs }:
 
 pkgs.writeScriptBin "switch-all" ''
-#!${pkgs.stdenv.shell}
+  #!${pkgs.stdenv.shell}
 
-if [ -e $HOME/Zero/nix-config ]; then
-  sudo ${pkgs.coreutils-full}/bin/true
-  pushd $HOME/Zero/nix-config
-  sudo nixos-rebuild switch --flake .#
-  ${pkgs.home-manager}/bin/home-manager switch -b backup --flake $HOME/Zero/nix-config
-  popd
-else
-  ${pkgs.coreutils-full}/bin/echo "ERROR! No nix-config found in $HOME/Zero/nix-config"
-fi
+  if [ -e $HOME/.dotfiles/nixfiles ]; then
+    all_cores=$(nproc)
+    build_cores=$(${pkgs.coreutils-full}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
+    echo "Switching NixOS ❄️ with $build_cores cores"
+    ${pkgs.unstable.nh}/bin/nh os switch $HOME/.dotfiles/nixfiles -- --cores $build_cores
+    echo "Switching Home Manager with $build_cores cores"
+    ${pkgs.unstable.nh}/bin/nh home switch --backup-extension backup $HOME/.dotfiles/nixfiles/ -- --impure --cores $build_cores
+  else
+    ${pkgs.coreutils-full}/bin/echo "ERROR! No nixfiles found in $HOME/.dotfiles/nixfiles"
+  fi
 ''

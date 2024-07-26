@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    ../../_mixins/fonts
+    # ../../_mixins/fonts
     # ../../_mixins/services/keybase.nix
     # ../../_mixins/services/syncthing.nix
   ];
@@ -24,11 +24,6 @@ in
       #   tab_width = 4
       #   [ALIASES]
       # ";
-      "${config.home.homeDirectory}/Pictures/wallpapers" = {
-        source = ../../_mixins/config/wallpapers;
-        recursive = true;
-      };
-      ".face".source = ./face.jpg;
       #file."Development/debian/.envrc".text = "export DEB_VENDOR=Debian";
       #file."Development/ubuntu/.envrc".text = "export DEB_VENDOR=Ubuntu";
       ".ssh/config".text = ''
@@ -98,62 +93,6 @@ in
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
     packages = with pkgs;
       lib.mkDefault [
-        # asciinema # Terminal recorder
-        # black # Code format Python
-        # bmon # Modern Unix `iftop`
-        # breezy # Terminal bzr client
-        # butler # Terminal Itch.io API client
-        # chafa # Terminal image viewer
-        # chroma # Code syntax highlighter
-        # clinfo # Terminal OpenCL info
-        # curlie # Terminal HTTP client
-        # dconf2nix # Nix code from Dconf files
-        # debootstrap # Terminal Debian installer
-        diffr # Modern Unix `diff`
-        # difftastic # Modern Unix `diff`
-        # dogdns # Modern Unix `dig`
-        # dua # Modern Unix `du`
-        duf # Modern Unix `df`
-        frogmouth # Terminal mardown viewer
-        # du-dust # Modern Unix `du`
-        # entr # Modern Unix `watch`
-        # fast-cli # Terminal fast.com
-        # fd # Modern Unix `find`
-        # glow # Terminal Markdown renderer
-        # gping # Modern Unix `ping`
-        # hexyl # Modern Unix `hexedit`
-        # httpie # Terminal HTTP client
-        # hyperfine # Terminal benchmarking
-        # iperf3 # Terminal network benchmarking
-        # iw # Terminal WiFi info
-        # jpegoptim # Terminal JPEG optimizer
-        # jiq # Modern Unix `jq`
-        # lazygit # Terminal Git client
-        # libva-utils # Terminal VAAPI info
-        # lurk # Modern Unix `strace`
-        # mdp # Terminal Markdown presenter
-        moar # Modern Unix `less`
-        # mtr # Modern Unix `traceroute`
-        # netdiscover # Modern Unix `arp`
-        # nethogs # Modern Unix `iftop`
-        # nodePackages.prettier # Code format
-        # nurl # Nix URL fetcher
-        # nyancat # Terminal rainbow spewing feline
-        # speedtest-go # Terminal speedtest.net
-        # optipng # Terminal PNG optimizer
-        # procs # Modern Unix `ps`
-        # python310Packages.gpustat # Terminal GPU info
-        # quilt # Terminal patch manager
-        ripgrep # Modern Unix `grep`
-        # rustfmt # Code format Rust
-        # shellcheck # Code lint Shell
-        # shfmt # Code format Shell
-        # tldr # Modern Unix `man`
-        # tokei # Modern Unix `wc` for code
-        # vdpauinfo # Terminal VDPAU info
-        # wavemon # Terminal WiFi monitor
-        # yq-go # Terminal `jq` for YAML
-        # nvchad
       ];
     # sessionVariables = {
     #   BZR_EMAIL = "Reinaldo P Jr <code@wimpress.io>";
@@ -176,15 +115,15 @@ in
 
     home-manager = lib.mkDefault {
       enable = true;
-      path = "${config.home.homeDirectory}/home-manager";
+      # path = "${config.home.homeDirectory}/home-manager";
     };
   };
 
   services = {
     home-manager = {
       autoUpgrade = {
-        enable = true;
-        frequency = "weekly";
+        enable = false;
+        # frequency = "weekly";
       };
     };
   };
@@ -193,16 +132,16 @@ in
     "d ${config.home.homeDirectory}/Scripts 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Studio/OBS/config/obs-studio/ 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Documents/workspace/linux 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Documents/workspace/virtualmachines/windows 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Documents/workspace/virtualmachines/linux 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Documents/workspace/virtualmachines/mac 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Documents/workspace/docker-configs/resources 0750 ${username} users - -"
-    "d ${config.home.homeDirectory}/Documents/workspace/docker-configs/composes 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Documents/workspace/lab 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Documents/Virtualmachines/windows 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Documents/Virtualmachines/linux 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Documents/Virtualmachines/mac 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Documents/docker/docker-configs/resources 0750 ${username} users - -"
+    "d ${config.home.homeDirectory}/Documents/docker-configs/composes 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Documents/lab 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Documents/workspace/github 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Documents/workspace/bitbucket 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Documents/workspace/gitlab 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Documents/workspace/scripts 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/Documents/scripts 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Downloads/Videos 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Downloads/Music 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Downloads/Torrents 0755 ${username} users - -"

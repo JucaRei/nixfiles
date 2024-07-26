@@ -1,8 +1,6 @@
-{
-  lib,
-  hostname,
-  ...
-}: let
+{ config, lib, hostname, ... }:
+with lib;
+let
   # Firewall configuration variable for syncthing
   syncthing = {
     hosts = [
@@ -10,63 +8,37 @@
       "rocinante"
       "DietPi"
       "nitro"
-      "brix"
-      "designare"
-      "micropc"
-      "nuc"
-      "p1"
-      "p2-max"
-      "ripper"
-      "skull"
-      "trooper"
       "vm"
-      "win2"
-      "win-max"
-      "zed"
+      "minimech"
+      "soyo"
+      "scrubber"
     ];
-    # tcpPorts = [ 22000 ];
-    # udpPorts = [ 22000 21027 53 5353 ];
+    tcpPorts = [ 22000 443 22 2375 9091 ];
+    udpPorts = [ 22000 21027 53 5353 ];
     allowedTCPPorts = [
-      # FTP
-      21
-      # DNS
-      53
-      # HTTP
-      80
-      # HTTPS
-      443
-      # IMAP
-      143
-      # LDAP
-      389
-      # Samba
-      139
-      445
-      # SMTP
-      25
-      # SSH
-      22
-      # PostgreSQL
-      5432
-      # MySQL/MariaDB
-      3306
-      3307
-      # NFS
-      111
-      2049
-      # Docker
-      2375
-      # Syncthing port
-      22000
-      # Transmission
-      9091
-      60450
-      # For gnomecast server
-      80
-      8010
-      8888
-      # wsdd : samba
-      5357
+      21 # FTP
+      53 # DNS
+      80 # HTTP
+      443 # HTTPS
+      143 # IMAP
+      389 # LDAP
+      139 # Samba
+      445 # Samba
+      25 # SMTP
+      22 # SSH
+      5432 # PostgreSQL
+      3306 # MySQL/MariaDB
+      3307 # MySQL/MariaDB
+      111 # NFS
+      2049 # NFS
+      2375 # Docker
+      22000 # Syncthing port
+      9091 # Transmission
+      51413 # Transmission
+      80 # For gnomecast server
+      8010 # For gnomecast server
+      8888 # For gnomecast server
+      5357 # wsdd : samba
       # Open KDE Connect
       {
         from = 1714;
@@ -78,18 +50,13 @@
     ];
 
     allowedUDPPorts = [
-      # DNS
-      53
-      # NetBIOS Name Service
-      137
-      # NetBIOS Datagram Service
-      138
-      # wsdd : samba
-      3702
-      # For device discovery
-      5353
-      # Syncthing port
-      21027
+      53 # DNS
+      137 # NetBIOS Name Service
+      138 # NetBIOS Datagram Service
+      3702 # wsdd : samba
+      51413 # Transmission
+      5353 # For device discovery
+      21027 # Syncthing port
       # Teamviewer
       # 5938
       # Open KDE Connect
@@ -97,31 +64,41 @@
         from = 1714;
         to = 1764;
       }
-      # Syncthing port
-      22000
-      8200
+      22000 # Syncthing port
+      8200 # Syncthing port
     ];
   };
-in {
-  networking = {
-    firewall = {
-      allowPing = true;
-      enable = true;
-      allowedTCPPorts =
-        []
-        ++ lib.optionals (builtins.elem hostname syncthing.hosts)
-        syncthing.tcpPorts;
-      allowedUDPPorts =
-        []
-        ++ lib.optionals (builtins.elem hostname syncthing.hosts)
-        syncthing.udpPorts;
 
-      #---------------------------------------------------------------------
-      # Adding a rule to the iptables firewall to allow NetBIOS name
-      # resolution traffic on UDP port 137
-      #---------------------------------------------------------------------
+  cfg = config.services.firewall;
+in
+{
+  options.services.firewall.enable = mkEnableOption "Weather enable or not Firewall";
+  config = mkIf cfg.enable {
+    networking = {
+      firewall = {
+        interfaces."podman[0-9]+".allowedUDPPorts = [ 53 ];
+        allowPing = true;
+        enable = true;
+        allowedTCPPorts =
+          [
+            # syncthing.allowedTCPPorts
+          ]
+          ++ lib.optionals (builtins.elem hostname syncthing.hosts)
+            syncthing.tcpPorts;
+        allowedUDPPorts =
+          [
+            # syncthing.allowedUDPPorts
+          ]
+          ++ lib.optionals (builtins.elem hostname syncthing.hosts)
+            syncthing.udpPorts;
 
-      extraCommands = "iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns";
+        #---------------------------------------------------------------------
+        # Adding a rule to the iptables firewall to allow NetBIOS name
+        # resolution traffic on UDP port 137
+        # network discovery
+        #---------------------------------------------------------------------
+        extraCommands = "iptables -t raw -A OUTPUT -p udp -m udp --dport 137 -j CT --helper netbios-ns";
+      };
     };
   };
 }

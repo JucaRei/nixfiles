@@ -1,14 +1,18 @@
-{pkgs, ...}:
-# let
-# ifDefault = lib.mkIf (builtins.elem params.browser [ "chrome" "google-chrome" ]);
-# in
+{ pkgs, lib, config, ... }:
+with lib;
+let
+  cfg = config.programs.google-chrome;
+in
 {
-  home.packages = with pkgs.unstable; [google-chrome];
-  # xdg = {
-  # mime.enable = ifDefault true;
-  # mimeApps = {
-  # enable = ifDefault true;
-  # defaultApplications = ifDefault (import ./default-browser.nix "chromium");
-  # };
-  # };
+  options.programs.google-chrome = {
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+    };
+  };
+  config = mkIf cfg.enable {
+    home.packages = with pkgs.unstable; [
+      google-chrome
+    ];
+  };
 }

@@ -1,10 +1,7 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  ...
-}: {
-  imports = [../config/qt/qt-style.nix ../apps/terminal/tilix.nix];
+{ inputs, lib, pkgs, ... }: {
+  imports = [
+    ../config/qt/qt-style.nix
+  ];
 
   # Exclude MATE themes. Yaru will be used instead.
   # Don't install mate-netbook or caja-dropbox
@@ -17,11 +14,14 @@
       mate-icon-theme
       mate-backgrounds
       mate-icon-theme-faenza
+      mate-terminal
     ];
 
     # Add some packages to complete the MATE desktop
     systemPackages = with pkgs; [
       celluloid
+      tilix
+      usbimager
       gnome.gucharmap
       gnome-firmware
       gnome.simple-scan
@@ -87,8 +87,8 @@
         };
       };
 
-      desktopManager = {mate.enable = true;};
+      desktopManager = { mate.enable = true; };
     };
   };
-  xdg.portal.extraPortals = with pkgs; [xdg-desktop-portal-gtk];
+  xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
 }

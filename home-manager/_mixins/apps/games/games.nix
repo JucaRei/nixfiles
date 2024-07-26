@@ -1,13 +1,10 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{ config, pkgs, lib, ... }:
+let
   myRetroarch = pkgs.retroarch.override {
-    cores = with pkgs.libretro; [mgba desmume dolphin citra genesis-plus-gx];
+    cores = with pkgs.libretro; [ mgba desmume dolphin citra genesis-plus-gx ];
   };
-in {
+in
+{
   home.packages = with pkgs; [
     # Games
     gamehub

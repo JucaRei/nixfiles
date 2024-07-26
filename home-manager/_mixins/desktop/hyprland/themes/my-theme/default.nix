@@ -1,18 +1,18 @@
-{
-  pkgs,
-  lib,
-  config,
-  hostname,
-  osConfig,
-  inputs,
-  username,
-  ...
-}: let
-  nixGL = import ../../../../../../lib/nixGL.nix {inherit config pkgs;};
+{ pkgs
+, lib
+, config
+, hostname
+, osConfig
+, inputs
+, username
+, ...
+}:
+let
+  nixGL = import ../../../../../../lib/nixGL.nix { inherit config pkgs; };
 
   # mpvpaper-custom = (nixGL pkgs.mpvpaper); # Live wallpaper
   scripts.wl-screenshot = {
-    runtimeInputs = [pkgs.grim pkgs.slurp pkgs.wl-clipboard pkgs.swayimg];
+    runtimeInputs = [ pkgs.grim pkgs.slurp pkgs.wl-clipboard pkgs.swayimg ];
     text = ''
       # ideas stolen from https://github.com/emersion/slurp/issues/104#issuecomment-1381110649
 
@@ -236,7 +236,8 @@
   '';
 
   swayidle = "${pkgs.swayidle}/bin/swayidle";
-in {
+in
+{
   imports = [
     ../../../../apps/terminal/foot.nix
     ../../../../apps/tools/imv.nix
@@ -288,7 +289,7 @@ in {
               ".config/rofi/scripts/wallpaper.sh"
               "notify-send 'Hey Junior, Welcome back' &"
             ];
-            xwayland = {force_zero_scaling = true;};
+            xwayland = { force_zero_scaling = true; };
             misc = {
               # disable redundant renders
               disable_autoreload = false;
@@ -331,7 +332,7 @@ in {
               special_scale_factor = 0.9;
               no_gaps_when_only = false;
             };
-            plugin = {split-monitor-workspaces = {count = 5;};};
+            plugin = { split-monitor-workspaces = { count = 5; }; };
           };
           extraConfig = ''
             ###############################
@@ -750,7 +751,7 @@ in {
               "CTRL SUPER, k, resizeactive, 0 -15"
               "CTRL SUPER, j, resizeactive, 0 15"
             ];
-            submap = ["resize" "reset"];
+            submap = [ "resize" "reset" ];
             binde = [
               # ",right,resizeactive,15 0"
               # ",left,resizeactive,-15 0"
@@ -800,23 +801,23 @@ in {
           color-picker
         ]
         ++ (with pkgs.xfce;
-          [
-            xfce4-power-manager
-            exo # thunar "open terminal here"
-            thunar-archive-plugin
-            (thunar.override {
-              thunarPlugins = with pkgs.xfce; [
-                thunar-archive-plugin
-                thunar-volman
-                thunar-media-tags-plugin
-              ];
-            })
-            mousepad
-            tumbler
-          ]
-          ++ (with pkgs.unstable; [
-            # papirus-icon-theme
-          ]));
+        [
+          xfce4-power-manager
+          exo # thunar "open terminal here"
+          thunar-archive-plugin
+          (thunar.override {
+            thunarPlugins = with pkgs.xfce; [
+              thunar-archive-plugin
+              thunar-volman
+              thunar-media-tags-plugin
+            ];
+          })
+          mousepad
+          tumbler
+        ]
+        ++ (with pkgs.unstable; [
+          # papirus-icon-theme
+        ]));
       file = {
         ".config/hypr/keybindings.conf" = {
           text = ''
@@ -1055,37 +1056,54 @@ in {
             fill_shape=false
           '';
         };
-        ".config/Thunar/uca.xml" = {
-          text = ''
-            <?xml version="1.0" encoding="UTF-8"?>
-            <actions>
-              <action>
-                <icon>xterm</icon>
-                <name>Open Terminal Here</name>
-                <unique-id>1612104464586264-1</unique-id>
-                <command>foot</command>
-                <description></description>
-                <patterns>*</patterns>
-                <startup-notify/>
-                <directories/>
-              </action>
-              <action>
-                <icon>code</icon>
-                <name>Open VSCode Here</name>
-                <unique-id>1612104464586265-1</unique-id>
-                <command>code %f</command>
-                <description></description>
-                <patterns>*</patterns>
-                <startup-notify/>
-                <directories/>
-              </action>
-            </actions>
-          '';
-        };
+        ".config/Thunar/uca.xml" =
+          let
+            TerminalEmulator = "${pkgs.foot}/bin/foot";
+          in
+          {
+            text = ''
+              <?xml version="1.0" encoding="UTF-8"?>
+              <actions>
+                <action>
+                  <icon>xterm</icon>
+                  <name>Open Terminal Here</name>
+                  <unique-id>1612104464586264-1</unique-id>
+                  <command>exo-open --working-directory %f --launch ${TerminalEmulator}</command>
+                  # <command>foot</command>
+                  <description>Example for a custom action</description>
+                  <patterns>*</patterns>
+                  <startup-notify/>
+                  <directories/>
+                </action>
+                <action>
+                  <icon>code</icon>
+                  <name>Open VSCode Here</name>
+                  <unique-id>1612104464586265-1</unique-id>
+                  <command>code %f</command>
+                  <description></description>
+                  <patterns>*</patterns>
+                  <startup-notify/>
+                  <directories/>
+                </action>
+                <action>
+                  <icon>bcompare</icon>
+                  <name>Compare</name>
+                  <submenu></submenu>
+                  <unique-id>1622791692322694-4</unique-id>
+                  <command>${pkgs.meld}/bin/meld %F</command>
+                  <description>Compare files and directories with  meld</description>
+                  <range></range>
+                  <patterns>*</patterns>
+                  <directories/>
+                  <text-files/>
+                </action>
+              </actions>
+            '';
+          };
       };
     };
 
-    programs = {pywal.enable = true;};
+    programs = { pywal.enable = true; };
 
     dconf = {
       settings = {
@@ -1098,7 +1116,7 @@ in {
       };
     };
 
-    services = {swayosd = {enable = true;};};
+    services = { swayosd = { enable = true; }; };
 
     xfconf.settings = {
       thunar = {

@@ -1,9 +1,6 @@
-{ config, desktop, inputs, lib, outputs, pkgs, modulesPath, stateVersion, username, hostname, nixgl, ... }:
+{ config, desktop, inputs, lib, outputs, pkgs, stateVersion, username, hostname, isWorkstation, isLima, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  isLima = builtins.substring 0 5 hostname == "lima-";
-  isWorkstation = if (desktop != null) then true else false;
-  isStreamstation = if (hostname == "phasma" || hostname == "vader") then true else false;
 in
 {
   # Only import desktop configuration if the host is desktop enabled
@@ -17,18 +14,23 @@ in
       # inputs.nix-colors.homeManagerModules.default
       # inputs.sops-nix.homeManagerModules.sops
       inputs.nix-index-database.hmModules.nix-index
+      # inputs.catppuccin.homeManagerModules.catppuccin
 
       # You can also split up your configuration and import pieces of it here:
       ./_mixins
     ]
     # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix
-    ++ lib.optional (isWorkstation) ./_mixins/desktop;
+    ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
+
+  # catppuccin = {
+  #   accent = "lavender";
+  #   flavor = "frappe";
+  # };
 
   home = {
-    inherit username;
     inherit stateVersion;
+    inherit username;
     activation.report-changes = config.lib.dag.entryAnywhere ''
       if [[ -n "$oldGenPath" && -n "$newGenPath" ]]; then
         ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
@@ -37,8 +39,15 @@ in
     homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
     sessionVariables = {
+      # libstdc++.so.6 => not found
+      # LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
+      FLAKE = "/home/${username}/.dotfiles/nixfiles";
+    };
+
+    file = {
+      ".hidden".text = ''snap'';
     };
   };
 
@@ -53,6 +62,9 @@ in
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
+      outputs.overlays.previous-packages
+      outputs.overlays.legacy-packages
+
       # inputs.nixpkgs-f2k.overlays.stdenvs
       # inputs.nixpkgs-f2k.overlays.compositors
       inputs.nixgl.overlay
@@ -63,7 +75,7 @@ in
       # inputs.agenix.overlays.default
 
       # Or define it inline, for example:
-      (final: prev: {
+      (_final: _prev: {
         # hi = final.hello.overrideAttrs (oldAttrs: {
         #   patches = [ ./change-hello-to-hi.patch ];
         # });
@@ -74,23 +86,17 @@ in
 
     # Configure your nixpkgs instance
     config = {
-      # Allow unsupported packages to be built
-      # allowUnsupportedSystem = true;
-      # Disable broken package
-      # allowBroken = false;
-      ### Allow old broken electron
+      # allowUnsupportedSystem = true; # Allow unsupported packages to be built
+      # allowBroken = false; # Disable broken package
       permittedInsecurePackages = [
+        ### Allow old broken electron
         # Workaround for https://github.com/nix-community/home-manager/issues/2942
-        "electron-21.4.0"
-        "electron-12.2.3"
-        "openssl-1.1.1w"
-        "electron-13.6.9"
-        # "mailspring-1.11.0"
+        # "electron-21.4.0"
       ];
       # Disable if you don't want unfree packages
       allowUnfree = true;
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
-      allowUnfreePredicate = _: true;
+      allowUnfreePredicate = (_: true);
       # Accept the joypixels license
       joypixels.acceptLicense = true;
     };
@@ -102,13 +108,14 @@ in
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
     package = pkgs.unstable.nix;
+
     settings =
       if isDarwin then {
         nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
         daemonIOLowPriority = true;
       }
       else {
-        # accept-flake-config = true;
+        accept-flake-config = true;
         auto-optimise-store = true;
         experimental-features = [
           "nix-command"
@@ -122,11 +129,10 @@ in
         # use-cgroups = if isLinux then true else false;
         # build-users-group = "nixbld";
         builders-use-substitutes = true;
-        # sandbox =
-        #   if isDarwin
-        #   then true
-        #   else false; #relaxed
-        sandbox = true;
+        sandbox =
+          if (isDarwin)
+          then true
+          else "relaxed"; #false
 
         # Avoid unwanted garbage collection when using nix-direnv
         # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
@@ -139,6 +145,7 @@ in
 
         # Allow to run nix
         # allowed-users = [ "nixbld" "@wheel" ];
+        allowed-users = [ "root" "@wheel" ];
         trusted-users = [ "root" "@wheel" ];
         connect-timeout = 5;
         http-connections = 0;
@@ -148,7 +155,7 @@ in
       ''
         log-lines = 15
 
-        # fallback = true
+        fallback = true
 
         # Free up to 1GiB whenever there is less than 100MiB left.
         # min-free = ${toString (100 * 1024 * 1024)}
@@ -162,6 +169,37 @@ in
       '';
   };
 
-  # Nicely reload system units when changing configs
-  systemd.user.startServices = lib.mkIf isLinux "sd-switch";
+  systemd.user = {
+    # Nicely reload system units when changing configs
+    startServices = lib.mkIf isLinux "sd-switch";
+
+    services.nix-index-database-sync = {
+      Unit.Description = "fetch mic92/nix-index-database";
+      Service = {
+        Type = "oneshot";
+        ExecStart = lib.getExe (pkgs.writeShellApplication {
+          name = "fetch-nix-index-database";
+          runtimeInputs = with pkgs; [ wget coreutils ];
+          text = ''
+            mkdir -p ~/.cache/nix-index
+            cd ~/.cache/nix-index
+            name="index-${pkgs.stdenv.system}"
+            wget -N "https://github.com/Mic92/nix-index-database/releases/latest/download/$name"
+            ln -sf "$name" "files"
+          '';
+        });
+        Restart = "on-failure";
+        RestartSec = "5m";
+      };
+    };
+
+    timers.nix-index-database-sync = {
+      Unit.Description = "Automatic github:mic92/nix-index-database fetching";
+      Timer = {
+        OnBootSec = "10m";
+        OnUnitActiveSec = "24h";
+      };
+      Install.WantedBy = [ "timers.target" ];
+    };
+  };
 }

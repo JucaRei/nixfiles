@@ -96,14 +96,7 @@
 #     };
 #   };
 # }
-{ pkgs
-, config
-, lib
-, inputs
-, hostname
-, username
-, ...
-}:
+{ pkgs, config, lib, inputs, hostname, username, ... }:
 let
   nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in
@@ -111,11 +104,23 @@ in
   programs = {
     hyprland = {
       enable = true;
+      # package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
+      #   enableXWayland = true; # whether to enable XWayland
+      #   legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
+      #   withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
+      # };
+
       package = inputs.hyprland.packages.${pkgs.system}.hyprland.override {
-        enableXWayland = true; # whether to enable XWayland
-        legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
-        withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
+        legacyRenderer = true;
+        mesa = pkgs.mesa;
       };
+      xwayland.enable = true;
+
+      # package = pkgs.unstable.hyprland.override {
+      #   enableXWayland = true; # whether to enable XWayland
+      #   legacyRenderer = if (hostname == "nitro") then false else true; # false; # whether to use the legacy renderer (for old GPUs)
+      #   withSystemd = if (hostname == "nitro") then true else false; # whether to build with systemd support
+      # };
       portalPackage = pkgs.xdg-desktop-portal-hyprland;
     };
   };
@@ -156,22 +161,28 @@ in
   environment = {
     sessionVariables = {
       # Hint electron apps to use wayland
-      LIBVA_DRIVER_NAME =
-        if hostname != "air" || "zion"
-        then lib.mkForce "nvidia"
-        else lib.mkDefault "";
-      NIXOS_OZONE_WL = "1";
+      # LIBVA_DRIVER_NAME =
+      #   if hostname != "air" || "zion"
+      #   then lib.mkForce "nvidia"
+      #   else lib.mkDefault "";
+
+
+      # override the setting in hyprland module
+      # priority of mkDefault is 1000
+      # default priority is 100
+      NIXOS_OZONE_WL = lib.mkOverride 990 "";
+      # NIXOS_OZONE_WL = "1";
       #GBM_BACKEND = "nvidia-drm";
       #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      WLR_NO_HARDWARE_CURSORS = "1";
       #WLR_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
-      QT_QPA_PLATFORM = "wayland";
       SDL_VIDEODRIVER = "wayland";
+      QT_QPA_PLATFORM = "wayland-egl";
+      WLR_NO_HARDWARE_CURSORS = "1";
       XDG_SESSION_TYPE = "wayland";
+      # DCONF_PROFILE = "sway";
       # "enable-features" = "UseOzonePlatform,WaylandWindowDecorations";
       # ozone-platform-hint = "auto";
       # "ozone-platform" = "wayland";
-      _JAVA_AWT_WM_NONEREPARENTING = "1";
 
       XAUTHORITY = "$XDG_RUNTIME_DIR/Xauthority";
     };
@@ -187,7 +198,7 @@ in
         # libnotify
         # libevdev
         # # libsForQt5.libkscreen
-        pkgs.sddm-astronaut-theme
+        pkgs.astronaut-sddm
 
         ### Change to home-manager later
         # mako # notification daemon
@@ -236,13 +247,13 @@ in
       ]));
 
     # Move ~/.Xauthority out of $HOME (setting XAUTHORITY early isn't enough)
-    extraInit = ''
-      xhost +SI:localuser:root;
+    # extraInit = ''
+    #   xhost +SI:localuser:root;
 
-      export XAUTHORITY=/tmp/Xauthority
-      [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"
+    #   export XAUTHORITY=/tmp/Xauthority
+    #   [ -e ~/.Xauthority ] && mv -f ~/.Xauthority "$XAUTHORITY"
 
-    '';
+    # '';
 
     # fix root on wayland
     # extraInit = ''

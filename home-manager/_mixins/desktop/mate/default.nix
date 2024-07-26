@@ -1,12 +1,27 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 with lib.hm.gvariant; {
   dconf.settings = {
-    "org/gnome/charmap" = {font = "Work Sans 22";};
+    "ca/desrt/dconf-editor" = {
+      show-warning = false;
+    };
+
+    "org/gnome/desktop/peripherals/mouse" = {
+      accel-profile = "adaptive";
+      left-handed = false;
+      natural-scroll = false;
+    };
+
+    "org/gnome/desktop/peripherals/touchpad" = {
+      natural-scroll = true;
+      tap-to-click = true;
+      two-finger-scrolling-enabled = true;
+    };
+
+    "org/gnome/charmap" = { font = "Work Sans 22"; };
 
     "org/gnome/desktop/interface" = {
       cursor-theme = "Yaru";
@@ -31,13 +46,13 @@ with lib.hm.gvariant; {
       variable-width-font = "Work Sans 12";
     };
 
-    "org/gnome/evolution/plugin/external-editor" = {command = "pluma";};
+    "org/gnome/evolution/plugin/external-editor" = { command = "pluma"; };
 
-    "org/gtk/settings/file-chooser" = {sort-directories-first = true;};
+    "org/gtk/settings/file-chooser" = { sort-directories-first = true; };
 
-    "org/mate/applications-office/calendar" = {exec = "evolution";};
+    "org/mate/applications-office/calendar" = { exec = "evolution"; };
 
-    "org/mate/applications-office/tasks" = {exec = "evolution";};
+    "org/mate/applications-office/tasks" = { exec = "evolution"; };
 
     "org/mate/caja/desktop" = {
       computer-icon-visible = false;
@@ -46,19 +61,19 @@ with lib.hm.gvariant; {
       trash-icon-visible = false;
     };
 
-    "org/mate/caja/list-view" = {default-zoom-level = "small";};
+    "org/mate/caja/list-view" = { default-zoom-level = "small"; };
 
-    "org/mate/caja/preferences" = {default-folder-view = "list-view";};
+    "org/mate/caja/preferences" = { default-folder-view = "list-view"; };
 
-    "org/mate/dictionary" = {print-font = "Work Sans 12";};
+    "org/mate/dictionary" = { print-font = "Work Sans 12"; };
 
-    "org/mate/disk-usage-analyzer/ui" = {statusbar-visible = true;};
+    "org/mate/disk-usage-analyzer/ui" = { statusbar-visible = true; };
 
-    "org/mate/desktop/applications/calculator" = {exec = "mate-calc";};
+    "org/mate/desktop/applications/calculator" = { exec = "mate-calc"; };
 
-    "org/mate/desktop/applications/messager" = {exec = "telegram-desktop";};
+    "org/mate/desktop/applications/messager" = { exec = "telegram-desktop"; };
 
-    "org/mate/desktop/applications/terminal" = {exec = "mate-terminal";};
+    "org/mate/desktop/applications/terminal" = { exec = "tilix"; };
 
     "org/mate/desktop/background" = {
       picture-filename = "";
@@ -85,11 +100,11 @@ with lib.hm.gvariant; {
     };
 
     "org/mate/desktop/peripherals/keyboard/kbd" = {
-      options = ["terminate	terminate:ctrl_alt_bksp" "caps	caps:none"];
+      options = [ "terminate	terminate:ctrl_alt_bksp" "caps	caps:none" ];
     };
 
     "org/mate/desktop/peripherals/mouse" = {
-      cursor-size = 32;
+      cursor-size = 24;
       cursor-theme = "Yaru";
     };
 
@@ -100,7 +115,7 @@ with lib.hm.gvariant; {
       two-finger-click = 0;
     };
 
-    "org/mate/desktop/session" = {idle-delay = 30;};
+    "org/mate/desktop/session" = { idle-delay = 30; };
 
     "org/mate/desktop/sound" = {
       event-sounds = true;
@@ -113,7 +128,7 @@ with lib.hm.gvariant; {
       interpolate = false;
     };
 
-    "org/mate/notification-daemon" = {theme = "slider";};
+    "org/mate/notification-daemon" = { theme = "slider"; };
 
     "org/mate/marco/general" = {
       alt-tab-expand-to-fit-title = true;
@@ -155,7 +170,7 @@ with lib.hm.gvariant; {
       command-1 = "mate-screensaver-command --lock";
       command-2 = ''/bin/sh -c "sleep 0.1; mate-screenshot --area"'';
       command-3 = "caja";
-      command-4 = "mate-terminal --window";
+      command-4 = "tilix --window";
       command-5 = "mate-control-center";
       command-6 = "mate-search-tool";
       command-7 = "mate-system-monitor -p";
@@ -207,7 +222,7 @@ with lib.hm.gvariant; {
       show-program-list = true;
     };
 
-    "org/mate/panel/menubar" = {icon-name = "start-here-symbolic";};
+    "org/mate/panel/menubar" = { icon-name = "start-here-symbolic"; };
 
     "org/mate/panel/objects/workspace-switcher/prefs" = {
       display-workspace-names = true;
@@ -237,7 +252,7 @@ with lib.hm.gvariant; {
     "org/mate/screensaver" = {
       lock-delay = 1;
       mode = "single";
-      themes = ["screensavers-footlogo-floaters"];
+      themes = [ "screensavers-footlogo-floaters" ];
     };
 
     "org/mate/settings-daemon/plugins/media-keys" = {
@@ -246,7 +261,7 @@ with lib.hm.gvariant; {
       screenreader = "<Alt><Mod4>s";
     };
 
-    "org/mate/stickynotes" = {default-font = "Work Sans Medium 10";};
+    "org/mate/stickynotes" = { default-font = "Work Sans Medium 10"; };
 
     "org/mate/system-monitor" = {
       cpu-color0 = "#9A0606";
@@ -296,7 +311,7 @@ with lib.hm.gvariant; {
     cursorTheme = {
       name = "Yaru";
       package = pkgs.yaru-theme;
-      size = 32;
+      size = 24;
     };
 
     font = {
@@ -311,9 +326,9 @@ with lib.hm.gvariant; {
       '';
     };
 
-    gtk3 = {extraConfig = {gtk-application-prefer-dark-theme = 1;};};
+    gtk3 = { extraConfig = { gtk-application-prefer-dark-theme = 1; }; };
 
-    gtk4 = {extraConfig = {gtk-application-prefer-dark-theme = 1;};};
+    gtk4 = { extraConfig = { gtk-application-prefer-dark-theme = 1; }; };
 
     iconTheme = {
       name = lib.mkDefault "Yaru-dark-magenta";
@@ -330,12 +345,12 @@ with lib.hm.gvariant; {
     pointerCursor = {
       name = "Yaru";
       package = pkgs.yaru-theme;
-      size = 32;
+      size = 24;
       gtk.enable = true;
       x11.enable = true;
     };
 
-    packages = with pkgs; [blueman];
+    packages = with pkgs; [ blueman ];
   };
-  services = {blueman-applet.enable = true;};
+  services = { blueman-applet.enable = true; };
 }

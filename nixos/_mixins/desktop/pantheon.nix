@@ -1,25 +1,22 @@
-{
-  inputs,
-  lib,
-  pkgs,
-  ...
-}: {
-  imports = [../config/qt/qt-style.nix ../apps/terminal/tilix.nix];
+{ inputs, lib, pkgs, ... }: {
+  imports = [
+    ../config/qt/qt-style.nix
+  ];
 
   # Exclude the elementary apps I don't use
   environment = {
+    # App indicator
+    # - https://discourse.nixos.org/t/anyone-with-pantheon-de/28422
+    # - https://github.com/NixOS/nixpkgs/issues/144045#issuecomment-992487775
+    pathsToLink = [ "/libexec" ];
+
     pantheon.excludePackages = with pkgs.pantheon; [
-      elementary-camera
+      elementary-code
       elementary-music
       elementary-photos
       elementary-videos
       epiphany
     ];
-
-    # App indicator
-    # - https://discourse.nixos.org/t/anyone-with-pantheon-de/28422
-    # - https://github.com/NixOS/nixpkgs/issues/144045#issuecomment-992487775
-    pathsToLink = ["/libexec"];
 
     # Add additional apps and include Yaru for syntax highlighting
     systemPackages = with pkgs; [
@@ -32,9 +29,11 @@
       gnome.simple-scan # Scanning
       indicator-application-gtk3 # App Indicator
       pantheon.sideload # elementary OS Flatpak installer
-      torrential # elementary OS torrent client
+      # torrential # elementary OS torrent client
+      gnome.dconf-editor
       yaru-theme
       usbimager
+      tilix
       # inputs.nix-software-center.packages.${system}.nix-software-center
       # hacked-cursor
     ];
@@ -73,8 +72,8 @@
   # - https://github.com/NixOS/nixpkgs/issues/144045#issuecomment-992487775
   systemd.user.services.indicatorapp = {
     description = "indicator-application-gtk3";
-    wantedBy = ["graphical-session.target"];
-    partOf = ["graphical-session.target"];
+    wantedBy = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
     serviceConfig = {
       ExecStart = "${pkgs.indicator-application-gtk3}/libexec/indicator-application/indicator-application-service";
     };

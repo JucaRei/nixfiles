@@ -1,23 +1,12 @@
-{ config, desktop, hostname, inputs, lib, pkgs, platform, username, ... }:
-let
-  isWorkstation = if (desktop != null) then true else false;
-  isServer = if (hostname == "DietPi") then true else false;
-in
+{ config, username, ... }:
 {
-  users = {
-    enforceIdUniqueness = true;
-    users = {
-      juca = {
-        createHome = true;
-        description = "Reinaldo P Jr";
-        extraGroups = [ "whell" ];
-        groups = "users";
-        uid = 1000;
-        linger = true;
-        autoSubUidGidRange = true;
-        shell = pkgs.fish;
-      };
-    };
-    mutableUsers = false;
+  # sha512crypt
+  users.users.juca = {
+    description = "Reinaldo P Jr";
+    hashedPassword = "$6$A5gukqBVeM3eJblr$K6L1kxSDvJJjy6.LVx78d1QojtmGJBwpI3MPvc52h8H/Avg0KQW/uG6QazLiuoC2vGZ79nq3czvj96hEdSLUf1";
   };
+
+  systemd.tmpfiles.rules = [
+    "d /mnt/snapshot/${username} 0755 ${username} users"
+  ];
 }

@@ -1,12 +1,12 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 with lib.hm.gvariant; {
   imports = [
-    # ../_mixins/console/fish
+    ../_mixins/non-nixos
+    ../_mixins/console/fish
   ];
   # dconf.settings = {
   #   "org/gnome/desktop/background" = {
@@ -16,10 +16,23 @@ with lib.hm.gvariant; {
   # };
 
   config = {
-    home = {packages = with pkgs; [util-linux cloneit];};
-    nix.settings = {
-      extra-substituters = ["https://nitro.cachix.org"];
-      extra-trusted-public-keys = ["nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U="];
+    home = {
+      packages = with pkgs; [
+        util-linux
+        cloneit
+        unstable.nix
+        nixpkgs-fmt
+        nil
+        deadnix
+        nix-direnv
+        nix-output-monitor
+        cachix
+      ];
     };
+    services.nonNixOs.enable = true;
+    # nix.settings = {
+    #   extra-substituters = [ "https://nitro.cachix.org" ];
+    #   extra-trusted-public-keys = [ "nitro.cachix.org-1:Z4AoDBOqfAdBlAGBCoyEZuwIQI9pY+e4amZwP94RU0U=" ];
+    # };
   };
 }

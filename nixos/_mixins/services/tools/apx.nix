@@ -1,13 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  sources,
-  ...
-}:
+{ config, lib, pkgs, sources, ... }:
 with lib; let
   cfg = config.modules.apx;
-in {
+in
+{
   options.modules.apx = {
     enable = mkOption {
       default = false;
@@ -25,6 +20,6 @@ in {
       }
     '';
 
-    environment.systemPackages = with pkgs; [apx distrobox];
+    environment.systemPackages = with pkgs; [ apx distrobox ];
   };
 }

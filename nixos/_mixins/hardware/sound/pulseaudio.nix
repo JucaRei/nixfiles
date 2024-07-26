@@ -1,9 +1,5 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}: let
+{ config, pkgs, lib, ... }:
+let
   ### Tiling window managers
   sound-volume-up = pkgs.writeScriptBin "sound-volume-up" ''
     #!${pkgs.stdenv.shell}
@@ -20,7 +16,8 @@
     pactl set-sink-volume @DEFAULT_SINK@ -2%
     notify-send -h string:synchronous:volume "$(pamixer --get-volume-human)" -t 1000
   '';
-in {
+in
+{
   sound.enable = true;
 
   hardware = {
@@ -33,7 +30,7 @@ in {
       extraConfig = lib.mkDefault "load-module module-switch-on-connect";
 
       # Writes to /etc/pulse/daemon.conf
-      daemon.config = {default-sample-rate = 48000;};
+      daemon.config = { default-sample-rate = 48000; };
     };
   };
 

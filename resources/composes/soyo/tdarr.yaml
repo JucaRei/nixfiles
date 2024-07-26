@@ -1,0 +1,146 @@
+version: "3.4"
+services:
+  tdarr:
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - 8265:8265 # webUI port
+      - 8266:8266 # server port
+    environment:
+      - TZ=America/Sao_Paulo
+      - PUID=1000
+      - PGID=990
+      - UMASK_SET=002
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - webUIPort=8265
+      - internalNode=true
+      - inContainer=true
+      - ffmpegVersion=6
+      - nodeName=MyInternalNode
+      # - NVIDIA_DRIVER_CAPABILITIES=all
+      # - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - /home/juca/Documents/docker/docker-configs/resources/tdarr/server:/app/server
+      - /home/juca/Documents/docker/docker-configs/resources/tdarr/config:/app/configs
+      - /home/juca/Documents/docker/docker-configs/resources/tdarr/logs:/app/logs
+      - /home/juca/Documents/docker/docker-configs/resources/tdarr/cache:/temp
+
+      # Media Volume 1
+      - media1_movies:/movies1
+      - media1_series:/series1
+      - media1_animes_series:/anime1
+      - media1_animes_movies:/animeMovies1
+
+      # Media Volume 2
+      - media2_movies:/movies2
+      - media2_series:/series2
+      - media2_animes_series:/anime2
+      - media2_animes_movies:/animeMovies2
+    devices:
+      - /dev/dri:/dev/dri
+      # - /dev/dri/renderD128:/dev/dri/renderD128
+      # - /dev/dri/card1:/dev/dri/card1
+    mem_limit: 2000M
+    cpus: 1.0
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  # node
+  tdarr-node:
+    container_name: tdarr-node
+    image: ghcr.io/haveagitgat/tdarr_node:latest
+    restart: unless-stopped
+    network_mode: service:tdarr
+    environment:
+      - TZ=America/Sao_Paulo
+      - PUID=1000
+      - PGID=990
+      - UMASK_SET=002
+      - nodeName=MyExternalNode
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - inContainer=true
+      - ffmpegVersion=6
+      # - NVIDIA_DRIVER_CAPABILITIES=all
+      # - NVIDIA_VISIBLE_DEVICES=all
+
+    volumes:
+      - /home/juca/Documents/docker/docker-configs/resources/tdarr/config:/app/configs
+      - /home/juca/Documents/docker/docker-configs/resources/tdarr/logs:/app/logs
+      - /home/juca/Documents/docker/docker-configs/resources/tdarr/cache:/temp
+
+        # Media Volume 1
+      - media1_movies:/movies1
+      - media1_series:/series1
+      - media1_animes_series:/anime1
+      - media1_animes_movies:/animeMovies1
+
+      # Media Volume 2
+      - media2_movies:/movies2
+      - media2_series:/series2
+      - media2_animes_series:/anime2
+      - media2_animes_movies:/animeMovies2
+
+    devices:
+      - /dev/dri:/dev/dri
+      # - /dev/dri/renderD128:/dev/dri/renderD128
+      # - /dev/dri/card1:/dev/dri/card1
+    mem_limit: 2000M
+    cpus: 1.0
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+volumes:
+  media1_movies:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Movies"
+      o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+  media1_series:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/TvShows"
+      o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+  media1_animes_series:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Animes/Series"
+      o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+  media1_animes_movies:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Animes/Movies"
+      o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+  media2_movies:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Filmes"
+      o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+  media2_series:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Series"
+      o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+  media2_animes_series:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes/Series"
+      o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"
+  media2_animes_movies:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes/Movies"
+      o: "addr=192.168.1.207,rw,nfsvers=3,nolock,soft,nosuid,noacl"

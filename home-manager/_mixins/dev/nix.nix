@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, inputs, ... }: {
   home = {
     packages = with pkgs; [
       # alejandra
@@ -7,17 +7,18 @@
       cached-nix-shell
       deadnix
       nix-bash-completions
-      nix-index
+      # nix-index
       nix-melt
       nix-prefetch-git
       nix-du
       nix-tree
       nixpkgs-fmt
+      # inputs.chaotic.packages.${pkgs.system}.nixfmt_rfc166
       nurl
       nil
       # nixd
       # rnix-lsp
-      statix
+      # statix
     ];
   };
 

@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+_: {
   users.users.root = {
     hashedPassword = "$y$j9T$2Rr7gAYyF9XnPyU/wWs6v.$dI1Vy9Uko8vRhFsWNhaz9.HOKMdCq7uKvqIahjQjnL8"; # null
     openssh.authorizedKeys.keys = [
