@@ -1,4 +1,4 @@
-version: '3.5'
+version: "3.5"
 services:
   headscale:
     container_name: headscale
@@ -10,3 +10,4 @@ services:
       - "27896:8080" # Exposes Headscale on port 27896 of the host
     command: headscale serve
     restart: unless-stopped
+# https://www.smarthomebeginner.com/traefik-v3-docker-compose-guide-2024/

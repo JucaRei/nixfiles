@@ -10,7 +10,8 @@
 #
 # https://myheadscale.example.com:443
 #
-server_url: https://headscale.yourdomain.com
+# server_url: https://headscale.yourdomain.com
+server_url: http://soyozscale.duckdns.org
 
 # Address to listen to / bind to on the server
 #
