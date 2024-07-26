@@ -9,7 +9,7 @@
     # ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     # ./nvidia-specialisation.nix
-    # ../../_mixins/hardware/boot/plymouth.nix
+    ../../_mixins/hardware/boot/plymouth.nix
     # ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
     # ../../_mixins/virtualization/quickemu.nix
