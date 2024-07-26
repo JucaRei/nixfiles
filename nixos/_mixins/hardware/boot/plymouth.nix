@@ -1,10 +1,10 @@
 { lib, config, pkgs, ... }:
 with lib;
 let
-  cfg = config.services.plymouth;
+  cfg = config.boot.mode.plymouth;
 in
 {
-  options.services.plymouth = {
+  options.boot.mode.plymouth = {
     enable = mkOption {
       type = types.bool;
       default = false;
