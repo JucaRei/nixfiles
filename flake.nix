@@ -20,9 +20,6 @@
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    sddm-sugar-candy-nix.url = "gitlab:Zhaith-Izaliel/sddm-sugar-candy-nix";
-    sddm-sugar-candy-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
-
     # cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
     # cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -277,7 +274,6 @@
           "juca@hyperv" = helper.mkHome { hostname = "hyperv"; desktop = "mate"; };
           "juca@voidvm" = helper.mkHome { hostname = "voidvm"; };
           "juca@debianvm" = helper.mkHome { hostname = "debianvm"; desktop = "bspwm"; };
-          "juca@vm-headless" = helper.mkHome { hostname = "vm"; desktop = null; };
           # Wsl
           "juca@nitrowin" = helper.mkHome { hostname = "nitrowin"; stateVersion = "23.11"; };
           # Raspberry 3
@@ -320,7 +316,6 @@
         vm = helper.mkHost { hostname = "vm"; desktop = "mate"; };
         scrubber = helper.mkHost { hostname = "scrubber"; desktop = "mate"; };
         hyperv = helper.mkHost { hostname = "hyperv"; desktop = "mate"; hostid = "6f2efa51"; };
-        vm-headless = helper.mkHost { hostname = "vm"; hostid = "04feccb5"; };
         # Raspberry
         rasp3 = helper.mkHost { hostname = "rasp3"; hostid = "6f2efa55"; };
       };
