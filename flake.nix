@@ -30,8 +30,6 @@
     # nixos-artwork.url = "github:NixOS/nixos-artwork";
     # nixos-artwork.flake = false;
 
-    # flatpaks.url = "github:GermanBread/declarative-flatpak/stable";
-
     # pinix.url = "github:remi-dupre/pinix";
     # pinix.inputs.nixpkgs.follows = "nixpkgs";
 

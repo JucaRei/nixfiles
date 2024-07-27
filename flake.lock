@@ -1676,31 +1676,10 @@
         "nur": "nur",
         "plasma-manager": "plasma-manager",
         "polybar-scripts": "polybar-scripts",
-        "sddm-sugar-candy-nix": "sddm-sugar-candy-nix",
         "sops-nix": "sops-nix",
         "split-monitor-workspaces": "split-monitor-workspaces",
         "vscode-server": "vscode-server",
         "wrapper-manager": "wrapper-manager"
-      }
-    },
-    "sddm-sugar-candy-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1717241028,
-        "narHash": "sha256-GO96asMkQ1hQGBJWyxkbM9cplypqXY2Wb5TpKRMfxiE=",
-        "owner": "Zhaith-Izaliel",
-        "repo": "sddm-sugar-candy-nix",
-        "rev": "b410c02eb404db9456cce766bd3ff7944a86ccb2",
-        "type": "gitlab"
-      },
-      "original": {
-        "owner": "Zhaith-Izaliel",
-        "repo": "sddm-sugar-candy-nix",
-        "type": "gitlab"
       }
     },
     "sops-nix": {

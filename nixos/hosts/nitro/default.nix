@@ -540,9 +540,9 @@
         let
           # Mount details
           description1 = "Volume_1";
-          description2 = "Volume_1";
+          description2 = "Volume_2";
           device1 = "//192.168.1.207/volume_1";
-          device2 = "//192.168.1.207/volume_2/Transmission/complete";
+          device2 = "//192.168.1.207/volume_2/Transmission/Volume_2";
           protocol = "smb:";
 
           bookmarks = "${protocol}${device1} ${description1}\n${protocol}${device2} ${description2}";
