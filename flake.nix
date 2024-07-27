@@ -9,13 +9,17 @@
     # You can access packages and modules from different nixpkgs revs at the same time.
     # See 'unstable-packages' overlay in 'overlays/default.nix'.
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    chaotic.inputs.chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    chaotic = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    };
 
     catppuccin.url = "github:catppuccin/nix";
 
-    attic.url = "github:zhaofengli/attic";
-    attic.inputs.nixpkgs.follows = "nixpkgs"; # 23.05
+    attic = {
+      url = "github:zhaofengli/attic";
+      inputs.nixpkgs.follows = "nixpkgs"; # 23.05
+    };
 
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -134,9 +138,6 @@
     # auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
     # auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs";
 
-    # ttf-to-tty.url = "github:Sigmanificient/ttf_to_tty";
-    # ttf-to-tty.inputs.nixpkgs.follows = "nixpkgs";
-
     #doom-emacs = {
     #  # Nix-community Doom Emacs
     #  url = "github:nix-community/nix-doom-emacs";
@@ -148,15 +149,24 @@
     nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
 
     # Hyprland
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     hyprland-contrib.url = "github:hyprwm/contrib";
-    hyprland.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    hyprland-plugins.url = "github:hyprwm/hyprland-plugins";
-    hyprland-plugins.inputs.hyprland.follows = "hyprland";
-    hyprpicker.url = "github:hyprwm/hyprpicker";
-    hyprpicker.inputs.nixpkgs.follows = "nixpkgs";
-    split-monitor-workspaces.url = "github:Duckonaut/split-monitor-workspaces";
-    split-monitor-workspaces.inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+    hyprpicker = {
+      url = "github:hyprwm/hyprpicker";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    split-monitor-workspaces = {
+      url = "github:Duckonaut/split-monitor-workspaces";
+      inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
+    };
+
     nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
     nixpkgs-wayland.inputs.nixpkgs.follows = "nixpkgs";
 

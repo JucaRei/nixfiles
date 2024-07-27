@@ -159,8 +159,6 @@ in
 
       ## Testing
       (self: super: {
-
-
         vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
         #   deadbeef = super.deadbeef.override { wavpackSupport = true; };
         #   deadbeef-with-plugins = super.deadbeef-with-plugins.override {
