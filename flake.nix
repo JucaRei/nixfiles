@@ -21,8 +21,10 @@
       inputs.nixpkgs.follows = "nixpkgs"; # 23.05
     };
 
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
     # cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
@@ -51,35 +53,46 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # home-manager.url = "github:nix-community/home-manager/release-23.11";
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    home-manager-unstable.url = "github:nix-community/home-manager/master";
-    home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     # nix-software-center.url = "github:vlinkz/nix-software-center";
     # nix-software-center.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-formatter-pack.url = "github:Gerschtli/nix-formatter-pack";
-    nix-formatter-pack.inputs.nixpkgs.follows = "nixpkgs";
+    nix-formatter-pack = {
+      url = "github:Gerschtli/nix-formatter-pack";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     ################
     ### FlakeHub ###
     ################
 
-    nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
-    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
+    nix-snapd = {
+      url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    vscode-server.url = "github:nix-community/nixos-vscode-server/hm-module-import";
-    # vscode-server.url = "github:nix-community/nixos-vscode-server";
-    vscode-server.inputs.nixpkgs.follows = "nixpkgs";
-
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server/hm-module-import";
+      # url = "github:nix-community/nixos-vscode-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixgl = {
       url = "github:nix-community/nixGL";
@@ -92,18 +105,24 @@
     };
 
     # Neovim
-    nixvim.url = "github:nix-community/nixvim";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Gaming tweaks
     nix-gaming.url = "github:fufexan/nix-gaming";
 
-    nixd.url = "github:nix-community/nixd";
-    nixd.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    nixd = {
+      url = "github:nix-community/nixd";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # Use nix-index without having to generate the database locally
-    nix-index-database.url = "github:Mic92/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # darwin = {
     #   url = "github:lnl7/nix-darwin/master"; # MacOS Package Management
@@ -128,11 +147,15 @@
 
     comma.url = "github:nix-community/comma/v1.4.1";
 
-    wrapper-manager.url = "github:viperML/wrapper-manager";
-    wrapper-manager.inputs.nixpkgs.follows = "nixpkgs";
+    wrapper-manager = {
+      url = "github:viperML/wrapper-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    nh.url = "github:viperML/nh/v3.5.10";
-    nh.inputs.nixpkgs.follows = "nixpkgs";
+    nh = {
+      url = "github:viperML/nh/v3.5.10";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # More up to date auto-cpufreq
     # auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
@@ -145,8 +168,10 @@
     #  inputs.emacs-overlay.follows = "emacs-overlay";
     #};
 
-    nixos-needtoreboot.url = "github:thefossguy/nixos-needsreboot";
-    nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-needtoreboot = {
+      url = "github:thefossguy/nixos-needsreboot";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Hyprland
     hyprland = {
@@ -167,8 +192,10 @@
       inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
     };
 
-    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
-    nixpkgs-wayland.inputs.nixpkgs.follows = "nixpkgs";
+    nixpkgs-wayland = {
+      url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # matugen.url = "github:InioX/matugen";
     # matugen.inputs.nixpkgs.follows = "nixpkgs";
