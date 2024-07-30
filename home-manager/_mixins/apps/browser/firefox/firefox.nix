@@ -16,6 +16,9 @@ let
     "distribution.searchplugins.defaultLocale" = "en-US";
     "general.useragent.locale" = "en-US";
     "general.useragent.compatMode.firefox" = true;
+    "browser.bookmarks.showMobileBookmarks" = true;
+    "browser.tabs.opentabfor.middleclick" = false;
+    "browser.compactmode.show" = true;
     "browser.tabs.tabMinWidth" = 16;
     "browser.toolbars.bookmarks.visibility" = "never";
     # "browser.download.always_ask_before_handling_new_types" = true;
@@ -72,10 +75,15 @@ let
     "extensions.getAddons.showPane" = false;
     "media.gmp-gmpopenh264.enabled" = true;
     "media.gmp-widevinecdm.enabled" = true;
+    "media.ffmpeg.vaapi.enabled" = true; ## keep this with ff 96
+    "media.rdd-ffmpeg.enabled" = true; ## keep this with ff 96
+    "media.rdd-vpx.enabled" = false; ## remove on ff 96
+    "media.navigator.mediadatadecoder_vpx_enabled" = true; ## remove on ff 96
     "media.ffvpx.enabled" = false;
     # disable av1, vaapi on old hardware does not support av1
     "media.av1.enabled" = false;
-    "media.ffmpeg.vaapi.enabled" = true;
+    "media.peerconnection.enabled" = true;
+    "gfx.webrender.all" = true;
     "places.history.enabled" = true;
     "security.ssl.errorReporting.enabled" = false;
     "widget.use-xdg-desktop-portal.file-picker" = 1; # Always use XDG portals for stuff

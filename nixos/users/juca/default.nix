@@ -3,7 +3,7 @@
   # sha512crypt
   users.users.juca = {
     description = "Reinaldo P Jr";
-    hashedPassword = "$6$A5gukqBVeM3eJblr$K6L1kxSDvJJjy6.LVx78d1QojtmGJBwpI3MPvc52h8H/Avg0KQW/uG6QazLiuoC2vGZ79nq3czvj96hEdSLUf1";
+    hashedPassword = "$y$j9T$dTw1jxn2A9K1CzXjFMU.T/$8oEdG9SIg/Y0FrSXlOdmDfH3KZMEZvQaExeI4G70GGC";
   };
 
   systemd.tmpfiles.rules = [

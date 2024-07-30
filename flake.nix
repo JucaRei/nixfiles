@@ -83,6 +83,8 @@
     ### FlakeHub ###
     ################
 
+    nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
+
     nix-snapd = {
       url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
