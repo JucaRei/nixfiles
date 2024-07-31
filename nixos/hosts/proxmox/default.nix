@@ -27,7 +27,9 @@
       };
   };
 
-  swapDevices = [ ];
+  swapDevices = [
+    { device = "/dev/disk/by-partlabel/disk-sda-swap"; }
+  ];
 
   programs = {
     fish.enable = true;
