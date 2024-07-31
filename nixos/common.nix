@@ -577,7 +577,7 @@ in
 
 
           # Enable pam_systemd module to set dbus environment variable.
-          login.startSession = isWorkstation;
+          login.startSession = mkForce isWorkstation;
         };
     };
   };
