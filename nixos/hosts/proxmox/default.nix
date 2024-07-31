@@ -7,6 +7,7 @@
 
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" ];
   boot.initrd.kernelModules = [ ];
+  boot.loader.grub.devices = [ "nodev" ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
@@ -27,6 +28,10 @@
   };
 
   swapDevices = [ ];
+
+  programs = {
+    fish.enable = true;
+  };
 
   services.proxmox-ve.enable = true;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
