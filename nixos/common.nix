@@ -355,7 +355,7 @@ in
     # snap daemon
     snap.enable = notVM && isWorkstation;
     # Enable GEO location
-    geoclue2 = {
+    geoclue2 = mkForce {
       enable = isWorkstation;
     };
     fwupd = {
