@@ -1,4 +1,4 @@
-{ disks ? [ "/dev/vda" ], ... }:
+{ disks ? [ "/dev/sda" ], ... }:
 let
   defaultXfsOpts = [ "defaults" "relatime" "nodiratime" ];
 in
