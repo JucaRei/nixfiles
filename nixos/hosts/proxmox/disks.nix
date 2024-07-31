@@ -7,35 +7,27 @@ in
     disk = {
       sda = {
         type = "disk";
-        device = builtins.elemAt disks 0;
         content = {
-          type = "gpt";
+          type = "table";
+          format = "msdos";
           partitions = {
-            ESP = {
-              type = "EF00";
-              size = "500M";
+            nixos = {
+              start = "1M";
+              end = "-4G";
+              bootable = true;
               content = {
                 type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [ "defaults" "noatime" "nodiratime" ];
-              };
-            };
-            swap = {
-              size = "4G";
-              content = {
-                type = "swap";
-              };
-            };
-            root = {
-              size = "100%";
-              content = {
-                type = "filesystem";
-                # Overwirte the existing filesystem
-                extraArgs = [ "-f" ];
                 format = "xfs";
                 mountpoint = "/";
                 mountOptions = defaultXfsOpts;
+              };
+              encryptedSwap = {
+                size = "100%";
+                content = {
+                  type = "swap";
+                  randomEncryption = true;
+                  priority = 100; # prefer to encrypt as long as we have space for it
+                };
               };
             };
           };
