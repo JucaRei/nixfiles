@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, nixGLWrap, ... }:
 with lib.hm.gvariant;
 let
   font-search = pkgs.writeShellScriptBin "font-search" ''
@@ -59,7 +59,7 @@ with lib;
         # spotdl
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
-        # (wrapProgram vlc)
+        (nixGLWrap pkgs vlc)
         # cloneit
         # deezer-gui
         # fantezy

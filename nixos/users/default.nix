@@ -29,6 +29,7 @@ in
       ]
       # "adbusers" "dialout" "render" "plugdev" "i2c" "systemd-journal" "corectrl" "wireshark" "storage" "scanner" "libvirtd" "qemu-libvirtd" "kvm" "input" "docker" "podman"
       ++ ifExists [
+        "adm"
         "docker"
         "lxd"
         "podman"

@@ -1,4 +1,23 @@
-{ inputs, outputs, stateVersion, lib, ... }: {
+{ inputs, outputs, stateVersion, lib, pkgs, config, ... }:
+let
+  nixGLWrap = pkgs: pkg:
+    let
+      bins = "${pkg}/bin";
+    in
+    pkgs.buildEnv {
+      name = "nixGL-${pkg.name}";
+      paths =
+        [ pkg ] ++
+        (map
+          (bin: pkgs.hiPrio (
+            pkgs.writeShellScriptBin bin ''
+              exec -a "$0" "${pkgs.nixgl.auto.nixGLDefault}/bin/nixGL" "${bins}/${bin}" "$@"
+            ''
+          ))
+          (builtins.attrNames (builtins.readDir bins)));
+    };
+in
+{
   # Helper function for generating home-manager configs
   mkHome =
     ### TODO - add displays
@@ -12,7 +31,7 @@
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
-        inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation;
+        inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation nixGLWrap;
       };
       modules = [
         ({ config, pkgs, lib, ... }: {

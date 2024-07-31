@@ -246,7 +246,7 @@
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       # stateVersion = "23.11"; # default
-      helper = import ./lib { inherit inputs outputs stateVersion lib pkgs; };
+      helper = import ./lib { inherit inputs outputs stateVersion lib config pkgs; };
 
     in
     {
