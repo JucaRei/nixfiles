@@ -21,6 +21,8 @@ in
                 mountpoint = "/";
                 mountOptions = defaultXfsOpts;
               };
+            };
+            swap = {
               encryptedSwap = {
                 size = "100%";
                 content = {
