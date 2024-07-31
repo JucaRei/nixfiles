@@ -59,7 +59,7 @@ with lib;
         # spotdl
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
-        (nixGLWrap pkgs vlc)
+        # (nixGLWrap pkgs vlc)
         # cloneit
         # deezer-gui
         # fantezy
