@@ -86,6 +86,15 @@ in
           #   # Optionally, use home-manager.extraSpecialArgs to pass
           #   # arguments to home.nix
           # }
+          inputs.proxmox-nixos.nixosModules.proxmox-ve
+
+          ({ pkgs, lib, inputs, config, ... }: {
+            # Shared Between all users
+            # services.proxmox-ve.enable = true;
+            nixpkgs.overlays = [
+              inputs.proxmox-nixos.overlays.${platform}
+            ];
+          })
         ]
         ++ inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ];
     };

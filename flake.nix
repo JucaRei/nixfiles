@@ -79,6 +79,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    proxmox-nixos = {
+      url = "github:SaumonNet/proxmox-nixos";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     ################
     ### FlakeHub ###
     ################
@@ -353,6 +358,7 @@
         vm = helper.mkHost { hostname = "vm"; desktop = "mate"; };
         scrubber = helper.mkHost { hostname = "scrubber"; desktop = "mate"; };
         hyperv = helper.mkHost { hostname = "hyperv"; desktop = "mate"; hostid = "6f2efa51"; };
+        proxmox = helper.mkHost { hostname = "proxmox"; desktop = null; };
         # Raspberry
         rasp3 = helper.mkHost { hostname = "rasp3"; hostid = "6f2efa55"; };
       };
