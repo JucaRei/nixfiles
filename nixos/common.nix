@@ -484,7 +484,7 @@ in
 
     # Keeps the system timezone up-to-date based on the current location
     automatic-timezoned = {
-      enable = true;
+      enable = mkForce true;
     };
 
     udev = lib.mkIf (isWorkstation) {
