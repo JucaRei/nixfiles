@@ -10,17 +10,21 @@
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/f8e74554-58c0-4b4e-a364-b14d137f324d";
-      fsType = "xfs";
-    };
+  fileSystems = {
+    "/" =
+      {
+        device = "/dev/disk/by-partlabel/disk-sda-root";
+        fsType = "xfs";
+        options = [ "defaults" "relatime" "nodiratime" ];
+      };
 
-  fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/D4B8-378E";
-      fsType = "vfat";
-    };
+    "/boot" =
+      {
+        device = "/dev/disk/by-partlabel/disk-sda-ESP";
+        fsType = "vfat";
+        options = [ "defaults" "noatime" "nodiratime" ];
+      };
+  };
 
   swapDevices = [ ];
 
