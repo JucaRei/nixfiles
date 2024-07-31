@@ -21,6 +21,12 @@ in
                 mountOptions = [ "defaults" "noatime" "nodiratime" ];
               };
             };
+            swap = {
+              size = "4G";
+              content = {
+                type = "swap";
+              };
+            };
             root = {
               size = "100%";
               content = {
