@@ -31,7 +31,7 @@ in
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
-        inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation nixGL;
+        inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation;
       };
       modules = [
         ({ config, pkgs, lib, ... }: {
