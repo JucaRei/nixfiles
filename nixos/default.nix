@@ -119,10 +119,6 @@ in
       outputs.overlays.legacy-packages
       # Add overlays exported from other flakes:
 
-      # inputs.nixd.overlays.default
-      # inputs.agenix.overlays.default
-
-
       # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
       (_: super: {
         makeModulesClosure = x:

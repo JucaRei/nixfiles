@@ -19,7 +19,7 @@ let
 in
 {
   # Helper function for generating home-manager configs
-  mkHome =
+  makeHomeManager =
     ### TODO - add displays
     { hostname, username ? "juca", desktop ? null, stateVersion ? "23.11", platform ? "x86_64-linux" }:
     let
@@ -47,13 +47,15 @@ in
         inputs.declarative-flatpak.homeManagerModules.default
         inputs.nur.hmModules.nur
         inputs.vscode-server.homeModules.default
+        inputs.nix-index-database.hmModules.nix-index
+        inputs.catppuccin.homeManagerModules.catppuccin
         # inputs.vscode-server.nixosModules.home
         ../home-manager
       ];
     };
 
   # Helper function for generating host configs
-  mkHost =
+  makeNixOS =
     { hostname, username ? "juca", desktop ? null, hostid ? null, platform ? "x86_64-linux", stateVersion ? "23.11", }:
     let
       isISO = builtins.substring 0 4 hostname == "iso-";

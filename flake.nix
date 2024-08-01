@@ -301,34 +301,34 @@
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
           # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
-          "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; };
-          "juca@zion" = helper.mkHome { hostname = "zion"; desktop = "bspwm"; };
-          "juca@air" = helper.mkHome { hostname = "air"; desktop = "bspwm"; stateVersion = "24.05"; };
-          "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; };
-          "juca@oldarch" = helper.mkHome { hostname = "oldarch"; desktop = "xfce"; stateVersion = "23.05"; };
-          #"juca@nitro" = helper.mkHome { hostname = "nitro"; };
-          "juca@nitrovoid" = helper.mkHome { hostname = "nitrovoid"; };
-          "juca@soyo" = helper.mkHome { hostname = "soyo"; stateVersion = "24.05"; };
-          "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "mate"; };
-          "juca@rocinante-headless" = helper.mkHome { hostname = "rocinante"; desktop = null; };
-          "juca@vortex" = helper.mkHome { hostname = "vortex"; };
+          "juca@nitro" = helper.makeHomeManager { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@zion" = helper.makeHomeManager { hostname = "zion"; desktop = "bspwm"; };
+          "juca@air" = helper.makeHomeManager { hostname = "air"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@anubis" = helper.makeHomeManager { hostname = "anubis"; desktop = "bspwm"; };
+          "juca@oldarch" = helper.makeHomeManager { hostname = "oldarch"; desktop = "xfce"; stateVersion = "23.05"; };
+          #"juca@nitro" = helper.makeHomeManager { hostname = "nitro"; };
+          "juca@nitrovoid" = helper.makeHomeManager { hostname = "nitrovoid"; };
+          "juca@soyo" = helper.makeHomeManager { hostname = "soyo"; stateVersion = "24.05"; };
+          "juca@rocinante" = helper.makeHomeManager { hostname = "rocinante"; desktop = "mate"; };
+          "juca@rocinante-headless" = helper.makeHomeManager { hostname = "rocinante"; desktop = null; };
+          "juca@vortex" = helper.makeHomeManager { hostname = "vortex"; };
           # Testing
-          "juca@hyperv" = helper.mkHome { hostname = "hyperv"; desktop = "mate"; };
-          "juca@voidvm" = helper.mkHome { hostname = "voidvm"; };
-          "juca@debianvm" = helper.mkHome { hostname = "debianvm"; desktop = "bspwm"; };
+          "juca@hyperv" = helper.makeHomeManager { hostname = "hyperv"; desktop = "mate"; };
+          "juca@voidvm" = helper.makeHomeManager { hostname = "voidvm"; };
+          "juca@debianvm" = helper.makeHomeManager { hostname = "debianvm"; desktop = "bspwm"; };
           # Wsl
-          "juca@nitrowin" = helper.mkHome { hostname = "nitrowin"; stateVersion = "23.11"; };
+          "juca@nitrowin" = helper.makeHomeManager { hostname = "nitrowin"; stateVersion = "23.11"; };
           # Raspberry 3
-          "juca@DietPi" = helper.mkHome { hostname = "DietPi"; desktop = null; platform = "aarch64-linux"; };
+          "juca@DietPi" = helper.makeHomeManager { hostname = "DietPi"; desktop = null; platform = "aarch64-linux"; };
           # VMs
-          "juca@minimech" = helper.mkHome { hostname = "minimech"; desktop = "bspwm"; };
-          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "bspwm"; };
-          "juca@lima-builder" = helper.mkHome { hostname = "lima-builder"; };
-          "juca@lima-default" = helper.mkHome { hostname = "lima-default"; };
-          "juca@vm" = helper.mkHome { hostname = "vm"; desktop = "mate"; };
+          "juca@minimech" = helper.makeHomeManager { hostname = "minimech"; desktop = "bspwm"; };
+          "juca@scrubber" = helper.makeHomeManager { hostname = "scrubber"; desktop = "bspwm"; };
+          "juca@lima-builder" = helper.makeHomeManager { hostname = "lima-builder"; };
+          "juca@lima-default" = helper.makeHomeManager { hostname = "lima-default"; };
+          "juca@vm" = helper.makeHomeManager { hostname = "vm"; desktop = "mate"; };
           # Iso
-          # "juca@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
-          # "juca@iso-desktop" = helper.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
+          # "juca@iso-console" = helper.makeHomeManager { hostname = "iso-console"; username = "nixos"; };
+          # "juca@iso-desktop" = helper.makeHomeManager { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
         };
       # hostids are generated using `mkhostid` alias
       nixosConfigurations = {
@@ -340,27 +340,27 @@
         # nom build .#nixosConfigurations.nitro.config.system.build.toplevel
 
         # ISO
-        iso-console = helper.mkHost { hostname = "iso-console"; username = "nixos"; };
-        iso-gnome = helper.mkHost { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; hostid = "f4173273"; };
-        iso-mate = helper.mkHost { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        iso-pantheon = helper.mkHost { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+        iso-console = helper.makeNixOS { hostname = "iso-console"; username = "nixos"; };
+        iso-gnome = helper.makeNixOS { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; hostid = "f4173273"; };
+        iso-mate = helper.makeNixOS { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        iso-pantheon = helper.makeNixOS { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles/nixfiles
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = helper.mkHost { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
-        air = helper.mkHost { hostname = "air"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
-        soyo = helper.mkHost { hostname = "soyo"; stateVersion = "24.05"; desktop = "kodi"; };
-        rocinante = helper.mkHost { hostname = "rocinante"; desktop = "mate"; hostid = "f4173273"; };
-        rocinante-headless = helper.mkHost { hostname = "rocinante"; hostid = "836715d7"; };
+        nitro = helper.makeNixOS { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
+        air = helper.makeNixOS { hostname = "air"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
+        soyo = helper.makeNixOS { hostname = "soyo"; stateVersion = "24.05"; desktop = "kodi"; };
+        rocinante = helper.makeNixOS { hostname = "rocinante"; desktop = "mate"; hostid = "f4173273"; };
+        rocinante-headless = helper.makeNixOS { hostname = "rocinante"; hostid = "836715d7"; };
         # Virtual Machines
-        vm = helper.mkHost { hostname = "vm"; desktop = "mate"; };
-        scrubber = helper.mkHost { hostname = "scrubber"; desktop = "mate"; };
-        hyperv = helper.mkHost { hostname = "hyperv"; desktop = "mate"; hostid = "6f2efa51"; };
-        proxmox = helper.mkHost { hostname = "proxmox"; desktop = null; };
+        vm = helper.makeNixOS { hostname = "vm"; desktop = "mate"; };
+        scrubber = helper.makeNixOS { hostname = "scrubber"; desktop = "mate"; };
+        hyperv = helper.makeNixOS { hostname = "hyperv"; desktop = "mate"; hostid = "6f2efa51"; };
+        proxmox = helper.makeNixOS { hostname = "proxmox"; desktop = null; };
         # Raspberry
-        rasp3 = helper.mkHost { hostname = "rasp3"; hostid = "6f2efa55"; };
+        rasp3 = helper.makeNixOS { hostname = "rasp3"; hostid = "6f2efa55"; };
       };
     };
 }

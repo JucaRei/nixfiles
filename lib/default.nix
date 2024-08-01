@@ -6,5 +6,5 @@ let
 
 in
 {
-  inherit (helpers) mkHome mkHost systems;
+  inherit (helpers) makeHomeManager makeNixOS systems;
 }
