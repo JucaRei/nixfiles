@@ -14,21 +14,21 @@
   fileSystems = {
     "/" =
       {
-        device = "/dev/disk/by-partlabel/disk-sda-root";
+        device = "/dev/disk/by-partlabel/root";
         fsType = "xfs";
         options = [ "defaults" "relatime" "nodiratime" ];
       };
 
     "/boot" =
       {
-        device = "/dev/disk/by-partlabel/disk-sda-ESP";
+        device = "/dev/disk/by-partlabel/ESP";
         fsType = "vfat";
         options = [ "defaults" "noatime" "nodiratime" ];
       };
   };
 
   swapDevices = [
-    { device = "/dev/disk/by-partlabel/disk-sda-swap"; }
+    # { device = "/dev/disk/by-partlabel/disk-sda-swap"; }
   ];
 
   programs = {
