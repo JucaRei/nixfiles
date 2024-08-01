@@ -132,10 +132,12 @@ in
         nix-output-monitor
         nixpkgs-fmt
         nil
-        (optionals (isOld) [ pkgs.nixgl.auto.nixGLDefault ])
+
+      ] ++ optionals (isGeneric && isOld) [
+        nixgl.auto.nixGLDefault
       ];
 
-      activation = {
+      activation = mkIf isGeneric {
         linkDesktopApplications = {
           # Add Packages To System Menu by updating database
           after = [ "writeBoundary" "createXdgUserDirectories" ];
