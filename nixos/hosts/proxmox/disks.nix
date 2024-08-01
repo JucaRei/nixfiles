@@ -15,6 +15,7 @@ in
               name = "nixos";
               start = "1M";
               end = "-4G";
+              part-type = "primary";
               bootable = true;
               content = {
                 type = "filesystem";
@@ -24,8 +25,8 @@ in
               };
             }
             {
-              name = "swap";
-              size = "100%";
+              name = "EncSWAP";
+              end = "100%";
               content = {
                 type = "swap";
                 randomEncryption = true;
