@@ -3,7 +3,6 @@
     [
       (modulesPath + "/profiles/qemu-guest.nix")
       (import ./disks.nix { })
-      ../../_mixins/hardware/boot/bios.nix
     ];
 
   boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod" ];
