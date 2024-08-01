@@ -16,14 +16,14 @@
   fileSystems = {
     "/" =
       {
-        device = "/dev/disk/by-partlabel/root";
+        device = "/dev/disk/by-partlabel/disk-vda-root";
         fsType = "xfs";
         options = [ "defaults" "relatime" "nodiratime" ];
       };
 
     "/boot" =
       {
-        device = "/dev/disk/by-partlabel/ESP";
+        device = "/dev/disk/by-partlabel/disk-vda-ESP";
         fsType = "vfat";
         options = [ "defaults" "noatime" "nodiratime" ];
       };
