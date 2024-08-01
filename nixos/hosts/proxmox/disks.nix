@@ -1,37 +1,47 @@
-{ disks ? [ "/dev/sda" ], ... }:
+{ disks ? [ "/dev/vda" ], ... }:
 let
   defaultXfsOpts = [ "defaults" "relatime" "nodiratime" ];
 in
 {
   disko.devices = {
     disk = {
-      sda = {
+      vda = {
         type = "disk";
-        device = "/dev/sda";
+        device = builtins.elemAt disks 0;
         content = {
           type = "table";
-          format = "msdos";
+          format = "gpt";
           partitions = [
             {
-              name = "nixos";
+              name = "boot";
+              start = "0%";
+              end = "1M";
+              flags = [ "bios_grub" ];
+            }
+            {
+              name = "ESP";
               start = "1M";
-              end = "-4G";
-              part-type = "primary";
+              end = "550MiB";
               bootable = true;
+              flags = [ "esp" ];
+              fs-type = "fat32";
               content = {
                 type = "filesystem";
-                format = "xfs";
-                mountpoint = "/";
-                mountOptions = defaultXfsOpts;
+                format = "vfat";
+                mountpoint = "/boot";
               };
             }
             {
-              name = "EncSWAP";
+              name = "root";
+              start = "550MiB";
               end = "100%";
               content = {
-                type = "swap";
-                randomEncryption = true;
-                priority = 100; # prefer to encrypt as long as we have space for it
+                type = "filesystem";
+                # Overwirte the existing filesystem
+                extraArgs = [ "-f" ];
+                format = "xfs";
+                mountpoint = "/";
+                mountOptions = defaultXfsOpts;
               };
             }
           ];
