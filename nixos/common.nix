@@ -9,13 +9,6 @@ in
 {
   imports =
     [
-      inputs.disko.nixosModules.disko
-      inputs.nh.nixosModules.default
-      inputs.catppuccin.nixosModules.catppuccin
-      inputs.nix-flatpak.nixosModules.nix-flatpak
-      inputs.nix-index-database.nixosModules.nix-index
-      inputs.nix-snapd.nixosModules.default
-      inputs.sops-nix.nixosModules.sops
       (modulesPath + "/installer/scan/not-detected.nix")
       (./. + "/hosts/${ hostname}")
       ./_mixins/services/network/openssh.nix

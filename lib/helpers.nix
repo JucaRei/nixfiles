@@ -87,7 +87,13 @@ in
           #   # arguments to home.nix
           # }
           inputs.proxmox-nixos.nixosModules.proxmox-ve
-
+          inputs.disko.nixosModules.disko
+          inputs.nh.nixosModules.default
+          inputs.catppuccin.nixosModules.catppuccin
+          inputs.nix-flatpak.nixosModules.nix-flatpak
+          inputs.nix-index-database.nixosModules.nix-index
+          inputs.nix-snapd.nixosModules.default
+          inputs.sops-nix.nixosModules.sops
           ({ pkgs, lib, inputs, config, ... }: {
             # Shared Between all users
             # services.proxmox-ve.enable = true;
