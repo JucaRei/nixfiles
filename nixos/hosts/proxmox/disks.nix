@@ -10,8 +10,9 @@ in
         content = {
           type = "table";
           format = "msdos";
-          partitions = {
-            nixos = {
+          partitions = [
+            {
+              name = "nixos";
               start = "1M";
               end = "-4G";
               bootable = true;
@@ -21,18 +22,17 @@ in
                 mountpoint = "/";
                 mountOptions = defaultXfsOpts;
               };
-            };
-            swap = {
-              encryptedSwap = {
-                size = "100%";
-                content = {
-                  type = "swap";
-                  randomEncryption = true;
-                  priority = 100; # prefer to encrypt as long as we have space for it
-                };
+            }
+            {
+              name = "swap";
+              size = "100%";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+                priority = 100; # prefer to encrypt as long as we have space for it
               };
-            };
-          };
+            }
+          ];
         };
       };
     };
