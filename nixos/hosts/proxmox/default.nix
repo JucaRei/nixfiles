@@ -10,8 +10,8 @@
   # boot.loader.grub.devices = [ "nodev" ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
-  boot.mode.bios.enable = true;
-  boot.loader.grub.device = lib.mkForce "/dev/vda";
+  # boot.mode.bios.enable = true;
+  # boot.loader.grub.device = lib.mkForce "/dev/vda";
 
   fileSystems = {
     "/" =
