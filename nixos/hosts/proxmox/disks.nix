@@ -12,18 +12,14 @@ in
           # type = "table";
           format = "gpt";
           partitions = {
-            boot = {
-              start = "0%";
-              end = "1M";
-              flags = [ "bios_grub" ];
+            MBR = {
+              type = "EF02"; # for grub MBR
+              size = "1M";
+              priority = 1; # Needs to be first partition
             };
-            esp = {
-              start = "1M";
-              end = "550MiB";
-              bootable = true;
-              priority = 1;
-              flags = [ "esp" ];
-              fs-type = "fat32";
+            ESP = {
+              type = "EF00";
+              size = "500M";
               content = {
                 type = "filesystem";
                 format = "vfat";
@@ -31,9 +27,7 @@ in
               };
             };
             root = {
-              start = "550MiB";
-              end = "100%";
-              priority = 2;
+              size = "100%";
               content = {
                 type = "filesystem";
                 # Overwirte the existing filesystem
