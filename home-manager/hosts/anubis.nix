@@ -1,4 +1,4 @@
-{ pkgs, config, lib, username, nixGL, ... }:
+{ pkgs, config, lib, username, ... }:
 with lib.hm.gvariant;
 let
   nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
