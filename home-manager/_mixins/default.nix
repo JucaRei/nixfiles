@@ -1,4 +1,5 @@
 { pkgs, config, desktop, hostname, lib, isLima, isWorkstation, ... }:
+with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   isStreamstation = if (hostname == "phasma" || hostname == "vader") then true else false;
@@ -8,15 +9,23 @@ let
   home-manager_change_summary = import ./config/scripts/home-manager_change_summary.nix { inherit pkgs; };
   samba = import ./config/scripts/samba.nix { inherit pkgs; };
 
+  cfg = config.services.nonNixOs;
+  isOld = if (hostname == "oldarch") then false else true;
+  isGeneric = if (config.services.nonNixOs.enable) then true else false;
+
 in
 {
   imports = [
-    # ./config/scripts/home-manager_change_summary.nix
     ./console
-    # ./config/scripts/nh-home
   ]
-  ++ lib.optional (isWorkstation) ./desktop;
+  ++ optional (isWorkstation) ./desktop;
 
+  options.services.nonNixOs = {
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+    };
+  };
 
   config = {
     home = {
@@ -98,7 +107,7 @@ in
         # wget # Terminal HTTP client
         # wthrr # Modern Unix weather
         # yq-go # Terminal `jq` for YAML
-      ] ++ lib.optionals (isStreamstation) [
+      ] ++ optionals (isStreamstation) [
         # Deckmaster and the utilities I bind to the Stream Deck
         alsa-utils
         bc
@@ -109,7 +118,7 @@ in
         piper-tts
         playerctl
         pulsemixer
-      ] ++ lib.optionals isLinux [
+      ] ++ optionals isLinux [
         # figlet # Terminal ASCII banners
         iw # Terminal WiFi info
         # lurk # Modern Unix `strace`
@@ -129,10 +138,22 @@ in
         p7zip
         unrar
         zip
-      ] ++ lib.optionals isDarwin [
+      ] ++ optionals isDarwin [
         m-cli # Terminal Swiss Army Knife for macOS
+      ] ++ optionals isGeneric [
+        nix-output-monitor
+        nixpkgs-fmt
+        nil
+        (optionals (isOld) [ pkgs.nixgl.auto.nixGLDefault ])
       ];
 
+      activation = mkIf isGeneric {
+        linkDesktopApplications = { };
+        # Add Packages To System Menu by updating database
+        after = [ "writeBoundary" "createXdgUserDirectories" ];
+        before = [ ];
+        data = "sudo /usr/bin/update-desktop-database";
+      };
 
       sessionVariables =
         let
@@ -147,7 +168,9 @@ in
         };
     };
 
-    programs = with lib;{
+    targets.genericLinux.enable = isGeneric;
+
+    programs = {
       command-not-found.enable = false;
       info.enable = true;
       jq = {

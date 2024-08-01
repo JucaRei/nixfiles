@@ -137,17 +137,14 @@ in
 
     config = {
       # allowBroken = true;
-      # Disable if you don't want unfree packages
-      allowUnfree = true;
-      # Accept the joypixels license
-      joypixels.acceptLicense = true;
+      allowUnfree = true; # Disable if you don't want unfree packages
+      joypixels.acceptLicense = true; # Accept the joypixels license
       allowUnsupportedSystem = true;
       permittedInsecurePackages = [
         "python3.11-youtube-dl-2021.12.17"
       ];
 
-      # Workaround for https://github.com/nix-community/home-manager/issues/2942
-      allowUnfreePredicate = _: true;
+      allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
     };
   };
 }
