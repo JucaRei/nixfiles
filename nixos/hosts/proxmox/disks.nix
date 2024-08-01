@@ -7,6 +7,7 @@ in
     disk = {
       sda = {
         type = "disk";
+        device = "/dev/sda";
         content = {
           type = "table";
           format = "msdos";
