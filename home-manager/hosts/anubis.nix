@@ -1,7 +1,7 @@
-{ pkgs, config, lib, username, ... }:
+{ pkgs, config, lib, username, nixGL, ... }:
 with lib.hm.gvariant;
 let
-  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+  # nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
   # mpv-custom = import ../_mixins/apps/video/mpv.nix;
   vivaldi-custom = pkgs.unstable.vivaldi.override {
     proprietaryCodecs = true;

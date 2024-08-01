@@ -27,11 +27,12 @@ in
       isInstall = !isISO;
       isLima = builtins.substring 0 5 hostname == "lima-";
       isWorkstation = builtins.isString desktop;
+      nixGL = (import ./nixGL.nix { inherit config pkgs; });
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
-        inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation nixGLWrap;
+        inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation nixGL;
       };
       modules = [
         ({ config, pkgs, lib, ... }: {
