@@ -44,9 +44,9 @@ in
   #   };
   # };
 
-  config.disko.devices = {
+  disko.devices = {
     disk = {
-      main = {
+      vda = {
         type = "disk";
         device = builtins.elemAt disks 0;
         content = {
