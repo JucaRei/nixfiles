@@ -15,7 +15,6 @@ in
       # inputs.sops-nix.homeManagerModules.sops
 
       # You can also split up your configuration and import pieces of it here:
-      ./_mixins
       ./common.nix
     ]
     # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
