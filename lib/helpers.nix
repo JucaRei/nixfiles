@@ -42,6 +42,9 @@ in
           home.packages = with pkgs; [
             nixpkgs-fmt
             nix-output-monitor
+            nurl # Nix URL fetcher
+            nixpkgs-review # Nix code review
+            nix-prefetch-scripts # Nix code fetcher
           ];
         })
         inputs.declarative-flatpak.homeManagerModules.default
