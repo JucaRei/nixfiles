@@ -27,7 +27,7 @@ in
       isInstall = !isISO;
       isLima = builtins.substring 0 5 hostname == "lima-";
       isWorkstation = builtins.isString desktop;
-      nixGL = (import ./nixGL.nix { inherit config; });
+      nixGL = (import ./nixGL.nix { inherit (inputs.nixpkgs.legacyPackages.${platform}) config; });
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
