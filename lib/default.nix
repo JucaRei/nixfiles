@@ -1,6 +1,6 @@
 { inputs, outputs, stateVersion, lib, pkgs, config, ... }:
 let
-  helpers = import ./helpers.nix { inherit lib inputs outputs stateVersion config pkgs; };
+  helpers = import ./helpers.nix { inherit inputs outputs stateVersion lib pkgs config; };
 
   # wrapProgram = pkgs.callPackage ./wrap-program.nix { inherit lib pkgs; };
 
