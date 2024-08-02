@@ -372,19 +372,23 @@ in
       };
     };
 
-    kmscon = mkIf (isInstall) {
-      enable = true;
-      hwRender = true;
-      fonts = [{
-        name = "FiraCode Nerd Font Mono";
-        package = pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; };
-      }];
-      extraConfig =
-        ''
-          font-size=14
-          xkb-layout=br
-        '';
-    };
+    kmscon = mkIf (isInstall)
+      {
+        enable = true;
+        hwRender = true;
+        fonts = [{
+          name = "FiraCode Nerd Font Mono";
+          package = pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; };
+        }];
+        extraConfig =
+          let
+            xkbLayout = if (hostname == "nitro" || "soyo") then "br" else "us";
+          in
+          ''
+            font-size=14
+            xkb-layout=${xkbLayout}
+          '';
+      };
 
     xserver = {
       ### Touchpad
@@ -422,24 +426,6 @@ in
       '';
       rateLimitBurst = 800;
       rateLimitInterval = "5s";
-    };
-
-    # to prevent nix-shell complaining about no space left
-    # default value is 10% of total RAM
-    # writes to: /etc/systemd/logind.conf
-    logind = mkIf (isInstall) {
-      extraConfig = ''
-        # Set the maximum size of runtime directories to 100%
-        RuntimeDirectorySize=100%
-
-        # Set the maximum number of inodes in runtime directories to 1048576
-        RuntimeDirectoryInodesMax=1048576
-
-        # to prevent nix-shell complaining about no space left
-        # default value is 10% of total RAM
-        # writes to: /etc/systemd/logind.conf
-        RuntimeDirectorySize=2G
-      '';
     };
 
     getty = {

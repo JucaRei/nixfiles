@@ -9,7 +9,7 @@
     # ../../_mixins/hardware/sound/pipewire.nix
     ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     # ./nvidia-specialisation.nix
-    ../../_mixins/hardware/boot/plymouth.nix
+    # ../../_mixins/hardware/boot/plymouth.nix
     # ../../_mixins/hardware/power/tlp.nix
     ../../_mixins/hardware/other/usb.nix
     # ../../_mixins/virtualization/quickemu.nix
@@ -37,11 +37,11 @@
       # done
       # modprobe -i vfio-pci
       # '';
-      mode = {
-        systemd-boot.enable = lib.mkForce false;
-        plymouth.enable = lib.mkForce true;
-        efi.enable = lib.mkForce true;
-      };
+      # mode = {
+      # systemd-boot.enable = lib.mkForce false;
+      # plymouth.enable = lib.mkForce true;
+      # efi.enable = lib.mkForce true;
+      # };
       loader = {
         efi = {
           efiSysMountPoint = lib.mkForce "/boot/efi";
@@ -49,16 +49,19 @@
         grub = {
           # theme = pkgs.cyberre-grub-theme;
           theme = pkgs.catppuccin-grub;
+          devices = [ "nodev" ];
+          efiSupport = true;
+          useOSProber = true;
         };
       };
       initrd = {
         availableKernelModules = [
-          "xhci_pci"
-          "ahci"
+          "xhci_pci" # USB 3.0
+          "ahci" # SATA devices on modern AHCI controllers
           "nvme"
-          "usb_storage"
-          "usbhid"
-          "sd_mod"
+          "usb_storage" # USB mass storage devices
+          "usbhid" # USB human interface devices
+          "sd_mod" # SCSI, SATA, and IDE devices
           "rtsx_pci_sdmmc"
           "aesni_intel"
           "cryptd"
@@ -199,7 +202,7 @@
       };
     };
 
-    console.keyMap = lib.mkForce "br";
+    # console.keyMap = lib.mkForce "br";
 
     programs.gnupg.agent.enable = true;
 
@@ -207,11 +210,11 @@
     ### For services ###
     ####################
 
-    location = {
-      provider = "manual";
-      latitude = -23.53938;
-      longitude = -46.65253;
-    };
+    # location = {
+    #   provider = "manual";
+    #   latitude = -23.53938;
+    #   longitude = -46.65253;
+    # };
 
     ##################
     ### FILESYSTEM ###
@@ -422,6 +425,8 @@
         lm_sensors
         #thorium
         libva-utils
+
+        os-prober
       ];
       sessionVariables = { };
 
@@ -433,6 +438,31 @@
 
     services = {
       virtualisation.kvm.enable = true;
+
+      xserver = {
+        ### Touchpad
+        libinput = {
+          enable = true;
+          touchpad = {
+            accelProfile = "adaptive";
+            accelSpeed = "0.6";
+            tapping = true;
+            scrollMethod = "twofinger";
+            disableWhileTyping = true;
+            clickMethod = "clickfinger";
+            naturalScrolling = true;
+            # natural scrolling for touchpad only, not mouse
+            additionalOptions = ''
+              MatchIsTouchpad "on"
+            '';
+          };
+          mouse = {
+            naturalScrolling = false;
+            disableWhileTyping = true;
+            accelProfile = "flat";
+          };
+        };
+      };
 
       acpid = {
         enable = true;
@@ -532,39 +562,37 @@
       hdapsd.enable = lib.mkDefault true;
     };
 
-    ### Load z3fold and lz4
-
     systemd = {
       oomd = { enable = false; };
       services =
-        let
-          # Mount details
-          description1 = "Volume_1";
-          description2 = "Volume_2";
-          device1 = "//192.168.1.207/volume_1";
-          device2 = "//192.168.1.207/volume_2/Transmission/Volume_2";
-          protocol = "smb:";
+        # let
+        #   # Mount details
+        #   description1 = "Volume_1";
+        #   description2 = "Volume_2";
+        #   device1 = "//192.168.1.207/volume_1";
+        #   device2 = "//192.168.1.207/volume_2/Transmission/Volume_2";
+        #   protocol = "smb:";
 
-          bookmarks = "${protocol}${device1} ${description1}\n${protocol}${device2} ${description2}";
-        in
+        #   bookmarks = "${protocol}${device1} ${description1}\n${protocol}${device2} ${description2}";
+        # in
         {
-          addBookmark = {
-            description = "Add SMB bookmark to GTK 3.0 bookmarks"; # Description of the systemd service
+          # addBookmark = {
+          #   description = "Add SMB bookmark to GTK 3.0 bookmarks"; # Description of the systemd service
 
-            # Add the bookmark entry only if it doesn't already exist
-            script = ''
-              bookmark="${bookmarks}"
-              bookmark_file=${config.users.users.${username}.home}/.config/gtk-3.0/bookmarks
-              if ! grep -Fxq "$bookmarks" "$bookmark_file"; then
-                echo "$bookmark" >> "$bookmark_file"
-              fi
-            '';
+          #   # Add the bookmark entry only if it doesn't already exist
+          #   script = ''
+          #     bookmark="${bookmarks}"
+          #     bookmark_file=${config.users.users.${username}.home}/.config/gtk-3.0/bookmarks
+          #     if ! grep -Fxq "$bookmarks" "$bookmark_file"; then
+          #       echo "$bookmark" >> "$bookmark_file"
+          #     fi
+          #   '';
 
-            wantedBy = [ "multi-user.target" ]; # Target to start the service
-            serviceConfig = {
-              Type = "oneshot"; # systemd service (one-shot)
-            };
-          };
+          #   wantedBy = [ "multi-user.target" ]; # Target to start the service
+          #   serviceConfig = {
+          #     Type = "oneshot"; # systemd service (one-shot)
+          #   };
+          # };
 
           zswap = {
             description = "Enable ZSwap, set to LZ4 and Z3FOLD";

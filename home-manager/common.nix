@@ -36,8 +36,6 @@ in
         home-switch
         gen-ssh-key
         home-manager_change_summary
-        # samba
-
         nix-whereis
         duf # Modern Unix `df`
         fd # Modern Unix `find`

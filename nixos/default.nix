@@ -5,7 +5,10 @@ let
   variables = import ./hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
 in
 {
-  imports = [ ./common.nix ];
+  imports = [
+    ./core
+    # ./common.nix
+  ];
 
   ####################
   ### Nix Settings ###
