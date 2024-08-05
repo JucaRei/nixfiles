@@ -1,28 +1,29 @@
-{
-  lib,
-  modulesPath,
-  pkgs,
-  inputs,
-  ...
+{ lib
+, modulesPath
+, pkgs
+, inputs
+, ...
 }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    (import ./disks.nix {})
+    (import ./disks.nix { })
     inputs.nixos-hardware.nixosModules.microsoft-hyper-v
-    ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/services/security/sudo.nix
   ];
 
   boot = {
     isContainer = false;
-    blacklistedKernelModules = ["hyperv_fb"];
+    blacklistedKernelModules = [ "hyperv_fb" ];
 
     initrd = {
-      availableKernelModules = ["sd_mod" "sr_mod"];
+      availableKernelModules = [ "sd_mod" "sr_mod" ];
+
 
       ### kernel modules to be loaded in the second stage, that are needed to mount the root file system ###
       kernelModules = [
         "dm-snapshot"
+        "hv_vmbus"
+        "hv_storvsc"
         # "zswap.compressor=z3fold"
         # "z3fold"
         # "crc32c-intel"
@@ -33,17 +34,21 @@
         #"kvm-intel"
       ];
       checkJournalingFS = false; # for vm
-      supportedFilesystems = ["xfs"];
+      supportedFilesystems = [ "xfs" ];
       verbose = false;
     };
     kernelPackages = pkgs.linuxPackages_lqx;
+    kernelParams = [
+      # "video=hyperv_fb:800x600" # https://askubuntu.com/a/399960
+      "video=hyperv_fb:1920x1080"
+    ];
 
     kernel.sysctl = {
       "vm.vfs_cache_pressure" = 500;
       "vm.swappiness" = 20;
       "vm.dirty_background_ratio" = 1;
       "vm.dirty_ratio" = 50;
-      "vm.overcommit_memory" = "1";
+      "vm.overcommit_memory" = "1"; # https://github.com/NixOS/nix/issues/421
     };
 
     plymouth = {
@@ -54,12 +59,12 @@
     loader = {
       timeout = 5;
 
-      grub = {
-        gfxmodeEfi = lib.mkForce "auto";
-        fontSize = 20;
+      # grub = {
+      #   gfxmodeEfi = lib.mkForce "auto";
+      #   fontSize = 20;
 
-        configurationName = lib.mkForce "NixOS HyperV test";
-      };
+      #   configurationName = lib.mkForce "NixOS HyperV test";
+      # };
     };
   };
 
@@ -71,7 +76,7 @@
 
   zramSwap = {
     enable = true;
-    swapDevices = 5;
+    swapDevices = 4;
     memoryPercent = 20; # 20% of total memory
     algorithm = "zstd";
   };
