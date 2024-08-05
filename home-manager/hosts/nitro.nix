@@ -78,6 +78,12 @@ with lib;
         # tmux
       ];
 
+      sessionVariables = {
+        # GBM_BACKEND = "nvidia-drm";
+        # GBM_BACKEND = "nvidia";
+        # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      };
+
       keyboard = lib.mkForce {
         # layout = "br,us";
         layout = lib.mkForce "br";

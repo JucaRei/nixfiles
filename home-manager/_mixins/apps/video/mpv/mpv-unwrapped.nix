@@ -11,7 +11,7 @@ with lib.hm.gvariant; let
       (pkgs.mpv-unwrapped.override {
         vapoursynthSupport = true;
         # webp support
-        ffmpeg = pkgs.ffmpeg_5-full;
+        ffmpeg = pkgs.ffmpeg_7-full;
       })
       {
         extraMakeWrapperArgs = [

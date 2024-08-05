@@ -13,7 +13,7 @@ let
           waylandSupport = true;
           jackaudioSupport = true; # Add jack support to mpv.
           # webp support
-          ffmpeg = pkgs.unstable.ffmpeg_5-full;
+          ffmpeg = pkgs.unstable.ffmpeg_7-full;
         };
       youtubeSupport = true;
       extraMakeWrapperArgs = [
