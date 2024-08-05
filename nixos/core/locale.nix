@@ -19,5 +19,9 @@ in
       #LC_COLLATE = "${variables.extra-locale}";
       #LC_MESSAGES = "${variables.extra-locale}";
     };
+    supportedLocales = [
+      "en_US.UTF-8/UTF-8"
+      "pt_BR.UTF-8/UTF-8"
+    ];
   };
 }

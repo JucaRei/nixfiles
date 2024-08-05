@@ -22,15 +22,13 @@
         cloneit
         gparted
         lm_sensors
-        libva-utils
         os-prober
       ];
       sessionVariables = { };
-
     };
 
     services = {
-      virtualisation.kvm.enable = true;
+      # virtualisation.kvm.enable = true;
 
       ### Touchpad
       libinput = {
@@ -51,7 +49,8 @@
         mouse = {
           naturalScrolling = false;
           disableWhileTyping = true;
-          accelProfile = "flat";
+          accelProfile = "adaptive";
+          accelSpeed = "0.3";
         };
       };
 
@@ -65,40 +64,38 @@
           interval = "weekly";
         };
       };
-      envfs = { enable = true; };
-      fstrim = { enable = true; };
-
     };
 
     systemd = {
-      oomd = { enable = false; };
-      services =
-        {
-          zswap = {
-            description = "Enable ZSwap, set to LZ4 and Z3FOLD";
-            enable = true;
-            wantedBy = [ "basic.target" ];
-            path = [ pkgs.bash ];
-            serviceConfig = {
-              ExecStart = ''
-                ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
-                      echo 1 > enabled&& \
-                      echo 20 > max_pool_percent&& \
-                      echo lz4hc > compressor&& \
-                      echo z3fold > zpool'
-              '';
-              Type = "simple";
-            };
-          };
-
-          nix-daemon = {
-            ### Limit resources used by nix-daemon
-            serviceConfig = {
-              MemoryMax = "8G";
-              MemorySwapMax = "12G";
-            };
+      oomd = {
+        enable = false;
+      };
+      services = {
+        zswap = {
+          description = "Enable ZSwap, set to LZ4 and Z3FOLD";
+          enable = true;
+          wantedBy = [ "basic.target" ];
+          path = [ pkgs.bash ];
+          serviceConfig = {
+            ExecStart = ''
+              ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
+                    echo 1 > enabled&& \
+                    echo 20 > max_pool_percent&& \
+                    echo lz4hc > compressor&& \
+                    echo z3fold > zpool'
+            '';
+            Type = "simple";
           };
         };
+
+        nix-daemon = {
+          ### Limit resources used by nix-daemon
+          serviceConfig = {
+            MemoryMax = "8G";
+            MemorySwapMax = "12G";
+          };
+        };
+      };
 
       sleep.extraConfig = ''
         AllowHibernation=yes
