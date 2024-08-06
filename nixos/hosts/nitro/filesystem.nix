@@ -41,10 +41,10 @@ in
       # };
     };
   };
-  
+
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-partlabel/root";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
       options = [
@@ -54,7 +54,7 @@ in
     };
 
     "/home" = {
-      device = "/dev/disk/by-partlabel/root";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
       options = [
@@ -63,7 +63,7 @@ in
     };
 
     "/.snapshots" = {
-      device = "/dev/disk/by-partlabel/root";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
       options = [
@@ -72,7 +72,7 @@ in
     };
 
     "/var" = {
-      device = "/dev/disk/by-partlabel/root";
+      device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
       options = [
         "subvol=@var"
@@ -81,7 +81,7 @@ in
 
 
     "/nix" = {
-      device = "/dev/disk/by-partlabel/root";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
       options = [
@@ -90,7 +90,7 @@ in
     };
 
     "/boot" = {
-      device = "/dev/disk/by-label/ESP";
+      device = "/dev/disk/by-partlabel/ESP";
       fsType = "vfat";
       options = [
         "fmask=0022"
