@@ -4,6 +4,7 @@
     ../../_mixins/hardware/other/usb.nix
     ../../_mixins/services/security/sudo.nix
     ../../_mixins/virtualization/virtual-manager/testing.nix
+    (import ./disks-btrfs.nix { })
     ./hardware.nix
     ./filesystem.nix
   ];

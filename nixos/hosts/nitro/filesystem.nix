@@ -1,4 +1,8 @@
-_:
+{ pkgs
+, desktop
+, lib
+, ...
+}:
 let
   BTRFS_OPTS = [
     "noatime"
@@ -12,6 +16,32 @@ let
   ];
 in
 {
+
+  environment.systemPackages = [ pkgs.snapper ] ++ lib.optional (builtins.isString desktop) pkgs.snapper-gui;
+
+  services.snapper = {
+    snapshotRootOnBoot = true;
+    cleanupInterval = "7d";
+    snapshotInterval = "weekly"; # "hourly";
+    configs = {
+      root = {
+        TIMELINE_CREATE = true;
+        TIMELINE_CLEANUP = true;
+        SUBVOLUME = "/";
+      };
+      # home = {
+      #   TIMELINE_CREATE = true;
+      #   TIMELINE_CLEANUP = true;
+      #   SUBVOLUME = "/home";
+      # };
+      # nix = {
+      #   TIMELINE_CREATE = true;
+      #   TIMELINE_CLEANUP = true;
+      #   SUBVOLUME = "/nix";
+      # };
+    };
+  };
+  
   fileSystems = {
     "/" = {
       device = "/dev/disk/by-partlabel/root";
