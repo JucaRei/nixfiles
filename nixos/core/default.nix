@@ -84,6 +84,10 @@ in
       rateLimitBurst = 800;
       rateLimitInterval = "5s";
     };
+
+    # larger runtime directory size to not run out of ram while building
+    # https://discourse.nixos.org/t/run-usr-id-is-too-small/4842
+    logind.extraConfig = mkIf (isWorkstation) "RuntimeDirectorySize=3G";
   };
 
   environment = {
