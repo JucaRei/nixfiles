@@ -153,16 +153,16 @@ in
         #     efiSysMountPoint = lib.mkForce "/boot";
         canTouchEfiVariables = true;
       };
-      systemd-boot.extraEntries."ubuntu.conf" = ''
-        title Ubuntu 23.04
-        efi   /efi/ubuntu/shimx64.efi
-      '';
-      # grub = {
-      #   theme = pkgs.catppuccin-grub;
-      #   devices = [ "nodev" ];
-      #   efiSupport = true;
-      #   useOSProber = true;
-      # };
+      # systemd-boot.extraEntries."ubuntu.conf" = ''
+      #   title Ubuntu 23.04
+      #   efi   /efi/ubuntu/shimx64.efi
+      # '';
+      grub = lib.mkForce {
+        theme = pkgs.catppuccin-grub;
+        devices = [ "nodev" ];
+        efiSupport = true;
+        useOSProber = true;
+      };
     };
   };
 

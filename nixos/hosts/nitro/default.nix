@@ -5,6 +5,7 @@
     ../../_mixins/services/security/sudo.nix
     ../../_mixins/virtualization/virtual-manager/testing.nix
     (import ./disks-btrfs.nix { })
+    # (import ./disks-bcachefs.nix { })
     ./hardware.nix
     ./filesystem.nix
   ];
@@ -24,6 +25,8 @@
         gparted
         lm_sensors
         os-prober
+
+        firefox-devedition
       ];
       sessionVariables = { };
     };

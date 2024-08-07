@@ -4,15 +4,14 @@
 , ...
 }:
 let
-  defaultBtrfsOpts = [
-    "noatime"
+  bcachefs_opts = [
+    "compression=zstd:3"
+    "background_compression=zstd:15"
+    "block_size=4096" # 4kb block size.
+    "discard"
+    "bind"
+    "relatime"
     "nodiratime"
-    "nodatacow"
-    "ssd"
-    "compress-force=zstd:15"
-    "space_cache=v2"
-    "commit=120"
-    "discard=async"
   ];
 in
 {
@@ -23,7 +22,6 @@ in
     disk = {
       nvme0 = {
         type = "disk";
-        # device = builtins.elemAt disks 0;
         device = "/dev/disk/by-id/nvme-WD_BLACK_SN770_500GB_23170F801244";
         content = {
           type = "gpt";
@@ -48,45 +46,28 @@ in
               };
             };
             root = {
-              name = "NixOS";
-              # size = "100%";
-              # start = "1024M";
+              name = "root";
               end = "-16GiB";
               content = {
-                type = "btrfs";
-                extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
-                # Subvolumes must set a mountpoint in order to be mounted,
-                # unless their parent is mounted
-                subvolumes = {
-                  # Subvolume name is different from mountpoint
-                  "@" = {
-                    mountpoint = "/";
-                    mountOptions = defaultBtrfsOpts;
-                  };
-                  # Subvolume name is the same as the mountpoint
-                  "@home" = {
-                    mountpoint = "/home";
-                    mountOptions = defaultBtrfsOpts;
-                  };
-                  # Parent is not mounted so the mountpoint must be set
-                  "@nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = defaultBtrfsOpts;
-                  };
-                  "@var" = {
-                    mountpoint = "/var";
-                    mountOptions = defaultBtrfsOpts;
-                  };
-                  "@snapshots" = {
-                    mountpoint = "/.snapshots";
-                    mountOptions = defaultBtrfsOpts;
-                  };
-                  # "@swap" = {
-                  #   mountpoint = "/swap";
-                  #   swap.swapfile.size = "16G";
-                  # };
-                  # mountpoint = "/partition-root";
-                };
+                type = "filesystem";
+                format = "bcachefs";
+                mountpoint = "/";
+                # extraArgs = bcachefs_opts;
+                extraArgs = [
+                  "--compression zstd"
+                  "--background_compression zstd"
+                  "--block_size=4096" # 4kb block size.
+                  "--discard"
+                  "--label nroot"
+                ];
+                mountOptions = [ "noatime" ];
+                # subvolumes = {
+                #   # Not implemented
+                #   "@home" = { };
+                #   "@nix" = { };
+                #   "@var" = { };
+                #   "@snapshots" = { };
+                # };
               };
             };
             swap = {
@@ -94,6 +75,7 @@ in
               # start = "-16GiB";
               # end = "100%";
               size = "100%";
+              type = "8200";
               # part-type = "primary";
               content = {
                 type = "swap";
