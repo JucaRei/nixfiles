@@ -358,7 +358,7 @@
         hyperv = helper.makeNixOS { hostname = "hyperv"; desktop = "mate"; hostid = "6f2efa51"; };
         proxmox = helper.makeNixOS { hostname = "proxmox"; desktop = null; };
         # Raspberry
-        rasp3 = helper.makeNixOS { hostname = "rasp3"; hostid = "6f2efa55"; };
+        # rasp3 = helper.makeNixOS { hostname = "rasp3"; hostid = "6f2efa55"; };
       };
     };
 }
