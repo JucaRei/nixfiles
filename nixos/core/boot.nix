@@ -18,7 +18,7 @@ with lib;
         efiSysMountPoint = mkDefault "/boot";
       };
       systemd-boot = mkOverride 1500 {
-        # enable = lib.mkDefault true;
+        enable = mkDefault true;
         configurationLimit = 10;
         consoleMode = "max";
         memtest86.enable = true;
