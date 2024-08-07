@@ -1,0 +1,17 @@
+version: "2.1"
+services:
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    network_mode: host # optional
+    environment:
+      - PUID=1000 #optional
+      - PGID=990 #optional
+      - TZ=America/Sao_Paulo #optional
+      - SUBDOMAINS=soyoz,soyozscale
+      - TOKEN=ffa477d8-bf6b-4a34-90cb-c620f9d29061
+      - UPDATE_IP=ipv4 #optional
+      - LOG_FILE=false #optional
+    volumes:
+      - /home/juca/Documents/docker/docker-configs/resources/duckdns:/config #optional
+    restart: unless-stopped

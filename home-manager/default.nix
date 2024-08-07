@@ -13,11 +13,9 @@ in
       # Or modules exported from other flakes (such as nix-colors):
       # inputs.nix-colors.homeManagerModules.default
       # inputs.sops-nix.homeManagerModules.sops
-      inputs.nix-index-database.hmModules.nix-index
-      # inputs.catppuccin.homeManagerModules.catppuccin
 
       # You can also split up your configuration and import pieces of it here:
-      ./_mixins
+      ./common.nix
     ]
     # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
@@ -39,8 +37,6 @@ in
     homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
     sessionVariables = {
-      # libstdc++.so.6 => not found
-      # LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
       FLAKE = "/home/${username}/.dotfiles/nixfiles";
@@ -65,8 +61,6 @@ in
       outputs.overlays.previous-packages
       outputs.overlays.legacy-packages
 
-      # inputs.nixpkgs-f2k.overlays.stdenvs
-      # inputs.nixpkgs-f2k.overlays.compositors
       inputs.nixgl.overlay
       inputs.nur.overlay
 
@@ -162,7 +156,7 @@ in
         # max-free = ${toString (1024 * 1024 * 1024)}
         # Free up to 2GiB whenever there is less than 1GiB left.
         min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
-        max-free = ${toString (2 * 1024 * 1024 * 1024)}    # 2 GiB
+        max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 2 GiB
       ''
       + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
         extra-platforms = x86_64-darwin

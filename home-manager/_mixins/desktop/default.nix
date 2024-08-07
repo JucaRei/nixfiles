@@ -117,7 +117,7 @@ in
           "file:///home/${username}/Videos"
           "file:///home/${username}/Documents/lab"
           "smb://192.168.1.207/volume_1/"
-          "smb://192.168.1.207/volume_2/Transmission/complete"
+          "smb://192.168.1.207/volume_2/Transmission/Volume_2"
         ] else [
           "file:///home/${username}/Documents"
           "file:///home/${username}/Documents/Virtualmachines"

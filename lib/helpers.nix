@@ -1,6 +1,25 @@
-{ inputs, outputs, stateVersion, lib, ... }: {
+{ inputs, outputs, stateVersion, lib, pkgs, config, ... }:
+let
+  nixGLWrap = pkgs: pkg:
+    let
+      bins = "${pkg}/bin";
+    in
+    pkgs.buildEnv {
+      name = "nixGL-${pkg.name}";
+      paths =
+        [ pkg ] ++
+        (map
+          (bin: pkgs.hiPrio (
+            pkgs.writeShellScriptBin bin ''
+              exec -a "$0" "${pkgs.nixgl.auto.nixGLDefault}/bin/nixGL" "${bins}/${bin}" "$@"
+            ''
+          ))
+          (builtins.attrNames (builtins.readDir bins)));
+    };
+in
+{
   # Helper function for generating home-manager configs
-  mkHome =
+  makeHomeManager =
     ### TODO - add displays
     { hostname, username ? "juca", desktop ? null, stateVersion ? "23.11", platform ? "x86_64-linux" }:
     let
@@ -23,28 +42,32 @@
           home.packages = with pkgs; [
             nixpkgs-fmt
             nix-output-monitor
+            nurl # Nix URL fetcher
           ];
         })
         inputs.declarative-flatpak.homeManagerModules.default
         inputs.nur.hmModules.nur
         inputs.vscode-server.homeModules.default
+        inputs.nix-index-database.hmModules.nix-index
+        inputs.catppuccin.homeManagerModules.catppuccin
         # inputs.vscode-server.nixosModules.home
         ../home-manager
       ];
     };
 
   # Helper function for generating host configs
-  mkHost =
+  makeNixOS =
     { hostname, username ? "juca", desktop ? null, hostid ? null, platform ? "x86_64-linux", stateVersion ? "23.11", }:
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
       isLima = builtins.substring 0 5 hostname == "lima-";
       isWorkstation = builtins.isString desktop;
+      notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
     in
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
-        inherit inputs outputs desktop hostname platform username hostid stateVersion isInstall isLima isISO isWorkstation;
+        inherit inputs outputs desktop hostname platform username hostid stateVersion isInstall isLima isISO notVM isWorkstation;
       };
       modules =
         let
@@ -66,6 +89,21 @@
           #   # Optionally, use home-manager.extraSpecialArgs to pass
           #   # arguments to home.nix
           # }
+          inputs.proxmox-nixos.nixosModules.proxmox-ve
+          inputs.disko.nixosModules.disko
+          inputs.nh.nixosModules.default
+          inputs.catppuccin.nixosModules.catppuccin
+          inputs.nix-flatpak.nixosModules.nix-flatpak
+          inputs.nix-index-database.nixosModules.nix-index
+          inputs.nix-snapd.nixosModules.default
+          inputs.sops-nix.nixosModules.sops
+          ({ pkgs, lib, inputs, config, ... }: {
+            # Shared Between all users
+            # services.proxmox-ve.enable = true;
+            nixpkgs.overlays = [
+              inputs.proxmox-nixos.overlays.${platform}
+            ];
+          })
         ]
         ++ inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ];
     };
@@ -77,41 +115,4 @@
     "x86_64-darwin"
     "aarch64-darwin"
   ];
-
-  nixGLWrapper =
-    pkgs:
-    { pkg
-    , nixGL ? pkgs.nixgl.nixGLMesa
-    }:
-    pkgs.symlinkJoin {
-      inherit (pkg) meta;
-
-      name = "nixGL-${lib.getName pkg}";
-      paths = [ pkg ];
-
-      nativeBuildInputs = with pkgs; [ makeWrapper ];
-
-      passthru.unwrapped = pkg;
-
-      postBuild = ''
-        mkdir -p $out/share/nixgl
-        # Delete lines that start with exec
-        cat '${lib.getExe nixGL}' | sed '/^exec/d' > $out/share/nixgl/env
-
-        (
-          # Prevent loop from running if no files
-          shopt -s nullglob
-
-          # Wrap programs in nixGL by loading the nixGL environment variables
-          for bin in "$out/bin/"*; do
-            wrapProgram "$bin" --run ". $out/share/nixgl/env"
-          done
-
-          # Fix desktop entries to point to the new binaries, if needed
-          for desktop in "$out/share/applications/"*".desktop"; do
-            sed -i "s|${pkg}|$out|g" "$desktop"
-          done
-        )
-      '';
-    };
 }

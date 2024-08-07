@@ -24,7 +24,7 @@ in
         # };
 
         # nameservers = [ "1.1.1.1" ];
-        timeServers = [ "192.168.1.1" "time.google.com" "time.cloudflare.com" ];
+        timeServers = [ "time.google.com" "time.cloudflare.com" ];
 
         networkmanager = {
           enable = true;

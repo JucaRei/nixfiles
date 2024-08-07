@@ -1,0 +1,13 @@
+# docker-compose.yaml
+services:
+  rathole-tunnel:
+    restart: unless-stopped
+    container_name: rathole-tunnel
+    image: rapiz1/rathole
+    command: ["--server", "/app/server.toml"]
+    ports:
+      - 2333:2333  # for rathole communication
+      - 8211:8211/udp  # for palworld communication
+      - 27015:27015/udp  # for steam client communication
+    volumes:
+      - ./server.toml:/app/server.toml

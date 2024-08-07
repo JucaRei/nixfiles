@@ -1,0 +1,17 @@
+[server]
+bind_addr = "0.0.0.0:2574"             # use random port
+default_token = "6twFVrMhDsPbRJWr5bWv" # generate using password manager
+
+[server.transport]
+type = "noise"
+
+[server.transport.noise]
+pattern = "Noise_KK_25519_ChaChaPoly_BLAKE2s"
+local_private_key = "uO3qkGhfId7josk54IkksbbDn3iLysq77ty2bPOiFXA=" # example only, generate your own
+remote_public_key = "sKDWEizIaVtZb+6VVcrab5KRgFuTbOnMJgnNSj/e4TM=" # example only, generate your own
+
+[server.services.caddy-http]
+bind_addr = "0.0.0.0:80"
+
+[server.services.caddy-https]
+bind_addr = "0.0.0.0:443"

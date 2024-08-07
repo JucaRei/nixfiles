@@ -9,19 +9,22 @@
     # You can access packages and modules from different nixpkgs revs at the same time.
     # See 'unstable-packages' overlay in 'overlays/default.nix'.
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    chaotic.inputs.chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    chaotic = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
+    };
 
     catppuccin.url = "github:catppuccin/nix";
 
-    attic.url = "github:zhaofengli/attic";
-    attic.inputs.nixpkgs.follows = "nixpkgs"; # 23.05
+    attic = {
+      url = "github:zhaofengli/attic";
+      inputs.nixpkgs.follows = "nixpkgs"; # 23.05
+    };
 
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-
-    sddm-sugar-candy-nix.url = "gitlab:Zhaith-Izaliel/sddm-sugar-candy-nix";
-    sddm-sugar-candy-nix.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
     # cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
@@ -32,8 +35,6 @@
     # Art
     # nixos-artwork.url = "github:NixOS/nixos-artwork";
     # nixos-artwork.flake = false;
-
-    # flatpaks.url = "github:GermanBread/declarative-flatpak/stable";
 
     # pinix.url = "github:remi-dupre/pinix";
     # pinix.inputs.nixpkgs.follows = "nixpkgs";
@@ -52,35 +53,53 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # home-manager.url = "github:nix-community/home-manager/release-23.11";
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    home-manager-unstable.url = "github:nix-community/home-manager/master";
-    home-manager-unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    home-manager-unstable = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     # nix-software-center.url = "github:vlinkz/nix-software-center";
     # nix-software-center.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-formatter-pack.url = "github:Gerschtli/nix-formatter-pack";
-    nix-formatter-pack.inputs.nixpkgs.follows = "nixpkgs";
+    nix-formatter-pack = {
+      url = "github:Gerschtli/nix-formatter-pack";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    proxmox-nixos = {
+      url = "github:SaumonNet/proxmox-nixos";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     ################
     ### FlakeHub ###
     ################
 
-    nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
-    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
+    nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
 
-    vscode-server.url = "github:nix-community/nixos-vscode-server/hm-module-import";
-    # vscode-server.url = "github:nix-community/nixos-vscode-server";
-    vscode-server.inputs.nixpkgs.follows = "nixpkgs";
+    nix-snapd = {
+      url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server/hm-module-import";
+      # url = "github:nix-community/nixos-vscode-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixgl = {
       url = "github:nix-community/nixGL";
@@ -93,18 +112,24 @@
     };
 
     # Neovim
-    nixvim.url = "github:nix-community/nixvim";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Gaming tweaks
     nix-gaming.url = "github:fufexan/nix-gaming";
 
-    nixd.url = "github:nix-community/nixd";
-    nixd.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    nixd = {
+      url = "github:nix-community/nixd";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # Use nix-index without having to generate the database locally
-    nix-index-database.url = "github:Mic92/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # darwin = {
     #   url = "github:lnl7/nix-darwin/master"; # MacOS Package Management
@@ -129,18 +154,19 @@
 
     comma.url = "github:nix-community/comma/v1.4.1";
 
-    wrapper-manager.url = "github:viperML/wrapper-manager";
-    wrapper-manager.inputs.nixpkgs.follows = "nixpkgs";
+    wrapper-manager = {
+      url = "github:viperML/wrapper-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    nh.url = "github:viperML/nh/v3.5.10";
-    nh.inputs.nixpkgs.follows = "nixpkgs";
+    nh = {
+      url = "github:viperML/nh/v3.5.10";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # More up to date auto-cpufreq
     # auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
     # auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs";
-
-    # ttf-to-tty.url = "github:Sigmanificient/ttf_to_tty";
-    # ttf-to-tty.inputs.nixpkgs.follows = "nixpkgs";
 
     #doom-emacs = {
     #  # Nix-community Doom Emacs
@@ -149,21 +175,34 @@
     #  inputs.emacs-overlay.follows = "emacs-overlay";
     #};
 
-    nixos-needtoreboot.url = "github:thefossguy/nixos-needsreboot";
-    nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-needtoreboot = {
+      url = "github:thefossguy/nixos-needsreboot";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Hyprland
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     hyprland-contrib.url = "github:hyprwm/contrib";
-    hyprland.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    hyprland-plugins.url = "github:hyprwm/hyprland-plugins";
-    hyprland-plugins.inputs.hyprland.follows = "hyprland";
-    hyprpicker.url = "github:hyprwm/hyprpicker";
-    hyprpicker.inputs.nixpkgs.follows = "nixpkgs";
-    split-monitor-workspaces.url = "github:Duckonaut/split-monitor-workspaces";
-    split-monitor-workspaces.inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
-    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
-    nixpkgs-wayland.inputs.nixpkgs.follows = "nixpkgs";
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+    hyprpicker = {
+      url = "github:hyprwm/hyprpicker";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    split-monitor-workspaces = {
+      url = "github:Duckonaut/split-monitor-workspaces";
+      inputs.hyprland.follows = "hyprland"; # <- make sure this line is present for the plugin to work as intended
+    };
+
+    nixpkgs-wayland = {
+      url = "github:nix-community/nixpkgs-wayland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # matugen.url = "github:InioX/matugen";
     # matugen.inputs.nixpkgs.follows = "nixpkgs";
@@ -212,7 +251,7 @@
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       # stateVersion = "23.11"; # default
-      helper = import ./lib { inherit inputs outputs stateVersion lib pkgs; };
+      helper = import ./lib { inherit inputs outputs stateVersion lib pkgs config; };
 
     in
     {
@@ -262,35 +301,32 @@
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
           # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
-          "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; };
-          "juca@zion" = helper.mkHome { hostname = "zion"; desktop = "bspwm"; };
-          "juca@air" = helper.mkHome { hostname = "air"; desktop = "bspwm"; stateVersion = "24.05"; };
-          "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; };
-          "juca@oldarch" = helper.mkHome { hostname = "oldarch"; desktop = "xfce"; stateVersion = "23.05"; };
-          #"juca@nitro" = helper.mkHome { hostname = "nitro"; };
-          "juca@nitrovoid" = helper.mkHome { hostname = "nitrovoid"; };
-          "juca@soyo" = helper.mkHome { hostname = "soyo"; stateVersion = "24.05"; };
-          "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "mate"; };
-          "juca@rocinante-headless" = helper.mkHome { hostname = "rocinante"; desktop = null; };
-          "juca@vortex" = helper.mkHome { hostname = "vortex"; };
+          "juca@nitro" = helper.makeHomeManager { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@air" = helper.makeHomeManager { hostname = "air"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@anubis" = helper.makeHomeManager { hostname = "anubis"; desktop = "bspwm"; };
+          "juca@oldarch" = helper.makeHomeManager { hostname = "oldarch"; desktop = "xfce"; stateVersion = "23.05"; };
+          #"juca@nitro" = helper.makeHomeManager { hostname = "nitro"; };
+          "juca@nitrovoid" = helper.makeHomeManager { hostname = "nitrovoid"; };
+          "juca@soyo" = helper.makeHomeManager { hostname = "soyo"; stateVersion = "24.05"; };
+          "juca@rocinante" = helper.makeHomeManager { hostname = "rocinante"; desktop = "mate"; };
+          "juca@rocinante-headless" = helper.makeHomeManager { hostname = "rocinante"; desktop = null; };
+          "juca@vortex" = helper.makeHomeManager { hostname = "vortex"; };
           # Testing
-          "juca@hyperv" = helper.mkHome { hostname = "hyperv"; desktop = "mate"; };
-          "juca@voidvm" = helper.mkHome { hostname = "voidvm"; };
-          "juca@debianvm" = helper.mkHome { hostname = "debianvm"; desktop = "bspwm"; };
-          "juca@vm-headless" = helper.mkHome { hostname = "vm"; desktop = null; };
+          "juca@hyperv" = helper.makeHomeManager { hostname = "hyperv"; desktop = "mate"; };
+          "juca@voidvm" = helper.makeHomeManager { hostname = "voidvm"; };
+          "juca@debianvm" = helper.makeHomeManager { hostname = "debianvm"; desktop = "bspwm"; };
           # Wsl
-          "juca@nitrowin" = helper.mkHome { hostname = "nitrowin"; stateVersion = "23.11"; };
+          "juca@nitrowin" = helper.makeHomeManager { hostname = "nitrowin"; stateVersion = "23.11"; };
           # Raspberry 3
-          "juca@DietPi" = helper.mkHome { hostname = "DietPi"; desktop = null; platform = "aarch64-linux"; };
+          "juca@DietPi" = helper.makeHomeManager { hostname = "DietPi"; desktop = null; platform = "aarch64-linux"; };
           # VMs
-          "juca@minimech" = helper.mkHome { hostname = "minimech"; desktop = "bspwm"; };
-          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "bspwm"; };
-          "juca@lima-builder" = helper.mkHome { hostname = "lima-builder"; };
-          "juca@lima-default" = helper.mkHome { hostname = "lima-default"; };
-          "juca@vm" = helper.mkHome { hostname = "vm"; desktop = "mate"; };
+          "juca@scrubber" = helper.makeHomeManager { hostname = "scrubber"; desktop = "bspwm"; };
+          "juca@lima-builder" = helper.makeHomeManager { hostname = "lima-builder"; };
+          "juca@lima-default" = helper.makeHomeManager { hostname = "lima-default"; };
+          "juca@vm" = helper.makeHomeManager { hostname = "vm"; desktop = "mate"; };
           # Iso
-          # "juca@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
-          # "juca@iso-desktop" = helper.mkHome { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
+          # "juca@iso-console" = helper.makeHomeManager { hostname = "iso-console"; username = "nixos"; };
+          # "juca@iso-desktop" = helper.makeHomeManager { hostname = "iso-desktop"; username = "nixos"; desktop = "pantheon"; };
         };
       # hostids are generated using `mkhostid` alias
       nixosConfigurations = {
@@ -302,27 +338,27 @@
         # nom build .#nixosConfigurations.nitro.config.system.build.toplevel
 
         # ISO
-        iso-console = helper.mkHost { hostname = "iso-console"; username = "nixos"; };
-        iso-gnome = helper.mkHost { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; hostid = "f4173273"; };
-        iso-mate = helper.mkHost { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        iso-pantheon = helper.mkHost { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+        iso-console = helper.makeNixOS { hostname = "iso-console"; username = "nixos"; };
+        iso-gnome = helper.makeNixOS { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; hostid = "f4173273"; };
+        iso-mate = helper.makeNixOS { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        iso-pantheon = helper.makeNixOS { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles/nixfiles
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = helper.mkHost { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
-        air = helper.mkHost { hostname = "air"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
-        soyo = helper.mkHost { hostname = "soyo"; stateVersion = "24.05"; desktop = "kodi"; };
-        rocinante = helper.mkHost { hostname = "rocinante"; desktop = "mate"; hostid = "f4173273"; };
-        rocinante-headless = helper.mkHost { hostname = "rocinante"; hostid = "836715d7"; };
+        nitro = helper.makeNixOS { hostname = "nitro"; desktop = "pantheon"; stateVersion = "24.05"; }; # desktop = "hyprland";
+        air = helper.makeNixOS { hostname = "air"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
+        soyo = helper.makeNixOS { hostname = "soyo"; stateVersion = "24.05"; desktop = "kodi"; };
+        rocinante = helper.makeNixOS { hostname = "rocinante"; desktop = "mate"; hostid = "f4173273"; };
+        rocinante-headless = helper.makeNixOS { hostname = "rocinante"; hostid = "836715d7"; };
         # Virtual Machines
-        vm = helper.mkHost { hostname = "vm"; desktop = "mate"; };
-        scrubber = helper.mkHost { hostname = "scrubber"; desktop = "mate"; };
-        hyperv = helper.mkHost { hostname = "hyperv"; desktop = "mate"; hostid = "6f2efa51"; };
-        vm-headless = helper.mkHost { hostname = "vm"; hostid = "04feccb5"; };
+        vm = helper.makeNixOS { hostname = "vm"; desktop = "mate"; };
+        scrubber = helper.makeNixOS { hostname = "scrubber"; desktop = "mate"; };
+        hyperv = helper.makeNixOS { hostname = "hyperv"; desktop = "mate"; hostid = "6f2efa51"; };
+        proxmox = helper.makeNixOS { hostname = "proxmox"; desktop = null; };
         # Raspberry
-        rasp3 = helper.mkHost { hostname = "rasp3"; hostid = "6f2efa55"; };
+        rasp3 = helper.makeNixOS { hostname = "rasp3"; hostid = "6f2efa55"; };
       };
     };
 }

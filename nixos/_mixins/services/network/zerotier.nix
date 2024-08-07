@@ -8,6 +8,6 @@
   };
   services.zerotierone = {
     enable = true;
-    joinNetworks = [ "e4da7455b2decfb5" ];
+    joinNetworks = [ "a0cbf4b62aa0391f" ];
   };
 }

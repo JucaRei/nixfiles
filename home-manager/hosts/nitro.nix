@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, nixGLWrap, ... }:
 with lib.hm.gvariant;
 let
   font-search = pkgs.writeShellScriptBin "font-search" ''
@@ -59,7 +59,7 @@ with lib;
         # spotdl
         # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
-        # (wrapProgram vlc)
+        # (nixGLWrap pkgs vlc)
         # cloneit
         # deezer-gui
         # fantezy
@@ -77,6 +77,12 @@ with lib;
         # gparted
         # tmux
       ];
+
+      sessionVariables = {
+        # GBM_BACKEND = "nvidia-drm";
+        # GBM_BACKEND = "nvidia";
+        # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      };
 
       keyboard = lib.mkForce {
         # layout = "br,us";

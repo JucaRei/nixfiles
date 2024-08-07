@@ -25,7 +25,7 @@ in
           # canTouchEfiVariables = if hostname == "air" then false else true;
           canTouchEfiVariables = true;
           # efiSysMountPoint = mkDefault "/boot/efi";
-          # efiSysMountPoint = "/boot";
+          efiSysMountPoint = "/boot";
         };
         grub = {
           useOSProber = isNitro;

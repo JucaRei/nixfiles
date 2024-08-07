@@ -53,7 +53,7 @@ in
     ../_mixins/apps/text-editor/vscode/vscode.nix
     ../_mixins/services/podman.nix
     ../_mixins/services/polkit-agent.nix
-    ../_mixins/non-nixos
+    # ../_mixins/non-nixos
     # ../_mixins/apps/tools/zathura.nix
     # ../_mixins/desktop/bspwm/themes/default
     # ../_mixins/apps/browser/opera.nix
