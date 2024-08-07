@@ -48,9 +48,10 @@ in
               };
             };
             root = {
-              size = "100%";
+              name = "NixOS";
+              # size = "100%";
               # start = "1024M";
-              # end = "-16GiB";
+              end = "-16GiB";
               content = {
                 type = "btrfs";
                 extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
@@ -80,23 +81,25 @@ in
                     mountpoint = "/.snapshots";
                     mountOptions = defaultBtrfsOpts;
                   };
-                  "@swap" = {
-                    mountpoint = "/swap";
-                    swap.swapfile.size = "16G";
-                  };
+                  # "@swap" = {
+                  #   mountpoint = "/swap";
+                  #   swap.swapfile.size = "16G";
+                  # };
                   # mountpoint = "/partition-root";
                 };
               };
-              # swap = {
-              #   # start = "-16GiB";
-              #   # end = "100%";
-              #   size = "100%";
-              #   # part-type = "primary";
-              #   content = {
-              #     type = "swap";
-              #     randomEncryption = true;
-              #   };
-              # };
+            };
+            swap = {
+              name = "SWAP";
+              # start = "-16GiB";
+              # end = "100%";
+              size = "100%";
+              # part-type = "primary";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+                resumeDevice = true; # resume from hiberation from this device
+              };
             };
           };
         };

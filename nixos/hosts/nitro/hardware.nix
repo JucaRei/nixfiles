@@ -147,17 +147,18 @@ in
       compressorArgs = [ "-19" "-T0" ];
       verbose = lib.mkForce false;
     };
-    loader = {
-      efi = {
-        efiSysMountPoint = lib.mkForce "/boot/efi";
-      };
-      grub = {
-        theme = pkgs.catppuccin-grub;
-        devices = [ "nodev" ];
-        efiSupport = true;
-        useOSProber = true;
-      };
-    };
+    # loader = {
+    #   efi = {
+    #     # efiSysMountPoint = lib.mkForce "/boot/efi";
+    #     efiSysMountPoint = lib.mkForce "/boot";
+    #   };
+      # grub = {
+      #   theme = pkgs.catppuccin-grub;
+      #   devices = [ "nodev" ];
+      #   efiSupport = true;
+      #   useOSProber = true;
+      # };
+    # };
   };
 
   # enable secondary monitors at boot time

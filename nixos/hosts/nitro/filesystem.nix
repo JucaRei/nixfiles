@@ -44,17 +44,17 @@ in
 
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-label/nixos";
+      device = "/dev/disk/by-partlabel/disk-nvme0-NixOS";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
       options = [
-        "subvol=@rootfs"
+        "subvol=@"
         "x-gvfs-hide" # hide from filemanager
       ] ++ BTRFS_OPTS;
     };
 
     "/home" = {
-      device = "/dev/disk/by-label/nixos";
+      device = "/dev/disk/by-partlabel/disk-nvme0-NixOS";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
       options = [
@@ -63,7 +63,7 @@ in
     };
 
     "/.snapshots" = {
-      device = "/dev/disk/by-label/nixos";
+      device = "/dev/disk/by-partlabel/disk-nvme0-NixOS";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
       options = [
@@ -72,7 +72,7 @@ in
     };
 
     "/var" = {
-      device = "/dev/disk/by-label/nixos";
+      device = "/dev/disk/by-partlabel/disk-nvme0-NixOS";
       fsType = "btrfs";
       options = [
         "subvol=@var"
@@ -81,7 +81,7 @@ in
 
 
     "/nix" = {
-      device = "/dev/disk/by-label/nixos";
+      device = "/dev/disk/by-partlabel/disk-nvme0-NixOS";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
       fsType = "btrfs";
       options = [
@@ -102,6 +102,12 @@ in
       ];
     };
 
+    # "swap" = {
+    #   device = "/dev/disk/by-partlabel/disk-nvme0-SWAP";
+    #   fstype = "btrfs";
+    #   # options = [ "subvol=@swap" ];
+    # };
+
     # "/boot/efi" = {
     #   device = "/dev/disk/by-label/EFI";
     #   # device = "/dev/disk/by-uuid/076D-BEC9";
@@ -119,7 +125,8 @@ in
   swapDevices = [
     {
       # device = "/var/swap/swapfile";
-      device = "/dev/disk/by-label/swap";
+      # device = "/dev/disk/by-label/swap";
+      device = "/dev/disk/by-partlabel/disk-nvme0-SWAP";
       # size = "20G";
     }
   ];

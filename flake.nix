@@ -347,7 +347,7 @@
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = helper.makeNixOS { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; }; # desktop = "hyprland";
+        nitro = helper.makeNixOS { hostname = "nitro"; desktop = "pantheon"; stateVersion = "24.05"; }; # desktop = "hyprland";
         air = helper.makeNixOS { hostname = "air"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
         soyo = helper.makeNixOS { hostname = "soyo"; stateVersion = "24.05"; desktop = "kodi"; };
         rocinante = helper.makeNixOS { hostname = "rocinante"; desktop = "mate"; hostid = "f4173273"; };

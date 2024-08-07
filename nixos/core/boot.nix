@@ -13,9 +13,9 @@ with lib;
       };
     };
     loader = mkOverride 1500 {
-      efi = mkDefault {
+      efi =  {
         # canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot";
+        efiSysMountPoint = mkDefault "/boot";
       };
       systemd-boot = mkOverride 1500 {
         # enable = lib.mkDefault true;
