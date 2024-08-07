@@ -150,7 +150,7 @@ in
     loader = {
       efi = {
         #     # efiSysMountPoint = lib.mkForce "/boot/efi";
-        #     efiSysMountPoint = lib.mkForce "/boot";
+        efiSysMountPoint = lib.mkForce "/boot";
         canTouchEfiVariables = true;
       };
       # systemd-boot.extraEntries."ubuntu.conf" = ''
@@ -158,10 +158,22 @@ in
       #   efi   /efi/ubuntu/shimx64.efi
       # '';
       grub = lib.mkForce {
-        theme = pkgs.catppuccin-grub;
-        devices = [ "nodev" ];
-        efiSupport = true;
-        useOSProber = true;
+        enable = lib.mkForce true;
+        theme = lib.mkForce pkgs.catppuccin-grub;
+        devices = lib.mkForce [ "nodev" ];
+        efiSupport = lib.mkForce true;
+        useOSProber = lib.mkForce true;
+        forceInstall = true;
+        fsIdentifier = "provided";
+        configurationName = "Nixos Configuration";
+        extraEntries = ''
+          menuentry "Reboot" {
+            reboot
+          }
+          menuentry "Poweroff" {
+            halt
+          }
+        '';
       };
     };
   };
