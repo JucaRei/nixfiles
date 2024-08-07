@@ -12,16 +12,16 @@ with lib;
         enable = true;
       };
     };
-    loader = mkOverride 1500 {
+    loader = {
       efi =  {
-        # canTouchEfiVariables = true;
-        efiSysMountPoint = mkDefault "/boot";
+        canTouchEfiVariables = true;
+      #   efiSysMountPoint =  "/boot";
       };
-      systemd-boot = mkOverride 1500 {
-        enable = mkDefault true;
+      systemd-boot = {
+        enable = true;
         configurationLimit = 10;
         consoleMode = "max";
-        memtest86.enable = true;
+        # memtest86.enable = true;
       };
     };
     # timeout = 5;

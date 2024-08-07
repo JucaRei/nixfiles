@@ -147,18 +147,23 @@ in
       compressorArgs = [ "-19" "-T0" ];
       verbose = lib.mkForce false;
     };
-    # loader = {
-    #   efi = {
-    #     # efiSysMountPoint = lib.mkForce "/boot/efi";
-    #     efiSysMountPoint = lib.mkForce "/boot";
-    #   };
+    loader = {
+      efi = {
+        #     # efiSysMountPoint = lib.mkForce "/boot/efi";
+        #     efiSysMountPoint = lib.mkForce "/boot";
+        canTouchEfiVariables = true;
+      };
+      systemd-boot.extraEntries."ubuntu.conf" = ''
+        title Ubuntu 23.04
+        efi   /efi/ubuntu/shimx64.efi
+      '';
       # grub = {
       #   theme = pkgs.catppuccin-grub;
       #   devices = [ "nodev" ];
       #   efiSupport = true;
       #   useOSProber = true;
       # };
-    # };
+    };
   };
 
   # enable secondary monitors at boot time
