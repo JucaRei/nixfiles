@@ -27,10 +27,11 @@
         os-prober
 
         firefox-devedition
+        brave
         vscode-fhs
         nil
         nixpkgs-fmt
-        duf 
+        duf
         htop
       ];
       sessionVariables = { };

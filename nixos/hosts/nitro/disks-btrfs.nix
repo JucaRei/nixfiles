@@ -68,6 +68,8 @@ in
                     mountpoint = "/home";
                     mountOptions = defaultBtrfsOpts;
                   };
+                  # Sub(sub)volume doesn't need a mountpoint as its parent is mounted
+                  # "@home/user" = { };
                   # Parent is not mounted so the mountpoint must be set
                   "@nix" = {
                     mountpoint = "/nix";
@@ -81,9 +83,21 @@ in
                     mountpoint = "/.snapshots";
                     mountOptions = defaultBtrfsOpts;
                   };
+                  # This subvolume will be created but not mounted
+                  # "/test" = { };
                   # "@swap" = {
-                  #   mountpoint = "/swap";
-                  #   swap.swapfile.size = "16G";
+                  #   # mountpoint = "/swap";
+                  #   swap = {
+                  #     swapfile = {
+                  #       size = "8G";
+                  #       path = "rel-path";
+                  #     };
+                  #     swapfile2 = {
+                  #       size = "8G";
+                  #       path = "rel-path";
+                  #     };
+
+                  #   };
                   # };
                   # mountpoint = "/partition-root";
                 };
