@@ -14,13 +14,13 @@ in
 
   users = {
     mutableUsers = true;
-    groups.${username} = {
-      members = [ "${username}" ];
-    };
-    extraUsers.${username} = {
-      name = "${username}";
-      group = "${username}";
-    };
+    # groups.${username} = {
+    #   members = [ "${username}" ];
+    # };
+    # extraUsers.${username} = {
+    #   name = "${username}";
+    #   group = "${username}";
+    # };
     users.${username} = {
       extraGroups = [
         "audio"

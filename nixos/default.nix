@@ -33,8 +33,8 @@ in
     # registry = mapAttrs (_: value: { flake = value; }) inputs;
     # Opinionated: make flake registry and nix path match flake inputs
 
-    # registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-    # nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+    registry = mapAttrs (_: value: { flake = value; }) inputs;
+    nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
 
     ### Add nixpkgs input to NIX_PATH
     ### This lets nix2 commands still use <nixpkgs>
