@@ -12,18 +12,18 @@ with lib;
         enable = true;
       };
     };
-    loader = {
-      efi =  {
-        canTouchEfiVariables = true;
-      #   efiSysMountPoint =  "/boot";
-      };
-      systemd-boot = {
-        enable = true;
-        configurationLimit = 10;
-        consoleMode = "max";
-        # memtest86.enable = true;
-      };
-    };
+    # loader = {
+    #   efi =  {
+    #     canTouchEfiVariables = true;
+    #   #   efiSysMountPoint =  "/boot";
+    #   };
+    #   systemd-boot = {
+    #     enable = true;
+    #     configurationLimit = 10;
+    #     consoleMode = "max";
+    #     # memtest86.enable = true;
+    #   };
+    # };
     # timeout = 5;
     consoleLogLevel = 3; # Default is 4;
     tmp = {
