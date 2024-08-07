@@ -13,11 +13,7 @@ in
   ####################
   ### Nix Settings ###
   ####################
-  nix =
-    let
-      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-    in
-    {
+  nix =  {
       # give nix-daemon the lowest priority
       daemonIOSchedClass = "idle"; # Reduce disk usage
       # Leave nix builds as a background task
@@ -37,8 +33,8 @@ in
       # registry = mapAttrs (_: value: { flake = value; }) inputs;
       # Opinionated: make flake registry and nix path match flake inputs
 
-      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+      # registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
+      # nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
 
       ### Add nixpkgs input to NIX_PATH
       ### This lets nix2 commands still use <nixpkgs>
@@ -50,16 +46,9 @@ in
       };
       package = mkIf (isInstall) pkgs.unstable.nix;
       settings = {
-        # Tell nix to use the xdg spec for base directories
-        # while transitioning, any state must be carried over
-        # manually, as Nix won't do it for us.
-        use-xdg-base-directories = true;
-
         # Always build inside sandboxed environments
         # sandbox = true;
-        sandbox-fallback = false;
         sandbox = "relaxed"; # true
-        # extra-sandbox-paths = [ "/opt" ];
 
         # extra-sandbox-paths = [ ];
         auto-optimise-store = true;
@@ -72,7 +61,7 @@ in
           "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
           "cgroups" # allow nix to execute builds inside cgroups
         ];
-        allowed-users = [ "root" "${username}" ];
+        allowed-users = [ "root" "@wheel" ];
         trusted-users = [ "root" "${username}" ];
         builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
         ### Avoid unwanted garbage collection when using nix-direnv
@@ -142,12 +131,12 @@ in
       # allowBroken = true;
       allowUnfree = true; # Disable if you don't want unfree packages
       joypixels.acceptLicense = true; # Accept the joypixels license
-      allowUnsupportedSystem = true;
+      # allowUnsupportedSystem = true;
       permittedInsecurePackages = [
         "python3.11-youtube-dl-2021.12.17"
       ];
 
-      allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
+      # allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
     };
   };
 }
