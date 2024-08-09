@@ -3,6 +3,7 @@ with lib;
 let
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
   variables = import ./hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
+  inherit (pkgs.stdenv) isLinux;
 in
 {
   imports = [
@@ -34,19 +35,12 @@ in
       ### This will add each flake input as a registry
       ### To make nix3 commands consistent with your flake
 
-      # registry = mapAttrs (_: value: { flake = value; }) inputs;
+      registry = mapAttrs (_: value: { flake = value; }) inputs;
       # Opinionated: make flake registry and nix path match flake inputs
-
-      # Opinionated: disable channels
-      channel.enable = false;
-
-      # Opinionated: make flake registry and nix path match flake inputs
-      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
 
       ### Add nixpkgs input to NIX_PATH
       ### This lets nix2 commands still use <nixpkgs>
-      # nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
+      nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
 
       optimise = {
         automatic = isLinux;
