@@ -15,9 +15,9 @@ in
   ### Nix Settings ###
   ####################
   nix =
-    let
-      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-    in
+    # let
+    #   flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+    # in
     {
       # give nix-daemon the lowest priority
       daemonIOSchedClass = "idle"; # Reduce disk usage
@@ -35,12 +35,12 @@ in
       ### This will add each flake input as a registry
       ### To make nix3 commands consistent with your flake
 
-      registry = mapAttrs (_: value: { flake = value; }) inputs;
+      # registry = mapAttrs (_: value: { flake = value; }) inputs;
       # Opinionated: make flake registry and nix path match flake inputs
 
       ### Add nixpkgs input to NIX_PATH
       ### This lets nix2 commands still use <nixpkgs>
-      nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
+      # nixPath = [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
 
       optimise = {
         automatic = isLinux;
@@ -57,33 +57,33 @@ in
         experimental-features = [
           "nix-command"
           "flakes"
-          "repl-flake" # repl to inspect a flake
-          "recursive-nix" # let nix invoke itself
-          "ca-derivations" # content addressed nix
-          "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
-          "cgroups" # allow nix to execute builds inside cgroups
+          # "repl-flake" # repl to inspect a flake
+          # "recursive-nix" # let nix invoke itself
+          # "ca-derivations" # content addressed nix
+          # "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
+          # "cgroups" # allow nix to execute builds inside cgroups
         ];
         # Opinionated: disable global registry
-        flake-registry = "";
+        # flake-registry = "";
         # Workaround for https://github.com/NixOS/nix/issues/9574
-        nix-path = config.nix.nixPath;
+        # nix-path = config.nix.nixPath;
 
-        allowed-users = [ "root" "${username}" ];
-        trusted-users = [ "root" "${username}" ];
-        builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
+        # allowed-users = [ "root" "${username}" ];
+        # trusted-users = [ "root" "${username}" ];
+        # builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
         ### Avoid unwanted garbage collection when using nix-direnv
         keep-outputs = true;
         keep-derivations = true;
         keep-going = true;
         warn-dirty = false;
-        tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
-        use-cgroups = true; # execute builds inside cgroups
+        # tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
+        # use-cgroups = true; # execute builds inside cgroups
         system-features = [
           ## Allows building v3/v4 packages
           "gccarch-x86-64-v3"
           "gccarch-x86-64-v4"
           "kvm"
-          "recursive-nix"
+          # "recursive-nix"
           "big-parallel"
           "nixos-test"
         ];
@@ -144,7 +144,7 @@ in
         "python3.11-youtube-dl-2021.12.17"
       ];
 
-      # allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
+      allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
     };
   };
 }

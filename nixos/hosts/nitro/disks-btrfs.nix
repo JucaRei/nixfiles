@@ -111,8 +111,8 @@ in
               # part-type = "primary";
               content = {
                 type = "swap";
-                randomEncryption = true;
-                resumeDevice = true; # resume from hiberation from this device
+                # randomEncryption = true;
+                # resumeDevice = true; # resume from hiberation from this device
               };
             };
           };
