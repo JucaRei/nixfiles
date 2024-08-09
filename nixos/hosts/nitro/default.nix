@@ -33,6 +33,8 @@
         nixpkgs-fmt
         duf
         htop
+        neofetch
+        spotube
       ];
       sessionVariables = { };
     };

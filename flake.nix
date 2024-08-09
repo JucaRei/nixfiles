@@ -26,8 +26,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
-    # cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
+    cachix.url = "github:cachix/cachix";
+    cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
+    cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
 
     # agenix.url = "github:ryantm/agenix";
     # agenix.inputs.nixpkgs.follows = "nixpkgs";

@@ -1,27 +1,14 @@
 { inputs, outputs, stateVersion, lib, pkgs, config, ... }:
-let
-  nixGLWrap = pkgs: pkg:
-    let
-      bins = "${pkg}/bin";
-    in
-    pkgs.buildEnv {
-      name = "nixGL-${pkg.name}";
-      paths =
-        [ pkg ] ++
-        (map
-          (bin: pkgs.hiPrio (
-            pkgs.writeShellScriptBin bin ''
-              exec -a "$0" "${pkgs.nixgl.auto.nixGLDefault}/bin/nixGL" "${bins}/${bin}" "$@"
-            ''
-          ))
-          (builtins.attrNames (builtins.readDir bins)));
-    };
-in
 {
   # Helper function for generating home-manager configs
   makeHomeManager =
     ### TODO - add displays
-    { hostname, username ? "juca", desktop ? null, stateVersion ? "23.11", platform ? "x86_64-linux" }:
+    { hostname
+    , username ? "juca"
+    , desktop ? null
+    , stateVersion ? "23.11"
+    , platform ? "x86_64-linux"
+    }:
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
@@ -57,7 +44,14 @@ in
 
   # Helper function for generating host configs
   makeNixOS =
-    { hostname, username ? "juca", desktop ? null, hostid ? null, platform ? "x86_64-linux", stateVersion ? "23.11", }:
+    { hostname
+    , username ? "juca"
+    , desktop ? null
+    , hostid ? null
+    , platform ? "x86_64-linux"
+    , stateVersion ? "23.11"
+    ,
+    }:
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
