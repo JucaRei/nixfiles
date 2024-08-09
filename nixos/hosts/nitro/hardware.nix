@@ -18,9 +18,9 @@ in
     boot = {
       blacklistedKernelModules = [ "nouveau" ]; # blacklist nouveau module so that it does not conflict with nvidia drm stuff
       ### Default Kernel
-      # kernelPackages = pkgs.linuxPackages_xanmod_latest;
+      kernelPackages = pkgs.linuxPackages_xanmod_latest;
       # kernelPackages = pkgs.linuxPackages_zen;
-      kernelPackages = pkgs.linuxPackages_lqx;
+      # kernelPackages = pkgs.linuxPackages_lqx;
       kernelModules = [
         "nosgx"
         "kvm-intel"
