@@ -21,6 +21,15 @@
         inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation;
       };
       modules = [
+        ../home-manager
+
+        inputs.declarative-flatpak.homeManagerModules.default
+        inputs.nur.hmModules.nur
+        inputs.vscode-server.homeModules.default
+        inputs.nix-index-database.hmModules.nix-index
+        inputs.catppuccin.homeManagerModules.catppuccin
+        # inputs.vscode-server.nixosModules.home
+
         ({ config, pkgs, lib, ... }: {
           # Shared Between all users
           services.vscode-server = {
@@ -32,13 +41,7 @@
             nurl # Nix URL fetcher
           ];
         })
-        inputs.declarative-flatpak.homeManagerModules.default
-        inputs.nur.hmModules.nur
-        inputs.vscode-server.homeModules.default
-        inputs.nix-index-database.hmModules.nix-index
-        inputs.catppuccin.homeManagerModules.catppuccin
-        # inputs.vscode-server.nixosModules.home
-        ../home-manager
+
       ];
     };
 
@@ -91,6 +94,7 @@
           inputs.nix-index-database.nixosModules.nix-index
           inputs.nix-snapd.nixosModules.default
           inputs.sops-nix.nixosModules.sops
+
           ({ pkgs, lib, inputs, config, ... }: {
             # Shared Between all users
             # services.proxmox-ve.enable = true;
@@ -98,8 +102,8 @@
               inputs.proxmox-nixos.overlays.${platform}
             ];
           })
-        ]
-        ++ inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ];
+
+        ] ++ inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ];
     };
 
   systems = inputs.nixpkgs.lib.genAttrs [

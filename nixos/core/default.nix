@@ -58,7 +58,7 @@ in
 
   services = {
     # snap daemon
-    # snap.enable = notVM && isWorkstation;
+    snap.enable = notVM && isISO;
 
     # Local services
     avahi = {
@@ -87,7 +87,7 @@ in
 
     # larger runtime directory size to not run out of ram while building
     # https://discourse.nixos.org/t/run-usr-id-is-too-small/4842
-    logind.extraConfig = mkIf (isWorkstation) "RuntimeDirectorySize=3G";
+    logind.extraConfig = mkIf (isWorkstation) "RuntimeDirectorySize=2G";
   };
 
   environment = {
@@ -122,9 +122,9 @@ in
     shellAliases = {
       system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
       sxorg = "export DISPLAY=:0.0";
-      drivers = "lspci -v | grep -B8 -v 'Kernel modules: [a-z0-9]+'";
-      r = "rsync -ra --info=progress2";
-      fd = "fd --hidden --exclude .git";
+      drivers = "${pkgs.pciutils}/bin/lspci -v | grep -B8 -v 'Kernel modules: [a-z0-9]+'";
+      r = "${pkgs.rsync}/bin/rsync -ra --info=progress2";
+      fd = "${pkgs.fd}/bin/fd --hidden --exclude .git";
       search = "nix search nixpkgs";
     };
 

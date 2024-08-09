@@ -315,15 +315,15 @@ in
     environment = {
       sessionVariables = {
         # LIBVA_DRIVER_NAME = "nvidia";
-        LIBVA_DRIVER_NAME = "nvidia-drm";
+        # LIBVA_DRIVER_NAME = "nvidia-drm";
         # WLR_NO_HARDWARE_CURSORS = "1";
 
         # May cause Firefox crashes
-        GBM_BACKEND = "nvidia-drm";
+        # GBM_BACKEND = "nvidia-drm";
 
         # If you face problems with Discord windows not displaying or screen
         # sharing not working in Zoom, remove or comment this:
-        __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+        # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
       };
     };
     services = {

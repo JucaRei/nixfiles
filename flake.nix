@@ -27,15 +27,13 @@
     };
 
     cachix.url = "github:cachix/cachix";
-    cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
-    cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
+    cachix-deploy-flake = {
+      url = "github:cachix/cachix-deploy-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # agenix.url = "github:ryantm/agenix";
     # agenix.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Art
-    # nixos-artwork.url = "github:NixOS/nixos-artwork";
-    # nixos-artwork.flake = false;
 
     # pinix.url = "github:remi-dupre/pinix";
     # pinix.inputs.nixpkgs.follows = "nixpkgs";
