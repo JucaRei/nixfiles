@@ -153,7 +153,7 @@ in
               };
               "@nix" = {
                 mountpoint = "/nix";
-                mountOptions = [ "subvol=nix" ] defaultBtrfsOpts;
+                mountOptions = [ "subvol=nix" ] + defaultBtrfsOpts;
               };
             };
           };
