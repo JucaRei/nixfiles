@@ -2,7 +2,8 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks-btrfs.nix { })
-    (import ./bcachefs.nix { })
+    # (import ./bcachefs.nix { })
+    (import ./impermanance-btrfs.nix { })
     ../../_mixins/hardware/boot/plymouth.nix
     ../../_mixins/virtualization/docker.nix
     ../../_mixins/services/tools/apx.nix
