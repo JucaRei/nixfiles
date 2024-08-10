@@ -109,7 +109,7 @@ in
             #   };
             # };
             root = {
-              name = "nixroot";
+              name = "root";
               size = "-4GiB";
               content = {
                 type = "lvm_pv";
