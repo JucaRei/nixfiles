@@ -108,24 +108,24 @@ in
             #     };
             #   };
             # };
-            root = {
-              name = "root";
-              size = "-4GiB";
-              content = {
-                type = "lvm_pv";
-                vg = "root_vg";
-              };
-            };
             swap = {
               name = "SWAP";
               # start = "-16GiB";
               # end = "100%";
-              size = "100%";
+              size = "4GiB";
               # part-type = "primary";
               content = {
                 type = "swap";
                 # randomEncryption = true;
                 # resumeDevice = true; # resume from hiberation from this device
+              };
+            };
+            root = {
+              name = "nixroot";
+              size = "100%";
+              content = {
+                type = "lvm_pv";
+                vg = "root_vg";
               };
             };
           };
