@@ -149,11 +149,11 @@ in
               };
               "@persist" = {
                 mountpoint = "/persist";
-                mountOptions = [ "subvol=persist" ] + defaultBtrfsOpts;
+                mountOptions = [ "subvol=persist" ] ++ defaultBtrfsOpts;
               };
               "@nix" = {
                 mountpoint = "/nix";
-                mountOptions = [ "subvol=nix" ] + defaultBtrfsOpts;
+                mountOptions = [ "subvol=nix" ] ++ defaultBtrfsOpts;
               };
             };
           };
