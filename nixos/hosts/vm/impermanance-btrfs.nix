@@ -133,10 +133,10 @@ in
       };
     };
     lvm_vg = {
-      nixroot_vg = {
+      root_vg = {
         type = "lvm_vg";
         lvs = {
-          nixroot = {
+          root = {
             size = "100%FREE";
             content = {
               type = "btrfs";
