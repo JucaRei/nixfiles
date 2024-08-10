@@ -33,6 +33,7 @@
         duf
         htop
         neofetch
+        unstable.mpv
         spotube
       ];
       sessionVariables = { };

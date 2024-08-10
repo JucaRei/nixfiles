@@ -320,8 +320,7 @@
           "juca@DietPi" = helper.makeHomeManager { hostname = "DietPi"; desktop = null; platform = "aarch64-linux"; };
           # VMs
           "juca@scrubber" = helper.makeHomeManager { hostname = "scrubber"; desktop = "bspwm"; };
-          "juca@lima-builder" = helper.makeHomeManager { hostname = "lima-builder"; };
-          "juca@lima-default" = helper.makeHomeManager { hostname = "lima-default"; };
+          "juca@proxmox" = helper.makeHomeManager { hostname = "proxmox"; };
           "juca@vm" = helper.makeHomeManager { hostname = "vm"; desktop = "mate"; };
           # Iso
           # "juca@iso-console" = helper.makeHomeManager { hostname = "iso-console"; username = "nixos"; };

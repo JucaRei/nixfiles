@@ -200,6 +200,7 @@ in
 
           # Nix
           store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+          nb = "${pkgs.nix}/bin/nix build --no-link --print-out-paths";
 
         };
 
