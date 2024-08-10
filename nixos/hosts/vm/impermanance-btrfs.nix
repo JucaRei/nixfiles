@@ -30,7 +30,8 @@ in
           partitions = {
             boot = {
               name = "boot";
-              size = "1M";
+              start = "0%";
+              end = "1M";
               type = "EF02";
             };
             ESP = {
