@@ -24,7 +24,7 @@ in
       vda = {
         type = "disk";
         # device = builtins.elemAt disks 0;
-        device = disks;
+        device = "/dev/vda";
         content = {
           type = "gpt";
           partitions = {
