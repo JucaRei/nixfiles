@@ -141,19 +141,19 @@ in
             content = {
               type = "btrfs";
               extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
-            };
-            subvolumes = {
-              "/root" = {
-                mountpoint = "/";
-                mountOptions = defaultBtrfsOpts;
-              };
-              "/persist" = {
-                mountpoint = "/persist";
-                mountOptions = [ "subvol=persist" ] ++ defaultBtrfsOpts;
-              };
-              "/nix" = {
-                mountpoint = "/nix";
-                mountOptions = [ "subvol=nix" ] ++ defaultBtrfsOpts;
+              subvolumes = {
+                "@root" = {
+                  mountpoint = "/";
+                  mountOptions = defaultBtrfsOpts;
+                };
+                "@persist" = {
+                  mountpoint = "/persist";
+                  mountOptions = [ "subvol=persist" ] ++ defaultBtrfsOpts;
+                };
+                "@nix" = {
+                  mountpoint = "/nix";
+                  mountOptions = [ "subvol=nix" ] ++ defaultBtrfsOpts;
+                };
               };
             };
           };
