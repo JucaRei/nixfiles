@@ -129,29 +129,29 @@ in
               };
             };
           };
-        };
-        lvm_vg = {
-          root_vg = {
-            type = "lvm_vg";
-            lvs = {
-              root = {
-                size = "100%FREE";
-                content = {
-                  type = "btrfs";
-                  extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
-                };
-                subvolumes = {
-                  "@" = {
-                    mountpoint = "/";
-                    mountOptions = defaultBtrfsOpts;
+          lvm_vg = {
+            root_vg = {
+              type = "lvm_vg";
+              lvs = {
+                root = {
+                  size = "100%FREE";
+                  content = {
+                    type = "btrfs";
+                    extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
                   };
-                  "@persist" = {
-                    mountpoint = "/persist";
-                    mountOptions = [ "subvol=persist" ] ++ defaultBtrfsOpts;
-                  };
-                  "@nix" = {
-                    mountpoint = "/nix";
-                    mountOptions = [ "subvol=nix" ] ++ defaultBtrfsOpts;
+                  subvolumes = {
+                    "@" = {
+                      mountpoint = "/";
+                      mountOptions = defaultBtrfsOpts;
+                    };
+                    "@persist" = {
+                      mountpoint = "/persist";
+                      mountOptions = [ "subvol=persist" ] ++ defaultBtrfsOpts;
+                    };
+                    "@nix" = {
+                      mountpoint = "/nix";
+                      mountOptions = [ "subvol=nix" ] ++ defaultBtrfsOpts;
+                    };
                   };
                 };
               };
@@ -168,3 +168,10 @@ in
 # run github:nix-community/disko -- \
 # --mode disko /tmp/disko.nix \
 # --arg device '"/dev/vda"'
+
+# sudo nix run github:nix-community/disko \
+#     --extra-experimental-features "nix-command flakes" \
+#     --no-write-lock-file \
+#     -- \
+#     --mode zap_create_mount \
+#     "nixos/hosts/vm/impermanance-btrfs.nix"
