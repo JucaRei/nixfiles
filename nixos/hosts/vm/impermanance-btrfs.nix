@@ -112,7 +112,7 @@ in
               name = "SWAP";
               # start = "-16GiB";
               # end = "100%";
-              size = "4GiB";
+              size = "4G";
               # part-type = "primary";
               content = {
                 type = "swap";
