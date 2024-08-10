@@ -143,15 +143,15 @@ in
               extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
             };
             subvolumes = {
-              "@root" = {
+              "/root" = {
                 mountpoint = "/";
                 mountOptions = defaultBtrfsOpts;
               };
-              "@persist" = {
+              "/persist" = {
                 mountpoint = "/persist";
                 mountOptions = [ "subvol=persist" ] ++ defaultBtrfsOpts;
               };
-              "@nix" = {
+              "/nix" = {
                 mountpoint = "/nix";
                 mountOptions = [ "subvol=nix" ] ++ defaultBtrfsOpts;
               };
