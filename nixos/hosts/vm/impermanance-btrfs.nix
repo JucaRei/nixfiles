@@ -143,7 +143,7 @@ in
               extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
             };
             subvolumes = {
-              "@" = {
+              "@root" = {
                 mountpoint = "/";
                 mountOptions = defaultBtrfsOpts;
               };
