@@ -20,9 +20,18 @@
   };
 
   outputs = { nixpkgs, ... } @ inputs:
+    let
+      system = "x86_64-linux";
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
+      lib = nixpkgs.lib;
+    in
     {
       nixosConfigurations.default = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
+        inherit system;
         modules = [
           inputs.disko.nixosModules.default
           (import ./disko.nix { device = "/dev/vda"; })
