@@ -121,7 +121,7 @@
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
     users = {
-      "vimjoyer" = import ./home.nix;
+      "juca" = import ./home.nix;
     };
   };
 }
