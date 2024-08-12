@@ -3,7 +3,8 @@
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks-btrfs.nix { })
     # (import ./bcachefs.nix { })
-    (import ./impermanance-btrfs.nix { })
+    # (import ./impermanance-btrfs.nix { })
+    (import ./impermanance-btrfs1.nix { device = "/dev/vda"; })
     ../../_mixins/hardware/boot/plymouth.nix
     ../../_mixins/virtualization/docker.nix
     ../../_mixins/services/tools/apx.nix

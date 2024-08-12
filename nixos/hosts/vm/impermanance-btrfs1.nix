@@ -1,6 +1,4 @@
-{ disks ? [
-    "/dev/vda"
-  ]
+{ device ? throw "Set this to your disk device, e.g. /dev/sda"
 , ...
 }:
 let
@@ -21,10 +19,9 @@ in
 
   disko.devices = {
     disk = {
-      vda = {
+      main = {
+        inherit device;
         type = "disk";
-        # device = builtins.elemAt disks 0;
-        device = "/dev/vda";
         content = {
           type = "gpt";
           partitions = {
@@ -49,72 +46,12 @@ in
                 ];
               };
             };
-            # root = {
-            #   name = "nixroot";
-            #   # size = "100%";
-            #   # start = "1024M";
-            #   end = "-4GiB";
-            #   content = {
-            #     type = "btrfs";
-            #     extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
-            #     # Subvolumes must set a mountpoint in order to be mounted,
-            #     # unless their parent is mounted
-            #     subvolumes = {
-            #       # Subvolume name is different from mountpoint
-            #       "@" = {
-            #         mountpoint = "/";
-            #         mountOptions = defaultBtrfsOpts;
-            #       };
-            #       # Subvolume name is the same as the mountpoint
-            #       "@home" = {
-            #         mountpoint = "/home";
-            #         mountOptions = defaultBtrfsOpts;
-            #       };
-            #       # Sub(sub)volume doesn't need a mountpoint as its parent is mounted
-            #       # "@home/user" = { };
-            #       # Parent is not mounted so the mountpoint must be set
-            #       "@nix" = {
-            #         mountpoint = "/nix";
-            #         mountOptions = defaultBtrfsOpts;
-            #       };
-            #       "@var" = {
-            #         mountpoint = "/var";
-            #         mountOptions = defaultBtrfsOpts;
-            #       };
-            #       "@snapshots" = {
-            #         mountpoint = "/.snapshots";
-            #         mountOptions = defaultBtrfsOpts;
-            #       };
-            #       # This subvolume will be created but not mounted
-            #       # "/test" = { };
-            #       # "@swap" = {
-            #       #   # mountpoint = "/swap";
-            #       #   swap = {
-            #       #     swapfile = {
-            #       #       size = "8G";
-            #       #       path = "rel-path";
-            #       #     };
-            #       #     swapfile2 = {
-            #       #       size = "8G";
-            #       #       path = "rel-path";
-            #       #     };
-
-            #       #   };
-            #       # };
-            #       # mountpoint = "/partition-root";
-            #     };
-            #   };
-            # };
             swap = {
               name = "SWAP";
-              # start = "-16GiB";
-              # end = "100%";
               size = "4G";
-              # part-type = "primary";
               content = {
                 type = "swap";
-                # randomEncryption = true;
-                # resumeDevice = true; # resume from hiberation from this device
+                resumeDevice = true; # resume from hiberation from this device
               };
             };
             root = {
