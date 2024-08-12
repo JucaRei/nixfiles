@@ -23,7 +23,8 @@
     nixosConfigurations.testing = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
       modules = [
-        inputs.disko.nixosModules.testing
+        inputs.nixpkgs.lib.nixosSystem
+        inputs.disko.nixosModules.disko
         ./configuration.nix
         (import ./disko.nix { device = "/dev/vda"; })
         inputs.home-manager.nixosModules.testing
