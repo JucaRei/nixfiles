@@ -102,6 +102,9 @@ in
       # max-free = 4294967296 # 4GiB
     };
 
+  # Use faster squashfs compression
+  isoImage.squashfsCompression = lib.mkIf isISO "gzip -Xcompression-level 1";
+
   ################
   ### Nixpkgs ####
   ################
