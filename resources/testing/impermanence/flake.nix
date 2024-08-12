@@ -1,5 +1,5 @@
 {
-  description = "Impermanence Testing";
+  description = "Nixos config flake";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -19,17 +19,19 @@
     };
   };
 
-  outputs = { nixpkgs, ... } @inputs: {
-    nixosConfigurations.testing = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [
-        inputs.nixpkgs.lib.nixosSystem
-        inputs.disko.nixosModules.disko
-        ./configuration.nix
-        (import ./disko.nix { device = "/dev/vda"; })
-        inputs.home-manager.nixosModules.testing
-        inputs.impermanence.nixosModules.impermanence
-      ];
+  outputs = { nixpkgs, ... } @ inputs:
+    {
+      nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.disko.nixosModules.default
+          (import ./disko.nix { device = "/dev/vda"; })
+
+          ./configuration.nix
+
+          inputs.home-manager.nixosModules.default
+          inputs.impermanence.nixosModules.impermanence
+        ];
+      };
     };
-  };
 }
