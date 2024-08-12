@@ -30,7 +30,6 @@ sudo cryptsetup luksOpen $PART3 crypted && \
 
 sudo mkfs.fat -F 32 -n boot ${PART1} && \
   sudo mkswap -L swap ${PART2} && \
-  # sudo mkfs.ext4 -L nixos ${PART3}
   sudo mkfs.btrfs -f -L nixos ${PART3}
 
 sudo parted $DISK -- unit MiB print
