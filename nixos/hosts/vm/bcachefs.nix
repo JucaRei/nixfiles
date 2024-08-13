@@ -1,9 +1,12 @@
-{ disks ? [ "/dev/vda" ], ... }:
+_:
+let
+  device = "/dev/vda";
+in
 {
   disko.devices = {
     disk = {
-      vda = {
-        device = builtins.elemAt disks 0;
+      ${baseNameOf device} = {
+        inherit device;
         type = "disk";
         content = {
           type = "gpt";

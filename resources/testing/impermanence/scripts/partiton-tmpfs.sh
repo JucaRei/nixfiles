@@ -35,8 +35,6 @@ sudo mkfs.fat -F 32 -n boot ${PART1} && \
 
 sudo parted $DISK -- unit MiB print
 
-sudo swapon $PART2
-
 # # default units for `print` and `mkpart` commands
 # unit MiB
 # # initialize the partition table
@@ -52,3 +50,34 @@ sudo swapon $PART2
 # mkpart nix 8705 100%
 # # see the results
 # print
+
+
+### Mount ###
+
+
+set -e
+
+# Mount your root file system as tmpfs
+sudo mount -v -t tmpfs none /mnt
+
+# Create mount directories
+sudo mkdir -v -p /mnt/{boot,nix,etc/nixos,var/log}
+
+# Mount /boot and /nix
+sudo mount -v $PART1 /mnt/boot -o umask=0077
+sudo mount -v $PART3 /mnt/nix
+
+# Create persistent directories
+sudo mkdir -v -p /mnt/nix/persist/{etc/nixos,var/log}
+
+# Bind mount the persistent configuration / logs
+sudo mount -v -o bind /mnt/nix/persist/etc/nixos /mnt/etc/nixos
+sudo mount -v -o bind /mnt/nix/persist/var/log /mnt/var/log
+
+# Make config directory temporarily easier to work with
+sudo chmod -v 777 /mnt/etc/nixos
+
+
+sudo swapon $PART2
+
+sudo nixos-generate-config --root /mnt && cd /mnt/etc/nixos

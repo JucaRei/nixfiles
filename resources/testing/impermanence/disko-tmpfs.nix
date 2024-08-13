@@ -2,7 +2,7 @@
 , ...
 }:
 let
-  defaultBtrfsOpts = [
+  defaultEXT4 = [
     "noatime"
     "nodiratime"
     "nodatacow"
@@ -46,35 +46,20 @@ in
                 ];
               };
             };
-            # swap = {
-            #   name = "SWAP";
-            #   size = "4G";
-            #   content = {
-            #     type = "swap";
-            #     resumeDevice = true; # resume from hiberation from this device
-            #   };
-            # };
-            # root = {
-            #   name = "nixroot";
-            #   size = "100%";
-            #   content = {
-            #     type = "lvm_pv";
-            #     vg = "root_vg";
-            #   };
-            # };
-            luks = {
+            swap = {
+              name = "SWAP";
+              size = "8G";
+              content = {
+                type = "swap";
+                resumeDevice = true; # resume from hiberation from this device
+              };
+            };
+            root = {
+              name = "nixroot";
               size = "100%";
               content = {
-                type = "luks";
-                name = "luks_lvm_encrypted";
-                passwordFile = "/tmp/secret.key";
-                settings = {
-                  allowDiscards = true;
-                };
-                content = {
-                  type = "lvm_pv";
-                  vg = "nix";
-                };
+                type = "lvm_pv";
+                vg = "root_vg";
               };
             };
           };
@@ -82,49 +67,26 @@ in
       };
     };
     lvm_vg = {
-      nix = {
+      root_vg = {
         type = "lvm_vg";
         lvs = {
-          swap = {
-            size = "8G";
-            content = {
-              type = "swap";
-              resumeDevice = true;
-            };
-          };
-          main = {
+          root = {
             size = "100%FREE";
             content = {
-              type = "btrfs";
+              type = "ext4";
               extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
               subvolumes = {
-                # mount the top-level subvolume at /btr_pool
-                # it will be used by btrbk to create snapshots
-                "/" = {
-                  mountpoint = "/btr_pool";
-                  # btrfs's top-level subvolume, internally has an id 5
-                  # we can access all other subvolumes from this subvolume.
-                  mountOptions = [ "subvolid=5" ] ++ defaultBtrfsOpts;
+                "@root" = {
+                  mountpoint = "/";
+                  mountOptions = defaultEXT4;
                 };
                 "@persist" = {
                   mountpoint = "/persist";
-                  mountOptions = defaultBtrfsOpts;
+                  mountOptions = [ "subvol=persist" ] ++ defaultEXT4;
                 };
                 "@nix" = {
                   mountpoint = "/nix";
-                  mountOptions = defaultBtrfsOpts;
-                };
-                "@tmp" = {
-                  mountpoint = "/tmp";
-                  mountOptions = defaultBtrfsOpts;
-                };
-                "@snapshots" = {
-                  mountpoint = "/.snapshots";
-                  mountOptions = defaultBtrfsOpts;
-                };
-                "@swap" = {
-                  mountpoint = "/swap";
-                  swap.swapfile.size = "8192M";
+                  mountOptions = [ "subvol=nix" ] ++ defaultEXT4;
                 };
               };
             };

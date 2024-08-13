@@ -18,6 +18,15 @@ in
   # fileSystems."/persistent".neededForBoot = true;
 
   disko.devices = {
+    nodev."/" = {
+      fsType = "tmpfs";
+      mountOptions = [
+        "defaults"
+        "size=32"
+        "mode=755"
+      ];
+    };
+
     disk = {
       main = {
         inherit device;

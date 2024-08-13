@@ -14,6 +14,45 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  ### TMPFS
+  # boot.initrd.luks.devices."crypted".device = "/dev/disk/by-uuid/f03611ac-be4b-4fd6-a3aa-d272ac451e3c";
+  boot.initrd.luks.devices."crypted".device = "/dev/disk/by-partlabel/nix";
+  fileSystems = {
+    "/" = {
+      device = "none";
+      fsType = "tmpfs";
+      options = [ "defaults" "size=25%" "mode=755" ];
+    };
+
+    "/boot" = {
+      device = "/dev/disk/by-partlabel/ESP";
+      fsType = "vfat";
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+
+    "/nix" = {
+      # device = "/dev/disk/by-uuid/f5d86a22-5b33-4715-b35c-b845d9c82b2b";
+      device = "/dev/disk/by-uuid/f5d86a22-5b33-4715-b35c-b845d9c82b2b";
+      fsType = "ext4";
+    };
+
+    "/etc/nixos" = {
+      device = "/nix/persist/etc/nixos";
+      fsType = "none";
+      options = [ "bind" ];
+    };
+
+    "/var/log" = {
+      device = "/nix/persist/var/log";
+      fsType = "none";
+      options = [ "bind" ];
+    };
+  };
+
+  swapDevices = [{
+    device = "/dev/disk/by-uuid/7f514e2a-303c-4e2e-a790-ae1ffe3e00e2";
+  }];
+
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
