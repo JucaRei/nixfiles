@@ -18,7 +18,7 @@ in
     boot = {
       blacklistedKernelModules = [ "nouveau" ]; # blacklist nouveau module so that it does not conflict with nvidia drm stuff
       ### Default Kernel
-      kernelPackages = pkgs.linuxPackages_xanmod_latest;
+      kernelPackages = pkgs.linuxPackages_xanmod_stable; #pkgs.linuxPackages_xanmod_latest;
       # kernelPackages = pkgs.linuxPackages_zen;
       # kernelPackages = pkgs.linuxPackages_lqx;
       kernelModules = [
@@ -278,11 +278,20 @@ in
 
       nvidia = {
         open = false;
-        package =
-          let
-            nPkgs = config.boot.kernelPackages.nvidiaPackages;
-          in
-          lib.mkForce (if (lib.versionOlder nPkgs.beta.version nPkgs.stable.version) then nPkgs.stable else nPkgs.beta);
+        # package =
+        #   let
+        #     nPkgs = config.boot.kernelPackages.nvidiaPackages;
+        #   in
+        #   lib.mkForce (if (lib.versionOlder nPkgs.beta.version nPkgs.stable.version) then nPkgs.stable else nPkgs.beta);
+        package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+          version = "555.58.02";
+          sha256_64bit = "sha256-xctt4TPRlOJ6r5S54h5W6PT6/3Zy2R4ASNFPu8TSHKM=";
+          sha256_aarch64 = "sha256-wb20isMrRg8PeQBU96lWJzBMkjfySAUaqt4EgZnhyF8=";
+          openSha256 = "sha256-8hyRiGB+m2hL3c9MDA/Pon+Xl6E788MZ50WrrAGUVuY=";
+          settingsSha256 = "sha256-ZpuVZybW6CFN/gz9rx+UJvQ715FZnAOYfHn5jt5Z2C8=";
+          persistencedSha256 = "sha256-a1D7ZZmcKFWfPjjH1REqPM5j/YLWKnbkP9qfRyIyxAw=";
+        };
+
         prime = {
           offload.enable = lib.mkForce true;
           offload.enableOffloadCmd = lib.mkForce true;
@@ -312,20 +321,20 @@ in
         ];
       };
     };
-    environment = {
-      sessionVariables = {
-        # LIBVA_DRIVER_NAME = "nvidia";
-        # LIBVA_DRIVER_NAME = "nvidia-drm";
-        # WLR_NO_HARDWARE_CURSORS = "1";
+    # environment = {
+    #   sessionVariables = {
+    # LIBVA_DRIVER_NAME = "nvidia";
+    # LIBVA_DRIVER_NAME = "nvidia-drm";
+    # WLR_NO_HARDWARE_CURSORS = "1";
 
-        # May cause Firefox crashes
-        # GBM_BACKEND = "nvidia-drm";
+    # May cause Firefox crashes
+    # GBM_BACKEND = "nvidia-drm";
 
-        # If you face problems with Discord windows not displaying or screen
-        # sharing not working in Zoom, remove or comment this:
-        # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      };
-    };
+    # If you face problems with Discord windows not displaying or screen
+    # sharing not working in Zoom, remove or comment this:
+    # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    #   };
+    # };
     services = {
       xserver = {
         videoDrivers = [

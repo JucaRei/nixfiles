@@ -103,7 +103,7 @@ in
     };
 
   # Use faster squashfs compression
-  isoImage.squashfsCompression = lib.mkIf isISO "gzip -Xcompression-level 1";
+  # isoImage.squashfsCompression = lib.mkIf isISO "gzip -Xcompression-level 1";
 
   ################
   ### Nixpkgs ####
@@ -117,7 +117,6 @@ in
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
-      outputs.overlays.previous-packages
       outputs.overlays.legacy-packages
       # Add overlays exported from other flakes:
 

@@ -1,4 +1,5 @@
 { inputs, outputs, stateVersion, lib, pkgs, config, ... }:
+with inputs;
 {
   # Helper function for generating home-manager configs
   makeHomeManager =
@@ -15,19 +16,19 @@
       isLima = builtins.substring 0 5 hostname == "lima-";
       isWorkstation = builtins.isString desktop;
     in
-    inputs.home-manager.lib.homeManagerConfiguration {
-      pkgs = inputs.nixpkgs.legacyPackages.${platform};
+    home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
         inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation;
       };
       modules = [
         ../home-manager
 
-        inputs.declarative-flatpak.homeManagerModules.default
-        inputs.nur.hmModules.nur
-        inputs.vscode-server.homeModules.default
-        inputs.nix-index-database.hmModules.nix-index
-        inputs.catppuccin.homeManagerModules.catppuccin
+        declarative-flatpak.homeManagerModules.default
+        nur.hmModules.nur
+        vscode-server.homeModules.default
+        nix-index-database.hmModules.nix-index
+        catppuccin.homeManagerModules.catppuccin
         # inputs.vscode-server.nixosModules.home
 
         ({ config, pkgs, lib, ... }: {
@@ -70,14 +71,14 @@
         let
           cd-dvd =
             if (desktop == null) then
-              inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+              nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             else
-              inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix";
+              nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix";
         in
         [
           ../nixos
-          # inputs.chaotic.nixosModules.default # DEFAULT MODULE
-          # inputs.home-manager.nixosModules.home-manager
+          # chaotic.nixosModules.default # DEFAULT MODULE
+          # home-manager.nixosModules.home-manager
           # {
           #   home-manager.useGlobalPkgs = true;
           #   home-manager.useUserPackages = true;
@@ -86,14 +87,15 @@
           #   # Optionally, use home-manager.extraSpecialArgs to pass
           #   # arguments to home.nix
           # }
-          inputs.proxmox-nixos.nixosModules.proxmox-ve
-          inputs.disko.nixosModules.disko
-          inputs.nh.nixosModules.default
-          inputs.catppuccin.nixosModules.catppuccin
-          inputs.nix-flatpak.nixosModules.nix-flatpak
-          inputs.nix-index-database.nixosModules.nix-index
-          inputs.nix-snapd.nixosModules.default
-          inputs.sops-nix.nixosModules.sops
+          proxmox-nixos.nixosModules.proxmox-ve
+          chaotic.nixosModules.default # OUR DEFAULT MODULE
+          disko.nixosModules.disko
+          nh.nixosModules.default
+          catppuccin.nixosModules.catppuccin
+          nix-flatpak.nixosModules.nix-flatpak
+          nix-index-database.nixosModules.nix-index
+          nix-snapd.nixosModules.default
+          sops-nix.nixosModules.sops
 
           ({ pkgs, lib, inputs, config, ... }: {
             # Shared Between all users
