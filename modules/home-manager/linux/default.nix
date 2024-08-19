@@ -45,7 +45,6 @@ in
     nix.settings.experimental-features = [
       "auto-allocate-uids"
       "cgroups"
-      # "configurable-impure-env"
     ];
 
     systemd.user = {
@@ -97,7 +96,7 @@ in
     programs = {
       home-manager = {
         enable = true;
-        path = lib.mkForce "$HOME/.config/home-manager";
+        # path = lib.mkForce "$HOME/.config/home-manager";
       };
     };
   };
