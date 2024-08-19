@@ -3,33 +3,25 @@ let
   inherit (pkgs.stdenv) isDarwin isLinux;
 in
 {
-  imports = [ ]
-    ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-    # ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
-    ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
+  imports = [
+  ]
+  ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
+  # ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
+  ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
 
   home = {
 
-    file = {
-      "${config.xdg.configHome}/fastfetch/config.jsonc".text = builtins.readFile ../resources/configs/fastfetch.jsonc;
-      "${config.xdg.configHome}/gh-dash/config.yml".text = builtins.readFile ../resources/configs/gh-dash-catppuccin-mocha-blue.yml;
-      "${config.xdg.configHome}/yazi/keymap.toml".text = builtins.readFile ../resources/configs/yazi-keymap.toml;
-      "${config.xdg.configHome}/fish/functions/help.fish".text = builtins.readFile ../resources/configs/help.fish;
-      "${config.xdg.configHome}/fish/functions/h.fish".text = builtins.readFile ../resources/configs/h.fish;
-      ".hidden".text = ''snap'';
-    };
-
     sessionVariables = lib.mkDefault {
-      EDITOR = "micro";
-      MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
-      MANROFFOPT = "-c";
-      MICRO_TRUECOLOR = "1";
-      PAGER = "bat";
-      SYSTEMD_EDITOR = "micro";
-      VISUAL = "micro";
-      NIXPKGS_ALLOW_UNFREE = "1";
-      NIXPKGS_ALLOW_INSECURE = "1";
-      FLAKE = "/home/${username}/.dotfiles/nixfiles";
+      EDITOR = lib.mkDefault "micro";
+      MANPAGER = lib.mkDefault "sh -c 'col --no-backspaces --spaces | bat --language man'";
+      MANROFFOPT = lib.mkDefault "-c";
+      MICRO_TRUECOLOR = lib.mkDefault "1";
+      PAGER = lib.mkDefault "bat";
+      SYSTEMD_EDITOR = lib.mkDefault "micro";
+      VISUAL = lib.mkDefault "micro";
+      NIXPKGS_ALLOW_UNFREE = lib.mkDefault "1";
+      NIXPKGS_ALLOW_INSECURE = lib.mkDefault "1";
+      FLAKE = lib.mkDefault "/home/${username}/.dotfiles/nixfiles";
     };
 
     shellAliases = {
@@ -51,7 +43,7 @@ in
       system = "${pkgs.inxi}/bin/inxi -Fazy";
       usb = "${pkgs.inxi}/bin/inxi -J";
       wifi = "${pkgs.inxi}/bin/inxi -n";
-      dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
+      dmesg = lib.mkIf isLinux "${pkgs.util-linux}/bin/dmesg --human --color=always";
       store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
     };
   };
@@ -233,7 +225,7 @@ in
     };
     fish = {
       catppuccin.enable = true;
-      enable = true;
+      enable = (import ../modules/home-manager/linux/cli/fish { inherit config pkgs lib; });
     };
     fzf = {
       catppuccin.enable = true;

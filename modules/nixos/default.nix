@@ -12,7 +12,7 @@ with lib;
     inputs.nix-snapd.nixosModules.default
     inputs.sops-nix.nixosModules.sops
     (modulesPath + "/installer/scan/not-detected.nix")
-  ] ++ lib.optional isWorkstation ./desktop;
+  ] ++ lib.optional isWorkstation ./gui/desktop;
 
   # Only install the docs I use
   documentation = {

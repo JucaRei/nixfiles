@@ -141,6 +141,7 @@
           krall = helper.mkDarwin { hostname = "krall"; platform = "x86_64-darwin"; };
         };
 
+        # nix develop -c {fish,zsh,bash}
         devShells = helper.forAllSystems (system:
           let
             pkgs = nixpkgs.legacyPackages.${system};

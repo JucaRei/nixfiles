@@ -1,5 +1,6 @@
 { config, inputs, hostname, lib, username, pkgs, isWorkstation, isLima, stateVersion, ... }: {
   imports = [
+    ../shared.nix
     inputs.nix-index-database.darwinModules.nix-index
   ] ++ lib.optional isWorkstation ./desktop;
 

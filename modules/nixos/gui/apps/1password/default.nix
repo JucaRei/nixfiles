@@ -1,9 +1,4 @@
-{
-  lib,
-  pkgs,
-  username,
-  ...
-}:
+{ lib, pkgs, username, ... }:
 let
   installFor = [ "juca" ];
 in

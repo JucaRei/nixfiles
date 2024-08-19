@@ -18,12 +18,12 @@
   };
 
   environment.etc = {
-    "backgrounds/DeterminateColorway-1920x1080.png".source = ../configs/backgrounds/DeterminateColorway-1920x1080.png;
-    "backgrounds/DeterminateColorway-1920x1200.png".source = ../configs/backgrounds/DeterminateColorway-1920x1200.png;
-    "backgrounds/DeterminateColorway-2560x1440.png".source = ../configs/backgrounds/DeterminateColorway-2560x1440.png;
-    "backgrounds/DeterminateColorway-2560x2880.png".source = ../configs/backgrounds/DeterminateColorway-2560x2880.png;
-    "backgrounds/DeterminateColorway-3440x1440.png".source = ../configs/backgrounds/DeterminateColorway-3440x1440.png;
-    "backgrounds/DeterminateColorway-3840x2160.png".source = ../configs/backgrounds/DeterminateColorway-3840x2160.png;
+    "backgrounds/DeterminateColorway-1920x1080.png".source = ../../../../resources/backgrounds/DeterminateColorway-1920x1080.png;
+    "backgrounds/DeterminateColorway-1920x1200.png".source = ../../../../resources/backgrounds/DeterminateColorway-1920x1200.png;
+    "backgrounds/DeterminateColorway-2560x1440.png".source = ../../../../resources/backgrounds/DeterminateColorway-2560x1440.png;
+    "backgrounds/DeterminateColorway-2560x2880.png".source = ../../../../resources/backgrounds/DeterminateColorway-2560x2880.png;
+    "backgrounds/DeterminateColorway-3440x1440.png".source = ../../../../resources/backgrounds/DeterminateColorway-3440x1440.png;
+    "backgrounds/DeterminateColorway-3840x2160.png".source = ../../../../resources/backgrounds/DeterminateColorway-3840x2160.png;
   };
 
   environment.systemPackages =

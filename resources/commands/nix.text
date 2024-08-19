@@ -1,5 +1,7 @@
 ## nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
 
+## nix run nixpkgs#home-manager -- switch -b backup --flake "${HOME}/.dotfiles/nixfiles"
+
 ## home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
 ## home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
 ## nix build .#homeConfigurations."juca@DietPi".activationPackage
