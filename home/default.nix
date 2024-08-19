@@ -98,10 +98,10 @@ in
     # To make nix3 commands consistent with your flake
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
 
-    # package = pkgs.nix;
+    package = pkgs.nix;
     # auto upgrade nix to the unstable version
     # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/tools/package-management/nix/default.nix#L284
-    package = pkgs.nixVersions.latest;
+    # package = pkgs.nixVersions.latest;
 
     settings = {
       auto-optimise-store = isLinux;
