@@ -2,7 +2,9 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks-btrfs.nix { })
-    (import ./bcachefs.nix { })
+    # (import ./bcachefs.nix { })
+    # (import ./impermanance-btrfs.nix { })
+    (import ./impermanance-btrfs1.nix { device = "/dev/vda"; })
     ../../_mixins/hardware/boot/plymouth.nix
     ../../_mixins/virtualization/docker.nix
     ../../_mixins/services/tools/apx.nix
@@ -118,6 +120,10 @@
           {
             x = 1600;
             y = 1050;
+          }
+          {
+            x = 1600;
+            y = 900;
           }
           {
             x = 1366;

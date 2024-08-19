@@ -58,7 +58,6 @@ in
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
-      outputs.overlays.previous-packages
       outputs.overlays.legacy-packages
 
       inputs.nixgl.overlay

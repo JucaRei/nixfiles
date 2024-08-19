@@ -3,7 +3,7 @@
 , lib
 , ...
 }: {
-  imports = [ ../config/qt/qt-style.nix ];
+  # imports = [ ../config/qt/qt-style.nix ];
   services = {
     xserver = {
       enable = true;
@@ -21,13 +21,13 @@
       };
       desktopManager = { cinnamon = { enable = true; }; };
     };
-    redshift = {
-      enable = true;
-      temperature = {
-        day = 5500;
-        night = 3000;
-      };
-    };
+    # redshift = {
+    #   enable = true;
+    #   temperature = {
+    #     day = 5500;
+    #     night = 3000;
+    #   };
+    # };
     cinnamon.apps.enable = true;
     gnome = { evolution-data-server = { enable = lib.mkDefault false; }; };
   };

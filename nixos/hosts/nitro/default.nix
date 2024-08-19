@@ -26,12 +26,15 @@
         lm_sensors
         os-prober
 
-        firefox-devedition
+        floorp
         vscode-fhs
         nil
         nixpkgs-fmt
-        duf 
+        duf
         htop
+        neofetch
+        unstable.mpv
+        spotube
       ];
       sessionVariables = { };
     };
@@ -62,6 +65,8 @@
           accelSpeed = "0.3";
         };
       };
+
+      virtualisation.kvm.enable = true;
 
       acpid = {
         enable = true;

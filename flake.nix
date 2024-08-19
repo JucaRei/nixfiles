@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs-legacy.url = "github:nixos/nixpkgs/nixos-22.11";
-    nixpkgs-previous.url = "github:nixos/nixpkgs/nixos-23.05";
     # nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     # You can access packages and modules from different nixpkgs revs at the same time.
@@ -26,15 +25,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # cachix-deploy-flake.url = "github:cachix/cachix-deploy-flake";
-    # cachix-deploy-flake.inputs.nixpkgs.follows = "nixpkgs";
+    cachix.url = "github:cachix/cachix";
+    cachix-deploy-flake = {
+      url = "github:cachix/cachix-deploy-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # agenix.url = "github:ryantm/agenix";
     # agenix.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Art
-    # nixos-artwork.url = "github:NixOS/nixos-artwork";
-    # nixos-artwork.flake = false;
 
     # pinix.url = "github:remi-dupre/pinix";
     # pinix.inputs.nixpkgs.follows = "nixpkgs";
@@ -321,8 +319,7 @@
           "juca@DietPi" = helper.makeHomeManager { hostname = "DietPi"; desktop = null; platform = "aarch64-linux"; };
           # VMs
           "juca@scrubber" = helper.makeHomeManager { hostname = "scrubber"; desktop = "bspwm"; };
-          "juca@lima-builder" = helper.makeHomeManager { hostname = "lima-builder"; };
-          "juca@lima-default" = helper.makeHomeManager { hostname = "lima-default"; };
+          "juca@proxmox" = helper.makeHomeManager { hostname = "proxmox"; };
           "juca@vm" = helper.makeHomeManager { hostname = "vm"; desktop = "mate"; };
           # Iso
           # "juca@iso-console" = helper.makeHomeManager { hostname = "iso-console"; username = "nixos"; };
@@ -347,7 +344,7 @@
         #  - nix build .#nixosConfigurations.ripper.config.system.build.toplevel
         # Servers
         # Laptop
-        nitro = helper.makeNixOS { hostname = "nitro"; desktop = "pantheon"; stateVersion = "24.05"; }; # desktop = "hyprland";
+        nitro = helper.makeNixOS { hostname = "nitro"; desktop = "cinnamon"; stateVersion = "24.05"; }; # desktop = "hyprland";
         air = helper.makeNixOS { hostname = "air"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
         soyo = helper.makeNixOS { hostname = "soyo"; stateVersion = "24.05"; desktop = "kodi"; };
         rocinante = helper.makeNixOS { hostname = "rocinante"; desktop = "mate"; hostid = "f4173273"; };
