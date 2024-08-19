@@ -4,6 +4,7 @@ let
 in
 {
   imports = [
+    (import ../modules/home-manager/linux/cli/fish { inherit config pkgs lib; })
   ]
   ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
   # ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
@@ -222,10 +223,6 @@ in
       ];
       git = true;
       icons = true;
-    };
-    fish = {
-      catppuccin.enable = true;
-      enable = (import ../modules/home-manager/linux/cli/fish { inherit config pkgs lib; });
     };
     fzf = {
       catppuccin.enable = true;
