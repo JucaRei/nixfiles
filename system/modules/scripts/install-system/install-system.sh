@@ -43,11 +43,11 @@ if [ "$(id -u)" -eq 0 ]; then
     exit 1
 fi
 
-if [ ! -d "$HOME/Zero/nix-config/.git" ]; then
-    git clone https://github.com/wimpysworld/nix-config.git "$HOME/Zero/nix-config"
+if [ ! -d "$HOME/.dotfiles/nixfiles/.git" ]; then
+    git clone https://github.com/JucaRei/nixfiles.git "$HOME/.dotfiles/nixfiles"
 fi
 
-pushd "$HOME/Zero/nix-config"
+pushd "$HOME/.dotfiles/nixfiles"
 
 if [[ -n "$TARGET_BRANCH" ]]; then
     git checkout "$TARGET_BRANCH"
@@ -63,7 +63,7 @@ fi
 if [[ -z "$TARGET_USER" ]]; then
     echo "ERROR! $(basename "$0") requires a username as the second argument"
     echo "       The following users are available"
-    find nixos/_mixins/users/ -mindepth 1 -maxdepth 1 -type d | cut -d'/' -f4 | grep -v -E "nixos|root"
+    find system/users -mindepth 1 -maxdepth 1 -type d | cut -d'/' -f4 | grep -v -E "nixos|root"
     exit 1
 fi
 
@@ -82,18 +82,18 @@ if [ ! -e "$HOME/.config/sops/age/keys.txt" ]; then
     fi
 fi
 
-if [ -x "nixos/$TARGET_HOST/disks.sh" ]; then
-    if ! sudo "nixos/$TARGET_HOST/disks.sh" "$TARGET_USER"; then
+if [ -x "system/hosts/$TARGET_HOST/disks.sh" ]; then
+    if ! sudo "system/hosts/$TARGET_HOST/disks.sh" "$TARGET_USER"; then
         echo "ERROR! Failed to prepare disks; stopping here!"
         exit 1
     fi
 else
-    if [ ! -e "nixos/$TARGET_HOST/disks.nix" ]; then
-        echo "ERROR! $(basename "$0") could not find the required nixos/$TARGET_HOST/disks.nix"
+    if [ ! -e "system/hosts/$TARGET_HOST/disks.nix" ]; then
+        echo "ERROR! $(basename "$0") could not find the required system/hosts/$TARGET_HOST/disks.nix"
         exit 1
     fi
 
-if grep -q "data.passwordFile" "nixos/$TARGET_HOST/disks.nix"; then
+if grep -q "data.passwordFile" "system/hosts/$TARGET_HOST/disks.nix"; then
     # If the machine we're provisioning expects a password to unlock a disk, prompt for it.
     while true; do
         # Prompt for the password, input is hidden
@@ -114,15 +114,15 @@ if grep -q "data.passwordFile" "nixos/$TARGET_HOST/disks.nix"; then
     echo -n "$password" > /tmp/data.passwordFile
 fi
 
-if grep -q "data.keyFile" "nixos/$TARGET_HOST/disks.nix"; then
+if grep -q "data.keyFile" "system/hosts/$TARGET_HOST/disks.nix"; then
     # Check if the machine we're provisioning expects a keyfile to unlock a disk.
     # If it does, generate a new key, and write to a known location.
     echo -n "$(head -c32 /dev/random | base64)" > /tmp/data.keyFile
 fi
 
-run_disko "nixos/$TARGET_HOST/disks.nix"
+run_disko "system/hosts/$TARGET_HOST/disks.nix"
 
-for CONFIG in $(find "nixos/$TARGET_HOST" -name "disks-*.nix" | sort); do
+for CONFIG in $(find "system/hosts/$TARGET_HOST" -name "disks-*.nix" | sort); do
     run_disko "$CONFIG"
 done
 fi
@@ -142,10 +142,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo nixos-install --no-root-password --flake ".#$TARGET_HOST"
 
     # Rsync nix-config to the target install and set the remote origin to SSH.
-    rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
+    rsync -a --delete "$HOME/.dotfiles/" "/mnt/home/$TARGET_USER/.dotfiles/"
     if [ "$TARGET_HOST" != "minimech" ] && [ "$TARGET_HOST" != "scrubber" ]; then
-        pushd "/mnt/home/$TARGET_USER/Zero/nix-config"
-        git remote set-url origin git@github.com:wimpysworld/nix-config.git
+        pushd "/mnt/home/$TARGET_USER/.dotfiles/nixfiles"
+        git remote set-url origin git@github.com:JucaRei/nixfiles.git
         popd
     fi
 
@@ -158,7 +158,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
     # Enter to the new install and apply the home-manager configuration.
     sudo nixos-enter --root /mnt --command "chown -R $TARGET_USER:users /home/$TARGET_USER"
-    sudo nixos-enter --root /mnt --command "cd /home/$TARGET_USER/Zero/nix-config; env USER=$TARGET_USER HOME=/home/$TARGET_USER home-manager switch --flake \".#$TARGET_USER@$TARGET_HOST\""
+    sudo nixos-enter --root /mnt --command "cd /home/$TARGET_USER/.dotfiles/nixfiles; env USER=$TARGET_USER HOME=/home/$TARGET_USER home-manager switch --flake \".#$TARGET_USER@$TARGET_HOST\""
     sudo nixos-enter --root /mnt --command "chown -R $TARGET_USER:users /home/$TARGET_USER"
 
     # If there is a keyfile for a data disk, put copy it to the root partition and

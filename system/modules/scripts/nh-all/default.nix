@@ -8,9 +8,13 @@ let
   };
 in
 {
-  environment.systemPackages = with pkgs; [ shellApplication ];
-  programs.fish.shellAliases = {
-    build-all = "nh-all build";
-    switch-all = "nh-all switch";
+  environment = {
+    systemPackages = with pkgs; [ shellApplication ];
+
+    # For any desired shell
+    shellAliases = {
+      build-all = "nh-all build";
+      switch-all = "nh-all switch";
+    };
   };
 }

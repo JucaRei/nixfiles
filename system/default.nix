@@ -1,26 +1,14 @@
-{ config
-, hostname
-, isInstall
-, isWorkstation
-, inputs
-, lib
-, modulesPath
-, outputs
-, pkgs
-, platform
-, stateVersion
-, username
-, ...
-}:
+{ config, hostname, isInstall, isWorkstation, inputs, lib, modulesPath, outputs, pkgs, platform, stateVersion, username, nixpkgs, ... }:
+with lib;
+let
+  hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+in
 {
   imports = [
     (./. ./hosts/${hostname})
-    ./_mixins/configs
-    ./_mixins/features
-    ./_mixins/scripts
-    ./_mixins/services
-    ./_mixins/users
-  ] ++ lib.optional isWorkstation ./_mixins/desktop;
+    ../modules/nixos
+    ./users
+  ];
 
   boot = {
     consoleLogLevel = 0;
@@ -29,7 +17,7 @@
     kernelParams = [ "udev.log_priority=3" ];
     kernelPackages = pkgs.linuxPackages_latest;
     # Only enable the systemd-boot on installs, not live media (.ISO images)
-    loader = lib.mkIf isInstall {
+    loader = mkIf isInstall {
       efi.canTouchEfiVariables = true;
       systemd-boot.configurationLimit = 10;
       systemd-boot.consoleMode = "max";
@@ -42,17 +30,19 @@
   #determinate.nix.primaryUser.username = username;
 
   # Only install the docs I use
-  documentation.enable = true;
-  documentation.nixos.enable = false;
-  documentation.man.enable = true;
-  documentation.info.enable = false;
-  documentation.doc.enable = false;
+  documentation = {
+    enable = true;
+    nixos.enable = false;
+    man.enable = true;
+    info.enable = false;
+    doc.enable = false;
+  };
 
   environment = {
     # Eject nano and perl from the system
     defaultPackages =
       with pkgs;
-      lib.mkForce [
+      mkForce [
         coreutils-full
         micro
       ];
@@ -63,7 +53,7 @@
         git
         nix-output-monitor
       ]
-      ++ lib.optionals isInstall [
+      ++ optionals isInstall [
         inputs.nixos-needtoreboot.packages.${platform}.default
         nvd
         nvme-cli
@@ -72,54 +62,26 @@
       ];
 
     variables = {
-      EDITOR = "micro";
-      SYSTEMD_EDITOR = "micro";
-      VISUAL = "micro";
+      EDITOR = mkDefault "micro";
+      SYSTEMD_EDITOR = mkDefault "micro";
+      VISUAL = mkDefault "micro";
+    };
+
+    shellAliases = {
+      nano = mkDefault "micro";
     };
   };
-
-  nixpkgs = {
-    # You can add overlays here
-    overlays = [
-      # Add overlays your own flake exports (from overlays and pkgs dir):
-      outputs.overlays.additions
-      outputs.overlays.modifications
-      outputs.overlays.unstable-packages
-      # Add overlays exported from other flakes:
-    ];
-    # Configure your nixpkgs instance
-    config = {
-      allowUnfree = true;
-    };
-  };
-
-  nix = {
-    optimise.automatic = true;
-    settings = {
-      auto-optimise-store = true;
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      warn-dirty = false;
-    };
-  };
-
-  nixpkgs.hostPlatform = lib.mkDefault "${platform}";
 
   programs = {
     command-not-found.enable = false;
     fish = {
       enable = true;
-      shellAliases = {
-        nano = "micro";
-      };
     };
     nano.enable = lib.mkDefault false;
     nh = {
       clean = {
         enable = true;
-        extraArgs = "--keep-since 15d --keep 10";
+        extraArgs = "--keep-since 7d --keep 5";
       };
       enable = true;
       flake = "/home/${username}/Zero/nix-config";

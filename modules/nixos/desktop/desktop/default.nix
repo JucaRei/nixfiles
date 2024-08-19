@@ -1,10 +1,4 @@
-{
-  desktop,
-  isInstall,
-  lib,
-  pkgs,
-  ...
-}:
+{ desktop, isInstall, lib, pkgs, ... }:
 {
   imports = [
     ./apps
