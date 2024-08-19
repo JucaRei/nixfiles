@@ -21,7 +21,7 @@ pkgs.mkShell {
     git
     home-manager
     nix
-    nix-direnv
+    nix-direnv # A shell extension that manages your environment for nix
     # dropbear # ssh
   ];
 
