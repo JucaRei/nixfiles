@@ -1,59 +1,17 @@
-{ inputs, outputs, stateVersion, lib, pkgs, config, ... }:
-with inputs;
+{ inputs
+, outputs
+, stateVersion
+, ...
+}:
 {
   # Helper function for generating home-manager configs
-  makeHomeManager =
-    ### TODO - add displays
-    { hostname
-    , username ? "juca"
-    , desktop ? null
-    , stateVersion ? "23.11"
-    , platform ? "x86_64-linux"
-    }:
-    let
-      isISO = builtins.substring 0 4 hostname == "iso-";
-      isInstall = !isISO;
-      isLima = builtins.substring 0 5 hostname == "lima-";
-      isWorkstation = builtins.isString desktop;
-    in
-    home-manager.lib.homeManagerConfiguration {
-      pkgs = nixpkgs.legacyPackages.${platform};
-      extraSpecialArgs = {
-        inherit inputs outputs desktop hostname platform username stateVersion isInstall isLima isISO isWorkstation;
-      };
-      modules = [
-        ../home-manager
-
-        declarative-flatpak.homeManagerModules.default
-        nur.hmModules.nur
-        vscode-server.homeModules.default
-        nix-index-database.hmModules.nix-index
-        catppuccin.homeManagerModules.catppuccin
-        # inputs.vscode-server.nixosModules.home
-
-        ({ config, pkgs, lib, ... }: {
-          # Shared Between all users
-          services.vscode-server = {
-            enable = lib.mkDefault false;
-          };
-          home.packages = with pkgs; [
-            nixpkgs-fmt
-            nix-output-monitor
-            nurl # Nix URL fetcher
-          ];
-        })
-
-      ];
-    };
-
-  # Helper function for generating host configs
-  makeNixOS =
+  makeHome =
     { hostname
     , username ? "juca"
     , desktop ? null
     , hostid ? null
     , platform ? "x86_64-linux"
-    , stateVersion ? "23.11"
+    , stateVersion ? "24.05"
     ,
     }:
     let
@@ -63,56 +21,110 @@ with inputs;
       isWorkstation = builtins.isString desktop;
       notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
     in
+    inputs.home-manager.lib.homeManagerConfiguration {
+      pkgs = inputs.nixpkgs.legacyPackages.${platform};
+      extraSpecialArgs = {
+        inherit
+          inputs
+          outputs
+          desktop
+          hostname
+          platform
+          hostid
+          username
+          stateVersion
+          isInstall
+          isLima
+          isISO
+          isWorkstation
+          notVM
+          ;
+      };
+      modules = [ ../modules/home-manager/linux ];
+    };
+
+  # Helper function for generating NixOS configs
+  makeSystem =
+    { hostname
+    , username ? "juca"
+    , desktop ? null
+    , platform ? "x86_64-linux"
+    , stateVersion ? "24.05"
+    ,
+    }:
+    let
+      isISO = builtins.substring 0 4 hostname == "iso-";
+      isInstall = !isISO;
+      isLima = builtins.substring 0 5 hostname == "lima-";
+      isWorkstation = builtins.isString desktop;
+    in
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
-        inherit inputs outputs desktop hostname platform username hostid stateVersion isInstall isLima isISO notVM isWorkstation;
+        inherit
+          inputs
+          outputs
+          desktop
+          hostname
+          platform
+          username
+          stateVersion
+          isInstall
+          isLima
+          isISO
+          isWorkstation
+          ;
       };
+      # If the hostname starts with "iso-", generate an ISO image
       modules =
         let
           cd-dvd =
             if (desktop == null) then
-              nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+              inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+                { isoImage.squashfsCompression = "gzip -Xcompression-level 1"; }
             else
-              nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix";
+              inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix"
+                { isoImage.squashfsCompression = "gzip -Xcompression-level 1"; };
         in
-        [
-          ../nixos
-          # chaotic.nixosModules.default # DEFAULT MODULE
-          # home-manager.nixosModules.home-manager
-          # {
-          #   home-manager.useGlobalPkgs = true;
-          #   home-manager.useUserPackages = true;
-          #   home-manager.users.${username} = import ../home-manager;
-
-          #   # Optionally, use home-manager.extraSpecialArgs to pass
-          #   # arguments to home.nix
-          # }
-          proxmox-nixos.nixosModules.proxmox-ve
-          chaotic.nixosModules.default # OUR DEFAULT MODULE
-          disko.nixosModules.disko
-          nh.nixosModules.default
-          catppuccin.nixosModules.catppuccin
-          nix-flatpak.nixosModules.nix-flatpak
-          nix-index-database.nixosModules.nix-index
-          nix-snapd.nixosModules.default
-          sops-nix.nixosModules.sops
-
-          ({ pkgs, lib, inputs, config, ... }: {
-            # Shared Between all users
-            # services.proxmox-ve.enable = true;
-            nixpkgs.overlays = [
-              inputs.proxmox-nixos.overlays.${platform}
-            ];
-          })
-
-        ] ++ inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ];
+        [ ../modules/system ] ++ inputs.nixpkgs.lib.optionals isISO [ cd-dvd ];
     };
 
-  systems = inputs.nixpkgs.lib.genAttrs [
-    "x86_64-linux"
+  mkDarwin =
+    { desktop ? "aqua"
+    , hostname
+    , username ? "juca"
+    , platform ? "aarch64-darwin"
+    ,
+    }:
+    let
+      isISO = false;
+      isInstall = true;
+      isLima = false;
+      isWorkstation = true;
+    in
+    inputs.nix-darwin.lib.darwinSystem {
+      specialArgs = {
+        inherit
+          inputs
+          outputs
+          desktop
+          hostname
+          platform
+          username
+          stateVersion
+          isInstall
+          isLima
+          isISO
+          isWorkstation
+          ;
+      };
+      modules = [ ../modules/home-manager/darwin ];
+    };
+
+  forAllSystems = inputs.nixpkgs.lib.genAttrs [
     "aarch64-linux"
     "i686-linux"
-    "x86_64-darwin"
+    "x86_64-linux"
     "aarch64-darwin"
+    "x86_64-darwin"
   ];
 }

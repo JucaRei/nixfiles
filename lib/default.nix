@@ -1,10 +1,11 @@
-{ inputs, outputs, stateVersion, lib, pkgs, config, ... }:
+{ inputs
+, outputs
+, stateVersion
+, ...
+}:
 let
-  helpers = import ./helpers.nix { inherit inputs outputs stateVersion lib pkgs config; };
-
-  # wrapProgram = pkgs.callPackage ./wrap-program.nix { inherit lib pkgs; };
-
+  helpers = import ./helpers.nix { inherit inputs outputs stateVersion; };
 in
 {
-  inherit (helpers) makeHomeManager makeNixOS systems;
+  inherit (helpers) mkDarwin makeHome makeSystem forAllSystems;
 }

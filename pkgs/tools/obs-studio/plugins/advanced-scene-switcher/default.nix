@@ -1,7 +1,9 @@
 { lib
 , fetchFromGitHub
+
 , cmake
 , ninja
+
 , alsa-lib
 , asio
 , curl
@@ -14,19 +16,25 @@
 , tesseract
 , websocketpp
 , xorg
+
 , httplib
 , libremidi
 }:
 
 stdenv.mkDerivation rec {
   pname = "advanced-scene-switcher";
-  version = "1.24.2";
+  # 1.25.1 worked
+  # 1.25.5 worked
+  # 1.26.4 segfaults
+  # 1.26.3 segfaults
+  # 1.26.2 worked
+  version = "1.26.2";
 
   src = fetchFromGitHub {
     owner = "WarmUpTill";
     repo = "SceneSwitcher";
     rev = version;
-    hash = "sha256-J5Qcs2eoKMeO1O/MCsR5wfmfbtndRaZmHrbleEZqqOo=";
+    hash = "sha256-x9wk4tqCXufHSb/ssUxjm0o6JrZzXnIk+adIn/YI9Qk=";
   };
 
   nativeBuildInputs = [
@@ -58,18 +66,13 @@ stdenv.mkDerivation rec {
     chmod -R +w $sourceRoot/deps/libremidi
   '';
 
-  postInstall = ''
-    mkdir $out/lib $out/share
-    mv $out/obs-plugins/64bit $out/lib/obs-plugins
-    mv $out/data $out/share/obs
-    rm -rf $out/obs-plugins
-  '';
+  env.NIX_CFLAGS_COMPILE = "-Wno-error=stringop-overflow";
 
   meta = with lib; {
-    description = "An automated scene switcher for OBS Studio";
+    description = "Automated scene switcher for OBS Studio";
     homepage = "https://github.com/WarmUpTill/SceneSwitcher";
     license = licenses.gpl2Plus;
     platforms = platforms.linux;
-    maintainers = with maintainers; [ paveloom ];
+    maintainers = with maintainers; [ flexiondotorg ];
   };
 }

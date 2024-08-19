@@ -7,13 +7,13 @@
 
 stdenv.mkDerivation rec {
   pname = "obs-noise";
-  version = "0.0.5a";
+  version = "1.0.0";
 
   src = fetchFromGitHub {
     owner = "FiniteSingularity";
     repo = "obs-noise";
     rev = "v${version}";
-    sha256 = "sha256-3HpZ1JzZRdvR/nJ4IB2xQZSkbBMppppApl3upaKYZ1c=";
+    sha256 = "sha256-D9vGXCrmQ8IDRmL8qZ1ZBiOz9AjhKm45W37zC16kRCk=";
   };
 
   nativeBuildInputs = [ cmake ];
@@ -29,7 +29,7 @@ stdenv.mkDerivation rec {
     description = "A plug-in for noise generation and noise effects for OBS.";
     homepage = "https://github.com/FiniteSingularity/obs-noise";
     maintainers = with maintainers; [ flexiondotorg ];
-    license = licenses.gpl2Plus;
+    license = licenses.gpl2Only;
     platforms = [ "x86_64-linux" "i686-linux" ];
   };
 }

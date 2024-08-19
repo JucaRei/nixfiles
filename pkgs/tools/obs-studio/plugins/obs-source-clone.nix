@@ -5,15 +5,15 @@
 , obs-studio
 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "obs-source-clone";
-  version = "0.1.4";
+  version = "0.1.5";
 
   src = fetchFromGitHub {
     owner = "exeldro";
     repo = "obs-source-clone";
-    rev = version;
-    sha256 = "sha256-E2pHJO3cdOXmSlTVGsz4tncm9fMaa8Rhsq9YZDNidjs=";
+    rev = "d1524d5d932d6841a1fbd6061cc4a0033fb615b7";
+    hash = "sha256-W9IIIGQdreI2FQGii5NUB5tVHcqsiYAKTutOHEPCyms=";
   };
 
   nativeBuildInputs = [ cmake ];
@@ -31,6 +31,6 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/exeldro/obs-source-clone";
     maintainers = with maintainers; [ flexiondotorg ];
     license = licenses.gpl2Plus;
-    platforms = [ "x86_64-linux" "i686-linux" ];
+    platforms = platforms.linux;
   };
 }

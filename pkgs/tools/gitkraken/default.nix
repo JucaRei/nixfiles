@@ -2,7 +2,7 @@
 , libXfixes, atk, gtk3, libXrender, pango, gnome, cairo, freetype, fontconfig
 , libX11, libXi, libxcb, libXext, libXcursor, glib, libXScrnSaver, libxkbfile, libXtst
 , nss, nspr, cups, fetchzip, expat, gdk-pixbuf, libXdamage, libXrandr, dbus
-, makeDesktopItem, openssl, wrapGAppsHook, at-spi2-atk, at-spi2-core, libuuid
+, makeDesktopItem, openssl, wrapGAppsHook3, makeShellWrapper, at-spi2-atk, at-spi2-core, libuuid
 , e2fsprogs, krb5, libdrm, mesa, unzip, copyDesktopItems, libxshmfence, libxkbcommon, git
 , libGL, zlib, cacert
 }:
@@ -11,32 +11,32 @@ with lib;
 
 let
   pname = "gitkraken";
-  version = "9.12.0";
+  version = "10.1.1";
 
   throwSystem = throw "Unsupported system: ${stdenv.hostPlatform.system}";
 
   srcs = {
     x86_64-linux = fetchzip {
       url = "https://release.axocdn.com/linux/GitKraken-v${version}.tar.gz";
-      hash = "sha256-g2YcNFKt1/YBmEOH3Z5b0MPMMOWBIvXh+V2fzaGgCgQ=";
+      hash = "sha256-+Bm6zEw9Q4FFgoXuSSQ9IFVVbyIenN5UN6VChqvESQI=";
     };
 
     x86_64-darwin = fetchzip {
       url = "https://release.axocdn.com/darwin/GitKraken-v${version}.zip";
-      hash = "sha256-yy7BbtguQj/LVM7ivNTcG97XIImQUMQPKwTVDWGvvnQ=";
+      hash = "sha256-6UjGiStMRr9fsNfJGMlhawR7PccMA9l9osAL4d/6ehc=";
     };
 
     aarch64-darwin = fetchzip {
       url = "https://release.axocdn.com/darwin-arm64/GitKraken-v${version}.zip";
-      hash = "sha256-ihnTzQC7B0TdHZzXmrwcVSfxKvGoBBTdRq8ZJicaVDI=";
+      hash = "sha256-FwI0GmarKneOuDyTgwOH1xSMy1wT/sbQ0XA3nUYqFmQ=";
     };
   };
 
   src = srcs.${stdenv.hostPlatform.system} or throwSystem;
 
   meta = {
-    homepage = "https://www.gitkraken.com/";
-    description = "The downright luxurious and most popular Git client for Windows, Mac & Linux";
+    homepage = "https://www.gitkraken.com/git-client";
+    description = "Simplifying Git for any OS";
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     license = licenses.unfree;
     platforms = builtins.attrNames srcs;
@@ -97,16 +97,16 @@ let
     ];
 
     desktopItems = [ (makeDesktopItem {
-      name = "GitKraken";
+      name = "GitKraken Desktop";
       exec = "gitkraken";
       icon = "gitkraken";
-      desktopName = "GitKraken";
+      desktopName = "GitKraken Desktop";
       genericName = "Git Client";
       categories = [ "Development" ];
-      comment = "Graphical Git client from Axosoft";
+      comment = "Unleash your repo";
     }) ];
 
-    nativeBuildInputs = [ copyDesktopItems makeWrapper wrapGAppsHook ];
+    nativeBuildInputs = [ copyDesktopItems (wrapGAppsHook3.override { makeWrapper = makeShellWrapper; }) ];
     buildInputs = [ gtk3 gnome.adwaita-icon-theme ];
 
     # avoid double-wrapping
@@ -122,6 +122,10 @@ let
       cp gitkraken.png $out/share/pixmaps/
 
       runHook postInstall
+    '';
+
+    preFixup = ''
+      gappsWrapperArgs+=(--add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}")
     '';
 
     postFixup = ''
@@ -157,13 +161,15 @@ let
   darwin = stdenv.mkDerivation {
     inherit pname version src meta;
 
-    nativeBuildInputs = [ unzip ];
+    nativeBuildInputs = [ unzip makeWrapper ];
 
     installPhase = ''
       runHook preInstall
 
-      mkdir -p $out/Applications/GitKraken.app
+      mkdir -p $out/Applications/GitKraken.app $out/bin
       cp -R . $out/Applications/GitKraken.app
+
+      makeWrapper $out/Applications/GitKraken.app/Contents/MacOS/GitKraken $out/bin/gitkraken
 
       runHook postInstall
     '';
