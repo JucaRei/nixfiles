@@ -17,6 +17,6 @@ in
     "${config.xdg.configHome}/yazi/keymap.toml".text = builtins.readFile ../../../../../resources/configs/yazi-keymap.toml;
     "${config.xdg.configHome}/fish/functions/help.fish".text = builtins.readFile ../../../../../resources/configs/help.fish;
     "${config.xdg.configHome}/fish/functions/h.fish".text = builtins.readFile ../../../../../resources/configs/h.fish;
-    ".hidden".text = lib.mkIf isDarwin ''snap'';
+    ".hidden".text = ''snap'';
   };
 }
