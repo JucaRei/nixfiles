@@ -1,8 +1,7 @@
-{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, hostname, platform, ... }:
+{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, hostname, platform, flakepath, ... }:
 with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  flakepath = "/home/${username}/.dotfiles/nixfiles";
   home-build = pkgs.writeScriptBin /*bash*/ "home-build" ''
     #!${pkgs.stdenv.shell}
 

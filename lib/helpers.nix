@@ -1,4 +1,4 @@
-{ inputs, outputs, stateVersion, pkgs, config, lib, ... }:
+{ inputs, outputs, stateVersion, pkgs, config, lib, flakepath, ... }:
 {
   # Helper function for generating home-manager configs
   makeHome =
@@ -8,6 +8,7 @@
     , hostid ? null
     , platform ? "x86_64-linux"
     , stateVersion ? "24.05"
+    , flakepath ? "/home/${username}/.dotfiles/nixfiles"
     ,
     }:
     let
@@ -27,6 +28,7 @@
           hostname
           platform
           hostid
+          flakepath
           username
           stateVersion
           isInstall
@@ -46,6 +48,7 @@
     , desktop ? null
     , platform ? "x86_64-linux"
     , stateVersion ? "24.05"
+    , flakepath ? "/home/${username}/Zero/nix-config"
     ,
     }:
     let
@@ -59,6 +62,7 @@
         inherit
           inputs
           outputs
+          flakepath
           desktop
           hostname
           platform
@@ -89,6 +93,7 @@
     , hostname
     , username ? "juca"
     , platform ? "aarch64-darwin"
+    , flakepath ? "/home/${username}/Zero/nix-config"
     ,
     }:
     let
@@ -103,6 +108,7 @@
           inputs
           outputs
           desktop
+          flakepath
           hostname
           platform
           username

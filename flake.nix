@@ -2,7 +2,6 @@
   description = "Juca's nix flake for my system's";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
-    # nixpkgs-legacy = "github:nixos/nixpkgs/nixos-22.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     auto-cpufreq = {
@@ -84,7 +83,7 @@
     with inputs; let
       inherit (self) outputs;
       # stateVersion = "23.11"; # default
-      helper = import ./lib { inherit inputs outputs stateVersion lib pkgs config; };
+      helper = import ./lib { inherit inputs outputs stateVersion lib pkgs config flakepath; };
     in
     {
       # home-manager switch -b backup --flake $HOME/Zero/nix-config
