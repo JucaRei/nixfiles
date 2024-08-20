@@ -1,9 +1,8 @@
-{ config, lib, hostname, pkgs, username, ... }:
+{ config, lib, hostname, pkgs, username, isWorkstation, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
 in
 {
-  imports = [ ];
   home = {
     file = {
       # ".ssh/config".text = ''
@@ -11,21 +10,26 @@ in
       #     HostName github.com
       #     User git
       # '';
-      # "Quickemu/nixos-console.conf".text = ''
-      #   #!/run/current-system/sw/bin/quickemu --vm
-      #   guest_os="linux"
-      #   disk_img="nixos-console/disk.qcow2"
-      #   disk_size="20G"
-      #   iso="nixos-console/nixos.iso"
-      # '';
-      # "Quickemu/nixos-desktop.conf".text = ''
-      #   #!/run/current-system/sw/bin/quickemu --vm
-      #   guest_os="linux"
-      #   disk_img="nixos-desktop/disk.qcow2"
-      #   disk_size="20G"
-      #   iso="nixos-desktop/nixos.iso"
-      # '';
-
+      "Quickemu/nixos-console.conf".text = ''
+        #!/run/current-system/sw/bin/quickemu --vm
+        guest_os="linux"
+        disk_img="nixos-console/disk.qcow2"
+        disk_size="20G"
+        iso="nixos-console/nixos.iso"
+      '';
+      "Quickemu/nixos-desktop.conf".text = ''
+        #!/run/current-system/sw/bin/quickemu --vm
+        guest_os="linux"
+        disk_img="nixos-desktop/disk.qcow2"
+        disk_size="20G"
+        iso="nixos-desktop/nixos.iso"
+      '';
+      ".face" = lib.mkIf isWorkstation {
+        source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+      };
+      ".distroboxrc" = lib.mkIf isLinux {
+        text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
+      };
       # List home-manager packages
       ".local/home-manager-packages.txt" = {
         text =
@@ -36,12 +40,16 @@ in
           in
           "${formatted}";
       };
+      # "${config.home.homeDirectory}/Pictures/wallpapers" = lib.mkDefault {
+      #   source = ../../_mixins/config/wallpapers;
+      #   recursive = true;
+      # };
     };
     # A Modern Unix experience
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
-    packages = with pkgs;
-      lib.mkDefault [
-      ];
+    packages = with pkgs;[
+      cloneit
+    ];
     extraOutputsToInstall = [ "info" "man" "share" "icons" "doc" ];
   };
   # programs = {
@@ -61,9 +69,9 @@ in
     "d ${config.home.homeDirectory}/workspace/github 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/workspace/bitbucket 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/workspace/gitlab 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Virtualmachines/windows 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Virtualmachines/linux 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Virtualmachines/mac 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/virtualmachines/windows 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/virtualmachines/linux 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/virtualmachines/mac 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/docker/composes 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Videos/Animes/movies 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Videos/Animes/series 0755 ${username} users - -"

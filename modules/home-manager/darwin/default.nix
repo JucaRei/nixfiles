@@ -1,16 +1,13 @@
 { config, inputs, hostname, lib, username, pkgs, isWorkstation, isLima, stateVersion, ... }: {
   imports = [
-    ../shared.nix
     inputs.nix-index-database.darwinModules.nix-index
-  ] ++ lib.optional isWorkstation ./desktop;
+  ] ++ lib.optional isWorkstation ./gui/desktop;
 
   fonts.fontconfig.enable = true;
 
   home = {
     inherit stateVersion username;
-    homeDirectory =
-      if isLima then "/home/${username}.linux" else "/Users/${username}";
-
+    homeDirectory = if isLima then "/home/${username}.linux" else "/Users/${username}";
 
     packages = with pkgs; [
       duf # Modern Unix `df`

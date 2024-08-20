@@ -1,37 +1,65 @@
 { config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, hostname, platform, ... }:
+with lib;
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
+  flakepath = "/home/${username}/.dotfiles/nixfiles";
+  home-build = pkgs.writeScriptBin /*bash*/ "home-build" ''
+    #!${pkgs.stdenv.shell}
+
+    if [ -e ${flakepath} ]; then
+      all_cores=$(nproc)
+      build_cores=$(${pkgs.coreutils}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
+      echo "Building Nix Home-manager 🏠️ with $build_cores cores"
+      ${pkgs.nh}/bin/nh home build ${flakepath} -- --impure --cores $build_cores
+    else
+      ${pkgs.coreutils}/bin/echo "ERROR! No nixfiles found in ${flakepath}"
+    fi
+  '';
+  home-switch = pkgs.writeScriptBin "home-switch" ''
+    #!${pkgs.stdenv.shell}
+
+    if [ -e ${flakepath} ]; then
+      all_cores=$(nproc)
+      build_cores=$(${pkgs.coreutils}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
+      echo "Building Nix Home-manager 🏠️ with $build_cores cores"
+      ${pkgs.nh}/bin/nh home switch --backup-extension backup ${flakepath} -- --impure --cores $build_cores
+    else
+      ${pkgs.coreutils}/bin/echo "ERROR! No nix-config found in ${flakepath}"
+    fi
+  '';
 in
 {
   imports = [
-    (import ../modules/home-manager/linux/cli/fish { inherit config pkgs lib; })
+    (import ../modules/home-manager/linux/cli/fish {
+      inherit config pkgs lib;
+    })
   ]
-  ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-  # ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
-  ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
+  ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
+  # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
+  ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
 
   home = {
 
-    sessionVariables = lib.mkDefault {
-      EDITOR = lib.mkDefault "micro";
-      MANPAGER = lib.mkDefault "sh -c 'col --no-backspaces --spaces | bat --language man'";
-      MANROFFOPT = lib.mkDefault "-c";
-      MICRO_TRUECOLOR = lib.mkDefault "1";
-      PAGER = lib.mkDefault "bat";
-      SYSTEMD_EDITOR = lib.mkDefault "micro";
-      VISUAL = lib.mkDefault "micro";
-      NIXPKGS_ALLOW_UNFREE = lib.mkDefault "1";
-      NIXPKGS_ALLOW_INSECURE = lib.mkDefault "1";
-      FLAKE = lib.mkDefault "/home/${username}/.dotfiles/nixfiles";
+    sessionVariables = mkDefault {
+      EDITOR = mkDefault "micro";
+      MANPAGER = mkDefault "sh -c 'col --no-backspaces --spaces | bat --language man'";
+      MANROFFOPT = mkDefault "-c";
+      MICRO_TRUECOLOR = mkDefault "1";
+      PAGER = mkDefault "bat";
+      SYSTEMD_EDITOR = mkDefault "micro";
+      VISUAL = mkDefault "micro";
+      NIXPKGS_ALLOW_UNFREE = mkDefault "1";
+      NIXPKGS_ALLOW_INSECURE = mkDefault "1";
+      FLAKE = mkDefault flakepath;
     };
 
     shellAliases = {
-      mkhostid = lib.mkIf isLinux "head -c4 /dev/urandom | od -A none -t x4";
+      mkhostid = mkIf isLinux "head -c4 /dev/urandom | od -A none -t x4";
       mkdir = "mkdir -pv";
-      ip = lib.mkIf isLinux "${pkgs.iproute2}/bin/ip --color --brief";
-      less = lib.mkDefault "${pkgs.bat}/bin/bat --paging=always";
-      more = lib.mkDefault "${pkgs.bat}/bin/bat --paging=always";
-      du = lib.mkDefault "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
+      ip = mkIf isLinux "${pkgs.iproute2}/bin/ip --color --brief";
+      less = mkDefault "${pkgs.bat}/bin/bat --paging=always";
+      more = mkDefault "${pkgs.bat}/bin/bat --paging=always";
+      du = mkDefault "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
       glow = "${pkgs.glow}/bin/glow --pager";
       ruler = ''${pkgs.hr}/bin/hr "╭─³⁴⁵⁶⁷⁸─╮"'';
       hr = ''${pkgs.hr}/bin/hr "─━"'';
@@ -45,8 +73,10 @@ in
       usb = "${pkgs.inxi}/bin/inxi -J";
       wifi = "${pkgs.inxi}/bin/inxi -n";
       dmesg = lib.mkIf isLinux "${pkgs.util-linux}/bin/dmesg --human --color=always";
-      store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+      # store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
     };
+
+    packages = with pkgs; [ home-build home-switch nix-whereis ];
   };
 
   # Workaround home-manager bug with flakes
@@ -445,7 +475,7 @@ in
   };
 
   services = {
-    gpg-agent = lib.mkIf isLinux {
+    gpg-agent = mkIf isLinux {
       enable = isLinux;
       enableSshSupport = true;
       pinentryPackage = pkgs.pinentry-curses;

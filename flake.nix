@@ -44,6 +44,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixd = {
+      url = "github:nix-community/nixd";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -56,6 +61,7 @@
     };
 
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0";
+    nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
 
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
 
@@ -77,7 +83,6 @@
   outputs = inputs@{ self, ... }:
     with inputs; let
       inherit (self) outputs;
-      # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       # stateVersion = "23.11"; # default
       helper = import ./lib { inherit inputs outputs stateVersion lib pkgs config; };
     in

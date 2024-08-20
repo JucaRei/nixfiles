@@ -6,8 +6,8 @@ lib.mkIf isDarwin {
   targets.darwin = {
     currentHostDefaults = {
       NSGlobalDomain = {
-        AppleLanguages = [ "en-GB" ];
-        AppleLocale = "en_GB";
+        AppleLanguages = [ "en-US" ];
+        AppleLocale = "en_US";
       };
       "com.apple.Safari" = {
         AutoFillCreditCardData = false;

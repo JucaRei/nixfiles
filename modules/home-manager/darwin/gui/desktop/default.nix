@@ -1,7 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, lib, isWorkstation, ... }:
 {
   imports = [
-    ../fonts
+    ./aqua
+    ../apps
   ];
 
   environment.systemPackages = with pkgs; [ ];

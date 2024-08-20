@@ -6,7 +6,7 @@ in
 {
   imports = [
     ../../../home
-    ./cli/alias_core
+    ./cli/features
     # If you want to use modules your own flake exports (from modules/home-manager):
     # outputs.homeManagerModules.example
 
@@ -15,7 +15,7 @@ in
     # inputs.determinate.homeModules.default
     inputs.sops-nix.homeManagerModules.sops
     inputs.nix-index-database.hmModules.nix-index
-  ] ++ lib.optional isWorkstation ./desktop;
+  ] ++ lib.optional isWorkstation ./gui/desktop;
 
   config = {
     catppuccin = {
@@ -88,7 +88,7 @@ in
         enable = !isLima;
         createDirectories = lib.mkDefault true;
         extraConfig = {
-          XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/Screenshots";
+          XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/screenshots";
         };
       };
     };
@@ -96,7 +96,6 @@ in
     programs = {
       home-manager = {
         enable = true;
-        # path = lib.mkForce "$HOME/.config/home-manager";
       };
     };
   };

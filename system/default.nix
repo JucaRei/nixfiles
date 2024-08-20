@@ -6,7 +6,6 @@ in
 {
   imports = [
     (./. ./hosts/${hostname})
-    ../modules/nixos
     ./users
   ];
 
