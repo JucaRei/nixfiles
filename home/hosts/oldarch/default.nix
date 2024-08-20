@@ -5,6 +5,7 @@
       nil
       nixpkgs-fmt
       nixd
+      cloneit
     ];
   };
 }

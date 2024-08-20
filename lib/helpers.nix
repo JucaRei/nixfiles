@@ -1,4 +1,4 @@
-{ inputs, outputs, stateVersion, pkgs, ... }:
+{ inputs, outputs, stateVersion, pkgs, config, lib, ... }:
 {
   # Helper function for generating home-manager configs
   makeHome =
@@ -116,7 +116,7 @@
       modules = [ ../modules/home-manager/darwin ];
     };
 
-  forAllSystems = inputs.nixpkgs.lib.genAttrs [
+  systems = inputs.nixpkgs.lib.genAttrs [
     "aarch64-linux"
     "i686-linux"
     "x86_64-linux"
