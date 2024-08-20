@@ -1,4 +1,4 @@
-{ inputs, outputs, stateVersion, ... }:
+{ inputs, outputs, ... }:
 {
   # Helper function for generating home-manager configs
   makeHome =

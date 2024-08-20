@@ -78,7 +78,7 @@
       with  inputs;
       let
         inherit (self) outputs;
-        helper = import ./lib { inherit inputs outputs stateVersion; };
+        helper = import ./lib { inherit inputs outputs; } // nixpkgs.lib // home-manager.lib;
       in
       {
         # home-manager switch -b backup --flake $HOME/Zero/nix-config

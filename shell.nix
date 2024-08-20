@@ -18,6 +18,7 @@
     ];
 
     shellHook = ''
+      $SHELL
       # alias ssh="dbclient"
       echo "Flakes!" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
     '';
