@@ -11,7 +11,10 @@ let
 in
 {
   options.modules.alias-core = {
-    enable = lib.mkEnableOption "Enable aliases for system" // { default = true; };
+    enable = lib.mkOption {
+      default = true;
+      type = lib.types.bool;
+    };
 
     systemd.shellAliases = lib.mkOption {
       type = with lib.types; attrsOf str;
@@ -169,8 +172,6 @@ in
           sxorg = "export DISPLAY=:0.0";
           nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
           ios = "sudo --preserve-env=PATH ${pkgs.dmidecode}/bin/dmidecode -t bios";
-          cat = ''bat --paging=never --theme=tokyo_night --style="numbers,changes" --italic-text=always''; # bat (cat)
-          ct = ''bat --paging=never --theme=tokyo_night --style="plain" --italic-text=always''; # bat (cat)
           wget = "${pkgs.wget2}/bin/wget2";
           cpa = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
           mva = "${pkgs.advmvcp}/bin/advmv --progress-bar";

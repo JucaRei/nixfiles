@@ -2,7 +2,8 @@
 with lib;
 {
   imports = [
-    ../../system
+    ../../cli
+    ../../gui
     inputs.auto-cpufreq.nixosModules.default
     inputs.catppuccin.nixosModules.catppuccin
     #inputs.determinate.nixosModules.default

@@ -157,7 +157,6 @@
       # Custom packages and modifications, exported as overlays
       overlays = import ./overlays {
         inherit inputs;
-        nixgl = nixgl.overlay;
       };
 
       # Custom packages; acessible via 'nix build', 'nix shell', etc

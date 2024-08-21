@@ -28,14 +28,10 @@ let
   '';
 in
 {
-  imports = [
-    (import ../modules/home-manager/linux/cli/fish {
-      inherit config pkgs lib;
-    })
-  ]
-  ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-  # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
-  ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
+  imports = [ ]
+    ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
+    # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
+    ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
 
   home = {
 
@@ -171,87 +167,15 @@ in
   };
 
   programs = {
-    aria2.enable = true;
-    atuin = {
-      enable = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-      enableZshIntegration = true;
-      flags = [ "--disable-up-arrow" ];
-      package = pkgs.atuin;
-      settings = {
-        auto_sync = true;
-        dialect = "us";
-        # key_path = config.sops.secrets.atuin_key.path;
-        show_preview = true;
-        style = "compact";
-        sync_frequency = "1h";
-        sync_address = "https://api.atuin.sh";
-        update_check = false;
-      };
-    };
-    bat = {
-      catppuccin.enable = true;
-      enable = true;
-      extraPackages = with pkgs.bat-extras; [
-        batgrep
-        batwatch
-        prettybat
-      ];
-      config = {
-        style = "plain";
-      };
-    };
-    bottom = {
-      catppuccin.enable = true;
-      enable = true;
-      settings = {
-        disk_filter = {
-          is_list_ignored = true;
-          list = [ "/dev/loop" ];
-          regex = true;
-          case_sensitive = false;
-          whole_word = false;
-        };
-        flags = {
-          dot_marker = false;
-          enable_gpu_memory = true;
-          group_processes = true;
-          hide_table_gap = true;
-          mem_as_value = true;
-          tree = true;
-        };
-      };
-    };
-    cava = {
-      catppuccin.enable = true;
-      enable = isLinux;
-    };
     dircolors = {
       enable = true;
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableZshIntegration = true;
     };
-    direnv = {
-      enable = true;
-      enableBashIntegration = true;
-      enableZshIntegration = true;
-      nix-direnv = {
-        enable = true;
-      };
-    };
-    eza = {
-      enable = true;
-      enableBashIntegration = true;
-      enableFishIntegration = true;
-      enableZshIntegration = true;
-      extraOptions = [
-        "--group-directories-first"
-        "--header"
-      ];
-      git = true;
-      icons = true;
+    cava = {
+      catppuccin.enable = true;
+      enable = isLinux;
     };
     fzf = {
       catppuccin.enable = true;

@@ -140,6 +140,8 @@ in
     weather-bar = prev.weather-bar;
     cava-polybar = prev.cava-polybar;
     xqp = prev.xqp;
+    nixgl = inputs.nixgl.overlay;
+    nur = inputs.nur.overlay;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
