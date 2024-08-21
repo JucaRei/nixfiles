@@ -53,15 +53,6 @@ in
     ];
     extraOutputsToInstall = [ "info" "man" "share" "icons" "doc" ];
   };
-  # programs = {
-  # git = {
-  #   userEmail = "reinaldo.develop@gmail.com";
-  #   userName = "Reinaldo P JR ";
-  #   signing = {
-  #     key = "15E06DA3";
-  #     signByDefault = true;
-  #   };
-  # };
 
 
   systemd.user.tmpfiles.rules = lib.mkIf isLinux [

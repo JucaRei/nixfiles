@@ -8,6 +8,9 @@
     # Enable modules
     modules = {
       atuin.enable = true;
+      htop.enable = true;
+      eza.enable = false;
+      lsd.enable = true;
     };
     home = {
       packages = with pkgs; [

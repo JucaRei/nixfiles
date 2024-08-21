@@ -68,16 +68,16 @@ in
     fonts.fontconfig = {
       enable = true;
       defaultFonts = {
-        serif = [ "Source Serif" ];
-        sansSerif = [
+        serif = lib.mkDefault [ "Source Serif" ];
+        sansSerif = lib.mkDefault [
           "Work Sans"
           "Fira Sans"
         ];
-        monospace = [
+        monospace = lib.mkDefault [
           "FiraCode Nerd Font Mono"
           "Symbols Nerd Font Mono"
         ];
-        emoji = [
+        emoji = lib.mkDefault [
           "Noto Color Emoji"
           "Twitter Color Emoji"
         ];

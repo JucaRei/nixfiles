@@ -25,7 +25,7 @@ in
       git = true;
       icons = true;
     };
-    home = {
+    home = mkIf cfg.enable {
       # packages = with inputs; [
       #   fh.packages.${platform}.default
       #   eza.packages.${platform}.default
