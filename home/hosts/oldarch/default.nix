@@ -1,9 +1,5 @@
 { pkgs, config, lib, ... }: {
-  imports = [
-    (import ../../../modules/home-manager/linux/cli/fish {
-      inherit config pkgs lib;
-    }) # fish as default Shell
-  ];
+  imports = [ ];
   config = {
     # Enable modules
     modules = {
@@ -11,6 +7,9 @@
       htop.enable = true;
       eza.enable = false;
       lsd.enable = true;
+      yt-dlp-custom.enable = true;
+      wallpapers.enable = true;
+      powerline-go.enable = true;
     };
     home = {
       packages = with pkgs; [

@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 {
   home.file = {
-    ".local/share/plank/themes/Catppuccin-mocha/dock.theme".text = builtins.readFile ../../configs/plank-catppuccin-mocha.theme;
+    ".local/share/plank/themes/Catppuccin-mocha/dock.theme".text = builtins.readFile ../../../../../../resources/configs/plank/plank-catppuccin-mocha.theme;
   };
 
   services = {

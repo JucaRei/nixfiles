@@ -15,9 +15,12 @@ in
         ./. + "/${desktop}/${username}/default.nix"
       )) ./${desktop}/${username};
 
-  # Authrorize X11 access in Distrobox
-  home.file = lib.mkIf isLinux {
-    ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
+  home = {
+    # Authrorize X11 access in Distrobox
+    file = lib.mkIf isLinux {
+      ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
+      ".face".source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+    };
   };
 
   programs = lib.mkIf (username == "juca") {

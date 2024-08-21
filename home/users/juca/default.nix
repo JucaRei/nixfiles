@@ -1,6 +1,12 @@
 { config, lib, hostname, pkgs, username, isWorkstation, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
+  cfg = config.modules.wallpapers;
+  walls = pkgs.fetchgit {
+    url = "https://github.com/D3Ext/aesthetic-wallpapers";
+    rev = "060c580dcc11afea2f77f9073bd8710920e176d8";
+    sha256 = "5MnW630EwjKOeOCIAJdSFW0fcSSY4xmfuW/w7WyIovI=";
+  };
 in
 {
   home = {
@@ -24,12 +30,6 @@ in
         disk_size="20G"
         iso="nixos-desktop/nixos.iso"
       '';
-      ".face" = lib.mkIf isWorkstation {
-        source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
-      };
-      ".distroboxrc" = lib.mkIf isLinux {
-        text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
-      };
       # List home-manager packages
       ".local/home-manager-packages.txt" = {
         text =
@@ -40,10 +40,6 @@ in
           in
           "${formatted}";
       };
-      # "${config.home.homeDirectory}/Pictures/wallpapers" = lib.mkDefault {
-      #   source = ../../_mixins/config/wallpapers;
-      #   recursive = true;
-      # };
     };
     # A Modern Unix experience
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/

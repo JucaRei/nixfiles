@@ -1,6 +1,7 @@
 { pkgs, lib, config, ... }:
 with lib;
 let
+  inherit (pkgs.stdenv) isLinux;
   cfg = config.modules.gpg;
 in
 {
@@ -68,13 +69,24 @@ in
       };
     };
 
-    services.gpg-agent = {
-      enable = true;
-      enableBashIntegration = true;
-      enableSshSupport = true;
-      defaultCacheTtl = 34560000;
-      maxCacheTtl = 34560000;
+    services = {
+      gpg-agent = {
+        enable = true;
+        pinentryPackage = lib.mkIf isLinux pkgs.pinentry-curses;
+        enableBashIntegration = true;
+        enableSshSupport = true;
+        defaultCacheTtl = 34560000;
+        maxCacheTtl = 34560000;
+      };
+      pueue = {
+        enable = isLinux;
+        # https://github.com/Nukesor/pueue/wiki/Configuration
+        settings = {
+          daemon = {
+            default_parallel_tasks = 1;
+          };
+        };
+      };
     };
-
   };
 }
