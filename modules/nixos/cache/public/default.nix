@@ -1,0 +1,17 @@
+{ config, lib, namespace, ... }:
+with lib;
+with lib.${namespace};
+let
+  cfg = config.${namespace}.cache.public;
+in
+{
+  options.${namespace}.cache.public = {
+    enable = mkEnableOption "EX Calibur public cache";
+  };
+
+  config = mkIf cfg.enable {
+    excalibur.nix.extra-substituters = {
+      # "https://attic.ruby.hamho.me/public".key = "public:QUkZTErD8fx9HQ64kuuEUZHO9tXNzws7chV8qy/KLUk=";
+    };
+  };
+}

@@ -1,15 +1,25 @@
-{ inputs
-, outputs
-, stateVersion
-, pkgs
-, config
-, lib
-, flakepath
-, ...
-}:
-let
-  helpers = import ./helpers.nix { inherit inputs outputs stateVersion lib pkgs config flakepath; };
-in
 {
-  inherit (helpers) mkDarwin makeHome makeSystem systems;
+  lib,
+  inputs,
+  snowfall-inputs,
+}:
+
+rec {
+  ## Override a package's metadata
+  ##
+  ## ```nix
+  ## let
+  ##  new-meta = {
+  ##    description = "My new description";
+  ##  };
+  ## in
+  ##  lib.override-meta new-meta pkgs.hello
+  ## ```
+  ##
+  #@ Attrs -> Package -> Package
+  override-meta =
+    meta: package:
+    package.overrideAttrs (attrs: {
+      meta = (attrs.meta or { }) // meta;
+    });
 }

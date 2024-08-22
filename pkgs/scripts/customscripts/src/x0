@@ -1,6 +1,0 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -i bash -p curl
-for x in "$@"; do
-  curl -F "file=@\"$x\"" https://x0.at/
-  echo " "
-done
