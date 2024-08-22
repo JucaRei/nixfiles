@@ -1,4 +1,4 @@
-{ lib, inputs, snowfall-inputs, }:
+{ lib, inputs }:
 
 rec {
   ## Override a package's metadata
