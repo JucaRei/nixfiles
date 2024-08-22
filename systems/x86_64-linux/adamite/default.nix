@@ -1,9 +1,8 @@
-{
-  lib,
-  pkgs,
-  modulesPath,
-  namespace,
-  ...
+{ lib
+, pkgs
+, modulesPath
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -27,7 +26,7 @@ with lib.${namespace};
     nix = enabled;
 
     cli-apps = {
-      tmux = enabled;
+      # tmux = enabled;
       # neovim = enabled;
     };
 
@@ -44,15 +43,15 @@ with lib.${namespace};
       openssh = enabled;
       tailscale = enabled;
 
-      websites = {
-        traek = enabled;
-        dotbox = enabled;
-        noop-ai = enabled;
-        sokoban = enabled;
-        jakehamilton = enabled;
-        beyondthefringeoc = enabled;
-        snowfall-docs = enabled;
-      };
+      # websites = {
+      #   traek = enabled;
+      #   dotbox = enabled;
+      #   noop-ai = enabled;
+      #   sokoban = enabled;
+      #   jakehamilton = enabled;
+      #   beyondthefringeoc = enabled;
+      #   snowfall-docs = enabled;
+      # };
     };
 
     system = {

@@ -1,8 +1,7 @@
-{
-  pkgs,
-  lib,
-  namespace,
-  ...
+{ pkgs
+, lib
+, namespace
+, ...
 }:
 let
   tailscale-key = builtins.getEnv "TAILSCALE_AUTH_KEY";
@@ -25,8 +24,8 @@ with lib.${namespace};
     };
 
     cli-apps = {
-      neovim = enabled;
-      tmux = enabled;
+      # neovim = enabled;
+      # tmux = enabled;
     };
 
     desktop = {

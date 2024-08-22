@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   cfg = config.${namespace}.system.zfs;
@@ -44,7 +43,7 @@ in
 
     excalibur = {
       tools = {
-        icehouse = enabled;
+        # icehouse = enabled;
       };
     };
   };

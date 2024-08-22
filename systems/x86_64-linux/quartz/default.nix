@@ -1,9 +1,8 @@
-{
-  pkgs,
-  config,
-  lib,
-  namespace,
-  ...
+{ pkgs
+, config
+, lib
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -51,8 +50,8 @@ with lib.${namespace};
     nix = enabled;
 
     cli-apps = {
-      neovim = enabled;
-      tmux = enabled;
+      # neovim = enabled;
+      # tmux = enabled;
     };
 
     tools = {
@@ -62,7 +61,7 @@ with lib.${namespace};
       comma = enabled;
       nix-ld = enabled;
       bottom = enabled;
-      icehouse = enabled;
+      # icehouse = enabled;
     };
 
     hardware = {
@@ -87,9 +86,11 @@ with lib.${namespace};
             { }
             (
               builtins.filter (snowfall.path.has-file-extension "hcl") (
-                builtins.map (
-                  path: ./vault/policies + "/${builtins.baseNameOf (builtins.unsafeDiscardStringContext path)}"
-                ) (snowfall.fs.get-files ./vault/policies)
+                builtins.map
+                  (
+                    path: ./vault/policies + "/${builtins.baseNameOf (builtins.unsafeDiscardStringContext path)}"
+                  )
+                  (snowfall.fs.get-files ./vault/policies)
               )
             );
       };

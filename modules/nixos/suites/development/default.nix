@@ -1,10 +1,9 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ options
+, config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -15,8 +14,8 @@ let
     yubikey = enabled;
   };
   cli-apps = {
-    tmux = enabled;
-    neovim = enabled;
+    # tmux = enabled;
+    # neovim = enabled;
     yubikey = enabled;
     prisma = enabled;
     mods = enabled;

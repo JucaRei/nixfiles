@@ -1,8 +1,7 @@
-{
-  pkgs,
-  lib,
-  namespace,
-  ...
+{ pkgs
+, lib
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -12,9 +11,9 @@ with lib.${namespace};
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   snowfallorg = {
-    avalanche.desktop = {
-      enable = false;
-    };
+    # avalanche.desktop = {
+    #   enable = false;
+    # };
   };
 
   excalibur = {

@@ -11,7 +11,7 @@ with lib.${namespace};
   excalibur = {
     cli-apps = {
       zsh = enabled;
-      neovim = enabled;
+      # neovim = enabled;
       home-manager = enabled;
     };
 

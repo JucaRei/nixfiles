@@ -1,10 +1,9 @@
-{
-  lib,
-  pkgs,
-  config,
-  modulesPath,
-  namespace,
-  ...
+{ lib
+, pkgs
+, config
+, modulesPath
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -94,9 +93,9 @@ with lib.${namespace};
       openssh = enabled;
       tailscale = enabled;
 
-      websites = {
-        aux = enabled;
-      };
+      # websites = {
+      #   aux = enabled;
+      # };
     };
 
     system = {

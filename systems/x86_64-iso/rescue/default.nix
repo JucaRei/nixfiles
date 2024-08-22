@@ -1,8 +1,7 @@
-{
-  pkgs,
-  lib,
-  namespace,
-  ...
+{ pkgs
+, lib
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -11,7 +10,7 @@ with lib.${namespace};
     nix = enabled;
 
     cli-apps = {
-      neovim = enabled;
+      # neovim = enabled;
     };
 
     tools = {

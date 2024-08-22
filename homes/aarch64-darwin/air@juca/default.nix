@@ -1,11 +1,10 @@
-{
-  lib,
-  pkgs,
-  config,
-  osConfig ? { },
-  format ? "unknown",
-  namespace,
-  ...
+{ lib
+, pkgs
+, config
+, osConfig ? { }
+, format ? "unknown"
+, namespace
+, ...
 }:
 with lib.${namespace};
 {
@@ -17,8 +16,8 @@ with lib.${namespace};
 
     cli-apps = {
       zsh = enabled;
-      tmux = enabled;
-      neovim = enabled;
+      # tmux = enabled;
+      # neovim = enabled;
       home-manager = enabled;
     };
 

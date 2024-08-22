@@ -1,10 +1,9 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ options
+, config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -32,7 +31,7 @@ in
         vlc = enabled;
         logseq = enabled;
         hey = enabled;
-        pocketcasts = enabled;
+        # pocketcasts = enabled;
         yt-music = enabled;
         twitter = enabled;
         gparted = enabled;

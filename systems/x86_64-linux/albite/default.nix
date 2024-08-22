@@ -1,9 +1,8 @@
-{
-  lib,
-  pkgs,
-  modulesPath,
-  namespace,
-  ...
+{ lib
+, pkgs
+, modulesPath
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -27,7 +26,7 @@ with lib.${namespace};
     nix = enabled;
 
     cli-apps = {
-      tmux = enabled;
+      # tmux = enabled;
       # neovim = enabled;
     };
 
@@ -44,10 +43,9 @@ with lib.${namespace};
       openssh = enabled;
       tailscale = enabled;
 
-      websites = {
-        pungeonquest = enabled;
-        nixpkgs-news = enabled;
-      };
+      # websites = {
+      #   nixpkgs-news = enabled;
+      # };
     };
 
     system = {

@@ -1,9 +1,8 @@
-{
-  pkgs,
-  lib,
-  inputs,
-  namespace,
-  ...
+{ pkgs
+, lib
+, inputs
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -89,7 +88,7 @@ in
     };
 
     cli-apps = {
-      neovim = enabled;
+      # neovim = enabled;
       yubikey = enabled;
     };
 

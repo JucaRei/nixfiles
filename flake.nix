@@ -34,8 +34,6 @@
     # snowfall-lib.url = "path:/home/short/work/@snowfallorg/lib";
     snowfall-lib.inputs.nixpkgs.follows = "nixpkgs";
 
-    aux-website.url = "git+ssh://forgejo@git.auxolotl.org/auxolotl/website.git";
-    aux-website.inputs.nixpkgs.follows = "nixpkgs";
 
     nixgl.url = "github:nix-community/nixGL";
 
@@ -63,6 +61,12 @@
       # the build fails. Re-enable this after some time has passed.
       inputs.nixpkgs.follows = "unstable";
       inputs.nixpkgs-stable.follows = "nixpkgs";
+    };
+
+    # Snowfall Drift
+    drift = {
+      url = "github:snowfallorg/drift";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Vault Integration
@@ -125,6 +129,7 @@
         overlays = with inputs; [
           flake.overlays.default
           attic.overlays.default
+          drift.overlays.default
           lix.overlays.default
           nixgl.overlay
         ];
