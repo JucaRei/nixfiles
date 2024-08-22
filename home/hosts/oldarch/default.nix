@@ -10,6 +10,9 @@
       yt-dlp-custom.enable = true;
       wallpapers.enable = true;
       powerline-go.enable = true;
+      apps = {
+        joplin.enable = true;
+      };
     };
     home = {
       packages = with pkgs; [

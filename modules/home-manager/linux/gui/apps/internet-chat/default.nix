@@ -1,39 +1,39 @@
-{
-  config,
-  lib,
-  pkgs,
-  username,
-  ...
-}:
+{ config, lib, pkgs, username, ... }:
 let
   installFor = [ "juca" ];
-  inherit (pkgs.stdenv) isLinux;
+  cfg = config.modules.apps.internet-chat;
 in
 {
-  home = {
-    file = lib.mkIf (lib.elem username installFor) {
-      "${config.home.homeDirectory}/.local/share/chatterino/Themes/mocha-blue.json".text = builtins.readFile ./chatterino-mocha-blue.json;
-      "${config.home.homeDirectory}/.config/halloy/themes/catppuccin-mocha.toml".text = builtins.readFile ./halloy-catppuccin-mocha.toml;
+  options.modules.apps.internet-chat = {
+    enable = lib.mkOption {
+      default = false;
+      type = lib.types.bool;
     };
+  };
 
-    packages =
-      with pkgs;
-      [ unstable.telegram-desktop ]
-      ++ lib.optionals (lib.elem username installFor) [
-        chatterino2
+  config = lib.mkIf cfg.enable {
+    home = {
+      file = lib.mkIf (lib.elem username installFor) {
+        # "${config.home.homeDirectory}/.local/share/chatterino/Themes/mocha-blue.json".text = builtins.readFile ../../../../../../resources/configs/chatterino/chatterino-mocha-blue.json;
+        "${config.home.homeDirectory}/.config/halloy/themes/catppuccin-mocha.toml".text = builtins.readFile ../../../../../../resources/configs/halloy/halloy-catppuccin-mocha.toml;
+      };
+
+      packages = with pkgs; [ unstable.telegram-desktop ]
+        ++ lib.optionals (lib.elem username installFor) [
+        # chatterino2
         cinny-desktop
         (discord.override { withOpenASAR = true; })
       ]
-      # Halloy is installed via homebrew on Darwin
-      ++ lib.optionals (lib.elem username installFor && isLinux) [
-        fractal
+        ++ lib.optionals (lib.elem username installFor) [
+        # fractal
         halloy
       ];
-  };
-
-  sops = {
-    secrets = lib.mkIf (lib.elem username installFor) {
-      halloy_config.path = "${config.home.homeDirectory}/.config/halloy/config.toml";
     };
+
+    # sops = {
+    #   secrets = lib.mkIf (lib.elem username installFor) {
+    #     halloy_config.path = "${config.home.homeDirectory}/.config/halloy/config.toml";
+    #   };
+    # };
   };
 }

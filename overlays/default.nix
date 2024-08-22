@@ -122,6 +122,7 @@ in
     bebasNeue = prev.bebasNeue;
     feather = prev.feather;
     abel = prev.abel;
+    joplin-desktop = prev.joplin-desktop;
     catppuccin-grub = prev.catppuccin-grub;
     cyberre-grub-theme = prev.cyberre-grub-theme;
     astronaut-sddm = prev.astronaut-sddm;

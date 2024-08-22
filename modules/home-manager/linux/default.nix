@@ -8,6 +8,7 @@ in
     ../shared
     ../../../home
     ./cli/features
+    ./gui/apps/internet-chat
     # If you want to use modules your own flake exports (from modules/home-manager):
     # outputs.homeManagerModules.example
 
