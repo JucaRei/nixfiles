@@ -17,11 +17,9 @@ in
       vm = enabled;
     };
 
-    programs = {
-      graphical = {
-        desktop-environment = {
-          gnome = enabled;
-        };
+    desktop = {
+      gnome = {
+        enable = true;
       };
     };
 
