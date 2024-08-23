@@ -19,7 +19,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    khanelinix = {
+    juca = {
       display-managers = {
         sddm = {
           enable = true;

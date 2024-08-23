@@ -29,7 +29,7 @@ in
       ]
       ++ lib.optionals stdenv.isDarwin [ iina ];
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical.apps = {
           obs = enabled;

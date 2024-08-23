@@ -18,7 +18,7 @@ in
 
   config = mkIf cfg.enable {
 
-    khanelinix = {
+    juca = {
       services = {
         seatd = enabled;
       };

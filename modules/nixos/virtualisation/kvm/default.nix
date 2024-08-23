@@ -90,7 +90,7 @@ in
       spiceUSBRedirection.enable = true;
     };
 
-    khanelinix = {
+    juca = {
       user = {
         extraGroups = [
           "disk"

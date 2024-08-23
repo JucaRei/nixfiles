@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    khanelinix = {
+    juca = {
       # TODO: input-leap replace barrier
 
       suites = {

@@ -28,7 +28,7 @@ in
       protonup-qt
     ];
 
-    khanelinix = {
+    juca = {
       programs = {
         terminal = {
           tools = {

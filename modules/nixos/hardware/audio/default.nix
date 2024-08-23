@@ -36,7 +36,7 @@ in
 
     hardware.pulseaudio.enable = mkForce false;
 
-    khanelinix = {
+    juca = {
       user.extraGroups = [ "audio" ];
     };
 

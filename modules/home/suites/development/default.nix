@@ -60,7 +60,7 @@ in
       };
     };
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical = {
           editors = {

@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    khanelinix = {
+    juca = {
       suites = {
         common = enabled;
         desktop = enabled;

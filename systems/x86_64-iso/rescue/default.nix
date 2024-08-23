@@ -16,7 +16,7 @@ in
     file
   ];
 
-  khanelinix = {
+  juca = {
     nix = enabled;
 
     cli-apps = {

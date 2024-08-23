@@ -10,7 +10,7 @@ in
 {
   imports = [ ./hardware.nix ];
 
-  khanelinix = {
+  juca = {
     nix = enabled;
 
     hardware = {
@@ -61,7 +61,7 @@ in
             browseable = true;
             comment = "Application Data folder";
             only-owner-editable = true;
-            path = "/home/${config.khanelinix.user.name}/.config/";
+            path = "/home/${config.juca.user.name}/.config/";
             public = false;
             read-only = false;
           };
@@ -71,7 +71,7 @@ in
             browseable = true;
             comment = "Data folder";
             only-owner-editable = true;
-            path = "/home/${config.khanelinix.user.name}/.local/share/";
+            path = "/home/${config.juca.user.name}/.local/share/";
             public = false;
             read-only = false;
           };
@@ -81,7 +81,7 @@ in
             browseable = true;
             comment = "Virtual Machines folder";
             only-owner-editable = true;
-            path = "/home/${config.khanelinix.user.name}/vms/";
+            path = "/home/${config.juca.user.name}/vms/";
             public = false;
             read-only = false;
           };
@@ -91,7 +91,7 @@ in
             browseable = true;
             comment = "ISO Images folder";
             only-owner-editable = true;
-            path = "/home/${config.khanelinix.user.name}/isos/";
+            path = "/home/${config.juca.user.name}/isos/";
             public = false;
             read-only = false;
           };
@@ -101,7 +101,7 @@ in
             browseable = true;
             comment = "Time Machine backups folder";
             only-owner-editable = true;
-            path = "/home/${config.khanelinix.user.name}/.timemachine/";
+            path = "/home/${config.juca.user.name}/.timemachine/";
             public = false;
             read-only = true;
           };

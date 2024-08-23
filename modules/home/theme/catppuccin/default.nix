@@ -80,7 +80,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    khanelinix = {
+    juca = {
       theme = {
         gtk = mkIf pkgs.stdenv.isLinux {
           cursor = {
@@ -134,7 +134,7 @@ in
 
     home = {
       file = mkMerge [
-        (mkIf config.khanelinix.programs.terminal.emulators.warp.enable {
+        (mkIf config.juca.programs.terminal.emulators.warp.enable {
           ".warp/themes/catppuccin_macchiato.yaml".source = warpStyle;
           ".local/share/warp-terminal/themes/catppuccin_macchiato.yaml".source = warpStyle;
         })

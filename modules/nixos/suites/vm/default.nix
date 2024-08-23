@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    khanelinix = {
+    juca = {
       services = {
         spice-vdagentd = enabled;
         spice-webdav = enabled;

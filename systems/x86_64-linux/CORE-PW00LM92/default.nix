@@ -8,7 +8,7 @@ in
 
   documentation.man.enable = mkForce true;
 
-  khanelinix = {
+  juca = {
     archetypes = {
       wsl = enabled;
     };

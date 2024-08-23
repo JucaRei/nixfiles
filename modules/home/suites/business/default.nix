@@ -34,7 +34,7 @@ in
       ]
       ++ lib.optionals stdenv.isDarwin [ teams ];
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical = {
           apps = {

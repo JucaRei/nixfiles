@@ -60,7 +60,7 @@ in
     };
   };
 
-  khanelinix = {
+  juca = {
     nix = enabled;
 
     desktop = {

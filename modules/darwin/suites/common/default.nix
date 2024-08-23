@@ -56,7 +56,7 @@ in
       ];
     };
 
-    khanelinix = {
+    juca = {
       nix = enabled;
 
       tools = {

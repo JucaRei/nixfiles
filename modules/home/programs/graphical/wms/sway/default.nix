@@ -69,7 +69,7 @@ in
       };
     };
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical = {
           launchers = {

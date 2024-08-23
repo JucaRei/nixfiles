@@ -29,7 +29,7 @@ in
         tree
       ];
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical = {
           browsers = {

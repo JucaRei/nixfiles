@@ -166,7 +166,7 @@ in
       };
     };
 
-    khanelinix = {
+    juca = {
       user.extraOptions.openssh.authorizedKeys.keys = cfg.authorizedKeys;
 
       home.extraOptions = {

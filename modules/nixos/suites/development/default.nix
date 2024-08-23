@@ -31,7 +31,7 @@ in
       8081
     ];
 
-    khanelinix = {
+    juca = {
       user = {
         extraGroups = [ "git" ] ++ lib.optionals cfg.sqlEnable [ "mysql" ];
       };

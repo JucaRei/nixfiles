@@ -10,7 +10,7 @@ let
   cfg = config.${namespace}.user;
 in
 {
-  khanelinix = {
+  juca = {
     archetypes = {
       personal = enabled;
       workstation = enabled;

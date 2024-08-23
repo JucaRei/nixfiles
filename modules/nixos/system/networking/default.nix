@@ -111,7 +111,7 @@ in
       traceroute
     ];
 
-    khanelinix.user.extraGroups = [
+    juca.user.extraGroups = [
       "network"
       "wireshark"
     ];

@@ -14,7 +14,7 @@ in
     ./specializations.nix
   ];
 
-  khanelinix = {
+  juca = {
     nix = enabled;
 
     archetypes = {

@@ -56,7 +56,7 @@ in
       };
     };
 
-    khanelinix = {
+    juca = {
       display-managers = {
         sddm = {
           enable = true;

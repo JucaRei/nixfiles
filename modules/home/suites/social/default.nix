@@ -27,7 +27,7 @@ in
       ]
     );
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical.apps = {
           discord = enabled;

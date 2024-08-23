@@ -24,7 +24,7 @@ in
       pkgs.wl-screenrec
     ];
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical = {
           addons = {

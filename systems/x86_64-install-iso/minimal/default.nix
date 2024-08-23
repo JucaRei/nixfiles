@@ -21,7 +21,7 @@ in
     file
   ];
 
-  khanelinix = {
+  juca = {
     nix = enabled;
 
     programs = {

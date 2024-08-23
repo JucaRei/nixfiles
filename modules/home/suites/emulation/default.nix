@@ -37,7 +37,7 @@ in
       ]
       ++ lib.optionals cfg.retroarchFull [ retroarchFull ];
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical = {
           apps = {

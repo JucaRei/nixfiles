@@ -88,7 +88,7 @@ in
       } // historicalLogAliases // historicalCrashAliases;
     };
 
-    khanelinix = {
+    juca = {
       programs = {
         graphical = {
           launchers = {

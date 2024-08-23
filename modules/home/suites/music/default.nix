@@ -33,7 +33,7 @@ in
         pkgs.${namespace}.yt-music
       ];
 
-    khanelinix = {
+    juca = {
       programs.terminal = {
         media = {
           ncmpcpp = enabled;
