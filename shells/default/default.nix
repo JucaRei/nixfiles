@@ -17,6 +17,8 @@ mkShell {
     nixpkgs-hammering
     nixpkgs-lint
     snowfall-flake.packages.${system}.flake
+    deploy-rs
+    nh
 
     # Adds all the packages required for the pre-commit checks
     inputs.self.checks.${system}.pre-commit-hooks.enabledPackages
