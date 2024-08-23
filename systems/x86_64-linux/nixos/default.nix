@@ -23,10 +23,13 @@ in
           _1password = enabled;
         };
 
-        wms = {
-          hyprland = {
-            enable = true;
-          };
+        # wms = {
+        #   hyprland = {
+        #     enable = true;
+        #   };
+        # };
+        gnome = {
+          enable = true;
         };
       };
     };
@@ -50,7 +53,7 @@ in
     };
   };
 
-  services.displayManager.defaultSession = "hyprland";
+  # services.displayManager.defaultSession = "hyprland";
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

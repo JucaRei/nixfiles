@@ -6,7 +6,11 @@
   ...
 }:
 {
-  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
+  imports = [
+    (modulesPath + "/profiles/qemu-guest.nix")
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./disks-btrfs.nix
+  ];
 
   ##
   # Desktop VM config
@@ -15,14 +19,16 @@
     kernelPackages = pkgs.linuxPackages_latest;
 
     initrd = {
-      kernelModules = [ "kvm-amd" ];
+      kernelModules = [
+        # "kvm-amd"
+        "kvm-intel"
+      ];
       availableKernelModules = [
-        "nvme"
-        "ahci"
         "xhci_pci"
-        "virtio_pci"
-        "virtio_blk"
-        "sr_mod"
+        "thunderbolt"
+        "nvme"
+        "usb_storage"
+        "sd_mod"
       ];
     };
 
