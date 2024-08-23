@@ -35,10 +35,10 @@ in
       user = {
         extraGroups = [ "git" ] ++ lib.optionals cfg.sqlEnable [ "mysql" ];
       };
+    };
 
-      virtualisation = {
-        podman.enable = cfg.dockerEnable;
-      };
+    virtualisation = {
+      podman.enable = cfg.dockerEnable;
     };
   };
 }
