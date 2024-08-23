@@ -29,9 +29,9 @@ in
         #     enable = true;
         #   };
         # };
-        gnome = {
-          enable = true;
-        };
+        # gnome = {
+        #   enable = true;
+        # };
       };
     };
 
