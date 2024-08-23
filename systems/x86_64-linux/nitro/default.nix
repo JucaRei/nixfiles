@@ -25,7 +25,7 @@ in
 
     display-managers = {
       gdm = {
-        # monitors = ./monitors.xml;
+        monitors = ./monitors.xml;
       };
 
       regreet = {
@@ -112,8 +112,8 @@ in
 
         configs = {
           Documents = {
-            ALLOW_USERS = [ "excalibur" ];
-            SUBVOLUME = "/home/excalibur/Documents";
+            ALLOW_USERS = [ "khaneliman" ];
+            SUBVOLUME = "/home/khaneliman/Documents";
             TIMELINE_CLEANUP = true;
             TIMELINE_CREATE = true;
           };

@@ -27,7 +27,7 @@ in
 
         development = {
           enable = true;
-          dockerEnable = enabled;
+          dockerEnable = true;
         };
 
         vm = enabled;
