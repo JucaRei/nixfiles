@@ -15,6 +15,7 @@ in
 
     archetypes = {
       vm = enabled;
+      workstation = enabled;
     };
 
     programs = {
@@ -31,18 +32,6 @@ in
         gnome = {
           enable = true;
         };
-      };
-    };
-
-    suites = {
-      common = enabled;
-      development = {
-        enable = true;
-        # azureEnable = true;
-        dockerEnable = true;
-        # kubernetesEnable = true;
-        nixEnable = true;
-        # sqlEnable = true;
       };
     };
 
