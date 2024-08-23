@@ -169,8 +169,6 @@ in
     xdg = {
       enable = true;
       cacheHome = config.home.homeDirectory + "/.local/cache";
-      configHome = config.home.homeDirectory + "/.config";
-      musicHome = config.home.homeDirectory + "/Music";
 
       mimeApps = {
         enable = true;
