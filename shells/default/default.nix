@@ -10,6 +10,7 @@ let
   inherit (inputs) snowfall-flake;
 in
 mkShell {
+  NIX_CONFIG = "extra-experimental-features = nix-command flakes";
   packages = with pkgs; [
     nix-tree
     nil
