@@ -88,7 +88,7 @@ in
       } // historicalLogAliases // historicalCrashAliases;
     };
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical = {
           launchers = {

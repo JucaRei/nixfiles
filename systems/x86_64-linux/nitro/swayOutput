@@ -1,8 +1,8 @@
 set $monitor-top DP-3
 set $monitor-bottom DP-1
 
-#output $monitor-top bg /home/juca/Photos/wallpapers/left.jpg fill
-#output $monitor-bottom bg /home/juca/Photos/wallpapers/center.jpg fill
+#output $monitor-top bg /home/excalibur/Photos/wallpapers/left.jpg fill
+#output $monitor-bottom bg /home/excalibur/Photos/wallpapers/center.jpg fill
 
 output $monitor-top resolution 3840x2160 position 1420,0 scale 2
 output $monitor-bottom resolution 5120x1440 position 0,1080

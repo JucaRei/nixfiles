@@ -29,7 +29,7 @@ in
       ]
       ++ lib.optionals stdenv.isDarwin [ iina ];
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical.apps = {
           obs = enabled;

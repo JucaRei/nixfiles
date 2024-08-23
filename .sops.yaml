@@ -25,21 +25,21 @@ creation_rules:
     key_groups:
       - age:
           - *admin_juca
-  - path_regex: secrets/khanelimac/juca[^/]+\.(yaml|json|env|ini)$
+  - path_regex: secrets/khanelimac/excalibur[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
           - *admin_juca
           - *user_khanelimac_juca
-  - path_regex: secrets/juca/[^/]+\.(yaml|json|env|ini)$
+  - path_regex: secrets/excalibur/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
           - *admin_juca
-  - path_regex: secrets/juca/juca[^/]+\.(yaml|json|env|ini)$
+  - path_regex: secrets/excalibur/excalibur[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
           - *admin_juca
           - *user_khanelinix_juca
-  - path_regex: secrets/juca/[^/]+\.(yaml|json|env|ini)$
+  - path_regex: secrets/excalibur/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
           - *admin_juca

@@ -34,7 +34,7 @@ in
       ]
       ++ lib.optionals stdenv.isDarwin [ teams ];
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical = {
           apps = {

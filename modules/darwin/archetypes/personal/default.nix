@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    juca = {
+    excaliburnix = {
       suites = {
         art = enabled;
         common = enabled;

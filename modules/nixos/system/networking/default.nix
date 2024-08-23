@@ -111,7 +111,7 @@ in
       traceroute
     ];
 
-    juca.user.extraGroups = [
+    excaliburnix.user.extraGroups = [
       "network"
       "wireshark"
     ];

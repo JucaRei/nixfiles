@@ -1,5 +1,5 @@
 {
-  description = "EX CaliburNiX";
+  description = "EX Calibur Nix configurations";
 
   inputs = {
     anyrun.url = "github:anyrun-org/anyrun";
@@ -29,7 +29,7 @@
     # Home Manager (master)
     home-manager = {
       url = "github:nix-community/home-manager";
-      # url = "git+file:///home/juca/Documents/github/home-manager";
+      # url = "git+file:///home/excalibur/Documents/github/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -112,8 +112,8 @@
     # Personal Neovim Flake
     khanelivim = {
       url = "github:khaneliman/khanelivim";
-      # url = "git+file:///Users/juca/Documents/github/khanelivim";
-      # url = "git+file:///home/juca/Documents/github/khanelivim";
+      # url = "git+file:///Users/excalibur/Documents/github/khanelivim";
+      # url = "git+file:///home/excalibur/Documents/github/khanelivim";
 
       inputs = {
         # nixpkgs.follows = "nixpkgs";
@@ -210,11 +210,11 @@
 
         snowfall = {
           meta = {
-            name = "excaliburnix";
-            title = "EX CaliburNiX";
+            name = "excalibur";
+            title = "EX Calibur NiX";
           };
 
-          namespace = "excaliburnix";
+          namespace = "excalibur";
         };
       };
     in

@@ -17,7 +17,7 @@ in
 
   config = mkIf cfg.enable {
 
-    juca = {
+    excaliburnix = {
 
       nix = enabled;
 

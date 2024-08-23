@@ -35,12 +35,12 @@ in
           credentialsFile = "REPLACEME";
           default = "http_status:404";
           ingress = {
-            "juca.com" = {
+            "excaliburnix.com" = {
               # TODO: replace with sops secret
               service = "https://ip:port";
               originRequest = {
                 noTLSVerify = true;
-                originServerName = "juca.com";
+                originServerName = "excaliburnix.com";
               };
             };
           };

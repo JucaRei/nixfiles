@@ -12,7 +12,7 @@ let
 in
 {
   config = mkIf cfg.enable {
-    juca.user.extraGroups = [ "networkmanager" ];
+    excaliburnix.user.extraGroups = [ "networkmanager" ];
 
     networking.networkmanager = {
       enable = true;

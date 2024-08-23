@@ -27,7 +27,7 @@ in
       ];
     };
 
-    juca = {
+    excaliburnix = {
       hardware = {
         power = enabled;
       };

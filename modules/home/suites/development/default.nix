@@ -63,7 +63,7 @@ in
       };
     };
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical = {
           editors = {

@@ -29,7 +29,7 @@ in
         tree
       ];
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical = {
           browsers = {

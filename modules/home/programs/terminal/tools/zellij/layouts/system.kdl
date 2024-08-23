@@ -41,16 +41,16 @@ layout {
         }
     }
 
-		tab name="juca" focus=true {
+		tab name="excalibur" focus=true {
         pane {
-         cwd "$HOME/juca/"
+         cwd "$HOME/excalibur/"
 			   edit "flake.nix"
         }
     }
 
     tab name="Git" split_direction="horizontal" name="Git" {
         pane {
-          cwd "$HOME/juca/"
+          cwd "$HOME/excalibur/"
           command "lazygit"
         }
     }
@@ -64,7 +64,7 @@ layout {
 
     tab name="Shell" split_direction="horizontal" name="Shell" {
         pane {
-          cwd "$HOME/juca/"
+          cwd "$HOME/excalibur/"
           command "zsh"
         }
     }

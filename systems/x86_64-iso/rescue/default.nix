@@ -16,7 +16,7 @@ in
     file
   ];
 
-  juca = {
+  excaliburnix = {
     nix = enabled;
 
     cli-apps = {

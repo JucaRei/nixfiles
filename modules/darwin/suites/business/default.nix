@@ -36,7 +36,7 @@ in
       };
     };
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical = {
           apps = {

@@ -90,7 +90,7 @@ in
       spiceUSBRedirection.enable = true;
     };
 
-    juca = {
+    excaliburnix = {
       user = {
         extraGroups = [
           "disk"

@@ -20,7 +20,7 @@ in
     initialPassword =
       mkOpt str "password"
         "The initial password to use when the user is first created.";
-    name = mkOpt str "juca" "The name to use for the user account.";
+    name = mkOpt str "excaliburnix" "The name to use for the user account.";
   };
 
   config = {

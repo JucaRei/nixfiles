@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    juca = {
+    excaliburnix = {
       # TODO: input-leap replace barrier
 
       suites = {

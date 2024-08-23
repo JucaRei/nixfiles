@@ -53,7 +53,7 @@
       ];
     };
 
-    "/home/juca/Downloads" = {
+    "/home/excaliburnix/Downloads" = {
       device = "/dev/disk/by-label/BtrProductive";
       fsType = "btrfs";
       options = [
@@ -65,7 +65,7 @@
       ];
     };
 
-    "/home/juca/Documents" = {
+    "/home/excaliburnix/Documents" = {
       device = "/dev/disk/by-label/BtrProductive";
       fsType = "btrfs";
       options = [
@@ -77,7 +77,7 @@
       ];
     };
 
-    "/home/juca/Pictures" = {
+    "/home/excaliburnix/Pictures" = {
       device = "/dev/disk/by-label/BtrProductive";
       fsType = "btrfs";
       options = [
@@ -89,7 +89,7 @@
       ];
     };
 
-    "/home/juca/Videos" = {
+    "/home/excaliburnix/Videos" = {
       device = "/dev/disk/by-label/BtrProductive";
       fsType = "btrfs";
       options = [
@@ -101,7 +101,7 @@
       ];
     };
 
-    "/home/juca/Music" = {
+    "/home/excaliburnix/Music" = {
       device = "/dev/disk/by-label/BtrProductive";
       fsType = "btrfs";
       options = [

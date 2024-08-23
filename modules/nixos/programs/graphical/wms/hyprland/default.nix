@@ -56,7 +56,7 @@ in
       };
     };
 
-    juca = {
+    excaliburnix = {
       display-managers = {
         sddm = {
           enable = true;

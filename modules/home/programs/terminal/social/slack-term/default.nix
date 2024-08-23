@@ -21,7 +21,7 @@ in
 
     # sops.secrets = {
     #   slack-term = {
-    #     sopsFile = lib.snowfall.fs.get-file "secrets/juca/default.yaml";
+    #     sopsFile = lib.snowfall.fs.get-file "secrets/excaliburnix/default.yaml";
     #     path = "${config.home.homeDirectory}/.config/slack-term/config";
     #   };
     # };

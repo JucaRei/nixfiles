@@ -19,7 +19,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    juca = {
+    excaliburnix = {
       display-managers = {
         sddm = {
           enable = true;

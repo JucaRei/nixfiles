@@ -18,7 +18,7 @@ in
 
   config = mkIf cfg.enable {
 
-    juca = {
+    excaliburnix = {
       services = {
         seatd = enabled;
       };

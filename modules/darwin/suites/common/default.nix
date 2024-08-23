@@ -56,7 +56,7 @@ in
       ];
     };
 
-    juca = {
+    excaliburnix = {
       nix = enabled;
 
       tools = {

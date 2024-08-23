@@ -33,7 +33,7 @@ in
         pkgs.${namespace}.yt-music
       ];
 
-    juca = {
+    excaliburnix = {
       programs.terminal = {
         media = {
           ncmpcpp = enabled;

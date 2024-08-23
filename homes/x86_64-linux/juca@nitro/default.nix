@@ -10,7 +10,7 @@ let
   inherit (lib.${namespace}) enabled;
 in
 {
-  juca = {
+  excaliburnix = {
     user = {
       enable = true;
       inherit (config.snowfallorg.user) name;
@@ -145,7 +145,7 @@ in
 
             includes = [
               {
-                condition = "gitdir:/home/juca/Documents/azure/DIB/";
+                condition = "gitdir:/home/excaliburnix/Documents/azure/DIB/";
                 path = "${./git/dib-signing}";
               }
             ];
@@ -190,7 +190,7 @@ in
 
       sops = {
         enable = true;
-        defaultSopsFile = lib.snowfall.fs.get-file "secrets/juca/juca/default.yaml";
+        defaultSopsFile = lib.snowfall.fs.get-file "secrets/excaliburnix/excaliburnix/default.yaml";
         sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
       };
     };

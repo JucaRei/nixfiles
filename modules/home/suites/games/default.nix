@@ -28,7 +28,7 @@ in
       protonup-qt
     ];
 
-    juca = {
+    excaliburnix = {
       programs = {
         terminal = {
           tools = {

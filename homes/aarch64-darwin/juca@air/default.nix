@@ -9,7 +9,7 @@ let
   inherit (lib.${namespace}) enabled disabled;
 in
 {
-  juca = {
+  excaliburnix = {
     user = {
       enable = true;
       inherit (config.snowfallorg.user) name;
@@ -60,7 +60,7 @@ in
     services = {
       sops = {
         # enable = true;
-        # defaultSopsFile = lib.snowfall.fs.get-file "secrets/khanelimac/juca/default.yaml";
+        # defaultSopsFile = lib.snowfall.fs.get-file "secrets/khanelimac/excaliburnix/default.yaml";
         # sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
       };
     };

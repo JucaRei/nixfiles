@@ -69,7 +69,7 @@ in
       };
     };
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical = {
           launchers = {

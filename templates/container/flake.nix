@@ -22,7 +22,7 @@
             # Enable a web server.
             services.httpd = {
               enable = true;
-              adminAddr = "juca@example.org";
+              adminAddr = "excaliburnix@example.org";
             };
           })
         ];

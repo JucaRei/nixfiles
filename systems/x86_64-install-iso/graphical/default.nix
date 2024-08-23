@@ -21,7 +21,7 @@ in
     file
   ];
 
-  juca = {
+  excaliburnix = {
     nix = enabled;
 
     apps = {

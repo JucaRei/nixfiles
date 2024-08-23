@@ -10,7 +10,7 @@ let
   cfg = config.${namespace}.user;
 in
 {
-  juca = {
+  excaliburnix = {
     archetypes = {
       personal = enabled;
       workstation = enabled;

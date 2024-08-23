@@ -166,7 +166,7 @@ in
       };
     };
 
-    juca = {
+    excaliburnix = {
       user.extraOptions.openssh.authorizedKeys.keys = cfg.authorizedKeys;
 
       home.extraOptions = {

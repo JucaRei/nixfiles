@@ -9,7 +9,7 @@ let
   inherit (lib.${namespace}) enabled disabled;
 in
 {
-  juca = {
+  excaliburnix = {
     user = {
       enable = true;
       inherit (config.snowfallorg.user) name;

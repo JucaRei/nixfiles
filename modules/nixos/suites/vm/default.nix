@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    juca = {
+    excaliburnix = {
       services = {
         spice-vdagentd = enabled;
         spice-webdav = enabled;

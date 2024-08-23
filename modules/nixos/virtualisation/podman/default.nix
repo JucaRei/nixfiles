@@ -28,7 +28,7 @@ in
       podman-desktop
     ];
 
-    juca = {
+    excalibur = {
       user = {
         extraGroups = [
           "docker"

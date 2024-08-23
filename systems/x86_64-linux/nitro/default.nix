@@ -14,7 +14,7 @@ in
     ./specializations.nix
   ];
 
-  juca = {
+  excaliburnix = {
     nix = enabled;
 
     archetypes = {
@@ -112,8 +112,8 @@ in
 
         configs = {
           Documents = {
-            ALLOW_USERS = [ "juca" ];
-            SUBVOLUME = "/home/juca/Documents";
+            ALLOW_USERS = [ "excaliburnix" ];
+            SUBVOLUME = "/home/excaliburnix/Documents";
             TIMELINE_CLEANUP = true;
             TIMELINE_CREATE = true;
           };

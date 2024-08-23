@@ -60,7 +60,7 @@ in
     };
   };
 
-  juca = {
+  excaliburnix = {
     nix = enabled;
 
     desktop = {

@@ -37,7 +37,7 @@ in
       ]
       ++ lib.optionals cfg.retroarchFull [ retroarchFull ];
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical = {
           apps = {

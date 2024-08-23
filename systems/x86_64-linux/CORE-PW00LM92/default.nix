@@ -8,7 +8,7 @@ in
 
   documentation.man.enable = mkForce true;
 
-  juca = {
+  excaliburnix = {
     archetypes = {
       wsl = enabled;
     };

@@ -24,7 +24,7 @@ in
       pkgs.wl-screenrec
     ];
 
-    juca = {
+    excaliburnix = {
       programs = {
         graphical = {
           addons = {
