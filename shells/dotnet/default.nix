@@ -41,13 +41,16 @@ mkShell {
     roslyn-ls
     vimPlugins.neotest-dotnet
     vscode-extensions.ms-dotnettools.csharp
+
+    figlet
+    lolcat
   ];
 
   shellHook = ''
 
     export NUGET_PLUGIN_PATHS=${artifacts-credprovider}/bin/netcore/CredentialProvider.Microsoft/CredentialProvider.Microsoft.dll
 
-    echo 🔨 Dotnet DevShell
+    echo "🔨 Dotnet DevShell" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
   '';

@@ -20,11 +20,14 @@ mkShell {
 
     # Adds all the packages required for the pre-commit checks
     inputs.self.checks.${system}.pre-commit-hooks.enabledPackages
+
+    figlet
+    lolcat
   ];
 
   shellHook = ''
     ${inputs.self.checks.${system}.pre-commit-hooks.shellHook}
-    echo 🔨 Welcome to ${namespace}
+    echo "🔨 Welcome to ${namespace}" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
   '';

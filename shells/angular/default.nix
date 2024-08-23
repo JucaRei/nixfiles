@@ -7,11 +7,14 @@ mkShell {
     vimPlugins.nvim-treesitter-parsers.angular
     vscode-extensions.angular.ng-template
     yarn
+
+    figlet
+    lolcat
   ];
 
   shellHook = ''
 
-    echo 🔨 Angular DevShell
+    echo "🔨 Angular DevShell" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
   '';

@@ -8,11 +8,14 @@ mkShell {
     temurin-jre-bin-17
     maven
     gradle
+
+    figlet
+    lolcat
   ];
 
   shellHook = ''
 
-    echo 🔨 Java DevShell
+    echo "🔨 Java DevShell" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
   '';

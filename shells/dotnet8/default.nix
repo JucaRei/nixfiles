@@ -15,6 +15,9 @@ mkShell {
         ]
       )
       csharp-ls
+
+      figlet
+      lolcat
     ]
     ++ dotnetDevShell.nativeBuildInputs;
 
@@ -24,7 +27,7 @@ mkShell {
 
     export DOTNET_ROOT="${pkgs.dotnet-sdk_8}";
 
-    echo 🔨 Dotnet 8 DevShell
+    echo "🔨 Dotnet 8 DevShell" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
   '';

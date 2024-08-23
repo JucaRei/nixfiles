@@ -56,6 +56,9 @@ mkShell {
       glm
       SDL2
       SDL2_gfx
+
+      figlet
+      lolcat
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       gdb
@@ -64,7 +67,7 @@ mkShell {
 
   shellHook = ''
 
-    echo 🔨 Cpp DevShell
+    echo "🔨 Cpp DevShell" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
   '';

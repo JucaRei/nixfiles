@@ -20,6 +20,9 @@ mkShell {
         # version projects.
         useDotnetFromEnv = false;
       }))
+
+      figlet
+      lolcat
     ]
     ++ dotnetDevShell.nativeBuildInputs;
 
@@ -29,7 +32,7 @@ mkShell {
 
     export DOTNET_ROOT="${pkgs.dotnet-sdk_7}";
 
-    echo 🔨 Dotnet 7 DevShell
+    echo "🔨 Dotnet 7 DevShell" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
   '';

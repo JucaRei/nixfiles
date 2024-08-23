@@ -16,7 +16,7 @@ in
 {
   options.${namespace}.programs.terminal.editors.neovim = {
     enable = mkEnableOption "neovim";
-    default = mkBoolOpt true "Whether to set Neovim as the session EDITOR";
+    default = mkBoolOpt false "Whether to set Neovim as the session EDITOR";
   };
 
   config = mkIf cfg.enable {

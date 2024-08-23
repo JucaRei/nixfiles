@@ -29,10 +29,13 @@ mkShell {
     nixpkgs-review
     snowfall-flake.packages.${system}.flake
     statix
+
+    figlet
+    lolcat
   ];
 
   shellHook = ''
-    echo 🔨 Welcome to ${namespace}
+    echo "🔨 Welcome to ${namespace}" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
   '';
