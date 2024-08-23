@@ -48,9 +48,9 @@ in
             enable = true;
 
             authorizedKeys = [
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEpfTVxQKmkAYOrsnroZoTk0LewcBIC4OjlsoJY6QbB0"
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM7UBwfd7+K0mdkAIb2TE6RzMu6L4wZnG/anuoYqJMPB"
-              "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFuMXeT21L3wnxnuzl0rKuE5+8inPSi8ca/Y3ll4s9pC"
+              # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEpfTVxQKmkAYOrsnroZoTk0LewcBIC4OjlsoJY6QbB0"
+              # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM7UBwfd7+K0mdkAIb2TE6RzMu6L4wZnG/anuoYqJMPB"
+              # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFuMXeT21L3wnxnuzl0rKuE5+8inPSi8ca/Y3ll4s9pC"
             ];
           };
         };
@@ -59,9 +59,9 @@ in
 
     services = {
       sops = {
-        enable = true;
-        defaultSopsFile = lib.snowfall.fs.get-file "secrets/khanelimac/juca/default.yaml";
-        sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
+        # enable = true;
+        # defaultSopsFile = lib.snowfall.fs.get-file "secrets/khanelimac/juca/default.yaml";
+        # sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
       };
     };
 
