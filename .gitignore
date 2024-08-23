@@ -40,6 +40,7 @@ node_modules
 # ░▀░▀░▀▀▀░▀░▀░▀▀▀░▀▀▀
 .direnv/*
 result
+.vscode/*
 .ccls-cache
 flake
 .pre-commit-config.yaml

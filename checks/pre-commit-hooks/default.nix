@@ -1,13 +1,11 @@
 {
   inputs,
   lib,
-  namespace,
   pkgs,
   ...
 }:
 let
   inherit (inputs) pre-commit-hooks-nix;
-  inherit (lib) getExe;
 in
 pre-commit-hooks-nix.lib.${pkgs.system}.run {
   src = ./.;
@@ -22,40 +20,40 @@ pre-commit-hooks-nix.lib.${pkgs.system}.run {
     in
     {
       actionlint.enable = true;
-      clang-format.enable = true;
-      clang-tidy.enable = true;
+      # clang-format.enable = true;
+      # clang-tidy.enable = true;
       # conform.enable = true;
 
-      deadnix = {
-        enable = true;
+      # deadnix = {
+      #   enable = true;
 
-        settings = {
-          edit = true;
-        };
-      };
+      #   settings = {
+      #     edit = true;
+      #   };
+      # };
 
       eslint = {
         enable = true;
         package = pkgs.eslint_d;
       };
 
-      git-cliff = {
-        enable = false;
-        inherit excludes fail_fast verbose;
+      # git-cliff = {
+      #   enable = false;
+      #   inherit excludes fail_fast verbose;
 
-        always_run = true;
-        description = "pre-push hook for git-cliff";
-        entry = "${getExe pkgs.${namespace}.git-cliff}";
-        language = "system";
-        stages = [ "pre-push" ];
-      };
+      #   always_run = true;
+      #   description = "pre-push hook for git-cliff";
+      #   entry = "${getExe pkgs.${namespace}.git-cliff}";
+      #   language = "system";
+      #   stages = [ "pre-push" ];
+      # };
 
       nixfmt = {
         enable = true;
         package = pkgs.nixfmt-rfc-style;
       };
 
-      pre-commit-hook-ensure-sops.enable = true;
+      # pre-commit-hook-ensure-sops.enable = true;
 
       prettier = {
         enable = true;

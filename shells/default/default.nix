@@ -11,17 +11,9 @@ let
 in
 mkShell {
   packages = with pkgs; [
-    hydra-check
-    nix-inspect
-    nix-bisect
-    nix-diff
-    nix-health
-    nix-index
-    # FIXME: broken nixpkgs
-    # nix-melt
-    nix-prefetch-git
-    nix-search-cli
     nix-tree
+    nil
+    nixfmt-rfc-style
     nixpkgs-hammering
     nixpkgs-lint
     snowfall-flake.packages.${system}.flake
