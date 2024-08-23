@@ -169,6 +169,8 @@ in
     xdg = {
       enable = true;
       cacheHome = config.home.homeDirectory + "/.local/cache";
+      configHome = config.home.homeDirectory + "/.config";
+      musicHome = config.home.homeDirectory + "/Music";
 
       mimeApps = {
         enable = true;
@@ -181,6 +183,9 @@ in
         createDirectories = true;
         extraConfig = {
           XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/screenshots";
+          XDG_CONFIG_HOME = "${config.xdg.userDirs.config}/.config";
+          XDG_DATA_HOME = "${config.xdg.userDirs.pictures}/.local.share";
+          XDG_STATE_HOME = "${config.xdg.userDirs.pictures}/.local/state";
         };
       };
     };

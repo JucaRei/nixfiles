@@ -44,13 +44,13 @@ let
       fileName = defaultIconFileName;
     };
   };
-  defaultIconFileName = "profile.png";
+  defaultIconFileName = "profile.jpg";
 in
 {
   options.${namespace}.user = {
     enable = mkOpt types.bool false "Whether to configure the user account.";
-    email = mkOpt types.str "khaneliman12@gmail.com" "The email of the user.";
-    fullName = mkOpt types.str "Austin Horstman" "The full name of the user.";
+    email = mkOpt types.str "reinaldo800gmail.com" "The email of the user.";
+    fullName = mkOpt types.str "Reinaldo P Jr" "The full name of the user.";
     home = mkOpt (types.nullOr types.str) home-directory "The user's home directory.";
     icon = mkOpt (types.nullOr types.package) defaultIcon "The profile picture to use for the user.";
     name = mkOpt (types.nullOr types.str) config.snowfallorg.user.name "The user account.";

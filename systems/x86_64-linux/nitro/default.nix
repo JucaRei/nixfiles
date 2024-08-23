@@ -25,7 +25,7 @@ in
 
     display-managers = {
       gdm = {
-        monitors = ./monitors.xml;
+        # monitors = ./monitors.xml;
       };
 
       regreet = {

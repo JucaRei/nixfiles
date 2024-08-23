@@ -16,11 +16,20 @@ in
   };
 
   config = mkIf cfg.enable {
+
     juca = {
+
+      nix = enabled;
+
       suites = {
         common = enabled;
         desktop = enabled;
-        development = enabled;
+
+        development = {
+          enable = true;
+          dockerEnable = enabled;
+        };
+
         vm = enabled;
       };
     };
