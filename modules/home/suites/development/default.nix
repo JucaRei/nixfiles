@@ -36,13 +36,16 @@ in
         ]
         ++ lib.optionals pkgs.stdenv.isLinux [
           github-desktop
-          qtcreator
+          # qtcreator
         ]
         ++ lib.optionals cfg.nixEnable [
           nixpkgs-hammering
           nixpkgs-lint-community
           nixpkgs-review
           nix-update
+          nil
+          nixd
+          nixfmt-rfc-style
         ]
         ++ lib.optionals cfg.gameEnable [
           godot_4
@@ -71,14 +74,18 @@ in
         terminal = {
           editors = {
             # helix = enabled;
-            neovim = {
+            # neovim = {
+            #   enable = true;
+            #   default = true;
+            # };
+            micro = {
               enable = true;
               default = true;
             };
           };
 
           tools = {
-            azure.enable = cfg.azureEnable;
+            # azure.enable = cfg.azureEnable;
             git-crypt = enabled;
             go.enable = cfg.goEnable;
             k9s.enable = cfg.kubernetesEnable;

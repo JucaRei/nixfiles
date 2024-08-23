@@ -27,22 +27,24 @@ in
     enable = mkBoolOpt false "Whether or not to enable Firefox.";
 
     extensions = mkOpt (listOf package) (with pkgs.nur.repos.rycee.firefox-addons; [
-      angular-devtools
+      # angular-devtools
       auto-tab-discard
-      bitwarden
+      # bitwarden
       # NOTE: annoying new page and permissions
       # bypass-paywalls-clean
       darkreader
-      firefox-color
-      firenvim
-      onepassword-password-manager
-      react-devtools
-      reduxdevtools
-      sidebery
+      return-youtube-dislikes
+      search-by-image
+      # firefox-color
+      # firenvim
+      # onepassword-password-manager
+      # react-devtools
+      # reduxdevtools
+      # sidebery
       sponsorblock
-      stylus
+      # stylus
       ublock-origin
-      user-agent-string-switcher
+      # user-agent-string-switcher
     ]) "Extensions to install";
 
     extraConfig = mkOpt str "" "Extra configuration for the user profile JS file.";
@@ -134,8 +136,184 @@ in
           updateInterval = 24 * 60 * 60 * 1000;
           definedAliases = [ "@nw" ];
         };
+        "NixOS Discourse" = {
+          urls = [ { template = "https://discourse.nixos.org/search?q={searchTerms}"; } ];
+          icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@nd" ];
+        };
+        "Home Manager Options" = {
+          urls = [
+            { template = "https://home-manager-options.extranix.com/?query={searchTerms}&release = master "; }
+          ];
+          icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+          definedAliases = [ "@hm" ];
+        };
+        "Home-Manager Docs" = {
+          urls = [ { template = "https://rycee.gitlab.io/home-manager/options.html"; } ];
+          definedAliases = [ "@hm-docs" ];
+        };
+        "Sourcegraph" = {
+          urls = [
+            {
+              template = "https://sourcegraph.com/search/?q=context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs%24+-repo:^github\.com/nix-community/home-manager%24+content:{searchTerms}";
+            }
+          ];
+          definedAliases = [ "@sc" ];
+        };
+        "Brave" = {
+          urls = [
+            {
+              template = "https://search.brave.com/search";
+              params = [
+                {
+                  name = "type";
+                  value = "search";
+                }
+                {
+                  name = "q";
+                  value = "{searchTerms}";
+                }
+              ];
+            }
+          ];
+          icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
+          definedAliases = [
+            "@brave"
+            "@b"
+          ];
+        };
+        "YouTube" = {
+          urls = [
+            {
+              template = "https://www.youtube.com/search";
+              params = [
+                {
+                  name = "type";
+                  value = "search";
+                }
+                {
+                  name = "q";
+                  value = "{searchTerms}";
+                }
+              ];
+            }
+          ];
+          definedAliases = [ "@yt" ];
+        };
       };
     } "Search configuration";
+
+    bookmarks = mkOpt optionalAttrs [
+      {
+        name = "CS (UBL)";
+        url = "https://github.com/Universidade-Livre/ciencia-da-computacao";
+      }
+      {
+        name = "CS (Wyden)";
+        url = "https://estudante.wyden.com.br/disciplinas";
+      }
+      {
+        name = "Data Structures Course (FM)";
+        url = "https://frontendmasters.com/courses/algorithms/";
+      }
+      {
+        name = "BJ-Share";
+        url = "https://bj-share.info/";
+      }
+      {
+        name = "kernel.org";
+        url = "https://www.kernel.org";
+      }
+      {
+        name = "Sourcegraph";
+        tags = [
+          "code"
+          "wiki"
+        ];
+        url = "https://www.sourcegraph.com/search";
+      }
+      {
+        name = "Nix sites";
+        toolbar = true;
+        bookmarks = [
+          {
+            name = "NixOS Discourse";
+            keyword = "nd";
+            tags = [
+              "nix"
+              "forum"
+              "blog"
+            ];
+            url = "https://discourse.nixos.org";
+          }
+          {
+            name = "Nix Package";
+            keyword = "np";
+            tags = [ "nix" ];
+            url = "https://search.nixos.org/packages?channel=unstable";
+          }
+          {
+            name = "Nix Options";
+            keyword = "no";
+            tags = [ "nix" ];
+            url = "https://search.nixos.org/options?channel=unstable";
+          }
+          {
+            name = "wiki";
+            tags = [
+              "wiki"
+              "nix"
+            ];
+            keyword = "nw";
+            url = "https://wiki.nixos.org/wiki/Linux_kernel";
+          }
+          {
+            name = "home-manager options";
+            tags = [
+              "wiki"
+              "nix"
+              "home-manager"
+            ];
+            keyword = "hm";
+            url = "https://home-manager-options.extranix.com/";
+          }
+          {
+            name = "Home-Manager";
+            keyword = "hm-doc";
+            tags = [
+              "wiki"
+              "nix"
+              "home-manager"
+            ];
+            url = "https://nix-community.github.io/home-manager/options.xhtml";
+          }
+          {
+            name = "Mynixos";
+            tags = [
+              "wiki"
+              "nix"
+              "nix-modules"
+            ];
+            url = "https://mynixos.com/";
+          }
+        ];
+      }
+      {
+        name = "GitHub";
+        keyword = "gh";
+        url = "https://github.com";
+      }
+      {
+        name = "GitLab";
+        keyword = "gl";
+        url = "https://gitlab.com";
+      }
+      {
+        name = "SourceHut";
+        keyword = "sh";
+        url = "https://git.sr.ht";
+      }
+    ] "Default Bookmarks";
 
     settings = mkOpt attrs { } "Settings to apply to the profile.";
     userChrome = mkOpt str "" "Extra configuration for the user chrome CSS file.";
@@ -185,8 +363,9 @@ in
               "browser.newtabpage.activity-stream.default.sites" = "";
               "browser.newtabpage.activity-stream.showSponsored" = false;
               "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
-              "browser.search.hiddenOneOffs" = "Google,Amazon.com,Bing,DuckDuckGo,eBay,Wikipedia (en)";
-              "browser.search.suggest.enabled" = false;
+              # "browser.search.hiddenOneOffs" = "Google,Amazon.com,Bing,DuckDuckGo,eBay,Wikipedia (en)";
+              "browser.search.hiddenOneOffs" = "Bing,DuckDuckGo,eBay,Wikipedia (en)";
+              "browser.search.suggest.enabled" = true; # false;
               "browser.sessionstore.warnOnQuit" = true;
               "browser.shell.checkDefaultBrowser" = false;
               "browser.ssb.enabled" = true;

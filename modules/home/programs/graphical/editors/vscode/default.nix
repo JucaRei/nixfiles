@@ -63,7 +63,7 @@ in
         timonwong.shellcheck
         usernamehw.errorlens
         vscode-icons-team.vscode-icons
-        wakatime.vscode-wakatime
+        # wakatime.vscode-wakatime
         xaver.clang-format
         yzhang.markdown-all-in-one
       ];
@@ -196,11 +196,11 @@ in
       };
     };
 
-    sops.secrets = {
-      wakatime = {
-        sopsFile = lib.snowfall.fs.get-file "secrets/juca/default.yaml";
-        path = "${config.home.homeDirectory}/.wakatime.cfg";
-      };
-    };
+    # sops.secrets = {
+    #   wakatime = {
+    #     sopsFile = lib.snowfall.fs.get-file "secrets/juca/default.yaml";
+    #     path = "${config.home.homeDirectory}/.wakatime.cfg";
+    #   };
+    # };
   };
 }

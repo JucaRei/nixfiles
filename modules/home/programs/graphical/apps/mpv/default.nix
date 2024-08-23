@@ -21,7 +21,7 @@ in
     programs.mpv = {
       enable = true;
 
-      defaultProfiles = [ "gpu-hq" ];
+      defaultProfiles = mkIf config.${namespace}.hardware.gpu.nvidia.enabled [ "gpu-hq" ];
       scripts = lib.optionals pkgs.stdenv.isLinux [ pkgs.mpvScripts.mpris ];
     };
 

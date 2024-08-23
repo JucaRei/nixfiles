@@ -53,7 +53,7 @@ in
         enable = cfg.enableSocketWatch;
         package = hypr-socket-watch.packages.${system}.hypr-socket-watch;
 
-        monitor = "DP-1";
+        monitor = "eDP-1";
         wallpapers = "${pkgs.${namespace}.wallpapers}/share/wallpapers/";
         debug = false;
       };

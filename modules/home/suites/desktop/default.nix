@@ -23,17 +23,17 @@ in
         appimage-run
         bitwarden
         bleachbit
-        clac
-        dropbox
+        # clac
+        # dropbox
         dupeguru
         feh
         filelight
         fontpreview
         gparted
-        input-leap
+        # input-leap
         kdePackages.ark
         kdePackages.gwenview
-        pkgs.${namespace}.pocketcasts
+        # pkgs.${namespace}.pocketcasts
         realvnc-vnc-viewer
         # FIXME: broken nixpkgs
         # rustdesk

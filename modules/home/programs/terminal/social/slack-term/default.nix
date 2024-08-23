@@ -19,11 +19,11 @@ in
   config = mkIf cfg.enable {
     home.packages = [ pkgs.slack-term ];
 
-    sops.secrets = {
-      slack-term = {
-        sopsFile = lib.snowfall.fs.get-file "secrets/juca/default.yaml";
-        path = "${config.home.homeDirectory}/.config/slack-term/config";
-      };
-    };
+    # sops.secrets = {
+    #   slack-term = {
+    #     sopsFile = lib.snowfall.fs.get-file "secrets/juca/default.yaml";
+    #     path = "${config.home.homeDirectory}/.config/slack-term/config";
+    #   };
+    # };
   };
 }

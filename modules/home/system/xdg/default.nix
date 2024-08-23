@@ -13,7 +13,10 @@ let
     "firefox-devedition.desktop"
     "firefox.desktop"
   ];
-  editor = [ "nvim.desktop" ];
+  editor = [
+    # "nvim.desktop"
+    "micro.desktop"
+  ];
   excel = [ "libreoffice-calc.desktop" ];
   fileManager = [ "thunar.desktop" ];
   image = [ "feh.desktop" ];

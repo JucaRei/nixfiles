@@ -19,11 +19,11 @@ in
   config = mkIf cfg.enable {
     home.packages = [ pkgs.twitch-tui ];
 
-    sops.secrets = {
-      twitch-tui = {
-        sopsFile = lib.snowfall.fs.get-file "secrets/juca/default.yaml";
-        path = "${config.home.homeDirectory}/.config/twt/config.toml";
-      };
-    };
+    # sops.secrets = {
+    #   twitch-tui = {
+    #     sopsFile = lib.snowfall.fs.get-file "secrets/juca/default.yaml";
+    #     path = "${config.home.homeDirectory}/.config/twt/config.toml";
+    #   };
+    # };
   };
 }
