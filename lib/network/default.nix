@@ -22,23 +22,23 @@ in
       };
 
     create-proxy =
-      { port ? null
-      , host ? "127.0.0.1"
-      , proxy-web-sockets ? false
-      , extra-config ? { }
-      ,
+      {
+        port ? null,
+        host ? "127.0.0.1",
+        proxy-web-sockets ? false,
+        extra-config ? { },
       }:
-        assert assertMsg (port != "" && port != null) "port cannot be empty";
-        assert assertMsg (host != "") "host cannot be empty";
-        extra-config
-        // {
-          locations = (extra-config.locations or { }) // {
-            "/" = (extra-config.locations."/" or { }) // {
-              proxyPass = "http://${host}${if port != null then ":${builtins.toString port}" else ""}";
+      assert assertMsg (port != "" && port != null) "port cannot be empty";
+      assert assertMsg (host != "") "host cannot be empty";
+      extra-config
+      // {
+        locations = (extra-config.locations or { }) // {
+          "/" = (extra-config.locations."/" or { }) // {
+            proxyPass = "http://${host}${if port != null then ":${builtins.toString port}" else ""}";
 
-              proxyWebsockets = proxy-web-sockets;
-            };
+            proxyWebsockets = proxy-web-sockets;
           };
         };
+      };
   };
 }

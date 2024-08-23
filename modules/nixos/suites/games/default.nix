@@ -1,37 +1,35 @@
 {
-  options,
   config,
   lib,
-  pkgs,
   namespace,
   ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt enabled;
+
   cfg = config.${namespace}.suites.games;
-  apps = {
-    steam = enabled;
-    prismlauncher = enabled;
-    lutris = enabled;
-    winetricks = enabled;
-    protontricks = enabled;
-    doukutsu-rs = enabled;
-    bottles = enabled;
-  };
-  cli-apps = {
-    wine = enabled;
-    proton = enabled;
-  };
 in
 {
-  options.${namespace}.suites.games = with types; {
+  options.${namespace}.suites.games = {
     enable = mkBoolOpt false "Whether or not to enable common games configuration.";
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
-      inherit apps cli-apps;
+    khanelinix = {
+      programs = {
+        graphical = {
+          addons = {
+            gamemode = enabled;
+            gamescope = enabled;
+            # mangohud = enabled;
+          };
+
+          apps = {
+            steam = enabled;
+          };
+        };
+      };
     };
   };
 }

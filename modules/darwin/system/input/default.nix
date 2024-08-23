@@ -1,18 +1,16 @@
 {
-  options,
   config,
-  pkgs,
   lib,
   namespace,
   ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf mkMerge mkEnableOption;
+
   cfg = config.${namespace}.system.input;
 in
 {
-  options.${namespace}.system.input = with types; {
+  options.${namespace}.system.input = {
     enable = mkEnableOption "macOS input";
   };
 
@@ -22,19 +20,36 @@ in
         keyboard = {
           enableKeyMapping = true;
           remapCapsLockToEscape = true;
+          # swapLeftCommandAndLeftAlt = true;
         };
 
         defaults = {
+          # trackpad settings
+          trackpad = {
+            # silent clicking = 0, default = 1
+            ActuationStrength = 0;
+            # enable tap to click
+            Clicking = true;
+            # firmness level, 0 = lightest, 2 = heaviest
+            FirstClickThreshold = 1;
+            # firmness level for force touch
+            SecondClickThreshold = 1;
+            # don't allow positional right click
+            TrackpadRightClick = true;
+            # three finger drag for space switching
+            # TrackpadThreeFingerDrag = true;
+          };
+
           ".GlobalPreferences" = {
-            "com.apple.mouse.scaling" = "1";
+            "com.apple.mouse.scaling" = 1.0;
           };
 
           NSGlobalDomain = {
             AppleKeyboardUIMode = 3;
             ApplePressAndHoldEnabled = false;
 
-            KeyRepeat = 2;
-            InitialKeyRepeat = 15;
+            KeyRepeat = 1;
+            InitialKeyRepeat = 10;
 
             NSAutomaticCapitalizationEnabled = false;
             NSAutomaticDashSubstitutionEnabled = false;
@@ -42,19 +57,6 @@ in
             NSAutomaticPeriodSubstitutionEnabled = false;
             NSAutomaticSpellingCorrectionEnabled = false;
           };
-        };
-      };
-
-      snowfallorg.user.${config.${namespace}.user.name}.home.config = {
-        home.activation = {
-          # Disable special keys when using Option as a modifier.
-          # https://superuser.com/questions/941286/disable-default-option-key-binding
-          disableSpecialKeys = lib.home-manager.hm.dag.entryAfter [ "writeBoundary" ] ''
-            set +e
-            $DRY_RUN_CMD /usr/bin/sudo mkdir -p $HOME/Library/KeyBindings
-            $DRY_RUN_CMD /usr/bin/sudo cp '${builtins.toPath ./DefaultKeyBinding.dict}' "$HOME/Library/KeyBindings/DefaultKeyBinding.dict"
-            set -e
-          '';
         };
       };
     }

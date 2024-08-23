@@ -1,28 +1,21 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
-with lib;
-with lib.${namespace};
+{ config, lib, namespace, ... }:
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt enabled;
+
   cfg = config.${namespace}.archetypes.gaming;
 in
 {
-  options.${namespace}.archetypes.gaming = with types; {
+  options.${namespace}.archetypes.gaming = {
     enable = mkBoolOpt false "Whether or not to enable the gaming archetype.";
   };
 
   config = mkIf cfg.enable {
-    excalibur.suites = {
+    ${namespace}.suites = {
       common = enabled;
       desktop = enabled;
       games = enabled;
-      social = enabled;
-      media = enabled;
+      video = enabled;
     };
   };
 }

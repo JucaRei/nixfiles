@@ -1,21 +1,20 @@
 {
-  lib,
   config,
+  lib,
   namespace,
   ...
 }:
 let
-  cfg = config.${namespace}.services.samba;
-
   inherit (lib)
-    types
+    mapAttrs
     mkEnableOption
     mkIf
-    mapAttrs
     optionalAttrs
+    types
     ;
+  inherit (lib.${namespace}) mkBoolOpt mkOpt;
 
-  inherit (lib.${namespace}) mkOpt mkBoolOpt;
+  cfg = config.${namespace}.services.samba;
 
   bool-to-yes-no = value: if value then "yes" else "no";
 
@@ -30,7 +29,7 @@ let
           browseable = mkBoolOpt true "Whether the share is browseable.";
           comment = mkOpt str name "An optional comment.";
           read-only = mkBoolOpt false "Whether the share should be read only.";
-          only-owner-editable = mkBoolOpt false "Whether the share is only writable by the system owner (excalibur.user.name).";
+          only-owner-editable = mkBoolOpt false "Whether the share is only writable by the system owner (${namespace}.user.name).";
 
           extra-config = mkOpt attrs { } "Extra configuration options for the share.";
         };
@@ -40,9 +39,8 @@ in
 {
   options.${namespace}.services.samba = with types; {
     enable = mkEnableOption "Samba";
-    workgroup = mkOpt str "WORKGROUP" "The workgroup to use.";
     browseable = mkBoolOpt true "Whether the shares are browseable.";
-
+    workgroup = mkOpt str "WORKGROUP" "The workgroup to use.";
     shares = mkOpt (attrsOf shares-submodule) { } "The shares to serve.";
   };
 
@@ -60,11 +58,11 @@ in
 
     services.samba = {
       enable = true;
-      openFirewall = true;
 
       extraConfig = ''
         browseable = ${bool-to-yes-no cfg.browseable}
       '';
+      openFirewall = true;
 
       shares = mapAttrs (
         name: value:
@@ -79,9 +77,21 @@ in
           "write list" = config.${namespace}.user.name;
           "read list" = "guest, nobody";
           "create mask" = "0755";
+          "directory mask" = "0755";
         })
         // value.extra-config
       ) cfg.shares;
     };
+
+    # TODO: figure out samba user and pass setup
+    # system.activationScripts = {
+    #   sambaUserSetup = {
+    #     text = ''
+    #       PATH=$PATH:${lib.makeBinPath [ pkgs.samba ]}
+    #       pdbedit -i smbpasswd:/home/${config.${namespace}.user.name}/smbpasswd -e tdbsam:/var/lib/samba/private/passdb.tdb
+    #     '';
+    #     deps = [ ];
+    #   };
+    # };
   };
 }

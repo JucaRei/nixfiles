@@ -1,77 +1,148 @@
 {
-  description = "EX Calibur nix configuration files";
+  description = "EX CaliburNiX";
 
   inputs = {
-    # NixPkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    anyrun.url = "github:anyrun-org/anyrun";
+    anyrun-nixos-options.url = "github:n3oney/anyrun-nixos-options";
 
-    # NixPkgs Unstable
-    unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    catppuccin-cursors.url = "github:catppuccin/cursors";
+    catppuccin.url = "github:catppuccin/nix";
 
-    # Lix
-    lix = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.0.tar.gz";
+    # macOS Support (master)
+    darwin = {
+      url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Home Manager
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    # macOS Support
-    darwin.url = "github:lnl7/nix-darwin";
-    darwin.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Hardware Configuration
-    nixos-hardware.url = "github:nixos/nixos-hardware";
-
-    # Generate System Images
-    nixos-generators.url = "github:nix-community/nixos-generators";
-    nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Snowfall Lib
-    snowfall-lib.url = "github:snowfallorg/lib";
-    # snowfall-lib.url = "path:/home/short/work/@snowfallorg/lib";
-    snowfall-lib.inputs.nixpkgs.follows = "nixpkgs";
-
-
-    nixgl.url = "github:nix-community/nixGL";
-
-    # Snowfall Flake
-    flake.url = "github:snowfallorg/flake";
-    flake.inputs.nixpkgs.follows = "unstable";
-
-    # Comma
-    comma.url = "github:nix-community/comma";
-    comma.inputs.nixpkgs.follows = "unstable";
 
     # System Deployment
-    deploy-rs.url = "github:serokell/deploy-rs";
-    deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Run unpatched dynamically compiled binaries
-    nix-ld.url = "github:Mic92/nix-ld";
-    nix-ld.inputs.nixpkgs.follows = "unstable";
-
-    # Binary Cache
-    attic = {
-      url = "github:zhaofengli/attic";
-
-      # FIXME: A specific version of Rust is needed right now or
-      # the build fails. Re-enable this after some time has passed.
-      inputs.nixpkgs.follows = "unstable";
-      inputs.nixpkgs-stable.follows = "nixpkgs";
-    };
-
-    # Snowfall Drift
-    drift = {
-      url = "github:snowfallorg/drift";
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Vault Integration
-    vault-service = {
-      url = "github:DeterminateSystems/nixos-vault-service";
+    # GPG default configuration
+    gpg-base-conf = {
+      url = "github:drduh/config";
+      flake = false;
+    };
+
+    # Home Manager (master)
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      # url = "git+file:///home/juca/Documents/github/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    ##
+    # Hyprland Section
+    ##
+    aquamarine = {
+      url = "github:hyprwm/aquamarine";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprland = {
+      url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        aquamarine.follows = "aquamarine";
+        xdph.follows = "xdg-desktop-portal-hyprland";
+        hyprwayland-scanner.follows = "hyprwayland-scanner";
+        hyprlang.follows = "hyprlang";
+        hyprutils.follows = "hyprutils";
+      };
+    };
+
+    xdg-desktop-portal-hyprland = {
+      url = "github:hyprwm/xdg-desktop-portal-hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hypridle = {
+      url = "github:hyprwm/Hypridle";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprlang = {
+      url = "github:hyprwm/hyprlang";
+
+      inputs = {
+        nixpkgs.follows = "hyprland/nixpkgs";
+        hyprutils.follows = "hyprutils";
+      };
+    };
+
+    hyprlock = {
+      url = "github:hyprwm/Hyprlock";
+      inputs.nixpkgs.follows = "hyprland/nixpkgs";
+    };
+
+    hyprpaper = {
+      url = "github:hyprwm/hyprpaper";
+      inputs.nixpkgs.follows = "hyprland/nixpkgs";
+    };
+
+    hyprland-contrib = {
+      url = "github:hyprwm/contrib";
+      inputs.nixpkgs.follows = "hyprland/nixpkgs";
+    };
+
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
+
+    hyprutils = {
+      url = "github:hyprwm/hyprutils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    hyprwayland-scanner = {
+      url = "github:hyprwm/hyprwayland-scanner";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Hyprland socket watcher
+    hypr-socket-watch = {
+      url = "github:khaneliman/hypr-socket-watch";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Personal Neovim Flake
+    khanelivim = {
+      url = "github:khaneliman/khanelivim";
+      # url = "git+file:///Users/juca/Documents/github/khanelivim";
+      # url = "git+file:///home/juca/Documents/github/khanelivim";
+
+      inputs = {
+        # nixpkgs.follows = "nixpkgs";
+        pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
+        snowfall-lib.follows = "snowfall-lib";
+        snowfall-flake.follows = "snowfall-flake";
+      };
+    };
+
+    # Secure boot
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.3.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Weekly updating nix-index database
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # NixPkgs (nixos-unstable)
+    nixpkgs = {
+      url = "github:nixos/nixpkgs/nixos-unstable";
+    };
+
+    # NixOS WSL Support
+    nixos-wsl = {
+      url = "github:nix-community/nixos-wsl";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -81,16 +152,39 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Nix User Repository (master)
+    nur = {
+      url = "github:nix-community/NUR";
+    };
+
     pre-commit-hooks-nix.url = "github:cachix/pre-commit-hooks.nix";
 
-    system-manager = {
-      url = "github:numtide/system-manager";
+    # Snowfall Lib
+    snowfall-lib = {
+      url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Flake Hygiene
-    flake-checker = {
-      url = "github:DeterminateSystems/flake-checker";
+    # Snowfall Flake
+    snowfall-flake = {
+      url = "github:snowfallorg/flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Sops (Secrets)
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Spicetify
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    waybar = {
+      url = "github:Alexays/Waybar";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -100,113 +194,82 @@
       flake = false;
     };
 
-    # GPG default configuration
-    gpg-base-conf = {
-      url = "github:drduh/config";
-      flake = false;
-    };
-
-    bibata-cursors = {
-      url = "github:suchipi/Bibata_Cursor";
-      flake = false;
+    wezterm = {
+      url = "github:wez/wezterm?dir=nix";
     };
   };
 
   outputs =
     inputs:
     let
-      lib = inputs.snowfall-lib.mkLib {
+      inherit (inputs) snowfall-lib;
+
+      lib = snowfall-lib.mkLib {
         inherit inputs;
         src = ./.;
 
         snowfall = {
           meta = {
-            name = "excalibur";
-            title = "EX Calibur";
+            name = "excaliburnix";
+            title = "EX CaliburNiX";
           };
 
-          namespace = "excalibur";
+          namespace = "excaliburnix";
         };
       };
     in
-    lib.mkFlake
-      {
-        channels-config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [
-            "electron-25.9.0"
-            "electron-27.3.11"
+    lib.mkFlake {
+      channels-config = {
+        # allowBroken = true;
+        allowUnfree = true;
+
+        # TODO: cleanup when available
+        permittedInsecurePackages = [
+          "freeimage-unstable-2021-11-01"
+          "jitsi-meet-1.0.8043"
+        ];
+      };
+
+      overlays = with inputs; [
+        nix-ld-rs.overlays.default
+        nur.overlay
+      ];
+
+      homes.modules = with inputs; [
+        anyrun.homeManagerModules.default
+        catppuccin.homeManagerModules.catppuccin
+        hypr-socket-watch.homeManagerModules.default
+        nix-index-database.hmModules.nix-index
+        sops-nix.homeManagerModules.sops
+        spicetify-nix.homeManagerModules.default
+      ];
+
+      systems = {
+        modules = {
+          nixos = with inputs; [
+            lanzaboote.nixosModules.lanzaboote
+            sops-nix.nixosModules.sops
           ];
         };
+      };
 
-        overlays = with inputs; [
-          nix-ld-rs.overlays.default
-          flake.overlays.default
-          attic.overlays.default
-          drift.overlays.default
-          lix.overlays.default
-          nixgl.overlay
-          nur.overlay
-        ];
+      templates = {
+        angular.description = "Angular template";
+        c.description = "C flake template.";
+        container.description = "Container template";
+        cpp.description = "CPP flake template";
+        dotnetf.description = "Dotnet FSharp template";
+        flake-compat.description = "Flake-compat shell and default files.";
+        go.description = "Go template";
+        node.description = "Node template";
+        python.description = "Python template";
+        rust.description = "Rust template";
+        rust-web-server.description = "Rust web server template";
+        snowfall.description = "Snowfall-lib template";
+      };
 
-        homes.modules = with inputs; [
-          # anyrun.homeManagerModules.default
-          catppuccin.homeManagerModules.catppuccin
-          # hypr-socket-watch.homeManagerModules.default
-          nix-index-database.hmModules.nix-index
-          # sops-nix.homeManagerModules.sops
-          # spicetify-nix.homeManagerModules.default
-        ];
+      deploy = lib.mkDeploy { inherit (inputs) self; };
 
-        systems = {
-          modules = {
-            nixos = with inputs; [
-              home-manager.nixosModules.home-manager
-              nix-ld.nixosModules.nix-ld
-              vault-service.nixosModules.nixos-vault-service
-              disko.nixosModules.disko
-              {
-                # Required for impermanence
-                fileSystems."/persist".neededForBoot = true;
-              }
-              # lix.nixosModules.default
-              # TODO: Replace excalibur.services.attic now that vault-agent
-              # exists and can force override environment files.
-              # attic.nixosModules.atticd
-            ];
-          };
-
-          hosts.jasper.modules = with inputs; [
-            nixos-hardware.nixosModules.framework-11th-gen-intel
-          ];
-        };
-
-        templates = {
-          angular.description = "Angular template";
-          c.description = "C flake template.";
-          container.description = "Container template";
-          cpp.description = "CPP flake template";
-          dotnetf.description = "Dotnet FSharp template";
-          flake-compat.description = "Flake-compat shell and default files.";
-          go.description = "Go template";
-          node.description = "Node template";
-          python.description = "Python template";
-          rust.description = "Rust template";
-          rust-web-server.description = "Rust web server template";
-          snowfall.description = "Snowfall-lib template";
-        };
-
-        deploy = lib.mkDeploy { inherit (inputs) self; };
-
-        checks =
-          builtins.mapAttrs
-            (_system: deploy-lib:
-              deploy-lib.deployChecks inputs.self.deploy)
-            inputs.deploy-rs.lib;
-
-        outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style; };
-      }
-    // {
-      self = inputs.self;
+      outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style; };
     };
 }

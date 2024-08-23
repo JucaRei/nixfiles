@@ -1,0 +1,231 @@
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
+}:
+let
+  inherit (lib) getExe;
+  inherit (lib.${namespace}) enabled;
+in
+{
+  khanelinix = {
+    user = {
+      enable = true;
+      inherit (config.snowfallorg.user) name;
+    };
+
+    programs = {
+      graphical = {
+        apps = {
+          thunderbird = enabled;
+          zathura = enabled;
+        };
+
+        bars = {
+          waybar = {
+            fullSizeOutputs = [ "DP-1" ];
+            condensedOutputs = [ "DP-3" ];
+          };
+        };
+
+        browsers = {
+          chromium = enabled;
+
+          firefox = {
+            gpuAcceleration = true;
+            hardwareDecoding = true;
+            settings = {
+              # "dom.ipc.processCount.webIsolated" = 9;
+              # "dom.maxHardwareConcurrency" = 16;
+              "media.av1.enabled" = false;
+              # "media.ffvpx.enabled" = false;
+              # "media.hardware-video-decoding.force-enabled" = true;
+              "media.hardwaremediakeys.enabled" = true;
+            };
+          };
+        };
+
+        wms = {
+          hyprland = {
+            enable = true;
+            # enableDebug = true;
+
+            appendConfig = # bash
+              ''
+                exec-once = hyprctl setcursor ${config.${namespace}.theme.gtk.cursor.name} ${
+                  builtins.toString config.${namespace}.theme.gtk.cursor.size
+                }
+              '';
+
+            prependConfig = # bash
+              lib.concatStringsSep "\n" [
+                "# See https://wiki.hyprland.org/Configuring/Monitors/"
+                "monitor=DP-3,	3840x2160@60,	1420x0,	2, bitdepth, 10"
+                "monitor=DP-1,	5120x1440@120,	0x1080,	1, bitdepth, 10"
+                ""
+                (lib.concatStringsSep " " [
+                  "exec-once = ${getExe pkgs.xorg.xrandr}"
+                  "--output XWAYLAND0 --primary --mode 1920x1080 --pos 1420x0 --rotate normal"
+                  "--output XWAYLAND1 --mode 5120x1440 --pos 0x1080 --rotate normal"
+                ])
+                ""
+                "workspace = 1, monitor:DP-3, persistent:true, default:true"
+                "workspace = 2, monitor:DP-1, persistent:true, default:true"
+                "workspace = 3, monitor:DP-1, persistent:true"
+                "workspace = 4, monitor:DP-1, persistent:true"
+                "workspace = 5, monitor:DP-1, persistent:true"
+                "workspace = 6, monitor:DP-1, persistent:true"
+                "workspace = 7, monitor:DP-1, persistent:true"
+                "workspace = 8, monitor:DP-1, persistent:true"
+                "workspace = 9, monitor:DP-1, persistent:true"
+              ];
+          };
+
+          sway = {
+            enable = true;
+
+            settings = {
+              output = {
+                "DP-3" = {
+                  resolution = "3840x2160";
+                  position = "1420,0";
+                  scale = "2";
+                };
+                "DP-1" = {
+                  resolution = "5120x1440";
+                  position = "0,1080";
+                };
+              };
+
+              workspaceOutputAssign = [
+                {
+                  workspace = "1";
+                  output = "DP-3";
+                }
+                {
+                  workspace = "2";
+                  output = "DP-1";
+                }
+                {
+                  workspace = "3";
+                  output = "DP-1";
+                }
+                {
+                  workspace = "4";
+                  output = "DP-1";
+                }
+                {
+                  workspace = "5";
+                  output = "DP-1";
+                }
+                {
+                  workspace = "6";
+                  output = "DP-1";
+                }
+                {
+                  workspace = "7";
+                  output = "DP-1";
+                }
+                {
+                  workspace = "8";
+                  output = "DP-1";
+                }
+              ];
+            };
+          };
+        };
+      };
+
+      terminal = {
+        tools = {
+          git = {
+            enable = true;
+
+            includes = [
+              {
+                condition = "gitdir:/home/juca/Documents/azure/DIB/";
+                path = "${./git/dib-signing}";
+              }
+            ];
+          };
+
+          run-as-service = enabled;
+          ssh = enabled;
+        };
+      };
+    };
+
+    services = {
+      hyprpaper = {
+        monitors = [
+          {
+            name = "DP-3";
+            wallpaper = "${pkgs.${namespace}.wallpapers}/share/wallpapers/cat_pacman.png";
+          }
+          {
+            name = "DP-1";
+            wallpaper = "${pkgs.${namespace}.wallpapers}/share/wallpapers/cat-sound.png";
+          }
+        ];
+
+        wallpapers = [
+          "${pkgs.${namespace}.wallpapers}/share/wallpapers/buttons.png"
+          "${pkgs.${namespace}.wallpapers}/share/wallpapers/cat_pacman.png"
+          "${pkgs.${namespace}.wallpapers}/share/wallpapers/cat-sound.png"
+          "${pkgs.${namespace}.wallpapers}/share/wallpapers/flatppuccin_macchiato.png"
+          "${pkgs.${namespace}.wallpapers}/share/wallpapers/hashtags-black.png"
+          "${pkgs.${namespace}.wallpapers}/share/wallpapers/hashtags-new.png"
+          "${pkgs.${namespace}.wallpapers}/share/wallpapers/hearts.png"
+          "${pkgs.${namespace}.wallpapers}/share/wallpapers/tetris.png"
+        ];
+      };
+
+      mpd = {
+        musicDirectory = "nfs://austinserver.local/mnt/user/data/media/music";
+      };
+
+      rnnoise = enabled;
+
+      sops = {
+        enable = true;
+        defaultSopsFile = lib.snowfall.fs.get-file "secrets/khanelinix/juca/default.yaml";
+        sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
+      };
+    };
+
+    system = {
+      xdg = enabled;
+    };
+
+    suites = {
+      art = enabled;
+      business = enabled;
+      common = enabled;
+      desktop = enabled;
+
+      development = {
+        enable = true;
+
+        dockerEnable = true;
+        gameEnable = true;
+        kubernetesEnable = true;
+        nixEnable = true;
+        sqlEnable = true;
+      };
+
+      emulation = enabled;
+      games = enabled;
+      music = enabled;
+      networking = enabled;
+      photo = enabled;
+      social = enabled;
+      video = enabled;
+    };
+
+    theme.catppuccin = enabled;
+  };
+
+  home.stateVersion = "21.11";
+}

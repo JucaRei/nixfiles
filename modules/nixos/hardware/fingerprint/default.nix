@@ -1,18 +1,17 @@
 {
-  options,
   config,
-  pkgs,
   lib,
   namespace,
   ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt;
+
   cfg = config.${namespace}.hardware.fingerprint;
 in
 {
-  options.${namespace}.hardware.fingerprint = with types; {
+  options.${namespace}.hardware.fingerprint = {
     enable = mkBoolOpt false "Whether or not to enable fingerprint support.";
   };
 

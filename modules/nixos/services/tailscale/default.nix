@@ -5,9 +5,11 @@
   namespace,
   ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) types mkIf;
+  inherit (lib.modules) mkBefore;
+  inherit (lib.${namespace}) mkBoolOpt mkOpt;
+
   cfg = config.${namespace}.services.tailscale;
 in
 {
@@ -23,20 +25,28 @@ in
     assertions = [
       {
         assertion = cfg.autoconnect.enable -> cfg.autoconnect.key != "";
-        message = "excalibur.services.tailscale.autoconnect.key must be set";
+        message = "${namespace}.services.tailscale.autoconnect.key must be set";
       }
     ];
 
-    environment.systemPackages = with pkgs; [ tailscale ];
+    boot.kernel.sysctl = {
+      # Enable IP forwarding
+      # required for Wireguard & Tailscale/Headscale subnet feature
+      # See <https://tailscale.com/kb/1019/subnets/?tab=linux#step-1-install-the-tailscale-client>
+      "net.ipv4.ip_forward" = true;
+      "net.ipv6.conf.all.forwarding" = true;
+    };
 
-    services.tailscale = enabled;
+    environment.systemPackages = with pkgs; [
+      tailscale
+      tailscale-systray
+    ];
 
     networking = {
       firewall = {
-        trustedInterfaces = [ config.services.tailscale.interfaceName ];
-
         allowedUDPPorts = [ config.services.tailscale.port ];
-
+        allowedTCPPorts = [ 5900 ];
+        trustedInterfaces = [ config.services.tailscale.interfaceName ];
         # Strict reverse path filtering breaks Tailscale exit node use and some subnet routing setups.
         checkReversePath = "loose";
       };
@@ -44,37 +54,51 @@ in
       networkmanager.unmanaged = [ "tailscale0" ];
     };
 
-    systemd.services.tailscale-autoconnect = mkIf cfg.autoconnect.enable {
-      description = "Automatic connection to Tailscale";
+    services.tailscale = {
+      enable = true;
+      permitCertUid = "root";
+      useRoutingFeatures = "both";
+    };
 
-      # Make sure tailscale is running before trying to connect to tailscale
-      after = [
-        "network-pre.target"
-        "tailscale.service"
-      ];
-      wants = [
-        "network-pre.target"
-        "tailscale.service"
-      ];
-      wantedBy = [ "multi-user.target" ];
+    systemd = {
+      network.wait-online.ignoredInterfaces = [ "${config.services.tailscale.interfaceName}" ];
 
-      # Set this service as a oneshot job
-      serviceConfig.Type = "oneshot";
+      services = {
+        tailscaled.serviceConfig.Environment = mkBefore [ "TS_NO_LOGS_NO_SUPPORT=true" ];
 
-      # Have the job run this shell script
-      script = with pkgs; ''
-        # Wait for tailscaled to settle
-        sleep 2
+        tailscale-autoconnect = mkIf cfg.autoconnect.enable {
+          description = "Automatic connection to Tailscale";
 
-        # Check if we are already authenticated to tailscale
-        status="$(${tailscale}/bin/tailscale status -json | ${jq}/bin/jq -r .BackendState)"
-        if [ $status = "Running" ]; then # if so, then do nothing
-          exit 0
-        fi
+          # Make sure tailscale is running before trying to connect to tailscale
+          after = [
+            "network-pre.target"
+            "tailscale.service"
+          ];
+          wants = [
+            "network-pre.target"
+            "tailscale.service"
+          ];
+          wantedBy = [ "multi-user.target" ];
 
-        # Otherwise authenticate with tailscale
-        ${tailscale}/bin/tailscale up -authkey "${cfg.autoconnect.key}"
-      '';
+          serviceConfig.Type = "oneshot";
+
+          script =
+            with pkgs; # bash
+            ''
+              # Wait for tailscaled to settle
+              sleep 2
+
+              # Check if we are already authenticated to tailscale
+              status="$(${getExe tailscale} status -json | ${getExe jq} -r .BackendState)"
+              if [ $status = "Running" ]; then # if so, then do nothing
+                exit 0
+              fi
+
+              # Otherwise authenticate with tailscale
+              ${getExe tailscale} up -authkey "${cfg.autoconnect.key}"
+            '';
+        };
+      };
     };
   };
 }

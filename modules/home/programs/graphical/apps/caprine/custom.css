@@ -1,0 +1,90 @@
+/*
+This is the custom styles file where you can add anything you want.
+The styles here will be injected into Caprine and will override default styles.
+If you want to disable styles but keep the config, just comment the lines that you don't want to be used.
+
+Press Command/Ctrl+R in Caprine to see your changes.
+*/
+.rq0escxv.l9j0dhe7.du4w35lb.j83agx80.cbu4d94t.g5gj957u.d2edcug0.hpfvmrgz.kud993qy.buofh1pr {
+    margin-top: unset !important;
+}
+
+/* Scrollbar fixes. */
+::-webkit-scrollbar-track, ::-webkit-scrollbar, ::-webkit-scrollbar-corner {
+	background-color: #1e2030;
+}
+::-webkit-scrollbar {
+	width: 15px;
+	overflow-x: hidden;
+}
+body::-webkit-scrollbar {
+	width: 0;
+}
+::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	background-color: #1e2030;
+	background-clip: content-box;
+	border: 1px solid transparent;
+}
+::-webkit-scrollbar-thumb:hover {	
+	background-color: #5b6078;
+}
+
+/* !important spam needed for the colors to actually work in Caprine. */
+:root,
+.__fb-light-mode,
+.__fb-dark-mode {
+  --card-background: #24273a !important;
+  --comment-background: #181926 !important;
+  --container-color: #24273a !important;
+  --card-background-flat: #939ab7 !important;
+  --disabled-button-background: #14170e !important;
+  --divider: #4d4d4d !important;
+  --hosted-view-selected-state: #24273a !important;
+  --hover-overlay: rgba(255, 255, 255, 0.05) !important;
+  --media-inner-border: rgba(255, 255, 255, 0.1) !important;
+  --chat-incoming-message-bubble-background-color: #363a4f !important;
+  --messenger-card-background: #24273a !important;
+  --messenger-reply-background: #181926 !important;
+  --overlay-alpha-80: rgba(41, 41, 41, 0.8) !important;
+  --popover-background: #24273a !important;
+  --primary-icon: #8aadf4 !important;
+  --primary-text: #cad3f5 !important;
+  --scroll-thumb: #5b6078 !important;
+  --secondary-button-background: #5b6078 !important;
+  --secondary-icon: #a6da95 !important;
+  --secondary-text: #b8c0e0 !important;
+  --shadow-1: rgba(0, 0, 0, 0.3) !important;
+  --shadow-2: rgba(0, 0, 0, 0.4) !important;
+  --shadow-5: rgba(0, 0, 0, 0.7) !important;
+  --shadow-8: rgba(0, 0, 0, 1) !important;
+  --shadow-inset: rgba(000, 000, 000, 0.5) !important;
+  --surface-background: #24273a !important;
+  --wash: #1e2030 !important;
+  --web-wash: #24273a !important;
+}
+
+/* Hide messenger ad */
+.x9f619.x1n2onr6.x1ja2u2z.x78zum5.x1r8uery.xs83m0k.xeuugli.x1qughib.x6s0dn4.xozqiw3.x1q0g3np.xb756pt.x1c4vz4f.xt55aet.xexx8yu.xc73u3c.x18d9i69.x5ib6vp.x1lku1pv.x12nzpgo {
+	display: none;
+}
+
+/* action buttons at bottom */
+.x1lliihq.x1rdy4ex.xcud41i.x4vbgl9.x139jcc6.x1k90msu.x11xpdln.x1qfuztq.xsrhx6k.x7p49u4 path {
+	fill: #8aadf4;
+}
+.x6s0dn4.x1ey2m1c.x78zum5.xl56j7k.x10l6tqk.x1vjfegm.xat24cr.x3oybdh.x1g2r6go.x11xpdln.x1th4bbo div svg path {
+	fill: #c6a0f6;
+}
+.x6s0dn4.x1ey2m1c.x78zum5.xl56j7k.x10l6tqk.x1vjfegm.xat24cr.x3oybdh.x1g2r6go.x11xpdln.x5h36tt div svg path {
+	fill: #a6da95;
+}
+.x6s0dn4.x1ey2m1c.x78zum5.xl56j7k.x10l6tqk.x1vjfegm.xat24cr.x3oybdh.x1g2r6go.x11xpdln.x5w5eug div svg path {
+	fill: #f5a97f;
+}
+.x6s0dn4.x1ey2m1c.x78zum5.xl56j7k.x10l6tqk.x1vjfegm.xat24cr.xds687c div svg path {
+	fill: #f0c6c6;
+}
+
+
+/* #ed8796 */

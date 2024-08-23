@@ -1,70 +1,57 @@
-{ pkgs
-, lib
-, namespace
-, ...
+{
+  pkgs,
+  lib,
+  namespace,
+  ...
 }:
 let
-  tailscale-key = builtins.getEnv "TAILSCALE_AUTH_KEY";
+  inherit (lib) mkForce;
+  inherit (lib.${namespace}) enabled;
 in
-with lib;
-with lib.${namespace};
 {
   # `install-iso` adds wireless support that
   # is incompatible with networkmanager.
   networking.wireless.enable = mkForce false;
 
-  excalibur = {
+  environment.systemPackages = with pkgs; [
+    git
+    wget
+    curl
+    pciutils
+    file
+  ];
+
+  khanelinix = {
     nix = enabled;
 
     apps = {
       _1password = enabled;
       firefox = enabled;
-      vscode = enabled;
       gparted = enabled;
     };
 
     cli-apps = {
-      # neovim = enabled;
-      # tmux = enabled;
+      neovim = enabled;
+      tmux = enabled;
     };
 
     desktop = {
       gnome = {
         enable = true;
       };
-
-      addons = {
-        # I like to have a convenient place to share wallpapers from
-        # even if they're not currently being used.
-        wallpapers = enabled;
-      };
     };
 
     tools = {
       k8s = enabled;
-      git = enabled;
-      node = enabled;
-      http = enabled;
-      misc = enabled;
-      titan = enabled;
     };
 
     hardware = {
       audio = enabled;
-      networking = enabled;
     };
 
     services = {
       openssh = enabled;
       printing = enabled;
-
-      tailscale = {
-        enable = true;
-        autoconnect = {
-          enable = tailscale-key != "";
-          key = tailscale-key;
-        };
-      };
     };
 
     security = {
@@ -78,6 +65,7 @@ with lib.${namespace};
       locale = enabled;
       time = enabled;
       xkb = enabled;
+      networking = enabled;
     };
   };
 
@@ -87,5 +75,5 @@ with lib.${namespace};
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "21.11"; # Did you read the comment?
 }

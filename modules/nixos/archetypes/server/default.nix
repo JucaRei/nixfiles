@@ -1,29 +1,24 @@
-{ options
-, config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  namespace,
+  ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt enabled;
+
   cfg = config.${namespace}.archetypes.server;
 in
 {
-  options.${namespace}.archetypes.server = with types; {
+  options.${namespace}.archetypes.server = {
     enable = mkBoolOpt false "Whether or not to enable the server archetype.";
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
+    khanelinix = {
       suites = {
-        common-slim = enabled;
-      };
-
-      cli-apps = {
-        # neovim = enabled;
-        # tmux = enabled;
+        common = enabled;
       };
     };
   };

@@ -1,18 +1,25 @@
 {
-  lib,
   config,
+  lib,
   pkgs,
   inputs,
   namespace,
   ...
 }:
 let
-  inherit (lib) types mkEnableOption mkIf;
+  inherit (lib)
+    types
+    mkEnableOption
+    mkIf
+    getExe
+    getExe'
+    ;
   inherit (lib.${namespace}) mkOpt;
+  inherit (inputs) gpg-base-conf yubikey-guide;
 
   cfg = config.${namespace}.security.gpg;
 
-  gpgConf = "${inputs.gpg-base-conf}/gpg.conf";
+  gpgConf = "${gpg-base-conf}/gpg.conf";
 
   gpgAgentConf = ''
     enable-ssh-support
@@ -20,7 +27,7 @@ let
     max-cache-ttl 120
   '';
 
-  guide = "${inputs.yubikey-guide}/README.md";
+  guide = "${yubikey-guide}/README.md";
 
   theme = pkgs.fetchFromGitHub {
     owner = "jez";
@@ -29,23 +36,21 @@ let
     sha256 = "1h48yqffpaz437f3c9hfryf23r95rr319lrb3y79kxpxbc9hihxb";
   };
 
-  guideHTML = pkgs.runCommand "yubikey-guide" { } ''
-    ${pkgs.pandoc}/bin/pandoc \
-      --standalone \
-      --metadata title="Yubikey Guide" \
-      --from markdown \
-      --to html5+smart \
-      --toc \
-      --template ${theme}/template.html5 \
-      --css ${theme}/docs/css/theme.css \
-      --css ${theme}/docs/css/skylighting-solarized-theme.css \
-      -o $out \
-      ${guide}
-  '';
-
-  reload-yubikey = pkgs.writeShellScriptBin "reload-yubikey" ''
-    ${pkgs.gnupg}/bin/gpg-connect-agent "scd serialno" "learn --force" /bye
-  '';
+  guideHTML =
+    pkgs.runCommand "yubikey-guide" { } # bash
+      ''
+        ${getExe pkgs.pandoc} \
+          --standalone \
+          --metadata title="Yubikey Guide" \
+          --from markdown \
+          --to html5+smart \
+          --toc \
+          --template ${theme}/template.html5 \
+          --css ${theme}/docs/css/theme.css \
+          --css ${theme}/docs/css/skylighting-solarized-theme.css \
+          -o $out \
+          ${guide}
+      '';
 in
 {
   options.${namespace}.security.gpg = {
@@ -56,26 +61,27 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ gnupg ];
 
-    environment.shellInit = ''
-      export GPG_TTY="$(tty)"
-      export SSH_AUTH_SOCK=$(${pkgs.gnupg}/bin/gpgconf --list-dirs agent-ssh-socket)
+    environment.shellInit = # bash
+      ''
+        export GPG_TTY="$(tty)"
+        export SSH_AUTH_SOCK=$(${getExe' pkgs.gnupg "gpgconf"} --list-dirs agent-ssh-socket)
 
-      ${pkgs.coreutils}/bin/timeout ${builtins.toString cfg.agentTimeout} ${pkgs.gnupg}/bin/gpgconf --launch gpg-agent
-      gpg_agent_timeout_status=$?
+        ${getExe' pkgs.coreutils "timeout"} ${builtins.toString cfg.agentTimeout} ${getExe' pkgs.gnupg "gpgconf"} --launch gpg-agent
+        gpg_agent_timeout_status=$?
 
-      if [ "$gpg_agent_timeout_status" = 124 ]; then
-        # Command timed out...
-        echo "GPG Agent timed out..."
-        echo 'Run "gpgconf --launch gpg-agent" to try and launch it again.'
-      fi
-    '';
+        if [ "$gpg_agent_timeout_status" = 124 ]; then
+          # Command timed out...
+          echo "GPG Agent timed out..."
+          echo 'Run "gpgconf --launch gpg-agent" to try and launch it again.'
+        fi
+      '';
 
     programs.gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
     };
 
-    excalibur.home.file = {
+    ${namespace}.home.file = {
       ".gnupg/.keep".text = "";
 
       ".gnupg/yubikey-guide.md".source = guide;

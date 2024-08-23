@@ -15,9 +15,10 @@ let
 
         dontUnpack = true;
 
-        installPhase = ''
-          cp $src $out
-        '';
+        installPhase = # bash
+          ''
+            cp $src $out
+          '';
 
         passthru = {
           inherit fileName;
@@ -25,7 +26,7 @@ let
       };
     in
     pkg;
-  names = builtins.map (lib.snowfall.path.get-file-name-without-extension) images;
+  names = builtins.map lib.snowfall.path.get-file-name-without-extension images;
   wallpapers = lib.foldl (
     acc: image:
     let
@@ -38,27 +39,19 @@ let
     acc // { "${name}" = mkWallpaper name (./wallpapers + "/${image}"); }
   ) { } images;
   installTarget = "$out/share/wallpapers";
-  installWallpapers = builtins.mapAttrs (name: wallpaper: ''
-    cp ${wallpaper} ${installTarget}/${wallpaper.fileName}
-  '') wallpapers;
 in
 pkgs.stdenvNoCC.mkDerivation {
-  name = "excalibur-wallpapers";
+  name = "${namespace}.wallpapers";
   src = ./wallpapers;
 
-  installPhase = ''
-    mkdir -p ${installTarget}
+  installPhase = # bash
+    ''
+      mkdir -p ${installTarget}
 
-    find * -type f -mindepth 0 -maxdepth 0 -exec cp ./{} ${installTarget}/{} ';'
-  '';
+      find * -type f -mindepth 0 -maxdepth 0 -exec cp ./{} ${installTarget}/{} ';'
+    '';
 
   passthru = {
     inherit names;
   } // wallpapers;
-
-  meta = with lib; {
-    description = "Some good wallpapers!";
-    license = licenses.asl20;
-    maintainers = with maintainers; [ jakehamilton ];
-  };
 }

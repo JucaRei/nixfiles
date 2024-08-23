@@ -1,30 +1,15 @@
 { lib }:
-
 rec {
-  ## Renames an alsa device from a given `name` using the new `description`.
-  ##
-  #@ { name: String, description: String } -> { matches: List, apply_properties: Attrs }
   mkAlsaRename =
     { name, description }:
     {
-      matches = [
-        [
-          [
-            "device.name"
-            "matches"
-            name
-          ]
-        ]
-      ];
-      # actions = { "update-props" = { "node.description" = description; }; };
-      apply_properties = {
-        "device.description" = description;
+      matches = [ { "node.name" = name; } ];
+      actions = {
+        "update-props" = {
+          "node.description" = description;
+        };
       };
     };
-
-  ## Create a pipewire audio node.
-  ##
-  #@ { name: String, factory: String ? "adapter", ... } -> { factory: String, args: Attrs }
   mkAudioNode =
     args@{
       name,
@@ -44,10 +29,6 @@ rec {
           "factory.name" = args."factory.name" or "support.null-audio-sink";
         };
     };
-
-  ## Create a virtual pipewire audio node.
-  ##
-  #@ { name: String, ... } -> { factory: "adapter", args: Attrs }
   mkVirtualAudioNode =
     args@{ name, ... }:
     mkAudioNode (
@@ -65,10 +46,6 @@ rec {
         "monitor.channel-volumes" = args."monitor.channel-volumes" or true;
       }
     );
-
-  ## Connect two pipewire audio nodes
-  ##
-  #@ { name: String?, from: String, to: String, ... } -> { name: "libpipewire-module-loopback", args: Attrs }
   mkBridgeAudioModule =
     args@{ from, to, ... }:
     {

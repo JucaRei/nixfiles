@@ -1,29 +1,32 @@
-{ pkgs
-, lib
-, inputs
-, namespace
-, ...
+{
+  lib,
+  pkgs,
+  namespace,
+  ...
 }:
-with lib;
-with lib.${namespace};
 let
-  gpgConf = "${inputs.gpg-base-conf}/gpg.conf";
+  inherit (lib) mkForce getExe getExe';
+  inherit (lib.${namespace}) enabled;
 
+  gpgConf = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/drduh/config/master/gpg.conf";
+    sha256 = "0va62sgnah8rjgp4m6zygs4z9gbpmqvq9m3x4byywk1dha6nvvaj";
+  };
   gpgAgentConf = ''
-    pinentry-program /run/current-system/sw/bin/pinentry-curses
+    pinentry-program ${getExe' pkgs.pinentry-curses "pinentry-curses"}
   '';
-
-  guide = "${inputs.yubikey-guide}/README.md";
-
+  guide = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/drduh/YubiKey-Guide/master/README.md";
+    sha256 = "164pyqm3yjybxlvwxzfb9mpp38zs9rb2fycngr6jv20n3vr1dipj";
+  };
   theme = pkgs.fetchFromGitHub {
     owner = "jez";
     repo = "pandoc-markdown-css-theme";
     rev = "019a4829242937761949274916022e9861ed0627";
     sha256 = "1h48yqffpaz437f3c9hfryf23r95rr319lrb3y79kxpxbc9hihxb";
   };
-
   guideHTML = pkgs.runCommand "yubikey-guide" { } ''
-    ${pkgs.pandoc}/bin/pandoc \
+    ${getExe pkgs.pandoc} \
       --standalone \
       --metadata title="Yubikey Guide" \
       --from markdown \
@@ -35,34 +38,18 @@ let
       -o $out \
       ${guide}
   '';
-
-  guideDesktopItem = pkgs.makeDesktopItem {
-    name = "yubikey-guide";
-    desktopName = "Yubikey Guide";
-    genericName = "View Yubikey Guide in a web browser";
-    exec = "${pkgs.xdg-utils}/bin/xdg-open ${guideHTML}";
-    icon = lib.snowfall.fs.get-file "modules/security/gpg/yubico-icon.svg";
-    categories = [ "System" ];
-  };
-
-  reload-yubikey = pkgs.writeShellScriptBin "reload-yubikey" ''
-    ${pkgs.gnupg}/bin/gpg-connect-agent "scd serialno" "learn --force" /bye
-  '';
 in
 {
-  services.pcscd.enable = true;
-  services.udev.packages = with pkgs; [ yubikey-personalization ];
-
   environment.systemPackages = with pkgs; [
     cryptsetup
+    git
     gnupg
     pinentry-curses
     pinentry-qt
     paperkey
     wget
-    guideDesktopItem
-    reload-yubikey
-    firefox
+    pciutils
+    file
   ];
 
   programs = {
@@ -73,7 +60,7 @@ in
     };
   };
 
-  excalibur = {
+  khanelinix = {
     nix = enabled;
 
     desktop = {
@@ -83,32 +70,22 @@ in
     };
 
     apps = {
-      vscode = enabled;
       firefox = enabled;
     };
 
     cli-apps = {
-      # neovim = enabled;
-      yubikey = enabled;
+      neovim = enabled;
     };
 
-    tools = {
-      misc = enabled;
-      git = enabled;
-    };
+    home = {
+      file = {
+        "guide.md".source = guide;
+        "guide.html".source = guideHTML;
+        "gpg.conf".source = gpgConf;
+        "gpg-agent.conf".text = gpgAgentConf;
 
-    home.file."guide.md".source = guide;
-    home.file."guide.html".source = guideHTML;
-    home.file."gpg.conf".source = gpgConf;
-    home.file."gpg-agent.conf".text = gpgAgentConf;
-
-    home.file.".gnupg/gpg.conf".source = gpgConf;
-    home.file.".gnupg/gpg-agent.conf".text = gpgAgentConf;
-
-    hardware = {
-      networking = {
-        # Networking is explicitly disabled in this environment.
-        enable = mkForce false;
+        ".gnupg/gpg.conf".source = gpgConf;
+        ".gnupg/gpg-agent.conf".text = gpgAgentConf;
       };
     };
 
@@ -121,7 +98,16 @@ in
       locale = enabled;
       time = enabled;
       xkb = enabled;
+      networking = {
+        # Networking is explicitly disabled in this environment.
+        enable = mkForce false;
+      };
     };
+  };
+
+  services = {
+    pcscd.enable = true;
+    udev.packages = with pkgs; [ yubikey-personalization ];
   };
 
   # This value determines the NixOS release from which the default

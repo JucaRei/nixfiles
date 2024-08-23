@@ -1,29 +1,25 @@
-{ options
-, config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  namespace,
+  ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt;
+
   cfg = config.${namespace}.suites.development;
-  apps = {
-    vscode = enabled;
-    yubikey = enabled;
-  };
-  cli-apps = {
-    # tmux = enabled;
-    # neovim = enabled;
-    yubikey = enabled;
-    prisma = enabled;
-    mods = enabled;
-  };
 in
 {
-  options.${namespace}.suites.development = with types; {
+  options.${namespace}.suites.development = {
     enable = mkBoolOpt false "Whether or not to enable common development configuration.";
+    azureEnable = mkBoolOpt false "Whether or not to enable azure development configuration.";
+    dockerEnable = mkBoolOpt false "Whether or not to enable docker development configuration.";
+    gameEnable = mkBoolOpt false "Whether or not to enable game development configuration.";
+    goEnable = mkBoolOpt false "Whether or not to enable go development configuration.";
+    kubernetesEnable = mkBoolOpt false "Whether or not to enable kubernetes development configuration.";
+    nixEnable = mkBoolOpt false "Whether or not to enable nix development configuration.";
+    sqlEnable = mkBoolOpt false "Whether or not to enable sql development configuration.";
   };
 
   config = mkIf cfg.enable {
@@ -35,23 +31,13 @@ in
       8081
     ];
 
-    excalibur = {
-      inherit apps cli-apps;
-
-      tools = {
-        # attic = enabled;
-        at = enabled;
-        direnv = enabled;
-        go = enabled;
-        http = enabled;
-        k8s = enabled;
-        node = enabled;
-        titan = enabled;
-        qmk = enabled;
+    khanelinix = {
+      user = {
+        extraGroups = [ "git" ] ++ lib.optionals cfg.sqlEnable [ "mysql" ];
       };
 
       virtualisation = {
-        podman = enabled;
+        podman.enable = cfg.dockerEnable;
       };
     };
   };

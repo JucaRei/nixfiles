@@ -1,25 +1,30 @@
 {
-  options,
   config,
-  pkgs,
   lib,
+  pkgs,
   namespace,
   ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt;
+
   cfg = config.${namespace}.hardware.storage;
 in
 {
-  options.${namespace}.hardware.storage = with types; {
+  options.${namespace}.hardware.storage = {
     enable = mkBoolOpt false "Whether or not to enable support for extra storage devices.";
+    ssdEnable = mkBoolOpt true "Whether or not to enable support for SSD storage devices.";
   };
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      ntfs3g
+      btrfs-progs
       fuseiso
+      nfs-utils
+      ntfs3g
     ];
+
+    services.fstrim.enable = lib.mkDefault cfg.ssdEnable;
   };
 }

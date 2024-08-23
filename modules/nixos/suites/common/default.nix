@@ -1,60 +1,70 @@
-{ options, config, lib, pkgs, namespace, ... }:
-with lib;
-with lib.${namespace};
+{ config, lib, pkgs, namespace, ... }:
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) enabled;
+
   cfg = config.${namespace}.suites.common;
 in
 {
-  options.${namespace}.suites.common = with types; {
-    enable = mkBoolOpt false "Whether or not to enable common configuration.";
-  };
+  imports = [ (lib.snowfall.fs.get-file "modules/shared/suites/common/default.nix") ];
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.excalibur.list-iommu ];
 
-    excalibur = {
+    environment = {
+      defaultPackages = lib.mkForce [ ];
+
+      systemPackages = with pkgs; [
+        curl
+        dnsutils
+        lshw
+        pciutils
+        pkgs.${namespace}.trace-symlink
+        pkgs.${namespace}.trace-which
+        rsync
+        # upower
+        util-linux
+        wget
+      ];
+    };
+
+    juca = {
+      hardware = {
+        power = enabled;
+      };
+
       nix = enabled;
 
-      # TODO: Enable this once Attic is configured again.
-      # cache.public = enabled;
-
-      cli-apps = {
-        flake = enabled;
-      };
-
-      tools = {
-        git = enabled;
-        misc = enabled;
-        fup-repl = enabled;
-        comma = enabled;
-        nix-ld = enabled;
-        bottom = enabled;
-      };
-
-      hardware = {
-        audio = enabled;
-        storage = enabled;
-        networking = enabled;
-      };
-
-      services = {
-        printing = enabled;
-        openssh = enabled;
-        tailscale = enabled;
+      programs = {
+        terminal = {
+          tools = {
+            bandwhich = enabled;
+            nix-ld = enabled;
+          };
+        };
       };
 
       security = {
+        auditd = enabled;
+        # FIXME: broken nixpkgs
+        # clamav = enabled;
         gpg = enabled;
-        doas = enabled;
-        keyring = enabled;
+        pam = enabled;
+        usbguard = enabled;
+      };
+
+      services = {
+        ddccontrol = enabled;
+        earlyoom = enabled;
+        logrotate = enabled;
+        # oomd = enabled;
+        openssh = enabled;
+        printing = enabled;
       };
 
       system = {
-        boot = enabled;
         fonts = enabled;
         locale = enabled;
         time = enabled;
-        xkb = enabled;
       };
     };
   };

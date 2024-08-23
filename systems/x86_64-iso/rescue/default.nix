@@ -1,26 +1,26 @@
-{ pkgs
-, lib
-, namespace
-, ...
-}:
-with lib;
-with lib.${namespace};
 {
-  excalibur = {
+  pkgs,
+  lib,
+  namespace,
+  ...
+}:
+let
+  inherit (lib.${namespace}) enabled;
+in
+{
+  environment.systemPackages = with pkgs; [
+    git
+    wget
+    curl
+    pciutils
+    file
+  ];
+
+  khanelinix = {
     nix = enabled;
 
     cli-apps = {
-      # neovim = enabled;
-    };
-
-    tools = {
-      misc = enabled;
-      git = enabled;
-      http = enabled;
-    };
-
-    hardware = {
-      networking = enabled;
+      neovim = enabled;
     };
 
     security = {

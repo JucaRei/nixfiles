@@ -1,35 +1,26 @@
 {
-  options,
   config,
   lib,
-  pkgs,
   namespace,
   ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt enabled;
+
   cfg = config.${namespace}.archetypes.workstation;
 in
 {
-  options.${namespace}.archetypes.workstation = with types; {
+  options.${namespace}.archetypes.workstation = {
     enable = mkBoolOpt false "Whether or not to enable the workstation archetype.";
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
+    khanelinix = {
       suites = {
         common = enabled;
         desktop = enabled;
         development = enabled;
-        art = enabled;
-        video = enabled;
-        social = enabled;
-        media = enabled;
-      };
-
-      tools = {
-        appimage-run = enabled;
       };
     };
   };

@@ -1,32 +1,36 @@
-{ pkgs
-, lib
-, namespace
-, ...
+{
+  pkgs,
+  lib,
+  namespace,
+  ...
 }:
-with lib;
-with lib.${namespace};
+let
+  inherit (lib) mkForce;
+  inherit (lib.${namespace}) enabled;
+in
 {
   # `install-iso` adds wireless support that
   # is incompatible with networkmanager.
   networking.wireless.enable = mkForce false;
 
-  excalibur = {
+  environment.systemPackages = with pkgs; [
+    git
+    wget
+    curl
+    pciutils
+    file
+  ];
+
+  khanelinix = {
     nix = enabled;
 
-    cli-apps = {
-      # neovim = enabled;
-      # tmux = enabled;
-    };
-
-    tools = {
-      git = enabled;
-      node = enabled;
-      misc = enabled;
-      http = enabled;
-    };
-
-    hardware = {
-      networking = enabled;
+    programs = {
+      terminal = {
+        editors = {
+          neovim = enabled;
+          tmux = enabled;
+        };
+      };
     };
 
     services = {
@@ -43,6 +47,7 @@ with lib.${namespace};
       locale = enabled;
       time = enabled;
       xkb = enabled;
+      networking = enabled;
     };
   };
 }

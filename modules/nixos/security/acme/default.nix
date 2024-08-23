@@ -1,7 +1,6 @@
 {
-  lib,
-  pkgs,
   config,
+  lib,
   virtual,
   namespace,
   ...
@@ -27,10 +26,9 @@ in
         inherit (cfg) email;
 
         group = mkIf config.services.nginx.enable "nginx";
-        server = mkIf cfg.staging "https://acme-staging-v02.api.letsencrypt.org/directory";
-
         # Reload nginx when certs change.
         reloadServices = optional config.services.nginx.enable "nginx.service";
+        server = mkIf cfg.staging "https://acme-staging-v02.api.letsencrypt.org/directory";
       };
     };
   };

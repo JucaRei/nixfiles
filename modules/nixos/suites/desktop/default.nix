@@ -1,40 +1,32 @@
-{ options
-, config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  namespace,
+  ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt enabled;
+
   cfg = config.${namespace}.suites.desktop;
 in
 {
-  options.${namespace}.suites.desktop = with types; {
+  options.${namespace}.suites.desktop = {
     enable = mkBoolOpt false "Whether or not to enable common desktop configuration.";
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
-      desktop = {
-        gnome = enabled;
+    khanelinix = {
+      programs = {
+        graphical = {
+          apps = {
+            _1password = enabled;
+          };
 
-        addons = {
-          wallpapers = enabled;
+          wms = {
+            hyprland = enabled;
+          };
         };
-      };
-
-      apps = {
-        _1password = enabled;
-        firefox = enabled;
-        vlc = enabled;
-        logseq = enabled;
-        hey = enabled;
-        # pocketcasts = enabled;
-        yt-music = enabled;
-        twitter = enabled;
-        gparted = enabled;
       };
     };
   };
