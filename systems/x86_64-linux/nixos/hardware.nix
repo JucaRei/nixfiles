@@ -9,7 +9,7 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     (modulesPath + "/installer/scan/not-detected.nix")
-    ./disks-btrfs.nix
+    # ./disks-btrfs.nix
   ];
 
   ##
