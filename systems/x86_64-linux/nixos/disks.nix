@@ -126,3 +126,5 @@ in
 }
 
 # https://sourcegraph.com/search?q=context:global+-repo:%5Egithub%5C.com/NixOS/nixpkgs%24+-repo:%5Egithub%5C.com/nix-community/home-manager%24+-repo:%5Egithub%5C.com/ceph/ceph%24++-repo:Azure/azure-sdk-for-js+-repo:osbuild+-repo:systemd+-repo:Azure+-repo:knorrie/python-btrfs++-repo:Azure/azure-sdk-for-java+-repo:%5Egithub%5C.com/NetApp/trident%24+-repo:hashicorp/go-azure-sdk+-repo:cblichmann/btrfscue++-repo:NVlabs/intrinsic3d+content:%27subvolumes+%3D+%7B%27&patternType=keyword&sm=0
+
+# sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /tmp/disk-config.nix
