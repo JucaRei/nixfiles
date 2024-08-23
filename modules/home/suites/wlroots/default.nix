@@ -24,7 +24,7 @@ in
       pkgs.wl-screenrec
     ];
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical = {
           addons = {

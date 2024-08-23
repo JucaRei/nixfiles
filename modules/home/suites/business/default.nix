@@ -34,7 +34,7 @@ in
       ]
       ++ lib.optionals stdenv.isDarwin [ teams ];
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical = {
           apps = {

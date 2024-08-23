@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excaliburnix = {
+    excalibur = {
       services = {
         spice-vdagentd = enabled;
         spice-webdav = enabled;

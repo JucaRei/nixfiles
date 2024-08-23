@@ -27,7 +27,7 @@ in
       ]
     );
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical.apps = {
           discord = enabled;

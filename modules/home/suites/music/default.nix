@@ -33,7 +33,7 @@ in
         pkgs.${namespace}.yt-music
       ];
 
-    excaliburnix = {
+    excalibur = {
       programs.terminal = {
         media = {
           ncmpcpp = enabled;

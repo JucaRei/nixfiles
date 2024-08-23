@@ -63,7 +63,7 @@ in
       };
     };
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical = {
           editors = {

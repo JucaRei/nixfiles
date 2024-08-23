@@ -29,7 +29,7 @@ in
         tree
       ];
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical = {
           browsers = {

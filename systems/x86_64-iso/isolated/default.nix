@@ -60,7 +60,7 @@ in
     };
   };
 
-  excaliburnix = {
+  excalibur = {
     nix = enabled;
 
     desktop = {

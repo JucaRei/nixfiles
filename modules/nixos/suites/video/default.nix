@@ -26,7 +26,7 @@ in
     # `/run/wrappers/bin` in the "Setup External Programs" menu.
     programs.k3b.enable = true;
 
-    excaliburnix = {
+    excalibur = {
       user.extraGroups = [ "cdrom" ];
     };
   };

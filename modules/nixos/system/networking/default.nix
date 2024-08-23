@@ -111,7 +111,7 @@ in
       traceroute
     ];
 
-    excaliburnix.user.extraGroups = [
+    excalibur.user.extraGroups = [
       "network"
       "wireshark"
     ];

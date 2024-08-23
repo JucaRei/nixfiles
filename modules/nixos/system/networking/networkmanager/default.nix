@@ -12,7 +12,7 @@ let
 in
 {
   config = mkIf cfg.enable {
-    excaliburnix.user.extraGroups = [ "networkmanager" ];
+    excalibur.user.extraGroups = [ "networkmanager" ];
 
     networking.networkmanager = {
       enable = true;

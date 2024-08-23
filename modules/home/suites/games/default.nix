@@ -28,7 +28,7 @@ in
       protonup-qt
     ];
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         terminal = {
           tools = {

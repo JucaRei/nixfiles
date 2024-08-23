@@ -10,7 +10,7 @@ in
 {
   import = [ ./hardware.nix ];
 
-  excaliburnix = {
+  excalibur = {
     nix = enabled;
 
     archetypes = {
@@ -51,7 +51,7 @@ in
             browseable = true;
             comment = "Application Data folder";
             only-owner-editable = true;
-            path = "/home/${config.excaliburnix.user.name}/.config/";
+            path = "/home/${config.excalibur.user.name}/.config/";
             public = false;
             read-only = false;
           };
@@ -61,7 +61,7 @@ in
             browseable = true;
             comment = "Data folder";
             only-owner-editable = true;
-            path = "/home/${config.excaliburnix.user.name}/.local/share/";
+            path = "/home/${config.excalibur.user.name}/.local/share/";
             public = false;
             read-only = false;
           };
@@ -71,7 +71,7 @@ in
             browseable = true;
             comment = "Virtual Machines folder";
             only-owner-editable = true;
-            path = "/home/${config.excaliburnix.user.name}/vms/";
+            path = "/home/${config.excalibur.user.name}/vms/";
             public = false;
             read-only = false;
           };
@@ -81,7 +81,7 @@ in
             browseable = true;
             comment = "ISO Images folder";
             only-owner-editable = true;
-            path = "/home/${config.excaliburnix.user.name}/isos/";
+            path = "/home/${config.excalibur.user.name}/isos/";
             public = false;
             read-only = false;
           };

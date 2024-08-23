@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excaliburnix = {
+    excalibur = {
       # TODO: input-leap replace barrier
 
       suites = {

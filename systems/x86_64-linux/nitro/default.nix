@@ -14,7 +14,7 @@ in
     ./specializations.nix
   ];
 
-  excaliburnix = {
+  excalibur = {
     nix = enabled;
 
     archetypes = {
@@ -112,8 +112,8 @@ in
 
         configs = {
           Documents = {
-            ALLOW_USERS = [ "excaliburnix" ];
-            SUBVOLUME = "/home/excaliburnix/Documents";
+            ALLOW_USERS = [ "excalibur" ];
+            SUBVOLUME = "/home/excalibur/Documents";
             TIMELINE_CLEANUP = true;
             TIMELINE_CREATE = true;
           };

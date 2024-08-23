@@ -8,7 +8,7 @@ in
 
   documentation.man.enable = mkForce true;
 
-  excaliburnix = {
+  excalibur = {
     archetypes = {
       wsl = enabled;
     };

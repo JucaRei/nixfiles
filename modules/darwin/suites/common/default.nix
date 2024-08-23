@@ -56,7 +56,7 @@ in
       ];
     };
 
-    excaliburnix = {
+    excalibur = {
       nix = enabled;
 
       tools = {

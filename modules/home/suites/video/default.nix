@@ -29,7 +29,7 @@ in
       ]
       ++ lib.optionals stdenv.isDarwin [ iina ];
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical.apps = {
           obs = enabled;

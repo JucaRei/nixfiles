@@ -166,7 +166,7 @@ in
       };
     };
 
-    excaliburnix = {
+    excalibur = {
       user.extraOptions.openssh.authorizedKeys.keys = cfg.authorizedKeys;
 
       home.extraOptions = {

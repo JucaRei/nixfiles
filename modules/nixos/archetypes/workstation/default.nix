@@ -16,7 +16,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excaliburnix = {
+    excalibur = {
       suites = {
         common = enabled;
         desktop = enabled;

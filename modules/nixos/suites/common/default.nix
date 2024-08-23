@@ -27,7 +27,7 @@ in
       ];
     };
 
-    excaliburnix = {
+    excalibur = {
       hardware = {
         power = enabled;
       };

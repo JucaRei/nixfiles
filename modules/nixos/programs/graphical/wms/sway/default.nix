@@ -19,7 +19,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excaliburnix = {
+    excalibur = {
       display-managers = {
         sddm = {
           enable = true;

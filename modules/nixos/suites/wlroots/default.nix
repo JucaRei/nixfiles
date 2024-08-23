@@ -18,7 +18,7 @@ in
 
   config = mkIf cfg.enable {
 
-    excaliburnix = {
+    excalibur = {
       services = {
         seatd = enabled;
       };

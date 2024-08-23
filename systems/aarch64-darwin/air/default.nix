@@ -10,7 +10,7 @@ let
   cfg = config.${namespace}.user;
 in
 {
-  excaliburnix = {
+  excalibur = {
     archetypes = {
       personal = enabled;
       workstation = enabled;

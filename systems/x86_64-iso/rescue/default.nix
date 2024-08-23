@@ -16,7 +16,7 @@ in
     file
   ];
 
-  excaliburnix = {
+  excalibur = {
     nix = enabled;
 
     cli-apps = {

@@ -10,7 +10,7 @@ let
   inherit (lib.${namespace}) enabled;
 in
 {
-  excaliburnix = {
+  excalibur = {
     user = {
       enable = true;
       inherit (config.snowfallorg.user) name;
@@ -145,7 +145,7 @@ in
 
             includes = [
               {
-                condition = "gitdir:/home/excaliburnix/Documents/azure/DIB/";
+                condition = "gitdir:/home/excalibur/Documents/azure/DIB/";
                 path = "${./git/dib-signing}";
               }
             ];
@@ -190,7 +190,7 @@ in
 
       sops = {
         enable = true;
-        defaultSopsFile = lib.snowfall.fs.get-file "secrets/excaliburnix/excaliburnix/default.yaml";
+        defaultSopsFile = lib.snowfall.fs.get-file "secrets/excalibur/excalibur/default.yaml";
         sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
       };
     };

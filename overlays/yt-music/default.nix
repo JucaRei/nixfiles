@@ -1,10 +1,10 @@
 _: final: prev: {
-  excaliburnix = (prev.excaliburnix or { }) // {
+  excalibur = (prev.excalibur or { }) // {
     yt-music = prev.makeDesktopItem {
       name = "YT Music";
       desktopName = "YT Music";
       genericName = "Music, from YouTube.";
-      exec = ''${prev.lib.getExe final.firefox} "https://music.youtube.com/?excaliburnix.app=true"'';
+      exec = ''${prev.lib.getExe final.firefox} "https://music.youtube.com/?excalibur.app=true"'';
       icon = ./icon.svg;
       type = "Application";
       categories = [

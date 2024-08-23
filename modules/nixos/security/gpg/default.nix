@@ -96,7 +96,7 @@ in
       reload-yubikey
     ];
 
-    excaliburnix = {
+    excalibur = {
       home.file = {
         ".gnupg/yubikey-guide.md".source = guide;
         ".gnupg/yubikey-guide.html".source = guideHTML;

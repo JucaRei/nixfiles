@@ -88,7 +88,7 @@ in
       } // historicalLogAliases // historicalCrashAliases;
     };
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical = {
           launchers = {

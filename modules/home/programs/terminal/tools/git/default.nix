@@ -171,7 +171,7 @@ in
 
     sops.secrets = {
       "github/access-token" = {
-        sopsFile = lib.snowfall.fs.get-file "secrets/excaliburnix/default.yaml";
+        sopsFile = lib.snowfall.fs.get-file "secrets/excalibur/default.yaml";
         path = "${config.home.homeDirectory}/.config/gh/access-token";
       };
     };

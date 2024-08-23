@@ -21,7 +21,7 @@ in
     file
   ];
 
-  excaliburnix = {
+  excalibur = {
     nix = enabled;
 
     programs = {

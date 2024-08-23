@@ -36,7 +36,7 @@ in
 
     hardware.pulseaudio.enable = mkForce false;
 
-    excaliburnix = {
+    excalibur = {
       user.extraGroups = [ "audio" ];
     };
 

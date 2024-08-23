@@ -90,7 +90,7 @@ in
       spiceUSBRedirection.enable = true;
     };
 
-    excaliburnix = {
+    excalibur = {
       user = {
         extraGroups = [
           "disk"

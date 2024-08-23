@@ -56,7 +56,7 @@ in
       };
     };
 
-    excaliburnix = {
+    excalibur = {
       display-managers = {
         sddm = {
           enable = true;

@@ -69,7 +69,7 @@ in
       };
     };
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical = {
           launchers = {

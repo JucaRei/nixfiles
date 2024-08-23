@@ -37,7 +37,7 @@ in
       ]
       ++ lib.optionals cfg.retroarchFull [ retroarchFull ];
 
-    excaliburnix = {
+    excalibur = {
       programs = {
         graphical = {
           apps = {
