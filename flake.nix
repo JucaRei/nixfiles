@@ -1,5 +1,5 @@
 {
-  description = "EX Calibur";
+  description = "EX Calibur nix configuration files";
 
   inputs = {
     # NixPkgs
@@ -75,6 +75,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Run unpatched dynamically compiled binaries
+    nix-ld-rs = {
+      url = "github:nix-community/nix-ld-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    pre-commit-hooks-nix.url = "github:cachix/pre-commit-hooks.nix";
+
     system-manager = {
       url = "github:numtide/system-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -132,34 +140,69 @@
         };
 
         overlays = with inputs; [
+          nix-ld-rs.overlays.default
           flake.overlays.default
           attic.overlays.default
           drift.overlays.default
           lix.overlays.default
           nixgl.overlay
+          nur.overlay
         ];
 
-        systems.modules.nixos = with inputs; [
-          home-manager.nixosModules.home-manager
-          nix-ld.nixosModules.nix-ld
-          vault-service.nixosModules.nixos-vault-service
-          # lix.nixosModules.default
-          # TODO: Replace excalibur.services.attic now that vault-agent
-          # exists and can force override environment files.
-          # attic.nixosModules.atticd
+        homes.modules = with inputs; [
+          # anyrun.homeManagerModules.default
+          catppuccin.homeManagerModules.catppuccin
+          # hypr-socket-watch.homeManagerModules.default
+          nix-index-database.hmModules.nix-index
+          # sops-nix.homeManagerModules.sops
+          # spicetify-nix.homeManagerModules.default
         ];
 
-        systems.hosts.jasper.modules = with inputs; [
-          nixos-hardware.nixosModules.framework-11th-gen-intel
-        ];
+        systems = {
+          modules = {
+            nixos = with inputs; [
+              home-manager.nixosModules.home-manager
+              nix-ld.nixosModules.nix-ld
+              vault-service.nixosModules.nixos-vault-service
+              disko.nixosModules.disko
+              {
+                # Required for impermanence
+                fileSystems."/persist".neededForBoot = true;
+              }
+              # lix.nixosModules.default
+              # TODO: Replace excalibur.services.attic now that vault-agent
+              # exists and can force override environment files.
+              # attic.nixosModules.atticd
+            ];
+          };
+
+          hosts.jasper.modules = with inputs; [
+            nixos-hardware.nixosModules.framework-11th-gen-intel
+          ];
+        };
+
+        templates = {
+          angular.description = "Angular template";
+          c.description = "C flake template.";
+          container.description = "Container template";
+          cpp.description = "CPP flake template";
+          dotnetf.description = "Dotnet FSharp template";
+          flake-compat.description = "Flake-compat shell and default files.";
+          go.description = "Go template";
+          node.description = "Node template";
+          python.description = "Python template";
+          rust.description = "Rust template";
+          rust-web-server.description = "Rust web server template";
+          snowfall.description = "Snowfall-lib template";
+        };
 
         deploy = lib.mkDeploy { inherit (inputs) self; };
 
-        checks = builtins.mapAttrs
-          (
-            system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
-          )
-          inputs.deploy-rs.lib;
+        checks =
+          builtins.mapAttrs
+            (_system: deploy-lib:
+              deploy-lib.deployChecks inputs.self.deploy)
+            inputs.deploy-rs.lib;
 
         outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style; };
       }
