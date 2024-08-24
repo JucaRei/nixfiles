@@ -50,8 +50,8 @@ in
       script = # bash
         ''
           config_file=/var/lib/AccountsService/users/${config.${namespace}.user.name}
-          icon_file=/run/current-system/sw/share/icons/user/${config.${namespace}.user.name}/${
-            config.${namespace}.user.name.icon.fileName
+          icon_file=/run/current-system/sw/share/icons/${config.${namespace}.user.name}/${
+            config.${namespace}.user.name.fileName
           }
 
           if ! [ -d "$(dirname "$config_file")" ]; then
