@@ -1,8 +1,7 @@
-{
-  lib,
-  namespace,
-  config,
-  ...
+{ lib
+, namespace
+, config
+, ...
 }:
 let
   inherit (lib.${namespace}) enabled;
@@ -17,7 +16,7 @@ in
       vm = enabled;
     };
 
-    desktop = {
+    desktop-environment = {
       gnome = {
         enable = true;
       };
