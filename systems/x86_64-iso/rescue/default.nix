@@ -1,8 +1,7 @@
-{
-  pkgs,
-  lib,
-  namespace,
-  ...
+{ pkgs
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib.${namespace}) enabled;
@@ -20,7 +19,7 @@ in
     nix = enabled;
 
     cli-apps = {
-      neovim = enabled;
+      # neovim = enabled;
     };
 
     security = {

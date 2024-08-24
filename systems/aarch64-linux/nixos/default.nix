@@ -24,7 +24,7 @@ in
     };
 
     cli-apps = {
-      neovim = enabled;
+      # neovim = enabled;
     };
 
     desktop = {

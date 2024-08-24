@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -271,10 +270,10 @@ in
     programs =
       let
         applyCatppuccin =
-          {
-            name,
-            nestedName ? null,
-            extraAttrs ? { },
+          { name
+          , nestedName ? null
+          , extraAttrs ? { }
+          ,
           }:
           let
             catppuccinConfig = {
@@ -311,7 +310,7 @@ in
           "glamour"
           "helix"
           "kitty"
-          "neovim"
+          # "neovim"
           "waybar"
           "zathura"
           "zellij"

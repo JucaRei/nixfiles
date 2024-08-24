@@ -1,11 +1,10 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  system,
-  namespace,
-  ...
+{ config
+, inputs
+, lib
+, pkgs
+, system
+, namespace
+, ...
 }:
 let
   inherit (inputs) hyprland-contrib;
@@ -187,7 +186,8 @@ in
         "$term" = "${getExe pkgs.kitty}";
         "$browser" = "${getExe config.programs.firefox.package}";
         "$mail" = "${getExe pkgs.thunderbird}";
-        "$editor" = "${getExe pkgs.neovim}";
+        # "$editor" = "${getExe pkgs.neovim}";
+        "$editor" = "${getExe pkgs.micro}";
         "$explorer" = "${getExe pkgs.xfce.thunar}";
         "$music" = "${getExe pkgs.spotify}";
         "$notification_center" = "${getExe' config.services.swaync.package "swaync-client"}";

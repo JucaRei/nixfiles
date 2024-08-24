@@ -1,8 +1,7 @@
-{
-  pkgs,
-  lib,
-  namespace,
-  ...
+{ pkgs
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkForce;
@@ -27,7 +26,7 @@ in
     programs = {
       terminal = {
         editors = {
-          neovim = enabled;
+          # neovim = enabled;
           tmux = enabled;
         };
       };

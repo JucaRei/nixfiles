@@ -1,8 +1,7 @@
-{
-  pkgs,
-  lib,
-  namespace,
-  ...
+{ pkgs
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkForce;
@@ -31,7 +30,7 @@ in
     };
 
     cli-apps = {
-      neovim = enabled;
+      # neovim = enabled;
       tmux = enabled;
     };
 

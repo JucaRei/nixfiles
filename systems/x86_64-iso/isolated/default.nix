@@ -1,8 +1,7 @@
-{
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkForce getExe getExe';
@@ -74,7 +73,7 @@ in
     };
 
     cli-apps = {
-      neovim = enabled;
+      # neovim = enabled;
     };
 
     home = {
