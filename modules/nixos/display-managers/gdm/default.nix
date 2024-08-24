@@ -43,50 +43,50 @@ in
       libinput.enable = true;
     };
 
-    systemd.services."${namespace}-user-icon" = {
-      before = [ "display-manager.service" ];
-      wantedBy = [ "display-manager.service" ];
+    # systemd.services."${namespace}-user-icon" = {
+    #   before = [ "display-manager.service" ];
+    #   wantedBy = [ "display-manager.service" ];
 
-      script = # bash
-        ''
-          config_file=/var/lib/AccountsService/users/${config.${namespace}.user.name}
-          icon_file=/run/current-system/sw/share/icons/${config.${namespace}.user.name}/${
-            config.${namespace}.user.name.fileName
-          }
+    #   script = # bash
+    #     ''
+    #       config_file=/var/lib/AccountsService/users/${config.${namespace}.user.name}
+    #       icon_file=/run/current-system/sw/share/icons/${config.${namespace}.user.name}/${
+    #         config.${namespace}.user.name.fileName
+    #       }
 
-          if ! [ -d "$(dirname "$config_file")" ]; then
-            mkdir -p "$(dirname "$config_file")"
-          fi
+    #       if ! [ -d "$(dirname "$config_file")" ]; then
+    #         mkdir -p "$(dirname "$config_file")"
+    #       fi
 
-          if ! [ -f "$config_file" ]; then
-            echo "[User]
-            Session=gnome
-            SystemAccount=false
-            Icon=$icon_file" > "$config_file"
-          else
-            icon_config=$(sed -E -n -e "/Icon=.*/p" $config_file)
+    #       if ! [ -f "$config_file" ]; then
+    #         echo "[User]
+    #         Session=gnome
+    #         SystemAccount=false
+    #         Icon=$icon_file" > "$config_file"
+    #       else
+    #         icon_config=$(sed -E -n -e "/Icon=.*/p" $config_file)
 
-            if [[ "$icon_config" == "" ]]; then
-              echo "Icon=$icon_file" >> $config_file
-            else
-              sed -E -i -e 's#^Icon=.*$#Icon=$icon_file#' $config_file
-            fi
-          fi
-        '';
+    #         if [[ "$icon_config" == "" ]]; then
+    #           echo "Icon=$icon_file" >> $config_file
+    #         else
+    #           sed -E -i -e 's#^Icon=.*$#Icon=$icon_file#' $config_file
+    #         fi
+    #       fi
+    #     '';
 
-      serviceConfig = {
-        Type = "simple";
-        User = "root";
-        Group = "root";
-      };
-    };
+    #   serviceConfig = {
+    #     Type = "simple";
+    #     User = "root";
+    #     Group = "root";
+    #   };
+    # };
 
-    system.activationScripts.postInstallGdm =
-      stringAfter [ "users" ] # bash
-        ''
-          echo "Setting gdm permissions for user icon"
-          ${getExe' pkgs.acl "setfacl"} -m u:gdm:x /home/${config.${namespace}.user.name}
-          ${getExe' pkgs.acl "setfacl"} -m u:gdm:r /home/${config.${namespace}.user.name}/.face.icon || true
-        '';
+    # system.activationScripts.postInstallGdm =
+    #   stringAfter [ "users" ] # bash
+    #     ''
+    #       echo "Setting gdm permissions for user icon"
+    #       ${getExe' pkgs.acl "setfacl"} -m u:gdm:x /home/${config.${namespace}.user.name}
+    #       ${getExe' pkgs.acl "setfacl"} -m u:gdm:r /home/${config.${namespace}.user.name}/.face.icon || true
+    #     '';
   };
 }
