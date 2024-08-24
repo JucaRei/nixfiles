@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkEnableOption mkIf;
@@ -19,7 +18,7 @@ let
   ];
   excel = [ "libreoffice-calc.desktop" ];
   fileManager = [ "thunar.desktop" ];
-  image = [ "feh.desktop" ];
+  image = lib.mkif config.${namespace}.programs.graphical.wms.enable [ "feh.desktop" ];
   mail = [ "thunderbird.desktop" ];
   powerpoint = [ "libreoffice-impress.desktop" ];
   terminal = [

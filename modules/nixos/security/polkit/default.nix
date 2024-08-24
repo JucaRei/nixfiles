@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -27,6 +26,12 @@ in
         /* Log authorization checks. */
         polkit.addRule(function(action, subject) {
           polkit.log("user " +  subject.user + " is attempting action " + action.id + " from PID " + subject.pid);
+        });
+      ''
+      +
+      ''polkit.addRule(function (action, subject) {
+          if (subject.isInGroup('wheel'))
+            return polkit.Result.YES;
         });
       '';
     };

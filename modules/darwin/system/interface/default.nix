@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf mkEnableOption;
@@ -62,7 +61,7 @@ in
         # auto show and hide dock
         autohide = true;
         # remove delay for showing dock
-        autohide-delay = 0.0;
+        autohide-delay = 0.2;
         # how fast is the dock showing animation
         autohide-time-modifier = 1.0;
         mineffect = "scale";

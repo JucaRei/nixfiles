@@ -21,7 +21,7 @@ in
         pkgs.${namespace}.trace-symlink
         pkgs.${namespace}.trace-which
         rsync
-        # upower
+        upower
         util-linux
         wget
       ];
