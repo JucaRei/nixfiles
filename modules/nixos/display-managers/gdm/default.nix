@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) types mkIf getExe';
@@ -52,7 +51,7 @@ in
         ''
           config_file=/var/lib/AccountsService/users/${config.${namespace}.user.name}
           icon_file=/run/current-system/sw/share/icons/user/${config.${namespace}.user.name}/${
-            config.${namespace}.user.icon.fileName
+            config.${namespace}.user.name.icon.fileName
           }
 
           if ! [ -d "$(dirname "$config_file")" ]; then
