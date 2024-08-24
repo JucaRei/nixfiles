@@ -38,7 +38,7 @@ let
     wireless-hid
   ];
 
-  default-attrs = mapAttrs (_key: mkDefault);
+  default-attrs = mapAttrs (_key: lib.mkDefault);
   nested-default-attrs = mapAttrs (_key: default-attrs);
 in
 {
