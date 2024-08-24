@@ -119,13 +119,14 @@ in
                 # FIX: references
                 # ++ optional config.${namespace}.programs.graphical.firefox.enable "firefox.desktop"
                 # ++ optional config.${namespace}.programs.graphical.vscode.enable "code.desktop"
-                ++ optional config.${namespace}.programs.terminal.emulators.foot.enable "foot.desktop"
-                ++ optional config.${namespace}.programs.terminal.emulators.kitty.enable "kitty.desktop"
+                # ++ optional config.${namespace}.programs.terminal.emulators.foot.enable "foot.desktop"
+                # ++ optional config.${namespace}.programs.terminal.emulators.kitty.enable "kitty.desktop"
                 ++ [ "org.gnome.Console.desktop" ]
-                # FIX: references
-                # ++ optional config.${namespace}.programs.graphical.logseq.enable "logseq.desktop"
-                ++ optional config.${namespace}.programs.graphical.apps.discord.enable "discord.desktop"
-                ++ optional config.${namespace}.programs.graphical.apps.steam.enable "steam.desktop";
+              ;
+              # FIX: references
+              # ++ optional config.${namespace}.programs.graphical.logseq.enable "logseq.desktop"
+              # ++ optional config.${namespace}.programs.graphical.apps.discord.enable "discord.desktop"
+              # ++ optional config.${namespace}.programs.graphical.apps.steam.enable "steam.desktop";
             };
 
             "org/gnome/desktop/background" = {
