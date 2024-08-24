@@ -1,10 +1,10 @@
-{
-  config,
-  lib,
-  namespace,
-  system,
-  inputs,
-  ...
+{ config
+, lib
+, namespace
+, system
+, inputs
+, pkgs
+, ...
 }:
 let
   inherit (lib) mkEnableOption mkIf;
@@ -21,7 +21,7 @@ in
 
   config = mkIf cfg.enable {
     home = {
-      # file = mkIf pkgs.stdenv.isDarwin { "Library/Preferences/glow/glow.yml".text = config; };
+      file = mkIf pkgs.stdenv.isDarwin { "Library/Preferences/glow/glow.yml".text = config; };
 
       sessionVariables = {
         EDITOR = mkIf cfg.default "nvim";
@@ -36,6 +36,6 @@ in
       };
     };
 
-    # xdg.configFile = mkIf pkgs.stdenv.isLinux { "glow/glow.yml".text = config; };
+    xdg.configFile = mkIf pkgs.stdenv.isLinux { "glow/glow.yml".text = config; };
   };
 }
