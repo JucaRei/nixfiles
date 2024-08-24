@@ -29,12 +29,12 @@ in
       packages = [ khanelivim.packages.${system}.default ];
     };
 
-    sops.secrets = {
-      wakatime = {
-        sopsFile = lib.snowfall.fs.get-file "secrets/excalibur/default.yaml";
-        path = "${config.home.homeDirectory}/.wakatime.cfg";
-      };
-    };
+    # sops.secrets = {
+    #   wakatime = {
+    #     sopsFile = lib.snowfall.fs.get-file "secrets/excalibur/default.yaml";
+    #     path = "${config.home.homeDirectory}/.wakatime.cfg";
+    #   };
+    # };
 
     # xdg.configFile = mkIf pkgs.stdenv.isLinux { "glow/glow.yml".text = config; };
   };

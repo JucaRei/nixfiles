@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) getExe;
@@ -188,11 +187,11 @@ in
 
       rnnoise = enabled;
 
-      sops = {
-        enable = true;
-        defaultSopsFile = lib.snowfall.fs.get-file "secrets/excalibur/excalibur/default.yaml";
-        sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
-      };
+      # sops = {
+      #   enable = true;
+      #   defaultSopsFile = lib.snowfall.fs.get-file "secrets/excalibur/excalibur/default.yaml";
+      #   sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ];
+      # };
     };
 
     system = {

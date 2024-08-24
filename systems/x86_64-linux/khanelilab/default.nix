@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib.${namespace}) enabled;
@@ -112,11 +111,11 @@ in
     security = {
       doas = enabled;
       keyring = enabled;
-      sops = {
-        enable = true;
-        sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-        defaultSopsFile = lib.snowfall.fs.get-file secrets/khanelilab/default.yaml;
-      };
+      # sops = {
+      #   enable = true;
+      #   sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+      #   defaultSopsFile = lib.snowfall.fs.get-file secrets/khanelilab/default.yaml;
+      # };
     };
 
     system = {

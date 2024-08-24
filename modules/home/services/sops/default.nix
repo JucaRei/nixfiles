@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf types;
@@ -28,12 +27,12 @@ in
         sshKeyPaths = [ "${config.home.homeDirectory}/.ssh/id_ed25519" ] ++ cfg.sshKeyPaths;
       };
 
-      secrets = {
-        nix = {
-          sopsFile = lib.snowfall.fs.get-file "secrets/excalibur/default.yaml";
-          path = "${config.home.homeDirectory}/.config/nix/nix.conf";
-        };
-      };
+      # secrets = {
+      #   nix = {
+      #     sopsFile = lib.snowfall.fs.get-file "secrets/excalibur/default.yaml";
+      #     path = "${config.home.homeDirectory}/.config/nix/nix.conf";
+      #   };
+      # };
     };
   };
 }

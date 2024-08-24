@@ -1,11 +1,10 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  system,
-  namespace,
-  ...
+{ config
+, inputs
+, lib
+, pkgs
+, system
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -96,13 +95,15 @@ let
   generateOutputSettings =
     outputList: barType:
     builtins.listToAttrs (
-      builtins.map (outputName: {
-        name = outputName;
-        value = mkMerge [
-          (mkBarSettings barType)
-          { output = outputName; }
-        ];
-      }) outputList
+      builtins.map
+        (outputName: {
+          name = outputName;
+          value = mkMerge [
+            (mkBarSettings barType)
+            { output = outputName; }
+          ];
+        })
+        outputList
     );
 in
 {
@@ -135,11 +136,11 @@ in
       style = "${style}${controlCenterStyle}${powerStyle}${statsStyle}${workspacesStyle}";
     };
 
-    sops.secrets = {
-      weather_config = {
-        sopsFile = lib.snowfall.fs.get-file "secrets/excalibur/default.yaml";
-        path = "${config.home.homeDirectory}/weather_config.json";
-      };
-    };
+    # sops.secrets = {
+    #   weather_config = {
+    #     sopsFile = lib.snowfall.fs.get-file "secrets/excalibur/default.yaml";
+    #     path = "${config.home.homeDirectory}/weather_config.json";
+    #   };
+    # };
   };
 }
