@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -45,22 +44,27 @@ in
 {
   options.${namespace}.programs.graphical.desktop-environment.gnome = with types; {
     enable = mkBoolOpt false "Whether or not to use Gnome as the desktop environment.";
-    color-scheme = mkOpt (enum [
-      "light"
-      "dark"
-    ]) "dark" "The color scheme to use.";
+    color-scheme = mkOpt
+      (enum [
+        "light"
+        "dark"
+      ]) "dark" "The color scheme to use.";
     extensions = mkOpt (listOf package) [ ] "Extra Gnome extensions to install.";
     monitors = mkOpt (nullOr path) null "The monitors.xml file to create.";
     suspend = mkBoolOpt true "Whether or not to suspend the machine after inactivity.";
     wallpaper = {
-      light = mkOpt (oneOf [
-        str
-        package
-      ]) pkgs.${namespace}.wallpapers.flatppuccin_macchiato "The light wallpaper to use.";
-      dark = mkOpt (oneOf [
-        str
-        package
-      ]) pkgs.${namespace}.wallpapers.cat-sound "The dark wallpaper to use.";
+      light = mkOpt
+        (oneOf [
+          str
+          package
+        ])
+        pkgs.${namespace}.wallpapers.flatppuccin_macchiato "The light wallpaper to use.";
+      dark = mkOpt
+        (oneOf [
+          str
+          package
+        ])
+        pkgs.${namespace}.wallpapers.cat-sound "The dark wallpaper to use.";
     };
     wayland = mkBoolOpt true "Whether or not to use Wayland.";
   };
@@ -317,43 +321,43 @@ in
           lib.optional (cfg.monitors != null) "L+ ${gdmHome}/.config/monitors.xml - - - - ${cfg.monitors}"
         );
 
-      services."${namespace}-user-icon" = {
-        before = [ "display-manager.service" ];
-        wantedBy = [ "display-manager.service" ];
+      # services."${namespace}-user-icon" = {
+      #   before = [ "display-manager.service" ];
+      #   wantedBy = [ "display-manager.service" ];
 
-        serviceConfig = {
-          Type = "simple";
-          User = "root";
-          Group = "root";
-        };
+      #   serviceConfig = {
+      #     Type = "simple";
+      #     User = "root";
+      #     Group = "root";
+      #   };
 
-        script = # bash
-          ''
-            config_file=/var/lib/AccountsService/users/${config.${namespace}.user.name}
-            icon_file=/run/current-system/sw/share/${namespace}.icons/user/${config.${namespace}.user.name}/${
-              config.${namespace}.user.icon.fileName
-            }
+      #   script = # bash
+      #     ''
+      #       config_file=/var/lib/AccountsService/users/${config.${namespace}.user.name}
+      #       icon_file=/run/current-system/sw/share/${namespace}.icons/user/${config.${namespace}.user.name}/${
+      #         config.${namespace}.user.icon.fileName
+      #       }
 
-            if ! [ -d "$(dirname "$config_file")"]; then
-              mkdir -p "$(dirname "$config_file")"
-            fi
+      #       if ! [ -d "$(dirname "$config_file")"]; then
+      #         mkdir -p "$(dirname "$config_file")"
+      #       fi
 
-            if ! [ -f "$config_file" ]; then
-              echo "[User]
-              Session=gnome
-              SystemAccount=false
-              Icon=$icon_file" > "$config_file"
-            else
-              icon_config=$(sed -E -n -e "/Icon=.*/p" $config_file)
+      #       if ! [ -f "$config_file" ]; then
+      #         echo "[User]
+      #         Session=gnome
+      #         SystemAccount=false
+      #         Icon=$icon_file" > "$config_file"
+      #       else
+      #         icon_config=$(sed -E -n -e "/Icon=.*/p" $config_file)
 
-              if [[ "$icon_config" == "" ]]; then
-                echo "Icon=$icon_file" >> $config_file
-              else
-                sed -E -i -e "s#^Icon=.*$#Icon=$icon_file#" $config_file
-              fi
-            fi
-          '';
-      };
+      #         if [[ "$icon_config" == "" ]]; then
+      #           echo "Icon=$icon_file" >> $config_file
+      #         else
+      #           sed -E -i -e "s#^Icon=.*$#Icon=$icon_file#" $config_file
+      #         fi
+      #       fi
+      #     '';
+      # };
     };
   };
 }
