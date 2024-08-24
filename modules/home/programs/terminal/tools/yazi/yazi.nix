@@ -341,10 +341,10 @@
     ];
 
     previewers = [
-      {
-        name = "*.md";
-        run = "glow";
-      }
+      # {
+      #   name = "*.md";
+      #   run = "glow";
+      # }
       {
         mime = "text/csv";
         run = "miller";
