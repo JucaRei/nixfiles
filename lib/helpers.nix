@@ -29,7 +29,8 @@ with inputs;
         vscode-server.homeModules.default
         nix-index-database.hmModules.nix-index
         catppuccin.homeManagerModules.catppuccin
-        # inputs.vscode-server.nixosModules.home
+        # inputs.vscode-server-hm.nixosModules.home
+        "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
 
         ({ config, pkgs, lib, ... }: {
           # Shared Between all users
@@ -105,7 +106,18 @@ with inputs;
             ];
           })
 
-        ] ++ inputs.nixpkgs.lib.optionals (isISO) [ cd-dvd ];
+        ] ++ inputs.nixpkgs.lib.optionals (isISO) [
+          cd-dvd
+          inputs.vscode-server.nixosModules.default
+          ({ pkgs, lib, config, ... }: {
+            environment = {
+              systemPackages = with pkgs; [
+                unstable.vscode-fhs
+              ];
+            };
+            services.vscode-server.enable = true;
+          })
+        ];
     };
 
   systems = inputs.nixpkgs.lib.genAttrs [
