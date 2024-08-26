@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) types;
@@ -16,11 +15,11 @@ in
     email = mkOpt str "reinaldo800@gmail.com" "The email of the user.";
     extraGroups = mkOpt (listOf str) [ ] "Groups for the user to be assigned.";
     extraOptions = mkOpt attrs { } "Extra options passed to <option>users.users.<name></option>.";
-    fullName = mkOpt str "Austin Horstman" "The full name of the user.";
+    fullName = mkOpt str "Reinaldo P Jr" "The full name of the user.";
     initialPassword =
       mkOpt str "password"
         "The initial password to use when the user is first created.";
-    name = mkOpt str "excalibur" "The name to use for the user account.";
+    name = mkOpt str "juca" "The name to use for the user account.";
   };
 
   config = {
