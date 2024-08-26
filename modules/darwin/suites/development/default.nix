@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -20,7 +19,7 @@ in
       casks = [
         "cutter"
         "docker"
-        "electron"
+        # "electron"
         "powershell"
         "visual-studio-code"
       ];
@@ -30,5 +29,6 @@ in
         "Xcode" = 497799835;
       };
     };
+    excalibur = { };
   };
 }

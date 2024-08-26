@@ -256,45 +256,19 @@
         };
       };
 
-      alias = {
-        templates = {
-          angular = {
-            description = "Angular template";
-          };
-          c = {
-            description = "C flake template.";
-          };
-          container = {
-            description = "Container template";
-          };
-          cpp = {
-            description = "CPP flake template";
-          };
-          dotnetf = {
-            description = "Dotnet FSharp template";
-          };
-          flake-compat = {
-            description = "Flake-compat shell and default files.";
-          };
-          go = {
-            description = "Go template";
-          };
-          node = {
-            description = "Node template";
-          };
-          python = {
-            description = "Python template";
-          };
-          rust = {
-            description = "Rust template";
-          };
-          rust-web-server = {
-            description = "Rust web server template";
-          };
-          snowfall = {
-            description = "Snowfall-lib template";
-          };
-        };
+      templates = {
+        angular.description = "Angular template";
+        c.description = "C flake template.";
+        container.description = "Container template";
+        cpp.description = "CPP flake template";
+        dotnetf.description = "Dotnet FSharp template";
+        flake-compat.description = "Flake-compat shell and default files.";
+        go.description = "Go template";
+        node.description = "Node template";
+        python.description = "Python template";
+        rust.description = "Rust template";
+        rust-web-server.description = "Rust web server template";
+        snowfall.description = "Snowfall-lib template";
       };
 
       deploy = lib.mkDeploy { inherit (inputs) self; };

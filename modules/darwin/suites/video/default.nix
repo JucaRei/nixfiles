@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -22,8 +21,10 @@ in
     homebrew = {
       masApps = mkIf config.${namespace}.tools.homebrew.masEnable {
         "Infuse" = 1136220934;
-        "iMovie" = 408981434;
+        # "iMovie" = 408981434;
       };
+
+      casks = [ "mpv" ];
     };
   };
 }

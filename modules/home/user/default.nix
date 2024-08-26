@@ -1,11 +1,10 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  system,
-  namespace,
-  ...
+{ config
+, inputs
+, lib
+, pkgs
+, system
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -29,6 +28,7 @@ let
     else
       "/home/${cfg.name}";
 
+  defaultIconFileName = "profile.jpg";
   defaultIcon = pkgs.stdenvNoCC.mkDerivation {
     name = "default-icon";
     src = ./. + "/${defaultIconFileName}";
@@ -44,7 +44,6 @@ let
       fileName = defaultIconFileName;
     };
   };
-  defaultIconFileName = "profile.jpg";
 in
 {
   options.${namespace}.user = {

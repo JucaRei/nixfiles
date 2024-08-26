@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -21,7 +20,7 @@ in
       qemu
       vte
       # FIX: broken nixpkg on darwin
-      # libvirt
+      libvirt
     ];
 
     homebrew = {

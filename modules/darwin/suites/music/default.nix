@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -17,7 +16,12 @@ in
 
   config = mkIf cfg.enable {
     homebrew = {
-      casks = [ "spotify" ];
+      taps = [ "krtirtho/apps" ];
+
+      casks = [
+        # "spotify"
+        "spotube"
+      ];
 
       masApps = mkIf config.${namespace}.tools.homebrew.masEnable { "GarageBand" = 682658836; };
     };

@@ -124,7 +124,7 @@ in
           "/Applications/Plex.app"
           # TODO: implement small_blank
           "/Applications/Visual Studio Code.app"
-          "/Applications/Visual Studio (Preview).app"
+          # "/Applications/Visual Studio (Preview).app"
           "/Applications/GitHub Desktop.app"
           "/Applications/GitKraken.app"
           # TODO: implement small_blank
@@ -139,7 +139,7 @@ in
       };
 
       menuExtraClock = {
-        ShowAMPM = true;
+        ShowAMPM = false;
         ShowDate = 1;
         ShowDayOfWeek = true;
         ShowSeconds = true;

@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -18,8 +17,8 @@ in
   config = mkIf cfg.enable {
     homebrew = {
       casks = [
-        "betterdiscord-installer"
-        "caprine"
+        "betterdiscord-installer" # https://betterdiscord.app/
+        "caprine" # facebook messenger
         "discord"
         "element"
         "slack"
