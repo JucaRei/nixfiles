@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkForce;
@@ -80,7 +79,7 @@ in
       social = enabled;
     };
 
-    theme.catppuccin = enabled;
+    # theme.catppuccin = enabled;
   };
 
   home.stateVersion = "21.11";

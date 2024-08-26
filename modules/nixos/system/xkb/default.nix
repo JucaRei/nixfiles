@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -20,8 +19,8 @@ in
 
     services.xserver = {
       xkb = {
-        layout = "us";
-        options = "caps:escape";
+        layout = "br";
+        # options = "caps:escape";
       };
     };
   };

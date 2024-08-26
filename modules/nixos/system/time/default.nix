@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -34,6 +33,6 @@ in
       '';
     };
 
-    time.timeZone = "America/Chicago";
+    time.timeZone = "America/Sao_Paulo";
   };
 }

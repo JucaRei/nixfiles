@@ -46,13 +46,18 @@ let
   };
 in
 {
-  options.${namespace}.user = {
-    enable = mkOpt types.bool false "Whether to configure the user account.";
-    email = mkOpt types.str "reinaldo800gmail.com" "The email of the user.";
-    fullName = mkOpt types.str "Reinaldo P Jr" "The full name of the user.";
-    home = mkOpt (types.nullOr types.str) home-directory "The user's home directory.";
-    icon = mkOpt (types.nullOr types.package) defaultIcon "The profile picture to use for the user.";
-    name = mkOpt (types.nullOr types.str) config.snowfallorg.user.name "The user account.";
+  options = {
+    ${namespace} = {
+      user = {
+        enable = mkOpt types.bool false "Whether to configure the user account.";
+        email = mkOpt types.str "reinaldo800gmail.com" "The email of the user.";
+        fullName = mkOpt types.str "Reinaldo P Jr" "The full name of the user.";
+        home = mkOpt (types.nullOr types.str) home-directory "The user's home directory.";
+        icon = mkOpt (types.nullOr types.package) defaultIcon "The profile picture to use for the user.";
+        name = mkOpt (types.nullOr types.str) config.snowfallorg.user.name "The user account.";
+
+      };
+    };
   };
 
   config = mkIf cfg.enable (mkMerge [
@@ -91,206 +96,232 @@ in
               nvd = "${pkgs.nvd}/bin/nvd diff";
               nix-diff = "${pkgs.nix-diff}/bin/nix-diff";
             };
-            # options.services.aliases = {
-            #   enable = lib.mkEnableOption "Enable aliases for system" // { default = true; };
-            systemd.shellAliases = lib.mkOption {
-              type = with lib.types; attrsOf str;
 
-              default =
-                let
-                  userCommands = [
-                    "cat"
-                    "get-default"
-                    "help"
-                    "is-active"
-                    "is-enabled"
-                    "is-failed"
-                    "is-system-running"
-                    "list-dependencies"
-                    "list-jobs"
-                    "list-sockets"
-                    "list-timers"
-                    "list-unit-files"
-                    "list-units"
-                    "show"
-                    "show-environment"
-                    "status"
+            options.systemd-commands.aliases = {
+              enable = lib.mkEnableOption "Enable systemd aliases for Linux system" // { default = lib.optionalString pkgs.stdenv.isLinux true; };
+
+              systemd = {
+                shellAliases = lib.optionalString pkgs.stdenv.isLinux (lib.mkOption {
+                  type = with lib.types; attrsOf str;
+
+                  default =
+                    let
+                      userCommands = [
+                        "cat"
+                        "get-default"
+                        "help"
+                        "is-active"
+                        "is-enabled"
+                        "is-failed"
+                        "is-system-running"
+                        "list-dependencies"
+                        "list-jobs"
+                        "list-sockets"
+                        "list-timers"
+                        "list-unit-files"
+                        "list-units"
+                        "show"
+                        "show-environment"
+                        "status"
+                      ];
+
+                      sudoCommands = [
+                        "add-requires"
+                        "add-wants"
+                        "cancel"
+                        "daemon-reexec"
+                        "daemon-reload"
+                        "default"
+                        "disable"
+                        "edit"
+                        "emergency"
+                        "enable"
+                        "halt"
+                        "import-environment"
+                        "isolate"
+                        "kexec"
+                        "kill"
+                        "link"
+                        "list-machines"
+                        "load"
+                        "mask"
+                        "preset"
+                        "preset-all"
+                        "reenable"
+                        "reload"
+                        "reload-or-restart"
+                        "reset-failed"
+                        "rescue"
+                        "restart"
+                        "revert"
+                        "set-default"
+                        "set-environment"
+                        "set-property"
+                        "start"
+                        "stop"
+                        "switch-root"
+                        "try-reload-or-restart"
+                        "try-restart"
+                        "unmask"
+                        "unset-environment"
+                      ];
+
+                      powerCommands = [
+                        "hibernate"
+                        "hybrid-sleep"
+                        "poweroff"
+                        "reboot"
+                        "suspend"
+                      ];
+
+                      # mkSystemCommand :: String -> { name :: String, value :: String }
+                      mkSystemCommand = c: { name = "sc-${c}"; value = "systemctl ${c}"; };
+
+                      # mkUserCommand :: String -> { name :: String, value :: String }
+                      mkUserCommand = c: { name = "scu-${c}"; value = "systemctl --user ${c}"; };
+
+                      # mkSudoCommand :: String -> { name :: String, value :: String }
+                      mkSudoCommand = c: { name = "sc-${c}"; value = "sudo systemctl ${c}"; };
+                    in
+                    builtins.listToAttrs
+                      (lib.flatten [
+                        (builtins.map mkSudoCommand sudoCommands)
+                        (builtins.map mkSystemCommand powerCommands)
+                        (builtins.map mkSystemCommand userCommands)
+                        (builtins.map mkUserCommand sudoCommands)
+                        (builtins.map mkUserCommand userCommands)
+                      ]) // {
+                      # Extra systemctl commands
+                      sc-disable-now = "sc-disable --now";
+                      sc-enable-now = "sc-enable --now";
+                      sc-failed = "systemctl --failed";
+                      sc-mask-now = "sc-mask --now";
+                      scu-disable-now = "scu-disable --now";
+                      scu-enable-now = "scu-enable --now";
+                      scu-failed = "systemctl --user --failed";
+                      scu-mask-now = "scu-mask --now";
+
+                      # Journalctl commands
+                      jc-boot = "journalctl -b";
+                      jc-kernel = "journalctl -k";
+                      jc-list-boot = "journalctl --list-boots";
+                      jc-service = "journalctl -u";
+                      jc-usage = "journalctl --disk-usage";
+                      jcu-service = "journalctl --user -u";
+
+                      # Networkctl commands
+                      nc-cat = "networkctl cat";
+                      nc-delete = "networkctl delete";
+                      nc-down = "networkctl down";
+                      nc-edit = "networkctl edit";
+                      nc-frenew = "networkctl forcerenew";
+                      nc-label = "networkctl label";
+                      nc-list = "networkctl list";
+                      nc-lldp = "networkctl lldp";
+                      nc-mask = "networkctl mask";
+                      nc-reconfig = "networkctl reconfigure";
+                      nc-reload = "networkctl reload";
+                      nc-renew = "networkctl renew";
+                      nc-status = "networkctl status";
+                      nc-unmask = "networkctl unmask";
+                      nc-up = "networkctl up";
+
+                      # Resolvectl commands
+                      rc-query = "resolvectl query";
+                      rc-service = "resolvectl service";
+                      rc-openpgp = "resolvectl openpgp";
+                      rc-tlsa = "resolvectl tlsa";
+                      rc-status = "resolvectl status";
+                      rc-stat = "resolvectl statistics";
+                      rc-reset-stat = "resolvectl reset-statistics";
+                      rc-flush = "resolvectl flush-caches";
+                      rc-reset = "resolvectl reset-server-features";
+                      rc-dns = "resolvectl dns";
+                      rc-domain = "resolvectl domain";
+                      rc-default-route = "resolvectl default-route";
+                      rc-llmnr = "resolvectl llmnr";
+                      rc-mdns = "resolvectl mdns";
+                      rc-dnssec = "resolvectl dnssec";
+                      rc-dnsovertls = "resolvectl dnsovertls";
+                      rc-nta = "resolvectl nta";
+                      rc-revert = "resolvectl revert";
+                      rc-monitor = "resolvectl monitor";
+                      rc-show-cache = "resolvectl show-cache";
+                      rc-show-server-state = "resolvectl show-server-state";
+                      rc-log-level = "resolvectl log-level";
+
+                      # Systemd nspawn
+                      nspawn = "${pkgs.systemdMinimal}/bin/systemd-nspawn";
+
+                      # Others
+                      sxorg = "export DISPLAY=:0.0";
+                      nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
+                      mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
+                      mkdir = "mkdir -pv";
+                      ios = "sudo --preserve-env=PATH ${pkgs.dmidecode}/bin/dmidecode -t bios";
+                      # cat = "${pkgs.bat}/bin/bat --paging=never";
+                      ip = "${pkgs.iproute2}/bin/ip --color --brief";
+                      less = "${pkgs.bat}/bin/bat --paging=always";
+                      more = "${pkgs.bat}/bin/bat --paging=always";
+                      top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
+                      wget = "${pkgs.wget2}/bin/wget2";
+                      du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
+                      cpa = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
+                      mva = "${pkgs.advmvcp}/bin/advmv --progress-bar";
+                      audio = "${pkgs.inxi}/bin/inxi -A";
+                      battery = "${pkgs.inxi}/bin/inxi -B -xxx";
+                      bluetooth = "${pkgs.inxi}/bin/inxi -E";
+                      graphics = "${pkgs.inxi}/bin/inxi -G";
+                      macros = "${pkgs.llvmPackages.clangNoLibc}/bin/cpp -dM /dev/null";
+                      pci = "sudo 'PATH=$PATH' env ${pkgs.inxi}/bin/inxi --slots";
+                      process = "${pkgs.inxi}/bin/inxi --processes";
+                      partitions = "${pkgs.inxi}/bin/inxi -P";
+                      repos = "${pkgs.inxi}/bin/inxi -r";
+                      sockets = "${pkgs.iproute2}/bin/ss -lp";
+                      system = "${pkgs.inxi}/bin/inxi -Fazy";
+                      usb = "${pkgs.inxi}/bin/inxi -J";
+                      wifi = "${pkgs.inxi}/bin/inxi -n";
+                      dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
+
+                      # Nix
+                      store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+                      nb = "${pkgs.nix}/bin/nix build --no-link --print-out-paths";
+                    };
+
+                  description = ''
+                    Create Aliases for systemd tools.
+                  '';
+                });
+              };
+
+              diffProgram = lib.mkOption {
+                type = lib.types.enum (builtins.attrNames nixDiffCommands);
+
+                default = assert builtins.hasAttr "builtin" nixDiffCommands; "builtin";
+              };
+              process = {
+                packages = lib.mkOption {
+                  type = with lib.types; listOf package;
+
+                  default = with pkgs; [
+                    nodePackages.fkill-cli
+                    procs
+                    strace
                   ];
 
-                  sudoCommands = [
-                    "add-requires"
-                    "add-wants"
-                    "cancel"
-                    "daemon-reexec"
-                    "daemon-reload"
-                    "default"
-                    "disable"
-                    "edit"
-                    "emergency"
-                    "enable"
-                    "halt"
-                    "import-environment"
-                    "isolate"
-                    "kexec"
-                    "kill"
-                    "link"
-                    "list-machines"
-                    "load"
-                    "mask"
-                    "preset"
-                    "preset-all"
-                    "reenable"
-                    "reload"
-                    "reload-or-restart"
-                    "reset-failed"
-                    "rescue"
-                    "restart"
-                    "revert"
-                    "set-default"
-                    "set-environment"
-                    "set-property"
-                    "start"
-                    "stop"
-                    "switch-root"
-                    "try-reload-or-restart"
-                    "try-restart"
-                    "unmask"
-                    "unset-environment"
-                  ];
-
-                  powerCommands = [
-                    "hibernate"
-                    "hybrid-sleep"
-                    "poweroff"
-                    "reboot"
-                    "suspend"
-                  ];
-
-                  # mkSystemCommand :: String -> { name :: String, value :: String }
-                  mkSystemCommand = c: { name = "sc-${c}"; value = "systemctl ${c}"; };
-
-                  # mkUserCommand :: String -> { name :: String, value :: String }
-                  mkUserCommand = c: { name = "scu-${c}"; value = "systemctl --user ${c}"; };
-
-                  # mkSudoCommand :: String -> { name :: String, value :: String }
-                  mkSudoCommand = c: { name = "sc-${c}"; value = "sudo systemctl ${c}"; };
-                in
-                builtins.listToAttrs
-                  (lib.flatten [
-                    (builtins.map mkSudoCommand sudoCommands)
-                    (builtins.map mkSystemCommand powerCommands)
-                    (builtins.map mkSystemCommand userCommands)
-                    (builtins.map mkUserCommand sudoCommands)
-                    (builtins.map mkUserCommand userCommands)
-                  ]) // {
-                  # Extra systemctl commands
-                  sc-disable-now = "sc-disable --now";
-                  sc-enable-now = "sc-enable --now";
-                  sc-failed = "systemctl --failed";
-                  sc-mask-now = "sc-mask --now";
-                  scu-disable-now = "scu-disable --now";
-                  scu-enable-now = "scu-enable --now";
-                  scu-failed = "systemctl --user --failed";
-                  scu-mask-now = "scu-mask --now";
-
-                  # Journalctl commands
-                  jc-boot = "journalctl -b";
-                  jc-kernel = "journalctl -k";
-                  jc-list-boot = "journalctl --list-boots";
-                  jc-service = "journalctl -u";
-                  jc-usage = "journalctl --disk-usage";
-                  jcu-service = "journalctl --user -u";
-
-                  # Networkctl commands
-                  nc-cat = "networkctl cat";
-                  nc-delete = "networkctl delete";
-                  nc-down = "networkctl down";
-                  nc-edit = "networkctl edit";
-                  nc-frenew = "networkctl forcerenew";
-                  nc-label = "networkctl label";
-                  nc-list = "networkctl list";
-                  nc-lldp = "networkctl lldp";
-                  nc-mask = "networkctl mask";
-                  nc-reconfig = "networkctl reconfigure";
-                  nc-reload = "networkctl reload";
-                  nc-renew = "networkctl renew";
-                  nc-status = "networkctl status";
-                  nc-unmask = "networkctl unmask";
-                  nc-up = "networkctl up";
-
-                  # Resolvectl commands
-                  rc-query = "resolvectl query";
-                  rc-service = "resolvectl service";
-                  rc-openpgp = "resolvectl openpgp";
-                  rc-tlsa = "resolvectl tlsa";
-                  rc-status = "resolvectl status";
-                  rc-stat = "resolvectl statistics";
-                  rc-reset-stat = "resolvectl reset-statistics";
-                  rc-flush = "resolvectl flush-caches";
-                  rc-reset = "resolvectl reset-server-features";
-                  rc-dns = "resolvectl dns";
-                  rc-domain = "resolvectl domain";
-                  rc-default-route = "resolvectl default-route";
-                  rc-llmnr = "resolvectl llmnr";
-                  rc-mdns = "resolvectl mdns";
-                  rc-dnssec = "resolvectl dnssec";
-                  rc-dnsovertls = "resolvectl dnsovertls";
-                  rc-nta = "resolvectl nta";
-                  rc-revert = "resolvectl revert";
-                  rc-monitor = "resolvectl monitor";
-                  rc-show-cache = "resolvectl show-cache";
-                  rc-show-server-state = "resolvectl show-server-state";
-                  rc-log-level = "resolvectl log-level";
-
-                  # Systemd nspawn
-                  nspawn = "${pkgs.systemdMinimal}/bin/systemd-nspawn";
-
-                  # Others
-                  sxorg = "export DISPLAY=:0.0";
-                  nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
-                  mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
-                  mkdir = "mkdir -pv";
-                  ios = "sudo --preserve-env=PATH ${pkgs.dmidecode}/bin/dmidecode -t bios";
-                  # cat = "${pkgs.bat}/bin/bat --paging=never";
-                  ip = "${pkgs.iproute2}/bin/ip --color --brief";
-                  less = "${pkgs.bat}/bin/bat --paging=always";
-                  more = "${pkgs.bat}/bin/bat --paging=always";
-                  top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
-                  wget = "${pkgs.wget2}/bin/wget2";
-                  du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
-                  cpa = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
-                  mva = "${pkgs.advmvcp}/bin/advmv --progress-bar";
-                  audio = "${pkgs.inxi}/bin/inxi -A";
-                  battery = "${pkgs.inxi}/bin/inxi -B -xxx";
-                  bluetooth = "${pkgs.inxi}/bin/inxi -E";
-                  graphics = "${pkgs.inxi}/bin/inxi -G";
-                  macros = "${pkgs.llvmPackages.clangNoLibc}/bin/cpp -dM /dev/null";
-                  pci = "sudo 'PATH=$PATH' env ${pkgs.inxi}/bin/inxi --slots";
-                  process = "${pkgs.inxi}/bin/inxi --processes";
-                  partitions = "${pkgs.inxi}/bin/inxi -P";
-                  repos = "${pkgs.inxi}/bin/inxi -r";
-                  sockets = "${pkgs.iproute2}/bin/ss -lp";
-                  system = "${pkgs.inxi}/bin/inxi -Fazy";
-                  usb = "${pkgs.inxi}/bin/inxi -J";
-                  wifi = "${pkgs.inxi}/bin/inxi -n";
-                  dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
-
-                  # Nix
-                  store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
-                  nb = "${pkgs.nix}/bin/nix build --no-link --print-out-paths";
+                  description = ''
+                    Packages for process management.
+                  '';
                 };
 
-              description = ''
-                Create Aliases for systemd tools.
-              '';
-              # };s
+              };
             };
 
-            system-commands = {
-              inherit (cfg.sytemd) shellAliases;
-            };
           in
           {
+            inherit (cfg.systemd-commands.shellAliases) shellAliases;
+            nd = builtins.getAttr cfg.systemd-commands.diffProgram nixDiffCommands;
+
             # nix specific aliases
             cleanup = "sudo nix-collect-garbage --delete-older-than 3d && nix-collect-garbage -d";
             bloat = "nix path-info -Sh /run/current-system";
@@ -340,7 +371,7 @@ in
             sha = "shasum -a 256"; # Test checksum
             sshperm = # bash
               ''${ getExe' pkgs. findutils"find"} .ssh/ -type f -exec chmod 600 {} \;; ${ getExe' pkgs. findutils"find"} .ssh/ -type d -exec chmod 700 {} \;; ${ getExe' pkgs. findutils"find"} .ssh/ -type f -name "*.pub" -exec chmod 644 {} \;'';
-          } ++ lib.optionalString pkgs.stdenv.isLinux system-commands;
+          } ++ lib.optionalString pkgs.stdenv.isLinux { };
 
         username = mkDefault cfg.name;
       };
@@ -348,7 +379,7 @@ in
       programs.home-manager = enabled;
 
       xdg.configFile = {
-        "sddm/faces/.${cfg.name}".source = cfg.icon;
+        "sddm/faces/.${cfg.name}".source = lib.optional  cfg.icon;
       };
     }
   ]);
