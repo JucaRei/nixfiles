@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -31,7 +30,7 @@ in
         fontpreview
         gparted
         # input-leap
-        kdePackages.ark
+        # kdePackages.ark
         kdePackages.gwenview
         # pkgs.${namespace}.pocketcasts
         realvnc-vnc-viewer

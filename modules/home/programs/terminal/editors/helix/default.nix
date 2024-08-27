@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkEnableOption mkIf;
@@ -32,7 +31,9 @@ in
               clang-tools
               marksman
               nil
+              nixd
               nixfmt-rfc-style
+              nixpkgs-fmt
               bash-language-server
               nodePackages.vscode-css-languageserver-bin
               nodePackages.vscode-langservers-extracted

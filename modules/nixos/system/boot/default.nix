@@ -13,6 +13,10 @@ in
 {
   options.${namespace}.system.boot = {
     enable = mkBoolOpt false "Whether or not to enable booting.";
+    efi = mkBoolOpt false "Whether or not to enable EFI for booting.";
+    bios = mkBoolOpt false "Whether or not to enable Bios Legacy for booting.";
+    grub = mkBoolOpt false "Whether or not to enable Grub for booting.";
+    systemd-boot = mkBoolOpt false "Whether or not to enable Systemd for booting.";
     plymouth = mkBoolOpt false "Whether or not to enable plymouth boot splash.";
     secureBoot = mkBoolOpt false "Whether or not to enable secure boot.";
     silentBoot = mkBoolOpt false "Whether or not to enable silent boot.";
@@ -60,16 +64,16 @@ in
       };
 
       loader = {
-        efi = {
+        efi = mkIf cfg.efi {
           canTouchEfiVariables = true;
           efiSysMountPoint = "/boot";
         };
 
         generationsDir.copyKernels = true;
 
-        systemd-boot = {
+        systemd-boot = mkIf cfg.systemd-boot {
           enable = !cfg.secureBoot;
-          configurationLimit = 20;
+          configurationLimit = 10;
           editor = false;
         };
       };

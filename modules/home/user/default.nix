@@ -331,18 +331,16 @@ in
             run = "nix run";
             search = "nix search";
             shell = "nix shell";
-            nixre = "${ lib. optionalString pkgs. stdenv. isLinux"sudo"} ${
-                getExe snowfall-flake. packages.${ system}. flake
-                } switch";
+            nixre = "${lib.optionalString pkgs.stdenv.isLinux "sudo"} ${getExe snowfall-flake.packages.${system}.flake} switch";
 
-            gsed = "${ getExe pkgs. gnused}";
+            gsed = "${ getExe pkgs.gnused}";
 
             # File management
-            rcp = "${ getExe pkgs. rsync} -rahP --mkpath --modify-window=1"; # Rsync copy keeping all attributes,timestamps,permissions"
-            rmv = "${ getExe pkgs. rsync} -rahP --mkpath --modify-window=1 --remove-sent-files"; # Rsync move keeping all attributes,timestamps,permissions
-            tarnow = "${ getExe pkgs. gnutar} -acf ";
-            untar = "${ getExe pkgs. gnutar} -zxvf ";
-            wget = "${ getExe pkgs. wget} -c ";
+            rcp = "${ getExe pkgs.rsync} -rahP --mkpath --modify-window=1"; # Rsync copy keeping all attributes,timestamps,permissions"
+            rmv = "${ getExe pkgs.rsync} -rahP --mkpath --modify-window=1 --remove-sent-files"; # Rsync move keeping all attributes,timestamps,permissions
+            tarnow = "${ getExe pkgs.gnutar} -acf ";
+            untar = "${ getExe pkgs.gnutar} -zxvf ";
+            wget = "${ getExe pkgs.wget} -c ";
 
             # Navigation shortcuts
             home = "cd ~";
@@ -354,24 +352,24 @@ in
             "......" = "cd ../../../../..";
 
             # Colorize output
-            dir = "${ getExe' pkgs. coreutils"dir"} --color=auto";
-            egrep = "${ getExe' pkgs. gnugrep"egrep"} --color=auto";
-            fgrep = "${ getExe' pkgs. gnugrep"fgrep"} --color=auto";
-            grep = "${ getExe pkgs. gnugrep} --color=auto";
-            vdir = "${ getExe' pkgs. coreutils"vdir"} --color=auto";
+            dir = "${ getExe' pkgs.coreutils "dir"} --color=auto";
+            egrep = "${ getExe' pkgs.gnugrep "egrep"} --color=auto";
+            fgrep = "${ getExe' pkgs.gnugrep "fgrep"} --color=auto";
+            grep = "${ getExe pkgs.gnugrep} --color=auto";
+            vdir = "${ getExe' pkgs.coreutils "vdir"} --color=auto";
 
             # Misc
-            clear = "clear && ${ getExe config. programs. fastfetch. package}";
+            clear = "clear && ${ getExe config.programs.fastfetch.package}";
             clr = "clear";
             pls = "sudo";
-            usage = "${ getExe' pkgs. coreutils"du"} -ah -d1 | sort -rn 2>/dev/null";
+            usage = "${ getExe' pkgs.coreutils "du"} -ah -d1 | sort -rn 2>/dev/null";
 
             # Cryptography
-            genpass = "${ getExe pkgs. openssl} rand - base64 20"; # Generate a random, 20-charactered password
+            genpass = "${ getExe pkgs.openssl} rand - base64 20"; # Generate a random, 20-charactered password
             sha = "shasum -a 256"; # Test checksum
             sshperm = # bash
-              ''${ getExe' pkgs. findutils"find"} .ssh/ -type f -exec chmod 600 {} \;; ${ getExe' pkgs. findutils"find"} .ssh/ -type d -exec chmod 700 {} \;; ${ getExe' pkgs. findutils"find"} .ssh/ -type f -name "*.pub" -exec chmod 644 {} \;'';
-          } ++ lib.optionalString pkgs.stdenv.isLinux { };
+              ''${ getExe' pkgs.findutils "find"} .ssh/ -type f -exec chmod 600 {} \;; ${getExe' pkgs.findutils "find"} .ssh/ -type d -exec chmod 700 {} \;; ${ getExe' pkgs.findutils "find"} .ssh/ -type f -name "*.pub" -exec chmod 644 {} \;'';
+          };
 
         username = mkDefault cfg.name;
       };
@@ -379,7 +377,7 @@ in
       programs.home-manager = enabled;
 
       xdg.configFile = {
-        "sddm/faces/.${cfg.name}".source = lib.optional  cfg.icon;
+        "sddm/faces/.${cfg.name}".source = cfg.icon;
       };
     }
   ]);

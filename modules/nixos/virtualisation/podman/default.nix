@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -51,7 +50,7 @@ in
         autoPrune = {
           enable = true;
           flags = [ "--all" ];
-          dates = "weekly";
+          dates = "weekly"; # "monthly";
         };
 
         defaultNetwork.settings.dns_enabled = true;

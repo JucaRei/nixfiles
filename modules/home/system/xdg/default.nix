@@ -13,7 +13,7 @@ let
     "firefox.desktop"
   ];
   editor = [
-    # "nvim.desktop"
+    "nvim.desktop"
     "micro.desktop"
   ];
   excel = [ "libreoffice-calc.desktop" ];

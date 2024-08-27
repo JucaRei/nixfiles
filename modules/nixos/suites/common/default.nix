@@ -1,6 +1,6 @@
 { config, lib, pkgs, namespace, ... }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkForce;
   inherit (lib.${namespace}) enabled disabled;
 
   cfg = config.${namespace}.suites.common;
@@ -11,7 +11,11 @@ in
   config = mkIf cfg.enable {
 
     environment = {
-      defaultPackages = lib.mkForce [ ];
+      defaultPackages = with pkgs; mkForce [
+        coreutils
+        nix-output-monitor
+        nh
+      ];
 
       systemPackages = with pkgs; [
         curl
@@ -46,7 +50,7 @@ in
       security = {
         auditd = enabled;
         # FIXME: broken nixpkgs
-        # clamav = enabled;
+        clamav = disabled;
         gpg = enabled;
         pam = enabled;
         usbguard = disabled;

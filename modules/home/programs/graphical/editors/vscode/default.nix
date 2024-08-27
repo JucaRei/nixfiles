@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkEnableOption mkIf;
@@ -41,12 +40,12 @@ in
         catppuccin.catppuccin-vsc
         christian-kohler.path-intellisense
         dbaeumer.vscode-eslint
-        eamodio.gitlens
+        # eamodio.gitlens
         esbenp.prettier-vscode
         formulahendry.auto-close-tag
         formulahendry.auto-rename-tag
-        github.vscode-github-actions
-        github.vscode-pull-request-github
+        # github.vscode-github-actions
+        # github.vscode-pull-request-github
         gruntfuggly.todo-tree
         irongeek.vscode-env
         mkhl.direnv
@@ -54,17 +53,17 @@ in
         ms-python.python
         ms-python.vscode-pylance
         ms-vscode-remote.remote-ssh
-        ms-vscode.cpptools
-        ms-vsliveshare.vsliveshare
+        # ms-vscode.cpptools
+        # ms-vsliveshare.vsliveshare
         redhat.vscode-yaml
-        rust-lang.rust-analyzer
+        # rust-lang.rust-analyzer
         shardulm94.trailing-spaces
         sumneko.lua
         timonwong.shellcheck
         usernamehw.errorlens
         vscode-icons-team.vscode-icons
         # wakatime.vscode-wakatime
-        xaver.clang-format
+        # xaver.clang-format
         yzhang.markdown-all-in-one
       ];
 

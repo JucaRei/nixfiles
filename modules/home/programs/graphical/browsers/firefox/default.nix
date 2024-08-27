@@ -74,7 +74,7 @@ in
           "ebay@search.mozilla.org".installation_mode = "blocked";
           "amazondotcom@search.mozilla.org".installation_mode = "blocked";
           "bing@search.mozilla.org".installation_mode = "blocked";
-          "ddg@search.mozilla.org".installation_mode = "blocked";
+          # "ddg@search.mozilla.org".installation_mode = "blocked";
           "wikipedia@search.mozilla.org".installation_mode = "blocked";
 
           "frankerfacez@frankerfacez.com" = {

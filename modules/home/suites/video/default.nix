@@ -1,13 +1,12 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
-  inherit (lib.${namespace}) mkBoolOpt enabled;
+  inherit (lib.${namespace}) mkBoolOpt enabled disabled;
 
   cfg = config.${namespace}.suites.video;
 in
@@ -32,7 +31,7 @@ in
     excalibur = {
       programs = {
         graphical.apps = {
-          obs = enabled;
+          obs = disabled;
           mpv = enabled;
           spicetify = enabled;
         };

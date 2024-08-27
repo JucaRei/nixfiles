@@ -1,13 +1,12 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
-  inherit (lib.${namespace}) mkBoolOpt enabled;
+  inherit (lib.${namespace}) mkBoolOpt enabled disabled;
 
   cfg = config.${namespace}.suites.development;
 in
@@ -29,7 +28,7 @@ in
         with pkgs;
         [
           jqp
-          neovide
+          # neovide
           onefetch
           postman
           vscode
@@ -55,7 +54,7 @@ in
         ]
         ++ lib.optionals cfg.sqlEnable [
           dbeaver-bin
-          mysql-workbench
+          # mysql-workbench
         ];
 
       shellAliases = {
@@ -86,7 +85,7 @@ in
 
           tools = {
             # azure.enable = cfg.azureEnable;
-            git-crypt = enabled;
+            git-crypt = disabled;
             go.enable = cfg.goEnable;
             k9s.enable = cfg.kubernetesEnable;
             lazydocker.enable = cfg.dockerEnable;

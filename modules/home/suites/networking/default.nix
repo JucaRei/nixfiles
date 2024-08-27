@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -23,7 +22,8 @@ in
       [
         nmap
         openssh
-        speedtest-cli
+        # speedtest-cli
+        speedtest-go
         ssh-copy-id
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [ iproute2 ];

@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -24,13 +23,14 @@ in
         pulsemixer
       ]
       ++ lib.optionals pkgs.stdenv.isLinux [
-        ardour
+        # ardour
         mpd-notification
         mpdevil
+        spotube
         spicetify-cli
         tageditor
-        youtube-music
-        pkgs.${namespace}.yt-music
+        # youtube-music
+        # pkgs.${namespace}.yt-music
       ];
 
     excalibur = {

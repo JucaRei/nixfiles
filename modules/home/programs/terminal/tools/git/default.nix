@@ -135,15 +135,15 @@ in
           gh-poi # clean up local branches safely
         ];
 
-        gitCredentialHelper = {
-          enable = true;
-          hosts = [
-            "https://github.com"
-            "https://gist.github.com"
-            "https://dibc@dev.azure.com"
-            "https://core-bts-02@dev.azure.com"
-          ];
-        };
+        # gitCredentialHelper = {
+        #   enable = true;
+        #   hosts = [
+        #     "https://github.com"
+        #     "https://gist.github.com"
+        #     "https://dibc@dev.azure.com"
+        #     "https://core-bts-02@dev.azure.com"
+        #   ];
+        # };
 
         settings = {
           version = "1";

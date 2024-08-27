@@ -1,13 +1,12 @@
-{
-  config,
-  lib,
-  namespace,
-  pkgs,
-  ...
+{ config
+, lib
+, namespace
+, pkgs
+, ...
 }:
 let
   inherit (lib) mkIf;
-  inherit (lib.${namespace}) mkBoolOpt enabled;
+  inherit (lib.${namespace}) mkBoolOpt enabled disabled;
 
   cfg = config.${namespace}.suites.social;
 in
@@ -20,7 +19,7 @@ in
     home.packages = lib.optionals pkgs.stdenv.isLinux (
       with pkgs;
       [
-        caprine-bin
+        caprine-bin # facebook messenger
         element-desktop
         slack
         telegram-desktop
@@ -35,8 +34,9 @@ in
         };
 
         terminal.social = {
-          slack-term = enabled;
-          twitch-tui = enabled;
+          slack-term = disabled;
+          twitch-tui = disabled;
+
         };
       };
     };
