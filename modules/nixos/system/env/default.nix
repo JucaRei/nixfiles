@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -48,11 +47,14 @@ in
       };
 
       extraInit = concatStringsSep "\n" (
-        mapAttrsToList (
-          n: v: # bash
-          ''
-            export ${n}="${v}"
-          '') cfg
+        mapAttrsToList
+          (
+            n: v: # bash
+              ''
+                export ${n}="${v}"
+              ''
+          )
+          cfg
       );
 
       pathsToLink = [
@@ -67,6 +69,7 @@ in
         WGETRC = "$XDG_CONFIG_HOME/wgetrc";
 
         MANPAGER = "nvim -c 'set ft=man bt=nowrite noswapfile nobk shada=\\\"NONE\\\" ro noma' +Man! -o -";
+        # MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
         SYSTEMD_PAGERSECURE = "true";
         PAGER = "less -FR";
         LESS = concatStringsSep " " pagerArgs;

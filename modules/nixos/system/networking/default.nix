@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -21,10 +20,11 @@ in
     enable = mkBoolOpt false "Whether or not to enable networking support";
     hosts = mkOpt attrs { } "An attribute set to merge with <option>networking.hosts</option>";
     optimizeTcp = mkBoolOpt false "Optimize TCP connections";
-    dns = mkOpt (types.enum [
-      "dnsmasq"
-      "systemd-resolved"
-    ]) "systemd-resolved" "Dns resolver to use";
+    dns = mkOpt
+      (types.enum [
+        "dnsmasq"
+        "systemd-resolved"
+      ]) "systemd-resolved" "Dns resolver to use";
   };
 
   config = mkIf cfg.enable {
@@ -135,8 +135,8 @@ in
       nameservers = [
         "1.1.1.1"
         "1.0.0.1"
-        "2606:4700:4700::1111"
-        "2606:4700:4700::1001"
+        # "2606:4700:4700::1111"
+        # "2606:4700:4700::1001"
       ];
 
       useDHCP = mkForce false;

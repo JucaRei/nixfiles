@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf mapAttrs;
@@ -52,7 +51,7 @@ in
 
       fontDir = {
         enable = true;
-        decompressFonts = true;
+        decompressFonts = false;
       };
     };
   };

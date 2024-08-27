@@ -24,7 +24,8 @@ in
 
   config = {
     environment.systemPackages = with pkgs; [
-      fortune
+      duf
+      htop
       lolcat
     ];
 

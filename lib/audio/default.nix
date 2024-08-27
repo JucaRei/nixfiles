@@ -3,7 +3,7 @@ rec {
   mkAlsaRename =
     { name, description }:
     {
-      matches = [ { "node.name" = name; } ];
+      matches = [{ "node.name" = name; }];
       actions = {
         "update-props" = {
           "node.description" = description;
@@ -11,10 +11,9 @@ rec {
       };
     };
   mkAudioNode =
-    args@{
-      name,
-      factory ? "adapter",
-      ...
+    args@{ name
+    , factory ? "adapter"
+    , ...
     }:
     {
       inherit factory;

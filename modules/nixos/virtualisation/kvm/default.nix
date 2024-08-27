@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -27,10 +26,11 @@ in
     machineUnits =
       mkOpt (listOf str) [ ]
         "The systemd *.scope units to wait for before starting Scream.";
-    platform = mkOpt (enum [
-      "amd"
-      "intel"
-    ]) "amd" "Which CPU platform the machine is using.";
+    platform = mkOpt
+      (enum [
+        "amd"
+        "intel"
+      ]) "intel" "Which CPU platform the machine is using.";
     vfioIds = mkOpt (listOf str) [ ] "The hardware IDs to pass through to a virtual machine.";
   };
 
@@ -47,9 +47,10 @@ in
         "${cfg.platform}_iommu=pt"
         "kvm.ignore_msrs=1"
       ];
-      extraModprobeConfig = optionalString (
-        length cfg.vfioIds > 0
-      ) "options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}";
+      extraModprobeConfig = optionalString
+        (
+          length cfg.vfioIds > 0
+        ) "options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}";
     };
 
     environment.systemPackages = with pkgs; [ virt-manager ];

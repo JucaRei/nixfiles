@@ -1,10 +1,9 @@
-{
-  config,
-  lib,
-  pkgs,
-  inputs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, inputs
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -93,7 +92,7 @@ in
       paperkey
       pinentry-curses
       pinentry-qt
-      reload-yubikey
+      # reload-yubikey
     ];
 
     excalibur = {
@@ -118,8 +117,8 @@ in
     };
 
     services = {
-      pcscd.enable = true;
-      udev.packages = with pkgs; [ yubikey-personalization ];
+      # pcscd.enable = true;
+      # udev.packages = with pkgs; [ yubikey-personalization ];
     };
   };
 }

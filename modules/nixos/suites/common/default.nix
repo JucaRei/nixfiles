@@ -1,7 +1,7 @@
 { config, lib, pkgs, namespace, ... }:
 let
   inherit (lib) mkIf;
-  inherit (lib.${namespace}) enabled;
+  inherit (lib.${namespace}) enabled disabled;
 
   cfg = config.${namespace}.suites.common;
 in
@@ -49,11 +49,10 @@ in
         # clamav = enabled;
         gpg = enabled;
         pam = enabled;
-        usbguard = enabled;
+        usbguard = disabled;
       };
 
       services = {
-        ddccontrol = enabled;
         earlyoom = enabled;
         logrotate = enabled;
         # oomd = enabled;

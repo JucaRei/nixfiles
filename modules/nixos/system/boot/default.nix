@@ -1,16 +1,14 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt default-attrs;
 
   cfg = config.${namespace}.system.boot;
-  themeCfg = config.${namespace}.theme;
 in
 {
   options.${namespace}.system.boot = {
@@ -78,14 +76,12 @@ in
 
       plymouth = {
         enable = cfg.plymouth;
-        theme = "${themeCfg.selectedTheme.name}-${themeCfg.selectedTheme.variant}";
-        themePackages = [ pkgs.catppuccin-plymouth ];
       };
 
       tmp = default-attrs {
         useTmpfs = true;
         cleanOnBoot = true;
-        tmpfsSize = "50%";
+        tmpfsSize = "25%";
       };
     };
 
