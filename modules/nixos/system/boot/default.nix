@@ -5,7 +5,7 @@
 , ...
 }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkDefault;
   inherit (lib.${namespace}) mkBoolOpt default-attrs;
 
   cfg = config.${namespace}.system.boot;
@@ -17,6 +17,7 @@ in
     bios = mkBoolOpt false "Whether or not to enable Bios Legacy for booting.";
     grub = mkBoolOpt false "Whether or not to enable Grub for booting.";
     systemd-boot = mkBoolOpt false "Whether or not to enable Systemd for booting.";
+    isDualBoot = mkBoolOpt false "Whether or not to enable for dual booting.";
     plymouth = mkBoolOpt false "Whether or not to enable plymouth boot splash.";
     secureBoot = mkBoolOpt false "Whether or not to enable secure boot.";
     silentBoot = mkBoolOpt false "Whether or not to enable silent boot.";
@@ -25,13 +26,15 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages =
       with pkgs;
-      [
+      [ fwupd ]
+      ++ lib.optionals cfg.efi [
         efibootmgr
         efitools
         efivar
-        fwupd
       ]
-      ++ lib.optionals cfg.secureBoot [ sbctl ];
+      ++ lib.optionals cfg.secureBoot [ sbctl ]
+      ++ lib.optionals cfg.isDualBoot [ os-prober ]
+    ;
 
     boot = {
       kernelParams =
@@ -67,6 +70,26 @@ in
         efi = mkIf cfg.efi {
           canTouchEfiVariables = true;
           efiSysMountPoint = "/boot";
+        };
+
+        grub = mkIf cfg.grub {
+          enable = true;
+          efiSupport = mkIf cfg.efi;
+          default = "saved";
+          forceInstall = true;
+          device = if cfg.efi then "nodev" else "/dev/sda";
+          fsIdentifier = "provided";
+          gfxmodeEfi = "auto";
+          fontSize = 20;
+          configurationLimit = 10;
+          extraEntries = ''
+            menuentry "Reboot" {
+              reboot
+            }
+            menuentry "Poweroff" {
+              halt
+            }
+          '';
         };
 
         generationsDir.copyKernels = true;
