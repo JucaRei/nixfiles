@@ -34,7 +34,7 @@ in
     system = {
       boot = {
         efi = true;
-        grub = true;
+        systemd-boot = true;
         enable = true;
         plymouth = true;
       };
