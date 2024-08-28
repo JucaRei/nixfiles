@@ -22,7 +22,7 @@ in
             _1password = enabled;
           };
 
-          desktop = {
+          desktop-environment = {
             gnome = enabled;
             # wms = {
             #   hyprland = enabled;
