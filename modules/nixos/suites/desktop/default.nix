@@ -23,7 +23,7 @@ in
           };
 
           desktop = {
-            gnome = { enable = true; };
+            gnome = enabled;
             # wms = {
             #   hyprland = enabled;
             # };
