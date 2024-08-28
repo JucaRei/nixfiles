@@ -21,7 +21,7 @@ in
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
     # loader.grub.devices = mkForce [ "nodev" ];
-    boot.loader.grub.device = mkForce "/dev/vda"; # "/dev/sda"; # or "nodev" for efi only
+    loader.grub.device = mkForce "/dev/vda"; # "/dev/sda"; # or "nodev" for efi only
 
     initrd = {
       kernelModules = [
