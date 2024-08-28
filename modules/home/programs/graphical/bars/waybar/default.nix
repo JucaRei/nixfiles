@@ -41,13 +41,13 @@ let
 
     modules-left =
       [ "custom/power" ]
-      ++ lib.optionals config.${namespace}.programs.graphical.wms.hyprland.enable [
+      ++ lib.optionals config.${namespace}.programs.graphical.desktop-environment.wms.hyprland.enable [
         "hyprland/workspaces"
       ]
       ++ lib.optionals config.${namespace}.programs.graphical.wms.sway.enable [ "sway/workspaces" ]
       ++ [ "custom/separator-left" ]
-      ++ lib.optionals config.${namespace}.programs.graphical.wms.hyprland.enable [ "hyprland/window" ]
-      ++ lib.optionals config.${namespace}.programs.graphical.wms.sway.enable [ "sway/window" ];
+      ++ lib.optionals config.${namespace}.programs.graphical.desktop-environment.wms.hyprland.enable [ "hyprland/window" ]
+      ++ lib.optionals config.${namespace}.programs.graphical.desktop-environment.wms.sway.enable [ "sway/window" ];
   };
 
   fullSizeModules = {
@@ -59,7 +59,7 @@ let
         "custom/separator-right"
         "group/control-center"
       ]
-      ++ lib.optionals config.${namespace}.programs.graphical.wms.hyprland.enable [ "hyprland/submap" ]
+      ++ lib.optionals config.${namespace}.programs.graphical.desktop-environment.wms.hyprland.enable [ "hyprland/submap" ]
       ++ [
         "custom/weather"
         "clock"
@@ -73,7 +73,7 @@ let
         "group/stats-drawer"
         "group/control-center"
       ]
-      ++ lib.optionals config.${namespace}.programs.graphical.wms.hyprland.enable [ "hyprland/submap" ]
+      ++ lib.optionals config.${namespace}.programs.graphical.desktop-environment.wms.hyprland.enable [ "hyprland/submap" ]
       ++ [
         "custom/weather"
         "clock"
@@ -88,7 +88,7 @@ let
       custom-modules
       default-modules
       group-modules
-      (lib.mkIf config.${namespace}.programs.graphical.wms.hyprland.enable hyprland-modules)
+      (lib.mkIf config.${namespace}.programs.graphical.desktop-environment.wms.hyprland.enable hyprland-modules)
       (lib.mkIf config.${namespace}.programs.graphical.wms.sway.enable sway-modules)
     ];
 

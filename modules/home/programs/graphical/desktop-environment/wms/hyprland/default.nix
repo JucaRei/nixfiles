@@ -30,7 +30,7 @@ let
   );
 in
 {
-  options.${namespace}.programs.graphical.wms.hyprland = {
+  options.${namespace}.programs.graphical.desktop-environment.wms.hyprland = {
     enable = mkEnableOption "Hyprland.";
     enableDebug = mkEnableOption "Enable debug mode.";
     appendConfig = lib.mkOption {
