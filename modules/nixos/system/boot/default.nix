@@ -77,7 +77,7 @@ in
           efiSupport = mkIf cfg.efi;
           default = "saved";
           forceInstall = true;
-          device = if cfg.efi then "nodev" else "/dev/sda";
+          devices = if cfg.efi then [ "nodev" ] else "/dev/sda";
           fsIdentifier = "provided";
           gfxmodeEfi = "auto";
           fontSize = 20;
