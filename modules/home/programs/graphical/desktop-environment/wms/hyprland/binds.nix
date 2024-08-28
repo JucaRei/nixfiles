@@ -1,14 +1,13 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf getExe;
 
-  cfg = config.${namespace}.programs.graphical.wms.hyprland;
+  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.hyprland;
 in
 {
   config = mkIf cfg.enable {
@@ -171,21 +170,22 @@ in
           # ░▀░▀░▀▀▀░▀░▀░▀░▀░▀▀▀░▀░░░▀░▀░▀▀▀░▀▀▀
           # Switch workspaces with CTRL_ALT + [0-9]
           ++ (builtins.concatLists (
-            builtins.genList (
-              x:
-              let
-                ws =
-                  let
-                    c = (x + 1) / 10;
-                  in
-                  builtins.toString (x + 1 - (c * 10));
-              in
-              [
-                "$CTRL_ALT, ${ws}, workspace, ${toString (x + 1)}"
-                "$CTRL_ALT_SUPER, ${ws}, movetoworkspace, ${toString (x + 1)}"
-                "$SUPER_SHIFT, ${ws}, movetoworkspacesilent, ${toString (x + 1)}"
-              ]
-            ) 10
+            builtins.genList
+              (
+                x:
+                let
+                  ws =
+                    let
+                      c = (x + 1) / 10;
+                    in
+                    builtins.toString (x + 1 - (c * 10));
+                in
+                [
+                  "$CTRL_ALT, ${ws}, workspace, ${toString (x + 1)}"
+                  "$CTRL_ALT_SUPER, ${ws}, movetoworkspace, ${toString (x + 1)}"
+                  "$SUPER_SHIFT, ${ws}, movetoworkspacesilent, ${toString (x + 1)}"
+                ]
+              ) 10
           ));
         bindl = [
           # ░█▀▀░█░█░█▀▀░▀█▀░█▀▀░█▄█

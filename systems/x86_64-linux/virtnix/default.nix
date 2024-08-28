@@ -18,7 +18,7 @@ in
 
     programs = {
       graphical = {
-        desktop = {
+        desktop-environment = {
           gnome = {
             enable = true;
           };

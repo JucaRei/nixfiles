@@ -8,11 +8,11 @@ let
   inherit (lib) mkIf mkEnableOption getExe;
   inherit (lib.${namespace}) enabled disabled;
 
-  cfg = config.${namespace}.programs.graphical.wms.sway;
+  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.sway;
 
 in
 {
-  options.${namespace}.programs.graphical.wms.sway = {
+  options.${namespace}.programs.graphical.desktop-environment.wms.sway = {
     enable = mkEnableOption "sway.";
     enableDebug = mkEnableOption "Enable debug mode.";
     appendConfig = lib.mkOption {

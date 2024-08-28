@@ -1,14 +1,13 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf getExe;
 
-  cfg = config.${namespace}.programs.graphical.wms.sway;
+  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.sway;
 in
 {
   config = mkIf cfg.enable {

@@ -11,7 +11,7 @@ let
   inherit (lib.${namespace}) enabled;
   inherit (inputs) hyprland;
 
-  cfg = config.${namespace}.programs.graphical.wms.hyprland;
+  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.hyprland;
 
   historicalLogAliases = builtins.listToAttrs (
     builtins.genList

@@ -1,12 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
-  cfg = config.${namespace}.programs.graphical.wms.hyprland;
+  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.hyprland;
 in
 {
   config = mkIf cfg.enable {

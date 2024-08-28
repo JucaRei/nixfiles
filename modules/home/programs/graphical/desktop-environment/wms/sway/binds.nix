@@ -1,11 +1,10 @@
-{
-  config,
-  inputs,
-  lib,
-  namespace,
-  pkgs,
-  system,
-  ...
+{ config
+, inputs
+, lib
+, namespace
+, pkgs
+, system
+, ...
 }:
 let
   inherit (lib)
@@ -16,7 +15,7 @@ let
     ;
   inherit (inputs) hyprland-contrib;
 
-  cfg = config.${namespace}.programs.graphical.wms.sway;
+  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.sway;
 in
 {
   config = mkIf cfg.enable {
@@ -177,30 +176,31 @@ in
             (lib.mkOptionDefault (
               builtins.listToAttrs (
                 builtins.concatLists (
-                  builtins.genList (
-                    x:
-                    let
-                      ws =
-                        let
-                          c = (x + 1) / 10;
-                        in
-                        builtins.toString (x + 1 - (c * 10));
-                    in
-                    [
-                      {
-                        name = "Control+Alt+${ws}";
-                        value = "workspace number ${ws}";
-                      }
-                      {
-                        name = "Control+Alt+Shift+${ws}";
-                        value = "move container to workspace ${ws}";
-                      }
-                      {
-                        name = "Mod4+Shift+${ws}";
-                        value = "move container to workspace ${ws}";
-                      }
-                    ]
-                  ) 10
+                  builtins.genList
+                    (
+                      x:
+                      let
+                        ws =
+                          let
+                            c = (x + 1) / 10;
+                          in
+                          builtins.toString (x + 1 - (c * 10));
+                      in
+                      [
+                        {
+                          name = "Control+Alt+${ws}";
+                          value = "workspace number ${ws}";
+                        }
+                        {
+                          name = "Control+Alt+Shift+${ws}";
+                          value = "move container to workspace ${ws}";
+                        }
+                        {
+                          name = "Mod4+Shift+${ws}";
+                          value = "move container to workspace ${ws}";
+                        }
+                      ]
+                    ) 10
                 )
               )
             ))
