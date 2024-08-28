@@ -33,6 +33,8 @@ in
 
     system = {
       boot = {
+        efi = true;
+        grub = true;
         enable = true;
         plymouth = true;
       };
