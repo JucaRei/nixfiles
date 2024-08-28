@@ -5,7 +5,8 @@
   ...
 }:
 let
-  inherit (lib.${namespace}) enabled;
+  inherit (lib.${namespace}) enabled disabled;
+  inherit (lib) mkForce;
 in
 {
   imports = [ ./hardware.nix ];
@@ -23,6 +24,9 @@ in
           gnome = {
             enable = true;
           };
+        };
+        apps = {
+          # _1password = mkForce disabled;
         };
       };
     };
@@ -96,3 +100,6 @@ in
   };
   system.stateVersion = "24.05"; # Did you read the comment?
 }
+
+# sudo mount -o remount,size=10G /nix/.rw-store
+# sudo mount -o remount,size=5G /tmp/
