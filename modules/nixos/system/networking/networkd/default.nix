@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf mkForce;
@@ -25,7 +24,7 @@ in
 
       # https://wiki.archlinux.org/title/Systemd-networkd
       networks = {
-        # leave the kernel dummy devies unmanagaed
+        # leave the kernel dummy devies unmanaged
         "10-dummy" = {
           matchConfig.Name = "dummy*";
           networkConfig = { };

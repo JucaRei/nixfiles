@@ -1,11 +1,10 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  system,
-  namespace,
-  ...
+{ config
+, inputs
+, lib
+, pkgs
+, system
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -48,9 +47,9 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = [
-      themeCfg.cursor.package
-      themeCfg.icon.package
-      gtkCfg.theme.package
+      # themeCfg.cursor.package
+      # themeCfg.icon.package
+      # gtkCfg.theme.package
     ];
 
     programs.regreet = {
@@ -58,16 +57,16 @@ in
 
       settings = {
         background = {
-          path = pkgs.${namespace}.wallpapers.flatppuccin_macchiato;
-          fit = "Cover";
+          # path = pkgs.${namespace}.wallpapers.flatppuccin_macchiato;
+          # fit = "Cover";
         };
 
         GTK = {
           application_prefer_dark_theme = true;
-          cursor_theme_name = "${themeCfg.cursor.name}";
-          font_name = "${config.${namespace}.system.fonts.default} * 12";
-          icon_theme_name = "${themeCfg.icon.name}";
-          theme_name = "${gtkCfg.theme.name}";
+          # cursor_theme_name = "${themeCfg.cursor.name}";
+          # font_name = "${config.${namespace}.system.fonts.default} * 12";
+          # icon_theme_name = "${themeCfg.icon.name}";
+          # theme_name = "${gtkCfg.theme.name}";
         };
       };
     };

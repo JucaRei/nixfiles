@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -25,9 +24,16 @@ in
 
       settings = {
         General = {
+          Enable = "Source,Sink,Media,Socket";
           Experimental = true;
           JustWorksRepairing = "always";
           MultiProfile = "multiple";
+
+          # make Xbox Series X controller work
+          Class = "0x000100";
+          ControllerMode = "bredr";
+          FastConnectable = true;
+          Privacy = "device";
         };
       };
     };

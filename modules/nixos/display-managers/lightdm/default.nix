@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -22,26 +21,26 @@ in
 
       displayManager.lightdm = {
         enable = true;
-        background = pkgs.${namespace}.wallpapers.flatppuccin_macchiato;
+        # background = pkgs.${namespace}.wallpapers.flatppuccin_macchiato;
 
         greeters = {
           gtk = {
             enable = true;
 
-            cursorTheme = {
-              inherit (config.${namespace}.desktop.addons.gtk.cursor) name;
-              package = config.${namespace}.desktop.addons.gtk.cursor.pkg;
-            };
+            # cursorTheme = {
+            #   inherit (config.${namespace}.desktop.addons.gtk.cursor) name;
+            #   package = config.${namespace}.desktop.addons.gtk.cursor.pkg;
+            # };
 
-            iconTheme = {
-              inherit (config.${namespace}.desktop.addons.gtk.icon) name;
-              package = config.${namespace}.desktop.addons.gtk.icon.pkg;
-            };
+            # iconTheme = {
+            #   inherit (config.${namespace}.desktop.addons.gtk.icon) name;
+            #   package = config.${namespace}.desktop.addons.gtk.icon.pkg;
+            # };
 
-            theme = {
-              name = "${config.${namespace}.desktop.addons.gtk.theme.name}";
-              package = config.${namespace}.desktop.addons.gtk.theme.pkg;
-            };
+            # theme = {
+            #   name = "${config.${namespace}.desktop.addons.gtk.theme.name}";
+            #   package = config.${namespace}.desktop.addons.gtk.theme.pkg;
+            # };
           };
         };
       };

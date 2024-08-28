@@ -103,6 +103,15 @@ in
 
       plymouth = {
         enable = cfg.plymouth;
+        theme = "deus_ex";
+        themePackages = with pkgs; [
+          (
+            # pkgs.catppuccin-plymouth
+            adi1090x-plymouth-themes.override {
+              selected_themes = [ theme ];
+            }
+          )
+        ];
       };
 
       tmp = default-attrs {
@@ -113,7 +122,7 @@ in
     };
 
     services.fwupd = {
-      enable = true;
+      enable = mkIf cfg.efi;
       daemonSettings.EspLocation = config.boot.loader.efi.efiSysMountPoint;
     };
   };

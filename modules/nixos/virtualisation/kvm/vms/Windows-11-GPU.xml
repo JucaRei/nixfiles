@@ -6,8 +6,10 @@
       <libosinfo:os id="http://microsoft.com/win/11" />
     </libosinfo:libosinfo>
   </metadata>
-  <memory unit="KiB">32768000</memory>
-  <currentMemory unit="KiB">32768000</currentMemory>
+  <!-- <memory unit="KiB">32768000</memory> --> <!-- 32gb -->
+  <!-- <currentMemory unit="KiB">32768000</currentMemory>  -->
+  <memory unit="KiB">11718750</memory> <!-- 12 GB -->
+  <currentMemory unit="KiB">11718750</currentMemory> <!-- 12 GB -->
   <memoryBacking>
     <source type="memfd" />
     <access mode="shared" />
