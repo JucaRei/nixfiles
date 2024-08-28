@@ -22,12 +22,11 @@ in
             _1password = enabled;
           };
 
-          # wms = {
-          #   hyprland = enabled;
-          # };
-
           desktop = {
-            gnome = enabled;
+            gnome = { enable = true; };
+            # wms = {
+            #   hyprland = enabled;
+            # };
           };
         };
       };
