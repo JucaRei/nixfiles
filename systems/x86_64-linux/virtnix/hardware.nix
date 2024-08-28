@@ -4,6 +4,9 @@
 , pkgs
 , ...
 }:
+let
+  inherit (lib) mkForce;
+in
 {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -16,7 +19,7 @@
   ##
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    loader.grub.devices = [ "nodev" ];
+    loader.grub.devices = mkForce [ "nodev" ];
 
     initrd = {
       kernelModules = [
