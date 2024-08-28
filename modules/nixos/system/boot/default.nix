@@ -122,7 +122,7 @@ in
     };
 
     services.fwupd = {
-      enable = mkIf cfg.efi;
+      enable = cfg.efi;
       daemonSettings.EspLocation = config.boot.loader.efi.efiSysMountPoint;
     };
   };
