@@ -1,10 +1,9 @@
-{
-  config,
-  lib,
-  pkgs,
-  osConfig,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, osConfig
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf mkDefault types;
@@ -24,27 +23,30 @@ in
 
     cursor = {
       name = mkOpt types.str "catppuccin-macchiato-blue-cursors" "The name of the cursor theme to apply.";
-      package = mkOpt types.package (
-        if pkgs.stdenv.isLinux then pkgs.catppuccin-cursors.macchiatoBlue else pkgs.emptyDirectory
-      ) "The package to use for the cursor theme.";
+      package = mkOpt types.package
+        (
+          if pkgs.stdenv.isLinux then pkgs.catppuccin-cursors.macchiatoBlue else pkgs.emptyDirectory
+        ) "The package to use for the cursor theme.";
       size = mkOpt types.int 32 "The size of the cursor.";
     };
 
     icon = {
       name = mkOpt types.str "Papirus-Dark" "The name of the icon theme to apply.";
-      package = mkOpt types.package (pkgs.catppuccin-papirus-folders.override {
-        accent = "blue";
-        flavor = "macchiato";
-      }) "The package to use for the icon theme.";
+      package = mkOpt types.package
+        (pkgs.catppuccin-papirus-folders.override {
+          accent = "blue";
+          flavor = "macchiato";
+        }) "The package to use for the icon theme.";
     };
 
     theme = {
       name = mkOpt types.str "catppuccin-macchiato-blue-standard" "The name of the theme to apply";
-      package = mkOpt types.package (pkgs.catppuccin-gtk.override {
-        accents = [ "blue" ];
-        size = "standard";
-        variant = "macchiato";
-      }) "The package to use for the theme";
+      package = mkOpt types.package
+        (pkgs.catppuccin-gtk.override {
+          accents = [ "blue" ];
+          size = "standard";
+          variant = "macchiato";
+        }) "The package to use for the theme";
     };
   };
 
@@ -141,9 +143,9 @@ in
         inherit (cfg.icon) name package;
       };
 
-      theme = {
-        inherit (cfg.theme) name package;
-      };
+      # theme = {
+      #   inherit (cfg.theme) name package;
+      # };
     };
 
     xdg = {

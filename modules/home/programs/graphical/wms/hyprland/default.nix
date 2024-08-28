@@ -117,10 +117,10 @@ in
         wlroots = enabled;
       };
 
-      theme = {
-        gtk = enabled;
-        qt = enabled;
-      };
+      # theme = {
+      #   gtk = enabled;
+      #   qt = enabled;
+      # };
     };
 
     wayland.windowManager.hyprland = {

@@ -136,10 +136,10 @@ in
         wlroots = enabled;
       };
 
-      theme = {
-        gtk = disabled;
-        qt = disabled;
-      };
+      # theme = {
+      #   gtk = disabled;
+      #   qt = disabled;
+      # };
     };
 
     services.displayManager.sessionPackages = [ hyprland.packages.${system}.hyprland ];

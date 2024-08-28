@@ -91,10 +91,10 @@ in
         wlroots = enabled;
       };
 
-      theme = {
-        gtk = disabled;
-        qt = disabled;
-      };
+      # theme = {
+      #   gtk = disabled;
+      #   qt = disabled;
+      # };
     };
 
     wayland.windowManager.sway = {

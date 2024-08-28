@@ -283,10 +283,10 @@ in
 
       system.xkb.enable = true;
 
-      theme = {
-        gtk = disabled;
-        qt = disabled;
-      };
+      # theme = {
+      #   gtk = disabled;
+      #   qt = disabled;
+      # };
     };
 
     # Open firewall for samba connections to work.

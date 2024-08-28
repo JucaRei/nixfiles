@@ -52,10 +52,10 @@ in
         wlroots = enabled;
       };
 
-      theme = {
-        gtk = disabled;
-        qt = disabled;
-      };
+      # theme = {
+      #   gtk = disabled;
+      #   qt = disabled;
+      # };
     };
 
     programs.sway = {
