@@ -14,10 +14,10 @@ let
     ;
   inherit (lib.${namespace}) mkBoolOpt;
 
-  cfg = config.${namespace}.desktop.addons.jankyborders;
+  cfg = config.${namespace}.desktop-environment.addons.jankyborders;
 in
 {
-  options.${namespace}.desktop.addons.jankyborders = {
+  options.${namespace}.desktop-environment.addons.jankyborders = {
     enable = mkBoolOpt false "Whether to enable jankyborders in the desktop environment.";
     package = mkOption {
       type = lib.types.package;

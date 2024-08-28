@@ -104,7 +104,7 @@ in
         };
       };
 
-      plymouth = {
+      plymouth = rec {
         enable = cfg.plymouth;
         theme = "deus_ex";
         themePackages = with pkgs; [

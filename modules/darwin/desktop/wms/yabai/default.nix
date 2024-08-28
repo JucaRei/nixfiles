@@ -9,16 +9,16 @@ let
   inherit (lib) mkIf getExe;
   inherit (lib.${namespace}) mkBoolOpt enabled;
 
-  cfg = config.${namespace}.desktop.wms.yabai;
+  cfg = config.${namespace}.desktop-environment.wms.yabai;
 in
 {
-  options.${namespace}.desktop.wms.yabai = {
+  options.${namespace}.desktop-environment.wms.yabai = {
     enable = mkBoolOpt false "Whether or not to enable yabai.";
     debug = mkBoolOpt false "Whether to enable debug output.";
   };
 
   config = mkIf cfg.enable {
-    ${namespace}.desktop.addons.jankyborders = enabled;
+    ${namespace}.desktop-environment.addons.jankyborders = enabled;
 
     services.yabai = {
       enable = true;
@@ -93,7 +93,7 @@ in
           # ${getExe config.services.yabai.package} -m signal --add event=window_title_changed app="Firefox" title="- noVNC$" action="${getExe config.services.yabai.package} -m window $WINDOW_ID --toggle native-fullscreen"
 
           # jankyborders
-          ${getExe config.${namespace}.desktop.addons.jankyborders.package} 2>/dev/null 1>&2 &
+          ${getExe config.${namespace}.desktop-environment.addons.jankyborders.package} 2>/dev/null 1>&2 &
 
           echo "yabai configuration loaded.."
         '';
