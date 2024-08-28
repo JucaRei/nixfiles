@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib.${namespace}) enabled;
@@ -87,14 +86,15 @@ in
             deviceUnit = "sys-devices-pci0000:00-0000:00:01.2-0000:02:00.0-0000:03:08.0-0000:08:00.3-usb3-3\x2d2-3\x2d2.1-3\x2d2.1.4-3\x2d2.1.4.3-3\x2d2.1.4.3:1.0-sound-card3-controlC3.device";
           };
         };
+        desktop-environment = {
+          wms = {
+            hyprland = {
+              enable = true;
+            };
 
-        wms = {
-          hyprland = {
-            enable = true;
-          };
-
-          sway = {
-            enable = true;
+            sway = {
+              enable = true;
+            };
           };
         };
       };
