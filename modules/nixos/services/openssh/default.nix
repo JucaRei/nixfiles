@@ -209,7 +209,6 @@ in
             { }
             (builtins.attrNames other-hosts);
         };
-        packages = pkgs.mosh;
       };
 
       programs.ssh = {
