@@ -20,7 +20,7 @@ let
     mkDefault
     ;
 
-  cfg = config.${namespace}.programs.graphical.desktops.gnome;
+  cfg = config.${namespace}.programs.graphical.desktop.gnome;
   gdmHome = config.users.users.gdm.home;
 
   defaultExtensions = with pkgs.gnomeExtensions; [

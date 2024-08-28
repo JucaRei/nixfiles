@@ -26,7 +26,7 @@ in
           #   hyprland = enabled;
           # };
 
-          desktops = {
+          desktop = {
             gnome = enabled;
           };
         };
