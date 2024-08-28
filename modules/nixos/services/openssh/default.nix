@@ -79,30 +79,30 @@ in
     services.openssh = {
       enable = true;
 
-      hostKeys = mkDefault [
-        {
-          bits = 4096;
-          path = "/etc/ssh/ssh_host_rsa_key";
-          type = "rsa";
-        }
-        {
-          bits = 4096;
-          path = "/etc/ssh/ssh_host_ed25519_key";
-          type = "ed25519";
-        }
-      ];
+      #hostKeys = mkDefault [
+      #  {
+      #    bits = 4096;
+      #    path = "/etc/ssh/ssh_host_rsa_key";
+      #    type = "rsa";
+      #  }
+      #  {
+      #    bits = 4096;
+      #    path = "/etc/ssh/ssh_host_ed25519_key";
+      #    type = "ed25519";
+      #  }
+      #];
 
       openFirewall = true;
       ports = [
         22
-        cfg.port
+      #  cfg.port
       ];
 
       settings = {
         # AuthenticationMethods = "publickey";
         # ChallengeResponseAuthentication = "no";
         # PasswordAuthentication = false;
-        PermitRootLogin = if format == "install-iso" then "yes" else "no";
+        # PermitRootLogin = if format == "install-iso" then "yes" else "no";
         banner = ''
           ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠛⠛⠋⠉⠈⠉⠉⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿
           ⣿⣿⣿⣿⣿⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⢿⣿⣿⣿⣿
@@ -157,12 +157,12 @@ in
       startWhenNeeded = true;
     };
 
-    programs.ssh = {
-      extraConfig = ''
-        ${other-hosts-config}
+    #programs.ssh = {
+    #  extraConfig = ''
+    #    ${other-hosts-config}
 
-        ${cfg.extraConfig}
-      '';
+    #    ${cfg.extraConfig}
+    #  '';
 
       # ship github/gitlab/sourcehut host keys to avoid MiM (man in the middle) attacks
       # knownHosts = mapAttrs (_: mkForce) {
@@ -197,20 +197,20 @@ in
       # };
     };
 
-    excalibur = {
+    #excalibur = {
       # user.extraOptions.openssh.authorizedKeys.keys = cfg.authorizedKeys;
 
-      home = {
-        extraOptions = {
-          programs.zsh.shellAliases = foldl
-            (
-              aliases: system: aliases // { "ssh-${system}" = "ssh ${system} -t tmux a"; }
-            )
-            { }
-            (builtins.attrNames other-hosts);
-        };
-      };
-    };
+    #  home = {
+    #    extraOptions = {
+    #      programs.zsh.shellAliases = foldl
+    #        (
+    #          aliases: system: aliases // { "ssh-${system}" = "ssh ${system} -t tmux a"; }
+    #        )
+    #        { }
+    #        (builtins.attrNames other-hosts);
+    #    };
+    #  };
+    #};
   };
 }
 
