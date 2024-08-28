@@ -275,9 +275,9 @@ in
               show-icon = false;
             };
 
-            "org/gnome/shell/extensions/user-theme" = {
-              name = "Catppuccin-Dark";
-            };
+            # "org/gnome/shell/extensions/user-theme" = {
+            #   name = "Catppuccin-Dark";
+            # };
           };
       };
 

@@ -1,10 +1,9 @@
-{
-  config,
-  lib,
-  pkgs,
-  inputs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, inputs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -23,7 +22,7 @@ in
   config = mkIf cfg.enable {
     programs.spicetify = {
       enable = true;
-      theme = spicePkgs.themes.catppuccin;
+      # theme = spicePkgs.themes.catppuccin;
 
       enabledCustomApps = with spicePkgs.apps; [
         lyricsPlus

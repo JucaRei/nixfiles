@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -27,7 +26,7 @@ in
 
       font = "MonaspiceNe Nerd Font 14";
       location = "center";
-      theme = "catppuccin";
+      # theme = "catppuccin";
 
       pass = {
         enable = true;

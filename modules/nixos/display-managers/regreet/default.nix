@@ -17,7 +17,7 @@ let
   inherit (inputs) hyprland;
 
   cfg = config.${namespace}.display-managers.regreet;
-  themeCfg = config.${namespace}.theme;
+  # themeCfg = config.${namespace}.theme;
   gtkCfg = config.${namespace}.desktop.addons.gtk;
 
   greetdHyprlandConfig = pkgs.writeText "greetd-hyprland-config" ''

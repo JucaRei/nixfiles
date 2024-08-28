@@ -1,11 +1,10 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  system,
-  namespace,
-  ...
+{ config
+, inputs
+, lib
+, pkgs
+, system
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf mkEnableOption getExe;
@@ -15,17 +14,19 @@ let
   cfg = config.${namespace}.programs.graphical.wms.hyprland;
 
   historicalLogAliases = builtins.listToAttrs (
-    builtins.genList (x: {
-      name = "hl${toString (x + 1)}";
-      value = "cat /tmp/hypr/$(command ls -t /tmp/hypr/ | grep -v '\.lock$' | head -n ${toString (x + 2)} | tail -n 1)/hyprland${lib.optionalString cfg.enableDebug "d"}.log";
-    }) 4
+    builtins.genList
+      (x: {
+        name = "hl${toString (x + 1)}";
+        value = "cat /tmp/hypr/$(command ls -t /tmp/hypr/ | grep -v '\.lock$' | head -n ${toString (x + 2)} | tail -n 1)/hyprland${lib.optionalString cfg.enableDebug "d"}.log";
+      }) 4
   );
 
   historicalCrashAliases = builtins.listToAttrs (
-    builtins.genList (x: {
-      name = "hlc${toString (x + 1)}";
-      value = "cat /home/${config.${namespace}.user.name}/.local/cache/hyprland/$(command ls -t /home/${config.${namespace}.user.name}/.local/cache/hyprland/ | grep 'hyprlandCrashReport' | head -n ${toString (x + 2)} | tail -n 1)";
-    }) 4
+    builtins.genList
+      (x: {
+        name = "hlc${toString (x + 1)}";
+        value = "cat /home/${config.${namespace}.user.name}/.local/cache/hyprland/$(command ls -t /home/${config.${namespace}.user.name}/.local/cache/hyprland/ | grep 'hyprlandCrashReport' | head -n ${toString (x + 2)} | tail -n 1)";
+      }) 4
   );
 in
 {
@@ -63,8 +64,8 @@ in
         {
           CLUTTER_BACKEND = "wayland";
           GDK_BACKEND = "wayland,x11";
-          HYPRCURSOR_THEME = config.${namespace}.theme.gtk.cursor.name;
-          HYPRCURSOR_SIZE = "${toString config.${namespace}.theme.cursor.size}";
+          # HYPRCURSOR_THEME = config.${namespace}.theme.gtk.cursor.name;
+          # HYPRCURSOR_SIZE = "${toString config.${namespace}.theme.cursor.size}";
           MOZ_ENABLE_WAYLAND = "1";
           MOZ_USE_XINPUT2 = "1";
           SDL_VIDEODRIVER = "wayland";

@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -82,7 +81,7 @@ in
             compact-bar.path = "compact-bar";
           };
 
-          theme = "catppuccin-macchiato";
+          # theme = "catppuccin-macchiato";
         };
       };
     };

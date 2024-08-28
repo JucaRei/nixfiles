@@ -1,18 +1,17 @@
-{
-  config,
-  inputs,
-  lib,
-  osConfig,
-  system,
-  namespace,
-  ...
+{ config
+, inputs
+, lib
+, osConfig
+, system
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
   inherit (inputs) hyprlock;
 
-  catppuccin = import (lib.snowfall.fs.get-file "modules/home/theme/catppuccin/colors.nix");
+  # catppuccin = import (lib.snowfall.fs.get-file "modules/home/theme/catppuccin/colors.nix");
 
   cfg = config.${namespace}.programs.graphical.screenlockers.hyprlock;
 in
@@ -57,9 +56,9 @@ in
             position = "0, -80";
             outline_thickness = 5;
             dots_center = true;
-            outer_color = catppuccin.colors.crust.rgb;
-            inner_color = catppuccin.colors.surface2.rgb;
-            font_color = catppuccin.colors.text.rgb;
+            # outer_color = catppuccin.colors.crust.rgb;
+            # inner_color = catppuccin.colors.surface2.rgb;
+            # font_color = catppuccin.colors.text.rgb;
             fade_on_empty = false;
             placeholder_text = "<span foreground=\"##cad3f5\">Password...</span>";
             shadow_passes = 2;
@@ -92,7 +91,7 @@ in
             size = 120;
             position = "0, 45";
             path = "/home/${config.snowfallorg.user.name}/.face";
-            border_color = catppuccin.colors.text.rgb;
+            # border_color = catppuccin.colors.text.rgb;
             border_size = 5;
             halign = "center";
             valign = "center";
@@ -108,7 +107,7 @@ in
           {
             monitor = "";
             text = "<span font_weight=\"ultrabold\">$TIME</span>";
-            color = catppuccin.colors.text.rgb;
+            # color = catppuccin.colors.text.rgb;
             font_size = 100;
             font_family = osConfig.${namespace}.system.fonts.default;
             valign = "center";
@@ -123,7 +122,7 @@ in
           {
             monitor = "";
             text = "<span font_weight=\"bold\"> $USER</span>";
-            color = catppuccin.colors.text.rgb;
+            # color = catppuccin.colors.text.rgb;
             font_size = 25;
             font_family = osConfig.${namespace}.system.fonts.default;
             valign = "top";
@@ -138,7 +137,7 @@ in
           {
             monitor = "";
             text = "<span font_weight=\"ultrabold\">󰌾 </span>";
-            color = catppuccin.colors.text.rgb;
+            # color = catppuccin.colors.text.rgb;
             font_size = 50;
             font_family = osConfig.${namespace}.system.fonts.default;
             valign = "center";
@@ -153,7 +152,7 @@ in
           {
             monitor = "";
             text = "<span font_weight=\"bold\">Locked</span>";
-            color = catppuccin.colors.text.rgb;
+            # color = catppuccin.colors.text.rgb;
             font_size = 25;
             font_family = osConfig.${namespace}.system.fonts.default;
             valign = "center";
@@ -168,7 +167,7 @@ in
           {
             monitor = "";
             text = "cmd[update:120000] echo \"<span font_weight='bold'>$(date +'%a %d %B')</span>\"";
-            color = catppuccin.colors.text.rgb;
+            # color = catppuccin.colors.text.rgb;
             font_size = 30;
             font_family = osConfig.${namespace}.system.fonts.default;
             valign = "center";
@@ -183,7 +182,7 @@ in
           {
             monitor = "";
             text = "<span font_weight=\"ultrabold\"> </span>";
-            color = catppuccin.colors.text.rgb;
+            # color = catppuccin.colors.text.rgb;
             font_size = 25;
             font_family = osConfig.${namespace}.system.fonts.default;
             valign = "bottom";

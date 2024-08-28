@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf getExe' stringAfter;
@@ -26,7 +25,7 @@ in
       displayManager = {
         sddm = {
           inherit (cfg) enable;
-          theme = "catppuccin-sddm-corners";
+          # theme = "catppuccin-sddm-corners";
           wayland = enabled;
         };
       };
