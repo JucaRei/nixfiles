@@ -132,9 +132,9 @@ in
         '';
         # PubkeyAuthentication = "yes";
         # StreamLocalBindUnlink = "yes";
-        UseDns = false;
-        UsePAM = true;
-        X11Forwarding = false;
+        # UseDns = false;
+        # UsePAM = true;
+        # X11Forwarding = false;
 
         # key exchange algorithms recommended by `nixpkgs#ssh-audit`
         # KexAlgorithms = [
