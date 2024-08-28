@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  modulesPath,
-  pkgs,
-  ...
+{ config
+, lib
+, modulesPath
+, pkgs
+, ...
 }:
 {
   imports = [
@@ -17,6 +16,7 @@
   ##
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
+    loader.grub.devices = [ "nodev" ];
 
     initrd = {
       kernelModules = [
