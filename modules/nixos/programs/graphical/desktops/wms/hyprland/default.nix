@@ -1,11 +1,10 @@
-{
-  config,
-  inputs,
-  lib,
-  pkgs,
-  system,
-  namespace,
-  ...
+{ config
+, inputs
+, lib
+, pkgs
+, system
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -14,7 +13,7 @@ let
     mkIf
     types
     ;
-  inherit (lib.${namespace}) mkBoolOpt mkOpt enabled;
+  inherit (lib.${namespace}) mkBoolOpt mkOpt enabled disabled;
   inherit (inputs) hyprland;
 
   cfg = config.${namespace}.programs.graphical.wms.hyprland;
@@ -51,8 +50,8 @@ in
       '';
 
       sessionVariables = {
-        HYPRCURSOR_THEME = config.${namespace}.theme.cursor.name;
-        HYPRCURSOR_SIZE = "${toString config.${namespace}.theme.cursor.size}";
+        # HYPRCURSOR_THEME = config.${namespace}.theme.cursor.name;
+        # HYPRCURSOR_SIZE = "${toString config.${namespace}.theme.cursor.size}";
       };
     };
 
@@ -138,8 +137,8 @@ in
       };
 
       theme = {
-        gtk = enabled;
-        qt = enabled;
+        gtk = disabled;
+        qt = disabled;
       };
     };
 

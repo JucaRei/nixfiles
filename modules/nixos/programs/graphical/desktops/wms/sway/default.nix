@@ -1,13 +1,12 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) types mkIf;
-  inherit (lib.${namespace}) mkBoolOpt mkOpt enabled;
+  inherit (lib.${namespace}) mkBoolOpt mkOpt enabled disabled;
 
   cfg = config.${namespace}.programs.graphical.wms.sway;
 in
@@ -54,8 +53,8 @@ in
       };
 
       theme = {
-        gtk = enabled;
-        qt = enabled;
+        gtk = disabled;
+        qt = disabled;
       };
     };
 
