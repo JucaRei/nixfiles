@@ -92,7 +92,7 @@ in
           '';
         };
 
-        generationsDir.copyKernels = true;
+        # generationsDir.copyKernels = true;
 
         systemd-boot = mkIf cfg.systemd-boot {
           enable = !cfg.secureBoot;
