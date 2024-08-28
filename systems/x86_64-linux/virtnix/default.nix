@@ -1,13 +1,14 @@
-{ lib
-, namespace
-, config
-, ...
+{
+  lib,
+  namespace,
+  config,
+  ...
 }:
 let
   inherit (lib.${namespace}) enabled;
 in
 {
-  import = [ ./hardware.nix ];
+  imports = [ ./hardware.nix ];
 
   excalibur = {
     nix = enabled;
