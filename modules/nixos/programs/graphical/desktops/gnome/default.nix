@@ -14,12 +14,13 @@ let
     ;
   inherit (lib.${namespace})
     enabled
+    disabled
     mkBoolOpt
     mkOpt
     mkDefault
     ;
 
-  cfg = config.${namespace}.programs.graphical.desktop-environment.gnome;
+  cfg = config.${namespace}.programs.graphical.desktops.gnome;
   gdmHome = config.users.users.gdm.home;
 
   defaultExtensions = with pkgs.gnomeExtensions; [
@@ -66,7 +67,7 @@ in
         ])
         pkgs.${namespace}.wallpapers.cat-sound "The dark wallpaper to use.";
     };
-    wayland = mkBoolOpt true "Whether or not to use Wayland.";
+    wayland = mkBoolOpt false "Whether or not to use Wayland."; # Default false
   };
 
   config = mkIf cfg.enable {
@@ -283,8 +284,8 @@ in
       system.xkb.enable = true;
 
       theme = {
-        gtk = enabled;
-        qt = enabled;
+        gtk = disabled;
+        qt = disabled;
       };
     };
 

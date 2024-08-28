@@ -16,9 +16,13 @@ in
       vm = enabled;
     };
 
-    desktop-environment = {
-      gnome = {
-        enable = true;
+    programs = {
+      graphical = {
+        desktops = {
+          gnome = {
+            enable = true;
+          };
+        };
       };
     };
 
