@@ -1,8 +1,9 @@
-{ config
-, lib
-, modulesPath
-, pkgs
-, ...
+{
+  config,
+  lib,
+  modulesPath,
+  pkgs,
+  ...
 }:
 let
   inherit (lib) mkForce;
@@ -19,7 +20,8 @@ in
   ##
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
-    loader.grub.devices = mkForce [ "nodev" ];
+    # loader.grub.devices = mkForce [ "nodev" ];
+    boot.loader.grub.device = mkForce "/dev/vda"; # "/dev/sda"; # or "nodev" for efi only
 
     initrd = {
       kernelModules = [

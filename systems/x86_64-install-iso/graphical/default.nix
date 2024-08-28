@@ -1,7 +1,8 @@
-{ pkgs
-, lib
-, namespace
-, ...
+{
+  pkgs,
+  lib,
+  namespace,
+  ...
 }:
 let
   inherit (lib) mkForce;
@@ -34,7 +35,7 @@ in
       tmux = enabled;
     };
 
-    desktop = {
+    desktop-environment = {
       gnome = {
         enable = true;
       };

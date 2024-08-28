@@ -1,12 +1,13 @@
-{ config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
 }:
 let
   inherit (lib) mkIf mkDefault;
-  inherit (lib.${namespace}) mkBoolOpt default-attrs;
+  inherit (lib.${namespace}) mkBoolOpt default-attrs force-attrs;
 
   cfg = config.${namespace}.system.boot;
 in
@@ -33,8 +34,7 @@ in
         efivar
       ]
       ++ lib.optionals cfg.secureBoot [ sbctl ]
-      ++ lib.optionals cfg.isDualBoot [ os-prober ]
-    ;
+      ++ lib.optionals cfg.isDualBoot [ os-prober ];
 
     boot = {
       kernelParams =
@@ -72,13 +72,15 @@ in
           efiSysMountPoint = "/boot";
         };
 
+        generationsDir.copyKernels = cfg.efi;
+
         grub = mkIf cfg.grub {
           enable = true;
-          efiSupport = mkIf cfg.efi;
+          efiSupport = cfg.efi;
           default = "saved";
-          forceInstall = true;
-          # devices = if (cfg.efi.enable == true) then [ "nodev" ] else "/dev/sda";
-          devices = [ "nodev" ];
+          # forceInstall = true;
+          devices = if (cfg.efi) then [ "nodev" ] else "/dev/sda";
+          # devices = [ "nodev" ];
           fsIdentifier = "provided";
           gfxmodeEfi = "auto";
           fontSize = 20;
@@ -108,9 +110,7 @@ in
         themePackages = with pkgs; [
           (
             # pkgs.catppuccin-plymouth
-            adi1090x-plymouth-themes.override {
-              selected_themes = [ theme ];
-            }
+            adi1090x-plymouth-themes.override { selected_themes = [ theme ]; }
           )
         ];
       };
@@ -123,7 +123,7 @@ in
     };
 
     services.fwupd = {
-      enable = cfg.efi;
+      enable = true; # cfg.efi;
       daemonSettings.EspLocation = config.boot.loader.efi.efiSysMountPoint;
     };
   };
