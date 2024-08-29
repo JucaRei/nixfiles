@@ -44,7 +44,7 @@ let
   nested-default-attrs = mapAttrs (_key: default-attrs);
 in
 {
-  options.${namespace}.programs.graphical.desktop-environments.gnome = with types; {
+  options.${namespace}.programs.desktop-environments.gnome = with types; {
     enable = mkBoolOpt false "Whether or not to use Gnome as the desktop environment.";
     color-scheme = mkOpt (enum [
       "light"
