@@ -121,3 +121,4 @@ in
 
 # sudo mount -o remount,size=10G /nix/.rw-store
 # sudo mount -o remount,size=5G /tmp/
+# sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /tmp/disks.nix
