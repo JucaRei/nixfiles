@@ -1,7 +1,8 @@
-{ config
-, lib
-, namespace
-, ...
+{
+  config,
+  lib,
+  namespace,
+  ...
 }:
 let
   inherit (lib) mkIf;
@@ -18,7 +19,7 @@ in
     excalibur = {
       programs = {
         desktop-environments = {
-          gnome = enabled;
+          # gnome = enabled;
           # wms = {
           #   hyprland = enabled;
           # };
