@@ -1,7 +1,8 @@
-{ lib
-, namespace
-, config
-, ...
+{
+  lib,
+  namespace,
+  config,
+  ...
 }:
 let
   inherit (lib.${namespace}) enabled disabled;
@@ -20,7 +21,7 @@ in
 
     programs = {
       graphical = {
-        desktop-environment = {
+        desktop-environments = {
           gnome = {
             enable = true;
           };
