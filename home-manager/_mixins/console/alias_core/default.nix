@@ -260,7 +260,6 @@ in
           #
           "n" = "nix";
 
-          "nb" = "nix build";
           "nbr" = "nix build --rebuild";
 
           "nd" = builtins.getAttr cfg.nix.diffProgram nixDiffCommands; # TODO: Make diff

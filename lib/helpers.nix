@@ -30,13 +30,13 @@ with inputs;
         nix-index-database.hmModules.nix-index
         catppuccin.homeManagerModules.catppuccin
         # inputs.vscode-server-hm.nixosModules.home
-        "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
+        # "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
 
         ({ config, pkgs, lib, ... }: {
           # Shared Between all users
-          services.vscode-server = {
-            enable = lib.mkDefault false;
-          };
+          # services.vscode-server = {
+          #   enable = lib.mkDefault false;
+          # };
           home.packages = with pkgs; [
             nixpkgs-fmt
             nix-output-monitor
