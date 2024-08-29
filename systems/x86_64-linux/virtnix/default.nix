@@ -100,6 +100,23 @@ in
     };
   };
   system.stateVersion = "24.05"; # Did you read the comment?
+  systemd = {
+    extraConfig = ''
+      DefaultCPUAccounting=yes
+      DefaultMemoryAccounting=yes
+      DefaultIOAccounting=yes
+    '';
+    user.extraConfig = ''
+      DefaultCPUAccounting=yes
+      DefaultMemoryAccounting=yes
+      DefaultIOAccounting=yes
+    '';
+    services."user@".serviceConfig.Delegate = true;
+  };
+  systemd.services.nix-daemon.serviceConfig = {
+    CPUWeight = 20;
+    IOWeight = 20;
+  };
 }
 
 # sudo mount -o remount,size=10G /nix/.rw-store
