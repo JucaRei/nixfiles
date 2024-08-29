@@ -20,7 +20,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    inputs.khanelinix = {
+    khanelinix = {
       url = "github:khaneliman/khanelinix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
