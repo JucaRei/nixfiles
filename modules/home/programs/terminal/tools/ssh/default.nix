@@ -25,7 +25,7 @@ let
   user = config.users.users.${config.${namespace}.user.name};
   user-id = builtins.toString user.uid;
 
-  default-key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJAZIwy7nkz8CZYR/ZTSNr+7lRBW2AYy1jw06b44zaID";
+  # default-key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJAZIwy7nkz8CZYR/ZTSNr+7lRBW2AYy1jw06b44zaID";
 
   other-hosts = lib.filterAttrs (
     key: host: key != name && (host.config.${namespace}.user.name or null) != null
@@ -72,23 +72,26 @@ in
     programs.ssh = {
       enable = true;
 
-      extraConfig = ''
-        StreamLocalBindUnlink yes
+      # extraConfig = ''
+      #   StreamLocalBindUnlink yes
 
-        ${other-hosts-config}
+      #   ${other-hosts-config}
 
-        ${cfg.extraConfig}
-      '';
+      #   ${cfg.extraConfig}
+      # '';
     };
 
-    home = {
-      shellAliases = foldl (
-        aliases: system: aliases // { "ssh-${system}" = "ssh ${system} -t tmux a"; }
-      ) { } (builtins.attrNames other-hosts);
+    # home = {
+    #   shellAliases = foldl
+    #     (
+    #       aliases: system: aliases // { "ssh-${system}" = "ssh ${system} -t tmux a"; }
+    #     )
+    #     { }
+    #     (builtins.attrNames other-hosts);
 
-      file = mkIf pkgs.stdenv.isDarwin {
-        ".ssh/authorized_keys".text = builtins.concatStringsSep "\n" cfg.authorizedKeys;
-      };
-    };
+    #   file = mkIf pkgs.stdenv.isDarwin {
+    #     ".ssh/authorized_keys".text = builtins.concatStringsSep "\n" cfg.authorizedKeys;
+    #   };
+    # };
   };
 }
