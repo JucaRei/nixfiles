@@ -20,12 +20,12 @@ in
     };
 
     programs = {
-      graphical = {
-        desktop-environments = {
-          gnome = {
-            enable = true;
-          };
+      desktop-environments = {
+        gnome = {
+          enable = true;
         };
+      };
+      graphical = {
         apps = {
           # _1password = mkForce disabled;
         };
