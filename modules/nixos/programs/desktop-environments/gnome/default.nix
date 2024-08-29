@@ -1,8 +1,9 @@
-{ config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
 }:
 let
   inherit (lib)
@@ -45,27 +46,22 @@ in
 {
   options.${namespace}.programs.graphical.desktop-environments.gnome = with types; {
     enable = mkBoolOpt false "Whether or not to use Gnome as the desktop environment.";
-    color-scheme = mkOpt
-      (enum [
-        "light"
-        "dark"
-      ]) "dark" "The color scheme to use.";
+    color-scheme = mkOpt (enum [
+      "light"
+      "dark"
+    ]) "dark" "The color scheme to use.";
     extensions = mkOpt (listOf package) [ ] "Extra Gnome extensions to install.";
     monitors = mkOpt (nullOr path) null "The monitors.xml file to create.";
     suspend = mkBoolOpt true "Whether or not to suspend the machine after inactivity.";
     wallpaper = {
-      light = mkOpt
-        (oneOf [
-          str
-          package
-        ])
-        pkgs.${namespace}.wallpapers.flatppuccin_macchiato "The light wallpaper to use.";
-      dark = mkOpt
-        (oneOf [
-          str
-          package
-        ])
-        pkgs.${namespace}.wallpapers.cat-sound "The dark wallpaper to use.";
+      light = mkOpt (oneOf [
+        str
+        package
+      ]) pkgs.${namespace}.wallpapers.flatppuccin_macchiato "The light wallpaper to use.";
+      dark = mkOpt (oneOf [
+        str
+        package
+      ]) pkgs.${namespace}.wallpapers.cat-sound "The dark wallpaper to use.";
     };
     wayland = mkBoolOpt false "Whether or not to use Wayland."; # Default false
   };
@@ -213,8 +209,8 @@ in
               menu-button-icon-image = 23;
 
               # menu-button-terminal =
-              #   if config.${namespace}.desktop-environment.addons.term.enable then
-              #     getExe config.${namespace}.desktop-environment.addons.term.pkg
+              #   if config.${namespace}.desktop-environments.addons.term.enable then
+              #     getExe config.${namespace}.desktop-environments.addons.term.pkg
               #   else
               #     getExe pkgs.gnome.gnome-terminal;
             };

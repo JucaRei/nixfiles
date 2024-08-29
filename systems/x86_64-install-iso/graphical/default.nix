@@ -35,9 +35,11 @@ in
       tmux = enabled;
     };
 
-    desktop-environment = {
-      gnome = {
-        enable = true;
+    programs = {
+      desktop-environments = {
+        gnome = {
+          enable = true;
+        };
       };
     };
 

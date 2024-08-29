@@ -9,10 +9,10 @@ let
   inherit (lib) mkIf types;
   inherit (lib.${namespace}) mkBoolOpt mkOpt;
 
-  cfg = config.${namespace}.desktop-environment.bars.sketchybar;
+  cfg = config.${namespace}.desktop-environments.bars.sketchybar;
 in
 {
-  options.${namespace}.desktop-environment.bars.sketchybar = {
+  options.${namespace}.desktop-environments.bars.sketchybar = {
     enable = mkBoolOpt false "Whether or not to enable sketchybar.";
     logFile = mkOpt types.str "/var/tmp/sketchybar.log" "Filepath of log output";
   };

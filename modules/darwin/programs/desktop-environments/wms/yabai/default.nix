@@ -1,8 +1,9 @@
-{ config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
 }:
 let
   inherit (lib) mkIf getExe;
@@ -92,7 +93,7 @@ in
           # ${getExe config.services.yabai.package} -m signal --add event=window_title_changed app="Firefox" title="- noVNC$" action="${getExe config.services.yabai.package} -m window $WINDOW_ID --toggle native-fullscreen"
 
           # jankyborders
-          ${getExe config.${namespace}.desktop-environment.addons.jankyborders.package} 2>/dev/null 1>&2 &
+          ${getExe config.${namespace}.desktop-environments.addons.jankyborders.package} 2>/dev/null 1>&2 &
 
           echo "yabai configuration loaded.."
         '';

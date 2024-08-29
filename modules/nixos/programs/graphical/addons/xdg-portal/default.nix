@@ -1,10 +1,11 @@
-{ config
-, inputs
-, lib
-, pkgs
-, system
-, namespace
-, ...
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  system,
+  namespace,
+  ...
 }:
 let
   inherit (lib) mkIf;
@@ -26,7 +27,7 @@ in
         configPackages = [ hyprland.packages.${system}.hyprland ];
 
         config = {
-          hyprland = mkIf config.${namespace}.programs.graphical.desktop-environment.wms.hyprland.enable {
+          hyprland = mkIf config.${namespace}.programs.graphical.desktop-environments.wms.hyprland.enable {
             default = [
               "hyprland"
               "gtk"
@@ -57,7 +58,7 @@ in
           with pkgs;
           [ xdg-desktop-portal-gtk ]
           ++ (lib.optional config.${namespace}.programs.graphical.wms.sway.enable xdg-desktop-portal-wlr)
-          ++ (lib.optional config.${namespace}.programs.graphical.desktop-environment.wms.hyprland.enable (
+          ++ (lib.optional config.${namespace}.programs.graphical.desktop-environments.wms.hyprland.enable (
             xdg-desktop-portal-hyprland.packages.${system}.xdg-desktop-portal-hyprland.override {
               debug = true;
               # TODO: use same package as home-manager
