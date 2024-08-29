@@ -1,10 +1,11 @@
-{ config
-, inputs
-, lib
-, pkgs
-, system
-, namespace
-, ...
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  system,
+  namespace,
+  ...
 }:
 let
   inherit (lib)
@@ -13,10 +14,15 @@ let
     mkIf
     types
     ;
-  inherit (lib.${namespace}) mkBoolOpt mkOpt enabled disabled;
+  inherit (lib.${namespace})
+    mkBoolOpt
+    mkOpt
+    enabled
+    disabled
+    ;
   inherit (inputs) hyprland;
 
-  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.hyprland;
+  cfg = config.${namespace}.programs.graphical.desktop-environments.wms.hyprland;
 
   programs = makeBinPath (
     with pkgs;
@@ -31,7 +37,7 @@ let
   );
 in
 {
-  options.${namespace}.programs.graphical.desktop-environment.wms.hyprland = with types; {
+  options.${namespace}.programs.graphical.desktop-environments.wms.hyprland = with types; {
     enable = mkBoolOpt false "Whether or not to enable Hyprland.";
     customConfigFiles =
       mkOpt attrs { }

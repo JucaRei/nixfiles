@@ -1,17 +1,23 @@
-{ config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
 }:
 let
   inherit (lib) types mkIf;
-  inherit (lib.${namespace}) mkBoolOpt mkOpt enabled disabled;
+  inherit (lib.${namespace})
+    mkBoolOpt
+    mkOpt
+    enabled
+    disabled
+    ;
 
-  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.sway;
+  cfg = config.${namespace}.programs.graphical.desktop-environments.wms.sway;
 in
 {
-  options.${namespace}.programs.graphical.desktop-environment.wms.sway = with types; {
+  options.${namespace}.programs.graphical.desktop-environments.wms.sway = with types; {
     enable = mkBoolOpt false "Whether or not to enable Sway.";
     extraConfig = mkOpt str "" "Additional configuration for the Sway config file.";
     wallpaper = mkOpt (nullOr package) null "The wallpaper to display.";
