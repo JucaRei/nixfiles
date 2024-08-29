@@ -1,11 +1,12 @@
-{ config
-, lib
-, pkgs
-, namespace
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  namespace,
+  ...
 }:
 let
-  cfg = config.profiles.${namespace}.desktop;
+  cfg = config.${namespace}.programs.desktop-environments.cinnamon;
   inherit (lib) mkEnableOption mkIf;
 in
 {
