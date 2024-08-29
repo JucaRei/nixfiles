@@ -13,7 +13,7 @@ in
   options.${namespace}.programs.desktop-environments.cinnamon = {
     enable = mkEnableOption "Setup desktop with Cinnamon DE";
   };
-  config = mkIf cfg.cinnamon.enable {
+  config = mkIf cfg.enable {
     services.xserver = {
       desktopManager = {
         cinnamon.enable = true;
