@@ -40,14 +40,14 @@ in
           emulators = {
             alacritty = enabled;
             foot.enable = pkgs.stdenv.isLinux;
-            kitty = enabled;
-            warp = enabled;
+            kitty = disabled;
+            warp = disabled;
             wezterm = enabled;
           };
 
           shell = {
             bash = enabled;
-            fish = enabled;
+            fish = disabled;
             zsh = enabled;
           };
 

@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf;
@@ -16,18 +15,21 @@ in
   };
 
   config = mkIf cfg.enable {
-    ${namespace}.desktop = {
-      addons = {
-        skhd = enabled;
-        jankyborders = enabled;
+    ${namespace}.programs = {
+      desktop-environments = {
+        wms = {
+          yabai = enabled;
+        };
       };
+      terminal = {
+        addons = {
+          skhd = enabled;
+          jankyborders = enabled;
+        };
 
-      bars = {
-        sketchybar = enabled;
-      };
-
-      wms = {
-        yabai = enabled;
+        bars = {
+          sketchybar = enabled;
+        };
       };
     };
 

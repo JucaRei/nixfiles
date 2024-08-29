@@ -7,7 +7,7 @@
 let
   inherit (lib) mkIf getExe;
 
-  cfg = config.${namespace}.programs.graphical.desktop-environment.desktop-environment.wms.hyprland;
+  cfg = config.${namespace}.programs.graphical.desktop-environments.wms.hyprland;
 in
 {
   config = mkIf cfg.enable {
@@ -39,7 +39,7 @@ in
           "${getExe pkgs.thunderbird}"
 
           # Startup background apps
-          "${getExe pkgs.openrgb-with-all-plugins} --startminimized --profile default"
+          # "${getExe pkgs.openrgb-with-all-plugins} --startminimized --profile default"
           "${getExe pkgs._1password-gui} --silent"
           "${getExe pkgs.tailscale-systray}"
           "run-as-service $(${getExe pkgs.wayvnc} $(${getExe pkgs.tailscale} ip --4))"

@@ -1,24 +1,23 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf getExe;
   inherit (lib.${namespace}) mkBoolOpt enabled;
 
-  cfg = config.${namespace}.desktop-environment.wms.yabai;
+  cfg = config.${namespace}.programs.desktop-environments.wms.yabai;
 in
 {
-  options.${namespace}.desktop-environment.wms.yabai = {
+  options.${namespace}.programs.desktop-environments.wms.yabai = {
     enable = mkBoolOpt false "Whether or not to enable yabai.";
     debug = mkBoolOpt false "Whether to enable debug output.";
   };
 
   config = mkIf cfg.enable {
-    ${namespace}.desktop-environment.addons.jankyborders = enabled;
+    ${namespace}.programs.desktop-environments.addons.jankyborders = enabled;
 
     services.yabai = {
       enable = true;

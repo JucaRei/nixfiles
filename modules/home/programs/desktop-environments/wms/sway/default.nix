@@ -8,11 +8,11 @@ let
   inherit (lib) mkIf mkEnableOption getExe;
   inherit (lib.${namespace}) enabled disabled;
 
-  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.sway;
+  cfg = config.${namespace}.programs.graphical.desktop-environments.wms.sway;
 
 in
 {
-  options.${namespace}.programs.graphical.desktop-environment.wms.sway = {
+  options.${namespace}.programs.graphical.desktop-environments.wms.sway = {
     enable = mkEnableOption "sway.";
     enableDebug = mkEnableOption "Enable debug mode.";
     appendConfig = lib.mkOption {
@@ -116,7 +116,7 @@ in
 
         input = {
           "*" = {
-            xkb_layout = "us";
+            xkb_layout = "br";
             xkb_numlock = "enabled";
             # repeat_delay = 0;
             # repeat_rate = 50;

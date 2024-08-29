@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkIf getExe;
@@ -12,10 +11,10 @@ let
   sketchybar = getExe config.services.sketchybar.package;
   yabai = getExe config.services.yabai.package;
 
-  cfg = config.${namespace}.desktop-environment.addons.skhd;
+  cfg = config.${namespace}.programs.terminal.addons.skhd;
 in
 {
-  options.${namespace}.desktop-environment.addons.skhd = {
+  options.${namespace}.programs.terminal.addons.skhd = {
     enable = mkBoolOpt false "Whether or not to enable skhd.";
   };
 

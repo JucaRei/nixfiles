@@ -1,19 +1,21 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, system
+, inputs
+, ...
 }:
 let
   inherit (lib) mkIf getExe;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.graphical.bars.sketchybar;
+  sketchybar-overlay = inputs.khanelinix.packages."${system}".sketchybar;
 
   shellAliases = with pkgs; {
     push = # bash
-      ''command git push && ${getExe sketchybar} --trigger git_push'';
+      ''command git push && ${getExe sketchybar-overlay} --trigger git_push'';
   };
 in
 {
@@ -27,11 +29,11 @@ in
     programs.zsh.initExtra = # bash
       ''
         brew() {
-          command brew "$@" && ${getExe pkgs.sketchybar} --trigger brew_update
+          command brew "$@" && ${getExe pkgs.sketchybar-overlay} --trigger brew_update
         }
 
         mas() {
-          command mas "$@" && ${getExe pkgs.sketchybar} --trigger brew_update
+          command mas "$@" && ${getExe pkgs.sketchybar-overlay} --trigger brew_update
         }
       '';
 

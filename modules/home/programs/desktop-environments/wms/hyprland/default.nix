@@ -11,7 +11,7 @@ let
   inherit (lib.${namespace}) enabled;
   inherit (inputs) hyprland;
 
-  cfg = config.${namespace}.programs.graphical.desktop-environment.wms.hyprland;
+  cfg = config.${namespace}.programs.graphical.desktop-environments.wms.hyprland;
 
   historicalLogAliases = builtins.listToAttrs (
     builtins.genList
@@ -30,7 +30,7 @@ let
   );
 in
 {
-  options.${namespace}.programs.graphical.desktop-environment.wms.hyprland = {
+  options.${namespace}.programs.graphical.desktop-environments.wms.hyprland = {
     enable = mkEnableOption "Hyprland.";
     enableDebug = mkEnableOption "Enable debug mode.";
     appendConfig = lib.mkOption {

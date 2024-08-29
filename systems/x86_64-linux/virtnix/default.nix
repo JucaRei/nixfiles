@@ -1,8 +1,7 @@
-{
-  lib,
-  namespace,
-  config,
-  ...
+{ lib
+, namespace
+, config
+, ...
 }:
 let
   inherit (lib.${namespace}) enabled disabled;
@@ -15,7 +14,8 @@ in
     nix = enabled;
 
     archetypes = {
-      vm = enabled;
+      # vm = enabled;
+      workstation = enabled;
     };
 
     programs = {

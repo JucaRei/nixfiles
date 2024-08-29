@@ -17,16 +17,15 @@ in
   config = mkIf cfg.enable {
     excalibur = {
       programs = {
+        desktop-environments = {
+          gnome = enabled;
+          # wms = {
+          #   hyprland = enabled;
+          # };
+        };
         graphical = {
           apps = {
             _1password = enabled;
-          };
-
-          desktop-environment = {
-            gnome = enabled;
-            # wms = {
-            #   hyprland = enabled;
-            # };
           };
         };
       };

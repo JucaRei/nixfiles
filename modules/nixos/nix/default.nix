@@ -1,8 +1,7 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
+{ config
+, lib
+, namespace
+, ...
 }:
 let
   inherit (lib) mkDefault mkIf mkForce;
@@ -66,6 +65,11 @@ in
       generateNixPathFromInputs = true;
       generateRegistryFromInputs = true;
       linkInputs = true;
+    };
+
+    system.switch = {
+      enable = false;
+      enableNg = true;
     };
   };
 }

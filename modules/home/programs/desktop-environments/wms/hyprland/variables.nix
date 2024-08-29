@@ -24,7 +24,7 @@ let
 
   screenshot-path = "/home/${config.${namespace}.user.name}/Pictures/screenshots";
 
-  cfg = config.${namespace}.programs.graphical.wms.desktop-environment.hyprland;
+  cfg = config.${namespace}.programs.graphical.wms.desktop-environments.hyprland;
 in
 {
   config = mkIf cfg.enable {

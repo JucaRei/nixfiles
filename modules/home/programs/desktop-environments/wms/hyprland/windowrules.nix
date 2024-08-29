@@ -5,7 +5,7 @@
 }:
 let
   inherit (lib) mkIf;
-  cfg = config.${namespace}.programs.graphical.desktop-environment.desktop-environment.wms.hyprland;
+  cfg = config.${namespace}.programs.graphical.desktop-environments.wms.hyprland;
 in
 {
   config = mkIf cfg.enable {

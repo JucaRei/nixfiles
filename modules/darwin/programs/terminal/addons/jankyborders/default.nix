@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib)
@@ -14,10 +13,10 @@ let
     ;
   inherit (lib.${namespace}) mkBoolOpt;
 
-  cfg = config.${namespace}.desktop-environment.addons.jankyborders;
+  cfg = config.${namespace}.programs.terminal.addons.jankyborders;
 in
 {
-  options.${namespace}.desktop-environment.addons.jankyborders = {
+  options.${namespace}.programs.terminal.addons.jankyborders = {
     enable = mkBoolOpt false "Whether to enable jankyborders in the desktop environment.";
     package = mkOption {
       type = lib.types.package;

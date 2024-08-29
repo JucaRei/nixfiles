@@ -29,7 +29,7 @@ in
     excalibur = {
       programs = {
         graphical.apps = {
-          discord = enabled;
+          discord = disabled;
           caprine = enabled;
         };
 

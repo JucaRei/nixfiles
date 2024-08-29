@@ -20,6 +20,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    inputs.khanelinix = {
+      url = "github:khaneliman/khanelinix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # GPG default configuration
     gpg-base-conf = {
       url = "github:drduh/config";
