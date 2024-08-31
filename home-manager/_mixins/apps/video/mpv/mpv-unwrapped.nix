@@ -42,7 +42,7 @@ in
     mpv = {
       enable = true;
       # package = nixGL mpvgl;
-      package = nixGL pkgs.mpv;
+      package = nixGL pkgs.unstable.mpv;
     };
   };
 
