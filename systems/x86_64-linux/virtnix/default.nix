@@ -114,6 +114,8 @@ in {
   systemd.services.nix-daemon.serviceConfig = {
     CPUWeight = 20;
     IOWeight = 20;
+    MemoryMax = "4G";
+    MemorySwapMax = "6G";
   };
 }
 # sudo mount -o remount,size=10G /nix/.rw-store
