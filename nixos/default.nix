@@ -1,11 +1,21 @@
-{ config, lib, username, platform, isInstall, outputs, inputs, pkgs, isISO, isWorkstation, ... }:
-with lib;
-let
-  hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
-  variables = import ./hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
-  inherit (pkgs.stdenv) isLinux;
-in
 {
+  config,
+  lib,
+  username,
+  platform,
+  isInstall,
+  outputs,
+  inputs,
+  pkgs,
+  isISO,
+  isWorkstation,
+  ...
+}:
+with lib; let
+  hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+  variables = import ./hosts/${hostname}/variables.nix {inherit config username;}; # vars for better check
+  inherit (pkgs.stdenv) isLinux;
+in {
   imports = [
     ./core
     # ./common.nix
@@ -44,9 +54,9 @@ in
 
       optimise = {
         automatic = isLinux;
-        dates = [ "14:00" ];
+        dates = ["14:00"];
       };
-      package = mkIf (isInstall) pkgs.unstable.nix;
+      package = mkIf isInstall pkgs.unstable.nix;
       settings = {
         # Always build inside sandboxed environments
         # sandbox = true;
@@ -67,8 +77,8 @@ in
         # Workaround for https://github.com/NixOS/nix/issues/9574
         # nix-path = config.nix.nixPath;
 
-        allowed-users = [ "root" "${username}" ];
-        trusted-users = [ "root" "${username}" ];
+        allowed-users = ["root" "${username}"];
+        trusted-users = ["root" "${username}"];
         builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
         ### Avoid unwanted garbage collection when using nix-direnv
         keep-outputs = true;
@@ -88,14 +98,13 @@ in
         ];
       };
 
-      extraOptions =
-        ''
-          log-lines = 15
-          # Free up to 4GiB whenever there is less than 2GiB left.
-          min-free = ${toString (2048 * 1024 * 1024)}
-          max-free = ${toString (4096 * 1024 * 1024)}
-          connect-timeout = 10
-        '';
+      extraOptions = ''
+        log-lines = 15
+        # Free up to 4GiB whenever there is less than 2GiB left.
+        min-free = ${toString (2048 * 1024 * 1024)}
+        max-free = ${toString (4096 * 1024 * 1024)}
+        connect-timeout = 10
+      '';
       # Free up to 4GiB whenever there is less than 512MiB left.
       # min-free = ${toString (512 * 1024 * 1024)}
       # min-free = 1073741824 # 1GiB
@@ -123,12 +132,12 @@ in
       # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
       (_: super: {
         makeModulesClosure = x:
-          super.makeModulesClosure (x // { allowMissing = true; });
+          super.makeModulesClosure (x // {allowMissing = true;});
       })
 
       ## Testing
       (self: super: {
-        vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
+        vaapiIntel = super.vaapiIntel.override {enableHybridCodec = true;};
         #   deadbeef = super.deadbeef.override { wavpackSupport = true; };
         #   deadbeef-with-plugins = super.deadbeef-with-plugins.override {
         #     plugins = with super.deadbeefPlugins; [ mpris2 statusnotifier ];
@@ -147,5 +156,18 @@ in
 
       allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
     };
+  };
+
+  system = {
+    activationScripts.report-changes = ''
+      PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}
+      nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
+      mkdir -p /var/log/activations
+      _nvddate=$(date +'%Y%m%d%H%M%S')
+      nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
+      if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
+        rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
+      fi
+    '';
   };
 }
