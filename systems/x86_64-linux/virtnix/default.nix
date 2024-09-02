@@ -3,13 +3,11 @@
   namespace,
   config,
   ...
-}:
-let
+}: let
   inherit (lib.${namespace}) enabled disabled;
   inherit (lib) mkForce;
-in
-{
-  imports = [ ./hardware.nix ];
+in {
+  imports = [./hardware.nix];
 
   excalibur = {
     nix = enabled;
@@ -118,7 +116,6 @@ in
     IOWeight = 20;
   };
 }
-
 # sudo mount -o remount,size=10G /nix/.rw-store
 # sudo mount -o remount,size=5G /tmp/
 # sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /tmp/disks.nix

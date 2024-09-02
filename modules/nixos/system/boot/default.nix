@@ -7,8 +7,8 @@
 }:
 let
   inherit (lib) mkIf mkDefault;
-  inherit (lib.${namespace}) mkBoolOpt default-attrs force-attrs;
 
+  inherit (lib.${namespace}) mkBoolOpt default-attrs force-attrs;
   cfg = config.${namespace}.system.boot;
 in
 {
@@ -71,8 +71,8 @@ in
           canTouchEfiVariables = true;
           efiSysMountPoint = "/boot";
         };
-
         generationsDir.copyKernels = cfg.efi;
+
 
         grub = mkIf cfg.grub {
           enable = true;
