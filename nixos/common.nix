@@ -246,6 +246,7 @@ in
       r = "rsync -ra --info=progress2";
       fd = "fd --hidden --exclude .git";
       search = "nix search nixpkgs";
+      nix_package_size="nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
     };
 
     #################################################################################
