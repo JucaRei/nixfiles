@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  modulesPath,
-  pkgs,
-  ...
+{ config
+, lib
+, modulesPath
+, pkgs
+, ...
 }:
 let
   inherit (lib) mkForce;
@@ -12,7 +11,7 @@ in
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     (modulesPath + "/installer/scan/not-detected.nix")
-    # ./disks-btrfs.nix
+    ./disks.nix
   ];
 
   ##

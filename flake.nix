@@ -119,7 +119,6 @@
       url = "github:khaneliman/khanelivim";
       # url = "git+file:///Users/excalibur/Documents/github/khanelivim";
       # url = "git+file:///home/excalibur/Documents/github/khanelivim";
-
       inputs = {
         # nixpkgs.follows = "nixpkgs";
         pre-commit-hooks-nix.follows = "pre-commit-hooks-nix";
