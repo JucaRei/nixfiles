@@ -6,17 +6,7 @@ in
   # Only import desktop configuration if the host is desktop enabled
   # Only import user specific configuration if they have bespoke settings
   imports =
-    [
-      # If you want to use modules your own flake exports (from modules/home-manager):
-      # outputs.homeManagerModules.example
-
-      # Or modules exported from other flakes (such as nix-colors):
-      # inputs.nix-colors.homeManagerModules.default
-      # inputs.sops-nix.homeManagerModules.sops
-
-      # You can also split up your configuration and import pieces of it here:
-      ./common.nix
-    ]
+    [ ./common.nix ]
     # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
@@ -155,7 +145,7 @@ in
         # max-free = ${toString (1024 * 1024 * 1024)}
         # Free up to 2GiB whenever there is less than 1GiB left.
         min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
-        max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 2 GiB
+        max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 3 GiB
       ''
       + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
         extra-platforms = x86_64-darwin

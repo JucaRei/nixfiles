@@ -15,7 +15,6 @@ in
     services.flatpak = {
       # enable = true;
       enableModule = mkForce true;
-      deduplicate = true;
       state-dir = "${config.home.homeDirectory}/.local/state/flatpak-module";
       target-dir = "${config.home.homeDirectory}/.local/share/flatpak";
       packages = [

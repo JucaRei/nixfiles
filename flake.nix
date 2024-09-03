@@ -305,7 +305,11 @@
           # nix build .#homeConfigurations."juca@DietPi".activationPackage
           # nom build .#homeConfigurations."juca@vm".activationPackage --impure
           # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
-          "juca@nitro" = helper.makeHomeManager { hostname = "nitro"; desktop = "bspwm"; stateVersion = "24.05"; };
+          "juca@nitro" = helper.makeHomeManager {
+            hostname = "nitro";
+            # desktop = "bspwm";
+            stateVersion = "24.05";
+          };
           "juca@air" = helper.makeHomeManager { hostname = "air"; desktop = "bspwm"; stateVersion = "24.05"; };
           "juca@anubis" = helper.makeHomeManager { hostname = "anubis"; desktop = "bspwm"; };
           "juca@oldarch" = helper.makeHomeManager { hostname = "oldarch"; desktop = "xfce"; stateVersion = "23.05"; };

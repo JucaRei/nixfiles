@@ -1,6 +1,6 @@
-{ config, lib, pkgs, inputs, nixGLWrap, ... }:
-with lib.hm.gvariant;
+{ config, lib, pkgs, ... }:
 let
+  # inherit (lib) lib;
   font-search = pkgs.writeShellScriptBin "font-search" ''
     fc-list \
         | grep -ioE ": [^:]*$1[^:]+:" \
@@ -13,8 +13,9 @@ let
   file-manager = "thunar.desktop";
   compressed = "engrampa.desktop";
   # browser = "vivaldi-stable.desktop";
-  browser = "firefox.desktop";
+  # browser = "firefox.desktop";
   # browser = "brave-browser.desktop";
+  browser = "floorp.desktop";
   # viewer = "org.xfce.ristretto.desktop";
   pdf = "org.pwmt.zathura.desktop";
   video = "umpv.desktop";
@@ -40,7 +41,7 @@ with lib;
     ../_mixins/apps/documents/zathura.nix
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
-    ../_mixins/apps/browser/firefox/firefox.nix
+    # ../_mixins/apps/browser/firefox/firefox.nix
     ../_mixins/apps/browser/brave
     # ../_mixins/apps/browser/firefox/librewolf.nix
     ../_mixins/services/flatpak.nix
@@ -108,7 +109,7 @@ with lib;
       starship.enable = true;
       eza.enable = false;
       lsd.enable = true;
-      firefox.enable = true;
+      # firefox.enable = true;
       flatpak-nix.enable = true;
       yt-dlp-custom.enable = true;
       brave.enable = true;
