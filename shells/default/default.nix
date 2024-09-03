@@ -1,10 +1,9 @@
-{
-  inputs,
-  mkShell,
-  pkgs,
-  system,
-  namespace,
-  ...
+{ inputs
+, mkShell
+, pkgs
+, system
+, namespace
+, ...
 }:
 let
   inherit (inputs) snowfall-flake;
@@ -22,7 +21,7 @@ mkShell {
     nh
 
     # Adds all the packages required for the pre-commit checks
-    inputs.self.checks.${system}.pre-commit-hooks.enabledPackages
+    # inputs.self.checks.${system}.pre-commit-hooks.enabledPackages
 
     figlet
     lolcat
