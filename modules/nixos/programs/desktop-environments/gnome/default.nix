@@ -71,21 +71,25 @@ in
       systemPackages =
         with pkgs;
         [
-          gnome.gnome-tweaks
-          gnome.nautilus-python
+          gnome-tweaks
+          nautilus-python
           wl-clipboard
         ]
         ++ defaultExtensions
         ++ cfg.extensions;
 
-      gnome.excludePackages = with pkgs.gnome; [
-        epiphany
-        geary
-        gnome-font-viewer
-        gnome-maps
-        gnome-system-monitor
-        pkgs.gnome-tour
-      ];
+      gnome.excludePackages =
+        with pkgs.gnome;
+        [
+          gnome-maps
+          pkgs.gnome-tour
+        ]
+        ++ (with pkgs; [
+          epiphany
+          geary
+          gnome-font-viewer
+          gnome-system-monitor
+        ]);
     };
 
     excalibur = {
