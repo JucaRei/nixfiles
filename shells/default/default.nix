@@ -28,7 +28,7 @@ mkShell {
   ];
 
   shellHook = ''
-    ${inputs.self.checks.${system}.pre-commit-hooks.shellHook}
+    # ${inputs.self.checks.${system}.pre-commit-hooks.shellHook}
     echo "🔨 Welcome to ${namespace}" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
 
 
