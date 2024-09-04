@@ -34,7 +34,6 @@ with lib;
     ../_mixins/apps/video/mpv/mpv.nix
     # ../_mixins/apps/tools/transmission.nix
     ../_mixins/dev/nix.nix
-    ../test.nix
     # ../_mixins/console/aria2.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
