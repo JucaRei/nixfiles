@@ -24,8 +24,10 @@ in
   ];
 
   config = {
-    services = {
+    custom = {
       nonNixOs.enable = true;
+    };
+    services = {
       yt-dlp-custom.enable = true;
       vscode-server.enable = true;
       bash.enable = true;
@@ -61,5 +63,3 @@ in
     programs.ungoogled.enable = true;
   };
 }
-
-# sudo --preserve-env=PATH env application

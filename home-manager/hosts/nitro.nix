@@ -69,7 +69,6 @@ with lib;
     home = {
       packages = with pkgs; [
         # spotdl
-        # whatsapp-for-linux # Whatsapp desktop messaging app
         # icloud-photo-downloader
         # (nixGLWrap pkgs vlc)
         # cloneit

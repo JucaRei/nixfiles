@@ -5,7 +5,7 @@ let
   cfg = config.services.transmission;
 in
 {
-  options.services.nonNixOs = {
+  options.services.transmission = {
     enable = mkOption {
       default = false;
       type = types.bool;

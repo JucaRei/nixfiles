@@ -65,9 +65,12 @@ in
       extra-trusted-public-keys = [ "anubis.cachix.org-1:p6q0lqdZcE9UrkmFonRSlRPAPADFnZB1atSgp6tbF3U=" ];
     };
 
+    custom = {
+      nonNixOs.enable = true;
+    };
+
     services = {
       bash.enable = true;
-      nonNixOs.enable = true;
       eza.enable = true;
       udiskie = {
         enable = true;

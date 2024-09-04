@@ -9,7 +9,7 @@ let
   # { enable32bits = true; }).auto;
   # nixGL-old = import ../../lib/nixGL-old.nix { inherit config pkgs; };
   # nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
-  # non-nixos = config.services.nonNixOs;
+  # non-nixos = config.custom.nonNixOs;
 
   font-search = pkgs.writeShellScriptBin "font-search" ''
     fc-list \
@@ -63,8 +63,10 @@ in
       vimix-gtk-themes
       # (oldGL thorium)
     ];
-    services = {
+    custom = {
       nonNixOs.enable = true;
+    };
+    services = {
       yt-dlp-custom.enable = true;
       bash.enable = true;
       # podman.enable = false;

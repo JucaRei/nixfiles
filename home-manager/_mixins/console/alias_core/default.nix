@@ -178,11 +178,14 @@ in
           less = "${pkgs.bat}/bin/bat --paging=always";
           more = "${pkgs.bat}/bin/bat --paging=always";
           top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";
+          ps = "${lib.getExe pkgs.procs}";
+          dd = ''${pkgs.writedisk}/bin/writedisk'';
           wget = "${pkgs.wget2}/bin/wget2";
           du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
           cpa = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
           mva = "${pkgs.advmvcp}/bin/advmv --progress-bar";
-          sk = ''"${pkgs.skim}/bin/sk --ansi -c 'grep -rI --color=always --line-number "{}" .'"'';
+          sk = '' "${pkgs.skim}/bin/sk --ansi -c 'grep -rI --color=always --line-number "
+            { } " .'" '';
           audio = "${pkgs.inxi}/bin/inxi -A";
           battery = "${pkgs.inxi}/bin/inxi -B -xxx";
           bluetooth = "${pkgs.inxi}/bin/inxi -E";
@@ -205,8 +208,11 @@ in
         };
 
       description = ''
-        Create Aliases for systemd tools.
-      '';
+        Create
+        Aliases
+        for
+        systemd
+        tools.'';
     };
 
     process = {
@@ -220,8 +226,10 @@ in
         ];
 
         description = ''
-          Packages for process management.
-        '';
+          Packages
+          for
+          process
+          management.'';
       };
 
     };

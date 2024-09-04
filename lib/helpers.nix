@@ -24,7 +24,6 @@ with inputs;
       };
       modules = [
         ../home-manager
-
         declarative-flatpak.homeManagerModules.default
         nur.hmModules.nur
         vscode-server.homeModules.default
@@ -32,7 +31,6 @@ with inputs;
         catppuccin.homeManagerModules.catppuccin
         # inputs.vscode-server-hm.nixosModules.home
         # "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
-
         ({ config, pkgs, lib, ... }: {
           # Shared Between all users
           # services.vscode-server = {
@@ -40,8 +38,10 @@ with inputs;
           # };
           home.packages = with pkgs; [
             nixpkgs-fmt
+            nixd
+            nil
+            nh
             nix-output-monitor
-            nurl # Nix URL fetcher
           ];
         })
 
