@@ -1,11 +1,27 @@
-{ lib, notVM, isInstall, config, ... }:
+{ lib, notVM, isInstall, config, pkgs, ... }:
 
-with lib;
 ############################
 ### Default Boot Options ###
 ############################
+let
+  inherit (lib) mkIf mkOverride mkOpt types;
+  cfg = config.sys.boot;
+in
 {
-  boot = mkDefault {
+  # options.sys.boot = {
+  #   enable = mkOpt types.bool isInstall "Whether or not to enable booting.";
+  #   efi = mkOpt types.bool false "Whether or not to enable EFI for booting.";
+  #   bios = mkOpt types.bool false "Whether or not to enable Bios Legacy for booting.";
+  #   grub = mkOpt types.bool false "Whether or not to enable Grub for booting.";
+  #   systemd-boot = mkOpt types.bool false "Whether or not to enable Systemd for booting.";
+  #   isDualBoot = mkOpt types.bool false "Whether or not to enable for dual booting.";
+  #   plymouth = mkOpt types.bool false "Whether or not to enable plymouth boot splash.";
+  #   secureBoot = mkOpt types.bool false "Whether or not to enable secure boot.";
+  #   silentBoot = mkOpt types.bool false "Whether or not to enable silent boot.";
+  # };
+
+  # config = mkIf cfg.enable {
+  boot = {
     initrd = {
       verbose = false;
       systemd = {
@@ -39,4 +55,5 @@ with lib;
       # option default = 1500
       mkOverride 1500 pkgs.linuxPackages_latest;
   };
+  # };
 }

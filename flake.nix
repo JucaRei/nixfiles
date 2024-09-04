@@ -43,8 +43,7 @@
     # };
 
     # Handles Flatpaks.
-    # flatpaks.url = "github:GermanBread/declarative-flatpak"; #dev
-    declarative-flatpak.url = "github:GermanBread/declarative-flatpak/stable";
+    declarative-flatpak.url = "github:GermanBread/declarative-flatpak/stable-v3";
 
     # nbfc = {
     #   url = "github:nbfc-linux/nbfc-linux";

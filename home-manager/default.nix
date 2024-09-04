@@ -3,11 +3,7 @@ let
   inherit (pkgs.stdenv) isDarwin isLinux;
 in
 {
-  # Only import desktop configuration if the host is desktop enabled
-  # Only import user specific configuration if they have bespoke settings
-  imports =
-    [ ./common.nix ]
-    # ++ lib.optional (builtins.isPath (./. + "/users/${username}")) ./users/${username}
+  imports = [ ./common.nix ]
     ++ lib.optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
     ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix;
 
@@ -24,6 +20,7 @@ in
         ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
       fi
     '';
+
     homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
     sessionVariables = {
@@ -49,7 +46,6 @@ in
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
       outputs.overlays.legacy-packages
-
       inputs.nixgl.overlay
       inputs.nur.overlay
 
@@ -69,13 +65,7 @@ in
 
     # Configure your nixpkgs instance
     config = {
-      # allowUnsupportedSystem = true; # Allow unsupported packages to be built
-      # allowBroken = false; # Disable broken package
-      permittedInsecurePackages = [
-        ### Allow old broken electron
-        # Workaround for https://github.com/nix-community/home-manager/issues/2942
-        # "electron-21.4.0"
-      ];
+      permittedInsecurePackages = [ ];
       # Disable if you don't want unfree packages
       allowUnfree = true;
       # Workaround for https://github.com/nix-community/home-manager/issues/2942
@@ -98,18 +88,18 @@ in
         daemonIOLowPriority = true;
       }
       else {
-        accept-flake-config = true;
+        # accept-flake-config = true;
         auto-optimise-store = true;
         experimental-features = [
           "nix-command"
           "flakes"
           # "ca-derivations"
-          # "auto-allocate-uids"
-          # "cgroups"
+          "auto-allocate-uids"
+          "cgroups"
           #"configurable-impure-env"
         ];
-        # auto-allocate-uids = true;
-        # use-cgroups = if isLinux then true else false;
+        auto-allocate-uids = true;
+        use-cgroups = if isLinux then true else false;
         # build-users-group = "nixbld";
         builders-use-substitutes = true;
         sandbox =
@@ -128,8 +118,8 @@ in
 
         # Allow to run nix
         # allowed-users = [ "nixbld" "@wheel" ];
-        allowed-users = [ "root" "@wheel" ];
-        trusted-users = [ "root" "@wheel" ];
+        # allowed-users = [ "root" "@wheel" ];
+        # trusted-users = [ "root" "@wheel" ];
         connect-timeout = 5;
         http-connections = 0;
 
