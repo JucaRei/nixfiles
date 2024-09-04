@@ -1,5 +1,6 @@
-{ inputs, outputs, stateVersion, lib, pkgs, config, ... }:
+{ inputs, outputs, stateVersion, pkgs, config, lib, ... }:
 with inputs;
+
 {
   # Helper function for generating home-manager configs
   makeHomeManager =
@@ -7,7 +8,7 @@ with inputs;
     { hostname
     , username ? "juca"
     , desktop ? null
-    , stateVersion ? "23.11"
+    , stateVersion ? "24.05"
     , platform ? "x86_64-linux"
     }:
     let
@@ -54,7 +55,7 @@ with inputs;
     , desktop ? null
     , hostid ? null
     , platform ? "x86_64-linux"
-    , stateVersion ? "23.11"
+    , stateVersion ? "24.05"
     ,
     }:
     let
@@ -77,20 +78,31 @@ with inputs;
               nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix";
         in
         [
+          ############################
+          ### Import nixos modules ###
+          ############################
+
           ../nixos
           # chaotic.nixosModules.default # DEFAULT MODULE
-          home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
-              users.${username} = import ../home-manager;
-            };
-            # Optionally, use home-manager.extraSpecialArgs to pass
-            # arguments to home.nix
-          }
+          # home-manager.nixosModules.home-manager
+          # {
+          #   home-manager = {
+          #     useGlobalPkgs = true;
+          #     useUserPackages = true;
+          #     users.${username} = {
+          #       home.username = "${username}";
+          #       home.homeDirectory = "/home/${username}";
+          #       imports = [ ../home-manager ];
+          #     };
+          #     extraSpecialArgs = {
+          #       inherit inputs outputs desktop hostname platform username hostid stateVersion isInstall isLima isISO notVM isWorkstation;
+          #     };
+          #   };
+          #   # Optionally, use home-manager.extraSpecialArgs to pass
+          #   # arguments to home.nix
+          # }
           proxmox-nixos.nixosModules.proxmox-ve
-          chaotic.nixosModules.default # OUR DEFAULT MODULE
+          chaotic.nixosModules.default
           disko.nixosModules.disko
           nh.nixosModules.default
           catppuccin.nixosModules.catppuccin
@@ -98,17 +110,17 @@ with inputs;
           nix-index-database.nixosModules.nix-index
           nix-snapd.nixosModules.default
           sops-nix.nixosModules.sops
-
           ({ pkgs, lib, inputs, config, ... }: {
             # Shared Between all users
             # services.proxmox-ve.enable = true;
-            nixpkgs.overlays = [
-              inputs.proxmox-nixos.overlays.${platform}
+            nixpkgs. overlays = [
+              inputs.proxmox-nixos.overlays.${ platform}
             ];
           })
 
         ] ++ inputs.nixpkgs.lib.optionals (isISO) [
           cd-dvd
+          ### Build ISO with vscode-server ###
           inputs.vscode-server.nixosModules.default
           ({ pkgs, lib, config, ... }: {
             environment = {
@@ -128,77 +140,4 @@ with inputs;
     "x86_64-darwin"
     "aarch64-darwin"
   ];
-
-  nixGLWrapper = pkgs: { bin, package ? pkgs."${bin}", output ? "" }:
-    pkgs.callPackage
-      (inputs:
-        let
-          pkg = if output == "" then (package.override inputs) else package."${output}";
-        in
-        pkgs.stdenv.mkDerivation {
-          name = "${bin}";
-          pname = "${bin}";
-          phases = [ "installPhase" ];
-          installPhase = ''
-            mkdir -p "$out/bin" "$out/share"
-            # cp -pRL "${pkg}/share" "$out/"
-            for f in '${pkg}'/share/*; do
-              ln -s -t "$out/share/" "$f"
-            done
-            cat >> "$out/bin/${bin}" << EOF
-            #!/usr/bin/env sh
-            ${pkgs.nixgl.nixGLIntel}/bin/nixGLIntel ${pkg}/bin/${bin} "\$@"
-            EOF
-            chmod u+x  "$out/bin/${bin}"
-          '';
-        })
-      { };
-
-  nixVulkanWrapper = pkgs: { bin, package ? pkgs."${bin}" }:
-    pkgs.callPackage
-      (inputs:
-        let pkg = (package.override inputs);
-        in
-        pkgs.stdenv.mkDerivation {
-          name = "${bin}";
-          pname = "${bin}";
-          phases = [ "installPhase" ];
-          installPhase = ''
-            mkdir -p "$out/bin" "$out/share"
-            # cp -pRL "${pkg}/share" "$out/"
-            for f in '${pkg}'/share/*; do # hello emacs */
-            ln -s -t "$out/share/" "$f"
-            done
-            cat >> "$out/bin/${bin}" << EOF
-            #!/usr/bin/env sh
-            ${pkgs.nixgl.nixVulkanIntel}/bin/nixVulkanIntel ${pkg}/bin/${bin} "\$@"
-            EOF
-            chmod u+x  "$out/bin/${bin}"
-          '';
-        })
-      { };
-
-  nixBothWrapper = pkgs: { bin, package ? pkgs."${bin}" }:
-    pkgs.callPackage
-      (inputs:
-        let pkg = (package.override inputs);
-        in
-        pkgs.stdenv.mkDerivation {
-          name = "${bin}";
-          pname = "${bin}";
-          phases = [ "installPhase" ];
-          installPhase = ''
-            mkdir -p "$out/bin" "$out/share"
-            # cp -pRL "${pkg}/share" "$out/"
-            for f in '${pkg}'/share/*; do # hello emacs */
-            ln -s -t "$out/share/" "$f"
-            done
-            cat >> "$out/bin/${bin}" << EOF
-            #!/usr/bin/env sh
-            ${pkgs.nixgl.nixGLIntel}/bin/nixGLIntel ${pkgs.nixgl.nixVulkanIntel}/bin/nixVulkanIntel ${pkg}/bin/${bin} "\$@"
-            EOF
-            chmod u+x  "$out/bin/${bin}"
-          '';
-        })
-      { };
 }
