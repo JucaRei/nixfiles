@@ -79,15 +79,16 @@ with inputs;
         [
           ../nixos
           # chaotic.nixosModules.default # DEFAULT MODULE
-          # home-manager.nixosModules.home-manager
-          # {
-          #   home-manager.useGlobalPkgs = true;
-          #   home-manager.useUserPackages = true;
-          #   home-manager.users.${username} = import ../home-manager;
-
-          #   # Optionally, use home-manager.extraSpecialArgs to pass
-          #   # arguments to home.nix
-          # }
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              users.${username} = import ../home-manager;
+            };
+            # Optionally, use home-manager.extraSpecialArgs to pass
+            # arguments to home.nix
+          }
           proxmox-nixos.nixosModules.proxmox-ve
           chaotic.nixosModules.default # OUR DEFAULT MODULE
           disko.nixosModules.disko
