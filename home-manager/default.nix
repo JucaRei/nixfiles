@@ -10,12 +10,11 @@ let
   gen-ssh-key = import ../resources/scripts/nix/gen-ssh-key.nix { inherit pkgs; };
   home-manager_change_summary = import ../resources/scripts/nix/home-manager_change_summary.nix { inherit pkgs; };
   isOld = if (hostname == "oldarch") then false else true;
-  isGeneric = if (config.custom.nonNixOs.enable) then true else false;
+  isGeneric = if (config.features.nonNixOs.enable) then true else false;
 in
 {
   imports = [
     ./_mixins/console
-    ./_mixins/non-nixos
     ./_mixins/features
   ]
   ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
@@ -120,7 +119,7 @@ in
   };
   nix = {
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
-    package = pkgs.unstable.nix;
+    package = pkgs.nixVersions.latest;
     settings =
       if isDarwin then {
         nixPath = [ "nixpkgs=/run/current-system/sw/nixpkgs" ];
@@ -150,7 +149,7 @@ in
         allow-dirty = true;
         # allowed-users = [ "nixbld" "@wheel" ]; # Allow to run nix
         # allowed-users = [ "root" "@wheel" ];
-        # trusted-users = [ "root" "@wheel" ];
+        trusted-users = [ "root" "${username}" ];
         connect-timeout = 5;
         http-connections = 0;
       };

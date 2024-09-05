@@ -2,11 +2,11 @@
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) mkIf mkOption types optionals;
-  cfg = config.custom.nonNixOs;
+  cfg = config.features.nonNixOs;
   isOld = if (hostname == "oldarch") then false else true;
 in
 {
-  options.custom.nonNixOs = {
+  options.features.nonNixOs = {
     enable = mkOption {
       default = false;
       type = types.bool;
