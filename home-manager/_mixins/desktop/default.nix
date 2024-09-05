@@ -65,7 +65,7 @@ in
     pointerCursor = mkDefault {
       package = mkDefault pkgs.bibata-cursors;
       name = mkDefault "Bibata-Modern-Classic";
-      size = mkDefault 22;
+      size = mkDefault 24;
       gtk.enable = true;
       x11.enable = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
     };

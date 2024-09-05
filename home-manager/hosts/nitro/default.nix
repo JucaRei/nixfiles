@@ -61,11 +61,16 @@ with lib;
         enable = true;
         defaultBrowser = "floorp.desktop";
         defaultFileManager = "nemo.desktop";
+        defaultAudioPlayer = "io.bassi.Amberol.desktop";
         defaultVideoPlayer = "mpv.desktop";
         defaultPdf = "org.pwmt.zathura.desktop";
         defaultPlainText = "org.gnome.gedit.desktop";
         defaultImgViewer = "xviewer.desktop";
         defaultArchiver = "org.gnome.FileRoller.desktop";
+        defaultExcel = "calc.desktop";
+        defaultWord = "writer.desktop";
+        defaultPowerPoint = "impress.desktop";
+        defaultEmail = "org.gnome.Geary.desktop";
       };
     };
     home = {
@@ -82,12 +87,14 @@ with lib;
         libreoffice-fresh
         # nf-iosevka
         gedit
+        amberol
+        gnome.geary
         neovim
         font-search
         unstable.obsidian
         # fcitx5-with-addons
         # vv
-        # gparted
+        gparted
         # tmux
       ];
 

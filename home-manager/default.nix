@@ -30,9 +30,11 @@ in
     inherit stateVersion;
     inherit username;
     activation = {
-      report-changes = config.lib.dag.entryAnywhere ''
-        if [[ -n "$oldGenPath" && -n "$newGenPath" ]]; then
-          ${pkgs.nvd}/bin/nvd diff $oldGenPath $newGenPath
+      diff = lib.hm.dag.entryAnywhere ''
+        if [[ -n ''${oldGenPath:-} ]] && [[ -n ''${newGenPath:-} ]]; then
+          ${lib.getExe config.nix.package} \
+            --extra-experimental-features 'nix-command' \
+            store diff-closures $oldGenPath $newGenPath || true
         fi
       '';
     };

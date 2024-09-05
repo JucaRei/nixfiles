@@ -15,7 +15,7 @@ in
     programs.bat = {
       enable = true;
       config = {
-        theme = "tokyo_night";
+        theme = "Catppuccin-mocha"; # "tokyo_night";
         style = "plain"; # remove line numbers
       };
       themes = {
@@ -25,9 +25,15 @@ in
         #   builtins.readFile ../../config/bat/themes/Catppuccin-mocha.tmTheme;
         # rose_pine_moon =
         #   builtins.readFile ../../config/bat/themes/rose_pine_moon.tmTheme;
-        tokyo_night =
-          # builtins.readFile ../../config/bat/themes/tokyo_night.tmTheme;
-          lib.fileContents ../../config/bat/themes/tokyo_night.tmTheme;
+        # tokyo_night = lib.fileContents ../../config/bat/themes/tokyo_night.tmTheme;
+        Catppuccin-mocha = builtins.readFile (pkgs.fetchFromGitHub
+          {
+            owner = "catppuccin";
+            repo = "bat";
+            rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
+            sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
+          }
+        + "/Catppuccin-mocha.tmTheme");
       };
 
       extraPackages = with pkgs.bat-extras; [
@@ -47,5 +53,6 @@ in
       };
       Install.WantedBy = [ "default.target" ];
     };
+    # home.activation.buildBatCache = "${lib.getExe pkgs.bat} cache --build";
   };
 }
