@@ -172,8 +172,10 @@ in
           mkdir = "mkdir -pv";
           ios = "sudo --preserve-env=PATH ${pkgs.dmidecode}/bin/dmidecode -t bios";
           # cat = "${pkgs.bat}/bin/bat --paging=never";
-          cat = ''bat --paging=never --theme=tokyo_night --style="numbers,changes" --italic-text=always''; # bat (cat)
-          ct = ''bat --paging=never --theme=tokyo_night --style="plain" --italic-text=always''; # bat (cat)
+          # cat = ''bat --paging=never --theme=tokyo_night --style="numbers,changes" --italic-text=always''; # bat (cat)
+          # ct = ''bat --paging=never --theme=tokyo_night --style="plain" --italic-text=always''; # bat (cat)
+          cat = ''bat --paging=never --style="numbers,changes" --italic-text=always''; # bat (cat)
+          ct = ''bat --paging=never --style="plain" --italic-text=always''; # bat (cat)
           ip = "${pkgs.iproute2}/bin/ip --color --brief";
           less = "${pkgs.bat}/bin/bat --paging=always";
           more = "${pkgs.bat}/bin/bat --paging=always";

@@ -339,5 +339,8 @@ in
       "application/vnd.ms-powerpoint.slideshow.macroEnabled.12" = cfg.defaultPowerPoint;
       "application/mspowerpoint" = cfg.defaultPowerPoint;
     };
+    home.activation."user-dirs" = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
+      rm -f $VERBOSE_ARG "$HOME/.config/user-dirs.dirs.old"
+    '';
   };
 }
