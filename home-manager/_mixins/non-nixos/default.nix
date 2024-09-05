@@ -1,7 +1,7 @@
 { config, lib, pkgs, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) mkIf mkOption types;
+  inherit (lib) mkIf mkOption types optionals;
   cfg = config.custom.nonNixOs;
   isOld = if (hostname == "oldarch") then false else true;
 in
