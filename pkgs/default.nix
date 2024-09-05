@@ -76,6 +76,7 @@
   # bt-overskride = pkgs.callPackage ./system/bluetooth/overskride { };
   # nautilus-annotations = pkgs.callPackage ./system/gnome/file-manager/nautilus-ext/nautilus-annotations { };
   # wallpaper-engine-plasma-plugin = pkgs.callPackage ./system/plasma/wallpaper-engine-plasma-plugin { };
+  vutorrent = pkgs.callPackage ./tools/vuetorrent { };
 
   #################
   ### Cli tools ###

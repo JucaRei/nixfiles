@@ -31,18 +31,18 @@ with lib;
 {
   imports = [
     # ../_mixins/console/neovim.nix
-    ../_mixins/apps/video/mpv/mpv.nix
+    ../../_mixins/apps/video/mpv/mpv.nix
     # ../_mixins/apps/tools/transmission.nix
-    ../_mixins/dev/nix.nix
+    ../../_mixins/dev/nix.nix
     # ../_mixins/console/aria2.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
-    ../_mixins/apps/text-editor/vscode/vscode.nix
-    ../_mixins/apps/documents/zathura.nix
+    ../../_mixins/apps/text-editor/vscode/vscode.nix
+    ../../_mixins/apps/documents/zathura.nix
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/firefox/firefox.nix
-    ../_mixins/apps/browser/brave
+    ../../_mixins/apps/browser/brave
     # ../_mixins/apps/browser/firefox/librewolf.nix
     # ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
@@ -55,16 +55,18 @@ with lib;
   # };
 
   config = {
-    # Cinnamon
-    mime.defaultApps = {
-      enable = true;
-      defaultBrowser = "floorp.desktop";
-      defaultFileManager = "nemo.desktop";
-      defaultVideoPlayer = "mpv.desktop";
-      defaultPdf = "org.pwmt.zathura.desktop";
-      defaultPlainText = "org.gnome.gedit.desktop";
-      defaultImgViewer = "xviewer.desktop";
-      defaultArchiver = " org.gnome.FileRoller.desktop";
+    features = {
+      # Cinnamon
+      mime.defaultApps = {
+        enable = true;
+        defaultBrowser = "floorp.desktop";
+        defaultFileManager = "nemo.desktop";
+        defaultVideoPlayer = "mpv.desktop";
+        defaultPdf = "org.pwmt.zathura.desktop";
+        defaultPlainText = "org.gnome.gedit.desktop";
+        defaultImgViewer = "xviewer.desktop";
+        defaultArchiver = "org.gnome.FileRoller.desktop";
+      };
     };
     home = {
       packages = with pkgs; [

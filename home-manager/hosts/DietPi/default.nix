@@ -1,10 +1,9 @@
-{
-  config,
-  stateVersion,
-  nixpkgs,
-  ...
+{ config
+, stateVersion
+, nixpkgs
+, ...
 }: {
-  imports = [../_mixins/console/fish.nix];
+  imports = [ ../_mixins/console/fish.nix ];
   targets.genericLinux.enable = true;
 
   inherit stateVersion;
@@ -17,5 +16,5 @@
     system.stateVersion = "${stateVersion}";
   '';
 
-  systemd.user.tmpfiles.rules = ["L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}"];
+  systemd.user.tmpfiles.rules = [ "L+  %h/.nix-defexpr/nixos  -  -  -  -  ${nixpkgs}" ];
 }

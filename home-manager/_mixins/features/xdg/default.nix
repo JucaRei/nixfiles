@@ -1,11 +1,11 @@
 { config, lib, ... }:
 let
-  cfg = config.mime.defaultApps;
+  cfg = config.features.mime.defaultApps;
   inherit (lib) types mkEnableOption mkOption mdDoc mkIf;
 in
 {
   options = {
-    mime.defaultApps = {
+    features.mime.defaultApps = {
       enable = mkEnableOption (mdDoc "Enable default mime for selected SYSTEM.");
       defaultBrowser = mkOption {
         type = types.nullOr types.str;

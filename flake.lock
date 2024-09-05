@@ -57,6 +57,26 @@
         "type": "github"
       }
     },
+    "auto-cpufreq": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1725514537,
+        "narHash": "sha256-Xsh3d7rQY7RKzZ7J0swrgxZEyITb7B3oX5F/tcBGjfk=",
+        "owner": "AdnanHodzic",
+        "repo": "auto-cpufreq",
+        "rev": "a42e8fb51e08059411d52451141cac86f1bc788a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AdnanHodzic",
+        "repo": "auto-cpufreq",
+        "type": "github"
+      }
+    },
     "cachix": {
       "inputs": {
         "devenv": "devenv",
@@ -1383,16 +1403,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1712645404,
-        "narHash": "sha256-uEVd15WsX+Wti9PXW724puFcsFO72VTiJyBwW2WXT9M=",
+        "lastModified": 1725188543,
+        "narHash": "sha256-dCfl8q5dg8euqD6NzsN4CLyY6KxmglCU9yJtSKYk+KU=",
         "owner": "viperML",
         "repo": "nh",
-        "rev": "fe4a96a0b0b0662dba7c186b4a1746c70bbcad03",
+        "rev": "a9ecc48cd5f5b56f0da7554a3fd0c099268ec7a2",
         "type": "github"
       },
       "original": {
         "owner": "viperML",
-        "ref": "v3.5.10",
+        "ref": "v3.5.25",
         "repo": "nh",
         "type": "github"
       }
@@ -1479,20 +1499,6 @@
         "owner": "numtide",
         "repo": "nix-filter",
         "type": "github"
-      }
-    },
-    "nix-flatpak": {
-      "locked": {
-        "lastModified": 1711997201,
-        "narHash": "sha256-J71xzQlVYsjagA4AsVwRazhBh2rZrPpKvxTgs6UzL7c=",
-        "rev": "b76fa31346db7fc958a9898f3c594696ca71c4fd",
-        "revCount": 61,
-        "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/gmodena/nix-flatpak/0.4.1/018e9afd-cf1a-7341-9fd8-0ebea665be29/source.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://flakehub.com/f/gmodena/nix-flatpak/%2A.tar.gz"
       }
     },
     "nix-formatter-pack": {
@@ -2382,6 +2388,7 @@
     "root": {
       "inputs": {
         "attic": "attic",
+        "auto-cpufreq": "auto-cpufreq",
         "cachix": "cachix",
         "cachix-deploy-flake": "cachix-deploy-flake",
         "catppuccin": "catppuccin",
@@ -2397,7 +2404,6 @@
         "hyprpicker": "hyprpicker",
         "lf-icons": "lf-icons",
         "nh": "nh",
-        "nix-flatpak": "nix-flatpak",
         "nix-formatter-pack": "nix-formatter-pack",
         "nix-gaming": "nix-gaming",
         "nix-index-database": "nix-index-database",

@@ -20,7 +20,7 @@ let
         | uniq
   '';
 
-  oldGL = import ../../lib/oldGL.nix { inherit config pkgs; };
+  # oldGL = import ../../../lib/oldGL.nix { inherit config pkgs; };
 
 
   nixGLWrapper = package: pkgs.stdenvNoCC.mkDerivation {

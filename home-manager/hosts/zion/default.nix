@@ -1,15 +1,15 @@
-{
-  pkgs,
-  lib,
-  inputs,
-  config,
-  ...
-}: let
-  nixGL = import ../../lib/nixGL.nix {inherit config pkgs;};
+{ pkgs
+, lib
+, inputs
+, config
+, ...
+}:
+let
+  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
 
   # For nixgl without having to always use nixgl.pkgs application before use it
   nixGLMesaWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" {} ''
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
       mkdir $out
       ln -s ${pkg}/* $out
       rm $out/bin
@@ -22,7 +22,7 @@
     '';
 
   nixGLVulkanWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" {} ''
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
       mkdir $out
       ln -s ${pkg}/* $out
       rm $out/bin
@@ -37,7 +37,7 @@
     '';
 
   nixGLVulkanMesaWrap = pkg:
-    pkgs.runCommand "${pkg.name}-nixgl-wrapper" {} ''
+    pkgs.runCommand "${pkg.name}-nixgl-wrapper" { } ''
       mkdir $out
       ln -s ${pkg}/* $out
       rm $out/bin
@@ -50,11 +50,12 @@
         chmod +x $wrapped_bin
       done
     '';
-in {
+in
+{
   imports = [
-    ../_mixins/apps/text-editor/vscode.nix
-    ../_mixins/apps/video/mpv.nix
-    ../_mixins/apps/browser/firefox.nix
+    ../../_mixins/apps/text-editor/vscode.nix
+    ../../_mixins/apps/video/mpv.nix
+    ../../_mixins/apps/browser/firefox.nix
     # ../_mixins/apps/terminal/alacritty.nix
     # inputs.vscode-server.nixosModules.default
   ];
@@ -65,8 +66,7 @@ in {
         # (nixGL pkgs.alacritty)
         (nixGL pkgs.vlc)
       ]
-      ++ (with pkgs; [st kbdlight cloneit]);
+      ++ (with pkgs; [ st kbdlight cloneit ]);
   };
 }
 # TMPDIR="/tmp" home-manager switch -b backup --impure --flake .#juca@zion --show-trace | nom && fish
-

@@ -10,12 +10,11 @@ let
         | sort \
         | uniq
   '';
-  nixGL = import ../../lib/nixGL.nix { inherit config pkgs; };
+  nixGL = import ../../../lib/nixGL.nix { inherit config pkgs; };
 in
 {
   imports = [
     ../_mixins/non-nixos
-    ../_mixins/services/podman.nix
     ../_mixins/console/yt-dlp.nix
     ../_mixins/console/bash.nix
     ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
@@ -24,34 +23,30 @@ in
   ];
 
   config = {
-    custom = {
-      nonNixOs.enable = true;
-    };
     services = {
+      nonNixOs.enable = true;
       yt-dlp-custom.enable = true;
       vscode-server.enable = true;
-      bash.enable = true;
-      podman.enable = true;
+      # bash.enable = true;
     };
 
     home = {
       keyboard = lib.mkForce {
-        layout = "br,us";
+        # layout = "br,us";
+        layout = "br";
         model = "pc105";
         options = [ "grp:shifts_toggle" ];
-        variant = "abnt2,intl";
+        # variant = "abnt2,intl";
+        variant = "abnt2";
       };
       packages = with pkgs;[
-        cloneit
         nix-whereis
         font-search
         stacer
         cachix
-        docker
-        docker-compose
+        # docker
+        # docker-compose
         (nixGL (config.programs.firefox.package))
-        (nixGL vlc)
-        # unstable.lima-bin
       ];
       file = {
         ".face" = {
@@ -63,3 +58,5 @@ in
     programs.ungoogled.enable = true;
   };
 }
+
+# sudo --preserve-env=PATH env application

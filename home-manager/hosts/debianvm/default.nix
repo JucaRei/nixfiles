@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 {
   imports = [
-    ../_mixins/non-nixos
+    ../../_mixins/non-nixos
   ];
   config = {
     custom = {
@@ -14,6 +14,5 @@
         # (nixGLVulkanMesaWrap pkgs.thorium)
       ]
       ++ (with pkgs; [ inxi ]);
-
   };
 }

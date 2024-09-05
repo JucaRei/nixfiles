@@ -8,7 +8,6 @@ let
   filemanager = vars.filemanager;
 
   # bspwm-conf = "${config.xsession.windowManager.bspwm.package}/bin";
-  # bspwm-conf = "lib.getExe' config.xsession.windowManager.bspwm.package} bspc";
   bspwm-conf = lib.getExe' config.xsession.windowManager.bspwm.package "bspc";
 
   picom-toggle = pkgs.writeShellScriptBin "picom-toggle" ''

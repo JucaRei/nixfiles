@@ -85,8 +85,6 @@
     ### FlakeHub ###
     ################
 
-    nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
-
     nix-snapd = {
       url = "https://flakehub.com/f/io12/nix-snapd/0.1.*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -163,13 +161,13 @@
     };
 
     nh = {
-      url = "github:viperML/nh/v3.5.10";
+      url = "github:viperML/nh/v3.5.25";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # More up to date auto-cpufreq
-    # auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
-    # auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs";
+    auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
+    auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs";
 
     #doom-emacs = {
     #  # Nix-community Doom Emacs
@@ -207,15 +205,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # matugen.url = "github:InioX/matugen";
-    # matugen.inputs.nixpkgs.follows = "nixpkgs";
-    # ags.url = "github:Aylur/ags";
-    # ags.inputs.nixpkgs.follows = "nixpkgs";
-    # astal.url = "github:Aylur/astal";
-    # astal.inputs.nixpkgs.follows = "github:Aylur/astal";
-    # stm.url = "github:Aylur/stm";
-    # stm.inputs.nixpkgs.follows = "github:Aylur/stm";
-
     lf-icons = {
       url = "github:gokcehan/lf";
       flake = false;
@@ -227,7 +216,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "nixpkgs";
     };
-
 
     # devenv.url = "github:cachix/devenv";
     # budgie = {

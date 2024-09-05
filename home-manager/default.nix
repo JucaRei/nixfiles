@@ -16,10 +16,11 @@ in
   imports = [
     ./_mixins/console
     ./_mixins/non-nixos
-    ./core/xdg.nix
+    ./_mixins/features
   ]
   ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
-  ++ optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix
+  # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix
+  ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
   ++ optional (isWorkstation) ./_mixins/desktop;
   catppuccin = {
     accent = "lavender";

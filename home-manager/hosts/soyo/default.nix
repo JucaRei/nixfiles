@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   imports = [
-    ../_mixins/apps/text-editor/vscode/code-remote
+    ../../_mixins/apps/text-editor/vscode/code-remote
   ];
   config = {
     services = {
