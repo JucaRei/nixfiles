@@ -34,4 +34,7 @@
   fonts = {
     fontconfig.enable = lib.mkForce true;
   };
+  home.sessionVariables = {
+    LOG_ICONS = "true"; # Enable as nerdfonts is on.
+  };
 }

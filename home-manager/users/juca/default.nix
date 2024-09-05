@@ -10,39 +10,7 @@ in
       #   Host github.com
       #     HostName github.com
       #     User git
-
-      #   # Host man
-      #   #   HostName man.wimpress.io
-
-      #   # Host yor
-      #   #   HostName yor.wimpress.io
-
-      #   # Host man.ubuntu-mate.net
-      #   #   HostName man.ubuntu-mate.net
-      #   #   User matey
-      #   #   IdentityFile ~/.ssh/id_rsa_semaphore
-
-      #   # Host yor.ubuntu-mate.net
-      #   #   HostName yor.ubuntu-mate.net
-      #   #   User matey
-      #   #   IdentityFile ~/.ssh/id_rsa_semaphore
-
-      #   # Host bazaar.launchpad.net
-      #   #   User flexiondotorg
-
-      #   # Host git.launchpad.net
-      #   #   User flexiondotorg
-
-      #   # Host ubuntu.com
-      #   #   HostName people.ubuntu.com
-      #   #   User flexiondotorg
-
-      #   # Host people.ubuntu.com
-      #   #   User flexiondotorg
-
-      #   # Host ubuntupodcast.org
-      #   #   HostName live.ubuntupodcast.org
-      # '';
+      #''
       "virtualmachines/nixos-console.conf".text = ''
         #!/run/current-system/sw/bin/quickemu --vm
         guest_os="linux"
@@ -57,7 +25,6 @@ in
         disk_size="20G"
         iso="nixos-desktop/nixos.iso"
       '';
-
       # List home-manager packages
       ".config/home-manager/home-manager_local-packages.txt" = {
         text =
@@ -71,9 +38,7 @@ in
     };
     # A Modern Unix experience
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/
-    packages = with pkgs;
-      lib.mkDefault [
-      ];
+    packages = with pkgs; lib.mkDefault [ ];
     extraOutputsToInstall = [ "info" "man" "share" "icons" "doc" ];
   };
   programs = {

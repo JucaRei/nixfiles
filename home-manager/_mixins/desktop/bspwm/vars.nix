@@ -1,6 +1,6 @@
 { pkgs, config, hostname }:
 let
-  nixgl = import ../../../../lib/nixGL.nix { inherit config pkgs; };
+  nixGL = import ../../../../lib/nixGL.nix { inherit config pkgs; };
   chromium-browser = import ../../apps/browser/chrome/ungoogled-chromium.nix { inherit pkgs config; };
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
   nerdPatched = with pkgs; [
@@ -73,7 +73,7 @@ in
 
   mod = if (hostname == "nitro") then "alt" else "super"; # alt
   modAlt = if (hostname == "nitro") then "super" else "alt"; # alt
-  alacritty-custom = if (isGeneric) then (nixgl config.programs.alacritty.package) else (config.programs.alacritty.package);
+  alacritty-custom = if (isGeneric) then (nixGL config.programs.alacritty.package) else (config.programs.alacritty.package);
   picom-custom = "${config.services.picom.package}/bin/picom";
   filemanager = "thunar";
   # browser = if (hostname == "nitro") then "brave" else "thorium";
