@@ -249,7 +249,7 @@ in
   # quit bspwm
   "${vars.mod} + ${vars.modAlt} + q" = ''
     systemctl --user stop bspwm-session.target; \
-    ${bspwm-conf}//bspc quit
+    ${bspwm-conf} quit
   '';
 
   ### Bspwm hotkeys
