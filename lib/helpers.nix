@@ -114,7 +114,7 @@ with inputs;
             # Shared Between all users
             # services.proxmox-ve.enable = true;
             nixpkgs. overlays = [
-              inputs.proxmox-nixos.overlays.${ platform}
+              inputs.proxmox-nixos.overlays.${platform}
             ];
           })
 
