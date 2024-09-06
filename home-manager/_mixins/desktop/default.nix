@@ -1,24 +1,15 @@
 { config, desktop, pkgs, username, lib, hostname, ... }:
-with lib;
 let
+  inherit (lib) optional optionals mkIf mkDefault mkForce;
   inherit (pkgs.stdenv) isDarwin isLinux;
-  walls = pkgs.fetchgit {
+  aesthetic-wallpapers = pkgs.fetchgit {
     url = "https://github.com/D3Ext/aesthetic-wallpapers";
     rev = "060c580dcc11afea2f77f9073bd8710920e176d8";
     sha256 = "5MnW630EwjKOeOCIAJdSFW0fcSSY4xmfuW/w7WyIovI=";
   };
 in
 {
-  imports =
-    [
-      # ../apps/documents/libreoffice.nix
-      # ../services/flatpak.nix
-      ../fonts
-    ]
-    ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-    ++ optional
-      (builtins.pathExists (./. + "/../../users/${username}/desktop.nix"))
-      ../../users/${username}/desktop.nix;
+  imports = [ ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   services = {
     # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
@@ -34,10 +25,9 @@ in
         '';
       };
       ".face" = {
-        # source = ./face.jpg;
         source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
       };
-      "Pictures/wallpapers".source = mkForce "${walls}/images";
+      "${config.xdg.userDirs.pictures}/wallpapers".source = mkForce "${aesthetic-wallpapers}/images";
     };
     packages = with pkgs; [
       black # Code format Python
