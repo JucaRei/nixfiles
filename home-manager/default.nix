@@ -198,14 +198,4 @@ in
       Install.WantedBy = [ "timers.target" ];
     };
   };
-  xdg = {
-    enable = isLinux;
-    userDirs = {
-      enable = isLinux && !isLima;
-      createDirectories = lib.mkDefault true;
-      extraConfig = {
-        XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/screenshots";
-      };
-    };
-  };
 }

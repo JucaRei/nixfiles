@@ -1,6 +1,7 @@
-{ config, lib, hostname, pkgs, username, ... }:
+{ config, lib, hostname, pkgs, username, isLima, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
+  inherit (lib) mkIf mkForce mkDefault;
 in
 {
   imports = [ ];
@@ -42,7 +43,7 @@ in
     extraOutputsToInstall = [ "info" "man" "share" "icons" "doc" ];
   };
   programs = {
-    home-manager = lib.mkDefault {
+    home-manager = mkDefault {
       enable = true;
     };
   };
@@ -56,14 +57,14 @@ in
   };
 
   xdg = {
-    enable = true;
+    enable = isLinux;
     cacheHome = "${config.home.homeDirectory}/.cache";
     configHome = "${config.home.homeDirectory}/.config";
     dataHome = "${config.home.homeDirectory}/.local/share";
     stateHome = "${config.home.homeDirectory}/.local/state";
 
     userDirs = {
-      enable = pkgs.stdenv.isLinux;
+      enable = isLinux && !isLima;
       createDirectories = true;
 
       download = "${config.home.homeDirectory}/Downloads";
@@ -78,14 +79,15 @@ in
       videos = "${config.home.homeDirectory}/Media/Videos";
 
       extraConfig = {
-        XDG_SCREENSHOTS_DIR = lib.mkForce "${config.xdg.userDirs.pictures}/screenshots";
-        XDG_WALLPAPERS_DIR = lib.mkForce "${config.xdg.userDirs.pictures}/wallpapers";
+        XDG_SCREENSHOTS_DIR = mkForce "${config.xdg.userDirs.pictures}/screenshots";
+        XDG_WALLPAPERS_DIR = mkForce "${config.xdg.userDirs.pictures}/wallpapers";
+        XDG_FLAKEPATH_DIR = mkForce "${config.xdg.homeDirectory}/.dotfiles";
         XDG_MAIL_DIR = "${config.home.homeDirectory}/Mail";
       };
     };
   };
 
-  systemd.user.tmpfiles.rules = lib.mkIf isLinux [
+  systemd.user.tmpfiles.rules = mkIf isLinux [
     "d ${config.home.homeDirectory}/workspace 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/virtualmachines/windows 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/virtualmachines/linux 0755 ${username} users - -"
@@ -114,7 +116,7 @@ in
     "d ${config.home.homeDirectory}/Media/Pictures/screenshots 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Media/Pictures/wallpapers 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Media/Pictures/resources 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/.dotfiles 0755 ${username} users - -"
+    # "d ${config.home.homeDirectory}/.dotfiles 0755 ${username} users - -"
   ];
 
 }
