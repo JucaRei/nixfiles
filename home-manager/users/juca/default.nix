@@ -81,7 +81,7 @@ in
       extraConfig = {
         XDG_SCREENSHOTS_DIR = mkForce "${config.xdg.userDirs.pictures}/screenshots";
         XDG_WALLPAPERS_DIR = mkForce "${config.xdg.userDirs.pictures}/wallpapers";
-        XDG_FLAKEPATH_DIR = mkForce "${config.xdg.homeDirectory}/.dotfiles";
+        XDG_FLAKEPATH_DIR = mkForce "${config.home.homeDirectory}/.dotfiles";
         XDG_MAIL_DIR = "${config.home.homeDirectory}/Mail";
       };
     };
