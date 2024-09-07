@@ -69,4 +69,11 @@
   # ];
   nixpkgs.config.kodi.enableAdvancedLauncher = true;
   sound.enable = true;
+
+  # x11 no suspend
+  # services.xserver.serverFlagsSection = ''
+  #   Option "StandbyTime" "0"
+  #   Option "SuspendTime" "0"
+  #   Option "OffTime" "0"
+  # '';
 }

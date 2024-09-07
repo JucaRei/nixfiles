@@ -1,7 +1,7 @@
 # Fonts!
 { pkgs, config, lib, isWorkstation, ... }:
 let
-  inherit (lib) mkOption mkIf types optional;
+  inherit (lib) mkOption mkIf types optionals;
   cfg = config.features.fonts;
 in
 {
@@ -13,11 +13,11 @@ in
         Whether enable default fonts for the system.
       '';
     };
-    enableNerdFonts = mkOption {
-      type = types.bool;
-      default = isWorkstation;
-      description = "Whether enable nerd fonts";
-    };
+    # enableNerdFonts = mkOption {
+    #   type = types.bool;
+    #   default = isWorkstation;
+    #   description = "Whether enable nerd fonts";
+    # };
 
   };
   config = mkIf cfg.enable {
@@ -33,7 +33,7 @@ in
         hack-font
         cairo
         # apple-font
-      ] ++ lib.optional cfg.enableNerdFonts [
+      ] ++ lib.optionals isWorkstation [
         work-sans
         ubuntu_font_family
         material-design-icons
@@ -54,7 +54,7 @@ in
     fonts = {
       fontconfig.enable = true;
     };
-    home.sessionVariables = mkIf cfg.enableNerdFonts {
+    home.sessionVariables = mkIf isWorkstation {
       LOG_ICONS = "true"; # Enable as nerdfonts is on.
     };
   };
