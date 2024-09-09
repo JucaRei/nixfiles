@@ -18,7 +18,9 @@ in
   config = {
     sys.boot = {
       enable = isInstall;
+      efi = true;
       grub = true;
+      silentBoot = true;
       plymouth = true;
     };
 
@@ -114,7 +116,6 @@ in
         # Add overlays your own flake exports (from overlays and pkgs dir):
         outputs.overlays.additions
         outputs.overlays.modifications
-        outputs.overlays.extended
         outputs.overlays.unstable-packages
         outputs.overlays.legacy-packages
         # Add overlays exported from other flakes:

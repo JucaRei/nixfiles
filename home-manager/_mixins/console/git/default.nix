@@ -1,13 +1,94 @@
 { lib, config, pkgs, ... }:
-with lib;
 let
+  inherit (lib) mkOption mkIf types optionalString mdDoc;
   cfg = config.services.git;
+
+  makeGitConfig =
+    { userName
+    , userEmail
+    , githubUser
+    , signingKey
+    ,
+    }: pkgs.writeText "config" (
+      ''
+        [user]
+          name = "${userName}"
+          email = "${userEmail}"
+          ${
+            optionalString (signingKey != null) ''
+              signingKey = "${signingKey}"
+            ''
+          }
+      ''
+      +
+      optionalString (githubUser != null) ''
+        [github]
+          username = "${githubUser}"
+      ''
+    );
+
+  defaultIdentity = {
+    email = "reinaldo800@gmail.com";
+    fullName = "Reinaldo P Jr";
+    githubUser = "Reinaldo";
+    # signingKey = "5B3390B01C01D3E";
+    conditions = [
+      "hasconfig:remote.*.url:git@github.com:JucaRei/**"
+      "hasconfig:remote.*.url:https://github.com/JucaRei/**"
+      # "gitdir:~/work2/foss/"
+      # "gitdir:~/work2/learning/"
+      # "gitdir:~/work2/personal/"
+      # "gitdir:~/work2/prototypes/"
+      # "gitdir:/assets/"
+      # "gitdir:/git-annex/"
+    ];
+  };
+
+  identityType = types.submodule {
+    options = {
+      email = mkOption {
+        type = types.str;
+        description = mdDoc "E-mail address of the user";
+      };
+      fullName = mkOption {
+        type = types.str;
+        description = mdDoc "Full name of the user";
+      };
+      githubUser = mkOption {
+        type = types.nullOr types.str;
+        description = mdDoc "GitHub login of the user";
+        default = null;
+      };
+      signingKey = mkOption {
+        type = types.nullOr types.str;
+        description = mdDoc "GPG signing key";
+        default = null;
+      };
+      conditions = mkOption {
+        type = types.listOf types.str;
+        description = mdDoc "List of include conditions";
+      };
+    };
+  };
 in
 {
   options.services.git = {
     enable = mkOption {
-      default = false;
+      default = true;
       type = types.bool;
+      description = mdDoc "Enable git by Default";
+    };
+
+    defaultIdentity = mkOption {
+      type = types.nullOr identityType;
+      description = mdDoc "Default identity";
+      default = defaultIdentity;
+    };
+
+    extraIdentities = mkOption {
+      type = types.listOf identityType;
+      description = lib.mdDoc "Extra list of identities";
+      default = [ ];
     };
   };
 
@@ -58,6 +139,10 @@ in
           push = { default = "matching"; };
           pull = { rebase = false; };
           init = { defaultBranch = "main"; };
+
+          # Increase the size of post buffers to prevent hung ups of git-push.
+          # https://stackoverflow.com/questions/6842687/the-remote-end-hung-up-unexpectedly-while-git-cloning#6849424
+          http.postBuffer = "524288000";
           url = {
             "https://github.com/".insteadOf = [ "gh:" "github:" ];
             "https://gitlab.com/".insteadOf = [ "gl:" "gitlab:" ];
@@ -114,6 +199,32 @@ in
           "*.o"
           "*.pyc"
           "*.elc"
+        ];
+        includes = lib.pipe ([ cfg.defaultIdentity ] ++ cfg.extraIdentities) [
+          (builtins.filter (v: v != null))
+          (builtins.map (
+            { email
+            , fullName
+            , githubUser
+            , signingKey
+            , conditions
+            ,
+            }:
+            let
+              configFile = makeGitConfig {
+                inherit githubUser signingKey;
+                userName = fullName;
+                userEmail = email;
+              };
+            in
+            builtins.map
+              (condition: {
+                path = configFile;
+                inherit condition;
+              })
+              conditions
+          ))
+          lib.flatten
         ];
       };
     };

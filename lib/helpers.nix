@@ -104,9 +104,7 @@ with inputs;
           proxmox-nixos.nixosModules.proxmox-ve
           chaotic.nixosModules.default
           disko.nixosModules.disko
-          nh.nixosModules.default
           catppuccin.nixosModules.catppuccin
-          nix-flatpak.nixosModules.nix-flatpak
           nix-index-database.nixosModules.nix-index
           nix-snapd.nixosModules.default
           sops-nix.nixosModules.sops

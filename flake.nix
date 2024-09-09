@@ -160,11 +160,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nh = {
-      url = "github:viperML/nh/v3.5.25";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # More up to date auto-cpufreq
     auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
     auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs";

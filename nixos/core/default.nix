@@ -3,7 +3,6 @@ with lib;
 let
   variables = import ../hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
-
 in
 {
   imports =
@@ -36,17 +35,6 @@ in
     ++ lib.optional (hostname == "nitro") ../_mixins/features/nix-ld
   ;
 
-  ######################
-  ### Nix Cli helper ###
-  ######################
-  nh = {
-    clean = {
-      enable = true;
-      extraArgs = "--keep-since 10d --keep 5";
-    };
-    enable = true;
-    flake = "${variables.flake-path}";
-  };
 
   ########################
   ### Default Programs ###
@@ -54,6 +42,16 @@ in
   programs = mkDefault {
     fuse.userAllowOther = isWorkstation;
     nano.enable = false;
+
+    ######################
+    ### Nix Cli helper ###
+    ######################
+    nh = {
+      enable = true;
+      clean.enable = true;
+      clean.extraArgs = "--keep-since 4d --keep 3";
+      flake = "${variables.flake-path}";
+    };
   };
 
   services = {
