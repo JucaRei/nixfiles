@@ -33,6 +33,7 @@ with lib;
     # ../_mixins/console/neovim.nix
     ../../_mixins/apps/video/mpv/mpv.nix
     ../../_mixins/apps/browser/chrome-based-browser.nix
+    ../../_mixins/apps/browser/firefox-based-browser.nix
     # ../_mixins/apps/tools/transmission.nix
     ../../_mixins/dev/nix.nix
     # ../_mixins/console/aria2.nix
@@ -43,7 +44,7 @@ with lib;
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
     # ../_mixins/apps/browser/firefox/firefox.nix
-    ../../_mixins/apps/browser/brave
+    # ../../_mixins/apps/browser/brave
     # ../_mixins/apps/browser/firefox/librewolf.nix
     # ../_mixins/services/flatpak.nix
     # ../_mixins/apps/text-editor/sublime.nix
@@ -118,6 +119,10 @@ with lib;
           # browser = "opera";
           disableWayland = true;
         };
+        # firefox-based-browser = {
+        #   enable = true;
+        #   browser = "firefox-devedition";
+        # };
       };
     };
 
