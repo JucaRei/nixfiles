@@ -55,22 +55,54 @@ with lib;
   # };
 
   config = {
-    features = {
-      # Cinnamon
-      mime.defaultApps = {
-        enable = true;
-        defaultBrowser = "floorp.desktop";
-        defaultFileManager = "nemo.desktop";
-        defaultAudioPlayer = "io.bassi.Amberol.desktop";
-        defaultVideoPlayer = "mpv.desktop";
-        defaultPdf = "org.pwmt.zathura.desktop";
-        defaultPlainText = "org.gnome.gedit.desktop";
-        defaultImgViewer = "xviewer.desktop";
-        defaultArchiver = "org.gnome.FileRoller.desktop";
-        defaultExcel = "calc.desktop";
-        defaultWord = "writer.desktop";
-        defaultPowerPoint = "impress.desktop";
-        defaultEmail = "org.gnome.Geary.desktop";
+    custom = {
+      features = {
+        # Cinnamon
+        mime.defaultApps = {
+          enable = true;
+          defaultBrowser = "floorp.desktop";
+          defaultFileManager = "nemo.desktop";
+          defaultAudioPlayer = "io.bassi.Amberol.desktop";
+          defaultVideoPlayer = "mpv.desktop";
+          defaultPdf = "org.pwmt.zathura.desktop";
+          defaultPlainText = "org.gnome.gedit.desktop";
+          defaultImgViewer = "xviewer.desktop";
+          defaultArchiver = "org.gnome.FileRoller.desktop";
+          defaultExcel = "calc.desktop";
+          defaultWord = "writer.desktop";
+          defaultPowerPoint = "impress.desktop";
+          defaultEmail = "org.gnome.Geary.desktop";
+        };
+      };
+      console = {
+        bash.enable = true;
+        starship.enable = true;
+        eza.enable = true;
+        lsd.enable = false;
+        # firefox.enable = true;
+        # flatpak-nix.enable = true;
+        yt-dlp-custom.enable = true;
+        # properties.enable = false;
+        # vscode-server = {
+        #   # enable = lib.mkForce true;
+        #   enableFHS = lib.mkForce true;
+        #   nodejsPackage = pkgs.nodejs-18_x;
+        #   # extraRuntimeDependencies = pkgs: with pkgs; [
+        #   #   nixpkgs-fmt # formatter
+        #   #   nix-output-monitor # better output from builds
+        #   #   nil # lsp server
+        #   #   nix-direnv # A shell extension that manages your environment for nix
+        #   #   git # versioning
+        #   #   wget
+        #   #   curl
+        #   # ];
+        # };
+
+        # aria2.enable = true;
+        # flatpak.packages = [
+        #   # "flathub:app/dev.aunetx.deezer/x86_64/stable"
+        #   "flathub:app/com.rtosta.zapzap/x86_64/stable"
+        # ];
       };
     };
     home = {
@@ -123,41 +155,6 @@ with lib;
       # '';
     };
 
-    services = mkForce {
-      bash.enable = true;
-      starship.enable = true;
-      eza.enable = false;
-      lsd.enable = true;
-      # firefox.enable = true;
-      # flatpak-nix.enable = true;
-      yt-dlp-custom.enable = true;
-      brave.enable = true;
-      # properties.enable = false;
-      # vscode-server = {
-      #   # enable = lib.mkForce true;
-      #   enableFHS = lib.mkForce true;
-      #   nodejsPackage = pkgs.nodejs-18_x;
-      #   # extraRuntimeDependencies = pkgs: with pkgs; [
-      #   #   nixpkgs-fmt # formatter
-      #   #   nix-output-monitor # better output from builds
-      #   #   nil # lsp server
-      #   #   nix-direnv # A shell extension that manages your environment for nix
-      #   #   git # versioning
-      #   #   wget
-      #   #   curl
-      #   # ];
-      # };
-
-      # aria2.enable = true;
-      # flatpak.packages = [
-      #   # "flathub:app/dev.aunetx.deezer/x86_64/stable"
-      #   "flathub:app/com.rtosta.zapzap/x86_64/stable"
-      # ];
-    };
-
-    programs = {
-      # yt-dlp.enable = true;
-    };
     dconf.settings = {
       # "org/gnome/desktop/interface" = {
       #   show-battery-percentage = true;
