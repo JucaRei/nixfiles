@@ -2,10 +2,10 @@
 { pkgs, config, lib, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.services.eza;
+  cfg = config.custom.console.eza;
 in
 {
-  options.services.eza = {
+  options.custom.console.eza = {
     enable = mkOption {
       default = false;
       type = types.bool;
