@@ -1,10 +1,10 @@
 { lib, config, ... }:
-with lib;
 let
-  cfg = config.services.lsd;
+  inherit (lib) mkOption types mkIf;
+  cfg = config.custom.console.lsd;
 in
 {
-  options.services.lsd = {
+  options.custom.console.lsd = {
     enable = mkOption {
       default = false;
       type = types.bool;

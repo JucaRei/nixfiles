@@ -65,37 +65,39 @@ in
       extra-trusted-public-keys = [ "anubis.cachix.org-1:p6q0lqdZcE9UrkmFonRSlRPAPADFnZB1atSgp6tbF3U=" ];
     };
 
-    features = {
-      nonNixOs.enable = true;
-      mime.defaultApps = {
-        enable = mkForce true;
-        defaultBrowser = "vivaldi.desktop";
-        defaultFileManager = "thunar.desktop";
-        defaultAudioPlayer = "org.gnome.Rhythmbox3.desktop";
-        defaultVideoPlayer = "mpv.desktop";
-        defaultPdf = "org.pwmt.zathura.desktop";
-        defaultPlainText = "org.xfce.mousepad.desktop";
-        defaultImgViewer = "feh.desktop";
-        defaultArchiver = "engrampa.desktop";
-        defaultExcel = "calc.desktop";
-        defaultWord = "writer.desktop";
-        defaultPowerPoint = "impress.desktop";
-        defaultEmail = "org.gnome.Geary.desktop";
+    custom = {
+      features = {
+        nonNixOs.enable = true;
+        mime.defaultApps = {
+          enable = mkForce true;
+          defaultBrowser = "vivaldi.desktop";
+          defaultFileManager = "thunar.desktop";
+          defaultAudioPlayer = "org.gnome.Rhythmbox3.desktop";
+          defaultVideoPlayer = "mpv.desktop";
+          defaultPdf = "org.pwmt.zathura.desktop";
+          defaultPlainText = "org.xfce.mousepad.desktop";
+          defaultImgViewer = "feh.desktop";
+          defaultArchiver = "engrampa.desktop";
+          defaultExcel = "calc.desktop";
+          defaultWord = "writer.desktop";
+          defaultPowerPoint = "impress.desktop";
+          defaultEmail = "org.gnome.Geary.desktop";
+        };
       };
-    };
 
-    services = {
-      bash.enable = true;
-      eza.enable = true;
-      udiskie = {
-        enable = true;
-        automount = true;
+      console = {
+        bash.enable = true;
+        eza.enable = true;
+        udiskie = {
+          enable = true;
+          automount = true;
+        };
+        skim.enable = true;
+        polkit-agent.enable = false; # true;
+        firefox.enable = true;
+        podman.enable = false;
+        yt-dlp-custom.enable = true;
       };
-      skim.enable = true;
-      polkit-agent.enable = false; # true;
-      firefox.enable = true;
-      podman.enable = false;
-      yt-dlp-custom.enable = true;
     };
 
     i18n =

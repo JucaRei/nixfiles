@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
-with lib;
 let
-  cfg = config.services.bat;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.bat;
 in
 {
-  options.services.bat = {
+  options.custom.console.bat = {
     enable = mkOption {
       default = false;
       type = types.bool;

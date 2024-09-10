@@ -1,10 +1,10 @@
 { pkgs, config, lib, ... }:
-with lib;
 let
-  cfg = config.services.glow;
+  cfg = config.custom.console.glow;
+  inherit (lib) mkOption mkIf types;
 in
 {
-  options.services.glow = {
+  options.custom.console.glow = {
     enable = mkOption {
       default = false;
       type = types.bool;

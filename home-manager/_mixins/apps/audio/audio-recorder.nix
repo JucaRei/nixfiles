@@ -2,10 +2,10 @@
 with lib;
 with lib.hm.gvariant;
 let
-  cfg = config.programs.audio-recorder;
+  cfg = config.custom.apps.audio-recorder;
 in
 {
-  options.programs.audio-recorder = {
+  options.custom.apps.audio-recorder = {
     enable = mkOption {
       default = false;
       type = types.bool;

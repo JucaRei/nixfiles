@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 with lib;
 let
-  cfg = config.services.emote;
+  cfg = config.custom.services.emote;
 in
 {
-  options.services.emote = {
+  options.custom.services.emote = {
     enable = mkOption {
       default = false;
       type = types.bool;

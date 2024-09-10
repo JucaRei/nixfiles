@@ -2,10 +2,10 @@
 { pkgs, config, lib, isWorkstation, ... }:
 let
   inherit (lib) mkOption mkIf types optionals;
-  cfg = config.features.fonts;
+  cfg = config.custom.features.fonts;
 in
 {
-  options.features.fonts = {
+  options.custom.features.fonts = {
     enable = mkOption {
       default = true;
       type = types.bool;

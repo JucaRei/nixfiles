@@ -21,10 +21,12 @@ in
   # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}.nix")) ./hosts/${hostname}.nix
   ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
   ++ optional (isWorkstation) ./_mixins/desktop;
+
   catppuccin = {
     accent = "lavender";
     flavor = "frappe";
   };
+
   home = {
     inherit stateVersion;
     inherit username;
@@ -56,7 +58,7 @@ in
       home-switch
       gen-ssh-key
       home-manager_change_summary
-      nix-whereis
+      # nix-whereis
       duf # Modern Unix `df`
       fd # Modern Unix `find`
       netdiscover # Modern Unix `arp`

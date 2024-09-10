@@ -1,10 +1,10 @@
 { pkgs, config, lib, ... }:
-with lib;
 let
-  cfg = config.services.github-cli;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.github-cli;
 in
 {
-  options.services.github-cli = {
+  options.custom.console.github-cli = {
     enable = mkOption {
       default = false;
       type = types.bool;

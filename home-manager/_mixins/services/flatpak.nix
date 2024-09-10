@@ -1,10 +1,10 @@
 { config, pkgs, username, lib, ... }:
 with lib;
 let
-  cfg = config.services.flatpak-nix;
+  cfg = config.custom.services.flatpak-nix;
 in
 {
-  options.services.flatpak-nix = {
+  options.custom.services.flatpak-nix = {
     enable = mkOption {
       default = false;
       type = types.bool;

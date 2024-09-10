@@ -1,10 +1,10 @@
 { pkgs, config, lib, ... }:
-with lib;
 let
-  cfg = config.services.htop;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.htop;
 in
 {
-  options.services.htop = {
+  options.custom.console.htop = {
     enable = mkOption {
       default = false;
       type = types.bool;

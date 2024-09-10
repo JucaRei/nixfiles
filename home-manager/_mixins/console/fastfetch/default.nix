@@ -1,10 +1,10 @@
 { pkgs, config, lib, ... }:
-with lib;
 let
-  cfg = config.services.fastfetch;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.fastfetch;
 in
 {
-  options.services.fastfetch = {
+  options.custom.console.fastfetch = {
     enable = mkOption {
       default = false;
       type = types.bool;

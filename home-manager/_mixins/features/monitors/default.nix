@@ -1,10 +1,10 @@
 { config, lib, ... }:
 let
-  cfg = config.features.monitors;
+  cfg = config.custom.features.monitors;
   inherit (lib) mkOption types;
 in
 {
-  options.features.monitors = {
+  options.custom.features.monitors = {
     laptopMonitors = mkOption {
       description = "List of internal laptop monitors.";
       default = [ ];

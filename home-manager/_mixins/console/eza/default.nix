@@ -1,7 +1,7 @@
 # { inputs, platform, ... }: {
 { pkgs, config, lib, ... }:
-with lib;
 let
+  inherit (lib) mkOption mkIf types;
   cfg = config.services.eza;
 in
 {

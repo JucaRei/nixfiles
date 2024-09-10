@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.services.aliases;
+  cfg = config.custom.console.aliases;
 
   nixDiffCommands = {
     builtin = "nix store diff-closures";
@@ -10,7 +10,7 @@ let
   };
 in
 {
-  options.services.aliases = {
+  options.custom.console.aliases = {
     enable = lib.mkEnableOption "Enable aliases for system" // { default = true; };
 
     systemd.shellAliases = lib.mkOption {

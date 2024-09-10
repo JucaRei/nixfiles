@@ -1,7 +1,7 @@
 { pkgs, lib, config, ... }:
-with lib;
 let
   inherit (pkgs.stdenv) isLinux;
+  inherit (lib) mkOption types mkIf;
   cfg = config.services.fish;
 in
 {

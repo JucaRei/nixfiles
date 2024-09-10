@@ -1,10 +1,10 @@
 { pkgs, config, lib, ... }:
-with lib;
 let
-  cfg = config.services.atuin;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.atuin;
 in
 {
-  options.services.atuin = {
+  options.custom.console.atuin = {
     enable = mkOption {
       default = false;
       type = types.bool;

@@ -1,7 +1,7 @@
 { pkgs, config, lib, ... }:
-with lib;
 let
   cfg = config.services.fzf;
+  inherit (lib) mkOption types mkIf;
 in
 {
   options.services.fzf = {

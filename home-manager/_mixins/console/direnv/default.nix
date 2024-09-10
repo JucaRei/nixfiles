@@ -1,10 +1,10 @@
 { lib, config, ... }:
-with lib;
 let
-  cfg = config.services.direnv;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.direnv;
 in
 {
-  options.services.direnv = {
+  options.custom.console.direnv = {
     enable = mkOption {
       default = false;
       type = types.bool;

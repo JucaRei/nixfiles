@@ -1,10 +1,10 @@
 { config, pkgs, lib, ... }:
 
 let
-  cfg = config.services.virt;
+  cfg = config.custom.services.virt;
 in
 {
-  options.services.virt.libvirt = {
+  options.custom.services.virt.libvirt = {
     enable = lib.mkEnableOption "Libvirt tools";
 
     managerPackage = lib.mkPackageOption pkgs "virt-manager" { };

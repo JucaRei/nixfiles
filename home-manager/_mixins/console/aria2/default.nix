@@ -1,12 +1,11 @@
 { pkgs, lib, config, ... }:
-with lib;
-with lib.hm.gvariant;
 let
-  cfg = config.services.aria2;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.aria2;
   configDownloads = config.home.homeDirectory + "/Downloads";
 in
 {
-  options.services.aria2 = {
+  options.custom.console.aria2 = {
     enable = mkOption {
       default = false;
       type = types.bool;

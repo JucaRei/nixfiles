@@ -3,12 +3,12 @@
 with lib;
 
 let
-  cfg = config.services.podman;
+  cfg = config.custom.services.podman;
   mkToml = (pkgs.formats.toml { }).generate;
   mkJson = (pkgs.formats.json { }).generate;
 in
 {
-  options.services.podman.enable = mkEnableOption "Configure podman for rootless container use";
+  options.custom.services.podman.enable = mkEnableOption "Configure podman for rootless container use";
 
   config = mkIf cfg.enable {
     home = {

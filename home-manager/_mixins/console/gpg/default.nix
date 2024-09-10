@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
-with lib;
 let
-  cfg = config.services.gpg;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.gpg;
 in
 {
-  options.services.gpg = {
+  options.custom.console.gpg = {
     enable = mkOption {
       default = false;
       type = types.bool;

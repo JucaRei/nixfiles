@@ -1,10 +1,10 @@
 { lib, config, ... }:
-with lib;
 let
-  cfg = config.services.gitui;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.gitui;
 in
 {
-  options.services.gitui = {
+  options.custom.console.gitui = {
     enable = mkOption {
       default = false;
       type = types.bool;

@@ -1,11 +1,11 @@
 { pkgs, config, lib, ... }:
-with lib;
 let
+  inherit (lib) mkOption mkIf types;
   inherit (pkgs.stdenv) isLinux;
-  cfg = config.services.cava;
+  cfg = config.custom.console.cava;
 in
 {
-  options.services.cava = {
+  options.custom.console.cava = {
     enable = mkOption {
       default = false;
       type = types.bool;

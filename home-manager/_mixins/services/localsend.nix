@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 with lib;
 let
-  cfg = config.services.localsend;
+  cfg = config.custom.services.localsend;
 in
 {
-  options.services.localsend = {
+  options.custom.services.localsend = {
     enable = mkOption {
       default = false;
       type = types.bool;

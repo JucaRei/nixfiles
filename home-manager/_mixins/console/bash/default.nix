@@ -1,12 +1,12 @@
 { pkgs, lib, config, ... }:
-with lib;
 let
-  cfg = config.services.bash;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.bash;
 in
 {
   # imports = [ ./starship ];
 
-  options.services.bash = {
+  options.custom.console.bash = {
     enable = mkOption {
       default = false;
       type = types.bool;
@@ -14,7 +14,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    # services.starship.enable = lib.mkDefault true;
+    # custom.console.starship.enable = lib.mkDefault true;
     programs = {
       bash = {
         enable = true;

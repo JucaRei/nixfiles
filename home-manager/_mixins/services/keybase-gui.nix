@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 with lib;
 let
-  cfg = config.services.keybase;
+  cfg = config.custom.services.keybase;
 in
 {
-  options.services.keybase = {
+  options.custom.services.keybase = {
     enable = mkOption {
       default = false;
       type = types.bool;
