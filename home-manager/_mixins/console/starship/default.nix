@@ -1,11 +1,10 @@
 { lib, config, ... }:
-with lib;
 let
-  inherit (lib) mkDefault;
-  cfg = config.services.starship;
+  inherit (lib) mkDefault mkOption mkIf types;
+  cfg = config.custom.console.starship;
 in
 {
-  options.services.starship =
+  options.custom.console.starship =
     {
       enable = mkOption {
         default = false;

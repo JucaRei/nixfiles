@@ -81,7 +81,6 @@ with lib;
         lsd.enable = false;
         # firefox.enable = true;
         # flatpak-nix.enable = true;
-        yt-dlp-custom.enable = true;
         # properties.enable = false;
         # vscode-server = {
         #   # enable = lib.mkForce true;
@@ -104,7 +103,15 @@ with lib;
         #   "flathub:app/com.rtosta.zapzap/x86_64/stable"
         # ];
       };
+      programs = {
+        git.enable = true;
+        mpd.enable = false;
+        gpg.enable = true;
+        ncmpcpp.enable = false;
+        yt-dlp-custom.enable = true;
+      };
     };
+
     home = {
       packages = with pkgs; [
         # spotdl

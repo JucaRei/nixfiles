@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
-with lib;
 let
-  cfg = config.services.skim;
+  inherit (lib) mkOption types mkIf;
+  cfg = config.custom.console.skim;
 in
 {
-  options.services.skim = {
+  options.custom.console.skim = {
     enable = mkOption {
       default = false;
       type = types.bool;

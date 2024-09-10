@@ -1,10 +1,10 @@
 { lib, config, ... }:
-with lib;
 let
-  cfg = config.services.ripgrep;
+  inherit (lib) mkOption types mkIf;
+  cfg = config.custom.console.ripgrep;
 in
 {
-  options.services.ripgrep = {
+  options.custom.console.ripgrep = {
     enable = mkOption {
       default = false;
       type = types.bool;

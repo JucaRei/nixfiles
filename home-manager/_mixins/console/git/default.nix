@@ -1,7 +1,7 @@
 { lib, config, pkgs, ... }:
 let
   inherit (lib) mkOption mkIf types optionalString mdDoc;
-  cfg = config.services.git;
+  cfg = config.custom.programs.git;
 
   makeGitConfig =
     { userName
@@ -72,7 +72,7 @@ let
   };
 in
 {
-  options.services.git = {
+  options.custom.programs.git = {
     enable = mkOption {
       default = true;
       type = types.bool;

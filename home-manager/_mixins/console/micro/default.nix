@@ -1,10 +1,10 @@
 { config, lib, ... }:
 with lib;
 let
-  cfg = config.services.micro;
+  cfg = config.custom.console.micro;
 in
 {
-  options.services.micro = {
+  options.custom.console.micro = {
     enable = mkOption {
       default = true;
       type = types.bool;

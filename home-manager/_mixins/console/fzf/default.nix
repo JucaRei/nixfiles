@@ -1,10 +1,10 @@
 { pkgs, config, lib, ... }:
 let
-  cfg = config.services.fzf;
+  cfg = config.custom.console.fzf;
   inherit (lib) mkOption types mkIf;
 in
 {
-  options.services.fzf = {
+  options.custom.console.fzf = {
     enable = mkOption {
       default = false;
       type = types.bool;

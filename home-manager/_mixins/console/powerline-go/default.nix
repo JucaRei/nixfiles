@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
-with lib;
 let
-  cfg = config.services.powerline-go;
+  inherit (lib) mkOption types mkIf;
+  cfg = config.custom.console.powerline-go;
 in
 {
-  options.services.powerline-go = {
+  options.custom.console.powerline-go = {
     enable = mkOption {
       default = false;
       type = types.bool;

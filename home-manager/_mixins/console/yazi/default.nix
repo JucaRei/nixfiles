@@ -1,10 +1,10 @@
 { config, lib, ... }:
-with lib;
 let
-  cfg = config.services.yazi;
+  inherit (lib) mkOption types mkIf;
+  cfg = config.custom.console.yazi;
 in
 {
-  options.services.yazi = {
+  options.custom.console.yazi = {
     enable = mkOption {
       default = false;
       type = types.bool;

@@ -1,10 +1,10 @@
 { config, pkgs, lib, ... }:
-with lib;
 let
-  cfg = config.services.neofetch;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.console.neofetch;
 in
 {
-  options.services.neofetch = {
+  options.custom.console.neofetch = {
     enable = mkOption {
       default = false;
       type = types.bool;

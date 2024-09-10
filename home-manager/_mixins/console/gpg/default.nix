@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.custom.console.gpg;
+  cfg = config.custom.programs.gpg;
 in
 {
-  options.custom.console.gpg = {
+  options.custom.programs.gpg = {
     enable = mkOption {
       default = false;
       type = types.bool;

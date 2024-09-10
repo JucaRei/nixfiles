@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  cfg = config.services.ssh;
+  cfg = config.custom.console.ssh;
 in
 {
-  options.services.ssh = {
+  options.custom.console.ssh = {
     enable = mkOption {
       default = false;
       type = types.bool;

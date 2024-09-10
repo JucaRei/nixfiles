@@ -2,14 +2,14 @@
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkOption types mkIf;
-  cfg = config.services.fish;
+  cfg = config.custom.console.fish;
 in
 {
   imports = [
     # ../starship.nix
   ];
 
-  options.services.fish = {
+  options.custom.console.fish = {
     enable = mkOption {
       default = false;
       type = types.bool;

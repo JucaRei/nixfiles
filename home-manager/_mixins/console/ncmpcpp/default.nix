@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
-with lib;
 let
-  cfg = config.services.ncmpcpp;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.custom.programs.ncmpcpp;
 in
 {
-  options.services.ncmpcpp = {
+  options.custom.programs.ncmpcpp = {
     enable = mkOption {
       default = false;
       type = types.bool;

@@ -1,13 +1,13 @@
 { config, pkgs, lib, username, ... }:
 with lib;
 let
-  cfg = config.services.yt-dlp-custom;
+  cfg = config.custom.programs.yt-dlp-custom;
 
   # mypython = with pkgs; python310;
   mypython = (pkgs.python310.withPackages (pythonPackages: with pythonPackages; [ ]));
 in
 {
-  options.services.yt-dlp-custom = {
+  options.custom.programs.yt-dlp-custom = {
     enable = mkOption {
       default = false;
       type = types.bool;

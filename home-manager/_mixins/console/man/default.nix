@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
-with lib;
 let
-  cfg = config.services.man;
+  inherit (lib) mkOption types mkIf;
+  cfg = config.custom.console.man;
   man_color_args = lib.strings.concatStringsSep " " [
     "-DP+k-" # Prompt = formatted bold Black on normal
     "-DE+kr" # Error/Info = formatted bold Black on Red
@@ -30,7 +30,7 @@ let
   '';
 in
 {
-  options.services.man = {
+  options.custom.console.man = {
     enable = mkOption {
       default = false;
       type = types.bool;

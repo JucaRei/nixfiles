@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
-with lib;
 let
-  cfg = config.services.zoxide;
+  inherit (lib) mkOption types mkIf;
+  cfg = config.custom.console.zoxide;
 in
 {
-  options.services.zoxide = {
+  options.custom.console.zoxide = {
     enable = mkOption {
       default = false;
       type = types.bool;
