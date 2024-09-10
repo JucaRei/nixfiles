@@ -105,7 +105,7 @@ with lib;
       };
       programs = {
         git.enable = true;
-        mpd.enable = false;
+        mpd.enable = true;
         gpg.enable = true;
         ncmpcpp.enable = false;
         yt-dlp-custom.enable = true;
