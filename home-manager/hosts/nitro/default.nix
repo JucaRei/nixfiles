@@ -32,6 +32,7 @@ with lib;
   imports = [
     # ../_mixins/console/neovim.nix
     ../../_mixins/apps/video/mpv/mpv.nix
+    ../../_mixins/apps/browser/chrome-based-browser.nix
     # ../_mixins/apps/tools/transmission.nix
     ../../_mixins/dev/nix.nix
     # ../_mixins/console/aria2.nix
@@ -77,9 +78,8 @@ with lib;
       console = {
         bash.enable = true;
         starship.enable = true;
-        eza.enable = true;
-        lsd.enable = false;
-        mpd.enable = true;
+        eza.enable = false;
+        lsd.enable = true;
         # firefox.enable = true;
         # flatpak-nix.enable = true;
         # properties.enable = false;
@@ -108,7 +108,16 @@ with lib;
         git.enable = true;
         gpg.enable = true;
         ncmpcpp.enable = false;
-        yt-dlp-custom.enable = true;
+        mpd.enable = true;
+        yt-dlp-custom.enable = mkForce true;
+      };
+
+      apps = {
+        chrome-based-browser = {
+          enable = true;
+          # browser = "opera";
+          disableWayland = true;
+        };
       };
     };
 

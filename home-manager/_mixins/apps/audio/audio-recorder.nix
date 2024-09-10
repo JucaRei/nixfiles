@@ -1,7 +1,6 @@
 { config, lib, pkgs, username, ... }:
-with lib;
-with lib.hm.gvariant;
 let
+  inherit (lib) mkOption mkIf types;
   cfg = config.custom.apps.audio-recorder;
 in
 {

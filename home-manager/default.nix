@@ -10,7 +10,7 @@ let
   gen-ssh-key = import ../resources/scripts/nix/gen-ssh-key.nix { inherit pkgs; };
   home-manager_change_summary = import ../resources/scripts/nix/home-manager_change_summary.nix { inherit pkgs; };
   isOld = if (hostname == "oldarch") then false else true;
-  isGeneric = if (config.features.nonNixOs.enable) then true else false;
+  isGeneric = if (config.targets.genericLinux.enable) then true else false;
 in
 {
   imports = [

@@ -23,8 +23,8 @@ in
     };
 
     systemd.user.tmpfiles.rules = [
-      "d ${config.home.homeDirectory}/Music/Audio 0755 ${username} users - -"
-      "L+ ${config.home.homeDirectory}/.local/share/org.gnome.SoundRecorder/ - - - - ${config.home.homeDirectory}/Music/Audio/"
+      "d ${config.home.homeDirectory}/Media/Music/records 0755 ${username} users - -"
+      "L+ ${config.home.homeDirectory}/.local/share/org.gnome.SoundRecorder/ - - - - ${config.home.homeDirectory}/Media/Music/records"
     ];
   };
 }

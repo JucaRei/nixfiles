@@ -51,7 +51,8 @@ in
   services = {
     home-manager = {
       autoUpgrade = {
-        enable = false;
+        enable = true;
+        frequency = "montly";
       };
     };
   };
@@ -106,7 +107,7 @@ in
     "d ${config.home.homeDirectory}/Media/Music/singles 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Media/Music/artits 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Media/Music/downloads 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Media/Music/records 0755 ${username} users - -"
+    # "d ${config.home.homeDirectory}/Media/Music/records 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/games 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/virtualmachines/nixos-desktop 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/virtualmachines/nixos-console 0755 ${username} users - -"

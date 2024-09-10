@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 with lib;
 let
-  cfg = config.services.vorta;
+  cfg = config.custom.apps.vorta;
 in
 {
-  options.services.vorta = {
+  options.custom.apps.vorta = {
     enable = mkOption {
       default = false;
       type = types.bool;

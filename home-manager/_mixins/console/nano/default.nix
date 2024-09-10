@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.custom.console.nano;
+  cfg = config.custom.programs.nano;
 in
 {
-  options.custom.console.nano = {
+  options.custom.programs.nano = {
     enable = mkOption {
       default = false;
       type = types.bool;
