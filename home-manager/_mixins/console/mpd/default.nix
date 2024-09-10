@@ -1,10 +1,10 @@
 { config, pkgs, lib, ... }:
 with lib;
 let
-  cfg = config.custom.programs.mpd;
+  cfg = config.custom.console.mpd;
 in
 {
-  options.custom.programs.mpd = {
+  options.custom.console.mpd = {
     enable = mkOption {
       default = false;
       type = types.bool;

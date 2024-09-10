@@ -79,6 +79,7 @@ with lib;
         starship.enable = true;
         eza.enable = true;
         lsd.enable = false;
+        mpd.enable = true;
         # firefox.enable = true;
         # flatpak-nix.enable = true;
         # properties.enable = false;
@@ -105,7 +106,6 @@ with lib;
       };
       programs = {
         git.enable = true;
-        mpd.enable = true;
         gpg.enable = true;
         ncmpcpp.enable = false;
         yt-dlp-custom.enable = true;
