@@ -14,7 +14,7 @@ in
   ];
 
   config = {
-    boot.mode.efi.enable = lib.mkForce true;
+    # boot.mode.efi.enable = lib.mkForce true;
     boot = {
       blacklistedKernelModules = [ "nouveau" ]; # blacklist nouveau module so that it does not conflict with nvidia drm stuff
       ### Default Kernel
@@ -22,7 +22,7 @@ in
       # kernelPackages = pkgs.linuxPackages_zen;
       # kernelPackages = pkgs.linuxPackages_lqx;
       kernelModules = [
-        "nosgx"
+        # "nosgx"
         "kvm-intel"
         "z3fold"
         "lz4hc"
@@ -145,10 +145,10 @@ in
           "aesni_intel"
           "cryptd"
         ];
-        systemd.enable = true;
+        # systemd.enable = true;
         compressor = "zstd";
         compressorArgs = [ "-19" "-T0" ];
-        verbose = lib.mkForce false;
+        # verbose = lib.mkForce false;
       };
       loader = {
         # efi = {
@@ -161,7 +161,7 @@ in
         #   efi   /efi/ubuntu/shimx64.efi
         # '';
         grub = {
-          theme = pkgs.catppuccin-grub;
+          theme = lib.mkForce pkgs.cyberre-grub-theme;
         };
       };
     };

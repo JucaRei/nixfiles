@@ -117,6 +117,7 @@ in
           "x-scheme-handler/http" = cfg.defaultBrowser;
           "x-scheme-handler/https" = cfg.defaultBrowser;
           "x-scheme-handler/about" = cfg.defaultBrowser;
+          "x-scheme-handler/ftp" = cfg.defaultBrowser;
           "x-scheme-handler/unknown" = cfg.defaultBrowser;
           "text/html" = cfg.defaultBrowser;
           "application/xhtml+xml" = cfg.defaultBrowser;
@@ -401,10 +402,5 @@ in
         rm -f $VERBOSE_ARG "$HOME/.config/user-dirs.dirs.old"
       '';
     };
-
-    # Fix xdg-portals opening URLs: https://github.com/NixOS/nixpkgs/issues/189851
-    systemd.user.extraConfig = ''
-      DefaultEnvironment="PATH=/run/wrappers/bin:/etc/profiles/per-user/%u/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
-    '';
   };
 }

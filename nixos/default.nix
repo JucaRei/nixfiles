@@ -1,8 +1,9 @@
-{ config, lib, username, platform, isInstall, outputs, inputs, pkgs, isISO, isWorkstation, ... }:
-with lib; let
+{ config, lib, username, platform, isInstall, outputs, inputs, pkgs, isISO, isWorkstation, hostname, ... }:
+let
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
   variables = import ./hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
   inherit (pkgs.stdenv) isLinux;
+  inherit (lib) mkIf mkDefault;
   users = [
     "root"
     "@wheel"
@@ -16,14 +17,53 @@ in
   ];
 
   config = {
+    ######################
+    ### Documentations ###
+    ######################
+    documentation = mkDefault {
+      enable = true; # documentation of packages
+      nixos.enable = false; # nixos documentation
+      man.enable = true; # manual pages and the man command
+      info.enable = false; # info pages and the info command
+      doc.enable = false; # documentation distributed in packages' /share/doc
+    };
+    #######################
+    ### Default Locales ###
+    #######################
+    i18n = {
+      defaultLocale = "en_US.utf8";
+      extraLocaleSettings = {
+        #LC_CTYPE = "pt_BR.UTF-8"; # Fix ç in us-intl.
+        LC_ADDRESS = "pt_BR.UTF-8";
+        LC_IDENTIFICATION = "pt_BR.UTF-8";
+        LC_MEASUREMENT = "pt_BR.UTF-8";
+        LC_MONETARY = "pt_BR.UTF-8";
+        LC_NAME = "pt_BR.UTF-8";
+        LC_NUMERIC = "pt_BR.UTF-8";
+        LC_PAPER = "pt_BR.UTF-8";
+        LC_TELEPHONE = "pt_BR.UTF-8";
+        LC_TIME = "pt_BR.UTF-8";
+        #LC_COLLATE = "pt_BR.UTF-8";
+        #LC_MESSAGES = "pt_BR.UTF-8";
+      };
+    };
+    ########################
+    ### Default Timezone ###
+    ########################
+    time = mkDefault {
+      timeZone = "America/Sao_Paulo";
+      hardwareClockInLocalTime = isWorkstation;
+    };
+    ######################
+    ### Custom Modules ###
+    ######################
     sys.boot = {
       enable = isInstall;
-      efi = true;
-      grub = true;
+      # boottype = "efi";
+      # bootmanager = "systemd-boot";
       silentBoot = true;
       plymouth = true;
     };
-
     ####################
     ### Nix Settings ###
     ####################
@@ -56,11 +96,8 @@ in
         };
         package = mkIf isInstall pkgs.unstable.nix;
         settings = {
-          # Always build inside sandboxed environments
-          # sandbox = true;
           sandbox = "relaxed"; # true
           nix-path = config.nix.nixPath;
-
           auto-optimise-store = true;
           experimental-features = [
             "nix-command"
@@ -108,10 +145,8 @@ in
     ################
     ### Nixpkgs ####
     ################
-
     nixpkgs = {
       hostPlatform = mkDefault "${platform}";
-
       overlays = [
         # Add overlays your own flake exports (from overlays and pkgs dir):
         outputs.overlays.additions
@@ -119,19 +154,16 @@ in
         outputs.overlays.unstable-packages
         outputs.overlays.legacy-packages
         # Add overlays exported from other flakes:
-
         # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
         (_: super: {
           makeModulesClosure = x:
             super.makeModulesClosure (x // { allowMissing = true; });
         })
-
         ## Testing
         (self: super: {
           vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
         })
       ];
-
       config = {
         # allowBroken = true;
         allowUnfree = true; # Disable if you don't want unfree packages
@@ -140,7 +172,6 @@ in
         permittedInsecurePackages = [
           "python3.11-youtube-dl-2021.12.17"
         ];
-
         allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
       };
     };

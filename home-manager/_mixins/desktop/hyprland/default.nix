@@ -6,6 +6,7 @@ in
 {
   imports = [ ./themes/my-theme ];
   config = {
+    custom.features.isWayland = true;
     home = {
       packages = with pkgs; [
         # kitty # terminal
@@ -85,10 +86,8 @@ in
       sessionVariables = {
         POLKIT_AUTH_AGENT = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
 
-        "DIRENV_LOG_FORMAT" = "";
         # "LIBVA_DRIVE_NAME" = if (hostname != "zion" || "air") then "nvidia" else "iHD";
         "LIBVA_DRIVE_NAME" = "nvidia";
-        "XDG_SESSION_TYPE" = "wayland";
         "GBM_BACKEND" = "nvidia-drm";
         # "GBM_BACKEND" = if (hostname == "nitro") then "nvidia-drm" else "";
         # "__GLX_VENDOR_LIBRARY" = if (hostname == "nitro" || "rocinante") then "nvidia" else "";
@@ -98,7 +97,6 @@ in
         "__GL_GSYNC_ALLOWED" = "0";
         "__GL_VRR_ALLOWED" = "0";
         # "MOZ_DISABLE_RDD_SANDBOX" = "1";
-        "MOZ_ENABLE_WAYLAND" = "1";
         "disable_features" = "WaylandOverlayDelegation";
         "enable_features" = "WaylandWindowDecorations";
         "ozone_platform" = "wayland";
@@ -139,14 +137,8 @@ in
         "CLUTTER_BACKEND" = "wayland";
         "CLUTTER_DEFAULT_FPS" = "60";
         "GDK_BACKEND" = "wayland,x11";
-        # "KITTY_ENABLE_WAYLAND" = "1";
-        "SDL_VIDEODRIVER" = "wayland";
-        # "XCURSOR_THEME" = "Adwaita";
-        # "XCURSOR_SIZE" = "24";
         "XDG_CURRENT_DESKTOP" = "Hyprland";
         "XDG_SESSION_DESKTOP" = "Hyprland";
-        "GTK_USE_PORTAL" = "1";
-        "NIXOS_XDG_OPEN_USE_PORTAL" = "1";
 
         # increase priority
         QT_STYLE_OVERRIDE = lib.mkForce "kvantum";
@@ -156,7 +148,6 @@ in
         # "QT_QPA_PLATFORM" = "wayland";
         # "QT_QPA_PLATFORMTHEME" = "qt5ct";
         QT_QPA_PLATFORMTHEME = lib.mkForce "qtct";
-        QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
         # remain backwards compatible with qt5
         DISABLE_QT_COMPAT = "0";
 
@@ -217,4 +208,3 @@ in
 #     };
 #   };
 # };
-
