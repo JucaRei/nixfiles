@@ -1,12 +1,12 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, desktop, ... }:
 let
   cfg = config.custom.features.mime.defaultApps;
-  inherit (lib) types mkEnableOption mkOption mdDoc mkIf;
+  inherit (lib) types mkEnableOption mkOption mdDoc mkIf optionals;
 in
 {
   options = {
     custom.features.mime.defaultApps = {
-      enable = mkEnableOption (mdDoc "Enable default mime for selected SYSTEM.");
+      enable = mkEnableOption (mdDoc "Enable default mime for selected SYSTEM.") // { default = true; };
       defaultBrowser = mkOption {
         type = types.nullOr types.str;
         description = mdDoc ''
@@ -116,6 +116,8 @@ in
           # Webformats
           "x-scheme-handler/http" = cfg.defaultBrowser;
           "x-scheme-handler/https" = cfg.defaultBrowser;
+          "x-scheme-handler/about" = cfg.defaultBrowser;
+          "x-scheme-handler/unknown" = cfg.defaultBrowser;
           "text/html" = cfg.defaultBrowser;
           "application/xhtml+xml" = cfg.defaultBrowser;
           "application/x-extension-htm" = cfg.defaultBrowser;
@@ -123,6 +125,7 @@ in
           "application/x-extension-shtml" = cfg.defaultBrowser;
           "application/x-extension-xhtml" = cfg.defaultBrowser;
           "application/x-extension-xht" = cfg.defaultBrowser;
+
 
           # File Browser
           "inode/directory" = cfg.defaultFileManager;
@@ -188,6 +191,7 @@ in
           "application/x-xz-compressed-tar" = cfg.defaultArchiver;
           "application/zip" = cfg.defaultArchiver;
 
+          # Audio
           "audio/x-vorbis+ogg" = cfg.defaultAudioPlayer;
           "audio/ogg" = cfg.defaultAudioPlayer;
           "audio/vorbis" = cfg.defaultAudioPlayer;
@@ -348,6 +352,45 @@ in
             defaultApplications = associations;
           };
         configFile."mimeapps.list".force = mkIf (config.custom.features.nonNixOs.enable) true;
+
+        portal = {
+          configPackages = [ ] ++ lib.optionals (desktop == "hyprland") [
+            pkgs.hyprland
+          ];
+          extraPortals = lib.optionals (desktop == "gnome") [
+            pkgs.xdg-desktop-portal-gnome
+          ] ++ lib.optionals (desktop == "hyprland") [
+            pkgs.xdg-desktop-portal-hyprland
+          ] ++ lib.optionals (desktop == "mate" || desktop == "cinnamon") [
+            pkgs.xdg-desktop-portal-xapp
+          ] ++ lib.optionals (desktop == "pantheon") [
+            pkgs.pantheon.xdg-desktop-portal-pantheon
+          ] ++ [
+            pkgs.xdg-desktop-portal-gtk
+          ];
+          config = {
+            common = {
+              default = [ "gtk" ];
+            };
+            gnome = lib.mkIf (desktop == "gnome" || desktop == "bspwm") {
+              default = [ "gnome" "gtk" ];
+              "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+            };
+            hyprland = lib.mkIf (desktop == "hyprland") {
+              default = [ "hyprland" "gtk" ];
+              "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+            };
+            x-cinnamon = lib.mkIf (desktop == "mate" || desktop == "cinnamon") {
+              default = [ "xapp" "gtk" ];
+              "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+            };
+            pantheon = lib.mkIf (desktop == "pantheon") {
+              default = [ "pantheon" "gtk" ];
+              "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+            };
+          };
+          xdgOpenUsePortal = true;
+        };
       };
 
 
@@ -358,5 +401,10 @@ in
         rm -f $VERBOSE_ARG "$HOME/.config/user-dirs.dirs.old"
       '';
     };
+
+    # Fix xdg-portals opening URLs: https://github.com/NixOS/nixpkgs/issues/189851
+    systemd.user.extraConfig = ''
+      DefaultEnvironment="PATH=/run/wrappers/bin:/etc/profiles/per-user/%u/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
+    '';
   };
 }
