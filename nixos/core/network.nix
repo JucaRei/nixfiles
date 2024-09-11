@@ -1,6 +1,6 @@
 { hostname, hostid, lib, pkgs, config, ... }:
 let
-
+  inherit (lib) mkEnableOption mkOption types mkIf mkDefault;
   port = pkgs.writeShellScriptBin "port" ''
     usage() {
       printf 'usage: %s open|close tcp|udp|both PORT[:PORT]\n' "''${0##*/}" >&2
@@ -60,108 +60,133 @@ let
         enable_disable_wifi
     fi
   '';
+
+  cfg = config.sys.network;
 in
 {
-  networking = {
-    extraHosts = ''
-      192.168.1.35  nitro
-      192.168.1.45  rocinante
-      192.168.1.76  dongle
-      192.168.1.228 rocinante
-      192.168.1.184 soyo
-      192.168.1.230 air
-      192.168.1.200 DietPi
-      192.168.122.* vm
-      192.168.122.* scrubber
-    '';
+  options.sys.network = {
+    enable = mkEnableOption "Wheater enable network for device" //
+      { default = true; };
+    networkOpt = mkOption {
+      type = types.nullOr (types.enum [ "network-manager" "wpa-supplicant" ]);
+      default = "network-manager"; # "efi";
+      description = "Default network option.";
+    };
+    exclusive-locallan = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Wheater enable exclusive-lan.";
+    };
+    powersave = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Wheater powersave on wifi.";
+    };
+  };
 
-    # interfaces = {
-    #   "enp7s0f1".wakeOnLan.enable = true;
-    # };
+  config = mkIf cfg.enable {
+    networking = {
+      extraHosts = ''
+        192.168.1.35  nitro
+        192.168.1.45  rocinante
+        192.168.1.76  dongle
+        192.168.1.228 rocinante
+        192.168.1.184 soyo
+        192.168.1.230 air
+        192.168.1.200 DietPi
+        192.168.122.* vm
+        192.168.122.* scrubber
+      '';
 
-    wireless.enable = false; # use network manager instead of wpa supplicanmt
-
-    # Disabling DHCPCD in favor of NetworkManager
-    dhcpcd.enable = false;
-    timeServers = [
-      "time.google.com"
-      "time.cloudflare.com"
-    ];
-    networkmanager = lib.mkDefault {
-      enable = true;
-      appendNameservers = [
-        "1.1.1.1" # Cloudflare
-        "8.8.8.8" # Google
-      ];
-      dns = "systemd-resolved";
-
-      # Prevent fragmentation and reassembly, which can improve network performance
-      connectionConfig = {
-        "ethernet.mtu" = 1462;
-        "wifi.mtu" = 1462;
-      };
-
-      # Use AdGuard Public DNS with ad/tracker blocking
-      #  - https://adguard-dns.io/en/public-dns.html
-      # insertNameservers = [ "94.140.14.14" "94.140.15.15" ];
-
-      wifi = {
-        backend = "iwd";
-        powersave = false;
-        #macAddress = "random";
-        #scanRandMacAddress = true;
-      };
-      # ethernet = {
-      #   macAddress = "random";
+      # interfaces = {
+      #   "enp7s0f1".wakeOnLan.enable = true;
       # };
 
-      # plugins = with pkgs; [
-      #   networkmanager-openvpn
-      #   networkmanager-openconnect
-      # ];
+      # use network manager instead of wpa supplicanmt
+      wireless.enable = if cfg.networkOpt == "network-manager" then false else true;
 
-      dispatcherScripts = [
-        {
-          # source = ./nm-dispatcher-scripts/70-wifi-wired-exclusive.sh;
-          source = "${exclusive-lan}/bin/70-wifi-wired-exclusive";
-        }
+      # Disabling DHCPCD in favor of NetworkManager
+      dhcpcd.enable = if cfg.networkOpt == "network-manager" then false else true;
+      timeServers = [
+        "time.google.com"
+        "time.cloudflare.com"
+      ];
+      networkmanager = mkIf (cfg.networkOpt == "network-manager") {
+        enable = true;
+        appendNameservers = [
+          "1.1.1.1" # Cloudflare
+          "8.8.8.8" # Google
+        ];
+        dns = "systemd-resolved";
+
+        # Prevent fragmentation and reassembly, which can improve network performance
+        connectionConfig = {
+          "ethernet.mtu" = 1462;
+          "wifi.mtu" = 1462;
+        };
+
+        # Use AdGuard Public DNS with ad/tracker blocking
+        #  - https://adguard-dns.io/en/public-dns.html
+        # insertNameservers = [ "94.140.14.14" "94.140.15.15" ];
+
+        wifi = mkIf (cfg.networkOpt == "network-manager") {
+          backend = "iwd";
+          powersave = mkDefault cfg.powersave;
+          #macAddress = "random";
+          #scanRandMacAddress = true;
+        };
+        # ethernet = {
+        #   macAddress = "random";
+        # };
+
+        # plugins = with pkgs; [
+        #   networkmanager-openvpn
+        #   networkmanager-openconnect
+        # ];
+
+        dispatcherScripts = mkIf cfg.exclusive-locallan [
+          {
+            # source = ./nm-dispatcher-scripts/70-wifi-wired-exclusive.sh;
+            source = "${exclusive-lan}/bin/70-wifi-wired-exclusive";
+          }
+        ];
+      };
+      wireless.iwd.package = pkgs.iwd;
+
+      hostName = hostname;
+      hostId = hostid;
+      usePredictableInterfaceNames = true;
+    };
+    services.resolved = {
+      enable = if (cfg.networkOpt == "network-manager") then true else false;
+    };
+
+    environment = {
+      systemPackages = with pkgs;[
+        whois
+        socat
+        nethogs
+        dnsutils
+        port
+
+        # ethtool can be used to manually enable wakeOnLan, eg:
+        #
+        #    sudo ethtool -s enp7s0f1 wol g
+        #
+        # on verify its status:
+        #
+        #    sudo ethtool enp7s0f1 | grep Wake-on
+        ethtool
       ];
     };
-    wireless.iwd.package = pkgs.unstable.iwd;
-
-    hostName = hostname;
-    hostId = hostid;
-    usePredictableInterfaceNames = true;
-  };
-  services.resolved = {
-    enable = true;
-  };
-
-  environment = {
-    systemPackages = with pkgs;[
-      whois
-      socat
-      nethogs
-      dnsutils
-      port
-
-      # ethtool can be used to manually enable wakeOnLan, eg:
-      #
-      #    sudo ethtool -s enp7s0f1 wol g
-      #
-      # on verify its status:
-      #
-      #    sudo ethtool enp7s0f1 | grep Wake-on
-      ethtool
-    ];
-  };
 
 
 
-  # https://github.com/NixOS/nixpkgs/issues/180175#issuecomment-1658731959
-  systemd.services.NetworkManager-wait-online = {
-    serviceConfig = {
-      ExecStart = [ "" "${pkgs.networkmanager}/bin/nm-online -q" ];
+    # https://github.com/NixOS/nixpkgs/issues/180175#issuecomment-1658731959
+    systemd.services.NetworkManager-wait-online = mkIf (cfg.networkOpt == "network-manager") {
+      serviceConfig = {
+        ExecStart = [ "" "${pkgs.networkmanager}/bin/nm-online -q" ];
+      };
     };
   };
 }

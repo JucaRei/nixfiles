@@ -16,7 +16,6 @@ in
       # ../_mixins/features/boot
       ../_mixins/features/bluetooth
       ../users
-
       ./documentation.nix
       ./boot.nix
       ./console.nix

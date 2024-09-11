@@ -7,33 +7,12 @@ let
   inherit (lib) mkIf mkOverride mkEnableOption types mkDefault mkOption listOf enum optionals;
   cfg = config.sys.boot;
 
-  mkOpt =
-    type: default: description:
-    mkOption { inherit type default description; };
-
-  mkOpt' = type: default: mkOpt type default null;
-
-  mkBoolOpt = mkOpt types.bool;
-
-  mkBoolOpt' = mkOpt' types.bool;
-
 in
 {
-  # options.sys.boot = {
-  #   enable = mkBoolOpt false "Whether or not to enable booting.";
-  #   efi = mkBoolOpt false "Whether or not to enable EFI for booting.";
-  #   bios = mkBoolOpt false "Whether or not to enable Bios Legacy for booting.";
-  #   grub = mkBoolOpt false "Whether or not to enable Grub for booting.";
-  #   systemd-boot = mkBoolOpt false "Whether or not to enable Systemd for booting.";
-  #   isDualBoot = mkBoolOpt false "Whether or not to enable for dual booting.";
-  #   plymouth = mkBoolOpt false "Whether or not to enable plymouth boot splash.";
-  #   # secureBoot = mkBoolOpt false "Whether or not to enable secure boot.";
-  #   silentBoot = mkBoolOpt false "Whether or not to enable silent boot.";
-  # };
 
   options.sys.boot = {
-    enable = mkEnableOption "Default booting type." // { default = true; };
-
+    enable = mkEnableOption "Default booting type." //
+      { default = true; };
     boottype = mkOption {
       # type = types.listOf (types.enum [ "efi" "legacy" ]);
       type = types.nullOr (types.enum [ "efi" "legacy" ]);
@@ -69,7 +48,7 @@ in
       initrd = {
         verbose = false;
         systemd = {
-          enable = true;
+          enable = if cfg.boottype == "efi" then true else false;
         };
       };
       kernelParams = optionals cfg.plymouth [ "quiet" "splash" ]
