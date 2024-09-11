@@ -347,8 +347,9 @@ in
             associations.added = associations;
             defaultApplications = associations;
           };
+        configFile."mimeapps.list".force = mkIf (config.custom.features.nonNixOs.enable) true;
       };
-    configFile."mimeapps.list".force = mkIf (config.custom.features.nonNixOs.enable) true;
+
 
 
     home = {
