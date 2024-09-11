@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 let
   cfg = config.custom.features.mime.defaultApps;
   inherit (lib) types mkEnableOption mkOption mdDoc mkIf;
@@ -110,7 +110,7 @@ in
 
   config = {
     # xdg.mimeApps.defaultApplications = mkIf (cfg != null) {
-    xdg.mimeApps =
+    xdg =
       let
         associations = {
           # Webformats
@@ -341,13 +341,21 @@ in
         };
       in
       mkIf cfg.enable {
-        associations.added = associations;
-        defaultApplications = associations;
+        mimeApps =
+          {
+            enable = true;
+            associations.added = associations;
+            defaultApplications = associations;
+          };
       };
+    configFile."mimeapps.list".force = mkIf (config.custom.features.nonNixOs.enable) true;
 
 
-    home.activation."user-dirs" = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
-      rm -f $VERBOSE_ARG "$HOME/.config/user-dirs.dirs.old"
-    '';
+    home = {
+      packages = with pkgs; [ junction ];
+      activation."user-dirs" = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
+        rm -f $VERBOSE_ARG "$HOME/.config/user-dirs.dirs.old"
+      '';
+    };
   };
 }
