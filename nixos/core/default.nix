@@ -14,12 +14,10 @@ in
       # ../_mixins/services/network/networkmanager.nix
       ../_mixins/services/security/firewall.nix
       # ../_mixins/features/boot
-      ../_mixins/features/bluetooth
-      ../users
-      ./documentation.nix
+      # ../_mixins/features/bluetooth
       ./boot.nix
       ./console.nix
-      ./plymouth.nix
+      ./hardware.nix
       ./locale.nix
       ./timezone.nix
       ./network.nix
@@ -34,6 +32,16 @@ in
     ++ lib.optional (hostname == "nitro") ../_mixins/features/nix-ld
   ;
 
+  ######################
+  ### Documentations ###
+  ######################
+  documentation = {
+    enable = true; # documentation of packages
+    nixos.enable = false; # nixos documentation
+    man.enable = true; # manual pages and the man command
+    info.enable = false; # info pages and the info command
+    doc.enable = false; # documentation distributed in packages' /share/doc
+  };
 
   ########################
   ### Default Programs ###

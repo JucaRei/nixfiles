@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    ../../_mixins/hardware/boot/efi.nix
+    # ../../_mixins/hardware/boot/efi.nix
     ../../_mixins/hardware/other/usb.nix
     ../../_mixins/services/security/sudo.nix
   ];

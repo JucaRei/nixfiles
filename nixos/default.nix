@@ -14,29 +14,11 @@ in
 {
   imports = [
     ./core
+    ./users
   ];
 
   config = {
-    #######################
-    ### Default Locales ###
-    #######################
-    i18n = {
-      defaultLocale = "en_US.utf8";
-      extraLocaleSettings = {
-        #LC_CTYPE = "pt_BR.UTF-8"; # Fix ç in us-intl.
-        LC_ADDRESS = "pt_BR.UTF-8";
-        LC_IDENTIFICATION = "pt_BR.UTF-8";
-        LC_MEASUREMENT = "pt_BR.UTF-8";
-        LC_MONETARY = "pt_BR.UTF-8";
-        LC_NAME = "pt_BR.UTF-8";
-        LC_NUMERIC = "pt_BR.UTF-8";
-        LC_PAPER = "pt_BR.UTF-8";
-        LC_TELEPHONE = "pt_BR.UTF-8";
-        LC_TIME = "pt_BR.UTF-8";
-        #LC_COLLATE = "pt_BR.UTF-8";
-        #LC_MESSAGES = "pt_BR.UTF-8";
-      };
-    };
+
     ########################
     ### Default Timezone ###
     ########################
@@ -72,6 +54,7 @@ in
           dates = "20:00"; # Schedule the task to run weekly / daily and 24hr time
           options = "--delete-older-than 7d"; # Specify options for the task: delete files older than 7days
           randomizedDelaySec = "14m";
+          persistent = true;
         };
 
         # Disable channels

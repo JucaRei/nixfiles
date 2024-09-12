@@ -14,22 +14,19 @@ in
     enable = mkEnableOption "Default booting type." //
       { default = true; };
     boottype = mkOption {
-      # type = types.listOf (types.enum [ "efi" "legacy" ]);
       type = types.nullOr (types.enum [ "efi" "legacy" ]);
-      default = "efi"; # "efi";
+      default = "efi";
       description = "Default boot option.";
     };
     bootmanager = mkOption {
-      # type = types.listOf (types.enum [ "grub" "systemd-boot" ]);
       type = types.nullOr (types.enum [ "grub" "systemd-boot" ]);
-      default = "grub"; # "systemd-boot";
+      default = "grub";
       description = "Whether or not to enable EFI for booting.";
     };
     isDualBoot = mkEnableOption "Whether or not to enable for dual booting." // { default = false; };
     plymouth = mkEnableOption "Whether or not to enable plymouth boot splash." // {
       default = isWorkstation;
     };
-    # secureBoot = mkEnableOption false "Whether or not to enable secure boot.";
     silentBoot = mkEnableOption "Whether or not to enable silent boot." // { default = isWorkstation; };
   };
 
@@ -46,12 +43,27 @@ in
     boot = {
       consoleLogLevel = 0;
       initrd = {
-        verbose = false;
+        verbose = mkIf cfg.silentBoot;
         systemd = {
           enable = if cfg.boottype == "efi" then true else false;
         };
       };
-      kernelParams = optionals cfg.plymouth [ "quiet" "splash" ]
+      kernel = {
+        sysctl = mkIf cfg.silentBoot {
+          "kernel.printk" = "3 3 3 3"; # "4 4 1 7";
+
+          # Hide kptrs even for processes with CAP_SYSLOG
+          # also prevents printing kernel pointers
+          "kernel.kptr_restrict" = 2;
+
+          # Disable ftrace debugging
+          "kernel.ftrace_enabled" = false;
+
+          # Disable NMI watchdog
+          "kernel.nmi_watchdog" = 0;
+        };
+      };
+      kernelParams = optionals cfg.plymouth [ "quiet" "splash" "fbcon=nodefer" ]
         ++ optionals cfg.silentBoot [
         # tell the kernel to not be verbose
         "quiet"
@@ -72,6 +84,15 @@ in
 
         # disable the cursor in vt to get a black screen during intermissions
         "vt.global_cursor_default=0"
+
+        # performance improvement for direct-mapped memory-side-cache utilization
+        # reduces the predictability of page allocations
+        "page_alloc.shuffle=1"
+
+        #  ignore access time (atime) updates on files
+        # except when they coincide with updates to the ctime or mtime
+        "rootflags=noatime"
+
       ];
 
       # lanzaboote = mkIf cfg.secureBoot {
@@ -135,5 +156,6 @@ in
         cleanOnBoot = true;
       };
     };
+    systemd.watchdog.rebootTime = mkIf (cfg.plymouth) "0";
   };
 }

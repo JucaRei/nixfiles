@@ -72,16 +72,10 @@ in
       default = "network-manager"; # "efi";
       description = "Default network option.";
     };
-    exclusive-locallan = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Wheater enable exclusive-lan.";
-    };
-    powersave = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Wheater powersave on wifi.";
-    };
+    exclusive-locallan = mkEnableOption "Wheater enable exclusive-lan." //
+      { default = false; };
+    powersave = mkEnableOption "Wheater powersave on wifi." //
+      { default = false; };
   };
 
   config = mkIf cfg.enable {
@@ -146,7 +140,6 @@ in
 
         dispatcherScripts = mkIf cfg.exclusive-locallan [
           {
-            # source = ./nm-dispatcher-scripts/70-wifi-wired-exclusive.sh;
             source = "${exclusive-lan}/bin/70-wifi-wired-exclusive";
           }
         ];

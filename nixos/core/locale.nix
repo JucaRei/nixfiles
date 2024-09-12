@@ -1,9 +1,13 @@
 { lib, config, username, hostname, ... }:
 let
+  inherit (lib) mkDefault;
   variables = import ../hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
 in
 {
-  i18n = with lib; {
+  #######################
+  ### Default Locales ###
+  #######################
+  i18n = {
     defaultLocale = mkDefault "${variables.df-locale}";
     extraLocaleSettings = mkDefault {
       #LC_CTYPE = mkDefault "pt_BR.UTF-8"; # Fix ç in us-intl.
