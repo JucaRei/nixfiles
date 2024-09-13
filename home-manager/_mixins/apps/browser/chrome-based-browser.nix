@@ -58,9 +58,9 @@ in
           id = "cofpegcepiccpobikjoddpmmocficdjj";
         }
         # kagi search
-        {
-          id = "cdglnehniifkbagbbombnjghhcihifij";
-        }
+        # {
+        #   id = "cdglnehniifkbagbbombnjghhcihifij";
+        # }
         # 1password
         {
           id = "aeblfdkhhhdcdjpifhhbdiojplfjncoa";
@@ -74,9 +74,9 @@ in
           id = "cjpalhdlnbpafiamejdnhcphjbkeiagm";
         }
         # tactiq
-        {
-          id = "fggkaccpbmombhnjkjokndojfgagejfb";
-        }
+        # {
+        #   id = "fggkaccpbmombhnjkjokndojfgagejfb";
+        # }
         # okta
         {
           id = "glnpjglilkicbckjpbgcfkogebgllemb";
@@ -86,65 +86,65 @@ in
           id = "kbfnbcaeplbcioakkpcpgfkobkghlhen";
         }
         # simplify
-        {
-          id = "pbmlfaiicoikhdbjagjbglnbfcbcojpj";
-        }
+        # {
+        #   id = "pbmlfaiicoikhdbjagjbglnbfcbcojpj";
+        # }
         # todoist
-        {
-          id = "jldhpllghnbhlbpcmnajkpdmadaolakh";
-        }
+        # {
+        #   id = "jldhpllghnbhlbpcmnajkpdmadaolakh";
+        # }
         # Loom video recording
-        {
-          id = "liecbddmkiiihnedobmlmillhodjkdmb";
-        }
+        # {
+        #   id = "liecbddmkiiihnedobmlmillhodjkdmb";
+        # }
         # Privacy Badger
         {
           id = "pkehgijcmpdhfbdbbnkijodmdjhbjlgp";
         }
         # Checker Plus for Mail
-        {
-          id = "oeopbcgkkoapgobdbedcemjljbihmemj";
-        }
+        # {
+        #   id = "oeopbcgkkoapgobdbedcemjljbihmemj";
+        # }
         # Checker Plus for Cal
-        {
-          id = "hkhggnncdpfibdhinjiegagmopldibha";
-        }
+        # {
+        #   id = "hkhggnncdpfibdhinjiegagmopldibha";
+        # }
         # Google docs offline
-        {
-          id = "ghbmnnjooekpmoecnnnilnnbdlolhkhi";
-        }
+        # {
+        #   id = "ghbmnnjooekpmoecnnnilnnbdlolhkhi";
+        # }
         # Markdown downloader
         {
           id = "pcmpcfapbekmbjjkdalcgopdkipoggdi";
         }
         # obsidian clipper
-        {
-          id = "mphkdfmipddgfobjhphabphmpdckgfhb";
-        }
+        # {
+        #   id = "mphkdfmipddgfobjhphabphmpdckgfhb";
+        # }
         # URL/Tab Manager
         {
           id = "egiemoacchfofdhhlfhkdcacgaopncmi";
         }
         # Mail message URL
-        {
-          id = "bcelhaineggdgbddincjkdmokbbdhgch";
-        }
+        # {
+        #   id = "bcelhaineggdgbddincjkdmokbbdhgch";
+        # }
         # Glean browser extension
-        {
-          id = "cfpdompphcacgpjfbonkdokgjhgabpij";
-        }
-        # gnome extention plugin
-        {
-          id = "gphhapmejobijbbhgpjhcjognlahblep";
-        }
+        # {
+        #   id = "cfpdompphcacgpjfbonkdokgjhgabpij";
+        # }
+        # gnome extension plugin
+        # {
+        #   id = "gphhapmejobijbbhgpjhcjognlahblep";
+        # }
         # copy to clipboard
-        {
-          id = "miancenhdlkbmjmhlginhaaepbdnlllc";
-        }
+        # {
+        #   id = "miancenhdlkbmjmhlginhaaepbdnlllc";
+        # }
         # Speed dial extention
-        {
-          id = "jpfpebmajhhopeonhlcgidhclcccjcik";
-        }
+        # {
+        #   id = "jpfpebmajhhopeonhlcgidhclcccjcik";
+        # }
         # Omnivore
         {
           id = "blkggjdmcfjdbmmmlfcpplkchpeaiiab";
@@ -154,9 +154,9 @@ in
           id = "enpfonmmpgoinjpglildebkaphbhndek";
         }
         # email tracking for work
-        {
-          id = "pgbdljpkijehgoacbjpolaomhkoffhnl";
-        }
+        # {
+        #   id = "pgbdljpkijehgoacbjpolaomhkoffhnl";
+        # }
         # zoom
         # {
         #   id = "kgjfgplpablkjnlkjmjdecgdpfankdle";

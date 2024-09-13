@@ -1,6 +1,6 @@
 { config, pkgs, lib, isWorkstation, hostname, ... }:
 let
-  inherit (lib) mkIf mkOption mkEnableOption types optionalString optional optionals mapAttrsToList concatStringsSep;
+  inherit (lib) mkIf mkOption mkEnableOption types optionalString optional optionals mapAttrsToList concatStringsSep mkMerge;
   cfg = config.sys.hardware;
 in
 {
@@ -40,117 +40,93 @@ in
       kernel = {
         sysctl =
           let
-            # harden = concatStringsSep "\n"
-            #   mapAttrsToList
-            #   (
-            #     key: value:
-            #       "${key} = ${value}"
-            #   )
-            #   cfg.hardenKernel;
+            systemctl-confs =
+              if
+                cfg.hardenKernel == true then
+                {
+                  # Prevent unintentional fifo writes
+                  "fs.protected_fifos" = 2;
 
-            # tcp = concatStringsSep "\n"
-            #   mapAttrsToList
-            #   (
-            #     key: value:
-            #       "${key} = ${value}"
-            #   )
-            #   cfg.hardenKernel;
-            harden = {
-              # Prevent unintentional fifo writes
-              "fs.protected_fifos" = 2;
+                  # Prevent unintended writes to already-created files
+                  "fs.protected_regular" = 2;
 
-              # Prevent unintended writes to already-created files
-              "fs.protected_regular" = 2;
+                  # Disable SUID binary dump
+                  "fs.suid_dumpable" = 0;
 
-              # Disable SUID binary dump
-              "fs.suid_dumpable" = 0;
+                  # Require user to have CAP_SYSLOG to use dmesg
+                  "kernel.dmesg_restrict" = 1;
 
-              # Require user to have CAP_SYSLOG to use dmesg
-              "kernel.dmesg_restrict" = 1;
+                  # Prevent printing kernel pointers
+                  "kernel.kptr_restrict" = 2;
 
-              # Prevent printing kernel pointers
-              "kernel.kptr_restrict" = 2;
+                  # Disallow profiling at all levels without CAP_SYS_ADMIN
+                  "kernel.perf_event_paranoid" = 3;
 
-              # Disallow profiling at all levels without CAP_SYS_ADMIN
-              "kernel.perf_event_paranoid" = 3;
+                  # Disable "Sysrq" key
+                  "kernel.sysrq" = 0;
 
-              # Disable "Sysrq" key
-              "kernel.sysrq" = 0;
+                  # Require CAP_BPF to use bpf
+                  "kernel.unprvileged_bpf_disabled" = 1;
 
-              # Require CAP_BPF to use bpf
-              "kernel.unprvileged_bpf_disabled" = 1;
+                  # Filter ARP packets to be responded on per-interface. Not sure why this isn't the default
+                  "net.ipv4.conf.all.arp_filter" = 1;
 
-              # Filter ARP packets to be responded on per-interface. Not sure why this isn't the default
-              "net.ipv4.conf.all.arp_filter" = 1;
+                  # Filter Reverse Path
+                  "net.ipv4.conf.all.rp_filter" = 1;
 
-              # Filter Reverse Path
-              "net.ipv4.conf.all.rp_filter" = 1;
+                  # Log impossible addr packets
+                  "net.ipv4.conf.all.log_martians" = 1;
+                  "net.ipv4.conf.default.log_martians" = 1;
+                }
+              else if
+                cfg.improveTCP == true then {
+                ## TCP hardening
+                # Prevent bogus ICMP errors from filling up logs.
+                "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
 
-              # Log impossible addr packets
-              "net.ipv4.conf.all.log_martians" = 1;
-              "net.ipv4.conf.default.log_martians" = 1;
-            };
+                # Reverse path filtering causes the kernel to do source validation of
+                # packets received from all interfaces. This can mitigate IP spoofing.
+                "net.ipv4.conf.default.rp_filter" = 1;
+                "net.ipv4.conf.all.rp_filter" = 1;
 
-            tcp = {
-              # Disable NMI watchdog
-              "kernel.nmi_watchdog" = 0;
+                # Do not accept IP source route packets (we're not a router)
+                # "net.ipv4.conf.all.accept_source_route" = 0;
+                # "net.ipv6.conf.all.accept_source_route" = 0;
 
-              ## TCP hardening
-              # Prevent bogus ICMP errors from filling up logs.
-              "net.ipv4.icmp_ignore_bogus_error_responses" = 1;
+                # Don't send ICMP redirects (again, we're on a router)
+                # "net.ipv4.conf.all.send_redirects" = 0;
+                # "net.ipv4.conf.default.send_redirects" = 0;
 
-              # Reverse path filtering causes the kernel to do source validation of
-              # packets received from all interfaces. This can mitigate IP spoofing.
-              "net.ipv4.conf.default.rp_filter" = 1;
-              "net.ipv4.conf.all.rp_filter" = 1;
+                # Refuse ICMP redirects (MITM mitigations)
+                # "net.ipv4.conf.all.accept_redirects" = 0;
+                # "net.ipv4.conf.default.accept_redirects" = 0;
+                # "net.ipv4.conf.all.secure_redirects" = 0;
+                # "net.ipv4.conf.default.secure_redirects" = 0;
+                # "net.ipv6.conf.all.accept_redirects" = 0;
+                # "net.ipv6.conf.default.accept_redirects" = 0;
 
-              # Do not accept IP source route packets (we're not a router)
-              # "net.ipv4.conf.all.accept_source_route" = 0;
-              # "net.ipv6.conf.all.accept_source_route" = 0;
+                # Protects against SYN flood attacks
+                "net.ipv4.tcp_syncookies" = 1;
 
-              # Don't send ICMP redirects (again, we're on a router)
-              # "net.ipv4.conf.all.send_redirects" = 0;
-              # "net.ipv4.conf.default.send_redirects" = 0;
+                # Incomplete protection again TIME-WAIT assassination
+                "net.ipv4.tcp_rfc1337" = 1;
 
-              # Refuse ICMP redirects (MITM mitigations)
-              # "net.ipv4.conf.all.accept_redirects" = 0;
-              # "net.ipv4.conf.default.accept_redirects" = 0;
-              # "net.ipv4.conf.all.secure_redirects" = 0;
-              # "net.ipv4.conf.default.secure_redirects" = 0;
-              # "net.ipv6.conf.all.accept_redirects" = 0;
-              # "net.ipv6.conf.default.accept_redirects" = 0;
+                # TCP optimization
+                # TCP Fast Open is a TCP extension that reduces network latency by packing
+                # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
+                # both incoming and outgoing connections:
+                "net.ipv4.tcp_fastopen" = 3;
 
-              # Protects against SYN flood attacks
-              "net.ipv4.tcp_syncookies" = 1;
-
-              # Incomplete protection again TIME-WAIT assassination
-              "net.ipv4.tcp_rfc1337" = 1;
-
-              # TCP optimization
-              # TCP Fast Open is a TCP extension that reduces network latency by packing
-              # data in the sender’s initial TCP SYN. Setting 3 = enable TCP Fast Open for
-              # both incoming and outgoing connections:
-              "net.ipv4.tcp_fastopen" = 3;
-
-              # Bufferbloat mitigations + slight improvement in throughput & latency
-              "net.ipv4.tcp_congestion_control" = "bbr";
-              # "net.core.default_qdisc" = "cake";
-            };
-
+                # Bufferbloat mitigations + slight improvement in throughput & latency
+                "net.ipv4.tcp_congestion_control" = "bbr";
+                # "net.core.default_qdisc" = "cake";
+              } else { };
           in
-          # mkIf cfg.hardenKernel lib.attrsets.mapAttrsToList (key: value: "${key} = ${value}" harden) harden
-            # ++ optional cfg.improveTCP lib.attrsets.mapAttrsToList (key: value: "${key} = ${value}" tcp) tcp;
-            # mkIf cfg.hardenKernel [ builtins.map (key: value: "${key} = ${value}" harden) harden ]
-            # ++ mkIf cfg.improveTCP [ builtins.map (key: value: "${key} = ${value}" tcp) tcp ];
-            #   ++ (optionals cfg.improveTCP { })
-
-          mkIf cfg.hardenKernel
-            {
-              inherit harden;
-            } ++ mkIf (cfg.improveTCP mapAttrsToList (key: value: "${key}=${value}") [ tcp ]);
+          mkMerge [ systemctl-confs { } ];
       };
 
       kernelParams = (optional (cfg.cpuVendor == "intel") "intel_iommu=on");
+
     };
 
     environment.systemPackages = optionals isWorkstation (
