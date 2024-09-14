@@ -6,31 +6,37 @@ in
 {
   imports = [ ./themes/my-theme ];
   config = {
-    custom.features.isWayland = true;
+    custom.features = {
+      isWayland = {
+        enable = true;
+        session-type = "hyprland";
+      };
+    };
     home = {
-      packages = with pkgs; [
-        # kitty # terminal
-        # mako # notification daemon
-        # libsForQt5.polkit-kde-agent # polkit agent
-        libcamera
-        dmenu
-        bibata-cursors
-        pavucontrol
-        # nwg-look
-        qt6Packages.qtstyleplugin-kvantum
-        libsForQt5.qtstyleplugin-kvantum
-        libsForQt5.qt5ct
-        qt6.qtwayland
-        libsForQt5.qt5.qtwayland
-        xdg-desktop-portal-hyprland
-        xdg-utils
-        libnotify
-        libevdev
-        gtk3
-        xdg-utils
-        xfce.tumbler
-        xfce.xfce4-power-manager
-      ];
+      packages = with pkgs;
+        [
+          # kitty # terminal
+          # mako # notification daemon
+          # libsForQt5.polkit-kde-agent # polkit agent
+          libcamera
+          dmenu
+          bibata-cursors
+          pavucontrol
+          # nwg-look
+          qt6Packages.qtstyleplugin-kvantum
+          libsForQt5.qtstyleplugin-kvantum
+          libsForQt5.qt5ct
+          qt6.qtwayland
+          libsForQt5.qt5.qtwayland
+          xdg-desktop-portal-hyprland
+          xdg-utils
+          libnotify
+          libevdev
+          gtk3
+          xdg-utils
+          xfce.tumbler
+          xfce.xfce4-power-manager
+        ];
     };
     wayland = {
       windowManager = {

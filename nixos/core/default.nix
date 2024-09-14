@@ -1,8 +1,13 @@
 { lib, config, desktop, inputs, hostid, hostname, username, stateVersion, modulesPath, outputs, platform, isInstall, isWorkstation, isISO, notVM, pkgs, ... }:
-with lib;
 let
+  inherit (lib) mkDefault mkIf mapAttrsToList optional optionals;
   variables = import ../hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
+  build-host = import ../../resources/scripts/nixos/build-host { inherit pkgs; };
+  build-all = import ../../resources/scripts/nixos/build-all { inherit pkgs; };
+  build-iso = import ../../resources/scripts/nixos/build-iso { inherit pkgs; };
+  install-system = import ../../resources/scripts/nixos/install-system { inherit pkgs platform inputs isISO; };
+
 in
 {
   imports =
@@ -15,6 +20,7 @@ in
       ../_mixins/services/security/firewall.nix
       # ../_mixins/features/boot
       # ../_mixins/features/bluetooth
+
       ./boot.nix
       ./console.nix
       ./hardware.nix
@@ -24,12 +30,12 @@ in
       ./ssh.nix
       ./system.nix
     ]
-    ++ lib.optional (notVM && hostname != "soyo") ../_mixins/features/smartd # Wheather enable smart daemon
-    ++ lib.optional (notVM) ../_mixins/features/docker # Wheather enable docker daemon
-    ++ lib.optional (notVM && hostname != "soyo") ../_mixins/features/lxd # Wheather enable linux containers
-    ++ lib.optional (isWorkstation) ../_mixins/desktop # if has desktop environment
-    ++ lib.optional (isWorkstation) ../_mixins/sys
-    ++ lib.optional (hostname == "nitro") ../_mixins/features/nix-ld
+    ++ optional (notVM && hostname != "soyo") ../_mixins/features/smartd # Wheather enable smart daemon
+    ++ optional (notVM) ../_mixins/features/docker # Wheather enable docker daemon
+    ++ optional (notVM && hostname != "soyo") ../_mixins/features/lxd # Wheather enable linux containers
+    ++ optional (isWorkstation) ../_mixins/desktop # if has desktop environment
+    ++ optional (isWorkstation) ../_mixins/sys
+    ++ optional (hostname == "nitro") ../_mixins/features/nix-ld
   ;
 
   ######################
@@ -55,8 +61,6 @@ in
     ######################
     nh = {
       enable = true;
-      clean.enable = true;
-      clean.extraArgs = "--keep-since 4d --keep 3";
       flake = "${variables.flake-path}";
     };
   };
@@ -112,9 +116,14 @@ in
       podman-tui
       podman
       flyctl
+      build-iso
+      install-system
       fuse-overlayfs
     ] ++ optionals (isInstall || isWorkstation) [
       inputs.nixos-needtoreboot.packages.${platform}.default
+      build-all
+      build-host
+      build-iso
       nvd
       nvme-cli
       smartmontools

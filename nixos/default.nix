@@ -56,13 +56,11 @@ in
           randomizedDelaySec = "14m";
           persistent = true;
         };
-
         # Disable channels
         channel.enable = false;
         # Make flake registry and nix path match flake inputs
         registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
         nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
-
         optimise = {
           automatic = isLinux;
           dates = [ "14:00" ];
@@ -85,7 +83,6 @@ in
           # flake-registry = "";
           # Workaround for https://github.com/NixOS/nix/issues/9574
           # nix-path = config.nix.nixPath;
-
           allowed-users = users;
           trusted-users = users;
           builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
@@ -106,7 +103,6 @@ in
             "nixos-test"
           ];
         };
-
         extraOptions = ''
           log-lines = 15
           # Free up to 4GiB whenever there is less than 2GiB left.
