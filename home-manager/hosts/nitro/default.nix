@@ -4,6 +4,8 @@ let
 in
 {
   imports = [
+    "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
+
     # ../_mixins/console/neovim.nix
     ../../_mixins/apps/video/mpv/mpv.nix
     ../../_mixins/apps/browser/chrome-based-browser.nix
@@ -98,6 +100,11 @@ in
         #   browser = "firefox-devedition";
         # };
       };
+    };
+
+    services.vscode-server = {
+      enable = true;
+      nodejsPackage = pkgs.nodejs-18_x;
     };
 
     home = {
