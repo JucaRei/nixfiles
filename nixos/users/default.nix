@@ -4,6 +4,8 @@ let
 
   variables = import ../hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
 
+  groupName = username;
+  inherit (lib) mkDefault;
 in
 {
   imports = [
@@ -13,14 +15,8 @@ in
   environment.localBinInPath = true;
 
   users = {
-    mutableUsers = true;
-    # groups.${username} = {
-    #   members = [ "${username}" ];
-    # };
-    # extraUsers.${username} = {
-    #   name = "${username}";
-    #   group = "${username}";
-    # };
+    mutableUsers = false;
+    # ${username}.group = groupName;
     users.${username} = {
       extraGroups = [
         "audio"
@@ -40,6 +36,11 @@ in
         # "qemu-libvirtd"
         "kvm"
       ];
+      # groups.${groupName}.gid = mkDefault config.users.users.${username}.uid; # make uid/gid == 1000
+      # extraUsers.${username} = {
+      #   name = "${username}";
+      #   group = "${username}";
+      # };
       homeMode = "0755";
       isNormalUser = true;
       openssh.authorizedKeys.keys = [

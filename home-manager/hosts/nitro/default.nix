@@ -117,7 +117,6 @@ in
         amberol
         gnome.geary
         neovim
-        font-search
         unstable.obsidian
         # fcitx5-with-addons
         # vv

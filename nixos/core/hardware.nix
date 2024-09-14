@@ -1,6 +1,6 @@
 { config, pkgs, lib, isWorkstation, hostname, ... }:
 let
-  inherit (lib) mkIf mkOption mkEnableOption types optionalString optional optionals mapAttrsToList concatStringsSep mkMerge;
+  inherit (lib) mkIf mkOption mkEnableOption types optionalString optional optionals mkMerge;
   cfg = config.sys.hardware;
 in
 {
@@ -140,24 +140,29 @@ in
     hardware = {
       bluetooth = mkIf isWorkstation {
         enable = true;
-        package = pkgs.bluez;
-        # package = pkgs.unstable.bluez-experimental;
+        # package = pkgs.bluez;
+        package = pkgs.unstable.bluez-experimental;
         powerOnBoot = false;
         settings = {
-          General.Name = config.networking.hostName;
-          # Enable = "Source,Sink,Media,Socket";
-          # JustWorksRepairing = "always";
-          # MultiProfile = "multiple";
-          # # make Xbox Series X controller work
-          # # Class = "0x000100";
-          # ControllerMode = "bredr";
-          # FastConnectable = true;
-          # Privacy = "device";
-          # Experimental = true;
+          General = {
+            Name = config.networking.hostName;
+            Enable = "Source,Sink,Media,Socket"; # Enable A2DP sink
+            JustWorksRepairing = "always";
+            MultiProfile = "multiple";
+            # # make Xbox Series X controller work
+            Class = "0x000100";
+            ControllerMode = "bredr";
+            FastConnectable = true;
+            Privacy = "device";
+            Experimental = true;
+          };
         };
       };
 
-      cpu.intel.updateMicrocode = cfg.cpuVendor == "intel";
+      cpu = {
+        intel.updateMicrocode = cfg.cpuVendor == "intel";
+        amd.updateMicrocode = mkIf (cfg.cpuVendor == "amd") config.hardware.enableRedistributableFirmware;
+      };
       enableRedistributableFirmware = true;
     };
 

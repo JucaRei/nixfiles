@@ -1,15 +1,14 @@
-{ config, username, hostname, isWorkstation, lib, ... }:
+{ hostname, isWorkstation, lib, ... }:
 let
-  variables = import ../hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
+  inherit (lib) mkForce;
 in
 {
   time = {
-    timeZone = "${variables.timezone}";
+    timeZone = "America/Sao_Paulo";
     hardwareClockInLocalTime = isWorkstation && hostname == "nitro"; ### Dual boot
   };
-
   services = {
-    geoclue2 = lib.mkForce {
+    geoclue2 = mkForce {
       enable = isWorkstation;
     };
   };

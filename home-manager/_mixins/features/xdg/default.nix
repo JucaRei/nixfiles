@@ -362,11 +362,15 @@ in
             pkgs.xdg-desktop-portal-gnome
           ] ++ lib.optionals (desktop == "hyprland") [
             pkgs.xdg-desktop-portal-hyprland
+            pkgs.xdg-desktop-portal-gtk
+          ]
+          ++ lib.optionals (desktop == "bspwm") [
+            pkgs.xdg-desktop-portal-gtk
           ] ++ lib.optionals (desktop == "mate" || desktop == "cinnamon") [
             pkgs.xdg-desktop-portal-xapp
+            pkgs.xdg-desktop-portal-gtk
           ] ++ lib.optionals (desktop == "pantheon") [
             pkgs.pantheon.xdg-desktop-portal-pantheon
-          ] ++ [
             pkgs.xdg-desktop-portal-gtk
           ];
           config = {

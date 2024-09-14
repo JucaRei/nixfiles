@@ -73,9 +73,17 @@ in
       description = "Default network option.";
     };
     exclusive-locallan = mkEnableOption "Wheater enable exclusive-lan." //
-      { default = false; };
+      {
+        type = types.bool;
+        default = false;
+        description = "Enable script.";
+      };
     powersave = mkEnableOption "Wheater powersave on wifi." //
-      { default = false; };
+      {
+        default = false;
+        type = types.bool;
+        description = "Enable powersave for wifi.";
+      };
   };
 
   config = mkIf cfg.enable {
@@ -150,8 +158,26 @@ in
       hostId = hostid;
       usePredictableInterfaceNames = true;
     };
-    services.resolved = {
-      enable = if (cfg.networkOpt == "network-manager") then true else false;
+    services = {
+      resolved = {
+        enable = if (cfg.networkOpt == "network-manager") then true else false;
+      };
+
+      # disable-wifi-powersave = {
+      #   wantedBy = [ "multi-user.target" ];
+      #   path = [ pkgs.iw ];
+      #   script = ''
+      #     iw dev wlan0 set power_save off
+      #   '';
+      # };
+
+      # Modify autoconnect priority of the connection to my home network
+      # modify-autoconnect-priority = {
+      #   description = "Modify autoconnect priority of OPTUS_B27161 connection";
+      #   script = ''
+      #     nmcli connection modify OPTUS_B27161 connection.autoconnect-priority 1
+      #   '';
+      # };
     };
 
     environment = {

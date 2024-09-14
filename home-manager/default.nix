@@ -29,6 +29,7 @@ in
 
   home = {
     inherit stateVersion;
+    # stateVersion = osConfig.system.stateVersion;
     inherit username;
     activation = {
       diff = lib.hm.dag.entryAnywhere ''
