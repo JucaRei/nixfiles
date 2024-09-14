@@ -12,9 +12,11 @@ let
   };
 in
 {
-  environment.systemPackages = with pkgs; [ shellApplication ];
-  programs.fish.shellAliases = {
-    build-host = "nh-host build";
-    switch-host = "nh-host switch";
+  environment = {
+    systemPackages = with pkgs; [ shellApplication ];
+    shellAliases = {
+      build-host = "nh-host build";
+      switch-host = "nh-host switch";
+    };
   };
 }
