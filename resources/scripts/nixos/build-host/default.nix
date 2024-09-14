@@ -12,11 +12,9 @@ let
   };
 in
 {
-  environment = {
-    systemPackages = with pkgs; [ shellApplication ];
-    shellAliases = {
-      build-host = "nh-host build";
-      switch-host = "nh-host switch";
-    };
+  environment.systemPackages = with pkgs; [ shellApplication ];
+  environment.shellAliases = {
+    build-host = "nh-host build";
+    switch-host = "nh-host switch";
   };
 }

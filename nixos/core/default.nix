@@ -3,10 +3,6 @@ let
   inherit (lib) mkDefault mkIf mapAttrsToList optional optionals;
   variables = import ../hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
-  build-host = import ../../resources/scripts/nixos/build-host { inherit pkgs; };
-  build-all = import ../../resources/scripts/nixos/build-all { inherit pkgs; };
-  build-iso = import ../../resources/scripts/nixos/build-iso { inherit pkgs; };
-  install-system = import ../../resources/scripts/nixos/install-system { inherit pkgs platform inputs isISO; };
 
 in
 {
@@ -15,12 +11,13 @@ in
       (modulesPath + "/installer/scan/not-detected.nix")
       (../. + "/hosts/${ hostname}")
       # ../_mixins/services/network/openssh.nix
-      ../_mixins/config/scripts
+      # ../_mixins/config/scripts
       # ../_mixins/services/network/networkmanager.nix
       ../_mixins/services/security/firewall.nix
       # ../_mixins/features/boot
       # ../_mixins/features/bluetooth
 
+      ../../resources/scripts/nixos
       ./boot.nix
       ./console.nix
       ./hardware.nix
@@ -116,14 +113,9 @@ in
       podman-tui
       podman
       flyctl
-      build-iso
-      install-system
       fuse-overlayfs
     ] ++ optionals (isInstall || isWorkstation) [
       inputs.nixos-needtoreboot.packages.${platform}.default
-      build-all
-      build-host
-      build-iso
       nvd
       nvme-cli
       smartmontools

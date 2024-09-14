@@ -8,11 +8,9 @@ let
   };
 in
 {
-  environment = {
-    systemPackages = with pkgs; [ shellApplication ];
-    shellAliases = {
-      build-all = "nh-all build";
-      switch-all = "nh-all switch";
-    };
+  environment.systemPackages = with pkgs; [ shellApplication ];
+  environment.shellAliases = {
+    build-all = "nh-all build";
+    switch-all = "nh-all switch";
   };
 }
