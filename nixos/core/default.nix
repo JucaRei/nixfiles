@@ -11,13 +11,13 @@ in
       (modulesPath + "/installer/scan/not-detected.nix")
       (../. + "/hosts/${ hostname}")
       # ../_mixins/services/network/openssh.nix
-      # ../_mixins/config/scripts
+      ../_mixins/config/scripts
       # ../_mixins/services/network/networkmanager.nix
       ../_mixins/services/security/firewall.nix
       # ../_mixins/features/boot
       # ../_mixins/features/bluetooth
 
-      ../../resources/scripts/nixos
+      # ../../resources/scripts/nixos
       ./boot.nix
       ./console.nix
       ./hardware.nix
