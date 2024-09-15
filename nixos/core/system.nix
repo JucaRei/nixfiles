@@ -1,6 +1,6 @@
 { config, lib, isInstall, hostname, username, stateVersion, isWorkstation, pkgs, ... }:
 let
-  inherit (lib) mkForce mkIf mkDefault mkOption mkEnableOption;
+  inherit (lib) mkForce mkIf mkDefault mkOption mkEnableOption types;
   cfg = config.sys.tweaks;
 in
 {
@@ -125,9 +125,14 @@ in
         enable = isInstall;
       };
 
-      dbus = mkDefault {
+      dbus = {
         packages = mkIf isWorkstation (with pkgs; [ gnome-keyring gcr ]);
-        implementation = "broker";
+        # implementation = mkDefault "broker";
+        implementation = mkOption {
+          type = types.nullOr (types.enum [ "dbus" "broker" ]);
+          default = "broker";
+          description = "Default dbus implementation.";
+        };
       };
     };
   };

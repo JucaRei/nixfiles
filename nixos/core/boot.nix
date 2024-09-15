@@ -1,4 +1,4 @@
-{ lib, notVM, isInstall, config, pkgs, isWorkstation, ... }:
+{ lib, config, pkgs, isWorkstation, ... }:
 
 ############################
 ### Default Boot Options ###
@@ -6,10 +6,8 @@
 let
   inherit (lib) mkIf mkOverride mkEnableOption types mkDefault mkOption listOf enum optionals;
   cfg = config.sys.boot;
-
 in
 {
-
   options.sys.boot = {
     enable = mkEnableOption "Default booting type." //
       { default = true; };
@@ -28,6 +26,7 @@ in
       default = isWorkstation;
     };
     silentBoot = mkEnableOption "Whether or not to enable silent boot." // { default = isWorkstation; };
+    secureBoot = mkEnableOption "Whether or not to enable secure boot." // { default = false; };
   };
 
   config = mkIf cfg.enable {
@@ -37,9 +36,8 @@ in
       efitools
       efivar
     ]
-      # ++ optionals cfg.secureBoot [ sbctl ]
+      ++ optionals cfg.secureBoot [ sbctl ]
       ++ optionals cfg.isDualBoot [ os-prober ];
-
     boot = {
       consoleLogLevel = 0;
       initrd = {
@@ -95,10 +93,10 @@ in
 
       ];
 
-      # lanzaboote = mkIf cfg.secureBoot {
-      #   enable = true;
-      #   pkiBundle = "/etc/secureboot";
-      # };
+      lanzaboote = mkIf cfg.secureBoot {
+        enable = true;
+        pkiBundle = "/etc/secureboot";
+      };
 
       loader = {
         efi = mkIf (cfg.boottype == "efi") {
