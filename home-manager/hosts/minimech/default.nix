@@ -17,7 +17,7 @@ in
     ../_mixins/non-nixos
     ../_mixins/console/yt-dlp.nix
     ../_mixins/console/bash.nix
-    ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
+    # ../_mixins/apps/text-editor/vscode/vscode-unwrapped.nix
     ../_mixins/apps/browser/chrome/ungoogled-chromium.nix
     ../_mixins/apps/browser/firefox/firefox.nix
   ];
@@ -26,7 +26,7 @@ in
     services = {
       nonNixOs.enable = true;
       yt-dlp-custom.enable = true;
-      vscode-server.enable = true;
+      # vscode-server.enable = true;
       # bash.enable = true;
     };
 

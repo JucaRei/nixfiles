@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
+    # "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
 
     # ../_mixins/console/neovim.nix
     ../../_mixins/apps/video/mpv/mpv.nix
