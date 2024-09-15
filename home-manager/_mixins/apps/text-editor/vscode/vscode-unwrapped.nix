@@ -13,7 +13,7 @@ in
   ];
 
   # enable vs-code remote
-  services.vscode-server.enable = true; # true
+  # services.vscode-server.enable = true; # true
 
   # home = {
   #   packages = [
