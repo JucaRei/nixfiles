@@ -3,7 +3,6 @@ with lib;
 let
   nixgl = import ../../../../../lib/nixGL.nix { inherit config pkgs; };
   codegl = nixGL pkgs.unstable.vscode;
-  cfg = config.services.vscode;
 
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
 in
