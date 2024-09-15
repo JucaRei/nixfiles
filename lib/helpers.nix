@@ -1,6 +1,4 @@
 { inputs, outputs, stateVersion, pkgs, config, lib, ... }:
-with inputs;
-
 {
   # Helper function for generating home-manager configs
   makeHomeManager =
@@ -17,6 +15,7 @@ with inputs;
       isLima = builtins.substring 0 5 hostname == "lima-";
       isWorkstation = builtins.isString desktop;
     in
+    with inputs;
     home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
@@ -26,11 +25,9 @@ with inputs;
         ../home-manager
         declarative-flatpak.homeManagerModules.default
         nur.hmModules.nur
-        vscode-server.homeModules.default
+        vscode-server.homeModules.default # vscode-server module for home-manager
         nix-index-database.hmModules.nix-index
         catppuccin.homeManagerModules.catppuccin
-        # inputs.vscode-server-hm.nixosModules.home
-        # "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
         ({ config, pkgs, lib, ... }: {
           # Shared Between all users
           # services.vscode-server = {
@@ -65,7 +62,8 @@ with inputs;
       isWorkstation = builtins.isString desktop;
       notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
     in
-    inputs.nixpkgs.lib.nixosSystem {
+    with inputs;
+    nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit inputs outputs desktop hostname platform username hostid stateVersion isInstall isLima isISO notVM isWorkstation;
       };
