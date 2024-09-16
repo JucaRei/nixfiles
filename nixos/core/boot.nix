@@ -1,4 +1,4 @@
-{ lib, config, pkgs, isWorkstation, ... }:
+{ lib, config, pkgs, isWorkstation, notVM, ... }:
 
 ############################
 ### Default Boot Options ###
@@ -46,6 +46,15 @@ in
           enable = if cfg.boottype == "efi" then true else false;
         };
       };
+
+      kernelPackages =
+        #        default = 1000
+        #   this default = 1250
+        # option default = 1500
+        mkOverride 1250 pkgs.linuxPackages_latest;
+
+      kernelModules = mkIf (notVM) [ "vhost_vsock" ];
+
       kernel = {
         sysctl = mkIf cfg.silentBoot {
           "kernel.printk" = "3 3 3 3"; # "4 4 1 7";
@@ -61,6 +70,7 @@ in
           "kernel.nmi_watchdog" = 0;
         };
       };
+
       kernelParams = optionals cfg.plymouth [ "quiet" "splash" "fbcon=nodefer" ]
         ++ optionals cfg.silentBoot [
         # tell the kernel to not be verbose

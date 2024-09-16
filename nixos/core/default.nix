@@ -23,6 +23,7 @@ in
       ./hardware.nix
       ./locale.nix
       ./timezone.nix
+      ./security.nix
       ./network.nix
       ./ssh.nix
       ./system.nix
@@ -116,6 +117,24 @@ in
     # larger runtime directory size to not run out of ram while building
     # https://discourse.nixos.org/t/run-usr-id-is-too-small/4842
     logind.extraConfig = mkIf (isWorkstation) "RuntimeDirectorySize=2G";
+
+    udev = mkIf isWorkstation {
+      enable = true;
+
+      # enable high precision timers if they exist
+      # (https://gentoostudio.org/?page_id=420)
+      # enable high precision timers if they exist && set I/O scheduler to NONE for ssd/nvme
+      # autosuspend USB devices && autosuspend PCI devices
+      # (https://gentoostudio.org/?page_id=420)
+      extraRules = ''
+        KERNEL=="cpu_dma_latency", GROUP="audio"
+        KERNEL=="rtc0", GROUP="audio"
+        KERNEL=="hpet", GROUP="audio"
+        ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="ext4", ATTR{../queue/scheduler}="kyber"
+        ACTION=="add", SUBSYSTEM=="usb", TEST=="power/control", ATTR{power/control}="auto"cl
+        ACTION=="add", SUBSYSTEM=="pci", TEST=="power/control", ATTR{power/control}="auto"
+      '';
+    };
   };
 
   environment = {
