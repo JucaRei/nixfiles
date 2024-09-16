@@ -99,6 +99,7 @@
           #   # Optionally, use home-manager.extraSpecialArgs to pass
           #   # arguments to home.nix
           # }
+          lanzaboote.nixosModules.lanzaboote
           proxmox-nixos.nixosModules.proxmox-ve
           chaotic.nixosModules.default
           disko.nixosModules.disko

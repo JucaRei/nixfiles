@@ -261,6 +261,8 @@ in
       drivers = with pkgs; [ gutenprint hplip ];
     };
     system-config-printer.enable = isInstall;
+
+    # dbus.packages = [ pkgs.gnome-keyring pkgs.gcr ];
   };
 
 

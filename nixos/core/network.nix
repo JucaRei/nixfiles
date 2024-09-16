@@ -146,7 +146,7 @@ in
         #   networkmanager-openconnect
         # ];
 
-        dispatcherScripts = mkIf cfg.exclusive-locallan [
+        dispatcherScripts = mkIf (cfg.exclusive-locallan == true) [
           {
             source = "${exclusive-lan}/bin/70-wifi-wired-exclusive";
           }

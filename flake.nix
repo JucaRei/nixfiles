@@ -2,12 +2,11 @@
   description = "Juca's NixOS and Home Manager Configuration";
 
   inputs = {
-    nixpkgs-legacy.url = "github:nixos/nixpkgs/nixos-22.11";
-    # nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
-    # You can access packages and modules from different nixpkgs revs at the same time.
     # See 'unstable-packages' overlay in 'overlays/default.nix'.
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-legacy.url = "github:nixos/nixpkgs/nixos-22.11";
+
     chaotic = {
       url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
       inputs.chaotic.url = "https://flakehub.com/f/chaotic-cx/nyx/*.tar.gz";
@@ -17,7 +16,7 @@
 
     attic = {
       url = "github:zhaofengli/attic";
-      inputs.nixpkgs.follows = "nixpkgs"; # 23.05
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     sops-nix = {
@@ -55,7 +54,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # home-manager.url = "github:nix-community/home-manager/release-23.11";
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,8 +66,10 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    # nix-software-center.url = "github:vlinkz/nix-software-center";
-    # nix-software-center.inputs.nixpkgs.follows = "nixpkgs";
+    # nix-software-center = {
+    #   url = "github:vlinkz/nix-software-center";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     nix-formatter-pack = {
       url = "github:Gerschtli/nix-formatter-pack";
@@ -90,21 +90,21 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # For home-manager
     vscode-server-hm = {
       url = "github:nix-community/nixos-vscode-server/hm-module-import";
-      # url = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # For nixos
     vscode-server = {
-      # url = "github:nix-community/nixos-vscode-server/hm-module-import";
       url = "github:nix-community/nixos-vscode-server";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nixgl = {
       url = "github:nix-community/nixGL";
-      inputs.nixpkgs.follows = "nixpkgs-unstable"; # "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     polybar-scripts = {
@@ -119,7 +119,10 @@
     };
 
     # Gaming tweaks
-    nix-gaming.url = "github:fufexan/nix-gaming";
+    nix-gaming = {
+      url = "github:fufexan/nix-gaming";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     nixd = {
       url = "github:nix-community/nixd";
@@ -140,7 +143,7 @@
     nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
 
     # picom.url = "github:yaocccc/picom";
-    #spicetify-nix.url = "github:the-argus/spicetify-nix";
+    # spicetify-nix.url = "github:the-argus/spicetify-nix";
     # nixos-generators.url = "github:NixOS/nixos-hardware/master";
     # robotnix.url = "github:danielfullmer/robotnix";
 
@@ -150,8 +153,10 @@
     #  flake = false;
     #};
 
-    # nix-on-droid.url = "github:t184256/nix-on-droid";
-    # nix-on-droid.inputs.nixpkgs.follows = "nixpkgs";
+    # nix-on-droid = {
+    #   url = "github:t184256/nix-on-droid";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     comma.url = "github:nix-community/comma/v1.4.1";
 
@@ -161,8 +166,10 @@
     };
 
     # More up to date auto-cpufreq
-    auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
-    auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs";
+    auto-cpufreq = {
+      url = "github:AdnanHodzic/auto-cpufreq";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     #doom-emacs = {
     #  # Nix-community Doom Emacs
@@ -177,7 +184,7 @@
     };
 
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.1";
+      url = "github:nix-community/lanzaboote";
       # Optional but recommended to limit the size of your system closure.
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -301,7 +308,6 @@
           "juca@air" = helper.makeHomeManager { hostname = "air"; desktop = "bspwm"; stateVersion = "24.05"; };
           "juca@anubis" = helper.makeHomeManager { hostname = "anubis"; desktop = "bspwm"; };
           "juca@oldarch" = helper.makeHomeManager { hostname = "oldarch"; desktop = "xfce"; stateVersion = "23.05"; };
-          #"juca@nitro" = helper.makeHomeManager { hostname = "nitro"; };
           "juca@nitrovoid" = helper.makeHomeManager { hostname = "nitrovoid"; };
           "juca@soyo" = helper.makeHomeManager { hostname = "soyo"; stateVersion = "24.05"; };
           "juca@rocinante" = helper.makeHomeManager { hostname = "rocinante"; desktop = "mate"; };
