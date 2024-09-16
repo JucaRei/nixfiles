@@ -94,7 +94,7 @@
             ExecStart = ''
               ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
                     echo 1 > enabled&& \
-                    echo 20 > max_pool_percent&& \
+                    echo 10 > max_pool_percent&& \
                     echo lz4hc > compressor&& \
                     echo z3fold > zpool'
             '';

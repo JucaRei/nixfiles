@@ -53,6 +53,8 @@
     , hostid ? null
     , platform ? "x86_64-linux"
     , stateVersion ? "24.05"
+    , isServer ? false
+    , isLaptop ? false
     ,
     }:
     let
@@ -65,7 +67,7 @@
     with inputs;
     nixpkgs.lib.nixosSystem {
       specialArgs = {
-        inherit inputs outputs desktop hostname platform username hostid stateVersion isInstall isLima isISO notVM isWorkstation;
+        inherit inputs outputs desktop hostname platform username hostid stateVersion isInstall isServer isLaptop isLima isISO notVM isWorkstation;
       };
       modules =
         let

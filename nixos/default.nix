@@ -18,7 +18,6 @@ in
   ];
 
   config = {
-
     ########################
     ### Default Timezone ###
     ########################
@@ -33,8 +32,10 @@ in
       enable = isInstall;
       # boottype = "efi";
       # bootmanager = "systemd-boot";
-      silentBoot = true;
-      plymouth = true;
+      # isDualBoot = false;
+      # secureBoot = false;
+      silentBoot = isWorkstation;
+      plymouth = isWorkstation;
     };
     ####################
     ### Nix Settings ###
@@ -144,7 +145,6 @@ in
         allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
       };
     };
-
     system = {
       activationScripts.report-changes = ''
         PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}

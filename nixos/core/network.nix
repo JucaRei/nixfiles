@@ -1,6 +1,6 @@
 { hostname, hostid, lib, pkgs, config, ... }:
 let
-  inherit (lib) mkEnableOption mkOption types mkIf mkDefault;
+  inherit (lib) mkEnableOption mkOption types mkIf mkDefault mdDoc optional;
   port = pkgs.writeShellScriptBin "port" ''
     usage() {
       printf 'usage: %s open|close tcp|udp|both PORT[:PORT]\n' "''${0##*/}" >&2
@@ -72,18 +72,30 @@ in
       default = "network-manager"; # "efi";
       description = "Default network option.";
     };
-    exclusive-locallan = mkEnableOption "Wheater enable exclusive-lan." //
+    exclusive-locallan = mkEnableOption "Wheter enable exclusive-lan." //
       {
         type = types.bool;
         default = false;
         description = "Enable script.";
       };
-    powersave = mkEnableOption "Wheater powersave on wifi." //
+    powersave = mkEnableOption "Wheter powersave on wifi." //
       {
         default = false;
         type = types.bool;
         description = "Enable powersave for wifi.";
       };
+    wakeonlan = mkOption {
+      type = types.bool;
+      default = false;
+      description = mdDoc "Whether enable wakeOnLan";
+    };
+
+    custom-interface = mkOption {
+      type = types.str;
+      default = "eth0";
+      description = "Desired interface.";
+    };
+
   };
 
   config = mkIf cfg.enable {
@@ -157,6 +169,15 @@ in
       hostName = hostname;
       hostId = hostid;
       usePredictableInterfaceNames = true;
+
+      interfaces = {
+        "${cfg.custom-interface}" = {
+          wakeOnLan = mkIf (cfg.wakeonlan == true) {
+            enable = true;
+            policy = [ "magic" ];
+          };
+        };
+      };
     };
     services = {
       resolved = {
@@ -178,6 +199,11 @@ in
       #     nmcli connection modify OPTUS_B27161 connection.autoconnect-priority 1
       #   '';
       # };
+
+      tlp.settings = mkIf (cfg.wakeonlan) {
+        # https://wiki.archlinux.org/title/Wake-on-LAN#Enable_WoL_in_TLP
+        WOL_DISABLE = "N";
+      };
     };
 
     environment = {
@@ -187,7 +213,8 @@ in
         nethogs
         dnsutils
         port
-
+      ]
+      ++ (optional cfg.wakeonlan [
         # ethtool can be used to manually enable wakeOnLan, eg:
         #
         #    sudo ethtool -s enp7s0f1 wol g
@@ -196,7 +223,7 @@ in
         #
         #    sudo ethtool enp7s0f1 | grep Wake-on
         ethtool
-      ];
+      ]);
     };
 
 

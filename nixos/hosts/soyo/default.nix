@@ -16,8 +16,12 @@ in
   # RTL8111/8168/8211/8411 Gigabit Ethernet
 
   config = {
+    sys.network = {
+      wakeonlan = true;
+      custom-interface = "enp2s0";
+    };
     boot = {
-      mode.efi.enable = true;
+      # mode.efi.enable = true;
       loader = {
         efi = {
           efiSysMountPoint = lib.mkForce "/boot/efi";
@@ -44,7 +48,6 @@ in
       };
       consoleLogLevel = lib.mkForce 0;
       tmp = {
-        # useTmpfs = true;
         cleanOnBoot = true;
       };
       kernelModules = [
@@ -56,15 +59,12 @@ in
         "tcp_cubic" # Cubic: A traditional and widely used congestion control algorithm
         "tcp_westwood" # Westwood: Particularly effective in wireless networks
         "crc32c-intel"
-        # "z3fold"
-        # "lz4hc"
-        # "lz4hc_compress"
       ];
       kernelParams = [
         # intel cpu
         # "i915.fastboot=1"
-        "i965" # Kernel module for Intel integrated graphics.
-        # "i915" # i915 kernel module
+        # "i965" # Kernel module for Intel integrated graphics.
+        "i915" # i915 kernel module
         # "i965.modeset=1" # Enables modesetting for the Intel i915 driver.
         "enable_gvt=1" # enable GPU virtualization
         "mem_sleep_default=deep"
@@ -154,7 +154,8 @@ in
       };
       extraModulePackages = [ ];
       extraModprobeConfig = lib.mkMerge [
-        "options i965 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=2 disable_power_well=1" # Configuration for Intel integrated graphics.
+        # "options i965 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=2 disable_power_well=1" # Configuration for Intel integrated graphics.
+        "options i915 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=2 disable_power_well=1" # Configuration for Intel integrated graphics.
         # "options iwlmvm power_scheme=3" # Sets a power-saving scheme for Intel Wi-Fi drivers.
         # "options iwlwifi power_save=1 uapsd_disable=1 power_level=5" # Manages power-saving features for Intel Wi-Fi drivers.
         "options snd_hda_intel power_save=1 power_save_controller=Y" # Configures power-saving for Intel High Definition Audio (HDA) hardware.
@@ -164,7 +165,6 @@ in
 
     # Intel GPU
     hardware = {
-
       opengl = {
         enable = true;
         extraPackages = with pkgs; [
@@ -428,10 +428,10 @@ in
           options = "${variables.xkboptions}";
           model = "${variables.model}";
         };
-        videoDrivers = [
-          # "intel"
-          "modesetting" # we enable modesetting since this is recomeneded for intel gpus
-        ];
+        # videoDrivers = [
+        #   # "intel"
+        #   "modesetting" # we enable modesetting since this is recomeneded for intel gpus
+        # ];
       };
       acpid = {
         enable = true;

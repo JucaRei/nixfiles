@@ -1,6 +1,7 @@
 { hostname, isInstall, lib, pkgs, config, ... }:
 let
   inherit (lib) mkEnableOption mkIf;
+  xkblayout = if (hostname == "soyo" || hostname == "nitro") then "br" else "us";
   kmsconFontSize = {
     soyo = "24";
     nitro = "18";
@@ -17,6 +18,8 @@ let
       palette=custom
       palette-foreground=30, 30, 46
       palette-foreground=20, 214, 244
+
+      xkb-layout = ${xkblayout}
     '';
   cfg = config.sys.console;
 in
@@ -40,8 +43,27 @@ in
     };
 
     console = {
+      earlySetup = true;
       font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
       packages = with pkgs; [ tamzen ];
+    };
+
+    services = {
+      kmscon = mkIf isInstall {
+        enable = true;
+        hwRender = false;
+        extraOptions = "--gpus primary";
+        fonts = [{
+          name = "FiraCode Nerd Font Mono";
+          package = pkgs.nerdfonts.override {
+            fonts = [
+              "FiraCode"
+              "NerdFontsSymbolsOnly"
+            ];
+          };
+        }];
+        extraConfig = kmsconExtraConfig;
+      };
     };
   };
 }

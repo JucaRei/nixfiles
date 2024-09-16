@@ -7,7 +7,7 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     (import ./disks.nix { })
-    inputs.nixos-hardware.nixosModules.microsoft-hyper-v
+    # inputs.nixos-hardware.nixosModules.microsoft-hyper-v
     ../../_mixins/services/security/sudo.nix
   ];
 

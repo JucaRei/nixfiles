@@ -7,7 +7,7 @@ in
     {
       allowSimultaneousMultithreading = true; # Enables simultaneous use of processor threads.
 
-      polkit = mkIf isInstall {
+      polkit = mkIf isInstall && isWorkstation {
         enable = true;
         debug = true;
         # the below configuration depends on security.polkit.debug being set to true
@@ -25,7 +25,7 @@ in
         '';
       };
 
-      pam = mkIf isWorkstation {
+      pam = mkIf isInstall {
         # Increase open file limit for sudoers
         # fix "too many files open" errors while writing a lot of data at once
         loginLimits = [{

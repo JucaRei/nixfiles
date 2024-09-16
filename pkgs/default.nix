@@ -115,7 +115,7 @@
   # paper = pkgs.callPackage ./scripts/paper { };
   # repl = pkgs.callPackage ./scripts/repl { };
   # nixGLNvidia-legacy = pkgs.callPackage ./scripts/nixGLNvidia-legacy { };
-  nixLegacyGLNvidia = pkgs.callPackage ./scripts/nixLegacyGLNvidia { };
+  # nixLegacyGLNvidia = pkgs.callPackage ./scripts/nixLegacyGLNvidia { };
   ###################
   ### Sddm Themes ###
   ###################

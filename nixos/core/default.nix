@@ -1,4 +1,4 @@
-{ lib, config, desktop, inputs, hostid, hostname, username, stateVersion, modulesPath, outputs, platform, isInstall, isWorkstation, isISO, notVM, pkgs, ... }:
+{ lib, config, desktop, inputs, hostid, hostname, username, stateVersion, modulesPath, outputs, platform, isInstall, isLaptop, isWorkstation, isISO, notVM, pkgs, ... }:
 let
   inherit (lib) mkDefault mkIf mapAttrsToList optional optionals;
   variables = import ../hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
@@ -11,7 +11,7 @@ in
       (modulesPath + "/installer/scan/not-detected.nix")
       (../. + "/hosts/${ hostname}")
       # ../_mixins/services/network/openssh.nix
-      ../_mixins/config/scripts
+      ../../resources/nixos/scripts
       # ../_mixins/services/network/networkmanager.nix
       ../_mixins/services/security/firewall.nix
       # ../_mixins/features/boot
@@ -66,6 +66,28 @@ in
     # snap daemon
     snap.enable = notVM && isISO;
 
+    libinput = {
+      enable = isWorkstation || isISO || isInstall;
+      touchpad = mkIf isLaptop {
+        accelProfile = "adaptive";
+        accelSpeed = "0.6";
+        tapping = true;
+        scrollMethod = "twofinger";
+        disableWhileTyping = true;
+        clickMethod = "clickfinger";
+        naturalScrolling = true;
+        # natural scrolling for touchpad only, not mouse
+        additionalOptions = ''
+          MatchIsTouchpad "on"
+        '';
+      };
+      mouse = {
+        naturalScrolling = false;
+        disableWhileTyping = true;
+        accelProfile = mkDefault "adaptive";
+      };
+    };
+
     # Local services
     avahi = {
       enable = isWorkstation;
@@ -98,11 +120,10 @@ in
 
   environment = {
     defaultPackages = with pkgs; [
-      coreutils
+      uutils-coreutils-noprefix
       micro
       nix-output-monitor
     ];
-
     systemPackages = with pkgs; [
       gitMinimal
     ] ++ optionals (isISO) [
@@ -125,14 +146,19 @@ in
       vdpauinfo
     ];
 
-    shellAliases = {
-      system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
-      sxorg = "export DISPLAY=:0.0";
-      drivers = "${pkgs.pciutils}/bin/lspci -v | grep -B8 -v 'Kernel modules: [a-z0-9]+'";
-      r = "${pkgs.rsync}/bin/rsync -ra --info=progress2";
-      fd = "${pkgs.fd}/bin/fd --hidden --exclude .git";
-      search = "nix search nixpkgs";
-    };
+    shellAliases =
+      let
+        _ = lib.getExe;
+        __ = lib.getExe';
+      in
+      {
+        system-clean = "sudo nix-collect-garbage -d && nix-collect-garbage -d";
+        sxorg = "export DISPLAY=:0.0";
+        drivers = "${__ pkgs.pciutils "lspci"} -v | grep -B8 -v 'Kernel modules: [a-z0-9]+'";
+        r = "${_ pkgs.rsync} -ra --info=progress2";
+        fd = "${_ pkgs.fd} --hidden --exclude .git";
+        search = "nix search nixpkgs";
+      };
 
     sessionVariables = {
       NIXPKGS_ALLOW_UNFREE = "1"; # Allow unfree packages
