@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, nixGLWrap, ... }:
 let
   inherit (lib) mkForce;
 in
@@ -111,7 +111,7 @@ in
       packages = with pkgs; [
         # spotdl
         # icloud-photo-downloader
-        # (nixGLWrap pkgs vlc)
+        # (nixGLWrap vlc)
         # cloneit
         # deezer-gui
         # fantezy

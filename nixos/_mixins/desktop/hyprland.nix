@@ -297,3 +297,60 @@ in
   };
   services.gnome = { gnome-keyring.enable = true; };
 }
+
+# wayland.windowManager.hyprland = {
+#     xwayland.enable = true;
+#     settings = {
+#       monitor = [
+#         "DP-4, highrr, 3840x0, 1"
+#         "DP-5, highrr, 0x0, 1"
+#       ];
+#       env = [
+#         "LIBVA_DRIVER_NAME,nvidia"
+#         "XDG_SESSION_TYPE,wayland"
+#         "GBM_BACKND,nvidia-drm"
+#         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+#         "WLR_NO_HARDWARE_CURSORS,1"
+#         "WLR_DRM_NO_ATOMIC,1"
+#       ];
+#     };
+#   };
+
+
+# home.file = {
+#     # Set the custom launcher script
+#     ".config/hypr/start.sh" = {
+#         enable = true;
+#         executable = true;
+#         text = ''
+#           #!/usr/bin/env bash
+#           # https://wiki.hyprland.org/FAQ/#some-of-my-apps-take-a-really-long-time-to-open
+#           dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP &
+
+#           # Set the wallpaper
+#           swww init
+
+#           # Waybar
+#           waybar &
+
+#           # Set up the idle management daemon
+#           swayidle -w \
+#               timeout 120       'swaylock -f && playerctl pause' \
+#               timeout 180       'hyprctl dispatch dpms off' \
+#               timeout 300       'systemctl suspend-then-hibernate' \
+#                    resume       'hyprctl dispatch dpms on' \
+#                    before-sleep 'swaylock -f' \
+#                    before-sleep 'playerctl pause' &
+
+#           # Automatic device mounting
+#           udiskie &
+
+#           DIR=/etc/nixos/git/wallpapers/${theme}
+#           IMG=`ls $DIR | shuf -n 1`
+#           swww img $DIR/$IMG -t random &
+
+#           # Notification listener
+#           mako
+#       '';
+#     };
+#   };

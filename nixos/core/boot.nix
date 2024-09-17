@@ -47,6 +47,13 @@ in
         };
       };
 
+      # Disable watchdog
+      extraModprobeConfig = mkIf cfg.plymouth ''
+        blacklist iTCO_wdt
+        blacklist iTCO_vendor_support
+        blacklist sp5100_tco
+      '';
+
       kernelPackages =
         #        default = 1000
         #   this default = 1250
@@ -71,8 +78,14 @@ in
         };
       };
 
-      kernelParams = optionals cfg.plymouth [ "quiet" "splash" "fbcon=nodefer" ]
-        ++ optionals cfg.silentBoot [
+      kernelParams = optionals cfg.plymouth [
+        "quiet"
+        "splash"
+        "fbcon=nodefer"
+        "nowatchdog" # Disable watchdog
+        "nmi_watchdog=0" # Disable watchdog
+      ]
+      ++ optionals cfg.silentBoot [
         # tell the kernel to not be verbose
         "quiet"
 
@@ -158,10 +171,10 @@ in
         ];
       };
 
-      tmp = mkDefault {
+      tmp = {
         useTmpfs = true;
         tmpfsSize = "30%";
-        cleanOnBoot = true;
+        cleanOnBoot = mkDefault (!config.boot.tmp.useTmpfs);
       };
     };
     systemd.watchdog.rebootTime = mkIf (cfg.plymouth) "0";

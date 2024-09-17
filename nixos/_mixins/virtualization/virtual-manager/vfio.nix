@@ -1,8 +1,8 @@
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, config, username, ... }:
 with lib;
 let
   inherit (lib) types mkOption mkEnableOption optional optionals;
-  cfg = config.services.virtualisation.vfio;
+  cfg = config.${namespace}.services.virtualisation.vfio;
 
   tmpfileEntry = name: f: "f /dev/shm/${name} ${f.mode} ${f.user} ${f.group} -";
 
@@ -16,7 +16,7 @@ let
       ,
     ''
       escapeNixString
-      config.services.virtualisation.vfio.libvirtd.deviceACL;
+      config.${namespace}.services.virtualisation.vfio.libvirtd.deviceACL;
 in
 {
   # Based on this https://gist.github.com/CRTified/43b7ce84cd238673f7f24652c85980b3
@@ -32,12 +32,20 @@ in
         type = types.bool;
         default = true;
       };
+      user = mkOption {
+        type = types.str;
+        default = config.users.users.${username};
+      };
+      group = mkOption {
+        type = types.str;
+        default = "kvm";
+      };
     };
-
     IOMMUType = mkOption {
       type = types.enum [ "intel" "amd" ];
-      example = "intel";
+      default = "intel";
       description = "Type of the IOMMU used";
+      example = "intel";
     };
     devices = mkOption {
       type = types.listOf (types.strMatching "[0-9a-f]{4}:[0-9a-f]{4}");
@@ -118,10 +126,10 @@ in
         (
           if cfg.IOMMUType == "intel"
           then [
-            "intel_iommu=on"
+            # "intel_iommu=on"
             "intel_iommu=igfx_off"
           ]
-          else [ "amd_iommu=on" ]
+          else [ "amd_iommu=on" "iommu=pt" ]
         )
         ++ (optional (builtins.length cfg.devices > 0)
           ("vfio-pci.ids=" + builtins.concatStringsSep "," cfg.devices))
@@ -133,7 +141,9 @@ in
         ++ optionals cfg.hugepages.enable [
           "default_hugepagesz=${cfg.hugepages.defaultPageSize}"
           "hugepagesz=${cfg.hugepages.pageSize}"
-          "hugepages=${toString cfg.hugepages.numPages}"
+
+          # Done through qemu script
+          # "hugepages=${toString cfg.hugepages.numPages}"
         ];
 
       kernelModules = [ "vfio_pci" "vfio_iommu_type1" "vfio" ];
@@ -151,14 +161,27 @@ in
 
     environment.systemPackages = with pkgs; [
       virtiofsd
-      looking-glass-client
+      # looking-glass-client
     ];
 
     virtualisation.libvirtd.qemu.verbatimConfig = ''
+      user = "${cfg.libvirtd.user}"
+      group = "${cfg.libvirtd.group}"
+      namespaces = []
+      security_driver = []
+      security_default_confined = 0
+      seccomp_sandbox = 0
       clear_emulation_capabilities = ${
         boolToZeroOne cfg.libvirtd.clearEmulationCapabilities
       }
       cgroup_device_acl = [
+        "/dev/full",
+        "/dev/kvm",
+        "/dev/null",
+        "/dev/ptmx",
+        "/dev/random",
+        "/dev/urandom",
+        "/dev/zero",
         ${aclString}
       ]
     '';
