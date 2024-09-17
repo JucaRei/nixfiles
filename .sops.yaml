@@ -1,23 +1,28 @@
-# Make a user key
-# mkdir -p ~/.config/sops/age
-# age-keygen -o ~/.config/sops/age/keys.txt
-# chmod 600 ~/.config/sops/age/keys.txt
-
-# Display the user public key:
-# age-keygen -y ~/.config/sops/age/keys.txt
-
-# Make a host public key:
-# ssh-to-age -i /etc/ssh/ssh_host_ed25519_key.pub
-
-# Add secrets
-# sops secrets/secrets.yaml
-
-# Rekey secrets.yaml after editing recipients in .sops.yaml:
-# sops updatekeys secrets/secrets.yaml
 keys:
-  - &user_juca age1xfpzwdsz06243ndj39x4yr2qs4u3ja777r3xautdtm59j54wa3kssualcn
+  # Users
+  - &users:
+    - &juca age1kky7jzc2x626xp4sfvpz7acytczqgdn7h2jxjqkjxzfd4kndcdxs8zr6ka
+    - &juca-ssh age1z0l70szylsym8705q0jrjkt38trxh9dp6pqx9xat7syj797zr3hqmhacka
+    - &pnicholson age13y24rlj2fehralwlexshgsv47q8e5uk03p9qk9qd42n7ccvd2ghqd5q5ry
+    - &pnicholson-ssh age1mkc7mqjwtgu4lfrr3ljvshyev2l2vl5hwsyfk6fdaf75wd03rydqsvqg94
+  # Hosts
+  - &hosts:
+    - &neo age1qrduxvns6v5vuanhekjmqtk8lla0f9zz8xu8v3kudx9hjr3ruq6sjxswkn
+    - &trinity age1jyx4hlcz4mgq73zt9an8a5sk64exfejv5y24hf38hvsv5lml5e5s8hlexn
+    - &vm age1d59p9nrrg7dy94q0xsmep77yh84t4zr76l5s99h2nx52etqv859qzzvvd2
+    - &morpheus age1rvkgaxf3c9y0ywjnlxrummfq6e09eaz44l3ctnmm0wdn4tzvwspq22yg24
+    - &pnicholson-1 age1f8ydnzdhugg8epwjtsealpaz08ym9g3p0dfwny0kjqp0mgj6n56q703fye
+
 creation_rules:
-  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+  - path_regex: secrets.ya?ml$
     key_groups:
       - age:
-          - *user_juca
+          - *juca-ssh
+          - *juca-ssh-ssh
+          - *pnicholson
+          - *pnicholson-1
+          - *pnicholson-ssh
+          - *neo
+          - *trinity
+          - *vm
+          - *morpheus

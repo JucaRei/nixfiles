@@ -1,3 +1,8 @@
-.direnv*
-result*
-.vscode*
+# direnv
+.direnv
+.env
+
+# pre-commit
+.pre-commit-config.yaml
+
+result
