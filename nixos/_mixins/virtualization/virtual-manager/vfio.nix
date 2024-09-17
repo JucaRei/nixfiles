@@ -126,7 +126,7 @@ in
         (
           if cfg.IOMMUType == "intel"
           then [
-            # "intel_iommu=on"
+            "intel_iommu=on"
             "intel_iommu=igfx_off"
           ]
           else [ "amd_iommu=on" "iommu=pt" ]
