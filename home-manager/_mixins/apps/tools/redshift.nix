@@ -1,13 +1,12 @@
-# Screen color temperature changer
-#
+{ config, lib, ... }:
+let
+  inherit (lib) mkIf;
+  cfg = config.custom.apps.redshift;
+in
 {
-  config,
-  lib,
-  ...
-}: {
-  config = lib.mkIf config.xsession.enable {
+  config = mkIf cfg.enable {
     # Only evaluate code if using X11
-    services = {
+    services = mkIf config.xsession.enable {
       redshift = {
         enable = true;
         temperature.night = 3000;

@@ -1,18 +1,15 @@
 { config, lib, ... }:
-with lib;
 let
+  inherit (lib) mkIf mkEnableOption;
   torrent = "transmission-gtk.desktop";
-  cfg = config.services.transmission;
+  cfg = config.custom.apps.transmission;
 in
 {
-  options.services.transmission = {
-    enable = mkOption {
-      default = false;
-      type = types.bool;
-    };
+  options.custom.apps.transmission = {
+    enable = mkEnableOption "Whether enable transmission.";
   };
 
-  config = {
+  config = mkIf cfg.enable {
     # networking.firewall.allowedTCPPorts = [ 9091 ];
     services.transmission = {
       enable = true;

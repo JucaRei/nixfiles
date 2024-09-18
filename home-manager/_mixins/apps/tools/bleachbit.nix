@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, username, ... }: {
   home = {
     package = pkgs.bleachbit;
     file = {
@@ -28,7 +28,7 @@
           [hashpath]
 
           [list/shred_drives]
-          0 = /home/netrunner/.cache
+          0 = /home/${username}/.cache
           1 = /tmp
 
           [preserve_languages]

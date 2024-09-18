@@ -26,7 +26,9 @@ in
     flavor = "frappe";
   };
 
-  # Default for any system
+  ###############################
+  ### Defaults for any system ###
+  ###############################
   custom = {
     programs = {
       mpd.enable = mkDefault false;
@@ -62,7 +64,7 @@ in
       micro.enable = mkDefault true;
       man.enable = mkDefault true;
       neofetch.enable = mkDefault false;
-      starship.enable = if config.custom.console.bash.enable then mkDefault true else mkDefault false;
+      starship.enable = if (config.custom.console.bash.enable) then mkDefault true else mkDefault false;
       ssh.enable = mkDefault true;
       skim.enable = mkDefault false;
       yazi.enable = mkDefault false;
