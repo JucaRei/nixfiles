@@ -1,15 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  pkgs,
-  ...
-}: let
+{ config, lib, namespace, pkgs, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.graphical.addons.wlogout;
-in {
+in
+{
   options.${namespace}.programs.graphical.addons.wlogout = {
     enable = mkBoolOpt false "Enable wlogout screen for managing sessions.";
   };

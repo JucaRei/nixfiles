@@ -1,14 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
-}: let
+{ config, lib, namespace, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.terminal.editors.helix;
-in {
+in
+{
   imports = lib.snowfall.fs.get-non-default-nix-files ./.;
 
   options.${namespace}.programs.terminal.editors.helix = {
@@ -29,18 +26,18 @@ in {
           "attributes" = base09;
           "comment" = {
             fg = base03;
-            modifiers = ["italic"];
+            modifiers = [ "italic" ];
           };
           "constant" = base09;
           "constant.character.escape" = base0C;
           "constant.numeric" = base09;
           "constructor" = base08;
           "debug" = base03;
-          "diagnostic" = {modifiers = ["underlined"];};
-          "diagnostic.error" = {underline = {style = "curl";};};
-          "diagnostic.hint" = {underline = {style = "curl";};};
-          "diagnostic.info" = {underline = {style = "curl";};};
-          "diagnostic.warning" = {underline = {style = "curl";};};
+          "diagnostic" = { modifiers = [ "underlined" ]; };
+          "diagnostic.error" = { underline = { style = "curl"; }; };
+          "diagnostic.hint" = { underline = { style = "curl"; }; };
+          "diagnostic.info" = { underline = { style = "curl"; }; };
+          "diagnostic.warning" = { underline = { style = "curl"; }; };
           "diff.delta" = base09;
           "diff.minus" = base08;
           "diff.plus" = base0B;
@@ -52,28 +49,28 @@ in {
           "label" = base0E;
           "markup.bold" = {
             fg = base0A;
-            modifiers = ["bold"];
+            modifiers = [ "bold" ];
           };
           "markup.heading" = base08;
           "markup.italic" = {
             fg = base0E;
-            modifiers = ["italic"];
+            modifiers = [ "italic" ];
           };
           "markup.link.text" = base0D;
           "markup.link.url" = {
             fg = base09;
-            modifiers = ["underlined"];
+            modifiers = [ "underlined" ];
           };
           "markup.list" = base0D;
           "markup.quote" = base0C;
           "markup.raw" = base0B;
-          "markup.strikethrough" = {modifiers = ["crossed_out"];};
+          "markup.strikethrough" = { modifiers = [ "crossed_out" ]; };
           "namespace" = base0E;
           "operator" = base05;
           "special" = base08;
           "string" = base0B;
           "type" = base0A;
-          "ui.background" = {bg = base00;};
+          "ui.background" = { bg = base00; };
           "ui.bufferline" = {
             fg = base03;
             bg = base00;
@@ -81,29 +78,29 @@ in {
           "ui.bufferline.active" = {
             fg = base05;
             bg = base02;
-            modifiers = ["bold"];
+            modifiers = [ "bold" ];
           };
           "ui.cursor" = {
             fg = base04;
-            modifiers = ["reversed"];
+            modifiers = [ "reversed" ];
           };
           "ui.cursor.insert" = {
             fg = base0A;
-            modifiers = ["underlined"];
+            modifiers = [ "underlined" ];
           };
           "ui.cursor.match" = {
             fg = base0A;
-            modifiers = ["underlined"];
+            modifiers = [ "underlined" ];
           };
           "ui.cursor.select" = {
             fg = base0A;
-            modifiers = ["underlined"];
+            modifiers = [ "underlined" ];
           };
           "ui.cursorline.primary" = {
             fg = base05;
             bg = base01;
           };
-          "ui.gutter" = {bg = base00;};
+          "ui.gutter" = { bg = base00; };
           "ui.help" = {
             fg = base06;
             bg = base01;
@@ -115,7 +112,7 @@ in {
           "ui.linenr.selected" = {
             fg = base04;
             bg = base01;
-            modifiers = ["bold"];
+            modifiers = [ "bold" ];
           };
           "ui.menu" = {
             fg = base05;
@@ -129,9 +126,9 @@ in {
             fg = base01;
             bg = base04;
           };
-          "ui.popup" = {bg = base01;};
-          "ui.selection" = {bg = base02;};
-          "ui.selection.primary" = {bg = base02;};
+          "ui.popup" = { bg = base01; };
+          "ui.selection" = { bg = base02; };
+          "ui.selection.primary" = { bg = base02; };
           "ui.statusline" = {
             fg = base04;
             bg = base01;
@@ -154,10 +151,10 @@ in {
           };
           "ui.text" = base05;
           "ui.text.focus" = base05;
-          "ui.virtual.indent-guide" = {fg = base03;};
-          "ui.virtual.ruler" = {bg = base01;};
-          "ui.virtual.whitespace" = {fg = base01;};
-          "ui.window" = {bg = base01;};
+          "ui.virtual.indent-guide" = { fg = base03; };
+          "ui.virtual.ruler" = { bg = base01; };
+          "ui.virtual.whitespace" = { fg = base01; };
+          "ui.window" = { bg = base01; };
           # "variable" = base0D;
           "variable" = base05;
           "variable.other.member" = base0D;
@@ -204,7 +201,7 @@ in {
             display-inlay-hints = false;
             snippets = true;
           };
-          rulers = [80];
+          rulers = [ 80 ];
           scrolloff = 5;
           statusline = {
             left = [
@@ -214,7 +211,7 @@ in {
               "spacer"
               "spinner"
             ];
-            center = ["file-name"];
+            center = [ "file-name" ];
             right = [
               "diagnostics"
               "position-percentage"

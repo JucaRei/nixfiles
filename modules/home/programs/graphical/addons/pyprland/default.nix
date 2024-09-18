@@ -1,15 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  pkgs,
-  ...
-}: let
+{ config, lib, namespace, pkgs, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.graphical.addons.pyprland;
-in {
+in
+{
   options.${namespace}.programs.graphical.addons.pyprland = {
     enable = mkBoolOpt false "Enable pyprland plugins for hyprland";
   };
@@ -18,7 +14,7 @@ in {
     xdg.configFile."hypr/pyprland.toml".source = ./pyprland.toml;
 
     home = {
-      packages = with pkgs; [pyprland];
+      packages = with pkgs; [ pyprland ];
     };
   };
 }

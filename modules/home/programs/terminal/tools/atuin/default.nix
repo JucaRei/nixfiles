@@ -40,8 +40,8 @@ in
         "--disable-up-arrow"
       ];
       settings = {
-        sync_address = "https://sh.juca.com";
-        sync_frequency = "15m";
+        # sync_address = "https://sh.juca.com";
+        # sync_frequency = "15m";
         dialect = "us";
         enter_accept = false;
         records = true;
@@ -49,8 +49,8 @@ in
       };
     };
 
-    sops.secrets.atuin_key = {
-      sopsFile = ../../../secrets.yaml;
-    };
+    # sops.secrets.atuin_key = {
+    #   sopsFile = ../../../secrets.yaml;
+    # };
   };
 }

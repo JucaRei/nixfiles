@@ -1,15 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  pkgs,
-  ...
-}: let
+{ config, lib, namespace, pkgs, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.graphical.addons.hyprlock;
-in {
+in
+{
   options.${namespace}.programs.graphical.addons.hyprlock = {
     enable = mkBoolOpt false "Whether to enable the hyprlock";
   };

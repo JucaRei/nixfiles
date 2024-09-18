@@ -1,14 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
-}: let
+{ config, lib, namespace, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.graphical.addons.wlsunset;
-in {
+in
+{
   options.${namespace}.programs.graphical.addons.wlsunset = {
     enable = mkBoolOpt false "Enable wlsunset night light";
   };
@@ -16,8 +13,8 @@ in {
   config = mkIf cfg.enable {
     services.wlsunset = {
       enable = true;
-      latitude = "38.752125";
-      longitude = "-121.288010";
+      latitude = "-23.5503898";
+      longitude = "-46.633081";
     };
   };
 }

@@ -1,15 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  pkgs,
-  ...
-}: let
+{ config, lib, namespace, pkgs, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.graphical.addons.kanshi;
-in {
+in
+{
   options.${namespace}.programs.graphical.addons.kanshi = {
     enable = mkBoolOpt false "Enable kanshi display addon";
   };
@@ -34,23 +30,23 @@ in {
             }
           ];
         }
-        {
-          profile.name = "dual";
-          profile.outputs = [
-            {
-              criteria = "LG Electronics LG ULTRAGEAR 105NTSUA9054";
-              position = "0,0";
-              mode = "2560x1440@165Hz";
-              status = "enable";
-            }
-            {
-              criteria = "LG Electronics LG ULTRAGEAR 105NTZNA9053";
-              position = "2560,0";
-              mode = "2560x1440@143.93Hz";
-              status = "enable";
-            }
-          ];
-        }
+        # {
+        #   profile.name = "dual";
+        #   profile.outputs = [
+        #     {
+        #       criteria = "LG Electronics LG ULTRAGEAR 105NTSUA9054";
+        #       position = "0,0";
+        #       mode = "2560x1440@165Hz";
+        #       status = "enable";
+        #     }
+        #     {
+        #       criteria = "LG Electronics LG ULTRAGEAR 105NTZNA9053";
+        #       position = "2560,0";
+        #       mode = "2560x1440@143.93Hz";
+        #       status = "enable";
+        #     }
+        #   ];
+        # }
         {
           profile.name = "vfio";
           profile.outputs = [
@@ -67,19 +63,19 @@ in {
           ];
         }
         {
-          profile.name = "work";
-          profile.outputs = [
-            {
-              criteria = "LG Electronics LG ULTRAGEAR 105NTSUA9054";
-              status = "disable";
-            }
-            {
-              criteria = "LG Electronics LG ULTRAGEAR 105NTZNA9053";
-              position = "0,0";
-              mode = "2560x1440@143.93Hz";
-              status = "enable";
-            }
-          ];
+          # profile.name = "work";
+          # profile.outputs = [
+          #   {
+          #     criteria = "LG Electronics LG ULTRAGEAR 105NTSUA9054";
+          #     status = "disable";
+          #   }
+          #   {
+          #     criteria = "LG Electronics LG ULTRAGEAR 105NTZNA9053";
+          #     position = "0,0";
+          #     mode = "2560x1440@143.93Hz";
+          #     status = "enable";
+          #   }
+          # ];
         }
       ];
     };

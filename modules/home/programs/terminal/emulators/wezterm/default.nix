@@ -1,15 +1,11 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}: let
+{ config, lib, pkgs, namespace, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.terminal.emulators.wezterm;
-in {
+in
+{
   options.${namespace}.programs.terminal.emulators.wezterm = {
     enable = mkBoolOpt false "Whether or not to enable wezterm.";
   };

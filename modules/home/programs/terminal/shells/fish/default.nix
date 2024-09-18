@@ -1,16 +1,11 @@
-{
-  config,
-  host,
-  lib,
-  namespace,
-  pkgs,
-  ...
-}: let
+{ config, host, lib, namespace, pkgs, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.terminal.shells.fish;
-in {
+in
+{
   options.${namespace}.programs.terminal.shells.fish = {
     enable = mkBoolOpt false "enable fish shell";
   };

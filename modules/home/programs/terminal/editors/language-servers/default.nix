@@ -1,15 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  pkgs,
-  ...
-}: let
+{ config, lib, namespace, pkgs, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.terminal.editors.language-servers;
-in {
+in
+{
   options.${namespace}.programs.terminal.editors.language-servers = {
     enable = mkBoolOpt false "Whether or not to enable language-servers";
   };

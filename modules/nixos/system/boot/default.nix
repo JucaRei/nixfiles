@@ -15,7 +15,7 @@ in
     };
     bootmanager = mkOption {
       type = types.nullOr (types.enum [ "grub" "systemd-boot" ]);
-      default = "grub";
+      default = "systemd-boot";
       description = "Whether or not to enable EFI for booting.";
     };
     isDualBoot = mkEnableOption "Whether or not to enable for dual booting." // { default = false; };

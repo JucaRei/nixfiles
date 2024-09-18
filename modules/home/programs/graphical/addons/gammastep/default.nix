@@ -1,14 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
-}: let
+{ config, lib, namespace, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.graphical.addons.gammastep;
-in {
+in
+{
   options.${namespace}.programs.graphical.addons.gammastep = {
     enable = mkBoolOpt false "Enable gammastep night light";
   };

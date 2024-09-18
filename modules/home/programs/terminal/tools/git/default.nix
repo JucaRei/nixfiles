@@ -22,14 +22,14 @@ in
 {
   options.${namespace}.programs.terminal.tools.git = with types; {
     enable = mkBoolOpt false "Whether or not to enable git.";
-    name = mkOpt (nullOr str) "Paul Nicholson" "The name to use with git.";
-    email = mkOpt (nullOr str) "juca@gmail.com" "The email to use with git.";
+    name = mkOpt (nullOr str) "Reinaldo P Jr" "The name to use with git.";
+    email = mkOpt (nullOr str) "reinaldo800@gmail.com" "The email to use with git.";
     urlRewrites = mkOpt (attrsOf str) { } "url we need to rewrite i.e. ssh to http";
-    allowedSigners = mkOpt str "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG++dlRrheRZgVLtzadOWFJgHgEL27t70oUZyLwL1o0F" "The public key used for signing commits";
+    # allowedSigners = mkOpt str "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG++dlRrheRZgVLtzadOWFJgHgEL27t70oUZyLwL1o0F" "The public key used for signing commits";
   };
 
   config = mkIf cfg.enable {
-    home.file.".ssh/allowed_signers".text = "* ${cfg.allowedSigners}";
+    # home.file.".ssh/allowed_signers".text = "* ${cfg.allowedSigners}";
 
     home.packages = with pkgs; [
       # delta # TODO: reenable once fixed upstream
@@ -42,8 +42,8 @@ in
       userEmail = cfg.email;
       includes = [
         {
-          path = "~/work/.gitconfig";
-          condition = "gitdir:~/work/";
+          # path = "~/work/.gitconfig";
+          # condition = "gitdir:~/work/";
         }
       ];
       aliases = {
@@ -60,10 +60,10 @@ in
             defaultBranch = "main";
           };
 
-          gpg.format = "ssh";
-          gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
-          commit.gpgsign = true;
-          user.signingkey = "~/.ssh/id_ed25519.pub";
+          # gpg.format = "ssh";
+          # gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+          # commit.gpgsign = true;
+          # user.signingkey = "~/.ssh/id_ed25519.pub";
 
           core = {
             editor = "hx";
@@ -130,7 +130,7 @@ in
             };
           };
 
-          diff."sopsdiffer" = { textconv = "sops -d"; };
+          # diff."sopsdiffer" = { textconv = "sops -d"; };
 
           pull = {
             rebase = true;

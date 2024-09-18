@@ -94,7 +94,7 @@
           namespace = "excalibur";
           meta = {
             name = "excalibur";
-            title = "brenix's Nix Flake";
+            title = "Excalibur's Nix Flake";
           };
         };
       };
@@ -148,7 +148,7 @@
       ];
 
       outputs-builder = channels: {
-        formatter = channels.nixpkgs.alejandra;
+        formatter = channels.nixpkgs.nixpkgs-fmt;
       };
     };
 }

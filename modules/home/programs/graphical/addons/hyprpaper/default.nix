@@ -1,14 +1,11 @@
-{
-  config,
-  lib,
-  namespace,
-  ...
-}: let
+{ config, lib, namespace, ... }:
+let
   inherit (lib) mkIf;
   inherit (lib.${namespace}) mkBoolOpt;
 
   cfg = config.${namespace}.programs.graphical.addons.hyprpaper;
-in {
+in
+{
   options.${namespace}.programs.graphical.addons.hyprpaper = {
     enable = mkBoolOpt false "Whether to enable the hyprpaper config";
   };
