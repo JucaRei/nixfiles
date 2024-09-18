@@ -32,8 +32,8 @@ in
     };
     home = {
       file = {
-        "${config.xdg.configHome}/yazi/keymap.toml".text = builtins.readFile ./yazi-keymap.toml;
-        "${config.xdg.configHome}/yazi/theme.toml".text = builtins.readFile ./yazi-theme.toml;
+        "${config.xdg.configHome}/yazi/keymap.toml".text = builtins.readFile ../../../../resources/dots/yazi/yazi-keymap.toml;
+        "${config.xdg.configHome}/yazi/theme.toml".text = builtins.readFile ../../../../resources/dots/yazi/yazi-theme.toml;
       };
     };
   };

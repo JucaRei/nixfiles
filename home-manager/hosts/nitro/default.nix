@@ -57,6 +57,7 @@ in
         starship.enable = true;
         eza.enable = false;
         lsd.enable = true;
+        fish.enable = mkForce true;
         # firefox.enable = true;
         # flatpak-nix.enable = true;
         # properties.enable = false;

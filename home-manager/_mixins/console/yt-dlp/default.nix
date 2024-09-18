@@ -18,7 +18,7 @@ in
       aria2 = {
         enable = true;
         settings = {
-          dir = "/home/${username}/Videos/Youtube"; # The directory to store the downloaded file.
+          dir = "/home/${username}/Media/Videos/Youtube"; # The directory to store the downloaded file.
           # input-file = "$HOME/.config/aria2/aria2.session"; # Downloads the URIs listed in FILE.
           # Default = 0; # Save error/unfinished downloads to a file specified by --save-session option every SEC seconds. If 0 is given, file will be saved only when aria2 exits.
           save-session-interval = 60;

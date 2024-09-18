@@ -48,16 +48,6 @@ in
           # Zsh-like completion
           # General
           # =============================================
-          # ignore upper and lowercase when TAB completion
-          bind "set completion-ignore-case on"
-          bind "set show-all-if-ambiguous on"
-          bind "TAB:menu-complete"
-
-          # set vim keybindings
-          set -o vi
-          # fix ctrl+l not working when using vim keybinds
-          bind -m vi-command 'Control-l: clear-screen'
-          bind -m vi-insert 'Control-l: clear-screen'
 
           if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
             . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -101,27 +91,14 @@ in
           parse_git_branch() {
             git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\[(\1)\]/'
           }
-          # export PS1="\n\[\033[1;32m\][\[\e]0;\u@\h: \w\a\]\u@\h:\w]\[\033[33m\]\$(parse_git_branch)\[\033[1;32m\]\$\[\033[0m\] "
-
-          # if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-          #   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-          #   . /nix/var/nix/profiles/default/etc/profile.d/nix.sh
-          #   . /home/juca/.nix-profile/etc/profile.d/nix.sh
-          #   . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
-          #   # . /home/$USER/.nix-profile/etc/profile.d/nix.sh
-          # fi
-
-          # nix shortcuts
-          shell() {
-            nix-shell '<nixpkgs>' -A "$1"
-          }
-
-          # -------===[ External Plugins ]===------- #
-          #eval "$(starship init bash)"
-          #eval "$(direnv hook bash)"
         '';
-        sessionVariables = { TERM = "xterm"; };
+        sessionVariables = {
+          # TERM = "xterm";
+          TERM = "xterm-256color";
+        };
       };
     };
+
+    home.packages = [ pkgs.bashInteractive ];
   };
 }

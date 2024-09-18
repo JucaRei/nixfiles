@@ -27,7 +27,7 @@ in
         #   #   builtins.readFile ../../config/bat/themes/Catppuccin-mocha.tmTheme;
         #   # rose_pine_moon =
         #   #   builtins.readFile ../../config/bat/themes/rose_pine_moon.tmTheme;
-        tokyo_night = lib.fileContents ../../config/bat/themes/tokyo_night.tmTheme;
+        tokyo_night = lib.fileContents ../../../../resources/dots/bat/themes/tokyo_night.tmTheme;
         #   # Catppuccin-mocha = builtins.readFile (pkgs.fetchFromGitHub
         #   #   {
         #   #     owner = "catppuccin";

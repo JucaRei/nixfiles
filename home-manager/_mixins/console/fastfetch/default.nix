@@ -16,7 +16,7 @@ in
       packages = with pkgs; [ fastfetch ];
       file = {
         "${config.xdg.configHome}/fastfetch/config.jsonc".text =
-          builtins.readFile ../../config/fastfetch/fastfetch.jsonc;
+          builtins.readFile ../../../../resources/dots/fastfetch/fastfetch.jsonc;
       };
       shellAliases = {
         neofetch = lib.mkForce "${pkgs.fastfetch}/bin/fastfetch";

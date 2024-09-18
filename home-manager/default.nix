@@ -1,13 +1,12 @@
-{ config, desktop, inputs, lib, outputs, pkgs, stateVersion, username, hostname, isWorkstation, isLima, ... }:
+{ config, desktop, inputs, lib, outputs, pkgs, stateVersion, username, hostname, isWorkstation, isLima, isInstall, ... }:
 #############################################
 ### Default Home-Manager configs for all. ###
 #############################################
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional optionals mkOption types mkIf;
+  inherit (lib) optional optionals mkOption types mkIf mkDefault;
   home-build = import ../resources/scripts/nix/home-build.nix { inherit pkgs; };
   home-switch = import ../resources/scripts/nix/home-switch.nix { inherit pkgs; };
-  gen-ssh-key = import ../resources/scripts/nix/gen-ssh-key.nix { inherit pkgs; };
   home-manager_change_summary = import ../resources/scripts/nix/home-manager_change_summary.nix { inherit pkgs; };
   isOld = if (hostname == "oldarch") then false else true;
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
@@ -25,6 +24,50 @@ in
   catppuccin = {
     accent = "lavender";
     flavor = "frappe";
+  };
+
+  # Default for any system
+  custom = {
+    programs = {
+      mpd.enable = mkDefault false;
+      nano.enable = mkDefault false;
+      git.enable = mkDefault true;
+      gpg.enable = mkDefault true;
+      ncmpcpp.enable = mkDefault false;
+      yt-dlp-custom.enable = isWorkstation || isInstall;
+    };
+
+    console = {
+      aliases.enable = mkDefault true;
+      aria2.enable = mkDefault false;
+      atuin.enable = mkDefault false;
+      bash.enable = mkDefault true;
+      btop.enable = mkDefault false;
+      bottom.enable = mkDefault false;
+      bat.enable = mkDefault true;
+      cava.enable = mkDefault false;
+      direnv.enable = mkDefault false;
+      dircolors.enable = mkDefault false;
+      fzf.enable = mkDefault false;
+      fish.enable = mkDefault false;
+      fastfetch.enable = mkDefault true;
+      eza.enable = false;
+      glow.enable = mkDefault false;
+      gitui.enable = isWorkstation;
+      github-cli.enable = mkDefault false;
+      htop.enable = mkDefault true;
+      lsd.enable = mkDefault true;
+      powerline-go.enable = if (config.custom.console.fish.enable) then mkDefault true else mkDefault false;
+      ripgrep.enable = mkDefault true;
+      micro.enable = mkDefault true;
+      man.enable = mkDefault true;
+      neofetch.enable = mkDefault false;
+      starship.enable = if config.custom.console.bash.enable then mkDefault true else mkDefault false;
+      ssh.enable = mkDefault true;
+      skim.enable = mkDefault false;
+      yazi.enable = mkDefault false;
+      zoxide.enable = mkDefault true;
+    };
   };
 
   home = {
@@ -57,7 +100,6 @@ in
     packages = with pkgs;[
       home-build
       home-switch
-      gen-ssh-key
       home-manager_change_summary
       # nix-whereis
       duf # Modern Unix `df`

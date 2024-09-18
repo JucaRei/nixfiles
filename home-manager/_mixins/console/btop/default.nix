@@ -228,6 +228,6 @@ in
     };
 
     xdg.configFile."btop/themes/cyberpunk_neon.theme".source =
-      ./themes/cyberpunk_neon.theme;
+      ../../../../resources/dots/btop/cyberpunk_neon.theme;
   };
 }

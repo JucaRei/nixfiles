@@ -612,8 +612,8 @@ in
         };
         os = {
           disabled = false;
-          # format = "[](fg:blue)[$symbol](bg:blue fg:black)[](fg:blue)";
-          format = "$symbol";
+          format = "(fg:white bg:dark-blue)[$symbol](bg:blue)(fg:blue)";
+          # format = "$symbol";
         };
         os.symbols = {
           Arch = "[ ](fg:bright-blue)";
