@@ -84,6 +84,11 @@ in
         '';
         default = "drawio.desktop";
       };
+      defaultCode = mkOption {
+        type = types.nullOr types.str;
+        description = mdDoc "Vscode mime type.";
+        default = "code.desktop";
+      };
       defaultWord = mkOption {
         type = types.nullOr types.str;
         description = mdDoc ''
@@ -136,6 +141,9 @@ in
 
           # Text
           "text/plain" = cfg.defaultPlainText;
+
+          # vscode
+          "x-scheme-handler/vscode" = cfg.defaultCode;
 
           # Images
           "image/gif" = cfg.defaultImgViewer;

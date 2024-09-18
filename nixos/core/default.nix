@@ -22,6 +22,7 @@ in
       ./console.nix
       ./hardware.nix
       ./locale.nix
+      ./optimizations.nix
       ./timezone.nix
       ./security.nix
       ./network.nix

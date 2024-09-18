@@ -15,7 +15,7 @@ in
     # ../_mixins/console/aria2.nix
     # ../_mixins/apps/text-editor/vscodium.nix
     #../_mixins/apps/text-editor/vscode.nix
-    ../../_mixins/apps/text-editor/vscode/vscode.nix
+    ../../_mixins/apps/text-editor/vscode
     ../../_mixins/apps/documents/zathura.nix
     # ../_mixins/apps/terminal/urxvt.nix
     # ../_mixins/apps/browser/floorp.nix
@@ -95,6 +95,7 @@ in
           browser = "brave";
           disableWayland = true;
         };
+        vscode.enable = true;
         # firefox-based-browser = {
         #   enable = true;
         #   browser = "firefox-devedition";

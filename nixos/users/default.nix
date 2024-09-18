@@ -1,9 +1,7 @@
 { config, desktop, lib, pkgs, username, hostname, isWorkstation, ... }:
 let
   ifExists = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
-
   variables = import ../hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
-
   groupName = username;
   inherit (lib) mkDefault;
 in
