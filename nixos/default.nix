@@ -18,13 +18,6 @@ in
   ];
 
   config = {
-    ########################
-    ### Default Timezone ###
-    ########################
-    time = mkDefault {
-      timeZone = "America/Sao_Paulo";
-      hardwareClockInLocalTime = isWorkstation;
-    };
     ######################
     ### Custom Modules ###
     ######################
