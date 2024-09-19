@@ -18,9 +18,13 @@
           inputstream-adaptive
           # vfs-sftp
           sponsorblock
-          # invidious
+          invidious
           # joystick
           sendtokodi
+          trakt
+          netflix
+          jellycon
+          osmc-skin
         ]);
       };
       displayManager = {

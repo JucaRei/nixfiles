@@ -46,11 +46,13 @@ in
     # ../../_mixins/apps/text-editor/vscodium.nix
     # ../../_mixins/apps/terminal/alacritty.nix
     # ../../_mixins/apps/browser/firefox/librewolf.nix
-    ../../_mixins/apps/browser/firefox/firefox.nix
+    # ../../_mixins/apps/browser/firefox/firefox.nix
     # ../../_mixins/apps/browser/opera
+    ../../_mixins/apps/browser/chrome-based-browser.nix
+    ../../_mixins/apps/browser/firefox-based-browser.nix
     ../../_mixins/apps/video/mpv/mpv-unwrapped.nix
     ../../_mixins/apps/documents/libreoffice.nix
-    ../../_mixins/apps/text-editor/vscode/vscode.nix
+    ../../_mixins/apps/text-editor/vscode
     ../../_mixins/services/podman.nix
     ../../_mixins/services/polkit-agent.nix
     # ../../_mixins/non-nixos
@@ -69,7 +71,7 @@ in
       features = {
         nonNixOs.enable = true;
         mime.defaultApps = {
-          enable = mkForce true;
+          enable = lib.mkForce true;
           defaultBrowser = "vivaldi.desktop";
           defaultFileManager = "thunar.desktop";
           defaultAudioPlayer = "org.gnome.Rhythmbox3.desktop";
@@ -85,19 +87,41 @@ in
         };
       };
 
-      console = {
-        bash.enable = true;
-        eza.enable = true;
-        udiskie = {
+      apps = {
+        firefox-based-browser = {
           enable = true;
-          automount = true;
+          browser = "firefox";
+          disableWayland = true;
         };
-        skim.enable = true;
-        polkit-agent.enable = false; # true;
-        firefox.enable = true;
+        chrome-based-browser = {
+          enable = true;
+          browser = "brave";
+          disableWayland = true;
+        };
+        vscode.enable = true;
+      };
+
+      services = {
         podman.enable = false;
+      };
+
+      programs = {
         yt-dlp-custom.enable = true;
       };
+
+      console = {
+        fish.enable = true;
+        bash.enable = true;
+        # udiskie = {
+        #   enable = true;
+        #   automount = true;
+        # };
+      };
+    };
+
+    services.vscode-server = {
+      enable = true;
+      nodejsPackage = pkgs.nodejs-18_x;
     };
 
     i18n =

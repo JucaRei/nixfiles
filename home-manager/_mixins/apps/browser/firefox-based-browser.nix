@@ -80,11 +80,11 @@ let
     "places.history.enabled" = true;
     "security.ssl.errorReporting.enabled" = false;
     "widget.use-xdg-desktop-portal.file-picker" = 1; # Always use XDG portals for stuff
-    "security.identityblock.show_extended_validation" = true;
+    # "security.identityblock.show_extended_validation" = true;
     # Show more ssl cert infos
     "experiments.supported" = false;
     "experiments.enabled" = false;
-    "experiments.manifest.uri" = "";
+    # "experiments.manifest.uri" = "";
     "datareporting.healthreport.service.enabled" = false;
     # privacy tweaks
     # "browser.contentblocking.category" = "strict";
@@ -160,7 +160,7 @@ let
     "svg.context-properties.content.enabled" = true; # Enable SVG context-propertes
 
     # Harden SSL
-    "security.ssl.require_safe_negotiation" = true;
+    # "security.ssl.require_safe_negotiation" = true;
 
     # # Disable Pocket
     "browser.newtabpage.activity-stream.feeds.discoverystreamfeed" = false;
@@ -189,9 +189,9 @@ let
     AutofillCreditCardEnabled = false;
     Cookies = {
       AcceptThirdParty = "from-visited";
-      Behavior = "reject-tracker";
-      BehaviorPrivateBrowsing = "reject-tracker";
-      RejectTracker = true;
+      # Behavior = "reject-tracker";
+      # BehaviorPrivateBrowsing = "reject-tracker";
+      # RejectTracker = true;
     };
     DisableAppUpdate = true;
     DisableDefaultBrowserAgent = true;
@@ -231,7 +231,7 @@ let
     PopupBlocking = {
       Default = true;
     };
-    PromptForDownloadLocation = mkDefault true;
+    PromptForDownloadLocation = true;
     SearchBar = "unified";
     OfferToSaveLogins = true;
     OverrideFirstRunPage = "";
@@ -242,7 +242,7 @@ let
     DisableFirefoxAccounts = mkForce false;
     DisableFirefoxStudies = mkForce true;
     DisableTelemetry = mkForce true;
-    NoDefaultBookmarks = mkDefault true;
+    NoDefaultBookmarks = false;
     PasswordManagerEnabled = true;
     DontCheckDefaultBrowser = true;
     EnableTrackingProtection = {

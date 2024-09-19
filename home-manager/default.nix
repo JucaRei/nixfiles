@@ -55,7 +55,7 @@ in
       fastfetch.enable = mkDefault true;
       eza.enable = false;
       glow.enable = mkDefault false;
-      gitui.enable = isWorkstation;
+      gitui.enable = false;
       github-cli.enable = mkDefault false;
       htop.enable = mkDefault true;
       lsd.enable = mkDefault true;

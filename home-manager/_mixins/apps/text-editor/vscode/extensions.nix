@@ -8,7 +8,7 @@ let
     tamasfe.even-better-toml
     editorconfig.editorconfig
     redhat.vscode-yaml
-    ms-python.python
+    # ms-python.python
     esbenp.prettier-vscode
     mkhl.direnv
     sumneko.lua
@@ -16,6 +16,12 @@ let
   ];
 
   marketPlaceExtensions = (pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
+	{
+		name = "python";
+		publisher = "ms-python";
+		version = "2024.15.2024091801";
+		sha256 = "sha256-N8y0cPJeFQTsOMOD1hB/T5pZcpEMRKLfpNtMz3qdGCY=";
+	}
     {
       name = "better-nix-syntax";
       publisher = "jeff-hykin";
@@ -71,14 +77,14 @@ let
       name = "separators";
       publisher = "alefragnani";
       version = "2.7.0";
-      sha256 = "sha256-JTFD6TGt4C3ctm+2ckTzqje2M/SiK7xshr1Hf9rQkFA=";
+      sha256 = "sha256-ir2qQwhA2cYmJ/K/DDSaTveVnWh8NUZKJN5GXvT2v/E=";
     }
     {
       name = "vscode-thunder-client";
       publisher = "rangav";
       version = "2.25.5";
       # sha256 = lib.fakeSha256;
-      sha256 = "sha256-peHWih/LtMRqjkqW6ObFRpOy2YzgjPSC+nhCtDS3B9A=";
+      sha256 = "sha256-uwHsTMi1huo8VhVuAynzGbZbBiEPBSqBOAsz3CCvvgM=";
     }
     {
       name = "reload";

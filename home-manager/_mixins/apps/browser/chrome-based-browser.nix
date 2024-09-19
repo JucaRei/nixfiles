@@ -45,6 +45,12 @@ in
           pkgs.opera
         else if cfg.browser == "vivaldi" then
           pkgs.vivaldi
+          	# .override
+            # {
+            #   proprietaryCodecs = true;
+            #   enableWidevine = false;
+            #   # qt = "qt6";
+            # }
         else
           pkgs.brave;
       commandLineArgs =
