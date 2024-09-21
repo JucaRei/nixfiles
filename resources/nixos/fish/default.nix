@@ -36,7 +36,7 @@ in
     set -U fish_pager_color_progress brwhite '--background=cyan'
   '';
   shellAbbrs = lib.mkIf (isInstall) {
-    captive-portal = "${pkgs.xdg-utils}/bin/xdg-open http://$(${pkgs.iproute2}/bin/ip --oneline route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $3}'";
+    captive-portal = "${pkgs.xdg-utils}/bin/xdg-open http://$(${pkgs.iproute2}/bin/ip --oneline route get 1.1.1.2 | ${pkgs.gawk}/bin/awk '{print $3}'";
     update-lock = "pushd $HOME/.dotfiles/nixfiles && nix flake update && popd";
   };
   shellAliases = {

@@ -40,13 +40,18 @@ in
           "uas" # Enables the USB Attached SCSI (UAS) driver, which provides a faster and more efficient way to access USB storage devices.
           "sdhci_pci"
         ];
-        kernelModules = [ "tcp_bbr" ];
+        kernelModules = [
+          "tcp_bbr"
+          "coretemp"
+        ];
         systemd.enable = true;
         compressor = "zstd";
         compressorArgs = [ "-19" "-T0" ];
-        verbose = lib.mkForce false;
+        verbose = lib.mkForce
+          false;
       };
-      consoleLogLevel = lib.mkForce 0;
+      consoleLogLevel = lib.mkForce
+        0;
       tmp = {
         cleanOnBoot = true;
       };
@@ -153,13 +158,14 @@ in
         };
       };
       extraModulePackages = [ ];
-      extraModprobeConfig = lib.mkMerge [
-        # "options i965 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=2 disable_power_well=1" # Configuration for Intel integrated graphics.
-        "options i915 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=2 disable_power_well=1" # Configuration for Intel integrated graphics.
-        # "options iwlmvm power_scheme=3" # Sets a power-saving scheme for Intel Wi-Fi drivers.
-        # "options iwlwifi power_save=1 uapsd_disable=1 power_level=5" # Manages power-saving features for Intel Wi-Fi drivers.
-        "options snd_hda_intel power_save=1 power_save_controller=Y" # Configures power-saving for Intel High Definition Audio (HDA) hardware.
-      ];
+      extraModprobeConfig = lib.mkMerge
+        [
+          # "options i965 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=2 disable_power_well=1" # Configuration for Intel integrated graphics.
+          "options i915 enable_dc=4 enable_fbc=1 enable_guc=2 enable_psr=2 disable_power_well=1" # Configuration for Intel integrated graphics.
+          # "options iwlmvm power_scheme=3" # Sets a power-saving scheme for Intel Wi-Fi drivers.
+          # "options iwlwifi power_save=1 uapsd_disable=1 power_level=5" # Manages power-saving features for Intel Wi-Fi drivers.
+          "options snd_hda_intel power_save=1 power_save_controller=Y" # Configures power-saving for Intel High Definition Audio (HDA) hardware.
+        ];
       blacklistedKernelModules = [ "nouveau" "nvidia" ];
     };
 
@@ -207,6 +213,9 @@ in
         nixos-tweaker
       ];
     };
+    etc."sysconfig/lm_sensors".text = ''
+      HWMON_MODULES="coretemp"
+    '';
     ##################
     ### FILESYSTEM ###
     ##################
@@ -488,11 +497,14 @@ in
         AllowHibernation=no
       '';
     };
-    powerManagement.cpuFreqGovernor = lib.mkForce "schedutil";
+    powerManagement.cpuFreqGovernor = lib.mkForce
+      "schedutil";
     nixpkgs = {
       hostPlatform = lib.mkDefault "x86_64-linux";
     };
-    console.keyMap = lib.mkForce "br";
-    systemd.enableUnifiedCgroupHierarchy = lib.mkForce true;
+    console.keyMap = lib.mkForce
+      "br";
+    systemd.enableUnifiedCgroupHierarchy = lib.mkForce
+      true;
   };
 }

@@ -34,10 +34,10 @@
         };
 
         #disable blank screen
-        setupCommands = ''
-          /run/current-system/sw/bin/xset -dpms
-          /run/current-system/sw/bin/xset s off
-        '';
+        # setupCommands = ''
+        #   /run/current-system/sw/bin/xset -dpms
+        #   /run/current-system/sw/bin/xset s off
+        # '';
 
         # This may be needed to force Lightdm into 'autologin' mode.
         # Setting an integer for the amount of time lightdm will wait
@@ -74,10 +74,18 @@
   nixpkgs.config.kodi.enableAdvancedLauncher = true;
   sound.enable = true;
 
-  # x11 no suspend
-  # services.xserver.serverFlagsSection = ''
-  #   Option "StandbyTime" "0"
-  #   Option "SuspendTime" "0"
-  #   Option "OffTime" "0"
-  # '';
+  services.xserver = {
+    # disable DPMS
+    monitorSection = ''
+      Option "DPMS" "false"
+    '';
+
+    # x11 no suspend, disable screen blanking in general
+    serverFlagsSection = ''
+      Option "StandbyTime"  "0"
+      Option "SuspendTime"  "0"
+      Option "OffTime"      "0"
+      Option "BlankTime"    "0"
+    '';
+  };
 }

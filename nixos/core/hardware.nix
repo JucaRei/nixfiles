@@ -166,7 +166,22 @@ in
       enableRedistributableFirmware = true;
     };
 
-    services.fwupd.enable = isWorkstation;
-    zramSwap.enable = true;
+    system.activationScripts = mkIf config.hardware.bluetooth.enable {
+      rfkillUnblockBluetooth.text = ''
+        rfkill unblock bluetooth
+      '';
+    };
+
+    services = {
+      fwupd.enable = isWorkstation;
+      udev.extraRules = ''
+        ACTION=="add|change", KERNEL=="[sv]d[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"
+      '';
+    };
+
+    # zramSwap = {
+    #   enable = true;
+    #   memoryPercent = 200;
+    # };
   };
 }

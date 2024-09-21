@@ -25,16 +25,33 @@ in
         "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
       ];
 
+      user.extraConfig = ''
+        DefaultCPUAccounting=yes
+        DefaultMemoryAccounting=yes
+        DefaultIOAccounting=yes
+      '';
+
       extraConfig = ''
         DefaultTimeoutStartSec=8s
         DefaultTimeoutStopSec=10s
         DefaultDeviceTimeoutSec=8s
         DefaultTimeoutAbortSec=10s
+
+        DefaultCPUAccounting=yes
+        DefaultMemoryAccounting=yes
+        DefaultIOAccounting=yes
       '';
 
       services = {
+        "user@".serviceConfig.Delegate = true;
+
         nix-gc = {
           unitConfig.ConditionACPower = true; ### Nix gc when powered
+        };
+
+        nix-daemon.serviceConfig = {
+          CPUWeight = 20;
+          IOWeight = 20;
         };
 
         NetworkManager-wait-online.enable = lib.mkForce false;

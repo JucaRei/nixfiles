@@ -4,7 +4,7 @@
 ### Default Boot Options ###
 ############################
 let
-  inherit (lib) mkIf mkOverride mkEnableOption types mkDefault mkOption listOf enum optionals;
+  inherit (lib) mkIf mkOverride mkEnableOption types mkDefault mkOption listOf enum optionals mkMerge;
   cfg = config.sys.boot;
 in
 {
@@ -16,8 +16,15 @@ in
       default = "efi";
       description = "Default boot option.";
     };
+    device = mkOption {
+      type = types.nullOr types.str;
+      default = null;
+      description = ''
+        Device for GRUB boot loader.
+      '';
+    };
     bootmanager = mkOption {
-      type = types.nullOr (types.enum [ "grub" "systemd-boot" ]);
+      type = types.nullOr (types.enum [ "grub" "systemd-boot" "raspberry" ]);
       default = "grub";
       description = "Whether or not to enable EFI for booting.";
     };
@@ -63,22 +70,35 @@ in
       kernelModules = mkIf (notVM) [ "vhost_vsock" ];
 
       kernel = {
-        sysctl = mkIf cfg.silentBoot {
-          "kernel.printk" = "3 3 3 3"; # "4 4 1 7";
+        sysctl = mkMerge [
+          (mkIf cfg.silentBoot
+            {
+              "kernel.printk" = "3 3 3 3"; # "4 4 1 7";
 
-          # Hide kptrs even for processes with CAP_SYSLOG
-          # also prevents printing kernel pointers
-          "kernel.kptr_restrict" = 2;
+              # Hide kptrs even for processes with CAP_SYSLOG
+              # also prevents printing kernel pointers
+              "kernel.kptr_restrict" = 2;
 
-          # Disable ftrace debugging
-          "kernel.ftrace_enabled" = false;
+              # Disable ftrace debugging
+              "kernel.ftrace_enabled" = false;
 
-          # Disable NMI watchdog
-          "kernel.nmi_watchdog" = 0;
-        };
+              # Disable NMI watchdog
+              "kernel.nmi_watchdog" = 0;
+            })
+
+          (mkIf (cfg.bootmanager == "raspberry")
+            {
+              "vm.dirty_background_ratio" = 5;
+              "vm.dirty_ratio" = 80;
+            })
+        ];
       };
 
-      kernelParams = optionals cfg.plymouth [
+      kernelParams = [
+        # Enable cgroups_v2
+        "cgroup_no_v1=all"
+        "systemd.unified_cgroup_hierarchy=yes"
+      ] ++ optionals cfg.plymouth [
         "quiet"
         "splash"
         "fbcon=nodefer"
@@ -114,6 +134,9 @@ in
         # except when they coincide with updates to the ctime or mtime
         "rootflags=noatime"
 
+      ]
+      ++ optionals (cfg.bootmanager == "raspberry") [
+        "cma=32M"
       ];
 
       lanzaboote = mkIf cfg.secureBoot {
@@ -122,6 +145,8 @@ in
       };
 
       loader = {
+        generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;
+
         efi = mkIf (cfg.boottype == "efi") {
           canTouchEfiVariables = mkDefault true;
           efiSysMountPoint = mkDefault "/boot";
@@ -129,7 +154,7 @@ in
         generationsDir.copyKernels = mkIf cfg.boottype == "efi";
 
         grub = mkIf (cfg.bootmanager == "grub") {
-          enable = true;
+          enable = mkIf (cfg.bootmanager == "grub" && cfg.bootmanager != "raspberry") true;
           efiSupport = if cfg.boottype == "efi" then true else false;
           theme = mkDefault pkgs.catppuccin-grub;
           default = "saved";
@@ -162,7 +187,7 @@ in
 
       plymouth = rec {
         enable = cfg.plymouth;
-        theme = "deus_ex";
+        theme = "spinner_alt"; # "deus_ex";
         themePackages = with pkgs; [
           (
             # pkgs.catppuccin-plymouth
@@ -178,5 +203,9 @@ in
       };
     };
     systemd.watchdog.rebootTime = mkIf (cfg.plymouth) "0";
+
+    # persistence.directories = mkIf persistence == true; [
+    #   "/etc/secureboot"
+    # ];
   };
 }

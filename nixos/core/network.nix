@@ -129,7 +129,8 @@ in
         enable = true;
         appendNameservers = [
           "1.1.1.1" # Cloudflare
-          "8.8.8.8" # Google
+          "1.0.0.1" # Cloudflare
+          # "8.8.8.8" # Google
         ];
         dns = "systemd-resolved";
 

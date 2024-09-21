@@ -19,8 +19,10 @@ in
 
       # ../../resources/scripts/nixos
       ./boot.nix
+      # ./backlight.nix
       ./console.nix
       ./hardware.nix
+      # ./graphics.nix
       ./locale.nix
       ./optimizations.nix
       ./timezone.nix
