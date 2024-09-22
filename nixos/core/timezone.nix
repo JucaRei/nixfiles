@@ -1,11 +1,11 @@
-{ hostname, isWorkstation, lib, ... }:
+{ hostname, isWorkstation, lib, config, ... }:
 let
   inherit (lib) mkForce;
 in
 {
   time = {
     timeZone = "America/Sao_Paulo";
-    hardwareClockInLocalTime = isWorkstation && hostname == "nitro"; ### Dual boot
+    hardwareClockInLocalTime = if (config.core.boot.isDualBoot == true) then true else false;
   };
   services = {
     geoclue2 = mkForce {

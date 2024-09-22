@@ -21,15 +21,14 @@ let
 
       xkb-layout = ${xkblayout}
     '';
-  cfg = config.sys.console;
+  cfg = config.core.console;
 in
 {
-  options.sys.console = {
+  options.core.console = {
     enable = mkEnableOption "Wheater enable console configuration." // { default = isInstall; };
   };
   config = mkIf cfg.enable {
     boot = {
-      # Catppuccin theme
       kernelParams = [
         "vt.default_red=30,243,166,249,137,245,148,186,88,243,166,249,137,245,148,166"
         "vt.default_grn=30,139,227,226,180,194,226,194,91,139,227,226,180,194,226,173"
@@ -37,6 +36,7 @@ in
       ];
     };
 
+    # Catppuccin theme
     catppuccin = {
       accent = "blue";
       flavor = "mocha";

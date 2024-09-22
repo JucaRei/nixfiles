@@ -5,10 +5,10 @@
 ############################
 let
   inherit (lib) mkIf mkOverride mkEnableOption types mkDefault mkOption listOf enum optionals mkMerge;
-  cfg = config.sys.boot;
+  cfg = config.core.boot;
 in
 {
-  options.sys.boot = {
+  options.core.boot = {
     enable = mkEnableOption "Default booting type." //
       { default = true; };
     boottype = mkOption {

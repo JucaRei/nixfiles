@@ -1,10 +1,10 @@
-{ config, pkgs, lib, isWorkstation, hostname, ... }:
+{ config, pkgs, lib, isWorkstation, isInstall, hostname, ... }:
 let
   inherit (lib) mkIf mkOption mkEnableOption types optionalString optional optionals mkMerge;
-  cfg = config.sys.hardware;
+  cfg = config.core.hardware;
 in
 {
-  options.sys.hardware = {
+  options.core.hardware = {
     enable = mkEnableOption "hardware defaults" // {
       default = true;
     };
@@ -13,7 +13,7 @@ in
     hardenKernel = mkEnableOption "kernel hardening options" // {
       default = false; # isWorkstation;
     };
-    improveTCP = mkEnableOption "tcp extra config." // { default = true; };
+    improveTCP = mkEnableOption "tcp extra config." // { default = isInstall; };
     enableKvm = mkEnableOption "kernel hardening options";
 
     cpuVendor = mkOption {

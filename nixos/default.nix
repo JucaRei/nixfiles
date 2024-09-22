@@ -21,7 +21,7 @@ in
     ######################
     ### Custom Modules ###
     ######################
-    sys.boot = {
+    core.boot = {
       enable = isInstall;
       # boottype = "efi";
       # bootmanager = "systemd-boot";

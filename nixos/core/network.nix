@@ -61,15 +61,15 @@ let
     fi
   '';
 
-  cfg = config.sys.network;
+  cfg = config.core.network;
 in
 {
-  options.sys.network = {
+  options.core.network = {
     enable = mkEnableOption "Wheater enable network for device" //
       { default = true; };
     networkOpt = mkOption {
       type = types.nullOr (types.enum [ "network-manager" "wpa-supplicant" ]);
-      default = "network-manager"; # "efi";
+      default = "network-manager";
       description = "Default network option.";
     };
     exclusive-locallan = mkEnableOption "Wheter enable exclusive-lan." //
