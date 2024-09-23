@@ -8,36 +8,12 @@ let
 
   notVM = if (hostname == "minimech" || hostname == "scrubber" || hostname == "vm" || builtins.substring 0 5 hostname == "lima-" || hostname == "rasp3") then false else true;
 
-  defaultDns = [ "1.1.1.1" "1.0.0.1" ];
   needsLowLatencyPipewire = if (hostname == "vm" || hostname == "scrubber") then true else false;
   saveBattery = if (hostname != "scrubber" && hostname != "vader") then true else false;
   hasRazerPeripherals = if (hostname == "phasma" || hostname == "vader") then true else false;
   isGamestation = if (hostname == "phasma" || hostname == "vader") && (desktop != null) then true else false;
   isNitro = if (hostname == "nitro") then true else false;
 
-  # Define DNS settings for specific users
-  # - https://cleanbrowsing.org/filters/
-  userDnsSettings = {
-    # Security Filter:
-    # - Blocks access to phishing, spam, malware and malicious domains.
-    juca = [ "185.228.168.9" "185.228.169.9" ];
-
-    # Adult Filter:
-    # - Blocks access to all adult, pornographic and explicit sites.
-    # - It does not block proxy or VPNs, nor mixed-content sites.
-    # - Sites like Reddit are allowed.
-    # - Google and Bing are set to the Safe Mode.
-    # - Malicious and Phishing domains are blocked.
-    teste = [ "185.228.168.10" "185.228.169.11" ];
-
-    # Family Filter:
-    # - Blocks access to all adult, pornographic and explicit sites.
-    # - It also blocks proxy and VPN domains that are used to bypass the filters.
-    # - Mixed content sites (like Reddit) are also blocked.
-    # - Google, Bing and Youtube are set to the Safe Mode.
-    # - Malicious and Phishing domains are blocked.
-    teste2 = [ "185.228.168.168" "185.228.169.168" ];
-  };
 in
 {
   # config = mkIf desktopMode {
@@ -48,38 +24,6 @@ in
     ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix"))
       ./${desktop}.nix;
 
-  # Conditionally set Public DNS based on username, defaulting if user not matched
-  networking = {
-    networkmanager = {
-      # Conditionally set Public DNS based on username, defaulting if user not matched
-      insertNameservers =
-        if builtins.hasAttr username userDnsSettings then
-          userDnsSettings.${username}
-        else
-          defaultDns;
-      wifi = {
-        backend = "iwd";
-        powersave = saveBattery;
-      };
-    };
-  };
-
-  boot = {
-    # Enable the threadirqs kernel parameter to reduce audio latency & Quiet Boot
-    # - Inpired by: https://github.com/musnix/musnix/blob/master/modules/base.nix#L56
-    kernelParams = lib.mkDefault [
-      "quiet"
-      "vt.global_cursor_default=0"
-      "systemd.show_status=auto"
-      "udev.log_level=3"
-      "rd.udev.log_level=3"
-      "mitigations=off"
-    ];
-    plymouth.enable =
-      if (hostname != "rasp3" || "soyo")
-      then lib.mkDefault true
-      else false;
-  };
 
   environment = {
     etc = {
@@ -89,12 +33,6 @@ in
       "fuse.conf".text = ''
         user_allow_other
       '';
-
-      "backgrounds/DeterminateColorway-1920x1080.png".source = ../config/backgrounds/DeterminateColorway-1920x1080.png;
-      "backgrounds/DeterminateColorway-1920x1200.png".source = ../config/backgrounds/DeterminateColorway-1920x1200.png;
-      "backgrounds/DeterminateColorway-2560x1440.png".source = ../config/backgrounds/DeterminateColorway-2560x1440.png;
-      "backgrounds/DeterminateColorway-3440x1440.png".source = ../config/backgrounds/DeterminateColorway-3440x1440.png;
-      "backgrounds/DeterminateColorway-3840x2160.png".source = ../config/backgrounds/DeterminateColorway-3840x2160.png;
     } // lib.optionalAttrs (isNitro) {
       "aspell.conf".text = ''
         master en_US
@@ -114,8 +52,6 @@ in
       # pavucontrol
       # pulseaudio
       # wmctrl
-      # xdotool
-      # ydotool
       # ] ++ lib.optionals (isGamestation) [
       #   mangohud
       # ] ++ lib.optionals (isInstall && hasRazerPeripherals) [
@@ -145,14 +81,6 @@ in
           ${pkgs.numlockx}/bin/numlockx on
         '';
       };
-      # videoDrivers = [
-      # "fbdev" # The fbdev (Framebuffer Device) driver is a generic framebuffer driver that provides access to the frame buffer of the display hardware.
-      # "modesetting"     # The modesetting driver is a generic driver for modern video hardware that relies on kernel modesetting (KMS) to set the display modes and manage resolution and refresh rate.
-      # "amdgpu"          # This is the open-source kernel driver for AMD graphics cards. It's part of the AMDGPU driver stack and provides support for newer AMD GPUs.
-      # "nouveau"         # Nouveau is an open-source driver for NVIDIA graphics cards. It aims to provide support for NVIDIA GPUs and is an alternative to the proprietary NVIDIA driver
-      # "radeon"          # The Radeon driver is an open-source driver for AMD Radeon graphics cards. It provides support for older AMD GPUs.
-      # "nvidia"
-      # ];
     };
     samba = {
       enable =
@@ -163,6 +91,7 @@ in
       # securityType = "user";
       # openFirewall = true;
       extraConfig = ''
+        # My old nas dlink-325 uses v1
         client min protocol = NT1
       '';
       ### --------------------------------------------------------- ###
@@ -226,9 +155,6 @@ in
         RuntimeDirectoryInodesMax=1048576
       '';
     };
-
-    # needed for GNOME services outside of GNOME Desktop
-    # dbus.packages = if hostname != "rasp3" then [ pkgs.gcr ] else "";
 
     udev =
       if (hostname != "rasp3" || "soyo")

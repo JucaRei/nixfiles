@@ -16,12 +16,12 @@ let
   ];
 
   marketPlaceExtensions = (pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [
-	{
-		name = "python";
-		publisher = "ms-python";
-		version = "2024.15.2024091801";
-		sha256 = "sha256-N8y0cPJeFQTsOMOD1hB/T5pZcpEMRKLfpNtMz3qdGCY=";
-	}
+    {
+      name = "python";
+      publisher = "ms-python";
+      version = "2024.15.2024091801";
+      sha256 = "sha256-BvR7K0bWLITRp+y5k6UD8ookgQGZVrwVdGM5y1QgaY4=";
+    }
     {
       name = "better-nix-syntax";
       publisher = "jeff-hykin";

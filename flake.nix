@@ -225,6 +225,11 @@
       inputs.home-manager.follows = "nixpkgs";
     };
 
+    # system-manager = {
+    #   url = "github:numtide/system-manager";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+
     # devenv.url = "github:cachix/devenv";
     # budgie = {
     #   url = "github:FedericoSchonborn/budgie-nix";
