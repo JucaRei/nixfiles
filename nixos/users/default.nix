@@ -17,12 +17,11 @@ in
     # ${username}.group = groupName;
     users.${username} = {
       extraGroups = [
-        "audio"
         "input"
-        "networkmanager"
         "users"
-        "video"
         "wheel"
+        "audio"
+        "video"
       ]
       # "adbusers" "dialout" "render" "plugdev" "i2c" "systemd-journal" "corectrl" "wireshark" "storage" "scanner" "libvirtd" "qemu-libvirtd" "kvm" "input" "docker" "podman"
       ++ ifExists [

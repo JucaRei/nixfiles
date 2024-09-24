@@ -172,7 +172,7 @@ in
     };
   };
   nix = {
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    # registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     package = pkgs.nixVersions.latest;
     settings =
       if isDarwin then {
@@ -185,11 +185,11 @@ in
         experimental-features = [
           "nix-command"
           "flakes"
-          "auto-allocate-uids"
-          "cgroups"
+          # "auto-allocate-uids"
+          # "cgroups"
         ];
-        auto-allocate-uids = true;
-        use-cgroups = if isLinux then true else false;
+        # auto-allocate-uids = true;
+        # use-cgroups = if isLinux then true else false;
         # build-users-group = "nixbld";
         builders-use-substitutes = true;
         sandbox = if (isDarwin) then true else "relaxed";
@@ -197,8 +197,8 @@ in
         # https://nixos.org/manual/nix/unstable/command-ref/conf-file.html
         # keep-going = true;
         show-trace = true;
-        keep-outputs = true;
-        keep-derivations = true;
+        # keep-outputs = true;
+        # keep-derivations = true;
         warn-dirty = false;
         allow-dirty = true;
         # allowed-users = users;

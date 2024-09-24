@@ -75,10 +75,10 @@ in
             # "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
             # "cgroups" # allow nix to execute builds inside cgroups
           ];
+          # auto-allocate-uids = true;
           # Opinionated: disable global registry
           # flake-registry = "";
           # Workaround for https://github.com/NixOS/nix/issues/9574
-          # nix-path = config.nix.nixPath;
           # allowed-users = users;
           trusted-users = users;
           builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
@@ -88,7 +88,7 @@ in
           keep-going = true;
           warn-dirty = false;
           tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
-          use-cgroups = true; # execute builds inside cgroups
+          # use-cgroups = true; # execute builds inside cgroups
           system-features = [
             ## Allows building v3/v4 packages
             # "gccarch-x86-64-v3"

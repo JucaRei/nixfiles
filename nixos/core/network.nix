@@ -1,6 +1,6 @@
-{ hostname, hostid, lib, pkgs, config, ... }:
+{ hostname, hostid, lib, pkgs, config, username, ... }:
 let
-  inherit (lib) mkEnableOption mkOption types mkIf mkDefault mdDoc optional;
+  inherit (lib) mkEnableOption mkOption types mkIf mkDefault mdDoc optional mkForce isBool;
   port = pkgs.writeShellScriptBin "port" ''
     usage() {
       printf 'usage: %s open|close tcp|udp|both PORT[:PORT]\n' "''${0##*/}" >&2
@@ -112,11 +112,7 @@ in
         192.168.122.* scrubber
       '';
 
-      # interfaces = {
-      #   "enp7s0f1".wakeOnLan.enable = true;
-      # };
-
-      # use network manager instead of wpa supplicanmt
+      # use network manager instead of wpa supplicant
       wireless.enable = if cfg.networkOpt == "network-manager" then false else true;
 
       # Disabling DHCPCD in favor of NetworkManager
@@ -128,7 +124,7 @@ in
       networkmanager = mkIf (cfg.networkOpt == "network-manager") {
         enable = true;
         appendNameservers = [
-          "1.1.1.1" # Cloudflare
+          "1.1.1.2" # Cloudflare
           "1.0.0.1" # Cloudflare
           # "8.8.8.8" # Google
         ];
@@ -183,15 +179,9 @@ in
     services = {
       resolved = {
         enable = if (cfg.networkOpt == "network-manager") then true else false;
-      };
 
-      # disable-wifi-powersave = {
-      #   wantedBy = [ "multi-user.target" ];
-      #   path = [ pkgs.iw ];
-      #   script = ''
-      #     iw dev wlan0 set power_save off
-      #   '';
-      # };
+
+      };
 
       # Modify autoconnect priority of the connection to my home network
       # modify-autoconnect-priority = {
@@ -227,13 +217,29 @@ in
       ]);
     };
 
-
-
     # https://github.com/NixOS/nixpkgs/issues/180175#issuecomment-1658731959
-    systemd.services.NetworkManager-wait-online = mkIf (cfg.networkOpt == "network-manager") {
-      serviceConfig = {
-        ExecStart = [ "" "${pkgs.networkmanager}/bin/nm-online -q" ];
+    systemd.services = {
+      NetworkManager-wait-online = {
+        enable = mkForce false;
+        serviceConfig = mkIf (cfg.networkOpt == "network-manager") {
+          ExecStart = [ "" "${pkgs.networkmanager}/bin/nm-online -q" ];
+        };
       };
+
+      disable-wifi-powersave = mkIf
+        (
+          isBool config.networking.networkmanager.wifi.powersave
+          && config.networking.networkmanager.wifi.powersave
+        )
+        {
+          wantedBy = [ "multi-user.target" ];
+          path = [ pkgs.iw ];
+          script = ''
+            iw dev wlan0 set power_save off
+          '';
+        };
     };
+
+    users.users.${username}.extraGroups = lib.optionals config.networking.networkmanager.enable [ "networkmanager" ];
   };
 }

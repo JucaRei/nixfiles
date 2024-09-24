@@ -54,7 +54,6 @@ in
           IOWeight = 20;
         };
 
-        NetworkManager-wait-online.enable = lib.mkForce false;
         systemd-udev-settle.enable = lib.mkForce false;
       };
 
