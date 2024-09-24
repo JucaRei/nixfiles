@@ -1,10 +1,10 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption optionalString mkOption types;
-  cfg = config.sys.hardware.backlight;
+  cfg = config.features.backlight;
 in
 {
-  options.sys.hardware.backlight = {
+  options.features.backlight = {
     enable = mkEnableOption "enable backlight support" // { default = true; };
     backlight-opt = mkOption {
       type = types.nullOr (types.enum [ "light" "brillo" ]);

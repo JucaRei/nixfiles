@@ -20,7 +20,7 @@ in
       # ../../resources/scripts/nixos
       ./boot.nix
       ./console.nix
-      ./hardware.nix
+      ./cpu.nix
       ./locale.nix
       ./optimizations.nix
       ./timezone.nix

@@ -1,11 +1,11 @@
 { config, pkgs, lib, isWorkstation, isInstall, hostname, ... }:
 let
   inherit (lib) mkIf mkOption mkEnableOption types optionalString optional optionals mkMerge;
-  cfg = config.core.hardware;
+  cfg = config.core.cpu;
 in
 {
-  options.core.hardware = {
-    enable = mkEnableOption "hardware defaults" // {
+  options.core.cpu = {
+    enable = mkEnableOption "cpu hardware defaults" // {
       default = true;
     };
 
@@ -138,38 +138,11 @@ in
     );
 
     hardware = {
-      bluetooth = mkIf isWorkstation {
-        enable = true;
-        # package = pkgs.bluez;
-        package = pkgs.unstable.bluez-experimental;
-        powerOnBoot = false;
-        settings = {
-          General = {
-            Name = config.networking.hostName;
-            Enable = "Source,Sink,Media,Socket"; # Enable A2DP sink
-            JustWorksRepairing = "always";
-            MultiProfile = "multiple";
-            # # make Xbox Series X controller work
-            Class = "0x000100";
-            ControllerMode = "bredr";
-            FastConnectable = true;
-            Privacy = "device";
-            Experimental = true;
-          };
-        };
-      };
-
       cpu = {
         intel.updateMicrocode = cfg.cpuVendor == "intel";
         amd.updateMicrocode = mkIf (cfg.cpuVendor == "amd") config.hardware.enableRedistributableFirmware;
       };
       enableRedistributableFirmware = true;
-    };
-
-    system.activationScripts = mkIf config.hardware.bluetooth.enable {
-      rfkillUnblockBluetooth.text = ''
-        rfkill unblock bluetooth
-      '';
     };
 
     services = {

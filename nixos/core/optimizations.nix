@@ -62,7 +62,7 @@ in
       };
 
       thermald = {
-        enable = if (config.core.hardware.cpuVendor == "intel") then true else false;
+        enable = if (config.core.cpu.cpuVendor == "intel") then true else false;
       };
 
       psd = {

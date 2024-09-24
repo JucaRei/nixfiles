@@ -205,10 +205,10 @@ in
         trusted-users = users;
         connect-timeout = 5;
         http-connections = 0;
+        log-lines = 15;
       };
     extraOptions =
-      ''log-lines = 15
-        fallback = true
+      ''
         # Free up to 1GiB whenever there is less than 100MiB left.
         # min-free = ${toString (100 * 1024 * 1024)}
         # max-free = ${toString (1024 * 1024 * 1024)}

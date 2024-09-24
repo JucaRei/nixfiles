@@ -1,19 +1,27 @@
-{ isWorkstation, pkgs, ... }: {
-  hardware = {
-    enableRedistributableFirmware = true;
+{ isWorkstation, pkgs, config, lib, ... }:
+let
+  inherit (lib) mkIf mkEnableOption;
+  cfg = config.features.bluetooth;
+in
+{
+  options.features.bluetooth = {
+    enable = mkEnableOption "Whether enable bluetooth";
+    default = isWorkstation;
+  };
 
-    # https://nixos.wiki/wiki/Bluetooth
-    bluetooth =
-      if (isWorkstation) then {
+  config = mkIf cfg.enable {
+    hardware = {
+      # https://nixos.wiki/wiki/Bluetooth
+      bluetooth = {
         enable = true;
-        # package = pkgs.unstable.bluez5-experimental;
         package = pkgs.unstable.bluez-experimental;
         powerOnBoot = false;
         # hsphfpd.enable = false;
         # disabledPlugins = [ "sap" ];
         settings = {
           General = {
-            Enable = "Source,Sink,Media,Socket";
+            Name = config.networking.hostName;
+            Enable = "Source,Sink,Media,Socket"; # Enable A2DP sink
             JustWorksRepairing = "always";
             MultiProfile = "multiple";
             # make Xbox Series X controller work
@@ -24,15 +32,12 @@
             Experimental = true;
           };
         };
-      } else {
-        enable = true;
-        package = pkgs.bluez;
-        settings = {
-          General = {
-            Enable = "Source,Sink,Media,Socket";
-            Experimental = true;
-          };
-        };
       };
+    };
+    system.activationScripts = {
+      rfkillUnblockBluetooth.text = ''
+        rfkill unblock bluetooth
+      '';
+    };
   };
 }

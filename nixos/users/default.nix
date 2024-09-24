@@ -20,7 +20,6 @@ in
         "input"
         "users"
         "wheel"
-        "audio"
         "video"
       ]
       # "adbusers" "dialout" "render" "plugdev" "i2c" "systemd-journal" "corectrl" "wireshark" "storage" "scanner" "libvirtd" "qemu-libvirtd" "kvm" "input" "docker" "podman"
