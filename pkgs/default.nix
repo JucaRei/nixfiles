@@ -31,6 +31,7 @@
   ### AI Tools ###
   ################
   # stable-diffusion = pkgs.callPackage ./tools/stable-diffusion { };
+  
 
   ############
   ### Misc ###

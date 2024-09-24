@@ -169,7 +169,7 @@ in
 
       hostName = hostname;
       hostId = hostid;
-      usePredictableInterfaceNames = true;
+      usePredictableInterfaceNames = mkDefault false;
 
       interfaces = {
         "${cfg.custom-interface}" = {

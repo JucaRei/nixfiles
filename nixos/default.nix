@@ -6,8 +6,8 @@ let
   inherit (lib) mkIf mkDefault;
   users = [
     "root"
-    "@wheel"
-    "nix-builder"
+    # "@wheel"
+    # "nix-builder"
     "${username}"
   ];
 in
@@ -63,21 +63,23 @@ in
         settings = {
           sandbox = "relaxed"; # true
           nix-path = config.nix.nixPath;
+          # Disable global registry
+          flake-registry = "";
           auto-optimise-store = true;
           experimental-features = [
             "nix-command"
             "flakes"
-            "repl-flake" # repl to inspect a flake
-            "recursive-nix" # let nix invoke itself
-            "ca-derivations" # content addressed nix
-            "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
-            "cgroups" # allow nix to execute builds inside cgroups
+            # "repl-flake" # repl to inspect a flake
+            # "recursive-nix" # let nix invoke itself
+            # "ca-derivations" # content addressed nix
+            # "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
+            # "cgroups" # allow nix to execute builds inside cgroups
           ];
           # Opinionated: disable global registry
           # flake-registry = "";
           # Workaround for https://github.com/NixOS/nix/issues/9574
           # nix-path = config.nix.nixPath;
-          allowed-users = users;
+          # allowed-users = users;
           trusted-users = users;
           builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
           ### Avoid unwanted garbage collection when using nix-direnv
@@ -89,12 +91,12 @@ in
           use-cgroups = true; # execute builds inside cgroups
           system-features = [
             ## Allows building v3/v4 packages
-            "gccarch-x86-64-v3"
-            "gccarch-x86-64-v4"
-            "kvm"
-            "recursive-nix"
-            "big-parallel"
-            "nixos-test"
+            # "gccarch-x86-64-v3"
+            # "gccarch-x86-64-v4"
+            # "kvm"
+            # "recursive-nix"
+            # "big-parallel"
+            # "nixos-test"
           ];
         };
         extraOptions = ''

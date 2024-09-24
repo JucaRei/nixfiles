@@ -49,7 +49,7 @@ in
     };
 
     services = {
-      kmscon = mkIf isInstall {
+      kmscon = mkIf (!config.boot.plymouth.enable) {
         enable = true;
         hwRender = false;
         extraOptions = "--gpus primary";

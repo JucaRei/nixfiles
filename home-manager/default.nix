@@ -10,6 +10,13 @@ let
   home-manager_change_summary = import ../resources/scripts/nix/home-manager_change_summary.nix { inherit pkgs; };
   isOld = if (hostname == "oldarch") then false else true;
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
+
+  users = [
+    "root"
+    # "@wheel"
+    # "nix-builder"
+    "${username}"
+  ];
 in
 {
   imports = [
@@ -194,9 +201,8 @@ in
         keep-derivations = true;
         warn-dirty = false;
         allow-dirty = true;
-        # allowed-users = [ "nixbld" "@wheel" ]; # Allow to run nix
-        # allowed-users = [ "root" "@wheel" ];
-        trusted-users = [ "root" "${username}" ];
+        # allowed-users = users;
+        trusted-users = users;
         connect-timeout = 5;
         http-connections = 0;
       };
