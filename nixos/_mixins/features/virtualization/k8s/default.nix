@@ -14,26 +14,26 @@ in
   };
 
   config = mkIf cfg.enable {
-    users.users."${username}".packages = with pkgs; [
-      # user.packages = with pkgs; [
-      kubectl # Kubernetes CLI
-      minikube # Tool that makes it easy to run Kubernetes locally
-      krew # Package manager for kubectl plugins
-      kubectx # Utility to quickly switch between K8s clusters (kubectx) and namespaces (kubens)
-      kubernetes-helm # Package manager for K8s charts
-      helmfile # Deploy helm charts to defferent environments with ease
-      kompose # Translate docker-compose files into K8s resources
-      kubecolor # Colorizes kubectl output
-    ];
-
-    # Set the K8s config location
-    # env.KUBECONFIG = "$XDG_CONFIG_HOME/.k8s";
-    # This is needed to run installed plugins
-    # env.PATH = [ "$HOME/.krew/bin" ];
-
-    # Source a bunch of aliases for handling K8s without getting finger cramps
-    # modules.shell.zsh.rcFiles = [ "../../../home-manager/_mixins/config/zsh/kubectl.zsh" ];
     environment = {
+      systemPackages = with pkgs;[
+        # user.packages = with pkgs; [
+        kubectl # Kubernetes CLI
+        minikube # Tool that makes it easy to run Kubernetes locally
+        krew # Package manager for kubectl plugins
+        kubectx # Utility to quickly switch between K8s clusters (kubectx) and namespaces (kubens)
+        kubernetes-helm # Package manager for K8s charts
+        helmfile # Deploy helm charts to defferent environments with ease
+        kompose # Translate docker-compose files into K8s resources
+        kubecolor # Colorizes kubectl output
+      ];
+
+      # Set the K8s config location
+      # env.KUBECONFIG = "$XDG_CONFIG_HOME/.k8s";
+      # This is needed to run installed plugins
+      # env.PATH = [ "$HOME/.krew/bin" ];
+
+      # Source a bunch of aliases for handling K8s without getting finger cramps
+      # modules.shell.zsh.rcFiles = [ "../../../home-manager/_mixins/config/zsh/kubectl.zsh" ];
       shellAliases = {
         # This command is used a LOT both below and in daily life
         k = "kubectl";

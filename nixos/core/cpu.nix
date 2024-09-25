@@ -9,7 +9,6 @@ in
       default = true;
     };
 
-    systemdBoot = mkEnableOption "common boot config";
     hardenKernel = mkEnableOption "kernel hardening options" // {
       default = false; # isWorkstation;
     };
@@ -151,10 +150,5 @@ in
         ACTION=="add|change", KERNEL=="[sv]d[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"
       '';
     };
-
-    # zramSwap = {
-    #   enable = true;
-    #   memoryPercent = 200;
-    # };
   };
 }
