@@ -5,10 +5,10 @@ let
 in
 {
   options.features.backlight = {
-    enable = mkEnableOption "enable backlight support" // { default = true; };
+    enable = mkEnableOption "enable backlight support";
     backlight-opt = mkOption {
-      type = types.nullOr (types.enum [ "light" "brillo" ]);
-      default = "brillo";
+      type = types.enum [ "light" "brillo" null ];
+      default = null;
       description = "Default backlight manager.";
     };
   };

@@ -1,10 +1,10 @@
 { inputs, pkgs, config, lib, ... }:
-with lib;
 let
-  cfg = config.services.steam;
+  inherit (lib) mkIf mkOption types;
+  cfg = config.features.games.steam;
 in
 {
-  options.services.steam = {
+  options.features.games.steam = {
     enable = mkOption {
       type = types.bool;
       default = false;
@@ -92,10 +92,10 @@ in
       })
     ];
 
-    ssbm = {
-      overlay.enable = true;
-      cache.enable = true;
-    };
+    # ssbm = {
+    #   overlay.enable = true;
+    #   cache.enable = true;
+    # };
 
     # nix-gaming cache
     nix.settings = {

@@ -2,6 +2,11 @@
 let
   installFor = [ "juca" ];
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
+  docker_storage_driver =
+    if config.fileSystems.fsType == "btrfs"
+    then "btrfs"
+    else "overlay2";
+
   dockerEnabled = config.virtualisation.docker.enable;
 in
 # lib.mkIf (lib.elem "${username}" installFor) {
@@ -96,7 +101,7 @@ in
       virtualisation = {
         docker = {
           enable = true;
-          storageDriver = "overlay2";
+          storageDriver = docker_storage_driver;
           logDriver = "json-file";
           # extraOptions = "-H 0.0.0.0:2376 --tlsverify --tlscacert /run/keys/docker/ca.pem --tlscert /run/keys/docker/server-cert.pem --tlskey /run/keys/docker/server-key.pem";
 

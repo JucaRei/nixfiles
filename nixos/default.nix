@@ -1,7 +1,6 @@
 { config, lib, username, platform, isInstall, outputs, inputs, pkgs, isISO, isWorkstation, hostname, ... }:
 let
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
-  variables = import ./hosts/${hostname}/variables.nix { inherit config username; }; # vars for better check
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkIf mkDefault;
   users = [

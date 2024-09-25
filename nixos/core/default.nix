@@ -14,7 +14,7 @@ in
       ../../resources/nixos/scripts
       # ../_mixins/services/network/networkmanager.nix
       ../_mixins/services/security/firewall.nix
-      # ../_mixins/features/boot
+      ../_mixins/features
       # ../_mixins/features/bluetooth
 
       # ../../resources/scripts/nixos
@@ -30,11 +30,11 @@ in
       ./system.nix
     ]
     ++ optional (notVM && hostname != "soyo") ../_mixins/features/smartd # Wheather enable smart daemon
-    ++ optional (notVM) ../_mixins/features/docker # Wheather enable docker daemon
-    ++ optional (notVM && hostname != "soyo") ../_mixins/features/lxd # Wheather enable linux containers
+    ++ optional (notVM) ../_mixins/virtualization/docker # Wheather enable docker daemon
+    ++ optional (notVM && hostname != "soyo") ../_mixins/virtualization/lxd # Wheather enable linux containers
     ++ optional (isWorkstation) ../_mixins/desktop # if has desktop environment
-    ++ optional (isWorkstation) ../_mixins/sys
-    ++ optional (hostname == "nitro") ../_mixins/features/nix-ld
+    # ++ optional (isWorkstation) ../_mixins/sys
+    # ++ optional (hostname == "nitro") ../_mixins/features/nix-ld
   ;
 
   ######################

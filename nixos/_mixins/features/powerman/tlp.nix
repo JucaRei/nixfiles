@@ -1,18 +1,15 @@
 { config, lib, pkgs, ... }:
-
 let
-  cfg = config.features.powermanagement;
+  inherit (lib) mkOption mkIf mkForce types;
+  cfg = config.features.powerman;
   MHz = x: x * 1000;
 in
-with lib;
 {
-  options = {
-    feature.powermanagement = {
-      laptop = mkOption {
-        default = false;
-        type = with types; bool;
-        description = "Enables laptop powermanagement tools";
-      };
+  options.features.powerman = {
+    laptop = mkOption {
+      default = false;
+      type = types.bool;
+      description = "Enables laptop power management tools";
     };
   };
 

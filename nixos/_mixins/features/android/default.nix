@@ -22,12 +22,16 @@ in
           scrcpy # Display and control Android devices over USB or TCP/IP
           droidcam # Linux client for DroidCam app
           waydroid # Waydroid is a container-based approach to boot a full Android system on a regular GNU/Linux system
+          waydroid-ui
         ];
         extraRules = ''
           # add my android device to adbusers
             SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", MODE="0666", GROUP="adbusers"
         '';
       };
+    };
+    virtualisation.waydroid = {
+      enable = true;
     };
     users.users.${username}.extraGroups = [
       "adbusers"

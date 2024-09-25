@@ -1,12 +1,17 @@
 # VNC Remote Connect Server
 #
-{ config
-, lib
-, pkgs
-, username
-, ...
-}: {
-  config = lib.mkIf config.services.xserver.enable {
+{ config, lib, pkgs, username, ... }:
+let
+  inherit (lib) mkIf mkEnableOption;
+  cfg = config.features.x11vnc;
+in
+{
+  options = {
+    features.x11vnc = {
+      enable = mkEnableOption "Whether enable x11vnc";
+    };
+  };
+  config = mkIf cfg.enable {
     # Only evaluate code if using X11
     networking.firewall.allowedTCPPorts = [ 5900 ]; # Since x11vpn defaults to port 5900. Open this port in firewall
 
