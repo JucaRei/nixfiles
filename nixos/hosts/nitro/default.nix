@@ -18,7 +18,7 @@ in
 
 
     features = {
-      audio.manager = mkForce "pulseaudio";
+      # audio.manager = mkForce "pulseaudio";
     };
     nixpkgs = {
       hostPlatform = lib.mkDefault "x86_64-linux";
