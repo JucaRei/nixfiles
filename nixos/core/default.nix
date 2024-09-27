@@ -22,6 +22,7 @@ in
       ./console.nix
       ./cpu.nix
       ./locale.nix
+      # ./graphics
       ./optimizations.nix
       ./timezone.nix
       ./security.nix
@@ -29,9 +30,9 @@ in
       ./ssh.nix
       ./system.nix
     ]
-    ++ optional (notVM && hostname != "soyo") ../_mixins/features/smartd # Wheather enable smart daemon
-    ++ optional (notVM) ../_mixins/virtualization/docker # Wheather enable docker daemon
-    ++ optional (notVM && hostname != "soyo") ../_mixins/virtualization/lxd # Wheather enable linux containers
+    # ++ optional (notVM && hostname != "soyo") ../_mixins/features/smartd # Wheather enable smart daemon
+    # ++ optional (notVM) ../_mixins/virtualization/docker # Wheather enable docker daemon
+    # ++ optional (notVM && hostname != "soyo") ../_mixins/virtualization/lxd # Wheather enable linux containers
     ++ optional (isWorkstation) ../_mixins/desktop # if has desktop environment
     # ++ optional (isWorkstation) ../_mixins/sys
     # ++ optional (hostname == "nitro") ../_mixins/features/nix-ld

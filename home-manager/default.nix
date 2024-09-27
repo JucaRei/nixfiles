@@ -110,6 +110,7 @@ in
       home-build
       home-switch
       home-manager_change_summary
+      bashInteractive
       # nix-whereis
       duf # Modern Unix `df`
       fd # Modern Unix `find`

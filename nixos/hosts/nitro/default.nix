@@ -7,7 +7,7 @@ in
     # ../../_mixins/hardware/graphics/nvidia/nvidia-offload.nix
     ../../_mixins/hardware/other/usb.nix
     ../../_mixins/services/security/sudo.nix
-    ../../_mixins/virtualization/virtual-manager/testing.nix
+    # ../../_mixins/virtualization/virtual-manager/testing.nix
     (import ./disks-btrfs.nix { })
     # (import ./disks-bcachefs.nix { })
     ./hardware.nix
@@ -16,8 +16,10 @@ in
   config = {
     programs.gnupg.agent.enable = true;
 
-    features.audio.manager = mkForce "pulseaudio";
 
+    features = {
+      audio.manager = mkForce "pulseaudio";
+    };
     nixpkgs = {
       hostPlatform = lib.mkDefault "x86_64-linux";
     };
@@ -72,7 +74,7 @@ in
         };
       };
 
-      virtualisation.kvm.enable = true;
+      # virtualisation.kvm.enable = true;
 
       acpid = {
         enable = true;

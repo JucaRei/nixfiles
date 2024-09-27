@@ -20,14 +20,16 @@ in
     ######################
     ### Custom Modules ###
     ######################
-    core.boot = {
-      enable = isInstall;
-      # boottype = "efi";
-      # bootmanager = "systemd-boot";
-      # isDualBoot = false;
-      # secureBoot = false;
-      silentBoot = isWorkstation;
-      plymouth = isWorkstation;
+    core = {
+      boot = {
+        enable = isInstall;
+        # boottype = "efi";
+        # bootmanager = "systemd-boot";
+        # isDualBoot = false;
+        # secureBoot = false;
+        silentBoot = isWorkstation;
+        plymouth = isWorkstation;
+      };
     };
     ####################
     ### Nix Settings ###

@@ -35,7 +35,13 @@ in
         options ${optionalString (cfg.cpuVendor != "other") "kvm_${cfg.cpuVendor}"} nested=1
       '';
 
-      kernelModules = mkIf cfg.improveTCP [ "tcp_bbr" ];
+      # kernelModules = mkIf cfg.improveTCP [ "tcp_bbr" ];
+      kernelModules =
+        let
+          isIntel = if (cfg.cpuVendor == "intel") then "kvm-intel" else "";
+        in
+        mkIf (cfg.improveTCP) [ "tcp_bbr" ];
+
       kernel = {
         sysctl =
           let

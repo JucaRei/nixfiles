@@ -1,7 +1,7 @@
 { pkgs, username, config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption;
-  cfg = config.features.bluetooth;
+  cfg = config.features.android;
 in
 {
   options.features.android = {
