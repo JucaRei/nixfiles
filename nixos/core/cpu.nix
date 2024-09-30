@@ -12,7 +12,7 @@ in
     hardenKernel = mkEnableOption "kernel hardening options" // {
       default = false; # isWorkstation;
     };
-    improveTCP = mkEnableOption "tcp extra config." // { default = isInstall; };
+    improveTCP = mkEnableOption "tcp extra config." // { default = isInstall || isWorkstation; };
     enableKvm = mkEnableOption "kernel hardening options";
 
     cpuVendor = mkOption {
@@ -35,8 +35,7 @@ in
         options ${optionalString (cfg.cpuVendor != "other") "kvm_${cfg.cpuVendor}"} nested=1
       '';
 
-      kernelModules = optionals (cfg.improveTCP) [ "tcp_bbr" ]
-        ++ optionals (cfg.cpuVendor == "intel") [ "kvm-intel" ];
+      kernelModules = mkIf (cfg.improveTCP) [ "tcp_bbr" ];
 
       kernel = {
         sysctl =

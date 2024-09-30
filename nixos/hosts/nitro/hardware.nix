@@ -1,5 +1,6 @@
 { config, lib, inputs, pkgs, ... }:
 let
+  inherit (lib) mkForce;
   intelBusId = "PCI:0:2:0";
   nvidiaBusId = "PCI:1:0:0";
 in
@@ -14,25 +15,32 @@ in
 
   config = {
     # boot.mode.efi.enable = lib.mkForce true;
+
+
+
+    features.graphics = {
+      enable = true;
+      gpu = "hybrid-nvidia";
+    };
     boot = {
-      blacklistedKernelModules = [ "nouveau" ]; # blacklist nouveau module so that it does not conflict with nvidia drm stuff
+      # blacklistedKernelModules = [ "nouveau" ]; # blacklist nouveau module so that it does not conflict with nvidia drm stuff
       ### Default Kernel
       kernelPackages = pkgs.linuxPackages_xanmod_stable; #pkgs.linuxPackages_xanmod_latest;
       # kernelPackages = pkgs.linuxPackages_zen;
       # kernelPackages = pkgs.linuxPackages_lqx;
       kernelModules = [
         # "nosgx"
-        "kvm-intel"
+        # "kvm-intel"
         "z3fold"
         "lz4hc"
         "lz4hc_compress"
         "acpi_call"
 
-        "clearcpuid=514" # Fixes certain wine games crash on launch
-        "nvidia"
-        "nvidia_modeset"
-        "nvidia_uvm"
-        "nvidia_drm"
+        # "clearcpuid=514" # Fixes certain wine games crash on launch
+        # "nvidia"
+        # "nvidia_modeset"
+        # "nvidia_uvm"
+        # "nvidia_drm"
       ];
       kernelParams = [
         "usbcore.autosuspend=-1" # Disable USB autosuspend
@@ -41,11 +49,11 @@ in
 
         # Enables the Nvidia's experimental framebuffer device
         # fix for the imaginary monitor that does not exist
-        "nvidia_drm.fbdev=1"
+        # "nvidia_drm.fbdev=1"
 
-        "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # To save and restore all video memory contents
-        "nvidia.NVreg_UsePageAttributeTable=1" # Enable the PAT feature
-        "nvidia.NVreg_RegistryDwords='OverrideMaxPerf=0x1'"
+        # "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # To save and restore all video memory contents
+        # "nvidia.NVreg_UsePageAttributeTable=1" # Enable the PAT feature
+        # "nvidia.NVreg_RegistryDwords='OverrideMaxPerf=0x1'"
       ];
       # kernel = {
       #   sysctl = {
@@ -166,159 +174,158 @@ in
     };
 
     # enable secondary monitors at boot time
-    specialisation = {
-      # prime-sync.configuration = {
-      #   system.nixos.tags = [ "prime-sync" ];
-      #   boot = {
-      #     kernelModules = lib.mkForce [
-      #       "clearcpuid=514" # Fixes certain wine games crash on launch
-      #       "nvidia"
-      #       "nvidia_modeset"
-      #       "nvidia_uvm"
-      #       "nvidia_drm"
-      #     ];
-      #     kernelParams = [
-      #       "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # To save and restore all video memory contents
-      #       "nvidia.NVreg_UsePageAttributeTable=1" # Enable the PAT feature
-      #       "nvidia.NVreg_RegistryDwords='OverrideMaxPerf=0x1'"
-      #     ];
-      #     kernel.sysctl = lib.mkForce {
-      #       "vm.max_map_count" = 2147483642;
-      #     };
-      #   };
-      #   hardware = {
-      #     nvidia = {
-      #       prime = {
-      #         offload.enable = lib.mkDefault false;
-      #         offload.enableOffloadCmd = lib.mkDefault false;
-      #         intelBusId = "PCI:0:2:0";
-      #         nvidiaBusId = "PCI:1:0:0";
-      #         sync.enable = lib.mkDefault true;
-      #       };
-      #       forceFullCompositionPipeline = true;
+    # specialisation = {
+    # prime-sync.configuration = {
+    #   system.nixos.tags = [ "prime-sync" ];
+    #   boot = {
+    #     kernelModules = lib.mkForce [
+    #       "clearcpuid=514" # Fixes certain wine games crash on launch
+    #       "nvidia"
+    #       "nvidia_modeset"
+    #       "nvidia_uvm"
+    #       "nvidia_drm"
+    #     ];
+    #     kernelParams = [
+    #       "nvidia.NVreg_PreserveVideoMemoryAllocations=1" # To save and restore all video memory contents
+    #       "nvidia.NVreg_UsePageAttributeTable=1" # Enable the PAT feature
+    #       "nvidia.NVreg_RegistryDwords='OverrideMaxPerf=0x1'"
+    #     ];
+    #     kernel.sysctl = lib.mkForce {
+    #       "vm.max_map_count" = 2147483642;
+    #     };
+    #   };
+    #   hardware = {
+    #     nvidia = {
+    #       prime = {
+    #         offload.enable = lib.mkDefault false;
+    #         offload.enableOffloadCmd = lib.mkDefault false;
+    #         intelBusId = "PCI:0:2:0";
+    #         nvidiaBusId = "PCI:1:0:0";
+    #         sync.enable = lib.mkDefault true;
+    #       };
+    #       forceFullCompositionPipeline = true;
 
-      #       # Modesetting is needed for most Wayland compositors
-      #       modesetting.enable = true;
-      #       nvidiaPersistenced = true;
-      #       powerManagement = {
-      #         enable = true;
-      #         finegrained = false;
-      #       };
-      #       nvidiaSettings = true;
-      #     };
-      #     opengl = {
-      #       driSupport = true;
-      #       driSupport32Bit = true;
-      #       extraPackages = with pkgs; [
-      #         (if (lib.versionOlder (lib.versions.majorMinor lib.version) "24.05") then vaapiIntel else intel-vaapi-driver)
-      #         libvdpau-va-gl
-      #         intel-media-driver
-      #         nvidia-vaapi-driver
-      #       ];
-      #     };
-      #   };
-      #   environment = {
-      #     systemPackages = with pkgs; [ ];
-      #   };
-      # };
+    #       # Modesetting is needed for most Wayland compositors
+    #       modesetting.enable = true;
+    #       nvidiaPersistenced = true;
+    #       powerManagement = {
+    #         enable = true;
+    #         finegrained = false;
+    #       };
+    #       nvidiaSettings = true;
+    #     };
+    #     opengl = {
+    #       driSupport = true;
+    #       driSupport32Bit = true;
+    #       extraPackages = with pkgs; [
+    #         (if (lib.versionOlder (lib.versions.majorMinor lib.version) "24.05") then vaapiIntel else intel-vaapi-driver)
+    #         libvdpau-va-gl
+    #         intel-media-driver
+    #         nvidia-vaapi-driver
+    #       ];
+    #     };
+    #   };
+    #   environment = {
+    #     systemPackages = with pkgs; [ ];
+    #   };
+    # };
 
 
-      external-display-only.configuration = {
-        system.nixos.tags = [ "ext-display-only" ];
-        boot.kernelParams = [ "video=eDP-1:d" "video=LVDS-1:d" ];
-      };
-      only-IGPU.configuration = {
-        system.nixos.tags = [ "only-IGPU" ];
-        boot = {
-          initrd.kernelModules = [ "i915" ];
-          kernelParams = [ "i915.enable_fbc=1" "i915.enable_guc=3" ];
-          extraModprobeConfig = ''
-            blacklist nouveau
-            options nouveau modeset=0
-          '';
-          blacklistedKernelModules = [
-            "nouveau"
-            "nvidia"
-            "nvidia_modeset"
-            "nvidia_uvm"
-            "nvidia_drm"
-          ];
-        };
-        services.udev.extraRules = ''
-          # Remove NVIDIA USB xHCI Host Controller devices, if present
-          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{power/control}="auto", ATTR{remove}="1"
+    # external-display-only.configuration = {
+    #   system.nixos.tags = [ "ext-display-only" ];
+    #   boot.kernelParams = [ "video=eDP-1:d" "video=LVDS-1:d" ];
+    # };
+    # only-IGPU.configuration = {
+    #   system.nixos.tags = [ "only-IGPU" ];
+    #   boot = {
+    #     initrd.kernelModules = [ "i915" ];
+    #     kernelParams = [ "i915.enable_fbc=1" "i915.enable_guc=3" ];
+    #     extraModprobeConfig = ''
+    #       blacklist nouveau
+    #       options nouveau modeset=0
+    #     '';
+    #     blacklistedKernelModules = [
+    #       "nouveau"
+    #       "nvidia"
+    #       "nvidia_modeset"
+    #       "nvidia_uvm"
+    #       "nvidia_drm"
+    #     ];
+    #   };
+    #   services.udev.extraRules = ''
+    #     # Remove NVIDIA USB xHCI Host Controller devices, if present
+    #     ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c0330", ATTR{power/control}="auto", ATTR{remove}="1"
 
-          # Remove NVIDIA USB Type-C UCSI devices, if present
-          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c8000", ATTR{power/control}="auto", ATTR{remove}="1"
+    #     # Remove NVIDIA USB Type-C UCSI devices, if present
+    #     ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0c8000", ATTR{power/control}="auto", ATTR{remove}="1"
 
-          # Remove NVIDIA Audio devices, if present
-          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{power/control}="auto", ATTR{remove}="1"
+    #     # Remove NVIDIA Audio devices, if present
+    #     ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x040300", ATTR{power/control}="auto", ATTR{remove}="1"
 
-          # Remove NVIDIA VGA/3D controller devices
-          ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{power/control}="auto", ATTR{remove}="1"
-        '';
-      };
-      # headless.configuration = {
-      #   system.nixos.tags = [ "headless" ];
+    #     # Remove NVIDIA VGA/3D controller devices
+    #     ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", ATTR{power/control}="auto", ATTR{remove}="1"
+    #   '';
+    # };
+    # headless.configuration = {
+    #   system.nixos.tags = [ "headless" ];
 
-      #   # environment.noXlibs = lib.mkForce true; # remove all x11
+    #   # environment.noXlibs = lib.mkForce true; # remove all x11
 
-      #   # Disable the X11 windowing system
-      #   services.xserver.enable = lib.mkForce false;
+    #   # Disable the X11 windowing system
+    #   services.xserver.enable = lib.mkForce false;
 
-      #   # Disable the GNOME Desktop Environment
-      #   services.xserver.displayManager.gdm.enable = lib.mkForce false;
-      #   services.xserver.desktopManager.gnome.enable = lib.mkForce false;
-      # };
-    };
+    #   # Disable the GNOME Desktop Environment
+    #   services.xserver.displayManager.gdm.enable = lib.mkForce false;
+    #   services.xserver.desktopManager.gnome.enable = lib.mkForce false;
+    # };
+
 
     hardware = {
-      cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+      # Make sure to use the correct Bus ID values for your system!
+
+      # amdgpuBusId = "PCI:54:0:0"; For AMD GPU
+      # cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
       nvidia = {
-        open = false;
-        # package =
-        #   let
-        #     nPkgs = config.boot.kernelPackages.nvidiaPackages;
-        #   in
-        #   lib.mkForce (if (lib.versionOlder nPkgs.beta.version nPkgs.stable.version) then nPkgs.stable else nPkgs.beta);
-        package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+
+        # 555.78 not working with xanmod
+        package = mkForce (config.boot.kernelPackages.nvidiaPackages.mkDriver {
           version = "555.58.02";
           sha256_64bit = "sha256-xctt4TPRlOJ6r5S54h5W6PT6/3Zy2R4ASNFPu8TSHKM=";
           sha256_aarch64 = "sha256-wb20isMrRg8PeQBU96lWJzBMkjfySAUaqt4EgZnhyF8=";
           openSha256 = "sha256-8hyRiGB+m2hL3c9MDA/Pon+Xl6E788MZ50WrrAGUVuY=";
           settingsSha256 = "sha256-ZpuVZybW6CFN/gz9rx+UJvQ715FZnAOYfHn5jt5Z2C8=";
           persistencedSha256 = "sha256-a1D7ZZmcKFWfPjjH1REqPM5j/YLWKnbkP9qfRyIyxAw=";
-        };
+        });
 
         prime = {
-          offload.enable = lib.mkForce true;
-          offload.enableOffloadCmd = lib.mkForce true;
+          #     offload.enable = lib.mkForce true;
+          #     offload.enableOffloadCmd = lib.mkForce true;
           intelBusId = "PCI:0:2:0";
           nvidiaBusId = "PCI:1:0:0";
-          reverseSync.enable = lib.mkForce true;
+          #     reverseSync.enable = lib.mkForce true;
         };
-        # forceFullCompositionPipeline = true;
+        #   # forceFullCompositionPipeline = true;
 
-        # Modesetting is needed for most Wayland compositors
-        modesetting.enable = true;
-        nvidiaPersistenced = false;
-        powerManagement = {
-          enable = true;
-          finegrained = true;
-        };
-        nvidiaSettings = false;
+        #   # Modesetting is needed for most Wayland compositors
+        #   modesetting.enable = true;
+        #   nvidiaPersistenced = false;
+        #   powerManagement = {
+        #     enable = true;
+        #     finegrained = true;
+        #   };
+        #   nvidiaSettings = false;
       };
-      opengl = {
-        driSupport = true;
-        driSupport32Bit = true;
-        extraPackages = with pkgs; [
-          (if (lib.versionOlder (lib.versions.majorMinor lib.version) "24.05") then vaapiIntel else intel-vaapi-driver)
-          libvdpau-va-gl
-          intel-media-driver
-          vaapiVdpau
-        ];
-      };
+      # opengl = {
+      #   driSupport = true;
+      #   driSupport32Bit = true;
+      #   extraPackages = with pkgs; [
+      #     (if (lib.versionOlder (lib.versions.majorMinor lib.version) "24.05") then vaapiIntel else intel-vaapi-driver)
+      #     libvdpau-va-gl
+      #     intel-media-driver
+      #     vaapiVdpau
+      #   ];
+      # };
     };
     # environment = {
     #   sessionVariables = {
@@ -334,13 +341,13 @@ in
     # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     #   };
     # };
-    services = {
-      xserver = {
-        videoDrivers = [
-          "i915"
-          "nvidia"
-        ];
-      };
-    };
+    # services = {
+    #   xserver = {
+    #     videoDrivers = [
+    #       "i915"
+    #       "nvidia"
+    #     ];
+    #   };
+    # };
   };
 }
