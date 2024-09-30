@@ -1,4 +1,4 @@
-{ lib, config, pkgs, isWorkstation, notVM, ... }:
+{ lib, config, pkgs, isWorkstation, isInstall, notVM, ... }:
 
 ############################
 ### Default Boot Options ###
@@ -30,9 +30,9 @@ in
     };
     isDualBoot = mkEnableOption "Whether or not to enable for dual booting." // { default = false; };
     plymouth = mkEnableOption "Whether or not to enable plymouth boot splash." // {
-      default = isWorkstation;
+      default = isWorkstation && isInstall;
     };
-    silentBoot = mkEnableOption "Whether or not to enable silent boot." // { default = isWorkstation; };
+    silentBoot = mkEnableOption "Whether or not to enable silent boot." // { default = isWorkstation && isInstall; };
     secureBoot = mkEnableOption "Whether or not to enable secure boot." // { default = false; };
   };
 

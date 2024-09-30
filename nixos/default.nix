@@ -90,15 +90,15 @@ in
           warn-dirty = false;
           tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
           # use-cgroups = true; # execute builds inside cgroups
-          system-features = [
-            ## Allows building v3/v4 packages
-            # "gccarch-x86-64-v3"
-            # "gccarch-x86-64-v4"
-            # "kvm"
-            # "recursive-nix"
-            # "big-parallel"
-            # "nixos-test"
-          ];
+          # system-features = [
+          #   # Allows building v3/v4 packages
+          #   "gccarch-x86-64-v3"
+          #   "gccarch-x86-64-v4"
+          #   "kvm"
+          #   "recursive-nix"
+          #   "big-parallel"
+          #   "nixos-test"
+          # ];
         };
         extraOptions = ''
           log-lines = 15

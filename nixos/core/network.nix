@@ -1,6 +1,6 @@
 { hostname, hostid, lib, pkgs, config, username, ... }:
 let
-  inherit (lib) mkEnableOption mkOption types mkIf mkDefault mdDoc optional mkForce isBool;
+  inherit (lib) mkEnableOption mkOption types mkIf mkDefault mdDoc optional optionals mkForce isBool listOf str;
   port = pkgs.writeShellScriptBin "port" ''
     usage() {
       printf 'usage: %s open|close tcp|udp|both PORT[:PORT]\n' "''${0##*/}" >&2
@@ -117,10 +117,7 @@ in
 
       # Disabling DHCPCD in favor of NetworkManager
       dhcpcd.enable = if cfg.networkOpt == "network-manager" then false else true;
-      timeServers = [
-        "time.google.com"
-        "time.cloudflare.com"
-      ];
+      timeServers = [ "time.google.com" "time.cloudflare.com" ];
       networkmanager = mkIf (cfg.networkOpt == "network-manager") {
         enable = true;
         appendNameservers = [
@@ -226,20 +223,16 @@ in
         };
       };
 
-      disable-wifi-powersave = mkIf
-        (
-          isBool config.networking.networkmanager.wifi.powersave
-          && config.networking.networkmanager.wifi.powersave
-        )
-        {
-          wantedBy = [ "multi-user.target" ];
-          path = [ pkgs.iw ];
-          script = ''
-            iw dev wlan0 set power_save off
-          '';
-        };
+      disable-wifi-powersave = mkIf (config.networking.networkmanager.wifi.powersave) {
+        wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.iw ];
+        script = ''
+          iw dev wlan0 set power_save off
+        '';
+      }
+      ;
     };
 
-    users.users.${username}.extraGroups = lib.optionals config.networking.networkmanager.enable [ "networkmanager" ];
+    users.users.${username}.extraGroups = optionals config.networking.networkmanager.enable [ "networkmanager" ];
   };
 }

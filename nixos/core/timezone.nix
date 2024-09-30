@@ -1,6 +1,6 @@
 { hostname, isWorkstation, lib, config, ... }:
 let
-  inherit (lib) mkForce;
+  inherit (lib) mkDefault;
 in
 {
   time = {
@@ -8,7 +8,7 @@ in
     hardwareClockInLocalTime = if (config.core.boot.isDualBoot == true) then true else false;
   };
   services = {
-    geoclue2 = mkForce {
+    geoclue2 = mkDefault {
       enable = isWorkstation;
     };
   };

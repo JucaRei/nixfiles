@@ -27,7 +27,6 @@ in
         "docker"
         "lxd"
         "podman"
-        "rtkit"
         # "qemu-libvirtd"
         "kvm"
       ];

@@ -14,7 +14,7 @@ in
     ##############
     system = {
       nixos = {
-        label = mkIf (isInstall) (builtins.concatStringsSep "-" [ "${hostname}-" ] + config.system.nixos.version);
+        label = mkIf (isInstall) (builtins.concatStringsSep "_" [ "${username}_${hostname}_" ] + config.system.nixos.version);
         tags = mkIf (isInstall) [ "NixOS" ];
       };
       stateVersion = stateVersion;
