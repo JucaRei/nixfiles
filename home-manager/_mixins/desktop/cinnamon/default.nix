@@ -4,13 +4,13 @@ let
 in
 {
   config = {
-    features = {
+    custom.features = {
       mime.defaultApps = mkDefault {
         enable = true;
-        # defaultBrowser = "floorp.desktop";
+        defaultBrowser = "floorp.desktop";
         defaultFileManager = "nemo.desktop";
         defaultAudioPlayer = "io.bassi.Amberol.desktop";
-        # defaultVideoPlayer = "mpv.desktop";
+        defaultVideoPlayer = "mpv.desktop";
         # defaultPdf = "org.pwmt.zathura.desktop";
         defaultPlainText = "org.gnome.gedit.desktop";
         defaultImgViewer = "xviewer.desktop";

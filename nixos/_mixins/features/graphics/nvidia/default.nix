@@ -29,19 +29,19 @@ in
         videoDrivers = [ "nvidia" ];
       }
 
-      (mkIf (isWorkstation) {
-        deviceSection = ''
-          Option "TearFree" "true"
-        '';
-        config = ''
-          Section "Device"
-            # Identifier "Nvidia Card"
-            # Driver "nvidia"
-            # VendorName "NVIDIA Corporation"
-            Option "RegistryDwords" "EnableBrightnessControl=1"
-          EndSection
-        ''; # enables  brightness control
-      })
+      # (mkIf (isWorkstation) {
+      #   deviceSection = ''
+      #     Option "TearFree" "true"
+      #   '';
+      #   config = ''
+      #     Section "Device"
+      #       # Identifier "Nvidia Card"
+      #       # Driver "nvidia"
+      #       # VendorName "NVIDIA Corporation"
+      #       Option "RegistryDwords" "EnableBrightnessControl=1"
+      #     EndSection
+      #   ''; # enables  brightness control
+      # })
       # (mkIf (backend == "x11") {
       #   # disable DPMS
       #   monitorSection = ''

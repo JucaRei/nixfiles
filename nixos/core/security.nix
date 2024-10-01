@@ -43,8 +43,8 @@ in
         in
         {
           # Allow screen lockers such as Swaylock or gtklock) to also unlock the screen.
-          swaylock.text = "auth include login";
-          gtklock.text = "auth include login";
+          # swaylock.text = "auth include login";
+          # gtklock.text = "auth include login";
 
           login = {
             inherit ttyAudit;

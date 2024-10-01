@@ -1,15 +1,12 @@
-{ desktop, lib, pkgs, hostname, username, isInstall, config, ... }:
-with lib;
-# with builtins;
+{ desktop, lib, pkgs, hostname, username, isInstall, config, isServer, isLaptop, isISO, ... }:
 let
+  inherit (lib) mkDefault optionalAttrs optionals mkIf;
   #   xorg = (elem "xorg" config.sys.hardware.graphics.desktopProtocols);
   #   wayland = (elem "wayland" config.sys.hardware.graphics.desktopProtocols);
   #   desktopMode = xorg || wayland;
 
   notVM = if (hostname == "minimech" || hostname == "scrubber" || hostname == "vm" || builtins.substring 0 5 hostname == "lima-" || hostname == "rasp3") then false else true;
 
-  hasRazerPeripherals = if (hostname == "phasma" || hostname == "vader") then true else false;
-  isGamestation = if (hostname == "phasma" || hostname == "vader") && (desktop != null) then true else false;
   isNitro = if (hostname == "nitro") then true else false;
 
 in
@@ -29,7 +26,7 @@ in
         "fuse.conf".text = ''
           user_allow_other
         '';
-      } // lib.optionalAttrs (isNitro) {
+      } // optionalAttrs (isNitro) {
         "aspell.conf".text = ''
           master en_US
           add-extra-dicts en-computers.rws
@@ -37,7 +34,7 @@ in
         '';
       };
 
-      systemPackages = with pkgs; (optionals (isInstall) [ ] ++ lib.optionals (isNitro) [
+      systemPackages = with pkgs; (optionals (isNitro) [
         aspellDicts.en
         aspellDicts.en-computers
         aspellDicts.pt_BR
@@ -51,23 +48,15 @@ in
       usbmuxd.enable = true;
       # Disable xterm
       xserver = {
-        excludePackages = lib.mkIf (hostname != "soyo") [ pkgs.xterm ];
-        desktopManager.xterm.enable = lib.mkIf (hostname != "soyo") false;
-        # Disable autoSuspend; my Pantheon session kept auto-suspending
-        # - https://discourse.nixos.org/t/why-is-my-new-nixos-install-suspending/19500
-        # displayManager.gdm.autoSuspend = if (desktop == "pantheon") then true else false;
-
-        displayManager = lib.mkIf (hostname != "soyo") {
+        excludePackages = with pkgs; [ xterm ];
+        displayManager = {
           sessionCommands = ''
             ${pkgs.numlockx}/bin/numlockx on
           '';
         };
       };
       samba = {
-        enable =
-          if (hostname != "rasp3")
-          then true
-          else false;
+        enable = true;
         #package = pkgs.unstable.samba4Full; # samba4Full broken
         # securityType = "user";
         # openFirewall = true;
@@ -109,24 +98,6 @@ in
         enable = true;
       };
 
-      clight = {
-        enable = if (hostname == "anubis") then true else false; #  notVM;
-        settings = {
-          verbose = true;
-          backlight.disabled = false;
-          dpms.timeouts = [ 900 300 ];
-          dimmer.timeouts = [ 870 270 ];
-          gamma.long_transitions = true;
-          screen.disabled = true;
-        };
-      };
-
-      # Configure the logind service with custom parameters
-      # This NixOS configuration snippet adjusts the settings for the logind service, specifically focusing on the runtime directories. The parameters set include:
-      # - `RuntimeDirectorySize=100%`: Allows runtime directories to use up to 100% of the available space, dynamically adjusting to the available disk space.
-      # - `RuntimeDirectoryInodesMax=1048576`: Sets the maximum number of inodes in runtime directories to 1,048,576, limiting the total number of files and directories that can be created.
-      # These configurations aim to manage resources effectively and prevent potential issues related to disk space exhaustion or an excessive number of files in user-specific runtime directories.
-
       logind = {
         extraConfig = ''
           # Set the maximum size of runtime directories to 100%
@@ -134,90 +105,33 @@ in
         '';
       };
 
-      udev =
-        if (hostname != "rasp3" || "soyo")
-        then {
-          packages = with pkgs; [ gnome.gnome-settings-daemon ];
-          extraRules = ''
-            # add my android device to adbusers
-            SUBSYSTEM=="usb", ATTR{idVendor}=="22d9", MODE="0666", GROUP="adbusers"
-          '';
-        }
-        else "";
-
-      flatpak = lib.mkIf (isInstall && hostname != "soyo") {
+      flatpak = mkIf (isInstall && isServer == false) {
         enable = true;
       };
 
-      pipewire = lib.mkIf (hostname != "soyo") {
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = isGamestation;
-        jack.enable = false;
-        pulse.enable = true;
-        wireplumber = {
-          enable = true;
-        };
-      };
-
-      printing = lib.mkIf (isInstall) {
+      printing = mkIf (isISO) {
         enable = true;
         drivers = with pkgs; [ gutenprint hplip ];
       };
-      system-config-printer.enable = isInstall;
-
-      # dbus.packages = [ pkgs.gnome-keyring pkgs.gcr ];
+      system-config-printer.enable = isISO;
     };
 
 
     hardware = {
-      # smooth backlight control
-      brillo.enable =
-        if hostname == "air"
-        then true
-        else false;
-      opengl = {
-        driSupport = true;
-        driSupport32Bit = if (hostname == "nitro") then true else false;
-        extraPackages =
-          lib.mkIf (hostname == "nitro") (with pkgs; [
-            intel-media-driver
-            # nvidia-vaapi-driver
-            libvdpau
-            libvdpau-va-gl
-          ]);
-        extraPackages32 =
-          lib.mkIf (hostname == "nitro")
-            (with pkgs.pkgsi686Linux;
-            [
-              # intel-media-driver
-              #  vaapiIntel
-              vaapiVdpau
-              libvdpau-va-gl
-              #  libva
-            ]);
+      brillo = {
+        # smooth backlight control
+        enable = optionals (isLaptop) true;
       };
 
-      # openrazer = lib.mkIf (hasRazerPeripherals) {
-      #   enable = true;
-      #   devicesOffOnScreensaver = false;
-      #   keyStatistics = true;
-      #   mouseBatteryNotifier = true;
-      #   syncEffectsEnabled = true;
-      #   users = [ "${username}" ];
-      # };
-
-      sane = lib.mkIf (isInstall) {
+      sane = lib.mkIf (isISO) {
         enable = true;
-        #extraBackends = with pkgs; [ hplipWithPlugin sane-airscan ];
-        extraBackends = with pkgs; [ sane-airscan ];
+        extraBackends = with pkgs; [ hplipWithPlugin sane-airscan ];
       };
     };
 
     systemd = {
       services = {
-
-        configure-flathub-repo = lib.mkIf (isInstall) {
+        configure-flathub-repo = mkIf (isInstall && isISO) {
           wantedBy = [ "multi-user.target" ];
           path = [ pkgs.flatpak ];
           script = ''
@@ -225,25 +139,12 @@ in
           '';
         };
 
-        configure-appcenter-repo = lib.mkIf (isInstall && desktop == "pantheon") {
+        configure-appcenter-repo = mkIf (isInstall && desktop == "pantheon") {
           wantedBy = [ "multi-user.target" ];
           path = [ pkgs.flatpak ];
           script = ''
             flatpak remote-add --if-not-exists appcenter https://flatpak.elementary.io/repo.flatpakrepo
           '';
-        };
-
-        fixSuspend = {
-          enable = true;
-          description = "Fix immediate wakeup on suspend/hibernate";
-          unitConfig = {
-            Type = "oneshot";
-          };
-          serviceConfig = {
-            User = "root";
-            ExecStart = "-${pkgs.bash}/bin/bash -c \"echo GPP0 > /proc/acpi/wakeup\"";
-          };
-          wantedBy = [ "multi-user.target" ];
         };
       };
     };
@@ -276,18 +177,16 @@ in
               # nerdfonts = pkgs.nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; };
             } ++
           (with pkgs; [
-            (nerdfonts.override { fonts = [ "FiraCode" "NerdFontsSymbolsOnly" ]; })
+            # (nerdfonts.override { fonts = [ "FiraCode" "NerdFontsSymbolsOnly" ]; })
             fira
             liberation_ttf
-            # noto-fonts-emoji
             source-serif
             inter
             roboto
-            # twitter-color-emoji
             work-sans
-          ] ++ lib.optionals (isInstall) [
+          ] ++ lib.optionals (isISO) [
             ubuntu_font_family
-          ] ++ lib.optionals lotsOfFonts [
+          ] ++ lib.optionals (lotsOfFonts) [
             # Japanese
             # ipafont # display jap symbols like シートベルツ in polybar
             # kochi-substitute
@@ -298,11 +197,12 @@ in
             # mplus-outline-fonts.osdnRelease
             # dejavu_fonts
             # iosevka-bin
+            iosevka
           ]);
 
         fontconfig = {
           antialias = true;
-          cache32Bit = isGamestation;
+          # cache32Bit = true;
           defaultFonts = {
             serif = [ "Source Serif" ];
             # serif = [

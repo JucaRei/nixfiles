@@ -1,6 +1,6 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) mkOption mkIf types;
+  inherit (lib) mkOption mkIf types getExe;
   cfg = config.custom.console.bash;
 in
 {
@@ -25,18 +25,18 @@ in
         historyFileSize = 10000;
         historyIgnore = [ "ls" "cd" "exit" "kill" "htop" "top" "btop" "btm" "neofetch" ];
         shellOptions = [
-          "histappend"
-          "autocd"
-          "globstar"
-          "checkwinsize"
-          "cdspell"
-          "cmdhist"
+          # "histappend" ### Configure bash to append (rather than overwrite history)
+          # "autocd"
+          # "globstar"
+          # "checkwinsize"
+          # "cdspell"
+          # "cmdhist" # Attempt to save all lines of a multiple-line command in the same entry
           # "dirspell"
-          "expand_aliases"
-          "dotglob"
-          "gnu_errfmt"
+          # "expand_aliases"
+          # "dotglob"
+          # "gnu_errfmt"
           # "histreedit"
-          "nocasematch"
+          # "nocasematch"
         ];
         shellAliases = {
           gitpfolders = "for i in */.git; do ( echo $i; cd $i/..; git pull; ); done";
@@ -45,6 +45,94 @@ in
           '';
         };
         initExtra = ''
+          ## History
+          export HISTFILE=/$HOME/.bash_history
+          ## Configure bash to append (rather than overwrite history)
+          shopt -s histappend
+
+          # Attempt to save all lines of a multiple-line command in the same entry
+          shopt -s cmdhist
+
+          ## After each command, append to the history file and reread it
+          export PROMPT_COMMAND="''${PROMPT_COMMAND:+$PROMPT_COMMAND$"\n"}history -a; history -c; history -r"
+
+          ## Print the timestamp of each command
+          HISTTIMEFORMAT="%Y%m%d.%H%M%S%z "
+
+          ## Set History File Size
+          HISTFILESIZE=2000000
+
+          ## Set History Size in memory
+          HISTSIZE=3000
+
+          ## Don't save ls,ps, history commands
+          export HISTIGNORE="ls:ll:ls -alh:pwd:clear:history:ps"
+
+          ## Do not store a duplicate of the last entered command and any commands prefixed with a space
+          HISTCONTROL=ignoreboth
+
+          if command -v "nmcli" &>/dev/null; then
+            alias wifi_scan="nmcli device wifi rescan && nmcli device wifi list"  # rescan for network
+          fi
+
+          if command -v "grep" &>/dev/null; then
+            alias grep="grep --color=auto"                            # Colorize grep
+          fi
+
+          if command -v "netstat" &>/dev/null; then
+            alias ports="netstat -tulanp"                             # Show Open Ports
+          fi
+
+          if command -v "tree" &>/dev/null; then
+            alias tree="${getExe pkgs.tree} -Cs"
+          fi
+
+          if command -v "rsync" &>/dev/null; then
+            alias rsync="${getExe pkgs.rsync} -aXxtv"                                # Better copying with Rsync
+          fi
+
+          if command -v "rg" &>/dev/null && command -v "fzf" &>/dev/null && command -v "bat" &>/dev/null; then
+            function frg {
+              result=$(${getExe pkgs.ripgrep} --ignore-case --color=always --line-number --no-heading "$@" |
+                ${getExe pkgs.fzf} --ansi \
+                    --color 'hl:-1:underline,hl+:-1:underline:reverse' \
+                    --delimiter ':' \
+                    --preview "${getExe pkgs.bat} --color=always {1} --theme='Solarized (light)' --highlight-line {2}" \
+                    --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
+              file="''${result%%:*}"
+              linenumber=$(echo "''${result}" | cut -d: -f2)
+              if [ ! -z "$file" ]; then
+                      $EDITOR +"''${linenumber}" "$file"
+              fi
+            }
+          fi
+
+          if [ -d "$HOME/.bashrc.d" ] ; then
+            for script in $HOME/.bashrc.d/* ; do
+              source $script
+            done
+          fi
+
+          # Quickly run a pkg run nixpkgs - Add a second argument to it otherwise it will simply run the command
+          pkgrun () {
+            if [ -n $1 ] ; then
+              local pkg
+              pkg=$1
+              if [ "$2" != "" ] ; then
+                shift
+                local args
+
+                args="$@"
+                  else
+                args=$pkg
+              fi
+
+              nix-shell -p $pkg.out --run "$args"
+            fi
+          }
+        ''
+        +
+        ''
           # Zsh-like completion
           # General
           # =============================================
@@ -84,7 +172,7 @@ in
           # Reporting tools
           # =============================================
           # "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
-          "${pkgs.nitch}/bin/nitch"
+          "${getExe pkgs.nitch}"
         '';
 
         bashrcExtra = ''
@@ -99,6 +187,14 @@ in
       };
     };
 
-    home.packages = [ pkgs.bashInteractive ];
+    home.packages = with pkgs; [
+      bashInteractive
+      nitch
+      ripgrep
+      rsync
+      tree
+      bat
+      fzf
+    ];
   };
 }

@@ -148,7 +148,7 @@ in
         generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;
 
         efi = mkIf (cfg.boottype == "efi") {
-          canTouchEfiVariables = mkDefault true;
+          # canTouchEfiVariables = mkDefault true;
           efiSysMountPoint = mkDefault "/boot";
         };
         generationsDir.copyKernels = mkIf cfg.boottype == "efi";
@@ -157,6 +157,7 @@ in
           enable = mkIf (cfg.bootmanager == "grub" && cfg.bootmanager != "raspberry") true;
           efiSupport = if cfg.boottype == "efi" then true else false;
           theme = mkDefault pkgs.catppuccin-grub;
+          efiInstallAsRemovable = mkDefault true;
           default = "saved";
           # devices = if cfg.boottype == "efi" then mkDefault [ "nodev" ] else mkDefault "/dev/sda";
           device = if cfg.boottype == "efi" then "nodev" else "/dev/sda";
@@ -187,7 +188,7 @@ in
 
       plymouth = rec {
         enable = cfg.plymouth;
-        theme = "spinner_alt"; # "deus_ex";
+        theme = "lone"; # "spinner_alt"; # "deus_ex";
         themePackages = with pkgs; [
           (
             # pkgs.catppuccin-plymouth

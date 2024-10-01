@@ -307,7 +307,7 @@
           # nom build .#homeConfigurations."juca@oldarch".activationPackage --impure --show-trace -L
           "juca@nitro" = helper.makeHomeManager {
             hostname = "nitro";
-            # desktop = "bspwm";
+            desktop = "cinnamon";
             stateVersion = "24.05";
           };
           # "juca@air" = helper.makeHomeManager { hostname = "air"; desktop = "bspwm"; stateVersion = "24.05"; };
