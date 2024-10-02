@@ -36,7 +36,7 @@ in
     # };
 
     features = {
-      audio.manager = mkForce "pulseaudio";
+      desktops.audio.manager = mkForce "pulseaudio";
       graphics = {
         enable = true;
         gpu = "nvidia-legacy";
