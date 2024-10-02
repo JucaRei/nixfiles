@@ -15,9 +15,11 @@
 # Rekey secrets.yaml after editing recipients in .sops.yaml:
 # sops updatekeys secrets/secrets.yaml
 keys:
-  - &user_juca age1xfpzwdsz06243ndj39x4yr2qs4u3ja777r3xautdtm59j54wa3kssualcn
+  - &user_martin age1xfpzwdsz06243ndj39x4yr2qs4u3ja777r3xautdtm59j54wa3kssualcn
+  - &host_tanis age1kscrpd0rx7ud06y635rsdc6h2ehyuwakhs65w442wa70qc0ct5ps0t0h5j
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
-          - *user_juca
+          - *user_martin
+          - *host_tanis

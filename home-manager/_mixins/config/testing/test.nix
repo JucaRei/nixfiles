@@ -1,3 +1,0 @@
-rec {
-  name = "testing CHECK???";
-}

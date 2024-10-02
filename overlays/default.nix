@@ -1,113 +1,64 @@
 # This file defines overlays
 { inputs, ... }:
-let
-  polybar-scripts = inputs.polybar-scripts // {
-    version = "git-" + builtins.substring 0 7 inputs.polybar-scripts.rev;
-  };
-in
 {
   # This one brings our custom packages from the 'pkgs' directory
-  additions = final: _prev: import ../pkgs { pkgs = final; };
-
+  additions = final: _prev: import ../pkgs final.pkgs;
 
   # This one contains whatever you want to overlay
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
-  # Get 1.3.0 to addres infinite loop:
-  # - https://github.com/Cisco-Talos/clamav/pull/1047
   modifications = _final: prev: {
-    gnome = prev.gnome.overrideScope' (gself: gsuper: {
-      nautilus = gsuper.nautilus.overrideAttrs (nsuper: {
-        buildInputs =
-          nsuper.buildInputs
-          ++ (with prev.gst_all_1;
-          [
-            gst-plugins-good
-            gst-plugins-bad
-          ]);
-      });
+    bemoji = prev.bemoji.overrideAttrs (_old: rec {
+      postPatch = ''
+        sed -i 's/🔍/"󰞅 "/g' bemoji
+        sed -i 's/fuzzel -d/fuzzel -d -w 48/' bemoji
+      '';
     });
 
+    #linuxPackages_latest = prev.linuxPackages_latest.extend (_lpself: lpsuper: {
+    #  mwprocapture = lpsuper.mwprocapture.overrideAttrs ( old: rec {
+    #    pname = "mwprocapture";
+    #    subVersion = "4390";
+    #    version = "1.3.0.${subVersion}";
+    #    src = prev.fetchurl {
+    #      url = "https://www.magewell.com/files/drivers/ProCaptureForLinux_${subVersion}.tar.gz";
+    #      sha256 = "sha256-a2cU7PYQh1KR5eeMhMNx2Sc3HHd7QvCG9+BoJyVPp1Y=";
+    #    };
+    #  });
+    #});
 
-    mpv = prev.pkgs.wrapMpv
-      (prev.pkgs.unstable.mpv-unwrapped.override {
-        # mpv 0.37
-        # (prev.pkgs.mpv-unwrapped.override {
-        vapoursynthSupport = true;
-        cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
-        waylandSupport = true;
-        jackaudioSupport = true; # Add jack support to mpv.
-        # webp support
-        ffmpeg = prev.pkgs.ffmpeg_7-full;
-      })
-      {
-        extraMakeWrapperArgs = [
-          "--prefix"
-          "LD_LIBRARY_PATH"
-          ":"
-          "${prev.pkgs.vapoursynth-mvtools}/lib/vapoursynth"
-        ];
-        scripts = with prev.pkgs.mpvScripts;
-          [
-            # thumbnail
-            thumbfast # High-performance on-the-fly thumbnailer.
-            autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
-            mpris
-            uosc # Adds a minimalist but highly customisable GUI.
-            acompressor
-            webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
-            inhibit-gnome
-            autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
-            sponsorblock
-          ];
+    # TODO: upgrade-hint; Remove this for >= 24.11
+    openasar = prev.openasar.overrideAttrs (_old: rec {
+      pname = "openasar";
+      version = "0-unstable-2024-09-06";
+      src = prev.fetchFromGitHub {
+        owner = "GooseMod";
+        repo = "OpenAsar";
+        rev = "f92ee8c3dc6b6ff9829f69a1339e0f82a877929c";
+        hash = "sha256-V2oZ0mQbX+DHDZfTj8sV4XS6r9NOmJYHvYOGK6X/+HU=";
       };
+    });
 
-    cloneit = prev.cloneit;
-    lima-bin = prev.lima-bin;
-    thorium = prev.thorium;
-    fluent = prev.fluent;
-    # chatgpt-cli = prev.chatgpt-cli;
-    advmvcp = prev.advmvcp;
-    nix-cleanup = prev.nix-cleanup;
-    nix-whereis = prev.nix-whereis;
-    nix-inspect = prev.nix-inspect;
-    nixos-tweaker = prev.nixos-tweaker;
-    sarasa-gothic = prev.sarasa-gothic;
-    iosevka-q = prev.iosevka-q;
-    nf-iosevka = prev.nf-iosevka;
-    bebasNeue = prev.bebasNeue;
-    feather = prev.feather;
-    abel = prev.abel;
-    catppuccin-grub = prev.catppuccin-grub;
-    cyberre-grub-theme = prev.cyberre-grub-theme;
-    astronaut-sddm = prev.astronaut-sddm;
-    # spotdl = prev.callPackage ../pkgs/tools/spotdl {
-    #   buildPythonApplication = prev.python311Packages.buildPythonApplication;
-    # };
-    juca-avatar = prev.juca-avatar;
+    hyprland = prev.hyprland.overrideAttrs (_old: rec {
+      postPatch = _old.postPatch + ''
+        sed -i 's|Exec=Hyprland|Exec=hypr-launch|' example/hyprland.desktop
+      '';
+    });
 
-    player-mpris-tail = prev.pkgs.callPackage ../pkgs/scripts/polybar-scripts/player-mpris-tail {
-      inherit polybar-scripts;
-      inherit (prev) stdenv;
-      inherit (prev.python3Packages) wrapPython dbus-python pygobject3;
-    };
-    polywins = prev.polywins;
-    weather-bar = prev.weather-bar;
-    cava-polybar = prev.cava-polybar;
-    xqp = prev.xqp;
+    wavebox = prev.wavebox.overrideAttrs (_old: rec {
+      pname = "wavebox";
+      version = "10.128.5-2";
+      src = prev.fetchurl {
+        url = "https://download.wavebox.app/stable/linux/deb/amd64/wavebox_${version}_amd64.deb";
+        sha256 = "sha256-eIiFiRlmnARtyd8YHUHrjDaaF8kQYvcOa2AwT3071Ho=";
+      };
+    });
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
   # be accessible through 'pkgs.unstable'
   unstable-packages = final: _prev: {
     unstable = import inputs.nixpkgs-unstable {
-      inherit (final) system;
-      config.allowUnfree = true;
-    };
-  };
-
-  legacy-packages = final: _prev: {
-    legacy = import inputs.nixpkgs-legacy {
       inherit (final) system;
       config.allowUnfree = true;
     };

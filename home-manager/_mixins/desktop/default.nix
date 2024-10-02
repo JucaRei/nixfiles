@@ -1,169 +1,144 @@
-{ config, desktop, pkgs, username, lib, hostname, ... }:
+{ config
+, desktop
+, lib
+, pkgs
+, username
+, ...
+}:
 let
-  inherit (lib) optional optionals mkIf mkDefault mkForce;
-  inherit (pkgs.stdenv) isDarwin isLinux;
-  aesthetic-wallpapers = pkgs.fetchgit {
-    url = "https://github.com/D3Ext/aesthetic-wallpapers";
-    rev = "060c580dcc11afea2f77f9073bd8710920e176d8";
-    sha256 = "5MnW630EwjKOeOCIAJdSFW0fcSSY4xmfuW/w7WyIovI=";
-  };
+  inherit (pkgs.stdenv) isLinux;
 in
 {
-  imports = [ ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
+  # import the DE specific configuration and any user specific desktop configuration
+  imports =
+    [
+      ./apps
+      ./features
+    ]
+    ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+    ++ lib.optional
+      (builtins.pathExists (
+        ./. + "/${desktop}/${username}/default.nix"
+      )) ./${desktop}/${username};
 
-  services = {
-    # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
-    mpris-proxy.enable = isLinux;
+  # Authrorize X11 access in Distrobox
+  home.file = lib.mkIf isLinux {
+    ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
   };
 
-  home = {
-    # Authrorize X11 access in Distrobox
-    file = mkIf isLinux {
-      ".distroboxrc" = {
-        text = ''
-          ${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER
-        '';
+  programs = lib.mkIf (username == "juca") {
+    alacritty = {
+      catppuccin.enable = isLinux;
+      enable = true;
+      settings = {
+        cursor = {
+          style = {
+            shape = "Block";
+            blinking = "Always";
+          };
+        };
+        env = {
+          TERM = "xterm-256color";
+        };
+        font = {
+          normal = {
+            family = "FiraCode Nerd Font Mono";
+          };
+          bold = {
+            family = "FiraCode Nerd Font Mono";
+          };
+          italic = {
+            family = "FiraCode Nerd Font Mono";
+          };
+          bold_italic = {
+            family = "FiraCode Nerd Font Mono";
+          };
+          size = 16;
+          builtin_box_drawing = true;
+        };
+        mouse = {
+          bindings = [
+            {
+              mouse = "Middle";
+              action = "Paste";
+            }
+          ];
+        };
+        selection = {
+          save_to_clipboard = true;
+        };
+        scrolling = {
+          history = 50000;
+          multiplier = 3;
+        };
+        window = {
+          decorations = if config.wayland.windowManager.hyprland.enable then "None" else "Full";
+          dimensions = {
+            columns = 132;
+            lines = 50;
+          };
+          padding = {
+            x = 5;
+            y = 5;
+          };
+          opacity = 1.0;
+          blur = false;
+        };
       };
-      ".face" = {
-        source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
-      };
-      "${config.xdg.userDirs.pictures}/wallpapers".source = mkForce "${aesthetic-wallpapers}/images";
-    };
-    packages = with pkgs; [
-      black # Code format Python
-      nodePackages.prettier # Code format
-      shellcheck # Code lint Shell
-      shfmt # Code format Shell
-      # font-manager
-      dconf2nix
-      hexchat
-      distrobox
-    ] ++ lib.optionals (isDarwin) [
-      # macOS apps
-      iterm2
-      pika
-      utm
-    ];
-    sessionVariables = {
-      # Enable icons in tooling since we have nerdfonts.
-      # LOG_ICONS = "true";
-    };
-    sessionPath = [
-      "$HOME/.local/bin"
-      "$HOME/.local/share/applications"
-    ];
-    pointerCursor = mkDefault {
-      package = mkDefault pkgs.bibata-cursors;
-      name = mkDefault "Bibata-Modern-Classic";
-      size = mkDefault 24;
-      gtk.enable = true;
-      x11.enable = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
     };
   };
 
-  dconf.settings = {
-    "ca/desrt/dconf-editor" = {
-      show-warning = false;
-    };
-  };
+  # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
+  services.mpris-proxy.enable = isLinux;
 
-  gtk = mkDefault {
-    enable = true;
-    gtk2 = {
-      configLocation = "${config.xdg.configHome}/gtk-2.0/gtkrc";
-      extraConfig = ''
-        gtk-xft-antialias=1
-        gtk-xft-hinting=1
-        gtk-xft-hintstyle="hintslight"
-        gtk-xft-rgba="rgb"
-      '';
-    }; #Fluent-Dark
-    gtk3 = {
-      extraConfig = {
-        gtk-xft-rgba = "rgb";
-        gtk-button-images = 1;
-        gtk-menu-images = 1;
-        gtk-enable-event-sounds = 1;
-        gtk-enable-input-feedback-sounds = 1;
-        gtk-xft-antialias = 1;
-        gtk-xft-hinting = 1;
-        gtk-xft-hintstyle = "hintfull"; #"hintslight";
-        gtk-cursor-blink = true;
-        gtk-recent-files-limit = 20;
-        gtk-application-prefer-dark-theme = 1;
-      };
-      extraCss = "
-        VteTerminal, vte-terminal {
-          padding: 13px;
-        }";
-      bookmarks =
-        if hostname == "nitro" then [
-          "file:///home/${username}/Documents"
-          "file:///home/${username}/Documents/Virtualmachines"
-          "file:///home/${username}/Documents/docker"
-          "file:///home/${username}/Downloads"
-          "file:///home/${username}/Pictures"
-          "file:///home/${username}/Media/Music"
-          "file:///home/${username}/Media/Pictures"
-          "file:///home/${username}/Media/Videos"
-          "file:///home/${username}/Documents/lab"
-          "smb://192.168.1.207/volume_1/"
-          "smb://192.168.1.207/volume_2/Transmission/Volume_2"
-        ] else [
-          "file:///home/${username}/Documents"
-          "file:///home/${username}/Documents/Virtualmachines"
-          "file:///home/${username}/Documents/docker"
-          "file:///home/${username}/Downloads"
-          "file:///home/${username}/Media/Music"
-          "file:///home/${username}/Media/Pictures"
-          "file:///home/${username}/Media/Videos"
-          "file:///home/${username}/Documents/lab"
-          "file:///mnt/sharecenter/volume_1"
-          "file:///mnt/sharecenter/volume_2"
-        ];
-    };
-    gtk4 = {
-      # gtk-icon-theme-name = "ePapirus-Dark";
-      # gtk-theme-name = "Yaru-purple-dark";
-      # gtk-cursor-theme-name = "volantes_cursors";
-      # gtk-cursor-theme-size = "24";
-      # gtk-font-name = "Fira Sans";
-      #   gtk-theme-name = "Fluent-Dark";
-      #   gtk-icon-theme-name = "Papirus-Dark";
-      #   gtk-cursor-theme-name = "volantes_cursors";
-      extraConfig.gtk-application-prefer-dark-theme = 1;
-    };
-    iconTheme = {
-      # name = "ePapirus-Dark";
-      # package = pkgs.papirus-icon-theme;
-      package = mkDefault pkgs.catppuccin-papirus-folders;
-      name = mkDefault "Papirus";
-    };
-    theme = {
-      # Catppuccin
-      name = "Catppuccin-Frappe-Compact-Pink-Dark";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "pink" ];
-        tweaks = [ "rimless" ];
-        size = "compact";
-        variant = "frappe";
-      };
-      # name = "Tokyonight-Dark-BL";
-      # package = pkgs.tokyo-night-gtk;
-    };
-    cursorTheme = {
-      # name = "volantes_cursors";
-      # package = pkgs.volantes-cursors;
-      # package = mkDefault pkgs.bibata-cursors;
-      # name = mkDefault "Bibata-Modern-Classic";
-      # size = mkDefault 22;
-    };
-    font = {
-      # name = "Fira Code";
-      # package = pkgs.fira-code;
-      name = "Lexend";
-      size = 11;
-      package = pkgs.lexend;
-    };
+  xresources.properties = {
+    "*background" = "#1E1E2E";
+    "*foreground" = "#CDD6F4";
+    # black
+    "*color0" = "#45475A";
+    "*color8" = "#585B70";
+    # red
+    "*color1" = "#F38BA8";
+    "*color9" = "#F38BA8";
+    # green
+    "*color2" = "#A6E3A1";
+    "*color10" = "#A6E3A1";
+    # yellow
+    "*color3" = "#F9E2AF";
+    "*color11" = "#F9E2AF";
+    # blue
+    "*color4" = "#89B4FA";
+    "*color12" = "#89B4FA";
+    #magenta
+    "*color5" = "#F5C2E7";
+    "*color13" = "#F5C2E7";
+    #cyan
+    "*color6" = "#94E2D5";
+    "*color14" = "#94E2D5";
+    #white
+    "*color7" = "#BAC2DE";
+    "*color15" = "#A6ADC8";
+
+    # Xterm Appearance
+    "XTerm*background" = "#1E1E2E";
+    "XTerm*foreground" = "#CDD6F4";
+    "XTerm*letterSpace" = 0;
+    "XTerm*lineSpace" = 0;
+    "XTerm*geometry" = "132x50";
+    "XTerm.termName" = "xterm-256color";
+    "XTerm*internalBorder" = 2;
+    "XTerm*faceName" = "FiraCode Nerd Font Mono:size=14:style=Medium:antialias=true";
+    "XTerm*boldFont" = "FiraCode Nerd Font Mono:size=14:style=Bold:antialias=true";
+    "XTerm*boldColors" = true;
+    "XTerm*cursorBlink" = true;
+    "XTerm*cursorUnderline" = false;
+    "XTerm*saveline" = 2048;
+    "XTerm*scrollBar" = false;
+    "XTerm*scrollBar_right" = false;
+    "XTerm*urgentOnBell" = true;
+    "XTerm*depth" = 24;
+    "XTerm*utf8" = true;
+    "XTerm*locale" = false;
+    "XTerm.vt100.metaSendsEscape" = true;
   };
 }

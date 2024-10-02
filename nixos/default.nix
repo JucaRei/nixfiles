@@ -1,157 +1,182 @@
-{ config, lib, username, platform, isInstall, outputs, inputs, pkgs, isISO, isWorkstation, hostname, ... }:
-let
-  hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;
-  inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkIf mkDefault;
-  users = [
-    "root"
-    # "@wheel"
-    # "nix-builder"
-    "${username}"
-  ];
-in
+{ config
+, hostname
+, isInstall
+, isWorkstation
+, inputs
+, lib
+, modulesPath
+, outputs
+, pkgs
+, platform
+, stateVersion
+, username
+, ...
+}:
 {
   imports = [
-    ./core
-    ./users
-  ];
+    inputs.auto-cpufreq.nixosModules.default
+    inputs.catppuccin.nixosModules.catppuccin
+    inputs.determinate.nixosModules.default
+    inputs.disko.nixosModules.disko
+    inputs.nix-flatpak.nixosModules.nix-flatpak
+    inputs.nix-index-database.nixosModules.nix-index
+    inputs.nix-snapd.nixosModules.default
+    inputs.sops-nix.nixosModules.sops
+    (modulesPath + "/installer/scan/not-detected.nix")
+    ./${hostname}
+    ./_mixins/configs
+    ./_mixins/features
+    ./_mixins/scripts
+    ./_mixins/services
+    ./_mixins/users
+  ] ++ lib.optional isWorkstation ./_mixins/desktop;
 
-  config = {
-    ######################
-    ### Custom Modules ###
-    ######################
-    core = {
-      boot = {
-        enable = isInstall;
-        # boottype = "efi";
-        # bootmanager = "systemd-boot";
-        # isDualBoot = false;
-        # secureBoot = false;
-        silentBoot = isWorkstation;
-        plymouth = isWorkstation;
-      };
+  boot = {
+    consoleLogLevel = 0;
+    initrd.verbose = false;
+    kernelModules = [ "vhost_vsock" ];
+    kernelParams = [ "udev.log_priority=3" ];
+    kernelPackages = pkgs.linuxPackages_latest;
+    # Only enable the systemd-boot on installs, not live media (.ISO images)
+    loader = lib.mkIf isInstall {
+      efi.canTouchEfiVariables = true;
+      systemd-boot.configurationLimit = 10;
+      systemd-boot.consoleMode = "max";
+      systemd-boot.enable = true;
+      systemd-boot.memtest86.enable = true;
+      timeout = 10;
     };
-    ####################
-    ### Nix Settings ###
-    ####################
-    nix =
-      let
-        flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-      in
-      {
-        # give nix-daemon the lowest priority
-        daemonIOSchedClass = "idle"; # Reduce disk usage
-        # Leave nix builds as a background task
-        daemonCPUSchedPolicy = "idle"; # Set CPU scheduling policy for daemon processes to idle
-        daemonIOSchedPriority = 7; # Set I/O scheduling priority for daemon processes to 7
-        gc = {
-          automatic = true;
-          dates = "20:00"; # Schedule the task to run weekly / daily and 24hr time
-          options = "--delete-older-than 7d"; # Specify options for the task: delete files older than 7days
-          randomizedDelaySec = "14m";
-          persistent = true;
-        };
-        # Disable channels
-        channel.enable = false;
-        # Make flake registry and nix path match flake inputs
-        registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-        nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
-        optimise = {
-          automatic = isLinux;
-          dates = [ "14:00" ];
-        };
-        package = mkIf isInstall pkgs.unstable.nix;
-        settings = {
-          sandbox = "relaxed"; # true
-          nix-path = config.nix.nixPath;
-          # Disable global registry
-          flake-registry = "";
-          auto-optimise-store = true;
-          experimental-features = [
-            "nix-command"
-            "flakes"
-            # "repl-flake" # repl to inspect a flake
-            # "recursive-nix" # let nix invoke itself
-            # "ca-derivations" # content addressed nix
-            # "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
-            # "cgroups" # allow nix to execute builds inside cgroups
-          ];
-          # auto-allocate-uids = true;
-          # Opinionated: disable global registry
-          # flake-registry = "";
-          # Workaround for https://github.com/NixOS/nix/issues/9574
-          # allowed-users = users;
-          trusted-users = users;
-          builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
-          ### Avoid unwanted garbage collection when using nix-direnv
-          keep-outputs = true;
-          keep-derivations = true;
-          keep-going = true;
-          warn-dirty = false;
-          tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
-          # use-cgroups = true; # execute builds inside cgroups
-          # system-features = [
-          #   # Allows building v3/v4 packages
-          #   "gccarch-x86-64-v3"
-          #   "gccarch-x86-64-v4"
-          #   "kvm"
-          #   "recursive-nix"
-          #   "big-parallel"
-          #   "nixos-test"
-          # ];
-        };
-        extraOptions = ''
-          log-lines = 15
-          # Free up to 4GiB whenever there is less than 2GiB left.
-          min-free = ${toString (2048 * 1024 * 1024)}
-          max-free = ${toString (4096 * 1024 * 1024)} # 4GiB
-          connect-timeout = 10
-        '';
-      };
-    ################
-    ### Nixpkgs ####
-    ################
-    nixpkgs = {
-      hostPlatform = mkDefault "${platform}";
-      overlays = [
-        # Add overlays your own flake exports (from overlays and pkgs dir):
-        outputs.overlays.additions
-        outputs.overlays.modifications
-        outputs.overlays.unstable-packages
-        outputs.overlays.legacy-packages
-        # Add overlays exported from other flakes:
-        # workaround for: https://github.com/NixOS/nixpkgs/issues/154163
-        (_: super: {
-          makeModulesClosure = x:
-            super.makeModulesClosure (x // { allowMissing = true; });
-        })
-        ## Testing
-        (self: super: {
-          vaapiIntel = super.vaapiIntel.override { enableHybridCodec = true; };
-        })
+  };
+
+  # Only install the docs I use
+  documentation.enable = true;
+  documentation.nixos.enable = false;
+  documentation.man.enable = true;
+  documentation.info.enable = false;
+  documentation.doc.enable = false;
+
+  environment = {
+    # Eject nano and perl from the system
+    defaultPackages =
+      with pkgs;
+      lib.mkForce [
+        coreutils-full
+        micro
       ];
-      config = {
-        # allowBroken = true;
-        allowUnfree = true; # Disable if you don't want unfree packages
-        joypixels.acceptLicense = true; # Accept the joypixels license
-        # allowUnsupportedSystem = true;
-        permittedInsecurePackages = [
-          "python3.11-youtube-dl-2021.12.17"
+
+    systemPackages =
+      with pkgs;
+      [
+        git
+        nix-output-monitor
+      ]
+      ++ lib.optionals isInstall [
+        inputs.determinate.packages.${platform}.default
+        inputs.fh.packages.${platform}.default
+        inputs.nixos-needtoreboot.packages.${platform}.default
+        nvd
+        nvme-cli
+        smartmontools
+        sops
+      ];
+
+    variables = {
+      EDITOR = "micro";
+      SYSTEMD_EDITOR = "micro";
+      VISUAL = "micro";
+    };
+  };
+
+  nixpkgs = {
+    # You can add overlays here
+    overlays = [
+      # Add overlays your own flake exports (from overlays and pkgs dir):
+      outputs.overlays.additions
+      outputs.overlays.modifications
+      outputs.overlays.unstable-packages
+      # Add overlays exported from other flakes:
+    ];
+    # Configure your nixpkgs instance
+    config = {
+      allowUnfree = true;
+    };
+  };
+
+  nix =
+    let
+      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+    in
+    {
+      settings = {
+        experimental-features = "flakes nix-command";
+        # Disable global registry
+        flake-registry = "";
+        # Workaround for https://github.com/NixOS/nix/issues/9574
+        nix-path = config.nix.nixPath;
+        trusted-users = [
+          "root"
+          "${username}"
         ];
-        allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
+        warn-dirty = false;
+      };
+      # Disable channels
+      channel.enable = false;
+      # Make flake registry and nix path match flake inputs
+      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
+      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
+    };
+
+  nixpkgs.hostPlatform = lib.mkDefault "${platform}";
+
+  programs = {
+    command-not-found.enable = false;
+    fish = {
+      enable = true;
+      shellAliases = {
+        nano = "micro";
       };
     };
-    system = {
-      activationScripts.report-changes = ''
-        PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}
-        nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
-        mkdir -p /var/log/activations
-        _nvddate=$(date +'%Y%m%d%H%M%S')
-        nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
-        if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
-          rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
-        fi
-      '';
+    nano.enable = lib.mkDefault false;
+    nh = {
+      clean = {
+        enable = true;
+        extraArgs = "--keep-since 15d --keep 10";
+      };
+      enable = true;
+      flake = "/home/${username}/Zero/nix-config";
     };
+    nix-index-database.comma.enable = isInstall;
+    nix-ld = lib.mkIf isInstall {
+      enable = true;
+      libraries = with pkgs; [
+        # Add any missing dynamic libraries for unpackaged
+        # programs here, NOT in environment.systemPackages
+      ];
+    };
+  };
+
+  services = {
+    fwupd.enable = isInstall;
+    hardware.bolt.enable = true;
+    smartd.enable = isInstall;
+  };
+
+  sops = lib.mkIf (isInstall && username == "juca") {
+    age = {
+      keyFile = "/home/${username}/.config/sops/age/keys.txt";
+      generateKey = false;
+    };
+    defaultSopsFile = ../secrets/secrets.yaml;
+    # sops-nix options: https://dl.thalheim.io/
+    secrets = {
+      test-key = { };
+    };
+  };
+
+  systemd.tmpfiles.rules = [ "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" ];
+
+  system = {
+    nixos.label = lib.mkIf isInstall "-";
+    inherit stateVersion;
   };
 }
