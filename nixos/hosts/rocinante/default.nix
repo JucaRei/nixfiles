@@ -2,7 +2,7 @@
 # nvidia 8600 gt
 { inputs, lib, pkgs, config, ... }:
 let
-  inherit (lib) mkForce;
+  inherit (lib) mkForce mkDefault;
 in
 {
   imports = [
@@ -99,10 +99,10 @@ in
       #   }))
       # ];
 
-      # kernelPackages = lib.mkDefault pkgs.linuxPackages_6_1;
-      # kernelPackages = lib.mkDefault pkgs.linuxPackages_5_4;
-      # kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
-      # kernelPackages = lib.mkDefault pkgs.linuxPackages_5_15;
+      kernelPackages = mkForce pkgs.linuxPackages_6_2;
+      # kernelPackages = mkDefault pkgs.linuxPackages_5_4;
+      # kernelPackages = mkDefault pkgs.linuxPackages_xanmod_stable;
+      # kernelPackages = mkDefault pkgs.linuxPackages_5_15;
       #kernelParams = [ "intel_idle.max_cstate=1" "hid_apple.iso_layout=0" "acpi_backlight=vendor" "acpi_mask_gpe=0x15" ];
       kernelParams = [
         "intel_idle.max_cstate=1"
@@ -127,7 +127,7 @@ in
       };
       xserver = {
         libinput = {
-          enable = lib.mkForce false;
+          enable = mkForce false;
           touchpad = {
             horizontalScrolling = true;
             naturalScrolling = false;
@@ -136,7 +136,7 @@ in
           };
         };
         synaptics = {
-          enable = lib.mkDefault true;
+          enable = mkDefault true;
           twoFingerScroll = true;
           tapButtons = true;
           palmDetect = true;
@@ -160,6 +160,6 @@ in
 
     powerManagement.cpuFreqGovernor = mkForce "performance";
 
-    nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+    nixpkgs.hostPlatform = mkDefault "x86_64-linux";
   };
 }

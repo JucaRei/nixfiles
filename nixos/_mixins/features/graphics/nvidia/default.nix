@@ -63,6 +63,7 @@ in
       blacklistedKernelModules = [
         "nouveau"
       ];
+      kernelParams = [ "nvidia-drm.modeset=1" ];
     };
 
     environment = {
@@ -70,6 +71,8 @@ in
         ({
           LIBVA_DRIVER_NAME = "nvidia";
         })
+
+        # NVD_BACKEND = "direct";
 
         # (mkIf (backend == "wayland") {
         #   WLR_NO_HARDWARE_CURSORS = "1";
@@ -89,6 +92,11 @@ in
         vulkan-loader
         vulkan-tools
         vulkan-validation-layers
+        # (writeScriptBin "nvidia-settings" ''
+        #   #!${stdenv.shell}
+        #   mkdir -p "$XDG_CONFIG_HOME/nvidia"
+        #   exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
+        # '')
       ]
         # ++ optional (device.gpu == "hybrid-nvidia") [
         #   nvidia-offload
