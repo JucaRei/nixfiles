@@ -46,7 +46,7 @@ in
     "/" = {
       device = "/dev/disk/by-partlabel/disk-nvme0-NixOS";
       # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-      fsType = "btrfs";
+      fsType = "btrfs"; 
       options = [
         "subvol=@"
         "x-gvfs-hide" # hide from filemanager

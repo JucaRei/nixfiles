@@ -34,6 +34,24 @@ in
       plymouth = true;
       silentBoot = true;
     };
+
+    features = {
+      audio.manager = mkForce "pulseaudio";
+      graphics = {
+        enable = true;
+        gpu = "nvidia-legacy";
+      };
+    };
+
+    fileSystems = {
+      "/" = "/dev/disk/by-partlabel/disk-sda-root";
+      fstype = "ext4";
+      options = [ "defaults" "noatime" "nodiratime" "commit=60" ];
+    };
+
+    swapDevices =
+      [{ device = "/dev/disk/by-partlabel/disk-sda-nixswap"; }];
+
     boot = {
       initrd = {
         availableKernelModules = [
@@ -82,20 +100,13 @@ in
       ];
       loader.grub = {
         gfxpayloadBios = "1920x1200";
+        copyKernels = true;
         theme = pkgs.cyberre-grub-theme;
+        device = "/dev/disk/by-partlabel/disk-sda-root";
       };
       #extraModprobeConfig = ''
       #  options bcm5974
       #'';
-    };
-
-    hardware = {
-      nvidia = {
-        package = config.boot.kernelPackages.nvidiaPackages.legacy_340;
-        nvidiaSettings = true;
-        modesetting.enable = true;
-      };
-      acpilight.enable = true;
     };
 
     services = {
