@@ -154,7 +154,6 @@ in
             }
             {
               name = "nixswap";
-              type = "8200";
               start = "-6GiB";
               end = "100%";
               content = {
