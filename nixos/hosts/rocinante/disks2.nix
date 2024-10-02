@@ -126,6 +126,7 @@ in
               flags = [ "bios_grub" ];
             };
             ESP = {
+              name = "ESP";
               start = "1M";
               end = "550MiB";
               bootable = true;
@@ -137,7 +138,8 @@ in
                 mountpoint = "/boot";
               };
             };
-            nixroot = {
+            root = {
+              name = "nixroot";
               start = "550MiB";
               end = "-6GiB";
               # end = "100%";
@@ -149,7 +151,9 @@ in
                 mountOptions = defaultExt4Opts;
               };
             };
-            nixswap = {
+            swap = {
+              name = "nixswap";
+              type = "8200";
               size = "100%";
               content = {
                 type = "swap";
