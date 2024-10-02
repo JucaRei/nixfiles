@@ -50,6 +50,7 @@
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
       isWorkstation = builtins.isString desktop;
+      notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
     in
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
@@ -64,6 +65,7 @@
           isInstall
           isISO
           isWorkstation
+          notVM
           ;
       };
       # If the hostname starts with "iso-", generate an ISO image
