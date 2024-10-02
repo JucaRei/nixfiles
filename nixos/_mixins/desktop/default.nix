@@ -14,7 +14,7 @@ in
   # config = mkIf desktopMode {
   imports = [ ../features ]
     ++ lib.optional (builtins.pathExists (./. + "/${desktop}"))
-    ./${desktop}.nix;
+    ./${desktop};
 
   config = {
     features.audio.manager = mkDefault "pipewire";
