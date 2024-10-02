@@ -118,14 +118,15 @@ in
         content = {
           type = "table";
           format = "gpt";
-          partitions = [{
-            boot = {
+          partitions = [
+            {
+              name = "boot";
               start = "0";
               end = "1M";
               part-type = "primary";
               flags = [ "bios_grub" ];
-            };
-            ESP = {
+            }
+            {
               name = "ESP";
               start = "1M";
               end = "550MiB";
@@ -137,8 +138,8 @@ in
                 format = "vfat";
                 mountpoint = "/boot";
               };
-            };
-            root = {
+            }
+            {
               name = "nixroot";
               start = "550MiB";
               end = "-6GiB";
@@ -150,8 +151,8 @@ in
                 mountpoint = "/";
                 mountOptions = defaultExt4Opts;
               };
-            };
-            swap = {
+            }
+            {
               name = "nixswap";
               type = "8200";
               size = "100%";
@@ -159,8 +160,8 @@ in
                 type = "swap";
                 resumeDevice = true;
               };
-            };
-          }];
+            }
+          ];
         };
       };
       #   };
