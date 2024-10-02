@@ -95,7 +95,7 @@ in
       loader.grub = {
         gfxpayloadBios = "1920x1200";
         copyKernels = true;
-        theme = pkgs.cyberre-grub-theme;
+        # theme = pkgs.cyberre-grub-theme;
         device = "/dev/sda";
       };
       #extraModprobeConfig = ''
