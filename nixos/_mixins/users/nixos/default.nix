@@ -1,13 +1,4 @@
-{
-  config,
-  desktop,
-  isISO,
-  isWorkstation,
-  lib,
-  pkgs,
-  username,
-  ...
-}:
+{ config, desktop, isISO, isWorkstation, lib, pkgs, username, ... }:
 let
   isWorkstationISO = isISO && isWorkstation;
 in

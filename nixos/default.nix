@@ -13,7 +13,7 @@ in
     inputs.nix-snapd.nixosModules.default
     inputs.sops-nix.nixosModules.sops
     (modulesPath + "/installer/scan/not-detected.nix")
-    ./${hostname}
+    (./. + "/hosts/${ hostname}")
     ./_mixins/configs
     ./_mixins/core
     ./_mixins/features
@@ -193,7 +193,7 @@ in
       smartd.enable = isInstall;
     };
 
-    sops = lib.mkIf (isInstall && username == "juca") {
+    sops = lib.mkIf (isInstall && username == "teste") {
       age = {
         keyFile = "/home/${username}/.config/sops/age/keys.txt";
         generateKey = false;
