@@ -45,7 +45,9 @@ in
             }
             {
               name = "nixswap";
+              start = "-6GiB";
               end = "100%";
+              fs-type = "linux-swap";
               content = {
                 type = "swap";
               };

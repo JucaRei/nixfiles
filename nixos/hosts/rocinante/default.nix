@@ -9,8 +9,8 @@ in
     #inputs.nixos-hardware.nixosModules.common-cpu-intel
     #inputs.nixos-hardware.nixosModules.common-pc-laptop
     #inputs.nixos-hardware.nixosModules.common-pc-ssd
-    (import ./disks.nix { })
-    ../../_mixins/hardware/graphics/nvidia-legacy.nix
+    (import ./disks2.nix { })
+    # ../../_mixins/hardware/graphics/nvidia-legacy.nix
     ../../_mixins/services/security/sudo.nix
   ];
 
@@ -44,13 +44,13 @@ in
     };
 
     fileSystems = {
-      "/" = "/dev/disk/by-partlabel/disk-sda-root";
+      "/" = "/dev/disk/by-partlabel/nixsystem";
       fstype = "ext4";
       options = [ "defaults" "noatime" "nodiratime" "commit=60" ];
     };
 
     swapDevices =
-      [{ device = "/dev/disk/by-partlabel/disk-sda-nixswap"; }];
+      [{ device = "/dev/disk/by-partlabel/nixswap"; }];
 
     boot = {
       initrd = {
@@ -102,7 +102,7 @@ in
         gfxpayloadBios = "1920x1200";
         copyKernels = true;
         theme = pkgs.cyberre-grub-theme;
-        device = "/dev/disk/by-partlabel/disk-sda-root";
+        device = "/dev/sda";
       };
       #extraModprobeConfig = ''
       #  options bcm5974
