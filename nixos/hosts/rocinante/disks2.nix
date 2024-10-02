@@ -146,7 +146,6 @@ in
               # end = "100%";
               content = {
                 type = "filesystem";
-                extraArgs = [ "-f" ];
                 format = "ext4";
                 mountpoint = "/";
                 mountOptions = defaultExt4Opts;
