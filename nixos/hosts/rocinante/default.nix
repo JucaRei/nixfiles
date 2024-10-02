@@ -35,8 +35,10 @@ in
     #   silentBoot = true;
     # };
 
+    desktops.features = {
+      audio.manager = mkForce "pulseaudio";
+    };
     features = {
-      desktops.audio.manager = mkForce "pulseaudio";
       graphics = {
         enable = true;
         gpu = "nvidia-legacy";
