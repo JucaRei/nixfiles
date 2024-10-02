@@ -1,10 +1,9 @@
-{
-  config,
-  hostname,
-  isInstall,
-  lib,
-  pkgs,
-  ...
+{ config
+, hostname
+, isInstall
+, lib
+, pkgs
+, ...
 }:
 let
   isIntelCPU = config.hardware.cpu.intel.updateMicrocode;
@@ -64,7 +63,7 @@ lib.mkIf isInstall {
     # Only enable power-profiles-daemon if the desktop environment supports it
     power-profiles-daemon.enable = usePowerProfiles;
     # Only enable thermald on Intel CPUs
-    thermald.enable = isIntelCPU;
+    # thermald.enable = isIntelCPU;
     # Disable TLP because it conflicts with auto-cpufreq
     tlp.enable = lib.mkForce false;
   };

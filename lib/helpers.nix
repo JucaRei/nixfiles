@@ -44,6 +44,7 @@
     , username ? "juca"
     , desktop ? null
     , platform ? "x86_64-linux"
+    , hostid ? null
     ,
     }:
     let
@@ -61,6 +62,7 @@
           hostname
           platform
           username
+          hostid
           stateVersion
           isInstall
           isISO

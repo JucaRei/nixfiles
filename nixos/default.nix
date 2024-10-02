@@ -38,10 +38,38 @@ in
         plymouth = mkDefault isWorkstation;
       };
 
+      cpu = {
+        enable = mkDefault true;
+        hardenKernel = mkDefault false;
+        improveTCP = mkDefault (isInstall || isWorkstation);
+        enableKvm = mkDefault false;
+        cpuVendor = mkDefault "intel";
+      };
+
       # Selected default docs
       documentation = {
         enable = mkDefault true;
         doctypes = [ "man" ];
+      };
+
+      optimizations = {
+        enable = true;
+        selected = [
+          "earlyoom"
+          (mkIf isWorkstation ("ananicy"))
+          "irqbalance"
+          (mkIf isWorkstation ("psd"))
+          (mkIf isWorkstation ("fixwakeup"))
+        ];
+      };
+
+      network = {
+        enable = true;
+        networkOpt = mkDefault "network-manager";
+        exclusive-locallan = mkDefault false;
+        powersave = mkDefault false;
+        wakeonlan = mkDefault false;
+        # custom-interface = "eth0";
       };
     };
 
@@ -62,6 +90,7 @@ in
         ]
         ++ lib.optionals isInstall [
           inputs.determinate.packages.${platform}.default
+          inputs.fh.packages.${platform}.default
           inputs.nixos-needtoreboot.packages.${platform}.default
           nvd
           nvme-cli
@@ -96,6 +125,12 @@ in
         flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
       in
       {
+        # give nix-daemon the lowest priority
+        daemonIOSchedClass = "idle"; # Reduce disk usage
+        # Leave nix builds as a background task
+        daemonCPUSchedPolicy = "idle"; # Set CPU scheduling policy for daemon processes to idle
+        daemonIOSchedPriority = 7; # Set I/O scheduling priority for daemon processes to 7
+
         settings = {
           experimental-features = "flakes nix-command";
           # Disable global registry
@@ -107,7 +142,15 @@ in
             "${username}"
           ];
           warn-dirty = false;
+          keep-going = false;
         };
+        extraOptions = ''
+          log-lines = 15
+          # Free up to 4GiB whenever there is less than 2GiB left.
+          min-free = ${toString (2048 * 1024 * 1024)}
+          max-free = ${toString (4096 * 1024 * 1024)} # 4GiB
+          connect-timeout = 10
+        '';
         # Disable channels
         channel.enable = false;
         # Make flake registry and nix path match flake inputs
@@ -129,10 +172,10 @@ in
       nh = {
         clean = {
           enable = true;
-          extraArgs = "--keep-since 15d --keep 10";
+          extraArgs = "--keep-since 7d --keep 10";
         };
         enable = true;
-        flake = "/home/${username}/Zero/nix-config";
+        flake = "/home/${username}/.dotfiles/nixfiles";
       };
       nix-index-database.comma.enable = isInstall;
       nix-ld = lib.mkIf isInstall {
@@ -145,7 +188,6 @@ in
     };
 
     services = {
-      fwupd.enable = isInstall;
       hardware.bolt.enable = true;
       smartd.enable = isInstall;
     };
