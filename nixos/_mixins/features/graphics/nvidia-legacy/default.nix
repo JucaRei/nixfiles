@@ -49,7 +49,7 @@ in
       };
       systemPackages = with pkgs; [
         glxinfo
-        sdlmame
+        mame
         libva
         libva-utils
       ];
