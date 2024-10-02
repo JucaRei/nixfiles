@@ -155,7 +155,8 @@ in
             {
               name = "nixswap";
               type = "8200";
-              size = "100%";
+              start = "-6GiB";
+              end = "100%";
               content = {
                 type = "swap";
                 resumeDevice = true;
