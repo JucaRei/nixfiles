@@ -10,9 +10,8 @@ in
         type = "disk";
         device = "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_120_GB_181102802196";
         content = {
-          # type = "table";
-          # format = "gpt";
-          type = "gpt";
+          type = "table";
+          format = "gpt";
           partitions = [
             {
               name = "boot";
@@ -23,66 +22,79 @@ in
             }
             {
               name = "ESP";
-              start = "1MiB";
-              end = "512MiB";
-              fs-type = "fat32";
+              start = "1M";
+              end = "550MiB";
               bootable = true;
+              flags = [ "esp" ];
+              fs-type = "fat32";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
               };
             }
+            # {
+            #   name = "nixswap";
+            #   start = "-6GiB";
+            #   end = "100%";
+            #   fs-type = "linux-swap";
+            #   content = {
+            #     type = "swap";
+            #   };
+            # }
+            {
+              swap = {
+                size = "6G";
+                content = {
+                  type = "swap";
+                  resumeDevice = true;
+                };
+              };
+            }
             {
               name = "nixsystem";
-              start = "512MiB";
-              end = "-6GiB";
+              start = "550MiB";
+              # end = "-6GiB";
+              end = "100%";
               content = {
-                format = "ext4";
                 type = "filesystem";
+                extraArgs = [ "-f" ];
+                format = "ext4";
                 mountpoint = "/";
                 mountOptions = defaultExt4Opts;
               };
             }
-            {
-              name = "nixswap";
-              start = "-6GiB";
-              end = "100%";
-              fs-type = "linux-swap";
-              content = {
-                type = "swap";
-              };
-            }
-            # {
-            #   name = "root";
-            #   start = "512MiB";
-            #   end = "100%";
-            #   content = {
-            #     type = "btrfs";
-            #     extraArgs = [ "-f" ];
-            #     subvolumes = {
-            #       "/rootfs" = {
-            #         mountpoint = "/";
-            #       };
-            #       # Mountpoints inferred from subvolume name
-            #       "/home" = {
-            #         mountOptions = [ "compress=zstd" ];
-            #       };
-            #       "/nix" = {
-            #         mountOptions = [
-            #           "compress=zstd"
-            #           "noatime"
-            #         ];
-            #       };
-            #       # "/persist" = {
-            #       #   mountOptions = [
-            #       #     "compress=zstd"
-            #       #     "noatime"
-            #       #   ];
-            #       # };
-            #     };
-            #   };
-            # }
+
+            #   # {
+            #   #   name = "root";
+            #   #   start = "512MiB";
+            #   #   end = "100%";
+            #   #   content = {
+            #   #     type = "btrfs";
+            #   #     extraArgs = [ "-f" ];
+            #   #     subvolumes = {
+            #   #       "/rootfs" = {
+            #   #         mountpoint = "/";
+            #   #       };
+            #   #       # Mountpoints inferred from subvolume name
+            #   #       "/home" = {
+            #   #         mountOptions = [ "compress=zstd" ];
+            #   #       };
+            #   #       "/nix" = {
+            #   #         mountOptions = [
+            #   #           "compress=zstd"
+            #   #           "noatime"
+            #   #         ];
+            #   #       };
+            #   #       # "/persist" = {
+            #   #       #   mountOptions = [
+            #   #       #     "compress=zstd"
+            #   #       #     "noatime"
+            #   #       #   ];
+            #   #       # };
+            #   #     };
+            #   #   };
+            #   # }
           ];
         };
       };

@@ -45,15 +45,6 @@ in
       };
     };
 
-    fileSystems = {
-      "/" = "/dev/disk/by-partlabel/nixsystem";
-      fstype = "ext4";
-      options = [ "defaults" "noatime" "nodiratime" "commit=60" ];
-    };
-
-    swapDevices =
-      [{ device = "/dev/disk/by-partlabel/nixswap"; }];
-
     boot = {
       initrd = {
         availableKernelModules = [
