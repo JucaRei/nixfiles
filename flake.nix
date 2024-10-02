@@ -356,7 +356,7 @@
         nitro = helper.makeNixOS { hostname = "nitro"; desktop = "cinnamon"; stateVersion = "24.05"; isServer = false; isLaptop = true; }; # desktop = "hyprland";
         # air = helper.makeNixOS { hostname = "air"; desktop = "pantheon"; hostid = "718641c6"; stateVersion = "22.11"; };
         soyo = helper.makeNixOS { hostname = "soyo"; stateVersion = "24.05"; desktop = "kodi"; };
-        # rocinante = helper.makeNixOS { hostname = "rocinante"; desktop = "mate"; hostid = "f4173273"; };
+        rocinante = helper.makeNixOS { hostname = "rocinante"; desktop = "mate"; isServer = false; isLaptop = true; };
         # rocinante-headless = helper.makeNixOS { hostname = "rocinante"; hostid = "836715d7"; };
         # Virtual Machines
         # vm = helper.makeNixOS { hostname = "vm"; desktop = "mate"; };

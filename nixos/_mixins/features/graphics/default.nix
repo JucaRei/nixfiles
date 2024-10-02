@@ -7,6 +7,7 @@ in
     ./amd
     ./intel
     ./nvidia
+    ./nvidia-legacy
   ];
 
   options.features.graphics = {
