@@ -163,7 +163,7 @@ in
           efiInstallAsRemovable = mkDefault true;
           default = "saved";
           # devices = if cfg.boottype == "efi" then mkDefault [ "nodev" ] else mkDefault "/dev/sda";
-          device = if cfg.boottype == "efi" then "nodev" else "/dev/sda";
+          # device = if cfg.boottype == "efi" then "nodev" else "/dev/sda";
           # device = if cfg.boottype == "efi" && cfg.bootmanager == "grub" then "nodev" else "/dev/sda";
           fsIdentifier = "provided";
           gfxmodeEfi = "auto";
