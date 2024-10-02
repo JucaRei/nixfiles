@@ -166,14 +166,6 @@
           hostname = "phasma";
           desktop = "hyprland";
         };
-        vader = helper.mkNixos {
-          hostname = "vader";
-          desktop = "hyprland";
-        };
-        shaa = helper.mkNixos {
-          hostname = "shaa";
-          desktop = "hyprland";
-        };
         tanis = helper.mkNixos {
           hostname = "tanis";
           desktop = "hyprland";
