@@ -118,7 +118,7 @@ in
         content = {
           type = "table";
           format = "gpt";
-          partitions = {
+          partitions = [{
             boot = {
               start = "0";
               end = "1M";
@@ -160,7 +160,7 @@ in
                 resumeDevice = true;
               };
             };
-          };
+          }];
         };
       };
       #   };
