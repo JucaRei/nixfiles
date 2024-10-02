@@ -60,6 +60,7 @@ in
           "irqbalance"
           (mkIf isWorkstation ("psd"))
           (mkIf isWorkstation ("fixwakeup"))
+          (mkIf (isWorkstation && config.core.cpu.cpuVendor == "intel") ("fixwakeup"))
         ];
       };
 
