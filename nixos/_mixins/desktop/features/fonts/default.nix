@@ -1,9 +1,8 @@
-{
-  config,
-  isInstall,
-  lib,
-  pkgs,
-  ...
+{ config
+, isInstall
+, lib
+, pkgs
+, ...
 }:
 {
   # https://yildiz.dev/posts/packing-custom-fonts-for-nixos/
@@ -143,4 +142,7 @@
       };
     };
   };
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    "mocha_mattari"
+  ];
 }

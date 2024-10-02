@@ -1,15 +1,9 @@
-{
-  hostname,
-  isISO,
-  lib,
-  pkgs,
-  ...
-}:
+{ hostname, isISO, lib, pkgs, ... }:
 let
   installOn = [
     "minimech"
     "scrubber"
-    "sidious"
+    "nitro"
   ];
 in
 lib.mkIf (lib.elem hostname installOn || isISO) {

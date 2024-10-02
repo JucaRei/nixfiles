@@ -16,5 +16,6 @@ in
   programs.fish.shellAliases = {
     build-host = "nh-host build";
     switch-host = "nh-host switch";
+    switch-boot = "nh-host boot";
   };
 }

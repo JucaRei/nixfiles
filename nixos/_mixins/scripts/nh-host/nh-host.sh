@@ -15,11 +15,11 @@ if [ "${1}" != "build" ] && [ "${1}" != "switch" ]; then
     usage
 fi
 
-if [ -e "${HOME}/Zero/nix-config" ]; then
+if [ -e "${HOME}/.dotfiles/nixfiles" ]; then
     all_cores=$(nproc)
     build_cores=$(printf "%.0f" "$(echo "${all_cores} * 0.75" | bc)")
     echo "${1^}ing NixOS ❄️  with ${build_cores} cores"
-    nh os "${1}" "${HOME}/Zero/nix-config/" -- --cores "${build_cores}"
+    nh os "${1}" "${HOME}/.dotfiles/nixfiles/" -- --cores "${build_cores}"
 else
-    echo "ERROR! No nix-config found in ${HOME}/Zero/nix-config"
+    echo "ERROR! No nix-config found in ${HOME}/.dotfiles/nixfiles"
 fi

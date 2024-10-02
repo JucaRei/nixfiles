@@ -31,7 +31,7 @@ in
       boot = {
         enable = mkDefault isInstall;
         boottype = mkDefault "efi";
-        bootmanager = mkDefault "systemd-boot";
+        bootmanager = mkDefault "grub";
         isDualBoot = mkDefault false;
         secureBoot = mkDefault false;
         silentBoot = mkDefault isWorkstation;
@@ -53,14 +53,14 @@ in
       };
 
       optimizations = {
-        enable = true;
+        enable = isInstall;
         selected = [
           "earlyoom"
           (mkIf isWorkstation ("ananicy"))
           "irqbalance"
           (mkIf isWorkstation ("psd"))
           (mkIf isWorkstation ("fixwakeup"))
-          (mkIf (isWorkstation && config.core.cpu.cpuVendor == "intel") ("fixwakeup"))
+          (mkIf (isWorkstation && config.core.cpu.cpuVendor == "intel") ("thermald"))
         ];
       };
 

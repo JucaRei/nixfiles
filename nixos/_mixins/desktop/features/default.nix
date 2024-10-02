@@ -2,8 +2,8 @@ _: {
   imports = [
     ./appimage
     ./flatpak
+    ./audio
     ./fonts
-    ./pipewire
     ./print
     ./scan
     ./v4l2loopback

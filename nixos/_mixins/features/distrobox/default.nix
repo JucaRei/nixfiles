@@ -1,10 +1,4 @@
-{ config
-, isWorkstation
-, lib
-, pkgs
-, username
-, ...
-}:
+{ config, isWorkstation, lib, pkgs, username, ... }:
 let
   installFor = [ "juca" ];
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;

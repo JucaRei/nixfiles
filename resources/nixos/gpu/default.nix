@@ -1,12 +1,4 @@
-{
-  config,
-  isInstall,
-  isWorkstation,
-  lib,
-  pkgs,
-  username,
-  ...
-}:
+{ config, isInstall, isWorkstation, lib, pkgs, username, ... }:
 let
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
   hasAmdGPU = config.hardware.amdgpu.initrd.enable;

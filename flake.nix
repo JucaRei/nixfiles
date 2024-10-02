@@ -178,6 +178,10 @@
           hostname = "sidious";
           desktop = "gnome";
         };
+        rocinante = helper.mkNixos {
+          hostname = "rocinante";
+          desktop = "hyprland";
+        };
         # Servers
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs

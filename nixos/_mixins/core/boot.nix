@@ -191,6 +191,7 @@ in
 
       plymouth = rec {
         enable = cfg.plymouth;
+        # catppuccin.enable = true;
         theme = "lone"; # "spinner_alt"; # "deus_ex";
         themePackages = with pkgs; [
           (
