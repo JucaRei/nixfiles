@@ -6,6 +6,7 @@ in
 {
   config = mkIf (device.gpu == "nvidia-legacy") {
     nixpkgs.config.allowUnfree = true;
+    nixpkgs.config.nvidia.acceptLicense = true;
 
     boot = {
       blacklistedKernelModules = [
@@ -53,5 +54,7 @@ in
         libva-utils
       ];
     };
+
+
   };
 }
