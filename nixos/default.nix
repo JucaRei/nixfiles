@@ -221,5 +221,4 @@ in
     nixos.label = lib.mkIf isInstall "-";
     inherit stateVersion;
   };
-};
 }
