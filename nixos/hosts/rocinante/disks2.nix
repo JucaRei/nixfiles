@@ -43,12 +43,11 @@ in
             #   };
             # }
             {
-              swap = {
-                size = "6G";
-                content = {
-                  type = "swap";
-                  resumeDevice = true;
-                };
+              name = "swap";
+              size = "6G";
+              content = {
+                type = "swap";
+                resumeDevice = true;
               };
             }
             {
