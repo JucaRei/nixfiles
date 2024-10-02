@@ -13,7 +13,7 @@ in
 {
   # config = mkIf desktopMode {
   imports = [ ../features ]
-    ++ lib.optional (builtins.pathExists (./. + "/${desktop}.nix"))
+    ++ lib.optional (builtins.pathExists (./. + "/${desktop}"))
     ./${desktop}.nix;
 
   config = {
@@ -42,7 +42,6 @@ in
         hunspellDicts.pt_BR
       ]);
     };
-
 
     services = {
       usbmuxd.enable = true;
