@@ -38,6 +38,7 @@ in
     desktops.features = {
       audio.manager = mkForce "pulseaudio";
     };
+
     features = {
       graphics = {
         enable = true;

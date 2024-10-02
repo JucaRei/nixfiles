@@ -129,96 +129,96 @@ in
         allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
       };
     };
-  };
 
-  nix =
-    let
-      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-    in
-    {
-      # give nix-daemon the lowest priority
-      daemonIOSchedClass = "idle"; # Reduce disk usage
-      # Leave nix builds as a background task
-      daemonCPUSchedPolicy = "idle"; # Set CPU scheduling policy for daemon processes to idle
-      daemonIOSchedPriority = 7; # Set I/O scheduling priority for daemon processes to 7
+    nix =
+      let
+        flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+      in
+      {
+        # give nix-daemon the lowest priority
+        daemonIOSchedClass = "idle"; # Reduce disk usage
+        # Leave nix builds as a background task
+        daemonCPUSchedPolicy = "idle"; # Set CPU scheduling policy for daemon processes to idle
+        daemonIOSchedPriority = 7; # Set I/O scheduling priority for daemon processes to 7
 
-      settings = {
-        experimental-features = "flakes nix-command";
-        # Disable global registry
-        flake-registry = "";
-        # Workaround for https://github.com/NixOS/nix/issues/9574
-        nix-path = config.nix.nixPath;
-        trusted-users = [
-          "root"
-          "${username}"
-        ];
-        warn-dirty = false;
-        keep-going = false;
+        settings = {
+          experimental-features = "flakes nix-command";
+          # Disable global registry
+          flake-registry = "";
+          # Workaround for https://github.com/NixOS/nix/issues/9574
+          nix-path = config.nix.nixPath;
+          trusted-users = [
+            "root"
+            "${username}"
+          ];
+          warn-dirty = false;
+          keep-going = false;
+        };
+        extraOptions = ''
+          log-lines = 15
+          # Free up to 4GiB whenever there is less than 2GiB left.
+          min-free = ${toString (2048 * 1024 * 1024)}
+          max-free = ${toString (4096 * 1024 * 1024)} # 4GiB
+          connect-timeout = 10
+        '';
+        # Disable channels
+        channel.enable = false;
+        # Make flake registry and nix path match flake inputs
+        registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
+        nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
       };
-      extraOptions = ''
-        log-lines = 15
-        # Free up to 4GiB whenever there is less than 2GiB left.
-        min-free = ${toString (2048 * 1024 * 1024)}
-        max-free = ${toString (4096 * 1024 * 1024)} # 4GiB
-        connect-timeout = 10
-      '';
-      # Disable channels
-      channel.enable = false;
-      # Make flake registry and nix path match flake inputs
-      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
-    };
 
-  nixpkgs.hostPlatform = lib.mkDefault "${platform}";
+    nixpkgs.hostPlatform = lib.mkDefault "${platform}";
 
-  programs = {
-    command-not-found.enable = false;
-    fish = {
-      enable = true;
-      shellAliases = {
-        nano = "micro";
-      };
-    };
-    nano.enable = lib.mkDefault false;
-    nh = {
-      clean = {
+    programs = {
+      command-not-found.enable = false;
+      fish = {
         enable = true;
-        extraArgs = "--keep-since 7d --keep 10";
+        shellAliases = {
+          nano = "micro";
+        };
       };
-      enable = true;
-      flake = "/home/${username}/.dotfiles/nixfiles";
+      nano.enable = lib.mkDefault false;
+      nh = {
+        clean = {
+          enable = true;
+          extraArgs = "--keep-since 7d --keep 10";
+        };
+        enable = true;
+        flake = "/home/${username}/.dotfiles/nixfiles";
+      };
+      nix-index-database.comma.enable = isInstall;
+      nix-ld = lib.mkIf isInstall {
+        enable = true;
+        libraries = with pkgs; [
+          # Add any missing dynamic libraries for unpackaged
+          # programs here, NOT in environment.systemPackages
+        ];
+      };
     };
-    nix-index-database.comma.enable = isInstall;
-    nix-ld = lib.mkIf isInstall {
-      enable = true;
-      libraries = with pkgs; [
-        # Add any missing dynamic libraries for unpackaged
-        # programs here, NOT in environment.systemPackages
-      ];
+
+    services = {
+      hardware.bolt.enable = true;
+      smartd.enable = isInstall;
     };
-  };
 
-  services = {
-    hardware.bolt.enable = true;
-    smartd.enable = isInstall;
-  };
-
-  sops = lib.mkIf (isInstall && username == "teste") {
-    age = {
-      keyFile = "/home/${username}/.config/sops/age/keys.txt";
-      generateKey = false;
+    sops = lib.mkIf (isInstall && username == "teste") {
+      age = {
+        keyFile = "/home/${username}/.config/sops/age/keys.txt";
+        generateKey = false;
+      };
+      defaultSopsFile = ../secrets/secrets.yaml;
+      # sops-nix options: https://dl.thalheim.io/
+      secrets = {
+        test-key = { };
+      };
     };
-    defaultSopsFile = ../secrets/secrets.yaml;
-    # sops-nix options: https://dl.thalheim.io/
-    secrets = {
-      test-key = { };
+
+    systemd.tmpfiles.rules = [ "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" ];
+
+    system = {
+      nixos.label = lib.mkIf isInstall "-";
+      inherit stateVersion;
     };
-  };
-
-  systemd.tmpfiles.rules = [ "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" ];
-
-  system = {
-    nixos.label = lib.mkIf isInstall "-";
-    inherit stateVersion;
   };
 }
