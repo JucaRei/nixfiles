@@ -159,7 +159,7 @@ in
         grub = mkIf (cfg.bootmanager == "grub") {
           enable = mkIf (cfg.bootmanager == "grub" && cfg.bootmanager != "raspberry") true;
           efiSupport = if cfg.boottype == "efi" then true else false;
-          theme = mkDefault pkgs.catppuccin-grub;
+          # theme = mkDefault pkgs.catppuccin-grub;
           efiInstallAsRemovable = mkDefault true;
           default = "saved";
           # devices = if cfg.boottype == "efi" then mkDefault [ "nodev" ] else mkDefault "/dev/sda";
