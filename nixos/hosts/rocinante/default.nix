@@ -46,6 +46,11 @@ in
       };
     };
 
+    hardware = {
+      # enableAllFirmware = true;
+      firmware = [ pkgs.b43Firmware_5_1_138 ];
+    };
+
     boot = {
       initrd = {
         availableKernelModules = [
@@ -65,7 +70,6 @@ in
           # "bcm5974"
         ];
       };
-      extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
       # blacklist similar modules to avoid collision
       blacklistedKernelModules = [
         "b43"
@@ -82,8 +86,21 @@ in
         # "b43"
         "wl" # set of kernel modules loaded in second stage of boot process
       ];
+
+      extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+      # extraModulePackages = [
+      #   (config.boot.kernelPackages.broadcom_sta.overrideAttrs (old: {
+      #     patches = old.patches ++ [
+      #       (builtins.fetchurl {
+      #         url = "https://raw.githubusercontent.com/archlinux/svntogit-community/5ec5b248976f84fcd7e3d7fae49ee91289912d12/trunk/012-linux517.patch";
+      #         sha256 = "df557afdb0934ed2de6ab967a350d777cbb7b53bf0b1bdaaa7f77a53102f30ac";
+      #       })
+      #     ];
+      #   }))
+      # ];
+
       # kernelPackages = lib.mkDefault pkgs.linuxPackages_6_1;
-      kernelPackages = lib.mkDefault pkgs.linuxPackages_5_4;
+      # kernelPackages = lib.mkDefault pkgs.linuxPackages_5_4;
       # kernelPackages = lib.mkDefault pkgs.linuxPackages_xanmod_stable;
       # kernelPackages = lib.mkDefault pkgs.linuxPackages_5_15;
       #kernelParams = [ "intel_idle.max_cstate=1" "hid_apple.iso_layout=0" "acpi_backlight=vendor" "acpi_mask_gpe=0x15" ];
