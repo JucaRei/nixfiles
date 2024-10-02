@@ -10,8 +10,9 @@ in
         type = "disk";
         device = "/dev/disk/by-id/ata-SanDisk_SSD_PLUS_120_GB_181102802196";
         content = {
-          type = "table";
-          format = "gpt";
+          # type = "table";
+          # format = "gpt";
+          type = "gpt";
           partitions = [
             {
               name = "boot";
