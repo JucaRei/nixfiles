@@ -64,7 +64,8 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    # nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/2f893e185c850bcd6dbf4fbc0c61b1b90d23ff79";
 
     # nix-software-center = {
     #   url = "github:vlinkz/nix-software-center";

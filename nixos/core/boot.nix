@@ -33,7 +33,7 @@ in
       default = isWorkstation && isInstall;
     };
     silentBoot = mkEnableOption "Whether or not to enable silent boot." // { default = isWorkstation && isInstall; };
-    secureBoot = mkEnableOption "Whether or not to enable secure boot." // { default = false; };
+    # secureBoot = mkEnableOption "Whether or not to enable secure boot." // { default = false; };
   };
 
   config = mkIf cfg.enable {
@@ -139,10 +139,10 @@ in
         "cma=32M"
       ];
 
-      lanzaboote = mkIf cfg.secureBoot {
-        enable = true;
-        pkiBundle = "/etc/secureboot";
-      };
+      # lanzaboote = mkIf cfg.secureBoot {
+      #   enable = true;
+      #   pkiBundle = "/etc/secureboot";
+      # };
 
       loader = {
         generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;

@@ -29,11 +29,11 @@ in
   # ];
 
   config = {
-    core = {
-      boottype = mkForce "legacy";
-      plymouth = true;
-      silentBoot = true;
-    };
+    # core = {
+    #   boottype = mkForce "legacy";
+    #   plymouth = true;
+    #   silentBoot = true;
+    # };
 
     features = {
       audio.manager = mkForce "pulseaudio";

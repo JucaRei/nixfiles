@@ -34,7 +34,7 @@ in
   };
 
   imports = [
-    inputs.nixos-hardware.nixosModules.common-gpu-nvidia
+    # inputs.nixos-hardware.nixosModules.common-gpu-nvidia
   ];
 
   config = mkIf cfg.enable (mkMerge [

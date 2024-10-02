@@ -3,7 +3,7 @@ let
   inherit (lib) mkIf;
   device = config.features.graphics;
 
-  
+
 in
 {
   config = mkIf (device.gpu == "intel" || device.gpu == "hybrid-nv") {
@@ -22,18 +22,27 @@ in
       vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
     };
 
-    hardware.opengl = {
-      extraPackages = with pkgs; [
+    # hardware.opengl = {
+    #   extraPackages = with pkgs; [
+    #     intel-compute-runtime
+    #     intel-media-driver
+    #     libvdpau-va-gl
+    #     vaapiIntel
+    #     vaapiVdpau
+    #   ];
+    # };
+
+    environment = {
+      variables = mkIf (config.hardware.opengl.enable && device.gpu != "hybrid-nv") {
+        VDPAU_DRIVER = "va_gl";
+      };
+      systemPackages = with pkgs.unstable; [
         intel-compute-runtime
         intel-media-driver
         libvdpau-va-gl
         vaapiIntel
         vaapiVdpau
       ];
-    };
-
-    environment.variables = mkIf (config.hardware.opengl.enable && device.gpu != "hybrid-nv") {
-      VDPAU_DRIVER = "va_gl";
     };
   };
 }

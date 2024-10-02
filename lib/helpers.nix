@@ -101,21 +101,21 @@
           #   # Optionally, use home-manager.extraSpecialArgs to pass
           #   # arguments to home.nix
           # }
-          lanzaboote.nixosModules.lanzaboote
-          proxmox-nixos.nixosModules.proxmox-ve
+          # lanzaboote.nixosModules.lanzaboote
+          # proxmox-nixos.nixosModules.proxmox-ve
           chaotic.nixosModules.default
           disko.nixosModules.disko
           catppuccin.nixosModules.catppuccin
           nix-index-database.nixosModules.nix-index
           nix-snapd.nixosModules.default
           sops-nix.nixosModules.sops
-          ({ pkgs, lib, inputs, config, ... }: {
-            # Shared Between all users
-            # services.proxmox-ve.enable = true;
-            nixpkgs. overlays = [
-              inputs.proxmox-nixos.overlays.${platform}
-            ];
-          })
+          # ({ pkgs, lib, inputs, config, ... }: {
+          #   # Shared Between all users
+          #   # services.proxmox-ve.enable = true;
+          #   nixpkgs. overlays = [
+          #     inputs.proxmox-nixos.overlays.${platform}
+          #   ];
+          # })
 
         ] ++ inputs.nixpkgs.lib.optionals (isISO) [
           cd-dvd

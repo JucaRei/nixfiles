@@ -1,6 +1,6 @@
 { inputs, lib, pkgs, config, ... }: {
   imports = [
-    inputs.nixos-hardware.nixosModules.apple-macbook-air-4
+    # inputs.nixos-hardware.nixosModules.apple-macbook-air-4
     # inputs.nixos-hardware.nixosModules.common-cpu-intel-sandy-bridge
     # inputs.nixos-hardware.nixosModules.common-pc-ssd
     # (import ./disks-1.nix { })
