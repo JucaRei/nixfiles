@@ -38,12 +38,12 @@ in
         ];
       })
       # Workaround for log spam on video calls: https://issues.chromium.org/issues/331796411
-      (wavebox.override {
-        commandLineArgs = [
-          "--disable-gpu-memory-buffer-video-frames"
-          "--ozone-platform-hint=auto"
-        ];
-      })
+      # (wavebox.override {
+      #   commandLineArgs = [
+      #     "--disable-gpu-memory-buffer-video-frames"
+      #     "--ozone-platform-hint=auto"
+      #   ];
+      # })
     ];
 
   # TODO: Configure Microsoft Edge policy
