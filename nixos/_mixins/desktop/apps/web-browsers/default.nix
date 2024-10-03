@@ -13,13 +13,13 @@ in
     with pkgs;
     lib.optionals isInstall [
       # Workaround for log spam on video calls: https://issues.chromium.org/issues/331796411
-      (google-chrome.override {
-        commandLineArgs = [
-          "--disable-gpu-memory-buffer-video-frames"
-          "--ozone-platform-hint=auto"
-        ];
-      })
-      microsoft-edge
+      # (google-chrome.override {
+      #   commandLineArgs = [
+      #     "--disable-gpu-memory-buffer-video-frames"
+      #     "--ozone-platform-hint=auto"
+      #   ];
+      # })
+      # microsoft-edge
     ]
     ++ lib.optionals (builtins.elem username installFor && isInstall) [
       # Workaround for log spam on video calls: https://issues.chromium.org/issues/331796411
@@ -30,13 +30,13 @@ in
         ];
       })
       # Workaround for log spam on video calls: https://issues.chromium.org/issues/331796411
-      (chromium.override {
-        enableWideVine = true;
-        commandLineArgs = [
-          "--disable-gpu-memory-buffer-video-frames"
-          "--ozone-platform-hint=auto"
-        ];
-      })
+      # (chromium.override {
+      #   enableWideVine = true;
+      #   commandLineArgs = [
+      #     "--disable-gpu-memory-buffer-video-frames"
+      #     "--ozone-platform-hint=auto"
+      #   ];
+      # })
       # Workaround for log spam on video calls: https://issues.chromium.org/issues/331796411
       # (wavebox.override {
       #   commandLineArgs = [
@@ -134,6 +134,7 @@ in
       languagePacks = [
         "en-GB"
         "en-US"
+        "pt-BR"
       ];
       package = pkgs.firefox;
       preferences = {

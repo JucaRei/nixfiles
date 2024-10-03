@@ -1,9 +1,5 @@
-{ lib
-, pkgs
-, username
-, ...
-}:
+{ lib, pkgs, username, ... }:
 let
-  installFor = [ "juca" ];
+  installFor = [ "" ];
 in
 lib.mkIf (lib.elem username installFor) { environment.systemPackages = with pkgs; [ zoom-us ]; }
