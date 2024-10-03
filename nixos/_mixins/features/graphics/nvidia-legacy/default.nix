@@ -28,9 +28,9 @@ in
 
     services = {
       xserver = {
-        deviceSection = lib.mkDefault ''
-          Option "TearFree" "true"
-        '';
+        # deviceSection = lib.mkDefault ''
+        #   Option "TearFree" "true"
+        # '';
         # config = ''
         #   Section "Device"
         #     Identifier "Nvidia Card"
