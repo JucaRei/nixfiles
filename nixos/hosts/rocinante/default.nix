@@ -31,8 +31,8 @@ in
   config = {
     core.boot = {
       # boottype = mkForce "legacy";
-      plymouth = true;
-      silentBoot = true;
+      plymouth = mkForce false;
+      silentBoot = mkForce false;
     };
 
     desktops.features = {
@@ -46,10 +46,10 @@ in
       };
     };
 
-    hardware = {
-      # enableAllFirmware = true;
-      firmware = [ pkgs.b43Firmware_5_1_138 ];
-    };
+    # hardware = {
+    # enableAllFirmware = true;
+    # firmware = [ pkgs.b43Firmware_5_1_138 ];
+    # };
 
     boot = {
       initrd = {
