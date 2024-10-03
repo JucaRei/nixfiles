@@ -1,4 +1,4 @@
-{ username, pkgs, config, lib, isInstall, isWorkstation, username, ... }:
+{ username, pkgs, config, lib, isInstall, isWorkstation, ... }:
 let
   groot_text = ''
 
