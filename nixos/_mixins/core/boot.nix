@@ -41,7 +41,7 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ fwupd ]
-      ++ optionals (cfg.boottype == "efi") [
+      ++ optionals (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") [
       efibootmgr
       efitools
       efivar
@@ -150,7 +150,7 @@ in
       loader = {
         generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;
 
-        efi = mkIf (cfg.boottype == "efi") {
+        efi = mkIf (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") {
           canTouchEfiVariables = mkIf (cfg.boottype == "efi");
           efiSysMountPoint = mkDefault "/boot";
         };
@@ -158,7 +158,7 @@ in
 
         grub = mkIf (cfg.bootmanager == "grub") {
           enable = mkIf (cfg.bootmanager == "grub" && cfg.bootmanager != "raspberry") true;
-          efiSupport = if cfg.boottype == "efi" then true else false;
+          efiSupport = if (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") then true else false;
           # theme = mkDefault pkgs.catppuccin-grub;
           efiInstallAsRemovable = mkIf (cfg.boottype == "hybrid-legacy");
           default = "saved";
