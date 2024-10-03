@@ -15,7 +15,7 @@ in
     enable = mkEnableOption "Default booting type." //
       { default = false; };
     boottype = mkOption {
-      type = types.nullOr (types.enum [ "efi" "legacy" null ]);
+      type = types.nullOr (types.enum [ "efi" "legacy" "hybrid-legacy" null ]);
       default = null; # "efi";
       description = "Default boot option.";
     };
@@ -53,7 +53,7 @@ in
       initrd = {
         verbose = mkIf cfg.silentBoot;
         systemd = {
-          enable = if cfg.boottype == "efi" then true else false;
+          enable = if (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") then true else false;
         };
       };
 
@@ -151,7 +151,7 @@ in
         generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;
 
         efi = mkIf (cfg.boottype == "efi") {
-          # canTouchEfiVariables = mkDefault true;
+          canTouchEfiVariables = mkIf (cfg.boottype == "efi");
           efiSysMountPoint = mkDefault "/boot";
         };
         generationsDir.copyKernels = mkIf cfg.boottype == "efi";
@@ -160,11 +160,11 @@ in
           enable = mkIf (cfg.bootmanager == "grub" && cfg.bootmanager != "raspberry") true;
           efiSupport = if cfg.boottype == "efi" then true else false;
           # theme = mkDefault pkgs.catppuccin-grub;
-          efiInstallAsRemovable = mkDefault true;
+          efiInstallAsRemovable = mkIf (cfg.boottype == "hybrid-legacy");
           default = "saved";
           # devices = if cfg.boottype == "efi" then mkDefault [ "nodev" ] else mkDefault "/dev/sda";
           # device = if cfg.boottype == "efi" then "nodev" else "/dev/sda";
-          # device = if cfg.boottype == "efi" && cfg.bootmanager == "grub" then "nodev" else "/dev/sda";
+          device = if (cfg.boottype == "efi" && cfg.bootmanager == "grub" || cfg.boottype == "hybrid-legacy" && cfg.bootmanager == "grub") then "nodev" else "/dev/sda";
           fsIdentifier = "provided";
           gfxmodeEfi = "auto";
           fontSize = 20;

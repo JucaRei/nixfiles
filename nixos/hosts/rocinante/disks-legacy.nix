@@ -2,12 +2,8 @@
 #{ disks ? [ "/dev/sda" ], ... }:
 { ... }:
 let
-  defaultXfsOpts = [
-    "defaults"
-    "relatime"
-    "nodiratime"
-  ];
-  # defaultExt4Opts = [ "defaults" "noatime" "nodiratime" "commit=60" ];
+  #defaultXfsOpts = [ "defaults" "relatime" "nodiratime" ];
+  defaultExt4Opts = [ "defaults" "noatime" "nodiratime" "commit=60" ];
 in
 {
   #device = "/dev/sda";
@@ -81,16 +77,16 @@ in
           format = "msdos";
           partitions = [
             {
-              name = "nixroot";
+              name = "root";
               part-type = "primary";
               start = "1M";
               end = "100%";
               bootable = true;
               content = {
                 type = "filesystem";
-                format = "xfs";
+                format = "ext4";
                 mountpoint = "/";
-                mountOptions = defaultXfsOpts;
+                mountOptions = defaultExt4Opts;
               };
             }
           ];

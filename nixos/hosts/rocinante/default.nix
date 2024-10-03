@@ -9,7 +9,7 @@ in
     #inputs.nixos-hardware.nixosModules.common-cpu-intel
     #inputs.nixos-hardware.nixosModules.common-pc-laptop
     #inputs.nixos-hardware.nixosModules.common-pc-ssd
-    (import ./disks2.nix { })
+    (import ./disks.nix { })
     # ../../_mixins/hardware/graphics/nvidia-legacy.nix
     # ../../_mixins/services/security/sudo.nix
   ];
@@ -30,7 +30,7 @@ in
 
   config = {
     core.boot = {
-      # boottype = mkForce "legacy";
+      boottype = mkForce "legacy";
       plymouth = mkForce false;
       silentBoot = mkForce false;
     };
