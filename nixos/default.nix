@@ -17,7 +17,6 @@ in
     ./_mixins/configs
     ./_mixins/core
     ./_mixins/features
-    ./_mixins/scripts
     ./_mixins/services
     ./_mixins/users
   ] ++ optional isWorkstation ./_mixins/desktop;

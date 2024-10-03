@@ -1,8 +1,7 @@
-{
-  lib,
-  isInstall,
-  pkgs,
-  ...
+{ lib
+, isInstall
+, pkgs
+, ...
 }:
 {
   environment = {

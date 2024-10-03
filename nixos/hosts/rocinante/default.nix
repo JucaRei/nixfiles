@@ -46,10 +46,15 @@ in
       };
     };
 
-    # hardware = {
-    # enableAllFirmware = true;
-    # firmware = [ pkgs.b43Firmware_5_1_138 ];
-    # };
+    hardware = {
+      enableAllFirmware = true;
+      # firmware = [ pkgs.b43Firmware_5_1_138 ];
+
+      opengl = {
+        driSupport = true;
+        driSupport32Bit = true;
+      };
+    };
 
     boot = {
       initrd = {
@@ -71,20 +76,20 @@ in
         ];
       };
       # blacklist similar modules to avoid collision
-      blacklistedKernelModules = [
-        "b43"
-        "bcma"
-        "ssb"
-        "brcmfmac"
-        "brcmsmac"
-        "bcma"
-      ];
+      # blacklistedKernelModules = [
+      #   "b43"
+      #   "bcma"
+      #   "ssb"
+      #   "brcmfmac"
+      #   "brcmsmac"
+      #   "bcma"
+      # ];
       kernelModules = [
         # "kvm-intel"
         # "applesmc"
         "bcm5974" # touchpad
         # "b43"
-        "wl" # set of kernel modules loaded in second stage of boot process
+        # "wl" # set of kernel modules loaded in second stage of boot process
       ];
 
       extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];

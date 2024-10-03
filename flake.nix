@@ -180,7 +180,7 @@
         };
         rocinante = helper.mkNixos {
           hostname = "rocinante";
-          desktop = "pantheon";
+          desktop = "mate";
         };
         # Servers
         revan = helper.mkNixos { hostname = "revan"; };
