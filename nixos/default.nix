@@ -250,10 +250,11 @@ in
           IOWeight = 20;
         };
 
-        systemd-udev-settle.enable = lib.mkForce false;
+        NetworkManager-wait-online.enable = mkForce false;
+        systemd-udev-settle.enable = mkForce false;
       };
 
-      targets = lib.mkIf (hostname == "soyo") {
+      targets = mkIf (hostname == "soyo") {
         hibernate.enable = false;
         hybrid-sleep.enable = false;
       };
