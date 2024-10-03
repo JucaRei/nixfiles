@@ -157,6 +157,8 @@ in
       #intel-gpu-tools
       glxinfo
       inxi
+
+      cachix
     ];
 
     # networking.enableB43Firmware = true;
@@ -167,5 +169,16 @@ in
     powerManagement.cpuFreqGovernor = mkForce "performance";
 
     nixpkgs.hostPlatform = mkDefault "x86_64-linux";
+
+    nix.settings = {
+      substituters = [
+        "https://oldarch.cachix.org"
+      ];
+      trusted-public-keys = [
+        "oldarch.cachix.org-1:LockJVSaehQ+nEXQPR1tJR6TcnVRve19QVsusuEmKqA="
+      ];
+    };
   };
 }
+
+
