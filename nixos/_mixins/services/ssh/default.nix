@@ -1,6 +1,6 @@
 { isInstall, lib, pkgs, ... }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkDefault;
 in
 {
   environment = mkIf isInstall { systemPackages = with pkgs; [ ssh-to-age ]; };
@@ -13,8 +13,8 @@ in
       enable = true;
       openFirewall = true;
       settings = {
-        PasswordAuthentication = false;
-        PermitRootLogin = lib.mkDefault "no";
+        PasswordAuthentication = true;
+        PermitRootLogin = mkDefault "no";
       };
       ports = [ 22 ];
       startWhenNeeded = true;
