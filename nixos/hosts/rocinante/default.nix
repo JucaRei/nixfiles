@@ -31,8 +31,8 @@ in
   config = {
     core.boot = {
       boottype = mkForce "legacy";
-      plymouth = mkForce false;
-      silentBoot = mkForce false;
+      plymouth = mkForce true;
+      silentBoot = mkForce true;
     };
 
     desktops.features = {

@@ -26,7 +26,7 @@ in
     };
     superUser = mkOption {
       type = types.enum [ "sudo" "doas" ];
-      default = "doas";
+      default = "sudo";
       description = "Select the default super user security privileges tool.";
     };
   };
