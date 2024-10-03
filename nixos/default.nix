@@ -104,7 +104,7 @@ in
         ];
 
       variables = {
-        EDITOR = mkDefault "micro";
+        EDITOR = "micro";
         SYSTEMD_EDITOR = "micro";
         VISUAL = "micro";
       };
