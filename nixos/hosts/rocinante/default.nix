@@ -76,20 +76,20 @@ in
         ];
       };
       # blacklist similar modules to avoid collision
-      # blacklistedKernelModules = [
-      #   "b43"
-      #   "bcma"
-      #   "ssb"
-      #   "brcmfmac"
-      #   "brcmsmac"
-      #   "bcma"
-      # ];
+      blacklistedKernelModules = [
+        "b43"
+        "bcma"
+        "ssb"
+        "brcmfmac"
+        "brcmsmac"
+        "bcma"
+      ];
       kernelModules = [
         # "kvm-intel"
         # "applesmc"
         "bcm5974" # touchpad
         # "b43"
-        # "wl" # set of kernel modules loaded in second stage of boot process
+        "wl" # set of kernel modules loaded in second stage of boot process
       ];
 
       extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
@@ -112,7 +112,8 @@ in
       kernelParams = [
         "intel_idle.max_cstate=1"
         "acpi_backlight=vendor"
-        # "acpi_mask_gpe=0x15"
+        "net.ifnames=0"
+        "acpi_mask_gpe=0x15"
       ];
       loader.grub = {
         gfxpayloadBios = "1920x1200";
