@@ -95,7 +95,7 @@ in
             }
             {
               name = "nixswap";
-              start = "-6GiB";
+              start = "-6G";
               end = "100%";
               content = {
                 type = "swap";
