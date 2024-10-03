@@ -162,7 +162,10 @@ in
         (pkgs.writeScriptBin "sudo" ''doas "$@"'')
       ];
 
-      shellAliases = mkIf (cfg.superUser == "doas") { };
+      # shellAliases = mkIf (cfg.superUser == "doas") {
+      #   sudo = "doas -u";
+      #   sudo = "doas $@";
+      # };
 
       etc = mkIf (cfg.superUser == "sudo") {
         "sudoers.d/00-lecture.txt".source = pkgs.stdenv.mkDerivation {
