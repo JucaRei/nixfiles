@@ -163,7 +163,7 @@ in
       # ];
 
       shellAliases = mkIf (cfg.superUser == "doas") {
-        #   sudo = "doas -u";
+        sudo = "doas -u";
         #   sudo = "doas $@";
       };
 
