@@ -51,7 +51,7 @@ in
     boot = {
       consoleLogLevel = 0;
       initrd = {
-        verbose = mkIf cfg.silentBoot;
+        verbose = if (cfg.silentBoot == true) then true else false;
         systemd = {
           enable = if (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") then true else false;
         };
@@ -160,7 +160,7 @@ in
           enable = mkIf (cfg.bootmanager == "grub" && cfg.bootmanager != "raspberry") true;
           efiSupport = if (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") then true else false;
           # theme = mkDefault pkgs.catppuccin-grub;
-          efiInstallAsRemovable = mkIf (cfg.boottype == "hybrid-legacy");
+          efiInstallAsRemovable = if (cfg.boottype != "legacy") then true else false;
           default = "saved";
           # devices = if cfg.boottype == "efi" then mkDefault [ "nodev" ] else mkDefault "/dev/sda";
           # device = if cfg.boottype == "efi" then "nodev" else "/dev/sda";

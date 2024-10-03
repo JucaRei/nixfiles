@@ -51,6 +51,11 @@ in
         doctypes = [ "man" ];
       };
 
+      security = {
+        enable = mkDefault true;
+        superUser = "doas";
+      };
+
       optimizations = {
         enable = isInstall;
         selected = [
@@ -99,7 +104,7 @@ in
         ];
 
       variables = {
-        EDITOR = "micro";
+        EDITOR = mkDefault "micro";
         SYSTEMD_EDITOR = "micro";
         VISUAL = "micro";
       };

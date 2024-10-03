@@ -7,5 +7,6 @@ _: {
     ./optimizations.nix
     ./locales.nix
     ./scripts.nix
+    ./security.nix
   ];
 }
