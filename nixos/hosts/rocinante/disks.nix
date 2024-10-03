@@ -84,13 +84,22 @@ in
               name = "nixroot";
               part-type = "primary";
               start = "1M";
-              end = "100%";
+              end = "-6G";
               bootable = true;
               content = {
                 type = "filesystem";
                 format = "xfs";
                 mountpoint = "/";
                 mountOptions = defaultXfsOpts;
+              };
+            }
+            {
+              name = "nixswap";
+              start = "-6GiB";
+              end = "100%";
+              content = {
+                type = "swap";
+                resumeDevice = true;
               };
             }
           ];
