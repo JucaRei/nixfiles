@@ -1,6 +1,6 @@
 { config, hostname, isInstall, isWorkstation, inputs, lib, modulesPath, outputs, pkgs, platform, stateVersion, username, ... }:
 let
-  inherit (lib) mkIf mkDefault optional;
+  inherit (lib) mkIf mkForce mkDefault optional;
 in
 {
   imports = [
@@ -199,6 +199,11 @@ in
     services = {
       hardware.bolt.enable = true;
       smartd.enable = isInstall;
+
+      dbus = {
+        # packages = optional isWorkstation [ pkgs.gnome-keyring pkgs.gcr ];
+        implementation = if isWorkstation then "broker" else "dbus";
+      };
     };
 
     sops = lib.mkIf (isInstall && username == "teste") {
@@ -213,11 +218,64 @@ in
       };
     };
 
-    systemd.tmpfiles.rules = [ "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" ];
+    systemd = {
+      tmpfiles.rules = [ "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" ];
+
+      user.extraConfig = ''
+        DefaultCPUAccounting=yes
+        DefaultMemoryAccounting=yes
+        DefaultIOAccounting=yes
+      '';
+
+      extraConfig = ''
+        DefaultTimeoutStartSec=8s
+        DefaultTimeoutStopSec=10s
+        DefaultDeviceTimeoutSec=8s
+        DefaultTimeoutAbortSec=10s
+
+        DefaultCPUAccounting=yes
+        DefaultMemoryAccounting=yes
+        DefaultIOAccounting=yes
+      '';
+
+      services = {
+        "user@".serviceConfig.Delegate = true;
+
+        nix-gc = {
+          unitConfig.ConditionACPower = true; ### Nix gc when powered
+        };
+
+        nix-daemon.serviceConfig = {
+          CPUWeight = 20;
+          IOWeight = 20;
+        };
+
+        systemd-udev-settle.enable = lib.mkForce false;
+      };
+
+      targets = lib.mkIf (hostname == "soyo") {
+        hibernate.enable = false;
+        hybrid-sleep.enable = false;
+      };
+
+      # enable cgroups=v2 as default
+      enableUnifiedCgroupHierarchy = mkForce isInstall;
+    };
 
     system = {
       nixos.label = lib.mkIf isInstall "-";
       inherit stateVersion;
+
+      activationScripts.report-changes = ''
+        PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}
+        nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
+        mkdir -p /var/log/activations
+        _nvddate=$(date +'%Y%m%d%H%M%S')
+        nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
+        if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
+          rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
+        fi
+      '';
     };
   };
 }
