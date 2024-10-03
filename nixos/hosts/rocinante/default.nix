@@ -99,7 +99,7 @@ in
       #   }))
       # ];
 
-      kernelPackages = mkForce pkgs.linuxPackages_6_2;
+      kernelPackages = mkForce pkgs.linuxPackages_6_6;
       # kernelPackages = mkDefault pkgs.linuxPackages_5_4;
       # kernelPackages = mkDefault pkgs.linuxPackages_xanmod_stable;
       # kernelPackages = mkDefault pkgs.linuxPackages_5_15;
