@@ -50,10 +50,10 @@ in
       enableAllFirmware = true;
       # firmware = [ pkgs.b43Firmware_5_1_138 ];
 
-      opengl = {
-        driSupport = true;
-        driSupport32Bit = true;
-      };
+      # opengl = {
+      #   driSupport = true;
+      #   driSupport32Bit = true;
+      # };
     };
 
     boot = {
@@ -113,10 +113,10 @@ in
         "intel_idle.max_cstate=1"
         "acpi_backlight=vendor"
         "net.ifnames=0"
-        "acpi_mask_gpe=0x15"
+        # "acpi_mask_gpe=0x15"
       ];
       loader.grub = {
-        gfxpayloadBios = "1920x1200";
+        gfxpayloadBios = mkForce "1920x1200";
         copyKernels = true;
         # theme = pkgs.cyberre-grub-theme;
         device = "/dev/sda";
