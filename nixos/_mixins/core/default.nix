@@ -6,5 +6,6 @@ _: {
     ./network.nix
     ./optimizations.nix
     ./locales.nix
+    ./scripts.nix
   ];
 }
