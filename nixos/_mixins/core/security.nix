@@ -157,15 +157,15 @@ in
       };
     };
     environment = {
-      systemPackages = mkIf (cfg.superUser == "doas") [
-        # (pkgs.writeScriptBin "sudo" ''exec doas "$@"'')
-        (pkgs.writeScriptBin "sudo" ''doas "$@"'')
-      ];
+      # systemPackages = mkIf (cfg.superUser == "doas") [
+      # (pkgs.writeScriptBin "sudo" ''exec doas "$@"'')
+      # (pkgs.writeScriptBin "sudo" ''doas "$@"'')
+      # ];
 
-      # shellAliases = mkIf (cfg.superUser == "doas") {
-      #   sudo = "doas -u";
-      #   sudo = "doas $@";
-      # };
+      shellAliases = mkIf (cfg.superUser == "doas") {
+        #   sudo = "doas -u";
+        #   sudo = "doas $@";
+      };
 
       etc = mkIf (cfg.superUser == "sudo") {
         "sudoers.d/00-lecture.txt".source = pkgs.stdenv.mkDerivation {
