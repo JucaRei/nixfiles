@@ -15,7 +15,8 @@
       duf # check space
       nixpkgs-fmt # formatter
       git # versioning
-      nix-output-monitor # better output from builds
+      # nix-output-monitor # better output from builds
+      nh
       dropbear # ssh
     ];
 

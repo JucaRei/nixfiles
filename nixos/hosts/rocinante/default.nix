@@ -10,6 +10,7 @@ in
     #inputs.nixos-hardware.nixosModules.common-pc-laptop
     #inputs.nixos-hardware.nixosModules.common-pc-ssd
     (import ./disks.nix { })
+    inputs.vscode-server.nixosModules.default
     # ../../_mixins/hardware/graphics/nvidia-legacy.nix
     # ../../_mixins/services/security/sudo.nix
   ];
@@ -127,10 +128,15 @@ in
     };
 
     services = {
+      vscode-server = {
+      	enable = true;
+      };
+    
       mbpfan = {
         enable = true;
         aggressive = true;
       };
+      
       xserver = {
         libinput = {
           enable = mkForce false;
@@ -141,6 +147,7 @@ in
             tappingDragLock = false;
           };
         };
+        
         synaptics = {
           enable = mkDefault true;
           twoFingerScroll = true;

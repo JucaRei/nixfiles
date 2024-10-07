@@ -34,6 +34,9 @@
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
     nix-vscode-extensions.inputs.nixpkgs.follows = "nixpkgs";
 
+	vscode-server.url = "github:nix-community/nixos-vscode-server";
+    vscode-server.inputs.nixpkgs.follows = "nixpkgs";
+
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -207,6 +210,18 @@
           platform = "x86_64-darwin";
         };
       };
+
+      # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
+      devShells = helper.forAllSystems (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        import ./shell.nix {
+          inherit pkgs;
+          # node = pkgs.callPackage ./shells/node { };
+        }
+      );
+
       # Custom packages and modifications, exported as overlays
       overlays = import ./overlays { inherit inputs; };
       # Custom packages; acessible via 'nix build', 'nix shell', etc
