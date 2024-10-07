@@ -182,7 +182,7 @@ in
           nano = "micro";
         };
       };
-      nano.enable = import ../resources/nixos/scripts/nano.nix { inherit pkgs config lib; };
+      nano = import ../resources/nixos/scripts/nano.nix { inherit pkgs config lib; };
       nh = {
         clean = {
           enable = true;
