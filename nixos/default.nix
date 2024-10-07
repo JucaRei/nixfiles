@@ -53,7 +53,7 @@ in
 
       security = {
         enable = mkDefault true;
-        superUser = "doas";
+        superUser = "sudo";
       };
 
       optimizations = {
