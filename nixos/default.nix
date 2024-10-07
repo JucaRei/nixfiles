@@ -182,7 +182,7 @@ in
           nano = "micro";
         };
       };
-      nano.enable = lib.mkDefault false;
+      nano.enable = import ../resources/nixos/scripts/nano.nix { inherit pkgs config lib; };
       nh = {
         clean = {
           enable = true;
@@ -208,6 +208,33 @@ in
       dbus = {
         # packages = optional isWorkstation [ pkgs.gnome-keyring pkgs.gcr ];
         implementation = if isWorkstation then "broker" else "dbus";
+      };
+
+      chrony = {
+        # if time is wrong:
+        # 1/ systemctl stop chronyd.service
+        # 2/ "sudo chronyd -q 'pool pool.ntp.org iburst'"
+        enable = true;
+
+        # to correct big errors on startup
+        initstepslew = {
+          enabled = true;
+          threshold = 100;
+        };
+
+        # we allow chrony to make big changes at
+        # see https://chrony.tuxfamily.org/faq.html#_is_chronyd_allowed_to_step_the_system_clock
+        extraConfig = ''
+          makestep 1 -1
+        '';
+        servers = [
+          "time.cloudflare.com"
+          "time.google.com"
+          "0.pool.ntp.org"
+          "1.pool.ntp.org"
+          "2.pool.ntp.org"
+          "3.pool.ntp.org"
+        ];
       };
     };
 
