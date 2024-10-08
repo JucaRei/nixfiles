@@ -121,7 +121,8 @@ in
       thorium
 
       cachix
-      icloudpd # iCloud Photos Downloader,
+      icloudpd # iCloud Photos Downloader
+      vscode-fhs
     ];
 
     networking.enableB43Firmware = true;
