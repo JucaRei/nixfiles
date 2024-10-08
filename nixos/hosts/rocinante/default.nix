@@ -6,28 +6,9 @@ let
 in
 {
   imports = [
-    #inputs.nixos-hardware.nixosModules.common-cpu-intel
-    #inputs.nixos-hardware.nixosModules.common-pc-laptop
-    #inputs.nixos-hardware.nixosModules.common-pc-ssd
     (import ./disks.nix { })
     inputs.vscode-server.nixosModules.default
-    # ../../_mixins/hardware/graphics/nvidia-legacy.nix
-    # ../../_mixins/services/security/sudo.nix
   ];
-
-  ## disko does manage mounting of / /boot /home, but I want to mount by-partlabel
-  #fileSystems."/" = lib.mkForce {
-  #  device = "/dev/disk/by-label/NIXOS";
-  #  fsType = "xfs";
-  #  options = [ "defaults" "noatime" "nodiratime" ];
-  #};
-
-  # swapDevices = [
-  #   {
-  #     device = "/swap";
-  #     size = 2048;
-  #   }
-  # ];
 
   config = {
     core.boot = {
@@ -84,13 +65,14 @@ in
         "brcmfmac"
         "brcmsmac"
         "bcma"
+        # "wl"
       ];
       kernelModules = [
         # "kvm-intel"
         # "applesmc"
+        "b43"
+        # "wl" # set of kernel modules loaded in second stage of boot process
         "bcm5974" # touchpad
-        # "b43"
-        "wl" # set of kernel modules loaded in second stage of boot process
       ];
 
       extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
@@ -106,9 +88,6 @@ in
       # ];
 
       kernelPackages = mkForce pkgs.linuxPackages_6_6;
-      # kernelPackages = mkDefault pkgs.linuxPackages_5_4;
-      # kernelPackages = mkDefault pkgs.linuxPackages_xanmod_stable;
-      # kernelPackages = mkDefault pkgs.linuxPackages_5_15;
       #kernelParams = [ "intel_idle.max_cstate=1" "hid_apple.iso_layout=0" "acpi_backlight=vendor" "acpi_mask_gpe=0x15" ];
       kernelParams = [
         "intel_idle.max_cstate=1"
@@ -129,25 +108,25 @@ in
 
     services = {
       vscode-server = {
-      	enable = true;
+        enable = true;
       };
-    
+
       mbpfan = {
         enable = true;
         aggressive = true;
       };
-      
-      xserver = {
-        libinput = {
-          enable = mkForce false;
-          touchpad = {
-            horizontalScrolling = true;
-            naturalScrolling = false;
-            tapping = true;
-            tappingDragLock = false;
-          };
+
+      libinput = {
+        enable = mkForce false;
+        touchpad = {
+          horizontalScrolling = true;
+          naturalScrolling = false;
+          tapping = true;
+          tappingDragLock = false;
         };
-        
+      };
+
+      xserver = {
         synaptics = {
           enable = mkDefault true;
           twoFingerScroll = true;
@@ -159,16 +138,15 @@ in
     };
 
     environment.systemPackages = with pkgs; [
-      # xorg.xbacklight
       xorg.xrdb
-      #intel-gpu-tools
       glxinfo
       inxi
 
       cachix
+      icloudpd # iCloud Photos Downloader
     ];
 
-    # networking.enableB43Firmware = true;
+    networking.enableB43Firmware = true;
 
     # ens5
     # wlp0s26f7u4

@@ -10,8 +10,10 @@ pkgs: {
   cloneit = pkgs.callPackage ./tools/cloneit { };
   image-colorizer = pkgs.callPackage ./tools/image-colorizer { };
   vv = pkgs.callPackage ./tools/vv { };
-  headscale-ui = pkgs.callPackage ./tools/headscale-ui { };
   ladder = pkgs.callPackage ./tools/ladder { };
+
+  # Browser front-end
+  headscale-ui = pkgs.callPackage ./tools/headscale-ui { };
   vuetorrent-ui = pkgs.callPackage ./tools/vuetorrent-ui { };
 
   # Local fonts
