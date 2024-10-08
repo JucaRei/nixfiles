@@ -1,31 +1,18 @@
 # Custom packages, that can be defined similarly to ones from nixpkgs
 # You can build them using 'nix build .#example'
 pkgs: {
-  # TODO upgrade-hint; Remove when upgrading to 24.11
-  catppuccin-gtk = pkgs.callPackage ./catppuccin-gtk { };
-  cpu-x = pkgs.callPackage ./cpu-x { };
-  davinci-resolve = pkgs.callPackage ./davinci-resolve { };
-  gitkraken = pkgs.callPackage ./gitkraken { };
-  joplin-desktop = pkgs.callPackage ./joplin-desktop { };
-  lima-bin = pkgs.callPackage ./lima-bin { };
-  monitorets = pkgs.callPackage ./monitorets { };
-  waybar = pkgs.callPackage ./waybar { };
-  zoom-us = pkgs.callPackage ./zoom-us { };
-  libcef = pkgs.callPackage ./libcef { };
+  # Browser
+  thorium = pkgs.callPackage ./desktop/thorium { };
 
-  # Local packages being prepped for upstreaming
-  defold = pkgs.callPackage ./defold { };
-  defold-bob = pkgs.callPackage ./defold-bob { };
-  defold-gdc = pkgs.callPackage ./defold-gdc { };
-  heynote = pkgs.callPackage ./heynote { };
-  jan = pkgs.callPackage ./jan { };
-  nerd-font-patcher = pkgs.callPackage ./nerd-font-patcher { };
-  obs-studio = pkgs.qt6Packages.callPackage ./obs-studio { };
-  obs-studio-plugins = pkgs.recurseIntoAttrs (pkgs.callPackage ./obs-studio/plugins { });
-
-  # Non-redistributable packages
-  cider = pkgs.callPackage ./cider { };
-  pico8 = pkgs.callPackage ./pico8 { };
+  # Tools
+  heynote = pkgs.callPackage ./desktop/tools/heynote { };
+  advmvcp = pkgs.callPackage ./tools/advmvcp { };
+  cloneit = pkgs.callPackage ./tools/cloneit { };
+  image-colorizer = pkgs.callPackage ./tools/image-colorizer { };
+  vv = pkgs.callPackage ./tools/vv { };
+  headscale-ui = pkgs.callPackage ./tools/headscale-ui { };
+  ladder = pkgs.callPackage ./tools/ladder { };
+  vuetorrent-ui = pkgs.callPackage ./tools/vuetorrent-ui { };
 
   # Local fonts
   # - https://yildiz.dev/posts/packing-custom-fonts-for-nixos/
