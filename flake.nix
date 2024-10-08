@@ -34,7 +34,7 @@
     nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
     nix-vscode-extensions.inputs.nixpkgs.follows = "nixpkgs";
 
-	vscode-server.url = "github:nix-community/nixos-vscode-server";
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
     vscode-server.inputs.nixpkgs.follows = "nixpkgs";
 
     sops-nix.url = "github:Mic92/sops-nix";
@@ -76,139 +76,60 @@
       helper = import ./lib { inherit inputs outputs stateVersion; };
     in
     {
-      # home-manager switch -b backup --flake $HOME/Zero/nix-config
-      # nix run nixpkgs#home-manager -- switch -b backup --flake "${HOME}/Zero/nix-config"
+      # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
+      # nix run nixpkgs#home-manager -- switch -b backup --flake "${HOME}/.dotfiles/nixfiles"
       homeConfigurations = {
         # .iso images
-        "nixos@iso-console" = helper.mkHome {
-          hostname = "iso-console";
-          username = "nixos";
-        };
-        "nixos@iso-gnome" = helper.mkHome {
-          hostname = "iso-gnome";
-          username = "nixos";
-          desktop = "gnome";
-        };
-        "nixos@iso-mate" = helper.mkHome {
-          hostname = "iso-mate";
-          username = "nixos";
-          desktop = "mate";
-        };
-        "nixos@iso-pantheon" = helper.mkHome {
-          hostname = "iso-pantheon";
-          username = "nixos";
-          desktop = "pantheon";
-        };
+        "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
+        "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+        "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
-        "juca@phasma" = helper.mkHome {
-          hostname = "phasma";
-          desktop = "hyprland";
-        };
-        "juca@vader" = helper.mkHome {
-          hostname = "vader";
-          desktop = "hyprland";
-        };
-        "juca@shaa" = helper.mkHome {
-          hostname = "shaa";
-          desktop = "hyprland";
-        };
-        "juca@tanis" = helper.mkHome {
-          hostname = "tanis";
-          desktop = "hyprland";
-        };
-        "juca@momin" = helper.mkHome {
-          hostname = "momin";
-          platform = "aarch64-darwin";
-          desktop = "aqua";
-        };
-        "juca@krall" = helper.mkHome {
-          hostname = "krall";
-          platform = "x86_64-darwin";
-          desktop = "aqua";
-        };
+        "juca@phasma" = helper.mkHome { hostname = "phasma"; desktop = "hyprland"; };
+        "juca@vader" = helper.mkHome { hostname = "vader"; desktop = "hyprland"; };
+        "juca@shaa" = helper.mkHome { hostname = "shaa"; desktop = "hyprland"; };
+        "juca@tanis" = helper.mkHome { hostname = "tanis"; desktop = "hyprland"; };
+        "juca@momin" = helper.mkHome { hostname = "momin"; platform = "aarch64-darwin"; desktop = "aqua"; };
+        "juca@krall" = helper.mkHome { hostname = "krall"; platform = "x86_64-darwin"; desktop = "aqua"; };
         # palpatine/sidious are dual boot hosts, WSL2/Ubuntu and NixOS respectively.
         "juca@palpatine" = helper.mkHome { hostname = "palpatine"; };
-        "juca@sidious" = helper.mkHome {
-          hostname = "sidious";
-          desktop = "gnome";
-        };
+        "juca@sidious" = helper.mkHome { hostname = "sidious"; desktop = "gnome"; };
         # Servers
         "juca@revan" = helper.mkHome { hostname = "revan"; };
         # Steam Deck
-        "deck@steamdeck" = helper.mkHome {
-          hostname = "steamdeck";
-          username = "deck";
-        };
+        "deck@steamdeck" = helper.mkHome { hostname = "steamdeck"; username = "deck"; };
         # VMs
         "juca@grozbok" = helper.mkHome { hostname = "grozbok"; };
         "juca@zeta" = helper.mkHome { hostname = "zeta"; };
         "juca@minimech" = helper.mkHome { hostname = "minimech"; };
-        "juca@scrubber" = helper.mkHome {
-          hostname = "scrubber";
-          desktop = "pantheon";
-        };
+        "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "pantheon"; };
       };
       nixosConfigurations = {
         # .iso images
         #  - nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
-        iso-console = helper.mkNixos {
-          hostname = "iso-console";
-          username = "nixos";
-        };
-        iso-gnome = helper.mkNixos {
-          hostname = "iso-gnome";
-          username = "nixos";
-          desktop = "gnome";
-        };
-        iso-mate = helper.mkNixos {
-          hostname = "iso-mate";
-          username = "nixos";
-          desktop = "mate";
-        };
-        iso-pantheon = helper.mkNixos {
-          hostname = "iso-pantheon";
-          username = "nixos";
-          desktop = "pantheon";
-        };
+        iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
+        iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+        iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
-        #  - sudo nixos-rebuild boot --flake $HOME/Zero/nix-config
-        #  - sudo nixos-rebuild switch --flake $HOME/Zero/nix-config
+        #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
+        #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
         #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
-        phasma = helper.mkNixos {
-          hostname = "phasma";
-          desktop = "hyprland";
-        };
-        tanis = helper.mkNixos {
-          hostname = "tanis";
-          desktop = "hyprland";
-        };
-        sidious = helper.mkNixos {
-          hostname = "sidious";
-          desktop = "gnome";
-        };
-        rocinante = helper.mkNixos {
-          hostname = "rocinante";
-          desktop = "mate";
-        };
+        phasma = helper.mkNixos { hostname = "phasma"; desktop = "hyprland"; };
+        tanis = helper.mkNixos { hostname = "tanis"; desktop = "hyprland"; };
+        sidious = helper.mkNixos { hostname = "sidious"; desktop = "gnome"; };
+        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "mate"; };
         # Servers
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs
         minimech = helper.mkNixos { hostname = "minimech"; };
-        scrubber = helper.mkNixos {
-          hostname = "scrubber";
-          desktop = "pantheon";
-        };
+        scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "pantheon"; };
       };
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
       #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
       darwinConfigurations = {
-        momin = helper.mkDarwin {
-          hostname = "momin";
-        };
-        krall = helper.mkDarwin {
-          hostname = "krall";
-          platform = "x86_64-darwin";
-        };
+        momin = helper.mkDarwin { hostname = "momin"; };
+        krall = helper.mkDarwin { hostname = "krall"; platform = "x86_64-darwin"; };
       };
 
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
