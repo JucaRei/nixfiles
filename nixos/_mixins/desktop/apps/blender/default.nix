@@ -1,25 +1,22 @@
-{
-  config,
-  hostname,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, hostname, lib, pkgs, ... }:
 let
-  installOn = [
-    "phasma"
-    "sidious"
-    "tanis"
-    "vader"
-  ];
+  inherit (lib) mkIf mkEnableOption;
   hasCUDA = lib.elem "cudaPackages.cudatoolkit" config.environment.systemPackages;
   hasOpenCL = config.hardware.amdgpu.opencl.enable;
+  cfg = config.desktop.apps.blender;
 in
-lib.mkIf (lib.elem hostname installOn) {
-  environment.systemPackages = with pkgs; [
-    (blender.override {
-      cudaSupport = hasCUDA;
-      hipSupport = hasOpenCL;
-    })
-  ];
+{
+  options = {
+    desktop.apps.blender = {
+      enable = mkEnableOption "Install blender.";
+    };
+  };
+  config = mkIf cfg.enable {
+    environment.systemPackages = with pkgs; [
+      (blender.override {
+        cudaSupport = hasCUDA;
+        hipSupport = hasOpenCL;
+      })
+    ];
+  };
 }
