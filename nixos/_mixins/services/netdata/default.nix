@@ -20,8 +20,8 @@ lib.mkIf (lib.elem config.networking.hostName installOn) {
       enable = true;
       enableAnalyticsReporting = false;
       package = pkgs.netdata;
-    };
+    };linuxPackages_latest
   };
   # Enable the Nvidia plugin for Netdata if an Nvidia GPU is present
-  systemd.services.netdata.path = lib.optionals hasNvidiaGPU [ pkgs.linuxPackages_latest.nvidia_x11 ];
+  systemd.services.netdata.path = lib.optionals hasNvidiaGPU [ pkgs..nvidia_x11 ];
 }

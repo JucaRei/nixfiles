@@ -1,11 +1,12 @@
 { config, hostname, lib, pkgs, ... }:
 let
-  wlogoutMargins = if hostname == "vader" then
-    "--margin-top 960 --margin-bottom 960"
-  else if hostname == "phasma" then
-    "--margin-left 540 --margin-right 540"
-  else
-    "";
+  wlogoutMargins =
+    if hostname == "vader" then
+      "--margin-top 960 --margin-bottom 960"
+    else if hostname == "phasma" then
+      "--margin-left 540 --margin-right 540"
+    else
+      "";
   outputDisplay = if (hostname == "vader" || hostname == "phasma") then "DP-1" else "eDP-1";
   bluetoothToggle = pkgs.writeShellApplication {
     name = "bluetooth-toggle";
@@ -351,58 +352,68 @@ in
             };
             persistent-workspaces = {
               # https://github.com/Alexays/Waybar/wiki/Module:-Hyprland#persistent-workspaces
-              "1" = if (hostname == "phasma" || hostname == "vader") then
-                      [ "DP-1" ]
-                    else
-                      [ "eDP-1" ];
-              "2" = if (hostname == "phasma" || hostname == "vader") then
-                      [ "DP-1" ]
-                    else
-                      [ "eDP-1" ];
-              "3" = if (hostname == "phasma") then
-                      [ "DP-1" ]
-                    else if (hostname == "vader") then
-                      [ "DP-2" ]
-                    else
-                      [ "eDP-1" ];
-              "4" = if (hostname == "phasma") then
-                      [ "DP-1" ]
-                    else if (hostname == "vader") then
-                      [ "DP-2" ]
-                    else
-                      [ "eDP-1" ];
-              "5" = if (hostname == "phasma") then
-                      [ "DP-1" ]
-                    else if (hostname == "vader") then
-                      [ "DP-2" ]
-                    else
-                      [ "eDP-1" ];
-              "6" = if (hostname == "phasma") then
-                      [ "DP-1" ]
-                    else if (hostname == "vader") then
-                      [ "DP-2" ]
-                    else
-                      [ "eDP-1" ];
-              "7" = if (hostname == "phasma" || hostname == "vader") then
-                      [ "DP-1" ]
-                    else
-                      [ "eDP-1" ];
-              "8" = if (hostname == "phasma" || hostname == "vader") then
-                      [ "DP-1" ]
-                    else
-                      [ "eDP-1" ];
-              "9" = if (hostname == "phasma") then
-                      [ "HDMI-A-1" ]
-                    else if (hostname == "vader") then
-                      [ "DP-2" ]
-                    else
-                      [ "*" ];
-              "10" = if (hostname == "phasma") then
-                      [ "DP-2" ]
-                    else if (hostname == "vader") then
-                      [ "DP-3" ]
-                    else
-                      [ "*" ];
+              "1" =
+                if (hostname == "phasma" || hostname == "vader") then
+                  [ "DP-1" ]
+                else
+                  [ "eDP-1" ];
+              "2" =
+                if (hostname == "phasma" || hostname == "vader") then
+                  [ "DP-1" ]
+                else
+                  [ "eDP-1" ];
+              "3" =
+                if (hostname == "phasma") then
+                  [ "DP-1" ]
+                else if (hostname == "vader") then
+                  [ "DP-2" ]
+                else
+                  [ "eDP-1" ];
+              "4" =
+                if (hostname == "phasma") then
+                  [ "DP-1" ]
+                else if (hostname == "vader") then
+                  [ "DP-2" ]
+                else
+                  [ "eDP-1" ];
+              "5" =
+                if (hostname == "phasma") then
+                  [ "DP-1" ]
+                else if (hostname == "vader") then
+                  [ "DP-2" ]
+                else
+                  [ "eDP-1" ];
+              "6" =
+                if (hostname == "phasma") then
+                  [ "DP-1" ]
+                else if (hostname == "vader") then
+                  [ "DP-2" ]
+                else
+                  [ "eDP-1" ];
+              "7" =
+                if (hostname == "phasma" || hostname == "vader") then
+                  [ "DP-1" ]
+                else
+                  [ "eDP-1" ];
+              "8" =
+                if (hostname == "phasma" || hostname == "vader") then
+                  [ "DP-1" ]
+                else
+                  [ "eDP-1" ];
+              "9" =
+                if (hostname == "phasma") then
+                  [ "HDMI-A-1" ]
+                else if (hostname == "vader") then
+                  [ "DP-2" ]
+                else
+                  [ "*" ];
+              "10" =
+                if (hostname == "phasma") then
+                  [ "DP-2" ]
+                else if (hostname == "vader") then
+                  [ "DP-3" ]
+                else
+                  [ "*" ];
             };
             on-click = "activate";
           };
@@ -444,7 +455,7 @@ in
             format = "<big>{:%H:%M}</big>";
             format-alt = "{:%a, %d %b %R}";
             interval = 60;
-            timezone = "Europe/London";
+            timezone = "America/Sao_Paulo";
             #timezones = [ "Europe/London" "Europe/Amsterdam" "America/Boston" "America/Los_Angeles" "Africa/Lagos" ];
             tooltip-format = "<tt><small>{calendar}</small></tt>";
           };

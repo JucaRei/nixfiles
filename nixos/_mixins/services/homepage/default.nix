@@ -1,10 +1,4 @@
-{
-  config,
-  hostname,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, hostname, lib, pkgs, ... }:
 let
   installOn = [
     "phasma"
@@ -384,9 +378,9 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
         {
           openmeteo = {
             label = "Weather";
-            latitude = "51.254383";
-            longitude = "-0.939525";
-            timezone = "Europe/London";
+            latitude = -23.55052;
+            longitude = -46.633308;
+            timezone = "America/Sao_Paulo";
             units = "metric";
           };
         }
