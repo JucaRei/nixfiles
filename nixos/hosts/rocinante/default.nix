@@ -118,6 +118,8 @@ in
       inxi
       nixos-tweaker
 
+      thorium
+
       cachix
       icloudpd # iCloud Photos Downloader,
     ];

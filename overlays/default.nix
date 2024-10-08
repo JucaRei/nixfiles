@@ -55,6 +55,7 @@
     });
 
     nixos-tweaker = prev.nixos-tweaker;
+    thorium = prev.thorium;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
