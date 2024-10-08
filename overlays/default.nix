@@ -53,6 +53,8 @@
         sha256 = "sha256-eIiFiRlmnARtyd8YHUHrjDaaF8kQYvcOa2AwT3071Ho=";
       };
     });
+
+    nixos-tweaker = prev.nixos-tweaker;
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will

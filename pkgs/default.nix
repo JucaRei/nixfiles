@@ -1,6 +1,10 @@
 # Custom packages, that can be defined similarly to ones from nixpkgs
 # You can build them using 'nix build .#example'
+
 pkgs: {
+  # Images
+  juca-avatar = pkgs.callPackage ./desktop/avatar/juca-avatar { };
+
   # Browser
   thorium = pkgs.callPackage ./desktop/thorium { };
 
@@ -11,6 +15,8 @@ pkgs: {
   image-colorizer = pkgs.callPackage ./tools/image-colorizer { };
   vv = pkgs.callPackage ./tools/vv { };
   ladder = pkgs.callPackage ./tools/ladder { };
+  nixos-tweaker = pkgs.callPackage ./tools/nixos-tweaker { };
+  docker-compose-check = pkgs.callPackage ./tools/docker-compose-check { };
 
   # Browser front-end
   headscale-ui = pkgs.callPackage ./tools/headscale-ui { };

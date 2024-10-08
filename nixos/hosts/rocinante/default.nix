@@ -116,6 +116,7 @@ in
       xorg.xrdb
       glxinfo
       inxi
+      nixos-tweaker
 
       cachix
       icloudpd # iCloud Photos Downloader,
