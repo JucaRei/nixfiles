@@ -24,13 +24,13 @@ in
     features = {
       graphics = {
         enable = true;
-        gpu = "nvidia-legacy";
+        gpu = "nvidia-legacy"; # 340xx
       };
     };
 
     hardware = {
       firmware = [
-        pkgs.b43Firmware_6_30_163_46
+        pkgs.b43Firmware_6_30_163_46 # BCM4321 wifi
       ];
     };
 
