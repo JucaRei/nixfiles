@@ -5,7 +5,7 @@ let
 in
 {
   options = {
-    desktop.features.xdg = mkOption {
+    desktop.features.xdg = {
       enable = mkOption {
         default = false;
         type = types.bool;
