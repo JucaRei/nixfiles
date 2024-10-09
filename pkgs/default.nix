@@ -8,6 +8,24 @@ pkgs: {
   # Browser
   thorium = pkgs.callPackage ./desktop/thorium { };
 
+  # Desktop
+  nautilus-annotations = pkgs.callPackage ./desktop/gnome/nautilus/nautilus-annotations { };
+
+  # Grub
+  grub-catppuccin = pkgs.callPackage ./system/grub/grub-catppuccin { };
+  cyberre = pkgs.callPackage ./system/grub/cyberre { };
+
+  # Themes
+  breeze-hacked-cursor = pkgs.callPackage ./desktop/themes/pointers/breeze-hacked-cursor { };
+
+  # Display Managers
+  astronaut-sddm = pkgs.callPackage ./system/display-managers/sddm/astronaut-sddm { };
+  sddm-sugar-dark = pkgs.callPackage ./system/display-managers/sddm/sddm-sugar-dark { };
+
+  # Plymouth
+  plymouth-catppuccin = pkgs.callPackage ./system/plymouth/plymouth-catppuccin { };
+  plymouth-themes = pkgs.callPackage ./system/plymouth/plymouth-themes { };
+
   # Tools
   heynote = pkgs.callPackage ./desktop/tools/heynote { };
   advmvcp = pkgs.callPackage ./tools/advmvcp { };
@@ -24,6 +42,9 @@ pkgs: {
 
   # Local fonts
   # - https://yildiz.dev/posts/packing-custom-fonts-for-nixos/
+  abel = pkgs.callPackage ./fonts/abel { };
+  apple-fonts = pkgs.callPackage ./fonts/apple-fonts { };
+  bebasNeue = pkgs.callPackage ./fonts/bebasNeue { };
   bebas-neue-2014-font = pkgs.callPackage ./fonts/bebas-neue-2014-font { };
   bebas-neue-2018-font = pkgs.callPackage ./fonts/bebas-neue-2018-font { };
   bebas-neue-pro-font = pkgs.callPackage ./fonts/bebas-neue-pro-font { };
@@ -33,11 +54,19 @@ pkgs: {
   commodore-64-pixelized-font = pkgs.callPackage ./fonts/commodore-64-pixelized-font { };
   digital-7-font = pkgs.callPackage ./fonts/digital-7-font { };
   dirty-ego-font = pkgs.callPackage ./fonts/dirty-ego-font { };
+  fantezy-font = pkgs.callPackage ./fonts/fantezy-font { };
+  feather = pkgs.callPackage ./fonts/feather { };
   fixedsys-core-font = pkgs.callPackage ./fonts/fixedsys-core-font { };
   fixedsys-excelsior-font = pkgs.callPackage ./fonts/fixedsys-excelsior-font { };
   impact-label-font = pkgs.callPackage ./fonts/impact-label-font { };
   mocha-mattari-font = pkgs.callPackage ./fonts/mocha-mattari-font { };
+  monaco = pkgs.callPackage ./fonts/monaco { };
+  noto-sans-arabic = pkgs.callPackage ./fonts/noto-sans-arabic { };
+  phospor = pkgs.callPackage ./fonts/phospor { };
   poppins-font = pkgs.callPackage ./fonts/poppins-font { };
+  pragmasevka = pkgs.callPackage ./fonts/pragmasevka { };
+  pragmatapro = pkgs.callPackage ./fonts/pragmatapro { };
+  twilio-sans-mono-nerd-font = pkgs.callPackage ./fonts/twilio-sans-mono-nerd-font { };
   spaceport-2006-font = pkgs.callPackage ./fonts/spaceport-2006-font { };
   zx-spectrum-7-font = pkgs.callPackage ./fonts/zx-spectrum-7-font { };
 }

@@ -1,10 +1,4 @@
-{ config
-, lib
-, pkgs
-, isInstall
-, username
-, ...
-}:
+{ config, lib, pkgs, isInstall, username, ... }:
 {
   environment = {
     gnome.excludePackages = with pkgs; [
@@ -332,7 +326,17 @@
           autoSuspend = false;
         };
       };
-      desktopManager.gnome.enable = true;
+      desktopManager.gnome = {
+        enable = true;
+        extraGSettingsOverridePackages = with pkgs; [
+          nautilus-open-any-terminal
+          nautilus-annotations
+        ];
+        extraGSettingsOverrides = ''
+          [org.gnome.desktop.peripherals.touchpad]
+          tap-to-click=true
+        '';
+      };
     };
   };
 }
