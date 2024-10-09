@@ -5,7 +5,7 @@ let
 in
 {
   options = {
-    desktop.apps.blender = {
+    desktop.apps.libreoffice = {
       enable = mkEnableOption "Whether enable Office packages.";
     };
   };

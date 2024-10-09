@@ -3,15 +3,15 @@ let
   inherit (lib) mkIf mkForce mkDefault optional;
 in
 {
-  imports = [
-    inputs.auto-cpufreq.nixosModules.default
-    inputs.catppuccin.nixosModules.catppuccin
-    inputs.determinate.nixosModules.default
-    inputs.disko.nixosModules.disko
-    inputs.nix-flatpak.nixosModules.nix-flatpak
-    inputs.nix-index-database.nixosModules.nix-index
-    inputs.nix-snapd.nixosModules.default
-    inputs.sops-nix.nixosModules.sops
+  imports = with inputs; [
+    auto-cpufreq.nixosModules.default
+    catppuccin.nixosModules.catppuccin
+    determinate.nixosModules.default
+    disko.nixosModules.disko
+    nix-flatpak.nixosModules.nix-flatpak
+    nix-index-database.nixosModules.nix-index
+    nix-snapd.nixosModules.default
+    sops-nix.nixosModules.sops
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${ hostname}")
     ./users
