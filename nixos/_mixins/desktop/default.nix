@@ -52,9 +52,14 @@ in
         "backgrounds/Colorway-2560x2880.png".source = ../../../resources/dots/backgrounds/Colorway-2560x2880.png;
         "backgrounds/Colorway-3440x1440.png".source = ../../../resources/dots/backgrounds/Colorway-3440x1440.png;
         "backgrounds/Colorway-3840x2160.png".source = ../../../resources/dots/backgrounds/Colorway-3840x2160.png;
+
+        # Allow mounting FUSE filesystems as a user.
+        # https://discourse.nixos.org/t/fusermount-systemd-service-in-home-manager/5157
+        "fuse.conf".text = "user_allow_other";
       };
 
-      systemPackages = with pkgs;[
+      systemPackages = with pkgs; [
+        firefox
         catppuccin-cursors.mochaBlue
         (catppuccin-gtk.override {
           accents = [ "blue" ];
@@ -65,9 +70,7 @@ in
           flavor = "mocha";
           accent = "blue";
         })
-      ]
-      ++ lib.optionals isInstall [
-        firefox
+      ] ++ lib.optionals isInstall [
         notify-desktop
         wmctrl
         xdotool
@@ -77,11 +80,25 @@ in
     programs.dconf.enable = true;
     services = {
       dbus.enable = true;
-      usbmuxd.enable = true;
+      usbmuxd.enable = true; # for IOS;
       xserver = {
         # Disable xterm
         desktopManager.xterm.enable = false;
         excludePackages = [ pkgs.xterm ];
+      };
+      samba = {
+        enable = true;
+        #package = pkgs.unstable.samba4Full; # samba4Full broken
+        # securityType = "user";
+        # openFirewall = true;
+        extraConfig = ''
+          # My old nas dlink-325 uses v1
+          client min protocol = NT1
+        '';
+      };
+      gvfs = {
+        package = pkgs.unstable.gvfs;
+        enable = true;
       };
     };
   };
