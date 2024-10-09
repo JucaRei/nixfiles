@@ -9,7 +9,7 @@ let
     else "overlay2";
 in
 {
-  config = mkIf cfg.manager == "docker" {
+  config = mkIf (cfg.manager == "docker") {
     environment = {
       systemPackages = with pkgs; [
         distrobox

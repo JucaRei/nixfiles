@@ -9,7 +9,7 @@ let
     else "overlay2";
 in
 {
-  config = mkIf cfg.manager == "podman" {
+  config = mkIf (cfg.manager == "podman") {
     #https://nixos.org/wiki/Podman
     environment = {
       systemPackages =
