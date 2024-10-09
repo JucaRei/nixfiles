@@ -13,8 +13,8 @@ in
       '';
     };
     engines = mkOption {
-      type = with types; listOf enum [ "steam" null ];
-      default = [ null ];
+      type = with types; enum [ "steam" null ];
+      default = null;
       description = "Enables selected engines";
     };
   };
