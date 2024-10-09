@@ -1,10 +1,10 @@
 { inputs, pkgs, config, lib, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  cfg = config.features.games;
+  cfg = config.desktop.apps.games;
 in
 {
-  options.features.games = {
+  options.desktop.apps.games = {
     enable = mkOption {
       type = types.bool;
       default = false;

@@ -19,14 +19,14 @@ in
         v4l2loopback.enable = false;
         xdg.enable = true;
       };
-      games = {
-        enable = false;
-        engines = [ null ];
-      };
 
       apps = {
         _1password.enable = true;
         blender.enable = false;
+        games = mkDefault {
+          enable = false;
+          engines = [ null ];
+        };
       };
     };
 
