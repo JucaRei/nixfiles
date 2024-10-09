@@ -4,7 +4,7 @@ let
 in
 {
   config = {
-    desktop.features.apps = {
+    desktop.apps = {
       celluloid.enable = true;
     };
 
