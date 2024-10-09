@@ -2,7 +2,16 @@
 {
   config = {
 
-    desktop.features.flatpak-appcenter.enable = true;
+    desktop = {
+      features = {
+        flatpak-appcenter.enable = true;
+      };
+      apps = {
+        celluloid.enable = true;
+        libreoffice.enable = true;
+      };
+    };
+
 
     environment = {
       gnome.excludePackages = with pkgs; [

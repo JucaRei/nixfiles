@@ -11,12 +11,22 @@ in
   config = {
     desktop = {
       features = {
+        appimage.enable = true;
         audio.manager = mkDefault "pipewire";
         fonts.enable = true;
         printers.enable = false;
         scan.enable = false;
         v4l2loopback.enable = false;
         xdg.enable = true;
+      };
+      games = {
+        enable = false;
+        engines = [ null ];
+      };
+
+      apps = {
+        _1password.enable = true;
+        blender.enable = false;
       };
     };
 

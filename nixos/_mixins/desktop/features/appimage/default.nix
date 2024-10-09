@@ -1,4 +1,4 @@
-{ lib, config, pkgs, isWorkstation, desktop, ... }:
+{ lib, config, pkgs, ... }:
 let
   inherit (lib) mkOption types mkIf;
   cfg = config.desktop.features.appimage;
@@ -7,7 +7,7 @@ in
   options = {
     desktop.features.appimage = {
       enable = mkOption {
-        default = isWorkstation && desktop != null;
+        default = false;
         type = types.bool;
         description = "Enables Support for executing AppImages";
       };
