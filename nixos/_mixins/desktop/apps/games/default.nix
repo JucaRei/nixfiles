@@ -1,7 +1,7 @@
 { inputs, pkgs, config, lib, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  cfg = config.desktop.features.games;
+  cfg = config.features.games;
 in
 {
   options.features.games = {
@@ -22,7 +22,7 @@ in
   config = mkIf cfg.enable {
     # https://nixos.wiki/wiki/Steam
     fonts.fontconfig.cache32Bit = true;
-    hardware = mkIf cfg.engines == "steam" {
+    hardware = mkIf (cfg.engines == "steam") {
       steam-hardware.enable = true;
       opengl = {
         driSupport32Bit = true;
@@ -30,7 +30,7 @@ in
       };
     };
     programs = {
-      steam = mkIf cfg.engines == "steam" {
+      steam = mkIf (cfg.engines == "steam") {
         enable = true;
         remotePlay.openFirewall =
           true; # Open ports in the firewall for Steam Remote Play
@@ -82,14 +82,14 @@ in
     };
 
     # improve wine performance
-    environment.sessionVariables = mkIf cfg.engines == "steam" {
+    environment.sessionVariables = mkIf (cfg.engines == "steam") {
       WINEDEBUG = "-all";
     };
 
     # Adds Proton GE to Steam
     # Does not work in main overlay
     # Results in infinite recursion due to referencing pkgs
-    nixpkgs.overlays = mkIf cfg.engines == "steam" [
+    nixpkgs.overlays = mkIf (cfg.engines == "steam") [
       (_: prev: {
         steam = prev.steam.override {
           extraProfile = "export STEAM_EXTRA_COMPAT_TOOLS_PATHS='${
@@ -105,7 +105,7 @@ inputs.nix-gaming.packages.${pkgs.system}.proton-ge
     # };
 
     # nix-gaming cache
-    nix.settings = mkIf cfg.engines == "steam" {
+    nix.settings = mkIf (cfg.engines == "steam") {
       extra-substituters = [ "https://nix-gaming.cachix.org" ];
       extra-trusted-public-keys = [
         "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
