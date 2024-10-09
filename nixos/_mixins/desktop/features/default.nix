@@ -1,7 +1,7 @@
 _: {
   imports = [
     ./appimage
-    ./flatpak
+    ./flatpak-appcenter
     ./audio
     ./fonts
     ./print
