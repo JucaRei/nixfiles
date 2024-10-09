@@ -17,8 +17,8 @@ in
         description = "Enables container manager";
       };
       manager = mkOption {
-        type = types.enum [ "docker" "podman" ];
-        default = "podman";
+        type = types.enum [ "docker" "podman" null ];
+        default = null;
         description = "Default container manager.";
       };
     };
