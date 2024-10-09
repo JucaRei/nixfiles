@@ -1,13 +1,12 @@
-{
-  config,
-  hostname,
-  inputs,
-  lib,
-  outputs,
-  pkgs,
-  platform,
-  username,
-  ...
+{ config
+, hostname
+, inputs
+, lib
+, outputs
+, pkgs
+, platform
+, username
+, ...
 }:
 {
   imports = [

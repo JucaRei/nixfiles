@@ -1,7 +1,7 @@
 { config, hostname, isInstall, isWorkstation, lib, pkgs, username, ... }:
 let
   inherit (lib) mkIf mkForce optionals optional mkOption types;
-  cfg = config.desktops.features.audio;
+  cfg = config.desktop.features.audio;
   low_latency = config.desktop.features.audio."pipewire".useLowLatencyPipewire;
 in
 {

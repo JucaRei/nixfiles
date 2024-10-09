@@ -9,7 +9,7 @@ in
       enable = mkOption {
         default = false;
         type = types.bool;
-        description = "Whether xdg defaults for desktops.";
+        description = "Whether xdg defaults for desktop.";
       };
     };
   };

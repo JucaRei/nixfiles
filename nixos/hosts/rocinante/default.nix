@@ -17,7 +17,7 @@ in
       silentBoot = mkForce true;
     };
 
-    desktops.features = {
+    desktop.features = {
       audio.manager = mkForce "pulseaudio";
     };
 
