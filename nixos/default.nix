@@ -14,11 +14,11 @@ in
     inputs.sops-nix.nixosModules.sops
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${ hostname}")
+    ./users
     ./_mixins/configs
     ./_mixins/core
     ./_mixins/features
     ./_mixins/services
-    ./_mixins/users
   ] ++ optional isWorkstation ./_mixins/desktop;
 
   config = {

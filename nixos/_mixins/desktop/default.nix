@@ -9,8 +9,15 @@ in
   ] ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
-    desktops.features = {
-      audio.manager = mkDefault "pipewire";
+    desktop = {
+      features = {
+        audio.manager = mkDefault "pipewire";
+        fonts.enable = true;
+        printers.enable = false;
+        scan.enable = false;
+        v4l2loopback.enable = false;
+        xdg.enable = true;
+      };
     };
 
     environment.etc = {

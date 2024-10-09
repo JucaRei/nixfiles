@@ -1,11 +1,11 @@
 { config, hostname, isInstall, isWorkstation, lib, pkgs, username, ... }:
 let
-  inherit (lib) mkIf mkForce optionals mkOption types;
+  inherit (lib) mkIf mkForce optionals optional mkOption types;
   cfg = config.desktops.features.audio;
-  low_latency = config.desktops.features.audio."pipewire".useLowLatencyPipewire;
+  low_latency = config.desktop.features.audio."pipewire".useLowLatencyPipewire;
 in
 {
-  options.desktops.features.audio."pipewire".useLowLatencyPipewire = mkOption {
+  options.desktop.features.audio."pipewire".useLowLatencyPipewire = mkOption {
     type = types.bool;
     default = false;
     description = "Whether enable low latency configuration.";
@@ -118,6 +118,6 @@ in
       };
     };
 
-    users.users.${username}.extraGroups = lib.optional config.services.pipewire.enable "audio";
+    users.users.${username}.extraGroups = optional config.services.pipewire.enable "audio";
   };
 }

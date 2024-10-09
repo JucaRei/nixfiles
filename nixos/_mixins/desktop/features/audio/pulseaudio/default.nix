@@ -1,7 +1,7 @@
 { config, lib, pkgs, username, ... }:
 let
   inherit (lib) mkIf mkForce;
-  cfg = config.desktops.features.audio;
+  cfg = config.desktop.features.audio;
 
 
   ### Tiling window managers
@@ -53,7 +53,7 @@ in
       audio.enable = false;
     };
 
-    environment.systemPackages = lib.mkIf config.services.xserver.enable [
+    environment.systemPackages = mkIf config.services.xserver.enable [
       sound-volume-up
       sound-volume-down
       pkgs.pavucontrol

@@ -1,15 +1,21 @@
-{ desktop
-, isInstall
-, lib
-, username
-, ...
-}:
+{ desktop, lib, config, ... }:
 let
-  installFor = [ "juca" ];
+  inherit (lib) mkIf mkOption types;
+  cfg = config.desktop.features.flatpak-appcenter;
 in
-lib.mkIf (lib.elem username installFor || desktop == "gnome" || desktop == "pantheon") {
+{
+  options = {
+    desktop.features.flatpak-appcenter = {
+      enable = mkOption {
+        default = false;
+        type = types.bool;
+        description = "Enables Flatpak Appcenter.";
+      };
+    };
+  };
+
   services = {
-    flatpak = lib.mkIf isInstall {
+    flatpak = {
       enable = true;
       # By default nix-flatpak will add the flathub remote;
       # Therefore Appcenter is only added when the desktop is Pantheon

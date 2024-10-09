@@ -1,29 +1,37 @@
+{ config, desktop, isInstall, lib, pkgs, ... }:
+let
+  inherit (lib) mkIf mkOption types optionals;
+  cfg = config.desktop.features.printers;
+in
 {
-  config,
-  desktop,
-  isInstall,
-  lib,
-  pkgs,
-  ...
-}:
-lib.mkIf isInstall {
-  # Only enables auxilary printing support/packages if
-  # config.services.printing.enable is true; the master control
-  # - https://wiki.nixos.org/wiki/Printing
-  programs.system-config-printer = lib.mkIf config.services.printing.enable {
-    enable = if (desktop == "mate" || desktop == "hyprland") then true else false;
-  };
-  services = {
-    printing = {
-      enable = true;
-      drivers =
-        with pkgs;
-        lib.optionals config.services.printing.enable [
-          gutenprint
-          hplip
-        ];
-      webInterface = false;
+  options = {
+    desktop.features.flatpak-appcenter = {
+      enable = mkOption {
+        default = false;
+        type = types.bool;
+        description = "Whether enables printing for desktop.";
+      };
     };
-    system-config-printer.enable = config.services.printing.enable;
+  };
+  config = mkIf cfg.enable {
+    # Only enables auxilary printing support/packages if
+    # config.services.printing.enable is true; the master control
+    # - https://wiki.nixos.org/wiki/Printing
+    programs.system-config-printer = mkIf config.services.printing.enable {
+      enable = if (desktop == "mate" || desktop == "hyprland") then true else false;
+    };
+    services = {
+      printing = {
+        enable = true;
+        drivers =
+          with pkgs;
+          optionals config.services.printing.enable [
+            gutenprint
+            hplip
+          ];
+        webInterface = false;
+      };
+      system-config-printer.enable = config.services.printing.enable;
+    };
   };
 }
