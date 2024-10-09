@@ -5,7 +5,7 @@ let
 in
 {
   options = {
-    desktop.features.flatpak-appcenter = {
+    desktop.features.printers = {
       enable = mkOption {
         default = false;
         type = types.bool;
