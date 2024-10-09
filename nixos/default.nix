@@ -15,7 +15,6 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${ hostname}")
     ./users
-    ./_mixins/configs
     ./_mixins/core
     ./_mixins/features
     ./_mixins/services
