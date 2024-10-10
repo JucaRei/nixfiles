@@ -19,6 +19,10 @@ in
 
     desktop.features = {
       audio.manager = mkForce "pulseaudio";
+      container-manager = {
+        enable = true;
+        manager = "docker";
+      };
     };
 
     features = {

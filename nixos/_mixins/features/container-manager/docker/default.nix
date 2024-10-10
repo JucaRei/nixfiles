@@ -26,9 +26,16 @@ in
         enable = true;
         storageDriver = docker_storage_driver;
         logDriver = "json-file";
+        rootless = {
+          enable = true;
+          setSocketVariable = true;
+          daemon.settings = {
+            dns = [ "1.1.1.1" "8.8.8.8" ];
+          };
+        };
       };
-    };
 
-    users.users.${username}.extraGroups = [ "docker" ];
+      users.users.${username}.extraGroups = [ "docker" ];
+    };
   };
 }
