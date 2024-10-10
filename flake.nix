@@ -116,7 +116,7 @@
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs
         minimech = helper.mkNixos { hostname = "minimech"; };
-        scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "pantheon"; };
+        scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "mate"; };
       };
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
       #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
