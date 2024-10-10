@@ -151,7 +151,7 @@ in
         generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;
 
         efi = mkIf (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") {
-          canTouchEfiVariables = mkIf (cfg.boottype == "efi");
+          canTouchEfiVariables = if (cfg.boottype == "efi") then true else false;
           efiSysMountPoint = mkDefault "/boot";
         };
         generationsDir.copyKernels = mkIf cfg.boottype == "efi";
