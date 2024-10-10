@@ -100,6 +100,30 @@ in
         package = pkgs.unstable.gvfs;
         enable = true;
       };
+      udisks2 = {
+        enable = true;
+        mountOnMedia = true;
+        settings = {
+          "media-automount.conf" = {
+            defaults = {
+              mount_defaults = ''
+                ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
+              '';
+            };
+          };
+          "71-device-name.rules" = ''
+            SUBSYSTEMS=="usb", ATTRS{idVendor}=="vendor_id", ATTRS{idProduct}=="product_id", MODE="0660", TAG+="uaccess"
+          '';
+
+          # fix NTFS mount, from https://wiki.archlinux.org/title/NTFS#udisks_support
+          "mount_options.conf" = {
+            defaults = {
+              # ntfs_defaults = "uid=$UID,gid=$GID,noatime,prealloc";
+              ntfs_defaults = "uid=$UID,gid=$GID,noatime";
+            };
+          };
+        };
+      };
     };
   };
 }
