@@ -111,10 +111,6 @@ in
               '';
             };
           };
-          "71-device-name.rules" = ''
-            SUBSYSTEMS=="usb", ATTRS{idVendor}=="vendor_id", ATTRS{idProduct}=="product_id", MODE="0660", TAG+="uaccess"
-          '';
-
           # fix NTFS mount, from https://wiki.archlinux.org/title/NTFS#udisks_support
           "mount_options.conf" = {
             defaults = {

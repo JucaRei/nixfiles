@@ -162,8 +162,6 @@ in
           # theme = mkDefault pkgs.catppuccin-grub;
           efiInstallAsRemovable = if (cfg.boottype != "legacy") then true else false;
           default = "saved";
-          # devices = if cfg.boottype == "efi" then mkDefault [ "nodev" ] else mkDefault "/dev/sda";
-          # device = if cfg.boottype == "efi" then "nodev" else "/dev/sda";
           device = if (cfg.boottype == "efi" && cfg.bootmanager == "grub" || cfg.boottype == "hybrid-legacy" && cfg.bootmanager == "grub") then "nodev" else "/dev/sda";
           fsIdentifier = "provided";
           gfxmodeEfi = "auto";

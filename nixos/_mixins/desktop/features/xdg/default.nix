@@ -24,7 +24,7 @@ in
         ] ++ optionals (desktop == "hyprland") [
           pkgs.xdg-desktop-portal-hyprland
           pkgs.xdg-desktop-portal-gtk
-        ] ++ optionals (desktop == "mate" || desktop == "cinnamon") [
+        ] ++ optionals (desktop == "mate") [
           pkgs.xdg-desktop-portal-xapp
           pkgs.xdg-desktop-portal-gtk
         ] ++ optionals (desktop == "pantheon") [
@@ -43,7 +43,7 @@ in
             default = [ "hyprland" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
-          x-cinnamon = mkIf (desktop == "mate" || desktop == "cinnamon") {
+          x-cinnamon = mkIf (desktop == "mate" ) {
             default = [ "xapp" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };

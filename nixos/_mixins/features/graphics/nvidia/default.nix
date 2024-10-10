@@ -108,10 +108,13 @@ in
       nvidia = {
         package = mkDefault nvidiaPackage;
         modesetting.enable = mkDefault true;
-        prime.offload.enableOffloadCmd = device.gpu == "hybrid-nvidia";
+        prime.offload = {
+          enable = if (device.gpu == "hybrid-nvidia") then true else false;
+          enableOffloadCmd = if (device.gpu == "hybrid-nvidia") then true else false;
+        };
         powerManagement = {
           enable = mkDefault true;
-          finegrained = device.gpu == "hybrid-nvidia";
+          finegrained = if (device.gpu == "hybrid-nvidia") then true else false;
         };
 
         open = mkDefault false;
