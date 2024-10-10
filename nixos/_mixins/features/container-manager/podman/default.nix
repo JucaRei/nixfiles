@@ -3,10 +3,6 @@ let
   inherit (lib) mkIf;
   cfg = config.features.container-manager;
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
-  docker_storage_driver =
-    if config.fileSystems."/".fsType == "btrfs"
-    then "btrfs"
-    else "overlay2";
 in
 {
   config = mkIf (cfg.manager == "podman") {

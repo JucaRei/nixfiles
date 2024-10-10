@@ -24,6 +24,8 @@ in
     virtualisation = {
       docker = {
         enable = true;
+        enableOnBoot = false;
+        # enableNvidia = hasNvidiaGPU;
         storageDriver = docker_storage_driver;
         logDriver = "json-file";
         rootless = {
@@ -31,6 +33,11 @@ in
           setSocketVariable = true;
           daemon.settings = {
             dns = [ "1.1.1.1" "8.8.8.8" ];
+            runtimes = {
+              nvidia = {
+                path = mkIf (hasNvidiaGPU) "${pkgs.nvidia-docker}/bin/nvidia-container-runtime";
+              };
+            };
           };
         };
       };
