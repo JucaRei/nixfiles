@@ -1,6 +1,11 @@
-_: {
+{ config, ... }: {
   location = {
     provider = "geoclue2";
+  };
+
+  time = {
+    timeZone = "America/Sao_Paulo";
+    hardwareClockInLocalTime = if (config.core.boot.isDualBoot == true) then true else false;
   };
 
   services = {
@@ -13,9 +18,5 @@ _: {
       submissionUrl = "https://beacondb.net/v2/geosubmit";
     };
     localtimed.enable = true;
-  };
-
-  time = {
-    hardwareClockInLocalTime = true;
   };
 }
