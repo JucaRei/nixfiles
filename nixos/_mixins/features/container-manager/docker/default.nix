@@ -17,6 +17,10 @@ in
         docker-compose
         docker-compose-check
       ];
+
+      sessionVariables = {
+        DOCKER_HOST = "unix:///var/run/docker.sock";
+      };
     };
 
     hardware.nvidia-container-toolkit.enable = hasNvidiaGPU;
@@ -33,9 +37,9 @@ in
           setSocketVariable = true;
           daemon.settings = {
             dns = [ "1.1.1.1" "8.8.8.8" ];
-            runtimes = {
+            runtimes = mkIf (hasNvidiaGPU) {
               nvidia = {
-                path = mkIf (hasNvidiaGPU) "${pkgs.nvidia-docker}/bin/nvidia-container-runtime";
+                path = "${pkgs.nvidia-docker}/bin/nvidia-container-runtime";
               };
             };
           };
