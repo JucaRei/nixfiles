@@ -11,7 +11,7 @@
 {
   imports = [
     inputs.nix-index-database.darwinModules.nix-index
-    ./${hostname}
+    (./. + ./hosts/${hostname})
     ./_mixins/desktop
     ./_mixins/scripts
   ];
