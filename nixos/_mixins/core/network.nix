@@ -104,10 +104,11 @@ in
   config = mkIf cfg.enable {
     networking = {
       extraHosts = ''
-        192.168.1.35  nitro
-        192.168.1.45  rocinante
-        192.168.1.76  dongle
-        192.168.1.228 rocinante
+        192.168.1.35  nitro-lan
+        192.168.1.50  nitro-wifi
+        192.168.1.45  rocinante-lan
+        192.168.1.228 rocinante-wifi
+        192.168.1.76  dongle-ax600
         192.168.1.184 soyo
         192.168.1.230 air
         192.168.1.200 DietPi
@@ -179,8 +180,9 @@ in
     services = {
       resolved = {
         enable = if (cfg.networkOpt == "network-manager") then true else false;
-
-
+        domains = [ "~." ];
+        # dnsovertls = "true";
+        # dnssec = "false";
       };
 
       # Modify autoconnect priority of the connection to my home network

@@ -1,14 +1,4 @@
-{ config
-, inputs
-, isLima
-, isWorkstation
-, lib
-, outputs
-, pkgs
-, stateVersion
-, username
-, ...
-}:
+{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
 in
@@ -24,7 +14,8 @@ in
     ./_mixins/features
     ./_mixins/scripts
     ./_mixins/services
-    ./_mixins/users
+    ./hosts
+    ./users
   ] ++ lib.optional isWorkstation ./_mixins/desktop;
 
   catppuccin = {

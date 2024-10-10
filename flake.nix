@@ -52,18 +52,11 @@
 
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/0";
 
-    antsy-alien-attack-pico.url = "https://flakehub.com/f/wimpysworld/antsy-alien-attack-pico/*.tar.gz";
-    antsy-alien-attack-pico.inputs.nixpkgs.follows = "nixpkgs";
-
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
 
     nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/*.tar.gz";
     nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
 
-    quickemu.url = "https://flakehub.com/f/quickemu-project/quickemu/*.tar.gz";
-    quickemu.inputs.nixpkgs.follows = "nixpkgs";
-    quickgui.url = "https://flakehub.com/f/quickemu-project/quickgui/*.tar.gz";
-    quickgui.inputs.nixpkgs.follows = "nixpkgs";
     stream-sprout.url = "https://flakehub.com/f/wimpysworld/stream-sprout/*.tar.gz";
     stream-sprout.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -147,7 +140,7 @@
       overlays = import ./overlays { inherit inputs; };
       # Custom packages; acessible via 'nix build', 'nix shell', etc
       packages = helper.forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-      # Formatter for .nix files, available via 'nix fmt'
-      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
+      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
     };
 }

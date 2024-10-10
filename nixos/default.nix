@@ -292,7 +292,7 @@ in
     };
 
     system = {
-      nixos.label = lib.mkIf isInstall "-";
+      nixos.label = lib.mkIf isInstall "NixOS";
       inherit stateVersion;
 
       activationScripts.report-changes = ''

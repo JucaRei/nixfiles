@@ -1,29 +1,32 @@
-{ config
-, desktop
-, lib
-, pkgs
-, username
-, ...
-}:
+{ config, desktop, lib, pkgs, username, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
+  inherit (lib) mkForce optional;
+
+  aesthetic-wallpapers = pkgs.fetchgit {
+    url = "https://github.com/D3Ext/aesthetic-wallpapers";
+    rev = "060c580dcc11afea2f77f9073bd8710920e176d8";
+    sha256 = "5MnW630EwjKOeOCIAJdSFW0fcSSY4xmfuW/w7WyIovI=";
+  };
 in
 {
   # import the DE specific configuration and any user specific desktop configuration
-  imports =
-    [
-      ./apps
-      ./features
-    ]
-    ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-    ++ lib.optional
-      (builtins.pathExists (
-        ./. + "/${desktop}/${username}/default.nix"
-      )) ./${desktop}/${username};
+  imports = [ ./apps ./features ]
+    ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+    ++ optional
+    (builtins.pathExists (
+      ./. + "/${desktop}/${username}/default.nix"
+    )) ./${desktop}/${username};
 
   # Authrorize X11 access in Distrobox
-  home.file = lib.mkIf isLinux {
-    ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
+  home = {
+    file = lib.mkIf isLinux {
+      ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
+      ".face" = {
+        source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+      };
+      "${config.xdg.userDirs.pictures}/wallpapers".source = mkForce "${aesthetic-wallpapers}/images";
+    };
   };
 
   programs = lib.mkIf (username == "juca") {

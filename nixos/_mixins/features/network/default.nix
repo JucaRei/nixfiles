@@ -1,11 +1,4 @@
-{ config
-, hostname
-, isWorkstation
-, lib
-, pkgs
-, username
-, ...
-}:
+{ config, hostname, isWorkstation, lib, pkgs, username, ... }:
 let
   unmanagedInterfaces =
     lib.optionals config.services.tailscale.enable [ "tailscale0" ]
