@@ -10,6 +10,11 @@ in
         enable = true;
         gpu = "hybrid-nvidia";
       };
+
+      container-manager = {
+        enable = true;
+        manager = "podman";
+      };
     };
 
     boot = {

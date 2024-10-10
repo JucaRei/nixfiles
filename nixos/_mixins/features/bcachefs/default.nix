@@ -3,14 +3,25 @@ let
   installOn = [
     "minimech"
     "scrubber"
-    "nitro"
   ];
+  inherit (lib) mkOption mkIf elem mkOverride types;
+
 in
-lib.mkIf (lib.elem hostname installOn || isISO) {
+{
+  options = {
+    features.bcachefs = {
+      enable = mkOption {
+        type = types.bool;
+        default = mkIf (elem hostname installOn || isISO);
+        description = "Enables bcachefs filesystem.";
+      };
+    };
+  };
+
   # Create a bootable ISO image with bcachefs.
   # - https://wiki.nixos.org/wiki/Bcachefs
   boot = {
-    kernelPackages = lib.mkOverride 0 pkgs.linuxPackages_latest;
+    kernelPackages = mkOverride 0 pkgs.linuxPackages_latest;
     supportedFilesystems = [ "bcachefs" ];
   };
   environment.systemPackages = with pkgs; [

@@ -162,7 +162,7 @@
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.cursorWidth": 1.8,
-  "terminal.integrated.fontFamily": "'FiraCode Nerd Font Mono Ret', 'monospace'",
+  "terminal.integrated.fontFamily": "'FiraCode Nerd Font Mono Semibold', 'monospace'",
   "terminal.integrated.fontSize": 16,
   "terminal.integrated.mouseWheelScrollSensitivity": 2,
   "terminal.integrated.persistentSessionScrollback": 200,
