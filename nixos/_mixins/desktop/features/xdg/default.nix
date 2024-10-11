@@ -36,7 +36,11 @@ in
           common = {
             default = [ "gtk" ];
           };
-          gnome = mkIf (desktop == "gnome" || desktop == "bspwm" || desktop == "budgie") {
+          gnome = mkIf (desktop == "gnome" || desktop == "bspwm") {
+            default = [ "gnome" "gtk" ];
+            "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          };
+          budgie = mkIf (desktop == "budgie") {
             default = [ "gnome" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
@@ -64,7 +68,7 @@ in
             "com.raggesilver.BlackBox.desktop"
           ] ++
             optionals (desktop == "budgie") [
-              "tilix.desktop"
+              "com.gexperts.Tilix.desktop"
             ];
         };
       };

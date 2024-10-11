@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkDefault mkIf mkForce;
+  inherit (lib) mkDefault mkIf mkForce getExe;
 in
 {
   config = {
@@ -38,9 +38,9 @@ in
         # systemd.enable = true;
         compressor = "zstd";
         compressorArgs = [ "-19" "-T0" ];
-        # verbose = lib.mkForce false;
+        # verbose = mkForce false;
       };
-      kernelPackages = pkgs.linuxPackages_xanmod_stable; #pkgs.linuxPackages_xanmod_latest;
+      kernelPackages = pkgs.linuxPackages_xanmod_stable;
       kernelModules = [
         "z3fold"
         "lz4hc"
@@ -81,40 +81,79 @@ in
     services = {
 
       xserver = {
-        xrandrHeads = [{
-          output = "eDP-1";
-          primary = true;
-          monitorConfig = ''
-            Option "PreferredMode" "1920x1080"
-            Option "Position" "1920 0"
-          '';
-        }
-          {
-            output = "HDMI-1-0";
-            primary = false;
-            monitorConfig = ''
-              Option "PreferredMode" "1920x1080"
-              Option "Position" "0 0"
-            '';
-          }];
-        #   # This must be done manually to ensure my screen spaces are arranged
-        #   # exactly as I need them to be *and* the correct monitor is "primary".
-        #   # Using xrandrHeads does not work.
-        #   monitorSection = ''
-        #     VendorName     "Unknown"
-        #     ModelName      "Samsung S27E391"
-        #     HorizSync       30.0 - 81.0
-        #     VertRefresh     50.0 - 75.0
-        #     Option         "DPMS"
-        #   '';
-        #   screenSection = ''
-        #     Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DP-1: 1920x1080_75 +0+0"
-        #     Option "SLI" "Off"
-        #     Option "MultiGPU" "Off"
-        #     Option "BaseMosaic" "off"
-        #     Option "Stereo" "0"
-        #     Option "nvidiaXineramaInfoOrder" "DFP-1"
-        #   '';
+        displayManager = {
+          setupCommands = ''${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal'';
+          # sessionCommands = ''${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal'';
+        };
+
+        # xrandrHeads = [
+        #   {
+        #     output = "eDP-1";
+        #     primary = true;
+        #     monitorConfig = ''
+        #       Option "PreferredMode" "1920x1080"
+        #       Option "Position" "1920 0"
+        #     '';
+        #   }
+        #   {
+        #     output = "HDMI-1-0";
+        #     primary = false;
+        #     monitorConfig = ''
+        #       Option "PreferredMode" "1920x1080"
+        #       Option "Position" "0 0"
+        #     '';
+        #   }
+        # ];
+        # This must be done manually to ensure my screen spaces are arranged
+        # exactly as I need them to be *and* the correct monitor is "primary".
+        # Using xrandrHeads does not work.
+        # monitorSection = ''
+        #   VendorName     "PlayStation"
+        #   Identifier     "HDMI-1-0"
+        #   HorizSync       30.0 - 81.0
+        #   VertRefresh     50.0 - 75.0
+        #   Option         "DPMS"
+        # '';
+        # screenSection = ''
+        #   Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DP-1: 1920x1080_75 +0+0"
+        #   Option "SLI" "Off"
+        #   Option "MultiGPU" "Off"
+        #   Option "BaseMosaic" "off"
+        #   Option "Stereo" "0"
+        #   Option "nvidiaXineramaInfoOrder" "DFP-1"
+        # '';
+
+
+        # Section "Monitor"
+        # Monitor Identity - Typically HDMI-0 or DisplayPort-0
+        # Identifier    "HDMI1"
+
+        # Setting Resolution and Modes
+        # Modeline is usually not required, but you can force resolution with it
+        # Modeline "1920x1080" 172.80 1920 2040 2248 2576 1080 1081 1084 1118
+        # Option "PreferredMode" "1920x1080"
+        # Option        "TargetRefresh" "60"
+
+        # Positioning the Monitor
+        # Basic
+        # Option "LeftOf or RightOf or Above or Below" "DisplayPort-0"
+        # Advanced
+        # Option        "Position" "1680 0"
+
+        # Disable a Monitor
+        # Option        "Disable" "true"
+        # EndSection .
+
+        resolutions = [
+
+          # { x = 2048; y = 1152; }
+          { x = 1920; y = 1080; }
+          { x = 1600; y = 900; }
+          { x = 1366; y = 768; }
+          # { x = 2560; y = 1440; }
+          # { x = 3072; y = 1728; }
+          # { x = 3840; y = 2160; }
+        ];
       };
 
       ### Touchpad

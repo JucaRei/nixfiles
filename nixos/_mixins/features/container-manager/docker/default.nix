@@ -1,6 +1,6 @@
 { config, lib, pkgs, username, ... }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkForce;
   cfg = config.features.container-manager;
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
   docker_storage_driver =
@@ -26,6 +26,21 @@ in
     hardware.nvidia-container-toolkit.enable = hasNvidiaGPU;
 
     virtualisation = {
+      oci-containers.backend = mkForce "docker";
+      containers = {
+        registries.search = [
+          "docker.io"
+          "gcr.io"
+          "quay.io"
+        ];
+        storage.settings = {
+          storage = {
+            driver = if docker_storage_driver == "btrfs" then "btrfs" else "overlay";
+            graphroot = "/var/lib/containers/storage";
+            runroot = "/run/containers/storage";
+          };
+        };
+      };
       docker = {
         enable = true;
         enableOnBoot = false;

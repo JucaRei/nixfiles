@@ -121,7 +121,7 @@
         tanis = helper.mkNixos { hostname = "tanis"; desktop = "hyprland"; };
         sidious = helper.mkNixos { hostname = "sidious"; desktop = "gnome"; };
         rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "mate"; };
-        nitro = helper.mkNixos { hostname = "nitro"; desktop = "budgie"; };
+        nitro = helper.mkNixos { hostname = "nitro"; desktop = "cinnamon"; };
         # Servers
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs

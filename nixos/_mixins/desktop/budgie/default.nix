@@ -124,16 +124,4 @@ in
     # Required by Budgie's Polkit Dialog.
     polkit.enable = mkDefault true;
   };
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
-    ## 23.11
-    config = {
-      common = { default = [ "gtk" ]; };
-      budgie = {
-        default = [ "gnome" "gtk" ];
-        "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-      };
-    };
-  };
 }

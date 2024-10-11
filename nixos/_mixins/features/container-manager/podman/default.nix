@@ -1,6 +1,6 @@
 { config, isWorkstation, lib, pkgs, username, ... }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkForce;
   cfg = config.features.container-manager;
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in
@@ -25,6 +25,7 @@ in
     hardware.nvidia-container-toolkit.enable = hasNvidiaGPU;
 
     virtualisation = {
+      oci-containers.backend = mkForce "podman";
       containers = {
         enable = true;
         containersConf.settings = {
@@ -44,6 +45,13 @@ in
             "registry.access.redhat.com"
             "registry.centos.org"
           ];
+        };
+        storage.settings = {
+          storage = {
+            driver = "overlay";
+            graphroot = "/var/lib/containers/storage";
+            runroot = "/run/containers/storage";
+          };
         };
       };
       podman = {
