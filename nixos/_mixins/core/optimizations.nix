@@ -6,21 +6,16 @@ in
 {
   options.core.optimizations = {
     enable = mkEnableOption "Enable optimizations module.";
-    selected = mkOption {
-      type = with types; listOf (enum [ "earlyoom" "ananicy" "thermald" "psd" "fixwakeup" ]);
-      default = [ ];
-      description = "Enables selected optimizations.";
-    };
   };
 
-  config = mkIf cfg.enable (mkMerge [
-    (mkIf (cfg.selected == "earlyoom") {
+  config = mkIf cfg.enable
+    {
       services = {
         # https://dataswamp.org/~solene/2022-09-28-earlyoom.html
         # avoid the linux kernel from locking itself when we're putting too much strain on the memory
         # this helps avoid having to shut down forcefully when we OOM
         earlyoom = {
-          enable = true;
+          enable = isInstall && isWorkstation;
           enableNotifications = false; # true; # annoying, but we want to know what's killed
           freeSwapThreshold = 2;
           freeMemThreshold = 2;
@@ -36,73 +31,64 @@ in
             echo "Process $EARLYOOM_NAME ($EARLYOOM_PID) was killed"
           '';
         };
-      };
-    })
 
-    (mkIf (cfg.selected == "ananicy") {
-      services = {
+
         # Auto Nice Daemon
         ananicy = {
-          # chaotic.ananicy-cpp.enable = true;
-          enable = true;
-          package = pkgs.ananicy-rules-cachyos;
+          enable = isInstall;
+          package = pkgs.ananicy-cpp;
           rulesProvider = pkgs.ananicy-rules-cachyos;
-          settings = {
-            check_freq = 2;
-            cgroup_load = true;
-            type_load = true;
-            rule_load = true;
-            apply_nice = true;
-            apply_latnice = true;
-            apply_ioclass = true;
-            apply_ionice = true;
-            apply_sched = true;
-            apply_oom_score_adj = true;
-            apply_cgroup = true;
-            check_disks_schedulers = true;
-          };
+          # settings = {
+          #   check_freq = 2;
+          #   cgroup_load = true;
+          #   type_load = true;
+          #   rule_load = true;
+          #   apply_nice = true;
+          #   apply_latnice = true;
+          #   apply_ioclass = true;
+          #   apply_ionice = true;
+          #   apply_sched = true;
+          #   apply_oom_score_adj = true;
+          #   apply_cgroup = true;
+          #   check_disks_schedulers = true;
+          # };
         };
-      };
-    })
 
-    (mkIf (cfg.selected == "irqbalance") {
-      services = {
         irqbalance = {
-          enable = true;
+          enable = isInstall;
         };
-      };
-    })
 
-    (mkIf (cfg.selected == "thermald") {
-      services = {
         thermald = {
-          enable = true;
+          enable = if (config.core.cpu.cpuVendor == "intel") then true else false;
         };
-      };
-    })
 
-    (mkIf (cfg.selected == "psd") {
-      services = {
         psd = {
-          enable = true;
+          enable = isInstall && isWorkstation;
           resyncTimer = "10min";
         };
       };
-    })
 
-    (mkIf (cfg.selected == "fixwakeup") {
-      systemd.services.fixSuspend = {
-        enable = true;
-        description = "Fix immediate wakeup on suspend/hibernate";
-        unitConfig = {
-          Type = "oneshot";
+      systemd.services = {
+        fixSuspend = mkIf (isInstall && isWorkstation) {
+          enable = true;
+          description = "Fix immediate wakeup on suspend/hibernate";
+          unitConfig = {
+            Type = "oneshot";
+          };
+          serviceConfig = {
+            User = "root";
+            ExecStart = "-${pkgs.bash}/bin/bash -c \"echo GPP0 > /proc/acpi/wakeup\"";
+          };
+          wantedBy = [ "multi-user.target" ];
         };
-        serviceConfig = {
-          User = "root";
-          ExecStart = "-${pkgs.bash}/bin/bash -c \"echo GPP0 > /proc/acpi/wakeup\"";
-        };
-        wantedBy = [ "multi-user.target" ];
+
+        # ananicy-cpp = mkIf config.services.ananicy.enable {
+        #   # https://gitlab.com/ananicy-cpp/ananicy-cpp/-/issues/40#note_1986279383
+        #   serviceConfig = {
+        #     Delegate-cpu = "cpuset io memory pids";
+        #     ExecStartPre = "${pkgs.coreutils}/bin/sleep 30";
+        #   };
+        # };
       };
-    })
-  ]);
+    };
 }
