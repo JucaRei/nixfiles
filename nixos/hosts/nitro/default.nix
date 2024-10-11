@@ -85,12 +85,17 @@ in
           output = "eDP-1";
           primary = true;
           monitorConfig = ''
-            --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+            Option "PreferredMode" "1920x1080"
+            Option "Position" "1920 0"
           '';
         }
           {
             output = "HDMI-1-0";
             primary = false;
+            monitorConfig = ''
+              Option "PreferredMode" "1920x1080"
+              Option "Position" "0 0"
+            '';
           }];
         #   # This must be done manually to ensure my screen spaces are arranged
         #   # exactly as I need them to be *and* the correct monitor is "primary".
