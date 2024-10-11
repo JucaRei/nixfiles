@@ -135,6 +135,7 @@ in
         daemonIOSchedPriority = 7; # Set I/O scheduling priority for daemon processes to 7
 
         settings = {
+          accept-flake-config = true;
           experimental-features = "flakes nix-command";
           # Disable global registry
           flake-registry = "";
