@@ -11,6 +11,7 @@ in
     inputs.catppuccin.homeManagerModules.catppuccin
     inputs.sops-nix.homeManagerModules.sops
     inputs.nix-index-database.hmModules.nix-index
+    inputs.chaotic-nyx.homeManagerModules.default
     ./_mixins/features
     ./_mixins/scripts
     ./_mixins/services

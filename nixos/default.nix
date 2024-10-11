@@ -1,6 +1,6 @@
 { config, hostname, isInstall, isWorkstation, inputs, lib, modulesPath, outputs, pkgs, platform, stateVersion, username, ... }:
 let
-  inherit (lib) mkIf mkForce mkDefault optional;
+  inherit (lib) mkIf mkForce mkDefault optional optionals;
 in
 {
   imports = with inputs; [
@@ -44,6 +44,8 @@ in
         cpuVendor = mkDefault "intel";
       };
 
+      optimizations.enable = true;
+
       # Selected default docs
       documentation = {
         enable = mkDefault true;
@@ -53,18 +55,6 @@ in
       security = {
         enable = mkDefault true;
         superUser = "sudo";
-      };
-
-      optimizations = {
-        enable = isInstall;
-        selected = [
-          "earlyoom"
-          (mkIf isWorkstation ("ananicy"))
-          "irqbalance"
-          (mkIf isWorkstation ("psd"))
-          (mkIf isWorkstation ("fixwakeup"))
-          (mkIf (isWorkstation && config.core.cpu.cpuVendor == "intel") ("thermald"))
-        ];
       };
 
       network = {
