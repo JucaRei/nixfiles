@@ -85,10 +85,6 @@ in
     xserver = {
       enable = true;
       displayManager = {
-        # gdm = {
-        #   enable = true;
-        #   wayland = true;
-        # };
         lightdm = {
           enable = true;
           greeters.slick = {
@@ -119,9 +115,6 @@ in
     };
   };
   security = {
-    # xdg.portal.extraPortals = with pkgs; [ xdg-desktop-portal-gnome ];
     pam.services = { budgie-screensaver.allowNullPassword = true; };
-    # Required by Budgie's Polkit Dialog.
-    polkit.enable = mkDefault true;
   };
 }
