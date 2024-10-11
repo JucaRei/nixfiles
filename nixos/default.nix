@@ -76,6 +76,10 @@ in
           micro
         ];
 
+      shellAliases = {
+        store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+      };
+
       systemPackages =
         with pkgs;
         [

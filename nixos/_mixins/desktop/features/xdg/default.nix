@@ -16,26 +16,27 @@ in
   config = mkIf cfg.enable {
     xdg = {
       portal = {
+
         configPackages = [ ] ++ optionals (desktop == "hyprland") [
           pkgs.hyprland
         ];
-        extraPortals = optionals (desktop == "gnome") [
-          pkgs.xdg-desktop-portal-gnome
+
+        extraPortals = with pkgs; [ ]
+          ++ optionals (desktop == "gnome" || desktop == "budgie") [
+          xdg-desktop-portal-gnome
         ] ++ optionals (desktop == "hyprland") [
-          pkgs.xdg-desktop-portal-hyprland
-          pkgs.xdg-desktop-portal-gtk
-        ] ++ optionals (desktop == "mate") [
-          pkgs.xdg-desktop-portal-xapp
-          pkgs.xdg-desktop-portal-gtk
+          xdg-desktop-portal-hyprland
+        ] ++ optionals (desktop == "mate" || desktop == "xfce4" || desktop == "cinnamon") [
+          xdg-desktop-portal-xapp
         ] ++ optionals (desktop == "pantheon") [
-          pkgs.pantheon.xdg-desktop-portal-pantheon
-          pkgs.xdg-desktop-portal-gtk
+          pantheon.xdg-desktop-portal-pantheon
         ];
+
         config = {
           common = {
             default = [ "gtk" ];
           };
-          gnome = mkIf (desktop == "gnome" || desktop == "bspwm") {
+          gnome = mkIf (desktop == "gnome" || desktop == "bspwm" || desktop == "budgie") {
             default = [ "gnome" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
@@ -43,7 +44,7 @@ in
             default = [ "hyprland" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
-          x-cinnamon = mkIf (desktop == "mate" ) {
+          x-cinnamon = mkIf (desktop == "mate" || desktop == "xfce4") {
             default = [ "xapp" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
@@ -61,7 +62,10 @@ in
           default = [ ]
             ++ optionals (desktop == "gnome") [
             "com.raggesilver.BlackBox.desktop"
-          ];
+          ] ++
+            optionals (desktop == "budgie") [
+              "tilix.desktop"
+            ];
         };
       };
     };

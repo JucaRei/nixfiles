@@ -1,6 +1,6 @@
-{ pkgs, lib, config, isWorkstation, isInstall, isISO, ... }:
+{ pkgs, lib, config, isWorkstation, isInstall, isISO, desktop, ... }:
 let
-  inherit (lib) mkEnableOption mkOption types mkIf mkMerge optional;
+  inherit (lib) mkEnableOption mkOption types mkIf mkMerge optional optionals;
   cfg = config.core.optimizations;
 in
 {
@@ -10,6 +10,16 @@ in
 
   config = mkIf cfg.enable
     {
+      environment = {
+        systemPackages = with pkgs;[
+          hdparm # Hard Drive management
+          smartmontools # SMART montioring
+        ] ++ optionals (desktop != null) [
+          nvme-cli
+          # power-profiles-daemon # dbus power profiles
+        ];
+      };
+
       services = {
         # https://dataswamp.org/~solene/2022-09-28-earlyoom.html
         # avoid the linux kernel from locking itself when we're putting too much strain on the memory
@@ -65,6 +75,26 @@ in
         psd = {
           enable = isInstall && isWorkstation;
           resyncTimer = "10min";
+        };
+
+        udev = {
+          path = [ pkgs.hdparm ];
+          extraRules = ''
+            ACTION=="add|change", KERNEL=="sd[a-z]", ATTRS{queue/rotational}=="1", RUN+="${pkgs.hdparm}/bin/hdparm -S 108 -B 127 /dev/%k"
+          '';
+        };
+
+        smartd = mkIf (desktop != null) {
+          enable = isInstall && isWorkstation;
+          defaults.monitored =
+            "-a " # monitor all attributes
+            + "-o on " # enable automatic offline data collection
+            + "-S on " # enable automatic attribute autosave
+            + "-n standby,q " # do not check if disk is in standby, and suppress log message to that effect so as not to cause a write to disk
+            + "-s (S/../.././02|L/../0[1-7]/4/02) " # schedule short self-test every day at 2AM, long self-test every months the first thursday at 2AM
+            + "-W 4,50,60 "
+            # monitor temperature, 4C Diff, 40 Info, 60 Crit
+          ;
         };
       };
 

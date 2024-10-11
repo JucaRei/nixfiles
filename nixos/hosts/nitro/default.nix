@@ -80,6 +80,38 @@ in
 
     services = {
 
+      xserver = {
+        xrandrHeads = [{
+          output = "eDP-1";
+          primary = true;
+          monitorConfig = ''
+            --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
+          '';
+        }
+          {
+            output = "HDMI-1-0";
+            primary = false;
+          }];
+        #   # This must be done manually to ensure my screen spaces are arranged
+        #   # exactly as I need them to be *and* the correct monitor is "primary".
+        #   # Using xrandrHeads does not work.
+        #   monitorSection = ''
+        #     VendorName     "Unknown"
+        #     ModelName      "Samsung S27E391"
+        #     HorizSync       30.0 - 81.0
+        #     VertRefresh     50.0 - 75.0
+        #     Option         "DPMS"
+        #   '';
+        #   screenSection = ''
+        #     Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DP-1: 1920x1080_75 +0+0"
+        #     Option "SLI" "Off"
+        #     Option "MultiGPU" "Off"
+        #     Option "BaseMosaic" "off"
+        #     Option "Stereo" "0"
+        #     Option "nvidiaXineramaInfoOrder" "DFP-1"
+        #   '';
+      };
+
       ### Touchpad
       libinput = {
         enable = true;
