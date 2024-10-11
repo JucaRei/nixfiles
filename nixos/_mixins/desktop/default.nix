@@ -9,11 +9,14 @@ in
   ] ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
+    features = {
+      bluetooth.enable = true;
+    };
+
     desktop = {
       features = {
         appimage.enable = true;
         audio.manager = mkDefault "pipewire";
-        bluetooth.enable = true;
         fonts.enable = true;
         printers.enable = false;
         scan.enable = false;
