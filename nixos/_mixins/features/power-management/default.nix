@@ -34,11 +34,11 @@ in
     boot.kernelParams = optionals (!isOldmac) [ "usbcore.autosuspend=-1" ];
 
     # Install Battery Threshold GNOME extensions for Thinkpads
-    environment.systemPackages =
-      with pkgs;
-      optionals (isThinkpad && config.services.xserver.desktopManager.gnome.enable) [
-        gnomeExtensions.thinkpad-battery-threshold
-      ];
+    # environment.systemPackages =
+    #   with pkgs;
+    #   optionals (isThinkpad && config.services.xserver.desktopManager.gnome.enable) [
+    #     gnomeExtensions.thinkpad-battery-threshold
+    #   ];
 
     powerManagement.powertop.enable = mkDefault false;
 
@@ -56,11 +56,11 @@ in
             platform_profile = "balanced";
             turbo = "auto";
           };
-          battery = {
-            enable_thresholds = isThinkpad;
-            start_threshold = 15;
-            stop_threshold = 85;
-          };
+          # battery = {
+          #   enable_thresholds = isThinkpad;
+          #   start_threshold = 15;
+          #   stop_threshold = 85;
+          # };
         };
       };
     };

@@ -113,8 +113,25 @@ in
           tapButtons = true;
           palmDetect = true;
           horizontalScroll = true;
+          buttonsMap = [ 1 3 2 ];
+          # minSpeed = "1.5";
+          # maxSpeed = "100";
+          # accelFactor = "0.34";
+          minSpeed = "0.70";
+          maxSpeed = "1.20";
+          accelFactor = "0.001";
         };
       };
+
+      # actkbd = {
+      #   enable = true;
+      #   bindings = [
+      #     { keys = [ 225 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -s sysfs/backlight/mba6x_backlight -A 10"; }
+      #     { keys = [ 224 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -s sysfs/backlight/mba6x_backlight -U 10"; }
+      #     { keys = [ 230 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -s sysfs/leds/smc::kbd_backlight -A 10"; }
+      #     { keys = [ 229 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -s sysfs/leds/smc::kbd_backlight -U 10"; }
+      #   ];
+      # };
     };
 
     environment.systemPackages = with pkgs; [

@@ -1,4 +1,4 @@
-{ pkgs ? (import ./default.nix) { }, ... }:
+{ pkgs ? (import ./nixpkgs.nix) { }, ... }:
 
 {
   default = pkgs.mkShell {
