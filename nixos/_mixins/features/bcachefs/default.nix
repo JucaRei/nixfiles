@@ -12,7 +12,7 @@ in
     features.bcachefs = {
       enable = mkOption {
         type = types.bool;
-        default = mkIf (elem hostname installOn || isISO);
+        default = if (elem hostname installOn || isISO) then true else false;
         description = "Enables bcachefs filesystem.";
       };
     };
