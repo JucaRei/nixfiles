@@ -15,6 +15,11 @@ in
         enable = true;
         manager = "podman";
       };
+
+      autocpufreq = {
+        enable = true;
+        autosuspend = false;
+      };
     };
 
     boot = {
@@ -42,7 +47,6 @@ in
         "lz4hc_compress"
       ];
       kernelParams = [
-        "usbcore.autosuspend=-1" # Disable USB autosuspend
         "zswap.enabled=1"
         "mem_sleep_default=deep"
       ];

@@ -13,6 +13,7 @@ in
       features = {
         appimage.enable = true;
         audio.manager = mkDefault "pipewire";
+        bluetooth.enable = true;
         fonts.enable = true;
         printers.enable = false;
         scan.enable = false;

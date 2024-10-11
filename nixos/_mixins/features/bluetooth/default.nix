@@ -6,7 +6,6 @@ in
 {
   options.features.bluetooth = {
     enable = mkEnableOption "Whether enable bluetooth";
-    default = isWorkstation || isInstall;
   };
 
   config = mkIf cfg.enable {

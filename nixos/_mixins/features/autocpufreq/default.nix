@@ -1,22 +1,25 @@
 { config, hostname, isInstall, lib, pkgs, ... }:
 let
   isIntelCPU = config.hardware.cpu.intel.updateMicrocode;
-  isLaptop = hostname != "vader" && hostname != "phasma" && hostname != "revan";
-  isOldmac = hostname == "anubis" || hostname == "rocinante";
   usePowerProfiles = config.programs.hyprland.enable
     || config.services.xserver.desktopManager.gnome.enable
     || config.services.xserver.desktopManager.pantheon.enable;
   inherit (lib) mkDefault mkIf mkForce mkOption optionals types;
-  cfg = config.features.power-management;
+  cfg = config.features.autocpufreq;
 
 in
 {
   options = {
-    features.power-management = {
+    features.autocpufreq = {
       enable = mkOption {
         type = types.bool;
         default = false;
         description = "Enables power management.";
+      };
+      autosuspend = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Whether disable auto-suspend.";
       };
     };
   };
@@ -31,20 +34,13 @@ in
     # - Thinkpads have a battery threshold charging either via the GNOME extension or auto-cpufreq
 
     # Disable USB autosuspend on desktop always on power workstations
-    boot.kernelParams = optionals (!isOldmac) [ "usbcore.autosuspend=-1" ];
-
-    # Install Battery Threshold GNOME extensions for Thinkpads
-    # environment.systemPackages =
-    #   with pkgs;
-    #   optionals (isThinkpad && config.services.xserver.desktopManager.gnome.enable) [
-    #     gnomeExtensions.thinkpad-battery-threshold
-    #   ];
+    boot.kernelParams = optionals (cfg.autosuspend) [ "usbcore.autosuspend=-1" ];
 
     powerManagement.powertop.enable = mkDefault false;
 
     programs = {
       auto-cpufreq = {
-        enable = !usePowerProfiles && isLaptop;
+        enable = true;
         settings = {
           battery = {
             governor = "powersave";
@@ -56,8 +52,9 @@ in
             platform_profile = "balanced";
             turbo = "auto";
           };
+          ### Available only on Lenovo
           # battery = {
-          #   enable_thresholds = isThinkpad;
+          #   enable_thresholds = true;
           #   start_threshold = 15;
           #   stop_threshold = 85;
           # };
@@ -67,7 +64,7 @@ in
 
     services = {
       # Only enable power-profiles-daemon if the desktop environment supports it
-      power-profiles-daemon.enable = usePowerProfiles;
+      power-profiles-daemon.enable = true;
       # Only enable thermald on Intel CPUs
       # thermald.enable = isIntelCPU;
       # Disable TLP because it conflicts with auto-cpufreq
