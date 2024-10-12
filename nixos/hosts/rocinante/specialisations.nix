@@ -27,6 +27,12 @@ in
             # screenSection = ''
             #   Option     "CurrentMetaMode" "1920 x 1200+0+0 {ForceFullCompositionPipeline=On}
             # '';
+            config = ''
+              Section "Device"
+                Identifier "Nvidia 8600 GT"
+                Driver "nouveau"
+              EndSection
+            '';
           };
         };
         environment = {
@@ -46,8 +52,8 @@ in
           #   LIBVA_DRIVER_NAME = "nouveau";
           # };
           variables = {
-            VDPAU_DRIVER = "nouveau";
-            LIBVA_DRIVER_NAME = "nouveau";
+            VDPAU_DRIVER = mkForce "nouveau";
+            LIBVA_DRIVER_NAME = mkForce "nouveau";
           };
 
           systemPackages = with pkgs; [

@@ -120,7 +120,7 @@
         phasma = helper.mkNixos { hostname = "phasma"; desktop = "hyprland"; };
         tanis = helper.mkNixos { hostname = "tanis"; desktop = "hyprland"; };
         sidious = helper.mkNixos { hostname = "sidious"; desktop = "gnome"; };
-        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "mate"; };
+        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
         nitro = helper.mkNixos { hostname = "nitro"; desktop = "xfce4"; };
         # Servers
         revan = helper.mkNixos { hostname = "revan"; };

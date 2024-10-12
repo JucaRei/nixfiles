@@ -101,7 +101,7 @@ in
         enable = mkForce false;
         touchpad = {
           horizontalScrolling = true;
-          naturalScrolling = false;
+          naturalScrolling = true;
           tapping = true;
           tappingDragLock = false;
         };
@@ -114,7 +114,7 @@ in
           tapButtons = true;
           palmDetect = true;
           horizontalScroll = true;
-          buttonsMap = [ 1 3 2 ];
+          # buttonsMap = [ 1 3 2 ];
           # minSpeed = "1.5";
           # maxSpeed = "100";
           # accelFactor = "0.34";
@@ -146,6 +146,9 @@ in
       cachix
       icloudpd # iCloud Photos Downloader
       vscode-fhs
+
+      nil
+      nixpkgs-fmt
     ];
 
     networking.enableB43Firmware = true;
