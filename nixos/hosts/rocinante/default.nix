@@ -7,6 +7,7 @@ in
 {
   imports = [
     (import ./disks.nix { })
+    ./specialisations.nix
     inputs.vscode-server.nixosModules.default
   ];
 

@@ -17,6 +17,8 @@
       gnome.excludePackages = with pkgs; [
         baobab
         gnome-text-editor
+        gnome-tour
+        gnome-user-docs
         gnome.geary
         gnome.gnome-system-monitor
         gnome.epiphany
@@ -29,6 +31,20 @@
         [
           blackbox-terminal
           gnome-usage
+          # gnomeExtensions.blur-my-shell
+          # gnomeExtensions.burn-my-windows
+          # gnomeExtensions.compact-top-bar
+          # gnomeExtensions.custom-accent-colors
+          # gradience
+          # gnomeExtensions.gtile
+          # gnomeExtensions.dash-to-panel
+          # gnomeExtensions.tray-icons-reloaded
+          # gnome.gnome-tweaks
+          # gnomeExtensions.arcmenu
+          # gnomeExtensions.gesture-improvements
+          # gnomeExtensions.paperwm
+          # gnomeExtensions.rounded-window-corners
+          # gnomeExtensions.vitals
           gnomeExtensions.appindicator
           gnomeExtensions.dash-to-dock
           gnomeExtensions.emoji-copy
@@ -324,6 +340,7 @@
 
     services = {
       gnome = {
+        gnome-initial-setup.enable = false;
         evolution-data-server.enable = lib.mkForce isInstall;
         games.enable = false;
         gnome-browser-connector.enable = isInstall;

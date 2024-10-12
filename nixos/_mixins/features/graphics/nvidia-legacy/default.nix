@@ -25,9 +25,11 @@ in
         # forceFullCompositionPipeline = true;
       };
       opengl = {
-      	extraPackages = with pkgs; [
-      		nvidia-vaapi-driver
-      	];
+        enable = true;
+        driSupport32Bit = true;
+        extraPackages = with pkgs; [
+          nvidia-vaapi-driver
+        ];
       };
     };
 
@@ -58,10 +60,12 @@ in
     environment = {
       sessionVariables = {
         LIBVA_DRIVER_NAME = "nvidia";
+        __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+        # GBM_BACKEND = "nvidia-drm";
+        WLR_NO_HARDWARE_CURSORS = "1";
       };
       systemPackages = with pkgs; [
         glxinfo
-        mame
         libva
         libva-utils
       ];
