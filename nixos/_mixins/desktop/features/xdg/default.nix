@@ -7,7 +7,7 @@ in
   options = {
     desktop.features.xdg = {
       enable = mkOption {
-        default = false;
+        default = true;
         type = types.bool;
         description = "Whether xdg defaults for desktop.";
       };
@@ -26,10 +26,13 @@ in
           xdg-desktop-portal-gnome
         ] ++ optionals (desktop == "hyprland") [
           xdg-desktop-portal-hyprland
-        ] ++ optionals (desktop == "mate" || desktop == "xfce4" || desktop == "cinnamon") [
+        ] ++ optionals (desktop == "mate" || desktop == "cinnamon") [
           xdg-desktop-portal-xapp
         ] ++ optionals (desktop == "pantheon") [
           pantheon.xdg-desktop-portal-pantheon
+        ] ++ optionals (desktop == "xfce4") [
+          xdg-desktop-portal-xapp
+          xdg-desktop-portal-gtk
         ];
 
         config = {
@@ -51,6 +54,10 @@ in
           x-cinnamon = mkIf (desktop == "mate" || desktop == "xfce4") {
             default = [ "xapp" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          };
+          xfce = mkIf (desktop == "xfce4") {
+          	default = [ "xapp" "gtk" ];
+          	"org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
           pantheon = mkIf (desktop == "pantheon") {
             default = [ "pantheon" "gtk" ];

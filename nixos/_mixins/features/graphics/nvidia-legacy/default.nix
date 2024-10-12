@@ -24,13 +24,18 @@ in
         # modesetting.enable = false;
         # forceFullCompositionPipeline = true;
       };
+      opengl = {
+      	extraPackages = with pkgs; [
+      		nvidia-vaapi-driver
+      	];
+      };
     };
 
     services = {
       xserver = {
-        # deviceSection = lib.mkDefault ''
-        #   Option "TearFree" "true"
-        # '';
+        deviceSection = lib.mkDefault ''
+          Option "TearFree" "true"
+        '';
         # config = ''
         #   Section "Device"
         #     Identifier "Nvidia Card"
@@ -43,17 +48,17 @@ in
           # Option "IgnoreABI" "1"
           Option "IgnoreABI" "true"
         '';
-        # screenSection = ''
-        #   Option     "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
-        # '';
+        screenSection = ''
+          Option     "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
+        '';
         videoDrivers = [ "nvidia" ];
       };
     };
 
     environment = {
-      # sessionVariables = {
-      #   LIBVA_DRIVER_NAME = "nvidia";
-      # };
+      sessionVariables = {
+        LIBVA_DRIVER_NAME = "nvidia";
+      };
       systemPackages = with pkgs; [
         glxinfo
         mame
