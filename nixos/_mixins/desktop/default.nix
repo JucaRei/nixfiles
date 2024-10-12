@@ -21,7 +21,6 @@ in
         printers.enable = false;
         scan.enable = false;
         v4l2loopback.enable = false;
-        xdg.enable = true;
       };
 
       apps = {
