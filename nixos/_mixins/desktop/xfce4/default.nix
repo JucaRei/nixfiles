@@ -24,8 +24,9 @@ in
       xfce4-mailwatch-plugin
     ];
     #   # Add some packages to complete the XFCE desktop
-    systemPackages = with pkgs.xfce // pkgs // pkgs.mate // pkgs.xorg; [
+    systemPackages = with pkgs.xfce // pkgs // pkgs.mate // pkgs.xorg // pkgs.gnome; [
       elementary-xfce-icon-theme
+      gnome-keyring
       atril
       gparted
       orage
