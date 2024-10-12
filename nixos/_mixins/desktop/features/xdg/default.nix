@@ -2,6 +2,7 @@
 let
   inherit (lib) mkIf mkOption types optionals;
   cfg = config.desktop.features.xdg;
+  xapps = (desktop == "xfce4") || (desktop == "mate") || (desktop == "cinnamon");
 in
 {
   options = {
@@ -22,43 +23,55 @@ in
         ];
 
         extraPortals = with pkgs; [ ]
-          ++ optionals (desktop == "gnome" || desktop == "budgie") [
+          ++ optionals (desktop == "gnome") [
           xdg-desktop-portal-gnome
+        ] ++ optionals (desktop == "budgie") [
+          xdg-desktop-portal-gnome
+          xdg-desktop-portal-gtk
         ] ++ optionals (desktop == "hyprland") [
           xdg-desktop-portal-hyprland
-        ] ++ optionals (desktop == "mate" || desktop == "cinnamon") [
+        ] ++ optionals (xapps) [
           xdg-desktop-portal-xapp
+          (xdg-desktop-portal-gtk.override {
+            # Use the upstream default so this won't conflict with the xapp portal.
+            buildPortalsInGnome = false;
+          })
         ] ++ optionals (desktop == "pantheon") [
           pantheon.xdg-desktop-portal-pantheon
-        ] ++ optionals (desktop == "xfce4") [
-          xdg-desktop-portal-xapp
-          xdg-desktop-portal-gtk
         ];
 
         config = {
           common = {
             default = [ "gtk" ];
           };
-          gnome = mkIf (desktop == "gnome" || desktop == "bspwm") {
+          gnome = mkIf (desktop == "gnome") {
             default = [ "gnome" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
-          budgie = mkIf (desktop == "budgie") {
-            default = [ "gnome" "gtk" ];
-            "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-          };
+          # bspwm = (desktop == "bspwm") {
+          #   default = [ "gnome" "gtk" ];
+          #   "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          # };
+          # budgie = (desktop == "budgie") {
+          #   default = [ "gnome" "gtk" ];
+          #   "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          # };
           hyprland = mkIf (desktop == "hyprland") {
             default = [ "hyprland" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
-          x-cinnamon = mkIf (desktop == "mate" || desktop == "xfce4") {
+          x-cinnamon = mkIf (desktop == "cinnamon") {
             default = [ "xapp" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
-          xfce = mkIf (desktop == "xfce4") {
-          	default = [ "xapp" "gtk" ];
-          	"org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-          };
+          # mate = mkIf (desktop == "mate") {
+          #   default = [ "xapp" "gtk" ];
+          #   "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          # };
+          # xfce = mkIf (desktop == "xfce4") {
+          #   default = [ "xapp" "gtk" ];
+          #   "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          # };
           pantheon = mkIf (desktop == "pantheon") {
             default = [ "pantheon" "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];

@@ -14,7 +14,11 @@
           };
         };
       };
-      desktopManager = { cinnamon = { enable = true; }; };
+      desktopManager = {
+        cinnamon = {
+          enable = true;
+        };
+      };
     };
     # redshift = {
     #   enable = true;
@@ -28,7 +32,7 @@
   };
   environment = {
     systemPackages =
-      (with pkgs; [ blueberry ])
+      (with pkgs; [ blueberry gthumb ])
       ++ (with pkgs.cinnamon; [
         nemo
         nemo-with-extensions
