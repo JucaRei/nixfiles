@@ -1,9 +1,8 @@
-{
-  config,
-  isInstall,
-  lib,
-  pkgs,
-  ...
+{ config
+, isInstall
+, lib
+, pkgs
+, ...
 }:
 {
   imports = [ ./greetd.nix ];
@@ -26,10 +25,10 @@
         libheif.out
         monitorets
         gnome.gnome-font-viewer
-        gnome.nautilus  # file manager
+        gnome.nautilus # file manager
         gnome.zenity
         polkit_gnome
-        wdisplays       # display configuration
+        wdisplays # display configuration
         wlr-randr
         unstable.catppuccin-cursors
       ];
@@ -99,5 +98,26 @@
     };
     gvfs.enable = true;
     udisks2.enable = true;
+  };
+
+  xdg = {
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      configPackages = [ pkgs.hyprland ];
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-hyprland
+        (xdg-desktop-portal-gtk.override {
+          # Use the upstream default so this won't conflict with the xapp portal.
+          buildPortalsInGnome = false;
+        })
+      ];
+      config = {
+        common = {
+          default = [ "hyprland" "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        };
+      };
+    };
   };
 }

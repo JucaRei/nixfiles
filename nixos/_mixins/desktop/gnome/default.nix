@@ -370,5 +370,29 @@
         };
       };
     };
+
+    xdg = {
+      portal = {
+        enable = true;
+        xdgOpenUsePortal = true;
+        configPackages = [ pkgs.gnome.gnome-session ];
+        extraPortals = with pkgs; [
+          xdg-desktop-portal-gnome
+          xdg-desktop-portal-gtk
+        ];
+        config = {
+          common = {
+            default = [ "gnome" "gtk" ];
+            "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          };
+        };
+      };
+      terminal-exec = {
+        enable = true;
+        settings = {
+          default = [ "com.raggesilver.BlackBox.desktop" ];
+        };
+      };
+    };
   };
 }

@@ -5,23 +5,23 @@ in
 {
 
   environment = {
-    budgie.excludePackages = with pkgs; [
-      mate.mate-terminal
-      mate.eom
-      mate.pluma
-      mate.atril
-      mate.engrampa
-      mate.mate-calc
-      mate.mate-terminal
-      mate.mate-system-monitor
-      # vlc
+    budgie.excludePackages = with pkgs // pkgs.mate; [
+      mate-terminal
+      eom
+      pluma
+      atril
+      engrampa
+      mate-calc
+      mate-terminal
+      mate-system-monitor
+      vlc
     ];
-    systemPackages = with pkgs; [
+    systemPackages = with pkgs // pkgs.budgie // pkgs.gnome; [
       # inputs.nix-software-center.packages.${system}.nix-software-center
-      budgie.budgie-backgrounds
-      budgie.budgie-control-center
-      budgie.budgie-desktop-view
-      budgie.budgie-screensaver
+      budgie-backgrounds
+      budgie-control-center
+      budgie-desktop-view
+      budgie-screensaver
       qogir-theme
       tilix
 
@@ -32,7 +32,7 @@ in
       gnome-menus
 
       # Required by Budgie Control Center.
-      gnome.zenity
+      zenity
 
       # Update user directories.
       xdg-user-dirs
@@ -40,11 +40,11 @@ in
   };
 
   # Qt application style.
-  qt = lib.mkForce {
-    enable = true;
-    style = "gtk2";
-    platformTheme = "gtk2";
-  };
+  # qt = lib.mkForce {
+  #   enable = true;
+  #   style = "gtk2";
+  #   platformTheme = "gtk2";
+  # };
 
   environment.pathsToLink = [
     "/share" # TODO: https://github.com/NixOS/nixpkgs/issues/47173
@@ -116,5 +116,29 @@ in
   };
   security = {
     pam.services = { budgie-screensaver.allowNullPassword = true; };
+  };
+
+  xdg = {
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      configPackages = [ pkgs.budgie.budgie-session ];
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-gnome
+        xdg-desktop-portal-gtk
+      ];
+      config = {
+        common = {
+          default = [ "gnome" "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+        };
+      };
+    };
+    terminal-exec = {
+      enable = true;
+      settings = {
+        default = [ "com.gexperts.Tilix.desktop" ];
+      };
+    };
   };
 }

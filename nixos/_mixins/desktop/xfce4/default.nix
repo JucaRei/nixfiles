@@ -4,6 +4,25 @@ let
 in
 {
   environment = {
+    xfce.excludePackages = with pkgs.xfce // pkgs; [
+      amberol
+      parole
+      xfburn
+      xfce4-dict
+      xfce4-dev-tools
+      xfce4-mpc-plugin
+      xfce4-taskmanager
+      xfce4-eyes-plugin
+      xfce4-verve-plugin
+      xfce4-notes-plugin
+      xfce4-sensors-plugin
+      xfce4-cpufreq-plugin
+      xfce4-netload-plugin
+      xfce4-docklike-plugin
+      xfce4-dockbarx-plugin
+      xfce4-cpugraph-plugin
+      xfce4-mailwatch-plugin
+    ];
     #   # Add some packages to complete the XFCE desktop
     systemPackages = with pkgs.xfce // pkgs // pkgs.mate // pkgs.xorg; [
       elementary-xfce-icon-theme
@@ -110,6 +129,26 @@ in
         xfce = {
           enable = true;
           enableXfwm = true;
+        };
+      };
+    };
+  };
+  xdg = {
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      configPackages = [ pkgs.xfce.xfce4-session ];
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-xapp
+        (xdg-desktop-portal-gtk.override {
+          # Use the upstream default so this won't conflict with the xapp portal.
+          buildPortalsInGnome = false;
+        })
+      ];
+      config = {
+        common = {
+          default = [ "xapp" "gtk" ];
+          "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
         };
       };
     };

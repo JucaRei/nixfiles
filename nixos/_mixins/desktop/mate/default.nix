@@ -400,5 +400,25 @@ in
         };
       };
     };
+    xdg = {
+      portal = {
+        enable = true;
+        xdgOpenUsePortal = true;
+        configPackages = [ pkgs.mate.mate-session-manager ];
+        extraPortals = with pkgs; [
+          xdg-desktop-portal-xapp
+          (xdg-desktop-portal-gtk.override {
+            # Use the upstream default so this won't conflict with the xapp portal.
+            buildPortalsInGnome = false;
+          })
+        ];
+        config = {
+          common = {
+            default = [ "xapp" "gtk" ];
+            "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          };
+        };
+      };
+    };
   };
 }

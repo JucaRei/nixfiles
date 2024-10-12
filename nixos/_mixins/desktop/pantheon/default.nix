@@ -315,5 +315,22 @@
         ExecStart = "${pkgs.indicator-application-gtk3}/libexec/indicator-application/indicator-application-service";
       };
     };
+
+    xdg = {
+      portal = {
+        enable = true;
+        xdgOpenUsePortal = true;
+        extraPortals = with pkgs; [
+          pantheon.xdg-desktop-portal-pantheon
+          xdg-desktop-portal-gtk
+        ];
+        config = {
+          common = {
+            default = [ "pantheon" "gtk" ];
+            "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          };
+        };
+      };
+    };
   };
 }
