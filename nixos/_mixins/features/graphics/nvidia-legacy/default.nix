@@ -14,6 +14,7 @@ in
     boot = {
       blacklistedKernelModules = [
         "nouveau"
+        "nvidiafb"
       ];
     };
 
@@ -28,12 +29,19 @@ in
         enable = true;
         driSupport32Bit = true;
         extraPackages = with pkgs; [
+          vaapiVdpau
+          libvdpau-va-gl
           nvidia-vaapi-driver
+        ];
+        extraPackages32 = with pkgs; [
+          vaapiVdpau
+          pkgsi686Linux.nvidia-vaapi-driver
         ];
       };
     };
 
     services = {
+      acpid.enable = true;
       xserver = {
         deviceSection = lib.mkDefault ''
           Option "TearFree" "true"
@@ -51,6 +59,8 @@ in
           Option "IgnoreABI" "true"
         '';
         screenSection = ''
+          Option     "AllowIndirectGLXProtocol" "off"
+          Option     "TripleBuffer" "on"
           Option     "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
         '';
         videoDrivers = [ "nvidia" ];
@@ -61,14 +71,18 @@ in
       sessionVariables = mkDefault {
         LIBVA_DRIVER_NAME = "nvidia";
         __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-        # GBM_BACKEND = "nvidia-drm";
+        GBM_BACKEND = "nvidia-drm";
         WLR_NO_HARDWARE_CURSORS = "1";
       };
       systemPackages = with pkgs; [
         glxinfo
-        libva
         libva-utils
+        vdpauinfo
       ];
+
+      # 'nvidia_x11' installs it's files to /run/opengl-driver/...
+      etc."egl/egl_external_platform.d".source =
+        "/run/opengl-driver/share/egl/egl_external_platform.d/";
     };
   };
 }

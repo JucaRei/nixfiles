@@ -98,29 +98,59 @@ in
       };
 
       libinput = {
-        enable = mkForce false;
+        enable = mkForce true;
         touchpad = {
           horizontalScrolling = true;
           naturalScrolling = true;
           tapping = true;
           tappingDragLock = false;
+          scrollMethod = "twofinger";
+          middleEmulation = true;
         };
       };
 
       xserver = {
+        xkb = {
+          layout = "us";
+          variant = "mac"; # "altgr-intl"
+          model = "pc105";
+          options = "eurosign:5";
+        };
+
         synaptics = {
-          enable = mkDefault true;
+          enable = mkForce false;
           twoFingerScroll = true;
           tapButtons = true;
-          palmDetect = true;
           horizontalScroll = true;
-          # buttonsMap = [ 1 3 2 ];
+          buttonsMap = [ 1 3 2 ];
+          dev = "/dev/input/event*";
           # minSpeed = "1.5";
           # maxSpeed = "100";
           # accelFactor = "0.34";
-          minSpeed = "0.70";
-          maxSpeed = "1.20";
+          scrollDelta = 10;
+          minSpeed = "0.7";
+          maxSpeed = "1.7";
+          palmDetect = true;
           accelFactor = "0.001";
+          additionalOptions =
+            ''
+              Option "FingerHigh" "50"
+              Option "FingerLow" "30"
+              Option "TapAndDragGesture" "off"
+              Option "TapButton1" "1"
+              Option "TapButton2" "3"
+              Option "TapButton3" "2"
+              Option "VertScrollDelta" "-500"
+              Option "HorizScrollDelta" "-500"
+            ''
+            # ''
+            #   # "Natural" scrolling
+            #   Option "VertScrollDelta" "-30"
+            #   Option "HorizScrollDelta" "-30"
+
+            #   Option "EmulateMidButtonTime" "100"
+            # ''
+          ;
         };
       };
 
