@@ -99,13 +99,12 @@ in
       #NIXOS_OZONE_WL = "1";
       #MOZ_ENABLE_WAYLAND = "1";
     };
-    security = {
-      pam.services.kwallet = {
-        name = "kwallet";
-        enableKwallet = true;
-      };
+  };
+  security = {
+    pam.services.kwallet = {
+      name = "kwallet";
+      enableKwallet = true;
     };
-
   };
   xdg = {
     portal = {
