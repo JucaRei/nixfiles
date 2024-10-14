@@ -1,6 +1,6 @@
 { config, hostname, isInstall, isWorkstation, inputs, lib, modulesPath, outputs, pkgs, platform, stateVersion, username, ... }:
 let
-  inherit (lib) mkIf mkForce mkDefault optional optionals;
+  inherit (lib) mkIf mkForce mkDefault optional optionals getExe';
 in
 {
   imports = with inputs; [
@@ -78,6 +78,7 @@ in
 
       shellAliases = {
         store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+        keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
       };
 
       systemPackages =
@@ -197,7 +198,7 @@ in
       smartd.enable = isInstall;
 
       dbus = {
-        # packages = optional isWorkstation [ pkgs.gnome-keyring pkgs.gcr ];
+        packages = optionals (isWorkstation) (with pkgs // pkgs.gnome; [ gnome-keyring gcr ]);
         implementation = if isWorkstation then "broker" else "dbus";
       };
 

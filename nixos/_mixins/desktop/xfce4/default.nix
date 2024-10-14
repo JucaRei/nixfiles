@@ -150,10 +150,9 @@ in
       ];
       config = {
         common = {
-          # x-cinnamon = [ "xapp" "gtk" ];
-          xfce = [ "xapp" "gtk" ]; #
+          xfce = [ "xapp" "gtk" ];
           "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-          "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-gtk" ];
+          "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-xapp" ];
         };
       };
     };

@@ -1,4 +1,9 @@
-{ username, pkgs, config, lib, ... }: {
+{ username, pkgs, config, lib, ... }:
+let
+  inherit (lib) getExe';
+  __ = getExe';
+in
+{
   config = {
     services = {
       displayManager.defaultSession = "none+bspwm";
@@ -9,6 +14,13 @@
             # GTK2_RC_FILES must be available to the display manager.
             export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
           '';
+          session = [
+            {
+              name = "Desktop";
+              manage = "desktop";
+              start = "${__ config.services.xserver.windowManager.bspwm.package} bspwm &> /dev/null";
+            }
+          ];
 
           # setupCommands = '''';
           lightdm = {
@@ -136,13 +148,13 @@
         xdgOpenUsePortal = true;
         configPackages = [ pkgs.gnome.gnome-session ];
         extraPortals = with pkgs; [
-          xdg-desktop-portal-gnome
           xdg-desktop-portal-gtk
         ];
         config = {
           common = {
-            default = [ "gnome" "gtk" ];
+            default = [ "gtk" ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+            "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-gtk" ];
           };
         };
       };
