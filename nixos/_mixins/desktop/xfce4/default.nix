@@ -135,6 +135,7 @@ in
       };
     };
   };
+  security.pam.services.lightdm.enableGnomeKeyring = true;
   xdg = {
     portal = {
       enable = true;
@@ -149,9 +150,10 @@ in
       ];
       config = {
         common = {
-          x-cinnamon = [ "xapp" "gtk" ];
+          # x-cinnamon = [ "xapp" "gtk" ];
+          xfce = [ "xapp" "gtk" ];
           "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
-          "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-xapp" ];
+          "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-gtk" ];
         };
       };
     };
