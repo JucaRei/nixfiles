@@ -1,6 +1,6 @@
 { config, lib, pkgs, isWorkstation, ... }:
 let
-  inherit (lib) mkIf mkMerge mkDefault optional;
+  inherit (lib) mkIf mkMerge mkDefault optional mkOption types;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta.version;
 
@@ -18,9 +18,17 @@ let
     else config.boot.kernelPackages.nvidiaPackages.beta;
 
   device = config.features.graphics;
-  # backend = config.features.display-server.manager;
+  backend = config.features.graphics.backend;
 in
 {
+  options = {
+    features.graphics.backend = mkOption {
+      type = types.enum [ "x11" "wayland" ];
+      default = "x11";
+      description = "Default backend for the system";
+    };
+  };
+
   config = mkIf (device.gpu == "nvidia" || device.gpu == "hybrid-nvidia") {
     nixpkgs.config.allowUnfree = true;
     nixpkgs.config.nvidia.acceptLicense = true;
@@ -63,7 +71,21 @@ in
       blacklistedKernelModules = [
         "nouveau"
       ];
-      kernelParams = [ "nvidia-drm.modeset=1" ];
+      kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
+
+      extraModprobeConfig =
+        "options nvidia "
+        + lib.concatStringsSep " " [
+          # nvidia assume that by default your CPU does not support PAT,
+          # but this is effectively never the case in 2023
+          "NVreg_UsePageAttributeTable=1"
+          # This is sometimes needed for ddc/ci support, see
+          # https://www.ddcutil.com/nvidia/
+          #
+          # Current monitor does not support it, but this is useful for
+          # the future
+          "NVreg_RegistryDwords=RMUseSwI2c=0x01;RMI2cSpeed=100"
+        ];
     };
 
     environment = {
@@ -74,16 +96,70 @@ in
 
         # NVD_BACKEND = "direct";
 
-        # (mkIf (backend == "wayland") {
-        #   WLR_NO_HARDWARE_CURSORS = "1";
-        #   #__GLX_VENDOR_LIBRARY_NAME = "nvidia";
-        #   #GBM_BACKEND = "nvidia-drm"; # breaks firefox apparently
-        # })
+        (mkIf (backend == "wayland") {
+          # Necessary to correctly enable va-api (video codec hardware
+          # acceleration). If this isn't set, the libvdpau backend will be
+          # picked, and that one doesn't work with most things, including
+          # Firefox.
 
-        # (mkIf ((backend == "wayland") && (device.gpu == "hybrid-nvidia") && (config.features.graphics.enable)) {
-        #   __NV_PRIME_RENDER_OFFLOAD = "1";
-        #   WLR_DRM_DEVICES = mkDefault "/dev/dri/card1:/dev/dri/card0";
-        # })
+          # Hardware cursors are currently broken on nvidia
+          WLR_NO_HARDWARE_CURSORS = "1";
+          # Required to run the correct GBM backend for nvidia GPUs on wayland
+          GBM_BACKEND = "nvidia-drm";
+          # Apparently, without this nouveau may attempt to be used instead
+          # (despite it being blacklisted)
+          __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+
+          # Required to use va-api it in Firefox. See
+          # https://github.com/elFarto/nvidia-vaapi-driver/issues/96
+          MOZ_DISABLE_RDD_SANDBOX = "1";
+
+          # It appears that the normal rendering mode is broken on recent
+          # nvidia drivers:
+          # https://github.com/elFarto/nvidia-vaapi-driver/issues/213#issuecomment-1585584038
+          NVD_BACKEND = "direct";
+
+          # Required for firefox 98+, see:
+          # https://github.com/elFarto/nvidia-vaapi-driver#firefox
+          EGL_PLATFORM = "wayland";
+        })
+
+        (mkIf ((backend == "wayland") && (device.gpu == "hybrid-nvidia") && (config.features.graphics.enable)) {
+          __NV_PRIME_RENDER_OFFLOAD = "1";
+
+          # VDPAU_DRIVER = nvidia
+
+          # Necessary to correctly enable va-api (video codec hardware
+          # acceleration). If this isn't set, the libvdpau backend will be
+          # picked, and that one doesn't work with most things, including
+          # Firefox.
+
+          # Hardware cursors are currently broken on nvidia
+          WLR_NO_HARDWARE_CURSORS = "1";
+          # Required to run the correct GBM backend for nvidia GPUs on wayland
+          GBM_BACKEND = "nvidia-drm";
+          # Apparently, without this nouveau may attempt to be used instead
+          # (despite it being blacklisted)
+          __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+
+          # Required to use va-api it in Firefox. See
+          # https://github.com/elFarto/nvidia-vaapi-driver/issues/96
+          MOZ_DISABLE_RDD_SANDBOX = "1";
+          # MOZ_DRM_DEVICE = "/dev/dri/renderD128";
+
+          # It appears that the normal rendering mode is broken on recent
+          # nvidia drivers:
+          # https://github.com/elFarto/nvidia-vaapi-driver/issues/213#issuecomment-1585584038
+          NVD_BACKEND = "direct";
+
+          # Required for firefox 98+, see:
+          # https://github.com/elFarto/nvidia-vaapi-driver#firefox
+          EGL_PLATFORM = "wayland";
+
+          WLR_DRM_DEVICES = mkDefault "/dev/dri/card1:/dev/dri/card0";
+
+          NVD_GPU = 0;
+        })
       ];
 
       systemPackages = with pkgs; mkIf (config.features.graphics.enable) [

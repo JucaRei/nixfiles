@@ -2,8 +2,6 @@
 let
   inherit (lib) mkIf;
   device = config.features.graphics;
-
-
 in
 {
   config = mkIf (device.gpu == "intel" || device.gpu == "hybrid-nv") {
