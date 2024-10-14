@@ -1,10 +1,9 @@
 { config, lib, pkgs, username, ... }:
 let
-  inherit (lib) mkDefault mkForce;
+  inherit (lib) mkDefault mkIf mkForce;
 in
 {
   config = {
-    features.graphics.backend = "wayland";
     programs = {
       kdeconnect = {
         # For GSConnect
@@ -73,7 +72,7 @@ in
           shotwell # Popular photo organizer for the GNOME desktop
 
           # KDE Plasma tools
-          kdiff3 # Compares and merges 2 or 3 files or directories
+          # kdiff3 # Compares and merges 2 or 3 files or directories
           ark # Graphical file compression/decompression utility
           filelight # Disk usage statistics
           kate # Advanced text editor
@@ -85,21 +84,32 @@ in
           # gparted # Graphical disk partitioning tool
           # figlet # Program for making large letters out of ordinary text
           # imagemagick # A software suite to create, edit, compose, or convert bitmap images
-          deepin.deepin-calculator # An easy to use calculator for ordinary users
+          # deepin.deepin-calculator # An easy to use calculator for ordinary users
         ]);
 
-      plasma5.excludePackages = with pkgs.libsForQt5; [
-        elisa
-        khelpcenter
-        # konsole
-        oxygen
-      ];
+      plasma5 = {
+        excludePackages = with pkgs // pkgs.libsForQt5; [
+          elisa
+          khelpcenter
+          # konsole
+          oxygen
+        ];
+      };
+      plasma6 = {
+        excludePackages = with pkgs // pkgs.libsForQt5; [
+          elisa
+          khelpcenter
+          # konsole
+          oxygen
+        ];
+      };
 
-      sessionVariables = {
-        #NIXOS_OZONE_WL = "1";
-        #MOZ_ENABLE_WAYLAND = "1";
+      sessionVariables = mkIf (config.features.graphics.backend == "wayland") {
+        NIXOS_OZONE_WL = "1";
+        MOZ_ENABLE_WAYLAND = "1";
       };
     };
+
     security = {
       pam.services.kwallet = {
         name = "kwallet";
@@ -108,7 +118,6 @@ in
     };
     xdg = {
       portal = {
-        # extraPortals = pkgs.xdg-desktop-portal-kde;
         enable = true;
         xdgOpenUsePortal = true;
         extraPortals = with pkgs // pkgs.kdePackages; [

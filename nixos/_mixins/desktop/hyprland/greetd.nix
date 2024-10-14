@@ -40,32 +40,34 @@ let
     $REGREET_SWAY &>/dev/null
   '';
 
-  wallpaperResolution = if hostname == "vader" then
-    "2560x2880"
-  else if hostname == "phasma" then
-    "3440x1440"
-  else if hostname == "tanis" then
-    "1920x1200"
-  else "1920x1080";
+  wallpaperResolution =
+    if hostname == "vader" then
+      "2560x2880"
+    else if hostname == "phasma" then
+      "3440x1440"
+    else if hostname == "tanis" then
+      "1920x1200"
+    else "1920x1080";
 
-  wallpapers = if hostname == "vader" then
-    ''
-    output DP-1 bg /etc/backgrounds/Catppuccin-2560x2880.png fill
-    output DP-2 bg /etc/backgrounds/Colorway-2560x2880.png fill
-    output DP-3 bg /etc/backgrounds/Colorway-1920x1080.png fill
-    ''
-  else if hostname == "phasma" then
-    ''
-    output DP-1 bg /etc/backgrounds/Catppuccin-3440x1440.png fill
-    output HDMI-A-1 bg /etc/backgrounds/Colorway-2560x1600.png fill
-    output DP-2 bg /etc/backgrounds/Colorway-1920x1080.png fill
-    ''
-  else if hostname == "tanis" then
-    ''
-    output eDP-1 bg /etc/backgrounds/Catppuccin-1920x1200.png fill
-    ''
-  else
-    ''output * bg /etc/backgrounds/Catppuccin-1920x1080.png fill'';
+  wallpapers =
+    if hostname == "vader" then
+      ''
+        output DP-1 bg /etc/backgrounds/Catppuccin-2560x2880.png fill
+        output DP-2 bg /etc/backgrounds/Colorway-2560x2880.png fill
+        output DP-3 bg /etc/backgrounds/Colorway-1920x1080.png fill
+      ''
+    else if hostname == "phasma" then
+      ''
+        output DP-1 bg /etc/backgrounds/Catppuccin-3440x1440.png fill
+        output HDMI-A-1 bg /etc/backgrounds/Colorway-2560x1600.png fill
+        output DP-2 bg /etc/backgrounds/Colorway-1920x1080.png fill
+      ''
+    else if hostname == "tanis" then
+      ''
+        output eDP-1 bg /etc/backgrounds/Catppuccin-1920x1200.png fill
+      ''
+    else
+      ''output * bg /etc/backgrounds/Catppuccin-1920x1080.png fill'';
 in
 {
   # Use a minimal Sway to run regreet
@@ -116,30 +118,30 @@ in
           icon_theme_name = "Papirus-Dark";
           theme_name = "catppuccin-mocha-blue-standard";
         };
-        # cursorTheme = {
-        #   name = "catppuccin-mocha-blue-cursors";
-        #   package = pkgs.catppuccin-cursors.mochaBlue;
-        # };
-        # font = {
-        #   name = "Work Sans";
-        #   package = pkgs.work-sans;
-        #   size = 24;
-        # };
-        # iconTheme = {
-        #   name = "Papirus-Dark";
-        #   package = pkgs.catppuccin-papirus-folders.override {
-        #     flavor = "mocha";
-        #     accent = "blue";
-        #   };
-        # };
-        # theme = {
-        #   name = "catppuccin-mocha-blue-standard";
-        #   package = pkgs.catppuccin-gtk.override {
-        #     accents = [ "blue" ];
-        #     size = "standard";
-        #     variant = "mocha";
-        #   };
-        # };
+        cursorTheme = {
+          name = "catppuccin-mocha-blue-cursors";
+          package = pkgs.catppuccin-cursors.mochaBlue;
+        };
+        font = {
+          name = "Work Sans";
+          package = pkgs.work-sans;
+          size = 24;
+        };
+        iconTheme = {
+          name = "Papirus-Dark";
+          package = pkgs.catppuccin-papirus-folders.override {
+            flavor = "mocha";
+            accent = "blue";
+          };
+        };
+        theme = {
+          name = "catppuccin-mocha-blue-standard";
+          package = pkgs.catppuccin-gtk.override {
+            accents = [ "blue" ];
+            size = "standard";
+            variant = "mocha";
+          };
+        };
       };
     };
   };
