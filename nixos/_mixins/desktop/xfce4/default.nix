@@ -79,6 +79,7 @@ in
     colord.enable = true;
     blueman.enable = true;
     touchegg.enable = true;
+    gnome.gnome-keyring.enable = true;
     xserver = {
       enable = true;
       displayManager = {
@@ -148,8 +149,9 @@ in
       ];
       config = {
         common = {
-          default = [ "xapp" "gtk" ];
+          x-cinnamon = [ "xapp" "gtk" ];
           "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-xapp" ];
         };
       };
     };
