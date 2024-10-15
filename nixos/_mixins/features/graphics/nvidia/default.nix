@@ -156,9 +156,8 @@ in
           # https://github.com/elFarto/nvidia-vaapi-driver#firefox
           EGL_PLATFORM = "wayland";
 
-          WLR_DRM_DEVICES = mkDefault "/dev/dri/card1:/dev/dri/card0";
+          WLR_DRM_DEVICES = mkDefault "/dev/dri/card1:/dev/dri/card2";
 
-          NVD_GPU = 0;
         })
       ];
 

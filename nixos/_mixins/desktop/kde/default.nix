@@ -108,6 +108,10 @@ in
         NIXOS_OZONE_WL = "1";
         MOZ_ENABLE_WAYLAND = "1";
       };
+
+      variables = mkIf (config.features.graphics.backend == "wayland" && config.features.graphics.gpu == "hybrid-nvidia") {
+        NVD_GPU = 0;
+      };
     };
 
     security = {

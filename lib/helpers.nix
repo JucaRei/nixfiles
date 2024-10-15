@@ -1,8 +1,7 @@
-{ inputs
-, outputs
-, stateVersion
-, ...
-}:
+{ inputs, outputs, stateVersion, ... }:
+let
+  lib = inputs.nixpkgs.lib // inputs.home-manager.lib;
+in
 {
   # Helper function for generating home-manager configs
   mkHome =
@@ -18,7 +17,7 @@
       isLima = hostname == "grozbok" || hostname == "zeta";
       isWorkstation = builtins.isString desktop;
     in
-    inputs.home-manager.lib.homeManagerConfiguration {
+    lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
         inherit
@@ -53,7 +52,7 @@
       isWorkstation = builtins.isString desktop;
       notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
     in
-    inputs.nixpkgs.lib.nixosSystem {
+    lib.nixosSystem {
       specialArgs = {
         inherit
           inputs
@@ -79,7 +78,26 @@
             else
               inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix";
         in
-        [ ../nixos ] ++ inputs.nixpkgs.lib.optionals isISO [ cd-dvd ];
+        [
+          ../nixos
+
+          # make home-manager as a module of nixos
+          # so that home-manager configuration will be deployed automatically when executing `nixos-rebuild switch`
+          # inputs.home-manager.nixosModules.home-manager
+          {
+            # home-manager = {
+            #   useGlobalPkgs = true;
+            #   useUserPackages = true;
+
+            #   # TODO replace juca with your own username
+            #   users.juca = import ../home-manager;
+
+            #   # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+            #   extraSpecialArgs = { inherit (inputs.config.home-manager.homeManagerConfiguration.extraSpecialArgs) extraSpecialArgs; };
+            # };
+          }
+        ]
+        ++ inputs.nixpkgs.lib.optionals isISO [ cd-dvd ];
     };
 
   mkDarwin =
@@ -112,10 +130,11 @@
       modules = [ ../darwin ];
     };
 
-  forAllSystems = inputs.nixpkgs.lib.genAttrs [
-    "aarch64-linux"
-    "x86_64-linux"
-    "aarch64-darwin"
-    "x86_64-darwin"
-  ];
+  forAllSystems = inputs.nixpkgs.lib.genAttrs
+    [
+      "aarch64-linux"
+      "x86_64-linux"
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
 }

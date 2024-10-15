@@ -1,15 +1,22 @@
 { config, isInstall, lib, pkgs, ... }:
+let
+  inherit (lib) mkIf;
+in
 {
   imports = [ ./greetd.nix ];
   environment = {
     # Enable HEIC image previews in Nautilus
     pathsToLink = [ "share/thumbnailers" ];
+    homeBinInPath = true;
     sessionVariables = {
       # Make sure the cursor size is the same in all environments
       HYPRCURSOR_SIZE = 24;
       HYPRCURSOR_THEME = "catppuccin-mocha-blue-cursors";
       NIXOS_OZONE_WL = 1;
       QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
+    };
+    variables = mkIf (config.features.graphics.backend == "wayland" && config.features.graphics.gpu == "hybrid-nvidia") {
+      NVD_GPU = 1;
     };
     systemPackages =
       with pkgs // pkgs.gnome;
@@ -22,7 +29,7 @@
         gnome-font-viewer
         nautilus # file manager
         zenity
-        kitty
+        alacritty
         polkit_gnome
         wdisplays # display configuration
         wlr-randr
@@ -38,12 +45,12 @@
           color-scheme = "prefer-dark";
           cursor-size = mkInt32 24;
           cursor-theme = "catppuccin-mocha-blue-cursors";
-          document-font-name = "Work Sans 10";
-          font-name = "Work Sans 10";
+          document-font-name = "Work Sans 11";
+          font-name = "Work Sans 11";
           gtk-theme = "catppuccin-mocha-blue-standard";
           gtk-enable-primary-paste = true;
           icon-theme = "Papirus-Dark";
-          monospace-font-name = "FiraCode Nerd Font Mono Medium 11";
+          monospace-font-name = "FiraCode Nerd Font Mono Medium 12";
           text-scaling-factor = mkDouble 1.0;
         };
 
@@ -60,7 +67,10 @@
         };
       };
     }];
-    file-roller.enable = isInstall;
+    file-roller = {
+      enable = isInstall;
+      package = pkgs.gnome.nautilus;
+    };
     gnome-disks.enable = isInstall;
     hyprland = {
       enable = true;
