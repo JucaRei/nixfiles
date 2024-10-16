@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkDefault mkIf;
+  inherit (lib) mkDefault mkIf mkForce;
   device = config.features.graphics;
 in
 {
@@ -16,13 +16,21 @@ in
         "nouveau"
         "nvidiafb"
       ];
+	  kernelModules = [
+	  	"nvidia"
+	  	"nvidia_modeset"
+	  	"nvidia_uvm"
+	  	"nvidia_drm"
+	  	"i2c-nvidia_gpu"
+	  ];
     };
 
     hardware = {
       nvidia = {
         package = config.boot.kernelPackages.nvidiaPackages.legacy_340;
         nvidiaSettings = true;
-        # modesetting.enable = false;
+        modesetting.enable = true;
+        powerManagement.finegrained = false;
         # forceFullCompositionPipeline = true;
       };
       opengl = {
@@ -30,12 +38,11 @@ in
         driSupport32Bit = true;
         extraPackages = with pkgs; [
           vaapiVdpau
-          libvdpau-va-gl
-          nvidia-vaapi-driver
+          libvdpau-va-gl 
         ];
-        extraPackages32 = with pkgs; [
+        extraPackages32 = with pkgs.driversi686Linux // pkgs.pkgsi686Linux; [
           vaapiVdpau
-          pkgsi686Linux.nvidia-vaapi-driver
+          libvdpau-va-gl
         ];
       };
     };
@@ -59,8 +66,8 @@ in
           Option "IgnoreABI" "true"
         '';
         screenSection = ''
-          Option     "AllowIndirectGLXProtocol" "off"
-          Option     "TripleBuffer" "on"
+          # Option     "AllowIndirectGLXProtocol" "off"
+          # Option     "TripleBuffer" "on"
           Option     "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
         '';
         videoDrivers = [ "nvidia" ];
@@ -69,20 +76,28 @@ in
 
     environment = {
       sessionVariables = mkDefault {
-        LIBVA_DRIVER_NAME = "nvidia";
-        __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-        GBM_BACKEND = "nvidia-drm";
-        WLR_NO_HARDWARE_CURSORS = "1";
+        LIBVA_DRIVER_NAME = mkForce "vdpau";
+        VDPAU_DRIVER = mkForce "nvidia";
+        # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+        # GBM_BACKEND = "nvidia-drm";
+        # WLR_NO_HARDWARE_CURSORS = "1";
       };
       systemPackages = with pkgs; [
         glxinfo
         libva-utils
         vdpauinfo
+        driversi686Linux.vdpauinfo
       ];
 
+      # variables = {
+      	# VAAPI_MPEG4_ENABLED= true;
+      # };
+
       # 'nvidia_x11' installs it's files to /run/opengl-driver/...
-      etc."egl/egl_external_platform.d".source =
-        "/run/opengl-driver/share/egl/egl_external_platform.d/";
+      # etc = {
+        # "egl/egl_external_platform.d".source = "/run/opengl-driver/share/egl/egl_external_platform.d/";
+        # "egl/egl_external_platform.d".source = "/run/opengl-driver/share/egl/egl_external_platform.d/";
+      # };
     };
   };
 }
