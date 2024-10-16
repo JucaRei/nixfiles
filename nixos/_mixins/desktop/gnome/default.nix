@@ -166,7 +166,7 @@
             "org/gnome/desktop/wm/preferences" = {
               audible-bell = false;
               button-layout = "close,minimize,maximize";
-              titlebar-font = "Work Sans Semi-Bold 12";
+              titlebar-font = "Work Sans Semi-Bold 11";
             };
 
             "org/gnome/GWeather" = {
@@ -192,18 +192,20 @@
 
             "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
               binding = "<Super>t";
-              command = "gnome-console";
+              # command = "gnome-console";
+              command = "blackbox";
               name = "Terminal";
             };
 
             "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
               binding = "<Primary><Alt>t";
-              command = "gnome-console";
+              # command = "gnome-console";
+              command = "blackbox";
               name = "Terminal";
             };
 
             "org/gnome/TextEditor" = {
-              custom-font = "FiraCode Nerd Font Mono Medium 13";
+              custom-font = "FiraCode Nerd Font Mono Medium 12";
               highlight-current-line = true;
               indent-style = "space";
               show-line-numbers = true;
@@ -359,14 +361,14 @@
         };
         desktopManager.gnome = {
           enable = true;
-          extraGSettingsOverridePackages = with pkgs; [
-            nautilus-open-any-terminal
-            nautilus-annotations
-          ];
-          extraGSettingsOverrides = ''
-            [org.gnome.desktop.peripherals.touchpad]
-            tap-to-click=true
-          '';
+          # extraGSettingsOverridePackages = with pkgs; [
+          #   nautilus-open-any-terminal
+          #   nautilus-annotations
+          # ];
+          # extraGSettingsOverrides = ''
+          #   [org.gnome.desktop.peripherals.touchpad]
+          #   tap-to-click=true
+          # '';
         };
       };
     };
@@ -378,7 +380,7 @@
         configPackages = [ pkgs.gnome.gnome-session ];
         extraPortals = with pkgs; [
           xdg-desktop-portal-gnome
-          xdg-desktop-portal-gtk
+          # xdg-desktop-portal-gtk
         ];
         config = {
           common = {

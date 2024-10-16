@@ -11,6 +11,8 @@ pkgs: {
   # Desktop
   nautilus-annotations = pkgs.callPackage ./desktop/gnome/nautilus/nautilus-annotations { };
 
+  rtl8188gu = pkgs.callPackage ./system/kernel/rtl8188gu { };
+
   # Grub
   grub-catppuccin = pkgs.callPackage ./system/grub/grub-catppuccin { };
   cyberre = pkgs.callPackage ./system/grub/cyberre { };

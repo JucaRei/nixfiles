@@ -1,7 +1,7 @@
 { config, hostname, isLima, isWorkstation, lib, pkgs, username, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkIf;
+  inherit (lib) mkIf getExe;
   isStreamstation = hostname == "phasma" || hostname == "vader";
 in
 {
@@ -20,73 +20,62 @@ in
       #     StartupNotify=false
       #   '';
       # };
-      ".face".source = ./face.png;
-      "Development/salsa.debian.org/.envrc" = mkIf (!isLima) {
-        text = ''export DEB_VENDOR=Debian'';
+      ".face" = {
+        source = "${getExe pkgs.juca-avatar} juca-avatar";
       };
-      "Development/git.launchpad.net/.envrc" = mkIf (!isLima) {
-        text = ''export DEB_VENDOR=Ubuntu'';
-      };
-      "Development/github.com/ubuntu/.envrc" = mkIf (!isLima) {
-        text = ''export DEB_VENDOR=Ubuntu'';
-      };
-      "Development/github.com/ubuntu-mate/.envrc" = mkIf (!isLima) {
-        text = ''export DEB_VENDOR=Ubuntu'';
-      };
-      "Quickemu/nixos-console.conf" = mkIf (!isLima) {
+      "virtualmachines/nixos-console.conf" = mkIf (!isLima) {
         text = ''
           #!/run/current-system/sw/bin/quickemu --vm
           guest_os="linux"
           disk_img="nixos-console/disk.qcow2"
-          disk_size="96G"
+          disk_size="25G"
           iso="nixos-console/nixos.iso"
         '';
       };
-      "Quickemu/nixos-gnome.conf" = mkIf (!isLima) {
+      "virtualmachines/nixos-gnome.conf" = mkIf (!isLima) {
         text = ''
           #!/run/current-system/sw/bin/quickemu --vm
           guest_os="linux"
           disk_img="nixos-gnome/disk.qcow2"
-          disk_size="96G"
+          disk_size="25G"
           iso="nixos-gnome/nixos.iso"
           width="1920"
           height="1080"
         '';
       };
-      "Quickemu/nixos-mate.conf" = mkIf (!isLima) {
+      "virtualmachines/nixos-mate.conf" = mkIf (!isLima) {
         text = ''
           #!/run/current-system/sw/bin/quickemu --vm
           guest_os="linux"
           disk_img="nixos-mate/disk.qcow2"
-          disk_size="96G"
+          disk_size="25G"
           iso="nixos-mate/nixos.iso"
           width="1920"
           height="1080"
         '';
       };
-      "Quickemu/nixos-pantheon.conf" = mkIf (!isLima) {
+      "virtualmachines/nixos-pantheon.conf" = mkIf (!isLima) {
         text = ''
           #!/run/current-system/sw/bin/quickemu --vm
           guest_os="linux"
           disk_img="nixos-pantheon/disk.qcow2"
-          disk_size="96G"
+          disk_size="25G"
           iso="nixos-pantheon/nixos.iso"
           width="1920"
           height="1080"
         '';
       };
       "/Development/.keep" = mkIf (!isLima) { text = ""; };
-      "/Games/.keep" = mkIf (!isLima) { text = ""; };
-      "/Quickemu/nixos-console/.keep" = mkIf (!isLima) { text = ""; };
-      "/Quickemu/nixos-gnome/.keep" = mkIf (!isLima) { text = ""; };
-      "/Quickemu/nixos-mate/.keep" = mkIf (!isLima) { text = ""; };
-      "/Quickemu/nixos-pantheon/.keep" = mkIf (!isLima) { text = ""; };
-      "/Scripts/.keep" = mkIf (!isLima) { text = ""; };
-      "/Websites/.keep" = mkIf (!isLima) { text = ""; };
-      "/Zero/.keep".text = "";
-      ".ssh/allowed_signers".text = ''
-        juca@wimpress.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAywaYwPN4LVbPqkc+kUc7ZVazPBDy4LCAud5iGJdr7g9CwLYoudNjXt/98Oam5lK7ai6QPItK6ECj5+33x/iFpWb3Urr9SqMc/tH5dU1b9N/9yWRhE2WnfcvuI0ms6AXma8QGp1pj/DoLryPVQgXvQlglHaDIL1qdRWFqXUO2u30X5tWtDdOoR02UyAtYBttou4K0rG7LF9rRaoLYP9iCBLxkMJbCIznPD/pIYa6Fl8V8/OVsxYiFy7l5U0RZ7gkzJv8iNz+GG8vw2NX4oIJfAR4oIk3INUvYrKvI2NSMSw5sry+z818fD1hK+soYLQ4VZ4hHRHcf4WV4EeVa5ARxdw== Martin Wimpress
-      '';
+      "/games/.keep" = mkIf (!isLima) { text = ""; };
+      "/virtualmachines/nixos-console/.keep" = mkIf (!isLima) { text = ""; };
+      "/virtualmachines/nixos-gnome/.keep" = mkIf (!isLima) { text = ""; };
+      "/virtualmachines/nixos-mate/.keep" = mkIf (!isLima) { text = ""; };
+      "/virtualmachines/nixos-pantheon/.keep" = mkIf (!isLima) { text = ""; };
+      "/workspace/scripts/.keep" = mkIf (!isLima) { text = ""; };
+      "/.dotfiles/.keep".text = "";
+      # ".ssh/allowed_signers".text = ''
+      #   juca@wimpress.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAywaYwPN4LVbPqkc+kUc7ZVazPBDy4LCAud5iGJdr7g9CwLYoudNjXt/98Oam5lK7ai6QPItK6ECj5+33x/iFpWb3Urr9SqMc/tH5dU1b9N/9yWRhE2WnfcvuI0ms6AXma8QGp1pj/DoLryPVQgXvQlglHaDIL1qdRWFqXUO2u30X5tWtDdOoR02UyAtYBttou4K0rG7LF9rRaoLYP9iCBLxkMJbCIznPD/pIYa6Fl8V8/OVsxYiFy7l5U0RZ7gkzJv8iNz+GG8vw2NX4oIJfAR4oIk3INUvYrKvI2NSMSw5sry+z818fD1hK+soYLQ4VZ4hHRHcf4WV4EeVa5ARxdw== Martin Wimpress
+      # '';
     };
     sessionVariables = {
       BZR_EMAIL = "Martin Wimpress <code@wimpress.io>";

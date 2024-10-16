@@ -1,6 +1,6 @@
 { config, lib, pkgs, isWorkstation, ... }:
 let
-  inherit (lib) mkIf mkMerge mkDefault optional mkOption types;
+  inherit (lib) mkIf mkMerge mkDefault mkForce optional mkOption types;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta.version;
 
@@ -156,7 +156,9 @@ in
           # https://github.com/elFarto/nvidia-vaapi-driver#firefox
           EGL_PLATFORM = "wayland";
 
-          WLR_DRM_DEVICES = mkDefault "/dev/dri/card1:/dev/dri/card2";
+          # WLR_DRM_DEVICES = mkDefault "/dev/dri/card1:/dev/dri/card0";
+          WLR_DRM_DEVICES = "/dev/dri/card2:/dev/dri/card1"; # Default nvidia
+          # WLR_DRM_DEVICES = "/dev/dri/by-path/{pci-*-card}";
 
         })
       ];

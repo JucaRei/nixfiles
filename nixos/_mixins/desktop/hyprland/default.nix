@@ -14,9 +14,19 @@ in
       HYPRCURSOR_THEME = "catppuccin-mocha-blue-cursors";
       NIXOS_OZONE_WL = 1;
       QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
+      DISPLAY = ":0";
+
+      #WLR_RENDERER = "vulkan"; # Vulkan reduces power usage
+
+      #WLR_DRM_NO_ATOMIC = 1;
+
+      #__GL_GSYNC_ALLOWED = 0; # global vsync
+      #__GL_SYNC_TO_VBLANK = 0;
+      #__GL_VRR_ALLOWED = 0;
     };
     variables = mkIf (config.features.graphics.backend == "wayland" && config.features.graphics.gpu == "hybrid-nvidia") {
-      NVD_GPU = 1;
+      # NVD_GPU = 1;
+      NVD_GPU = "/dev/dri/renderD129";
     };
     systemPackages =
       with pkgs // pkgs.gnome;
@@ -35,6 +45,10 @@ in
         wlr-randr
         unstable.catppuccin-cursors
       ];
+
+    shellAliases = {
+      check-drm = "${pkgs.drm_info}/bin/drm_info -j | ${pkgs.jq}/bin/jq 'with_entries(.value |= .driver.desc)'";
+    };
   };
 
   programs = {

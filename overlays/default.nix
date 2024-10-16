@@ -39,6 +39,8 @@
       };
     });
 
+    rtl8188gu = prev.rtl8188gu;
+
     hyprland = prev.hyprland.overrideAttrs (_old: rec {
       postPatch = _old.postPatch + ''
         sed -i 's|Exec=Hyprland|Exec=hypr-launch|' example/hyprland.desktop

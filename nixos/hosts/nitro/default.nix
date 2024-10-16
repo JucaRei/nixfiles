@@ -39,7 +39,11 @@ in
         compressor = "zstd";
         compressorArgs = [ "-19" "-T0" ];
         # verbose = mkForce false;
+        # kernelModules = [ "8188gu" ];
       };
+      extraModulePackages = (with config.boot.kernelPackages; [
+        (callPackage ../../../pkgs/system/kernel/rtl8188gu { })
+      ]);
       kernelPackages = pkgs.linuxPackages_xanmod_stable;
       kernelModules = [
         "z3fold"
@@ -55,6 +59,8 @@ in
           theme = mkForce pkgs.cyberre;
         };
       };
+
+      extraModprobeConfig = "options kvm_intel nested=1";
     };
 
     environment = {
@@ -254,6 +260,48 @@ in
     nixpkgs = {
       hostPlatform = mkDefault "x86_64-linux";
     };
+
+    programs = {
+      virt-manager.enable = true;
+      dconf = {
+        enable = true;
+        profiles = {
+          user = {
+            databases = [{
+              settings = with lib.gvariant; {
+                "org/virt-manager/virt-manager/connections" = {
+                  autoconnect = [ "qemu:///system" ];
+                  uris = [ "qemu:///system" ];
+                };
+              };
+            }];
+          };
+        };
+      };
+    };
+
+    virtualisation.libvirtd = {
+      enable = true;
+      qemu = {
+        package = pkgs.qemu_kvm;
+        runAsRoot = true;
+        swtpm.enable = true;
+        ovmf = {
+          enable = true;
+          packages = [
+            (pkgs.OVMF.override {
+              secureBoot = true;
+              tpmSupport = true;
+            }).fd
+          ];
+        };
+      };
+    };
+
+    users.users.juca = {
+      extraGroups = [ "libvirtd" ];
+    };
+
 
     fileSystems =
       let
