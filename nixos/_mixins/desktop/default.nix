@@ -99,10 +99,6 @@ in
           client min protocol = NT1
         '';
       };
-      gvfs = {
-        package = pkgs.unstable.gvfs;
-        enable = true;
-      };
       udisks2 = {
         enable = true;
         mountOnMedia = true;

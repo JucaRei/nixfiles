@@ -10,10 +10,6 @@ in
       xserver = {
         enable = true;
         displayManager = {
-          sessionCommands = ''
-            # GTK2_RC_FILES must be available to the display manager.
-            export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
-          '';
           session = [
             {
               name = "Desktop";
@@ -127,11 +123,6 @@ in
         alacritty
         rxvt-unicode
       ];
-
-      # Fix issue with java applications and tiling window managers.
-      sessionVariables = {
-        "_JAVA_AWT_WM_NONREPARENTING" = "1";
-      };
     };
 
     services = {
