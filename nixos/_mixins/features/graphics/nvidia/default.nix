@@ -101,6 +101,7 @@ in
           # acceleration). If this isn't set, the libvdpau backend will be
           # picked, and that one doesn't work with most things, including
           # Firefox.
+          __NV_PRIME_RENDER_OFFLOAD = (mkIf (device.gpu == "hybrid-nvidia")) "1";
 
           # Hardware cursors are currently broken on nvidia
           WLR_NO_HARDWARE_CURSORS = "1";
@@ -113,39 +114,6 @@ in
           # Required to use va-api it in Firefox. See
           # https://github.com/elFarto/nvidia-vaapi-driver/issues/96
           MOZ_DISABLE_RDD_SANDBOX = "1";
-
-          # It appears that the normal rendering mode is broken on recent
-          # nvidia drivers:
-          # https://github.com/elFarto/nvidia-vaapi-driver/issues/213#issuecomment-1585584038
-          NVD_BACKEND = "direct";
-
-          # Required for firefox 98+, see:
-          # https://github.com/elFarto/nvidia-vaapi-driver#firefox
-          EGL_PLATFORM = "wayland";
-        })
-
-        (mkIf ((backend == "wayland") && (device.gpu == "hybrid-nvidia") && (config.features.graphics.enable)) {
-          __NV_PRIME_RENDER_OFFLOAD = "1";
-
-          # VDPAU_DRIVER = nvidia
-
-          # Necessary to correctly enable va-api (video codec hardware
-          # acceleration). If this isn't set, the libvdpau backend will be
-          # picked, and that one doesn't work with most things, including
-          # Firefox.
-
-          # Hardware cursors are currently broken on nvidia
-          WLR_NO_HARDWARE_CURSORS = "1";
-          # Required to run the correct GBM backend for nvidia GPUs on wayland
-          GBM_BACKEND = "nvidia-drm";
-          # Apparently, without this nouveau may attempt to be used instead
-          # (despite it being blacklisted)
-          __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-
-          # Required to use va-api it in Firefox. See
-          # https://github.com/elFarto/nvidia-vaapi-driver/issues/96
-          MOZ_DISABLE_RDD_SANDBOX = "1";
-          # MOZ_DRM_DEVICE = "/dev/dri/renderD128";
 
           # It appears that the normal rendering mode is broken on recent
           # nvidia drivers:
@@ -157,10 +125,10 @@ in
           EGL_PLATFORM = "wayland";
 
           # WLR_DRM_DEVICES = mkDefault "/dev/dri/card1:/dev/dri/card0";
-          WLR_DRM_DEVICES = "/dev/dri/card2:/dev/dri/card1"; # Default nvidia
+          WLR_DRM_DEVICES = (mkIf (device.gpu == "hybrid-nvidia")) "/dev/dri/card2:/dev/dri/card1"; # Default nvidia
           # WLR_DRM_DEVICES = "/dev/dri/by-path/{pci-*-card}";
-
         })
+
       ];
 
       systemPackages = with pkgs; mkIf (config.features.graphics.enable) [
@@ -185,9 +153,12 @@ in
       nvidia = {
         package = mkDefault nvidiaPackage;
         modesetting.enable = mkDefault true;
-        prime.offload = {
-          enable = if (device.gpu == "hybrid-nvidia") then true else false;
-          enableOffloadCmd = if (device.gpu == "hybrid-nvidia") then true else false;
+        prime = {
+          offload = {
+            enable = if (device.gpu == "hybrid-nvidia") then true else false;
+            enableOffloadCmd = if (device.gpu == "hybrid-nvidia") then true else false;
+          };
+          # reverseSync.enable = if (device.gpu == "hybrid-nvidia") then true else false;
         };
         powerManagement = {
           enable = mkDefault true;

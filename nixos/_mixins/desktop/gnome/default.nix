@@ -1,4 +1,9 @@
 { config, lib, pkgs, isInstall, username, ... }:
+let
+  inherit (lib) mkDefault;
+  backend = config.features.graphics.backend;
+  isWayland = if (config.services.xserver.displayManager.gdm.wayland == true) then "wayland" else "x11";
+in
 {
   config = {
 
@@ -12,18 +17,24 @@
       };
     };
 
+    features.graphics = {
+      backend = isWayland;
+    };
+
 
     environment = {
-      gnome.excludePackages = with pkgs; [
+      gnome.excludePackages = with pkgs // pkgs.gnome; [
         baobab
         gnome-text-editor
         gnome-tour
         gnome-user-docs
-        gnome.geary
-        gnome.gnome-system-monitor
-        gnome.epiphany
-        gnome.gnome-music
-        gnome.totem
+        geary
+        gnome-system-monitor
+        epiphany
+        gnome-music
+        totem
+        gnome-console
+        gnome-terminal
       ];
 
       systemPackages =
@@ -357,6 +368,7 @@
           gdm = {
             enable = true;
             autoSuspend = false;
+            wayland = mkDefault true;
           };
         };
         desktopManager.gnome = {

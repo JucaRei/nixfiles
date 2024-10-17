@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkDefault mkIf mkForce getExe;
+
+  # if echo $XDG_SESSION_TYPE == x11
 in
 {
   config = {
@@ -81,21 +83,85 @@ in
         htop
         neofetch
         unstable.mpv
-        spotube
+        # spotube
+        youtube-music
       ];
     };
 
-    services = {
+    services =
+      let
+        isXorg = if ("${pkgs.uutils-coreutils-noprefix}/bin/echo $XDG_SESSION_TYPE" == "x11") then true else false;
+      in
+      {
+        xserver = mkIf (config.features.graphics.backend != "wayland") {
+          # FUCK NVIDIA
+          config = mkForce ''
+            Section "ServerLayout"
+              Identifier "layout"
+              Screen "nvidia" 0 0
+            EndSection
 
-      xserver =
-        let
-          isXorg = if ("${pkgs.uutils-coreutils-noprefix}/bin/echo $XDG_SESSION_TYPE" == "x11") then true else false;
-        in
-        {
-          displayManager = mkIf isXorg {
-            setupCommands = ''${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal'';
-            # sessionCommands = ''${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal'';
-          };
+            Section "Module"
+                Load "modesetting"
+                Load "glx"
+            EndSection
+
+            Section "Device"
+              Identifier "nvidia"
+              Driver "nvidia"
+              BusID "PCI:1:0:0"
+              Option "AllowEmptyInitialConfiguration"
+            EndSection
+
+            Section "Device"
+              Identifier "intel"
+              Driver "modesetting"
+              Option "AccelMethod" "sna"
+            EndSection
+
+            Section "Screen"
+              Identifier     "nvidia"
+              Device         "nvidia"
+              DefaultDepth    24
+              Option         "AllowEmptyInitialConfiguration"
+              SubSection     "Display"
+                Depth       24
+                Modes      "nvidia-auto-select"
+              EndSubSection
+            EndSection
+
+            Section "Screen"
+              Identifier "intel"
+              Device "intel"
+            EndSection
+          '';
+          # displayManager = mkIf isXorg {
+          #   setupCommands = ''
+          #     RIGHT='eDP-1'
+          #     LEFT='HDMI-1-0'
+          #     ${lib.getExe pkgs.xorg.xrandr} --output $LEFT --mode 1920x1080 --rotate right --output $LEFT --mode 1920x1080 --rotate left --right-of $LEFT
+          #   '';
+          # sessionCommands = ''${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal'';
+          # };
+
+          # xrandrHeads = [
+          #   {
+          #     output = "HDMI-1-0";
+          #     monitorConfig = ''
+          #       Option "PreferredMode"  "1920x1080"
+          #       Option "Primary"        "true"
+          #       Option "RightOf"        "eDP-1"
+          #     '';
+          #   }
+          #   {
+          #     output = "eDP-1";
+          #     monitorConfig = ''
+          #       Option "right-of" "DP1"
+          #       Option "Rotate" "left"
+          #       Option "PreferredMode" "1920x1080"
+          #     '';
+          #   }
+          # ];
 
           # Brazil layout
           layout = "br"; # Keyboard layout
@@ -172,30 +238,30 @@ in
           ];
         };
 
-      ### Touchpad
-      libinput = {
-        enable = true;
-        touchpad = {
-          accelProfile = "adaptive";
-          accelSpeed = "0.6";
-          tapping = true;
-          scrollMethod = "twofinger";
-          disableWhileTyping = true;
-          clickMethod = "clickfinger";
-          naturalScrolling = true;
-          # natural scrolling for touchpad only, not mouse
-          additionalOptions = ''
-            MatchIsTouchpad "on"
-          '';
-        };
-        mouse = {
-          naturalScrolling = false;
-          disableWhileTyping = true;
-          accelProfile = "adaptive";
-          accelSpeed = "0.3";
+        ### Touchpad
+        libinput = {
+          enable = true;
+          touchpad = {
+            accelProfile = "adaptive";
+            accelSpeed = "0.6";
+            tapping = true;
+            scrollMethod = "twofinger";
+            disableWhileTyping = true;
+            clickMethod = "clickfinger";
+            naturalScrolling = true;
+            # natural scrolling for touchpad only, not mouse
+            additionalOptions = ''
+              MatchIsTouchpad "on"
+            '';
+          };
+          mouse = {
+            naturalScrolling = false;
+            disableWhileTyping = true;
+            accelProfile = "adaptive";
+            accelSpeed = "0.3";
+          };
         };
       };
-    };
 
     hardware = {
       # 555.78 not working with xanmod
