@@ -39,12 +39,13 @@ in
         compressor = "zstd";
         compressorArgs = [ "-19" "-T0" ];
         # verbose = mkForce false;
-        # kernelModules = [ "8188gu" ];
       };
       extraModulePackages = (with config.boot.kernelPackages; [
-        (callPackage ../../../pkgs/system/kernel/rtl8188gu { })
+        # (callPackage ../../../pkgs/system/kernel/rtl8188gu/test2.nix { })
       ]);
       kernelPackages = pkgs.linuxPackages_xanmod_stable;
+      # kernelPackages = mkForce pkgs.linuxPackages_6_6;
+
       kernelModules = [
         "z3fold"
         "lz4hc"
