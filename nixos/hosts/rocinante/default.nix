@@ -56,21 +56,29 @@ in
       };
       # blacklist similar modules to avoid collision
       blacklistedKernelModules = [
+      	# B43 driver
         "bcma"
         "ssb"
         "brcmfmac"
         "brcmsmac"
         "bcma"
         "wl"
+
+        # USB rtl8811gu
+        # "rtw88_8821gu"
       ];
       kernelModules = [
         # "kvm-intel"
         # "applesmc"
         "b43"
         "bcm5974" # touchpad
+        "8188gu" # realtek driver
       ];
 
-      extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
+      extraModulePackages = [ 
+      	config.boot.kernelPackages.broadcom_sta
+      	config.boot.kernelPackages.rtl8821cu # rtl8811cu 
+      ];
 
       kernelPackages = mkForce pkgs.linuxPackages_6_6;
       kernelParams = [
