@@ -368,7 +368,7 @@ in
           gdm = {
             enable = true;
             autoSuspend = false;
-            wayland = mkDefault true;
+            wayland = mkDefault false;
           };
         };
         desktopManager.gnome = {

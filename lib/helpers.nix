@@ -1,7 +1,5 @@
 { inputs, outputs, stateVersion, ... }:
-let
-  lib = inputs.nixpkgs.lib // inputs.home-manager.lib;
-in
+
 {
   # Helper function for generating home-manager configs
   mkHome =
@@ -17,7 +15,7 @@ in
       isLima = hostname == "grozbok" || hostname == "zeta";
       isWorkstation = builtins.isString desktop;
     in
-    lib.homeManagerConfiguration {
+    inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
         inherit
@@ -52,7 +50,7 @@ in
       isWorkstation = builtins.isString desktop;
       notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
     in
-    lib.nixosSystem {
+    inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
         inherit
           inputs
