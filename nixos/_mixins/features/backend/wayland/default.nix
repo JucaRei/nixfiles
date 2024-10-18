@@ -7,6 +7,8 @@ in
   config = mkIf (device.backend == "wayland") {
     environment = {
       sessionVariables = {
+        QT_QPA_PLATFORM = "wayland";
+
         __NV_PRIME_RENDER_OFFLOAD = (mkIf (device.gpu == "hybrid-nvidia")) "1";
 
         # Hardware cursors are currently broken on nvidia

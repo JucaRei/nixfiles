@@ -254,6 +254,9 @@ in
       nix-direnv = {
         enable = true;
       };
+      direnvrcExtra = ''
+        echo "loaded direnv!"
+      '';
     };
     eza = {
       enable = true;

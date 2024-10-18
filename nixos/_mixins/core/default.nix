@@ -9,4 +9,9 @@ _: {
     ./scripts.nix
     ./security.nix
   ];
+  boot = {
+    kernel.sysctl = {
+      "vm.dirty_ratio" = 6; # sync disk when buffer reach 6% of memory
+    };
+  };
 }

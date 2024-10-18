@@ -54,6 +54,7 @@ in
         verbose = if (cfg.silentBoot == true) then true else false;
         systemd = {
           enable = if (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") then true else false;
+          strip = mkDefault true; # Saves considerable space in initrd
         };
       };
 

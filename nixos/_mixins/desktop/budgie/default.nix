@@ -5,7 +5,7 @@ in
 {
 
   environment = {
-    budgie.excludePackages = with pkgs // pkgs.mate; [
+    budgie.excludePackages = with pkgs // pkgs.mate // pkgs.gnome; [
       mate-terminal
       eom
       pluma
@@ -13,16 +13,20 @@ in
       engrampa
       mate-calc
       mate-terminal
+      gnome-terminal
       mate-system-monitor
       vlc
+      geary
     ];
-    systemPackages = with pkgs // pkgs.budgie // pkgs.gnome; [
+    systemPackages = with pkgs // pkgs.budgie // pkgs.gnome // pkgs.gnomeExtensions; [
       # inputs.nix-software-center.packages.${system}.nix-software-center
       budgie-backgrounds
       budgie-control-center
       budgie-desktop-view
       budgie-screensaver
+      magpie
       qogir-theme
+      brightness-panel-menu-indicator
       tilix
 
       # Required by the Budgie Desktop session.
@@ -37,19 +41,20 @@ in
       # Update user directories.
       xdg-user-dirs
     ];
+
+    # Qt application style.
+    # qt = mkForce {
+    #   enable = true;
+    #   style = "gtk2";
+    #   platformTheme = "gtk2";
+    # };
+
+    sessionVariables."G_SLICE" = "always-malloc";
+
+    pathsToLink = [
+      "/share" # TODO: https://github.com/NixOS/nixpkgs/issues/47173
+    ];
   };
-
-  # Qt application style.
-  # qt = lib.mkForce {
-  #   enable = true;
-  #   style = "gtk2";
-  #   platformTheme = "gtk2";
-  # };
-
-  environment.pathsToLink = [
-    "/share" # TODO: https://github.com/NixOS/nixpkgs/issues/47173
-  ];
-
   # Enable some programs to provide a complete desktop
   programs = {
     light.enable = true;
@@ -57,30 +62,34 @@ in
     nm-applet.enable = true;
     seahorse.enable = true;
     #system-config-printer.enable = true;
+
+    dconf = {
+      profiles = { };
+    };
   };
 
   # Enable services to round out the desktop
   services = {
     dbus.packages = with pkgs; [ budgie.budgie-control-center ];
-    blueman.enable = true;
+    # blueman.enable = true;
 
-    colord.enable = lib.mkDefault true; # for BCC's Color panel.
-    accounts-daemon.enable = lib.mkDefault true; # for BCC's Users panel.
-    fprintd.enable = lib.mkDefault true; # for BCC's Users panel.
+    colord.enable = mkDefault true; # for BCC's Color panel.
+    accounts-daemon.enable = mkDefault true; # for BCC's Users panel.
+    fprintd.enable = mkDefault true; # for BCC's Users panel.
     gnome = {
-      at-spi2-core.enable = lib.mkDefault true; # for BCC's A11y panel.
+      at-spi2-core.enable = mkDefault true; # for BCC's A11y panel.
       gnome-keyring.enable = true;
-      gnome-settings-daemon.enable = lib.mkDefault true;
-      glib-networking.enable = lib.mkDefault true;
+      gnome-settings-daemon.enable = mkDefault true;
+      glib-networking.enable = mkDefault true;
       # For BCC's Online Accounts panel.
-      gnome-online-accounts.enable = lib.mkDefault true;
+      gnome-online-accounts.enable = mkDefault true;
       gnome-online-miners.enable = true;
-      rygel.enable = lib.mkDefault true;
-      gnome-user-share.enable = lib.mkDefault true;
+      rygel.enable = mkForce false;
+      gnome-user-share.enable = mkDefault true;
     };
     # For BCC's Sharing panel.
-    dleyna-renderer.enable = lib.mkDefault true;
-    dleyna-server.enable = lib.mkDefault true;
+    dleyna-renderer.enable = mkDefault true;
+    dleyna-server.enable = mkDefault true;
 
     xserver = {
       enable = true;
@@ -89,9 +98,16 @@ in
           enable = true;
           greeters.slick = {
             enable = true;
-            theme = mkDefault { name = "Qogir"; };
-            iconTheme = mkDefault { name = "Qogir"; };
-            cursorTheme = mkDefault { name = "Qogir"; };
+            theme = mkForce {
+              name = "Qogir-Dark";
+            };
+            iconTheme = mkForce {
+              name = "Qogir-Dark";
+            };
+            cursorTheme = mkForce {
+              name = "Qogir-Dark";
+            };
+            draw-user-backgrounds = false;
           };
         };
         # autoLogin = {
@@ -104,12 +120,20 @@ in
       desktopManager = {
         budgie = {
           enable = mkDefault true;
-          sessionPath = [ pkgs.budgie.budgie-desktop-view ];
+          sessionPath = with pkgs.budgie // pkgs.gnome; [ budgie-desktop-view gpaste ];
           extraGSettingsOverrides = ''
             [com.solus-project.icon-tasklist:Budgie]
-            pinned-launchers=["floorp.desktop", "nixos-manual.desktop", "mate-terminal.desktop", "nemo.desktop", "gparted.desktop", "io.calamares.calamares.desktop"] '';
+              pinned-launchers=["firefox.desktop", "com.gexperts.Tilix.desktop", "nemo.desktop", "code.desktop", "io.calamares.calamares.desktop"]
+
+            [org.gnome.desktop.interface:Budgie]
+              gtk-theme="Qogir-Dark"
+          '';
           extraGSettingsOverridePackages = [ ];
-          extraPlugins = with pkgs; [ budgiePlugins.budgie-analogue-clock-applet ];
+          extraPlugins = with pkgs // pkgs.budgiePlugins; [
+            budgie-media-player-applet
+            budgie-analogue-clock-applet
+            budgie-user-indicator-redux
+          ];
         };
       };
     };
@@ -131,6 +155,7 @@ in
         common = {
           default = [ "gnome" "gtk" ];
           "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
+          "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-gtk" ];
         };
       };
     };

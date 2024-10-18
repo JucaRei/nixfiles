@@ -101,8 +101,6 @@
         # Steam Deck
         "deck@steamdeck" = helper.mkHome { hostname = "steamdeck"; username = "deck"; };
         # VMs
-        "juca@grozbok" = helper.mkHome { hostname = "grozbok"; };
-        "juca@zeta" = helper.mkHome { hostname = "zeta"; };
         "juca@minimech" = helper.mkHome { hostname = "minimech"; };
         "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "pantheon"; };
       };
@@ -121,7 +119,7 @@
         tanis = helper.mkNixos { hostname = "tanis"; desktop = "hyprland"; };
         sidious = helper.mkNixos { hostname = "sidious"; desktop = "gnome"; };
         rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-        nitro = helper.mkNixos { hostname = "nitro"; desktop = "gnome"; };
+        nitro = helper.mkNixos { hostname = "nitro"; desktop = "pantheon"; };
         # Servers
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs

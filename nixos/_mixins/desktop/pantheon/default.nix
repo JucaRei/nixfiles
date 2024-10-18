@@ -68,7 +68,7 @@
             };
 
             "io/elementary/desktop/wingpanel/sound" = {
-              max-volume = mkDouble 100.0;
+              max-volume = mkDouble 130.0;
             };
 
             "io/elementary/files/preferences" = {
@@ -106,7 +106,7 @@
             "net/launchpad/plank/docks/dock1" = {
               alignment = "center";
               hide-mode = "window-dodge";
-              icon-size = mkInt32 48;
+              icon-size = mkInt32 32;
               pinned-only = false;
               position = "left";
               theme = "Catppuccin-mocha";
@@ -119,14 +119,14 @@
             "org/gnome/desktop/interface" = {
               clock-format = "24h";
               color-scheme = "prefer-dark";
-              cursor-size = mkInt32 48;
+              cursor-size = mkInt32 24;
               cursor-theme = "catppuccin-mocha-blue-cursors";
-              document-font-name = "Work Sans 12";
-              font-name = "Work Sans 12";
+              document-font-name = "Work Sans 11";
+              font-name = "Work Sans 11";
               gtk-theme = "catppuccin-mocha-blue-standard";
               gtk-enable-primary-paste = true;
               icon-theme = "Papirus-Dark";
-              monospace-font-name = "FiraCode Nerd Font Mono Medium 13";
+              monospace-font-name = "FiraCode Nerd Font Mono Medium 12";
               text-scaling-factor = mkDouble 1.0;
             };
 
@@ -140,40 +140,41 @@
 
             "org/gnome/desktop/wm/keybindings" = {
               switch-to-workspace-1 = [
-                "<Control><Alt>1"
-                "<Control><Alt>Home"
+                # "<Control><Alt>1"
+                "<Alt>1"
+                "<Alt>Home"
               ];
-              switch-to-workspace-2 = [ "<Control><Alt>2" ];
-              switch-to-workspace-3 = [ "<Control><Alt>3" ];
-              switch-to-workspace-4 = [ "<Control><Alt>4" ];
-              switch-to-workspace-5 = [ "<Control><Alt>5" ];
-              switch-to-workspace-6 = [ "<Control><Alt>6" ];
-              switch-to-workspace-7 = [ "<Control><Alt>7" ];
-              switch-to-workspace-8 = [ "<Control><Alt>8" ];
+              switch-to-workspace-2 = [ "<Alt>2" ];
+              switch-to-workspace-3 = [ "<Alt>3" ];
+              switch-to-workspace-4 = [ "<Alt>4" ];
+              switch-to-workspace-5 = [ "<Alt>5" ];
+              switch-to-workspace-6 = [ "<Alt>6" ];
+              switch-to-workspace-7 = [ "<Alt>7" ];
+              switch-to-workspace-8 = [ "<Alt>8" ];
               switch-to-workspace-down = [ "<Control><Alt>Down" ];
               switch-to-workspace-last = [ "<Control><Alt>End" ];
               switch-to-workspace-left = [ "<Control><Alt>Left" ];
               switch-to-workspace-right = [ "<Control><Alt>Right" ];
               switch-to-workspace-up = [ "<Control><Alt>Up" ];
-              move-to-workspace-1 = [ "<Super><Alt>1" ];
-              move-to-workspace-2 = [ "<Super><Alt>2" ];
-              move-to-workspace-3 = [ "<Super><Alt>3" ];
-              move-to-workspace-4 = [ "<Super><Alt>4" ];
-              move-to-workspace-5 = [ "<Super><Alt>5" ];
-              move-to-workspace-6 = [ "<Super><Alt>6" ];
-              move-to-workspace-7 = [ "<Super><Alt>7" ];
-              move-to-workspace-8 = [ "<Super><Alt>8" ];
-              move-to-workspace-down = [ "<Super><Alt>Down" ];
-              move-to-workspace-last = [ "<Super><Alt>End" ];
-              move-to-workspace-left = [ "<Super><Alt>Left" ];
-              move-to-workspace-right = [ "<Super><Alt>Right" ];
-              move-to-workspace-up = [ "<Super><Alt>Up" ];
+              move-to-workspace-1 = [ "<Shift><Alt>1" ];
+              move-to-workspace-2 = [ "<Shift><Alt>2" ];
+              move-to-workspace-3 = [ "<Shift><Alt>3" ];
+              move-to-workspace-4 = [ "<Shift><Alt>4" ];
+              move-to-workspace-5 = [ "<Shift><Alt>5" ];
+              move-to-workspace-6 = [ "<Shift><Alt>6" ];
+              move-to-workspace-7 = [ "<Shift><Alt>7" ];
+              move-to-workspace-8 = [ "<Shift><Alt>8" ];
+              move-to-workspace-down = [ "<Shift><Alt>Down" ];
+              move-to-workspace-last = [ "<Shift><Alt>End" ];
+              move-to-workspace-left = [ "<Shift><Alt>Left" ];
+              move-to-workspace-right = [ "<Shift><Alt>Right" ];
+              move-to-workspace-up = [ "<Shift><Alt>Up" ];
             };
 
             "org/gnome/desktop/wm/preferences" = {
               audible-bell = false;
               button-layout = "close,minimize,maximize";
-              titlebar-font = "Work Sans Semi-Bold 12";
+              titlebar-font = "Work Sans Semi-Bold 11";
             };
 
             "org/gnome/GWeather" = {
@@ -186,8 +187,8 @@
             };
 
             "org/gnome/mutter/keybindings" = {
-              toggle-tiled-left = [ "<Super>Left" ];
-              toggle-tiled-right = [ "<Super>Right" ];
+              toggle-tiled-left = [ "<Shift>Left" ];
+              toggle-tiled-right = [ "<Shift>Right" ];
             };
 
             "org/gnome/settings-daemon/plugins/media-keys" = {
@@ -199,13 +200,13 @@
             };
 
             "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-              binding = "<Super>e";
+              binding = "<Alt>e";
               command = "io.elementary.files --new-window ~";
               name = "File Manager";
             };
 
             "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-              binding = "<Super>t";
+              binding = "<Alt>Return";
               command = "io.elementary.terminal --new-window --working-directory=~";
               name = "Terminal";
             };
