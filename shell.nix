@@ -15,18 +15,14 @@
       # nix-output-monitor # better output from builds
       nh
       dropbear # ssh
+
+      figlet
+      lolcat
     ];
 
     shellHook = ''
       alias ssh="dbclient"
-      echo "
-        . _____   _           _
-        |  ____| | |         | |
-        | |__    | |   __ _  | | __   ___   ___
-        |  __|   | |  / _\` | | |/ /  / _ \ / __|
-        | |      | | | (_| | |   <  |  __/ \\__ \\
-        |_|      |_|  \__,_| |_|\_\  \___| |___/
-      "
+      echo "🔨 Welcome to flakes" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
     '';
   };
 }
