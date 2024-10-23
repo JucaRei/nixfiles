@@ -1,7 +1,7 @@
 { config, lib, pkgs, username, isWorkstation, ... }:
 let
   inherit (lib) mkIf mkForce;
-  cfg = config.desktop.features.audio;
+  cfg = config.features.audio;
 
 
   ### Tiling window managers

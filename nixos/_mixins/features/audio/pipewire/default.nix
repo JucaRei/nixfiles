@@ -1,11 +1,11 @@
 { config, hostname, isInstall, isWorkstation, lib, pkgs, username, ... }:
 let
   inherit (lib) mkIf mkForce optionals optional mkOption types;
-  cfg = config.desktop.features.audio;
-  low_latency = config.desktop.features.audio."pipewire".useLowLatencyPipewire;
+  cfg = config.features.audio;
+  low_latency = config.features.audio."pipewire".useLowLatencyPipewire;
 in
 {
-  options.desktop.features.audio."pipewire".useLowLatencyPipewire = mkOption {
+  options.features.audio."pipewire".useLowLatencyPipewire = mkOption {
     type = types.bool;
     default = false;
     description = "Whether enable low latency configuration.";
