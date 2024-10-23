@@ -3,7 +3,7 @@ let
   inherit (lib) mkDefault mkIf mkForce getExe;
 in
 {
-  imports = [ ./disks-emmc.nix ];
+  imports = [ (import ./disks-emmc.nix { }) ];
   config = {
     core = {
       boot = {
