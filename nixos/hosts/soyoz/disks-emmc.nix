@@ -1,11 +1,13 @@
 { disks ? [ "/dev/mmcblk0" ], ... }:
 let
   defaultF2FS = [
+    "noatime"
     "compress_algorithm=zstd:6"
     "compress_chksum"
     "atgc"
     "gc_merge"
     "lazytime"
+    "nodiscard"
   ];
 in
 {
