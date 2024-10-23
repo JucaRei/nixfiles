@@ -43,7 +43,7 @@ in
             {
               name = "root";
               start = "550MiB";
-              end = "100%";
+              end = "-6GiB";
               content = {
                 type = "filesystem";
                 # Overwirte the existing filesystem
@@ -51,6 +51,15 @@ in
                 format = "f2fs";
                 mountpoint = "/";
                 mountOptions = defaultF2FS;
+              };
+            }
+            {
+              name = "swap";
+              start = "-6GiB";
+              end = "100%";
+              content = {
+                type = "swap";
+                resumeDevice = true;
               };
             }
           ];
