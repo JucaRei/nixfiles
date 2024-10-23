@@ -1,4 +1,4 @@
-{ config, lib, pkgs, username, ... }:
+{ config, lib, pkgs, username, isWorkstation, ... }:
 let
   inherit (lib) mkIf mkForce;
   cfg = config.desktop.features.audio;
@@ -54,11 +54,14 @@ in
     };
 
     environment.systemPackages = mkIf config.services.xserver.enable [
-      sound-volume-up
-      sound-volume-down
+
       pkgs.pavucontrol
       pkgs.pamixer
-    ];
+    ]
+    ++ (mkIf (isWorkstation) [
+      sound-volume-up
+      sound-volume-down
+    ]);
 
     systemd.services.audio-off = {
       description = "Mute audio before suspend";
