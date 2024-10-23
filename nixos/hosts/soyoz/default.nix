@@ -144,7 +144,7 @@ in
             invidious
             sendtokodi
             trakt
-            osmc-skin
+            # osmc-skin
           ]);
         };
         displayManager = {
