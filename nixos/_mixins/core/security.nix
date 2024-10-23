@@ -14,7 +14,7 @@ let
     \033[0m
   '';
 
-  inherit (lib) mkIf mkOption types;
+  inherit (lib) mkIf mkDefault mkOption types;
   cfg = config.core.security;
 in
 {
@@ -152,7 +152,7 @@ in
             };
 
             # Enable pam_systemd module to set dbus environment variable.
-            login.startSession = isWorkstation;
+            login.startSession = mkDefault isWorkstation;
           };
       };
     };
