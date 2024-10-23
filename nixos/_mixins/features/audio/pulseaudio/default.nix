@@ -58,10 +58,11 @@ in
       pkgs.pavucontrol
       pkgs.pamixer
     ]
-    ++ (mkIf (isWorkstation) [
-      sound-volume-up
-      sound-volume-down
-    ]);
+      # ++ (mkIf (isWorkstation) [
+      #   sound-volume-up
+      #   sound-volume-down
+      # ])
+    ;
 
     systemd.services.audio-off = {
       description = "Mute audio before suspend";
