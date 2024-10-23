@@ -58,9 +58,9 @@ in
         compressorArgs = [ "-19" "-T0" ];
         # verbose = mkForce false;
 
-        supportedFilesystems = [
-          "f2fs"
-        ];
+        # supportedFilesystems = [
+        #   "f2fs"
+        # ];
         kernelModules = [ "coretemp" ];
       };
       supportedFilesystems = [ "vfat" "f2fs" "cifs" "nfs" ];
@@ -160,12 +160,12 @@ in
         '';
 
         # x11 no suspend, disable screen blanking in general
-        # serverFlagsSection = ''
-        #   Option "StandbyTime"  "0"
-        #   Option "SuspendTime"  "0"
-        #   Option "OffTime"      "0"
-        #   Option "BlankTime"    "0"
-        # '';
+        serverFlagsSection = ''
+          Option "StandbyTime"  "0"
+          Option "SuspendTime"  "0"
+          Option "OffTime"      "0"
+          Option "BlankTime"    "0"
+        '';
 
         #disable blank screen
         # setupCommands = ''
@@ -257,18 +257,18 @@ in
       ### Smb folders ###
       ###################
 
-      "/media/sharecenter/volume_1" = {
-        device = "//192.168.1.207/Volume_1";
-        fsType = "cifs";
-        # options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "gid=100" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
-        options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
-      };
+      # "/media/sharecenter/volume_1" = {
+      #   device = "//192.168.1.207/Volume_1";
+      #   fsType = "cifs";
+      #   # options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "gid=100" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+      #   options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+      # };
 
-      "/media/sharecenter/volume_2" = {
-        device = "//192.168.1.207/Volume_2/Transmission/Volume_2";
-        fsType = "cifs";
-        options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
-      };
+      # "/media/sharecenter/volume_2" = {
+      #   device = "//192.168.1.207/Volume_2/Transmission/Volume_2";
+      #   fsType = "cifs";
+      #   options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+      # };
     };
 
     powerManagement.cpuFreqGovernor = lib.mkForce
