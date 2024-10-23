@@ -195,6 +195,17 @@ in
           accelSpeed = "0.3";
         };
       };
+
+      samba = {
+        enable = true;
+        #package = pkgs.unstable.samba4Full; # samba4Full broken
+        # securityType = "user";
+        # openFirewall = true;
+        extraConfig = ''
+          # My old nas dlink-325 uses v1
+          client min protocol = NT1
+        '';
+      };
     };
 
 
