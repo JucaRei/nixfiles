@@ -1,6 +1,6 @@
 { isWorkstation, isInstall, pkgs, config, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption;
+  inherit (lib) mkIf mkEnableOption mkForce;
   cfg = config.features.bluetooth;
 in
 {
@@ -34,7 +34,7 @@ in
       };
     };
     system.activationScripts = {
-      rfkillUnblockBluetooth.text = ''
+      rfkillUnblockBluetooth.text = mkForce ''
         rfkill unblock bluetooth
       '';
     };
