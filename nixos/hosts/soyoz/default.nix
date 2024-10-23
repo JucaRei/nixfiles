@@ -4,7 +4,7 @@ let
 in
 {
   config = {
-
+    imports = [ ./disks-emmc.nix ];
     core = {
       boot = {
         silentBoot = false;
