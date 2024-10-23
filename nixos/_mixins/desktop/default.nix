@@ -11,12 +11,12 @@ in
   config = {
     features = {
       bluetooth.enable = true;
+      audio.manager = mkDefault "pipewire";
     };
 
     desktop = {
       features = {
         appimage.enable = true;
-        audio.manager = mkDefault "pipewire";
         fonts.enable = true;
         printers.enable = false;
         scan.enable = false;

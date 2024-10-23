@@ -22,6 +22,10 @@ in
     };
 
     features = {
+      audio = {
+        manager = mkForce "pulseaudio";
+      };
+
       graphics = {
         enable = true;
         gpu = "intel";
@@ -35,12 +39,6 @@ in
       autocpufreq = {
         enable = false;
         autosuspend = false;
-      };
-    };
-
-    desktop.features = {
-      audio = {
-        manager = mkForce "pulseaudio";
       };
     };
 

@@ -9,14 +9,14 @@ in
   ];
 
   options = {
-    desktop.features.audio.manager = mkOption {
+    features.audio.manager = mkOption {
       type = types.enum [ "pipewire" "pulseaudio" null ];
       default = null;
       description = "Default audio system manager";
     };
   };
 
-  config = mkIf (config.desktop.features.audio.manager != null) {
+  config = mkIf (config.features.audio.manager != null) {
     # Allow members of the "audio" group to set RT priorities
     security = {
       # Inspired by musnix: https://github.com/musnix/musnix/blob/master/modules/base.nix#L87
