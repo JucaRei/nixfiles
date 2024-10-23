@@ -153,6 +153,17 @@ in
             enable = true;
             user = lib.mkForce "${username}";
           };
+
+          #disable blank screen
+          setupCommands = ''
+            /run/current-system/sw/bin/xset -dpms
+            /run/current-system/sw/bin/xset s off
+          '';
+
+          # This may be needed to force Lightdm into 'autologin' mode.
+          # Setting an integer for the amount of time lightdm will wait
+          # between attempts to try to autologin again.
+          # lightdm.autoLogin.timeout = 3;
         };
 
         # disable DPMS
@@ -167,17 +178,6 @@ in
         #   Option "OffTime"      "0"
         #   Option "BlankTime"    "0"
         # '';
-
-        #disable blank screen
-        setupCommands = ''
-          /run/current-system/sw/bin/xset -dpms
-          /run/current-system/sw/bin/xset s off
-        '';
-
-        # This may be needed to force Lightdm into 'autologin' mode.
-        # Setting an integer for the amount of time lightdm will wait
-        # between attempts to try to autologin again.
-        # lightdm.autoLogin.timeout = 3;
 
         # Brazil layout
         layout = "br"; # Keyboard layout

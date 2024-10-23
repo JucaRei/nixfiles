@@ -7,7 +7,7 @@ let
     "atgc"
     "gc_merge"
     "lazytime"
-    "nodiscard"
+    # "nodiscard"
   ];
 in
 {
