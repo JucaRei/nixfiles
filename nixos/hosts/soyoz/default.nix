@@ -57,20 +57,52 @@ in
         compressor = "zstd";
         compressorArgs = [ "-19" "-T0" ];
         # verbose = mkForce false;
+
+        supportedFilesystems = [
+          "f2fs"
+        ];
+        kernelModules = [ "coretemp" ];
       };
+      supportedFilesystems = [ "vfat" "f2fs" "cifs" "nfs" ];
       extraModulePackages = (with config.boot.kernelPackages; [
         # (callPackage ../../../pkgs/system/kernel/rtl8188gu/test2.nix { })
       ]);
       kernelPackages = pkgs.linuxPackages_xanmod_stable;
 
       kernelModules = [
+        "coretemp" # Temperature monitoring on Intel CPUs
         "z3fold"
         "lz4hc"
         "lz4hc_compress"
+        "tcp_cubic" # Cubic: A traditional and widely used congestion control algorithm
+        "tcp_westwood" # Westwood: Particularly effective in wireless networks
       ];
       kernelParams = [
         "zswap.enabled=1"
         "mem_sleep_default=deep"
+        "elevator=kyber" # Change IO scheduler to Kyber
+
+        # "boot.shell_on_fail"
+
+        # "pcie_aspm=force" # pcie active state power management
+        # "elevator=kyber" # Change IO scheduler to Kyber
+        # "fbcon=nodefer" # Prevent the kernel from blanking plymouth out of the framebuffer
+        # "intel_iommu=on" # Enable IOMMU
+        # "io_delay=none" # Disable I/O delay accounting
+        # "iomem=relaxed" # Allow more relaxed I/O memory access
+        # "iommu=pt" # Enables passthrough mode for the IOMMU, allowing direct access to hardware devices
+        # "irqaffinity=0-7" # Set IRQ affinity to CPUs 0-7
+        # "loglevel=3" # Set kernel log level to 3 (default)
+        # # "logo.nologo" # Disable boot logo if any
+        # "mitigations=off" # Turn off certain CPU security mitigations. It might enhance performance
+        # "nmi-watchdog=0" # Disable the non-maskable interrupt (NMI) watchdog
+        # "noirqdebug" # Disable IRQ debugging
+        # "rootdelay=0" # No delay when mounting root filesystem
+        # "video.allow_duplicates=1" # Allow duplicate frames or similar, helps smooth video playback
+        # "zswap.max_pool_percent=10" # Set zswap maximum pool percentage to 10%
+        # "zswap.compressor=lz4" # Set zswap compressor to lz4
+        # "zswap.enabled=1" # Enable zswap
+        # "zswap.zpool=zsmalloc" # Set zswap zpool to zsmalloc
       ];
       loader = {
         grub = {
@@ -197,6 +229,11 @@ in
       sleep.extraConfig = ''
         AllowHibernation=no
       '';
+
+      ### HWP
+      # tmpfiles = {
+      #   rules = [ "w /sys/devices/system/cpu/cpufreq/policy*/energy_performance_preference - - - - balance_power" ];
+      # };
     };
 
     nixpkgs = {
