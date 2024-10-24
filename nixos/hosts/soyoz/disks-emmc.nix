@@ -7,7 +7,15 @@ let
     "atgc"
     "gc_merge"
     "lazytime"
-    # "nodiscard"
+    "nodiscard"
+    "background_gc=on"
+    # "inline_xattr"
+    # "inline_data"
+    # "inline_dentry"
+    # "flush_merge"
+    # "extent_cache"
+    # "checkpoint_merge"
+    # "compress_cache"
   ];
 in
 {
@@ -49,7 +57,11 @@ in
               content = {
                 type = "filesystem";
                 # Overwirte the existing filesystem
-                extraArgs = [ "-f" ];
+                extraArgs = [
+                  "-f"
+                  # "-O"
+                  # "encrypt,extra_attr,inode_checksum,flexible_inline_xattr,inode_crtime,lost_found,sb_checksum,compression"
+                ];
                 format = "f2fs";
                 mountpoint = "/";
                 mountOptions = defaultF2FS;

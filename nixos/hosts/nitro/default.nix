@@ -336,6 +336,9 @@ in
           user = {
             databases = [{
               settings = with lib.gvariant; {
+                "org/virt-manager/virt-manager" = {
+                  xmleditor-enabled = true;
+                };
                 "org/virt-manager/virt-manager/connections" = {
                   autoconnect = [ "qemu:///system" ];
                   uris = [ "qemu:///system" ];
