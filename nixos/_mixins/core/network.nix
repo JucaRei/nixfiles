@@ -92,13 +92,6 @@ in
       description = mdDoc "Whether enable wakeOnLan";
     };
 
-    custom-interface = mkOption {
-      type = types.str;
-      default = "";
-      example = "eth0";
-      description = "Desired interface.";
-    };
-
   };
 
   config = mkIf cfg.enable {
@@ -169,7 +162,8 @@ in
       usePredictableInterfaceNames = mkDefault false;
 
       interfaces = {
-        "${cfg.custom-interface}" = {
+        # "${cfg.custom-interface}" = {
+        "eth0" = {
           wakeOnLan = mkIf (cfg.wakeonlan == true) {
             enable = true;
             policy = [ "magic" ];

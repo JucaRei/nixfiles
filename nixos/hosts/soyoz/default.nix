@@ -20,7 +20,7 @@ in
 
       network = {
         wakeonlan = true;
-        custom-interface = "eth0";
+        # custom-interface = "eth0";
       };
     };
 
