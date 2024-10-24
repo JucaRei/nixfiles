@@ -195,7 +195,7 @@ in
 
     services = {
       hardware.bolt.enable = true;
-      smartd.enable = isInstall;
+      smartd.enable = mkDefault isInstall;
 
       dbus = {
         packages = optionals (isWorkstation) (with pkgs // pkgs.gnome; [ gnome-keyring gcr ]);
