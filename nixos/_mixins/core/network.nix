@@ -92,6 +92,13 @@ in
       description = mdDoc "Whether enable wakeOnLan";
     };
 
+    custom-interface = mkOption {
+      type = types.str;
+      default = "";
+      example = "eth0";
+      description = "Desired interface.";
+    };
+
   };
 
   config = mkIf cfg.enable {
@@ -162,8 +169,7 @@ in
       usePredictableInterfaceNames = mkDefault false;
 
       interfaces = {
-        # "${cfg.custom-interface}" = {
-        "eth0" = {
+        "${cfg.custom-interface}" = {
           wakeOnLan = mkIf (cfg.wakeonlan == true) {
             enable = true;
             policy = [ "magic" ];
@@ -194,14 +200,14 @@ in
     };
 
     environment = {
-      systemPackages = with pkgs;[
+      systemPackages = with pkgs; [
         whois
         socat
         nethogs
         dnsutils
         port
       ]
-      ++ (optional cfg.wakeonlan [
+      ++ (optionals (cfg.wakeonlan) [
         # ethtool can be used to manually enable wakeOnLan, eg:
         #
         #    sudo ethtool -s enp7s0f1 wol g
