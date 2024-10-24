@@ -3,7 +3,10 @@ let
   inherit (lib) mkDefault mkIf mkForce getExe;
 in
 {
-  imports = [ (import ./disks-emmc.nix { }) ];
+  imports = [
+    (import ./disks-emmc.nix { })
+    ./kodi.nix
+  ];
   config = {
     core = {
       boot = {
@@ -16,8 +19,8 @@ in
       };
 
       network = {
-        # wakeonlan = true;
-        custom-interface = "";
+        wakeonlan = true;
+        custom-interface = "eth0";
       };
     };
 
