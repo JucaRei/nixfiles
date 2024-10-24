@@ -17,14 +17,14 @@
           youtube
           inputstream-adaptive
           # vfs-sftp
-          sponsorblock
-          invidious
+          # sponsorblock
+          # invidious
           # joystick
           sendtokodi
           trakt
-          netflix
-          jellycon
-          osmc-skin
+          # netflix
+          # jellycon
+          # osmc-skin
         ]);
       };
       displayManager = {
@@ -34,16 +34,29 @@
         };
 
         #disable blank screen
-        # setupCommands = ''
-        #   /run/current-system/sw/bin/xset -dpms
-        #   /run/current-system/sw/bin/xset s off
-        # '';
+        setupCommands = ''
+          /run/current-system/sw/bin/xset -dpms
+          /run/current-system/sw/bin/xset s off
+        '';
 
         # This may be needed to force Lightdm into 'autologin' mode.
         # Setting an integer for the amount of time lightdm will wait
         # between attempts to try to autologin again.
         # lightdm.autoLogin.timeout = 3;
       };
+
+      # # disable DPMS
+      # monitorSection = ''
+      #   Option "DPMS" "false"
+      # '';
+
+      # # x11 no suspend, disable screen blanking in general
+      # serverFlagsSection = ''
+      #   Option "StandbyTime"  "0"
+      #   Option "SuspendTime"  "0"
+      #   Option "OffTime"      "0"
+      #   Option "BlankTime"    "0"
+      # '';
     };
 
     # cage is compositor and "login manager" that starts a single program: Kodi
@@ -72,20 +85,4 @@
   #   pkgs.kodi-wayland
   # ];
   nixpkgs.config.kodi.enableAdvancedLauncher = true;
-  sound.enable = true;
-
-  services.xserver = {
-    # disable DPMS
-    monitorSection = ''
-      Option "DPMS" "false"
-    '';
-
-    # x11 no suspend, disable screen blanking in general
-    serverFlagsSection = ''
-      Option "StandbyTime"  "0"
-      Option "SuspendTime"  "0"
-      Option "OffTime"      "0"
-      Option "BlankTime"    "0"
-    '';
-  };
 }

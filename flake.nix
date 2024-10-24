@@ -121,7 +121,7 @@
         rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
         nitro = helper.mkNixos { hostname = "nitro"; desktop = "pantheon"; };
         # Servers
-        soyoz = helper.mkNixos { hostname = "soyoz"; };
+        soyoz = helper.mkNixos { hostname = "soyoz"; desktop = "kodi"; };
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs
         minimech = helper.mkNixos { hostname = "minimech"; };

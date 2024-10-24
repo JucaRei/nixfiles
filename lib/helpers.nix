@@ -13,7 +13,7 @@
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
       isLima = hostname == "grozbok" || hostname == "zeta";
-      isWorkstation = builtins.isString desktop;
+      isWorkstation = if (builtins.isString desktop && desktop != "kodi") then true else false;
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
@@ -47,7 +47,7 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
-      isWorkstation = builtins.isString desktop;
+      isWorkstation = if (builtins.isString desktop && desktop != "kodi") then true else false;
       notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
     in
     inputs.nixpkgs.lib.nixosSystem {
