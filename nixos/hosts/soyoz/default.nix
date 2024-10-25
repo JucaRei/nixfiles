@@ -4,7 +4,8 @@ let
 in
 {
   imports = [
-    (import ./disks-emmc.nix { })
+    # (import ./disks-emmc.nix { })
+    (import ./disks-btrfs.nix { })
     ./kodi.nix
   ];
   config = {
