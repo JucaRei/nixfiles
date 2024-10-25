@@ -93,48 +93,50 @@ in
         isXorg = if ("${pkgs.uutils-coreutils-noprefix}/bin/echo $XDG_SESSION_TYPE" == "x11") then true else false;
       in
       {
+        nfs.server.enable = true;
+
         xserver = mkIf (config.features.graphics.backend != "wayland") {
           # FUCK NVIDIA
-          config = mkForce ''
-            Section "ServerLayout"
-              Identifier "layout"
-              Screen "nvidia" 0 0
-            EndSection
+          # config = mkForce ''
+          #   Section "ServerLayout"
+          #     Identifier "layout"
+          #     Screen "nvidia" 0 0
+          #   EndSection
 
-            Section "Module"
-                Load "modesetting"
-                Load "glx"
-            EndSection
+          #   Section "Module"
+          #       Load "modesetting"
+          #       Load "glx"
+          #   EndSection
 
-            Section "Device"
-              Identifier "nvidia"
-              Driver "nvidia"
-              BusID "PCI:1:0:0"
-              Option "AllowEmptyInitialConfiguration"
-            EndSection
+          #   Section "Device"
+          #     Identifier "nvidia"
+          #     Driver "nvidia"
+          #     BusID "PCI:1:0:0"
+          #     Option "AllowEmptyInitialConfiguration"
+          #   EndSection
 
-            Section "Device"
-              Identifier "intel"
-              Driver "modesetting"
-              Option "AccelMethod" "sna"
-            EndSection
+          #   Section "Device"
+          #     Identifier "intel"
+          #     Driver "modesetting"
+          #     Option "AccelMethod" "sna"
+          #   EndSection
 
-            Section "Screen"
-              Identifier     "nvidia"
-              Device         "nvidia"
-              DefaultDepth    24
-              Option         "AllowEmptyInitialConfiguration"
-              SubSection     "Display"
-                Depth       24
-                Modes      "nvidia-auto-select"
-              EndSubSection
-            EndSection
+          #   Section "Screen"
+          #     Identifier     "nvidia"
+          #     Device         "nvidia"
+          #     DefaultDepth    24
+          #     Option         "AllowEmptyInitialConfiguration"
+          #     SubSection     "Display"
+          #       Depth       24
+          #       Modes      "nvidia-auto-select"
+          #     EndSubSection
+          #   EndSection
 
-            Section "Screen"
-              Identifier "intel"
-              Device "intel"
-            EndSection
-          '';
+          #   Section "Screen"
+          #     Identifier "intel"
+          #     Device "intel"
+          #   EndSection
+          # '';
           # displayManager = mkIf isXorg {
           #   setupCommands = ''
           #     RIGHT='eDP-1'
@@ -476,3 +478,6 @@ in
     ];
   };
 }
+
+# sudo mount -t nfs 192.168.2.200:/mnt/HD/HD_b2 /home/juca/Media/Videos/Volume1
+# sudo mount -t nfs 192.168.2.200:/mnt/HD/HD_a2/ /home/juca/Media/Videos/Volume2

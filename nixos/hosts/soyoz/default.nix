@@ -78,7 +78,7 @@ in
         "lz4hc"
         "lz4hc_compress"
         "tcp_cubic" # Cubic: A traditional and widely used congestion control algorithm
-        "tcp_westwood" # Westwood: Particularly effective in wireless networks
+        # "tcp_westwood" # Westwood: Particularly effective in wireless networks
       ];
       kernelParams = [
         "zswap.enabled=1"

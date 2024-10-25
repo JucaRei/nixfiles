@@ -2,7 +2,6 @@ _: {
   imports = [
     ./appimage
     ./flatpak-appcenter
-    ./audio
     ./fonts
     ./print
     ./scan

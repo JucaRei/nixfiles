@@ -2,6 +2,7 @@
 let
   defaultF2FS = [
     "noatime"
+    "nodiratime"
     "compress_algorithm=zstd:6"
     "compress_chksum"
     "atgc"
@@ -10,9 +11,9 @@ let
     "nodiscard"
     "background_gc=on"
     # "inline_xattr"
-    # "inline_data"
-    # "inline_dentry"
-    # "flush_merge"
+    "inline_data"
+    "inline_dentry"
+    "flush_merge"
     # "extent_cache"
     # "checkpoint_merge"
     # "compress_cache"
