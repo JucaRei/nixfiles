@@ -100,6 +100,11 @@ in
         enable = true;
       };
 
+	  # nfs
+      rpcbind = {
+      	enable = true;
+      };
+
       mbpfan = {
         enable = true;
         aggressive = true;
@@ -184,6 +189,11 @@ in
       cachix
       icloudpd # iCloud Photos Downloader
       vscode-fhs
+
+	  nfs-utils
+	  libnfs
+	  unfs3
+	  liblockfile
 
       nil
       nixpkgs-fmt

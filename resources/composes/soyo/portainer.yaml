@@ -1,0 +1,22 @@
+---
+services:
+  portainer-ce:
+    image: "portainer/portainer-ce:latest"
+    container_name: portainer
+    ## Docker
+    # command: -H unix:///var/run/docker.sock
+
+    volumes:
+      ## Docker
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/home/juca/docker/portainer/config:/data"
+
+    # network_mode: "host"
+
+    ports:
+      # https
+      - "9001:8000"
+      - "9443:9443"
+      # http
+      - "9002:9000"
+    restart: unless-stopped
