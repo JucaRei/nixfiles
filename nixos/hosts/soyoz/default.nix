@@ -216,18 +216,18 @@ in
       ### Smb folders ###
       ###################
 
-      # "/media/sharecenter/volume_1" = {
-      #   device = "//192.168.1.207/Volume_1";
-      #   fsType = "cifs";
-      #   # options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "gid=100" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
-      #   options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
-      # };
+      "/media/sharecenter/volume_1" = {
+        device = "//192.168.2.200/volume_1";
+        fsType = "cifs";
+        # options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "gid=100" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+        options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "gid=100" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+      };
 
-      # "/media/sharecenter/volume_2" = {
-      #   device = "//192.168.1.207/Volume_2/Transmission/Volume_2";
-      #   fsType = "cifs";
-      #   options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
-      # };
+      "/media/sharecenter/volume_2" = {
+        device = "//192.168.2.200/volume_2/Transmission/Volume_2";
+        fsType = "cifs";
+        options = [ "guest" "x-systemd.automount" "noauto" "uid=1000" "gid=100" "vers=1.0" "nounix" "x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s" ];
+      };
     };
 
     powerManagement.cpuFreqGovernor = lib.mkForce
