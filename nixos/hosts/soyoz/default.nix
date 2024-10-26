@@ -11,8 +11,8 @@ in
   config = {
     core = {
       boot = {
-        silentBoot = false;
-        plymouth = false;
+        silentBoot = true;
+        plymouth = true;
       };
 
       cpu = {
