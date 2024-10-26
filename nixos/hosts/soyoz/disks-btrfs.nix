@@ -1,4 +1,4 @@
-{ disks ? [ "/dev/mmcblk0" ], ... }:
+{ disks ? [ "/dev/mmcblk1" ], ... }:
 let
   defaultBtrfsOpts = [
     "noatime"
@@ -28,7 +28,7 @@ in
 
   disko.devices = {
     disk = {
-      mmcblk0 = {
+      mmcblk1 = {
         type = "disk";
         device = builtins.elemAt disks 0;
         content = {
