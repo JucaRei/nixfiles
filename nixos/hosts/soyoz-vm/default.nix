@@ -20,6 +20,6 @@
       ];
     };
 
-    options.features.zram.enable = true;
+    features.zram.enable = true;
   };
 }
