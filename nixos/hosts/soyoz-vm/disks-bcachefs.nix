@@ -43,7 +43,7 @@ in
             };
             root = {
               name = "root";
-              end = "-0"; # "-16GiB";
+              end = "-2GiB"; # "-16GiB";
               content = {
                 type = "filesystem";
                 format = "bcachefs";
@@ -66,20 +66,22 @@ in
                 # };
               };
             };
-            # swap = {
-            #   name = "SWAP";
-            #   size = "100%";
-            #   type = "8200";
-            #   # part-type = "primary";
-            #   content = {
-            #     type = "swap";
-            #     randomEncryption = true;
-            #     resumeDevice = true; # resume from hiberation from this device
-            #   };
-            # };
+            swap = {
+              name = "SWAP";
+              size = "100%";
+              type = "8200";
+              # part-type = "primary";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+                resumeDevice = true; # resume from hiberation from this device
+              };
+            };
           };
         };
       };
     };
   };
 }
+
+# mount -o remount,size=10G,noatime /nix/.rw-store
