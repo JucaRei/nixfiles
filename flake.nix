@@ -124,6 +124,7 @@
         soyoz = helper.mkNixos { hostname = "soyoz"; };
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs
+        soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = "xfce4"; };
         minimech = helper.mkNixos { hostname = "minimech"; };
         scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "mate"; };
       };
