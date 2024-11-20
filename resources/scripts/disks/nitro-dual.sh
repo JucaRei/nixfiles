@@ -2,7 +2,7 @@
 
 # export DRIVE="/dev/nvme0n1"
 # DRIVE="/dev/nvme0n1p2"
-DRIVE="/dev/nvme0n1p4"
+DRIVE="/dev/nvme0n1p3"
 
 # sgdisk -Z /dev/${DRIVE}p2
 # sgdisk -Z /dev/${DRIVE}p3
@@ -39,15 +39,15 @@ btrfs su cr /mnt/@nix
 btrfs su cr /mnt/@logs
 btrfs su cr /mnt/@tmp
 btrfs su cr /mnt/@snapshots
-btrfs su cr /mnt/@swap
+# btrfs su cr /mnt/@swap
 umount -Rv /mnt
 
 # mount -o $BTRFS_OPTS,subvol=@root /dev/vda2 /mnt
-mount -o $BTRFS_OPTS3,subvol=@rootfs /dev/disk/by-label/nixsystem /mnt
+mount -o $BTRFS_OPTS,subvol=@rootfs /dev/disk/by-label/nixsystem /mnt
 # mount -o $BTRFS_OPTS,subvol="@root" /dev/disk/by-partlabel/nixsystem /mnt
 # mkdir -pv /mnt/{boot/efi,home,.snapshots,nix,var/log,var/tmp,var/swap}
-mkdir -pv /mnt/{boot,home,.snapshots,nix,var/{swap,tmp,log}}
-mount -o $BTRFS_OPTS2,subvol=@home /dev/disk/by-label/nixsystem /mnt/home
+mkdir -pv /mnt/{boot,home,.snapshots,nix,var/{tmp,log}}
+mount -o $BTRFS_OPTS,subvol=@home /dev/disk/by-label/nixsystem /mnt/home
 # mount -o $BTRFS_OPTS,subvol="@home" /dev/disk/by-partlabel/nixsystem /mnt/home
 mount -o $BTRFS_OPTS,subvol=@snapshots /dev/disk/by-label/nixsystem /mnt/.snapshots
 # mount -o $BTRFS_OPTS,subvol="@snapshots" /dev/disk/by-partlabel/nixsystem /mnt/.snapshots
@@ -55,20 +55,20 @@ mount -o $BTRFS_OPTS2,subvol=@tmp /dev/disk/by-label/nixsystem /mnt/var/tmp
 # mount -o $BTRFS_OPTS,subvol="@tmp" /dev/disk/by-partlabel/nixsystem /mnt/var/tmp
 mount -o $BTRFS_OPTS,subvol=@nix /dev/disk/by-label/nixsystem /mnt/nix
 mount -o $BTRFS_OPTS,subvol=@logs /dev/disk/by-label/nixsystem /mnt/var/log
-mount -o $BTRFS_OPTS,subvol=@swap /dev/disk/by-label/nixsystem /mnt/var/swap
+# mount -o $BTRFS_OPTS,subvol=@swap /dev/disk/by-label/nixsystem /mnt/var/swap
 # mount -o $BTRFS_OPTS,subvol="@nix" /dev/disk/by-partlabel/nixsystem /mnt/nix
 # mount /dev/disk/by-label/BOOT /mnt/boot
 # mkdir -pv /mnt/boot/efi
 # mount -t vfat -o defaults,noatime,nodiratime /dev/disk/by-label/EFI /mnt/boot/efi
 mount -t vfat -o defaults,noatime,nodiratime /dev/disk/by-label/EFI /mnt/boot
 
-touch /mnt/var/swap/swapfile
-chmod 600 /mnt/var/swap/swapfile
-chattr +C /mnt/var/swap/swapfile
-lsattr /mnt/var/swap/swapfile
-dd if=/dev/zero of=/mnt/var/swap/swapfile bs=1M count=16384 status=progress
-mkswap /mnt/var/swap/swapfile
-swapon /mnt/var/swap/swapfile
+# touch /mnt/var/swap/swapfile
+# chmod 600 /mnt/var/swap/swapfile
+# chattr +C /mnt/var/swap/swapfile
+# lsattr /mnt/var/swap/swapfile
+# dd if=/dev/zero of=/mnt/var/swap/swapfile bs=1M count=16384 status=progress
+# mkswap /mnt/var/swap/swapfile
+# swapon /mnt/var/swap/swapfile
 
 
 
