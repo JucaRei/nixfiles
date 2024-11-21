@@ -60,7 +60,7 @@ in
       extraModulePackages = (with config.boot.kernelPackages; [
         # (callPackage ../../../pkgs/system/kernel/rtl8188gu/test2.nix { })
       ]);
-      kernelPackages = pkgs.linuxPackages_xanmod_stable;
+      # kernelPackages = pkgs.linuxPackages_xanmod_stable;
       # kernelPackages = mkForce pkgs.linuxPackages_6_6;
 
       kernelModules = [
@@ -118,54 +118,54 @@ in
 
         xserver = mkIf (config.features.graphics.backend != "wayland") {
           # FUCK NVIDIA
-          # config = mkForce ''
-          #   Section "ServerLayout"
-          #     Identifier "layout"
-          #     Screen "nvidia" 0 0
-          #   EndSection
+          config = mkForce ''
+             Section "ServerLayout"
+               Identifier "layout"
+               Screen "nvidia" 0 0
+             EndSection
 
-          #   Section "Module"
-          #       Load "modesetting"
-          #       Load "glx"
-          #   EndSection
+             Section "Module"
+                 Load "modesetting"
+                 Load "glx"
+             EndSection
 
-          #   Section "Device"
-          #     Identifier "nvidia"
-          #     Driver "nvidia"
-          #     BusID "PCI:1:0:0"
-          #     Option "AllowEmptyInitialConfiguration"
-          #   EndSection
+             Section "Device"
+               Identifier "nvidia"
+               Driver "nvidia"
+               BusID "PCI:1:0:0"
+               Option "AllowEmptyInitialConfiguration"
+             EndSection
 
-          #   Section "Device"
-          #     Identifier "intel"
-          #     Driver "modesetting"
-          #     Option "AccelMethod" "sna"
-          #   EndSection
+             Section "Device"
+               Identifier "intel"
+               Driver "modesetting"
+               Option "AccelMethod" "sna"
+             EndSection
 
-          #   Section "Screen"
-          #     Identifier     "nvidia"
-          #     Device         "nvidia"
-          #     DefaultDepth    24
-          #     Option         "AllowEmptyInitialConfiguration"
-          #     SubSection     "Display"
-          #       Depth       24
-          #       Modes      "nvidia-auto-select"
-          #     EndSubSection
-          #   EndSection
+            Section "Screen"
+              Identifier     "nvidia"
+              Device         "nvidia"
+              DefaultDepth    24
+              Option         "AllowEmptyInitialConfiguration"
+              SubSection     "Display"
+                Depth       24
+                Modes      "nvidia-auto-select"
+              EndSubSection
+            EndSection
 
-          #   Section "Screen"
-          #     Identifier "intel"
-          #     Device "intel"
-          #   EndSection
-          # '';
-          # displayManager = mkIf isXorg {
-          #   setupCommands = ''
-          #     RIGHT='eDP-1'
-          #     LEFT='HDMI-1-0'
-          #     ${lib.getExe pkgs.xorg.xrandr} --output $LEFT --mode 1920x1080 --rotate right --output $LEFT --mode 1920x1080 --rotate left --right-of $LEFT
-          #   '';
-          # sessionCommands = ''${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal'';
-          # };
+             Section "Screen"
+               Identifier "intel"
+               Device "intel"
+             EndSection
+          '';
+          displayManager = mkIf isXorg {
+            setupCommands = ''
+              RIGHT='eDP-1'
+              LEFT='HDMI-1-0'
+              ${lib.getExe pkgs.xorg.xrandr} --output $LEFT --mode 1920x1080 --rotate right --output $LEFT --mode 1920x1080 --rotate left --right-of $LEFT
+            '';
+            sessionCommands = ''${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal'';
+          };
 
           # xrandrHeads = [
           #   {
@@ -185,12 +185,13 @@ in
           #     '';
           #   }
           # ];
-
-          # Brazil layout
-          layout = "br"; # Keyboard layout
-          xkbModel = "pc105";
-          xkbVariant = "nativo";
-
+          xkb = {
+            # Brazil layout
+            layout = "br"; # Keyboard layout
+            model = "pc105";
+            variant = "nodeadkeys";
+            options = "terminate:ctrl_alt_bksp";
+          };
           # xrandrHeads = [
           #   {
           #     output = "eDP-1";
@@ -223,7 +224,7 @@ in
           #   Option "metamodes" "HDMI-0: nvidia-auto-select +1920+0, DP-1: 1920x1080_75 +0+0"
           #   Option "SLI" "Off"
           #   Option "MultiGPU" "Off"
-          #   Option "BaseMosaic" "off"
+          #   Option "BaseMosaic" "o ff"
           #   Option "Stereo" "0"
           #   Option "nvidiaXineramaInfoOrder" "DFP-1"
           # '';
@@ -450,8 +451,8 @@ in
         ] ++ BTRFS_OPTS;
       };
 
-      "/boot/efi" = {
-        device = "/dev/disk/by-uuid/72A1-7441";
+      "/boot" = {
+        device = "/dev/disk/by-label/BOOT";
         fsType = "vfat";
         options = [
           "fmask=0022"

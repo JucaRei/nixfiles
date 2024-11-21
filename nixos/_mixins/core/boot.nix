@@ -69,7 +69,7 @@ in
         #        default = 1000
         #   this default = 1250
         # option default = 1500
-        mkOverride 1250 pkgs.linuxPackages_latest;
+        mkOverride 1250 pkgs.unstable.linuxPackages_latest;
 
       kernelModules = mkIf (notVM) [ "vhost_vsock" ];
 
@@ -176,6 +176,7 @@ in
               halt
             }
           '';
+          useOSProber = if (cfg.isDualBoot == true) then true else false;
         };
 
         systemd-boot = mkIf (cfg.bootmanager == "systemd-boot") {
