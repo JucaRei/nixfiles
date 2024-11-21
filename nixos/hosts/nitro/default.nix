@@ -2,25 +2,17 @@
 let
   inherit (lib) mkDefault mkIf mkForce getExe;
 
-  BTRFS_OPTS = [
-    "noatime"
-    "nodiratime"
-    "nodatacow"
-    "ssd"
-    "compress-force=zstd:15"
-    "space_cache=v2"
-    "commit=120"
-    "discard=async"
-  ];
-
   # if echo $XDG_SESSION_TYPE == x11
 in
 {
+  imports = [
+    ./filesystem.nix
+    # ./disks-btrfs.nix
+  ];
   config = {
     core.boot = {
       isDualBoot = true;
     };
-
 
     features = {
       graphics = {
@@ -32,6 +24,8 @@ in
         enable = true;
         manager = "podman";
       };
+
+      virtualisation.enable = true;
 
       autocpufreq = {
         enable = true;
@@ -96,7 +90,6 @@ in
         gparted
         lm_sensors
 
-        floorp
         vscode-fhs
         nil
         nixpkgs-fmt
@@ -119,28 +112,28 @@ in
         xserver = mkIf (config.features.graphics.backend != "wayland") {
           # FUCK NVIDIA
           config = mkForce ''
-             Section "ServerLayout"
-               Identifier "layout"
-               Screen "nvidia" 0 0
-             EndSection
+            Section "ServerLayout"
+              Identifier "layout"
+              Screen "nvidia" 0 0
+            EndSection
 
-             Section "Module"
-                 Load "modesetting"
-                 Load "glx"
-             EndSection
+            Section "Module"
+              Load "modesetting"
+              Load "glx"
+            EndSection
 
-             Section "Device"
-               Identifier "nvidia"
-               Driver "nvidia"
-               BusID "PCI:1:0:0"
-               Option "AllowEmptyInitialConfiguration"
-             EndSection
+            Section "Device"
+              Identifier "nvidia"
+              Driver "nvidia"
+              BusID "PCI:1:0:0"
+              Option "AllowEmptyInitialConfiguration"
+            EndSection
 
-             Section "Device"
-               Identifier "intel"
-               Driver "modesetting"
-               Option "AccelMethod" "sna"
-             EndSection
+            Section "Device"
+              Identifier "intel"
+              Driver "modesetting"
+              Option "AccelMethod" "sna"
+            EndSection
 
             Section "Screen"
               Identifier     "nvidia"
@@ -153,10 +146,10 @@ in
               EndSubSection
             EndSection
 
-             Section "Screen"
-               Identifier "intel"
-               Device "intel"
-             EndSection
+            Section "Screen"
+              Identifier "intel"
+              Device "intel"
+            EndSection
           '';
           displayManager = mkIf isXorg {
             setupCommands = ''
@@ -323,6 +316,7 @@ in
             ExecStart = ''
               ${pkgs.bash}/bin/bash -c 'cd /sys/module/zswap/parameters&& \
                     echo 1 > enabled&& \
+                    echo 1 > shrinker_enabled&& \
                     echo 10 > max_pool_percent&& \
                     echo lz4hc > compressor&& \
                     echo z3fold > zpool'
@@ -351,156 +345,6 @@ in
     nixpkgs = {
       hostPlatform = mkDefault "x86_64-linux";
     };
-
-    programs = {
-      virt-manager.enable = true;
-      dconf = {
-        enable = true;
-        profiles = {
-          user = {
-            databases = [{
-              settings = with lib.gvariant; {
-                "org/virt-manager/virt-manager" = {
-                  xmleditor-enabled = true;
-                };
-                "org/virt-manager/virt-manager/connections" = {
-                  autoconnect = [ "qemu:///system" ];
-                  uris = [ "qemu:///system" ];
-                };
-              };
-            }];
-          };
-        };
-      };
-    };
-
-    virtualisation.libvirtd = {
-      enable = true;
-      qemu = {
-        package = pkgs.qemu_kvm;
-        runAsRoot = true;
-        swtpm.enable = true;
-        ovmf = {
-          enable = true;
-          packages = [
-            (pkgs.OVMF.override {
-              secureBoot = true;
-              tpmSupport = true;
-            }).fd
-          ];
-        };
-      };
-    };
-
-    users.users.juca = {
-      extraGroups = [ "libvirtd" ];
-    };
-
-
-    fileSystems = {
-      "/" = {
-        device = "/dev/disk/by-label/nixsystem";
-        # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-        fsType = "btrfs";
-        options = [
-          "subvol=@rootfs"
-          "x-gvfs-hide" # hide from filemanager
-        ] ++ BTRFS_OPTS;
-      };
-
-      "/home" = {
-        device = "/dev/disk/by-label/nixsystem";
-        # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-        fsType = "btrfs";
-        options = [
-          "subvol=@home"
-        ] ++ BTRFS_OPTS;
-      };
-
-      "/.snapshots" = {
-        device = "/dev/disk/by-label/nixsystem";
-        # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-        fsType = "btrfs";
-        options = [
-          "subvol=@snapshots"
-        ] ++ BTRFS_OPTS;
-      };
-
-      "/var/log" = {
-        device = "/dev/disk/by-label/nixsystem";
-        fsType = "btrfs";
-        options = [
-          "subvol=@logs"
-        ] ++ BTRFS_OPTS;
-      };
-
-      "/var/tmp" = {
-        device = "/dev/disk/by-label/nixsystem";
-        fsType = "btrfs";
-        options = [
-          "subvol=@tmp"
-        ] ++ BTRFS_OPTS;
-      };
-
-      "/nix" = {
-        device = "/dev/disk/by-label/nixsystem";
-        # device = "/dev/disk/by-uuid/e9cd822d-be82-4f8d-9f05-b594889110a9";
-        fsType = "btrfs";
-        options = [
-          "subvol=@nix"
-        ] ++ BTRFS_OPTS;
-      };
-
-      "/boot" = {
-        device = "/dev/disk/by-label/BOOT";
-        fsType = "vfat";
-        options = [
-          "fmask=0022"
-          "dmask=0022"
-          "defaults"
-          "noatime"
-          "nodiratime"
-          "x-gvfs-hide" # hide from filemanager
-        ];
-        noCheck = true;
-      };
-
-      # "/var/swap" = {
-      #   # device = "/dev/disk/by-label/nixsystem";
-      #   device = "/dev/disk/by-uuid/62107246-5335-41d1-a94b-076b7baae356";
-      #   fstype = "btrfs";
-      #   options = [ "noatime" "ssd_spread" "subvol=@swap" ];
-      # };
-
-      # "/boot/efi" = {
-      #   device = "/dev/disk/by-label/EFI";
-      #   # device = "/dev/disk/by-uuid/076D-BEC9";
-      #   fsType = "vfat";
-      #   options = [
-      #     "defaults"
-      #     "noatime"
-      #     "nodiratime"
-      #     "x-gvfs-hide" # hide from filemanager
-      #   ];
-      #   noCheck = true;
-      # };
-    };
-
-    # swapDevices = [
-    #   {
-    #     device = "/var/swap/swapfile";
-    #     size = 16384;
-    #     # device = "/var/swap/swapfile";
-    #     # device = "/dev/disk/by-label/swap";
-    #     # device = "/dev/disk/by-partlabel/disk-nvme0-SWAP";
-    #     # size = "20G";
-    #   }
-    # ];
-
-    swapDevices = [{
-      device = "/swapfile";
-      size = 16 * 1024; # 16GB
-    }];
   };
 }
 

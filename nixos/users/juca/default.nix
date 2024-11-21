@@ -3,7 +3,7 @@
   users.users.juca = {
     description = "Reinaldo P Jr";
     # mkpasswd -m sha-512
-    hashedPassword = "$6$Xtum91YtXaphROBA$/T1AlLDH/lTSUz1l/TgwnOSrfoU6LVcWhReAqFyZtOD0wzUTNoBITD7F5o71gVsRVRLlSh/TT8i0VOYAChNOX.";
+    hashedPassword = "$6$nOWm53r88anKugNB$71oxJWP8dU6oLrUX8TlTDINUUMy4G.tb07aH7MPD6NUmmVkI6slCoIDcFY/Dfe/Sy.pAVyUF8aq2/ko/Ml7Ml.";
   };
   systemd.tmpfiles.rules = [ "d /mnt/snapshot/${username} 0755 ${username} users" ];
 }

@@ -16,13 +16,13 @@ in
         "nouveau"
         "nvidiafb"
       ];
-	  kernelModules = [
-	  	"nvidia"
-	  	"nvidia_modeset"
-	  	"nvidia_uvm"
-	  	"nvidia_drm"
-	  	"i2c-nvidia_gpu"
-	  ];
+      kernelModules = [
+        "nvidia"
+        "nvidia_modeset"
+        "nvidia_uvm"
+        "nvidia_drm"
+        "i2c-nvidia_gpu"
+      ];
     };
 
     hardware = {
@@ -38,7 +38,7 @@ in
         driSupport32Bit = true;
         extraPackages = with pkgs; [
           vaapiVdpau
-          libvdpau-va-gl 
+          libvdpau-va-gl
         ];
         extraPackages32 = with pkgs.driversi686Linux // pkgs.pkgsi686Linux; [
           vaapiVdpau
@@ -90,13 +90,13 @@ in
       ];
 
       # variables = {
-      	# VAAPI_MPEG4_ENABLED= true;
+      # VAAPI_MPEG4_ENABLED= true;
       # };
 
       # 'nvidia_x11' installs it's files to /run/opengl-driver/...
       # etc = {
-        # "egl/egl_external_platform.d".source = "/run/opengl-driver/share/egl/egl_external_platform.d/";
-        # "egl/egl_external_platform.d".source = "/run/opengl-driver/share/egl/egl_external_platform.d/";
+      # "egl/egl_external_platform.d".source = "/run/opengl-driver/share/egl/egl_external_platform.d/";
+      # "egl/egl_external_platform.d".source = "/run/opengl-driver/share/egl/egl_external_platform.d/";
       # };
     };
   };
