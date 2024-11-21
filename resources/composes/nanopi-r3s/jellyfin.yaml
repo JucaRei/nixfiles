@@ -9,29 +9,24 @@ services:
       - TZ=America/Sao_Paulo
       - UMASK_SET=022 #optional
     volumes:
-      - /docker/jellyfin/config:/config
-      - /docker/jellyfin/cache:/cache
+      - /root/docker-composes/jellyfin/config:/config
+      - /root/docker-composes/jellyfin/cache:/cache
       - nas1_movies:/data/movies
       - nas1_tvshow:/data/tvshows
-      - nas1_animes_series:/data/animes/series
-      - nas1_animes_movies:/data/animes/movies
+      - nas1_animes:/data/animes
       - nas2_tvshow:/data/tvshows2
       - nas2_movies:/data/movies2
-      - nas2_animes_series:/data/animes2/series
-      - nas2_animes_movies:/data/animes2/movies
-      # - hd700_animes_series:/data/animes3/series
-      # - hd700_animes_movies:/data/animes3/movies
-      # - hd700_movies:/data/movies3
-      # - hd700_tvshows:/data/tvshows3
+      - nas2_animes:/data/animes2
+
     ports:
-      - 2025:8096
+      - 3545:8096
       # - 8920:8920 #optional
       # - 7359:7359/udp #optional
       # - 1900:1900/udp #optional
-    # mem_limit: 750M # 1500M
-    # mem_reservation: 300M
-    # cpus: 0.8
-    # network_mode: "host"
+    mem_limit: 750M # 1500M
+    mem_reservation: 300M
+    cpus: 1.0
+    network_mode: "host"
     devices:
       ### Intel
       # - /dev/dri:/dev/dri
@@ -58,60 +53,30 @@ volumes:
       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
   nas1_tvshow:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_1/TvShows
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
       device: ":/mnt/HD/HD_b2/TvShows"
       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  nas1_animes_series:
+  nas1_animes:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_1/Animes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_b2/Animes/Series"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  nas1_animes_movies:
-    driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_1/Animes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
-      type: nfs
-      device: ":/mnt/HD/HD_b2/Animes/Movies"
+      device: ":/mnt/HD/HD_b2/Animes"
       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
   nas2_movies:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_2/Transmission/complete/Filmes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Filmes"
       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
   nas2_tvshow:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_2/Transmission/complete/Series
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Series"
       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  nas2_animes_series:
+  nas2_animes:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_2/Transmission/complete/Animes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes/Series"
+      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes"
       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  nas2_animes_movies:
-    driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_2/Transmission/complete/Animes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
-      type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes/Movies"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+
   # hd700_animes_series:
   #     driver_opts:
   #         type: cifs

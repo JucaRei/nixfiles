@@ -17,6 +17,10 @@ let
 in
 {
   config = {
+    core.boot = {
+      isDualBoot = true;
+    };
+
 
     features = {
       graphics = {
@@ -67,10 +71,16 @@ in
       kernelParams = [
         "zswap.enabled=1"
         "mem_sleep_default=deep"
+        "usbcore.autosuspend=-1" # Disable USB autosuspend
       ];
       loader = {
         grub = {
           theme = mkForce pkgs.cyberre;
+          efiInstallAsRemovable = mkForce false;
+        };
+        efi = {
+          efiSysMountPoint = mkForce "/boot";
+          canTouchEfiVariables = mkForce true;
         };
       };
 
@@ -440,7 +450,7 @@ in
         ] ++ BTRFS_OPTS;
       };
 
-      "/boot" = {
+      "/boot/efi" = {
         device = "/dev/disk/by-uuid/72A1-7441";
         fsType = "vfat";
         options = [
