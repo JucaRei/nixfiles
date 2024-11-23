@@ -91,6 +91,7 @@ in
         lm_sensors
 
         vscode-fhs
+        deluge-gtk
         nil
         nixpkgs-fmt
         duf
@@ -98,7 +99,7 @@ in
         neofetch
         unstable.mpv
         # spotube
-        youtube-music
+        # youtube-music
       ];
     };
 
@@ -328,8 +329,13 @@ in
         nix-daemon = {
           ### Limit resources used by nix-daemon
           serviceConfig = {
-            MemoryMax = "8G";
-            MemorySwapMax = "12G";
+            # CPUQuota = "${toString (config.system.nproc * 20)}%";
+            # weights default is 100
+            # CPUWeight = "idle";
+            # IOWeight = "20";
+            # MemoryHigh = "20%";
+            MemoryMax = "4G";
+            MemorySwapMax = "8G";
           };
         };
       };

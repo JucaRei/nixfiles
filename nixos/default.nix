@@ -73,6 +73,7 @@ in
         with pkgs;
         lib.mkForce [
           coreutils-full
+          parted
           micro
         ];
 
