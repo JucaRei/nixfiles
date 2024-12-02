@@ -23,9 +23,9 @@ services:
       # - 8920:8920 #optional
       # - 7359:7359/udp #optional
       # - 1900:1900/udp #optional
-    mem_limit: 750M # 1500M
-    mem_reservation: 300M
-    cpus: 1.0
+    mem_limit: 850M # 1500M
+    # mem_reservation: 300M
+    cpus: 1.4
     network_mode: "host"
     devices:
       ### Intel
@@ -36,6 +36,8 @@ services:
       ### Rockchip
       - /dev/rga:/dev/rga
       - /dev/dri:/dev/dri
+      # - /dev/dri/card0:/dev/dri/card0
+      # - /dev/dri/renderD128:/dev/dri/renderD128
       - /dev/dma_heap:/dev/dma_heap
       - /dev/mpp_service:/dev/mpp_service
       # - /dev/mali0:/dev/mali0 # only required to enable OpenCL-accelerated HDR -> SDR tonemapping
@@ -46,36 +48,36 @@ volumes:
   nas1_movies:
     driver_opts:
       # type: cifs
-      # device: //192.168.2.200/volume_1/Movies
+      # device: //10.10.10.200/volume_1/Movies
       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
       device: ":/mnt/HD/HD_b2/Movies"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
   nas1_tvshow:
     driver_opts:
       type: nfs
       device: ":/mnt/HD/HD_b2/TvShows"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
   nas1_animes:
     driver_opts:
       type: nfs
       device: ":/mnt/HD/HD_b2/Animes"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
   nas2_movies:
     driver_opts:
       type: nfs
       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Filmes"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
   nas2_tvshow:
     driver_opts:
       type: nfs
       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Series"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
   nas2_animes:
     driver_opts:
       type: nfs
       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
 
   # hd700_animes_series:
   #     driver_opts:

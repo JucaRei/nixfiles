@@ -154,3 +154,6 @@
       formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
     };
 }
+
+# 8086:3185 igpu
+# 8086:3198 audio

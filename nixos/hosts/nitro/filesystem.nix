@@ -10,6 +10,17 @@ let
     "commit=120"
     "discard=async"
   ];
+
+  BTRFS_OPTS2 = [
+    "noatime"
+    "nodiratime"
+    "nodatacow"
+    "ssd"
+    "compress-force=zstd:3"
+    "space_cache=v2"
+    "commit=120"
+    "discard=async"
+  ];
 in
 {
   fileSystems = {
@@ -20,7 +31,7 @@ in
       options = [
         "subvol=@rootfs"
         "x-gvfs-hide" # hide from filemanager
-      ] ++ BTRFS_OPTS;
+      ] ++ BTRFS_OPTS2;
     };
 
     "/home" = {
@@ -46,7 +57,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@logs"
-      ] ++ BTRFS_OPTS;
+      ] ++ BTRFS_OPTS2;
     };
 
     "/var/tmp" = {
@@ -54,7 +65,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@tmp"
-      ] ++ BTRFS_OPTS;
+      ] ++ BTRFS_OPTS2;
     };
 
     "/nix" = {
