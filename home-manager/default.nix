@@ -1,6 +1,7 @@
-{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, ... }:
+{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (lib) optional;
 in
 {
   imports = [
@@ -15,9 +16,12 @@ in
     ./_mixins/features
     ./_mixins/scripts
     ./_mixins/services
-    ./hosts
-    ./users
-  ] ++ lib.optional isWorkstation ./_mixins/desktop;
+    ../resources/hm-configs/console
+  ]
+  ++ optional isWorkstation ./_mixins/desktop
+  ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
+  ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
+  ;
 
   catppuccin = {
     accent = "blue";
@@ -27,22 +31,7 @@ in
   home = {
     inherit stateVersion;
     inherit username;
-    homeDirectory =
-      if isDarwin then
-        "/Users/${username}"
-      else if isLima then
-        "/home/${username}.linux"
-      else
-        "/home/${username}";
-
-    file = {
-      "${config.xdg.configHome}/fastfetch/config.jsonc".text = builtins.readFile ./_mixins/configs/fastfetch.jsonc;
-      "${config.xdg.configHome}/gh-dash/config.yml".text = builtins.readFile ./_mixins/configs/gh-dash-catppuccin-mocha-blue.yml;
-      "${config.xdg.configHome}/yazi/keymap.toml".text = builtins.readFile ./_mixins/configs/yazi-keymap.toml;
-      "${config.xdg.configHome}/fish/functions/help.fish".text = builtins.readFile ./_mixins/configs/help.fish;
-      "${config.xdg.configHome}/fish/functions/h.fish".text = builtins.readFile ./_mixins/configs/h.fish;
-      ".hidden".text = ''snap'';
-    };
+    homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
     # A Modern Unix experience
     # https://jvns.ca/blog/2022/04/12/a-list-of-new-ish--command-line-tools/

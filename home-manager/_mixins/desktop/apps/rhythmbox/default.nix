@@ -1,55 +1,53 @@
-{
-  config,
-  hostname,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, hostname, lib, pkgs, ... }:
 let
-  installOn = [
-    "phasma"
-    "vader"
-  ];
+  inherit (lib) mkEnableOption;
+  cfg = config.desktop.apps.rhythmbox;
 in
-lib.mkIf (lib.elem hostname installOn) {
-  home = {
-    packages = with pkgs; [ rhythmbox ];
+{
+  options.desktop.apps.rhythmbox = {
+    enable = mkEnableOption "Enables rhythmbox.";
   };
 
-  dconf.settings = with lib.hm.gvariant; {
-    "org/gnome/rhythmbox/plugins" = {
-      active-plugins = [
-        "rb"
-        "power-manager"
-        "mpris"
-        "iradio"
-        "generic-player"
-        "audiocd"
-        "android"
-      ];
+  config = {
+    home = {
+      packages = with pkgs; [ rhythmbox ];
     };
 
-    "org/gnome/rhythmbox/podcast" = {
-      download-interval = "manual";
-    };
+    dconf.settings = with lib.hm.gvariant; {
+      "org/gnome/rhythmbox/plugins" = {
+        active-plugins = [
+          "rb"
+          "power-manager"
+          "mpris"
+          "iradio"
+          "generic-player"
+          "audiocd"
+          "android"
+        ];
+      };
 
-    "org/gnome/rhythmbox/rhythmdb" = {
-      locations = [ "file://${config.home.homeDirectory}/Studio/Music" ];
-      monitor-library = true;
-    };
+      "org/gnome/rhythmbox/podcast" = {
+        download-interval = "manual";
+      };
 
-    "org/gnome/rhythmbox/sources" = {
-      browser-views = "genres-artists-albums";
-      visible-columns = [
-        "post-time"
-        "duration"
-        "track-number"
-        "album"
-        "genre"
-        "beats-per-minute"
-        "play-count"
-        "artist"
-      ];
+      "org/gnome/rhythmbox/rhythmdb" = {
+        locations = [ "file://${config.home.homeDirectory}/Studio/Music" ];
+        monitor-library = true;
+      };
+
+      "org/gnome/rhythmbox/sources" = {
+        browser-views = "genres-artists-albums";
+        visible-columns = [
+          "post-time"
+          "duration"
+          "track-number"
+          "album"
+          "genre"
+          "beats-per-minute"
+          "play-count"
+          "artist"
+        ];
+      };
     };
   };
 }

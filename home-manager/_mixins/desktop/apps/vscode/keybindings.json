@@ -1,0 +1,12 @@
+[
+ {
+  "command": "editor.debug.action.selectionToRepl",
+  "key": "shift+enter",
+  "when": "editorTextFocus && inDebugMode"
+ },
+ {
+  "command": "editor.debug.action.selectionToRepl",
+  "key": "shift+enter",
+  "when": "editorTextFocus && inDebugMode"
+ }
+]

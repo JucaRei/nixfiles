@@ -1,0 +1,72 @@
+---
+services:
+  transmission:
+    image: linuxserver/transmission:arm64v8-version-3.00-r8
+    container_name: transmission
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Sao_Paulo
+      #       - TRANSMISSION_WEB_HOME= #optional
+      - USER=juca
+      - PASS=200291
+    #       - WHITELIST= #optional
+    #       - PEERPORT= #optional
+    #       - HOST_WHITELIST= #optional
+    volumes:
+      - /root/docker/transmission/data:/config
+      - /mnt/700gb/Downloads:/downloads
+      - /mnt/700gb/Tvshows:/series
+      - /mnt/700gb/Movies:/filmes
+      - /mnt/700gb/Animes:/animes
+      - /mnt/700gb/Books:/livros
+      - /mnt/700gb/Mangas:/mangas
+
+      - nas1_movies:/filmes1
+      - nas1_tvshow:/series1
+      - nas1_animes:/animes1
+
+      - nas2_movies:/filmes2
+      - nas2_tvshow:/series2
+      - nas2_animes:/animes2
+
+    mem_limit: 300M
+    mem_reservation: 100M
+    cpus: 1.0
+    network_mode: "host"
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+volumes:
+  nas1_movies:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Movies"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,nosuid,noexec,nodev"
+  nas1_tvshow:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/TvShows"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,nosuid,noexec,nodev"
+  nas1_animes:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Animes"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,nosuid,noexec,nodev"
+  nas2_movies:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Filmes"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,nosuid,noexec,nodev"
+  nas2_tvshow:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Series"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,nosuid,noexec,nodev"
+  nas2_animes:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,nosuid"

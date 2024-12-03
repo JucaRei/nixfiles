@@ -1,16 +1,20 @@
-{ lib
-, pkgs
-, username
-, ...
-}:
+{ lib, pkgs, username, config, ... }:
 let
-  installFor = [ "juca" ];
+  inherit (lib) mkEnableOption mkIf;
+  cfg = config.desktop.apps.music;
 in
-lib.mkIf (builtins.elem username installFor) {
-  home = {
-    packages = with pkgs; [
-      cider
-      youtube-music
-    ];
+{
+  options = {
+    desktop.apps.music = {
+      enable = mkEnableOption "Enable some music packages";
+    };
+  };
+  config = mkIf cfg.enable {
+    home = {
+      packages = with pkgs; [
+        cider
+        youtube-music
+      ];
+    };
   };
 }

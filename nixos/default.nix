@@ -246,7 +246,11 @@ in
     };
 
     systemd = {
-      tmpfiles.rules = [ "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" ];
+      tmpfiles.rules = [
+        "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash" # Create symlink to /bin/bash
+        "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
+        "d /var/lib/private/sops/age 0755 root root"
+      ];
 
       user.extraConfig = ''
         DefaultCPUAccounting=yes
@@ -291,19 +295,26 @@ in
     };
 
     system = {
-      nixos.label = lib.mkIf isInstall "NixOS";
+      nixos.label = lib.mkIf isInstall "ex";
       inherit stateVersion;
 
-      activationScripts.report-changes = ''
-        PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}
-        nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
-        mkdir -p /var/log/activations
-        _nvddate=$(date +'%Y%m%d%H%M%S')
-        nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
-        if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
-          rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
-        fi
-      '';
+      activationScripts = {
+        report-changes = ''
+          PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}
+          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
+          mkdir -p /var/log/activations
+          _nvddate=$(date +'%Y%m%d%H%M%S')
+          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
+          if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
+            rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
+          fi
+        '';
+
+        nixos-needtoreboot = {
+          supportsDryActivation = true;
+          text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
+        };
+      };
     };
   };
 }

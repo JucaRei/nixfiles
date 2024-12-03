@@ -19,8 +19,7 @@
       # - https://github.com/NixOS/nixpkgs/issues/144045#issuecomment-992487775
       pathsToLink = [ "/libexec" ];
 
-      systemPackages =
-        with pkgs;
+      systemPackages = with pkgs;
         lib.optionals isInstall [
           pick-colour-picker
         ];
