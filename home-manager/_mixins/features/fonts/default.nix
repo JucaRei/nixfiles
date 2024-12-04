@@ -1,13 +1,7 @@
-{
-  isInstall,
-  lib,
-  pkgs,
-  ...
-}:
+{ isInstall, lib, pkgs, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
-  isOtherOS =
-    if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
+  isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
 in
 lib.mkIf (isDarwin || isOtherOS) {
   # https://yildiz.dev/posts/packing-custom-fonts-for-nixos/
@@ -35,19 +29,19 @@ lib.mkIf (isDarwin || isOtherOS) {
         bebas-neue-pro-font
         bebas-neue-rounded-font
         bebas-neue-semi-rounded-font
-        boycott-font
-        commodore-64-pixelized-font
-        digital-7-font
-        dirty-ego-font
-        fixedsys-core-font
-        fixedsys-excelsior-font
-        impact-label-font
+        # boycott-font
+        # commodore-64-pixelized-font
+        # digital-7-font
+        # dirty-ego-font
+        # fixedsys-core-font
+        # fixedsys-excelsior-font
+        # impact-label-font
         mocha-mattari-font
         poppins-font
-        spaceport-2006-font
+        # spaceport-2006-font
         ubuntu_font_family
-        unscii
-        zx-spectrum-7-font
+        # unscii
+        # zx-spectrum-7-font
       ];
   };
 

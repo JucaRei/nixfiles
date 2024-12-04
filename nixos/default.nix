@@ -312,7 +312,7 @@ in
 
         nixos-needtoreboot = {
           supportsDryActivation = true;
-          text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
+          text = "${lib.getExe inputs.nixos-needtoreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
         };
       };
     };

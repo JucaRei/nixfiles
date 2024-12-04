@@ -33,8 +33,8 @@
     nixos-needtoreboot.url = "github:thefossguy/nixos-needsreboot";
     nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    # nix-darwin.url = "github:LnL7/nix-darwin";
+    # nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-index-database.url = "github:Mic92/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
@@ -130,10 +130,10 @@
       };
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
       #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
-      darwinConfigurations = {
-        momin = helper.mkDarwin { hostname = "momin"; };
-        krall = helper.mkDarwin { hostname = "krall"; platform = "x86_64-darwin"; };
-      };
+      # darwinConfigurations = {
+      #   momin = helper.mkDarwin { hostname = "momin"; };
+      #   krall = helper.mkDarwin { hostname = "krall"; platform = "x86_64-darwin"; };
+      # };
 
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
       devShells = helper.forAllSystems (system:

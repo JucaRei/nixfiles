@@ -98,35 +98,35 @@
         ++ inputs.nixpkgs.lib.optionals isISO [ cd-dvd ];
     };
 
-  mkDarwin =
-    { desktop ? "aqua"
-    , hostname
-    , username ? "juca"
-    , platform ? "aarch64-darwin"
-    ,
-    }:
-    let
-      isISO = false;
-      isInstall = true;
-      isWorkstation = true;
-    in
-    inputs.nix-darwin.lib.darwinSystem {
-      specialArgs = {
-        inherit
-          inputs
-          outputs
-          desktop
-          hostname
-          platform
-          username
-          stateVersion
-          isInstall
-          isISO
-          isWorkstation
-          ;
-      };
-      modules = [ ../darwin ];
-    };
+  # mkDarwin =
+  #   { desktop ? "aqua"
+  #   , hostname
+  #   , username ? "juca"
+  #   , platform ? "aarch64-darwin"
+  #   ,
+  #   }:
+  #   let
+  #     isISO = false;
+  #     isInstall = true;
+  #     isWorkstation = true;
+  #   in
+  #   inputs.nix-darwin.lib.darwinSystem {
+  #     specialArgs = {
+  #       inherit
+  #         inputs
+  #         outputs
+  #         desktop
+  #         hostname
+  #         platform
+  #         username
+  #         stateVersion
+  #         isInstall
+  #         isISO
+  #         isWorkstation
+  #         ;
+  #     };
+  #     modules = [ ../darwin ];
+  #   };
 
   forAllSystems = inputs.nixpkgs.lib.genAttrs
     [

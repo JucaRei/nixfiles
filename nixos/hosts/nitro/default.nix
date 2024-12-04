@@ -89,6 +89,7 @@ in
         cloneit
         gparted
         lm_sensors
+        cloneit
 
         # tigervnc
         unstable.obsidian

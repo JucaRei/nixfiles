@@ -1,14 +1,18 @@
-{ lib
-, pkgs
-, username
-, ...
-}:
+{ lib, pkgs, config, ... }:
 let
-  installFor = [ "juca" ];
   inherit (pkgs.stdenv) isLinux;
+  inherit (lib) mkIf mkEnableOption;
+  cfg = config.desktop.apps.zed-editor;
 in
-lib.mkIf (lib.elem username installFor && isLinux) {
-  home = {
-    packages = with pkgs; [ unstable.zed-editor ];
+{
+  options = {
+    desktop.apps.zed-editor = {
+      enable = mkEnableOption "Enables zed as editor";
+    };
+  };
+  config = mkIf cfg.enable && isLinux {
+    home = {
+      packages = with pkgs; [ unstable.zed-editor ];
+    };
   };
 }
