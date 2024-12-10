@@ -1,7 +1,7 @@
 { config, desktop, lib, pkgs, username, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkForce optional;
+  inherit (lib) mkForce optional mkIf;
 
   aesthetic-wallpapers = pkgs.fetchgit {
     url = "https://github.com/D3Ext/aesthetic-wallpapers";
@@ -13,135 +13,136 @@ in
   # import the DE specific configuration and any user specific desktop configuration
   imports = [ ./apps ./features ]
     ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-    ++ optional
-    (builtins.pathExists (
-      ./. + "/${desktop}/${username}/default.nix"
-    )) ./${desktop}/${username};
+    ++ optional (builtins.pathExists (./. + "/${desktop}/${username}/default.nix")) ./${desktop}/${username};
 
-  # Authrorize X11 access in Distrobox
-  home = {
-    file = lib.mkIf isLinux {
-      ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
-      ".face" = {
-        source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+  config = {
+    # Authrorize X11 access in Distrobox
+    home = {
+      file = mkIf isLinux {
+        ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
+        ".face" = { source = "${pkgs.juca-avatar}/share/faces/juca.jpg"; };
+        "${config.xdg.userDirs.pictures}/wallpapers".source = mkForce "${aesthetic-wallpapers}/images";
       };
-      "${config.xdg.userDirs.pictures}/wallpapers".source = mkForce "${aesthetic-wallpapers}/images";
     };
-  };
 
-  programs = lib.mkIf (username == "juca") {
-    alacritty = {
-      catppuccin.enable = isLinux;
+    custom.features.mime.defaultApps = {
       enable = true;
-      settings = {
-        cursor = {
-          style = {
-            shape = "Block";
-            blinking = "Always";
+    };
+
+    programs = mkIf (username == "juca") {
+      alacritty = {
+        catppuccin.enable = isLinux;
+        enable = true;
+        settings = {
+          cursor = {
+            style = {
+              shape = "Block";
+              blinking = "Always";
+            };
           };
-        };
-        env = {
-          TERM = "xterm-256color";
-        };
-        font = {
-          normal = {
-            family = "FiraCode Nerd Font Mono";
+          env = {
+            TERM = "xterm-256color";
           };
-          bold = {
-            family = "FiraCode Nerd Font Mono";
+          font = {
+            normal = {
+              family = "FiraCode Nerd Font Mono";
+            };
+            bold = {
+              family = "FiraCode Nerd Font Mono";
+            };
+            italic = {
+              family = "FiraCode Nerd Font Mono";
+            };
+            bold_italic = {
+              family = "FiraCode Nerd Font Mono";
+            };
+            size = 16;
+            builtin_box_drawing = true;
           };
-          italic = {
-            family = "FiraCode Nerd Font Mono";
+          mouse = {
+            bindings = [
+              {
+                mouse = "Middle";
+                action = "Paste";
+              }
+            ];
           };
-          bold_italic = {
-            family = "FiraCode Nerd Font Mono";
+          selection = {
+            save_to_clipboard = true;
           };
-          size = 16;
-          builtin_box_drawing = true;
-        };
-        mouse = {
-          bindings = [
-            {
-              mouse = "Middle";
-              action = "Paste";
-            }
-          ];
-        };
-        selection = {
-          save_to_clipboard = true;
-        };
-        scrolling = {
-          history = 50000;
-          multiplier = 3;
-        };
-        window = {
-          decorations = if config.wayland.windowManager.hyprland.enable then "None" else "Full";
-          dimensions = {
-            columns = 132;
-            lines = 50;
+          scrolling = {
+            history = 50000;
+            multiplier = 3;
           };
-          padding = {
-            x = 5;
-            y = 5;
+          window = {
+            decorations = if config.wayland.windowManager.hyprland.enable then "None" else "Full";
+            dimensions = {
+              columns = 132;
+              lines = 50;
+            };
+            padding = {
+              x = 5;
+              y = 5;
+            };
+            opacity = 1.0;
+            blur = false;
           };
-          opacity = 1.0;
-          blur = false;
         };
       };
     };
-  };
 
-  # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
-  services.mpris-proxy.enable = isLinux;
+    # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
+    services.mpris-proxy.enable = isLinux;
 
-  xresources.properties = {
-    "*background" = "#1E1E2E";
-    "*foreground" = "#CDD6F4";
-    # black
-    "*color0" = "#45475A";
-    "*color8" = "#585B70";
-    # red
-    "*color1" = "#F38BA8";
-    "*color9" = "#F38BA8";
-    # green
-    "*color2" = "#A6E3A1";
-    "*color10" = "#A6E3A1";
-    # yellow
-    "*color3" = "#F9E2AF";
-    "*color11" = "#F9E2AF";
-    # blue
-    "*color4" = "#89B4FA";
-    "*color12" = "#89B4FA";
-    #magenta
-    "*color5" = "#F5C2E7";
-    "*color13" = "#F5C2E7";
-    #cyan
-    "*color6" = "#94E2D5";
-    "*color14" = "#94E2D5";
-    #white
-    "*color7" = "#BAC2DE";
-    "*color15" = "#A6ADC8";
+    xresources.properties = {
+      "*background" = "#1E1E2E";
+      "*foreground" = "#CDD6F4";
+      # black
+      "*color0" = "#45475A";
+      "*color8" = "#585B70";
+      # red
+      "*color1" = "#F38BA8";
+      "*color9" = "#F38BA8";
+      # green
+      "*color2" = "#A6E3A1";
+      "*color10" = "#A6E3A1";
+      # yellow
+      "*color3" = "#F9E2AF";
+      "*color11" = "#F9E2AF";
+      # blue
+      "*color4" = "#89B4FA";
+      "*color12" = "#89B4FA";
+      #magenta
+      "*color5" = "#F5C2E7";
+      "*color13" = "#F5C2E7";
+      #cyan
+      "*color6" = "#94E2D5";
+      "*color14" = "#94E2D5";
+      #white
+      "*color7" = "#BAC2DE";
+      "*color15" = "#A6ADC8";
 
-    # Xterm Appearance
-    "XTerm*background" = "#1E1E2E";
-    "XTerm*foreground" = "#CDD6F4";
-    "XTerm*letterSpace" = 0;
-    "XTerm*lineSpace" = 0;
-    "XTerm*geometry" = "132x50";
-    "XTerm.termName" = "xterm-256color";
-    "XTerm*internalBorder" = 2;
-    "XTerm*faceName" = "FiraCode Nerd Font Mono:size=14:style=Medium:antialias=true";
-    "XTerm*boldFont" = "FiraCode Nerd Font Mono:size=14:style=Bold:antialias=true";
-    "XTerm*boldColors" = true;
-    "XTerm*cursorBlink" = true;
-    "XTerm*cursorUnderline" = false;
-    "XTerm*saveline" = 2048;
-    "XTerm*scrollBar" = false;
-    "XTerm*scrollBar_right" = false;
-    "XTerm*urgentOnBell" = true;
-    "XTerm*depth" = 24;
-    "XTerm*utf8" = true;
-    "XTerm*locale" = false;
-    "XTerm.vt100.metaSendsEscape" = true;
+      # Xterm Appearance
+      "XTerm*background" = "#1E1E2E";
+      "XTerm*foreground" = "#CDD6F4";
+      "XTerm*letterSpace" = 0;
+      "XTerm*lineSpace" = 0;
+      "XTerm*geometry" = "132x50";
+      "XTerm.termName" = "xterm-256color";
+      "XTerm*internalBorder" = 2;
+      "XTerm*faceName" = "FiraCode Nerd Font Mono:size=14:style=Medium:antialias=true";
+      "XTerm*boldFont" = "FiraCode Nerd Font Mono:size=14:style=Bold:antialias=true";
+      "XTerm*boldColors" = true;
+      "XTerm*cursorBlink" = true;
+      "XTerm*cursorUnderline" = false;
+      "XTerm*saveline" = 2048;
+      "XTerm*scrollBar" = false;
+      "XTerm*scrollBar_right" = false;
+      "XTerm*urgentOnBell" = true;
+      "XTerm*depth" = 24;
+      "XTerm*utf8" = true;
+      "XTerm*locale" = false;
+      "XTerm.vt100.metaSendsEscape" = true;
+    };
   };
 }

@@ -1,6 +1,7 @@
 { config, lib, pkgs, desktop, ... }:
 let
   cfg = config.custom.features.mime.defaultApps;
+  inherit (pkgs.stdenv) isLinux;
   inherit (lib) types mkEnableOption mkOption mdDoc mkIf optionals;
 in
 {
@@ -357,7 +358,9 @@ in
           "application/mspowerpoint" = cfg.defaultPowerPoint;
         };
       in
-      mkIf cfg.enable {
+      mkIf cfg.enable && isLinux {
+        enable = true;
+        mime.enable = true;
         mimeApps = {
           enable = true;
           associations.added = associations;

@@ -34,8 +34,7 @@ in
     homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
     packages =
-      with pkgs;
-      [
+      with pkgs; [
         duf # Modern Unix `df`
         fd # Modern Unix `find`
         netdiscover # Modern Unix `arp`
@@ -54,6 +53,11 @@ in
       SYSTEMD_EDITOR = "micro";
       VISUAL = "micro";
     };
+
+    sessionPath = [
+      "$HOME/.local/bin"
+      "$HOME/.local/share/applications"
+    ];
   };
 
   # Workaround home-manager bug with flakes
