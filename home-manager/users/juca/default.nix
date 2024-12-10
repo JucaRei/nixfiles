@@ -2,24 +2,10 @@
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkIf getExe;
-  isStreamstation = hostname == "phasma" || hostname == "vader";
 in
 {
   home = {
     file = {
-      # "${config.xdg.configHome}/autostart/deskmaster-xl.desktop" = lib.mkIf isStreamstation {
-      #   text = ''
-      #     [Desktop Entry]
-      #     Name=Deckmaster XL
-      #     Comment=Deckmaster XL
-      #     Type=Application
-      #     Exec=deckmaster -deck ${config.home.homeDirectory}/Studio/StreamDeck/Deckmaster-xl/main.deck
-      #     Categories=
-      #     Terminal=false
-      #     NoDisplay=true
-      #     StartupNotify=false
-      #   '';
-      # };
       ".face" = {
         source = "${getExe pkgs.juca-avatar} juca-avatar";
       };

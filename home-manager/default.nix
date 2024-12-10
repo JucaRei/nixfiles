@@ -14,8 +14,8 @@ in
     inputs.nix-index-database.hmModules.nix-index
     inputs.chaotic-nyx.homeManagerModules.default
     ./_mixins/features
-    ./_mixins/scripts
-    ./_mixins/services
+    ../resource/hm-configs
+    ../resources/hm-configs/scripts
     ../resources/hm-configs/console
   ]
   ++ optional isWorkstation ./_mixins/desktop
