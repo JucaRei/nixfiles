@@ -1,13 +1,7 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, lib, pkgs, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
-  buttonLayout =
-    if config.wayland.windowManager.hyprland.enable then "appmenu" else "close,minimize,maximize";
+  buttonLayout = if config.wayland.windowManager.hyprland.enable then "appmenu" else "close,minimize,maximize";
 in
 lib.mkIf isLinux {
   # TODO: Migrate to Colloid-gtk-theme 2024-06-18 or newer; now has catppuccin colors
@@ -15,7 +9,7 @@ lib.mkIf isLinux {
   dconf.settings = with lib.hm.gvariant; {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
-      cursor-size = 48;
+      cursor-size = 24;
       cursor-theme = "catppuccin-mocha-blue-cursors";
       gtk-theme = "catppuccin-mocha-blue-standard";
       icon-theme = "Papirus-Dark";
@@ -33,7 +27,7 @@ lib.mkIf isLinux {
     };
 
     "org/mate/desktop/peripherals/mouse" = {
-      cursor-size = mkInt32 48;
+      cursor-size = mkInt32 24;
       cursor-theme = "Catppuccin-Mocha-Blue-Cursors";
     };
 
@@ -99,7 +93,7 @@ lib.mkIf isLinux {
     pointerCursor = {
       name = "catppuccin-mocha-blue-cursors";
       package = pkgs.catppuccin-cursors.mochaBlue;
-      size = 48;
+      size = 24;
       gtk.enable = true;
       x11.enable = true;
     };

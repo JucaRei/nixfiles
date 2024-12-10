@@ -1,9 +1,4 @@
-{
-  hostname,
-  lib,
-  pkgs,
-  ...
-}:
+{ hostname, lib, pkgs, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
 in
@@ -70,19 +65,6 @@ in
         ];
       };
 
-      "org/gnome/desktop/wm/preferences" = {
-        num-workspaces = mkInt32 8;
-        workspace-names = [
-          "Web"
-          "Work"
-          "Chat"
-          "Code"
-          "Term"
-          "Cast"
-          "Virt"
-          "Fun"
-        ];
-      };
 
       "org/gnome/desktop/default/applications/terminal" = {
         exec = "alacritty";

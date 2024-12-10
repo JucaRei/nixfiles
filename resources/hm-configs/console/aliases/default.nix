@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkEnableOption mkOption types;
+  inherit (pkgs.stdenv) isLinux;
   cfg = config.console.aliases;
   nixDiffCommands = {
     builtin = "nix store diff-closures";
@@ -169,6 +170,7 @@ in
           nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
           mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
           mkdir = "mkdir -pv";
+          lsusb = "${lib.getExe pkgs.cyme}";
           ios = "sudo --preserve-env=PATH ${pkgs.dmidecode}/bin/dmidecode -t bios";
           # cat = "${pkgs.bat}/bin/bat --paging=never";
           # cat = ''bat --paging=never --theme=tokyo_night --style="numbers,changes" --italic-text=always''; # bat (cat)
@@ -176,7 +178,7 @@ in
           cat = ''bat --paging=never --style="numbers,changes" --italic-text=always''; # bat (cat)
           ct = ''bat --paging=never --style="plain" --italic-text=always''; # bat (cat)
           cp = "${pkgs.xcp}/bin/xcp";
-          ip = "${pkgs.iproute2}/bin/ip --color --brief";
+          ip = lib.mkIf isLinux "${pkgs.iproute2}/bin/ip --color --brief";
           less = "${pkgs.bat}/bin/bat --paging=always";
           more = "${pkgs.bat}/bin/bat --paging=always";
           top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --mem_as_value";

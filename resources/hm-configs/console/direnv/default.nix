@@ -21,6 +21,9 @@ in
         nix-direnv = {
           enable = true;
         };
+        direnvrcExtra = ''
+          echo "loaded direnv!"
+        '';
         config = {
           whitelist = {
             prefix = [

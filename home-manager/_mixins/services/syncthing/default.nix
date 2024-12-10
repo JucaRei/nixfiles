@@ -1,12 +1,4 @@
-{ config
-, hostname
-, isLima
-, isWorkstation
-, lib
-, pkgs
-, username
-, ...
-}:
+{ config, hostname, isLima, isWorkstation, lib, pkgs, username, ... }:
 let
   installFor = [ "juca" ];
   inherit (pkgs.stdenv) isLinux;

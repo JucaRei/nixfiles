@@ -1,7 +1,8 @@
 {
   description = "NixOS, nix-darwin and Home Manager Configuration";
   inputs = {
-    nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
+    # nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
+    nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2411.*";
     nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
 
     flake-compat = {
@@ -74,7 +75,7 @@
     let
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-      stateVersion = "24.05";
+      stateVersion = "24.11";
       helper = import ./lib { inherit inputs outputs stateVersion; };
     in
     {
@@ -91,8 +92,6 @@
         "juca@vader" = helper.mkHome { hostname = "vader"; desktop = "hyprland"; };
         "juca@shaa" = helper.mkHome { hostname = "shaa"; desktop = "hyprland"; };
         "juca@tanis" = helper.mkHome { hostname = "tanis"; desktop = "hyprland"; };
-        "juca@momin" = helper.mkHome { hostname = "momin"; platform = "aarch64-darwin"; desktop = "aqua"; };
-        "juca@krall" = helper.mkHome { hostname = "krall"; platform = "x86_64-darwin"; desktop = "aqua"; };
         # palpatine/sidious are dual boot hosts, WSL2/Ubuntu and NixOS respectively.
         "juca@palpatine" = helper.mkHome { hostname = "palpatine"; };
         "juca@sidious" = helper.mkHome { hostname = "sidious"; desktop = "gnome"; };
@@ -103,6 +102,9 @@
         # VMs
         "juca@minimech" = helper.mkHome { hostname = "minimech"; };
         "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "pantheon"; };
+        # Apple
+        # "juca@momin" = helper.mkHome { hostname = "momin"; platform = "aarch64-darwin"; desktop = "aqua"; };
+        # "juca@krall" = helper.mkHome { hostname = "krall"; platform = "x86_64-darwin"; desktop = "aqua"; };
       };
       nixosConfigurations = {
         # .iso images
@@ -118,7 +120,7 @@
         phasma = helper.mkNixos { hostname = "phasma"; desktop = "hyprland"; };
         tanis = helper.mkNixos { hostname = "tanis"; desktop = "hyprland"; };
         sidious = helper.mkNixos { hostname = "sidious"; desktop = "gnome"; };
-        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
+        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; stateVersion = "24.05"; };
         nitro = helper.mkNixos { hostname = "nitro"; desktop = "xfce4"; };
         # Servers
         soyoz = helper.mkNixos { hostname = "soyoz"; };

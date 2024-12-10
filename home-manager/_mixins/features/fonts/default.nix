@@ -38,10 +38,7 @@ lib.mkIf (isDarwin || isOtherOS) {
         # impact-label-font
         mocha-mattari-font
         poppins-font
-        # spaceport-2006-font
         ubuntu_font_family
-        # unscii
-        # zx-spectrum-7-font
       ];
   };
 

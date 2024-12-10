@@ -35,6 +35,7 @@
       modules = [ ../home-manager ];
     };
 
+
   # Helper function for generating NixOS configs
   mkNixos =
     { hostname
