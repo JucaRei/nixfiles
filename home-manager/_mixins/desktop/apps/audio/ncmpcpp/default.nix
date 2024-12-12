@@ -8,7 +8,7 @@ in
     enable = mkOption {
       default = false;
       type = types.bool;
-      descript = "Enables ncmpcpp";
+      description = "Enables ncmpcpp";
     };
   };
   config = mkIf cfg.enable {

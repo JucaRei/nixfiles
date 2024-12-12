@@ -24,8 +24,8 @@ in
     fonts.fontconfig.cache32Bit = true;
     hardware = mkIf (cfg.engines == "steam") {
       steam-hardware.enable = true;
-      opengl = {
-        driSupport32Bit = true;
+      graphics = {
+        enable32Bit = true;
         extraPackages = with pkgs; [ vulkan-validation-layers ];
       };
     };

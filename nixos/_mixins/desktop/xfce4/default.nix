@@ -80,10 +80,12 @@ in
     blueman.enable = true;
     touchegg.enable = true;
     gnome.gnome-keyring.enable = true;
+    displayManager = {
+      defaultSession = "xfce";
+    };
     xserver = {
       enable = true;
       displayManager = {
-        defaultSession = "xfce";
         lightdm = {
           enable = true;
           greeters = {
@@ -142,11 +144,8 @@ in
       xdgOpenUsePortal = true;
       configPackages = [ pkgs.xfce.xfce4-session ];
       extraPortals = with pkgs; [
+        xdg-desktop-portal-gtk
         xdg-desktop-portal-xapp
-        (xdg-desktop-portal-gtk.override {
-          # Use the upstream default so this won't conflict with the xapp portal.
-          buildPortalsInGnome = false;
-        })
       ];
       config = {
         common = {

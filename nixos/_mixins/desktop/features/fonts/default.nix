@@ -31,7 +31,7 @@ in
           fira
           font-awesome
           # liberation_ttf
-          noto-fonts-emoji
+          # noto-fonts-emoji
           # noto-fonts-monochrome-emoji
           # source-serif
           # symbola
@@ -60,23 +60,26 @@ in
       fontconfig = {
         antialias = true;
         # Enable 32-bit support if driSupport32Bit is true
-        cache32Bit = lib.mkForce config.hardware.opengl.driSupport32Bit;
+        cache32Bit = lib.mkForce config.hardware.graphics.enable32Bit;
         defaultFonts = {
           serif = [
-            "Source Serif"
-            "Noto Color Emoji"
+            # "Source Serif"
+            # "Noto Color Emoji"
+            "Merriweather"
           ];
           sansSerif = [
-            "Work Sans"
-            "Fira Sans"
-            "Noto Color Emoji"
+            "Lato"
+            # "Work Sans"
+            # "Fira Sans"
+            # "Noto Color Emoji"
           ];
           monospace = [
+            "Merriweather"
             "FiraCode Nerd Font Mono"
-            "Font Awesome 6 Free"
-            "Font Awesome 6 Brands"
-            "Symbola"
-            "Noto Emoji"
+            # "Font Awesome 6 Free"
+            # "Font Awesome 6 Brands"
+            # "Symbola"
+            # "Noto Emoji"
           ];
           emoji = [
             "Noto Color Emoji"
@@ -88,63 +91,6 @@ in
           enable = true;
           style = "slight";
         };
-        localConf = ''
-          <?xml version="1.0"?>
-          <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
-          <fontconfig>
-            <!-- Use Noto Emoji when other popular fonts are being specifically requested. -->
-            <match target="pattern">
-              <test qual="any" name="family"><string>Segoe UI Symbol</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>EmojiSymbols</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Emoji</string></edit>
-            </match>
-            <!-- This adds Noto Emoji as a final fallback font for Symbola. -->
-            <match target="pattern">
-              <test qual="any" name="family"><string>Symbola</string></test>
-              <edit name="family" mode="append" binding="weak"><string>Noto Emoji</string></edit>
-            </match>
-            <!-- Use Noto Color Emoji when other popular fonts are being specifically requested. -->
-            <match target="pattern">
-              <test qual="any" name="family"><string>Apple Color Emoji</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>Segoe UI Emoji</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>Android Emoji</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>Twitter Color Emoji</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>Twemoji</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>Twemoji Mozilla</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>TwemojiMozilla</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>EmojiTwo</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-            <match target="pattern">
-              <test qual="any" name="family"><string>Emoji Two</string></test>
-              <edit name="family" mode="assign" binding="same"><string>Noto Color Emoji</string></edit>
-            </match>
-          </fontconfig>
-        '';
         subpixel = {
           rgba = "rgb";
           lcdfilter = "light";

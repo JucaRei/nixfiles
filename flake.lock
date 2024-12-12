@@ -783,17 +783,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1715010630,
-        "narHash": "sha256-zOMZDSAd3w1Dd5Jcs3nYae7aNomb3qfMJmCQl2ucZok=",
-        "owner": "thefossguy",
-        "repo": "nixos-needsreboot",
-        "rev": "8a3f64cc3c246cc6311485ad96ee9db0989c1377",
-        "type": "github"
+        "lastModified": 1714932872,
+        "narHash": "sha256-C+oxZthPMuqEEiioPsqeWZ+xFlt2Y4yz5S2Cg4dtG08=",
+        "rev": "c00f7e0eb0d35bce9351173ed73a99454d57a8b6",
+        "type": "tarball",
+        "url": "https://codeberg.org/api/v1/repos/Mynacol/nixos-needsreboot/archive/c00f7e0eb0d35bce9351173ed73a99454d57a8b6.tar.gz"
       },
       "original": {
-        "owner": "thefossguy",
-        "repo": "nixos-needsreboot",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz"
       }
     },
     "nixpkgs": {
@@ -838,6 +836,20 @@
       "original": {
         "type": "tarball",
         "url": "https://github.com/NixOS/nixpkgs/archive/50eb7ecf4cd0a5756d7275c8ba36790e5bd53e33.tar.gz"
+      }
+    },
+    "nixpkgs-oldstable": {
+      "locked": {
+        "lastModified": 1733730953,
+        "narHash": "sha256-dlK7n82FEyZlHH7BFHQAM5tua+lQO1Iv7aAtglc1O5s=",
+        "rev": "7109b680d161993918b0a126f38bc39763e5a709",
+        "revCount": 637183,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/nixos/nixpkgs/0.2405.637183%2Brev-7109b680d161993918b0a126f38bc39763e5a709/0193ad58-5769-7294-a467-49c5f8ea156c/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/nixos/nixpkgs/0.2405.%2A"
       }
     },
     "nixpkgs-regression": {
@@ -960,16 +972,16 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1733016324,
-        "narHash": "sha256-8qwPSE2g1othR1u4uP86NXxm6i7E9nHPyJX3m3lx7Q4=",
-        "rev": "7e1ca67996afd8233d9033edd26e442836cc2ad6",
-        "revCount": 637020,
+        "lastModified": 1733808091,
+        "narHash": "sha256-KWwINTQelKOoQgrXftxoqxmKFZb9pLVfnRvK270nkVk=",
+        "rev": "a0f3e10d94359665dba45b71b4227b0aeb851f8e",
+        "revCount": 710905,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/nixos/nixpkgs/0.2405.637020%2Brev-7e1ca67996afd8233d9033edd26e442836cc2ad6/01938271-595b-797a-b079-b2b4fda246ca/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/nixos/nixpkgs/0.2411.710905%2Brev-a0f3e10d94359665dba45b71b4227b0aeb851f8e/0193b471-0e0b-7383-924e-bbf71451b05c/source.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://flakehub.com/f/nixos/nixpkgs/0.2405.%2A"
+        "url": "https://flakehub.com/f/nixos/nixpkgs/0.2411.%2A"
       }
     },
     "pre-commit-hooks-nix": {
@@ -1019,6 +1031,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixos-needtoreboot": "nixos-needtoreboot",
         "nixpkgs": "nixpkgs_7",
+        "nixpkgs-oldstable": "nixpkgs-oldstable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "sops-nix": "sops-nix",
         "stream-sprout": "stream-sprout",

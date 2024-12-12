@@ -1,4 +1,4 @@
-{ desktop, isInstall, lib, pkgs, ... }:
+{ desktop, isInstall, lib, pkgs, config, ... }:
 let
   inherit (lib) mkDefault;
 in
@@ -79,26 +79,25 @@ in
         xdotool
         ydotool
       ];
+
+      sessionVariables = {
+        "TMPDIR" = "/tmp";
+      };
     };
+
     programs.dconf.enable = true;
+
     services = {
       dbus.enable = true;
+
       usbmuxd.enable = true; # for IOS;
+
       xserver = {
         # Disable xterm
         desktopManager.xterm.enable = false;
         excludePackages = [ pkgs.xterm ];
       };
-      samba = {
-        enable = true;
-        #package = pkgs.unstable.samba4Full; # samba4Full broken
-        # securityType = "user";
-        # openFirewall = true;
-        extraConfig = ''
-          # My old nas dlink-325 uses v1
-          client min protocol = NT1
-        '';
-      };
+
       udisks2 = {
         enable = true;
         mountOnMedia = true;

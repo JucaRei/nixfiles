@@ -31,7 +31,7 @@ in
     # };
 
     environment = {
-      variables = mkIf (config.hardware.opengl.enable && device.gpu != "hybrid-nv") {
+      variables = mkIf (config.hardware.graphics.enable && device.gpu != "hybrid-nv") {
         VDPAU_DRIVER = "va_gl";
       };
       systemPackages = with pkgs.unstable; [

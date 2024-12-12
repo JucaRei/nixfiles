@@ -201,7 +201,7 @@ in
       smartd.enable = mkDefault isInstall;
 
       dbus = {
-        packages = optionals (isWorkstation) (with pkgs // pkgs.gnome; [ gnome-keyring gcr ]);
+        packages = optionals (isWorkstation) (with pkgs ; [ gnome-keyring gcr ]);
         implementation = if isWorkstation then "broker" else "dbus";
       };
 
@@ -289,9 +289,6 @@ in
         hibernate.enable = false;
         hybrid-sleep.enable = false;
       };
-
-      # enable cgroups=v2 as default
-      enableUnifiedCgroupHierarchy = mkForce isInstall;
     };
 
     system = {

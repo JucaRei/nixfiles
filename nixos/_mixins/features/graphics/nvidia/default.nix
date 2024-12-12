@@ -126,7 +126,7 @@ in
         forceFullCompositionPipeline = true;
       };
 
-      opengl = {
+      graphics = {
         extraPackages = with pkgs; [
           nvidia-vaapi-driver
         ];

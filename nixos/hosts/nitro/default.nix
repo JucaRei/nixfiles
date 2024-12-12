@@ -66,6 +66,10 @@ in
         "zswap.enabled=1"
         "mem_sleep_default=deep"
         "usbcore.autosuspend=-1" # Disable USB autosuspend
+
+        ### CGROUPS v1
+        # "systemd.unified_cgroup_hierachy=0"
+        # "SYSTEMD_CGROUP_ENABLE_LEGACY_FORCE=1"
       ];
       loader = {
         grub = {
@@ -90,6 +94,7 @@ in
         gparted
         lm_sensors
         cloneit
+        typora
 
         # tigervnc
         unstable.obsidian

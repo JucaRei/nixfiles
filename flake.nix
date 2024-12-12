@@ -1,7 +1,7 @@
 {
   description = "NixOS, nix-darwin and Home Manager Configuration";
   inputs = {
-    # nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
+    nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
     nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2411.*";
     nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
 
@@ -31,7 +31,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    nixos-needtoreboot.url = "github:thefossguy/nixos-needsreboot";
+    nixos-needtoreboot.url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
     nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
 
     # nix-darwin.url = "github:LnL7/nix-darwin";
@@ -120,7 +120,7 @@
         phasma = helper.mkNixos { hostname = "phasma"; desktop = "hyprland"; };
         tanis = helper.mkNixos { hostname = "tanis"; desktop = "hyprland"; };
         sidious = helper.mkNixos { hostname = "sidious"; desktop = "gnome"; };
-        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; stateVersion = "24.05"; };
+        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
         nitro = helper.mkNixos { hostname = "nitro"; desktop = "xfce4"; };
         # Servers
         soyoz = helper.mkNixos { hostname = "soyoz"; };

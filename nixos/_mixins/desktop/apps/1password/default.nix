@@ -11,7 +11,7 @@ in
   };
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
-      _1password
+      _1password-cli
       _1password-gui
     ];
   };

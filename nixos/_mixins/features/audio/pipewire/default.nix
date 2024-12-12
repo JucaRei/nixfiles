@@ -44,7 +44,7 @@ in
         enable = true;
         alsa.enable = true;
         # Enable 32-bit support if driSupport32Bit is true
-        alsa.support32Bit = mkForce config.hardware.opengl.driSupport32Bit;
+        alsa.support32Bit = mkForce config.hardware.graphics.enable32Bit;
         jack.enable = false;
         pulse.enable = true;
         wireplumber = {
