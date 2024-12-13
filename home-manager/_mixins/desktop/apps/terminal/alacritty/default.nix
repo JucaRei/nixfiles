@@ -11,6 +11,7 @@ in
     };
   };
   config = mkIf cfg.enable {
+    catppuccin.enable = isLinux;
     home.packages = with pkgs; [
       (nerdfonts.override
         {
@@ -34,6 +35,7 @@ in
           };
           # opacity = 0.7;
           opacity = 0.95;
+          blur = false;
 
           # Window decorations
           #
@@ -56,8 +58,8 @@ in
 
           ## Blank space added around the window in pixels.
           padding = {
-            x = 10;
-            y = 10;
+            x = 5;
+            y = 5;
           };
 
           # Spread additional padding evenly around the terminal content.
@@ -65,8 +67,8 @@ in
 
           ## Number of lines/columns (not pixels) in the terminal.
           dimensions = {
-            columns = 82;
-            lines = 24;
+            columns = 132;
+            lines = 50;
           };
         };
 
@@ -354,7 +356,7 @@ in
           #   - | Beam
           style = {
             shape = "Block";
-            blinking = "On";
+            blinking = "Always";
           };
         };
 

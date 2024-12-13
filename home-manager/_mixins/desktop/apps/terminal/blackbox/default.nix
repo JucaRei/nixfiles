@@ -12,7 +12,7 @@ in
       description = "Enables blackbox terminal.";
     };
   };
-  config = cfg.enable && isLinux {
+  config = mkIf (cfg.enable && isLinux) {
     dconf.settings = with lib.hm.gvariant;
       mkIf isLinux {
         "com/raggesilver/BlackBox" = {

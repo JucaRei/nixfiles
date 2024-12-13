@@ -1,14 +1,14 @@
 { config, lib, pkgs, desktop, ... }:
 let
-  cfg = config.custom.features.mime.defaultApps;
+  cfg = config.features.mime.defaultApps;
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) types mkEnableOption mkOption mdDoc mkIf optionals;
 in
 {
   options = {
-    custom.features.mime.defaultApps = {
+    features.mime.defaultApps = {
       enable = mkOption {
-        types = types.bool;
+        type = types.bool;
         default = false;
         description = "Enable default mime for selected SYSTEM.";
       };
@@ -52,6 +52,7 @@ in
         description = mdDoc ''
           Desktop file for the browser. It should support pdf archives.
         '';
+        # default = null;
         default = null;
       };
       defaultPlainText = mkOption {
@@ -80,6 +81,7 @@ in
         description = mdDoc ''
           Desktop file for the browser. It should be able to manage all archiver files.
         '';
+        # default = null;
         default = null;
       };
       defaultDraw = mkOption {
@@ -358,7 +360,7 @@ in
           "application/mspowerpoint" = cfg.defaultPowerPoint;
         };
       in
-      mkIf cfg.enable && isLinux {
+      mkIf (cfg.enable && isLinux) {
         enable = true;
         mime.enable = true;
         mimeApps = {
@@ -366,7 +368,7 @@ in
           associations.added = associations;
           defaultApplications = associations;
         };
-        configFile."mimeapps.list".force = mkIf (config.custom.features.nonNixOs.enable) true;
+        configFile."mimeapps.list".force = mkIf (config.features.nonNixOs.enable) true;
 
         portal = {
           configPackages = [ ] ++ lib.optionals (desktop == "hyprland") [

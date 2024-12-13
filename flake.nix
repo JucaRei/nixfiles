@@ -10,6 +10,8 @@
       flake = false;
     };
 
+    nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
+
     # Chaotic Nyx!
     # chaotic-nyx = {
     #   url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -18,44 +20,71 @@
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
-    auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
-    auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    auto-cpufreq = {
+      url = "github:AdnanHodzic/auto-cpufreq";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     catppuccin.url = "github:catppuccin/nix";
 
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    home-manager_unstable = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
-    nixos-needtoreboot.url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
-    nixos-needtoreboot.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-needtoreboot = {
+      url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    # nix-darwin.url = "github:LnL7/nix-darwin";
-    # nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    nix-index-database.url = "github:Mic92/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
-    nix-vscode-extensions.inputs.nixpkgs.follows = "nixpkgs";
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    vscode-server.url = "github:nix-community/nixos-vscode-server";
-    vscode-server.inputs.nixpkgs.follows = "nixpkgs";
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Optional but recommended to limit the size of your system closure.
-    lanzaboote.url = "github:nix-community/lanzaboote";
-    lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # FlakeHub
-    catppuccin-vsc.url = "https://flakehub.com/f/catppuccin/vscode/*.tar.gz";
-    catppuccin-vsc.inputs.nixpkgs.follows = "nixpkgs";
+    catppuccin-vsc = {
+      url = "https://flakehub.com/f/catppuccin/vscode/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0";
 
@@ -63,11 +92,15 @@
 
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
 
-    nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/*.tar.gz";
-    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
+    nix-snapd = {
+      url = "https://flakehub.com/f/io12/nix-snapd/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    stream-sprout.url = "https://flakehub.com/f/wimpysworld/stream-sprout/*.tar.gz";
-    stream-sprout.inputs.nixpkgs.follows = "nixpkgs";
+    stream-sprout = {
+      url = "https://flakehub.com/f/wimpysworld/stream-sprout/*.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -92,6 +125,7 @@
         "juca@vader" = helper.mkHome { hostname = "vader"; desktop = "hyprland"; };
         "juca@shaa" = helper.mkHome { hostname = "shaa"; desktop = "hyprland"; };
         "juca@tanis" = helper.mkHome { hostname = "tanis"; desktop = "hyprland"; };
+        "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
         # palpatine/sidious are dual boot hosts, WSL2/Ubuntu and NixOS respectively.
         "juca@palpatine" = helper.mkHome { hostname = "palpatine"; };
         "juca@sidious" = helper.mkHome { hostname = "sidious"; desktop = "gnome"; };

@@ -21,15 +21,15 @@ in
         nix-direnv = {
           enable = true;
         };
-        direnvrcExtra = ''
-          echo "loaded direnv!"
-        '';
         config = {
           whitelist = {
             prefix = [
               "${config.home.homeDirectory}/code"
             ];
           };
+          direnvrcExtra = ''
+            echo "loaded direnv!"
+          '';
         };
       };
       git.ignores = [ ".direnv" ];

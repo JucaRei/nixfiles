@@ -7,7 +7,7 @@ in
   options.features.isWayland = {
     # enable = mkEnableOption "Wayland configuration management for user";
     enable = mkOption {
-      types = types.bool;
+      type = types.bool;
       default = false;
       description = "Wayland configuration management for user";
     };

@@ -9,7 +9,7 @@ in
       enable = mkEnableOption "Enables Matrix client.";
     };
   };
-  config = cfg.enable {
+  config = mkIf cfg.enable {
     home = {
       packages = with packages; [
         fractal

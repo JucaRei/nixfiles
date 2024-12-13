@@ -1,20 +1,20 @@
 { config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional;
+  inherit (lib) optional mkIf;
 in
 {
-  imports = [
+  imports = with inputs // outputs; [
     # If you want to use modules your own flake exports (from modules/home-manager):
     # outputs.homeManagerModules.example
 
     # Modules exported from other flakes:
-    inputs.catppuccin.homeManagerModules.catppuccin
-    inputs.sops-nix.homeManagerModules.sops
-    inputs.nix-index-database.hmModules.nix-index
-    inputs.chaotic-nyx.homeManagerModules.default
+    nur.modules.homeManager.default
+    catppuccin.homeManagerModules.catppuccin
+    sops-nix.homeManagerModules.sops
+    nix-index-database.hmModules.nix-index
+    # chaotic-nyx.homeManagerModules.default
     ./_mixins/features
-    ../resource/hm-configs
     ../resources/hm-configs/scripts
     ../resources/hm-configs/console
   ]
@@ -65,11 +65,11 @@ in
   news.display = "silent";
 
   nixpkgs = {
-    overlays = [
+    overlays = with outputs; [
       # Add overlays your own flake exports (from overlays and pkgs dir):
-      outputs.overlays.additions
-      outputs.overlays.modifications
-      outputs.overlays.unstable-packages
+      overlays.additions
+      overlays.modifications
+      overlays.unstable-packages
     ];
     # Configure your nixpkgs instance
     config = {
@@ -93,7 +93,7 @@ in
   };
 
   services = {
-    gpg-agent = lib.mkIf isLinux {
+    gpg-agent = mkIf isLinux {
       enable = isLinux;
       enableSshSupport = true;
       pinentryPackage = pkgs.pinentry-curses;
@@ -109,7 +109,7 @@ in
     };
   };
 
-  sops = lib.mkIf (username == "teste") {
+  sops = mkIf (username == "teste") {
     age = {
       keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
       generateKey = false;
@@ -135,5 +135,5 @@ in
   };
 
   # Nicely reload system units when changing configs
-  systemd.user.startServices = lib.mkIf isLinux "sd-switch";
+  systemd.user.startServices = mkIf isLinux "sd-switch";
 }

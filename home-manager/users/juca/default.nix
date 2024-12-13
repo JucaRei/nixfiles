@@ -6,9 +6,6 @@ in
 {
   home = {
     file = {
-      ".face" = {
-        source = "${getExe pkgs.juca-avatar} juca-avatar";
-      };
       "virtualmachines/nixos-console.conf" = mkIf (!isLima) {
         text = ''
           #!/run/current-system/sw/bin/quickemu --vm

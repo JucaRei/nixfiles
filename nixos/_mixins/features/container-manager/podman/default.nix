@@ -70,6 +70,11 @@ in
       unprivilegedUsernsClone = config.virtualisation.containers.enable;
     };
 
+    boot.kernel.sysctl = {
+      "fs.inotify.max_user_watches" = 10485760;
+      "fs.inotify.max_user_instances" = 1024;
+    };
+
     users.users.${username}.extraGroups = lib.optional config.virtualisation.podman.enable "podman";
   };
 }

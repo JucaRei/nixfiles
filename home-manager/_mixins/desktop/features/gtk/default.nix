@@ -45,7 +45,7 @@ lib.mkIf isLinux {
     cursorTheme = {
       name = "catppuccin-mocha-blue-cursors";
       package = pkgs.catppuccin-cursors.mochaBlue;
-      size = 48;
+      size = 24;
     };
     enable = true;
     font = {

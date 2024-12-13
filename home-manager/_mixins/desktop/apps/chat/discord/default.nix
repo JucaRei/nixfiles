@@ -52,7 +52,7 @@ in
       enable = mkEnableOption "Enables discord app.";
     };
   };
-  config = cfg.enable {
+  config = mkIf cfg.enable {
     home = {
       packages = with packages; [
         (discord.override { withOpenASAR = true; })

@@ -24,7 +24,7 @@ in
       };
 
       apps = {
-        _1password.enable = true;
+        _1password.enable = false;
         blender.enable = false;
         games = mkDefault {
           enable = false;

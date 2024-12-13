@@ -60,8 +60,13 @@ in
           };
         };
       };
-
     };
+
+    boot.kernel.sysctl = {
+      "fs.inotify.max_user_watches" = 52428800;
+      "fs.inotify.max_user_instances" = 4096;
+    };
+
     users.users.${username}.extraGroups = [ "docker" ];
   };
 }

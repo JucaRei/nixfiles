@@ -83,6 +83,7 @@ in
     displayManager = {
       defaultSession = "xfce";
     };
+    xrdp.defaultWindowManager = "xfce4-session";
     xserver = {
       enable = true;
       displayManager = {

@@ -110,6 +110,8 @@ in
         games.enable = false;
         gnome-browser-connector.enable = isInstall;
         gnome-online-accounts.enable = isInstall;
+        # gnome-remote-desktop.enable = true;
+        core-utilities = true;
         tracker.enable = true;
         tracker-miners.enable = true;
       };

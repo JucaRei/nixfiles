@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkEnableOption;
   inherit (pkgs.stdenv) isLinux;
   cfg = config.desktop.apps.notes.gnome-text;
 in
@@ -12,7 +12,7 @@ with lib.hm.gvariant;
     };
   };
 
-  config = mkIf cfg.enable && isLinux {
+  config = mkIf (cfg.enable && isLinux) {
     home.packages = with pkgs; [ gnome-text-editor ];
 
     dconf.settings = {

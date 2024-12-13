@@ -4,5 +4,6 @@ _: {
     ./ncmpcpp
     ./rhythmbox
     ./sonixd
+    ./recorder
   ];
 }

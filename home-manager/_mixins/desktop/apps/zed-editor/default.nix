@@ -10,7 +10,7 @@ in
       enable = mkEnableOption "Enables zed as editor";
     };
   };
-  config = mkIf cfg.enable && isLinux {
+  config = mkIf (cfg.enable && isLinux) {
     home = {
       packages = with pkgs; [ unstable.zed-editor ];
     };
