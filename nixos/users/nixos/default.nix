@@ -1,15 +1,16 @@
 { config, desktop, isISO, isWorkstation, lib, pkgs, username, ... }:
 let
   isWorkstationISO = isISO && isWorkstation;
+  inherit (lib) mkIf mkForce optionals;
 in
 {
   config.users.users.nixos.description = "NixOS";
 
   # All configurations for live media are below:
-  config.system = lib.mkIf isISO { stateVersion = lib.mkForce lib.trivial.release; };
+  config.system = mkIf isISO { stateVersion = mkForce lib.trivial.release; };
 
   config.environment = {
-    etc = lib.mkIf isWorkstationISO {
+    etc = mkIf isWorkstationISO {
       "firefox.dockitem".source = pkgs.writeText "firefox.dockitem" ''
         [PlankDockItemPreferences]
         Launcher=file:///run/current-system/sw/share/applications/firefox.desktop
@@ -34,18 +35,18 @@ in
       '';
       "gparted.dockitem".target = "/plank/gparted.dockitem";
     };
-    systemPackages = lib.optionals isWorkstationISO [ pkgs.gparted ];
+    systemPackages = optionals isWorkstationISO [ pkgs.gparted ];
   };
 
   # All workstation configurations for live media are below.
-  config.isoImage = lib.mkIf isWorkstationISO { edition = lib.mkForce "${desktop}"; };
+  config.isoImage = mkIf isWorkstationISO { edition = mkForce "${desktop}"; };
 
   config.programs = {
     dconf.profiles.user.databases = [
       {
         settings =
           with lib.gvariant;
-          lib.mkIf isWorkstationISO {
+          mkIf isWorkstationISO {
             "net/launchpad/plank/docks/dock1" = {
               dock-items = [
                 "firefox.dockitem"
@@ -79,11 +80,11 @@ in
   };
 
   config.services.xserver = {
-    displayManager.autoLogin = lib.mkIf isWorkstationISO { user = "${username}"; };
+    displayManager.autoLogin = mkIf isWorkstationISO { user = "${username}"; };
   };
 
   # Create desktop shortcuts and dock items for the live media
-  config.systemd.tmpfiles = lib.mkIf isWorkstationISO {
+  config.systemd.tmpfiles = mkIf isWorkstationISO {
     rules =
       [
         "d /home/${username}/Desktop 0755 ${username} users"
@@ -99,7 +100,7 @@ in
         "L+ /home/${username}/Desktop/io.calamares.calamares.desktop - - - - ${pkgs.calamares-nixos}/share/applications/io.calamares.calamares.desktop"
         "L+ /home/${username}/Desktop/gparted.desktop - - - - ${pkgs.gparted}/share/applications/gparted.desktop"
       ]
-      ++ lib.optionals (isWorkstationISO && desktop == "mate") [
+      ++ optionals (isWorkstationISO && desktop == "mate") [
         "L+ /home/${username}/Desktop/caja.desktop - - - - ${pkgs.mate.caja}/share/applications/caja.desktop"
         "L+ /home/${username}/Desktop/mate-terminal.desktop - - - - ${pkgs.mate.mate-terminal}/share/applications/mate-terminal.desktop"
       ];

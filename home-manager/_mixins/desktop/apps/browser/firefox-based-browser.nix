@@ -10,7 +10,7 @@ let
     "general.useragent.locale" = "en-US";
     "general.useragent.compatMode.firefox" = true;
     "browser.bookmarks.showMobileBookmarks" = true;
-    "browser.tabs.opentabfor.middleclick" = false;
+    "browser.tabs.opentabfor.middleclick" = true;
     "browser.compactmode.show" = true;
     "browser.tabs.tabMinWidth" = 16;
     "browser.toolbars.bookmarks.visibility" = "never";

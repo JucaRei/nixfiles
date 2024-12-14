@@ -14,6 +14,7 @@ in
       openFirewall = true;
       settings = {
         PasswordAuthentication = true;
+        # PermitRootLogin = lib.mkDefault "prohibit-password";
         PermitRootLogin = mkDefault "no";
       };
       ports = [ 22 ];
@@ -49,6 +50,7 @@ in
     sshguard = {
       enable = true;
       whitelist = [
+        "10.10.10.1/24"
         "192.168.1.0/24"
         "192.168.122.0/24"
       ];

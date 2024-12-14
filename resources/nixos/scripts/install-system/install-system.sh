@@ -5,8 +5,9 @@ set +u  # Disable nounset
 set +o pipefail  # Disable pipefail
 
 TARGET_HOST="${1:-}"
-TARGET_USER="${2:-martin}"
-TARGET_BRANCH="${3:-main}"
+TARGET_USER="${2:-juca}"
+# TARGET_BRANCH="${3:-main}"
+TARGET_BRANCH="${3:-newconfig}"
 
 function run_disko() {
     local DISKO_CONFIG="$1"
@@ -43,11 +44,11 @@ if [ "$(id -u)" -eq 0 ]; then
     exit 1
 fi
 
-if [ ! -d "$HOME/Zero/nix-config/.git" ]; then
-    git clone https://github.com/wimpysworld/nix-config.git "$HOME/Zero/nix-config"
+if [ ! -d "$HOME/.dotfiles/nixfiles/.git" ]; then
+    git clone --depth=1 https://github.com/JucaRei/nixfiles.git "$HOME/.dotfiles/nixfiles"
 fi
 
-pushd "$HOME/Zero/nix-config"
+pushd "$HOME/.dotfiles/nixfiles"
 
 if [[ -n "$TARGET_BRANCH" ]]; then
     git checkout "$TARGET_BRANCH"
@@ -142,10 +143,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     sudo nixos-install --no-root-password --flake ".#$TARGET_HOST"
 
     # Rsync nix-config to the target install and set the remote origin to SSH.
-    rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/Zero/"
+    rsync -a --delete "$HOME/Zero/" "/mnt/home/$TARGET_USER/.dotfiles/"
     if [ "$TARGET_HOST" != "minimech" ] && [ "$TARGET_HOST" != "scrubber" ]; then
-        pushd "/mnt/home/$TARGET_USER/Zero/nix-config"
-        git remote set-url origin git@github.com:wimpysworld/nix-config.git
+        pushd "/mnt/home/$TARGET_USER/.dotfiles/nixfiles"
+        git remote set-url origin git@github.com:JucaRei/nixfiles.git
         popd
     fi
 
@@ -158,7 +159,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
     # Enter to the new install and apply the home-manager configuration.
     sudo nixos-enter --root /mnt --command "chown -R $TARGET_USER:users /home/$TARGET_USER"
-    sudo nixos-enter --root /mnt --command "cd /home/$TARGET_USER/Zero/nix-config; env USER=$TARGET_USER HOME=/home/$TARGET_USER home-manager switch --flake \".#$TARGET_USER@$TARGET_HOST\""
+    sudo nixos-enter --root /mnt --command "cd /home/$TARGET_USER/.dotfiles/nixfiles; env USER=$TARGET_USER HOME=/home/$TARGET_USER home-manager switch --flake \".#$TARGET_USER@$TARGET_HOST\""
     sudo nixos-enter --root /mnt --command "chown -R $TARGET_USER:users /home/$TARGET_USER"
 
     # If there is a keyfile for a data disk, put copy it to the root partition and

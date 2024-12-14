@@ -70,8 +70,7 @@ in
     environment = {
       # Eject nano and perl from the system
       defaultPackages =
-        with pkgs;
-        lib.mkForce [
+        with pkgs; mkForce [
           coreutils-full
           parted
           micro
@@ -88,10 +87,10 @@ in
           git
           nix-output-monitor
         ]
-        ++ lib.optionals isInstall [
+        ++ optionals isInstall [
           inputs.determinate.packages.${platform}.default
           inputs.fh.packages.${platform}.default
-          inputs.nixos-needtoreboot.packages.${platform}.default
+          inputs.nixos-needsreboot.packages.${platform}.default
           nvd
           nvme-cli
           smartmontools
@@ -167,7 +166,7 @@ in
         nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
       };
 
-    nixpkgs.hostPlatform = lib.mkDefault "${platform}";
+    nixpkgs.hostPlatform = mkDefault "${platform}";
 
     programs = {
       command-not-found.enable = false;
@@ -177,7 +176,7 @@ in
           nano = "micro";
         };
       };
-      nano = import ../resources/nixos/scripts/nano.nix { inherit pkgs config lib; };
+      nano = import ../resources/nixos/scripts2/nano.nix { inherit pkgs config lib; };
       nh = {
         clean = {
           enable = true;
@@ -187,7 +186,7 @@ in
         flake = "/home/${username}/.dotfiles/nixfiles";
       };
       nix-index-database.comma.enable = isInstall;
-      nix-ld = lib.mkIf isInstall {
+      nix-ld = mkIf isInstall {
         enable = true;
         libraries = with pkgs; [
           # Add any missing dynamic libraries for unpackaged
@@ -292,7 +291,7 @@ in
     };
 
     system = {
-      nixos.label = lib.mkIf isInstall "ex";
+      nixos.label = lib.mkIf isInstall "nixsystem";
       inherit stateVersion;
 
       activationScripts = {
@@ -307,9 +306,9 @@ in
           fi
         '';
 
-        nixos-needtoreboot = {
+        nixos-needsreboot = mkIf (isInstall) {
           supportsDryActivation = true;
-          text = "${lib.getExe inputs.nixos-needtoreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
+          text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
         };
       };
     };

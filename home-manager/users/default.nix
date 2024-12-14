@@ -1,19 +1,8 @@
-{ lib, username, pkgs, config, isLima, ... }:
+{ lib, username, pkgs, config, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkDefault;
+  inherit (lib) optional;
 in
 {
-  imports = lib.optional (builtins.pathExists (./. + "/${username}")) ./${username};
-
-  xdg = {
-    enable = isLinux;
-    userDirs = {
-      enable = isLinux && !isLima;
-      createDirectories = mkDefault true;
-      extraConfig = {
-        XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Media/Pictures/screenshots";
-      };
-    };
-  };
+  imports = optional (builtins.pathExists (./. + "/${username}")) ./${username};
 }

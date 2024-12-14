@@ -822,7 +822,7 @@
         "type": "github"
       }
     },
-    "nixos-needtoreboot": {
+    "nixos-needsreboot": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -1098,7 +1098,7 @@
         "nix-snapd": "nix-snapd",
         "nix-vscode-extensions": "nix-vscode-extensions",
         "nixos-hardware": "nixos-hardware",
-        "nixos-needtoreboot": "nixos-needtoreboot",
+        "nixos-needsreboot": "nixos-needsreboot",
         "nixpkgs": "nixpkgs_6",
         "nixpkgs-oldstable": "nixpkgs-oldstable",
         "nixpkgs-unstable": "nixpkgs-unstable",

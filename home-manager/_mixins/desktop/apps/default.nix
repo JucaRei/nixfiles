@@ -14,7 +14,7 @@ in
     packages = with pkgs; lib.optionals isLinux [
       glide-media-player # video player
       unstable.decibels # audio player
-      gnome.gnome-calculator # calcualtor
+      gnome-calculator # calculator
       loupe # image viewer
       papers # document viewer
     ];
