@@ -10,7 +10,6 @@ let
 in
 {
   imports = [
-    ../../../resources/nixos/scripts2/nixos-change-summary.nix
     ../../../resources/nixos/scripts
   ];
   environment.systemPackages = [
