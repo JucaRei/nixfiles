@@ -18,15 +18,13 @@ in
       silentBoot = mkForce true;
     };
 
-    desktop.features = {
-      audio.manager = mkForce "pulseaudio";
-    };
-
     features = {
       graphics = {
         enable = true;
         gpu = "nvidia-legacy"; # 340xx
       };
+
+      audio.manager = mkForce "pulseaudio";
 
       container-manager = {
         enable = true;
@@ -56,7 +54,7 @@ in
       };
       # blacklist similar modules to avoid collision
       blacklistedKernelModules = [
-      	# B43 driver
+        # B43 driver
         "bcma"
         "ssb"
         "brcmfmac"
@@ -75,9 +73,9 @@ in
         "8188gu" # realtek driver
       ];
 
-      extraModulePackages = [ 
-      	config.boot.kernelPackages.broadcom_sta
-      	config.boot.kernelPackages.rtl8821cu # rtl8811cu 
+      extraModulePackages = [
+        config.boot.kernelPackages.broadcom_sta
+        config.boot.kernelPackages.rtl8821cu # rtl8811cu
       ];
 
       kernelPackages = mkForce pkgs.linuxPackages_6_6;
@@ -100,9 +98,9 @@ in
         enable = true;
       };
 
-	  # nfs
+      # nfs
       rpcbind = {
-      	enable = true;
+        enable = true;
       };
 
       mbpfan = {
@@ -190,10 +188,10 @@ in
       icloudpd # iCloud Photos Downloader
       vscode-fhs
 
-	  nfs-utils
-	  libnfs
-	  unfs3
-	  liblockfile
+      nfs-utils
+      libnfs
+      unfs3
+      liblockfile
 
       nil
       nixpkgs-fmt

@@ -1,6 +1,6 @@
-{ lib, ... }:
+{ config, lib, username, ... }:
 let
-  inherit (lib) mkOption types;
+  inherit (lib) mkOption types optionals;
 in
 {
   imports = [
@@ -21,5 +21,12 @@ in
       default = null;
       description = "Manufacturer/type of the primary system GPU";
     };
+  };
+
+  config = {
+    users.users.${username}.extraGroups = optionals config.hardware.graphics.enable [
+      "render"
+      "video"
+    ];
   };
 }
