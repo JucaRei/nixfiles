@@ -19,8 +19,10 @@ in
     ../resources/hm-configs/console
   ]
   ++ optional isWorkstation ./_mixins/desktop
-  ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
-  ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
+  # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
+  ++ optional (builtins.pathExists (./. + "/hosts")) ./hosts
+  # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
+  ++ optional (builtins.pathExists (./. + "/users")) ./users
   ;
 
   catppuccin = {

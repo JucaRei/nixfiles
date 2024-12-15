@@ -1,6 +1,11 @@
-{ lib, username, pkgs, config, ... }:
+{ lib
+, username
+  # , pkgs
+, config
+, ...
+}:
 let
-  inherit (pkgs.stdenv) isLinux;
+  # inherit (pkgs.stdenv) isLinux;
   inherit (lib) optional;
 in
 {

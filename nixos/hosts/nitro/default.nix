@@ -90,22 +90,14 @@ in
         btdu
         btrfs-progs
         compsize
-        cloneit
         gparted
         lm_sensors
-        cloneit
-        typora
 
         # tigervnc
-        unstable.obsidian
         vscode-fhs
-        deluge-gtk
-        nil
-        nixpkgs-fmt
         duf
         htop
         neofetch
-        unstable.mpv
         # spotube
         # youtube-music
       ];
