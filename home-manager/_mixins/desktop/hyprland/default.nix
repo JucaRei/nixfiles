@@ -1,9 +1,8 @@
-{
-  config,
-  hostname,
-  lib,
-  pkgs,
-  ...
+{ config
+, hostname
+, lib
+, pkgs
+, ...
 }:
 let
   monitors = (import ./monitors.nix { }).${hostname};
@@ -299,14 +298,14 @@ in
   # Hyprland is a Wayland compositor and dynamic tiling window manager
   # Additional applications are required to create a full desktop shell
   imports = [
-    ./avizo        # on-screen display for audio and backlight
-    ./fuzzel       # app launcher, emoji picker and clipboard manager
-    ./grimblast    # screenshot grabber and annotator
-    ./hyprlock     # screen locker
-    ./hyprpaper    # wallpaper setter
-    ./swaync       # notification center
-    ./waybar       # status bar
-    ./wlogout      # session menu
+    ./avizo # on-screen display for audio and backlight
+    ./fuzzel # app launcher, emoji picker and clipboard manager
+    ./grimblast # screenshot grabber and annotator
+    ./hyprlock # screen locker
+    ./hyprpaper # wallpaper setter
+    ./swaync # notification center
+    ./waybar # status bar
+    ./wlogout # session menu
   ];
   services = {
     gpg-agent.pinentryPackage = lib.mkForce pkgs.pinentry-gnome3;
@@ -315,6 +314,11 @@ in
       automount = false;
       tray = "auto";
       notify = true;
+
+      settings.program_options = {
+        terminal = "xterm";
+        event_hook = "${lib.getExe' pkgs.libnotify "notify-send"} --icon=drive-removable-media {event} {device_presentation}";
+      };
     };
   };
 
@@ -396,7 +400,7 @@ in
           "$mod ALT, 9, movetoworkspace, 9"
           "CTRL ALT, 0, workspace, 10"
           "$mod ALT, 0, movetoworkspace, 10"
-      ];
+        ];
       # https://wiki.hyprland.org/Configuring/Variables/#animations
       animations = {
         enabled = true;
@@ -459,12 +463,13 @@ in
       #https://wiki.hyprland.org/Configuring/Master-Layout/
       master = {
         mfact = if (hostname == "vader" || hostname == "phasma") then 0.5 else 0.55;
-        orientation = if hostname == "vader" then
-          "top"
-        else if hostname == "phasma" then
-          "center"
-        else
-          "left";
+        orientation =
+          if hostname == "vader" then
+            "top"
+          else if hostname == "phasma" then
+            "center"
+          else
+            "left";
       };
       # https://wiki.hyprland.org/Configuring/Dwindle-Layout/
       dwindle = {
@@ -509,7 +514,7 @@ in
           bezier_step = 0.025; #0.025
           points_per_step = 2; #2
           history_points = 12; #20
-          history_step = 2;    #2
+          history_step = 2; #2
         };
       };
       windowrulev2 = [

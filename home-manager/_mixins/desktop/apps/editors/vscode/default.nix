@@ -8,10 +8,11 @@ let
   cfg = config.desktop.apps.editors.vscode;
 
   settings-directory = if pkgs.stdenv.hostPlatform.isDarwin then "$HOME/Library/Application Support/Code/User" else "$HOME/.config/Code/User";
+  extensions = import ./extensions.nix { inherit pkgs; };
   defaultExtensions = { "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueId) extensions; };
+  # userSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // defaultExtensions;
   userSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // defaultExtensions;
   keybindings = builtins.fromJSON (builtins.readFile ./keybindings.json);
-  extensions = import ./extensions.nix { inherit pkgs; };
 in
 # lib.mkIf (lib.elem username installFor)
 {
@@ -34,6 +35,14 @@ in
         shellcheck
         shfmt
       ];
+
+      # file = mkIf (config.features.isWayland == true) {
+      #   ".config/code-flags.conf".text = ''
+      #     --enable-features=UseOzonePlatform
+      #     --ozone-platform=wayland
+      #     --enable-features=WaylandWindowDecorations
+      #   '';
+      # };
 
       activation = {
         beforeCheckLinkTargets = {
@@ -61,9 +70,9 @@ in
     };
     programs = {
       vscode = {
+        inherit extensions userSettings keybindings;
         enable = true;
         mutableExtensionsDir = true;
-        inherit extensions userSettings keybindings;
         package = if (isGeneric) then (nixgl pkgs.unstable.vscode) else pkgs.unstable.vscode;
         enableUpdateCheck = false;
         enableExtensionUpdateCheck = false;

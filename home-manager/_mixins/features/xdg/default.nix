@@ -368,7 +368,7 @@ in
           associations.added = associations;
           defaultApplications = associations;
         };
-        configFile."mimeapps.list".force = mkIf (config.features.nonNixOs.enable) true;
+        configFile."mimeapps.list".force = mkIf (config.features.nonNixOs.enable);
 
         portal = {
           configPackages = [ ] ++ lib.optionals (desktop == "hyprland") [

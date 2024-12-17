@@ -1,7 +1,7 @@
 { lib, pkgs, username, config, ... }:
 let
   inherit (lib) optional;
-  # ifExists = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
+  ifExists = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
 in
 {
   imports = [ ./root ] ++ optional (builtins.pathExists (./. + "/${username}")) ./${username};
@@ -12,9 +12,10 @@ in
       "users"
       "wheel"
     ]
-      # ++ ifExists [
+    ++ ifExists [
       #   "kvm"
-      # ]
+      "adm"
+    ]
     ;
     homeMode = "0755";
     isNormalUser = true;

@@ -5,45 +5,45 @@ let
     ms-python.python
 
     # All the Catppuccin theme options are available as overrides
-    (catppuccin-vsc.override {
-      accent = "blue";
-      boldKeywords = true;
-      italicComments = true;
-      italicKeywords = true;
-      extraBordersEnabled = false;
-      workbenchMode = "default";
-      bracketMode = "rainbow";
-      colorOverrides = { };
-      customUIColors = { };
-    })
+    # (catppuccin.catppuccin-vsc.override {
+    #   accent = "blue";
+    #   boldKeywords = true;
+    #   italicComments = true;
+    #   italicKeywords = true;
+    #   extraBordersEnabled = false;
+    #   workbenchMode = "default";
+    #   bracketMode = "rainbow";
+    #   colorOverrides = { };
+    #   customUIColors = { };
+    # })
 
     # Nix
     jnoortheen.nix-ide
     jeff-hykin.better-nix-syntax
 
     # formulahendry.code-runner
-    vscode-marketplace.aaron-bond.better-comments
-    vscode-marketplace.dotjoshjohnson.xml
-    vscode-marketplace.foxundermoon.shell-format
-    vscode-marketplace.bmalehorn.shell-syntax
+    aaron-bond.better-comments
+    dotjoshjohnson.xml
+    foxundermoon.shell-format
+    # bmalehorn.shell-syntax
 
     # TOML
     tamasfe.even-better-toml
     redhat.vscode-yaml
-    vscode-marketplace.jeff-hykin.better-dockerfile-syntax
+    # jeff-hykin.better-dockerfile-syntax
 
 
     oderwat.indent-rainbow
     davidanson.vscode-markdownlint
-    vscode-marketplace.evan-buss.font-switcher
-    vscode-marketplace.github.vscode-github-actions
+    # evan-buss.font-switcher
+    github.vscode-github-actions
     # ms-python.python
     # esbenp.prettier-vscode
     # sumneko.lua
 
     mkhl.direnv
     ms-vscode-remote.remote-ssh
-    vscode-marketplace.pkief.material-product-icons
+    pkief.material-product-icons
   ];
 
   marketPlaceExtensions = (pkgs.unstable.vscode-utils.extensionsFromVscodeMarketplace [

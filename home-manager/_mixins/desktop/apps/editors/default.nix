@@ -4,5 +4,6 @@ _: {
     ./meld
     ./sublime
     ./vscode
+    ./zed-editor
   ];
 }

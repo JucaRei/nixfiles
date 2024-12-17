@@ -1,6 +1,6 @@
 _: {
   imports = [
-    ./chrome-based-browser.nix
-    ./firefox-based-browser.nix
+    ./chrome-based-browser
+    ./firefox-based-browser
   ];
 }

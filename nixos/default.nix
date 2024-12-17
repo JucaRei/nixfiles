@@ -81,21 +81,19 @@ in
         keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
       };
 
-      systemPackages =
-        with pkgs;
-        [
-          git
-          nix-output-monitor
-        ]
-        ++ optionals isInstall [
-          inputs.determinate.packages.${platform}.default
-          inputs.fh.packages.${platform}.default
-          inputs.nixos-needsreboot.packages.${platform}.default
-          nvd
-          nvme-cli
-          smartmontools
-          sops
-        ];
+      systemPackages = with pkgs; [
+        git
+        nix-output-monitor
+      ]
+      ++ optionals isInstall [
+        inputs.determinate.packages.${platform}.default
+        inputs.fh.packages.${platform}.default
+        inputs.nixos-needsreboot.packages.${platform}.default
+        nvd
+        nvme-cli
+        smartmontools
+        sops
+      ];
 
       variables = {
         EDITOR = "micro";
@@ -143,14 +141,39 @@ in
 
         settings = {
           accept-flake-config = true;
-          experimental-features = "flakes nix-command";
+          experimental-features = [
+            "flakes"
+            "nix-command"
+            # "repl-flake" # repl to inspect a flake
+            # "recursive-nix" # let nix invoke itself
+            # "ca-derivations" # content addressed nix
+            # "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
+            # "cgroups" # allow nix to execute builds inside cgroups
+          ];
+          # auto-allocate-uids = true;
+          # allowed-users = users;
+          # builders-use-substitutes = true; # Avoid copying derivations unnecessary over SSH.
+          # use-cgroups = true; # execute builds inside cgroups
+          system-features = [
+            #   # Allows building v3/v4 packages
+            "gccarch-x86-64-v3"
+            "gccarch-x86-64-v4"
+            #   "kvm"
+            #   "recursive-nix"
+            #   "big-parallel"
+            #   "nixos-test"
+          ];
+          ### Avoid unwanted garbage collection when using nix-direnv
+          # keep-outputs = true;
+          # keep-derivations = true;
+          keep-going = false;
+          warn-dirty = false;
+          tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
           # Disable global registry
           flake-registry = "";
           # Workaround for https://github.com/NixOS/nix/issues/9574
           nix-path = config.nix.nixPath;
           trusted-users = [ "root" "${username}" ];
-          warn-dirty = false;
-          keep-going = false;
         };
         extraOptions = ''
           log-lines = 15
@@ -197,7 +220,6 @@ in
 
     services = {
       hardware.bolt.enable = true;
-      smartd.enable = mkDefault isInstall;
 
       dbus = {
         packages = optionals (isWorkstation) (with pkgs ; [ gnome-keyring gcr ]);
