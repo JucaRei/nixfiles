@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  cfg = config.services.flameshot;
+  cfg = config.desktop.apps.tools.flameshot;
 in
 {
-  options.services.flameshot = {
+  options.desktop.apps.tools.flameshot = {
     enable = mkOption {
       default = false;
       type = types.bool;

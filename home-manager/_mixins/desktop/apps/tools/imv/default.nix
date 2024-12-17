@@ -25,7 +25,7 @@ in
 
           # Suppress built-in key bindings, and specify them explicitly in this
           # config file.
-          suppress_default_binds = true;
+          # suppress_default_binds = true;
 
           aliases = {
             # Define aliases here. Any arguments passed to an alias are appended to the

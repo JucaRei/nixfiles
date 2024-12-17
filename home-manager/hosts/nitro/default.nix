@@ -15,8 +15,10 @@
       lsd.enable = true;
     };
 
-    desktop.apps.editors.vscode = {
-      enable = true;
+    desktop.apps = {
+      editors.vscode = {
+        enable = true;
+      };
     };
   };
 }

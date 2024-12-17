@@ -36,13 +36,13 @@ in
         shfmt
       ];
 
-      # file = mkIf (config.features.isWayland == true) {
-      #   ".config/code-flags.conf".text = ''
-      #     --enable-features=UseOzonePlatform
-      #     --ozone-platform=wayland
-      #     --enable-features=WaylandWindowDecorations
-      #   '';
-      # };
+      file = mkIf (config.features.isWayland == true) {
+        ".config/code-flags.conf".text = ''
+          --enable-features=UseOzonePlatform
+          --ozone-platform=wayland
+          --enable-features=WaylandWindowDecorations
+        '';
+      };
 
       activation = {
         beforeCheckLinkTargets = {

@@ -25,30 +25,13 @@ in
     ];
     #   # Add some packages to complete the XFCE desktop
     systemPackages = with pkgs.xfce // pkgs // pkgs.mate // pkgs.xorg // pkgs.gnome; [
-      elementary-xfce-icon-theme
-      gnome-keyring
       atril
-      gparted
-      orage
       xfconf
-      galculator
       xfce4-pulseaudio-plugin
       xfce4-whiskermenu-plugin
       xfce4-weather-plugin
       xclip
       xkill
-      (writeShellApplication {
-        name = "xfce4-panel-toggle";
-        runtimeInputs = [ xfce.xfconf ];
-        text = ''
-          for num in {0,1}
-          do
-            current=$(xfconf-query -c xfce4-panel -p /panels/panel-"$num"/autohide-behavior)
-            if [[ current -eq 1 ]]; then next=0; else next=1; fi
-            xfconf-query -c xfce4-panel -p /panels/panel-"$num"/autohide-behavior -s $next
-          done
-        '';
-      })
     ];
     pathsToLink = [
       "/share/xfce4"
@@ -62,14 +45,6 @@ in
 
   # Enable some programs to provide a complete desktop
   programs = {
-    thunar = {
-      enable = true;
-      plugins = with pkgs.xfce; [
-        thunar-archive-plugin
-        thunar-media-tags-plugin
-        thunar-volman
-      ];
-    };
     xfconf.enable = mkDefault true;
     nm-applet.enable = true;
   };

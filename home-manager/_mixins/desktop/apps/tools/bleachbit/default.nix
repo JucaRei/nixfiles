@@ -11,7 +11,7 @@ in
   };
   config = mkIf cfg.enable {
     home = {
-      package = pkgs.bleachbit;
+      packages = pkgs.bleachbit;
       file = {
         ".config/bleachbit/bleachbit.ini" = {
           text = ''
