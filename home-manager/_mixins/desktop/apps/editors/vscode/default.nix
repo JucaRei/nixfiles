@@ -73,7 +73,7 @@ in
         inherit extensions userSettings keybindings;
         enable = true;
         mutableExtensionsDir = true;
-        package = if (isGeneric) then (nixgl pkgs.unstable.vscode) else pkgs.unstable.vscode;
+        package = if (isGeneric) then (nixgl pkgs.unstable.vscode-fhs) else pkgs.unstable.vscode-fhs;
         enableUpdateCheck = false;
         enableExtensionUpdateCheck = false;
       };

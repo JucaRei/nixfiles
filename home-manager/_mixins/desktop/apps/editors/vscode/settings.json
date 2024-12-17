@@ -29,7 +29,11 @@
     "editor.minimap.autohide": true,
     "editor.minimap.maxColumn": 100,
     "editor.minimap.renderCharecters": false,
-    "editor.quickSuggestions.comments": "on",
+    "editor.quickSuggestions": {
+        "other": "on",
+        "comments": "off",
+        "strings": "off"
+    },
     "editor.quickSuggestionsdelay": 1,
     "editor.renderWhitespace": "trailing",
     "editor.roundedSelection": true,
@@ -137,7 +141,7 @@
     "terminal.integrated.mouseWheelScrollSensitivity": 2,
     "terminal.integrated.persistentSessionScrollback": 200,
     "terminal.integrated.scrollback": 5000,
-    "terminal.integrated.shell.linux": "/nix/store/dv7spdwndp37znhlq3i6s08azymssyqr-fish-3.7.1/bin/fish",
+    "terminal.integrated.shell.linux": "fish",
     "terminal.integrated.showExitAlert": false,
     "terminal.integrated.smoothScrolling": true,
     "terminal.integrated.tabs.focusMode": "singleClick",

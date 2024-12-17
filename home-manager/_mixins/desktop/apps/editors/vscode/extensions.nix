@@ -63,12 +63,12 @@ let
       sha256 = "sha256-28tSGWdtQVu0I34DQBl1CicEqQHP37dS//FH9sTaECY=";
     }
 
-    # {
-    #   name = "macos-modern-theme";
-    #   publisher = "davidbwaters";
-    #   version = "2.3.19";
-    #   sha256 = "sha256-/gpGu3vvomQA0TC+TBJkBe2AFWimIyiMM5fndYF8G/A=";
-    # }
+    {
+      name = "macos-modern-theme";
+      publisher = "davidbwaters";
+      version = "2.3.19";
+      sha256 = "sha256-/gpGu3vvomQA0TC+TBJkBe2AFWimIyiMM5fndYF8G/A=";
+    }
 
     ### Icons ###
     {
@@ -82,7 +82,7 @@ let
       name = "Mihale";
       publisher = "zeno";
       version = "0.2.0";
-      sha256 = "sha256-OSsVdJyG7Mi4ltza40LvmyDZF/hMmVZENfJkaBzVcWw=";
+      sha256 = "sha256-EkOk0XaPiC8u3OxsdSOEhSTZPCZNi4m/v1Vp98J68Oc=";
     }
 
     ### Workspace
@@ -90,7 +90,7 @@ let
       name = "l13-projects";
       publisher = "L13RARY";
       version = "2.0.0";
-      sha256 = "sha256-HVlnHzIxRZbTXu0zg9DXUAXaydmQaIt9H4ZYmmrniR0=";
+      sha256 = "sha256-1wvuKMf6RQ+exHk9YCSnyI2bgb5JjKbOqBYp83Q6ge4=";
     }
 
     ### Enable/disable formating button
@@ -142,6 +142,13 @@ let
     }
 
     ### Themes
+    {
+      name = "red-theme";
+      publisher = "RedCrafter07";
+      version = "0.0.4";
+      # sha256 = lib.fakeSha256;
+      sha256 = "sha256-yVQ3zP7+sFbAemv9cU3dlE4gzPu39EZ46nlicsQKA0Y=";
+    }
     # {
     #   name = "darker-plus-material-red";
     #   publisher = "chireia";
@@ -162,17 +169,10 @@ let
     #   sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
     # }
     {
-      name = "red-theme";
-      publisher = "RedCrafter07";
-      version = "0.0.4";
-      # sha256 = lib.fakeSha256;
-      sha256 = "sha256-zGQaQDusiEhuvqGd5AqSpTYKpuaGR2WJr5XpPbESzeU=";
-    }
-    {
       name = "Codeify";
       publisher = "siyam";
       version = "1.1.2";
-      sha256 = "sha256-zGQaQDusiEhuvqGd5AqSpTYKpuaGR2WJr5XpPbESzeU=";
+      sha256 = "sha256-vPCbcbeH0CpOVxQ6kL/Ub9i4tztyqRzq2o2y8fIYAlo=";
     }
   ]);
 in

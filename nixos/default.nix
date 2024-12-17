@@ -69,12 +69,11 @@ in
 
     environment = {
       # Eject nano and perl from the system
-      defaultPackages =
-        with pkgs; mkForce [
-          coreutils-full
-          parted
-          micro
-        ];
+      defaultPackages = with pkgs; mkForce [
+        coreutils-full
+        parted
+        micro
+      ];
 
       shellAliases = {
         store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
