@@ -2,7 +2,7 @@
 let
   cfg = config.features.mime.defaultApps;
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) types mkEnableOption mkOption mdDoc mkIf optionals;
+  inherit (lib) types mkEnableOption mkOption mdDoc mkIf mkForce optionals;
 in
 {
   options = {
@@ -121,7 +121,6 @@ in
   };
 
   config = {
-    # xdg.mimeApps.defaultApplications = mkIf (cfg != null) {
     xdg =
       let
         associations = {
@@ -368,7 +367,6 @@ in
           associations.added = associations;
           defaultApplications = associations;
         };
-        configFile."mimeapps.list".force = mkIf (config.features.nonNixOs.enable);
 
         portal = {
           configPackages = [ ] ++ lib.optionals (desktop == "hyprland") [

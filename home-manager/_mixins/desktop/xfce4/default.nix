@@ -1,5 +1,25 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }:
+let
+  inherit (lib) mkDefault mkIf;
+in
+{
   config = {
+    features.mime.defaultApps = mkDefault {
+      enable = true;
+      defaultBrowser = "firefox.desktop";
+      defaultFileManager = "thunar.desktop";
+      defaultAudioPlayer = "rhythmbox.desktop";
+      defaultVideoPlayer = "mpv.desktop";
+      defaultPdf = "atril.desktop";
+      defaultPlainText = "org.xfce.mousepad.desktop";
+      defaultImgViewer = "org.xfce.ristretto.desktop";
+      defaultArchiver = "engrampa.desktop";
+      defaultExcel = "calc.desktop";
+      defaultWord = "writer.desktop";
+      defaultPowerPoint = "impress.desktop";
+      # defaultEmail = "org.gnome.Geary.desktop";
+    };
+
     desktop.apps = {
       file-managers = {
         thunar.enable = true;

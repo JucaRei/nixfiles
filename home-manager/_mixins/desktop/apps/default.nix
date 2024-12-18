@@ -9,14 +9,4 @@ let
 in
 {
   imports = lib.mapAttrsToList (name: _: importDirectory name) directories;
-
-  home = {
-    packages = with pkgs; lib.optionals isLinux [
-      glide-media-player # video player
-      unstable.decibels # audio player
-      gnome-calculator # calculator
-      loupe # image viewer
-      papers # document viewer
-    ];
-  };
 }

@@ -16,7 +16,11 @@ let
     vitals
   ] ++ (with pkgs; [
     gnome-extension-manager
-
+    glide-media-player # video player
+    unstable.decibels # audio player
+    gnome-calculator # calculator
+    loupe # image viewer
+    papers # document viewer
   ]);
 in
 {

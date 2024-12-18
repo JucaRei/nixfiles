@@ -8,6 +8,7 @@ in
       amberol
       parole
       xfburn
+      xarchiver
       xfce4-dict
       xfce4-dev-tools
       xfce4-mpc-plugin
