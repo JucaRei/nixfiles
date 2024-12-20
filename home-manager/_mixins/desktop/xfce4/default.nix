@@ -17,12 +17,15 @@ in
       defaultExcel = "calc.desktop";
       defaultWord = "writer.desktop";
       defaultPowerPoint = "impress.desktop";
-      # defaultEmail = "org.gnome.Geary.desktop";
+      defaultEmail = "org.gnome.Geary.desktop";
     };
 
     desktop.apps = {
       file-managers = {
         thunar.enable = true;
+      };
+      audio = {
+        rhythmbox.enable = true;
       };
     };
 

@@ -31,7 +31,7 @@ in
       };
 
       "org/gnome/rhythmbox/rhythmdb" = {
-        locations = [ "file://${config.home.homeDirectory}/Media/Music" ];
+        locations = [ "file://${config.home.homeDirectory}/Music" ];
         monitor-library = true;
       };
 

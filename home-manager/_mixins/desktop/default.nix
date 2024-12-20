@@ -25,6 +25,27 @@ in
       };
     };
 
+    gtk = {
+      gtk3 = {
+        bookmarks = [
+          "file:///home/${username}/Documents"
+          "file:///home/${username}/Downloads"
+          "file:///home/${username}/Pictures"
+          "file:///home/${username}/Pictures/screenshots"
+          "file:///home/${username}/Pictures/wallpapers"
+          "file:///home/${username}/Music"
+          "file:///home/${username}/Videos"
+          "file:///home/${username}/docker"
+          "file:///home/${username}/games"
+          "file:///home/${username}/workspace"
+          "file:///home/${username}/virtualmachines"
+          "smb://10.10.10.200/volume_1 hd400gb"
+          "smb://10.10.10.200/volume_2/Transmission/Volume_2 h2tb"
+          "smb://10.10.10.1/extermalhd hdwrt"
+        ];
+      };
+    };
+
     desktop.apps.browser = {
       chrome-based-browser = mkDefault {
         enable = false;

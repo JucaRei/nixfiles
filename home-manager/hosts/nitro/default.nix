@@ -19,6 +19,9 @@
       editors.vscode = {
         enable = true;
       };
+      video = {
+        mpv = { enable = true; };
+      };
     };
   };
 }

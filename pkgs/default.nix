@@ -17,6 +17,9 @@ pkgs: {
   grub-catppuccin = pkgs.callPackage ./system/grub/grub-catppuccin { };
   cyberre = pkgs.callPackage ./system/grub/cyberre { };
 
+  # Kernel
+  # linuxPackages_xanmod_stable = pkgs.callPackage ./system/kernel/xanmod { };
+
   # Themes
   breeze-hacked-cursor = pkgs.callPackage ./desktop/themes/pointers/breeze-hacked-cursor { };
 

@@ -54,7 +54,7 @@ in
       extraModulePackages = (with config.boot.kernelPackages; [
         # (callPackage ../../../pkgs/system/kernel/rtl8188gu/test2.nix { })
       ]);
-      # kernelPackages = pkgs.linuxPackages_xanmod_stable;
+      kernelPackages = pkgs.linuxPackages_xanmod_stable;
       # kernelPackages = mkForce pkgs.linuxPackages_6_6;
 
       kernelModules = [

@@ -1,5 +1,5 @@
 _: {
   imports = [
-    # ./mpv
+    ./mpv
   ];
 }

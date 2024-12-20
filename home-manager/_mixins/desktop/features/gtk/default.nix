@@ -1,6 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, desktop, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
+  inherit (lib) mkIf;
   buttonLayout = if config.wayland.windowManager.hyprland.enable then "appmenu" else "close,minimize,maximize";
 in
 lib.mkIf isLinux {
@@ -36,7 +37,7 @@ lib.mkIf isLinux {
       theme = "catppuccin-mocha-blue-standard";
     };
 
-    "org/pantheon/desktop/gala/appearance" = {
+    "org/pantheon/desktop/gala/appearance" = mkIf (desktop == "pantheon" || desktop == "gnome") {
       button-layout = "${buttonLayout}";
     };
   };

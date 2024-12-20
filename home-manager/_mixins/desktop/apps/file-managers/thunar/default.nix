@@ -139,10 +139,10 @@ in
     #   };
     # };
 
-    xdg.mimeApps = mkForce {
-      defaultApplications = { "inode/directory" = [ "thunar.desktop" ]; };
-      associations.added = { "inode/directory" = [ "thunar.desktop" ]; };
-    };
+    # xdg.mimeApps = mkForce {
+    #   defaultApplications = { "inode/directory" = [ "thunar.desktop" ]; };
+    #   associations.added = { "inode/directory" = [ "thunar.desktop" ]; };
+    # };
 
     systemd.user.services.thunar = {
       Unit = {

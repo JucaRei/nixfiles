@@ -497,10 +497,10 @@ in
         };
       };
     };
-    xdg.mimeApps = mkForce {
-      defaultApplications = { "inode/directory" = [ "spacefm.desktop" ]; };
-      associations.added = { "inode/directory" = [ "spacefm.desktop" ]; };
-    };
+    # xdg.mimeApps = mkForce {
+    #   defaultApplications = { "inode/directory" = [ "spacefm.desktop" ]; };
+    #   associations.added = { "inode/directory" = [ "spacefm.desktop" ]; };
+    # };
     # spacefm-find.desktop
     # spacefm-folder-handler.desktop
   };
