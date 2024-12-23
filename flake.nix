@@ -162,7 +162,7 @@
         # VMs
         soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = "xfce4"; };
         minimech = helper.mkNixos { hostname = "minimech"; };
-        scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "mate"; };
+        scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "bspwm"; };
       };
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
       #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel

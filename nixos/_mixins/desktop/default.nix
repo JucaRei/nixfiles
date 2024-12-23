@@ -31,7 +31,7 @@ in
           engines = [ null ];
         };
         graphics-production.enable = false;
-        libreoffice.enable = isInstall;
+        libreoffice.enable = false;
       };
     };
 

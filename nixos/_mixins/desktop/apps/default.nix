@@ -5,7 +5,6 @@ _: {
     ./celluloid
     ./games
     ./graphics-production
-    ./libreoffice
     ./utilities
     ./video-production
   ];
