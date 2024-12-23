@@ -23,14 +23,39 @@ in
             };
             root = {
               name = "Nixos";
-              end = "-0";
+              end = "-4G";
               content = {
                 mountpoint = "/";
                 # extraArgs = [ "-f" "--compression=lz4" "--discard" "--encrypted" ];
-                extraArgs = [ "-f" "--compression=lz4" "--discard" ];
-                mountOptions = [ "defaults" "compression=lz4" "discard" "relatime" "nodiratime" ];
+                extraArgs = [
+                  "-f"
+                  "--compression=zstd"
+                  "--discard"
+                  "--background_compression zstd"
+                  # "--block_size=4096" # 4kb block size.
+                ];
+                mountOptions = [
+                  "defaults"
+                  "compression=zstd"
+                  "discard"
+                  "relatime"
+                  "nodiratime"
+                ];
                 type = "filesystem";
                 format = "bcachefs";
+              };
+            };
+            swap = {
+              name = "SWAP";
+              # start = "-16GiB";
+              # end = "100%";
+              size = "100%";
+              type = "8200";
+              # part-type = "primary";
+              content = {
+                type = "swap";
+                # randomEncryption = true;
+                resumeDevice = false; # resume from hiberation from this device
               };
             };
           };
@@ -39,8 +64,5 @@ in
     };
   };
 
-  swapDevices = [{
-    device = "/swapfile";
-    size = 4 * 1024; # 16GB
-  }];
+
 }
