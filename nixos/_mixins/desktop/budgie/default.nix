@@ -30,7 +30,7 @@ in
       tilix
 
       # Required by the Budgie Desktop session.
-      # (gnome.gnome-session.override { gnomeShellSupport = false; })
+      # (gnome-session.override { gnomeShellSupport = false; })
 
       # Required by Budgie Menu.
       gnome-menus

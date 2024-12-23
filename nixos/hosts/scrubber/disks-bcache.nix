@@ -66,3 +66,7 @@ in
 
 
 }
+
+# sudo mkswap /dev/vda3
+# sudo swapon /dev/vda3
+# sudo mount -o remount,size=10G /

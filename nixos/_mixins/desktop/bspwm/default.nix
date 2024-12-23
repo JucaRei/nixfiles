@@ -10,11 +10,11 @@ in
       xserver = {
         enable = true;
         displayManager = {
-          session = [{
-            name = "Desktop";
-            manage = "desktop";
-            start = "${__ config.services.xserver.windowManager.bspwm.package} bspwm &> /dev/null";
-          }];
+          # session = [{
+          #   name = "Desktop";
+          #   manage = "desktop";
+          #   start = "${__ config.services.xserver.windowManager.bspwm.package} bspwm &> /dev/null";
+          # }];
 
           # setupCommands = '''';
           lightdm = {
@@ -135,7 +135,7 @@ in
       portal = {
         enable = true;
         xdgOpenUsePortal = true;
-        configPackages = [ pkgs.gnome.gnome-session ];
+        configPackages = [ pkgs.gnome-session ];
         extraPortals = with pkgs; [
           xdg-desktop-portal-gtk
         ];

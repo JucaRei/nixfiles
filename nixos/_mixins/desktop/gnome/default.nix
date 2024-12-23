@@ -143,7 +143,7 @@ in
       portal = {
         enable = true;
         xdgOpenUsePortal = true;
-        configPackages = [ pkgs.gnome.gnome-session ];
+        configPackages = [ pkgs.gnome-session ];
         extraPortals = with pkgs; [
           xdg-desktop-portal-gnome
           # xdg-desktop-portal-gtk
