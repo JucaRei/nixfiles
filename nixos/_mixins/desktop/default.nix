@@ -31,7 +31,6 @@ in
           engines = [ null ];
         };
         graphics-production.enable = false;
-        libreoffice.enable = false;
       };
     };
 
