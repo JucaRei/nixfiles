@@ -31,7 +31,7 @@ in
                   "-f"
                   "--compression=zstd"
                   "--discard"
-                  "--background_compression zstd"
+                  "background_compression zstd"
                   # "--block_size=4096" # 4kb block size.
                 ];
                 mountOptions = [
@@ -69,4 +69,4 @@ in
 
 # sudo mkswap /dev/vda3
 # sudo swapon /dev/vda3
-# sudo mount -o remount,size=10G /
+# sudo mount -o remount,size=20G /
