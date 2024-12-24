@@ -29,9 +29,9 @@ in
                 # extraArgs = [ "-f" "--compression=lz4" "--discard" "--encrypted" ];
                 extraArgs = [
                   "-f"
-                  "--compression=zstd"
+                  "--compression=zstd:5"
                   "--discard"
-                  "background_compression zstd"
+                  # "background_compression zstd"
                   # "--block_size=4096" # 4kb block size.
                 ];
                 mountOptions = [
