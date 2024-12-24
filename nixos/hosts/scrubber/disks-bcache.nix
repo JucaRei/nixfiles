@@ -25,7 +25,6 @@ in
               name = "Nixos";
               end = "-4G";
               content = {
-                mountpoint = "/";
                 # extraArgs = [ "-f" "--compression=lz4" "--discard" "--encrypted" ];
                 extraArgs = [
                   "-f"
@@ -34,6 +33,7 @@ in
                   # "background_compression zstd"
                   # "--block_size=4096" # 4kb block size.
                 ];
+                format = "bcachefs";
                 mountOptions = [
                   "defaults"
                   "compression=zstd"
@@ -42,7 +42,7 @@ in
                   "nodiratime"
                 ];
                 type = "filesystem";
-                format = "bcachefs";
+                mountpoint = "/";
               };
             };
             swap = {
