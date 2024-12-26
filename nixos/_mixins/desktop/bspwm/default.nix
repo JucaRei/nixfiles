@@ -6,7 +6,8 @@ in
 {
   config = {
     services = {
-      displayManager.defaultSession = "none+bspwm";
+      displayManager.defaultSession = "bspwm";
+      # displayManager.defaultSession = "none+bspwm";
       xserver = {
         enable = true;
         displayManager = {
