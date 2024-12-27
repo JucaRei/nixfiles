@@ -13,6 +13,11 @@ let
       waylandSupport = true;
       jackaudioSupport = true; # Add jack support to mpv.
       # webp support
+      x11Support = true;
+      pipewireSupport = true;
+      sdl2Support = true;
+      vaapiSupport = true;
+      vdpauSupport = true;
       ffmpeg = pkgs.unstable.ffmpeg_7-full;
     };
     youtubeSupport = true;
@@ -134,19 +139,27 @@ in
 
           geometry = "50%:50%";
 
-          slang = "pt_BR,en,eng,de,deu,ge";
-          alang = "ja,jp,jpn,jap,Japanese,en,eng,English";
+          input-ipc-server = "/tmp/mpvsocket";
+          write-filename-in-watch-later-config = true;
+
+          slang = "pt_BR,en";
+          alang = "jpn,en,de,pt_BR";
+          vlang = "jpn,en,de,pt_BR";
 
           sub-auto = "fuzzy";
           sub-font = "Dubai";
           sub-fix-timing = true;
+          sub-use-margins = "no";
+          sub-scale-by-window = "yes";
+          sub-scale-with-window = "no";
           sub-font-size = 36;
           # sub-color = "#FFFFFFFF";
           sub-color = "#F9F5E3";
-          sub-border-color = "#7282D9";
-          sub-border-size = 1;
-          sub-shadow-offset = 1;
-          sub-shadow-color = "#33000000";
+          sub-border-color = "#151F30"; #"#E3371E"; #"#7282D9";
+          sub-border-size = 2;
+          sub-shadow-offset = 2;
+          # sub-shadow-color = "#33000000";
+          sub-shadow-color = "0.0/0.0/0.0";
           sub-spacing = 0.5;
           blend-subtitles = true;
           sub-gauss = 1.0;
@@ -154,8 +167,12 @@ in
           sub-ass-use-video-data = "all"; # Backward compatibility for vsfilter fansubs
           sub-ass-override = true;
           # sub-file-paths-append = "subtitles";
+          sid = 1;
+
+          fs = true;
           af-add = "dynaudnorm=g=5:f=250:r=0.9:p=0.5";
 
+          gpu-context = mkIf (config.features.isWayland.enable) "waylandvk";
 
           # osd-font = config.fonts.sansSerif.name;
           osd-fractions = true;
@@ -168,16 +185,15 @@ in
           # profile = "gpu-hq";
           # gpu-context = "auto";
 
-          audio-device = "pipewire";
-          ao = "pulse,alsa,jack,pipewire,";
+          ytdl-format = "(webm,mkv,mp4)[height<=?720]";
+          ytdl-raw-options = "ignore-config=,sub-lang=en,write-auto-sub=";
+
           audio-file-auto = "fuzzy";
           audio-normalize-downmix = true;
 
-          input-default-bindings = false;
-
           save-position-on-quit = true;
           watch-later-directory = "${config.xdg.stateHome}/mpv/watch_later";
-          cache-dir = "${config.xdg.cacheHome}/mpv/";
+          cache-dir = "${config.xdg.cacheHome}/mpv";
 
           resume-playback-check-mtime = true;
           reset-on-next-file = "audio-delay,mute,pause,speed,sub-delay,video-aspect-override,video-pan-x,video-pan-y,video-rotate,video-zoom,volume";
@@ -191,15 +207,43 @@ in
           dither = "fruit";
           window-scale = 0.5;
 
+          ordered-chapters = true;
+
+          wayland-edge-pixels-pointer = mkIf (config.features.isWayland.enable) 0;
+          wayland-edge-pixels-touch = mkIf (config.features.isWayland.enable) 0;
+
           osc = false;
           border = true;
           osd-bar = false;
           osd-bold = true;
           osd-font-size = 24;
           osd-font = "FiraCode Nerd Font Mono Retina";
+
+          screenshot-format = "webp";
+          screenshot-webp-lossless = true;
+          screenshot-directory = "${config.home.homeDirectory}/Pictures/screenshots/mpv";
+          screenshot-sw = true;
+
+          input-default-bindings = false;
         };
 
         profiles = {
+          "protocol.http".force-window = "immediate";
+          "protocol.https".profile = "protocol.http";
+
+          # "extension.gif" = {
+          #   cache = false;
+          #   loop-file = true;
+          # };
+
+          # "extension.png" = {
+          #   profile = "extension.gif";
+          #   video-aspect-override = 0;
+          # };
+
+          # "extension.jpeg".profile = "extension.png";
+          # "extension.jpg".profile = "extension.png";
+
           eye-cancer = {
             sharpen = 5;
             osd-font = "Comic Sans MS";
@@ -215,13 +259,25 @@ in
             profile-cond = "os.getenv('HOSTNAME') == 'nitro'";
             hwdec = "vaapi";
             vo = "gpu,dmabuf-wayland,wlshm,vdpau,xv,x11,sdl,drm,";
+            audio-device = "pipewire";
+            ao = "pulse,alsa,jack,pipewire,";
             gpu-context = "auto";
           };
         };
 
         bindings = rec {
+          # UOSC
+          "<" = "script-binding uosc/prev";
+          ">" = "script-binding uosc/next";
+          m = "script-binding uosc/menu";
+          o = "script-binding uosc/open-file";
+          P = "script-binding uosc/items";
+
           # https://github.com/-player/mpv/blob/master/etc/input.conf
           R = "cycle_values window-scale 2 0.5 1"; # switch between 2x, 1/2, unresized window size
+          r = "cycle_values video-rotate 90 180 270 0"; # Rotate video
+
+          I = ''cycle-values vf "sub,lavfi=negate" ""''; # invert colors
 
           MBTN_LEFT_DBL = "cycle fullscreen";
           MBTN_RIGHT = "cycle pause";
@@ -283,7 +339,7 @@ in
           n = "playlist-next";
           N = "playlist-prev";
 
-          o = "show-progress";
+          # o = "show-progress";
           O = "script-binding stats/display-stats-toggle";
           "`" = "script-binding console/enable";
           ":" = "script-binding console/enable";
@@ -327,9 +383,21 @@ in
         scriptOpts = {
           # console.font = config.fonts.monospace.name;
           osc = {
-            seekbarstyle = "diamond";
+            seekbarstyle = "knob"; # "diamond";
+            seekbarkeyframes = false;
+            seekrangestyle = "slider";
+            vidscale = false;
+            deadzonesize = 0.75;
+            inmousemove = 4;
+            valign = 0.9;
+            timems = true;
             scalewindowed = 0.8;
             hidetimeout = 300;
+            layout = "slimbox";
+          };
+          uosc = {
+            opacity = "curtain=0,timeline=0.3";
+            timeline_size = 30;
           };
           thumbfast = {
             hwdec = true;

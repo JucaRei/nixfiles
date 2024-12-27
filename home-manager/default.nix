@@ -13,6 +13,7 @@ in
     catppuccin.homeManagerModules.catppuccin
     sops-nix.homeManagerModules.sops
     nix-index-database.hmModules.nix-index
+    nix-flatpak.homeManagerModules.nix-flatpak
     # chaotic-nyx.homeManagerModules.default
     ./_mixins/features
     ../resources/hm-configs/scripts

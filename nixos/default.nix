@@ -8,7 +8,7 @@ in
     catppuccin.nixosModules.catppuccin
     determinate.nixosModules.default
     disko.nixosModules.disko
-    nix-flatpak.nixosModules.nix-flatpak
+    # nix-flatpak.nixosModules.nix-flatpak
     nix-index-database.nixosModules.nix-index
     nix-snapd.nixosModules.default
     sops-nix.nixosModules.sops
