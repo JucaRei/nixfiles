@@ -23,6 +23,11 @@ in
         ".face" = { source = "${pkgs.juca-avatar}/share/faces/juca.jpg"; };
         "${config.xdg.userDirs.pictures}/wallpapers".source = mkForce "${aesthetic-wallpapers}/images";
       };
+
+      sessionVariables = {
+        # prevent wine from creating file associations
+        WINEDLLOVERRIDES = "winemenubuilder.exe=d";
+      };
     };
 
     gtk = {

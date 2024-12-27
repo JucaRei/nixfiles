@@ -128,14 +128,14 @@ in
     userDirs = {
       enable = isLinux && !isLima;
       createDirectories = isWorkstation;
-      # download = "${config.home.homeDirectory}/Downloads";
+      download = "${config.home.homeDirectory}/Downloads";
       # desktop = "${config.home.homeDirectory}/Desktop";
-      # documents = "${config.home.homeDirectory}/Documents";
+      documents = "${config.home.homeDirectory}/Documents";
       publicShare = "${config.home.homeDirectory}/.local/share/public";
       templates = "${config.home.homeDirectory}/.local/share/templates";
-      # music = "${config.home.homeDirectory}/Music";
-      # pictures = "${config.home.homeDirectory}/Pictures";
-      # videos = "${config.home.homeDirectory}/Videos";
+      music = "${config.home.homeDirectory}/Music";
+      pictures = "${config.home.homeDirectory}/Pictures";
+      videos = "${config.home.homeDirectory}/Videos";
 
       extraConfig = {
         XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/screenshots";
@@ -143,6 +143,7 @@ in
         XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
         XDG_MISC_DIR = "${config.home.homeDirectory}/misc";
         XDG_WORKSPACE_DIR = "${config.home.homeDirectory}/workspace";
+        XDG_RECORD_DIR = "${config.xdg.userDirs.videos}/Record";
       };
     };
   };

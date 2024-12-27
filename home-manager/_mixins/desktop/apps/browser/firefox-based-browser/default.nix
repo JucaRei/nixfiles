@@ -7,6 +7,8 @@ let
   sharedSettings = import ./sharedSettings.nix { inherit osConfig lib; };
   custom-policies = import ./policies.nix;
   floorpconf = import ./floop-config.nix { inherit osConfig lib; };
+
+  defaultFirefox = if (cfg.browser == "firefox" || cfg.browser == "firefox-devedition" || cfg.browser == "firefox-esr") then true else false;
 in
 {
 
@@ -34,9 +36,9 @@ in
     # home.packages =
     #   optional (cfg.browser == "vivaldi") pkgs.vivaldi-ffmpeg-codecs;
     programs.firefox =
-      let
-        defaultFirefox = if (cfg.browser == "firefox" || cfg.browser == "firefox-devedition" || cfg.browser == "firefox-esr") then true else false;
-      in
+      # let
+      #   defaultFirefox = if (cfg.browser == "firefox" || cfg.browser == "firefox-devedition" || cfg.browser == "firefox-esr") then true else false;
+      # in
       {
         enable = true;
         package =
@@ -93,6 +95,10 @@ in
     home = {
       sessionVariables = {
         DEFAULT_BROWSER = "${config.desktop.apps.browser.firefox-based-browser.browser}/share/applications/${config.desktop.apps.browser.firefox-based-browser.browser}.desktop";
+      };
+
+      file = mkIf (defaultFirefox) {
+        ".mozilla/native-messaging-hosts/ff2mpv.json".source = "${pkgs.ff2mpv}/lib/mozilla/native-messaging-hosts/ff2mpv.json";
       };
     };
   };

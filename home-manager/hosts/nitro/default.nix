@@ -8,7 +8,6 @@
       deluge-gtk
       nil
       nixpkgs-fmt
-      unstable.mpv
     ];
 
     console = {

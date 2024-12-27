@@ -69,6 +69,7 @@ pkgs: {
   noto-sans-arabic = pkgs.callPackage ./fonts/noto-sans-arabic { };
   phospor = pkgs.callPackage ./fonts/phospor { };
   poppins-font = pkgs.callPackage ./fonts/poppins-font { };
+  font-dubai = pkgs.callPackage ./fonts/dubai { };
   pragmasevka = pkgs.callPackage ./fonts/pragmasevka { };
   pragmatapro = pkgs.callPackage ./fonts/pragmatapro { };
   twilio-sans-mono-nerd-font = pkgs.callPackage ./fonts/twilio-sans-mono-nerd-font { };
