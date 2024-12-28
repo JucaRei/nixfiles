@@ -52,13 +52,12 @@ let
       cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
       waylandSupport = true;
       jackaudioSupport = true; # Add jack support to mpv.
-      ## webp support
+      # webp support
       x11Support = true;
       pipewireSupport = true;
       sdl2Support = true;
       vaapiSupport = true;
       vdpauSupport = true;
-      ffmpeg = pkgs.ffmpeg_7-full;
     };
     youtubeSupport = true;
     extraMakeWrapperArgs = [
