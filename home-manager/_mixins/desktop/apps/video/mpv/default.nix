@@ -5,11 +5,9 @@ let
 
   ### Use's from unstable
   # mpv-unstable = pkgs.unstable.wrapMpv
-  mpv-unstable = if (hostname != "rocinante") then pkgs.unstable.mpv-unwrapped.wrapper else
-  pkgs.oldstable.mpv-unwrapped.wrapper {
+  mpv-unstable = pkgs.unstable.mpv-unwrapped.wrapper {
     # mpv = pkgs.unstable.mpv-unwrapped.override {
-    mpv = if (hostname != "rocinante") then pkgs.unstable.mpv-unwrapped.override else
-    pkgs.oldstable.mpv-unwrapped.override {
+    mpv = pkgs.unstable.mpv-unwrapped.override {
       vapoursynthSupport = true;
       cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
       waylandSupport = true;
@@ -58,7 +56,7 @@ in
 
   imports = [
     (inputs.home-manager_unstable + "/modules/programs/mpv.nix") # imports module from unstable branch
-    (inputs.home-manager_oldstable + "/modules/programs/mpv.nix") # imports module from oldstable branch
+    # (inputs.home-manager_oldstable + "/modules/programs/mpv.nix") # imports module from oldstable branch
   ];
 
   options = {
