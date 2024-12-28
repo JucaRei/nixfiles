@@ -73,6 +73,7 @@ in
       overlays.additions
       overlays.modifications
       overlays.unstable-packages
+      overlays.oldstable-packages
     ];
     # Configure your nixpkgs instance
     config = {

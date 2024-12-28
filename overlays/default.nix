@@ -66,7 +66,7 @@
     };
   };
 
-  oldstable-package = final: _prev: {
+  oldstable-packages = final: _prev: {
     oldstable = import inputs.nixpkgs-oldstable {
       inherit (final) system;
       config.allowUnfree = true;

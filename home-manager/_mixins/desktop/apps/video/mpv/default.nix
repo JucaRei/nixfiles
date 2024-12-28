@@ -4,30 +4,70 @@ let
   cfg = config.desktop.apps.video.mpv;
 
   ### Use's from unstable
-  # mpv-unstable = pkgs.unstable.wrapMpv
-  mpv-unstable = pkgs.unstable.mpv-unwrapped.wrapper {
-    # mpv = pkgs.unstable.mpv-unwrapped.override {
-    mpv = pkgs.unstable.mpv-unwrapped.override {
+  # mpv-unstable = pkgs.unstable.mpv-unwrapped.wrapper {
+  #   mpv = pkgs.unstable.mpv-unwrapped.override {
+  #     vapoursynthSupport = true;
+  #     cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
+  #     waylandSupport = true;
+  #     jackaudioSupport = true; # Add jack support to mpv.
+  #     ## webp support
+  #     x11Support = true;
+  #     pipewireSupport = true;
+  #     sdl2Support = true;
+  #     vaapiSupport = true;
+  #     vdpauSupport = true;
+  #     ffmpeg = pkgs.unstable.ffmpeg_7-full;
+  #   };
+  #   youtubeSupport = true;
+  #   extraMakeWrapperArgs = [
+  #     "--prefix"
+  #     "LD_LIBRARY_PATH"
+  #     ":"
+  #     "${pkgs.unstable.vapoursynth-mvtools}/lib/vapoursynth"
+  #   ];
+  #   scripts = with pkgs.unstable.mpvScripts; [
+  #     # thumbnail
+  #     thumbfast # High-performance on-the-fly thumbnailer.
+  #     mpris
+  #     uosc # Adds a minimalist but highly customisable GUI.
+  #     #modernz # Sleek and modern OSC for mpv designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC
+  #     # builtins.autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
+  #     # builtins.acompressor # Script to toggle and control ffmpeg's dynamic range compression filter
+  #     quality-menu # Userscript for MPV that allows you to change youtube video quality (ytdl-format) on the fly
+  #     # webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
+  #     autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
+  #     sponsorblock
+  #     mpv-cheatsheet # MPV script for looking up keyboard shortcuts
+  #     # (subserv.override { port = 1337; secondary = false; })
+  #     # (subserv.override { port = 1338; secondary = true; })
+  #   ]
+  #     # ++ mkIf (desktop == "gnome") [ inhibit-gnome ]
+  #   ;
+  # };
+
+  # From version 24.05
+  mpv-oldstable = pkgs.unstable.mpv-unwrapped.wrapper {
+    mpv = pkgs.oldstable.mpv-unwrapped.override {
       vapoursynthSupport = true;
       cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
       waylandSupport = true;
       jackaudioSupport = true; # Add jack support to mpv.
-      # webp support
+      ## webp support
       x11Support = true;
       pipewireSupport = true;
       sdl2Support = true;
       vaapiSupport = true;
       vdpauSupport = true;
-      ffmpeg = pkgs.unstable.ffmpeg_7-full;
+      ffmpeg = pkgs.ffmpeg_7-full;
     };
     youtubeSupport = true;
     extraMakeWrapperArgs = [
       "--prefix"
       "LD_LIBRARY_PATH"
       ":"
-      "${pkgs.unstable.vapoursynth-mvtools}/lib/vapoursynth"
+      "${pkgs.vapoursynth-mvtools}/lib/vapoursynth"
     ];
-    scripts = with pkgs.unstable.mpvScripts; [
+    scripts = with pkgs.mpvScripts; [
       # thumbnail
       thumbfast # High-performance on-the-fly thumbnailer.
       mpris
@@ -55,8 +95,8 @@ in
   ];
 
   imports = [
-    (inputs.home-manager_unstable + "/modules/programs/mpv.nix") # imports module from unstable branch
-    # (inputs.home-manager_oldstable + "/modules/programs/mpv.nix") # imports module from oldstable branch
+    # (inputs.home-manager_unstable + "/modules/programs/mpv.nix") # imports module from unstable branch
+    (inputs.home-manager_oldstable + "/modules/programs/mpv.nix") # imports module from oldstable branch
   ];
 
   options = {
@@ -132,7 +172,8 @@ in
     programs = {
       mpv = {
         enable = true;
-        package = mpv-unstable;
+        # package = mpv-unstable;
+        package = mpv-oldstable;
         config = {
           volume = 65;
           volume-max = 150;
