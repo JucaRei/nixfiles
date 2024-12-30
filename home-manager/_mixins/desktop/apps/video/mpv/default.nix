@@ -1,49 +1,51 @@
 { pkgs, lib, modulesPath, inputs, desktop, config, hostname, ... }:
 let
-  inherit (lib) mkIf mkForce mkEnableOption;
+  inherit (lib) mkIf mkForce mkDefault optional mkEnableOption;
   cfg = config.desktop.apps.video.mpv;
+  anime4k = pkgs.anime4k;
+  isNitro = hostname == "nitro";
 
   ### Use's from unstable
-  # mpv-unstable = pkgs.unstable.mpv-unwrapped.wrapper {
-  #   mpv = pkgs.unstable.mpv-unwrapped.override {
-  #     vapoursynthSupport = true;
-  #     cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
-  #     waylandSupport = true;
-  #     jackaudioSupport = true; # Add jack support to mpv.
-  #     ## webp support
-  #     x11Support = true;
-  #     pipewireSupport = true;
-  #     sdl2Support = true;
-  #     vaapiSupport = true;
-  #     vdpauSupport = true;
-  #     ffmpeg = pkgs.unstable.ffmpeg_7-full;
-  #   };
-  #   youtubeSupport = true;
-  #   extraMakeWrapperArgs = [
-  #     "--prefix"
-  #     "LD_LIBRARY_PATH"
-  #     ":"
-  #     "${pkgs.unstable.vapoursynth-mvtools}/lib/vapoursynth"
-  #   ];
-  #   scripts = with pkgs.unstable.mpvScripts; [
-  #     # thumbnail
-  #     thumbfast # High-performance on-the-fly thumbnailer.
-  #     mpris
-  #     uosc # Adds a minimalist but highly customisable GUI.
-  #     #modernz # Sleek and modern OSC for mpv designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC
-  #     # builtins.autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
-  #     # builtins.acompressor # Script to toggle and control ffmpeg's dynamic range compression filter
-  #     quality-menu # Userscript for MPV that allows you to change youtube video quality (ytdl-format) on the fly
-  #     # webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
-  #     autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
-  #     sponsorblock
-  #     mpv-cheatsheet # MPV script for looking up keyboard shortcuts
-  #     # (subserv.override { port = 1337; secondary = false; })
-  #     # (subserv.override { port = 1338; secondary = true; })
-  #   ]
-  #     # ++ mkIf (desktop == "gnome") [ inhibit-gnome ]
-  #   ;
-  # };
+  mpv-unstable = pkgs.unstable.mpv-unwrapped.wrapper {
+    mpv = pkgs.unstable.mpv-unwrapped.override {
+      vapoursynthSupport = true;
+      cddaSupport = true; # Support for playing CDs with `mpv cdda:///dev/sr0`
+      waylandSupport = true;
+      jackaudioSupport = true; # Add jack support to mpv.
+      ## webp support
+      x11Support = true;
+      pipewireSupport = true;
+      sdl2Support = true;
+      vaapiSupport = true;
+      vdpauSupport = true;
+      ffmpeg = pkgs.unstable.ffmpeg_7-full;
+    };
+    youtubeSupport = true;
+    extraMakeWrapperArgs = [
+      "--prefix"
+      "LD_LIBRARY_PATH"
+      ":"
+      "${pkgs.unstable.vapoursynth-mvtools}/lib/vapoursynth"
+    ];
+    scripts = with pkgs.unstable.mpvScripts; [
+      # thumbnail
+      thumbfast # High-performance on-the-fly thumbnailer.
+      mpris
+      uosc # Adds a minimalist but highly customisable GUI.
+      #modernz # Sleek and modern OSC for mpv designed to enhance functionality by adding more features, all while preserving the core standards of mpv's OSC
+      # builtins.autoload # Automatically load playlist entries before and after the currently playing file, by scanning the directory.
+      # builtins.acompressor # Script to toggle and control ffmpeg's dynamic range compression filter
+      quality-menu # Userscript for MPV that allows you to change youtube video quality (ytdl-format) on the fly
+      # webtorrent-mpv-hook # Adds a hook that allows mpv to stream torrents. It provides an osd overlay to show info/progress.
+      autodeint # Automatically insert the appropriate deinterlacing filter based on a short section of the current video, triggered by key bind.
+      sponsorblock
+      mpv-cheatsheet # MPV script for looking up keyboard shortcuts
+      # (subserv.override { port = 1337; secondary = false; })
+      # (subserv.override { port = 1338; secondary = true; })
+    ]
+      # ++ mkIf (desktop == "gnome") [ inhibit-gnome ]
+    ;
+  };
 
   # From version 24.05
   mpv-oldstable = pkgs.unstable.mpv-unwrapped.wrapper {
@@ -94,9 +96,11 @@ in
   ];
 
   imports = [
-    # (inputs.home-manager_unstable + "/modules/programs/mpv.nix") # imports module from unstable branch
-    (inputs.home-manager_oldstable + "/modules/programs/mpv.nix") # imports module from oldstable branch
+    (inputs.home-manager_unstable + "/modules/programs/mpv.nix") # imports module from unstable branch
+    # (inputs.home-manager_oldstable + "/modules/programs/mpv.nix") # imports module from oldstable branch
   ];
+
+
 
   options = {
     desktop.apps.video.mpv = {
@@ -171,21 +175,26 @@ in
     programs = {
       mpv = {
         enable = true;
-        # package = mpv-unstable;
-        package = mpv-oldstable;
+        package = mpv-unstable;
+        # package = if (hostname == "rocinante") then mpv-oldstable else mpv-unstable;
         config = {
           volume = 65;
           volume-max = 150;
+          # audio-spdif = "ac3,dts,eac3,dts-hd,truehd";
+          # audio-channels = "stereo,5.1,7.1";
           audio-channels = "auto";
+          subs-with-matching-audio = true; # Won't ignore subtitles tagged as "Forced"
+          audio-delay = "+0.084"; #Useful if you're watching with your headphones on PC, but output the video on your Television with a long HDMI cable (counter the delay)
+          # af = "acompressor=ratio=4,loudnorm";
 
           geometry = "50%:50%";
 
           input-ipc-server = "/tmp/mpvsocket";
           write-filename-in-watch-later-config = true;
 
-          slang = "pt_BR,en";
-          alang = "jpn,en,de,pt_BR";
-          vlang = "jpn,en,de,pt_BR";
+          slang = "pt_BR,ptBR,en";
+          alang = "ja,jpn,en,eng,enGB,de,pt_BR,ptBR";
+          vlang = "ja,jpn,en,eng,enGB,de,pt_BR,ptBR";
 
           sub-auto = "fuzzy";
           sub-font = "Dubai";
@@ -218,7 +227,7 @@ in
           # osd-font = config.fonts.sansSerif.name;
           osd-fractions = true;
           # hwdec = "auto";
-          # hwdec = "auto-safe"
+          hwdec = "auto-safe";
           # hwdec = "vaapi";
           # vo = "gpu,dmabuf-wayland,wlshm,vdpau,xv,x11,sdl,drm,";
           # because ao=pipewire doesn't work for audio-only files for whatever reason...
@@ -269,7 +278,11 @@ in
         };
 
         profiles = {
-          "protocol.http".force-window = "immediate";
+          "protocol.http" = {
+            force-window = "immediate";
+            hls-bitrate = "max"; # use max quality for HLS streams
+            cache = true;
+          };
           "protocol.https".profile = "protocol.http";
 
           # "extension.gif" = {
@@ -299,11 +312,12 @@ in
           nitro = {
             profile-cond = "os.getenv('HOSTNAME') == 'nitro'";
             hwdec = "vaapi";
-            vo = "gpu,dmabuf-wayland,wlshm,vdpau,xv,x11,sdl,drm,";
+            vo = "gpu,vdpau,dmabuf-wayland,wlshm,xv,x11,sdl,drm,";
             audio-device = "pipewire";
             ao = "pulse,alsa,jack,pipewire,";
             gpu-context = "auto";
           };
+
         };
 
         bindings = rec {
@@ -368,7 +382,7 @@ in
 
           "Ctrl++" = "add sub-scale 0.1";
           "Ctrl+-" = "add sub-scale -0.1";
-          "Ctrl+0" = "set sub-scale 0";
+          "Ctrl+=" = "set sub-scale 0";
 
           q = "quit";
           Q = "quit-watch-later";
@@ -419,7 +433,29 @@ in
           "[" = "multiply speed 1/1.1";
           "]" = "multiply speed 1.1";
           # T = "script-binding generate-thumbnails";
-        };
+
+        } // (if hostname == "nitro" then {
+
+          ### High
+          #   # curl -sL https://github.com/bloc97/Anime4K/raw/master/md/Template/GLSL_Mac_Linux_High-end/input.conf | grep '^CTRL' | sed -r -e '/^$/d' -e 's|~~/shaders/|${anime4k}/|g' -e "s| |\" = ''|" -e "s|$|'';|"
+          "CTRL+1" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Restore_CNN_VL.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_VL.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode A (HQ)"'';
+          "CTRL+2" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Restore_CNN_Soft_VL.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_VL.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode B (HQ)"'';
+          "CTRL+3" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode C (HQ)"'';
+          "CTRL+4" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Restore_CNN_VL.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_VL.glsl:${anime4k}/Anime4K_Restore_CNN_M.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode A+A (HQ)"'';
+          "CTRL+5" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Restore_CNN_Soft_VL.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_VL.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Restore_CNN_Soft_M.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode B+B (HQ)"'';
+          "CTRL+6" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Restore_CNN_M.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode C+A (HQ)"'';
+          "CTRL+0" = ''no-osd change-list glsl-shaders clr ""; show-text "GLSL shaders cleared"'';
+        } else {
+          ### Low
+          #   # curl -sL https://github.com/bloc97/Anime4K/raw/master/md/Template/GLSL_Mac_Linux_Low-end/input.conf | grep '^CTRL' | sed -r -e '/^$/d' -e 's|~~/shaders/|${anime4k}/|g' -e "s| |\" = ''|" -e "s|$|'';|"
+          "CTRL+1" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Restore_CNN_M.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode A (Fast)"'';
+          "CTRL+2" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Restore_CNN_Soft_M.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode B (Fast)"'';
+          "CTRL+3" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Upscale_Denoise_CNN_x2_M.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode C (Fast)"'';
+          "CTRL+4" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Restore_CNN_M.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl:${anime4k}/Anime4K_Restore_CNN_S.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode A+A (Fast)"'';
+          "CTRL+5" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Restore_CNN_Soft_M.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_M.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Restore_CNN_Soft_S.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode B+B (Fast)"'';
+          "CTRL+6" = ''no-osd change-list glsl-shaders set "${anime4k}/Anime4K_Clamp_Highlights.glsl:${anime4k}/Anime4K_Upscale_Denoise_CNN_x2_M.glsl:${anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${anime4k}/Anime4K_Restore_CNN_S.glsl:${anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode C+A (Fast)"'';
+          "CTRL+0" = ''no-osd change-list glsl-shaders clr ""; show-text "GLSL shaders cleared"'';
+        });
 
         scriptOpts = {
           # console.font = config.fonts.monospace.name;

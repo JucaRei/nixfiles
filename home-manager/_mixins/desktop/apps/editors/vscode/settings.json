@@ -104,9 +104,21 @@
     "git.openRepositoryInParentFolders": "always",
     "nix.enableLanguageServer": true,
     "nix.formatterPath": "nixpkgs-fmt",
-    "nix.serverPath": "nil",
+    "nix.serverPath": "nixd",
+    "nixpkgs": {
+        "expr": "import <nixpkgs> { }",
+        "expr": "import (builtins.getFlake \"$HOME/.dotfiles/nixfiles\").inputs.nixpkgs { }"
+    },
+    "options": {
+        "nixos": {
+            "expr": "(builtins.getFlake \"$HOME/.dotfiles/nixfiles\").nixosConfigurations.#hostname.options"
+        },
+        "home-manager": {
+            "expr": "(builtins.getFlake \"$HOME/.dotfiles/nixfiles\").homeConfigurations.#username@hostname.options"
+        }
+    },
     "nix.serverSettings": {
-        "nil": {
+        "nixd": {
             "diagnostics": {
                 "ignored": [
                     "unused_binding",
@@ -120,7 +132,7 @@
             },
             "nix": {
                 "flake": {
-                    "autoArchive": true,
+                    "autoArchive": false,
                     "autoEvalInputs": false
                 }
             }

@@ -1,8 +1,7 @@
 { pkgs, ... }:
 let
   nixpkgs-review =
-    if pkgs.stdenv.isLinux
-    then
+    if pkgs.stdenv.isLinux then
       pkgs.nixpkgs-review.override
         {
           withSandboxSupport = true;

@@ -15,10 +15,11 @@ in
     nix-index-database.hmModules.nix-index
     nix-flatpak.homeManagerModules.nix-flatpak
     # chaotic-nyx.homeManagerModules.default
-    ./_mixins/features
+
     ../resources/hm-configs/scripts
     ../resources/hm-configs/console
   ]
+  ++ optional isWorkstation ./_mixins/features
   ++ optional isWorkstation ./_mixins/desktop
   # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
   ++ optional (builtins.pathExists (./. + "/hosts")) ./hosts
@@ -49,8 +50,8 @@ in
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
       EDITOR = "micro";
-      MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
-      MANROFFOPT = "-c";
+      # MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
+      # MANROFFOPT = "-c";
       MICRO_TRUECOLOR = "1";
       PAGER = "bat";
       SYSTEMD_EDITOR = "micro";
@@ -90,6 +91,14 @@ in
         "${username}"
       ];
     };
+  };
+
+  console = {
+    bat.enable = true;
+    bottom.enable = true;
+    lsd.enable = true;
+    man.enable = true;
+    zoxide.enable = true;
   };
 
   programs = {

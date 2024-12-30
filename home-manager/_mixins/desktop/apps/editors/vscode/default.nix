@@ -34,6 +34,9 @@ in
         # rustfmt
         shellcheck
         shfmt
+        nixd
+        nixpkgs-fmt
+        # nil
       ];
 
       file = mkIf (config.features.isWayland == true) {

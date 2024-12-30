@@ -1,7 +1,7 @@
-{ username, pkgs, config, lib, ... }:
+{ pkgs, lib, ... }:
 let
-  inherit (lib) getExe';
-  __ = getExe';
+  # inherit (lib) getExe';
+  # __ = getExe';
 in
 {
   config = {

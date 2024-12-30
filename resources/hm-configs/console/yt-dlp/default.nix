@@ -1,24 +1,28 @@
 { config, pkgs, lib, username, ... }:
-with lib;
 let
-  cfg = config.programs.yt-dlp-custom;
+  inherit (lib) mkOption mkIf types;
+  cfg = config.console.yt-dlp-custom;
 
   # mypython = with pkgs; python310;
   mypython = (pkgs.python310.withPackages (pythonPackages: with pythonPackages; [ ]));
 in
 {
-  options.programs.yt-dlp-custom = {
-    enable = mkOption {
-      default = false;
-      type = types.bool;
+  options = {
+    console.yt-dlp-custom = {
+      enable = mkOption {
+        default = false;
+        type = types.bool;
+      };
     };
   };
+
   config = mkIf cfg.enable {
+
     programs = {
       aria2 = {
         enable = true;
         settings = {
-          dir = "/home/${username}/Media/Videos/Youtube"; # The directory to store the downloaded file.
+          dir = "/home/${username}/Videos/youtube"; # The directory to store the downloaded file.
           # input-file = "$HOME/.config/aria2/aria2.session"; # Downloads the URIs listed in FILE.
           # Default = 0; # Save error/unfinished downloads to a file specified by --save-session option every SEC seconds. If 0 is given, file will be saved only when aria2 exits.
           save-session-interval = 60;
@@ -172,7 +176,7 @@ in
         '';
       };
     };
-    home = mkIf cfg.enable {
+    home = {
       shellAliases = {
         makeplaylist = ''
           find -type f -iname "*.mp3" -or -iname "*.ogg" -or -iname "*.flac" -or -iname "*.m4a" > playlist.m3u

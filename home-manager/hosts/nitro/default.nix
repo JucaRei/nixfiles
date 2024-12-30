@@ -10,11 +10,15 @@ in
       unstable.obsidian
       deluge-gtk
       nil
+      nixd
       nixpkgs-fmt
+      spotube
     ];
 
     console = {
       lsd.enable = true;
+      yt-dlp-custom.enable = true;
+      aria2.enable = true;
     };
 
     desktop.apps = {

@@ -83,18 +83,19 @@
           # make home-manager as a module of nixos
           # so that home-manager configuration will be deployed automatically when executing `nixos-rebuild switch`
           # inputs.home-manager.nixosModules.home-manager
-          {
-            # home-manager = {
-            #   useGlobalPkgs = true;
-            #   useUserPackages = true;
+          # {
+          #   home-manager = {
+          #     useGlobalPkgs = true;
+          #     useUserPackages = true;
 
-            #   # TODO replace juca with your own username
-            #   users.juca = import ../home-manager;
+          #     #   # TODO replace juca with your own username
+          #     users.juca = import ../home-manager;
 
-            #   # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
-            #   extraSpecialArgs = { inherit (inputs.config.home-manager.homeManagerConfiguration.extraSpecialArgs) extraSpecialArgs; };
-            # };
-          }
+          #     # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+          #     # extraSpecialArgs = { inherit (inputs.config.home-manager.homeManagerConfiguration.extraSpecialArgs) extraSpecialArgs; };
+          #     extraSpecialArgs = { inherit inputs; };
+          #   };
+          # }
         ]
         ++ inputs.nixpkgs.lib.optionals isISO [ cd-dvd ];
     };
