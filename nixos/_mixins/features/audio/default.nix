@@ -1,6 +1,6 @@
-{ config, lib, pkgs, username, ... }:
+{ config, lib, username, ... }:
 let
-  inherit (lib) mkOption mkIf types optional;
+  inherit (lib) mkOption mkIf types;
 in
 {
   imports = [

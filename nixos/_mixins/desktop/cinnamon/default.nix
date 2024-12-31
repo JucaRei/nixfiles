@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ pkgs, lib, ... }: {
   config = {
     services = {
       xserver = {
@@ -29,7 +29,11 @@
       #   };
       # };
       cinnamon.apps.enable = true;
-      gnome = { evolution-data-server = { enable = lib.mkDefault false; }; };
+      gnome = {
+        evolution-data-server = {
+          enable = lib.mkDefault false;
+        };
+      };
     };
     environment = {
       systemPackages =

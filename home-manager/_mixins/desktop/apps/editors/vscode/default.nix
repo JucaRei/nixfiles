@@ -1,7 +1,7 @@
-{ inputs, lib, pkgs, username, config, ... }:
+{ inputs, lib, pkgs, config, ... }:
 let
-  installFor = [ "juca" ];
-  inherit (pkgs.stdenv) isLinux;
+  # installFor = [ "juca" ];
+  # inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkIf mkEnableOption;
   nixgl = import ../../../../../../lib/nixGL.nix { inherit config pkgs; };
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
@@ -76,7 +76,7 @@ in
         inherit extensions userSettings keybindings;
         enable = true;
         mutableExtensionsDir = true;
-        package = if (isGeneric) then (nixgl pkgs.unstable.vscode-fhs) else pkgs.unstable.vscode-fhs;
+        package = if isGeneric then (nixgl pkgs.unstable.vscode-fhs) else pkgs.unstable.vscode-fhs;
         enableUpdateCheck = false;
         enableExtensionUpdateCheck = false;
       };

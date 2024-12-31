@@ -3,7 +3,9 @@
     xserver = {
       enable = true;
       windowManager = {
-        awesome = { enable = true; };
+        awesome = {
+          enable = true;
+        };
       };
       displayManager = {
         defaultSession = "none+fake";

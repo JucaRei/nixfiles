@@ -1,4 +1,4 @@
-{ config, desktop, isInstall, lib, pkgs, username, ... }:
+{ config, desktop, lib, pkgs, username, ... }:
 let
   inherit (lib) mkOption mkIf types optionals;
   scanningApp = if (desktop == "plasma") then pkgs.kdePackages.skanpage else pkgs.gnome.simple-scan;

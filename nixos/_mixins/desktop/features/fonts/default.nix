@@ -28,6 +28,7 @@ in
               "NerdFontsSymbolsOnly"
             ];
           })
+          merriweather
           fira
           font-awesome
           # liberation_ttf
@@ -35,7 +36,8 @@ in
           # noto-fonts-monochrome-emoji
           # source-serif
           # symbola
-          work-sans
+          # work-sans
+          lato
         ]
         ++ lib.optionals isInstall [
           # bebas-neue-2014-font

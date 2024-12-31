@@ -1,4 +1,4 @@
-{ config, isWorkstation, lib, pkgs, username, ... }:
+{ config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.features.snapcraft;

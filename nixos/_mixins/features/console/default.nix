@@ -6,18 +6,17 @@ let
     nitro = "18";
     anubis = "22";
   };
-  kmsconExtraConfig =
-    (
-      if (builtins.hasAttr hostname kmsconFontSize) then
-        ''font-size=${kmsconFontSize.${hostname}} ''
-      else
-        ''font-size=14''
-    )
-    + ''
-      palette=custom
-      palette-foreground=30, 30, 46
-      palette-foreground=20, 214, 244
-    '';
+  kmsconExtraConfig = (
+    if (builtins.hasAttr hostname kmsconFontSize) then
+      ''font-size=${kmsconFontSize.${hostname}} ''
+    else
+      ''font-size=14''
+  )
+  + ''
+    palette=custom
+    palette-foreground=30, 30, 46
+    palette-foreground=20, 214, 244
+  '';
 in
 {
   boot = {
@@ -44,17 +43,6 @@ in
       enable = !config.boot.plymouth.enable;
       extraOptions = "--gpus primary";
       hwRender = if (desktop == null) then true else false;
-      fonts = [
-        {
-          name = "FiraCode Nerd Font Mono";
-          package = pkgs.nerdfonts.override {
-            fonts = [
-              "FiraCode"
-              "NerdFontsSymbolsOnly"
-            ];
-          };
-        }
-      ];
       extraConfig = kmsconExtraConfig;
     };
     getty = mkIf isInstall {

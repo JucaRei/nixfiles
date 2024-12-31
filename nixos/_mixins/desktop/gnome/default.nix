@@ -1,7 +1,6 @@
-{ config, lib, pkgs, isInstall, username, ... }:
+{ config, lib, pkgs, isInstall, ... }:
 let
-  inherit (lib) mkDefault;
-  backend = config.features.graphics.backend;
+  inherit (lib) mkDefault mkIf mkForce optionals;
   isWayland = if (config.services.xserver.displayManager.gdm.wayland == true) then "wayland" else "x11";
 in
 {
@@ -42,7 +41,7 @@ in
         [
           blackbox-terminal
         ]
-        ++ lib.optionals isInstall [
+        ++ optionals isInstall [
           eyedropper
           gnome.gnome-tweaks
         ];
@@ -52,7 +51,7 @@ in
       calls.enable = false;
       dconf.profiles.user.databases = [
         {
-          settings = with lib.gvariant; {
+          settings = {
             "org/gnome/desktop/datetime" = {
               automatic-timezone = true;
             };
@@ -80,33 +79,31 @@ in
     # - https://github.com/NixOS/nixpkgs/issues/171136
     # - https://discourse.nixos.org/t/fingerprint-auth-gnome-gdm-wont-allow-typing-password/35295
     security.pam.services.login.fprintAuth = false;
-    security.pam.services.gdm-fingerprint = lib.mkIf
-      config.services.fprintd.enable
-      {
-        text = ''
-          auth       required                    pam_shells.so
-          auth       requisite                   pam_nologin.so
-          auth       requisite                   pam_faillock.so      preauth
-          auth       required                    ${pkgs.fprintd}/lib/security/pam_fprintd.so
-          auth       optional                    pam_permit.so
-          auth       required                    pam_env.so
-          auth       [success=ok default=1]      ${pkgs.gnome.gdm}/lib/security/pam_gdm.so
-          auth       optional                    ${pkgs.gnome.gnome-keyring}/lib/security/pam_gnome_keyring.so
+    security.pam.services.gdm-fingerprint = mkIf config.services.fprintd.enable {
+      text = ''
+        auth       required                    pam_shells.so
+        auth       requisite                   pam_nologin.so
+        auth       requisite                   pam_faillock.so      preauth
+        auth       required                    ${pkgs.fprintd}/lib/security/pam_fprintd.so
+        auth       optional                    pam_permit.so
+        auth       required                    pam_env.so
+        auth       [success=ok default=1]      ${pkgs.gnome.gdm}/lib/security/pam_gdm.so
+        auth       optional                    ${pkgs.gnome.gnome-keyring}/lib/security/pam_gnome_keyring.so
 
-          account    include                     login
+        account    include                     login
 
-          password   required                    pam_deny.so
+        password   required                    pam_deny.so
 
-          session    include                     login
-          session    optional                    ${pkgs.gnome.gnome-keyring}/lib/security/pam_gnome_keyring.so auto_start
-        '';
-      };
+        session    include                     login
+        session    optional                    ${pkgs.gnome.gnome-keyring}/lib/security/pam_gnome_keyring.so auto_start
+      '';
+    };
     security.pam.services.gdm.enableGnomeKeyring = true;
 
     services = {
       gnome = {
         gnome-initial-setup.enable = false;
-        evolution-data-server.enable = lib.mkForce isInstall;
+        evolution-data-server.enable = mkForce isInstall;
         games.enable = false;
         gnome-browser-connector.enable = isInstall;
         gnome-online-accounts.enable = isInstall;

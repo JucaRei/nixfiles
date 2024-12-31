@@ -1,6 +1,6 @@
-{ pkgs, lib, inputs, username, ... }:
+{ pkgs, lib, ... }:
 let
-  inherit (lib) mkIf mkDefault mkForce;
+  inherit (lib) mkDefault mkForce;
 in
 {
 
@@ -62,10 +62,6 @@ in
     nm-applet.enable = true;
     seahorse.enable = true;
     #system-config-printer.enable = true;
-
-    dconf = {
-      profiles = { };
-    };
   };
 
   # Enable services to round out the desktop

@@ -36,7 +36,7 @@ in
           let
             isNvidia = device.gpu == "hybrid-nvidia" || device.gpu == "nvidia";
           in
-          mkIf (isNvidia) "direct";
+          mkIf isNvidia "direct";
 
         # Required for firefox 98+, see:
         # https://github.com/elFarto/nvidia-vaapi-driver#firefox

@@ -1,4 +1,4 @@
-{ isWorkstation, isInstall, pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkForce;
   cfg = config.features.bluetooth;

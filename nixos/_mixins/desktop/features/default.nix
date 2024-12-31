@@ -6,5 +6,7 @@ _: {
     ./print
     ./scan
     ./v4l2loopback
+    ./wine
+    ./x11vnc
   ];
 }

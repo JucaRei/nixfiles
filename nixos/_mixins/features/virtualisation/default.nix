@@ -42,7 +42,7 @@ in
         profiles = {
           user = {
             databases = [{
-              settings = with lib.gvariant; {
+              settings = {
                 "org/virt-manager/virt-manager" = {
                   xmleditor-enabled = true;
                 };
