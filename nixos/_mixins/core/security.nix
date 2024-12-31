@@ -37,13 +37,19 @@ in
         enable = if (cfg.superUser == "doas") then false else true;
 
         # Stops sudo from timing out.
-        extraConfig = ''
-          # ${username} ALL=(ALL) NOPASSWD:ALL
-          ${username} ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemctl
-          ${username} ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemd-run
-          Defaults env_reset,timestamp_timeout=-1
-          Defaults:insults,root,%wheel timestamp_timeout=30
-        '';
+        extraConfig =
+          "# ${username} ALL=(ALL) NOPASSWD:ALL\n"
+          + "${username} ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemctl\n"
+          + "${username} ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemd-run\n"
+          # + "Defaults env_reset,timestamp_timeout=-1"
+          # + "Defaults:insults,root,%wheel timestamp_timeout=30"
+          #+ "Defaults editor=${pkgs.neovim}/bin/nvim";
+          + "Defaults timestamp_type=global\n"  # share sudo session between terminal sessions
+          + "Defaults timestamp_timeout=20\n"  # set sudo timeout from 10 to 20 minutes
+          + "Defaults pwfeedback\n"  # display stars when typing characters
+          + "Defaults insults\n"
+          + "Defaults:root,%wheel env_keep+=EDITOR" # Enables sudo-prepended programs like `systemctl edit ...` to use the specified default editor https://github.com/NixOS/nixpkgs/issues/276778
+        ;
         configFile = ''
           Defaults lecture = always
           Defaults lecture_file=/etc/sudoers.d/00-lecture.txt

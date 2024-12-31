@@ -1,9 +1,9 @@
-{ pkgs, lib, modulesPath, inputs, desktop, config, hostname, ... }:
+{ pkgs, lib, modulesPath, inputs, username, config, hostname, ... }:
 let
-  inherit (lib) mkIf mkForce mkDefault optional mkEnableOption;
+  inherit (lib) mkIf mkForce mkEnableOption;
+  inherit (pkgs.stdenv) isLinux;
   cfg = config.desktop.apps.video.mpv;
   anime4k = pkgs.anime4k;
-  isNitro = hostname == "nitro";
 
   ### Use's from unstable
   mpv-unstable = pkgs.unstable.mpv-unwrapped.wrapper {
@@ -120,57 +120,59 @@ in
           font-dubai
         ];
 
-        # file = {
-        #   ".config/mpv/script-opts/chapterskip.conf" = {
-        #     text = "categories=sponsorblock>SponsorBlock";
-        #   };
+        file = {
+          #   ".config/mpv/script-opts/chapterskip.conf" = {
+          #     text = "categories=sponsorblock>SponsorBlock";
+          #   };
 
-        #   ".config/mpv/script-opts/sub-select.json" = {
-        #     text = builtins.toJSON [
-        #       { blacklist = [ "signs" "songs" "translation only" "forced" ]; }
-        #       {
-        #         alang = "*";
-        #         slang = "pt_BR,en,eng,de,deu,ger";
-        #       }
-        #     ];
-        #   };
+          #   ".config/mpv/script-opts/sub-select.json" = {
+          #     text = builtins.toJSON [
+          #       { blacklist = [ "signs" "songs" "translation only" "forced" ]; }
+          #       {
+          #         alang = "*";
+          #         slang = "pt_BR,en,eng,de,deu,ger";
+          #       }
+          #     ];
+          #   };
 
-        #   ".config/mpv/script-opts/console.conf" = {
-        #     # text = "font=FiraCode Nerd Font Retina";
-        #     text = "font=FiraCode Nerd Font Retina";
-        #   };
+          #   ".config/mpv/script-opts/console.conf" = {
+          #     # text = "font=FiraCode Nerd Font Retina";
+          #     text = "font=FiraCode Nerd Font Retina";
+          #   };
 
-        #   ".config/mpv/script-opts/stats.conf" = {
-        #     source = kvFormat.generate "mpv-script-opts-stats" {
-        #       font = font;
-        #       font_mono = font;
-        #       #BBGGRR
-        #       font_color = "C6BD0A";
-        #       border_color = "1E0B00";
-        #       plot_bg_border_color = "D900EA";
-        #       plot_bg_color = "9";
-        #       plot_color = "D900EA";
-        #     };
-        #   };
+          #   ".config/mpv/script-opts/stats.conf" = {
+          #     source = kvFormat.generate "mpv-script-opts-stats" {
+          #       font = font;
+          #       font_mono = font;
+          #       #BBGGRR
+          #       font_color = "C6BD0A";
+          #       border_color = "1E0B00";
+          #       plot_bg_border_color = "D900EA";
+          #       plot_bg_color = "9";
+          #       plot_color = "D900EA";
+          #     };
+          #   };
 
-        #   ".config/mpv/vapoursynth/motion-based-interpolation.vpy" = {
-        #     source = ./configs/vapoursynth/motion-based-interpolation.vpy;
-        #   };
+          #   ".config/mpv/vapoursynth/motion-based-interpolation.vpy" = {
+          #     source = ./configs/vapoursynth/motion-based-interpolation.vpy;
+          #   };
 
-        #   ## ".config/mpv/input.conf" = builtins.readFile ./configs/input.conf;
-        #   ".config/mpv/input.conf" = { source = ./configs/input.conf; };
-        #   ".config/mpv/mpv.conf" = { source = ./configs/mpv.conf; };
-        #   ".config/mpv/profiles.conf" = { source = ./configs/profiles.conf; };
+          #   ## ".config/mpv/input.conf" = builtins.readFile ./configs/input.conf;
+          #   ".config/mpv/input.conf" = { source = ./configs/input.conf; };
+          #   ".config/mpv/mpv.conf" = { source = ./configs/mpv.conf; };
+          #   ".config/mpv/profiles.conf" = { source = ./configs/profiles.conf; };
 
-        #   ".config/mpv/scripts/evfast.lua" = { source = ./configs/scripts/evfast.lua; };
-        #   ".config/mpv/scripts/memo.lua" = { source = ./configs/scripts/memo.lua; };
-        #   ".config/mpv/scripts/sview.lua" = { source = ./configs/scripts/sview.lua; };
+          #   ".config/mpv/scripts/evfast.lua" = { source = ./configs/scripts/evfast.lua; };
+          #   ".config/mpv/scripts/memo.lua" = { source = ./configs/scripts/memo.lua; };
+          #   ".config/mpv/scripts/sview.lua" = { source = ./configs/scripts/sview.lua; };
 
-        #   ".config/mpv/script-opts/evfast.conf" = { source = ./configs/scripts-opts/evfast.conf; };
-        #   ".config/mpv/script-opts/memo.conf" = { source = ./configs/scripts-opts/memo.conf; };
-        #   ".config/mpv/script-opts/thumbfast.conf" = { source = ./configs/scripts-opts/thumbfast.conf; };
-        #   ".config/mpv/script-opts/uosc.conf" = { source = ./configs/scripts-opts/uosc.conf; };
-        # };
+          #   ".config/mpv/script-opts/evfast.conf" = { source = ./configs/scripts-opts/evfast.conf; };
+          #   ".config/mpv/script-opts/memo.conf" = { source = ./configs/scripts-opts/memo.conf; };
+          #   ".config/mpv/script-opts/thumbfast.conf" = { source = ./configs/scripts-opts/thumbfast.conf; };
+          #   ".config/mpv/script-opts/uosc.conf" = { source = ./configs/scripts-opts/uosc.conf; };
+
+          ".logs/mpv/mpv.log" = { source = config.lib.file.mkOutOfStoreSymlink ./configs/mpv.log; };
+        };
       };
     programs = {
       mpv = {
@@ -221,6 +223,7 @@ in
 
           fs = true;
           af-add = "dynaudnorm=g=5:f=250:r=0.9:p=0.5";
+          log-file = "$HOME/.logs/mpv/mpv.log";
 
           gpu-context = mkIf (config.features.isWayland.enable) "waylandvk";
 
@@ -243,7 +246,7 @@ in
 
           save-position-on-quit = true;
           watch-later-directory = "${config.xdg.stateHome}/mpv/watch_later";
-          cache-dir = "${config.xdg.cacheHome}/mpv";
+          # cache-dir = "${config.xdg.cacheHome}/mpv";
 
           resume-playback-check-mtime = true;
           reset-on-next-file = "audio-delay,mute,pause,speed,sub-delay,video-aspect-override,video-pan-x,video-pan-y,video-rotate,video-zoom,volume";
@@ -312,10 +315,13 @@ in
           nitro = {
             profile-cond = "os.getenv('HOSTNAME') == 'nitro'";
             hwdec = "vaapi";
-            vo = "gpu,vdpau,dmabuf-wayland,wlshm,xv,x11,sdl,drm,";
+            vo = "gpu-next,gpu,vdpau,dmabuf-wayland,wlshm,xv,x11,sdl,drm,";
             audio-device = "pipewire";
             ao = "pulse,alsa,jack,pipewire,";
+            pulse-latency-hacks = true;
             gpu-context = "auto";
+            correct-pts = false;
+            container-fps-override = 60;
           };
 
         };
@@ -486,5 +492,10 @@ in
         };
       };
     };
+
+    systemd.user.tmpfiles.rules = mkIf isLinux [
+      "d ${config.home.homeDirectory}/.logs 0755 ${username} users - -"
+      "d ${config.home.homeDirectory}/.logs/mpv 0755 ${username} users - -"
+    ];
   };
 }

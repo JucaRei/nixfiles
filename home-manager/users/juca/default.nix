@@ -1,7 +1,7 @@
-{ config, hostname, isLima, isWorkstation, lib, pkgs, username, ... }:
+{ config, isLima, isWorkstation, lib, pkgs, username, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkIf mkForce getExe;
+  inherit (lib) mkIf;
 in
 {
   home = {
