@@ -1,4 +1,4 @@
-{ hostname, lib, pkgs, config, isWorkstation, ... }:
+{ lib, pkgs, config, isWorkstation, ... }:
 let
   inherit (lib) mkIf mkOption types;
   cfg = config.custom.services.samba;

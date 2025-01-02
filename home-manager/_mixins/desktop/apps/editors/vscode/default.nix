@@ -37,6 +37,12 @@ in
         nixd
         nixpkgs-fmt
         # nil
+
+        (nerdfonts.override {
+          fonts = [
+            "JetBrainsMono"
+          ];
+        })
       ];
 
       file = mkIf (config.features.isWayland == true) {

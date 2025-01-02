@@ -1,0 +1,41 @@
+services:
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+      - UMASK_SET=022 #optional
+      # - JELLYFIN_PublishedServerUrl=192.168.0.5 #optional
+      # - NVIDIA_VISIBLE_DEVICES=all
+      # - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+      - DOCKER_MODS=linuxserver/mods:jellyfin-opencl-intel
+    volumes:
+      - /home/juca/docker/jellyfin/data:/config
+
+      - /home/juca/Shared/externalwrt/Animes:/animes
+      - /home/juca/Shared/externalwrt/Movies:/movies
+      - /home/juca/Shared/externalwrt/Tvshows:/series
+
+      - /home/juca/Shared/hd2tb/Animes:/animes1
+      - /home/juca/Shared/hd2tb/Filmes:/movies1
+      - /home/juca/Shared/hd2tb/Series:/series1
+
+      - /home/juca/Shared/hd400g/Animes:/animes2
+      - /home/juca/Shared/hd400g/Movies:/movies2
+      - /home/juca/Shared/hd400g/TvShows:/series2
+
+    ports:
+      - 8096:8096
+      # - 8920:8920 #optional
+      # - 7359:7359/udp #optional
+      # - 1900:1900/udp #optional
+    mem_limit: 1500M
+    mem_reservation: 300M
+    cpus: 0.8
+    devices:
+      # - /dev/dri:/dev/dri
+      # - /dev/dri/card0:/dev/dri/card0
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    restart: unless-stopped

@@ -1,6 +1,5 @@
-{ pkgs, lib, desktop, hostname, config, isWorkstation, ... }:
+{ lib, ... }:
 let
-  inherit (lib) mkDefault;
   currentDir = ./.; # Represents the current directory
   isDirectoryAndNotTemplate = name: type: type == "directory";
   directories = lib.filterAttrs isDirectoryAndNotTemplate (builtins.readDir currentDir);
