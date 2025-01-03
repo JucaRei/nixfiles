@@ -1,6 +1,6 @@
 { hostname, hostid, lib, pkgs, config, username, ... }:
 let
-  inherit (lib) mkEnableOption mkOption types mkIf mkDefault mdDoc optional optionals mkForce isBool listOf str;
+  inherit (lib) mkEnableOption mkOption types mkIf mkDefault mdDoc optionals mkForce;
   port = pkgs.writeShellScriptBin "port" ''
     usage() {
       printf 'usage: %s open|close tcp|udp|both PORT[:PORT]\n' "''${0##*/}" >&2
@@ -104,14 +104,11 @@ in
   config = mkIf cfg.enable {
     networking = {
       extraHosts = ''
-        192.168.1.35  nitro-lan
-        192.168.1.50  nitro-wifi
-        192.168.1.45  rocinante-lan
-        192.168.1.228 rocinante-wifi
-        192.168.1.76  dongle-ax600
-        192.168.1.184 soyo
-        192.168.1.230 air
-        192.168.1.200 DietPi
+        10.10.10.40   nitro
+        10.10.10.100  Soyoz
+        10.10.10.45   rocinante
+        10.10.10.230  air
+        10.10.10.200  DietPi
         192.168.122.* vm
         192.168.122.* scrubber
       '';

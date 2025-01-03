@@ -1,6 +1,6 @@
 { config, hostname, isInstall, isWorkstation, inputs, lib, modulesPath, outputs, pkgs, platform, stateVersion, username, ... }:
 let
-  inherit (lib) mkIf mkForce mkDefault optional optionals getExe';
+  inherit (lib) mkIf mkForce mkDefault optional optionals;
 in
 {
   imports = with inputs; [
@@ -11,6 +11,7 @@ in
     nix-flatpak.nixosModules.nix-flatpak
     nix-index-database.nixosModules.nix-index
     nix-snapd.nixosModules.default
+    chaotic.nixosModules.default
     sops-nix.nixosModules.sops
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${ hostname}")
@@ -155,11 +156,11 @@ in
           # use-cgroups = true; # execute builds inside cgroups
           system-features = [
             #   # Allows building v3/v4 packages
-            "gccarch-x86-64-v3"
-            "gccarch-x86-64-v4"
+            # "gccarch-x86-64-v3"
+            # "gccarch-x86-64-v4"
             #   "kvm"
             #   "recursive-nix"
-            #   "big-parallel"
+            # "big-parallel"
             #   "nixos-test"
           ];
           ### Avoid unwanted garbage collection when using nix-direnv

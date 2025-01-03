@@ -1,12 +1,12 @@
 { desktop, isInstall, lib, pkgs, config, ... }:
 let
-  inherit (lib) mkDefault;
+  inherit (lib) mkIf mkDefault optional optionals mkOptionDefault;
 in
 {
   imports = [
     ./apps
     ./features
-  ] ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
+  ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
     features = {
@@ -36,31 +36,12 @@ in
 
     environment = {
       etc = {
-        "backgrounds/Cat-1920px.png".source = ../../../resources/dots/backgrounds/Cat-1920px.png;
-        "backgrounds/Cat-2560px.png".source = ../../../resources/dots/backgrounds/Cat-2560px.png;
-        "backgrounds/Cat-3440px.png".source = ../../../resources/dots/backgrounds/Cat-3440px.png;
-        "backgrounds/Cat-3840px.png".source = ../../../resources/dots/backgrounds/Cat-3840px.png;
-        "backgrounds/Catppuccin-1920x1080.png".source = ../../../resources/dots/backgrounds/Catppuccin-1920x1080.png;
-        "backgrounds/Catppuccin-1920x1200.png".source = ../../../resources/dots/backgrounds/Catppuccin-1920x1200.png;
-        "backgrounds/Catppuccin-2560x1440.png".source = ../../../resources/dots/backgrounds/Catppuccin-2560x1440.png;
-        "backgrounds/Catppuccin-2560x1600.png".source = ../../../resources/dots/backgrounds/Catppuccin-2560x1600.png;
-        "backgrounds/Catppuccin-2560x2880.png".source = ../../../resources/dots/backgrounds/Catppuccin-2560x2880.png;
-        "backgrounds/Catppuccin-3440x1440.png".source = ../../../resources/dots/backgrounds/Catppuccin-3440x1440.png;
-        "backgrounds/Catppuccin-3840x2160.png".source = ../../../resources/dots/backgrounds/Catppuccin-3840x2160.png;
-        "backgrounds/Colorway-1920x1080.png".source = ../../../resources/dots/backgrounds/Colorway-1920x1080.png;
-        "backgrounds/Colorway-1920x1200.png".source = ../../../resources/dots/backgrounds/Colorway-1920x1200.png;
-        "backgrounds/Colorway-2560x1440.png".source = ../../../resources/dots/backgrounds/Colorway-2560x1440.png;
-        "backgrounds/Colorway-2560x1600.png".source = ../../../resources/dots/backgrounds/Colorway-2560x1600.png;
-        "backgrounds/Colorway-2560x2880.png".source = ../../../resources/dots/backgrounds/Colorway-2560x2880.png;
-        "backgrounds/Colorway-3440x1440.png".source = ../../../resources/dots/backgrounds/Colorway-3440x1440.png;
-        "backgrounds/Colorway-3840x2160.png".source = ../../../resources/dots/backgrounds/Colorway-3840x2160.png;
-
         # Allow mounting FUSE filesystems as a user.
         # https://discourse.nixos.org/t/fusermount-systemd-service-in-home-manager/5157
         "fuse.conf".text = "user_allow_other";
       };
 
-      systemPackages = with pkgs; [
+      systemPackages = with pkgs;  [
         firefox
         catppuccin-cursors.mochaBlue
         (catppuccin-gtk.override {
@@ -72,19 +53,18 @@ in
           flavor = "mocha";
           accent = "blue";
         })
-      ] ++ lib.optionals isInstall [
+      ] ++ optionals isInstall [
         notify-desktop
-        wmctrl
         xdotool
         ydotool
-      ];
+      ] ++ optionals (config.features.graphics.backend == "x11") [ wmctrl ];
 
       sessionVariables = {
         "TMPDIR" = "/tmp";
       };
     };
 
-    programs.dconf.enable = true;
+    # programs.dconf.enable = true;
 
     services = {
       dbus.enable = true;
@@ -96,6 +76,18 @@ in
         desktopManager.xterm.enable = false;
         excludePackages = [ pkgs.xterm ];
       };
+
+      gvfs = {
+        enable = mkOptionDefault true;
+      };
+
+      gnome.gnome-keyring =
+        let
+          desktops = desktop == "hyprland" || desktop == "mate" || desktop == "xfce4" || desktop == "budgie" || desktop == "bspwm" || desktop == "gnome";
+        in
+        {
+          enable = mkIf desktops true;
+        };
 
       udisks2 = {
         enable = true;

@@ -36,5 +36,10 @@ in
         };
       };
     };
+    home = {
+      shellAliases = {
+        top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --theme=gruvbox -c -g --enable_gpu --memory_legend=top-right --enable_cache_memory";
+      };
+    };
   };
 }

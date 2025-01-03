@@ -1,11 +1,12 @@
-{ lib, config, ... }:
+{ lib, config, pkgs, ... }:
 let
-  inherit (lib) mkIf mkDefault;
+  inherit (lib) mkIf mkForce mkDefault;
   device = config.features.graphics;
 in
 {
   config = mkIf (device.backend == "wayland") {
     environment = {
+
       sessionVariables = {
         QT_QPA_PLATFORM = "wayland";
 
@@ -46,16 +47,11 @@ in
       };
 
       pathsToLink = [ "/libexec" ];
-    };
 
-    services = {
-      gvfs = {
-        enable = mkDefault true;
-      };
-
-      gnome.gnome-keyring = {
-        enable = mkDefault true;
+      shellAliases = {
+        check-drm = mkForce "${pkgs.drm_info}/bin/drm_info -j | ${pkgs.jq}/bin/jq 'with_entries(.value |= .driver.desc)'";
       };
     };
+
   };
 }

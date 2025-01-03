@@ -12,12 +12,6 @@
 
     nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
 
-    # Chaotic Nyx!
-    # chaotic-nyx = {
-    #   url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    #   inputs.home-manager.follows = "home-manager";
-    # };
-
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
     auto-cpufreq = {

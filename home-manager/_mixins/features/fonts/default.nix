@@ -4,14 +4,13 @@ let
   inherit (lib) mkIf mkOption types optionals;
   isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
   cfg = config.features.fonts;
-  # systems = if (isDarwin == true || isOtherOS == true) then true else false;
+  systems = if (isDarwin == true || isOtherOS == true) then true else false;
 
-  defaultOption = isDarwin || isOtherOS;
 in
 {
   options.features.fonts = {
     enable = mkOption {
-      default = defaultOption;
+      default = systems;
       type = types.bool;
     };
   };

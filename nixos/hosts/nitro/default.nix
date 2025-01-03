@@ -1,6 +1,6 @@
-{ config, lib, pkgs, ... }:
+{ lib, pkgs, ... }:
 let
-  inherit (lib) mkDefault mkIf mkForce getExe;
+  inherit (lib) mkDefault mkForce;
 
   # if echo $XDG_SESSION_TYPE == x11
 in
@@ -29,8 +29,8 @@ in
       virtualisation.enable = true;
 
       autocpufreq = {
-        enable = false; # not working
-        autosuspend = false;
+        enable = true; # not working
+        autosuspend = true;
       };
     };
 
@@ -52,10 +52,12 @@ in
         compressorArgs = [ "-19" "-T0" ];
         # verbose = mkForce false;
       };
-      extraModulePackages = (with config.boot.kernelPackages; [
-        # (callPackage ../../../pkgs/system/kernel/rtl8188gu/test2.nix { })
-      ]);
-      kernelPackages = pkgs.linuxPackages_xanmod_stable;
+      # extraModulePackages = (with config.boot.kernelPackages; [
+      #   # (callPackage ../../../pkgs/system/kernel/rtl8188gu/test2.nix { })
+      # ]);
+
+      # kernelPackages = pkgs.linuxPackages_cachyos;
+      kernelPackages = pkgs.linuxPackages_xanmod_latest;
       # kernelPackages = mkForce pkgs.linuxPackages_6_6;
 
       kernelModules = [
@@ -66,7 +68,7 @@ in
       kernelParams = [
         "zswap.enabled=1"
         "mem_sleep_default=deep"
-        "usbcore.autosuspend=-1" # Disable USB autosuspend
+        # "usbcore.autosuspend=-1" # Disable USB autosuspend
 
         ### CGROUPS v1
         # "systemd.unified_cgroup_hierachy=0"
@@ -94,18 +96,14 @@ in
         gparted
         lm_sensors
 
-        # tigervnc
-        vscode-fhs
         duf
-        htop
-        neofetch
-        # spotube
-        # youtube-music
       ];
     };
 
     services = {
       nfs.server.enable = true;
+
+      scx.enable = true; # by default uses scx_rustland scheduler
 
       xserver = {
         xkb = {

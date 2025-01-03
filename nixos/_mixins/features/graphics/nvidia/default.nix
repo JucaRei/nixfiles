@@ -113,6 +113,7 @@ in
             enable = if (device.gpu == "hybrid-nvidia") then true else false;
             enableOffloadCmd = if (device.gpu == "hybrid-nvidia") then true else false;
           };
+          # Make the Intel iGPU default. The NVIDIA Quadro is for CUDA/NVENC
           # reverseSync.enable = if (device.gpu == "hybrid-nvidia") then true else false;
         };
         powerManagement = {

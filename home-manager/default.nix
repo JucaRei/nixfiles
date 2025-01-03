@@ -1,7 +1,8 @@
-{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, hostname, ... }:
+{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optional mkIf;
+  isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
 in
 {
   imports = with inputs // outputs; [
@@ -14,7 +15,7 @@ in
     sops-nix.homeManagerModules.sops
     nix-index-database.hmModules.nix-index
     nix-flatpak.homeManagerModules.nix-flatpak
-    # chaotic-nyx.homeManagerModules.default
+    chaotic.homeManagerModules.default
 
     ../resources/hm-configs/scripts
     ../resources/hm-configs/console
@@ -39,10 +40,12 @@ in
 
     packages =
       with pkgs; [
-        duf # Modern Unix `df`
         fd # Modern Unix `find`
         netdiscover # Modern Unix `arp`
+      ]
+      ++ optional isOtherOS [
         pciutils # Terminal PCI info
+        duf # Modern Unix `df`
         usbutils # Terminal USB info
       ];
 
@@ -86,10 +89,7 @@ in
     package = pkgs.nixVersions.latest;
     settings = {
       experimental-features = "flakes nix-command";
-      trusted-users = [
-        "root"
-        "${username}"
-      ];
+      trusted-users = [ "root" "${username}" ];
     };
   };
 
@@ -97,7 +97,7 @@ in
     bat.enable = true;
     bottom.enable = true;
     lsd.enable = true;
-    man.enable = true;
+    man.enable = isOtherOS;
     zoxide.enable = true;
   };
 
@@ -111,15 +111,15 @@ in
       enableSshSupport = true;
       pinentryPackage = pkgs.pinentry-curses;
     };
-    pueue = {
-      enable = isLinux;
-      # https://github.com/Nukesor/pueue/wiki/Configuration
-      settings = {
-        daemon = {
-          default_parallel_tasks = 1;
-        };
-      };
-    };
+    # pueue = {
+    #   enable = isLinux;
+    #   # https://github.com/Nukesor/pueue/wiki/Configuration
+    #   settings = {
+    #     daemon = {
+    #       default_parallel_tasks = 1;
+    #     };
+    #   };
+    # };
   };
 
   sops = mkIf (username == "teste") {

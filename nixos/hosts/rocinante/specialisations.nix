@@ -59,7 +59,8 @@ in
           systemPackages = with pkgs; [
             mesa # Enables mesa
             mesa.drivers # Enables the use of mesa drivers
-            libdrm
+            libdrm_git
+            driversi686Linux.libdrm32_git
             driversi686Linux.mesa
             # xorg.xf86videonouveau
             glxinfo
