@@ -1,6 +1,6 @@
-{ config, lib, pkgs, ... }:
+{ lib, pkgs, ... }:
 let
-  inherit (lib) mkIf mkForce;
+  inherit (lib) mkForce;
 in
 {
   specialisation = {
@@ -8,13 +8,13 @@ in
       configuration = {
         system.nixos.tags = [ "nouveau-drivers" ];
         boot = {
-          kernelParams = [
-            "nouveau.modeset=1"
-            # "nouveau.config=NvGspRm=1" # New unstable nouveau
-          ];
-          initrd = {
-            kernelModules = [ "nouveau" ];
-          };
+          # kernelParams = [
+          #   "nouveau.modeset=1"
+          #   "nouveau.config=NvGspRm=1" # New unstable nouveau
+          # ];
+          # initrd = {
+          #   kernelModules = [ "nouveau" ];
+          # };
           blacklistedKernelModules = [ "nvidia" "nvidia_uvm" "nvidia_drm" "nvidia_modeset" ];
           loader.grub.configurationName = mkForce "Nouveau Drivers";
         };
@@ -54,14 +54,20 @@ in
           variables = {
             VDPAU_DRIVER = mkForce "nouveau";
             LIBVA_DRIVER_NAME = mkForce "nouveau";
+            __GL_GSYNC_ALLOWED = 0;
+            __GL_SYNC_TO_VBLANK = 0;
+            __GL_VRR_ALLOWED = 0;
+            MOZ_DISABLE_RDD_SANDBOX = 1;
+            NVD_BACKEND = "direct";
           };
 
-          systemPackages = with pkgs; [
-            mesa # Enables mesa
-            mesa.drivers # Enables the use of mesa drivers
+          systemPackages = with pkgs // pkgs.driversi686Linux; [
+            # mesa # Enables mesa
+            mesa_git # Enables mesa
+            mesa_git.drivers # Enables the use of mesa drivers
             libdrm_git
-            driversi686Linux.libdrm32_git
-            driversi686Linux.mesa
+            libdrm32_git
+            mesa32_git
             # xorg.xf86videonouveau
             glxinfo
 
