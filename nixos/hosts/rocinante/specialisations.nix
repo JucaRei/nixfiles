@@ -63,8 +63,8 @@ in
 
           systemPackages = with pkgs // pkgs.driversi686Linux; [
             # mesa # Enables mesa
+            # mesa_git.drivers # Enables the use of mesa drivers
             mesa_git # Enables mesa
-            mesa_git.drivers # Enables the use of mesa drivers
             libdrm_git
             libdrm32_git
             mesa32_git
@@ -76,6 +76,7 @@ in
             # libvdpau-va-gl # Not sure if this is needed
           ];
         };
+        # chaotic.mesa-git.enable = true;
       };
     };
   };
