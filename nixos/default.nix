@@ -222,7 +222,7 @@ in
       hardware.bolt.enable = true;
 
       dbus = {
-        packages = optionals (isWorkstation) (with pkgs ; [ gnome-keyring gcr ]);
+        packages = optionals isWorkstation (with pkgs ; [ gnome-keyring gcr ]);
         implementation = if isWorkstation then "broker" else "dbus";
       };
 
@@ -328,7 +328,7 @@ in
           fi
         '';
 
-        nixos-needsreboot = mkIf (isInstall) {
+        nixos-needsreboot = mkIf isInstall {
           supportsDryActivation = true;
           text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
         };

@@ -3,7 +3,8 @@
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks.nix { })
-    (import ./disks-bcache.nix { })
+    # (import ./disks-bcache.nix { })
+    (import ./disks-btrfs.nix { })
   ];
 
   boot = {

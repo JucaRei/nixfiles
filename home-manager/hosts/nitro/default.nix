@@ -11,6 +11,7 @@ in
       deluge-gtk
       nil
       nixd
+      remmina
       nixpkgs-fmt
       spotube
     ];
