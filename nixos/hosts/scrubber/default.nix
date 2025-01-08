@@ -1,10 +1,13 @@
-{ modulesPath, ... }:
+{ modulesPath, lib, ... }:
+let
+  inherit (lib) mkForce;
+in
 {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks.nix { })
     # (import ./disks-bcache.nix { })
-    (import ./disks-btrfs.nix { })
+    (import ./disks2.nix { })
   ];
 
   boot = {
@@ -18,5 +21,12 @@
       "sr_mod"
       "virtio_blk"
     ];
+
+  };
+
+  core = {
+    boot = {
+      bootmanager = mkForce "systemd-boot";
+    };
   };
 }

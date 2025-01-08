@@ -1,6 +1,7 @@
 _:
 let
-  device = "/dev/vda";
+  # device = "/dev/vda";
+  device = "/dev/sda";
 
   defaultBtrfsOpts = [
     "noatime"
