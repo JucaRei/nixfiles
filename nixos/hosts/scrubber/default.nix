@@ -7,7 +7,8 @@ in
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks.nix { })
     # (import ./disks-bcache.nix { })
-    (import ./disks2.nix { })
+    # (import ./disks2.nix { })
+    ./filesystem.nix
   ];
 
   boot = {

@@ -1,6 +1,6 @@
 { config, hostname, isInstall, isWorkstation, inputs, lib, modulesPath, outputs, pkgs, platform, stateVersion, username, ... }:
 let
-  inherit (lib) mkIf mkForce mkDefault optional optionals;
+  inherit (lib) mkIf mkForce mkOverride mkDefault mkOptionDefault optional optionals;
 in
 {
   imports = with inputs; [
@@ -31,17 +31,17 @@ in
         enable = mkDefault isInstall;
         boottype = mkDefault "efi";
         bootmanager = mkDefault "grub";
-        isDualBoot = mkDefault false;
-        secureBoot = mkDefault false;
-        silentBoot = mkDefault isWorkstation;
-        plymouth = mkDefault isWorkstation;
+        isDualBoot = mkOptionDefault false;
+        secureBoot = mkOptionDefault false;
+        silentBoot = mkOptionDefault isWorkstation;
+        plymouth = mkOptionDefault isWorkstation;
       };
 
       cpu = {
-        enable = mkDefault true;
-        hardenKernel = mkDefault false;
+        enable = mkOverride 990 true;
+        hardenKernel = mkOptionDefault false;
         improveTCP = mkDefault (isInstall || isWorkstation);
-        enableKvm = mkDefault false;
+        enableKvm = mkOptionDefault false;
         cpuVendor = mkDefault "intel";
       };
 

@@ -1,8 +1,4 @@
-{ disks ? [
-    "/dev/nvme0n1"
-  ]
-, ...
-}:
+_:
 let
   defaultBtrfsOpts = [
     "noatime"
