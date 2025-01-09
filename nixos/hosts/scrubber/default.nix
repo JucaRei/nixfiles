@@ -25,11 +25,11 @@ in
 
     loader = {
       grub = {
-        efiInstallAsRemovable = mkForce false;
+        efiInstallAsRemovable = mkForce true;
       };
       efi = {
         efiSysMountPoint = mkForce "/boot";
-        canTouchEfiVariables = mkForce true;
+        canTouchEfiVariables = mkForce false;
       };
     };
   };

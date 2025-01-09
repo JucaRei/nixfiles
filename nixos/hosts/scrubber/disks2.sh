@@ -4,7 +4,7 @@ DRIVE="/dev/sda"
 
 sgdisk -Z ${DRIVE}
 sgdisk -n 0:0:512MB ${DRIVE}
-sgdisk -n 0:0:-3.5GB ${DRIVE}
+sgdisk -n 0:0:-4GB ${DRIVE}
 sgdisk -n 0:0:0 ${DRIVE}
 
 sgdisk -t 1:EF00 ${DRIVE}
