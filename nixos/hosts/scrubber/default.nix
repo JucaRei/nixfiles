@@ -36,7 +36,7 @@ in
 
   core = {
     boot = {
-      bootmanager = mkForce "systemd-boot";
+      bootmanager = mkForce "grub";
     };
   };
 }
