@@ -23,6 +23,15 @@ in
       "virtio_blk"
     ];
 
+    loader = {
+      grub = {
+        efiInstallAsRemovable = mkForce false;
+      };
+      efi = {
+        efiSysMountPoint = mkForce "/boot";
+        canTouchEfiVariables = mkForce true;
+      };
+    };
   };
 
   core = {
