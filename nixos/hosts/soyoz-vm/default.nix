@@ -24,6 +24,9 @@ in
       supportedFilesystems.bcachefs = mkForce true;
     };
 
-    features.zram.enable = true;
+    features = {
+      bcachefs.enable = true;
+      zram.enable = mkForce true;
+    };
   };
 }
