@@ -160,7 +160,7 @@
         soyoz = helper.mkNixos { hostname = "soyoz"; };
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs
-        soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = null; };
+        soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = "bspwm"; };
         minimech = helper.mkNixos { hostname = "minimech"; };
         scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "bspwm"; };
       };

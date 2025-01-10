@@ -26,7 +26,7 @@ in
 
     features = {
       bcachefs.enable = true;
-      zram.enable = mkForce true;
+      # zram.enable = mkForce true;
     };
   };
 }
