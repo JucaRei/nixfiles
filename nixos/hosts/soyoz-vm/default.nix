@@ -1,4 +1,7 @@
-{ modulesPath, ... }:
+{ modulesPath, lib, ... }:
+let
+  inherit (lib) mkForce;
+in
 {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
@@ -18,6 +21,7 @@
         "sr_mod"
         "sd_mod"
       ];
+      supportedFilesystems.bcachefs = mkForce true;
     };
 
     features.zram.enable = true;

@@ -1,4 +1,4 @@
-{ disks ? [ "/dev/sda" ], ... }:
+_:
 let
   bcachefs_opts = [
     "compression=zstd:3"
@@ -18,18 +18,13 @@ in
     disk = {
       sda = {
         type = "disk";
-        device = "/dev/sda";
+        device = "/dev/vda";
         content = {
           type = "gpt";
           partitions = {
             ESP = {
-              # priority = 1;
-              name = "ESP";
-              label = "ESP";
-              # start = "1M";
               start = "0%";
               end = "100M";
-              # size = "1024M";
               type = "EF00";
               content = {
                 type = "filesystem";
@@ -43,18 +38,18 @@ in
             };
             root = {
               name = "root";
-              end = "-2GiB"; # "-16GiB";
+              end = "-3GiB"; # "-16GiB";
               content = {
                 type = "filesystem";
                 format = "bcachefs";
                 mountpoint = "/";
                 # extraArgs = bcachefs_opts;
                 extraArgs = [
-                  "--compression zstd"
-                  "--background_compression zstd"
+                  "--compression=zstd:3"
+                  "--background_compression=zstd"
                   "--block_size=4096" # 4kb block size.
                   "--discard"
-                  "--label nroot"
+                  "--label=nixsystem"
                 ];
                 mountOptions = [ "noatime" ];
                 # subvolumes = {
@@ -73,8 +68,8 @@ in
               # part-type = "primary";
               content = {
                 type = "swap";
-                randomEncryption = true;
-                resumeDevice = true; # resume from hiberation from this device
+                # randomEncryption = true;
+                # resumeDevice = true; # resume from hiberation from this device
               };
             };
           };

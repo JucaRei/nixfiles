@@ -14,4 +14,5 @@ _: {
       });
     })
   ];
+  features.bcachefs.enable = true;
 }
