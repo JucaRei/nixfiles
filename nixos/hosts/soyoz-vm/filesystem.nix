@@ -9,6 +9,7 @@ _: {
         "block_size=4096"
         "discard"
         "label=nixsystem"
+        "noatime"
       ];
     };
 

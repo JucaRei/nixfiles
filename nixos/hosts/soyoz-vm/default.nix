@@ -6,7 +6,8 @@ in
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks.nix { })
-    (import ./disks-bcachefs.nix { })
+    # (import ./disks-bcachefs.nix { })
+    ./filesystem.nix
   ];
 
   config = {
