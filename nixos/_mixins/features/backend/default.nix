@@ -11,7 +11,7 @@ in
   options.features.graphics = {
     backend = mkOption {
       type = types.enum [ "x11" "wayland" null ];
-      default = "x11";
+      default = null;
       description = "Default backend for the system";
     };
   };

@@ -47,11 +47,15 @@ in
                 extraArgs = [
                   "--compression=zstd:3"
                   "--background_compression=zstd"
-                  "--block_size=4096" # 4kb block size.
+                  # "--block_size=4096" # 4kb block size.
                   "--discard"
-                  "--label=nixsystem"
+                  "--label=vda.vm"
                 ];
-                mountOptions = [ "noatime" ];
+                mountOptions = [
+                  "compression=zstd:3"
+                  "noatime"
+                  # "very_degraded"
+                ];
                 # subvolumes = {
                 #   # Not implemented
                 #   "@home" = { };
