@@ -1,4 +1,4 @@
-{ config, pkgs, username, lib, ... }:
+{ config, username, lib, ... }:
 let
   inherit (lib) mkOption types mkIf mkForce;
   cfg = config.custom.services.flatpak-nix;

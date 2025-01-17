@@ -42,7 +42,7 @@ in
         else if cfg.browser == "google-chrome" then
           pkgs.google-chrome
         else if cfg.browser == "opera" then
-          pkgs.opera
+          (pkgs.opera.override { proprietaryCodecs = true; })
         else if cfg.browser == "vivaldi" then
           pkgs.vivaldi
         # .override

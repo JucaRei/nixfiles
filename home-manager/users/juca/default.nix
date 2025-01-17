@@ -62,29 +62,29 @@ in
     sessionVariables = { };
   };
   programs = {
-    fish.interactiveShellInit = ''
-      set -x GH_TOKEN (${pkgs.coreutils}/bin/cat ${config.sops.secrets.gh_token.path} 2>/dev/null)
-      set -x GITHUB_TOKEN (${pkgs.coreutils}/bin/cat ${config.sops.secrets.gh_token.path} 2>/dev/null)
-    '';
+    # fish.interactiveShellInit = ''
+    #   set -x GH_TOKEN (${pkgs.coreutils}/bin/cat ${config.sops.secrets.gh_token.path} 2>/dev/null)
+    #   set -x GITHUB_TOKEN (${pkgs.coreutils}/bin/cat ${config.sops.secrets.gh_token.path} 2>/dev/null)
+    # '';
     fish.loginShellInit = ''
       ${pkgs.figurine}/bin/figurine -f "DOS Rebel.flf" $hostname
     '';
-    git = {
-      extraConfig = {
-        gpg = {
-          format = "ssh";
-          ssh = {
-            allowedSignersFile = "${config.home.homeDirectory}/.ssh/allowed_signers";
-          };
-        };
-      };
-      userEmail = "reinaldo800@gmail.com";
-      userName = "Reinaldo P Jr";
-      signing = {
-        key = "${config.home.homeDirectory}/.ssh/id_rsa";
-        signByDefault = true;
-      };
-    };
+    # git = {
+    #   extraConfig = {
+    #     gpg = {
+    #       format = "ssh";
+    #       ssh = {
+    #         allowedSignersFile = "${config.home.homeDirectory}/.ssh/allowed_signers";
+    #       };
+    #     };
+    #   };
+    #   userEmail = "reinaldo800@gmail.com";
+    #   userName = "Reinaldo P Jr";
+    #   signing = {
+    #     key = "${config.home.homeDirectory}/.ssh/id_rsa";
+    #     signByDefault = true;
+    #   };
+    # };
   };
 
   systemd.user.tmpfiles.rules = mkIf isLinux [

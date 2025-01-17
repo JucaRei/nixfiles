@@ -44,8 +44,8 @@
   "editor.renderWhitespace": "trailing",
   "editor.roundedSelection": true,
   "editor.rulers": [
-    90,
-    130
+    100,
+    140
   ],
   "editor.scrollbar.horizontal": "auto",
   "editor.scrollbar.vertical": "auto",
@@ -63,7 +63,7 @@
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
   "editor.wordWrap": "bounded",
-  "editor.wordWrapColumn": 120,
+  "editor.wordWrapColumn": 140,
   "editor.wrappingIndent": "indent",
   "explorer.compactFolders": false,
   "explorer.confirmDelete": false,

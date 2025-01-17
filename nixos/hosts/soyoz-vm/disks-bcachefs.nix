@@ -54,7 +54,7 @@ in
                 mountOptions = [
                   "compression=zstd:3"
                   "noatime"
-                  # "very_degraded"
+                  "very_degraded"
                 ];
                 # subvolumes = {
                 #   # Not implemented

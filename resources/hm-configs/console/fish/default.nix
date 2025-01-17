@@ -8,10 +8,12 @@ in
     # ../starship.nix
   ];
 
-  options.console.fish = {
-    enable = mkOption {
-      default = false;
-      type = types.bool;
+  options = {
+    console.fish = {
+      enable = mkOption {
+        default = false;
+        type = types.bool;
+      };
     };
   };
 

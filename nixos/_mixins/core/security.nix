@@ -189,7 +189,7 @@ in
     };
 
     systemd.tmpfiles.rules = [
-      "L+ /usr/local/bin - - - - /run/current-system/sw/bin/"
+      "L+ /usr/local/bin - - - - /run/current-system/sw/bin/" # symlink executable's to normal linux path
     ];
   };
 }

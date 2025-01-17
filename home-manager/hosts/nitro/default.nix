@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, ... }:
 let
   inherit (lib) mkOptionDefault;
 in
@@ -17,9 +17,13 @@ in
     ];
 
     console = {
+      aliases.enable = true;
       lsd.enable = true;
       yt-dlp-custom.enable = true;
       aria2.enable = true;
+      fastfetch.enable = true;
+      fzf.enable = false;
+      fish.enable = true;
     };
 
     desktop.apps = {
@@ -28,6 +32,13 @@ in
       };
       video = {
         mpv = { enable = true; };
+      };
+      browser = {
+        chrome-based-browser = {
+          enable = false;
+          browser = "opera";
+          disableWayland = true;
+        };
       };
     };
 

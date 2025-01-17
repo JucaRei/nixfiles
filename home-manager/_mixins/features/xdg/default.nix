@@ -322,6 +322,7 @@ in
           "video/x-flc" = cfg.defaultVideoPlayer;
           "video/x-fli" = cfg.defaultVideoPlayer;
           "video/x-flv" = cfg.defaultVideoPlayer;
+          "video/ts" = cfg.defaultVideoPlayer;
 
           # Draw IO
           "application/vnd.jgraph.mxfile" = cfg.defaultDraw;

@@ -1,36 +1,22 @@
-{ isInstall, lib, pkgs, config, isISO, ... }:
+{ lib, config, ... }:
 let
-  inherit (lib) mkOption types mkIf mkDefault;
-  cfg = config.customservices.ssh;
+  inherit (lib) mkIf mkEnableOption;
+  cfg = config.customservices.ssh.enable;
 in
 {
-  options = {
-    customservices.ssh = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Enable default settings for ssh on nixos.";
+  config = mkIf cfg.enable {
+    options = {
+      customservices.ssh = {
+        enable = mkEnableOption "Enable's ssh configs";
       };
     };
-  };
-  config = mkIf cfg.enable {
-    environment = mkIf isInstall { systemPackages = with pkgs; [ ssh-to-age ]; };
+
     programs = {
-      mosh.enable = isInstall;
-      ssh.startAgent = true;
-    };
-    services = {
-      openssh = {
+      ssh = {
         enable = true;
-        openFirewall = true;
-        settings = {
-          PasswordAuthentication = true;
-          # PermitRootLogin = lib.mkDefault "prohibit-password";
-          PermitRootLogin = if isISO then "yes" else "no";
-        };
-        ports = [ 22 ];
-        startWhenNeeded = true;
-        banner = ''
+        compression = true;
+        controlMaster = "auto";
+        extraConfig = "Banner=\n
           ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠛⠛⠋⠉⠈⠉⠉⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿
           ⣿⣿⣿⣿⣿⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⢿⣿⣿⣿⣿
           ⣿⣿⣿⣿⡏⣀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿
@@ -55,17 +41,8 @@ in
           ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠁⠀⠀⠹⣿⠃⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿
           ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⢐⣿⣿⣿⣿⣿⣿⣿⣿⣿
           ⣿⣿⣿⣿⠿⠛⠉⠉⠁⠀⢻⣿⡇⠀⠀⠀⠀⠀⠀⢀⠈⣿⣿⡿⠉⠛⠛⠛⠉⠉
-          ⣿⡿⠋⠁⠀⠀⢀⣀⣠⡴⣸⣿⣇⡄⠀⠀⠀⠀⢀⡿⠄⠙⠛⠀⣀⣠⣤⣤⠄⠀
-        '';
-      };
-      sshguard = {
-        enable = true;
-        whitelist = [
-          "10.10.10.*/24"
-          "192.168.1.*/24"
-          "192.168.0.*/24"
-          "192.168.122.*/24"
-        ];
+          ⣿⡿⠋⠁⠀⠀⢀⣀⣠⡴⣸⣿⣇⡄⠀⠀⠀⠀⢀⡿⠄⠙⠛⠀⣀⣠⣤⣤⠄
+        ";
       };
     };
   };

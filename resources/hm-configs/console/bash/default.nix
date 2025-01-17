@@ -71,41 +71,33 @@ in
           ## Do not store a duplicate of the last entered command and any commands prefixed with a space
           HISTCONTROL=ignoreboth
 
-          if command -v "nmcli" &>/dev/null; then
-            alias wifi_scan="nmcli device wifi rescan && nmcli device wifi list"  # rescan for network
-          fi
+          # if command -v "nmcli" &>/dev/null; then
+          #   alias wifi_scan="nmcli device wifi rescan && nmcli device wifi list"  # rescan for network
+          # fi
 
-          if command -v "grep" &>/dev/null; then
-            alias grep="grep --color=auto"                            # Colorize grep
-          fi
+          # if command -v "tree" &>/dev/null; then
+          #   alias tree="${getExe pkgs.tree} -Cs"
+          # fi
 
-          if command -v "netstat" &>/dev/null; then
-            alias ports="netstat -tulanp"                             # Show Open Ports
-          fi
+          # if command -v "rsync" &>/dev/null; then
+          #   alias rsync="${getExe pkgs.rsync} -aXxtv" # Better copying with Rsync
+          # fi
 
-          if command -v "tree" &>/dev/null; then
-            alias tree="${getExe pkgs.tree} -Cs"
-          fi
-
-          if command -v "rsync" &>/dev/null; then
-            alias rsync="${getExe pkgs.rsync} -aXxtv"                                # Better copying with Rsync
-          fi
-
-          if command -v "rg" &>/dev/null && command -v "fzf" &>/dev/null && command -v "bat" &>/dev/null; then
-            function frg {
-              result=$(${getExe pkgs.ripgrep} --ignore-case --color=always --line-number --no-heading "$@" |
-                ${getExe pkgs.fzf} --ansi \
-                    --color 'hl:-1:underline,hl+:-1:underline:reverse' \
-                    --delimiter ':' \
-                    --preview "${getExe pkgs.bat} --color=always {1} --theme='Solarized (light)' --highlight-line {2}" \
-                    --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
-              file="''${result%%:*}"
-              linenumber=$(echo "''${result}" | cut -d: -f2)
-              if [ ! -z "$file" ]; then
-                      $EDITOR +"''${linenumber}" "$file"
-              fi
-            }
-          fi
+          # if command -v "rg" &>/dev/null && command -v "fzf" &>/dev/null && command -v "bat" &>/dev/null; then
+          #   function frg {
+          #     result=$(${getExe pkgs.ripgrep} --ignore-case --color=always --line-number --no-heading "$@" |
+          #       ${getExe pkgs.fzf} --ansi \
+          #           --color 'hl:-1:underline,hl+:-1:underline:reverse' \
+          #           --delimiter ':' \
+          #           --preview "${getExe pkgs.bat} --color=always {1} --theme='Solarized (light)' --highlight-line {2}" \
+          #           --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
+          #     file="''${result%%:*}"
+          #     linenumber=$(echo "''${result}" | cut -d: -f2)
+          #     if [ ! -z "$file" ]; then
+          #             $EDITOR +"''${linenumber}" "$file"
+          #     fi
+          #   }
+          # fi
 
           if [ -d "$HOME/.bashrc.d" ] ; then
             for script in $HOME/.bashrc.d/* ; do
@@ -115,10 +107,12 @@ in
 
           # Quickly run a pkg run nixpkgs - Add a second argument to it otherwise it will simply run the command
           pkgrun () {
-            if [ -n $1 ] ; then
+            # if [ -n $1 ] ; then
+            if test -n $1  ; then
               local pkg
               pkg=$1
-              if [ "$2" != "" ] ; then
+              # if [ "$2" != "" ] ; then
+              if test "$2" != "" ; then
                 shift
                 local args
 
@@ -148,20 +142,20 @@ in
           ex() {
             if [ -f $1 ] ; then
               case $1 in
-                *.tar.bz2)   tar xjf $1   ;;
-                *.tar.gz)    tar xzf $1   ;;
-                *.bz2)       bunzip2 $1   ;;
-                *.rar)       unrar x $1   ;;
-                *.gz)        gunzip $1    ;;
-                *.tar)       tar xf $1    ;;
-                *.tbz2)      tar xjf $1   ;;
-                *.tgz)       tar xzf $1   ;;
-                *.zip)       unzip $1     ;;
-                *.Z)         uncompress $1;;
-                *.7z)        7z x $1      ;;
-                *.deb)       ar x $1      ;;
-                *.tar.xz)    tar xf $1    ;;
-                *.tar.zst)   tar xf $1    ;;
+                *.tar.bz2)   tar xjf $1                               ;;
+                *.tar.gz)    tar xzf $1                               ;;
+                *.bz2)       bunzip2 $1                               ;;
+                *.rar)       unrar x $1                               ;;
+                *.gz)        gunzip $1                                ;;
+                *.tar)       tar xf $1                                ;;
+                *.tbz2)      tar xjf $1                               ;;
+                *.tgz)       tar xzf $1                               ;;
+                *.zip)       unzip $1                                 ;;
+                *.Z)         uncompress $1                            ;;
+                *.7z)        7z x $1                                  ;;
+                *.deb)       ar x $1                                  ;;
+                *.tar.xz)    tar xf $1                                ;;
+                *.tar.zst)   tar xf $1                                ;;
                 *)           echo "'$1' cannot be extracted via ex()" ;;
               esac
             else
@@ -191,9 +185,9 @@ in
       bashInteractive
       nitch
       ripgrep
-      rsync
-      tree
-      fzf
+      # rsync
+      # tree
+      # fzf
     ];
   };
 }

@@ -9,7 +9,8 @@ in
 {
   imports = optional (builtins.pathExists (./. + "/${username}")) ./${username};
 
-  home.packages = with pkgs; [ ]
-    ++ optionals (!isOtherOS) [ build-all switch-all ];
-
+  home = {
+    packages = with pkgs; [ ]
+      ++ optionals (!isOtherOS) [ build-all switch-all ];
+  };
 }

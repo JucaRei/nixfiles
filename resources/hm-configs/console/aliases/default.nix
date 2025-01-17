@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkEnableOption mkIf getExe mkOption types;
+  inherit (lib) mkIf getExe getExe' mkOption types;
   inherit (pkgs.stdenv) isLinux;
   cfg = config.console.aliases;
   nixDiffCommands = {
@@ -11,7 +11,12 @@ let
 in
 {
   options.console.aliases = {
-    enable = mkEnableOption "Enable aliases for system" // { default = true; };
+    # enable = mkEnableOption "Enable aliases for system" // { default = true; };
+    enable = mkOption {
+      default = true;
+      type = types.bool;
+      description = "Enable's a list of shell aliases.";
+    };
 
     systemd.shellAliases = mkOption {
       type = with types; attrsOf str;
@@ -201,6 +206,11 @@ in
           usb = "${pkgs.inxi}/bin/inxi -J";
           wifi = "${pkgs.inxi}/bin/inxi -n";
           dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
+          ports = "${pkgs.unixtools.netstat}/bin/netstat -tulanp"; # Show open ports
+          wifi_scan = "${getExe' pkgs.networkmanager "nmcli"} device wifi rescan && ${getExe' pkgs.networkmanager "nmcli"} device wifi list";
+          grep = "${getExe' pkgs.gnugrep "grep"} -E --color=auto";
+          rsync = "${getExe pkgs.rsync} -aXxtv"; # Better copying with Rsync
+          tree = "${getExe pkgs.tree} -Cs"; # -colorized - sorted
 
           # Nix
           store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
