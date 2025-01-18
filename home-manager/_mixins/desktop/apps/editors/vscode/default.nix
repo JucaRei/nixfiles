@@ -34,9 +34,11 @@ in
         # rustfmt
         shellcheck
         shfmt
+        # nil
         nixd
         nixpkgs-fmt
-        # nil
+        # udev-gothic-nf
+        jetbrains-mono
 
         (nerdfonts.override {
           fonts = [

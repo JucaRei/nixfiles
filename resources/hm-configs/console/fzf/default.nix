@@ -18,12 +18,17 @@ in
       #   "--preview 'if [ -d {} ]; then ${pkgs.eza}/bin/eza --tree --color=always {} | head -200; else ${getExe pkgs.bat} -n --color=always --line-range :500 {}; fi'"
       # ];
       fileWidgetOptions = [
-        "--preview '${pkgs.bat}/bin/bat --color=always --plain --line-range=:200 {}'"
+        "--preview '${pkgs.bat}/bin/bat --color=always --style=numbers --line-range :300 {}'"
+        "--color=light"
       ];
+      fileWidgetCommand = "${getExe pkgs.fd} -H --color=always --type f --hidden --follow --exclude .git";
       changeDirWidgetCommand = "${getExe pkgs.fd} --type=d --hidden --strip-cwd-prefix --exclude .git";
       changeDirWidgetOptions = [
         "--preview '${pkgs.eza}/bin/eza --tree --color=always {} | head -200'"
         "--exact"
+      ];
+      historyWidgetOptions = [
+        "--sort"
       ];
       ## Theme
       defaultOptions = [

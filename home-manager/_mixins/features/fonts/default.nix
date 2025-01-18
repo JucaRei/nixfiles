@@ -25,6 +25,7 @@ in
             "NerdFontsSymbolsOnly"
           ];
         })
+        search-fonts # show existent fonts
         # font-awesome
         # liberation_ttf
         # noto-fonts-emoji

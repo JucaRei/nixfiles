@@ -9,8 +9,6 @@ in
       typora
       unstable.obsidian
       deluge-gtk
-      nil
-      nixd
       remmina
       nixpkgs-fmt
       spotube
@@ -23,6 +21,7 @@ in
       aria2.enable = true;
       fastfetch.enable = true;
       fzf.enable = false;
+      skim.enable = true;
       fish.enable = true;
     };
 

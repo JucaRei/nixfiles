@@ -5,7 +5,7 @@ let
   isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
 in
 {
-  imports = with inputs // outputs; [
+  imports = with inputs; [
     # If you want to use modules your own flake exports (from modules/home-manager):
     # outputs.homeManagerModules.example
 
@@ -72,12 +72,12 @@ in
   news.display = "silent";
 
   nixpkgs = {
-    overlays = with outputs; [
+    overlays = [
       # Add overlays your own flake exports (from overlays and pkgs dir):
-      overlays.additions
-      overlays.modifications
-      overlays.unstable-packages
-      overlays.oldstable-packages
+      outputs.overlays.additions
+      outputs.overlays.modifications
+      outputs.overlays.unstable-packages
+      outputs.overlays.oldstable-packages
     ];
     # Configure your nixpkgs instance
     config = {

@@ -28,6 +28,7 @@ in
               "NerdFontsSymbolsOnly"
             ];
           })
+          font-search # show existent fonts
           merriweather
           fira
           font-awesome

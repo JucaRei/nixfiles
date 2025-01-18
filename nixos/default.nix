@@ -100,6 +100,20 @@ in
         SYSTEMD_EDITOR = "micro";
         VISUAL = "micro";
       };
+
+      ## Create a file in /etc/nixos-current-system-packages  Listing all Packages ###
+      etc = {
+        "nixos-current-system-packages" = {
+          text =
+            let
+              packages =
+                builtins.map (p: "${p.name}") config.environment.systemPackages;
+              sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+              formatted = builtins.concatStringsSep "\n" sortedUnique;
+            in
+            formatted;
+        };
+      };
     };
 
     nixpkgs = {
@@ -109,6 +123,7 @@ in
         outputs.overlays.additions
         outputs.overlays.modifications
         outputs.overlays.unstable-packages
+        outputs.overlays.oldstable-packages
         # Add overlays exported from other flakes:
 
         # Add overlays exported from other flakes:
@@ -327,6 +342,17 @@ in
         #     rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
         #   fi
         # '';
+
+        report-changes = ''
+          PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}
+          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
+          mkdir -p /var/log/activations
+          _nvddate=$(date +'%Y%m%d%H%M%S')
+          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
+          if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
+            rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
+          fi
+        '';
 
         nixos-needsreboot = mkIf isInstall {
           supportsDryActivation = true;
