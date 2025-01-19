@@ -1,8 +1,8 @@
-{ user-settings, pkgs, config, lib, username, osConfig, ... }:
+{ pkgs, config, lib, username, osConfig, ... }:
 let
-  inherit (lib) mkOption mkIf mkForce mkDefault types optional mkMerge;
+  inherit (lib) mkOption mkIf types;
   cfg = config.desktop.apps.browser.firefox-based-browser;
-  inherit (pkgs.nur.repos.rycee) firefox-addons;
+  # inherit (pkgs.nur.repos.rycee) firefox-addons;
 
   sharedSettings = import ./sharedSettings.nix { inherit osConfig lib; };
   custom-policies = import ./policies.nix;
@@ -42,23 +42,25 @@ in
       {
         enable = true;
         package =
-          if cfg.browser == "firefox-esr" then
+          if (cfg.browser == "firefox-esr") then
             pkgs.firefox-esr
-          else if cfg.browser == "firefox" then
+          else if (cfg.browser == "firefox") then
             pkgs.firefox
-          else if cfg.browser == "firefox-devedition" then
+          else if (cfg.browser == "firefox" && config.features.isWayland.enable) then
+            pkgs.firefox-wayland
+          else if (cfg.browser == "firefox-devedition") then
             pkgs.firefox-devedition
-          else if cfg.browser == "librewolf" then
+          else if (cfg.browser == "librewolf") then
             pkgs.librewolf
-          # else if cfg.browser == "floorp" then
+          # else if (cfg.browser == "floorp") then
           #   pkgs.floorp-unwrapped.override { pipewireSupport = true; }
-          else cfg.browser == "floorp" pkgs.floorp;
+          else (cfg.browser == "floorp") pkgs.floorp;
         # else
         #   pkgs.waterfox;
 
-        policies = mkIf (defaultFirefox) custom-policies;
+        policies = mkIf defaultFirefox custom-policies;
 
-        nativeMessagingHosts = mkIf (defaultFirefox) (with pkgs; [
+        nativeMessagingHosts = mkIf defaultFirefox (with pkgs; [
           bukubrow
           tridactyl-native
           fx-cast-bridge
@@ -97,7 +99,7 @@ in
         DEFAULT_BROWSER = "${config.desktop.apps.browser.firefox-based-browser.browser}/share/applications/${config.desktop.apps.browser.firefox-based-browser.browser}.desktop";
       };
 
-      file = mkIf (defaultFirefox) {
+      file = mkIf defaultFirefox {
         ".mozilla/native-messaging-hosts/ff2mpv.json".source = "${pkgs.ff2mpv}/lib/mozilla/native-messaging-hosts/ff2mpv.json";
       };
     };

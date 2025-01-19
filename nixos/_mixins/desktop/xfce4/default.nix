@@ -55,7 +55,7 @@ in
     colord.enable = true;
     blueman.enable = true;
     touchegg.enable = true;
-    gnome.gnome-keyring.enable = true;
+    # gnome.gnome-keyring.enable = true;
     displayManager = {
       defaultSession = "xfce";
     };

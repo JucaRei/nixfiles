@@ -23,6 +23,7 @@ in
     };
   };
   config = mkIf cfg.enable {
+    home.packages = with  pkgs; [ sf-mono-liga-bin ];
     programs = {
       zathura = {
         enable = true;
@@ -151,7 +152,8 @@ in
           # "render-loading" = "false";
           unmap = "f";
           # font = "DaddyTimeMono Nerd Font 15";
-          font = "RobotoMono Nerd Font 12";
+          # font = "RobotoMono Nerd Font 12";
+          font = "Liga SFMono Nerd Font Italic 12";
 
           notification-error-bg = "#1d2021"; # bg
           notification-error-fg = "#fb4934"; # bright:red

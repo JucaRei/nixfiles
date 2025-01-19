@@ -96,6 +96,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # SFMono w/ patches
+    sf-mono-liga-src = {
+      url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
+      flake = false;
+    };
+
     stream-sprout = {
       url = "https://flakehub.com/f/wimpysworld/stream-sprout/*.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";

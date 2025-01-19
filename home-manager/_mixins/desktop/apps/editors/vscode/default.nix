@@ -38,13 +38,14 @@ in
         nixd
         nixpkgs-fmt
         # udev-gothic-nf
-        jetbrains-mono
+        # jetbrains-mono
+        sf-mono-liga-bin
 
-        (nerdfonts.override {
-          fonts = [
-            "JetBrainsMono"
-          ];
-        })
+        # (nerdfonts.override {
+        #   fonts = [
+        #     "JetBrainsMono"
+        #   ];
+        # })
       ];
 
       file = mkIf (config.features.isWayland == true) {
@@ -78,6 +79,10 @@ in
           '';
         };
       };
+
+      sessionVariables = {
+        DIRENV_LOG_FORMAT = "";
+      };
     };
     programs = {
       vscode = {
@@ -87,6 +92,26 @@ in
         package = if isGeneric then (nixgl pkgs.unstable.vscode-fhs) else pkgs.unstable.vscode-fhs;
         enableUpdateCheck = false;
         enableExtensionUpdateCheck = false;
+      };
+      direnv = {
+        enable = true;
+        package = pkgs.unstable.direnv;
+        nix-direnv = {
+          enable = true;
+          package = pkgs.unstable.nix-direnv;
+        };
+        silent = false;
+        enableBashIntegration = true;
+        stdlib = ''
+          : ''${XDG_CACHE_HOME:=$HOME/.cache}
+          declare -A direnv_layout_dirs
+          direnv_layout_dir() {
+              echo "''${direnv_layout_dirs[$PWD]:=$(
+                  echo -n "$XDG_CACHE_HOME"/direnv/layouts/
+                  echo -n "$PWD" | shasum | cut -d ' ' -f 1
+              )}"
+          }
+        '';
       };
     };
   };

@@ -1,4 +1,4 @@
-{ osConfig, lib, ... }:
+{ ... }:
 {
   # Floorp settings
   "floorp.tabsleep.enabled" = true;

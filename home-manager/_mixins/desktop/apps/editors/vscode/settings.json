@@ -19,7 +19,7 @@
     "diffEditor.experimental.showMoves": true,
     "diffEditor.hideUnchangedRegions.enabled": true,
     "editor.find.autoFindInSelection": "multiline",
-    "editor.fontFamily": "'FiraCode Nerd Font', 'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'",
+    "editor.fontFamily": "'Liga SFMono Nerd Font Italic', 'FiraCode Nerd Font', 'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'",
     "editor.fontLigatures": true,
     "editor.fontSize": 18,
     "editor.fontVariations": true,
@@ -194,20 +194,23 @@
     "window.title": "${rootName}${separator}${profileName}${separator}${activeEditorShort}",
     "window.titleBarStyle": "custom",
     "window.zoomLevel": 0.3,
-    "workbench.colorTheme": "RedCrafter07 Theme",
     "workbench.editor.labelFormat": "short",
     "workbench.enableExperiments": true,
     "workbench.iconTheme": "pcode-icon-theme-dark",
-    "workbench.preferredDarkColorTheme": "RedCrafter07 Theme",
+    "workbench.preferredDarkColorTheme": "Starfall Palenight",
     "workbench.productIconTheme": "macos-modern",
     "workbench.settings.editor": "ui",
     "workbench.settings.enableNaturalLanguageSearch": true,
     "workbench.tree.indent": 4,
     "zenMode.hideLineNumbers": false,
-    "workbench.colorCustomizations": {
-        "[RedCrafter07 Theme]": {
-            "breadcrumb.background": "#31368b",
-            "editor.background": "#29293e"
+    "_old_theme": {
+        "_workbench.colorTheme": "RedCrafter07 Theme",
+        "_workbench.preferredDarkColorTheme": "RedCrafter07 Theme",
+        "_workbench.colorCustomizations": {
+            "_[RedCrafter07 Theme]": {
+                "_breadcrumb.background": "#31368b",
+                "_editor.background": "#29293e"
+            }
         }
     }
 }

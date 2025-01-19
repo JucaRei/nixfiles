@@ -26,8 +26,10 @@ in
     };
 
     desktop.apps = {
-      editors.vscode = {
-        enable = true;
+      editors = {
+        vscode = {
+          enable = true;
+        };
       };
       video = {
         mpv = { enable = true; };

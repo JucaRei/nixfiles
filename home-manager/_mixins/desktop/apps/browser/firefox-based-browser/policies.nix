@@ -80,6 +80,10 @@
     History = false;
     #Locked = true;
   };
+  PDFjs = {
+    Enabled = true;
+    EnablePermissions = false;
+  };
   UserMessaging = {
     WhatsNew = false;
     ExtensionRecommendations = false;
