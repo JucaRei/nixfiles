@@ -11,9 +11,12 @@ let
 in
 {
   # import the DE specific configuration and any user specific desktop configuration
-  imports = [ ./apps ./features ]
-    ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-    ++ optional (builtins.pathExists (./. + "/${desktop}/${username}/default.nix")) ./${desktop}/${username};
+  imports = [
+    ./apps
+    ./features
+  ]
+  ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+  ++ optional (builtins.pathExists (./. + "/${desktop}/${username}/default.nix")) ./${desktop}/${username};
 
   config = {
     # Authrorize X11 access in Distrobox
