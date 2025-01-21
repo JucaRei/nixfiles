@@ -7,6 +7,8 @@
     nativeBuildInputs = with pkgs; [
       nix # nix
       nil # lsp server
+      nixd
+      direnv
       nix-direnv # A shell extension that manages your environment for nix
       home-manager # manage dots
       duf # check space
