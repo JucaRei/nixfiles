@@ -150,13 +150,13 @@ in
 
         ### Script ###
 
-        XF86AudioRaiseVolume = "${pkgs.orpheus_raise-volume}/bin/orpheus_raise-volume";
-        XF86AudioLowerVolume = "${pkgs.orpheus_lower-volume}/bin/orpheus_lower-volume";
-        XF86AudioMute = "${orpheus_mute}/bin/orpheus_mute";
+        # XF86AudioRaiseVolume = "${pkgs.orpheus_raise-volume}/bin/orpheus_raise-volume";
+        # XF86AudioLowerVolume = "${pkgs.orpheus_lower-volume}/bin/orpheus_lower-volume";
+        # XF86AudioMute = "${pkgs.orpheus_mute}/bin/orpheus_mute";
 
         ### Mac backlight ###
-        XF86KbdBrightnessUp = "exec ${pkgs.kbdlight}/bin/kbdlight up 5";
-        XF86KbdBrightnessDown = "exec ${pkgs.kbdlight}/bin/kbdlight down 5";
+        # XF86KbdBrightnessUp = "exec ${pkgs.kbdlight}/bin/kbdlight up 5";
+        # XF86KbdBrightnessDown = "exec ${pkgs.kbdlight}/bin/kbdlight down 5";
 
         ### Pamixer cmdline ###
 
@@ -171,8 +171,8 @@ in
 
         ### Brillo ###
 
-        XF86MonBrightnessUp = "exec ${pkgs.dunst-light}/bin/pkgs.-light up";
-        XF86MonBrightnessDown = "exec ${pkgs.dunst-light}/bin/dunst-pkgs.light down";
+        # XF86MonBrightnessUp = "exec ${pkgs.dunst-light}/bin/pkgs.-light up";
+        # XF86MonBrightnessDown = "exec ${pkgs.dunst-light}/bin/dunst-pkgs.light down";
         # XF86MonBrightnessUp = "exec ${pkgs.brillo}/bin/brillo -e -A 0.2";
         # XF86MonBrightnessDown = "exec ${pkgs.brillo}/bin/brillo -e -U 0.2";
 
@@ -183,12 +183,12 @@ in
 
         ### PlayerCtl ###
 
-        XF86AudioPlay = "${pkgs.playerctl}/bin/playerctl play";
-        XF86AudioPause = "${pkgs.playerctl}/bin/playerctl pause";
-        XF86AudioNext = "${pkgs.playerctl}/bin/playerctl next";
-        XF86AudioPrev = "${pkgs.playerctl}/bin/playerctl previous";
+        # XF86AudioPlay = "${pkgs.playerctl}/bin/playerctl play";
+        # XF86AudioPause = "${pkgs.playerctl}/bin/playerctl pause";
+        # XF86AudioNext = "${pkgs.playerctl}/bin/playerctl next";
+        # XF86AudioPrev = "${pkgs.playerctl}/bin/playerctl previous";
         # "${vars.mod} + l" = "exec ${_ pkgs.systemd}/bin/loginctl lock-session";
-        "${vars.mod} + n" = "exec ${pkgs.xdg-utils}/bin/xdg-open http://";
+        # "${vars.mod} + n" = "exec ${pkgs.xdg-utils}/bin/xdg-open http://";
 
         ##################
         ### Screenshot ###
