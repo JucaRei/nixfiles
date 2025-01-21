@@ -15,52 +15,52 @@ in
     programs.lsd = {
       enable = true;
       enableAliases = false;
-      colors = mkDefault {
-        user = 159;
-        group = 231;
-        permission = {
-          # read = 183;
-          # write = 212;
-          # exec = 159;
-          # exec-sticky = 159;
-          # no-access = 210;
-          read = 77; #limegreen
-          write = 216; #orange
-          exec = 204; #crimson
-          exec-sticky = 163; #crimson
-          no-access = 195; #lavender
-          octal = 0;
-          acl = 0;
-          context = 0;
-        };
-        date = {
-          # hour-old = 146;
-          # day-old = 103;
-          # older = 60;
-          hour-old = 39; #lightseagreen
-          day-old = 45; #darkcyan
-          older = 117; #mediumturquoise
-        };
-        size = {
-          # none = 60;
-          # small = 120;
-          # medium = 222;
-          # large = 210;
-          none = 195; #lavender
-          small = 223; #burlywood
-          medium = 215; #sandybrown
-          large = 202; #orange
-        };
-        inode = {
-          valid = 231;
-          invalid = 210;
-        };
-        links = {
-          valid = 9; # cyan # 159;
-          invalid = 14; # red # 210;
-        };
-        tree-edge = 183;
-      };
+      # colors = mkDefault {
+      #   user = 159;
+      #   group = 231;
+      #   permission = {
+      #     # read = 183;
+      #     # write = 212;
+      #     # exec = 159;
+      #     # exec-sticky = 159;
+      #     # no-access = 210;
+      #     read = 77; #limegreen
+      #     write = 216; #orange
+      #     exec = 204; #crimson
+      #     exec-sticky = 163; #crimson
+      #     no-access = 195; #lavender
+      #     octal = 0;
+      #     acl = 0;
+      #     context = 0;
+      #   };
+      #   date = {
+      #     # hour-old = 146;
+      #     # day-old = 103;
+      #     # older = 60;
+      #     hour-old = 39; #lightseagreen
+      #     day-old = 45; #darkcyan
+      #     older = 117; #mediumturquoise
+      #   };
+      #   size = {
+      #     # none = 60;
+      #     # small = 120;
+      #     # medium = 222;
+      #     # large = 210;
+      #     none = 195; #lavender
+      #     small = 223; #burlywood
+      #     medium = 215; #sandybrown
+      #     large = 202; #orange
+      #   };
+      #   inode = {
+      #     valid = 231;
+      #     invalid = 210;
+      #   };
+      #   links = {
+      #     valid = 9; # cyan # 159;
+      #     invalid = 14; # red # 210;
+      #   };
+      #   tree-edge = 183;
+      # };
       settings = {
         indicators = false;
 
