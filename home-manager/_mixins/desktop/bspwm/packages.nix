@@ -47,7 +47,7 @@ in
         at-spi2-atk
 
         lm_sensors
-        libweb # Tools and library for the WebP image format
+        libwebp # Tools and library for the WebP image format
         imagemagick
 
         jgmenu
