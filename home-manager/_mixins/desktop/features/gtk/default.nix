@@ -54,7 +54,7 @@ lib.mkIf isLinux {
       package = pkgs.work-sans;
     };
     gtk2 = {
-      configLocation = "${config.xdg.configHome}/.gtkrc-2.0";
+      configLocation = mkDefault "${config.xdg.configHome}/.gtkrc-2.0";
       extraConfig = mkDefault ''
         gtk-application-prefer-dark-theme = 1
         gtk-button-images = 1
@@ -62,14 +62,14 @@ lib.mkIf isLinux {
       '';
     };
     gtk3 = {
-      extraConfig = {
+      extraConfig = mkDefault {
         gtk-application-prefer-dark-theme = mkDefault 1;
         gtk-button-images = mkDefault 1;
         gtk-decoration-layout = "${buttonLayout}";
       };
     };
     gtk4 = {
-      extraConfig = {
+      extraConfig = mkDefault {
         gtk-decoration-layout = "${buttonLayout}";
       };
     };

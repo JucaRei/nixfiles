@@ -1,6 +1,6 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkOption types mkIf;
+  inherit (lib) mkOption types mkIf mkDefault;
   cfg = config.console.lsd;
 in
 {
@@ -101,7 +101,7 @@ in
           # Possible values: always, auto, never
           when = "auto"; #"always";
           separator = "  "; # double-space, first one gets consumed by nerdfont icon
-          theme = "fancy";
+          theme = mkDefault "fancy";
         };
 
         # == Layout ==
