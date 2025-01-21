@@ -1,6 +1,6 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) mkIf mkDefault getExe getExe';
+  inherit (lib) mkIf mkDefault mkForce getExe getExe';
   isSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true; # check if is systemd system or not
   bspwm_pkg = "${getExe' config.xsession.windowManager.bspwm.package "bspwm"}"; # get bspwm executable path
 
@@ -80,7 +80,7 @@ in
         };
 
         ".xinitrc" = mkIf isSystemd {
-          executable = true;
+          executable = mkForce true;
           text = ''
             #!${pkgs.stdenv.shell}
 
