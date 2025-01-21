@@ -1,5 +1,5 @@
 { pkgs, lib, config, ... }: {
-  home.packages = pkgs.jgmenu;
+  home.packages = with pkgs; [ jgmenu ];
 
   xdg.configFile = {
     "jgmenu/jgmenurc".text = ''
