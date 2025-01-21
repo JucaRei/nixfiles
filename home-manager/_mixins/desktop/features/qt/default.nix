@@ -7,7 +7,7 @@ lib.mkIf isLinux {
   # https://discourse.nixos.org/t/struggling-to-configure-gtk-qt-theme-on-laptop/42268/
   home = {
     packages = with pkgs; [
-      (catppuccin-kvantum.override mkDefault {
+      (catppuccin-kvantum.override {
         accent = mkDefault "blue";
         variant = mkDefault "mocha";
       })
