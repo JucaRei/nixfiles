@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 let
-  inherit (pkgs.stdenv) isLinux;
+  inherit (pkgs.stdenv) isLinux mkDefault;
 in
 lib.mkIf isLinux {
   # https://discourse.nixos.org/t/struggling-to-configure-gtk-qt-theme-on-laptop/42268/
@@ -16,18 +16,18 @@ lib.mkIf isLinux {
   };
 
   qt = {
-    enable = true;
-    platformTheme.name = "gtk";
+    enable = mkDefault true;
+    platformTheme.name = mkDefault "gtk";
     style = {
-      name = "kvantum";
+      name = mkDefault "kvantum";
     };
   };
 
   systemd.user.sessionVariables = {
-    QT_STYLE_OVERRIDE = "kvantum";
+    QT_STYLE_OVERRIDE = mkDefault "kvantum";
   };
 
-  xdg.configFile = {
+  xdg.configFile = mkDefault {
     kvantum = {
       target = "Kvantum/kvantum.kvconfig";
       text = lib.generators.toINI { } { General.theme = "Catppuccin-Mocha-Blue"; };
@@ -36,7 +36,7 @@ lib.mkIf isLinux {
       target = "qt5ct/qt5ct.conf";
       text = lib.generators.toINI { } {
         Appearance = {
-          icon_theme = "Papirus-Dark";
+          icon_theme = mkDefault "Papirus-Dark";
         };
       };
     };
@@ -44,7 +44,7 @@ lib.mkIf isLinux {
       target = "qt6ct/qt6ct.conf";
       text = lib.generators.toINI { } {
         Appearance = {
-          icon_theme = "Papirus-Dark";
+          icon_theme = mkDefault "Papirus-Dark";
         };
       };
     };
