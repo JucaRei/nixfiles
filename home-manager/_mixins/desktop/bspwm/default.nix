@@ -33,8 +33,8 @@ in
             ${getExe pkgs.wmname} LG3D \n
             # ${getExe' config.xsession.windowManager.bspwm.package "bspc"} config remove_disabled_monitors true \n
             # ${getExe' config.xsession.windowManager.bspwm.package "bspc"} config remove_unplugged_monitors true \n
-            # ${pkgs.isNitro_workspace}/bin/isNitro_workspace
           ";
+          # ${isNitro_workspace}/bin/isNitro_workspace
           extraConfig = ''
             ${pkgs.systemdMinimal}/bin/systemctl --user start bspwm-session.target
             ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name left_ptr
