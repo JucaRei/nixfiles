@@ -19,7 +19,7 @@ in
         autoindent = true;
         autosu = true;
         comment = true;
-        colorscheme = "monokai";
+        # colorscheme = "monokai";
         diffgutter = true;
         rmtrailingws = true;
         savecursor = true;
