@@ -5,7 +5,7 @@ pkgs.writeScriptBin "boot-host" ''
 
   if [ -e $HOME/.dotfiles/nixfiles ]; then
     pushd $HOME/.dotfiles/nixfiles
-    sudo nixos-rebuild boot --flake .#
+    sudo nixos-rebuild boot --flake .# --show-trace -vL
     popd
   else
     ${pkgs.uutils-coreutils-noprefix}/bin/echo "ERROR! No Nix configurations found in $HOME/.dotfiles/nixfiles"
