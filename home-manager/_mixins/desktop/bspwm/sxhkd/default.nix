@@ -131,6 +131,73 @@ in
         "${vars.modAlt} + shift +x" = "${pkgs.i3lock-fancy-rapid}/bin/i3lock-fancy-rapid -p";
         "${vars.mod} + ${vars.modAlt} + shift + {h,j,k,l}" = "${bspc} node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}"; # contract a window by moving one of its side inward
         "${vars.modAlt} + shift + {Left,Down,Up,Right}" = "${bspc} node -v {-20 0,0 20,0 -20,20 0}";
+
+        ####################
+        ### Control Keys ###
+        ####################
+
+        ### PulseAudio ###
+
+        # XF86AudioMute = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle%";
+        # XF86AudioRaiseVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+        # XF86AudioLowerVolume = "exec --no-startup-id ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+
+        ### Wireplumber ###
+
+        # XF86AudioMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+        # "{XF86AudioRaiseVolume, XF86AudioLowerVolume}" = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%{+,-}";
+        # XF86AudioMicMute = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+
+        ### Script ###
+
+        XF86AudioRaiseVolume = "${pkgs.orpheus_raise-volume}/bin/orpheus_raise-volume";
+        XF86AudioLowerVolume = "${pkgs.orpheus_lower-volume}/bin/orpheus_lower-volume";
+        XF86AudioMute = "${orpheus_mute}/bin/orpheus_mute";
+
+        ### Mac backlight ###
+        XF86KbdBrightnessUp = "exec ${pkgs.kbdlight}/bin/kbdlight up 5";
+        XF86KbdBrightnessDown = "exec ${pkgs.kbdlight}/bin/kbdlight down 5";
+
+        ### Pamixer cmdline ###
+
+        # XF86AudioMute = "${_ pkgs.pamixer}/bin/pamixer -t";
+        # XF86AudioRaiseVolume = "${_ pkgs.pamixer}/bin/pamixer -i 2";
+        # XF86AudioLowerVolume = "${_ pkgs.pamixer}/bin/pamixer -d 2"
+
+        ### Acpilight ###
+
+        # XF86MonBrightnessUp = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -inc 5";
+        # XF86MonBrightnessDown = "exec ${pkgs.acpilight}/bin/xbacklight -perceived -dec 5";
+
+        ### Brillo ###
+
+        XF86MonBrightnessUp = "exec ${pkgs.dunst-light}/bin/pkgs.-light up";
+        XF86MonBrightnessDown = "exec ${pkgs.dunst-light}/bin/dunst-pkgs.light down";
+        # XF86MonBrightnessUp = "exec ${pkgs.brillo}/bin/brillo -e -A 0.2";
+        # XF86MonBrightnessDown = "exec ${pkgs.brillo}/bin/brillo -e -U 0.2";
+
+        ### Xbacklight ###
+
+        # XF86MonBrightnessUp = "${_ pkgs.xorg.xbacklight}/bin/xbacklight + 5";
+        # XF86MonBrightnessDown = "${_ pkgs.xorg.xbacklight}/bin/xbacklight - 5";
+
+        ### PlayerCtl ###
+
+        XF86AudioPlay = "${pkgs.playerctl}/bin/playerctl play";
+        XF86AudioPause = "${pkgs.playerctl}/bin/playerctl pause";
+        XF86AudioNext = "${pkgs.playerctl}/bin/playerctl next";
+        XF86AudioPrev = "${pkgs.playerctl}/bin/playerctl previous";
+        # "${vars.mod} + l" = "exec ${_ pkgs.systemd}/bin/loginctl lock-session";
+        "${vars.mod} + n" = "exec ${pkgs.xdg-utils}/bin/xdg-open http://";
+
+        ##################
+        ### Screenshot ###
+        ##################
+        "Print" = "~/.config/rofi/configurations/scripts/screenshots.sh";
+        "${vars.modAlt} + shift + 4" = "~/.config/rofi/configurations/scripts/screenshots.sh";
+        # "Print" = "${screenshooter}/bin/screenshooter";
+        # "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+        # "Print" = "${pkgs.rofi-screenshot}/bin/rofi-screenshot";
       };
     };
   };
