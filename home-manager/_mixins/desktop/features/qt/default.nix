@@ -18,7 +18,10 @@ lib.mkIf isLinux {
 
   qt = {
     enable = mkDefault true;
-    platformTheme.name = mkDefault "gtk";
+    platformTheme = {
+      # name = mkDefault "gtk";
+      name = mkDefault "kvantum";
+    };
     style = {
       name = mkDefault "kvantum";
     };
