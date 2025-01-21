@@ -15,7 +15,7 @@ in
     programs.lsd = {
       enable = true;
       enableAliases = false;
-      colors = {
+      colors = mkDefault {
         user = 159;
         group = 231;
         permission = {
@@ -70,7 +70,7 @@ in
           # When to colorize the output.
           # When "classic" is set, this is set to "never".
           # Possible values: never, auto, always
-          when = "auto";
+          when = mkDefault "auto";
         };
 
         # == Date ==
@@ -99,7 +99,7 @@ in
           # When to use icons.
           # When "classic" is set, this is set to "never".
           # Possible values: always, auto, never
-          when = "auto"; #"always";
+          when = mkDefault "auto"; #"always";
           separator = "  "; # double-space, first one gets consumed by nerdfont icon
           theme = mkDefault "fancy";
         };
