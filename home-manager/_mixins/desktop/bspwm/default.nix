@@ -1,6 +1,6 @@
 { pkgs, config, lib, hostname, ... }@args:
 let
-  inherit (lib) getExe getExe' mkDefault mkIf;
+  inherit (lib) getExe getExe' mkForce;
   _ = getExe;
   __ = getExe';
 
@@ -19,7 +19,7 @@ in
     xsession = {
       windowManager = {
         bspwm = {
-          enable = true;
+          enable = mkForce true;
           package = if isGeneric then (nixgl pkgs.bspwm) else pkgs.bspwm;
           monitors = {
             Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
