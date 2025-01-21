@@ -1,6 +1,7 @@
 { lib, pkgs, ... }:
 let
-  inherit (pkgs.stdenv) isLinux mkDefault;
+  inherit (pkgs.stdenv) isLinux;
+  inherit (lib) mkDefault;
 in
 lib.mkIf isLinux {
   # https://discourse.nixos.org/t/struggling-to-configure-gtk-qt-theme-on-laptop/42268/
