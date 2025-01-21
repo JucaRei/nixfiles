@@ -144,19 +144,19 @@ in
     #   associations.added = { "inode/directory" = [ "thunar.desktop" ]; };
     # };
 
-    systemd.user.services.thunar = {
-      Unit = {
-        Description = "Thunar file manager";
-        Documentation = "man:Thunar(1)";
-      };
-      Service = {
-        Type = "dbus";
-        ExecStart = "${finalThunar}/bin/Thunar --daemon";
-        BusName = "org.xfce.FileManager";
-        KillMode = "process";
-        # NOTE: PATH is necessary for when thunar is launched by browsers
-        PassEnvironment = [ "PATH" ];
-      };
-    };
+    # systemd.user.services.thunar = {
+    #   Unit = {
+    #     Description = "Thunar file manager";
+    #     Documentation = "man:Thunar(1)";
+    #   };
+    #   Service = {
+    #     Type = "dbus";
+    #     ExecStart = "${finalThunar}/bin/Thunar --daemon";
+    #     BusName = "org.xfce.FileManager";
+    #     KillMode = "process";
+    #     # NOTE: PATH is necessary for when thunar is launched by browsers
+    #     PassEnvironment = [ "PATH" ];
+    #   };
+    # };
   };
 }

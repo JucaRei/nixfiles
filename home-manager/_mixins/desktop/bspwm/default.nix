@@ -9,125 +9,166 @@ let
   hasSystemd = if ("${pkgs.ps}/bin/ps --no-headers -o comm 1" == "systemd") then false else true; # check if is systemd system or not
 
   random-walls = "${pkgs.procps}/bin/watch -n 600 ${pkgs.feh}/bin/feh --randomize --bg-fill '$HOME/Pictures/wallpapers/*'"; # wallpapers from system
-
-  dual-workspace =
-    let
-      bspc-bin = "${_ config.xsession.windowManager.bspwm.package}";
-    in
-    pkgs.writeShellScriptBin "dual-workspace" ''
-      #!${pkgs.stdenv.shell}
-
-        external=$(${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^HDMI-1-0 connected')
-        vm=$(${pkgs.xorg.xrandr}/bin/xrandr --query | grep '^Virtual-1 connected')
-        if [[ $HOSTNAME == nitro && $external = *\ connected* ]]; then
-                ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-                ${bspc-bin} monitor HDMI-1-0 -d I III V VII IX
-                ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
-        elif [[ $HOSTNAME == anubis && $vm = *\ connected* ]]; then
-                ${pkgs.xorg.xrandr}/bin/xrandr --output Virtual-1 --primary --mode 1920x1080
-                ${bspc-bin} monitor -d I II III IV V VI VII VIII IX X
-        elif  [[ $HOSTNAME == anubis && $external = *\ connected* ]]; then
-                ${pkgs.xorg.xrandr}/bin/xrandr --output eDP-1 --primary --mode 1366x768 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal
-                ${bspc-bin} monitor HDMI-1 -d I III V VII IX
-                ${bspc-bin} monitor eDP-1 -d II IV VI VIII X
-        else
-                ${bspc-bin} monitor -d I II III IV V VI VII VIII IX X
-        fi
-    '';
 in
 {
+  imports = [
+    ./packages.nix
+    ./jgmenu.nix
+  ];
   config = {
-    home = {
-      packages = with pkgs // pkgs.xorg; [
-        ### Utilities for bspwm
-        xinit
-        libXcomposite
-        libXinerama
-        xprop
-        libxcb
-        xdpyinfo
-        xkill
-        xsetroot
-        xrandr
-        xclip
-        bc
-        killall
-
-        usbutils # usb utilities
-
-        qgnomeplatform # QPlatformTheme for a better Qt application inclusion in GNOME
-        libsForQt5.qtstyleplugin-kvantum # SVG-based Qt5 theme engine plus a config tool and extra theme
-        qt5.qttools
-        qt6Packages.qtstyleplugin-kvantum
-        lxappearance-gtk2
-        libsForQt5.qt5ct
-        gtk-engine-murrine
-
-
-        dialog # display dialog boxes from shell
-        zenity # dialog for gtk
-        at-spi2-atk
-
-        lm_sensors
-        libweb # Tools and library for the WebP image format
-        imagemagick
-
-        jgmenu
-
-        # system
-        xdg-utils
-        xdg-user-dirs # create xdg user dirs
-        xdg-desktop-portal-gtk
-      ];
-
-      shellAliases = { is_picom_on = "${__ pkgs.procps "pgrep"} -x 'picom' > /dev/null && echo 'on' || echo 'off'"; };
-
-      sessionVariables = {
-        "_JAVA_AWT_WM_NONREPARENTING" = "1";
-        TERMINAL = "alacritty";
-        GLFW_IM_MODULE = "ibus";
-        TERM = "xterm-256color";
-        QT_STYLE_OVERRIDE = mkDefault ""; # fix qt-override
-      };
-
-      file =
-        let
-          windowMan = "${_ config.xsession.windowManager.bspwm.package}"; # get bspwm executable path
-        in
-        {
-          ".local/share/applications/bspwm.desktop" = mkIf (!hasSystemd) {
-            text = ''
-              [Desktop Entry]
-              Name=bspwm
-              Comment=Binary space partitioning window manager
-              Exec=${windowMan}
-              Type=Application
-            '';
+    xsession = {
+      windowManager = {
+        bspwm = {
+          enable = true;
+          package = if isGeneric then (nixgl pkgs.bspwm) else pkgs.bspwm;
+          monitors = {
+            Virtual-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+            HDMI-1-0 = [ "I" "III" "V" "VII" "IX" ];
+            eDP-1 = [ "II" "IV" "VI" "VIII" "X" ];
+            eDP1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+            eDP1-1 = [ "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X" ];
+            #   # bspc monitor eDP-1 -d 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰊠 󰮯 󰮯
           };
-        };
-    };
-    programs = {
-      feh = {
-        enable = true;
-        package = pkgs.feh;
-        keybindings = {
-          prev_img = [
-            # "h"
-            "Left"
+          extraConfigEarly = "
+            ${getExe pkgs.wmname} LG3D \n
+            # ${getExe' config.xsession.windowManager.package "bspc"} config remove_disabled_monitors true \n
+            # ${getExe' config.xsession.windowManager.package "bspc"} config remove_unplugged_monitors true \n
+            # ${getExe pkgs.isNiro_workspace}
+          ";
+          extraConfig = ''
+            ${pkgs.systemdMinimal}/bin/systemctl --user start bspwm-session.target
+            ${pkgs.xorg.xsetroot}/bin/xsetroot -cursor_name left_ptr
+          '';
+          rules = {
+            "firefox" = {
+              desktop = "^3";
+              focus = true;
+            };
+            "Thunar" = {
+              desktop = "^2";
+              follow = true;
+            };
+            "Lxappearance" = {
+              desktop = "^8";
+              follow = false;
+            };
+            "Alacritty" = {
+              # desktop = "^1";
+              follow = true;
+              state = "floating";
+            };
+            "Alacritty:floating" = {
+              state = "floating";
+            };
+            "mpv" = {
+              state = "floating";
+              center = true;
+              # rectangle = "1200x700+360+190";
+              # desktop = "^6";
+              # sticky = true;
+            };
+            "Pavucontrol" = {
+              state = "floating";
+              desktop = "^10";
+              follow = true;
+            };
+            "ZapZap" = {
+              state = "floating";
+              desktop = "^9";
+              follow = true;
+            };
+            "Notepadqq" = {
+              desktop = "^4";
+              follow = true;
+            };
+            ".gimp-2.10-wrapped_" = {
+              desktop = "^5";
+              follow = true;
+            };
+            "BleachBit" = {
+              desktop = "^9";
+              follow = true;
+            };
+            "Zathura" = {
+              state = "tiled";
+            };
+            "GParted" = {
+              desktop = "^10";
+              follow = true;
+            };
+            "Virt-manager" = {
+              desktop = "^5";
+              follow = true;
+              state = "floating";
+            };
+            # "ark" = {
+            #   desktop = "^7";
+            #   follow = true;
+            # };
+            "Engrampa" = {
+              state = "floating";
+            };
+            "Audacity" = {
+              # desktop = "^5";
+              follow = true;
+              state = "floating";
+            };
+            "Blueman-manager" = {
+              state = "floating";
+              center = true;
+            };
+          };
+          settings = {
+            remove_disabled_monitors = true;
+            remove_unplugged_monitors = true;
+            pointer_modifier = "mod1";
+            pointer_action1 = "move"; # Move floating windows
+            ### Resize floating windows ###
+            pointer_action2 = "resize_side";
+            pointer_action3 = "resize_corner";
+            click_to_focus = "button1";
+            focus_follows_pointer = false;
+            top_padding = 2;
+            left_padding = 1;
+            right_padding = 1;
+            border_width = 2;
+            window_gap = 4;
+            top_monocle_padding = 2;
+            right_monocle_padding = 2;
+            left_monocle_padding = 2;
+            bottom_monocle_padding = 2;
+            automatic_scheme = "tiling";
+            initial_polarity = "first_child";
+            split_ratio = 0.50;
+            single_monocle = true;
+            borderless_monocle = true;
+            gapless_monocle = false;
+            paddingless_mono = true;
+            normal_border_color = "#b8bfe5"; # "#343c40"; # "#1E1F29"
+            active_border_color = "#DBBC7F";
+            focused_border_color = "#81ae5f"; # "#BD93F9";
+            presel_border_color = "#343c40"; #"#FF79C6";
+          };
+          alwaysResetDesktops = true;
+          startupPrograms = [
+            "${getExe config.programs.alacritty.package} --daemon"
           ];
-          next_img = [
-            "Right"
-          ];
-          zoom_in = "plus";
-          zoom_out = "minus";
         };
+      };
+
+      numlock = {
+        enable = if (hostname == "nitro") then true else false;
       };
     };
 
-    services = {
-      playerctld = {
-        enable = true;
-        package = pkgs.playerctl;
+    systemd.user = {
+      targets.bspwm-session = {
+        Unit = {
+          Description = "Bspwm Session";
+          BindsTo = [ "graphical-session.target" ];
+          Wants = [ "graphical-session-pre.target" ];
+          After = [ "graphical-session-pre.target" ];
+        };
       };
     };
   };

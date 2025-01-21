@@ -3,6 +3,9 @@ let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkIf mkEnableOption;
   cfg = config.desktop.apps.terminal.alacritty;
+
+  nixgl = import ../../../../../../lib/nixGL.nix { inherit config pkgs; };
+  isGeneric = if (config.targets.genericLinux.enable) then true else false;
 in
 {
   options = {
@@ -24,7 +27,7 @@ in
     ];
     programs.alacritty = mkIf isLinux {
       enable = true;
-      package = pkgs.alacritty;
+      package = if isGeneric then (nixgl pkgs.alacritty) else pkgs.alacritty;
       settings = {
         window = {
           title = "Terminal";
