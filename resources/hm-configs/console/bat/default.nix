@@ -1,6 +1,6 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) mkOption mkIf types;
+  inherit (lib) mkOption mkIf types mkForce;
   cfg = config.console.bat;
 in
 {
@@ -27,7 +27,7 @@ in
         #   #   builtins.readFile ../../config/bat/themes/Catppuccin-mocha.tmTheme;
         #   # rose_pine_moon =
         #   #   builtins.readFile ../../config/bat/themes/rose_pine_moon.tmTheme;
-        tokyo_night = lib.fileContents ../../../dots/bat/themes/tokyo_night.tmTheme;
+        tokyo_night = mkForce lib.fileContents ../../../dots/bat/themes/tokyo_night.tmTheme;
         #   # Catppuccin-mocha = builtins.readFile (pkgs.fetchFromGitHub
         #   #   {
         #   #     owner = "catppuccin";
