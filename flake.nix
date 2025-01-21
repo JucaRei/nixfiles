@@ -141,7 +141,7 @@
         "deck@steamdeck" = helper.mkHome { hostname = "steamdeck"; username = "deck"; };
         # VMs
         "juca@minimech" = helper.mkHome { hostname = "minimech"; };
-        "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "pantheon"; };
+        "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "bspwm"; };
         # Apple
         # "juca@momin" = helper.mkHome { hostname = "momin"; platform = "aarch64-darwin"; desktop = "aqua"; };
         # "juca@krall" = helper.mkHome { hostname = "krall"; platform = "x86_64-darwin"; desktop = "aqua"; };
