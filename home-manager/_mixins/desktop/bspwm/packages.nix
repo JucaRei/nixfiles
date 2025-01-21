@@ -69,7 +69,7 @@ in
       };
 
       file = {
-        ".local/share/applications/bspwm.desktop" = mkIf (!isSystemd) {
+        ".local/share/applications/bspwm.desktop" = mkIf isSystemd {
           text = ''
             [Desktop Entry]
             Name=bspwm
@@ -79,7 +79,7 @@ in
           '';
         };
 
-        ".xinitrc" = mkIf (!isSystemd) {
+        ".xinitrc" = mkIf isSystemd {
           executable = true;
           text = ''
             #!${pkgs.stdenv.shell}
