@@ -17,7 +17,7 @@ in
       enable = true;
       config = {
         # theme = "Catppuccin-mocha";
-        theme = "tokyo_night";
+        theme = mkForce "tokyo_night";
         style = "plain"; # remove line numbers
       };
       themes = {
@@ -27,7 +27,7 @@ in
         #   #   builtins.readFile ../../config/bat/themes/Catppuccin-mocha.tmTheme;
         #   # rose_pine_moon =
         #   #   builtins.readFile ../../config/bat/themes/rose_pine_moon.tmTheme;
-        tokyo_night = mkForce lib.fileContents ../../../dots/bat/themes/tokyo_night.tmTheme;
+        tokyo_night = lib.fileContents ../../../dots/bat/themes/tokyo_night.tmTheme;
         #   # Catppuccin-mocha = builtins.readFile (pkgs.fetchFromGitHub
         #   #   {
         #   #     owner = "catppuccin";
