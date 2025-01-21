@@ -75,14 +75,14 @@ lib.mkIf isLinux {
     };
     iconTheme = {
       name = mkDefault "Papirus-Dark";
-      package = pkgs.catppuccin-papirus-folders.override mkDefault {
+      package = pkgs.catppuccin-papirus-folders.override {
         flavor = "mocha";
         accent = "blue";
       };
     };
     theme = {
       name = mkDefault "catppuccin-mocha-blue-standard";
-      package = pkgs.catppuccin-gtk.override mkDefault {
+      package = pkgs.catppuccin-gtk.override {
         accents = [ "blue" ];
         size = "standard";
         variant = "mocha";
