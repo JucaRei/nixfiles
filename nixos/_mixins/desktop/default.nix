@@ -1,4 +1,4 @@
-{ desktop, isInstall, lib, pkgs, config, ... }:
+{ desktop, isInstall, lib, pkgs, config, hostname, ... }:
 let
   inherit (lib) mkIf mkDefault optional optionals mkOptionDefault;
 in
