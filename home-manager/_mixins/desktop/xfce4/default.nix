@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 let
   inherit (lib) mkDefault;
 in
@@ -50,6 +50,11 @@ in
           '';
         })
       ];
+
+      file = {
+        "${config.xdg.dataHome}/xfce4/terminal/colorschemes/Dracula.theme".text =
+          lib.fileContents ../../../../resources/hm-configs/desktop/xfce/terminal/Dracula.theme;
+      };
     };
   };
 }
