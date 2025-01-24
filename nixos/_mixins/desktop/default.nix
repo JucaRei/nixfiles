@@ -77,14 +77,14 @@ in
         excludePackages = [ pkgs.xterm ];
 
         xkb = if (hostname == nitro || scrubber) then {
-          variant = "abnt2";
           layout = "br";
           variant = "abnt2";
+          model = "pc105";
         }
         else {
+          layout = "us";
           variant = "mac";
           model = "pc104";
-          layout = "us";
         };
       };
 
