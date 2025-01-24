@@ -19,6 +19,7 @@ in
         # theme = "Catppuccin-mocha";
         theme = mkForce "tokyo_night";
         style = "plain"; # remove line numbers
+        pager = "less -FR";
       };
       themes = {
         #   # cyberpunk-neon =
@@ -27,7 +28,11 @@ in
         #   #   builtins.readFile ../../config/bat/themes/Catppuccin-mocha.tmTheme;
         #   # rose_pine_moon =
         #   #   builtins.readFile ../../config/bat/themes/rose_pine_moon.tmTheme;
-        tokyo_night = lib.fileContents ../../../dots/bat/themes/tokyo_night.tmTheme;
+        # tokyo_night = lib.fileContents ../../../dots/bat/themes/tokyo_night.tmTheme;
+        tokyo_night = {
+          src = ../../../dots/bat/themes;
+          file = "tokyo_night.tmTheme";
+        };
         #   # Catppuccin-mocha = builtins.readFile (pkgs.fetchFromGitHub
         #   #   {
         #   #     owner = "catppuccin";

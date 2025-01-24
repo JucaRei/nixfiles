@@ -66,8 +66,13 @@ in
         "lz4hc_compress"
       ];
       kernelParams = [
+        "nosgx"
         "zswap.enabled=1"
         "mem_sleep_default=deep"
+        # "i8042.reset"
+        # "i8042.noloop"
+        "i8042.nomux" # Don't check presence of an active multiplexing controller
+        "i8042.nopnp" # Don't use ACPIPn<P / PnPBIOS to discover KBD/AUX controllers
         # "usbcore.autosuspend=-1" # Disable USB autosuspend
 
         ### CGROUPS v1
@@ -103,7 +108,7 @@ in
     services = {
       nfs.server.enable = true;
 
-      scx.enable = true; # by default uses scx_rustland scheduler
+      # scx.enable = true; # by default uses scx_rustland scheduler
 
       xserver = {
         xkb = {

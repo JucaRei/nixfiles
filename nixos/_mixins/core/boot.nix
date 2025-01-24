@@ -169,7 +169,7 @@ in
           fontSize = 20;
           configurationLimit = 10;
           # splashImage = ./backgrounds/grub-nixos-3.png;
-          splashMode = "stretch";
+          # splashMode = "stretch";
           extraEntries = ''
             menuentry "Reboot" {
               reboot

@@ -1,7 +1,11 @@
 { pkgs ? (import ./nixpkgs.nix) { }, ... }:
+# let
+#   nixfmt-plus = pkgs.callPackage import ./pkgs/tools/nixfmt-plus { };
+# in
 
 {
   default = pkgs.mkShell {
+    name = "dots flake";
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "experimental-features = nix-command flakes";
     nativeBuildInputs = with pkgs; [
@@ -23,6 +27,7 @@
     ];
 
     shellHook = ''
+      # exec fish
       alias ssh="dbclient"
       echo "🔨 Welcome to flakes" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
       echo ">>>> ❄️ Entering Nix Development Environment"

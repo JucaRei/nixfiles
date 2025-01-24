@@ -125,7 +125,7 @@ in
           mkMerge [ systemctl-confs { } ];
       };
 
-      kernelParams = (optional (cfg.cpuVendor == "intel") "intel_iommu=on");
+      kernelParams = (optional (cfg.cpuVendor == "intel") "intel_iommu=on" );
 
     };
 

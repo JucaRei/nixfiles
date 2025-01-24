@@ -10,6 +10,18 @@
       flake = false;
     };
 
+    system-manager = {
+      url = "github:numtide/system-manager";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+
+    nixgl = {
+      url = "github:nix-community/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
 
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -101,11 +113,6 @@
       url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
       flake = false;
     };
-
-    stream-sprout = {
-      url = "https://flakehub.com/f/wimpysworld/stream-sprout/*.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -167,7 +174,6 @@
         revan = helper.mkNixos { hostname = "revan"; };
         # VMs
         soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = null; };
-        minimech = helper.mkNixos { hostname = "minimech"; };
         scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "bspwm"; };
       };
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
@@ -176,6 +182,11 @@
       #   momin = helper.mkDarwin { hostname = "momin"; };
       #   krall = helper.mkDarwin { hostname = "krall"; platform = "x86_64-darwin"; };
       # };
+
+      #  system-manager configurations
+      systemConfigs = {
+        minimech = helper.mkSystemManager { };
+      };
 
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
       devShells = helper.forAllSystems (system:
@@ -193,7 +204,8 @@
       # Custom packages; acessible via 'nix build', 'nix shell', etc
       packages = helper.forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
-      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+      # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-plus);
     };
 }
 

@@ -1,6 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, lib, ... }:
 let
-  inherit (lib) mkDefault mkIf;
+  inherit (lib) mkDefault;
 in
 {
   config = {
@@ -36,6 +36,7 @@ in
         gparted
         galculator
         orage
+
         (writeShellApplication {
           name = "xfce4-panel-toggle";
           runtimeInputs = [ xfce.xfconf ];

@@ -3,7 +3,7 @@ let
   inherit (lib) mkIf;
   kmsconFontSize = {
     rocinante = "24";
-    nitro = "18";
+    nitro = "20";
     anubis = "22";
   };
   kmsconExtraConfig = (
@@ -34,8 +34,16 @@ in
   };
 
   console = {
-    font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    packages = with pkgs; [ tamzen ];
+    keyMap = if (hostname == "nitro" || "scrubber") then "br-abnt2" else "us";
+
+    earlySetup = true;
+    # font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
+    font = "ter-powerline-v32n";
+    packages = with pkgs; [
+      # tamzen
+      terminus_font
+      powerline-fonts
+    ];
   };
 
   services = {

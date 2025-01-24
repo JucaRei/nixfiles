@@ -88,9 +88,9 @@ in
         fixSuspend = mkIf (isInstall && isWorkstation) {
           enable = true;
           description = "Fix immediate wakeup on suspend/hibernate";
-          unitConfig = {
-            Type = "oneshot";
-          };
+          # unitConfig = {
+          #   Type = "oneshot";
+          # };
           serviceConfig = {
             User = "root";
             ExecStart = "-${pkgs.bash}/bin/bash -c \"echo GPP0 > /proc/acpi/wakeup\"";

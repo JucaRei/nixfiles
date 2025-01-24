@@ -27,6 +27,10 @@ in
         };
       };
     };
+    xdg = {
+      mime.enable = true;
+      systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+    };
     targets.genericLinux.enable = true;
   };
 }

@@ -75,6 +75,8 @@ in
         # Disable xterm
         desktopManager.xterm.enable = false;
         excludePackages = [ pkgs.xterm ];
+
+        xkb = {};
       };
 
       gvfs = {

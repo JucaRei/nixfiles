@@ -91,7 +91,7 @@
           #     useUserPackages = true;
 
           #     #   # TODO replace juca with your own username
-          #     users.juca = import ../home-manager;
+          #     users.${username} = import ../home-manager;
 
           #     # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
           #     # extraSpecialArgs = { inherit (inputs.config.home-manager.homeManagerConfiguration.extraSpecialArgs) extraSpecialArgs; };
@@ -131,6 +131,20 @@
   #     };
   #     modules = [ ../darwin ];
   #   };
+
+  mkSystemManager = { system ? "x86_64-linux", }:
+    inputs.system-manager.lib.makeSystemConfig {
+      modules = [
+        inputs.nix-system-graphics.systemModules.default
+        {
+          config = {
+            nixpkgs.hostPlatform = system;
+            system-manager.allowAnyDistro = true;
+            system-graphics.enable = true;
+          };
+        }
+      ];
+    };
 
   forAllSystems = inputs.nixpkgs.lib.genAttrs
     [

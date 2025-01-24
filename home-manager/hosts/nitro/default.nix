@@ -11,7 +11,7 @@ in
       deluge-gtk
       remmina
       nixpkgs-fmt
-      spotube
+      unstable.spotube
     ];
 
     console = {

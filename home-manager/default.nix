@@ -65,6 +65,8 @@ in
       "$HOME/.local/bin"
       "$HOME/.local/share/applications"
     ];
+
+    enableNixpkgsReleaseCheck = false;
   };
 
   # Workaround home-manager bug with flakes
@@ -73,6 +75,8 @@ in
 
   nixpkgs = {
     overlays = [
+      inputs.nixgl.overlay # for non-nixos linux system's
+
       # Add overlays your own flake exports (from overlays and pkgs dir):
       outputs.overlays.additions
       outputs.overlays.modifications

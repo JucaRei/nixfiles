@@ -20,6 +20,7 @@ let
     # Nix
     jnoortheen.nix-ide
     jeff-hykin.better-nix-syntax
+    arrterian.nix-env-selector
 
     # formulahendry.code-runner
     aaron-bond.better-comments

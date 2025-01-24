@@ -77,7 +77,7 @@ in
       ];
 
       shellAliases = {
-                store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+        store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
         keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
       };
 
@@ -284,7 +284,7 @@ in
     systemd = {
       tmpfiles.rules = [
         "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash" # Create symlink to /bin/bash
-        "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
+        "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" # Create dirs for home-manager
         "d /var/lib/private/sops/age 0755 root root"
       ];
 

@@ -39,8 +39,6 @@
       };
     });
 
-    rtl8188gu = prev.rtl8188gu;
-
     sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation rec {
       pname = "sf-mono-liga-bin";
       version = "dev";
