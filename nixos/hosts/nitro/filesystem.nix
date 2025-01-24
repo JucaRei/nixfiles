@@ -16,7 +16,7 @@ let
     "nodiratime"
     "nodatacow"
     "ssd"
-    "compress-force=zstd:3"
+    "compress-force=zstd:6"
     "space_cache=v2"
     "commit=120"
     "discard=async"

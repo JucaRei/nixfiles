@@ -5,7 +5,7 @@ let
     "nodiratime"
     "nodatacow"
     "ssd"
-    "compress-force=zstd:15"
+    "compress-force=zstd:8"
     "space_cache=v2"
     "commit=120"
     "discard=async"
@@ -27,7 +27,7 @@ in
             ESP = {
               # priority = 1;
               name = "ESP";
-              label = "ESP";
+              label = "BOOT";
               # start = "1M";
               start = "0%";
               end = "1024M";
