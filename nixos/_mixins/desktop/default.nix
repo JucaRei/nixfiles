@@ -76,7 +76,7 @@ in
         desktopManager.xterm.enable = false;
         excludePackages = [ pkgs.xterm ];
 
-        xkb = if (hostname == nitro || scrubber) then {
+        xkb = if (hostname == "nitro" || "scrubber") then {
           layout = "br";
           variant = "abnt2";
           model = "pc105";
