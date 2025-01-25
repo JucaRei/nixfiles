@@ -34,8 +34,8 @@ in
         # rustfmt
         shellcheck
         shfmt
-        # nil
-        nixd
+        nil
+        # nixd
         nixpkgs-fmt
         # udev-gothic-nf
         # jetbrains-mono

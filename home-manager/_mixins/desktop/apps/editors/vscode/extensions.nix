@@ -20,7 +20,8 @@ let
     # Nix
     jnoortheen.nix-ide
     jeff-hykin.better-nix-syntax
-    arrterian.nix-env-selector
+    # arrterian.nix-env-selector
+    # mkhl.direnv
 
     # formulahendry.code-runner
     aaron-bond.better-comments
@@ -42,7 +43,6 @@ let
     # esbenp.prettier-vscode
     # sumneko.lua
 
-    mkhl.direnv
     ms-vscode-remote.remote-ssh
     pkief.material-product-icons
   ];

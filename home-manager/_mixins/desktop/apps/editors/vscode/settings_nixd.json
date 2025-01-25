@@ -2,6 +2,8 @@
     "[nix]": {
         "editor.defaultFormatter": "jnoortheen.nix-ide"
     },
+    "direnv.restart.automatic": true,
+    "direnv.status.showChangesCount": false,
     "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
     "editor.bracketPairColorization.enabled": true,
     "editor.codeActionsOnSave": {
@@ -12,7 +14,7 @@
     "editor.cursorStyle": "line",
     "editor.cursorSurroundingLines": 1.2,
     "editor.cursorSurroundingLinesStyle": "all",
-    "editor.cursorWidth": 1.6,
+    "editor.cursorWidth": 2,
     "editor.codeLens": true,
     "diffEditor.experimental.showMoves": true,
     "diffEditor.hideUnchangedRegions.enabled": true,
@@ -21,7 +23,7 @@
     "editor.fontLigatures": true,
     "editor.fontSize": 18,
     "editor.fontVariations": true,
-    "editor.fontWeight": 500,
+    "editor.fontWeight": 600,
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
     "editor.guides.bracketPairs": true,
@@ -42,8 +44,8 @@
     "editor.renderWhitespace": "trailing",
     "editor.roundedSelection": true,
     "editor.rulers": [
-        100,
-        140
+        90,
+        130
     ],
     "editor.scrollbar.horizontal": "auto",
     "editor.scrollbar.vertical": "auto",
@@ -61,7 +63,7 @@
     "editor.suggestSelection": "first",
     "editor.tabSize": 2,
     "editor.wordWrap": "bounded",
-    "editor.wordWrapColumn": 140,
+    "editor.wordWrapColumn": 120,
     "editor.wrappingIndent": "indent",
     "explorer.compactFolders": false,
     "explorer.confirmDelete": false,
@@ -102,9 +104,21 @@
     "git.openRepositoryInParentFolders": "always",
     "nix.enableLanguageServer": true,
     "nix.formatterPath": "nixpkgs-fmt",
-    "nix.serverPath": "nil",
+    "_nix.serverPath": "nixd",
+    "nixpkgs": {
+        "expr": "import <nixpkgs> { }",
+        "expr": "import (builtins.getFlake \"$HOME/.dotfiles/nixfiles\").inputs.nixpkgs { }"
+    },
+    "options": {
+        "nixos": {
+            "expr": "(builtins.getFlake \"$HOME/.dotfiles/nixfiles\").nixosConfigurations.#hostname.options"
+        },
+        "home-manager": {
+            "expr": "(builtins.getFlake \"$HOME/.dotfiles/nixfiles\").homeConfigurations.#username@hostname.options"
+        }
+    },
     "nix.serverSettings": {
-        "nil": {
+        "nixd": {
             "diagnostics": {
                 "ignored": [
                     "unused_binding",
@@ -180,7 +194,6 @@
     "window.title": "${rootName}${separator}${profileName}${separator}${activeEditorShort}",
     "window.titleBarStyle": "custom",
     "window.zoomLevel": 0.3,
-    "workbench.colorTheme": "RedCrafter07 Theme",
     "workbench.editor.labelFormat": "short",
     "workbench.enableExperiments": true,
     "workbench.iconTheme": "Mihale",

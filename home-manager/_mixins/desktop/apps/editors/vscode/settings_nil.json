@@ -19,7 +19,7 @@
   "diffEditor.experimental.showMoves": true,
   "diffEditor.hideUnchangedRegions.enabled": true,
   "editor.find.autoFindInSelection": "multiline",
-  "editor.fontFamily": "'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'",
+  "editor.fontFamily": "'Liga SFMono Nerd Font Italic', 'FiraCode Nerd Font', 'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'",
   "editor.fontLigatures": true,
   "editor.fontSize": 18,
   "editor.fontVariations": true,
@@ -164,7 +164,7 @@
   "terminal.integrated.cursorBlinking": true,
   "terminal.integrated.cursorStyle": "line",
   "terminal.integrated.cursorWidth": 1.8,
-  "terminal.integrated.fontFamily": "'FiraCode Nerd Font Mono Ret', 'monospace'",
+  "terminal.integrated.fontFamily": "'Merryweather', 'FiraCode Nerd Font Mono', 'monospace'",
   "terminal.integrated.fontSize": 16,
   "terminal.integrated.mouseWheelScrollSensitivity": 2,
   "terminal.integrated.persistentSessionScrollback": 200,
@@ -185,17 +185,21 @@
   "workbench.colorTheme": "RedCrafter07 Theme",
   "workbench.editor.labelFormat": "short",
   "workbench.enableExperiments": true,
-  "workbench.iconTheme": "pcode-icon-theme-dark",
-  "workbench.preferredDarkColorTheme": "RedCrafter07 Theme",
+  "workbench.iconTheme": "Mihale",
+  "workbench.preferredDarkColorTheme": "Starfall Palenight",
   "workbench.productIconTheme": "macos-modern",
   "workbench.settings.editor": "ui",
   "workbench.settings.enableNaturalLanguageSearch": true,
   "workbench.tree.indent": 4,
   "zenMode.hideLineNumbers": false,
-  "workbench.colorCustomizations": {
-    "[RedCrafter07 Theme]": {
-      "breadcrumb.background": "#31368b",
-      "editor.background": "#29293e"
+  "_old_theme": {
+    "_workbench.colorTheme": "RedCrafter07 Theme",
+    "_workbench.preferredDarkColorTheme": "RedCrafter07 Theme",
+    "_workbench.colorCustomizations": {
+      "_[RedCrafter07 Theme]": {
+        "_breadcrumb.background": "#31368b",
+        "_editor.background": "#29293e"
+      }
     }
   }
 }

@@ -5,12 +5,11 @@ let
   isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
   cfg = config.features.fonts;
   systems = if (isDarwin == true || isOtherOS == true) then true else false;
-
 in
 {
   options.features.fonts = {
     enable = mkOption {
-      default = systems;
+      default = true;
       type = types.bool;
     };
   };
@@ -19,20 +18,31 @@ in
     # https://yildiz.dev/posts/packing-custom-fonts-for-nixos/
     home = {
       packages = with pkgs; [
-        (nerdfonts.override {
-          fonts = [
-            "FiraCode"
-            "NerdFontsSymbolsOnly"
-          ];
-        })
-        search-fonts # show existent fonts
+        # (nerdfonts.override {
+        #   fonts = [
+        #     "FiraCode"
+        #     "NerdFontsSymbolsOnly"
+        #   ];
+        # })
+        font-search # show existent fonts
         # font-awesome
         # liberation_ttf
-        # noto-fonts-emoji
+        noto-fonts-emoji
         # noto-fonts-monochrome-emoji
         # source-serif
         # symbola
         # work-sans
+      ] ++ optionals systems [
+          (nerdfonts.override {
+            fonts = [
+              "FiraCode"
+              "NerdFontsSymbolsOnly"
+            ];
+          })
+          merriweather
+          lato
+          fira
+          font-awesome
       ]
       ++ optionals isInstall [
         # bebas-neue-2014-font
@@ -52,32 +62,32 @@ in
       ]
       ;
     };
-    # fonts.fontconfig = {
-    #   enable = true;
-    #   defaultFonts = {
-    #     serif = [
-    #       # "Source Serif"
-    #       # "Noto Color Emoji"
-    #       "Merriweather"
-    #     ];
-    #     sansSerif = [
-    #       "Lato"
-    #       # "Work Sans"
-    #       # "Fira Sans"
-    #       # "Noto Color Emoji"
-    #     ];
-    #     monospace = [
-    #       "Merriweather"
-    #       "FiraCode Nerd Font Mono"
-    #       # "Font Awesome 6 Free"
-    #       # "Font Awesome 6 Brands"
-    #       # "Symbola"
-    #       # "Noto Emoji"
-    #     ];
-    #     emoji = [
-    #       "Noto Color Emoji"
-    #     ];
-    #   };
-    # };
+    fonts.fontconfig = {
+      enable = true;
+      defaultFonts = {
+        serif = [
+          # "Source Serif"
+          # "Noto Color Emoji"
+          "Merriweather"
+        ];
+        sansSerif = [
+          "Lato"
+          # "Work Sans"
+          # "Fira Sans"
+          # "Noto Color Emoji"
+        ];
+        monospace = [
+          "Merriweather"
+          "FiraCode Nerd Font Mono"
+          # "Font Awesome 6 Free"
+          # "Font Awesome 6 Brands"
+          # "Symbola"
+          # "Noto Emoji"
+        ];
+        emoji = [
+          "Noto Color Emoji"
+        ];
+      };
+    };
   };
 }

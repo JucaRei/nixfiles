@@ -27,18 +27,6 @@
     #  });
     #});
 
-    # TODO: upgrade-hint; Remove this for >= 24.11
-    openasar = prev.openasar.overrideAttrs (_old: rec {
-      pname = "openasar";
-      version = "0-unstable-2024-09-06";
-      src = prev.fetchFromGitHub {
-        owner = "GooseMod";
-        repo = "OpenAsar";
-        rev = "f92ee8c3dc6b6ff9829f69a1339e0f82a877929c";
-        hash = "sha256-V2oZ0mQbX+DHDZfTj8sV4XS6r9NOmJYHvYOGK6X/+HU=";
-      };
-    });
-
     sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation rec {
       pname = "sf-mono-liga-bin";
       version = "dev";
