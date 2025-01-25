@@ -164,6 +164,7 @@
         # nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
         # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
 
+
         # .iso images
         iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
         iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
