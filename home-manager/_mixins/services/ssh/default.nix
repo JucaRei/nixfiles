@@ -15,6 +15,7 @@ in
       ssh = {
         enable = true;
         compression = true;
+        forwardAgent = true;
         controlMaster = "auto";
         extraConfig = "Banner=\n
           ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠛⠛⠋⠉⠈⠉⠉⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿
