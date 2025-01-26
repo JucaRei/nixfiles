@@ -37,6 +37,8 @@ in
         plymouth = mkOptionDefault isWorkstation;
       };
 
+      ssh.enable = true;
+
       cpu = {
         enable = mkOverride 990 true;
         hardenKernel = mkOptionDefault false;
