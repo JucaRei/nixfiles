@@ -52,6 +52,9 @@ in
         prettybat
       ];
     };
+
+    # Avoid [bat error]: The binary caches for the user-customized syntaxes and themes in
+    # '/home/<user>/.cache/bat' are not compatible with this version of bat (0.25.0).
     systemd.user.services.bat-cache = {
       Unit.Description = "Build and update bat cache";
       Service = {
@@ -60,6 +63,14 @@ in
       };
       Install.WantedBy = [ "default.target" ];
     };
+
     # home.activation.buildBatCache = "${lib.getExe pkgs.bat} cache --build";
+    # home.activation.batCacheRebuild = {
+    #   after = [ "linkGeneration" ];
+    #   before = [ ];
+    #   data = ''
+    #     ${pkgs.bat}/bin/bat cache --build
+    #   '';
+    # };
   };
 }

@@ -18,6 +18,7 @@
   "editor.codeLens": true,
   "diffEditor.experimental.showMoves": true,
   "diffEditor.hideUnchangedRegions.enabled": true,
+  "diffEditor.maxComputationTime": 0,
   "editor.find.autoFindInSelection": "multiline",
   "editor.fontFamily": "'Liga SFMono Nerd Font Italic', 'FiraCode Nerd Font', 'JetbrainsMono Nerd Font SemiBold Italic', 'SauceCodePro Nerd Font Propo Regular Italic', 'Droid Sans Mono'",
   "editor.fontLigatures": true,

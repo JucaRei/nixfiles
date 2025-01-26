@@ -10,7 +10,11 @@ in
   "browser.bookmarks.showMobileBookmarks" = true;
   "browser.tabs.opentabfor.middleclick" = true;
   "browser.compactmode.show" = true;
+  # "browser.uidensity" = 0; # Set UI density to normal
+  "browser.uidensity" = 1; # enable compact mode
+  "ui.systemUsesDarkTheme" = 1; # force dark theme
   "browser.tabs.tabMinWidth" = 16;
+  "browser.tabs.firefox-view" = true; # Sync tabs across devices
   "browser.toolbars.bookmarks.visibility" = "never";
   # "browser.download.always_ask_before_handling_new_types" = true;
   # "browser.download.sanitize_non_media_extensions" = false;
@@ -154,7 +158,6 @@ in
 
   # (copied into here because home-manager already writes to user.js)
   "toolkit.legacyUserProfileCustomizations.stylesheets" = true; # Enable customChrome.cs
-  "browser.uidensity" = 0; # Set UI density to normal
   "svg.context-properties.content.enabled" = true; # Enable SVG context-propertes
 
   # Harden SSL

@@ -48,6 +48,25 @@ in
         # })
       ];
 
+
+      # rofi-edit-proj = {
+      #   text = ''
+      #     proj_dir="/persist${config.home.homeDirectory}/projects";
+      #     projects=$(find "$proj_dir" -maxdepth 1 -type d | sort | sed "s|$proj_dir||" | grep -v "^$" | sed 's|^/||')
+
+      #     selected=$(echo "$projects" | rofi -dmenu -i -p "Open Project:")
+
+      #     # Check if a project was selected
+      #     if [ -z "$selected" ]; then
+      #         echo "No project selected"
+      #         exit 0
+      #     fi
+
+      #     # Open the project in VS Code
+      #     codium "$proj_dir/$selected"
+      #   '';
+      # };
+
       file = mkIf (config.features.isWayland == true) {
         ".config/code-flags.conf".text = ''
           --enable-features=UseOzonePlatform
