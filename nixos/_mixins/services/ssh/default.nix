@@ -1,7 +1,8 @@
-{ isInstall, lib, pkgs, config, isISO, ... }:
+{ isInstall, lib, pkgs, config, isISO, notVM, ... }:
 let
   inherit (lib) mkOption types mkIf mkDefault;
   cfg = config.customservices.ssh;
+  systems = if (isISO || !notVM) then true else false;
 in
 {
   options = {
@@ -24,9 +25,9 @@ in
         enable = true;
         openFirewall = true;
         settings = {
-          PasswordAuthentication = true;
+          PasswordAuthentication = systems;
           # PermitRootLogin = lib.mkDefault "prohibit-password";
-          PermitRootLogin = if isISO then "yes" else "no";
+          PermitRootLogin = if systems then "yes" else "no";
         };
         ports = [ 22 ];
         startWhenNeeded = true;
