@@ -76,16 +76,21 @@ in
         desktopManager.xterm.enable = false;
         excludePackages = [ pkgs.xterm ];
 
-        xkb = if (hostname == "nitro" || "scrubber") then {
-          layout = "br";
-          variant = "abnt2";
-          model = "pc105";
-        }
-        else {
-          layout = "us";
-          variant = "mac";
-          model = "pc104";
-        };
+        xkb =
+          let
+            hostsbr = hostname == ("nitro" || "scrubber");
+          in
+          if hostsbr then
+            {
+              layout = "br";
+              variant = "abnt2";
+              model = "pc105";
+            }
+          else {
+            layout = "us";
+            variant = "mac";
+            model = "pc104";
+          };
       };
 
       gvfs = {
