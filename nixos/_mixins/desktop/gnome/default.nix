@@ -12,7 +12,6 @@ in
       };
       apps = {
         celluloid.enable = true;
-        libreoffice.enable = true;
       };
     };
 
