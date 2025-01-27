@@ -187,7 +187,7 @@
 
         # VMs
         soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = null; };
-        scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "bspwm"; };
+        scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "gnome"; };
       };
 
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
