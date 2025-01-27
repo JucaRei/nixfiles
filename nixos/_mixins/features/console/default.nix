@@ -34,7 +34,7 @@ in
   };
 
   console = {
-    keyMap = if (hostname == "nitro" || "scrubber") then "br-abnt2" else "us";
+    keyMap = if (hostname == "nitro") || (hostname == "scrubber") then "br-abnt2" else "us";
 
     earlySetup = true;
     # font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
