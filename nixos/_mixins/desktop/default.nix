@@ -77,15 +77,11 @@ in
         excludePackages = [ pkgs.xterm ];
 
         xkb =
-          let
-            hostsbr = hostname == ("nitro" || "scrubber");
-          in
-          if hostsbr then
-            {
-              layout = "br";
-              variant = "abnt2";
-              model = "pc105";
-            }
+          if (hostname == "nitro") || (hostname == "scrubber") then {
+            layout = "br";
+            variant = "abnt2";
+            model = "pc105";
+          }
           else {
             layout = "us";
             variant = "mac";
