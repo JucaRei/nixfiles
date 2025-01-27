@@ -76,6 +76,12 @@ in
         desktopManager.xterm.enable = false;
         excludePackages = [ pkgs.xterm ];
 
+        displayManager = {
+          sessionCommands = mkIf (hostname == "nitro") ''
+            ${pkgs.numlockx}/bin/numlockx on
+          '';
+        };
+
         xkb =
           if (hostname == "nitro") || (hostname == "scrubber") then {
             layout = "br";

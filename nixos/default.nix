@@ -179,8 +179,8 @@ in
             #   "nixos-test"
           ];
           ### Avoid unwanted garbage collection when using nix-direnv
-          # keep-outputs = true;
-          # keep-derivations = true;
+          keep-outputs = true;
+          keep-derivations = true;
           keep-going = false;
           warn-dirty = false;
           tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
@@ -224,13 +224,6 @@ in
         flake = "/home/${username}/.dotfiles/nixfiles";
       };
       nix-index-database.comma.enable = isInstall;
-      nix-ld = mkIf isInstall {
-        enable = true;
-        libraries = with pkgs; [
-          # Add any missing dynamic libraries for unpackaged
-          # programs here, NOT in environment.systemPackages
-        ];
-      };
     };
 
     services = {
@@ -332,31 +325,24 @@ in
       inherit stateVersion;
 
       activationScripts = {
-        # report-changes = ''
-        #   PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}
-        #   nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
-        #   mkdir -p /var/log/activations
-        #   _nvddate=$(date +'%Y%m%d%H%M%S')
-        #   nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
-        #   if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
-        #     rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
-        #   fi
-        # '';
+        diff = {
+          supportsDryActivation = true;
+          text = ''
+            BLUE=$(${pkgs.ncurses}/bin/tput setaf 4)
+            CLEAR=$(${pkgs.ncurses}/bin/tput sgr0)
 
-        report-changes = ''
-          PATH=$PATH:${lib.makeBinPath [pkgs.nvd pkgs.nix]}
-          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
-          mkdir -p /var/log/activations
-          _nvddate=$(date +'%Y%m%d%H%M%S')
-          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
-          if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
-            rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
-          fi
-        '';
+            if [[ -e /run/current-system ]]; then
+              echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
+              ${pkgs.nvd}/bin/nvd --nix-bin-dir=${config.nix.package}/bin diff /run/current-system "$systemConfig"
+              echo "$BLUE                $CLEAR"
+            fi
+          '';
+        };
 
         nixos-needsreboot = mkIf isInstall {
           supportsDryActivation = true;
-          text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
+          text = ''
+            ${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true '';
         };
       };
     };

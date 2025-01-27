@@ -37,36 +37,43 @@ in
 
       systemPackages =
         with pkgs // pkgs.gnomeExtensions ;
-        [
-          blackbox-terminal
-        ]
-        ++ optionals isInstall [
+        [ blackbox-terminal ] ++
+        optionals isInstall [
           eyedropper
-          gnome.gnome-tweaks
+          # gnome.gnome-tweaks
         ];
     };
 
     programs = {
       calls.enable = false;
-      dconf.profiles.user.databases = [
-        {
-          settings = {
-            "org/gnome/desktop/datetime" = {
-              automatic-timezone = true;
-            };
+      dconf = {
+        enable = true;
+        profiles.user.databases = [
+          {
+            settings = {
+              "org/gnome/desktop/datetime" = {
+                automatic-timezone = true;
+              };
 
-            "org/gnome/desktop/default/applications/terminal" = {
-              exec = "blackbox";
-              exec-arg = "-e";
-            };
+              "org/gnome/desktop/default/applications/terminal" = {
+                exec = "blackbox";
+                exec-arg = "-e";
+              };
 
-            "org/gnome/desktop/peripherals/touchpad" = {
-              tap-to-click = true;
+              "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
+                binding = "<Alt>Return";
+                command = "blackbox";
+                name = "Terminal";
+              };
+
+              "org/gnome/desktop/peripherals/touchpad" = {
+                tap-to-click = true;
+              };
             };
-          };
-        }
-      ];
-      evince.enable = false;
+          }
+        ];
+      };
+      evince.enable = true;
       file-roller.enable = isInstall;
       geary.enable = false;
       gnome-disks.enable = isInstall;
@@ -102,16 +109,17 @@ in
     services = {
       gnome = {
         gnome-initial-setup.enable = false;
+        gnome-keyring.enable = true;
         evolution-data-server.enable = mkForce isInstall;
         games.enable = false;
         gnome-browser-connector.enable = isInstall;
-        gnome-online-accounts.enable = isInstall;
+        gnome-online-accounts.enable = false;
         # gnome-remote-desktop.enable = true;
         core-utilities = {
-          enable = true;
+          enable = false;
         };
+        sushi.enable = true;
         tracker.enable = true;
-        tracker-miners.enable = true;
       };
       udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
       xserver = {
@@ -120,19 +128,19 @@ in
           gdm = {
             enable = true;
             autoSuspend = false;
-            wayland = mkDefault false;
+            wayland = mkDefault true;
           };
         };
         desktopManager.gnome = {
           enable = true;
-          # extraGSettingsOverridePackages = with pkgs; [
-          #   nautilus-open-any-terminal
-          #   nautilus-annotations
-          # ];
-          # extraGSettingsOverrides = ''
-          #   [org.gnome.desktop.peripherals.touchpad]
-          #   tap-to-click=true
-          # '';
+          extraGSettingsOverridePackages = with pkgs; [
+            nautilus-open-any-terminal
+            # nautilus-annotations
+          ];
+          extraGSettingsOverrides = ''
+            [org.gnome.desktop.peripherals.touchpad]
+            tap-to-click=true
+          '';
         };
       };
     };
@@ -156,8 +164,10 @@ in
       terminal-exec = {
         enable = true;
         settings = {
+          GNOME = [ "com.raggesilver.BlackBox.desktop" ];
           default = [ "com.raggesilver.BlackBox.desktop" ];
         };
+        package = pkgs.blackbox-terminal;
       };
     };
   };

@@ -100,8 +100,11 @@ in
         compsize
         gparted
         lm_sensors
+        vscode-fhs
 
         duf
+        gnupg
+        pinentry-curses
       ];
     };
 

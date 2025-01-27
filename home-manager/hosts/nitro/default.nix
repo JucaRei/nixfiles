@@ -32,7 +32,7 @@ in
         };
       };
       video = {
-        mpv = { enable = true; };
+        mpv = { enable = false; };
       };
       browser = {
         chrome-based-browser = {
