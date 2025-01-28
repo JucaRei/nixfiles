@@ -67,7 +67,8 @@ in
         ]);
 
         profiles = {
-          ${username} = {
+          # ${username} = {
+          default = {
             id = 0;
             settings = if (cfg.browser == "floop") then floorpconf else sharedSettings;
             isDefault = true;

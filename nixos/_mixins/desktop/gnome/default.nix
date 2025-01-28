@@ -11,7 +11,7 @@ in
         flatpak-appcenter.enable = true;
       };
       apps = {
-        celluloid.enable = true;
+        celluloid.enable = false;
       };
     };
 
@@ -126,6 +126,8 @@ in
         gnome-keyring.enable = true;
         evolution-data-server.enable = mkForce isInstall;
         games.enable = false;
+        tinysparql.enable = true;
+        localsearch.enable = true;
         gnome-browser-connector.enable = isInstall;
         gnome-online-accounts.enable = false;
         # gnome-remote-desktop.enable = true;

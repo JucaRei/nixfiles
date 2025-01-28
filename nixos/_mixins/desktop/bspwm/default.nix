@@ -1,8 +1,5 @@
 { pkgs, lib, ... }:
-let
-  # inherit (lib) getExe';
-  # __ = getExe';
-in
+
 {
   config = {
     services = {

@@ -8,6 +8,8 @@ let
     rev = "060c580dcc11afea2f77f9073bd8710920e176d8";
     sha256 = "5MnW630EwjKOeOCIAJdSFW0fcSSY4xmfuW/w7WyIovI=";
   };
+
+  is_X11 = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
 in
 {
   # import the DE specific configuration and any user specific desktop configuration
@@ -58,13 +60,13 @@ in
       chrome-based-browser = mkDefault {
         enable = false;
         browser = "brave";
-        disableWayland = true;
+        disableWayland = is_X11;
       };
 
       firefox-based-browser = mkDefault {
         enable = true;
         browser = "firefox";
-        disableWayland = true;
+        disableWayland = is_X11;
       };
     };
 

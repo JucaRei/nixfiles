@@ -28,7 +28,7 @@ in
     desktop.apps = {
       editors = {
         vscode = {
-          enable = true;
+          enable = false;
         };
       };
       video = {
