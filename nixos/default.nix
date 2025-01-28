@@ -279,6 +279,8 @@ in
         "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash" # Create symlink to /bin/bash
         "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" # Create dirs for home-manager
         "d /var/lib/private/sops/age 0755 root root"
+
+        "d /var/log/nix 0755 ${username} users"
       ];
 
       user.extraConfig = ''
@@ -333,7 +335,9 @@ in
 
             if [[ -e /run/current-system ]]; then
               echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
-              ${pkgs.nvd}/bin/nvd --nix-bin-dir=${config.nix.package}/bin diff /run/current-system "$systemConfig"
+              echo "#"
+              ${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff $(${pkgs.coreutils}/bin/readlink "/run/current-system") "$systemConfig" | tee /var/log/nix/nix-changelog
+              echo "#"
               echo "$BLUE                $CLEAR"
             fi
           '';
@@ -341,8 +345,7 @@ in
 
         nixos-needsreboot = mkIf isInstall {
           supportsDryActivation = true;
-          text = ''
-            ${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true '';
+          text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true ";
         };
       };
     };

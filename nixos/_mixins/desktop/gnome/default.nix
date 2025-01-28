@@ -33,6 +33,8 @@ in
         totem
         gnome-console
         gnome-terminal
+
+        simple-scan
       ];
 
       systemPackages =
@@ -57,11 +59,23 @@ in
 
               "org/gnome/desktop/default/applications/terminal" = {
                 exec = "blackbox";
-                exec-arg = "-e";
+                # exec-arg = "-e";
+              };
+
+              "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
+                binding = "<Super>e";
+                name = "File Manager";
+                command = "nautilus -w ~/";
               };
 
               "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
                 binding = "<Alt>Return";
+                command = "blackbox";
+                name = "Terminal";
+              };
+
+              "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
+                binding = "<Primary><Alt>t";
                 command = "blackbox";
                 name = "Terminal";
               };
@@ -116,10 +130,11 @@ in
         gnome-online-accounts.enable = false;
         # gnome-remote-desktop.enable = true;
         core-utilities = {
-          enable = false;
+          enable = true;
         };
         sushi.enable = true;
         tracker.enable = true;
+        at-spi2-core.enable = true;
       };
       udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
       xserver = {
