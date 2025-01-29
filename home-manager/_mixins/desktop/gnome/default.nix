@@ -1,12 +1,14 @@
 { lib, pkgs, ... }:
 let
+  inherit (lib) mkDefault mkForce;
+
   apps = with pkgs; [
     gnome-usage
 
     gnome-extension-manager
     glide-media-player
     gnome-tweaks
-    glide-media-player # video player
+    # glide-media-player # video player
     decibels # audio player
     papers # document viewer
   ];
@@ -27,7 +29,7 @@ let
 in
 {
   services = {
-    gpg-agent.pinentryPackage = lib.mkForce pkgs.pinentry-gnome3;
+    gpg-agent.pinentryPackage = mkForce pkgs.pinentry-gnome3;
     gnome-keyring = {
       enable = true;
       components = [ "secrets" "ssh" ];
@@ -42,6 +44,10 @@ in
     };
   };
 
+  desktop.apps = {
+    notes.gnome-text.enable = true;
+    video.mpv.enable = mkDefault true;
+  };
 
   dconf.settings = with lib.hm.gvariant; {
     "ca/desrt/dconf-editor" = {
@@ -110,7 +116,7 @@ in
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<Alt>e"; # "<Super>e";
       name = "File Manager";
-      command = "nautilus -w ~/";
+      command = "nautilus -w ~";
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
       binding = "<Alt>Return"; # "<Super>t";
@@ -121,19 +127,6 @@ in
       binding = "<Ctrl><Alt>t";
       name = "Terminal";
       command = "blackbox";
-    };
-
-    ### Text Editor
-    "org/gnome/TextEditor" = {
-      custom-font = "FiraCode Nerd Font Mono Medium 12";
-      highlight-current-line = true;
-      indent-style = "space";
-      show-line-numbers = true;
-      show-map = true;
-      show-right-margin = true;
-      style-scheme = "builder-dark";
-      tab-width = mkInt32 4;
-      use-system-font = false;
     };
 
     ### Power
@@ -274,6 +267,7 @@ in
       favorite-apps = [
         "firefox.desktop"
         "code.desktop"
+        "org.gnome.Nautilus.desktop"
       ];
 
       ### Extensions

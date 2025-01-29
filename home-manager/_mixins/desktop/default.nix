@@ -23,6 +23,11 @@ in
   config = {
     # Authrorize X11 access in Distrobox
     home = {
+      sessionPath = [
+        "$HOME/.local/bin"
+        "$HOME/.local/share/applications"
+      ];
+
       file = mkIf isLinux {
         ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
         ".face" = { source = "${pkgs.juca-avatar}/share/faces/juca.jpg"; };

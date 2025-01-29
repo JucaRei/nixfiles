@@ -16,6 +16,7 @@ with lib.hm.gvariant;
     home.packages = with pkgs; [ gnome-text-editor ];
 
     dconf.settings = {
+      ### Text Editor
       "org/gnome/TextEditor" = {
         custom-font = "FiraCode Nerd Font Mono Medium 14";
         highlight-current-line = true;

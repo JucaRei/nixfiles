@@ -31,9 +31,9 @@ in
           enable = false;
         };
       };
-      video = {
-        mpv = { enable = false; };
-      };
+      # video = {
+      #   mpv = { enable = false; };
+      # };
       browser = {
         chrome-based-browser = {
           enable = false;

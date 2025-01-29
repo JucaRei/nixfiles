@@ -38,6 +38,16 @@ in
     inherit username;
     homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
 
+    activation = {
+      diff = lib.hm.dag.entryAnywhere ''
+        if [[ -n ''${oldGenPath:-} ]] && [[ -n ''${newGenPath:-} ]]; then
+          ${lib.getExe config.nix.package} \
+            --extra-experimental-features 'nix-command' \
+            store diff-closures $oldGenPath $newGenPath || true
+        fi
+      '';
+    };
+
     packages =
       with pkgs; [
         fd # Modern Unix `find`
@@ -61,11 +71,6 @@ in
       VISUAL = "micro";
     };
 
-    sessionPath = [
-      "$HOME/.local/bin"
-      "$HOME/.local/share/applications"
-    ];
-
     enableNixpkgsReleaseCheck = false;
   };
 
@@ -86,6 +91,8 @@ in
     # Configure your nixpkgs instance
     config = {
       allowUnfree = true;
+      # allowUnfreePredicate = (_: true);
+      # permittedInsecurePackages = [ ];
     };
   };
 
@@ -94,7 +101,21 @@ in
     settings = {
       experimental-features = "flakes nix-command";
       trusted-users = [ "root" "${username}" ];
+      warn-dirty = false;
+      allow-dirty = true;
     };
+
+    extraOptions = ''
+      # Free up to 1GiB whenever there is less than 100MiB left.
+      # min-free = ${toString (100 * 1024 * 1024)}
+      # max-free = ${toString (1024 * 1024 * 1024)}
+      # Free up to 2GiB whenever there is less than 1GiB left.
+      min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
+      max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 3 GiB
+    ''
+    + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
+      extra-platforms = x86_64-darwin
+    '';
   };
 
   console = {
