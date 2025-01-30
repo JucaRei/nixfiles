@@ -57,7 +57,8 @@ in
       # ]);
 
       # kernelPackages = pkgs.linuxPackages_cachyos;
-      kernelPackages = pkgs.linuxPackages_xanmod_latest;
+      # kernelPackages = pkgs.linuxPackages_xanmod_latest;
+      kernelPackages = pkgs.linuxPackages_lqx;
       # kernelPackages = mkForce pkgs.linuxPackages_6_6;
 
       kernelModules = [

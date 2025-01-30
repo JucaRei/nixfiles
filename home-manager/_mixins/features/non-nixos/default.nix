@@ -26,10 +26,14 @@ in
           data = ''sudo env "PATH=$PATH" /usr/bin/update-desktop-database'';
         };
       };
+      sessionPath = [ "$HOME/.local/bin" ];
     };
     xdg = {
       mime.enable = true;
       systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+    };
+    programs = {
+      home-manager.enable = true;
     };
     targets.genericLinux.enable = true;
   };

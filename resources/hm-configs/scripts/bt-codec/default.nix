@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 let
+  inherit (lib) mkIf mkOption types;
+  cfg = config.scripts.bt-codec;
+
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
     inherit name;
@@ -14,5 +17,17 @@ let
   };
 in
 {
-  home.packages = with pkgs; [ shellApplication ];
+  options = {
+    scripts.bt-codec = {
+      enable = mkOption {
+        default = false;
+        type = types.bool;
+        description = "enables bt-codec script.";
+      };
+    };
+  };
+
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [ shellApplication ];
+  };
 }

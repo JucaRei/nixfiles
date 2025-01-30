@@ -21,7 +21,7 @@ in
       (brave.override {
         commandLineArgs = [
           "--disable-gpu-memory-buffer-video-frames"
-          "--ozone-platform-hint=auto"
+          # "--ozone-platform-hint=auto"
         ];
       })
       # Workaround for log spam on video calls: https://issues.chromium.org/issues/331796411

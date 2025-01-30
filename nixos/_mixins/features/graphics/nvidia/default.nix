@@ -1,6 +1,6 @@
 { config, lib, pkgs, isWorkstation, ... }:
 let
-  inherit (lib) mkIf mkMerge mkDefault mkForce optional mkOption types;
+  inherit (lib) mkIf mkMerge mkDefault mkForce optionals mkOption types;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta.version;
 
@@ -64,7 +64,10 @@ in
         "nouveau"
       ];
       # initrd.kernelModules = [ "nvidia" "nvidia_drm" "nvidia_uvm" "nvidia_modeset" ];
-      kernelParams = [ "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
+      kernelParams = [
+        "nvidia-drm.modeset=1"
+        "nvidia-drm.fbdev=1"
+      ];
 
       extraModprobeConfig =
         "options nvidia "
@@ -86,21 +89,20 @@ in
         LIBVA_DRIVER_NAME = "nvidia";
       };
 
-      systemPackages = with pkgs; mkIf (config.features.graphics.enable) [
+      systemPackages = with pkgs; optionals (config.features.graphics.enable) [
         libva
         libva-utils
         vulkan-loader
         vulkan-tools
         vulkan-validation-layers
+
         # (writeScriptBin "nvidia-settings" ''
         #   #!${stdenv.shell}
         #   mkdir -p "$XDG_CONFIG_HOME/nvidia"
         #   exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
         # '')
       ]
-        # ++ optional (device.gpu == "hybrid-nvidia") [
-        #   nvidia-offload
-        # ]
+      ++ optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ]
       ;
     };
 

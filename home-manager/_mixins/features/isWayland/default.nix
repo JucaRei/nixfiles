@@ -31,8 +31,9 @@ in
       MOZ_ENABLE_WAYLAND = "1";
       _JAVA_AWT_WM_NONREPARENTING = "1";
       NIXOS_OZONE_WL = "1";
-      # GTK_USE_PORTAL = "1";
-      # WLR_RENDERER_ALLOW_SOFTWARE = "1";
+      GTK_USE_PORTAL = "1";
+      WLR_RENDERER_ALLOW_SOFTWARE = "1";
+      ELECTRON_OZONE_PLATFORM_HINT = "auto";
     };
   };
 }

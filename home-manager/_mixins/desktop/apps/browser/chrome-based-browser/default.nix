@@ -57,7 +57,9 @@ in
         let
           isNotOpera = if (cfg.browser == "opera") then false else true;
         in
-        mkIf isNotOpera [ "--ozone-platform-hint=auto" ];
+        mkIf isNotOpera [
+          # "--ozone-platform-hint=auto"
+        ];
       extensions = [
         # bookmark search
         {
@@ -211,7 +213,7 @@ in
                 --enable-features=UseOzonePlatform
                 --ozone-platform=wayland
                 --enable-features=WaylandWindowDecorations
-                --ozone-platform-hint=auto
+                # --ozone-platform-hint=auto
               '';
               # --force-device-scale-factor=1
             } else if cfg.browser == "brave" then {
@@ -222,7 +224,7 @@ in
                 --enable-features=UseOzonePlatform
                 --ozone-platform=wayland
                 --enable-features=WaylandWindowDecorations
-                --ozone-platform-hint=auto
+                # --ozone-platform-hint=auto
               '';
               # --force-device-scale-factor=1
             } else if cfg.browser == "opera" then {
@@ -233,7 +235,7 @@ in
                 --enable-features=UseOzonePlatform
                 --ozone-platform=wayland
                 --enable-features=WaylandWindowDecorations
-                --ozone-platform-hint=auto
+                # --ozone-platform-hint=auto
               '';
               # --force-device-scale-factor=1
             } else if cfg.browser == "vivaldi" then {
@@ -244,7 +246,7 @@ in
                 --enable-features=UseOzonePlatform
                 --ozone-platform=wayland
                 --enable-features=WaylandWindowDecorations
-                --ozone-platform-hint=auto
+                # --ozone-platform-hint=auto
               '';
               # --force-device-scale-factor=1
             } else

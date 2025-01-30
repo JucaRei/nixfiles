@@ -216,7 +216,9 @@
       );
 
       # Custom packages and modifications, exported as overlays
-      overlays = import ./overlays { inherit inputs; };
+      overlays = import ./overlays {
+        inherit inputs;
+      };
 
       # Custom packages; acessible via 'nix build', 'nix shell', etc
       packages = helper.forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});

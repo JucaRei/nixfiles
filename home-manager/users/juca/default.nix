@@ -130,6 +130,8 @@ in
 
     "d ${config.home.homeDirectory}/.config/home-manager 0755 ${username} users - -"
     # "L+ ${config.xdg.dataHome}/applications - - - - /run/current-system/sw/bin/" # symlink executable's to normal linux path
+    # "L+ ${config.home.homeDirectory}/.local/bin - - - - $HOME/.nix-profile/bin" # symlink executable's to normal linux path
+
   ];
 
   xdg = {

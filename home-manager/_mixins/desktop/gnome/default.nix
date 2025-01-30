@@ -6,7 +6,6 @@ let
     gnome-usage
 
     gnome-extension-manager
-    glide-media-player
     gnome-tweaks
     # glide-media-player # video player
     decibels # audio player
@@ -28,6 +27,10 @@ let
   ];
 in
 {
+  features.isWayland = {
+    enable = true;
+    session-type = [ "gnome" ];
+  };
   services = {
     gpg-agent.pinentryPackage = mkForce pkgs.pinentry-gnome3;
     gnome-keyring = {
@@ -267,6 +270,7 @@ in
       favorite-apps = [
         "firefox.desktop"
         "code.desktop"
+        "com.raggesilver.BlackBox.desktop"
         "org.gnome.Nautilus.desktop"
       ];
 
