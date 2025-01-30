@@ -24,10 +24,11 @@ in
       #__GL_SYNC_TO_VBLANK = 0;
       #__GL_VRR_ALLOWED = 0;
     };
-    variables = mkIf (config.features.graphics.backend == "wayland" && config.features.graphics.gpu == "hybrid-nvidia") {
-      # NVD_GPU = 1;
-      NVD_GPU = "/dev/dri/renderD129";
-    };
+
+    # variables = mkIf (config.features.graphics.backend == "wayland" && config.features.graphics.gpu == "hybrid-nvidia") {
+    #   # NVD_GPU = 1;
+    #   # NVD_GPU = "/dev/dri/renderD129";
+    # };
     systemPackages =
       with pkgs // pkgs.gnome;
       lib.optionals isInstall [

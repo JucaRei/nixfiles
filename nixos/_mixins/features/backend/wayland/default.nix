@@ -15,7 +15,7 @@ in
     environment = {
 
       sessionVariables = rec {
-        QT_QPA_PLATFORM = "wayland";
+        QT_QPA_PLATFORM = "wayland;xcb";
 
         __NV_PRIME_RENDER_OFFLOAD = (mkIf (device.gpu == "hybrid-nvidia")) "1";
 
@@ -26,8 +26,6 @@ in
 
         # Required to run the correct GBM backend for nvidia GPUs on wayland
         GBM_BACKEND = (mkIf ((device.gpu == "hybrid-nvidia") || (device.gpu == "nvidia"))) "nvidia-drm";
-
-        # WLR_BACKEND = "vulkan";
 
         # Apparently, without this nouveau may attempt to be used instead
         # (despite it being blacklisted)
@@ -46,6 +44,11 @@ in
         # Required to use va-api it in Firefox. See
         # https://github.com/elFarto/nvidia-vaapi-driver/issues/96
         MOZ_DISABLE_RDD_SANDBOX = (mkIf (device.gpu == "hybrid-nvidia")) "1";
+
+        # https://www.reddit.com/r/hyprland/comments/188a8fr/people_with_nvidia_cards_please_share_your_secret/
+        # __VK_LAYER_NV_optimus = (mkIf (device.gpu == "hybrid-nvidia")) "NVIDIA_only";
+        WLR_BACKEND = "vulkan";
+        # DRI_PRIME = mkIf (device.gpu == "hybrid-nvidia") "pci-0000_01_00_0";
 
         # It appears that the normal rendering mode is broken on recent
         # nvidia drivers:

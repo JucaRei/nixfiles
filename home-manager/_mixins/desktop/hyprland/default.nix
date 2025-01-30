@@ -1,9 +1,4 @@
-{ config
-, hostname
-, lib
-, pkgs
-, ...
-}:
+{ config, hostname, lib, pkgs, ... }:
 let
   monitors = (import ./monitors.nix { }).${hostname};
   hyprActivity = pkgs.writeShellApplication {

@@ -229,6 +229,8 @@ in
     services = {
       hardware.bolt.enable = true;
 
+      userborn.enable = true;
+
       dbus = {
         packages = optionals isWorkstation (with pkgs ; [ gnome-keyring gcr ]);
         implementation = if isWorkstation then "broker" else "dbus";
@@ -347,6 +349,11 @@ in
           supportsDryActivation = true;
           text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true ";
         };
+      };
+
+      switch = {
+        enable = false; # Perl
+        enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
       };
     };
   };

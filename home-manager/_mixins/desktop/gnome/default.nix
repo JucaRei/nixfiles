@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, username, ... }:
 let
   inherit (lib) mkDefault mkForce;
 
@@ -81,6 +81,12 @@ in
       automatic-timezone = true;
     };
 
+    # Session
+    "org/gnome/gnome-session" = {
+      auto-save-session = true;
+      suspend-then-hibernate = true;
+    };
+
     ### Desktop
     "org/gnome/desktop/interface" = {
       clock-format = "24h";
@@ -96,6 +102,7 @@ in
       monospace-font-name = "FiraCode Nerd Font Mono Medium 11";
       show-battery-percentage = true;
       text-scaling-factor = mkDouble 1.0;
+      locale-pointer = true;
     };
 
     ### Session
@@ -106,6 +113,12 @@ in
     ### Sound
     "org/gnome/desktop/sound" = {
       theme-name = "freedesktop";
+    };
+
+    # Terminal
+    "org.gnome.desktop.default-applications.terminal" = {
+      exec = "blackbox";
+      # exec-arg = "-w";
     };
 
     ### Keybindings
@@ -119,7 +132,7 @@ in
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       binding = "<Alt>e"; # "<Super>e";
       name = "File Manager";
-      command = "nautilus -w ~";
+      command = "nautilus -w /home/${username}";
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
       binding = "<Alt>Return"; # "<Super>t";
@@ -168,6 +181,8 @@ in
       move-to-workspace-right = [ "<Alt><Shift>Right" "<Alt><Shift>Page_Down" ];
       move-to-workspace-up = [ "<Alt><Shift>Up" ];
 
+      close = [ "<Alt>q" ];
+
       # Disable maximise/unmaximise because tiling-assistant extension handles it
       maximize = mkEmptyArray type.string;
       unmaximize = mkEmptyArray type.string;
@@ -175,7 +190,7 @@ in
 
     ### Workspace Preferences
     "org/gnome/desktop/wm/preferences" = {
-      audible-bell = false;
+      audible-bell = true;
       # button-layout = "close,minimize,maximize";
       titlebar-font = "Work Sans Semi-Bold 11";
     };
@@ -184,7 +199,7 @@ in
     "org/gnome/mutter" = {
       dynamic-workspaces = false;
       workspaces-only-on-primary = false;
-      # edge-tiling = false; # Disable Mutter edge-tiling because tiling-assistant extension handles it
+      edge-tiling = false; # Disable Mutter edge-tiling because tiling-assistant extension handles it
     };
     "org/gnome/mutter/keybindings" = {
       # Disable Mutter toggle-tiled because tiling-assistant extension handles it
@@ -207,7 +222,14 @@ in
 
     ### Nautilus
     "org/gnome/nautilus/preferences" = {
-      default-folder-viewer = "list-view";
+      # default-folder-viewer = "list-view";
+      default-folder-viewer = "icon-view";
+    };
+
+    # Location
+    "org/gnome/system/location" = {
+      enabled = true;
+      max-accuracy-level = "exact";
     };
 
     ### GTK
@@ -270,6 +292,7 @@ in
       favorite-apps = [
         "firefox.desktop"
         "code.desktop"
+        "obsidian.desktop"
         "com.raggesilver.BlackBox.desktop"
         "org.gnome.Nautilus.desktop"
       ];

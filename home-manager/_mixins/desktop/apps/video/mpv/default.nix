@@ -204,7 +204,7 @@ in
           sub-use-margins = "no";
           sub-scale-by-window = "yes";
           sub-scale-with-window = "no";
-          sub-font-size = 36;
+          sub-font-size = 42;
           # sub-color = "#FFFFFFFF";
           sub-color = "#F9F5E3";
           sub-border-color = "#151F30"; #"#E3371E"; #"#7282D9";
@@ -386,9 +386,24 @@ in
 
           u = "revert-seek";
 
-          "Ctrl++" = "add sub-scale 0.1";
-          "Ctrl+-" = "add sub-scale -0.1";
-          "Ctrl+=" = "set sub-scale 0";
+          # Font Size
+          KP7 = "add sub-scale -0.05";
+          KP8 = "set sub-scale 1.0";
+          KP9 = "add sub-scale +0.05";
+          "Ctrl++" = "add sub-scale 0.5";
+          "Ctrl+-" = "add sub-scale -0.5";
+          "Shift+=" = "set sub-scale 0";
+          # "CTRL++" = "add sub-font-size 1";
+          # "CTRL+-" = "add sub-font-size -1";
+
+          # Font cycle
+          "Ctrl+s" =
+            let
+              fontA = "Dubai";
+              fontB = "Fira Sans Condensed Italic";
+            in
+            # "cycle-values sub-font ' ${fontA} ' ' ${fontB} ' ' fontC ' [...]";
+            "cycle-values sub-font ' ${fontA} ' ' ${fontB} '";
 
           q = "quit";
           Q = "quit-watch-later";

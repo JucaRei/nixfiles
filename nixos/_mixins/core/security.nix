@@ -117,6 +117,23 @@ in
           polkit.addRule(function(action, subject) {
             polkit.log("user " +  subject.user + " is attempting action " + action.id + " from PID " + subject.pid);
           });
+        '' + ''
+          polkit.addRule(function(action, subject) {
+            if (
+              subject.isInGroup("users")
+                && (
+                  action.id == "org.freedesktop.login1.reboot" ||
+                  action.id == "org.freedesktop.login1.reboot-multiple-sessions" ||
+                  action.id == "org.freedesktop.login1.power-off" ||
+                  action.id == "org.freedesktop.login1.power-off-multiple-sessions" ||
+                  action.id == "org.freedesktop.login1.suspend" ||
+                  action.id == "org.freedesktop.login1.suspend-multiple-sessions"
+                )
+              )
+            {
+              return polkit.Result.YES;
+            }
+          })
         '';
       };
 
