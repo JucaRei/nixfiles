@@ -33,7 +33,7 @@ in
       NIXOS_OZONE_WL = "1";
       GTK_USE_PORTAL = "1";
       WLR_RENDERER_ALLOW_SOFTWARE = "1";
-      ELECTRON_OZONE_PLATFORM_HINT = "auto";
+      # ELECTRON_OZONE_PLATFORM_HINT = "auto";
     };
   };
 }

@@ -162,11 +162,11 @@ in
       switch-to-workspace-6 = [ "<Alt>6" ];
       switch-to-workspace-7 = [ "<Alt>7" ];
       switch-to-workspace-8 = [ "<Alt>8" ];
-      switch-to-workspace-down = [ "<Alt>Down" ];
+      switch-to-workspace-down = [ "<Ctrl><Alt>Down" ];
       switch-to-workspace-last = [ "<Alt>End" "<Super>End" ];
       switch-to-workspace-left = [ "<Alt>Left" "<Super>Page_Up" ];
       switch-to-workspace-right = [ "<Alt>Right" "<Super>Page_Down" ];
-      switch-to-workspace-up = [ "<Alt>Up" ];
+      switch-to-workspace-up = [ "<Ctrl><Alt>Up" ];
       move-to-workspace-1 = [ "<Alt><Shift>1" ];
       move-to-workspace-2 = [ "<Alt><Shift>2" ];
       move-to-workspace-3 = [ "<Alt><Shift>3" ];

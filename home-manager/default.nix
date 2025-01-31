@@ -63,8 +63,7 @@ in
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
       EDITOR = "micro";
-      # MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
-      # MANROFFOPT = "-c";
+
       MICRO_TRUECOLOR = "1";
       PAGER = "bat";
       SYSTEMD_EDITOR = "micro";
@@ -101,6 +100,7 @@ in
     settings = {
       experimental-features = "flakes nix-command";
       trusted-users = [ "root" "${username}" ];
+      allowed-users = [ "root" "${username}" ];
       warn-dirty = false;
       allow-dirty = true;
     };
@@ -178,13 +178,24 @@ in
       # obs_secrets = { };
       # ssh_config.path = "${config.home.homeDirectory}/.ssh/config";
       ssh_key.path = "${config.home.homeDirectory}/.ssh/machines/personal/nitro";
-      # ssh_pub.path = "${config.home.homeDirectory}/.ssh/machines/personal/nitro.pub";
+      ssh_key_pub.path = "${config.home.homeDirectory}/.ssh/machines/personal/nitro.pub";
       # ssh_semaphore_key.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore";
       # ssh_semaphore_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore.pub";
       # transifex.path = "${config.home.homeDirectory}/.transifexrc";
     };
   };
 
-  # Nicely reload system units when changing configs
-  systemd.user.startServices = mkIf isLinux "sd-switch";
+  systemd = {
+    user = {
+      # Nicely reload system units when changing configs
+      startServices = mkIf isLinux "sd-switch";
+
+      # Create age keys directory for SOPS
+      tmpfiles = mkIf isLinux {
+        rules = [
+          "d ${config.home.homeDirectory}/.config/sops/age 0755 ${username} users - -"
+        ];
+      };
+    };
+  };
 }

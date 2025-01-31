@@ -34,6 +34,7 @@ in
         gnome-console
         gnome-terminal
 
+        evince
         simple-scan
       ];
 

@@ -69,7 +69,7 @@ in
 
       file = mkIf (config.features.isWayland == true) {
         ".config/code-flags.conf".text = ''
-          --enable-features=UseOzonePlatform
+          # --enable-features=UseOzonePlatform
           --ozone-platform=wayland
           --enable-features=WaylandWindowDecorations
         '';

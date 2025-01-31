@@ -7,7 +7,7 @@ in
     home.packages = with pkgs ; [
       cloneit
       typora
-      unstable.obsidian
+      # unstable.obsidian
       deluge-gtk
       remmina
       nixpkgs-fmt
@@ -56,6 +56,7 @@ in
         packages = [
           # { appId = "com.rtosta.zapzap"; origin = "flathub"; }
           "com.rtosta.zapzap"
+          "md.obsidian.Obsidian"
         ];
 
         update.auto = {

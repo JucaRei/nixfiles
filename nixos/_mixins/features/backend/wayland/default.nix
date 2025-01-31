@@ -1,7 +1,17 @@
-{ lib, config, pkgs, ... }:
+{ lib, config, pkgs, desktop, ... }:
 let
   inherit (lib) mkIf mkForce mkDefault;
   device = config.features.graphics;
+
+  # nvidia-card = "$(readlink -f /dev/dri/by-path/pci-0000:01:00.0-card)";
+  nvidia-card = "/dev/dri/card1";
+  gnome-gpu-rule = pkgs.writeTextFile {
+    name = "61-mutter-primary-gpu.rules";
+    text = ''
+      ENV{DEVNAME}=="${nvidia-card}", TAG+="mutter-device-preferred-primary"
+    '';
+    destination = "/etc/udev/rules.d/61-mutter-primary-gpu.rules";
+  };
 in
 {
   config = mkIf (device.backend == "wayland") {
@@ -31,13 +41,13 @@ in
         # (despite it being blacklisted)
         __GLX_VENDOR_LIBRARY_NAME =
           let
-            isNvidia = device.gpu == "hybrid-nvidia" || device.gpu == "nvidia";
+            isNvidia = (device.gpu == "hybrid-nvidia") || (device.gpu == "nvidia");
           in
           mkIf (isNvidia) "nvidia";
 
         VDPAU_DRIVER =
           let
-            isNvidia = device.gpu == "hybrid-nvidia" || device.gpu == "nvidia";
+            isNvidia = (device.gpu == "hybrid-nvidia") || (device.gpu == "nvidia");
           in
           mkIf (isNvidia) "nvidia";
 
@@ -55,7 +65,7 @@ in
         # https://github.com/elFarto/nvidia-vaapi-driver/issues/213#issuecomment-1585584038
         NVD_BACKEND =
           let
-            isNvidia = device.gpu == "hybrid-nvidia" || device.gpu == "nvidia";
+            isNvidia = (device.gpu == "hybrid-nvidia") || (device.gpu == "nvidia");
           in
           mkIf isNvidia "direct";
 
@@ -82,8 +92,6 @@ in
         __EGL_VENDOR_LIBRARY_FILENAMES = (mkIf (device.gpu == "hybrid-nvidia")) "${config.hardware.nvidia.package}/share/glvnd/egl_vendor.d/10_nvidia.json:${config.hardware.graphics.package}/share/glvnd/egl_vendor.d/50_mesa.json";
       };
 
-
-
       pathsToLink = [ "/libexec" ];
 
       shellAliases = {
@@ -91,5 +99,8 @@ in
       };
     };
 
+    services = mkIf (desktop == "gnome" && config.features.graphics.gpu == "hybrid-nvidia") {
+      udev.packages = [ gnome-gpu-rule ];
+    };
   };
 }

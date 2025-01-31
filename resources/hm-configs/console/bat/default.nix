@@ -72,5 +72,12 @@ in
     #     ${pkgs.bat}/bin/bat cache --build
     #   '';
     # };
+    home = {
+      sessionVariables = {
+        # MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
+        MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+        MANROFFOPT = "-c";
+      };
+    };
   };
 }

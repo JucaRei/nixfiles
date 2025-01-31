@@ -56,7 +56,8 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nixos-needsreboot = {
-      url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.3.tar.gz";
+      # url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
+      url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.3.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -140,7 +141,7 @@
         "juca@vader" = helper.mkHome { hostname = "vader"; desktop = "hyprland"; };
         "juca@shaa" = helper.mkHome { hostname = "shaa"; desktop = "hyprland"; };
         "juca@tanis" = helper.mkHome { hostname = "tanis"; desktop = "hyprland"; };
-        "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "gnome"; };
+        "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "hyprland"; };
         "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
         # palpatine/sidious are dual boot hosts, WSL2/Ubuntu and NixOS respectively.
         "juca@palpatine" = helper.mkHome { hostname = "palpatine"; };
@@ -179,7 +180,7 @@
         tanis = helper.mkNixos { hostname = "tanis"; desktop = "hyprland"; };
         sidious = helper.mkNixos { hostname = "sidious"; desktop = "gnome"; };
         rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-        nitro = helper.mkNixos { hostname = "nitro"; desktop = "gnome"; };
+        nitro = helper.mkNixos { hostname = "nitro"; desktop = "hyprland"; };
 
         # Servers
         soyoz = helper.mkNixos { hostname = "soyoz"; };

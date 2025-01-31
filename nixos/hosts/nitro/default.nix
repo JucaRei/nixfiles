@@ -112,6 +112,21 @@ in
     services = {
       nfs.server.enable = true;
 
+      ollama = {
+        enable = true;
+        acceleration = "cuda";
+        loadModels = [
+          "mxbai-embed-large:335m"
+          "nomic-embed-text:latest"
+          "codestral:22b"
+          "deepseek-r1:1.5b"
+          "qwen2.5-coder:7b" #128k
+        ];
+      };
+      open-webui = {
+        enable = true;
+      };
+
       # scx.enable = true; # by default uses scx_rustland scheduler
 
       xserver = {

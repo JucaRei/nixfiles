@@ -55,9 +55,7 @@ in
       "/virtualmachines/nixos-pantheon/.keep" = mkIf (!isLima) { text = ""; };
       "/workspace/.keep" = mkIf (!isLima) { text = ""; };
       "/.dotfiles/.keep".text = "";
-      # ".ssh/allowed_signers".text = ''
-      #   juca@wimpress.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAywaYwPN4LVbPqkc+kUc7ZVazPBDy4LCAud5iGJdr7g9CwLYoudNjXt/98Oam5lK7ai6QPItK6ECj5+33x/iFpWb3Urr9SqMc/tH5dU1b9N/9yWRhE2WnfcvuI0ms6AXma8QGp1pj/DoLryPVQgXvQlglHaDIL1qdRWFqXUO2u30X5tWtDdOoR02UyAtYBttou4K0rG7LF9rRaoLYP9iCBLxkMJbCIznPD/pIYa6Fl8V8/OVsxYiFy7l5U0RZ7gkzJv8iNz+GG8vw2NX4oIJfAR4oIk3INUvYrKvI2NSMSw5sry+z818fD1hK+soYLQ4VZ4hHRHcf4WV4EeVa5ARxdw== Martin Wimpress
-      # '';
+      # ".ssh/allowed_signers".text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINrd5yF/0aMECHqkM1oNrOX5QBQ4sYbkiNR15XzBGkUU Reinaldo P Jr";
 
       # List home-manager packages
       ".config/home-manager/installed-packages.txt" = {
@@ -92,7 +90,7 @@ in
     #   userEmail = "reinaldo800@gmail.com";
     #   userName = "Reinaldo P Jr";
     #   signing = {
-    #     key = "${config.home.homeDirectory}/.ssh/id_rsa";
+    #     key = "${config.home.homeDirectory}/.ssh/machines/personal/nitro";
     #     signByDefault = true;
     #   };
     # };
@@ -100,9 +98,7 @@ in
 
   systemd.user.tmpfiles.rules = mkIf isLinux [
     "d ${config.home.homeDirectory}/workspace 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/virtualmachines/windows 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/virtualmachines/linux 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/virtualmachines/mac 0755 ${username} users - -"
+
     "d ${config.home.homeDirectory}/workspace/docker 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/workspace/lab 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Videos/animes/movies 0755 ${username} users - -"
@@ -118,6 +114,9 @@ in
     "d ${config.home.homeDirectory}/Music/downloads 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Music/records 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/games 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/virtualmachines/windows 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/virtualmachines/linux 0755 ${username} users - -"
+    "d ${config.home.homeDirectory}/virtualmachines/mac 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/virtualmachines/nixos-desktop 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/virtualmachines/nixos-console 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Pictures/family 0755 ${username} users - -"
