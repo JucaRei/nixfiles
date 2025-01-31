@@ -56,7 +56,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     nixos-needsreboot = {
-      url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
+      url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.3.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
