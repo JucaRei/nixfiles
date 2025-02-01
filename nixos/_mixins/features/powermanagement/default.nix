@@ -11,7 +11,7 @@ in
     ./undervolt.nix
   ];
 
-  options.features.powermanagement = {
+  options.features.powerManagement = {
     enable = mkOption {
       type = types.bool;
       default = false;

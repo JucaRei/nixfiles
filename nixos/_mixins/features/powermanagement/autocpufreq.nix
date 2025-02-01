@@ -1,7 +1,7 @@
 { config, lib, ... }:
 let
   inherit (lib) mkIf;
-  cfg = config.features.powermanagement;
+  cfg = config.features.powerManagement;
 
 in
 {

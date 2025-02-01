@@ -2,7 +2,7 @@
 
 let
   inherit (lib) mkIf mkDefault;
-  cfg = config.features.powermanagement.undervolt;
+  cfg = config.features.powerManagement.undervolt;
   undervolt =
     if (config.core.cpu.vendor == "intel")
     then true

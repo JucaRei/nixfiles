@@ -1,7 +1,7 @@
 { config, lib, ... }:
 
 let
-  powerOptions = config.features.powermanagement;
+  powerOptions = config.features.powerManagement;
 in
 with lib;
 

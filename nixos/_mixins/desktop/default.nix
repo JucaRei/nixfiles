@@ -17,7 +17,7 @@ in
         autosuspend = true;
       };
 
-      powermanagement = {
+      powerManagement = {
         enable = true;
         powerProfiles = mkOptionDefault "power-profiles-daemon";
       };

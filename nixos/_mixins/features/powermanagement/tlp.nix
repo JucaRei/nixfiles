@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.features.powermanagement;
+  cfg = config.features.powerManagement;
   MHz = x: x * 1000;
 in
 with lib;

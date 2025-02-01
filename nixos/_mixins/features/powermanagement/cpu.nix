@@ -2,7 +2,7 @@
 
 let
   inherit (lib) mkIf;
-  cfg = config.features.powermanagement;
+  cfg = config.features.powerManagement;
 in
 {
 
@@ -19,8 +19,8 @@ in
     ];
 
     services = {
-      auto-cpufreq.enable = !config.features.powermanagement.tlp.enable;
-      power-profiles-daemon.enable = !config.features.powermanagement.tlp.enable;
+      auto-cpufreq.enable = !config.features.powerManagement.tlp.enable;
+      power-profiles-daemon.enable = !config.features.powerManagement.tlp.enable;
     };
   };
 }
