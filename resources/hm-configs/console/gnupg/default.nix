@@ -1,4 +1,8 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, lib, ... }:
+let
+  inherit (lib) mkDefault;
+in
+{
   programs = {
     gpg = {
       enable = true;
@@ -12,7 +16,7 @@
     gpg-agent = {
       enable = true;
       defaultCacheTtl = 3600;
-      pinentryPackage = pkgs.pinentry-curses;
+      pinentryPackage = mkDefault pkgs.pinentry-curses;
       enableSshSupport = true;
       enableExtraSocket = true;
     };

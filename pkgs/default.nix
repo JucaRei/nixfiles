@@ -41,6 +41,8 @@ pkgs: {
   nixos-tweaker = pkgs.callPackage ./tools/nixos-tweaker { };
   docker-compose-check = pkgs.callPackage ./tools/docker-compose-check { };
   nixpkgs-plus = pkgs.callPackage ./tools/nixfmt-plus { };
+  createScript = pkgs.callPackage ./tools/createScript { };
+  speedtest-custom = pkgs.callPackage ./tools/speedtest-custom { };
 
   # Browser front-end
   headscale-ui = pkgs.callPackage ./tools/headscale-ui { };

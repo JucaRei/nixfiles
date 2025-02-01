@@ -33,6 +33,13 @@ in
 
   config = mkIf cfg.enable {
     security = {
+
+      # User namespaces are required for sandboxing. Better than nothing imo.
+      allowUserNamespaces = true;
+
+      # Disable unprivileged user namespaces, unless containers are enabled
+      unprivilegedUsernsClone = config.features.container-manager.enable;
+
       sudo = {
         enable = if (cfg.superUser == "doas") then false else true;
 
@@ -44,9 +51,11 @@ in
           # + "Defaults env_reset,timestamp_timeout=-1"
           # + "Defaults:insults,root,%wheel timestamp_timeout=30"
           #+ "Defaults editor=${pkgs.neovim}/bin/nvim";
+          # + "Defaults env_keep += EDITOR PATH\n"
           + "Defaults timestamp_type=global\n"  # share sudo session between terminal sessions
           + "Defaults timestamp_timeout=20\n"  # set sudo timeout from 10 to 20 minutes
           + "Defaults pwfeedback\n"  # display stars when typing characters
+          + "Defaults passprompt=[31m sudo: password for %p@%h, running as %U:[0m "
           + "Defaults insults\n"
           + "Defaults:root,%wheel env_keep+=EDITOR" # Enables sudo-prepended programs like `systemctl edit ...` to use the specified default editor https://github.com/NixOS/nixpkgs/issues/276778
         ;
@@ -140,12 +149,14 @@ in
       pam = mkIf (isInstall) {
         # Increase open file limit for sudoers
         # fix "too many files open" errors while writing a lot of data at once
-        loginLimits = [{
-          domain = "@wheel";
-          item = "nofile";
-          type = "soft";
-          value = "524288";
-        }];
+        loginLimits = [
+          {
+            domain = "@wheel";
+            item = "nofile";
+            type = "soft";
+            value = "524288";
+          }
+        ];
 
         services =
           let
@@ -179,6 +190,12 @@ in
           };
       };
     };
+
+    virtualisation = {
+      #  flush the L1 data cache before entering guests
+      flushL1DataCache = "always";
+    };
+
     environment = {
       # systemPackages = mkIf (cfg.superUser == "doas") [
       # (pkgs.writeScriptBin "sudo" ''exec doas "$@"'')

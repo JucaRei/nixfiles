@@ -12,6 +12,15 @@ in
     features = {
       bluetooth.enable = true;
       audio.manager = mkDefault "pipewire";
+      auto-cpufreq = {
+        enable = true;
+        autosuspend = true;
+      };
+
+      powermanagement = {
+        enable = true;
+        powerProfiles = mkOptionDefault "power-profiles-daemon";
+      };
     };
 
     desktop = {

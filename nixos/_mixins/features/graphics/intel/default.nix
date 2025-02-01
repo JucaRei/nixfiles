@@ -5,11 +5,11 @@ let
 in
 {
   # config = mkIf (device.gpu == "intel" || device.gpu == "hybrid-nv") {
-  config = mkIf (device.gpu == "intel" || device.gpu == "hybrid-nvidia") {
+  config = mkIf ((device.gpu == "intel") || (device.gpu == "hybrid-nvidia")) {
 
     boot = {
-      initrd.kernelModules = mkIf (device.gpu == "intel") [ "i915" ];
-      kernelParams = mkIf (device.gpu == "intel") [
+      initrd.kernelModules = mkIf ((device.gpu == "intel") || (device.gpu == "hybrid-nvidia")) [ "i915" ];
+      kernelParams = mkIf ((device.gpu == "intel") || (device.gpu == "hybrid-nvidia")) [
         "enable_gvt=1"
         "i915.fastboot=1"
       ];
@@ -33,6 +33,9 @@ in
         # intel-compute-runtime
         # intel-media-driver
         # libvdpau-va-gl
+        vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
+        # onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
+        # intel-media-sdk   # for older GPUs
         vaapiIntel
         mesa
       ]);

@@ -131,11 +131,11 @@ in
   };
 
   services = {
-    gpg-agent = mkIf isLinux {
-      enable = isLinux;
-      enableSshSupport = true;
-      pinentryPackage = pkgs.pinentry-curses;
-    };
+    # gpg-agent = mkIf isLinux {
+    #   enable = isLinux;
+    #   enableSshSupport = true;
+    #   pinentryPackage = pkgs.pinentry-curses;
+    # };
     # pueue = {
     #   enable = isLinux;
     #   # https://github.com/Nukesor/pueue/wiki/Configuration

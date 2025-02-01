@@ -21,7 +21,7 @@ let
 in
 {
 
-  config = mkIf (device.gpu == "nvidia" || device.gpu == "hybrid-nvidia") {
+  config = mkIf ((device.gpu == "nvidia") || (device.gpu == "hybrid-nvidia")) {
     nixpkgs.config.allowUnfree = true;
     nixpkgs.config.nvidia.acceptLicense = true;
 

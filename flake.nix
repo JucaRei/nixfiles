@@ -142,6 +142,7 @@
         "juca@shaa" = helper.mkHome { hostname = "shaa"; desktop = "hyprland"; };
         "juca@tanis" = helper.mkHome { hostname = "tanis"; desktop = "hyprland"; };
         "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "hyprland"; };
+        "juca@nitrowin" = helper.mkHome { hostname = "nitro"; desktop = null; };
         "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
         # palpatine/sidious are dual boot hosts, WSL2/Ubuntu and NixOS respectively.
         "juca@palpatine" = helper.mkHome { hostname = "palpatine"; };
