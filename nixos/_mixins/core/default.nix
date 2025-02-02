@@ -11,7 +11,7 @@ _: {
   ];
   boot = {
     kernel.sysctl = {
-      "vm.dirty_ratio" = 6; # sync disk when buffer reach 6% of memory
+      "vm.dirty_ratio" = 10; # sync disk when buffer reach 6% of memory
     };
   };
 }

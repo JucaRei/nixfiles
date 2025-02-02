@@ -1,9 +1,15 @@
-{ config, lib, pkgs, username, ... }:
+{ config, lib, pkgs, ... }:
 let
   inherit (lib) mkDefault mkIf mkForce;
+  isWayland = if (config.services.xserver.displayManager.sddm.wayland.enable == true) then "wayland" else "x11";
+
 in
 {
   config = {
+    features.graphics = {
+      backend = isWayland;
+    };
+
     programs = {
       kdeconnect = {
         # For GSConnect
@@ -20,7 +26,7 @@ in
             enable = true;
             autoNumlock = true;
             wayland = {
-              enable = true;
+              enable = mkDefault true;
             };
             settings = {
               Theme = {

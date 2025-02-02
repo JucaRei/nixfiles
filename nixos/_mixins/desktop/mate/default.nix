@@ -1,9 +1,11 @@
 { lib, isInstall, pkgs, ... }:
 let
-  inherit (lib) mkIf mkForce;
+  inherit (lib) mkForce;
 in
 {
   config = {
+    features.graphics.backend = "x11";
+
     desktop.apps = {
       celluloid.enable = true;
     };

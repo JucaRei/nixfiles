@@ -1,6 +1,6 @@
-{ config, lib, pkgs, isWorkstation, ... }:
+{ config, lib, pkgs, ... }:
 let
-  inherit (lib) mkIf mkMerge mkDefault mkForce optionals mkOption types;
+  inherit (lib) mkIf mkMerge mkDefault optionals;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta.version;
 
@@ -21,7 +21,7 @@ let
 in
 {
 
-  config = mkIf ((device.gpu == "nvidia") || (device.gpu == "hybrid-nvidia")) {
+  config = mkIf (device.gpu == "nvidia" || device.gpu == "hybrid-nvidia") {
     nixpkgs.config.allowUnfree = true;
     nixpkgs.config.nvidia.acceptLicense = true;
 
@@ -89,18 +89,12 @@ in
         LIBVA_DRIVER_NAME = "nvidia";
       };
 
-      systemPackages = with pkgs; optionals (config.features.graphics.enable) [
-        libva
-        libva-utils
-        vulkan-loader
-        vulkan-tools
-        vulkan-validation-layers
-
-        # (writeScriptBin "nvidia-settings" ''
-        #   #!${stdenv.shell}
-        #   mkdir -p "$XDG_CONFIG_HOME/nvidia"
-        #   exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
-        # '')
+      systemPackages = with pkgs; optionals (config.hardware.nvidia.nvidiaSettings) [
+        (writeScriptBin "nvidia-settings" ''
+          #!${stdenv.shell}
+          mkdir -p "$XDG_CONFIG_HOME/nvidia"
+          exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
+        '')
       ]
       ++ optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ]
       ;

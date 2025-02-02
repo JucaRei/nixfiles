@@ -1,17 +1,23 @@
-{ isInstall, lib, pkgs, ... }:
+{ isInstall, lib, pkgs, config, ... }:
+# let
+# isWayland = if (config.services.xserver.displayManager.gdm.wayland == true) then "wayland" else "x11";
+# in
 {
   config = {
     desktop.features.flatpak-appcenter.enable = true;
+
+    features.graphics.backend = "x11"; # isWayland;
+
     environment = {
-      pantheon.excludePackages = with pkgs;
+      pantheon.excludePackages = with pkgs.pantheon;
         [
-          pantheon.elementary-calculator
-          pantheon.elementary-camera
-          pantheon.elementary-code
-          pantheon.elementary-music
-          pantheon.elementary-photos
-          pantheon.elementary-videos
-          pantheon.epiphany
+          elementary-calculator
+          elementary-camera
+          elementary-code
+          elementary-music
+          elementary-photos
+          elementary-videos
+          epiphany
         ];
 
       # App indicator

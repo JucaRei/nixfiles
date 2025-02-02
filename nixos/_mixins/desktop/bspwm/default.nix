@@ -2,6 +2,8 @@
 
 {
   config = {
+    features.graphics.backend = "x11";
+
     services = {
       # displayManager.defaultSession = "bspwm";
       displayManager.defaultSession = "none+bspwm";

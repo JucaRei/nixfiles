@@ -62,60 +62,14 @@ in
           flavor = "mocha";
           accent = "blue";
         })
-      ] ++ optionals isInstall [
-        notify-desktop
-        xdotool
-        ydotool
-      ] ++ optionals (config.features.graphics.backend == "x11") [ wmctrl ];
+      ];
 
       sessionVariables = {
         "TMPDIR" = "/tmp";
       };
     };
 
-    # programs.dconf.enable = true;
-
     services = {
-      dbus.enable = true;
-
-      usbmuxd.enable = true; # for IOS;
-
-      xserver = {
-        # Disable xterm
-        desktopManager.xterm.enable = false;
-        excludePackages = [ pkgs.xterm ];
-
-        displayManager = {
-          sessionCommands = mkIf (hostname == "nitro") ''
-            ${pkgs.numlockx}/bin/numlockx on
-          '';
-        };
-
-        xkb =
-          if (hostname == "nitro") || (hostname == "scrubber") then {
-            layout = "br";
-            variant = "abnt2";
-            model = "pc105";
-          }
-          else {
-            layout = "us";
-            variant = "mac";
-            model = "pc104";
-          };
-      };
-
-      gvfs = {
-        enable = mkOptionDefault true;
-      };
-
-      gnome.gnome-keyring =
-        let
-          desktops = desktop == "hyprland" || desktop == "mate" || desktop == "xfce4" || desktop == "budgie" || desktop == "bspwm" || desktop == "gnome";
-        in
-        {
-          enable = mkIf desktops true;
-        };
-
       udisks2 = {
         enable = true;
         mountOnMedia = true;

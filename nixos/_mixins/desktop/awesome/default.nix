@@ -1,4 +1,7 @@
 { pkgs, ... }: {
+
+  features.graphics.backend = "x11";
+
   services = {
     xserver = {
       enable = true;

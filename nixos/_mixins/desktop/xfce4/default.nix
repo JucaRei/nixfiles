@@ -1,8 +1,9 @@
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, ... }:
 let
   inherit (lib) mkDefault;
 in
 {
+  features.graphics.backend = "x11";
   environment = {
     xfce.excludePackages = with pkgs.xfce // pkgs; [
       amberol

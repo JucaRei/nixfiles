@@ -77,6 +77,7 @@ in
       ];
 
       shellAliases = {
+        nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
         store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
         keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
       };
@@ -344,6 +345,18 @@ in
             fi
           '';
         };
+
+        # Got this thanks to tiredofit
+        report-changes = ''
+          PATH=$PATH:${lib.makeBinPath [ pkgs.nvd pkgs.nix ]}
+          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
+          mkdir -p /var/log/activations
+          _nvddate=$(date +'%Y%m%d%H%M%S')
+          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
+          if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
+            rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
+          fi
+        '';
 
         nixos-needsreboot = mkIf isInstall {
           supportsDryActivation = true;

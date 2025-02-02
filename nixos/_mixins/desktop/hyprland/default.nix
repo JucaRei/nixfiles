@@ -4,6 +4,11 @@ let
 in
 {
   imports = [ ./greetd.nix ];
+
+  features.graphics = {
+    backend = "wayland";
+  };
+
   environment = {
     # Enable HEIC image previews in Nautilus
     pathsToLink = [ "share/thumbnailers" ];

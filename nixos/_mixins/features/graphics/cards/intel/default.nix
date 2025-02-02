@@ -1,15 +1,15 @@
-{ config, lib, pkgs, hostname, ... }:
+{ config, lib, pkgs, ... }:
 let
   inherit (lib) mkIf;
   device = config.features.graphics;
 in
 {
   # config = mkIf (device.gpu == "intel" || device.gpu == "hybrid-nv") {
-  config = mkIf ((device.gpu == "intel") || (device.gpu == "hybrid-nvidia")) {
+  config = mkIf (device.gpu == "intel" || device.gpu == "hybrid-nvidia") {
 
     boot = {
-      initrd.kernelModules = mkIf ((device.gpu == "intel") || (device.gpu == "hybrid-nvidia")) [ "i915" ];
-      kernelParams = mkIf ((device.gpu == "intel") || (device.gpu == "hybrid-nvidia")) [
+      initrd.kernelModules = [ "i915" ];
+      kernelParams = [
         "enable_gvt=1"
         "i915.fastboot=1"
       ];
@@ -17,10 +17,11 @@ in
     };
     services.xserver.videoDrivers =
       if (device.gpu == "hybrid-nvidia") then [ "modesetting" ]
-      else if (hostname == "anubis") then [
-        "i965"
-      ]
-      else [ "intel" ];
+      # else if (hostname == "anubis") then [
+      #   "i965"
+      # ]
+      # else [ "intel" ];
+      else [ "i965" ];
 
     nixpkgs.config.packageOverrides = pkgs: {
       vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
@@ -33,11 +34,11 @@ in
         # intel-compute-runtime
         # intel-media-driver
         # libvdpau-va-gl
-        vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
+        # vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
         # onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
         # intel-media-sdk   # for older GPUs
         vaapiIntel
-        mesa
+        vaapiVdpau
       ]);
     });
 
@@ -50,7 +51,6 @@ in
         intel-media-driver
         libvdpau-va-gl
         vaapiIntel
-        # vaapiVdpau
       ]));
     };
   };
