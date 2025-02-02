@@ -6,11 +6,11 @@ let
 in
 {
 
-  config = mkIf (cfg.powerManagement == "power-profiles-daemon" || cfg.powerManagement == "auto-cpufreq") {
+  config = mkIf (cfg.powerManagement == "power-profiles-daemon") {
     boot = {
       extraModulePackages = with config.boot.kernelPackages; [
-        cpupower
-        pkgs.cpupower-gui
+        # cpupower
+        # pkgs.cpupower-gui
       ];
     };
 
