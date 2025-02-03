@@ -6,7 +6,7 @@ let
 in
 {
 
-  config = mkIf (cfg.powerManagement == "power-profiles-daemon") {
+  config = mkIf (cfg.powerProfiles == "power-profiles-daemon") {
     boot = {
       extraModulePackages = with config.boot.kernelPackages; [
         # cpupower
@@ -19,8 +19,7 @@ in
     ];
 
     services = {
-      auto-cpufreq.enable = !config.features.powerManagement.tlp.enable;
-      power-profiles-daemon.enable = !config.features.powerManagement.tlp.enable;
+      power-profiles-daemon.enable = if (config.features.powerManagement.powerProfiles != "tlp" || "auto-cpufreq") then true else false;
     };
   };
 }

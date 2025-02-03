@@ -1,6 +1,6 @@
 { lib, config, pkgs, desktop, hostname, ... }:
 let
-  inherit (lib) mkIf mkDefault;
+  inherit (lib) mkIf mkDefault optionals;
   graphics = config.features.graphics;
 in
 {
@@ -42,13 +42,16 @@ in
         excludePackages = [ pkgs.xterm ];
 
         displayManager = {
-          #   sessionCommands = ''
-          #     # GTK2_RC_FILES must be available to the display manager.
-          #     export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
-          #   '';
-          sessionCommands = mkIf (hostname == "nitro") ''
-            ${pkgs.numlockx}/bin/numlockx on
-          '';
+
+          sessionCommands =
+            ''
+              # GTK2_RC_FILES must be available to the display manager.
+              export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc \n"
+            ''
+            +
+            (optionals (hostname == "nitro") ''
+              ${pkgs.numlockx}/bin/numlockx on
+            '');
         };
 
         xkb =

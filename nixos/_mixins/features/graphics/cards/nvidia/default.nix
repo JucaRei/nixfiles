@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkIf mkMerge mkDefault optionals;
+  inherit (lib) mkForce mkIf mkMerge mkDefault optionals;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta.version;
 
@@ -18,6 +18,7 @@ let
     else config.boot.kernelPackages.nvidiaPackages.beta;
 
   device = config.features.graphics;
+  backend = config.features.graphics.backend;
 in
 {
 
@@ -25,10 +26,9 @@ in
     nixpkgs.config.allowUnfree = true;
     nixpkgs.config.nvidia.acceptLicense = true;
 
-    services.xserver = mkMerge [
-      {
-        videoDrivers = [ "nvidia" ];
-      }
+    services.xserver = mkMerge [{
+      videoDrivers = [ "nvidia" ];
+    }
 
       # (mkIf (isWorkstation) {
       #   deviceSection = ''
@@ -43,27 +43,27 @@ in
       #     EndSection
       #   ''; # enables  brightness control
       # })
-      # (mkIf (backend == "x11") {
-      #   # disable DPMS
-      #   monitorSection = ''
-      #     Option "DPMS" "false"
-      #   '';
 
-      #   # disable screen blanking in general
-      #   serverFlagsSection = ''
-      #     Option "StandbyTime" "0"
-      #     Option "SuspendTime" "0"
-      #     Option "OffTime" "0"
-      #     Option "BlankTime" "0"
-      #   '';
-      # })
-    ];
+      (mkIf (backend == "x11") {
+        # disable DPMS
+        monitorSection = ''
+          Option "DPMS" "false"
+        '';
+
+        # disable screen blanking in general
+        serverFlagsSection = ''
+          Option "StandbyTime" "0"
+          Option "SuspendTime" "0"
+          Option "OffTime" "0"
+          Option "BlankTime" "0"
+        '';
+      })];
 
     boot = {
-      blacklistedKernelModules = [
+      blacklistedKernelModules = mkForce [
         "nouveau"
       ];
-      # initrd.kernelModules = [ "nvidia" "nvidia_drm" "nvidia_uvm" "nvidia_modeset" ];
+      initrd.kernelModules = [ "nvidia" "nvidia_drm" "nvidia_uvm" "nvidia_modeset" ];
       kernelParams = [
         "nvidia-drm.modeset=1"
         "nvidia-drm.fbdev=1"
@@ -86,7 +86,7 @@ in
 
     environment = {
       sessionVariables = {
-        LIBVA_DRIVER_NAME = "nvidia";
+        LIBVA_DRIVER_NAME = mkIf (device.gpu == "nvidia") || (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable) "nvidia";
       };
 
       systemPackages = with pkgs; optionals (config.hardware.nvidia.nvidiaSettings) [
@@ -96,7 +96,8 @@ in
           exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
         '')
       ]
-      ++ optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ]
+      ++
+      optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ]
       ;
     };
 
@@ -110,7 +111,7 @@ in
             enableOffloadCmd = if (device.gpu == "hybrid-nvidia") then true else false;
           };
           # Make the Intel iGPU default. The NVIDIA Quadro is for CUDA/NVENC
-          # reverseSync.enable = if (device.gpu == "hybrid-nvidia") then true else false;
+          reverseSync.enable = if (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable) then true else false;
         };
         powerManagement = {
           enable = mkDefault true;
@@ -118,7 +119,7 @@ in
         };
 
         open = mkDefault false;
-        nvidiaSettings = false;
+        nvidiaSettings = mkDefault false;
         nvidiaPersistenced = true;
         forceFullCompositionPipeline = true;
       };

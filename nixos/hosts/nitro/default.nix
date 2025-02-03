@@ -18,7 +18,9 @@ in
     features = {
       graphics = {
         enable = true;
-        gpu = "hybrid-nvidia";
+        # gpu = "hybrid-nvidia";
+        gpu = "intel";
+        acceleration = true;
       };
 
       container-manager = {
@@ -54,7 +56,7 @@ in
 
       # kernelPackages = pkgs.linuxPackages_cachyos;
       # kernelPackages = pkgs.linuxPackages_xanmod_latest;
-      kernelPackages = pkgs.linuxPackages_lqx;
+      # kernelPackages = pkgs.linuxPackages_lqx;
       # kernelPackages = mkForce pkgs.linuxPackages_6_6;
 
       kernelModules = [
@@ -86,8 +88,6 @@ in
           canTouchEfiVariables = mkForce true;
         };
       };
-
-      extraModprobeConfig = "options kvm_intel nested=1";
     };
 
     environment = {
@@ -108,17 +108,17 @@ in
     services = {
       nfs.server.enable = true;
 
-      ollama = {
-        enable = true;
-        acceleration = "cuda";
-        loadModels = [
-          "mxbai-embed-large:335m"
-          "nomic-embed-text:latest"
-          "codestral:22b"
-          "deepseek-r1:1.5b"
-          "qwen2.5-coder:7b" #128k
-        ];
-      };
+      # ollama = {
+      #   enable = false;
+      #   acceleration = "cuda";
+      #   loadModels = [
+      #     "mxbai-embed-large:335m"
+      #     "nomic-embed-text:latest"
+      #     "codestral:22b"
+      #     "deepseek-r1:1.5b"
+      #     "qwen2.5-coder:7b" #128k
+      #   ];
+      # };
       open-webui = {
         enable = true;
       };
@@ -175,10 +175,13 @@ in
         prime = {
           #     offload.enable = lib.mkForce true;
           #     offload.enableOffloadCmd = lib.mkForce true;
-          intelBusId = "PCI:0:2:0";
           nvidiaBusId = "PCI:1:0:0";
+          intelBusId = "PCI:0:2:0";
+
           #     reverseSync.enable = lib.mkForce true;
         };
+
+        #nvidiaSettings = true;
       };
     };
 

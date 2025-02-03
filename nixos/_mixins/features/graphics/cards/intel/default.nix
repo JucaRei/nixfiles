@@ -15,32 +15,34 @@ in
       ];
       kernelModules = [ "kvm-intel" ];
     };
-    services.xserver.videoDrivers =
-      if (device.gpu == "hybrid-nvidia") then [ "modesetting" ]
-      # else if (hostname == "anubis") then [
-      #   "i965"
-      # ]
-      # else [ "intel" ];
-      else [ "i965" ];
+    services.xserver.videoDrivers = [ "modesetting" ];
+
+    # if (device.gpu == "hybrid-nvidia") then
+    #   [ "modesetting" ]
+    # else if (hostname == "anubis") then [
+    #   "i965"
+    # ]
+    # else [ "intel" ];
+    # else [ "i965" ];
 
     nixpkgs.config.packageOverrides = pkgs: {
       vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
     };
 
     hardware.graphics = (mkIf (device.gpu == "hybrid-nvidia") {
-      enable = true;
-      enable32Bit = true;
-      extraPackages = (with pkgs.unstable; [
-        # intel-compute-runtime
-        # intel-media-driver
-        # libvdpau-va-gl
-        # vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
-        # onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
-        # intel-media-sdk   # for older GPUs
-        vaapiIntel
-        vaapiVdpau
-      ]);
-    });
+       enable = true;
+       enable32Bit = true;
+       extraPackages = (with pkgs.unstable; [
+     intel-compute-runtime
+     intel-media-driver
+     libvdpau-va-gl
+     #vpl-gpu-rt # for newer GPUs on NixOS >24.05 or unstable
+     #onevpl-intel-gpu  # for newer GPUs on NixOS <= 24.05
+     #intel-media-sdk   # for older GPUs
+         vaapiIntel
+         vaapiVdpau
+       ]);
+     });
 
     environment = {
       variables = mkIf (config.hardware.graphics.enable && device.gpu != "hybrid-nvidia") {

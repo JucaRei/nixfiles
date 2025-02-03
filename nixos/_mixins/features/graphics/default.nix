@@ -56,13 +56,17 @@ in
       "video"
     ];
 
-    hardware = {
-      graphics = mkIf (config.features.graphics.enable && config.features.graphics.acceleration) {
-        package = pkgs.unstable.mesa.drivers;
-        enable = true;
-        enable32Bit = true;
-      };
-    };
+    #hardware = {
+    #  graphics = mkIf (config.features.graphics.enable && config.features.graphics.acceleration) {
+    #    package = pkgs.unstable.mesa.drivers;
+    #    enable = true;
+    #    enable32Bit = true;
+    #    extraPackages = (mkIf (config.features.graphics.gpu == "hybrid-nvidia") (with pkgs.unstable;[
+    #      vaapiIntel
+    #      vaapiVdpau
+    #    ]));
+    #  };
+    #};
 
     environment = {
       systemPackages = with pkgs; mkIf (config.features.graphics.enable && config.features.graphics.gpu != null) [
