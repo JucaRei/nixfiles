@@ -18,9 +18,9 @@ in
     features = {
       graphics = {
         enable = true;
-        # gpu = "hybrid-nvidia";
-        gpu = "intel";
-        acceleration = true;
+        gpu = "hybrid-nvidia";
+        # gpu = "intel";
+        # acceleration = true;
       };
 
       container-manager = {

@@ -86,19 +86,19 @@ in
 
     environment = {
       sessionVariables = {
-        LIBVA_DRIVER_NAME = mkIf (device.gpu == "nvidia") || (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable) "nvidia";
+        LIBVA_DRIVER_NAME = (mkIf (device.gpu == "nvidia" || (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable)) "nvidia");
       };
 
-      systemPackages = with pkgs; optionals (config.hardware.nvidia.nvidiaSettings) [
-        (writeScriptBin "nvidia-settings" ''
-          #!${stdenv.shell}
-          mkdir -p "$XDG_CONFIG_HOME/nvidia"
-          exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
-        '')
-      ]
-      ++
-      optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ]
-      ;
+      #systemPackages = (optionals (config.hardware.nvidia.nvidiaSettings) with pkgs; [
+      #  (writeScriptBin "nvidia-settings" ''
+      #    #!${stdenv.shell}
+      #    mkdir -p "$XDG_CONFIG_HOME/nvidia"
+      #    exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
+      #  '')
+      #])
+      #++
+      #(optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ])
+      #;
     };
 
     hardware = {
