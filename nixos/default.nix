@@ -135,6 +135,7 @@ in
         })
       ];
 
+      hostPlatform = mkDefault "${platform}";
       # Configure your nixpkgs instance
       config = {
         allowUnfree = true;
@@ -204,8 +205,6 @@ in
         registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
         nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
       };
-
-    nixpkgs.hostPlatform = mkDefault "${platform}";
 
     programs = {
       command-not-found.enable = false;
@@ -283,7 +282,7 @@ in
         "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" # Create dirs for home-manager
         "d /var/lib/private/sops/age 0755 root root"
 
-        "d /var/log/nix 0755 ${username} users"
+        # "d /var/log/nix 0755 ${username} users"
       ];
 
       user.extraConfig = ''
@@ -293,10 +292,10 @@ in
       '';
 
       extraConfig = ''
-        DefaultTimeoutStartSec=8s
+        # DefaultTimeoutStartSec=s
         DefaultTimeoutStopSec=10s
-        DefaultDeviceTimeoutSec=8s
-        DefaultTimeoutAbortSec=10s
+        # DefaultDeviceTimeoutSec=8s
+        # DefaultTimeoutAbortSec=10s
 
         DefaultCPUAccounting=yes
         DefaultMemoryAccounting=yes
@@ -330,43 +329,43 @@ in
       inherit stateVersion;
 
       activationScripts = {
-        diff = {
-          supportsDryActivation = true;
-          text = ''
-            BLUE=$(${pkgs.ncurses}/bin/tput setaf 4)
-            CLEAR=$(${pkgs.ncurses}/bin/tput sgr0)
+        # diff = {
+        #   supportsDryActivation = true;
+        #   text = ''
+        #     BLUE=$(${pkgs.ncurses}/bin/tput setaf 4)
+        #     CLEAR=$(${pkgs.ncurses}/bin/tput sgr0)
 
-            if [[ -e /run/current-system ]]; then
-              echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
-              echo "#"
-              ${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff $(${pkgs.coreutils}/bin/readlink "/run/current-system") "$systemConfig" | tee /var/log/nix/nix-changelog
-              echo "#"
-              echo "$BLUE                $CLEAR"
-            fi
-          '';
-        };
+        #     if [[ -e /run/current-system ]]; then
+        #       echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
+        #       echo "#"
+        #       ${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff $(${pkgs.coreutils}/bin/readlink "/run/current-system") "$systemConfig" | tee /var/log/nix/nix-changelog
+        #       echo "#"
+        #       echo "$BLUE                $CLEAR"
+        #     fi
+        #   '';
+        # };
 
         # Got this thanks to tiredofit
-        report-changes = ''
-          PATH=$PATH:${lib.makeBinPath [ pkgs.nvd pkgs.nix ]}
-          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
-          mkdir -p /var/log/activations
-          _nvddate=$(date +'%Y%m%d%H%M%S')
-          nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
-          if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
-            rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
-          fi
-        '';
+        # report-changes = ''
+        #   PATH=$PATH:${lib.makeBinPath [ pkgs.nvd pkgs.nix ]}
+        #   nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
+        #   mkdir -p /var/log/activations
+        #   _nvddate=$(date +'%Y%m%d%H%M%S')
+        #   nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
+        #   if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
+        #     rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
+        #   fi
+        # '';
 
-        nixos-needsreboot = mkIf isInstall {
+        nixos-needsreboot = lib.mkIf (isInstall) {
           supportsDryActivation = true;
-          text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true ";
+          text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
         };
       };
 
       switch = {
-        enable = false; # Perl
-        enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
+        enable = true; # false; # Perl
+        # enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
       };
     };
   };

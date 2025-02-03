@@ -63,7 +63,12 @@ in
       blacklistedKernelModules = mkForce [
         "nouveau"
       ];
-      initrd.kernelModules = [ "nvidia" "nvidia_drm" "nvidia_uvm" "nvidia_modeset" ];
+      initrd.kernelModules = [
+        "nvidia"
+        "nvidia_drm"
+        "nvidia_uvm"
+        "nvidia_modeset"
+      ];
       kernelParams = [
         "nvidia-drm.modeset=1"
         "nvidia-drm.fbdev=1"

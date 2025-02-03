@@ -20,7 +20,7 @@ in
         enable = true;
         gpu = "hybrid-nvidia";
         # gpu = "intel";
-        # acceleration = true;
+        acceleration = true;
       };
 
       container-manager = {

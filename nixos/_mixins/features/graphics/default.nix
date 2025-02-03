@@ -8,6 +8,7 @@ in
     ./cards/nvidia
     ./cards/nvidia-legacy
     ./cards/intel
+    ./cards/opengl
 
     ./backend/wayland
     ./backend/x11
@@ -56,17 +57,17 @@ in
       "video"
     ];
 
-    #hardware = {
-    #  graphics = mkIf (config.features.graphics.enable && config.features.graphics.acceleration) {
-    #    package = pkgs.unstable.mesa.drivers;
-    #    enable = true;
-    #    enable32Bit = true;
-    #    extraPackages = (mkIf (config.features.graphics.gpu == "hybrid-nvidia") (with pkgs.unstable;[
-    #      vaapiIntel
-    #      vaapiVdpau
-    #    ]));
-    #  };
-    #};
+    hardware = {
+      graphics = mkIf (config.features.graphics.enable && config.features.graphics.acceleration) {
+        # package = pkgs.unstable.mesa.drivers;
+        enable = true;
+        enable32Bit = true;
+        extraPackages = (mkIf (config.features.graphics.gpu == "hybrid-nvidia") (with pkgs.unstable;[
+          vaapiIntel
+          vaapiVdpau
+        ]));
+      };
+    };
 
     environment = {
       systemPackages = with pkgs; mkIf (config.features.graphics.enable && config.features.graphics.gpu != null) [
