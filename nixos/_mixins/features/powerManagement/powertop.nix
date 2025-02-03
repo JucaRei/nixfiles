@@ -5,16 +5,6 @@ let
 in
 with lib;
 {
-  options = {
-    features.powerManagement.powertop = {
-      startup = mkOption {
-        default = isWorkstation;
-        type = with types; bool;
-        description = "Enables powertop daemon on startup";
-      };
-    };
-  };
-
   config = mkIf (cfg.enable && cfg.powerProfiles != "tlp") {
     environment.systemPackages = with pkgs; [
       powertop

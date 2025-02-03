@@ -4,7 +4,7 @@ let
   graphics = config.features.graphics;
 in
 {
-  config = mkIf graphics.enable && (graphics.backend == "x11") {
+  config = mkIf (graphics.enable && graphics.backend == "x11") {
     environment = {
       systemPackages = with pkgs; [
         wmctrl

@@ -113,10 +113,10 @@ in
         };
         GTK = {
           application_prefer_dark_theme = true;
-          cursor_theme_name = "catppuccin-mocha-blue-cursors";
-          font_name = "Work Sans 16";
-          icon_theme_name = "Papirus-Dark";
-          theme_name = "catppuccin-mocha-blue-standard";
+          # cursor_theme_name = "catppuccin-mocha-blue-cursors";
+          # font_name = "Work Sans 16";
+          # icon_theme_name = "Papirus-Dark";
+          # theme_name = "catppuccin-mocha-blue-standard";
         };
         cursorTheme = {
           name = "catppuccin-mocha-blue-cursors";

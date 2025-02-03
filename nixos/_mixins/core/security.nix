@@ -55,7 +55,7 @@ in
           + "Defaults timestamp_type=global\n"  # share sudo session between terminal sessions
           + "Defaults timestamp_timeout=20\n"  # set sudo timeout from 10 to 20 minutes
           + "Defaults pwfeedback\n"  # display stars when typing characters
-          + "Defaults passprompt=[31m sudo: password for %p@%h, running as %U:[0m "
+          # + "Defaults passprompt=[31m sudo: password for %p@%h, running as %U:[0m "
           + "Defaults insults\n"
           + "Defaults:root,%wheel env_keep+=EDITOR" # Enables sudo-prepended programs like `systemctl edit ...` to use the specified default editor https://github.com/NixOS/nixpkgs/issues/276778
         ;
@@ -189,11 +189,11 @@ in
             login.startSession = mkDefault isWorkstation;
           };
       };
-    };
 
-    virtualisation = {
-      #  flush the L1 data cache before entering guests
-      flushL1DataCache = "always";
+      virtualisation = {
+        #  flush the L1 data cache before entering guests
+        flushL1DataCache = "always";
+      };
     };
 
     environment = {

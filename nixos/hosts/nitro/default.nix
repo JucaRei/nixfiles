@@ -28,10 +28,6 @@ in
 
       virtualisation.enable = true;
 
-      autocpufreq = {
-        enable = true; # not working
-        autosuspend = true;
-      };
     };
 
     boot = {

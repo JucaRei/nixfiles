@@ -144,10 +144,11 @@ in
       configPackages = [ pkgs.hyprland ];
       extraPortals = with pkgs; [
         xdg-desktop-portal-hyprland
-        (xdg-desktop-portal-gtk.override {
-          # Use the upstream default so this won't conflict with the xapp portal.
-          buildPortalsInGnome = false;
-        })
+        xdg-desktop-portal-gtk
+        # (xdg-desktop-portal-gtk.override {
+          ## Use the upstream default so this won't conflict with the xapp portal.
+          # buildPortalsInGnome = false;
+        # })
       ];
       config = {
         common = {
