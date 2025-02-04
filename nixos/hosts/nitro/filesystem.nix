@@ -25,17 +25,17 @@ in
 {
   fileSystems = {
     "/" = {
-      device = "/dev/disk/by-label/nixsystem";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
-        "subvol=@rootfs"
+        "subvol=@root"
         "x-gvfs-hide" # hide from filemanager
       ] ++ BTRFS_OPTS2;
     };
 
     "/home" = {
-      device = "/dev/disk/by-label/nixsystem";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
@@ -43,8 +43,8 @@ in
       ] ++ BTRFS_OPTS;
     };
 
-    "/.snapshots" = {
-      device = "/dev/disk/by-label/nixsystem";
+    "/var/snapshots" = {
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
@@ -53,16 +53,16 @@ in
     };
 
     "/var/log" = {
-      device = "/dev/disk/by-label/nixsystem";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
-        "subvol=@logs"
+        "subvol=@log"
       ] ++ BTRFS_OPTS2;
     };
 
     "/var/tmp" = {
-      device = "/dev/disk/by-label/nixsystem";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
@@ -71,7 +71,7 @@ in
     };
 
     "/nix" = {
-      device = "/dev/disk/by-label/nixsystem";
+      device = "/dev/disk/by-label/nixos";
       # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
@@ -95,7 +95,7 @@ in
     };
 
     # "/var/swap" = {
-    #   # device = "/dev/disk/by-label/nixsystem";
+    #   # device = "/dev/disk/by-label/nixos";
     #   device = "/dev/disk/by-uuid/62107246-5335-41d1-a94b-076b7baae356";
     #   fstype = "btrfs";
     #   options = [ "noatime" "ssd_spread" "subvol=@swap" ];
