@@ -119,9 +119,9 @@ in
       #     "qwen2.5-coder:7b" #128k
       #   ];
       # };
-      open-webui = {
-        enable = true;
-      };
+      # open-webui = {
+      #   enable = true;
+      # };
 
       # scx.enable = true; # by default uses scx_rustland scheduler
 

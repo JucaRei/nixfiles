@@ -25,8 +25,8 @@ in
 {
   fileSystems = {
     "/" = {
-      # device = "/dev/disk/by-label/nixsystem";
-      device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
+      device = "/dev/disk/by-label/nixsystem";
+      # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
         "subvol=@rootfs"
@@ -35,8 +35,8 @@ in
     };
 
     "/home" = {
-      # device = "/dev/disk/by-label/nixsystem";
-      device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
+      device = "/dev/disk/by-label/nixsystem";
+      # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
         "subvol=@home"
@@ -44,8 +44,8 @@ in
     };
 
     "/.snapshots" = {
-      # device = "/dev/disk/by-label/nixsystem";
-      device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
+      device = "/dev/disk/by-label/nixsystem";
+      # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
         "subvol=@snapshots"
@@ -53,8 +53,8 @@ in
     };
 
     "/var/log" = {
-      # device = "/dev/disk/by-label/nixsystem";
-      device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
+      device = "/dev/disk/by-label/nixsystem";
+      # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
         "subvol=@logs"
@@ -62,8 +62,8 @@ in
     };
 
     "/var/tmp" = {
-      # device = "/dev/disk/by-label/nixsystem";
-      device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
+      device = "/dev/disk/by-label/nixsystem";
+      # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
         "subvol=@tmp"
@@ -71,8 +71,8 @@ in
     };
 
     "/nix" = {
-      # device = "/dev/disk/by-label/nixsystem";
-      device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
+      device = "/dev/disk/by-label/nixsystem";
+      # device = "/dev/disk/by-uuid/a4a7e1b9-0730-4eec-9ead-e8c9e4355085";
       fsType = "btrfs";
       options = [
         "subvol=@nix"
@@ -80,8 +80,8 @@ in
     };
 
     "/boot" = {
-      # device = "/dev/disk/by-label/BOOT";
-      device = "/dev/disk/by-uuid/BBF5-D456";
+      device = "/dev/disk/by-label/BOOT";
+      # device = "/dev/disk/by-uuid/BBF5-D456";
       fsType = "vfat";
       options = [
         "fmask=0022"
