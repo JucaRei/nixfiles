@@ -158,6 +158,7 @@ in
 
         settings = {
           accept-flake-config = true;
+          extra-sandbox-paths = [ "/bin/sh=${pkgs.bash}/bin/sh" ];
           experimental-features = [
             "flakes"
             "nix-command"
@@ -218,7 +219,7 @@ in
       nh = {
         clean = {
           enable = true;
-          extraArgs = "--keep-since 7d --keep 10";
+          extraArgs = "--keep-since 5d --keep 7";
         };
         enable = true;
         flake = "/home/${username}/.dotfiles/nixfiles";
