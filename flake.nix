@@ -98,10 +98,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0";
-
-    fh.url = "https://flakehub.com/f/DeterminateSystems/fh/0";
-
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
 
     nix-snapd = {
@@ -220,6 +216,7 @@
       # Custom packages and modifications, exported as overlays
       overlays = import ./overlays {
         inherit inputs;
+        nixgl = inputs.nixgl.overlay;
       };
 
       # Custom packages; acessible via 'nix build', 'nix shell', etc

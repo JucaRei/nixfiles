@@ -7,6 +7,7 @@
     , username ? "juca"
     , desktop ? null
     , platform ? "x86_64-linux"
+    , stateVersion ? "24.11"
     ,
     }:
     let
@@ -19,9 +20,7 @@
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
-        inherit
-          inputs
-          outputs
+        inherit inputs outputs
           desktop
           hostname
           platform
@@ -132,19 +131,19 @@
   #     modules = [ ../darwin ];
   #   };
 
-  mkSystemManager = { system ? "x86_64-linux", }:
-    inputs.system-manager.lib.makeSystemConfig {
-      modules = [
-        inputs.nix-system-graphics.systemModules.default
-        {
-          config = {
-            nixpkgs.hostPlatform = system;
-            system-manager.allowAnyDistro = true;
-            system-graphics.enable = true;
-          };
-        }
-      ];
-    };
+  # mkSystemManager = { system ? "x86_64-linux", }:
+  #   inputs.system-manager.lib.makeSystemConfig {
+  #     modules = [
+  #       inputs.nix-system-graphics.systemModules.default
+  #       {
+  #         config = {
+  #           nixpkgs.hostPlatform = system;
+  #           system-manager.allowAnyDistro = true;
+  #           system-graphics.enable = true;
+  #         };
+  #       }
+  #     ];
+  #   };
 
   forAllSystems = inputs.nixpkgs.lib.genAttrs
     [

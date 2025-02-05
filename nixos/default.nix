@@ -14,7 +14,7 @@ in
     chaotic.nixosModules.default
     sops-nix.nixosModules.sops
     (modulesPath + "/installer/scan/not-detected.nix")
-    (./. + "/hosts/${ hostname}")
+    (./. + "/hosts/${hostname}")
     ./users
     ./_mixins/core
     ./_mixins/features
@@ -87,8 +87,6 @@ in
         nix-output-monitor
       ]
       ++ optionals isInstall [
-        inputs.determinate.packages.${platform}.default
-        inputs.fh.packages.${platform}.default
         inputs.nixos-needsreboot.packages.${platform}.default
         nvd
         nvme-cli
@@ -230,7 +228,7 @@ in
     services = {
       hardware.bolt.enable = true;
 
-      userborn.enable = true;
+      # userborn.enable = true;
 
       dbus = {
         packages = optionals isWorkstation (with pkgs ; [ gnome-keyring gcr ]);
@@ -365,8 +363,8 @@ in
       };
 
       switch = {
-        enable = true; # false; # Perl
-        # enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
+        # enable = true; # false; # Perl
+        enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
       };
     };
   };
