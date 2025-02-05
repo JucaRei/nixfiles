@@ -1,10 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -15,10 +9,11 @@ in
   options.${namespace}.virtualisation.kvm = with types; {
     enable = mkBoolOpt false "Whether or not to enable KVM virtualisation.";
     vfioIds = mkOpt (listOf str) [ ] "The hardware IDs to pass through to a virtual machine.";
-    platform = mkOpt (enum [
-      "amd"
-      "intel"
-    ]) "amd" "Which CPU platform the machine is using.";
+    platform = mkOpt
+      (enum [
+        "amd"
+        "intel"
+      ]) "amd" "Which CPU platform the machine is using.";
     # Use `machinectl` and then `machinectl status <name>` to
     # get the unit "*.scope" of the virtual machine.
     machineUnits =
