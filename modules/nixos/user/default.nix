@@ -72,10 +72,6 @@ in
           lclg = "lc -1 --gs";
           lcu = "${pkgs.colorls}/bin/colorls -U";
           lclu = "${pkgs.colorls}/bin/colorls -U -1";
-
-          nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
-          store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
-          keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
         };
       };
     };

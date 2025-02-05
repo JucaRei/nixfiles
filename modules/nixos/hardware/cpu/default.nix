@@ -127,7 +127,6 @@ in
     };
 
     services = {
-      fwupd.enable = true;
       udev.extraRules = ''
         ACTION == "add|change", KERNEL=="[sv]d[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"
       '';

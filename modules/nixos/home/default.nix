@@ -1,11 +1,8 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  inputs,
-  namespace,
-  ...
+{ options
+, config
+, lib
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
