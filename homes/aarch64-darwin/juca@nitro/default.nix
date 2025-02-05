@@ -1,11 +1,10 @@
-{
-  lib,
-  pkgs,
-  config,
-  osConfig ? { },
-  format ? "unknown",
-  namespace,
-  ...
+{ lib
+, pkgs
+, config
+, osConfig ? { }
+, format ? "unknown"
+, namespace
+, ...
 }:
 with lib.${namespace};
 {
@@ -30,5 +29,5 @@ with lib.${namespace};
 
   home.sessionPath = [ "$HOME/bin" ];
 
-  home.stateVersion = "22.11";
+  home.stateVersion = "23.05";
 }

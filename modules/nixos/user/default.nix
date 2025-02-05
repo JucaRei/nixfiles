@@ -1,16 +1,9 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  namespace,
-  ...
-}:
+{ config, pkgs, lib, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
   cfg = config.${namespace}.user;
-  defaultIconFileName = "profile.png";
+  defaultIconFileName = "profile.jpg"; # "profile.png";
   defaultIcon = pkgs.stdenvNoCC.mkDerivation {
     name = "default-icon";
     src = ./. + "/${defaultIconFileName}";
@@ -38,15 +31,14 @@ let
 
         cp ${cfg.icon} "$target/${cfg.icon.fileName}"
       '';
+  ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
 in
 {
   options.${namespace}.user = with types; {
     name = mkOpt str "juca" "The name to use for the user account.";
     fullName = mkOpt str "Reinaldo P Jr" "The full name of the user.";
     email = mkOpt str "reinaldo800@gmail.com" "The email of the user.";
-    initialPassword =
-      mkOpt str "password"
-        "The initial password to use when the user is first created.";
+    initialPassword = mkOpt str "123" "The initial password to use when the user is first created.";
     icon = mkOpt (nullOr package) defaultIcon "The profile picture to use for the user.";
     prompt-init = mkBoolOpt true "Whether or not to show an initial message when opening a new shell.";
     extraGroups = mkOpt (listOf str) [ ] "Groups for the user to be assigned.";
@@ -55,10 +47,7 @@ in
 
   config = {
     environment.systemPackages = with pkgs; [
-      cowsay
-      fortune
-      lolcat
-      excalibur.cowsay-plus
+      duf
       propagatedIcon
     ];
 
@@ -90,59 +79,6 @@ in
           lcu = "${pkgs.colorls}/bin/colorls -U";
           lclu = "${pkgs.colorls}/bin/colorls -U -1";
         };
-
-        programs = {
-          starship = {
-            enable = true;
-            settings = {
-              character = {
-                success_symbol = "[➜](bold green)";
-                error_symbol = "[✗](bold red) ";
-                vicmd_symbol = "[](bold blue) ";
-              };
-            };
-          };
-
-          zsh = {
-            enable = true;
-            enableCompletion = true;
-            syntaxHighlighting.enable = true;
-
-            autosuggestion.enable = true;
-
-            initExtra =
-              ''
-                # Fix an issue with tmux.
-                export KEYTIMEOUT=1
-
-                # Use vim bindings.
-                set -o vi
-
-                # Improved vim bindings.
-                source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
-              ''
-              + optionalString cfg.prompt-init ''
-                ${pkgs.toilet}/bin/toilet -f future "Plus Ultra" --gay
-              '';
-
-            shellAliases = {
-              say = "${pkgs.toilet}/bin/toilet -f pagga";
-            };
-
-            plugins = [
-              {
-                name = "zsh-nix-shell";
-                file = "nix-shell.plugin.zsh";
-                src = pkgs.fetchFromGitHub {
-                  owner = "chisui";
-                  repo = "zsh-nix-shell";
-                  rev = "v0.4.0";
-                  sha256 = "037wz9fqmx0ngcwl9az55fgkipb745rymznxnssr3rx9irb6apzg";
-                };
-              }
-            ];
-          };
-        };
       };
     };
 
@@ -154,7 +90,7 @@ in
       home = "/home/${cfg.name}";
       group = "users";
 
-      shell = pkgs.zsh;
+      shell = pkgs.bash;
 
       # Arbitrary user ID to use for the user. Since I only
       # have a single user on my machines this won't ever collide.
@@ -163,7 +99,16 @@ in
       # system to select).
       uid = 1000;
 
-      extraGroups = [ "steamcmd" ] ++ cfg.extraGroups;
+      extraGroups = [
+        "input"
+        "users"
+        "wheel"
+      ]
+      ++ ifTheyExist [
+        "adm"
+        "steamcmd"
+      ]
+      ++ cfg.extraGroups;
     } // cfg.extraOptions;
   };
 }

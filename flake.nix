@@ -121,6 +121,7 @@
             "electron-25.9.0"
             "electron-27.3.11"
           ];
+          allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
         };
 
         overlays = with inputs; [
@@ -135,6 +136,7 @@
         homes = {
           modules = with inputs; [
             sops-nix.homeManagerModules.sops
+            nur.modules.homeManager.default
           ];
         };
 
@@ -163,9 +165,12 @@
             ];
 
             hosts = {
-              jasper.modules = with inputs; [
-                nixos-hardware.nixosModules.framework-11th-gen-intel
-              ];
+              jasper = {
+                modules = with inputs; [
+                  nixos-hardware.nixosModules.framework-11th-gen-intel
+                ];
+                specialArgs = { };
+              };
             };
           };
         };
