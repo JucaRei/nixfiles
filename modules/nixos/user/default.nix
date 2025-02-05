@@ -41,9 +41,9 @@ let
 in
 {
   options.${namespace}.user = with types; {
-    name = mkOpt str "short" "The name to use for the user account.";
-    fullName = mkOpt str "Jake Hamilton" "The full name of the user.";
-    email = mkOpt str "jake.hamilton@hey.com" "The email of the user.";
+    name = mkOpt str "juca" "The name to use for the user account.";
+    fullName = mkOpt str "Reinaldo P Jr" "The full name of the user.";
+    email = mkOpt str "reinaldo800@gmail.com" "The email of the user.";
     initialPassword =
       mkOpt str "password"
         "The initial password to use when the user is first created.";

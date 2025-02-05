@@ -15,10 +15,10 @@ let
 in
 {
   options.${namespace}.user = {
-    name = mkOpt types.str "short" "The user account.";
+    name = mkOpt types.str "juca" "The user account.";
 
-    fullName = mkOpt types.str "Jake Hamilton" "The full name of the user.";
-    email = mkOpt types.str "jake.hamilton@hey.com" "The email of the user.";
+    fullName = mkOpt types.str "Reinaldo P JR" "The full name of the user.";
+    email = mkOpt types.str "reinaldo800@gmail.com" "The email of the user.";
 
     uid = mkOpt (types.nullOr types.int) 501 "The uid for the user account.";
   };

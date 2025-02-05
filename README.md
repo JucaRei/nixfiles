@@ -37,16 +37,8 @@ nix flake update
 - `nixos/`: Directory containing NixOS configuration modules.
 - `overlays/`: Directory for custom Nixpkgs overlays.
 
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request on GitHub.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ## Acknowledgements
-
+- Heavely inspired by [jakehamilton](https://github.com/jakehamilton/config) config. Thank you!
 - [NixOS](https://nixos.org/)
 - [Snowfall](https://github.com/GTrunSec/snowfall)
 

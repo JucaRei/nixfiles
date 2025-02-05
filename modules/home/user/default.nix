@@ -30,10 +30,10 @@ in
 {
   options.${namespace}.user = {
     enable = mkOpt types.bool true "Whether to configure the user account.";
-    name = mkOpt (types.nullOr types.str) (config.snowfallorg.user.name or "short") "The user account.";
+    name = mkOpt (types.nullOr types.str) (config.snowfallorg.user.name or "juca") "The user account.";
 
-    fullName = mkOpt types.str "Jake Hamilton" "The full name of the user.";
-    email = mkOpt types.str "jake.hamilton@hey.com" "The email of the user.";
+    fullName = mkOpt types.str "Reinaldo P Jr" "The full name of the user.";
+    email = mkOpt types.str "reinaldo800@gmail.com" "The email of the user.";
 
     home = mkOpt (types.nullOr types.str) home-directory "The user's home directory.";
   };
