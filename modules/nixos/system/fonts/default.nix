@@ -1,40 +1,49 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  namespace,
-  ...
-}:
+{ config, pkgs, lib, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
   cfg = config.${namespace}.system.fonts;
 in
 {
-  options.${namespace}.system.fonts = with types; {
-    enable = mkBoolOpt false "Whether or not to manage fonts.";
-    fonts = mkOpt (listOf package) [ ] "Custom font packages to install.";
-  };
+  imports = [ (lib.snowfall.fs.get-file "modules/shared/system/fonts/default.nix") ];
 
   config = mkIf cfg.enable {
-    environment.variables = {
-      # Enable icons in tooling since we have nerdfonts.
-      LOG_ICONS = "true";
+    environment = {
+      systemPackages = with pkgs; [
+        font-manager
+        fontpreview
+        smile
+      ];
     };
 
-    environment.systemPackages = with pkgs; [ font-manager ];
-
-    fonts.packages =
-      with pkgs;
-      [
-        noto-fonts
-        noto-fonts-cjk-sans
-        noto-fonts-cjk-serif
-        noto-fonts-emoji
-        pkgs.excalibur.rf
-        (nerdfonts.override { fonts = [ "Hack" ]; })
+    fonts = {
+      packages = with pkgs; [
+        lexend
+        nerd-fonts.iosevka
       ]
       ++ cfg.fonts;
+
+      enableDefaultPackages = true;
+
+      fontconfig = {
+        enable = true;
+        enableSubpixel = true;
+        antialias = true;
+        hinting.enable = true;
+      };
+
+      fontDir = {
+        enable = true;
+        decompressFonts = false;
+        path = "/usr/share/fonts";
+      };
+
+    };
+
+    systemd = {
+      tmpfiles.rules = [
+        "d /usr/share/fonts 0755 root root"
+      ];
+    };
   };
 }

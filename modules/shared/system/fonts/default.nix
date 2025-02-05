@@ -20,15 +20,14 @@ in
         # comic-neue
         # source-sans
         inter
-        lexend
+        # lexend
 
         # Emojis
-        noto-fonts-color-emoji
-        twemoji-color-font
+        # noto-fonts-color-emoji
+        # twemoji-color-font
 
         # Nerd Fonts
         # nerd-fonts.caskaydia-cove
-        nerd-fonts.iosevka
         nerd-fonts.monaspace
         nerd-fonts.symbols-only
       ] "Custom font packages to install.";
@@ -36,9 +35,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.variables = {
-      # Enable icons in tooling since we have nerdfonts.
-      LOG_ICONS = "true";
+    environment = {
+      variables = {
+        # Enable icons in tooling since we have nerdfonts.
+        LOG_ICONS = "true";
+      };
     };
   };
 }
