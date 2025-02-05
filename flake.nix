@@ -8,9 +8,9 @@
 
     # NixPkgs Unstable
     # unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
+    unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
 
-    nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2305.*";
+    oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2305.*";
 
     # Declarative disk management
     disko.url = "github:nix-community/disko";
@@ -64,7 +64,7 @@
 
     # Snowfall Flake
     flake.url = "github:snowfallorg/flake";
-    flake.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    flake.inputs.nixpkgs.follows = "unstable";
 
     # Snowfall Drift
     drift.url = "github:snowfallorg/drift";
@@ -75,7 +75,7 @@
 
     # Comma
     comma.url = "github:nix-community/comma";
-    comma.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    comma.inputs.nixpkgs.follows = "unstable";
 
     # System Deployment
     deploy-rs.url = "github:serokell/deploy-rs";
@@ -83,7 +83,7 @@
 
     # Run unpatched dynamically compiled binaries
     nix-ld.url = "github:Mic92/nix-ld";
-    nix-ld.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    nix-ld.inputs.nixpkgs.follows = "unstable";
 
     # Binary Cache
     attic = {
@@ -91,7 +91,7 @@
 
       # FIXME: A specific version of Rust is needed right now or
       # the build fails. Re-enable this after some time has passed.
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "unstable";
       inputs.nixpkgs-stable.follows = "nixpkgs";
     };
 
