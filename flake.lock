@@ -7,7 +7,7 @@
         "flake-parts": "flake-parts",
         "nix-github-actions": "nix-github-actions",
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "unstable"
         ],
         "nixpkgs-stable": [
           "nixpkgs"
@@ -55,7 +55,7 @@
         "flake-compat": "flake-compat_2",
         "naersk": "naersk",
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "unstable"
         ],
         "utils": "utils"
       },
@@ -219,7 +219,7 @@
       "inputs": {
         "flake-compat": "flake-compat_5",
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "unstable"
         ],
         "snowfall-lib": "snowfall-lib_2"
       },
@@ -780,7 +780,7 @@
     "nix-ld": {
       "inputs": {
         "nixpkgs": [
-          "nixpkgs-unstable"
+          "unstable"
         ]
       },
       "locked": {
@@ -951,20 +951,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-oldstable": {
-      "locked": {
-        "lastModified": 1704290814,
-        "narHash": "sha256-LWvKHp7kGxk/GEtlrGYV68qIvPHkU9iToomNFGagixU=",
-        "rev": "70bdadeb94ffc8806c0570eb5c2695ad29f0e421",
-        "revCount": 492897,
-        "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/nixos/nixpkgs/0.2305.492897%2Brev-70bdadeb94ffc8806c0570eb5c2695ad29f0e421/018ce318-b896-7d27-b495-cc2cdb39d680/source.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://flakehub.com/f/nixos/nixpkgs/0.2305.%2A"
-      }
-    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1730741070,
@@ -979,20 +965,6 @@
         "ref": "nixos-24.05",
         "repo": "nixpkgs",
         "type": "github"
-      }
-    },
-    "nixpkgs-unstable": {
-      "locked": {
-        "lastModified": 1738553537,
-        "narHash": "sha256-HrrsuYIOl14dreCDUsXQGrWxdiU8LPKxcIo759jUk6Q=",
-        "rev": "2d31b9476b7c6f5b029e595586b0b112a7ad130b",
-        "revCount": 747074,
-        "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/DeterminateSystems/nixpkgs-weekly/0.1.747074%2Brev-2d31b9476b7c6f5b029e595586b0b112a7ad130b/0194cf75-5498-70d5-b3cb-2b719e4d9a2a/source.tar.gz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0"
       }
     },
     "nixpkgs_2": {
@@ -1092,6 +1064,20 @@
         "type": "github"
       }
     },
+    "oldstable": {
+      "locked": {
+        "lastModified": 1704290814,
+        "narHash": "sha256-LWvKHp7kGxk/GEtlrGYV68qIvPHkU9iToomNFGagixU=",
+        "rev": "70bdadeb94ffc8806c0570eb5c2695ad29f0e421",
+        "revCount": 492897,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/nixos/nixpkgs/0.2305.492897%2Brev-70bdadeb94ffc8806c0570eb5c2695ad29f0e421/018ce318-b896-7d27-b495-cc2cdb39d680/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/nixos/nixpkgs/0.2305.%2A"
+      }
+    },
     "pre-commit-hooks-nix": {
       "inputs": {
         "flake-compat": [
@@ -1138,11 +1124,11 @@
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_4",
-        "nixpkgs-oldstable": "nixpkgs-oldstable",
-        "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
+        "oldstable": "oldstable",
         "snowfall-lib": "snowfall-lib_3",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "unstable": "unstable_2"
       }
     },
     "rust-analyzer-src": {
@@ -1387,6 +1373,20 @@
         "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
+      }
+    },
+    "unstable_2": {
+      "locked": {
+        "lastModified": 1738553537,
+        "narHash": "sha256-HrrsuYIOl14dreCDUsXQGrWxdiU8LPKxcIo759jUk6Q=",
+        "rev": "2d31b9476b7c6f5b029e595586b0b112a7ad130b",
+        "revCount": 747074,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/DeterminateSystems/nixpkgs-weekly/0.1.747074%2Brev-2d31b9476b7c6f5b029e595586b0b112a7ad130b/0194cf75-5498-70d5-b3cb-2b719e4d9a2a/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0"
       }
     },
     "utils": {

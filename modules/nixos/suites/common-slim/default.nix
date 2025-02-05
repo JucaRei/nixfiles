@@ -1,5 +1,4 @@
 {
-  options,
   config,
   lib,
   pkgs,
@@ -53,7 +52,11 @@ in
       };
 
       system = {
-        boot = enabled;
+        boot = {
+          enable = true;
+          boottype = "efi";
+          bootmanager = "grub";
+        };
         fonts = enabled;
         locale = enabled;
         time = enabled;

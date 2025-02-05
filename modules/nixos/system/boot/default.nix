@@ -1,7 +1,8 @@
 { config, lib, pkgs, namespace, ... }:
 let
-  inherit (lib) mkIf types mdDoc optionals mkDefault mkOverride mkMerge;
+  inherit (lib) mkIf mdDoc optionals mkDefault mkOverride mkMerge;
   inherit (lib.${namespace}) mkOpt mkBoolOpt;
+  inherit (lib.types) nullOr path enum null;
 
   cfg = config.${namespace}.system.boot;
 
@@ -10,10 +11,10 @@ in
 {
   options.${namespace}.system.boot = {
     enable = mkBoolOpt false (mdDoc "Whether or not to enable booting.");
-    boottype = mkOpt (types.nullOr (types.enum [ "efi" "legacy" "hybrid-legacy" null ])) null (mdDoc "The boot type to use.");
-    bootmanager = mkOpt (types.nullOr (types.enum [ "grub" "systemd-boot" "raspberry" null ])) null (mdDoc "The default bootmanager to use.");
+    boottype = mkOpt (nullOr (enum [ "efi" "legacy" "hybrid-legacy" null ])) null (mdDoc "The boot type to use.");
+    bootmanager = mkOpt (nullOr (enum [ "grub" "systemd-boot" "raspberry" null ])) null (mdDoc "The default bootmanager to use.");
     plymouth = mkBoolOpt false (mdDoc "Whether or not to enable plymouth boot splash.");
-    device = mkOpt types.path null (mdDoc "The device to install the bootloader to.");
+    device = mkOpt path null (mdDoc "The device to install the bootloader to.");
     isDualBoot = mkBoolOpt false (mdDoc "Whether or not to enable dual boot.");
     secureBoot = mkBoolOpt false (mdDoc "Whether or not to enable secure boot.");
     silentBoot = mkBoolOpt false (mdDoc "Whether or not to enable silent boot.");

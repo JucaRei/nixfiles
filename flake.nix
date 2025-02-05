@@ -97,7 +97,8 @@
 
   };
 
-  outputs = inputs:
+  outputs =
+    inputs:
     let
       lib = inputs.snowfall-lib.mkLib {
         inherit inputs;
@@ -113,85 +114,84 @@
         };
       };
     in
-    lib.mkFlake
-      {
-        channels-config = {
-          allowUnfree = true;
-          permittedInsecurePackages = [
-            "electron-25.9.0"
-            "electron-27.3.11"
-          ];
-          allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
-        };
-
-        overlays = with inputs; [
-          nixgl.overlay
-          nur.overlays.default
-          flake.overlays.default
-          drift.overlays.default
-          attic.overlays.default
-          # lix.overlays.default
+    lib.mkFlake {
+      channels-config = {
+        allowUnfree = true;
+        permittedInsecurePackages = [
+          "electron-25.9.0"
+          "electron-27.3.11"
         ];
+        allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
+      };
 
-        homes = {
-          modules = with inputs; [
-            sops-nix.homeManagerModules.sops
-            nur.modules.homeManager.default
+      overlays = with inputs; [
+        nixgl.overlay
+        nur.overlays.default
+        flake.overlays.default
+        drift.overlays.default
+        attic.overlays.default
+        # lix.overlays.default
+      ];
+
+      homes = {
+        modules = with inputs; [
+          sops-nix.homeManagerModules.sops
+          nur.modules.homeManager.default
+        ];
+      };
+
+      systems = {
+
+        modules = {
+
+          nixos = with inputs; [
+            home-manager.nixosModules.home-manager
+            nix-ld.nixosModules.nix-ld
+            disko.nixosModules.disko
+            impermanence.nixosModules.impermanence
+            sops-nix.nixosModules.sops
+            chaotic.nixosModules.default
+            {
+              # manually import overlay
+              chaotic.nyx.overlay.enable = false;
+            }
+            # lix.nixosModules.default
+            # {
+            #   system.tools.nixos-option.enable = false;
+            # }
+            # TODO: Replace excalibur.services.attic now that vault-agent
+            # exists and can force override environment files.
+            # attic.nixosModules.atticd
           ];
-        };
 
-        systems = {
-
-          modules = {
-
-            nixos = with inputs; [
-              home-manager.nixosModules.home-manager
-              nix-ld.nixosModules.nix-ld
-              disko.nixosModules.disko
-              impermanence.nixosModules.impermanence
-              sops-nix.nixosModules.sops
-              chaotic.nixosModules.default
-              {
-                # manually import overlay
-                chaotic.nyx.overlay.enable = false;
-              }
-              # lix.nixosModules.default
-              # {
-              #   system.tools.nixos-option.enable = false;
-              # }
-              # TODO: Replace excalibur.services.attic now that vault-agent
-              # exists and can force override environment files.
-              # attic.nixosModules.atticd
-            ];
-
-            hosts = {
-              jasper = {
-                modules = with inputs; [
-                  nixos-hardware.nixosModules.framework-11th-gen-intel
-                ];
-                specialArgs = { };
-              };
+          hosts = {
+            jasper = {
+              modules = with inputs; [
+                nixos-hardware.nixosModules.framework-11th-gen-intel
+              ];
+              specialArgs = { };
             };
+
+            juca = { };
           };
         };
+      };
 
-        deploy = lib.mkDeploy { inherit (inputs) self; };
+      deploy = lib.mkDeploy { inherit (inputs) self; };
 
-        templates = { };
+      templates = { };
 
-        devShells = {
-          default.description = "Default development environment";
-        };
+      devShells = {
+        default.description = "Default development environment";
+      };
 
-        checks = builtins.mapAttrs
-          (
-            system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
-          )
-          inputs.deploy-rs.lib;
+      checks = builtins.mapAttrs (
+        system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
+      ) inputs.deploy-rs.lib;
 
-        # outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style ./shells/default/default.nix; };
-        outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style; };
-      }
+      # outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style ./shells/default/default.nix; };
+      outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style; };
+    }
     // {
       self = inputs.self;
     };

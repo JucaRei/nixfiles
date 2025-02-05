@@ -1,18 +1,17 @@
 {
-  options,
   config,
   lib,
   pkgs,
   namespace,
   ...
 }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkOptionDefault mkIf;
+  inherit (lib.${namespace}) mkBoolOpt enabled;
   cfg = config.${namespace}.suites.common;
 in
 {
-  options.${namespace}.suites.common = with types; {
+  options.${namespace}.suites.common = {
     enable = mkBoolOpt false "Whether or not to enable common configuration.";
   };
 
@@ -58,7 +57,15 @@ in
       };
 
       system = {
-        boot = enabled;
+        boot = {
+          enable = true;
+          boottype = mkOptionDefault "efi";
+          bootmanager = mkOptionDefault "grub";
+          isDualBoot = mkOptionDefault false;
+          secureBoot = mkOptionDefault false;
+          silentBoot = mkOptionDefault true;
+          plymouth = mkOptionDefault true;
+        };
         fonts = enabled;
         locale = enabled;
         time = enabled;

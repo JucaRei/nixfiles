@@ -1,17 +1,13 @@
-{
-  options,
-  config,
-  lib,
-  namespace,
-  ...
-}:
-with lib;
-with lib.${namespace};
+{ config, lib, namespace, ... }:
 let
+  inherit (lib) mkIf;
+  inherit (lib.${namespace}) mkBoolOpt;
+
   cfg = config.${namespace}.system.xkb;
+  hostname = config.${namespace}.system.modules.hosts;
 in
 {
-  options.${namespace}.system.xkb = with types; {
+  options.${namespace}.system.xkb = with lib.types; {
     enable = mkBoolOpt false "Whether or not to configure xkb.";
   };
 
@@ -19,10 +15,19 @@ in
     console.useXkbConfig = true;
 
     services.xserver = {
-      xkb = {
-        layout = "us";
-        options = "caps:escape";
-      };
+      xkb =
+        if (hostname == "nitro") || (hostname == "scrubber") then
+          {
+            layout = "br";
+            variant = "abnt2";
+            model = "pc105";
+          }
+        else
+          {
+            layout = "us";
+            variant = "mac";
+            model = "pc104";
+          };
     };
   };
 }
