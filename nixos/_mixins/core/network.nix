@@ -232,10 +232,8 @@ in
         # Stuck at system boot
         NetworkManager-wait-online.enable = mkForce false;
         systemd-networkd-wait-online.enable = mkForce false;
-        systemd-udev-settle.enable = mkForce false;
         systemd-networkd.stopIfChanged = mkForce false;
         systemd-resolved.stopIfChanged = mkForce false;
-        systemd-user-sessions.enable = false;
 
         disable-wifi-powersave = mkIf (cfg.powersave) {
           wantedBy = [ "multi-user.target" ];

@@ -53,7 +53,7 @@
       inputs.nixpkgs.follows = "nixpkgs-oldstable";
     };
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
 
     nixos-needsreboot = {
       # url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
@@ -133,26 +133,14 @@
         "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
         "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
-        "juca@phasma" = helper.mkHome { hostname = "phasma"; desktop = "hyprland"; };
-        "juca@vader" = helper.mkHome { hostname = "vader"; desktop = "hyprland"; };
-        "juca@shaa" = helper.mkHome { hostname = "shaa"; desktop = "hyprland"; };
-        "juca@tanis" = helper.mkHome { hostname = "tanis"; desktop = "hyprland"; };
         "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
         "juca@nitrowin" = helper.mkHome { hostname = "nitro"; desktop = null; };
         "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
-        # palpatine/sidious are dual boot hosts, WSL2/Ubuntu and NixOS respectively.
-        "juca@palpatine" = helper.mkHome { hostname = "palpatine"; };
-        "juca@sidious" = helper.mkHome { hostname = "sidious"; desktop = "gnome"; };
         # Servers
-        "juca@revan" = helper.mkHome { hostname = "revan"; };
-        # Steam Deck
-        "deck@steamdeck" = helper.mkHome { hostname = "steamdeck"; username = "deck"; };
         # VMs
         "juca@minimech" = helper.mkHome { hostname = "minimech"; };
         "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "bspwm"; };
         # Apple
-        # "juca@momin" = helper.mkHome { hostname = "momin"; platform = "aarch64-darwin"; desktop = "aqua"; };
-        # "juca@krall" = helper.mkHome { hostname = "krall"; platform = "x86_64-darwin"; desktop = "aqua"; };
       };
       nixosConfigurations = {
         ## Examples ##
@@ -173,9 +161,6 @@
         #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
         #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
-        phasma = helper.mkNixos { hostname = "phasma"; desktop = "hyprland"; };
-        tanis = helper.mkNixos { hostname = "tanis"; desktop = "hyprland"; };
-        sidious = helper.mkNixos { hostname = "sidious"; desktop = "gnome"; };
         rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
         nitro = helper.mkNixos { hostname = "nitro"; username = "juca"; desktop = "xfce4"; };
 
@@ -191,16 +176,14 @@
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
       #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
       # darwinConfigurations = {
-      #   momin = helper.mkDarwin { hostname = "momin"; };
-      #   krall = helper.mkDarwin { hostname = "krall"; platform = "x86_64-darwin"; };
       # };
 
       #  System-Manager configurations
       # nix run .#systemCOnfigs.{$hostname}.config.system.build.toplevel
       # nom build .#systemCOnfigs.{$hostname}.config.system.build.toplevel
-      systemConfigs = {
-        minimech = helper.mkSystemManager { };
-      };
+      # systemConfigs = {
+      #   minimech = helper.mkSystemManager { };
+      # };
 
       # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
       devShells = helper.forAllSystems (system:

@@ -12,6 +12,8 @@ in
     nix-snapd.nixosModules.default
     chaotic.nixosModules.default
     sops-nix.nixosModules.sops
+    nixos-hardware.nixosModules.common-pc
+    nixos-hardware.nixosModules.common-pc-ssd
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
     ./users
@@ -88,8 +90,6 @@ in
       ++ optionals isInstall [
         inputs.nixos-needsreboot.packages.${platform}.default
         nvd
-        nvme-cli
-        smartmontools
         sops
       ];
 
@@ -302,6 +302,8 @@ in
 
       services = {
         "user@".serviceConfig.Delegate = true;
+        systemd-user-sessions.enable = false;
+
 
         nix-gc = {
           unitConfig.ConditionACPower = true; ### Nix gc when powered
@@ -312,7 +314,6 @@ in
           IOWeight = 20;
         };
 
-        NetworkManager-wait-online.enable = mkForce false;
         systemd-udev-settle.enable = mkForce false;
       };
 
@@ -327,21 +328,21 @@ in
       inherit stateVersion;
 
       activationScripts = {
-        # diff = {
-        #   supportsDryActivation = true;
-        #   text = ''
-        #     BLUE=$(${pkgs.ncurses}/bin/tput setaf 4)
-        #     CLEAR=$(${pkgs.ncurses}/bin/tput sgr0)
+        diff = {
+          supportsDryActivation = true;
+          text = ''
+            BLUE=$(${pkgs.ncurses}/bin/tput setaf 4)
+            CLEAR=$(${pkgs.ncurses}/bin/tput sgr0)
 
-        #     if [[ -e /run/current-system ]]; then
-        #       echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
-        #       echo "#"
-        #       ${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff $(${pkgs.coreutils}/bin/readlink "/run/current-system") "$systemConfig" | tee /var/log/nix/nix-changelog
-        #       echo "#"
-        #       echo "$BLUE                $CLEAR"
-        #     fi
-        #   '';
-        # };
+            if [[ -e /run/current-system ]]; then
+              echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
+              echo "#"
+              ${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff $(${pkgs.coreutils}/bin/readlink "/run/current-system") "$systemConfig" | tee /var/log/nix/nix-changelog
+              echo "#"
+              echo "$BLUE                $CLEAR"
+            fi
+          '';
+        };
 
         # Got this thanks to tiredofit
         # report-changes = ''

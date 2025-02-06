@@ -20,8 +20,8 @@ in
     features = {
       graphics = {
         enable = true;
-        #gpu = "hybrid-nvidia";
-        gpu = "intel";
+        gpu = "hybrid-nvidia";
+        # gpu = "intel";
         acceleration = true;
       };
 

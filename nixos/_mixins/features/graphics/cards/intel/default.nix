@@ -15,7 +15,7 @@ in
       ];
       kernelModules = [ "kvm-intel" ];
     };
-    services.xserver.videoDrivers = [ "modesetting" ];
+    #servicesxserver.videoDrivers = [ "modesetting" ];
 
     # if (device.gpu == "hybrid-nvidia") then
     #   [ "modesetting" ]

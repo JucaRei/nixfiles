@@ -16,6 +16,8 @@ in
       # Fix issue with java applications and tiling window managers.
       sessionVariables = {
         "_JAVA_AWT_WM_NONREPARENTING" = (mkIf (desktop == "bspwm")) "1";
+        LIBVA_DRIVER_NAME = mkIf (graphics.gpu == "nvidia" || graphics.gpu == "hybrid-nvidia") "nvidia";
+        VDPAU_DRIVER = mkIf (graphics.gpu == "nvidia" || graphics.gpu == "hybrid-nvidia") "nvidia";
       };
     };
     services = {

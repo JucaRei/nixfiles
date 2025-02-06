@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkForce mkIf mkMerge mkDefault optionals;
+  inherit (lib) mkForce mkIf mkMerge mkDefault optionals optional;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta.version;
 
@@ -94,22 +94,30 @@ in
         LIBVA_DRIVER_NAME = (mkIf (device.gpu == "nvidia" || (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable)) "nvidia");
       };
 
-      #systemPackages = (optionals (config.hardware.nvidia.nvidiaSettings) with pkgs; [
-      #  (writeScriptBin "nvidia-settings" ''
-      #    #!${stdenv.shell}
-      #    mkdir -p "$XDG_CONFIG_HOME/nvidia"
-      #    exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
-      #  '')
-      #])
-      #++
-      #(optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ])
-      #;
+      # systemPackages = (optionals (config.hardware.nvidia.nvidiaSettings) with pkgs;
+      # [ (writeScriptBin "nvidia-settings" ''
+      #   #!${stdenv.shell}
+      #   mkdir -p "$XDG_CONFIG_HOME/nvidia"
+      #   exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
+      # '')
+      # ]) ++ (optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ]) ;
+
+      systemPackages =
+        if (config.hardware.nvidia.nvidiaSettings == true) then [
+          (pkgs.writeScriptBin "nvidia-settings" ''
+            #!${pkgs.stdenv.shell}
+            mkdir -p "$XDG_CONFIG_HOME/nvidia"
+            exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
+          ''
+          )
+        ] else false
+          ++ (optionals (device.gpu == "hybrid-nvidia") nvidia-offload);
     };
 
     hardware = {
       nvidia = {
         package = mkDefault nvidiaPackage;
-        modesetting.enable = mkDefault true;
+        modesetting.enable = mkForce true;
         prime = {
           offload = {
             enable = if (device.gpu == "hybrid-nvidia") then true else false;
@@ -124,7 +132,7 @@ in
         };
 
         open = mkDefault false;
-        nvidiaSettings = mkDefault false;
+        nvidiaSettings = true;
         nvidiaPersistenced = true;
         forceFullCompositionPipeline = true;
       };
