@@ -72,14 +72,14 @@ in
     environment = {
       # Eject nano and perl from the system
       defaultPackages = with pkgs; mkForce [
-        coreutils-full
+        uutils-coreutils-noprefix
         parted
         micro
       ];
 
       shellAliases = {
         nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
-        store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+        store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
         keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
       };
 
@@ -137,7 +137,7 @@ in
       config = {
         allowUnfree = true;
         allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
-        permittedInsecurePackages = [ "tightvnc-1.3.10" ];
+        # permittedInsecurePackages = [ "tightvnc-1.3.10" ];
         # allowInsecure = true
       };
     };
@@ -227,7 +227,7 @@ in
     services = {
       hardware.bolt.enable = true;
 
-      # userborn.enable = true;
+      userborn.enable = true;
 
       dbus = {
         packages = optionals isWorkstation (with pkgs ; [ gnome-keyring gcr ]);

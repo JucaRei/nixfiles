@@ -1,4 +1,4 @@
-{ config, desktop, hostname, isInstall, lib, pkgs, ... }:
+{ config, desktop, hostname, isInstall, lib, pkgs, isWorkstation, ... }:
 let
   inherit (lib) mkIf;
   kmsconFontSize = {
@@ -37,12 +37,12 @@ in
     keyMap = if (hostname == "nitro") || (hostname == "scrubber") then "br-abnt" else "us";
 
     earlySetup = true;
-    # font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    font = "ter-powerline-v32n";
+    font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
+    # font = "ter-powerline-v32n";
     packages = with pkgs; [
       # tamzen
-      terminus_font
-      powerline-fonts
+      # terminus_font
+      # powerline-fonts
     ];
   };
 
@@ -53,7 +53,7 @@ in
       hwRender = if (desktop == null) then true else false;
       extraConfig = kmsconExtraConfig;
     };
-    getty = mkIf isInstall {
+    getty = mkIf (isInstall && isWorkstation) {
       greetingLine = "\\l";
       helpLine = ''
         Type `i' to print system information.

@@ -11,7 +11,7 @@ in
   };
   config = mkIf cfg.enable {
     virtualisation = {
-     libvirtd = {
+      libvirtd = {
         enable = true;
         qemu = {
           package = pkgs.unstable.qemu_kvm;

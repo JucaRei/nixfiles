@@ -1,11 +1,16 @@
 { pkgs, config, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption mkForce;
+  inherit (lib) mkIf mkOption mkForce;
+  inherit (lib.types) bool;
   cfg = config.features.bluetooth;
 in
 {
   options.features.bluetooth = {
-    enable = mkEnableOption "Whether enable bluetooth";
+    enable = mkOption {
+      default = false;
+      type = bool;
+      description = "Enable Bluetooth support";
+    };
   };
 
   config = mkIf cfg.enable {
