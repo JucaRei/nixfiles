@@ -114,10 +114,15 @@ in
       '';
 
       # use network manager instead of wpa supplicant
-      wireless.enable = if cfg.networkOpt == "network-manager" then false else true;
-
+      wireless = mkIf (cfg.networkOpt != "network-manager") {
+        enable = true;
+        # iwd = {
+        #   enable = mkIf (cfg.networkOpt == "network-manager") true;
+        #   package = pkgs.iwd;
+        # };
+      };
       # Disabling DHCPCD in favor of NetworkManager
-      dhcpcd.enable = if cfg.networkOpt == "network-manager" then false else true;
+      dhcpcd.enable = mkIf (cfg.networkOpt == "wpa-supplicant") true;
       timeServers = [ "time.google.com" "time.cloudflare.com" ];
       networkmanager = mkIf (cfg.networkOpt == "network-manager") {
         enable = true;
@@ -138,7 +143,7 @@ in
         #  - https://adguard-dns.io/en/public-dns.html
         # insertNameservers = [ "94.140.14.14" "94.140.15.15" ];
 
-        wifi = mkIf (cfg.networkOpt == "network-manager") {
+        wifi = {
           backend = "iwd";
           powersave = mkDefault cfg.powersave;
           #macAddress = "random";
@@ -159,11 +164,10 @@ in
           }
         ];
       };
-      wireless.iwd.package = pkgs.iwd;
 
       hostName = hostname;
       hostId = hostid;
-      usePredictableInterfaceNames = mkDefault false;
+      # usePredictableInterfaceNames = mkDefault false;
 
       interfaces = {
         "${cfg.custom-interface}" = {
@@ -176,7 +180,7 @@ in
     };
     services = {
       resolved = {
-        enable = if (cfg.networkOpt == "network-manager") then true else false;
+        enable = mkIf (cfg.networkOpt == "network-manager") true;
         domains = [ "~." ];
         # dnsovertls = "true";
         # dnssec = "false";
@@ -217,22 +221,33 @@ in
     };
 
     # https://github.com/NixOS/nixpkgs/issues/180175#issuecomment-1658731959
-    systemd.services = {
-      NetworkManager-wait-online = {
-        enable = mkForce false;
-        serviceConfig = mkIf (cfg.networkOpt == "network-manager") {
-          ExecStart = [ "" "${pkgs.networkmanager}/bin/nm-online -q" ];
-        };
+    systemd = {
+      services = {
+        # NetworkManager-wait-online = {
+        #   serviceConfig = mkIf (cfg.networkOpt == "network-manager") {
+        #     ExecStart = [ "" "${pkgs.networkmanager}/bin/nm-online -q" ];
+        #   };
+        # };
+
+        # Stuck at system boot
+        NetworkManager-wait-online.enable = mkForce false;
+        systemd-networkd-wait-online.enable = mkForce false;
+        systemd-udev-settle.enable = mkForce false;
+        systemd-networkd.stopIfChanged = mkForce false;
+        systemd-resolved.stopIfChanged = mkForce false;
+        systemd-user-sessions.enable = false;
+
+        disable-wifi-powersave = mkIf (cfg.powersave) {
+          wantedBy = [ "multi-user.target" ];
+          path = [ pkgs.iw ];
+          script = ''
+            iw dev wlan0 set power_save off
+          '';
+        }
+        ;
       };
 
-      disable-wifi-powersave = mkIf (config.networking.networkmanager.wifi.powersave) {
-        wantedBy = [ "multi-user.target" ];
-        path = [ pkgs.iw ];
-        script = ''
-          iw dev wlan0 set power_save off
-        '';
-      }
-      ;
+      extraConfig = "DefaultTimeoutStopSec=30s";
     };
 
     users.users.${username}.extraGroups = optionals config.networking.networkmanager.enable [ "networkmanager" ];

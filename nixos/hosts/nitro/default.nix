@@ -15,10 +15,6 @@ in
       boot = {
         isDualBoot = true;
       };
-
-      network = {
-        networkOpt = mkForce "wpa-supplicant";
-      };
     };
 
     features = {
