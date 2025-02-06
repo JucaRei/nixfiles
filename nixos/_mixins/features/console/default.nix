@@ -37,12 +37,12 @@ in
     keyMap = if (hostname == "nitro") || (hostname == "scrubber") then "br-abnt" else "us";
 
     earlySetup = true;
-    font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    # font = "ter-powerline-v32n";
+    # font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
+    font = "ter-powerline-v32n";
     packages = with pkgs; [
       # tamzen
-      # terminus_font
-      # powerline-fonts
+      terminus_font
+      powerline-fonts
     ];
   };
 

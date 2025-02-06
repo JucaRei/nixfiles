@@ -114,103 +114,103 @@
 
   outputs =
     { self, nix-darwin, nixpkgs, ... }@inputs:
-    let
-      inherit (self) outputs;
-      # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-      stateVersion = "24.11";
-      helper = import ./lib { inherit inputs outputs stateVersion; };
-    in
-    {
-      # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
-      # home-manager switch -b backup --flake $FLAKE
-      # nix run nixpkgs#home-manager -- switch -b backup --flake "${HOME}/.dotfiles/nixfiles"
-      # nom build -- switch -b backup --flake "${HOME}/.dotfiles/nixfiles"
-      # nom build .#homeConfigurations.${username@hostname}.activationPackage --impure --show-trace -vL
-      homeConfigurations = {
-        # .iso images
-        "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
-        "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
-        "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
-        # Workstations
-        "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
-        "juca@nitrowin" = helper.mkHome { hostname = "nitro"; desktop = null; };
-        "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
-        # Servers
-        # VMs
-        "juca@minimech" = helper.mkHome { hostname = "minimech"; };
-        "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "bspwm"; };
-        # Apple
+      with inputs;
+      let
+        inherit (self) outputs;
+        # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+        helper = import ./lib { inherit inputs outputs stateVersion; };
+      in
+      {
+        # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
+        # home-manager switch -b backup --flake $FLAKE
+        # nix run nixpkgs#home-manager -- switch -b backup --flake "${HOME}/.dotfiles/nixfiles"
+        # nom build -- switch -b backup --flake "${HOME}/.dotfiles/nixfiles"
+        # nom build .#homeConfigurations.${username@hostname}.activationPackage --impure --show-trace -vL
+        homeConfigurations = {
+          # .iso images
+          "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
+          "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+          "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+          "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+          # Workstations
+          "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
+          "juca@nitrowin" = helper.mkHome { hostname = "nitro"; desktop = null; };
+          "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
+          # Servers
+          # VMs
+          "juca@minimech" = helper.mkHome { hostname = "minimech"; };
+          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "bspwm"; };
+          # Apple
+        };
+        nixosConfigurations = {
+          ## Examples ##
+          # nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
+          # nix run github:numtide/nixos-anywhere -- --flake /home/juca/.dotfiles/nixfiles#air root@192.168.1.76
+          # nix run github:numtide/nixos-anywhere -- --flake $FLAKE#air root@192.168.1.76
+          # nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
+          # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
+
+
+          # .iso images
+          iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
+          iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+          iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+          iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+
+          # Workstations
+          #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
+          #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
+          #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
+          rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
+          nitro = helper.mkNixos { hostname = "nitro"; username = "juca"; desktop = "gnome"; };
+
+          # Servers
+          soyoz = helper.mkNixos { hostname = "soyoz"; };
+          revan = helper.mkNixos { hostname = "revan"; };
+
+          # VMs
+          soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = null; };
+          scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "gnome"; };
+        };
+
+        #nix run nix-darwin -- switch --flake ~/Zero/nix-config
+        #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
+        # darwinConfigurations = {
+        # };
+
+        #  System-Manager configurations
+        # nix run .#systemCOnfigs.{$hostname}.config.system.build.toplevel
+        # nom build .#systemCOnfigs.{$hostname}.config.system.build.toplevel
+        # systemConfigs = {
+        #   minimech = helper.mkSystemManager { };
+        # };
+
+        # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
+        devShells = helper.forAllSystems (system:
+          let
+            pkgs = nixpkgs.legacyPackages.${system};
+          in
+          import ./shell.nix {
+            inherit pkgs;
+            # node = pkgs.callPackage ./shells/node { };
+          }
+        );
+
+        # Custom packages and modifications, exported as overlays
+        overlays = import ./overlays {
+          inherit inputs;
+          nixgl = inputs.nixgl.overlay;
+        };
+
+        # Custom packages; acessible via 'nix build', 'nix shell', etc
+        packages = helper.forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+        # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+        # nom-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+
+        # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
+        formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+        # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-plus);
       };
-      nixosConfigurations = {
-        ## Examples ##
-        # nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
-        # nix run github:numtide/nixos-anywhere -- --flake /home/juca/.dotfiles/nixfiles#air root@192.168.1.76
-        # nix run github:numtide/nixos-anywhere -- --flake $FLAKE#air root@192.168.1.76
-        # nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
-        # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
-
-
-        # .iso images
-        iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
-        iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
-        iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
-
-        # Workstations
-        #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
-        #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
-        #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
-        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-        nitro = helper.mkNixos { hostname = "nitro"; username = "juca"; desktop = "xfce4"; };
-
-        # Servers
-        soyoz = helper.mkNixos { hostname = "soyoz"; };
-        revan = helper.mkNixos { hostname = "revan"; };
-
-        # VMs
-        soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = null; };
-        scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "gnome"; };
-      };
-
-      #nix run nix-darwin -- switch --flake ~/Zero/nix-config
-      #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
-      # darwinConfigurations = {
-      # };
-
-      #  System-Manager configurations
-      # nix run .#systemCOnfigs.{$hostname}.config.system.build.toplevel
-      # nom build .#systemCOnfigs.{$hostname}.config.system.build.toplevel
-      # systemConfigs = {
-      #   minimech = helper.mkSystemManager { };
-      # };
-
-      # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
-      devShells = helper.forAllSystems (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        import ./shell.nix {
-          inherit pkgs;
-          # node = pkgs.callPackage ./shells/node { };
-        }
-      );
-
-      # Custom packages and modifications, exported as overlays
-      overlays = import ./overlays {
-        inherit inputs;
-        nixgl = inputs.nixgl.overlay;
-      };
-
-      # Custom packages; acessible via 'nix build', 'nix shell', etc
-      packages = helper.forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-      # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
-      # nom-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
-
-      # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
-      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
-      # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-plus);
-    };
 }
 
 # 8086:3185 igpu
