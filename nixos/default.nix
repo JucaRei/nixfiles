@@ -6,7 +6,6 @@ in
   imports = with inputs; [
     auto-cpufreq.nixosModules.default
     catppuccin.nixosModules.catppuccin
-    determinate.nixosModules.default
     disko.nixosModules.disko
     nix-flatpak.nixosModules.nix-flatpak
     nix-index-database.nixosModules.nix-index

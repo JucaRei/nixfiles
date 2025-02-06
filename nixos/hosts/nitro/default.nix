@@ -11,15 +11,21 @@ in
     # ./disks-btrfs.nix
   ];
   config = {
-    core.boot = {
-      isDualBoot = true;
+    core = {
+      boot = {
+        isDualBoot = true;
+      };
+
+      network = {
+        networkOpt = mkForce "wpa-supplicant";
+      };
     };
 
     features = {
       graphics = {
         enable = true;
-        gpu = "hybrid-nvidia";
-        # gpu = "intel";
+        #gpu = "hybrid-nvidia";
+        gpu = "intel";
         acceleration = true;
       };
 
