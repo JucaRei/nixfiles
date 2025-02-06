@@ -4,9 +4,8 @@ let
   ifExists = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
 in
 {
-  imports = [
-    ./root
-  ] ++ lib.optional (builtins.pathExists (./. + "/${username}")) ./${username};
+  imports = [ ./root ]
+    ++ lib.optional builtins.pathExists (./. + "/${username}") ./${username};
 
   environment.localBinInPath = true;
   users = {

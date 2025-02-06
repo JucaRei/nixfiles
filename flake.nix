@@ -162,7 +162,7 @@
           #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
           #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
           rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-          nitro = helper.mkNixos { hostname = "nitro"; username = "juca"; desktop = "gnome"; };
+          nitro = helper.mkNixos { hostname = "nitro"; desktop = "gnome"; };
 
           # Servers
           soyoz = helper.mkNixos { hostname = "soyoz"; };

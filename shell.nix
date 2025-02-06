@@ -10,6 +10,7 @@
     NIX_CONFIG = "extra-experimental-features = nix-command flakes";
 
     nativeBuildInputs = with pkgs; [
+      vscode-fhs
       nix # nix
       nil # lsp server
       nixd
@@ -29,6 +30,7 @@
 
     shellHook = ''
       # exec fish
+      export NIXPKGS_ALLOW_UNFREE=1
       alias ssh="dbclient"
       echo "🔨 Welcome to flakes" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
       echo ">>>> ❄️ Entering Nix Development Environment"
