@@ -42,7 +42,7 @@ in
         with pkgs // pkgs.gnomeExtensions ;
         [ blackbox-terminal ] ++
         optionals isInstall [
-          eyedropper
+          # eyedropper
           # gnome.gnome-tweaks
         ];
     };
@@ -88,7 +88,7 @@ in
           }
         ];
       };
-      evince.enable = true;
+      evince.enable = false;
       file-roller.enable = isInstall;
       geary.enable = false;
       gnome-disks.enable = isInstall;
@@ -136,7 +136,6 @@ in
           enable = true;
         };
         sushi.enable = true;
-        tracker.enable = true;
         at-spi2-core.enable = true;
       };
       udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
@@ -146,7 +145,7 @@ in
           gdm = {
             enable = true;
             autoSuspend = false;
-            wayland = mkDefault true;
+            wayland = mkDefault false;
           };
         };
         desktopManager.gnome = {

@@ -1,12 +1,13 @@
 { lib, pkgs, username, config, ... }:
 let
-  inherit (lib) mkForce optional;
+  inherit (lib) mkForce;
   ifExists = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
 in
 {
-  imports = [
-    ./root
-  ] ++ lib.optional (builtins.pathExists (./. + "/${username}")) ./${username};
+  imports = [ ./root ]
+    ++ lib.optional (builtins.pathExists (./. + "/${username}")) ./${username}
+    # ++ lib.optionals (builtins.pathExists (./. + "/${username}")) [ ./${username} ]
+  ;
 
   environment.localBinInPath = true;
   users = {

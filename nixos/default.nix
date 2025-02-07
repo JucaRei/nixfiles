@@ -221,7 +221,9 @@ in
         enable = true;
         flake = "/home/${username}/.dotfiles/nixfiles";
       };
-      nix-index-database.comma.enable = isInstall;
+      nix-index-database = {
+        comma.enable = isInstall;
+      };
     };
 
     services = {

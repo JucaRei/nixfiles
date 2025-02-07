@@ -18,7 +18,7 @@ pkgs.writeScriptBin "build-iso" ''
     ${pkgs.uutils-coreutils-noprefix}/bin/cp result/iso/$ISO $HOME/virtualmachines/nixos-$1/nixos.iso
     ${pkgs.uutils-coreutils-noprefix}/bin/chown $USER: $HOME/virtualmachines/nixos-$1/nixos.iso
     ${pkgs.uutils-coreutils-noprefix}/bin/chmod 644 $HOME/virtualmachines/nixos-$1/nixos.iso
-    popd 2>&1 > /dev/null
+    popd 2>&1 > /dev/null || exit 1
   else
     ${pkgs.uutils-coreutils-noprefix}/bin/echo "ERROR! No nix-config found in $HOME/.dotfiles/nixfiles"
   fi

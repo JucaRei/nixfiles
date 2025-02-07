@@ -22,7 +22,7 @@ in
     desktop = {
       features = {
         appimage.enable = true;
-        fonts.enable = true;
+        fonts.enable = false;
         printers.enable = false;
         scan.enable = false;
         v4l2loopback.enable = false;

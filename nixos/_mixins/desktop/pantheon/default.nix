@@ -6,7 +6,7 @@
   config = {
     desktop.features.flatpak-appcenter.enable = true;
 
-    features.graphics.backend = "x11"; # isWayland;
+    features.graphics.backend = "wayland"; # isWayland;
 
     environment = {
       pantheon.excludePackages = with pkgs.pantheon;
@@ -262,7 +262,6 @@
       ];
       evince.enable = false;
       gnome-disks.enable = isInstall;
-      pantheon-tweaks.enable = isInstall;
       seahorse.enable = isInstall;
     };
 

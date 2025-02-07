@@ -39,4 +39,10 @@ in
       bootmanager = mkForce "grub";
     };
   };
+
+  features = {
+    zram = {
+      enable = true;
+    };
+  };
 }

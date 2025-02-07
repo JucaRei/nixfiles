@@ -13,9 +13,30 @@ let
       ''font-size=14''
   )
   + ''
+    no-drm
+    no-switchvt
+    grab-scroll-up=
+    grab-scroll-down=
     palette=custom
-    palette-foreground=30, 30, 46
-    palette-foreground=20, 214, 244
+    palette-black=69,71,90
+    palette-red=243,139,168
+    palette-green=166,227,161
+    palette-yellow=249,226,175
+    palette-blue=137,180,250
+    palette-magenta=245,194,231
+    palette-cyan=148,226,213
+    palette-light-grey=127,132,156
+    palette-dark-grey=88,91,112
+    palette-light-red=243,139,168
+    palette-light-green=166,227,161
+    palette-light-yellow=249,226,175
+    palette-light-blue=137,180,250
+    palette-light-magenta=245,194,231
+    palette-light-cyan=148,226,213
+    palette-white=205,214,244
+    palette-foreground=166,173,200
+    palette-background=30,30,46
+    sb-size=10240
   '';
 in
 {
@@ -37,12 +58,12 @@ in
     keyMap = if (hostname == "nitro") || (hostname == "scrubber") then "br-abnt" else "us";
 
     earlySetup = true;
-    # font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    font = "ter-powerline-v32n";
+    font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
+    # font = "ter-powerline-v32n";
     packages = with pkgs; [
-      # tamzen
-      terminus_font
-      powerline-fonts
+      tamzen
+      # terminus_font
+      # powerline-fonts
     ];
   };
 
@@ -51,6 +72,17 @@ in
       enable = !config.boot.plymouth.enable;
       extraOptions = "--gpus primary";
       hwRender = if (desktop == null) then true else false;
+      fonts = [
+        {
+          name = "FiraCode Nerd Font Mono";
+          package = pkgs.nerdfonts.override {
+            fonts = [
+              "FiraCode"
+              "NerdFontsSymbolsOnly"
+            ];
+          };
+        }
+      ];
       extraConfig = kmsconExtraConfig;
     };
     getty = mkIf isInstall {

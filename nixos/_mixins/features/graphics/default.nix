@@ -77,6 +77,10 @@ in
         vulkan-tools
         vulkan-validation-layers
       ];
+
+      shellAliases = {
+        session-type = "${pkgs.elogind}/bin/loginctl show-session $(${pkgs.gawk}/bin/awk '/tty/ {print $1}' <(${pkgs.elogind}/bin/loginctl)) -p Type | ${pkgs.gawk}/bin/awk -F= '{print $2}'";
+      };
     };
   };
 }
