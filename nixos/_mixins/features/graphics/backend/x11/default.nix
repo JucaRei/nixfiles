@@ -1,6 +1,6 @@
 { lib, config, pkgs, desktop, hostname, ... }:
 let
-  inherit (lib) mkIf mkDefault optionals;
+  inherit (lib) mkIf mkDefault optional;
   graphics = config.features.graphics;
 in
 {
@@ -51,7 +51,7 @@ in
               export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc \n"
             ''
             +
-            (optionals (hostname == "nitro") ''
+            (optional (hostname == "nitro") ''
               ${pkgs.numlockx}/bin/numlockx on
             '');
         };
