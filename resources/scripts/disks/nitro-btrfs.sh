@@ -10,11 +10,6 @@ DRIVE="/dev/nvme0n1p4"
 # export BOOT_PARTITION="${DRIVE}p2"
 # export ROOT_PARTITION="${DRIVE}p3"
 
-sgdisk -Z ${DRIVE}
-
-sleep 1
-partprobe
-sleep 1
 # sgdisk -Z /dev/$ROOT_PARTITION
 # sgdisk -t 1:0C01 /dev/nvme01n1
 # sgdisk -c 1:"Microsoft reserved partition"

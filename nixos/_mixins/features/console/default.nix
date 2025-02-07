@@ -1,4 +1,4 @@
-{ config, desktop, hostname, isInstall, lib, pkgs, isWorkstation, ... }:
+{ config, desktop, hostname, isInstall, lib, pkgs, ... }:
 let
   inherit (lib) mkIf;
   kmsconFontSize = {
@@ -53,7 +53,7 @@ in
       hwRender = if (desktop == null) then true else false;
       extraConfig = kmsconExtraConfig;
     };
-    getty = mkIf (isInstall && isWorkstation) {
+    getty = mkIf isInstall {
       greetingLine = "\\l";
       helpLine = ''
         Type `i' to print system information.
