@@ -44,16 +44,18 @@ in
         excludePackages = [ pkgs.xterm ];
 
         displayManager = {
-
           sessionCommands =
-            ''
-              # GTK2_RC_FILES must be available to the display manager.
-              export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc \n"
-            ''
-            +
-            (optional (hostname == "nitro") ''
-              ${pkgs.numlockx}/bin/numlockx on
-            '');
+            if hostname != "nitro" then
+              ''
+                # GTK2_RC_FILES must be available to the display manager.
+                export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+              ''
+            else
+              ''
+                # GTK2_RC_FILES must be available to the display manager.
+                export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+                ${pkgs.numlockx}/bin/numlockx on
+              '';
         };
 
         xkb =
