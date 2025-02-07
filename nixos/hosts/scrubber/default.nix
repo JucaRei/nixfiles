@@ -1,4 +1,4 @@
-{ modulesPath, lib, ... }:
+{ modulesPath, lib, config, ... }:
 let
   inherit (lib) mkForce;
 in
@@ -12,38 +12,48 @@ in
     # ./filesystem.nix
   ];
 
-  boot = {
-    initrd.availableKernelModules = [
-      "xhci_pci"
-      "ohci_pci"
-      "ehci_pci"
-      "virtio_pci"
-      "ahci"
-      "usbhid"
-      "sr_mod"
-      "virtio_blk"
-    ];
+  config = {
 
-    loader = {
-      grub = {
-        efiInstallAsRemovable = mkForce true;
-      };
-      efi = {
-        efiSysMountPoint = mkForce "/boot";
-        canTouchEfiVariables = mkForce false;
-      };
-    };
-  };
-
-  core = {
     boot = {
-      bootmanager = mkForce "grub";
-    };
-  };
+      initrd.availableKernelModules = [
+        "xhci_pci"
+        "ohci_pci"
+        "ehci_pci"
+        "virtio_pci"
+        "ahci"
+        "usbhid"
+        "sr_mod"
+        "virtio_blk"
+      ];
 
-  features = {
-    zram = {
-      enable = true;
+      loader = {
+        grub = {
+          efiInstallAsRemovable = mkForce true;
+        };
+        efi = {
+          efiSysMountPoint = mkForce "/boot";
+          canTouchEfiVariables = mkForce false;
+        };
+      };
+    };
+
+    core = {
+      boot = {
+        bootmanager = mkForce "grub";
+      };
+    };
+
+    features = {
+      zram = {
+        enable = true;
+      };
+    };
+
+    nixpkgs = {
+      hostPlatform = "x86_64-linux";
     };
   };
 }
+
+
+# nix run github:nix-community/nixos-anywhere -- --flake .#scrubber --target-host root@192.168.122.105

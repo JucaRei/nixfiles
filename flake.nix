@@ -209,7 +209,7 @@
 
       # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
       formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
-      # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-plus);
+      # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
     };
 }
 
