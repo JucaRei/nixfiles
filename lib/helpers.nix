@@ -44,6 +44,7 @@
     , desktop ? null
     , platform ? "x86_64-linux"
     , hostid ? null
+    , stateVersion ? "24.11"
     ,
     }:
     let
