@@ -37,12 +37,6 @@ in
 
         enable = mkDefault true;
 
-        desktopManager = {
-          xterm.enable = mkDefault false;
-        };
-
-        excludePackages = [ pkgs.xterm ];
-
         displayManager = {
           sessionCommands =
             if hostname != "nitro" then

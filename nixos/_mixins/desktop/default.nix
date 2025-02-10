@@ -86,6 +86,14 @@ in
           };
         };
       };
+
+      xserver = {
+        desktopManager = {
+          xterm.enable = mkDefault false;
+        };
+
+        excludePackages = [ pkgs.xterm ];
+      };
     };
 
     # Fix xdg-portals opening URLs: https://github.com/NixOS/nixpkgs/issues/189851

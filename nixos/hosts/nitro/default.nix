@@ -101,6 +101,8 @@ in
         lm_sensors
         vscode-fhs
 
+        transmission_3-gtk
+
         duf
         gnupg
         pinentry-curses
