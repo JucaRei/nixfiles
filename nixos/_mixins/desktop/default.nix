@@ -48,6 +48,7 @@ in
 
       systemPackages = with pkgs;  [
         firefox
+        gsmartcontrol
         catppuccin-cursors.mochaBlue
         (catppuccin-gtk.override {
           accents = [ "blue" ];

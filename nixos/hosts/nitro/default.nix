@@ -102,6 +102,7 @@ in
         vscode-fhs
 
         transmission_3-gtk
+        vlc
 
         duf
         gnupg
