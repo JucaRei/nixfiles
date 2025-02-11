@@ -1,12 +1,12 @@
 _: {
   imports = [
     ./appimage
-    ./flatpak-appcenter
+    ./flatpak
     ./fonts
+    ./pipewire
     ./print
     ./scan
     ./v4l2loopback
-    ./wine
-    ./x11vnc
+    ./xdg
   ];
 }

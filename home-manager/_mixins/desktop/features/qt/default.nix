@@ -1,47 +1,42 @@
 { lib, pkgs, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkDefault;
 in
 lib.mkIf isLinux {
   # https://discourse.nixos.org/t/struggling-to-configure-gtk-qt-theme-on-laptop/42268/
   home = {
     packages = with pkgs; [
-      # (catppuccin-kvantum.override {
-      #   accent = mkDefault "blue";
-      #   variant = mkDefault "mocha";
-      # })
-      catppuccin-kvantum
+      (catppuccin-kvantum.override {
+        accent = "blue";
+        variant = "mocha";
+      })
       libsForQt5.qtstyleplugin-kvantum
       libsForQt5.qt5ct
     ];
   };
 
   qt = {
-    enable = mkDefault true;
-    platformTheme = {
-      # name = mkDefault "gtk";
-      name = mkDefault "kvantum";
-    };
+    enable = true;
+    platformTheme.name = "gtk";
     style = {
-      name = mkDefault "kvantum";
+      name = "kvantum";
     };
   };
 
   systemd.user.sessionVariables = {
-    QT_STYLE_OVERRIDE = mkDefault "kvantum";
+    QT_STYLE_OVERRIDE = "kvantum";
   };
 
-  xdg.configFile = mkDefault {
+  xdg.configFile = {
     kvantum = {
       target = "Kvantum/kvantum.kvconfig";
-      text = lib.generators.toINI { } { General.theme = "Catppuccin-Mocha-Blue"; };
+      text = lib.generators.toINI { } { General.theme = "catppuccin-mocha-blue"; };
     };
     qt5ct = {
       target = "qt5ct/qt5ct.conf";
       text = lib.generators.toINI { } {
         Appearance = {
-          icon_theme = mkDefault "Papirus-Dark";
+          icon_theme = "Papirus-Dark";
         };
       };
     };
@@ -49,7 +44,7 @@ lib.mkIf isLinux {
       target = "qt6ct/qt6ct.conf";
       text = lib.generators.toINI { } {
         Appearance = {
-          icon_theme = mkDefault "Papirus-Dark";
+          icon_theme = "Papirus-Dark";
         };
       };
     };

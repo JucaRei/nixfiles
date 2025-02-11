@@ -1,4 +1,10 @@
-{ config, hostname, lib, pkgs, ... }:
+{
+  config,
+  hostname,
+  lib,
+  pkgs,
+  ...
+}:
 let
   monitors = (import ./monitors.nix { }).${hostname};
   hyprActivity = pkgs.writeShellApplication {
@@ -45,8 +51,12 @@ let
           local CLASS="$3"
           if ! app_is_running "$CLASS"; then
               echo -n " - Starting $APP on workspace $WORKSPACE: "
-              hyprctl dispatch exec "[workspace $WORKSPACE silent]" "$APP"
-              if [ "$APP" == "tenacity" ]; then
+              if [ "$WORKSPACE" == "10" ]; then
+                hyprctl dispatch exec "[workspace $WORKSPACE silent; float; size 1596 1076]" "$APP"
+              else
+                hyprctl dispatch exec "[workspace $WORKSPACE silent]" "$APP"
+              fi
+              if [ "$APP" == "audacity" ]; then
                   sleep 5
               fi
               wait_for_app "$CLASS"
@@ -69,10 +79,9 @@ let
           start_app fractal 3 "class: org.gnome.Fractal"
           start_app halloy 3 "class: org.squidowl.halloy"
           start_app code 4 "initialTitle: Visual Studio Code"
-          start_app "gitkraken --no-show-splash-screen" 4 "title: GitKraken Desktop"
-          start_app alacritty 5 "class: Alacritty"
-          start_app boxbuddy-rs 6 "class: io.github.dvlv.boxbuddyrs"
-          start_app pods 6 "class: com.github.marhkb.Pods"
+          start_app foot 5 "class: foot"
+          start_app "gitkraken --no-show-splash-screen" 5 "title: GitKraken Desktop"
+          start_app joplin-desktop 6 "class: @joplin/app-desktop"
           if [ "$HOSTNAME" == "phasma" ] || [ "$HOSTNAME" == "vader" ]; then
               start_app "obs --disable-shutdown-check --collection 'VirtualCam' --profile 'VirtualCam' --scene 'VirtualCam-DetSys' --startvirtualcam" 7 "class: com.obsproject.Studio"
           fi
@@ -82,14 +91,17 @@ let
             -P meet-detsys \
             -no-remote \
             --new-window https://meet.google.com" 9 "title: Google Meet - Mozilla Firefox"
-          start_app heynote  9 "class: Heynote"
+          start_app heynote 9 "class: Heynote"
           hyprctl dispatch forcerendererreload
       }
 
       function activity_linuxmatters() {
-          start_app tenacity 9 "class: tenacity"
+          start_app audacity 9 "class: audacity"
           firefox -CreateProfile linuxmatters-stage
-          start_app "firefox -P linuxmatters-stage -no-remote --new-window https://github.com/restfulmedia/linuxmatters_backstage" 9 "title: restfulmedia/linuxmatters_backstage"
+          start_app "firefox \
+              -P linuxmatters-stage \
+              -no-remote \
+              --new-window https://github.com/restfulmedia/linuxmatters_backstage" 9 "title: restfulmedia/linuxmatters_backstage"
           if [ "$HOSTNAME" == "phasma" ] || [ "$HOSTNAME" == "vader" ]; then
               start_app "obs --disable-shutdown-check --collection VirtualCam --profile VirtualCam --scene VirtualCam-LinuxMatters --startvirtualcam" 9 "class: com.obsproject.Studio"
           fi
@@ -106,24 +118,37 @@ let
       }
 
       function activity_wimpysworld() {
+          # Workspace 7
+          hyprctl dispatch workspace 7 &>/dev/null
+          start_app "obs --disable-shutdown-check --collection 'Wimpys World' --profile Dev-Local --scene Collage" 7 "class: com.obsproject.Studio"
+          # Workspace 8
+          start_app rhythmbox 8 "class: rhythmbox"
+          # Workspace 9
+          hyprctl dispatch workspace 9 &>/dev/null
           firefox -CreateProfile wimpysworld-studio
           start_app "firefox \
               -P wimpysworld-studio \
               -no-remote \
               --new-window https://dashboard.twitch.tv/u/wimpysworld/stream-manager \
+              --new-tab https://wimpysworld.live \
               --new-tab https://streamelements.com \
               --new-tab https://botrix.live" 9 "title: Twitch — Mozilla Firefox"
-          start_app "obs --disable-shutdown-check --collection 'Wimpys World' --profile Dev-Local --scene Collage" 7 "class: com.obsproject.Studio"
-          start_app chatterino 7 "chatterino"
-          start_app discord 9 " - Discord"
-          start_app code 10 "initialTitle: Visual Studio Code"
-          start_app gitkraken 10 "title: GitKraken Desktop"
-          start_app alacritty 10 "class: Alacritty"
+          case "$HOSTNAME" in
+              phasma)
+                start_app discord 9 " - Discord"
+                start_app chatterino 7 "chatterino"
+                ;;
+              vader)
+                start_app discord 9 " - Discord"
+                start_app chatterino 9 "chatterino"
+                ;;
+          esac
+          # Workspace 10
           firefox -CreateProfile wimpysworld-stage
           start_app "firefox \
               -P wimpysworld-stage \
               -no-remote \
-              --new-window https://wimpysworld.com
+              --new-window https://wimpysworld.com \
               --new-tab https://github.com/wimpysworld" 10 "title: Wimpy's World — Mozilla Firefox"
           hyprctl dispatch forcerendererreload
       }
@@ -134,9 +159,11 @@ let
             -P 8bitversus-studio \
             -no-remote \
             --new-window https://dashboard.twitch.tv/u/8bitversus/stream-manager" 9 "title: Twitch — Mozilla Firefox"
+          start_app discord 9 " - Discord"
+          hyprctl dispatch workspace 9 &>/dev/null
           start_app "obs --disable-shutdown-check --collection 8-bit-VS --profile 8-bit-VS-Local --scene Hosts" 7 "class: com.obsproject.Studio"
           start_app chatterino 7 "chatterino"
-          start_app discord 9 " - Discord"
+          hyprctl dispatch workspace 7 &>/dev/null
           hyprctl dispatch forcerendererreload
       }
 
@@ -293,14 +320,14 @@ in
   # Hyprland is a Wayland compositor and dynamic tiling window manager
   # Additional applications are required to create a full desktop shell
   imports = [
-    ./avizo # on-screen display for audio and backlight
-    ./fuzzel # app launcher, emoji picker and clipboard manager
-    ./grimblast # screenshot grabber and annotator
-    ./hyprlock # screen locker
-    ./hyprpaper # wallpaper setter
-    ./swaync # notification center
-    ./waybar # status bar
-    ./wlogout # session menu
+    ./avizo        # on-screen display for audio and backlight
+    ./fuzzel       # app launcher, emoji picker and clipboard manager
+    ./hyprlock     # screen locker
+    ./hyprpaper    # wallpaper setter
+    ./hyprshot     # screenshot grabber and annotator
+    ./swaync       # notification center
+    ./waybar       # status bar
+    ./wlogout      # session menu
   ];
   services = {
     gpg-agent.pinentryPackage = lib.mkForce pkgs.pinentry-gnome3;
@@ -309,11 +336,6 @@ in
       automount = false;
       tray = "auto";
       notify = true;
-
-      settings.program_options = {
-        terminal = "xterm";
-        event_hook = "${lib.getExe' pkgs.libnotify "notify-send"} --icon=drive-removable-media {event} {device_presentation}";
-      };
     };
   };
 
@@ -331,7 +353,6 @@ in
 
   wayland.windowManager.hyprland = {
     enable = true;
-    catppuccin.enable = true;
     plugins = with pkgs; [ hyprlandPlugins.hyprtrails ];
     settings = {
       inherit (monitors) monitor workspace;
@@ -354,7 +375,7 @@ in
           "$mod, Q, killactive"
           # Launch applications
           "$mod, E, exec, nautilus --new-window"
-          "$mod, T, exec, alacritty"
+          "$mod, T, exec, foot"
           # Move focus
           "ALT, Tab, cyclenext"
           "ALT, Tab, bringactivetotop"
@@ -393,13 +414,11 @@ in
           "$mod ALT, 8, movetoworkspace, 8"
           "CTRL ALT, 9, workspace, 9"
           "$mod ALT, 9, movetoworkspace, 9"
-          "CTRL ALT, 0, workspace, 10"
-          "$mod ALT, 0, movetoworkspace, 10"
-        ];
+      ];
       # https://wiki.hyprland.org/Configuring/Variables/#animations
       animations = {
         enabled = true;
-        first_launch_animation = false;
+        first_launch_animation = true;
       };
       # https://wiki.hyprland.org/Configuring/Animations/
       animation = [
@@ -426,14 +445,16 @@ in
         fullscreen_opacity = 1.0;
         dim_inactive = true;
         dim_strength = 0.025;
-        # Subtle shadows
-        "col.shadow" = "rgba(11111baf)";
-        "col.shadow_inactive" = "rgba(1e1e2eaf)";
-        drop_shadow = true;
-        shadow_range = 304;
-        shadow_render_power = 4;
-        shadow_offset = "0, 42";
-        shadow_scale = 0.9;
+        shadow = {
+          # Subtle shadows
+          color = "rgba(11111baf)";
+          color_inactive = "rgba(1e1e2eaf)";
+          enabled = true;
+          range = 304;
+          render_power = 4;
+          offset = "0, 42";
+          scale = 0.9;
+        };
         blur = {
           enabled = true;
           passes = 2;
@@ -458,13 +479,12 @@ in
       #https://wiki.hyprland.org/Configuring/Master-Layout/
       master = {
         mfact = if (hostname == "vader" || hostname == "phasma") then 0.5 else 0.55;
-        orientation =
-          if hostname == "vader" then
-            "top"
-          else if hostname == "phasma" then
-            "center"
-          else
-            "left";
+        orientation = if hostname == "vader" then
+          "top"
+        else if hostname == "phasma" then
+          "center"
+        else
+          "left";
       };
       # https://wiki.hyprland.org/Configuring/Dwindle-Layout/
       dwindle = {
@@ -509,7 +529,7 @@ in
           bezier_step = 0.025; #0.025
           points_per_step = 2; #2
           history_points = 12; #20
-          history_step = 2; #2
+          history_step = 2;    #2
         };
       };
       windowrulev2 = [
@@ -523,6 +543,9 @@ in
         "opacity 1.0, class: com.defold.editor.Start"
         "opacity 1.0, class: class: dmengine"
         "opacity 1.0, title: UNIGINE Engine"
+        "opacity 1.0, title: Steam Big Picture Mode"
+        "opacity 1.0, class: Gimp"
+        "opacity 1.0, class: love"
 
         # make pop-up file dialogs floating, centred, and pinned
         "float, title:(Open|Progress|Save File)"
@@ -531,9 +554,9 @@ in
         "float, class:(xdg-desktop-portal-gtk)"
         "center, class:(xdg-desktop-portal-gtk)"
         "pin, class:(xdg-desktop-portal-gtk)"
-        "float, class:^(code)$"
-        "center, class:^(code)$"
-        "pin, class:^(code)$"
+        "float, class:^(code)$, initialTitle:^((?!Visual Studio Code).)*$"
+        "center, class:^(code)$, initialTitle:^((?!Visual Studio Code).)*$"
+        "pin, class:^(code)$, initialTitle:^((?!Visual Studio Code).)*$"
 
         # Apps that should be floating
         "float, title:(Maestral Settings|MainPicker|overskride|Pipewire Volume Control|Trayscale)"
@@ -552,6 +575,15 @@ in
         "size 960 640 initialTitle:(Polychromatic)"
         "size 880 1010, title:(overskride)"
         "size 886 960, title:(Trayscale)"
+
+        # Apps for streaming from dummy workspace
+        "float, onworkspace:10"
+        "opacity 1.0 0.6 1.0, onworkspace:10"
+        "size 1596 1076, onworkspace:10"
+        "maxsize 1596 1076, onworkspace:10"
+        "minsize 1596 1076, onworkspace:10"
+        "move 322 2, onworkspace:10"
+        "noshadow, onworkspace:10"
       ];
       layerrule = [
         "blur, launcher" # fuzzel

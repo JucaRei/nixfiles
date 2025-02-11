@@ -15,28 +15,28 @@
       '';
     });
 
-    #linuxPackages_latest = prev.linuxPackages_latest.extend (_lpself: lpsuper: {
-    #  mwprocapture = lpsuper.mwprocapture.overrideAttrs ( old: rec {
-    #    pname = "mwprocapture";
-    #    subVersion = "4390";
-    #    version = "1.3.0.${subVersion}";
-    #    src = prev.fetchurl {
-    #      url = "https://www.magewell.com/files/drivers/ProCaptureForLinux_${subVersion}.tar.gz";
-    #      sha256 = "sha256-a2cU7PYQh1KR5eeMhMNx2Sc3HHd7QvCG9+BoJyVPp1Y=";
-    #    };
-    #  });
-    #});
+    custom-caddy = import ./custom-caddy.nix { pkgs = prev; };
 
-    sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation rec {
-      pname = "sf-mono-liga-bin";
-      version = "dev";
-      src = inputs.sf-mono-liga-src;
-      dontConfigure = true;
-      installPhase = ''
-        mkdir -p $out/share/fonts/opentype
-        cp -R $src/*.otf $out/share/fonts/opentype/
-      '';
-    };
+    gitkraken = prev.gitkraken.overrideAttrs (old: rec {
+      version = "10.6.2";
+
+      src = {
+        x86_64-linux = prev.fetchzip {
+          url = "https://release.axocdn.com/linux/GitKraken-v${version}.tar.gz";
+          hash = "sha256-E/9BR4PE5QF075+NgJZTtgDoShHEqeRcoICnMLt3RuY=";
+        };
+
+        x86_64-darwin = prev.fetchzip {
+          url = "https://release.axocdn.com/darwin/GitKraken-v${version}.zip";
+          hash = "sha256-gCiZN+ivXEF5KLas7eZn9iWfXcDGwf1gXK1ejY2C4xs=";
+        };
+
+        aarch64-darwin = prev.fetchzip {
+          url = "https://release.axocdn.com/darwin-arm64/GitKraken-v${version}.zip";
+          hash = "sha256-1zd57Kqi5iKHw/dNqLQ7jVAkNFvkFeqQbZPN32kF9IU=";
+        };
+      }.${prev.stdenv.hostPlatform.system} or (throw "Unsupported system: ${prev.stdenv.hostPlatform.system}");
+    });
 
     hyprland = prev.hyprland.overrideAttrs (_old: rec {
       postPatch = _old.postPatch + ''
@@ -44,12 +44,52 @@
       '';
     });
 
+    linuxPackages_6_12 = prev.linuxPackages_6_12.extend (_lpself: lpsuper: {
+      mwprocapture = lpsuper.mwprocapture.overrideAttrs (old: rec {
+        pname = "mwprocapture";
+        subVersion = "4407";
+        version = "1.3.0.${subVersion}";
+        src = prev.fetchurl {
+          url = "https://www.magewell.com/files/drivers/ProCaptureForLinux_${subVersion}.tar.gz";
+          sha256 = "sha256-wzOwnaxaD4Cm/cdc/sXHEzYZoN6b/kivDPvXRsC+Aig=";
+        };
+        postPatch =
+          let
+            kernelVersion = lpsuper.kernel.version;
+            needsPatch = prev.lib.versionAtLeast kernelVersion "6.12";
+          in
+          ''
+            ${old.postPatch or ""}
+            ${if needsPatch then ''
+              sed -i 's/no_llseek/noop_llseek/' src/sources/avstream/mw-event-dev.c
+            '' else ""}
+          '';
+      });
+    });
+
+    resources = prev.resources.overrideAttrs (_old: rec {
+      pname = "resources";
+      version = "1.7.0";
+      src = prev.fetchFromGitHub {
+        owner = "nokyan";
+        repo = "resources";
+        rev = "refs/tags/v${version}";
+        hash = "sha256-mnOpWVJTNGNdGd6fMIZl3AOF4NbtMm1XS8QFqfAF/18=";
+      };
+
+      cargoDeps = prev.rustPlatform.fetchCargoTarball {
+        inherit src;
+        name = "resources-${version}";
+        hash = "sha256-vIqtKJxKQ/mHFcB6IxfX27Lk2ID/W+M4hQnPB/aExa4=";
+      };
+    });
+
     wavebox = prev.wavebox.overrideAttrs (_old: rec {
       pname = "wavebox";
-      version = "10.128.5-2";
+      version = "10.131.15-2";
       src = prev.fetchurl {
         url = "https://download.wavebox.app/stable/linux/deb/amd64/wavebox_${version}_amd64.deb";
-        sha256 = "sha256-eIiFiRlmnARtyd8YHUHrjDaaF8kQYvcOa2AwT3071Ho=";
+        sha256 = "sha256-rGMkXs5w/NrIYOKPArCLBMUDoMnvQqggo91viyJUfj4=";
       };
     });
   };
@@ -58,13 +98,6 @@
   # be accessible through 'pkgs.unstable'
   unstable-packages = final: _prev: {
     unstable = import inputs.nixpkgs-unstable {
-      inherit (final) system;
-      config.allowUnfree = true;
-    };
-  };
-
-  oldstable-packages = final: _prev: {
-    oldstable = import inputs.nixpkgs-oldstable {
       inherit (final) system;
       config.allowUnfree = true;
     };

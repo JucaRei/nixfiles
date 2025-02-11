@@ -1,85 +1,171 @@
-{ config, desktop, lib, pkgs, username, ... }:
+{
+  config,
+  desktop,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 let
-  inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkForce optional mkIf mkDefault;
-
-  aesthetic-wallpapers = pkgs.fetchgit {
-    url = "https://github.com/D3Ext/aesthetic-wallpapers";
-    rev = "060c580dcc11afea2f77f9073bd8710920e176d8";
-    sha256 = "5MnW630EwjKOeOCIAJdSFW0fcSSY4xmfuW/w7WyIovI=";
-  };
-
-  is_X11 = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
+  inherit (pkgs.stdenv) isLinux isDarwin;
 in
 {
   # import the DE specific configuration and any user specific desktop configuration
-  imports = [
-    ./apps
-    ./features
-  ]
-  ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-  ++ optional (builtins.pathExists (./. + "/${desktop}/${username}/default.nix")) ./${desktop}/${username};
+  imports =
+    [
+      ./apps
+      ./features
+    ]
+    ++ lib.optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+    ++ lib.optional (builtins.pathExists (
+      ./. + "/${desktop}/${username}/default.nix"
+    )) ./${desktop}/${username};
 
-  config = {
-    # Authrorize X11 access in Distrobox
-    home = {
-      sessionPath = [
-        "$HOME/.local/bin"
-        "$HOME/.local/share/applications"
-      ];
+  # Enable the Catppuccin theme
+  catppuccin = {
+    alacritty.enable = config.programs.alacritty.enable && isLinux;
+    foot.enable = config.programs.foot.enable;
+    fuzzel.enable = config.programs.fuzzel.enable;
+    hyprland.enable = config.wayland.windowManager.hyprland.enable;
+    waybar.enable = config.programs.waybar.enable;
+    obs.enable = config.programs.obs-studio.enable;
+  };
 
-      file = mkIf isLinux {
-        ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
-        ".face" = { source = "${pkgs.juca-avatar}/share/faces/juca.jpg"; };
-        "${config.xdg.userDirs.pictures}/wallpapers".source = mkForce "${aesthetic-wallpapers}/images";
-      };
+  # Authrorize X11 access in Distrobox
+  home.file = lib.mkIf isLinux {
+    ".distroboxrc".text = ''${pkgs.xorg.xhost}/bin/xhost +si:localuser:$USER'';
+  };
 
-      sessionVariables = {
-        # prevent wine from creating file associations
-        WINEDLLOVERRIDES = "winemenubuilder.exe=d";
+  programs = lib.mkIf (username == "martin") {
+    alacritty = lib.mkIf (desktop != "hyprland") {
+      enable = true;
+      settings = {
+        cursor = {
+          style = {
+            shape = "Block";
+            blinking = "Always";
+          };
+        };
+        env = {
+          TERM = "xterm-256color";
+        };
+        font = {
+          normal = {
+            family = "FiraCode Nerd Font Mono";
+          };
+          bold = {
+            family = "FiraCode Nerd Font Mono";
+          };
+          italic = {
+            family = "FiraCode Nerd Font Mono";
+          };
+          bold_italic = {
+            family = "FiraCode Nerd Font Mono";
+          };
+          size = 16;
+          builtin_box_drawing = true;
+        };
+        mouse = {
+          bindings = [
+            {
+              mouse = "Middle";
+              action = "Paste";
+            }
+          ];
+        };
+        selection = {
+          save_to_clipboard = true;
+        };
+        scrolling = {
+          history = 50000;
+          multiplier = 3;
+        };
+        window = {
+          decorations = if config.wayland.windowManager.hyprland.enable then "None" else "Full";
+          dimensions = {
+            columns = 132;
+            lines = 50;
+          };
+          padding = {
+            x = 5;
+            y = 5;
+          };
+          opacity = 1.0;
+          blur = false;
+        };
       };
     };
-
-    gtk = {
-      gtk3 = {
-        bookmarks = [
-          "file:///home/${username}/Documents"
-          "file:///home/${username}/Downloads"
-          "file:///home/${username}/Pictures"
-          "file:///home/${username}/Pictures/screenshots"
-          "file:///home/${username}/Pictures/wallpapers"
-          "file:///home/${username}/Music"
-          "file:///home/${username}/Videos"
-          "file:///home/${username}/docker"
-          "file:///home/${username}/games"
-          "file:///home/${username}/workspace"
-          "file:///home/${username}/virtualmachines"
-          "smb://10.10.10.200/volume_1 hd400gb"
-          "smb://10.10.10.200/volume_2/Transmission/Volume_2 h2tb"
-          "smb://10.10.10.1/extermalhd hdwrt"
-        ];
+    foot = lib.mkIf isLinux {
+      enable = true;
+      # https://codeberg.org/dnkl/foot/src/branch/master/foot.ini
+      server.enable = false;
+      settings = {
+        main = {
+          font = "FiraCode Nerd Font Mono:size=16";
+          term = "xterm-256color";
+        };
+        cursor = {
+          style = "block";
+          blink = "yes";
+        };
+        scrollback = {
+          lines = 10240;
+        };
       };
     };
+  };
 
-    desktop.apps.browser = {
-      chrome-based-browser = mkDefault {
-        enable = false;
-        browser = "brave";
-        disableWayland = is_X11;
-      };
+  # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
+  services.mpris-proxy.enable = isLinux;
 
-      firefox-based-browser = mkDefault {
-        enable = true;
-        browser = "firefox";
-        disableWayland = is_X11;
-      };
-    };
+  xresources.properties = {
+    "*background" = "#1E1E2E";
+    "*foreground" = "#CDD6F4";
+    # black
+    "*color0" = "#45475A";
+    "*color8" = "#585B70";
+    # red
+    "*color1" = "#F38BA8";
+    "*color9" = "#F38BA8";
+    # green
+    "*color2" = "#A6E3A1";
+    "*color10" = "#A6E3A1";
+    # yellow
+    "*color3" = "#F9E2AF";
+    "*color11" = "#F9E2AF";
+    # blue
+    "*color4" = "#89B4FA";
+    "*color12" = "#89B4FA";
+    #magenta
+    "*color5" = "#F5C2E7";
+    "*color13" = "#F5C2E7";
+    #cyan
+    "*color6" = "#94E2D5";
+    "*color14" = "#94E2D5";
+    #white
+    "*color7" = "#BAC2DE";
+    "*color15" = "#A6ADC8";
 
-    # features.mime.defaultApps = {
-    #   enable = true;
-    # };
-
-    # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
-    services.mpris-proxy.enable = isLinux;
+    # Xterm Appearance
+    "XTerm*background" = "#1E1E2E";
+    "XTerm*foreground" = "#CDD6F4";
+    "XTerm*letterSpace" = 0;
+    "XTerm*lineSpace" = 0;
+    "XTerm*geometry" = "132x50";
+    "XTerm.termName" = "xterm-256color";
+    "XTerm*internalBorder" = 2;
+    "XTerm*faceName" = "FiraCode Nerd Font Mono:size=14:style=Medium:antialias=true";
+    "XTerm*boldFont" = "FiraCode Nerd Font Mono:size=14:style=Bold:antialias=true";
+    "XTerm*boldColors" = true;
+    "XTerm*cursorBlink" = true;
+    "XTerm*cursorUnderline" = false;
+    "XTerm*saveline" = 2048;
+    "XTerm*scrollBar" = false;
+    "XTerm*scrollBar_right" = false;
+    "XTerm*urgentOnBell" = true;
+    "XTerm*depth" = 24;
+    "XTerm*utf8" = true;
+    "XTerm*locale" = false;
+    "XTerm.vt100.metaSendsEscape" = true;
   };
 }

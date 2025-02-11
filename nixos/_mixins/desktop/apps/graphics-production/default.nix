@@ -1,18 +1,16 @@
-{ lib, pkgs, config, ... }:
-let
-  inherit (lib) mkIf mkEnableOption;
-  cfg = config.desktop.apps.graphics-production;
-in
 {
-  options = {
-    desktop.apps.graphics-production = {
-      enable = mkEnableOption "Whether enable graphics for production.";
-    };
-  };
-  config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      inkscape
-      pinta
-    ];
-  };
+  lib,
+  pkgs,
+  username,
+  ...
+}:
+let
+  installFor = [ "martin" ];
+in
+lib.mkIf (lib.elem username installFor) {
+  environment.systemPackages = with pkgs; [
+    gimp
+    inkscape
+
+  ];
 }

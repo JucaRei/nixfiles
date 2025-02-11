@@ -1,43 +1,55 @@
-{ config, desktop, hostname, isInstall, lib, pkgs, ... }:
+{
+  config,
+  desktop,
+  hostname,
+  isInstall,
+  lib,
+  pkgs,
+  ...
+}:
 let
-  inherit (lib) mkIf;
   kmsconFontSize = {
-    rocinante = "24";
-    nitro = "20";
-    anubis = "22";
+    sidious = "24";
+    tanis = "18";
+    vader = "20";
   };
-  kmsconExtraConfig = (
-    if (builtins.hasAttr hostname kmsconFontSize) then
-      ''font-size=${kmsconFontSize.${hostname}} ''
-    else
-      ''font-size=14''
-  )
-  + ''
-    no-drm
-    no-switchvt
-    grab-scroll-up=
-    grab-scroll-down=
-    palette=custom
-    palette-black=69,71,90
-    palette-red=243,139,168
-    palette-green=166,227,161
-    palette-yellow=249,226,175
-    palette-blue=137,180,250
-    palette-magenta=245,194,231
-    palette-cyan=148,226,213
-    palette-light-grey=127,132,156
-    palette-dark-grey=88,91,112
-    palette-light-red=243,139,168
-    palette-light-green=166,227,161
-    palette-light-yellow=249,226,175
-    palette-light-blue=137,180,250
-    palette-light-magenta=245,194,231
-    palette-light-cyan=148,226,213
-    palette-white=205,214,244
-    palette-foreground=166,173,200
-    palette-background=30,30,46
-    sb-size=10240
-  '';
+  kmsconExtraConfig =
+    (
+      if (builtins.hasAttr hostname kmsconFontSize) then
+        ''
+        font-size=${kmsconFontSize.${hostname}}
+        ''
+      else
+        ''
+        font-size=14
+        ''
+    )
+    + ''
+      no-drm
+      no-switchvt
+      grab-scroll-up=
+      grab-scroll-down=
+      palette=custom
+      palette-black=69,71,90
+      palette-red=243,139,168
+      palette-green=166,227,161
+      palette-yellow=249,226,175
+      palette-blue=137,180,250
+      palette-magenta=245,194,231
+      palette-cyan=148,226,213
+      palette-light-grey=127,132,156
+      palette-dark-grey=88,91,112
+      palette-light-red=243,139,168
+      palette-light-green=166,227,161
+      palette-light-yellow=249,226,175
+      palette-light-blue=137,180,250
+      palette-light-magenta=245,194,231
+      palette-light-cyan=148,226,213
+      palette-white=205,214,244
+      palette-foreground=166,173,200
+      palette-background=30,30,46
+      sb-size=10240
+    '';
 in
 {
   boot = {
@@ -55,23 +67,22 @@ in
   };
 
   console = {
-    keyMap = if (hostname == "nitro") || (hostname == "scrubber") then "br-abnt" else "us";
-
-    earlySetup = true;
     font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-    # font = "ter-powerline-v32n";
-    packages = with pkgs; [
-      tamzen
-      # terminus_font
-      # powerline-fonts
-    ];
+    packages = with pkgs; [ tamzen ];
   };
 
   services = {
+    # TODO: Build from this patch branch that has mouse support
+    # - https://github.com/MacSlow/kmscon/tree/add-kmscon.conf-manpage
+    # - https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/km/kmscon/package.nix
+    # TODO: Replace `login -p` with maybe `fish -l`
+    # TODO: Is this DRM patch helpful?
+    # - https://github.com/Aetf/kmscon/pull/66
+    # TODO: Does compiling without fbterm help by odd sized displays?
+    # - https://github.com/Aetf/kmscon/issues/18#issuecomment-612003371
     kmscon = lib.mkIf isInstall {
-      enable = !config.boot.plymouth.enable;
-      extraOptions = "--gpus primary";
-      hwRender = if (desktop == null) then true else false;
+      enable = true;
+      hwRender = false;
       fonts = [
         {
           name = "FiraCode Nerd Font Mono";
@@ -84,38 +95,6 @@ in
         }
       ];
       extraConfig = kmsconExtraConfig;
-    };
-    getty = mkIf isInstall {
-      greetingLine = "\\l";
-      helpLine = ''
-        Type `i' to print system information.
-
-            .     .       .  .   . .   .   . .    +  .
-              .     .  :     .    .. :. .___---------___.
-                   .  .   .    .  :.:. _".^ .^ ^.  '.. :"-_. .
-                .  :       .  .  .:../:            . .^  :.:\.
-                    .   . :: +. :.:/: .   .    .        . . .:\
-             .  :    .     . _ :::/:               .  ^ .  . .:\
-              .. . .   . - : :.:./.                        .  .:\
-              .      .     . :..|:                    .  .  ^. .:|
-                .       . : : ..||        .                . . !:|
-              .     . . . ::. ::\(                           . :)/
-             .   .     : . : .:.|. ######              .#######::|
-              :.. .  :-  : .:  ::|.#######           ..########:|
-             .  .  .  ..  .  .. :\ ########          :######## :/
-              .        .+ :: : -.:\ ########       . ########.:/
-                .  .+   . . . . :.:\. #######       #######..:/
-                  :: . . . . ::.:..:.\           .   .   ..:/
-               .   .   .  .. :  -::::.\.       | |     . .:/
-                  .  :  .  .  .-:.":.::.\             ..:/
-             .      -.   . . . .: .:::.:.\.           .:/
-            .   .   .  :      : ....::_:..:\   ___.  :/
-               .   .  .   .:. .. .  .: :.:.:\       :/
-                 +   .   .   : . ::. :.:. .:.|\  .:/|
-                 .         +   .  .  ...:: ..|  --.:|
-            .      . . .   .  .  . ... :..:.."(  ..)"
-             .   .       .      :  .   .: ::/  .  .::\
-      '';
     };
   };
 }

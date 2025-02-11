@@ -1,12 +1,11 @@
 { config, hostname, lib, pkgs, ... }:
 let
-  wlogoutMargins =
-    if hostname == "vader" then
-      "--margin-top 960 --margin-bottom 960"
-    else if hostname == "phasma" then
-      "--margin-left 540 --margin-right 540"
-    else
-      "";
+  wlogoutMargins = if hostname == "vader" then
+    "--margin-top 960 --margin-bottom 960"
+  else if hostname == "phasma" then
+    "--margin-left 540 --margin-right 540"
+  else
+    "";
   outputDisplay = if (hostname == "vader" || hostname == "phasma") then "DP-1" else "eDP-1";
   bluetoothToggle = pkgs.writeShellApplication {
     name = "bluetooth-toggle";
@@ -95,7 +94,6 @@ in
   programs = {
     waybar = {
       enable = true;
-      catppuccin.enable = true;
       style = ''
         * {
           font-family: FiraCode Nerd Font Mono;
@@ -340,80 +338,70 @@ in
             format-icons = {
               "1" = "󰖟";
               "2" = "󱒔";
-              "3" = "󰭹";
-              "4" = "󰅴";
+              "3" = "";
+              "4" = "";
               "5" = "󱆃";
-              "6" = "󰡨";
-              "7" = "󰦔";
-              "8" = "󰺵";
+              "6" = "";
+              "7" = "";
+              "8" = "󰊴";
               "9" = "󰄀";
-              "10" = "󰊓";
+              "10" = "󰐯";
               default = "";
             };
             persistent-workspaces = {
               # https://github.com/Alexays/Waybar/wiki/Module:-Hyprland#persistent-workspaces
-              "1" =
-                if (hostname == "phasma" || hostname == "vader") then
-                  [ "DP-1" ]
-                else
-                  [ "eDP-1" ];
-              "2" =
-                if (hostname == "phasma" || hostname == "vader") then
-                  [ "DP-1" ]
-                else
-                  [ "eDP-1" ];
-              "3" =
-                if (hostname == "phasma") then
-                  [ "DP-1" ]
-                else if (hostname == "vader") then
-                  [ "DP-2" ]
-                else
-                  [ "eDP-1" ];
-              "4" =
-                if (hostname == "phasma") then
-                  [ "DP-1" ]
-                else if (hostname == "vader") then
-                  [ "DP-2" ]
-                else
-                  [ "eDP-1" ];
-              "5" =
-                if (hostname == "phasma") then
-                  [ "DP-1" ]
-                else if (hostname == "vader") then
-                  [ "DP-2" ]
-                else
-                  [ "eDP-1" ];
-              "6" =
-                if (hostname == "phasma") then
-                  [ "DP-1" ]
-                else if (hostname == "vader") then
-                  [ "DP-2" ]
-                else
-                  [ "eDP-1" ];
-              "7" =
-                if (hostname == "phasma" || hostname == "vader") then
-                  [ "DP-1" ]
-                else
-                  [ "eDP-1" ];
-              "8" =
-                if (hostname == "phasma" || hostname == "vader") then
-                  [ "DP-1" ]
-                else
-                  [ "eDP-1" ];
-              "9" =
-                if (hostname == "phasma") then
-                  [ "HDMI-A-1" ]
-                else if (hostname == "vader") then
-                  [ "DP-2" ]
-                else
-                  [ "*" ];
-              "10" =
-                if (hostname == "phasma") then
-                  [ "DP-2" ]
-                else if (hostname == "vader") then
-                  [ "DP-3" ]
-                else
-                  [ "*" ];
+              "1" = if (hostname == "phasma" || hostname == "vader") then
+                      [ "DP-1" ]
+                    else
+                      [ "eDP-1" ];
+              "2" = if (hostname == "phasma" || hostname == "vader") then
+                      [ "DP-1" ]
+                    else
+                      [ "eDP-1" ];
+              "3" = if (hostname == "phasma") then
+                      [ "DP-1" ]
+                    else if (hostname == "vader") then
+                      [ "DP-2" ]
+                    else
+                      [ "eDP-1" ];
+              "4" = if (hostname == "phasma") then
+                      [ "DP-1" ]
+                    else if (hostname == "vader") then
+                      [ "DP-2" ]
+                    else
+                      [ "eDP-1" ];
+              "5" = if (hostname == "phasma") then
+                      [ "DP-1" ]
+                    else if (hostname == "vader") then
+                      [ "DP-2" ]
+                    else
+                      [ "eDP-1" ];
+              "6" = if (hostname == "phasma") then
+                      [ "DP-1" ]
+                    else if (hostname == "vader") then
+                      [ "DP-2" ]
+                    else
+                      [ "eDP-1" ];
+              "7" = if (hostname == "phasma" || hostname == "vader") then
+                      [ "DP-1" ]
+                    else
+                      [ "eDP-1" ];
+              "8" = if (hostname == "phasma" || hostname == "vader") then
+                      [ "DP-1" ]
+                    else
+                      [ "eDP-1" ];
+              "9" = if (hostname == "phasma") then
+                      [ "HDMI-A-1" ]
+                    else if (hostname == "vader") then
+                      [ "DP-2" ]
+                    else
+                      [ ];
+              "10" = if (hostname == "phasma") then
+                      [ "DP-2" ]
+                    else if (hostname == "vader") then
+                      [ "DP-3" ]
+                    else
+                      [ ];
             };
             on-click = "activate";
           };
@@ -455,16 +443,16 @@ in
             format = "<big>{:%H:%M}</big>";
             format-alt = "{:%a, %d %b %R}";
             interval = 60;
-            timezone = "America/Sao_Paulo";
+            #timezone = "Europe/London";
             #timezones = [ "Europe/London" "Europe/Amsterdam" "America/Boston" "America/Los_Angeles" "Africa/Lagos" ];
             tooltip-format = "<tt><small>{calendar}</small></tt>";
           };
           "custom/calendar" = {
             format = "<big>󰔠</big>";
             max-length = 2;
-            on-click = "${lib.getExe pkgs.gnome.gnome-calendar}";
+            on-click = "${lib.getExe pkgs.gnome-calendar}";
             on-click-middle = "${lib.getExe pkgs.mousam}";
-            on-click-right = "${lib.getExe pkgs.gnome.gnome-clocks}";
+            on-click-right = "${lib.getExe pkgs.gnome-clocks}";
             tooltip-format = "󰸗  Calendar (left-click)\n󰼳  Weather (middle-click)\n󱎫  Clock (right-click)";
           };
           #https://haseebmajid.dev/posts/2024-03-15-til-how-to-get-swaync-to-play-nice-with-waybar/
@@ -474,11 +462,11 @@ in
               none = "";
               notification = "<span foreground='#f5c2e7'>󱅫</span>";
               dnd-none = "󰂠";
-              dnd-notification = "󰂞";
+              dnd-notification = "󱅫";
               inhibited-none = "";
               inhibited-notification = "<span foreground='#f5c2e7'>󰅸</span>";
               dnd-inhibited-none = "󰪓";
-              dnd-inhibited-notification = "󰂟";
+              dnd-inhibited-notification = "󰅸";
             };
             max-length = 3;
             return-type = "json";
@@ -544,7 +532,7 @@ in
             format-on = "󰂯";
             format-off = "󰂲";
             on-click-middle = "${lib.getExe bluetoothToggle}";
-            on-click-right = "hyprctl dispatch exec [workspace current] ${lib.getExe pkgs.blueberry}";
+            on-click-right = "hyprctl dispatch exec [workspace current] ${pkgs.blueberry}/bin/blueberry";
             tooltip-format = "  {controller_alias}\t󰿀  {controller_address}\n󰂴  {num_connections} connected";
             tooltip-format-connected = "  {controller_alias}\t󰿀  {controller_address}\n󰂴  {num_connections} connected\n{device_enumerate}";
             tooltip-format-disabled = "󰂲  {controller_alias}\t󰿀  {controller_address}\n󰂳  {status}";

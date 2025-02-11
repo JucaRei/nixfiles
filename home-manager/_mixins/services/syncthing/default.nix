@@ -1,9 +1,18 @@
-{ config, hostname, isLima, isWorkstation, lib, pkgs, username, ... }:
+{
+  config,
+  hostname,
+  isLima,
+  isWorkstation,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 let
-  installFor = [ "juca" ];
+  installFor = [ "martin" ];
   inherit (pkgs.stdenv) isLinux;
 in
-lib.mkIf (lib.elem username installFor && isLinux && !isLima) {
+lib.mkIf (lib.elem username installFor && !isLima) {
   home = {
     file."/Syncthing/.keep".text = "";
     packages = with pkgs; [ stc-cli ];
@@ -20,7 +29,7 @@ lib.mkIf (lib.elem username installFor && isLinux && !isLima) {
       "--no-browser"
     ];
     tray = lib.mkIf isWorkstation {
-      enable = true;
+      enable = isLinux;
       package = pkgs.syncthingtray;
     };
   };
@@ -36,13 +45,15 @@ lib.mkIf (lib.elem username installFor && isLinux && !isLima) {
 
   # Workaround for Failed to restart syncthingtray.service: Unit tray.target not found.
   # - https://github.com/nix-community/home-manager/issues/2064
-  systemd.user.targets.tray = lib.mkIf isWorkstation {
-    Unit = {
-      Description = "Home Manager System Tray";
-      Wants = [ "graphical-session-pre.target" ];
+  systemd = lib.mkIf isLinux {
+    user.targets.tray = lib.mkIf isWorkstation {
+      Unit = {
+        Description = "Home Manager System Tray";
+        Wants = [ "graphical-session-pre.target" ];
+      };
     };
-  };
-  systemd.user.services.syncthingtray = {
-    Service.ExecStart = lib.mkForce "${pkgs.syncthingtray}/bin/syncthingtray --wait";
+    user.services.syncthingtray = {
+      Service.ExecStart = lib.mkForce "${pkgs.syncthingtray}/bin/syncthingtray --wait";
+    };
   };
 }

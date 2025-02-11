@@ -1,256 +1,119 @@
-{ config, hostname, lib, pkgs, ... }:
+{
+  config,
+  hostname,
+  lib,
+  pkgs,
+  tailNet,
+  ...
+}:
 let
   installOn = [
-    "phasma"
-    "tanis"
-    "revan"
-    "sidious"
-    "vader"
+    "none"
   ];
 in
 lib.mkIf (lib.elem "${hostname}" installOn) {
+  sops = {
+    secrets = {
+      homepage-env = {
+        group = "users";
+        mode = "0400";
+        owner = "root";
+        path = "/etc/homepage-dashboard/secrets.env";
+        sopsFile = ../../../../secrets/homepage.yaml;
+      };
+    };
+  };
   services = {
+    # Reverse proxy homepage-dashboard if Tailscale is enabled.
+    caddy.virtualHosts."${hostname}.${tailNet}".extraConfig = lib.mkIf
+    (config.services.homepage-dashboard.enable && config.services.tailscale.enable)
+      ''
+        reverse_proxy localhost:8082
+      '';
     homepage-dashboard = {
       enable = true;
-      package = pkgs.unstable.homepage-dashboard;
-      bookmarks = [
-        {
-          Development = [
-            {
-              GitHub = [
-                {
-                  abbr = "GH";
-                  href = "https://github.com/flexiondotorg";
-                  icon = "github-light.png";
-                }
-              ];
-            }
-            {
-              GitLab = [
-                {
-                  abbr = "GL";
-                  href = "https://gitlab.com";
-                  icon = "gitlab.png";
-                }
-              ];
-            }
-            {
-              FlakeHub = [
-                {
-                  abbr = "FH";
-                  href = "https://flakehub.com";
-                  icon = "https://flakehub.com/favicon.png";
-                }
-              ];
-            }
-            {
-              Launchpad = [
-                {
-                  abbr = "LP";
-                  href = "https://launchpad.net/~flexiondotorg";
-                  icon = "https://launchpad.net/@@/favicon-32x32.png?v=2022";
-                }
-              ];
-            }
-          ];
-        }
-        {
-          NixOS = [
-            {
-              "NixOS Discourse" = [
-                {
-                  abbr = "ND";
-                  href = "https://discourse.nixos.org";
-                  icon = "https://discourse.nixos.org/uploads/default/original/2X/c/cb4fe584627b37e7c1d5424e9cec0bb30fdb6c4d.png";
-                }
-              ];
-            }
-            {
-              "Nixpkgs" = [
-                {
-                  abbr = "NP";
-                  href = "https://github.com/NixOS/nixpkgs";
-                  icon = "https://avatars.githubusercontent.com/u/487568?s=48&v=4";
-                }
-              ];
-            }
-            {
-              "NixOS Search" = [
-                {
-                  abbr = "NS";
-                  href = "https://search.nixos.org";
-                  icon = "https://search.nixos.org/images/nix-logo.png";
-                }
-              ];
-            }
-            {
-              "Home Manager" = [
-                {
-                  abbr = "HM";
-                  href = "https://nix-community.github.io/home-manager/options.xhtml";
-                  icon = "https://avatars.githubusercontent.com/u/33221035?s=200&v=4";
-                }
-              ];
-            }
-            {
-              "NixOS Wiki" = [
-                {
-                  abbr = "NW";
-                  href = "https://wiki.nixos.org";
-                  icon = "https://wiki.nixos.org/nixos.png";
-                }
-              ];
-            }
-          ];
-        }
-        {
-          Social = [
-            {
-              Mastodon = [
-                {
-                  abbr = "MD";
-                  href = "https://fosstodon.org/deck/@wimpy";
-                  icon = "mastodon.png";
-                }
-              ];
-            }
-            {
-              Bluesky = [
-                {
-                  abbr = "BS";
-                  href = "https://bsky.app/notifications";
-                  icon = "https://bsky.app/static/favicon-32x32.png";
-                }
-              ];
-            }
-            {
-              Instagram = [
-                {
-                  abbr = "IG";
-                  href = "https://www.instagram.com/";
-                  icon = "instagram.png";
-                }
-              ];
-            }
-            {
-              X = [
-                {
-                  abbr = "X";
-                  href = "https://x.com/flexiondotorg";
-                  icon = "x-light.png";
-                }
-              ];
-            }
-            {
-              LinkedIn = [
-                {
-                  abbr = "LI";
-                  href = "https://www.linkedin.com/in/martinwimpress/";
-                  icon = "linkedin.png";
-                }
-              ];
-            }
-          ];
-        }
-        {
-          Shopping = [
-            {
-              Amazon = [
-                {
-                  abbr = "AZ";
-                  href = "https://www.amazon.co.uk/";
-                  icon = "amazon-light.png";
-                }
-              ];
-            }
-            {
-              eBay = [
-                {
-                  abbr = "EB";
-                  href = "https://www.ebay.co.uk";
-                  icon = "ebay.png";
-                }
-              ];
-            }
-            {
-              Ocado = [
-                {
-                  abbr = "OC";
-                  href = "https://www.ocado.com/";
-                  icon = "https://www.ocado.com/webshop/static/images/7.4.99/favicon.png";
-                }
-              ];
-            }
-            {
-              Tesco = [
-                {
-                  abbr = "TS";
-                  href = "https://www.tesco.com/groceries";
-                  icon = "https://webautomation.io/static/images/domain_images/tescofav_2vycyUg.png";
-                }
-              ];
-            }
-            {
-              Scan = [
-                {
-                  abbr = "SC";
-                  href = "https://scan.co.uk";
-                  icon = "https://scan.co.uk/content/images/logo-192x192.png";
-                }
-              ];
-            }
-          ];
-        }
-        {
-          Productivity = [
-            {
-              ChatGPT = [
-                {
-                  abbr = "AI";
-                  href = "https://chatgpt.com/";
-                  icon = "https://cdn.oaistatic.com/_next/static/media/favicon-32x32.630a2b99.png";
-                }
-              ];
-            }
-            {
-              Calendar = [
-                {
-                  abbr = "CA";
-                  href = "https://calendar.google.com";
-                  icon = "https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_31_2x.png";
-                }
-              ];
-            }
-            {
-              Gmail = [
-                {
-                  abbr = "GM";
-                  href = "https://mail.google.com";
-                  icon = "gmail.png";
-                }
-              ];
-            }
-            {
-              Notion = [
-                {
-                  abbr = "NT";
-                  href = "https://notion.so";
-                  icon = "notion.png";
-                }
-              ];
-            }
-          ];
-        }
-      ];
+      environmentFile = config.sops.secrets.homepage-env.path;
       services = [
+        {
+          Services = [
+            {
+              Netdata = lib.mkIf config.services.netdata.enable {
+                description = "Netdata Observability";
+                icon = "netdata";
+                href = "https://${hostname}.${tailNet}/netdata/";
+                siteMonitor = "https://${hostname}.${tailNet}/netdata/";
+                widget = {
+                  type = "netdata";
+                  url = "http://localhost:19999";
+                  fields = [ "criticals" "warnings" ];
+                };
+              };
+            }
+            {
+              Scrutiny = lib.mkIf config.services.scrutiny.enable {
+                description = "S.M.A.R.T. Monitoring";
+                icon = "scrutiny";
+                href = "https://${hostname}.${tailNet}/scrutiny/";
+                siteMonitor = "https://${hostname}.${tailNet}/scrutiny/";
+                widget = {
+                  type = "scrutiny";
+                  url = "http://localhost:8080/scrutiny";
+                  fields = [ "failed" "passed" "unknown" ];
+                };
+              };
+            }
+            {
+              Jellyfin = lib.mkIf config.services.jellyfin.enable {
+                description = "Jellyfin Media Server";
+                icon = "jellyfin.png";
+                href = "http://${hostname}:8096";
+                siteMonitor = "http://${hostname}:8096/web";
+                widget = {
+                  type = "jellyfin";
+                  url = "http://localhost:8096";
+                  key = "{{HOMEPAGE_VAR_JELLYFIN_API_KEY}}";
+                  enableBlocks = true;              # optional, defaults to false
+                  enableNowPlaying = true;          # optional, defaults to true
+                  enableUser = true;                # optional, defaults to false
+                  showEpisodeNumber = true;         # optional, defaults to false
+                  expandOneStreamToTwoRows = true;  # optional, defaults to true
+                };
+              };
+            }
+            {
+              Plex = lib.mkIf config.services.plex.enable {
+                description = "Plex Media Server";
+                icon = "plex.png";
+                href = "http://${hostname}:32400";
+                siteMonitor = "http://${hostname}:32400/web";
+                widget = {
+                  type = "plex";
+                  url = "http://127.0.0.1:32400";
+                  # https://www.plexopedia.com/plex-media-server/general/plex-token/
+                  # https://www.plex.tv/claim/
+                  key = "{{HOMEPAGE_VAR_PLEX_API_KEY}}";
+                  fields = [ "streams" "movies" "tv" ];
+                };
+              };
+            }
+          ];
+        }
         {
           Infra = [
             {
-              "tp-link AX6000" = {
+              "tp-link Deco BE85" = {
                 description = "Router: Home";
                 icon = "tp-link.png";
-                href = "http://192.168.2.1";
-                siteMonitor = "http://192.168.2.1";
+                href = "http://10.10.10.1";
+                siteMonitor = "http://10.10.10.1";
+              };
+            }
+            {
+              "Hitron Chita" = {
+                description = "Router: Fibre";
+                icon = "router";
+                href = "http://62.31.16.153";
+                siteMonitor = "http://62.31.16.153/webpages/login.html";
               };
             }
             {
@@ -265,24 +128,110 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
               "Philips Hue Bridge" = {
                 description = "Lights: Home";
                 icon = "diyhue.png";
-                href = "https://192.168.2.250";
-                siteMonitor = "https://192.168.2.250";
+                href = "http://10.10.10.19";
+                siteMonitor = "http://10.10.10.19";
               };
             }
             {
               "Grandstream HT801" = {
                 description = "VoIP: Home";
                 icon = "voip-info.png";
-                href = "http://192.168.2.58";
-                siteMonitor = "http://192.168.2.58";
+                href = "http://10.10.10.12";
+                siteMonitor = "http://10.10.10.12/cgi-bin/login/";
               };
             }
             {
               "HP Color LaserJet Pro MFP M283fdw" = {
                 description = "Printer: Home";
                 icon = "hp.png";
-                href = "http://192.168.2.11";
-                siteMonitor = "http://192.168.2.11";
+                href = "http://10.10.10.11";
+                siteMonitor = "http://10.10.10.11";
+              };
+            }
+          ];
+        }
+        {
+          Tailscale = [
+            {
+              Revan = {
+                description = "Home Server";
+                icon = "tailscale";
+                href = "https://revan.${tailNet}";
+                siteMonitor = "https://revan.${tailNet}";
+                widget = {
+                    type = "tailscale";
+                    deviceid = "{{HOMEPAGE_VAR_REVAN_TAILSCALE_DEVICEID}}";
+                    key = "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}";
+                    fields = [ "address" "last_seen" "expires" ];
+                };
+              };
+            }
+            {
+              Malak = {
+                description = "Internet Server";
+                icon = "tailscale";
+                href = "https://malak.${tailNet}";
+                siteMonitor = "https://malak.${tailNet}";
+                widget = {
+                    type = "tailscale";
+                    deviceid = "{{HOMEPAGE_VAR_MALAK_TAILSCALE_DEVICEID}}";
+                    key = "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}";
+                    fields = [ "address" "last_seen" "expires" ];
+                };
+              };
+            }
+            {
+              Vader = {
+                description = "Home Workstation";
+                icon = "tailscale";
+                href = "https://vader.${tailNet}";
+                siteMonitor = "https://vader.${tailNet}";
+                widget = {
+                    type = "tailscale";
+                    deviceid = "{{HOMEPAGE_VAR_VADER_TAILSCALE_DEVICEID}}";
+                    key = "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}";
+                    fields = [ "address" "last_seen" "expires" ];
+                };
+              };
+            }
+            {
+              Pasma = {
+                description = "Office Workstation";
+                icon = "tailscale";
+                href = "https://phasma.${tailNet}";
+                siteMonitor = "https://phasma.${tailNet}";
+                widget = {
+                    type = "tailscale";
+                    deviceid = "{{HOMEPAGE_VAR_PHASMA_TAILSCALE_DEVICEID}}";
+                    key = "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}";
+                    fields = [ "address" "last_seen" "expires" ];
+                };
+              };
+            }
+            {
+              Frontroom = {
+                description = "AppleTV: Frontroom";
+                icon = "tailscale";
+                href = "https://login.tailscale.com/admin/machines";
+                widget = {
+                    type = "tailscale";
+                    deviceid = "{{HOMEPAGE_VAR_FRONTROOM_TAILSCALE_DEVICEID}}";
+                    key = "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}";
+                    fields = [ "address" "last_seen" "expires" ];
+                };
+              };
+            }
+            {
+              Bedroom = {
+                description = "AppleTV: Bedroom";
+                icon = "tailscale";
+                href = "https://login.tailscale.com/admin/machines";
+                widget = {
+                    type = "tailscale";
+                    deviceid = "{{HOMEPAGE_VAR_BEDROOM_TAILSCALE_DEVICEID}}";
+                    key = "{{HOMEPAGE_VAR_TAILSCALE_API_KEY}}";
+                    fields = [ "address" "last_seen" "expires" ];
+                };
               };
             }
           ];
@@ -300,12 +249,6 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
         favicon = "https://wimpysworld.com/favicon.ico";
         headerStyle = "boxed";
         hideVersion = true;
-        #layout = {
-        #  Links = {
-        #    style = "row";
-        #    columns = 4;
-        #  };
-        #};
         showStats = true;
         title = "Homepage: ${hostname}";
       };
@@ -378,9 +321,9 @@ lib.mkIf (lib.elem "${hostname}" installOn) {
         {
           openmeteo = {
             label = "Weather";
-            latitude = -23.55052;
-            longitude = -46.633308;
-            timezone = "America/Sao_Paulo";
+            latitude = "51.254383";
+            longitude = "-0.939525";
+            #timezone = "Europe/London";
             units = "metric";
           };
         }

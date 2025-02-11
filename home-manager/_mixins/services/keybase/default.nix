@@ -1,16 +1,15 @@
-{ config
-, isLima
-, isWorkstation
-, lib
-, pkgs
-, username
-, ...
+{
+  config,
+  isWorkstation,
+  hostname,
+  lib,
+  pkgs,
+  ...
 }:
 let
-  installFor = [ "juca" ];
-  inherit (pkgs.stdenv) isLinux;
+  installOn = [ "phasma" "vader" ];
 in
-lib.mkIf (lib.elem username installFor && isLinux && !isLima) {
+lib.mkIf (lib.elem hostname installOn) {
   home.file = {
     "${config.xdg.configHome}/keybase/autostart_created" = {
       text = ''

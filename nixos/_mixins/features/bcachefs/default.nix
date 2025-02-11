@@ -1,33 +1,27 @@
-{ hostname, isISO, config, lib, pkgs, ... }:
+{
+  hostname,
+  isISO,
+  lib,
+  pkgs,
+  ...
+}:
 let
   installOn = [
-    "minimech"
-    "scrubber"
+    "crawler"
+    "dagger"
+    "shaa"
+    "sidious"
   ];
-  inherit (lib) mkOption mkIf elem mkOverride types;
-  cfg = config.features.bcachefs;
 in
-{
-  options = {
-    features.bcachefs = {
-      enable = mkOption {
-        type = types.bool;
-        default = if (elem hostname installOn || isISO) then true else false;
-        description = "Enables bcachefs filesystem.";
-      };
-    };
+lib.mkIf (lib.elem hostname installOn || isISO) {
+  # Create a bootable ISO image with bcachefs.
+  # - https://wiki.nixos.org/wiki/Bcachefs
+  boot = {
+    kernelPackages = lib.mkOverride 0 pkgs.linuxPackages_6_12;
+    supportedFilesystems = [ "bcachefs" ];
   };
-
-  config = mkIf cfg.enable {
-    # Create a bootable ISO image with bcachefs.
-    # - https://wiki.nixos.org/wiki/Bcachefs
-    boot = {
-      kernelPackages = mkOverride 0 pkgs.linuxPackages_latest;
-      supportedFilesystems = [ "bcachefs" ];
-    };
-    environment.systemPackages = with pkgs; [
-      bcachefs-tools
-      keyutils
-    ];
-  };
+  environment.systemPackages = with pkgs; [
+    bcachefs-tools
+    keyutils
+  ];
 }
