@@ -3,8 +3,12 @@
   inputs = {
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/0";
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/0";
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    home-manager = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     #nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2411.*";
     nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
@@ -12,29 +16,58 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     catppuccin.url = "https://flakehub.com/f/catppuccin/nix/*";
-    catppuccin-vsc.url = "https://flakehub.com/f/catppuccin/vscode/*";
-    catppuccin-vsc.inputs.nixpkgs.follows = "nixpkgs";
-    disko.url = "https://flakehub.com/f/nix-community/disko/1.11.0.tar.gz";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
+    catppuccin-vsc = {
+      url = "https://flakehub.com/f/catppuccin/vscode/*";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    disko = {
+      url = "https://flakehub.com/f/nix-community/disko/1.11.0.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
-    nixos-needsreboot.url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.3.tar.gz";
-    nixos-needsreboot.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-needsreboot = {
+      url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.3.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    nix-index-database.url = "github:Mic92/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
-    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
-    nix-vscode-extensions.inputs.nixpkgs.follows = "nixpkgs";
+    nix-index-database = {
+      url = "github:Mic92/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*";
-    nix-snapd.url = "https://flakehub.com/f/io12/nix-snapd/*";
-    nix-snapd.inputs.nixpkgs.follows = "nixpkgs";
-    quickemu.url = "https://flakehub.com/f/quickemu-project/quickemu/*";
-    quickemu.inputs.nixpkgs.follows = "nixpkgs";
-    quickgui.url = "https://flakehub.com/f/quickemu-project/quickgui/*";
-    quickgui.inputs.nixpkgs.follows = "nixpkgs";
-    sops-nix.url = "https://flakehub.com/f/Mic92/sops-nix/0.1.887.tar.gz";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-    stream-sprout.url = "https://flakehub.com/f/wimpysworld/stream-sprout/*";
-    stream-sprout.inputs.nixpkgs.follows = "nixpkgs";
+    nix-snapd = {
+      url = "https://flakehub.com/f/io12/nix-snapd/*";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    quickemu = {
+      url = "https://flakehub.com/f/quickemu-project/quickemu/*";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    quickgui = {
+      url = "https://flakehub.com/f/quickemu-project/quickgui/*";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    sops-nix = {
+      url = "https://flakehub.com/f/Mic92/sops-nix/0.1.887.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    stream-sprout = {
+      url = "https://flakehub.com/f/wimpysworld/stream-sprout/*";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     { self, nix-darwin, nixpkgs, ... }@inputs:
@@ -167,5 +200,29 @@
       packages = helper.forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
       # Formatter for .nix files, available via 'nix fmt'
       formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+
+      # formatter = helper.forAllSystems (system:
+      #   nix-formatter-pack.lib.mkFormatter {
+      #     pkgs = nixpkgs.legacyPackages.${system};
+      #     config.tools = {
+      #       alejandra.enable = false;
+      #       deadnix.enable = true;
+      #       nixpkgs-fmt.enable = true;
+      #       statix.enable = true;
+      #     };
+      #   }
+      # );
+
+      # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
+      devShells = helper.forAllSystems (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          default = pkgs.callPackage ./shell.nix { };
+          node = pkgs.callPackage ./shell/node.nix { };
+        }
+        # in import ./shell.nix { inherit pkgs; }
+      );
     };
 }
