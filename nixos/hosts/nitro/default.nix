@@ -103,6 +103,7 @@ in
 
         transmission_3-gtk
         vlc
+        spotube
 
         duf
         gnupg
