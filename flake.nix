@@ -43,23 +43,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    home-manager_unstable = {
-      url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-
-    home-manager_oldstable = {
-      url = "github:nix-community/home-manager/release-24.05";
-      inputs.nixpkgs.follows = "nixpkgs-oldstable";
-    };
-
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
 
-    nixos-needsreboot = {
-      # url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
-      url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.5.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # nixos-needsreboot = {
+    #   # url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
+    #   url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.3.tar.gz";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -163,7 +153,7 @@
           #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
           #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
           rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-          nitro = helper.mkNixos { hostname = "nitro"; desktop = "kde"; };
+          nitro = helper.mkNixos { hostname = "nitro"; desktop = "xfce4"; };
 
           # Servers
           soyoz = helper.mkNixos { hostname = "soyoz"; };

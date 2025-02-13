@@ -21,13 +21,15 @@ in
       xserver = {
         enable = true;
         displayManager = {
-          defaultSession = "plasma"; #plasmax11
+          # defaultSession = "plasma"; #plasmax11
+          defaultSession = "plasmax11";
           sddm = {
             enable = true;
             autoNumlock = true;
             wayland = {
-              enable = mkDefault true;
+              enable = mkForce false;
             };
+            # theme = "${pkgs.sddm-astronaut}";
             settings = {
               Theme = {
                 CursorTheme = "layan-border_cursors";
@@ -35,9 +37,18 @@ in
             };
           };
         };
-        desktopManager.plasma6 = {
-          enable = true; # Desktop Environment
-        };
+        # desktopManager = {
+        #   plasma5 = {
+        #     useQtScaling = true;
+        #     runUsingSystemd = true;
+        #     phononBackend = "vlc";
+        #     enable = true;
+        #   };
+        # };
+      };
+      desktopManager.plasma6 = {
+        enable = true; # Desktop Environment
+        enableQt5Integration = true;
       };
     };
 
@@ -50,8 +61,13 @@ in
           kaccounts-integration
           kaccounts-providers
         ])
-        ++ (with pkgs; [
-          libportal-qt5
+        ++ (with pkgs // pkgs.kdePackages; [
+          # Flatpak
+          # libportal
+          # libportal-qt5
+          libportal-qt6
+          libportal-gtk4
+          # libportal-gtk3
 
           # Multimedia Utilities
           # ffmpeg # ffprobe ffmpeg
@@ -68,14 +84,15 @@ in
           # simplescreenrecorder # ssr-glinject simplescreenrecorder
           # video-trimmer # video-trimmer
 
-          qt6Packages.qtstyleplugin-kvantum
+          qtstyleplugin-kvantum
+          kio
 
           # Miscellaneous:
           # variety # A wallpaper manager for Linux systems
 
-          # Picture manger
-          digikam # Photo Management Program
-          shotwell # Popular photo organizer for the GNOME desktop
+          # Picture manager
+          # digikam # Photo Management Program
+          # shotwell # Popular photo organizer for the GNOME desktop
 
           # KDE Plasma tools
           # kdiff3 # Compares and merges 2 or 3 files or directories
@@ -84,7 +101,7 @@ in
           kate # Advanced text editor
           kcalc # Scientific calculator
           kgpg # A KDE based interface for GnuPG, a powerful encryption utility
-          krename
+          # krename
 
           # keepassxc # keepassxc keepassxc-cli keepassxc-proxy
           # gparted # Graphical disk partitioning tool
@@ -93,14 +110,14 @@ in
           # deepin.deepin-calculator # An easy to use calculator for ordinary users
         ]);
 
-      plasma5 = {
-        excludePackages = with pkgs // pkgs.libsForQt5; [
-          elisa
-          khelpcenter
-          # konsole
-          oxygen
-        ];
-      };
+      # plasma5 = {
+      #   excludePackages = with pkgs // pkgs.libsForQt5; [
+      #     elisa
+      #     khelpcenter
+      #     # konsole
+      #     oxygen
+      #   ];
+      # };
       plasma6 = {
         excludePackages = with pkgs // pkgs.libsForQt5; [
           elisa

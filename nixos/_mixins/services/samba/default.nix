@@ -115,6 +115,9 @@ in
             # "load printers" = "yes";
             # "cups options" = "raw";
             # "disable spoolss" = "yes";
+
+            security = "user";
+            # include = "/etc/samba/smb2.conf";
           };
         };
       };

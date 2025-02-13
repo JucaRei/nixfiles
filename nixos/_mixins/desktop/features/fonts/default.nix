@@ -18,7 +18,7 @@ in
     fonts = {
       # Enable a basic set of fonts providing several font styles and families and reasonable coverage of Unicode.
       enableDefaultPackages = false;
-      fontDir.enable = true;
+      # fontDir.enable = true;
       packages =
         with pkgs;
         [
@@ -31,7 +31,7 @@ in
           font-search # show existent fonts
           merriweather
           fira
-          font-awesome
+          # font-awesome
           # liberation_ttf
           # noto-fonts-emoji
           # noto-fonts-monochrome-emoji
@@ -44,7 +44,7 @@ in
           # bebas-neue-2014-font
           # bebas-neue-pro-font
           # bebas-neue-rounded-font
-          bebas-neue-semi-rounded-font
+          # bebas-neue-semi-rounded-font
           # boycott-font
           # commodore-64-pixelized-font
           # digital-7-font
@@ -63,7 +63,7 @@ in
       fontconfig = {
         antialias = true;
         # Enable 32-bit support if driSupport32Bit is true
-        cache32Bit = lib.mkForce config.hardware.graphics.enable32Bit;
+        # cache32Bit = lib.mkForce config.hardware.graphics.enable32Bit;
         defaultFonts = {
           serif = [
             # "Source Serif"

@@ -88,7 +88,7 @@ in
         nix-output-monitor
       ]
       ++ optionals isInstall [
-        inputs.nixos-needsreboot.packages.${platform}.default
+        # inputs.nixos-needsreboot.packages.${platform}.default
         nvd
         sops
       ];
@@ -157,12 +157,15 @@ in
           accept-flake-config = true;
           extra-sandbox-paths = [ "/bin/sh=${pkgs.bash}/bin/sh" ];
           experimental-features = [
-            "flakes"
-            "nix-command"
+            "flakes" # flakes
+            "nix-command" # experimental nix commands
             # "repl-flake" # repl to inspect a flake
             # "recursive-nix" # let nix invoke itself
             # "ca-derivations" # content addressed nix
             # "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
+            # "configurable-impure-env" # allow impure environments
+            # "git-hashing" # allow store objects which are hashed via Git's hashing algorithm
+            # "verified-fetches" # enable verification of git commit signatures for fetchGit
             # "cgroups" # allow nix to execute builds inside cgroups
           ];
           # auto-allocate-uids = true;
@@ -307,6 +310,7 @@ in
         systemd-user-sessions.enable = false;
 
 
+        # https://github.com/NotAShelf/nyx/blob/d407b4d6e5ab7f60350af61a3d73a62a5e9ac660/modules/core/common/system/nix/module.nix#L236-L244
         nix-gc = {
           unitConfig.ConditionACPower = true; ### Nix gc when powered
         };
@@ -358,10 +362,10 @@ in
         #   fi
         # '';
 
-        nixos-needsreboot = lib.mkIf (isInstall) {
-          supportsDryActivation = true;
-          text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
-        };
+        # nixos-needsreboot = lib.mkIf (isInstall) {
+        #   supportsDryActivation = true;
+        #   text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
+        # };
       };
 
       switch = {

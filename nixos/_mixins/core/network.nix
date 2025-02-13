@@ -130,6 +130,12 @@ in
           "1.1.1.2" # Cloudflare
           "1.0.0.1" # Cloudflare
           # "8.8.8.8" # Google
+          ## Quad9 v4
+          # "9.9.9.9"
+          # "149.112.112.112"
+          ## Quad9 v6
+          # "2620:fe::fe"
+          # "2620:fe::9"
         ];
         dns = "systemd-resolved";
 
@@ -183,6 +189,8 @@ in
         enable = mkIf (cfg.networkOpt == "network-manager") true;
         domains = [ "~." ];
         # dnsovertls = "true";
+        # dnsovertls = "opportunistic";
+        # dnssec = "allow-downgrade";
         # dnssec = "false";
       };
 

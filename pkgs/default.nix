@@ -24,8 +24,6 @@ pkgs: {
   breeze-hacked-cursor = pkgs.callPackage ./desktop/themes/pointers/breeze-hacked-cursor { };
 
   # Display Managers
-  astronaut-sddm = pkgs.callPackage ./system/display-managers/sddm/astronaut-sddm { };
-  sddm-sugar-dark = pkgs.callPackage ./system/display-managers/sddm/sddm-sugar-dark { };
 
   # Plymouth
   plymouth-catppuccin = pkgs.callPackage ./system/plymouth/plymouth-catppuccin { };
