@@ -24,6 +24,8 @@
     # Nix user repository
     nur.url = "github:nix-community/NUR";
 
+    snowfall-flake.url = "github:snowfallorg/flake";
+
     # Lix
     # lix = {
     #   url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-1.tar.gz";
@@ -46,6 +48,8 @@
 
     # Secure boot
     lanzaboote.url = "github:nix-community/lanzaboote/v0.4.2";
+
+    nix-index-database.url = "github:nix-community/nix-index-database";
 
     # Generate System Images
     nixos-generators.url = "github:nix-community/nixos-generators";
@@ -97,10 +101,11 @@
 
   };
 
-  outputs =
-    inputs:
+  outputs = inputs:
     let
-      lib = inputs.snowfall-lib.mkLib {
+      inherit (inputs) snowfall-lib;
+
+      lib = snowfall-lib.mkLib {
         inherit inputs;
         src = ./.;
 
@@ -114,85 +119,83 @@
         };
       };
     in
-    lib.mkFlake {
-      channels-config = {
-        allowUnfree = true;
-        permittedInsecurePackages = [
-          "electron-25.9.0"
-          "electron-27.3.11"
-        ];
-        allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
-      };
-
-      overlays = with inputs; [
-        nixgl.overlay
-        nur.overlays.default
-        flake.overlays.default
-        drift.overlays.default
-        attic.overlays.default
-        # lix.overlays.default
-      ];
-
-      homes = {
-        modules = with inputs; [
-          sops-nix.homeManagerModules.sops
-          nur.modules.homeManager.default
-        ];
-      };
-
-      systems = {
-
-        modules = {
-
-          nixos = with inputs; [
-            home-manager.nixosModules.home-manager
-            nix-ld.nixosModules.nix-ld
-            disko.nixosModules.disko
-            impermanence.nixosModules.impermanence
-            sops-nix.nixosModules.sops
-            chaotic.nixosModules.default
-            {
-              # manually import overlay
-              chaotic.nyx.overlay.enable = false;
-            }
-            # lix.nixosModules.default
-            # {
-            #   system.tools.nixos-option.enable = false;
-            # }
-            # TODO: Replace excalibur.services.attic now that vault-agent
-            # exists and can force override environment files.
-            # attic.nixosModules.atticd
+    lib.mkFlake
+      {
+        channels-config = {
+          allowUnfree = true;
+          # allowBroken = true;
+          # showDerivationWarnings = [ "maintainerless" ];
+          permittedInsecurePackages = [
+            "electron-25.9.0"
+            "electron-27.3.11"
           ];
+          allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
+        };
 
-          hosts = {
-            jasper = {
-              modules = with inputs; [
-                nixos-hardware.nixosModules.framework-11th-gen-intel
-              ];
-              specialArgs = { };
+        overlays = with inputs; [
+          nixgl.overlay
+          nur.overlays.default
+          flake.overlays.default
+          drift.overlays.default
+          attic.overlays.default
+          # lix.overlays.default
+        ];
+
+        homes = {
+          modules = with inputs; [
+            sops-nix.homeManagerModules.sops
+            nur.modules.homeManager.default
+            nix-index-database.hmModules.nix-index
+          ];
+        };
+
+        systems = {
+          modules = {
+            darwin = with inputs;[
+              sops-nix.darwinModules.sops
+            ];
+            nixos = with inputs; [
+              home-manager.nixosModules.home-manager
+              nix-ld.nixosModules.nix-ld
+              disko.nixosModules.disko
+              impermanence.nixosModules.impermanence
+              sops-nix.nixosModules.sops
+              chaotic.nixosModules.default
+              {
+                # manually import overlay
+                chaotic.nyx.overlay.enable = false;
+              }
+              # lix.nixosModules.default
+              # {
+              #   system.tools.nixos-option.enable = false;
+              # }
+              # TODO: Replace excalibur.services.attic now that vault-agent
+              # exists and can force override environment files.
+              # attic.nixosModules.atticd
+            ];
+            hosts = {
+              jasper = {
+                modules = with inputs; [
+                  nixos-hardware.nixosModules.framework-11th-gen-intel
+                ];
+                specialArgs = { };
+              };
+              juca = { };
             };
-
-            juca = { };
           };
         };
-      };
 
-      deploy = lib.mkDeploy { inherit (inputs) self; };
+        deploy = lib.mkDeploy { inherit (inputs) self; };
 
-      templates = { };
+        templates = { };
 
-      devShells = {
-        default.description = "Default development environment";
-      };
+        checks = builtins.mapAttrs (system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy) inputs.deploy-rs.lib;
 
-      checks = builtins.mapAttrs (
-        system: deploy-lib: deploy-lib.deployChecks inputs.self.deploy
-      ) inputs.deploy-rs.lib;
-
-      # outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style ./shells/default/default.nix; };
-      outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style; };
-    }
+        # outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style ./shells/default/default.nix; };
+        outputs-builder = channels: { formatter = channels.nixpkgs.nixfmt-rfc-style; };
+      }
     // {
       self = inputs.self;
-    };
+    }
+  ;
 }

@@ -3,11 +3,11 @@ let
   inherit (lib.${namespace}) mkOpt;
   inherit (lib) mkIf mkForce optional types;
   username = config.${namespace}.user.name;
-  cfg = config.hardware.${namespace}.audio;
+  cfg = config.${namespace}.hardware.audio;
   low_latency = config.features.audio."pipewire".useLowLatencyPipewire;
 in
 {
-  options.hardware.${namespace}.audio."pipewire".useLowLatencyPipewire =
+  options.${namespace}.hardware.audio."pipewire".useLowLatencyPipewire =
     # mkOption {
     #   type = types.bool;
     #   default = false;

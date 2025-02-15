@@ -58,7 +58,7 @@ in
         users = [
           "root"
           "@wheel"
-          "nix-builder"
+          # "nix-builder"
           config.${namespace}.user.name
         ];
       in

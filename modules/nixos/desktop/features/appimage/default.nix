@@ -8,11 +8,11 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.tools.appimage-run;
+  cfg = config.${namespace}.desktop.features.appimage;
 in
 {
-  options.${namespace}.tools.appimage-run = with types; {
-    enable = mkBoolOpt false "Whether or not to enable appimage-run.";
+  options.${namespace}.desktop.features.appimage = with types; {
+    enable = mkBoolOpt false "Whether or not to enable appimage.";
   };
 
   config = mkIf cfg.enable {

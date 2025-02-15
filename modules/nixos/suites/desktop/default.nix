@@ -1,10 +1,9 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ options
+, config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
@@ -21,6 +20,10 @@ in
       desktop = {
         gnome = enabled;
 
+        features = {
+          appimage = enabled;
+        };
+
         addons = {
           wallpapers = enabled;
         };
@@ -36,6 +39,10 @@ in
         yt-music = enabled;
         twitter = enabled;
         gparted = enabled;
+      };
+
+      tools = {
+        appimage-run = enabled;
       };
     };
   };

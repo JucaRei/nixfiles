@@ -1,6 +1,7 @@
-{
-  lib,
-  inputs,
+{ lib
+, inputs
+, snowfall-inputs
+,
 }:
 
 rec {
