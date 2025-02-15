@@ -10,6 +10,11 @@
       flake = false;
     };
 
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     system-manager = {
       url = "github:numtide/system-manager";
       inputs = {
@@ -63,7 +68,7 @@
 
     nix-vscode-extensions = {
       url = "github:nix-community/nix-vscode-extensions";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     vscode-server = {
@@ -153,7 +158,11 @@
           #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
           #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
           rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-          nitro = helper.mkNixos { hostname = "nitro"; desktop = "xfce4"; };
+          nitro = helper.mkNixos {
+            hostname = "nitro";
+            # desktop = "hyprland";
+            desktop = "xfce4";
+          };
 
           # Servers
           soyoz = helper.mkNixos { hostname = "soyoz"; };

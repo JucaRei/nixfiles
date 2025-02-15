@@ -90,6 +90,7 @@ in
       ++ optionals isInstall [
         # inputs.nixos-needsreboot.packages.${platform}.default
         nvd
+        cachix
         sops
       ];
 

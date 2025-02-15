@@ -1,6 +1,6 @@
-{ config, isInstall, lib, pkgs, ... }:
+{ config, isInstall, lib, pkgs, inputs, ... }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkForce;
 in
 {
   imports = [ ./greetd.nix ];
@@ -35,13 +35,13 @@ in
     #   # NVD_GPU = "/dev/dri/renderD129";
     # };
     systemPackages =
-      with pkgs // pkgs.gnome;
+      with pkgs.unstable;
       lib.optionals isInstall [
         hyprpicker
         # Enable HEIC image previews in Nautilus
         libheif
         libheif.out
-        unstable.monitorets
+        monitorets
         gnome-font-viewer
         nautilus # file manager
         zenity
@@ -49,10 +49,8 @@ in
         polkit_gnome
         wdisplays # display configuration
         wlr-randr
-        unstable.catppuccin-cursors
+        catppuccin-cursors
       ];
-
-
 
     etc = {
       "backgrounds/Cat-1920px.png".source = ../../../../resources/dots/backgrounds/Cat-1920px.png;
@@ -108,11 +106,12 @@ in
     }];
     file-roller = {
       enable = isInstall;
-      package = pkgs.gnome.nautilus;
+      package = pkgs.unstable.nautilus;
     };
     gnome-disks.enable = isInstall;
     hyprland = {
       enable = true;
+      package = mkForce pkgs.unstable.hyprland;
       systemd.setPath.enable = true;
     };
     nautilus-open-any-terminal = {
@@ -141,13 +140,14 @@ in
     portal = {
       enable = true;
       xdgOpenUsePortal = true;
-      configPackages = [ pkgs.hyprland ];
-      extraPortals = with pkgs; [
-        xdg-desktop-portal-hyprland
+      configPackages = [ pkgs.unstable.hyprland ];
+      extraPortals = with pkgs.oldstable; [
+        # (inputs.hyprland.packages.xdg-desktop-portal-hyprland)
+        (pkgs.unstable.xdg-desktop-portal-hyprland)
         xdg-desktop-portal-gtk
         # (xdg-desktop-portal-gtk.override {
-          ## Use the upstream default so this won't conflict with the xapp portal.
-          # buildPortalsInGnome = false;
+        ## Use the upstream default so this won't conflict with the xapp portal.
+        # buildPortalsInGnome = false;
         # })
       ];
       config = {
@@ -157,5 +157,10 @@ in
         };
       };
     };
+  };
+
+  nix.settings = {
+    extra-substituters = [ "https://hyprland.cachix.org" ];
+    extra-trusted-public-keys = [ "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" ];
   };
 }
