@@ -1,10 +1,4 @@
-{ lib
-, config
-, pkgs
-, namespace
-, osConfig ? { }
-, ...
-}:
+{ lib, config, pkgs, namespace, osConfig ? { }, ... }:
 let
   inherit (lib)
     types

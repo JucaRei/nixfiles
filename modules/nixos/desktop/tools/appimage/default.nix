@@ -1,17 +1,11 @@
-{ options
-, config
-, lib
-, pkgs
-, namespace
-, ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.desktop.features.appimage;
+  cfg = config.${namespace}.desktop.tools.appimage;
 in
 {
-  options.${namespace}.desktop.features.appimage = with types; {
+  options.${namespace}.desktop.tools.appimage = with types; {
     enable = mkBoolOpt false "Whether or not to enable appimage.";
   };
 

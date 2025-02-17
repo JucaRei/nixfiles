@@ -1,11 +1,4 @@
-inputs@{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+inputs@{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -41,9 +34,11 @@ in
 
       extraOptions = {
         # Use Neovim for Git diffs.
-        programs.zsh.shellAliases.vimdiff = "nvim -d";
-        programs.bash.shellAliases.vimdiff = "nvim -d";
-        programs.fish.shellAliases.vimdiff = "nvim -d";
+        programs = {
+          zsh.shellAliases.vimdiff = "nvim -d";
+          bash.shellAliases.vimdiff = "nvim -d";
+          fish.shellAliases.vimdiff = "nvim -d";
+        };
       };
     };
   };

@@ -41,9 +41,6 @@ in
         gparted = enabled;
       };
 
-      tools = {
-        appimage-run = enabled;
-      };
     };
   };
 }

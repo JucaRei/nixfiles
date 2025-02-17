@@ -1,12 +1,4 @@
-{
-  lib,
-  config,
-  pkgs,
-  host ? null,
-  format ? "unknown",
-  namespace,
-  ...
-}:
+{ lib, config, pkgs, host ? null, format ? "unknown", namespace, ... }:
 let
   inherit (lib) types;
   inherit (lib.${namespace}) mkOpt;

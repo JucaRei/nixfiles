@@ -1,11 +1,4 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -16,5 +9,9 @@ in
     enable = mkBoolOpt false "Whether or not to enable Bottom.";
   };
 
-  config = mkIf cfg.enable { environment.systemPackages = with pkgs; [ bottom ]; };
+  config = mkIf cfg.enable {
+    excalibur.home.extraOptions = {
+      home.packages = with pkgs; [ bottom ];
+    };
+  };
 }
