@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.games.dolphin;
+  cfg = config.${namespace}.programs.graphical.games.dolphin;
 in
 {
-  options.${namespace}.apps.games.dolphin = with types; {
+  options.${namespace}.programs.graphical.games.dolphin = with types; {
     enable = mkBoolOpt false "Whether or not to enable Dolphin.";
   };
 

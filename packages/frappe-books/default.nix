@@ -1,8 +1,7 @@
-{
-  pkgs,
-  lib,
-  namespace,
-  ...
+{ pkgs
+, lib
+, namespace
+, ...
 }:
 let
   pname = "frappe-books";
@@ -29,7 +28,7 @@ pkgs.appimageTools.wrapType2 rec {
     install -m 444 -D ${pname}_512.png $out/share/icons/hicolor/512x512/apps/${pname}.png
 
     substituteInPlace $out/share/applications/${pname}.desktop \
-    	--replace 'Exec=AppRun --no-sandbox %U' 'Exec=${pname} %U'
+      --replace 'Exec=AppRun --no-sandbox %U' 'Exec=${pname} %U'
   '';
 
   meta = with lib; {

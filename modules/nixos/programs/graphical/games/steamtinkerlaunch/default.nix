@@ -1,11 +1,11 @@
 { lib, pkgs, config, namespace, ... }:
 let
-  cfg = config.${namespace}.apps.games.steamtinkerlaunch;
+  cfg = config.${namespace}.programs.graphical.games.steamtinkerlaunch;
 
   inherit (lib) mkIf mkEnableOption;
 in
 {
-  options.${namespace}.apps.games.steamtinkerlaunch = {
+  options.${namespace}.programs.graphical.games.steamtinkerlaunch = {
     enable = mkEnableOption "Steam Tinker Launch";
   };
 

@@ -46,13 +46,28 @@ in
   };
 
   config = {
-    environment.systemPackages = with pkgs; [
-      duf
-      propagatedIcon
+    environment = {
+      sessionVariables = {
+        XDG_BIN_HOME = "$HOME/.local/bin";
+        XDG_CACHE_HOME = "$HOME/.cache";
+        XDG_CONFIG_HOME = "$HOME/.config";
+        XDG_DATA_HOME = "$HOME/.local/share";
+        XDG_DESKTOP_DIR = "$HOME";
+      };
 
-      wget
-      curl
-    ];
+      variables = {
+        # Make some programs "XDG" compliant.
+        LESSHISTFILE = "$XDG_CACHE_HOME/less.history";
+      };
+
+      systemPackages = with pkgs; [
+        duf
+        propagatedIcon
+
+        wget
+        curl
+      ];
+    };
 
     excalibur = {
       home = {
@@ -105,6 +120,8 @@ in
           "input"
           "users"
           "wheel"
+          "systemd-journal"
+          "nix"
         ]
         ++ ifTheyExist [
           "adm"

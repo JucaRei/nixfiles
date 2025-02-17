@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.tools.attic;
+  cfg = config.${namespace}.programs.terminal.tools.attic;
 in
 {
-  options.${namespace}.apps.tools.attic = {
+  options.${namespace}.programs.terminal.tools.attic = {
     enable = mkEnableOption "Attic";
   };
 

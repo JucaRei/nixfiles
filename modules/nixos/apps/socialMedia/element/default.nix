@@ -1,18 +1,11 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.element;
+  cfg = config.${namespace}.apps.socialMedia.element;
 in
 {
-  options.${namespace}.apps.element = with types; {
+  options.${namespace}.apps.socialMedia.element = with types; {
     enable = mkBoolOpt false "Whether or not to enable Element.";
   };
 

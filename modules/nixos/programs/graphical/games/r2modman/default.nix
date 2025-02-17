@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.games.r2modman;
+  cfg = config.${namespace}.programs.graphical.games.r2modman;
 in
 {
-  options.${namespace}.apps.games.r2modman = with types; {
+  options.${namespace}.programs.graphical.games.r2modman = with types; {
     enable = mkBoolOpt false "Whether or not to enable r2modman.";
   };
 

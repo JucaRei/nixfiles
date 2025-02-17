@@ -1,18 +1,11 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.protontricks;
+  cfg = config.${namespace}.programs.graphical.games.protontricks;
 in
 {
-  options.${namespace}.apps.protontricks = with types; {
+  options.${namespace}.programs.graphical.games.protontricks = with types; {
     enable = mkBoolOpt false "Whether or not to enable Protontricks.";
   };
 

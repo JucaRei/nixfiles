@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.games.lutris;
+  cfg = config.${namespace}.programs.graphical.games.lutris;
 in
 {
-  options.${namespace}.apps.games.lutris = with types; {
+  options.${namespace}.programs.graphical.games.lutris = with types; {
     enable = mkBoolOpt false "Whether or not to enable Lutris.";
   };
 

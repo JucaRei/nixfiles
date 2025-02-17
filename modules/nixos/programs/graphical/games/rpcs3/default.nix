@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.games.rpcs3;
+  cfg = config.${namespace}.programs.graphical.games.rpcs3;
 in
 {
-  options.${namespace}.apps.games.rpcs3 = with types; {
+  options.${namespace}.programs.graphical.games.rpcs3 = with types; {
     enable = mkBoolOpt false "Whether or not to enable rpcs3.";
   };
 

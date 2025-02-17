@@ -1,8 +1,7 @@
 { lib, config, pkgs, namespace, ... }:
+with lib;
+with (lib.${namespace});
 let
-  inherit (lib) types mkEnableOption mkIf;
-  inherit (lib.${namespace}) mkOpt enabled;
-
   cfg = config.${namespace}.tools.git;
   user = config.${namespace}.user;
 in

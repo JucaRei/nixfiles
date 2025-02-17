@@ -1,10 +1,4 @@
-{
-  lib,
-  config,
-  pkgs,
-  namespace,
-  ...
-}:
+{ lib, config, pkgs, namespace, ... }:
 let
   inherit (lib) types mkEnableOption mkIf;
   cfg = config.${namespace}.tools.ssh;

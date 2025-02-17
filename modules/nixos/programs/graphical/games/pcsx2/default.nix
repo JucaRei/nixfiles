@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.games.pcsx2;
+  cfg = config.${namespace}.programs.graphical.games.pcsx2;
 in
 {
-  options.${namespace}.apps.games.pcsx2 = with types; {
+  options.${namespace}.programs.graphical.games.pcsx2 = with types; {
     enable = mkBoolOpt false "Whether or not to enable PCSX2.";
   };
 
