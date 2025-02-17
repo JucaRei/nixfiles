@@ -1,7 +1,7 @@
-{ lib, config, pkgs, desktop, hostname, ... }:
+{ lib, config, pkgs, desktop, hostname, namespace, ... }:
 let
   inherit (lib) mkIf mkDefault optional;
-  graphics = config.hardware.graphics;
+  graphics = config.${namespace}.hardware.graphics;
 in
 {
   config = mkIf (graphics.enable && graphics.backend == "x11") {

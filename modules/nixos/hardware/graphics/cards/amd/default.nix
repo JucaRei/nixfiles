@@ -1,9 +1,9 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, namespace, ... }:
 let
   inherit (lib) mkIf mkMerge versionAtLeast;
-  device = config.hardware.graphics;
-  backend = config.hardware.backend;
-  graphics = config.hardware.graphics.enable;
+  device = config.${namespace}.hardware.graphics;
+  backend = config.${namespace}.hardware.backend;
+  graphics = config.${namespace}.hardware.graphics.enable;
 in
 {
   config = mkIf (device.gpu == "amd" || device.gpu == "hybrid-amd" || device.gpu == "integrated-amd") {

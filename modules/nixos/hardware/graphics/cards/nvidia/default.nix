@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, namespace, ... }:
 let
   inherit (lib) mkForce mkIf mkMerge mkDefault optionals optional;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
@@ -17,8 +17,8 @@ let
     then config.boot.kernelPackages.nvidiaPackages.stable
     else config.boot.kernelPackages.nvidiaPackages.beta;
 
-  device = config.hardware.graphics;
-  backend = config.hardware.graphics.backend;
+  device = config.${namespace}.hardware.graphics;
+  backend = config.${namespace}.hardware.graphics.backend;
 in
 {
 

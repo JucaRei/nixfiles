@@ -1,7 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, namespace, ... }:
 let
   inherit (lib) mkDefault mkIf mkForce;
-  device = config.hardware.graphics;
+  device = config.${namespace}.hardware.graphics;
 in
 {
   config = mkIf (device.gpu == "nvidia-legacy") {

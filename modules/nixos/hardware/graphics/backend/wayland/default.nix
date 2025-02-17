@@ -1,7 +1,7 @@
-{ lib, config, pkgs, desktop, ... }:
+{ lib, config, pkgs, desktop, namespace, ... }:
 let
   inherit (lib) mkIf mkForce;
-  graphics = config.hardware.graphics;
+  graphics = config.${namespace}.hardware.graphics;
 
   # nvidia-card = "$(readlink -f /dev/dri/by-path/pci-0000:01:00.0-card)";
   nvidia-card = "/dev/dri/card1";
