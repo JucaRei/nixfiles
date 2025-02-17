@@ -16,7 +16,7 @@ in
         # b612 # high legibility
         # material-icons
         # material-design-icons
-        work-sans
+        # work-sans
         # comic-neue
         # source-sans
         inter

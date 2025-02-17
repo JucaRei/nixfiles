@@ -61,12 +61,24 @@ in
 
         qemu = {
           package = pkgs.qemu_kvm;
-          ovmf = enabled;
+          ovmf = {
+            enable = true;
+            packages = [
+              (pkgs.OVMF.override {
+                secureBoot = true;
+                tpmSupport = true;
+              }).fd
+            ];
+          };
           swtpm = enabled;
           verbatimConfig = ''
             namespaces = []
             user = "+${builtins.toString config.users.users.${user.name}.uid}"
           '';
+        };
+
+        spiceUSBRedirection = {
+          enable = true;
         };
       };
     };
@@ -99,6 +111,35 @@ in
             Service.StartLimitIntervalSec = "5";
             Service.StartLimitBurst = "1";
             Install.RequiredBy = cfg.machineUnits;
+          };
+
+          dconf = {
+            settings = {
+              "org/virt-manager/virt-manager" = {
+                system-tray = true;
+                xmleditor-enabled = true;
+              };
+
+              "org/virt-manager/virt-manager/connections" = {
+                autoconnect = [ "qemu:///system" ];
+                uris = [ "qemu:///system" ];
+              };
+
+              "org/virt-manager/virt-manager/stats" = {
+                enable-disk-poll = true;
+                enable-memory-poll = true;
+                enable-net-poll = true;
+              };
+
+              "org/virt-manager/virt-manager/console" = {
+                resize-guest = 1;
+                scaling = 2;
+              };
+
+              # "org/virt-manager/virt-manager/new-vm" = {
+              #   cpu-default = "host-passthrough";
+              # };
+            };
           };
         };
       };

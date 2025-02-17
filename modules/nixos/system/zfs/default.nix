@@ -37,10 +37,12 @@ in
       };
     };
 
-    excalibur = {
-      tools = {
-        icehouse = enabled;
-      };
-    };
+    # excalibur = {
+    #   apps = {
+    #     tools = {
+    #       icehouse = enabled;
+    #     };
+    #   };
+    # };
   };
 }

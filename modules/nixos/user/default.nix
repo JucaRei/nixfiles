@@ -49,29 +49,36 @@ in
     environment.systemPackages = with pkgs; [
       duf
       propagatedIcon
+
+      wget
+      curl
     ];
 
-    excalibur.home = {
-      file = {
-        "Desktop/.keep".text = "";
-        "Documents/.keep".text = "";
-        "Downloads/.keep".text = "";
-        "Music/.keep".text = "";
-        "Pictures/.keep".text = "";
-        "Videos/.keep".text = "";
-        "work/.keep".text = "";
-        ".face".source = cfg.icon;
-        "Pictures/${cfg.icon.fileName or (builtins.baseNameOf cfg.icon)}".source = cfg.icon;
-      };
+    excalibur = {
+      home = {
+        file = {
+          "Desktop/.keep".text = "";
+          "Documents/.keep".text = "";
+          "Downloads/.keep".text = "";
+          "Music/.keep".text = "";
+          "Pictures/.keep".text = "";
+          "Videos/.keep".text = "";
+          "work/.keep".text = "";
+          ".face".source = cfg.icon;
+          "Pictures/${cfg.icon.fileName or (builtins.baseNameOf cfg.icon)}".source = cfg.icon;
+        };
 
-      extraOptions = {
-        home.shellAliases = {
-          lc = "${pkgs.colorls}/bin/colorls --sd";
-          lcg = "lc --gs";
-          lcl = "lc -1";
-          lclg = "lc -1 --gs";
-          lcu = "${pkgs.colorls}/bin/colorls -U";
-          lclu = "${pkgs.colorls}/bin/colorls -U -1";
+        configFile."wgetrc".text = "";
+
+        extraOptions = {
+          home.shellAliases = {
+            lc = "${pkgs.colorls}/bin/colorls --sd";
+            lcg = "lc --gs";
+            lcl = "lc -1";
+            lclg = "lc -1 --gs";
+            lcu = "${pkgs.colorls}/bin/colorls -U";
+            lclu = "${pkgs.colorls}/bin/colorls -U -1";
+          };
         };
       };
     };

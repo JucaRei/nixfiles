@@ -1,11 +1,4 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -19,10 +12,12 @@ in
   config = mkIf cfg.enable {
     excalibur = {
       apps = {
-        gimp = enabled;
-        inkscape = enabled;
-        blender = enabled;
-				aseprite = enabled;
+        art = {
+          gimp = enabled;
+          inkscape = enabled;
+          blender = enabled;
+          aseprite = enabled;
+        };
       };
 
       system.fonts.fonts = with pkgs; [ google-fonts ];
