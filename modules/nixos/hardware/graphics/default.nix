@@ -1,7 +1,8 @@
-{ config, lib, username, pkgs, namespace, ... }:
+{ options, config, lib, pkgs, namespace, ... }:
+with lib;
+with (lib.${namespace});
 let
-  inherit (lib) mkIf mkOption types optionals;
-  inherit (lib.${namespace}) mkBoolOpt mkOpt;
+  user = config.${namespace}.user.name;
 in
 {
   imports = [
@@ -16,8 +17,10 @@ in
   ];
 
   options.hardware.graphics = {
-    enable = mkBoolOpt false {
-      description = "Enable or disable graphics specific options";
+    enable = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Enable graphics for selected device.";
     };
 
     acceleration = mkOption {
@@ -51,17 +54,17 @@ in
   };
 
   config = {
-    users.users.${username}.extraGroups = optionals (config.features.graphics.enable && config.features.graphics.backend != null) [
+    users.users.${user}.extraGroups = optionals (config.hardware.graphics.enable && config.hardware.graphics.backend != null) [
       "render"
       "video"
     ];
 
     hardware = {
-      graphics = mkIf (config.features.graphics.enable && config.features.graphics.acceleration) {
+      graphics = mkIf (config.hardware.graphics.enable && config.hardware.graphics.acceleration) {
         # package = pkgs.unstable.mesa.drivers;
         enable = true;
         enable32Bit = true;
-        extraPackages = (mkIf (config.features.graphics.gpu == "hybrid-nvidia") (with pkgs.unstable;[
+        extraPackages = (mkIf (config.hardware.graphics.gpu == "hybrid-nvidia") (with pkgs.unstable;[
           vaapiIntel
           vaapiVdpau
         ]));
@@ -69,7 +72,7 @@ in
     };
 
     environment = {
-      systemPackages = with pkgs; mkIf (config.features.graphics.enable && config.features.graphics.gpu != null) [
+      systemPackages = with pkgs; mkIf (config.hardware.graphics.enable && config.hardware.graphics.gpu != null) [
         libva
         libva-utils
         vulkan-loader
