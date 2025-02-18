@@ -1,8 +1,4 @@
-{ config
-, lib
-, namespace
-, ...
-}:
+{ config, lib, namespace, ... }:
 let
   inherit (lib) mkDefault mkIf;
 
@@ -19,8 +15,8 @@ in
         enable = true;
 
         options = {
-          warningsAreErrors = true;
-          splitBuild = true;
+          warningsAreErrors = false;
+          # splitBuild = true;
         };
       };
     };

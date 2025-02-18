@@ -1,9 +1,8 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 let
   inherit (lib) mkOptionDefault mkIf;
@@ -24,19 +23,27 @@ in
       # TODO: Enable this once Attic is configured again.
       # cache.public = enabled;
 
-      cli-apps = {
-        flake = enabled;
-        thaw = enabled;
+      programs = {
+        graphical = { };
+
+
+        terminal = {
+          apps = {
+            flake = enabled;
+            # thaw = enabled;
+            comma = enabled;
+          };
+
+
+          tools = {
+            git = enabled;
+            misc = enabled;
+            nix-ld = enabled;
+            bottom = enabled;
+          };
+        };
       };
 
-      tools = {
-        git = enabled;
-        misc = enabled;
-        fup-repl = enabled;
-        comma = enabled;
-        nix-ld = enabled;
-        bottom = enabled;
-      };
 
       hardware = {
         audio = enabled;

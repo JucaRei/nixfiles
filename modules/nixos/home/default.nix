@@ -1,9 +1,4 @@
-{ options
-, config
-, lib
-, namespace
-, ...
-}:
+{ options, config, lib, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -19,7 +14,7 @@ in
   };
 
   config = {
-    excalibur.home.extraOptions = {
+    ${namespace}.home.extraOptions = {
       home.stateVersion = config.system.stateVersion;
       home.file = mkAliasDefinitions options.${namespace}.home.file;
       xdg.enable = true;
