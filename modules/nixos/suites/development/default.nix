@@ -1,26 +1,8 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
   cfg = config.${namespace}.suites.development;
-  apps = {
-    vscode = enabled;
-    yubikey = enabled;
-  };
-  cli-apps = {
-    tmux = enabled;
-    neovim = enabled;
-    yubikey = enabled;
-    prisma = enabled;
-    mods = enabled;
-  };
 in
 {
   options.${namespace}.suites.development = with types; {
@@ -36,23 +18,21 @@ in
       8081
     ];
 
-    excalibur = {
-      inherit apps cli-apps;
+    ${namespace} = {
 
-      tools = {
-        # attic = enabled;
-        at = enabled;
-        direnv = enabled;
-        go = enabled;
-        http = enabled;
-        k8s = enabled;
-        node = enabled;
-        titan = enabled;
-        qmk = enabled;
+      programs = {
+        terminal = {
+          dev = {
+            direnv = enable;
+            nix-ld = enabled;
+          };
+        };
       };
 
-      virtualisation = {
-        podman = enabled;
+      system = {
+        virtualisation = {
+          podman = enabled;
+        };
       };
     };
   };

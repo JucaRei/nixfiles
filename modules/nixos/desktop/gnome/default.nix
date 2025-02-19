@@ -2,11 +2,11 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.programs.graphical.desktop-environment.gnome;
+  cfg = config.${namespace}.desktop.gnome;
   gdmHome = config.users.users.gdm.home;
 in
 {
-  options.${namespace}.programs.graphical.desktop-environment.gnome = with types; {
+  options.${namespace}.desktop.gnome = with types; {
     enable = mkBoolOpt false "Whether or not to use Gnome as the desktop environment.";
     wayland = mkBoolOpt false "Whether or not to use Wayland.";
     suspend = mkBoolOpt true "Whether or not to suspend the machine after inactivity.";

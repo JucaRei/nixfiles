@@ -4,33 +4,23 @@ with lib.${namespace};
 let
   cfg = config.${namespace}.user;
   defaultIconFileName = "profile.jpg"; # "profile.png";
-  defaultIcon = pkgs.stdenvNoCC.mkDerivation {
-    name = "default-icon";
-    src = ./. + "/${defaultIconFileName}";
 
-    dontUnpack = true;
+  icon = pkgs.${namespace}.user-icon;
 
-    installPhase = ''
-      cp $src $out
-    '';
-
-    passthru = {
-      fileName = defaultIconFileName;
-    };
-  };
   propagatedIcon =
     pkgs.runCommandNoCC "propagated-icon"
       {
         passthru = {
-          fileName = cfg.icon.fileName;
+          fileName = cfg.${namespace}.user-icon.fileName;
         };
       }
       ''
         local target="$out/share/excalibur-icons/user/${cfg.name}"
         mkdir -p "$target"
 
-        cp ${cfg.icon} "$target/${cfg.icon.fileName}"
+        cp ${cfg.icon} "$target/${cfg.${namespace}.user-icon.fileName}"
       '';
+
   ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
 in
 {
@@ -39,7 +29,7 @@ in
     fullName = mkOpt str "Reinaldo P Jr" "The full name of the user.";
     email = mkOpt str "reinaldo800@gmail.com" "The email of the user.";
     initialPassword = mkOpt str "123" "The initial password to use when the user is first created.";
-    icon = mkOpt (nullOr package) defaultIcon "The profile picture to use for the user.";
+    icon = mkOpt (nullOr package) icon "The profile picture to use for the user.";
     prompt-init = mkBoolOpt true "Whether or not to show an initial message when opening a new shell.";
     extraGroups = mkOpt (listOf str) [ ] "Groups for the user to be assigned.";
     extraOptions = mkOpt attrs { } (mdDoc "Extra options passed to `users.users.<name>`.");
@@ -47,14 +37,6 @@ in
 
   config = {
     environment = {
-      sessionVariables = {
-        XDG_BIN_HOME = "$HOME/.local/bin";
-        XDG_CACHE_HOME = "$HOME/.cache";
-        XDG_CONFIG_HOME = "$HOME/.config";
-        XDG_DATA_HOME = "$HOME/.local/share";
-        XDG_DESKTOP_DIR = "$HOME";
-      };
-
       variables = {
         # Make some programs "XDG" compliant.
         LESSHISTFILE = "$XDG_CACHE_HOME/less.history";
@@ -69,20 +51,8 @@ in
       ];
     };
 
-    excalibur = {
+    ${namespace} = {
       home = {
-        file = {
-          "Desktop/.keep".text = "";
-          "Documents/.keep".text = "";
-          "Downloads/.keep".text = "";
-          "Music/.keep".text = "";
-          "Pictures/.keep".text = "";
-          "Videos/.keep".text = "";
-          "work/.keep".text = "";
-          ".face".source = cfg.icon;
-          "Pictures/${cfg.icon.fileName or (builtins.baseNameOf cfg.icon)}".source = cfg.icon;
-        };
-
         configFile."wgetrc".text = "";
 
         extraOptions = {

@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.blender;
+  cfg = config.${namespace}.programs.graphical.design.der;
 in
 {
-  options.${namespace}.apps.art.blender = with types; {
+  options.${namespace}.programs.graphical.design.blender = with types; {
     enable = mkBoolOpt false "Whether or not to enable Blender.";
   };
 

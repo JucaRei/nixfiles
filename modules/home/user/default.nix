@@ -6,7 +6,7 @@ let
     mkDefault
     mkMerge
     ;
-  inherit (lib.${namespace}) mkOpt;
+  inherit (lib.${namespace}) mkOpt enabled;
 
   cfg = config.${namespace}.user;
 
@@ -48,7 +48,32 @@ in
       home = {
         username = mkDefault cfg.name;
         homeDirectory = mkDefault cfg.home;
+
+        sessionVariables = {
+          XDG_BIN_HOME = "$HOME/.local/bin";
+          XDG_CACHE_HOME = "$HOME/.cache";
+          XDG_CONFIG_HOME = "$HOME/.config";
+          XDG_DATA_HOME = "$HOME/.local/share";
+          XDG_DESKTOP_DIR = "$HOME";
+        };
+
+        file = {
+          "Desktop/.keep".text = "";
+          "Documents/.keep".text = "";
+          "Downloads/.keep".text = "";
+          "Music/.keep".text = "";
+          "Pictures/.keep".text = "";
+          "Videos/.keep".text = "";
+          "work/.keep".text = "";
+        } //
+        lib.optionalAttrs (cfg.icon != null) {
+          ".face".source = cfg.icon;
+          ".face.icon".source = cfg.icon;
+          "Pictures/${cfg.icon.fileName or (builtins.baseNameOf cfg.icon)}".source = cfg.icon;
+        };
       };
+
+      programs.home-manager = enabled;
     }
   ]);
 }

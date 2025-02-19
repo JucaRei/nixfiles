@@ -2,7 +2,7 @@
 with lib;
 let
   inherit (lib.${namespace}) mkOpt mkBoolOpt;
-  cfg = config.${namespace}.programs.terminal.ssh;
+  cfg = config.${namespace}.system.services.ssh;
 in
 {
   imports = [ (lib.snowfall.fs.get-file "modules/home/programs/terminal/tools/ssh/default.nix") ];

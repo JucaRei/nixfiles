@@ -2,7 +2,7 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.art.gimp;
+  cfg = config.${namespace}.programs.graphical.design.gimp;
 in
 {
   options.${namespace}.apps.art.gimp = with types; {

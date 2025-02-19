@@ -1,10 +1,4 @@
-{ options
-, config
-, lib
-, pkgs
-, namespace
-, ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -16,7 +10,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
+    ${namespace} = {
       desktop = {
         gnome = enabled;
 
@@ -26,6 +20,13 @@ in
 
         addons = {
           wallpapers = enabled;
+        };
+      };
+
+      system = {
+        xkb = enabled;
+        security = {
+          keyring = enabled;
         };
       };
 

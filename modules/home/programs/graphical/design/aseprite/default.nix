@@ -1,9 +1,9 @@
 { lib, config, pkgs, ... }:
 let
-  cfg = config.excalibur.apps.aseprite;
+  cfg = config.excalibur.programs.graphical.design.aseprite;
 in
 {
-  options.excalibur.apps.art.aseprite = {
+  options.excalibur.programs.graphical.design.art.aseprite = {
     enable = lib.mkEnableOption "aseprite";
   };
 

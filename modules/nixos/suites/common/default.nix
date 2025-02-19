@@ -27,13 +27,12 @@ in
         xclip
       ]
       ++
-      (with pkgs.${namespace};
-      [
+      (with pkgs.${namespace}; [
         list-iommu
         trace-symlink
         trace-which
-      ]
-      );
+      ])
+      ;
 
       ## Create a file in /etc/installed/nixos-current-system-packages  Listing all Packages ###
       etc = {
@@ -91,9 +90,9 @@ in
       };
 
       services = {
-        printing = enabled;
-        openssh = enabled;
-        tailscale = enabled;
+        # printing = enabled;
+        ssh = enabled;
+        # tailscale = enabled;
       };
 
       system = {
@@ -109,15 +108,13 @@ in
         fonts = enabled;
         locale = enabled;
         time = enabled;
-        xkb = enabled;
 
         security = {
-          gpg = enabled;
+          # gpg = enabled;
           superuser = {
             enable = true;
             manager = mkDefault "sudo";
           };
-          keyring = enabled;
         };
       };
     };

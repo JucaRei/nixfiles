@@ -1,11 +1,4 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -17,11 +10,15 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
-      apps = {
-        yuzu = enabled;
-        pcsx2 = enabled;
-        dolphin = enabled;
+    ${namespace} = {
+      programs = {
+        graphical = {
+          games = {
+            yuzu = enabled;
+            pcsx2 = enabled;
+            dolphin = enabled;
+          };
+        };
       };
     };
   };

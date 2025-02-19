@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.programs.graphical.apps.art.inkscape;
+  cfg = config.${namespace}.programs.graphical.design.inkscape;
 in
 {
-  options.${namespace}.programs.graphical.apps.art.inkscape = with types; {
+  options.${namespace}.programs.graphical.design.inkscape = with types; {
     enable = mkBoolOpt false "Whether or not to enable Inkscape.";
   };
 

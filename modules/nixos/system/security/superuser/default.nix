@@ -8,7 +8,7 @@ with lib.${namespace};
 
   options.${namespace}.system.security.superuser = {
     enable = mkBoolOpt false "Whether or not enable super user manager.";
-    manager = mkOption types.enum [ "sudo" "doas" ] "sudo" "The super user manager to use.";
+    manager = mkOption str enum [ "sudo" "doas" ] "sudo" "The super user manager to use.";
   };
   config = mkIf config.${namespace}.system.security.superuser.enable {
     security = {

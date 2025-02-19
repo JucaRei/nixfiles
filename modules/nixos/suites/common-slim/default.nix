@@ -28,8 +28,8 @@ in
           tools = {
             git = enabled;
             comma = enabled;
-            bottom = enabled;
-            direnv = enabled;
+            # bottom = enabled;
+            # direnv = enabled;
           };
         };
       };
@@ -40,11 +40,6 @@ in
           enable = true;
           manager = "network-manager";
         };
-      };
-
-      services = {
-        openssh = enabled;
-        tailscale = enabled;
       };
 
       security = {
@@ -63,7 +58,9 @@ in
         fonts = enabled;
         locale = enabled;
         time = enabled;
-        # xkb = enabled;
+        services = {
+          ssh = enabled;
+        };
       };
     };
   };
