@@ -1,9 +1,4 @@
-{
-  lib,
-  runCommandNoCC,
-  namespace,
-  ...
-}:
+{ lib, runCommandNoCC, namespace, ... }:
 let
   inherit (lib.${namespace}) override-meta;
 

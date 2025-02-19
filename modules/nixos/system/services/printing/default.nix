@@ -1,11 +1,4 @@
-{
-  options,
-  config,
-  pkgs,
-  lib,
-  namespace,
-  ...
-}:
+{ options, config, pkgs, lib, namespace, ... }:
 with lib;
 with lib.${namespace};
 let

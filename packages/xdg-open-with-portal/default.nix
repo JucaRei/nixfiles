@@ -1,12 +1,6 @@
 # Taken from https://github.com/LunNova/nixos-configs
 # 💖 Thank you!
-{
-  lib,
-  writeShellScriptBin,
-  glib,
-  namespace,
-  ...
-}:
+{ lib, writeShellScriptBin, glib, namespace, ... }:
 let
   inherit (lib.${namespace}) override-meta;
 

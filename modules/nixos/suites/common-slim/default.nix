@@ -1,10 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -16,30 +10,36 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.excalibur.list-iommu ];
+    environment.systemPackages = [ pkgs.${namespace}.list-iommu ];
 
-    excalibur = {
+    ${namespace} = {
       nix = enabled;
 
       # TODO: Enable this once Attic is configured again.
       # cache.public = enabled;
 
-      cli-apps = {
-        flake = enabled;
-        thaw = enabled;
-      };
+      programs = {
 
-      tools = {
-        git = enabled;
-        fup-repl = enabled;
-        comma = enabled;
-        bottom = enabled;
-        direnv = enabled;
+        terminal = {
+          apps = {
+            flake = enabled;
+          };
+
+          tools = {
+            git = enabled;
+            comma = enabled;
+            bottom = enabled;
+            direnv = enabled;
+          };
+        };
       };
 
       hardware = {
         storage = enabled;
-        networking = enabled;
+        networking = {
+          enable = true;
+          manager = "network-manager";
+        };
       };
 
       services = {
@@ -48,7 +48,10 @@ in
       };
 
       security = {
-        doas = enabled;
+        superuser = {
+          enable = true;
+          manager = mkDefault "doas";
+        };
       };
 
       system = {
@@ -60,7 +63,7 @@ in
         fonts = enabled;
         locale = enabled;
         time = enabled;
-        xkb = enabled;
+        # xkb = enabled;
       };
     };
   };

@@ -12,7 +12,7 @@ in
   config = mkIf cfg.enable {
     excalibur.suites = {
       common = enabled;
-      desktop = enabled;
+      desktop-environment = enabled;
       games = enabled;
       social = enabled;
       media = enabled;

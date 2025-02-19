@@ -5,7 +5,6 @@ let
 
   cfg = config.${namespace}.suites.common;
   username = config.${namespace}.user.name;
-  server = config.${namespace}.archetypes.server;
 in
 {
   options.${namespace}.suites.common = {
@@ -22,45 +21,12 @@ in
         wget
         killall
       ];
-
-      systemPackages = with pkgs; [
-        curl
-        fd
-        file
-        findutils
-        lsof
-        pciutils
-        tldr
-        unzip
-        xclip
-      ];
-
-      shellAliases = {
-        nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
-        store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
-        keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
-      };
-
-      ## Create a file in /etc/installed/nixos-current-system-packages  Listing all Packages ###
-      etc = {
-        "nixos-current-system-packages" = {
-          text =
-            let
-              packages =
-                builtins.map (p: "${p.name}") config.environment.systemPackages;
-              sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-              formatted = builtins.concatStringsSep "\n" sortedUnique;
-            in
-            formatted;
-        };
-      };
     };
 
     systemd = {
       tmpfiles.rules = [
         "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash" # Create symlink to /bin/bash
         "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" # Create dirs for home-manager
-        "d /var/lib/private/sops/age 0755 root root"
       ];
 
       extraConfig = ''
@@ -88,11 +54,6 @@ in
 
         NetworkManager-wait-online.enable = mkForce false;
         systemd-udev-settle.enable = mkForce false;
-      };
-
-      targets = mkIf server {
-        hibernate.enable = false;
-        hybrid-sleep.enable = false;
       };
     };
 
