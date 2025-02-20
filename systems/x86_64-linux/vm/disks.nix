@@ -24,11 +24,10 @@ _: {
               size = "100%";
               content = {
                 extraArgs = [ "-f" ];
-                format = "bcachefs";
+                format = "xfs";
                 mountOptions = [
                   "defaults"
                   "relatime"
-                  "nodiratime"
                 ];
                 mountpoint = "/";
                 type = "filesystem";
