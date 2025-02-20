@@ -2,17 +2,17 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.desktop.xfce4;
+  cfg = config.${namespace}.desktop.environment.xfce4;
 
 in
 {
-  options.${namespace}.desktop.xfce4 = with types; {
+  options.${namespace}.desktop.environment.xfce4 = with types; {
     enable = mkBoolOpt false "Whether or not to use XFCE as the desktop environment.";
     suspend = mkBoolOpt true "Whether or not to suspend the machine after inactivity.";
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
+    ${namespace} = {
       system.xkb.enable = true;
     };
 

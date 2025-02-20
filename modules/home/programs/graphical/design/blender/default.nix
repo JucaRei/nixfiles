@@ -2,7 +2,7 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.programs.graphical.design.der;
+  cfg = config.${namespace}.programs.graphical.design.blender;
 in
 {
   options.${namespace}.programs.graphical.design.blender = with types; {

@@ -1,11 +1,4 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -17,11 +10,12 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
+    ${namespace} = {
       apps = {
         discord = {
           enable = true;
-          chromium = enabled;
+          # chromium = enabled;
+          native = enabled;
         };
         element = enabled;
       };

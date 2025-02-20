@@ -1,11 +1,4 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -17,9 +10,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
+    ${namespace} = {
       apps = {
         freetube = enabled;
+        yt-music = enabled;
       };
     };
   };

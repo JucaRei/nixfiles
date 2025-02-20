@@ -2,11 +2,11 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.desktop.gnome;
+  cfg = config.${namespace}.desktop.environment.gnome;
   gdmHome = config.users.users.gdm.home;
 in
 {
-  options.${namespace}.desktop.gnome = with types; {
+  options.${namespace}.desktop.environment.gnome = with types; {
     enable = mkBoolOpt false "Whether or not to use Gnome as the desktop environment.";
     wayland = mkBoolOpt false "Whether or not to use Wayland.";
     suspend = mkBoolOpt true "Whether or not to suspend the machine after inactivity.";
@@ -19,6 +19,18 @@ in
     ${namespace} = {
       system.xkb.enable = true;
 
+      desktop = {
+        display-manager = {
+          gdm = {
+            enable = true;
+            autoSuspend = true;
+            defaultSession = "gnome";
+            monitors = null;
+            wayland = false;
+          };
+        };
+      };
+
       programs.graphical = {
         # desktop-environment.gnome
       };
@@ -28,7 +40,7 @@ in
       systemPackages =
         with pkgs;
         [
-          (hiPrio excalibur.xdg-open-with-portal)
+          (hiPrio "${namespace}".xdg-open-with-portal)
           blackbox-terminal
         ]
         ++ defaultExtensions
@@ -118,16 +130,9 @@ in
         tracker = enabled;
         at-spi2-core = enabled;
       };
-      udev.packages = [ pkgs.gnome.gnome-settings-daemon ];
+      udev.packages = [ pkgs.gnome-settings-daemon ];
       xserver = {
         enable = true;
-        displayManager = {
-          gdm = {
-            enable = true;
-            wayland = cfg.wayland;
-            autoSuspend = cfg.suspend;
-          };
-        };
         desktopManager.gnome = {
           enable = true;
           extraGSettingsOverridePackages = with pkgs; [
@@ -202,7 +207,7 @@ in
         # - https://github.com/NixOS/nixpkgs/issues/171136
         # - https://discourse.nixos.org/t/fingerprint-auth-gnome-gdm-wont-allow-typing-password/35295
         login.fprintAuth = false;
-        gdm-fingerprint = mkIf config.services.fprintd.enable {
+        gdm-fingerprint = mkIf config.${namespace}.hardware.fingerprint.enable {
           text = ''
             auth       required                    pam_shells.so
             auth       requisite                   pam_nologin.so
@@ -221,7 +226,7 @@ in
             session    optional                    ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so auto_start
           '';
         };
-        gdm.enableGnomeKeyring = true;
+        # gdm.enableGnomeKeyring = true;
       };
     };
 

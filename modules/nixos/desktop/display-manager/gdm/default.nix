@@ -8,11 +8,11 @@ let
     ;
   inherit (lib.${namespace}) mkBoolOpt mkOpt;
 
-  cfg = config.${namespace}.display-managers.gdm;
+  cfg = config.${namespace}.desktop.display-manager.gdm;
   gdmHome = config.users.users.gdm.home;
 in
 {
-  options.${namespace}.display-managers.gdm = with types; {
+  options.${namespace}.desktop.display-manager.gdm = with types; {
     enable = mkBoolOpt false "Whether or not to enable gdm.";
     autoSuspend = mkBoolOpt true "Whether or not to suspend the machine after inactivity.";
     defaultSession = mkOpt (nullOr str) null "The default session to use.";

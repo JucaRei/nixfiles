@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.tools.gparted;
+  cfg = config.${namespace}.programs.graphical.tools.gparted;
 in
 {
-  options.${namespace}.apps.tools.gparted = with types; {
+  options.${namespace}.programs.graphical.tools.gparted = with types; {
     enable = mkBoolOpt false "Whether or not to enable gparted.";
   };
 

@@ -10,19 +10,15 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
+    ${namespace} = {
       suites = {
         common = enabled;
         desktop = enabled;
-        development = enabled;
-        art = enabled;
-        video = enabled;
+        # development = enabled;
+        # art = enabled;
+        # video = enabled;
         social = enabled;
         media = enabled;
-      };
-
-      tools = {
-        appimage-run = enabled;
       };
     };
   };

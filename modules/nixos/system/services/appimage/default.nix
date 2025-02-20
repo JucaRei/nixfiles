@@ -2,16 +2,14 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.programs.graphical.tools.appimage;
+  cfg = config.${namespace}.system.services.appimage;
 in
 {
-  options.${namespace}.programs.graphical.tools.appimage = with types; {
+  options.${namespace}.system.services.appimage = with types; {
     enable = mkBoolOpt false "Whether or not to enable appimage.";
   };
 
   config = mkIf cfg.enable {
-    excalibur.home.configFile."wgetrc".text = "";
-
     boot.binfmt.registrations.appimage = {
       wrapInterpreterInShell = false;
       interpreter = "${pkgs.appimage-run}/bin/appimage-run";

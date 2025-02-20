@@ -2,10 +2,10 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.apps.tools.bottles;
+  cfg = config.${namespace}.programs.graphical.tools.bottles;
 in
 {
-  options.${namespace}.apps.tools.bottles = with types; {
+  options.${namespace}.programs.graphical.tools.bottles = with types; {
     enable = mkBoolOpt false "Whether or not to enable Bottles.";
   };
 

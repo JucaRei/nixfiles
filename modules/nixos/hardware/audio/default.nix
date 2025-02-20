@@ -1,4 +1,4 @@
-{ config, lib, namespace, ... }:
+{ options, config, lib, namespace, ... }:
 let
   inherit (lib) mkIf types;
   inherit (lib.${namespace}) mkBoolOpt mkOpt;
@@ -7,6 +7,11 @@ let
   username = config.${namespace}.user.name;
 in
 {
+  imports = [
+    ./pipewire
+    ./pulseaudio
+  ];
+
   options.${namespace}.hardware.audio = {
     enable = mkBoolOpt false "Enable or disable pipewire";
     manager = mkOpt types.enum [ "pulseaudio" "pipewire" ] "pipewire" "The audio manager to use";

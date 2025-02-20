@@ -1,28 +1,14 @@
-{
-  options,
-  config,
-  lib,
-  pkgs,
-  namespace,
-  ...
+{ options
+, config
+, lib
+, pkgs
+, namespace
+, ...
 }:
 with lib;
 with lib.${namespace};
 let
   cfg = config.${namespace}.suites.games;
-  apps = {
-    steam = enabled;
-    prismlauncher = enabled;
-    lutris = enabled;
-    winetricks = enabled;
-    protontricks = enabled;
-    doukutsu-rs = enabled;
-    bottles = enabled;
-  };
-  cli-apps = {
-    wine = enabled;
-    proton = enabled;
-  };
 in
 {
   options.${namespace}.suites.games = with types; {
@@ -30,8 +16,30 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
-      inherit apps cli-apps;
+    ${namespace} = {
+      programs = {
+        graphical = {
+          games = {
+            steam = enabled;
+            lutris = enabled;
+            winetricks = enabled;
+            protontricks = enabled;
+            bottles = enabled;
+          };
+          tools = {
+            bottles = enabled;
+          };
+        };
+
+        terminal = {
+          apps = {
+            proton = enabled;
+          };
+          tools = {
+            wine = enabled;
+          };
+        };
+      };
     };
   };
 }

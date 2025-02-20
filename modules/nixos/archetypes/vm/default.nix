@@ -10,9 +10,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur = {
+    ${namespace} = {
       suites = {
-        common-slim = enabled;
+        common = enabled;
+        desktop = enabled;
+        development = enabled;
       };
 
       programs = {

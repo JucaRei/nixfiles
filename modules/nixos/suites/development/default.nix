@@ -24,7 +24,7 @@ in
         terminal = {
           dev = {
             direnv = enable;
-            nix-ld = enabled;
+            # nix-ld = enabled;
           };
         };
       };

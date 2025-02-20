@@ -12,10 +12,8 @@ in
   config = mkIf cfg.enable {
     ${namespace} = {
       desktop = {
-        gnome = enabled;
-
-        features = {
-          appimage = enabled;
+        environments = {
+          gnome = enabled;
         };
 
         addons = {
@@ -28,18 +26,32 @@ in
         security = {
           keyring = enabled;
         };
+        services = {
+          appimage = enabled;
+        };
       };
 
-      apps = {
-        _1password = enabled;
-        firefox = enabled;
-        vlc = enabled;
-        logseq = enabled;
-        hey = enabled;
-        pocketcasts = enabled;
-        yt-music = enabled;
-        twitter = enabled;
-        gparted = enabled;
+      programs = {
+        graphical = {
+          browser = {
+            firefox = enabled;
+          };
+
+          media = {
+            vlc = enabled;
+          };
+
+          tools = {
+            _1password = enabled;
+          };
+        };
+
+        terminal = {
+          tools = {
+            gparted = enabled;
+            nix-ld = enabled;
+          };
+        };
       };
 
     };

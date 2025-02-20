@@ -2,7 +2,7 @@
 with lib;
 with (lib.${namespace}).mkOpt;
 {
-  options.${namespace}.programs.terminal.apps.ssh = mkOption {
+  options.${namespace}.programs.terminal.tools.ssh = mkOption {
     enable = mkBoolOpt false "Whether or not to configure ssh support.";
     extraConfig = mkOpt str "" "Extra configuration to apply.";
     port = mkOpt port 2222 "The port to listen on (in addition to 22).";

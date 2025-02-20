@@ -10,9 +10,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.suites = {
+    ${namespace}.suites = {
       common = enabled;
-      desktop-environment = enabled;
+      desktop = enabled;
       games = enabled;
       social = enabled;
       media = enabled;

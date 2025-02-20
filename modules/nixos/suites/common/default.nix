@@ -75,7 +75,7 @@ in
             git = enabled;
             misc = enabled;
             nix-ld = enabled;
-            bottom = enabled;
+            # bottom = enabled;
           };
         };
       };
@@ -84,7 +84,10 @@ in
       hardware = {
         audio = enabled;
         storage = enabled;
-        networking = enabled;
+        networking = {
+          enable = true;
+          manager = "network-manager";
+        };
 
         power = mkDefault enabled;
       };

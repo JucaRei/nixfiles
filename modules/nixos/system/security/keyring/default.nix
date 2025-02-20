@@ -3,6 +3,7 @@ with lib;
 with lib.${namespace};
 let
   cfg = config.${namespace}.security.keyring;
+  gnome-env = config.${namespace}.desktop.environment.gnome;
 in
 {
   options.${namespace}.security.keyring = with types; {
@@ -14,5 +15,11 @@ in
       gnome.gnome-keyring
       gnome.libgnome-keyring
     ];
+
+    security = {
+      pam.services = mkIf gnome-env {
+        gdm.enableGnomeKeyring = true;
+      };
+    };
   };
 }
