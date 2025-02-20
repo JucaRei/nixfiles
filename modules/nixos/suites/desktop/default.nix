@@ -29,6 +29,7 @@ in
         services = {
           appimage = enabled;
         };
+        fonts = enabled;
       };
 
       programs = {
