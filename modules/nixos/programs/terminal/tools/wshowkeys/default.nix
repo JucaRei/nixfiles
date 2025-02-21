@@ -10,7 +10,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.user.extraGroups = [ "input" ];
+    ${namespace}.user.extraGroups = [ "input" ];
     environment.systemPackages = with pkgs; [ wshowkeys ];
   };
 }

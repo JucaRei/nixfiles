@@ -10,7 +10,7 @@ with lib.${namespace};
   # is incompatible with networkmanager.
   networking.wireless.enable = mkForce false;
 
-  excalibur = {
+  ${namespace} = {
     nix = enabled;
 
     cli-apps = {

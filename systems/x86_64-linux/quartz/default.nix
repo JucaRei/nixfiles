@@ -46,7 +46,7 @@ with lib.${namespace};
     7359
   ];
 
-  excalibur = {
+  ${namespace} = {
     nix = enabled;
 
     cli-apps = {
@@ -149,17 +149,17 @@ with lib.${namespace};
         enable = true;
         host = "hamho.me";
 
-        package = pkgs.excalibur.homer-catppuccin.override { favicon = "light"; };
+        package = pkgs.${namespace}.homer-catppuccin.override { favicon = "light"; };
 
         settings = {
           title = "Dashboard";
           subtitle = "Hamilton Home";
 
-          logo = pkgs.excalibur.homer-catppuccin.logos.light;
+          logo = pkgs.${namespace}.homer-catppuccin.logos.light;
 
           stylesheet = [
-            pkgs.excalibur.homer-catppuccin.stylesheets.latte
-            pkgs.excalibur.homer-catppuccin.stylesheets.frappe
+            pkgs.${namespace}.homer-catppuccin.stylesheets.latte
+            pkgs.${namespace}.homer-catppuccin.stylesheets.frappe
           ];
 
           footer = "";

@@ -1,6 +1,6 @@
 { options, config, lib, namespace, ... }:
 let
-  inherit (lib) mkIf types;
+  inherit (lib) mkIf types mkOption mdDoc;
   inherit (lib.${namespace}) mkBoolOpt mkOpt;
 
   cfg = config.${namespace}.hardware.audio;
@@ -14,7 +14,16 @@ in
 
   options.${namespace}.hardware.audio = {
     enable = mkBoolOpt false "Enable or disable pipewire";
-    manager = mkOpt types.enum [ "pulseaudio" "pipewire" ] "pipewire" "The audio manager to use";
+    manager = mkOption {
+      type = types.nullOr (
+        types.enum [
+          "pulseaudio"
+          "pipewire"
+        ]
+      );
+      default = "pipewire";
+      description = mdDoc "The audio manager to use";
+    };
   };
 
   config = mkIf cfg.enable {

@@ -73,7 +73,7 @@ in
     };
   };
 
-  excalibur = {
+  ${namespace} = {
     nix = enabled;
 
     desktop = {

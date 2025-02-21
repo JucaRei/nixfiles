@@ -12,12 +12,8 @@ in
   config = mkIf cfg.enable {
     ${namespace} = {
       desktop = {
-        environments = {
+        environment = {
           gnome = enabled;
-        };
-
-        addons = {
-          wallpapers = enabled;
         };
       };
 
@@ -34,9 +30,11 @@ in
 
       programs = {
         graphical = {
-          browser = {
-            firefox = enabled;
-          };
+          # browser = {
+          # firefox = {
+          #   enable = true;
+          # };
+          # };
 
           media = {
             vlc = enabled;

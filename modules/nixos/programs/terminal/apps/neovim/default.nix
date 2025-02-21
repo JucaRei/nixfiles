@@ -14,7 +14,7 @@ in
       # FIXME: As of today (2022-12-09), `page` no longer works with my Neovim
       # configuration. Either something in my configuration is breaking it or `page` is busted.
       # page
-      excalibur.neovim
+      "${namespace}".neovim
     ];
 
     environment.variables = {
@@ -27,7 +27,7 @@ in
       EDITOR = "nvim";
     };
 
-    excalibur.home = {
+    ${namespace}.home = {
       configFile = {
         "dashboard-nvim/.keep".text = "";
       };

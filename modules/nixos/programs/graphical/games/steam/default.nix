@@ -25,7 +25,7 @@ in
     # Enable GameCube controller support.
     services.udev.packages = [ pkgs.dolphinEmu ];
 
-    environment.systemPackages = with pkgs.excalibur; [ steam ];
+    environment.systemPackages = with pkgs.${namespace}; [ steam ];
 
     environment.sessionVariables = {
       STEAM_EXTRA_COMPAT_TOOLS_PATHS = "$HOME/.steam/root/compatibilitytools.d";

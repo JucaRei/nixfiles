@@ -11,7 +11,7 @@ with lib.${namespace};
     kernelPackages = pkgs.linuxKernel.packages.linux_rpi3;
   };
 
-  excalibur = {
+  ${namespace} = {
     archetypes = {
       server = enabled;
     };

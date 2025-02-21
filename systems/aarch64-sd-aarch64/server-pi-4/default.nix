@@ -17,7 +17,7 @@ with lib.${namespace};
   # nixpkgs.config.allowUnsupportedSystem = true;
   # nixpkgs.crossSystem.system = "aarch64-linux";
 
-  excalibur = {
+  ${namespace} = {
     archetypes = {
       server = enabled;
     };

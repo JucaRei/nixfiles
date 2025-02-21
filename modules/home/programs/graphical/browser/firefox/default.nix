@@ -15,7 +15,7 @@ let
   };
 in
 {
-  options.${namespace}.programs.graphical.browser.firefox = with types; {
+  options.${namespace}.programs.graphical.browser.firefox = {
     enable = mkBoolOpt false "Whether or not to enable Firefox.";
     extraConfig = mkOpt str "" "Extra configuration for the user profile JS file.";
     userChrome = mkOpt str "" "Extra configuration for the user chrome CSS file.";
@@ -23,7 +23,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    ${namespace}.desktop.addons.firefox-nordic-theme = enabled;
+    # ${namespace}.desktop.addons.firefox-nordic-theme = enabled;
 
     services.gnome.gnome-browser-connector.enable = config.${namespace}.desktop.gnome.enable;
 

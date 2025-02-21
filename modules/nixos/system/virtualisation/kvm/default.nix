@@ -1,12 +1,14 @@
 { config, lib, pkgs, namespace, ... }:
-with lib;
-with lib.${namespace};
 let
+  inherit (lib) mkIf optionalString concatStringsSep length;
+  inherit (lib.types) listOf str enum;
+  inherit (lib.${namespace}) mkBoolOpt mkOpt enabled;
+
   cfg = config.${namespace}.virtualisation.kvm;
   user = config.${namespace}.user;
 in
 {
-  options.${namespace}.virtualisation.kvm = with types; {
+  options.${namespace}.virtualisation.kvm = {
     enable = mkBoolOpt false "Whether or not to enable KVM virtualisation.";
     vfioIds = mkOpt (listOf str) [ ] "The hardware IDs to pass through to a virtual machine.";
     platform = mkOpt
@@ -92,8 +94,12 @@ in
         ];
       };
 
-      apps = {
-        looking-glass-client = enabled;
+      programs = {
+        terminal = {
+          tools = {
+            looking-glass-client = enabled;
+          };
+        };
       };
 
       home = {

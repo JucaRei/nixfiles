@@ -1,41 +1,60 @@
-{ config, lib, pkgs, namespace, ... }:
+{ config, inputs, lib, namespace, pkgs, ... }:
+
+############################
+### Default Boot Options ###
+############################
 let
-  inherit (lib) mkIf mdDoc optionals mkDefault mkOverride mkMerge;
-  inherit (lib.${namespace}) mkOpt mkBoolOpt;
-  inherit (lib.types) nullOr path enum null;
-
+  inherit (lib) mkIf mkOverride mkEnableOption mkDefault mkOption optionals mkMerge;
+  inherit (lib.types) str nullOr listOf enum;
+  inherit (lib.${namespace}) mkOpt;
   cfg = config.${namespace}.system.boot;
-
-  notVM = config.system.build.vm != "kvm";
+  hostname = config.${namespace}.host.name;
 in
 {
+  imports = [
+    inputs.lanzaboote.nixosModules.lanzaboote
+  ];
   options.${namespace}.system.boot = {
-    enable = mkBoolOpt false (mdDoc "Whether or not to enable booting.");
-    boottype = mkOpt (nullOr (enum [ "efi" "legacy" "hybrid-legacy" null ])) null (mdDoc "The boot type to use.");
-    bootmanager = mkOpt (nullOr (enum [ "grub" "systemd-boot" "raspberry" null ])) null (mdDoc "The default bootmanager to use.");
-    plymouth = mkBoolOpt false (mdDoc "Whether or not to enable plymouth boot splash.");
-    device = mkOpt path null (mdDoc "The device to install the bootloader to.");
-    isDualBoot = mkBoolOpt false (mdDoc "Whether or not to enable dual boot.");
-    secureBoot = mkBoolOpt false (mdDoc "Whether or not to enable secure boot.");
-    silentBoot = mkBoolOpt false (mdDoc "Whether or not to enable silent boot.");
+    enable = mkEnableOption "Default booting type." //
+      { default = false; };
+    boottype = mkOption {
+      type = nullOr (enum [ "efi" "legacy" "hybrid-legacy" null ]);
+      default = null; # "efi";
+      description = "Default boot option.";
+    };
+    device = mkOption {
+      type = nullOr str;
+      default = null;
+      description = ''
+        Device for GRUB boot loader.
+      '';
+    };
+    bootmanager = mkOption {
+      type = nullOr (enum [ "grub" "systemd-boot" "raspberry" null ]);
+      default = null; # "grub";
+      description = "Whether or not to enable EFI for booting.";
+    };
+    isDualBoot = mkEnableOption "Whether or not to enable for dual booting." // { default = false; };
+    plymouth = mkEnableOption "Whether or not to enable plymouth boot splash." // {
+      default = false;
+    };
+    silentBoot = mkEnableOption "Whether or not to enable silent boot." // { default = false; };
+    secureBoot = mkEnableOption "Whether or not to enable secure boot." // { default = false; };
   };
 
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ fwupd ]
-      ++
-      optionals (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") [
-        efibootmgr
-        efitools
-        efivar
-      ]
+      ++ optionals (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") [
+      efibootmgr
+      efitools
+      efivar
+    ]
       ++ optionals cfg.secureBoot [ sbctl ]
       ++ optionals cfg.isDualBoot [ os-prober ];
-
     boot = {
       consoleLogLevel = 0;
-
       initrd = {
-        verbose = if (cfg.silentBoot) then true else false;
+        verbose = if (cfg.silentBoot == true) then true else false;
         systemd = {
           enable = if (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") then true else false;
           strip = mkDefault true; # Saves considerable space in initrd
@@ -53,7 +72,9 @@ in
         #        default = 1000
         #   this default = 1250
         # option default = 1500
-        mkOverride 1250 pkgs.linuxPackages_latest.unstable;
+        mkOverride 1250 pkgs.unstable.linuxPackages_latest;
+
+      kernelModules = mkIf (hostname == "vm") [ "vhost_vsock" ];
 
       kernel = {
         sysctl = mkMerge [
@@ -80,21 +101,17 @@ in
         ];
       };
 
-      kernelModules = mkIf notVM [ "vhost_vsock" ];
-
       kernelParams = [
         # Enable cgroups_v2
         "cgroup_no_v1=all"
         "systemd.unified_cgroup_hierarchy=yes"
-      ]
-      ++ optionals cfg.plymouth [
+      ] ++ optionals cfg.plymouth [
         "quiet"
         "splash"
         "fbcon=nodefer"
         "nowatchdog" # Disable watchdog
         "nmi_watchdog=0" # Disable watchdog
       ]
-      ++ optionals cfg.plymouth [ "quiet" ]
       ++ optionals cfg.silentBoot [
         # tell the kernel to not be verbose
         "quiet"
@@ -123,6 +140,7 @@ in
         #  ignore access time (atime) updates on files
         # except when they coincide with updates to the ctime or mtime
         "rootflags=noatime"
+
       ]
       ++ optionals (cfg.bootmanager == "raspberry") [
         "cma=32M"
@@ -130,57 +148,51 @@ in
 
       lanzaboote = mkIf cfg.secureBoot {
         enable = true;
-        pkiBundle = "/var/lib/sbctl";
+        pkiBundle = "/etc/secureboot";
       };
 
       loader = {
         generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;
 
         efi = mkIf (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") {
-          canTouchEfiVariables = if (cfg.boottype == "efi" && cfg.bootmanager != true) then false else true;
+          canTouchEfiVariables = if (cfg.boottype == "efi" && config.boot.loader.grub.enable == false) then true else false;
           efiSysMountPoint = mkDefault "/boot";
         };
         generationsDir.copyKernels = mkIf cfg.boottype == "efi";
 
-        systemd-boot = {
-          enable = !cfg.secureBoot;
-          configurationLimit = 20;
-          editor = false;
+        grub = mkIf (cfg.bootmanager == "grub") {
+          enable = mkIf (cfg.bootmanager == "grub" && cfg.bootmanager != "raspberry") true;
+          efiSupport = if (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") then true else false;
+          # theme = mkDefault pkgs.catppuccin-grub;
+          efiInstallAsRemovable = if (cfg.boottype != "legacy") then true else false;
+          default = "saved";
+          device = if (cfg.boottype == "efi" && cfg.bootmanager == "grub" || cfg.boottype == "hybrid-legacy" && cfg.bootmanager == "grub") then "nodev" else "/dev/sda";
+          fsIdentifier = "provided";
+          gfxmodeEfi = "auto";
+          fontSize = 20;
+          configurationLimit = 10;
+          # splashImage = ./backgrounds/grub-nixos-3.png;
+          # splashMode = "stretch";
+          extraEntries = ''
+            menuentry "Reboot" {
+              reboot
+            }
+            menuentry "Poweroff" {
+              halt
+            }
+          '';
+          useOSProber = if (cfg.isDualBoot == true) then true else false;
         };
-      };
 
-      grub = mkIf (cfg.bootmanager == "grub") {
-        enable = mkIf (cfg.bootmanager == "grub" && cfg.bootmanager != "raspberry") true;
-        efiSupport = if (cfg.boottype == "efi" || cfg.boottype == "hybrid-legacy") then true else false;
-        # theme = mkDefault pkgs.catppuccin-grub;
-        efiInstallAsRemovable = if (cfg.boottype != "legacy") then true else false;
-        default = "saved";
-        device = if (cfg.boottype == "efi" && cfg.bootmanager == "grub" || cfg.boottype == "hybrid-legacy" && cfg.bootmanager == "grub") then "nodev" else "/dev/sda";
-        fsIdentifier = "provided";
-        gfxmodeEfi = "auto";
-        fontSize = 20;
-        configurationLimit = 10;
-        # splashImage = ./backgrounds/grub-nixos-3.png;
-        # splashMode = "stretch";
-        extraEntries = ''
-          menuentry "Reboot" {
-            reboot
-          }
-          menuentry "Poweroff" {
-            halt
-          }
-        '';
-        useOSProber = if (cfg.isDualBoot == true) then true else false;
+        systemd-boot = mkIf (cfg.bootmanager == "systemd-boot") {
+          enable = true;
+          consoleMode = "max";
+          configurationLimit = 10;
+          editor = false;
+          memtest86.enable = true;
+        };
+        timeout = 7;
       };
-
-      systemd-boot = mkIf (cfg.bootmanager == "systemd-boot") {
-        enable = true;
-        consoleMode = "max";
-        configurationLimit = 10;
-        editor = false;
-        memtest86.enable = true;
-      };
-      timeout = 7;
 
       plymouth = rec {
         enable = cfg.plymouth;
@@ -196,16 +208,10 @@ in
 
       tmp = {
         useTmpfs = true;
+        tmpfsSize = "30%";
         cleanOnBoot = mkDefault (!config.boot.tmp.useTmpfs);
-        tmpfsSize = "50%";
       };
     };
-
-    services.fwupd = {
-      enable = true;
-      daemonSettings.EspLocation = config.boot.loader.efi.efiSysMountPoint;
-    };
-
     systemd.watchdog.rebootTime = mkIf (cfg.plymouth) "0";
 
     # persistence.directories = mkIf persistence == true; [

@@ -98,7 +98,7 @@ in
       };
     };
 
-    excalibur = {
+    ${namespace} = {
       home.file = {
         ".gnupg/.keep".text = "";
 

@@ -1,4 +1,5 @@
 { options, config, lib, namespace, ... }:
+with lib;
 with lib.${namespace};
 {
   imports = [
@@ -8,7 +9,11 @@ with lib.${namespace};
 
   options.${namespace}.system.security.superuser = {
     enable = mkBoolOpt false "Whether or not enable super user manager.";
-    manager = mkOption str enum [ "sudo" "doas" ] "sudo" "The super user manager to use.";
+    manager = mkOption {
+      type = types.nullOr (enum [ "sudo" "doas" ]);
+      default = "sudo";
+      description = mdDoc "The super user manager to use.";
+    };
   };
   config = mkIf config.${namespace}.system.security.superuser.enable {
     security = {

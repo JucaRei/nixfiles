@@ -1,7 +1,7 @@
 { lib, namespace, ... }:
 with lib.${namespace};
 {
-  excalibur = {
+  ${namespace} = {
     suites = {
       common = enabled;
       development = enabled;

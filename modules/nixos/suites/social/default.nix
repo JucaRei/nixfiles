@@ -11,7 +11,7 @@ in
 
   config = mkIf cfg.enable {
     ${namespace} = {
-      apps = {
+      programs.graphical.social = {
         discord = {
           enable = true;
           # chromium = enabled;

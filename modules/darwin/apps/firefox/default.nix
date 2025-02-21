@@ -29,9 +29,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.desktop.addons.firefox-nordic-theme = enabled;
+    ${namespace}.desktop.addons.firefox-nordic-theme = enabled;
 
-    excalibur.home = {
+    ${namespace}.home = {
       extraOptions = {
         programs.firefox = {
           enable = true;

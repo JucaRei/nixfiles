@@ -9,10 +9,6 @@ in
 {
   imports = [ (lib.snowfall.fs.get-file "modules/shared/suites/common/default.nix") ];
 
-  options.${namespace}.suites.common = {
-    enable = mkBoolOpt false "Whether or not to enable common configuration.";
-  };
-
   config = mkIf cfg.enable {
     environment = {
       systemPackages = with pkgs; [
@@ -102,7 +98,7 @@ in
         boot = {
           enable = true;
           boottype = mkOptionDefault "efi";
-          bootmanager = mkOptionDefault "grub";
+          bootmanager = "grub";
           isDualBoot = mkOptionDefault false;
           secureBoot = mkOptionDefault false;
           silentBoot = mkOptionDefault false;

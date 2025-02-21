@@ -16,7 +16,7 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.pkgs.npm ];
 
-    excalibur.home.extraOptions = {
+    ${namespace}.home.extraOptions = {
       programs.zsh.initExtra = ''
         export PRISMA_SCHEMA_ENGINE_BINARY="${cfg.pkgs.engines}/bin/schema-engine"
         export PRISMA_QUERY_ENGINE_BINARY="${cfg.pkgs.engines}/bin/query-engine"

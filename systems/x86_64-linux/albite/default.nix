@@ -22,7 +22,7 @@ with lib.${namespace};
 
   environment.systemPackages = with pkgs; [ neovim ];
 
-  excalibur = {
+  ${namespace} = {
     nix = enabled;
 
     cli-apps = {

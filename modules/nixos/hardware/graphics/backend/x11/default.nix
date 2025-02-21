@@ -1,7 +1,12 @@
-{ lib, config, pkgs, desktop, hostname, namespace, ... }:
+{ lib, config, pkgs, namespace, ... }:
 let
   inherit (lib) mkIf mkDefault optional;
   graphics = config.${namespace}.hardware.graphics;
+
+  hostname = config.${namespace}.host.name;
+
+  gnome-desk = config.${namespace}.desktop.environment;
+
 in
 {
   config = mkIf (graphics.enable && graphics.backend == "x11") {
@@ -15,7 +20,7 @@ in
 
       # Fix issue with java applications and tiling window managers.
       sessionVariables = {
-        "_JAVA_AWT_WM_NONREPARENTING" = (mkIf (desktop == "bspwm")) "1";
+        "_JAVA_AWT_WM_NONREPARENTING" = (mkIf (gnome-desk)) "1";
         LIBVA_DRIVER_NAME = mkIf (graphics.gpu == "nvidia" || graphics.gpu == "hybrid-nvidia") "nvidia";
         VDPAU_DRIVER = mkIf (graphics.gpu == "nvidia" || graphics.gpu == "hybrid-nvidia") "nvidia";
       };
@@ -29,9 +34,9 @@ in
         enable = mkDefault true;
       };
 
-      gnome.gnome-keyring = (mkIf (desktop != "kde" || desktop != "pantheon")) {
-        enable = true;
-      };
+      # gnome.gnome-keyring = (mkIf (desktop != "kde" || desktop != "pantheon")) {
+      #   enable = true;
+      # };
 
       xserver = {
 

@@ -16,7 +16,7 @@ in
     ./backend/x11
   ];
 
-  options.hardware.graphics = {
+  options.${namespace}.hardware.graphics = {
     enable = mkOption {
       type = types.bool;
       default = false;
@@ -54,17 +54,17 @@ in
   };
 
   config = {
-    users.users.${user}.extraGroups = optionals (config.hardware.graphics.enable && config.hardware.graphics.backend != null) [
+    users.users.${user}.extraGroups = optionals (config.${namespace}.hardware.graphics && config.${namespace}.hardware.graphics.backend != null) [
       "render"
       "video"
     ];
 
     hardware = {
-      graphics = mkIf (config.hardware.graphics.enable && config.hardware.graphics.acceleration) {
+      graphics = mkIf (config.${namespace}.hardware.graphics.enable && config.${namespace}.hardware.graphics.acceleration) {
         # package = pkgs.unstable.mesa.drivers;
         enable = true;
         enable32Bit = true;
-        extraPackages = (mkIf (config.hardware.graphics.gpu == "hybrid-nvidia") (with pkgs.unstable;[
+        extraPackages = (mkIf (config.${namespace}.hardware.graphics.gpu == "hybrid-nvidia") (with pkgs.unstable;[
           vaapiIntel
           vaapiVdpau
         ]));
@@ -72,7 +72,7 @@ in
     };
 
     environment = {
-      systemPackages = with pkgs; mkIf (config.hardware.graphics.enable && config.hardware.graphics.gpu != null) [
+      systemPackages = with pkgs; mkIf (config.${namespace}.hardware.graphics.enable && config.${namespace}.hardware.graphics.gpu != null) [
         libva
         libva-utils
         vulkan-loader

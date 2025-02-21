@@ -16,7 +16,7 @@ with lib.${namespace};
     };
   };
 
-  excalibur = {
+  ${namespace} = {
     archetypes = {
       workstation = enabled;
     };
@@ -53,7 +53,7 @@ with lib.${namespace};
     };
   };
 
-  excalibur.home.extraOptions = {
+  ${namespace}.home.extraOptions = {
     # dconf.settings = {
     #   "org/gnome/shell/extensions/just-perfection" = {
     #     panel-size = 60;

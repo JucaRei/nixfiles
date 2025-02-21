@@ -6,7 +6,7 @@ let
 in
 {
 
-  config = mkIf cfg.manager == "doas" {
+  config = mkIf (cfg.manager == "doas") {
     # Disable sudo
     security.sudo.enable = false;
 

@@ -11,9 +11,8 @@ in
 
   config = mkIf cfg.enable {
     ${namespace} = {
-      apps = {
+      programs.graphical.media = {
         freetube = enabled;
-        yt-music = enabled;
       };
     };
   };

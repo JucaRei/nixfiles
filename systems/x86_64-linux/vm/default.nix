@@ -18,6 +18,12 @@ with lib.${namespace};
         };
       };
     };
+
+    system = {
+      xkb = {
+        keyboards = "ptBR";
+      };
+    };
   };
 
   system.stateVersion = "22.11";

@@ -1,10 +1,4 @@
-{ options
-, config
-, lib
-, pkgs
-, namespace
-, ...
-}:
+{ options, config, lib, pkgs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -17,10 +11,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.apps.firefox = {
-      extraConfig = builtins.readFile "${pkgs.excalibur.firefox-nordic-theme}/configuration/user.js";
+    ${namespace}.apps.firefox = {
+      extraConfig = builtins.readFile "${pkgs.${namespace}.firefox-nordic-theme}/configuration/user.js";
       userChrome = ''
-        @import "${pkgs.excalibur.firefox-nordic-theme}/userChrome.css";
+        @import "${pkgs.${namespace}.firefox-nordic-theme}/userChrome.css";
       '';
     };
   };

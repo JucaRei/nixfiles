@@ -12,7 +12,7 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ podman-compose ];
 
-    excalibur.home.extraOptions = {
+    ${namespace}.home.extraOptions = {
       home.shellAliases = {
         "docker-compose" = "podman-compose";
       };

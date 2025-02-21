@@ -54,7 +54,7 @@ with lib.${namespace};
 
   environment.systemPackages = with pkgs; [
     chromium
-    excalibur.kalidoface
+    "${namespace}".kalidoface
     deluge
   ];
 
@@ -106,7 +106,7 @@ with lib.${namespace};
   # 	acme.enable = true;
   # };
 
-  excalibur = {
+  ${namespace} = {
 
     apps = {
       rpcs3 = enabled;
@@ -155,8 +155,8 @@ with lib.${namespace};
 
     desktop.gnome = {
       wallpaper = {
-        light = pkgs.excalibur.wallpapers.nord-rainbow-light-nix-ultrawide;
-        dark = pkgs.excalibur.wallpapers.nord-rainbow-dark-nix-ultrawide;
+        light = pkgs.${namespace}.wallpapers.nord-rainbow-light-nix-ultrawide;
+        dark = pkgs.${namespace}.wallpapers.nord-rainbow-dark-nix-ultrawide;
       };
       monitors = ./monitors.xml;
     };

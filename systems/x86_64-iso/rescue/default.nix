@@ -6,7 +6,7 @@
 with lib;
 with lib.${namespace};
 {
-  excalibur = {
+  ${namespace} = {
     nix = enabled;
 
     cli-apps = {

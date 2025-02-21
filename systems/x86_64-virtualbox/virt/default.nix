@@ -14,7 +14,7 @@ with lib.${namespace};
     WLR_NO_HARDWARE_CURSORS=1
   '';
 
-  excalibur = {
+  ${namespace} = {
     nix = enabled;
 
     apps = {

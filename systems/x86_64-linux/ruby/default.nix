@@ -9,7 +9,7 @@ with lib.${namespace};
 {
   imports = [ ./hardware.nix ];
 
-  excalibur = {
+  ${namespace} = {
     nix = enabled;
 
     cli-apps = {

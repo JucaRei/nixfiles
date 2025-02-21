@@ -1,10 +1,12 @@
-{ lib, config, pkgs, desktop, namespace, ... }:
+{ lib, config, pkgs, namespace, ... }:
 let
   inherit (lib) mkIf mkForce;
   graphics = config.${namespace}.hardware.graphics;
 
   # nvidia-card = "$(readlink -f /dev/dri/by-path/pci-0000:01:00.0-card)";
   nvidia-card = "/dev/dri/card1";
+
+  gnome-desk = config.${namespace}.desktop.environment;
 
   gnome-gpu-rule = pkgs.writeTextFile {
     name = "61-mutter-primary-gpu.rules";
@@ -101,7 +103,8 @@ in
       };
     };
 
-    services = mkIf (desktop == "gnome" && config.hardware.graphics.gpu == "hybrid-nvidia") {
+    services = mkIf (gnome-desk && config.hardware.graphics.gpu == "hybrid-nvidia") {
+      # services = mkIf (config.hardware.graphics.gpu == "hybrid-nvidia") {
       udev.packages = [ gnome-gpu-rule ];
     };
   };

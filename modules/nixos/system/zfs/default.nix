@@ -37,7 +37,7 @@ in
       };
     };
 
-    # excalibur = {
+    # ${namespace} = {
     #   apps = {
     #     tools = {
     #       icehouse = enabled;

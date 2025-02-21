@@ -1,11 +1,4 @@
-{ options
-, config
-, pkgs
-, lib
-, inputs
-, namespace
-, ...
-}:
+{ options, config, pkgs, lib, inputs, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -26,7 +19,7 @@ in
   };
 
   config = {
-    excalibur.home.extraOptions = {
+    ${namespace}.home.extraOptions = {
       home.stateVersion = mkDefault "22.11";
       home.file = mkAliasDefinitions options.${namespace}.home.file;
       xdg.enable = true;

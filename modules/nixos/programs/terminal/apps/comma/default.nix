@@ -12,10 +12,10 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [
       comma
-      excalibur.nix-update-index
+      "${namespace}".nix-update-index
     ];
 
-    excalibur.home = {
+    ${namespace}.home = {
       configFile = {
         "wgetrc".text = "";
       };

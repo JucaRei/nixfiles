@@ -31,11 +31,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.desktop.addons.firefox-nordic-theme = enabled;
+    ${namespace}.desktop.addons.firefox-nordic-theme = enabled;
 
     services.gnome.gnome-browser-connector.enable = config.${namespace}.desktop.gnome.enable;
 
-    excalibur.home = {
+    ${namespace}.home = {
       file = mkMerge [
         {
           ".mozilla/native-messaging-hosts/com.dannyvankooten.browserpass.json".source = "${pkgs.browserpass}/lib/mozilla/native-messaging-hosts/com.dannyvankooten.browserpass.json";

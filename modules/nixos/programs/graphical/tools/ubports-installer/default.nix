@@ -10,8 +10,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs.excalibur; [ ubports-installer ];
+    environment.systemPackages = with pkgs.${namespace}; [ ubports-installer ];
 
-    services.udev.packages = with pkgs.excalibur; [ ubports-installer-udev-rules ];
+    services.udev.packages = with pkgs.${namespace}; [ ubports-installer-udev-rules ];
   };
 }

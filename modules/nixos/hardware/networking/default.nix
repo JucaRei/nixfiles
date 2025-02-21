@@ -72,11 +72,11 @@ in
     hosts = mkOpt attrs { } (mdDoc "An attribute set to merge with `networking.hosts`");
     powersave = mkOpt types.bool false "Whether or not to enable powersave mode";
     wakeOnLan = mkOpt types.bool false "Whether or not to enable Wake-on-LAN";
-    custom-interface = mkOpt types.str null "A custom network interface to use";
+    # custom-interface = mkOpt types.nullOr null "A custom network interface to use";
   };
 
   config = mkIf cfg.enable {
-    excalibur.user.extraGroups = mkIf (cfg.manager == "network-manager") [ "networkmanager" ];
+    ${namespace}.user.extraGroups = mkIf (cfg.manager == "network-manager") [ "networkmanager" ];
 
     networking = {
       hosts = {
@@ -130,14 +130,14 @@ in
 
       usePredictableInterfaceNames = mkDefault true;
 
-      interfaces = {
-        "${cfg.custom-interface}" = {
-          wakeOnLan = mkIf (cfg.wakeOnLan == true) {
-            enable = true;
-            policy = [ "magic" ];
-          };
-        };
-      };
+      # interfaces = {
+      #   "${cfg.custom-interface}" = {
+      #     wakeOnLan = mkIf (cfg.wakeOnLan == true) {
+      #       enable = true;
+      #       policy = [ "magic" ];
+      #     };
+      #   };
+      # };
 
       # Disabling DHCPCD in favor of NetworkManager
       dhcpcd.enable =

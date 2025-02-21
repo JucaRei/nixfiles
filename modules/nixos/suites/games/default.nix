@@ -22,9 +22,8 @@ in
           games = {
             steam = enabled;
             lutris = enabled;
-            winetricks = enabled;
+            # winetricks = enabled;
             protontricks = enabled;
-            bottles = enabled;
           };
           tools = {
             bottles = enabled;

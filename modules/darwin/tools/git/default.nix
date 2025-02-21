@@ -1,10 +1,4 @@
-{ options
-, config
-, pkgs
-, lib
-, namespace
-, ...
-}:
+{ options, config, pkgs, lib, namespace, ... }:
 with lib;
 with lib.${namespace};
 let
@@ -23,7 +17,7 @@ in
   config = mkIf cfg.enable {
     environment.systemPackages = with pkgs; [ git ];
 
-    excalibur.home.extraOptions = {
+    ${namespace}.home.extraOptions = {
       programs.git = {
         enable = true;
         inherit (cfg) userName userEmail;

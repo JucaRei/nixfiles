@@ -10,7 +10,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.home.extraOptions = {
+    ${namespace}.home.extraOptions = {
       programs.direnv = {
         enable = true;
         nix-direnv = enabled;
