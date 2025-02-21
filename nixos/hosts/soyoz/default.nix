@@ -120,7 +120,7 @@ in
 
     environment = {
       systemPackages = with pkgs; [
-        cloneit
+        # cloneit
         lm_sensors
         duf
       ];

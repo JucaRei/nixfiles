@@ -4,7 +4,7 @@ let
 in
 {
   home.packages = with pkgs ; [
-    cloneit
+    # cloneit
     typora
     # unstable.obsidian
     deluge-gtk
