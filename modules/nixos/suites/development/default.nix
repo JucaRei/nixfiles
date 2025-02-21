@@ -22,8 +22,8 @@ in
 
       programs = {
         terminal = {
-          dev = {
-            direnv = enable;
+          tools = {
+            direnv = enabled;
             # nix-ld = enabled;
           };
         };

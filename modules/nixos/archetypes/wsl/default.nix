@@ -23,6 +23,6 @@ in
       ];
     };
 
-    ${namespace}.system.networking.enable = mkForce false;
+    ${namespace}.hardware.networking.enable = mkForce false;
   };
 }

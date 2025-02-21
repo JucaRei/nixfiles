@@ -19,12 +19,15 @@ in
 
       system = {
         xkb = enabled;
+
         security = {
           keyring = enabled;
         };
+
         services = {
           appimage = enabled;
         };
+
         fonts = enabled;
       };
 
@@ -42,17 +45,17 @@ in
 
           tools = {
             _1password = enabled;
+            gparted = enabled;
           };
         };
 
         terminal = {
           tools = {
-            gparted = enabled;
             nix-ld = enabled;
           };
         };
-      };
 
+      };
     };
   };
 }

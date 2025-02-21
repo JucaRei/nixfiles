@@ -12,7 +12,7 @@ in
   config = mkIf cfg.enable {
     ${namespace} = {
       programs.graphical.media = {
-        freetube = enabled;
+        # freetube = enabled;
       };
     };
   };

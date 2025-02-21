@@ -69,7 +69,7 @@ in
 
           tools = {
             git = enabled;
-            misc = enabled;
+            # misc = enabled;
             nix-ld = enabled;
             # bottom = enabled;
           };
@@ -88,13 +88,10 @@ in
         power = mkDefault enabled;
       };
 
-      services = {
-        # printing = enabled;
-        ssh = enabled;
-        # tailscale = enabled;
-      };
+
 
       system = {
+
         boot = {
           enable = true;
           boottype = mkOptionDefault "efi";
@@ -104,9 +101,16 @@ in
           silentBoot = mkOptionDefault false;
           plymouth = mkOptionDefault false;
         };
+
         fonts = enabled;
         locale = enabled;
         time = enabled;
+
+        services = {
+          # printing = enabled;
+          ssh = enabled;
+          # tailscale = enabled;
+        };
 
         security = {
           # gpg = enabled;
@@ -115,6 +119,7 @@ in
             manager = mkDefault "sudo";
           };
         };
+
       };
     };
 

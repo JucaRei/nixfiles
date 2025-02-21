@@ -23,11 +23,11 @@ in
         terminal = {
           apps = {
             flake = enabled;
+            comma = enabled;
           };
 
           tools = {
             git = enabled;
-            comma = enabled;
             # bottom = enabled;
             # direnv = enabled;
           };
@@ -42,25 +42,29 @@ in
         };
       };
 
-      security = {
-        superuser = {
-          enable = true;
-          manager = mkDefault "doas";
-        };
-      };
-
       system = {
+
         boot = {
           enable = true;
           boottype = "efi";
           bootmanager = "grub";
         };
+
         fonts = enabled;
         locale = enabled;
         time = enabled;
+
         services = {
           ssh = enabled;
         };
+
+        security = {
+          superuser = {
+            enable = true;
+            manager = mkDefault "doas";
+          };
+        };
+
       };
     };
   };

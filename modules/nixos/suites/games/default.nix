@@ -26,7 +26,7 @@ in
             protontricks = enabled;
           };
           tools = {
-            bottles = enabled;
+            # bottles = enabled;
           };
         };
 

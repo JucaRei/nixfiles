@@ -2,11 +2,11 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.security.keyring;
+  cfg = config.${namespace}.system.security.keyring;
   gnome-env = config.${namespace}.desktop.environment.gnome;
 in
 {
-  options.${namespace}.security.keyring = with types; {
+  options.${namespace}.system.security.keyring = with types; {
     enable = mkBoolOpt false "Whether to enable gnome keyring.";
   };
 

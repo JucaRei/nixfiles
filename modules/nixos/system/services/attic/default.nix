@@ -2,7 +2,7 @@
 with lib;
 with lib.${namespace};
 let
-  cfg = config.${namespace}.services.attic;
+  cfg = config.${namespace}.system.services.attic;
 
   toml-format = pkgs.formats.toml { };
 
@@ -32,7 +32,7 @@ let
     config.services.postgresql.enable && hasPrefix "postgresql://" url && is-local-db-url;
 in
 {
-  options.${namespace}.services.attic = {
+  options.${namespace}.system.services.attic = {
     enable = mkEnableOption "Attic";
 
     package = mkOpt types.package pkgs.attic-server "The attic-server package to use.";
@@ -51,7 +51,7 @@ in
     assertions = [
       {
         assertion = !isStorePath cfg.credentials;
-        message = "excalibur.services.attic.credentials CANNOT be in the Nix Store.";
+        message = "${namespace}.services.attic.credentials CANNOT be in the Nix Store.";
       }
     ];
 
@@ -66,8 +66,8 @@ in
       groups = optionalAttrs (cfg.group == "atticd") { atticd = { }; };
     };
 
-    excalibur = {
-      tools.attic = enabled;
+    ${namespace} = {
+      programs.terminal.tools.attic = enabled;
 
       services.attic.settings = {
         database.url = mkDefault "sqlite:///var/lib/atticd/server.db?mode=rwc";
@@ -94,7 +94,10 @@ in
         User = cfg.user;
         Group = cfg.group;
         DynamicUser = true;
-      } // optionalAttrs (cfg.credentials != null) { EnvironmentFile = mkDefault cfg.credentials; };
+      }
+      // optionalAttrs (cfg.credentials != null) {
+        EnvironmentFile = mkDefault cfg.credentials;
+      };
     };
   };
 }
