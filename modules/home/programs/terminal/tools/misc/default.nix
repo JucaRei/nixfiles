@@ -10,7 +10,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.home.configFile."wgetrc".text = "";
 
     home.packages = with pkgs; [
       fzf

@@ -30,9 +30,9 @@ in
   config = mkIf (cfg.enable or cfg.chromium.enable) {
     environment.systemPackages =
       lib.optional cfg.enable discord
-      ++ lib.optional cfg.canary.enable pkgs.excalibur.discord
-      ++ lib.optional cfg.chromium.enable pkgs.excalibur.discord-chromium
-      ++ lib.optional cfg.firefox.enable pkgs.excalibur.discord-firefox
+      ++ lib.optional cfg.canary.enable pkgs.${namespace}.discord
+      ++ lib.optional cfg.chromium.enable pkgs.${namespace}.discord-chromium
+      ++ lib.optional cfg.firefox.enable pkgs.${namespace}.discord-firefox
       ++ lib.optional cfg.native.enable pkgs.discord;
   };
 }

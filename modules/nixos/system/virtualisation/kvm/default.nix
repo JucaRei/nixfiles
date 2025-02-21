@@ -85,7 +85,7 @@ in
       };
     };
 
-    excalibur = {
+    ${namespace} = {
       user = {
         extraGroups = [
           "qemu-libvirtd"

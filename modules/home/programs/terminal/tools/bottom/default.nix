@@ -10,7 +10,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.home.extraOptions = {
+    ${namespace}.home.extraOptions = {
       home.packages = with pkgs; [ bottom ];
     };
   };

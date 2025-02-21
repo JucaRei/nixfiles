@@ -5,13 +5,11 @@ let
   cfg = config.${namespace}.programs.graphical.social.element;
 in
 {
-  options.${namespace}.programs.graphical.social.element = with types; {
+  options.${namespace}.programs.graphical.social.element = {
     enable = mkBoolOpt false "Whether or not to enable Element.";
   };
 
   config = mkIf cfg.enable {
-    ${namespace}.home.extraOptions = {
-      home.packages = with pkgs; [ element-desktop ];
-    };
+    # home.packages = with pkgs; [ element-desktop ];
   };
 }

@@ -15,7 +15,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    excalibur.home.extraOptions = {
+    ${namespace}.home.extraOptions = {
       programs.git = {
         enable = true;
         inherit (cfg) userName userEmail;
@@ -37,9 +37,9 @@ in
           core = {
             whitespace = "trailing-space,space-before-tab";
           };
-          safe = {
-            directory = "${user.home}/work/config/.git";
-          };
+          # safe = {
+          #   directory = "${user.home}/work/config/.git";
+          # };
         };
       };
     };

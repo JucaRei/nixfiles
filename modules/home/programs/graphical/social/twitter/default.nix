@@ -10,6 +10,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    # home.packages = with pkgs.excalibur; [ twitter ];
+    # home.packages = with pkgs.${namespace}; [ twitter ];
   };
 }

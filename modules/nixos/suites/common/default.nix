@@ -3,7 +3,6 @@ let
   inherit (lib) mkOptionDefault mkDefault mkIf;
   inherit (lib.${namespace}) mkBoolOpt enabled;
   cfg = config.${namespace}.suites.common;
-  username = config.${namespace}.user.name;
   server = config.${namespace}.archetypes.server;
 in
 {
@@ -85,7 +84,7 @@ in
           manager = "network-manager";
         };
 
-        power = mkDefault enabled;
+        # power = mkDefault enabled;
       };
 
 

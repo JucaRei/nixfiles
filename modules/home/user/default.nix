@@ -37,11 +37,11 @@ in
       assertions = [
         {
           assertion = cfg.name != null;
-          message = "excalibur.user.name must be set";
+          message = "${namespace}.user.name must be set";
         }
         {
           assertion = cfg.home != null;
-          message = "excalibur.user.home must be set";
+          message = "${namespace}.user.home must be set";
         }
       ];
 
@@ -65,15 +65,15 @@ in
           "Pictures/.keep".text = "";
           "Videos/.keep".text = "";
           "work/.keep".text = "";
-        } //
-        lib.optionalAttrs (cfg.icon != null) {
-          ".face".source = cfg.icon;
-          ".face.icon".source = cfg.icon;
-          "Pictures/${cfg.icon.fileName or (builtins.baseNameOf cfg.icon)}".source = cfg.icon;
-        };
+        }
+          # //
+          # lib.optionalAttrs (cfg.icon != null) {
+          #   ".face".source = cfg.icon;
+          #   ".face.icon".source = cfg.icon;
+          #   "Pictures/${cfg.icon.fileName or (builtins.baseNameOf cfg.icon)}".source = cfg.icon;
+          # }
+        ;
       };
-
-      programs.home-manager = enabled;
     }
   ]);
 }

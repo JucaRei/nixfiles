@@ -28,3 +28,5 @@ with lib.${namespace};
 
   system.stateVersion = "22.11";
 }
+
+# nix run github:nix-community/nixos-anywhere -- --flake .#scrubber --target-host root@192.168.122.173
