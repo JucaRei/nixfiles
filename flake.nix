@@ -48,6 +48,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    home-manager_unstable = {
+      url = "github:nix-community/home-manager/release-24.11";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
 
     # nixos-needsreboot = {

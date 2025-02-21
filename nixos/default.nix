@@ -4,6 +4,7 @@ let
 in
 {
   imports = with inputs; [
+    nur.modules.nixos.default
     auto-cpufreq.nixosModules.default
     catppuccin.nixosModules.catppuccin
     disko.nixosModules.disko
