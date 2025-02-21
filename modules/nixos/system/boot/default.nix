@@ -18,8 +18,8 @@ in
     enable = mkEnableOption "Default booting type." //
       { default = false; };
     boottype = mkOption {
-      type = nullOr (enum [ "efi" "legacy" "hybrid-legacy" null ]);
-      default = null; # "efi";
+      type = nullOr (enum [ "efi" "legacy" "hybrid-legacy" ]);
+      default = "efi";
       description = "Default boot option.";
     };
     device = mkOption {

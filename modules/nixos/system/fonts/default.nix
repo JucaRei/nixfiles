@@ -27,7 +27,7 @@ in
 
       fontconfig = {
         enable = true;
-        enableSubpixel = true;
+        # enableSubpixel = true;
         antialias = true;
         hinting.enable = true;
       };
@@ -35,7 +35,7 @@ in
       fontDir = {
         enable = true;
         decompressFonts = false;
-        path = "/usr/share/fonts";
+        # path = "/usr/share/fonts";
       };
 
     };

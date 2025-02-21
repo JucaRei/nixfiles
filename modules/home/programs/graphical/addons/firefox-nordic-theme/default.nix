@@ -11,7 +11,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    ${namespace}.apps.firefox = {
+    ${namespace}.programs.graphical.browser.firefox = {
       extraConfig = builtins.readFile "${pkgs.${namespace}.firefox-nordic-theme}/configuration/user.js";
       userChrome = ''
         @import "${pkgs.${namespace}.firefox-nordic-theme}/userChrome.css";

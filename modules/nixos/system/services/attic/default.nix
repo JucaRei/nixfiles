@@ -51,7 +51,7 @@ in
     assertions = [
       {
         assertion = !isStorePath cfg.credentials;
-        message = "${namespace}.services.attic.credentials CANNOT be in the Nix Store.";
+        message = "${namespace}.system.services.attic.credentials CANNOT be in the Nix Store.";
       }
     ];
 
@@ -69,7 +69,7 @@ in
     ${namespace} = {
       programs.terminal.tools.attic = enabled;
 
-      services.attic.settings = {
+      system.services.attic.settings = {
         database.url = mkDefault "sqlite:///var/lib/atticd/server.db?mode=rwc";
 
         storage = mkDefault {

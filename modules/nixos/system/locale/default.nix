@@ -34,12 +34,12 @@ in
         LC_TELEPHONE = "pt_BR.UTF-8";
         LC_TIME = "pt_BR.UTF-8";
       };
-    };
 
-    supportedLocales = [
-      "pt_BR.UTF-8/UTF-8"
-      "en_US.UTF-8/UTF-8"
-    ];
+      supportedLocales = [
+        "pt_BR.UTF-8/UTF-8"
+        "en_US.UTF-8/UTF-8"
+      ];
+    };
 
     console = {
       keyMap = if (hostname == "nitro") || (hostname == "scrubber") then "br-abnt" else "us";

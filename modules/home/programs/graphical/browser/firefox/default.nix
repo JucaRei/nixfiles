@@ -1,5 +1,6 @@
 { options, config, lib, pkgs, namespace, ... }:
 with lib;
+with lib.types;
 with lib.${namespace};
 let
   cfg = config.${namespace}.programs.graphical.browser.firefox;
@@ -25,16 +26,16 @@ in
   config = mkIf cfg.enable {
     # ${namespace}.desktop.addons.firefox-nordic-theme = enabled;
 
-    services.gnome.gnome-browser-connector.enable = config.${namespace}.desktop.gnome.enable;
+    # services.gnome.gnome-browser-connector.enable = config.${namespace}.desktop.environment.gnome.enable;
 
     ${namespace}.home = {
       file = mkMerge [
         {
           ".mozilla/native-messaging-hosts/com.dannyvankooten.browserpass.json".source = "${pkgs.browserpass}/lib/mozilla/native-messaging-hosts/com.dannyvankooten.browserpass.json";
         }
-        (mkIf config.${namespace}.desktop.gnome.enable {
-          ".mozilla/native-messaging-hosts/org.gnome.chrome_gnome_shell.json".source = "${pkgs.chrome-gnome-shell}/lib/mozilla/native-messaging-hosts/org.gnome.chrome_gnome_shell.json";
-        })
+        # (mkIf config.${namespace}.desktop.environment.gnome.enable {
+        #   ".mozilla/native-messaging-hosts/org.gnome.chrome_gnome_shell.json".source = "${pkgs.chrome-gnome-shell}/lib/mozilla/native-messaging-hosts/org.gnome.chrome_gnome_shell.json";
+        # })
       ];
 
       extraOptions = {
@@ -44,7 +45,9 @@ in
 
           nativeMessagingHosts = [
             pkgs.browserpass
-          ] ++ optional config.${namespace}.desktop.gnome.enable pkgs.gnomeExtensions.gsconnect;
+          ]
+            # ++ optional config.${namespace}.desktop.environment.gnome.enable pkgs.gnomeExtensions.gsconnect
+          ;
 
           profiles.${config.${namespace}.user.name} = {
             inherit (cfg) extraConfig userChrome settings;

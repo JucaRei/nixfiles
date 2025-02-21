@@ -78,10 +78,10 @@ in
             user = "+${builtins.toString config.users.users.${user.name}.uid}"
           '';
         };
+      };
 
-        spiceUSBRedirection = {
-          enable = true;
-        };
+      spiceUSBRedirection = {
+        enable = true;
       };
     };
 
