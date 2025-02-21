@@ -1,11 +1,15 @@
-{
-  inputs,
-  outputs,
-  stateVersion,
-  ...
+{ inputs
+, outputs
+, stateVersion
+, pkgs
+, lib
+, config
+, ...
 }:
 let
-  helpers = import ./helpers.nix { inherit inputs outputs stateVersion; };
+  helpers = import ./helpers.nix { inherit inputs outputs stateVersion; }
+    //
+    import ./nixgl.nix { inherit pkgs lib config; };
 in
 {
   inherit (helpers)
@@ -13,5 +17,8 @@ in
     mkHome
     mkNixos
     forAllSystems
+    nixGLMesaWrap
+    nixGLVulkanWrap
+    nixGLVulkanMesaWrap
     ;
 }
