@@ -101,7 +101,6 @@ in
         lm_sensors
         vscode-fhs
 
-        transmission_3-gtk
         obsidian
         vlc
         spotube

@@ -9,10 +9,17 @@ in
   ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
-    features = {
-      bluetooth.enable = true;
-      audio.manager = mkDefault "pipewire";
+    hardware = {
+      audio = {
+        enable = true;
+        manager = "pipewire";
+      };
+      bluetooths = {
+        enable = true;
+      };
 
+    };
+    features = {
       # powerManagement = {
       #   enable = true;
       #   powerProfiles = mkOptionDefault "power-profiles-daemon";

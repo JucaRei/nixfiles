@@ -21,6 +21,17 @@ in
     ./_mixins/core
     ./_mixins/features
     ./_mixins/services
+
+    # ./_mixins/system
+    ./_mixins/hardware/audio
+    ./_mixins/hardware/bluetooth
+    ./_mixins/hardware/cpu
+    ./_mixins/hardware/fingerprint
+    # ./_mixins/hardware/graphics
+    ./_mixins/hardware/network
+    ./_mixins/hardware/power
+    ./_mixins/hardware/storage
+
   ] ++ optional isWorkstation ./_mixins/desktop;
 
   config = {
@@ -39,13 +50,13 @@ in
         plymouth = mkOptionDefault isWorkstation;
       };
 
-      cpu = {
-        enable = mkOverride 990 true;
-        hardenKernel = mkOptionDefault false;
-        improveTCP = mkDefault (isInstall || isWorkstation);
-        enableKvm = mkOptionDefault false;
-        cpuVendor = mkDefault "intel";
-      };
+      # cpu = {
+      #   enable = mkOverride 990 true;
+      #   hardenKernel = mkOptionDefault false;
+      #   improveTCP = mkDefault (isInstall || isWorkstation);
+      #   enableKvm = mkOptionDefault false;
+      #   cpuVendor = mkDefault "intel";
+      # };
 
       optimizations.enable = true;
 
@@ -67,6 +78,16 @@ in
         powersave = mkDefault false;
         wakeonlan = mkDefault false;
         # custom-interface = "eth0";
+      };
+    };
+
+    hardware = {
+      cpu = {
+        enable = mkOverride 990 true;
+        hardenKernel = mkOptionDefault false;
+        improveTCP = mkDefault (isInstall || isWorkstation);
+        enableKvm = mkOptionDefault false;
+        cpuVendor = mkDefault "intel";
       };
     };
 
