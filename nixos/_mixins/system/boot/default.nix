@@ -5,13 +5,13 @@
 ############################
 let
   inherit (lib) mkIf mkOverride mkEnableOption types mkDefault mkOption listOf enum optionals mkMerge;
-  cfg = config.core.boot;
+  cfg = config.system.boot;
 in
 {
   imports = [
     inputs.lanzaboote.nixosModules.lanzaboote
   ];
-  options.core.boot = {
+  options.system.boot = {
     enable = mkEnableOption "Default booting type." //
       { default = false; };
     boottype = mkOption {

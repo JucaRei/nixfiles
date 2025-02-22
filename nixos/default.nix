@@ -22,9 +22,10 @@ in
     ./_mixins/features
     ./_mixins/services
 
-    # ./_mixins/system
+    ./_mixins/system
+
     ./_mixins/hardware/audio
-    ./_mixins/hardware/bluetooth
+    ./_mixins/hardware/bluetooths
     ./_mixins/hardware/cpu
     ./_mixins/hardware/fingerprint
     # ./_mixins/hardware/graphics
@@ -35,37 +36,12 @@ in
   ] ++ optional isWorkstation ./_mixins/desktop;
 
   config = {
+
     ######################
     ### Custom Modules ###
     ######################
+
     core = {
-      # Default boot Options
-      boot = {
-        enable = mkDefault isInstall;
-        boottype = mkDefault "efi";
-        bootmanager = mkDefault "grub";
-        isDualBoot = mkOptionDefault false;
-        secureBoot = mkOptionDefault false;
-        silentBoot = mkOptionDefault isWorkstation;
-        plymouth = mkOptionDefault isWorkstation;
-      };
-
-      # cpu = {
-      #   enable = mkOverride 990 true;
-      #   hardenKernel = mkOptionDefault false;
-      #   improveTCP = mkDefault (isInstall || isWorkstation);
-      #   enableKvm = mkOptionDefault false;
-      #   cpuVendor = mkDefault "intel";
-      # };
-
-      optimizations.enable = true;
-
-      # Selected default docs
-      documentation = {
-        enable = mkDefault true;
-        doctypes = [ "man" ];
-      };
-
       security = {
         enable = mkDefault true;
         superUser = "sudo";
@@ -78,6 +54,25 @@ in
         powersave = mkDefault false;
         wakeonlan = mkDefault false;
         # custom-interface = "eth0";
+      };
+    };
+
+    system = {
+      boot = {
+        enable = mkDefault isInstall;
+        boottype = mkDefault "efi";
+        bootmanager = mkDefault "grub";
+        isDualBoot = mkOptionDefault false;
+        secureBoot = mkOptionDefault false;
+        silentBoot = mkOptionDefault isWorkstation;
+        plymouth = mkOptionDefault isWorkstation;
+      };
+
+      optimizations.enable = true;
+
+      docs = {
+        enable = mkDefault true;
+        doctypes = [ "man" ];
       };
     };
 

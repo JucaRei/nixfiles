@@ -11,7 +11,8 @@ in
     # ./disks-btrfs.nix
   ];
   config = {
-    core = {
+
+    system = {
       boot = {
         isDualBoot = true;
       };
@@ -105,6 +106,7 @@ in
         vlc
         spotube
 
+        brave
         duf
         gnupg
         pinentry-curses

@@ -1,11 +1,11 @@
 { config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption mkOption types;
-  cfg = config.system.documentation;
+  cfg = config.system.docs;
 in
 {
   options = {
-    system.documentation = {
+    system.docs = {
       enable = mkEnableOption "Enable default documentation.";
       doctypes = mkOption {
         type = types.listOf (types.enum [ "nixos" "man" "info" "doc" ]);

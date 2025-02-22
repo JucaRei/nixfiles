@@ -10,10 +10,12 @@ in
 
   config = {
     hardware = {
+
       audio = {
         enable = true;
         manager = "pipewire";
       };
+
       bluetooths = {
         enable = true;
       };
