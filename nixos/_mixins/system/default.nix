@@ -13,4 +13,8 @@ in
       "vm.dirty_ratio" = 10; # sync disk when buffer reach 6% of memory
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "L+ /usr/local/bin - - - - /run/current-system/sw/bin/" # symlink executable's to normal linux path
+  ];
 }

@@ -18,7 +18,9 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
     ./users
-    ./_mixins/core
+
+    # ./_mixins/core
+
     ./_mixins/features
     ./_mixins/services
 
@@ -97,7 +99,7 @@ in
       shellAliases = {
         nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
         store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
-        keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
+        keyring-lock = "${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked";
       };
 
       systemPackages = with pkgs; [
@@ -122,8 +124,7 @@ in
         "nixos-current-system-packages" = {
           text =
             let
-              packages =
-                builtins.map (p: "${p.name}") config.environment.systemPackages;
+              packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
               sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
               formatted = builtins.concatStringsSep "\n" sortedUnique;
             in

@@ -10,17 +10,21 @@ in
 
   config = {
     hardware = {
-
       audio = {
         enable = true;
         manager = "pipewire";
       };
-
       bluetooths = {
         enable = true;
       };
-
     };
+
+    system = {
+      fonts = {
+        enable = true;
+      };
+    };
+
     features = {
       # powerManagement = {
       #   enable = true;
@@ -31,7 +35,7 @@ in
     desktop = {
       features = {
         appimage.enable = true;
-        fonts.enable = true;
+        # fonts.enable = true;
         printers.enable = false;
         scan.enable = false;
         v4l2loopback.enable = false;
