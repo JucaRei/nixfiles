@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkIf;
-  device = config.hardware.graphics;
+  device = config.hardware.cards;
 in
 {
   # config = mkIf (device.gpu == "intel" || device.gpu == "hybrid-nv") {
@@ -43,7 +43,7 @@ in
     # });
 
     environment = {
-      variables = mkIf (config.hardware.graphics.enable && device.gpu != "hybrid-nvidia") {
+      variables = mkIf (device.enable && device.gpu != "hybrid-nvidia") {
         VDPAU_DRIVER = "va_gl";
       };
       # systemPackages = (mkIf (device.gpu == "intel") (with pkgs.unstable; [

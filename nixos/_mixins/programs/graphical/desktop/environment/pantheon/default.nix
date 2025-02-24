@@ -6,7 +6,7 @@
   config = {
     desktop.features.flatpak-appcenter.enable = true;
 
-    features.graphics.backend = "wayland"; # isWayland;
+    programs.graphical.desktop.backend = "wayland"; # isWayland;
 
     environment = {
       pantheon.excludePackages = with pkgs.pantheon;

@@ -1,32 +1,35 @@
-{ lib, options, namespace, config, ... }:
+{ isInstall, lib, pkgs, config, isISO, notVM, ... }:
 let
-  inherit (lib) mkIf mkDefault mkOption;
-  inherit (lib.types) bool;
-  cfg = config.system.ssh;
+  inherit (lib) mkOption types mkIf mkDefault;
+  cfg = config.system.services.ssh;
+  systems = if (isISO || !notVM) then true else false;
 in
 {
-
-  options.system.ssh = {
-    enable = mkOption {
-      type = bool;
-      default = false;
-      description = "Whether or not to configure ssh support.";
+  options = {
+    system.services.ssh = {
+      enable = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Enable default settings for ssh on nixos.";
+      };
     };
   };
-
   config = mkIf cfg.enable {
+    environment = mkIf isInstall { systemPackages = with pkgs; [ ssh-to-age ]; };
     programs = {
+      mosh.enable = isInstall;
       ssh.startAgent = true;
     };
     services = {
       openssh = {
         enable = true;
         openFirewall = true;
-        # port = cfg.port;
         settings = {
-          PasswordAuthentication = mkDefault "true";
-          # PermitRootLogin = if systems then "yes" else "no";
+          PasswordAuthentication = systems;
+          # PermitRootLogin = lib.mkDefault "prohibit-password";
+          PermitRootLogin = if systems then "yes" else "no";
         };
+        ports = [ 22 ];
         startWhenNeeded = true;
         banner = ''
           ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠛⠛⠋⠉⠈⠉⠉⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿

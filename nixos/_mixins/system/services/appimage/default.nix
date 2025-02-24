@@ -1,11 +1,11 @@
 { lib, config, pkgs, ... }:
 let
   inherit (lib) mkOption types mkIf;
-  cfg = config.services.appimage;
+  cfg = config.system.services.appimage;
 in
 {
   options = {
-    services.appimage = {
+    system.services.appimage = {
       enable = mkOption {
         default = false;
         type = types.bool;

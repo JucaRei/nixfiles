@@ -1,11 +1,11 @@
 { lib, pkgs, config, isWorkstation, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  cfg = config.custom.services.samba;
+  cfg = config.system.services.samba;
 in
 {
   options = {
-    custom.services.samba = {
+    system.services.samba = {
       enable = mkOption {
         default = isWorkstation;
         type = types.bool;
@@ -78,7 +78,7 @@ in
             # Enable VFS (Virtual File System) objects including ACL (Access Control List) xattr, Catia, and Streams xattr
             "vfs objects" = "acl_xattr catia streams_xattr";
 
-            "hosts allow" = "127.0.0. 10. 172.16.0.0/255.240.0.0 192.168. 169.254. fd00::/8 fe80::/10 localhost";
+            "hosts allow" = "127.0.0. 10.10.10. 172.16.0.0/255.240.0.0 192.168.1. 169.254. fd00::/8 fe80::/10 localhost";
             "hosts deny" = "allow";
 
             # "deadtime" = "30";

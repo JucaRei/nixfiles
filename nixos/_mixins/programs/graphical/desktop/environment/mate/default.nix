@@ -4,7 +4,7 @@ let
 in
 {
   config = {
-    features.graphics.backend = "x11";
+    programs.graphical.desktop.backend = "x11";
 
     desktop.apps = {
       celluloid.enable = true;

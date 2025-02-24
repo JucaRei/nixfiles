@@ -15,7 +15,7 @@ in
       };
     };
 
-    features.graphics = {
+    programs.graphical.desktop = {
       backend = isWayland;
     };
 
@@ -96,7 +96,7 @@ in
       seahorse.enable = isInstall;
     };
 
-    
+
     security.pam.services.gdm.enableGnomeKeyring = true;
 
     services = {

@@ -13,11 +13,11 @@ let
     "nitro"
   ];
   inherit (lib) mkEnableOption mkIf;
-  cfg = config.customservices.tailscale;
+  cfg = config.system.services.tailscale;
 in
 {
   options = {
-    customservices.tailscale = {
+    system.services.tailscale = {
       enable = mkEnableOption "Enable's TailScale";
     };
   };

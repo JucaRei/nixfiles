@@ -19,23 +19,22 @@ in
     (./. + "/hosts/${hostname}")
     ./users
 
-    # ./_mixins/core
-
     ./_mixins/features
-    ./_mixins/services
+    # ./_mixins/services
 
     ./_mixins/system
 
-    ./_mixins/hardware/audio
-    ./_mixins/hardware/bluetooths
-    ./_mixins/hardware/cpu
-    ./_mixins/hardware/fingerprint
-    # ./_mixins/hardware/graphics
-    ./_mixins/hardware/network
-    ./_mixins/hardware/power
-    ./_mixins/hardware/storage
+    ./_mixins/hardware
 
-    # ] ++ optional isWorkstation ./_mixins/desktop;
+    # ./_mixins/hardware/audio
+    # ./_mixins/hardware/bluetooths
+    # ./_mixins/hardware/cpu
+    # ./_mixins/hardware/fingerprint
+    # # ./_mixins/hardware/graphics
+    # ./_mixins/hardware/network
+    # ./_mixins/hardware/power
+    # ./_mixins/hardware/storage
+
   ] ++ optional isWorkstation ./_mixins/programs/graphical/desktop/environment;
 
   config = {
@@ -70,8 +69,9 @@ in
         doctypes = [ "man" ];
       };
 
-      ssh.enable = true;
-
+      services = {
+        ssh.enable = true;
+      };
     };
 
     hardware = {
@@ -253,7 +253,7 @@ in
       };
     };
 
-    
+
 
     sops = lib.mkIf (isInstall && username == "teste") {
       age = {

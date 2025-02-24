@@ -1,7 +1,8 @@
 { lib, config, pkgs, desktop, ... }:
 let
   inherit (lib) mkIf mkForce;
-  graphics = config.programs.graphical.desktop.backend;
+  graphics = config.hardware.cards;
+  backend = config.programs.graphical.desktop.backend;
 
   # nvidia-card = "$(readlink -f /dev/dri/by-path/pci-0000:01:00.0-card)";
   nvidia-card = "/dev/dri/card1";
@@ -11,11 +12,12 @@ let
     text = ''
       ENV{DEVNAME}=="${nvidia-card}", TAG+="mutter-graphics-preferred-primary"
     '';
+
     destination = "/etc/udev/rules.d/61-mutter-primary-gpu.rules";
   };
 in
 {
-  config = mkIf (graphics.backend == "wayland") {
+  config = mkIf (backend == "wayland") {
     boot = {
       kernelParams = mkIf (graphics.gpu == "hybrid-nvidia" || graphics.gpu == "nvidia") [
         "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
@@ -100,7 +102,7 @@ in
       };
     };
 
-    services = mkIf (desktop == "gnome" && config.desktop.backend.graphics.gpu == "hybrid-nvidia") {
+    services = mkIf (desktop == "gnome" && graphics.gpu == "hybrid-nvidia") {
       udev.packages = [ gnome-gpu-rule ];
     };
   };

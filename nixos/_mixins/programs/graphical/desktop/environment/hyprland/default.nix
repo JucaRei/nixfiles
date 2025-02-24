@@ -5,9 +5,7 @@ in
 {
   imports = [ ./greetd.nix ];
 
-  features.graphics = {
-    backend = "wayland";
-  };
+  programs.graphical.desktop.backend = "wayland";
 
   environment = {
     # Enable HEIC image previews in Nautilus

@@ -1,6 +1,7 @@
 { config, lib, username, pkgs, isWorkstation, ... }:
 let
   inherit (lib) mkIf mkOption types optionals;
+  backend = config.programs.graphical.desktop.backend;
 in
 {
   imports = [
@@ -14,7 +15,7 @@ in
     # ./backend/x11
   ];
 
-  options.hardware.graphics = {
+  options.hardware.cards = {
     enable = mkOption {
       type = types.bool;
       default = isWorkstation;
@@ -44,25 +45,21 @@ in
       description = "Manufacturer/type of the primary system GPU";
     };
 
-    # backend = mkOption {
-    #   type = types.enum [ "x11" "wayland" null ];
-    #   default = null;
-    #   description = "Default backend for the system";
-    # };
+
   };
 
   config = {
-    users.users.${username}.extraGroups = optionals (config.hardware.graphics.enable && config.hardware.graphics.backend != null) [
+    users.users.${username}.extraGroups = optionals (config.hardware.cards.enable && backend != null) [
       "render"
       "video"
     ];
 
     hardware = {
-      graphics = mkIf (config.hardware.graphics.enable && config.hardware.graphics.acceleration) {
+      graphics = mkIf (config.hardware.cards.enable && config.hardware.cards.acceleration) {
         # package = pkgs.unstable.mesa.drivers;
         enable = true;
         enable32Bit = true;
-        extraPackages = (mkIf (config.hardware.graphics.gpu == "hybrid-nvidia") (with pkgs.unstable;[
+        extraPackages = (mkIf (config.hardware.cards.gpu == "hybrid-nvidia") (with pkgs.unstable;[
           vaapiIntel
           vaapiVdpau
         ]));
@@ -70,7 +67,7 @@ in
     };
 
     environment = {
-      systemPackages = with pkgs; mkIf (config.hardware.graphics.enable && config.hardware.graphics.gpu != null) [
+      systemPackages = with pkgs; mkIf (config.hardware.cards.enable && config.hardware.cards.gpu != null) [
         libva
         libva-utils
         vulkan-loader

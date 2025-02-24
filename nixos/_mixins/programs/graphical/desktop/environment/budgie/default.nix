@@ -3,7 +3,7 @@ let
   inherit (lib) mkDefault mkForce;
 in
 {
-  features.graphics.backend = "x11";
+  programs.graphical.desktop.backend = "x11";
 
   environment = {
     budgie.excludePackages = with pkgs // pkgs.mate // pkgs.gnome; [

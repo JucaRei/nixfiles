@@ -1,10 +1,11 @@
 { lib, config, pkgs, desktop, hostname, ... }:
 let
   inherit (lib) mkIf mkDefault optional;
-  graphics = config.programs.graphical.desktop.backend;
+  graphics = config.hardware.cards;
+  backend = config.programs.graphical.desktop.backend;
 in
 {
-  config = mkIf (graphics.enable && graphics.backend == "x11") {
+  config = mkIf (backend == "x11") {
     environment = {
       systemPackages = with pkgs; [
         wmctrl

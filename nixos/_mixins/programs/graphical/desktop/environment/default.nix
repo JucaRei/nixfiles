@@ -3,7 +3,9 @@ let
   inherit (lib) optional mkOptionDefault;
 in
 {
-  imports = [ ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
+  imports = [
+    ../backend
+  ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
     hardware = {
@@ -35,6 +37,15 @@ in
         };
       };
 
+      services = {
+        appimage = {
+          enable = true;
+        };
+        samba = {
+          enable = true;
+        };
+      };
+
       time = {
         enable = true;
         provider = mkOptionDefault [ "chrony" ];
@@ -47,10 +58,6 @@ in
           xterm.enable = mkOptionDefault false;
         };
         excludePackages = [ pkgs.xterm ];
-      };
-
-      appimage = {
-        enable = true;
       };
 
       udisks2 = {

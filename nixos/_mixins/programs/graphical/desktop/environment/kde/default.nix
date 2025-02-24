@@ -6,7 +6,7 @@ let
 in
 {
   config = {
-    features.graphics = {
+    programs.graphical.desktop = {
       backend = isWayland;
     };
 

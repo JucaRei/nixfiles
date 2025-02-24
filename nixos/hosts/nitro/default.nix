@@ -19,12 +19,11 @@ in
     };
 
     features = {
-      graphics = {
-        enable = true;
-        gpu = "hybrid-nvidia";
-        # gpu = "intel";
-        acceleration = true;
-      };
+      # graphics = {
+      #   enable = true;
+      #   gpu = "hybrid-nvidia";
+      #   # gpu = "intel";
+      #   acceleration = true;
 
       container-manager = {
         enable = true;
@@ -32,7 +31,15 @@ in
       };
 
       virtualisation.enable = true;
+    };
 
+    hardware = {
+      cards = {
+        enable = true;
+        gpu = "hybrid-nvidia";
+        # gpu = "intel";
+        acceleration = true;
+      };
     };
 
     boot = {
