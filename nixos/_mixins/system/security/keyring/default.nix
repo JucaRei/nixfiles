@@ -1,9 +1,10 @@
-{ options, config, lib, pkgs, namespace, ... }:
+{ options, config, lib, pkgs, namespace, desktop, ... }:
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
   cfg = config.system.security.keyring;
-  gnome-env = config.desktop.environment.gnome;
+  # gnome-env = config.desktop.environment.gnome;
+  gnome-env = if (desktop == "gnome") then true else false;
 in
 {
   options.system.security.keyring = {

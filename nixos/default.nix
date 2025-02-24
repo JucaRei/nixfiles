@@ -43,21 +43,21 @@ in
     ### Custom Modules ###
     ######################
 
-    core = {
-      security = {
-        enable = mkDefault true;
-        superUser = "sudo";
-      };
+    # core = {
+    # security = {
+    #   enable = mkDefault true;
+    #   superUser = "sudo";
+    # };
 
-      network = {
-        enable = true;
-        networkOpt = mkDefault "network-manager";
-        exclusive-locallan = mkDefault false;
-        powersave = mkDefault false;
-        wakeonlan = mkDefault false;
-        # custom-interface = "eth0";
-      };
-    };
+    # network = {
+    #   enable = true;
+    #   networkOpt = mkDefault "network-manager";
+    #   exclusive-locallan = mkDefault false;
+    #   powersave = mkDefault false;
+    #   wakeonlan = mkDefault false;
+    #   # custom-interface = "eth0";
+    # };
+    # };
 
     system = {
       boot = {
@@ -70,11 +70,31 @@ in
         plymouth = mkOptionDefault isWorkstation;
       };
 
+      console.enable = true;
+      locales.enable = true;
+
       optimizations.enable = true;
+
+      security = {
+        superuser = {
+          enable = mkDefault true;
+          manager = mkDefault "sudo";
+        };
+        keyring = {
+          enable = true;
+        };
+      };
 
       docs = {
         enable = mkDefault true;
         doctypes = [ "man" ];
+      };
+
+      ssh.enable = true;
+
+      time = {
+        enable = true;
+        provider = [ "chrony" ];
       };
     };
 
@@ -85,6 +105,15 @@ in
         improveTCP = mkDefault (isInstall || isWorkstation);
         enableKvm = mkOptionDefault false;
         cpuVendor = mkDefault "intel";
+      };
+
+      network = {
+        enable = true;
+        networkOpt = mkDefault "network-manager";
+        exclusive-locallan = mkDefault false;
+        powersave = mkDefault false;
+        wakeonlan = mkDefault false;
+        # custom-interface = "eth0";
       };
     };
 

@@ -2,7 +2,6 @@
 # let
 #   nixfmt-plus = pkgs.callPackage import ./pkgs/tools/nixfmt-plus { };
 # in
-
 {
   default = pkgs.mkShell {
     name = "dots flake ";

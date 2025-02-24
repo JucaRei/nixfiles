@@ -1,4 +1,4 @@
-{ options, config, lib, ... }:
+{ options, config, lib, username, ... }:
 let
   inherit (lib) mkIf mkOption mdDoc;
   inherit (lib.types) enum nullOr bool;
@@ -32,6 +32,10 @@ in
       unprivilegedUsernsClone = config.features.container-manager.enable;
     };
 
-    users.extraGroups = [ "wheel" "systemd-journal" ];
+    users.users.${username}.extraGroups = [
+      "wheel"
+      "systemd-journal"
+      # "proc" # Enable full /proc access and systemd-status
+    ];
   };
 }

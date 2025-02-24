@@ -55,9 +55,7 @@
     in
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
-        inherit
-          inputs
-          outputs
+        inherit inputs outputs
           desktop
           hostname
           platform
@@ -108,11 +106,12 @@
                     platform
                     username
                     stateVersion
-                    isInstall
-                    isISO
-                    isLima
                     isOtherOS
-                    isWorkstation;
+                    isInstall
+                    isLima
+                    isISO
+                    isWorkstation
+                    ;
                 };
             };
           }
@@ -164,11 +163,10 @@
   #     ];
   #   };
 
-  forAllSystems = inputs.nixpkgs.lib.genAttrs
-    [
-      "aarch64-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
+  forAllSystems = inputs.nixpkgs.lib.genAttrs [
+    "aarch64-linux"
+    "x86_64-linux"
+    "aarch64-darwin"
+    "x86_64-darwin"
+  ];
 }

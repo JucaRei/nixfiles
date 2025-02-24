@@ -14,7 +14,7 @@ let
     \033[0m
   '';
   cfg = config.system.security.superuser;
-  user = config.users.users.${username};
+  user = "${username}";
 in
 {
   config = mkIf (cfg.manager == "sudo") {

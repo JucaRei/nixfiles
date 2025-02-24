@@ -8,11 +8,6 @@ in
   options = {
     system.locales = {
       enable = mkEnableOption "Enable locales support";
-      addionalLocales = lib.mkOption {
-        type = listOf str;
-        default = [ ];
-        description = "Additional locales to be generated.";
-      };
     };
   };
 
@@ -35,15 +30,14 @@ in
       supportedLocales = [
         "pt_BR.UTF-8/UTF-8"
         "en_US.UTF-8/UTF-8"
-      ] ++ cfg.addionalLocales;
+      ];
     };
 
-    environment = {
-      variables = {
-        # Set locale archive variable in case it isn't being set properly
-        LOCALE_ARCHIVE = "/run/current-system/sw/lib/locale/locale-archive";
-      };
-    };
-
+    # environment = {
+    #   variables = {
+    #     # Set locale archive variable in case it isn't being set properly
+    #     LOCALE_ARCHIVE = "/run/current-system/sw/lib/locale/locale-archive";
+    #   };
+    # };
   };
 }

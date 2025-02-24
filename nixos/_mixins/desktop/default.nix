@@ -23,6 +23,12 @@ in
       fonts = {
         enable = true;
       };
+
+      security = {
+        pam = {
+          enable = true;
+        };
+      };
     };
 
     features = {

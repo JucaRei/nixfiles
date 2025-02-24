@@ -14,7 +14,7 @@ in
     # ./backend/x11
   ];
 
-  options.features.graphics = {
+  options.hardware.graphics = {
     enable = mkOption {
       type = types.bool;
       default = isWorkstation;

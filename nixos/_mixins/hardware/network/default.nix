@@ -93,7 +93,7 @@ in
     };
     custom-interface = mkOption {
       type = nullOr str;
-      default = null;
+      default = "";
       example = "eth0";
       description = "Desired interface.";
     };
