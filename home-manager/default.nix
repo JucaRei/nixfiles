@@ -3,6 +3,7 @@ let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optional mkIf;
   isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
+  isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
 in
 {
   imports = with inputs; [
@@ -77,26 +78,26 @@ in
   # - https://github.com/nix-community/home-manager/issues/2033
   news.display = "silent";
 
-  # nixpkgs = {
-  #   overlays = [
-  #     inputs.nixgl.overlay # for non-nixos linux system's
+  nixpkgs = mkIf isNixos {
+    overlays = [
+      inputs.nixgl.overlay # for non-nixos linux system's
 
-  #     # Add overlays your own flake exports (from overlays and pkgs dir):
-  #     outputs.overlays.additions
-  #     outputs.overlays.modifications
-  #     outputs.overlays.unstable-packages
-  #     outputs.overlays.oldstable-packages
-  #   ];
-  #   # Configure your nixpkgs instance
-  #   config = {
-  #     allowUnfree = true;
-  #     # allowUnfreePredicate = (_: true);
-  #     # permittedInsecurePackages = [ ];
-  #   };
-  # };
+      # Add overlays your own flake exports (from overlays and pkgs dir):
+      outputs.overlays.additions
+      outputs.overlays.modifications
+      outputs.overlays.unstable-packages
+      outputs.overlays.oldstable-packages
+    ];
+    # Configure your nixpkgs instance
+    config = {
+      allowUnfree = true;
+      # allowUnfreePredicate = (_: true);
+      # permittedInsecurePackages = [ ];
+    };
+  };
 
   nix = {
-    # package = pkgs.nixVersions.latest;
+    package = mkIf isNixos pkgs.nixVersions.latest;
     settings = {
       experimental-features = "flakes nix-command";
       trusted-users = [ "root" "${username}" ];

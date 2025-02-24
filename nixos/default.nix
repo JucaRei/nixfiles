@@ -35,29 +35,14 @@ in
     ./_mixins/hardware/power
     ./_mixins/hardware/storage
 
-  ] ++ optional isWorkstation ./_mixins/desktop;
+    # ] ++ optional isWorkstation ./_mixins/desktop;
+  ] ++ optional isWorkstation ./_mixins/programs/graphical/desktop/environment;
 
   config = {
 
     ######################
     ### Custom Modules ###
     ######################
-
-    # core = {
-    # security = {
-    #   enable = mkDefault true;
-    #   superUser = "sudo";
-    # };
-
-    # network = {
-    #   enable = true;
-    #   networkOpt = mkDefault "network-manager";
-    #   exclusive-locallan = mkDefault false;
-    #   powersave = mkDefault false;
-    #   wakeonlan = mkDefault false;
-    #   # custom-interface = "eth0";
-    # };
-    # };
 
     system = {
       boot = {
@@ -73,15 +58,11 @@ in
       console.enable = true;
       locales.enable = true;
 
-      optimizations.enable = true;
 
       security = {
         superuser = {
           enable = mkDefault true;
           manager = mkDefault "sudo";
-        };
-        keyring = {
-          enable = true;
         };
       };
 
@@ -92,10 +73,6 @@ in
 
       ssh.enable = true;
 
-      time = {
-        enable = true;
-        provider = [ "chrony" ];
-      };
     };
 
     hardware = {
