@@ -58,7 +58,6 @@ in
       console.enable = true;
       locales.enable = true;
 
-
       security = {
         superuser = {
           enable = mkDefault true;
@@ -97,14 +96,14 @@ in
     environment = {
       # Eject nano and perl from the system
       defaultPackages = with pkgs; mkForce [
-        coreutils-full
+        uutils-coreutils-noprefix
         parted
         micro
       ];
 
       shellAliases = {
         nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
-        store-path = "${pkgs.coreutils-full}/bin/readlink (${pkgs.which}/bin/which $argv)";
+        store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
         keyring-lock = "${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked";
       };
 
@@ -254,43 +253,7 @@ in
       };
     };
 
-    services = {
-      hardware.bolt.enable = true;
-
-      # userborn.enable = true;
-
-      dbus = {
-        packages = optionals isWorkstation (with pkgs ; [ gnome-keyring gcr ]);
-        implementation = if isWorkstation then "broker" else "dbus";
-      };
-
-      chrony = {
-        # if time is wrong:
-        # 1/ systemctl stop chronyd.service
-        # 2/ "sudo chronyd -q 'pool pool.ntp.org iburst'"
-        enable = true;
-
-        # to correct big errors on startup
-        initstepslew = {
-          enabled = true;
-          threshold = 100;
-        };
-
-        # we allow chrony to make big changes at
-        # see https://chrony.tuxfamily.org/faq.html#_is_chronyd_allowed_to_step_the_system_clock
-        extraConfig = ''
-          makestep 1 -1
-        '';
-        servers = [
-          "time.cloudflare.com"
-          "time.google.com"
-          "0.pool.ntp.org"
-          "1.pool.ntp.org"
-          "2.pool.ntp.org"
-          "3.pool.ntp.org"
-        ];
-      };
-    };
+    
 
     sops = lib.mkIf (isInstall && username == "teste") {
       age = {

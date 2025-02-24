@@ -33,7 +33,6 @@ in
     };
 
     users.users.${username}.extraGroups = [
-      "wheel"
       "systemd-journal"
       # "proc" # Enable full /proc access and systemd-status
     ];

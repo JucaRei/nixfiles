@@ -1,5 +1,7 @@
-{ lib, ... }:
+{ lib, isWorkstation, pkgs, ... }:
 let
+  inherit (lib) optionals;
+
   currentDir = ./.; # Represents the current directory
   isDirectoryAndNotTemplate = name: type: type == "directory";
   directories = lib.filterAttrs isDirectoryAndNotTemplate (builtins.readDir currentDir);
@@ -11,6 +13,15 @@ in
   boot = {
     kernel.sysctl = {
       "vm.dirty_ratio" = 10; # sync disk when buffer reach 6% of memory
+    };
+  };
+
+  services = {
+    userborn.enable = true;
+
+    dbus = {
+      packages = optionals isWorkstation (with pkgs ; [ gnome-keyring gcr ]);
+      implementation = if isWorkstation then "broker" else "dbus";
     };
   };
 

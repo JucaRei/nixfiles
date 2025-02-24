@@ -63,12 +63,12 @@ in
       # useXkbConfig = true;
       keyMap = if (hostname == "nitro") || (hostname == "scrubber") then "br-abnt" else "us";
       earlySetup = true;
-      # font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
-      font = "ter-powerline-v26n";
+      font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
+      # font = "ter-powerline-v26n";
       packages = with pkgs; [
-        # tamzen
-        terminus_font
-        powerline-fonts
+        tamzen
+        # terminus_font
+        # powerline-fonts
       ];
     };
 

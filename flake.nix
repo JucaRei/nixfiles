@@ -55,9 +55,10 @@
 
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
 
+    ### Broken ###
     # nixos-needsreboot = {
-    #   # url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
-    #   url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.3.tar.gz";
+    #   url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
+    #   # url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.5.tar.gz";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
 
@@ -150,7 +151,6 @@
           # nix run github:numtide/nixos-anywhere -- --flake $FLAKE#air root@192.168.1.76
           # nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
           # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
-
 
           # .iso images
           iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
