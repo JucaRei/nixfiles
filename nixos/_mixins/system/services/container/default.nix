@@ -1,7 +1,7 @@
 { lib, config, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  cfg = config.features.container-manager;
+  cfg = config.system.services.container;
 in
 {
   imports = [
@@ -10,7 +10,7 @@ in
   ];
 
   options = {
-    features.container-manager = {
+    system.services.container = {
       enable = mkOption {
         default = false;
         type = types.bool;

@@ -1,13 +1,13 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  cfg = config.features.zram;
+  cfg = config.system.services.zram;
   # Only enable zram swap if no swap devices are configured
   usezramSwap = builtins.length config.swapDevices == 0;
 in
 {
   options = {
-    features.zram = {
+    system.services.zram = {
       enable = mkOption {
         type = types.bool;
         default = if usezramSwap then true else false;

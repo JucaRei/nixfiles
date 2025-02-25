@@ -16,6 +16,13 @@ in
       boot = {
         isDualBoot = true;
       };
+
+      services = {
+        container = {
+          enable = true;
+          manager = "docker";
+        };
+      };
     };
 
     features = {
@@ -24,11 +31,6 @@ in
       #   gpu = "hybrid-nvidia";
       #   # gpu = "intel";
       #   acceleration = true;
-
-      container-manager = {
-        enable = true;
-        manager = "docker";
-      };
 
       virtualisation.enable = true;
     };

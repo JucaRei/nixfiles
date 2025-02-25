@@ -27,9 +27,6 @@ in
     security = {
       # User namespaces are required for sandboxing. Better than nothing imo.
       allowUserNamespaces = true;
-
-      # Disable unprivileged user namespaces, unless containers are enabled
-      unprivilegedUsernsClone = config.features.container-manager.enable;
     };
 
     users.users.${username}.extraGroups = [

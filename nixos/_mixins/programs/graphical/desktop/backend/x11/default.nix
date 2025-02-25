@@ -1,6 +1,6 @@
 { lib, config, pkgs, desktop, hostname, ... }:
 let
-  inherit (lib) mkIf mkDefault optional;
+  inherit (lib) mkIf mkOptionDefault optional;
   graphics = config.hardware.graphics.cards;
   backend = config.programs.graphical.desktop.backend;
 in
@@ -27,7 +27,7 @@ in
       usbmuxd.enable = true; # for IOS;
 
       gvfs = {
-        enable = mkDefault true;
+        enable = mkOptionDefault true;
       };
 
       gnome.gnome-keyring = (mkIf (desktop != "kde" || desktop != "pantheon")) {
@@ -36,7 +36,7 @@ in
 
       xserver = {
 
-        enable = mkDefault true;
+        enable = mkOptionDefault true;
 
         displayManager = {
           sessionCommands =

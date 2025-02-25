@@ -5,11 +5,11 @@ let
     "scrubber"
   ];
   inherit (lib) mkOption mkIf elem mkOverride types;
-  cfg = config.features.bcachefs;
+  cfg = config.system.services.bcachefs;
 in
 {
   options = {
-    features.bcachefs = {
+    system.services.bcachefs = {
       enable = mkOption {
         type = types.bool;
         default = if (elem hostname installOn || isISO) then true else false;

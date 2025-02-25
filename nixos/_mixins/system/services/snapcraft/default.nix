@@ -1,12 +1,12 @@
 { config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption;
-  cfg = config.features.snapcraft;
+  cfg = config.system.services.snapcraft;
 in
 {
   options = {
-    features.snapcraft = {
-      enable = mkEnableOption "Whether enables snap.";
+    system.services.snapcraft = {
+      enable = mkEnableOption "Whether enables snap daemon.";
     };
   };
   config = mkIf cfg.enable {

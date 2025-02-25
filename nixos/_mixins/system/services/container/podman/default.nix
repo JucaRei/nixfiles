@@ -1,7 +1,7 @@
 { config, isWorkstation, lib, pkgs, username, ... }:
 let
   inherit (lib) mkIf mkForce;
-  cfg = config.features.container-manager;
+  cfg = config.system.services.container;
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
 in
 {
@@ -62,12 +62,6 @@ in
         dockerSocket.enable = true;
         enable = true;
       };
-    };
-
-    security = {
-      # Disable unprivileged user namespaces, unless containers are enabled
-      # required by podman to run containers in rootless mode.
-      unprivilegedUsernsClone = config.virtualisation.containers.enable;
     };
 
     boot.kernel.sysctl = {

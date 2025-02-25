@@ -16,7 +16,7 @@ in
       allowUserNamespaces = true;
 
       # Disable unprivileged user namespaces, unless containers are enabled
-      unprivilegedUsernsClone = config.features.container-manager.enable;
+      unprivilegedUsernsClone = config.system.services.container.enable;
 
       # Enables simultaneous use of processor threads.
       allowSimultaneousMultithreading = true;

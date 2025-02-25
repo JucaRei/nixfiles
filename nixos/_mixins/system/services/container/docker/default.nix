@@ -1,7 +1,7 @@
 { config, lib, pkgs, username, ... }:
 let
   inherit (lib) mkIf mkForce;
-  cfg = config.features.container-manager;
+  cfg = config.system.services.container;
   hasNvidiaGPU = lib.elem "nvidia" config.services.xserver.videoDrivers;
   docker_storage_driver =
     if config.fileSystems."/".fsType == "btrfs"

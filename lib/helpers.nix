@@ -89,7 +89,6 @@
               useUserPackages = true;
               backupFileExtension = "hm-backup";
 
-              #   # TODO replace juca with your own username
               users.${username} = import ../home-manager;
 
               # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix

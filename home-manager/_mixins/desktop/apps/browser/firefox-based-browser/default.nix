@@ -103,6 +103,22 @@ in
       file = mkIf defaultFirefox {
         ".mozilla/native-messaging-hosts/ff2mpv.json".source = "${pkgs.ff2mpv}/lib/mozilla/native-messaging-hosts/ff2mpv.json";
       };
+
+      activation =
+        let
+          backup-path = "/home/${username}/.mozilla/firefox/default";
+        in
+        {
+          beforeCheckLinkTargets = mkIf (cfg.browser == "firefox-esr" || cfg.browser == "firefox" || cfg.browser == "firefox-devedition") {
+            after = [ ];
+            before = [ "checkLinkTargets" ];
+            data = ''
+              if [ -f "${backup-path}/search.json.mozlz4.hm-backup" ]; then
+                rm "${backup-path}/search.json.mozlz4.hm-backup"
+              fi
+            '';
+          };
+        };
     };
   };
 }

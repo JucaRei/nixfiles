@@ -1,10 +1,10 @@
 { pkgs, username, config, lib, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  cfg = config.features.android;
+  cfg = config.system.services.android;
 in
 {
-  options.features.android = {
+  options.system.services.android = {
     enable = mkOption {
       type = types.bool;
       default = false;

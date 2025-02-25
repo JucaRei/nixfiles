@@ -5,6 +5,7 @@ in
 {
   config = {
     programs.graphical.desktop.backend = "x11";
+
     environment = {
       xfce.excludePackages = with pkgs.xfce // pkgs; [
         amberol
@@ -27,7 +28,7 @@ in
         xfce4-mailwatch-plugin
       ];
       #   # Add some packages to complete the XFCE desktop
-      systemPackages = with pkgs.xfce // pkgs // pkgs.mate // pkgs.xorg // pkgs.gnome; [
+      systemPackages = with pkgs // pkgs.xfce // pkgs // pkgs.mate // pkgs.xorg; [
         atril
         xfconf
         xfce4-pulseaudio-plugin
