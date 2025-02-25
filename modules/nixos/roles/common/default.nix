@@ -45,6 +45,10 @@ in
         ssh.enable = true;
       };
 
+      scripts = {
+        enable = true;
+      };
+
     };
 
     hardware = {
@@ -74,11 +78,11 @@ in
         micro
       ];
 
-      # variables = {
-      #   EDITOR = "micro";
-      #   SYSTEMD_EDITOR = "micro";
-      #   VISUAL = "micro";
-      # };
+      variables = {
+        EDITOR = "micro";
+        SYSTEMD_EDITOR = "micro";
+        VISUAL = "micro";
+      };
 
       shellAliases = {
         nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
@@ -128,6 +132,33 @@ in
       tmpfiles.rules = [
         "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash" # Create symlink to /bin/bash
       ];
+
+      user.extraConfig = ''
+        DefaultCPUAccounting=yes
+        DefaultMemoryAccounting=yes
+        DefaultIOAccounting=yes
+      '';
+
+      extraConfig = ''
+        # DefaultTimeoutStartSec=s
+        DefaultTimeoutStopSec=10s
+        # DefaultDeviceTimeoutSec=8s
+        # DefaultTimeoutAbortSec=10s
+
+        DefaultCPUAccounting=yes
+        DefaultMemoryAccounting=yes
+        DefaultIOAccounting=yes
+      '';
+
+      services = {
+
+        nix-daemon.serviceConfig = {
+          CPUWeight = 20;
+          IOWeight = 20;
+        };
+
+        systemd-udev-settle.enable = mkForce false;
+      };
     };
   };
 }

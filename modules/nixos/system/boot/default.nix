@@ -79,10 +79,6 @@ in
             {
               "kernel.printk" = "3 3 3 3"; # "4 4 1 7";
 
-              # Hide kptrs even for processes with CAP_SYSLOG
-              # also prevents printing kernel pointers
-              "kernel.kptr_restrict" = 2;
-
               # Disable ftrace debugging
               "kernel.ftrace_enabled" = false;
 
