@@ -5,6 +5,8 @@ in
 {
   imports = [
     ../backend
+    ../display-manager
+    ../../apps
   ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
@@ -49,6 +51,14 @@ in
       time = {
         enable = true;
         provider = mkOptionDefault [ "chrony" ];
+      };
+    };
+
+    programs = {
+      graphical = {
+        apps = {
+          _1password.enable = true;
+        };
       };
     };
 

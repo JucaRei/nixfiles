@@ -166,13 +166,14 @@ in
               }).fd
             ];
           };
+          runAsRoot = true;
           swtpm = {
             enable = true;
             package = pkgs.swtpm;
           };
           verbatimConfig = ''
             namespaces = []
-            user = "+${builtins.toString config.users.users.${username}.uid}"
+            # user = "+${builtins.toString config.users.users.${username}.uid}"
 
             # Whether libvirt should dynamically change file ownership
             # to match the configured user/group above. Defaults to 1.
@@ -186,15 +187,17 @@ in
       };
     };
 
-    users.users.${username} = {
-      extraGroups = [
-        "qemu-libvirtd"
-        "libvirtd"
-        "disk"
-      ];
-      # "qemu-libvirtd" = {
-      #   extraGroups = optionals (!config.virtualisation.libvirtd.qemu.runAsRoot) [ "kvm" "input" ];
-      # };
+    users.users = {
+      ${username} = {
+        extraGroups = [
+          "qemu-libvirtd"
+          "libvirtd"
+          "disk"
+        ];
+      };
+      "qemu-libvirtd" = {
+        extraGroups = optionals (!config.virtualisation.libvirtd.qemu.runAsRoot) [ "kvm" "input" ];
+      };
     };
 
     # systemd.user.services.scream = {
