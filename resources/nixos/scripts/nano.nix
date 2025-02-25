@@ -3,7 +3,7 @@ let
   inherit (lib) getExe;
 in
 {
-  enable = false;
+  enable = true;
   package = pkgs.unstable.nano;
   syntaxHighlight = true;
   nanorc = ''

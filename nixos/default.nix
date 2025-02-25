@@ -19,82 +19,49 @@ in
     (./. + "/hosts/${hostname}")
     ./users
     ../modules/nixos/system
+    ../modules/nixos/roles
     ../modules/nixos/hardware
   ] ++ optional isWorkstation ../modules/nixos/programs/graphical/desktop/environment;
 
   config = {
+
+    roles.common = {
+      enable = true;
+    };
 
     ######################
     ### Custom Modules ###
     ######################
 
     system = {
-      boot = {
-        enable = mkDefault isInstall;
-        boottype = mkDefault "efi";
-        bootmanager = mkDefault "grub";
-        isDualBoot = mkOptionDefault false;
-        secureBoot = mkOptionDefault false;
-        silentBoot = mkOptionDefault isWorkstation;
-        plymouth = mkOptionDefault isWorkstation;
-      };
 
-      console.enable = true;
-      locales.enable = true;
+      # console.enable = true;
 
-      security = {
-        superuser = {
-          enable = mkDefault true;
-          manager = mkDefault "sudo";
-        };
-      };
-
-      docs = {
-        enable = mkDefault true;
-        doctypes = [ "man" ];
-      };
-
-      services = {
-        ssh.enable = true;
-      };
     };
 
     hardware = {
-      cpu = {
-        enable = mkOverride 990 true;
-        hardenKernel = mkOptionDefault false;
-        improveTCP = mkDefault (isInstall || isWorkstation);
-        enableKvm = mkOptionDefault false;
-        cpuVendor = mkDefault "intel";
-      };
+      # cpu = {
+      #   enable = mkOverride 990 true;
+      #   hardenKernel = mkOptionDefault false;
+      #   improveTCP = mkDefault (isInstall || isWorkstation);
+      #   enableKvm = mkOptionDefault false;
+      #   cpuVendor = mkDefault "intel";
+      # };
 
-      network = {
-        enable = true;
-        networkOpt = mkDefault "network-manager";
-        exclusive-locallan = mkDefault false;
-        powersave = mkDefault false;
-        wakeonlan = mkDefault false;
-        # custom-interface = "eth0";
-      };
+      # network = {
+      #   enable = true;
+      #   networkOpt = mkDefault "network-manager";
+      #   exclusive-locallan = mkDefault false;
+      #   powersave = mkDefault false;
+      #   wakeonlan = mkDefault false;
+      #   # custom-interface = "eth0";
+      # };
     };
 
     environment = {
-      # Eject nano and perl from the system
-      defaultPackages = with pkgs; mkForce [
-        uutils-coreutils-noprefix
-        parted
-        micro
-      ];
-
-      shellAliases = {
-        nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
-        store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
-        keyring-lock = "${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked";
-      };
-
       systemPackages = with pkgs; [
-        git
-        nix-output-monitor
+        # git
+        # nix-output-monitor
       ]
       ++ optionals isInstall [
         nvd
@@ -108,18 +75,6 @@ in
         VISUAL = "micro";
       };
 
-      ## Create a file in /etc/nixos-current-system-packages  Listing all Packages ###
-      etc = {
-        "nixos-current-system-packages" = {
-          text =
-            let
-              packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
-              sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
-              formatted = builtins.concatStringsSep "\n" sortedUnique;
-            in
-            formatted;
-        };
-      };
     };
 
     nixpkgs = {
@@ -216,22 +171,6 @@ in
       };
 
     programs = {
-      command-not-found.enable = false;
-      fish = {
-        enable = true;
-        shellAliases = {
-          nano = "micro";
-        };
-      };
-      nano = import ../resources/nixos/scripts/nano.nix { inherit pkgs config lib; };
-      nh = {
-        clean = {
-          enable = true;
-          extraArgs = "--keep-since 5d --keep 7";
-        };
-        enable = true;
-        flake = "/home/${username}/.dotfiles/nixfiles";
-      };
       nix-index-database = {
         comma.enable = isInstall;
       };
