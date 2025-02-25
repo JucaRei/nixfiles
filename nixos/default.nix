@@ -18,23 +18,9 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
     ./users
-
     ./_mixins/features
-    # ./_mixins/services
-
     ./_mixins/system
-
     ./_mixins/hardware
-
-    # ./_mixins/hardware/audio
-    # ./_mixins/hardware/bluetooths
-    # ./_mixins/hardware/cpu
-    # ./_mixins/hardware/fingerprint
-    # # ./_mixins/hardware/graphics
-    # ./_mixins/hardware/network
-    # ./_mixins/hardware/power
-    # ./_mixins/hardware/storage
-
   ] ++ optional isWorkstation ./_mixins/programs/graphical/desktop/environment;
 
   config = {

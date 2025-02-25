@@ -1,6 +1,7 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkIf mkOption types;
+  inherit (lib) mkIf mkOption;
+  inherit (lib.types) bool enum;
   cfg = config.system.services.container;
 in
 {
@@ -13,11 +14,11 @@ in
     system.services.container = {
       enable = mkOption {
         default = false;
-        type = types.bool;
+        type = bool;
         description = "Enables container manager";
       };
       manager = mkOption {
-        type = types.enum [ "docker" "podman" null ];
+        type = enum [ "docker" "podman" null ];
         default = null;
         description = "Default container manager.";
       };

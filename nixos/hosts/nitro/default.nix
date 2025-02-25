@@ -22,17 +22,16 @@ in
           enable = true;
           manager = "docker";
         };
+
+        virtualisation = {
+          kvm = {
+            enable = true;
+            vfioIds = [ ];
+            platform = "intel";
+            machineUnits = [ ];
+          };
+        };
       };
-    };
-
-    features = {
-      # graphics = {
-      #   enable = true;
-      #   gpu = "hybrid-nvidia";
-      #   # gpu = "intel";
-      #   acceleration = true;
-
-      virtualisation.enable = true;
     };
 
     hardware = {
