@@ -10,25 +10,8 @@ in
   ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
-    hardware = {
-      audio = {
-        enable = true;
-        manager = "pipewire";
-      };
-      bluetooths = {
-        enable = true;
-      };
-    };
 
     system = {
-      fonts = {
-        enable = true;
-      };
-
-      optimizations = {
-        enable = true;
-      };
-
       security = {
         keyring = {
           enable = true;
@@ -100,7 +83,7 @@ in
       };
 
       systemPackages = with pkgs;  [
-        gsmartcontrol
+        # gsmartcontrol
         catppuccin-cursors.mochaBlue
         (catppuccin-gtk.override {
           accents = [ "blue" ];
