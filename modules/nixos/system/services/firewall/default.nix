@@ -13,15 +13,15 @@ let
       "scrubber"
     ];
     tcpPorts = [
-      22000 # Syncthing
+      # 22000 # Syncthing
       # 443
       # 22
       # 2375
       # 9091
     ];
     udpPorts = [
-      22000 # Syncthing
-      21027 # Syncthing
+      # 22000 # Syncthing
+      # 21027 # Syncthing
       # 53
       # 5353
     ];
@@ -42,7 +42,7 @@ let
       # 111 # NFS
       # 2049 # NFS
       # 2375 # Docker
-      22000 # Syncthing port
+      # 22000 # Syncthing port
       # 9091 # Transmission
       # 51413 # Transmission
       # 80 # For gnomecast server
@@ -73,26 +73,33 @@ let
       #   from = 1714;
       #   to = 1764;
       # }
-      22000 # Syncthing port
+      # 22000 # Syncthing port
       # 8200 # Syncthing port
     ];
   };
 
-  cfg = config.services.firewall;
+  cfg = config.system.services.firewall;
 in
 {
-  options.services.firewall.enable = mkEnableOption "Weather enable or not Firewall";
+  options = {
+    system = {
+      services = {
+        firewall = {
+          enable = mkEnableOption "Weather enable or not Firewall";
+        };
+      };
+    };
+  };
   config = mkIf cfg.enable {
     networking = {
       firewall = {
-        interfaces."podman[0-9]+".allowedUDPPorts = [ 53 ];
+        interfaces."podman[0-9]+".allowedUDPPorts = mkIf (config.system.services.container.manager == "podman") [ 53 ];
         allowPing = true;
         enable = true;
-        allowedTCPPorts =
-          [
-            # syncthing.allowedTCPPorts
-          ]
-          ++ lib.optionals (builtins.elem hostname defaultApplications.hosts) defaultApplications.tcpPorts;
+        allowedTCPPorts = [
+          # syncthing.allowedTCPPorts
+        ]
+        ++ lib.optionals (builtins.elem hostname defaultApplications.hosts) defaultApplications.tcpPorts;
         allowedUDPPorts = [
           # defaultApplications.allowedUDPPorts
         ]

@@ -18,10 +18,10 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
     ./users
-    ./_mixins/features
-    ./_mixins/system
-    ./_mixins/hardware
-  ] ++ optional isWorkstation ./_mixins/programs/graphical/desktop/environment;
+    ../modules/nixos/features
+    ../modules/nixos/system
+    ../modules/nixos/hardware
+  ] ++ optional isWorkstation ../modules/nixos/programs/graphical/desktop/environment;
 
   config = {
 
