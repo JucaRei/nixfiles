@@ -112,7 +112,6 @@ in
         nix-output-monitor
       ]
       ++ optionals isInstall [
-        # inputs.nixos-needsreboot.packages.${platform}.default
         nvd
         cachix
         sops
@@ -273,7 +272,7 @@ in
         "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root" # Create dirs for home-manager
         "d /var/lib/private/sops/age 0755 root root"
 
-        # "d /var/log/nix 0755 ${username} users"
+        "d /var/log/nix 0755 ${username} users"
       ];
 
       user.extraConfig = ''
@@ -338,22 +337,6 @@ in
           '';
         };
 
-        # Got this thanks to tiredofit
-        # report-changes = ''
-        #   PATH=$PATH:${lib.makeBinPath [ pkgs.nvd pkgs.nix ]}
-        #   nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2)
-        #   mkdir -p /var/log/activations
-        #   _nvddate=$(date +'%Y%m%d%H%M%S')
-        #   nvd diff $(ls -dv /nix/var/nix/profiles/system-*-link | tail -2) > /var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log
-        #   if grep -q "No version or selection state changes" "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log" ; then
-        #     rm -rf "/var/log/activations/$_nvddate-$(ls -dv /nix/var/nix/profiles/system-*-link | tail -1 | cut -d '-' -f 2)-$(readlink $(ls -dv /nix/var/nix/profiles/system-*-link | tail -1) | cut -d - -f 4-).log"
-        #   fi
-        # '';
-
-        # nixos-needsreboot = lib.mkIf (isInstall) {
-        #   supportsDryActivation = true;
-        #   text = "${lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default} \"$systemConfig\" || true";
-        # };
       };
 
       switch = {

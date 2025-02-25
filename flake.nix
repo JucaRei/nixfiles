@@ -55,13 +55,6 @@
 
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
 
-    ### Broken ###
-    # nixos-needsreboot = {
-    #   url = "https://codeberg.org/Mynacol/nixos-needsreboot/archive/0.2.2.tar.gz";
-    #   # url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.5.tar.gz";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";

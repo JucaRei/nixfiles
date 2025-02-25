@@ -34,11 +34,13 @@ in
     };
 
     hardware = {
-      cards = {
-        enable = true;
-        gpu = "hybrid-nvidia";
-        # gpu = "intel";
-        acceleration = true;
+      graphics = {
+        cards = {
+          enable = true;
+          gpu = "hybrid-nvidia";
+          # gpu = "intel";
+          acceleration = true;
+        };
       };
     };
 

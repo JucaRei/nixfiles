@@ -1,8 +1,8 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) mkIf;
-  cfg = config.features.graphics;
-  acceleration = config.features.graphics.acceleration;
+  cfg = config.hardware.graphics;
+  acceleration = config.hardware.graphics.acceleration;
   gpu = cfg.gpu;
 in
 {

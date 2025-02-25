@@ -1,7 +1,7 @@
 { lib, config, pkgs, desktop, hostname, ... }:
 let
   inherit (lib) mkIf mkDefault optional;
-  graphics = config.hardware.cards;
+  graphics = config.hardware.graphics.cards;
   backend = config.programs.graphical.desktop.backend;
 in
 {

@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkIf;
-  device = config.hardware.cards;
+  device = config.hardware.graphics.cards;
 in
 {
   # config = mkIf (device.gpu == "intel" || device.gpu == "hybrid-nv") {

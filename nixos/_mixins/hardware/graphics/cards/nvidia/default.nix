@@ -17,7 +17,7 @@ let
     then config.boot.kernelPackages.nvidiaPackages.stable
     else config.boot.kernelPackages.nvidiaPackages.beta;
 
-  device = config.hardware.cards;
+  device = config.hardware.graphics.cards;
   backend = config.programs.graphical.desktop.backend;
 
 in
