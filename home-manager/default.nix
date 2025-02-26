@@ -80,6 +80,25 @@ in
   news.display = "silent";
 
   # nixpkgs = mkOverride 1500 (mkIf (!isNixos)
+  # nixpkgs = {
+  #   overlays = mkIf (!isNixos) [
+  #     inputs.nixgl.overlay # for non-nixos linux system's
+
+  #     # Add overlays your own flake exports (from overlays and pkgs dir):
+  #     outputs.overlays.additions
+  #     outputs.overlays.modifications
+  #     outputs.overlays.unstable-packages
+  #     outputs.overlays.oldstable-packages
+  #   ];
+  #   # Configure your nixpkgs instance
+  #   config = mkIf (!isNixos) {
+  #     allowUnfree = true;
+  #     # allowUnfreePredicate = (_: true);
+  #     # permittedInsecurePackages = [ ];
+  #   };
+  #   # });
+  # };
+
   nixpkgs = {
     overlays = [
       inputs.nixgl.overlay # for non-nixos linux system's
@@ -91,19 +110,19 @@ in
       outputs.overlays.oldstable-packages
     ];
     # Configure your nixpkgs instance
-    config = mkIf (checkVer) {
+    config = {
       allowUnfree = true;
       # allowUnfreePredicate = (_: true);
       # permittedInsecurePackages = [ ];
     };
-    # });
   };
 
-  nix = mkIf (checkVer) {
+
+  nix = {
     # package = optional (isNixos == false) pkgs.nixVersions.latest;
     # package = mkDefault (optional checkVer pkgs.nixVersions.latest);
-    # package = mkDefault pkgs.nixVersions.latest;
-    package = mkDefault pkgs.nix;
+    package = mkDefault pkgs.nixVersions.latest;
+    # package = mkDefault pkgs.nix;
     # package = if isNixos then pkgs.nixVersions.latest else null;
     settings = {
       experimental-features = "flakes nix-command";
