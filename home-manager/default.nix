@@ -97,7 +97,7 @@ in
   });
 
   nix = {
-    package = (mkIf (isNixos) pkgs.nixVersions.latest);
+    package = pkgs.lib.mkIf isNixos pkgs.nixVersions.latest;
     # package = if isNixos then null else pkgs.nixVersions.latest;
     settings = {
       experimental-features = "flakes nix-command";
