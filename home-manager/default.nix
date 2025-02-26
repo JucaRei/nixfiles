@@ -99,7 +99,7 @@ in
 
   nix = {
     # package = optional (isNixos == false) pkgs.nixVersions.latest;
-    package = mkDefault (mkIf checkVer pkgs.nixVersions.latest);
+    package = mkDefault (optional checkVer pkgs.nixVersions.latest);
     # package = if isNixos then pkgs.nixVersions.latest else null;
     settings = {
       experimental-features = "flakes nix-command";
