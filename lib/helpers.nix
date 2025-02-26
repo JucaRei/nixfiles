@@ -15,7 +15,7 @@
       isInstall = !isISO;
       isLima = hostname == "grozbok" || hostname == "zeta";
       isWorkstation = builtins.isString desktop;
-      isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
+      isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then true else false;
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};

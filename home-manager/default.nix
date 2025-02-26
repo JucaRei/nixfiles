@@ -1,8 +1,7 @@
-{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, ... }:
+{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional mkIf;
-  isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
+  inherit (lib) optional optionals mkIf;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
 in
 {
@@ -18,10 +17,11 @@ in
     nix-flatpak.homeManagerModules.nix-flatpak
     chaotic.homeManagerModules.default
 
+    ./_mixins/features
     ../resources/hm-configs/scripts
     ../resources/hm-configs/console
   ]
-  ++ optional isWorkstation ./_mixins/features
+  # ++ optional isWorkstation ./_mixins/features
   ++ optional isWorkstation ./_mixins/desktop
   # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
   ++ optional (builtins.pathExists (./. + "/hosts")) ./hosts
@@ -54,7 +54,7 @@ in
         fd # Modern Unix `find`
         netdiscover # Modern Unix `arp`
       ]
-      ++ optional isOtherOS [
+      ++ optionals (isOtherOS) [
         pciutils # Terminal PCI info
         duf # Modern Unix `df`
         usbutils # Terminal USB info

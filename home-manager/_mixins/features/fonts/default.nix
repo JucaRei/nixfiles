@@ -1,10 +1,9 @@
-{ isInstall, lib, pkgs, config, ... }:
+{ isInstall, lib, pkgs, config, isOtherOS, ... }:
 let
   inherit (pkgs.stdenv) isDarwin;
   inherit (lib) mkIf mkOption types optionals;
-  isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
   cfg = config.features.fonts;
-  systems = if (isDarwin == true || isOtherOS == true) then true else false;
+  systems = if (isDarwin || isOtherOS) then true else false;
 in
 {
   options.features.fonts = {
@@ -33,16 +32,16 @@ in
         # symbola
         # work-sans
       ] ++ optionals systems [
-          (nerdfonts.override {
-            fonts = [
-              "FiraCode"
-              "NerdFontsSymbolsOnly"
-            ];
-          })
-          merriweather
-          lato
-          fira
-          font-awesome
+        (nerdfonts.override {
+          fonts = [
+            "FiraCode"
+            "NerdFontsSymbolsOnly"
+          ];
+        })
+        merriweather
+        lato
+        fira
+        font-awesome
       ]
       ++ optionals isInstall [
         # bebas-neue-2014-font
