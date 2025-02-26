@@ -136,7 +136,7 @@
           # Servers
           # VMs
           "juca@minimech" = helper.mkHome { hostname = "minimech"; };
-          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "bspwm"; };
+          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "kde"; };
           # Apple
         };
         nixosConfigurations = {
@@ -170,7 +170,7 @@
 
           # VMs
           soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = null; };
-          scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "gnome"; };
+          scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "kde"; };
         };
 
         #nix run nix-darwin -- switch --flake ~/Zero/nix-config

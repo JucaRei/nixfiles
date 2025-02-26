@@ -76,6 +76,9 @@ in
         };
       };
     };
-    security.pam.services.lightdm.enableGnomeKeyring = mkIf (desktop == "mate" || desktop == "xfce4");
+    # security.pam.services.lightdm.enableGnomeKeyring = mkIf (desktop == "mate" || desktop == "xfce4");
+    security.pam.services.greetd = {
+      enableGnomeKeyring = if (desktop == "mate" || desktop == "xfce4") then true else false;
+    };
   };
 }

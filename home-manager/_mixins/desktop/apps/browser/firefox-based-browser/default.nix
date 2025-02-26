@@ -73,7 +73,7 @@ in
             settings = if (cfg.browser == "floop") then floorpconf else sharedSettings;
             isDefault = true;
             extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-              #   # Install extensions from NUR
+              ## Install extensions from NUR
               #   decentraleyes
               ublock-origin
               return-youtube-dislikes
@@ -81,11 +81,11 @@ in
               # midnight-lizard
               # noscript
               search-by-image
-              #   clearurls
+              # clearurls
               # sponsorblock
-              #   darkreader
-              #   h264ify
-              #   df-youtube
+              # darkreader
+              # h264ify
+              # df-youtube
             ];
             search = import ./search.nix { inherit pkgs config; };
             bookmarks = import ./bookmarks.nix;

@@ -5,9 +5,17 @@ let
 
 in
 {
+  imports = [ ../../display-manager/sddm ];
+
   config = {
-    programs.graphical.desktop = {
-      backend = isWayland;
+    programs.graphical = {
+      displayManager.sddm = {
+        theme = "abstractdark-sddm-theme";
+        isWayland = false;
+      };
+      desktop = {
+        backend = isWayland;
+      };
     };
 
     programs = {
@@ -23,19 +31,6 @@ in
         displayManager = {
           # defaultSession = "plasma"; #plasmax11
           defaultSession = "plasmax11";
-          sddm = {
-            enable = true;
-            autoNumlock = true;
-            wayland = {
-              enable = mkForce false;
-            };
-            # theme = "${pkgs.sddm-astronaut}";
-            settings = {
-              Theme = {
-                CursorTheme = "layan-border_cursors";
-              };
-            };
-          };
         };
         # desktopManager = {
         #   plasma5 = {
