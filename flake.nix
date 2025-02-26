@@ -131,6 +131,8 @@
           "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
           "juca@nitrowin" = helper.mkHome { hostname = "nitro"; desktop = null; };
           "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
+          # Only terminal apps
+          "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = null; };
           # Servers
           # VMs
           "juca@minimech" = helper.mkHome { hostname = "minimech"; };
