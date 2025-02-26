@@ -79,24 +79,25 @@ in
   # - https://github.com/nix-community/home-manager/issues/2033
   news.display = "silent";
 
-  nixpkgs = mkOverride 1500 (mkIf (!isNixos)
-    {
-      overlays = [
-        inputs.nixgl.overlay # for non-nixos linux system's
+  # nixpkgs = mkOverride 1500 (mkIf (!isNixos)
+  nixpkgs = {
+    overlays = [
+      inputs.nixgl.overlay # for non-nixos linux system's
 
-        # Add overlays your own flake exports (from overlays and pkgs dir):
-        outputs.overlays.additions
-        outputs.overlays.modifications
-        outputs.overlays.unstable-packages
-        outputs.overlays.oldstable-packages
-      ];
-      # Configure your nixpkgs instance
-      # config =  {
-      #   allowUnfree = true;
-      #   # allowUnfreePredicate = (_: true);
-      #   # permittedInsecurePackages = [ ];
-      # };
-    });
+      # Add overlays your own flake exports (from overlays and pkgs dir):
+      outputs.overlays.additions
+      outputs.overlays.modifications
+      outputs.overlays.unstable-packages
+      outputs.overlays.oldstable-packages
+    ];
+    # Configure your nixpkgs instance
+    # config =  {
+    #   allowUnfree = true;
+    #   # allowUnfreePredicate = (_: true);
+    #   # permittedInsecurePackages = [ ];
+    # };
+    # });
+  };
 
   nix = mkIf (!isNixos) {
     # package = optional (isNixos == false) pkgs.nixVersions.latest;
