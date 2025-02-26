@@ -1,8 +1,9 @@
 { config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional optionals mkIf mkOverride;
+  inherit (lib) optional optionals mkIf mkOverride mkDefault;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
+  checkVer = if isNixos == true then false else true;
 in
 {
   imports = with inputs; [
@@ -97,8 +98,9 @@ in
   });
 
   nix = {
-    package = pkgs.lib.mkIf isNixos pkgs.nixVersions.latest;
-    # package = if isNixos then null else pkgs.nixVersions.latest;
+    # package = optional (isNixos == false) pkgs.nixVersions.latest;
+    package = mkDefault (mkIf checkVer pkgs.nixVersions.latest);
+    # package = if isNixos then pkgs.nixVersions.latest else null;
     settings = {
       experimental-features = "flakes nix-command";
       trusted-users = [ "root" "${username}" ];
