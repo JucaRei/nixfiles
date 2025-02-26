@@ -53,6 +53,11 @@ in
         excludePackages = [ pkgs.xterm ];
       };
 
+      gvfs = {
+        enable = true;
+        package = pkgs.gnome.gvfs;
+      };
+
       udisks2 = {
         enable = true;
         mountOnMedia = true;

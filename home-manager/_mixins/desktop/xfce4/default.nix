@@ -31,11 +31,9 @@ in
 
     home = {
       packages = with pkgs // pkgs.xfce // pkgs // pkgs.mate // pkgs.xorg; [
-        elementary-xfce-icon-theme
         gnome-keyring
         gparted
         galculator
-        orage
 
         # (writeShellApplication {
         #   name = "xfce4-panel-toggle";
