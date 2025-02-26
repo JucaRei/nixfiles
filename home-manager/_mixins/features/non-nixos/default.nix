@@ -15,7 +15,8 @@ in
   config = mkIf cfg.enable {
     home = {
       packages = with pkgs; [
-        inputs.nixgl.auto.nixGLDefault
+        # inputs.nixgl.auto.nixGLDefault
+        inputs.nixgl.packages."${pkgs.system}".nixGLDefault
       ];
       # OpenGL for GUI apps
       activation = {
