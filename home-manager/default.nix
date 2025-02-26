@@ -1,4 +1,4 @@
-{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, ... }:
+{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, system, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optional optionals mkIf mkOverride mkDefault;
@@ -8,7 +8,7 @@ in
 {
   imports = with inputs; [
     # If you want to use modules your own flake exports (from modules/home-manager):
-    # outputs.homeManagerModules.example
+    # homeManagerModules.example
 
     # Modules exported from other flakes:
     nur.modules.homeManager.default
@@ -91,18 +91,19 @@ in
       outputs.overlays.oldstable-packages
     ];
     # Configure your nixpkgs instance
-    # config =  {
-    #   allowUnfree = true;
-    #   # allowUnfreePredicate = (_: true);
-    #   # permittedInsecurePackages = [ ];
-    # };
+    config = mkIf (checkVer) {
+      allowUnfree = true;
+      # allowUnfreePredicate = (_: true);
+      # permittedInsecurePackages = [ ];
+    };
     # });
   };
 
-  nix = mkIf (!isNixos) {
+  nix = mkIf (checkVer) {
     # package = optional (isNixos == false) pkgs.nixVersions.latest;
     # package = mkDefault (optional checkVer pkgs.nixVersions.latest);
-    package = mkDefault pkgs.nixVersions.latest;
+    # package = mkDefault pkgs.nixVersions.latest;
+    package = mkDefault pkgs.nix;
     # package = if isNixos then pkgs.nixVersions.latest else null;
     settings = {
       experimental-features = "flakes nix-command";
