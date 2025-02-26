@@ -78,7 +78,7 @@ in
   # - https://github.com/nix-community/home-manager/issues/2033
   news.display = "silent";
 
-  nixpkgs = mkOverride 1500 (mkIf (!isNixos) {
+  nixpkgs = mkOverride 1500 (mkIf (isNixos) {
     overlays = [
       inputs.nixgl.overlay # for non-nixos linux system's
 
@@ -97,7 +97,8 @@ in
   });
 
   nix = {
-    package = mkOverride 1500 (mkIf (!isNixos) pkgs.nixVersions.latest);
+    package = (mkIf (isNixos) pkgs.nixVersions.latest);
+    # package = if isNixos then null else pkgs.nixVersions.latest;
     settings = {
       experimental-features = "flakes nix-command";
       trusted-users = [ "root" "${username}" ];
