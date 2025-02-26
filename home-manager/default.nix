@@ -1,7 +1,7 @@
 { config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional optionals mkIf;
+  inherit (lib) optional optionals mkIf mkOverride;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
 in
 {
@@ -78,7 +78,7 @@ in
   # - https://github.com/nix-community/home-manager/issues/2033
   news.display = "silent";
 
-  nixpkgs = mkIf (!isNixos) {
+  nixpkgs = mkOverride 1500 (mkIf (!isNixos) {
     overlays = [
       inputs.nixgl.overlay # for non-nixos linux system's
 
@@ -89,15 +89,15 @@ in
       outputs.overlays.oldstable-packages
     ];
     # Configure your nixpkgs instance
-    config = {
-      allowUnfree = true;
-      # allowUnfreePredicate = (_: true);
-      # permittedInsecurePackages = [ ];
-    };
-  };
+    # config =  {
+    #   allowUnfree = true;
+    #   # allowUnfreePredicate = (_: true);
+    #   # permittedInsecurePackages = [ ];
+    # };
+  });
 
   nix = {
-    package = mkIf (!isNixos) pkgs.nixVersions.latest;
+    package = mkOverride 1500 (mkIf (!isNixos) pkgs.nixVersions.latest);
     settings = {
       experimental-features = "flakes nix-command";
       trusted-users = [ "root" "${username}" ];
