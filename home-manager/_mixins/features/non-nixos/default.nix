@@ -1,4 +1,4 @@
-{ config, lib, pkgs, hostname, ... }:
+{ config, lib, pkgs, hostname, inputs, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) mkIf mkOption types optionals;
@@ -15,7 +15,7 @@ in
   config = mkIf cfg.enable {
     home = {
       packages = with pkgs; [
-        nixgl.auto.nixGLDefault
+        inputs.nixgl.auto.nixGLDefault
       ];
       # OpenGL for GUI apps
       activation = {
