@@ -5,8 +5,8 @@ in
 {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    # (import ./disks.nix { })
-    (import ./disks-xfs.nix { })
+    (import ./disks.nix { })
+    # (import ./disks-xfs.nix { })
     # (import ./disks-bcache.nix { })
     # (import ./disks2.nix { })
     # ./filesystem.nix
@@ -37,16 +37,8 @@ in
       };
     };
 
-    core = {
-      boot = {
-        bootmanager = mkForce "grub";
-      };
-    };
-
-    features = {
-      zram = {
-        enable = true;
-      };
+    system.services.zram = {
+      enable = true;
     };
 
     nixpkgs = {
