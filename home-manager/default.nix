@@ -64,6 +64,7 @@ in
     sessionVariables = {
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
+      FLAKE = "${config.home.homeDirectory}/.dotfiles/nixfiles";
       EDITOR = "micro";
 
       MICRO_TRUECOLOR = "1";
