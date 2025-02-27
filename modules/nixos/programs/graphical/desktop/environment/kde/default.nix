@@ -29,8 +29,8 @@ in
       xserver = {
         enable = true;
         displayManager = {
-          # defaultSession = "plasma"; #plasmax11
-          defaultSession = "plasmax11";
+          defaultSession = "plasma"; #plasmax11
+          # defaultSession = "plasmax11";
         };
         # desktopManager = {
         #   plasma5 = {
