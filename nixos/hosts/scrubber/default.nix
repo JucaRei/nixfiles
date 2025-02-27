@@ -5,8 +5,8 @@ in
 {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
-    (import ./disks.nix { })
-    # (import ./disks-xfs.nix { })
+    # (import ./disks.nix { })
+    (import ./disks-xfs.nix { })
     # (import ./disks-bcache.nix { })
     # (import ./disks2.nix { })
     # ./filesystem.nix

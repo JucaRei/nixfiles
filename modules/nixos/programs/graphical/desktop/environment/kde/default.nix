@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkDefault mkIf mkForce;
-  isWayland = if (config.services.xserver.displayManager.sddm.wayland.enable == true) then "wayland" else "x11";
+  wayland = if (config.services.xserver.displayManager.sddm.wayland.enable == true) then "wayland" else "x11";
 
 in
 {
@@ -10,11 +10,11 @@ in
   config = {
     programs.graphical = {
       displayManager.sddm = {
-        theme = "abstractdark-sddm-theme";
-        isWayland = false;
+        sddm-theme = "abstractdark-sddm-theme";
+        wayland-session = false;
       };
       desktop = {
-        backend = isWayland;
+        backend = wayland;
       };
     };
 
@@ -122,12 +122,12 @@ in
         ];
       };
 
-      # sessionVariables = mkIf (config.features.graphics.backend == "wayland") {
+      # sessionVariables = mkIf (config.programs.graphical.desktop.backend == "wayland") {
       #   NIXOS_OZONE_WL = "1";
       #   MOZ_ENABLE_WAYLAND = "1";
       # };
 
-      variables = mkIf (config.features.graphics.backend == "wayland" && config.features.graphics.gpu == "hybrid-nvidia") {
+      variables = mkIf (config.programs.graphical.desktop.backend == "wayland" && config.hardware.graphics.cards.gpu == "hybrid-nvidia") {
         NVD_GPU = 1;
       };
     };

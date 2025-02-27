@@ -1,4 +1,4 @@
-{ config, lib, pkgs, hostname, inputs, ... }:
+{ config, lib, pkgs, hostname, inputs, username, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) mkIf mkOption types optionals;
@@ -25,7 +25,8 @@ in
           # Add Packages To System Menu by updating database
           after = [ "writeBoundary" "createXdgUserDirectories" ];
           before = [ ];
-          data = ''sudo env "PATH=$PATH" /usr/bin/update-desktop-database'';
+          # data = ''sudo env "PATH=$PATH" /usr/bin/update-desktop-database'';
+          data = ''sudo -u ${username} /usr/bin/update-desktop-database'';
         };
       };
       sessionPath = [ "$HOME/.local/bin" ];

@@ -1,4 +1,5 @@
 { config, pkgs, ... }: {
+  imports = [ ../../_mixins/services/podman ];
   config = {
     features.nonNixOs = {
       enable = true;

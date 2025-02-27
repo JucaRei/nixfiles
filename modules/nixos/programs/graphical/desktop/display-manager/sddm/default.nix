@@ -1,24 +1,24 @@
 { config, pkgs, lib, username, ... }:
 let
-  inherit (lib) stringAfter getExe';
-  inherit (lib.types) listOf enum str bool;
+  inherit (lib) mkOption stringAfter getExe';
+  inherit (lib.types) listOf enum str nullOr bool;
   cfg = config.programs.graphical.displayManager.sddm;
 in
 {
   options = {
     programs.graphical.displayManager.sddm = {
-      theme = {
-        type = listOf (enum str [
+      sddm-theme = mkOption {
+        type = enum [
           "sddm-astronaut"
           "catppuccin-sddm-corners"
           "sddm-sugar-dark"
           "sddm-chili-theme"
           "abstractdark-sddm-theme"
-        ]);
+        ];
         default = "sddm-astronaut";
         description = "The SDDM theme to use.";
       };
-      isWayland = {
+      wayland-session = mkOption {
         type = bool;
         default = false;
         description = "Enable Wayland support.";
@@ -28,21 +28,19 @@ in
 
   config = {
     services = {
-      displayManager = {
-        sddm = {
-          enable = true;
-          theme = cfg.theme;
+      xserver = {
+        displayManager = {
           setupCommands = ''
             ln -sfn /etc/sddm.conf.d /etc/sddm.conf
           '';
+        };
+      };
+      displayManager = {
+        sddm = {
+          enable = true;
+          theme = cfg.sddm-theme;
           wayland = {
-            enable = cfg.isWayland;
-          };
-          package = pkgs.sddm.override {
-            extraConfig = ''
-              [General]
-              Numlock=on
-            '';
+            enable = cfg.wayland-session;
           };
           settings = {
             Theme = {
@@ -50,16 +48,16 @@ in
             };
           };
           extraPackages =
-            if cfg.theme == "sddm-astronaut"
+            if cfg.sddm-theme == "sddm-astronaut"
             then [ pkgs.sddm-theme-astronaut ]
-            else if cfg.theme == "catppuccin-sddm-corners"
+            else if cfg.sddm-theme == "catppuccin-sddm-corners"
             then [ pkgs.sddm-theme-corners ]
-            else if cfg.theme == "sddm-sugar-dark"
+            else if cfg.sddm-theme == "sddm-sugar-dark"
             then [ pkgs.sddm-theme-sugar-dark ]
-            else if cfg.theme == "sddm-chili-theme"
+            else if cfg.sddm-theme == "sddm-chili-theme"
             then [ pkgs.sddm-theme-chili ]
-            else if cfg.theme == "abstractdark-sddm-theme"
-            then [ pkgs.nur.repos.fortuneteller2k.impure.sddm-theme-abstractdark ]
+            else if cfg.sddm-theme == "abstractdark-sddm-theme"
+            then [ pkgs.sddm-theme-abstractdark ]
             else [ ];
           autoNumlock = true;
         };
@@ -67,11 +65,14 @@ in
     };
 
     system.activationScripts.postInstallSddm =
+      let
+        setfacl = lib.getExe' pkgs.acl "setfacl";
+      in
       stringAfter [ "users" ] # bash
         ''
           echo "Setting sddm permissions for user icon"
-          ${getExe' pkgs.acl "setfacl"} -m u:sddm:x /home/${username}
-          ${getExe' pkgs.acl "setfacl"} -m u:sddm:r /home/${username}/.face.icon || true
+          ${setfacl} -m u:sddm:x /home/${username}
+          ${setfacl} -m u:sddm:r /home/${username}/.face.icon || true
         '';
   };
 }

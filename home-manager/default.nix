@@ -3,7 +3,7 @@ let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optional optionals mkIf mkOverride mkDefault;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
-  checkVer = if isNixos == true then false else true;
+  checkVer = if (isNixos == true) then false else true;
 in
 {
   imports = with inputs; [
@@ -102,6 +102,14 @@ in
 
   nix = {
     package = mkDefault pkgs.nixVersions.latest;
+    nixPath = mkIf (checkVer) [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
+
+    registry = mkIf (checkVer) {
+      nixpkgs = {
+        flake = inputs.nixpkgs;
+      };
+    };
+
     settings = {
       experimental-features = "flakes nix-command";
       trusted-users = [ "root" "${username}" ];
