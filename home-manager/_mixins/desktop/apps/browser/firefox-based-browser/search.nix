@@ -66,12 +66,14 @@
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       definedAliases = [ "@nd" ];
     };
+
     "Home Manager Options" = {
       urls = [{ template = "https://home-manager-options.extranix.com/?query={searchTerms}&release = master "; }];
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       updateInterval = 24 * 60 * 60 * 1000; # every day
       definedAliases = [ "@hm" ];
     };
+
     "Home-Manager Docs" = {
       urls = [{ template = "https://rycee.gitlab.io/home-manager/options.html"; }];
       definedAliases = [ "@hm-docs" ];

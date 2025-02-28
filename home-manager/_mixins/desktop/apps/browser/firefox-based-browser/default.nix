@@ -74,18 +74,11 @@ in
             isDefault = true;
             extensions = with pkgs.nur.repos.rycee.firefox-addons; [
               ## Install extensions from NUR
-              #   decentraleyes
+              multi-account-containers
               ublock-origin
               return-youtube-dislikes
               don-t-fuck-with-paste
-              # midnight-lizard
-              # noscript
               search-by-image
-              # clearurls
-              # sponsorblock
-              # darkreader
-              # h264ify
-              # df-youtube
             ];
             search = import ./search.nix { inherit pkgs config; };
             bookmarks = import ./bookmarks.nix;

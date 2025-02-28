@@ -1,20 +1,19 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) mkOption mkIf types getExe;
-  cfg = config.console.bash;
+  inherit (lib) mkOption mkDefault mkIf types getExe;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.bash;
 in
 {
-  # imports = [ ./starship ];
-
-  options.console.bash = {
+  options.programs.terminal.console.bash = {
     enable = mkOption {
       default = true;
-      type = types.bool;
+      type = bool;
     };
   };
 
   config = mkIf cfg.enable {
-    console.starship.enable = lib.mkDefault true;
+    programs.terminal.console.starship.enable = mkDefault true;
     programs = {
       bash = {
         enable = true;

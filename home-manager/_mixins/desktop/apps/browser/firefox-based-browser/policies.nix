@@ -94,4 +94,40 @@
     Locked = false;
   };
   UseSystemPrintDialog = true;
+
+  ExtensionSettings = {
+    # "*".installation_mode = "blocked"; # blocks all addons except the ones specified below
+    # Check about:support for extension/add-on ID strings.
+    # Valid strings for installation_mode are "allowed", "blocked",
+    # "force_installed" and "normal_installed".
+    # ublock-origin:
+    # "uBlock0@raymondhill.net" = {
+    #   install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+    #   installation_mode = "force_installed";
+    # };
+
+    # simple-translate:
+    "simple-translate@sienori" = {
+      install_url = "https://addons.mozilla.org/firefox/downloads/latest/simple-translate/latest.xpi";
+      installation_mode = "force_installed";
+    };
+
+    # midnight-lizard:
+    "{8fbc7259-8015-4172-9af1-20e1edfbbd3a}" = {
+      install_url = "https://addons.mozilla.org/firefox/downloads/latest/midnight-lizard-quantum/latest.xpi";
+      installation_mode = "force_installed";
+    };
+
+    # Music Mode for YouTube™:
+    "{e960c19a-b3ce-477c-8a0d-d82959225dee}" = {
+      install_url = "https://addons.mozilla.org/firefox/downloads/latest/music-mode-for-youtube/latest.xpi";
+      installation_mode = "force_installed";
+    };
+
+    # catppuccin mocha mauve:
+    "{76aabc99-c1a8-4c1e-832b-d4f2941d5a7a}" = {
+      install_url = "https://addons.mozilla.org/firefox/downloads/latest/catppuccin-mocha-mauve-git/latest.xpi";
+      installation_mode = "force_installed";
+    };
+  };
 }
