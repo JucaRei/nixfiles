@@ -135,6 +135,7 @@
           "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = null; };
           # Servers
           # VMs
+          "juca@qemu" = helper.mkHome { hostname = "qemu"; desktop = "bspwm"; };
           "juca@minimech" = helper.mkHome { hostname = "minimech"; };
           "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "kde"; };
           # Apple

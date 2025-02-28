@@ -13,6 +13,15 @@ in
   ];
 
   config = {
+    programs = {
+      graphical = {
+        displayManager = {
+          sddm = {
+            sddm-theme = "abstractdark-sddm-theme";
+          };
+        };
+      };
+    };
 
     boot = {
       initrd.availableKernelModules = [

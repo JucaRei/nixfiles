@@ -3,7 +3,9 @@ let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optional optionals mkIf mkOverride mkDefault;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
-  checkVer = if (isNixos == true) then false else true;
+  checkVer = if isNixos then false else true;
+
+  flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
 in
 {
   imports = with inputs; [
@@ -61,17 +63,19 @@ in
         usbutils # Terminal USB info
       ];
 
-    sessionVariables = {
-      NIXPKGS_ALLOW_UNFREE = "1";
-      NIXPKGS_ALLOW_INSECURE = "1";
-      FLAKE = "${config.home.homeDirectory}/.dotfiles/nixfiles";
-      EDITOR = "micro";
+    sessionVariables =
+      {
+        NIX_PATH = mkOverride 1500 (mkIf (checkVer) (lib.concatStringsSep ":" (lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs)));
+        NIXPKGS_ALLOW_UNFREE = "1";
+        NIXPKGS_ALLOW_INSECURE = "1";
+        FLAKE = "${config.home.homeDirectory}/.dotfiles/nixfiles";
+        EDITOR = "micro";
 
-      MICRO_TRUECOLOR = "1";
-      PAGER = "bat";
-      SYSTEMD_EDITOR = "micro";
-      VISUAL = "micro";
-    };
+        MICRO_TRUECOLOR = "1";
+        PAGER = "bat";
+        SYSTEMD_EDITOR = "micro";
+        VISUAL = "micro";
+      };
 
     enableNixpkgsReleaseCheck = false;
   };
@@ -102,13 +106,8 @@ in
 
   nix = {
     package = mkDefault pkgs.nixVersions.latest;
-    nixPath = mkIf (checkVer) [ "nixpkgs=${inputs.nixpkgs.outPath}" ];
 
-    registry = mkIf (checkVer) {
-      nixpkgs = {
-        flake = inputs.nixpkgs;
-      };
-    };
+    registry = mkIf (checkVer) (lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs);
 
     settings = {
       experimental-features = "flakes nix-command";
@@ -116,6 +115,8 @@ in
       allowed-users = [ "root" "${username}" ];
       warn-dirty = false;
       allow-dirty = true;
+
+      flake-registry = ""; # Disable global flake registry
     };
 
     extraOptions = ''
