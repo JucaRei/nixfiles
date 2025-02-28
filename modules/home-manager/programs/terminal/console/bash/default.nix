@@ -183,10 +183,6 @@ in
     home.packages = with pkgs; [
       bashInteractive
       nitch
-      ripgrep
-      # rsync
-      # tree
-      # fzf
     ];
   };
 }

@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) mkOption mkIf types;
-  cfg = config.console.bottom;
+  inherit (lib) mkOption mkIf types getExe';
+  cfg = config.programs.terminal.console.bottom;
 in
 {
-  options.console.bottom = {
+  options.programs.terminal.console.bottom = {
     enable = mkOption {
       default = false;
       type = types.bool;
@@ -38,7 +38,7 @@ in
     };
     home = {
       shellAliases = {
-        top = "${pkgs.bottom}/bin/btm --basic --tree --hide_table_gap --dot_marker --theme=gruvbox -c -g --enable_gpu --memory_legend=top-right --enable_cache_memory";
+        top = "${getExe' config.programs.bottom.package "btm"} --basic --tree --hide_table_gap --dot_marker --theme=gruvbox -c -g --enable_gpu --memory_legend=top-right --enable_cache_memory";
       };
     };
   };

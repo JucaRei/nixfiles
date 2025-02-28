@@ -85,8 +85,8 @@
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
-              useGlobalPkgs = false;
-              useUserPackages = true;
+              useGlobalPkgs = false; # use packages that are installed in the system level
+              useUserPackages = true; # Packages will be installed to /etc/profiles, not $HOME/.nix-profile
               backupFileExtension = "hm-backup";
 
               users.${username} = import ../home-manager;

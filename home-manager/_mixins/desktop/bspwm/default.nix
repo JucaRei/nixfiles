@@ -162,6 +162,11 @@ in
       };
     };
 
+    home = {
+      sessionPath = [
+        
+      ];
+    };
     systemd.user = {
       targets.bspwm-session = {
         Unit = {

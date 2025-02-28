@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) mkOption mkIf types mkForce;
-  cfg = config.console.bat;
+  cfg = config.programs.terminal.console.bat;
 in
 {
-  options.console.bat = {
+  options.programs.terminal.console.bat = {
     enable = mkOption {
       default = false;
       type = types.bool;
