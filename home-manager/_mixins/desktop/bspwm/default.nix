@@ -17,6 +17,7 @@ in
   ];
   config = {
     xsession = {
+      enable = true;
       windowManager = {
         bspwm = {
           enable = mkForce true;
