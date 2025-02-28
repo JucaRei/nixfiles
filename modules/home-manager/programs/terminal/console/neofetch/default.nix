@@ -1,13 +1,15 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) mkOption mkIf types;
-  cfg = config.console.neofetch;
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.neofetch;
 in
 {
-  options.console.neofetch = {
+  options.programs.terminal.console.neofetch = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable neofetch";
     };
   };
   config = mkIf cfg.enable {
@@ -16,7 +18,7 @@ in
       file = {
         # "${config.xdg.configHome}/neofetch/config.conf".text = builtins.readFile ../../../../resources/dots/neofetch/config.conf;
         "${config.xdg.configHome}/neofetch/config.conf".text =
-          builtins.readFile ../../../dots/neofetch/electric.conf;
+          builtins.readFile ./conf/electric.conf;
       };
     };
   };

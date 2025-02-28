@@ -1,15 +1,12 @@
 { lib, config, ... }:
 let
   inherit (lib) mkOption types mkIf;
-  cfg = config.console.fish;
+  cfg = config.programs.terminal.console.fish;
 in
 {
-  imports = [
-    # ../starship.nix
-  ];
 
   options = {
-    console.fish = {
+    programs.terminal.console.fish = {
       enable = mkOption {
         default = false;
         type = types.bool;
@@ -26,15 +23,15 @@ in
 
     home.file = {
       "${config.xdg.configHome}/fish/functions/help.fish".text =
-        builtins.readFile ../../../dots/fish/help.fish;
+        builtins.readFile ./confs/help.fish;
       "${config.xdg.configHome}/fish/functions/h.fish".text =
-        builtins.readFile ../../../dots/fish/h.fish;
+        builtins.readFile ./confs/h.fish;
       "${config.xdg.configHome}/fish/functions/lima-create.fish".text =
-        builtins.readFile ../../../dots/fish/lima-create.fish;
+        builtins.readFile ./confs/lima-create.fish;
       "${config.xdg.configHome}/fish/functions/gpg-restore.fish".text =
-        builtins.readFile ../../../dots/fish/gpg-restore.fish;
+        builtins.readFile ./confs/gpg-restore.fish;
       "${config.xdg.configHome}/fish/functions/get-nix-hash.fish".text =
-        builtins.readFile ../../../dots/fish/get-nix-hash.fish;
+        builtins.readFile ./confs/get-nix-hash.fish;
     };
   };
 }

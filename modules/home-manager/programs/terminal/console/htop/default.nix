@@ -1,13 +1,15 @@
 { pkgs, config, lib, ... }:
 let
-  inherit (lib) mkOption mkIf types;
-  cfg = config.console.htop;
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.htop;
 in
 {
-  options.console.htop = {
+  options.programs.terminal.console.htop = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable htop support.";
     };
   };
 
@@ -15,7 +17,7 @@ in
     home = {
       packages = [ pkgs.htop ];
       file = {
-        "${config.xdg.configHome}/htop/htoprc".text = builtins.readFile ../../../dots/htop/htoprc;
+        "${config.xdg.configHome}/htop/htoprc".text = builtins.readFile ./htoprc;
       };
     };
 

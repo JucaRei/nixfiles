@@ -1,13 +1,15 @@
 { lib, config, username, ... }:
 let
-  inherit (lib) mkDefault mkOption mkIf types;
-  cfg = config.console.starship;
+  inherit (lib) mkDefault mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.starship;
 in
 {
-  options.console.starship = {
+  options.programs.terminal.console.starship = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable's starship configuration.";
     };
   };
   config = mkIf cfg.enable {

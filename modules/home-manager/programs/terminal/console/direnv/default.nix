@@ -1,10 +1,10 @@
 { lib, config, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.direnv;
+  cfg = config.programs.terminal.console.direnv;
 in
 {
-  options.direnv = {
+  options.programs.terminal.console.direnv = {
     enable = mkOption {
       default = false;
       type = types.bool;
@@ -24,7 +24,7 @@ in
         config = {
           whitelist = {
             prefix = [
-              "${config.home.homeDirectory}/code"
+              # "${config.home.homeDirectory}/code"
             ];
           };
           direnvrcExtra = ''

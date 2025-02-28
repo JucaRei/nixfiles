@@ -1,13 +1,15 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkOption types mkIf;
-  cfg = config.console.ripgrep;
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.ripgrep;
 in
 {
-  options.console.ripgrep = {
+  options.programs.terminal.console.ripgrep = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable's ripgrep";
     };
   };
   config = mkIf cfg.enable {

@@ -1,13 +1,15 @@
 { config, lib, pkgs, ... }:
-with lib;
 let
-  cfg = config.console.ssh;
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.ssh;
 in
 {
-  options.console.ssh = {
+  options.programs.terminal.console.ssh = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable's ssh configs.";
     };
   };
   config = mkIf cfg.enable {

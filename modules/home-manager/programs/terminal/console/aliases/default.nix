@@ -13,7 +13,7 @@ in
 {
   options.programs.terminal.console.aliases = {
     enable = mkOption {
-      default = true;
+      default = false;
       type = bool;
       description = "Enable's a list of shell aliases.";
     };

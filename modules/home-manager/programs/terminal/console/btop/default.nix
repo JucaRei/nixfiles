@@ -1,10 +1,10 @@
 { pkgs, config, lib, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.console.btop;
+  cfg = config.programs.terminal.console.btop;
 in
 {
-  options.console.btop = {
+  options.programs.terminal.console.btop = {
     enable = mkOption {
       default = false;
       type = types.bool;
@@ -228,6 +228,6 @@ in
     };
 
     xdg.configFile."btop/themes/cyberpunk_neon.theme".source =
-      ../../../dots/btop/cyberpunk_neon.theme;
+      ./cyberpunk_neon.theme;
   };
 }

@@ -7,7 +7,7 @@ in
 {
   options.programs.terminal.console.bash = {
     enable = mkOption {
-      default = true;
+      default = false;
       type = bool;
     };
   };

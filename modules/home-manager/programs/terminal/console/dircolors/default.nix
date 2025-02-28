@@ -1,10 +1,10 @@
 { lib, config, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.console.dircolors;
+  cfg = config.programs.terminal.console.dircolors;
 in
 {
-  options.console.dircolors = {
+  options.programs.terminal.console.dircolors = {
     enable = mkOption {
       default = false;
       type = types.bool;

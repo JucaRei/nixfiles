@@ -1,13 +1,15 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) mkOption types mkIf;
-  cfg = config.console.zoxide;
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.zoxide;
 in
 {
-  options.console.zoxide = {
+  options.programs.terminal.console.zoxide = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable's zoxide";
     };
   };
 

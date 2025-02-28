@@ -2,10 +2,10 @@
 let
   inherit (lib) mkOption mkIf types;
   inherit (pkgs.stdenv) isLinux;
-  cfg = config.console.cava;
+  cfg = config.programs.terminal.console.cava;
 in
 {
-  options.console.cava = {
+  options.programs.terminal.console.cava = {
     enable = mkOption {
       default = false;
       type = types.bool;

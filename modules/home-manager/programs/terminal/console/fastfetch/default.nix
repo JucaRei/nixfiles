@@ -1,13 +1,13 @@
 { lib, config, ... }:
 let
   inherit (lib) mkIf mkOption types getExe;
-  cfg = config.console.fastfetch;
+  cfg = config.programs.terminal.console.fastfetch;
 in
 {
   options = {
-    console.fastfetch = {
+    programs.terminal.console.fastfetch = {
       enable = mkOption {
-        default = true;
+        default = false;
         type = types.bool;
         description = "Enable's fastfetch, a better neofetch.";
       };

@@ -1,13 +1,15 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) mkOption types mkIf;
-  cfg = config.console.powerline-go;
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.powerline-go;
 in
 {
-  options.console.powerline-go = {
+  options.programs.terminal.console.powerline-go = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable's powerline-go.";
     };
   };
 

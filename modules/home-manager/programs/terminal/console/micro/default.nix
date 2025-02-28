@@ -1,13 +1,15 @@
 { config, lib, ... }:
-with lib;
 let
-  cfg = config.console.micro;
+  cfg = config.programs.terminal.console.micro;
+  inherit (lib) mkOption mkIf types;
+  inherit (lib.types) bool;
 in
 {
-  options.console.micro = {
+  options.programs.terminal.console.micro = {
     enable = mkOption {
       default = true;
-      type = types.bool;
+      type = bool;
+      description = "Enable micro editor support.";
     };
   };
 

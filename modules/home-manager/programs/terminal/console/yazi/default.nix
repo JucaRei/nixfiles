@@ -1,13 +1,15 @@
 { config, lib, ... }:
 let
-  inherit (lib) mkOption types mkIf;
-  cfg = config.console.yazi;
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.yazi;
 in
 {
-  options.console.yazi = {
+  options.programs.terminal.console.yazi = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable's Yazi.";
     };
   };
 
@@ -32,8 +34,8 @@ in
     };
     home = {
       file = {
-        "${config.xdg.configHome}/yazi/keymap.toml".text = builtins.readFile ../../../dots/yazi/yazi-keymap.toml;
-        "${config.xdg.configHome}/yazi/theme.toml".text = builtins.readFile ../../../dots/yazi/yazi-theme.toml;
+        "${config.xdg.configHome}/yazi/keymap.toml".text = builtins.readFile ./confs/yazi-keymap.toml;
+        "${config.xdg.configHome}/yazi/theme.toml".text = builtins.readFile ./confs/yazi-theme.toml;
       };
     };
   };

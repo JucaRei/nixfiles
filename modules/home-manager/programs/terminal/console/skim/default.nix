@@ -1,13 +1,15 @@
 { pkgs, lib, config, ... }:
 let
-  inherit (lib) getExe getExe' mkOption types mkIf;
-  cfg = config.console.skim;
+  inherit (lib) getExe getExe' mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.skim;
 in
 {
-  options.console.skim = {
+  options.programs.terminal.console.skim = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable's skim configuration.";
     };
   };
   config = mkIf cfg.enable {

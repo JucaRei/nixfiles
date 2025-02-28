@@ -1,7 +1,10 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkOption types mkIf;
-  cfg = config.console.man;
+  inherit (lib.types) bool;
+
+  cfg = config.programs.terminal.console.man;
+
   man_color_args = lib.strings.concatStringsSep " " [
     "-DP+k-" # Prompt = formatted bold Black on normal
     "-DE+kr" # Error/Info = formatted bold Black on Red
@@ -11,6 +14,7 @@ let
     "-Du+g" # underline = formatted green
     "-Ds+kw" # standout = formatted Black on White
   ];
+
   manpager = pkgs.writeShellScriptBin "manpager" ''
     export LESS_TERMCAP_mb=$(tput bold)             # begin blinking
     export LESS_TERMCAP_md=$(tput bold)             # begin bold
@@ -28,12 +32,14 @@ let
 
     less --use-color ${man_color_args} "$@"
   '';
+
 in
 {
-  options.console.man = {
+  options.programs.terminal.console.man = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable support man pages.";
     };
   };
 

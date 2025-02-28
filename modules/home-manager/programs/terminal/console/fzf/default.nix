@@ -1,11 +1,11 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) mkIf mkEnableOption getExe;
-  cfg = config.console.fzf;
+  cfg = config.programs.terminal.console.fzf;
 in
 {
   options = {
-    console.fzf = {
+    programs.terminal.console.fzf = {
       enable = mkEnableOption "Enable's fzf and configs.";
     };
   };

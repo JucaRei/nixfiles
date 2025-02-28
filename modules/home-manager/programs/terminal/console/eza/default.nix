@@ -2,10 +2,10 @@
 { pkgs, config, lib, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.console.eza;
+  cfg = config.programs.terminal.console.eza;
 in
 {
-  options.console.eza = {
+  options.programs.terminal.console.eza = {
     enable = mkOption {
       default = false;
       type = types.bool;
@@ -14,11 +14,14 @@ in
 
   config = mkIf cfg.enable {
     home = {
+
       # packages = with inputs; [
       #   fh.packages.${platform}.default
       #   eza.packages.${platform}.default
       # ];
+
       packages = with pkgs.unstable; [ eza ];
+
       shellAliases = {
         ls = "eza --icons -l -T -h -L=1";
         lt = "eza --icons -l --time-style long-iso -a -h";

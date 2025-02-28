@@ -1,17 +1,19 @@
 { config, pkgs, lib, username, ... }:
 let
-  inherit (lib) mkOption mkIf types;
-  cfg = config.console.yt-dlp-custom;
+  inherit (lib) mkOption mkIf mdDoc;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.yt-dlp-custom;
 
   # mypython = with pkgs; python310;
   mypython = (pkgs.python310.withPackages (pythonPackages: with pythonPackages; [ ]));
 in
 {
   options = {
-    console.yt-dlp-custom = {
+    programs.terminal.console.yt-dlp-custom = {
       enable = mkOption {
         default = false;
-        type = types.bool;
+        type = bool;
+        description = mdDoc "Enable's yt-dlp with custom aliases.";
       };
     };
   };

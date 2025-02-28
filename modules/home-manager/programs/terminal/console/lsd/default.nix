@@ -1,13 +1,15 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkOption types mkIf mkDefault;
-  cfg = config.console.lsd;
+  inherit (lib) mkOption mkIf mkDefault;
+  inherit (lib.types) bool;
+  cfg = config.programs.terminal.console.lsd;
 in
 {
-  options.console.lsd = {
+  options.programs.terminal.console.lsd = {
     enable = mkOption {
       default = false;
-      type = types.bool;
+      type = bool;
+      description = "Enable lsd support.";
     };
   };
 
