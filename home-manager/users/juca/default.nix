@@ -1,4 +1,4 @@
-{ config, isLima, isWorkstation, lib, pkgs, username, ... }:
+{ config, isLima, isWorkstation, desktop, lib, pkgs, username, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkIf;
@@ -6,6 +6,10 @@ in
 {
   home = {
     file = {
+      ".face" = mkIf (desktop != null) {
+        source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+      };
+
       "virtualmachines/nixos-console.conf" = mkIf (!isLima) {
         text = ''
           #!/run/current-system/sw/bin/quickemu --vm
@@ -48,6 +52,7 @@ in
           height="1080"
         '';
       };
+
       "/games/.keep" = mkIf (!isLima) { text = ""; };
       "/virtualmachines/nixos-console/.keep" = mkIf (!isLima) { text = ""; };
       "/virtualmachines/nixos-gnome/.keep" = mkIf (!isLima) { text = ""; };
