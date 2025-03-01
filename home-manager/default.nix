@@ -63,19 +63,17 @@ in
         usbutils # Terminal USB info
       ];
 
-    sessionVariables =
-      {
-        NIX_PATH = mkOverride 1500 (mkIf (checkVer) (lib.concatStringsSep ":" (lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs)));
-        NIXPKGS_ALLOW_UNFREE = "1";
-        NIXPKGS_ALLOW_INSECURE = "1";
-        FLAKE = "${config.home.homeDirectory}/.dotfiles/nixfiles";
-        EDITOR = "micro";
+    sessionVariables = {
+      NIXPKGS_ALLOW_UNFREE = "1";
+      NIXPKGS_ALLOW_INSECURE = "1";
+      FLAKE = "${config.home.homeDirectory}/.dotfiles/nixfiles";
+      EDITOR = "micro";
 
-        MICRO_TRUECOLOR = "1";
-        PAGER = "bat";
-        SYSTEMD_EDITOR = "micro";
-        VISUAL = "micro";
-      };
+      MICRO_TRUECOLOR = "1";
+      PAGER = "bat";
+      SYSTEMD_EDITOR = "micro";
+      VISUAL = "micro";
+    };
 
     enableNixpkgsReleaseCheck = false;
   };
@@ -107,16 +105,12 @@ in
   nix = {
     package = mkDefault pkgs.nixVersions.latest;
 
-    registry = mkIf (checkVer) (lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs);
-
     settings = {
       experimental-features = "flakes nix-command";
       trusted-users = [ "root" "${username}" ];
       allowed-users = [ "root" "${username}" ];
       warn-dirty = false;
       allow-dirty = true;
-
-      flake-registry = ""; # Disable global flake registry
     };
 
     extraOptions = ''
