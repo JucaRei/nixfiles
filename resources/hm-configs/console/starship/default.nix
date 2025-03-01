@@ -78,7 +78,6 @@ in
             disabled = false;
             format = "$symbol";
             style = "";
-
             symbols = {
               AlmaLinux = "[](fg:text bg:surface1)";
               Alpine = "[](fg:blue bg:surface1)";
