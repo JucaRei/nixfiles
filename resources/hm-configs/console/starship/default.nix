@@ -11,13 +11,14 @@ in
     };
   };
   config = mkIf cfg.enable {
+    # https://github.com/etrigan63/Catppuccin-starship
+    catppuccin.starship.enable = true;
+
     programs = {
       starship = {
         enable = true;
         enableBashIntegration = true;
         enableFishIntegration = true;
-        catppuccin.enable = true;
-        # https://github.com/etrigan63/Catppuccin-starship
         settings = {
           add_newline = false;
           command_timeout = 1000;
@@ -77,42 +78,43 @@ in
             disabled = false;
             format = "$symbol";
             style = "";
-          };
-          os.symbols = {
-            AlmaLinux = "[](fg:text bg:surface1)";
-            Alpine = "[](fg:blue bg:surface1)";
-            Amazon = "[](fg:peach bg:surface1)";
-            Android = "[](fg:green bg:surface1)";
-            Arch = "[󰣇](fg:sapphire bg:surface1)";
-            Artix = "[](fg:sapphire bg:surface1)";
-            CentOS = "[](fg:mauve bg:surface1)";
-            Debian = "[](fg:red bg:surface1)";
-            DragonFly = "[](fg:teal bg:surface1)";
-            EndeavourOS = "[](fg:mauve bg:surface1)";
-            Fedora = "[](fg:blue bg:surface1)";
-            FreeBSD = "[](fg:red bg:surface1)";
-            Garuda = "[](fg:sapphire bg:surface1)";
-            Gentoo = "[](fg:lavender bg:surface1)";
-            Illumos = "[](fg:peach bg:surface1)";
-            Kali = "[](fg:blue bg:surface1)";
-            Linux = "[](fg:yellow bg:surface1)";
-            Macos = "[](fg:text bg:surface1)";
-            Manjaro = "[](fg:green bg:surface1)";
-            Mint = "[󰣭](fg:teal bg:surface1)";
-            NixOS = "[](fg:sky bg:surface1)";
-            OpenBSD = "[](fg:yellow bg:surface1)";
-            openSUSE = "[](fg:green bg:surface1)";
-            Pop = "[](fg:sapphire bg:surface1)";
-            Raspbian = "[](fg:maroon bg:surface1)";
-            Redhat = "[](fg:red bg:surface1)";
-            RedHatEnterprise = "[](fg:red bg:surface1)";
-            RockyLinux = "[](fg:green bg:surface1)";
-            Solus = "[](fg:blue bg:surface1)";
-            SUSE = "[](fg:green bg:surface1)";
-            Ubuntu = "[](fg:peach bg:surface1)";
-            Unknown = "[](fg:text bg:surface1)";
-            Void = "[](fg:green bg:surface1)";
-            Windows = "[󰖳](fg:sky bg:surface1)";
+
+            symbols = {
+              AlmaLinux = "[](fg:text bg:surface1)";
+              Alpine = "[](fg:blue bg:surface1)";
+              Amazon = "[](fg:peach bg:surface1)";
+              Android = "[](fg:green bg:surface1)";
+              Arch = "[󰣇](fg:sapphire bg:surface1)";
+              Artix = "[](fg:sapphire bg:surface1)";
+              CentOS = "[](fg:mauve bg:surface1)";
+              Debian = "[](fg:red bg:surface1)";
+              DragonFly = "[](fg:teal bg:surface1)";
+              EndeavourOS = "[](fg:mauve bg:surface1)";
+              Fedora = "[](fg:blue bg:surface1)";
+              FreeBSD = "[](fg:red bg:surface1)";
+              Garuda = "[](fg:sapphire bg:surface1)";
+              Gentoo = "[](fg:lavender bg:surface1)";
+              Illumos = "[](fg:peach bg:surface1)";
+              Kali = "[](fg:blue bg:surface1)";
+              Linux = "[](fg:yellow bg:surface1)";
+              Macos = "[](fg:text bg:surface1)";
+              Manjaro = "[](fg:green bg:surface1)";
+              Mint = "[󰣭](fg:teal bg:surface1)";
+              NixOS = "[](fg:sky bg:surface1)";
+              OpenBSD = "[](fg:yellow bg:surface1)";
+              openSUSE = "[](fg:green bg:surface1)";
+              Pop = "[](fg:sapphire bg:surface1)";
+              Raspbian = "[](fg:maroon bg:surface1)";
+              Redhat = "[](fg:red bg:surface1)";
+              RedHatEnterprise = "[](fg:red bg:surface1)";
+              RockyLinux = "[](fg:green bg:surface1)";
+              Solus = "[](fg:blue bg:surface1)";
+              SUSE = "[](fg:green bg:surface1)";
+              Ubuntu = "[](fg:peach bg:surface1)";
+              Unknown = "[](fg:text bg:surface1)";
+              Void = "[](fg:green bg:surface1)";
+              Windows = "[󰖳](fg:sky bg:surface1)";
+            };
           };
           username = {
             aliases = {
