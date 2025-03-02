@@ -2,10 +2,10 @@
 let
   inherit (lib) mkOption mkDefault mkIf types getExe;
   inherit (lib.types) bool;
-  cfg = config.programs.terminal.console.bash;
+  cfg = config.programs.terminal.shell.bash;
 in
 {
-  options.programs.terminal.console.bash = {
+  options.programs.terminal.shell.bash = {
     enable = mkOption {
       default = false;
       type = bool;
@@ -13,8 +13,8 @@ in
   };
 
   config = mkIf cfg.enable {
-    programs.terminal.console.starship.enable = mkDefault true;
     programs = {
+      terminal.console.starship.enable = mkDefault true;
       bash = {
         enable = true;
         enableCompletion = true;

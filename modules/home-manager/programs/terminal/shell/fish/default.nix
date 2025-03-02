@@ -1,12 +1,12 @@
 { lib, config, ... }:
 let
   inherit (lib) mkOption types mkIf;
-  cfg = config.programs.terminal.console.fish;
+  cfg = config.programs.terminal.shell.fish;
 in
 {
 
   options = {
-    programs.terminal.console.fish = {
+    programs.terminal.shell.fish = {
       enable = mkOption {
         default = false;
         type = types.bool;
