@@ -1,8 +1,4 @@
-{ writeShellApplication
-, uutils-coreutils-noprefix
-, which
-,
-}:
+{ writeShellApplication, uutils-coreutils-noprefix, which, }:
 writeShellApplication {
   name = "whereis-nix";
 
