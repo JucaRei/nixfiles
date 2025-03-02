@@ -1,0 +1,91 @@
+{ isInstall, lib, pkgs, config, isOtherOS, ... }:
+let
+  inherit (lib) mkIf mkOption types optionals;
+  cfg = config.system.fonts;
+  systems = if (isOtherOS) then true else false;
+in
+{
+  options.system.fonts = {
+    enable = mkOption {
+      default = true;
+      type = types.bool;
+    };
+  };
+
+  config = mkIf cfg.enable {
+    # https://yildiz.dev/posts/packing-custom-fonts-for-nixos/
+    home = {
+      packages = with pkgs; [
+        # (nerdfonts.override {
+        #   fonts = [
+        #     "FiraCode"
+        #     "NerdFontsSymbolsOnly"
+        #   ];
+        # })
+        font-search # show existent fonts
+        # font-awesome
+        # liberation_ttf
+        noto-fonts-emoji
+        # noto-fonts-monochrome-emoji
+        # source-serif
+        # symbola
+        # work-sans
+      ] ++ optionals systems [
+        (nerdfonts.override {
+          fonts = [
+            "FiraCode"
+            "NerdFontsSymbolsOnly"
+          ];
+        })
+        merriweather
+        lato
+        fira
+        font-awesome
+      ]
+      ++ optionals isInstall [
+        # bebas-neue-2014-font
+        # bebas-neue-pro-font
+        # bebas-neue-rounded-font
+        # bebas-neue-semi-rounded-font
+        # boycott-font
+        # commodore-64-pixelized-font
+        # digital-7-font
+        # dirty-ego-font
+        # fixedsys-core-font
+        # fixedsys-excelsior-font
+        # impact-label-font
+        # mocha-mattari-font
+        # poppins-font
+        # ubuntu_font_family
+      ]
+      ;
+    };
+    fonts.fontconfig = {
+      enable = true;
+      defaultFonts = {
+        serif = [
+          # "Source Serif"
+          # "Noto Color Emoji"
+          "Merriweather"
+        ];
+        sansSerif = [
+          "Lato"
+          # "Work Sans"
+          # "Fira Sans"
+          # "Noto Color Emoji"
+        ];
+        monospace = [
+          "Merriweather"
+          "FiraCode Nerd Font Mono"
+          # "Font Awesome 6 Free"
+          # "Font Awesome 6 Brands"
+          # "Symbola"
+          # "Noto Emoji"
+        ];
+        emoji = [
+          "Noto Color Emoji"
+        ];
+      };
+    };
+  };
+}

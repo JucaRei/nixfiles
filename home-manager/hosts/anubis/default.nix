@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, inputs, ... }: {
   imports = [ ../../_mixins/services/podman ];
   config = {
     features.nonNixOs = {
@@ -12,5 +12,7 @@
       packages = with pkgs; [
       ];
     };
+
+    # nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
   };
 }

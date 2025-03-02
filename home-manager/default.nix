@@ -1,11 +1,9 @@
 { config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, system, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional optionals mkIf mkOverride mkDefault;
+  inherit (lib) optional optionals mapAttrsToList mkIf mkOverride mkDefault;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
   checkVer = if isNixos then false else true;
-
-  flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
 in
 {
   imports = with inputs; [
@@ -86,6 +84,7 @@ in
   nixpkgs = {
     overlays = [
       inputs.nixgl.overlay # for non-nixos linux system's
+      inputs.nur.overlays.default
 
       # Add overlays your own flake exports (from overlays and pkgs dir):
       outputs.overlays.additions
@@ -102,29 +101,35 @@ in
   };
 
 
-  nix = {
-    package = mkDefault pkgs.nixVersions.latest;
+  nix =
+    let
+      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+    in
+    {
+      package = mkDefault pkgs.nixVersions.latest;
 
-    settings = {
-      experimental-features = "flakes nix-command";
-      trusted-users = [ "root" "${username}" ];
-      allowed-users = [ "root" "${username}" ];
-      warn-dirty = false;
-      allow-dirty = true;
+      settings = {
+        experimental-features = "flakes nix-command";
+        trusted-users = [ "root" "${username}" "@wheel" ];
+        allowed-users = [ "root" "${username}" "@whell" ];
+        warn-dirty = false;
+        allow-dirty = true;
+      };
+
+      extraOptions = ''
+        # Free up to 1GiB whenever there is less than 100MiB left.
+        # min-free = ${toString (100 * 1024 * 1024)}
+        # max-free = ${toString (1024 * 1024 * 1024)}
+        # Free up to 2GiB whenever there is less than 1GiB left.
+        min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
+        max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 3 GiB
+      ''
+      + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
+        extra-platforms = x86_64-darwin
+      '';
+
+      nixPath = mkIf isOtherOS (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
     };
-
-    extraOptions = ''
-      # Free up to 1GiB whenever there is less than 100MiB left.
-      # min-free = ${toString (100 * 1024 * 1024)}
-      # max-free = ${toString (1024 * 1024 * 1024)}
-      # Free up to 2GiB whenever there is less than 1GiB left.
-      min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
-      max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 3 GiB
-    ''
-    + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
-      extra-platforms = x86_64-darwin
-    '';
-  };
 
   console = {
     bat.enable = true;

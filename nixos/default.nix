@@ -101,7 +101,8 @@ in
           # Disable global registry
           flake-registry = "";
           # Workaround for https://github.com/NixOS/nix/issues/9574
-          nix-path = mkOverride 1500 config.nix.nixPath;
+          # nix-path = mkOverride 1500 config.nix.nixPath;
+          nix-path = mkOptionDefault config.nix.nixPath;
           trusted-users = [ "root" "${username}" ];
         };
         extraOptions = ''
