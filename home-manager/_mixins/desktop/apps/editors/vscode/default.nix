@@ -2,7 +2,7 @@
 let
   # installFor = [ "juca" ];
   # inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkIf mkEnableOption;
+  inherit (lib) mkIf mkEnableOption mkOptionDefault;
   nixgl = import ../../../../../../lib/nixGL.nix { inherit config pkgs; };
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
   cfg = config.desktop.apps.editors.vscode;
@@ -76,7 +76,7 @@ in
       };
 
       activation = {
-        beforeCheckLinkTargets = {
+        beforeCheckLinkTargets = mkOptionDefault {
           after = [ ];
           before = [ "checkLinkTargets" ];
           data = ''

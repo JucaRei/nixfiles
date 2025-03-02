@@ -1,7 +1,7 @@
 { config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, system, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional optionals mapAttrsToList mkIf mkOverride mkDefault;
+  inherit (lib) optional optionals mapAttrsToList mkIf mkOverride mkDefault mkOptionDefault;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
   checkVer = if isNixos then false else true;
 in
@@ -54,6 +54,7 @@ in
       with pkgs; [
         fd # Modern Unix `find`
         netdiscover # Modern Unix `arp`
+        whereis-nix # nix store path
       ]
       ++ optionals (isOtherOS) [
         pciutils # Terminal PCI info
@@ -61,7 +62,7 @@ in
         usbutils # Terminal USB info
       ];
 
-    sessionVariables = {
+    sessionVariables = mkOptionDefault {
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
       FLAKE = "${config.home.homeDirectory}/.dotfiles/nixfiles";

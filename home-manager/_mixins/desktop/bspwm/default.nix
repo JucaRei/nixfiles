@@ -163,9 +163,7 @@ in
     };
 
     home = {
-      sessionPath = [
-        
-      ];
+      sessionPath = [ ];
     };
     systemd.user = {
       targets.bspwm-session = {

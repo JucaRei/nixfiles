@@ -213,7 +213,8 @@ in
           tree = "${getExe pkgs.tree} -Cs"; # -colorized - sorted
 
           # Nix
-          store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
+          # store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
+
 
           nb = "${pkgs.nix}/bin/nix build --no-link --print-out-paths";
 

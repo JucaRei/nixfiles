@@ -80,4 +80,5 @@ pkgs: {
 
   # Scripts
   font-search = pkgs.callPackage ./fonts/font-search { };
+  whereis-nix = pkgs.callPackage ./tools/whereis-nix { };
 }

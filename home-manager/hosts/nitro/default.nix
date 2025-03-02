@@ -25,23 +25,23 @@ in
     fish.enable = true;
   };
 
-  # desktop.apps = {
-  #   editors = {
-  #     vscode = {
-  #       enable = false;
-  #     };
-  #   };
-  # video = {
-  #   mpv = { enable = false; };
-  # };
-  # browser = {
-  #   chrome-based-browser = {
-  #     enable = false;
-  #     browser = "opera";
-  #     disableWayland = true;
-  #   };
-  # };
-  # };
+  desktop.apps = {
+    editors = {
+      vscode = {
+        enable = true;
+      };
+    };
+    # video = {
+    #   mpv = { enable = false; };
+    # };
+    # browser = {
+    #   chrome-based-browser = {
+    #     enable = false;
+    #     browser = "opera";
+    #     disableWayland = true;
+    #   };
+    # };
+  };
 
   services = {
     flatpak = {

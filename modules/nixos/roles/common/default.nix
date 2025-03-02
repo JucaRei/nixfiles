@@ -78,16 +78,10 @@ in
         micro
       ];
 
-      variables = {
-        EDITOR = "micro";
-        SYSTEMD_EDITOR = "micro";
-        VISUAL = "micro";
-      };
-
       shellAliases = {
         nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
-        store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
         keyring-lock = "${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked";
+        # store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
       };
 
       systemPackages = with pkgs; [

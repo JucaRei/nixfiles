@@ -110,7 +110,7 @@ in
         compsize
         gparted
         lm_sensors
-        vscode-fhs
+        # vscode-fhs
 
         obsidian
         vlc
