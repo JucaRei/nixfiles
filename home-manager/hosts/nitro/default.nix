@@ -11,7 +11,7 @@ in
     remmina
     nixpkgs-fmt
     unstable.spotube
-    heynote
+    # heynote
   ];
 
   console = {
