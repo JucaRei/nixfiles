@@ -21,7 +21,7 @@ in
     ../modules/nixos/system
     ../modules/nixos/roles
     ../modules/nixos/hardware
-  ] ++ optional isWorkstation ../modules/nixos/programs/graphical/desktop/environment;
+  ] ++ optional isWorkstation ../modules/nixos/programs/graphical/desktop;
 
   config = {
 

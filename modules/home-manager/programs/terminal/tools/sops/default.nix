@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, username, ... }:
 let
   inherit (lib) mkOption mkIf mdDoc;
   inherit (lib.types) bool;
@@ -49,6 +49,14 @@ in
         # ssh_semaphore_key.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore";
         # ssh_semaphore_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore.pub";
         # transifex.path = "${config.home.homeDirectory}/.transifexrc";
+      };
+    };
+    systemd.user = {
+      # Create age keys directory for SOPS
+      tmpfiles = {
+        rules = [
+          "d ${config.home.homeDirectory}/.config/sops/age 0755 ${username} users - -"
+        ];
       };
     };
   };

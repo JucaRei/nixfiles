@@ -1,4 +1,13 @@
-{ ... }: {
+{ config, lib, pkgs, username, stateVersion, isLima, ... }:
+let
+  inherit (lib) mkOptionDefault mkForce;
+in
+{
+  catppuccin = {
+    accent = "blue";
+    flavor = "mocha";
+  };
+
   programs = {
     home-manager = {
       enable = true;

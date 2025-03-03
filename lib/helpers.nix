@@ -87,7 +87,7 @@
             home-manager = {
               useGlobalPkgs = false; # use packages that are installed in the system level
               useUserPackages = true; # Packages will be installed to /etc/profiles, not $HOME/.nix-profile
-              backupFileExtension = "hm-backup";
+              backupFileExtension = "home-manager.backup";
 
               users.${username} = import ../home-manager;
 
