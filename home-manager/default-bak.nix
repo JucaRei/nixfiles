@@ -27,7 +27,7 @@ in
   # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
   ++ optional (builtins.pathExists (./. + "/hosts")) ./hosts
   ++ optional (builtins.pathExists (./. + "/users")) ./users
-  ++ optional isWorkstation ../modules/home-manager/programs/graphical/desktop/environment
+  ++ optional isWorkstation ../modules/home-manager/programs/graphical/desktop
   ;
 
   # Workaround home-manager bug with flakes

@@ -3,20 +3,16 @@ let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkForce optional mkIf mkDefault;
 
-  is_X11 = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
+  # is_X11 = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
+  backend = config.programs.graphical.desktop.backend;
+
 in
 {
   # import the DE specific configuration and any user specific desktop configuration
-  imports = [
-    # ./apps
-    # ./features
-  ]
-  ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
-    # ++ optional (builtins.pathExists (./. + "/${desktop}/${username}/default.nix")) ./${desktop}/${username}
-  ;
+  imports = [ ../../apps ]
+    ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
-    # Authrorize X11 access in Distrobox
     home = {
       sessionPath = [
         "$HOME/.local/bin"
@@ -54,21 +50,19 @@ in
       chrome-based-browser = mkDefault {
         enable = false;
         browser = "brave";
-        disableWayland = is_X11;
+        # disableWayland = is_X11;
+        disableWayland = if backend == "wayland" then true else false;
       };
 
       firefox-based-browser = mkDefault {
         enable = true;
         browser = "firefox";
-        disableWayland = is_X11;
+        # disableWayland = is_X11;
+        disableWayland = if backend == "wayland" then true else false;
       };
     };
 
-    # features.mime.defaultApps = {
-    #   enable = true;
-    # };
-
     # https://nixos.wiki/wiki/Bluetooth#Using_Bluetooth_headsets_with_PulseAudio
-    services.mpris-proxy.enable = isLinux;
+    services.mpris-proxy.enable = true;
   };
 }
