@@ -1,6 +1,6 @@
 { pkgs, lib, ... }:
 let
-  inherit (lib) mkOptionDefault;
+  inherit (lib) mkOptionDefault mkForce;
 in
 {
   home.packages = with pkgs ; [
@@ -10,19 +10,21 @@ in
     deluge-gtk
     remmina
     nixpkgs-fmt
-    unstable.spotube
+    oldstable.spotube
     # heynote
   ];
 
   console = {
     aliases.enable = true;
-    lsd.enable = true;
+    lsd.enable = mkForce false;
+    eza.enable = true;
     yt-dlp-custom.enable = true;
     aria2.enable = true;
     fastfetch.enable = true;
     fzf.enable = false;
-    skim.enable = true;
+    skim.enable = false;
     fish.enable = true;
+    dircolors.enable = true;
   };
 
   desktop.apps = {

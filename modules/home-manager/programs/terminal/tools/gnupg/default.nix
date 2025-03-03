@@ -1,16 +1,16 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (lib) mkOption mkDefault mkIf;
+  inherit (lib) mkOption mkDefault mkIf mdDoc;
   inherit (lib.types) bool;
-  cfg = config.programs.terminal.console.gnupg;
+  cfg = config.programs.terminal.tools.gnupg;
 in
 {
   options = {
-    programs.terminal.console.gnupg = {
+    programs.terminal.tools.gnupg = {
       enable = mkOption {
         type = bool;
         default = false;
-        description = "Enable GnuPG support.";
+        description = mdDoc "Enable GnuPG support.";
       };
     };
   };

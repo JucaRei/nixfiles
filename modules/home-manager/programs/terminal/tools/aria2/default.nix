@@ -1,11 +1,11 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) mkOption mkIf mkForce types;
-  cfg = config.programs.terminal.console.aria2;
+  cfg = config.programs.terminal.tools.aria2;
   configDownloads = config.home.homeDirectory + "/Downloads";
 in
 {
-  options.programs.terminal.console.aria2 = {
+  options.programs.terminal.tools.aria2 = {
     enable = mkOption {
       default = false;
       type = types.bool;

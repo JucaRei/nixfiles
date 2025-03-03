@@ -28,7 +28,7 @@ in
         la = "eza --icons -l --time-style long-iso -a";
         ll = "eza --icons -l";
         lla = "eza --icons -la";
-        tree = "eza --icons --tree -l";
+        # tree = "eza --icons --tree -l";
       };
     };
   };

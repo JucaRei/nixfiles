@@ -16,6 +16,8 @@ in
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableZshIntegration = true;
+      # extraConfig = builtins.readFile ./LS_COLORS_catppuccin;
+      extraConfig = builtins.readFile ./LS_COLORS_solarized-dark;
     };
   };
 }

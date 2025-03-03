@@ -2,7 +2,7 @@
 let
   # installFor = [ "juca" ];
   # inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkIf mkEnableOption mkOptionDefault;
+  inherit (lib) mkForce mkIf mkEnableOption mkOptionDefault;
   nixgl = import ../../../../../../lib/nixGL.nix { inherit config pkgs; };
   isGeneric = if (config.targets.genericLinux.enable) then true else false;
   cfg = config.desktop.apps.editors.vscode;
@@ -10,7 +10,6 @@ let
   settings-directory = if pkgs.stdenv.hostPlatform.isDarwin then "$HOME/Library/Application Support/Code/User" else "$HOME/.config/Code/User";
   extensions = import ./extensions.nix { inherit pkgs; };
   defaultExtensions = { "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueId) extensions; };
-  # userSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // defaultExtensions;
   userSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // defaultExtensions;
   keybindings = builtins.fromJSON (builtins.readFile ./keybindings.json);
 in
@@ -76,7 +75,7 @@ in
       };
 
       activation = {
-        beforeCheckLinkTargets = mkOptionDefault {
+        beforeCheckLinkTargets = mkForce {
           after = [ ];
           before = [ "checkLinkTargets" ];
           data = ''
@@ -89,7 +88,7 @@ in
           '';
         };
 
-        afterWriteBoundary = {
+        afterWriteBoundary = mkForce {
           after = [ "writeBoundary" ];
           before = [ ];
           data = ''

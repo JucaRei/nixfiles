@@ -181,18 +181,18 @@
     "window.titleBarStyle": "custom",
     "window.zoomLevel": 0.3,
     "workbench.colorTheme": "RedCrafter07 Theme",
+    "workbench.preferredDarkColorTheme": "RedCrafter07 Theme",
     "workbench.editor.labelFormat": "short",
     "workbench.enableExperiments": true,
     "workbench.iconTheme": "Mihale",
-    "workbench.preferredDarkColorTheme": "Codeify dark matter",
     "workbench.productIconTheme": "macos-modern",
     "workbench.settings.editor": "ui",
     "workbench.settings.enableNaturalLanguageSearch": true,
     "workbench.tree.indent": 4,
     "zenMode.hideLineNumbers": false,
     "_old_theme": {
-        "_workbench.colorTheme": "RedCrafter07 Theme",
-        "_workbench.preferredDarkColorTheme": "RedCrafter07 Theme",
+        "_workbench.colorTheme": "Codeify dark matter",
+        "_workbench.preferredDarkColorTheme": "Codeify dark matter",
         "_workbench.colorCustomizations": {
             "_[RedCrafter07 Theme]": {
                 "_breadcrumb.background": "#31368b",

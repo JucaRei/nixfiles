@@ -38,7 +38,7 @@ let
     oderwat.indent-rainbow
     davidanson.vscode-markdownlint
     # evan-buss.font-switcher
-    github.vscode-github-actions
+    # github.vscode-github-actions
     # ms-python.python
     # esbenp.prettier-vscode
     # sumneko.lua

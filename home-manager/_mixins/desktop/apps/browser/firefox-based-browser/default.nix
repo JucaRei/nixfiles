@@ -1,6 +1,6 @@
 { pkgs, config, lib, username, osConfig, ... }:
 let
-  inherit (lib) mkOption mkIf types;
+  inherit (lib) mkOption mkIf mkForce types;
   cfg = config.desktop.apps.browser.firefox-based-browser;
   # inherit (pkgs.nur.repos.rycee) firefox-addons;
 
@@ -102,7 +102,7 @@ in
           backup-path = "/home/${username}/.mozilla/firefox/default";
         in
         {
-          beforeCheckLinkTargets = mkIf (cfg.browser == "firefox-esr" || cfg.browser == "firefox" || cfg.browser == "firefox-devedition") {
+          beforeCheckLinkTargets = mkIf (mkForce (cfg.browser == "firefox-esr" || cfg.browser == "firefox" || cfg.browser == "firefox-devedition") {
             after = [ ];
             before = [ "checkLinkTargets" ];
             data = ''
@@ -110,7 +110,7 @@ in
                 rm "${backup-path}/search.json.mozlz4.hm-backup"
               fi
             '';
-          };
+          });
         };
     };
   };

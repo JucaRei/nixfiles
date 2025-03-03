@@ -2,10 +2,10 @@
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
-  cfg = config.programs.terminal.console.ssh;
+  cfg = config.programs.terminal.tools.ssh;
 in
 {
-  options.programs.terminal.console.ssh = {
+  options.programs.terminal.tools.ssh = {
     enable = mkOption {
       default = false;
       type = bool;

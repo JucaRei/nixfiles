@@ -2,14 +2,14 @@
 let
   inherit (lib) mkOption mkIf mdDoc;
   inherit (lib.types) bool;
-  cfg = config.programs.terminal.console.yt-dlp-custom;
+  cfg = config.programs.terminal.tools.yt-dlp-custom;
 
   # mypython = with pkgs; python310;
   mypython = (pkgs.python310.withPackages (pythonPackages: with pythonPackages; [ ]));
 in
 {
   options = {
-    programs.terminal.console.yt-dlp-custom = {
+    programs.terminal.tools.yt-dlp-custom = {
       enable = mkOption {
         default = false;
         type = bool;
