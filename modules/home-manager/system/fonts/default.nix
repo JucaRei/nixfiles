@@ -69,14 +69,14 @@ in
           "Merriweather"
         ];
         sansSerif = [
+          "Work Sans"
           "Lato"
-          # "Work Sans"
           # "Fira Sans"
           # "Noto Color Emoji"
         ];
         monospace = [
-          "Merriweather"
           "FiraCode Nerd Font Mono"
+          # "Merriweather"
           # "Font Awesome 6 Free"
           # "Font Awesome 6 Brands"
           # "Symbola"

@@ -1,7 +1,7 @@
 { config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, system, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional optionals mapAttrsToList mkIf mkOverride mkDefault mkOptionDefault;
+  inherit (lib) optional optionals mapAttrsToList mkForce mkIf mkOverride mkDefault mkOptionDefault;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
   checkVer = if isNixos then false else true;
 in
@@ -65,7 +65,7 @@ in
     sessionVariables = mkOptionDefault {
       NIXPKGS_ALLOW_UNFREE = "1";
       NIXPKGS_ALLOW_INSECURE = "1";
-      FLAKE = "${config.home.homeDirectory}/.dotfiles/nixfiles";
+      FLAKE = mkForce "/home/${username}/.dotfiles/nixfiles";
       EDITOR = "micro";
 
       MICRO_TRUECOLOR = "1";

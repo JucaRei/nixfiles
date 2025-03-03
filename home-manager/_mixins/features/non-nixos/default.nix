@@ -25,8 +25,10 @@ in
           # Add Packages To System Menu by updating database
           after = [ "writeBoundary" "createXdgUserDirectories" ];
           before = [ ];
+
+          data = "${pkgs.desktop-file-utils}/bin/update-desktop-database";
           # data = ''sudo env "PATH=$PATH" /usr/bin/update-desktop-database'';
-          data = ''sudo -u ${username} /usr/bin/update-desktop-database'';
+          # data = ''sudo -u ${username} /usr/bin/update-desktop-database'';
         };
       };
       sessionPath = [ "$HOME/.local/bin" ];
