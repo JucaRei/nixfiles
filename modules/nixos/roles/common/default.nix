@@ -5,6 +5,10 @@ let
   cfg = config.roles.common;
 in
 {
+  imports = [
+    ../../hardware
+    ../../system
+  ];
   options = {
     roles.common = {
       enable = mkOption {
@@ -15,7 +19,7 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf cfg.enable {  
     system = {
       boot = {
         enable = isInstall;

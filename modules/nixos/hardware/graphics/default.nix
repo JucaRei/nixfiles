@@ -10,9 +10,6 @@ in
     ./cards/nvidia-legacy
     ./cards/intel
     ./cards/opengl
-
-    # ./backend/wayland
-    # ./backend/x11
   ];
 
   options.hardware.graphics.cards = {

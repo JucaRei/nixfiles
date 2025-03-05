@@ -5,6 +5,9 @@ let
   cfg = config.roles.workstation;
 in
 {
+  imports = [
+    ../../programs/graphical
+  ];
   options = {
     roles.workstation = {
       enable = mkOption {

@@ -19,12 +19,12 @@ in
     chaotic.homeManagerModules.default
 
     ./_mixins/features
-    ../modules/home-manager
+    ../modules/home-manager/programs
+    ../modules/home-manager/roles
+    ../modules/home-manager/system
     ../resources/hm-configs/scripts
     ../resources/hm-configs/console
   ]
-  # ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
-  # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
   ++ optional (builtins.pathExists (./. + "/hosts")) ./hosts
   ++ optional (builtins.pathExists (./. + "/users")) ./users
   ++ optional isWorkstation ../modules/home-manager/programs/graphical/desktop
@@ -104,7 +104,7 @@ in
       package = mkDefault pkgs.nixVersions.latest;
 
       settings = {
-        experimental-features = "flakes nix-command";
+        experimental-features = "flakes nix-command ca-derivations";
         trusted-users = [ "root" "${username}" "@wheel" ];
         allowed-users = [ "root" "${username}" "@whell" ];
         warn-dirty = false;

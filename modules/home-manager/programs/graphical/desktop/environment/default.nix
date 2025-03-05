@@ -9,8 +9,7 @@ let
 in
 {
   # import the DE specific configuration and any user specific desktop configuration
-  imports = [ ../../apps ]
-    ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
+  imports = [ ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
 
   config = {
     home = {

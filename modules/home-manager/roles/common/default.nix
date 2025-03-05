@@ -3,6 +3,10 @@ let
   inherit (lib) mkOptionDefault mkForce;
 in
 {
+  imports = [
+    ../../programs
+    ../../system
+  ];
   catppuccin = {
     accent = "blue";
     flavor = "mocha";

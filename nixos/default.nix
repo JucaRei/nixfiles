@@ -18,12 +18,16 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
     ./users
-    ../modules/nixos/system
+    # ../modules/nixos/system
     ../modules/nixos/roles
-    ../modules/nixos/hardware
-  ] ++ optional isWorkstation ../modules/nixos/programs/graphical/desktop;
+    # ../modules/nixos/hardware
+  ] ++
+  optional isWorkstation ../modules/nixos/programs/graphical/desktop;
 
   config = {
+    roles.common = {
+      enable = true;
+    };
 
     nixpkgs = {
       # You can add overlays here
@@ -72,7 +76,7 @@ in
             "nix-command" # experimental nix commands
             # "repl-flake" # repl to inspect a flake
             # "recursive-nix" # let nix invoke itself
-            # "ca-derivations" # content addressed nix
+            "ca-derivations" # content addressed nix
             # "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
             # "configurable-impure-env" # allow impure environments
             # "git-hashing" # allow store objects which are hashed via Git's hashing algorithm
