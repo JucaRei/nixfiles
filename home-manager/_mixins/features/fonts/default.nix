@@ -65,9 +65,9 @@ in
       enable = true;
       defaultFonts = {
         serif = [
-          # "Source Serif"
+          "Source Serif"
           # "Noto Color Emoji"
-          "Merriweather"
+          # "Merriweather"
         ];
         sansSerif = [
           "Lato"
@@ -76,7 +76,7 @@ in
           # "Noto Color Emoji"
         ];
         monospace = [
-          "Merriweather"
+          # "Merriweather"
           "FiraCode Nerd Font Mono"
           # "Font Awesome 6 Free"
           # "Font Awesome 6 Brands"

@@ -1,8 +1,8 @@
-{ hostname, lib, pkgs, ... }:
+{ hostname, config, lib, pkgs, ... }:
 let
-  installOn = [
-    ""
-  ];
+  inherit (lib) mkOption mkIf mdDoc;
+  inherit (lib.types) bool;
+  cfg = config.system.scripts.music-volume;
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
     inherit name;
@@ -14,4 +14,17 @@ let
     text = builtins.readFile ./${name}.sh;
   };
 in
-lib.mkIf (builtins.elem hostname installOn) { home.packages = with pkgs; [ shellApplication ]; }
+{
+  options = {
+    system.scripts.music-volume = {
+      enable = mkOption {
+        type = bool;
+        default = false;
+        description = mdDoc "Enable's music-volume script.";
+      };
+    };
+  };
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [ shellApplication ];
+  };
+}

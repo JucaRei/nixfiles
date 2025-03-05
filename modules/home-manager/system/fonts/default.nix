@@ -37,7 +37,6 @@ in
             "NerdFontsSymbolsOnly"
           ];
         })
-        merriweather
         lato
         fira
         font-awesome
@@ -64,9 +63,9 @@ in
       enable = true;
       defaultFonts = {
         serif = [
-          # "Source Serif"
+          "Source Serif"
           # "Noto Color Emoji"
-          "Merriweather"
+          # "Merriweather"
         ];
         sansSerif = [
           "Work Sans"

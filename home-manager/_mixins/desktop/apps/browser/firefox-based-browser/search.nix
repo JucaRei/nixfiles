@@ -7,6 +7,8 @@
           template = "https://nixos.wiki/index.php?search={searchTerms}";
         }
       ];
+      iconUpdateURL = "https://nixos.wiki/favicon.png";
+      updateInterval = 24 * 60 * 60 * 1000;
       definedAliases = [ "@nw" ];
     };
 
@@ -79,13 +81,12 @@
       definedAliases = [ "@hm-docs" ];
     };
 
-    "Sourcegraph" =
-      {
-        urls = [{
-          template = "https://sourcegraph.com/search/?q=context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs%24+-repo:^github\.com/nix-community/home-manager%24+content:{searchTerms}";
-        }];
-        definedAliases = [ "@sc" ];
-      };
+    "Sourcegraph" = {
+      urls = [{
+        template = "https://sourcegraph.com/search/?q=context:global+lang:Nix+-repo:^github\.com/NixOS/nixpkgs%24+-repo:^github\.com/nix-community/home-manager%24+content:{searchTerms}";
+      }];
+      definedAliases = [ "@sc" ];
+    };
 
     "Brave" = {
       urls = [{
@@ -127,7 +128,9 @@
     };
 
     "GitHub" = {
-      urls = [{ template = "https://github.com/search?q={searchTerms}&type=code"; }];
+      urls = [{ template = "https://github.com/search?q={searchTerms}"; }];
+      iconUpdateURL = "https://github.com/fluidicon.png";
+      updateInterval = 7 * 24 * 60 * 60 * 1000;
       definedAliases = [ "@gh" ];
     };
 
@@ -137,8 +140,8 @@
   };
 
   order = [
-    "Google"
     "Bing"
+    "Google"
     "Brave"
     "DuckDuckGo"
     "Searx"

@@ -1,10 +1,8 @@
 { hostname, lib, pkgs, config, ... }:
 let
-  # installOn = [
-  #   ""
-  # ];
+
   inherit (lib) mkIf mkOption types;
-  cfg = config.scripts.get-cider-volume;
+  cfg = config.system.scripts.get-cider-volume;
 
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
@@ -24,7 +22,7 @@ in
 # lib.mkIf (builtins.elem hostname installOn) {
 {
   options = {
-    scripts.get-cider-volume = {
+    system.scripts.get-cider-volume = {
       enable = mkOption {
         default = false;
         type = types.bool;

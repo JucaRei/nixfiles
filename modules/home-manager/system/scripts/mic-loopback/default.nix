@@ -1,8 +1,8 @@
-{ hostname, lib, pkgs, ... }:
+{ config, hostname, lib, pkgs, ... }:
 let
-  installOn = [
-    ""
-  ];
+  inherit (lib) mkOption mkIf mdDoc;
+  inherit (lib.types) bool;
+  cfg = config.system.scripts.mic-loopback;
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
     inherit name;
@@ -17,4 +17,18 @@ let
     text = builtins.readFile ./${name}.sh;
   };
 in
-lib.mkIf (builtins.elem hostname installOn) { home.packages = with pkgs; [ shellApplication ]; }
+{
+
+  options = {
+    system.scripts.mic-loopback = {
+      enable = mkOption {
+        type = bool;
+        default = false;
+        description = mdDoc "Enable's mic-loopback script.";
+      };
+    };
+  };
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [ shellApplication ];
+  };
+}

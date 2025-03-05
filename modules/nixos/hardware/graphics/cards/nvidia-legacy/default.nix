@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs ? pkgs.oldstable, ... }:
 let
   inherit (lib) mkDefault mkIf mkForce;
   device = config.hardware.graphics.cards;

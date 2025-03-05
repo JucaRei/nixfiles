@@ -1,6 +1,8 @@
-{ lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
+  inherit (lib) mkOption mkIf;
   inherit (pkgs.stdenv) isLinux;
+  cfg = config.system.scripts.captive-portal;
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
     inherit name;
@@ -13,4 +15,17 @@ let
     text = builtins.readFile ./${name}.sh;
   };
 in
-lib.mkIf isLinux { home.packages = with pkgs; [ shellApplication ]; }
+{
+  options = {
+    system.scripts.captive-portal = {
+      enable = mkOption {
+        default = false;
+        type = lib.types.bool;
+        description = "enables captive-portal script.";
+      };
+    };
+  };
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [ shellApplication ];
+  };
+}

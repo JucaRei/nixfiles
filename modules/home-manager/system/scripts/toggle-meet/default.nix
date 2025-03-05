@@ -1,5 +1,8 @@
-{ lib, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 let
+  inherit (lib) mkOption mkIf mdDoc;
+  inherit (lib.types) bool;
+  cfg = config.system.scripts.toggle-meet;
   inherit (pkgs.stdenv) isLinux;
   name = builtins.baseNameOf (builtins.toString ./.);
   shellApplication = pkgs.writeShellApplication {
@@ -11,4 +14,17 @@ let
     text = builtins.readFile ./${name}.sh;
   };
 in
-lib.mkIf isLinux { home.packages = with pkgs; [ shellApplication ]; }
+{
+  options = {
+    system.scripts.toggle-meet = {
+      enable = mkOption {
+        type = bool;
+        default = false;
+        description = mdDoc "Enable's toggle-meet script.";
+      };
+    };
+  };
+  config = mkIf cfg.enable {
+    home.packages = with pkgs; [ shellApplication ];
+  };
+}
