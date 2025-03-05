@@ -105,7 +105,8 @@ in
     home = {
       packages = with pkgs; [
         # iosevka-comfy.comfy
-        merriweather
+        # merriweather
+        roboto
       ];
       sessionVariables = {
         DEFAULT_BROWSER = "${config.desktop.apps.browser.firefox-based-browser.browser}/share/applications/${config.desktop.apps.browser.firefox-based-browser.browser}.desktop";
@@ -128,7 +129,7 @@ in
             #     rm "${backup-path}/search.json.mozlz4.home-manager.backup"
             #   fi
             # '';
-              data = mkForce ''
+            data = mkForce ''
               if [ -f "${backup-path}/search.json.mozlz4" ]; then
                 rm "${backup-path}/search.json.mozlz4"
               fi

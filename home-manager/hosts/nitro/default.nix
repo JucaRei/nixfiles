@@ -3,6 +3,9 @@ let
   inherit (lib) mkOptionDefault mkForce;
 in
 {
+  imports = [
+    ../../_mixins/services/git
+  ];
   home.packages = with pkgs ; [
     # cloneit
     typora
@@ -25,6 +28,12 @@ in
     skim.enable = false;
     fish.enable = true;
     dircolors.enable = true;
+  };
+
+  custom.services.git = {
+    enable = true;
+    user = "Reinaldo";
+    email = "reinaldo800@gmail.com";
   };
 
   desktop.apps = {
