@@ -13,7 +13,7 @@ in
   config = mkIf cfg.enable {
     # Flatpak declarative
     services.flatpak = {
-      # enable = true;
+      enable = true;
       enableModule = mkForce true;
       target-dir = "${config.home.homeDirectory}/.local/share/flatpak";
       packages = [

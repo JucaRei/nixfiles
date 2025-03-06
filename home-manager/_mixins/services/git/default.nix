@@ -80,7 +80,7 @@ in
         ];
 
         lfs = {
-          enable = true;
+          enable = false;
           skipSmudge = false;
         };
 
@@ -180,10 +180,10 @@ in
           url = {
             # "ssh://git@github.com/" = { insteadOf = "https://github.com/"; };
             # "https://github.com/" = { insteadOf = [ "gh" "https://github.com/" ]; };
-            "ssh://git@github.com" = { insteadOf = [ "gh" "https://github.com/" ]; };
-            "https://gist.github.com/".insteadOf = [ "gist" ];
-            "ssh://git@bitbucket.org" = { insteadOf = [ "bb" "https://bitbucket.org" ]; };
-            "ssh://git@git.sr.ht/".insteadOf = [ "sh" "https://git.sr.ht/" ];
+            "ssh://git@github.com" = { insteadOf = [ "gh:" "https://github.com/" ]; };
+            "https://gist.github.com/".insteadOf = [ "gist:" ];
+            "ssh://git@bitbucket.org" = { insteadOf = [ "bb:" "https://bitbucket.org" ]; };
+            "ssh://git@git.sr.ht/".insteadOf = [ "sh:" "https://git.sr.ht/" ];
           };
         };
 
