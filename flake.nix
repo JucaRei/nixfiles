@@ -136,6 +136,7 @@
           # Servers
           # VMs
           "juca@qemu" = helper.mkHome { hostname = "qemu"; desktop = "bspwm"; };
+          "juca@soyoz-vm" = helper.mkHome { hostname = "soyoz-vm"; desktop = "gnome"; };
           "juca@minimech" = helper.mkHome { hostname = "minimech"; };
           "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "kde"; };
           # Apple
@@ -170,7 +171,7 @@
           revan = helper.mkNixos { hostname = "revan"; };
 
           # VMs
-          soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = null; };
+          soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = "gnome"; };
           scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "kde"; };
         };
 

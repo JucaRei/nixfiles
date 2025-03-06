@@ -7,17 +7,26 @@ in
     ../../programs
     ../../system
   ];
+
   catppuccin = {
     accent = "blue";
     flavor = "mocha";
   };
 
   programs = {
+
     home-manager = {
       enable = true;
     };
+
     nix-index = {
       enable = true;
+    };
+
+    terminal = {
+      shell = {
+        bash.enable = true;
+      };
     };
   };
 

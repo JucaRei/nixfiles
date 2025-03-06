@@ -6,7 +6,7 @@ in
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks.nix { })
-    (import ./disks-bcachefs.nix { })
+    (import ./disks-btrfs.nix { })
     # ./filesystem.nix
   ];
 
@@ -22,12 +22,29 @@ in
         "sr_mod"
         "sd_mod"
       ];
-      supportedFilesystems.bcachefs = mkForce true;
+
+      loader = {
+        grub = {
+          efiInstallAsRemovable = mkForce true;
+        };
+        efi = {
+          efiSysMountPoint = mkForce "/boot";
+          canTouchEfiVariables = mkForce false;
+        };
+      };
+      # supportedFilesystems.bcachefs = mkForce true;
     };
 
-    features = {
-      bcachefs.enable = true;
-      # zram.enable = mkForce true;
+    system.services.zram = {
+      enable = true;
     };
+
+    nixpkgs = {
+      hostPlatform = "x86_64-linux";
+    };
+
+    # features = {
+    # bcachefs.enable = true;
+    # };
   };
 }
