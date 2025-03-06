@@ -14,11 +14,13 @@ in
   config = mkIf cfg.enable {
 
     i18n = {
-      defaultLocale = "en_US.utf8";
+      defaultLocale = "en_US.UTF-8";
       extraLocaleSettings = {
-        #LC_CTYPE =  "pt_BR.UTF-8"; # Fix ç in us-intl.
+        LANG = "en_US.UTF-8";
+        LC_CTYPE = "pt_BR.UTF-8"; # Fix ç in us-intl.
         LC_ADDRESS = "pt_BR.UTF-8";
-        LC_IDENTIFICATION = "pt_BR.UTF-8";
+        # LC_IDENTIFICATION = "pt_BR.UTF-8";
+        LC_IDENTIFICATION = "en_US.UTF-8";
         LC_MEASUREMENT = "pt_BR.UTF-8";
         LC_MONETARY = "pt_BR.UTF-8";
         LC_NAME = "pt_BR.UTF-8";
@@ -39,5 +41,9 @@ in
     #     LOCALE_ARCHIVE = "/run/current-system/sw/lib/locale/locale-archive";
     #   };
     # };
+
+    systemd.tmpfiles.rules = [
+      "L /usr/lib/locale/locale-archive - - - - /run/current-system/sw/lib/locale/locale-archive"
+    ];
   };
 }

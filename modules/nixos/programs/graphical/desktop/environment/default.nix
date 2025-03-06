@@ -1,6 +1,6 @@
 { config, lib, pkgs, desktop, ... }:
 let
-  inherit (lib) optional mkOptionDefault;
+  inherit (lib) optional mkOptionDefault mkDefault;
 in
 {
   imports = [
@@ -38,7 +38,7 @@ in
     programs = {
       graphical = {
         apps = {
-          _1password.enable = true;
+          _1password.enable = mkDefault true;
         };
       };
     };

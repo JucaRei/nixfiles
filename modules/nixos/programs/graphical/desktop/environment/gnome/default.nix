@@ -6,17 +6,20 @@ in
 {
   config = {
 
-    desktop = {
-      features = {
+    system = {
+      services = {
         flatpak-appcenter.enable = true;
       };
-      apps = {
-        celluloid.enable = false;
-      };
+
     };
 
-    programs.graphical.desktop = {
-      backend = isWayland;
+    programs.graphical = {
+      apps = {
+        _1password.enable = false;
+      };
+      desktop = {
+        backend = isWayland;
+      };
     };
 
 

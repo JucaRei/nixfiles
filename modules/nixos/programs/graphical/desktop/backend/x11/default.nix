@@ -54,6 +54,12 @@ in
         };
 
         xkb =
+          # mkIf (hostname == "nitro" || hostname == "scrubber") {
+          #   layout = "br";
+          #   variant = "abnt2";
+          #   model = "pc105";
+          # };
+
           if (hostname == "nitro") || (hostname == "scrubber") then {
             layout = "br";
             variant = "abnt2";
@@ -61,7 +67,7 @@ in
           }
           else {
             layout = "us";
-            variant = "mac";
+            variant = "mac,";
             model = "pc104";
           };
       };

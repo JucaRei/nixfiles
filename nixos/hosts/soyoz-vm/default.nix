@@ -6,7 +6,8 @@ in
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
     # (import ./disks.nix { })
-    (import ./disks-btrfs.nix { })
+    # (import ./disks-btrfs.nix { })
+    (import ./disks-xfs.nix { })
     # ./filesystem.nix
   ];
 
@@ -25,18 +26,24 @@ in
 
       loader = {
         grub = {
-          efiInstallAsRemovable = mkForce true;
+          device = mkForce "/dev/vda";
+          # efiInstallAsRemovable = mkForce true;
         };
-        efi = {
-          efiSysMountPoint = mkForce "/boot";
-          canTouchEfiVariables = mkForce false;
-        };
+        # efi = {
+        #   efiSysMountPoint = mkForce "/boot";
+        #   canTouchEfiVariables = mkForce false;
+        # };
       };
       # supportedFilesystems.bcachefs = mkForce true;
     };
 
-    system.services.zram = {
-      enable = true;
+    system = {
+      boot = {
+        boottype = mkForce "legacy";
+      };
+      services.zram = {
+        enable = true;
+      };
     };
 
     nixpkgs = {

@@ -1,6 +1,6 @@
 { config, isInstall, lib, pkgs, ... }:
 let
-  inherit (lib) mkIf mkOption types;
+  inherit (lib) mkIf mkOption mkForce;
   inherit (lib.types) bool;
   cfg = config.system.fonts;
 in
@@ -26,7 +26,10 @@ in
     fonts = {
       # Enable a basic set of fonts providing several font styles and families and reasonable coverage of Unicode.
       enableDefaultPackages = false;
-      # fontDir.enable = true;
+      fontDir = {
+        enable = mkForce false;
+        # decompressFonts = false;
+      };
       packages =
         with pkgs; [
           (nerdfonts.override {
@@ -106,8 +109,8 @@ in
         };
       };
     };
-    nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-      "mocha_mattari"
-    ];
+    # nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    #   "mocha_mattari"
+    # ];
   };
 }

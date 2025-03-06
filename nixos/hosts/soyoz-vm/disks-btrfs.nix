@@ -1,60 +1,89 @@
-_:
+{ disks ? [
+    # "/dev/mmcblk1"
+    "/dev/vda"
+  ]
+, ...
+}:
 let
-  device = "/dev/vda";
-  # device = "/dev/sda";
-
   defaultBtrfsOpts = [
     "noatime"
     "nodiratime"
     "nodatacow"
     "ssd"
-    "compress-force=zstd:5"
+    "compress-force=zstd:15"
+    "space_cache=v2"
+    "commit=120"
+    "discard=async"
+  ];
+
+  defaultBtrfsOpts2 = [
+    "noatime"
+    "nodiratime"
+    "nodatacow"
+    "ssd"
+    "compress-force=zstd:3"
     "space_cache=v2"
     "commit=120"
     "discard=async"
   ];
 in
 {
+  # required by impermanence
+  # fileSystems."/persistent".neededForBoot = true;
+
   disko.devices = {
     disk = {
-      ${baseNameOf device} = {
-        inherit device;
+      mmcblk1 = {
         type = "disk";
+        device = builtins.elemAt disks 0;
         content = {
           type = "gpt";
           partitions = {
             ESP = {
-              end = "500M";
+              name = "BOOT";
+              label = "ESP";
+              start = "0%";
+              end = "100M";
               type = "EF00";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "defaults" "noatime" "umask=0077" ];
+                mountOptions = [
+                  "defaults"
+                  "umask=0077"
+                ];
               };
             };
             root = {
-              name = "Nixos";
-              end = "100%";
+              name = "NixOS";
+              size = "100%";
               content = {
-                extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
                 type = "btrfs";
+                extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
+                # Subvolumes must set a mountpoint in order to be mounted,
+                # unless their parent is mounted
                 subvolumes = {
+                  # Subvolume name is different from mountpoint
                   "@" = {
                     mountpoint = "/";
-                    mountOptions = defaultBtrfsOpts;
+                    mountOptions = defaultBtrfsOpts2;
                   };
+                  # Subvolume name is the same as the mountpoint
                   "@home" = {
                     mountpoint = "/home";
                     mountOptions = defaultBtrfsOpts;
                   };
+                  # Sub(sub)volume doesn't need a mountpoint as its parent is mounted
+                  # "@home/user" = { };
+                  # Parent is not mounted so the mountpoint must be set
                   "@nix" = {
                     mountpoint = "/nix";
                     mountOptions = defaultBtrfsOpts;
                   };
                   "@var" = {
                     mountpoint = "/var";
-                    mountOptions = defaultBtrfsOpts;
+                    mountOptions = defaultBtrfsOpts2;
                   };
                   "@snapshots" = {
                     mountpoint = "/.snapshots";
@@ -68,10 +97,4 @@ in
       };
     };
   };
-
-
 }
-
-# sudo mkswap /dev/vda3
-# sudo swapon /dev/vda3
-# sudo mount -o remount,size=20G /

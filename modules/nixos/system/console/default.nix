@@ -1,4 +1,4 @@
-{ config, lib, hostname, pkgs, ... }:
+{ config, lib, hostname, pkgs, isWorkstation, ... }:
 let
   inherit (lib) mkEnableOption mkIf;
   cfg = config.system.console;
@@ -60,8 +60,8 @@ in
     };
 
     console = {
-      # useXkbConfig = true;
-      keyMap = if (hostname == "nitro") || (hostname == "scrubber") then "br-abnt" else "us";
+      useXkbConfig = isWorkstation;
+      keyMap = mkIf (hostname == "nitro" || hostname == "scrubber" && config.console.useXkbConfig == false) "br-abnt";
       earlySetup = true;
       font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
       # font = "ter-powerline-v26n";

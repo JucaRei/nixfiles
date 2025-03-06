@@ -49,7 +49,7 @@ in
 
   desktop.apps = {
     notes.gnome-text.enable = true;
-    video.mpv.enable = mkDefault true;
+    # video.mpv.enable = mkDefault true;
   };
 
   dconf.settings = with lib.hm.gvariant; {

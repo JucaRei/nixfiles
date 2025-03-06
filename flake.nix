@@ -171,7 +171,7 @@
           revan = helper.mkNixos { hostname = "revan"; };
 
           # VMs
-          soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = "gnome"; };
+          soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = "gnome"; stateVersion = "24.05"; };
           scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "kde"; };
         };
 
