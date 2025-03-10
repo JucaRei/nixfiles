@@ -80,6 +80,8 @@ in
       kernelParams = [
         "nosgx"
         "zswap.enabled=1"
+        "mds=full"
+        "mmio_stale_data=full"
         "mem_sleep_default=deep"
         # "i8042.reset"
         # "i8042.noloop"

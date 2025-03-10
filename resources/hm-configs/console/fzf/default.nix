@@ -48,10 +48,14 @@ in
         # "--marker='>' --pointer='>' --separator='─' --scrollbar='│'"
         # "--info='right'"
       ];
-
+  
       enableZshIntegration = true;
       enableFishIntegration = true;
       enableBashIntegration = true;
+    };
+
+    home.shellAliases = {
+      fpreview = ''${pkgs.neovim}/bin/nvim $(fzf --preview="${getExe config.programs.bat.package} --color=always --line-range :500 {}")'';
     };
   };
 }

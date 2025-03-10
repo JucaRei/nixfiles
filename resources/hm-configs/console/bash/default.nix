@@ -8,13 +8,12 @@ in
 
   options.console.bash = {
     enable = mkOption {
-      default = true;
+      default = false;
       type = types.bool;
     };
   };
 
   config = mkIf cfg.enable {
-    console.starship.enable = lib.mkDefault true;
     programs = {
       bash = {
         enable = true;

@@ -1,6 +1,6 @@
 { config, lib, hostname, pkgs, isWorkstation, ... }:
 let
-  inherit (lib) mkEnableOption mkIf;
+  inherit (lib) mkEnableOption mkDefault mkIf;
   cfg = config.system.console;
 
   kmsconFontSize = {
@@ -60,8 +60,8 @@ in
     };
 
     console = {
-      useXkbConfig = isWorkstation;
-      keyMap = mkIf (hostname == "nitro" || hostname == "scrubber" && config.console.useXkbConfig == false) "br-abnt";
+      # useXkbConfig = if (isWorkstation == true) then true else false;
+      keyMap = mkIf (hostname == "nitro" || hostname == "scrubber") "br-abnt";
       earlySetup = true;
       font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
       # font = "ter-powerline-v26n";

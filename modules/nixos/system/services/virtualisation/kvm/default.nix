@@ -37,7 +37,7 @@ in
     boot = {
       kernelModules = [
         "kvm-${cfg.platform}"
-        "vfio_virqfd"
+        # "vfio_virqfd"
         "vfio_pci"
         "vfio_iommu_type1"
         "vfio"
