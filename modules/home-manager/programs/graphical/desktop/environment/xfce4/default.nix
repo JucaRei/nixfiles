@@ -96,6 +96,7 @@ in
       keyboards = {
         "Default/Numlock" = false;
       };
+      xfce4-screenshooter = { };
       xfwm4 = { };
       xfce4-keyboard-shortcuts = {
         # "commands/custom/XF86AudioLowerVolume" = "exec pactl set-sink-volume @DEFAULT_SINK@ -10%";
@@ -103,25 +104,6 @@ in
         # "commands/custom/XF86AudioMute" = "exec pactl set-sink-mute @DEFAULT_SINK@ toggle";
       };
       displays = { };
-      thunar = {
-        "last-view" = "ThunarIconView";
-        "last-icon-view-zoom-level" = "THUNAR_ZOOM_LEVEL_100_PERCENT";
-        "last-show-hidden" = true;
-
-        "last-location-bar" = "ThunarLocationButtons";
-        "misc-image-preview-mode" = "THUNAR_IMAGE_PREVIEW_MODE_EMBEDDED";
-        "misc-date-style" = "THUNAR_DATE_STYLE_ISO";
-        "last-restore-tabs" = true;
-        "misc-confirm-close-multiple-tabs" = false;
-
-        "misc-single-click" = false;
-        "misc-case-sensitive" = false;
-        "misc-show-delete-action" = true;
-        "hidden-bookmarks" = [
-          "file://${config.home.homeDirectory}/Desktop"
-          "computer:///"
-        ];
-      };
     };
 
     # xfconf-query -l

@@ -1,4 +1,4 @@
-{ modulesPath, lib, ... }:
+{ modulesPath, lib, inputs, ... }:
 let
   inherit (lib) mkForce;
 in
@@ -9,6 +9,7 @@ in
     # (import ./disks-btrfs.nix { })
     (import ./disks-xfs.nix { })
     # ./filesystem.nix
+    inputs.vscode-server.nixosModules.default
   ];
 
   config = {
@@ -48,6 +49,12 @@ in
 
     nixpkgs = {
       hostPlatform = "x86_64-linux";
+    };
+
+    services = {
+      vscode-server = {
+        enable = true;
+      };
     };
 
     # features = {

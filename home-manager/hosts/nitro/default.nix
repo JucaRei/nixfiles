@@ -15,6 +15,8 @@ in
     nixpkgs-fmt
     oldstable.spotube
     # heynote
+
+    ladder
   ];
 
   console = {
