@@ -52,17 +52,17 @@ in
               '';
         };
 
-        xkb =
-          if (hostname == "nitro") || (hostname == "scrubber") then {
-            layout = "br";
-            variant = "abnt2";
-            model = "pc105";
-          }
-          else {
-            layout = "us";
-            variant = "mac";
-            model = "pc104";
-          };
+        # xkb =
+        #   if (hostname == "nitro") || (hostname == "scrubber") then {
+        #     layout = "br";
+        #     variant = "abnt2";
+        #     model = "pc105";
+        #   }
+        #   else {
+        #     layout = "us";
+        #     variant = "mac";
+        #     model = "pc104";
+        #   };
       };
     };
   };
