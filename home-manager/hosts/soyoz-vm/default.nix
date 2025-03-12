@@ -12,6 +12,7 @@
   console.fzf.enable = true;
 
   home = {
+    packages = with  pkgs; [nil nixpkgs-fmt];
     keyboard = {
       layout = "br";
       variant = "abnt2";
