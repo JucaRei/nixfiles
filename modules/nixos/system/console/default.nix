@@ -62,7 +62,7 @@ in
     console = {
       # useXkbConfig = if (isWorkstation == true) then true else false;
       keyMap = mkIf (hostname == "nitro" || hostname == "scrubber") "br-abnt";
-      earlySetup = true;
+      earlySetup = false;
       font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
       # font = "ter-powerline-v26n";
       packages = with pkgs; [
