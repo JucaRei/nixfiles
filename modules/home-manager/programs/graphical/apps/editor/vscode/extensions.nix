@@ -79,12 +79,12 @@ let
       sha256 = "sha256-OSsVdJyG7Mi4ltza40LvmyDZF/hMmVZENfJkaBzVcWw=";
     }
 
-    {
-      name = "Mihale";
-      publisher = "zeno";
-      version = "0.2.0";
-      sha256 = "sha256-EkOk0XaPiC8u3OxsdSOEhSTZPCZNi4m/v1Vp98J68Oc=";
-    }
+    # {
+    #   name = "Mihale";
+    #   publisher = "zeno";
+    #   version = "0.2.0";
+    #   sha256 = "sha256-EkOk0XaPiC8u3OxsdSOEhSTZPCZNi4m/v1Vp98J68Oc=";
+    # }
 
     ### Workspace
     {
@@ -111,12 +111,12 @@ let
     # }
 
     ### Draw a line between code functions, etc
-    {
-      name = "separators";
-      publisher = "alefragnani";
-      version = "2.7.0";
-      sha256 = "sha256-ir2qQwhA2cYmJ/K/DDSaTveVnWh8NUZKJN5GXvT2v/E=";
-    }
+    # {
+    #   name = "separators";
+    #   publisher = "alefragnani";
+    #   version = "2.7.0";
+    #   sha256 = "sha256-ir2qQwhA2cYmJ/K/DDSaTveVnWh8NUZKJN5GXvT2v/E=";
+    # }
 
     # {
     #   name = "vscode-thunder-client";
@@ -169,12 +169,12 @@ let
     #   version = "0.0.21";
     #   sha256 = "sha256-4qy+2Tg9g0/9D+MNvLSgWUE8sc5itsC/pJ9hcfxyVzQ=";
     # }
-    {
-      name = "Codeify";
-      publisher = "siyam";
-      version = "1.1.2";
-      sha256 = "sha256-vPCbcbeH0CpOVxQ6kL/Ub9i4tztyqRzq2o2y8fIYAlo=";
-    }
+    # {
+    #   name = "Codeify";
+    #   publisher = "siyam";
+    #   version = "1.1.2";
+    #   sha256 = "sha256-vPCbcbeH0CpOVxQ6kL/Ub9i4tztyqRzq2o2y8fIYAlo=";
+    # }
   ]);
 in
 marketPlaceExtensions ++ packagedExtensions

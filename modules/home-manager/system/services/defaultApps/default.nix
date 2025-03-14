@@ -150,6 +150,20 @@ in
           ### PDF ###
           ###########
           "application/pdf" = cfg.defaultPdf;
+          "application/epub+zip" = cfg.defaultPdf;
+          "application/oxps" = cfg.defaultPdf;
+          "application/x-fictionbook" = cfg.defaultPdf;
+          "image/vnd.djvu" = cfg.defaultPdf;
+          "image/vnd.djvu+multipage" = cfg.defaultPdf;
+          "application/postscript" = cfg.defaultPdf;
+          "application/eps" = cfg.defaultPdf;
+          "application/x-eps" = cfg.defaultPdf;
+          "image/eps" = cfg.defaultPdf;
+          "image/x-eps" = cfg.defaultPdf;
+          "application/x-cbr" = cfg.defaultPdf;
+          "application/x-cbz" = cfg.defaultPdf;
+          "application/x-cb7" = cfg.defaultPdf;
+          "application/x-cbt" = cfg.defaultPdf;
 
           ############
           ### Text ###

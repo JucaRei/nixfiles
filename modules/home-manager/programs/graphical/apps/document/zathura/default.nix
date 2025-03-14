@@ -2,6 +2,7 @@
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.programs.graphical.apps.document.zathura;
+
   windowsize = pkgs.writeShellScriptBin "windowsize" ''
     #!/bin/sh
     ${pkgs.zathura}/bin/zathura "$@" & PID="$!"
@@ -271,30 +272,37 @@ in
         '';
       };
     };
-    xdg =
-      let
-        application = "org.pwmt.zathura.desktop";
-      in
-      {
-        mimeApps = {
-          defaultApplications = lib.mkForce {
-            "application/pdf" = application;
-            "application/oxps" = application;
-            "application/epub+zip" = application;
-            "application/x-fictionbook" = application;
-            "image/vnd.djvu" = application;
-            "image/vnd.djvu+multipage" = application;
-            "application/postscript" = application;
-            "application/eps" = application;
-            "application/x-eps" = application;
-            "image/eps" = application;
-            "image/x-eps" = application;
-            "application/x-cbr" = application;
-            "application/x-cbz" = application;
-            "application/x-cb7" = application;
-            "application/x-cbt" = application;
-          };
-        };
-      };
+
+    system.services.defaultApps = {
+      enable = true;
+      defaultPdf = "org.pwmt.zathura.desktop";
+    };
+
+
+    # xdg =
+    #   let
+    #     application = "org.pwmt.zathura.desktop";
+    #   in
+    #   {
+    #     mimeApps = {
+    #       defaultApplications = lib.mkForce {
+    #         "application/pdf" = application;
+    #         "application/oxps" = application;
+    #         "application/epub+zip" = application;
+    #         "application/x-fictionbook" = application;
+    #         "image/vnd.djvu" = application;
+    #         "image/vnd.djvu+multipage" = application;
+    #         "application/postscript" = application;
+    #         "application/eps" = application;
+    #         "application/x-eps" = application;
+    #         "image/eps" = application;
+    #         "image/x-eps" = application;
+    #         "application/x-cbr" = application;
+    #         "application/x-cbz" = application;
+    #         "application/x-cb7" = application;
+    #         "application/x-cbt" = application;
+    #       };
+    #     };
+    #   };
   };
 }

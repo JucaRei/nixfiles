@@ -124,12 +124,11 @@ in
           beforeCheckLinkTargets = mkIf (cfg.browser == "firefox-esr" || cfg.browser == "firefox" || cfg.browser == "firefox-devedition") {
             after = [ ];
             before = mkForce [ "checkLinkTargets" ];
-            # data = mkForce ''
-            #   if [ -f "${backup-path}/search.json.mozlz4.home-manager.backup" ]; then
-            #     rm "${backup-path}/search.json.mozlz4.home-manager.backup"
-            #   fi
-            # '';
             data = mkForce ''
+              if [ -f "${backup-path}/search.json.mozlz4.home-manager.backup" ]; then
+                rm "${backup-path}/search.json.mozlz4.home-manager.backup"
+              fi
+
               if [ -f "${backup-path}/search.json.mozlz4" ]; then
                 rm "${backup-path}/search.json.mozlz4"
               fi

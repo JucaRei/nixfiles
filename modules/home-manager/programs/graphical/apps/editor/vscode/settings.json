@@ -184,7 +184,7 @@
     "workbench.preferredDarkColorTheme": "RedCrafter07 Theme",
     "workbench.editor.labelFormat": "short",
     "workbench.enableExperiments": true,
-    "workbench.iconTheme": "Mihale",
+    "workbench.iconTheme": "simple-icons",
     "workbench.productIconTheme": "macos-modern",
     "workbench.settings.editor": "ui",
     "workbench.settings.enableNaturalLanguageSearch": true,
