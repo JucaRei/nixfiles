@@ -1,4 +1,13 @@
-{ pkgs, ... }: {
+{ config, pkgs, lib, ... }:
+let
+  inherit (lib) mkForce;
+in
+{
+  imports = [
+    ../../../modules/home-manager/system/services/ct-podman
+    # ../../../modules/home-manager/programs/terminal/console
+    # ../../../resources/hm-configs/console/aliases
+  ];
   # i18n = {
   #   glibcLocales = pkgs.glibcLocales.override {
   #     allLocales = false;
@@ -8,15 +17,28 @@
   #     ];
   #   };
   # };
+  config = {
 
-  console.fzf.enable = true;
+    # programs.terminal.console.aliases.enable = true;
 
-  home = {
-    packages = with  pkgs; [nil nixpkgs-fmt];
-    keyboard = {
-      layout = "br";
-      variant = "abnt2";
-      model = "pc105";
+    console = {
+      fzf.enable = true;
+      starship.enable = true;
+      bash.enable = true;
+      # zsh.enable = true;
+      fish.enable = true;
+      aliases.enable = mkForce true;
+    };
+    system.services.ct-podman.enable = true;
+
+    home = {
+      packages = with  pkgs;
+        [ nil nixpkgs-fmt ];
+      keyboard = {
+        layout = "br";
+        variant = "abnt2";
+        model = "pc105";
+      };
     };
   };
 }

@@ -21,6 +21,7 @@ in
 
   console = {
     aliases.enable = true;
+    starship.enable = true;
     bash.enable = true;
     lsd.enable = mkForce false;
     eza.enable = true;
@@ -32,7 +33,6 @@ in
     fish.enable = true;
     zsh.enable = false;
     dircolors.enable = true;
-    starship.enable = true;
   };
 
   custom.services.git = {

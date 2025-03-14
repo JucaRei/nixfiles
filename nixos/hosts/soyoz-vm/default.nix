@@ -55,6 +55,9 @@ in
       vscode-server = {
         enable = true;
       };
+      smartd = {
+        enable = mkForce false;
+      };
     };
 
     # features = {

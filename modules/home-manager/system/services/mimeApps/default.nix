@@ -1,12 +1,12 @@
 { config, lib, pkgs, desktop, ... }:
 let
-  cfg = config.system.services.defaultApps;
+  cfg = config.system.services.mimeApps;
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) types mkEnableOption mkOption mdDoc mkIf mkForce optionals;
 in
 {
   options = {
-    system.services.defaultApps = {
+    system.services.mimeApps = {
       enable = mkOption {
         type = types.bool;
         default = false;

@@ -1,7 +1,6 @@
 { config, lib, pkgs, options, ... }:
 let
   inherit (lib) mkIf getExe getExe' mkOption types;
-  inherit (lib.types) bool attrsOf str listOf package;
   inherit (pkgs.stdenv) isLinux;
   cfg = config.programs.terminal.console.aliases;
   nixDiffCommands = {
@@ -12,14 +11,15 @@ let
 in
 {
   options.programs.terminal.console.aliases = {
+    # enable = mkEnableOption "Enable aliases for system" // { default = true; };
     enable = mkOption {
       default = false;
-      type = bool;
+      type = types.bool;
       description = "Enable's a list of shell aliases.";
     };
 
     systemd.shellAliases = mkOption {
-      type = attrsOf str;
+      type = with types; attrsOf str;
 
       default =
         let
@@ -107,9 +107,7 @@ in
             (builtins.map mkSystemCommand userCommands)
             (builtins.map mkUserCommand sudoCommands)
             (builtins.map mkUserCommand userCommands)
-          ])
-        //
-        {
+          ]) // {
           # Extra systemctl commands
           sc-disable-now = "sc-disable --now";
           sc-enable-now = "sc-enable --now";
@@ -217,6 +215,7 @@ in
           # Nix
           # store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
 
+
           nb = "${pkgs.nix}/bin/nix build --no-link --print-out-paths";
 
         };
@@ -231,7 +230,7 @@ in
 
     process = {
       packages = mkOption {
-        type = listOf package;
+        type = with lib.types; listOf package;
 
         default = with pkgs; [
           nodePackages.fkill-cli
@@ -243,8 +242,7 @@ in
           Packages
           for
           process
-          management.
-        '';
+          management.'';
       };
 
     };
@@ -273,9 +271,7 @@ in
     (lib.mkIf cfg.nix.enable {
       home = {
         packages = [ pkgs.comma ]
-          ++ lib.optional (cfg.nix.diffProgram != "builtin") [
-          pkgs.${cfg.nix.diffProgram}
-        ]
+          ++ lib.optional (cfg.nix.diffProgram != "builtin") [ pkgs.${cfg.nix.diffProgram} ]
           # ++ lib.optional cfg.nix.cachix.enable [ cfg.nix.cachix.package ]
         ;
 
