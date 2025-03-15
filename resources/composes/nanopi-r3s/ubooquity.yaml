@@ -15,12 +15,13 @@ services:
       - books:/books
       - pdfs:/pdfs
     ports:
-      - 2202:2202
-      - 2203:2203
+      - 5050:2202
+      - 5051:2203
     restart: unless-stopped
     mem_limit: 350M
     cpus: 1.0
-    network_mode: "host"
+    network_mode: "bridge"
+    # network_mode: "host"
 volumes:
   comics:
     driver_opts:

@@ -81,4 +81,7 @@ pkgs: {
   # Scripts
   font-search = pkgs.callPackage ./fonts/font-search { };
   whereis-nix = pkgs.callPackage ./tools/whereis-nix { };
+
+  # Security
+  warsaw-bin = pkgs.callPackage ./system/security/banking/warsaw-bin { };
 }
