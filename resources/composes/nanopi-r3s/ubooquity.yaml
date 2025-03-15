@@ -1,0 +1,44 @@
+---
+services:
+  ubooquity:
+    image: lscr.io/linuxserver/ubooquity:2.1.5
+    container_name: ubooquity
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Sao_Paulo
+      - MAXMEM=250 #optional
+    volumes:
+      - /root/docker/ubooquity/data:/config
+      - comics:/comics
+      - mangas:/mangas
+      - books:/books
+      - pdfs:/pdfs
+    ports:
+      - 2202:2202
+      - 2203:2203
+    restart: unless-stopped
+    mem_limit: 350M
+    cpus: 1.0
+    network_mode: "host"
+volumes:
+  comics:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Read/Comics"
+      o: "addr=10.10.10 200,rw,nfsvers=3,nolock,soft,nosuid"
+  books:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Read/Books"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
+  mangas:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Read/Mangas"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
+  pdfs:
+    driver_opts:
+      type: nfs
+      device: ":/mnt/HD/HD_b2/Read/Pdfs"
+      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
