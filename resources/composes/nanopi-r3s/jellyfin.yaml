@@ -1,32 +1,48 @@
 ---
 services:
   jellyfin:
-    image: lscr.io/linuxserver/jellyfin:10.9.11
+    #image: lscr.io/linuxserver/jellyfin:arm64v8-nightly-2025021314ubu2404-ls62
+    image: lscr.io/linuxserver/jellyfin:10.10.6
     container_name: jellyfin
+    privileged: true
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=0
+      - PGID=0
       - TZ=America/Sao_Paulo
-      - UMASK_SET=022 #optional
+      # - UMASK_SET=022 #optional
+    # command:
+      # '`for dev in dri dma_heap mali0 rga mpp-service ; do [ -e "/dev/$dev" ] && echo " --device /dev/$dev"; done`'
     volumes:
-      - /root/docker-composes/jellyfin/config:/config
-      - /root/docker-composes/jellyfin/cache:/cache
-      - nas1_movies:/data/movies
-      - nas1_tvshow:/data/tvshows
-      - nas1_animes:/data/animes
-      - nas2_tvshow:/data/tvshows2
-      - nas2_movies:/data/movies2
-      - nas2_animes:/data/animes2
+      - /root/docker/jellyfin/config:/config
+      - /root/docker/jellyfin/cache:/cache
 
+      # - externalHD_movies:/filmes
+      - /mnt/700gb/Movies:/filmes
+      # - externalHD_series:/series
+      - /mnt/700gb/Tvshows:/series
+      # - externalHD_animes:/animes
+      - /mnt/700gb/Animes:/animes
+      - nas1_movies:/filmes1
+      - nas1_tvshow:/series1
+      - nas1_animes:/animes1
+      - nas2_tvshow:/series2
+      - nas2_movies:/filmes2
+      - nas2_animes:/animes2
+
+      # - /etc/OpenCL:/etc/OpenCL:ro # only required to enable OpenCL-accelerated HDR -> SDR tonemapping
+      # - /usr/lib/aarch64-linux-gnu/libmali.so.1:/usr/lib/aarch64-linux-gnu/libmali.so.1:ro # only required to enable OpenCL-accelerated HDR -> SDR tonemapping
+    # security_opt:
+    #   - systempaths=unconfined
+    #   - apparmor=unconfined
     ports:
       - 3545:8096
       # - 8920:8920 #optional
       # - 7359:7359/udp #optional
       # - 1900:1900/udp #optional
-    mem_limit: 850M # 1500M
+    mem_limit: 1600M # 1500M
     # mem_reservation: 300M
-    cpus: 1.4
-    network_mode: "host"
+    cpus: 2.4
+    network_mode: "bridge" # "host"
     devices:
       ### Intel
       # - /dev/dri:/dev/dri
@@ -36,15 +52,30 @@ services:
       ### Rockchip
       - /dev/rga:/dev/rga
       - /dev/dri:/dev/dri
-      # - /dev/dri/card0:/dev/dri/card0
-      # - /dev/dri/renderD128:/dev/dri/renderD128
+      #- /dev/dri/card0:/dev/dri/card0
+      #- /dev/dri/renderD128:/dev/dri/renderD128
       - /dev/dma_heap:/dev/dma_heap
       - /dev/mpp_service:/dev/mpp_service
-      # - /dev/mali0:/dev/mali0 # only required to enable OpenCL-accelerated HDR -> SDR tonemapping
+      #- /dev/mali0:/dev/mali0 # only required to enable OpenCL-accelerated HDR -> SDR tonemapping
     # extra_hosts:
     #   - "host.docker.internal:host-gateway"
     restart: unless-stopped
 volumes:
+  externalHD_movies:
+    driver_opts:
+      type: cifs
+      device: //10.10.10.1/extermalhd/Movies
+      o: "rw,guest,vers=3.0,nodev"
+  externalHD_series:
+    driver_opts:
+      type: cifs
+      device: //10.10.10.1/extermalhd/Tvshows
+      o: "rw,guest,vers=3.0,nodev"
+  externalHD_animes:
+    driver_opts:
+      type: cifs
+      device: //10.10.10.1/extermalhd/Animes
+      o: "rw,guest,vers=3.0,nodev"
   nas1_movies:
     driver_opts:
       # type: cifs
