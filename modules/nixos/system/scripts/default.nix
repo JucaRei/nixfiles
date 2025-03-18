@@ -5,16 +5,16 @@ let
   inherit (lib.types) bool;
   cfg = config.system.scripts;
 
-  build-all = import ../../../../resources/nixos/scripts/build-all.nix { inherit pkgs; };
-  build-host = import ../../../../resources/nixos/scripts/build-host.nix { inherit pkgs; };
-  build-iso = import ../../../../resources/nixos/scripts/build-iso.nix { inherit pkgs; };
-  flatpak-theme = import ../../../../resources/nixos/scripts/flatpak-theme.nix { inherit pkgs; };
-  switch-all = import ../../../../resources/nixos/scripts/switch-all.nix { inherit pkgs; };
-  switch-host = import ../../../../resources/nixos/scripts/switch-host.nix { inherit pkgs; };
-  switch-boot = import ../../../../resources/nixos/scripts/switch-boot.nix { inherit pkgs; };
+  # build-all = import ./build-all.nix { inherit pkgs; };
+  build-host = import ./build-host.nix { inherit pkgs; };
+  build-iso = import ./build-iso.nix { inherit pkgs; };
+  flatpak-theme = import ./flatpak-theme.nix { inherit pkgs; };
+  # switch-all = import ./switch-all.nix { inherit pkgs; };
+  switch-host = import ./switch-host.nix { inherit pkgs; };
+  switch-boot = import ./switch-boot.nix { inherit pkgs; };
+  nixos-change-summary = import ./nixos-change-summary.nix { inherit pkgs; };
 in
 {
-  imports = [ ../../../../resources/nixos/scripts/nixos-change-summary.nix ];
   options = {
     system = {
       scripts = {
@@ -28,10 +28,11 @@ in
   };
   config = mkIf cfg.enable {
     environment.systemPackages = [
-      build-all
+      nixos-change-summary
+      # build-all
       build-host
       build-iso
-      switch-all
+      # switch-all
       switch-boot
       switch-host
     ] ++ lib.optionals (isInstall && config.services.flatpak.enable) [

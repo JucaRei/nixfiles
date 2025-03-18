@@ -170,7 +170,7 @@ in
           # Systemd nspawn
           nspawn = "${pkgs.systemdMinimal}/bin/systemd-nspawn";
 
-		  fix-ext4 = "sudo ${pkgs.e2fsprogs}/bin/e2fsck -vfy"
+          fix-ext4 = "sudo ${pkgs.e2fsprogs}/bin/e2fsck -vfy";
           # Others
           sxorg = "export DISPLAY=:0.0";
           nix-hash-sha256 = "nix-hash --flat --base32 --type sha256";
