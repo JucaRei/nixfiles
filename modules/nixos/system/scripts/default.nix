@@ -12,7 +12,7 @@ let
   # switch-all = import ./switch-all.nix { inherit pkgs; };
   switch-host = import ./switch-host.nix { inherit pkgs; };
   switch-boot = import ./switch-boot.nix { inherit pkgs; };
-  nixos-change-summary = import ./nixos-change-summary.nix { inherit pkgs; };
+  # nixos-change-summary = import ./nixos-change-summary.nix { inherit pkgs; };
 in
 {
   options = {
@@ -28,7 +28,7 @@ in
   };
   config = mkIf cfg.enable {
     environment.systemPackages = [
-      nixos-change-summary
+      # nixos-change-summary
       # build-all
       build-host
       build-iso

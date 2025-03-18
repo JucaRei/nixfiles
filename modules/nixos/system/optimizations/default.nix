@@ -48,16 +48,19 @@ in
         package = pkgs.ananicy-cpp;
         rulesProvider = pkgs.ananicy-rules-cachyos;
         settings = {
-          check_freq = 15;
+          check_freq = 5;
+
+          # Verbose mgs: true/false
           cgroup_load = true;
           type_load = true;
           rule_load = true;
+
           apply_nice = true;
           apply_latnice = true;
           apply_ioclass = true;
           apply_ionice = true;
           apply_sched = true;
-          apply_oom_score_adj = true;
+          apply_oom_score_adj = false;
           apply_cgroup = true;
           check_disks_schedulers = true;
 
@@ -118,7 +121,7 @@ in
       ananicy-cpp = mkIf config.services.ananicy.enable {
         # https://gitlab.com/ananicy-cpp/ananicy-cpp/-/issues/40#note_1986279383
         serviceConfig = {
-          Delegate-cpu = "cpuset io memory pids";
+          Delegate = "cpu cpuset io memory pids";
           ExecStartPre = "${pkgs.uutils-coreutils-noprefix}/bin/sleep 30";
         };
       };
