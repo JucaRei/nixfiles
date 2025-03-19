@@ -1,4 +1,4 @@
-{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, system, ... }:
+{ config, inputs, isLima, isWorkstation, lib, outputs, pkgs, stateVersion, username, isOtherOS, system, ... }@args:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optional optionals mapAttrsToList mkForce mkIf mkOverride mkDefault mkOptionDefault;
@@ -34,7 +34,7 @@ in
       accent = "blue";
       flavor = "mocha";
     };
-    
+
     home = {
       inherit stateVersion;
       inherit username;
@@ -123,8 +123,8 @@ in
           extra-platforms = x86_64-darwin
         '';
 
-        nixPath = mkIf isOtherOS (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
-        # nixPath = mkIf (!isNixos) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
+        # nixPath = mkIf isOtherOS (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
+        nixPath = mkIf (!isNixos) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
       };
 
     console = {

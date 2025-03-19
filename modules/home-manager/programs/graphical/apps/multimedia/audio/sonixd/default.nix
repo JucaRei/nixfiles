@@ -1,7 +1,7 @@
 { pkgs, config, lib, ... }:
 let
   inherit (lib) mkIf mkEnableOption;
-  cfg = config.programs.graphical.apps.multimedia.sonixd;
+  cfg = config.programs.graphical.apps.multimedia.audio.sonixd;
 in
 {
   options = {

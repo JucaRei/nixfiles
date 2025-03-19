@@ -1,10 +1,10 @@
 { config, hostname, lib, pkgs, ... }:
 let
   inherit (lib) mkIf mkEnableOption;
-  cfg = config.programs.graphical.apps.multimedia.rhythmbox;
+  cfg = config.programs.graphical.apps.multimedia.audio.rhythmbox;
 in
 {
-  options.programs.graphical.apps.multimedia.rhythmbox = {
+  options.programs.graphical.apps.multimedia.audio.rhythmbox = {
     enable = mkEnableOption "Enables rhythmbox.";
   };
 

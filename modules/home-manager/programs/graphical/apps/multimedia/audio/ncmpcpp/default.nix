@@ -1,10 +1,10 @@
 { pkgs, lib, config, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.programs.graphical.apps.multimedia.ncmpcpp;
+  cfg = config.programs.graphical.apps.multimedia.audio.ncmpcpp;
 in
 {
-  options.programs.graphical.apps.multimedia.ncmpcpp = {
+  options.programs.graphical.apps.multimedia.audio.ncmpcpp = {
     enable = mkOption {
       default = false;
       type = types.bool;

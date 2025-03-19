@@ -117,7 +117,6 @@ in
     "d ${config.home.homeDirectory}/Music/singles 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Music/artists 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/Music/downloads 0755 ${username} users - -"
-    "d ${config.home.homeDirectory}/Music/records 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/games 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/virtualmachines/windows 0755 ${username} users - -"
     "d ${config.home.homeDirectory}/virtualmachines/linux 0755 ${username} users - -"

@@ -2,7 +2,7 @@
 let
   inherit (lib) mkIf mkForce mkEnableOption;
   inherit (pkgs.stdenv) isLinux;
-  cfg = config.programs.graphical.apps.multimedia.mpv;
+  cfg = config.programs.graphical.apps.multimedia.video.mpv;
   anime4k = pkgs.anime4k;
 
   ### Use's from unstable
@@ -103,7 +103,7 @@ in
 
 
   options = {
-    programs.graphical.apps.multimedia.mpv = {
+    programs.graphical.apps.multimedia.video.mpv = {
       enable = mkEnableOption "Enable's mpv with some configs.";
     };
   };

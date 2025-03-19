@@ -1,10 +1,10 @@
 { config, lib, pkgs, username, ... }:
 let
   inherit (lib) mkOption mkIf types;
-  cfg = config.programs.graphical.apps.multimedia.audio-recorder;
+  cfg = config.programs.graphical.apps.multimedia.audio.recorder;
 in
 {
-  options.programs.graphical.apps.multimedia.audio-recorder = {
+  options.programs.graphical.apps.multimedia.audio.recorder = {
     enable = mkOption {
       default = false;
       type = types.bool;
@@ -18,7 +18,7 @@ in
       "apps/audio-recorder" = {
         append-to-file = false;
         filename-pattern = "LMP-${username}-%V-%H%M";
-        folder-name = "${config.home.homeDirectory}/Audio";
+        folder-name = "${config.home.homeDirectory}/Music/records";
         keep-on-top = true;
         level-bar-value = 2;
         media-format = "Podcast Mono, Lossless 44KHz";
@@ -30,6 +30,6 @@ in
       };
     };
 
-    systemd.user.tmpfiles.rules = [ "d ${config.home.homeDirectory}/Media/Audio 0755 ${username} users - -" ];
+    systemd.user.tmpfiles.rules = [ "d ${config.home.homeDirectory}/Music/records 0755 ${username} users - -" ];
   };
 }

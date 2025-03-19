@@ -4,7 +4,7 @@ let
   cfg = config.programs.graphical.apps.multimedia.mpd;
 in
 {
-  options.programs.graphical.apps.multimedia.mpd = {
+  options.programs.graphical.apps.multimedia.audio.mpd = {
     enable = mkOption {
       default = false;
       type = types.bool;

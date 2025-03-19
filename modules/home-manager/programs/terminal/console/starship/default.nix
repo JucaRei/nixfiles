@@ -13,12 +13,12 @@ in
     };
   };
   config = mkIf cfg.enable {
+    catppuccin.starship.enable = true;
     programs = {
       starship = {
         enable = true;
         enableBashIntegration = true;
         enableFishIntegration = true;
-        catppuccin.enable = true;
         # https://github.com/etrigan63/Catppuccin-starship
         settings = {
           add_newline = false;

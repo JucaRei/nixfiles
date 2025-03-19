@@ -129,13 +129,13 @@
           "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
           # Workstations
           "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
-          "juca@nitrowin" = helper.mkHome { hostname = "nitro"; desktop = null; };
+          "juca@nitrowin" = helper.mkHome { hostname = "nitro"; };
           "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
           # Only terminal apps
-          "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = null; stateVersion = "24.05"; };
+          "juca@anubis" = helper.mkHome { hostname = "anubis"; stateVersion = "24.05"; };
           # Servers
           # VMs
-          "juca@qemu" = helper.mkHome { hostname = "qemu"; desktop = "bspwm"; };
+          "juca@qemu" = helper.mkHome { hostname = "qemu"; };
           "juca@soyoz-vm" = helper.mkHome { hostname = "soyoz-vm"; desktop = "xfce4"; };
           "juca@minimech" = helper.mkHome { hostname = "minimech"; };
           "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "kde"; };
