@@ -7,7 +7,7 @@ in
 {
   options = {
     system.services.git = {
-      enable = {
+      enable = mkOption {
         type = bool;
         default = false;
         description = mdDoc "Enable's git services.";
@@ -29,7 +29,7 @@ in
     programs = {
       git = {
         enable = true;
-        username = cfg.user;
+        userName = cfg.user;
         userEmail = cfg.email;
 
         ignores = [

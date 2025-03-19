@@ -16,7 +16,7 @@ in
   };
   config = mkIf cfg.enable {
     home = {
-      package = pkgs.distrobox;
+      packages = pkgs.distrobox;
       file = {
         ".distroboxrc".text = ''${getExe' pkgs.xorg.xhost "xhost"} +si:localuser:$USER'';
       };

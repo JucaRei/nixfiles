@@ -2,7 +2,7 @@
 let
   # installFor = [ "juca" ];
   inherit (lib) mkOption mkIf mkForce;
-  inherit (lib.bool) bool;
+  inherit (lib.types) bool;
   inherit (pkgs.stdenv) isLinux;
   cfg = config.system.services.sync;
 in

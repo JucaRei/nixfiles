@@ -1,6 +1,6 @@
 { config, username, lib, ... }:
 let
-  inherit (lib) mkOption mkIf mkForce;
+  inherit (lib) mkOption mkIf mkForce mkOptionDefault;
   inherit (lib.types) bool;
   cfg = config.system.services.flatpaks;
 in
@@ -18,12 +18,9 @@ in
 
     # Flatpak declarative
     services.flatpak = {
-      # enable = true;
-      enableModule = mkForce true;
-      target-dir = "${config.xdg.dataHome}/flatpak";
       packages = [
         # "flathub:app/info.febvre.Komikku/x86_64/stable"
-        "flathub:app/com.ktechpit.whatsie/x86_64/stable"
+        { appId = "com.ktechpit.whatsie"; origin = "flathub"; }
 
         ## out-of-tree flatpaks can be installed like this (note: they can't be a URL because flatpak doesn't like that)
         # ":${./foobar.flatpak}"
@@ -36,18 +33,29 @@ in
         # <remote name>:<type>/<flatpak ref>/<arch>/<branch>:<commit>
       ];
       # preInitCommand = "";
-      remotes = {
+      remotes = mkOptionDefault {
         flathub = "https://dl.flathub.org/repo/flathub.flatpakrepo";
         flathub-beta = "https://dl.flathub.org/beta-repo/flathub-beta.flatpakrepo";
         gnome-nightly = "https://nightly.gnome.org/gnome-nightly.flatpakrepo";
       };
       overrides = {
-        "global" = {
+        global = {
+          # Force Wayland by default
+          # Context.sockets = [ "wayland" "!x11" "!fallback-x11" ];
+
           filesystems = [
             "home"
             # "!~/Games/Heroic"
           ];
-          environment = { "MOZ_ENABLE_WAYLAND" = 1; };
+          environment = {
+            # "MOZ_ENABLE_WAYLAND" = 1;
+
+            # Fix un-themed cursor in some Wayland apps
+            XCURSOR_PATH = "/run/host/user-share/icons:/run/host/share/icons";
+
+            # Force correct theme for some GTK apps
+            # GTK_THEME = "Adwaita:dark";
+          };
           sockets = [ "!x11" "fallback-x11" ];
         };
       };

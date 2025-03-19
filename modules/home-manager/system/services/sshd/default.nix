@@ -1,12 +1,17 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkIf mkEnableOption;
-  cfg = config.system.services.sshd.enable;
+  inherit (lib) mkIf mkOption mdDoc;
+  inherit (lib.types) bool;
+  cfg = config.system.services.sshd;
 in
 {
   options = {
     system.services.sshd = {
-      enable = mkEnableOption "Enable's ssh configs";
+      enable = mkOption {
+        type = bool;
+        default = false;
+        description = mdDoc "Enable's sshd configs.";
+      };
     };
   };
   config = mkIf cfg.enable {

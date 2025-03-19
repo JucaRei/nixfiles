@@ -1,4 +1,4 @@
-{ config, lib, pkgs, modulesPath, inputs, ... }:
+{ config, lib, pkgs, modulesPath, inputs, username, ... }:
 let
   inherit (lib) mkOption mkIf optionals mkForce;
   inherit (lib.types) bool;
@@ -6,12 +6,12 @@ let
 
   extraPackages = [ pkgs.shadow ];
 
-  # podman-unstable = pkgs.podman.override {
-  #   extraPackages = extraPackages ++ [
-  #     # setuid shadow ## fix for debian
-  #     "/run/wrappers"
-  #   ];
-  # };
+  podman-unstable = pkgs.podman.override {
+    extraPackages = extraPackages ++ [
+      # setuid shadow ## fix for debian
+      "/run/wrappers"
+    ];
+  };
 
   ### Use from podman from unstable
 in
@@ -35,7 +35,7 @@ in
     services = {
       podman = {
         enable = true;
-        package = pkgs.podman; # podman-unstable;
+        package = podman-unstable;
         # autoUpdate = {
         # enable = true;
         # onCalendar = "*-*-* 00:00:00";
@@ -75,8 +75,8 @@ in
 
     };
 
-    # systemd.user.services."user@".serviceConfig = {
-    systemd.user.services."podman".serviceConfig = {
+    systemd.user.services."${username}@".serviceConfig = {
+      # systemd.user.services."podman".serviceConfig = {
       Delegate = "cpu cpuset io memory pids";
     };
   };

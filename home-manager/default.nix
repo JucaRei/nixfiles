@@ -101,7 +101,7 @@ in
         flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
       in
       {
-        package = mkIf (!isNixos) pkgs.nixVersions.latest;
+        package = mkIf (isOtherOS) (mkDefault pkgs.nixVersions.latest);
 
         settings = {
           experimental-features = "flakes nix-command";
@@ -123,8 +123,8 @@ in
           extra-platforms = x86_64-darwin
         '';
 
-        # nixPath = mkIf isOtherOS (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
-        nixPath = mkIf (!isNixos) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
+        nixPath = mkIf isOtherOS (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
+        # nixPath = mkIf (!isNixos) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
       };
 
     console = {
