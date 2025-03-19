@@ -29,186 +29,192 @@ in
   # ++ optional (builtins.pathExists (./. + "/users/${username}")) ./users/${username}
   ++ optional (builtins.pathExists (./. + "/users")) ./users
   ;
-
-  catppuccin = {
-    accent = "blue";
-    flavor = "mocha";
-  };
-
-  home = {
-    inherit stateVersion;
-    inherit username;
-    homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
-
-    activation = {
-      diff = lib.hm.dag.entryAnywhere ''
-        if [[ -n ''${oldGenPath:-} ]] && [[ -n ''${newGenPath:-} ]]; then
-          ${lib.getExe config.nix.package} \
-            --extra-experimental-features 'nix-command' \
-            store diff-closures $oldGenPath $newGenPath || true
-        fi
-      '';
+  config = {
+    catppuccin = {
+      accent = "blue";
+      flavor = "mocha";
     };
+    
+    home = {
+      inherit stateVersion;
+      inherit username;
+      # homeDirectory = if isDarwin then "/Users/${username}" else if isLima then "/home/${username}.linux" else "/home/${username}";
+      homeDirectory = if isLima then "/home/${username}.linux" else "/home/${username}";
 
-    packages =
-      with pkgs; [
-        fd # Modern Unix `find`
-        netdiscover # Modern Unix `arp`
-        whereis-nix # nix store path
-      ]
-      ++ optionals (isOtherOS) [
-        pciutils # Terminal PCI info
-        duf # Modern Unix `df`
-        usbutils # Terminal USB info
-      ];
-
-    sessionVariables = mkOptionDefault {
-      NIXPKGS_ALLOW_UNFREE = "1";
-      NIXPKGS_ALLOW_INSECURE = "1";
-      FLAKE = mkForce "/home/${username}/.dotfiles/nixfiles";
-      EDITOR = "micro";
-
-      MICRO_TRUECOLOR = "1";
-      PAGER = "bat";
-      SYSTEMD_EDITOR = "micro";
-      VISUAL = "micro";
-    };
-
-    enableNixpkgsReleaseCheck = false;
-  };
-
-  # Workaround home-manager bug with flakes
-  # - https://github.com/nix-community/home-manager/issues/2033
-  news.display = "silent";
-
-
-  nixpkgs = {
-    overlays = [
-      inputs.nixgl.overlay # for non-nixos linux system's
-      inputs.nur.overlays.default
-
-      # Add overlays your own flake exports (from overlays and pkgs dir):
-      outputs.overlays.additions
-      outputs.overlays.modifications
-      outputs.overlays.unstable-packages
-      outputs.overlays.oldstable-packages
-    ];
-    # Configure your nixpkgs instance
-    config = {
-      allowUnfree = true;
-      # allowUnfreePredicate = (_: true);
-      # permittedInsecurePackages = [ ];
-    };
-  };
-
-
-  nix =
-    let
-      flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
-    in
-    {
-      package = mkDefault pkgs.nixVersions.latest;
-
-      settings = {
-        experimental-features = "flakes nix-command";
-        trusted-users = [ "root" "${username}" "@wheel" ];
-        allowed-users = [ "root" "${username}" "@whell" ];
-        warn-dirty = false;
-        allow-dirty = true;
+      activation = {
+        diff = lib.hm.dag.entryAnywhere ''
+          if [[ -n ''${oldGenPath:-} ]] && [[ -n ''${newGenPath:-} ]]; then
+            ${lib.getExe config.nix.package} \
+              --extra-experimental-features 'nix-command' \
+              store diff-closures $oldGenPath $newGenPath || true
+          fi
+        '';
       };
 
-      extraOptions = ''
-        # Free up to 1GiB whenever there is less than 100MiB left.
-        # min-free = ${toString (100 * 1024 * 1024)}
-        # max-free = ${toString (1024 * 1024 * 1024)}
-        # Free up to 2GiB whenever there is less than 1GiB left.
-        min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
-        max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 3 GiB
-      ''
-      + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
-        extra-platforms = x86_64-darwin
-      '';
-
-      nixPath = mkIf isOtherOS (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
-    };
-
-  console = {
-    bat.enable = true;
-    bottom.enable = true;
-    lsd.enable = true;
-    man.enable = isOtherOS;
-    zoxide.enable = true;
-  };
-
-  programs = {
-    nix-index.enable = true;
-  };
-
-  services = {
-    # gpg-agent = mkIf isLinux {
-    #   enable = isLinux;
-    #   enableSshSupport = true;
-    #   pinentryPackage = pkgs.pinentry-curses;
-    # };
-    # pueue = {
-    #   enable = isLinux;
-    #   # https://github.com/Nukesor/pueue/wiki/Configuration
-    #   settings = {
-    #     daemon = {
-    #       default_parallel_tasks = 1;
-    #     };
-    #   };
-    # };
-  };
-
-  sops = mkIf (username == "teste") {
-    # sops = mkIf (username == "juca") {
-    age = {
-      # automatically import host SSH key as age keys
-      # sshKeyPaths = [ "/home/${username}/.ssh/machines/personal/nitro" ];
-      # this will use an agey key that is expected to already be in the filesystem
-      keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
-      generateKey = false;
-      # generate a new key if the key specified above does not exist
-      # generateKey = true;
-    };
-    defaultSopsFile = ../secrets/secrets.yaml;
-    # validateSopsFiles = false;
-    # sops-nix options: https://dl.thalheim.io/
-
-    # secrets will be output to /run/secrets
-    # e.g. /run/secrets/password
-    # secrets required for user creation are handled in respective ./users/<username>.nix files
-    # because they will be output to /run/secrets-for-users and only when the user is assigned to a host
-    secrets = {
-      # password = { };
-      # asciinema.path = "${config.home.homeDirectory}/.config/asciinema/config";
-      # atuin_key.path = "${config.home.homeDirectory}/.local/share/atuin/key";
-      # gh_token = { };
-      # gpg_private = { };
-      # gpg_public = { };
-      # gpg_ownertrust = { };
-      # hueadm.path = "${config.home.homeDirectory}/.hueadm.json";
-      # obs_secrets = { };
-      # ssh_config.path = "${config.home.homeDirectory}/.ssh/config";
-      ssh_key.path = "${config.home.homeDirectory}/.ssh/machines/personal/nitro";
-      ssh_key_pub.path = "${config.home.homeDirectory}/.ssh/machines/personal/nitro.pub";
-      # ssh_semaphore_key.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore";
-      # ssh_semaphore_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore.pub";
-      # transifex.path = "${config.home.homeDirectory}/.transifexrc";
-    };
-  };
-
-  systemd = {
-    user = {
-      # Nicely reload system units when changing configs
-      startServices = mkIf isLinux "sd-switch";
-
-      # Create age keys directory for SOPS
-      tmpfiles = mkIf isLinux {
-        rules = [
-          "d ${config.home.homeDirectory}/.config/sops/age 0755 ${username} users - -"
+      packages =
+        with pkgs; [
+          fd # Modern Unix `find`
+          netdiscover # Modern Unix `arp`
+          whereis-nix # nix store path
+        ]
+        ++ optionals (isOtherOS) [
+          pciutils # Terminal PCI info
+          duf # Modern Unix `df`
+          usbutils # Terminal USB info
         ];
+
+      sessionVariables = mkDefault {
+        NIXPKGS_ALLOW_UNFREE = "1";
+        NIXPKGS_ALLOW_INSECURE = "1";
+      };
+
+      enableNixpkgsReleaseCheck = false;
+    };
+
+    # Workaround home-manager bug with flakes
+    # - https://github.com/nix-community/home-manager/issues/2033
+    news.display = "silent";
+
+
+    nixpkgs = {
+      overlays = [
+        inputs.nixgl.overlay # for non-nixos linux system's
+        inputs.nur.overlays.default
+
+        # Add overlays your own flake exports (from overlays and pkgs dir):
+        outputs.overlays.additions
+        outputs.overlays.modifications
+        outputs.overlays.unstable-packages
+        outputs.overlays.oldstable-packages
+      ];
+      # Configure your nixpkgs instance
+      config = {
+        allowUnfree = true;
+        # allowUnfreePredicate = (_: true);
+        # permittedInsecurePackages = [ ];
+      };
+    };
+
+
+    nix =
+      let
+        flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+      in
+      {
+        package = mkIf (!isNixos) pkgs.nixVersions.latest;
+
+        settings = {
+          experimental-features = "flakes nix-command";
+          trusted-users = [ "root" "${username}" "@wheel" ];
+          allowed-users = [ "root" "${username}" "@whell" ];
+          warn-dirty = false;
+          allow-dirty = true;
+        };
+
+        extraOptions = ''
+          # Free up to 1GiB whenever there is less than 100MiB left.
+          # min-free = ${toString (100 * 1024 * 1024)}
+          # max-free = ${toString (1024 * 1024 * 1024)}
+          # Free up to 2GiB whenever there is less than 1GiB left.
+          min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
+          max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 3 GiB
+        ''
+        + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
+          extra-platforms = x86_64-darwin
+        '';
+
+        nixPath = mkIf isOtherOS (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
+        # nixPath = mkIf (!isNixos) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
+      };
+
+    console = {
+      bat.enable = true;
+      bottom.enable = true;
+      lsd.enable = true;
+      man.enable = isOtherOS;
+      zoxide.enable = true;
+    };
+
+    programs = {
+      nix-index.enable = true;
+    };
+
+    services = {
+      # gpg-agent = mkIf isLinux {
+      #   enable = isLinux;
+      #   enableSshSupport = true;
+      #   pinentryPackage = pkgs.pinentry-curses;
+      # };
+      # pueue = {
+      #   enable = isLinux;
+      #   # https://github.com/Nukesor/pueue/wiki/Configuration
+      #   settings = {
+      #     daemon = {
+      #       default_parallel_tasks = 1;
+      #     };
+      #   };
+      # };
+    };
+
+    sops = mkIf (username == "teste") {
+      # sops = mkIf (username == "juca") {
+      age = {
+        # automatically import host SSH key as age keys
+        # sshKeyPaths = [ "/home/${username}/.ssh/machines/personal/nitro" ];
+        # this will use an agey key that is expected to already be in the filesystem
+        keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
+        generateKey = false;
+        # generate a new key if the key specified above does not exist
+        # generateKey = true;
+      };
+      defaultSopsFile = ../secrets/secrets.yaml;
+      # validateSopsFiles = false;
+      # sops-nix options: https://dl.thalheim.io/
+
+      # secrets will be output to /run/secrets
+      # e.g. /run/secrets/password
+      # secrets required for user creation are handled in respective ./users/<username>.nix files
+      # because they will be output to /run/secrets-for-users and only when the user is assigned to a host
+      secrets = {
+        # password = { };
+        # asciinema.path = "${config.home.homeDirectory}/.config/asciinema/config";
+        # atuin_key.path = "${config.home.homeDirectory}/.local/share/atuin/key";
+        # gh_token = { };
+        # gpg_private = { };
+        # gpg_public = { };
+        # gpg_ownertrust = { };
+        # hueadm.path = "${config.home.homeDirectory}/.hueadm.json";
+        # obs_secrets = { };
+        # ssh_config.path = "${config.home.homeDirectory}/.ssh/config";
+        ssh_key.path = "${config.home.homeDirectory}/.ssh/machines/personal/nitro";
+        ssh_key_pub.path = "${config.home.homeDirectory}/.ssh/machines/personal/nitro.pub";
+        # ssh_semaphore_key.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore";
+        # ssh_semaphore_pub.path = "${config.home.homeDirectory}/.ssh/id_rsa_semaphore.pub";
+        # transifex.path = "${config.home.homeDirectory}/.transifexrc";
+      };
+    };
+
+    systemd = {
+      user = {
+        # Nicely reload system units when changing configs
+        startServices = mkIf isLinux "sd-switch";
+
+        sessionVariables = {
+          FLAKE = mkForce "/home/${username}/.dotfiles/nixfiles";
+          EDITOR = "micro";
+
+          MICRO_TRUECOLOR = "1";
+          PAGER = "bat";
+          SYSTEMD_EDITOR = "micro";
+          VISUAL = "micro";
+        };
+
+        # Create age keys directory for SOPS
+        tmpfiles = mkIf isLinux {
+          rules = [
+            "d ${config.home.homeDirectory}/.config/sops/age 0755 ${username} users - -"
+          ];
+        };
       };
     };
   };

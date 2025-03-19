@@ -2,11 +2,11 @@
 let
   inherit (lib) mkOption mkIf mdDoc;
   inherit (lib.types) bool;
-  cfg = config.console.zsh;
+  cfg = config.programs.terminal.shells.zsh;
 in
 {
   options = {
-    console.zsh = {
+    programs.terminal.shells.zsh = {
       enable = mkOption {
         type = bool;
         default = false;
@@ -172,7 +172,7 @@ in
       };
     };
     home = {
-    # packages = with pkgs ; [ perl ];
+      # packages = with pkgs ; [ perl ];
       #   activation = {
       #     zshBefore = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
       #       rm -f $XDG_CONFIG_HOME/zsh/.zshenv

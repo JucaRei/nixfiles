@@ -2,10 +2,10 @@
 let
   inherit (lib) mkOption mkDefault mkIf types getExe;
   inherit (lib.types) bool;
-  cfg = config.programs.terminal.shell.bash;
+  cfg = config.programs.terminal.shells.bash;
 in
 {
-  options.programs.terminal.shell.bash = {
+  options.programs.terminal.shells.bash = {
     enable = mkOption {
       default = false;
       type = bool;

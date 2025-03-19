@@ -1,7 +1,7 @@
 { config, desktop, lib, pkgs, username, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mkForce optional mkIf mkDefault;
+  inherit (lib) mkForce optional optionals mkIf mkDefault;
 
   # is_X11 = if ("${pkgs.elogind}/bin/loginctl show-session 2 -p Type" == "Type=x11") then true else false;
   backend = config.programs.graphical.desktop.backend;
@@ -9,7 +9,10 @@ let
 in
 {
   # import the DE specific configuration and any user specific desktop configuration
-  imports = [ ] ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop};
+  imports = [ ]
+    # ++ optional (builtins.pathExists (./. + "/${desktop}")) ./${desktop}
+    ++ optionals (builtins.pathExists (./. + "/${desktop}")) [ ./${desktop} ]
+  ;
 
   config = {
     home = {

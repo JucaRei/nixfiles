@@ -14,7 +14,7 @@ in
   };
   config = mkIf cfg.enable {
     home = {
-      package = pkgs.nano;
+      packages = pkgs.nano;
       file = {
         ".nanorc".text = ''
           set autoindent   # Auto indent

@@ -80,9 +80,9 @@ in
     #   set -x GH_TOKEN (${pkgs.coreutils}/bin/cat ${config.sops.secrets.gh_token.path} 2>/dev/null)
     #   set -x GITHUB_TOKEN (${pkgs.coreutils}/bin/cat ${config.sops.secrets.gh_token.path} 2>/dev/null)
     # '';
-    fish.loginShellInit = ''
-      ${pkgs.figurine}/bin/figurine -f "DOS Rebel.flf" $hostname
-    '';
+    # fish.loginShellInit = ''
+    #   ${pkgs.figurine}/bin/figurine -f "DOS Rebel.flf" $hostname
+    # '';
     # git = {
     #   extraConfig = {
     #     gpg = {

@@ -1,6 +1,6 @@
 { lib, config, username, ... }:
 let
-  inherit (lib) mkDefault mkOption mkIf types;
+  inherit (lib) mkDefault mkOption mkForce mkIf types;
   cfg = config.console.starship;
 in
 {
@@ -17,9 +17,9 @@ in
     programs = {
       starship = {
         enable = true;
-        enableBashIntegration = true;
-        enableFishIntegration = true;
-        enableZshIntegration = true;
+        enableBashIntegration = mkForce true;
+        enableFishIntegration = mkForce true;
+        enableZshIntegration = mkForce true;
         settings = {
           add_newline = false;
           command_timeout = 1000;

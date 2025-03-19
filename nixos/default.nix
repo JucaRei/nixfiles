@@ -18,8 +18,8 @@ in
     (modulesPath + "/installer/scan/not-detected.nix")
     (./. + "/hosts/${hostname}")
     ./users
-    # ../modules/nixos/system
     ../modules/nixos/roles
+    # ../modules/nixos/system
     # ../modules/nixos/hardware
   ] ++
   optional isWorkstation ../modules/nixos/programs/graphical/desktop;

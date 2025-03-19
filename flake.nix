@@ -132,7 +132,7 @@
           "juca@nitrowin" = helper.mkHome { hostname = "nitro"; desktop = null; };
           "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
           # Only terminal apps
-          "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = null; };
+          "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = null; stateVersion = "24.05"; };
           # Servers
           # VMs
           "juca@qemu" = helper.mkHome { hostname = "qemu"; desktop = "bspwm"; };
