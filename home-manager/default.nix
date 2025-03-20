@@ -101,7 +101,7 @@ in
         flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
       in
       {
-        package = mkIf (isOtherOS) (mkDefault pkgs.nixVersions.latest);
+        package = mkIf (isOtherOS) (mkOptionDefault pkgs.nixVersions.latest);
 
         settings = {
           experimental-features = "flakes nix-command";

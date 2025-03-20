@@ -9,7 +9,6 @@
     NIX_CONFIG = "extra-experimental-features = nix-command flakes";
 
     nativeBuildInputs = with pkgs; [
-      nix # nix
       nil # lsp server
       # nixd
       direnv
