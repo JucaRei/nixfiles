@@ -1,10 +1,19 @@
-{ config, lib, ... }:
+{ config, lib, pkgs ? pkgs.unstable, ... }:
 let
   inherit (lib) mkEnableOption mkIf;
   inherit (lib.types) str listOf;
   cfg = config.system.locales;
 in
 {
+  # disabledModules = [
+  #   "${modulesPath}/config/i18n.nix"
+  # ];
+
+  # imports = [
+  #   # (inputs.nixpkgs-unstable + "/modules/config/i18n.nix")
+  #   (inputs.nixpkgs-unstable + "${modulesPath}/config/i18n.nix")
+  # ];
+
   options = {
     system.locales = {
       enable = mkEnableOption "Enable locales support";
@@ -35,12 +44,12 @@ in
       ];
     };
 
-    # environment = {
-    #   variables = {
-    #     # Set locale archive variable in case it isn't being set properly
-    #     LOCALE_ARCHIVE = "/run/current-system/sw/lib/locale/locale-archive";
-    #   };
-    # };
+    environment = {
+      variables = {
+        # Set locale archive variable in case it isn't being set properly
+        LOCALE_ARCHIVE = "/run/current-system/sw/lib/locale/locale-archive";
+      };
+    };
 
     systemd.tmpfiles.rules = [
       "L /usr/lib/locale/locale-archive - - - - /run/current-system/sw/lib/locale/locale-archive"

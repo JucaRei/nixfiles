@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, config, ... }:
 let
   inherit (lib) mkDefault mkForce;
 
@@ -68,7 +68,7 @@ in
       # ]);
 
       # kernelPackages = pkgs.linuxPackages_cachyos;
-      # kernelPackages = pkgs.linuxPackages_xanmod_latest;
+      # kernelPackages = pkgs.unstable.linuxPackages_xanmod_latest;
       # kernelPackages = pkgs.linuxPackages_lqx;
       # kernelPackages = mkForce pkgs.linuxPackages_6_6;
 
@@ -110,18 +110,8 @@ in
         btdu
         btrfs-progs
         compsize
-        gparted
-        lm_sensors
-        # vscode-fhs
-
-        obsidian
-        vlc
-        spotube
-
-        brave
-        duf
-        gnupg
-        pinentry-curses
+        # gparted
+        # lm_sensors
       ];
     };
 
@@ -184,7 +174,8 @@ in
       # 555.78 not working with xanmod
       nvidia = {
         # package = mkForce (config.boot.kernelPackages.nvidiaPackages.mkDriver {
-        #   version = "555.58.02";
+        #   # version = "555.58.02"; 570.124.04-6.13.7
+        #   version = "570.124.04";
         #   sha256_64bit = "sha256-xctt4TPRlOJ6r5S54h5W6PT6/3Zy2R4ASNFPu8TSHKM=";
         #   sha256_aarch64 = "sha256-wb20isMrRg8PeQBU96lWJzBMkjfySAUaqt4EgZnhyF8=";
         #   openSha256 = "sha256-8hyRiGB+m2hL3c9MDA/Pon+Xl6E788MZ50WrrAGUVuY=";

@@ -13,10 +13,12 @@ in
     deluge-gtk
     remmina
     nixpkgs-fmt
-    oldstable.spotube
+    # oldstable.spotube
+    unstable.spotube
     # heynote
 
-    ladder
+    # ladder
+    mpv
   ];
 
   console = {

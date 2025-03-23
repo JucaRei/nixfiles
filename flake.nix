@@ -3,6 +3,7 @@
   inputs = {
     nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
     nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2411.*";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
     nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
 
     flake-compat = {
