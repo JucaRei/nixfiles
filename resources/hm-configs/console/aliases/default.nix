@@ -191,8 +191,8 @@ in
           dd = ''${pkgs.writedisk}/bin/writedisk'';
           wget = "${pkgs.wget2}/bin/wget2";
           du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
-          cpa = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
-          mva = "${pkgs.advmvcp}/bin/advmv --progress-bar";
+          # cpa = "${pkgs.advmvcp}/bin/advcp -R --progress-bar";
+          # mva = "${pkgs.advmvcp}/bin/advmv --progress-bar";
           audio = "${pkgs.inxi}/bin/inxi -A";
           battery = "${pkgs.inxi}/bin/inxi -B -xxx";
           bluetooth = "${pkgs.inxi}/bin/inxi -E";

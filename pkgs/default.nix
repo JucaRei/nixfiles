@@ -32,7 +32,7 @@ pkgs: {
 
   # Tools
   heynote = pkgs.callPackage ./desktop/tools/heynote { };
-  advmvcp = pkgs.callPackage ./tools/advmvcp { };
+  # advmvcp = pkgs.callPackage ./tools/advmvcp { };
   cloneit = pkgs.callPackage ./tools/cloneit { };
   image-colorizer = pkgs.callPackage ./tools/image-colorizer { };
   vv = pkgs.callPackage ./tools/vv { };

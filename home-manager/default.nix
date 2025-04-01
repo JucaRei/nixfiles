@@ -12,7 +12,7 @@ in
 
     # Modules exported from other flakes:
     nur.modules.homeManager.default
-    catppuccin.homeManagerModules.catppuccin
+    catppuccin.homeModules.catppuccin
     sops-nix.homeManagerModules.sops
     nix-index-database.hmModules.nix-index
     nix-flatpak.homeManagerModules.nix-flatpak
