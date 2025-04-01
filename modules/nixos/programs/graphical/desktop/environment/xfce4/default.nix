@@ -93,5 +93,24 @@ in
         };
       };
     };
+    powerManagement.enable = true;
+    # systemd.sleep.extraConfig = ''
+    #   SuspendState=freeze
+    # '';
+
+    # systemd.user.services.xautolock-session =
+    #   let
+    #     cfg = config.services.screen-locker;
+    #   in
+    #   lib.mkForce {
+    #     Service = lib.mkForce {
+    #       ExecStart = lib.concatStringsSep " " ([
+    #         "${cfg.xautolock.package}/bin/xautolock"
+    #         "-time 10" # minutes
+    #         "-locker '${pkgs.systemd}/bin/systemctl suspend'"
+    #       ] ++ lib.optional cfg.xautolock.detectSleep "-detectsleep"
+    #       ++ cfg.xautolock.extraOptions);
+    #     };
+    #   };
   };
 }

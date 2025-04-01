@@ -10,7 +10,7 @@ in
     # cloneit
     typora
     # unstable.obsidian
-    deluge-gtk
+    # deluge-gtk
     remmina
     nixpkgs-fmt
     # oldstable.spotube
@@ -63,7 +63,7 @@ in
 
   services = {
     flatpak = {
-      enable = true;
+      enable = false;
       remotes = mkOptionDefault [{
         # name = "flathub-beta";
         # location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
