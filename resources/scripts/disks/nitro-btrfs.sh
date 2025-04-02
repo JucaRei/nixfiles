@@ -2,6 +2,8 @@
 
 DRIVE="/dev/nvme0n1p4"
 
+sgdisk -Z $DRIVE
+
 # sgdisk -Z /dev/${DRIVE}p2
 # sgdisk -Z /dev/${DRIVE}p3
 # sgdisk -n 0:0:512MiB /dev/vda

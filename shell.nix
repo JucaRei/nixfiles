@@ -19,6 +19,7 @@
       git # versioning
       # nix-output-monitor # better output from builds
       nh
+      cachix
       dropbear # ssh
 
       figlet

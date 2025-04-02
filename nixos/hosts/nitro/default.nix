@@ -85,6 +85,10 @@ in
             machineUnits = [ ];
           };
         };
+
+        zram = {
+          enable = true;
+        };
       };
     };
 
@@ -121,8 +125,8 @@ in
       #   # (callPackage ../../../pkgs/system/kernel/rtl8188gu/test2.nix { })
       # ]);
 
-      kernelPackages = pkgs.linuxPackages_cachyos;
-      # kernelPackages = pkgs.unstable.linuxPackages_xanmod_latest;
+      # kernelPackages = pkgs.linuxPackages_cachyos;
+      kernelPackages = pkgs.unstable.linuxPackages_xanmod_latest;
       # kernelPackages = pkgs.linuxPackages_lqx;
       # kernelPackages = mkForce pkgs.linuxPackages_6_6;
 
@@ -287,12 +291,12 @@ in
         };
       };
 
-      sleep.extraConfig = ''
-        AllowHibernation=yes
-        AllowSuspend=yes
-        AllowSuspendThenHibernate=yes
-        AllowHybridSleep=yes
-      '';
+      # sleep.extraConfig = ''
+      #   AllowHibernation=yes
+      #   AllowSuspend=yes
+      #   AllowSuspendThenHibernate=yes
+      #   AllowHybridSleep=yes
+      # '';
     };
 
     nixpkgs = {

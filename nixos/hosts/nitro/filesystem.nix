@@ -190,8 +190,8 @@ in
   #   }
   # ];
 
-  swapDevices = [{
-    device = "/swapfile";
-    size = 16 * 1024; # 16GB
-  }];
+  # swapDevices = [{
+  #   device = "/swapfile";
+  #   size = 16 * 1024; # 16GB
+  # }];
 }
