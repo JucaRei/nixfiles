@@ -7,6 +7,7 @@ let
 in
 {
   imports = [ ./root ]
+    # ++ lib.optional (builtins.pathExists (./. + "/${username}")) ./${username}
     ++ lib.optional (builtins.pathExists (./. + "/${username}")) ./${username}
     # ++ lib.optionals (builtins.pathExists (./. + "/${username}")) [ ./${username} ]
   ;

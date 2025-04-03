@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, config, modulesPath, ... }:
 let
   inherit (lib) mkDefault mkForce;
 
@@ -7,6 +7,7 @@ in
 {
   imports = [
     ./filesystem.nix
+    ../../users
     # ./externalMonitor.nix
     # ./disks-btrfs.nix
   ];

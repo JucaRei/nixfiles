@@ -16,7 +16,7 @@ in
     nixos-hardware.nixosModules.common-pc
     nixos-hardware.nixosModules.common-pc-ssd
     (modulesPath + "/installer/scan/not-detected.nix")
-    (./. + "/hosts/${hostname}")
+    (./. + "/hosts/${hostname}/default.nix")
     ./users
     ../modules/nixos/roles
     # ../modules/nixos/system
@@ -103,7 +103,7 @@ in
           warn-dirty = false;
           tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
           # Disable global registry
-          flake-registry = "";
+          # flake-registry = "";
           # Workaround for https://github.com/NixOS/nix/issues/9574
           # nix-path = mkOverride 1500 config.nix.nixPath;
           nix-path = mkOptionDefault config.nix.nixPath;
@@ -117,7 +117,7 @@ in
           connect-timeout = 10
         '';
         # Disable channels
-        channel.enable = false;
+        # channel.enable = mkForce false;
         # Make flake registry and nix path match flake inputs
         registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
         nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
