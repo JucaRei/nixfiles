@@ -170,6 +170,8 @@ in
           # Systemd nspawn
           nspawn = "${pkgs.systemdMinimal}/bin/systemd-nspawn";
 
+          # scan-net = ''nmap -sn 10.10.10.1/24 | awk '/Nmap scan/{gsub(/[()]/,"",$NF); print $NF > "nmap_scanned_ips"}' '';
+
           fix-ext4 = "sudo ${pkgs.e2fsprogs}/bin/e2fsck -vfy";
           # Others
           sxorg = "export DISPLAY=:0.0";
