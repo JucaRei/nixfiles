@@ -65,67 +65,107 @@
   };
 
   outputs =
-    { self
-    , nixpkgs
-    , home-manager
-    , ...
-    } @ inputs:
-    let
-      inherit (self) outputs;
-      # Supported systems for your flake packages, shell, etc.
-      systems = [
-        "aarch64-linux"
-        "i686-linux"
-        "x86_64-linux"
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ];
-      # This is a function that generates an attribute by calling a function you
-      # pass to it, with each system as an argument
-      forAllSystems = nixpkgs.lib.genAttrs systems;
-    in
-    {
-      # Your custom packages
-      # Accessible through 'nix build', 'nix shell', etc
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-      # Formatter for your nix files, available through 'nix fmt'
-      # Other options beside 'alejandra' include 'nixpkgs-fmt'
-      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
-
-      # Your custom packages and modifications, exported as overlays
-      overlays = import ./overlays { inherit inputs; };
-      # Reusable nixos modules you might want to export
-      # These are usually stuff you would upstream into nixpkgs
-      nixosModules = import ./modules/nixos;
-      # Reusable home-manager modules you might want to export
-      # These are usually stuff you would upstream into home-manager
-      homeManagerModules = import ./modules/home-manager;
-
-      # NixOS configuration entrypoint
-      # Available through 'nixos-rebuild --flake .#your-hostname'
-      nixosConfigurations = {
-        # FIXME replace with your hostname
-        your-hostname = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = [
-            # > Our main nixos configuration file <
-            ./nixos/configuration.nix
-          ];
+    { self, nix-darwin, nixpkgs, ... }@inputs:
+      with inputs;
+      let
+        inherit (self) outputs;
+        # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+        # stateVersion = "24.11";
+        helper = import ./lib { inherit inputs outputs stateVersion; };
+      in
+      {
+        # home-manager switch -b backup --flake $HOME/.dotfiles/nixfiles
+        # home-manager switch -b backup --flake $FLAKE
+        # nix run nixpkgs#home-manager -- switch -b backup --flake "${HOME}/.dotfiles/nixfiles"
+        # nom build -- switch -b backup --flake "${HOME}/.dotfiles/nixfiles"
+        # nom build .#homeConfigurations.${username@hostname}.activationPackage --impure --show-trace -vL
+        homeConfigurations = {
+          # .iso images
+          "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
+          "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+          "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+          "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+          # Workstations
+          "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
+          "juca@nitrowin" = helper.mkHome { hostname = "nitro"; };
+          "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
+          # Only terminal apps
+          "juca@anubis" = helper.mkHome { hostname = "anubis"; stateVersion = "24.05"; };
+          # Servers
+          # VMs
+          "juca@qemu" = helper.mkHome { hostname = "qemu"; };
+          "juca@soyoz-vm" = helper.mkHome { hostname = "soyoz-vm"; desktop = "xfce4"; };
+          "juca@minimech" = helper.mkHome { hostname = "minimech"; };
+          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "kde"; };
+          # Apple
         };
-      };
+        nixosConfigurations = {
+          ## Examples ##
+          # nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
+          # nix run github:numtide/nixos-anywhere -- --flake /home/juca/.dotfiles/nixfiles#air root@192.168.1.76
+          # nix run github:numtide/nixos-anywhere -- --flake $FLAKE#air root@192.168.1.76
+          # nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
+          # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
 
-      # Standalone home-manager configuration entrypoint
-      # Available through 'home-manager --flake .#your-username@your-hostname'
-      homeConfigurations = {
-        # FIXME replace with your username@hostname
-        "your-username@your-hostname" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-          extraSpecialArgs = { inherit inputs outputs; };
-          modules = [
-            # > Our main home-manager configuration file <
-            ./home-manager/home.nix
-          ];
+          # .iso images
+          iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
+          iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+          iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+          iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+
+          # Workstations
+          #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
+          #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
+          #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
+          rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
+          nitro = helper.mkNixos {
+            hostname = "nitro";
+            # desktop = "hyprland";
+            desktop = "xfce4";
+          };
+
+          # Servers
+          soyoz = helper.mkNixos { hostname = "soyoz"; };
+          revan = helper.mkNixos { hostname = "revan"; };
+
+          # VMs
+          soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = "xfce4"; stateVersion = "24.05"; };
+          scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "kde"; };
         };
+
+        #nix run nix-darwin -- switch --flake ~/Zero/nix-config
+        #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
+        # darwinConfigurations = {
+        # };
+
+        #  System-Manager configurations
+        # nix run .#systemCOnfigs.{$hostname}.config.system.build.toplevel
+        # nom build .#systemCOnfigs.{$hostname}.config.system.build.toplevel
+        # systemConfigs = {
+        #   minimech = helper.mkSystemManager { };
+        # };
+
+        # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
+        devShells = helper.forAllSystems (system:
+          let
+            pkgs = nixpkgs.legacyPackages.${system};
+          in
+          import ./shell.nix {
+            inherit pkgs;
+            # node = pkgs.callPackage ./shells/node { };
+          }
+        );
+
+        # Custom packages and modifications, exported as overlays
+        overlays = import ./overlays { inherit inputs; };
+
+        # Custom packages; acessible via 'nix build', 'nix shell', etc
+        packages = helper.forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+        # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+        # nom-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
+
+        # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
+        formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+        # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
       };
-    };
 }
