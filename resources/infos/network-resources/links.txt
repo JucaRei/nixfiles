@@ -1,3 +1,0 @@
-## rathole
-- https://blog.mni.li/posts/caddy-rathole-zero-knowledge/
-- https://github.com/rapiz1/rathole
