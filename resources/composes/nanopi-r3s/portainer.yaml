@@ -1,7 +1,7 @@
 ---
 services:
   portainer-ce:
-    image: "portainer/portainer-ce:2.23.0-linux-arm64-alpine"
+    image: "portainer/portainer-ce:alpine"
     container_name: portainer
     ## Docker
     # command: -H unix:///var/run/docker.sock
@@ -9,14 +9,14 @@ services:
     volumes:
       ## Docker
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/docker/portainer/data:/data"
+      - "/root/docker/portainer/data:/data"
 
     # network_mode: "host"
 
     ports:
       # https
-      - "9001:8000"
-      - "9443:9443"
+      - "7080:8000"
+      - "9555:9443"
       # http
-      - "9002:9000"
+      - "7081:9000"
     restart: unless-stopped

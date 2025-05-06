@@ -1,8 +1,7 @@
----
 services:
   jellyfin:
     #image: lscr.io/linuxserver/jellyfin:arm64v8-nightly-2025021314ubu2404-ls62
-    image: lscr.io/linuxserver/jellyfin:10.10.6
+    image: lscr.io/linuxserver/jellyfin:10.10.7
     container_name: jellyfin
     privileged: true
     environment:
@@ -13,8 +12,10 @@ services:
     # command:
       # '`for dev in dri dma_heap mali0 rga mpp-service ; do [ -e "/dev/$dev" ] && echo " --device /dev/$dev"; done`'
     volumes:
-      - /root/docker/jellyfin/config:/config
-      - /root/docker/jellyfin/cache:/cache
+      # - /root/docker/jellyfin/config:/config
+      # - /root/docker/jellyfin/cache:/cache
+      - /opt/docker/composes/jellyfin/data:/config
+      - /opt/docker/composes/jellyfin/cache:/cache
 
       # - externalHD_movies:/filmes
       - /mnt/700gb/Movies:/filmes
@@ -41,8 +42,10 @@ services:
       # - 1900:1900/udp #optional
     mem_limit: 1600M # 1500M
     # mem_reservation: 300M
-    cpus: 2.4
-    network_mode: "bridge" # "host"
+    cpus: 1.5
+    networks:
+      media:
+    # network_mode: "bridge" # "host"
     devices:
       ### Intel
       # - /dev/dri:/dev/dri
@@ -61,54 +64,59 @@ services:
     #   - "host.docker.internal:host-gateway"
     restart: unless-stopped
 volumes:
-  externalHD_movies:
+  hd700_animes:
+    driver: local
     driver_opts:
-      type: cifs
-      device: //10.10.10.1/extermalhd/Movies
-      o: "rw,guest,vers=3.0,nodev"
-  externalHD_series:
+      type: "cifs"
+      o: "username=guest,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Animes"
+  hd700_movies:
+    driver: local
     driver_opts:
-      type: cifs
-      device: //10.10.10.1/extermalhd/Tvshows
-      o: "rw,guest,vers=3.0,nodev"
-  externalHD_animes:
+      type: "cifs"
+      o: "username=guest,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Movies"
+  hd700_series:
+    driver: local
     driver_opts:
-      type: cifs
-      device: //10.10.10.1/extermalhd/Animes
-      o: "rw,guest,vers=3.0,nodev"
+      type: "cifs"
+      o: "username=guest,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Tvshows"
   nas1_movies:
     driver_opts:
-      # type: cifs
-      # device: //10.10.10.200/volume_1/Movies
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_b2/Movies"
-      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_b2/Movies
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
   nas1_tvshow:
     driver_opts:
       type: nfs
-      device: ":/mnt/HD/HD_b2/TvShows"
-      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_b2/TvShows
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
   nas1_animes:
     driver_opts:
       type: nfs
-      device: ":/mnt/HD/HD_b2/Animes"
-      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_b2/Animes
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
   nas2_movies:
     driver_opts:
       type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Filmes"
-      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Filmes
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
   nas2_tvshow:
     driver_opts:
       type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Series"
-      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Series
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
   nas2_animes:
     driver_opts:
       type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes"
-      o: "addr=10.10.10.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Animes
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid
+
+networks:
+  media:
+    name: my-bridge-net
+    external: true
 
   # hd700_animes_series:
   #     driver_opts:

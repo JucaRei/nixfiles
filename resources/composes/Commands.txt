@@ -1,0 +1,23 @@
+### Bridge
+docker network create my-bridge-net --subnet 10.0.0.0/19 --gateway 10.0.0.1
+
+### IPVlan
+docker network create -d ipvlan --subnet=10.10.10.1/24 --gateway=10.10.10.1 -o ipvlan_mode=l2 -o parent=eth1 my-ipvlan-net
+
+### Macvlan
+docker network create -d macvlan --subnet=11.11.11.0/24 --gateway=11.11.11.1 -o parent=eth1 my-macvlan-net
+docker network create -d macvlan --subnet=11.11.11.0/24 --gateway=11.11.11.1 -o parent=br-lan my-macvlan-net
+docker network create -d macvlan --subnet=10.10.10.0/24 --gateway=10.10.10.1 --ip-range 10.10.10.253/32 -o parent=br-lan local-network
+
+
+tcpdump ip-full
+
+
+#### Disable odhcpd ####
+
+/etc/init.d/odhcpd disable
+/etc/init.d/odhcpd stop
+
+config odhcpd 'odhcpd'
+option dhcpv6 'disabled'
+option ra 'disabled'

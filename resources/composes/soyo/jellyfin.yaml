@@ -12,115 +12,169 @@ services:
       # - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
       - DOCKER_MODS=linuxserver/mods:jellyfin-opencl-intel
     volumes:
-      - /home/juca/docker/jellyfin/config:/config
-      - nas1_movies:/data/movies
-      - nas1_tvshow:/data/tvshows
-      - nas1_animes_series:/data/animes/series
-      - nas1_animes_movies:/data/animes/movies
-      - nas2_tvshow:/data/tvshows2
-      - nas2_movies:/data/movies2
-      - nas2_animes_series:/data/animes2/series
-      - nas2_animes_movies:/data/animes2/movies
+      - /home/dev/composes-data/jellyfin/data:/config
+
+      - hd700_animes:/animes
+      - hd700_movies:/movies
+      - hd700_series:/series
+      - nas1_movies:/movies1
+      - nas1_tvshow:/series1
+      - nas1_animes:/animes1
+      - nas2_tvshow:/series2
+      - nas2_movies:/movies2
+      - nas2_animes:/animes2
     ports:
       - 8096:8096
       - 8920:8920 #optional
       - 7359:7359/udp #optional
       - 1900:1900/udp #optional
-    mem_limit: 1000M
+    mem_limit: 1200M
     mem_reservation: 300M
-    cpus: 0.8
+    cpus: 0.7
     devices:
       # - /dev/dri:/dev/dri
       - /dev/dri/renderD128:/dev/dri/renderD128
-      - /dev/dri/card1:/dev/dri/card1
+      - /dev/dri/card0:/dev/dri/card0
     restart: unless-stopped
 volumes:
+  hd700_animes:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      o: "username=guest,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Animes"
+  hd700_movies:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      o: "username=guest,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Movies"
+  hd700_series:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      o: "username=guest,vers=3.0,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Tvshows"
   nas1_movies:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_1/Movies
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_b2/Movies"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_b2/Movies
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
   nas1_tvshow:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_1/TvShows
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_b2/TvShows"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  nas1_animes_series:
+      device: :/mnt/HD/HD_b2/TvShows
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
+  nas1_animes:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_1/Animes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_b2/Animes/Series"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  nas1_animes_movies:
-    driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_1/Animes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
-      type: nfs
-      device: ":/mnt/HD/HD_b2/Animes/Movies"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_b2/Animes
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
   nas2_movies:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_2/Transmission/complete/Filmes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Filmes"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Filmes
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
   nas2_tvshow:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_2/Transmission/complete/Series
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Series"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  nas2_animes_series:
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Series
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid,noexec,nodev
+  nas2_animes:
     driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_2/Transmission/complete/Animes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
       type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes/Series"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  nas2_animes_movies:
-    driver_opts:
-      # type: cifs
-      # device: //192.168.2.200/volume_2/Transmission/complete/Animes
-      # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
-      type: nfs
-      device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes/Movies"
-      o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
-  # hd700_animes_series:
-  #     driver_opts:
-  #         type: cifs
-  #         device: //192.168.2.1/HD700/Animes/Series
-  #         # o: "username=root,password=200291,vers=3.1.1"
-  #         o: "rw,guest"
-  # hd700_animes_movies:
-  #     driver_opts:
-  #         type: cifs
-  #         device: //192.168.2.1/HD700/Animes/Movies
-  #         o: "rw,guest"
-  # hd700_movies:
-  #     driver_opts:
-  #         type: cifs
-  #         device: //192.168.2.1/HD700/Movies
-  #         o: "rw,guest"
-  # hd700_tvshows:
-  #     driver_opts:
-  #         type: cifs
-  #         device: //192.168.2.1/HD700/Tvshows
-  #         o: "rw,guest"
-# networks:
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Animes
+      o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid
+
+
+
+# volumes:
+#   nas1_movies:
+#     driver_opts:
+#       # type: cifs
+#       # device: //192.168.2.200/volume_1/Movies
+#       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+#       type: nfs
+#       device: ":/mnt/HD/HD_b2/Movies"
+#       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+#   nas1_tvshow:
+#     driver_opts:
+#       # type: cifs
+#       # device: //192.168.2.200/volume_1/TvShows
+#       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+#       type: nfs
+#       device: ":/mnt/HD/HD_b2/TvShows"
+#       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+#   nas1_animes_series:
+#     driver_opts:
+#       # type: cifs
+#       # device: //192.168.2.200/volume_1/Animes
+#       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+#       type: nfs
+#       device: ":/mnt/HD/HD_b2/Animes/Series"
+#       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+#   nas1_animes_movies:
+#     driver_opts:
+#       # type: cifs
+#       # device: //192.168.2.200/volume_1/Animes
+#       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+#       type: nfs
+#       device: ":/mnt/HD/HD_b2/Animes/Movies"
+#       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+#   nas2_movies:
+#     driver_opts:
+#       # type: cifs
+#       # device: //192.168.2.200/volume_2/Transmission/complete/Filmes
+#       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+#       type: nfs
+#       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Filmes"
+#       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+#   nas2_tvshow:
+#     driver_opts:
+#       # type: cifs
+#       # device: //192.168.2.200/volume_2/Transmission/complete/Series
+#       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+#       type: nfs
+#       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Series"
+#       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+#   nas2_animes_series:
+#     driver_opts:
+#       # type: cifs
+#       # device: //192.168.2.200/volume_2/Transmission/complete/Animes
+#       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+#       type: nfs
+#       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes/Series"
+#       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+#   nas2_animes_movies:
+#     driver_opts:
+#       # type: cifs
+#       # device: //192.168.2.200/volume_2/Transmission/complete/Animes
+#       # o: "username=juca,password=200291,vers=1.0,uid=1000,gid=990"
+#       type: nfs
+#       device: ":/mnt/HD/HD_a2/Transmission/Volume_2/Animes/Movies"
+#       o: "addr=192.168.2.200,rw,nfsvers=3,nolock,soft,nosuid"
+#   # hd700_animes_series:
+#   #     driver_opts:
+#   #         type: cifs
+#   #         device: //192.168.2.1/HD700/Animes/Series
+#   #         # o: "username=root,password=200291,vers=3.1.1"
+#   #         o: "rw,guest"
+#   # hd700_animes_movies:
+#   #     driver_opts:
+#   #         type: cifs
+#   #         device: //192.168.2.1/HD700/Animes/Movies
+#   #         o: "rw,guest"
+#   # hd700_movies:
+#   #     driver_opts:
+#   #         type: cifs
+#   #         device: //192.168.2.1/HD700/Movies
+#   #         o: "rw,guest"
+#   # hd700_tvshows:
+#   #     driver_opts:
+#   #         type: cifs
+#   #         device: //192.168.2.1/HD700/Tvshows
+#   #         o: "rw,guest"
+# # networks:
 #   default:
 #     driver: bridge
 #     # name: duckdns

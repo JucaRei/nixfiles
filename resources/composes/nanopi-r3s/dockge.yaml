@@ -1,0 +1,33 @@
+services:
+  dockge:
+    image: louislam/dockge:latest
+    restart: unless-stopped
+    ports:
+      - 7111:5001
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/docker-composes/dockge/config:/app/data
+      # Stacks Directory
+      # ⚠️ READ IT CAREFULLY. If you did it wrong, your data could end up writing into a WRONG PATH.
+      # ⚠️ 1. FULL path only. No relative path (MUST)
+      # ⚠️ 2. Left Stacks Path === Right Stacks Path (MUST)
+      - /opt/docker-composes/dockge/stacks:/opt/stacks
+    environment:
+      # Tell Dockge where to find the stacks
+      - DOCKGE_STACKS_DIR=/opt/docker-composes/dockge/stacks
+    networks:
+      shared:
+networks:
+  shared:
+    name: my-bridge-net
+    external: true
+
+#     networks:
+#       - my-bridge-net
+# networks:
+#   my-bridge-net:
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: "10.0.0.0/19"
+#           gateway: "10.0.0.1"
