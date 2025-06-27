@@ -1,0 +1,152 @@
+services:
+  transmission:
+    # image: linuxserver/transmission:4.0.5
+    image: linuxserver/transmission:version-3.00-r8
+    container_name: transmission
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+      - USER=juca
+      - PASS=200291
+      # - TRANSMISSION_WEB_HOME= #optional
+      # - WHITELIST= #optional
+      # - PEERPORT= #optional
+      # - HOST_WHITELIST= #optional
+    volumes:
+      - /home/juca/services/transmission/data:/config
+
+      # - /home/juca/700gb/Animes:/animes
+      # - /home/juca/700gb/Downloads:/downloads
+      # - /home/juca/700gb/Tvshows:/series
+      # - /home/juca/700gb/Movies:/filmes
+      # - /home/juca/700gb/Books:/livros
+      # - /home/juca/700gb/Mangas:/mangas
+      # - /home/juca/700gb/Cursos:/cursos
+
+      - hd700animes:/animes
+      - hd700downloads:/downloads
+      - hd700series:/series
+      - hd700movies:/filmes
+      - hd700books:/livros
+      - hd700mangas:/mangas
+      - hd700cursos:/cursos
+
+      - nas1_movies:/filmes1
+      - nas1_tvshow:/series1
+      - nas1_animes:/animes1
+      - nas2_movies:/filmes2
+      - nas2_tvshow:/series2
+      - nas2_animes:/animes2
+      - nas2_downloads:/downloads2
+      - nas2_cursos:/cursos2
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    restart: unless-stopped
+volumes:
+  hd700animes:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      # o: "guest,vers=2.1,nounix,uid=1000,gid=1000,sec=none"
+      # o: "guest,vers=2.1,nounix,noperm,sec=none"
+      o: "guest,vers=4.2,nounix,sec=none,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Animes"
+  hd700downloads:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      # o: "guest,vers=2.1,nounix,uid=1000,gid=1000,sec=none"
+      # o: "guest,vers=2.1,nounix,noperm,sec=none"
+      o: "guest,vers=4.2,nounix,sec=none,noserverino,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Downloads"
+  hd700series:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      # o: "guest,vers=2.1,nounix,uid=1000,gid=1000,sec=none"
+      # o: "guest,vers=2.1,nounix,noperm,sec=none"
+      o: "guest,vers=4.2,nounix,sec=none,noserverino,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Tvshows"
+  hd700livros:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      # o: "guest,vers=2.1,nounix,uid=1000,gid=1000,sec=none"
+      # o: "guest,vers=2.1,nounix,noperm,sec=none"
+      o: "guest,vers=4.2,nounix,sec=none,noserverino,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Books"
+  hd700movies:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      # o: "guest,vers=2.1,nounix,uid=1000,gid=1000,sec=none"
+      # o: "guest,vers=2.1,nounix,noperm,sec=none"
+      o: "guest,vers=4.2,nounix,sec=none,noserverino,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Movies"
+  hd700books:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      # o: "guest,vers=2.1,nounix,uid=1000,gid=1000,sec=none"
+      # o: "guest,vers=2.1,nounix,noperm,sec=none"
+      o: "guest,vers=4.2,nounix,sec=none,noserverino,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Movies"
+  hd700mangas:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      # o: "guest,vers=2.1,nounix,uid=1000,gid=1000,sec=none"
+      # o: "guest,vers=2.1,nounix,noperm,sec=none"
+      o: "guest,vers=4.2,nounix,sec=none,noserverino,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Mangas"
+  hd700cursos:
+    driver: local
+    driver_opts:
+      type: "cifs"
+      # o: "guest,vers=2.1,nounix,uid=1000,gid=1000,sec=none"
+      # o: "guest,vers=2.1,nounix,noperm,sec=none"
+      o: "guest,vers=4.2,nounix,sec=none,noserverino,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      device: "//10.10.10.1/700gb/Cursos"
+  nas1_movies:
+    driver_opts:
+      type: nfs
+      device: :/mnt/HD/HD_b2/Movies
+      o: addr=10.10.10.10,rw,nfsvers=3,nolock,nosuid,noexec,nodev
+  nas1_tvshow:
+    driver_opts:
+      type: nfs
+      device: :/mnt/HD/HD_b2/TvShows
+      o: addr=10.10.10.10,rw,nfsvers=3,nolock,nosuid,noexec,nodev
+  nas1_animes:
+    driver_opts:
+      type: nfs
+      device: :/mnt/HD/HD_b2/Animes
+      o: addr=10.10.10.10,rw,nfsvers=3,nolock,nosuid,noexec,nodev
+  nas2_movies:
+    driver_opts:
+      type: nfs
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Filmes
+      o: addr=10.10.10.10,rw,nfsvers=3,nolock,nosuid,noexec,nodev
+  nas2_tvshow:
+    driver_opts:
+      type: nfs
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Series
+      o: addr=10.10.10.10,rw,nfsvers=3,nolock,nosuid,noexec,nodev
+  nas2_animes:
+    driver_opts:
+      type: nfs
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Animes
+      o: addr=10.10.10.10,rw,nfsvers=3,nolock,nosuid
+  nas2_downloads:
+    driver_opts:
+      type: nfs
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Downloads
+      o: addr=10.10.10.10,rw,nfsvers=3,nolock,nosuid
+  nas2_cursos:
+    driver_opts:
+      type: nfs
+      device: :/mnt/HD/HD_a2/Transmission/Volume_2/Cursos
+      o: addr=10.10.10.10,rw,nfsvers=3,nolock,nosuid

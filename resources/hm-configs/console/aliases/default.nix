@@ -215,6 +215,8 @@ in
           rsync = "${getExe pkgs.rsync} -aXxtv"; # Better copying with Rsync
           tree = "${getExe pkgs.tree} -Cs"; # -colorized - sorted
 
+          # sharecenter = ${pkgs.ssh}/bin/ssh -v -oHostKeyAlgorithms=+ssh-dss root@10.10.10.226
+
           # Nix
           # store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
 

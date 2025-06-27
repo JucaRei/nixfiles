@@ -75,4 +75,3 @@ volumes:
       type: nfs
       device: :/mnt/HD/HD_a2/Transmission/Volume_2/Downloads
       o: addr=10.10.10.226,rw,nfsvers=3,nolock,nosuid
-networks: {}

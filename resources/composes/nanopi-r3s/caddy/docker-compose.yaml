@@ -1,0 +1,20 @@
+volumes:
+  caddy_data: {}
+  caddy_config: {}
+
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "443:443"http://10.10.10.137:20211/systeminfo.php
+    volumes:
+      - ./caddyConf/Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+  whoami:
+    image: traefik/whoami
+    container_name: whoami
+    restart: unless-stopped

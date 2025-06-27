@@ -12,13 +12,14 @@ services:
       - PUID=1000
       - PGID=990
       - UMASK_SET=002
-      - serverIP=0.0.0.0
-      - serverPort=8266
+      # - serverIP=0.0.0.0
+      # - serverPort=8266
       - webUIPort=8265
       - internalNode=true
       - inContainer=true
-      - ffmpegVersion=6
-      - nodeName=MyInternalNode
+      - ffmpegVersion=7
+      # - nodeName=MyInternalNode
+      - nodeName=Soyoz
       # - NVIDIA_DRIVER_CAPABILITIES=all
       # - NVIDIA_VISIBLE_DEVICES=all
     volumes:
@@ -64,10 +65,10 @@ services:
       - PGID=990
       - UMASK_SET=002
       - nodeName=MyExternalNode
-      - serverIP=0.0.0.0
-      - serverPort=8266
+      # - serverIP=0.0.0.0
+      # - serverPort=8266
       - inContainer=true
-      - ffmpegVersion=6
+      - ffmpegVersion=7
       # - NVIDIA_DRIVER_CAPABILITIES=all
       # - NVIDIA_VISIBLE_DEVICES=all
 
