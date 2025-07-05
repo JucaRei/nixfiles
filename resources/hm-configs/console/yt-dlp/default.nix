@@ -191,7 +191,8 @@ in
         #  yta-vorbis = "yt-dlp --extract-audio --audio-format vorbis --output '%(title)s.%(ext)s' --no-keep-video ";
         #  yta-wav = "yt-dlp --extract-audio --audio-format wav --output '%(title)s.%(ext)s' --no-keep-video ";
         ytv-best = "yt-dlp -f bestvideo+bestaudio --output '%(title)s.%(ext)s' --no-keep-video ";
-        ytv-best-mp4 = "yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 --no-keep-video --embed-chapters --output '%(title)s.%(ext)s' ";
+        # ytv-best-mp4 = "yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' --write-auto-sub --sub-lang 'pt,us' --embed-subs --merge-output-format mp4 --no-keep-video --embed-chapters --output '%(title)s.%(ext)s' ";
+        ytv-best-mp4-fullhd = "yt-dlp -f 'bv*[ext=mp4][height<=1080]+ba[ext=m4a]/best[ext=mp4]' --write-auto-sub --sub-lang 'pt,us' --embed-subs --merge-output-format mp4 --no-keep-video --embed-chapters --output '%(title)s.%(ext)s' ";
         # ytv-best-playlist = "yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 --no-keep-video --embed-chapters --output '%(playlist_uploader)s/%(playlist_title)s/%(title)s. [%(id)s].%(ext)s' ";
         ytv-best-playlist = "yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio' --merge-output-format mp4 --no-keep-video --embed-chapters --output '%(playlist_uploader)s/%(playlist_title)s/%(playlist_index)s - %(title)s. .%(ext)s' ";
 

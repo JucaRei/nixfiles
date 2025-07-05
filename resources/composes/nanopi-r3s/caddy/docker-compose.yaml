@@ -1,20 +1,42 @@
 volumes:
-  caddy_data: {}
-  caddy_config: {}
+  caddy_data: # docker volume create caddy-data
+    external: true # ensures that docker compose down does not delete the volume
+
+  caddy_config:
 
 services:
   caddy:
     image: caddy:latest
+    # image: serfriz/caddy-cloudflare-ddns-crowdsec-geoip-security:2
     container_name: caddy
     restart: unless-stopped
-    ports:
-      - "443:443"http://10.10.10.137:20211/systeminfo.php
-    volumes:
-      - ./caddyConf/Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
 
-  whoami:
-    image: traefik/whoami
-    container_name: whoami
-    restart: unless-stopped
+    ports:
+      # - "80:80"  # HTTP port
+      - "443:443"  # HTTPS port
+      # - "443:443/udp"  # HTTP/3 port (optional)
+
+    volumes:
+      - ./caddyConf/Caddyfile:/etc/caddy/Caddyfile # to use your own Caddyfile
+      - caddy_data:/data # volume mount for certificates data
+      - caddy_config:/config # volume mount for configuration data
+
+    # environment:
+    #   - CLOUDFLARE_API_TOKEN=<token-value>  # Cloudflare API token (if applicable)
+    #   - DUCKDNS_API_TOKEN=<token-value>  # DuckDNS API token (if applicable)
+    #   - CROWDSEC_API_KEY=<key-value>  # CrowdSec API key (if applicable)
+    #   - GANDI_BEARER_TOKEN=<token-value>  # Gandi API token (if applicable)
+    #   - NETCUP_CUSTOMER_NUMBER=<number-value>  # Netcup customer number (if applicable)
+    #   - NETCUP_API_KEY=<key-value>  # Netcup API key (if applicable)
+    #   - NETCUP_API_PASSWORD=<password-value>  # Netcup API password (if applicable)
+    #   - PORKBUN_API_KEY=<key-value>  # Porkbun API key (if applicable)
+    #   - PORKBUN_API_SECRET_KEY=<secret-key-value>  # Porkbun API secret key (if applicable)
+    #   - OVH_ENDPOINT=<endpoint-value>  # OVH endpoint (if applicable)
+    #   - OVH_APPLICATION_KEY=<application-value>  # OVH application key (if applicable)
+    #   - OVH_APPLICATION_SECRET=<secret-value>  # OVH application secret (if applicable)
+    #   - OVH_CONSUMER_KEY=<consumer-key-value>  # OVH consumer key (if applicable)
+
+  # whoami:
+  #   image: traefik/whoami
+  #   container_name: whoami
+  #   restart: unless-stopped
