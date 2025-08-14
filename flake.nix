@@ -2,10 +2,9 @@
   description = "NixOS, nix-darwin and Home Manager Configuration";
 
   inputs = {
-
-
     # Nixpkgs Stable
-    nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2411.*";
+    # nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2411.*";
+    nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2505.*";
 
     # Nixpkgs Unstable
     # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -16,7 +15,8 @@
     nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
 
     # Home manager Stable
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    # home-manager.url = "github:nix-community/home-manager/release-24.11";
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     home-manager_unstable.url = "github:nix-community/home-manager/master";
@@ -36,6 +36,7 @@
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
     nur.url = "github:nix-community/NUR"; # Add "nur.nixosModules.nur" to the host modules
+    nixos-needsreboot.url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.9.tar.gz";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -81,24 +82,55 @@
         # nom build .#homeConfigurations.${username@hostname}.activationPackage --impure --show-trace -vL
         homeConfigurations = {
           # .iso images
-          "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
-          "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
-          "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-          "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+          "nixos@iso-console" = helper.mkHome {
+            hostname = "iso-console";
+            username = "nixos";
+          };
+          "nixos@iso-gnome" = helper.mkHome {
+            hostname = "iso-gnome";
+            username = "nixos";
+            desktop = "gnome";
+          };
+          "nixos@iso-mate" = helper.mkHome {
+            hostname = "iso-mate";
+            username = "nixos";
+            desktop = "mate";
+          };
+          "nixos@iso-pantheon" = helper.mkHome {
+            hostname = "iso-pantheon";
+            username = "nixos";
+            desktop = "pantheon";
+          };
           # Workstations
-          "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
+          "juca@nitro" = helper.mkHome {
+            hostname = "nitro";
+            desktop = "xfce4";
+          };
           "juca@nitrowin" = helper.mkHome { hostname = "nitro"; };
-          "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
+          "juca@rocinante" = helper.mkHome {
+            hostname = "rocinante";
+            desktop = "xfce4";
+          };
           # Only terminal apps
-          "juca@anubis" = helper.mkHome { hostname = "anubis"; stateVersion = "24.05"; };
+          "juca@anubis" = helper.mkHome {
+            hostname = "anubis";
+            stateVersion = "24.05";
+          };
           # Servers
           # VMs
           "juca@qemu" = helper.mkHome { hostname = "qemu"; };
-          "juca@soyoz-vm" = helper.mkHome { hostname = "soyoz-vm"; desktop = "xfce4"; };
+          "juca@soyoz-vm" = helper.mkHome {
+            hostname = "soyoz-vm";
+            desktop = "xfce4";
+          };
           "juca@minimech" = helper.mkHome { hostname = "minimech"; };
-          "juca@scrubber" = helper.mkHome { hostname = "scrubber"; desktop = "kde"; };
+          "juca@scrubber" = helper.mkHome {
+            hostname = "scrubber";
+            desktop = "kde";
+          };
           # Apple
         };
+
         nixosConfigurations = {
           ## Examples ##
           # nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
@@ -108,18 +140,40 @@
           # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
 
           # .iso images
-          iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
-          iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
-          iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-          iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+          iso-console = helper.mkNixos {
+            hostname = "iso-console";
+            username = "nixos";
+          };
+          iso-gnome = helper.mkNixos {
+            hostname = "iso-gnome";
+            username = "nixos";
+            desktop = "gnome";
+          };
+          iso-mate = helper.mkNixos {
+            hostname = "iso-mate";
+            username = "nixos";
+            desktop = "mate";
+          };
+          iso-pantheon = helper.mkNixos {
+            hostname = "iso-pantheon";
+            username = "nixos";
+            desktop = "pantheon";
+          };
 
           # Workstations
           #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
           #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
           #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
-          rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-          nitro = helper.mkNixos {
-            hostname = "nitro";
+          rocinante = helper.mkNixos {
+            hostname = "rocinante";
+            desktop = "xfce4";
+          };
+          zion = helper.mkNixos {
+            hostname = "zion";
+            desktop = "xfce4";
+          };
+          nixtro = helper.mkNixos {
+            hostname = "nixtro";
             # desktop = "hyprland";
             desktop = "xfce4";
           };
@@ -129,8 +183,11 @@
           revan = helper.mkNixos { hostname = "revan"; };
 
           # VMs
-          soyoz-vm = helper.mkNixos { hostname = "soyoz-vm"; desktop = "xfce4"; stateVersion = "24.05"; };
-          scrubber = helper.mkNixos { hostname = "scrubber"; desktop = "kde"; };
+          virtua = helper.mkNixos {
+            hostname = "virtua";
+            desktop = "xfce4";
+            stateVersion = "24.05";
+          };
         };
 
         #nix run nix-darwin -- switch --flake ~/Zero/nix-config
@@ -145,27 +202,88 @@
         #   minimech = helper.mkSystemManager { };
         # };
 
-        # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
-        devShells = helper.forAllSystems (system:
+        devShells =
           let
-            pkgs = nixpkgs.legacyPackages.${system};
+            supportedSystems = [
+              "x86_64-linux"
+              "aarch64-linux"
+              "x86_64-darwin"
+            ];
+            forEachSupportedSystem =
+              f:
+              nixpkgs.lib.genAttrs supportedSystems (
+                system:
+                f {
+                  pkgs = import nixpkgs {
+                    inherit system;
+                    config.allowUnfree = true;
+                  };
+                }
+              );
           in
-          import ./shell.nix {
-            inherit pkgs;
-            # node = pkgs.callPackage ./shells/node { };
-          }
-        );
+          forEachSupportedSystem (
+            { pkgs }:
+            {
+              default = pkgs.mkShell {
+                packages =
+                  with pkgs;
+                  [
+                    git
+                    home-manager
+                    just
+                    micro
+                    nh
+                    nixpkgs-fmt
+                    # nixd # lsp server
+                    nil # lsp server
+                    nix-output-monitor
+                    nix-direnv # A shell extension that manages your environment for nix
+                    duf # check space
+                    cachix
+                    dropbear # ss
+
+                    figlet
+                    lolcat
+                  ]
+                  ++ lib.optionals pkgs.stdenv.isLinux [
+                    inputs.nixos-needsreboot.packages.${system}.default
+                  ];
+                shellHook = ''
+                  # exec fish
+                  alias ssh="dbclient"
+                  echo "🔨 Welcome to flakes" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
+                  echo ">>>> ❄️ Entering Nix Development Environment"
+                '';
+              };
+            }
+          );
 
         # Custom packages and modifications, exported as overlays
         overlays = import ./overlays { inherit inputs; };
 
         # Custom packages; acessible via 'nix build', 'nix shell', etc
-        packages = helper.forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+        packages = helper.forAllSystems (system:
+          let
+            # Import nixpkgs for the target system, applying overlays directly
+            pkgsWithOverlays = import nixpkgs {
+              inherit system;
+              config = { allowUnfree = true; }; # Ensure consistent config
+              # Pass the list of overlay functions directly
+              overlays = builtins.attrValues self.overlays;
+            };
+            # Import the function from pkgs/default.nix
+            pkgsFunction = import ./pkgs;
+            # Call the function with the fully overlaid package set
+            customPkgs = pkgsFunction pkgsWithOverlays;
+          in
+          # Return the set of custom packages
+          customPkgs
+        );
         # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
         # nom-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
 
         # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
-        formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
-        # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+        # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+        formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
       };
 }

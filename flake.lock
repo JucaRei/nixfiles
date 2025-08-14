@@ -222,6 +222,20 @@
         "url": "https://flakehub.com/f/DeterminateSystems/flake-schemas/%3D0.1.5.tar.gz"
       }
     },
+    "flake-schemas_2": {
+      "locked": {
+        "lastModified": 1721999734,
+        "narHash": "sha256-G5CxYeJVm4lcEtaO87LKzOsVnWeTcHGKbKxNamNWgOw=",
+        "rev": "0a5c42297d870156d9c57d8f99e476b738dcd982",
+        "revCount": 75,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/DeterminateSystems/flake-schemas/0.1.5/0190ef2f-61e0-794b-ba14-e82f225e55e6/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/DeterminateSystems/flake-schemas/%2A.tar.gz"
+      }
+    },
     "flake-utils": {
       "locked": {
         "lastModified": 1659877975,
@@ -305,16 +319,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1744117652,
-        "narHash": "sha256-t7dFCDl4vIOOUMhEZnJF15aAzkpaup9x4ZRGToDFYWI=",
+        "lastModified": 1753592768,
+        "narHash": "sha256-oV695RvbAE4+R9pcsT9shmp6zE/+IZe6evHWX63f2Qg=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b4e98224ad1336751a2ac7493967a4c9f6d9cb3f",
+        "rev": "fc3add429f21450359369af74c2375cb34a2d204",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "release-24.11",
+        "ref": "release-25.05",
         "repo": "home-manager",
         "type": "github"
       }
@@ -521,6 +535,25 @@
         "url": "https://flakehub.com/f/NixOS/nixos-hardware/%2A"
       }
     },
+    "nixos-needsreboot": {
+      "inputs": {
+        "flake-schemas": "flake-schemas_2",
+        "nixpkgs": "nixpkgs_3",
+        "rust-overlay": "rust-overlay_2"
+      },
+      "locked": {
+        "lastModified": 1749729981,
+        "narHash": "sha256-PAWaPOfivq3Hg7bkRiWdl0HHV7qIRTfXDOXVxgZi3B4=",
+        "rev": "7d61968ee3e4e9233578785e40e482653053b704",
+        "revCount": 71,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/wimpysworld/nixos-needsreboot/0.2.9/0197640e-475b-7fe3-8724-172ebd5fb0be/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/wimpysworld/nixos-needsreboot/0.2.9.tar.gz"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1743583204,
@@ -595,19 +628,34 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1743975612,
-        "narHash": "sha256-o4FjFOUmjSRMK7dn0TFdAT0RRWUWD+WsspPHa+qEQT8=",
-        "rev": "a880f49904d68b5e53338d1e8c7bf80f59903928",
-        "revCount": 716793,
-        "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/nixos/nixpkgs/0.2411.716793%2Brev-a880f49904d68b5e53338d1e8c7bf80f59903928/01961286-30fb-7ec7-9d2b-20b3bb244b1b/source.tar.gz"
+        "lastModified": 1749285348,
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "3e3afe5174c561dee0df6f2c2b2236990146329f",
+        "type": "github"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://flakehub.com/f/nixos/nixpkgs/0.2411.%2A"
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs_4": {
+      "locked": {
+        "lastModified": 1754292888,
+        "narHash": "sha256-1ziydHSiDuSnaiPzCQh1mRFBsM2d2yRX9I+5OPGEmIE=",
+        "rev": "ce01daebf8489ba97bd1609d185ea276efdeb121",
+        "revCount": 807449,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/nixos/nixpkgs/0.2505.807449%2Brev-ce01daebf8489ba97bd1609d185ea276efdeb121/019878c3-d1d3-7ed5-8fd3-80608117d5d9/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/nixos/nixpkgs/0.2505.%2A"
+      }
+    },
+    "nixpkgs_5": {
       "locked": {
         "lastModified": 1743964447,
         "narHash": "sha256-nEo1t3Q0F+0jQ36HJfbJtiRU4OI+/0jX/iITURKe3EE=",
@@ -626,7 +674,7 @@
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts_3",
-        "nixpkgs": "nixpkgs_4",
+        "nixpkgs": "nixpkgs_5",
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
@@ -684,7 +732,8 @@
         "nix-snapd": "nix-snapd",
         "nixgl": "nixgl",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_3",
+        "nixos-needsreboot": "nixos-needsreboot",
+        "nixpkgs": "nixpkgs_4",
         "nixpkgs-oldstable": "nixpkgs-oldstable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",
@@ -724,6 +773,26 @@
         "owner": "oxalica",
         "repo": "rust-overlay",
         "rev": "38e9826bc4296c9daf18bc1e6aa299f3e932a403",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "rust-overlay_2": {
+      "inputs": {
+        "nixpkgs": [
+          "nixos-needsreboot",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1749695868,
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "55f914d5228b5c8120e9e0f9698ed5b7214d09cd",
         "type": "github"
       },
       "original": {

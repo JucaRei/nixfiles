@@ -1,4 +1,8 @@
-{ inputs, outputs, stateVersion, ... }:
+{ inputs
+, outputs
+, stateVersion
+, ...
+}:
 
 {
   # Helper function for generating home-manager configs
@@ -13,14 +17,16 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
-      isLima = hostname == "grozbok" || hostname == "zeta";
       isWorkstation = builtins.isString desktop;
-      isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then true else false;
+      isOtherOS =
+        if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then true else false;
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       extraSpecialArgs = {
-        inherit inputs outputs
+        inherit
+          inputs
+          outputs
           desktop
           hostname
           platform
@@ -28,14 +34,12 @@
           stateVersion
           isOtherOS
           isInstall
-          isLima
           isISO
           isWorkstation
           ;
       };
       modules = [ ../home-manager ];
     };
-
 
   # Helper function for generating NixOS configs
   mkNixos =
@@ -51,11 +55,22 @@
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
       isWorkstation = builtins.isString desktop && builtins.isString != null;
-      notVM = if (hostname == "minimech") || (hostname == "scrubber") || (hostname == "vm") || (hostname == "soyoz-vm") || (builtins.substring 0 5 hostname == "lima-") then false else true;
+      notVM =
+        if
+          (hostname == "virtua")
+          || (hostname == "vm")
+          || (hostname == "soyoz-vm")
+        # || (builtins.substring 0 5 hostname == "lima-")
+        then
+          false
+        else
+          true;
     in
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
-        inherit inputs outputs
+        inherit
+          inputs
+          outputs
           desktop
           hostname
           platform
@@ -95,11 +110,14 @@
               # extraSpecialArgs = { inherit (inputs.config.home-manager.homeManagerConfiguration.extraSpecialArgs) extraSpecialArgs; };
               extraSpecialArgs =
                 let
-                  isLima = hostname == "grozbok" || hostname == "zeta";
-                  isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
+                  # isLima = hostname == "grozbok" || hostname == "zeta";
+                  isOtherOS =
+                    if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
                 in
                 {
-                  inherit inputs outputs
+                  inherit
+                    inputs
+                    outputs
                     desktop
                     hostname
                     platform
@@ -107,7 +125,6 @@
                     stateVersion
                     isOtherOS
                     isInstall
-                    isLima
                     isISO
                     isWorkstation
                     ;
