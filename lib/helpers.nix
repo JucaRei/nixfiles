@@ -1,9 +1,8 @@
-{ inputs
-, outputs
-, stateVersion
-, ...
-}:
-
+{ inputs, outputs, pkgs, stateVersion, ... }:
+let
+  # Import nixGL helper function
+  mkNixGL = pkgs: import ./nixGL.nix { inherit pkgs; };
+in
 {
   # Helper function for generating home-manager configs
   mkHome =
@@ -12,12 +11,13 @@
     , desktop ? null
     , platform ? "x86_64-linux"
     , stateVersion ? "24.11"
-    ,
+    , useNixGL ? false # Add new parameter to control nixGL usage
     }:
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
       isWorkstation = builtins.isString desktop;
+      nixGLWrapper = if useNixGL then mkNixGL pkgs else (x: x); # Define nixGLWrapper based on useNixGL
       isOtherOS =
         if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then true else false;
     in

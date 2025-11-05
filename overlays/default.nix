@@ -2,12 +2,12 @@
 { inputs, ... }:
 {
   # This one brings our custom packages from the 'pkgs' directory
-  additions = final: _prev: import ../pkgs final.pkgs;
+  localPackages = final: _prev: import ../pkgs final.pkgs;
 
   # This one contains whatever you want to overlay
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
-  modifications = _final: prev: {
+  modifiedPackages = _final: prev: {
 
     #linuxPackages_latest = prev.linuxPackages_latest.extend (_lpself: lpsuper: {
     #  mwprocapture = lpsuper.mwprocapture.overrideAttrs ( old: rec {
@@ -62,17 +62,33 @@
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
   # be accessible through 'pkgs.unstable'
-  unstable-packages = final: _prev: {
+  unstablePackages = final: _prev: {
     unstable = import inputs.nixpkgs-unstable {
       inherit (final) system;
       config.allowUnfree = true;
+      overlays = [
+        # Apply the same rofi-unwrapped modification to unstable packages
+        (_final: _prev: {
+          # rofi-unwrapped = _prev.rofi-unwrapped.overrideAttrs (oldAttrs: {
+          #   postInstall = (oldAttrs.postInstall or "") + ''
+          #     rm -f $out/share/applications/rofi.desktop
+          #     rm -f $out/share/applications/rofi-theme-selector.desktop
+          #   '';
+          # });
+        })
+      ];
     };
   };
-
-  oldstable-packages = final: _prev: {
+  # When applied, the unstable nixpkgs set (declared in the flake inputs) will
+  # be accessible through 'pkgs.oldstable'
+  oldstablePackages = final: _prev: {
     oldstable = import inputs.nixpkgs-oldstable {
       inherit (final) system;
       config.allowUnfree = true;
+      overlays = [
+        # Apply the same rofi-unwrapped modification to unstable packages
+        (_final: _prev: { })
+      ];
     };
   };
 }

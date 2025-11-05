@@ -1,8 +1,5 @@
 # Call once on import to load global context
-{ pkgs
-, config
-,
-}:
+{ pkgs, config, }:
 # Wrap a single package
 pkg:
 #if config.nixGLPrefix == "" then

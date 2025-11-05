@@ -13,9 +13,11 @@ in
   config = {
     nixpkgs = {
       overlays = [
-        outputs.overlays.additions
-        outputs.overlays.modifications
-        outputs.overlays.unstable-packages
+        outputs.overlays.localPackages
+        outputs.overlays.modifiedPackages
+        outputs.overlays.unstablePackages
+        outputs.overlays.oldstablePackages
+        # Add more overlays here as needed
 
         (_: super: {
           makeModulesClosure = x:
