@@ -1,44 +1,29 @@
 { config, lib, pkgs, username, ... }:
 let
-  inherit (lib) optionals mkDefault
-    # optional
-    ;
-  ifExists = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
-
-  # groupName = "${username}";
+  inherit (lib) optionals mkDefault;
+  hasGroup = group: builtins.hasAttr group config.users.groups;
+  filterExistingGroups = builtins.filter hasGroup;
 in
 {
-  imports = [ ./root ] ++
-    # optional (builtins.pathExists (./. + "/${username}")) ./${username} ++ # return the single user config if it exists
-    optionals (builtins.pathExists (./. + "/${username}")) [ ./${username} ]; # multiple user configs
+  imports = [ ./root ]
+    ++ optionals (builtins.pathExists ./${username}) [ ./${username} ]; # multiple user configs
+  # optional (builtins.pathExists (./. + "/${username}")) ./${username} ++ # return the single user config if it exists
 
   config = {
-
-    users.users = {
-      ${username} = {
-        isNormalUser = true;
-        extraGroups = [
-          "input"
-          "users"
-          "wheel"
-        ]
-        ++ ifExists [
-          "adm"
-          "networkmanager"
-          # "audio"
-          # "docker"
-        ];
-        packages = with pkgs; [ git htop ];
-
-        # groups.${groupName}.gid = mkDefault config.users.users.${username}.uid; # make uid/gid == 1000
-        # extraUsers.${username} = {
-        #   name = "${username}";
-        #   group = "${username}";
-        # };
-      };
-
-      isNormalUser = true; # This is the default, but just to be explicit
+    users.users.${username} = {
+      isNormalUser = true;
       shell = mkDefault pkgs.bash;
+      extraGroups = [
+        "input"
+        "users"
+        "wheel"
+      ] ++ filterExistingGroups [
+        "adm"
+        "networkmanager"
+        # "audio"
+        # "docker"
+      ];
+      packages = with pkgs; [ git htop ];
     };
 
     environment.localBinInPath = true;

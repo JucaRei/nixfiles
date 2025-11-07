@@ -10,12 +10,17 @@
       nil
       nixpkgs-fmt
       duf
+      nix-direnv
+      direnv
       # dropbear # ssh server
       # nix-output-monitor # better output from builds
       # micro
       # nh
       # nixfmt
       # nixd # lsp server
+
+      vscode-fhs
+      nix
 
       figlet
       lolcat

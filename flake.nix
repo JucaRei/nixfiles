@@ -8,6 +8,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager_unstable.url = "github:nix-community/home-manager/master";
     home-manager_unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-index-database.url = "github:Mic92/nix-index-database";
@@ -52,15 +53,12 @@
         "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
         "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
-        "juca@nitrowin" = helper.mkHome { hostname = "nitro"; };
         "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
         # Only terminal apps
         "juca@anubis" = helper.mkHome { hostname = "anubis"; stateVersion = "24.05"; };
         # Servers
         # VMs
-        "juca@qemu" = helper.mkHome { hostname = "qemu"; };
-        "juca@soyoz-vm" = helper.mkHome { hostname = "soyoz-vm"; desktop = "xfce4"; };
-        "juca@minimech" = helper.mkHome { hostname = "minimech"; };
+        "juca@virtual" = helper.mkHome { hostname = "minimech"; };
       };
 
       nixosConfigurations = {
@@ -81,18 +79,13 @@
         #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
         #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
+        nixtro = helper.mkNixos { hostname = "rocinante"; desktop = "hyprland"; };
         rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
         zion = helper.mkNixos { hostname = "zion"; desktop = "xfce4"; };
-        nixtro = helper.mkNixos {
-          hostname = "nixtro";
-          # desktop = "hyprland";
-          desktop = "xfce4";
-        };
         # Servers
         soyoz = helper.mkNixos { hostname = "soyoz"; };
-        revan = helper.mkNixos { hostname = "revan"; };
         # VMs
-        virtua = helper.mkNixos { hostname = "virtua"; desktop = "xfce4"; stateVersion = "24.05"; };
+        virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; stateVersion = "24.05"; };
       };
 
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config

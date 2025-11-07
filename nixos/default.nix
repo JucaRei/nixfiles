@@ -1,97 +1,102 @@
-{ inputs, outputs, lib, config, pkgs, hostname, platform, isInstall, username, ... }:
+{ inputs, outputs, lib, config, pkgs, hostname, platform, modulesPath, isInstall, username, isWorkstation, ... }:
 let
-  inherit (lib) optional mkDefault mkOptionDefault;
+  inherit (lib) mkIf optional optionals mkDefault mkOptionDefault;
 in
 {
   imports = [
     (./. + "/hosts/${hostname}/default.nix")
     ./users
     ../modules/nixos
-  ] ++ (with inputs; [ ] ++ optional (lib.hasAttr "nixosModules" inputs.nixpkgs) inputs.nixpkgs.nixosModules.default);
+    (modulesPath + "/installer/scan/not-detected.nix")
+  ]
+  ++ (with inputs; [
+    nur.modules.nixos.default
+    nixosModules.disko
+    nixos-hardware.nixosModules.common-pc-ssd
+    nixos-hardware.nixosModules.common-pc
+    auto-cpufreq.nixosModules.default
+    catppuccin.nixosModules.catppuccin
+    nix-flatpak.nixosModules.nix-flatpak
+    nix-index-database.nixosModules.nix-index
+    chaotic.nixosModules.default
+    sops-nix.nixosModules.sops
+  ]
+  ++ optional (lib.hasAttr "nixosModules" inputs.nixpkgs) inputs.nixpkgs.nixosModules.default);
 
   # This is the main configuration for your NixOS system.
   config = {
-    nixpkgs = {
-      overlays = [
-        outputs.overlays.localPackages
-        outputs.overlays.modifiedPackages
-        outputs.overlays.unstablePackages
-        outputs.overlays.oldstablePackages
-        # Add more overlays here as needed
+    documentation = mkDefault {
+      enable = true;
+      man = {
+        enable = true;
+        man-db = {
+          enable = true;
+        };
+      };
+      info.enable = false;
+      doc.enable = false;
+      dev.enable = false;
+      nixos.enable = false;
+    };
 
-        (_: super: {
-          makeModulesClosure = x:
-            super.makeModulesClosure (x // { allowMissing = true; });
-        })
+    boot = {
+      binfmt = mkIf isInstall {
+        emulatedSystems = [
+          "armv5tel-linux"
+          # "armv6l-linux"
+          # "armv7l-linux"
+          # "i686-linux"
+        ]
+        ++ optionals (platform == "x86_64-linux") [ "aarch64-linux" ]
+        ++ optionals (platform == "aarch64-linux") [ "x86_64-linux" ];
+      };
+      kernelModules = [ "vhost_vsock" ];
+    };
+
+    environment = {
+      systemPackages = with pkgs; [
+        inputs.determinate.packages.${pkgs.system}.default
+        uutils-coreutils-noprefix
+        parted
+        git
+        nix-output-monitor
+
+        (pkgs.writeShellScriptBin "nixos-rebuild-half" ''
+          #!/usr/bin/env bash
+          set -euo pipefail
+
+          # Compute half the logical cores (minimum 1)
+          cores=$(nproc --all || echo 1)
+          half_cores=$(expr $cores / 2)
+          max_jobs=''${half_cores:-1}
+
+          # Call the original nixos-rebuild with dynamic max-jobs
+          exec nixos-rebuild --max-jobs "$max_jobs" "$@"
+        '')
       ];
-
-      # Configure your nixpkgs instance
-      config = {
-        allowUnfree = true;
-        allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
-        # permittedInsecurePackages = [  ];
-        # allowInsecure = true
+      shellAliases = {
+        # update-dotfiles = "git -C $HOME/.dotfiles pull && nix flake update $HOME/.dotfiles/nixfiles && nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles";
+        nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
+        store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
       };
-      hostPlatform = mkDefault "${platform}";
     };
 
-    nix = let flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs; in {
-      # give nix-daemon the lowest priority
-      daemonIOSchedClass = "idle";
-      daemonCPUSchedPolicy = "idle";
-      daemonIOSchedPriority = 7;
-
-      settings = {
-        # accept-flake-config = true;
-        # extra-sandbox-paths = [ "/bin/sh=${pkgs.bash}/bin/sh" ];
-        experimental-features = [
-          "nix-command" # Enable the new 'nix' command
-          "flakes" # Enable flakes
-          # "ca-derivations" # content addressed nix
-          # "repl-flake" # repl to inspect a flake
-          # "recursive-nix" # let nix invoke itself
-          # "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
-          # "configurable-impure-env" # allow impure environments
-          # "git-hashing" # allow store objects which are hashed via Git's hashing algorithm
-          # "verified-fetches" # enable verification of git commit signatures for fetchGit
-          # "cgroups" # allow nix to execute builds inside cgroups
-        ];
-        system-features = [
-          # "gccarch-x86-64-v3" # Allows building v3 packages
-          # "gccarch-x86-64-v4" # Allows building v4 packages
-          # "kvm"
-          # "recursive-nix"
-          # "big-parallel"
-          # "nixos-test"
-        ];
-        ### Avoid unwanted garbage collection when using nix-direnv
-        # keep-outputs = true;
-        keep-derivations = true;
-        keep-going = false;
-        warn-dirty = false;
-        tarball-ttl = 300; # Set the time-to-live (in seconds) for cached tarballs to 300 seconds (5 minutes)
-        flake-registry = ""; # Opinionated: disable global registry
-        nix-path = mkOptionDefault config.nix.nixPath; # Workaround for https://github.com/NixOS/nix/issues/9574
-        trusted-users = [ "root" "${username}" ];
+    services = {
+      system76-sheduler = {
+        enable = mkIf isWorkstation true;
+        assignments = {
+          nix-builds = {
+            nice = 10; # from -20 (high) to 19 (low)
+            class = "batch"; # "idle", "batch", "other", "rr", "fifo"
+            ioClass = "idle"; # "idle", "best-effort", "realtime"
+            matchers = [
+              "nix-daemon"
+            ];
+          };
+        };
       };
-      extraOptions = ''
-        log-lines = 20
-        # Free up to 4GiB whenever there is less than 2GiB left.
-        min-free = ${toString (2048 * 1024 * 1024)}
-        max-free = ${toString (4096 * 1024 * 1024)} # 4GiB
-        connect-timeout = 8
-      '';
-
-      channel.enable = false; # Opinionated: disable channels
-
-      # Opinionated: make flake registry and nix path match flake inputs
-      registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
-      nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
     };
 
-    # FIXME: Add the rest of your current configuration
-
-    # TODO: Set your hostname
     networking.hostName = "your-hostname";
 
     # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
@@ -122,12 +127,6 @@ in
         # Remove if you want to SSH using passwords
         PasswordAuthentication = false;
       };
-    };
-
-    # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-    system = {
-      nixos.label = lib.mkIf isInstall "nixsystem";
-      stateVersion = "23.05";
     };
   };
 }

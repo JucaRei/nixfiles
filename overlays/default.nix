@@ -1,11 +1,8 @@
-# This file defines overlays
 { inputs, ... }:
 {
   # This one brings our custom packages from the 'pkgs' directory
   localPackages = final: _prev: import ../pkgs final.pkgs;
 
-  # This one contains whatever you want to overlay
-  # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
   modifiedPackages = _final: prev: {
 

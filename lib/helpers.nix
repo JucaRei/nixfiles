@@ -111,8 +111,7 @@ in
               extraSpecialArgs =
                 let
                   # isLima = hostname == "grozbok" || hostname == "zeta";
-                  isOtherOS =
-                    if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
+                  isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
                 in
                 {
                   inherit
