@@ -98,6 +98,9 @@ in
         [
           "d /home/${username}/Desktop 0755 ${username} users"
           "d /home/${username}/.config 0755 ${username} users"
+          "L+ /home/${username}/Desktop/io.calamares.calamares.desktop - - - - ${pkgs.calamares-nixos}/share/applications/io.calamares.calamares.desktop"
+          "L+ /home/${username}/Desktop/gparted.desktop - - - - ${pkgs.gparted}/share/applications/gparted.desktop"
+
           "d /home/${username}/.config/plank 0755 ${username} users"
           "d /home/${username}/.config/plank/dock1 0755 ${username} users"
           "d /home/${username}/.config/plank/dock1/launchers 0755 ${username} users"
@@ -107,9 +110,7 @@ in
           "L+ /home/${username}/.config/plank/dock1/launchers/code.dockitem - - - - /etc/plank/code.dockitem"
           "L+ /home/${username}/.config/plank/dock1/launchers/gparted.dockitem - - - - /etc/plank/gparted.dockitem"
           "L+ /home/${username}/Desktop/firefox.desktop - - - - ${pkgs.firefox}/share/applications/firefox.desktop"
-          "L+ /home/${username}/Desktop/io.calamares.calamares.desktop - - - - ${pkgs.calamares-nixos}/share/applications/io.calamares.calamares.desktop"
           "L+ /home/${username}/Desktop/code.desktop - - - - ${pkgs.vscode-fhs}/share/applications/code.desktop"
-          "L+ /home/${username}/Desktop/gparted.desktop - - - - ${pkgs.gparted}/share/applications/gparted.desktop"
         ]
         ++ optionals (isWorkstationISO && desktop == "mate") [
           "L+ /home/${username}/Desktop/caja.desktop - - - - ${pkgs.mate.caja}/share/applications/caja.desktop"

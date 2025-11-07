@@ -2,24 +2,6 @@
 let
   inherit (lib) mkIf mkForce;
   cfg = config.hardware.audio;
-
-
-  ### Tiling window managers
-  sound-volume-up = pkgs.writeScriptBin "sound-volume-up" ''
-    #!${pkgs.stdenv.shell}
-    set -e
-
-    pactl set-sink-volume @DEFAULT_SINK@ +2%
-    notify-send -h string:synchronous:volume "$(pamixer --get-volume-human)" -t 1000
-  '';
-
-  sound-volume-down = pkgs.writeScriptBin "sound-volume-down" ''
-    #!${pkgs.stdenv.shell}
-    set -e
-
-    pactl set-sink-volume @DEFAULT_SINK@ -2%
-    notify-send -h string:synchronous:volume "$(pamixer --get-volume-human)" -t 1000
-  '';
 in
 {
   config = mkIf (cfg.manager == "pulseaudio") {

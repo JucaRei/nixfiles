@@ -53,13 +53,40 @@ in
       kernelModules = [ "vhost_vsock" ];
     };
 
-    environment = {
-      systemPackages = with pkgs; [
-        inputs.determinate.packages.${pkgs.system}.default
-        uutils-coreutils-noprefix
-        parted
-        nix-output-monitor
+    hardware = {
+      bluetooth = {
+        enable = mkIf isInstall true;
+        package = pkgs.unstable.bluez-experimental;
+        powerOnBoot = false;
+      };
+      settings = {
+        General = mkIf isWorkstation {
+          Name = config.networking.hostName;
+          Enable = "Source,Sink,Media,Socket"; # Enable A2DP sink
+          JustWorksRepairing = "always";
+          MultiProfile = "multiple";
+          ControllerMode = "bredr";
+          FastConnectable = true;
+          Privacy = "device";
+          Experimental = true;
+        };
+      };
+    };
 
+    system.activationScripts = {
+      rfkillUnblockBluetooth = mkIf config.hardware.bluetooth.enable {
+        text = ''
+          # Unblock Bluetooth on activation
+          ${pkgs.util-linux}/bin/rfkill unblock bluetooth || true
+        '';
+      };
+    };
+
+    environment = {
+      defaultPackages = with pkgs; [ parted uutils-coreutils-noprefix ];
+      systemPackages = with pkgs; [ nix-output-monitor ]
+        ++ optionals isInstall [
+        inputs.determinate.packages.${pkgs.system}.default
         (pkgs.writeShellScriptBin "nixos-rebuild-half" ''
           #!/usr/bin/env bash
           set -euo pipefail
@@ -77,11 +104,27 @@ in
         # update-dotfiles = "git -C $HOME/.dotfiles pull && nix flake update $HOME/.dotfiles/nixfiles && nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles";
         nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
         store-path = "${pkgs.uutils-coreutils-noprefix}/bin/readlink (${pkgs.which}/bin/which $argv)";
+        keyring-lock = ''${pkgs.systemdMinimal}/bin/busctl --user get-property org.freedesktop.secrets /org/freedesktop/secrets/collection/login org.freedesktop.Secret.Collection Locked'';
+      };
+
+      etc = {
+        ## Create a file in /etc/nixos-current-system-packages  Listing all Packages ###
+        "nixos-current-system-packages" = {
+          text =
+            let
+              packages =
+                builtins.map (p: "${p.name}") config.environment.systemPackages;
+              sortedUnique = builtins.sort builtins.lessThan (lib.unique packages);
+              formatted = builtins.concatStringsSep "\n" sortedUnique;
+            in
+            formatted;
+        };
       };
     };
 
     programs = {
       command-not-found.enable = false;
+
       nh = {
         clean = {
           enable = isInstall;
@@ -90,6 +133,7 @@ in
         enable = true;
         flake = "/home/${username}/.dotfiles/nixfiles";
       };
+
       nix-ld = mkIf isInstall {
         enable = true;
         libraries = with pkgs; [
@@ -113,62 +157,61 @@ in
           };
         };
       };
+
       dbus = {
         enable = true;
         implementation = if isWorkstation then "broker" else "systemd";
       };
+
+      chrony = {
+        # if time is wrong:
+        # 1/ systemctl stop chronyd.service
+        # 2/ "sudo chronyd -q 'pool pool.ntp.org iburst'"
+        enable = true;
+        # to correct big errors on startup
+        initstepslew = {
+          enabled = true;
+          threshold = 100;
+        };
+        # we allow chrony to make big changes at
+        # see https://chrony.tuxfamily.org/faq.html#_is_chronyd_allowed_to_step_the_system_clock
+        extraConfig = ''
+          makestep 1 -1
+        '';
+        servers = [
+          "time.cloudflare.com"
+          "time.google.com"
+          "0.pool.ntp.org"
+          "1.pool.ntp.org"
+          "2.pool.ntp.org"
+          "3.pool.ntp.org"
+        ];
+      };
     };
 
     # Only enable sudo-rs on installs, not live media (.ISO images)
-    security = lib.mkIf isInstall {
+    security = mkIf isInstall {
       polkit.enable = true;
       sudo.enable = false;
       sudo-rs = {
-        enable = lib.mkDefault true;
+        enable = mkDefault true;
       };
     };
 
     # Create symlink to /bin/bash
     # - https://github.com/lima-vm/lima/issues/2110
     systemd = {
-      extraConfig = "DefaultTimeoutStopSec=10s";
+      extraConfig = ''
+        DefaultTimeoutStopSec=10s
+        DefaultCPUAccounting=yes
+        DefaultMemoryAccounting=yes
+        DefaultIOAccounting=yes
+      '';
       tmpfiles.rules = [
         "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
         "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
         "d /var/lib/private/sops/age 0755 root root"
       ];
-    };
-
-    networking.hostName = "your-hostname";
-
-    # TODO: Configure your system-wide user settings (groups, etc), add more users as needed.
-    users.users = {
-      # FIXME: Replace with your username
-      your-username = {
-        # TODO: You can set an initial password for your user.
-        # If you do, you can skip setting a root password by passing '--no-root-passwd' to nixos-install.
-        # Be sure to change it (using passwd) after rebooting!
-        initialPassword = "correcthorsebatterystaple";
-        isNormalUser = true;
-        openssh.authorizedKeys.keys = [
-          # TODO: Add your SSH public key(s) here, if you plan on using SSH to connect
-        ];
-        # TODO: Be sure to add any other groups you need (such as networkmanager, audio, docker, etc)
-        extraGroups = [ "wheel" ];
-      };
-    };
-
-    # This setups a SSH server. Very important if you're setting up a headless system.
-    # Feel free to remove if you don't need it.
-    services.openssh = {
-      enable = true;
-      settings = {
-        # Opinionated: forbid root login through SSH.
-        PermitRootLogin = "no";
-        # Opinionated: use keys only.
-        # Remove if you want to SSH using passwords
-        PasswordAuthentication = false;
-      };
     };
   };
 }

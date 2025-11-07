@@ -72,8 +72,8 @@ in
         max-free = 4096 * 1024 * 1024; # 4GiB
       };
       extraOptions = ''
-        log-lines = 20
-        connect-timeout = 8
+        log-lines = 25
+        connect-timeout = 10
       '';
       # Free up to 4GiB whenever there is less than 2GiB left.
       #min-free = ${toString (2048 * 1024 * 1024)}

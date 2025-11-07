@@ -23,7 +23,8 @@ in
         # "audio"
         # "docker"
       ];
-      packages = with pkgs; [ git htop ];
+      homeMode = "0755";
+      packages = with pkgs; [ git htop home-manager ];
     };
 
     environment.localBinInPath = true;
