@@ -41,7 +41,7 @@ in
 
     boot = {
       binfmt = mkIf isInstall {
-        emulatedSystems = [
+        emulatedSystems = mkIf isWorkstation [
           "armv5tel-linux"
           # "armv6l-linux"
           # "armv7l-linux"
@@ -58,7 +58,6 @@ in
         inputs.determinate.packages.${pkgs.system}.default
         uutils-coreutils-noprefix
         parted
-        git
         nix-output-monitor
 
         (pkgs.writeShellScriptBin "nixos-rebuild-half" ''
@@ -81,6 +80,25 @@ in
       };
     };
 
+    programs = {
+      command-not-found.enable = false;
+      nh = {
+        clean = {
+          enable = isInstall;
+          extraArgs = "--keep-since 15d --keep 10";
+        };
+        enable = true;
+        flake = "/home/${username}/.dotfiles/nixfiles";
+      };
+      nix-ld = mkIf isInstall {
+        enable = true;
+        libraries = with pkgs; [
+          # Add any missing dynamic libraries for unpackaged
+          # programs here, NOT in environment.systemPackages
+        ];
+      };
+    };
+
     services = {
       system76-sheduler = {
         enable = mkIf isWorkstation true;
@@ -95,6 +113,30 @@ in
           };
         };
       };
+      dbus = {
+        enable = true;
+        implementation = if isWorkstation then "broker" else "systemd";
+      };
+    };
+
+    # Only enable sudo-rs on installs, not live media (.ISO images)
+    security = lib.mkIf isInstall {
+      polkit.enable = true;
+      sudo.enable = false;
+      sudo-rs = {
+        enable = lib.mkDefault true;
+      };
+    };
+
+    # Create symlink to /bin/bash
+    # - https://github.com/lima-vm/lima/issues/2110
+    systemd = {
+      extraConfig = "DefaultTimeoutStopSec=10s";
+      tmpfiles.rules = [
+        "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
+        "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
+        "d /var/lib/private/sops/age 0755 root root"
+      ];
     };
 
     networking.hostName = "your-hostname";

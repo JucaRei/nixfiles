@@ -11,7 +11,6 @@ in
     ++ optional (isWorkstation && builtins.pathExists ./. + "./desktop/${desktop}") ./desktop/${desktop};
 
   config = {
-
     nix = let flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs; in {
       # give nix-daemon the lowest priority
       daemonIOSchedClass = "idle";
@@ -33,6 +32,9 @@ in
           # "verified-fetches" # enable verification of git commit signatures for fetchGit
           # "cgroups" # allow nix to execute builds inside cgroups
         ];
+        extra-experimental-features = "parallel-eval";
+        lazy-trees = true;
+        eval-cores = 0; # Enable parallel evaluation across all cores
         system-features = [
           # "gccarch-x86-64-v3" # Allows building v3 packages
           # "gccarch-x86-64-v4" # Allows building v4 packages
@@ -80,15 +82,6 @@ in
       # Opinionated: make flake registry and nix path match flake inputs
       registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
       nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
-      gc = {
-        automatic = true;
-        dates = [ "weekly" ];
-        options = {
-          delete-older-than = "30d";
-          # keepDerivations = true;
-          # keepOutputs = true;
-        };
-      };
     };
 
     nixpkgs = {
@@ -114,8 +107,9 @@ in
     };
 
     system = {
-      nixos.label = mkIf isInstall "NIXOS_SYSTEM";
+      nixos.label = mkIf isInstall "--NIXOS_SYSTEM--";
       inherit stateVersion;
+
       activationScripts = {
         diff = {
           supportsDryActivation = true;
@@ -131,7 +125,15 @@ in
             fi
           '';
         };
+
+        nixos-needsreboot = mkIf (isInstall) {
+          supportsDryActivation = true;
+          text = "${
+            lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default
+          } \"$systemConfig\" || true";
+        };
       };
+
       switch = {
         # enable = true; # false; # Perl
         enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
