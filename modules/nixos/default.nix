@@ -8,7 +8,8 @@ let
 in
 {
   imports = mapAttrsToList (name: _: importDirectory name) directories
-    ++ optional (isWorkstation && builtins.pathExists ./. + "./desktop/${desktop}") ./desktop/${desktop};
+    ++ optional (isWorkstation) ./desktop
+  ;
 
   config = {
     nix = let flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs; in {

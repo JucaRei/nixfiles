@@ -19,7 +19,6 @@ in
     nix-flatpak.nixosModules.nix-flatpak
     nix-index-database.nixosModules.nix-index
     chaotic.nixosModules.default
-    sops-nix.nixosModules.sops
   ]
   ++ optional (lib.hasAttr "nixosModules" inputs.nixpkgs) inputs.nixpkgs.nixosModules.default);
 
@@ -37,6 +36,23 @@ in
       doc.enable = false;
       dev.enable = false;
       nixos.enable = false;
+    };
+
+    i18n = {
+      defaultLocale = "en_US.UTF-8";
+      extraLocaleSettings = {
+        LANG = "en_US.UTF-8";
+        LC_CTYPE = "pt_BR.UTF-8"; # Fix ç in us-intl.
+        LC_ADDRESS = "pt_BR.UTF-8";
+        LC_IDENTIFICATION = "en_US.UTF-8";
+        LC_MEASUREMENT = "pt_BR.UTF-8";
+        LC_MONETARY = "pt_BR.UTF-8";
+        LC_NAME = "pt_BR.UTF-8";
+        LC_NUMERIC = "pt_BR.UTF-8";
+        LC_PAPER = "pt_BR.UTF-8";
+        LC_TELEPHONE = "pt_BR.UTF-8";
+        LC_TIME = "pt_BR.UTF-8";
+      };
     };
 
     boot = {
@@ -158,6 +174,10 @@ in
         };
       };
 
+      fprintd = {
+        enable = mkDefault false;
+      };
+
       dbus = {
         enable = true;
         implementation = if isWorkstation then "broker" else "systemd";
@@ -189,15 +209,6 @@ in
       };
     };
 
-    # Only enable sudo-rs on installs, not live media (.ISO images)
-    security = mkIf isInstall {
-      polkit.enable = true;
-      sudo.enable = false;
-      sudo-rs = {
-        enable = mkDefault true;
-      };
-    };
-
     # Create symlink to /bin/bash
     # - https://github.com/lima-vm/lima/issues/2110
     systemd = {
@@ -210,7 +221,6 @@ in
       tmpfiles.rules = [
         "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
         "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
-        "d /var/lib/private/sops/age 0755 root root"
       ];
     };
   };

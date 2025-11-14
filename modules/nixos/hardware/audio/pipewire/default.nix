@@ -27,7 +27,8 @@ in
         pulseaudio
         pulsemixer
       ]
-      ++ optionals (isInstall && isWorkstation) [ pwvucontrol ];
+      ++ optionals (isInstall && isWorkstation) [ pwvucontrol ]
+      ++ optionals (isInstall && isWorkstation) [ ldacbt ];
 
     hardware.pulseaudio.enable = mkForce false;
 
@@ -53,7 +54,7 @@ in
           # https://pipewire.pages.freedesktop.org/wireplumber/daemon/configuration/alsa.html#alsa-buffer-properties
           # cat /nix/store/*-wireplumber-*/share/wireplumber/main.lua.d/99-alsa-lowlatency.lua
           # cat /nix/store/*-wireplumber-*/share/wireplumber/wireplumber.conf.d/99-alsa-lowlatency.conf
-          configPackages = mkIf (low_latency == true) [
+          configPackages = (mkIf (low_latency == true) [
             (pkgs.writeTextDir "share/wireplumber/main.lua.d/99-alsa-lowlatency.lua" ''
               alsa_monitor.rules = {
                 {
@@ -61,13 +62,9 @@ in
                   apply_properties = {
                     ["audio.format"] = "S16LE",
                     ["audio.rate"] = 48000,
-                    -- api.alsa.headroom: defaults to 0
                     ["api.alsa.headroom"] = 128,
-                    -- api.alsa.period-num: defaults to 2
                     ["api.alsa.period-num"] = 2,
-                    -- api.alsa.period-size: defaults to 1024, tweak by trial-and-error
                     ["api.alsa.period-size"] = 512,
-                    -- api.alsa.disable-batch: USB audio interface typically use the batch mode
                     ["api.alsa.disable-batch"] = false,
                     ["resample.quality"] = 4,
                     ["resample.disable"] = false,
@@ -76,13 +73,15 @@ in
                 },
               }
             '')
-
+          ])
+          ++ [
+            # always include BlueZ properties so LDAC is advertised
             (pkgs.writeTextDir "share/wireplumber/wireplumber.conf.d/10-bluez.conf" ''
               monitor.bluez.properties = {
-                bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hsp_hs hsp_ag hfp_hf hfp_ag ]
-                bluez5.codecs = [ sbc sbc_xq aac ]
-                bluez5.enable-sbc-xq = true
-                bluez5.hfphsp-backend = "native"
+                bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hsp_hs hsp_ag hfp_hf hfp_ag ];
+                bluez5.codecs = [ sbc sbc_xq aac ldac ];
+                bluez5.enable-sbc-xq = true;
+                bluez5.hfphsp-backend = "native";
               }
             '')
           ];

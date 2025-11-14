@@ -20,7 +20,7 @@ in
         "amd"
         "other"
       ];
-      default = "intel";
+      default = "other";
       description = mdDoc ''
         Vendor for the CPU, meant mostly for x86/x86_64 systems.
       '';

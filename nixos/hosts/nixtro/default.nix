@@ -23,8 +23,16 @@ in
         kernelModules = [ ];
       };
 
-      kernelModules = [ "kvm-intel" ];
+      kernelModules = [
+        # "kvm-intel"
+      ];
       extraModulePackages = [ ];
+    };
+
+    hardware.graphics.cards = {
+      enable = true;
+      acceleration = true;
+      gpu = "hybrid-nvidia";
     };
   };
 }
