@@ -57,7 +57,7 @@ in
       isWorkstation = builtins.isString desktop && builtins.isString != null;
       notVM =
         if
-          (hostname == "virtua")
+          (hostname == "virtual")
           || (hostname == "vm")
           || (hostname == "soyoz-vm")
         # || (builtins.substring 0 5 hostname == "lima-")

@@ -3,7 +3,7 @@ let
   inherit (pkgs.stdenv) isDarwin isLinux;
 in
 {
-  imports = with inputs; [ ];
+  imports = with inputs; [ ../modules/home-manager ];
   nixpkgs = {
     overlays = with outputs; [
       overlays.localPackages
