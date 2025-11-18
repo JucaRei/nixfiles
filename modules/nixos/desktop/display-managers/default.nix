@@ -8,15 +8,14 @@ in
     ./lightdm
     ./sddm
     ./regreet
+    ./gdm
   ];
 
   options = {
     desktop.display-managers.name = mkOption {
-      type = nullOr (enum [ "lightdm" "sddm" "regreet" ]);
-      default = mkOptionDefault (if (
-        cfg.desktop.environment != "bspwm" || cfg.desktop.environments != "gnome"
-      )
-      then "sddm" else "lightdm");
+      type = nullOr (enum [ "lightdm" "sddm" "regreet" "gdm" ]);
+      default = null;
+      description = "The selected display-manager for your desktop environment.";
     };
   };
 }

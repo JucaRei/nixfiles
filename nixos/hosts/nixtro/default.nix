@@ -1,6 +1,6 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 let
-  inherit (lib) mkDefault;
+  inherit (lib) mkDefault mkForce;
 in
 {
   imports = [
@@ -9,6 +9,18 @@ in
   ];
 
   config = {
+    timeZone = mkForce "America/Sao_Paulo";
+
+    programs = {
+      nix-ld = {
+        enable = true;
+        libraries = with pkgs; [
+          # Add any missing dynamic libraries for unpackaged
+          # programs here, NOT in environment.systemPackages
+        ];
+      };
+    };
+
     boot = {
       initrd = {
         availableKernelModules = [

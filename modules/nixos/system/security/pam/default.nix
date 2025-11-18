@@ -1,12 +1,16 @@
 { config, lib, isInstall, isWorkstation, ... }:
 let
-  inherit (lib) mkEnableOption mkDefault mkIf;
+  inherit (lib) mkOption mkDefault mkIf;
   inherit (lib.types) bool;
   cfg = config.system.security.pam;
 in
 {
   options.system.security.pam = {
-    enable = mkEnableOption "Enable optimizations module.";
+    enable = mkOption {
+      type = bool;
+      default = isInstall;
+      description = "Enable optimizations module.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -18,7 +22,7 @@ in
       # Enables simultaneous use of processor threads.
       allowSimultaneousMultithreading = true;
 
-      polkit = mkIf (isInstall && isWorkstation) {
+      polkit = mkIf (isWorkstation) {
         enable = true;
         debug = true;
         # the below configuration depends on security.polkit.debug being set to true
@@ -57,7 +61,7 @@ in
         '';
       };
 
-      pam = mkIf (isInstall) {
+      pam = mkIf (isWorkstation) {
         # Increase open file limit for sudoers
         # fix "too many files open" errors while writing a lot of data at once
         loginLimits = [
@@ -103,7 +107,7 @@ in
 
       virtualisation = {
         #  flush the L1 data cache before entering guests
-        flushL1DataCache = mkIf (config.system.services.virtualisation.enable) "always";
+        flushL1DataCache = mkIf (config.system.services.virt-manager.enable) "always";
       };
     };
   };

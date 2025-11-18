@@ -23,10 +23,6 @@ in
     };
 
     services = {
-      usbmuxd.enable = true; # for IOS;
-      gvfs = {
-        enable = mkOptionDefault true;
-      };
       gnome.gnome-keyring = (mkIf (desktop != "kde" || desktop != "pantheon")) {
         enable = true;
       };

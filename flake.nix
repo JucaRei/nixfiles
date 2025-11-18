@@ -58,7 +58,7 @@
         "juca@anubis" = helper.mkHome { hostname = "anubis"; stateVersion = "24.05"; };
         # Servers
         # VMs
-        "juca@virtual" = helper.mkHome { hostname = "minimech"; };
+        "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
       };
 
       nixosConfigurations = {

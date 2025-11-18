@@ -1,6 +1,9 @@
-{ inputs, outputs, lib, config, pkgs, hostname, platform, modulesPath, isInstall, username, isWorkstation, ... }:
+{ inputs, outputs, lib, config, pkgs, hostname, platform, modulesPath, isISO, isInstall, username, isWorkstation, ... }:
 let
   inherit (lib) mkIf optional optionals mkDefault mkOptionDefault;
+
+  # Only enable zram swap if no swap devices are configured
+  usezramSwap = builtins.length config.swapDevices == 0;
 in
 {
   imports = [
@@ -38,7 +41,7 @@ in
       nixos.enable = false;
     };
 
-    i18n = {
+    i18n = mkDefault {
       defaultLocale = "en_US.UTF-8";
       extraLocaleSettings = {
         LANG = "en_US.UTF-8";
@@ -56,8 +59,8 @@ in
     };
 
     boot = {
-      binfmt = mkIf isInstall {
-        emulatedSystems = mkIf isWorkstation [
+      binfmt = mkIf (isInstall) {
+        emulatedSystems = mkIf (isWorkstation && config.system.services.virt-manager.enable) [
           "armv5tel-linux"
           # "armv6l-linux"
           # "armv7l-linux"
@@ -66,7 +69,10 @@ in
         ++ optionals (platform == "x86_64-linux") [ "aarch64-linux" ]
         ++ optionals (platform == "aarch64-linux") [ "x86_64-linux" ];
       };
-      kernelModules = [ "vhost_vsock" ];
+      kernelModules = mkIf (config.system.services.virt-manager.enable) [ "vhost_vsock" ];
+      kernel = {
+        sysctl = mkIf (usezramSwap) { "vm.page-cluster" = 1; };
+      };
     };
 
     hardware = {
@@ -103,18 +109,18 @@ in
       systemPackages = with pkgs; [ nix-output-monitor ]
         ++ optionals isInstall [
         inputs.determinate.packages.${pkgs.system}.default
-        (pkgs.writeShellScriptBin "nixos-rebuild-half" ''
-          #!/usr/bin/env bash
-          set -euo pipefail
+        # (pkgs.writeShellScriptBin "nixos-rebuild-half" ''
+        #   #!/usr/bin/env bash
+        #   set -euo pipefail
 
-          # Compute half the logical cores (minimum 1)
-          cores=$(nproc --all || echo 1)
-          half_cores=$(expr $cores / 2)
-          max_jobs=''${half_cores:-1}
+        #   # Compute half the logical cores (minimum 1)
+        #   cores=$(nproc --all || echo 1)
+        #   half_cores=$(expr $cores / 2)
+        #   max_jobs=''${half_cores:-1}
 
-          # Call the original nixos-rebuild with dynamic max-jobs
-          exec nixos-rebuild --max-jobs "$max_jobs" "$@"
-        '')
+        #   # Call the original nixos-rebuild with dynamic max-jobs
+        #   exec nixos-rebuild --max-jobs "$max_jobs" "$@"
+        # '')
       ];
       shellAliases = {
         # update-dotfiles = "git -C $HOME/.dotfiles pull && nix flake update $HOME/.dotfiles/nixfiles && nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles";
@@ -149,14 +155,6 @@ in
         enable = true;
         flake = "/home/${username}/.dotfiles/nixfiles";
       };
-
-      nix-ld = mkIf isInstall {
-        enable = true;
-        libraries = with pkgs; [
-          # Add any missing dynamic libraries for unpackaged
-          # programs here, NOT in environment.systemPackages
-        ];
-      };
     };
 
     services = {
@@ -181,6 +179,42 @@ in
       dbus = {
         enable = true;
         implementation = if isWorkstation then "broker" else "systemd";
+      };
+
+      openssh = let iso = mkIf isISO; in {
+        enable = true;
+        settings = {
+          PasswordAuthentication = mkDefault true;
+          PermiRootLogin = iso;
+        };
+        startWhenNeeded = true;
+        banner = ''
+          ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠛⠛⠋⠉⠈⠉⠉⠉⠉⠛⠻⢿⣿⣿⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⣿⡿⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⢿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⡏⣀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣤⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿
+          ⣿⣿⣿⢏⣴⣿⣷⠀⠀⠀⠀⠀⢾⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀⠀⠀⠀⠈⣿⣿
+          ⣿⣿⣟⣾⣿⡟⠁⠀⠀⠀⠀⠀⢀⣾⣿⣿⣿⣿⣿⣷⢢⠀⠀⠀⠀⠀⠀⠀⢸⣿
+          ⣿⣿⣿⣿⣟⠀⡴⠄⠀⠀⠀⠀⠀⠀⠙⠻⣿⣿⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀⣿
+          ⣿⣿⣿⠟⠻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠶⢴⣿⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⣿
+          ⣿⣁⡀⠀⠀⢰⢠⣦⠀⠀⠀⠀⠀⠀⠀⠀⢀⣼⣿⣿⣿⣿⣿⡄⠀⣴⣶⣿⡄⣿
+          ⣿⡋⠀⠀⠀⠎⢸⣿⡆⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣿⣿⣿⣿⠗⢘⣿⣟⠛⠿⣼
+          ⣿⣿⠋⢀⡌⢰⣿⡿⢿⡀⠀⠀⠀⠀⠀⠙⠿⣿⣿⣿⣿⣿⡇⠀⢸⣿⣿⣧⢀⣼
+          ⣿⣿⣷⢻⠄⠘⠛⠋⠛⠃⠀⠀⠀⠀⠀⢿⣧⠈⠉⠙⠛⠋⠀⠀⠀⣿⣿⣿⣿⣿
+          ⣿⣿⣧⠀⠈⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠟⠀⠀⠀⠀⢀⢃⠀⠀⢸⣿⣿⣿⣿
+          ⣿⣿⡿⠀⠴⢗⣠⣤⣴⡶⠶⠖⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡸⠀⣿⣿⣿⣿
+          ⣿⣿⣿⡀⢠⣾⣿⠏⠀⠠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠉⠀⣿⣿⣿⣿
+          ⣿⣿⣿⣧⠈⢹⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿
+          ⣿⣿⣿⣿⡄⠈⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣾⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⣧⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⣿⣦⣄⣀⣀⣀⣀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡄⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⠀⠀⠀⠙⣿⣿⡟⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠁⠀⠀⠹⣿⠃⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⢐⣿⣿⣿⣿⣿⣿⣿⣿⣿
+          ⣿⣿⣿⣿⠿⠛⠉⠉⠁⠀⢻⣿⡇⠀⠀⠀⠀⠀⠀⢀⠈⣿⣿⡿⠉⠛⠛⠛⠉⠉
+          ⣿⡿⠋⠁⠀⠀⢀⣀⣠⡴⣸⣿⣇⡄⠀⠀⠀⠀⢀⡿⠄⠙⠛⠀⣀⣠⣤⣤⠄⠀
+        '';
       };
 
       chrony = {
@@ -222,6 +256,27 @@ in
         "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
         "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
       ];
+
+      services = {
+        "mglru" = mkIf (usezramSwap) {
+          enable = true;
+          wantedBy = [ "basic.target" ];
+          script = ''${pkgs.uutils-coreutils-noprefix}/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms'';
+          serviceConfig = {
+            Type = "oneshot";
+          };
+          unitConfig = {
+            ConditionPathExists = "/sys/kernel/mm/lru_gen/enabled";
+            Description = "Configure Enable Multi-Gen LRU";
+          };
+        };
+      };
+    };
+
+    zramSwap = {
+      algorithm = "zstd";
+      enable = usezramSwap;
+      memoryPercent = 100;
     };
   };
 }
