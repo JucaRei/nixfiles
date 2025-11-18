@@ -1,16 +1,44 @@
-{ config, pkgs, inputs, outputs, ... }:
+{ config, lib, pkgs, stateVersion, username, isOtherOS, inputs, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
+  inherit (lib) optional mkIf;
+  isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
+  checkVer = if isNixos then false else true;
 in
 {
-  imports = with inputs; [ ../modules/home-manager ];
-  nixpkgs = {
-    overlays = with outputs; [
-      overlays.localPackages
-      overlays.modifiedPackages
-      overlays.unstablePackages
-      overlays.oldstablePackages
-      # Add more overlays here as needed
-    ];
+  imports = [
+    ../modules/home-manager
+
+    # Modules exported from other flakes:
+    inputs.nur.modules.homeManager.default
+    inputs.catppuccin.homeModules.catppuccin
+    inputs.sops-nix.homeManagerModules.sops
+    inputs.nix-index-database.hmModules.nix-index
+    inputs.nix-flatpak.homeManagerModules.nix-flatpak
+    inputs.chaotic.homeManagerModules.default
+  ]
+  ++ optional (builtins.pathExists (./. + "/hosts")) ./hosts
+  ++ optional (builtins.pathExists (./. + "/users")) ./users
+  ;
+
+  config = {
+    home = {
+      inherit stateVersion;
+      inherit username;
+      homeDirectory = if isDarwin then "/Users/${username}" else "/home/${username}";
+      packages = with pkgs; [
+        fd # Modern Unix `find`
+        netdiscover # Modern Unix `arp`
+        whereis-nix # nix store path
+      ] ++ optionals (isOtherOS) [
+        pciutils # Terminal PCI info
+        duf # Modern Unix `df`
+        usbutils # Terminal USB info
+      ];
+    };
+    programs = {
+      nix-index.enable = true;
+      home-manager.enable = checkVer;
+    };
   };
 }
