@@ -34,11 +34,16 @@ in
         pciutils # Terminal PCI info
         duf # Modern Unix `df`
         usbutils # Terminal USB info
+      ] ++ optionals (checkVer) [
+        home-build
+        home-switch
+        home-manager_change_summary
       ];
     };
     programs = {
       nix-index.enable = true;
       home-manager.enable = checkVer;
+      system.services.ssh.enable = checkVer;
     };
   };
 }

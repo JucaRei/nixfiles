@@ -18,8 +18,7 @@ in
       isInstall = !isISO;
       isWorkstation = builtins.isString desktop;
       nixGLWrapper = if useNixGL then mkNixGL pkgs else (x: x); # Define nixGLWrapper based on useNixGL
-      isOtherOS =
-        if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then true else false;
+      isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then true else false;
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
