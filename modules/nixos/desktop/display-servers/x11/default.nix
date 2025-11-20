@@ -1,31 +1,12 @@
 { lib, config, pkgs, desktop, hostname, ... }:
 let
-  inherit (lib) mkIf mkOptionDefault optional;
+  inherit (lib) mkIf mkOptionDefault;
   graphics = config.hardware.graphics.cards;
   backend = config.desktop.display-servers.backend;
 in
 {
   config = mkIf (backend == "x11") {
-    environment = {
-      systemPackages = mkIf (desktop == "bspwm") (with pkgs; [
-        wmctrl
-        notify-desktop
-        xdotool
-        ydotool
-      ]);
-
-      # Fix issue with java applications and tiling window managers.
-      sessionVariables = {
-        "_JAVA_AWT_WM_NONREPARENTING" = (mkIf (desktop == "bspwm")) "1";
-        LIBVA_DRIVER_NAME = mkIf (graphics.gpu == "nvidia" || graphics.gpu == "hybrid-nvidia") "nvidia";
-        VDPAU_DRIVER = mkIf (graphics.gpu == "nvidia" || graphics.gpu == "hybrid-nvidia") "nvidia";
-      };
-    };
-
     services = {
-      gnome.gnome-keyring = (mkIf (desktop != "kde" || desktop != "pantheon")) {
-        enable = true;
-      };
       xserver = {
         enable = mkOptionDefault true;
         displayManager = {
@@ -48,7 +29,7 @@ in
           #   variant = "abnt2";
           #   model = "pc105";
           # };
-          if (hostname == "nitro") || (hostname == "scrubber") then {
+          if (hostname == "nitro") || (hostname == "virtual") then {
             layout = "us,br";
             variant = "alt-intl,abnt2";
             options = "lv3:ralt_switch,grp_led:scroll";
