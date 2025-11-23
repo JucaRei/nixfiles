@@ -8,7 +8,7 @@ in
   options.system.security.pam = {
     enable = mkOption {
       type = bool;
-      default = isInstall;
+      default = false;
       description = "Enable optimizations module.";
     };
   };

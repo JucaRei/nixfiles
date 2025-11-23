@@ -18,7 +18,7 @@ in
       };
       manager = mkOption {
         type = nullOr (enum [ "sudo" "doas" ]);
-        default = "sudo";
+        default = null;
         description = mdDoc "The super user manager to use.";
       };
     };

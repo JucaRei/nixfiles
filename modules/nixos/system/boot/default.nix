@@ -3,6 +3,24 @@ let
   inherit (lib) mkDefault mkOption mkIf mkMerge optionals mkOverride;
   inherit (lib.types) bool nullOr enum str;
   cfg = config.system.boot;
+
+  # Simplified disk detection: extract base device name
+  rootDevice = config.fileSystems."/".device or null;
+  autoBootDisk =
+    if rootDevice != null then
+      let
+        devName = lib.last (lib.splitString "/" rootDevice);
+        # Match and remove partition suffix (handles nvme0n1p1, sda1, mmcblk0p1)
+        match = builtins.match "^(.*?)(p?[0-9]+)$" devName;
+      in
+      if match != null then "/dev/${builtins.elemAt match 0}" else rootDevice
+    else null;
+
+  # Determine boot device with fallback chain
+  bootDevice =
+    if cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy"
+    then "nodev"
+    else (cfg.device or autoBootDisk or (if notVM then "/dev/sda" else "/dev/vda"));
 in
 {
   options = {
@@ -20,7 +38,7 @@ in
       device = mkOption {
         type = nullOr (str);
         default = null;
-        description = "Device for GRUB loader";
+        description = "Device for GRUB loader (e.g., /dev/sda, /dev/vda, /dev/nvme0n1).";
       };
       bootManager = mkOption {
         type = nullOr (enum [ "grub" "systemd-boot" "raspberry" null ]);
@@ -34,12 +52,12 @@ in
       };
       plymouth = mkOption {
         type = bool;
-        default = isWorkstation;
+        default = false;
         description = "Enable's plymouth.";
       };
       silentBoot = mkOption {
         type = bool;
-        default = isWorkstation && isInstall;
+        default = false;
         description = "Whether or not to enable silent boot.";
       };
       secureBoot = mkOption {
@@ -64,19 +82,24 @@ in
 
     boot = {
       consoleLogLevel = 0;
+
       initrd = {
-        verbose = mkIf cfg.silentBoot;
+        verbose = mkIf cfg.silentBoot false;
         systemd = {
           enable = if (cfg.bootType == "efi" || cfg.bootType == "hybrid=legacy") then true else false;
           strip = mkDefault true;
+          mounts = mkIf cfg.plymouth [ "/sys/firmware/efi/efivars" ]; # For Plymouth in initrd
         };
       };
+
       extraModprobeConfig = mkIf (cfg.plymouth) ''
         blacklist iTCO_wdt
         blacklist iTCO_vendor_support
         blacklist sp5100_tco
       '';
+
       kernelPackages = mkOverride 1250 pkgs.unstable.linuxPackages_latest;
+
       kernel = {
         sysctl = mkMerge [
           (mkIf (cfg.silentBoot) {
@@ -90,6 +113,7 @@ in
           })
         ];
       };
+
       kernelParams = [
         # Enable cgroups_v2
         "cgroup_no_v1=all"
@@ -111,26 +135,32 @@ in
         "vt.global_cursor_default=0" # disable the cursor in vt to get a black screen during intermissions
         "page_alloc.shuffle=1" # reduces the predictability of page allocations
         "rootflags=noatime" # ignore access time (atime) updates on files
-      ] ++ optionals (cfg.bootManager == "raspberry") [
-        "cma=32M"
-      ];
+      ]
+      ++ optionals (cfg.bootManager == "raspberry") [ "cma=32M" ]
+      ++ optionals (notVM && !cfg.secureBoot) [ "mitigations=off" ] # Perf boost, optional
+      ;
+
       lanzaboote = mkIf (cfg.secureBoot) {
         enable = true;
         pkiBundle = "/etc/secureboot";
       };
+
       loader = {
         generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;
+
         efi = mkIf (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") {
           canTouchEfiVariables = if (cfg.bootType == "efi" && config.boot.loader.grub.enable == false) then true else false;
           efiSysMountPoint = mkDefault "/boot";
         };
-        generationsDir.copyKernels = mkIf (cfg.bootType == "efi");
+
+        generationsDir.copyKernels = mkIf (cfg.bootType == "efi") true;
+
         grub = mkIf (cfg.bootManager == "grub") {
           enable = mkIf (cfg.bootManager == "grub" && cfg.bootManager != "raspberry") true;
           efiSupport = if (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") then true else false;
           efiInstallAsRemovable = if (cfg.bootType != "legacy") then true else false;
           default = "saved";
-          device = if (cfg.bootType == "efi" && cfg.bootManager == "grub" || cfg.bootType == "hybrid-legacy" && cfg.bootManager == "grub") then "nodev" else "/dev/sda";
+          device = bootDevice;
           fsIdentifier = "provided";
           gfxmodeEfi = "auto";
           fontSize = 20;
@@ -138,15 +168,12 @@ in
           # splashImage = ./backgrounds/grub-nixos-3.png;
           # splashMode = "stretch";
           extraEntries = ''
-            menuentry "Reboot" {
-              reboot
-            }
-            menuentry "Poweroff" {
-              halt
-            }
+            menuentry "Reboot" { reboot }
+            menuentry "Poweroff" { halt }
           '';
           useOSProber = if (cfg.isDualBoot == true) then true else false;
         };
+
         systemd-boot = mkIf (cfg.bootManager == "systemd-boot") {
           enable = true;
           consoleMode = "max";
@@ -154,8 +181,10 @@ in
           editor = false;
           memtest86.enable = true;
         };
+
         timeout = 7;
       };
+
       plymouth = rec {
         enable = cfg.plymouth;
         theme = "lone";
@@ -163,12 +192,14 @@ in
           (adi1090x-plymouth-themes.override { selected_themes = [ theme ]; })
         ];
       };
+
       tmp = {
         useTmpfs = true;
         tmpfsSize = "30%";
         cleanOnBoot = mkDefault (!config.boot.tmp.useTmpfs);
       };
     };
+
     systemd = {
       watchdog.rebootTime = mkIf (cfg.plymouth) "0";
     };

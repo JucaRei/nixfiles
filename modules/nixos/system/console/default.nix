@@ -60,7 +60,7 @@ in
     };
 
     console = {
-      useXkbConfig = if (isWorkstation == true) then true else false;
+      useXkbConfig = true;
       # keyMap = mkIf (hostname == "nitro" || hostname == "scrubber") "br-abnt";
       earlySetup = false;
       font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";

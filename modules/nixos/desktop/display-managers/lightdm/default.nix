@@ -1,19 +1,22 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+
+  cfg = config.desktop.display-managers.lightdm;
 in
 {
   options = {
     desktop.display-managers.lightdm = {
       enable = mkOption {
-        type = lib.types.bool;
+        type = bool;
         default = false;
         description = "Enable LightDM as the display manager.";
       };
     };
   };
 
-  config = {
+  config = mkIf (cfg.enable) {
     services = {
       xserver = {
         enable = true;
@@ -78,10 +81,44 @@ in
                 '';
               };
             };
+            extraSeatDefaults = ''
+              greeter-hide-users=false
+              #greeter-show-manual-login=true
+            '';
           };
         };
       };
     };
+
+    # environment = {
+    #   etc = {
+    #     "X11/xinit/xinitrc".source = pkgs.writeShellScript "xinitrc" ''
+    #       if test -z "$DBUS_SESSION_BUS_ADDRESS"; then
+    #         eval $(dbus-launch --exit-with-session --sh-syntax)
+    #       fi
+    #       systemctl --user import-environment DISPLAY XAUTHORITY
+
+    #       if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+    #         dbus-update-activation-environment DISPLAY XAUTHORITY
+    #       fi
+    #       systemctl --user start nixos-fake-graphical-session.target
+
+    #       ${pkgs.runtimeShell} ${pkgs.xfce.xfce4-session.xinitrc} &
+    #       waitPID=$!
+    #       wait $waitPID
+
+    #       # stop services and all subprocesses
+    #       systemctl --user stop nixos-fake-graphical-session.target
+    #       kill 0
+    #     '';
+    #   };
+    # };
+
+    # systemd.user.targets.nixos-fake-graphical-session = {
+    #   description = "Fake Graphical Session Target";
+    #   wants = [ "graphical-session.target" ]; # Or your custom services
+    #   wantedBy = [ "multi-user.target" ]; # Adjust as needed
+    # };
   };
 }
 

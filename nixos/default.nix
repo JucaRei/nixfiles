@@ -1,6 +1,6 @@
 { inputs, outputs, lib, config, pkgs, hostname, platform, modulesPath, isISO, isInstall, username, isWorkstation, ... }:
 let
-  inherit (lib) mkIf optional optionals mkDefault mkOptionDefault;
+  inherit (lib) mkIf optional optionals mkDefault;
 
   # Only enable zram swap if no swap devices are configured
   usezramSwap = builtins.length config.swapDevices == 0;
@@ -26,7 +26,7 @@ in
   ++ optional (lib.hasAttr "nixosModules" inputs.nixpkgs) inputs.nixpkgs.nixosModules.default);
 
   # This is the main configuration for your NixOS system.
-  config = {
+  config = mkDefault {
     documentation = mkDefault {
       enable = true;
       man = {
@@ -55,6 +55,25 @@ in
         LC_PAPER = "pt_BR.UTF-8";
         LC_TELEPHONE = "pt_BR.UTF-8";
         LC_TIME = "pt_BR.UTF-8";
+      };
+    };
+
+    system = {
+      boot = mkDefault {
+        bootType = "efi";
+        bootManager = "grub";
+        plymouth = isWorkstation;
+        silentBoot = isWorkstation;
+      };
+      console = isWorkstation;
+      security = mkDefault {
+        superuser = {
+          enable = true;
+          manager = mkDefault "sudo";
+        };
+        pam = {
+          enable = isInstall;
+        };
       };
     };
 

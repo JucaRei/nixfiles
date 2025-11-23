@@ -23,6 +23,8 @@ in
         # https://discourse.nixos.org/t/fusermount-systemd-service-in-home-manager/5157
         "fuse.conf".text = "user_allow_other";
       };
+
+      localBinInPath = true;
     };
 
     services = {

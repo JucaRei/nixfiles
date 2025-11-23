@@ -1,16 +1,13 @@
 { isInstall, lib, pkgs, config, ... }:
 
 {
-  imports = [
-    ../../display-manager/lightdm
-  ];
   config = {
     desktop = {
       display-managers.name = "lightdm";
       display-servers.backend = "wayland";
     };
 
-    system.services.flatpak-appcenter.enable = true;
+    # system.services.flatpak-appcenter.enable = true;
 
     environment = {
       pantheon.excludePackages = with pkgs.pantheon; [
