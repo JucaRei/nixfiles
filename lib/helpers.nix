@@ -33,6 +33,7 @@ in
           isInstall
           isISO
           isWorkstation
+          nixGLWrapper
           ;
       };
       modules = [ ../home-manager ];
@@ -105,26 +106,20 @@ in
 
               # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
               # extraSpecialArgs = { inherit (inputs.config.home-manager.homeManagerConfiguration.extraSpecialArgs) extraSpecialArgs; };
-              extraSpecialArgs =
-                let
-                  # isLima = hostname == "grozbok" || hostname == "zeta";
-                  isOtherOS = if builtins.isString (builtins.getEnv "__NIXOS_SET_ENVIRONMENT_DONE") then false else true;
-                in
-                {
-                  inherit
-                    inputs
-                    outputs
-                    desktop
-                    hostname
-                    platform
-                    username
-                    stateVersion
-                    isOtherOS
-                    isInstall
-                    isISO
-                    isWorkstation
-                    ;
-                };
+              extraSpecialArgs = {
+                inherit
+                  inputs
+                  outputs
+                  desktop
+                  hostname
+                  platform
+                  username
+                  stateVersion
+                  isInstall
+                  isISO
+                  isWorkstation
+                  ;
+              };
             };
           }
         ]

@@ -52,10 +52,10 @@
         "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
         "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
-        "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
-        "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
+        # "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
+        # "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
         # Only terminal apps
-        "juca@anubis" = helper.mkHome { hostname = "anubis"; stateVersion = "24.05"; };
+        # "juca@anubis" = helper.mkHome { hostname = "anubis"; stateVersion = "24.05"; };
         # Servers
         # VMs
         "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
@@ -79,11 +79,11 @@
         #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
         #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
-        nixtro = helper.mkNixos { hostname = "rocinante"; desktop = "hyprland"; };
-        rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-        zion = helper.mkNixos { hostname = "zion"; desktop = "xfce4"; };
+        # nixtro = helper.mkNixos { hostname = "rocinante"; desktop = "hyprland"; };
+        # rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
+        # zion = helper.mkNixos { hostname = "zion"; desktop = "xfce4"; };
         # Servers
-        soyoz = helper.mkNixos { hostname = "soyoz"; };
+        # soyoz = helper.mkNixos { hostname = "soyoz"; };
         # VMs
         virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; stateVersion = "24.05"; };
       };
