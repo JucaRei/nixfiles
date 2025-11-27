@@ -41,10 +41,25 @@ in
       extraModulePackages = [ ];
     };
 
-    hardware.graphics.cards = {
-      enable = true;
-      acceleration = true;
-      gpu = "hybrid-nvidia";
+    hardware = {
+      cpu = {
+        enable = true;
+        hardenKernel = true;
+        improveTCP = true;
+        enableKvm = true;
+        cpuVendor = "intel";
+      };
+
+      audio = {
+        enable = true;
+        manager = "pipewire";
+      };
+
+      graphics.cards = {
+        enable = true;
+        acceleration = true;
+        gpu = "hybrid-nvidia";
+      };
     };
   };
 }
