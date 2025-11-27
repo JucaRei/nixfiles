@@ -14,10 +14,6 @@ in
 
   config = {
     environment = {
-      systemPackages = with pkgs; [
-        font-search # show existent fonts
-      ];
-
       etc = {
         # Allow mounting FUSE filesystems as a user.
         # https://discourse.nixos.org/t/fusermount-systemd-service-in-home-manager/5157
@@ -62,10 +58,8 @@ in
         enable = mkDefault true;
         # decompressFonts = false;
       };
-      packages = with pkgs; [
-        (nerdfonts.override {
-          fonts = [ "FiraCode" "NerdFontsSymbolsOnly" ];
-        })
+      packages = with pkgs.nerd-fonts; [
+        fira-code
       ];
       fontconfig = {
         antialias = true;

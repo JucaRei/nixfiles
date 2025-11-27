@@ -8,9 +8,7 @@
     # Add more fonts for any browser
     packages = with pkgs; [
       msttcorefonts
-      (nerdfonts.override {
-        fonts = [ "FiraCode" ];
-      })
+      nerd-fonts.martian-mono
     ];
   };
 }

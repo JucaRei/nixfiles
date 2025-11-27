@@ -46,10 +46,5 @@ in
       home-manager.enable = checkVer;
       system.services.ssh.enable = true;
     };
-
-    xdg = {
-      mime.enable = true;
-      systemDirs.data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
-    };
   };
 }

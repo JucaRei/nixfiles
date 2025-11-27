@@ -16,28 +16,11 @@ in
               store diff-closures $oldGenPath $newGenPath || true
           fi
         '';
-
-        linkDestopApplications = mkIf (!isNixOS && isWorkstation != null) {
-          # Add Packages To System Menu by updating database
-          after = [ "writeBoundary" "createXdgUserDirectories" ];
-          before = [ ];
-          data = "${pkgs.desktop-file-utils}/bin/update-desktop-database";
-        };
       };
-
-      sessionVariables = mkDefault {
-        NIXPKGS_ALLOW_UNFREE = "1";
-        NIXPKGS_ALLOW_INSECURE = "1";
-      };
-
-      sessionPath = mkIf (!isNixOS && isWorkstation != null) [
-        "$HOME/.local/bin"
-      ];
 
       enableNixpkgsReleaseCheck = false;
     };
 
-    targets.genericLinux.enable = mkIf (!isNixOS) true;
 
     news.display = "silent";
 
@@ -91,17 +74,6 @@ in
     systemd = {
       user = {
         startServices = mkIf isLinux "sd-switch"; # Nicely reload system units when changing configs
-
-        sessionVariables = {
-          FLAKE = mkDefault "/home/${username}/.dotfiles/nixfiles";
-        };
-        # Create age keys directory for SOPS
-
-        tmpfiles = mkIf isLinux {
-          rules = [
-            "d ${config.home.homeDirectory}/.config/sops/age 0755 ${username} users - -"
-          ];
-        };
       };
     };
   };
