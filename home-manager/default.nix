@@ -43,6 +43,7 @@ in
     };
     programs = {
       nix-index.enable = true;
+      tools.ssh.enable = true;
       home-manager.enable = checkVer;
       system.services.ssh.enable = true;
     };

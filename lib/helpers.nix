@@ -33,7 +33,7 @@ in
           isInstall
           isISO
           isWorkstation
-          nixGLWrapper
+          nixGLWrapper# ← passed to every module
           ;
       };
       modules = [ ../home-manager ];
