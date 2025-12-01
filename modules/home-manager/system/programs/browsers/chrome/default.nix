@@ -1,4 +1,4 @@
-{ config, lib, pkgs, osConfig ? null, ... }:
+{ config, lib, pkgs, osConfig ? null, nixGLWrapper ? (x: x), ... }:
 let
   inherit (lib) optional mkOption mkIf;
   inherit (lib.types) enum bool;
@@ -58,20 +58,20 @@ in
     programs.chromium = {
       enable = true;
       package =
-        if cfg.browser == "chromium" then pkgs.chromium
-        else if cfg.browser == "ungoogled-chromium" then pkgs.ungoogled-chromium
-        else if cfg.browser == "google-chrome" then pkgs.google-chrome
+        if cfg.browser == "chromium" then nixGLWrapper pkgs.chromium
+        else if cfg.browser == "ungoogled-chromium" then nixGLWrapper pkgs.ungoogled-chromium
+        else if cfg.browser == "google-chrome" then nixGLWrapper pkgs.google-chrome
         # else if cfg.browser == "opera" then
         #   (pkgs.opera.override { proprietaryCodecs = true; })
-        else if cfg.browser == "vivaldi" then pkgs.vivaldi
+        else if cfg.browser == "vivaldi" then nixGLWrapper pkgs.vivaldi
         # .override
         # {
         #   proprietaryCodecs = true;
         #   enableWidevine = false;
         #   # qt = "qt6";
         # }
-        else if cfg.browser == "edge" then pkgs.microsoft-edge
-        else pkgs.brave;
+        else if cfg.browser == "edge" then nixGLWrapper pkgs.microsoft-edge
+        else nixGLWrapper pkgs.brave;
 
       commandLineArgs = [
         "--no-default-browser-check"

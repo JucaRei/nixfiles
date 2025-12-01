@@ -1,4 +1,4 @@
-{ config, lib, pkgs, username, osConfig ? null, ... }:
+{ config, lib, pkgs, username, osConfig ? null, nixGLWrapper ? (x: x), ... }:
 let
   inherit (lib) mkIf mkOption mkDefault mkForce;
   inherit (lib.types) bool enum;
@@ -73,10 +73,10 @@ in
     programs.firefox = {
       enable = true;
       package =
-        if (cfg.version == "firefox-esr") then pkgs.firefox-esr
-        else if (cfg.version == "firefox") then pkgs.firefox
-        else if (cfg.version == "floorp") then pkgs.floorp-bin
-        else (cfg.version == "firefox-devedition") pkgs.firefox-devedition;
+        if (cfg.version == "firefox-esr") then nixGLWrapper pkgs.firefox-esr
+        else if (cfg.version == "firefox") then nixGLWrapper pkgs.firefox
+        else if (cfg.version == "floorp") then nixGLWrapper pkgs.floorp-bin
+        else (cfg.version == "firefox-devedition") nixGLWrapper pkgs.firefox-devedition;
 
       policies = builtins.fromJSON (builtins.readFile ./policies.json);
 

@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, nixGLWrapper ? (x: x), ... }:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.documents.libreoffice;
@@ -17,7 +17,7 @@ in
         hunspellDicts.en_US # American English spellcheck dictionary
         hunspellDicts.pt_BR
         languagetool # spelling, style. and grammer checker
-        libreoffice-fresh
+        (nixGLWrapper libreoffice-fresh)
       ];
     };
   };

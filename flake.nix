@@ -28,7 +28,9 @@
     lanzaboote.url = "github:nix-community/lanzaboote";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
     vscode-server.url = "github:nix-community/nixos-vscode-server";
-    vscode-server.inputs.nixpkgs.follows = "nixpkgs";
+    vscode-server.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    nix4vscode.url = "github:nix-community/nix4vscode";
+    nix4vscode.inputs.nixpkgs.follows = "nixpkgs-unstable";
     sf-mono-liga-src.url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized"; # SFMono w/ patches
     sf-mono-liga-src.flake = false;
     sops-nix.url = "github:Mic92/sops-nix";
@@ -54,8 +56,8 @@
         # Workstations
         # "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
         # "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
+        "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
         # Only terminal apps
-        # "juca@anubis" = helper.mkHome { hostname = "anubis"; stateVersion = "24.05"; };
         # Servers
         # VMs
         "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
