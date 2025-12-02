@@ -123,7 +123,12 @@
             };
           }
         ]
-        ++ inputs.nixpkgs.lib.optionals isISO [ cd-dvd ];
+        ++ inputs.nixpkgs.lib.optionals isISO [
+          (if (desktop == null) then
+            inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+          else
+            inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix")
+        ];
     };
 
   # mkDarwin =
