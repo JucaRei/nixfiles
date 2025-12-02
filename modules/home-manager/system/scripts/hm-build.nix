@@ -1,10 +1,6 @@
-{ config, ... }:
+{ pkgs, ... }:
 
-let
-  pkgs = config.home.manager.pkgs;
-in
-
-pkgs.writeScriptBin /*bash*/ "hm-build" ''
+pkgs.writeScriptBin "hm-build" ''
   #!${pkgs.stdenv.shell}
 
   if [ -e $HOME/.dotfiles/nixfiles ]; then
