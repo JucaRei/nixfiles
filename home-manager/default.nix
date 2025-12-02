@@ -10,7 +10,7 @@ in
     # Modules exported from other flakes:
     inputs.catppuccin.homeModules.catppuccin
     inputs.sops-nix.homeManagerModules.sops
-    inputs.nix-index-database.hmModules.nix-index
+    inputs.nix-index-database.homeModules.nix-index
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
     inputs.chaotic.homeManagerModules.default
     inputs.nur.modules.homeManager.default
