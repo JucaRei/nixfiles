@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, ... }:
 
 pkgs.writeScriptBin "hm-switch" ''
   #!${pkgs.stdenv.shell}

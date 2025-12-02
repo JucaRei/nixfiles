@@ -1,4 +1,4 @@
-{ pkgs }:
+{ pkgs, ... }:
 
 pkgs.writeScriptBin /*bash*/ "hm-build" ''
   #!${pkgs.stdenv.shell}
