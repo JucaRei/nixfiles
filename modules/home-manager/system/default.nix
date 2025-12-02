@@ -1,7 +1,7 @@
 _: {
   imports = [
     ./programs
-    ./scripts
+    # ./scripts
     ./services
   ];
 }
