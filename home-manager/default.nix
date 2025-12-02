@@ -1,7 +1,7 @@
 { config, lib, pkgs, stateVersion, username, isOtherOS, inputs, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional mkIf;
+  inherit (lib) optional optionals mkIf;
   isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
   checkVer = if isNixos then false else true;
 in
