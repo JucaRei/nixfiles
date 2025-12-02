@@ -2,8 +2,6 @@
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optional optionals mkIf;
-  isNixos = builtins.hasAttr "system" config; # only present on NixOS systems
-  checkVer = if isNixos then false else true;
 in
 {
   imports = [
@@ -19,12 +17,7 @@ in
     inputs.nur.hmModules.nur
   ]
   ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
-  ++ optional (builtins.pathExists (./. + "/users")) ./users
-  ++ optionals (checkVer) [
-    ../modules/home-manager/system/scripts/hm-build.nix
-    # hm-switch
-    # hm-chsummary
-  ];
+  ++ optional (builtins.pathExists (./. + "/users")) ./users;
 
   config = {
     home = {
@@ -39,16 +32,11 @@ in
         pciutils # Terminal PCI info
         duf # Modern Unix `df`
         usbutils # Terminal USB info
-      ] ++ optionals (checkVer) [
-        hm-build
-        hm-switch
-        hm-chsummary
       ];
     };
     programs = {
       nix-index.enable = true;
       tools.ssh.enable = true;
-      home-manager.enable = checkVer;
       system.services.ssh.enable = true;
     };
   };
