@@ -1,7 +1,7 @@
 { config, lib, pkgs, stateVersion, username, isOtherOS, inputs, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optional optionals mkIf;
+  inherit (lib) optionals mkIf;
 in
 {
   imports = [
@@ -15,8 +15,8 @@ in
     inputs.chaotic.homeManagerModules.default
     inputs.nur.modules.homeManager.default
   ]
-  ++ (optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname})
-  ++ (optional (builtins.pathExists (./. + "/users")) ./users);
+  ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
+  ++ lib.optional (builtins.pathExists (./. + "/users")) ./users;
 
   config = {
     home = {
