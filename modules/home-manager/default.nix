@@ -1,12 +1,12 @@
 { config, lib, pkgs, inputs, outputs, username, osConfig ? null, isWorkstation, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mapAttrsToList mkDefault mkIf;
+  inherit (lib) mapAttrsToList mkDefault mkIf optionals;
 
   isNixOS = osConfig != null;
 in
 {
-  imports = [ ./system ] ++ mkIf (isWorkstation) [ ./desktop/environments ];
+  imports = [ ./system ] ++ optionals isWorkstation [ ./desktop/environments ];
   config = {
     home = {
       activation = {
@@ -52,7 +52,7 @@ in
       settings = {
         experimental-features = "flakes nix-command";
         trusted-users = [ "${username}" "@wheel" ]; # root
-        allowed-users = [ "${username}" "@whell" ]; # root
+        allowed-users = [ "${username}" "@wheel" ]; # root
         warn-dirty = false;
         allow-dirty = true;
       };
