@@ -13,12 +13,11 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
-
       isWorkstation = builtins.isString desktop;
 
+      pkgs = inputs.nixpkgs.legacyPackages.${platform};
       mkNixGL = import ./nixGL.nix { inherit pkgs; };
-      pkgs = inputs.nixpkgs.legacyPackages.${placeholder};
-      nixGLWrapper = if useNixGL then mkNixGL pkgs else (x: x); # Define nixGLWrapper based on useNixGL
+      nixGLWrapper = if useNixGL then mkNixGL else (x: x); # Define nixGLWrapper based on useNixGL
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
@@ -34,7 +33,7 @@
           isInstall
           isISO
           isWorkstation
-          nixGLWrapper# ← passed to every module
+          nixGLWrapper
           ;
       };
       modules = [ ../home-manager ];
