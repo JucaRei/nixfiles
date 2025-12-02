@@ -6,7 +6,7 @@ let
   isNixOS = osConfig != null;
 in
 {
-  imports = [ ./system ] ++ optionals isWorkstation [ ./desktop/environments ];
+  imports = [ ./system ] ++ optionals (isWorkstation) [ ./desktop/environments ];
   config = {
     home = {
       activation = {

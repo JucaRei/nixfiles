@@ -6,6 +6,7 @@ in
 {
   imports = [
     ../modules/home-manager
+    ./users
 
     # Modules exported from other flakes:
     inputs.catppuccin.homeModules.catppuccin
@@ -15,8 +16,7 @@ in
     inputs.chaotic.homeManagerModules.default
     inputs.nur.modules.homeManager.default
   ]
-  ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
-  ++ lib.optional (builtins.pathExists (./. + "/users")) ./users;
+  ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
 
   config = {
     home = {
