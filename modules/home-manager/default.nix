@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, outputs, username, osConfig ? null, isWorkstation ? null, ... }:
+{ config, lib, pkgs, inputs, outputs, username, osConfig ? null, isWorkstation, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mapAttrsToList mkDefault mkIf;
@@ -6,6 +6,7 @@ let
   isNixOS = osConfig != null;
 in
 {
+  imports = [ ./system ] ++ mkIf (isWorkstation) [ ./desktop/environments ];
   config = {
     home = {
       activation = {

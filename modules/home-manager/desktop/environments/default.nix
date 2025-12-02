@@ -7,6 +7,7 @@ in
   imports = [
     ./bspwm
     ./xfce4
+    ../display-servers
   ];
 
   config = {
