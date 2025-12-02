@@ -20,7 +20,11 @@ in
   ]
   ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
   ++ optional (builtins.pathExists (./. + "/users")) ./users
-  ;
+  ++ optionals (checkVer) [
+    ../modules/home-manager/system/scripts/hm-build.nix
+    # hm-switch
+    # hm-chsummary
+  ];
 
   config = {
     home = {
