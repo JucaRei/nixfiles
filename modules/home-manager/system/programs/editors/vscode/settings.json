@@ -157,7 +157,7 @@
     // "DavidAnson.vscode-markdownlint",
     // "github.vscode-github-actions",
     // "mkhl.direnv",
-    "ms-vscode-remote.remote-ssh"
+    // "ms-vscode-remote.remote-ssh"
     // "PKief.material-product-icons"
   ],
   "remote.SSH.useLocalServer": false,

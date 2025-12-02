@@ -1,20 +1,33 @@
 {
   description = "NixOS, nix-darwin and Home Manager Configuration";
   inputs = {
+    ### Determine Helper
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*";
+
+
+    ### NIXOS
     nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2505.*";
     nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
     nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
+
+    ### Home-Manager
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager_unstable.url = "github:nix-community/home-manager/master";
     home-manager_unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+
+    ### Nix for darwin
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-index-database.url = "github:Mic92/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
-    catppuccin.url = "github:catppuccin/nix";
+
+    ### Chaotic repo
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+
+    ### Other Custom Modules
+    catppuccin.url = "github:catppuccin/nix";
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
     nur.url = "github:nix-community/NUR";

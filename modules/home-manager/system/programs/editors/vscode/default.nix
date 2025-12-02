@@ -7,7 +7,7 @@ let
   isWayland = backend == "wayland";
 
   # Settings
-  jsonPath = "${./configs/settings.json}";
+  jsonPath = "${./settings.json}";
   userSettingsRaw = builtins.fromJSON (builtins.readDir jsonPath);
   remoteExtensions = {
     "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueID) (userSettingsRaw.extensions or [ ]); # Assume JSON has "extensions" array
@@ -83,7 +83,7 @@ in
 
             # Editor
             oderwat.indent-rainbow
-            # ms-vscode-remote.remote-ssh
+            ms-vscode-remote.remote-ssh
           ] ++
           pkgs.nix4vscode.forVscode [
             "davidbwaters.macos-modern-theme"
