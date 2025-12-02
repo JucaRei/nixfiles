@@ -15,8 +15,8 @@ in
     inputs.chaotic.homeManagerModules.default
     inputs.nur.modules.homeManager.default
   ]
-  ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
-  ++ optional (builtins.pathExists (./. + "/users")) ./users;
+  ++ (optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname})
+  ++ (optional (builtins.pathExists (./. + "/users")) ./users);
 
   config = {
     home = {
