@@ -8,13 +8,12 @@ in
     ../modules/home-manager
 
     # Modules exported from other flakes:
-    inputs.nur.modules.homeManager.default
     inputs.catppuccin.homeModules.catppuccin
     inputs.sops-nix.homeManagerModules.sops
     inputs.nix-index-database.hmModules.nix-index
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
     inputs.chaotic.homeManagerModules.default
-    inputs.nur.hmModules.nur
+    inputs.nur.modules.homeManager.default
   ]
   ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
   ++ optional (builtins.pathExists (./. + "/users")) ./users;
