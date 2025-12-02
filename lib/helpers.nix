@@ -54,13 +54,12 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
-      isWorkstation = builtins.isString desktop && builtins.isString != null;
+      isWorkstation = builtins.isString desktop && desktop != null;
       notVM =
         if
           (hostname == "virtual")
           || (hostname == "vm")
           || (hostname == "soyoz-vm")
-        # || (builtins.substring 0 5 hostname == "lima-")
         then
           false
         else
@@ -85,13 +84,6 @@
       };
       # If the hostname starts with "iso-", generate an ISO image
       modules =
-        let
-          cd-dvd =
-            if (desktop == null) then
-              inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-            else
-              inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix";
-        in
         [
           ../nixos
 
@@ -100,14 +92,10 @@
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
-              useGlobalPkgs = false; # use packages that are installed in the system level
-              useUserPackages = true; # Packages will be installed to /etc/profiles, not $HOME/.nix-profile
+              useGlobalPkgs = false;
+              useUserPackages = true;
               backupFileExtension = "home-manager.backup";
-
               users.${username} = import ../home-manager;
-
-              # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
-              # extraSpecialArgs = { inherit (inputs.config.home-manager.homeManagerConfiguration.extraSpecialArgs) extraSpecialArgs; };
               extraSpecialArgs = {
                 inherit
                   inputs
