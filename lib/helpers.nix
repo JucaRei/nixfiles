@@ -8,7 +8,7 @@
     , desktop ? null
     , platform ? "x86_64-linux"
     , stateVersion ? "24.11"
-    , useNixGL ? false # Add new parameter to control nixGL usage
+    , useNixGL ? false
     }:
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
@@ -17,7 +17,7 @@
 
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       mkNixGL = import ./nixGL.nix { inherit pkgs; };
-      nixGLWrapper = if useNixGL then mkNixGL else (x: x); # Define nixGLWrapper based on useNixGL
+      nixGLWrapper = if useNixGL then mkNixGL else (x: x);
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
@@ -36,7 +36,9 @@
           nixGLWrapper
           ;
       };
-      modules = [ ../home-manager ];
+      modules = [
+        ../home-manager
+      ];
     };
 
   # Helper function for generating NixOS configs
