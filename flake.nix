@@ -73,7 +73,8 @@
         # Only terminal apps
         # Servers
         # VMs
-        "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
+        # "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
+        "juca@virtualvm" = helper.mkHome { hostname = "virtualvm"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
       };
 
       nixosConfigurations = {

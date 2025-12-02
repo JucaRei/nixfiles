@@ -1,4 +1,4 @@
-{ config, lib, pkgs, stateVersion, username, isOtherOS, inputs, ... }:
+{ config, lib, pkgs, stateVersion, username, isOtherOS, inputs, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optional mkIf;
@@ -18,7 +18,7 @@ in
     inputs.chaotic.homeManagerModules.default
     inputs.nur.hmModules.nur
   ]
-  ++ optional (builtins.pathExists (./. + "/hosts")) ./hosts
+  ++ optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname}
   ++ optional (builtins.pathExists (./. + "/users")) ./users
   ;
 
