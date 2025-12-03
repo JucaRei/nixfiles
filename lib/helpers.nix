@@ -50,7 +50,6 @@
     , platform ? "x86_64-linux"
     , hostid ? null
     , stateVersion ? "24.11"
-    ,
     }:
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
@@ -95,7 +94,7 @@
             home-manager = {
               useGlobalPkgs = false;
               useUserPackages = true;
-              backupFileExtension = "home-manager.backup";
+              backupFileExtension = "hm.backup";
               users.${username} = import ../home-manager;
               extraSpecialArgs = {
                 inherit

@@ -5,7 +5,7 @@ let
   cfg = config.system.programs.browsers.firefox;
 
   sharedSettings = import ./shared.nix { inherit config lib osConfig; }
-    // ./fonts.nix { };
+    // import ./fonts.nix { };
 
   isNixOS = osConfig != null;
   hasVaapi =
@@ -21,7 +21,7 @@ in
         default = false;
         description = "Enable's firefox web based browser.";
       };
-      version = {
+      version = mkOption {
         type = enum [ "firefox" "firefox-devedition" "firefox-esr" "floorp" ];
         default = "firefox";
         description = "Choose which firefox version you want.";

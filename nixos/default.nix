@@ -1,6 +1,6 @@
 { inputs, outputs, lib, config, pkgs, hostname, platform, modulesPath, isISO, isInstall, username, isWorkstation, ... }:
 let
-  inherit (lib) mkIf optional optionals mkDefault;
+  inherit (lib) mkIf optionals mkDefault;
 
   # Only enable zram swap if no swap devices are configured
   usezramSwap = builtins.length config.swapDevices == 0;

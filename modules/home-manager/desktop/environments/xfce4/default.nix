@@ -8,7 +8,7 @@ let
 in
 {
   config = {
-    desktop.display-serves.backend.default = "x11";
+    desktop.display-servers.backend.default = "x11";
 
     home = let gio = pkgs.gnome.gvfs; in {
       packages = with pkgs // pkgs.xfce // pkgs.mate // pkgs.xorg;[

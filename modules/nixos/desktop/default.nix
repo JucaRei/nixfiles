@@ -1,6 +1,6 @@
 { config, lib, pkgs, desktop, isWorkstation, ... }:
 let
-  inherit (lib) optional mkIf mkOption mkOptionDefault mkDefault;
+  inherit (lib) optionals mkIf mkOption mkOptionDefault mkDefault;
   inherit (lib.types) nullOr enum;
   cfg = config.desktop.environments;
 in
@@ -9,7 +9,9 @@ in
     ./display-servers
     ./display-managers
   ]
-  ++ optional (builtins.pathExists (./. + "/environments/${desktop}")) ./environments/${desktop}
+  ++ lib.optionals (desktop != null && builtins.pathExists (./. + "/environments/${desktop}")) [
+    (./. + "/environments/${desktop}")
+  ]
   ;
 
   config = {

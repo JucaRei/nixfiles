@@ -1,6 +1,6 @@
 { config, inputs, outputs, pkgs, platform, lib, isInstall, stateVersion, username, isWorkstation, desktop, ... }:
 let
-  inherit (lib) optional mkDefault mapAttrsToList mkOptionDefault mkIf;
+  inherit (lib) mkDefault mapAttrsToList mkOptionDefault mkIf;
   currentDir = ./.; # Represents the current directory
   isDirectoryAndNotTemplate = name: type: type == "directory";
   directories = lib.filterAttrs isDirectoryAndNotTemplate (builtins.readDir currentDir);
@@ -8,7 +8,7 @@ let
 in
 {
   imports = mapAttrsToList (name: _: importDirectory name) directories
-    ++ optional (isWorkstation) ./desktop
+    ++ lib.optional (isWorkstation) ./desktop
   ;
 
   config = {
