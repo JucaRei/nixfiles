@@ -5,7 +5,6 @@
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*";
 
-
     ### NIXOS
     nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2505.*";
     nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
@@ -73,8 +72,8 @@
         # Only terminal apps
         # Servers
         # VMs
-        "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
-        # "juca@virtualvm" = helper.mkHome { hostname = "virtualvm"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
+        # "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
+        "juca@virtualvm" = helper.mkHome { hostname = "virtualvm"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
       };
 
       nixosConfigurations = {
@@ -102,7 +101,7 @@
         # soyoz = helper.mkNixos { hostname = "soyoz"; };
         # VMs
         # virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; stateVersion = "24.05"; };
-        virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; };
+        virtualvm = helper.mkNixos { hostname = "virtualvm"; desktop = "xfce4"; };
       };
 
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config

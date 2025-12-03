@@ -152,7 +152,7 @@ in
       };
 
       loader = {
-        generic-extlinux-compatible.enable = mkIf (cfg.bootmanager == "raspberry") true;
+        generic-extlinux-compatible.enable = mkIf (cfg.bootManager == "raspberry") true;
 
         efi = mkIf (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") {
           canTouchEfiVariables = if (cfg.bootType == "efi" && config.boot.loader.grub.enable == false) then true else false;

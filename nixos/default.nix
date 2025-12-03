@@ -12,21 +12,22 @@ in
     ../modules/nixos
     (modulesPath + "/installer/scan/not-detected.nix")
   ]
-  ++ (with inputs; [
-    nur.modules.nixos.default
-    disko.nixosModules.disko
-    nixos-hardware.nixosModules.common-pc-ssd
-    nixos-hardware.nixosModules.common-pc
-    auto-cpufreq.nixosModules.default
-    catppuccin.nixosModules.catppuccin
-    nix-flatpak.nixosModules.nix-flatpak
-    nix-index-database.nixosModules.nix-index
-    chaotic.nixosModules.default
-  ]);
+  ++ [
+    inputs.nur.modules.nixos.default
+    inputs.disko.nixosModules.disko
+    inputs.nixos-hardware.nixosModules.common-pc-ssd
+    inputs.nixos-hardware.nixosModules.common-pc
+    inputs.auto-cpufreq.nixosModules.default
+    inputs.catppuccin.nixosModules.catppuccin
+    inputs.nix-flatpak.nixosModules.nix-flatpak
+    inputs.nix-index-database.nixosModules.nix-index
+    inputs.chaotic.nixosModules.default
+    inputs.lanzaboote.nixosModules.lanzaboote
+  ];
 
   # This is the main configuration for your NixOS system.
-  config = mkDefault {
-    documentation = mkDefault {
+  config = {
+    documentation = {
       enable = true;
       man = {
         enable = true;
@@ -40,8 +41,8 @@ in
       nixos.enable = false;
     };
 
-    i18n = mkDefault {
-      defaultLocale = "en_US.UTF-8";
+    i18n = {
+      defaultLocale = mkDefault "en_US.UTF-8";
       extraLocaleSettings = {
         LANG = "en_US.UTF-8";
         LC_CTYPE = "pt_BR.UTF-8"; # Fix ç in us-intl.
@@ -64,7 +65,7 @@ in
         plymouth = isWorkstation;
         silentBoot = isWorkstation;
       };
-      console = isWorkstation;
+      # console.options = isWorkstation;
       security = mkDefault {
         superuser = {
           enable = true;
@@ -95,20 +96,20 @@ in
 
     hardware = {
       bluetooth = {
-        enable = mkIf isInstall true;
+        enable = mkIf (isInstall) true;
         package = pkgs.unstable.bluez-experimental;
         powerOnBoot = false;
-      };
-      settings = {
-        General = mkIf isWorkstation {
-          Name = config.networking.hostName;
-          Enable = "Source,Sink,Media,Socket"; # Enable A2DP sink
-          JustWorksRepairing = "always";
-          MultiProfile = "multiple";
-          ControllerMode = "bredr";
-          FastConnectable = true;
-          Privacy = "device";
-          Experimental = true;
+        settings = {
+          General = mkIf isWorkstation {
+            Name = config.networking.hostName;
+            Enable = "Source,Sink,Media,Socket"; # Enable A2DP sink
+            JustWorksRepairing = "always";
+            MultiProfile = "multiple";
+            ControllerMode = "bredr";
+            FastConnectable = true;
+            Privacy = "device";
+            Experimental = true;
+          };
         };
       };
     };
@@ -176,19 +177,19 @@ in
     };
 
     services = {
-      system76-sheduler = {
-        enable = mkIf isWorkstation true;
-        assignments = {
-          nix-builds = {
-            nice = 10; # from -20 (high) to 19 (low)
-            class = "batch"; # "idle", "batch", "other", "rr", "fifo"
-            ioClass = "idle"; # "idle", "best-effort", "realtime"
-            matchers = [
-              "nix-daemon"
-            ];
-          };
-        };
-      };
+      # system76-sheduler = {
+      #   enable = mkIf isWorkstation true;
+      #   # assignments = {
+      #   #   nix-builds = {
+      #   #     nice = 10; # from -20 (high) to 19 (low)
+      #   #     class = "batch"; # "idle", "batch", "other", "rr", "fifo"
+      #   #     ioClass = "idle"; # "idle", "best-effort", "realtime"
+      #   #     matchers = [
+      #   #       "nix-daemon"
+      #   #     ];
+      #   #   };
+      #   # };
+      # };
 
       fprintd = {
         enable = mkDefault false;

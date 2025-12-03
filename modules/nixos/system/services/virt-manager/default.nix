@@ -126,9 +126,8 @@ in
     };
 
     services = {
-      spice-vdagent = {
+      spice-vdagentd = {
         enable = true;
-        userServices.${user}.after = cfg.machineUnits;
       };
     };
 
@@ -141,7 +140,7 @@ in
     };
 
     virtualisation = {
-      libvird = {
+      libvirtd = {
         enable = true;
         extraConfig = ''
           user="${user}"
@@ -187,9 +186,6 @@ in
           "libvirtd"
           "disk"
         ];
-      };
-      "qemu-libvirtd" = {
-        extraGroups = optionals (!config.virtualisation.libvirtd.qemu.runAsRoot) [ "kvm" ];
       };
     };
 

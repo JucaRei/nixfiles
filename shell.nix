@@ -13,6 +13,8 @@
       nix-direnv
       direnv
       openssh
+      htop
+      duf
       # dropbear # ssh server
       # nix-output-monitor # better output from builds
       # micro
@@ -20,8 +22,8 @@
       # nixfmt
       # nixd # lsp server
 
-      vscode-fhs
-      nix
+      # vscode-fhs
+      # nix
 
       figlet
       lolcat

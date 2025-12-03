@@ -43,7 +43,7 @@ in
             theme = cfg.sddm-theme;
             wayland = {
               enable = cfg.wayland-session;
-              compositor = "kwin";
+              # compositor = "kwin";
             };
             settings = {
               Theme = {

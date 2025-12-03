@@ -1,7 +1,7 @@
-{ config, lib, hostname, pkgs, isWorkstation, ... }:
+{ config, lib, hostname, pkgs, isWorkstation, inputs, ... }:
 let
   inherit (lib) mkEnableOption mkDefault mkIf;
-  cfg = config.system.console;
+  cfg = config.system.console.options;
 
   kmsconFontSize = {
     rocinante = "24";
@@ -44,7 +44,7 @@ let
 in
 {
   options = {
-    system.console = {
+    system.console.options = {
       enable = mkEnableOption "Enable console support";
     };
   };
@@ -60,6 +60,7 @@ in
     };
 
     console = {
+      enable = true;
       useXkbConfig = true;
       # keyMap = mkIf (hostname == "nitro" || hostname == "scrubber") "br-abnt";
       earlySetup = false;
