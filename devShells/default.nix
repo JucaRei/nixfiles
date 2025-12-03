@@ -12,6 +12,7 @@
       duf
       nix-direnv
       direnv
+      openssh
       # dropbear # ssh server
       # nix-output-monitor # better output from builds
       # micro

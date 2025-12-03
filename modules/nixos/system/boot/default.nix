@@ -20,7 +20,13 @@ let
   bootDevice =
     if cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy"
     then "nodev"
-    else (cfg.device or autoBootDisk or (if notVM then "/dev/sda" else "/dev/vda"));
+    else if cfg.device != null
+    then cfg.device
+    else if autoBootDisk != null
+    then autoBootDisk
+    else if notVM
+    then "/dev/sda"
+    else "/dev/vda";
 in
 {
   options = {

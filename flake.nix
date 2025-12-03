@@ -62,19 +62,19 @@
     {
       homeConfigurations = {
         # .iso images
-        "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
-        "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
-        "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+        # "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
+        # "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+        # "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        # "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # Workstations
         # "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
         # "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
-        "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
+        # "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
         # Only terminal apps
         # Servers
         # VMs
-        # "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
-        "juca@virtualvm" = helper.mkHome { hostname = "virtualvm"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
+        "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
+        # "juca@virtualvm" = helper.mkHome { hostname = "virtualvm"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
       };
 
       nixosConfigurations = {
@@ -86,10 +86,10 @@
         # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
 
         # .iso images
-        iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
-        iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
-        iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+        # iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
+        # iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+        # iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        # iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
 
         # Workstations
         #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
@@ -101,7 +101,8 @@
         # Servers
         # soyoz = helper.mkNixos { hostname = "soyoz"; };
         # VMs
-        virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; stateVersion = "24.05"; };
+        # virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; stateVersion = "24.05"; };
+        virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; };
       };
 
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config

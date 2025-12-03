@@ -38,34 +38,32 @@ in
           setupCommands = ''
             ln -sfn /etc/sddm.conf.d /etc/sddm.conf
           '';
-        };
-      };
-      displayManager = {
-        sddm = {
-          enable = true;
-          theme = cfg.sddm-theme;
-          wayland = {
-            enable = cfg.wayland-session;
-            compositor = "kwin";
-          };
-          settings = {
-            Theme = {
-              CursorTheme = "layan-border_cursors";
+          sddm = {
+            enable = true;
+            theme = cfg.sddm-theme;
+            wayland = {
+              enable = cfg.wayland-session;
+              compositor = "kwin";
             };
+            settings = {
+              Theme = {
+                CursorTheme = "layan-border_cursors";
+              };
+            };
+            extraPackages =
+              if cfg.sddm-theme == "sddm-astronaut"
+              then [ pkgs.sddm-theme-astronaut ]
+              else if cfg.sddm-theme == "catppuccin-sddm-corners"
+              then [ pkgs.sddm-theme-corners ]
+              else if cfg.sddm-theme == "sddm-sugar-dark"
+              then [ pkgs.sddm-theme-sugar-dark ]
+              else if cfg.sddm-theme == "sddm-chili-theme"
+              then [ pkgs.sddm-theme-chili ]
+              else if cfg.sddm-theme == "abstractdark-sddm-theme"
+              then [ pkgs.sddm-theme-abstractdark ]
+              else [ ];
+            autoNumlock = true;
           };
-          extraPackages =
-            if cfg.sddm-theme == "sddm-astronaut"
-            then [ pkgs.sddm-theme-astronaut ]
-            else if cfg.sddm-theme == "catppuccin-sddm-corners"
-            then [ pkgs.sddm-theme-corners ]
-            else if cfg.sddm-theme == "sddm-sugar-dark"
-            then [ pkgs.sddm-theme-sugar-dark ]
-            else if cfg.sddm-theme == "sddm-chili-theme"
-            then [ pkgs.sddm-theme-chili ]
-            else if cfg.sddm-theme == "abstractdark-sddm-theme"
-            then [ pkgs.sddm-theme-abstractdark ]
-            else [ ];
-          autoNumlock = true;
         };
       };
     };

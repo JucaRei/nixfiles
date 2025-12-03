@@ -14,7 +14,7 @@ in
   ]
   ++ (with inputs; [
     nur.modules.nixos.default
-    nixosModules.disko
+    disko.nixosModules.disko
     nixos-hardware.nixosModules.common-pc-ssd
     nixos-hardware.nixosModules.common-pc
     auto-cpufreq.nixosModules.default
@@ -22,8 +22,7 @@ in
     nix-flatpak.nixosModules.nix-flatpak
     nix-index-database.nixosModules.nix-index
     chaotic.nixosModules.default
-  ]
-  ++ optional (lib.hasAttr "nixosModules" inputs.nixpkgs) inputs.nixpkgs.nixosModules.default);
+  ]);
 
   # This is the main configuration for your NixOS system.
   config = mkDefault {

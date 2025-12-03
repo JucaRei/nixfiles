@@ -41,17 +41,20 @@ in
     };
 
     services = {
-      xserver.desktopManager.xfce = {
+      xserver = {
         enable = true;
-        enableWaylandSession = mkDefault false;
-        enableScreensaver = mkDefault false;
+        desktopManager.xfce = {
+          enable = true;
+          enableWaylandSession = mkDefault false;
+          enableScreensaver = mkDefault false;
+        };
       };
-      displayManager = {
-        defaultSession = "xfce";
-        xrdp.defaultWindowManager = "xfce4-session";
+      touchegg = {
+        enable = mkDefault true;
       };
-      touchegg.enable = mkDefault true;
-      blueman.enable = mkDefault true;
+      blueman = {
+        enable = mkDefault true;
+      };
     };
     xdg = {
       portal = {

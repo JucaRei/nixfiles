@@ -2,9 +2,8 @@
   config = {
     desktop.display-servers.backend = "x11";
     services = {
-      displayManager = {
+      xserver = {
         enable = true;
-        defaultSession = "none+bspwm";
       };
     };
   };

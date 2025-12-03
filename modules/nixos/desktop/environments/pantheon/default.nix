@@ -23,9 +23,15 @@
     };
 
     programs = {
-      evince.enable = false;
-      gnome-disks.enable = isInstall;
-      seahorse.enable = isInstall;
+      evince = {
+        enable = false;
+      };
+      gnome-disks = {
+        enable = isInstall;
+      };
+      seahorse = {
+        enable = isInstall;
+      };
     };
 
     # security = {

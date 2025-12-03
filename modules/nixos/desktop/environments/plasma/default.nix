@@ -31,20 +31,20 @@ in
     };
 
     programs = {
-      kdeconnect = {
-        enable = mkIf (notVM) true;
+      kdeconnect = mkIf (notVM) {
+        enable = true;
         package = pkgs.gnomeExtensions.gsconnect;
       };
     };
 
     services = {
-      displayManager = {
-        defaultSession = "plasma"; #plasmax11
-      };
-      desktopManager = {
-        plasma6 = {
-          enable = true;
-          enableQt5Integration = true;
+      xserver = {
+        enable = true;
+        desktopManager = {
+          plasma6 = {
+            enable = true;
+            enableQt5Integration = true;
+          };
         };
       };
     };

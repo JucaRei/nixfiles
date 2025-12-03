@@ -24,12 +24,16 @@ in
     };
 
     services = {
-      irqbalance = true;
+      irqbalance = {
+        enable = true;
+      };
       gvfs = {
         enable = true;
         package = pkgs.gnome.gvfs;
       };
-      usbmuxd.enable = true; # for IOS;
+      usbmuxd = {
+        enable = true;
+      };
       udisks2 = {
         enable = true;
         mountOnMedia = true;

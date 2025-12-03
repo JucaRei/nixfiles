@@ -48,7 +48,9 @@ in
     };
 
     services = {
-      acpid.enable = true;
+      acpid = {
+        enable = true;
+      };
       xserver = {
         deviceSection = lib.mkDefault ''
           Option "TearFree" "true"

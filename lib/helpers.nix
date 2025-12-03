@@ -30,6 +30,7 @@
           platform
           username
           stateVersion
+          useNixGL
           isInstall
           isISO
           isWorkstation
