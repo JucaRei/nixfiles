@@ -79,10 +79,10 @@ in
 
         ];
 
-        lfs = {
-          enable = true;
-          skipSmudge = false;
-        };
+        # lfs = {
+        #   enable = true;
+        #   skipSmudge = false;
+        # };
 
         aliases = {
           ci = "commit";
@@ -119,12 +119,12 @@ in
           "commit" = {
             verbose = true;
           };
-          "filter \"lfs\"" = {
-            process = "git-lfs filter-process";
-            required = true;
-            clean = "git-lfs clean -- %f";
-            smudge = "git-lfs smudge -- %f";
-          };
+          # "filter \"lfs\"" = {
+          #   process = "git-lfs filter-process";
+          #   required = true;
+          #   clean = "git-lfs clean -- %f";
+          #   smudge = "git-lfs smudge -- %f";
+          # };
           advice = {
             statusHints = true;
           };
