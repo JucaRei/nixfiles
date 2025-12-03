@@ -125,11 +125,13 @@
             config = { allowUnfree = true; };
           };
         in
-        # import ./devShells/default.nix { inherit pkgs; })
-        {
-          default = (import ./devShells/default.nix { inherit pkgs; }).default;
-          teste = (import ./devShells/teste.nix { inherit pkgs; }).teste;
+        import ./shell.nix {
+          inherit pkgs;
         })
+        # {
+        #   default = (import ./devShells/default.nix { inherit pkgs; }).default;
+        #   teste = (import ./devShells/teste.nix { inherit pkgs; }).teste;
+        # })
       ;
 
       # Custom packages and modifications, exported as overlays
