@@ -3,12 +3,22 @@
 { config, lib, ... }:
 
 {
-  # Provide a stub programs.delta.enable option so catppuccin delta module doesn't error
+  # Provide stub programs.delta options so catppuccin delta module doesn't error
   options.programs.delta = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
       description = "Enable delta (stub option for catppuccin compatibility)";
+    };
+    enableGitIntegration = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable git integration (stub option for catppuccin compatibility)";
+    };
+    options = lib.mkOption {
+      type = lib.types.attrsOf lib.types.str;
+      default = { };
+      description = "Delta options (stub for catppuccin compatibility)";
     };
   };
 
