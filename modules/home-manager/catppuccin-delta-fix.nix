@@ -29,6 +29,13 @@
       default = false;
       description = "Enable Catppuccin theme (stub for compatibility)";
     };
+    delta = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable Catppuccin delta integration (stub for compatibility)";
+      };
+    };
   };
 
   config = {
