@@ -68,11 +68,12 @@ in
       package = nixGLWrapper pkgs.vscode-fhs;
       mutableExtensionsDir = true;
 
-      commandLineArgs = mkIf isWayland [
-        "--enable-features=UseOzonePlatform"
-        "--ozone-platform=wayland"
-        "--enable-features=WaylandWindowDecorations"
-      ];
+      # commandLineArgs was removed in home-manager 25.05
+      # commandLineArgs = mkIf isWayland [
+      #   "--enable-features=UseOzonePlatform"
+      #   "--ozone-platform=wayland"
+      #   "--enable-features=WaylandWindowDecorations"
+      # ];
 
       profiles = {
         "${hostname}" = {
