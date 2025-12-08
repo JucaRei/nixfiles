@@ -10,7 +10,7 @@ in
     system.services.virt-manager = {
       enable = mkOption {
         type = bool;
-        default = mkDefault false;
+        default = false;
         description = "Enable virt-manager service.";
       };
       vfioIds = mkOption {
