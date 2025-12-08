@@ -1,6 +1,6 @@
 { config, lib, pkgs, desktop, isWorkstation, ... }:
 let
-  inherit (lib) optionals mkIf mkOption mkOptionDefault mkDefault;
+  inherit (lib) optionals mkIf mkOption mkOptionDefault mkDefault mkForce;
   inherit (lib.types) nullOr enum;
   cfg = config.desktop.environments;
 in
@@ -88,7 +88,7 @@ in
     };
 
     hardware.cpu = {
-      enable = mkOptionDefault true;
+      enable = mkForce true;
       improveTCP = mkOptionDefault true;
     };
 
