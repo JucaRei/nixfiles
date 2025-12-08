@@ -85,10 +85,11 @@ in
       };
     };
 
-    services = {
-      gnome.gnome-keyring = mkIf ((desktop != "kde" && desktop != "pantheon") && isNixOS) {
-        enable = true;
-      };
-    };
+    # gnome.gnome-keyring was removed/changed in home-manager 25.05, so disable it
+    # services = {
+    #   gnome.gnome-keyring = mkIf ((desktop != "kde" && desktop != "pantheon") && isNixOS) {
+    #     enable = true;
+    #   };
+    # };
   };
 }
