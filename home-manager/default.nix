@@ -41,7 +41,7 @@ in
     programs = {
       nix-index.enable = true;
       tools.ssh.enable = true;
-      system.services.ssh.enable = true;
     };
+    system.services.ssh.enable = true;
   };
 }
