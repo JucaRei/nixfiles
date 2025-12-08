@@ -88,7 +88,7 @@ in
     };
 
     hardware.cpu = {
-      enable = mkForce true;
+      enable = mkOptionDefault true;
       improveTCP = mkOptionDefault true;
     };
 

@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkIf getExe;
-  cfg = config.system.programs.shell;
+  cfg = config.system.programs.shells;
 in
 {
   config = mkIf (cfg.default == "zsh") {

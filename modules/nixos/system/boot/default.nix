@@ -93,7 +93,6 @@ in
         verbose = mkIf cfg.silentBoot false;
         systemd = {
           enable = if (cfg.bootType == "efi" || cfg.bootType == "hybrid=legacy") then true else false;
-          strip = mkDefault true;
           mounts = mkIf cfg.plymouth [ "/sys/firmware/efi/efivars" ]; # For Plymouth in initrd
         };
       };

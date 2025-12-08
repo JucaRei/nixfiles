@@ -13,7 +13,7 @@ let
       \033[00;31m  \\___/
     \033[0m
   '';
-  cfg = config.system.security.sudo;
+  cfg = config.system.security.superuser;
   user = "${username}";
 in
 {

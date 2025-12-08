@@ -14,7 +14,6 @@
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
       isWorkstation = builtins.isString desktop;
-      isLima = false;
 
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       mkNixGL = (import ./nixGL.nix { inherit pkgs; }).wrapper;
@@ -35,7 +34,6 @@
           isInstall
           isISO
           isWorkstation
-          isLima
           nixGLWrapper
           ;
       };
@@ -57,8 +55,6 @@
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
       isWorkstation = builtins.isString desktop && desktop != null;
-      isLima = false;
-      isOtherOS = false;
       notVM =
         if
           (hostname == "virtual")
@@ -83,8 +79,6 @@
           isInstall
           isISO
           isWorkstation
-          isLima
-          isOtherOS
           notVM
           ;
       };
@@ -114,8 +108,6 @@
                   isInstall
                   isISO
                   isWorkstation
-                  isLima
-                  isOtherOS
                   ;
               };
             };

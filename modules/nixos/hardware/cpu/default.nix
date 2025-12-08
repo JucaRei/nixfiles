@@ -1,6 +1,6 @@
 { config, pkgs, lib, isWorkstation, isInstall, hostname, ... }:
 let
-  inherit (lib) mkIf mdDoc mkOption mkEnableOption types optionalString optional optionals mkMerge;
+  inherit (lib) mkDefault mkIf mdDoc mkOption mkEnableOption types optionalString optional optionals mkMerge;
   inherit (lib.types) bool enum;
   cfg = config.hardware.cpu;
 in
@@ -8,7 +8,7 @@ in
   options.hardware.cpu = {
     enable = mkOption {
       type = bool;
-      default = false;
+      default = true;
       description = " Enables cpu hardware defaults";
     };
     hardenKernel = mkEnableOption "kernel hardening options";
@@ -141,9 +141,9 @@ in
     };
 
     services = {
-      fwupd = {
-        enable = isInstall;
-      };
+      # fwupd = {
+      #   enable = mkIf (cfg.enable && isInstall);
+      # };
       udev.extraRules = ''
         ACTION=="add|change", KERNEL=="[sv]d[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"
       '';

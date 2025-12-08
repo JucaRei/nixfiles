@@ -10,7 +10,8 @@ in
         ".face" = mkIf (desktop != null) {
           source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
         };
-        "lab/vm/nixos-console.conf" = mkIf (!isLima) {
+        # "lab/vm/nixos-console.conf" = mkIf (!isLima) {
+        "lab/vm/nixos-console.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
             guest_os="linux"
@@ -19,7 +20,7 @@ in
             iso="nixos-console/nixos.iso"
           '';
         };
-        "lab/vm/nixos-gnome.conf" = mkIf (!isLima) {
+        "lab/vm/nixos-gnome.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
             guest_os="linux"
@@ -30,7 +31,7 @@ in
             height="1080"
           '';
         };
-        "lab/vm/nixos-mate.conf" = mkIf (!isLima) {
+        "lab/vm/nixos-mate.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
             guest_os="linux"
@@ -41,7 +42,7 @@ in
             height="1080"
           '';
         };
-        "lab/vm/nixos-pantheon.conf" = mkIf (!isLima) {
+        "lab/vm/nixos-pantheon.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
             guest_os="linux"
@@ -52,11 +53,12 @@ in
             height="1080"
           '';
         };
-        "/lab/vm/nixos-console/.keep" = mkIf (!isLima) { text = ""; };
-        "/lab/vm/nixos-gnome/.keep" = mkIf (!isLima) { text = ""; };
-        "/lab/vm/nixos-mate/.keep" = mkIf (!isLima) { text = ""; };
-        "/lab/vm/nixos-pantheon/.keep" = mkIf (!isLima) { text = ""; };
-        "/lab/workspace/.keep" = mkIf (!isLima) { text = ""; };
+        # "/lab/vm/nixos-console/.keep" = mkIf (!isLima) { text = ""; };
+        "/lab/vm/nixos-console/.keep" = { text = ""; };
+        "/lab/vm/nixos-gnome/.keep" = { text = ""; };
+        "/lab/vm/nixos-mate/.keep" = { text = ""; };
+        "/lab/vm/nixos-pantheon/.keep" = { text = ""; };
+        "/lab/workspace/.keep" = { text = ""; };
         "/.dotfiles/.keep".text = "";
 
         # List home-manager packages

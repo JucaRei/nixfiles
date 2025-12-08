@@ -69,7 +69,7 @@ in
       security = mkDefault {
         superuser = {
           enable = true;
-          manager = mkDefault "sudo";
+          # manager = mkDefault "sudo";
         };
         pam = {
           enable = isInstall;
@@ -202,11 +202,11 @@ in
         implementation = if isWorkstation then "broker" else "systemd";
       };
 
-      openssh = let iso = mkIf isISO; in {
+      openssh = {
         enable = true;
         settings = {
           PasswordAuthentication = mkDefault true;
-          PermiRootLogin = iso;
+          PermiRootLogin = if isISO then true else false;
         };
         startWhenNeeded = true;
         banner = ''

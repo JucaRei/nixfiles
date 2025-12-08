@@ -17,15 +17,10 @@ in
         description = "Whether or not enable superuser manager.";
       };
       manager = mkOption {
-        type = nullOr (enum [ "sudo" "doas" ]);
-        default = null;
+        type = enum [ "sudo" "doas" ];
+        default = "sudo";
         description = mdDoc "The super user manager to use.";
       };
-    };
-    system.security.sudo = mkOption {
-      type = submodule { };
-      default = { };
-      description = "Sudo configuration";
     };
   };
   config = mkIf config.system.security.superuser.enable {

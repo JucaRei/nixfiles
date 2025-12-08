@@ -1,4 +1,4 @@
-{ config, lib, pkgs, username, isLima, isWorkstation, ... }:
+{ config, lib, pkgs, username, isWorkstation, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkDefault mkIf;
@@ -41,7 +41,7 @@ in
       stateHome = "${config.home.homeDirectory}/.local/state";
 
       userDirs = {
-        enable = isLinux && !isLima;
+        enable = isLinux;
         createDirectories = isWorkstation;
         download = "${config.home.homeDirectory}/Downloads";
         # desktop = "${config.home.homeDirectory}/Desktop";

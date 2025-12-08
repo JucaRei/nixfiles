@@ -2,7 +2,7 @@
 let
   inherit (lib) optional mkOption mkIf;
   inherit (lib.types) enum bool;
-  cfg = config.system.programs.browsers.chrome;
+  cfg = config.system.programs.browsers.chromium;
 
   isNixOS = osConfig != null;
   # Declarative check on NixOS (true if VA-API packages present)

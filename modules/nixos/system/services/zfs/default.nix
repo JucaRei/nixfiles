@@ -1,6 +1,6 @@
 { config, lib, namespace, ... }:
 let
-  cfg = config.system.zfs;
+  cfg = config.system.services.zfs;
 
   inherit (lib) mkEnableOption mkOption mkIf mkDefault;
   inherit (lib.types) listOf str;
