@@ -9,7 +9,7 @@ in
     ./users
 
     # Modules exported from other flakes:
-    inputs.catppuccin.homeModules.catppuccin
+    # inputs.catppuccin.homeModules.catppuccin  # Disabled: multiple modules fail with home-manager 25.05
     inputs.sops-nix.homeManagerModules.sops
     inputs.nix-index-database.homeModules.nix-index
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
