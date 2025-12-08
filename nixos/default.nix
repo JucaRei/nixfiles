@@ -79,14 +79,16 @@ in
 
     boot = {
       binfmt = mkIf (isInstall) {
-        emulatedSystems = mkIf (isWorkstation && config.system.services.virt-manager.enable) [
-          "armv5tel-linux"
-          # "armv6l-linux"
-          # "armv7l-linux"
-          # "i686-linux"
-        ]
-        ++ optionals (platform == "x86_64-linux") [ "aarch64-linux" ]
-        ++ optionals (platform == "aarch64-linux") [ "x86_64-linux" ];
+        emulatedSystems = mkIf (isWorkstation && config.system.services.virt-manager.enable) (
+          [
+            "armv5tel-linux"
+            # "armv6l-linux"
+            # "armv7l-linux"
+            # "i686-linux"
+          ]
+          ++ optionals (platform == "x86_64-linux") [ "aarch64-linux" ]
+          ++ optionals (platform == "aarch64-linux") [ "x86_64-linux" ]
+        );
       };
       kernelModules = mkIf (config.system.services.virt-manager.enable) [ "vhost_vsock" ];
       kernel = {
