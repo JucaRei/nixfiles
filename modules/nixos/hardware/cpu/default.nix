@@ -1,6 +1,6 @@
 { config, pkgs, lib, isWorkstation, isInstall, hostname, ... }:
 let
-  inherit (lib) mkIf mdDoc mkOption mkEnableOption types optionalString optional optionals mkMerge;
+  inherit (lib) mkIf mdDoc mkOption mkEnableOption types optionalString optional optionals mkMerge mkDefault;
   inherit (lib.types) bool enum;
   cfg = config.hardware.cpu;
 in
@@ -8,7 +8,7 @@ in
   options.hardware.cpu = {
     enable = mkOption {
       type = bool;
-      default = false;
+      default = mkDefault false;
       description = " Enables cpu hardware defaults";
     };
     hardenKernel = mkEnableOption "kernel hardening options";
