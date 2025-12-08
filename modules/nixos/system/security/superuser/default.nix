@@ -1,7 +1,7 @@
 { options, config, lib, username, ... }:
 let
   inherit (lib) mkIf mkOption mdDoc;
-  inherit (lib.types) enum nullOr bool;
+  inherit (lib.types) enum nullOr bool submodule;
 in
 {
   imports = [
@@ -21,6 +21,11 @@ in
         default = null;
         description = mdDoc "The super user manager to use.";
       };
+    };
+    system.security.sudo = mkOption {
+      type = submodule { };
+      default = { };
+      description = "Sudo configuration";
     };
   };
   config = mkIf config.system.security.superuser.enable {
