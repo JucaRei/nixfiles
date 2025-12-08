@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, outputs, username, osConfig ? null, isWorkstation, ... }:
+{ config, lib, pkgs, inputs, outputs, username, osConfig ? null, isWorkstation, stateVersion, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mapAttrsToList mkDefault mkIf optionals;
@@ -10,6 +10,9 @@ in
     ++ optionals (isWorkstation) [ ./desktop/environments ];
   config = {
     home = {
+      inherit username;
+      inherit stateVersion;
+
       activation = {
         diff = lib.hm.dag.entryAnywhere ''
           if [[ -n ''${oldGenPath:-} ]] && [[ -n ''${newGenPath:-} ]]; then
@@ -21,6 +24,11 @@ in
       };
 
       enableNixpkgsReleaseCheck = false;
+
+      sessionVariables = {
+        NIXPKGS_ALLOW_UNFREE = "1";
+        NIXPKGS_ALLOW_INSECURE = "1";
+      };
     };
 
 
