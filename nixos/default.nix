@@ -21,7 +21,7 @@ in
     inputs.catppuccin.nixosModules.catppuccin
     inputs.nix-flatpak.nixosModules.nix-flatpak
     inputs.nix-index-database.nixosModules.nix-index
-    inputs.chaotic.nixosModules.default
+    # inputs.chaotic.nixosModules.default
     inputs.lanzaboote.nixosModules.lanzaboote
   ];
 

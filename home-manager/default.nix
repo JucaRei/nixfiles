@@ -13,7 +13,7 @@ in
     inputs.sops-nix.homeManagerModules.sops
     inputs.nix-index-database.homeModules.nix-index
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
-    inputs.chaotic.homeManagerModules.default
+    # inputs.chaotic.homeManagerModules.default
     inputs.nur.modules.homeManager.default
   ]
   ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
