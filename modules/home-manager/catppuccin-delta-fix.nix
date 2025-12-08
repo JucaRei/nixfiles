@@ -1,9 +1,9 @@
-# This module disables the catppuccin delta configuration
-# to work around the issue that home-manager 25.05 doesn't have programs.delta
+# This module is a compatibility shim for catppuccin
+# When catppuccin is disabled, this provides stub options to avoid errors
 { config, lib, ... }:
 
 {
-  # Provide stub programs.delta options so catppuccin delta module doesn't error
+  # Provide stub programs.delta options so catppuccin delta module (if imported) doesn't error
   options.programs.delta = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -22,8 +22,17 @@
     };
   };
 
+  # Provide stub catppuccin options when it's not imported
+  options.catppuccin = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable Catppuccin theme (stub for compatibility)";
+    };
+  };
+
   config = {
-    # Always disable catppuccin delta
+    # Disable catppuccin delta if it's somehow enabled
     catppuccin.delta.enable = lib.mkForce false;
   };
 }
