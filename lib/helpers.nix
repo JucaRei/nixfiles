@@ -112,6 +112,12 @@
               };
             };
           }
+          # Disable the catppuccin delta module as it requires programs.delta which is not available in home-manager 25.05
+          {
+            disabledModules = [
+              "${inputs.catppuccin}/modules/home-manager/delta.nix"
+            ];
+          }
         ]
         ++ inputs.nixpkgs.lib.optionals isISO [
           (if (desktop == null) then

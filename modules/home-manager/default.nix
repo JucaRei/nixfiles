@@ -6,7 +6,10 @@ let
   isNixOS = osConfig != null;
 in
 {
-  imports = [ ./system ]
+  imports = [ 
+    ./system
+    ./catppuccin-delta-fix
+  ]
     ++ optionals (isWorkstation) [ ./desktop/environments ];
   config = {
     home = {

@@ -18,6 +18,11 @@ in
   ]
   ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
 
+  disabledModules = [
+    # Disable catppuccin delta module as it requires programs.delta which is not available in home-manager 25.05
+    "${inputs.catppuccin}/modules/home-manager/delta.nix"
+  ];
+
   config = {
     home = {
       inherit stateVersion;
