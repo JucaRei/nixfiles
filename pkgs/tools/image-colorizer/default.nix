@@ -1,9 +1,8 @@
-{
-  lib,
-  buildPythonPackage,
-  fetchFromGitHub,
-  pkgs,
-  ...
+{ lib
+, buildPythonPackage
+, fetchFromGitHub
+, pkgs
+, ...
 }:
 buildPythonPackage rec {
   pname = "imagecolorizer";
@@ -21,7 +20,7 @@ buildPythonPackage rec {
     )
     EOF
   '';
-  propagatedBuildInputs = with pkgs; [python310Packages.pillow];
+  propagatedBuildInputs = with pkgs; [ python3Packages.pillow ];
   src = fetchFromGitHub {
     repo = "ImageColorizer";
     owner = "kiddae";

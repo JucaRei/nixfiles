@@ -1,6 +1,6 @@
 { stdenv
 , lib
-, buildFHSUserEnv
+, buildFHSEnv
 , fetchurl
 , dpkg
 , pkg-config
@@ -82,7 +82,7 @@ let
 in
 # warsaw-bin-core
 
-buildFHSUserEnv {
+buildFHSEnv {
   name = "warsaw-bin";
 
   targetPkgs = pkgs: with pkgs; [

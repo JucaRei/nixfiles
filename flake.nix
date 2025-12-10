@@ -106,7 +106,7 @@
         # soyoz = helper.mkNixos { hostname = "soyoz"; };
         # VMs
         # virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; stateVersion = "24.05"; };
-        virtualvm = helper.mkNixos { hostname = "virtualvm"; desktop = "xfce4"; };
+        # virtualvm = helper.mkNixos { hostname = "virtualvm"; desktop = "xfce4"; };
       };
 
       #nix run nix-darwin -- switch --flake ~/Zero/nix-config
@@ -159,6 +159,9 @@
         in
         customPkgs
       );
+
+      # Expose homeConfigurations and nixosConfigurations under legacyPackages for nix build support
+      legacyPackages = helper.forAllSystems (system: { inherit homeConfigurations nixosConfigurations; });
       # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
       # nom-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
 

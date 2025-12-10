@@ -141,9 +141,9 @@ in
     };
 
     services = {
-      # fwupd = {
-      #   enable = mkIf (cfg.enable && isInstall);
-      # };
+      fwupd = {
+        enable = if (isInstall && isWorkstation) then true else false;
+      };
       udev.extraRules = ''
         ACTION=="add|change", KERNEL=="[sv]d[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"
       '';

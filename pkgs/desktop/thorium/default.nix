@@ -17,7 +17,7 @@
 , freetype
 , gdk-pixbuf
 , glib
-, gnome
+, adwaita-icon-theme
 , gsettings-desktop-schemas
 , gtk3
 , libuuid
@@ -167,7 +167,7 @@ stdenv.mkDerivation rec {
     vivaldi-ffmpeg-codecs
 
     # needed for XDG_ICON_DIRS
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
   ];
 
   unpackPhase = "dpkg-deb --fsys-tarfile $src | tar -x --no-same-permissions --no-same-owner";
