@@ -22,7 +22,7 @@
       extraSpecialArgs = {
         inherit inputs outputs desktop hostname platform username stateVersion usenixGL isInstall isISO isWorkstation nixGLWrapper;
       };
-      modules = [ ../modules/home-manager ];
+      modules = [ ../home-manager ];
     };
 
   makeNixOS =
@@ -37,7 +37,7 @@
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
       isWorkstation = builtins.isString desktop;
-      notVM = if (hostname == "virtual") || (hostname == "vm") || (hostname == "soyoz-vm") then false else true;
+      notVM = if (hostname == "virtual") || (hostname == "virtualvm") || (hostname == "vm") || (hostname == "soyoz-vm") then false else true;
     in
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
@@ -47,7 +47,6 @@
 
       modules = [
         ../nixos
-        ../modules/nixos
 
         #  make home-manager as a module of nixos
         inputs.home-manager.nixosModules.home-manager
@@ -59,7 +58,6 @@
             users.${username} = import ../home-manager;
             extraSpecialArgs = {
               inherit inputs outputs desktop hostname platform username stateVersion isInstall isISO isWorkstation;
-
             };
           };
         }

@@ -6,6 +6,7 @@ in
   # You can import other NixOS modules here
   imports = [
     ./users
+    ../modules/nixos
   ] ++
   optional (builtins.pathExists ./hosts/${hostname}) ./hosts/${hostname};
 }
