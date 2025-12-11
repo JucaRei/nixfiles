@@ -56,10 +56,10 @@ in
 
   services = {
     openssh = {
-      enable = mkIf (isISO) true;
+      enable = true;
       settings = {
         # Opinionated: forbid root login through SSH.
-        PermitRootLogin = "yes";
+        PermitRootLogin = mkIf (isISO) "yes";
         # Opinionated: use keys only.
         # Remove if you want to SSH using passwords
         PasswordAuthentication = true;
