@@ -76,7 +76,7 @@
         # };
         vm = helper.makeNixOS {
           hostname = "vm";
-          desktop = "plasma";
+          desktop = "pantheon";
           stateVersion = "25.05";
         };
       };
