@@ -1,6 +1,6 @@
-{ inputs, lib, config, pkgs, modulesPath, hostname, username, stateVersion, platform, ... }:
+{ inputs, lib, config, pkgs, modulesPath, hostname, username, stateVersion, platform, isISO, isWorkstation, ... }:
 let
-  inherit (lib) mkDefault optional;
+  inherit (lib) mkDefault mkIf optional;
 
   systemModules = with inputs; [
     nur.modules.nixos.default
@@ -17,7 +17,9 @@ in
   # You can import other NixOS modules here
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
-  ] ++ systemModules;
+    ./hardware
+  ] ++ systemModules
+  ++ mkIf (isWorkstation) [ ./desktop ];
 
   config = {
     nixpkgs = {
@@ -123,7 +125,7 @@ in
       enable = true;
       settings = {
         # Opinionated: forbid root login through SSH.
-        PermitRootLogin = "yes";
+        PermitRootLogin = mkIf (isISO) "yes";
         # Opinionated: use keys only.
         # Remove if you want to SSH using passwords
         PasswordAuthentication = true;

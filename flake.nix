@@ -70,10 +70,15 @@
       };
 
       nixosConfigurations = {
-        virtualvm = helper.makeNixOS {
-          hostname = "virtualvm";
+        # virtualvm = helper.makeNixOS {
+        #   hostname = "virtualvm";
+        #   # desktop = "xfce4";
+        #   # stateVersion = "24.05";
+        # };
+        vm = helper.makeNixOS {
+          hostname = "vm";
           # desktop = "xfce4";
-          # stateVersion = "24.05";
+          # stateVersion = "25.11";
         };
       };
 
