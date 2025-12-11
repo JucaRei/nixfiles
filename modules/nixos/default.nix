@@ -159,7 +159,7 @@ in
     };
 
     system = {
-      nixos.label = "**Nix-System**";
+      nixos.label = "_Nix-System_";
 
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       stateVersion = stateVersion;
