@@ -37,9 +37,9 @@ in
       };
       displayManager.sddm = {
         enable = true;
-        theme = cfg.sddm-theme;
+        theme = cfg.sddm.sddm-theme;
         wayland = {
-          enable = cfg.wayland-session;
+          enable = cfg.sddm.wayland-session;
           compositor = if (desktop == "plasma") then "kwin" else "weston";
         };
         settings = {
@@ -60,7 +60,6 @@ in
         ''
           echo "Setting sddm permissions for user icon"
           ${setfacl} -m u:sddm:x /home/${username}
-          ${setfacl} -m u:sddm:r /home/${username}/.face.icon || true
         '';
   };
 }

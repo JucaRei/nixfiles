@@ -7,16 +7,6 @@ let
   cfg = config.desktop.display-manager;
 in
 {
-  options = {
-    desktop.display-managers.lightdm = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable LightDM as the display manager.";
-      };
-    };
-  };
-
   config = mkIf (cfg.chosen == "lightdm") {
     services = {
       xserver = {

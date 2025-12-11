@@ -76,7 +76,7 @@
         # };
         vm = helper.makeNixOS {
           hostname = "vm";
-          desktop = "xfce4";
+          desktop = "plasma";
           stateVersion = "25.05";
         };
       };

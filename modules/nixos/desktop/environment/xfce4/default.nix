@@ -9,6 +9,7 @@ in
         enable = true;
         chosen = "lightdm";
       };
+      backend = "x11";
     };
 
     environment = {
