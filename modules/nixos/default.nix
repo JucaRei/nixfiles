@@ -18,8 +18,8 @@ in
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./hardware
-  ] ++ systemModules
-  ++ mkIf (isWorkstation) [ ./desktop ];
+  ] ++ optional isWorkstation ./desktop
+  ++ systemModules;
 
   config = {
     nixpkgs = {

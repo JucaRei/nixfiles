@@ -1,6 +1,6 @@
-{ inputs, lib, config, pkgs, username, stateVersion, outputs, isNixOS, osConfig ? null, ... }:
+{ inputs, lib, config, pkgs, username, stateVersion, outputs, isNixOS, osConfig ? null, isWorkstation, ... }:
 let
-  inherit (lib) mkDefault;
+  inherit (lib) mkDefault mkIf optional;
 
   isNixOS = osConfig != null;
   inherit (pkgs.stdenv) isLinux isDarwin;
@@ -15,16 +15,8 @@ let
 in
 {
 
-  imports = [
-    # If you want to use modules your own flake exports (from modules/home-manager):
-    # inputs.self.homeManagerModules.example
-
-    # Or modules exported from other flakes (such as nix-colors):
-    # inputs.nix-cnur.overlays.defaultolors.homeManagerModules.default
-
-    # You can also split up your configuration and import pieces of it here:
-    # ./nvim.nix
-  ];
+  imports = [ ./apps ] ++
+    optional isWorkstation ./desktop;
 
   config = {
     nixpkgs = {
@@ -99,11 +91,12 @@ in
     # home.packages = with pkgs; [ steam ];
 
     # Enable home-manager and git
-    programs.home-manager.enable = true;
-    programs.git.enable = true;
+    programs = {
+      home-manager.enable = true;
+      git.enable = true;
+    };
 
     # Nicely reload system units when changing configs
-    systemd.user.startServices = lib.mkIf isLinux "sd-switch";
-
+    systemd.user.startServices = mkIf isLinux "sd-switch";
   };
 }
