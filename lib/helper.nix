@@ -12,6 +12,7 @@
     let
       isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
+      notVM = if (hostname == "virtual") || (hostname == "virtualvm") || (hostname == "vm") || (hostname == "soyoz-vm") then false else true;
       isWorkstation = builtins.isString desktop;
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       makenixGL = (import ./nixGL.nix { inherit pkgs; }).wrapper;
@@ -20,7 +21,7 @@
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
       extraSpecialArgs = {
-        inherit inputs outputs desktop hostname platform username stateVersion usenixGL isInstall isISO isWorkstation nixGLWrapper;
+        inherit inputs outputs desktop hostname platform username stateVersion usenixGL isInstall isISO notVM isWorkstation nixGLWrapper;
       };
       modules = [ ../home-manager ];
     };

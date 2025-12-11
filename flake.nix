@@ -82,7 +82,7 @@
         vm = helper.makeNixOS {
           hostname = "vm";
           desktop = "pantheon";
-          stateVersion = "25.05";
+          # stateVersion = "25.05";
         };
       };
 
