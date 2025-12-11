@@ -26,13 +26,13 @@ in
       loader = {
         grub = {
           enable = true;
-          efiInstallAsRemovable = mkForce true;
+          # efiInstallAsRemovable = mkForce true;
           devices = [ "/dev/vda" ];
           efiSupport = true;
         };
         efi = {
           efiSysMountPoint = mkForce "/boot";
-          canTouchEfiVariables = mkForce false;
+          canTouchEfiVariables = mkForce true;
         };
       };
     };
