@@ -1,4 +1,4 @@
-{ inputs, lib, config, pkgs, modulesPath, hostname, username, stateVersion, platform, isISO, isWorkstation, ... }:
+{ inputs, lib, config, pkgs, modulesPath, hostname, username, stateVersion, platform, isWorkstation, ... }:
 let
   inherit (lib) mkDefault mkIf optional;
 
@@ -18,6 +18,7 @@ in
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
     ./hardware
+    ./services
   ] ++ optional isWorkstation ./desktop
   ++ systemModules;
 
@@ -116,23 +117,43 @@ in
       nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
     };
 
-    # FIXME: Add the rest of your current configuration
-
-    # TODO: Set your hostname
-    networking.hostName = "${hostname}";
-
-    services.openssh = {
-      enable = true;
-      settings = {
-        # Opinionated: forbid root login through SSH.
-        PermitRootLogin = mkIf (isISO) "yes";
-        # Opinionated: use keys only.
-        # Remove if you want to SSH using passwords
-        PasswordAuthentication = true;
+    hardware = {
+      cpu = mkDefault {
+        enable = true;
+        hardenKernel = false;
+        improveTCP = false;
+        enableKvm = false;
+        cpuVendor = "other";
       };
     };
 
-    # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-    system.stateVersion = stateVersion;
+    system = {
+      nixos.label = "_Nix-System_";
+
+      # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+      stateVersion = stateVersion;
+
+      activationScripts = {
+        diff = {
+          supportsDryActivation = true;
+          text = ''
+            BLUE=$(${pkgs.ncurses}/bin/tput setaf 4)
+            CLEAR=$(${pkgs.ncurses}/bin/tput sgr0)
+
+            if [[ -e /run/current-system ]]; then
+              echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
+              echo "#"
+              ${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff $(${pkgs.coreutils}/bin/readlink "/run/current-system") "$systemConfig" | tee /var/log/nix/nix-changelog
+              echo "#"
+              echo "$BLUE                $CLEAR"
+            fi
+          '';
+        };
+      };
+      switch = {
+        # enable = true; # false; # Perl
+        enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
+      };
+    };
   };
 }

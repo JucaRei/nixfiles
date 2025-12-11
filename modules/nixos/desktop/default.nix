@@ -22,6 +22,7 @@ in
     };
 
     services = {
+      bluetooth.enable = true;
       irqbalance.enable = true;
       gvfs = {
         enable = true;
