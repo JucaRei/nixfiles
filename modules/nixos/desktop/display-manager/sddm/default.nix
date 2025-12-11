@@ -1,17 +1,12 @@
 { config, pkgs, lib, username, ... }:
 let
-  inherit (lib) mkOption stringAfter getExe';
+  inherit (lib) mkIf mkOption stringAfter getExe';
   inherit (lib.types) listOf enum str nullOr bool;
-  cfg = config.desktop.display-manager.sddm;
+  cfg = config.desktop.display-manager;
 in
 {
   options = {
     desktop.display-manager.sddm = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable SDDM as the display manager.";
-      };
       sddm-theme = mkOption {
         type = enum [
           "sddm-astronaut"
@@ -31,7 +26,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf (cfg.chosen == "sddm") {
     services = {
       xserver = {
         displayManager = {
