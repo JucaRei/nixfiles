@@ -1,7 +1,7 @@
 { config, lib, pkgs, desktop, osConfig ? null, platform, ... }:
 let
   inherit (lib) mkIf;
-  backend = config.desktop.display-servers.backend;
+  backend = config.desktop.backend;
   isNixOS = osConfig != null;
   isArm = platform == "aarch64-linux" || platform == "armv7l-linux";
 
@@ -9,8 +9,8 @@ let
   videoDrivers = if isNixOS then (osConfig.services.xserver.videoDrivers or [ ]) else [ ];
   hasNvidia = lib.elem "nvidia" videoDrivers;
   hasIntel = lib.elem "intel" videoDrivers;
-  hasAmd = lib.elemAny [ "amdgpu" "radeon" "ati" ] videoDrivers;
-  hasArmGpu = if isArm then (lib.elemAny [ "vc4" "panfrost" "rockchip" "kmsro" ] videoDrivers) else false;
+  hasAmd = lib.any (elem: lib.elem elem videoDrivers) [ "amdgpu" "radeon" "ati" ];
+  hasArmGpu = if isArm then (lib.any (elem: lib.elem elem videoDrivers) [ "vc4" "panfrost" "rockchip" "kmsro" ]) else false;
   hasGpuFallback =
     if videoDrivers != [ ] && isNixOS then
       if hasNvidia then "nvidia" else if hasAmd then "amd" else if hasIntel then "intel" else if hasArmGpu then "arm" else null
@@ -20,7 +20,7 @@ in
   config = mkIf (backend == "wayland") {
 
     home = {
-      sessionVariables = {
+      sessionVariables = lib.filterAttrs (n: v: v != null) {
         # Common Wayland vars
         QT_QPA_PLATFORM = "wayland;xcb"; # Prefer Wayland, fallback to XCB
         XDG_SESSION_TYPE = "wayland";
@@ -30,33 +30,33 @@ in
         WLR_NO_HARDWARE_CURSORS = "1"; # Often needed on ARM too
 
         # GPU-specific (declarative on NixOS only)
-        GBM_BACKEND = mkIf isNixOS (if hasNvidia || hasGpuFallback == "nvidia" then "nvidia-drm" else if hasArmGpu || hasGpuFallback == "arm" then "gbm" else null);
-        __GLX_VENDOR_LIBRARY_NAME = mkIf isNixOS (if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else null);
-        __NV_PRIME_RENDER_OFFLOAD = mkIf isNixOS (if hasNvidia || hasGpuFallback == "nvidia" then "1" else null);
-        __VK_LAYER_NV_optimus = mkIf isNixOS (if hasNvidia || hasGpuFallback == "nvidia" then "NVIDIA_only" else null);
-        LIBVA_DRIVER_NAME = mkIf isNixOS (
+        GBM_BACKEND = if isNixOS then (if hasNvidia || hasGpuFallback == "nvidia" then "nvidia-drm" else if hasArmGpu || hasGpuFallback == "arm" then "gbm" else null) else null;
+        __GLX_VENDOR_LIBRARY_NAME = if isNixOS then (if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else null) else null;
+        __NV_PRIME_RENDER_OFFLOAD = if isNixOS then (if hasNvidia || hasGpuFallback == "nvidia" then "1" else null) else null;
+        __VK_LAYER_NV_optimus = if isNixOS then (if hasNvidia || hasGpuFallback == "nvidia" then "NVIDIA_only" else null) else null;
+        LIBVA_DRIVER_NAME = if isNixOS then (
           if hasIntel || hasGpuFallback == "intel" then "iHD" else
           if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else
           if hasAmd || hasGpuFallback == "amd" then "radeonsi" else
           if hasArmGpu || hasGpuFallback == "arm" then "v3d" else null
-        );
-        VDPAU_DRIVER = mkIf isNixOS (
+        ) else null;
+        VDPAU_DRIVER = if isNixOS then (
           if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else
           if hasAmd || hasGpuFallback == "amd" then "radeonsi" else
           if hasArmGpu || hasGpuFallback == "arm" then "v3d" else null
-        );
-        MOZ_DISABLE_RDD_SANDBOX = mkIf isNixOS (if hasNvidia || hasGpuFallback == "nvidia" then "1" else null);
+        ) else null;
+        MOZ_DISABLE_RDD_SANDBOX = if isNixOS then (if hasNvidia || hasGpuFallback == "nvidia" then "1" else null) else null;
         WLR_BACKEND = "vulkan";
-        NVD_BACKEND = mkIf isNixOS (if hasNvidia || hasGpuFallback == "nvidia" then "direct" else null);
+        NVD_BACKEND = if isNixOS then (if hasNvidia || hasGpuFallback == "nvidia" then "direct" else null) else null;
 
         # Card paths (adjust PCI paths for ARM; may not apply, so conditional)
-        IGPU_CARD = mkIf (!isArm) "$(${pkgs.uutils-coreutils-noprefix}/bin/readlink -f /dev/dri/by-path/pci-0000:00:02.0-card)";
-        DGPU_CARD = mkIf (!isArm) "$(${pkgs.uutils-coreutils-noprefix}/bin/readlink -f /dev/dri/by-path/pci-0000:01:00.0-card)";
+        IGPU_CARD = if (!isArm) then "$(${pkgs.uutils-coreutils-noprefix}/bin/readlink -f /dev/dri/by-path/pci-0000:00:02.0-card)" else null;
+        DGPU_CARD = if (!isArm) then "$(${pkgs.uutils-coreutils-noprefix}/bin/readlink -f /dev/dri/by-path/pci-0000:01:00.0-card)" else null;
       };
 
       # Runtime detection for non-NixOS (Wayland-focused, with ARM fallback)
-      activation = {
-        setWaylandVars = mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      activation = mkIf (!isNixOS) {
+        setWaylandVars = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           mkdir -pv $HOME/.local/scripts
           cat > $HOME/.local/scripts/wayland-vars.sh <<EOF
           #!/bin/sh
@@ -85,19 +85,19 @@ in
           fi
           EOF
           chmod +x $HOME/.local/scripts/wayland-vars.sh
-        '');
+        '';
       };
 
-      file = {
+      file = mkIf (!isNixOS) {
         # Source the script in .profile (shell-agnostic, covers bash/zsh/fish/etc.)
-        ".profile".text = mkIf (!isNixOS) ''
+        ".profile".text = ''
           [ -f "$HOME/.local/scripts/wayland-vars.sh" ] && . "$HOME/.local/scripts/wayland-vars.sh"
         '';
       };
     };
 
     services.gnome-keyring = {
-      enable = mkIf ((desktop != "kde" && desktop != "pantheon") && isNixOS) true;
+      enable = (desktop != "kde" && desktop != "pantheon") && isNixOS;
     };
   };
 }

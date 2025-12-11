@@ -3,7 +3,7 @@ let
   backend = config.desktop.backend;
 in
 {
-  backend = "x11";
+  desktop.backend = "x11";
 
   home = {
     packages = with pkgs; [

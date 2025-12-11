@@ -1,12 +1,18 @@
 { config, lib, pkgs, desktop, isWorkstation, ... }:
 let
-  inherit (lib) optionals;
+  inherit (lib) optionals mkOption types;
 in
 {
   imports = [ ./display-manager ] ++
     optionals (builtins.pathExists (./. + "/environment/${desktop}")) [
       (./. + "/environment/${desktop}")
     ];
+
+  options.desktop.backend = mkOption {
+    type = types.enum [ "x11" "wayland" ];
+    default = "x11";
+    description = "Whether to use X11 or Wayland backend.";
+  };
 
   config = {
     environment = {
@@ -91,13 +97,10 @@ in
           };
           wantedBy = [ "multi-user.target" ];
         };
-        # Fix xdg-portals opening URLs: https://github.com/NixOS/nixpkgs/issues/189851
-        user = {
-          extraConfig = ''
-            DefaultEnvironment="PATH=/run/wrappers/bin:/etc/profiles/per-user/%u/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin"
-          '';
-        };
       };
     };
+
+    # Fix xdg-portals opening URLs: https://github.com/NixOS/nixpkgs/issues/189851
+    environment.variables.PATH = "/run/wrappers/bin:/etc/profiles/per-user/%u/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin";
   };
 }

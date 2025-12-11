@@ -13,15 +13,11 @@ in
 
   config = {
     home = {
-      packages = mkIf (!isNixOS) [
+      packages = optionals (!isNixOS) [
         pkgs.nixgl.auto.nixGLDefault
       ] ++ (with pkgs; [
         font-search # show existent fonts
-        (nerdfonts.override {
-          fonts = [
-            "NerdFontsSymbolsOnly"
-          ];
-        })
+        nerd-fonts.symbols-only
       ]);
 
       activation = {
@@ -51,6 +47,6 @@ in
       };
     };
 
-    targets.genericLinux.enable = mkIf (!isNixOS) true;
+    targets.genericLinux.enable = !isNixOS;
   };
 }
