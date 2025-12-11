@@ -69,6 +69,11 @@
       };
 
       nixosConfigurations = {
+        # .iso images
+        iso-console = helper.makeNixOS { hostname = "iso-console"; username = "nixos"; };
+        # iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
+        # iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
+        # iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
         # virtualvm = helper.makeNixOS {
         #   hostname = "virtualvm";
         #   # desktop = "xfce4";

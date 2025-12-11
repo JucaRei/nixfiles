@@ -85,7 +85,7 @@ in
 
     dbus = {
       enable = true;
-      implementation = if isWorkstation then "broker" else "systemd";
+      implementation = if isWorkstation then "broker" else "dbus";
     };
   };
 
