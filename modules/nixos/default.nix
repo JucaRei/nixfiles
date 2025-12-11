@@ -67,9 +67,9 @@ in
           # "verified-fetches" # enable verification of git commit signatures for fetchGit
           # "cgroups" # allow nix to execute builds inside cgroups
         ];
-        extra-experimental-features = "parallel-eval";
-        lazy-trees = true;
-        eval-cores = 0; # Enable parallel evaluation across all cores
+        # extra-experimental-features = "parallel-eval";
+        # lazy-trees = true;
+        # eval-cores = 0; # Enable parallel evaluation across all cores
         system-features = [
           # "gccarch-x86-64-v3" # Allows building v3 packages
           # "gccarch-x86-64-v4" # Allows building v4 packages
