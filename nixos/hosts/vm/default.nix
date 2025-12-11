@@ -24,15 +24,12 @@ in
       };
 
       loader = {
-        grub = {
+        systemd-boot = {
           enable = true;
-          efiInstallAsRemovable = true;
-          devices = [ "/dev/vda" ];
-          efiSupport = true;
         };
         efi = {
-          efiSysMountPoint = mkForce "/boot";
-          canTouchEfiVariables = mkForce false;
+          efiSysMountPoint = "/boot";
+          canTouchEfiVariables = false;
         };
       };
     };
