@@ -1,7 +1,7 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }: {
   imports = [
-    # Import the vscode-server home-manager module
-    "${fetchTarball "https://github.com/msteen/nixos-vscode-server/tarball/master"}/modules/vscode-server/home.nix"
+    # Import the vscode-server home-manager module from flake input
+    "${inputs.vscode-server}/modules/vscode-server/home.nix"
   ];
 
   # Enable the service
