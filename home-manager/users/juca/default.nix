@@ -1,4 +1,4 @@
-{ config, pkgs, lib, isWorkstation, ... }:
+{ config, pkgs, lib, isWorkstation, desktop, notVM, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkIf;
@@ -6,8 +6,14 @@ let
 in
 {
   home = {
-    sessionVariables = { };
+    sessionVariables = {
+      FLAKE = "/home/${username}/.dotfiles/nixfiles";
+    };
     file = {
+      ".face" = mkIf (desktop != null) {
+        source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+      };
+
       ".config/home-manager/installed-packages.txt" = {
         text =
           let
@@ -17,6 +23,54 @@ in
           in
           "${formatted}";
       };
+
+      "workspace/iso's/nixos-console.conf" = mkIf (notVM) {
+        text = ''
+          #!/run/current-system/sw/bin/quickemu --vm
+          guest_os="linux"
+          disk_img="nixos-console/disk.qcow2"
+          disk_size="25G"
+          iso="nixos-console/nixos.iso"
+        '';
+      };
+      "workspace/iso's/nixos-gnome.conf" = mkIf (notVM) {
+        text = ''
+          #!/run/current-system/sw/bin/quickemu --vm
+          guest_os="linux"
+          disk_img="nixos-gnome/disk.qcow2"
+          disk_size="25G"
+          iso="nixos-gnome/nixos.iso"
+          width="1920"
+          height="1080"
+        '';
+      };
+      "workspace/iso's/nixos-mate.conf" = mkIf (notVM) {
+        text = ''
+          #!/run/current-system/sw/bin/quickemu --vm
+          guest_os="linux"
+          disk_img="nixos-mate/disk.qcow2"
+          disk_size="25G"
+          iso="nixos-mate/nixos.iso"
+          width="1920"
+          height="1080"
+        '';
+      };
+      "workspace/iso's/nixos-pantheon.conf" = mkIf (notVM) {
+        text = ''
+          #!/run/current-system/sw/bin/quickemu --vm
+          guest_os="linux"
+          disk_img="nixos-pantheon/disk.qcow2"
+          disk_size="25G"
+          iso="nixos-pantheon/nixos.iso"
+          width="1920"
+          height="1080"
+        '';
+      };
+
+      "/workspace/iso's/nixos-console/.keep" = mkIf (notVM) { text = ""; };
+      "/workspace/iso's/nixos-gnome/.keep" = mkIf (notVM) { text = ""; };
+      "/workspace/iso's/nixos-mate/.keep" = mkIf (notVM) { text = ""; };
+      "/workspace/iso's/nixos-pantheon/.keep" = mkIf (notVM) { text = ""; };
       "/workspace/.keep".text = "";
       "/.dotfiles/.keep".text = "";
     };
@@ -69,11 +123,11 @@ in
       "d ${config.home.homeDirectory}/Music/downloads 0755 ${username} users - -"
       "d ${config.home.homeDirectory}/Music/records 0755 ${username} users - -"
       "d ${config.home.homeDirectory}/games 0755 ${username} users - -"
-      "d ${config.home.homeDirectory}/virtualmachines/windows 0755 ${username} users - -"
-      "d ${config.home.homeDirectory}/virtualmachines/linux 0755 ${username} users - -"
-      "d ${config.home.homeDirectory}/virtualmachines/mac 0755 ${username} users - -"
-      "d ${config.home.homeDirectory}/virtualmachines/nixos-desktop 0755 ${username} users - -"
-      "d ${config.home.homeDirectory}/virtualmachines/nixos-console 0755 ${username} users - -"
+      "d ${config.home.homeDirectory}/workspace/iso's/windows 0755 ${username} users - -"
+      "d ${config.home.homeDirectory}/workspace/iso's/linux 0755 ${username} users - -"
+      "d ${config.home.homeDirectory}/workspace/iso's/mac 0755 ${username} users - -"
+      "d ${config.home.homeDirectory}/workspace/iso's/nixos-desktop 0755 ${username} users - -"
+      "d ${config.home.homeDirectory}/workspace/iso's/nixos-console 0755 ${username} users - -"
       "d ${config.home.homeDirectory}/Pictures/family 0755 ${username} users - -"
       "d ${config.home.homeDirectory}/Pictures/backup 0755 ${username} users - -"
       "d ${config.home.homeDirectory}/Pictures/phones 0755 ${username} users - -"
