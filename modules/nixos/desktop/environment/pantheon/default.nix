@@ -3,7 +3,10 @@
 {
   config = {
     desktop = {
-      display-manager = "lightdm";
+      display-manager = {
+        enable = true;
+        chosen = "lightdm";
+      };
       backend = "wayland";
     };
 
