@@ -2,6 +2,9 @@
 let
   inherit (lib) mkDefault mkIf optional;
 
+  # Only enable zram swap if no swap devices are configured
+  usezramSwap = builtins.length config.swapDevices == 0;
+
   systemModules = with inputs; [
     nur.modules.nixos.default
     disko.nixosModules.disko
@@ -127,6 +130,34 @@ in
       };
     };
 
+    systemd = {
+      extraConfig = ''
+        DefaultTimeoutStopSec=10s
+        DefaultCPUAccounting=yes
+        DefaultMemoryAccounting=yes
+        DefaultIOAccounting=yes
+      '';
+      tmpfiles.rules = [
+        "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
+        "d /nix/var/nix/profiles/per-user/${username} 0755 ${username} root"
+      ];
+
+      services = {
+        "mglru" = mkIf (usezramSwap) {
+          enable = true;
+          wantedBy = [ "basic.target" ];
+          script = ''${pkgs.uutils-coreutils-noprefix}/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms'';
+          serviceConfig = {
+            Type = "oneshot";
+          };
+          unitConfig = {
+            ConditionPathExists = "/sys/kernel/mm/lru_gen/enabled";
+            Description = "Configure Enable Multi-Gen LRU";
+          };
+        };
+      };
+    };
+
     system = {
       nixos.label = "_Nix-System_";
 
@@ -154,6 +185,12 @@ in
         # enable = true; # false; # Perl
         enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
       };
+    };
+
+    zramSwap = {
+      algorithm = "zstd";
+      enable = usezramSwap;
+      memoryPercent = 100;
     };
   };
 }

@@ -10,6 +10,8 @@
     enableFHS = true;
   };
 
+  apps.console.ssh.enable = true;
+
   # Optional: Enable an FHS environment for better extension compatibility
 
   # home.packages = [ pkgs.vscode ];
