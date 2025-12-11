@@ -3,16 +3,13 @@ let
   inherit (lib) optionals mkOption types;
 in
 {
-  imports = [ ./display-manager ] ++
-    optionals (builtins.pathExists (./. + "/environment/${desktop}")) [
-      (./. + "/environment/${desktop}")
-    ];
-
-  options.desktop.backend = mkOption {
-    type = types.enum [ "x11" "wayland" ];
-    default = "x11";
-    description = "Whether to use X11 or Wayland backend.";
-  };
+  imports = [
+    ./display-manager
+    ./backend
+  ] ++
+  optionals (builtins.pathExists (./. + "/environment/${desktop}")) [
+    (./. + "/environment/${desktop}")
+  ];
 
   config = {
     environment = {

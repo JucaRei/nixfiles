@@ -5,6 +5,7 @@ in
 {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
+    (import ./xfs.nix { })
   ];
 
   config = {
@@ -25,15 +26,21 @@ in
       loader = {
         grub = {
           enable = true;
-          devices = [ "/dev/sda" ];
+          efiInstallAsRemovable = mkForce true;
+          devices = [ "/dev/vda" ];
+          efiSupport = true;
+        };
+        efi = {
+          efiSysMountPoint = mkForce "/boot";
+          canTouchEfiVariables = mkForce false;
         };
       };
     };
 
-    fileSystems."/" = {
-      device = "/dev/sda1";
-      fsType = "ext4";
-    };
+    # fileSystems."/" = {
+    #   device = "/dev/sda1";
+    #   fsType = "ext4";
+    # };
 
     nixpkgs = {
       hostPlatform = "x86_64-linux";
