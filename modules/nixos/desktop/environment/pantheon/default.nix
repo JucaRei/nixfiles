@@ -55,8 +55,8 @@
 
     services = {
       gnome = {
-        evolution-data-server.enable = false; # isInstall;
-        gnome-online-accounts.enable = lib.mkForce isInstall;
+        evolution-data-server.enable = lib.mkForce false; # isInstall;
+        gnome-online-accounts.enable = lib.mkForce true;
         # gnome-keyring.enable = true;
       };
       xserver = {
