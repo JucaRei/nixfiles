@@ -57,7 +57,7 @@
             backupFileExtension = "hm.backup";
             users.${username} = import ../home-manager;
             extraSpecialArgs = {
-              inherit inputs outputs desktop hostname platform username stateVersion isInstall isISO isWorkstation;
+              inherit inputs outputs desktop hostname platform username stateVersion isInstall isISO isWorkstation notVM;
             };
           };
         }
