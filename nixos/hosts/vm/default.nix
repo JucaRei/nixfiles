@@ -50,5 +50,10 @@ in
       enable = true;
       manager = "pipewire";
     };
+
+    zramSwap = {
+      enable = true;
+      memoryPercent = 100;
+    };
   };
 }
