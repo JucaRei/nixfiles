@@ -1,4 +1,4 @@
-{ config, pkgs, lib, username, ... }:
+{ config, pkgs, lib, username, desktop, ... }:
 let
   inherit (lib) mkIf mkOption stringAfter getExe';
   inherit (lib.types) listOf enum str nullOr bool;
@@ -33,22 +33,22 @@ in
           setupCommands = ''
             ln -sfn /etc/sddm.conf.d /etc/sddm.conf
           '';
-          sddm = {
-            enable = true;
-            theme = cfg.sddm-theme;
-            wayland = {
-              enable = cfg.wayland-session;
-              # compositor = "kwin";
-            };
-            settings = {
-              Theme = {
-                CursorTheme = "layan-border_cursors";
-              };
-            };
-            extraPackages = [ ];
-            autoNumlock = true;
+        };
+      };
+      displayManager.sddm = {
+        enable = true;
+        theme = cfg.sddm-theme;
+        wayland = {
+          enable = cfg.wayland-session;
+          compositor = if (desktop == "plasma") then "kwin" else "weston";
+        };
+        settings = {
+          Theme = {
+            CursorTheme = "layan-border_cursors";
           };
         };
+        extraPackages = [ ];
+        autoNumlock = true;
       };
     };
 
