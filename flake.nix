@@ -23,7 +23,7 @@
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
     ### Other Custom Modules
-    # catppuccin.url = "github:catppuccin/nix";
+    catppuccin.url = "github:catppuccin/nix";
     # nixos-needsreboot.url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/*.tar.gz";
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
@@ -58,7 +58,6 @@
       # forAllSystems = nixpkgs.lib.genAttrs systems;
     in
     {
-
       homeConfigurations = {
         "juca@virtualvm" = helper.makeHomeManager {
           hostname = "virtualvm";
@@ -67,7 +66,6 @@
           # stateVersion = "24.05";
         };
       };
-
       nixosConfigurations = {
         # .iso images
         iso-console = helper.makeNixOS { hostname = "iso-console"; username = "nixos"; };
@@ -85,9 +83,8 @@
           # stateVersion = "25.05";
         };
       };
-
-      # Accessible through 'nix build', 'nix shell', etc
       packages = helper.forAllSystems (system:
+        # Accessible through 'nix build', 'nix shell', etc
         let
           pkgsWithOverlays = import nixpkgs {
             # Import nixpkgs for the target system, applying overlays directly
@@ -101,17 +98,10 @@
         in
         customPkgs # Return the set of custom packages
       );
-
-
-      # Formatter for your nix files, available through 'nix fmt'
-      # Other options beside 'alejandra' include 'nixpkgs-fmt'
       formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
-
-      # Your custom packages and modifications, exported as overlays
       overlays = import ./overlays { inherit inputs; };
-
-      # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
       devShells = helper.forAllSystems (system:
+        # Devshell for bootstrapping; acessible via 'nix develop' or 'nix-shell' (legacy)
         let
           # pkgs = nixpkgs.legacyPackages.${system};
           pkgs = import nixpkgs {
@@ -119,7 +109,9 @@
             config = { allowUnfree = true; };
           };
         in
-        import ./shell.nix { inherit pkgs; }
+        {
+          default = (import ./shell.nix { inherit pkgs; }).default;
+        }
       );
     };
 }

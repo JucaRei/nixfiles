@@ -15,8 +15,11 @@ let
 in
 {
 
-  imports = [ ./apps ] ++
-    optional isWorkstation ./desktop;
+  imports = [
+    ./apps
+    ./disabled/catppuccin-delta-fix.nix
+  ] ++
+  optional isWorkstation ./desktop;
 
   config = {
     nixpkgs = {
@@ -86,17 +89,15 @@ in
 
     news.display = "silent";
 
-    # Add stuff for your user as you see fit:
-    # programs.neovim.enable = true;
-    # home.packages = with pkgs; [ steam ];
-
     # Enable home-manager and git
     programs = {
       home-manager.enable = true;
       git.enable = true;
     };
 
-    # Nicely reload system units when changing configs
-    systemd.user.startServices = mkIf isLinux "sd-switch";
+    systemd = {
+      # Nicely reload system units when changing configs
+      user.startServices = mkIf isLinux "sd-switch";
+    };
   };
 }

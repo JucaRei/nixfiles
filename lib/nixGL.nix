@@ -21,7 +21,7 @@ pkg:
         cp -rs --no-preserve=mode "${pkg.${outputName}}" "''$${outputName}"
         set +x
       '') (old.outputs or ["out"]))
-    }
+    }4
 
     rm -rf $out/bin/*
     shopt -s nullglob # Prevent loop from running if no files

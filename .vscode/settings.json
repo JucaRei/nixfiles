@@ -1,3 +1,13 @@
 {
-  "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix"
+  "nixEnvSelector.nixFile": "${workspaceFolder}/shell.nix",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "/bin/bash",
+      "args": []
+    }
+  },
+  "terminal.integrated.env.linux": {
+    "PATH": "/home/juca/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games",
+    "NIX_SSL_CERT_FILE": "/etc/ssl/certs/ca-certificates.crt"
+  }
 }

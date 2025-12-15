@@ -2,4 +2,5 @@
 result/*
 ./result/*
 result
-.vscode/
+.vscode/*
+vscode/*
