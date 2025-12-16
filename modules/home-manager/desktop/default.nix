@@ -13,9 +13,7 @@ in
 
   config = {
     home = {
-      packages = optionals (!isNixOS) [
-        pkgs.nixgl.auto.nixGLDefault
-      ] ++ (with pkgs; [
+      packages = (with pkgs; [
         font-search # show existent fonts
         nerd-fonts.symbols-only
       ]);

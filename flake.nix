@@ -31,6 +31,7 @@
     nur.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+    # nixgl.url = "github:nix-community/nixGL";
     nixgl.url = "github:nix-community/nixGL";
     nixgl.inputs.nixpkgs.follows = "nixpkgs";
     auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
@@ -61,8 +62,8 @@
       homeConfigurations = {
         "juca@virtualvm" = helper.makeHomeManager {
           hostname = "virtualvm";
-          # desktop = "xfce4";
-          # usenixGL = true;
+          desktop = "xfce4";
+          useNixGL = true;
           # stateVersion = "24.05";
         };
       };
