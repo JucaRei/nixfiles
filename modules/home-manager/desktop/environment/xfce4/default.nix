@@ -4,6 +4,7 @@ let
 in
 {
   desktop.backend = "x11";
+  apps.graphical.file-manager.thunar.enable = true;
 
   home = {
     packages = with pkgs; [
