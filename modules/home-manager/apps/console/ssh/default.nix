@@ -1,10 +1,9 @@
-{ config, lib, pkgs, osConfig ? null, ... }:
+{ config, lib, pkgs, ... }:
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
   cfg = config.apps.console.ssh;
 
-  isNixOS = osConfig != null;
 in
 {
   options = {
@@ -32,11 +31,6 @@ in
       + lib.optionalString pkgs.stdenv.isDarwin ''
         IgnoreUnknown UseKeychain
         UseKeychain yes
-      ''
-      + lib.optionalString (!isNixOS) ''
-        Host *
-          PermitLocalCommand yes
-          LocalCommand cat ${./banner.txt}
       '';
       matchBlocks = {
         "github.com" = {
