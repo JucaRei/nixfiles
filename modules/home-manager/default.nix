@@ -48,7 +48,6 @@ in
         experimental-features = [
           "flakes"
           "nix-command"
-        ] ++ lib.mkIf (!isNixOS) [
           "impure-derivations"
         ];
         trusted-users = [ "${username}" ];
