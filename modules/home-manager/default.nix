@@ -45,9 +45,15 @@ in
     nix = let flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs; in {
       package = lib.mkIf (!isNixOS) pkgs.nixVersions.latest;
       settings = {
-        experimental-features = "flakes nix-command";
-        trusted-users = [ "${username}" "@wheel" ]; # root
-        allowed-users = [ "${username}" "@wheel" ]; # root
+        experimental-features = [
+          "flakes"
+          "nix-command"
+        ] ++ lib.mkIf (!isNixOS) [
+          "impure-derivations"
+        ];
+        trusted-users = [ "${username}" ];
+        extra-trusted-users = [ "@admin" "@root" "@sudo" "@wheel" ];
+        allowed-users = [ "${username}" ];
         warn-dirty = false;
         allow-dirty = true;
       };
