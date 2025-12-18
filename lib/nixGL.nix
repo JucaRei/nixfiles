@@ -7,6 +7,8 @@ pkg: pkgs.runCommandLocal "${pkg.name}-nixgl"
   nativeBuildInputs = [ pkgs.makeWrapper ];
   preferLocalBuild = true;
   allowSubstitutes = false;
+  pname = pkg.pname or pkg.name;
+  version = pkg.version or "";
 } ''
   mkdir -p $out/bin
   for bin in ${pkg}/bin/*; do
