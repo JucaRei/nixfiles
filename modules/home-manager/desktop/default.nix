@@ -1,6 +1,6 @@
 { config, lib, pkgs, desktop, osConfig ? null, ... }:
 let
-  inherit (lib) optionals mkIf;
+  inherit (lib) optionals mkIf mkForce;
   isNixOS = osConfig != null;
 in
 {
@@ -37,14 +37,15 @@ in
     };
 
     xdg = {
+      enable = mkForce true;
       mimeApps.enable = true;
       mime.enable = true;
-      systemDirs = {
-        data =
-          if isNixOS then [ "${config.home.homeDirectory}/.nix-profile/share/applications" ]
-          else [ "${config.home.homeDirectory}/.local/share/applications" ];
-        config = [ "/etc/xdg" ];
-      };
+      # systemDirs = {
+      #   data =
+      #     if isNixOS then [ "${config.home.homeDirectory}/.nix-profile/share/applications" ]
+      #     else [ "${config.home.homeDirectory}/.local/share/applications" ];
+      #   config = [ "/etc/xdg" ];
+      # };
       # desktopEntries.enable = true;
     };
 
