@@ -40,10 +40,12 @@ in
       mimeApps.enable = true;
       mime.enable = true;
       systemDirs = {
-        data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
+        data =
+          if isNixOS then [ "${config.home.homeDirectory}/.nix-profile/share/applications" ]
+          else [ "${config.home.homeDirectory}/.local/share/applications" ];
         config = [ "/etc/xdg" ];
       };
-      desktopEntries.enable = true;
+      # desktopEntries.enable = true;
     };
 
     targets.genericLinux.enable = !isNixOS;
