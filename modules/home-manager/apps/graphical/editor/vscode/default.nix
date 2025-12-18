@@ -9,7 +9,14 @@ let
   # Settings
   jsonPath = "${./settings.json}";
   # userSettingsRaw = builtins.fromJSON (builtins.readDir jsonPath);
-  userSettingsRaw = builtins.fromJSON (builtins.readFile jsonPath);
+  userSettingsRaw =
+    let
+      jsonText = builtins.readFile jsonPath;
+      jsonLines = lib.splitString "\n" jsonText;
+      filteredLines = lib.filter (line: !lib.hasPrefix "//" (lib.trim line)) jsonLines;
+      cleanJsonText = lib.concatStringsSep "\n" filteredLines;
+    in
+      builtins.fromJSON cleanJsonText;
   remoteExtensions = {
     "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueID) (userSettingsRaw.extensions or [ ]); # Assume JSON has "extensions" array
   };
