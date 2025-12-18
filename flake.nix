@@ -64,7 +64,7 @@
           hostname = "virtualvm";
           desktop = "xfce4";
           useNixGL = true;
-          # stateVersion = "24.05";
+          stateVersion = "25.11";
         };
       };
       nixosConfigurations = {
