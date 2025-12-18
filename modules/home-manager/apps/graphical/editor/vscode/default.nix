@@ -9,6 +9,7 @@ let
   # Settings
   jsonPath = "${./settings.json}";
   # userSettingsRaw = builtins.fromJSON (builtins.readDir jsonPath);
+
   userSettingsRaw =
     let
       jsonText = builtins.readFile jsonPath;
@@ -16,10 +17,12 @@ let
       filteredLines = lib.filter (line: !lib.hasPrefix "//" (lib.trim line)) jsonLines;
       cleanJsonText = lib.concatStringsSep "\n" filteredLines;
     in
-      builtins.fromJSON cleanJsonText;
+    builtins.fromJSON cleanJsonText;
+
   remoteExtensions = {
     "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueID) (userSettingsRaw.extensions or [ ]); # Assume JSON has "extensions" array
   };
+
   userSettings = userSettingsRaw // remoteExtensions;
 
   # User dir for settings (cross-platform)
@@ -56,14 +59,11 @@ in
       # };
 
       activation = {
-        # Force declarative settings by removing & regenerating user file on activation
-        vscodeSettings = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-          rm -f "${settingsDir}/settings.json"
-        '';
-
         afterClean = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           mkdir -p "${settingsDir}"
-          ${pkgs.coreutils}/bin/cat ${(pkgs.formats.json {}).generate "settings.json" userSettings} > "${settingsDir}/settings.json"
+          if [ ! -f "${settingsDir}/settings.json" ]; then
+            ${pkgs.coreutils}/bin/cat ${(pkgs.formats.json {}).generate "settings.json" userSettings} > "${settingsDir}/settings.json"
+          fi
         '';
       };
     };
