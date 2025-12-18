@@ -62,6 +62,7 @@ in
         '';
 
         afterClean = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p "${settingsDir}"
           ${pkgs.coreutils}/bin/cat ${(pkgs.formats.json {}).generate "settings.json" userSettings} > "${settingsDir}/settings.json"
         '';
       };
