@@ -43,6 +43,7 @@ in
         data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
         config = [ "/etc/xdg" ];
       };
+      desktopEntries.enable = true;
     };
 
     targets.genericLinux.enable = !isNixOS;
