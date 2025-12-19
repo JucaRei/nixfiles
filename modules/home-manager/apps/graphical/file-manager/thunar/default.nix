@@ -63,17 +63,6 @@ in
                   <directories/>
               </action>
               <action>
-                  # <icon>${pkgs.vscode}/share/pixmaps/vscode.png</icon>
-                  <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
-                  <name>Open VSCode Here</name>
-                  <unique-id>1612104464586265-1</unique-id>
-                  <command>code %f</command>
-                  <description></description>
-                  <patterns>*</patterns>
-                  <startup-notify/>
-                  <directories/>
-              </action>
-              <action>
                   <icon>${pkgs.meld}/share/icons/hicolor/symbolic/apps/org.gnome.Meld-symbolic.svg</icon>
                   <name>Compare</name>
                   <submenu></submenu>
@@ -95,15 +84,6 @@ in
                   <directories/>
               </action>
               <action>
-                  <icon>gitahead</icon>
-                  <name>Open with gitahead</name>
-                  <unique-id>1587287434852027-1</unique-id>
-                  <command>gitahead %F</command>
-                  <description>Open with gitahead</description>
-                  <patterns>*</patterns>
-                  <directories/>
-              </action>
-              <action>
                   <icon>catfish</icon>
                   <name>Search with catfish</name>
                   <unique-id>1489089852658523-2</unique-id>
@@ -121,6 +101,23 @@ in
                   <patterns>*.tar.bz2;*.tbz2</patterns>
                   <other-files/>
               </action>
+          </actions>
+        ''
+        +
+        lib.mkIf (config.programs.vscode.enable) ''
+          <actions>
+            <action>
+              # <icon>${pkgs.vscode}/share/pixmaps/vscode.png</icon>
+              <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
+              <name>Open VSCode Here</name>
+              <unique-id>1612104464586265-1</unique-id>
+              # <command>${lib.getExe config.programs.vscode.package}code %f</command>
+              <command>${lib.getExe config.programs.vscode.package} %f</command>
+              <description></description>
+              <patterns>*</patterns>
+              <startup-notify/>
+              <directories/>
+            </action>
           </actions>
         '';
       };
