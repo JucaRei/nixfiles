@@ -60,6 +60,11 @@ in
 
       activation = {
         afterClean = lib.hm.dag.entryAfter [ "installPackages" ] ''
+          # Clean up any existing backup files to avoid conflicts
+          if [ -f "${settingsDir}/settings.json.backup" ]; then
+            rm "${settingsDir}/settings.json.backup"
+          fi
+
           mkdir -p "$HOME/.vscode/extensions"
           mkdir -p "${settingsDir}"
           if [ ! -f "${settingsDir}/settings.json" ]; then
