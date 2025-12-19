@@ -104,7 +104,7 @@ in
           </actions>
         ''
         +
-        lib.optionalString (config.programs.vscode.enable) ''
+        lib.optionalString (config.apps.graphical.editor.vscode.enable) ''
           <action>
             <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
             <name>Open VSCode Here</name>
