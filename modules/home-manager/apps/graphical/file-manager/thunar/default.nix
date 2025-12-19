@@ -105,17 +105,18 @@ in
         ''
         +
         lib.optionalString (config.apps.graphical.editor.vscode.enable) ''
-              <action>
-                  <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
-                  <name>Open VSCode Here</name>
-                  <unique-id>1612104464586265-1</unique-id>
-                  <command>${lib.getExe' config.programs.vscode.package "code"} %f</command>
-                  <description></description>
-                  <patterns>*</patterns>
-                  <startup-notify/>
-                  <directories/>
-              </action>
+          <action>
+              <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
+              <name>Open VSCode Here</name>
+              <unique-id>1612104464586265-1</unique-id>
+              <command>${config.programs.vscode.package}/bin/code %f</command>
+              <description></description>
+              <patterns>*</patterns>
+              <startup-notify/>
+              <directories/>
+          </action>
         '';
+        # <command>${lib.getExe config.programs.vscode.package} %f</command>
       };
     };
   };
