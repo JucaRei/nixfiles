@@ -1,4 +1,4 @@
-{ config, lib, pkgs, osConfig ? null, ... }:
+{ config, lib, pkgs, osConfig ? null, nixGLWrapper, ... }:
 let
   inherit (lib) mkIf mkEnableOption;
   isNixOS = osConfig != null;

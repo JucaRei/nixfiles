@@ -5,6 +5,7 @@
     graphical = {
       terminal.alacritty.enable = true;
       editor.vscode.enable = true;
+      file-manager.spacefm.enable = true;
     };
   };
 }

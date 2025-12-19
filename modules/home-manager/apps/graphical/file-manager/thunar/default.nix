@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, osConfig ? null, nixGLWrapper, ... }:
 let
   inherit (lib) mkEnableOption mkIf;
   cfg = config.apps.graphical.file-manager.thunar;
@@ -6,6 +6,25 @@ let
     thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
   });
   finalThunar = thunar-with-plugins;
+  isNixOS = osConfig != null;
+
+
+  thunar-packages = with pkgs; [
+    ### XFCE packages
+    xfce.exo
+    finalThunar
+    xfce.catfish # search tool
+    xfce.tumbler # thumbnail
+
+    webp-pixbuf-loader # webp
+    gnome.gvfs
+    cifs-utils # Tools for managing Linux CIFS client filesystems
+    poppler # .pdf .ps
+    libgsf # .odf
+    freetype # fonts
+    libgepub # .epub
+    ffmpegthumbnailer # videos
+  ];
 in
 {
   options = {
@@ -16,22 +35,7 @@ in
 
   config = mkIf cfg.enable {
     home = {
-      packages = with pkgs; [
-        ### XFCE packages
-        xfce.exo
-        finalThunar
-        xfce.tumbler # thumbnail
-        xfce.catfish # search tool
-
-        webp-pixbuf-loader # webp
-        gnome.gvfs
-        cifs-utils # Tools for managing Linux CIFS client filesystems
-        poppler # .pdf .ps
-        libgsf # .odf
-        freetype # fonts
-        libgepub # .epub
-        ffmpegthumbnailer # videos
-      ];
+      packages = if (!isNixOS) then nixGLWrapper thunar-packages else thunar-packages;
 
       sessionVariables = {
         GIO_EXTRA_MODULES =
@@ -104,7 +108,7 @@ in
           </action>
         ''
         +
-        lib.optionalString (config.apps.graphical.editor.vscode.enable == true) ''
+        lib.optionalString (config.apps.graphical.editor.vscode.enable) ''
           <action>
               <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
               <name>Open VSCode Here</name>

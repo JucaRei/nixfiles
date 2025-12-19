@@ -1,7 +1,8 @@
-{ pkgs, lib, config, nixGLWrapper, ... }:
+{ pkgs, lib, config, osConfig ? null, nixGLWrapper, ... }:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.apps.graphical.document.zathura;
+  isNixOS = osConfig != null;
 
   windowsize = pkgs.writeShellScriptBin "windowsize" ''
     #!/bin/sh
@@ -28,7 +29,7 @@ in
     programs = {
       zathura = {
         enable = true;
-        package = nixGLWrapper pkgs.zathura;
+        package = if (!isNixOS) then nixGLWrapper pkgs.zathura else pkgs.zathura;
         # options = {
         #   font = "JetBrains Mono 9";
         #   # Enable dark mode by default

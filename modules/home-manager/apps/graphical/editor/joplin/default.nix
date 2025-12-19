@@ -1,8 +1,9 @@
-{ config, lib, pkgs, nixGLWrapper, ... }:
+{ config, lib, pkgs, osConfig ? null, nixGLWrapper, ... }:
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkEnableOption types mkIf;
   cfg = config.apps.graphical.editor.joplin;
+  isNixOS = osConfig != null;
 in
 {
   options = {
@@ -16,13 +17,13 @@ in
     home = {
       #   packages = lib.optionals (platform != "x86_64-darwin") [ pkgs.joplin ];
       packages = with pkgs; [ work-sans ] ++
-        mkIf (!isNixos) [ nerd-fonts.fira-code ];
+        mkIf (!isNixOS) [ nerd-fonts.fira-code ];
     };
 
     programs.joplin-desktop = {
       # enable = isLinux;
       enable = true;
-      package = nixGLWrapper pkgs.joplin-desktop;
+      package = if (!isNixOS) then nixGLWrapper pkgs.joplin-desktop else pkgs.joplin-desktop;
       extraConfig = {
         "markdown.plugin.sub" = true;
         "markdown.plugin.sup" = true;

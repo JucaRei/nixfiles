@@ -1,6 +1,7 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, osConfig ? null, nixGLWrapper, ... }:
 let
   inherit (lib) mkIf mkForce mkEnableOption;
+  isNixOS = osConfig != null;
   cfg = config.apps.graphical.file-manager.spacefm;
 in
 {
@@ -11,7 +12,7 @@ in
   };
   config = mkIf cfg.enable {
     home = {
-      packages = with pkgs; [ spaceFM ];
+      packages = if (!isNixOS) then [ nixGLWrapper pkgs.spaceFM ] else [ pkgs.spaceFM ];
 
       # ${spaceFM}/bin/spacefm -d &
       file = {
