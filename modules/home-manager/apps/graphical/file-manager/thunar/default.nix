@@ -109,7 +109,7 @@ in
                   <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
                   <name>Open VSCode Here</name>
                   <unique-id>1612104464586265-1</unique-id>
-                  <command>${config.programs.vscode.package}/bin/code %f</command>
+                  <command>${lib.getExe' config.programs.vscode.package "code"} %f</command>
                   <description></description>
                   <patterns>*</patterns>
                   <startup-notify/>

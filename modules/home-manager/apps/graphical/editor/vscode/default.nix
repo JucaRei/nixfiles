@@ -59,7 +59,7 @@ in
       # };
 
       activation = {
-        afterClean = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        afterClean = lib.hm.dag.entryAfter [ "installPackages" ] ''
           mkdir -p "$HOME/.vscode/extensions"
           mkdir -p "${settingsDir}"
           if [ ! -f "${settingsDir}/settings.json" ]; then
