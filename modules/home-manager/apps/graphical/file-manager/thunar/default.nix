@@ -104,7 +104,7 @@ in
           </actions>
         ''
         +
-        lib.mkIf (config.programs.vscode.enable) ''
+        lib.optinalString (config.programs.vscode.enable) ''
           <actions>
             <action>
               # <icon>${pkgs.vscode}/share/pixmaps/vscode.png</icon>
