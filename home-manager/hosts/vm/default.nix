@@ -10,7 +10,13 @@
       # enableFHS = true;
     };
 
-    apps.console.ssh.enable = true;
+    apps = {
+      console.ssh.enable = true;
+      graphical = {
+        # terminal.alacritty.enable = true;
+        editor.vscode.enable = true;
+      };
+    };
 
     # Optional: Enable an FHS environment for better extension compatibility
 
