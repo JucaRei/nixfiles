@@ -60,6 +60,7 @@ in
 
       activation = {
         afterClean = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p "$HOME/.vscode/extensions"
           mkdir -p "${settingsDir}"
           if [ ! -f "${settingsDir}/settings.json" ]; then
             ${pkgs.coreutils}/bin/cat ${(pkgs.formats.json {}).generate "settings.json" userSettings} > "${settingsDir}/settings.json"
