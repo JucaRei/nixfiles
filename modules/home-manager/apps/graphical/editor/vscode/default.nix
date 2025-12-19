@@ -1,7 +1,9 @@
-{ config, lib, pkgs, inputs, hostname, nixGLWrapper, ... }:
+{ config, lib, pkgs, inputs, hostname, osConfig ? null, nixGLWrapper, ... }:
 let
   inherit (lib) mkForce mkIf mkEnableOption;
   cfg = config.apps.graphical.editor.vscode;
+
+  isNixOS = osConfig != null;
 
   backend = config.desktop.backend or "x11";
   isWayland = backend == "wayland";
@@ -80,7 +82,7 @@ in
 
       # - NixOS (useNixGL = false) → pure vscode
       # - Debian/Ubuntu/etc. (useNixGL = true) → nixGL-wrapped vscode
-      package = nixGLWrapper pkgs.vscode-fhs;
+      package = if (!isNixOS) then nixGLWrapper pkgs.vscode-fhs else pkgs.vscode-fhs;
       mutableExtensionsDir = true;
 
       # commandLineArgs was removed in home-manager 25.05
