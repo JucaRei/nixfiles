@@ -70,7 +70,7 @@ in
 
     programs.vscode = {
       enable = true;
-      inherit userSettings;
+      # inherit userSettings;
 
       # - NixOS (useNixGL = false) → pure vscode
       # - Debian/Ubuntu/etc. (useNixGL = true) → nixGL-wrapped vscode
@@ -85,7 +85,8 @@ in
       # ];
 
       profiles = {
-        "${hostname}" = {
+        default = {
+          inherit userSettings;
           extensions = with pkgs.vscode-extensions; [
             # Nix
             jnoortheen.nix-ide
@@ -103,6 +104,24 @@ in
             "redcrafter07.red-theme"
           ];
         };
+        # "${hostname}" = {
+        #   extensions = with pkgs.vscode-extensions; [
+        #     # Nix
+        #     jnoortheen.nix-ide
+        #     jeff-hykin.better-nix-syntax
+
+        #     # Editor
+        #     oderwat.indent-rainbow
+        #     ms-vscode-remote.remote-ssh
+        #   ] ++
+        #   pkgs.nix4vscode.forVscode [
+        #     "davidbwaters.macos-modern-theme"
+        #     "comdec.simple-icons"
+        #     "tombonnike.vscode-status-bar-format-toggle"
+        #     "natqe.reload"
+        #     "redcrafter07.red-theme"
+        #   ];
+        # };
       };
     };
   };
