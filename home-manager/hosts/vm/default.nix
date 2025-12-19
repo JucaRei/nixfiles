@@ -14,7 +14,7 @@
       console.ssh.enable = true;
       graphical = {
         # terminal.alacritty.enable = true;
-        editor.vscode.enable = true;
+        # editor.vscode.enable = true;
       };
     };
 
