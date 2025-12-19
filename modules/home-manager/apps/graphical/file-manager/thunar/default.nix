@@ -107,11 +107,9 @@ in
         lib.optionalString (config.programs.vscode.enable) ''
           <actions>
             <action>
-              # <icon>${pkgs.vscode}/share/pixmaps/vscode.png</icon>
               <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
               <name>Open VSCode Here</name>
               <unique-id>1612104464586265-1</unique-id>
-              # <command>${lib.getExe config.programs.vscode.package}code %f</command>
               <command>${config.programs.vscode.package}/bin/code %f</command>
               <description></description>
               <patterns>*</patterns>
