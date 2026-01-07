@@ -56,7 +56,7 @@
       inherit (self) outputs;
       # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
       # stateVersion = "24.11";
-      helper = import ./lib { inherit inputs outputs stateVersion pkgs; };
+      helper = import ./lib { inherit inputs outputs; };
     in
     {
       homeConfigurations = {
@@ -159,11 +159,6 @@
         in
         customPkgs
       );
-
-      # Expose homeConfigurations and nixosConfigurations under legacyPackages for nix build support
-      legacyPackages = helper.forAllSystems (system: { inherit homeConfigurations nixosConfigurations; });
-      # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
-      # nom-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'
 
       # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
       formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);

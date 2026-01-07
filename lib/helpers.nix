@@ -1,4 +1,4 @@
-{ inputs, outputs, pkgs, stateVersion, ... }:
+{ inputs, outputs, ... }:
 
 {
   # Helper function for generating home-manager configs
@@ -16,7 +16,10 @@
       isWorkstation = builtins.isString desktop;
 
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
-      mkNixGL = (import ./nixGL.nix { inherit pkgs; }).wrapper;
+      # mkNixGL = (import ./nixGL.nix { inherit pkgs; }).wrapper;
+      mkNixGL = (import ./nixGL.nix { pkgs = pkgs; }).wrapper;
+
+
       nixGLWrapper = if useNixGL then mkNixGL else (x: x);
     in
     inputs.home-manager.lib.homeManagerConfiguration {

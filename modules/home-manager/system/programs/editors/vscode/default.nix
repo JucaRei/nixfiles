@@ -23,6 +23,7 @@ in
   options = {
     system.programs.editors.vscode = {
       enable = mkEnableOption "VS Code with declarative settings, extensions, and nixGL auto-wrap";
+      enableConfigurableSettings = mkEnableOption "Whether to enable user settings management";
     };
   };
 
@@ -47,7 +48,7 @@ in
       #   '';
       # };
 
-      activation = {
+      activation = mkIf cfg.enableConfigurableSettings {
         # Force declarative settings by removing & regenerating user file on activation
         vscodeSettings = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
           rm -f "${settingsDir}/settings.json"
@@ -61,7 +62,11 @@ in
 
     programs.vscode = {
       enable = true;
-      inherit userSettings;
+      userSettings =
+        let
+          inherit userSettings;
+        in
+        mkIf cfg.enableConfigurableSettings userSettings;
 
       # - NixOS (useNixGL = false) → pure vscode
       # - Debian/Ubuntu/etc. (useNixGL = true) → nixGL-wrapped vscode
@@ -75,7 +80,7 @@ in
       #   "--enable-features=WaylandWindowDecorations"
       # ];
 
-      profiles = {
+      profiles = mkIf cfg.enableConfigurableSettings {
         "${hostname}" = {
           extensions = with pkgs.vscode-extensions; [
             # Nix

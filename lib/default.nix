@@ -1,7 +1,7 @@
-{ inputs, outputs, stateVersion, pkgs, ... }:
+{ inputs, outputs, ... }:
 let
-  helpers = import ./helpers.nix { inherit inputs outputs stateVersion pkgs; };
+  helpers = import ./helpers.nix { inherit inputs outputs; };
 in
 {
-  inherit (helpers) mkDarwin mkHome mkNixos forAllSystems;
+  inherit (helpers) mkHome mkNixos forAllSystems;
 }
