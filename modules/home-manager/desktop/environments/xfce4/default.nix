@@ -58,7 +58,7 @@ in
                   <startup-notify/>
                   <directories/>
               </action>
-        '' + mkIf (config.programs.vscode.enable) ''
+        '' + mkIf (config.system.programs.editors.vscode.enable) ''
           <action>
               # <icon>${pkgs.vscode}/share/pixmaps/vscode.png</icon>
               <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
