@@ -20,14 +20,20 @@ in
 {
   config = mkIf (backend == "x11") {
     home = {
-      packages = with pkgs; (mkIf (desktop == "bspwm") [
-        wmctrl
-        notify-desktop
-        xdotool
-        ydotool
-      ]) ++
-      (mkIf (!isNixOS) [ pciutils glxinfo ]) # For lspci on non-NixOS + glxinfo for ARM detection
-      ;
+      packages = with pkgs; lib.mkIf (backend == "x11") (
+        lib.concatLists [
+          (mkIf (desktop == "bspwm") [
+            wmctrl
+            notify-desktop
+            xdotool
+            ydotool
+          ])
+          (mkIf (!isNixOS) [
+            pciutils
+            glxinfo
+          ]) # For lspci on non-NixOS + glxinfo for ARM detection
+        ]
+      );
 
       # Fix issue with java applications and tiling window managers.
       sessionVariables = {
