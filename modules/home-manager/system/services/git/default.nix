@@ -13,12 +13,14 @@ in
         description = mdDoc "Enable's git services.";
       };
 
-      user = mkOption {
+      userName = mkOption {
+        # Needs mkOption
         type = str;
         default = "";
         description = mdDoc "The default username.";
       };
-      email = {
+
+      userEmail = mkOption {
         type = str;
         default = "";
         description = mdDoc "The default email.";
@@ -29,8 +31,8 @@ in
     programs = {
       git = {
         enable = true;
-        userName = cfg.user;
-        userEmail = cfg.email;
+        userName = cfg.userName;
+        userEmail = cfg.userEmail;
 
         ignores = [
           # General:

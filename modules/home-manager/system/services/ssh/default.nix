@@ -21,7 +21,7 @@ in
         compression = true;
         forwardAgent = true;
         controlMaster = "auto";
-        extraConfig = "Banner ${./banner.txt}";
+        # extraConfig = "Banner ${./banner.txt}";
       };
     };
   };
