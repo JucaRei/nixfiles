@@ -1,7 +1,8 @@
-{ config, lib, pkgs, stateVersion, username, isOtherOS, inputs, hostname, ... }:
+{ config, lib, pkgs, stateVersion, username, osConfig ? null, inputs, hostname, ... }:
 let
   inherit (pkgs.stdenv) isDarwin isLinux;
   inherit (lib) optionals mkIf;
+  isNixOS = osConfig != null;
 in
 {
   imports = [
@@ -32,7 +33,7 @@ in
         fd # Modern Unix `find`
         netdiscover # Modern Unix `arp`
         whereis-nix # nix store path
-      ] ++ optionals (isOtherOS) [
+      ] ++ optionals (!isNixOS) [
         pciutils # Terminal PCI info
         duf # Modern Unix `df`
         usbutils # Terminal USB info

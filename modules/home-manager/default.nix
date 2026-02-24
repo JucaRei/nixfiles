@@ -8,7 +8,7 @@ in
 {
   imports = [
     ./system
-    ./disabled/catppuccin-delta-fix.nix
+    # ./disabled/catppuccin-delta-fix.nix
   ]
   ++ optionals (isWorkstation) [ ./desktop/environments ];
   config = {

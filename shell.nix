@@ -16,7 +16,7 @@
       htop
       duf
       # dropbear # ssh server
-      # nix-output-monitor # better output from builds
+      nix-output-monitor # better output from builds
       # micro
       # nh
       # nixfmt

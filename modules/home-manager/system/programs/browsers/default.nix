@@ -7,7 +7,7 @@
   home = {
     # Add more fonts for any browser
     packages = with pkgs; [
-      msttcorefonts
+      # msttcorefonts
       nerd-fonts.martian-mono
     ];
   };

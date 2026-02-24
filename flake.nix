@@ -6,12 +6,12 @@
     fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*";
 
     ### NIXOS
-    nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2505.*";
+    nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2511.*";
     nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
     nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
 
     ### Home-Manager
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     home-manager_unstable.url = "github:nix-community/home-manager/master";
     home-manager_unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -73,6 +73,7 @@
         # Servers
         # VMs
         # "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
+        "juca@fedora" = helper.mkHome { hostname = "fedora"; };
         "juca@virtualvm" = helper.mkHome {
           hostname = "virtualvm";
           # desktop = "xfce4";
