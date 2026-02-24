@@ -14,7 +14,6 @@ let
   hasAmd = lib.any (d: d == "amdgpu" || d == "radeon" || d == "ati") videoDrivers;
   hasArmGpu = isArm && lib.any (d: d == "vc4" || d == "panfrost" || d == "rockchip" || d == "kmsro") videoDrivers;
 
-  # ── ADD THIS BLOCK (was missing) ───────────────────────────────────────
   hasGpuFallback =
     if videoDrivers != [ ] && isNixOS then
       if hasNvidia then "nvidia"
@@ -27,6 +26,7 @@ in
 {
   config = mkIf (backend == "x11") {
     home = {
+      # ── THIS IS THE FIXED PART ────────────────────────────────────────
       packages = with pkgs; concatLists [
         (mkIf (desktop == "bspwm") [
           wmctrl
@@ -58,7 +58,6 @@ in
         );
       };
 
-      # activation.setX11Vars and file.".profile" unchanged
       activation.setX11Vars = mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         mkdir -pv $HOME/.local/scripts
         cat > $HOME/.local/scripts/x11-vars.sh <<EOF
