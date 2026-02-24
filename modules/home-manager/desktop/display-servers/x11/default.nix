@@ -1,6 +1,6 @@
 { lib, config, pkgs, desktop, osConfig ? null, platform, ... }:
 let
-  inherit (lib) mkIf optionals;
+  inherit (lib) mkIf concatLists optionals;
 
   backend = config.desktop.display-servers.backend;
   isNixOS = osConfig != null;
@@ -10,7 +10,7 @@ let
   hasNvidia = lib.elem "nvidia" videoDrivers;
   hasIntel = lib.elem "intel" videoDrivers;
   hasAmd = lib.elemAny [ "amdgpu" "radeon" "ati" ] videoDrivers;
-  hasArmGpu = isArm && lib.elemAny [ "vc4" "panfrost" "rockchip" "kmsro" ] videoDrivers;
+  hasArmGpu = if isArm then (lib.elemAny [ "vc4" "panfrost" "rockchip" "kmsro" ] videoDrivers) else false;
 
   hasGpuFallback =
     if videoDrivers != [ ] && isNixOS then
@@ -20,7 +20,6 @@ in
 {
   config = mkIf (backend == "x11") {
     home = {
-      # ── CORRECT & SIMPLE: always returns a list ───────────────────────
       packages = with pkgs; optionals (desktop == "bspwm") [
         wmctrl
         notify-desktop
@@ -32,20 +31,26 @@ in
       ];
 
       sessionVariables = {
-        "_JAVA_AWT_WM_NONREPARENTING" = mkIf (desktop == "bspwm") "1";
+        # Java fix for non-reparenting WMs (bspwm, etc.)
+        "_JAVA_AWT_WM_NONREPARENTING" = if desktop == "bspwm" then "1" else "";
 
-        LIBVA_DRIVER_NAME = mkIf isNixOS (
-          if hasIntel || hasGpuFallback == "intel" then "iHD" else
-          if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else
-          if hasAmd || hasGpuFallback == "amd" then "radeonsi" else
-          if hasArmGpu || hasGpuFallback == "arm" then "v3d" else null
-        );
+        # Hardware acceleration (only declarative on NixOS)
+        LIBVA_DRIVER_NAME =
+          if isNixOS then
+            (
+              if hasIntel || hasGpuFallback == "intel" then "iHD" else
+              if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else
+              if hasAmd || hasGpuFallback == "amd" then "radeonsi" else
+              if hasArmGpu || hasGpuFallback == "arm" then "v3d" else ""
+            ) else "";
 
-        VDPAU_DRIVER = mkIf isNixOS (
-          if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else
-          if hasAmd || hasGpuFallback == "amd" then "radeonsi" else
-          if hasArmGpu || hasGpuFallback == "arm" then "v3d" else null
-        );
+        VDPAU_DRIVER =
+          if isNixOS then
+            (
+              if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else
+              if hasAmd || hasGpuFallback == "amd" then "radeonsi" else
+              if hasArmGpu || hasGpuFallback == "arm" then "v3d" else ""
+            ) else "";
       };
 
       activation.setX11Vars = mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''

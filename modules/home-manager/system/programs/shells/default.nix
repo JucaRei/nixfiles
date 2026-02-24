@@ -40,16 +40,20 @@ in
         description = mdDoc "Enable useful shell aliases.";
       };
 
-      systemd = mkOption {
-        type = bool;
-        default = true;
-        description = mdDoc "Enable systemd-related aliases (sc-, scu-, jc- etc.).";
+      systemd = {
+        enable = mkOption {
+          type = bool;
+          default = true;
+          description = mdDoc "Enable systemd-related aliases (sc-, scu-, jc- etc.).";
+        };
       };
 
-      process = mkOption {
-        type = bool;
-        default = true;
-        description = mdDoc "Install process-related tools (procs, fkill).";
+      process = {
+        enable = mkOption {
+          type = bool;
+          default = true;
+          description = mdDoc "Install process-related tools (procs, fkill).";
+        };
       };
 
       nix = {
@@ -103,7 +107,6 @@ in
         tree = "${getExe pkgs.tree} -Cs";
         gitpfolders = "for i in */.git; do (echo \$i; cd \$i/..; git pull); done";
 
-        # Conditional aliases – empty when condition false
         pci = mkIf isNixOS "sudo 'PATH=\$PATH' env ${pkgs.inxi}/bin/inxi --slots";
         wifi_scan = mkIf isNixOS "${getExe' pkgs.networkmanager "nmcli"} device wifi rescan && ${getExe' pkgs.networkmanager "nmcli"} device wifi list";
 
@@ -115,15 +118,6 @@ in
     (mkIf cfg.aliases.systemd.enable {
       home.shellAliases = import ./aliases/systemd.nix { inherit lib pkgs; };
     })
-
-    # # Process tools
-    # (mkIf cfg.aliases.process.enable {
-    #   home.packages = with pkgs; [
-    #     nodePackages.fkill-cli
-    #     procs
-    #     strace
-    #   ];
-    # })
 
     # Nix aliases + tools
     (mkIf cfg.aliases.nix.enable {

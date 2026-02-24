@@ -43,7 +43,7 @@ in
           # TerminalEmulator=${config.programs.alacritty.package}/bin/alacritty
           TerminalEmulatorDismissed=true
         '';
-        ".config/Thunar/accels.scm".text = lib.fileContents ./accels.scm;
+        # ".config/Thunar/accels.scm".text = lib.fileContents ./accels.scm;
 
         ".config/Thunar/uca.xml".text = ''
           <?xml version="1.0" encoding="UTF-8"?>
