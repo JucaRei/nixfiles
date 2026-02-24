@@ -18,11 +18,7 @@ in
         pkgs.nixgl.auto.nixGLDefault
       ] ++ (with pkgs;[
         font-search # show existent fonts
-        (nerdfonts.override {
-          fonts = [
-            "NerdFontsSymbolsOnly"
-          ];
-        })
+        nerd-fonts.symbols-only
       ]);
 
       activation = {
