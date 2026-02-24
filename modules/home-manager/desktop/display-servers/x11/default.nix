@@ -1,53 +1,43 @@
 { lib, config, pkgs, desktop, osConfig ? null, platform, ... }:
-
 let
-  inherit (lib) mkIf concatLists;
+  inherit (lib) mkIf optionals;
 
   backend = config.desktop.display-servers.backend;
   isNixOS = osConfig != null;
   isArm = platform == "aarch64-linux" || platform == "armv7l-linux";
 
   videoDrivers = if isNixOS then (osConfig.services.xserver.videoDrivers or [ ]) else [ ];
-
   hasNvidia = lib.elem "nvidia" videoDrivers;
   hasIntel = lib.elem "intel" videoDrivers;
-  hasAmd = lib.any (d: d == "amdgpu" || d == "radeon" || d == "ati") videoDrivers;
-  hasArmGpu = isArm && lib.any (d: d == "vc4" || d == "panfrost" || d == "rockchip" || d == "kmsro") videoDrivers;
+  hasAmd = lib.elemAny [ "amdgpu" "radeon" "ati" ] videoDrivers;
+  hasArmGpu = isArm && lib.elemAny [ "vc4" "panfrost" "rockchip" "kmsro" ] videoDrivers;
 
   hasGpuFallback =
     if videoDrivers != [ ] && isNixOS then
-      if hasNvidia then "nvidia"
-      else if hasAmd then "amd"
-      else if hasIntel then "intel"
-      else if hasArmGpu then "arm"
-      else null
+      if hasNvidia then "nvidia" else if hasAmd then "amd" else if hasIntel then "intel" else if hasArmGpu then "arm" else null
     else null;
 in
 {
   config = mkIf (backend == "x11") {
     home = {
-      # ── THIS IS THE FIXED PART ────────────────────────────────────────
-      packages = with pkgs; concatLists [
-        (mkIf (desktop == "bspwm") [
-          wmctrl
-          notify-desktop
-          xdotool
-          ydotool
-        ])
-
-        (mkIf (!isNixOS) [
-          pciutils
-          glxinfo
-        ])
+      # ── CORRECT & SIMPLE: always returns a list ───────────────────────
+      packages = with pkgs; optionals (desktop == "bspwm") [
+        wmctrl
+        notify-desktop
+        xdotool
+        ydotool
+      ] ++ optionals (!isNixOS) [
+        pciutils
+        virtualgl
       ];
 
       sessionVariables = {
-        _JAVA_AWT_WM_NONREPARENTING = mkIf (desktop == "bspwm") "1";
+        "_JAVA_AWT_WM_NONREPARENTING" = mkIf (desktop == "bspwm") "1";
 
         LIBVA_DRIVER_NAME = mkIf isNixOS (
+          if hasIntel || hasGpuFallback == "intel" then "iHD" else
           if hasNvidia || hasGpuFallback == "nvidia" then "nvidia" else
           if hasAmd || hasGpuFallback == "amd" then "radeonsi" else
-          if hasIntel || hasGpuFallback == "intel" then "iHD" else
           if hasArmGpu || hasGpuFallback == "arm" then "v3d" else null
         );
 
@@ -79,9 +69,11 @@ in
         chmod +x $HOME/.local/scripts/x11-vars.sh
       '');
 
-      file.".profile".text = mkIf (!isNixOS) ''
-        [ -f "$HOME/.local/scripts/x11-vars.sh" ] && . "$HOME/.local/scripts/x11-vars.sh"
-      '';
+      file = {
+        ".profile".text = mkIf (!isNixOS) ''
+          [ -f "$HOME/.local/scripts/x11-vars.sh" ] && . "$HOME/.local/scripts/x11-vars.sh"
+        '';
+      };
     };
   };
 }

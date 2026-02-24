@@ -1,6 +1,6 @@
 { config, lib, pkgs, osConfig ? null, isWorkstation, ... }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf optionals;
   isNixOS = osConfig != null;
 in
 {
@@ -14,7 +14,7 @@ in
 
     home = {
 
-      packages = mkIf (!isNixOS) [
+      packages = optionals (!isNixOS) [
         pkgs.nixgl.auto.nixGLDefault
       ] ++ (with pkgs;[
         font-search # show existent fonts
