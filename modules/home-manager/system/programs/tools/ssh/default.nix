@@ -32,19 +32,19 @@ in
           UseKeychain yes
         '';
       matchBlocks = {
-        "github.com" = {
-          user = "Reinaldo";
-          identityFile = with config.home; "${homeDirectory}/.ssh/github";
-          # identityFile = "~/.ssh/github_ed25519";
-          # identitiesOnly = true;
-        };
-        "git.sr.ht" = {
-          identityFile = with config.home; "${homeDirectory}/.ssh/sourcehut";
-        };
-        "gitlab.com" = {
-          user = "Reinaldo";
-          identityFile = with config.home; "${homeDirectory}/.ssh/gitlab";
-        };
+        # "github.com" = {
+        #   user = "Reinaldo";
+        #   identityFile = with config.home; "${homeDirectory}/.ssh/github";
+        #   # identityFile = "~/.ssh/github_ed25519";
+        #   # identitiesOnly = true;
+        # };
+        # "git.sr.ht" = {
+        #   identityFile = with config.home; "${homeDirectory}/.ssh/sourcehut";
+        # };
+        # "gitlab.com" = {
+        #   user = "Reinaldo";
+        #   identityFile = with config.home; "${homeDirectory}/.ssh/gitlab";
+        # };
         "127.*.*.* 192.168.*.* 10.*.*.* 172.16.*.* 172.17.*.* 172.18.*.* 172.19.*.* 172.2?.*.* 172.30.*.* 172.31.*.*" = {
           extraOptions = {
             Stricthostkeychecking = "no";

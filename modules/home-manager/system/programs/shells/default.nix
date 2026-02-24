@@ -108,13 +108,13 @@ in
         wifi_scan = mkIf isNixOS "${getExe' pkgs.networkmanager "nmcli"} device wifi rescan && ${getExe' pkgs.networkmanager "nmcli"} device wifi list";
 
         search = "${pkgs.ripgrep}/bin/rg -p --glob '!node_modules/*' --glob '!vendor/*' \"\$@\"";
-      } // (mkIf cfg.aliases.systemd.enable (import ./aliases/systemd.nix { inherit lib pkgs; }));
+      };
     })
 
-    # Systemd aliases - MOVED inside the block above to fix merging issue
-    # (mkIf cfg.aliases.systemd.enable {
-    #   home.shellAliases = import ./aliases/systemd.nix { inherit lib pkgs; };
-    # })
+    # Systemd aliases
+    (mkIf cfg.aliases.systemd.enable {
+      home.shellAliases = import ./aliases/systemd.nix { inherit lib pkgs; };
+    })
 
     # # Process tools
     # (mkIf cfg.aliases.process.enable {
