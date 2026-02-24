@@ -74,7 +74,7 @@ in
         # min-free = ${toString (100 * 1024 * 1024)}
         # max-free = ${toString (1024 * 1024 * 1024)}
         # Free up to 2GiB whenever there is less than 1GiB left.
-        min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
+        # min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
         # max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 3 GiB # Removed from nix 2.18
       ''
       + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''

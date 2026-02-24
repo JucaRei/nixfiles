@@ -20,7 +20,7 @@ in
       enable = true;
       git = true;
       icons = "auto";
-      colors = true;
+      colors = "always";
       enableBashIntegration = mkIf (config.system.programs.shells.default == "bash") true;
       enableFishIntegration = mkIf (config.system.programs.shells.default == "fish") true;
       enableZshIntegration = mkIf (config.system.programs.shells.default == "zsh") true;
