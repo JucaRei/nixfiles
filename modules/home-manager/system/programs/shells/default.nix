@@ -7,9 +7,9 @@ let
   isNixOS = osConfig != null;
 
   nixDiff = {
-    builtin   = "nix store diff-closures";
-    nvd       = "${pkgs.nvd}/bin/nvd diff";
-    nix-diff  = "${pkgs.nix-diff}/bin/nix-diff";
+    builtin = "nix store diff-closures";
+    nvd = "${pkgs.nvd}/bin/nvd diff";
+    nix-diff = "${pkgs.nix-diff}/bin/nix-diff";
   };
 in
 {
@@ -84,37 +84,37 @@ in
     # General aliases
     (mkIf cfg.aliases.enable {
       home.shellAliases = {
-        mkhostid  = "head -c4 /dev/urandom | od -A none -t x4";
-        lsusb     = getExe pkgs.cyme;
-        du        = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
-        audio     = "${pkgs.inxi}/bin/inxi -A";
-        battery   = "${pkgs.inxi}/bin/inxi -B -xxx";
+        mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
+        lsusb = getExe pkgs.cyme;
+        du = "${pkgs.ncdu}/bin/ncdu --color dark -r -x --exclude .git --exclude .svn --exclude .asdf --exclude node_modules --exclude .npm --exclude .nuget --exclude Library";
+        audio = "${pkgs.inxi}/bin/inxi -A";
+        battery = "${pkgs.inxi}/bin/inxi -B -xxx";
         bluetooth = "${pkgs.inxi}/bin/inxi -E";
-        graphics  = "${pkgs.inxi}/bin/inxi -G";
-        process   = "${pkgs.inxi}/bin/inxi --processes";
-        partitions= "${pkgs.inxi}/bin/inxi -P";
-        sockets   = "${pkgs.iproute2}/bin/ss -lp";
-        system    = "${pkgs.inxi}/bin/inxi -Fazy";
-        usb       = "${pkgs.inxi}/bin/inxi -J";
-        wifi      = "${pkgs.inxi}/bin/inxi -n";
-        dmesg     = "${pkgs.util-linux}/bin/dmesg --human --color=always";
-        ports     = "${pkgs.unixtools.netstat}/bin/netstat -tulanp";
-        rsync     = "${getExe pkgs.rsync} -aXxtv";
-        tree      = "${getExe pkgs.tree} -Cs";
+        graphics = "${pkgs.inxi}/bin/inxi -G";
+        process = "${pkgs.inxi}/bin/inxi --processes";
+        partitions = "${pkgs.inxi}/bin/inxi -P";
+        sockets = "${pkgs.iproute2}/bin/ss -lp";
+        system = "${pkgs.inxi}/bin/inxi -Fazy";
+        usb = "${pkgs.inxi}/bin/inxi -J";
+        wifi = "${pkgs.inxi}/bin/inxi -n";
+        dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
+        ports = "${pkgs.unixtools.netstat}/bin/netstat -tulanp";
+        rsync = "${getExe pkgs.rsync} -aXxtv";
+        tree = "${getExe pkgs.tree} -Cs";
         gitpfolders = "for i in */.git; do (echo \$i; cd \$i/..; git pull); done";
 
         # Conditional aliases – empty when condition false
-        pci       = mkIf isNixOS "sudo 'PATH=\$PATH' env ${pkgs.inxi}/bin/inxi --slots";
+        pci = mkIf isNixOS "sudo 'PATH=\$PATH' env ${pkgs.inxi}/bin/inxi --slots";
         wifi_scan = mkIf isNixOS "${getExe' pkgs.networkmanager "nmcli"} device wifi rescan && ${getExe' pkgs.networkmanager "nmcli"} device wifi list";
 
-        search    = "${pkgs.ripgrep}/bin/rg -p --glob '!node_modules/*' --glob '!vendor/*' \"\$@\"";
-      };
+        search = "${pkgs.ripgrep}/bin/rg -p --glob '!node_modules/*' --glob '!vendor/*' \"\$@\"";
+      } // (mkIf cfg.aliases.systemd.enable (import ./aliases/systemd.nix { inherit lib pkgs; }));
     })
 
-    # Systemd aliases
-    (mkIf cfg.aliases.systemd.enable {
-      home.shellAliases = import ./aliases/systemd.nix { inherit lib pkgs; };
-    })
+    # Systemd aliases - MOVED inside the block above to fix merging issue
+    # (mkIf cfg.aliases.systemd.enable {
+    #   home.shellAliases = import ./aliases/systemd.nix { inherit lib pkgs; };
+    # })
 
     # # Process tools
     # (mkIf cfg.aliases.process.enable {
@@ -132,22 +132,33 @@ in
           ++ optional (cfg.aliases.nix.diffProgram != "builtin") pkgs.${cfg.aliases.nix.diffProgram};
 
         shellAliases = {
-          n   = "nix";          nf  = "nix flake";
-          nbr = "nix build --rebuild";  nfc = "nix flake check";
-          nd  = nixDiff.${cfg.aliases.nix.diffProgram};
-          nb  = mkIf (!isNixOS) "${pkgs.nix}/bin/nix build --no-link --print-out-paths";
-          ndev= "nix develop";  nfu = "nix flake update";
-          ne  = "nix edit";     nfuc= "nix flake update && nix flake check";
+          n = "nix";
+          nf = "nix flake";
+          nbr = "nix build --rebuild";
+          nfc = "nix flake check";
+          nd = nixDiff.${cfg.aliases.nix.diffProgram};
+          nb = mkIf (!isNixOS) "${pkgs.nix}/bin/nix build --no-link --print-out-paths";
+          ndev = "nix develop";
+          nfu = "nix flake update";
+          ne = "nix edit";
+          nfuc = "nix flake update && nix flake check";
 
-          nlog= "nix log";      np  = "nix profile";
-          nph = "nix profile history";  npi = "nix profile install";
-          npl = "nix profile list";     npu = "nix profile upgrade";
-          nprm= "nix profile remove";   nprb= "nix profile rollback";
+          nlog = "nix log";
+          np = "nix profile";
+          nph = "nix profile history";
+          npi = "nix profile install";
+          npl = "nix profile list";
+          npu = "nix profile upgrade";
+          nprm = "nix profile remove";
+          nprb = "nix profile rollback";
           npw = "nix profile wipe-history";
 
-          nr  = "nix run";      ns  = "nix search";
-          nrepl="nix repl";     nsn = "nix search nixpkgs";
-          nsh = "nix shell";    nsu = "nix search nixpkgs-unstable";
+          nr = "nix run";
+          ns = "nix search";
+          nrepl = "nix repl";
+          nsn = "nix search nixpkgs";
+          nsh = "nix shell";
+          nsu = "nix search nixpkgs-unstable";
           nsd = "nix show-derivation";
           nst = "nix store";
         };
