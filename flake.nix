@@ -60,6 +60,7 @@
     in
     {
       homeConfigurations = {
+        # nix-shell -p home-manager.out --run 'home-manager switch -b backup --flake . --show-trace'
         # .iso images
         # "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
         # "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
