@@ -8,15 +8,25 @@ let
   isArm = platform == "aarch64-linux" || platform == "armv7l-linux";
 
   videoDrivers = if isNixOS then (osConfig.services.xserver.videoDrivers or [ ]) else [ ];
+
   hasNvidia = lib.elem "nvidia" videoDrivers;
   hasIntel = lib.elem "intel" videoDrivers;
   hasAmd = lib.any (d: d == "amdgpu" || d == "radeon" || d == "ati") videoDrivers;
   hasArmGpu = isArm && lib.any (d: d == "vc4" || d == "panfrost" || d == "rockchip" || d == "kmsro") videoDrivers;
+
+  # ── ADD THIS BLOCK (was missing) ───────────────────────────────────────
+  hasGpuFallback =
+    if videoDrivers != [ ] && isNixOS then
+      if hasNvidia then "nvidia"
+      else if hasAmd then "amd"
+      else if hasIntel then "intel"
+      else if hasArmGpu then "arm"
+      else null
+    else null;
 in
 {
   config = mkIf (backend == "x11") {
     home = {
-      # ── This is now always a list (the correct way) ─────────────────────
       packages = with pkgs; concatLists [
         (mkIf (desktop == "bspwm") [
           wmctrl
@@ -48,13 +58,13 @@ in
         );
       };
 
-      # Your activation and .profile blocks remain unchanged
+      # activation.setX11Vars and file.".profile" unchanged
       activation.setX11Vars = mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         mkdir -pv $HOME/.local/scripts
         cat > $HOME/.local/scripts/x11-vars.sh <<EOF
         #!/bin/sh
         if [ -f /proc/device-tree/model ] && grep -iqE 'raspberry|nanopi|rockchip' /proc/device-tree/model; then
-          export LIBVA_DRIVER_NAME="v3d"  # or "panfrost" for Mali
+          export LIBVA_DRIVER_NAME="v3d"
           export VDPAU_DRIVER="v3d"
         elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*nvidia' >/dev/null; then
           export LIBVA_DRIVER_NAME="nvidia"
