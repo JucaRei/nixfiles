@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) optionalString;
   thunar-with-plugins = with pkgs.xfce; (thunar.override {
     thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
   });
@@ -58,7 +58,7 @@ in
                   <startup-notify/>
                   <directories/>
               </action>
-        '' + mkIf (config.system.programs.editors.vscode.enable) ''
+        '' + optionalString config.system.programs.editors.vscode.enable ''
           <action>
               # <icon>${pkgs.vscode}/share/pixmaps/vscode.png</icon>
               <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>

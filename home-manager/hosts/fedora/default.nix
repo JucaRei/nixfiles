@@ -13,6 +13,12 @@
           bat.enable = true;
           eza.enable = true;
         };
+        editors = {
+          vscode = {
+            enable = true;
+            enableConfigurableSettings = true;
+          };
+        };
       };
     };
   };
