@@ -1,14 +1,14 @@
 { config, lib, pkgs, inputs, useNixGL ? false, hostname, ... }:
 let
   inherit (lib) mkForce mkIf mkEnableOption;
-
   cfg = config.system.programs.editors.vscode;
+
   backend = config.desktop.display-servers.backend or "x11";
   isWayland = backend == "wayland";
 
   nixGLWrapper =
     if useNixGL then
-      (import ../../../../../../lib/nixGL.nix { inherit pkgs; }).wrapper   # adjust to correct count if needed
+      (import ../../../../../../lib/nixGL.nix { inherit pkgs; }).wrapper   # this now returns the function
     else
       (x: x);
 
@@ -16,10 +16,11 @@ let
   jsonPath = "${./settings.json}";
   userSettingsRaw = builtins.fromJSON (builtins.readFile jsonPath);
   remoteExtensions = {
-    "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueID) (userSettingsRaw.extensions or [ ]);
+    "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueID) (userSettingsRaw.extensions or [ ]); # Assume JSON has "extensions" array
   };
   userSettings = userSettingsRaw // remoteExtensions;
 
+  # User dir for settings (cross-platform)
   settingsDir =
     if pkgs.stdenv.isDarwin then "${config.home.homeDirectory}/Library/Application Support/Code/User"
     else "${config.xdg.configHome}/Code/User";
