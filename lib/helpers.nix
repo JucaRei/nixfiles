@@ -17,10 +17,12 @@
 
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       # mkNixGL = (import ./nixGL.nix { inherit pkgs; }).wrapper;
-      mkNixGL = (import ./nixGL.nix { pkgs = pkgs; }).wrapper;
 
-
-      nixGLWrapper = if useNixGL then mkNixGL else (x: x);
+      nixGLWrapper =
+        if useNixGL then
+          (import ./nixGL.nix { inherit pkgs; }).wrapper
+        else
+          (x: x);
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
@@ -37,8 +39,11 @@
           isInstall
           isISO
           isWorkstation
-          nixGLWrapper
           ;
+
+        # Only pass nixGLWrapper if it's actually enabled
+      } // inputs.nixpkgs.lib.optionalAttrs useNixGL {
+        inherit nixGLWrapper;
       };
       modules = [
         ../home-manager

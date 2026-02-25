@@ -70,7 +70,14 @@ in
 
       # - NixOS (useNixGL = false) → pure vscode
       # - Debian/Ubuntu/etc. (useNixGL = true) → nixGL-wrapped vscode
-      package = nixGLWrapper pkgs.vscode-fhs;
+      # package = nixGLWrapper pkgs.vscode-fhs;
+
+      package =
+        if builtins.isFunction nixGLWrapper then
+          nixGLWrapper pkgs.vscode-fhs
+        else
+          pkgs.vscode-fhs; # fallback if somehow passed wrong
+
       mutableExtensionsDir = true;
 
       # commandLineArgs was removed in home-manager 25.05
