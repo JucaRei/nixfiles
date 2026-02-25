@@ -1,10 +1,16 @@
-{ config, lib, pkgs, inputs, nixGLWrapper ? (x: x), useNixGL ? false, hostname, ... }:
+{ config, lib, pkgs, inputs, useNixGL ? false, hostname, ... }:
 let
   inherit (lib) mkForce mkIf mkEnableOption;
   cfg = config.system.programs.editors.vscode;
 
   backend = config.desktop.display-servers.backend or "x11";
   isWayland = backend == "wayland";
+
+  nixGLWrapper =
+    if useNixGL then
+      (import ../../../../../../lib/nixGL.nix { inherit pkgs; }).wrapper
+    else
+      (x: x);
 
   # Settings
   jsonPath = "${./settings.json}";
@@ -70,13 +76,7 @@ in
 
       # - NixOS (useNixGL = false) → pure vscode
       # - Debian/Ubuntu/etc. (useNixGL = true) → nixGL-wrapped vscode
-      # package = nixGLWrapper pkgs.vscode-fhs;
-
-      package =
-        if builtins.isFunction nixGLWrapper then
-          nixGLWrapper pkgs.vscode-fhs
-        else
-          pkgs.vscode-fhs; # fallback if somehow passed wrong
+      package = nixGLWrapper pkgs.vscode-fhs;
 
       mutableExtensionsDir = true;
 

@@ -40,10 +40,7 @@
           isISO
           isWorkstation
           ;
-
         # Only pass nixGLWrapper if it's actually enabled
-      } // inputs.nixpkgs.lib.optionalAttrs useNixGL {
-        inherit nixGLWrapper;
       };
       modules = [
         ../home-manager
