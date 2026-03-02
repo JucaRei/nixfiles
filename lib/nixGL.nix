@@ -1,63 +1,65 @@
-{ pkgs }:
+# lib/nixGL.nix - Fully sandbox-safe nixGL wrapper (binary + desktop)
+{ pkgs, nixGL ? pkgs.nixgl.auto.nixGLDefault }:
 
-{
-  # The actual wrapper function: takes a package and returns a wrapped one
+let
+  inherit (pkgs.lib) concatStringsSep optionalString;
+
+in
+rec {
+  # Binary wrapper: safe, no symlink overwrite
   wrapper = pkg:
-    if pkg == null then null else
-    pkg.overrideAttrs (old: {
-      name = "nixGL-${old.name or old.pname}";
-      buildCommand = ''
-        set -eo pipefail
+    if pkg == null || !(pkg ? outPath) then pkg else
+    pkgs.runCommandLocal "nixgl-bin-${pkg.name or pkg.pname or "unnamed"}"
+      {
+        inherit (pkg) meta passthru;
+      } ''
+            set -euo pipefail
 
-        ${pkgs.lib.concatStringsSep "\n" (map (outputName: ''
-          echo "Copying output ${outputName}"
-          cp -rs --no-preserve=mode "${pkg.${outputName}}" "''$${outputName}"
-        '') (old.outputs or ["out"]))}
+            # Copy structure
+            cp -r --no-preserve=mode "${pkg}" "$out"
 
-        rm -rf $out/bin/*
-        shopt -s nullglob
-        for file in ${pkg.out}/bin/*; do
-          echo "#!${pkgs.bash}/bin/bash" > "$out/bin/$(basename $file)"
-          echo "exec -a \"\$0\" ${pkgs.nixgl.auto.nixGLDefault}/bin/nixGL $file \"\$@\"" >> "$out/bin/$(basename $file)"
-          chmod +x "$out/bin/$(basename $file)"
-        done
-        shopt -u nullglob
-      '';
-    });
+            # Fresh bin dir
+            rm -rf "$out/bin"
+            mkdir -p "$out/bin"
+
+            # Wrap binaries
+            shopt -s nullglob
+            for bin in "${pkg}"/bin/*; do
+              if [ -f "$bin" ] && [ -x "$bin" ]; then
+                cat > "$out/bin/$(basename "$bin")" <<EOF
+      #!${pkgs.runtimeShell}
+      exec ${nixGL}/bin/nixGL "$bin" "\$@"
+      EOF
+                chmod +x "$out/bin/$(basename "$bin")"
+              fi
+            done
+            shopt -u nullglob
+    '';
+
+  # Desktop wrapper: patches .desktop in a writable temp dir
+  wrapDesktopFiles = pkg:
+    let binWrapped = wrapper pkg;
+    in pkgs.runCommandLocal "nixgl-desktop-${pkg.name or pkg.pname}"
+      {
+        inherit (pkg) meta passthru;
+      } ''
+      set -euo pipefail
+
+      cp -r --no-preserve=mode "${binWrapped}" "$out"
+
+      # Create writable temp dir for patching
+      mkdir -p temp_desktop
+
+      shopt -s globstar nullglob
+      for d in "$out"/share/applications/**/*.desktop "$out"/share/gnome/applications/**/*.desktop; do
+        if [ -f "$d" ]; then
+          cp "$d" temp_desktop/temp.desktop
+          sed 's|^Exec=\(.*\)$|Exec=${nixGL}/bin/nixGL \1|' temp_desktop/temp.desktop > "$d"
+          rm temp_desktop/temp.desktop
+        fi
+      done
+      shopt -u globstar nullglob
+
+      rm -rf temp_desktop
+    '';
 }
-
-# # Call once on import to load global context
-# # { pkgs, config, }:
-# { pkgs }:
-# # Wrap a single package
-# pkg:
-# #if config.nixGLPrefix == "" then
-# #  pkg
-# #else
-# # Wrap the package's binaries with nixGL, while preserving the rest of
-# # the outputs and derivation attributes.
-# (pkg.overrideAttrs (old: {
-#   name = "nixGL-${pkg.name}";
-#   buildCommand = ''
-#     set -eo pipefail
-
-#     ${
-#       # Heavily inspired by https://stackoverflow.com/a/68523368/6259505
-#       pkgs.lib.concatStringsSep "\n" (map (outputName: ''
-#         echo "Copying output ${outputName}"
-#         set -x
-#         cp -rs --no-preserve=mode "${pkg.${outputName}}" "''$${outputName}"
-#         set +x
-#       '') (old.outputs or ["out"]))
-#     }
-
-#     rm -rf $out/bin/*
-#     shopt -s nullglob # Prevent loop from running if no files
-#     for file in ${pkg.out}/bin/*; do
-#       echo "#!${pkgs.bash}/bin/bash" > "$out/bin/$(basename $file)"
-#       echo "exec -a \"\$0\" ${pkgs.nixgl.auto.nixGLDefault}/bin/nixGL $file \"\$@\"" >> "$out/bin/$(basename $file)"
-#       chmod +x "$out/bin/$(basename $file)"
-#     done
-#     shopt -u nullglob # Revert nullglob back to its normal default state
-#   '';
-# }))

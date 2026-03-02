@@ -6,11 +6,9 @@ let
   backend = config.desktop.display-servers.backend or "x11";
   isWayland = backend == "wayland";
 
-  nixGLWrapper =
-    if useNixGL then
-      (import ../../../../../../lib/nixGL.nix { inherit pkgs; }).wrapper   # this now returns the function
-    else
-      (x: x);
+  nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs; };
+  nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
+  # nixGLWrapper = if useNixGL then nixGL.wrapDesktopFiles else (x: x);
 
   # Settings
   jsonPath = "${./settings.json}";
