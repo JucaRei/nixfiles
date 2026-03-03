@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) optionalString;
+  inherit (lib) optionalString getExe;
   thunar-with-plugins = with pkgs.xfce; (thunar.override {
     thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
   });
@@ -39,10 +39,15 @@ in
       };
 
       file = {
-        ".config/xfce4/helpers.rc".text = ''
-          # TerminalEmulator=${config.programs.alacritty.package}/bin/alacritty
-          TerminalEmulatorDismissed=true
-        '';
+        ".config/xfce4/helpers.rc".text =
+          let
+            terminal = getExe config.programs.alacritty.package;
+          in
+          ''
+            # TerminalEmulator=${terminal}
+              TerminalEmulatorDismissed=true
+          '';
+
         # ".config/Thunar/accels.scm".text = lib.fileContents ./accels.scm;
 
         ".config/Thunar/uca.xml".text = ''

@@ -75,6 +75,7 @@
         # VMs
         # "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
         "juca@fedora" = helper.mkHome { hostname = "fedora"; desktop = "xfce4"; useNixGL = true; stateVersion = "25.11"; };
+        "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; useNixGL = true; stateVersion = "25.11"; };
         "juca@virtualvm" = helper.mkHome {
           hostname = "virtualvm";
           # desktop = "xfce4";
