@@ -4,7 +4,7 @@ let
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 in
 {
-
+  imports = [ ];
   xsession = {
     enable = true;
     windowManager = {
@@ -22,7 +22,6 @@ in
   home = {
     packages = with pkgs; [
       # Window Manager
-      bspwm
       sxhkd
 
       xorg.xrandr
@@ -35,7 +34,7 @@ in
       alacritty
 
       # File Manager
-      thunar
+      xfce.thunar
 
       # Misc
       gnome-keyring
@@ -49,7 +48,7 @@ in
     };
     polybar = {
       enable = true;
-      package = nixGLWrapper pkgs.polybar;
+      package = pkgs.polybar;
       config = {
         "bar/main" = {
           monitor = "DP-1";
