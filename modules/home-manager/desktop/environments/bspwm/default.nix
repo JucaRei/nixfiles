@@ -31,10 +31,10 @@ in
       polybar
 
       # Terminal
-      alacritty
+      # alacritty
 
       # File Manager
-      xfce.thunar
+      # xfce.thunar
 
       # Misc
       gnome-keyring
@@ -46,17 +46,17 @@ in
     sxhkd = {
       enable = true;
     };
-    polybar = {
-      enable = true;
-      package = pkgs.polybar;
-      config = {
-        "bar/main" = {
-          monitor = "DP-1";
-          width = "100%";
-          height = "24";
-          font-0 = "monospace:size=10";
-        };
-      };
-    };
+    # polybar = {
+    #   enable = true;
+    #   package = pkgs.polybar;
+    #   config = {
+    #     "bar/main" = {
+    #       monitor = "DP-1";
+    #       width = "100%";
+    #       height = "24";
+    #       font-0 = "monospace:size=10";
+    #     };
+    #   };
+    # };
   };
 }

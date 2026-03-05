@@ -41,6 +41,7 @@ in
     };
     programs = {
       nix-index.enable = true;
+      home-manager.enable = true;
     };
     system = {
       programs.tools.ssh.enable = true;

@@ -76,6 +76,7 @@ in
         # MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
         # MANPAGER = "sh -c 'col -bx | bat -l man -p'";
         # MANROFFOPT = "-c";
+        cat = "bat --style=plain --pager=never";
       };
     };
   };
