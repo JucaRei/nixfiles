@@ -19,6 +19,10 @@
             enableConfigurableSettings = true;
           };
         };
+        terminal = {
+          enable = true;
+          name = "alacritty";
+        };
       };
     };
   };

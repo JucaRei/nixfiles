@@ -5,6 +5,22 @@ let
 in
 {
   config = {
+    system.programs.shells = {
+      aliases = lib.mkDefault {
+        enable = true;
+        systemd = {
+          enable = true;
+        };
+        process = {
+          enable = true;
+        };
+        nix = {
+          enable = true;
+          diffProgram = "nix-diff";
+        };
+      };
+    };
+
     home = {
       file = {
         ".face" = mkIf (desktop != null) {

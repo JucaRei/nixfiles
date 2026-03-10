@@ -61,17 +61,21 @@
     {
       homeConfigurations = {
         # nix-shell -p home-manager.out --run 'home-manager switch -b backup --flake . --show-trace --impure'
+
         # .iso images
         # "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
         # "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
         # "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
         # "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
+
         # Workstations
         # "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
         # "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
         # "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
         # Only terminal apps
+
         # Servers
+
         # VMs
         # "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
         "juca@fedora" = helper.mkHome { hostname = "fedora"; desktop = "bspwm"; useNixGL = true; stateVersion = "25.11"; };

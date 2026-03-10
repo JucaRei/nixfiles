@@ -76,7 +76,10 @@ in
         # MANPAGER = "sh -c 'col --no-backspaces --spaces | bat --language man'";
         # MANPAGER = "sh -c 'col -bx | bat -l man -p'";
         # MANROFFOPT = "-c";
-        cat = "bat --style=plain --pager=never";
+      };
+      shellAliases = {
+        cat = ''bat --paging=never --style="numbers,changes" --italic-text=always''; # bat (cat)
+        ct = ''bat --paging=never --style="plain" --italic-text=always''; # bat (cat)
       };
     };
   };

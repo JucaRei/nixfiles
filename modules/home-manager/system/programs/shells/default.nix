@@ -104,7 +104,7 @@ in
         dmesg = "${pkgs.util-linux}/bin/dmesg --human --color=always";
         ports = "${pkgs.unixtools.netstat}/bin/netstat -tulanp";
         rsync = "${getExe pkgs.rsync} -aXxtv";
-        tree = "${getExe pkgs.tree} -Cs";
+        tree = lib.mkDefault "${getExe pkgs.tree} -Cs";
         gitpfolders = "for i in */.git; do (echo \$i; cd \$i/..; git pull); done";
 
         pci = mkIf isNixOS "sudo 'PATH=\$PATH' env ${pkgs.inxi}/bin/inxi --slots";

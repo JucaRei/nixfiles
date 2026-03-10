@@ -14,7 +14,9 @@ in
       ];
     };
 
-    system.programs.shells.enable = true;
+    system.programs.shells = {
+      enable = true;
+    };
 
     systemd = {
       user = {
