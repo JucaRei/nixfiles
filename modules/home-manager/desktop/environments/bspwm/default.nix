@@ -63,7 +63,7 @@ in
         [Desktop Entry]
         Name=BSPWM
         Comment=Binary space partitioning window manager
-        Exec=${config.home.homeDirectory}/.nix-profile/bin/bspwm
+        Exec=${pkgs.bspwm}/bin/bspwm
         Type=Application
         DesktopNames=bspwm
       '';
