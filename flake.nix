@@ -86,6 +86,7 @@
           useNixGL = true;
           stateVersion = "24.05";
         };
+        "juca@anubisvm" = helper.mkHome { hostname= "anubisvm"; desktop = "bspwm"; useNixGL = true;};
       };
 
       nixosConfigurations = {
