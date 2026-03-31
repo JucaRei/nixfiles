@@ -1,6 +1,6 @@
 { config, lib, pkgs, useNixGL ? false, osConfig ? null, ... }:
 let
-  inherit (lib) optionals;
+  inherit (lib) optionals mkIf;
   nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
@@ -57,6 +57,17 @@ in
       xdg-user-dirs # create xdg user dirs
       xdg-desktop-portal-gtk
     ]);
+
+    file = mkIf (!isNixOS) {
+      ".local/share/xsessions/bspwm.desktop".text = ''
+        [Desktop Entry]
+        Name=BSPWM
+        Comment=Binary space partitioning window manager
+        Exec=${config.home.homeDirectory}/.nix-profile/bin/bspwm
+        Type=Application
+        DesktopNames=bspwm
+      '';
+    };
 
     shellAliases = {
       is_picom_on = "pgrep -x 'picom' > /dev/null && echo 'on' || echo 'off'";
