@@ -30,7 +30,7 @@ in
       sxhkd
 
       # Launcher
-      rofi-wayland
+      rofi
 
       # Screenshot
       flameshot

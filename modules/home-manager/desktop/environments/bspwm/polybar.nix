@@ -30,7 +30,7 @@ in
         polybar-msg cmd quit 2>/dev/null
 
         # Launch polybar on all monitors
-        if type (xrandr); then
+        if type xrandr >/dev/null 2>&1; then
           for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
             MONITOR=$m polybar --reload main &
           done
