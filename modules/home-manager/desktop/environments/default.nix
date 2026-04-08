@@ -13,7 +13,6 @@ in
   config = {
 
     home = {
-
       packages = optionals (!isNixOS) [
         pkgs.nixgl.auto.nixGLDefault
       ] ++ (with pkgs;[

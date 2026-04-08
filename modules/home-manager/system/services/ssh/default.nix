@@ -18,9 +18,13 @@ in
     programs = {
       ssh = {
         enable = true;
-        compression = true;
-        forwardAgent = true;
-        controlMaster = "auto";
+        matchBlocks = {
+          "*" = {
+            compression = true;
+            forwardAgent = true;
+            controlMaster = "auto";
+          };
+        };
         # extraConfig = "Banner ${./banner.txt}";
       };
     };

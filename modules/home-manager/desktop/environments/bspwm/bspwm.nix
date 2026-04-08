@@ -33,6 +33,7 @@ in
   config = mkIf cfg.enable {
     xsession = {
       enable = true;
+      profilePath = ".xprofile";
       windowManager = {
         bspwm = {
           enable = true;
