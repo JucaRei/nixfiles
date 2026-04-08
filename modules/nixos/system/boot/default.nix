@@ -142,7 +142,6 @@ in
         "rootflags=noatime" # ignore access time (atime) updates on files
       ]
       ++ optionals (cfg.bootManager == "raspberry") [ "cma=32M" ]
-      ++ optionals (notVM && !cfg.secureBoot) [ "mitigations=off" ] # Perf boost, optional
       ;
 
       lanzaboote = mkIf (cfg.secureBoot) {

@@ -56,7 +56,7 @@ in
                 (command: {
                   command = "/run/current-system/sw/bin/${command}";
                   options = [ "NOPASSWD" "SETENV" ];
-                }) [ "poweroff" "shutdown" "reboot" "nh" "nixos-rebuild" "nix-env" "bandwhich" "dmesg" "sync" "systemctl" "usbtop" "powertop" "tlp-stat" ];
+                }) [ "poweroff" "shutdown" "reboot" "nh" "nixos-rebuild" "nix-env" "systemctl" ];
             # groups = [ "wheel" ];
           }
         ];

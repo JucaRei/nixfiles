@@ -16,8 +16,6 @@
       isWorkstation = builtins.isString desktop;
 
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
-      # mkNixGL = (import ./nixGL.nix { inherit pkgs; }).wrapper;
-
       nixGLWrapper =
         if useNixGL then
           (import ./nixGL.nix { inherit pkgs; }).wrapper
@@ -117,12 +115,6 @@
               };
             };
           }
-          # Disable the catppuccin delta module as it requires programs.delta which is not available in home-manager 25.05
-          # {
-          #   disabledModules = [
-          #     "${inputs.catppuccin}/modules/home-manager/delta.nix"
-          #   ];
-          # }
         ]
         ++ inputs.nixpkgs.lib.optionals isISO [
           (if (desktop == null) then
@@ -137,6 +129,7 @@
   #   , hostname
   #   , username ? "juca"
   #   , platform ? "aarch64-darwin"
+  #   , stateVersion ? "24.11"
   #   ,
   #   }:
   #   let

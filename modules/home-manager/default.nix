@@ -8,7 +8,6 @@ in
 {
   imports = [
     ./system
-    # ./disabled/catppuccin-delta-fix.nix
   ]
   ++ optionals (isWorkstation) [ ./desktop/environments ];
   config = {
@@ -30,7 +29,6 @@ in
 
       sessionVariables = {
         NIXPKGS_ALLOW_UNFREE = "1";
-        NIXPKGS_ALLOW_INSECURE = "1";
       };
     };
 
@@ -38,13 +36,12 @@ in
     news.display = "silent";
 
     nixpkgs = {
-      overlays = [ ] ++
+      overlays =
         (with inputs; [
-          nixgl.overlay # for non-nixos linux system's
+          nixgl.overlay
           nur.overlays.default
-        ]) ++
-        (with outputs; [
-          # Add overlays your own flake exports (from overlays and pkgs dir):
+        ])
+        ++ (with outputs; [
           overlays.localPackages
           overlays.modifiedPackages
           overlays.unstablePackages
@@ -53,8 +50,6 @@ in
 
       config = {
         allowUnfree = true;
-        # allowUnfreePredicate = (_: true);
-        # permittedInsecurePackages = [ ];
       };
     };
 
@@ -63,23 +58,9 @@ in
 
       settings = {
         experimental-features = "flakes nix-command";
-        trusted-users = [ "${username}" "@wheel" ]; # root
-        allowed-users = [ "${username}" "@wheel" ]; # root
+        trusted-users = [ "${username}" "@wheel" ];
         warn-dirty = false;
-        allow-dirty = true;
       };
-
-      extraOptions = ''
-        # Free up to 1GiB whenever there is less than 100MiB left.
-        # min-free = ${toString (100 * 1024 * 1024)}
-        # max-free = ${toString (1024 * 1024 * 1024)}
-        # Free up to 2GiB whenever there is less than 1GiB left.
-        # min-free = ${toString (1024 * 1024 * 1024)}        # 1 GiB
-        # max-free = ${toString (3 * 1024 * 1024 * 1024)}    # 3 GiB # Removed from nix 2.18
-      ''
-      + pkgs.lib.optionalString (pkgs.system == "aarch64-darwin") ''
-        extra-platforms = x86_64-darwin
-      '';
 
       nixPath = mkIf (!isNixOS) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
     };
