@@ -38,11 +38,12 @@ in
 
     home = {
       packages = with pkgs; [
-        nodePackages.prettier
+        prettier
         nil
         nixpkgs-fmt
         sf-mono-liga-bin
       ];
+
 
       # file = mkIf isWayland {
       #   ".config/code-flags.conf".text = ''

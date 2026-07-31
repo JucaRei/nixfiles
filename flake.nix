@@ -30,10 +30,13 @@
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    nix4vscode.url = "github:nix-community/nix4vscode";
+    nix4vscode.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     sf-mono-liga-src.url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
     sf-mono-liga-src.flake = false;
   };
+
 
   outputs = { self, nixpkgs, ... }@inputs:
     let

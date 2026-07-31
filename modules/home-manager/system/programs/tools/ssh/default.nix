@@ -19,7 +19,7 @@ in
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks = {
+      settings = {
         "*" = {
           compression = true;
           forwardAgent = true;
@@ -27,21 +27,17 @@ in
           serverAliveInterval = 300;
         };
         "127.*.*.* 192.168.*.* 10.*.*.* 172.16.*.* 172.17.*.* 172.18.*.* 172.19.*.* 172.2?.*.* 172.30.*.* 172.31.*.*" = {
-          extraOptions = {
-            Stricthostkeychecking = "no";
-            Userknownhostsfile = "/dev/null";
-            LogLevel = "quiet";
-          };
+          strictHostKeyChecking = "no";
+          userKnownHostsFile = "/dev/null";
         };
 
         "*.lan" = {
-          extraOptions = {
-            Stricthostkeychecking = "no";
-            Userknownhostsfile = "/dev/null";
-            LogLevel = "quiet";
-          };
+          strictHostKeyChecking = "no";
+          userKnownHostsFile = "/dev/null";
         };
       };
+
+
       extraOptionOverrides = { Include = "local.d/*"; };
       extraConfig =
         ''

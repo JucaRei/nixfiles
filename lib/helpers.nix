@@ -1,6 +1,10 @@
 { inputs, outputs, ... }:
 
+let
+  inherit (inputs.nixpkgs) lib;
+in
 {
+
   # Helper function for generating standalone Home Manager configurations (for non-NixOS distros)
   mkHome =
     { hostname

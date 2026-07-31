@@ -7,7 +7,9 @@
 buildPythonPackage rec {
   pname = "imagecolorizer";
   version = "git";
+  format = "setuptools";
   preBuild = ''
+
     cat > setup.py << EOF
     from setuptools import setup
     setup(

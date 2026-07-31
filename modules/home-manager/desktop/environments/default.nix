@@ -14,8 +14,11 @@ in
 
     home = {
       packages = optionals (!isNixOS) [
-        pkgs.nixgl.auto.nixGLDefault
-      ] ++ (with pkgs;[
+        (if (builtins ? currentTime && pkgs ? nixgl && pkgs.nixgl ? auto)
+         then pkgs.nixgl.auto.nixGLDefault
+         else (pkgs.writeShellScriptBin "nixGL" ''exec "$@"''))
+      ] ++ (with pkgs; [
+
         font-search # show existent fonts
         nerd-fonts.symbols-only
       ]);

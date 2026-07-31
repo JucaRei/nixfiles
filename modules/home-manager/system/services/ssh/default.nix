@@ -18,13 +18,14 @@ in
     programs = {
       ssh = {
         enable = true;
-        matchBlocks = {
+        settings = {
           "*" = {
             compression = true;
             forwardAgent = true;
             controlMaster = "auto";
           };
         };
+
         # extraConfig = "Banner ${./banner.txt}";
       };
     };

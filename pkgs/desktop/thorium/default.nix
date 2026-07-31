@@ -59,9 +59,10 @@
 , enableVideoAcceleration ? libvaSupport
 , # For Vulkan support (--enable-features=Vulkan); disabled by default as it seems to break VA-API
   vulkanSupport ? false
-, addOpenGLRunpath
+, addOpenGLRunpath ? null
 , enableVulkan ? vulkanSupport
 ,
+
 }:
 let
   inherit
@@ -140,7 +141,7 @@ stdenv.mkDerivation rec {
   pname = "thorium";
   # version = "124.0.6367.218";
   # version = "128.0.6613.189";
-  version = "130.0.6723.174";
+  version = "M150.0.7871.101";
 
   src = fetchurl {
     #https://github.com/alex313031/thorium/releases/download/M112.0.5615.166/thorium-browser_112.0.5615.166-1_amd64.deb
