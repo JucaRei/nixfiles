@@ -7,9 +7,7 @@
     nativeBuildInputs = with pkgs; [
       git
       home-manager
-      nil
       nixpkgs-fmt
-      duf
       nix-direnv
       direnv
       openssh

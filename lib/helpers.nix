@@ -1,7 +1,7 @@
 { inputs, outputs, ... }:
 
 {
-  # Helper function for generating home-manager configs
+  # Helper function for generating standalone Home Manager configurations (for non-NixOS distros)
   mkHome =
     { hostname
     , username ? "juca"
@@ -9,11 +9,11 @@
     , platform ? "x86_64-linux"
     , stateVersion ? "24.11"
     , useNixGL ? false
+    , isISO ? false
     }:
     let
-      isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
-      isWorkstation = builtins.isString desktop;
+      isWorkstation = desktop != null;
 
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
       nixGLWrapper =
@@ -37,15 +37,15 @@
           isInstall
           isISO
           isWorkstation
+          nixGLWrapper
           ;
-        # Only pass nixGLWrapper if it's actually enabled
       };
       modules = [
         ../home-manager
       ];
     };
 
-  # Helper function for generating NixOS configs
+  # Helper function for generating NixOS system configurations (with integrated Home Manager)
   mkNixos =
     { hostname
     , username ? "juca"
@@ -53,20 +53,13 @@
     , platform ? "x86_64-linux"
     , hostid ? null
     , stateVersion ? "24.11"
+    , isISO ? lib.hasPrefix "iso-" hostname
+    , isVM ? false
     }:
     let
-      isISO = builtins.substring 0 4 hostname == "iso-";
       isInstall = !isISO;
-      isWorkstation = builtins.isString desktop && desktop != null;
-      notVM =
-        if
-          (hostname == "virtual")
-          || (hostname == "vm")
-          || (hostname == "soyoz-vm")
-        then
-          false
-        else
-          true;
+      isWorkstation = desktop != null;
+      notVM = !isVM;
     in
     inputs.nixpkgs.lib.nixosSystem {
       specialArgs = {
@@ -85,13 +78,11 @@
           notVM
           ;
       };
-      # If the hostname starts with "iso-", generate an ISO image
       modules =
         [
           ../nixos
 
-          # make home-manager as a module of nixos
-          # so that home-manager configuration will be deployed automatically when executing `nixos-rebuild switch`
+          # Automatically deploy Home Manager configuration during nixos-rebuild switch
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -117,57 +108,12 @@
           }
         ]
         ++ inputs.nixpkgs.lib.optionals isISO [
-          (if (desktop == null) then
+          (if desktop == null then
             inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           else
             inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix")
         ];
     };
-
-  # mkDarwin =
-  #   { desktop ? "aqua"
-  #   , hostname
-  #   , username ? "juca"
-  #   , platform ? "aarch64-darwin"
-  #   , stateVersion ? "24.11"
-  #   ,
-  #   }:
-  #   let
-  #     isISO = false;
-  #     isInstall = true;
-  #     isWorkstation = true;
-  #   in
-  #   inputs.nix-darwin.lib.darwinSystem {
-  #     specialArgs = {
-  #       inherit
-  #         inputs
-  #         outputs
-  #         desktop
-  #         hostname
-  #         platform
-  #         username
-  #         stateVersion
-  #         isInstall
-  #         isISO
-  #         isWorkstation
-  #         ;
-  #     };
-  #     modules = [ ../darwin ];
-  #   };
-
-  # mkSystemManager = { system ? "x86_64-linux", }:
-  #   inputs.system-manager.lib.makeSystemConfig {
-  #     modules = [
-  #       inputs.nix-system-graphics.systemModules.default
-  #       {
-  #         config = {
-  #           nixpkgs.hostPlatform = system;
-  #           system-manager.allowAnyDistro = true;
-  #           system-graphics.enable = true;
-  #         };
-  #       }
-  #     ];
-  #   };
 
   forAllSystems = inputs.nixpkgs.lib.genAttrs [
     "aarch64-linux"
@@ -176,3 +122,4 @@
     "x86_64-darwin"
   ];
 }
+

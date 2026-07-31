@@ -1,15 +1,13 @@
 { config, inputs, outputs, pkgs, platform, lib, isInstall, stateVersion, username, isWorkstation, desktop, ... }:
 let
   inherit (lib) mkDefault mapAttrsToList mkOptionDefault mkIf;
-  currentDir = ./.; # Represents the current directory
-  isDirectoryAndNotTemplate = name: type: type == "directory";
-  directories = lib.filterAttrs isDirectoryAndNotTemplate (builtins.readDir currentDir);
-  importDirectory = name: import (currentDir + "/${name}");
 in
 {
-  imports = mapAttrsToList (name: _: importDirectory name) directories
-    ++ lib.optional (isWorkstation) ./desktop
-  ;
+  imports = [
+    ./hardware
+    ./system
+  ] ++ lib.optional isWorkstation ./desktop;
+
 
   config = {
     nix = let flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs; in {

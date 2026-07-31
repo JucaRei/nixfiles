@@ -9,15 +9,14 @@ in
     ../modules/home-manager
     ./users
 
-    # Modules exported from other flakes:
-    # inputs.catppuccin.homeModules.catppuccin  # Disabled: multiple modules fail with home-manager 25.05
+    # External flake modules
     inputs.sops-nix.homeManagerModules.sops
     inputs.nix-index-database.homeModules.nix-index
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
-    # inputs.chaotic.homeManagerModules.default
     inputs.nur.modules.homeManager.default
   ]
   ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
+
 
   disabledModules = [
     # Disable catppuccin delta module as it requires programs.delta which is not available in home-manager 25.05

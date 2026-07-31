@@ -1,61 +1,43 @@
 {
-  description = "NixOS, nix-darwin and Home Manager Configuration";
-  inputs = {
-    ### Determine Helper
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-    fh.url = "https://flakehub.com/f/DeterminateSystems/fh/*";
+  description = "NixOS and Home Manager Configurations";
 
-    ### NIXOS
-    nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2511.*";
+  inputs = {
+    # Nix Packages
+    nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2605.*";
     nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
     nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
 
-    ### Home-Manager
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    # Home-Manager
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    home-manager_unstable.url = "github:nix-community/home-manager/master";
-    home-manager_unstable.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
-    ### Nix for darwin
-    nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    # Custom Tooling & Databases
     nix-index-database.url = "github:Mic92/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
-    ### Chaotic repo
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-
-    ### Other Custom Modules
     catppuccin.url = "github:catppuccin/nix";
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
-    nur.url = "github:nix-community/NUR";
+    nur.url = "github:nix-community/nur";
     nixos-needsreboot.url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/*.tar.gz";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    nixgl.url = "github:nix-community/nixGL";
+    nixgl.url = "github:nix-community/nixgl";
     nixgl.inputs.nixpkgs.follows = "nixpkgs";
     auto-cpufreq.url = "github:AdnanHodzic/auto-cpufreq";
     auto-cpufreq.inputs.nixpkgs.follows = "nixpkgs-unstable";
     lanzaboote.url = "github:nix-community/lanzaboote";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
-    vscode-server.url = "github:nix-community/nixos-vscode-server";
-    vscode-server.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    nix4vscode.url = "github:nix-community/nix4vscode";
-    nix4vscode.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    sf-mono-liga-src.url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized"; # SFMono w/ patches
-    sf-mono-liga-src.flake = false;
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-    system-manager.url = "github:numtide/system-manager";
-    system-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    sf-mono-liga-src.url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
+    sf-mono-liga-src.flake = false;
   };
-  outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
-    with inputs;
+
+  outputs = { self, nixpkgs, ... }@inputs:
     let
       inherit (self) outputs;
-      # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-      # stateVersion = "24.11";
       helper = import ./lib { inherit inputs outputs; };
     in
     {
@@ -78,8 +60,8 @@
 
         # VMs
         # "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
-        "juca@fedora" = helper.mkHome { hostname = "fedora"; desktop = "bspwm"; useNixGL = true; stateVersion = "25.11"; };
-        "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; useNixGL = true; stateVersion = "25.11"; };
+        "juca@fedora" = helper.mkHome { hostname = "fedora"; desktop = "bspwm"; useNixGL = true; stateVersion = "26.05"; };
+        "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; useNixGL = true; stateVersion = "26.05"; };
         "juca@virtualvm" = helper.mkHome {
           hostname = "virtualvm";
           # desktop = "xfce4";
@@ -89,6 +71,8 @@
         "juca@anubisvm" = helper.mkHome { hostname= "anubisvm"; desktop = "bspwm"; useNixGL = true;};
       };
 
+      # Full NixOS System configurations (includes integrated Home-Manager)
+      # Usage: sudo nixos-rebuild switch --flake .#hostname
       nixosConfigurations = {
         ## Examples ##
         # nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
@@ -117,59 +101,41 @@
         # virtualvm = helper.mkNixos { hostname = "virtualvm"; desktop = "xfce4"; };
       };
 
-      #nix run nix-darwin -- switch --flake ~/Zero/nix-config
-      #nix build .#darwinConfigurations.{hostname}.config.system.build.toplevel
-      # darwinConfigurations = {
-      # };
-
-      #  System-Manager configurations
-      # nix run .#systemCOnfigs.{$hostname}.config.system.build.toplevel
-      # nom build .#systemCOnfigs.{$hostname}.config.system.build.toplevel
-      # systemConfigs = {
-      #   minimech = helper.mkSystemManager { };
-      # };
-
+      # Development environment
       devShells = helper.forAllSystems (system:
         let
-          # pkgs = nixpkgs.legacyPackages.${system}
           pkgs = import nixpkgs {
             inherit system;
             config = { allowUnfree = true; };
           };
         in
-        import ./shell.nix {
-          inherit pkgs;
-        })
-        # {
-        #   default = (import ./devShells/default.nix { inherit pkgs; }).default;
-        #   teste = (import ./devShells/teste.nix { inherit pkgs; }).teste;
-        # })
-      ;
-
-      # Custom packages and modifications, exported as overlays
-      overlays = import ./overlays { inherit inputs; };
-
-      # Custom packages; acessible via 'nix build', 'nix shell', etc
-      packages = helper.forAllSystems (system:
-        let
-          # Import nixpkgs for the target system, applying overlays directly
-          pkgsWithOverlays = import nixpkgs {
-            inherit system;
-            config = { allowUnfree = true; }; # Ensure consistent config
-            # Pass the list of overlay functions directly
-            overlays = builtins.attrValues self.overlays;
-          };
-          # Import the function from pkgs/default.nix
-          pkgsFunction = import ./pkgs;
-          # Call the function with the fully overlaid package set
-          customPkgs = pkgsFunction pkgsWithOverlays;
-          # Return the set of custom packages
-        in
-        customPkgs
+        import ./shell.nix { inherit pkgs; }
       );
 
-      # Formatter for .nix files, available via 'nix fmt' #nixfmt-rfc-style
+      # Custom packages & modifications exported as overlays
+      overlays = import ./overlays { inherit inputs; };
+
+      # Custom packages accessible via 'nix build .#package'
+      packages = helper.forAllSystems (system:
+        let
+          pkgsWithOverlays = import nixpkgs {
+            inherit system;
+            config = { allowUnfree = true; };
+            overlays = builtins.attrValues self.overlays;
+          };
+        in
+        (import ./pkgs) pkgsWithOverlays
+      );
+
+      # Formatter for .nix files ('nix fmt')
       formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
-      # formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+
+      # Automated checks run via 'nix flake check'
+      checks = helper.forAllSystems (system: {
+        home-fedora = self.homeConfigurations."juca@fedora".activationPackage;
+        home-anubis = self.homeConfigurations."juca@anubis".activationPackage;
+      });
     };
 }
+
+
