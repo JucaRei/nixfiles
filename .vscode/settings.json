@@ -1,4 +1,6 @@
 {
+  // Tema atual do usuário: One Dark Pro Flat (customizado com alto contraste)
+  // "workbench.colorTheme": "One Dark Pro Flat",
   "nix.enableLanguageServer": true,
   "nix.serverPath": "nil",
   "nix.formatterPath": "nixpkgs-fmt",
