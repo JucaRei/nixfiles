@@ -29,19 +29,19 @@
     "enabled": true,
     "rules": {
       "parameter": {
-        "foreground": "#BD93F9",
+        "foreground": "#E040FB",
         "fontStyle": "bold"
       },
       "parameter.declaration": {
-        "foreground": "#BD93F9",
+        "foreground": "#E040FB",
         "fontStyle": "bold"
       },
       "variable.declaration": {
-        "foreground": "#BD93F9",
+        "foreground": "#E040FB",
         "fontStyle": "bold"
       },
       "variable.parameter": {
-        "foreground": "#BD93F9",
+        "foreground": "#E040FB",
         "fontStyle": "bold"
       },
       "variable": {
@@ -88,16 +88,16 @@
           "variable.parameter.nix",
           "variable.other.formal-argument",
           "variable.other.formal-argument.nix",
-          "meta.parameter",
+          "variable.other.declaration.nix",
           "meta.parameter.nix",
           "meta.parameter.nix variable",
-          "meta.formal-argument",
           "meta.formal-argument.nix",
+          "meta.function.nix variable",
           "entity.name.variable.parameter",
           "entity.name.variable.parameter.nix"
         ],
         "settings": {
-          "foreground": "#BD93F9",
+          "foreground": "#E040FB",
           "fontStyle": "bold"
         }
       },
