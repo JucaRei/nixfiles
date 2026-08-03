@@ -134,11 +134,12 @@
       formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
 
       # Automated checks run via 'nix flake check'
-      checks = helper.forAllSystems (system: {
-        home-fedora = self.homeConfigurations."juca@fedora".activationPackage;
-        home-anubis = self.homeConfigurations."juca@anubis".activationPackage;
-      });
+      checks = helper.mkChecks { inherit self inputs; };
     };
 }
+
+
+
+
 
 

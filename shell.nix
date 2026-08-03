@@ -6,11 +6,14 @@
     NIX_CONFIG = "extra-experimental-features = nix-command flakes";
     nativeBuildInputs = with pkgs; [
       git
+      nil
+      statix
+      deadnix
       home-manager
       nixpkgs-fmt
       nix-direnv
       direnv
-      openssh
+      # openssh
       htop
       duf
       # dropbear # ssh server

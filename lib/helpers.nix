@@ -125,5 +125,22 @@ in
     "aarch64-darwin"
     "x86_64-darwin"
   ];
+
+  # Helper function to generate automated checks for nix flake check
+  mkChecks = { self, inputs }:
+    inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ] (system:
+      let
+        # Test active Home Manager configurations for the current architecture
+        homes = lib.filterAttrs (_: cfg: cfg.pkgs.system == system) (self.homeConfigurations or { });
+        homeChecks = lib.mapAttrs' (name: cfg: lib.nameValuePair "home-${name}" cfg.activationPackage) homes;
+
+        # Test active NixOS configurations for x86_64-linux
+        nixosChecks = lib.optionalAttrs (system == "x86_64-linux") (
+          lib.mapAttrs' (name: cfg: lib.nameValuePair "nixos-${name}" cfg.config.system.build.toplevel) (self.nixosConfigurations or { })
+        );
+      in
+      homeChecks // nixosChecks
+    );
 }
+
 

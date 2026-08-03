@@ -1,0 +1,228 @@
+{
+  "nix.enableLanguageServer": true,
+  "nix.serverPath": "nil",
+  "nix.formatterPath": "nixpkgs-fmt",
+  "nix.serverSettings": {
+    "nil": {
+      "formatting": {
+        "command": [
+          "nixpkgs-fmt"
+        ]
+      }
+    }
+  },
+  "editor.fontWeight": 500,
+  "workbench.colorCustomizations": {
+    "editor.foreground": "#FFFFFF",
+    "editorLineNumber.foreground": "#B5B5B5",
+    "editorLineNumber.activeForeground": "#FFFFFF",
+    "editorIndentGuide.activeBackground1": "#909090",
+    "editor.selectionBackground": "#3D5A80A0",
+    "editor.lineHighlightBackground": "#ffffff0f",
+    "editorCursor.foreground": "#50FA7B",
+    "editorBracketMatch.background": "#50FA7B30",
+    "editorBracketMatch.border": "#50FA7B"
+  },
+  "editor.semanticTokenColorCustomizations": {
+    "enabled": true,
+    "rules": {
+      "parameter": {
+        "foreground": "#BD93F9",
+        "fontStyle": "bold"
+      },
+      "parameter.declaration": {
+        "foreground": "#BD93F9",
+        "fontStyle": "bold"
+      },
+      "variable.declaration": {
+        "foreground": "#BD93F9",
+        "fontStyle": "bold"
+      },
+      "variable.parameter": {
+        "foreground": "#BD93F9",
+        "fontStyle": "bold"
+      },
+      "variable": {
+        "foreground": "#FF6B6B"
+      },
+      "property": {
+        "foreground": "#F78C6C",
+        "fontStyle": "bold"
+      },
+      "function": {
+        "foreground": "#61AFEF",
+        "fontStyle": "bold"
+      },
+      "boolean": {
+        "foreground": "#F1FA8C",
+        "fontStyle": "bold"
+      }
+    }
+  },
+  "editor.tokenColorCustomizations": {
+    "comments": "#94A3B8",
+    "strings": "#A3E635",
+    "keywords": "#FF79C6",
+    "functions": "#61AFEF",
+    "variables": "#FF6B6B",
+    "types": "#4EC9B0",
+    "numbers": "#FF9E64",
+    "textMateRules": [
+      {
+        "name": "Comentários Neutros Legíveis",
+        "scope": [
+          "comment",
+          "punctuation.definition.comment"
+        ],
+        "settings": {
+          "foreground": "#94A3B8",
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "name": "Parâmetros e Argumentos de Funções (Lambda / Pattern)",
+        "scope": [
+          "variable.parameter",
+          "variable.parameter.nix",
+          "variable.other.formal-argument",
+          "variable.other.formal-argument.nix",
+          "meta.parameter",
+          "meta.parameter.nix",
+          "meta.parameter.nix variable",
+          "meta.formal-argument",
+          "meta.formal-argument.nix",
+          "entity.name.variable.parameter",
+          "entity.name.variable.parameter.nix"
+        ],
+        "settings": {
+          "foreground": "#BD93F9",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "name": "Variáveis e Identificadores Chamativos",
+        "scope": [
+          "variable",
+          "variable.other",
+          "variable.other.readwrite",
+          "variable.name"
+        ],
+        "settings": {
+          "foreground": "#FF6B6B"
+        }
+      },
+      {
+        "name": "Funções e Chamadas em Negrito",
+        "scope": [
+          "entity.name.function",
+          "meta.function-call",
+          "support.function",
+          "variable.function",
+          "entity.name.function.call",
+          "variable.other.member"
+        ],
+        "settings": {
+          "foreground": "#61AFEF",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "name": "Palavras-chave e Controle em Negrito",
+        "scope": [
+          "keyword",
+          "keyword.control",
+          "keyword.other",
+          "keyword.other.with",
+          "keyword.other.import",
+          "storage.type",
+          "storage.modifier"
+        ],
+        "settings": {
+          "foreground": "#FF79C6",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "name": "Tipos e Classes em Negrito",
+        "scope": [
+          "entity.name.type",
+          "entity.name.class",
+          "support.type",
+          "support.class"
+        ],
+        "settings": {
+          "foreground": "#4EC9B0",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "name": "Booleans e Constantes de Linguagem",
+        "scope": [
+          "constant.language",
+          "constant.language.boolean"
+        ],
+        "settings": {
+          "foreground": "#F1FA8C",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "name": "Números e Outras Constantes em Negrito",
+        "scope": [
+          "constant.numeric",
+          "constant.character",
+          "constant.other"
+        ],
+        "settings": {
+          "foreground": "#FF9E64",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "name": "Atributos e Propriedades Legíveis",
+        "scope": [
+          "entity.other.attribute-name",
+          "variable.other.attribute",
+          "variable.other.property",
+          "support.type.property-name"
+        ],
+        "settings": {
+          "foreground": "#F78C6C",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "name": "Strings e Interpolação",
+        "scope": [
+          "string",
+          "string.quoted",
+          "string.template",
+          "punctuation.definition.string"
+        ],
+        "settings": {
+          "foreground": "#A3E635"
+        }
+      },
+      {
+        "name": "Caminhos de Arquivos no Nix",
+        "scope": [
+          "string.unquoted.path",
+          "string.other.path"
+        ],
+        "settings": {
+          "foreground": "#00F5D4",
+          "fontStyle": "bold"
+        }
+      },
+      {
+        "name": "Operadores de Alto Contraste",
+        "scope": [
+          "keyword.operator"
+        ],
+        "settings": {
+          "foreground": "#4A90E2"
+        }
+      }
+    ]
+  }
+}

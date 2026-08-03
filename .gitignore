@@ -2,5 +2,5 @@
 result/*
 ./result/*
 result
-.vscode/
+# .vscode/
 .qwen*
