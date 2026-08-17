@@ -1,4 +1,4 @@
-{ config, lib, pkgs, isInstall, isWorkstation, notVM, ... }:
+{ config, lib, pkgs, isInstall, notVM, ... }:
 let
   inherit (lib) mkDefault mkOption mkIf mkMerge optionals mkOverride;
   inherit (lib.types) bool nullOr enum str;
@@ -92,7 +92,7 @@ in
       initrd = {
         verbose = mkIf cfg.silentBoot false;
         systemd = {
-          enable = if (cfg.bootType == "efi" || cfg.bootType == "hybrid=legacy") then true else false;
+          enable = if (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") then true else false;
           mounts = mkIf cfg.plymouth [ "/sys/firmware/efi/efivars" ]; # For Plymouth in initrd
         };
       };

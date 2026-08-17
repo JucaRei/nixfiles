@@ -55,14 +55,20 @@
 
         # Workstations
         # "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
-        # "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
-        # "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "xfce4"; useNixGL = true; stateVersion = "24.05"; };
-        # Only terminal apps
+        # "juca@anubis" = helper.mkHome {
+        #   hostname = "anubis";
+        #   desktop = "xfce4";
+        #   useNixGL = true;
+        #   stateVersion = "24.05";
+        # };
+        "juca@rocinante" = helper.mkHome {
+          hostname = "rocinante";
+          desktop = "xfce4";
+          useNixGL = true;
+          stateVersion = "26.05";
+        };
 
-        # Servers
-
-        # VMs
-        # "juca@virtual" = helper.mkHome { hostname = "virtual"; desktop = "xfce4"; };
+        # VMs & Hosts
         "juca@fedora" = helper.mkHome { hostname = "fedora"; desktop = "bspwm"; useNixGL = true; stateVersion = "26.05"; };
         "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; useNixGL = true; stateVersion = "26.05"; };
         "juca@virtualvm" = helper.mkHome {
@@ -71,7 +77,7 @@
           useNixGL = true;
           stateVersion = "24.05";
         };
-        "juca@anubisvm" = helper.mkHome { hostname= "anubisvm"; desktop = "bspwm"; useNixGL = true;};
+        "juca@anubisvm" = helper.mkHome { hostname = "anubisvm"; desktop = "bspwm"; useNixGL = true; };
       };
 
       # Full NixOS System configurations (includes integrated Home-Manager)
@@ -84,24 +90,16 @@
         # nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
         # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
 
-        # .iso images
-        # iso-console = helper.mkNixos { hostname = "iso-console"; username = "nixos"; };
-        # iso-gnome = helper.mkNixos { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
-        # iso-mate = helper.mkNixos { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        # iso-pantheon = helper.mkNixos { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
-
-        # Workstations
         #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
         #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
         #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
-        # nixtro = helper.mkNixos { hostname = "rocinante"; desktop = "hyprland"; };
-        # rocinante = helper.mkNixos { hostname = "rocinante"; desktop = "xfce4"; };
-        # zion = helper.mkNixos { hostname = "zion"; desktop = "xfce4"; };
-        # Servers
-        # soyoz = helper.mkNixos { hostname = "soyoz"; };
-        # VMs
-        # virtual = helper.mkNixos { hostname = "virtual"; desktop = "xfce4"; stateVersion = "24.05"; };
-        # virtualvm = helper.mkNixos { hostname = "virtualvm"; desktop = "xfce4"; };
+
+        # Workstations
+        rocinante = helper.mkNixos {
+          hostname = "rocinante";
+          desktop = "xfce4";
+          stateVersion = "24.11";
+        };
       };
 
       # Development environment
@@ -137,9 +135,3 @@
       checks = helper.mkChecks { inherit self inputs; };
     };
 }
-
-
-
-
-
-

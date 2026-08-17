@@ -189,7 +189,7 @@
           "support.type.property-name"
         ],
         "settings": {
-          "foreground": "#F78C6C",
+          "foreground": "#6c91f7",
           "fontStyle": "bold"
         }
       },
@@ -226,5 +226,7 @@
         }
       }
     ]
-  }
+  },
+  "editor.minimap.autohide": "mouseover",
+  "terminal.integrated.fontSize": 18,
 }
