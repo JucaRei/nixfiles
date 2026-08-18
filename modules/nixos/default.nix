@@ -84,41 +84,12 @@ in
     };
 
     nixpkgs = {
-      overlays = with outputs; [
-        overlays.localPackages
-        overlays.modifiedPackages
-        overlays.unstablePackages
-        overlays.oldstablePackages
-        # Add more overlays here as needed
-        (_: super: {
-          makeModulesClosure = x:
-            super.makeModulesClosure (x // { allowMissing = true; });
-          pkgsi686Linux = import inputs.nixpkgs {
-            system = "i686-linux";
-            config = {
-              allowUnfree = true;
-              allowUnfreePredicate = _: true;
-              allowBroken = true;
-              allowBrokenPredicate = _: true;
-              allowInsecure = true;
-              allowInsecurePredicate = _: true;
-              nvidia.acceptLicense = true;
-              permittedInsecurePackages = [
-                "broadcom-sta-6.30.223.271-59-6.18"
-                "broadcom-sta"
-              ];
-            };
-          };
-        })
-      ];
+      overlays = builtins.attrValues outputs.overlays;
       # Configure your nixpkgs instance
       config = {
         allowUnfree = true;
-        allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
         allowBroken = true;
-        allowBrokenPredicate = _: true;
         allowInsecure = true;
-        allowInsecurePredicate = _: true;
         nvidia.acceptLicense = true;
         permittedInsecurePackages = [
           "broadcom-sta-6.30.223.271-59-6.18"
