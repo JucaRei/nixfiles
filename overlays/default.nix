@@ -23,9 +23,16 @@
       inherit (final) system;
       config = {
         allowUnfree = true;
+        allowUnfreePredicate = _: true;
         allowBroken = true;
         allowBrokenPredicate = _: true;
+        allowInsecure = true;
+        allowInsecurePredicate = _: true;
         nvidia.acceptLicense = true;
+        permittedInsecurePackages = [
+          "broadcom-sta-6.30.223.271-59-6.18"
+          "broadcom-sta"
+        ];
       };
     };
   };
@@ -36,9 +43,16 @@
       inherit (final) system;
       config = {
         allowUnfree = true;
+        allowUnfreePredicate = _: true;
         allowBroken = true;
         allowBrokenPredicate = _: true;
+        allowInsecure = true;
+        allowInsecurePredicate = _: true;
         nvidia.acceptLicense = true;
+        permittedInsecurePackages = [
+          "broadcom-sta-6.30.223.271-59-6.18"
+          "broadcom-sta"
+        ];
       };
     };
   };

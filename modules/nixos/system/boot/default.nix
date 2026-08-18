@@ -204,7 +204,9 @@ in
     };
 
     systemd = {
-      watchdog.rebootTime = mkIf (cfg.plymouth) "0";
+      settings.Manager = mkIf (cfg.plymouth) {
+        RebootWatchdogSec = "0";
+      };
     };
 
     # persistence.directories = mkIf persistence == true; [

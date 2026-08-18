@@ -1,9 +1,13 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) optionalString getExe;
-  thunar-with-plugins = with pkgs.xfce; (thunar.override {
-    thunarPlugins = [ thunar-volman thunar-archive-plugin thunar-media-tags-plugin ];
-  });
+  thunar-with-plugins = (pkgs.thunar or pkgs.xfce.thunar).override {
+    thunarPlugins = [
+      (pkgs.thunar-volman or pkgs.xfce.thunar-volman)
+      (pkgs.thunar-archive-plugin or pkgs.xfce.thunar-archive-plugin)
+      (pkgs.thunar-media-tags-plugin or pkgs.xfce.thunar-media-tags-plugin)
+    ];
+  };
   finalThunar = thunar-with-plugins;
 in
 {
@@ -11,12 +15,12 @@ in
     desktop.display-servers.backend = "x11";
 
     home = let gio = pkgs.gnome.gvfs; in {
-      packages = with pkgs // pkgs.xfce // pkgs.mate // pkgs.xorg;[
+      packages = with pkgs; [
         # File Manager
-        exo
+        (pkgs.xfce4-exo or pkgs.exo or pkgs.xfce.exo)
         finalThunar
-        tumbler
-        catfish
+        (pkgs.tumbler or pkgs.xfce.tumbler)
+        (pkgs.catfish or pkgs.xfce.catfish)
 
         xarchiver
         webp-pixbuf-loader
@@ -57,7 +61,7 @@ in
                   <icon>xterm</icon>
                   <name>Open Terminal Here</name>
                   <unique-id>1612104464586264-1</unique-id>
-                  <command>${pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch TerminalEmulator</command>
+                  <command>${pkgs.xfce4-exo or pkgs.exo or pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch TerminalEmulator</command>
                   <description>Example for a custom action</description>
                   <patterns>*</patterns>
                   <startup-notify/>
@@ -103,7 +107,7 @@ in
                   <icon>catfish</icon>
                   <name>Search with catfish</name>
                   <unique-id>1489089852658523-2</unique-id>
-                  <command>${pkgs.xfce.catfish}/bin/catfish --path=$f$d</command>
+                  <command>${pkgs.catfish or pkgs.xfce.catfish}/bin/catfish --path=$f$d</command>
                   <description></description>
                   <patterns>*</patterns>
                   <directories/>

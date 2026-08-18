@@ -100,7 +100,13 @@ in
               allowUnfreePredicate = _: true;
               allowBroken = true;
               allowBrokenPredicate = _: true;
+              allowInsecure = true;
+              allowInsecurePredicate = _: true;
               nvidia.acceptLicense = true;
+              permittedInsecurePackages = [
+                "broadcom-sta-6.30.223.271-59-6.18"
+                "broadcom-sta"
+              ];
             };
           };
         })
@@ -111,6 +117,7 @@ in
         allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
         allowBroken = true;
         allowBrokenPredicate = _: true;
+        allowInsecure = true;
         allowInsecurePredicate = _: true;
         nvidia.acceptLicense = true;
         permittedInsecurePackages = [

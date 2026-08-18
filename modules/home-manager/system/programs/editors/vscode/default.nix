@@ -67,44 +67,29 @@ in
 
     programs.vscode = {
       enable = true;
-      userSettings =
-        let
-          inherit userSettings;
-        in
-        mkIf cfg.enableConfigurableSettings userSettings;
 
       # - NixOS (useNixGL = false) → pure vscode
       # - Debian/Ubuntu/etc. (useNixGL = true) → nixGL-wrapped vscode
       package = nixGLWrapper pkgs.vscode-fhs;
 
-      mutableExtensionsDir = true;
+      profiles.default = mkIf cfg.enableConfigurableSettings {
+        inherit userSettings;
+        extensions = with pkgs.vscode-extensions; [
+          # Nix
+          jnoortheen.nix-ide
+          jeff-hykin.better-nix-syntax
 
-      # commandLineArgs was removed in home-manager 25.05
-      # commandLineArgs = mkIf isWayland [
-      #   "--enable-features=UseOzonePlatform"
-      #   "--ozone-platform=wayland"
-      #   "--enable-features=WaylandWindowDecorations"
-      # ];
-
-      profiles = mkIf cfg.enableConfigurableSettings {
-        "${hostname}" = {
-          extensions = with pkgs.vscode-extensions; [
-            # Nix
-            jnoortheen.nix-ide
-            jeff-hykin.better-nix-syntax
-
-            # Editor
-            oderwat.indent-rainbow
-            ms-vscode-remote.remote-ssh
-          ] ++
-          pkgs.nix4vscode.forVscode [
-            "davidbwaters.macos-modern-theme"
-            "comdec.simple-icons"
-            "tombonnike.vscode-status-bar-format-toggle"
-            "natqe.reload"
-            "redcrafter07.red-theme"
-          ];
-        };
+          # Editor
+          oderwat.indent-rainbow
+          ms-vscode-remote.remote-ssh
+        ] ++
+        pkgs.nix4vscode.forVscode [
+          "davidbwaters.macos-modern-theme"
+          "comdec.simple-icons"
+          "tombonnike.vscode-status-bar-format-toggle"
+          "natqe.reload"
+          "redcrafter07.red-theme"
+        ];
       };
     };
   };

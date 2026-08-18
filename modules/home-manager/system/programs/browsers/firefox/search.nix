@@ -6,7 +6,7 @@
           template = "https://nixos.wiki/index.php?search={searchTerms}";
         }
       ];
-      iconUpdateURL = "https://nixos.wiki/favicon.png";
+      icon = "https://nixos.wiki/favicon.png";
       updateInterval = 24 * 60 * 60 * 1000;
       definedAliases = [ "@nw" ];
     };
@@ -122,7 +122,7 @@
       definedAliases = [ "@brave" "@b" ];
     };
 
-    "YouTube" = {
+    "youtube" = {
       urls = [{
         template = "https://www.youtube.com/search";
         params = [
@@ -133,13 +133,11 @@
       definedAliases = [ "@yt" ];
     };
 
-    "DuckDuckGo" = {
-      name = "DuckDuckGo";
-      keyword = "@ddg";
-      search = "https://duckduckgo.com/?q={searchTerms}";
+    "ddg".metaData = {
+      alias = "@ddg";
     };
 
-    "Bing".metaData = {
+    "bing".metaData = {
       hidden = false;
       alias = "@b";
     };
@@ -154,23 +152,23 @@
           }];
         }
       ];
-      iconUpdateURL = "https://github.com/fluidicon.png";
+      icon = "https://github.com/fluidicon.png";
       updateInterval = 7 * 24 * 60 * 60 * 1000;
       definedAliases = [ "@gh" ];
     };
 
-    "Google".metaData.alias = "@g";
+    "google".metaData.alias = "@g";
 
-    "Wikipedia".metaData.alias = "@wiki";
+    "wikipedia".metaData.alias = "@wiki";
   };
 
   order = [
-    "Google"
-    "Bing"
+    "google"
+    "bing"
     "Brave"
-    "DuckDuckGo"
+    "ddg"
   ];
 
-  default = "Google";
+  default = "google";
   force = false;
 }

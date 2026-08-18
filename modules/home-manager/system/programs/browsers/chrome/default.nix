@@ -8,7 +8,7 @@ let
   # Declarative check on NixOS (true if VA-API packages present)
   hasVaapi =
     if isNixOS then
-      lib.any (pkg: lib.hasPrefix "vaapi" (pkg.name or "")) (osConfig.hardware.opengl.extraPackages or [ ])
+      lib.any (pkg: lib.hasPrefix "vaapi" (pkg.name or "") || lib.hasPrefix "libva" (pkg.name or "")) (osConfig.hardware.graphics.extraPackages or (osConfig.hardware.opengl.extraPackages or [ ]))
     else false; # Fallback; runtime check below for non-NixOS
 in
 {

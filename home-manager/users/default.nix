@@ -44,6 +44,7 @@ in
 
       userDirs = {
         enable = isLinux;
+        setSessionVariables = true;
         createDirectories = isWorkstation;
         download = "${config.home.homeDirectory}/Downloads";
         # desktop = "${config.home.homeDirectory}/Desktop";
@@ -55,12 +56,12 @@ in
         videos = "${config.home.homeDirectory}/Videos";
 
         extraConfig = {
-          XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/screenshots";
-          XDG_WALLPAPERS_DIR = "${config.xdg.userDirs.pictures}/wallpapers";
-          XDG_GAMES_DIR = "${config.home.homeDirectory}/games";
-          XDG_MISC_DIR = "${config.home.homeDirectory}/misc";
-          XDG_WORKSPACE_DIR = "${config.home.homeDirectory}/lab/workspace";
-          XDG_RECORD_DIR = "${config.xdg.userDirs.videos}/Record";
+          SCREENSHOTS = "${config.xdg.userDirs.pictures}/screenshots";
+          WALLPAPERS = "${config.xdg.userDirs.pictures}/wallpapers";
+          GAMES = "${config.home.homeDirectory}/games";
+          MISC = "${config.home.homeDirectory}/misc";
+          WORKSPACE = "${config.home.homeDirectory}/lab/workspace";
+          RECORD = "${config.xdg.userDirs.videos}/Record";
         };
       };
     };

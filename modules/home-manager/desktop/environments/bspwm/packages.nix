@@ -55,16 +55,16 @@ in
       at-spi2-atk
 
       # X11 utilities
-      xorg.xinit
-      xorg.libXcomposite
-      xorg.libXinerama
-      xorg.xprop
-      xorg.libxcb
-      xorg.xdpyinfo
-      xorg.xkill
-      xorg.xsetroot
-      xorg.xwininfo
-      xorg.xrandr
+      xinit
+      libxcomposite
+      libxinerama
+      xprop
+      libxcb
+      xdpyinfo
+      xkill
+      xsetroot
+      xwininfo
+      xrandr
 
       # XDG utilities
       xdg-utils

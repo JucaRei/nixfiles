@@ -60,7 +60,7 @@ in
       portal = {
         enable = true;
         xdgOpenUsePortal = true;
-        configPackages = [ pkgs.xfce.xfce4-session ];
+        configPackages = [ (pkgs.xfce4-session or pkgs.xfce.xfce4-session) ];
         extraPortals = with pkgs; [
           xdg-desktop-portal-gtk
           xdg-desktop-portal-xapp
