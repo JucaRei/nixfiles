@@ -69,11 +69,9 @@ in
         # Free up space automatically
         min-free = 2048 * 1024 * 1024; # 2GiB
         max-free = 4096 * 1024 * 1024; # 4GiB
+        log-lines = 25;
+        connect-timeout = 10;
       };
-      extraOptions = ''
-        log-lines = 25
-        connect-timeout = 10
-      '';
       channel.enable = false; # Opinionated: disable channels
       # Opinionated: make flake registry and nix path match flake inputs
       registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;
@@ -109,6 +107,7 @@ in
             if [[ -e /run/current-system ]]; then
               echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
               echo "#"
+              mkdir -p /var/log/nix
               ${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff $(${pkgs.coreutils}/bin/readlink "/run/current-system") "$systemConfig" | tee /var/log/nix/nix-changelog
               echo "#"
               echo "$BLUE                $CLEAR"
@@ -116,10 +115,10 @@ in
           '';
         };
 
-        nixos-needsreboot = mkIf (isInstall) {
+        nixos-needsreboot = mkIf isInstall {
           supportsDryActivation = true;
           text = "${
-            lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default
+            lib.getExe inputs.nixos-needsreboot.packages.${pkgs.stdenv.hostPlatform.system}.default
           } \"$systemConfig\" || true";
         };
       };

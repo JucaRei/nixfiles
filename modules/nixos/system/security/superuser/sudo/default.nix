@@ -65,10 +65,7 @@ in
 
     environment = {
       etc = {
-        "sudoers.d/00-lecture.txt".source = pkgs.stdenv.mkDerivation {
-          name = lib.strings.sanitizeDerivationName "sudoers.d/00-lecture.txt";
-          buildCommand = "echo -e '${groot_text}' > $out";
-        };
+        "sudoers.d/00-lecture.txt".text = groot_text;
       };
     };
   };

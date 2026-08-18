@@ -1,8 +1,6 @@
-{ config, lib, pkgs, desktop, isWorkstation, ... }:
+{ lib, pkgs, desktop, ... }:
 let
-  inherit (lib) optionals mkIf mkOption mkOptionDefault mkDefault mkForce;
-  inherit (lib.types) nullOr enum;
-  cfg = config.desktop.environments;
+  inherit (lib) mkOptionDefault mkDefault;
 in
 {
   imports = [
@@ -31,7 +29,7 @@ in
       };
       gvfs = {
         enable = true;
-        package = pkgs.gnome.gvfs;
+        package = pkgs.gvfs;
       };
       usbmuxd = {
         enable = true;
