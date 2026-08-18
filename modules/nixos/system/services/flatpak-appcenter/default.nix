@@ -1,11 +1,11 @@
 { desktop, lib, config, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  cfg = config.system.services.flatpak-appcenter;
+  cfg = config.nixos.services.flatpak-appcenter;
 in
 {
   options = {
-    system.services.flatpak-appcenter = {
+    nixos.services.flatpak-appcenter = {
       enable = mkOption {
         default = false;
         type = types.bool;

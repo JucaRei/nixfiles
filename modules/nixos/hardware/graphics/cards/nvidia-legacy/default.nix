@@ -27,8 +27,19 @@ in
 
     hardware = {
       nvidia = {
-        package = config.boot.kernelPackages.nvidiaPackages.legacy_340;
-        nvidiaSettings = true;
+        package =
+          let
+            base = config.boot.kernelPackages.nvidiaPackages.legacy_340;
+          in
+          base // {
+            mod = base;
+            bin = base;
+            out = base;
+            settings = null;
+            open = null;
+            persistenced = null;
+          };
+        nvidiaSettings = false;
         modesetting.enable = true;
         powerManagement.finegrained = false;
         # forceFullCompositionPipeline = true;
@@ -37,11 +48,11 @@ in
         enable = true;
         enable32Bit = true;
         extraPackages = with pkgs; [
-          vaapiVdpau
+          libva-vdpau-driver
           libvdpau-va-gl
         ];
-        extraPackages32 = with pkgs.driversi686Linux // pkgs.pkgsi686Linux; [
-          vaapiVdpau
+        extraPackages32 = with pkgs.pkgsi686Linux; [
+          libva-vdpau-driver
           libvdpau-va-gl
         ];
       };
@@ -85,10 +96,10 @@ in
         # WLR_NO_HARDWARE_CURSORS = "1";
       };
       systemPackages = with pkgs; [
-        glxinfo
+        mesa-demos
         libva-utils
         vdpauinfo
-        driversi686Linux.vdpauinfo
+        pkgsi686Linux.vdpauinfo
       ];
 
       # variables = {

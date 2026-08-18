@@ -107,6 +107,8 @@ in
                   isISO
                   isWorkstation
                   ;
+                useNixGL = false;
+                nixGLWrapper = (pkg: pkg);
               };
             };
           }

@@ -74,8 +74,8 @@ in
               intel-compute-runtime
               intel-media-driver
               libvdpau-va-gl
-              vaapiIntel
-              vaapiVdpau
+              intel-vaapi-driver
+              libva-vdpau-driver
             ] else with pkgs.unstable; [
             mesa.drivers
           ];

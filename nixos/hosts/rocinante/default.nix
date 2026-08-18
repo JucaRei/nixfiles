@@ -9,7 +9,7 @@ in
   ];
 
   config = {
-    timeZone = mkForce "America/Sao_Paulo";
+    time.timeZone = mkForce "America/Sao_Paulo";
 
     # --- Hardware & CPU (MacBook Pro 4,1 - Penryn Core 2 Duo) ---
     hardware = {
@@ -91,8 +91,6 @@ in
 
       # Parâmetros de kernel para estabilidade térmica, GPU e economia de energia
       kernelParams = [
-        "apparmor=1"
-        "security=apparmor"
         "pcie_aspm=force"
         "zswap.enabled=0" # Desativado: conflita com zramSwap (compressão dupla)
         "mitigations=off"
@@ -183,5 +181,13 @@ in
 
     # Teclado no console TTY
     console.useXkbConfig = true;
+
+    nixpkgs.config = {
+      allowInsecurePredicate = _: true;
+      permittedInsecurePackages = [
+        "broadcom-sta-6.30.223.271-59-6.18"
+        "broadcom-sta"
+      ];
+    };
   };
 }

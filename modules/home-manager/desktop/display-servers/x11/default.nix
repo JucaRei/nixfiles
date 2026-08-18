@@ -32,7 +32,7 @@ in
 
       sessionVariables = {
         # Java fix for non-reparenting WMs (bspwm, etc.)
-        "_JAVA_AWT_WM_NONREPARENTING" = if desktop == "bspwm" then "1" else "";
+        "_JAVA_AWT_WM_NONREPARENTING" = lib.mkDefault (if desktop == "bspwm" then "1" else "");
 
         # Hardware acceleration (only declarative on NixOS)
         LIBVA_DRIVER_NAME =

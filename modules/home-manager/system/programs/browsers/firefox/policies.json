@@ -51,7 +51,6 @@
   "DisableFirefoxAccounts": false,
   "DisableFirefoxStudies": true,
   "DisableTelemetry": true,
-  "NoDefaultBookmarks": true,
   "PasswordManagerEnabled": true,
   "DontCheckDefaultBrowser": true,
   "EnableTrackingProtection": {

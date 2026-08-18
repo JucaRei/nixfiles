@@ -1,17 +1,17 @@
 { config, lib, namespace, ... }:
 let
-  cfg = config.system.services.zfs;
+  cfg = config.nixos.services.zfs;
 
   inherit (lib) mkEnableOption mkOption mkIf mkDefault;
   inherit (lib.types) listOf str;
 in
 {
-  options.system.services.zfs = {
+  options.nixos.services.zfs = {
     enable = mkEnableOption "ZFS support";
 
     pools = mkOption {
-      type = listOf str [ "rpool" ];
-      default = [ "" ];
+      type = listOf str;
+      default = [ "rpool" ];
       description = "The ZFS pools to manage.";
     };
     auto-snapshot = {

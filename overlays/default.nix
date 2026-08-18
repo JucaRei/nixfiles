@@ -21,7 +21,12 @@
   unstablePackages = final: _prev: {
     unstable = import inputs.nixpkgs-unstable {
       inherit (final) system;
-      config.allowUnfree = true;
+      config = {
+        allowUnfree = true;
+        allowBroken = true;
+        allowBrokenPredicate = _: true;
+        nvidia.acceptLicense = true;
+      };
     };
   };
 
@@ -29,7 +34,12 @@
   oldstablePackages = final: _prev: {
     oldstable = import inputs.nixpkgs-oldstable {
       inherit (final) system;
-      config.allowUnfree = true;
+      config = {
+        allowUnfree = true;
+        allowBroken = true;
+        allowBrokenPredicate = _: true;
+        nvidia.acceptLicense = true;
+      };
     };
   };
 }

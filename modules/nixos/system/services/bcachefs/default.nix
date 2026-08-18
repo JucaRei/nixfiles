@@ -4,11 +4,11 @@ let
     "nitro"
   ];
   inherit (lib) mkOption mkIf elem mkOverride types;
-  cfg = config.system.services.bcachefs;
+  cfg = config.nixos.services.bcachefs;
 in
 {
   options = {
-    system.services.bcachefs = {
+    nixos.services.bcachefs = {
       enable = mkOption {
         type = types.bool;
         default = if (elem hostname installOn || isISO) then true else false;

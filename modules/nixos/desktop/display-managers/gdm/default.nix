@@ -19,12 +19,11 @@ in
       };
     };
   };
-  config = {
+  config = mkIf cfg.enable {
     services = {
       xserver = {
         displayManager = {
           gdm = {
-            wayland = cfg.wayland-session;
             autoSuspend = false;
             settings = {
               daemon = {
@@ -37,11 +36,6 @@ in
                   package = pkgs.layan-cursors;
                   size = 24;
                 };
-                # cursorTheme = {
-                #   name = "Dracula-cursors";
-                #   package = pkgs.dracula-theme;
-                #   size = 16;
-                # };
               };
             };
           };

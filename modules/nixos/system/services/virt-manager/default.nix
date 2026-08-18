@@ -2,12 +2,12 @@
 let
   inherit (lib) mkOption mkIf mkDefault concatStringsSep optionalString length optionals;
   inherit (lib.types) bool listOf str enum;
-  cfg = config.system.services.virt-manager;
+  cfg = config.nixos.services.virt-manager;
   user = "${username}";
 in
 {
   options = {
-    system.services.virt-manager = {
+    nixos.services.virt-manager = {
       enable = mkOption {
         type = bool;
         default = false;

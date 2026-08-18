@@ -51,16 +51,15 @@ in
               };
             };
             extraPackages =
-              if cfg.sddm-theme == "sddm-astronaut"
-              then [ pkgs.sddm-theme-astronaut ]
-              else if cfg.sddm-theme == "catppuccin-sddm-corners"
-              then [ pkgs.sddm-theme-corners ]
-              else if cfg.sddm-theme == "sddm-sugar-dark"
-              then [ pkgs.sddm-theme-sugar-dark ]
-              else if cfg.sddm-theme == "sddm-chili-theme"
-              then [ pkgs.sddm-theme-chili ]
-              else if cfg.sddm-theme == "abstractdark-sddm-theme"
-              then [ pkgs.sddm-theme-abstractdark ]
+              if cfg.sddm-theme == "sddm-astronaut" && pkgs ? sddm-astronaut-theme then [ pkgs.sddm-astronaut-theme ]
+              else if cfg.sddm-theme == "sddm-astronaut" && pkgs ? sddm-theme-astronaut then [ pkgs.sddm-theme-astronaut ]
+              else if cfg.sddm-theme == "catppuccin-sddm-corners" && pkgs ? sddm-theme-corners then [ pkgs.sddm-theme-corners ]
+              else if cfg.sddm-theme == "catppuccin-sddm-corners" && pkgs ? catppuccin-sddm-corners then [ pkgs.catppuccin-sddm-corners ]
+              else if cfg.sddm-theme == "sddm-sugar-dark" && pkgs ? sddm-sugar-dark then [ pkgs.sddm-sugar-dark ]
+              else if cfg.sddm-theme == "sddm-sugar-dark" && pkgs ? sddm-theme-sugar-dark then [ pkgs.sddm-theme-sugar-dark ]
+              else if cfg.sddm-theme == "sddm-chili-theme" && pkgs ? sddm-chili-theme then [ pkgs.sddm-chili-theme ]
+              else if cfg.sddm-theme == "sddm-chili-theme" && pkgs ? sddm-theme-chili then [ pkgs.sddm-theme-chili ]
+              else if cfg.sddm-theme == "abstractdark-sddm-theme" && pkgs ? sddm-theme-abstractdark then [ pkgs.sddm-theme-abstractdark ]
               else [ ];
             autoNumlock = true;
           };

@@ -1,6 +1,6 @@
-{ config, inputs, outputs, pkgs, platform, lib, isInstall, stateVersion, username, isWorkstation, desktop, ... }:
+{ config, inputs, outputs, pkgs, platform, lib, isInstall, stateVersion, username, isWorkstation,  ... }:
 let
-  inherit (lib) mkDefault mapAttrsToList mkOptionDefault mkIf;
+  inherit (lib) mkDefault mkOptionDefault mkIf;
 in
 {
   imports = [
@@ -93,20 +93,36 @@ in
         (_: super: {
           makeModulesClosure = x:
             super.makeModulesClosure (x // { allowMissing = true; });
+          pkgsi686Linux = import inputs.nixpkgs {
+            system = "i686-linux";
+            config = {
+              allowUnfree = true;
+              allowUnfreePredicate = _: true;
+              allowBroken = true;
+              allowBrokenPredicate = _: true;
+              nvidia.acceptLicense = true;
+            };
+          };
         })
       ];
       # Configure your nixpkgs instance
       config = {
         allowUnfree = true;
         allowUnfreePredicate = _: true; # Workaround for https://github.com/nix-community/home-manager/issues/2942
-        # permittedInsecurePackages = [  ];
-        # allowInsecure = true
+        allowBroken = true;
+        allowBrokenPredicate = _: true;
+        allowInsecurePredicate = _: true;
+        nvidia.acceptLicense = true;
+        permittedInsecurePackages = [
+          "broadcom-sta-6.30.223.271-59-6.18"
+          "broadcom-sta"
+        ];
       };
       hostPlatform = mkDefault "${platform}";
     };
 
     system = {
-      nixos.label = mkIf isInstall "--NIXOS_SYSTEM--";
+      nixos.label = mkIf isInstall "NIXOS_SYSTEM";
       inherit stateVersion;
 
       activationScripts = {
@@ -131,11 +147,6 @@ in
             lib.getExe inputs.nixos-needsreboot.packages.${pkgs.system}.default
           } \"$systemConfig\" || true";
         };
-      };
-
-      switch = {
-        # enable = true; # false; # Perl
-        enableNg = true; # Rust-based re-implementation of the original Perl switch-to-configuration
       };
     };
   };

@@ -30,7 +30,8 @@ in
       ++ optionals (isInstall && isWorkstation) [ pwvucontrol ]
       ++ optionals (isInstall && isWorkstation) [ ldacbt ];
 
-    hardware.pulseaudio.enable = mkForce false;
+    # Note: hardware.pulseaudio was removed in NixOS 25.05.
+    # PipeWire with pulse.enable = true automatically handles PulseAudio compatibility.
 
     services = {
       # https://nixos.wiki/wiki/PipeWire
@@ -54,7 +55,7 @@ in
           # https://pipewire.pages.freedesktop.org/wireplumber/daemon/configuration/alsa.html#alsa-buffer-properties
           # cat /nix/store/*-wireplumber-*/share/wireplumber/main.lua.d/99-alsa-lowlatency.lua
           # cat /nix/store/*-wireplumber-*/share/wireplumber/wireplumber.conf.d/99-alsa-lowlatency.conf
-          configPackages = (mkIf (low_latency == true) [
+          configPackages = (optionals low_latency [
             (pkgs.writeTextDir "share/wireplumber/main.lua.d/99-alsa-lowlatency.lua" ''
               alsa_monitor.rules = {
                 {

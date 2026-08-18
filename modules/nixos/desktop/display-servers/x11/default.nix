@@ -30,15 +30,15 @@ in
           #   model = "pc105";
           # };
           if (hostname == "nitro") || (hostname == "virtual") then {
-            layout = "us,br";
-            variant = "alt-intl,abnt2";
-            options = "lv3:ralt_switch,grp_led:scroll";
-            model = "pc105";
+            layout = lib.mkDefault "us,br";
+            variant = lib.mkDefault "alt-intl,abnt2";
+            options = lib.mkDefault "lv3:ralt_switch,grp_led:scroll";
+            model = lib.mkDefault "pc105";
           }
           else {
-            layout = "us";
-            variant = "mac,";
-            model = "pc104";
+            layout = lib.mkDefault "us";
+            variant = lib.mkDefault "mac,";
+            model = lib.mkDefault "pc104";
           };
       };
     };

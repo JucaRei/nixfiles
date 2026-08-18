@@ -1,7 +1,7 @@
 { config, lib, username, pkgs, isWorkstation, ... }:
 let
   inherit (lib) mkIf mkOption types optionals;
-  backend = config.display-servers.backend;
+  backend = config.desktop.display-servers.backend or null;
 in
 {
   imports = [
@@ -52,10 +52,10 @@ in
         # package = pkgs.unstable.mesa.drivers;
         enable = true;
         enable32Bit = true;
-        extraPackages = (mkIf (config.hardware.graphics.cards.gpu == "hybrid-nvidia") (with pkgs.unstable;[
-          vaapiIntel
-          vaapiVdpau
-        ]));
+        extraPackages = optionals (config.hardware.graphics.cards.gpu == "hybrid-nvidia") (with pkgs.unstable; [
+          intel-vaapi-driver
+          libva-vdpau-driver
+        ]);
       };
     };
 

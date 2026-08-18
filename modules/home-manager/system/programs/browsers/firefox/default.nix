@@ -73,10 +73,10 @@ in
     programs.firefox = {
       enable = true;
       package =
-        if (cfg.version == "firefox-esr") then nixGLWrapper pkgs.firefox-esr
-        else if (cfg.version == "firefox") then nixGLWrapper pkgs.firefox
-        else if (cfg.version == "floorp") then nixGLWrapper pkgs.floorp-bin
-        else (cfg.version == "firefox-devedition") nixGLWrapper pkgs.firefox-devedition;
+        if (cfg.version == "firefox-esr") then pkgs.firefox-esr
+        else if (cfg.version == "floorp") then pkgs.floorp-bin
+        else if (cfg.version == "firefox-devedition") then pkgs.firefox-devedition
+        else pkgs.firefox;
 
       policies = builtins.fromJSON (builtins.readFile ./policies.json);
 
@@ -91,27 +91,16 @@ in
         "${username}" = {
           isDefault = true;
 
-          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-            multi-account-containers # Installs the official extension
-            # Add others like ublock-origin if desired
-            ublock-origin
-            return-youtube-dislikes
-            don-t-fuck-with-paste
-            search-by-image
-
-            # (buildFirefoxXpiAddon {
-            #   pname = "bypass-paywalls";
-            #   addonId = "magnolia@12.34";
-            #   version = "master";
-            #   url = "https://gitflic.ru/project/magnolia1234/bpc_uploads/blob/raw?file=bypass_paywalls_clean-3.9.0.0.xpi&inline=false&commit=0532b9830d43992b2f2e63e5335d58d1a8681704";
-            #   sha256 = "sha256-DLhryk7rdglguLEUscvZgveC2adyTDTyC0mp2eTuvBs=";
-            #   meta = with lib; {
-            #     description = "A paywall bypasser";
-            #     license = licenses.mit;
-            #     platforms = platforms.all;
-            #   };
-            # })
-          ];
+          extensions = {
+            packages = with pkgs.nur.repos.rycee.firefox-addons; [
+              multi-account-containers # Installs the official extension
+              # Add others like ublock-origin if desired
+              ublock-origin
+              return-youtube-dislikes
+              don-t-fuck-with-paste
+              search-by-image
+            ];
+          };
 
           containers = {
             work = {
@@ -140,7 +129,10 @@ in
 
           settings = sharedSettings;
           search = import ./search.nix { inherit pkgs config; };
-          bookmarks = import ./bookmarks.nix { };
+          bookmarks = {
+            force = true;
+            settings = import ./bookmarks.nix;
+          };
         };
       };
     };
