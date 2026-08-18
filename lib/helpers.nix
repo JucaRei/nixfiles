@@ -3,7 +3,7 @@
 let
   inherit (inputs.nixpkgs) lib;
 in
-{
+rec {
 
   # Helper function for generating standalone Home Manager configurations (for non-NixOS distros)
   mkHome =
@@ -117,8 +117,22 @@ in
           (if desktop == null then
             inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           else
-            inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-calamares.nix")
+            inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix")
         ];
+    };
+
+  # Helper function for generating generic, minimal and optimized live ISOs
+  mkIso =
+    { desktop ? null
+    , platform ? "x86_64-linux"
+    , stateVersion ? "24.11"
+    }:
+    mkNixos {
+      hostname = if desktop != null then "iso-${desktop}" else "iso-console";
+      username = "nixos";
+      inherit desktop platform stateVersion;
+      isISO = true;
+      isVM = false;
     };
 
   forAllSystems = inputs.nixpkgs.lib.genAttrs [

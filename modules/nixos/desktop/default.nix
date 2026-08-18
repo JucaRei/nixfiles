@@ -1,6 +1,6 @@
 { lib, pkgs, desktop, ... }:
 let
-  inherit (lib) mkOptionDefault mkDefault;
+  inherit (lib) mkDefault;
 in
 {
   imports = [
@@ -86,8 +86,8 @@ in
     };
 
     hardware.cpu = {
-      enable = mkOptionDefault true;
-      improveTCP = mkOptionDefault true;
+      enable = mkDefault true;
+      improveTCP = mkDefault true;
     };
 
     location = {

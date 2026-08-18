@@ -1,4 +1,4 @@
-{ isInstall, lib, pkgs, config, ... }:
+{ isInstall, pkgs, ... }:
 
 {
   config = {
@@ -56,18 +56,14 @@
         gnome-online-accounts.enable = isInstall;
         gnome-keyring.enable = true;
       };
-      xserver = {
+      desktopManager.pantheon = {
         enable = true;
-        desktopManager = {
-          pantheon = {
-            enable = true;
-            extraWingpanelIndicators = with pkgs; [
-              wingpanel-indicator-ayatana
-              monitor
-            ];
-          };
-        };
+        extraWingpanelIndicators = with pkgs; [
+          wingpanel-indicator-ayatana
+          monitor
+        ];
       };
+      xserver.enable = true;
     };
 
     # App indicator

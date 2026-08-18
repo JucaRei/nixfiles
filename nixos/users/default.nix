@@ -1,6 +1,6 @@
 { config, lib, pkgs, username, ... }:
 let
-  inherit (lib) optionals mkDefault;
+  inherit (lib) optionals;
   hasGroup = group: builtins.hasAttr group config.users.groups;
   filterExistingGroups = builtins.filter hasGroup;
 in
@@ -12,7 +12,7 @@ in
   config = {
     users.users.${username} = {
       isNormalUser = true;
-      shell = mkDefault pkgs.bash;
+      shell = lib.mkForce pkgs.bash;
       extraGroups = [
         "input"
         "users"

@@ -1,10 +1,10 @@
-{ inputs, lib, config, pkgs, hostname, platform, modulesPath, isInstall, username, isWorkstation, ... }:
+{ inputs, lib, config, pkgs, hostname, platform, modulesPath, isInstall, isISO ? false, username, isWorkstation, ... }:
 let
   inherit (lib) mkIf mkDefault optionals;
 in
 {
   imports = [
-    (./. + "/hosts/${hostname}/default.nix")
+    (if isISO then ./hosts/iso/default.nix else ./. + "/hosts/${hostname}/default.nix")
     ./users
     ../modules/nixos
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -70,6 +70,7 @@ in
 
     # --- Boot & Virtualization helpers ---
     boot = {
+      zfs.forceImportRoot = mkDefault false;
       binfmt = mkIf isInstall {
         emulatedSystems = mkIf (isWorkstation && (config.nixos.services.virt-manager.enable or false)) (
           [ "armv5tel-linux" ]
@@ -85,7 +86,7 @@ in
       defaultPackages = with pkgs; [ parted uutils-coreutils-noprefix ];
       systemPackages = with pkgs; [ nix-output-monitor ]
         ++ optionals (isInstall && inputs ? determinate) [
-        inputs.determinate.packages.${pkgs.system}.default
+        inputs.determinate.packages.${pkgs.stdenv.hostPlatform.system}.default
       ];
       shellAliases = {
         nix_package_size = "nix path-info --size --human-readable --recursive /run/current-system | cut -d - -f 2- | sort";
@@ -121,7 +122,7 @@ in
       fprintd.enable = mkDefault false;
       dbus = {
         enable = true;
-        implementation = if isWorkstation then "broker" else "systemd";
+        implementation = if isWorkstation then "broker" else "dbus";
       };
     };
 

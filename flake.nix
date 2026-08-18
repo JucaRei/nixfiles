@@ -100,6 +100,14 @@
           desktop = "xfce4";
           stateVersion = "24.11";
         };
+
+        # Generic & Minimal Live ISOs (x86_64, with firmware, GPU drivers, Wi-Fi, VSCode, Firefox, GParted)
+        iso-xfce4 = helper.mkIso { desktop = "xfce4"; };
+        iso-gnome = helper.mkIso { desktop = "gnome"; };
+        iso-mate = helper.mkIso { desktop = "mate"; };
+        iso-pantheon = helper.mkIso { desktop = "pantheon"; };
+        iso-bspwm = helper.mkIso { desktop = "bspwm"; };
+        iso-console = helper.mkIso { desktop = null; };
       };
 
       # Development environment

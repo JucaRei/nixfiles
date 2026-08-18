@@ -1,6 +1,6 @@
 { lib, config, pkgs, desktop, osConfig ? null, platform, ... }:
 let
-  inherit (lib) mkIf concatLists optionals;
+  inherit (lib) mkIf optionals;
 
   backend = config.desktop.display-servers.backend;
   isNixOS = osConfig != null;
@@ -9,8 +9,8 @@ let
   videoDrivers = if isNixOS then (osConfig.services.xserver.videoDrivers or [ ]) else [ ];
   hasNvidia = lib.elem "nvidia" videoDrivers;
   hasIntel = lib.elem "intel" videoDrivers;
-  hasAmd = lib.elemAny [ "amdgpu" "radeon" "ati" ] videoDrivers;
-  hasArmGpu = if isArm then (lib.elemAny [ "vc4" "panfrost" "rockchip" "kmsro" ] videoDrivers) else false;
+  hasAmd = builtins.any (x: lib.elem x videoDrivers) [ "amdgpu" "radeon" "ati" ];
+  hasArmGpu = if isArm then (builtins.any (x: lib.elem x videoDrivers) [ "vc4" "panfrost" "rockchip" "kmsro" ]) else false;
 
   hasGpuFallback =
     if videoDrivers != [ ] && isNixOS then

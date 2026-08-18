@@ -3,6 +3,6 @@ let
   helpers = import ./helpers.nix { inherit inputs outputs; };
 in
 {
-  inherit (helpers) mkHome mkNixos forAllSystems mkChecks;
+  inherit (helpers) mkHome mkNixos mkIso forAllSystems mkChecks;
 }
 
