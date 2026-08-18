@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkForce mkIf mkMerge mkDefault optionals optional;
+  inherit (lib) mkForce mkIf mkMerge mkDefault optionals;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta.version;
 
@@ -24,9 +24,6 @@ in
 {
 
   config = mkIf (device.gpu == "nvidia" || device.gpu == "hybrid-nvidia") {
-    nixpkgs.config.allowUnfree = true;
-    nixpkgs.config.nvidia.acceptLicense = true;
-
     services.xserver = mkMerge [{
       videoDrivers = [ "nvidia" ];
     }

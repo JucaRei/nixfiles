@@ -181,13 +181,5 @@ in
 
     # Teclado no console TTY
     console.useXkbConfig = true;
-
-    nixpkgs.config = {
-      allowInsecurePredicate = _: true;
-      permittedInsecurePackages = [
-        "broadcom-sta-6.30.223.271-59-6.18"
-        "broadcom-sta"
-      ];
-    };
   };
 }

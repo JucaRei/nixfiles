@@ -5,12 +5,6 @@ let
 in
 {
   config = mkIf (device.gpu == "nvidia-legacy") {
-    nixpkgs.config = {
-      allowUnfree = true;
-      allowBroken = true;
-      nvidia.acceptLicense = true;
-    };
-
     boot = {
       blacklistedKernelModules = [
         "nouveau"
