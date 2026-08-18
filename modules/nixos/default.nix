@@ -64,7 +64,7 @@ in
         trusted-users = [ "root" "${username}" ];
         # Auto-optimize store to reduce disk usage
         auto-optimise-store = true;
-        # Build parallelism (set to "auto" for daemon to use all cores; use wrapper for dynamic half-cores during rebuilds)
+        # Build parallelism
         max-jobs = mkDefault "auto";
         # Free up space automatically
         min-free = 2048 * 1024 * 1024; # 2GiB
@@ -74,9 +74,6 @@ in
         log-lines = 25
         connect-timeout = 10
       '';
-      # Free up to 4GiB whenever there is less than 2GiB left.
-      #min-free = ${toString (2048 * 1024 * 1024)}
-      #max-free = ${toString (4096 * 1024 * 1024)} # 4GiB
       channel.enable = false; # Opinionated: disable channels
       # Opinionated: make flake registry and nix path match flake inputs
       registry = lib.mapAttrs (_: flake: { inherit flake; }) flakeInputs;

@@ -36,20 +36,18 @@ in
     news.display = "silent";
 
     nixpkgs = {
-      overlays =
-        (with inputs; [
-          nixgl.overlay
-          nur.overlays.default
-        ])
-        ++ (with outputs; [
-          overlays.localPackages
-          overlays.modifiedPackages
-          overlays.unstablePackages
-          overlays.oldstablePackages
-        ]);
+      overlays = [
+        inputs.nixgl.overlay
+        inputs.nur.overlays.default
+      ] ++ (builtins.attrValues outputs.overlays);
 
       config = {
         allowUnfree = true;
+        allowInsecure = true;
+        permittedInsecurePackages = [
+          "broadcom-sta-6.30.223.271-59-6.18"
+          "broadcom-sta"
+        ];
       };
     };
 
