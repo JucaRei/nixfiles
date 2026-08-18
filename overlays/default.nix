@@ -8,7 +8,7 @@
     makeModulesClosure = x:
       prev.makeModulesClosure (x // { allowMissing = true; });
 
-    sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation rec {
+    sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation {
       pname = "sf-mono-liga-bin";
       version = "dev";
       src = inputs.sf-mono-liga-src;

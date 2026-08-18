@@ -1,4 +1,4 @@
-{ config, inputs, outputs, pkgs, platform, lib, isInstall, stateVersion, username, isWorkstation,  ... }:
+{ config, inputs, outputs, pkgs, platform, lib, isInstall, stateVersion, username, isWorkstation, ... }:
 let
   inherit (lib) mkDefault mkOptionDefault mkIf;
 in
