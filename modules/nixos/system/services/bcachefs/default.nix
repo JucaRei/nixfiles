@@ -3,7 +3,7 @@ let
   installOn = [
     "nitro"
   ];
-  inherit (lib) mkOption mkIf elem mkOverride types;
+  inherit (lib) mkOption mkIf elem types;
   cfg = config.nixos.services.bcachefs;
 in
 {
@@ -21,7 +21,6 @@ in
     # Create a bootable ISO image with bcachefs.
     # - https://wiki.nixos.org/wiki/Bcachefs
     boot = {
-      kernelPackages = mkOverride 0 pkgs.linuxPackages_latest;
       supportedFilesystems = [ "bcachefs" ];
     };
     environment.systemPackages = with pkgs; [

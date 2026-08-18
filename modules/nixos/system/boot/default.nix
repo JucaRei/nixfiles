@@ -1,6 +1,6 @@
 { config, lib, pkgs, isInstall, notVM, ... }:
 let
-  inherit (lib) mkDefault mkOption mkIf mkMerge optionals mkOverride;
+  inherit (lib) mkDefault mkOption mkIf mkMerge optionals;
   inherit (lib.types) bool nullOr enum str;
   cfg = config.system.boot;
 
@@ -102,7 +102,7 @@ in
         blacklist sp5100_tco
       '';
 
-      kernelPackages = mkOverride 1250 pkgs.unstable.linuxPackages_latest;
+      kernelPackages = mkDefault pkgs.linuxPackages;
 
       kernel = {
         sysctl = mkMerge [

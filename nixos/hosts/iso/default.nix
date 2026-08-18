@@ -20,6 +20,9 @@ in
       wirelessRegulatoryDatabase = true;
     };
 
+    # Use stable LTS kernel for ISOs (ensures pre-built binary cache & full ZFS compatibility)
+    boot.kernelPackages = mkForce pkgs.linuxPackages;
+
     # Support all common filesystems for rescue and installation
     boot.supportedFilesystems = [
       "btrfs"
@@ -28,6 +31,7 @@ in
       "f2fs"
       "vfat"
       "ntfs"
+      "zfs"
     ];
 
     # --- Network Management ---
