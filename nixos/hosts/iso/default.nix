@@ -23,6 +23,34 @@ in
     # Use stable LTS kernel for ISOs (ensures pre-built binary cache & full ZFS compatibility)
     boot.kernelPackages = mkForce pkgs.linuxPackages;
 
+    # Ensure all USB storage, disk controllers and filesystem drivers are available in early initrd
+    boot.initrd = {
+      availableKernelModules = [
+        "usb_storage"
+        "uas"
+        "xhci_pci"
+        "xhci_hcd"
+        "ehci_pci"
+        "ehci_hcd"
+        "ohci_pci"
+        "ohci_hcd"
+        "uhci_hcd"
+        "ahci"
+        "nvme"
+        "sd_mod"
+        "sr_mod"
+        "mmc_block"
+        "sdhci_pci"
+        "iso9660"
+        "squashfs"
+        "overlay"
+        "loop"
+      ];
+    };
+
+    # Disable Hyper-V guest drivers on generic bare metal ISOs to eliminate hv_vmbus probe errors
+    virtualisation.hypervGuest.enable = mkForce false;
+
     # Support all common filesystems for rescue and installation
     boot.supportedFilesystems = [
       "btrfs"
