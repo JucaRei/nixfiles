@@ -13,7 +13,11 @@
       }
     }
   },
-  "editor.fontWeight": 500,
+  "editor.fontWeight": "300",
+  "editor.fontSize": 24,
+  "editor.fontFamily": "'JetBrainsMonoNL NF Regular','Lilex Nerd Font Regular', 'Lilex Nerd Font', 'monospace'",
+  "editor.fontLigatures": true,
+  "editor.stickyScroll.enabled": false,
   "workbench.colorCustomizations": {
     "editor.foreground": "#FFFFFF",
     "editorLineNumber.foreground": "#B5B5B5",

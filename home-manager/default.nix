@@ -1,7 +1,7 @@
-{ config, lib, pkgs, stateVersion, username, osConfig ? null, inputs, hostname, ... }:
+{ lib, pkgs, stateVersion, username, osConfig ? null, inputs, hostname, ... }:
 let
-  inherit (pkgs.stdenv) isDarwin isLinux;
-  inherit (lib) optionals mkIf;
+  inherit (pkgs.stdenv) isDarwin;
+  inherit (lib) optionals;
   isNixOS = osConfig != null;
 in
 {
