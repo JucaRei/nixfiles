@@ -5,14 +5,25 @@ let
 in
 rec {
 
-  # Helper function for generating standalone Home Manager configurations (for non-NixOS distros)
+  # ============================================================================
+  # mkHome: Gera configurações standalone do Home Manager (distros não-NixOS)
+  # ============================================================================
+  # Parâmetros:
+  #   - hostname     : (String, obrigatório) Nome do host (usado para carregar hosts/${hostname} e dotfiles)
+  #   - username     : (String, default: "juca") Usuário do sistema
+  #   - desktop      : (String | null, default: null) Ambiente gráfico ("bspwm", "xfce4", etc). Se não nulo, ativa `isWorkstation`
+  #   - platform     : (String, default: "x86_64-linux") Arquitetura do sistema alvo
+  #   - stateVersion : (String, default: "26.05") Versão de compatibilidade do Home Manager (alinhado com o flake.nix)
+  #   - useNixGL     : (Bool, default: true) Aplica wrapper NixGL para aceleração 3D/OpenGL em distros não-NixOS
+  #   - isISO        : (Bool, default: false) Define se a configuração pertence a uma ISO live
+  # ============================================================================
   mkHome =
     { hostname
     , username ? "juca"
     , desktop ? null
     , platform ? "x86_64-linux"
-    , stateVersion ? "24.11"
-    , useNixGL ? false
+    , stateVersion ? "26.05"
+    , useNixGL ? true
     , isISO ? false
     }:
     let
@@ -49,7 +60,19 @@ rec {
       ];
     };
 
-  # Helper function for generating NixOS system configurations (with integrated Home Manager)
+  # ============================================================================
+  # mkNixos: Gera configurações completas do NixOS (com Home Manager integrado)
+  # ============================================================================
+  # Parâmetros:
+  #   - hostname     : (String, obrigatório) Hostname do sistema NixOS
+  #   - username     : (String, default: "juca") Usuário principal para o Home Manager embutido
+  #   - desktop      : (String | null, default: null) Ambiente de desktop do sistema
+  #   - platform     : (String, default: "x86_64-linux") Arquitetura do hardware
+  #   - hostid       : (String | null, default: null) Host ID para ZFS / rede (8 caracteres hexadecimais)
+  #   - stateVersion : (String, default: "24.11") Versão de compatibilidade do NixOS
+  #   - isISO        : (Bool, default: auto) Detecta se é ISO através do prefixo "iso-" no hostname
+  #   - isVM         : (Bool, default: false) Sinaliza se a máquina roda em ambiente virtualizado
+  # ============================================================================
   mkNixos =
     { hostname
     , username ? "juca"
@@ -65,7 +88,7 @@ rec {
       isWorkstation = desktop != null;
       notVM = !isVM;
     in
-    inputs.nixpkgs.lib.nixosSystem {
+    lib.nixosSystem {
       specialArgs = {
         inherit
           inputs
@@ -86,7 +109,7 @@ rec {
         [
           ../nixos
 
-          # Automatically deploy Home Manager configuration during nixos-rebuild switch
+          # Provisionamento automático do Home Manager durante nixos-rebuild switch
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
@@ -113,7 +136,7 @@ rec {
             };
           }
         ]
-        ++ inputs.nixpkgs.lib.optionals isISO [
+        ++ lib.optionals isISO [
           (if desktop == null then
             inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           else
@@ -121,7 +144,14 @@ rec {
         ];
     };
 
-  # Helper function for generating generic, minimal and optimized live ISOs
+  # ============================================================================
+  # mkIso: Helper para gerar imagens ISO inicializáveis (minimal ou gráficas)
+  # ============================================================================
+  # Parâmetros:
+  #   - desktop      : (String | null, default: null) Interface gráfica da ISO (ex: "xfce4", "gnome" ou null para console)
+  #   - platform     : (String, default: "x86_64-linux") Arquitetura da mídia
+  #   - stateVersion : (String, default: "24.11") Versão de estado
+  # ============================================================================
   mkIso =
     { desktop ? null
     , platform ? "x86_64-linux"
@@ -135,16 +165,23 @@ rec {
       isVM = false;
     };
 
-  forAllSystems = inputs.nixpkgs.lib.genAttrs [
-    "aarch64-linux"
+  # ============================================================================
+  # forAllSystems: Mapeia atributos para as arquiteturas suportadas
+  # ============================================================================
+  # Nota: Plataformas Darwin desabilitadas por padrão para acelerar o `nix flake check`
+  # e evitar warnings de build incompatível no Linux. Reative se for compilar no macOS.
+  # ============================================================================
+  forAllSystems = lib.genAttrs [
     "x86_64-linux"
-    "aarch64-darwin"
-    "x86_64-darwin"
+    "aarch64-linux"
+    # "x86_64-darwin"
+    # "aarch64-darwin"
   ];
 
-  # Helper function to generate automated checks for nix flake check
-  mkChecks = { self, inputs }:
-    inputs.nixpkgs.lib.genAttrs [ "aarch64-linux" "x86_64-linux" "aarch64-darwin" "x86_64-darwin" ] (_system: { });
+  # ============================================================================
+  # mkChecks: Gera checks automatizados para o `nix flake check`
+  # ============================================================================
+  mkChecks = { self, inputs }: forAllSystems (_system: { });
 }
 
 

@@ -45,55 +45,19 @@
     in
     {
       homeConfigurations = {
-        # nix-shell -p home-manager.out --run 'home-manager switch -b backup --flake . --show-trace --impure'
-
-        # .iso images
-        # "nixos@iso-console" = helper.mkHome { hostname = "iso-console"; username = "nixos"; };
-        # "nixos@iso-gnome" = helper.mkHome { hostname = "iso-gnome"; username = "nixos"; desktop = "gnome"; };
-        # "nixos@iso-mate" = helper.mkHome { hostname = "iso-mate"; username = "nixos"; desktop = "mate"; };
-        # "nixos@iso-pantheon" = helper.mkHome { hostname = "iso-pantheon"; username = "nixos"; desktop = "pantheon"; };
-
         # Workstations
-        # "juca@nitro" = helper.mkHome { hostname = "nitro"; desktop = "xfce4"; };
-        # "juca@anubis" = helper.mkHome {
-        #   hostname = "anubis";
-        #   desktop = "xfce4";
-        #   useNixGL = true;
-        #   stateVersion = "24.05";
-        # };
-        "juca@rocinante" = helper.mkHome {
-          hostname = "rocinante";
-          desktop = "xfce4";
-          useNixGL = true;
-          stateVersion = "26.05";
-        };
+        "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
 
         # VMs & Hosts
-        "juca@fedora" = helper.mkHome { hostname = "fedora"; desktop = "bspwm"; useNixGL = true; stateVersion = "26.05"; };
-        "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; useNixGL = true; stateVersion = "26.05"; };
-        "juca@virtualvm" = helper.mkHome {
-          hostname = "virtualvm";
-          # desktop = "xfce4";
-          useNixGL = true;
-          stateVersion = "24.05";
-        };
-        "juca@anubisvm" = helper.mkHome { hostname = "anubisvm"; desktop = "bspwm"; useNixGL = true; };
+        "juca@fedora" = helper.mkHome { hostname = "fedora"; desktop = "bspwm"; };
+        "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; };
+        "juca@virtualvm" = helper.mkHome { hostname = "virtualvm"; stateVersion = "24.05"; };
+        "juca@anubisvm" = helper.mkHome { hostname = "anubisvm"; desktop = "bspwm"; };
       };
 
       # Full NixOS System configurations (includes integrated Home-Manager)
       # Usage: sudo nixos-rebuild switch --flake .#hostname
       nixosConfigurations = {
-        ## Examples ##
-        # nix run github:numtide/nixos-anywhere -- --build-on-remote --flake /home/juca/Documents/workspace/gitea/nixsystem#vm root@192.168.2.175
-        # nix run github:numtide/nixos-anywhere -- --flake /home/juca/.dotfiles/nixfiles#air root@192.168.1.76
-        # nix run github:numtide/nixos-anywhere -- --flake $FLAKE#air root@192.168.1.76
-        # nix build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
-        # nom build .#nixosConfigurations.{iso-console|iso-desktop}.config.system.build.isoImage
-
-        #  - sudo nixos-rebuild boot --flake $HOME/.dotfiles/nixfiles
-        #  - sudo nixos-rebuild switch --flake $HOME/.dotfiles/nixfiles
-        #  - nix build .#nixosConfigurations.{hostname}.config.system.build.toplevel
-
         # Workstations
         rocinante = helper.mkNixos {
           hostname = "rocinante";
@@ -101,7 +65,7 @@
           stateVersion = "24.11";
         };
 
-        # Generic & Minimal Live ISOs (x86_64, with firmware, GPU drivers, Wi-Fi, VSCode, Firefox, GParted)
+        # Generic & Minimal Live ISOs
         iso-xfce4 = helper.mkIso { desktop = "xfce4"; };
         iso-gnome = helper.mkIso { desktop = "gnome"; };
         iso-mate = helper.mkIso { desktop = "mate"; };
@@ -115,7 +79,7 @@
         let
           pkgs = import nixpkgs {
             inherit system;
-            config = { allowUnfree = true; };
+            config.allowUnfree = true;
           };
         in
         import ./shell.nix { inherit pkgs; }
@@ -129,7 +93,7 @@
         let
           pkgsWithOverlays = import nixpkgs {
             inherit system;
-            config = { allowUnfree = true; };
+            config.allowUnfree = true;
             overlays = builtins.attrValues self.overlays;
           };
         in
@@ -137,7 +101,7 @@
       );
 
       # Formatter for .nix files ('nix fmt')
-      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixpkgs-fmt);
+      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
 
       # Automated checks run via 'nix flake check'
       checks = helper.mkChecks { inherit self inputs; };

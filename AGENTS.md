@@ -25,15 +25,25 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
    - `modules/`: Módulos customizados reaproveitáveis.
    - `lib/`: Funções utilitárias (`mkNixos`, `mkHome`).
    - `overlays/` e `pkgs/`: Pacotes próprios e extensões do nixpkgs.
-3. **Boas Práticas de Modificação**:
+3. **Boas Práticas de Modificação e Validação**:
    - Sempre manter comentários informativos e documentação existente.
-   - Fazer alterações cirúrgicas e verificar a sintaxe com `nix flake check` quando apropriado.
+   - **Validação Cirúrgica (Pontual)**: Durante edições passo a passo, valide apenas o que foi alterado (ex: `nix eval` da configuração alterada ou `nix flake check --no-build`) para evitar reavaliações e compilações pesadas desnecessárias.
+   - **Verificação Global**: Deixe a execução completa de `nix flake check` apenas para o fechamento final da tarefa ou sob demanda do usuário.
 
 ---
 
 ## ⚡ Comandos Rápidos de Validação e Aplicação
 
-- **Verificação de Sintaxe / Flake**:
+- **Validação Rápida / Cirúrgica (Sem build pesado de tudo)**:
+  ```bash
+  # Validação de sintaxe e tipos rápida sem compilar pacotes:
+  nix flake check --no-build
+
+  # Avaliar apenas a máquina / pacote alterado:
+  nix eval .#homeConfigurations."juca@<host>".config.home.stateVersion
+  nix eval .#nixosConfigurations.<host>.config.system.stateVersion
+  ```
+- **Verificação de Flake Completa (Apenas no final)**:
   ```bash
   nix flake check
   ```
@@ -51,6 +61,7 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 ## 📝 Histórico de Ajustes e Decisões
 
 - **`home-manager/default.nix`**: Removido parâmetro `config` não referenciado na assinatura de argumentos e removidos `isLinux` / `mkIf` não utilizados no bloco `let`.
+- **`flake.nix` & `lib/`**: Simplificação de `homeConfigurations`, modernização do `formatter` para `nixfmt-rfc-style`, redução de sistemas suportados para Linux (`x86_64-linux` e `aarch64-linux`), e adoção de validações pontuais em etapas intermediárias.
 
 ---
 
