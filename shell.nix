@@ -1,4 +1,7 @@
-{ pkgs ? (import ./nixpkgs.nix) { }, ... }:
+{
+  pkgs ? (import ./nixpkgs.nix) { },
+  ...
+}:
 {
   default = pkgs.mkShell {
     name = "Flakes SHELL";
@@ -10,10 +13,9 @@
       statix
       deadnix
       home-manager
-      nixpkgs-fmt
+      nixfmt-rfc-style
       nix-direnv
       direnv
-      # openssh
       htop
       duf
       # dropbear # ssh server

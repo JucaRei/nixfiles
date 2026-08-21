@@ -37,8 +37,8 @@
     sf-mono-liga-src.flake = false;
   };
 
-
-  outputs = { self, nixpkgs, ... }@inputs:
+  outputs =
+    { self, nixpkgs, ... }@inputs:
     let
       inherit (self) outputs;
       helper = import ./lib { inherit inputs outputs; };
@@ -46,13 +46,28 @@
     {
       homeConfigurations = {
         # Workstations
-        "juca@rocinante" = helper.mkHome { hostname = "rocinante"; desktop = "xfce4"; };
+        "juca@rocinante" = helper.mkHome {
+          hostname = "rocinante";
+          desktop = "xfce4";
+        };
 
         # VMs & Hosts
-        "juca@fedora" = helper.mkHome { hostname = "fedora"; desktop = "bspwm"; };
-        "juca@anubis" = helper.mkHome { hostname = "anubis"; desktop = "bspwm"; };
-        "juca@virtualvm" = helper.mkHome { hostname = "virtualvm"; stateVersion = "24.05"; };
-        "juca@anubisvm" = helper.mkHome { hostname = "anubisvm"; desktop = "bspwm"; };
+        "juca@fedora" = helper.mkHome {
+          hostname = "fedora";
+          desktop = "bspwm";
+        };
+        "juca@anubis" = helper.mkHome {
+          hostname = "anubis";
+          desktop = "bspwm";
+        };
+        "juca@virtualvm" = helper.mkHome {
+          hostname = "virtualvm";
+          stateVersion = "24.05";
+        };
+        "juca@anubisvm" = helper.mkHome {
+          hostname = "anubisvm";
+          desktop = "bspwm";
+        };
       };
 
       # Full NixOS System configurations (includes integrated Home-Manager)
@@ -75,7 +90,8 @@
       };
 
       # Development environment
-      devShells = helper.forAllSystems (system:
+      devShells = helper.forAllSystems (
+        system:
         let
           pkgs = import nixpkgs {
             inherit system;
@@ -89,7 +105,8 @@
       overlays = import ./overlays { inherit inputs; };
 
       # Custom packages accessible via 'nix build .#package'
-      packages = helper.forAllSystems (system:
+      packages = helper.forAllSystems (
+        system:
         let
           pkgsWithOverlays = import nixpkgs {
             inherit system;

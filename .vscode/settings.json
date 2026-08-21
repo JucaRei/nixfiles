@@ -3,12 +3,12 @@
   // "workbench.colorTheme": "One Dark Pro Flat",
   "nix.enableLanguageServer": true,
   "nix.serverPath": "nil",
-  "nix.formatterPath": "nixpkgs-fmt",
+  "nix.formatterPath": "nixfmt",
   "nix.serverSettings": {
     "nil": {
       "formatting": {
         "command": [
-          "nixpkgs-fmt"
+          "nixfmt"
         ]
       }
     }
