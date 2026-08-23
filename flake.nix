@@ -87,6 +87,14 @@
         iso-pantheon = helper.mkIso { desktop = "pantheon"; };
         iso-bspwm = helper.mkIso { desktop = "bspwm"; };
         iso-console = helper.mkIso { desktop = null; };
+
+        # MacBook Pro 4,1 specific ISO (fixes 32-bit EFI boot + Apple hardware)
+        iso-rocinante = helper.mkNixos {
+          hostname = "iso-rocinante";
+          desktop = "xfce4";
+          stateVersion = "24.11";
+          isISO = true;
+        };
       };
 
       # Development environment

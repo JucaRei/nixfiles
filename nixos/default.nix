@@ -1,10 +1,17 @@
 { inputs, lib, config, pkgs, hostname, platform, modulesPath, isInstall, isISO ? false, username, isWorkstation, ... }:
 let
   inherit (lib) mkIf mkDefault optionals;
+  # ISO host routing: hardware-specific ISOs (iso-rocinante) have their own
+  # host directory; generic ISOs (iso-xfce4, iso-gnome, etc.) share hosts/iso/
+  hostDir = if isISO && builtins.pathExists (./. + "/hosts/${hostname}")
+            then ./. + "/hosts/${hostname}/default.nix"
+            else if isISO
+            then ./hosts/iso/default.nix
+            else ./. + "/hosts/${hostname}/default.nix";
 in
 {
   imports = [
-    (if isISO then ./hosts/iso/default.nix else ./. + "/hosts/${hostname}/default.nix")
+    hostDir
     ./users
     ../modules/nixos
     (modulesPath + "/installer/scan/not-detected.nix")

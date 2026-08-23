@@ -46,7 +46,7 @@ in
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "Debian" "-f" ];
+                extraArgs = [ "-L" "NixOS" "-f" ];
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";
@@ -68,10 +68,7 @@ in
                     mountpoint = "/var/log";
                     mountOptions = defaultBtrfsOpts;
                   };
-                  "@var_cache_apt" = {
-                    mountpoint = "/var/cache/apt";
-                    mountOptions = defaultBtrfsOpts;
-                  };
+
                   "@swap" = {
                     mountpoint = "/swap";
                     mountOptions = defaultBtrfsOpts;

@@ -10,37 +10,33 @@
         options = [ "defaults" "umask=0077" "noatime" "nodiratime" ];
       };
       "/" = {
-        device = lib.mkForce "/dev/disk/by-label/Debian";
+        device = lib.mkForce "/dev/disk/by-label/NixOS";
         fsType = "btrfs";
         options = btrfsOpts ++ [ "subvol=@" ];
       };
       "/home" = {
-        device = lib.mkForce "/dev/disk/by-label/Debian";
+        device = lib.mkForce "/dev/disk/by-label/NixOS";
         fsType = "btrfs";
         options = btrfsOpts ++ [ "subvol=@home" ];
       };
       "/.snapshots" = {
-        device = lib.mkForce "/dev/disk/by-label/Debian";
+        device = lib.mkForce "/dev/disk/by-label/NixOS";
         fsType = "btrfs";
         options = btrfsOpts ++ [ "subvol=@snapshots" ];
       };
       "/nix" = {
-        device = lib.mkForce "/dev/disk/by-label/Debian";
+        device = lib.mkForce "/dev/disk/by-label/NixOS";
         fsType = "btrfs";
         options = btrfsOpts ++ [ "subvol=@nix" ];
       };
       "/var/log" = {
-        device = lib.mkForce "/dev/disk/by-label/Debian";
+        device = lib.mkForce "/dev/disk/by-label/NixOS";
         fsType = "btrfs";
         options = btrfsOpts ++ [ "subvol=@var_log" ];
       };
-      "/var/cache/apt" = {
-        device = lib.mkForce "/dev/disk/by-label/Debian";
-        fsType = "btrfs";
-        options = btrfsOpts ++ [ "subvol=@var_cache_apt" ];
-      };
+
       "/swap" = {
-        device = lib.mkForce "/dev/disk/by-label/Debian";
+        device = lib.mkForce "/dev/disk/by-label/NixOS";
         fsType = "btrfs";
         options = btrfsOpts ++ [ "subvol=@swap" ];
       };
