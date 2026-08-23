@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   inherit (lib) mkForce;
 in
@@ -71,10 +76,13 @@ in
 
     # Kernel params for stable boot on Penryn hardware
     boot.kernelParams = [
-      "nomodeset"           # Safe video mode — avoids NVIDIA/Nouveau conflicts in live env
-      "mitigations=off"     # Penryn: CPU mitigations are expensive and barely relevant
+      # NOTE: nomodeset is intentionally ABSENT — nouveau needs KMS for X11/LightDM
+      "mitigations=off" # Penryn: CPU mitigations are expensive and barely relevant
       "nowatchdog"
     ];
+
+    # Disable Plymouth — hangs at "terminate Plymouth Boot Screen" on 8600M GT + nouveau
+    boot.plymouth.enable = mkForce false;
 
     # Enable all firmware for broadest Wi-Fi/Bluetooth/GPU compatibility
     hardware = {
@@ -124,7 +132,7 @@ in
     # --- ZRAM Swap ---
     zramSwap = {
       enable = true;
-      algorithm = "lz4";       # LZ4: lower latency than zstd on Penryn Core 2 Duo
+      algorithm = "lz4"; # LZ4: lower latency than zstd on Penryn Core 2 Duo
       memoryPercent = 75;
       priority = 100;
     };
@@ -132,8 +140,8 @@ in
     # --- ISO Image Settings ---
     isoImage = {
       squashfsCompression = "zstd -Xcompression-level 15"; # Slightly lower than 19 for faster build
-      makeEfiBootable = true;   # Needed even for 32-bit EFI (GRUB handles the 32-bit target)
-      makeUsbBootable = true;   # Hybrid MBR for BIOS/Legacy USB boot
+      makeEfiBootable = true; # Needed even for 32-bit EFI (GRUB handles the 32-bit target)
+      makeUsbBootable = true; # Hybrid MBR for BIOS/Legacy USB boot
       edition = "rocinante";
     };
 
