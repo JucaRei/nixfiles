@@ -178,6 +178,17 @@ in
         };
       };
 
+      # Sincronização automática de relógio/NTP (corrige bateria RTC/PRAM descarregada em Macs antigos)
+      timesyncd = {
+        enable = true;
+        servers = [
+          "a.st1.ntp.br"
+          "b.st1.ntp.br"
+          "c.st1.ntp.br"
+          "pool.ntp.org"
+        ];
+      };
+
       thermald.enable = false; # Desativado: usa Intel DPTF (Sandy Bridge+). Penryn/ICH8-M não suporta.
       earlyoom = {
         enable = true;
