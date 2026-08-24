@@ -22,7 +22,7 @@ in
       };
       script = ''
         polybar-msg cmd quit 2>/dev/null || true
-        killall -q polybar || true
+        pkill -x polybar || true
         while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
         if type xrandr >/dev/null 2>&1; then

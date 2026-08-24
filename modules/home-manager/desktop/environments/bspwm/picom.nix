@@ -17,8 +17,8 @@ in
     services.picom = {
       enable = true;
       package = pkgs.picom;
-      backend = "glx";
-      vSync = true;
+      backend = "xrender"; # glx causa crash no Nouveau (NV50/GeForce 8600M GT)
+      vSync = false; # VSync via glx não funciona com Nouveau; usar xrandr --setprovideroutputsource
 
       shadow = true;
       shadowOpacity = 0.6;
@@ -43,9 +43,9 @@ in
           "class_g = 'Polybar'"
         ];
 
-        # Opacidade ativa e inativa
+        # Opacidade: sem dimming em hardware antigo
         active-opacity = 1.0;
-        inactive-opacity = 0.95;
+        inactive-opacity = 1.0;
         inactive-opacity-override = false;
         focus-exclude = [
           "class_g = 'Polybar'"
@@ -53,10 +53,8 @@ in
           "class_g = 'flameshot'"
         ];
 
-        # Diminuir tearing e melhorar desempenho
+        # Melhorar desempenho no xrender
         use-damage = true;
-        glx-no-stencil = true;
-        glx-no-rebind-pixmap = true;
       };
     };
   };

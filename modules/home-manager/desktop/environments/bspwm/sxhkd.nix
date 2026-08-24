@@ -28,7 +28,6 @@ in
         "super + Return" = "${pkgs.alacritty}/bin/alacritty";
         "super + KP_Enter" = "${pkgs.alacritty}/bin/alacritty";
         "super + t" = "${pkgs.alacritty}/bin/alacritty";
-        "super + space" = "${pkgs.rofi}/bin/rofi -show drun";
         "super + d" = "${pkgs.rofi}/bin/rofi -show drun";
         "super + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
         "super + w" = "${pkgs.rofi}/bin/rofi -show window";

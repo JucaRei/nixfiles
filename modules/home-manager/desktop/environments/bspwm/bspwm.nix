@@ -72,7 +72,7 @@ in
             xsetroot -cursor_name left_ptr &
 
             # Importar variáveis de ambiente para serviços do usuário
-            systemctl --user import-environment DISPLAY XAUTHORITY &
+            systemctl --user import-environment DISPLAY XAUTHORITY
 
             # Agente de autenticação Polkit
             ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
@@ -80,8 +80,8 @@ in
             # Wallpaper / Fundo
             xsetroot -solid '#1e1e2e' &
 
-            # Applet de Rede
-            nm-applet &
+            # Applet de Rede (após importar DISPLAY)
+            ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &
 
             # Mouse bindings para mover e redimensionar janelas flutuantes
             bspc config pointer_modifier mod4
@@ -105,7 +105,7 @@ in
       sessionVariables = {
         "_JAVA_AWT_WM_NONREPARENTING" = "1";
         GLFW_IM_MODULE = "ibus";
-        TERM = "xterm-256color";
+        TERM = "alacritty"; # Compatível com o Alacritty
         QT_STYLE_OVERRIDE = lib.mkDefault "kvantum";
         LOG_ICONS = "true";
       };

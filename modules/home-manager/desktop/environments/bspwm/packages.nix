@@ -10,11 +10,11 @@ let
   isNixOS = osConfig != null;
   homeDir = "/home/${username}";
 
-  thunar-with-plugins = (pkgs.thunar or pkgs.xfce.thunar).override {
+  thunar-with-plugins = pkgs.thunar.override {
     thunarPlugins = [
-      (pkgs.thunar-volman or pkgs.xfce.thunar-volman)
-      (pkgs.thunar-archive-plugin or pkgs.xfce.thunar-archive-plugin)
-      (pkgs.thunar-media-tags-plugin or pkgs.xfce.thunar-media-tags-plugin)
+      pkgs.thunar-volman
+      pkgs.thunar-archive-plugin
+      pkgs.thunar-media-tags-plugin
     ];
   };
 in
