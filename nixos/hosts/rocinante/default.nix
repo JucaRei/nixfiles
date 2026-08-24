@@ -233,14 +233,18 @@ in
     # Teclado no console TTY
     console.useXkbConfig = true;
 
-    # --- Duas opções de Boot no Menu do GRUB ---
-    # 1. Padrão: Kernel Zen (unstable) + Driver Nouveau (Aceleração Mesa)
-    # 2. Especialização "nvidia": Kernel Zen (unstable) + Driver NVIDIA 340 Legacy (linux_zen.nvidia_x11_legacy340)
-    specialisation = {
-      nvidia.configuration = {
-        boot.kernelPackages = lib.mkForce pkgs.unstable.linuxPackages_zen;
-        hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
-      };
-    };
+    # --- Nota sobre Driver NVIDIA 340 Legacy ---
+    # O driver nvidia_x11_legacy340 (340.108) NÃO COMPILA com kernels modernos (6.x+).
+    # Erro confirmado: "nvtypes.h: No such file or directory" — API do kernel removida após ~5.x.
+    # Confirmado com: nix-shell -p linuxKernel.packages.linux_7_2.nvidia_x11_legacy340
+    # O driver Nouveau (Mesa) é a única opção funcional para a GeForce 8600M GT (NV50).
+    # Ver ROCINANTE.md para detalhes completos.
+    #
+    # specialisation = {
+    #   nvidia.configuration = {
+    #     boot.kernelPackages = lib.mkForce pkgs.unstable.linuxPackages_zen;
+    #     hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
+    #   };
+    # };
   };
 }
