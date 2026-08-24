@@ -33,7 +33,7 @@ in
       graphics.cards = {
         enable = true;
         acceleration = true;
-        gpu = "nvidia-legacy"; # NVIDIA GeForce 8600M GT (driver proprietário 340.xx)
+        gpu = "nvidia-legacy"; # NVIDIA GeForce 8600M GT (driver proprietário 340.xx com Linux 5.15 LTS)
       };
 
       # Firmware redistribuível (essencial para Wi-Fi Broadcom e Microcode Intel)
@@ -51,6 +51,9 @@ in
     };
 
     boot = {
+      # Kernel 5.15 LTS: última linha LTS compatível com o driver proprietário NVIDIA 340.xx
+      kernelPackages = pkgs.linuxPackages_5_15;
+
       initrd = {
         availableKernelModules = [
           "uhci_hcd"
