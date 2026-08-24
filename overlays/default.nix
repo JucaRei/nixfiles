@@ -30,6 +30,8 @@
         allowInsecure = true;
         nvidia.acceptLicense = true;
         permittedInsecurePackages = [
+          "broadcom-sta-6.30.223.271-59-5.15.212"
+          "broadcom-sta-6.30.223.271-59-5.15"
           "broadcom-sta-6.30.223.271-59-6.18.40"
           "broadcom-sta-6.30.223.271-59-6.18"
           "broadcom-sta"
@@ -48,6 +50,8 @@
         allowInsecure = true;
         nvidia.acceptLicense = true;
         permittedInsecurePackages = [
+          "broadcom-sta-6.30.223.271-59-5.15.212"
+          "broadcom-sta-6.30.223.271-59-5.15"
           "broadcom-sta-6.30.223.271-59-6.18.40"
           "broadcom-sta-6.30.223.271-59-6.18"
           "broadcom-sta"
