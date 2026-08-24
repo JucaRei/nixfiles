@@ -26,6 +26,8 @@ in
       keybindings = cfg.keybindings // {
         # --- Aplicativos & Launchers ---
         "super + Return" = "${pkgs.alacritty}/bin/alacritty";
+        "super + KP_Enter" = "${pkgs.alacritty}/bin/alacritty";
+        "super + t" = "${pkgs.alacritty}/bin/alacritty";
         "super + space" = "${pkgs.rofi}/bin/rofi -show drun";
         "super + d" = "${pkgs.rofi}/bin/rofi -show drun";
         "super + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
@@ -38,7 +40,7 @@ in
         "super + shift + q" = "bspc node -k";
 
         # --- Alternar Estados (Floating / Fullscreen / Monocle) ---
-        "super + t" = "bspc node -t ~floating";
+        "super + s" = "bspc node -t ~floating";
         "super + shift + f" = "bspc node -t ~fullscreen";
         "super + m" = "bspc desktop -l next";
 

@@ -64,6 +64,10 @@ in
             "Catfish" = { state = "floating"; };
           };
           extraConfig = ''
+            # Iniciar daemon de atalhos de teclado (SXHKD)
+            pkill -x sxhkd || true
+            ${pkgs.sxhkd}/bin/sxhkd &
+
             # Cursor padrão
             xsetroot -cursor_name left_ptr &
 
