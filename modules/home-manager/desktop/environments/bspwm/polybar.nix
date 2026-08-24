@@ -81,7 +81,7 @@ in
 
           modules-left = "bspwm xwindow";
           modules-center = "";
-          modules-right = "pulseaudio backlight battery cpu memory date";
+          modules-right = "pulseaudio backlight battery cpu memory date powermenu";
 
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";
@@ -254,6 +254,34 @@ in
         "settings" = {
           screenchange-reload = true;
           pseudo-transparency = false;
+        };
+
+        "module/powermenu" = {
+          type = "custom/text";
+          content = "󰐥";
+          content-foreground = "\${colors.red}";
+          content-background = "\${colors.mantle}";
+          content-padding = 2;
+
+          click-left = let
+            rofiPowerMenu = pkgs.writeShellScript "rofi-powermenu" ''
+              chosen=$(printf "  Desligar\n  Reiniciar\n  Suspender\n  Hibernar\n  Sair (logout)\n  Bloquear" \
+                | ${pkgs.rofi}/bin/rofi \
+                    -dmenu \
+                    -i \
+                    -p "Power Menu" \
+                    -theme-str 'window {width: 280px;} listview {lines: 6;}' \
+                    -no-custom)
+              case "$chosen" in
+                *"Desligar")    systemctl poweroff ;;
+                *"Reiniciar")   systemctl reboot ;;
+                *"Suspender")   systemctl suspend ;;
+                *"Hibernar")    systemctl hibernate ;;
+                *"Sair"*)       bspc quit ;;
+                *"Bloquear")    ${pkgs.xdg-utils}/bin/xdg-open . 2>/dev/null; loginctl lock-session ;;
+              esac
+            '';
+          in "${rofiPowerMenu}";
         };
       };
     };
