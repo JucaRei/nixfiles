@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  isISO,
+  ...
+}:
 let
   inherit (lib) mkDefault;
 in
@@ -7,12 +12,11 @@ in
     services.openssh = {
       enable = true;
       settings = {
-        PasswordAuthentication = true;
-        KbdInteractiveAuthentication = true;
-        PermitRootLogin = mkDefault "yes";
+        PasswordAuthentication = mkDefault true;
+        PermitRootLogin = mkDefault (if isISO then "yes" else "no");
         Banner = "${pkgs.writeText "ssh-banner" (builtins.readFile ./ssh-banner.txt)}";
       };
-      startWhenNeeded = false;
+      startWhenNeeded = true;
     };
   };
 }

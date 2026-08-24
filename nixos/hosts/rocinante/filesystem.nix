@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }: {
+{ lib, ... }: {
   fileSystems =
     let
       btrfsOpts = [
@@ -49,40 +49,13 @@
         fsType = "btrfs";
         options = btrfsOpts ++ [ "subvol=@var_log" ];
       };
-
-      "/swap" = {
-        device = lib.mkForce "/dev/disk/by-label/NixOS";
-        fsType = "btrfs";
-        options = btrfsOpts ++ [
-          "subvol=@swap"
-          "nofail"
-        ];
-      };
     };
-
-  # Garante a criação do swapfile no BTRFS antes do swap.target sem causar ciclos de dependência
-  systemd.services.btrfs-swapfile-init = {
-    description = "Create BTRFS swapfile on @swap if not present";
-    unitConfig.DefaultDependencies = false;
-    after = [ "local-fs.target" ];
-    before = [ "swap.target" ];
-    wantedBy = [ "swap.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = pkgs.writeShellScript "create-btrfs-swapfile" ''
-        if [ ! -f /swap/swapfile ]; then
-          ${pkgs.btrfs-progs}/bin/btrfs filesystem mkswapfile --size 6G /swap/swapfile
-        fi
-      '';
-    };
-  };
 
   swapDevices = [
     {
-      device = "/swap/swapfile";
+      device = "/dev/disk/by-label/swap";
       priority = 10; # Fallback de emergência: usado APENAS se ZRAM (prioridade 100) encher
-      options = [ "nofail" ]; # Evita travar o boot em emergency mode caso o swapfile ainda não esteja pronto
+      options = [ "nofail" ];
     }
   ];
 }

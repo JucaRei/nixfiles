@@ -17,8 +17,10 @@
 | **Firmware EFI** | 32-bit EFI com CPU 64-bit — arranque híbrido obrigatório |
 | **SSD** | Substituiu o HDD original |
 | **Disco** | `/dev/sda` |
-| **Partição EFI** | `/dev/sda1` (label `EFI`) |
-| **Partição BTRFS** | `/dev/sda2` (label `NixOS`) |
+| **Partição BIOS-Boot** | `/dev/sda1` (2M, EF02) |
+| **Partição EFI** | `/dev/sda2` (512M, FAT32, label `EFI`) |
+| **Partição Swap** | `/dev/sda3` (6 GB, label `swap`) |
+| **Partição BTRFS** | `/dev/sda4` (label `NixOS`) |
 
 ---
 
@@ -27,23 +29,24 @@
 | Ficheiro | Papel |
 |---|---|
 | [`default.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/default.nix) | Configuração principal do host |
-| [`filesystem.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/filesystem.nix) | Montagens BTRFS, swapfile e EFI |
+| [`filesystem.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/filesystem.nix) | Montagens BTRFS, swap partition e EFI |
 | [`disko.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/disko.nix) | Definição declarativa das partições |
 | [`modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix) | Módulo do driver NVIDIA 340 Legacy (ativado pela `specialisation`) |
 
 ---
 
-## 🧱 Layout de Disco (BTRFS)
+## 🧱 Layout de Disco (BTRFS + Swap Dedicado)
 
 ```
-/dev/sda1  →  EFI  (FAT32, ~256 MB, montado em /boot/efi)
-/dev/sda2  →  NixOS (BTRFS)
+/dev/sda1  →  BIOS-BOOT (2 MB, BIOS MBR/GPT fallback)
+/dev/sda2  →  EFI  (FAT32, 512 MB, montado em /boot/efi)
+/dev/sda3  →  swap (6 GB, partição swap nativa)
+/dev/sda4  →  NixOS (BTRFS)
   ├── @             →  /
   ├── @home         →  /home
   ├── @nix          →  /nix
   ├── @snapshots    →  /.snapshots
-  ├── @var_log      →  /var/log
-  └── @swap         →  /swap   (contém /swap/swapfile, 6 GB)
+  └── @var_log      →  /var/log
 ```
 
 ### Opções de montagem BTRFS (`btrfsOpts`):
@@ -51,10 +54,10 @@
 rw, noatime, ssd, compress-force=zstd:2, space_cache=v2, commit=120, discard=async
 ```
 
-### Swapfile em BTRFS:
-- Criado automaticamente por `systemd.services.btrfs-swapfile-init` (sem ciclos de dependência)
-- Tamanho: **6 GB** — criado com `btrfs filesystem mkswapfile --size 6G /swap/swapfile`
+### Swap em Partição Dedicada:
+- Tamanho: **6 GB** em `/dev/disk/by-label/swap`
 - Prioridade: `10` (fallback de emergência — o ZRAM tem prioridade `100`)
+- Vantagem: Elimina problemas de ordenação systemd, fragmentação e compatibilidade de swapfile em BTRFS.
 
 ---
 

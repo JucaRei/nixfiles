@@ -41,6 +41,15 @@ in
                 ];
               };
             };
+            swap = {
+              name = "swap";
+              size = "6G";
+              content = {
+                type = "swap";
+                extraArgs = [ "-L" "swap" ];
+                priority = 10;
+              };
+            };
             root = {
               name = "NixOS";
               size = "100%";
@@ -67,12 +76,6 @@ in
                   "@var_log" = {
                     mountpoint = "/var/log";
                     mountOptions = defaultBtrfsOpts;
-                  };
-
-                  "@swap" = {
-                    mountpoint = "/swap";
-                    mountOptions = defaultBtrfsOpts;
-                    swap.swapfile.size = "6G";
                   };
                 };
               };

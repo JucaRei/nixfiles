@@ -206,9 +206,9 @@ in
         settings = {
           PasswordAuthentication = lib.mkForce true;
           KbdInteractiveAuthentication = lib.mkForce true;
-          PermitRootLogin = lib.mkForce "yes";
+          PermitRootLogin = lib.mkDefault "no";
         };
-        startWhenNeeded = lib.mkForce false;
+        startWhenNeeded = lib.mkForce true;
       };
     };
 
