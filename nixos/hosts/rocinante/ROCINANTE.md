@@ -75,30 +75,29 @@ O MacBook Pro 4,1 tem firmware EFI 32-bit mas CPU 64-bit. O arranque com ISOs Ni
 
 ## 🚀 Opções de Boot no Menu do GRUB
 
-### ⚠️ Apenas uma opção funcional — Kernel Zen + Nouveau
+### 1. Padrão — Kernel Zen + Nouveau
 
 ```nix
 boot.kernelPackages = pkgs.unstable.linuxPackages_zen;
 hardware.graphics.cards.gpu = null;  # usa nouveau + Mesa
 ```
 
-- Kernel Zen do canal `unstable` (baixa latência, optimizado para desktop)
+- Kernel Zen do canal `unstable` (baixa latência, otimizado para desktop)
 - Driver gráfico: `nouveau` (open-source, aceleração Mesa 2D/3D nativa na NV50)
 - Variáveis: `LIBVA_DRIVER_NAME=nouveau`, `VDPAU_DRIVER=nouveau`
 
-### ❌ Especialização `nvidia` — REMOVIDA (driver não compila)
+### 2. Especialização `nvidia` — Kernel 7.2 + NVIDIA 340 Legacy
 
-O driver `nvidia_x11_legacy340` (340.108) **não compila** contra kernels modernos (6.x+).
-
-**Erro confirmado** (testado com `nix-shell -p linuxKernel.packages.linux_7_2.nvidia_x11_legacy340`):
+```nix
+specialisation.nvidia.configuration = {
+  boot.kernelPackages = lib.mkForce pkgs.unstable.linuxPackages_7_2;
+  hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
+};
 ```
-fatal error: nvtypes.h: No such file or directory
-nvidia.ko failed to build!
-```
 
-**Razão**: O driver NVIDIA 340 é de 2019 e usa APIs internas do kernel que foram removidas em torno do 5.18+. O `nvtypes.h` foi movido para dentro do driver e não é mais exposto como header público do kernel.
-
-**Conclusão**: A GPU GeForce 8600M GT (NV50/G84) só tem suporte funcional via `nouveau` no NixOS com kernels modernos.
+- Kernel: `pkgs.unstable.linuxKernel.packages.linux_7_2` (`linuxPackages_7_2`)
+- Driver: `pkgs.unstable.linuxKernel.packages.linux_7_2.nvidia_x11_legacy340` (injetado via `config.boot.kernelPackages.nvidia_x11_legacy340`)
+- Configurado diretamente via `boot.extraModulePackages` e `services.xserver` sem ativar o módulo incompatível `hardware/video/nvidia.nix`
 
 
 ---

@@ -4,7 +4,7 @@
   inputs = {
     # Nix Packages
     nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2605.*";
-    nixpkgs-unstable.url = "https://flakehub.com/f/DeterminateSystems/nixpkgs-weekly/0";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
 
     # Home-Manager

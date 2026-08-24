@@ -18,10 +18,12 @@ in
 
     # Permitir broadcom-sta apenas no host rocinante (hardware específico)
     nixpkgs.config.permittedInsecurePackages = [
-      "broadcom-sta-6.30.223.271-59-6.17.9"
+      "broadcom-sta-6.30.223.271-63-7.2"
+      "broadcom-sta-6.30.223.271-63-7.1.9"
       "broadcom-sta-6.30.223.271-63-7.1.7"
       "broadcom-sta-6.30.223.271-63-7.1.5"
       "broadcom-sta-6.30.223.271-63-7.1"
+      "broadcom-sta-6.30.223.271-59-6.17.9"
       "broadcom-sta-6.30.223.271-63-6.18.43"
       "broadcom-sta-6.30.223.271-63-6.18"
       "broadcom-sta-6.30.223.271-59-6.18.40"
@@ -233,18 +235,14 @@ in
     # Teclado no console TTY
     console.useXkbConfig = true;
 
-    # --- Nota sobre Driver NVIDIA 340 Legacy ---
-    # O driver nvidia_x11_legacy340 (340.108) NÃO COMPILA com kernels modernos (6.x+).
-    # Erro confirmado: "nvtypes.h: No such file or directory" — API do kernel removida após ~5.x.
-    # Confirmado com: nix-shell -p linuxKernel.packages.linux_7_2.nvidia_x11_legacy340
-    # O driver Nouveau (Mesa) é a única opção funcional para a GeForce 8600M GT (NV50).
-    # Ver ROCINANTE.md para detalhes completos.
-    #
-    # specialisation = {
-    #   nvidia.configuration = {
-    #     boot.kernelPackages = lib.mkForce pkgs.unstable.linuxPackages_zen;
-    #     hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
-    #   };
-    # };
+    # --- Duas opções de Boot no Menu do GRUB ---
+    # 1. Padrão: Kernel Zen (unstable) + Driver Nouveau (Mesa/aceleração nativa NV50)
+    # 2. Especialização "nvidia": Kernel 7.2 (unstable) + Driver NVIDIA 340 Legacy (linuxPackages_7_2.nvidia_x11_legacy340)
+    specialisation = {
+      nvidia.configuration = {
+        boot.kernelPackages = lib.mkForce pkgs.unstable.linuxPackages_7_2;
+        hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
+      };
+    };
   };
 }
