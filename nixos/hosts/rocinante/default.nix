@@ -199,6 +199,17 @@ in
         variant = "mac";
         options = "terminate:ctrl_alt_bksp";
       };
+
+      # SSH com autenticação por senha habilitada e serviço contínuo (apenas no rocinante)
+      openssh = {
+        enable = true;
+        settings = {
+          PasswordAuthentication = lib.mkForce true;
+          KbdInteractiveAuthentication = lib.mkForce true;
+          PermitRootLogin = lib.mkForce "yes";
+        };
+        startWhenNeeded = lib.mkForce false;
+      };
     };
 
     # Variáveis de aceleração gráfica para Mesa / Nouveau
