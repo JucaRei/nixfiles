@@ -99,13 +99,13 @@ in
         diff = {
           supportsDryActivation = true;
           text = ''
-            BLUE=$(${pkgs.ncurses}/bin/tput setaf 4)
-            CLEAR=$(${pkgs.ncurses}/bin/tput sgr0)
+            BLUE=$(${pkgs.ncurses}/bin/tput setaf 4 2>/dev/null || true)
+            CLEAR=$(${pkgs.ncurses}/bin/tput sgr0 2>/dev/null || true)
             if [[ -e /run/current-system ]]; then
               echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
               echo "#"
               mkdir -p /var/log/nix
-              ${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff $(${pkgs.coreutils}/bin/readlink "/run/current-system") "$systemConfig" | tee /var/log/nix/nix-changelog
+              (${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff "$(${pkgs.coreutils}/bin/readlink "/run/current-system")" "$systemConfig" | tee /var/log/nix/nix-changelog) || true
               echo "#"
               echo "$BLUE                $CLEAR"
             fi
