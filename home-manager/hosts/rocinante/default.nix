@@ -1,9 +1,4 @@
-{
-  lib,
-  pkgs,
-  desktop ? null,
-  ...
-}:
+{ pkgs, ... }:
 {
   config = {
     system = {
@@ -28,19 +23,7 @@
       };
     };
 
-    # Mapeamento do Teclado Apple (Command = Super / Mod4, Option = Alt / Mod1)
-    home.keyboard = {
-      options = [
-        "altwin:swap_alt_win"
-      ];
-    };
-
-    desktop.bspwm = lib.mkIf (desktop == "bspwm") {
-      extraConfig = ''
-        # Garante no BSPWM que a tecla Command funcione como Super (Mod4)
-        ${pkgs.setxkbmap}/bin/setxkbmap -option altwin:swap_alt_win
-      '';
-    };
+    # Teclado Apple: swap_opt_cmd=0 no kernel já define Command = Super (Mod4) e Option = Alt (Mod1) nativamente
 
     home.packages = with pkgs; [
       brightnessctl
