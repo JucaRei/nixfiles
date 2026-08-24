@@ -75,6 +75,10 @@ in
       nixPath = lib.mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs;
     };
 
+    programs = {
+      zsh.enable = true;
+    };
+
     nixpkgs = {
       overlays = builtins.attrValues outputs.overlays;
       # Configure your nixpkgs instance
