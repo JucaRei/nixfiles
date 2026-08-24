@@ -36,9 +36,7 @@ in
         bspwm = {
           enable = true;
           package = nixGLWrapper pkgs.bspwm;
-          monitors = {
-            "*" = [ "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" ];
-          };
+          monitors = { };
           settings = {
             split_ratio = 0.52;
             border_width = 2;
@@ -64,6 +62,11 @@ in
             "Catfish" = { state = "floating"; };
           };
           extraConfig = ''
+            # Configurar workspaces 1 a 10 (onde 0 = 10) em todos os monitores conectados
+            for m in $(bspc query -M); do
+              bspc monitor "$m" -d 1 2 3 4 5 6 7 8 9 10
+            done
+
             # Iniciar daemon de atalhos de teclado (SXHKD)
             pkill -x sxhkd || true
             ${pkgs.sxhkd}/bin/sxhkd &
