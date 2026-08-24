@@ -79,7 +79,7 @@ in
         "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/";
 
         # --- Bloquear Sessão ---
-        "super + l" = "${pkgs.libnotify}/bin/notify-send 'Locking screen...'";
+        "super + shift + x" = "${pkgs.libnotify}/bin/notify-send 'Locking screen...'";
       };
     };
   };
