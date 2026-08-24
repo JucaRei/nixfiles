@@ -246,14 +246,16 @@ in
     # Teclado no console TTY
     console.useXkbConfig = true;
 
-    # --- Duas opções de Boot no Menu do GRUB ---
-    # 1. Padrão: Kernel Zen (unstable) + Driver Nouveau (Mesa / aceleração nativa NV50)
-    # 2. Especialização "nvidia": Kernel 5.15 LTS + Driver NVIDIA 340 Legacy (linuxPackages_5_15.nvidia_x11_legacy340)
-    specialisation = {
-      nvidia.configuration = {
-        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_5_15;
-        hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
-      };
-    };
+    # --- Opção de Boot ---
+    # Kernel Zen (unstable) + Driver Nouveau (Mesa / aceleração nativa NV50)
+    # Nota: O driver NVIDIA 340 Legacy (340.108) não compila no sandbox do NixOS
+    # (falha com 'mkdir: cannot create directory conftest: Permission denied').
+    # A GPU GeForce 8600M GT funciona nativamente e com aceleração total via Nouveau.
+    # specialisation = {
+    #   nvidia.configuration = {
+    #     boot.kernelPackages = lib.mkForce pkgs.linuxPackages_5_15;
+    #     hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
+    #   };
+    # };
   };
 }

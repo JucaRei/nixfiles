@@ -24,14 +24,14 @@ in
     };
 
     hardware = {
-      nvidia = {
-        package = config.boot.kernelPackages.nvidia_x11_legacy340;
-        open = false;
-        nvidiaSettings = false;
-        modesetting.enable = false; # 340.xx não possui nvidia_drm / modesetting
-        powerManagement.enable = false;
-        powerManagement.finegrained = false;
-      };
+      # nvidia = {
+      #   package = config.boot.kernelPackages.nvidia_x11_legacy340;
+      #   open = false;
+      #   nvidiaSettings = false;
+      #   modesetting.enable = false; # 340.xx não possui nvidia_drm / modesetting
+      #   powerManagement.enable = false;
+      #   powerManagement.finegrained = false;
+      # };
       graphics = {
         enable = true;
         enable32Bit = true;
@@ -60,7 +60,8 @@ in
         screenSection = ''
           Option     "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
         '';
-        videoDrivers = [ "nvidia" ];
+        # Driver carregado via boot.extraModulePackages; xserver usa o driver instalado pelo módulo do kernel
+        videoDrivers = lib.mkForce [ ];
       };
     };
 
