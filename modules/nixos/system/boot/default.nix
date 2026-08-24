@@ -1,7 +1,25 @@
-{ config, lib, pkgs, isInstall, notVM, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  isInstall,
+  notVM,
+  ...
+}:
 let
-  inherit (lib) mkDefault mkOption mkIf mkMerge optionals;
-  inherit (lib.types) bool nullOr enum str;
+  inherit (lib)
+    mkDefault
+    mkOption
+    mkIf
+    mkMerge
+    optionals
+    ;
+  inherit (lib.types)
+    bool
+    nullOr
+    enum
+    str
+    ;
   cfg = config.system.boot;
 
   # Simplified disk detection: extract base device name
@@ -14,19 +32,21 @@ let
         match = builtins.match "^(.*?)(p?[0-9]+)$" devName;
       in
       if match != null then "/dev/${builtins.elemAt match 0}" else rootDevice
-    else null;
+    else
+      null;
 
   # Determine boot device with fallback chain
   bootDevice =
-    if cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy"
-    then "nodev"
-    else if cfg.device != null
-    then cfg.device
-    else if autoBootDisk != null
-    then autoBootDisk
-    else if notVM
-    then "/dev/sda"
-    else "/dev/vda";
+    if cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy" then
+      "nodev"
+    else if cfg.device != null then
+      cfg.device
+    else if autoBootDisk != null then
+      autoBootDisk
+    else if notVM then
+      "/dev/sda"
+    else
+      "/dev/vda";
 in
 {
   options = {
@@ -37,7 +57,12 @@ in
         description = "Enable`s boot for installation.";
       };
       bootType = mkOption {
-        type = nullOr (enum [ "efi" "legacy" "hybrid-legacy" null ]);
+        type = nullOr (enum [
+          "efi"
+          "legacy"
+          "hybrid-legacy"
+          null
+        ]);
         default = null;
         description = "Default's boot option.";
       };
@@ -47,7 +72,12 @@ in
         description = "Device for GRUB loader (e.g., /dev/sda, /dev/vda, /dev/nvme0n1).";
       };
       bootManager = mkOption {
-        type = nullOr (enum [ "grub" "systemd-boot" "raspberry" null ]);
+        type = nullOr (enum [
+          "grub"
+          "systemd-boot"
+          "raspberry"
+          null
+        ]);
         default = null;
         description = "Select the Default boot Manager.";
       };
@@ -76,12 +106,14 @@ in
 
   config = mkIf cfg.enable {
     environment = {
-      systemPackages = with pkgs; [ fwupd ]
+      systemPackages =
+        with pkgs;
+        [ fwupd ]
         ++ optionals (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") [
-        efibootmgr
-        efitools
-        efivar
-      ]
+          efibootmgr
+          efitools
+          efivar
+        ]
         ++ optionals cfg.secureBoot [ sbctl ]
         ++ optionals cfg.isDualBoot [ os-prober ];
     };
@@ -122,7 +154,8 @@ in
         # Enable cgroups_v2
         "cgroup_no_v1=all"
         "systemd.unified_cgroup_hierarchy=yes"
-      ] ++ optionals (cfg.plymouth) [
+      ]
+      ++ optionals (cfg.plymouth) [
         "quiet"
         "splash"
         "fbcon=nodefer"
@@ -140,8 +173,7 @@ in
         "page_alloc.shuffle=1" # reduces the predictability of page allocations
         "rootflags=noatime" # ignore access time (atime) updates on files
       ]
-      ++ optionals (cfg.bootManager == "raspberry") [ "cma=32M" ]
-      ;
+      ++ optionals (cfg.bootManager == "raspberry") [ "cma=32M" ];
 
       lanzaboote = mkIf (cfg.secureBoot) {
         enable = true;
@@ -152,10 +184,9 @@ in
         generic-extlinux-compatible.enable = mkIf (cfg.bootManager == "raspberry") true;
 
         efi = mkIf (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") {
-          canTouchEfiVariables = if (cfg.bootType == "efi" && config.boot.loader.grub.enable == false) then true else false;
-          efiSysMountPoint = mkDefault (
-            if config.fileSystems ? "/boot/efi" then "/boot/efi" else "/boot"
-          );
+          canTouchEfiVariables =
+            if (cfg.bootType == "efi" && config.boot.loader.grub.enable == false) then true else false;
+          efiSysMountPoint = mkDefault (if config.fileSystems ? "/boot/efi" then "/boot/efi" else "/boot");
         };
 
         generationsDir.copyKernels = mkIf (cfg.bootType == "efi") true;
