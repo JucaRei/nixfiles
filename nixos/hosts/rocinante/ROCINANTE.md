@@ -305,11 +305,12 @@ home-manager switch --flake .#juca@rocinante
 
 ```nix
 # Nível kernel (modprobe):
-options hid_apple fnmode=1 swap_opt_cmd=1
+options hid_apple fnmode=1 swap_opt_cmd=0
 # fnmode=1: teclas F1-F12 são multimídia por padrão (sem Fn)
-# swap_opt_cmd=1: troca fisicamente Command e Option
+# swap_opt_cmd=0: tecla física Command = Super (Mod4), tecla física Option = Alt (Mod1)
 
-# Nível X11:
+# Nível Home-Manager / X11 (BSPWM):
+home.keyboard.options = [ "altwin:swap_alt_win" ];
 services.xserver.xkb = { layout = "us"; variant = "mac"; options = "terminate:ctrl_alt_bksp"; };
 ```
 

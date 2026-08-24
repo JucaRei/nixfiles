@@ -97,9 +97,9 @@ in
         "coretemp"
       ];
 
-      # Teclado Apple: fnmode=1 (teclas multimídia/brilho nativas), swap_opt_cmd=1 (Command/Option físicos)
+      # Teclado Apple: fnmode=1 (teclas multimídia/brilho nativas), swap_opt_cmd=0 (Command = Super, Option = Alt)
       extraModprobeConfig = ''
-        options hid_apple fnmode=1 swap_opt_cmd=1
+        options hid_apple fnmode=1 swap_opt_cmd=0
       '';
 
       # Blacklist dos módulos open-source que conflitam com o broadcom-sta (wl)

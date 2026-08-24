@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   config = {
     system = {
@@ -21,6 +21,20 @@
           name = "alacritty";
         };
       };
+    };
+
+    # Mapeamento do Teclado Apple (Command = Super / Mod4, Option = Alt / Mod1)
+    home.keyboard = {
+      options = [
+        "altwin:swap_alt_win"
+      ];
+    };
+
+    desktop.bspwm = {
+      extraConfig = ''
+        # Garante no BSPWM que a tecla Command funcione como Super (Mod4)
+        ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option altwin:swap_alt_win
+      '';
     };
 
     home.packages = with pkgs; [
