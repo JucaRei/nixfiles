@@ -1,4 +1,9 @@
-{ lib, pkgs, desktop ? null, ... }:
+{
+  lib,
+  pkgs,
+  desktop ? null,
+  ...
+}:
 {
   config = {
     system = {
