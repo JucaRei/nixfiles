@@ -32,8 +32,8 @@ in
         "super + d" = "${pkgs.rofi}/bin/rofi -show drun";
         "super + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
         "super + w" = "${pkgs.rofi}/bin/rofi -show window";
-        "super + e" = "${pkgs.xfce.thunar}/bin/thunar";
-        "super + f" = "${pkgs.xfce.thunar}/bin/thunar";
+        "super + e" = "${pkgs.thunar}/bin/thunar";
+        "super + f" = "${pkgs.thunar}/bin/thunar";
 
         # --- Janelas (Fechar / Matar) ---
         "super + q" = "bspc node -c";
