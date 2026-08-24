@@ -153,7 +153,9 @@ in
 
         efi = mkIf (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") {
           canTouchEfiVariables = if (cfg.bootType == "efi" && config.boot.loader.grub.enable == false) then true else false;
-          efiSysMountPoint = mkDefault "/boot";
+          efiSysMountPoint = mkDefault (
+            if config.fileSystems ? "/boot/efi" then "/boot/efi" else "/boot"
+          );
         };
 
         generationsDir.copyKernels = mkIf (cfg.bootType == "efi") true;
