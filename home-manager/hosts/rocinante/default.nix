@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, desktop ? null, ... }:
 {
   config = {
     system = {
@@ -30,10 +30,10 @@
       ];
     };
 
-    desktop.bspwm = {
+    desktop.bspwm = lib.mkIf (desktop == "bspwm") {
       extraConfig = ''
         # Garante no BSPWM que a tecla Command funcione como Super (Mod4)
-        ${pkgs.xorg.setxkbmap}/bin/setxkbmap -option altwin:swap_alt_win
+        ${pkgs.setxkbmap}/bin/setxkbmap -option altwin:swap_alt_win
       '';
     };
 
