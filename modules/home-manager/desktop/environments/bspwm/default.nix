@@ -1,7 +1,6 @@
-{ config, lib, pkgs, useNixGL ? false, osConfig ? null, ... }:
+{ config, lib, pkgs, osConfig ? null, ... }:
 let
   inherit (lib) mkIf;
-
   isNixOS = osConfig != null;
 in
 {
@@ -9,10 +8,52 @@ in
     ./bspwm.nix
     ./sxhkd.nix
     ./polybar.nix
+    ./picom.nix
+    ./dunst.nix
+    ./rofi.nix
     ./packages.nix
   ];
 
   config = mkIf config.desktop.bspwm.enable {
+    desktop.display-servers.backend = "x11";
+
+    # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---
+    gtk = {
+      enable = true;
+      theme = {
+        name = "Catppuccin-Mocha-Standard-Blue-Dark";
+        package = pkgs.catppuccin-gtk.override {
+          accents = [ "blue" ];
+          size = "standard";
+          tweaks = [ "rimless" ];
+          variant = "mocha";
+        };
+      };
+      iconTheme = {
+        name = "Papirus-Dark";
+        package = pkgs.papirus-icon-theme;
+      };
+      cursorTheme = {
+        name = "Catppuccin-Mocha-Dark-Cursors";
+        package = pkgs.catppuccin-cursors.mochaDark;
+        size = 24;
+      };
+      font = {
+        name = "Inter";
+        size = 10;
+      };
+      gtk3.extraConfig = {
+        gtk-application-prefer-dark-theme = 1;
+        gtk-cursor-theme-size = 24;
+      };
+      gtk4 = {
+        theme = config.gtk.theme;
+        extraConfig = {
+          gtk-application-prefer-dark-theme = 1;
+        };
+      };
+    };
+
     home = {
       sessionPath = [
         "$HOME/.local/bin"

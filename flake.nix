@@ -48,7 +48,7 @@
         # Workstations
         "juca@rocinante" = helper.mkHome {
           hostname = "rocinante";
-          desktop = "xfce4";
+          desktop = "bspwm";
         };
 
         # VMs & Hosts
@@ -76,7 +76,7 @@
         # Workstations
         rocinante = helper.mkNixos {
           hostname = "rocinante";
-          desktop = "xfce4";
+          desktop = "bspwm";
           stateVersion = "24.11";
         };
 

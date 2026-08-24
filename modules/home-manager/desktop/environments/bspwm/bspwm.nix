@@ -1,19 +1,17 @@
-{ config, lib, pkgs, useNixGL ? false, osConfig ? null, ... }:
+{ config, lib, pkgs, useNixGL ? false, desktop ? null, ... }:
 let
-  inherit (lib) mkOption mkIf optionals;
+  inherit (lib) mkOption mkIf;
   inherit (lib.types) bool listOf str;
   cfg = config.desktop.bspwm;
 
   nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
-
-  isNixOS = osConfig != null;
 in
 {
   options.desktop.bspwm = {
     enable = mkOption {
       type = bool;
-      default = true;
+      default = (desktop == "bspwm");
       description = "Enable bspwm window manager";
     };
 
@@ -42,33 +40,55 @@ in
             "*" = [ "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" ];
           };
           settings = {
-            split_ratio = 0.5;
+            split_ratio = 0.52;
             border_width = 2;
-            window_gap = 8;
-            top_padding = 32;
-            bottom_padding = 8;
-            left_padding = 8;
-            right_padding = 8;
-            normal_border_color = "#444444";
-            active_border_color = "#5577aa";
-            focused_border_color = "#88aacc";
-            presel_feedback_color = "#ff6666";
+            window_gap = 6;
+            top_padding = 28; # Altura da Polybar
+            bottom_padding = 4;
+            left_padding = 4;
+            right_padding = 4;
+            normal_border_color = "#313244";
+            active_border_color = "#45475a";
+            focused_border_color = "#89b4fa";
+            presel_feedback_color = "#f38ba8";
+          };
+          rules = {
+            "Pavucontrol" = { state = "floating"; };
+            "GParted" = { state = "floating"; };
+            "Galculator" = { state = "floating"; };
+            "Flameshot" = { state = "floating"; };
+            "Lxappearance" = { state = "floating"; };
+            "Xfce4-taskmanager" = { state = "floating"; };
+            "File-roller" = { state = "floating"; };
+            "Nitrogen" = { state = "floating"; };
+            "Catfish" = { state = "floating"; };
           };
           extraConfig = ''
-            # Remove all borders by default
-            bspc config border_width 2
+            # Cursor padrão
+            xsetroot -cursor_name left_ptr &
 
-            # Mouse bindings for floating windows
+            # Importar variáveis de ambiente para serviços do usuário
+            systemctl --user import-environment DISPLAY XAUTHORITY &
+
+            # Agente de autenticação Polkit
+            ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
+
+            # Wallpaper / Fundo
+            xsetroot -solid '#1e1e2e' &
+
+            # Applet de Rede
+            nm-applet &
+
+            # Mouse bindings para mover e redimensionar janelas flutuantes
             bspc config pointer_modifier mod4
             bspc config pointer_action1 move
             bspc config pointer_action2 resize_side
-            bspc config pointer_action2 resize_corner
-            bspc config pointer_action3 resize
+            bspc config pointer_action3 resize_corner
 
-            # Focus follows mouse
+            # Foco segue o ponteiro
             bspc config focus_follows_pointer true
 
-            # External rules
+            # Regras customizadas adicionais
             ${lib.concatStringsSep "\n" cfg.rules}
 
             ${cfg.extraConfig}
@@ -82,7 +102,7 @@ in
         "_JAVA_AWT_WM_NONREPARENTING" = "1";
         GLFW_IM_MODULE = "ibus";
         TERM = "xterm-256color";
-        QT_STYLE_OVERRIDE = lib.mkDefault "";
+        QT_STYLE_OVERRIDE = lib.mkDefault "kvantum";
         LOG_ICONS = "true";
       };
 

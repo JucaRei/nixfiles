@@ -1,35 +1,30 @@
 { config, lib, pkgs, ... }:
 let
   inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool str;
+  inherit (lib.types) bool;
   cfg = config.desktop.bspwm.polybar;
 in
 {
   options.desktop.bspwm.polybar = {
     enable = mkOption {
       type = bool;
-      default = true;
+      default = config.desktop.bspwm.enable;
       description = "Enable polybar for bspwm";
-    };
-
-    theme = mkOption {
-      type = str;
-      default = "default";
-      description = "Polybar theme name";
     };
   };
 
   config = mkIf cfg.enable {
     services.polybar = {
       enable = true;
-      package = pkgs.polybar;
+      package = pkgs.polybar.override {
+        pulseSupport = true;
+        i3Support = false;
+      };
       script = ''
-        #!/usr/bin/env bash
+        polybar-msg cmd quit 2>/dev/null || true
+        killall -q polybar || true
+        while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-        # Kill existing bars
-        polybar-msg cmd quit 2>/dev/null
-
-        # Launch polybar on all monitors
         if type xrandr >/dev/null 2>&1; then
           for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
             MONITOR=$m polybar --reload main &
@@ -39,157 +34,226 @@ in
         fi
       '';
       config = {
+        "colors" = {
+          base = "#1e1e2e";
+          mantle = "#181825";
+          crust = "#11111b";
+          surface0 = "#313244";
+          surface1 = "#45475a";
+          text = "#cdd6f4";
+          subtext0 = "#a6adc8";
+          blue = "#89b4fa";
+          lavender = "#b4befe";
+          sapphire = "#74c7ec";
+          sky = "#89dceb";
+          teal = "#94e2d5";
+          green = "#a6e3a1";
+          yellow = "#f9e2af";
+          peach = "#fab387";
+          maroon = "#eba0ac";
+          red = "#f38ba8";
+          mauve = "#cba6f7";
+          flamingo = "#f2cdcd";
+          rosewater = "#f5e0dc";
+          transparent = "#00000000";
+        };
+
         "bar/main" = {
-          monitor = "";
-          monitor-fallback = "";
           width = "100%";
-          height = "24";
-          offset-x = "0";
-          offset-y = "0";
+          height = "26";
+          radius = 0;
           fixed-center = true;
 
-          background = "#222222";
-          foreground = "#ffffff";
+          background = "\${colors.base}";
+          foreground = "\${colors.text}";
 
-          line-size = "2";
-          line-color = "#5577aa";
+          line-size = 2;
+          line-color = "\${colors.blue}";
 
-          border-size = "0";
-          border-color = "#000000";
+          border-size = 0;
+          padding-left = 1;
+          padding-right = 2;
+          module-margin = 1;
 
-          padding-left = "1";
-          padding-right = "1";
-          module-margin-left = "1";
-          module-margin-right = "1";
+          font-0 = "Inter:size=10;2";
+          font-1 = "Symbols Nerd Font:size=11;2";
+          font-2 = "JetBrainsMono Nerd Font:size=10;2";
 
-          font-0 = "monospace:size=10;2";
-          font-1 = "FontAwesome:size=10;2";
-          font-2 = "NotoColorEmoji:size=10;2";
-
-          modules-left = "bspwm";
+          modules-left = "bspwm xwindow";
           modules-center = "";
-          modules-right = "cpu memory filesystem pulseaudio battery date";
-
-          tray-position = "right";
-          tray-padding = "2";
+          modules-right = "pulseaudio backlight battery cpu memory date";
 
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";
+
+          enable-ipc = true;
+          wm-restack = "bspwm";
         };
 
         "module/bspwm" = {
           type = "internal/bspwm";
+          pin-workspaces = true;
+          enable-click = true;
+          enable-scroll = true;
+          reverse-scroll = false;
+
           format = "<label-state> <label-mode>";
-          label-focused = "";
-          label-focused-background = "#333333";
-          label-focused-underline = "#5577aa";
-          label-focused-padding = "2";
-          label-occupied = "";
-          label-occupied-padding = "2";
-          label-urgent = "";
-          label-urgent-background = "#aa3333";
-          label-urgent-padding = "2";
-          label-empty = "";
-          label-empty-foreground = "#666666";
-          label-empty-padding = "2";
-          label-monocle = "M";
-          label-tiled = "T";
-          label-floating = " |";
-          label-pseudotiled = "P";
-          label-fullscreen = " F";
-          label-locked = " ";
-          label-sticky = " ";
-          label-private = " ";
+
+          label-focused = "%name%";
+          label-focused-foreground = "\${colors.base}";
+          label-focused-background = "\${colors.blue}";
+          label-focused-padding = 2;
+          label-focused-margin = 0;
+
+          label-occupied = "%name%";
+          label-occupied-foreground = "\${colors.text}";
+          label-occupied-background = "\${colors.surface0}";
+          label-occupied-padding = 2;
+          label-occupied-margin = 0;
+
+          label-urgent = "%name%";
+          label-urgent-foreground = "\${colors.base}";
+          label-urgent-background = "\${colors.red}";
+          label-urgent-padding = 2;
+          label-urgent-margin = 0;
+
+          label-empty = "%name%";
+          label-empty-foreground = "\${colors.subtext0}";
+          label-empty-background = "\${colors.mantle}";
+          label-empty-padding = 2;
+          label-empty-margin = 0;
+
+          label-monocle = " [M]";
+          label-monocle-foreground = "\${colors.yellow}";
+          label-floating = " [F]";
+          label-floating-foreground = "\${colors.peach}";
+          label-fullscreen = " [MAX]";
+          label-fullscreen-foreground = "\${colors.mauve}";
+        };
+
+        "module/xwindow" = {
+          type = "internal/xwindow";
+          label = "%title:0:45:...%";
+          label-foreground = "\${colors.subtext0}";
+          label-padding = 1;
         };
 
         "module/cpu" = {
           type = "internal/cpu";
-          interval = "2";
-          format = "<label> <ramp-coreload>";
-          label = "CPU";
-          ramp-coreload-0 = "▁";
-          ramp-coreload-1 = "▂";
-          ramp-coreload-2 = "▃";
-          ramp-coreload-3 = "▄";
-          ramp-coreload-4 = "▅";
-          ramp-coreload-5 = "▆";
-          ramp-coreload-6 = "▇";
-          ramp-coreload-7 = "█";
+          interval = 2;
+          format-prefix = "󰍛 ";
+          format-prefix-foreground = "\${colors.teal}";
+          label = "%percentage:2%%";
+          label-foreground = "\${colors.text}";
         };
 
         "module/memory" = {
           type = "internal/memory";
-          interval = "3";
-          format = "<label>";
-          label = "MEM %percentage_used%%";
-        };
-
-        "module/filesystem" = {
-          type = "internal/fs";
-          interval = "30";
-          mount-0 = "/";
-          label-mounted = "%{F#5577aa}%mountpoint%%{F-}: %percentage_used%%";
-          label-unmounted = "%mountpoint%: not mounted";
+          interval = 3;
+          format-prefix = "󰘚 ";
+          format-prefix-foreground = "\${colors.mauve}";
+          label = "%percentage_used:2%%";
+          label-foreground = "\${colors.text}";
         };
 
         "module/pulseaudio" = {
           type = "internal/pulseaudio";
-          format-volume = "<label-volume> <bar-volume>";
-          label-volume = "VOL";
-          label-muted = "MUTED";
-          label-muted-foreground = "#666666";
-          bar-volume-width = "10";
-          bar-volume-0 = "▁";
-          bar-volume-1 = "▂";
-          bar-volume-2 = "▃";
-          bar-volume-3 = "▄";
-          bar-volume-4 = "▅";
-          bar-volume-5 = "▆";
-          bar-volume-6 = "▇";
-          bar-volume-7 = "█";
-          bar-volume-gradient = false;
-          bar-volume-indicator = "|";
-          bar-volume-fill = "-";
-          bar-volume-empty = "-";
-          bar-volume-empty-foreground = "#666666";
+          use-ui-max = true;
+          interval = 5;
+
+          format-volume = "<ramp-volume> <label-volume>";
+          label-volume = "%percentage%%";
+          label-volume-foreground = "\${colors.text}";
+
+          ramp-volume-0 = "󰕿";
+          ramp-volume-1 = "󰖀";
+          ramp-volume-2 = "󰕾";
+          ramp-volume-foreground = "\${colors.blue}";
+
+          format-muted = "<label-muted>";
+          format-muted-prefix = "󰝟 ";
+          format-muted-prefix-foreground = "\${colors.red}";
+          label-muted = "mute";
+          label-muted-foreground = "\${colors.subtext0}";
+
           click-right = "pavucontrol";
+        };
+
+        "module/backlight" = {
+          type = "internal/backlight";
+          card = "nv_backlight";
+          use-actual-brightness = true;
+          enable-scroll = true;
+
+          format = "<ramp> <label>";
+          label = "%percentage%%";
+          label-foreground = "\${colors.text}";
+
+          ramp-0 = "󰃞";
+          ramp-1 = "󰃝";
+          ramp-2 = "󰃟";
+          ramp-3 = "󰃠";
+          ramp-foreground = "\${colors.yellow}";
         };
 
         "module/battery" = {
           type = "internal/battery";
+          full-at = 98;
+          low-at = 15;
           battery = "BAT0";
-          adapter = "AC";
-          full-at = "98";
+          adapter = "ADP1";
+          poll-interval = 5;
+
           format-charging = "<animation-charging> <label-charging>";
           format-discharging = "<ramp-capacity> <label-discharging>";
-          format-full = "<label-full>";
+          format-full = "<ramp-capacity> <label-full>";
+
           label-charging = "%percentage%%";
           label-discharging = "%percentage%%";
-          label-full = "Full";
-          ramp-capacity-0 = "";
-          ramp-capacity-1 = "";
-          ramp-capacity-2 = "";
-          ramp-capacity-3 = "";
-          ramp-capacity-4 = "";
-          animation-charging-0 = "";
-          animation-charging-1 = "";
-          animation-charging-2 = "";
-          animation-charging-3 = "";
-          animation-charging-4 = "";
-          animation-charging-framerate = "750";
+          label-full = "100%";
+
+          ramp-capacity-0 = "󰂎";
+          ramp-capacity-1 = "󰁺";
+          ramp-capacity-2 = "󰁻";
+          ramp-capacity-3 = "󰁼";
+          ramp-capacity-4 = "󰁽";
+          ramp-capacity-5 = "󰁾";
+          ramp-capacity-6 = "󰁿";
+          ramp-capacity-7 = "󰂀";
+          ramp-capacity-8 = "󰂁";
+          ramp-capacity-9 = "󰂂";
+          ramp-capacity-10 = "󰁹";
+          ramp-capacity-foreground = "\${colors.green}";
+
+          animation-charging-0 = "󰂆";
+          animation-charging-1 = "󰂇";
+          animation-charging-2 = "󰂈";
+          animation-charging-3 = "󰂉";
+          animation-charging-4 = "󰂊";
+          animation-charging-5 = "󰂋";
+          animation-charging-6 = "󰂅";
+          animation-charging-foreground = "\${colors.green}";
+          animation-charging-framerate = 750;
         };
 
         "module/date" = {
           type = "internal/date";
-          interval = "1";
-          date = "%Y-%m-%d";
+          interval = 1;
+          date = "%d/%m";
           time = "%H:%M";
+          date-alt = "%A, %d %B %Y";
+          time-alt = "%H:%M:%S";
+
+          format = "<label>";
+          format-prefix = "󰥔 ";
+          format-prefix-foreground = "\${colors.sapphire}";
           label = "%date% %time%";
+          label-foreground = "\${colors.text}";
         };
 
         "settings" = {
-          screenchange-reload = "true";
-          pseudo-transparency = "true";
+          screenchange-reload = true;
+          pseudo-transparency = false;
         };
       };
     };

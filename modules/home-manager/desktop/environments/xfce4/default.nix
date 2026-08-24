@@ -1,6 +1,6 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, desktop ? null, ... }:
 let
-  inherit (lib) optionalString getExe;
+  inherit (lib) mkIf optionalString getExe;
   thunar-with-plugins = (pkgs.thunar or pkgs.xfce.thunar).override {
     thunarPlugins = [
       (pkgs.thunar-volman or pkgs.xfce.thunar-volman)
@@ -15,7 +15,7 @@ let
     else "${pkgs.xfce4-terminal or pkgs.xfce.xfce4-terminal or pkgs.alacritty}/bin/xfce4-terminal";
 in
 {
-  config = {
+  config = mkIf (desktop == "xfce4") {
     desktop.display-servers.backend = "x11";
 
     # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---

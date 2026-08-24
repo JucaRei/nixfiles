@@ -8,7 +8,7 @@ in
   options.desktop.bspwm.sxhkd = {
     enable = mkOption {
       type = bool;
-      default = true;
+      default = config.desktop.bspwm.enable;
       description = "Enable sxhkd keybindings for bspwm";
     };
 
@@ -22,55 +22,62 @@ in
   config = mkIf cfg.enable {
     services.sxhkd = {
       enable = true;
+      package = pkgs.sxhkd;
       keybindings = cfg.keybindings // {
-        # Window management
-        "super + Return" = "alacritty";
-        "super + d" = "rofi -show drun";
-        "super + shift + d" = "rofi -show run";
+        # --- Aplicativos & Launchers ---
+        "super + Return" = "${pkgs.alacritty}/bin/alacritty";
+        "super + space" = "${pkgs.rofi}/bin/rofi -show drun";
+        "super + d" = "${pkgs.rofi}/bin/rofi -show drun";
+        "super + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
+        "super + w" = "${pkgs.rofi}/bin/rofi -show window";
+        "super + e" = "${pkgs.xfce.thunar}/bin/thunar";
+        "super + f" = "${pkgs.xfce.thunar}/bin/thunar";
 
-        # Close window
-        "super + shift + q" = "bspc node -c";
+        # --- Janelas (Fechar / Matar) ---
+        "super + q" = "bspc node -c";
+        "super + shift + q" = "bspc node -k";
 
-        # Focus nodes
-        "super + {_,shift + }{h,j,k,l}" = ''
-          bspc node -{f,s} {west,south,north,east}
-        '';
-
-        # Focus desktops (workspaces)
-        "super + {_,shift + }{1-9,0}" = ''
-          bspc {desktop -f,node -d} '^{1-9,10}'
-        '';
-
-        # Resize floating nodes
-        "super + alt + {Left,Down,Up,Right}" = "bspc node -v {-20 0,0 20,0 -20,20 0}";
-
-        # Toggle floating
+        # --- Alternar Estados (Floating / Fullscreen / Monocle) ---
         "super + t" = "bspc node -t ~floating";
-        "super + shift + t" = "bspc node -t ~fullscreen";
+        "super + shift + f" = "bspc node -t ~fullscreen";
+        "super + m" = "bspc desktop -l next";
 
-        # Rotate desktop
-        "super + r" = "bspc desktop -R 90";
+        # --- Foco e Movimento em Janelas (Vim + Setas) ---
+        "super + {h,j,k,l}" = "bspc node -f {west,south,north,east}";
+        "super + {Left,Down,Up,Right}" = "bspc node -f {west,south,north,east}";
+        "super + shift + {h,j,k,l}" = "bspc node -s {west,south,north,east}";
+        "super + shift + {Left,Down,Up,Right}" = "bspc node -s {west,south,north,east}";
+
+        # --- Áreas de Trabalho (Workspaces 1-10) ---
+        "super + {1-9,0}" = "bspc desktop -f '^{1-9,10}'";
+        "super + shift + {1-9,0}" = "bspc node -d '^{1-9,10}'";
+
+        # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
+        "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+        "super + alt + {Left,Down,Up,Right}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+
+        # --- Reiniciar / Recarregar BSPWM e SXHKD ---
         "super + shift + r" = "bspc wm -r";
+        "super + Escape" = "pkill -USR1 -x sxhkd";
 
-        # Gap controls
-        "super + g" = "bspc config window_gap 0";
-        "super + shift + g" = "bspc config window_gap 10";
+        # --- Controles de Mídia e Áudio ---
+        "XF86AudioRaiseVolume" = "${pkgs.pamixer}/bin/pamixer -i 5";
+        "XF86AudioLowerVolume" = "${pkgs.pamixer}/bin/pamixer -d 5";
+        "XF86AudioMute" = "${pkgs.pamixer}/bin/pamixer -t";
+        "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
+        "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
+        "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
 
-        # Volume controls (common shortcuts)
-        "XF86AudioRaiseVolume" = "pactl set-sink-volume @DEFAULT_SINK@ +5%";
-        "XF86AudioLowerVolume" = "pactl set-sink-volume @DEFAULT_SINK@ -5%";
-        "XF86AudioMute" = "pactl set-sink-mute @DEFAULT_SINK@ toggle";
-        "XF86AudioPlay" = "playerctl play-pause";
-        "XF86AudioNext" = "playerctl next";
-        "XF86AudioPrev" = "playerctl previous";
+        # --- Controle de Brilho (MacBook) ---
+        "XF86MonBrightnessUp" = "${pkgs.brightnessctl}/bin/brightnessctl set +5%";
+        "XF86MonBrightnessDown" = "${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
 
-        # Brightness (laptops)
-        "XF86MonBrightnessUp" = "brightnessctl set +5%";
-        "XF86MonBrightnessDown" = "brightnessctl set 5%-";
+        # --- Screenshots (Flameshot) ---
+        "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+        "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/";
 
-        # Screenshot
-        "Print" = "flameshot gui";
-        "shift + Print" = "flameshot full -p ~/Pictures/";
+        # --- Bloquear Sessão ---
+        "super + l" = "${pkgs.libnotify}/bin/notify-send 'Locking screen...'";
       };
     };
   };

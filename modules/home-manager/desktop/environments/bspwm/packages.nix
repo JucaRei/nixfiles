@@ -9,12 +9,20 @@ let
 
   isNixOS = osConfig != null;
   homeDir = "/home/${username}";
+
+  thunar-with-plugins = (pkgs.thunar or pkgs.xfce.thunar).override {
+    thunarPlugins = [
+      (pkgs.thunar-volman or pkgs.xfce.thunar-volman)
+      (pkgs.thunar-archive-plugin or pkgs.xfce.thunar-archive-plugin)
+      (pkgs.thunar-media-tags-plugin or pkgs.xfce.thunar-media-tags-plugin)
+    ];
+  };
 in
 {
   options.desktop.bspwm.packages = {
     enable = mkOption {
       type = bool;
-      default = true;
+      default = config.desktop.bspwm.enable;
       description = "Enable bspwm-related packages";
     };
 
@@ -27,34 +35,46 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # Window Manager
+      # Window Manager & Utilities
       sxhkd
-
-      # Launcher
       rofi
-
-      # Terminal
+      polybar
+      picom
+      dunst
+      feh
       (nixGLWrapper alacritty)
+      thunar-with-plugins
+      xfce.tumbler
+      xarchiver
+      file-roller
 
-      # Screenshot
+      # Screenshots
       flameshot
 
-      # Audio control
+      # Áudio e Brilho
       pavucontrol
+      pamixer
       playerctl
       brightnessctl
 
-      # Utilities
-      xclip
-      bc
-      imagemagick
+      # Temas e Fontes
+      catppuccin-gtk
+      papirus-icon-theme
+      catppuccin-cursors.mochaDark
+      inter
 
-      # System utilities (non-NixOS)
+      # Clipboard e X11
+      xclip
+      xsel
+      xdotool
+      libnotify
+      networkmanagerapplet
+      pasystray
+      galculator
+      lxappearance
     ] ++ optionals (!isNixOS) [
       glibcLocales
       at-spi2-atk
-
-      # X11 utilities
       xinit
       libxcomposite
       libxinerama
@@ -65,22 +85,16 @@ in
       xsetroot
       xwininfo
       xrandr
-
-      # XDG utilities
       xdg-utils
       xdg-user-dirs
       xdg-desktop-portal-gtk
-
-      # Dialog utilities
       dialog
     ] ++ cfg.extraPackages;
 
-    # Create XDG user directories
     xdg.enable = true;
 
-    # Desktop entry and wrapper for non-NixOS systems (LightDM compatibility)
+    # Sessão para LightDM em sistemas não-NixOS
     home.file = mkIf (!isNixOS) {
-      # xsessions desktop entry for LightDM
       ".local/share/xsessions/bspwm.desktop".text = ''
         [Desktop Entry]
         Name=BSPWM
@@ -90,24 +104,18 @@ in
         DesktopNames=bspwm
       '';
 
-      # Wrapper: source nix env, then let .xsession handle the rest
       ".local/bin/start-bspwm".text = ''
         #!/bin/sh
-        
-        # Source nix profile (Fedora's LightDM won't have it)
         if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
           . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
         fi
         if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
           . "$HOME/.nix-profile/etc/profile.d/nix.sh"
         fi
-        
-        # Let home-manager's .xsession handle the rest (it sources .xprofile internally)
         exec "$HOME/.xsession"
       '';
       ".local/bin/start-bspwm".executable = true;
 
-      # Tell LightDM to use bspwm as default session
       ".dmrc".text = ''
         [Desktop]
         Session=bspwm
@@ -115,5 +123,3 @@ in
     };
   };
 }
-
-# sudo sed -i 's|#sessions-directory=.*|sessions-directory=/usr/share/xsessions:/usr/share/wayland-sessions:/home/juca/.local/share/xsessions|' /etc/lightdm/lightdm.conf
