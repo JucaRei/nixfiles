@@ -16,7 +16,7 @@ in
         "nvidiafb"
       ];
       extraModulePackages = [
-        config.boot.kernelPackages.nvidiaPackages.legacy_340
+        config.boot.kernelPackages.nvidia_x11_legacy340
       ];
       kernelModules = [
         "nvidia"
@@ -25,7 +25,7 @@ in
 
     hardware = {
       nvidia = {
-        package = config.boot.kernelPackages.nvidiaPackages.legacy_340;
+        package = config.boot.kernelPackages.nvidia_x11_legacy340;
         open = false;
         nvidiaSettings = false;
         modesetting.enable = false; # Crítico: driver 340.xx não possui nvidia_drm/nvidia_modeset/nvidia_uvm

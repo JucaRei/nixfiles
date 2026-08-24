@@ -16,6 +16,21 @@ in
   config = {
     time.timeZone = mkForce "America/Sao_Paulo";
 
+    # Permitir broadcom-sta apenas no host rocinante (hardware específico)
+    nixpkgs.config.permittedInsecurePackages = [
+      "broadcom-sta-6.30.223.271-59-6.17.9"
+      "broadcom-sta-6.30.223.271-63-7.1.7"
+      "broadcom-sta-6.30.223.271-63-7.1.5"
+      "broadcom-sta-6.30.223.271-63-7.1"
+      "broadcom-sta-6.30.223.271-63-6.18.43"
+      "broadcom-sta-6.30.223.271-63-6.18"
+      "broadcom-sta-6.30.223.271-59-6.18.40"
+      "broadcom-sta-6.30.223.271-59-6.18"
+      "broadcom-sta-6.30.223.271-59-5.15.212"
+      "broadcom-sta-6.30.223.271-59-5.15"
+      "broadcom-sta"
+    ];
+
     # --- Hardware & CPU (MacBook Pro 4,1 - Penryn Core 2 Duo) ---
     hardware = {
       cpu = {
@@ -51,6 +66,9 @@ in
     };
 
     boot = {
+      # Kernel padrão: Linux Zen do unstable (otimizado para agilidade de desktop em CPUs dual-core) + Nouveau
+      kernelPackages = pkgs.unstable.linuxPackages_zen;
+
       initrd = {
         availableKernelModules = [
           "uhci_hcd"
@@ -99,20 +117,20 @@ in
 
       # Parâmetros de kernel para estabilidade térmica, GPU Nouveau e economia de energia
       kernelParams = [
-        "pcie_aspm=force"                  # Força economia de energia nos barramentos PCIe (ICH8-M)
-        "zswap.enabled=0"                  # Desativado: ZRAM gerencia 100% da compressão de memória
-        "mitigations=off"                  # Desativa mitigações de CPU (ganho de 15-25% em Core 2 Duo Penryn)
-        "nowatchdog"                       # Economiza ciclos de CPU desativando lockup detectors
-        "nouveau.modeset=1"                # Garante KMS ativo para a GPU NVIDIA GeForce 8600M GT
-        "transparent_hugepage=madvise"    # Reduz fragmentação e overhead de memória nos 6 GB RAM
-        "elevator=bfq"                     # Scheduler de I/O de baixa latência para o SSD
+        "pcie_aspm=force" # Força economia de energia nos barramentos PCIe (ICH8-M)
+        "zswap.enabled=0" # Desativado: ZRAM gerencia 100% da compressão de memória
+        "mitigations=off" # Desativa mitigações de CPU (ganho de 15-25% em Core 2 Duo Penryn)
+        "nowatchdog" # Economiza ciclos de CPU desativando lockup detectors
+        "nouveau.modeset=1" # Garante KMS ativo para a GPU NVIDIA GeForce 8600M GT
+        "transparent_hugepage=madvise" # Reduz fragmentação e overhead de memória nos 6 GB RAM
+        "elevator=bfq" # Scheduler de I/O de baixa latência para o SSD
       ];
 
       # Tuning avançado de Memória Virtual para ZRAM + 6GB RAM (Canal Assimétrico)
       kernel.sysctl = {
-        "vm.swappiness" = 180;             # Com ZRAM: prioriza compactação em RAM antes de tocar o SSD
-        "vm.vfs_cache_pressure" = 50;      # Mantém caches de diretórios e inodes em RAM
-        "vm.page-cluster" = 0;             # Desativa swap em bloco: essencial para descompactação ZRAM sem latência
+        "vm.swappiness" = 180; # Com ZRAM: prioriza compactação em RAM antes de tocar o SSD
+        "vm.vfs_cache_pressure" = 50; # Mantém caches de diretórios e inodes em RAM
+        "vm.page-cluster" = 0; # Desativa swap em bloco: essencial para descompactação ZRAM sem latência
         "vm.dirty_background_ratio" = 5;
         "vm.dirty_ratio" = 15;
         "vm.dirty_writeback_centisecs" = 1500;
@@ -126,7 +144,7 @@ in
       enable = true;
       algorithm = "lz4";
       memoryPercent = 75; # ~4.5 GB de ZRAM (compactados) — suficiente para os 6 GB RAM
-      priority = 100;    # Maior prioridade: kernel usa ZRAM antes do swapfile em disco
+      priority = 100; # Maior prioridade: kernel usa ZRAM antes do swapfile em disco
     };
 
     # --- Serviços de Hardware do MacBook Pro ---
@@ -214,5 +232,15 @@ in
 
     # Teclado no console TTY
     console.useXkbConfig = true;
+
+    # --- Duas opções de Boot no Menu do GRUB ---
+    # 1. Padrão: Kernel Zen (unstable) + Driver Nouveau (Aceleração Mesa)
+    # 2. Especialização "nvidia": Kernel Zen (unstable) + Driver NVIDIA 340 Legacy (linux_zen.nvidia_x11_legacy340)
+    specialisation = {
+      nvidia.configuration = {
+        boot.kernelPackages = lib.mkForce pkgs.unstable.linuxPackages_zen;
+        hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
+      };
+    };
   };
 }

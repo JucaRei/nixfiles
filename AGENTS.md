@@ -8,8 +8,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 
 - **Tipo**: Configuração declarativa usando **Nix Flakes** para **NixOS** e **Home Manager** (standalone e integrado).
 - **Usuário Padrão**: `juca`
-- **Hosts Comuns**: `fedora` (Home Manager standalone), `virtualvm` (NixOS), etc.
+- **Hosts Comuns**: `fedora` (Home Manager standalone), `virtualvm` (NixOS), `rocinante` (NixOS — MacBook Pro 4,1).
 - **Documentação Base**: Ver [README.md](file:///mnt/d/workspace/MyRepos/nixfiles/README.md) e [WIKI.md](file:///mnt/d/workspace/MyRepos/nixfiles/WIKI.md).
+- **Memória por Host**: Consultar `nixos/hosts/<host>/ROCINANTE.md` (ou equivalente) para context específico de hardware.
 
 ---
 
@@ -62,6 +63,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 
 - **`home-manager/default.nix`**: Removido parâmetro `config` não referenciado na assinatura de argumentos e removidos `isLinux` / `mkIf` não utilizados no bloco `let`.
 - **`flake.nix` & `lib/`**: Simplificação de `homeConfigurations`, modernização do `formatter` para `nixfmt-rfc-style`, redução de sistemas suportados para Linux (`x86_64-linux` e `aarch64-linux`), e adoção de validações pontuais em etapas intermediárias.
+- **`overlays/default.nix`**: `inherit (final) system` renomeado para `inherit (final.stdenv.hostPlatform) system` (evita deprecation warning). `permittedInsecurePackages` global removido (scoped para hosts específicos).
+- **`modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`** (driver NVIDIA 340 Legacy):
+  - Atributo correto: `config.boot.kernelPackages.nvidia_x11_legacy340` (não `nvidiaPackages.legacy_340`).
+  - **Não usar `hardware.nvidia`** — o módulo `hardware/video/nvidia.nix` do nixpkgs 25.05 exige `.mod`/`.open` que o legacy 340 não possui. Configurar via `boot.extraModulePackages` diretamente.
+  - `xserver.videoDrivers = lib.mkForce []` — o módulo kernel carregado via `boot.extraModulePackages` é suficiente para o X11.
+- **Host `rocinante`** (MacBook Pro 4,1 - Early 2008): Ver [ROCINANTE.md](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/ROCINANTE.md) para documentação completa de hardware, problemas conhecidos e decisões de configuração.
 
 ---
 
