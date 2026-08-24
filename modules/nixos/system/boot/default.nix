@@ -195,7 +195,7 @@ in
           enable = mkIf (cfg.bootManager == "grub" && cfg.bootManager != "raspberry") true;
           efiSupport = if (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") then true else false;
           efiInstallAsRemovable = if (cfg.bootType != "legacy") then true else false;
-          default = "saved";
+          default = 0;
           device = bootDevice;
           fsIdentifier = "provided";
           gfxmodeEfi = "auto";
