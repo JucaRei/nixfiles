@@ -33,7 +33,7 @@ in
       graphics.cards = {
         enable = true;
         acceleration = true;
-        gpu = "nvidia-legacy"; # NVIDIA GeForce 8600M GT (driver proprietário 340.xx com Linux 5.15 LTS)
+        gpu = null; # NVIDIA GeForce 8600M GT: usa driver nouveau + Mesa (aceleração por hardware nativa)
       };
 
       # Firmware redistribuível (essencial para Wi-Fi Broadcom e Microcode Intel)
@@ -51,9 +51,6 @@ in
     };
 
     boot = {
-      # Kernel 5.15 LTS: última linha LTS compatível com o driver proprietário NVIDIA 340.xx
-      kernelPackages = pkgs.linuxPackages_5_15;
-
       initrd = {
         availableKernelModules = [
           "uhci_hcd"
@@ -100,19 +97,22 @@ in
         config.boot.kernelPackages.broadcom_sta
       ];
 
-      # Parâmetros de kernel para estabilidade térmica, GPU e economia de energia
+      # Parâmetros de kernel para estabilidade térmica, GPU Nouveau e economia de energia
       kernelParams = [
-        "pcie_aspm=force"
-        "zswap.enabled=0" # Desativado: conflita com zramSwap (compressão dupla)
-        "mitigations=off"
-        "nowatchdog"
+        "pcie_aspm=force"                  # Força economia de energia nos barramentos PCIe (ICH8-M)
+        "zswap.enabled=0"                  # Desativado: ZRAM gerencia 100% da compressão de memória
+        "mitigations=off"                  # Desativa mitigações de CPU (ganho de 15-25% em Core 2 Duo Penryn)
+        "nowatchdog"                       # Economiza ciclos de CPU desativando lockup detectors
+        "nouveau.modeset=1"                # Garante KMS ativo para a GPU NVIDIA GeForce 8600M GT
+        "transparent_hugepage=madvise"    # Reduz fragmentação e overhead de memória nos 6 GB RAM
+        "elevator=bfq"                     # Scheduler de I/O de baixa latência para o SSD
       ];
 
-      # Tuning de Memória Virtual para os 6GB RAM (Canal Assimétrico)
+      # Tuning avançado de Memória Virtual para ZRAM + 6GB RAM (Canal Assimétrico)
       kernel.sysctl = {
-        "vm.swappiness" = 100; # Com ZRAM: preferir comprimir RAM antes de matar processos
-        "vm.vfs_cache_pressure" = 50;
-        "vm.page-cluster" = 0; # Crítico para ZRAM: evita leitura em bloco desnecessária
+        "vm.swappiness" = 180;             # Com ZRAM: prioriza compactação em RAM antes de tocar o SSD
+        "vm.vfs_cache_pressure" = 50;      # Mantém caches de diretórios e inodes em RAM
+        "vm.page-cluster" = 0;             # Desativa swap em bloco: essencial para descompactação ZRAM sem latência
         "vm.dirty_background_ratio" = 5;
         "vm.dirty_ratio" = 15;
         "vm.dirty_writeback_centisecs" = 1500;
@@ -120,34 +120,50 @@ in
     };
 
     # --- ZRAM Swap com LZ4 ---
-    # LZ4: menor latência de compressão que zstd — ideal para swap em memória em tempo real
-    # no Core 2 Duo (Penryn). zstd tem maior razão de compressão mas é pesado para a CPU.
+    # LZ4: menor latência de compressão que zstd — ideal para swap em tempo real
+    # no Core 2 Duo (Penryn).
     zramSwap = {
       enable = true;
       algorithm = "lz4";
       memoryPercent = 75; # ~4.5 GB de ZRAM (compactados) — suficiente para os 6 GB RAM
-      priority = 100; # Maior prioridade: kernel usa ZRAM antes do swapfile em disco
+      priority = 100;    # Maior prioridade: kernel usa ZRAM antes do swapfile em disco
     };
 
     # --- Serviços de Hardware do MacBook Pro ---
     services = {
-      # Controle inteligente das ventoinhas do MacBook Pro
+      # Controle inteligente das ventoinhas do MacBook Pro (curva térmica adaptada para Penryn)
       mbpfan = {
         enable = true;
         settings.general = {
           min_fan1_speed = 2000;
           max_fan1_speed = 6000;
-          low_temp = 55;
-          high_temp = 72;
-          max_temp = 86;
+          low_temp = 50;
+          high_temp = 68;
+          max_temp = 82;
           polling_interval = 2;
         };
       };
 
-      # Gestão de energia e temperatura
-      tlp.enable = true;
+      # Gestão de energia e temperatura (TLP com governors otimizados para Core 2 Duo)
+      tlp = {
+        enable = true;
+        settings = {
+          CPU_SCALING_GOVERNOR_ON_AC = "schedutil";
+          CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+          CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+          CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+          SATA_LINKPWR_ON_AC = "med_power_with_dipm";
+          SATA_LINKPWR_ON_BAT = "min_power";
+          SCHED_POWERSAVE_ON_BAT = 1;
+        };
+      };
+
       thermald.enable = false; # Desativado: usa Intel DPTF (Sandy Bridge+). Penryn/ICH8-M não suporta.
-      earlyoom.enable = true;
+      earlyoom = {
+        enable = true;
+        freeMemThreshold = 5;
+        freeSwapThreshold = 10;
+      };
       irqbalance.enable = true;
       acpid.enable = true;
 
@@ -163,6 +179,12 @@ in
         variant = "mac";
         options = "terminate:ctrl_alt_bksp";
       };
+    };
+
+    # Variáveis de aceleração gráfica para Mesa / Nouveau
+    environment.sessionVariables = {
+      LIBVA_DRIVER_NAME = "nouveau";
+      VDPAU_DRIVER = "nouveau";
     };
 
     # --- Rede Wi-Fi & Fixes de Repetidor ---
