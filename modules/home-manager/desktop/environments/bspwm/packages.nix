@@ -35,16 +35,11 @@ in
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # Window Manager & Utilities
-      sxhkd
-      rofi
-      polybar
-      picom
-      dunst
+      # Utilitários e Desktop
       feh
       (nixGLWrapper alacritty)
       thunar-with-plugins
-      xfce.tumbler
+      tumbler
       xarchiver
       file-roller
 
