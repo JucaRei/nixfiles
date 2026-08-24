@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkForce;
 in
@@ -28,7 +33,7 @@ in
       graphics.cards = {
         enable = true;
         acceleration = true;
-        gpu = "nvidia-legacy"; # NVIDIA GeForce 8600M GT (340.xx legacy)
+        gpu = "nvidia-legacy"; # NVIDIA GeForce 8600M GT (driver proprietário 340.xx)
       };
 
       # Firmware redistribuível (essencial para Wi-Fi Broadcom e Microcode Intel)
@@ -59,7 +64,10 @@ in
           "applesmc"
           "btrfs"
         ];
-        kernelModules = [ "applesmc" "hid_apple" ];
+        kernelModules = [
+          "applesmc"
+          "hid_apple"
+        ];
       };
 
       # Módulos carregados para o hardware do MacBook Pro 4,1
@@ -99,9 +107,9 @@ in
 
       # Tuning de Memória Virtual para os 6GB RAM (Canal Assimétrico)
       kernel.sysctl = {
-        "vm.swappiness" = 100;              # Com ZRAM: preferir comprimir RAM antes de matar processos
+        "vm.swappiness" = 100; # Com ZRAM: preferir comprimir RAM antes de matar processos
         "vm.vfs_cache_pressure" = 50;
-        "vm.page-cluster" = 0;              # Crítico para ZRAM: evita leitura em bloco desnecessária
+        "vm.page-cluster" = 0; # Crítico para ZRAM: evita leitura em bloco desnecessária
         "vm.dirty_background_ratio" = 5;
         "vm.dirty_ratio" = 15;
         "vm.dirty_writeback_centisecs" = 1500;
@@ -115,7 +123,7 @@ in
       enable = true;
       algorithm = "lz4";
       memoryPercent = 75; # ~4.5 GB de ZRAM (compactados) — suficiente para os 6 GB RAM
-      priority = 100;    # Maior prioridade: kernel usa ZRAM antes do swapfile em disco
+      priority = 100; # Maior prioridade: kernel usa ZRAM antes do swapfile em disco
     };
 
     # --- Serviços de Hardware do MacBook Pro ---
@@ -160,7 +168,7 @@ in
       networkmanager = {
         enable = true;
         wifi.scanRandMacAddress = false; # Fix: repetidores rejeitam MAC aleatório
-        wifi.powersave = false;          # Fix: evita desconexões em repetidores
+        wifi.powersave = false; # Fix: evita desconexões em repetidores
       };
     };
 
@@ -170,9 +178,9 @@ in
     # --- Pacotes do Sistema ---
     environment.systemPackages = with pkgs; [
       brightnessctl # Controle de brilho da tela e luz do teclado
-      pamixer       # Controle de volume CLI
-      pavucontrol   # Controle de volume GUI
-      ffmpeg        # Codecs de vídeo/áudio para YouTube
+      pamixer # Controle de volume CLI
+      pavucontrol # Controle de volume GUI
+      ffmpeg # Codecs de vídeo/áudio para YouTube
       libva-utils
       vdpauinfo
       mesa-demos

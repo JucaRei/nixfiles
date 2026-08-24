@@ -60,11 +60,13 @@
       };
     };
 
-  # Garante a criação do swapfile no BTRFS antes do swap.target
+  # Garante a criação do swapfile no BTRFS antes do swap.target sem causar ciclos de dependência
   systemd.services.btrfs-swapfile-init = {
     description = "Create BTRFS swapfile on @swap if not present";
+    unitConfig.DefaultDependencies = false;
+    after = [ "local-fs.target" ];
     before = [ "swap.target" ];
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = [ "swap.target" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;

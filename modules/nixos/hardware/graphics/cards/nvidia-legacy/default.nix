@@ -1,4 +1,9 @@
-{ config, lib, pkgs ? pkgs.oldstable, ... }:
+{
+  config,
+  lib,
+  pkgs ? pkgs.oldstable,
+  ...
+}:
 let
   inherit (lib) mkDefault mkIf mkForce;
   device = config.hardware.graphics.cards;
@@ -10,33 +15,22 @@ in
         "nouveau"
         "nvidiafb"
       ];
+      extraModulePackages = [
+        config.boot.kernelPackages.nvidiaPackages.legacy_340
+      ];
       kernelModules = [
         "nvidia"
-        "nvidia_modeset"
-        "nvidia_uvm"
-        "nvidia_drm"
-        "i2c-nvidia_gpu"
       ];
     };
 
     hardware = {
       nvidia = {
-        package =
-          let
-            base = config.boot.kernelPackages.nvidiaPackages.legacy_340;
-          in
-          base // {
-            mod = base;
-            bin = base;
-            out = base;
-            settings = null;
-            open = null;
-            persistenced = null;
-          };
+        package = config.boot.kernelPackages.nvidiaPackages.legacy_340;
+        open = false;
         nvidiaSettings = false;
-        modesetting.enable = true;
+        modesetting.enable = false; # Crítico: driver 340.xx não possui nvidia_drm/nvidia_modeset/nvidia_uvm
+        powerManagement.enable = false;
         powerManagement.finegrained = false;
-        # forceFullCompositionPipeline = true;
       };
       graphics = {
         enable = true;

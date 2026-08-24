@@ -1,10 +1,7 @@
-{ config, lib, pkgs, inputs, useNixGL ? false, hostname, ... }:
+{ config, lib, pkgs, inputs, useNixGL ? false, ... }:
 let
-  inherit (lib) mkForce mkIf mkEnableOption;
+  inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.editors.vscode;
-
-  backend = config.desktop.display-servers.backend or "x11";
-  isWayland = backend == "wayland";
 
   nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
@@ -60,6 +57,7 @@ in
         '';
 
         afterClean = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p "${settingsDir}"
           ${pkgs.coreutils}/bin/cat ${(pkgs.formats.json {}).generate "settings.json" userSettings} > "${settingsDir}/settings.json"
         '';
       };
