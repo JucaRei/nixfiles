@@ -9,7 +9,7 @@ let
   inherit (lib.types) bool;
   cfg = config.desktop.bspwm.polybar;
 
-  # --- Script de Controle de Mídia via playerctl ---
+  # --- Script de Controle de Mídia (Playerctl - gh0stzk style) ---
   mediaScript = pkgs.writeShellScript "polybar-media" ''
     export PATH="${pkgs.playerctl}/bin:${pkgs.coreutils}/bin:$PATH"
     if ! command -v playerctl >/dev/null 2>&1; then
@@ -19,7 +19,7 @@ let
     if [ "$status" = "Playing" ]; then
       artist=$(playerctl metadata artist 2>/dev/null)
       title=$(playerctl metadata title 2>/dev/null)
-      echo "󰎈 $artist - $title" | cut -c1-35
+      echo "󰎈 $artist - $title" | cut -c1-32
     elif [ "$status" = "Paused" ]; then
       echo "󰏤 Pausado"
     else
@@ -27,7 +27,7 @@ let
     fi
   '';
 
-  # --- Script de Status do Bluetooth ---
+  # --- Script de Status do Bluetooth (gh0stzk style) ---
   bluetoothScript = pkgs.writeShellScript "polybar-bluetooth" ''
     export PATH="${pkgs.bluez}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.coreutils}/bin:$PATH"
     if ! command -v bluetoothctl >/dev/null 2>&1; then
@@ -48,7 +48,7 @@ let
     fi
   '';
 
-  # --- Menu / Toggle de Bluetooth ---
+  # --- Menu Interativo de Bluetooth (Rofi) ---
   rofiBluetoothMenu = pkgs.writeShellScript "rofi-bluetooth" ''
     export PATH="${pkgs.bluez}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.coreutils}/bin:$PATH"
     
@@ -61,7 +61,7 @@ let
 
     devices=$(bluetoothctl devices 2>/dev/null | awk '{$1=""; $2=""; print "󰂱 " $0}' | sed 's/^[ \t]*//')
 
-    chosen=$(echo -e "$toggle_text\n󰑐  Parear novos dispositivos\n$devices" | rofi \
+    chosen=$(echo -e "$toggle_text\n󰑐  Buscar novos dispositivos\n$devices" | rofi \
       -dmenu \
       -i \
       -p "Bluetooth" \
@@ -78,7 +78,7 @@ let
     elif [[ "$chosen" =~ "Ativar" ]]; then
       bluetoothctl power on
       dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 -t 1500 "Bluetooth ativado"
-    elif [[ "$chosen" =~ "Parear" ]]; then
+    elif [[ "$chosen" =~ "Buscar" ]]; then
       bluetoothctl scan on &
       dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "Buscando dispositivos Bluetooth..."
     elif [[ "$chosen" =~ "󰂱" ]]; then
@@ -91,14 +91,12 @@ let
     fi
   '';
 
-  # --- Menu Interativo de Redes Wi-Fi com Rofi ---
+  # --- Menu Interativo de Wi-Fi (gh0stzk style com Rofi) ---
   rofiWifiMenu = pkgs.writeShellScript "rofi-wifi-menu" ''
     export PATH="${pkgs.networkmanager}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.gnugrep}/bin:${pkgs.coreutils}/bin:$PATH"
 
-    # Notificar início do escaneamento
     dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 -t 1500 "Escaneando redes Wi-Fi..."
 
-    # Obter lista de redes Wi-Fi formatadas
     wifi_list=$(nmcli --fields "SECURITY,SSID,BARS" device wifi list --rescan yes 2>/dev/null | sed 1d | sed -E "s/  +/ /g" | sed -E "s/^ *//" | grep -v "^--" | awk -F' ' '{
       sec=$1;
       bars=$NF;
@@ -117,7 +115,6 @@ let
       exit 0
     fi
 
-    # Seleção de Rede via Rofi
     chosen_line=$(echo -e "$wifi_list\n󰑐  Escanear novamente\n󰤮  Desconectar Wi-Fi" | rofi \
       -dmenu \
       -i \
@@ -139,21 +136,18 @@ let
       exec "$0"
     fi
 
-    # Extrair SSID limpo
     chosen_ssid=$(echo "$chosen_line" | awk -F'  ' '{print $2}' | sed 's/ \[.*//' | sed 's/^ *//;s/ *$//')
 
     if [ -n "$chosen_ssid" ]; then
-      # Verificar se a rede já é conhecida
       saved_conn=$(nmcli -g NAME connection show | grep -Fx "$chosen_ssid" || true)
       if [ -n "$saved_conn" ]; then
         dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
         if nmcli connection up "$chosen_ssid"; then
-          dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\" com sucesso!"
+          dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\"!"
         else
           dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Falha ao conectar a \"$chosen_ssid\""
         fi
       else
-        # Solicitar senha se for rede protegida
         if [[ "$chosen_line" =~ "󰌾" ]]; then
           wifi_pass=$(rofi -dmenu -password -p "Senha para $chosen_ssid" -theme-str 'window {width: 320px; border-radius: 12px;}')
           if [ -n "$wifi_pass" ]; then
@@ -165,7 +159,6 @@ let
             fi
           fi
         else
-          # Rede aberta
           dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
           nmcli device wifi connect "$chosen_ssid"
         fi
@@ -173,7 +166,7 @@ let
     fi
   '';
 
-  # --- Menu de Desligamento com Rofi ---
+  # --- Menu de Desligamento com Rofi (gh0stzk style) ---
   rofiPowerMenu = pkgs.writeShellScript "rofi-powermenu" ''
     export PATH="${pkgs.rofi}/bin:${pkgs.systemd}/bin:${pkgs.bspwm}/bin:${pkgs.coreutils}/bin:$PATH"
 
@@ -200,7 +193,7 @@ in
     enable = mkOption {
       type = bool;
       default = config.desktop.bspwm.enable;
-      description = "Enable modern polybar for bspwm";
+      description = "Enable gh0stzk-inspired modern polybar for bspwm";
     };
   };
 
@@ -225,7 +218,7 @@ in
         fi
       '';
       config = {
-        # --- Paleta Catppuccin Mocha ---
+        # --- Paleta de Cores (Catppuccin Mocha / gh0stzk style) ---
         "colors" = {
           base = "#1e1e2e";
           mantle = "#181825";
@@ -252,7 +245,7 @@ in
           transparent = "#00000000";
         };
 
-        # --- Barra Principal (Moderna & Elegante) ---
+        # --- Barra Principal ---
         "bar/main" = {
           width = "100%";
           height = "30";
@@ -286,7 +279,7 @@ in
           wm-restack = "bspwm";
         };
 
-        # --- Lançador de Aplicativos (Spotlight / Rofi) ---
+        # --- Lançador de Aplicativos (gh0stzk NixOS Pill) ---
         "module/launcher" = {
           type = "custom/text";
           format = "%{A1:${pkgs.rofi}/bin/rofi -show drun:}<label>%{A}";
@@ -298,7 +291,7 @@ in
           click-left = "${pkgs.rofi}/bin/rofi -show drun";
         };
 
-        # --- Workspaces do BSPWM (Pills Dinâmicos com Ícones) ---
+        # --- Workspaces do BSPWM (gh0stzk Rice Style) ---
         "module/bspwm" = {
           type = "internal/bspwm";
           pin-workspaces = true;
@@ -341,10 +334,12 @@ in
           label-fullscreen-foreground = "\${colors.mauve}";
         };
 
-        # --- Título da Janela Ativa ---
+        # --- Título da Janela Ativa (gh0stzk style) ---
         "module/xwindow" = {
           type = "internal/xwindow";
-          label = "%title:0:30:...%";
+          format-prefix = "󰣆 ";
+          format-prefix-foreground = "\${colors.sapphire}";
+          label = "%title:0:28:...%";
           label-foreground = "\${colors.subtext0}";
           label-padding = 1;
         };
@@ -361,7 +356,7 @@ in
           click-right = "${pkgs.playerctl}/bin/playerctl next";
         };
 
-        # --- Bluetooth ---
+        # --- Bluetooth (gh0stzk style) ---
         "module/bluetooth" = {
           type = "custom/script";
           exec = "${bluetoothScript}";
@@ -372,7 +367,7 @@ in
           click-left = "${rofiBluetoothMenu}";
         };
 
-        # --- Uso de CPU ---
+        # --- Uso de CPU (gh0stzk style) ---
         "module/cpu" = {
           type = "internal/cpu";
           interval = 2;
@@ -383,7 +378,7 @@ in
           label-foreground = "\${colors.text}";
         };
 
-        # --- Uso de Memória ---
+        # --- Uso de Memória (gh0stzk style) ---
         "module/memory" = {
           type = "internal/memory";
           interval = 2;
@@ -394,7 +389,7 @@ in
           label-foreground = "\${colors.text}";
         };
 
-        # --- Volume & Áudio ---
+        # --- Volume & Áudio (gh0stzk style) ---
         "module/pulseaudio" = {
           type = "internal/pulseaudio";
           use-ui-max = true;
@@ -418,7 +413,7 @@ in
           click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
         };
 
-        # --- Brilho da Tela ---
+        # --- Brilho da Tela (gh0stzk style) ---
         "module/backlight" = {
           type = "internal/backlight";
           card = "nv_backlight";
@@ -436,7 +431,7 @@ in
           ramp-foreground = "\${colors.yellow}";
         };
 
-        # --- Bateria ---
+        # --- Bateria (gh0stzk style) ---
         "module/battery" = {
           type = "internal/battery";
           full-at = 98;
@@ -477,7 +472,7 @@ in
           animation-charging-framerate = 750;
         };
 
-        # --- Rede com Download/Upload e Menu Interativo ---
+        # --- Rede com Download/Upload e Menu Interativo (gh0stzk style) ---
         "module/network" = {
           type = "internal/network";
           interface-type = "wireless";
@@ -504,7 +499,7 @@ in
           click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor";
         };
 
-        # --- Data & Hora ---
+        # --- Data & Hora (gh0stzk style) ---
         "module/date" = {
           type = "internal/date";
           interval = 1;
@@ -520,7 +515,7 @@ in
           label-foreground = "\${colors.text}";
         };
 
-        # --- Botão Power Menu ---
+        # --- Botão Power Menu (gh0stzk style) ---
         "module/powermenu" = {
           type = "custom/text";
           format = "%{A1:${rofiPowerMenu}:}<label>%{A}";

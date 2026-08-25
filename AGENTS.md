@@ -69,6 +69,7 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Não usar `hardware.nvidia`** — o módulo `hardware/video/nvidia.nix` do nixpkgs 25.05 exige `.mod`/`.open` que o legacy 340 não possui. Configurar via `boot.extraModulePackages` diretamente.
   - `xserver.videoDrivers = lib.mkForce []` — o módulo kernel carregado via `boot.extraModulePackages` é suficiente para o X11.
 - **Host `rocinante`** (MacBook Pro 4,1 - Early 2008): Ver [ROCINANTE.md](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/ROCINANTE.md) para documentação completa de hardware, problemas conhecidos e decisões de configuração.
+- **Estética Polybar e BSPWM**: Inspirada na suíte de rices [gh0stzk/dotfiles](https://github.com/gh0stzk/dotfiles), utilizando paleta Catppuccin Mocha com ícones Nerd Font coloridos, pills de workspaces (`󰮯`, `󰊠`, `󰀦`), indicadores de download/upload (`󰇚`, `󰕒`), menus interativos via Rofi (Wi-Fi, Bluetooth, Power Menu) e feedback visual OSD via Dunst.
 
 ---
 
