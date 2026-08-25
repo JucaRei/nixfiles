@@ -152,16 +152,18 @@ in
 
     # --- Serviços de Hardware do MacBook Pro ---
     services = {
-      # Controle inteligente das ventoinhas do MacBook Pro (curva térmica adaptada para Penryn)
+      # Controle térmico agressivo das ventoinhas do MacBook Pro (máximo acima de 60°C)
       mbpfan = {
         enable = true;
         settings.general = {
           min_fan1_speed = 2000;
           max_fan1_speed = 6000;
-          low_temp = 50;
-          high_temp = 68;
-          max_temp = 82;
-          polling_interval = 2;
+          min_fan2_speed = 2000;
+          max_fan2_speed = 6000;
+          low_temp = 45;
+          high_temp = 55;
+          max_temp = 60; # Acima de 60°C opera na rotação máxima (6000 RPM)
+          polling_interval = 1;
         };
       };
 
