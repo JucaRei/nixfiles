@@ -22,10 +22,9 @@ in
     services.picom = {
       enable = true;
       package = pkgs.picom;
-      # nvidia-legacy 340 e Nouveau não suportam GLX estável — usar xrender
-      # GPUs modernas (ex: PRIME, Intel) podem usar glx para melhor desempenho
+      # nvidia-legacy 340 e Nouveau usam xrender para estabilidade; GPUs modernas usam glx
       backend = if isNouveauOrLegacy then "xrender" else "glx";
-      vSync = !isNouveauOrLegacy; # VSync só funciona bem com glx em GPUs modernas
+      vSync = !isNouveauOrLegacy;
 
       shadow = true;
       shadowOpacity = 0.6;
@@ -51,7 +50,6 @@ in
         ];
 
         active-opacity = 1.0;
-        # Dimming em janelas inativas apenas em GPUs que suportam glx
         inactive-opacity = if isNouveauOrLegacy then 1.0 else 0.95;
         inactive-opacity-override = false;
         focus-exclude = [
@@ -61,10 +59,6 @@ in
         ];
 
         use-damage = true;
-      } // lib.optionalAttrs (!isNouveauOrLegacy) {
-        # Otimizações exclusivas do backend glx (GPUs modernas)
-        glx-no-stencil = true;
-        glx-no-rebind-pixmap = true;
       };
     };
   };
