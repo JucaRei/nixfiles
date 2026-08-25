@@ -95,6 +95,17 @@ in
             # Foco segue o ponteiro
             bspc config focus_follows_pointer true
 
+            # Configurar Touchpad: Natural Scrolling (estilo macOS), Tapping e Clickfinger
+            if command -v ${pkgs.xorg.xinput}/bin/xinput >/dev/null 2>&1; then
+              for id in $(${pkgs.xorg.xinput}/bin/xinput list --id-only 2>/dev/null); do
+                if ${pkgs.xorg.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -q "libinput Natural Scrolling Enabled"; then
+                  ${pkgs.xorg.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 1 2>/dev/null || true
+                  ${pkgs.xorg.xinput}/bin/xinput set-prop "$id" "libinput Tapping Enabled" 1 2>/dev/null || true
+                  ${pkgs.xorg.xinput}/bin/xinput set-prop "$id" "libinput Click Method Enabled" 0 1 2>/dev/null || true
+                fi
+              done
+            fi
+
             # Regras customizadas adicionais
             ${lib.concatStringsSep "\n" cfg.rules}
 

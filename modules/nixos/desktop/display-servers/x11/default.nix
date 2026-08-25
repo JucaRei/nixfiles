@@ -1,7 +1,6 @@
-{ lib, config, pkgs, desktop, hostname, ... }:
+{ lib, config, pkgs, hostname, ... }:
 let
   inherit (lib) mkIf mkOptionDefault;
-  graphics = config.hardware.graphics.cards;
   backend = config.desktop.display-servers.backend;
 in
 {
@@ -40,6 +39,18 @@ in
             variant = lib.mkDefault "mac,";
             model = lib.mkDefault "pc104";
           };
+      };
+
+      # Configuração global do Touchpad (Natural Scrolling, Tapping, Clickfinger)
+      libinput = {
+        enable = mkOptionDefault true;
+        touchpad = {
+          naturalScrolling = true;
+          tapping = true;
+          clickMethod = "clickfinger";
+          scrollMethod = "twofinger";
+          disableWhileTyping = true;
+        };
       };
     };
   };
