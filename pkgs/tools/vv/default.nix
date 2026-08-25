@@ -18,7 +18,7 @@ stdenvNoCC.mkDerivation rec {
     sha256 = "05mm6al5rxln6y5xyywm37rbb0ncgdvb1ghb97m46vfnszyd12h6";
   };
 
-  nativeBuildInputs = [makeWrapper];
+  nativeBuildInputs = [ makeWrapper ];
 
   installPhase = ''
     runHook preInstall
@@ -28,13 +28,18 @@ stdenvNoCC.mkDerivation rec {
 
   postFixup = ''
     wrapProgram $out/bin/vv \
-      --prefix PATH : ${lib.makeBinPath [file imagemagick]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          file
+          imagemagick
+        ]
+      }
   '';
 
   meta = {
     homepage = "https://github.com/hackerb9/vv";
     description = "A simple image viewer for video terminals capable of sixel graphics.";
     license = lib.licenses.gpl3;
-    maintainers = [lib.maintainers.iynaix];
+    maintainers = [ lib.maintainers.iynaix ];
   };
 }

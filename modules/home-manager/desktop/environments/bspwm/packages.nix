@@ -1,4 +1,12 @@
-{ config, lib, pkgs, useNixGL ? false, osConfig ? null, username ? "juca", ... }:
+{
+  config,
+  lib,
+  pkgs,
+  useNixGL ? false,
+  osConfig ? null,
+  username ? "juca",
+  ...
+}:
 let
   inherit (lib) mkOption mkIf optionals;
   inherit (lib.types) bool package;
@@ -26,50 +34,54 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      # Utilitários e Desktop
-      feh
-      (nixGLWrapper alacritty)
+    home.packages =
+      with pkgs;
+      [
+        # Utilitários e Desktop
+        feh
+        (nixGLWrapper alacritty)
 
-      # Áudio e Brilho
-      pavucontrol
-      pamixer
-      playerctl
-      brightnessctl
+        # Áudio e Brilho
+        pavucontrol
+        pamixer
+        playerctl
+        brightnessctl
 
-      # Temas e Fontes
-      catppuccin-gtk
-      papirus-icon-theme
-      catppuccin-cursors.mochaDark
-      inter
+        # Temas e Fontes
+        catppuccin-gtk
+        papirus-icon-theme
+        catppuccin-cursors.mochaDark
+        inter
 
-      # Clipboard e X11
-      xclip
-      xsel
-      xdotool
-      libnotify
-      networkmanagerapplet
-      pasystray
-      galculator
-      lxappearance
-    ] ++ optionals (!isNixOS) [
-      glibcLocales
-      at-spi2-atk
-      xinit
-      libxcomposite
-      libxinerama
-      xprop
-      libxcb
-      xdpyinfo
-      xkill
-      xsetroot
-      xwininfo
-      xrandr
-      xdg-utils
-      xdg-user-dirs
-      xdg-desktop-portal-gtk
-      dialog
-    ] ++ cfg.extraPackages;
+        # Clipboard e X11
+        xclip
+        xsel
+        xdotool
+        libnotify
+        networkmanagerapplet
+        pasystray
+        galculator
+        lxappearance
+      ]
+      ++ optionals (!isNixOS) [
+        glibcLocales
+        at-spi2-atk
+        xinit
+        libxcomposite
+        libxinerama
+        xprop
+        libxcb
+        xdpyinfo
+        xkill
+        xsetroot
+        xwininfo
+        xrandr
+        xdg-utils
+        xdg-user-dirs
+        xdg-desktop-portal-gtk
+        dialog
+      ]
+      ++ cfg.extraPackages;
 
     xdg.enable = true;
 

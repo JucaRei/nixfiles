@@ -1,4 +1,10 @@
-{ config, lib, pkgs, notVM, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  notVM,
+  ...
+}:
 let
   inherit (lib) mkDefault mkIf;
   hasNvidia = lib.elem "nvidia" config.services.xserver.videoDrivers;

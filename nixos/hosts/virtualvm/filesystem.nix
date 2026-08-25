@@ -1,19 +1,43 @@
 _: {
   fileSystems =
     let
-      btrfsOpts = [ "rw" "noatime" "ssd" "compress-force=zstd:8" "space_cache=v2" "commit=120" "discard=async" ];
-      btrfsOpts2 = [ "rw" "noatime" "ssd" "compress-force=zstd:15" "space_cache=v2" "commit=120" "discard=async" ];
+      btrfsOpts = [
+        "rw"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:8"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
+      btrfsOpts2 = [
+        "rw"
+        "noatime"
+        "ssd"
+        "compress-force=zstd:15"
+        "space_cache=v2"
+        "commit=120"
+        "discard=async"
+      ];
     in
     {
       "/boot" = {
         device = "/dev/disk/by-label/SYSTEM";
         fsType = "ext4";
-        options = [ "rw" "relatime" ];
+        options = [
+          "rw"
+          "relatime"
+        ];
       };
       "/boot/efi" = {
         device = "/dev/disk/by-label/ESP";
         fsType = "vfat";
-        options = [ "defaults" "umask=0077" "noatime" "nodiratime" ];
+        options = [
+          "defaults"
+          "umask=0077"
+          "noatime"
+          "nodiratime"
+        ];
       };
       "/" = {
         device = "/dev/disk/by-label/virtualvm";

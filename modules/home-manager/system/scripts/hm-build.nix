@@ -12,4 +12,3 @@ pkgs.writeScriptBin "hm-build" ''
     ${pkgs.uutils-coreutils-noprefix}/bin/echo "ERROR! No nixfiles found in $HOME/.dotfiles/nixfiles"
   fi
 ''
-

@@ -1,10 +1,17 @@
-{ config, lib, pkgs, desktop ? null, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  desktop ? null,
+  ...
+}:
 let
   inherit (lib) mkIf getExe;
   terminalBin =
-    if config.programs ? alacritty && config.programs.alacritty.enable
-    then getExe config.programs.alacritty.package
-    else "${pkgs.xfce4-terminal or pkgs.alacritty}/bin/xfce4-terminal";
+    if config.programs ? alacritty && config.programs.alacritty.enable then
+      getExe config.programs.alacritty.package
+    else
+      "${pkgs.xfce4-terminal or pkgs.alacritty}/bin/xfce4-terminal";
 in
 {
   config = mkIf (desktop == "xfce4") {
@@ -127,55 +134,59 @@ in
       };
     };
 
-    home = let gio = pkgs.gnome.gvfs; in {
-      packages = with pkgs; [
-        # File Manager Helpers & Search
-        xfce4-exo
-        catfish
+    home =
+      let
+        gio = pkgs.gnome.gvfs;
+      in
+      {
+        packages = with pkgs; [
+          # File Manager Helpers & Search
+          xfce4-exo
+          catfish
 
-        # Temas e Fontes
-        catppuccin-gtk
-        papirus-icon-theme
-        catppuccin-cursors.mochaDark
-        inter
+          # Temas e Fontes
+          catppuccin-gtk
+          papirus-icon-theme
+          catppuccin-cursors.mochaDark
+          inter
 
-        # Utilitários e Plugins do Painel
-        xfce4-whiskermenu-plugin
-        xfce4-pulseaudio-plugin
-        xfce4-screenshooter
-        xfce4-clipman-plugin
-        xfce4-taskmanager
-        xfce4-sensors-plugin
-        xfce4-cpufreq-plugin
-        xfce4-netload-plugin
-        xfce4-docklike-plugin
-        ristretto
-        mousepad
-        pavucontrol
-        networkmanagerapplet
+          # Utilitários e Plugins do Painel
+          xfce4-whiskermenu-plugin
+          xfce4-pulseaudio-plugin
+          xfce4-screenshooter
+          xfce4-clipman-plugin
+          xfce4-taskmanager
+          xfce4-sensors-plugin
+          xfce4-cpufreq-plugin
+          xfce4-netload-plugin
+          xfce4-docklike-plugin
+          ristretto
+          mousepad
+          pavucontrol
+          networkmanagerapplet
 
-        # Arquivos compactados e Thumbnails adicionais
-        zip
-        unzip
-        libgepub
-        ffmpegthumbnailer
+          # Arquivos compactados e Thumbnails adicionais
+          zip
+          unzip
+          libgepub
+          ffmpegthumbnailer
 
-        # Ferramentas do sistema
-        gnome-keyring
-        gparted
-        galculator
-        libnotify
-      ];
+          # Ferramentas do sistema
+          gnome-keyring
+          gparted
+          galculator
+          libnotify
+        ];
 
-      sessionVariables = {
-        GIO_EXTRA_MODULES = "${gio}/lib/gio/modules";
+        sessionVariables = {
+          GIO_EXTRA_MODULES = "${gio}/lib/gio/modules";
+        };
+
+        file = {
+          ".config/xfce4/helpers.rc".text = ''
+            TerminalEmulatorDismissed=true
+          '';
+        };
       };
-
-      file = {
-        ".config/xfce4/helpers.rc".text = ''
-          TerminalEmulatorDismissed=true
-        '';
-      };
-    };
   };
 }

@@ -1,6 +1,14 @@
-{ pkgs, polybar, cava, ... }:
+{
+  pkgs,
+  polybar,
+  cava,
+  ...
+}:
 pkgs.writeShellApplication {
   name = "cava-polybar";
-  runtimeInputs = [ polybar cava ];
+  runtimeInputs = [
+    polybar
+    cava
+  ];
   text = builtins.readFile ./cava.sh;
 }

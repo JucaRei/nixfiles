@@ -1,4 +1,8 @@
-{ writeShellApplication, uutils-coreutils-noprefix, which, }:
+{
+  writeShellApplication,
+  uutils-coreutils-noprefix,
+  which,
+}:
 writeShellApplication {
   name = "whereis-nix";
 
@@ -17,6 +21,9 @@ writeShellApplication {
     readlink -f "$(which "$program_name")"
   '';
 
-  runtimeInputs = [ uutils-coreutils-noprefix which ];
+  runtimeInputs = [
+    uutils-coreutils-noprefix
+    which
+  ];
 }
 # nix-build -E 'with import <nixpkgs> {}; callPackage ./default.nix {}'

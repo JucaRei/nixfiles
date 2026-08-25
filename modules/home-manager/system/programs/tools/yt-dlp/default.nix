@@ -1,4 +1,10 @@
-{ config, pkgs, lib, username, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  username,
+  ...
+}:
 let
   inherit (lib) mkEnableOption mkIf mdDoc;
   inherit (lib.types) bool;
@@ -6,8 +12,9 @@ let
 in
 {
   options = {
-    system.programs.tools.yt-dlp.enable =
-      mkEnableOption (mdDoc "Enable yt-dlp with custom aliases and aria2 integration.");
+    system.programs.tools.yt-dlp.enable = mkEnableOption (
+      mdDoc "Enable yt-dlp with custom aliases and aria2 integration."
+    );
   };
 
   config = mkIf cfg.enable {

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkIf getExe;
   cfg = config.system.programs.shells;
@@ -10,10 +15,26 @@ in
         enable = true;
         enableCompletion = true;
         enableVteIntegration = true;
-        historyControl = [ "erasedups" "ignoredups" "ignorespace" ];
+        historyControl = [
+          "erasedups"
+          "ignoredups"
+          "ignorespace"
+        ];
         historyFile = "$HOME/.bash_history";
         historyFileSize = 10000;
-        historyIgnore = [ "ls" "pwd" "clear" "cd" "exit" "kill" "htop" "top" "btop" "btm" "neofetch" ];
+        historyIgnore = [
+          "ls"
+          "pwd"
+          "clear"
+          "cd"
+          "exit"
+          "kill"
+          "htop"
+          "top"
+          "btop"
+          "btm"
+          "neofetch"
+        ];
         initExtra = ''
           if [ -d "$HOME/.bashrc.d" ] ; then
             for script in $HOME/.bashrc.d/* ; do

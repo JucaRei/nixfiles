@@ -5,4 +5,5 @@
   })
   {
     src = ./.;
-  }).defaultNix
+  }
+).defaultNix

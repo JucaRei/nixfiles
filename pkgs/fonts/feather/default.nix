@@ -1,4 +1,9 @@
-{ stdenv, fetchzip, unzip, lib }:
+{
+  stdenv,
+  fetchzip,
+  unzip,
+  lib,
+}:
 let
   version = "1.0";
   pname = "feather-font";
@@ -12,7 +17,10 @@ stdenv.mkDerivation {
   };
 
   buildInputs = [ unzip ];
-  phases = [ "unpackPhase" "installPhase" ];
+  phases = [
+    "unpackPhase"
+    "installPhase"
+  ];
 
   installPhase = ''
     mkdir -p $out/share/fonts/truetype

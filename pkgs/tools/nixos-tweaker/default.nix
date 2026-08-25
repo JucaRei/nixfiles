@@ -1,4 +1,11 @@
-{ writeShellScriptBin, util-linux, procps, coreutils, systemdMinimal, ... }:
+{
+  writeShellScriptBin,
+  util-linux,
+  procps,
+  coreutils,
+  systemdMinimal,
+  ...
+}:
 writeShellScriptBin "nixos-tweaker" ''
   #!/usr/bin/env bash
 

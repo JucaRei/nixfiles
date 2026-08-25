@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkIf mkEnableOption mkOption;
   inherit (lib.types) package;
@@ -41,8 +46,15 @@ in
       exec = "antigravity %F";
       icon = "code";
       terminal = false;
-      categories = [ "Development" "IDE" "TextEditor" ];
-      mimeType = [ "text/plain" "inode/directory" ];
+      categories = [
+        "Development"
+        "IDE"
+        "TextEditor"
+      ];
+      mimeType = [
+        "text/plain"
+        "inode/directory"
+      ];
     };
   };
 }

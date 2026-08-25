@@ -1,7 +1,26 @@
-{ config, lib, pkgs, username, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 let
-  inherit (lib) mkOption mkIf mkDefault concatStringsSep optionalString length optionals;
-  inherit (lib.types) bool listOf str enum;
+  inherit (lib)
+    mkOption
+    mkIf
+    mkDefault
+    concatStringsSep
+    optionalString
+    length
+    optionals
+    ;
+  inherit (lib.types)
+    bool
+    listOf
+    str
+    enum
+    ;
   cfg = config.nixos.services.virt-manager;
   user = "${username}";
 in
@@ -19,7 +38,10 @@ in
         description = "The hardware IDs to pass through to a virtual machine.";
       };
       platform = mkOption {
-        type = enum [ "amd" "intel" ];
+        type = enum [
+          "amd"
+          "intel"
+        ];
         default = "intel";
         description = "Which CPU platform the machine is using.";
       };
@@ -54,34 +76,40 @@ in
             softdep amdgpu pre: vfio vfio-pci
             options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
           '')
-        else if (config.hardware.graphics.cards.gpu == "nvidia" || config.hardware.graphics.cards.gpu == "hybrid-nvidia") then
+        else if
+          (
+            config.hardware.graphics.cards.gpu == "nvidia"
+            || config.hardware.graphics.cards.gpu == "hybrid-nvidia"
+          )
+        then
           (optionalString (length cfg.vfioIds > 0) ''
             softdep nvidia pre: vfio vfio-pci
             options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
           '')
         else
-        # (cfg.platform == "intel")
-        #   (optionalString (length cfg.vfioIds > 0) ''
-        #     softdep snd_hda_intel pre: vfio vfio-pci
-        #     softdep snd_hda_codec_hdmi pre: vfio vfio-pci
-        #     softdep i915 pre: vfio vfio-pci
-        #     options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
-        #   '')
-          (cfg.platform == "intel")
-            (optionalString (length cfg.vfioIds > 0) ''
+          # (cfg.platform == "intel")
+          #   (optionalString (length cfg.vfioIds > 0) ''
+          #     softdep snd_hda_intel pre: vfio vfio-pci
+          #     softdep snd_hda_codec_hdmi pre: vfio vfio-pci
+          #     softdep i915 pre: vfio vfio-pci
+          #     options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
+          #   '')
+          (cfg.platform == "intel") (
+            optionalString (length cfg.vfioIds > 0) ''
               softdep drm pre: vfio vfio-pci
               options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
-            '')
-        # ++ mkIf (cfg.platform == "intel")
-        #   (optionalString (length cfg.vfioIds > 0) ''
-        #     softdep i915 pre: vfio vfio-pci
-        #     options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
-        #   '')
-        # ++
-        # mkIf (config.hardware.graphics.cards.gpu == "nvidia" || config.hardware.graphics.cards.gpu == "hybrid-nvidia") (optionalString (length cfg.vfioIds > 0) ''
-        #   softdep drm pre: vfio vfio-pci
-        #   options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
-        # '')
+            ''
+          )
+      # ++ mkIf (cfg.platform == "intel")
+      #   (optionalString (length cfg.vfioIds > 0) ''
+      #     softdep i915 pre: vfio vfio-pci
+      #     options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
+      #   '')
+      # ++
+      # mkIf (config.hardware.graphics.cards.gpu == "nvidia" || config.hardware.graphics.cards.gpu == "hybrid-nvidia") (optionalString (length cfg.vfioIds > 0) ''
+      #   softdep drm pre: vfio vfio-pci
+      #   options vfio-pci ids=${concatStringsSep "," cfg.vfioIds}
+      # '')
       ;
     };
 
@@ -94,17 +122,22 @@ in
         enable = true;
         profiles = {
           user = {
-            databases = [{
-              settings = {
-                "org/virt-manager/virt-manager" = {
-                  xmleditor-enabled = true;
+            databases = [
+              {
+                settings = {
+                  "org/virt-manager/virt-manager" = {
+                    xmleditor-enabled = true;
+                  };
+                  "org/virt-manager/virt-manager/connections" = {
+                    autoconnect = [ "qemu:///session" ];
+                    uris = [
+                      "qemu:///system"
+                      "qemu:///session"
+                    ];
+                  };
                 };
-                "org/virt-manager/virt-manager/connections" = {
-                  autoconnect = [ "qemu:///session" ];
-                  uris = [ "qemu:///system" "qemu:///session" ];
-                };
-              };
-            }];
+              }
+            ];
           };
         };
       };

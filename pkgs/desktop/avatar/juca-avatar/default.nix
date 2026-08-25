@@ -1,10 +1,14 @@
-{ stdenvNoCC
-, imagemagick
+{
+  stdenvNoCC,
+  imagemagick,
 }:
 
 stdenvNoCC.mkDerivation rec {
   name = "juca-avatar";
-  phases = [ "installPhase" "fixupPhase" ];
+  phases = [
+    "installPhase"
+    "fixupPhase"
+  ];
 
   src = ./juca.jpg;
 

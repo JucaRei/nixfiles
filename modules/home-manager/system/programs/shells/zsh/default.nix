@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkIf getExe;
   cfg = config.system.programs.shells;
@@ -12,11 +17,23 @@ in
       dotDir = "$HOME/.config/zsh";
       autosuggestion = {
         enable = true;
-        strategy = [ "history" "completion" "match_prev_cmd" ];
+        strategy = [
+          "history"
+          "completion"
+          "match_prev_cmd"
+        ];
       };
       syntaxHighlighting = {
         enable = false;
-        highlighters = [ "main" "brackets" "pattern" "cursor" "regexp" "root" "line" ];
+        highlighters = [
+          "main"
+          "brackets"
+          "pattern"
+          "cursor"
+          "regexp"
+          "root"
+          "line"
+        ];
         patterns = {
           unknown-token = "fg=magenta";
           WORDCHARS = "*?_-.[]~=&;!#$%^(){}<>";
@@ -28,7 +45,19 @@ in
         ignoreAllDups = true;
         ignoreDups = true;
         ignoreSpace = true;
-        ignorePatterns = [ "rm *" "pkill *" "cp *" "ls" "ll" "la" "pwd" "history" "exit" "clear" "cd" ];
+        ignorePatterns = [
+          "rm *"
+          "pkill *"
+          "cp *"
+          "ls"
+          "ll"
+          "la"
+          "pwd"
+          "history"
+          "exit"
+          "clear"
+          "cd"
+        ];
         share = true;
         size = 10000;
         save = 10000;
@@ -45,7 +74,11 @@ in
       # Plugins
       oh-my-zsh = {
         enable = true;
-        plugins = [ "git" "sudo" "z" ];
+        plugins = [
+          "git"
+          "sudo"
+          "z"
+        ];
         extraConfig = ''
           # don't sort git branches
           zstyle ':completion:*:git-checkout:*' sort false

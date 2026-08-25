@@ -21,11 +21,20 @@ stdenvNoCC.mkDerivation {
     hash = "sha256-6I41RpsB5dJBO4kMAKNtfmrRzbinrK4eyO22+bTOW9s=";
   };
 
-  nativeBuildInputs = [inkscape xcursorgen];
+  nativeBuildInputs = [
+    inkscape
+    xcursorgen
+  ];
 
-  postPatch = let
-    colors = [accentColor baseColor borderColor textColor];
-  in
+  postPatch =
+    let
+      colors = [
+        accentColor
+        baseColor
+        borderColor
+        textColor
+      ];
+    in
     ''
       patchShebangs build.sh
       substituteInPlace Makefile \
@@ -52,7 +61,7 @@ stdenvNoCC.mkDerivation {
     homepage = "https://github.com/clayrisser/breeze-hacked-cursor-theme";
     description = "Breeze Hacked cursor theme";
     license = licenses.gpl2;
-    maintainers = with maintainers; [anomalocaris];
+    maintainers = with maintainers; [ anomalocaris ];
     platforms = platforms.linux;
   };
 }

@@ -1,13 +1,14 @@
-{ stdenv
-, lib
-, fetchFromGitLab
-, glib
-, nautilus
-, gtksourceview5
-, libadwaita
-, autoreconfHook
-, wrapGAppsHook4
-, pkg-config
+{
+  stdenv,
+  lib,
+  fetchFromGitLab,
+  glib,
+  nautilus,
+  gtksourceview5,
+  libadwaita,
+  autoreconfHook,
+  wrapGAppsHook4,
+  pkg-config,
 }:
 
 stdenv.mkDerivation rec {
@@ -22,10 +23,18 @@ stdenv.mkDerivation rec {
     hash = "sha256-BivnmsACnpxdd6FV+ncdDd5ZwtJSSzNExoiCXeXIFkA=";
   };
 
-  nativeBuildInputs =
-    [ autoreconfHook glib nautilus pkg-config wrapGAppsHook4 ];
+  nativeBuildInputs = [
+    autoreconfHook
+    glib
+    nautilus
+    pkg-config
+    wrapGAppsHook4
+  ];
 
-  buildInputs = [ libadwaita gtksourceview5 ];
+  buildInputs = [
+    libadwaita
+    gtksourceview5
+  ];
 
   preConfigure = ''
     ./bootstrap

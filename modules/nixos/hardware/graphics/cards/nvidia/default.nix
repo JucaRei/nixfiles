@@ -1,6 +1,17 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
-  inherit (lib) mkForce mkIf mkMerge mkDefault optionals;
+  inherit (lib)
+    mkForce
+    mkIf
+    mkMerge
+    mkDefault
+    optionals
+    ;
   nvStable = config.boot.kernelPackages.nvidiaPackages.stable.version;
   nvBeta = config.boot.kernelPackages.nvidiaPackages.beta.version;
 
@@ -13,9 +24,10 @@ let
   '';
 
   nvidiaPackage =
-    if (lib.strings.versionOlder nvBeta nvStable)
-    then config.boot.kernelPackages.nvidiaPackages.stable
-    else config.boot.kernelPackages.nvidiaPackages.beta;
+    if (lib.strings.versionOlder nvBeta nvStable) then
+      config.boot.kernelPackages.nvidiaPackages.stable
+    else
+      config.boot.kernelPackages.nvidiaPackages.beta;
 
   device = config.hardware.graphics.cards;
   backend = config.programs.graphical.desktop.backend;
@@ -24,9 +36,10 @@ in
 {
 
   config = mkIf (device.gpu == "nvidia" || device.gpu == "hybrid-nvidia") {
-    services.xserver = mkMerge [{
-      videoDrivers = [ "nvidia" ];
-    }
+    services.xserver = mkMerge [
+      {
+        videoDrivers = [ "nvidia" ];
+      }
 
       # (mkIf (isWorkstation) {
       #   deviceSection = ''
@@ -55,7 +68,8 @@ in
           Option "OffTime" "0"
           Option "BlankTime" "0"
         '';
-      })];
+      })
+    ];
 
     boot = {
       blacklistedKernelModules = mkForce [
@@ -89,7 +103,12 @@ in
 
     environment = {
       sessionVariables = {
-        LIBVA_DRIVER_NAME = (mkIf (device.gpu == "nvidia" || (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable)) "nvidia");
+        LIBVA_DRIVER_NAME = (
+          mkIf (
+            device.gpu == "nvidia"
+            || (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable)
+          ) "nvidia"
+        );
       };
 
       # systemPackages = (optionals (config.hardware.nvidia.nvidiaSettings) with pkgs;
@@ -101,15 +120,16 @@ in
       # ]) ++ (optionals (device.gpu == "hybrid-nvidia") [ nvidia-offload ]) ;
 
       systemPackages =
-        if (config.hardware.nvidia.nvidiaSettings == true) then [
-          (pkgs.writeScriptBin "nvidia-settings" ''
-            #!${pkgs.stdenv.shell}
-            mkdir -p "$XDG_CONFIG_HOME/nvidia"
-            exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
-          ''
-          )
-        ] else false
-          ++ (optionals (device.gpu == "hybrid-nvidia") nvidia-offload);
+        if (config.hardware.nvidia.nvidiaSettings == true) then
+          [
+            (pkgs.writeScriptBin "nvidia-settings" ''
+              #!${pkgs.stdenv.shell}
+              mkdir -p "$XDG_CONFIG_HOME/nvidia"
+              exec ${config.boot.kernelPackages.nvidia_x11.settings}/bin/nvidia-settings --config="$XDG_CONFIG_HOME/nvidia/settings"
+            '')
+          ]
+        else
+          false ++ (optionals (device.gpu == "hybrid-nvidia") nvidia-offload);
     };
 
     hardware = {
@@ -122,7 +142,11 @@ in
             enableOffloadCmd = if (device.gpu == "hybrid-nvidia") then true else false;
           };
           # Make the Intel iGPU default. The NVIDIA Quadro is for CUDA/NVENC
-          reverseSync.enable = if (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable) then true else false;
+          reverseSync.enable =
+            if (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable) then
+              true
+            else
+              false;
         };
         powerManagement = {
           enable = mkDefault true;

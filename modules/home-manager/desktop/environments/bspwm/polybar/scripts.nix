@@ -42,7 +42,7 @@
   # --- Menu Interativo de Bluetooth (Rofi) ---
   rofiBluetoothMenu = pkgs.writeShellScript "rofi-bluetooth" ''
     export PATH="${pkgs.bluez}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.coreutils}/bin:$PATH"
-    
+
     power=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
     if [ "$power" = "yes" ]; then
       toggle_text="󰂲  Desativar Bluetooth"

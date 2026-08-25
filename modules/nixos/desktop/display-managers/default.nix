@@ -1,6 +1,12 @@
 { config, lib, ... }:
 let
-  inherit (lib) optional mkOption mkOptionDefault enum nullOr;
+  inherit (lib)
+    optional
+    mkOption
+    mkOptionDefault
+    enum
+    nullOr
+    ;
   cfg = config.desktop.display-managers;
 in
 {
@@ -13,7 +19,12 @@ in
 
   options = {
     desktop.display-managers.name = mkOption {
-      type = nullOr (enum [ "lightdm" "sddm" "regreet" "gdm" ]);
+      type = nullOr (enum [
+        "lightdm"
+        "sddm"
+        "regreet"
+        "gdm"
+      ]);
       default = null;
       description = "The selected display-manager for your desktop environment.";
     };

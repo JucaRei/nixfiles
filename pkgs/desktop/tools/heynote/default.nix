@@ -1,4 +1,10 @@
-{ lib, appimageTools, fetchurl, makeWrapper, writeScript, }:
+{
+  lib,
+  appimageTools,
+  fetchurl,
+  makeWrapper,
+  writeScript,
+}:
 let
   version = "2.1.1";
   pname = "heynote";

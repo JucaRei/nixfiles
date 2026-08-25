@@ -50,7 +50,11 @@ in
               end = "-16GiB";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "nixos" "-f" ]; # Override existing partition
+                extraArgs = [
+                  "-L"
+                  "nixos"
+                  "-f"
+                ]; # Override existing partition
                 # Subvolumes must set a mountpoint in order to be mounted,
                 # unless their parent is mounted
                 subvolumes = {

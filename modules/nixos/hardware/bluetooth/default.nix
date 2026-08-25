@@ -1,4 +1,11 @@
-{ config, lib, pkgs, isInstall, isWorkstation, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  isInstall,
+  isWorkstation,
+  ...
+}:
 let
   inherit (lib) mkIf;
 in

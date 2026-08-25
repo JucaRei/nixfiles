@@ -20,7 +20,13 @@ in
         description = "Enable terminal emulator configuration.";
       };
       name = mkOption {
-        type = nullOr (enum [ "alacritty" "kitty" "foot" "wezterm" "xfce4-terminal" ]);
+        type = nullOr (enum [
+          "alacritty"
+          "kitty"
+          "foot"
+          "wezterm"
+          "xfce4-terminal"
+        ]);
         default = null;
         description = "The selected terminal emulator for your desktop environment.";
       };

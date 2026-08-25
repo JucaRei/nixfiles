@@ -1,4 +1,10 @@
-{ lib, config, pkgs, hostname, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  hostname,
+  ...
+}:
 let
   inherit (lib) mkIf mkOptionDefault;
   backend = config.desktop.display-servers.backend;
@@ -28,17 +34,19 @@ in
           #   variant = "abnt2";
           #   model = "pc105";
           # };
-          if (hostname == "nitro") || (hostname == "virtual") then {
-            layout = lib.mkDefault "us,br";
-            variant = lib.mkDefault "alt-intl,abnt2";
-            options = lib.mkDefault "lv3:ralt_switch,grp_led:scroll";
-            model = lib.mkDefault "pc105";
-          }
-          else {
-            layout = lib.mkDefault "us";
-            variant = lib.mkDefault "mac,";
-            model = lib.mkDefault "pc104";
-          };
+          if (hostname == "nitro") || (hostname == "virtual") then
+            {
+              layout = lib.mkDefault "us,br";
+              variant = lib.mkDefault "alt-intl,abnt2";
+              options = lib.mkDefault "lv3:ralt_switch,grp_led:scroll";
+              model = lib.mkDefault "pc105";
+            }
+          else
+            {
+              layout = lib.mkDefault "us";
+              variant = lib.mkDefault "mac,";
+              model = lib.mkDefault "pc104";
+            };
       };
 
       # Configuração global do Touchpad (Natural Scrolling, Tapping, Clickfinger)

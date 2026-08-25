@@ -46,7 +46,10 @@ in
               size = "6G";
               content = {
                 type = "swap";
-                extraArgs = [ "-L" "swap" ];
+                extraArgs = [
+                  "-L"
+                  "swap"
+                ];
                 priority = 10;
               };
             };
@@ -55,7 +58,11 @@ in
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-L" "NixOS" "-f" ];
+                extraArgs = [
+                  "-L"
+                  "NixOS"
+                  "-f"
+                ];
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";

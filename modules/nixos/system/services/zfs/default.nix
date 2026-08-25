@@ -1,8 +1,18 @@
-{ config, lib, namespace, ... }:
+{
+  config,
+  lib,
+  namespace,
+  ...
+}:
 let
   cfg = config.nixos.services.zfs;
 
-  inherit (lib) mkEnableOption mkOption mkIf mkDefault;
+  inherit (lib)
+    mkEnableOption
+    mkOption
+    mkIf
+    mkDefault
+    ;
   inherit (lib.types) listOf str;
 in
 {

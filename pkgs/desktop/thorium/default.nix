@@ -1,72 +1,71 @@
-{ lib
-, stdenv
-, fetchurl
-, wrapGAppsHook
-, makeWrapper
-, dpkg
-, alsa-lib
-, at-spi2-atk
-, at-spi2-core
-, atk
-, cairo
-, cups
-, dbus
-, expat
-, vivaldi-ffmpeg-codecs
-, fontconfig
-, freetype
-, gdk-pixbuf
-, glib
-, adwaita-icon-theme
-, gsettings-desktop-schemas
-, gtk3
-, libuuid
-, libdrm
-, libX11
-, libXcomposite
-, libXcursor
-, libXdamage
-, libXext
-, libXfixes
-, libXi
-, libxkbcommon
-, libXrandr
-, libXrender
-, libXScrnSaver
-, libxshmfence
-, libXtst
-, mesa
-, nspr
-, nss
-, pango
-, pipewire
-, udev
-, wayland
-, xorg
-, zlib
-, xdg-utils
-, snappy
-, # command line arguments which are always set e.g "--disable-gpu"
-  commandLineArgs ? ""
-, # Necessary for USB audio devices.
-  pulseSupport ? stdenv.isLinux
-, libpulseaudio
-, # For GPU acceleration support on Wayland (without the lib it doesn't seem to work)
-  libGL
-, # For video acceleration via VA-API (--enable-features=VaapiVideoDecoder,VaapiVideoEncoder)
-  libvaSupport ? stdenv.isLinux
-, libva
-, enableVideoAcceleration ? libvaSupport
-, # For Vulkan support (--enable-features=Vulkan); disabled by default as it seems to break VA-API
-  vulkanSupport ? false
-, addOpenGLRunpath ? null
-, enableVulkan ? vulkanSupport
-,
+{
+  lib,
+  stdenv,
+  fetchurl,
+  wrapGAppsHook,
+  makeWrapper,
+  dpkg,
+  alsa-lib,
+  at-spi2-atk,
+  at-spi2-core,
+  atk,
+  cairo,
+  cups,
+  dbus,
+  expat,
+  vivaldi-ffmpeg-codecs,
+  fontconfig,
+  freetype,
+  gdk-pixbuf,
+  glib,
+  adwaita-icon-theme,
+  gsettings-desktop-schemas,
+  gtk3,
+  libuuid,
+  libdrm,
+  libX11,
+  libXcomposite,
+  libXcursor,
+  libXdamage,
+  libXext,
+  libXfixes,
+  libXi,
+  libxkbcommon,
+  libXrandr,
+  libXrender,
+  libXScrnSaver,
+  libxshmfence,
+  libXtst,
+  mesa,
+  nspr,
+  nss,
+  pango,
+  pipewire,
+  udev,
+  wayland,
+  xorg,
+  zlib,
+  xdg-utils,
+  snappy,
+  # command line arguments which are always set e.g "--disable-gpu"
+  commandLineArgs ? "",
+  # Necessary for USB audio devices.
+  pulseSupport ? stdenv.isLinux,
+  libpulseaudio,
+  # For GPU acceleration support on Wayland (without the lib it doesn't seem to work)
+  libGL,
+  # For video acceleration via VA-API (--enable-features=VaapiVideoDecoder,VaapiVideoEncoder)
+  libvaSupport ? stdenv.isLinux,
+  libva,
+  enableVideoAcceleration ? libvaSupport,
+  # For Vulkan support (--enable-features=Vulkan); disabled by default as it seems to break VA-API
+  vulkanSupport ? false,
+  addOpenGLRunpath ? null,
+  enableVulkan ? vulkanSupport,
 
 }:
 let
-  inherit
-    (lib)
+  inherit (lib)
     optional
     optionals
     makeLibraryPath
@@ -134,8 +133,7 @@ let
     ++ optional enableVulkan "Vulkan";
 
   # The feature disable is needed for VAAPI to work correctly: https://github.com/thorium/thorium-browser/issues/20935
-  disableFeatures =
-    optional enableVideoAcceleration "UseChromeOSDirectVideoDecoder";
+  disableFeatures = optional enableVideoAcceleration "UseChromeOSDirectVideoDecoder";
 in
 stdenv.mkDerivation rec {
   pname = "thorium";
@@ -158,7 +156,10 @@ stdenv.mkDerivation rec {
   dontPatchELF = true;
   doInstallCheck = true;
 
-  nativeBuildInputs = [ dpkg (wrapGAppsHook.override { inherit makeWrapper; }) ];
+  nativeBuildInputs = [
+    dpkg
+    (wrapGAppsHook.override { inherit makeWrapper; })
+  ];
 
   buildInputs = [
     # needed for GSETTINGS_SCHEMAS_PATH
@@ -226,27 +227,22 @@ stdenv.mkDerivation rec {
     gappsWrapperArgs+=(
       --prefix LD_LIBRARY_PATH : ${rpath}
       --prefix PATH : ${binpath}
-      --suffix PATH : ${lib.makeBinPath [xdg-utils vivaldi-ffmpeg-codecs]}
-      ${
-      optionalString (enableFeatures != []) ''
-        --add-flags "--enable-features=${
-          strings.concatStringsSep "," enableFeatures
-        }"
-      ''
-    }
-      ${
-      optionalString (disableFeatures != []) ''
-        --add-flags "--disable-features=${
-          strings.concatStringsSep "," disableFeatures
-        }"
-      ''
-    }
+      --suffix PATH : ${
+        lib.makeBinPath [
+          xdg-utils
+          vivaldi-ffmpeg-codecs
+        ]
+      }
+      ${optionalString (enableFeatures != [ ]) ''
+        --add-flags "--enable-features=${strings.concatStringsSep "," enableFeatures}"
+      ''}
+      ${optionalString (disableFeatures != [ ]) ''
+        --add-flags "--disable-features=${strings.concatStringsSep "," disableFeatures}"
+      ''}
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
-      ${
-      optionalString vulkanSupport ''
+      ${optionalString vulkanSupport ''
         --prefix XDG_DATA_DIRS  : "${addOpenGLRunpath.driverLink}/share"
-      ''
-    }
+      ''}
       --add-flags ${escapeShellArg commandLineArgs}
     )
   '';
@@ -269,7 +265,12 @@ stdenv.mkDerivation rec {
     '';
     sourceProvenance = with sourceTypes; [ binaryNativeCode ];
     license = licenses.mpl20;
-    maintainers = with maintainers; [ uskudnik rht jefflabonte nasirhm ];
+    maintainers = with maintainers; [
+      uskudnik
+      rht
+      jefflabonte
+      nasirhm
+    ];
     platforms = [ "x86_64-linux" ];
   };
 }

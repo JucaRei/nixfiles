@@ -1,4 +1,9 @@
-{ config, lib, username, ... }:
+{
+  config,
+  lib,
+  username,
+  ...
+}:
 let
   inherit (lib) mkOption mkIf types;
   inherit (lib.types) nullOr enum bool;
@@ -19,7 +24,10 @@ in
         description = "Enable audio system manager";
       };
       manager = mkOption {
-        type = nullOr (enum [ "pipewire" "pulseaudio" ]);
+        type = nullOr (enum [
+          "pipewire"
+          "pulseaudio"
+        ]);
         default = null;
         description = "Default audio system manager";
       };

@@ -1,7 +1,7 @@
-{ lib
-, buildGoModule
-, fetchFromGitHub
-,
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
 }:
 buildGoModule rec {
   pname = "ladder";
@@ -20,7 +20,10 @@ buildGoModule rec {
 
   vendorHash = "sha256-LnbmWpKJo7USTcl5RQknw3nGe4YZ7iNWnl/dtT43afk=";
 
-  ldflags = [ "-s" "-w" ];
+  ldflags = [
+    "-s"
+    "-w"
+  ];
 
   postInstall = ''
     mv $out/bin/cmd $out/bin/ladder

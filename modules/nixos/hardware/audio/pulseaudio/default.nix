@@ -1,4 +1,11 @@
-{ config, lib, pkgs, username, isWorkstation, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  isWorkstation,
+  ...
+}:
 let
   inherit (lib) mkIf mkForce;
   cfg = config.hardware.audio;
@@ -25,9 +32,10 @@ in
       # pulseaudio.zeroconf.discovery.enable = true;
       # pulseaudio.zeroconf.publish.enable = true;
 
-
       # Writes to /etc/pulse/daemon.conf
-      daemon.config = { default-sample-rate = 48000; };
+      daemon.config = {
+        default-sample-rate = 48000;
+      };
     };
 
     services.pipewire = {
@@ -40,10 +48,10 @@ in
       pkgs.pavucontrol
       pkgs.pamixer
     ]
-      # ++ (mkIf (isWorkstation) [
-      #   sound-volume-up
-      #   sound-volume-down
-      # ])
+    # ++ (mkIf (isWorkstation) [
+    #   sound-volume-up
+    #   sound-volume-down
+    # ])
     ;
 
     systemd.services.audio-off = {

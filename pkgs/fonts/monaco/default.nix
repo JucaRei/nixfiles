@@ -16,12 +16,13 @@ in
     homepage = "https://github.com/Karmenzind/monaco-nerd-fonts";
     maintainers = with maintainers; [ ];
   };
-}).overrideAttrs (_: {
-  postFetch = ''
-    unzip -j $downloadedFile
-    for i in *.ttf; do
-      local destname="$(echo "$i" | sed -E 's|-[[:digit:].]+\.ttf$|.ttf|')"
-      install -Dm 644 "$i" "$out/share/fonts/truetype/$destname"
-    done
-  '';
-})
+}).overrideAttrs
+  (_: {
+    postFetch = ''
+      unzip -j $downloadedFile
+      for i in *.ttf; do
+        local destname="$(echo "$i" | sed -E 's|-[[:digit:].]+\.ttf$|.ttf|')"
+        install -Dm 644 "$i" "$out/share/fonts/truetype/$destname"
+      done
+    '';
+  })

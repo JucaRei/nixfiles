@@ -14,8 +14,8 @@
   ncurses,
   writeText,
   conf ? null,
-  patches ? [],
-  extraLibs ? [],
+  patches ? [ ],
+  extraLibs ? [ ],
   nixosTests,
 }:
 stdenv.mkDerivation rec {
@@ -25,8 +25,7 @@ stdenv.mkDerivation rec {
 
   inherit src patches;
 
-  configFile =
-    lib.optionalString (conf != null) (writeText "config.def.h" conf);
+  configFile = lib.optionalString (conf != null) (writeText "config.def.h" conf);
 
   postPatch =
     lib.optionalString (conf != null) "cp ${configFile} config.def.h"
@@ -36,16 +35,28 @@ stdenv.mkDerivation rec {
 
   strictDeps = true;
 
-  makeFlags = ["PKG_CONFIG=${stdenv.cc.targetPrefix}pkg-config"];
+  makeFlags = [ "PKG_CONFIG=${stdenv.cc.targetPrefix}pkg-config" ];
 
-  nativeBuildInputs = [pkg-config ncurses fontconfig freetype];
-  buildInputs = [libX11 libXft harfbuzz gd glib] ++ extraLibs;
+  nativeBuildInputs = [
+    pkg-config
+    ncurses
+    fontconfig
+    freetype
+  ];
+  buildInputs = [
+    libX11
+    libXft
+    harfbuzz
+    gd
+    glib
+  ]
+  ++ extraLibs;
 
   preInstall = ''
     export TERMINFO=$out/share/terminfo
   '';
 
-  installFlags = ["PREFIX=$(out)"];
+  installFlags = [ "PREFIX=$(out)" ];
 
   passthru.tests.test = nixosTests.terminal-emulators.st;
 
@@ -53,7 +64,7 @@ stdenv.mkDerivation rec {
     homepage = "https://github.com/AlphaTechnolog/st";
     description = "snazzy terminal (suckless + lightweight)";
     license = licenses.mit;
-    maintainers = with maintainers; [alphatechnolog];
+    maintainers = with maintainers; [ alphatechnolog ];
     platforms = platforms.unix;
   };
 }

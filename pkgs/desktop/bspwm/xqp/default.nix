@@ -1,4 +1,9 @@
-{ pkgs, lib, stdenv, libX11 }:
+{
+  pkgs,
+  lib,
+  stdenv,
+  libX11,
+}:
 
 stdenv.mkDerivation rec {
   pname = "xqp";

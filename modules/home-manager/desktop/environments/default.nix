@@ -1,4 +1,11 @@
-{ config, lib, pkgs, osConfig ? null, isWorkstation, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  osConfig ? null,
+  isWorkstation,
+  ...
+}:
 let
   inherit (lib) mkIf optionals;
   isNixOS = osConfig != null;
@@ -13,20 +20,28 @@ in
   config = {
 
     home = {
-      packages = optionals (!isNixOS) [
-        (if (builtins ? currentTime && pkgs ? nixgl && pkgs.nixgl ? auto)
-         then pkgs.nixgl.auto.nixGLDefault
-         else (pkgs.writeShellScriptBin "nixGL" ''exec "$@"''))
-      ] ++ (with pkgs; [
+      packages =
+        optionals (!isNixOS) [
+          (
+            if (builtins ? currentTime && pkgs ? nixgl && pkgs.nixgl ? auto) then
+              pkgs.nixgl.auto.nixGLDefault
+            else
+              (pkgs.writeShellScriptBin "nixGL" ''exec "$@"'')
+          )
+        ]
+        ++ (with pkgs; [
 
-        font-search # show existent fonts
-        nerd-fonts.symbols-only
-      ]);
+          font-search # show existent fonts
+          nerd-fonts.symbols-only
+        ]);
 
       activation = {
         linkDestopApplications = mkIf (!isNixOS) {
           # Add Packages To System Menu by updating database
-          after = [ "writeBoundary" "createXdgUserDirectories" ];
+          after = [
+            "writeBoundary"
+            "createXdgUserDirectories"
+          ];
           before = [ ];
           data = "${pkgs.desktop-file-utils}/bin/update-desktop-database";
         };

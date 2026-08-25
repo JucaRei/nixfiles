@@ -1,4 +1,7 @@
-{ pkgs ? (import ./nixpkgs.nix) { }, ... }:
+{
+  pkgs ? (import ./nixpkgs.nix) { },
+  ...
+}:
 {
   teste = pkgs.mkShell {
     name = "Testing Shell";

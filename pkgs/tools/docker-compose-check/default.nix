@@ -1,10 +1,11 @@
-{ lib
-, stdenv
-, writeShellScript
-, systemd
-, util-linux
-, coreutils
-, ...
+{
+  lib,
+  stdenv,
+  writeShellScript,
+  systemd,
+  util-linux,
+  coreutils,
+  ...
 }:
 
 stdenv.mkDerivation rec {

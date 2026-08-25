@@ -1,4 +1,9 @@
-{ lib, pkgs, desktop, ... }:
+{
+  lib,
+  pkgs,
+  desktop,
+  ...
+}:
 let
   inherit (lib) mkDefault;
 in
@@ -9,8 +14,7 @@ in
   ]
   ++ lib.optionals (desktop != null && builtins.pathExists (./. + "/environments/${desktop}")) [
     (./. + "/environments/${desktop}")
-  ]
-  ;
+  ];
 
   config = {
     environment = {

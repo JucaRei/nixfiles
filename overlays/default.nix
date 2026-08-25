@@ -5,8 +5,7 @@
 
   # Modifications to standard packages
   modifiedPackages = _final: prev: {
-    makeModulesClosure = x:
-      prev.makeModulesClosure (x // { allowMissing = true; });
+    makeModulesClosure = x: prev.makeModulesClosure (x // { allowMissing = true; });
 
     sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation {
       pname = "sf-mono-liga-bin";
@@ -48,4 +47,3 @@
     };
   };
 }
-

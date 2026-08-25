@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkIf mkEnableOption optionalString;
   cfg = config.system.programs.file-manager.thunar;
@@ -12,9 +17,10 @@ let
   };
 
   terminalCmd =
-    if config.programs ? alacritty && config.programs.alacritty.enable
-    then "${pkgs.alacritty}/bin/alacritty --working-directory %f"
-    else "${pkgs.xfce4-exo}/bin/exo-open --working-directory %f --launch TerminalEmulator";
+    if config.programs ? alacritty && config.programs.alacritty.enable then
+      "${pkgs.alacritty}/bin/alacritty --working-directory %f"
+    else
+      "${pkgs.xfce4-exo}/bin/exo-open --working-directory %f --launch TerminalEmulator";
 in
 {
   options = {
@@ -58,31 +64,33 @@ in
                 <startup-notify/>
                 <directories/>
             </action>
-      '' + optionalString (config.system.programs.editors.vscode.enable or false) ''
-            <action>
-                <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
-                <name>Open VSCode Here</name>
-                <unique-id>1612104464586265-1</unique-id>
-                <command>code %f</command>
-                <description>Abrir pasta no VSCode</description>
-                <patterns>*</patterns>
-                <startup-notify/>
-                <directories/>
-            </action>
-      '' + optionalString (config.system.programs.editors.antigravity.enable or false) ''
-            <action>
-                <icon>code</icon>
-                <name>Open in Antigravity</name>
-                <unique-id>1612104464586266-1</unique-id>
-                <command>antigravity %f</command>
-                <description>Abrir projeto no Antigravity AI IDE</description>
-                <patterns>*</patterns>
-                <startup-notify/>
-                <directories/>
-                <text-files/>
-            </action>
-      '' +
       ''
+      + optionalString (config.system.programs.editors.vscode.enable or false) ''
+        <action>
+            <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
+            <name>Open VSCode Here</name>
+            <unique-id>1612104464586265-1</unique-id>
+            <command>code %f</command>
+            <description>Abrir pasta no VSCode</description>
+            <patterns>*</patterns>
+            <startup-notify/>
+            <directories/>
+        </action>
+      ''
+      + optionalString (config.system.programs.editors.antigravity.enable or false) ''
+        <action>
+            <icon>code</icon>
+            <name>Open in Antigravity</name>
+            <unique-id>1612104464586266-1</unique-id>
+            <command>antigravity %f</command>
+            <description>Abrir projeto no Antigravity AI IDE</description>
+            <patterns>*</patterns>
+            <startup-notify/>
+            <directories/>
+            <text-files/>
+        </action>
+      ''
+      + ''
             <action>
                 <icon>${pkgs.meld}/share/icons/hicolor/symbolic/apps/org.gnome.Meld-symbolic.svg</icon>
                 <name>Compare</name>

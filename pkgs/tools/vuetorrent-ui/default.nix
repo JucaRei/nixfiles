@@ -1,8 +1,8 @@
-{ lib
-, stdenv
-, fetchzip
-, nix-update-script
-,
+{
+  lib,
+  stdenv,
+  fetchzip,
+  nix-update-script,
 }:
 
 stdenv.mkDerivation (finalAttrs: {

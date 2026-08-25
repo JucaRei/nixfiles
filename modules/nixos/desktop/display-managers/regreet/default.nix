@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
@@ -47,7 +52,10 @@ in
         button{background-color:#cba6f7;transition:background-color 0.3s ease;}
         button:hover{background-color:#94e2d5;}
       '';
-      systemPackages = with pkgs; [ dracula-theme yaru-theme ];
+      systemPackages = with pkgs; [
+        dracula-theme
+        yaru-theme
+      ];
     };
   };
 }

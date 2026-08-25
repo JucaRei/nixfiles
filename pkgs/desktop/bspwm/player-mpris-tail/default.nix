@@ -1,12 +1,17 @@
-{ pkgs ? import <nixpkgs> { }
-, lib ? pkgs.lib
-, writePython3Bin ? pkgs.writers.writePython3Bin
+{
+  pkgs ? import <nixpkgs> { },
+  lib ? pkgs.lib,
+  writePython3Bin ? pkgs.writers.writePython3Bin,
 }:
 
 writePython3Bin "player-mpris"
-{
-  libraries = with pkgs.python3Packages; [ dbus-python pygobject3 urllib3 ];
-}
+  {
+    libraries = with pkgs.python3Packages; [
+      dbus-python
+      pygobject3
+      urllib3
+    ];
+  }
 
   ''
     import sys

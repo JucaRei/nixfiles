@@ -1,4 +1,11 @@
-{ config, lib, pkgs, username, isWorkstation, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  isWorkstation,
+  ...
+}:
 let
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkDefault mkIf;

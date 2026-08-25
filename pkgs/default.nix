@@ -21,7 +21,9 @@ pkgs: {
   # linuxPackages_xanmod_stable = pkgs.callPackage ./system/kernel/xanmod { };
 
   # Themes
-  sddm-theme-abstractdark = pkgs.callPackage ./system/display-managers/sddm/themes/sddm-theme-abstractdark { };
+  sddm-theme-abstractdark =
+    pkgs.callPackage ./system/display-managers/sddm/themes/sddm-theme-abstractdark
+      { };
   breeze-hacked-cursor = pkgs.callPackage ./desktop/themes/pointers/breeze-hacked-cursor { };
 
   # Display Managers

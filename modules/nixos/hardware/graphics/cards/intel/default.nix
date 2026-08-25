@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkIf;
   acceleration = config.hardware.graphics.cards.acceleration;
@@ -27,8 +32,6 @@ in
     # else [ "intel" ];
     # else [ "i965" ];
 
-
-
     # hardware.graphics = (mkIf (device.gpu == "hybrid-nvidia") {
     #   enable = true;
     #   enable32Bit = true;
@@ -56,9 +59,8 @@ in
       # ]));
     };
 
-    nixpkgs.config.packageOverrides = (mkIf
-      (gpu == "hybrid-nvidia")
-      (pkgs: {
+    nixpkgs.config.packageOverrides = (
+      mkIf (gpu == "hybrid-nvidia") (pkgs: {
         vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
       })
     );
@@ -70,15 +72,19 @@ in
         enable32Bit = true;
         extraPackages =
           if (gpu == "intel" || gpu == "hybrid-nvidia") then
-            with pkgs.unstable; [
+            with pkgs.unstable;
+            [
               intel-compute-runtime
               intel-media-driver
               libvdpau-va-gl
               intel-vaapi-driver
               libva-vdpau-driver
-            ] else with pkgs.unstable; [
-            mesa.drivers
-          ];
+            ]
+          else
+            with pkgs.unstable;
+            [
+              mesa.drivers
+            ];
       };
     };
   };

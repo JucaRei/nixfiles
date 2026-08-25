@@ -1,8 +1,15 @@
-{ lib, config, pkgs, ... }: {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+{
   services =
     let
       inherit (lib) mkIf mkForce;
-      isXorg = if ("${pkgs.uutils-coreutils-noprefix}/bin/echo $XDG_SESSION_TYPE" == "x11") then true else false;
+      isXorg =
+        if ("${pkgs.uutils-coreutils-noprefix}/bin/echo $XDG_SESSION_TYPE" == "x11") then true else false;
     in
     {
       xserver = mkIf (config.features.graphics.backend != "wayland") {
@@ -53,7 +60,7 @@
             LEFT='HDMI-1-0'
             ${lib.getExe pkgs.xorg.xrandr} --output $LEFT --mode 1920x1080 --rotate right --output $LEFT --mode 1920x1080 --rotate left --right-of $LEFT
           '';
-          sessionCommands = ''${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal'';
+          sessionCommands = "${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal";
         };
 
         ## xrandrHeads = [
@@ -112,7 +119,6 @@
         #   Option "nvidiaXineramaInfoOrder" "DFP-1"
         # '';
 
-
         # Section "Monitor"
         # Monitor Identity - Typically HDMI-0 or DisplayPort-0
         # Identifier    "HDMI1"
@@ -136,9 +142,18 @@
         resolutions = [
 
           # { x = 2048; y = 1152; }
-          { x = 1920; y = 1080; }
-          { x = 1600; y = 900; }
-          { x = 1366; y = 768; }
+          {
+            x = 1920;
+            y = 1080;
+          }
+          {
+            x = 1600;
+            y = 900;
+          }
+          {
+            x = 1366;
+            y = 768;
+          }
           # { x = 2560; y = 1440; }
           # { x = 3072; y = 1728; }
           # { x = 3840; y = 2160; }

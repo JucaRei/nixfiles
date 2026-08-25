@@ -11,7 +11,10 @@ in
 
   options = {
     desktop.display-servers.backend = mkOption {
-      type = nullOr (enum [ "x11" "wayland" ]);
+      type = nullOr (enum [
+        "x11"
+        "wayland"
+      ]);
       default = null;
       description = "Default backend for the system";
     };

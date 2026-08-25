@@ -1,4 +1,10 @@
-{ lib, pkgs, desktop, isWorkstation, ... }:
+{
+  lib,
+  pkgs,
+  desktop,
+  isWorkstation,
+  ...
+}:
 let
   inherit (lib) mkForce;
 in

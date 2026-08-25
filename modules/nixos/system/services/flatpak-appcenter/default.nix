@@ -1,4 +1,9 @@
-{ desktop, lib, config, ... }:
+{
+  desktop,
+  lib,
+  config,
+  ...
+}:
 let
   inherit (lib) mkIf mkOption types;
   cfg = config.nixos.services.flatpak-appcenter;

@@ -1,7 +1,18 @@
-{ options, config, lib, username, ... }:
+{
+  options,
+  config,
+  lib,
+  username,
+  ...
+}:
 let
   inherit (lib) mkIf mkOption mdDoc;
-  inherit (lib.types) enum nullOr bool submodule;
+  inherit (lib.types)
+    enum
+    nullOr
+    bool
+    submodule
+    ;
 in
 {
   imports = [
@@ -17,7 +28,10 @@ in
         description = "Whether or not enable superuser manager.";
       };
       manager = mkOption {
-        type = enum [ "sudo" "doas" ];
+        type = enum [
+          "sudo"
+          "doas"
+        ];
         default = "sudo";
         description = mdDoc "The super user manager to use.";
       };

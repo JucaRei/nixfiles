@@ -1,7 +1,23 @@
-{ config, lib, pkgs, inputs, outputs, username, osConfig ? null, isWorkstation, stateVersion, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  outputs,
+  username,
+  osConfig ? null,
+  isWorkstation,
+  stateVersion,
+  ...
+}:
 let
   inherit (pkgs.stdenv) isLinux;
-  inherit (lib) mapAttrsToList mkDefault mkIf optionals;
+  inherit (lib)
+    mapAttrsToList
+    mkDefault
+    mkIf
+    optionals
+    ;
 
   isNixOS = osConfig != null;
 in
@@ -32,14 +48,14 @@ in
       };
     };
 
-
     news.display = "silent";
 
     nixpkgs = {
       overlays = [
         inputs.nixgl.overlay
         inputs.nur.overlays.default
-      ] ++ (builtins.attrValues outputs.overlays);
+      ]
+      ++ (builtins.attrValues outputs.overlays);
 
       config = {
         allowUnfree = true;
@@ -47,17 +63,24 @@ in
       };
     };
 
-    nix = let flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs; in {
-      package = mkIf (!isNixOS) (mkDefault pkgs.nixVersions.latest);
+    nix =
+      let
+        flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
+      in
+      {
+        package = mkIf (!isNixOS) (mkDefault pkgs.nixVersions.latest);
 
-      settings = {
-        experimental-features = "flakes nix-command";
-        trusted-users = [ "${username}" "@wheel" ];
-        warn-dirty = false;
+        settings = {
+          experimental-features = "flakes nix-command";
+          trusted-users = [
+            "${username}"
+            "@wheel"
+          ];
+          warn-dirty = false;
+        };
+
+        nixPath = mkIf (!isNixOS) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
       };
-
-      nixPath = mkIf (!isNixOS) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
-    };
 
     systemd = {
       user = {

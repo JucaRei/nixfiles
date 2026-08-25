@@ -1,12 +1,20 @@
-{ config, lib, osConfig ? null, ... }:
+{
+  config,
+  lib,
+  osConfig ? null,
+  ...
+}:
 let
   cfg = config.programs.firefox;
 
   isNixOS = osConfig != null;
   hasVaapi =
     if isNixOS then
-      lib.any (pkg: lib.hasPrefix "vaapi" (pkg.name or "") || lib.hasPrefix "libva" (pkg.name or "")) (osConfig.hardware.graphics.extraPackages or (osConfig.hardware.opengl.extraPackages or [ ]))
-    else false;
+      lib.any (pkg: lib.hasPrefix "vaapi" (pkg.name or "") || lib.hasPrefix "libva" (pkg.name or "")) (
+        osConfig.hardware.graphics.extraPackages or (osConfig.hardware.opengl.extraPackages or [ ])
+      )
+    else
+      false;
 in
 {
   "devtools.theme" = "dark";
@@ -72,10 +80,10 @@ in
   "extensions.getAddons.showPane" = false;
   "media.gmp-gmpopenh264.enabled" = true;
   "media.gmp-widevinecdm.enabled" = true;
-  "media.ffmpeg.vaapi.enabled" = lib.mkIf (hasVaapi) true; ## keep this with ff 96
-  "media.rdd-ffmpeg.enabled" = lib.mkIf (hasVaapi) true; ## keep this with ff 96
-  "media.rdd-vpx.enabled" = lib.mkIf (hasVaapi) false; ## remove on ff 96
-  "media.navigator.mediadatadecoder_vpx_enabled" = lib.mkIf (hasVaapi) true; ## remove on ff 96
+  "media.ffmpeg.vaapi.enabled" = lib.mkIf (hasVaapi) true; # # keep this with ff 96
+  "media.rdd-ffmpeg.enabled" = lib.mkIf (hasVaapi) true; # # keep this with ff 96
+  "media.rdd-vpx.enabled" = lib.mkIf (hasVaapi) false; # # remove on ff 96
+  "media.navigator.mediadatadecoder_vpx_enabled" = lib.mkIf (hasVaapi) true; # # remove on ff 96
   "media.ffvpx.enabled" = lib.mkIf (hasVaapi) false;
   # disable av1, vaapi on old hardware does not support av1
   "media.av1.enabled" = false;

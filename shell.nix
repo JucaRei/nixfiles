@@ -13,7 +13,7 @@
       statix
       deadnix
       home-manager
-      nixfmt-rfc-style
+      nixfmt
       nix-direnv
       direnv
       htop

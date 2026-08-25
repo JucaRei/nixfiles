@@ -13,7 +13,7 @@ stdenvNoCC.mkDerivation {
     hash = "sha256-cUFAsB4pWsXhPvbuiFqXARTMYW+63rEGTwa8RNvuU84=";
   };
 
-  nativeBuildInputs = [nerd-font-patcher];
+  nativeBuildInputs = [ nerd-font-patcher ];
 
   buildPhase = ''
     find -name \*.ttf -execdir nerd-font-patcher -c {} \;
@@ -32,7 +32,7 @@ stdenvNoCC.mkDerivation {
     description = " Twilio Sans Mono is a beautiful and extensive open source programming font";
     platforms = platforms.all;
     license = licenses.ofl;
-    maintainers = [maintainers.n3oney];
+    maintainers = [ maintainers.n3oney ];
     homepage = "https://github.com/twilio/twilio-sans-mono";
   };
 }

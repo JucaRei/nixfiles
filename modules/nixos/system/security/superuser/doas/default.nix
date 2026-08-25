@@ -1,4 +1,11 @@
-{ options, config, pkgs, lib, username, ... }:
+{
+  options,
+  config,
+  pkgs,
+  lib,
+  username,
+  ...
+}:
 let
   inherit (lib) mkIf;
   cfg = config.system.security.superuser;

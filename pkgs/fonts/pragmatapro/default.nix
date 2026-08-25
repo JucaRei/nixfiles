@@ -6,7 +6,7 @@
 stdenv.mkDerivation rec {
   name = "PragmataPro${version}";
   version = "0.829";
-  buildInputs = [unzip];
+  buildInputs = [ unzip ];
 
   src = requireFile {
     url = "file://path/to/${name}.zip";
@@ -26,5 +26,7 @@ stdenv.mkDerivation rec {
     find -name "PragmataPro*.ttf" -exec mv {} $install_path \;
   '';
 
-  meta = with stdenv.lib; {platfotms = platforms.linux;};
+  meta = with stdenv.lib; {
+    platfotms = platforms.linux;
+  };
 }

@@ -1,6 +1,16 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
-  inherit (lib) mkOption mkIf types mkForce;
+  inherit (lib)
+    mkOption
+    mkIf
+    types
+    mkForce
+    ;
   cfg = config.system.programs.console.bat;
 in
 {

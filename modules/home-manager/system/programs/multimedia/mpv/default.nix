@@ -1,4 +1,12 @@
-{ config, lib, pkgs, username, hostname, nixGLWrapper ? (x: x), ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  hostname,
+  nixGLWrapper ? (x: x),
+  ...
+}:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.multimedia.mpv;
@@ -144,4 +152,3 @@ in
     ];
   };
 }
-

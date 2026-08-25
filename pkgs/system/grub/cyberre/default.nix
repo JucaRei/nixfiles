@@ -26,8 +26,8 @@ stdenvNoCC.mkDerivation {
   meta = with lib; {
     homepage = "https://www.opendesktop.org/s/Gnome/p/1420727";
     description = "CyberRe Grub theme";
-    maintainers = with maintainers; [anomalocaris];
+    maintainers = with maintainers; [ anomalocaris ];
     platforms = platforms.linux;
-    badPlatforms = ["x86_64-apple-darwin"];
+    badPlatforms = [ "x86_64-apple-darwin" ];
   };
 }

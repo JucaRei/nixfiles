@@ -1,12 +1,17 @@
-{ config, lib, pkgs, username, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 let
   inherit (lib) optionals;
   hasGroup = group: builtins.hasAttr group config.users.groups;
   filterExistingGroups = builtins.filter hasGroup;
 in
 {
-  imports = [ ./root ]
-    ++ optionals (builtins.pathExists ./${username}) [ ./${username} ]; # multiple user configs
+  imports = [ ./root ] ++ optionals (builtins.pathExists ./${username}) [ ./${username} ]; # multiple user configs
   # optional (builtins.pathExists (./. + "/${username}")) ./${username} ++ # return the single user config if it exists
 
   config = {
@@ -17,14 +22,19 @@ in
         "input"
         "users"
         "wheel"
-      ] ++ filterExistingGroups [
+      ]
+      ++ filterExistingGroups [
         "adm"
         "networkmanager"
         # "audio"
         # "docker"
       ];
       homeMode = "0755";
-      packages = with pkgs; [ git htop home-manager ];
+      packages = with pkgs; [
+        git
+        htop
+        home-manager
+      ];
     };
 
     environment.localBinInPath = true;

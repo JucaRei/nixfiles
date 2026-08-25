@@ -126,7 +126,7 @@
       );
 
       # Formatter for .nix files ('nix fmt')
-      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-rfc-style);
+      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
 
       # Automated checks run via 'nix flake check'
       checks = helper.mkChecks { inherit self inputs; };

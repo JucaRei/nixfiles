@@ -1,4 +1,10 @@
-{ config, lib, pkgs, useNixGL ? false, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  useNixGL ? false,
+  ...
+}:
 let
   cfg = config.system.programs.terminal;
   nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs; };
@@ -105,22 +111,28 @@ in
         live_config_reload = true;
         mouse = {
           hide_when_typing = true;
-          bindings = [{
-            mouse = "Middle";
-            action = "Paste";
-          }];
+          bindings = [
+            {
+              mouse = "Middle";
+              action = "Paste";
+            }
+          ];
         };
-        hints.enabled = [{
-          command = "${pkgs.xdg-utils}/bin/xdg-open";
-          hyperlinks = true;
-          post_processing = true;
-          persist = false;
-          mouse.enabled = true;
-          binding = { key = "U"; mods = "Control|Shift"; };
-        }];
+        hints.enabled = [
+          {
+            command = "${pkgs.xdg-utils}/bin/xdg-open";
+            hyperlinks = true;
+            post_processing = true;
+            persist = false;
+            mouse.enabled = true;
+            binding = {
+              key = "U";
+              mods = "Control|Shift";
+            };
+          }
+        ];
       }
-      // themeSettings
-      ;
+      // themeSettings;
       # theme = "Dracula";
       # themePackage = pkgs.alacritty-theme;
     };

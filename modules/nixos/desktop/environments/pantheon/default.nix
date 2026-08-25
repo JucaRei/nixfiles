@@ -87,7 +87,10 @@
         ];
         config = {
           common = {
-            default = [ "pantheon" "gtk" ];
+            default = [
+              "pantheon"
+              "gtk"
+            ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
           };
         };

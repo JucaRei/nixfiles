@@ -70,7 +70,10 @@ in
         ];
         config = {
           common = {
-            xfce = [ "xapp" "gtk" ];
+            xfce = [
+              "xapp"
+              "gtk"
+            ];
             "org.freedesktop.impl.portal.Secret" = [ "gnome-keyring" ];
             "org.freedesktop.portal.FileChooser" = [ "xdg-desktop-portal-xapp" ];
           };

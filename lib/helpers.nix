@@ -18,24 +18,21 @@ rec {
   #   - isISO        : (Bool, default: false) Define se a configuração pertence a uma ISO live
   # ============================================================================
   mkHome =
-    { hostname
-    , username ? "juca"
-    , desktop ? null
-    , platform ? "x86_64-linux"
-    , stateVersion ? "26.05"
-    , useNixGL ? true
-    , isISO ? false
+    {
+      hostname,
+      username ? "juca",
+      desktop ? null,
+      platform ? "x86_64-linux",
+      stateVersion ? "26.05",
+      useNixGL ? true,
+      isISO ? false,
     }:
     let
       isInstall = !isISO;
       isWorkstation = desktop != null;
 
       pkgs = inputs.nixpkgs.legacyPackages.${platform};
-      nixGLWrapper =
-        if useNixGL then
-          (import ./nixGL.nix { inherit pkgs; }).wrapper
-        else
-          (x: x);
+      nixGLWrapper = if useNixGL then (import ./nixGL.nix { inherit pkgs; }).wrapper else (x: x);
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
@@ -74,14 +71,15 @@ rec {
   #   - isVM         : (Bool, default: false) Sinaliza se a máquina roda em ambiente virtualizado
   # ============================================================================
   mkNixos =
-    { hostname
-    , username ? "juca"
-    , desktop ? null
-    , platform ? "x86_64-linux"
-    , hostid ? null
-    , stateVersion ? "24.11"
-    , isISO ? lib.hasPrefix "iso-" hostname
-    , isVM ? false
+    {
+      hostname,
+      username ? "juca",
+      desktop ? null,
+      platform ? "x86_64-linux",
+      hostid ? null,
+      stateVersion ? "24.11",
+      isISO ? lib.hasPrefix "iso-" hostname,
+      isVM ? false,
     }:
     let
       isInstall = !isISO;
@@ -105,43 +103,44 @@ rec {
           notVM
           ;
       };
-      modules =
-        [
-          ../nixos
+      modules = [
+        ../nixos
 
-          # Provisionamento automático do Home Manager durante nixos-rebuild switch
-          inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager = {
-              useGlobalPkgs = false;
-              useUserPackages = true;
-              backupFileExtension = "hm.backup";
-              users.${username} = import ../home-manager;
-              extraSpecialArgs = {
-                inherit
-                  inputs
-                  outputs
-                  desktop
-                  hostname
-                  platform
-                  username
-                  stateVersion
-                  isInstall
-                  isISO
-                  isWorkstation
-                  ;
-                useNixGL = false;
-                nixGLWrapper = (pkg: pkg);
-              };
+        # Provisionamento automático do Home Manager durante nixos-rebuild switch
+        inputs.home-manager.nixosModules.home-manager
+        {
+          home-manager = {
+            useGlobalPkgs = false;
+            useUserPackages = true;
+            backupFileExtension = "hm.backup";
+            users.${username} = import ../home-manager;
+            extraSpecialArgs = {
+              inherit
+                inputs
+                outputs
+                desktop
+                hostname
+                platform
+                username
+                stateVersion
+                isInstall
+                isISO
+                isWorkstation
+                ;
+              useNixGL = false;
+              nixGLWrapper = (pkg: pkg);
             };
-          }
-        ]
-        ++ lib.optionals isISO [
-          (if desktop == null then
+          };
+        }
+      ]
+      ++ lib.optionals isISO [
+        (
+          if desktop == null then
             inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
           else
-            inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix")
-        ];
+            inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
+        )
+      ];
     };
 
   # ============================================================================
@@ -153,9 +152,10 @@ rec {
   #   - stateVersion : (String, default: "24.11") Versão de estado
   # ============================================================================
   mkIso =
-    { desktop ? null
-    , platform ? "x86_64-linux"
-    , stateVersion ? "24.11"
+    {
+      desktop ? null,
+      platform ? "x86_64-linux",
+      stateVersion ? "24.11",
     }:
     mkNixos {
       hostname = if desktop != null then "iso-${desktop}" else "iso-console";
@@ -183,5 +183,3 @@ rec {
   # ============================================================================
   mkChecks = { self, inputs }: forAllSystems (_system: { });
 }
-
-

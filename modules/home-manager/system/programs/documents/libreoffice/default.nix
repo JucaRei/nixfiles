@@ -1,4 +1,10 @@
-{ config, lib, pkgs, nixGLWrapper ? (x: x), ... }:
+{
+  config,
+  lib,
+  pkgs,
+  nixGLWrapper ? (x: x),
+  ...
+}:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.documents.libreoffice;

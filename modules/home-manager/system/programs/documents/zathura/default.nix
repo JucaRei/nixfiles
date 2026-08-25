@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.documents.zathura;
@@ -24,7 +29,7 @@ in
     };
   };
   config = mkIf cfg.enable {
-    home.packages = with  pkgs; [ sf-mono-liga-bin ];
+    home.packages = with pkgs; [ sf-mono-liga-bin ];
     programs = {
       zathura = {
         enable = true;
@@ -149,7 +154,7 @@ in
           window-title-page = true;
           # window-icon = "";
           statusbar-home-tilde = true;
-          guioptions = "n"; #none
+          guioptions = "n"; # none
           # "render-loading" = "false";
           unmap = "f";
           # font = "DaddyTimeMono Nerd Font 15";
@@ -272,7 +277,6 @@ in
         '';
       };
     };
-
 
     xdg =
       let

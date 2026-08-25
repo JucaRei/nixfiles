@@ -1,4 +1,9 @@
-{ config, lib, isWorkstation, ... }:
+{
+  config,
+  lib,
+  isWorkstation,
+  ...
+}:
 let
   inherit (lib) mkOption mkDefault mkIf;
   inherit (lib.types) bool;
@@ -17,7 +22,10 @@ in
     security = {
 
       # Disable unprivileged user namespaces, unless containers are enabled
-      unprivilegedUsernsClone = mkDefault (config.virtualisation.containers.enable or (config.virtualisation.podman.enable or (config.virtualisation.docker.enable or false)));
+      unprivilegedUsernsClone = mkDefault (
+        config.virtualisation.containers.enable
+          or (config.virtualisation.podman.enable or (config.virtualisation.docker.enable or false))
+      );
 
       # Enables simultaneous use of processor threads.
       allowSimultaneousMultithreading = true;
@@ -33,15 +41,13 @@ in
               return polkit.Result.YES;
           });
         ''
-        +
-        ''
+        + ''
           /* Log authorization checks. */
           polkit.addRule(function(action, subject) {
             polkit.log("user " +  subject.user + " is attempting action " + action.id + " from PID " + subject.pid);
           });
         ''
-        +
-        ''
+        + ''
           polkit.addRule(function(action, subject) {
             if (
               subject.isInGroup("users")

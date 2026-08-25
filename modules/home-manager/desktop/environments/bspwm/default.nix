@@ -1,4 +1,10 @@
-{ config, lib, pkgs, osConfig ? null, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  osConfig ? null,
+  ...
+}:
 let
   inherit (lib) mkIf;
   isNixOS = osConfig != null;

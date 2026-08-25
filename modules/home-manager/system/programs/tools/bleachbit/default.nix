@@ -1,4 +1,10 @@
-{ pkgs, username, lib, config, ... }:
+{
+  pkgs,
+  username,
+  lib,
+  config,
+  ...
+}:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.tools.bleachbit;

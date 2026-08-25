@@ -1,4 +1,10 @@
-{ config, lib, pkgs, osConfig ? null, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  osConfig ? null,
+  ...
+}:
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
@@ -28,7 +34,10 @@ in
 
       shadow = true;
       shadowOpacity = 0.6;
-      shadowOffsets = [ (-12) (-12) ];
+      shadowOffsets = [
+        (-12)
+        (-12)
+      ];
       shadowExclude = [
         "name = 'Notification'"
         "class_g = 'Polybar'"
@@ -39,7 +48,10 @@ in
 
       fade = true;
       fadeDelta = 4;
-      fadeSteps = [ 0.03 0.03 ];
+      fadeSteps = [
+        0.03
+        0.03
+      ];
 
       settings = {
         corner-radius = 8;

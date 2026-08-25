@@ -7,12 +7,11 @@ let
 in
 {
   environment = {
-    systemPackages = with pkgs;
-      [
-        build-host
-        build-iso
-        switch-boot
-        switch-host
-      ];
+    systemPackages = with pkgs; [
+      build-host
+      build-iso
+      switch-boot
+      switch-host
+    ];
   };
 }

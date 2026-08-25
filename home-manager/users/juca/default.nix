@@ -1,4 +1,13 @@
-{ config, lib, pkgs, desktop, isLima, username, isWorkstation, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  desktop,
+  isLima,
+  username,
+  isWorkstation,
+  ...
+}:
 let
   inherit (lib) mkIf;
   inherit (pkgs.stdenv) isLinux;
@@ -70,11 +79,21 @@ in
           '';
         };
         # "/lab/vm/nixos-console/.keep" = mkIf (!isLima) { text = ""; };
-        "/lab/vm/nixos-console/.keep" = { text = ""; };
-        "/lab/vm/nixos-gnome/.keep" = { text = ""; };
-        "/lab/vm/nixos-mate/.keep" = { text = ""; };
-        "/lab/vm/nixos-pantheon/.keep" = { text = ""; };
-        "/lab/workspace/.keep" = { text = ""; };
+        "/lab/vm/nixos-console/.keep" = {
+          text = "";
+        };
+        "/lab/vm/nixos-gnome/.keep" = {
+          text = "";
+        };
+        "/lab/vm/nixos-mate/.keep" = {
+          text = "";
+        };
+        "/lab/vm/nixos-pantheon/.keep" = {
+          text = "";
+        };
+        "/lab/workspace/.keep" = {
+          text = "";
+        };
         "/.dotfiles/.keep".text = "";
 
         # List home-manager packages

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
@@ -66,7 +71,10 @@ in
           };
 
           "inputbar" = {
-            children = map mkLiteral [ "prompt" "entry" ];
+            children = map mkLiteral [
+              "prompt"
+              "entry"
+            ];
             background-color = mkLiteral "@bg-col";
             border-radius = mkLiteral "6px";
             padding = mkLiteral "2px";

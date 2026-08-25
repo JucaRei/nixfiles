@@ -31,7 +31,7 @@ pkgs.writeScriptBin "build-iso" ''
   pushd "$TARGET_DIR" > /dev/null || exit 1
   echo "Building ISO ($1) with $build_cores cores..."
   ${pkgs.nix-output-monitor}/bin/nom build .#nixosConfigurations.iso-$1.config.system.build.isoImage -L --show-trace --cores "$build_cores" --out-link "$RESULT_LINK"
-  
+
   if [ -d "$RESULT_LINK/iso" ]; then
     ISO_PATH=$(${pkgs.uutils-coreutils-noprefix}/bin/ls "$RESULT_LINK"/iso/*.iso 2>/dev/null | ${pkgs.uutils-coreutils-noprefix}/bin/head -n1)
     if [ -n "$ISO_PATH" ] && [ -f "$ISO_PATH" ]; then

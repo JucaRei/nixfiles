@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkDefault mkIf;
   usezramSwap = builtins.length config.swapDevices == 0;
@@ -21,7 +26,7 @@ in
     systemd.services.mglru = mkIf usezramSwap {
       enable = true;
       wantedBy = [ "basic.target" ];
-      script = ''${pkgs.uutils-coreutils-noprefix}/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms'';
+      script = "${pkgs.uutils-coreutils-noprefix}/bin/echo 1000 > /sys/kernel/mm/lru_gen/min_ttl_ms";
       serviceConfig = {
         Type = "oneshot";
       };

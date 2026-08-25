@@ -1,6 +1,20 @@
-{ config, lib, pkgs, osConfig ? null, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  osConfig ? null,
+  ...
+}:
 let
-  inherit (lib) getExe getExe' mkIf mkMerge optional mkOption mdDoc;
+  inherit (lib)
+    getExe
+    getExe'
+    mkIf
+    mkMerge
+    optional
+    mkOption
+    mdDoc
+    ;
   inherit (lib.types) enum bool;
 
   cfg = config.system.programs.shells;
@@ -28,7 +42,11 @@ in
     };
 
     default = mkOption {
-      type = enum [ "bash" "fish" "zsh" ];
+      type = enum [
+        "bash"
+        "fish"
+        "zsh"
+      ];
       default = "bash";
       description = mdDoc "Default shell to configure.";
     };
@@ -63,7 +81,11 @@ in
           description = mdDoc "Enable clean Nix command aliases.";
         };
         diffProgram = mkOption {
-          type = enum [ "builtin" "nvd" "nix-diff" ];
+          type = enum [
+            "builtin"
+            "nvd"
+            "nix-diff"
+          ];
           default = "builtin";
           description = mdDoc "Tool used by `nd` to show generation differences.";
         };
@@ -122,8 +144,10 @@ in
     # Nix aliases + tools
     (mkIf cfg.aliases.nix.enable {
       home = {
-        packages = [ pkgs.comma ]
-          ++ optional (cfg.aliases.nix.diffProgram != "builtin") pkgs.${cfg.aliases.nix.diffProgram};
+        packages = [
+          pkgs.comma
+        ]
+        ++ optional (cfg.aliases.nix.diffProgram != "builtin") pkgs.${cfg.aliases.nix.diffProgram};
 
         shellAliases = {
           n = "nix";

@@ -1,6 +1,22 @@
-{ config, hostname, isInstall, isWorkstation, lib, pkgs, username, ... }:
+{
+  config,
+  hostname,
+  isInstall,
+  isWorkstation,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
 let
-  inherit (lib) mkIf mkForce optionals optional mkOption types;
+  inherit (lib)
+    mkIf
+    mkForce
+    optionals
+    optional
+    mkOption
+    types
+    ;
   cfg = config.hardware.audio;
   low_latency = config.hardware.audio."pipewire".useLowLatencyPipewire;
 in
@@ -55,37 +71,38 @@ in
           # https://pipewire.pages.freedesktop.org/wireplumber/daemon/configuration/alsa.html#alsa-buffer-properties
           # cat /nix/store/*-wireplumber-*/share/wireplumber/main.lua.d/99-alsa-lowlatency.lua
           # cat /nix/store/*-wireplumber-*/share/wireplumber/wireplumber.conf.d/99-alsa-lowlatency.conf
-          configPackages = (optionals low_latency [
-            (pkgs.writeTextDir "share/wireplumber/main.lua.d/99-alsa-lowlatency.lua" ''
-              alsa_monitor.rules = {
-                {
-                  matches = {{{ "node.name", "matches", "*_*put.*" }}};
-                  apply_properties = {
-                    ["audio.format"] = "S16LE",
-                    ["audio.rate"] = 48000,
-                    ["api.alsa.headroom"] = 128,
-                    ["api.alsa.period-num"] = 2,
-                    ["api.alsa.period-size"] = 512,
-                    ["api.alsa.disable-batch"] = false,
-                    ["resample.quality"] = 4,
-                    ["resample.disable"] = false,
-                    ["session.suspend-timeout-seconds"] = 0,
+          configPackages =
+            (optionals low_latency [
+              (pkgs.writeTextDir "share/wireplumber/main.lua.d/99-alsa-lowlatency.lua" ''
+                alsa_monitor.rules = {
+                  {
+                    matches = {{{ "node.name", "matches", "*_*put.*" }}};
+                    apply_properties = {
+                      ["audio.format"] = "S16LE",
+                      ["audio.rate"] = 48000,
+                      ["api.alsa.headroom"] = 128,
+                      ["api.alsa.period-num"] = 2,
+                      ["api.alsa.period-size"] = 512,
+                      ["api.alsa.disable-batch"] = false,
+                      ["resample.quality"] = 4,
+                      ["resample.disable"] = false,
+                      ["session.suspend-timeout-seconds"] = 0,
+                    },
                   },
-                },
-              }
-            '')
-          ])
-          ++ [
-            # always include BlueZ properties so LDAC is advertised
-            (pkgs.writeTextDir "share/wireplumber/wireplumber.conf.d/10-bluez.conf" ''
-              monitor.bluez.properties = {
-                bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hsp_hs hsp_ag hfp_hf hfp_ag ];
-                bluez5.codecs = [ sbc sbc_xq aac ldac ];
-                bluez5.enable-sbc-xq = true;
-                bluez5.hfphsp-backend = "native";
-              }
-            '')
-          ];
+                }
+              '')
+            ])
+            ++ [
+              # always include BlueZ properties so LDAC is advertised
+              (pkgs.writeTextDir "share/wireplumber/wireplumber.conf.d/10-bluez.conf" ''
+                monitor.bluez.properties = {
+                  bluez5.roles = [ a2dp_sink a2dp_source bap_sink bap_source hsp_hs hsp_ag hfp_hf hfp_ag ];
+                  bluez5.codecs = [ sbc sbc_xq aac ldac ];
+                  bluez5.enable-sbc-xq = true;
+                  bluez5.hfphsp-backend = "native";
+                }
+              '')
+            ];
         };
         # https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/Config-PipeWire#quantum-ranges
         extraConfig.pipewire."92-low-latency" = mkIf (low_latency == true) {

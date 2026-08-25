@@ -1,4 +1,10 @@
-{ config, lib, pkgs, desktop, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  desktop,
+  ...
+}:
 let
   inherit (lib) mkIf mkForce;
   graphics = config.hardware.graphics.cards;
@@ -25,7 +31,9 @@ in
 
     environment = {
       sessionVariables = {
-        __EGL_VENDOR_LIBRARY_FILENAMES = (mkIf (graphics.gpu == "hybrid-nvidia")) "${config.hardware.nvidia.package}/share/glvnd/egl_vendor.d/10_nvidia.json:${config.hardware.graphics.package}/share/glvnd/egl_vendor.d/50_mesa.json";
+        __EGL_VENDOR_LIBRARY_FILENAMES =
+          (mkIf (graphics.gpu == "hybrid-nvidia"))
+            "${config.hardware.nvidia.package}/share/glvnd/egl_vendor.d/10_nvidia.json:${config.hardware.graphics.package}/share/glvnd/egl_vendor.d/50_mesa.json";
       };
       pathsToLink = [ "/libexec" ];
       shellAliases = {

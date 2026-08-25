@@ -1,23 +1,24 @@
-{ stdenv
-, lib
-, buildFHSEnv
-, fetchurl
-, dpkg
-, pkg-config
-, chrpath
-, openssl
-, curl
-, dbus
-, nss
-, at-spi2-core
-, gtk2
-, xorg
-, python3Packages
-, mc
-, hello
-, sudo
-, firefox-bin
-, autoPatchelfHook
+{
+  stdenv,
+  lib,
+  buildFHSEnv,
+  fetchurl,
+  dpkg,
+  pkg-config,
+  chrpath,
+  openssl,
+  curl,
+  dbus,
+  nss,
+  at-spi2-core,
+  gtk2,
+  xorg,
+  python3Packages,
+  mc,
+  hello,
+  sudo,
+  firefox-bin,
+  autoPatchelfHook,
 }:
 
 let
@@ -85,18 +86,19 @@ in
 buildFHSEnv {
   name = "warsaw-bin";
 
-  targetPkgs = pkgs: with pkgs; [
-    at-spi2-core
-    curl
-    dbus
-    gtk2
-    nss
-    openssl
-    sudo
-    warsaw-bin-core
-    firefox-bin
-    #ping
-  ];
+  targetPkgs =
+    pkgs: with pkgs; [
+      at-spi2-core
+      curl
+      dbus
+      gtk2
+      nss
+      openssl
+      sudo
+      warsaw-bin-core
+      firefox-bin
+      #ping
+    ];
 
   runScript = "bash";
 

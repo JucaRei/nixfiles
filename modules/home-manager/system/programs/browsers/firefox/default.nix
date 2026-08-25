@@ -1,17 +1,32 @@
-{ config, lib, pkgs, username, osConfig ? null, nixGLWrapper ? (x: x), ... }:
+{
+  config,
+  lib,
+  pkgs,
+  username,
+  osConfig ? null,
+  nixGLWrapper ? (x: x),
+  ...
+}:
 let
-  inherit (lib) mkIf mkOption mkDefault mkForce;
+  inherit (lib)
+    mkIf
+    mkOption
+    mkDefault
+    mkForce
+    ;
   inherit (lib.types) bool enum;
   cfg = config.system.programs.browsers.firefox;
 
-  sharedSettings = import ./shared.nix { inherit config lib osConfig; }
-    // import ./fonts.nix { };
+  sharedSettings = import ./shared.nix { inherit config lib osConfig; } // import ./fonts.nix { };
 
   isNixOS = osConfig != null;
   hasVaapi =
     if isNixOS then
-      lib.any (pkg: lib.hasPrefix "vaapi" (pkg.name or "") || lib.hasPrefix "libva" (pkg.name or "")) (osConfig.hardware.graphics.extraPackages or (osConfig.hardware.opengl.extraPackages or [ ]))
-    else false;
+      lib.any (pkg: lib.hasPrefix "vaapi" (pkg.name or "") || lib.hasPrefix "libva" (pkg.name or "")) (
+        osConfig.hardware.graphics.extraPackages or (osConfig.hardware.opengl.extraPackages or [ ])
+      )
+    else
+      false;
 in
 {
   options = {
@@ -22,7 +37,12 @@ in
         description = "Enable's firefox web based browser.";
       };
       version = mkOption {
-        type = enum [ "firefox" "firefox-devedition" "firefox-esr" "floorp" ];
+        type = enum [
+          "firefox"
+          "firefox-devedition"
+          "firefox-esr"
+          "floorp"
+        ];
         default = "firefox";
         description = "Choose which firefox version you want.";
       };
@@ -32,7 +52,8 @@ in
   config = mkIf cfg.enable {
     home = {
       file = {
-        ".mozilla/native-messaging-hosts/ff2mpv.json".source = "${pkgs.ff2mpv-rust}/lib/mozilla/native-messaging-hosts/ff2mpv.json";
+        ".mozilla/native-messaging-hosts/ff2mpv.json".source =
+          "${pkgs.ff2mpv-rust}/lib/mozilla/native-messaging-hosts/ff2mpv.json";
       };
 
       sessionVariables = {
@@ -43,41 +64,51 @@ in
 
       packages = mkIf (!isNixOS) [ pkgs.libva-utils ];
 
-      activation = let backup-path = "/home/${username}/.mozilla/firefox/default"; in {
-        # beforeCheckLinkTargets = mkIf (cfg.browser == "firefox-esr" || cfg.browser == "firefox" || cfg.browser == "firefox-devedition") {
-        beforeCheckLinkTargets = {
-          after = [ ];
-          before = mkForce [ "checkLinkTargets" ];
-          data = mkForce ''
-            if [ -f "${backup-path}/search.json.mozlz4.home-manager.backup" ]; then
-              rm "${backup-path}/search.json.mozlz4.home-manager.backup"
-            fi
+      activation =
+        let
+          backup-path = "/home/${username}/.mozilla/firefox/default";
+        in
+        {
+          # beforeCheckLinkTargets = mkIf (cfg.browser == "firefox-esr" || cfg.browser == "firefox" || cfg.browser == "firefox-devedition") {
+          beforeCheckLinkTargets = {
+            after = [ ];
+            before = mkForce [ "checkLinkTargets" ];
+            data = mkForce ''
+              if [ -f "${backup-path}/search.json.mozlz4.home-manager.backup" ]; then
+                rm "${backup-path}/search.json.mozlz4.home-manager.backup"
+              fi
 
-            if [ -f "${backup-path}/search.json.mozlz4" ]; then
-              rm "${backup-path}/search.json.mozlz4"
-            fi
-          '';
+              if [ -f "${backup-path}/search.json.mozlz4" ]; then
+                rm "${backup-path}/search.json.mozlz4"
+              fi
+            '';
+          };
+
+          checkVaapi = mkIf (!isNixOS) (
+            lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+              if vainfo --display drm 2>/dev/null | grep -q VAProfile; then
+                export HAS_VAAPI=1
+              else
+                export HAS_VAAPI=0
+              fi
+              echo "export HAS_VAAPI=$HAS_VAAPI" > $HOME/.local/scripts/vaapi-status.sh
+            ''
+          );
         };
-
-        checkVaapi = mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          if vainfo --display drm 2>/dev/null | grep -q VAProfile; then
-            export HAS_VAAPI=1
-          else
-            export HAS_VAAPI=0
-          fi
-          echo "export HAS_VAAPI=$HAS_VAAPI" > $HOME/.local/scripts/vaapi-status.sh
-        '');
-      };
     };
 
     programs.firefox = {
       enable = true;
       configPath = ".mozilla/firefox";
       package =
-        if (cfg.version == "firefox-esr") then pkgs.firefox-esr
-        else if (cfg.version == "floorp") then pkgs.floorp-bin
-        else if (cfg.version == "firefox-devedition") then pkgs.firefox-devedition
-        else pkgs.firefox;
+        if (cfg.version == "firefox-esr") then
+          pkgs.firefox-esr
+        else if (cfg.version == "floorp") then
+          pkgs.floorp-bin
+        else if (cfg.version == "firefox-devedition") then
+          pkgs.firefox-devedition
+        else
+          pkgs.firefox;
 
       policies = builtins.fromJSON (builtins.readFile ./policies.json);
 

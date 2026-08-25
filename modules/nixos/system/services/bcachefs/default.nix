@@ -1,9 +1,21 @@
-{ hostname, isISO, config, lib, pkgs, ... }:
+{
+  hostname,
+  isISO,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   installOn = [
     "nitro"
   ];
-  inherit (lib) mkOption mkIf elem types;
+  inherit (lib)
+    mkOption
+    mkIf
+    elem
+    types
+    ;
   cfg = config.nixos.services.bcachefs;
 in
 {

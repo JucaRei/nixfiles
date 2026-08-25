@@ -1,4 +1,11 @@
-{ config, lib, pkgs, inputs, useNixGL ? false, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  useNixGL ? false,
+  ...
+}:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.editors.vscode;
@@ -17,8 +24,10 @@ let
 
   # User dir for settings (cross-platform)
   settingsDir =
-    if pkgs.stdenv.isDarwin then "${config.home.homeDirectory}/Library/Application Support/Code/User"
-    else "${config.xdg.configHome}/Code/User";
+    if pkgs.stdenv.isDarwin then
+      "${config.home.homeDirectory}/Library/Application Support/Code/User"
+    else
+      "${config.xdg.configHome}/Code/User";
 in
 {
   options = {
@@ -41,7 +50,6 @@ in
         sf-mono-liga-bin
       ];
 
-
       # file = mkIf isWayland {
       #   ".config/code-flags.conf".text = ''
       #     --enable-features=UseOzonePlatform
@@ -58,7 +66,9 @@ in
 
         afterClean = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           mkdir -p "${settingsDir}"
-          ${pkgs.coreutils}/bin/cat ${(pkgs.formats.json {}).generate "settings.json" userSettings} > "${settingsDir}/settings.json"
+          ${pkgs.coreutils}/bin/cat ${
+            (pkgs.formats.json { }).generate "settings.json" userSettings
+          } > "${settingsDir}/settings.json"
         '';
       };
     };
@@ -72,22 +82,24 @@ in
 
       profiles.default = mkIf cfg.enableConfigurableSettings {
         inherit userSettings;
-        extensions = with pkgs.vscode-extensions; [
-          # Nix
-          jnoortheen.nix-ide
-          jeff-hykin.better-nix-syntax
+        extensions =
+          with pkgs.vscode-extensions;
+          [
+            # Nix
+            jnoortheen.nix-ide
+            jeff-hykin.better-nix-syntax
 
-          # Editor
-          oderwat.indent-rainbow
-          ms-vscode-remote.remote-ssh
-        ] ++
-        pkgs.nix4vscode.forVscode [
-          "davidbwaters.macos-modern-theme"
-          "comdec.simple-icons"
-          "tombonnike.vscode-status-bar-format-toggle"
-          "natqe.reload"
-          "redcrafter07.red-theme"
-        ];
+            # Editor
+            oderwat.indent-rainbow
+            ms-vscode-remote.remote-ssh
+          ]
+          ++ pkgs.nix4vscode.forVscode [
+            "davidbwaters.macos-modern-theme"
+            "comdec.simple-icons"
+            "tombonnike.vscode-status-bar-format-toggle"
+            "natqe.reload"
+            "redcrafter07.red-theme"
+          ];
       };
     };
   };
