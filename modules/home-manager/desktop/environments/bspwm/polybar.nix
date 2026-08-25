@@ -27,6 +27,70 @@ let
     fi
   '';
 
+  # --- Script de Status do Bluetooth ---
+  bluetoothScript = pkgs.writeShellScript "polybar-bluetooth" ''
+    export PATH="${pkgs.bluez}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.coreutils}/bin:$PATH"
+    if ! command -v bluetoothctl >/dev/null 2>&1; then
+      echo "󰂲"
+      exit 0
+    fi
+
+    power=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
+    if [ "$power" = "yes" ]; then
+      connected_dev=$(bluetoothctl info 2>/dev/null | grep "Name:" | cut -d: -f2 | sed 's/^ *//')
+      if [ -n "$connected_dev" ]; then
+        echo "󰂱 $connected_dev" | cut -c1-15
+      else
+        echo "󰂯"
+      fi
+    else
+      echo "󰂲"
+    fi
+  '';
+
+  # --- Menu / Toggle de Bluetooth ---
+  rofiBluetoothMenu = pkgs.writeShellScript "rofi-bluetooth" ''
+    export PATH="${pkgs.bluez}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.coreutils}/bin:$PATH"
+    
+    power=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
+    if [ "$power" = "yes" ]; then
+      toggle_text="󰂲  Desativar Bluetooth"
+    else
+      toggle_text="󰂯  Ativar Bluetooth"
+    fi
+
+    devices=$(bluetoothctl devices 2>/dev/null | awk '{$1=""; $2=""; print "󰂱 " $0}' | sed 's/^[ \t]*//')
+
+    chosen=$(echo -e "$toggle_text\n󰑐  Parear novos dispositivos\n$devices" | rofi \
+      -dmenu \
+      -i \
+      -p "Bluetooth" \
+      -theme-str 'window {width: 340px; border-radius: 12px;} listview {lines: 8;}' \
+      -no-custom)
+
+    if [ -z "$chosen" ]; then
+      exit 0
+    fi
+
+    if [[ "$chosen" =~ "Desativar" ]]; then
+      bluetoothctl power off
+      dunstify -a "Bluetooth" -u low -i "bluetooth-disabled" -r 9995 -t 1500 "Bluetooth desativado"
+    elif [[ "$chosen" =~ "Ativar" ]]; then
+      bluetoothctl power on
+      dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 -t 1500 "Bluetooth ativado"
+    elif [[ "$chosen" =~ "Parear" ]]; then
+      bluetoothctl scan on &
+      dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "Buscando dispositivos Bluetooth..."
+    elif [[ "$chosen" =~ "󰂱" ]]; then
+      dev_name=$(echo "$chosen" | sed 's/󰂱 //')
+      dev_mac=$(bluetoothctl devices | grep -F "$dev_name" | awk '{print $2}')
+      if [ -n "$dev_mac" ]; then
+        dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 "Conectando a $dev_name..."
+        bluetoothctl connect "$dev_mac"
+      fi
+    fi
+  '';
+
   # --- Menu Interativo de Redes Wi-Fi com Rofi ---
   rofiWifiMenu = pkgs.writeShellScript "rofi-wifi-menu" ''
     export PATH="${pkgs.networkmanager}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.gnugrep}/bin:${pkgs.coreutils}/bin:$PATH"
@@ -213,7 +277,7 @@ in
 
           modules-left = "launcher bspwm xwindow";
           modules-center = "media";
-          modules-right = "pulseaudio backlight battery network cpu memory date powermenu";
+          modules-right = "pulseaudio backlight battery bluetooth network cpu memory date powermenu";
 
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";
@@ -280,7 +344,7 @@ in
         # --- Título da Janela Ativa ---
         "module/xwindow" = {
           type = "internal/xwindow";
-          label = "%title:0:35:...%";
+          label = "%title:0:30:...%";
           label-foreground = "\${colors.subtext0}";
           label-padding = 1;
         };
@@ -295,6 +359,17 @@ in
           label = "%output%";
           click-left = "${pkgs.playerctl}/bin/playerctl play-pause";
           click-right = "${pkgs.playerctl}/bin/playerctl next";
+        };
+
+        # --- Bluetooth ---
+        "module/bluetooth" = {
+          type = "custom/script";
+          exec = "${bluetoothScript}";
+          interval = 2;
+          format = "%{A1:${rofiBluetoothMenu}:}%{A3:${rofiBluetoothMenu}:}<label>%{A}%{A}";
+          label = "%output%";
+          label-foreground = "\${colors.sapphire}";
+          click-left = "${rofiBluetoothMenu}";
         };
 
         # --- Uso de CPU ---
@@ -402,14 +477,14 @@ in
           animation-charging-framerate = 750;
         };
 
-        # --- Rede (Wi-Fi com Ações %{A1:...} no Formato) ---
+        # --- Rede com Download/Upload e Menu Interativo ---
         "module/network" = {
           type = "internal/network";
           interface-type = "wireless";
-          interval = 3;
+          interval = 2;
 
           format-connected = "%{A1:${rofiWifiMenu}:}%{A3:${pkgs.networkmanagerapplet}/bin/nm-connection-editor:}<ramp-signal> <label-connected>%{A}%{A}";
-          label-connected = "%essid%";
+          label-connected = "%essid% %{F#89b4fa}󰇚%{F-} %downspeed:7% %{F#fab387}󰕒%{F-} %upspeed:7%";
           label-connected-foreground = "\${colors.text}";
 
           ramp-signal-0 = "󰤯";
@@ -445,7 +520,7 @@ in
           label-foreground = "\${colors.text}";
         };
 
-        # --- Botão Power Menu com Ação Garantida ---
+        # --- Botão Power Menu ---
         "module/powermenu" = {
           type = "custom/text";
           format = "%{A1:${rofiPowerMenu}:}<label>%{A}";
