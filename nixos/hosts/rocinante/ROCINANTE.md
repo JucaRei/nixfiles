@@ -89,17 +89,17 @@ hardware.graphics.cards.gpu = null;  # usa nouveau + Mesa
 - Driver gráfico: `nouveau` (open-source, aceleração Mesa 2D/3D nativa na NV50)
 - Variáveis: `LIBVA_DRIVER_NAME=nouveau`, `VDPAU_DRIVER=nouveau`
 
-### 2. Especialização `nvidia` — Kernel 7.2 + NVIDIA 340 Legacy
+### 2. Especialização `nvidia` — Kernel 6.6 LTS + NVIDIA 340 Legacy
 
 ```nix
 specialisation.nvidia.configuration = {
-  boot.kernelPackages = lib.mkForce pkgs.unstable.linuxPackages_7_2;
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
   hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
 };
 ```
 
-- Kernel: `pkgs.unstable.linuxKernel.packages.linux_7_2` (`linuxPackages_7_2`)
-- Driver: `pkgs.unstable.linuxKernel.packages.linux_7_2.nvidia_x11_legacy340` (injetado via `config.boot.kernelPackages.nvidia_x11_legacy340`)
+- Kernel: `pkgs.linuxPackages_6_6` (Linux 6.6 LTS — compatibilidade total com Btrfs moderno e SATA ICH8-M)
+- Driver: `pkgs.linuxPackages_6_6.nvidia_x11_legacy340` (injetado via `config.boot.kernelPackages.nvidia_x11_legacy340`)
 - Configurado diretamente via `boot.extraModulePackages` e `services.xserver` sem ativar o módulo incompatível `hardware/video/nvidia.nix`
 
 

@@ -288,11 +288,11 @@ in
 
     # --- Duas opções de Boot no Menu do GRUB ---
     # 1. Padrão: Kernel Zen (unstable) + Driver Nouveau (Mesa / aceleração nativa NV50)
-    # 2. Especialização "nvidia": Kernel 5.15 LTS + Driver NVIDIA 340 Legacy (linuxPackages_5_15.nvidia_x11_legacy340)
+    # 2. Especialização "nvidia": Kernel 6.6 LTS + Driver NVIDIA 340 Legacy (linuxPackages_6_6.nvidia_x11_legacy340)
     specialisation = {
       nvidia.configuration = {
         boot = {
-          kernelPackages = lib.mkForce pkgs.linuxPackages_5_15;
+          kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
           kernelParams = lib.mkForce [
             "pcie_aspm=force"
             "zswap.enabled=0"
