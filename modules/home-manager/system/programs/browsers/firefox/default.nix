@@ -4,7 +4,6 @@
   pkgs,
   username,
   osConfig ? null,
-  nixGLWrapper ? (x: x),
   ...
 }:
 let
@@ -20,13 +19,6 @@ let
   sharedSettings = import ./shared.nix { inherit config lib osConfig; } // import ./fonts.nix { };
 
   isNixOS = osConfig != null;
-  hasVaapi =
-    if isNixOS then
-      lib.any (pkg: lib.hasPrefix "vaapi" (pkg.name or "") || lib.hasPrefix "libva" (pkg.name or "")) (
-        osConfig.hardware.graphics.extraPackages or (osConfig.hardware.opengl.extraPackages or [ ])
-      )
-    else
-      false;
 in
 {
   options = {
@@ -64,25 +56,14 @@ in
 
       packages = mkIf (!isNixOS) [ pkgs.libva-utils ];
 
-      activation =
-        let
-          backup-path = "/home/${username}/.mozilla/firefox/default";
-        in
-        {
-          # beforeCheckLinkTargets = mkIf (cfg.browser == "firefox-esr" || cfg.browser == "firefox" || cfg.browser == "firefox-devedition") {
-          beforeCheckLinkTargets = {
-            after = [ ];
-            before = mkForce [ "checkLinkTargets" ];
-            data = mkForce ''
-              if [ -f "${backup-path}/search.json.mozlz4.home-manager.backup" ]; then
-                rm "${backup-path}/search.json.mozlz4.home-manager.backup"
-              fi
-
-              if [ -f "${backup-path}/search.json.mozlz4" ]; then
-                rm "${backup-path}/search.json.mozlz4"
-              fi
-            '';
-          };
+      activation = {
+        beforeCheckLinkTargets = {
+          after = [ ];
+          before = mkForce [ "checkLinkTargets" ];
+          data = mkForce ''
+            find "$HOME/.mozilla/firefox" -name "search.json.mozlz4*" -type f -exec rm -f {} + 2>/dev/null || true
+          '';
+        };
 
           checkVaapi = mkIf (!isNixOS) (
             lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -160,7 +141,7 @@ in
           containersForce = true; # Recommended: Overwrites existing container config on Firefox launch (prevents symlink issues)
 
           settings = sharedSettings;
-          search = import ./search.nix { inherit pkgs config; };
+          search = { force = true; } // import ./search.nix { inherit pkgs config; };
           bookmarks = {
             force = true;
             settings = import ./bookmarks.nix;

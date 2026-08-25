@@ -48,6 +48,10 @@ in
           duf # Modern Unix `df`
           usbutils # Terminal USB info
         ];
+
+      activation.cleanStaleBackups = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+        find "$HOME/.config" "$HOME/.mozilla" -maxdepth 4 \( -name "*.hm.backup" -o -name "*.home-manager.backup" \) -exec rm -f {} + 2>/dev/null || true
+      '';
     };
     programs = {
       nix-index.enable = true;
