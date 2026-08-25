@@ -72,8 +72,18 @@ in
       # Kernel padrão: Linux Zen do unstable (otimizado para agilidade de desktop em CPUs dual-core) + Nouveau
       kernelPackages = pkgs.unstable.linuxPackages_zen;
 
+      supportedFilesystems = [
+        "btrfs"
+        "vfat"
+        "ext4"
+      ];
+
       initrd = {
         systemd.enable = lib.mkForce false; # Evita falhas de montagem do /sysroot em hardware legado Intel ICH8-M
+        supportedFilesystems = [
+          "btrfs"
+          "vfat"
+        ];
         availableKernelModules = [
           "ahci"
           "ata_piix"
@@ -90,6 +100,7 @@ in
           "btrfs"
         ];
         kernelModules = [
+          "btrfs"
           "applesmc"
           "hid_apple"
         ];
