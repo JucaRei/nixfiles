@@ -77,7 +77,7 @@
         rocinante = helper.mkNixos {
           hostname = "rocinante";
           desktop = "bspwm";
-          stateVersion = "24.11";
+          stateVersion = "22.11";
         };
 
         # Generic & Minimal Live ISOs
