@@ -73,10 +73,14 @@ in
       kernelPackages = pkgs.unstable.linuxPackages_zen;
 
       initrd = {
+        systemd.enable = lib.mkForce false; # Evita falhas de montagem do /sysroot em hardware legado Intel ICH8-M
         availableKernelModules = [
+          "ahci"
+          "ata_piix"
+          "pata_acpi"
+          "ata_generic"
           "uhci_hcd"
           "ehci_pci"
-          "ahci"
           "firewire_ohci"
           "usb_storage"
           "usbhid"
@@ -276,7 +280,18 @@ in
     # 2. Especialização "nvidia": Kernel 5.15 LTS + Driver NVIDIA 340 Legacy (linuxPackages_5_15.nvidia_x11_legacy340)
     specialisation = {
       nvidia.configuration = {
-        boot.kernelPackages = lib.mkForce pkgs.linuxPackages_5_15;
+        boot = {
+          kernelPackages = lib.mkForce pkgs.linuxPackages_5_15;
+          kernelParams = lib.mkForce [
+            "pcie_aspm=force"
+            "zswap.enabled=0"
+            "mitigations=off"
+            "nowatchdog"
+            "nomodeset"
+            "transparent_hugepage=madvise"
+            "elevator=bfq"
+          ];
+        };
         hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
       };
     };
