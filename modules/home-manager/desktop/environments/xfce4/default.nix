@@ -1,14 +1,6 @@
 { config, lib, pkgs, desktop ? null, ... }:
 let
   inherit (lib) mkIf optionalString getExe;
-  thunar-with-plugins = pkgs.thunar.override {
-    thunarPlugins = [
-      pkgs.thunar-volman
-      pkgs.thunar-archive-plugin
-      pkgs.thunar-media-tags-plugin
-    ];
-  };
-  finalThunar = thunar-with-plugins;
   terminalBin =
     if config.programs ? alacritty && config.programs.alacritty.enable
     then getExe config.programs.alacritty.package
@@ -17,6 +9,11 @@ in
 {
   config = mkIf (desktop == "xfce4") {
     desktop.display-servers.backend = "x11";
+
+    # --- Programas Padrão do XFCE ---
+    system.programs = {
+      file-manager.thunar.enable = true;
+    };
 
     # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---
     gtk = {
@@ -93,14 +90,14 @@ in
       xfce4-keyboard-shortcuts = {
         "commands/custom/<Super>Return" = terminalBin;
         "commands/custom/<Super>t" = terminalBin;
-        "commands/custom/<Super>e" = "${finalThunar}/bin/thunar";
-        "commands/custom/<Super>f" = "${finalThunar}/bin/thunar";
-        "commands/custom/<Super>r" = "${pkgs.xfce4-appfinder or pkgs.xfce.xfce4-appfinder}/bin/xfce4-appfinder";
-        "commands/custom/<Super>space" = "${pkgs.xfce4-appfinder or pkgs.xfce.xfce4-appfinder}/bin/xfce4-appfinder";
-        "commands/custom/Print" = "${pkgs.xfce4-screenshooter or pkgs.xfce.xfce4-screenshooter}/bin/xfce4-screenshooter -f";
-        "commands/custom/<Alt>Print" = "${pkgs.xfce4-screenshooter or pkgs.xfce.xfce4-screenshooter}/bin/xfce4-screenshooter -w";
-        "commands/custom/<Shift>Print" = "${pkgs.xfce4-screenshooter or pkgs.xfce.xfce4-screenshooter}/bin/xfce4-screenshooter -r";
-        "commands/custom/<Super>l" = "${pkgs.xfce4-session or pkgs.xfce.xfce4-session}/bin/xflock4";
+        "commands/custom/<Super>e" = "${pkgs.thunar}/bin/thunar";
+        "commands/custom/<Super>f" = "${pkgs.thunar}/bin/thunar";
+        "commands/custom/<Super>r" = "${pkgs.xfce4-appfinder}/bin/xfce4-appfinder";
+        "commands/custom/<Super>space" = "${pkgs.xfce4-appfinder}/bin/xfce4-appfinder";
+        "commands/custom/Print" = "${pkgs.xfce4-screenshooter}/bin/xfce4-screenshooter -f";
+        "commands/custom/<Alt>Print" = "${pkgs.xfce4-screenshooter}/bin/xfce4-screenshooter -w";
+        "commands/custom/<Shift>Print" = "${pkgs.xfce4-screenshooter}/bin/xfce4-screenshooter -r";
+        "commands/custom/<Super>l" = "${pkgs.xfce4-session}/bin/xflock4";
       };
 
       # Gestão de Energia
@@ -132,11 +129,9 @@ in
 
     home = let gio = pkgs.gnome.gvfs; in {
       packages = with pkgs; [
-        # File Manager & Plugins
-        (pkgs.xfce4-exo or pkgs.exo or pkgs.xfce.exo)
-        finalThunar
-        (pkgs.tumbler or pkgs.xfce.tumbler)
-        (pkgs.catfish or pkgs.xfce.catfish)
+        # File Manager Helpers & Search
+        xfce4-exo
+        catfish
 
         # Temas e Fontes
         catppuccin-gtk
@@ -159,15 +154,9 @@ in
         pavucontrol
         networkmanagerapplet
 
-        # Arquivos compactados e Thumbnails
-        xarchiver
-        file-roller
-        webp-pixbuf-loader
+        # Arquivos compactados e Thumbnails adicionais
         zip
         unzip
-        poppler
-        libgsf
-        freetype
         libgepub
         ffmpegthumbnailer
 
@@ -194,7 +183,7 @@ in
                   <icon>xterm</icon>
                   <name>Open Terminal Here</name>
                   <unique-id>1612104464586264-1</unique-id>
-                  <command>${pkgs.xfce4-exo or pkgs.exo or pkgs.xfce.exo}/bin/exo-open --working-directory %f --launch TerminalEmulator</command>
+                  <command>${pkgs.xfce4-exo}/bin/exo-open --working-directory %f --launch TerminalEmulator</command>
                   <description>Example for a custom action</description>
                   <patterns>*</patterns>
                   <startup-notify/>
@@ -229,16 +218,17 @@ in
                   <icon>system-file-manager-root</icon>
                   <name>Open folder as root</name>
                   <unique-id>1493475601060449-3</unique-id>
-                  <command>${pkgs.polkit}/bin/pkexec ${finalThunar}/bin/thunar %f</command>
+                  <command>${pkgs.polkit}/bin/pkexec ${pkgs.thunar}/bin/thunar %f</command>
                   <description></description>
                   <patterns>*</patterns>
                   <directories/>
+                  <text-files/>
               </action>
               <action>
                   <icon>catfish</icon>
                   <name>Search with catfish</name>
                   <unique-id>1489089852658523-2</unique-id>
-                  <command>${pkgs.catfish or pkgs.xfce.catfish}/bin/catfish --path=$f$d</command>
+                  <command>${pkgs.catfish}/bin/catfish --path=$f$d</command>
                   <description></description>
                   <patterns>*</patterns>
                   <directories/>
