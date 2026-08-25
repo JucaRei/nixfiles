@@ -204,11 +204,22 @@ in
         ACTION=="add", SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/leds/%k/brightness"
       '';
 
-      # Teclado Apple US Mac no X11
-      xserver.xkb = {
-        layout = "us";
-        variant = "mac";
-        options = "terminate:ctrl_alt_bksp";
+      xserver = {
+        # Resolução nativa da tela WUXGA (MacBook Pro 17" - 1920x1200 @ 60Hz)
+        resolutions = [
+          {
+            x = 1920;
+            y = 1200;
+          }
+        ];
+        dpi = 133;
+
+        # Teclado Apple US Mac no X11
+        xkb = {
+          layout = "us";
+          variant = "mac";
+          options = "terminate:ctrl_alt_bksp";
+        };
       };
 
       # SSH com autenticação por senha habilitada e serviço contínuo (apenas no rocinante)
