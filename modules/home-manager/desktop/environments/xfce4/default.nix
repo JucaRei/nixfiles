@@ -200,6 +200,18 @@ in
               <startup-notify/>
               <directories/>
           </action>
+        '' + optionalString (config.system.programs.editors.antigravity.enable or false) ''
+          <action>
+              <icon>code</icon>
+              <name>Open in Antigravity</name>
+              <unique-id>1612104464586266-1</unique-id>
+              <command>antigravity %f</command>
+              <description>Open workspace in Antigravity AI IDE</description>
+              <patterns>*</patterns>
+              <startup-notify/>
+              <directories/>
+              <text-files/>
+          </action>
         '' +
         ''
               <action>
