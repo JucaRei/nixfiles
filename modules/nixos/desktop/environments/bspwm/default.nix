@@ -58,7 +58,7 @@ in
 
         # Terminal & File manager
         alacritty
-        xfce.thunar
+        thunar
       ];
     };
 

@@ -9,14 +9,6 @@ let
 
   isNixOS = osConfig != null;
   homeDir = "/home/${username}";
-
-  thunar-with-plugins = pkgs.thunar.override {
-    thunarPlugins = [
-      pkgs.thunar-volman
-      pkgs.thunar-archive-plugin
-      pkgs.thunar-media-tags-plugin
-    ];
-  };
 in
 {
   options.desktop.bspwm.packages = {
@@ -38,13 +30,6 @@ in
       # Utilitários e Desktop
       feh
       (nixGLWrapper alacritty)
-      thunar-with-plugins
-      tumbler
-      xarchiver
-      file-roller
-
-      # Screenshots
-      flameshot
 
       # Áudio e Brilho
       pavucontrol

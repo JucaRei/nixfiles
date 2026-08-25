@@ -1,18 +1,18 @@
 { config, lib, pkgs, desktop ? null, ... }:
 let
   inherit (lib) mkIf optionalString getExe;
-  thunar-with-plugins = (pkgs.thunar or pkgs.xfce.thunar).override {
+  thunar-with-plugins = pkgs.thunar.override {
     thunarPlugins = [
-      (pkgs.thunar-volman or pkgs.xfce.thunar-volman)
-      (pkgs.thunar-archive-plugin or pkgs.xfce.thunar-archive-plugin)
-      (pkgs.thunar-media-tags-plugin or pkgs.xfce.thunar-media-tags-plugin)
+      pkgs.thunar-volman
+      pkgs.thunar-archive-plugin
+      pkgs.thunar-media-tags-plugin
     ];
   };
   finalThunar = thunar-with-plugins;
   terminalBin =
     if config.programs ? alacritty && config.programs.alacritty.enable
     then getExe config.programs.alacritty.package
-    else "${pkgs.xfce4-terminal or pkgs.xfce.xfce4-terminal or pkgs.alacritty}/bin/xfce4-terminal";
+    else "${pkgs.xfce4-terminal or pkgs.alacritty}/bin/xfce4-terminal";
 in
 {
   config = mkIf (desktop == "xfce4") {

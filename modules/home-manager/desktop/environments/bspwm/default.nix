@@ -17,6 +17,12 @@ in
   config = mkIf config.desktop.bspwm.enable {
     desktop.display-servers.backend = "x11";
 
+    # --- Programas Padrão do BSPWM ---
+    system.programs = {
+      file-manager.thunar.enable = true;
+      tools.flameshot.enable = true;
+    };
+
     # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---
     gtk = {
       enable = true;

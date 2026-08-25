@@ -3,6 +3,7 @@ _: {
     ./browsers
     ./console
     ./documents
+    ./file-manager
     ./terminal
     ./editors
     ./multimedia
