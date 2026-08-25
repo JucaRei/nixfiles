@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   username,
   ...
 }:
@@ -28,24 +27,14 @@ in
     security = {
       sudo = {
         enable = true;
-        extraConfig =
-          "# ${user}.user ALL=(ALL) NOPASSWD:ALL\n"
-          + "${user}.user ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemctl\n"
-          + "${user}.user ALL=(ALL) NOPASSWD:${pkgs.systemd}/bin/systemd-run\n"
-          # + "Defaults env_reset,timestamp_timeout=-1"
-          # + "Defaults:insults,root,%wheel timestamp_timeout=30"
-          #+ "Defaults editor=${pkgs.neovim}/bin/nvim";
-          # + "Defaults env_keep += EDITOR PATH\n"
-          + "Defaults timestamp_type=global\n" # share sudo session between terminal sessions
-          + "Defaults timestamp_timeout=20\n" # set sudo timeout from 10 to 20 minutes
-          + "Defaults pwfeedback\n" # display stars when typing characters
-          # + "Defaults passprompt=[31m sudo: password for %p@%h, running as %U:[0m "
-          + "Defaults insults\n"
-          + "Defaults:root,%wheel env_keep+=EDITOR" # Enables sudo-prepended programs like `systemctl edit ...` to use the specified default editor https://github.com/NixOS/nixpkgs/issues/276778
-        ;
-        configFile = ''
+        extraConfig = ''
           Defaults lecture = always
-          Defaults lecture_file=/etc/sudoers.d/00-lecture.txt
+          Defaults lecture_file = /etc/sudoers.d/00-lecture.txt
+          Defaults timestamp_type = global
+          Defaults timestamp_timeout = 20
+          Defaults pwfeedback
+          Defaults insults
+          Defaults:root,%wheel env_keep += EDITOR
         '';
         execWheelOnly = true;
         wheelNeedsPassword = true;
@@ -84,7 +73,10 @@ in
 
     environment = {
       etc = {
-        "sudoers.d/00-lecture.txt".text = groot_text;
+        "sudoers.d/00-lecture.txt" = {
+          text = groot_text;
+          mode = "0444";
+        };
       };
     };
   };
