@@ -3,13 +3,49 @@ let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
   cfg = config.desktop.bspwm.polybar;
+
+  # Script interativo de controle de mídia via playerctl
+  mediaScript = pkgs.writeShellScript "polybar-media" ''
+    if ! command -v ${pkgs.playerctl}/bin/playerctl >/dev/null 2>&1; then
+      exit 0
+    fi
+    status=$(${pkgs.playerctl}/bin/playerctl status 2>/dev/null)
+    if [ "$status" = "Playing" ]; then
+      artist=$(${pkgs.playerctl}/bin/playerctl metadata artist 2>/dev/null)
+      title=$(${pkgs.playerctl}/bin/playerctl metadata title 2>/dev/null)
+      echo "󰎈 $artist - $title" | cut -c1-35
+    elif [ "$status" = "Paused" ]; then
+      echo "󰏤 Pausado"
+    else
+      echo ""
+    fi
+  '';
+
+  # Menu de Desligamento via Rofi
+  rofiPowerMenu = pkgs.writeShellScript "rofi-powermenu" ''
+    chosen=$(printf "󰐥  Desligar\n󰜉  Reiniciar\n󰤄  Suspender\n󰒲  Hibernar\n󰈆  Sair (logout)\n󰌾  Bloquear" \
+      | ${pkgs.rofi}/bin/rofi \
+          -dmenu \
+          -i \
+          -p "Power Menu" \
+          -theme-str 'window {width: 280px; border-radius: 12px;} listview {lines: 6;}' \
+          -no-custom)
+    case "$chosen" in
+      *"Desligar")    systemctl poweroff ;;
+      *"Reiniciar")   systemctl reboot ;;
+      *"Suspender")   systemctl suspend ;;
+      *"Hibernar")    systemctl hibernate ;;
+      *"Sair"*)       bspc quit ;;
+      *"Bloquear")    loginctl lock-session ;;
+    esac
+  '';
 in
 {
   options.desktop.bspwm.polybar = {
     enable = mkOption {
       type = bool;
       default = config.desktop.bspwm.enable;
-      description = "Enable polybar for bspwm";
+      description = "Enable modern polybar for bspwm";
     };
   };
 
@@ -34,14 +70,17 @@ in
         fi
       '';
       config = {
+        # --- Paleta Catppuccin Mocha ---
         "colors" = {
           base = "#1e1e2e";
           mantle = "#181825";
           crust = "#11111b";
           surface0 = "#313244";
           surface1 = "#45475a";
+          surface2 = "#585b70";
           text = "#cdd6f4";
           subtext0 = "#a6adc8";
+          subtext1 = "#bac2de";
           blue = "#89b4fa";
           lavender = "#b4befe";
           sapphire = "#74c7ec";
@@ -58,9 +97,10 @@ in
           transparent = "#00000000";
         };
 
+        # --- Barra Principal (Moderna & Arredondada) ---
         "bar/main" = {
           width = "100%";
-          height = "26";
+          height = "30";
           radius = 0;
           fixed-center = true;
 
@@ -72,16 +112,17 @@ in
 
           border-size = 0;
           padding-left = 1;
-          padding-right = 2;
+          padding-right = 1;
           module-margin = 1;
 
-          font-0 = "Inter:size=10;2";
-          font-1 = "Symbols Nerd Font:size=11;2";
-          font-2 = "JetBrainsMono Nerd Font:size=10;2";
+          font-0 = "Inter:weight=SemiBold:size=10;3";
+          font-1 = "Symbols Nerd Font:size=12;3";
+          font-2 = "JetBrainsMono Nerd Font:weight=Medium:size=10;3";
+          font-3 = "Symbols Nerd Font:size=14;4";
 
-          modules-left = "bspwm xwindow";
-          modules-center = "";
-          modules-right = "pulseaudio backlight battery cpu memory date powermenu";
+          modules-left = "launcher bspwm xwindow";
+          modules-center = "media";
+          modules-right = "pulseaudio backlight battery network cpu memory date powermenu";
 
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";
@@ -90,12 +131,26 @@ in
           wm-restack = "bspwm";
         };
 
+        # --- Lançador de Aplicativos (Spotlight / Rofi) ---
+        "module/launcher" = {
+          type = "custom/text";
+          format = "<label>";
+          label = " 󱄅 ";
+          label-font = 4;
+          label-foreground = "\${colors.blue}";
+          label-background = "\${colors.surface0}";
+          label-padding = 1;
+          click-left = "${pkgs.rofi}/bin/rofi -show drun";
+        };
+
+        # --- Workspaces do BSPWM (Pills Dinâmicos) ---
         "module/bspwm" = {
           type = "internal/bspwm";
           pin-workspaces = true;
           enable-click = true;
           enable-scroll = true;
           reverse-scroll = false;
+          inline-mode = false;
 
           format = "<label-state> <label-mode>";
 
@@ -118,44 +173,62 @@ in
           label-urgent-margin = 0;
 
           label-empty = "%name%";
-          label-empty-foreground = "\${colors.subtext0}";
+          label-empty-foreground = "\${colors.surface2}";
           label-empty-background = "\${colors.mantle}";
           label-empty-padding = 2;
           label-empty-margin = 0;
 
-          label-monocle = " [M]";
+          label-monocle = " 󰍉 ";
           label-monocle-foreground = "\${colors.yellow}";
-          label-floating = " [F]";
+          label-floating = " 󰖲 ";
           label-floating-foreground = "\${colors.peach}";
-          label-fullscreen = " [MAX]";
+          label-fullscreen = " 󰊓 ";
           label-fullscreen-foreground = "\${colors.mauve}";
         };
 
+        # --- Título da Janela Ativa ---
         "module/xwindow" = {
           type = "internal/xwindow";
-          label = "%title:0:45:...%";
+          label = "%title:0:40:...%";
           label-foreground = "\${colors.subtext0}";
           label-padding = 1;
         };
 
+        # --- Mídia / Playerctl ---
+        "module/media" = {
+          type = "custom/script";
+          exec = "${mediaScript}";
+          interval = 2;
+          format = "<label>";
+          format-foreground = "\${colors.lavender}";
+          label = "%output%";
+          click-left = "${pkgs.playerctl}/bin/playerctl play-pause";
+          click-right = "${pkgs.playerctl}/bin/playerctl next";
+        };
+
+        # --- Uso de CPU ---
         "module/cpu" = {
           type = "internal/cpu";
           interval = 2;
+          format = "<label>";
           format-prefix = "󰍛 ";
           format-prefix-foreground = "\${colors.teal}";
           label = "%percentage:2%%";
           label-foreground = "\${colors.text}";
         };
 
+        # --- Uso de Memória ---
         "module/memory" = {
           type = "internal/memory";
           interval = 3;
+          format = "<label>";
           format-prefix = "󰘚 ";
           format-prefix-foreground = "\${colors.mauve}";
           label = "%percentage_used:2%%";
           label-foreground = "\${colors.text}";
         };
 
+        # --- Volume & Áudio ---
         "module/pulseaudio" = {
           type = "internal/pulseaudio";
           use-ui-max = true;
@@ -173,12 +246,13 @@ in
           format-muted = "<label-muted>";
           format-muted-prefix = "󰝟 ";
           format-muted-prefix-foreground = "\${colors.red}";
-          label-muted = "mute";
+          label-muted = "0%";
           label-muted-foreground = "\${colors.subtext0}";
 
-          click-right = "pavucontrol";
+          click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
         };
 
+        # --- Brilho da Tela ---
         "module/backlight" = {
           type = "internal/backlight";
           card = "nv_backlight";
@@ -196,6 +270,7 @@ in
           ramp-foreground = "\${colors.yellow}";
         };
 
+        # --- Bateria ---
         "module/battery" = {
           type = "internal/battery";
           full-at = 98;
@@ -236,12 +311,37 @@ in
           animation-charging-framerate = 750;
         };
 
+        # --- Rede (Wi-Fi / Ethernet) ---
+        "module/network" = {
+          type = "internal/network";
+          interface-type = "wireless";
+          interval = 3;
+
+          format-connected = "<ramp-signal> <label-connected>";
+          label-connected = "%essid%";
+          label-connected-foreground = "\${colors.text}";
+
+          ramp-signal-0 = "󰤯";
+          ramp-signal-1 = "󰤟";
+          ramp-signal-2 = "󰤢";
+          ramp-signal-3 = "󰤥";
+          ramp-signal-4 = "󰤨";
+          ramp-signal-foreground = "\${colors.teal}";
+
+          format-disconnected = "<label-disconnected>";
+          format-disconnected-prefix = "󰤮 ";
+          format-disconnected-prefix-foreground = "\${colors.red}";
+          label-disconnected = "Offline";
+          label-disconnected-foreground = "\${colors.subtext0}";
+        };
+
+        # --- Data & Hora ---
         "module/date" = {
           type = "internal/date";
           interval = 1;
           date = "%d/%m";
           time = "%H:%M";
-          date-alt = "%A, %d %B %Y";
+          date-alt = "%A, %d de %B de %Y";
           time-alt = "%H:%M:%S";
 
           format = "<label>";
@@ -251,38 +351,21 @@ in
           label-foreground = "\${colors.text}";
         };
 
-        "settings" = {
-          screenchange-reload = true;
-          pseudo-transparency = false;
-        };
-
+        # --- Power Menu Button ---
         "module/powermenu" = {
           type = "custom/text";
           format = "<label>";
-          label = "󰐥";
+          label = " 󰐥 ";
+          label-font = 4;
           label-foreground = "\${colors.red}";
-          label-background = "\${colors.mantle}";
+          label-background = "\${colors.surface0}";
           label-padding = 1;
+          click-left = "${rofiPowerMenu}";
+        };
 
-          click-left = let
-            rofiPowerMenu = pkgs.writeShellScript "rofi-powermenu" ''
-              chosen=$(printf "  Desligar\n  Reiniciar\n  Suspender\n  Hibernar\n  Sair (logout)\n  Bloquear" \
-                | ${pkgs.rofi}/bin/rofi \
-                    -dmenu \
-                    -i \
-                    -p "Power Menu" \
-                    -theme-str 'window {width: 280px;} listview {lines: 6;}' \
-                    -no-custom)
-              case "$chosen" in
-                *"Desligar")    systemctl poweroff ;;
-                *"Reiniciar")   systemctl reboot ;;
-                *"Suspender")   systemctl suspend ;;
-                *"Hibernar")    systemctl hibernate ;;
-                *"Sair"*)       bspc quit ;;
-                *"Bloquear")    loginctl lock-session ;;
-              esac
-            '';
-          in "${rofiPowerMenu}";
+        "settings" = {
+          screenchange-reload = true;
+          pseudo-transparency = false;
         };
       };
     };

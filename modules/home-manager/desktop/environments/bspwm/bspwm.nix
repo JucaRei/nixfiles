@@ -41,7 +41,7 @@ in
             split_ratio = 0.52;
             border_width = 2;
             window_gap = 6;
-            top_padding = 28; # Altura da Polybar
+            top_padding = 34; # Altura da Polybar (30px + espaçamento)
             bottom_padding = 4;
             left_padding = 4;
             right_padding = 4;
