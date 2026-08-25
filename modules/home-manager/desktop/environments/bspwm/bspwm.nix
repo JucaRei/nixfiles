@@ -131,6 +131,10 @@ in
               done
             fi
 
+            # Iniciar daemon de gestos do Touchpad (3 dedos para alternar workspaces)
+            pkill -x libinput-gestures || true
+            ${pkgs.libinput-gestures}/bin/libinput-gestures &
+
             # Regras customizadas adicionais
             ${lib.concatStringsSep "\n" cfg.rules}
 
@@ -140,7 +144,25 @@ in
       };
     };
 
+    xdg.configFile."libinput-gestures.conf".text = ''
+      # Gestos de 3 dedos no Touchpad (estilo macOS)
+      # Deslizar para a esquerda com 3 dedos -> Próximo Workspace
+      gesture swipe left 3 ${pkgs.bspwm}/bin/bspc desktop -f next.local
+      # Deslizar para a direita com 3 dedos -> Workspace Anterior
+      gesture swipe right 3 ${pkgs.bspwm}/bin/bspc desktop -f prev.local
+      # Deslizar para cima com 3 dedos -> Abrir Lançador Rofi
+      gesture swipe up 3 ${pkgs.rofi}/bin/rofi -show drun
+      # Deslizar para baixo com 3 dedos -> Fechar janela em foco
+      gesture swipe down 3 ${pkgs.bspwm}/bin/bspc node -c
+    '';
+
     home = {
+      packages = with pkgs; [
+        libinput-gestures
+        wmctrl
+        xdotool
+      ];
+
       sessionVariables = {
         "_JAVA_AWT_WM_NONREPARENTING" = "1";
         GLFW_IM_MODULE = "ibus";
