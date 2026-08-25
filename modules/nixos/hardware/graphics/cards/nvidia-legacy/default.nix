@@ -16,7 +16,8 @@ in
         "nvidiafb"
       ];
       extraModulePackages = [
-        config.boot.kernelPackages.nvidia_x11_legacy340
+        config.boot.kernelPackages.nvidia_x11_legacy340.bin
+        config.boot.kernelPackages.nvidia_x11_legacy340.mod
       ];
       kernelModules = [
         "nvidia"
@@ -24,14 +25,6 @@ in
     };
 
     hardware = {
-      # nvidia = {
-      #   package = config.boot.kernelPackages.nvidia_x11_legacy340;
-      #   open = false;
-      #   nvidiaSettings = false;
-      #   modesetting.enable = false; # 340.xx não possui nvidia_drm / modesetting
-      #   powerManagement.enable = false;
-      #   powerManagement.finegrained = false;
-      # };
       graphics = {
         enable = true;
         enable32Bit = true;
@@ -51,6 +44,13 @@ in
         enable = true;
       };
       xserver = {
+        drivers = [
+          {
+            name = "nvidia";
+            modules = [ config.boot.kernelPackages.nvidia_x11_legacy340.bin ];
+            display = true;
+          }
+        ];
         deviceSection = lib.mkDefault ''
           Option "TearFree" "true"
         '';
@@ -60,8 +60,6 @@ in
         screenSection = ''
           Option     "metamodes" "nvidia-auto-select +0+0 {ForceFullCompositionPipeline=On}"
         '';
-        # Driver carregado via boot.extraModulePackages; xserver usa o driver instalado pelo módulo do kernel
-        videoDrivers = lib.mkForce [ ];
       };
     };
 
