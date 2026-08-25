@@ -11,13 +11,14 @@ let
 
   # --- Script de Controle de Mídia via playerctl ---
   mediaScript = pkgs.writeShellScript "polybar-media" ''
-    if ! command -v ${pkgs.playerctl}/bin/playerctl >/dev/null 2>&1; then
+    export PATH="${pkgs.playerctl}/bin:${pkgs.coreutils}/bin:$PATH"
+    if ! command -v playerctl >/dev/null 2>&1; then
       exit 0
     fi
-    status=$(${pkgs.playerctl}/bin/playerctl status 2>/dev/null)
+    status=$(playerctl status 2>/dev/null)
     if [ "$status" = "Playing" ]; then
-      artist=$(${pkgs.playerctl}/bin/playerctl metadata artist 2>/dev/null)
-      title=$(${pkgs.playerctl}/bin/playerctl metadata title 2>/dev/null)
+      artist=$(playerctl metadata artist 2>/dev/null)
+      title=$(playerctl metadata title 2>/dev/null)
       echo "󰎈 $artist - $title" | cut -c1-35
     elif [ "$status" = "Paused" ]; then
       echo "󰏤 Pausado"
@@ -28,11 +29,13 @@ let
 
   # --- Menu Interativo de Redes Wi-Fi com Rofi ---
   rofiWifiMenu = pkgs.writeShellScript "rofi-wifi-menu" ''
-    # Notificar varredura
-    ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 -t 1500 "Escaneando redes Wi-Fi..."
+    export PATH="${pkgs.networkmanager}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.gnugrep}/bin:${pkgs.coreutils}/bin:$PATH"
+
+    # Notificar início do escaneamento
+    dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 -t 1500 "Escaneando redes Wi-Fi..."
 
     # Obter lista de redes Wi-Fi formatadas
-    wifi_list=$(nmcli --fields "SECURITY,SSID,BARS" device wifi list --rescan yes | sed 1d | sed -E "s/  +/ /g" | sed -E "s/^ *//" | grep -v "^--" | awk -F' ' '{
+    wifi_list=$(nmcli --fields "SECURITY,SSID,BARS" device wifi list --rescan yes 2>/dev/null | sed 1d | sed -E "s/  +/ /g" | sed -E "s/^ *//" | grep -v "^--" | awk -F' ' '{
       sec=$1;
       bars=$NF;
       $1="";
@@ -46,12 +49,12 @@ let
     }' | sort -u)
 
     if [ -z "$wifi_list" ]; then
-      ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u normal -i "network-wireless-offline" -r 9994 "Nenhuma rede Wi-Fi encontrada"
+      dunstify -a "Wi-Fi" -u normal -i "network-wireless-offline" -r 9994 "Nenhuma rede Wi-Fi encontrada"
       exit 0
     fi
 
     # Seleção de Rede via Rofi
-    chosen_line=$(echo -e "$wifi_list\n󰑐  Escanear novamente\n󰤮  Desconectar Wi-Fi" | ${pkgs.rofi}/bin/rofi \
+    chosen_line=$(echo -e "$wifi_list\n󰑐  Escanear novamente\n󰤮  Desconectar Wi-Fi" | rofi \
       -dmenu \
       -i \
       -p "Redes Wi-Fi" \
@@ -64,7 +67,7 @@ let
 
     if [[ "$chosen_line" =~ "Desconectar" ]]; then
       nmcli device disconnect wlan0 2>/dev/null || nmcli device disconnect wlp3s0 2>/dev/null || nmcli radio wifi off
-      ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless-offline" -r 9994 "Wi-Fi desconectado"
+      dunstify -a "Wi-Fi" -u low -i "network-wireless-offline" -r 9994 "Wi-Fi desconectado"
       exit 0
     fi
 
@@ -77,29 +80,29 @@ let
 
     if [ -n "$chosen_ssid" ]; then
       # Verificar se a rede já é conhecida
-      saved_conn=$(nmcli -g NAME connection show | grep -Fx "$chosen_ssid")
+      saved_conn=$(nmcli -g NAME connection show | grep -Fx "$chosen_ssid" || true)
       if [ -n "$saved_conn" ]; then
-        ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
+        dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
         if nmcli connection up "$chosen_ssid"; then
-          ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\" com sucesso!"
+          dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\" com sucesso!"
         else
-          ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Falha ao conectar a \"$chosen_ssid\""
+          dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Falha ao conectar a \"$chosen_ssid\""
         fi
       else
         # Solicitar senha se for rede protegida
         if [[ "$chosen_line" =~ "󰌾" ]]; then
-          wifi_pass=$(${pkgs.rofi}/bin/rofi -dmenu -password -p "Senha para $chosen_ssid" -theme-str 'window {width: 320px; border-radius: 12px;}')
+          wifi_pass=$(rofi -dmenu -password -p "Senha para $chosen_ssid" -theme-str 'window {width: 320px; border-radius: 12px;}')
           if [ -n "$wifi_pass" ]; then
-            ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
+            dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
             if nmcli device wifi connect "$chosen_ssid" password "$wifi_pass"; then
-              ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\"!"
+              dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\"!"
             else
-              ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Senha incorreta ou erro de conexão"
+              dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Senha incorreta ou erro de conexão"
             fi
           fi
         else
           # Rede aberta
-          ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
+          dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
           nmcli device wifi connect "$chosen_ssid"
         fi
       fi
@@ -108,20 +111,23 @@ let
 
   # --- Menu de Desligamento com Rofi ---
   rofiPowerMenu = pkgs.writeShellScript "rofi-powermenu" ''
+    export PATH="${pkgs.rofi}/bin:${pkgs.systemd}/bin:${pkgs.bspwm}/bin:${pkgs.coreutils}/bin:$PATH"
+
     chosen=$(printf "󰐥  Desligar\n󰜉  Reiniciar\n󰤄  Suspender\n󰒲  Hibernar\n󰈆  Sair (logout)\n󰌾  Bloquear" \
-      | ${pkgs.rofi}/bin/rofi \
+      | rofi \
           -dmenu \
           -i \
           -p "Power Menu" \
           -theme-str 'window {width: 280px; border-radius: 12px;} listview {lines: 6;}' \
           -no-custom)
+
     case "$chosen" in
-      *"Desligar")    systemctl poweroff ;;
-      *"Reiniciar")   systemctl reboot ;;
-      *"Suspender")   systemctl suspend ;;
-      *"Hibernar")    systemctl hibernate ;;
+      *"Desligar"*)    systemctl poweroff || loginctl poweroff ;;
+      *"Reiniciar"*)   systemctl reboot || loginctl reboot ;;
+      *"Suspender"*)   systemctl suspend || loginctl suspend ;;
+      *"Hibernar"*)    systemctl hibernate || loginctl hibernate ;;
       *"Sair"*)       bspc quit ;;
-      *"Bloquear")    loginctl lock-session ;;
+      *"Bloquear"*)    loginctl lock-session ;;
     esac
   '';
 in
@@ -219,7 +225,7 @@ in
         # --- Lançador de Aplicativos (Spotlight / Rofi) ---
         "module/launcher" = {
           type = "custom/text";
-          format = "<label>";
+          format = "%{A1:${pkgs.rofi}/bin/rofi -show drun:}<label>%{A}";
           label = " 󱄅 ";
           label-font = 4;
           label-foreground = "\${colors.blue}";
@@ -396,13 +402,13 @@ in
           animation-charging-framerate = 750;
         };
 
-        # --- Rede (Wi-Fi com Menu Interativo ao Clicar) ---
+        # --- Rede (Wi-Fi com Ações %{A1:...} no Formato) ---
         "module/network" = {
           type = "internal/network";
           interface-type = "wireless";
           interval = 3;
 
-          format-connected = "<ramp-signal> <label-connected>";
+          format-connected = "%{A1:${rofiWifiMenu}:}%{A3:${pkgs.networkmanagerapplet}/bin/nm-connection-editor:}<ramp-signal> <label-connected>%{A}%{A}";
           label-connected = "%essid%";
           label-connected-foreground = "\${colors.text}";
 
@@ -413,13 +419,12 @@ in
           ramp-signal-4 = "󰤨";
           ramp-signal-foreground = "\${colors.teal}";
 
-          format-disconnected = "<label-disconnected>";
+          format-disconnected = "%{A1:${rofiWifiMenu}:}%{A3:${pkgs.networkmanagerapplet}/bin/nm-connection-editor:}<label-disconnected>%{A}%{A}";
           format-disconnected-prefix = "󰤮 ";
           format-disconnected-prefix-foreground = "\${colors.red}";
           label-disconnected = "Offline";
           label-disconnected-foreground = "\${colors.subtext0}";
 
-          # Clique abre menu interativo de redes Wi-Fi
           click-left = "${rofiWifiMenu}";
           click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor";
         };
@@ -440,10 +445,10 @@ in
           label-foreground = "\${colors.text}";
         };
 
-        # --- Botão Power Menu ---
+        # --- Botão Power Menu com Ação Garantida ---
         "module/powermenu" = {
           type = "custom/text";
-          format = "<label>";
+          format = "%{A1:${rofiPowerMenu}:}<label>%{A}";
           label = " 󰐥 ";
           label-font = 4;
           label-foreground = "\${colors.red}";
