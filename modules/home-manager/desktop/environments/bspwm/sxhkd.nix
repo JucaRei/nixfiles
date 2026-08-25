@@ -24,24 +24,52 @@ in
       enable = true;
       package = pkgs.sxhkd;
       keybindings = cfg.keybindings // {
-        # --- Aplicativos & Launchers ---
+        # --- Aplicativos & Launchers (macOS Style) ---
+        # Spotlight (Cmd + Space) e Rofi Drun
+        "super + space" = "${pkgs.rofi}/bin/rofi -show drun";
+        "super + d" = "${pkgs.rofi}/bin/rofi -show drun";
+        "super + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
+
+        # Terminal (Cmd + Return, Cmd + T)
         "super + Return" = "${pkgs.alacritty}/bin/alacritty";
         "super + KP_Enter" = "${pkgs.alacritty}/bin/alacritty";
         "super + t" = "${pkgs.alacritty}/bin/alacritty";
-        "super + d" = "${pkgs.rofi}/bin/rofi -show drun";
-        "super + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
-        "super + w" = "${pkgs.rofi}/bin/rofi -show window";
-        "super + e" = "${pkgs.thunar}/bin/thunar";
-        "super + f" = "${pkgs.thunar}/bin/thunar";
 
-        # --- Janelas (Fechar / Matar) ---
+        # Finder / Gerenciador de Arquivos (Cmd + Shift + F, Cmd + E)
+        "super + e" = "${pkgs.thunar}/bin/thunar";
+        "super + shift + e" = "${pkgs.thunar}/bin/thunar";
+
+        # Alternador de Janelas (Cmd + Tab / Cmd + W)
+        "alt + Tab" = "${pkgs.rofi}/bin/rofi -show window";
+        "super + w" = "${pkgs.rofi}/bin/rofi -show window";
+
+        # Preferências do Sistema (Cmd + ,)
+        "super + comma" = "${pkgs.lxappearance}/bin/lxappearance";
+
+        # --- Janelas (macOS Style: Cmd + Q / Cmd + Opt + Esc) ---
         "super + q" = "bspc node -c";
+        "super + alt + Escape" = "bspc node -k";
         "super + shift + q" = "bspc node -k";
 
-        # --- Alternar Estados (Floating / Fullscreen / Monocle) ---
+        # --- Estados de Janela (macOS Style: Cmd + Ctrl + F Fullscreen) ---
+        "super + ctrl + f" = "bspc node -t ~fullscreen";
         "super + s" = "bspc node -t ~floating";
-        "super + shift + f" = "bspc node -t ~fullscreen";
         "super + m" = "bspc desktop -l next";
+
+        # --- Screenshots (macOS Style: Cmd + Shift + 3 / 4 / 5) ---
+        # Cmd + Shift + 3: Captura de tela inteira salva em ~/Pictures
+        "super + shift + 3" = "${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/";
+        # Cmd + Shift + 4: Seleção interativa de área
+        "super + shift + 4" = "${pkgs.flameshot}/bin/flameshot gui";
+        # Cmd + Shift + 5: Ferramenta GUI de captura
+        "super + shift + 5" = "${pkgs.flameshot}/bin/flameshot gui";
+        # Atalhos padrão PrintScreen (fallback)
+        "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+        "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/";
+
+        # --- Bloqueio & Sessão (macOS Style: Cmd + Ctrl + Q) ---
+        "super + ctrl + q" = "loginctl lock-session";
+        "super + shift + x" = "loginctl lock-session";
 
         # --- Foco e Movimento em Janelas (Vim + Setas) ---
         "super + {h,j,k,l}" = "bspc node -f {west,south,north,east}";
@@ -72,13 +100,6 @@ in
         # --- Controle de Brilho (MacBook) ---
         "XF86MonBrightnessUp" = "${pkgs.brightnessctl}/bin/brightnessctl set +5%";
         "XF86MonBrightnessDown" = "${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
-
-        # --- Screenshots (Flameshot) ---
-        "Print" = "${pkgs.flameshot}/bin/flameshot gui";
-        "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/";
-
-        # --- Bloquear Sessão ---
-        "super + shift + x" = "${pkgs.libnotify}/bin/notify-send 'Locking screen...'";
       };
     };
   };
