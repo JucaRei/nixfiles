@@ -7,17 +7,18 @@
 }:
 let
   inherit (lib) mkIf;
+  esc = builtins.fromJSON "\"\\u001b\"";
   groot_text = ''
-      \033[00;32m  \\^V//
-      \033[00;33m  |\033[01;37m. \033[01;37m.\033[00;33m|   \033[01;34m  I am (G)root!
-      \033[00;32m- \033[00;33m\\ - / \033[00;32m_
-      \033[00;33m \\_| |_/
-      \033[00;33m   \\ \\
-      \033[00;31m __\033[00;33m/\033[00;31m_\033[00;33m/\033[00;31m__
-      \033[00;31m|_______|  \033[00;37m With great power comes great responsibility.
-      \033[00;31m \\     /   \033[00;37m Use sudo wisely.
-      \033[00;31m  \\___/
-    \033[0m
+      ${esc}[00;32m  \\^V//
+      ${esc}[00;33m  |${esc}[01;37m. ${esc}[01;37m.${esc}[00;33m|   ${esc}[01;34m  I am (G)root!
+      ${esc}[00;32m- ${esc}[00;33m\\ - / ${esc}[00;32m_
+      ${esc}[00;33m \\_| |_/
+      ${esc}[00;33m   \\ \\
+      ${esc}[00;31m __${esc}[00;33m/${esc}[00;31m_${esc}[00;33m/${esc}[00;31m__
+      ${esc}[00;31m|_______|  ${esc}[00;37m With great power comes great responsibility.
+      ${esc}[00;31m \\     /   ${esc}[00;37m Use sudo wisely.
+      ${esc}[00;31m  \\___/
+    ${esc}[0m
   '';
   cfg = config.system.security.superuser;
   user = "${username}";
