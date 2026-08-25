@@ -1,8 +1,69 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool attrs;
   cfg = config.desktop.bspwm.sxhkd;
+
+  # --- Script de Notificação de Volume (Dunst OSD) ---
+  volumeOsd = pkgs.writeShellScript "volume-osd" ''
+    case "$1" in
+      up)   ${pkgs.pamixer}/bin/pamixer -i 5 ;;
+      down) ${pkgs.pamixer}/bin/pamixer -d 5 ;;
+      mute) ${pkgs.pamixer}/bin/pamixer -t ;;
+    esac
+
+    vol=$(${pkgs.pamixer}/bin/pamixer --get-volume 2>/dev/null || echo "0")
+    is_muted=$(${pkgs.pamixer}/bin/pamixer --get-mute 2>/dev/null || echo "false")
+
+    if [ "$is_muted" = "true" ] || [ "$vol" -eq 0 ]; then
+      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "audio-volume-muted" -r 9991 -h int:value:0 -t 1500 "Volume: Mudo"
+    else
+      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "audio-volume-high" -r 9991 -h int:value:"$vol" -t 1500 "Volume: $vol%"
+    fi
+  '';
+
+  # --- Script de Notificação de Brilho da Tela (Dunst OSD) ---
+  brightnessOsd = pkgs.writeShellScript "brightness-osd" ''
+    case "$1" in
+      up)   ${pkgs.brightnessctl}/bin/brightnessctl set +2% ;;
+      down) ${pkgs.brightnessctl}/bin/brightnessctl set 2%- ;;
+    esac
+
+    val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
+    ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+  '';
+
+  # --- Script de Controle e Notificação de Luz do Teclado (MacBook kbd_backlight) ---
+  kbdBrightnessOsd = pkgs.writeShellScript "kbd-brightness-osd" ''
+    # Identificar dispositivo de iluminação de teclado
+    dev="smc::kbd_backlight"
+    if ! ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" info >/dev/null 2>&1; then
+      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list | grep -m1 "kbd_backlight" | cut -d\' -f2)
+    fi
+
+    if [ -n "$dev" ]; then
+      case "$1" in
+        up)     ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +10% ;;
+        down)   ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 10%- ;;
+        toggle)
+          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%')
+          if [ "$curr" -gt 0 ]; then
+            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 0%
+          else
+            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 50%
+          fi
+          ;;
+      esac
+
+      val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%')
+      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
+    fi
+  '';
 in
 {
   options.desktop.bspwm.sxhkd = {
@@ -89,17 +150,25 @@ in
         "super + shift + r" = "bspc wm -r";
         "super + Escape" = "pkill -USR1 -x sxhkd";
 
-        # --- Controles de Mídia e Áudio ---
-        "XF86AudioRaiseVolume" = "${pkgs.pamixer}/bin/pamixer -i 5";
-        "XF86AudioLowerVolume" = "${pkgs.pamixer}/bin/pamixer -d 5";
-        "XF86AudioMute" = "${pkgs.pamixer}/bin/pamixer -t";
+        # --- Controles de Mídia e Áudio com Dunst OSD ---
+        "XF86AudioRaiseVolume" = "${volumeOsd} up";
+        "XF86AudioLowerVolume" = "${volumeOsd} down";
+        "XF86AudioMute" = "${volumeOsd} mute";
         "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
         "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
         "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
 
-        # --- Controle de Brilho (MacBook) ---
-        "XF86MonBrightnessUp" = "${pkgs.brightnessctl}/bin/brightnessctl set +5%";
-        "XF86MonBrightnessDown" = "${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
+        # --- Controle de Brilho da Tela (MacBook F1 / F2) ---
+        "XF86MonBrightnessUp" = "${brightnessOsd} up";
+        "XF86MonBrightnessDown" = "${brightnessOsd} down";
+
+        # --- Controle de Iluminação do Teclado (MacBook F5 / F6) ---
+        "XF86KbdBrightnessUp" = "${kbdBrightnessOsd} up";
+        "XF86KbdBrightnessDown" = "${kbdBrightnessOsd} down";
+        "XF86KbdLightOnOff" = "${kbdBrightnessOsd} toggle";
+        "super + F6" = "${kbdBrightnessOsd} up";
+        "super + F5" = "${kbdBrightnessOsd} down";
+        "super + shift + F5" = "${kbdBrightnessOsd} toggle";
       };
     };
   };

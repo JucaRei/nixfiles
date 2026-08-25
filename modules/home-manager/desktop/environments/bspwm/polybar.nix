@@ -1,10 +1,15 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
   cfg = config.desktop.bspwm.polybar;
 
-  # Script interativo de controle de mídia via playerctl
+  # --- Script de Controle de Mídia via playerctl ---
   mediaScript = pkgs.writeShellScript "polybar-media" ''
     if ! command -v ${pkgs.playerctl}/bin/playerctl >/dev/null 2>&1; then
       exit 0
@@ -21,7 +26,87 @@ let
     fi
   '';
 
-  # Menu de Desligamento via Rofi
+  # --- Menu Interativo de Redes Wi-Fi com Rofi ---
+  rofiWifiMenu = pkgs.writeShellScript "rofi-wifi-menu" ''
+    # Notificar varredura
+    ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 -t 1500 "Escaneando redes Wi-Fi..."
+
+    # Obter lista de redes Wi-Fi formatadas
+    wifi_list=$(nmcli --fields "SECURITY,SSID,BARS" device wifi list --rescan yes | sed 1d | sed -E "s/  +/ /g" | sed -E "s/^ *//" | grep -v "^--" | awk -F' ' '{
+      sec=$1;
+      bars=$NF;
+      $1="";
+      $NF="";
+      ssid=$0;
+      gsub(/^ +| +$/, "", ssid);
+      if (ssid != "") {
+        icon = (sec ~ /WPA|WEP/) ? "󰌾" : "󰤨";
+        printf "%s  %-25s [%s]\n", icon, ssid, bars;
+      }
+    }' | sort -u)
+
+    if [ -z "$wifi_list" ]; then
+      ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u normal -i "network-wireless-offline" -r 9994 "Nenhuma rede Wi-Fi encontrada"
+      exit 0
+    fi
+
+    # Seleção de Rede via Rofi
+    chosen_line=$(echo -e "$wifi_list\n󰑐  Escanear novamente\n󰤮  Desconectar Wi-Fi" | ${pkgs.rofi}/bin/rofi \
+      -dmenu \
+      -i \
+      -p "Redes Wi-Fi" \
+      -theme-str 'window {width: 380px; border-radius: 12px;} listview {lines: 10;}' \
+      -no-custom)
+
+    if [ -z "$chosen_line" ]; then
+      exit 0
+    fi
+
+    if [[ "$chosen_line" =~ "Desconectar" ]]; then
+      nmcli device disconnect wlan0 2>/dev/null || nmcli device disconnect wlp3s0 2>/dev/null || nmcli radio wifi off
+      ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless-offline" -r 9994 "Wi-Fi desconectado"
+      exit 0
+    fi
+
+    if [[ "$chosen_line" =~ "Escanear" ]]; then
+      exec "$0"
+    fi
+
+    # Extrair SSID limpo
+    chosen_ssid=$(echo "$chosen_line" | awk -F'  ' '{print $2}' | sed 's/ \[.*//' | sed 's/^ *//;s/ *$//')
+
+    if [ -n "$chosen_ssid" ]; then
+      # Verificar se a rede já é conhecida
+      saved_conn=$(nmcli -g NAME connection show | grep -Fx "$chosen_ssid")
+      if [ -n "$saved_conn" ]; then
+        ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
+        if nmcli connection up "$chosen_ssid"; then
+          ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\" com sucesso!"
+        else
+          ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Falha ao conectar a \"$chosen_ssid\""
+        fi
+      else
+        # Solicitar senha se for rede protegida
+        if [[ "$chosen_line" =~ "󰌾" ]]; then
+          wifi_pass=$(${pkgs.rofi}/bin/rofi -dmenu -password -p "Senha para $chosen_ssid" -theme-str 'window {width: 320px; border-radius: 12px;}')
+          if [ -n "$wifi_pass" ]; then
+            ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
+            if nmcli device wifi connect "$chosen_ssid" password "$wifi_pass"; then
+              ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\"!"
+            else
+              ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Senha incorreta ou erro de conexão"
+            fi
+          fi
+        else
+          # Rede aberta
+          ${pkgs.dunst}/bin/dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
+          nmcli device wifi connect "$chosen_ssid"
+        fi
+      fi
+    fi
+  '';
+
+  # --- Menu de Desligamento com Rofi ---
   rofiPowerMenu = pkgs.writeShellScript "rofi-powermenu" ''
     chosen=$(printf "󰐥  Desligar\n󰜉  Reiniciar\n󰤄  Suspender\n󰒲  Hibernar\n󰈆  Sair (logout)\n󰌾  Bloquear" \
       | ${pkgs.rofi}/bin/rofi \
@@ -97,7 +182,7 @@ in
           transparent = "#00000000";
         };
 
-        # --- Barra Principal (Moderna & Arredondada) ---
+        # --- Barra Principal (Moderna & Elegante) ---
         "bar/main" = {
           width = "100%";
           height = "30";
@@ -143,7 +228,7 @@ in
           click-left = "${pkgs.rofi}/bin/rofi -show drun";
         };
 
-        # --- Workspaces do BSPWM (Pills Dinâmicos) ---
+        # --- Workspaces do BSPWM (Pills Dinâmicos com Ícones) ---
         "module/bspwm" = {
           type = "internal/bspwm";
           pin-workspaces = true;
@@ -154,19 +239,19 @@ in
 
           format = "<label-state> <label-mode>";
 
-          label-focused = "%name%";
+          label-focused = "󰮯 %name%";
           label-focused-foreground = "\${colors.base}";
           label-focused-background = "\${colors.blue}";
           label-focused-padding = 2;
           label-focused-margin = 0;
 
-          label-occupied = "%name%";
+          label-occupied = "󰊠 %name%";
           label-occupied-foreground = "\${colors.text}";
           label-occupied-background = "\${colors.surface0}";
           label-occupied-padding = 2;
           label-occupied-margin = 0;
 
-          label-urgent = "%name%";
+          label-urgent = "󰀦 %name%";
           label-urgent-foreground = "\${colors.base}";
           label-urgent-background = "\${colors.red}";
           label-urgent-padding = 2;
@@ -189,7 +274,7 @@ in
         # --- Título da Janela Ativa ---
         "module/xwindow" = {
           type = "internal/xwindow";
-          label = "%title:0:40:...%";
+          label = "%title:0:35:...%";
           label-foreground = "\${colors.subtext0}";
           label-padding = 1;
         };
@@ -220,7 +305,7 @@ in
         # --- Uso de Memória ---
         "module/memory" = {
           type = "internal/memory";
-          interval = 3;
+          interval = 2;
           format = "<label>";
           format-prefix = "󰘚 ";
           format-prefix-foreground = "\${colors.mauve}";
@@ -232,7 +317,7 @@ in
         "module/pulseaudio" = {
           type = "internal/pulseaudio";
           use-ui-max = true;
-          interval = 5;
+          interval = 2;
 
           format-volume = "<ramp-volume> <label-volume>";
           label-volume = "%percentage%%";
@@ -311,7 +396,7 @@ in
           animation-charging-framerate = 750;
         };
 
-        # --- Rede (Wi-Fi / Ethernet) ---
+        # --- Rede (Wi-Fi com Menu Interativo ao Clicar) ---
         "module/network" = {
           type = "internal/network";
           interface-type = "wireless";
@@ -333,6 +418,10 @@ in
           format-disconnected-prefix-foreground = "\${colors.red}";
           label-disconnected = "Offline";
           label-disconnected-foreground = "\${colors.subtext0}";
+
+          # Clique abre menu interativo de redes Wi-Fi
+          click-left = "${rofiWifiMenu}";
+          click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor";
         };
 
         # --- Data & Hora ---
@@ -351,7 +440,7 @@ in
           label-foreground = "\${colors.text}";
         };
 
-        # --- Power Menu Button ---
+        # --- Botão Power Menu ---
         "module/powermenu" = {
           type = "custom/text";
           format = "<label>";
