@@ -1,4 +1,11 @@
-{ config, lib, pkgs, useNixGL ? false, desktop ? null, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  useNixGL ? false,
+  desktop ? null,
+  ...
+}:
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool listOf str;
@@ -51,15 +58,33 @@ in
             presel_feedback_color = "#f38ba8";
           };
           rules = {
-            "Pavucontrol" = { state = "floating"; };
-            "GParted" = { state = "floating"; };
-            "Galculator" = { state = "floating"; };
-            "Flameshot" = { state = "floating"; };
-            "Lxappearance" = { state = "floating"; };
-            "Xfce4-taskmanager" = { state = "floating"; };
-            "File-roller" = { state = "floating"; };
-            "Nitrogen" = { state = "floating"; };
-            "Catfish" = { state = "floating"; };
+            "Pavucontrol" = {
+              state = "floating";
+            };
+            "GParted" = {
+              state = "floating";
+            };
+            "Galculator" = {
+              state = "floating";
+            };
+            "Flameshot" = {
+              state = "floating";
+            };
+            "Lxappearance" = {
+              state = "floating";
+            };
+            "Xfce4-taskmanager" = {
+              state = "floating";
+            };
+            "File-roller" = {
+              state = "floating";
+            };
+            "Nitrogen" = {
+              state = "floating";
+            };
+            "Catfish" = {
+              state = "floating";
+            };
           };
           extraConfig = ''
             # Configurar workspaces 1 a 10 (onde 0 = 10) em todos os monitores conectados
@@ -96,12 +121,12 @@ in
             bspc config focus_follows_pointer true
 
             # Configurar Touchpad: Natural Scrolling (estilo macOS), Tapping e Clickfinger
-            if command -v ${pkgs.xorg.xinput}/bin/xinput >/dev/null 2>&1; then
-              for id in $(${pkgs.xorg.xinput}/bin/xinput list --id-only 2>/dev/null); do
-                if ${pkgs.xorg.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -q "libinput Natural Scrolling Enabled"; then
-                  ${pkgs.xorg.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 1 2>/dev/null || true
-                  ${pkgs.xorg.xinput}/bin/xinput set-prop "$id" "libinput Tapping Enabled" 1 2>/dev/null || true
-                  ${pkgs.xorg.xinput}/bin/xinput set-prop "$id" "libinput Click Method Enabled" 0 1 2>/dev/null || true
+            if command -v ${pkgs.xinput}/bin/xinput >/dev/null 2>&1; then
+              for id in $(${pkgs.xinput}/bin/xinput list --id-only 2>/dev/null); do
+                if ${pkgs.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -q "libinput Natural Scrolling Enabled"; then
+                  ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 1 2>/dev/null || true
+                  ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Tapping Enabled" 1 2>/dev/null || true
+                  ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Click Method Enabled" 0 1 2>/dev/null || true
                 fi
               done
             fi

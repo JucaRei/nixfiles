@@ -260,7 +260,7 @@
 
     format-connected = "%{A1:${scripts.rofiWifiMenu}:}%{A3:${pkgs.networkmanagerapplet}/bin/nm-connection-editor:}<ramp-signal> <label-connected>%{A}%{A}";
     format-connected-background = "\${colors.surface0}";
-    label-connected = "%essid% %{F#89b4fa}󰇚%{F-} %downspeed:7% %{F#fab387}󰕒%{F-} %upspeed:7%";
+    label-connected = "%essid%  %{F#89b4fa}󰇚 %downspeed:7%%{F-}  %{F#fab387}󰕒 %upspeed:7%%{F-}";
     label-connected-foreground = "\${colors.text}";
     label-connected-padding = 1;
 
