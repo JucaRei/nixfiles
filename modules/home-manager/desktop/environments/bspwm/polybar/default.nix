@@ -11,7 +11,7 @@ let
 
   colors = import ./colors.nix;
   scripts = import ./scripts.nix { inherit pkgs; };
-  polybarModules = import ./modules.nix { inherit pkgs scripts; };
+  polybarModules = import ./modules.nix { inherit pkgs colors scripts; };
 in
 {
   options.desktop.bspwm.polybar = {
@@ -52,11 +52,11 @@ in
           radius = 0;
           fixed-center = true;
 
-          background = "\${colors.transparent}";
-          foreground = "\${colors.text}";
+          background = colors.transparent;
+          foreground = colors.text;
 
           line-size = 2;
-          line-color = "\${colors.blue}";
+          line-color = colors.blue;
 
           border-size = 0;
           padding-left = 1;
