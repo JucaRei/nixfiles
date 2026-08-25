@@ -41,22 +41,65 @@
 
   # --- Menu Interativo de Bluetooth (Rofi) ---
   rofiBluetoothMenu = pkgs.writeShellScript "rofi-bluetooth" ''
-    export PATH="${pkgs.bluez}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.coreutils}/bin:$PATH"
+    export PATH="${pkgs.bluez}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.coreutils}/bin:$PATH"
 
     power=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
-    if [ "$power" = "yes" ]; then
-      toggle_text="󰂲  Desativar Bluetooth"
-    else
-      toggle_text="󰂯  Ativar Bluetooth"
+    if [ "$power" != "yes" ]; then
+      chosen=$(echo -e "󰂯  Ativar Bluetooth" | rofi \
+        -dmenu \
+        -i \
+        -p "Bluetooth Desativado" \
+        -theme-str 'window {width: 320px; border-radius: 12px;} listview {lines: 1;}' \
+        -no-custom)
+      if [[ "$chosen" =~ "Ativar" ]]; then
+        bluetoothctl power on
+        bluetoothctl pairable on
+        dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 -t 1500 "Bluetooth ativado"
+        exec "$0"
+      fi
+      exit 0
     fi
 
-    devices=$(bluetoothctl devices 2>/dev/null | awk '{$1=""; $2=""; print "󰂱 " $0}' | sed 's/^[ \t]*//')
+    bluetoothctl pairable on 2>/dev/null || true
 
-    chosen=$(echo -e "$toggle_text\n󰑐  Buscar novos dispositivos\n$devices" | rofi \
+    # Se chamado com argumento "--scan", faz uma busca ativa de 5 segundos
+    if [ "$1" = "--scan" ]; then
+      dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "Escaneando dispositivos Bluetooth (5s)..."
+      bluetoothctl --timeout 5 scan on 2>/dev/null || true
+      dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 -t 1500 "Busca finalizada!"
+    fi
+
+    # Monta a lista formatada de dispositivos
+    dev_list=""
+    while IFS= read -r line; do
+      if [ -n "$line" ]; then
+        mac=$(echo "$line" | awk '{print $2}')
+        name=$(echo "$line" | cut -d' ' -f3-)
+        [ -z "$name" ] && name="Dispositivo sem nome"
+
+        info=$(bluetoothctl info "$mac" 2>/dev/null)
+        if echo "$info" | grep -q "Connected: yes"; then
+          dev_list+="󰂱  $name  [$mac]  (Conectado)\n"
+        elif echo "$info" | grep -q "Paired: yes"; then
+          dev_list+="󰂯  $name  [$mac]  (Pareado)\n"
+        else
+          dev_list+="󰑐  $name  [$mac]  (Disponível)\n"
+        fi
+      fi
+    done < <(bluetoothctl devices 2>/dev/null)
+
+    header="󰂲  Desativar Bluetooth\n󰑐  Escanear novos dispositivos"
+    if [ -n "$dev_list" ]; then
+      menu_items="$header\n$dev_list"
+    else
+      menu_items="$header\n󰂲  Nenhum dispositivo encontrado (clique em Escanear)"
+    fi
+
+    chosen=$(echo -e "$menu_items" | rofi \
       -dmenu \
       -i \
       -p "Bluetooth" \
-      -theme-str 'window {width: 340px; border-radius: 12px;} listview {lines: 8;}' \
+      -theme-str 'window {width: 460px; border-radius: 12px;} listview {lines: 10;}' \
       -no-custom)
 
     if [ -z "$chosen" ]; then
@@ -66,18 +109,27 @@
     if [[ "$chosen" =~ "Desativar" ]]; then
       bluetoothctl power off
       dunstify -a "Bluetooth" -u low -i "bluetooth-disabled" -r 9995 -t 1500 "Bluetooth desativado"
-    elif [[ "$chosen" =~ "Ativar" ]]; then
-      bluetoothctl power on
-      dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 -t 1500 "Bluetooth ativado"
-    elif [[ "$chosen" =~ "Buscar" ]]; then
-      bluetoothctl scan on &
-      dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "Buscando dispositivos Bluetooth..."
-    elif [[ "$chosen" =~ "󰂱" ]]; then
-      dev_name=$(echo "$chosen" | sed 's/󰂱 //')
-      dev_mac=$(bluetoothctl devices | grep -F "$dev_name" | awk '{print $2}')
-      if [ -n "$dev_mac" ]; then
-        dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 "Conectando a $dev_name..."
-        bluetoothctl connect "$dev_mac"
+    elif [[ "$chosen" =~ "Escanear" ]]; then
+      exec "$0" --scan
+    elif [[ "$chosen" =~ \[([0-9A-Fa-f:]{17})\] ]]; then
+      mac="''${BASH_REMATCH[1]}"
+      name=$(echo "$chosen" | sed -E 's/^[󰂱󰂯󰑐 ]+//;s/  \[.*//')
+
+      if [[ "$chosen" =~ "\(Conectado\)" ]]; then
+        # Desconectar
+        dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 "Desconectando $name..."
+        bluetoothctl disconnect "$mac"
+        dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "$name desconectado"
+      else
+        # Parear, Confiar e Conectar
+        dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "Pareando e conectando a $name..."
+        bluetoothctl pair "$mac" 2>/dev/null || true
+        bluetoothctl trust "$mac" 2>/dev/null || true
+        if bluetoothctl connect "$mac"; then
+          dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 -t 3000 "$name conectado com sucesso!"
+        else
+          dunstify -a "Bluetooth" -u critical -i "bluetooth-disabled" -r 9995 "Falha ao conectar a $name"
+        fi
       fi
     fi
   '';
