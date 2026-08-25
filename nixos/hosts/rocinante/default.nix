@@ -5,7 +5,8 @@
   ...
 }:
 let
-  inherit (lib) mkForce;
+  inherit (lib) mkForce mkIf;
+  isX11 = (config.desktop.display-servers.backend == "x11") || config.services.xserver.enable;
 in
 {
   imports = [
@@ -204,7 +205,7 @@ in
         ACTION=="add", SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/leds/%k/brightness"
       '';
 
-      xserver = {
+      xserver = mkIf isX11 {
         # Resolução nativa da tela WUXGA (MacBook Pro 17" - 1920x1200 @ 60Hz)
         resolutions = [
           {
