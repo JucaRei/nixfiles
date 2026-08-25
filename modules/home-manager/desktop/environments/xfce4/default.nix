@@ -1,6 +1,6 @@
 { config, lib, pkgs, desktop ? null, ... }:
 let
-  inherit (lib) mkIf optionalString getExe;
+  inherit (lib) mkIf getExe;
   terminalBin =
     if config.programs ? alacritty && config.programs.alacritty.enable
     then getExe config.programs.alacritty.package
@@ -174,87 +174,6 @@ in
       file = {
         ".config/xfce4/helpers.rc".text = ''
           TerminalEmulatorDismissed=true
-        '';
-
-        ".config/Thunar/uca.xml".text = ''
-          <?xml version="1.0" encoding="UTF-8"?>
-          <actions>
-              <action>
-                  <icon>xterm</icon>
-                  <name>Open Terminal Here</name>
-                  <unique-id>1612104464586264-1</unique-id>
-                  <command>${pkgs.xfce4-exo}/bin/exo-open --working-directory %f --launch TerminalEmulator</command>
-                  <description>Example for a custom action</description>
-                  <patterns>*</patterns>
-                  <startup-notify/>
-                  <directories/>
-              </action>
-        '' + optionalString (config.system.programs.editors.vscode.enable or false) ''
-          <action>
-              <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
-              <name>Open VSCode Here</name>
-              <unique-id>1612104464586265-1</unique-id>
-              <command>code %f</command>
-              <description></description>
-              <patterns>*</patterns>
-              <startup-notify/>
-              <directories/>
-          </action>
-        '' + optionalString (config.system.programs.editors.antigravity.enable or false) ''
-          <action>
-              <icon>code</icon>
-              <name>Open in Antigravity</name>
-              <unique-id>1612104464586266-1</unique-id>
-              <command>antigravity %f</command>
-              <description>Open workspace in Antigravity AI IDE</description>
-              <patterns>*</patterns>
-              <startup-notify/>
-              <directories/>
-              <text-files/>
-          </action>
-        '' +
-        ''
-              <action>
-                  <icon>${pkgs.meld}/share/icons/hicolor/symbolic/apps/org.gnome.Meld-symbolic.svg</icon>
-                  <name>Compare</name>
-                  <submenu></submenu>
-                  <unique-id>1622791692322694-4</unique-id>
-                  <command>${pkgs.meld}/bin/meld %F</command>
-                  <description>Compare files and directories with meld</description>
-                  <range></range>
-                  <patterns>*</patterns>
-                  <directories/>
-                  <text-files/>
-              </action>
-              <action>
-                  <icon>system-file-manager-root</icon>
-                  <name>Open folder as root</name>
-                  <unique-id>1493475601060449-3</unique-id>
-                  <command>${pkgs.polkit}/bin/pkexec ${pkgs.thunar}/bin/thunar %f</command>
-                  <description></description>
-                  <patterns>*</patterns>
-                  <directories/>
-                  <text-files/>
-              </action>
-              <action>
-                  <icon>catfish</icon>
-                  <name>Search with catfish</name>
-                  <unique-id>1489089852658523-2</unique-id>
-                  <command>${pkgs.catfish}/bin/catfish --path=$f$d</command>
-                  <description></description>
-                  <patterns>*</patterns>
-                  <directories/>
-              </action>
-              <action>
-                  <icon>archive-extract</icon>
-                  <name>Extract here</name>
-                  <unique-id>1489091300385082-4</unique-id>
-                  <command>${pkgs.xarchiver}/bin/xarchiver -e %f</command>
-                  <description></description>
-                  <patterns>*.tar.gz;*.tgz;*.tar.bz2;*.tbz2;*.tar.xz;*.txz;*.zip;*.7z;*.rar;*.tar.zst</patterns>
-                  <other-files/>
-              </action>
-          </actions>
         '';
       };
     };
