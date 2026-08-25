@@ -7,7 +7,7 @@ in
   imports = [
     ./bspwm.nix
     ./sxhkd.nix
-    ./polybar.nix
+    ./polybar
     ./picom.nix
     ./dunst.nix
     ./rofi.nix
