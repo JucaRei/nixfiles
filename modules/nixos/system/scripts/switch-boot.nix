@@ -6,8 +6,11 @@ pkgs.writeScriptBin "switch-boot" ''
   if [ -e $HOME/.dotfiles/nixfiles ]; then
     all_cores=$(nproc)
     build_cores=$(${pkgs.uutils-coreutils-noprefix}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
-    echo "Switching NixOS with $build_cores cores"
-    ${pkgs.unstable.nh}/bin/nh os boot ~/.dotfiles/nixfiles -- --show-trace -vL --impure --cores $build_cores
+    echo "📦 Building NixOS boot configuration ($HOSTNAME) with $build_cores cores..."
+    if [ -d "$HOME/.dotfiles/nixfiles/.git" ]; then
+      ${pkgs.git}/bin/git -C "$HOME/.dotfiles/nixfiles" add -A 2>/dev/null || true
+    fi
+    ${pkgs.unstable.nh}/bin/nh os boot "$HOME/.dotfiles/nixfiles" -- --show-trace --impure -vL --cores "$build_cores"
     echo "🧹 Cleaning old generations (keeping last 5)..."
     ${pkgs.unstable.nh}/bin/nh clean all --keep 5
   else
