@@ -258,10 +258,11 @@ in
 
         "module/powermenu" = {
           type = "custom/text";
-          content = "󰐥";
-          content-foreground = "\${colors.red}";
-          content-background = "\${colors.mantle}";
-          content-padding = 2;
+          format = "<label>";
+          label = "󰐥";
+          label-foreground = "\${colors.red}";
+          label-background = "\${colors.mantle}";
+          label-padding = 1;
 
           click-left = let
             rofiPowerMenu = pkgs.writeShellScript "rofi-powermenu" ''
@@ -278,7 +279,7 @@ in
                 *"Suspender")   systemctl suspend ;;
                 *"Hibernar")    systemctl hibernate ;;
                 *"Sair"*)       bspc quit ;;
-                *"Bloquear")    ${pkgs.xdg-utils}/bin/xdg-open . 2>/dev/null; loginctl lock-session ;;
+                *"Bloquear")    loginctl lock-session ;;
               esac
             '';
           in "${rofiPowerMenu}";
