@@ -15,7 +15,7 @@ in
       enable = mkEnableOption "Google Antigravity AI IDE";
       package = mkOption {
         type = package;
-        default = pkgs.antigravity;
+        default = pkgs.unstable.antigravity-ide-fhs;
         description = "Package or wrapper for Antigravity IDE.";
       };
     };
