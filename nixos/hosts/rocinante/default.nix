@@ -301,7 +301,5 @@ in
 
     # Teclado no console TTY
     console.useXkbConfig = true;
-
-
   };
 }
