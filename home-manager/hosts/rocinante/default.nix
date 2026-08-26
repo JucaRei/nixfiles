@@ -11,8 +11,9 @@
           firefox.enable = true;
         };
         editors = {
-          antigravity = {
+          vscode = {
             enable = true;
+            enableConfigurableSettings = true;
           };
         };
         terminal = {
