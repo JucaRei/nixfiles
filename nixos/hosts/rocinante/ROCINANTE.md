@@ -76,9 +76,7 @@ O MacBook Pro 4,1 tem firmware EFI 32-bit mas CPU 64-bit. O arranque com ISOs Ni
 
 ---
 
-## 🚀 Opções de Boot no Menu do GRUB
-
-### 1. Padrão — Kernel Zen + Nouveau
+## 🚀 Driver Gráfico (Nouveau)
 
 ```nix
 boot.kernelPackages = pkgs.unstable.linuxPackages_zen;
@@ -88,19 +86,6 @@ hardware.graphics.cards.gpu = null;  # usa nouveau + Mesa
 - Kernel Zen do canal `unstable` (baixa latência, otimizado para desktop)
 - Driver gráfico: `nouveau` (open-source, aceleração Mesa 2D/3D nativa na NV50)
 - Variáveis: `LIBVA_DRIVER_NAME=nouveau`, `VDPAU_DRIVER=nouveau`
-
-### 2. Especialização `nvidia` — Kernel 6.6 LTS + NVIDIA 340 Legacy
-
-```nix
-specialisation.nvidia.configuration = {
-  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
-  hardware.graphics.cards.gpu = lib.mkForce "nvidia-legacy";
-};
-```
-
-- Kernel: `pkgs.linuxPackages_6_6` (Linux 6.6 LTS — compatibilidade total com Btrfs moderno e SATA ICH8-M)
-- Driver: `pkgs.linuxPackages_6_6.nvidia_x11_legacy340` (injetado via `config.boot.kernelPackages.nvidia_x11_legacy340`)
-- Configurado diretamente via `boot.extraModulePackages` e `services.xserver` sem ativar o módulo incompatível `hardware/video/nvidia.nix`
 
 
 ---
