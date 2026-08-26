@@ -46,7 +46,7 @@ in
       packages = with pkgs; [
         prettier
         nil
-        nixpkgs-fmt
+        nixfmt
         sf-mono-liga-bin
       ];
 

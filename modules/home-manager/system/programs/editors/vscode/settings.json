@@ -1,25 +1,19 @@
 {
   "nix.enableLanguageServer": true,
-  "nix.formatterPath": "nixpkgs-fmt",
   "nix.serverPath": "nil",
+  "nix.formatterPath": "nixfmt",
   "nix.serverSettings": {
     "nil": {
-      "diagnostics": {
-        "ignored": [
-          "unused_binding",
-          "unused_with"
-        ]
-      },
       "formatting": {
         "command": [
-          "nixpkgs-fmt"
+          "nixfmt"
         ]
       }
     }
   },
   "direnv.restart.automatic": true,
   "direnv.status.showChangesCount": false,
-  "editor.fontSize": 23,
+  "editor.fontSize": 25,
   "editor.lineHeight": 1.4,
   "editor.tabSize": 2,
   "editor.lineNumbers": "on",
