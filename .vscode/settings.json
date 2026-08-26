@@ -27,7 +27,16 @@
     "editor.lineHighlightBackground": "#ffffff0f",
     "editorCursor.foreground": "#50FA7B",
     "editorBracketMatch.background": "#50FA7B30",
-    "editorBracketMatch.border": "#50FA7B"
+    "editorBracketMatch.border": "#50FA7B",
+    // "[RedCrafter07 Theme]": {
+    //   "[Pop Dark]": {
+    //     "tab.activeBackground": "#372f92"
+    //   }
+    // },
+    "editor.background": "#1e1e2e",
+    "tab.activeBackground": "#1e1e2e",
+    "tab.inactiveBackground": "#181825",
+    "editorGroupHeader.tabsBackground": "#11111b"
   },
   "editor.semanticTokenColorCustomizations": {
     "enabled": true,
