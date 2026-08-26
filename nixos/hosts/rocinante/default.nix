@@ -17,6 +17,8 @@ in
   config = {
     time.timeZone = mkForce "America/Sao_Paulo";
 
+    programs.nix-ld.enable = true;
+
     # Permitir broadcom-sta apenas no host rocinante (hardware específico)
     nixpkgs.config.permittedInsecurePackages = [
       "broadcom-sta-6.30.223.271-63-7.2"
