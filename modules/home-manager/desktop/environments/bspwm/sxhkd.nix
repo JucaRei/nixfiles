@@ -107,6 +107,9 @@ in
         # Preferências do Sistema (Cmd + ,)
         "super + comma" = "${pkgs.lxappearance}/bin/lxappearance";
 
+        # Terminal Scratchpad (Cmd + U)
+        "super + u" = "${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty";
+
         # --- Janelas (macOS Style: Cmd + Q / Cmd + Opt + Esc) ---
         "super + q" = "bspc node -c";
         "super + alt + Escape" = "bspc node -k";

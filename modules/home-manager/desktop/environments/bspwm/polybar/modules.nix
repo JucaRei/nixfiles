@@ -158,6 +158,24 @@
     label-padding = 1;
   };
 
+  # --- Temperatura da CPU ---
+  "module/temperature" = {
+    type = "internal/temperature";
+    thermal-zone = 0;
+    warn-temperature = 70;
+    format = "<ramp> <label>";
+    format-warn = "<ramp> <label-warn>";
+    format-background = colors.surface0;
+    label = "%temperature-c%";
+    label-warn = "%temperature-c%";
+    label-warn-foreground = colors.red;
+    ramp-0 = "";
+    ramp-1 = "";
+    ramp-2 = "";
+    ramp-foreground = colors.peach;
+    label-padding = 1;
+  };
+
   # --- Volume & Áudio ---
   "module/pulseaudio" = {
     type = "internal/pulseaudio";

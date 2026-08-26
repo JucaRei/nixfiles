@@ -71,6 +71,9 @@ in
         ];
 
         use-damage = true;
+        # Performance extras para GPUs antigas
+        glx-no-stencil = true;
+        glx-no-rebind-pixmap = true;
       };
     };
   };

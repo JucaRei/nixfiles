@@ -145,14 +145,14 @@ in
     };
 
     xdg.configFile."libinput-gestures.conf".text = ''
-      # Gestos de 3 dedos no Touchpad (estilo macOS)
-      # Deslizar para a esquerda com 3 dedos -> Próximo Workspace
-      gesture swipe left 3 ${pkgs.bspwm}/bin/bspc desktop -f next.local
-      # Deslizar para a direita com 3 dedos -> Workspace Anterior
-      gesture swipe right 3 ${pkgs.bspwm}/bin/bspc desktop -f prev.local
-      # Deslizar para cima com 3 dedos -> Abrir Lançador Rofi
+      # Gestos de 4 dedos para trocar de Desktop
+      gesture swipe left 4  ${pkgs.bspwm}/bin/bspc desktop -f next.local
+      gesture swipe right 4 ${pkgs.bspwm}/bin/bspc desktop -f prev.local
+      # Gestos de 3 dedos para navegação no navegador
+      gesture swipe left 3  ${pkgs.xdotool}/bin/xdotool key alt+Left
+      gesture swipe right 3 ${pkgs.xdotool}/bin/xdotool key alt+Right
+      # Outros
       gesture swipe up 3 ${pkgs.rofi}/bin/rofi -show drun
-      # Deslizar para baixo com 3 dedos -> Fechar janela em foco
       gesture swipe down 3 ${pkgs.bspwm}/bin/bspc node -c
     '';
 
@@ -161,6 +161,7 @@ in
         libinput-gestures
         wmctrl
         xdotool
+        tdrop
       ];
 
       sessionVariables = {
