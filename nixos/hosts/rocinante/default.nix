@@ -67,7 +67,7 @@ in
       bootType = "hybrid-legacy";
       bootManager = "grub";
       device = "/dev/sda";
-      plymouth = false;
+      plymouth = true;
       silentBoot = true;
     };
 
