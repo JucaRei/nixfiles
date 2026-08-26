@@ -39,6 +39,7 @@
     # Teclado Apple: swap_opt_cmd=0 no kernel já define Command = Super (Mod4) e Option = Alt (Mod1) nativamente
 
     home.packages = with pkgs; [
+      direnv
       brightnessctl
       pamixer
       pavucontrol

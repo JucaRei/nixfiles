@@ -49,28 +49,6 @@ in
         nixfmt
         sf-mono-liga-bin
       ];
-
-      # file = mkIf isWayland {
-      #   ".config/code-flags.conf".text = ''
-      #     --enable-features=UseOzonePlatform
-      #     --ozone-platform=wayland
-      #     --enable-features=WaylandWindowDecorations
-      #   '';
-      # };
-
-      activation = mkIf cfg.enableConfigurableSettings {
-        # Force declarative settings by removing & regenerating user file on activation
-        vscodeSettings = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
-          rm -f "${settingsDir}/settings.json"
-        '';
-
-        afterClean = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          mkdir -p "${settingsDir}"
-          ${pkgs.coreutils}/bin/cat ${
-            (pkgs.formats.json { }).generate "settings.json" userSettings
-          } > "${settingsDir}/settings.json"
-        '';
-      };
     };
 
     programs.vscode = {
@@ -81,7 +59,10 @@ in
       package = nixGLWrapper pkgs.vscode-fhs;
 
       profiles.default = mkIf cfg.enableConfigurableSettings {
-        inherit userSettings;
+        userSettings = userSettings // {
+          "workbench.panel.defaultLocation" = "right";
+          "chat.editor.fontSize" = 12;
+        };
         extensions =
           with pkgs.vscode-extensions;
           [
