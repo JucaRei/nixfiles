@@ -277,10 +277,11 @@ in
     # --- Rede Wi-Fi & Fixes de Repetidor ---
     networking = {
       hostName = "rocinante";
+      search = [ "home.lan" ];
       nameservers = [
-        "1.1.1.1"
-        "8.8.8.8"
-        "1.0.0.1"
+        "10.10.10.25" # DNS Local (Technitium DNS Server + Unbound em dns01.home.lan)
+        "1.1.1.1" # Fallback público Cloudflare
+        "8.8.8.8" # Fallback público Google
       ];
       networkmanager = {
         enable = true;
