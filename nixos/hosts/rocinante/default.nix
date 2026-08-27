@@ -277,10 +277,18 @@ in
     # --- Rede Wi-Fi & Fixes de Repetidor ---
     networking = {
       hostName = "rocinante";
+      nameservers = [
+        "1.1.1.1"
+        "8.8.8.8"
+        "1.0.0.1"
+      ];
       networkmanager = {
         enable = true;
-        wifi.scanRandMacAddress = false; # Fix: repetidores rejeitam MAC aleatório
-        wifi.powersave = false; # Fix: evita desconexões em repetidores
+        wifi = {
+          scanRandMacAddress = false; # Fix: repetidores rejeitam MAC aleatório ao escanear
+          powersave = false; # Fix: evita desconexões e perda de pacotes em repetidores
+          macAddress = "preserve"; # Fix: mantém MAC físico permanente para evitar falhas de ARP no repetidor
+        };
       };
     };
 
