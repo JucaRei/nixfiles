@@ -44,20 +44,10 @@
       helper = import ./lib { inherit inputs outputs; };
     in
     {
+      # Standalone Home-Manager configurations (for non-NixOS hosts like Fedora/Debian/macOS)
+      # Usage: home-manager switch --flake .#username@hostname
       homeConfigurations = {
-        # Workstations
-        "juca@rocinante" = helper.mkHome {
-          hostname = "rocinante";
-          desktop = "bspwm";
-        };
-
-        "juca@rocinante-vm" = helper.mkHome {
-          hostname = "rocinante-vm";
-          desktop = "bspwm";
-          stateVersion = "24.11";
-        };
-
-        # VMs & Hosts
+        # Non-NixOS Standalone Hosts
         "juca@fedora" = helper.mkHome {
           hostname = "fedora";
           desktop = "bspwm";
