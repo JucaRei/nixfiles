@@ -42,25 +42,35 @@ Para obter a melhor performance e integração gráfica com o SPICE/noVNC:
 
 ## 🚀 Como Instalar / Aplicar na VM
 
-### 1. Instalação via Disko (A partir de uma ISO NixOS)
-Dê boot na VM pela ISO do NixOS (ex: `iso-xfce4` ou `iso-console`) e execute:
+### 1. Instalação Remota com `nix-anywhere` (Recomendado - Direto do seu PC) 🚀
+Com a VM ligada na ISO do NixOS (ex: no IP `10.10.10.221`), você pode particionar, formatar com Disko e instalar todo o sistema diretamente a partir do terminal da sua máquina principal com **um único comando**:
 
 ```bash
+# Executado a partir da sua máquina principal (na pasta nixfiles):
+nix run github:nix-community/nix-anywhere -- --flake .#rocinante-vm nixos@10.10.10.221
+```
+*(Se a ISO estiver logada como root sem senha, basta usar `root@<IP_DA_VM>` ou definir uma senha temporária com `passwd` na VM antes).*
+
+---
+
+### 2. Instalação Manual via Disko (Direto no Console da VM)
+Se preferir rodar os comandos diretamente dentro do console noVNC/SPICE da VM:
+
+```bash
+# 1. Particionamento e montagem automática com Disko:
 sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko -- \
   --mode zap_create_mount \
   --flake github:JucaRei/nixfiles#rocinante-vm
 
+# 2. Instalação do sistema:
 sudo nixos-install --flake github:JucaRei/nixfiles#rocinante-vm
 sudo reboot
 ```
 
-### 2. Rebuild do Sistema (Dentro da VM já instalada)
+---
+
+### 3. Rebuild do Sistema (Dentro da VM já instalada)
 ```bash
 sudo nixos-rebuild switch --flake .#rocinante-vm
 ```
 *(ou `switch-host`)*
-
-### 3. Rebuild do Home Manager Standalone
-```bash
-home-manager switch --flake .#juca@rocinante-vm
-```
