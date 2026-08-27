@@ -51,6 +51,12 @@
           desktop = "bspwm";
         };
 
+        "juca@rocinante-vm" = helper.mkHome {
+          hostname = "rocinante-vm";
+          desktop = "bspwm";
+          stateVersion = "24.11";
+        };
+
         # VMs & Hosts
         "juca@fedora" = helper.mkHome {
           hostname = "fedora";
@@ -73,11 +79,18 @@
       # Full NixOS System configurations (includes integrated Home-Manager)
       # Usage: sudo nixos-rebuild switch --flake .#hostname
       nixosConfigurations = {
-        # Workstations
+        # Workstations & Testing VMs
         rocinante = helper.mkNixos {
           hostname = "rocinante";
           desktop = "bspwm";
           stateVersion = "22.11";
+        };
+
+        rocinante-vm = helper.mkNixos {
+          hostname = "rocinante-vm";
+          desktop = "bspwm";
+          stateVersion = "24.11";
+          isVM = true;
         };
 
         # Generic & Minimal Live ISOs
