@@ -42,12 +42,12 @@ Para obter a melhor performance e integração gráfica com o SPICE/noVNC:
 
 ## 🚀 Como Instalar / Aplicar na VM
 
-### 1. Instalação Remota com `nix-anywhere` (Recomendado - Direto do seu PC) 🚀
+### 1. Instalação Remota com `nixos-anywhere` (Recomendado - Direto do seu PC) 🚀
 Com a VM ligada na ISO do NixOS (ex: no IP `10.10.10.221`), você pode particionar, formatar com Disko e instalar todo o sistema diretamente a partir do terminal da sua máquina principal com **um único comando**:
 
 ```bash
 # Executado a partir da sua máquina principal (na pasta nixfiles):
-nix run github:nix-community/nix-anywhere -- --flake .#rocinante-vm nixos@10.10.10.221
+nix run nixpkgs#nixos-anywhere -- --flake .#rocinante-vm nixos@10.10.10.221
 ```
 *(Se a ISO estiver logada como root sem senha, basta usar `root@<IP_DA_VM>` ou definir uma senha temporária com `passwd` na VM antes).*
 
