@@ -15,7 +15,7 @@ in
     disk = {
       main = {
         type = "disk";
-        device = lib.mkDefault "/dev/vda";
+        device = lib.mkDefault "/dev/sda";
         content = {
           type = "gpt";
           partitions = {

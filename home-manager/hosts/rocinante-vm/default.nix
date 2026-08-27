@@ -28,6 +28,9 @@
       };
     };
 
+    # Desativa compositor picom para zerar o overhead de CPU em renderização por software (Celeron N4000)
+    desktop.bspwm.picom.enable = false;
+
     # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) no VS Code da VM
     programs.vscode.profiles.default.extensions =
       lib.mkIf config.system.programs.editors.vscode.enable (
