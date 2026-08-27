@@ -59,7 +59,7 @@ in
       enable = true;
       bootType = "efi";
       bootManager = "grub";
-      device = "/dev/vda";
+      device = "/dev/sda";
       plymouth = true;
       silentBoot = true;
     };
