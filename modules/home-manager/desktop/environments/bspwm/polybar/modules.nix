@@ -53,7 +53,7 @@
   # --- Workspaces do BSPWM (Pills Dinâmicos) ---
   "module/bspwm" = {
     type = "internal/bspwm";
-    pin-workspaces = true;
+    pin-workspaces = false;
     enable-click = true;
     enable-scroll = true;
     reverse-scroll = false;

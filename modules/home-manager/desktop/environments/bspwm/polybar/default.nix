@@ -47,6 +47,7 @@ in
 
         # --- Barra Principal (Floating Capsules / gh0stzk style) ---
         "bar/main" = {
+          monitor = "\${env:MONITOR:}";
           width = "100%";
           height = "30";
           radius = 0;
