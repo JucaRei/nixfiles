@@ -192,8 +192,8 @@ in
       search = [ "home.lan" ];
       nameservers = [
         "10.10.10.25" # DNS Local Primário (Technitium + Unbound em dns01.home.lan)
-        "1.1.1.1"     # Fallback público Cloudflare
-        "8.8.8.8"     # Fallback público Google
+        "1.1.1.1" # Fallback público Cloudflare
+        "8.8.8.8" # Fallback público Google
       ];
       networkmanager = {
         enable = true;

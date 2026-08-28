@@ -28,6 +28,9 @@
       };
     };
 
+    # Desativa compositor picom para zerar o overhead de CPU em VM
+    desktop.bspwm.picom.enable = false;
+
     # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) no VS Code do Hyper-V
     programs.vscode.profiles.default.extensions =
       lib.mkIf config.system.programs.editors.vscode.enable (
