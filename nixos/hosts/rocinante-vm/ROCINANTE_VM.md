@@ -1,24 +1,34 @@
-# 🖥️ Host: `rocinante-vm` (Proxmox / KVM Virtual Machine)
+# 🖥️ Host: `rocinante-vm` (Windows Hyper-V & Proxmox KVM)
 
-Configuração virtualizada criada para testar e validar o ambiente desktop do **Rocinante** (BSPWM, Polybar, temas, VS Code com Gemini, dotfiles) dentro de uma máquina virtual no **Proxmox VE**.
+Configuração virtualizada universal criada para testar e validar o ambiente desktop do **Rocinante** (BSPWM, Polybar, temas, VS Code com Gemini, dotfiles) dentro de máquinas virtuais no **Windows Hyper-V** e **Proxmox VE**.
 
 ---
 
-## ⚙️ Especificações Recomendadas da VM no Proxmox VE
+## 🪟 Especificações Recomendadas para Windows Hyper-V
 
-Para obter a melhor performance e integração gráfica com o SPICE/noVNC:
+Ao criar a Máquina Virtual no **Gerenciador do Hyper-V (Hyper-V Manager)**:
+
+| Recurso | Configuração Recomendada |
+| :--- | :--- |
+| **Geração** | **Geração 2 (Generation 2)** (Suporte UEFI / GPT nativo) |
+| **Memória** | 4096 MB a 8192 MB (Memória Dinâmica ativada) |
+| **Processadores** | 2 a 4 Processadores Virtuais |
+| **Rede** | *Default Switch* (NAT com DHCP automático) ou *External Virtual Switch* |
+| **Segurança (Secure Boot)** | **Habilitado** com Template: **"Microsoft UEFI Certificate Authority"** (ou desativado) |
+| **Disco Rígido** | VHDX SCSI (`/dev/sda`), 32GB a 64GB |
+
+---
+
+## ⚙️ Especificações Recomendadas no Proxmox VE (KVM)
 
 | Recurso | Configuração Recomendada |
 | :--- | :--- |
 | **OS Type** | Linux 6.x / 2.6 Kernel |
-| **BIOS** | **OVMF (UEFI)** (Recomendado) ou SeaBIOS |
-| **Machine** | `q35` ou `i440fx` |
-| **CPU** | Type: `host` (habilita AES-NI e todas as instruções da CPU do servidor), 2 a 4 Cores |
-| **Memory** | 4096 MB a 8192 MB (com Ballooning ativado) |
-| **Display** | **SPICE (qxl)** ou **VirtIO-GPU** (para suporte a 3D e redimensionamento automático) |
-| **Hard Disk** | VirtIO Block (`/dev/vda`) ou SCSI com VirtIO SCSI Single (`/dev/sda`), 32GB+ |
-| **Network** | VirtIO (paravirtualized), Bridge `vmbr0` |
-| **QEMU Agent** | **Habilitado** (Enabled: 1) |
+| **BIOS** | **OVMF (UEFI)** |
+| **CPU** | Type: **`host`**, 2 Cores |
+| **Display** | **SPICE (qxl)** ou **VirtIO-GPU** |
+| **Hard Disk** | SCSI com VirtIO SCSI Single (`/dev/sda`), 32GB+ |
+| **QEMU Agent** | Habilitado (Enabled: 1) |
 
 ---
 

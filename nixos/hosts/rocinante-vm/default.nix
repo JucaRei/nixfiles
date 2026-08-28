@@ -31,7 +31,9 @@ in
       ];
     };
 
-    # --- Hardware & Virtualização Proxmox / QEMU KVM ---
+    # --- Integração de Virtualização (Hyper-V Windows & Proxmox / QEMU KVM) ---
+    virtualisation.hypervGuest.enable = true; # Daemons Hyper-V (VSS, KVP, FCOPY, heartbeat)
+
     hardware = {
       cpu = {
         enable = true;
@@ -48,7 +50,7 @@ in
       graphics.cards = {
         enable = true;
         acceleration = true;
-        gpu = null; # Usa driver Mesa 3D / VirtIO-GPU / QXL nativo
+        gpu = null; # Usa driver Mesa 3D / VirtIO-GPU / QXL / Hyper-V FB nativo
       };
 
       enableRedistributableFirmware = true;
@@ -81,6 +83,16 @@ in
           "vfat"
         ];
         availableKernelModules = [
+          # Hyper-V Drivers (Windows Hyper-V)
+          "hv_vmbus"
+          "hv_storvsc"
+          "hv_netvsc"
+          "hv_balloon"
+          "hv_utils"
+          "hyperv_keyboard"
+          "hyperv_fb"
+          "hid_hyperv"
+
           # VirtIO Drivers (Proxmox / KVM)
           "virtio_pci"
           "virtio_scsi"
@@ -91,8 +103,10 @@ in
           "virtio_gpu"
           "qxl"
           "bochs_drm"
+
           # Controladores de Armazenamento & USB
           "ahci"
+          "ata_piix"
           "xhci_pci"
           "nvme"
           "usb_storage"
@@ -103,18 +117,22 @@ in
         ];
         kernelModules = [
           "btrfs"
+          "hv_vmbus"
+          "hv_storvsc"
+          "hv_netvsc"
           "virtio_balloon"
           "virtio_net"
           "virtio_pci"
         ];
       };
 
-      # Parâmetros de kernel para desempenho em VM
+      # Parâmetros de kernel para desempenho e resolução em VM
       kernelParams = [
         "mitigations=off" # Desativa mitigações para performance máxima na VM
         "nowatchdog"
         "transparent_hugepage=madvise"
         "elevator=none" # VMs com SSD/VirtIO se beneficiam de noop/none scheduler
+        "video=hyperv_fb:1920x1080" # Fix: Resolução Full HD nativa no console do Hyper-V
       ];
 
       # Tuning de Memória Virtual para VM
@@ -133,12 +151,12 @@ in
       priority = 100;
     };
 
-    # --- Serviços de Integração Proxmox / QEMU ---
+    # --- Serviços de Integração de Hipervisores (Hyper-V + QEMU/Proxmox) ---
     services = {
-      # QEMU Guest Agent (relatórios de IP, fsfreeze para backup consistente, shutdown limpo no PVE)
+      # QEMU Guest Agent (para Proxmox KVM)
       qemuGuest.enable = true;
 
-      # SPICE vdagent (Redimensionamento automático de tela no noVNC/SPICE e clipboard compartilhado)
+      # SPICE vdagent (para Proxmox KVM)
       spice-vdagentd.enable = true;
 
       # Sincronização de horário NTP
