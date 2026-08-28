@@ -17,6 +17,7 @@ in
     ./picom.nix
     ./dunst.nix
     ./rofi.nix
+    ./jgmenu.nix
     ./packages.nix
   ];
 
