@@ -47,15 +47,15 @@ in
           settings = {
             split_ratio = 0.52;
             border_width = 2;
-            window_gap = 6;
-            top_padding = 34; # Altura da Polybar (30px + espaçamento)
-            bottom_padding = 4;
-            left_padding = 4;
-            right_padding = 4;
-            normal_border_color = "#313244";
-            active_border_color = "#45475a";
-            focused_border_color = "#89b4fa";
-            presel_feedback_color = "#f38ba8";
+            window_gap = 10; # Gaps arejados estilo Hyprland
+            top_padding = 34; # Altura da Polybar
+            bottom_padding = 6;
+            left_padding = 6;
+            right_padding = 6;
+            normal_border_color = "#181825"; # Catppuccin Mantle escuro
+            active_border_color = "#313244"; # Catppuccin Surface0
+            focused_border_color = "#cba6f7"; # Catppuccin Mauve (Glow característico do Hyprland)
+            presel_feedback_color = "#f2cdcd"; # Catppuccin Flamingo
           };
           rules = {
             "Pavucontrol" = {

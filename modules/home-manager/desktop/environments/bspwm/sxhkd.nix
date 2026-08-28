@@ -65,6 +65,79 @@ let
     fi
   '';
 
+  # --- Dashboard de Preferências / Control Center (Estilo Hyprland / SwayNC) ---
+  controlCenter = pkgs.writeShellScript "control-center" ''
+    OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
+    OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
+    OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
+    OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
+    OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
+    OPT_FILES="󰉋  Gerenciador de Arquivos (Thunar)"
+    OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
+    OPT_KEYS="󰌌  Guia de Atalhos do Sistema"
+    OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
+    OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
+
+    CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+      "$OPT_RES" \
+      "$OPT_SOUND" \
+      "$OPT_NET" \
+      "$OPT_THEME" \
+      "$OPT_WALL" \
+      "$OPT_FILES" \
+      "$OPT_TERM" \
+      "$OPT_KEYS" \
+      "$OPT_RELOAD" \
+      "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings ")
+
+    case "$CHOICE" in
+      "$OPT_RES")
+        R_1080="1920x1080 (Full HD 1080p)"
+        R_2K="2560x1440 (Quad HD 2K)"
+        R_900="1600x900 (HD+)"
+        R_768="1366x768 (HD)"
+        R_CUSTOM="⚙ Painel Avançado de Telas (ARandR)"
+
+        RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução ")
+        case "$RES" in
+          "$R_1080") ${pkgs.xorg.xrandr}/bin/xrandr -s 1920x1080 ;;
+          "$R_2K")   ${pkgs.xorg.xrandr}/bin/xrandr -s 2560x1440 ;;
+          "$R_900")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1600x900 ;;
+          "$R_768")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1366x768 ;;
+          "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xorg.xrandr}/bin/xrandr ;;
+        esac
+        ;;
+      "$OPT_SOUND")
+        ${pkgs.pavucontrol}/bin/pavucontrol &
+        ;;
+      "$OPT_NET")
+        ${pkgs.networkmanagerapplet}/bin/nm-connection-editor &
+        ;;
+      "$OPT_THEME")
+        ${pkgs.lxappearance}/bin/lxappearance &
+        ;;
+      "$OPT_WALL")
+        ${pkgs.nitrogen}/bin/nitrogen || ${pkgs.feh}/bin/feh &
+        ;;
+      "$OPT_FILES")
+        ${pkgs.xfce.thunar}/bin/thunar ~ &
+        ;;
+      "$OPT_TERM")
+        ${pkgs.alacritty}/bin/alacritty &
+        ;;
+      "$OPT_KEYS")
+        ${pkgs.dunst}/bin/dunstify -a "Guia de Atalhos" -u normal -i "keyboard" -t 8000 "Atalhos Principais" \
+          "<b>Super + Espaço</b>: Lançador de Apps\n<b>Super + Enter</b>: Terminal\n<b>Super + Q</b>: Fechar Janela\n<b>Super + Ctrl + F</b>: Tela Cheia\n<b>Super + , ou Botão Direito no Desktop</b>: Painel Quick Settings\n<b>Super + Alt + Setas</b>: Redimensionar Janela\n<b>Super + Shift + R</b>: Recarregar Barra e BSPWM"
+        ;;
+      "$OPT_RELOAD")
+        bspc wm -r
+        ${pkgs.dunst}/bin/dunstify -a "Sistema" -u low -i "view-refresh" -t 2000 "BSPWM e Polybar recarregados com sucesso!"
+        ;;
+      "$OPT_POWER")
+        ${pkgs.rofi}/bin/rofi -show power-menu -modi "power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu" || loginctl lock-session
+        ;;
+    esac
+  '';
 in
 {
   options.desktop.bspwm.sxhkd = {
@@ -86,12 +159,13 @@ in
       enable = true;
       package = pkgs.sxhkd;
       keybindings = cfg.keybindings // {
-        # --- Clique no Desktop / Menu de Contexto & Preferências (jgmenu) ---
-        # Botão Direito no Desktop (Root Window vazia)
-        "~button3" = "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${pkgs.jgmenu}/bin/jgmenu_run; fi";
-        "super + button3" = "${pkgs.jgmenu}/bin/jgmenu_run";
-        "super + comma" = "${pkgs.jgmenu}/bin/jgmenu_run"; # Cmd + , (Atalho universal de Preferências)
-        "super + p" = "${pkgs.jgmenu}/bin/jgmenu_run";
+        # --- Clique no Desktop / Control Center (Estilo Hyprland / SwayNC) ---
+        # Botão Direito no Desktop (Root Window sem janela)
+        "~button3" = "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${controlCenter}; fi";
+        "super + button3" = "${controlCenter}";
+        "super + comma" = "${controlCenter}"; # Cmd + , (Atalho universal de Preferências)
+        "super + p" = "${controlCenter}";
+        "super + c" = "${controlCenter}"; # Control Center
 
         # --- Aplicativos & Launchers (macOS Style) ---
         # Spotlight (Cmd + Space) e Rofi Drun

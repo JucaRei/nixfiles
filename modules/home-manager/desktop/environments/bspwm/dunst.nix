@@ -25,24 +25,25 @@ in
       settings = {
         global = {
           font = "Inter 10";
-          corner_radius = 8;
+          corner_radius = 12;
           origin = "top-right";
-          offset = "16x40";
-          width = "(250, 400)";
-          height = "(50, 200)";
+          offset = "16x46";
+          width = "(260, 420)";
+          height = "(50, 220)";
           progress_bar = true;
-          progress_bar_height = 6;
-          progress_bar_frame_width = 1;
-          progress_bar_min_width = 150;
-          progress_bar_max_width = 300;
-          progress_bar_corner_radius = 4;
+          progress_bar_height = 8;
+          progress_bar_frame_width = 0;
+          progress_bar_min_width = 160;
+          progress_bar_max_width = 320;
+          progress_bar_corner_radius = 6;
+          highlight = "#cba6f7";
           frame_width = 2;
-          frame_color = "#89b4fa";
+          frame_color = "#cba6f7";
           separator_color = "frame";
-          gap_size = 6;
-          padding = 12;
-          horizontal_padding = 12;
-          text_icon_padding = 10;
+          gap_size = 8;
+          padding = 14;
+          horizontal_padding = 14;
+          text_icon_padding = 12;
           icon_position = "left";
           min_icon_size = 24;
           max_icon_size = 48;
@@ -55,14 +56,14 @@ in
           background = "#1e1e2e";
           foreground = "#cdd6f4";
           frame_color = "#585b70";
-          timeout = 5;
+          timeout = 4;
         };
 
         urgency_normal = {
           background = "#1e1e2e";
           foreground = "#cdd6f4";
-          frame_color = "#89b4fa";
-          timeout = 8;
+          frame_color = "#cba6f7";
+          timeout = 6;
         };
 
         urgency_critical = {
