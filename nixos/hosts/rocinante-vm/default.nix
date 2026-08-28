@@ -116,6 +116,7 @@ in
         "nowatchdog"
         "transparent_hugepage=madvise"
         "elevator=none" # VMs com SSD/VirtIO se beneficiam de noop/none scheduler
+        "video=hyperv_fb:1920x1080" # Ex: 2560x1440, 1920x1200, etc.
       ];
 
       # Tuning de Memória Virtual para VM
