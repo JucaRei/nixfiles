@@ -80,6 +80,7 @@ in
 
           enable-ipc = true;
           wm-restack = "bspwm";
+          screenchange-reload = true;
         };
       };
     };
