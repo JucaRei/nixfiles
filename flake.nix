@@ -83,6 +83,13 @@
           isVM = true;
         };
 
+        rocinante-hyperv = helper.mkNixos {
+          hostname = "rocinante-hyperv";
+          desktop = "bspwm";
+          stateVersion = "24.11";
+          isVM = true;
+        };
+
         # Generic & Minimal Live ISOs
         iso-xfce4 = helper.mkIso { desktop = "xfce4"; };
         iso-gnome = helper.mkIso { desktop = "gnome"; };

@@ -31,7 +31,9 @@ in
       ];
     };
 
-    # --- Hardware & Virtualização Proxmox / QEMU KVM ---
+    # --- Integração Nativa com Windows Hyper-V ---
+    virtualisation.hypervGuest.enable = true; # Daemons Hyper-V (VSS, KVP, FCOPY, heartbeat)
+
     hardware = {
       cpu = {
         enable = true;
@@ -48,7 +50,7 @@ in
       graphics.cards = {
         enable = true;
         acceleration = true;
-        gpu = null; # Usa driver Mesa 3D / VirtIO-GPU / QXL nativo
+        gpu = null; # Usa driver Mesa 3D / Hyper-V Framebuffer nativo
       };
 
       enableRedistributableFirmware = true;
@@ -81,19 +83,19 @@ in
           "vfat"
         ];
         availableKernelModules = [
-          # VirtIO Drivers (Proxmox / KVM)
-          "virtio_pci"
-          "virtio_scsi"
-          "virtio_blk"
-          "virtio_net"
-          "virtio_balloon"
-          "virtio_console"
-          "virtio_gpu"
-          "qxl"
-          "bochs_drm"
+          # Hyper-V Drivers (Windows Hyper-V)
+          "hv_vmbus"
+          "hv_storvsc"
+          "hv_netvsc"
+          "hv_balloon"
+          "hv_utils"
+          "hyperv_keyboard"
+          "hyperv_fb"
+          "hid_hyperv"
 
           # Controladores de Armazenamento & USB
           "ahci"
+          "ata_piix"
           "xhci_pci"
           "nvme"
           "usb_storage"
@@ -104,18 +106,21 @@ in
         ];
         kernelModules = [
           "btrfs"
-          "virtio_balloon"
-          "virtio_net"
-          "virtio_pci"
+          "hv_vmbus"
+          "hv_storvsc"
+          "hv_netvsc"
+          "hv_balloon"
+          "hv_utils"
         ];
       };
 
-      # Parâmetros de kernel para desempenho em VM
+      # Parâmetros de kernel para desempenho e resolução nativa no Hyper-V
       kernelParams = [
         "mitigations=off" # Desativa mitigações para performance máxima na VM
         "nowatchdog"
         "transparent_hugepage=madvise"
-        "elevator=none" # VMs com SSD/VirtIO se beneficiam de noop/none scheduler
+        "elevator=none" # VMs com VHDX/SSD se beneficiam de noop/none scheduler
+        "video=hyperv_fb:1920x1080" # Fix: Resolução Full HD nativa no console do Hyper-V
       ];
 
       # Tuning de Memória Virtual para VM
@@ -134,14 +139,8 @@ in
       priority = 100;
     };
 
-    # --- Serviços de Integração Proxmox / QEMU ---
+    # --- Serviços do Sistema ---
     services = {
-      # QEMU Guest Agent (relatórios de IP, fsfreeze para backup consistente, shutdown limpo no PVE)
-      qemuGuest.enable = true;
-
-      # SPICE vdagent (Redimensionamento automático de tela no noVNC/SPICE e clipboard compartilhado)
-      spice-vdagentd.enable = true;
-
       # Sincronização de horário NTP
       timesyncd = {
         enable = true;
@@ -153,7 +152,7 @@ in
         ];
       };
 
-      # Desativa fwupd (inútil em VMs e evita falhas de boot/serviço)
+      # Desativa fwupd (inútil em VMs)
       fwupd.enable = false;
 
       earlyoom = {
@@ -174,7 +173,7 @@ in
         };
       };
 
-      # SSH para acesso remoto no laboratório Proxmox
+      # SSH para acesso remoto no Hyper-V
       openssh = {
         enable = true;
         settings = {
@@ -186,9 +185,9 @@ in
       };
     };
 
-    # --- Rede & DNS Technitium ---
+    # --- Rede & DNS ---
     networking = {
-      hostName = "rocinante-vm";
+      hostName = "rocinante-hyperv";
       search = [ "home.lan" ];
       nameservers = [
         "10.10.10.25" # DNS Local Primário (Technitium + Unbound em dns01.home.lan)
@@ -208,7 +207,6 @@ in
       ffmpeg
       mesa-demos
       lm_sensors
-      spice-vdagent
     ];
 
     # Teclado no console TTY
