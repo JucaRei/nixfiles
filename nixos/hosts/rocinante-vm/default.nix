@@ -154,7 +154,7 @@ in
       };
 
       # Desativa fwupd (inútil em VMs e evita falhas de boot/serviço)
-      fwupd.enable = false;
+      fwupd.enable = lib.mkForce false;
 
       earlyoom = {
         enable = true;
