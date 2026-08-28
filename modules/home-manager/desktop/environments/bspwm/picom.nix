@@ -29,10 +29,10 @@ in
       enable = true;
       package = pkgs.picom;
       # nvidia-legacy 340 e Nouveau usam xrender para estabilidade; GPUs modernas usam glx
-      backend = if isNouveauOrLegacy then "xrender" else "glx";
-      vSync = !isNouveauOrLegacy;
+      backend = lib.mkDefault (if isNouveauOrLegacy then "xrender" else "glx");
+      vSync = lib.mkDefault (!isNouveauOrLegacy);
 
-      shadow = true;
+      shadow = lib.mkDefault true;
       shadowOpacity = 0.6;
       shadowOffsets = [
         (-12)
