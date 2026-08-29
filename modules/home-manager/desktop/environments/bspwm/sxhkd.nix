@@ -65,9 +65,10 @@ let
     fi
   '';
 
-  # --- Manual / Cheat-Sheet Interativo de Atalhos (Rofi Keybinds Manual) ---
-  keybindsManual = pkgs.writeShellScript "keybinds-manual" ''
-    KB_LIST="󰌌  Super + Space / Super + D     ➜  Lançador de Aplicativos (Rofi)
+  # --- Dashboard Unificado: Quick Settings + Manual de Atalhos (Estilo Hyprland) ---
+  quickSettings = pkgs.writeShellScript "quick-settings" ''
+    show_manual() {
+      KB_LIST="󰌌  Super + Space / Super + D     ➜  Lançador de Aplicativos (Rofi)
 󰌌  Super + Enter / Super + T     ➜  Abrir Terminal (Alacritty)
 󰌌  Super + E / Super + Shift + E ➜  Gerenciador de Arquivos (Thunar)
 󰌌  Super + , / Super + C / Botão Dir. ➜ Painel Quick Settings / Preferências
@@ -93,95 +94,86 @@ let
 󰌌  Super + Ctrl + Q              ➜  Bloquear Sessão do Usuário
 󰌌  Teclas de Volume / Brilho     ➜  Controle com Feedback Visual OSD"
 
-    CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
+      CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
 
-    case "$CHOICE" in
-      *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
-      *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
-      *"Gerenciador de Arquivos"*) ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
-      *"Painel Quick Settings"*) ${controlCenter} ;;
-      *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
-      *"Terminal Flutuante"*) ${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty ;;
-      *"Fechar / Encerrar Janela"*) bspc node -c ;;
-      *"Tela Cheia"*) bspc node -t ~fullscreen ;;
-      *"Janela Flutuante"*) bspc node -t ~floating ;;
-      *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/ ;;
-      *"Seleção de Área"*) ${pkgs.flameshot}/bin/flameshot gui ;;
-      *"Recarregar BSPWM"*) bspc wm -r ;;
-      *"Bloquear Sessão"*) loginctl lock-session ;;
-    esac
-  '';
+      case "$CHOICE" in
+        *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
+        *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
+        *"Gerenciador de Arquivos"*) ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
+        *"Painel Quick Settings"*) show_control_center ;;
+        *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
+        *"Terminal Flutuante"*) ${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty ;;
+        *"Fechar / Encerrar Janela"*) bspc node -c ;;
+        *"Tela Cheia"*) bspc node -t ~fullscreen ;;
+        *"Janela Flutuante"*) bspc node -t ~floating ;;
+        *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/ ;;
+        *"Seleção de Área"*) ${pkgs.flameshot}/bin/flameshot gui ;;
+        *"Recarregar BSPWM"*) bspc wm -r ;;
+        *"Bloquear Sessão"*) loginctl lock-session ;;
+      esac
+    }
 
-  # --- Dashboard de Preferências / Control Center (Estilo Hyprland / SwayNC) ---
-  controlCenter = pkgs.writeShellScript "control-center" ''
-    OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
-    OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
-    OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
-    OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
-    OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
-    OPT_FILES="󰉋  Gerenciador de Arquivos (Thunar)"
-    OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
-    OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
-    OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
-    OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
+    show_control_center() {
+      OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
+      OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
+      OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
+      OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
+      OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
+      OPT_FILES="󰉋  Gerenciador de Arquivos (Thunar)"
+      OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
+      OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
+      OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
+      OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
 
-    CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
-      "$OPT_RES" \
-      "$OPT_SOUND" \
-      "$OPT_NET" \
-      "$OPT_THEME" \
-      "$OPT_WALL" \
-      "$OPT_FILES" \
-      "$OPT_TERM" \
-      "$OPT_KEYS" \
-      "$OPT_RELOAD" \
-      "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings ")
+      CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+        "$OPT_RES" \
+        "$OPT_SOUND" \
+        "$OPT_NET" \
+        "$OPT_THEME" \
+        "$OPT_WALL" \
+        "$OPT_FILES" \
+        "$OPT_TERM" \
+        "$OPT_KEYS" \
+        "$OPT_RELOAD" \
+        "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings ")
 
-    case "$CHOICE" in
-      "$OPT_RES")
-        R_1080="1920x1080 (Full HD 1080p)"
-        R_2K="2560x1440 (Quad HD 2K)"
-        R_900="1600x900 (HD+)"
-        R_768="1366x768 (HD)"
-        R_CUSTOM="⚙ Painel Avançado de Telas (ARandR)"
+      case "$CHOICE" in
+        "$OPT_RES")
+          R_1080="1920x1080 (Full HD 1080p)"
+          R_2K="2560x1440 (Quad HD 2K)"
+          R_900="1600x900 (HD+)"
+          R_768="1366x768 (HD)"
+          R_CUSTOM="⚙ Painel Avançado de Telas (ARandR)"
 
-        RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução ")
-        case "$RES" in
-          "$R_1080") ${pkgs.xorg.xrandr}/bin/xrandr -s 1920x1080 ;;
-          "$R_2K")   ${pkgs.xorg.xrandr}/bin/xrandr -s 2560x1440 ;;
-          "$R_900")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1600x900 ;;
-          "$R_768")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1366x768 ;;
-          "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xorg.xrandr}/bin/xrandr ;;
-        esac
-        ;;
-      "$OPT_SOUND")
-        ${pkgs.pavucontrol}/bin/pavucontrol &
-        ;;
-      "$OPT_NET")
-        ${pkgs.networkmanagerapplet}/bin/nm-connection-editor &
-        ;;
-      "$OPT_THEME")
-        ${pkgs.lxappearance}/bin/lxappearance &
-        ;;
-      "$OPT_WALL")
-        ${pkgs.nitrogen}/bin/nitrogen || ${pkgs.feh}/bin/feh &
-        ;;
-      "$OPT_FILES")
-        ${pkgs.xfce.thunar}/bin/thunar ~ &
-        ;;
-      "$OPT_TERM")
-        ${pkgs.alacritty}/bin/alacritty &
-        ;;
-      "$OPT_KEYS")
-        ${keybindsManual}
-        ;;
-      "$OPT_RELOAD")
-        bspc wm -r
-        ${pkgs.dunst}/bin/dunstify -a "Sistema" -u low -i "view-refresh" -t 2000 "BSPWM e Polybar recarregados com sucesso!"
-        ;;
-      "$OPT_POWER")
-        ${pkgs.rofi}/bin/rofi -show power-menu -modi "power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu" || loginctl lock-session
-        ;;
+          RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução ")
+          case "$RES" in
+            "$R_1080") ${pkgs.xorg.xrandr}/bin/xrandr -s 1920x1080 ;;
+            "$R_2K")   ${pkgs.xorg.xrandr}/bin/xrandr -s 2560x1440 ;;
+            "$R_900")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1600x900 ;;
+            "$R_768")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1366x768 ;;
+            "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xorg.xrandr}/bin/xrandr ;;
+          esac
+          ;;
+        "$OPT_SOUND") ${pkgs.pavucontrol}/bin/pavucontrol & ;;
+        "$OPT_NET") ${pkgs.networkmanagerapplet}/bin/nm-connection-editor & ;;
+        "$OPT_THEME") ${pkgs.lxappearance}/bin/lxappearance & ;;
+        "$OPT_WALL") ${pkgs.nitrogen}/bin/nitrogen || ${pkgs.feh}/bin/feh & ;;
+        "$OPT_FILES") ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
+        "$OPT_TERM") ${pkgs.alacritty}/bin/alacritty & ;;
+        "$OPT_KEYS") show_manual ;;
+        "$OPT_RELOAD")
+          bspc wm -r
+          ${pkgs.dunst}/bin/dunstify -a "Sistema" -u low -i "view-refresh" -t 2000 "BSPWM e Polybar recarregados com sucesso!"
+          ;;
+        "$OPT_POWER")
+          ${pkgs.rofi}/bin/rofi -show power-menu -modi "power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu" || loginctl lock-session
+          ;;
+      esac
+    }
+
+    case "$1" in
+      --manual) show_manual ;;
+      *) show_control_center ;;
     esac
   '';
 in
@@ -207,13 +199,13 @@ in
       keybindings = cfg.keybindings // {
         # --- Clique no Desktop / Control Center (Estilo Hyprland / SwayNC) ---
         # Botão Direito no Desktop (Root Window sem janela)
-        "~button3" = "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${controlCenter}; fi";
-        "super + button3" = "${controlCenter}";
-        "super + comma" = "${controlCenter}"; # Cmd + , (Atalho universal de Preferências)
-        "super + p" = "${controlCenter}";
-        "super + c" = "${controlCenter}"; # Control Center
-        "super + slash" = "${keybindsManual}"; # Cmd + / (Manual & Cheat-Sheet de Atalhos)
-        "super + F1" = "${keybindsManual}"; # F1 (Ajuda do Sistema)
+        "~button3" = "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${quickSettings}; fi";
+        "super + button3" = "${quickSettings}";
+        "super + comma" = "${quickSettings}"; # Cmd + , (Atalho universal de Preferências)
+        "super + p" = "${quickSettings}";
+        "super + c" = "${quickSettings}"; # Control Center
+        "super + slash" = "${quickSettings} --manual"; # Cmd + / (Manual & Cheat-Sheet de Atalhos)
+        "super + F1" = "${quickSettings} --manual"; # F1 (Ajuda do Sistema)
 
         # --- Aplicativos & Launchers (macOS Style) ---
         # Spotlight (Cmd + Space) e Rofi Drun
