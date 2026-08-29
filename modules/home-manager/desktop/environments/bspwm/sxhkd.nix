@@ -65,6 +65,53 @@ let
     fi
   '';
 
+  # --- Manual / Cheat-Sheet Interativo de Atalhos (Rofi Keybinds Manual) ---
+  keybindsManual = pkgs.writeShellScript "keybinds-manual" ''
+    KB_LIST="󰌌  Super + Space / Super + D     ➜  Lançador de Aplicativos (Rofi)
+󰌌  Super + Enter / Super + T     ➜  Abrir Terminal (Alacritty)
+󰌌  Super + E / Super + Shift + E ➜  Gerenciador de Arquivos (Thunar)
+󰌌  Super + , / Super + C / Botão Dir. ➜ Painel Quick Settings / Preferências
+󰌌  Super + / ou Super + F1       ➜  Manual e Guia de Atalhos (Cheat-Sheet)
+󰌌  Alt + Tab / Super + W         ➜  Alternador de Janelas Abertas
+󰌌  Super + U                     ➜  Terminal Flutuante Rápido (Scratchpad)
+󰌌  Super + Q / Super + Shift + Q ➜  Fechar / Encerrar Janela
+󰌌  Super + Alt + Esc             ➜  Forçar Fechamento de Janela Travada
+󰌌  Super + Ctrl + F              ➜  Alternar Tela Cheia (Fullscreen)
+󰌌  Super + S                     ➜  Alternar Janela Flutuante (Floating/Tiling)
+󰌌  Super + M                     ➜  Modo Monocle (Foco em Janela Única)
+󰌌  Super + {H,J,K,L} ou Setas    ➜  Navegar Foco Entre Janelas (Vim/Setas)
+󰌌  Super + Shift + {H,J,K,L}     ➜  Mover / Trocar Posição da Janela
+󰌌  Super + Alt + {H,J,K,L}/Setas ➜  Redimensionar Tamanho da Janela
+󰌌  Super + Botão Esquerdo        ➜  Mover Janela Flutuante com o Mouse
+󰌌  Super + Botão Direito         ➜  Redimensionar Janela com o Mouse
+󰌌  Super + 1..9, 0               ➜  Ir para Área de Trabalho (Workspace) 1 a 10
+󰌌  Super + Shift + 1..9, 0       ➜  Enviar Janela para Workspace 1 a 10
+󰌌  Super + Shift + 3 / Shift+Prt ➜  Captura de Tela Inteira (salva em ~/Pictures)
+󰌌  Super + Shift + 4 / Print     ➜  Seleção de Área para Captura (Flameshot)
+󰌌  Super + Shift + 5             ➜  Interface Gráfica de Capturas
+󰌌  Super + Shift + R             ➜  Recarregar BSPWM e Polybar
+󰌌  Super + Ctrl + Q              ➜  Bloquear Sessão do Usuário
+󰌌  Teclas de Volume / Brilho     ➜  Controle com Feedback Visual OSD"
+
+    CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
+
+    case "$CHOICE" in
+      *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
+      *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
+      *"Gerenciador de Arquivos"*) ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
+      *"Painel Quick Settings"*) ${controlCenter} ;;
+      *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
+      *"Terminal Flutuante"*) ${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty ;;
+      *"Fechar / Encerrar Janela"*) bspc node -c ;;
+      *"Tela Cheia"*) bspc node -t ~fullscreen ;;
+      *"Janela Flutuante"*) bspc node -t ~floating ;;
+      *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/ ;;
+      *"Seleção de Área"*) ${pkgs.flameshot}/bin/flameshot gui ;;
+      *"Recarregar BSPWM"*) bspc wm -r ;;
+      *"Bloquear Sessão"*) loginctl lock-session ;;
+    esac
+  '';
+
   # --- Dashboard de Preferências / Control Center (Estilo Hyprland / SwayNC) ---
   controlCenter = pkgs.writeShellScript "control-center" ''
     OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
@@ -74,7 +121,7 @@ let
     OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
     OPT_FILES="󰉋  Gerenciador de Arquivos (Thunar)"
     OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
-    OPT_KEYS="󰌌  Guia de Atalhos do Sistema"
+    OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
     OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
     OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
 
@@ -126,8 +173,7 @@ let
         ${pkgs.alacritty}/bin/alacritty &
         ;;
       "$OPT_KEYS")
-        ${pkgs.dunst}/bin/dunstify -a "Guia de Atalhos" -u normal -i "keyboard" -t 8000 "Atalhos Principais" \
-          "<b>Super + Espaço</b>: Lançador de Apps\n<b>Super + Enter</b>: Terminal\n<b>Super + Q</b>: Fechar Janela\n<b>Super + Ctrl + F</b>: Tela Cheia\n<b>Super + , ou Botão Direito no Desktop</b>: Painel Quick Settings\n<b>Super + Alt + Setas</b>: Redimensionar Janela\n<b>Super + Shift + R</b>: Recarregar Barra e BSPWM"
+        ${keybindsManual}
         ;;
       "$OPT_RELOAD")
         bspc wm -r
@@ -166,6 +212,8 @@ in
         "super + comma" = "${controlCenter}"; # Cmd + , (Atalho universal de Preferências)
         "super + p" = "${controlCenter}";
         "super + c" = "${controlCenter}"; # Control Center
+        "super + slash" = "${keybindsManual}"; # Cmd + / (Manual & Cheat-Sheet de Atalhos)
+        "super + F1" = "${keybindsManual}"; # F1 (Ajuda do Sistema)
 
         # --- Aplicativos & Launchers (macOS Style) ---
         # Spotlight (Cmd + Space) e Rofi Drun
