@@ -193,6 +193,12 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Recarregar automaticamente o sxhkd e bspwm ao rodar switch-host
+    home.activation.reloadSxhkd = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -USR1 -x sxhkd 2>/dev/null || true
+      $DRY_RUN_CMD ${pkgs.bspwm}/bin/bspc wm -r 2>/dev/null || true
+    '';
+
     services.sxhkd = {
       enable = true;
       package = pkgs.sxhkd;
