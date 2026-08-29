@@ -80,6 +80,9 @@ let
 󰌌  Super + Ctrl + F              ➜  Alternar Tela Cheia (Fullscreen)
 󰌌  Super + S                     ➜  Alternar Janela Flutuante (Floating/Tiling)
 󰌌  Super + M                     ➜  Modo Monocle (Foco em Janela Única)
+󰌌  Super + Y / Super + Minus     ➜  Esconder / Minimizar Janela Ativa
+󰌌  Super + Shift + Y / Shift+-  ➜  Restaurar Última Janela Escondida
+󰌌  Super + Shift + M            ➜  Mostrar Desktop (Minimizar/Restaurar Todas)
 󰌌  Super + {H,J,K,L} ou Setas    ➜  Navegar Foco Entre Janelas (Vim/Setas)
 󰌌  Super + Shift + {H,J,K,L}     ➜  Mover / Trocar Posição da Janela
 󰌌  Super + Alt + {H,J,K,L}/Setas ➜  Redimensionar Tamanho da Janela
@@ -106,6 +109,8 @@ let
         *"Fechar / Encerrar Janela"*) bspc node -c ;;
         *"Tela Cheia"*) bspc node -t ~fullscreen ;;
         *"Janela Flutuante"*) bspc node -t ~floating ;;
+        *"Esconder / Minimizar Janela"*) bspc node -g hidden=on ;;
+        *"Restaurar Última Janela"*) bspc node any.hidden.local -g hidden=off -f ;;
         *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/ ;;
         *"Seleção de Área"*) ${pkgs.flameshot}/bin/flameshot gui ;;
         *"Recarregar BSPWM"*) bspc wm -r ;;
@@ -244,6 +249,18 @@ in
         "super + ctrl + f" = "bspc node -t ~fullscreen";
         "super + s" = "bspc node -t ~floating";
         "super + m" = "bspc desktop -l next";
+
+        # --- Minimizar / Esconder Janelas (Desktop Environment Style) ---
+        # Esconder/Minimizar a janela ativa (Cmd + Y ou Cmd + -)
+        "super + y" = "bspc node -g hidden=on";
+        "super + minus" = "bspc node -g hidden=on";
+
+        # Restaurar/Desocultar a última janela escondida (Cmd + Shift + Y ou Cmd + Shift + -)
+        "super + shift + y" = "bspc node any.hidden.local -g hidden=off -f";
+        "super + shift + minus" = "bspc node any.hidden.local -g hidden=off -f";
+
+        # Alternar Mostrar Desktop (Minimizar todas / Restaurar todas no workspace ativo)
+        "super + shift + m" = "if [ $(bspc query -N -d focused -n .window.!hidden | wc -l) -gt 0 ]; then for n in $(bspc query -N -d focused -n .window.!hidden); do bspc node $n -g hidden=on; done; else for n in $(bspc query -N -d focused -n .window.hidden); do bspc node $n -g hidden=off; done; fi";
 
         # --- Screenshots (macOS Style: Cmd + Shift + 3 / 4 / 5) ---
         # Cmd + Shift + 3: Captura de tela inteira salva em ~/Pictures

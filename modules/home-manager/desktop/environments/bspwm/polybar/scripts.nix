@@ -230,4 +230,38 @@
       *"Bloquear"*)    loginctl lock-session ;;
     esac
   '';
+
+  # --- Script de Monitoramento de Janelas Minimizadas na Polybar ---
+  minimizedScript = pkgs.writeShellScript "polybar-minimized" ''
+    export PATH="${pkgs.bspwm}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:$PATH"
+    hidden_nodes=$(bspc query -N -d focused -n .window.hidden 2>/dev/null)
+    count=$(echo "$hidden_nodes" | grep -v '^$' | wc -l)
+
+    if [ "$count" -gt 0 ]; then
+      echo "󰖯 $count"
+    else
+      echo ""
+    fi
+  '';
+
+  # --- Menu Rofi para Restaurar Janelas Minimizadas ---
+  restoreMenuScript = pkgs.writeShellScript "rofi-restore-minimized" ''
+    export PATH="${pkgs.bspwm}/bin:${pkgs.xdotool}/bin:${pkgs.rofi}/bin:${pkgs.coreutils}/bin:$PATH"
+    hidden_nodes=$(bspc query -N -d focused -n .window.hidden 2>/dev/null)
+    if [ -z "$hidden_nodes" ]; then
+      exit 0
+    fi
+
+    entries=""
+    for node in $hidden_nodes; do
+      title=$(xdotool getwindowname "$node" 2>/dev/null || echo "Janela $node")
+      entries="$entries$node: 󰖯 $title\n"
+    done
+
+    chosen=$(printf "$entries" | rofi -dmenu -i -p " 󰖯 Restaurar Janela " -theme-str 'window { width: 480px; border-radius: 14px; }')
+    if [ -n "$chosen" ]; then
+      selected_node=$(echo "$chosen" | cut -d: -f1)
+      bspc node "$selected_node" -g hidden=off -f
+    fi
+  '';
 }

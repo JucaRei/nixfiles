@@ -94,15 +94,30 @@
     label-fullscreen-foreground = colors.mauve;
   };
 
-  # --- Título da Janela Ativa ---
+  # --- Título da Janela Ativa (Interativo: Clique para Minimizar, Meio para Fechar, Direito para Fullscreen) ---
   "module/xwindow" = {
     type = "internal/xwindow";
+    format = "%{A1:${pkgs.bspwm}/bin/bspc node -g hidden=on:}%{A2:${pkgs.bspwm}/bin/bspc node -c:}%{A3:${pkgs.bspwm}/bin/bspc node -t ~fullscreen:}<label>%{A}%{A}%{A}";
     format-prefix = "󰣆 ";
     format-prefix-foreground = colors.sapphire;
     format-background = colors.surface0;
     label = "%title:0:28:...%";
     label-foreground = colors.subtext0;
     label-padding = 1;
+  };
+
+  # --- Janelas Minimizadas / Ocultas na Polybar ---
+  "module/minimized" = {
+    type = "custom/script";
+    exec = "${scripts.minimizedScript}";
+    interval = 1;
+    format = "%{A1:${pkgs.bspwm}/bin/bspc node any.hidden.local -g hidden=off -f:}%{A3:${scripts.restoreMenuScript}:}<label>%{A}%{A}";
+    format-background = colors.surface0;
+    format-foreground = colors.peach;
+    label = "%output%";
+    label-padding = 1;
+    click-left = "${pkgs.bspwm}/bin/bspc node any.hidden.local -g hidden=off -f";
+    click-right = "${scripts.restoreMenuScript}";
   };
 
   # --- Mídia / Playerctl ---
