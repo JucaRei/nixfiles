@@ -12,8 +12,8 @@ let
   # --- Script de Notificação de Volume (Dunst OSD) ---
   volumeOsd = pkgs.writeShellScript "volume-osd" ''
     case "$1" in
-      up)   ${pkgs.pamixer}/bin/pamixer -i 5 ;;
-      down) ${pkgs.pamixer}/bin/pamixer -d 5 ;;
+      up)   ${pkgs.pamixer}/bin/pamixer -i 2 ;;
+      down) ${pkgs.pamixer}/bin/pamixer -d 2 ;;
       mute) ${pkgs.pamixer}/bin/pamixer -t ;;
     esac
 
@@ -67,119 +67,119 @@ let
 
   # --- Dashboard Unificado: Quick Settings + Manual de Atalhos (Estilo Hyprland) ---
   quickSettings = pkgs.writeShellScript "quick-settings" ''
-    show_manual() {
-      KB_LIST="󰌌  Super + Space / Super + D     ➜  Lançador de Aplicativos (Rofi)
-󰌌  Super + Enter / Super + T     ➜  Abrir Terminal (Alacritty)
-󰌌  Super + E / Super + Shift + E ➜  Gerenciador de Arquivos (Thunar)
-󰌌  Super + , / Super + C / Botão Dir. ➜ Painel Quick Settings / Preferências
-󰌌  Super + / ou Super + F1       ➜  Manual e Guia de Atalhos (Cheat-Sheet)
-󰌌  Alt + Tab / Super + W         ➜  Alternador de Janelas Abertas
-󰌌  Super + U                     ➜  Terminal Flutuante Rápido (Scratchpad)
-󰌌  Super + Q / Super + Shift + Q ➜  Fechar / Encerrar Janela
-󰌌  Super + Alt + Esc             ➜  Forçar Fechamento de Janela Travada
-󰌌  Super + Ctrl + F              ➜  Alternar Tela Cheia (Fullscreen)
-󰌌  Super + S                     ➜  Alternar Janela Flutuante (Floating/Tiling)
-󰌌  Super + M                     ➜  Modo Monocle (Foco em Janela Única)
-󰌌  Super + Y / Super + Minus     ➜  Esconder / Minimizar Janela Ativa
-󰌌  Super + Shift + Y / Shift+-  ➜  Restaurar Última Janela Escondida
-󰌌  Super + Shift + M            ➜  Mostrar Desktop (Minimizar/Restaurar Todas)
-󰌌  Super + {H,J,K,L} ou Setas    ➜  Navegar Foco Entre Janelas (Vim/Setas)
-󰌌  Super + Shift + {H,J,K,L}     ➜  Mover / Trocar Posição da Janela
-󰌌  Super + Alt + {H,J,K,L}/Setas ➜  Redimensionar Tamanho da Janela
-󰌌  Super + Botão Esquerdo        ➜  Mover Janela Flutuante com o Mouse
-󰌌  Super + Botão Direito         ➜  Redimensionar Janela com o Mouse
-󰌌  Super + 1..9, 0               ➜  Ir para Área de Trabalho (Workspace) 1 a 10
-󰌌  Super + Shift + 1..9, 0       ➜  Enviar Janela para Workspace 1 a 10
-󰌌  Super + Shift + 3 / Shift+Prt ➜  Captura de Tela Inteira (salva em ~/Pictures)
-󰌌  Super + Shift + 4 / Print     ➜  Seleção de Área para Captura (Flameshot)
-󰌌  Super + Shift + 5             ➜  Interface Gráfica de Capturas
-󰌌  Super + Shift + R             ➜  Recarregar BSPWM e Polybar
-󰌌  Super + Ctrl + Q              ➜  Bloquear Sessão do Usuário
-󰌌  Teclas de Volume / Brilho     ➜  Controle com Feedback Visual OSD"
+        show_manual() {
+          KB_LIST="󰌌  Super + Space / Super + D     ➜  Lançador de Aplicativos (Rofi)
+    󰌌  Super + Enter / Super + T     ➜  Abrir Terminal (Alacritty)
+    󰌌  Super + E / Super + Shift + E ➜  Gerenciador de Arquivos (Thunar)
+    󰌌  Super + , / Super + C / Botão Dir. ➜ Painel Quick Settings / Preferências
+    󰌌  Super + / ou Super + F1       ➜  Manual e Guia de Atalhos (Cheat-Sheet)
+    󰌌  Alt + Tab / Super + W         ➜  Alternador de Janelas Abertas
+    󰌌  Super + U                     ➜  Terminal Flutuante Rápido (Scratchpad)
+    󰌌  Super + Q / Super + Shift + Q ➜  Fechar / Encerrar Janela
+    󰌌  Super + Alt + Esc             ➜  Forçar Fechamento de Janela Travada
+    󰌌  Super + Ctrl + F              ➜  Alternar Tela Cheia (Fullscreen)
+    󰌌  Super + S                     ➜  Alternar Janela Flutuante (Floating/Tiling)
+    󰌌  Super + M                     ➜  Modo Monocle (Foco em Janela Única)
+    󰌌  Super + Y / Super + Minus     ➜  Esconder / Minimizar Janela Ativa
+    󰌌  Super + Shift + Y / Shift+-  ➜  Restaurar Última Janela Escondida
+    󰌌  Super + Shift + M            ➜  Mostrar Desktop (Minimizar/Restaurar Todas)
+    󰌌  Super + {H,J,K,L} ou Setas    ➜  Navegar Foco Entre Janelas (Vim/Setas)
+    󰌌  Super + Shift + {H,J,K,L}     ➜  Mover / Trocar Posição da Janela
+    󰌌  Super + Alt + {H,J,K,L}/Setas ➜  Redimensionar Tamanho da Janela
+    󰌌  Super + Botão Esquerdo        ➜  Mover Janela Flutuante com o Mouse
+    󰌌  Super + Botão Direito         ➜  Redimensionar Janela com o Mouse
+    󰌌  Super + 1..9, 0               ➜  Ir para Área de Trabalho (Workspace) 1 a 10
+    󰌌  Super + Shift + 1..9, 0       ➜  Enviar Janela para Workspace 1 a 10
+    󰌌  Super + Shift + 3 / Shift+Prt ➜  Captura de Tela Inteira (salva em ~/Pictures)
+    󰌌  Super + Shift + 4 / Print     ➜  Seleção de Área para Captura (Flameshot)
+    󰌌  Super + Shift + 5             ➜  Interface Gráfica de Capturas
+    󰌌  Super + Shift + R             ➜  Recarregar BSPWM e Polybar
+    󰌌  Super + Ctrl + Q              ➜  Bloquear Sessão do Usuário
+    󰌌  Teclas de Volume / Brilho     ➜  Controle com Feedback Visual OSD"
 
-      CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
+          CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
 
-      case "$CHOICE" in
-        *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
-        *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
-        *"Gerenciador de Arquivos"*) ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
-        *"Painel Quick Settings"*) show_control_center ;;
-        *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
-        *"Terminal Flutuante"*) ${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty ;;
-        *"Fechar / Encerrar Janela"*) bspc node -c ;;
-        *"Tela Cheia"*) bspc node -t ~fullscreen ;;
-        *"Janela Flutuante"*) bspc node -t ~floating ;;
-        *"Esconder / Minimizar Janela"*) bspc node -g hidden=on ;;
-        *"Restaurar Última Janela"*) bspc node any.hidden.local -g hidden=off -f ;;
-        *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/ ;;
-        *"Seleção de Área"*) ${pkgs.flameshot}/bin/flameshot gui ;;
-        *"Recarregar BSPWM"*) bspc wm -r ;;
-        *"Bloquear Sessão"*) loginctl lock-session ;;
-      esac
-    }
-
-    show_control_center() {
-      OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
-      OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
-      OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
-      OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
-      OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
-      OPT_FILES="󰉋  Gerenciador de Arquivos (Thunar)"
-      OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
-      OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
-      OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
-      OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
-
-      CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
-        "$OPT_RES" \
-        "$OPT_SOUND" \
-        "$OPT_NET" \
-        "$OPT_THEME" \
-        "$OPT_WALL" \
-        "$OPT_FILES" \
-        "$OPT_TERM" \
-        "$OPT_KEYS" \
-        "$OPT_RELOAD" \
-        "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings ")
-
-      case "$CHOICE" in
-        "$OPT_RES")
-          R_1080="1920x1080 (Full HD 1080p)"
-          R_2K="2560x1440 (Quad HD 2K)"
-          R_900="1600x900 (HD+)"
-          R_768="1366x768 (HD)"
-          R_CUSTOM="⚙ Painel Avançado de Telas (ARandR)"
-
-          RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução ")
-          case "$RES" in
-            "$R_1080") ${pkgs.xorg.xrandr}/bin/xrandr -s 1920x1080 ;;
-            "$R_2K")   ${pkgs.xorg.xrandr}/bin/xrandr -s 2560x1440 ;;
-            "$R_900")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1600x900 ;;
-            "$R_768")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1366x768 ;;
-            "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xorg.xrandr}/bin/xrandr ;;
+          case "$CHOICE" in
+            *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
+            *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
+            *"Gerenciador de Arquivos"*) ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
+            *"Painel Quick Settings"*) show_control_center ;;
+            *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
+            *"Terminal Flutuante"*) ${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty ;;
+            *"Fechar / Encerrar Janela"*) bspc node -c ;;
+            *"Tela Cheia"*) bspc node -t ~fullscreen ;;
+            *"Janela Flutuante"*) bspc node -t ~floating ;;
+            *"Esconder / Minimizar Janela"*) bspc node -g hidden=on ;;
+            *"Restaurar Última Janela"*) bspc node any.hidden.local -g hidden=off -f ;;
+            *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/ ;;
+            *"Seleção de Área"*) ${pkgs.flameshot}/bin/flameshot gui ;;
+            *"Recarregar BSPWM"*) bspc wm -r ;;
+            *"Bloquear Sessão"*) loginctl lock-session ;;
           esac
-          ;;
-        "$OPT_SOUND") ${pkgs.pavucontrol}/bin/pavucontrol & ;;
-        "$OPT_NET") ${pkgs.networkmanagerapplet}/bin/nm-connection-editor & ;;
-        "$OPT_THEME") ${pkgs.lxappearance}/bin/lxappearance & ;;
-        "$OPT_WALL") ${pkgs.nitrogen}/bin/nitrogen || ${pkgs.feh}/bin/feh & ;;
-        "$OPT_FILES") ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
-        "$OPT_TERM") ${pkgs.alacritty}/bin/alacritty & ;;
-        "$OPT_KEYS") show_manual ;;
-        "$OPT_RELOAD")
-          bspc wm -r
-          ${pkgs.dunst}/bin/dunstify -a "Sistema" -u low -i "view-refresh" -t 2000 "BSPWM e Polybar recarregados com sucesso!"
-          ;;
-        "$OPT_POWER")
-          ${pkgs.rofi}/bin/rofi -show power-menu -modi "power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu" || loginctl lock-session
-          ;;
-      esac
-    }
+        }
 
-    case "$1" in
-      --manual) show_manual ;;
-      *) show_control_center ;;
-    esac
+        show_control_center() {
+          OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
+          OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
+          OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
+          OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
+          OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
+          OPT_FILES="󰉋  Gerenciador de Arquivos (Thunar)"
+          OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
+          OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
+          OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
+          OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
+
+          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+            "$OPT_RES" \
+            "$OPT_SOUND" \
+            "$OPT_NET" \
+            "$OPT_THEME" \
+            "$OPT_WALL" \
+            "$OPT_FILES" \
+            "$OPT_TERM" \
+            "$OPT_KEYS" \
+            "$OPT_RELOAD" \
+            "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings ")
+
+          case "$CHOICE" in
+            "$OPT_RES")
+              R_1080="1920x1080 (Full HD 1080p)"
+              R_2K="2560x1440 (Quad HD 2K)"
+              R_900="1600x900 (HD+)"
+              R_768="1366x768 (HD)"
+              R_CUSTOM="⚙ Painel Avançado de Telas (ARandR)"
+
+              RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução ")
+              case "$RES" in
+                "$R_1080") ${pkgs.xorg.xrandr}/bin/xrandr -s 1920x1080 ;;
+                "$R_2K")   ${pkgs.xorg.xrandr}/bin/xrandr -s 2560x1440 ;;
+                "$R_900")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1600x900 ;;
+                "$R_768")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1366x768 ;;
+                "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xorg.xrandr}/bin/xrandr ;;
+              esac
+              ;;
+            "$OPT_SOUND") ${pkgs.pavucontrol}/bin/pavucontrol & ;;
+            "$OPT_NET") ${pkgs.networkmanagerapplet}/bin/nm-connection-editor & ;;
+            "$OPT_THEME") ${pkgs.lxappearance}/bin/lxappearance & ;;
+            "$OPT_WALL") ${pkgs.nitrogen}/bin/nitrogen || ${pkgs.feh}/bin/feh & ;;
+            "$OPT_FILES") ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
+            "$OPT_TERM") ${pkgs.alacritty}/bin/alacritty & ;;
+            "$OPT_KEYS") show_manual ;;
+            "$OPT_RELOAD")
+              bspc wm -r
+              ${pkgs.dunst}/bin/dunstify -a "Sistema" -u low -i "view-refresh" -t 2000 "BSPWM e Polybar recarregados com sucesso!"
+              ;;
+            "$OPT_POWER")
+              ${pkgs.rofi}/bin/rofi -show power-menu -modi "power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu" || loginctl lock-session
+              ;;
+          esac
+        }
+
+        case "$1" in
+          --manual) show_manual ;;
+          *) show_control_center ;;
+        esac
   '';
 in
 {
@@ -210,7 +210,8 @@ in
       keybindings = cfg.keybindings // {
         # --- Clique no Desktop / Control Center (Estilo Hyprland / SwayNC) ---
         # Botão Direito no Desktop (Root Window sem janela)
-        "~button3" = "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${quickSettings}; fi";
+        "~button3" =
+          "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${quickSettings}; fi";
         "super + button3" = "${quickSettings}";
         "super + comma" = "${quickSettings}"; # Cmd + , (Atalho universal de Preferências)
         "super + p" = "${quickSettings}";
@@ -238,7 +239,8 @@ in
         "super + w" = "${pkgs.rofi}/bin/rofi -show window";
 
         # Terminal Scratchpad (Cmd + U)
-        "super + u" = "${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty";
+        "super + u" =
+          "${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty";
 
         # --- Janelas (macOS Style: Cmd + Q / Cmd + Opt + Esc) ---
         "super + q" = "bspc node -c";
@@ -260,7 +262,8 @@ in
         "super + shift + minus" = "bspc node any.hidden.local -g hidden=off -f";
 
         # Alternar Mostrar Desktop (Minimizar todas / Restaurar todas no workspace ativo)
-        "super + shift + m" = "if [ $(bspc query -N -d focused -n .window.!hidden | wc -l) -gt 0 ]; then for n in $(bspc query -N -d focused -n .window.!hidden); do bspc node $n -g hidden=on; done; else for n in $(bspc query -N -d focused -n .window.hidden); do bspc node $n -g hidden=off; done; fi";
+        "super + shift + m" =
+          "if [ $(bspc query -N -d focused -n .window.!hidden | wc -l) -gt 0 ]; then for n in $(bspc query -N -d focused -n .window.!hidden); do bspc node $n -g hidden=on; done; else for n in $(bspc query -N -d focused -n .window.hidden); do bspc node $n -g hidden=off; done; fi";
 
         # --- Screenshots (macOS Style: Cmd + Shift + 3 / 4 / 5) ---
         # Cmd + Shift + 3: Captura de tela inteira salva em ~/Pictures

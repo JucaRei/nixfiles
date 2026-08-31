@@ -9,6 +9,7 @@
     packages = with pkgs; [
       # msttcorefonts
       nerd-fonts.martian-mono
+      ffmpeg # Codecs de vídeo/áudio para YouTube
     ];
   };
 }

@@ -298,10 +298,6 @@ in
 
     # --- Pacotes do Sistema ---
     environment.systemPackages = with pkgs; [
-      brightnessctl # Controle de brilho da tela e luz do teclado
-      pamixer # Controle de volume CLI
-      pavucontrol # Controle de volume GUI
-      ffmpeg # Codecs de vídeo/áudio para YouTube
       libva-utils
       vdpauinfo
       mesa-demos

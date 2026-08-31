@@ -43,8 +43,8 @@ in
         polkit_gnome
 
         # Audio & Volume
-        pavucontrol
-        pamixer
+        pavucontrol # Controle de volume GUI
+        pamixer # Controle de volume CLI
         playerctl
 
         # Utilities

@@ -35,7 +35,6 @@ in
         ".face" = mkIf (desktop != null) {
           source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
         };
-        # "lab/vm/nixos-console.conf" = mkIf (!isLima) {
         "lab/vm/nixos-console.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
