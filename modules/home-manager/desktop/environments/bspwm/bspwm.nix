@@ -58,35 +58,155 @@ in
             presel_feedback_color = "#f2cdcd"; # Catppuccin Flamingo
           };
           rules = {
-            "Pavucontrol" = {
+            # --- Utilitários de Sistema, Áudio e Vídeo ---
+            "Lxappearance" = {
               state = "floating";
+              center = true;
+              follow = true;
             };
-            "GParted" = {
+            "lxappearance" = {
               state = "floating";
+              center = true;
+              follow = true;
             };
             "Galculator" = {
               state = "floating";
+              center = true;
+              follow = true;
             };
-            "Flameshot" = {
+            "galculator" = {
               state = "floating";
+              center = true;
+              follow = true;
             };
-            "Lxappearance" = {
+            "Gnome-calculator" = {
               state = "floating";
+              center = true;
+              follow = true;
             };
-            "Xfce4-taskmanager" = {
+            "Qalculate-gtk" = {
               state = "floating";
+              center = true;
+              follow = true;
             };
-            "File-roller" = {
+            "Pavucontrol" = {
               state = "floating";
+              center = true;
+              follow = true;
+            };
+            "pavucontrol" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Arandr" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "arandr" = {
+              state = "floating";
+              center = true;
+              follow = true;
             };
             "Nitrogen" = {
               state = "floating";
+              center = true;
+              follow = true;
+            };
+            "nitrogen" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Nm-connection-editor" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "nm-connection-editor" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Blueman-manager" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Blueman-adapters" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "GParted" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "gparted" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Xfce4-taskmanager" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "File-roller" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Engrampa" = {
+              state = "floating";
+              center = true;
+              follow = true;
             };
             "Catfish" = {
               state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Flameshot" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "feh" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Viewnior" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Kvantum Manager" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Font-manager" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Thunar" = {
+              # Diálogos internos do Thunar (Progresso, Propriedades, Substituição)
+              # Janelas normais do Thunar serão tiled, mas diálogos com class/instance serão floating
             };
           };
           extraConfig = ''
+            # Regras extras de janelas flutuantes para diálogos e seletores do sistema
+            bspc rule -a "*:*:Open File" state=floating center=on follow=on
+            bspc rule -a "*:*:Save As" state=floating center=on follow=on
+            bspc rule -a "*:*:File Operation Progress" state=floating center=on follow=on
+            bspc rule -a "*:*:Preferences" state=floating center=on follow=on
+            bspc rule -a "*:*:Confirm to replace files" state=floating center=on follow=on
+
             # Configurar workspaces 1 a 10 (onde 0 = 10) em todos os monitores conectados
             for m in $(bspc query -M); do
               bspc monitor "$m" -d 1 2 3 4 5 6 7 8 9 10
