@@ -198,10 +198,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Recarregar automaticamente o sxhkd e bspwm ao rodar switch-host
+    # Recarregar automaticamente o sxhkd, bspwm e polybar ao rodar switch-host ou nixos-rebuild
     home.activation.reloadSxhkd = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -USR1 -x sxhkd 2>/dev/null || true
       $DRY_RUN_CMD ${pkgs.bspwm}/bin/bspc wm -r 2>/dev/null || true
+      $DRY_RUN_CMD ${pkgs.polybar}/bin/polybar-msg cmd restart 2>/dev/null || true
     '';
 
     services.sxhkd = {
