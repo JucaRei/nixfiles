@@ -32,6 +32,7 @@ in
     # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---
     gtk = {
       enable = true;
+      colorScheme = "dark";
       theme = {
         name = "Catppuccin-Mocha-Standard-Blue-Dark";
         package = pkgs.catppuccin-gtk.override {

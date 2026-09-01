@@ -67,7 +67,7 @@ in
           WALLPAPERS = "${config.xdg.userDirs.pictures}/wallpapers";
           GAMES = "${config.home.homeDirectory}/games";
           MISC = "${config.home.homeDirectory}/misc";
-          WORKSPACE = "${config.home.homeDirectory}/lab/workspace";
+          WORKSPACE = "${config.home.homeDirectory}/Documents/workspace";
           RECORD = "${config.xdg.userDirs.videos}/Record";
         };
       };

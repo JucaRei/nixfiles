@@ -3,7 +3,6 @@
   lib,
   pkgs,
   desktop,
-  isLima,
   username,
   isWorkstation,
   ...
@@ -109,8 +108,10 @@ in
     };
     systemd = {
       user.tmpfiles.rules = mkIf (isLinux && isWorkstation) [
-        "d ${config.home.homeDirectory}/lab/workspace 0755 ${username} users - -"
-        "d ${config.home.homeDirectory}/lab/workspace/lab 0755 ${username} users - -"
+        "d ${config.home.homeDirectory}/Documents/docs 0755 ${username} users - -"
+        "d ${config.home.homeDirectory}/Documents/workspace 0755 ${username} users - -"
+        "d ${config.home.homeDirectory}/Documents/workspace/lab 0755 ${username} users - -"
+        "d ${config.home.homeDirectory}/Documents/studies 0755 ${username} users - -"
         "d ${config.home.homeDirectory}/Videos/animes/movies 0755 ${username} users - -"
         "d ${config.home.homeDirectory}/Videos/animes/series 0755 ${username} users - -"
         "d ${config.home.homeDirectory}/Videos/animes/OVAs 0755 ${username} users - -"
@@ -138,6 +139,23 @@ in
         "d ${config.home.homeDirectory}/.dotfiles 0755 ${username} users - -"
         "d ${config.home.homeDirectory}/.config/home-manager 0755 ${username} users - -"
       ];
+    };
+
+    gtk = mkIf isWorkstation {
+      gtk3 = {
+        bookmarks = [
+          "${config.home.homeDirectory}/Documents/docs"
+          "${config.home.homeDirectory}/Documents/workspace"
+          "${config.home.homeDirectory}/Documents/studies"
+          "${config.home.homeDirectory}/Downloads"
+          "${config.home.homeDirectory}/Music"
+          "${config.home.homeDirectory}/Pictures"
+          "${config.xdg.userDirs.pictures}/screenshots"
+          "${config.xdg.userDirs.pictures}/wallpapers"
+          "${config.home.homeDirectory}/Videos"
+          "${config.home.homeDirectory}/lab/workspace"
+        ];
+      };
     };
   };
 }
