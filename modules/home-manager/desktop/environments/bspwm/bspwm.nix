@@ -209,7 +209,7 @@ in
 
             # Configurar workspaces 1 a 10 (onde 0 = 10) em todos os monitores conectados
             for m in $(bspc query -M); do
-              bspc monitor "$m" -d 1 2 3 4 5 6 7 8 9 10
+              bspc monitor "$m" -d I II III IV V VI VII VIII IX X
             done
 
             # Iniciar daemon de atalhos de teclado (SXHKD)
