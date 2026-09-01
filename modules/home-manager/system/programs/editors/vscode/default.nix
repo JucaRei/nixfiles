@@ -50,7 +50,7 @@ in
       # - NixOS (useNixGL = false) → pure vscode
       # - Debian/Ubuntu/etc. (useNixGL = true) → nixGL-wrapped vscode
       package = if useNixGL then nixGLWrapper pkgs.vscode-fhs else pkgs.vscode;
-      mutableExtensionsDir = false;
+      mutableExtensionsDir = true; # Permite instalar extensões manualmente pela interface do VS Code
 
       profiles.default = mkIf cfg.enableConfigurableSettings {
         userSettings = userSettings // {
