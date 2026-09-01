@@ -21,13 +21,6 @@ let
     "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueID) (userSettingsRaw.extensions or [ ]); # Assume JSON has "extensions" array
   };
   userSettings = userSettingsRaw // remoteExtensions;
-
-  # User dir for settings (cross-platform)
-  settingsDir =
-    if pkgs.stdenv.isDarwin then
-      "${config.home.homeDirectory}/Library/Application Support/Code/User"
-    else
-      "${config.xdg.configHome}/Code/User";
 in
 {
   options = {
@@ -56,7 +49,8 @@ in
 
       # - NixOS (useNixGL = false) → pure vscode
       # - Debian/Ubuntu/etc. (useNixGL = true) → nixGL-wrapped vscode
-      package = nixGLWrapper pkgs.vscode-fhs;
+      package = if useNixGL then nixGLWrapper pkgs.vscode-fhs else pkgs.vscode;
+      mutableExtensionsDir = false;
 
       profiles.default = mkIf cfg.enableConfigurableSettings {
         userSettings = userSettings // {
