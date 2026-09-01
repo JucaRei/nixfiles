@@ -40,11 +40,6 @@
 
     home.packages = with pkgs; [
       direnv
-      brightnessctl
-      pamixer
-      pavucontrol
-      eza
-      bat
       duf
       fzf
       ripgrep

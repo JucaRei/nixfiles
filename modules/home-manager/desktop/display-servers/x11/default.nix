@@ -54,9 +54,7 @@ in
       packages =
         with pkgs;
         optionals (desktop == "bspwm") [
-          wmctrl
           notify-desktop
-          xdotool
           ydotool
         ]
         ++ optionals (!isNixOS) [
