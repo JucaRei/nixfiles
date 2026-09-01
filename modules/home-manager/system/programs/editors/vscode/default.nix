@@ -35,6 +35,19 @@ in
       inputs.nix4vscode.overlays.default
     ];
 
+    # Limpa automaticamente settings.json do VS Code caso tenha sido transformado em arquivo físico
+    # antes do checkLinkTargets do Home Manager, evitando erro de "file is in the way of replacement"
+    home.activation.cleanVscodeSettings = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+      for f in "$HOME/.config/Code/User/settings.json" \
+               "$HOME/.config/Code/User/profiles"/*/settings.json \
+               "$HOME/Library/Application Support/Code/User/settings.json" \
+               "$HOME/Library/Application Support/Code/User/profiles"/*/settings.json; do
+        if [ -e "$f" ] && [ ! -L "$f" ]; then
+          $DRY_RUN_CMD rm -f "$f" 2>/dev/null || true
+        fi
+      done
+    '';
+
     home = {
       packages = with pkgs; [
         prettier

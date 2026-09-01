@@ -8,8 +8,15 @@ pkgs.writeScriptBin "switch-host" ''
     build_cores=$(${pkgs.uutils-coreutils-noprefix}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
     echo "🚀 Switching NixOS host ($HOSTNAME) with $build_cores cores..."
 
-    # Limpar backups antigos para evitar erro de 'would be clobbered'
+    # Limpar backups antigos e arquivos físicos de settings.json para evitar erro de 'would be clobbered'
     find "$HOME/.config" -name "*.hm.backup" -delete 2>/dev/null || true
+    for f in "$HOME/.config/Code/User/settings.json" \
+             "$HOME/.config/Code/User/profiles"/*/settings.json \
+             "$HOME/Library/Application Support/Code/User/settings.json"; do
+      if [ -e "$f" ] && [ ! -L "$f" ]; then
+        rm -f "$f" 2>/dev/null || true
+      fi
+    done
 
     if [ -d "$HOME/.dotfiles/nixfiles/.git" ]; then
       ${pkgs.git}/bin/git -C "$HOME/.dotfiles/nixfiles" add -A 2>/dev/null || true
