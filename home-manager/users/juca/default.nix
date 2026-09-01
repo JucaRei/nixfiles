@@ -34,7 +34,7 @@ in
         ".face" = mkIf (desktop != null) {
           source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
         };
-        "lab/vm/nixos-console.conf" = {
+        "Documents/workspace/lab/vm/nixos-console.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
             guest_os="linux"
@@ -43,7 +43,7 @@ in
             iso="nixos-console/nixos.iso"
           '';
         };
-        "lab/vm/nixos-gnome.conf" = {
+        "Documents/workspace/lab/vm/nixos-gnome.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
             guest_os="linux"
@@ -54,7 +54,7 @@ in
             height="1080"
           '';
         };
-        "lab/vm/nixos-mate.conf" = {
+        "Documents/workspace/lab/vm/nixos-mate.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
             guest_os="linux"
@@ -65,7 +65,7 @@ in
             height="1080"
           '';
         };
-        "lab/vm/nixos-pantheon.conf" = {
+        "Documents/workspace/lab/vm/nixos-pantheon.conf" = {
           text = ''
             #!/run/current-system/sw/bin/quickemu --vm
             guest_os="linux"
@@ -77,19 +77,25 @@ in
           '';
         };
         # "/lab/vm/nixos-console/.keep" = mkIf (!isLima) { text = ""; };
-        "/lab/vm/nixos-console/.keep" = {
+        "/Documents/workspace/lab/vm/nixos-console/.keep" = {
           text = "";
         };
-        "/lab/vm/nixos-gnome/.keep" = {
+        "/Documents/workspace/lab/vm/nixos-gnome/.keep" = {
           text = "";
         };
-        "/lab/vm/nixos-mate/.keep" = {
+        "/Documents/workspace/lab/vm/nixos-mate/.keep" = {
           text = "";
         };
-        "/lab/vm/nixos-pantheon/.keep" = {
+        "/Documents/workspace/lab/vm/nixos-pantheon/.keep" = {
           text = "";
         };
-        "/lab/workspace/.keep" = {
+        "Documents/workspace/.keep" = {
+          text = "";
+        };
+        "Documents/lab/.keep" = {
+          text = "";
+        };
+        "Documents/lab/vm/.keep" = {
           text = "";
         };
         "/.dotfiles/.keep".text = "";
