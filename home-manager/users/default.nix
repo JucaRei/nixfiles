@@ -63,10 +63,10 @@ in
         videos = "${config.home.homeDirectory}/Videos";
 
         extraConfig = {
-          SCREENSHOTS = "${config.xdg.userDirs.pictures}/screenshots";
-          WALLPAPERS = "${config.xdg.userDirs.pictures}/wallpapers";
-          GAMES = "${config.home.homeDirectory}/games";
-          MISC = "${config.home.homeDirectory}/misc";
+          SCREENSHOTS = "${config.xdg.userDirs.pictures}/Screenshots";
+          WALLPAPERS = "${config.xdg.userDirs.pictures}/Wallpapers";
+          GAMES = "${config.home.homeDirectory}/Games";
+          MISC = "${config.home.homeDirectory}/Misc";
           WORKSPACE = "${config.home.homeDirectory}/Documents/workspace";
           RECORD = "${config.xdg.userDirs.videos}/Record";
         };

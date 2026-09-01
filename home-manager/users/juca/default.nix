@@ -149,11 +149,13 @@ in
           "${config.home.homeDirectory}/Documents/studies"
           "${config.home.homeDirectory}/Downloads"
           "${config.home.homeDirectory}/Music"
+          "${config.home.homeDirectory}/Games"
           "${config.home.homeDirectory}/Pictures"
-          "${config.xdg.userDirs.pictures}/screenshots"
-          "${config.xdg.userDirs.pictures}/wallpapers"
+          "${config.xdg.userDirs.pictures}/Screenshots"
+          "${config.xdg.userDirs.pictures}/Wallpapers"
           "${config.home.homeDirectory}/Videos"
-          "${config.home.homeDirectory}/lab/workspace"
+          "${config.home.homeDirectory}/Documents/workspace/lab"
+          "${config.home.homeDirectory}/Misc"
         ];
       };
     };
