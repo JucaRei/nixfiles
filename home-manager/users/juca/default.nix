@@ -150,18 +150,18 @@ in
     gtk = mkIf isWorkstation {
       gtk3 = {
         bookmarks = [
-          "${config.home.homeDirectory}/Documents/docs"
-          "${config.home.homeDirectory}/Documents/workspace"
-          "${config.home.homeDirectory}/Documents/studies"
-          "${config.home.homeDirectory}/Downloads"
-          "${config.home.homeDirectory}/Music"
-          "${config.home.homeDirectory}/Games"
-          "${config.home.homeDirectory}/Pictures"
-          "${config.xdg.userDirs.pictures}/Screenshots"
-          "${config.xdg.userDirs.pictures}/Wallpapers"
-          "${config.home.homeDirectory}/Videos"
-          "${config.home.homeDirectory}/Documents/workspace/lab"
-          "${config.home.homeDirectory}/Misc"
+          "file://${config.home.homeDirectory}/Documents/docs"
+          "file://${config.home.homeDirectory}/Documents/workspace"
+          "file://${config.home.homeDirectory}/Documents/studies"
+          "file://${config.home.homeDirectory}/Downloads"
+          "file://${config.home.homeDirectory}/Music"
+          "file://${config.home.homeDirectory}/Games"
+          "file://${config.home.homeDirectory}/Pictures"
+          "file://${config.xdg.userDirs.pictures}/Screenshots"
+          "file://${config.xdg.userDirs.pictures}/Wallpapers"
+          "file://${config.home.homeDirectory}/Videos"
+          "file://${config.home.homeDirectory}/Documents/workspace/lab"
+          "file://${config.home.homeDirectory}/Misc"
         ];
       };
     };
