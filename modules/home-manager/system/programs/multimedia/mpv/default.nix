@@ -68,6 +68,17 @@ let
         video-sync=audio
       ''
 
+    # ── Hyper-V Virtual Machine — sem aceleração 3D por hardware ───────────────
+    # Evita tentativas de Vulkan e DRM KMS que falham no adaptador virtual do Hyper-V.
+    else if hostname == "rocinante-hyperv" then
+      ''
+        [hw-preset]
+        profile-desc=Hyper-V: Software rendering (x11, sem hwdec)
+        vo=x11
+        hwdec=no
+        video-sync=audio
+      ''
+
     # ── Fallback genérico para outros hosts / VMs ──────────────────────────────
     else
       ''
