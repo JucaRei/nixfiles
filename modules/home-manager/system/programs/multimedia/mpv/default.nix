@@ -89,26 +89,28 @@ in
     programs.mpv = {
       enable = true;
 
-      # nixGLWrapper envolve o binário para resolver libGL em ambientes não-NixOS
+      # nixGLWrapper envolve o binário para resolver libGL em ambientes não-NixOS.
       # Nota: mpv-unwrapped.wrapper foi removido no nixpkgs ≥ 2025-12-29.
-      # Usar pkgs.mpv.override, passando mpv-unwrapped customizado como parâmetro.
+      # Nota: programs.mpv.package e programs.mpv.scripts são mutuamente exclusivos
+      # no HM. Solução: passar scripts directamente ao pkgs.mpv.override, que os
+      # inclui na derivação — sem depender do wrapping do HM.
       package = nixGLWrapper (
         pkgs.mpv.override {
           mpv-unwrapped = pkgs.mpv-unwrapped.override {
             vapoursynthSupport = true;
           };
           youtubeSupport = true;
+          scripts = with pkgs.mpvScripts; [
+            uosc              # UI moderna (substitui o OSC builtin)
+            memo              # Histórico de ficheiros recentes
+            evafast           # Seeking rápido com preview
+            thumbfast         # Thumbnails na barra de progresso
+            mpv-cheatsheet-ng # Overlay de atalhos de teclado
+            sponsorblock-minimal # Skip de segmentos SponsorBlock (YouTube)
+          ];
         }
       );
-
-      scripts = with pkgs.mpvScripts; [
-        uosc # UI moderna (substitui o OSC builtin)
-        memo # Histórico de ficheiros recentes
-        evafast # Seeking rápido com preview
-        thumbfast # Thumbnails na barra de progresso
-        mpv-cheatsheet-ng # Overlay de atalhos de teclado
-        sponsorblock-minimal # Skip de segmentos SponsorBlock (YouTube)
-      ];
+      # Nota: scripts declarados dentro de mpv.override acima (mutuamente exclusivo com package)
     };
 
     # ─────────────────────────────────────────────────────────────────────────
