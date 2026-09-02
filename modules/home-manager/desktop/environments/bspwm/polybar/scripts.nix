@@ -2,7 +2,7 @@
 {
   # --- Script de Controle de Mídia (Playerctl) ---
   mediaScript = pkgs.writeShellScript "polybar-media" ''
-    export PATH="${pkgs.playerctl}/bin:${pkgs.coreutils}/bin:$PATH"
+    export PATH="${pkgs.playerctl}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
     if ! command -v playerctl >/dev/null 2>&1; then
       exit 0
     fi
@@ -20,7 +20,7 @@
 
   # --- Script de Status do Bluetooth ---
   bluetoothScript = pkgs.writeShellScript "polybar-bluetooth" ''
-    export PATH="${pkgs.bluez}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.coreutils}/bin:$PATH"
+    export PATH="${pkgs.bluez}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
     if ! command -v bluetoothctl >/dev/null 2>&1; then
       echo "󰂲"
       exit 0
@@ -41,7 +41,7 @@
 
   # --- Menu Interativo de Bluetooth (Rofi) ---
   rofiBluetoothMenu = pkgs.writeShellScript "rofi-bluetooth" ''
-    export PATH="${pkgs.bluez}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.coreutils}/bin:$PATH"
+    export PATH="${pkgs.bluez}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
 
     power=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
     if [ "$power" != "yes" ]; then
@@ -136,7 +136,7 @@
 
   # --- Menu Interativo de Wi-Fi (Rofi) ---
   rofiWifiMenu = pkgs.writeShellScript "rofi-wifi-menu" ''
-    export PATH="${pkgs.networkmanager}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.gnugrep}/bin:${pkgs.coreutils}/bin:$PATH"
+    export PATH="${pkgs.networkmanager}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.gnugrep}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
 
     dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 -t 1500 "Escaneando redes Wi-Fi..."
 
@@ -211,7 +211,7 @@
 
   # --- Menu de Desligamento com Rofi ---
   rofiPowerMenu = pkgs.writeShellScript "rofi-powermenu" ''
-    export PATH="${pkgs.rofi}/bin:${pkgs.systemd}/bin:${pkgs.bspwm}/bin:${pkgs.coreutils}/bin:$PATH"
+    export PATH="${pkgs.rofi}/bin:${pkgs.systemd}/bin:${pkgs.bspwm}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
 
     chosen=$(printf "󰐥  Desligar\n󰜉  Reiniciar\n󰤄  Suspender\n󰒲  Hibernar\n󰈆  Sair (logout)\n󰌾  Bloquear" \
       | rofi \
@@ -233,7 +233,7 @@
 
   # --- Script de Monitoramento de Janelas Minimizadas na Polybar ---
   minimizedScript = pkgs.writeShellScript "polybar-minimized" ''
-    export PATH="${pkgs.bspwm}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:$PATH"
+    export PATH="${pkgs.bspwm}/bin:${pkgs.uutils-coreutils-noprefix}/bin:${pkgs.gnugrep}/bin:$PATH"
     hidden_nodes=$(bspc query -N -d focused -n .window.hidden 2>/dev/null)
     count=$(echo "$hidden_nodes" | grep -v '^$' | wc -l)
 
@@ -246,7 +246,7 @@
 
   # --- Menu Rofi para Restaurar Janelas Minimizadas ---
   restoreMenuScript = pkgs.writeShellScript "rofi-restore-minimized" ''
-    export PATH="${pkgs.bspwm}/bin:${pkgs.xdotool}/bin:${pkgs.rofi}/bin:${pkgs.coreutils}/bin:$PATH"
+    export PATH="${pkgs.bspwm}/bin:${pkgs.xdotool}/bin:${pkgs.rofi}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
     hidden_nodes=$(bspc query -N -d focused -n .window.hidden 2>/dev/null)
     if [ -z "$hidden_nodes" ]; then
       exit 0

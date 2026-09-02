@@ -124,7 +124,7 @@ in
               echo "$BLUE   $CLEAR System Diff Report $BLUE   $CLEAR"
               echo "#"
               mkdir -p /var/log/nix
-              (${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff "$(${pkgs.coreutils}/bin/readlink "/run/current-system")" "$systemConfig" | tee /var/log/nix/nix-changelog) || true
+              (${pkgs.nvd}/bin/nvd --color=always --nix-bin-dir=${config.nix.package}/bin diff "$(${pkgs.uutils-coreutils-noprefix}/bin/readlink "/run/current-system")" "$systemConfig" | tee /var/log/nix/nix-changelog) || true
               echo "#"
               echo "$BLUE                $CLEAR"
             fi

@@ -234,8 +234,8 @@ in
 
       # Regras UDEV: Permissões de controle de brilho da tela e iluminação do teclado
       udev.extraRules = ''
-        ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/backlight/%k/brightness"
-        ACTION=="add", SUBSYSTEM=="leds", RUN+="${pkgs.coreutils}/bin/chmod a+w /sys/class/leds/%k/brightness"
+        ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.uutils-coreutils-noprefix}/bin/chmod a+w /sys/class/backlight/%k/brightness"
+        ACTION=="add", SUBSYSTEM=="leds", RUN+="${pkgs.uutils-coreutils-noprefix}/bin/chmod a+w /sys/class/leds/%k/brightness"
       '';
 
       xserver = mkIf isX11 {

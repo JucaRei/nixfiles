@@ -7,7 +7,7 @@ let
 in
 {
   environment = {
-    systemPackages = with pkgs; [
+    systemPackages = [
       build-host
       build-iso
       switch-boot
