@@ -336,14 +336,14 @@
     label-disconnected-padding = 1;
   };
 
-  # --- Data & Hora ---
+  # --- Data & Hora (Cores customizadas para Dia, Mês, Ano e Hora) ---
   "module/date" = {
     type = "internal/date";
     interval = 1;
-    date = "%d/%m";
-    time = "%H:%M";
-    date-alt = "%A, %d de %B de %Y";
-    time-alt = "%H:%M:%S";
+    date = "%{F${colors.blue}}%d%{F-}/%{F${colors.teal}}%m%{F-}";
+    time = "%{F${colors.mauve}}%H:%M%{F-}";
+    date-alt = "%{F${colors.lavender}}%A%{F-}, %{F${colors.blue}}%d%{F-} of %{F${colors.teal}}%B%{F-} of %{F${colors.yellow}}%Y%{F-}";
+    time-alt = "%{F${colors.mauve}}%H:%M:%S%{F-}";
 
     format = "<label>";
     format-prefix = "󰥔 ";
