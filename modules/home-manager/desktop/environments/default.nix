@@ -3,7 +3,6 @@
   lib,
   pkgs,
   osConfig ? null,
-  isWorkstation,
   ...
 }:
 let

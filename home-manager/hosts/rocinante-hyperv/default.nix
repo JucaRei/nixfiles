@@ -25,13 +25,16 @@
           enable = true;
           name = "alacritty";
         };
+        documents = {
+          libreoffice.enable = true;
+        };
       };
     };
 
     # Desativa compositor picom para zerar o overhead de CPU em VM
     desktop.bspwm = {
       picom.enable = false;
-      packages.extraPackages = with pkgs; [ libreoffice-qt ];
+      # packages.extraPackages = with pkgs; [ libreoffice-qt ];
     };
 
     # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) no VS Code do Hyper-V
