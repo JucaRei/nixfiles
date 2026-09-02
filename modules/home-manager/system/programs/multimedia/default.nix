@@ -1,32 +1,6 @@
-{ lib, ... }:
-{
-  options.system.programs.multimedia = lib.mkOption {
-    type = lib.types.submodule {
-      options = {
-        mpv = lib.mkOption {
-          type = lib.types.submodule {
-            options = {
-              enable = lib.mkEnableOption "mpv media player";
-            };
-          };
-          default = { };
-          description = "MPV player configuration";
-        };
-        rhythmbox = lib.mkOption {
-          type = lib.types.submodule {
-            options = {
-              enable = lib.mkEnableOption "rhythmbox music player";
-            };
-          };
-          default = { };
-          description = "Rhythmbox music player configuration";
-        };
-      };
-    };
-    default = { };
-    description = "Multimedia programs configuration";
-  };
-
+# Roteador de imports — cada sub-módulo declara suas próprias options.
+# Segue o mesmo padrão de editors/default.nix e browsers/default.nix.
+_: {
   imports = [
     ./mpv
     ./rhythmbox

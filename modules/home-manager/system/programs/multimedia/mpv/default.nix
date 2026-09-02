@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  username,
   hostname,
   nixGLWrapper ? (x: x),
   ...
@@ -11,144 +10,135 @@ let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.multimedia.mpv;
 
-  # anime4K_LowEnd = ''
-  #   # Optimized shaders for lower-end GPU:
-  #   CTRL+1 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_M.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode A (Fast)"
-  #   CTRL+2 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_Soft_M.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode B (Fast)"
-  #   CTRL+3 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Upscale_Denoise_CNN_x2_M.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode C (Fast)"
-  #   CTRL+4 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_M.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_S.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode A+A (Fast)"
-  #   CTRL+5 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_Soft_M.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_Soft_S.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode B+B (Fast)"
-  #   CTRL+6 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Upscale_Denoise_CNN_x2_M.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_S.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_S.glsl"; show-text "Anime4K: Mode C+A (Fast)"
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Perfil de hardware [hw-preset] em formato mpv.conf nativo.
+  # Gerado em tempo de compilação Nix por host — sem runtime env vars.
+  # Activado pela linha `profile=hw-preset` no fim de mpv.conf.
+  # ─────────────────────────────────────────────────────────────────────────────
+  hwPresetSection =
+    # ── Acer Nitro 5 AN52 — Intel (iGPU) + NVIDIA GTX/RTX (dGPU) ─────────────
+    # Driver proprietário NVIDIA. Vulkan + nvdec-copy para decodificação acelerada.
+    # nvdec-copy é mais compatível que nvdec pois não usa zero-copy com VA-API.
+    if hostname == "nixtro" then
+      ''
+        [hw-preset]
+        profile-desc=Nitro 5: NVIDIA dGPU (nvdec-copy, vulkan)
+        vo=gpu
+        gpu-api=vulkan
+        hwdec=nvdec-copy
+        gpu-shader-cache-dir=~/.cache/mpv/shaders
+        icc-profile-auto=yes
+        video-sync=display-resample
+      ''
 
-  #   CTRL+0 no-osd change-list glsl-shaders clr ""; show-text "GLSL shaders cleared"
-  # '';
+    # ── MacBook Pro 4,1 (Early 2008) — NVIDIA 8600M GT / Nouveau (NV50) ────────
+    # Nouveau NV50 não suporta Vulkan. OpenGL + VAAPI via Mesa.
+    # Escaladores bilinear reduzem carga no Core 2 Duo Penryn (2 núcleos, ~2.4GHz).
+    else if hostname == "rocinante" then
+      ''
+        [hw-preset]
+        profile-desc=Rocinante: Nouveau NV50 (vaapi, opengl, leve)
+        vo=gpu
+        gpu-api=opengl
+        hwdec=vaapi
+        scale=bilinear
+        cscale=bilinear
+        dscale=bilinear
+        correct-downscaling=no
+        sigmoid-upscaling=no
+        video-sync=audio
+      ''
 
-  # anime4K_HighEnd = ''
-  #   # Optimized shaders for higher-end GPU:
-  #   CTRL+1 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_VL.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_VL.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode A (HQ)"
-  #   CTRL+2 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_Soft_VL.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_VL.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode B (HQ)"
-  #   CTRL+3 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode C (HQ)"
-  #   CTRL+4 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_VL.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_VL.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_M.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode A+A (HQ)"
-  #   CTRL+5 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_Soft_VL.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_VL.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_Soft_M.glsl:${pkgs.anime4k}/Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode B+B (HQ)"
-  #   CTRL+6 no-osd change-list glsl-shaders set "${pkgs.anime4k}/Anime4K_Clamp_Highlights.glsl:${pkgs.anime4k}/Anime4K_Upscale_Denoise_CNN_x2_VL.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x2.glsl:${pkgs.anime4k}/Anime4K_AutoDownscalePre_x4.glsl:${pkgs.anime4k}/Anime4K_Restore_CNN_M.glsl:${pkgs.anime4k} /Anime4K_Upscale_CNN_x2_M.glsl"; show-text "Anime4K: Mode C+A (HQ)"
+    # ── MacBook Air 4,1 — Intel HD 3000, 2 GB RAM ──────────────────────────────
+    # Memória limitada: cache reduzido, escaladores leves, sem pré-processamento.
+    # video-sync=audio evita o overhead de display-resample em hardware fraco.
+    else if hostname == "anubis" then
+      ''
+        [hw-preset]
+        profile-desc=MacBook Air: Intel HD 3000 (vaapi, opengl, 2GB RAM)
+        vo=gpu
+        gpu-api=opengl
+        hwdec=vaapi
+        scale=bilinear
+        cscale=bilinear
+        dscale=bilinear
+        correct-downscaling=no
+        sigmoid-upscaling=no
+        cache-secs=5
+        video-sync=audio
+      ''
 
-  #   CTRL+0 no-osd change-list glsl-shaders clr ""; show-text "GLSL shaders cleared"
-  # '';
+    # ── Fallback genérico para outros hosts / VMs ──────────────────────────────
+    else
+      ''
+        [hw-preset]
+        profile-desc=Generic: auto hwdec (auto-safe, opengl)
+        vo=gpu
+        gpu-api=auto
+        hwdec=auto-safe
+      '';
 in
 {
-  options = {
-    enable = mkEnableOption "Enable's mpv with custom settings as default";
+  # Declara a opção no mesmo módulo que a implementa (padrão do repositório).
+  # Segue o mesmo estilo de editors/vscode e editors/antigravity.
+  options.system.programs.multimedia.mpv = {
+    enable = mkEnableOption "mpv media player with custom profiles and scripts";
   };
 
   config = mkIf cfg.enable {
     programs.mpv = {
       enable = true;
+
+      # nixGLWrapper envolve o binário para resolver libGL em ambientes não-NixOS
       package = nixGLWrapper pkgs.mpv-unwrapped.wrapper {
         mpv = pkgs.mpv-unwrapped.override {
           vapoursynthSupport = true;
         };
         youtubeSupport = true;
       };
-      bindings = (builtins.readFile ./configs/bindings.conf);
-      extraInput = ''
-        esc         quit                                              #! Quit
-        Ctrl+l      cycle-values sub-lang pt_BR en eng de deu ger     #! Cycle subtitle order
-        Ctrl+n      af-toggle=@dynaudnorm:lavfi=[dynaudnorm=g=5:f=250:r=0.9:p=0.5]
-        Ctrl+m      af-toggle=@loudnorm:lavfi=[loudnorm=I=-16:TP=-3:LRA=4]
-        Ctrl+t      apply-profile hdr-sdr
 
-        Alt+h       add sub-delay +1
-        Alt+1       add sub-delay -1
-
-        Alt+h       add sub-scale +0.1
-        Alt+j       add sub-scale -0.1
-
-        B           cycle-values background "#000000" "#ffffff"
-      '';
-      config = (builtins.readFile ./configs/mpv.conf);
-      defaultProfiles = [
-        "gpu-context = auto"
-        "ordered-chapters = true"
-      ];
-      profiles = {
-        "mbp-air" = {
-          profile-cond = "os.getenv('HOSTNAME') == 'anubis'";
-          brightness = 70;
-          vo = "auto-safe";
-        };
-
-        "hdr-sdr" = {
-          profile-desc = "Tone-map HDR to SDR";
-          tone-mapping = "bt.2446a";
-          tone-mapping-mode = "luma";
-          target-colorscpace-hint = "yes";
-        };
-
-        "protocol.http" = {
-          cache = true;
-          ytdl-format = "(webm,mkv,mp4)[height<=?720]";
-          ytdl-raw-options = "ignore-config=,sub-lang=en,write-auto-sub=";
-          hls-bitrate = "max"; # use max quality for HLS streams
-          force-window = "immediate";
-        };
-        "protocol.https" = {
-          profile = "protocol.http";
-          ytdl-format = "(webm,mkv,mp4)[height<=?720]";
-          ytdl-raw-options = "ignore-config=,sub-lang=en,write-auto-sub=";
-          cache = true;
-        };
-
-        "extension.gif" = {
-          cache = false;
-          loop-file = true;
-        };
-
-        "extension.png" = {
-          profile = "extension.gif";
-          video-aspect-override = 0;
-        };
-
-        "extension.jpeg".profile = "extension.png";
-        "extension.jpg".profile = "extension.png";
-      };
-      scriptOpts = {
-        osc = {
-          seekbarstyle = "knob"; # "diamond";
-          seekbarkeyframes = false;
-          seekrangestyle = "slider";
-          vidscale = false;
-          deadzonesize = 0.75;
-          inmousemove = 4;
-          valign = 0.9;
-          timems = true;
-          scalewindowed = 0.8;
-          hidetimeout = 300;
-          layout = "slimbox";
-        };
-        uosc = builtins.readFile ./configs/opts/uosc.conf;
-        thumbfast = builtins.readFile ./configs/opts/thumbfast.conf;
-        evafast = builtins.readFile ./configs/opts/evafast.conf;
-        memo = builtins.readFile ./configs/opts/memo.conf;
-      };
       scripts = with pkgs.mpvScripts; [
-        uosc
-        memo
-        evafast
-        thumbfast
-        mpv-cheatsheet
-        sponsorblock-minimal
+        uosc # UI moderna (substitui o OSC builtin)
+        memo # Histórico de ficheiros recentes
+        evafast # Seeking rápido com preview
+        thumbfast # Thumbnails na barra de progresso
+        mpv-cheatsheet # Overlay de atalhos de teclado
+        sponsorblock-minimal # Skip de segmentos SponsorBlock (YouTube)
       ];
     };
 
-    home = {
-      packages = with pkgs; [
-        font-dubai
-      ];
+    # ─────────────────────────────────────────────────────────────────────────
+    # Toda a configuração é gerida como ficheiros — sem attrsOf em Nix.
+    # Vantagem: editável directamente, sem recompilar o flake para ajustes.
+    # ─────────────────────────────────────────────────────────────────────────
+    xdg.configFile = {
+
+      # mpv.conf base (configs/mpv.conf) + perfil de hardware injetado via Nix
+      # O perfil [hw-preset] varia por host; a linha profile= activa-o no arranque.
+      "mpv/mpv.conf".text = ''
+        ${builtins.readFile ./configs/mpv.conf}
+
+        # ── Perfil de hardware gerado em compilação para: ${hostname} ──────────
+        ${hwPresetSection}
+        profile=hw-preset
+      '';
+
+      # Atalhos de teclado — todos em input.conf (substitui bindings.conf)
+      "mpv/input.conf".source = ./configs/input.conf;
+
+      # Script opts
+      "mpv/script-opts/osc.conf".source = ./configs/opts/osc.conf;
+      "mpv/script-opts/uosc.conf".source = ./configs/opts/uosc.conf;
+      "mpv/script-opts/thumbfast.conf".source = ./configs/opts/thumbfast.conf;
+      "mpv/script-opts/evafast.conf".source = ./configs/opts/evafast.conf;
+      "mpv/script-opts/memo.conf".source = ./configs/opts/memo.conf;
     };
+
+    home.packages = [ pkgs.font-dubai ];
 
     systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
-      "d ${config.home.homeDirectory}/.logs 0755 ${username} users - -"
-      "d ${config.home.homeDirectory}/.logs/mpv 0755 ${username} users - -"
+      "d ${config.home.homeDirectory}/.logs 0755 ${config.home.username} users - -"
+      "d ${config.home.homeDirectory}/.logs/mpv 0755 ${config.home.username} users - -"
     ];
   };
 }

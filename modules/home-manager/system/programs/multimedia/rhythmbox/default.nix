@@ -4,8 +4,9 @@ let
   cfg = config.system.programs.multimedia.rhythmbox;
 in
 {
-  options = {
-    enable = mkEnableOption "Enable's rhythmbox with custom settings as default";
+  # Declara a opção no mesmo módulo que a implementa (padrão do repositório).
+  options.system.programs.multimedia.rhythmbox = {
+    enable = mkEnableOption "Rhythmbox music player";
   };
 
   config = mkIf cfg.enable { };
