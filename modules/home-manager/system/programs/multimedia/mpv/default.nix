@@ -90,19 +90,23 @@ in
       enable = true;
 
       # nixGLWrapper envolve o binário para resolver libGL em ambientes não-NixOS
-      package = nixGLWrapper pkgs.mpv-unwrapped.wrapper {
-        mpv = pkgs.mpv-unwrapped.override {
-          vapoursynthSupport = true;
-        };
-        youtubeSupport = true;
-      };
+      # Nota: mpv-unwrapped.wrapper foi removido no nixpkgs ≥ 2025-12-29.
+      # Usar pkgs.mpv.override, passando mpv-unwrapped customizado como parâmetro.
+      package = nixGLWrapper (
+        pkgs.mpv.override {
+          mpv-unwrapped = pkgs.mpv-unwrapped.override {
+            vapoursynthSupport = true;
+          };
+          youtubeSupport = true;
+        }
+      );
 
       scripts = with pkgs.mpvScripts; [
         uosc # UI moderna (substitui o OSC builtin)
         memo # Histórico de ficheiros recentes
         evafast # Seeking rápido com preview
         thumbfast # Thumbnails na barra de progresso
-        mpv-cheatsheet # Overlay de atalhos de teclado
+        mpv-cheatsheet-ng # Overlay de atalhos de teclado
         sponsorblock-minimal # Skip de segmentos SponsorBlock (YouTube)
       ];
     };

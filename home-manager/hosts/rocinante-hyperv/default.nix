@@ -25,8 +25,8 @@
           enable = true;
           name = "alacritty";
         };
-        documents = {
-          libreoffice.enable = true;
+        multimedia.mpv = {
+          enable = true;
         };
       };
     };
