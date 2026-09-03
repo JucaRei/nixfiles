@@ -14,6 +14,7 @@ let
   gpuDriver = osConfig.hardware.graphics.cards.gpu or "unknown";
   isNvidiaLegacy = gpuDriver == "nvidia-legacy";
   isNouveauOrLegacy = isNvidiaLegacy || gpuDriver == "nouveau" || gpuDriver == "unknown" || gpuDriver == null;
+  hasBlur = (!isNouveauOrLegacy) && (cfg.backend != "xrender");
 in
 {
   options.desktop.bspwm.picom = {
@@ -44,6 +45,7 @@ in
       package = pkgs.picom;
       backend = lib.mkDefault cfg.backend;
       vSync = lib.mkDefault (!isNouveauOrLegacy);
+      wintypes = { };
 
       shadow = lib.mkDefault true;
       shadowOpacity = 0.75;
@@ -79,7 +81,7 @@ in
         unredir-if-possible = false;
 
         # Blur com dual_kawase (apenas em GPUs modernas com aceleração GLX)
-        blur = lib.mkIf (!isNouveauOrLegacy && cfg.backend != "xrender") {
+        blur = lib.mkIf hasBlur {
           method = "dual_kawase";
           strength = 8;
           background = false;
@@ -100,7 +102,7 @@ in
             fade = true;
             shadow = true;
             corner-radius = 12;
-            blur-background = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
             opacity = 0.90;
             ${lib.optionalString cfg.animations.enable ''
             animations = (
@@ -195,7 +197,7 @@ in
             corner-radius = 8;
             opacity = 0.95;
             shadow = true;
-            blur-background = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
           },
           {
             match = "fullscreen";
@@ -205,7 +207,7 @@ in
             match = "window_type = 'dock'";
             corner-radius = 12;
             fade = true;
-            blur-background = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
             opacity = 0.85;
           },
           {
@@ -219,12 +221,12 @@ in
           {
             match = "class_g = 'Alacritty' || class_g = 'st-256color' || class_g = 'kitty' || class_g = 'FloaTerm'";
             opacity = 0.75;
-            blur-background = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
           },
           {
             match = "class_g = 'bspwm-scratch' || class_g = 'Updating' || class_g = 'Voiceassistantoverlay'";
             opacity = 0.70;
-            blur-background = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
             ${lib.optionalString cfg.animations.enable ''
             animations = (
               {
@@ -267,7 +269,7 @@ in
           {
             match = "class_g = 'Rofi'";
             opacity = 0.75;
-            blur-background = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
             corner-radius = 12;
             ${lib.optionalString cfg.animations.enable ''
             animations = (
@@ -317,7 +319,7 @@ in
           {
             match = "class_g = 'Polybar' || class_g = 'eww-bar'";
             corner-radius = 0;
-            blur-background = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
             unredir-if-possible = false;
           },
           {
@@ -327,7 +329,7 @@ in
           {
             match = "name = 'Notification' || class_g ?= 'Notify-osd' || class_g = 'Dunst'";
             shadow = true;
-            blur-background = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
             opacity = 0.75;
             ${lib.optionalString cfg.animations.enable ''
             animations = (
