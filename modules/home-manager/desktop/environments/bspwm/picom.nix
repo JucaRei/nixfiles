@@ -14,7 +14,7 @@ let
   gpuDriver = osConfig.hardware.graphics.cards.gpu or "unknown";
   isNvidiaLegacy = gpuDriver == "nvidia-legacy";
   isNouveauOrLegacy = isNvidiaLegacy || gpuDriver == "nouveau" || gpuDriver == "unknown" || gpuDriver == null;
-  hasBlur = (!isNouveauOrLegacy) && (cfg.backend != "xrender");
+  hasBlur = cfg.blur.enable && (!isNouveauOrLegacy) && (cfg.backend != "xrender");
 in
 {
   options.desktop.bspwm.picom = {
@@ -30,12 +30,34 @@ in
       description = "Picom rendering backend (glx for GPU acceleration, xrender for VMs/legacy)";
     };
 
+    blur = {
+      enable = mkOption {
+        type = bool;
+        default = !isNouveauOrLegacy && cfg.backend != "xrender";
+        description = "Enable dual_kawase background blur (requires glx/egl backend and capable GPU)";
+      };
+    };
+
     animations = {
       enable = mkOption {
         type = bool;
         default = !isNouveauOrLegacy;
         description = "Enable modern smooth window animations in picom (requires glx/egl backend)";
       };
+    };
+
+    shadows = {
+      enable = mkOption {
+        type = bool;
+        default = true;
+        description = "Enable window shadows in picom";
+      };
+    };
+
+    useDamage = mkOption {
+      type = bool;
+      default = isNouveauOrLegacy; # true por padrão em hardware legado para minimizar repintura de tela
+      description = "Only repaint modified regions of the screen to save CPU/GPU cycles";
     };
   };
 
@@ -47,7 +69,7 @@ in
       vSync = lib.mkDefault (!isNouveauOrLegacy);
       wintypes = { };
 
-      shadow = lib.mkDefault true;
+      shadow = lib.mkDefault cfg.shadows.enable;
       shadowOpacity = 0.75;
       shadowOffsets = [
         (-12)
@@ -55,30 +77,31 @@ in
       ];
 
       fade = true;
-      fadeDelta = 8;
-      fadeSteps = [
-        0.028
-        0.028
-      ];
+      fadeDelta = if isNouveauOrLegacy then 4 else 8;
+      fadeSteps = if isNouveauOrLegacy then [ 0.05 0.05 ] else [ 0.028 0.028 ];
 
       settings = {
-        shadow-radius = 12;
+        shadow-radius = if isNouveauOrLegacy then 8 else 12;
         shadow-color = "#000000";
 
         no-fading-openclose = false;
         no-fading-destroyed-argb = false;
 
         frame-opacity = 1.0;
-        corner-radius = 12;
+        corner-radius = if isNouveauOrLegacy then 8 else 12;
 
         dithered-present = false;
         detect-rounded-corners = true;
         detect-client-opacity = true;
         detect-transient = true;
-        use-damage = false;
+        use-damage = cfg.useDamage;
         detect-client-leader = false;
         use-ewmh-active-win = true;
         unredir-if-possible = false;
+
+        # Otimizações de performance para GLX em GPUs legacy
+        glx-no-stencil = true;
+        glx-no-rebind-pixmap = true;
 
         # Blur com dual_kawase (apenas em GPUs modernas com aceleração GLX)
         blur = lib.mkIf hasBlur {
