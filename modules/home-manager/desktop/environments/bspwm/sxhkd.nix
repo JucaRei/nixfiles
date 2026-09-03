@@ -70,6 +70,7 @@ let
         show_manual() {
           KB_LIST="󰌌  Super + Space / Super + D     ➜  Lançador de Aplicativos (Rofi)
     󰌌  Super + Enter / Super + T     ➜  Abrir Terminal (Alacritty)
+    󰌌  Super + B                     ➜  Navegador Web Padrão
     󰌌  Super + E / Super + Shift + E ➜  Gerenciador de Arquivos (Thunar)
     󰌌  Super + , / Super + C / Botão Dir. ➜ Painel Quick Settings / Preferências
     󰌌  Super + / ou Super + F1       ➜  Manual e Guia de Atalhos (Cheat-Sheet)
@@ -102,6 +103,7 @@ let
           case "$CHOICE" in
             *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
             *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
+            *"Navegador Web Padrão"*) if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi ;;
             *"Gerenciador de Arquivos"*) ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
             *"Painel Quick Settings"*) show_control_center ;;
             *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
@@ -124,18 +126,20 @@ let
           OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
           OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
           OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
+          OPT_BROWSER="󰈹  Navegador Web (Firefox / Padrão)"
           OPT_FILES="󰉋  Gerenciador de Arquivos (Thunar)"
           OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
           OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
           OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
           OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
 
-          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
             "$OPT_RES" \
             "$OPT_SOUND" \
             "$OPT_NET" \
             "$OPT_THEME" \
             "$OPT_WALL" \
+            "$OPT_BROWSER" \
             "$OPT_FILES" \
             "$OPT_TERM" \
             "$OPT_KEYS" \
@@ -163,6 +167,9 @@ let
             "$OPT_NET") ${pkgs.networkmanagerapplet}/bin/nm-connection-editor & ;;
             "$OPT_THEME") ${pkgs.lxappearance}/bin/lxappearance & ;;
             "$OPT_WALL") ${pkgs.nitrogen}/bin/nitrogen || ${pkgs.feh}/bin/feh & ;;
+            "$OPT_BROWSER")
+              if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi
+              ;;
             "$OPT_FILES") ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
             "$OPT_TERM") ${pkgs.alacritty}/bin/alacritty & ;;
             "$OPT_KEYS") show_manual ;;
@@ -225,6 +232,10 @@ in
         "super + space" = "${pkgs.rofi}/bin/rofi -show drun";
         "super + d" = "${pkgs.rofi}/bin/rofi -show drun";
         "super + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
+
+        # Navegador Web Padrão (Cmd + B)
+        "super + b" =
+          "if [ -n \"$BROWSER\" ]; then \"$BROWSER\" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi";
 
         # Terminal (Cmd + Return, Cmd + T)
         "super + Return" = "${pkgs.alacritty}/bin/alacritty";
