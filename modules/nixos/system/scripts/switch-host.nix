@@ -54,6 +54,26 @@ pkgs.writeScriptBin "switch-host" ''
           "Sistema Atualizado!" "Configurações, regras e atalhos recarregados com sucesso." 2>/dev/null || true
       fi
 
+      # Verificar se o serviço de ativação do Home Manager falhou
+      if systemctl is-failed --quiet home-manager-*.service 2>/dev/null; then
+        HM_ERROR_DIR="$HOME/.config/errors/nix/home-manager"
+        mkdir -p "$HM_ERROR_DIR"
+        hm_timestamp=$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S)
+        hm_error_file="$HM_ERROR_DIR/activation-error-$hm_timestamp.log"
+        journalctl --user -u "home-manager-*.service" --no-pager > "$hm_error_file" 2>/dev/null || \
+          journalctl -u "home-manager-*.service" --no-pager > "$hm_error_file" 2>/dev/null || true
+        ln -sf "$hm_error_file" "$HM_ERROR_DIR/last-error.log" 2>/dev/null || true
+
+        echo "⚠️ Atenção: A ativação do Home Manager falhou!"
+        echo "📋 Log de erro salvo em: $hm_error_file"
+        echo "🔗 Último erro do Home Manager em: $HM_ERROR_DIR/last-error.log"
+
+        if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
+          ${pkgs.dunst}/bin/dunstify -a "Home Manager" -u critical -i "dialog-error" -r 9998 -t 10000 \
+            "Erro na Ativação do Home Manager" "Log salvo em: $HM_ERROR_DIR/last-error.log" 2>/dev/null || true
+        fi
+      fi
+
       echo "🧹 Cleaning old generations (keeping last 5)..."
       ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
     else
@@ -62,6 +82,18 @@ pkgs.writeScriptBin "switch-host" ''
       error_file="$ERROR_DIR/switch-error-$timestamp.log"
       cp "$TMP_LOG" "$error_file" 2>/dev/null || true
       ln -sf "$error_file" "$ERROR_DIR/last-error.log" 2>/dev/null || true
+
+      # Se o erro envolver o Home Manager, replicar também na pasta de erro do home-manager
+      if grep -Ei "home-manager|home\.file|collision|would be clobbered|hm_picom" "$TMP_LOG" >/dev/null 2>&1; then
+        HM_ERROR_DIR="$HOME/.config/errors/nix/home-manager"
+        mkdir -p "$HM_ERROR_DIR"
+        hm_error_file="$HM_ERROR_DIR/switch-error-$timestamp.log"
+        cp "$TMP_LOG" "$hm_error_file" 2>/dev/null || true
+        ln -sf "$hm_error_file" "$HM_ERROR_DIR/last-error.log" 2>/dev/null || true
+        echo "⚠️ O erro possui mensagens relacionadas ao Home Manager!"
+        echo "🔗 Log replicado em: $HM_ERROR_DIR/last-error.log"
+      fi
+
       rm -f "$TMP_LOG" 2>/dev/null || true
 
       echo ""
