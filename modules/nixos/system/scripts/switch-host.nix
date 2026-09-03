@@ -8,6 +8,11 @@ pkgs.writeScriptBin "switch-host" ''
     build_cores=$(${pkgs.uutils-coreutils-noprefix}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
     echo "🚀 Switching NixOS host ($HOSTNAME) with $build_cores cores..."
 
+    # Diretório de logs de erro do NixOS
+    ERROR_DIR="$HOME/.config/errors/nix/nixos"
+    mkdir -p "$ERROR_DIR"
+    TMP_LOG=$(mktemp /tmp/nixos-switch-XXXXXX.log 2>/dev/null || echo "/tmp/nixos-switch-$$.log")
+
     # Limpar backups antigos e arquivos físicos de settings.json para evitar erro de 'would be clobbered'
     find "$HOME/.config" -name "*.hm.backup" -delete 2>/dev/null || true
     for f in "$HOME/.config/Code/User/settings.json" \
@@ -22,7 +27,9 @@ pkgs.writeScriptBin "switch-host" ''
       ${pkgs.git}/bin/git -C "$HOME/.dotfiles/nixfiles" add -A 2>/dev/null || true
     fi
 
-    if ${pkgs.unstable.nh}/bin/nh os switch "$HOME/.dotfiles/nixfiles" -- --show-trace --impure -vL --cores "$build_cores"; then
+    set -o pipefail
+    if ${pkgs.unstable.nh}/bin/nh os switch "$HOME/.dotfiles/nixfiles" -- --show-trace --impure -vL --cores "$build_cores" 2>&1 | tee "$TMP_LOG"; then
+      rm -f "$TMP_LOG" 2>/dev/null || true
       echo "✨ Switch concluído com sucesso! Recarregando ambiente gráfico ao vivo..."
 
       # Recarregar atalhos do sxhkd
@@ -50,8 +57,23 @@ pkgs.writeScriptBin "switch-host" ''
       echo "🧹 Cleaning old generations (keeping last 5)..."
       ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
     else
-      echo "❌ Erro durante o switch. Verifique as mensagens acima."
-      exit 1
+      err_code=$?
+      timestamp=$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S)
+      error_file="$ERROR_DIR/switch-error-$timestamp.log"
+      cp "$TMP_LOG" "$error_file" 2>/dev/null || true
+      ln -sf "$error_file" "$ERROR_DIR/last-error.log" 2>/dev/null || true
+      rm -f "$TMP_LOG" 2>/dev/null || true
+
+      echo ""
+      echo "❌ Erro durante o switch do NixOS (código de saída: $err_code)!"
+      echo "📋 Log de erro salvo em: $error_file"
+      echo "🔗 Último erro disponível em: $ERROR_DIR/last-error.log"
+
+      if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
+        ${pkgs.dunst}/bin/dunstify -a "NixOS" -u critical -i "dialog-error" -r 9999 -t 10000 \
+          "Erro no Switch NixOS" "Log salvo em: $ERROR_DIR/last-error.log" 2>/dev/null || true
+      fi
+      exit $err_code
     fi
   else
     ${pkgs.uutils-coreutils-noprefix}/bin/echo "ERROR! No nix-config found in $HOME/.dotfiles/nixfiles"

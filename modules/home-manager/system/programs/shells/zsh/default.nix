@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf getExe;
+  inherit (lib) mkIf;
   cfg = config.system.programs.shells;
 in
 {
@@ -70,6 +70,54 @@ in
         zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
         zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
         zstyle ':completion:*' menu no
+
+        # Wrappers com captura automática de logs de erro em ~/.config/errors/nix/
+        home-manager() {
+          if [[ "$1" == "switch" ]]; then
+            local error_dir="$HOME/.config/errors/nix/home-manager"
+            mkdir -p "$error_dir"
+            local tmp_log
+            tmp_log=$(mktemp /tmp/hm-switch-XXXXXX.log 2>/dev/null || echo "/tmp/hm-switch-$$.log")
+            command home-manager "$@" 2>&1 | tee "$tmp_log"
+            local exit_code=''${pipestatus[1]}
+            if [[ $exit_code -ne 0 ]]; then
+              local timestamp
+              timestamp=$(date +%Y-%m-%d_%H-%M-%S)
+              local error_file="$error_dir/switch-error-$timestamp.log"
+              cp "$tmp_log" "$error_file" 2>/dev/null || true
+              ln -sf "$error_file" "$error_dir/last-error.log" 2>/dev/null || true
+              echo -e "\n❌ Erro no home-manager switch (código $exit_code)!\n📋 Log de erro: $error_file\n🔗 Atalho: $error_dir/last-error.log"
+            fi
+            rm -f "$tmp_log" 2>/dev/null || true
+            return $exit_code
+          else
+            command home-manager "$@"
+          fi
+        }
+
+        nixos-rebuild() {
+          if [[ "$1" == "switch" || "$1" == "boot" ]]; then
+            local action="$1"
+            local error_dir="$HOME/.config/errors/nix/nixos"
+            mkdir -p "$error_dir"
+            local tmp_log
+            tmp_log=$(mktemp /tmp/nixos-rebuild-XXXXXX.log 2>/dev/null || echo "/tmp/nixos-rebuild-$$.log")
+            command nixos-rebuild "$@" 2>&1 | tee "$tmp_log"
+            local exit_code=''${pipestatus[1]}
+            if [[ $exit_code -ne 0 ]]; then
+              local timestamp
+              timestamp=$(date +%Y-%m-%d_%H-%M-%S)
+              local error_file="$error_dir/$action-error-$timestamp.log"
+              cp "$tmp_log" "$error_file" 2>/dev/null || true
+              ln -sf "$error_file" "$error_dir/last-error.log" 2>/dev/null || true
+              echo -e "\n❌ Erro no nixos-rebuild $action (código $exit_code)!\n📋 Log de erro: $error_file\n🔗 Atalho: $error_dir/last-error.log"
+            fi
+            rm -f "$tmp_log" 2>/dev/null || true
+            return $exit_code
+          else
+            command nixos-rebuild "$@"
+          fi
+        }
       '';
       # Plugins
       oh-my-zsh = {
