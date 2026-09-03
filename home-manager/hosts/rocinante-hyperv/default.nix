@@ -31,9 +31,12 @@
       };
     };
 
-    # Desativa compositor picom para zerar o overhead de CPU em VM
+    # Ativa compositor picom com animações para testes no Hyper-V
     desktop.bspwm = {
-      picom.enable = false;
+      picom = {
+        enable = true;
+        animations.enable = true;
+      };
       # packages.extraPackages = with pkgs; [ libreoffice-qt ];
     };
 
