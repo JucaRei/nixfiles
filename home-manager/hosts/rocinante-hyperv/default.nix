@@ -31,11 +31,12 @@
       };
     };
 
-    # Ativa compositor picom com animações para testes no Hyper-V
+    # Ativa compositor picom no Hyper-V usando xrender (evita falha de falta de GL visual em VM)
     desktop.bspwm = {
       picom = {
         enable = true;
-        animations.enable = true;
+        backend = "xrender";
+        animations.enable = false;
       };
       # packages.extraPackages = with pkgs; [ libreoffice-qt ];
     };

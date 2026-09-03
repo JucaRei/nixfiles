@@ -38,6 +38,9 @@ pkgs.writeScriptBin "switch-host" ''
         ${pkgs.polybar}/bin/polybar-msg cmd restart 2>/dev/null || true
       fi
 
+      # Recarregar / Iniciar Picom
+      systemctl --user restart picom 2>/dev/null || (${pkgs.picom}/bin/picom -b 2>/dev/null || true)
+
       # Notificação visual de sucesso no desktop
       if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
         ${pkgs.dunst}/bin/dunstify -a "NixOS" -u low -i "software-update-available" -r 9999 -t 3000 \

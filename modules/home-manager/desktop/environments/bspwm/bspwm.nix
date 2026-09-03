@@ -221,6 +221,13 @@ in
 
             # Importar variáveis de ambiente para serviços do usuário
             systemctl --user import-environment DISPLAY XAUTHORITY
+            systemctl --user start graphical-session.target 2>/dev/null || true
+
+            # Iniciar compositor Picom se habilitado
+            ${lib.optionalString config.desktop.bspwm.picom.enable ''
+              pkill -x picom || true
+              systemctl --user restart picom 2>/dev/null || (${pkgs.picom}/bin/picom -b 2>/dev/null || true) &
+            ''}
 
             # Agente de autenticação Polkit
             ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
