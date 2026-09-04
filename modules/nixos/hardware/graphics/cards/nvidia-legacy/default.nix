@@ -33,11 +33,13 @@ in
         enable = true;
         enable32Bit = true;
         extraPackages = with pkgs; [
+          legacy340.out
           legacy340.bin
           libva-vdpau-driver
           libvdpau-va-gl
         ];
         extraPackages32 = with pkgs.pkgsi686Linux; [
+          legacy340.lib32
           libva-vdpau-driver
           libvdpau-va-gl
         ];
