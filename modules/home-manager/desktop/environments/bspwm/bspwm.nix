@@ -345,7 +345,7 @@ in
             fi
 
             # Iniciar daemon de gestos do Touchpad
-            systemctl --user restart libinput-gestures 2>/dev/null || (pkill -x libinput-gestures || true; ${pkgs.libinput-gestures}/bin/libinput-gestures -c ~/.config/libinput-gestures.conf &)
+            systemctl --user restart libinput-gestures 2>/dev/null || (pkill -f libinput-gestures || true; pkill -f libinput-debug-events || true; sleep 0.2; ${pkgs.libinput-gestures}/bin/libinput-gestures -c ~/.config/libinput-gestures.conf &)
 
             # Regras customizadas adicionais
             ${lib.concatStringsSep "\n" cfg.rules}
@@ -380,6 +380,10 @@ in
         ExecStart = "${pkgs.libinput-gestures}/bin/libinput-gestures -c %h/.config/libinput-gestures.conf";
         Restart = "on-failure";
         RestartSec = 3;
+        PassEnvironment = [
+          "DISPLAY"
+          "XAUTHORITY"
+        ];
         Environment = [
           "PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.bspwm pkgs.xdotool pkgs.rofi pkgs.xprop ]}:/run/current-system/sw/bin"
         ];
