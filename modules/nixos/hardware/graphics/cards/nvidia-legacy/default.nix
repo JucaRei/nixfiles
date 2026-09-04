@@ -75,7 +75,11 @@ in
       sessionVariables = {
         LIBVA_DRIVER_NAME = "vdpau";
         VDPAU_DRIVER = "nvidia";
+        LD_LIBRARY_PATH = "/run/opengl-driver/lib:/run/opengl-driver-32/lib";
       };
+      extraInit = ''
+        export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+      '';
       systemPackages = with pkgs; [
         legacy340.settings
         mesa-demos

@@ -47,6 +47,7 @@ let
         null
     else
       null;
+  hasLegacyNvidia = isNixOS && ((osConfig.hardware.graphics.cards.gpu or null) == "nvidia-legacy");
 in
 {
   config = mkIf (backend == "x11") {
@@ -66,11 +67,13 @@ in
         # Java fix for non-reparenting WMs (bspwm, etc.)
         "_JAVA_AWT_WM_NONREPARENTING" = lib.mkDefault (if desktop == "bspwm" then "1" else "");
 
-        # Hardware acceleration (only declarative on NixOS)
+        # Hardware acceleration (declarative on NixOS)
         LIBVA_DRIVER_NAME =
           if isNixOS then
             (
-              if hasIntel || hasGpuFallback == "intel" then
+              if hasLegacyNvidia then
+                "vdpau"
+              else if hasIntel || hasGpuFallback == "intel" then
                 "iHD"
               else if hasNvidia || hasGpuFallback == "nvidia" then
                 "nvidia"
@@ -79,7 +82,7 @@ in
               else if hasArmGpu || hasGpuFallback == "arm" then
                 "v3d"
               else
-                ""
+                (osConfig.environment.sessionVariables.LIBVA_DRIVER_NAME or "")
             )
           else
             "";
@@ -87,17 +90,25 @@ in
         VDPAU_DRIVER =
           if isNixOS then
             (
-              if hasNvidia || hasGpuFallback == "nvidia" then
+              if hasLegacyNvidia then
+                "nvidia"
+              else if hasNvidia || hasGpuFallback == "nvidia" then
                 "nvidia"
               else if hasAmd || hasGpuFallback == "amd" then
                 "radeonsi"
               else if hasArmGpu || hasGpuFallback == "arm" then
                 "v3d"
               else
-                ""
+                (osConfig.environment.sessionVariables.VDPAU_DRIVER or "")
             )
           else
             "";
+      } // lib.optionalAttrs (isNixOS && (hasLegacyNvidia || (osConfig.environment.sessionVariables ? LD_LIBRARY_PATH))) {
+        LD_LIBRARY_PATH =
+          if hasLegacyNvidia then
+            "/run/opengl-driver/lib:/run/opengl-driver-32/lib"
+          else
+            osConfig.environment.sessionVariables.LD_LIBRARY_PATH;
       };
 
       activation.setX11Vars = mkIf (!isNixOS) (

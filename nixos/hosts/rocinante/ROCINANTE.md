@@ -259,6 +259,11 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINrd5yF/0aMECHqkM1oNrOX5QBQ4sYbkiNR15XzBGkUU
 **Comportamento**: Quando o cabo de rede (Ethernet) é conectado e obtém IP, o rádio Wi-Fi é automaticamente desativado (`nmcli radio wifi off`). Ao desconectar o cabo de rede, o rádio Wi-Fi é reativado imediatamente (`nmcli radio wifi on`).
 **Implementação**: Script de dispatcher no NetworkManager (`networking.networkmanager.dispatcherScripts`) associado ao serviço de sincronização no boot (`systemd.services.wifi-wired-autoswitch`).
 
+### 12. Suporte a Clientes OpenGL no NVIDIA 340 Legacy (Alacritty / GLX)
+**Problema**: O driver NVIDIA 340 é pré-libglvnd e fornece uma biblioteca monolítica antiga (`libGL.so.340.108`). Binários Nix modernos (como Alacritty) trazem `libglvnd` no seu RPATH e buscam `libGLX_nvidia.so.0` (que o Legacy 340 não possui), resultando em `failed to find suitable GL configuration` ou `couldn't find RGB GLX visual`.
+**Solução**: Exportar `LD_LIBRARY_PATH=/run/opengl-driver/lib:/run/opengl-driver-32/lib` nas variáveis de sessão do NixOS, no `extraInit`, no Home Manager X11 e no `bspwmrc` antes do `sxhkd`. Isso força o dynamic loader a carregar o `libGL.so.1` nativo da NVIDIA antes do libglvnd, habilitando renderização direta 3D por hardware na GeForce 8600M GT.
+
+
 ---
 
 ## 🚀 Implantação via `nixos-anywhere`

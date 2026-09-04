@@ -212,6 +212,11 @@ in
               bspc monitor "$m" -d I II III IV V VI VII VIII IX X
             done
 
+            # Carregar bibliotecas de driver gráfico se presentes (essencial para drivers legados como NVIDIA 340)
+            if [ -d /run/opengl-driver/lib ] && [ -f /run/opengl-driver/lib/libGL.so.1 ]; then
+              export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+            fi
+
             # Iniciar daemon de atalhos de teclado (SXHKD)
             pkill -x sxhkd || true
             ${pkgs.sxhkd}/bin/sxhkd &
@@ -220,7 +225,7 @@ in
             xsetroot -cursor_name left_ptr &
 
             # Importar variáveis de ambiente para serviços do usuário
-            systemctl --user import-environment DISPLAY XAUTHORITY
+            systemctl --user import-environment DISPLAY XAUTHORITY LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER
             systemctl --user start graphical-session.target 2>/dev/null || true
 
             # Iniciar compositor Picom se habilitado

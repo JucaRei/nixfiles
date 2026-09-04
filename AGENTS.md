@@ -84,6 +84,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **Rede Dinâmica (Polybar) & Auto-switching (Rocinante)**:
   - **Polybar**: Módulo de rede dinâmico (`scripts.networkScript`) identifica automaticamente conexão cabeada (`󰈀 $con_name`) ou Wi-Fi (`󰤨 $ssid` com ramp de sinal), além de estados `Desativado` e `Offline`. O módulo de velocidade de tráfego (`netspeed`) mede tráfego agregado (`accumulate-stats = true`) de ambas as interfaces.
   - **Host `rocinante`**: Auto-switching configurado via NetworkManager dispatcher (`networking.networkmanager.dispatcherScripts`) e serviço systemd de boot (`systemd.services.wifi-wired-autoswitch`): desativa o rádio Wi-Fi ao plugar o cabo de rede (`up`), e reativa o rádio Wi-Fi ao desconectar o cabo (`down`).
+- **Suporte a Clientes OpenGL no NVIDIA 340 Legacy (Alacritty / GLX)**:
+  - O driver 340.108 é pré-libglvnd e monolítico (`libGL.so.340.108`). Binários Nix modernos trazem `libglvnd` no seu RPATH e buscam `libGLX_nvidia.so.0` (inexistente no Legacy 340), causando erro `failed to find suitable GL configuration` ou `couldn't find RGB GLX visual`.
+  - Resolvido exportando `LD_LIBRARY_PATH=/run/opengl-driver/lib:/run/opengl-driver-32/lib` nas variáveis de sessão do NixOS (`environment.sessionVariables`, `environment.extraInit`), no Home Manager X11 e no `bspwmrc` antes do `sxhkd`. Isso prioriza o carregamento direto do `libGL.so.1` nativo da NVIDIA e ativa a renderização direta 3D por hardware na GeForce 8600M GT.
 
 ---
 
