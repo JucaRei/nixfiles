@@ -13,6 +13,42 @@ let
 
   nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
+
+  externalRulesScript = pkgs.writeShellScript "bspwm-external-rules" ''
+    wid="$1"
+    class="$2"
+    instance="$3"
+    consequences="$4"
+
+    case "$class" in
+      *xdg-desktop-portal*|*Xdg-desktop-portal*)
+        echo "state=floating center=on rectangle=850x550+0+0 follow=on"
+        exit 0
+        ;;
+    esac
+
+    # Consultar propriedades X11 da nova janela
+    PROPS="$(${pkgs.xprop}/bin/xprop -id "$wid" WM_NAME _NET_WM_NAME WM_WINDOW_ROLE _NET_WM_WINDOW_TYPE 2>/dev/null)"
+    [ -z "$PROPS" ] && exit 0
+
+    # 1. Diálogos nativos de seleção de arquivos (GtkFileChooserDialog) -> tamanho compacto e centralizado
+    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -q 'WM_WINDOW_ROLE.*GtkFileChooserDialog'; then
+      echo "state=floating center=on rectangle=850x550+0+0 follow=on"
+      exit 0
+    fi
+
+    # 2. Títulos de janelas de seleção de pastas e arquivos (VSCode, navegadores, Electron, GTK, Qt)
+    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -Ei -q '(WM_NAME|_NET_WM_NAME).*"(Open Folder|Abrir [Pp]asta|Open File|Abrir [Aa]rquivo|Select a? [Ff]older|Selecionar .*pasta|Select a? [Ff]ile|Selecionar .*arquivo|Choose [Ff]older|Escolher [Pp]asta|Choose [Ff]ile|Escolher [Aa]rquivo|Save As|Salvar [Cc]omo|Save File|Salvar [Aa]rquivo|File Upload|Enviar [Aa]rquivo|Open Workspace|Abrir [Ee]spaço|Add Folder|Adicionar [Pp]asta)'; then
+      echo "state=floating center=on rectangle=850x550+0+0 follow=on"
+      exit 0
+    fi
+
+    # 3. Janelas modais/diálogos genéricos -> flutuantes e centralizadas preservando tamanho padrão
+    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -q '_NET_WM_WINDOW_TYPE_DIALOG'; then
+      echo "state=floating center=on follow=on"
+      exit 0
+    fi
+  '';
 in
 {
   options.desktop.bspwm = {
@@ -198,14 +234,43 @@ in
               # Diálogos internos do Thunar (Progresso, Propriedades, Substituição)
               # Janelas normais do Thunar serão tiled, mas diálogos com class/instance serão floating
             };
+            "xdg-desktop-portal-gtk" = {
+              state = "floating";
+              center = true;
+              follow = true;
+              rectangle = "850x550+0+0";
+            };
+            "Xdg-desktop-portal-gtk" = {
+              state = "floating";
+              center = true;
+              follow = true;
+              rectangle = "850x550+0+0";
+            };
           };
           extraConfig = ''
-            # Regras extras de janelas flutuantes para diálogos e seletores do sistema
-            bspc rule -a "*:*:Open File" state=floating center=on follow=on
-            bspc rule -a "*:*:Save As" state=floating center=on follow=on
+            # Script dinâmico de regras externas para diálogos e seletores de arquivos/pastas
+            bspc config external_rules_command "${externalRulesScript}"
+
+            # Regras estáticas para seletores de arquivos e pastas (tamanho compacto e centralizado)
+            bspc rule -a "*:*:Open Folder" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Abrir pasta" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Open File" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Abrir arquivo" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Select Folder" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Selecionar pasta" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Select a Folder" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Selecionar uma pasta" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Choose Folder" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Escolher pasta" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Save As" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Salvar como" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Save File" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "*:*:Salvar arquivo" state=floating center=on rectangle=850x550+0+0 follow=on
             bspc rule -a "*:*:File Operation Progress" state=floating center=on follow=on
             bspc rule -a "*:*:Preferences" state=floating center=on follow=on
             bspc rule -a "*:*:Confirm to replace files" state=floating center=on follow=on
+            bspc rule -a "xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a "Xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
 
             # Configurar workspaces 1 a 10 (onde 0 = 10) em todos os monitores conectados
             for m in $(bspc query -M); do
@@ -294,6 +359,7 @@ in
         wmctrl
         xdotool
         tdrop
+        xprop
       ];
 
       sessionVariables = {
