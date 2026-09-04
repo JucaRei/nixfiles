@@ -27,21 +27,19 @@
 ## 🗂️ Ficheiros Relevantes
 
 | Ficheiro | Papel |
-|---|---|
 | [`default.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/default.nix) | Configuração principal do host |
-| [`filesystem.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/filesystem.nix) | Montagens BTRFS, swap partition e EFI |
-| [`disko.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/disko.nix) | Definição declarativa das partições |
+| [`filesystem.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/filesystem.nix) | Montagens BTRFS e swap partition (sem EFI em legacy) |
+| [`disko-legacy.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/disko-legacy.nix) | Particionamento declarativo MBR (msdos) puro para BIOS/CSM |
+| [`disko.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/disko.nix) | Particionamento GPT anterior (referência) |
 | [`modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix) | Módulo do driver NVIDIA 340 Legacy (ativado pela `specialisation`) |
 
 ---
 
-## 🧱 Layout de Disco (BTRFS + Swap Dedicado)
+## 🧱 Layout de Disco (MBR / msdos puro para Apple CSM / BIOS)
 
 ```
-/dev/sda1  →  BIOS-BOOT (2 MB, BIOS MBR/GPT fallback)
-/dev/sda2  →  EFI  (FAT32, 512 MB, montado em /boot/efi)
-/dev/sda3  →  swap (6 GB, partição swap nativa)
-/dev/sda4  →  NixOS (BTRFS)
+/dev/sda1  →  swap (6 GB, partição primária swap nativa)
+/dev/sda2  →  NixOS (BTRFS, primária, bootable flag ativada para CSM)
   ├── @             →  /
   ├── @home         →  /home
   ├── @nix          →  /nix

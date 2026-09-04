@@ -11,7 +11,8 @@ in
 {
   imports = [
     ./filesystem.nix
-    ./disko.nix
+    ./disko-legacy.nix
+    # ./disko.nix # Legado GPT/EFI
   ];
 
   config = {

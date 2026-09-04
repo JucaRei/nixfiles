@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{ config, lib, ... }: {
   fileSystems =
     let
       btrfsOpts = [
@@ -12,18 +12,6 @@
       ];
     in
     {
-      "/boot/efi" = {
-        device = lib.mkForce "/dev/disk/by-label/EFI";
-        fsType = "vfat";
-        options = [
-          "defaults"
-          "umask=0077"
-          "noatime"
-          "nodiratime"
-          "nofail"
-          "x-systemd.automount"
-        ];
-      };
       "/" = {
         device = lib.mkForce "/dev/disk/by-label/NixOS";
         fsType = "btrfs";
@@ -49,13 +37,19 @@
         fsType = "btrfs";
         options = btrfsOpts ++ [ "subvol=@var_log" ];
       };
-    };
-
-  swapDevices = [
-    {
-      device = "/dev/disk/by-label/swap";
-      priority = 10; # Fallback de emergência: usado APENAS se ZRAM (prioridade 100) encher
-      options = [ "nofail" ];
     }
-  ];
+    // lib.optionalAttrs (config.system.boot.bootType != "legacy") {
+      "/boot/efi" = {
+        device = lib.mkForce "/dev/disk/by-label/EFI";
+        fsType = "vfat";
+        options = [
+          "defaults"
+          "umask=0077"
+          "noatime"
+          "nodiratime"
+          "nofail"
+          "x-systemd.automount"
+        ];
+      };
+    };
 }
