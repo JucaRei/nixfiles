@@ -74,10 +74,10 @@ in
       enableRedistributableFirmware = true;
     };
 
-    # --- Boot & GRUB híbrido (BIOS i386-pc para VBIOS da NVIDIA + EFI fallback) ---
+    # --- Boot & GRUB BIOS/CSM (i386-pc obrigatório para a VBIOS da NVIDIA GeForce 8600M GT) ---
     system.boot = {
       enable = true;
-      bootType = "hybrid-legacy";
+      bootType = "legacy";
       bootManager = "grub";
       device = "/dev/sda";
       plymouth = true;
@@ -303,6 +303,7 @@ in
       vdpauinfo
       mesa-demos
       lm_sensors
+      gptfdisk
     ];
 
     # Teclado no console TTY
@@ -316,7 +317,14 @@ in
           system.nixos.tags = [ "nvidia-kernel-6.6" ];
           boot = {
             kernelPackages = mkForce pkgs.linuxPackages_6_6;
-            kernelParams = [ "nouveau.modeset=0" ];
+            kernelParams = mkForce [
+              "zswap.enabled=0"
+              "mitigations=off"
+              "nowatchdog"
+              "nouveau.modeset=0"
+              "transparent_hugepage=madvise"
+              "elevator=bfq"
+            ];
           };
           hardware.graphics.cards.gpu = mkForce "nvidia-legacy";
         };

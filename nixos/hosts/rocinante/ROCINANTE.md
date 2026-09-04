@@ -61,18 +61,18 @@ rw, noatime, ssd, compress-force=zstd:2, space_cache=v2, commit=120, discard=asy
 
 ---
 
-## 🖥️ Boot — GRUB Híbrido
+## 🖥️ Boot — GRUB BIOS / CSM
 
 | Parâmetro | Valor |
 |---|---|
-| `bootType` | `"hybrid-legacy"` — GRUB BIOS i386-pc (obrigatório para EFI 32-bit) |
+| `bootType` | `"legacy"` — GRUB BIOS `i386-pc` no MBR `/dev/sda` (obrigatório para Apple CSM / VBIOS NVIDIA) |
 | `device` | `/dev/sda` |
-| `efiSysMountPoint` | `/boot/efi` (auto-detectado pelo módulo de boot) |
+| `efiSysMountPoint` | `/boot/efi` (partição EFI FAT32 montada com automount / fallback) |
 | `default` | `0` (evita `error: sparse file not allowed` no BTRFS) |
-| Plymouth | **desativado** (`plymouth = false`) |
+| Plymouth | `true` |
 
-### Problema do firmware EFI 32-bit:
-O MacBook Pro 4,1 tem firmware EFI 32-bit mas CPU 64-bit. O arranque com ISOs NixOS padrão e Ventoy falhou com erros como `hv_vmbus`, `initrd-find-nixos-closure`. A solução foi criar a ISO personalizada `iso-rocinante` com `boot.initrd.systemd.enable = mkForce false`.
+### Apple CSM e VBIOS da NVIDIA:
+Em modo EFI nativo, o firmware da Apple não espelha a Video BIOS (VBIOS) da GeForce 8600M GT em `0xC0000` e desativa a Option ROM no barramento PCIe, fazendo o driver proprietário falhar com `NVRM: failed to copy vbios to system memory`. O arranque em modo **Legacy BIOS / CSM** (via GRUB `i386-pc` com partição `bios_grub` `/dev/sda1` e Hybrid MBR) ativa a camada de emulação BIOS da Apple, que disponibiliza a VBIOS para o driver NVIDIA.
 
 ---
 

@@ -25,7 +25,7 @@ pkgs.writeScriptBin "switch-boot" ''
       ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
     else
       err_code=$?
-      timestamp=$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S)
+      timestamp=$(${pkgs.uutils-coreutils-noprefix}/bin/date +%Y-%m-%d_%H-%M-%S)
       error_file="$ERROR_DIR/boot-error-$timestamp.log"
       cp "$TMP_LOG" "$error_file" 2>/dev/null || true
       ln -sf "$error_file" "$ERROR_DIR/last-error.log" 2>/dev/null || true

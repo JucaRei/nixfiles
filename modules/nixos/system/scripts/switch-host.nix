@@ -58,7 +58,7 @@ pkgs.writeScriptBin "switch-host" ''
       if systemctl is-failed --quiet home-manager-*.service 2>/dev/null; then
         HM_ERROR_DIR="$HOME/.config/errors/nix/home-manager"
         mkdir -p "$HM_ERROR_DIR"
-        hm_timestamp=$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S)
+        hm_timestamp=$(${pkgs.uutils-coreutils-noprefix}/bin/date +%Y-%m-%d_%H-%M-%S)
         hm_error_file="$HM_ERROR_DIR/activation-error-$hm_timestamp.log"
         journalctl --user -u "home-manager-*.service" --no-pager > "$hm_error_file" 2>/dev/null || \
           journalctl -u "home-manager-*.service" --no-pager > "$hm_error_file" 2>/dev/null || true
@@ -78,7 +78,7 @@ pkgs.writeScriptBin "switch-host" ''
       ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
     else
       err_code=$?
-      timestamp=$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S)
+      timestamp=$(${pkgs.uutils-coreutils-noprefix}/bin/date +%Y-%m-%d_%H-%M-%S)
       error_file="$ERROR_DIR/switch-error-$timestamp.log"
       cp "$TMP_LOG" "$error_file" 2>/dev/null || true
       ln -sf "$error_file" "$ERROR_DIR/last-error.log" 2>/dev/null || true

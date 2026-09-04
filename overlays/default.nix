@@ -18,6 +18,11 @@
               patches = (old.patches or [ ]) ++ [
                 ./patches/legacy340-for-nix-kernel-modules.patch
               ];
+              postFixup = (old.postFixup or "") + ''
+                if [ -d "$bin/lib/xorg/modules/extensions" ]; then
+                  ln -sf libglx.so.340.108 "$bin/lib/xorg/modules/extensions/libglx.so"
+                fi
+              '';
             });
           }
         );

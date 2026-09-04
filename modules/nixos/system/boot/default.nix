@@ -196,7 +196,7 @@ in
           efiSupport = if (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") then true else false;
           efiInstallAsRemovable = if (cfg.bootType != "legacy") then true else false;
           default = 0;
-          device = bootDevice;
+          devices = lib.mkForce [ bootDevice ];
           fsIdentifier = "provided";
           gfxmodeEfi = "auto";
           fontSize = 20;
