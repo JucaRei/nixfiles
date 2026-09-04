@@ -21,6 +21,32 @@ index 0d0dcc4..ee17ee4 100644
 +modules_install: module
 +	mkdir -p $(MODLIB)/misc; \
 +	cp $(MODULE_OBJECT) $(MODLIB)/misc/
+diff --git a/kernel/conftest.sh b/kernel/conftest.sh
+index a5225e5..b2c3d4e 100755
+--- a/kernel/conftest.sh
++++ b/kernel/conftest.sh
+@@ -199,3 +199,3 @@ create_skeleton_headers() {
+ build_cflags() {
+-    BASE_CFLAGS="-O2 -D__KERNEL__ \
++    BASE_CFLAGS="-std=gnu11 -fshort-wchar -Wno-error=implicit-function-declaration -Wno-implicit-function-declaration -O2 -D__KERNEL__ \
+ -DKBUILD_BASENAME=\"#conftest$$\" -DKBUILD_MODNAME=\"#conftest$$\" \
+@@ -1355,4 +1355,3 @@ compile_test() {
+             else
+-                echo "#error pci_dma_mapping_error() conftest failed!" | append_conftest "functions"
+                 return
+             fi
+diff --git a/kernel/nv-linux.h b/kernel/nv-linux.h
+index b6b9d62..a1b2c3d 100644
+--- a/kernel/nv-linux.h
++++ b/kernel/nv-linux.h
+@@ -324,4 +324,5 @@ static inline void *nv_ioremap_nocache(unsigned long phys_addr,
+ #endif
+-#elif defined(NV_VM_INSERT_PAGE_PRESENT)
+-#error "NV_PCI_DMA_MAPPING_ERROR() undefined!"
++#else
++#define NV_PCI_DMA_MAPPING_ERROR(dev, addr) \
++    dma_mapping_error(&((dev)->dev), addr)
+ #endif
 diff --git a/kernel/nvidia-modules-common.mk b/kernel/nvidia-modules-common.mk
 index c38cb61..ac5c43b 100644
 --- a/kernel/nvidia-modules-common.mk
@@ -34,3 +60,17 @@ index c38cb61..ac5c43b 100644
  
  #
  # The precompiled kernel module build process requires a separation of the
+diff --git a/kernel/uvm/conftest.sh b/kernel/uvm/conftest.sh
+index c1d2e3f..d2e3f4a 100755
+--- a/kernel/uvm/conftest.sh
++++ b/kernel/uvm/conftest.sh
+@@ -199,3 +199,3 @@ create_skeleton_headers() {
+ build_cflags() {
+-    BASE_CFLAGS="-O2 -D__KERNEL__ \
++    BASE_CFLAGS="-std=gnu11 -fshort-wchar -Wno-error=implicit-function-declaration -Wno-implicit-function-declaration -O2 -D__KERNEL__ \
+ -DKBUILD_BASENAME=\"#conftest$$\" -DKBUILD_MODNAME=\"#conftest$$\" \
+@@ -1313,4 +1313,3 @@ compile_test() {
+             else
+-                echo "#error pci_dma_mapping_error() conftest failed!" | append_conftest "functions"
+                 return
+             fi

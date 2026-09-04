@@ -66,7 +66,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **`overlays/default.nix` & `overlays/patches/`**: 
   - `inherit (final) system` renomeado para `inherit (final.stdenv.hostPlatform) system` (evita deprecation warning).
   - `permittedInsecurePackages` global removido (scoped para hosts específicos).
-  - Patch `legacy340-for-nix-kernel-modules.patch` (Issue #554929 / PR #555840) aplicado em `modifiedPackages` via `linuxKernel.packagesFor` para corrigir KBuild do driver 340 Legacy com store read-only.
+  - Patch `legacy340-for-nix-kernel-modules.patch` (Issue #554929 / PR #555840 + GCC 15 / Kernel 6.6 fixes) aplicado em `modifiedPackages` via `linuxKernel.packagesFor`:
+    - Corrige KBuild com `$src` no nix store e target `modules_install`.
+    - Injeta flags no `conftest.sh`: `-std=gnu11` (evita keywords C23 `bool`/`false` do GCC 15), `-fshort-wchar` (corrige parsing de EFI UTF-16) e `-Wno-error=implicit-function-declaration` (preserva lógica invertida de detecção de funções).
+    - Adiciona fallback para `dma_mapping_error` no `nv-linux.h` substituindo a chamada legada removida `pci_dma_mapping_error`.
 - **`modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`** (driver NVIDIA 340 Legacy):
   - Atributo correto: `config.boot.kernelPackages.nvidia_x11_legacy340` (não `nvidiaPackages.legacy_340`).
   - **Não usar `hardware.nvidia`** — o módulo `hardware/video/nvidia.nix` do nixpkgs adiciona `nvidia_modeset`/`nvidia_drm` incondicionalmente, módulos que o Legacy 340 não possui. Configurado via `boot.extraModulePackages = [ legacy340.bin legacy340.mod ]` e `services.xserver.drivers` diretamente.
