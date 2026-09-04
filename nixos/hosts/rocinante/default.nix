@@ -292,6 +292,84 @@ in
           powersave = false; # Fix: evita desconexões e perda de pacotes em repetidores
           macAddress = "preserve"; # Fix: mantém MAC físico permanente para evitar falhas de ARP no repetidor
         };
+        # Alternância automática: Cabo conectado -> Wi-Fi desligado / Cabo desconectado -> Wi-Fi ligado
+        dispatcherScripts = [
+          {
+            source = pkgs.writeShellScript "wifi-wired-autoswitch" ''
+              export PATH="${pkgs.networkmanager}/bin:${pkgs.gnugrep}/bin:${pkgs.coreutils}/bin:$PATH"
+
+              IFACE="$1"
+              ACTION="$2"
+
+              if [ -z "$IFACE" ] || [ "$IFACE" = "lo" ]; then
+                exit 0
+              fi
+
+              is_ethernet() {
+                [ -d "/sys/class/net/$1" ] && [ ! -d "/sys/class/net/$1/wireless" ] && [ -e "/sys/class/net/$1/device" ]
+              }
+
+              has_other_active_ethernet() {
+                local excluded="$1"
+                for dev in /sys/class/net/*; do
+                  local devname="''${dev##*/}"
+                  if [ "$devname" != "$excluded" ] && is_ethernet "$devname"; then
+                    if [ -f "$dev/carrier" ] && [ "$(cat "$dev/carrier" 2>/dev/null)" = "1" ]; then
+                      return 0
+                    fi
+                  fi
+                done
+                return 1
+              }
+
+              if is_ethernet "$IFACE"; then
+                case "$ACTION" in
+                  up)
+                    # Cabo conectado: desativa o rádio Wi-Fi
+                    nmcli radio wifi off
+                    ;;
+                  down|post-down)
+                    # Cabo desconectado: reativa o rádio Wi-Fi se nenhum outro cabo estiver conectado
+                    if ! has_other_active_ethernet "$IFACE"; then
+                      nmcli radio wifi on
+                    fi
+                    ;;
+                esac
+              fi
+            '';
+            type = "basic";
+          }
+        ];
+      };
+    };
+
+    # Sincronização do estado de rede no boot
+    systemd.services.wifi-wired-autoswitch = {
+      description = "Sincroniza rádio Wi-Fi com conexão cabeada no boot";
+      after = [ "NetworkManager.service" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "wifi-wired-boot-sync" ''
+          export PATH="${pkgs.networkmanager}/bin:${pkgs.coreutils}/bin:$PATH"
+          sleep 1
+          has_eth=0
+          for eth in /sys/class/net/*; do
+            if [ -d "$eth" ] && [ ! -d "$eth/wireless" ] && [ -e "$eth/device" ]; then
+              if [ -f "$eth/carrier" ] && [ "$(cat "$eth/carrier" 2>/dev/null)" = "1" ]; then
+                has_eth=1
+                break
+              fi
+            fi
+          done
+
+          if [ "$has_eth" -eq 1 ]; then
+            nmcli radio wifi off
+          else
+            nmcli radio wifi on
+          fi
+        '';
       };
     };
 

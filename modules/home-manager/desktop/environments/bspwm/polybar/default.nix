@@ -10,7 +10,7 @@ let
   cfg = config.desktop.bspwm.polybar;
 
   colors = import ./colors.nix;
-  scripts = import ./scripts.nix { inherit pkgs; };
+  scripts = import ./scripts.nix { inherit pkgs colors; };
   polybarModules = import ./modules.nix { inherit pkgs colors scripts; };
 in
 {

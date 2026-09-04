@@ -255,6 +255,10 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINrd5yF/0aMECHqkM1oNrOX5QBQ4sYbkiNR15XzBGkUU
 **Problema**: Warning `'system' has been renamed to 'stdenv.hostPlatform.system'`.
 **Solução**: Usar `inherit (final.stdenv.hostPlatform) system` nos overlays `unstablePackages` e `oldstablePackages`.
 
+### 11. Alternância Automática Cabo Ethernet / Wi-Fi
+**Comportamento**: Quando o cabo de rede (Ethernet) é conectado e obtém IP, o rádio Wi-Fi é automaticamente desativado (`nmcli radio wifi off`). Ao desconectar o cabo de rede, o rádio Wi-Fi é reativado imediatamente (`nmcli radio wifi on`).
+**Implementação**: Script de dispatcher no NetworkManager (`networking.networkmanager.dispatcherScripts`) associado ao serviço de sincronização no boot (`systemd.services.wifi-wired-autoswitch`).
+
 ---
 
 ## 🚀 Implantação via `nixos-anywhere`

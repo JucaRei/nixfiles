@@ -286,41 +286,26 @@
     animation-charging-framerate = 750;
   };
 
-  # --- Rede Wi-Fi & Menu Interativo ---
+  # --- Rede (Cabo / Wi-Fi Dinâmico) & Menu Interativo ---
   "module/network" = {
-    type = "internal/network";
-    interface-type = "wireless";
+    type = "custom/script";
+    exec = "${scripts.networkScript}";
     interval = 2;
 
-    format-connected = "%{A1:${scripts.rofiWifiMenu}:}%{A3:${pkgs.networkmanagerapplet}/bin/nm-connection-editor:}<ramp-signal> <label-connected>%{A}%{A}";
-    format-connected-background = colors.surface0;
-    label-connected = "%essid%";
-    label-connected-foreground = colors.text;
-    label-connected-padding = 1;
-
-    ramp-signal-0 = "󰤯";
-    ramp-signal-1 = "󰤟";
-    ramp-signal-2 = "󰤢";
-    ramp-signal-3 = "󰤥";
-    ramp-signal-4 = "󰤨";
-    ramp-signal-foreground = colors.teal;
-
-    format-disconnected = "%{A1:${scripts.rofiWifiMenu}:}%{A3:${pkgs.networkmanagerapplet}/bin/nm-connection-editor:}<label-disconnected>%{A}%{A}";
-    format-disconnected-prefix = "󰤮 ";
-    format-disconnected-prefix-foreground = colors.red;
-    format-disconnected-background = colors.surface0;
-    label-disconnected = "Offline";
-    label-disconnected-foreground = colors.subtext0;
-    label-disconnected-padding = 1;
+    format = "%{A1:${scripts.rofiWifiMenu}:}%{A3:${pkgs.networkmanagerapplet}/bin/nm-connection-editor:}<label>%{A}%{A}";
+    format-background = colors.surface0;
+    label = "%output%";
+    label-foreground = colors.text;
+    label-padding = 1;
 
     click-left = "${scripts.rofiWifiMenu}";
     click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor";
   };
 
-  # --- Velocidade de Tráfego de Rede (Download / Upload) ---
+  # --- Velocidade de Tráfego de Rede (Download / Upload - Cabo e Wi-Fi) ---
   "module/netspeed" = {
     type = "internal/network";
-    interface-type = "wireless";
+    accumulate-stats = true;
     interval = 1;
 
     format-connected = "<label-connected>";

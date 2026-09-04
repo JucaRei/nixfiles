@@ -81,6 +81,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Fix `libglx.so`**: Adicionado `postFixup` no overlay de `nvidia_x11_legacy340` criando symlink `libglx.so -> libglx.so.340.108` em `$bin/lib/xorg/modules/extensions`, corrigindo o carregamento indevido do GLX do Mesa pelo Xorg.
   - **Parâmetros de Kernel**: `specialisation.nvidia` usa `mkForce` para definir parâmetros limpos sem `nouveau.modeset=1` nem `pcie_aspm=force`.
 - **Estética Polybar e BSPWM**: Inspirada na suíte de rices [gh0stzk/dotfiles](https://github.com/gh0stzk/dotfiles), utilizando paleta Catppuccin Mocha com ícones Nerd Font coloridos, pills de workspaces (`󰮯`, `󰊠`, `󰀦`), indicadores de download/upload (`󰇚`, `󰕒`), menus interativos via Rofi (Wi-Fi, Bluetooth, Power Menu) e feedback visual OSD via Dunst.
+- **Rede Dinâmica (Polybar) & Auto-switching (Rocinante)**:
+  - **Polybar**: Módulo de rede dinâmico (`scripts.networkScript`) identifica automaticamente conexão cabeada (`󰈀 $con_name`) ou Wi-Fi (`󰤨 $ssid` com ramp de sinal), além de estados `Desativado` e `Offline`. O módulo de velocidade de tráfego (`netspeed`) mede tráfego agregado (`accumulate-stats = true`) de ambas as interfaces.
+  - **Host `rocinante`**: Auto-switching configurado via NetworkManager dispatcher (`networking.networkmanager.dispatcherScripts`) e serviço systemd de boot (`systemd.services.wifi-wired-autoswitch`): desativa o rádio Wi-Fi ao plugar o cabo de rede (`up`), e reativa o rádio Wi-Fi ao desconectar o cabo (`down`).
 
 ---
 
