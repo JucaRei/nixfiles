@@ -7,6 +7,22 @@
   modifiedPackages = _final: prev: {
     makeModulesClosure = x: prev.makeModulesClosure (x // { allowMissing = true; });
 
+    # Fix for nvidia_x11_legacy340 on modern nixpkgs KBuild (Issue #554929 / PR #555840)
+    # Permite compilação dos módulos de kernel quando $src aponta para o store read-only do Nix.
+    linuxKernel = prev.linuxKernel // {
+      packagesFor =
+        kernel:
+        (prev.linuxKernel.packagesFor kernel).extend (
+          _lFinal: lPrev: {
+            nvidia_x11_legacy340 = lPrev.nvidia_x11_legacy340.overrideAttrs (old: {
+              patches = (old.patches or [ ]) ++ [
+                ./patches/legacy340-for-nix-kernel-modules.patch
+              ];
+            });
+          }
+        );
+    };
+
     sf-mono-liga-bin = prev.stdenvNoCC.mkDerivation {
       pname = "sf-mono-liga-bin";
       version = "dev";

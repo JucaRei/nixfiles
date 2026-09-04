@@ -5,8 +5,9 @@
   ...
 }:
 let
-  inherit (lib) mkDefault mkIf mkForce;
+  inherit (lib) mkIf mkForce;
   device = config.hardware.graphics.cards;
+  legacy340 = config.boot.kernelPackages.nvidia_x11_legacy340;
 in
 {
   config = mkIf (device.gpu == "nvidia-legacy") {
@@ -14,6 +15,10 @@ in
       blacklistedKernelModules = [
         "nouveau"
         "nvidiafb"
+      ];
+      extraModulePackages = [
+        legacy340.bin
+        legacy340.mod
       ];
       kernelModules = [
         "nvidia"
@@ -24,15 +29,11 @@ in
     };
 
     hardware = {
-      nvidia = {
-        package = config.boot.kernelPackages.nvidia_x11_legacy340;
-        nvidiaSettings = true;
-      };
-
       graphics = {
         enable = true;
         enable32Bit = true;
         extraPackages = with pkgs; [
+          legacy340.bin
           libva-vdpau-driver
           libvdpau-va-gl
         ];
@@ -48,7 +49,14 @@ in
         enable = true;
       };
       xserver = {
-        videoDrivers = [ "nvidia" ];
+        videoDrivers = mkForce [ ];
+        drivers = [
+          {
+            name = "nvidia";
+            modules = [ legacy340.bin ];
+            display = true;
+          }
+        ];
         deviceSection = ''
           Option "RegistryDwords" "EnableBrightnessControl=1"
         '';
@@ -62,11 +70,12 @@ in
     };
 
     environment = {
-      sessionVariables = mkDefault {
-        LIBVA_DRIVER_NAME = mkForce "vdpau";
-        VDPAU_DRIVER = mkForce "nvidia";
+      sessionVariables = {
+        LIBVA_DRIVER_NAME = "vdpau";
+        VDPAU_DRIVER = "nvidia";
       };
       systemPackages = with pkgs; [
+        legacy340.settings
         mesa-demos
         libva-utils
         vdpauinfo

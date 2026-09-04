@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkForce mkIf;
+  inherit (lib) mkForce mkIf mkDefault;
   isX11 = (config.desktop.display-servers.backend == "x11") || config.services.xserver.enable;
 in
 {
@@ -67,7 +67,7 @@ in
       graphics.cards = {
         enable = true;
         acceleration = true;
-        gpu = null; # NVIDIA GeForce 8600M GT: usa driver nouveau + Mesa (aceleração por hardware nativa)
+        gpu = null; # Padrão: driver open-source nouveau + Mesa nativa
       };
 
       # Firmware redistribuível (essencial para Wi-Fi Broadcom e Microcode Intel)
@@ -268,10 +268,10 @@ in
       };
     };
 
-    # Variáveis de aceleração gráfica para Mesa / Nouveau
+    # Variáveis de aceleração gráfica para Mesa / Nouveau (padrão)
     environment.sessionVariables = {
-      LIBVA_DRIVER_NAME = "nouveau";
-      VDPAU_DRIVER = "nouveau";
+      LIBVA_DRIVER_NAME = mkDefault "nouveau";
+      VDPAU_DRIVER = mkDefault "nouveau";
     };
 
     # --- Rede Wi-Fi & Fixes de Repetidor ---
@@ -280,6 +280,7 @@ in
       search = [ "home.lan" ];
       nameservers = [
         "10.10.10.25" # DNS Local (Technitium DNS Server + Unbound em dns01.home.lan)
+        "10.10.10.26" # Fallback (Technitium DNS Server + Unbound em dns02.home.lan)
         "1.1.1.1" # Fallback público Cloudflare
         "8.8.8.8" # Fallback público Google
       ];
@@ -306,5 +307,20 @@ in
 
     # Teclado no console TTY
     console.useXkbConfig = true;
+
+    # --- Specialisation: Boot alternativo com Kernel 6.6 LTS + Driver NVIDIA 340 Legacy ---
+    specialisation = {
+      nvidia = {
+        inheritParentConfig = true;
+        configuration = {
+          system.nixos.tags = [ "nvidia-kernel-6.6" ];
+          boot = {
+            kernelPackages = mkForce pkgs.linuxPackages_6_6;
+            kernelParams = [ "nouveau.modeset=0" ];
+          };
+          hardware.graphics.cards.gpu = mkForce "nvidia-legacy";
+        };
+      };
+    };
   };
 }

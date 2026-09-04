@@ -63,12 +63,17 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 
 - **`home-manager/default.nix`**: Removido parâmetro `config` não referenciado na assinatura de argumentos e removidos `isLinux` / `mkIf` não utilizados no bloco `let`.
 - **`flake.nix` & `lib/`**: Simplificação de `homeConfigurations`, modernização do `formatter` para `nixfmt-rfc-style`, redução de sistemas suportados para Linux (`x86_64-linux` e `aarch64-linux`), e adoção de validações pontuais em etapas intermediárias.
-- **`overlays/default.nix`**: `inherit (final) system` renomeado para `inherit (final.stdenv.hostPlatform) system` (evita deprecation warning). `permittedInsecurePackages` global removido (scoped para hosts específicos).
+- **`overlays/default.nix` & `overlays/patches/`**: 
+  - `inherit (final) system` renomeado para `inherit (final.stdenv.hostPlatform) system` (evita deprecation warning).
+  - `permittedInsecurePackages` global removido (scoped para hosts específicos).
+  - Patch `legacy340-for-nix-kernel-modules.patch` (Issue #554929 / PR #555840) aplicado em `modifiedPackages` via `linuxKernel.packagesFor` para corrigir KBuild do driver 340 Legacy com store read-only.
 - **`modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`** (driver NVIDIA 340 Legacy):
   - Atributo correto: `config.boot.kernelPackages.nvidia_x11_legacy340` (não `nvidiaPackages.legacy_340`).
-  - **Não usar `hardware.nvidia`** — o módulo `hardware/video/nvidia.nix` do nixpkgs 25.05 exige `.mod`/`.open` que o legacy 340 não possui. Configurar via `boot.extraModulePackages` diretamente.
-  - `xserver.videoDrivers = lib.mkForce []` — o módulo kernel carregado via `boot.extraModulePackages` é suficiente para o X11.
-- **Host `rocinante`** (MacBook Pro 4,1 - Early 2008): Ver [ROCINANTE.md](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/ROCINANTE.md) para documentação completa de hardware, problemas conhecidos e decisões de configuração.
+  - **Não usar `hardware.nvidia`** — o módulo `hardware/video/nvidia.nix` do nixpkgs adiciona `nvidia_modeset`/`nvidia_drm` incondicionalmente, módulos que o Legacy 340 não possui. Configurado via `boot.extraModulePackages = [ legacy340.bin legacy340.mod ]` e `services.xserver.drivers` diretamente.
+  - `xserver.videoDrivers = lib.mkForce []`.
+- **Host `rocinante`** (MacBook Pro 4,1 - Early 2008): Ver [ROCINANTE.md](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/ROCINANTE.md). Configurado com boot dual:
+  - **Padrão**: Kernel Zen (`pkgs.unstable.linuxPackages_zen`) com driver open-source `nouveau`.
+  - **`specialisation.nvidia`**: Kernel 6.6 LTS (`pkgs.linuxPackages_6_6`) com driver proprietário NVIDIA 340 Legacy. Selecionável no menu GRUB.
 - **Estética Polybar e BSPWM**: Inspirada na suíte de rices [gh0stzk/dotfiles](https://github.com/gh0stzk/dotfiles), utilizando paleta Catppuccin Mocha com ícones Nerd Font coloridos, pills de workspaces (`󰮯`, `󰊠`, `󰀦`), indicadores de download/upload (`󰇚`, `󰕒`), menus interativos via Rofi (Wi-Fi, Bluetooth, Power Menu) e feedback visual OSD via Dunst.
 
 ---

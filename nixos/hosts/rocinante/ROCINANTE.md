@@ -76,16 +76,31 @@ O MacBook Pro 4,1 tem firmware EFI 32-bit mas CPU 64-bit. O arranque com ISOs Ni
 
 ---
 
-## 🚀 Driver Gráfico (Nouveau)
+## 🚀 Drivers Gráficos e Boot Dual (Nouveau vs NVIDIA Legacy)
 
-```nix
-boot.kernelPackages = pkgs.unstable.linuxPackages_zen;
-hardware.graphics.cards.gpu = null;  # usa nouveau + Mesa
-```
+O sistema possui duas opções de arranque configuradas via `specialisation` e selecionáveis no menu GRUB:
 
-- Kernel Zen do canal `unstable` (baixa latência, otimizado para desktop)
-- Driver gráfico: `nouveau` (open-source, aceleração Mesa 2D/3D nativa na NV50)
-- Variáveis: `LIBVA_DRIVER_NAME=nouveau`, `VDPAU_DRIVER=nouveau`
+1. **Boot Padrão (Nouveau + Kernel Zen)**:
+   ```nix
+   boot.kernelPackages = pkgs.unstable.linuxPackages_zen;
+   hardware.graphics.cards.gpu = null;  # nouveau + Mesa
+   ```
+   - Kernel Zen do canal `unstable` (baixa latência, agilidade máxima para desktop em Core 2 Duo).
+   - Driver gráfico: `nouveau` (open-source, aceleração Mesa 2D/3D nativa na GeForce 8600M GT).
+   - Variáveis de aceleração: `LIBVA_DRIVER_NAME=nouveau`, `VDPAU_DRIVER=nouveau`.
+
+2. **Boot Alternativo (`specialisation.nvidia` — Kernel 6.6 LTS + NVIDIA 340 Legacy)**:
+   ```nix
+   specialisation.nvidia.configuration = {
+     system.nixos.tags = [ "nvidia-kernel-6.6" ];
+     boot.kernelPackages = pkgs.linuxPackages_6_6;
+     boot.kernelParams = [ "nouveau.modeset=0" ];
+     hardware.graphics.cards.gpu = "nvidia-legacy";
+   };
+   ```
+   - Kernel 6.6 LTS (último kernel estável compatível com os patches da série 340.108).
+   - Driver proprietário NVIDIA 340.108 com aceleração VDPAU completa via hardware.
+   - Patch aplicado via overlay em `overlays/patches/legacy340-for-nix-kernel-modules.patch` para resolver incompatibilidade de KBuild em store read-only (Nixpkgs #554929 / PR #555840).
 
 
 ---
@@ -222,12 +237,13 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINrd5yF/0aMECHqkM1oNrOX5QBQ4sYbkiNR15XzBGkUU
 **Solução**: `mkdir -p "${settingsDir}"` antes de escrever o ficheiro.
 
 ### 6. Driver NVIDIA 340 Legacy não compila
-**Problema**: `nvidia-kernel-modules-340.108` falha com `mkdir: cannot create directory 'conftest': Permission denied` — o instalador antigo de 2019 tenta escrever na árvore de fontes read-only do kernel no sandbox do Nix.
-**Status**: **Não resolvido** — o pacote `nvidiaPackages.legacy_340` está quebrado no NixOS moderno, mesmo no kernel 5.15. A opção de boot padrão usa `nouveau` que funciona perfeitamente.
+**Problema**: `nvidia-kernel-modules-340.108` falhava com `mkdir: cannot create directory 'conftest': Permission denied` no Nixpkgs 26.05 porque a variável KBuild `$src` apontava para o store read-only.
+**Solução**: Resolvido via patch em `overlays/patches/legacy340-for-nix-kernel-modules.patch` (baseado no upstream PR #555840 / Issue #554929) injetado através de `modifiedPackages` em `overlays/default.nix`.
+**Status**: **Resolvido** — disponível no boot alternativo através da `specialisation.nvidia` com Kernel 6.6 LTS.
 
 ### 7. `hardware.nvidia.mod` missing (nixpkgs nvidia.nix)
-**Problema**: O módulo `hardware/video/nvidia.nix` do nixpkgs 25.05 exige que o package do driver tenha atributos `.mod` e `.open`, que `nvidia_x11_legacy340` não possui.
-**Solução**: **Não usar `hardware.nvidia`** — configurar o driver directamente via `boot.extraModulePackages` e `boot.kernelModules`. O `xserver.videoDrivers` fica vazio (`lib.mkForce []`); o módulo kernel carregado no boot é suficiente para o X11 detectar e usar o driver.
+**Problema**: O módulo `hardware/video/nvidia.nix` do nixpkgs adiciona `nvidia_modeset` e `nvidia_drm` incondicionalmente quando `videoDrivers = [ "nvidia" ]`, módulos que o Legacy 340 não possui.
+**Solução**: Configurar o driver directamente em `modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix` via `boot.extraModulePackages = [ legacy340.bin legacy340.mod ]`, `boot.kernelModules = [ "nvidia" ]`, e no X11 usar `services.xserver.drivers` com `modules = [ legacy340.bin ]` e `videoDrivers = lib.mkForce []`.
 
 ### 8. Atributo errado do driver NVIDIA legacy
 **Problema**: `kernelPackages.nvidiaPackages.legacy_340` não existe no nixpkgs unstable.
