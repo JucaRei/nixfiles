@@ -49,6 +49,22 @@ let
       exit 0
     fi
   '';
+
+  browserTabSwitch = pkgs.writeShellScript "browser-tab-switch" ''
+    action="$1" # "next" or "prev"
+    wid="$(${pkgs.xdotool}/bin/xdotool getactivewindow 2>/dev/null)"
+    [ -z "$wid" ] && exit 0
+    wclass="$(${pkgs.xprop}/bin/xprop -id "$wid" WM_CLASS 2>/dev/null | ${pkgs.coreutils}/bin/tr '[:upper:]' '[:lower:]')"
+    case "$wclass" in
+      *firefox*|*chrome*|*chromium*|*brave*|*opera*|*vivaldi*|*edge*|*zen*|*code*|*alacritty*)
+        if [ "$action" = "next" ]; then
+          ${pkgs.xdotool}/bin/xdotool key --clearmodifiers ctrl+Page_Down
+        else
+          ${pkgs.xdotool}/bin/xdotool key --clearmodifiers ctrl+Page_Up
+        fi
+        ;;
+    esac
+  '';
 in
 {
   options.desktop.bspwm = {
@@ -328,9 +344,8 @@ in
               done
             fi
 
-            # Iniciar daemon de gestos do Touchpad (3 dedos para alternar workspaces)
-            pkill -x libinput-gestures || true
-            ${pkgs.libinput-gestures}/bin/libinput-gestures &
+            # Iniciar daemon de gestos do Touchpad
+            systemctl --user restart libinput-gestures 2>/dev/null || (pkill -x libinput-gestures || true; ${pkgs.libinput-gestures}/bin/libinput-gestures -c ~/.config/libinput-gestures.conf &)
 
             # Regras customizadas adicionais
             ${lib.concatStringsSep "\n" cfg.rules}
@@ -342,16 +357,37 @@ in
     };
 
     xdg.configFile."libinput-gestures.conf".text = ''
-      # Gestos de 4 dedos para trocar de Desktop
-      gesture swipe left 4  ${pkgs.bspwm}/bin/bspc desktop -f next.local
-      gesture swipe right 4 ${pkgs.bspwm}/bin/bspc desktop -f prev.local
-      # Gestos de 3 dedos para navegação no navegador
-      gesture swipe left 3  ${pkgs.xdotool}/bin/xdotool key alt+Left
-      gesture swipe right 3 ${pkgs.xdotool}/bin/xdotool key alt+Right
-      # Outros
+      # Gestos de 3 dedos para trocar de Desktop (Workspaces)
+      gesture swipe left 3  ${pkgs.bspwm}/bin/bspc desktop -f next.local
+      gesture swipe right 3 ${pkgs.bspwm}/bin/bspc desktop -f prev.local
+
+      # Gestos de 4 dedos para alternar abas do navegador (se estiver em uso)
+      gesture swipe left 4  ${browserTabSwitch} next
+      gesture swipe right 4 ${browserTabSwitch} prev
+
+      # Outros gestos de 3 dedos
       gesture swipe up 3 ${pkgs.rofi}/bin/rofi -show drun
       gesture swipe down 3 ${pkgs.bspwm}/bin/bspc node -c
     '';
+
+    systemd.user.services.libinput-gestures = {
+      Unit = {
+        Description = "Touchpad gesture daemon";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.libinput-gestures}/bin/libinput-gestures -c %h/.config/libinput-gestures.conf";
+        Restart = "on-failure";
+        RestartSec = 3;
+        Environment = [
+          "PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.bspwm pkgs.xdotool pkgs.rofi pkgs.xprop ]}:/run/current-system/sw/bin"
+        ];
+      };
+      Install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
+    };
 
     home = {
       packages = with pkgs; [

@@ -90,6 +90,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **Janelas Flutuantes e Seletores de Arquivos/Pastas (BSPWM)**:
   - Diálogos de seleção de arquivos/pastas (ex: "Open Folder" / "Abrir pasta" do VSCode, `GtkFileChooserDialog`, `xdg-desktop-portal-gtk`) por padrão eram mapeados como janelas normais (tiled/fullscreen).
   - Configurado conjunto de regras estáticas e um script dinâmico via `external_rules_command` (`bspwm-external-rules` usando `xprop` e regex bilíngue PT/EN) que força estado flutuante centralizado e compacto (`state=floating center=on rectangle=850x550+0+0 follow=on`). Demais janelas modais (`_NET_WM_WINDOW_TYPE_DIALOG`) recebem `state=floating center=on` mantendo dimensões naturais.
+- **Gestos do Touchpad (libinput-gestures no BSPWM)**:
+  - **3 dedos**: Alternar entre workspaces/desktops do BSPWM (`swipe left 3` -> `next.local`, `swipe right 3` -> `prev.local`).
+  - **4 dedos**: Alternar abas do navegador ou editor em uso (`swipe left 4` -> `ctrl+Page_Down` / próxima aba, `swipe right 4` -> `ctrl+Page_Up` / aba anterior) com `--clearmodifiers`, executado dinamicamente via script `browser-tab-switch` apenas quando um navegador ou aplicativo com abas estiver em foco.
+  - Supervisionado via serviço systemd do usuário (`systemd.user.services.libinput-gestures`) com recarregamento automático no `home-manager switch`.
 
 ---
 
