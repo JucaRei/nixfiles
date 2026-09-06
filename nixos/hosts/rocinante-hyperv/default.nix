@@ -166,9 +166,10 @@ in
 
       # Configurações do X11 / BSPWM
       xserver = mkIf isX11 {
+        # Teclado US International (dead keys para acentos PT-BR)
         xkb = {
           layout = "us";
-          variant = "mac";
+          variant = "intl";
           options = "terminate:ctrl_alt_bksp";
         };
       };

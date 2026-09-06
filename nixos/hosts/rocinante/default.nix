@@ -7,6 +7,17 @@
 let
   inherit (lib) mkForce mkIf mkDefault;
   isX11 = (config.desktop.display-servers.backend == "x11") || config.services.xserver.enable;
+
+  # Helper: verifica se há alguma interface Ethernet ativa (cabo conectado)
+  hasActiveEthernet = pkgs.writeShellScript "has-active-ethernet" ''
+    for dev in /sys/class/net/*; do
+      name="''${dev##*/}"
+      [ -d "$dev/wireless" ] && continue
+      [ -e "$dev/device" ] || continue
+      [ "$(cat "$dev/carrier" 2>/dev/null)" = "1" ] && exit 0
+    done
+    exit 1
+  '';
 in
 {
   imports = [
@@ -32,24 +43,9 @@ in
     };
 
     # Permitir broadcom-sta apenas no host rocinante (hardware específico)
-    nixpkgs.config.permittedInsecurePackages = [
-      "broadcom-sta-6.30.223.271-63-7.2"
-      "broadcom-sta-6.30.223.271-63-7.1.9"
-      "broadcom-sta-6.30.223.271-63-7.1.7"
-      "broadcom-sta-6.30.223.271-63-7.1.5"
-      "broadcom-sta-6.30.223.271-63-7.1"
-      "broadcom-sta-6.30.223.271-59-6.17.9"
-      "broadcom-sta-6.30.223.271-63-6.18.43"
-      "broadcom-sta-6.30.223.271-63-6.18"
-      "broadcom-sta-6.30.223.271-59-6.18.40"
-      "broadcom-sta-6.30.223.271-59-6.18"
-      "broadcom-sta-6.30.223.271-59-6.6.145"
-      "broadcom-sta-6.30.223.271-59-6.6"
-      "broadcom-sta-6.30.223.271-63-6.6"
-      "broadcom-sta-6.30.223.271-59-5.15.212"
-      "broadcom-sta-6.30.223.271-59-5.15"
-      "broadcom-sta"
-    ];
+    # Predicate por prefixo: cobre qualquer versão/kernel automaticamente
+    nixpkgs.config.allowInsecurePredicate = pkg:
+      builtins.hasPrefix "broadcom-sta" (lib.getName pkg);
 
     # --- Hardware & CPU (MacBook Pro 4,1 - Penryn Core 2 Duo) ---
     hardware = {
@@ -73,6 +69,9 @@ in
 
       # Firmware redistribuível (essencial para Wi-Fi Broadcom e Microcode Intel)
       enableRedistributableFirmware = true;
+
+      # Domínio regulatório Brasil
+      wirelessRegulatoryDatabase = true;
     };
 
     # --- Boot & GRUB BIOS/CSM (i386-pc obrigatório para a VBIOS da NVIDIA GeForce 8600M GT) ---
@@ -97,10 +96,6 @@ in
 
       initrd = {
         systemd.enable = lib.mkForce false; # Evita falhas de montagem do /sysroot em hardware legado Intel ICH8-M
-        supportedFilesystems = [
-          "btrfs"
-          "vfat"
-        ];
         availableKernelModules = [
           "ahci"
           "ata_piix"
@@ -117,7 +112,6 @@ in
           "btrfs"
         ];
         kernelModules = [
-          "btrfs"
           "applesmc"
           "hid_apple"
         ];
@@ -206,9 +200,7 @@ in
         openFirewall = true;
       };
 
-      gvfs = {
-        enable = true;
-      };
+      gvfs.enable = true;
 
       avahi = {
         enable = true;
@@ -270,10 +262,10 @@ in
         ];
         dpi = 133;
 
-        # Teclado Apple US Mac no X11
+        # Teclado Apple US International no X11 (dead keys para acentos PT-BR)
         xkb = {
           layout = "us";
-          variant = "mac";
+          variant = "intl";
           options = "terminate:ctrl_alt_bksp";
         };
       };
@@ -290,27 +282,7 @@ in
       };
     };
 
-    networking.firewall = {
-      enable = true;
-      allowPing = true;
-      # Abre portas para descoberta de rede
-      allowedUDPPorts = [
-        5353
-        3702
-      ];
-      allowedTCPPorts = [
-        5353
-        3702
-      ];
-    };
-
-    # Variáveis de aceleração gráfica para Mesa / Nouveau (padrão)
-    environment.sessionVariables = {
-      LIBVA_DRIVER_NAME = mkDefault "nouveau";
-      VDPAU_DRIVER = mkDefault "nouveau";
-    };
-
-    # --- Rede Wi-Fi & Fixes de Repetidor ---
+    # --- Rede, Wi-Fi & Fixes de Repetidor ---
     networking = {
       hostName = "rocinante";
       search = [ "home.lan" ];
@@ -320,6 +292,15 @@ in
         "1.1.1.1" # Fallback público Cloudflare
         "8.8.8.8" # Fallback público Google
       ];
+
+      firewall = {
+        enable = true;
+        allowPing = true;
+        # Abre portas para descoberta de rede (mDNS + WS-Discovery)
+        allowedUDPPorts = [ 5353 3702 ];
+        allowedTCPPorts = [ 5353 3702 ];
+      };
+
       networkmanager = {
         enable = true;
         wifi = {
@@ -331,46 +312,24 @@ in
         dispatcherScripts = [
           {
             source = pkgs.writeShellScript "wifi-wired-autoswitch" ''
-              export PATH="${pkgs.networkmanager}/bin:${pkgs.gnugrep}/bin:${pkgs.coreutils}/bin:$PATH"
+              export PATH="${pkgs.networkmanager}/bin:$PATH"
 
               IFACE="$1"
               ACTION="$2"
 
-              if [ -z "$IFACE" ] || [ "$IFACE" = "lo" ]; then
-                exit 0
-              fi
+              [ -z "$IFACE" ] || [ "$IFACE" = "lo" ] && exit 0
+              [ -d "/sys/class/net/$IFACE/wireless" ] && exit 0
+              [ -e "/sys/class/net/$IFACE/device" ] || exit 0
 
-              is_ethernet() {
-                [ -d "/sys/class/net/$1" ] && [ ! -d "/sys/class/net/$1/wireless" ] && [ -e "/sys/class/net/$1/device" ]
-              }
-
-              has_other_active_ethernet() {
-                local excluded="$1"
-                for dev in /sys/class/net/*; do
-                  local devname="''${dev##*/}"
-                  if [ "$devname" != "$excluded" ] && is_ethernet "$devname"; then
-                    if [ -f "$dev/carrier" ] && [ "$(cat "$dev/carrier" 2>/dev/null)" = "1" ]; then
-                      return 0
-                    fi
-                  fi
-                done
-                return 1
-              }
-
-              if is_ethernet "$IFACE"; then
-                case "$ACTION" in
-                  up)
-                    # Cabo conectado: desativa o rádio Wi-Fi
-                    nmcli radio wifi off
-                    ;;
-                  down|post-down)
-                    # Cabo desconectado: reativa o rádio Wi-Fi se nenhum outro cabo estiver conectado
-                    if ! has_other_active_ethernet "$IFACE"; then
-                      nmcli radio wifi on
-                    fi
-                    ;;
-                esac
-              fi
+              case "$ACTION" in
+                up)
+                  nmcli radio wifi off
+                  ;;
+                down|post-down)
+                  # Reativa Wi-Fi se nenhum outro cabo estiver conectado
+                  ${hasActiveEthernet} || nmcli radio wifi on
+                  ;;
+              esac
             '';
             type = "basic";
           }
@@ -387,19 +346,9 @@ in
         Type = "oneshot";
         RemainAfterExit = true;
         ExecStart = pkgs.writeShellScript "wifi-wired-boot-sync" ''
-          export PATH="${pkgs.networkmanager}/bin:${pkgs.coreutils}/bin:$PATH"
+          export PATH="${pkgs.networkmanager}/bin:$PATH"
           sleep 1
-          has_eth=0
-          for eth in /sys/class/net/*; do
-            if [ -d "$eth" ] && [ ! -d "$eth/wireless" ] && [ -e "$eth/device" ]; then
-              if [ -f "$eth/carrier" ] && [ "$(cat "$eth/carrier" 2>/dev/null)" = "1" ]; then
-                has_eth=1
-                break
-              fi
-            fi
-          done
-
-          if [ "$has_eth" -eq 1 ]; then
+          if ${hasActiveEthernet}; then
             nmcli radio wifi off
           else
             nmcli radio wifi on
@@ -408,11 +357,14 @@ in
       };
     };
 
-    # Domínio regulatório Brasil
-    hardware.wirelessRegulatoryDatabase = true;
-
-    # --- Pacotes do Sistema ---
+    # --- Pacotes e Variáveis do Sistema ---
     environment = {
+      # Variáveis de aceleração gráfica para Mesa / Nouveau (padrão)
+      sessionVariables = {
+        LIBVA_DRIVER_NAME = mkDefault "nouveau";
+        VDPAU_DRIVER = mkDefault "nouveau";
+      };
+
       systemPackages = with pkgs; [
         libva-utils
         vdpauinfo
@@ -424,24 +376,18 @@ in
         samba # Contém o cliente smbclient
       ];
 
-      etc = {
-        "samba/smb.conf".text = ''
-          [global]
-          workgroup = WORKGROUP
-          client min protocol = NT1
-          client max protocol = SMB3
-          client ipc min protocol = NT1
-          client ipc max protocol = SMB3
-          client lanman auth = no
-          client ntlmv2 auth = yes
-          client use spnego = yes
-          client signing = auto
-          client max protocol = SMB3
-          client ipc max protocol = SMB3
-          client max protocol = SMB3
-          client ipc max protocol = SMB3
-        '';
-      };
+      etc."samba/smb.conf".text = ''
+        [global]
+        workgroup = WORKGROUP
+        client min protocol = NT1
+        client max protocol = SMB3
+        client ipc min protocol = NT1
+        client ipc max protocol = SMB3
+        client lanman auth = no
+        client ntlmv2 auth = yes
+        client use spnego = yes
+        client signing = auto
+      '';
     };
 
     # Teclado no console TTY
