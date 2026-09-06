@@ -21,6 +21,9 @@
             enableConfigurableSettings = true;
           };
         };
+        multimedia = {
+          mpv.enable = true;
+        };
         terminal = {
           enable = true;
           name = "alacritty";
@@ -30,11 +33,12 @@
 
     # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) especificamente na Rocinante
     programs.vscode.profiles.default.extensions =
-      lib.mkIf config.system.programs.editors.vscode.enable (
-        pkgs.nix4vscode.forVscode [
-          "Continue.continue"
-        ]
-      );
+      lib.mkIf config.system.programs.editors.vscode.enable
+        (
+          pkgs.nix4vscode.forVscode [
+            "Continue.continue"
+          ]
+        );
 
     # Compositor Picom ultra-leve para o MacBook Pro 4,1 (Intel Core 2 Duo / GeForce 8600M GT)
     desktop.bspwm.picom = {

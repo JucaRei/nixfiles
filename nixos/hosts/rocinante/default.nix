@@ -199,6 +199,27 @@ in
         };
       };
 
+      # --- Suporte a Samba (Cliente) ---
+      # Permite acessar compartilhamentos SMB, inclusive legados (SMBv1)
+      samba-wsdd = {
+        enable = true;
+        openFirewall = true;
+      };
+
+      gvfs = {
+        enable = true;
+      };
+
+      avahi = {
+        enable = true;
+        nssmdns4 = true; # Habilita resolução .local
+        publish = {
+          enable = true;
+          addresses = true;
+          workstation = true;
+        };
+      };
+
       # Gestão de energia e temperatura (TLP com governors otimizados para Core 2 Duo)
       tlp = {
         enable = true;
@@ -267,6 +288,20 @@ in
         };
         startWhenNeeded = lib.mkForce true;
       };
+    };
+
+    networking.firewall = {
+      enable = true;
+      allowPing = true;
+      # Abre portas para descoberta de rede
+      allowedUDPPorts = [
+        5353
+        3702
+      ];
+      allowedTCPPorts = [
+        5353
+        3702
+      ];
     };
 
     # Variáveis de aceleração gráfica para Mesa / Nouveau (padrão)
@@ -377,13 +412,37 @@ in
     hardware.wirelessRegulatoryDatabase = true;
 
     # --- Pacotes do Sistema ---
-    environment.systemPackages = with pkgs; [
-      libva-utils
-      vdpauinfo
-      mesa-demos
-      lm_sensors
-      gptfdisk
-    ];
+    environment = {
+      systemPackages = with pkgs; [
+        libva-utils
+        vdpauinfo
+        mesa-demos
+        lm_sensors
+        gptfdisk
+
+        cifs-utils # Necessário para montar compartilhamentos via mount -t cifs
+        samba # Contém o cliente smbclient
+      ];
+
+      etc = {
+        "samba/smb.conf".text = ''
+          [global]
+          workgroup = WORKGROUP
+          client min protocol = NT1
+          client max protocol = SMB3
+          client ipc min protocol = NT1
+          client ipc max protocol = SMB3
+          client lanman auth = no
+          client ntlmv2 auth = yes
+          client use spnego = yes
+          client signing = auto
+          client max protocol = SMB3
+          client ipc max protocol = SMB3
+          client max protocol = SMB3
+          client ipc max protocol = SMB3
+        '';
+      };
+    };
 
     # Teclado no console TTY
     console.useXkbConfig = true;

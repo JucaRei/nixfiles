@@ -4,6 +4,7 @@
   pkgs,
   hostname,
   nixGLWrapper ? (x: x),
+  isNvidia ? false,
   ...
 }:
 let
@@ -35,19 +36,29 @@ let
     # Nouveau NV50 não suporta Vulkan. OpenGL + VAAPI via Mesa.
     # Escaladores bilinear reduzem carga no Core 2 Duo Penryn (2 núcleos, ~2.4GHz).
     else if hostname == "rocinante" then
-      ''
-        [hw-preset]
-        profile-desc=Rocinante: Nouveau NV50 (vaapi, opengl, leve)
-        vo=gpu
-        gpu-api=opengl
-        hwdec=vaapi
-        scale=bilinear
-        cscale=bilinear
-        dscale=bilinear
-        correct-downscaling=no
-        sigmoid-upscaling=no
-        video-sync=audio
-      ''
+      if isNvidia then
+        ''
+          [hw-preset]
+          profile-desc=Rocinante: NVIDIA 340 Legacy (Proprietário)
+          vo=gpu
+          gpu-api=opengl
+          hwdec=no
+          profile=fast
+          scale=bilinear
+          cscale=bilinear
+          dscale=bilinear
+        ''
+      else
+        ''
+          [hw-preset]
+          profile-desc=Rocinante: Nouveau (Open Source)
+          vo=gpu
+          gpu-api=opengl
+          hwdec=vaapi
+          scale=bilinear
+          cscale=bilinear
+          dscale=bilinear
+        ''
 
     # ── MacBook Air 4,1 — Intel HD 3000, 2 GB RAM ──────────────────────────────
     # Memória limitada: cache reduzido, escaladores leves, sem pré-processamento.

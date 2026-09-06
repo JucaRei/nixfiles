@@ -129,6 +129,7 @@ rec {
                 ;
               useNixGL = false;
               nixGLWrapper = (pkg: pkg);
+              isNvidia = (hostname == "rocinante"); # Detecta se é o driver legado da NVIDIA no host rocinante
             };
           };
         }
