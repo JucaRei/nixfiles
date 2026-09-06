@@ -20,8 +20,6 @@
           "umask=0077"
           "noatime"
           "nodiratime"
-          "nofail"
-          "x-systemd.automount"
         ];
       };
       "/" = {
