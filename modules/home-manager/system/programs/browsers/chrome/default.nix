@@ -58,12 +58,13 @@ in
       # Runtime detection for non-NixOS (via activation script)
       activation.checkVaapi = lib.mkIf (!isNixOS) (
         lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p "$HOME/.local/scripts"
           if vainfo --display drm 2>/dev/null | grep -q VAProfile; then
             export HAS_VAAPI=1
           else
             export HAS_VAAPI=0
           fi
-          echo "export HAS_VAAPI=$HAS_VAAPI" > $HOME/.local/scripts/vaapi-status.sh
+          echo "export HAS_VAAPI=$HAS_VAAPI" > "$HOME/.local/scripts/vaapi-status.sh"
         ''
       );
     };
