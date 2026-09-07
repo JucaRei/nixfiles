@@ -35,14 +35,15 @@ in
         ]);
 
       activation = {
-        linkDestopApplications = mkIf (!isNixOS) {
-          # Add Packages To System Menu by updating database
-          after = [
+        linkDestopApplications = mkIf (!isNixOS) (
+          lib.hm.dag.entryAfter [
             "writeBoundary"
             "createXdgUserDirectories"
-          ];
-          data = "mkdir -p $HOME/.local/share/applications && ${pkgs.desktop-file-utils}/bin/update-desktop-database $HOME/.local/share/applications 2>/dev/null || true";
-        };
+          ] ''
+            mkdir -p "$HOME/.local/share/applications"
+            ${pkgs.desktop-file-utils}/bin/update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
+          ''
+        );
 
         "user-dirs" = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
           rm -f $VERBOSE_ARG "$HOME/.config/user-dirs.dirs.old"
