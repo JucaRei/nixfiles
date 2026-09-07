@@ -29,9 +29,10 @@ in
           )
         ]
         ++ (with pkgs; [
-
           font-search # show existent fonts
           nerd-fonts.symbols-only
+          nerd-fonts.jetbrains-mono
+          inter
         ]);
 
       activation = {
@@ -64,6 +65,7 @@ in
       };
     };
 
+    fonts.fontconfig.enable = true;
     targets.genericLinux.enable = mkIf (!isNixOS) true;
   };
 }

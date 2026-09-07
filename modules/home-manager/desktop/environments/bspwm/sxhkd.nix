@@ -34,7 +34,7 @@ let
       down) ${pkgs.brightnessctl}/bin/brightnessctl set 2%- ;;
     esac
 
-    val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
+    val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%' | head -n1)
     ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
   '';
 
@@ -51,7 +51,7 @@ let
         up)     ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +10% ;;
         down)   ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 10%- ;;
         toggle)
-          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%')
+          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%' | head -n1)
           if [ "$curr" -gt 0 ]; then
             ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 0%
           else
@@ -60,7 +60,7 @@ let
           ;;
       esac
 
-      val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%')
+      val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%' | head -n1)
       ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
     fi
   '';
