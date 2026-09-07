@@ -26,20 +26,20 @@ in
       enableDefaultConfig = false;
       settings = {
         "*" = {
-          compression = true;
-          forwardAgent = true;
-          serverAliveCountMax = 2;
-          serverAliveInterval = 300;
+          Compression = true;
+          ForwardAgent = true;
+          ServerAliveCountMax = 2;
+          ServerAliveInterval = 300;
         };
         "127.*.*.* 192.168.*.* 10.*.*.* 172.16.*.* 172.17.*.* 172.18.*.* 172.19.*.* 172.2?.*.* 172.30.*.* 172.31.*.*" =
           {
-            strictHostKeyChecking = "no";
-            userKnownHostsFile = "/dev/null";
+            StrictHostKeyChecking = "no";
+            UserKnownHostsFile = "/dev/null";
           };
 
         "*.lan" = {
-          strictHostKeyChecking = "no";
-          userKnownHostsFile = "/dev/null";
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
         };
       };
 

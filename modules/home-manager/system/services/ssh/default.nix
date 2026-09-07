@@ -20,9 +20,9 @@ in
         enable = true;
         settings = {
           "*" = {
-            compression = true;
-            forwardAgent = true;
-            controlMaster = "auto";
+            Compression = true;
+            ForwardAgent = true;
+            ControlMaster = "auto";
           };
         };
 

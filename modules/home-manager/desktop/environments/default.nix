@@ -41,8 +41,7 @@ in
             "writeBoundary"
             "createXdgUserDirectories"
           ];
-          before = [ ];
-          data = "${pkgs.desktop-file-utils}/bin/update-desktop-database";
+          data = "mkdir -p $HOME/.local/share/applications && ${pkgs.desktop-file-utils}/bin/update-desktop-database $HOME/.local/share/applications 2>/dev/null || true";
         };
 
         "user-dirs" = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
