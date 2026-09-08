@@ -173,21 +173,14 @@
     label-padding = 1;
   };
 
-  # --- Temperatura da CPU ---
+  # --- Temperatura da CPU (Script Dinâmico Universal) ---
   "module/temperature" = {
-    type = "internal/temperature";
-    thermal-zone = 0;
-    warn-temperature = 70;
-    format = "<ramp> <label>";
-    format-warn = "<ramp> <label-warn>";
+    type = "custom/script";
+    exec = "${scripts.temperatureScript}";
+    interval = 3;
+    format = "<label>";
     format-background = colors.surface0;
-    label = "%temperature-c%";
-    label-warn = "%temperature-c%";
-    label-warn-foreground = colors.red;
-    ramp-0 = "";
-    ramp-1 = "";
-    ramp-2 = "";
-    ramp-foreground = colors.peach;
+    label = "%output%";
     label-padding = 1;
   };
 
