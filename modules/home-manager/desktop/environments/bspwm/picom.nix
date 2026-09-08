@@ -13,7 +13,8 @@ let
   # Detecta se o módulo nvidia-legacy está ativo via osConfig (NixOS integrado)
   gpuDriver = osConfig.hardware.graphics.cards.gpu or "unknown";
   isNvidiaLegacy = gpuDriver == "nvidia-legacy";
-  isNouveauOrLegacy = isNvidiaLegacy || gpuDriver == "nouveau" || gpuDriver == "unknown" || gpuDriver == null;
+  isNouveauOrLegacy =
+    isNvidiaLegacy || gpuDriver == "nouveau" || gpuDriver == "unknown" || gpuDriver == null;
   hasBlur = cfg.blur.enable && (!isNouveauOrLegacy) && (cfg.backend != "xrender");
 in
 {
@@ -21,11 +22,15 @@ in
     enable = mkOption {
       type = bool;
       default = config.desktop.bspwm.enable;
-      description = "Enable picom compositor for bspwm";
+      description = "Enable modern and lightweight picom compositor for bspwm";
     };
 
     backend = mkOption {
-      type = lib.types.enum [ "xrender" "glx" "egl" ];
+      type = lib.types.enum [
+        "xrender"
+        "glx"
+        "egl"
+      ];
       default = if isNouveauOrLegacy then "xrender" else "glx";
       description = "Picom rendering backend (glx for GPU acceleration, xrender for VMs/legacy)";
     };
@@ -34,15 +39,7 @@ in
       enable = mkOption {
         type = bool;
         default = !isNouveauOrLegacy && cfg.backend != "xrender";
-        description = "Enable dual_kawase background blur (requires glx/egl backend and capable GPU)";
-      };
-    };
-
-    animations = {
-      enable = mkOption {
-        type = bool;
-        default = !isNouveauOrLegacy;
-        description = "Enable modern smooth window animations in picom (requires glx/egl backend)";
+        description = "Enable background blur (requires glx/egl backend and capable GPU)";
       };
     };
 
@@ -50,14 +47,14 @@ in
       enable = mkOption {
         type = bool;
         default = true;
-        description = "Enable window shadows in picom";
+        description = "Enable soft window shadows in picom";
       };
     };
 
     useDamage = mkOption {
       type = bool;
-      default = isNouveauOrLegacy; # true por padrão em hardware legado para minimizar repintura de tela
-      description = "Only repaint modified regions of the screen to save CPU/GPU cycles";
+      default = true;
+      description = "Only repaint modified regions of the screen to minimize CPU/GPU usage";
     };
   };
 
@@ -67,405 +64,116 @@ in
       package = pkgs.picom;
       backend = lib.mkDefault cfg.backend;
       vSync = lib.mkDefault (!isNouveauOrLegacy);
-      wintypes = { };
 
+      # Sombras suaves e naturais
       shadow = lib.mkDefault cfg.shadows.enable;
-      shadowOpacity = 0.75;
+      shadowOpacity = 0.55;
       shadowOffsets = [
         (-12)
         (-12)
       ];
 
+      # Fading suave e ágil (sem atraso na abertura/fechamento)
       fade = true;
-      fadeDelta = if isNouveauOrLegacy then 4 else 8;
-      fadeSteps = if isNouveauOrLegacy then [ 0.05 0.05 ] else [ 0.028 0.028 ];
+      fadeDelta = 6;
+      fadeSteps = [
+        0.04
+        0.04
+      ];
 
       settings = {
-        shadow-radius = if isNouveauOrLegacy then 8 else 12;
-        shadow-color = "#000000";
+        shadow-radius = 14;
+        shadow-color = "#11111b"; # Catppuccin Crust
 
-        no-fading-openclose = false;
-        no-fading-destroyed-argb = false;
-
-        frame-opacity = 1.0;
-        corner-radius = if isNouveauOrLegacy then 8 else 12;
-
-        dithered-present = false;
+        # Cantos arredondados modernos
+        corner-radius = if isNouveauOrLegacy then 8 else 10;
         detect-rounded-corners = true;
+
+        # Opacidades
+        active-opacity = 0.98;
+        inactive-opacity = 0.90;
+        frame-opacity = 1.0;
+        inactive-opacity-override = false;
+
+        # Eficiência máxima de renderização
+        use-damage = cfg.useDamage;
+        dithered-present = false;
         detect-client-opacity = true;
         detect-transient = true;
-        use-damage = cfg.useDamage;
-        detect-client-leader = false;
+        detect-client-leader = true;
         use-ewmh-active-win = true;
         unredir-if-possible = false;
 
-        # Otimizações de performance para GLX em GPUs legacy
+        # Otimizações GLX
         glx-no-stencil = true;
         glx-no-rebind-pixmap = true;
 
-        # Blur com dual_kawase (apenas em GPUs modernas com aceleração GLX)
+        # Blur suave e leve (se ativado)
         blur = lib.mkIf hasBlur {
           method = "dual_kawase";
-          strength = 8;
+          strength = 5;
           background = false;
           background-frame = false;
           background-fixed = false;
         };
       };
 
-      # Regras formatadas no padrão libconfig list ( ... ) exigido pelo Picom
+      # Regras modernas no formato libconfig (rules)
       extraConfig = ''
         rules = (
-          {
-            blur-background = false;
-            fade = false;
-          },
           {
             match = "window_type = 'normal'";
             fade = true;
             shadow = true;
-            corner-radius = 12;
             ${lib.optionalString hasBlur "blur-background = true;"}
-            opacity = 0.90;
-            ${lib.optionalString cfg.animations.enable ''
-            animations = (
-              {
-                triggers = ["close"];
-                opacity = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.35;
-                  start = "window-raw-opacity-before";
-                  end = 0;
-                };
-                blur-opacity = "opacity";
-                shadow-opacity = "opacity";
-                scale-x = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.35;
-                  start = 1;
-                  end = 0.85;
-                };
-                scale-y = "scale-x";
-                offset-x = "(1 - scale-x) / 2 * window-width";
-                offset-y = "(1 - scale-y) / 2 * window-height";
-                shadow-scale-x = "scale-x";
-                shadow-scale-y = "scale-y";
-                shadow-offset-x = "offset-x";
-                shadow-offset-y = "offset-y";
-              },
-              {
-                triggers = ["open"];
-                opacity = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.4;
-                  start = 0;
-                  end = "window-raw-opacity";
-                };
-                blur-opacity = "opacity";
-                shadow-opacity = "opacity";
-                scale-x = {
-                  curve = "cubic-bezier(0.16, 1, 0.3, 1)";
-                  duration = 0.4;
-                  start = 0.85;
-                  end = 1;
-                };
-                scale-y = "scale-x";
-                offset-x = "(1 - scale-x) / 2 * window-width";
-                offset-y = "(1 - scale-y) / 2 * window-height";
-                shadow-scale-x = "scale-x";
-                shadow-scale-y = "scale-y";
-                shadow-offset-x = "offset-x";
-                shadow-offset-y = "offset-y";
-              },
-              {
-                triggers = ["geometry"];
-                scale-x = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.4;
-                  start = "window-width-before / window-width";
-                  end = 1;
-                };
-                scale-y = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.4;
-                  start = "window-height-before / window-height";
-                  end = 1;
-                };
-                offset-x = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.4;
-                  start = "window-x-before - window-x";
-                  end = 0;
-                };
-                offset-y = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.4;
-                  start = "window-y-before - window-y";
-                  end = 0;
-                };
-                shadow-scale-x = "scale-x";
-                shadow-scale-y = "scale-y";
-                shadow-offset-x = "offset-x";
-                shadow-offset-y = "offset-y";
-              }
-            );
-            ''}
           },
           {
             match = "window_type = 'dialog'";
             shadow = true;
+            corner-radius = 10;
           },
           {
-            match = "window_type = 'tooltip'";
+            match = "window_type = 'tooltip' || window_type = 'menu' || window_type = 'dropdown_menu' || window_type = 'popup_menu'";
             corner-radius = 8;
+            shadow = false;
             opacity = 0.95;
-            shadow = true;
-            ${lib.optionalString hasBlur "blur-background = true;"}
           },
           {
             match = "fullscreen";
             corner-radius = 0;
-          },
-          {
-            match = "window_type = 'dock'";
-            corner-radius = 12;
-            fade = true;
-            ${lib.optionalString hasBlur "blur-background = true;"}
-            opacity = 0.85;
-          },
-          {
-            match = "window_type = 'dropdown_menu' || window_type = 'menu' || window_type = 'popup' || window_type = 'popup_menu'";
-            corner-radius = 8;
-          },
-          {
-            match = "window_type = 'menu' || role = 'popup' || role = 'bubble'";
             shadow = false;
           },
           {
-            match = "class_g = 'Alacritty' || class_g = 'st-256color' || class_g = 'kitty' || class_g = 'FloaTerm'";
-            opacity = 0.75;
+            match = "class_g = 'Polybar'";
+            shadow = false;
+            corner-radius = 12;
+            opacity = 1.0;
             ${lib.optionalString hasBlur "blur-background = true;"}
           },
           {
-            match = "class_g = 'bspwm-scratch' || class_g = 'Updating' || class_g = 'Voiceassistantoverlay'";
-            opacity = 0.70;
+            match = "class_g = 'Alacritty' || class_g = 'kitty'";
+            opacity = 0.92;
             ${lib.optionalString hasBlur "blur-background = true;"}
-            ${lib.optionalString cfg.animations.enable ''
-            animations = (
-              {
-                triggers = ["close", "hide"];
-                opacity = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.3;
-                  start = "window-raw-opacity-before";
-                  end = 0;
-                };
-                blur-opacity = "opacity";
-                shadow-opacity = "opacity";
-                offset-y = {
-                  curve = "cubic-bezier(0.6, 0, 0.735, 0.045)";
-                  duration = 0.3;
-                  start = 0;
-                  end = "-100";
-                };
-              },
-              {
-                triggers = ["open", "show"];
-                opacity = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.35;
-                  start = 0;
-                  end = "window-raw-opacity";
-                };
-                blur-opacity = "opacity";
-                shadow-opacity = "opacity";
-                offset-y = {
-                  curve = "cubic-bezier(0.16, 1, 0.3, 1)";
-                  duration = 0.35;
-                  start = "-100";
-                  end = 0;
-                };
-              }
-            );
-            ''}
           },
           {
             match = "class_g = 'Rofi'";
-            opacity = 0.75;
-            ${lib.optionalString hasBlur "blur-background = true;"}
-            corner-radius = 12;
-            ${lib.optionalString cfg.animations.enable ''
-            animations = (
-              {
-                triggers = ["close", "hide"];
-                opacity = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.25;
-                  start = "window-raw-opacity-before";
-                  end = 0;
-                };
-                blur-opacity = "opacity";
-                shadow-opacity = "opacity";
-                scale-x = {
-                  curve = "cubic-bezier(0.6, 0, 0.735, 0.045)";
-                  duration = 0.25;
-                  start = 1;
-                  end = 0.9;
-                };
-                scale-y = "scale-x";
-                offset-x = "(1 - scale-x) / 2 * window-width";
-                offset-y = "(1 - scale-y) / 2 * window-height";
-              },
-              {
-                triggers = ["open", "show"];
-                opacity = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.3;
-                  start = 0;
-                  end = "window-raw-opacity";
-                };
-                blur-opacity = "opacity";
-                shadow-opacity = "opacity";
-                scale-x = {
-                  curve = "cubic-bezier(0.16, 1, 0.3, 1)";
-                  duration = 0.3;
-                  start = 0.9;
-                  end = 1;
-                };
-                scale-y = "scale-x";
-                offset-x = "(1 - scale-x) / 2 * window-width";
-                offset-y = "(1 - scale-y) / 2 * window-height";
-              }
-            );
-            ''}
-          },
-          {
-            match = "class_g = 'Polybar' || class_g = 'eww-bar'";
-            corner-radius = 0;
-            ${lib.optionalString hasBlur "blur-background = true;"}
-            unredir-if-possible = false;
-          },
-          {
-            match = "class_g = 'Viewnior' || class_g = 'mpv' || class_g = 'Dunst' || class_g = 'retroarch'";
-            corner-radius = 14;
-          },
-          {
-            match = "name = 'Notification' || class_g ?= 'Notify-osd' || class_g = 'Dunst'";
+            opacity = 0.95;
+            corner-radius = 16;
             shadow = true;
             ${lib.optionalString hasBlur "blur-background = true;"}
-            opacity = 0.75;
-            ${lib.optionalString cfg.animations.enable ''
-            animations = (
-              {
-                triggers = ["close", "hide"];
-                opacity = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.25;
-                  start = "window-raw-opacity-before";
-                  end = 0;
-                };
-                blur-opacity = "opacity";
-                shadow-opacity = "opacity";
-                offset-x = {
-                  curve = "cubic-bezier(0.6, 0, 0.735, 0.045)";
-                  duration = 0.25;
-                  start = 0;
-                  end = "100";
-                };
-              },
-              {
-                triggers = ["open", "show"];
-                opacity = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  duration = 0.3;
-                  start = 0;
-                  end = "window-raw-opacity";
-                };
-                blur-opacity = "opacity";
-                shadow-opacity = "opacity";
-                offset-x = {
-                  curve = "cubic-bezier(0.16, 1, 0.3, 1)";
-                  duration = 0.3;
-                  start = "100";
-                  end = 0;
-                };
-              }
-            );
-            ''}
           },
           {
-            match = "class_g = 'Polybar' || class_g = 'Eww' || class_g = 'jgmenu' || class_g = 'bspwm-scratch' || class_g = 'Spotify' || class_g = 'retroarch' || class_g = 'firefox' || class_g = 'Screenkey' || class_g = 'mpv' || class_g = 'Viewnior' || _GTK_FRAME_EXTENTS@";
+            match = "class_g = 'Dunst'";
+            opacity = 0.95;
+            corner-radius = 12;
+            shadow = true;
+            ${lib.optionalString hasBlur "blur-background = true;"}
+          },
+          {
+            match = "class_g = 'slop' || class_g = 'Screenkey' || _GTK_FRAME_EXTENTS@";
             shadow = false;
+            corner-radius = 0;
           }
-          ${lib.optionalString cfg.animations.enable ''
-          ,
-          {
-            match = "_MY_CUSTOM_WORKSPACE_SWITCH@ = 1 && window_type = 'normal' && !class_g = 'Polybar' && !class_g = 'eww-bar' && !class_g = 'Dunst'";
-            animations = (
-              {
-                triggers = ["show"];
-                offset-x = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  start = "-1920";
-                  end = "0";
-                  duration = 0.3;
-                };
-                shadow-offset-x = "offset-x";
-              },
-              {
-                triggers = ["hide"];
-                opacity = {
-                  curve = "linear";
-                  duration = 0.3;
-                  start = "window-raw-opacity-before";
-                  end = "window-raw-opacity-before";
-                };
-                blur-opacity = 0;
-                shadow-opacity = "opacity";
-                offset-x = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  start = "0";
-                  end = "-1920";
-                  duration = 0.2;
-                };
-                shadow-offset-x = "offset-x";
-              }
-            );
-          },
-          {
-            match = "_MY_CUSTOM_WORKSPACE_SWITCH@ = 2 && window_type = 'normal' && !class_g = 'Polybar' && !class_g = 'eww-bar' && !class_g = 'Dunst'";
-            animations = (
-              {
-                triggers = ["show"];
-                offset-x = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  start = "1920";
-                  end = "0";
-                  duration = 0.3;
-                };
-                shadow-offset-x = "offset-x";
-              },
-              {
-                triggers = ["hide"];
-                opacity = {
-                  curve = "linear";
-                  duration = 0.3;
-                  start = "window-raw-opacity-before";
-                  end = "window-raw-opacity-before";
-                };
-                blur-opacity = 0;
-                shadow-opacity = "opacity";
-                offset-x = {
-                  curve = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                  start = "0";
-                  end = "1920";
-                  duration = 0.2;
-                };
-                shadow-offset-x = "offset-x";
-              }
-            );
-          }
-          ''}
         );
       '';
     };

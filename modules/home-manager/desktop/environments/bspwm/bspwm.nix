@@ -99,16 +99,17 @@ in
           settings = {
             split_ratio = 0.52;
             border_width = 2;
-            window_gap = 10; # Gaps arejados estilo Hyprland
-            top_padding = 34; # Altura da Polybar
-            bottom_padding = 6;
-            left_padding = 6;
-            right_padding = 6;
-            normal_border_color = "#181825"; # Catppuccin Mantle escuro
-            active_border_color = "#313244"; # Catppuccin Surface0
-            focused_border_color = "#cba6f7"; # Catppuccin Mauve (Glow característico do Hyprland)
-            presel_feedback_color = "#f2cdcd"; # Catppuccin Flamingo
+            window_gap = 10;
+            top_padding = 48; # Espaço para a Polybar flutuante
+            bottom_padding = 10;
+            left_padding = 10;
+            right_padding = 10;
+            normal_border_color = "#313244"; # Catppuccin Surface0
+            active_border_color = "#45475a"; # Catppuccin Surface1
+            focused_border_color = "#cba6f7"; # Catppuccin Mauve
+            presel_feedback_color = "#89b4fa"; # Catppuccin Blue
           };
+
           rules = {
             # --- Utilitários de Sistema, Áudio e Vídeo ---
             "Lxappearance" = {
@@ -400,7 +401,15 @@ in
           "XAUTHORITY"
         ];
         Environment = [
-          "PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.bspwm pkgs.xdotool pkgs.rofi pkgs.xprop ]}:/run/current-system/sw/bin"
+          "PATH=${
+            lib.makeBinPath [
+              pkgs.coreutils
+              pkgs.bspwm
+              pkgs.xdotool
+              pkgs.rofi
+              pkgs.xprop
+            ]
+          }:/run/current-system/sw/bin"
         ];
       };
       Install = {
