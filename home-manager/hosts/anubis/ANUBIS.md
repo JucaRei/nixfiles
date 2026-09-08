@@ -51,8 +51,22 @@ Com apenas 2 GB de RAM e Intel HD 3000:
 - `useDamage = true` (repinta apenas regiões modificadas)
 
 ### Teclado
-Layout BR ABNT2 configurado via `home.keyboard` no Home Manager.
-Parâmetros de kernel (ex: `hid_apple.swap_opt_cmd`) são configurados diretamente no GRUB do Fedora, fora do escopo do Home Manager.
+Layout Mac com dead keys para acentos PT-BR (`layout = "us"`, `variant = "intl"`, `model = "apple"`) configurado via `home.keyboard` no Home Manager.
+
+### Touchpad (Touch to Click, Natural Scrolling)
+Configurado permanentemente no Fedora via `/etc/X11/xorg.conf.d/40-libinput.conf`:
+- `Tapping = "on"` (Touch to Click ativado nativamente)
+- `NaturalScrolling = "true"` (Rolagem natural estilo macOS)
+- `ClickMethod = "clickfinger"` (Dois dedos para botão direito)
+- `DisableWhileTyping = "true"`
+
+### Controle de Brilho da Tela e Teclado
+Permissões no sysfs tornadas persistentes no Fedora via `/etc/tmpfiles.d/backlight.conf`:
+```
+z /sys/class/backlight/*/brightness 0666 - - -
+z /sys/class/leds/*kbd_backlight*/brightness 0666 - - -
+```
+Pacote `brightnessctl` instalado no Fedora para suporte udev.
 
 ### Parâmetros de Kernel (Fedora/GRUB)
 Gerenciados nativamente no Fedora (`/etc/default/grub`):

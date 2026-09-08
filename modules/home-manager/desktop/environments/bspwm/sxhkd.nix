@@ -48,8 +48,8 @@ let
 
     if [ -n "$dev" ]; then
       case "$1" in
-        up)     ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +10% ;;
-        down)   ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 10%- ;;
+        up)     ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +2% ;;
+        down)   ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 2%- ;;
         toggle)
           curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%' | head -n1)
           if [ "$curr" -gt 0 ]; then
