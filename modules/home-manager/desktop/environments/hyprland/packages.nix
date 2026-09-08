@@ -76,16 +76,30 @@ in
 
     xdg.enable = true;
 
-    # Sessão Wayland para gerenciadores de login (ex: GDM, SDDM, Regreet) em sistemas não-NixOS
+    # Sessão Wayland e wrapper para sistemas não-NixOS (Fedora/standalone)
     home.file = mkIf (!isNixOS) {
       ".local/share/wayland-sessions/hyprland.desktop".text = ''
         [Desktop Entry]
         Name=Hyprland
         Comment=An intelligent dynamic tiling Wayland compositor
-        Exec=${pkgs.hyprland}/bin/Hyprland
+        Exec=${config.home.homeDirectory}/.local/bin/start-hyprland
         Type=Application
         DesktopNames=Hyprland
       '';
+
+      ".local/bin/start-hyprland" = {
+        text = ''
+          #!/bin/sh
+          if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+            . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+          fi
+          if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+            . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+          fi
+          exec ${pkgs.hyprland}/bin/Hyprland "$@"
+        '';
+        executable = true;
+      };
     };
   };
 }

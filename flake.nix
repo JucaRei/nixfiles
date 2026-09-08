@@ -54,8 +54,9 @@
         };
         "juca@anubis" = helper.mkHome {
           hostname = "anubis";
-          desktop = "bspwm";
+          desktop = "hyprland";
         };
+
         "juca@virtualvm" = helper.mkHome {
           hostname = "virtualvm";
           stateVersion = "24.05";
