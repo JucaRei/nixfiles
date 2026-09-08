@@ -98,7 +98,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Home Manager**: Localizado em `modules/home-manager/desktop/environments/hyprland/`. Arquitetura modular composta por `hyprland.nix` (compositor, animações bezier `fastBezier`/`overshot`, blur de 2 passes, cantos arredondados de 10px, sombras suaves translúcidas, regras de janelas para diálogos modais e PIP, gestos de 3 dedos nativos), `waybar.nix` (barra superior flutuante estilo *floating pills* com tema Catppuccin Mocha, workspaces interativos, relógio com calendário, pulseaudio com scroll, rede dinâmica wifi/ethernet, backlight, bateria e menu de energia), `rofi.nix` (launcher e histórico de clipboard com `cliphist`), `hyprlock.nix` (bloqueio de tela moderno com blur, tipografia e avatar do usuário), `hypridle.nix` (gestão de inatividade), `hyprpaper.nix` (papel de parede), `dunst.nix` (notificações) e `packages.nix` (grim, slurp, wl-clipboard, etc.).
   - **NixOS**: Em `modules/nixos/desktop/environments/hyprland/default.nix`, adicionado serviço PAM para o `hyprlock` (`security.pam.services.hyprlock = {};`) e portals Wayland. Em `modules/nixos/desktop/display-managers/default.nix`, configurado mapeamento declarativo via `mkDefault` conectando `desktop.display-managers.name` aos respectivos DMs (`regreet`, `sddm`, `lightdm`, `gdm`).
 
+- **Host `anubis` com Hyprland (Fedora Standalone)**:
+  - Configurado via `desktop = "hyprland"` no `flake.nix`.
+  - Gera `~/.local/bin/start-hyprland` com ambiente do Nix carregado e `.local/share/wayland-sessions/hyprland.desktop`.
+  - Para iniciar a sessão no Fedora: selecionar "Hyprland" no Display Manager ou executar `start-hyprland` a partir de uma TTY.
+
 ---
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
