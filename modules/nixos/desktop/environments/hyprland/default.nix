@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+{ config, lib, ... }:
+let
+  inherit (lib) mkIf mkForce;
+in
 {
   config = {
     desktop = {
@@ -14,8 +17,9 @@
       sessionVariables = {
         # Make sure the cursor size is the same in all environments
         HYPRCURSOR_SIZE = 24;
-        NIXOS_OZONE_WL = "1";
-        QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+        # HYPRCURSOR_THEME = "catppuccin-mocha-blue-cursors";
+        NIXOS_OZONE_WL = 1;
+        QT_WAYLAND_DISABLE_WINDOWDECORATION = 1;
         DISPLAY = ":0";
       };
     };
@@ -24,13 +28,6 @@
       hyprland = {
         enable = true;
       };
-    };
-
-    security.pam.services.hyprlock = { };
-
-    xdg.portal = {
-      enable = true;
-      extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
     };
 
     nix = {

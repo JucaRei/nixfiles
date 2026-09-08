@@ -13,7 +13,6 @@ in
   imports = [
     ./bspwm
     ./xfce4
-    ./hyprland
     ../display-servers
   ];
 
@@ -38,15 +37,13 @@ in
 
       activation = {
         linkDestopApplications = mkIf (!isNixOS) (
-          lib.hm.dag.entryAfter
-            [
-              "writeBoundary"
-              "createXdgUserDirectories"
-            ]
-            ''
-              mkdir -p "$HOME/.local/share/applications"
-              ${pkgs.desktop-file-utils}/bin/update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
-            ''
+          lib.hm.dag.entryAfter [
+            "writeBoundary"
+            "createXdgUserDirectories"
+          ] ''
+            mkdir -p "$HOME/.local/share/applications"
+            ${pkgs.desktop-file-utils}/bin/update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
+          ''
         );
 
         "user-dirs" = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
