@@ -330,7 +330,6 @@ in
         "super + shift + 3" = "${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/";
         # Cmd + Shift + 4: Seleção interativa de área
         "super + shift + 4" = "${pkgs.flameshot}/bin/flameshot gui";
-        "super + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
         # Cmd + Shift + 5: Ferramenta GUI de captura
         "super + shift + 5" = "${pkgs.flameshot}/bin/flameshot gui";
         # Atalhos padrão PrintScreen (fallback)

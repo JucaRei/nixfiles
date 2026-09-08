@@ -18,7 +18,7 @@ in
     enable = mkOption {
       type = bool;
       default = config.desktop.bspwm.enable;
-      description = "Enable modern floating Polybar for bspwm";
+      description = "Enable gh0stzk-inspired modular Polybar for bspwm";
     };
   };
 
@@ -32,10 +32,10 @@ in
       script = ''
         polybar-msg cmd quit 2>/dev/null || true
         pkill -x polybar || true
-        while pgrep -u $UID -x polybar >/dev/null; do sleep 0.5; done
+        while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
 
-        if command -v ${pkgs.xorg.xrandr}/bin/xrandr >/dev/null 2>&1; then
-          for m in $(${pkgs.xorg.xrandr}/bin/xrandr --query | grep " connected" | cut -d" " -f1); do
+        if type xrandr >/dev/null 2>&1; then
+          for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
             MONITOR=$m polybar --reload main &
           done
         else
@@ -45,44 +45,41 @@ in
       config = polybarModules // {
         "colors" = colors;
 
-        # --- Barra Principal Flutuante (Floating Pill Style) ---
+        # --- Barra Principal (Floating Capsules / gh0stzk style) ---
         "bar/main" = {
           monitor = "\${env:MONITOR:}";
-          width = "100%:-28";
-          height = "34";
-          offset-x = "14";
-          offset-y = "8";
-          radius = 12;
+          width = "100%";
+          height = "30";
+          radius = 0;
           fixed-center = true;
 
-          background = "#e61e1e2e"; # Catppuccin Base semi-translúcido (90%)
+          background = colors.transparent;
           foreground = colors.text;
 
           line-size = 2;
-          line-color = colors.mauve;
+          line-color = colors.blue;
 
-          border-size = 1;
-          border-color = "#45475a"; # Catppuccin Surface1 sutil
-
-          padding-left = 2;
-          padding-right = 2;
-          module-margin = 1;
+          border-size = 0;
+          padding-left = 1;
+          padding-right = 1;
+          module-margin = 0;
 
           font-0 = "Inter:weight=SemiBold:size=10;3";
-          font-1 = "FiraCode Nerd Font:size=11;3";
+          font-1 = "Symbols Nerd Font:size=12;3";
           font-2 = "JetBrainsMono Nerd Font:weight=Medium:size=10;3";
-          font-3 = "Symbols Nerd Font:size=14;3";
+          font-3 = "Symbols Nerd Font:size=15;4"; # Ícone do lançador e power
+          font-4 = "Symbols Nerd Font:size=16;4"; # Glyphs das cápsulas  e 
 
-          modules-left = "launcher sep bspwm sep xwindow";
-          modules-center = "date";
-          modules-right = "cpu memory pulseaudio backlight battery network sep powermenu";
+          # --- Organização em Cápsulas/Pills (gh0stzk Rice Style) ---
+          modules-left = "bi launcher bd sep bi bspwm bd sep bi xwindow bd sep bi minimized bd";
+          modules-center = "bi media bd";
+          modules-right = "bi pulseaudio backlight battery bd sep bi temperature bd sep bi bluetooth bd sep bi network bd sep bi netspeed bd sep bi cpu memory bd sep bi date bd sep bi powermenu bd";
 
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";
 
           enable-ipc = true;
           wm-restack = "bspwm";
-          override-redirect = true;
           screenchange-reload = true;
         };
       };
