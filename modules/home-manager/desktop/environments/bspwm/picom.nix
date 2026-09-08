@@ -51,11 +51,20 @@ in
       };
     };
 
+    animations = {
+      enable = mkOption {
+        type = bool;
+        default = false;
+        description = "Enable window animations (preserved for host compatibility)";
+      };
+    };
+
     useDamage = mkOption {
       type = bool;
       default = true;
       description = "Only repaint modified regions of the screen to minimize CPU/GPU usage";
     };
+
   };
 
   config = mkIf cfg.enable {
