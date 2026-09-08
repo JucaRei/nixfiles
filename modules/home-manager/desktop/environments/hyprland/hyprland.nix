@@ -29,6 +29,59 @@ let
     ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
     ${pkgs.libnotify}/bin/notify-send -i "$file" "Captura de Tela" "Recorte salvo em Pictures/Screenshots e copiado."
   '';
+
+  kbdBrightnessOsd = pkgs.writeShellScript "hypr-kbd-brightness-osd" ''
+    # Identificar dispositivo de iluminação de teclado (MacBook smc::kbd_backlight ou similar)
+    dev="smc::kbd_backlight"
+    if ! ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" info >/dev/null 2>&1; then
+      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list 2>/dev/null | grep -m1 "kbd_backlight" | cut -d\' -f2)
+    fi
+
+    if [ -n "$dev" ]; then
+      case "$1" in
+        up)
+          prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
+          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +5% >/dev/null 2>&1
+          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
+          if [ "$prev" = "$curr" ]; then
+            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +1 >/dev/null 2>&1
+          fi
+          ;;
+        down)
+          prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
+          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 5%- >/dev/null 2>&1
+          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
+          if [ "$prev" = "$curr" ]; then
+            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 1- >/dev/null 2>&1
+          fi
+          ;;
+        toggle)
+          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+          if [ "$curr" -gt 0 ] 2>/dev/null; then
+            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 0%
+          else
+            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 50%
+          fi
+          ;;
+      esac
+
+      val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+      if [ -n "$val" ]; then
+        ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
+      fi
+    fi
+  '';
+
+  monBrightnessOsd = pkgs.writeShellScript "hypr-mon-brightness-osd" ''
+    case "$1" in
+      up) ${pkgs.brightnessctl}/bin/brightnessctl set 5%+ ;;
+      down) ${pkgs.brightnessctl}/bin/brightnessctl set 5%- ;;
+    esac
+    val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
+    if [ -n "$val" ]; then
+      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+    fi
+  '';
 in
 {
   options.desktop.hyprland = {
@@ -302,14 +355,24 @@ in
           ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
           ", XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
           ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
+
+          # Iluminação do Teclado (Liga/Desliga)
+          ", XF86KbdLightOnOff, exec, ${kbdBrightnessOsd} toggle"
+          "$mainMod SHIFT, F5, exec, ${kbdBrightnessOsd} toggle"
         ];
 
         binde = [
           # Volume e Brilho com repetição contínua
           ", XF86AudioRaiseVolume, exec, ${pkgs.pamixer}/bin/pamixer -i 5"
           ", XF86AudioLowerVolume, exec, ${pkgs.pamixer}/bin/pamixer -d 5"
-          ", XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 5%+"
-          ", XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 5%-"
+          ", XF86MonBrightnessUp, exec, ${monBrightnessOsd} up"
+          ", XF86MonBrightnessDown, exec, ${monBrightnessOsd} down"
+
+          # Iluminação do Teclado (MacBook / Laptops)
+          ", XF86KbdBrightnessUp, exec, ${kbdBrightnessOsd} up"
+          ", XF86KbdBrightnessDown, exec, ${kbdBrightnessOsd} down"
+          "$mainMod, F6, exec, ${kbdBrightnessOsd} up"
+          "$mainMod, F5, exec, ${kbdBrightnessOsd} down"
         ];
 
         bindm = [

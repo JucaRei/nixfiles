@@ -30,11 +30,16 @@ in
         };
 
         listener = [
-          # 2.5 min: Diminui o brilho do monitor
+          # 2.5 min: Diminui o brilho do monitor e desliga iluminação do teclado
           {
             timeout = 150;
             on-timeout = "${pkgs.brightnessctl}/bin/brightnessctl -s set 10";
             on-resume = "${pkgs.brightnessctl}/bin/brightnessctl -r";
+          }
+          {
+            timeout = 150;
+            on-timeout = "${pkgs.brightnessctl}/bin/brightnessctl -sd '*::kbd_backlight' set 0 || true";
+            on-resume = "${pkgs.brightnessctl}/bin/brightnessctl -rd '*::kbd_backlight' || true";
           }
           # 5 min: Bloqueia a tela
           {
