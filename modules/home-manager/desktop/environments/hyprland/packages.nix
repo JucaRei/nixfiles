@@ -122,7 +122,7 @@ in
           # Evita tentativa de carregar backend Vulkan inexistente no Intel Sandy Bridge (HD 3000)
           unset WLR_BACKEND
 
-          exec ${pkgs.hyprland}/bin/Hyprland "$@"
+          exec ${pkgs.hyprland}/bin/start-hyprland "$@"
         '';
         executable = true;
       };

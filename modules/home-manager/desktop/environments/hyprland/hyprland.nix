@@ -97,6 +97,18 @@ in
           vfr = false;
         };
 
+        misc = {
+          disable_hyprland_logo = true;
+          disable_splash_rendering = true;
+          disable_watchdog_warning = true;
+          vrr = 0;
+        };
+
+        ecosystem = {
+          no_update_news = true;
+          no_donation_nag = true;
+        };
+
         decoration = {
           rounding = 10;
           active_opacity = 0.98;
