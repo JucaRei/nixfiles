@@ -71,6 +71,7 @@ in
         glibcLocales
         xdg-desktop-portal-gtk
         xdg-desktop-portal-hyprland
+        intel-vaapi-driver
       ]
       ++ cfg.extraPackages;
 
@@ -110,6 +111,13 @@ in
           export GBM_BACKENDS_PATH="${pkgs.mesa}/lib/gbm:/usr/lib64/gbm''${GBM_BACKENDS_PATH:+:$GBM_BACKENDS_PATH}"
           export LIBGL_DRIVERS_PATH="${pkgs.mesa}/lib/dri:/usr/lib64/dri''${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}"
           export __EGL_VENDOR_LIBRARY_DIRS="${pkgs.mesa}/share/glvnd/egl_vendor.d:/usr/share/glvnd/egl_vendor.d''${__EGL_VENDOR_LIBRARY_DIRS:+:$__EGL_VENDOR_LIBRARY_DIRS}"
+
+          # Aceleração de hardware VA-API para Intel Sandy Bridge (i965)
+          export LIBVA_DRIVER_NAME="i965"
+          export LIBVA_DRIVERS_PATH="${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib64/dri''${LIBVA_DRIVERS_PATH:+:$LIBVA_DRIVERS_PATH}"
+
+          # Sincroniza ambiente de drivers gráficos com o systemd do usuário
+          systemctl --user set-environment GBM_BACKENDS_PATH="$GBM_BACKENDS_PATH" LIBGL_DRIVERS_PATH="$LIBGL_DRIVERS_PATH" __EGL_VENDOR_LIBRARY_DIRS="$__EGL_VENDOR_LIBRARY_DIRS" LIBVA_DRIVER_NAME="$LIBVA_DRIVER_NAME" LIBVA_DRIVERS_PATH="$LIBVA_DRIVERS_PATH" 2>/dev/null || true
 
           # Evita tentativa de carregar backend Vulkan inexistente no Intel Sandy Bridge (HD 3000)
           unset WLR_BACKEND

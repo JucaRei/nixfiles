@@ -73,7 +73,6 @@ in
           "CLUTTER_BACKEND,wayland"
           "SDL_VIDEODRIVER,wayland"
           "MOZ_ENABLE_WAYLAND,1"
-          "AQ_NO_MODIFIERS,1"
         ];
 
         general = {
@@ -161,10 +160,11 @@ in
         };
 
         exec-once = [
+          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
+          "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
           "${pkgs.waybar}/bin/waybar"
           "${pkgs.dunst}/bin/dunst"
           "${pkgs.hypridle}/bin/hypridle"
-          "${pkgs.hyprpaper}/bin/hyprpaper"
           "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
           "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
           "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"

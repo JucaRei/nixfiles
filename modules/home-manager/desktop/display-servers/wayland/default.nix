@@ -78,18 +78,21 @@ in
         __VK_LAYER_NV_optimus = mkIf isNixOS (
           if hasNvidia || hasGpuFallback == "nvidia" then "NVIDIA_only" else null
         );
-        LIBVA_DRIVER_NAME = mkIf isNixOS (
-          if hasIntel || hasGpuFallback == "intel" then
-            "iHD"
-          else if hasNvidia || hasGpuFallback == "nvidia" then
-            "nvidia"
-          else if hasAmd || hasGpuFallback == "amd" then
-            "radeonsi"
-          else if hasArmGpu || hasGpuFallback == "arm" then
-            "v3d"
-          else
-            null
-        );
+        LIBVA_DRIVER_NAME =
+          if isNixOS then
+            (
+              if hasIntel || hasGpuFallback == "intel" then
+                "iHD"
+              else if hasNvidia || hasGpuFallback == "nvidia" then
+                "nvidia"
+              else if hasAmd || hasGpuFallback == "amd" then
+                "radeonsi"
+              else if hasArmGpu || hasGpuFallback == "arm" then
+                "v3d"
+              else
+                null
+            )
+          else (if hasIntel || hasGpuFallback == "intel" then "i965" else null);
         VDPAU_DRIVER = mkIf isNixOS (
           if hasNvidia || hasGpuFallback == "nvidia" then
             "nvidia"
@@ -106,6 +109,7 @@ in
         # Mesa & GBM loader paths for non-NixOS hosts (e.g. Fedora)
         GBM_BACKENDS_PATH = mkIf (!isNixOS) "${pkgs.mesa}/lib/gbm:/usr/lib64/gbm";
         LIBGL_DRIVERS_PATH = mkIf (!isNixOS) "${pkgs.mesa}/lib/dri:/usr/lib64/dri";
+        LIBVA_DRIVERS_PATH = mkIf (!isNixOS) "${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib64/dri";
         NVD_BACKEND = mkIf isNixOS (if hasNvidia || hasGpuFallback == "nvidia" then "direct" else null);
 
         # Card paths (adjust PCI paths for ARM; may not apply, so conditional)
@@ -144,8 +148,13 @@ in
               export LIBVA_DRIVER_NAME="radeonsi"
               export VDPAU_DRIVER="radeonsi"
             elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*intel' >/dev/null; then
-              # Intel
-              export LIBVA_DRIVER_NAME="iHD"
+              # Intel (detect Sandy/Ivy/Haswell legacy vs Broadwell+ iHD)
+              if lspci | grep -iE '2nd Generation|3rd Gen|4th Gen|HD Graphics 3000|HD Graphics 4000|HD Graphics 2500|HD Graphics 2000' >/dev/null; then
+                export LIBVA_DRIVER_NAME="i965"
+              else
+                export LIBVA_DRIVER_NAME="iHD"
+              fi
+              export LIBVA_DRIVERS_PATH="${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib64/dri"
             fi
             EOF
             chmod +x $HOME/.local/scripts/wayland-vars.sh
