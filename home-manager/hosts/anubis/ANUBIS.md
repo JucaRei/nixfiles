@@ -74,9 +74,14 @@ z /sys/class/leds/*kbd_backlight*/brightness 0666 - - -
 Pacote `brightnessctl` instalado no Fedora para suporte udev.
 
 ### Wi-Fi (Broadcom BCM43224)
-- **Driver**: `brcmsmac` (driver nativo open-source do kernel Linux)
+- **Driver**: `brcmsmac` + barramento `bcma` (drivers nativos open-source do kernel Linux)
 - **Nome da Interface**: `wlp2s0b1`
-- **Módulo no Boot**: `/etc/modules-load.d/wifi.conf` contém `brcmsmac`
+- **Módulos no Boot**: `/etc/modules-load.d/wifi.conf` contém `bcma` e `brcmsmac`
+- **Serviço de Inicialização Pré-Rede**: `/etc/systemd/system/ensure-wifi.service` habilitado no `multi-user.target` garantindo a carga de `bcma` e `brcmsmac` antes do NetworkManager.
+- **Prevenção de Quedas (Powersave Desativado)**:
+  - `/etc/NetworkManager/conf.d/disable-wifi-powersave.conf` com `wifi.powersave = 2`.
+  - Conexão Wi-Fi com `802-11-wireless.powersave = 2`, `connection.autoconnect-retries = 0` (tentativas infinitas de reconexão automática) e `connection.autoconnect-priority = 100`.
+- **Initramfs (Dracut)**: Atualizado com `sudo dracut -f` para carregar `bcma`/`brcmsmac` e respeitar a blacklist desde o início do boot.
 - **Polkit**: `/etc/polkit-1/rules.d/50-networkmanager.rules` permite ao grupo `wheel` gerenciar conexões do NetworkManager sem prompt de senha.
 - **Motivo**: O driver proprietário `wl` causa Kernel Panic (`exitcode=0x00000009`) nas versões recentes do kernel Fedora (7.x) e falhava na associação em redes 5GHz por operar com `passivemode=1`.
 - **Configuração ativa em `/etc/modprobe.d/broadcom-wifi.conf`**:
