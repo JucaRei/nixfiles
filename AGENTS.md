@@ -119,6 +119,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Teclado Apple / Mac no Hyprland**:
     - Herdado declarativamente de `home.keyboard` (`layout = "us"`, `variant = "intl"`, `model = "apple"`).
     - Habilita suporte a dead keys para acentos em Português (`'c` -> `ç`, `~a` -> `ã`, `'e` -> `é`) e mapeamento físico correto no teclado do MacBook Air.
+  - **Autenticação do Hyprlock no Fedora (PAM)**:
+    - Em distribuições não-NixOS com Home Manager standalone, `/etc/pam.d/hyprlock` não existe por padrão, fazendo o PAM cair na regra `/etc/pam.d/other` (que rejeita qualquer tentativa como "Wrong password!").
+    - Requer provisionar `/etc/pam.d/hyprlock` incluindo `system-auth` (`auth`, `account`, `password`, `session include system-auth`).
 
 ---
 
