@@ -58,6 +58,15 @@ Layout Mac com dead keys para acentos PT-BR (`layout = "us"`, `variant = "intl"`
 2. **Nível de Usuário (Home Manager)**:
    - `home.keyboard = { layout = "us"; variant = "intl"; model = "apple"; };` em [default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/hosts/anubis/default.nix).
 
+### Fuso Horário (Timezone - America/Sao_Paulo)
+- Configurado especificamente para o Anubis em [default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/hosts/anubis/default.nix):
+  - `home.sessionVariables.TZ = "America/Sao_Paulo";`
+  - `desktop.bspwm.extraConfig = "export TZ=\"America/Sao_Paulo\"";` garantindo que a Polybar e toda a sessão gráfica operem no horário correto de Brasília.
+- No Fedora (nível de sistema):
+  ```bash
+  sudo timedatectl set-timezone America/Sao_Paulo
+  ```
+
 ### Touchpad (Touch to Click, Natural Scrolling)
 Configurado permanentemente no Fedora via `/etc/X11/xorg.conf.d/40-libinput.conf`:
 - `Tapping = "on"` (Touch to Click ativado nativamente)

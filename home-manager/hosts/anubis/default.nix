@@ -44,6 +44,15 @@
       useDamage = true;
     };
 
+    # Fuso horário America/Sao_Paulo para o Anubis (relógio da Polybar e sessão)
+    home.sessionVariables = {
+      TZ = "America/Sao_Paulo";
+    };
+
+    desktop.bspwm.extraConfig = ''
+      export TZ="America/Sao_Paulo"
+    '';
+
     # Teclado Mac com dead keys para acentos PT-BR (é, ã, ç)
     home.keyboard = {
       layout = "us";
