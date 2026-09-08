@@ -1,6 +1,4 @@
 {
-  config,
-  lib,
   pkgs,
   ...
 }:
@@ -55,6 +53,10 @@
 
     home.packages = with pkgs; [
       direnv
+      nix-direnv
+      nil
+      git
+      nh
       duf
       fzf
       ripgrep
