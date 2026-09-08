@@ -49,6 +49,48 @@ in
       default = [ ",preferred,auto,1" ];
       description = "Hyprland monitor configurations";
     };
+
+    keyboard = {
+      layout = mkOption {
+        type = str;
+        default =
+          if config.home.keyboard != null && config.home.keyboard.layout != null then
+            config.home.keyboard.layout
+          else
+            "br,us";
+        description = "Hyprland keyboard layout (defaults to home.keyboard.layout)";
+      };
+
+      variant = mkOption {
+        type = str;
+        default =
+          if config.home.keyboard != null && config.home.keyboard.variant != null then
+            config.home.keyboard.variant
+          else
+            "";
+        description = "Hyprland keyboard variant (defaults to home.keyboard.variant)";
+      };
+
+      model = mkOption {
+        type = str;
+        default =
+          if config.home.keyboard != null && config.home.keyboard.model != null then
+            config.home.keyboard.model
+          else
+            "";
+        description = "Hyprland keyboard model (defaults to home.keyboard.model)";
+      };
+
+      options = mkOption {
+        type = str;
+        default =
+          if config.home.keyboard != null && config.home.keyboard.options != [] then
+            lib.concatStringsSep "," config.home.keyboard.options
+          else
+            "";
+        description = "Hyprland keyboard options (defaults to home.keyboard.options)";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -151,8 +193,10 @@ in
         };
 
         input = {
-          kb_layout = "br,us";
-          kb_options = "grp:alt_shift_toggle";
+          kb_layout = cfg.keyboard.layout;
+          kb_variant = cfg.keyboard.variant;
+          kb_model = cfg.keyboard.model;
+          kb_options = cfg.keyboard.options;
           follow_mouse = 1;
           sensitivity = 0;
 
