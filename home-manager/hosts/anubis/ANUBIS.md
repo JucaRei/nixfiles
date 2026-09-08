@@ -51,7 +51,12 @@ Com apenas 2 GB de RAM e Intel HD 3000:
 - `useDamage = true` (repinta apenas regiões modificadas)
 
 ### Teclado
-Layout Mac com dead keys para acentos PT-BR (`layout = "us"`, `variant = "intl"`, `model = "apple"`) configurado via `home.keyboard` no Home Manager.
+Layout Mac com dead keys para acentos PT-BR (`layout = "us"`, `variant = "intl"`, `model = "apple"`) configurado em duas camadas:
+1. **Nível de Sistema (Fedora)**:
+   - `localectl set-x11-keymap us apple intl`
+   - Arquivo `/etc/X11/xorg.conf.d/00-keyboard.conf` gerado automaticamente garantindo suporte no Xorg e no console virtual (`us-intl`).
+2. **Nível de Usuário (Home Manager)**:
+   - `home.keyboard = { layout = "us"; variant = "intl"; model = "apple"; };` em [default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/hosts/anubis/default.nix).
 
 ### Touchpad (Touch to Click, Natural Scrolling)
 Configurado permanentemente no Fedora via `/etc/X11/xorg.conf.d/40-libinput.conf`:
@@ -70,6 +75,9 @@ Pacote `brightnessctl` instalado no Fedora para suporte udev.
 
 ### Wi-Fi (Broadcom BCM43224)
 - **Driver**: `brcmsmac` (driver nativo open-source do kernel Linux)
+- **Nome da Interface**: `wlp2s0b1`
+- **Módulo no Boot**: `/etc/modules-load.d/wifi.conf` contém `brcmsmac`
+- **Polkit**: `/etc/polkit-1/rules.d/50-networkmanager.rules` permite ao grupo `wheel` gerenciar conexões do NetworkManager sem prompt de senha.
 - **Motivo**: O driver proprietário `wl` causa Kernel Panic (`exitcode=0x00000009`) nas versões recentes do kernel Fedora (7.x) e falhava na associação em redes 5GHz por operar com `passivemode=1`.
 - **Configuração ativa em `/etc/modprobe.d/broadcom-wifi.conf`**:
   ```
@@ -82,6 +90,11 @@ Pacote `brightnessctl` instalado no Fedora para suporte udev.
   sudo cp /etc/modprobe.d/broadcom-wifi.conf.bak /etc/modprobe.d/broadcom-wifi.conf
   sudo cp /etc/modprobe.d/wl-options.conf.bak /etc/modprobe.d/wl-options.conf
   ```
+
+### Resolução de Erros Comuns no `switch-home`
+- **Erro `Existing file ... would be clobbered`**:
+  - Ocorre quando arquivos de configuração (ex: `~/.config/alacritty/alacritty.toml` ou `~/.config/gtk-3.0/settings.ini`) foram salvos como arquivos normais em vez de symlinks do Nix Store, e já existe um `.backup`.
+  - **Solução**: Renomear o arquivo físico conflitante para `.old` (ex: `mv ~/.config/alacritty/alacritty.toml ~/.config/alacritty/alacritty.toml.old`) e rodar `switch-home` novamente.
 
 ### Parâmetros de Kernel (Fedora/GRUB)
 Gerenciados nativamente no Fedora (`/etc/default/grub`):
