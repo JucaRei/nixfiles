@@ -31,6 +31,14 @@ pkgs.writeScriptBin "hm-switch" ''
       ${pkgs.git}/bin/git -C "$HOME/.dotfiles/nixfiles" add -A 2>/dev/null || true
     fi
 
+    # Se a sessão DBus não responder (comum via SSH ou transição de Display Manager),
+    # desativa a variável para que o Home Manager use dbus-run-session isolado no dconf
+    if [ -n "''${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+      if ! ${pkgs.dbus}/bin/dbus-send --session --dest=org.freedesktop.DBus --type=method_call --print-reply /org/freedesktop/DBus org.freedesktop.DBus.GetId >/dev/null 2>&1; then
+        unset DBUS_SESSION_BUS_ADDRESS
+      fi
+    fi
+
     set -o pipefail
     if ${pkgs.unstable.nh}/bin/nh home switch --backup-extension backup "$HOME/.dotfiles/nixfiles" -- --impure --show-trace -vL --cores "$build_cores" 2>&1 | tee "$TMP_LOG"; then
       rm -f "$TMP_LOG" 2>/dev/null || true
