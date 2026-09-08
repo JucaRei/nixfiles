@@ -73,6 +73,7 @@ in
           "CLUTTER_BACKEND,wayland"
           "SDL_VIDEODRIVER,wayland"
           "MOZ_ENABLE_WAYLAND,1"
+          "AQ_NO_MODIFIERS,1"
         ];
 
         general = {

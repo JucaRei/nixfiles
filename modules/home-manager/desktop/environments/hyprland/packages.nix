@@ -90,6 +90,11 @@ in
       ".local/bin/start-hyprland" = {
         text = ''
           #!/bin/sh
+          # Limpa variáveis herdadas do compositor do Display Manager (ex: Weston no SDDM)
+          # para que o Aquamarine acesse diretamente o backend DRM no hardware
+          unset WAYLAND_DISPLAY
+          unset DISPLAY
+
           if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
             . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           fi
