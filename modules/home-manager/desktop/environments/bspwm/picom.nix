@@ -61,7 +61,7 @@ in
     };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf (config.desktop.bspwm.enable && cfg.enable) {
     services.picom = {
       enable = true;
       package = pkgs.picom;
