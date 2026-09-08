@@ -10,17 +10,19 @@ let
   nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
-  themeSettings = {
-    import = [ (pkgs.alacritty-theme + "/dracula.toml") ];
-  };
 in
 {
   config = lib.mkIf (cfg.name == "alacritty") {
     home.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
+    xdg.configFile."alacritty/alacritty.toml".force = true;
     programs.alacritty = {
       enable = true;
       package = nixGLWrapper pkgs.alacritty;
       settings = {
+        general = {
+          live_config_reload = true;
+          import = [ (pkgs.alacritty-theme + "/dracula.toml") ];
+        };
         window = {
           title = "Terminal";
           position = "None";
@@ -67,8 +69,8 @@ in
             y = 0;
           };
         };
-        draw_bold_text_with_bright_colors = true;
         colors = {
+          draw_bold_text_with_bright_colors = true;
           primary = {
             background = "#282a36";
             foreground = "#f8f8f2";
@@ -108,7 +110,6 @@ in
           blink_interval = 750;
           blink_timeout = 0;
         };
-        live_config_reload = true;
         mouse = {
           hide_when_typing = true;
           bindings = [
@@ -131,8 +132,7 @@ in
             };
           }
         ];
-      }
-      // themeSettings;
+      };
       # theme = "Dracula";
       # themePackage = pkgs.alacritty-theme;
     };

@@ -12,9 +12,12 @@ pkgs.writeScriptBin "hm-switch" ''
     mkdir -p "$ERROR_DIR"
     TMP_LOG=$(mktemp /tmp/hm-switch-XXXXXX.log 2>/dev/null || echo "/tmp/hm-switch-$$.log")
 
-    # Limpar backups antigos e arquivos físicos de settings.json para evitar erro de 'would be clobbered'
+    # Limpar backups antigos e arquivos físicos para evitar erro de 'would be clobbered'
+    find "$HOME/.config" -name "*.backup" -delete 2>/dev/null || true
     find "$HOME/.config" -name "*.hm.backup" -delete 2>/dev/null || true
-    for f in "$HOME/.config/Code/User/settings.json" \
+    for f in "$HOME/.config/alacritty/alacritty.toml" \
+             "$HOME/.config/gtk-3.0/settings.ini" \
+             "$HOME/.config/Code/User/settings.json" \
              "$HOME/.config/Code/User/profiles"/*/settings.json \
              "$HOME/Library/Application Support/Code/User/settings.json"; do
       if [ -e "$f" ] && [ ! -L "$f" ]; then
