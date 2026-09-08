@@ -29,10 +29,16 @@ let
 
   # --- Script de Notificação de Brilho da Tela (Dunst OSD) ---
   brightnessOsd = pkgs.writeShellScript "brightness-osd" ''
-    # Identificar dispositivo de tela real (priorizar controladores de GPU como intel, nv, apple, gmux)
-    dev=$(${pkgs.brightnessctl}/bin/brightnessctl --class=backlight --list 2>/dev/null | grep -E "intel_backlight|nv_backlight|gmux_backlight|apple_backlight" | cut -d\' -f2 | head -n1)
-    if [ -z "$dev" ]; then
-      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --class=backlight --list 2>/dev/null | grep -m1 "Device" | cut -d\' -f2)
+    # Identificar dispositivo de tela real (priorizar intel_backlight > nv_backlight > apple_backlight > acpi_video0)
+    dev=""
+    for d in intel_backlight nv_backlight apple_backlight acpi_video0; do
+      if [ -d "/sys/class/backlight/$d" ]; then
+        dev="$d"
+        break
+      fi
+    done
+    if [ -z "$dev" ] && [ -d /sys/class/backlight ]; then
+      dev=$(ls -1 /sys/class/backlight 2>/dev/null | head -n1)
     fi
 
     dev_args=()
