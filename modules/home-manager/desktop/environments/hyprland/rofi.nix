@@ -9,7 +9,7 @@ let
   inherit (lib.types) bool;
   cfg = config.desktop.hyprland.rofi;
 
-  cliphistRofi = pkgs.writeShellScriptBin "cliphist-rofi" ''
+  hyprCliphist = pkgs.writeShellScriptBin "hypr-cliphist" ''
     ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰅌 Clipboard " -theme-str 'window {width: 700px;}' | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
   '';
 in
@@ -23,7 +23,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ cliphistRofi ];
+    home.packages = [ hyprCliphist ];
 
     programs.rofi = {
       enable = true;

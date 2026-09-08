@@ -165,7 +165,7 @@ in
           "$mainMod, SPACE, exec, ${pkgs.rofi}/bin/rofi -show drun"
           "$mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun"
           "$mainMod, E, exec, ${pkgs.thunar}/bin/thunar"
-          "$mainMod, V, exec, cliphist-rofi"
+          "$mainMod, V, exec, hypr-cliphist"
           "$mainMod, L, exec, ${pkgs.hyprlock}/bin/hyprlock"
 
           # Gerenciamento de Janelas
