@@ -101,6 +101,19 @@ in
           if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
             . "$HOME/.nix-profile/etc/profile.d/nix.sh"
           fi
+          if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+            . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+          fi
+
+          # Suporte a drivers gráficos Mesa e GBM em distribuições não-NixOS (Fedora standalone)
+          # Garante que libgbm e Aquamarine encontrem dri_gbm.so sem falhar na busca de /run/opengl-driver
+          export GBM_BACKENDS_PATH="${pkgs.mesa}/lib/gbm:/usr/lib64/gbm''${GBM_BACKENDS_PATH:+:$GBM_BACKENDS_PATH}"
+          export LIBGL_DRIVERS_PATH="${pkgs.mesa}/lib/dri:/usr/lib64/dri''${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}"
+          export __EGL_VENDOR_LIBRARY_DIRS="${pkgs.mesa}/share/glvnd/egl_vendor.d:/usr/share/glvnd/egl_vendor.d''${__EGL_VENDOR_LIBRARY_DIRS:+:$__EGL_VENDOR_LIBRARY_DIRS}"
+
+          # Evita tentativa de carregar backend Vulkan inexistente no Intel Sandy Bridge (HD 3000)
+          unset WLR_BACKEND
+
           exec ${pkgs.hyprland}/bin/Hyprland "$@"
         '';
         executable = true;

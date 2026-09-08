@@ -103,7 +103,9 @@ in
         MOZ_DISABLE_RDD_SANDBOX = mkIf isNixOS (
           if hasNvidia || hasGpuFallback == "nvidia" then "1" else null
         );
-        WLR_BACKEND = "vulkan";
+        # Mesa & GBM loader paths for non-NixOS hosts (e.g. Fedora)
+        GBM_BACKENDS_PATH = mkIf (!isNixOS) "${pkgs.mesa}/lib/gbm:/usr/lib64/gbm";
+        LIBGL_DRIVERS_PATH = mkIf (!isNixOS) "${pkgs.mesa}/lib/dri:/usr/lib64/dri";
         NVD_BACKEND = mkIf isNixOS (if hasNvidia || hasGpuFallback == "nvidia" then "direct" else null);
 
         # Card paths (adjust PCI paths for ARM; may not apply, so conditional)

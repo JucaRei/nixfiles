@@ -101,7 +101,16 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **Host `anubis` com Hyprland (Fedora Standalone)**:
   - Configurado via `desktop = "hyprland"` no `flake.nix`.
   - Gera `~/.local/bin/start-hyprland` com ambiente do Nix carregado e `.local/share/wayland-sessions/hyprland.desktop`.
-  - Para iniciar a sessão no Fedora: selecionar "Hyprland" no Display Manager ou executar `start-hyprland` a partir de uma TTY.
+  - **Display Manager**: SDDM instalado nativamente no Fedora (`dnf install sddm dconf`) com leitura de `/usr/share/wayland-sessions/hyprland.desktop`.
+  - **Compatibilidade Hyprland 0.55+ (Nixpkgs 26.05)**:
+    - `configType = "hyprlang"` forçado no Home Manager para evitar quebra de sintaxe com o gerador experimental em Lua.
+    - Regras de janela migradas de `windowrulev2` para `windowrule = [ "match:class ..., float 1" ... ]` com valores estritos.
+    - Gestos atualizados de `gestures.workspace_swipe` para `gesture = [ "3, horizontal, workspace" ]`.
+    - Atalho de layout migrado de `togglesplit` para `layoutmsg, togglesplit`.
+  - **Estabilização de Vídeo Intel HD 3000 (Sandy Bridge)**:
+    - Desativado VFR (`debug.vfr = false`) para evitar oscilações de brilho/tensão no painel eDP em repouso.
+    - Ativado cursor por software (`cursor.no_hardware_cursors = true`) para evitar micro-flickering de recálculo de plano DRM na GPU.
+    - `render.direct_scanout = 0`.
 
 ---
 
