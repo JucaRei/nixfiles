@@ -68,6 +68,21 @@ z /sys/class/leds/*kbd_backlight*/brightness 0666 - - -
 ```
 Pacote `brightnessctl` instalado no Fedora para suporte udev.
 
+### Wi-Fi (Broadcom BCM43224)
+- **Driver**: `brcmsmac` (driver nativo open-source do kernel Linux)
+- **Motivo**: O driver proprietário `wl` causa Kernel Panic (`exitcode=0x00000009`) nas versões recentes do kernel Fedora (7.x) e falhava na associação em redes 5GHz por operar com `passivemode=1`.
+- **Configuração ativa em `/etc/modprobe.d/broadcom-wifi.conf`**:
+  ```
+  blacklist wl
+  blacklist ssb
+  blacklist b43
+  ```
+- **Como reverter para o `wl` (se necessário)**:
+  ```bash
+  sudo cp /etc/modprobe.d/broadcom-wifi.conf.bak /etc/modprobe.d/broadcom-wifi.conf
+  sudo cp /etc/modprobe.d/wl-options.conf.bak /etc/modprobe.d/wl-options.conf
+  ```
+
 ### Parâmetros de Kernel (Fedora/GRUB)
 Gerenciados nativamente no Fedora (`/etc/default/grub`):
 ```
