@@ -30,6 +30,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
    - Sempre manter comentários informativos e documentação existente.
    - **Validação Cirúrgica (Pontual)**: Durante edições passo a passo, valide apenas o que foi alterado (ex: `nix eval` da configuração alterada ou `nix flake check --no-build`) para evitar reavaliações e compilações pesadas desnecessárias.
    - **Verificação Global**: Deixe a execução completa de `nix flake check` apenas para o fechamento final da tarefa ou sob demanda do usuário.
+4. **Padrão de Tiling Managers no Home Manager (NixOS vs Standalone)**:
+   - Para qualquer Tiling Manager (Hyprland, BSPWM, etc.):
+     - **Wrapper de Inicialização**: Gerar `~/.local/bin/start-<wm>` carregando o profile do Nix (`nix-daemon.sh` e `nix.sh`), drivers gráficos nativos (`GBM_BACKENDS_PATH` e `LIBGL_DRIVERS_PATH` no Wayland) e importação de variáveis (`dbus-update-activation-environment --systemd ...` e `systemctl --user import-environment ...`).
+     - **Sessões Desktop**: Gerar `.desktop` em `~/.local/share/wayland-sessions/` ou `~/.local/share/xsessions/`. Em distros standalone, linkar para `/usr/share/*-sessions/` se o Display Manager não escanear diretórios de usuário.
+     - **Autenticação PAM (Lockers)**: Screen lockers (`hyprlock`, `swaylock`) em distros standalone exigem arquivo `/etc/pam.d/<locker>` com `system-auth` (Fedora) ou `login` (Debian/Ubuntu/Arch).
+     - **Teclado Unificado**: Módulos devem herdar configurações de `home.keyboard` (`layout`, `variant`, `model`).
+
 
 ---
 
