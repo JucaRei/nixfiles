@@ -85,6 +85,18 @@ in
           allow_tearing = false;
         };
 
+        cursor = {
+          no_hardware_cursors = true;
+        };
+
+        render = {
+          direct_scanout = 0;
+        };
+
+        debug = {
+          vfr = false;
+        };
+
         decoration = {
           rounding = 10;
           active_opacity = 0.98;
