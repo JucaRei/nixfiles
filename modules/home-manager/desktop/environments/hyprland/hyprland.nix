@@ -172,7 +172,7 @@ in
           "$mainMod, F, fullscreen, 0"
           "$mainMod SHIFT, SPACE, togglefloating,"
           "$mainMod, P, pseudo,"
-          "$mainMod, J, togglesplit,"
+          "$mainMod, J, layoutmsg, togglesplit"
 
           # Navegação de Foco (Setas e Vim Keys)
           "$mainMod, left, movefocus, l"
