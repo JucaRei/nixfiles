@@ -111,6 +111,11 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Desativado VFR (`debug.vfr = false`) para evitar oscilações de brilho/tensão no painel eDP em repouso.
     - Ativado cursor por software (`cursor.no_hardware_cursors = true`) para evitar micro-flickering de recálculo de plano DRM na GPU.
     - `render.direct_scanout = 0`.
+    - Drivers Mesa e GBM declarados explicitamente via `GBM_BACKENDS_PATH` e `LIBGL_DRIVERS_PATH` no wrapper `start-hyprland` e propagados ao `systemd --user`.
+    - Eliminada duplicidade de inicialização do `hyprpaper` (`exec-once` vs serviço systemd) que causava piscamento na tela a cada 2s.
+  - **Aceleração VA-API (Intel HD 3000)**:
+    - Sandy Bridge utiliza o driver legado `intel-vaapi-driver` (`i965`), pois o moderno `intel-media-driver` (`iHD`) suporta apenas Broadwell (Gen 8) em diante.
+    - Exportados `LIBVA_DRIVER_NAME = "i965"` e `LIBVA_DRIVERS_PATH = "${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib64/dri"`.
 
 ---
 
