@@ -15,6 +15,8 @@ pkgs.writeScriptBin "hm-switch" ''
     # Limpar backups antigos e arquivos físicos para evitar erro de 'would be clobbered'
     find "$HOME/.config" -name "*.backup" -delete 2>/dev/null || true
     find "$HOME/.config" -name "*.hm.backup" -delete 2>/dev/null || true
+    # Limpar cache do Rofi para evitar 'no such file or directory' de caminhos antigos do Nix store
+    rm -f "$HOME/.cache/rofi"* 2>/dev/null || true
     for f in "$HOME/.config/alacritty/alacritty.toml" \
              "$HOME/.config/gtk-3.0/settings.ini" \
              "$HOME/.config/Code/User/settings.json" \
@@ -32,6 +34,8 @@ pkgs.writeScriptBin "hm-switch" ''
     set -o pipefail
     if ${pkgs.unstable.nh}/bin/nh home switch --backup-extension backup "$HOME/.dotfiles/nixfiles" -- --impure --show-trace -vL --cores "$build_cores" 2>&1 | tee "$TMP_LOG"; then
       rm -f "$TMP_LOG" 2>/dev/null || true
+      # Limpar cache do Rofi pós-atualização
+      rm -f "$HOME/.cache/rofi"* 2>/dev/null || true
       echo "✨ Home Manager switch concluído com sucesso!"
 
       # Notificação visual de sucesso no desktop

@@ -29,13 +29,40 @@ let
 
   # --- Script de Notificação de Brilho da Tela (Dunst OSD) ---
   brightnessOsd = pkgs.writeShellScript "brightness-osd" ''
+    # Identificar dispositivo de tela real (priorizar controladores de GPU como intel, nv, apple, gmux)
+    dev=$(${pkgs.brightnessctl}/bin/brightnessctl --class=backlight --list 2>/dev/null | grep -E "intel_backlight|nv_backlight|gmux_backlight|apple_backlight" | cut -d\' -f2 | head -n1)
+    if [ -z "$dev" ]; then
+      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --class=backlight --list 2>/dev/null | grep -m1 "Device" | cut -d\' -f2)
+    fi
+
+    dev_args=()
+    if [ -n "$dev" ]; then
+      dev_args=(-d "$dev")
+    fi
+
     case "$1" in
-      up)   ${pkgs.brightnessctl}/bin/brightnessctl set +2% ;;
-      down) ${pkgs.brightnessctl}/bin/brightnessctl set 2%- ;;
+      up)
+        prev=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" get 2>/dev/null)
+        ${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" set +2% >/dev/null 2>&1
+        curr=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" get 2>/dev/null)
+        if [ "$prev" = "$curr" ]; then
+          ${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" set +1 >/dev/null 2>&1
+        fi
+        ;;
+      down)
+        prev=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" get 2>/dev/null)
+        ${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" set 2%- >/dev/null 2>&1
+        curr=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" get 2>/dev/null)
+        if [ "$prev" = "$curr" ]; then
+          ${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" set 1- >/dev/null 2>&1
+        fi
+        ;;
     esac
 
-    val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%' | head -n1)
-    ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+    val=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+    if [ -n "$val" ]; then
+      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+    fi
   '';
 
   # --- Script de Controle e Notificação de Luz do Teclado (MacBook kbd_backlight) ---
@@ -43,16 +70,30 @@ let
     # Identificar dispositivo de iluminação de teclado
     dev="smc::kbd_backlight"
     if ! ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" info >/dev/null 2>&1; then
-      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list | grep -m1 "kbd_backlight" | cut -d\' -f2)
+      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list 2>/dev/null | grep -m1 "kbd_backlight" | cut -d\' -f2)
     fi
 
     if [ -n "$dev" ]; then
       case "$1" in
-        up)     ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +2% ;;
-        down)   ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 2%- ;;
+        up)
+          prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
+          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +2% >/dev/null 2>&1
+          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
+          if [ "$prev" = "$curr" ]; then
+            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +1 >/dev/null 2>&1
+          fi
+          ;;
+        down)
+          prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
+          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 2%- >/dev/null 2>&1
+          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
+          if [ "$prev" = "$curr" ]; then
+            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 1- >/dev/null 2>&1
+          fi
+          ;;
         toggle)
-          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%' | head -n1)
-          if [ "$curr" -gt 0 ]; then
+          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+          if [ "$curr" -gt 0 ] 2>/dev/null; then
             ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 0%
           else
             ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 50%
@@ -60,8 +101,10 @@ let
           ;;
       esac
 
-      val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m | cut -d, -f4 | tr -d '%' | head -n1)
-      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
+      val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+      if [ -n "$val" ]; then
+        ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
+      fi
     fi
   '';
 

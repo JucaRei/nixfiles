@@ -222,7 +222,6 @@
   # --- Brilho da Tela ---
   "module/backlight" = {
     type = "internal/backlight";
-    card = "nv_backlight";
     use-actual-brightness = true;
     enable-scroll = true;
 
