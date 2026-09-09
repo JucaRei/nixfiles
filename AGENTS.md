@@ -138,6 +138,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - Totalmente integrado à paleta Catppuccin Mocha, compartilhando Waybar, Rofi, Dunst, Hyprlock, Hypridle e Hyprpaper.
   - Wrapper `start-mango` em `~/.local/bin/` com drivers gráficos nativos e `.desktop` em `wayland-sessions`.
   - Herança de teclado unificada (`home.keyboard`) com dead keys e controles multimídia/brilho idênticos.
+  - **Deploy no Anubis (Fedora Standalone)**:
+    - Removido `alacritty` do `home.packages` do mangowm para prevenir colisão de `buildEnv` com o wrapper nixGL (`programs.alacritty`).
+    - Wrapper `start-mango` sincronizado com drivers Mesa/VA-API (`i965`), limpeza de `WAYLAND_DISPLAY` legado do display manager e exportação para D-Bus / Systemd.
+    - Sessão Wayland gerada em `~/.local/share/wayland-sessions/mango.desktop` (requer cópia/link para `/usr/share/wayland-sessions/` para visibilidade no SDDM nativo do Fedora).
 
 ---
 
