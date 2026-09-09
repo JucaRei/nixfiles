@@ -129,6 +129,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Autenticação do Hyprlock no Fedora (PAM)**:
     - Em distribuições não-NixOS com Home Manager standalone, `/etc/pam.d/hyprlock` não existe por padrão, fazendo o PAM cair na regra `/etc/pam.d/other` (que rejeita qualquer tentativa como "Wrong password!").
     - Requer provisionar `/etc/pam.d/hyprlock` incluindo `system-auth` (`auth`, `account`, `password`, `session include system-auth`).
+  - **Controle de Iluminação do Teclado e Tela (MacBook / Laptops)**:
+    - Dispositivo `smc::kbd_backlight` integrado via script `hypr-kbd-brightness-osd` com feedback visual OSD via Dunst.
+    - Atalhos configurados: `XF86KbdBrightnessUp`/`Down`, `XF86KbdLightOnOff`, com atalhos diretos `$mainMod + F6` (aumentar), `$mainMod + F5` (diminuir) e `$mainMod + Shift + F5` (liga/desliga).
+    - Integrado ao `hypridle`: desliga a luz do teclado após 2.5 min de inatividade e restaura automaticamente.
 
 ---
 
