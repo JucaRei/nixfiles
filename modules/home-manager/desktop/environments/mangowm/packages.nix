@@ -35,7 +35,8 @@ in
       playerctl
       brightnessctl
       libnotify
-      alacritty
+      grim
+      slurp
     ];
 
     home.file = {
