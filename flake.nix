@@ -59,7 +59,7 @@
         };
         "juca@anubis" = helper.mkHome {
           hostname = "anubis";
-          desktop = "hyprland";
+          desktop = "mangowm";
         };
 
         "juca@virtualvm" = helper.mkHome {
