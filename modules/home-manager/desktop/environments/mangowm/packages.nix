@@ -37,6 +37,8 @@ in
       libnotify
       grim
       slurp
+      hicolor-icon-theme
+      adwaita-icon-theme
     ];
 
     home.file = {
@@ -70,6 +72,9 @@ in
           export CLUTTER_BACKEND="wayland"
           export SDL_VIDEODRIVER="wayland"
 
+          # Tema GTK escuro unificado
+          export GTK_THEME="catppuccin-mocha-blue-standard+rimless"
+
           # Drivers Mesa nativos para aceleração por hardware em distros não-NixOS
           export GBM_BACKENDS_PATH="${pkgs.mesa}/lib/gbm:/usr/lib64/gbm''${GBM_BACKENDS_PATH:+:$GBM_BACKENDS_PATH}"
           export LIBGL_DRIVERS_PATH="${pkgs.mesa}/lib/dri:/usr/lib64/dri''${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}"
@@ -80,11 +85,11 @@ in
           export LIBVA_DRIVERS_PATH="${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib64/dri''${LIBVA_DRIVERS_PATH:+:$LIBVA_DRIVERS_PATH}"
 
           # Propagação do ambiente gráfico para o D-Bus e Systemd do usuário
-          systemctl --user set-environment GBM_BACKENDS_PATH="$GBM_BACKENDS_PATH" LIBGL_DRIVERS_PATH="$LIBGL_DRIVERS_PATH" __EGL_VENDOR_LIBRARY_DIRS="$__EGL_VENDOR_LIBRARY_DIRS" LIBVA_DRIVER_NAME="$LIBVA_DRIVER_NAME" LIBVA_DRIVERS_PATH="$LIBVA_DRIVERS_PATH" 2>/dev/null || true
+          systemctl --user set-environment GBM_BACKENDS_PATH="$GBM_BACKENDS_PATH" LIBGL_DRIVERS_PATH="$LIBGL_DRIVERS_PATH" __EGL_VENDOR_LIBRARY_DIRS="$__EGL_VENDOR_LIBRARY_DIRS" LIBVA_DRIVER_NAME="$LIBVA_DRIVER_NAME" LIBVA_DRIVERS_PATH="$LIBVA_DRIVERS_PATH" GTK_THEME="$GTK_THEME" 2>/dev/null || true
           if command -v dbus-update-activation-environment >/dev/null 2>&1; then
-            dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+            dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME
           fi
-          systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE 2>/dev/null || true
+          systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE GTK_THEME 2>/dev/null || true
 
           exec ${mangoPkg}/bin/mango "$@"
         '';

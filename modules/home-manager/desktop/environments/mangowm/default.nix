@@ -36,7 +36,7 @@ in
       enable = true;
       colorScheme = "dark";
       theme = {
-        name = "Catppuccin-Mocha-Standard-Blue-Dark";
+        name = "catppuccin-mocha-blue-standard+rimless";
         package = pkgs.catppuccin-gtk.override {
           accents = [ "blue" ];
           size = "standard";
@@ -69,11 +69,31 @@ in
       };
     };
 
+    dconf.settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+        gtk-theme = config.gtk.theme.name;
+        icon-theme = config.gtk.iconTheme.name;
+        cursor-theme = config.gtk.cursorTheme.name;
+        cursor-size = config.gtk.cursorTheme.size;
+        font-name = "${config.gtk.font.name} ${toString config.gtk.font.size}";
+      };
+    };
+
     home = {
       sessionPath = [
         "$HOME/.local/bin"
         "$HOME/.local/share/applications"
       ];
+      sessionVariables = {
+        GTK_THEME = config.gtk.theme.name;
+      };
+      file = {
+        ".themes/${config.gtk.theme.name}".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+        ".themes/Catppuccin-Mocha-Standard-Blue-Dark".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+        ".local/share/themes/${config.gtk.theme.name}".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+        ".local/share/themes/Catppuccin-Mocha-Standard-Blue-Dark".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+      };
     };
 
     xdg = {

@@ -26,7 +26,7 @@ in
     gtk = {
       enable = true;
       theme = {
-        name = "Catppuccin-Mocha-Standard-Blue-Dark";
+        name = "catppuccin-mocha-blue-standard+rimless";
         package = pkgs.catppuccin-gtk.override {
           accents = [ "blue" ];
           size = "standard";
@@ -63,7 +63,7 @@ in
     xfconf.settings = {
       # Gerenciador de Janelas (XFWM4)
       xfwm4 = {
-        "general/theme" = "Catppuccin-Mocha-Standard-Blue-Dark";
+        "general/theme" = config.gtk.theme.name;
         "general/title_font" = "Inter Bold 10";
         "general/button_layout" = "O|HMC";
         "general/box_move" = false;
@@ -80,7 +80,7 @@ in
 
       # Aparência global e fontes (Xsettings)
       xsettings = {
-        "Net/ThemeName" = "Catppuccin-Mocha-Standard-Blue-Dark";
+        "Net/ThemeName" = config.gtk.theme.name;
         "Net/IconThemeName" = "Papirus-Dark";
         "Gtk/CursorThemeName" = "Catppuccin-Mocha-Dark-Cursors";
         "Gtk/CursorThemeSize" = 24;

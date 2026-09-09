@@ -116,8 +116,11 @@ in
           export LIBVA_DRIVER_NAME="i965"
           export LIBVA_DRIVERS_PATH="${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib64/dri''${LIBVA_DRIVERS_PATH:+:$LIBVA_DRIVERS_PATH}"
 
+          # Tema GTK escuro unificado
+          export GTK_THEME="catppuccin-mocha-blue-standard+rimless"
+
           # Sincroniza ambiente de drivers gráficos com o systemd do usuário
-          systemctl --user set-environment GBM_BACKENDS_PATH="$GBM_BACKENDS_PATH" LIBGL_DRIVERS_PATH="$LIBGL_DRIVERS_PATH" __EGL_VENDOR_LIBRARY_DIRS="$__EGL_VENDOR_LIBRARY_DIRS" LIBVA_DRIVER_NAME="$LIBVA_DRIVER_NAME" LIBVA_DRIVERS_PATH="$LIBVA_DRIVERS_PATH" 2>/dev/null || true
+          systemctl --user set-environment GBM_BACKENDS_PATH="$GBM_BACKENDS_PATH" LIBGL_DRIVERS_PATH="$LIBGL_DRIVERS_PATH" __EGL_VENDOR_LIBRARY_DIRS="$__EGL_VENDOR_LIBRARY_DIRS" LIBVA_DRIVER_NAME="$LIBVA_DRIVER_NAME" LIBVA_DRIVERS_PATH="$LIBVA_DRIVERS_PATH" GTK_THEME="$GTK_THEME" 2>/dev/null || true
 
           # Evita tentativa de carregar backend Vulkan inexistente no Intel Sandy Bridge (HD 3000)
           unset WLR_BACKEND
