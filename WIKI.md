@@ -238,20 +238,34 @@ sudo ln -sf ~/.local/share/xsessions/bspwm.desktop /usr/share/xsessions/
 > ```
 
 
-#### 5️⃣ Configurar o PAM para o Bloqueador de Tela (Screen Locker)
-Em sistemas standalone, utilitários de bloqueio como **`hyprlock`** ou **`swaylock`** falham com *"Wrong password!"* se não tiverem uma regra no PAM do sistema host.
+#### 5️⃣ Configurar o PAM e o Wrapper do `unix_chkpwd` (Screen Locker)
+Em sistemas standalone (como Fedora), utilitários como **`hyprlock`** ou **`swaylock`** falham com *"Wrong password!"* por dois motivos:
+1. O módulo `pam_unix.so` compilado pelo Nixpkgs busca o helper de verificação de senha com permissões de root em `/run/wrappers/bin/unix_chkpwd` (no Fedora, o binário nativo fica em `/usr/sbin/unix_chkpwd`).
+2. Módulos extras como `pam_pwquality.so` chamados pelo `system-auth` não existem no Nix Store.
 
-No Fedora/RHEL, crie o arquivo com o comando abaixo (uma única vez por máquina):
+Execute estes comandos uma única vez no terminal do host (Fedora):
+
 ```bash
+# 1. Criar o link simbólico para o helper setuid do PAM:
+sudo mkdir -p /run/wrappers/bin
+sudo ln -sf /usr/sbin/unix_chkpwd /run/wrappers/bin/unix_chkpwd
+
+# 2. Tornar o link persistente após reinicializações via systemd-tmpfiles:
+sudo tee /etc/tmpfiles.d/nix-wrappers.conf << 'EOF'
+d /run/wrappers 0755 root root -
+d /run/wrappers/bin 0755 root root -
+L+ /run/wrappers/bin/unix_chkpwd - - - - /usr/sbin/unix_chkpwd
+EOF
+
+# 3. Criar a regra dedicada do hyprlock no PAM:
 sudo tee /etc/pam.d/hyprlock << 'EOF'
 #%PAM-1.0
-auth        include     system-auth
-account     include     system-auth
-password    include     system-auth
-session     include     system-auth
+auth        sufficient    pam_unix.so try_first_pass nullok
+auth        required      pam_deny.so
+account     required      pam_unix.so
 EOF
 ```
-*(Para distros baseadas em Debian/Ubuntu, substitua `system-auth` por `login`)*.
+
 
 #### 6️⃣ Configuração Unificada de Teclado
 Para manter consistência em qualquer gerenciador de janelas, configure seu teclado centralmente no `home-manager/default.nix`:
