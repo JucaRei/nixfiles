@@ -45,11 +45,18 @@ in
         executable = true;
         text = ''
           #!/bin/sh
+          # Limpa variáveis herdadas do compositor do Display Manager (ex: Weston no SDDM)
+          unset WAYLAND_DISPLAY
+          unset DISPLAY
+
           if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
             . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
           fi
           if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
             . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+          fi
+          if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+            . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
           fi
 
           export XDG_CURRENT_DESKTOP=mango
@@ -64,12 +71,20 @@ in
           export SDL_VIDEODRIVER="wayland"
 
           # Drivers Mesa nativos para aceleração por hardware em distros não-NixOS
-          export GBM_BACKENDS_PATH="/usr/lib64/gbm:/usr/lib/x86_64-linux-gnu/gbm:$GBM_BACKENDS_PATH"
-          export LIBGL_DRIVERS_PATH="/usr/lib64/dri:/usr/lib/x86_64-linux-gnu/dri:$LIBGL_DRIVERS_PATH"
+          export GBM_BACKENDS_PATH="${pkgs.mesa}/lib/gbm:/usr/lib64/gbm''${GBM_BACKENDS_PATH:+:$GBM_BACKENDS_PATH}"
+          export LIBGL_DRIVERS_PATH="${pkgs.mesa}/lib/dri:/usr/lib64/dri''${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}"
+          export __EGL_VENDOR_LIBRARY_DIRS="${pkgs.mesa}/share/glvnd/egl_vendor.d:/usr/share/glvnd/egl_vendor.d''${__EGL_VENDOR_LIBRARY_DIRS:+:$__EGL_VENDOR_LIBRARY_DIRS}"
+
+          # Aceleração de hardware VA-API para Intel Sandy Bridge (i965)
+          export LIBVA_DRIVER_NAME="i965"
+          export LIBVA_DRIVERS_PATH="${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib64/dri''${LIBVA_DRIVERS_PATH:+:$LIBVA_DRIVERS_PATH}"
 
           # Propagação do ambiente gráfico para o D-Bus e Systemd do usuário
-          dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
-          systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+          systemctl --user set-environment GBM_BACKENDS_PATH="$GBM_BACKENDS_PATH" LIBGL_DRIVERS_PATH="$LIBGL_DRIVERS_PATH" __EGL_VENDOR_LIBRARY_DIRS="$__EGL_VENDOR_LIBRARY_DIRS" LIBVA_DRIVER_NAME="$LIBVA_DRIVER_NAME" LIBVA_DRIVERS_PATH="$LIBVA_DRIVERS_PATH" 2>/dev/null || true
+          if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+            dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE
+          fi
+          systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE 2>/dev/null || true
 
           exec ${mangoPkg}/bin/mango "$@"
         '';
