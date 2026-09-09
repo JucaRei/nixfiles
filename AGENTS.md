@@ -145,6 +145,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - O pacote `pkgs.catppuccin-gtk` gera o diretório do tema em caixa baixa: `catppuccin-mocha-blue-standard+rimless`. Nomes em CamelCase como `Catppuccin-Mocha-Standard-Blue-Dark` não encontravam os arquivos em `share/themes/`, fazendo o GTK3 e o Thunar caírem silenciosamente no Adwaita Claro (`rgb(246,245,244)`).
     - Unificado o nome em todos os ambientes (`mangowm`, `hyprland`, `bspwm`, `xfce4`) para `catppuccin-mocha-blue-standard+rimless`.
     - Declarado `dconf.settings."org/gnome/desktop/interface"` com `color-scheme = "prefer-dark"`, export de `GTK_THEME` nos wrappers e symlinks retrocompatíveis em `~/.themes` e `~/.local/share/themes`.
+  - **Menu de Energia e Encerramento de Sessão (Logout)**:
+    - O script `session-power-menu` (e alias `hyprland-power-menu`) foi tornado agnóstico ao compositor: identifica se está rodando no MangoWM (`pkill -SIGTERM -x mango` / `loginctl terminate-session`), no Hyprland (`hyprctl dispatch exit`) ou em sessão genérica systemd.
+    - No MangoWM, configurados os atalhos `$SUPER + Shift + E` e `$SUPER + Escape` para o menu de energia, e `$SUPER + Shift + Q` para encerrar a sessão imediatamente (`quit`).
 
 ---
 
