@@ -9,15 +9,29 @@ let
   inherit (lib.types) bool;
   cfg = config.desktop.hyprland.waybar;
 
-  powerMenu = pkgs.writeShellScript "hyprland-power-menu" ''
+  powerMenu = pkgs.writeShellScriptBin "session-power-menu" ''
     chosen=$(printf "󰌾 Bloquear\n󰤄 Suspender\n󰍃 Encerrar Sessão\n󰑐 Reiniciar\n󰐥 Desligar" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰐥 Energia " -theme-str 'window {width: 320px; height: 320px;} listview {columns: 1; lines: 5;}')
     case "$chosen" in
       *"Bloquear") ${pkgs.hyprlock}/bin/hyprlock ;;
       *"Suspender") systemctl suspend ;;
-      *"Encerrar Sessão") ${pkgs.hyprland}/bin/hyprctl dispatch exit ;;
+      *"Encerrar Sessão")
+        if [ "$XDG_CURRENT_DESKTOP" = "mango" ] || [ "$DESKTOP_SESSION" = "mango" ] || pgrep -x mango >/dev/null 2>&1; then
+          pkill -SIGTERM -x mango 2>/dev/null || loginctl terminate-session "''${XDG_SESSION_ID:-}" 2>/dev/null || loginctl terminate-user "$USER"
+        elif command -v hyprctl >/dev/null 2>&1 && pgrep -x Hyprland >/dev/null 2>&1; then
+          ${pkgs.hyprland}/bin/hyprctl dispatch exit
+        elif [ -n "''${XDG_SESSION_ID:-}" ]; then
+          loginctl terminate-session "$XDG_SESSION_ID"
+        else
+          loginctl terminate-user "$USER"
+        fi
+        ;;
       *"Reiniciar") systemctl reboot ;;
       *"Desligar") systemctl poweroff ;;
     esac
+  '';
+
+  powerMenuHyprland = pkgs.writeShellScriptBin "hyprland-power-menu" ''
+    exec ${powerMenu}/bin/session-power-menu "$@"
   '';
 in
 {
@@ -30,6 +44,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.packages = [
+      powerMenu
+      powerMenuHyprland
+    ];
+
     programs.waybar = {
       enable = true;
       package = pkgs.waybar;
@@ -197,7 +216,7 @@ in
 
           "custom/power" = {
             format = "󰐥";
-            on-click = "${powerMenu}";
+            on-click = "${powerMenu}/bin/session-power-menu";
             tooltip = false;
           };
         };

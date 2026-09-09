@@ -205,7 +205,9 @@ in
       bind=SUPER,e,spawn,${pkgs.thunar}/bin/thunar
       bind=SUPER,v,spawn,${cliphistMenu}
       bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
-      bind=SUPER+SHIFT,e,spawn,hyprland-power-menu
+      bind=SUPER,Escape,spawn,session-power-menu
+      bind=SUPER+SHIFT,e,spawn,session-power-menu
+      bind=SUPER+SHIFT,q,quit
 
       # Gerenciamento de Janelas
       bind=SUPER,q,killclient,
