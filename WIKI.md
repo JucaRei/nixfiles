@@ -227,6 +227,17 @@ sudo ln -sf ~/.local/share/wayland-sessions/hyprland.desktop /usr/share/wayland-
 sudo ln -sf ~/.local/share/xsessions/bspwm.desktop /usr/share/xsessions/
 ```
 
+> 💡 **Ocultar contas de build do Nix (`nixbld1..32`) na tela do SDDM**:  
+> No Linux multi-usuário, o Nix cria usuários de build com UIDs entre 30001 e 30032. Para que o SDDM exiba apenas os usuários reais do sistema:
+> ```bash
+> sudo tee /etc/sddm.conf.d/hide-nix-users.conf << 'EOF'
+> [Users]
+> HideShells=/sbin/nologin,/usr/sbin/nologin,/bin/false,/usr/bin/false
+> MaximumUid=29999
+> EOF
+> ```
+
+
 #### 5️⃣ Configurar o PAM para o Bloqueador de Tela (Screen Locker)
 Em sistemas standalone, utilitários de bloqueio como **`hyprlock`** ou **`swaylock`** falham com *"Wrong password!"* se não tiverem uma regra no PAM do sistema host.
 
