@@ -141,7 +141,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Deploy no Anubis (Fedora Standalone)**:
     - Removido `alacritty` do `home.packages` do mangowm para prevenir colisão de `buildEnv` com o wrapper nixGL (`programs.alacritty`).
     - Wrapper `start-mango` sincronizado com drivers Mesa/VA-API (`i965`), limpeza de `WAYLAND_DISPLAY` legado do display manager e exportação para D-Bus / Systemd.
-    - Sessão Wayland gerada em `~/.local/share/wayland-sessions/mango.desktop` (requer cópia/link para `/usr/share/wayland-sessions/` para visibilidade no SDDM nativo do Fedora).
+  - **Tema GTK e Dark Mode no Thunar / Wayland**:
+    - O pacote `pkgs.catppuccin-gtk` gera o diretório do tema em caixa baixa: `catppuccin-mocha-blue-standard+rimless`. Nomes em CamelCase como `Catppuccin-Mocha-Standard-Blue-Dark` não encontravam os arquivos em `share/themes/`, fazendo o GTK3 e o Thunar caírem silenciosamente no Adwaita Claro (`rgb(246,245,244)`).
+    - Unificado o nome em todos os ambientes (`mangowm`, `hyprland`, `bspwm`, `xfce4`) para `catppuccin-mocha-blue-standard+rimless`.
+    - Declarado `dconf.settings."org/gnome/desktop/interface"` com `color-scheme = "prefer-dark"`, export de `GTK_THEME` nos wrappers e symlinks retrocompatíveis em `~/.themes` e `~/.local/share/themes`.
 
 ---
 
