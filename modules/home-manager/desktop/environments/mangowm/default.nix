@@ -13,12 +13,6 @@ in
   imports = [
     ./mango.nix
     ./packages.nix
-    ../hyprland/waybar.nix
-    ../hyprland/rofi.nix
-    ../hyprland/dunst.nix
-    ../hyprland/hyprlock.nix
-    ../hyprland/hypridle.nix
-    ../hyprland/hyprpaper.nix
   ];
 
   config = mkIf config.desktop.mangowm.enable {
