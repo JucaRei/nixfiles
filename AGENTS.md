@@ -133,6 +133,11 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Dispositivo `smc::kbd_backlight` integrado via script `hypr-kbd-brightness-osd` com feedback visual OSD via Dunst.
     - Atalhos configurados: `XF86KbdBrightnessUp`/`Down`, `XF86KbdLightOnOff`, com atalhos diretos `$mainMod + F6` (aumentar), `$mainMod + F5` (diminuir) e `$mainMod + Shift + F5` (liga/desliga).
     - Integrado ao `hypridle`: desliga a luz do teclado após 2.5 min de inatividade e restaura automaticamente.
+- **Módulo MangoWM (Wayland - dwl / scenefx)**:
+  - Adicionado suporte ao compositor **MangoWM** (`desktop = "mangowm"` ou `"mango"`), tiling Wayland moderno e ultra-leve com suporte a blur, sombras e cantos arredondados (scenefx) e tags estilo dwm/dwm.
+  - Totalmente integrado à paleta Catppuccin Mocha, compartilhando Waybar, Rofi, Dunst, Hyprlock, Hypridle e Hyprpaper.
+  - Wrapper `start-mango` em `~/.local/bin/` com drivers gráficos nativos e `.desktop` em `wayland-sessions`.
+  - Herança de teclado unificada (`home.keyboard`) com dead keys e controles multimídia/brilho idênticos.
 
 ---
 

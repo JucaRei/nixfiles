@@ -1,0 +1,1 @@
+import ../mangowm/default.nix

@@ -164,7 +164,7 @@ Com o tempo, compilações antigas e versões anteriores do sistema acumulam no 
 
 ## 🪟 7. Guia de Integração: Tiling Managers e Sincronização com o Home Manager
 
-Este repositório suporta múltiplos gerenciadores de janelas (como **Hyprland** para Wayland e **BSPWM** para X11). A forma como eles sincronizam com o sistema depende se o host roda **NixOS** ou **Home Manager Standalone** (ex: Fedora, Arch, Ubuntu).
+Este repositório suporta múltiplos gerenciadores de janelas (como **Hyprland** e **MangoWM** para Wayland, e **BSPWM** para X11). A forma como eles sincronizam com o sistema depende se o host roda **NixOS** ou **Home Manager Standalone** (ex: Fedora, Arch, Ubuntu).
 
 ### 🔄 Diferença Arquitetural: NixOS vs Standalone
 

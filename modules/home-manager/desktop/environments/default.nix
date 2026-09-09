@@ -14,6 +14,7 @@ in
     ./bspwm
     ./xfce4
     ./hyprland
+    ./mangowm
     ../display-servers
   ];
 

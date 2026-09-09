@@ -33,6 +33,11 @@
     nix4vscode.url = "github:nix-community/nix4vscode";
     nix4vscode.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
+    mangowm = {
+      url = "github:mangowm/mango";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     sf-mono-liga-src.url = "github:shaunsingh/SFMono-Nerd-Font-Ligaturized";
     sf-mono-liga-src.flake = false;
   };
