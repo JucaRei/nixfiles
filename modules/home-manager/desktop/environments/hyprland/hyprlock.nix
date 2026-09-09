@@ -24,10 +24,7 @@ in
       package = pkgs.hyprlock;
       settings = {
         general = {
-          disable_loading_bar = false;
           hide_cursor = true;
-          grace = 0;
-          no_fade_in = false;
         };
 
         background = [
