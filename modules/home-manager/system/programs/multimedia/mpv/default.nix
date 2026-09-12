@@ -142,14 +142,18 @@ in
     xdg.configFile = {
 
       # mpv.conf base (configs/mpv.conf) + perfil de hardware injetado via Nix
-      # O perfil [hw-preset] varia por host; a linha profile= activa-o no arranque.
+      # O perfil [hw-preset] define as configurações de hardware e é activado no [default].
       "mpv/mpv.conf".text = ''
         ${builtins.readFile ./configs/mpv.conf}
 
         # ── Perfil de hardware gerado em compilação para: ${hostname} ──────────
         ${hwPresetSection}
+
+        # ── Ativação do perfil de hardware por omissão para todos os ficheiros ──
+        [default]
         profile=hw-preset
       '';
+
 
       # Atalhos de teclado — todos em input.conf (substitui bindings.conf)
       "mpv/input.conf".source = ./configs/input.conf;

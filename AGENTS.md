@@ -148,9 +148,14 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Menu de Energia e Encerramento de Sessão (Logout)**:
     - O script `session-power-menu` (e alias `hyprland-power-menu`) foi tornado agnóstico ao compositor: identifica se está rodando no MangoWM (`pkill -SIGTERM -x mango` / `loginctl terminate-session`), no Hyprland (`hyprctl dispatch exit`) ou em sessão genérica systemd.
     - No MangoWM, configurados os atalhos `$SUPER + Shift + E` e `$SUPER + Escape` para o menu de energia, e `$SUPER + Shift + Q` para encerrar a sessão imediatamente (`quit`).
+- **Host `rocinante-hyperv` (Bootloader & Multimídia MPV)**:
+  - **Label `EFI` na partição FAT32**: `/boot/efi` depende de `/dev/disk/by-label/EFI`. Se a partição estiver sem rótulo, o `boot-efi.mount` falha e cai no stub de automount `systemd-1` do PID 1, quebrando o `grub-install` com `Inappropriate ioctl for device`. Corrigido via `fatlabel /dev/sda2 EFI`.
+  - **MPV e Perfil de Hardware (`hw-preset`)**: A diretiva `profile=hw-preset` deve ser declarada em uma seção `[default]` no final de `mpv.conf`, garantindo que as opções do hardware (ex: `vo=x11`, `hwdec=no` no Hyper-V sem GPU 3D) sobrescrevam a base (`vo=gpu`) e evitando inclusão recursiva dentro de `[hw-preset]`.
+  - **Script `thumbfast`**: O parâmetro `hwdec` espera um booleano (`yes`/`no`), e o valor legado `'auto'` causava erro de parsing na inicialização. Fixado em `hwdec=no`.
 
 ---
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 

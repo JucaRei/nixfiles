@@ -44,14 +44,19 @@
       # packages.extraPackages = with pkgs; [ libreoffice-qt ];
     };
 
-    # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) no VS Code do Hyper-V
-    programs.vscode.profiles.default.extensions =
-      lib.mkIf config.system.programs.editors.vscode.enable
-        (
-          pkgs.nix4vscode.forVscode [
-            "Continue.continue"
-          ]
-        );
+    programs = {
+
+      antigravity-cli = {
+        enable = true;
+      };
+
+      # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) no VS Code do Hyper-V
+      vscode.profiles.default.extensions = lib.mkIf config.system.programs.editors.vscode.enable (
+        pkgs.nix4vscode.forVscode [
+          "Continue.continue"
+        ]
+      );
+    };
 
     home.packages = with pkgs; [
       direnv

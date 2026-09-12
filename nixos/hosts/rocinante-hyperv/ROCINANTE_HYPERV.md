@@ -55,3 +55,18 @@ Ao criar a Máquina Virtual no **Hyper-V Manager**:
 ```bash
 sudo nixos-rebuild switch --flake .#rocinante-hyperv
 ```
+
+---
+
+## 🛠️ Notas de Resolução e Troubleshooting
+
+- **Partição EFI e Erro `failed to get canonical path of systemd-1`**:
+  - O NixOS monta a partição EFI através de `/dev/disk/by-label/EFI`. Se a partição FAT32 (ex: `/dev/sda2`) não possuir o label `EFI`, o `boot-efi.mount` falha e o systemd mantém apenas o stub de automount (`systemd-1` via autofs).
+  - O `grub-install` não consegue resolver pipes `autofs` e falha com `failed to get canonical path of 'systemd-1'` e `Inappropriate ioctl for device`.
+  - **Correção**: Atribuir o label correto à partição EFI:
+    ```bash
+    sudo fatlabel /dev/sda2 EFI
+    sudo udevadm trigger
+    sudo systemctl restart boot-efi.mount
+    ```
+
