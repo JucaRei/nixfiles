@@ -284,3 +284,12 @@ O módulo do Hyprland e do X11 leem essas opções automaticamente, garantindo q
    - Faça logout da sessão atual (`Super + Shift + E` ou pelo Power Menu).
    - Na tela do Display Manager (SDDM/GDM), selecione a nova sessão na lista e faça login.
 
+#### 8️⃣ Documentação dos Ambientes Desktop
+Cada ambiente de trabalho possui seu próprio guia de arquitetura, customizações, regras e atalhos detalhados dentro de sua respectiva pasta:
+- **MangoWM (Wayland)**: [modules/home-manager/desktop/environments/mangowm/README.md](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/mangowm/README.md)
+- **Hyprland (Wayland)**: [modules/home-manager/desktop/environments/hyprland/README.md](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/hyprland/README.md)
+- **BSPWM (X11)**: [modules/home-manager/desktop/environments/bspwm/README.md](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/bspwm/README.md)
+- **XFCE4 (X11)**: [modules/home-manager/desktop/environments/xfce4/README.md](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/xfce4/README.md)
+
+
+

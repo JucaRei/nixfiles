@@ -13,13 +13,14 @@ in
   imports = [
     ./mango.nix
     ./packages.nix
+    ./waybar.nix
   ];
 
   config = mkIf config.desktop.mangowm.enable {
     desktop.display-servers.backend = "wayland";
 
     # Habilita os componentes visuais unificados
-    desktop.hyprland.waybar.enable = true;
+    desktop.mangowm.waybar.enable = true;
     desktop.hyprland.rofi.enable = true;
     desktop.hyprland.dunst.enable = true;
     desktop.hyprland.hyprlock.enable = true;

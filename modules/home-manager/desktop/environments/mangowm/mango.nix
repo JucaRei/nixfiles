@@ -148,6 +148,23 @@ in
       urgentcolor=0xf38ba8ff
       scratchpadcolor=0x89b4faff
       globalcolor=0xcba6f7ff
+      overlaycolor=0x89dcebff
+
+      # --- Layout Scroller & Overview ---
+      scroller_structs=450
+      scroller_default_proportion=0.5
+      scroller_focus_center=0
+      scroller_prefer_center=0
+      edge_scroller_pointer_focus=0
+      scroller_ignore_proportion_single=0
+      scroller_default_proportion_single=0.75
+      scroller_proportion_preset=0.5,0.7,1.0
+
+      hotarea_size=10
+      enable_hotarea=0
+      ov_tab_mode=1
+      overviewgappi=6
+      overviewgappo=20
 
       # --- Configuração de Entrada (Teclado e Touchpad) ---
       repeat_rate=30
@@ -169,6 +186,20 @@ in
       sloppyfocus=1
       warpcursor=1
       cursor_size=24
+
+      # --- Gestos de Touchpad ---
+      gesturebind=none,up,4,viewtoright,0
+      gesturebind=none,down,4,viewtoleft,0
+      gesturebind=none,left,3,focusdir,left
+      gesturebind=none,right,3,focusdir,right
+      gesturebind=none,up,3,focusdir,up
+      gesturebind=none,down,3,focusdir,down
+
+      # --- Roda do Mouse (Axisbind) ---
+      axisbind=SUPER,UP,viewtoleft
+      axisbind=SUPER,DOWN,viewtoright
+      axisbind=SUPER+CTRL,UP,tagtoleft
+      axisbind=SUPER+CTRL,DOWN,tagtoright
 
       # --- Layouts por Tag (1 a 9) ---
       tag_num=9
@@ -196,10 +227,12 @@ in
       # ============================================================================
 
       # Recarregar Configuração
+      bind=SUPER+ALT,r,spawn,mango-reload
       bind=SUPER,r,reload_config
 
       # Aplicativos e Utilitários
       bind=SUPER,Return,spawn,${pkgs.alacritty}/bin/alacritty
+      bind=SUPER+CTRL,Return,spawn,${pkgs.alacritty}/bin/alacritty --title floating-kitty
       bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
       bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
       bind=SUPER,e,spawn,${pkgs.thunar}/bin/thunar
@@ -209,26 +242,63 @@ in
       bind=SUPER+SHIFT,e,spawn,session-power-menu
       bind=SUPER+SHIFT,q,quit
 
-      # Gerenciamento de Janelas
+      # Gerenciamento de Janelas e Estados
       bind=SUPER,q,killclient,
       bind=SUPER,c,killclient,
-      bind=SUPER,f,togglefullscreen,
+      bind=SUPER,w,togglefloating,
       bind=SUPER+SHIFT,space,togglefloating,
-      bind=SUPER,n,switch_layout
-      bind=SUPER,Tab,focusstack,next
       bind=SUPER,backslash,togglefloating,
+      bind=ALT,Tab,toggleoverview,
+      bind=SUPER,Tab,focusstack,next
+      bind=ALT,f,togglefullscreen,
+      bind=ALT+SHIFT,f,togglefakefullscreen,
+      bind=ALT,a,togglemaximizescreen,
+      bind=SUPER,i,minimized,
+      bind=SUPER+SHIFT,i,restore_minimized
+      bind=SUPER+SHIFT,o,toggleoverlay,
+      bind=SUPER+SHIFT,g,toggleglobal,
+      bind=ALT,z,toggle_scratchpad
 
-      # Foco Direcional
+      # Redimensionamento de Janelas
+      bind=SUPER,equal,resizewin,20,0
+      bind=SUPER,minus,resizewin,-20,0
+      bind=SUPER+CTRL,equal,resizewin,0,20
+      bind=SUPER+CTRL,minus,resizewin,0,-20
+
+      # Layouts e Proporções
+      bind=CTRL,space,switch_layout
+      bind=SUPER,n,switch_layout
+      bind=CTRL+SHIFT,space,spawn,mango-layout-picker
+      bind=SUPER+ALT,f,set_proportion,1.0
+      bind=ALT,space,switch_proportion_preset,
+      bind=SUPER+c,scroller_stack,left
+      bind=SUPER+SHIFT,c,scroller_stack,right
+
+      # Ajustes de Gaps
+      bind=ALT+SHIFT,x,incgaps,2
+      bind=ALT+SHIFT,z,incgaps,-2
+      bind=ALT+SHIFT,r,togglegaps
+      bind=SUPER+SHIFT,a,spawn,mango-toggle-outer-gaps
+
+      # Foco Direcional (Setas e Vim Keys)
       bind=SUPER,Left,focusdir,left
       bind=SUPER,Right,focusdir,right
       bind=SUPER,Up,focusdir,up
       bind=SUPER,Down,focusdir,down
+      bind=SUPER,h,focusdir,left
+      bind=SUPER,l,focusdir,right
+      bind=SUPER,k,focusdir,up
+      bind=SUPER,j,focusdir,down
 
-      # Trocar Janelas de Posição
+      # Trocar Janelas de Posição (Setas e Vim Keys)
       bind=SUPER+SHIFT,Left,exchange_client,left
       bind=SUPER+SHIFT,Right,exchange_client,right
       bind=SUPER+SHIFT,Up,exchange_client,up
       bind=SUPER+SHIFT,Down,exchange_client,down
+      bind=SUPER+SHIFT,h,exchange_client,left
+      bind=SUPER+SHIFT,l,exchange_client,right
+      bind=SUPER+SHIFT,k,exchange_client,up
+      bind=SUPER+SHIFT,j,exchange_client,down
 
       # Controle de Tags (1 a 9)
       bind=SUPER,1,view,1
@@ -250,6 +320,12 @@ in
       bind=SUPER+SHIFT,7,tag,7,0
       bind=SUPER+SHIFT,8,tag,8,0
       bind=SUPER+SHIFT,9,tag,9,0
+
+      # Navegação entre Tags Adjacentes
+      bind=SUPER+CTRL,Up,viewtoleft,0
+      bind=SUPER+CTRL,Down,viewtoright,0
+      bind=SUPER+CTRL+ALT,Up,tagtoleft,0
+      bind=SUPER+CTRL+ALT,Down,tagtoright,0
 
       # Teclas Multimídia e Áudio
       bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.pamixer}/bin/pamixer -i 5
@@ -281,9 +357,25 @@ in
       mousebind=SUPER,btn_right,moveresize,curresize
       mousebind=NONE,btn_middle,togglemaximizescreen,0
 
+      # Regras de Janela (Window Rules)
+      windowrule=isfloating:1,width:850,height:550,title:floating-kitty
+      windowrule=isfloating:1,appid:thunar
+      windowrule=isfloating:1,appid:pavucontrol
+      windowrule=isfloating:1,appid:nm-connection-editor
+      windowrule=isfloating:1,appid:blueman-manager
+      windowrule=isfloating:1,title:.*Preferences.*
+      windowrule=isfloating:1,title:.*Settings.*
+      windowrule=isfloating:1,title:.*Choose.*
+      windowrule=isfloating:1,title:.*Open.*
+      windowrule=isfloating:1,title:.*Save.*
+      windowrule=isfloating:1,title:.*Confirm.*
+      windowrule=idleinhibit_when_focus:1,appid:steam
+
       # Regras de Camada (Layer Rules)
       layerrule=animation_type_open:zoom,layer_name:rofi
       layerrule=animation_type_close:zoom,layer_name:rofi
+      layerrule=blur:1,layer_name:waybar
+      layerrule=blur:1,layer_name:rofi
     '';
   };
 }
