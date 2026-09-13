@@ -66,7 +66,7 @@
       htop
       btop
 
-      xrender
+      xrandr
     ];
 
     xsession.initExtra = ''

@@ -4,8 +4,11 @@
   localPackages = final: _prev: import ../pkgs final.pkgs;
 
   # Modifications to standard packages
-  modifiedPackages = _final: prev: {
+  modifiedPackages = final: prev: {
     makeModulesClosure = x: prev.makeModulesClosure (x // { allowMissing = true; });
+
+    # Fallback to unstable antigravity-cli if not present in current nixpkgs stable
+    antigravity-cli = prev.antigravity-cli or final.unstable.antigravity-cli;
 
     # Fix for nvidia_x11_legacy340 on modern nixpkgs KBuild (Issue #554929 / PR #555840)
     # Permite compilação dos módulos de kernel quando $src aponta para o store read-only do Nix.
