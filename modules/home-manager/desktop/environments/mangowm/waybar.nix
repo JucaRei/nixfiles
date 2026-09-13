@@ -9,6 +9,106 @@ let
   inherit (lib.types) bool;
   cfg = config.desktop.mangowm;
 
+  # Script de Energia / Sessão (Power Menu via Rofi) — agnóstico ao compositor
+  powerMenu = pkgs.writeShellScriptBin "session-power-menu" ''
+    chosen=$(printf "󰌾 Bloquear\n󰤄 Suspender\n󰍃 Encerrar Sessão\n󰑐 Reiniciar\n󰐥 Desligar" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰐥 Energia " -theme-str 'window {width: 320px; height: 320px;} listview {columns: 1; lines: 5;}')
+    case "$chosen" in
+      *"Bloquear") ${pkgs.hyprlock}/bin/hyprlock ;;
+      *"Suspender") systemctl suspend ;;
+      *"Encerrar Sessão")
+        if [ "$XDG_CURRENT_DESKTOP" = "mango" ] || [ "$DESKTOP_SESSION" = "mango" ] || pgrep -x mango >/dev/null 2>&1; then
+          pkill -SIGTERM -x mango 2>/dev/null || loginctl terminate-session "''${XDG_SESSION_ID:-}" 2>/dev/null || loginctl terminate-user "$USER"
+        elif command -v hyprctl >/dev/null 2>&1 && pgrep -x Hyprland >/dev/null 2>&1; then
+          hyprctl dispatch exit
+        elif [ -n "''${XDG_SESSION_ID:-}" ]; then
+          loginctl terminate-session "$XDG_SESSION_ID"
+        else
+          loginctl terminate-user "$USER"
+        fi
+        ;;
+      *"Reiniciar") systemctl reboot ;;
+      *"Desligar") systemctl poweroff ;;
+    esac
+  '';
+
+  # Script de seleção WiFi via Rofi + nmcli (usa nmcli nativo do Fedora/NixOS)
+  rofiWifiMenu = pkgs.writeShellScriptBin "rofi-wifi-menu" ''
+    NMCLI="/usr/bin/nmcli"
+    if ! command -v "$NMCLI" >/dev/null 2>&1; then
+      NMCLI=$(command -v nmcli 2>/dev/null || true)
+    fi
+    if [ -z "$NMCLI" ]; then
+      ${pkgs.libnotify}/bin/notify-send -u critical "WiFi" "nmcli não encontrado. Instale o NetworkManager."
+      exit 1
+    fi
+
+    # Estado atual da conexão
+    connected=$($NMCLI -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
+    wifi_status=$($NMCLI radio wifi)
+
+    if [ "$wifi_status" = "disabled" ]; then
+      action=$(printf "󰤮 WiFi Desligado\n󰖩 Ligar WiFi" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰤮 WiFi " -theme-str 'window {width: 360px; height: 200px;} listview {lines: 2;}')
+      case "$action" in
+        *"Ligar WiFi") $NMCLI radio wifi on; ${pkgs.libnotify}/bin/notify-send -u low "WiFi" "Rádio WiFi ligado!" ;;
+      esac
+      exit 0
+    fi
+
+    # Escanear redes disponíveis
+    $NMCLI dev wifi rescan 2>/dev/null || true
+    sleep 1
+
+    # Listar SSIDs com sinal
+    networks=$($NMCLI -t -f SSID,SIGNAL,SECURITY dev wifi list | grep -v '^$' | sort -t: -k2 -rn | head -15)
+    menu=""
+    if [ -n "$connected" ]; then
+      menu="󰤨 Conectado: $connected\n󰤭 Desconectar\n"
+    fi
+    menu="$menu󰤯 Desligar WiFi\n─────────────\n"
+
+    while IFS=: read -r ssid signal security; do
+      [ -z "$ssid" ] && continue
+      if [ "$signal" -ge 75 ]; then icon="󰤨";
+      elif [ "$signal" -ge 50 ]; then icon="󰤥";
+      elif [ "$signal" -ge 25 ]; then icon="󰤢";
+      else icon="󰤟"; fi
+      lock=""; [ -n "$security" ] && [ "$security" != "--" ] && lock=" 󰌾"
+      menu="$menu$icon $ssid ($signal%)$lock\n"
+    done <<< "$networks"
+
+    chosen=$(printf "$menu" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰤨 WiFi " -theme-str 'window {width: 420px; height: 480px;} listview {lines: 12;}')
+    [ -z "$chosen" ] && exit 0
+
+    case "$chosen" in
+      *"Desconectar")
+        $NMCLI dev disconnect iface wlp2s0b1 2>/dev/null || $NMCLI con down id "$connected" 2>/dev/null
+        ${pkgs.libnotify}/bin/notify-send -u low "WiFi" "Desconectado de $connected"
+        ;;
+      *"Desligar WiFi")
+        $NMCLI radio wifi off
+        ${pkgs.libnotify}/bin/notify-send -u low "WiFi" "Rádio WiFi desligado"
+        ;;
+      *"Conectado"*) ;;
+      *"─────"*) ;;
+      *)
+        ssid=$(echo "$chosen" | sed 's/^[^ ]* //' | sed 's/ ([0-9]*%).*$//')
+        if $NMCLI -t -f NAME con show | grep -qx "$ssid"; then
+          $NMCLI con up id "$ssid" 2>/dev/null
+        else
+          pass=$(${pkgs.rofi}/bin/rofi -dmenu -p " 󰌾 Senha WiFi: $ssid " -password -theme-str 'window {width: 420px; height: 100px;} listview {lines: 0;}')
+          if [ -n "$pass" ]; then
+            $NMCLI dev wifi connect "$ssid" password "$pass" 2>/dev/null
+          fi
+        fi
+        if $NMCLI -t -f active,ssid dev wifi | grep -q "^yes:$ssid"; then
+          ${pkgs.libnotify}/bin/notify-send -u low "WiFi" "Conectado a $ssid"
+        else
+          ${pkgs.libnotify}/bin/notify-send -u critical "WiFi" "Falha ao conectar a $ssid"
+        fi
+        ;;
+    esac
+  '';
+
   # Script para exibir o layout ativo na Waybar (via mmsg -g)
   mangoLayoutSwitcher = pkgs.writeShellScriptBin "mango-layout-switcher" ''
     set -euo pipefail
@@ -104,6 +204,8 @@ in
     home.packages = [
       mangoLayoutSwitcher
       mangoLayoutPicker
+      powerMenu
+      rofiWifiMenu
     ];
 
     programs.waybar = {
@@ -239,6 +341,7 @@ in
             format-ethernet = "󰈀 {bandwidthDownBytes} 󰇚";
             format-disconnected = "󰤭 Offline";
             interval = 2;
+            on-click = "${rofiWifiMenu}/bin/rofi-wifi-menu";
             tooltip-format-wifi = "WiFi: {essid} ({signalStrength}%)\nDown: {bandwidthDownBits} | Up: {bandwidthUpBits}";
             tooltip-format-ethernet = "Ethernet: {ifname}\nDown: {bandwidthDownBits} | Up: {bandwidthUpBits}";
           };
@@ -302,7 +405,7 @@ in
           "custom/power" = {
             format = "󰐥";
             tooltip = "Menu de Sessão / Energia";
-            on-click = "session-power-menu";
+            on-click = "${powerMenu}/bin/session-power-menu";
           };
         };
       };
@@ -384,6 +487,17 @@ in
         #tags button:hover {
           background: rgba(137, 180, 250, 0.25);
           color: #cdd6f4;
+        }
+
+        /* Oculta tags 6-9 quando vazias para economizar espaço em telas pequenas */
+        #tags button.empty:nth-child(n+6) {
+          padding: 0;
+          margin: 0;
+          min-width: 0;
+          font-size: 0;
+          border: none;
+          opacity: 0;
+          /* transition handles smooth appear/disappear */
         }
 
         /* Layout Switcher */
