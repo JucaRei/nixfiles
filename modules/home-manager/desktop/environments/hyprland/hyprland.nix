@@ -74,8 +74,22 @@ let
 
   monBrightnessOsd = pkgs.writeShellScript "hypr-mon-brightness-osd" ''
     case "$1" in
-      up) ${pkgs.brightnessctl}/bin/brightnessctl set 5%+ ;;
-      down) ${pkgs.brightnessctl}/bin/brightnessctl set 5%- ;;
+      up)
+        prev=$(${pkgs.brightnessctl}/bin/brightnessctl get 2>/dev/null)
+        ${pkgs.brightnessctl}/bin/brightnessctl set +2% >/dev/null 2>&1
+        curr=$(${pkgs.brightnessctl}/bin/brightnessctl get 2>/dev/null)
+        if [ "$prev" = "$curr" ]; then
+          ${pkgs.brightnessctl}/bin/brightnessctl set +1 >/dev/null 2>&1
+        fi
+        ;;
+      down)
+        prev=$(${pkgs.brightnessctl}/bin/brightnessctl get 2>/dev/null)
+        ${pkgs.brightnessctl}/bin/brightnessctl set 2%- >/dev/null 2>&1
+        curr=$(${pkgs.brightnessctl}/bin/brightnessctl get 2>/dev/null)
+        if [ "$prev" = "$curr" ]; then
+          ${pkgs.brightnessctl}/bin/brightnessctl set 1- >/dev/null 2>&1
+        fi
+        ;;
     esac
     val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
     if [ -n "$val" ]; then

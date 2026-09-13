@@ -44,7 +44,7 @@ let
       case "$1" in
         up)
           prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +5% >/dev/null 2>&1
+          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +2% >/dev/null 2>&1
           curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
           if [ "$prev" = "$curr" ]; then
             ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +1 >/dev/null 2>&1
@@ -52,7 +52,7 @@ let
           ;;
         down)
           prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 5%- >/dev/null 2>&1
+          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 2%- >/dev/null 2>&1
           curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
           if [ "$prev" = "$curr" ]; then
             ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 1- >/dev/null 2>&1
@@ -75,11 +75,25 @@ let
     fi
   '';
 
-  # Controle de Brilho da Tela com OSD Dunst
+  # Controle de Brilho da Tela com OSD Dunst (passos de 2%)
   monBrightnessOsd = pkgs.writeShellScript "mango-mon-brightness-osd" ''
     case "$1" in
-      up) ${pkgs.brightnessctl}/bin/brightnessctl set 5%+ ;;
-      down) ${pkgs.brightnessctl}/bin/brightnessctl set 5%- ;;
+      up)
+        prev=$(${pkgs.brightnessctl}/bin/brightnessctl get 2>/dev/null)
+        ${pkgs.brightnessctl}/bin/brightnessctl set +2% >/dev/null 2>&1
+        curr=$(${pkgs.brightnessctl}/bin/brightnessctl get 2>/dev/null)
+        if [ "$prev" = "$curr" ]; then
+          ${pkgs.brightnessctl}/bin/brightnessctl set +1 >/dev/null 2>&1
+        fi
+        ;;
+      down)
+        prev=$(${pkgs.brightnessctl}/bin/brightnessctl get 2>/dev/null)
+        ${pkgs.brightnessctl}/bin/brightnessctl set 2%- >/dev/null 2>&1
+        curr=$(${pkgs.brightnessctl}/bin/brightnessctl get 2>/dev/null)
+        if [ "$prev" = "$curr" ]; then
+          ${pkgs.brightnessctl}/bin/brightnessctl set 1- >/dev/null 2>&1
+        fi
+        ;;
     esac
     val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
     if [ -n "$val" ]; then

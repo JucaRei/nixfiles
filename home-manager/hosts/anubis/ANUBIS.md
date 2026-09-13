@@ -82,6 +82,11 @@ z /sys/class/leds/*kbd_backlight*/brightness 0666 - - -
 ```
 Pacote `brightnessctl` instalado no Fedora para suporte udev.
 
+- **Granularidade do Backlight (Passos de 2%)**:
+  - Por padrão no Sandy Bridge (MacBook Air 4,1), o kernel ignora o `intel_backlight` e registra apenas o `acpi_video0` com `max_brightness = 15`. Nesse modo, cada unidade de 1 representa 6.67% (~7%), forçando saltos de 7 em 7.
+  - Para habilitar controle PWM nativo fino com centenas de passos lineares, configurado `acpi_backlight=native` nos parâmetros de boot do kernel via `grubby` e `/etc/default/grub`.
+  - Nos módulos do compositor (`mango.nix`, `hyprland.nix`, `waybar.nix`), os incrementos foram unificados para **2%** (`+2%` e `2%-`) com fallback de step unitário (`+1` / `1-`) para precisão máxima.
+
 ### Wi-Fi (Broadcom BCM43224)
 - **Driver**: `brcmsmac` + barramento `bcma` (drivers nativos open-source do kernel Linux)
 - **Nome da Interface**: `wlp2s0b1`

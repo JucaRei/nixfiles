@@ -156,8 +156,8 @@ in
               "󰃟"
               "󰃠"
             ];
-            on-scroll-up = "${pkgs.brightnessctl}/bin/brightnessctl set 5%+";
-            on-scroll-down = "${pkgs.brightnessctl}/bin/brightnessctl set 5%-";
+            on-scroll-up = "${pkgs.brightnessctl}/bin/brightnessctl set +2%";
+            on-scroll-down = "${pkgs.brightnessctl}/bin/brightnessctl set 2%-";
           };
 
           "pulseaudio" = {

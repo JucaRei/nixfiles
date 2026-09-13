@@ -174,6 +174,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **MangoWM — Suporte Nativo a Workspaces (`ext/workspaces`) & Gestos de 3 Dedos**:
   - **Workspaces na Waybar**: O MangoWM moderno adota o protocolo Wayland oficial `ext-workspace-v1` (`ext_workspace_manager_v1`), e não o legado `dwl_status_manager_v2`. O módulo foi migrado de `dwl/tags` para `ext/workspaces` com `sort-by-id = true`, exibindo os botões de workspace reativos com tema Catppuccin e ocultação de tags vazias acima de 5.
   - **Swipe de Workspaces com 3 dedos**: Configurado `gesturebind=none,left,3,viewtoright,0` e `gesturebind=none,right,3,viewtoleft,0` para alternar workspaces horizontalmente, e `up`/`down` para alternar overview (`toggleoverview`), movendo os comandos de foco de janela para 4 dedos.
+- **Backlight e Iluminação (Passos de 2% no Anubis)**:
+  - **Causa dos Saltos de 7%**: O kernel Linux no MacBook Air 4,1 registrava por padrão apenas a interface ACPI legada `acpi_video0` (`max_brightness = 15`), onde 1 passo representava 6.67% (~7%).
+  - **Ativação PWM Nativa**: Injetado `acpi_backlight=native` nos parâmetros de boot do kernel via `grubby` e `/etc/default/grub` no Fedora, permitindo controle fino do backlight via `intel_backlight`.
+  - **Scripts Unificados em 2%**: `mango-mon-brightness-osd`, `mango-kbd-brightness-osd`, `hypr-mon-brightness-osd` e o módulo `backlight` do Waybar atualizados para saltos de **2%** (`+2%` e `2%-`) com fallback para step unitário (`+1`/`1-`).
 
 ---
 
