@@ -187,13 +187,17 @@ in
       warpcursor=1
       cursor_size=24
 
-      # --- Gestos de Touchpad ---
-      gesturebind=none,up,4,viewtoright,0
-      gesturebind=none,down,4,viewtoleft,0
-      gesturebind=none,left,3,focusdir,left
-      gesturebind=none,right,3,focusdir,right
-      gesturebind=none,up,3,focusdir,up
-      gesturebind=none,down,3,focusdir,down
+      # --- Gestos de Touchpad (Swipe de Workspaces com 3 dedos) ---
+      gesturebind=none,left,3,viewtoright,0
+      gesturebind=none,right,3,viewtoleft,0
+      gesturebind=none,up,3,toggleoverview,0
+      gesturebind=none,down,3,toggleoverview,0
+
+      # Gestos de 4 dedos para foco de janelas
+      gesturebind=none,left,4,focusdir,left
+      gesturebind=none,right,4,focusdir,right
+      gesturebind=none,up,4,focusdir,up
+      gesturebind=none,down,4,focusdir,down
 
       # --- Roda do Mouse (Axisbind) ---
       axisbind=SUPER,UP,viewtoleft

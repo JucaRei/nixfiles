@@ -167,6 +167,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Tags 6-9 ocultas quando vazias**: CSS `#tags button.empty:nth-child(n+6)` com `opacity: 0; font-size: 0; padding: 0;` para economizar espaço na tela de 1366x768 do MacBook Air. Tags aparecem automaticamente quando recebem janelas, foco ou urgência. `tag_num=9` e keybindings completos mantidos.
   - **Deploy remoto via SSH**: `nix copy --to ssh://` requer `nix-store` no PATH padrão do SSH (não-interativo). No Fedora com Determinate Nix, criado symlink `/usr/local/bin/nix-store -> /nix/var/nix/profiles/default/bin/nix-store` e adicionado `trusted-users = root juca` em `/etc/nix/nix.custom.conf` para permitir cópias sem assinatura.
   - **Hyprpaper falha no Intel HD 3000**: `PRIME export not supported` e `eglCreateImageKHR failed` — limitação do hardware Sandy Bridge. Wallpaper via `hyprpaper` não funciona; alternativa seria `swaybg`.
+- **MangoWM — Fix de Inicialização do Waybar & Janela Ativa (`custom/window`)**:
+  - **Crash por `SIGSEGV` do `dwl/window`**: O módulo nativo C++ `dwl/window` do Waybar 0.15.0 tentava conectar-se ao protocolo `dwl_status_manager_v2`. Como o MangoWM moderno/nightly não expõe essa interface específica, o construtor do Waybar causava core dump (`dwl::Window::Window` segfault) matando o Waybar no boot.
+  - **Módulo `custom/window`**: Substituído o instável `dwl/window` por `custom/window` com script `mango-window-title` que consulta `mmsg get focusing-client` via IPC nativo do MangoWM, extrai `title` e `appid` com `jq -c` em linha única, aplica ícones dinâmicos Nerd Font (Firefox, VS Code, Terminal, etc.) e trunca títulos longos para telas menores.
+  - **Sintaxe moderna do `mmsg`**: Atualizados os scripts `mangoLayoutSwitcher`, `mangoLayoutPicker`, `mangoReload` e `mangoToggleOuterGaps` para a sintaxe do MangoWM nightly (`mmsg get <query>` e `mmsg dispatch <func>[,arg...]`). Adicionado fallback automático para encontrar o socket `MANGO_INSTANCE_SIGNATURE` em `/run/user/<uid>/mango-*.sock`.
+- **MangoWM — Suporte Nativo a Workspaces (`ext/workspaces`) & Gestos de 3 Dedos**:
+  - **Workspaces na Waybar**: O MangoWM moderno adota o protocolo Wayland oficial `ext-workspace-v1` (`ext_workspace_manager_v1`), e não o legado `dwl_status_manager_v2`. O módulo foi migrado de `dwl/tags` para `ext/workspaces` com `sort-by-id = true`, exibindo os botões de workspace reativos com tema Catppuccin e ocultação de tags vazias acima de 5.
+  - **Swipe de Workspaces com 3 dedos**: Configurado `gesturebind=none,left,3,viewtoright,0` e `gesturebind=none,right,3,viewtoleft,0` para alternar workspaces horizontalmente, e `up`/`down` para alternar overview (`toggleoverview`), movendo os comandos de foco de janela para 4 dedos.
 
 ---
 

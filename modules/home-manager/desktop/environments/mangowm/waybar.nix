@@ -109,9 +109,63 @@ let
     esac
   '';
 
-  # Script para exibir o layout ativo na Waybar (via mmsg -g)
+  # Script para exibir o título da janela ativa na Waybar (via mmsg get focusing-client)
+  mangoWindowTitle = pkgs.writeShellScriptBin "mango-window-title" ''
+    set -euo pipefail
+    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
+      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    fi
+
+    client=$(mmsg get focusing-client 2>/dev/null || true)
+    if [ -z "$client" ] || echo "$client" | grep -q '"error"'; then
+      echo '{"text":"","tooltip":"Área de Trabalho","class":"empty"}'
+      exit 0
+    fi
+
+    title=$(echo "$client" | ${pkgs.jq}/bin/jq -r '.title // empty' 2>/dev/null || true)
+    appid=$(echo "$client" | ${pkgs.jq}/bin/jq -r '.appid // empty' 2>/dev/null || true)
+
+    if [ -z "$title" ]; then
+      echo '{"text":"","tooltip":"Área de Trabalho","class":"empty"}'
+      exit 0
+    fi
+
+    appid_lower=$(echo "$appid" | tr '[:upper:]' '[:lower:]')
+
+    icon="󰣆"
+    case "$appid_lower" in
+      *firefox*) icon="󰈹" ;;
+      *chrom*) icon="" ;;
+      *code*) icon="󰨞" ;;
+      *zed*) icon="󱓷" ;;
+      *discord*) icon="󰙯" ;;
+      *steam*) icon="󰓓" ;;
+      *alacritty*) icon="" ;;
+      *kitty*) icon="󰄛" ;;
+      *thunar*) icon="󰉋" ;;
+      *pavucontrol*) icon="󰕾" ;;
+    esac
+
+    # Truncar título longo para telas pequenas
+    if [ ''${#title} -gt 28 ]; then
+      display_title="''${title:0:25}…"
+    else
+      display_title="$title"
+    fi
+
+    ${pkgs.jq}/bin/jq -c -n \
+      --arg text "$icon $display_title" \
+      --arg tooltip "$title ($appid)" \
+      --arg class "$appid_lower" \
+      '{"text": $text, "tooltip": $tooltip, "class": $class}'
+  '';
+
+  # Script para exibir o layout ativo na Waybar (via mmsg get all-monitors)
   mangoLayoutSwitcher = pkgs.writeShellScriptBin "mango-layout-switcher" ''
     set -euo pipefail
+    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
+      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    fi
 
     declare -A LAYOUT_NAMES=(
       [T]="Tile"
@@ -125,6 +179,9 @@ let
       [VT]="Vert Tile"
       [VG]="Vert Grid"
       [VK]="Vert Deck"
+      [DW]="Dwindle"
+      [F]="Fair"
+      [VF]="Vert Fair"
       [TG]="TGMix"
     )
 
@@ -140,22 +197,19 @@ let
       [VT]="󰕴"
       [VG]="󰝙"
       [VK]="󰓪"
+      [DW]="󰕯"
+      [F]="󰕮"
+      [VF]="󰕬"
       [TG]="󰕱"
     )
 
-    state=$(mmsg -g 2>/dev/null || true)
-    if [ -z "$state" ]; then
+    state=$(mmsg get all-monitors 2>/dev/null || true)
+    if [ -z "$state" ] || echo "$state" | grep -q '"error"'; then
       echo '{"text":"󰕰 Mango","tooltip":"MangoWM não detectado ou inativo"}'
       exit 0
     fi
 
-    focused_mon=$(echo "$state" | grep "selmon 1" | awk '{print $1}' | head -n1)
-    if [ -z "$focused_mon" ]; then
-      echo '{"text":"󰕰 N/A","tooltip":"Nenhum monitor focado"}'
-      exit 0
-    fi
-
-    code=$(echo "$state" | grep "^''${focused_mon} layout " | awk '{print $NF}' | head -n1)
+    code=$(echo "$state" | ${pkgs.jq}/bin/jq -r '.monitors[0].layout_symbol // empty' 2>/dev/null || true)
     if [ -z "$code" ] || [ -z "''${LAYOUT_NAMES[$code]+x}" ]; then
       echo "{\"text\":\"󰕰 ''${code:-Tile}\",\"tooltip\":\"Layout atual: ''${code:-Desconhecido}\"}"
       exit 0
@@ -170,24 +224,28 @@ let
   # Menu Rofi para seleção rápida de layout do MangoWM
   mangoLayoutPicker = pkgs.writeShellScriptBin "mango-layout-picker" ''
     set -euo pipefail
+    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
+      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    fi
 
-    options="󰹑 Scroller (S)\n󰕰 Tile (T)\n󰕲 Center Tile (CT)\n󰝘 Grid (G)\n󰍹 Monocle (M)\n󰓩 Deck (K)\n󰕳 Right Tile (RT)\n󰹒 Vertical Scroller (VS)\n󰕴 Vertical Tile (VT)\n󰝙 Vertical Grid (VG)\n󰓪 Vertical Deck (VK)\n󰕱 TGMix (TG)"
+    options="󰹑 Scroller (S)\n󰕰 Tile (T)\n󰕲 Center Tile (CT)\n󰝘 Grid (G)\n󰍹 Monocle (M)\n󰓩 Deck (K)\n󰕳 Right Tile (RT)\n󰹒 Vertical Scroller (VS)\n󰕴 Vertical Tile (VT)\n󰝙 Vertical Grid (VG)\n󰓪 Vertical Deck (VK)\n󰕯 Dwindle (DW)\n󰕮 Fair (F)"
 
-    chosen=$(echo -e "$options" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰕰 Layout Mango " -theme-str 'window {width: 320px; height: 420px;} listview {lines: 12;}')
+    chosen=$(echo -e "$options" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰕰 Layout Mango " -theme-str 'window {width: 320px; height: 440px;} listview {lines: 13;}')
 
     case "$chosen" in
-      *"Scroller (S)") mmsg -d setlayout scroller ;;
-      *"Tile (T)") mmsg -d setlayout tile ;;
-      *"Center Tile (CT)") mmsg -d setlayout center_tile ;;
-      *"Grid (G)") mmsg -d setlayout grid ;;
-      *"Monocle (M)") mmsg -d setlayout monocle ;;
-      *"Deck (K)") mmsg -d setlayout deck ;;
-      *"Right Tile (RT)") mmsg -d setlayout right_tile ;;
-      *"Vertical Scroller (VS)") mmsg -d setlayout vertical_scroller ;;
-      *"Vertical Tile (VT)") mmsg -d setlayout vertical_tile ;;
-      *"Vertical Grid (VG)") mmsg -d setlayout vertical_grid ;;
-      *"Vertical Deck (VK)") mmsg -d setlayout vertical_deck ;;
-      *"TGMix (TG)") mmsg -d setlayout tgmix ;;
+      *"Scroller (S)") mmsg dispatch setlayout,scroller >/dev/null 2>&1 ;;
+      *"Tile (T)") mmsg dispatch setlayout,tile >/dev/null 2>&1 ;;
+      *"Center Tile (CT)") mmsg dispatch setlayout,center_tile >/dev/null 2>&1 ;;
+      *"Grid (G)") mmsg dispatch setlayout,grid >/dev/null 2>&1 ;;
+      *"Monocle (M)") mmsg dispatch setlayout,monocle >/dev/null 2>&1 ;;
+      *"Deck (K)") mmsg dispatch setlayout,deck >/dev/null 2>&1 ;;
+      *"Right Tile (RT)") mmsg dispatch setlayout,right_tile >/dev/null 2>&1 ;;
+      *"Vertical Scroller (VS)") mmsg dispatch setlayout,vertical_scroller >/dev/null 2>&1 ;;
+      *"Vertical Tile (VT)") mmsg dispatch setlayout,vertical_tile >/dev/null 2>&1 ;;
+      *"Vertical Grid (VG)") mmsg dispatch setlayout,vertical_grid >/dev/null 2>&1 ;;
+      *"Vertical Deck (VK)") mmsg dispatch setlayout,vertical_deck >/dev/null 2>&1 ;;
+      *"Dwindle (DW)") mmsg dispatch setlayout,dwindle >/dev/null 2>&1 ;;
+      *"Fair (F)") mmsg dispatch setlayout,fair >/dev/null 2>&1 ;;
     esac
   '';
 in
@@ -204,6 +262,7 @@ in
     home.packages = [
       mangoLayoutSwitcher
       mangoLayoutPicker
+      mangoWindowTitle
       powerMenu
       rofiWifiMenu
     ];
@@ -225,9 +284,9 @@ in
 
           modules-left = [
             "custom/launcher"
-            "dwl/tags"
+            "ext/workspaces"
             "custom/layout"
-            "dwl/window"
+            "custom/window"
           ];
 
           modules-center = [
@@ -253,19 +312,10 @@ in
             tooltip = false;
           };
 
-          "dwl/tags" = {
-            num-tags = 9;
-            tag-labels = [
-              "1"
-              "2"
-              "3"
-              "4"
-              "5"
-              "6"
-              "7"
-              "8"
-              "9"
-            ];
+          "ext/workspaces" = {
+            format = "{name}";
+            on-click = "activate";
+            sort-by-id = true;
           };
 
           "custom/layout" = {
@@ -276,20 +326,11 @@ in
             tooltip = true;
           };
 
-          "dwl/window" = {
-            format = "{title}";
-            max-length = 35;
-            rewrite = {
-              "(.*) — Mozilla Firefox" = "󰈹 $1";
-              "(.*) - Chromium" = " $1";
-              "(.*) - Visual Studio Code" = "󰨞 $1";
-              "(.*) - zed" = "󱓷 $1";
-              "(.*) - Discord" = "󰙯 $1";
-              "(.*) - Steam" = "󰓓 $1";
-              "(.*) - Alacritty" = " $1";
-              "(.*) - Kitty" = "󰄛 $1";
-              "(.*) - Thunar" = "󰉋 $1";
-            };
+          "custom/window" = {
+            exec = "${mangoWindowTitle}/bin/mango-window-title";
+            interval = 1;
+            return-type = "json";
+            tooltip = true;
           };
 
           "clock" = {
@@ -446,8 +487,9 @@ in
           border-color: #b4befe;
         }
 
-        /* Workspaces / DWL Tags */
-        #tags {
+        /* Workspaces / Mango Tags */
+        #tags,
+        #workspaces {
           background: rgba(17, 17, 27, 0.4);
           border: 1px solid rgba(49, 50, 68, 0.6);
           border-radius: 8px;
@@ -455,7 +497,8 @@ in
           margin: 4px 3px;
         }
 
-        #tags button {
+        #tags button,
+        #workspaces button {
           color: #6c7086;
           background: transparent;
           border-radius: 6px;
@@ -464,40 +507,46 @@ in
           transition: all 0.2s ease-in-out;
         }
 
-        #tags button.occupied {
+        #tags button.occupied,
+        #workspaces button.occupied {
           color: #f9e2af;
         }
 
-        #tags button.empty {
+        #tags button.empty,
+        #workspaces button.empty {
           color: #585b70;
         }
 
         #tags button.focused,
-        #tags button.active {
+        #tags button.active,
+        #workspaces button.focused,
+        #workspaces button.active {
           color: #1e1e2e;
           background: #89b4fa;
           font-weight: 800;
         }
 
-        #tags button.urgent {
+        #tags button.urgent,
+        #workspaces button.urgent {
           color: #1e1e2e;
           background: #f38ba8;
         }
 
-        #tags button:hover {
+        #tags button:hover,
+        #workspaces button:hover {
           background: rgba(137, 180, 250, 0.25);
           color: #cdd6f4;
         }
 
         /* Oculta tags 6-9 quando vazias para economizar espaço em telas pequenas */
-        #tags button.empty:nth-child(n+6) {
+        #tags button.empty:nth-child(n+6),
+        #workspaces button.empty:nth-child(n+6) {
           padding: 0;
           margin: 0;
           min-width: 0;
           font-size: 0;
           border: none;
           opacity: 0;
-          /* transition handles smooth appear/disappear */
         }
 
         /* Layout Switcher */
@@ -518,10 +567,18 @@ in
         }
 
         /* Window Title */
-        #window {
+        #window,
+        #custom-window {
           color: #a6adc8;
           padding: 2px 8px;
           margin: 4px 3px;
+          font-weight: 600;
+        }
+
+        #custom-window.empty {
+          opacity: 0;
+          padding: 0;
+          margin: 0;
         }
 
         /* Center Clock */

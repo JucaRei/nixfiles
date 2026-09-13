@@ -17,21 +17,27 @@ let
     else
       pkgs.emptyDirectory;
   mangoReload = pkgs.writeShellScriptBin "mango-reload" ''
-    mmsg -d reload_config 2>/dev/null || true
+    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
+      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    fi
+    mmsg dispatch reload_config 2>/dev/null || true
     pkill -SIGUSR2 waybar 2>/dev/null || true
     ${pkgs.libnotify}/bin/notify-send -u low -i "preferences-desktop" "MangoWM" "Configurações e Waybar recarregados!"
   '';
 
   mangoToggleOuterGaps = pkgs.writeShellScriptBin "mango-toggle-outer-gaps" ''
+    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
+      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    fi
     STATE_FILE="$HOME/.cache/mango_gaps_mode"
     mkdir -p "$HOME/.cache"
     if [ -f "$STATE_FILE" ]; then
       rm -f "$STATE_FILE"
-      mmsg -d setgappo 12 12 2>/dev/null || true
+      mmsg dispatch setgappo,12,12 2>/dev/null || true
       ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Modo Normal: Gaps externos (12px)"
     else
       touch "$STATE_FILE"
-      mmsg -d setgappo 400 12 2>/dev/null || true
+      mmsg dispatch setgappo,400,12 2>/dev/null || true
       ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Modo Foco: Gaps externos expandidos (400px)"
     fi
   '';

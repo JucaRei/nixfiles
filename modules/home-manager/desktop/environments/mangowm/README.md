@@ -262,20 +262,26 @@ O MangoWM disponibiliza a ferramenta de linha de comando `mmsg` para interação
 
 ### Consultar o Estado do Compositor
 ```bash
-# Exibe monitores, tag ativa, layout atual e clientes
-mmsg -g
+# Exibe todos os monitores, tags ativas e layout atual
+mmsg get all-monitors
+
+# Exibe a janela/cliente em foco (título, appid, dimensões)
+mmsg get focusing-client
+
+# Lista todos os layouts suportados
+mmsg get layouts
 ```
 
 ### Alterar Layout via Terminal
 ```bash
 # Alternar layout
-mmsg -d switch_layout
+mmsg dispatch switch_layout
 
 # Definir layout específico diretamente
-mmsg -d setlayout scroller
-mmsg -d setlayout tile
-mmsg -d setlayout grid
-mmsg -d setlayout monocle
+mmsg dispatch setlayout,scroller
+mmsg dispatch setlayout,tile
+mmsg dispatch setlayout,grid
+mmsg dispatch setlayout,monocle
 ```
 
 ### Recarregar Configurações a Quente
@@ -285,7 +291,7 @@ Após editar qualquer opção no Nix e rodar `home-manager switch`, você pode r
 mango-reload
 
 # Ou diretamente pelo mmsg
-mmsg -d reload_config
+mmsg dispatch reload_config
 ```
 
 ### Reiniciar a Waybar Manualmente
