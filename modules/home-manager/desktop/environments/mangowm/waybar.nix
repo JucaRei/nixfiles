@@ -359,9 +359,19 @@ in
           };
 
           "temperature" = {
+            hwmon-path-abs = [
+              "/sys/devices/platform/coretemp.0/hwmon"
+              "/sys/devices/pci0000:00/0000:00:18.3/hwmon"
+              "/sys/devices/pci0000:00/0000:00:19.3/hwmon"
+              "/sys/devices/pci0000:00/0000:00:14.3/hwmon"
+            ];
+            input-filename = "temp1_input";
+            critical-threshold = 80;
+            format-critical = " {temperatureC}°C";
             format = " {temperatureC}°C";
             interval = 3;
             tooltip = true;
+            tooltip-format = "CPU: {temperatureC}°C";
           };
 
           "memory" = {
@@ -614,6 +624,10 @@ in
 
         #temperature {
           color: #fab387;
+        }
+
+        #temperature.critical {
+          color: #f38ba8;
         }
 
         #memory {

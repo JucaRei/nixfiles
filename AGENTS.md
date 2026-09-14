@@ -194,6 +194,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - Criar um symlink `libffmpeg.so.8.1 -> libffmpeg.so` no store enganava o script lançador `/opt/vivaldi/vivaldi`, fazendo-o precarregar a versão aberta e ignorar a versão proprietária em `~/.local`. Esse symlink falso foi removido e o `update-ffmpeg` foi marcado como executável (`chmod +x`).
   - Adicionada ativação `setupVivaldiCodecs` no módulo do Chrome para garantir que o script `update-ffmpeg --user` seja acionado se os codecs proprietários ainda não estiverem baixados.
   - Removido `--enable-zero-copy` de `commandLineArgs` que quebrava renderização de vídeo em GPUs legadas (Intel HD 3000 / Sandy Bridge).
+- **Waybar — Sensor de Temperatura da CPU (`waybar.nix`)**:
+  - **Causa da Temperatura Incorreta**: Por padrão, o módulo `temperature` do Waybar consulta `/sys/class/thermal/thermal_zone0/temp`. Em MacBooks e diversos laptops x86 com Linux, `thermal_zone0` corresponde à bateria (`BAT0`, ~36°C) e não à CPU.
+  - **Detecção Dinâmica de Hwmon**: Configurado `hwmon-path-abs` com lista de caminhos de hardware (`/sys/devices/platform/coretemp.0/hwmon` para Intel, `/sys/devices/pci.../hwmon` para AMD) e `input-filename = "temp1_input"`, permitindo que o Waybar localize dinamicamente o sensor do processador mesmo que a ordem numérica de `hwmon#` mude entre reinicializações.
+  - **Feedback Visual e Alertas**: Adicionado `critical-threshold = 80`, troca dinâmica para o ícone `` quando crítico (`format-critical`), estilização `#temperature.critical` em vermelho (`#f38ba8`), e tooltip detalhado `CPU: {temperatureC}°C`.
 
 ---
 
