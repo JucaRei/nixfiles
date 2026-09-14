@@ -212,6 +212,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **VS Code**: `builtins.readFile ./settings.json` adotado no lugar de interpolação em string `"${./settings.json}"`, prevenindo path inválido no Nix store.
     - **Broadcom STA (`rocinante` / `iso-rocinante`)**: Declarado `broadcom-sta-6.30.223.271-63-7.1.9` em `nixpkgs.config.permittedInsecurePackages` com verificação segura via `lib.hasPrefix` e `lib.strings.hasInfix`.
 
+- **Home Manager — Limpeza de Módulos Externos e Redundâncias (`home-manager/default.nix`)**:
+  - **Módulo NUR Redundante**: Removido `inputs.nur.modules.homeManager.default`. A função desse módulo oficial é unicamente injetar `inputs.nur.overlays.default` em `nixpkgs.overlays`. Como esse overlay já é injetado diretamente em [lib/helpers.nix](file:///mnt/d/workspace/MyRepos/nixfiles/lib/helpers.nix) (na instância `pkgs` do standalone) e em [modules/home-manager/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/default.nix) (via `nixpkgs.overlays`), a importação era desnecessária e triplicada.
+  - **Remoção de Código Morto (`disabledModules`)**: Removido bloco `disabledModules` que desabilitava o submódulo `delta.nix` do Catppuccin, uma vez que o módulo do Catppuccin nem sequer é importado no Home Manager.
+
 ---
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.

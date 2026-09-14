@@ -22,14 +22,8 @@ in
     inputs.sops-nix.homeManagerModules.sops
     inputs.nix-index-database.homeModules.nix-index
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
-    inputs.nur.modules.homeManager.default
   ]
   ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
-
-  disabledModules = [
-    # Disable catppuccin delta module as it requires programs.delta which is not available in home-manager 25.05
-    "${inputs.catppuccin}/modules/home-manager/delta.nix"
-  ];
 
   config = {
     home = {
