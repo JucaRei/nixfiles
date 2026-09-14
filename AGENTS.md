@@ -226,6 +226,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Configurado `general.enableShadows = false` e offsets zero, desativando a camada de sombra do Quickshell globalmente (barra, notificações, OSD e painéis).
       - Em `bar`, configurado `enableExclusionZoneInset = false` (evita que janelas sangrem por baixo da barra) com margens proporcionais (`marginVertical = 4`, `marginHorizontal = 8`).
       - Em `notifications`, definido `density = "compact"` (largura otimizada de 320px em vez de 440px para telas 1366x768 como a do MacBook Air / Anubis), opacidade 0.92 e tempos de exibição equilibrados.
+      - **Clima no Calendário**: Adicionados blocos `location` (`name = "São Paulo, Brazil"`, `autoLocate = true`, `weatherEnabled = true`, `useFahrenheit = false`) e `calendar` com `weather-card`, permitindo que o `LocationService` consulte automaticamente as coordenadas e previsão da Open-Meteo para exibição no painel de relógio/calendário.
+      - **Workspaces na Barra**: O widget `Workspace` em compositores Wayland genéricos/dwl requer `followFocusedScreen = true` (para parear saídas globais sem projeção fixa de output), `hideUnoccupied = false`, `labelMode = "index"` e `showLabelsOnlyWhenOccupied = false`, garantindo a exibição de todas as tags ativas com seus índices visíveis.
+      - **Dock e Ícones**: Configurado `pinnedStatic = true` e nomes canônicos de `.desktop` instalados no host (`firefox.desktop`, `vivaldi-stable.desktop`, `thunar.desktop`, `Alacritty.desktop`, `antigravity-ide.desktop`), permitindo que o Quickshell resolva os ícones do tema Papirus-Dark / hicolor corretamente.
   - **Opções Declarativas**:
     - `desktop.wayland.shell`: Permite selecionar o shell desejado (`enum [ "traditional" "noctalia" ]`), tendo como default `"traditional"`.
     - `desktop.wayland.compositor`: Define/detecta o compositor em execução (`"hyprland"` ou `"mangowm"`).

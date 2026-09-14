@@ -84,7 +84,17 @@ let
       widgets = {
         left = [
           { id = "Launcher"; }
-          { id = "Workspace"; }
+          {
+            id = "Workspace";
+            followFocusedScreen = true;
+            hideUnoccupied = false;
+            labelMode = "index";
+            showLabelsOnlyWhenOccupied = false;
+            pillSize = 0.8;
+            focusedColor = "primary";
+            occupiedColor = "secondary";
+            emptyColor = "surfaceVariant";
+          }
           { id = "ActiveWindow"; }
         ];
         center = [
@@ -104,6 +114,29 @@ let
 
       mouseWheelAction = "none";
       rightClickAction = "controlCenter";
+    };
+
+    # Localização e Previsão do Tempo
+    location = {
+      name = "São Paulo, Brazil";
+      autoLocate = true;
+      weatherEnabled = true;
+      weatherShowEffects = true;
+      useFahrenheit = false;
+      use12hourFormat = false;
+      showCalendarEvents = true;
+      showCalendarWeather = true;
+      hideWeatherTimezone = false;
+      hideWeatherCityName = false;
+    };
+
+    # Calendário com Cartão de Previsão do Tempo
+    calendar = {
+      cards = [
+        { id = "calendar-header-card"; enabled = true; }
+        { id = "calendar-month-card"; enabled = true; }
+        { id = "weather-card"; enabled = true; }
+      ];
     };
 
     # Aparência Geral e Efeitos (sem sombras intrusivas que cortam janelas)
@@ -147,7 +180,7 @@ let
       schedulingMode = "off";
     };
 
-    # Dock Inferior Flutuante com Auto-Hide
+    # Dock Inferior Flutuante com Auto-Hide e Ícones Corretos
     dock = {
       enabled = true;
       position = "bottom";
@@ -157,16 +190,18 @@ let
       floatingRatio = 1.0;
       size = 1.0;
       onlySameOutput = true;
+      pinnedStatic = true;
+      colorizeIcons = false;
       showLauncherIcon = true;
       launcherPosition = "start";
       showDockIndicator = true;
       indicatorColor = "primary";
       pinnedApps = [
         "firefox.desktop"
+        "vivaldi-stable.desktop"
         "thunar.desktop"
         "Alacritty.desktop"
-        "code.desktop"
-        "antigravity.desktop"
+        "antigravity-ide.desktop"
       ];
     };
 
