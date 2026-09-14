@@ -16,6 +16,25 @@ let
     ];
   };
 
+  # Wrapper para garantir suporte a GVfs (Samba/SMB, Rede, Lixeira, MTP) no Thunar
+  thunar-wrapped = pkgs.symlinkJoin {
+    name = "thunar-with-gvfs";
+    paths = [ thunar-with-plugins ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      rm -rf $out/bin
+      mkdir -p $out/bin
+
+      for bin in ${thunar-with-plugins}/bin/*; do
+        if [ -x "$bin" ]; then
+          makeWrapper "$bin" "$out/bin/$(basename "$bin")" \
+            --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
+            --prefix XDG_DATA_DIRS : "${pkgs.gvfs}/share:/usr/share"
+        fi
+      done
+    '';
+  };
+
   terminalCmd =
     if config.programs ? alacritty && config.programs.alacritty.enable then
       "${pkgs.alacritty}/bin/alacritty --working-directory %f"
@@ -30,8 +49,13 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.sessionVariables = {
+      GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
+    };
+
     home.packages = with pkgs; [
-      thunar-with-plugins
+      thunar-wrapped
+      gvfs
       tumbler
       xarchiver
       file-roller
@@ -107,7 +131,7 @@ in
                 <icon>system-file-manager-root</icon>
                 <name>Open folder as root</name>
                 <unique-id>1493475601060449-3</unique-id>
-                <command>${pkgs.polkit}/bin/pkexec ${pkgs.thunar}/bin/thunar %f</command>
+                <command>${pkgs.polkit}/bin/pkexec ${thunar-wrapped}/bin/thunar %f</command>
                 <description>Abrir pasta como administrador</description>
                 <patterns>*</patterns>
                 <directories/>
