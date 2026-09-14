@@ -237,6 +237,14 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 
 ---
 
+- **Noctalia Shell — Workspaces Dinâmicos no MangoWM (`ext-workspace-v1`)**:
+  - **Causa da Ausência de Workspaces**: O Noctalia Shell detectava o MangoWM via `XDG_CURRENT_DESKTOP=mango` e forçava o `MangoService.qml`, que dependia do protocolo legado DWL IPC (`zdwl_ipc_manager_v2`). Como o MangoWM moderno/nightly utiliza o protocolo oficial Wayland `ext-workspace-v1` (`ext_workspace_manager_v1`), o `DwlIpc.available` falhava e a contagem de workspaces ficava em zero.
+  - **Patch `noctalia-mangowm-workspaces.patch`**:
+    - `CompositorService.qml`: chaveia o backend para `extWorkspaceComponent` ao detectar o MangoWM.
+    - `ExtWorkspaceService.qml`: substitui o timer one-shot de 500ms por um timer de repetição com intervalo de 200ms para descoberta resiliente de `WindowManager.windowsets`, ordena os workspaces numericamente (1, 2, 3...) e calcula `isOccupied = (ws.shouldDisplay && !ws.active)` com base nas janelas relatadas pelo MangoWM.
+  - **Comportamento Dinâmico Incrementável**: Configurado `hideUnoccupied = true` no widget `Workspace` em `modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix`. Apenas workspaces ocupados (com janelas) e o workspace atualmente ativo são renderizados na barra superior ao lado do launcher. À medida que novos workspaces são navegados ou recebem janelas, eles surgem dinamicamente e se incrementam na barra.
+  - **Idempotência no Overlay**: Injetado `final.lib.optional (!(builtins.elem ...))` em `overlays/default.nix` prevenindo duplicação de patches no encadeamento de overlays do Home Manager.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
