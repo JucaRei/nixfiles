@@ -138,29 +138,6 @@ let
     pkill -RTMIN+8 waybar 2>/dev/null || true
   '';
 
-  mangoReload = pkgs.writeShellScriptBin "mango-reload" ''
-    if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
-      SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
-      [ -n "$SOCK" ] && export MANGO_INSTANCE_SIGNATURE=$(basename "$SOCK" .sock | sed 's/^mango-//')
-    fi
-    mmsg dispatch reload_config 2>/dev/null || true
-    pkill -SIGUSR2 waybar 2>/dev/null || true
-    ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Configuração e Waybar recarregados com sucesso!"
-  '';
-
-  mangoToggleOuterGaps = pkgs.writeShellScriptBin "mango-toggle-outer-gaps" ''
-    GAPS_FILE="/tmp/.mango_outer_gaps_$USER"
-    if [ -f "$GAPS_FILE" ]; then
-      rm -f "$GAPS_FILE"
-      mmsg dispatch set_outer_gaps,8 2>/dev/null || true
-      ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Gaps externos restaurados (8px)"
-    else
-      touch "$GAPS_FILE"
-      mmsg dispatch set_outer_gaps,0 2>/dev/null || true
-      ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Gaps externos desativados (0px)"
-    fi
-  '';
-
   mangoWindowTitle = pkgs.writeShellScriptBin "mango-window-title" ''
     if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
       SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
@@ -226,8 +203,6 @@ in
       rofiWifiMenu
       mangoLayoutSwitcher
       mangoLayoutPicker
-      mangoReload
-      mangoToggleOuterGaps
       mangoWindowTitle
     ];
 
