@@ -1,5 +1,266 @@
---- a/Services/Compositor/CompositorService.qml	1969-12-31 21:00:01.000000000 -0300
-+++ b/Services/Compositor/CompositorService.qml	2026-09-14 19:18:25.517000096 -0300
+diff -ruN a/Modules/Bar/Widgets/ActiveWindow.qml b/Modules/Bar/Widgets/ActiveWindow.qml
+--- a/Modules/Bar/Widgets/ActiveWindow.qml	2026-09-14 20:08:45.169726065 -0300
++++ b/Modules/Bar/Widgets/ActiveWindow.qml	2026-09-14 20:32:01.428977783 -0300
+@@ -59,6 +59,39 @@
+   readonly property string windowTitle: CompositorService.getFocusedWindowTitle() || "No active window"
+   readonly property string fallbackIcon: "user-desktop"
+ 
++  property string windowType: "Tiled"
++  property bool isFloating: false
++
++  Process {
++    id: mangoWatcher
++    command: ["sh", "-c", "export PATH=$HOME/.nix-profile/bin:$HOME/.local/bin:/nix/var/nix/profiles/default/bin:$PATH; export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$UID/mango-*.sock 2>/dev/null | head -n1); mmsg watch focusing-client"]
++    running: CompositorService.isMango
++    stdout: SplitParser {
++      onRead: data => {
++        try {
++          const client = JSON.parse(data);
++          if (!client || client.id === null) {
++            root.windowType = "";
++            root.isFloating = false;
++          } else if (client.is_fullscreen) {
++            root.windowType = "Fullscreen";
++            root.isFloating = false;
++          } else if (client.is_floating) {
++            root.windowType = "Floating";
++            root.isFloating = true;
++          } else if (client.is_maximized) {
++            root.windowType = "Maximized";
++            root.isFloating = false;
++          } else {
++            root.windowType = "Tiled";
++            root.isFloating = false;
++          }
++        } catch(e) {}
++      }
++    }
++  }
++
++
+   readonly property int iconSize: Style.toOdd(capsuleHeight * 0.75)
+   readonly property int verticalSize: Style.toOdd(capsuleHeight * 0.85)
+ 
+@@ -104,6 +137,10 @@
+       }
+     }
+ 
++    if (hasFocusedWindow && windowType !== "") {
++      contentWidth += 65 + Style.marginS;
++    }
++
+     // Text width (use the measured width)
+     if (showText) {
+       contentWidth += titleContainer.measuredWidth;
+@@ -255,6 +292,39 @@
+           }
+         }
+ 
++        // Window type badge
++        Rectangle {
++          id: windowTypeBadge
++          visible: hasFocusedWindow && windowType !== ""
++          Layout.alignment: Qt.AlignVCenter
++          height: Math.round(capsuleHeight * 0.62)
++          implicitWidth: typeText.implicitWidth + Style.marginM
++          radius: Style.radiusS
++          color: isFloating ? Qt.alpha(Color.mSecondary, 0.22) : Qt.alpha(Color.mPrimary, 0.22)
++          border.color: isFloating ? Color.mSecondary : Color.mPrimary
++          border.width: 1
++          z: 2
++
++          NText {
++            id: typeText
++            anchors.centerIn: parent
++            text: root.windowType
++            pointSize: Math.round(barFontSize * 0.72)
++            font.weight: Style.fontWeightBold
++            color: isFloating ? Color.mSecondary : Color.mPrimary
++            applyUiScale: false
++          }
++
++          MouseArea {
++            anchors.fill: parent
++            cursorShape: Qt.PointingHandCursor
++            hoverEnabled: true
++            onClicked: {
++              Quickshell.execDetached(["sh", "-c", "export PATH=$HOME/.nix-profile/bin:$HOME/.local/bin:/nix/var/nix/profiles/default/bin:$PATH; export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$UID/mango-*.sock 2>/dev/null | head -n1); mmsg dispatch togglefloating"]);
++            }
++          }
++        }
++
+         NScrollText {
+           id: titleContainer
+           text: windowTitle
+@@ -266,8 +336,9 @@
+           maxWidth: {
+             // Calculate available width based on other elements
+             var iconWidth = (showIcon && windowIcon.visible ? (iconSize + Style.marginS) : 0);
++            var badgeWidth = (windowTypeBadge.visible ? (windowTypeBadge.implicitWidth + Style.marginS) : 0);
+             var totalMargins = Style.margin2XXS;
+-            var availableWidth = mainContainer.width - iconWidth - totalMargins;
++            var availableWidth = mainContainer.width - iconWidth - badgeWidth - totalMargins;
+             return Math.max(20, availableWidth);
+           }
+           scrollMode: {
+@@ -357,7 +428,9 @@
+       TooltipService.hide();
+     }
+     onClicked: mouse => {
+-                 if (mouse.button === Qt.RightButton) {
++                 if (mouse.button === Qt.LeftButton) {
++                   Quickshell.execDetached(["sh", "-c", "export PATH=$HOME/.nix-profile/bin:$HOME/.local/bin:/nix/var/nix/profiles/default/bin:$PATH; export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$UID/mango-*.sock 2>/dev/null | head -n1); mmsg dispatch minimized"]);
++                 } else if (mouse.button === Qt.RightButton) {
+                    PanelService.showContextMenu(contextMenu, root, screen);
+                  }
+                }
+diff -ruN a/Modules/Bar/Widgets/Clock.qml b/Modules/Bar/Widgets/Clock.qml
+--- a/Modules/Bar/Widgets/Clock.qml	2026-09-14 20:08:45.168173328 -0300
++++ b/Modules/Bar/Widgets/Clock.qml	2026-09-14 20:32:01.428283895 -0300
+@@ -47,6 +47,34 @@
+ 
+   readonly property color textColor: Color.resolveColorKey(clockColor)
+ 
++  function formatPtDate(date) {
++    const days = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
++    const months = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
++    return days[date.getDay()] + ", " + date.getDate() + " de " + months[date.getMonth()];
++  }
++
++  function formatPtTime(date) {
++    const h = String(date.getHours()).padStart(2, '0');
++    const m = String(date.getMinutes()).padStart(2, '0');
++    const s = String(date.getSeconds()).padStart(2, '0');
++    return h + ":" + m + ":" + s;
++  }
++
++
++  function formatPtDate(date) {
++    const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
++    const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
++    return days[date.getDay()] + ', ' + date.getDate() + ' de ' + months[date.getMonth()];
++  }
++
++  function formatPtTime(date) {
++    const h = String(date.getHours()).padStart(2, '0');
++    const m = String(date.getMinutes()).padStart(2, '0');
++    const s = String(date.getSeconds()).padStart(2, '0');
++    return h + ':' + m + ':' + s;
++  }
++
++
+   // Content dimensions for implicit sizing
+   readonly property real contentWidth: isBarVertical ? capsuleHeight : Math.round((isBarVertical ? verticalLoader.implicitWidth : horizontalLoader.implicitWidth) + Style.margin2M)
+   readonly property real contentHeight: isBarVertical ? Math.round(verticalLoader.implicitHeight + Style.margin2S) : capsuleHeight
+@@ -82,7 +110,7 @@
+           spacing: Settings.data.bar.showCapsule ? -5 : -3
+           Repeater {
+             id: repeater
+-            model: I18n.locale.toString(now, formatHorizontal.trim()).split("\\n")
++            model: [root.formatPtTime(now), root.formatPtDate(now)]
+             NText {
+               visible: text !== ""
+               text: modelData
+@@ -122,7 +150,7 @@
+           anchors.centerIn: parent
+           spacing: -2
+           Repeater {
+-            model: I18n.locale.toString(now, formatVertical.trim()).split(" ")
++            model: root.formatPtTime(now).split(":")
+             delegate: NText {
+               visible: text !== ""
+               text: modelData
+@@ -173,11 +201,7 @@
+ 
+   // Build tooltip text with formatted time/date
+   function buildTooltipText() {
+-    if (tooltipFormat && tooltipFormat.trim() !== "") {
+-      return I18n.locale.toString(now, tooltipFormat.trim());
+-    }
+-    // Fallback to default if no format is set
+-    return I18n.tr("common.calendar"); // Defaults to "Calendar"
++    return formatPtDate(now) + " - " + formatPtTime(now);
+   }
+ 
+   MouseArea {
+diff -ruN a/Modules/Bar/Widgets/Taskbar.qml b/Modules/Bar/Widgets/Taskbar.qml
+--- a/Modules/Bar/Widgets/Taskbar.qml	2026-09-14 20:08:45.170926036 -0300
++++ b/Modules/Bar/Widgets/Taskbar.qml	2026-09-14 20:32:01.429563517 -0300
+@@ -936,9 +936,13 @@
+                          return;
+                          if (mouse.button === Qt.LeftButton) {
+                            if (isRunning && modelData.window) {
+-                             // Running app - focus it
++                             // Running app - focus it or toggle minimize
+                              try {
+-                               CompositorService.focusWindow(modelData.window);
++                               if (taskbarItem.isFocused) {
++                                 Quickshell.execDetached(["sh", "-c", "export PATH=$HOME/.nix-profile/bin:$HOME/.local/bin:/nix/var/nix/profiles/default/bin:$PATH; export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$UID/mango-*.sock 2>/dev/null | head -n1); mmsg dispatch minimized"]);
++                               } else {
++                                 CompositorService.focusWindow(modelData.window);
++                               }
+                              } catch (error) {
+                                Logger.e("Taskbar", "Failed to activate toplevel: " + error);
+                              }
+diff -ruN a/Modules/Cards/CalendarHeaderCard.qml b/Modules/Cards/CalendarHeaderCard.qml
+--- a/Modules/Cards/CalendarHeaderCard.qml	2026-09-14 20:08:45.168309912 -0300
++++ b/Modules/Cards/CalendarHeaderCard.qml	2026-09-14 20:32:01.428400999 -0300
+@@ -66,7 +66,10 @@
+           spacing: Style.marginS
+ 
+           NText {
+-            text: I18n.locale.monthName(root.currentMonth, Locale.LongFormat).toUpperCase()
++            text: {
++              const months = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
++              return months[root.currentMonth];
++            }
+             pointSize: Style.fontSizeXL * 1.1
+             font.weight: Style.fontWeightBold
+             color: Color.mOnPrimary
+diff -ruN a/Modules/Cards/CalendarMonthCard.qml b/Modules/Cards/CalendarMonthCard.qml
+--- a/Modules/Cards/CalendarMonthCard.qml	2026-09-14 20:08:45.168953215 -0300
++++ b/Modules/Cards/CalendarMonthCard.qml	2026-09-14 20:32:01.428745252 -0300
+@@ -99,7 +99,10 @@
+       }
+ 
+       NText {
+-        text: I18n.locale.monthName(root.calendarMonth, Locale.LongFormat).toUpperCase() + " " + root.calendarYear
++        text: {
++          const months = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
++          return months[root.calendarMonth] + " " + root.calendarYear;
++        }
+         pointSize: Style.fontSizeM
+         font.weight: Style.fontWeightBold
+         color: Color.mOnSurface
+@@ -155,9 +158,9 @@
+             NText {
+               anchors.centerIn: parent
+               text: {
++                const ptDays = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
+                 let dayIndex = (root.firstDayOfWeek + index) % 7;
+-                const dayName = I18n.locale.dayName(dayIndex, Locale.ShortFormat);
+-                return dayName.substring(0, 2).toUpperCase();
++                return ptDays[dayIndex];
+               }
+               color: Color.mPrimary
+               pointSize: Style.fontSizeS
+diff -ruN a/Modules/Dock/DockContent.qml b/Modules/Dock/DockContent.qml
+--- a/Modules/Dock/DockContent.qml	2026-09-14 20:08:45.169831157 -0300
++++ b/Modules/Dock/DockContent.qml	2026-09-14 20:32:01.429277243 -0300
+@@ -745,6 +745,10 @@
+                              }
+ 
+                              if (!Settings.data.dock.groupApps || runningToplevels.length <= 1) {
++                               if (primaryToplevel && primaryToplevel.activated) {
++                                 Quickshell.execDetached(["sh", "-c", "export PATH=$HOME/.nix-profile/bin:$HOME/.local/bin:/nix/var/nix/profiles/default/bin:$PATH; export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$UID/mango-*.sock 2>/dev/null | head -n1); mmsg dispatch minimized"]);
++                                 return;
++                               }
+                                if (primaryToplevel && primaryToplevel.activate) {
+                                  primaryToplevel.activate();
+                                }
+diff -ruN a/Services/Compositor/CompositorService.qml b/Services/Compositor/CompositorService.qml
+--- a/Services/Compositor/CompositorService.qml	2026-09-14 20:08:45.167276511 -0300
++++ b/Services/Compositor/CompositorService.qml	2026-09-14 20:08:59.088387015 -0300
 @@ -78,8 +78,9 @@
        isSway = false;
        isMango = true;
@@ -12,8 +273,9 @@
      } else if (labwcPid && labwcPid.length > 0) {
        isHyprland = false;
        isNiri = false;
---- a/Services/Compositor/ExtWorkspaceService.qml	1969-12-31 21:00:01.000000000 -0300
-+++ b/Services/Compositor/ExtWorkspaceService.qml	2026-09-14 19:25:12.246828936 -0300
+diff -ruN a/Services/Compositor/ExtWorkspaceService.qml b/Services/Compositor/ExtWorkspaceService.qml
+--- a/Services/Compositor/ExtWorkspaceService.qml	2026-09-14 20:08:45.168038843 -0300
++++ b/Services/Compositor/ExtWorkspaceService.qml	2026-09-14 20:08:59.089788082 -0300
 @@ -45,13 +45,19 @@
    }
  

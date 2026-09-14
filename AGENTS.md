@@ -244,6 +244,18 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - `ExtWorkspaceService.qml`: substitui o timer one-shot de 500ms por um timer de repetição com intervalo de 200ms para descoberta resiliente de `WindowManager.windowsets`, ordena os workspaces numericamente (1, 2, 3...) e calcula `isOccupied = (ws.shouldDisplay && !ws.active)` com base nas janelas relatadas pelo MangoWM.
   - **Comportamento Dinâmico Incrementável**: Configurado `hideUnoccupied = true` no widget `Workspace` em `modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix`. Apenas workspaces ocupados (com janelas) e o workspace atualmente ativo são renderizados na barra superior ao lado do launcher. À medida que novos workspaces são navegados ou recebem janelas, eles surgem dinamicamente e se incrementam na barra.
   - **Idempotência no Overlay**: Injetado `final.lib.optional (!(builtins.elem ...))` em `overlays/default.nix` prevenindo duplicação de patches no encadeamento de overlays do Home Manager.
+- **Noctalia Shell — Indicador de Tipo de Janela, Ocultar ao Clicar na Barra e Relógio/Calendário em pt-BR**:
+  - **Indicador de Tipo de Janela (`ActiveWindow.qml`)**:
+    - Adicionado badge visual (`Tiled`, `Floating`, `Fullscreen`, `Maximized`) ao lado do ícone e título da janela ativa no widget `ActiveWindow`.
+    - Integrado listener nativo via `Process` executando `mmsg watch focusing-client` que atualiza o estado em tempo real no MangoWM.
+    - O clique no badge de tipo de janela executa `mmsg dispatch togglefloating`, permitindo alternar instantaneamente entre modo flutuante e tiled.
+  - **Ocultar / Minimizar Janela ao Clicar na Barra e Dock**:
+    - **Barra Superior (`ActiveWindow.qml`)**: Clique com o botão esquerdo na janela ativa dispara `mmsg dispatch minimized`, minimizando a janela como em desktops convencionais.
+    - **Taskbar Superior (`Taskbar.qml`)**: Se a aplicação clicada já estiver focada (`taskbarItem.isFocused`), dispara `mmsg dispatch minimized`; se não estiver focada, transfere o foco (`CompositorService.focusWindow`).
+    - **Dock Inferior (`DockContent.qml`)**: Ao clicar em uma aplicação cujo toplevel primário já está ativo (`primaryToplevel.activated`), minimiza a aplicação (`mmsg dispatch minimized`), permitindo comportamento clássico de toggle focus/hide.
+  - **Relógio com Segundos e pt-BR Exclusivo para Relógio e Calendário**:
+    - **Relógio da Barra (`Clock.qml`)**: Exibe horas com segundos (`HH:mm:ss`) na linha superior e data formatada em Português do Brasil na linha inferior (`Segunda, 14 de setembro`), com tooltip no formato `Segunda, 14 de setembro - HH:mm:ss`. A formatação em pt-BR é scoped estritamente para o relógio e calendário, mantendo a linguagem do sistema e do restante do shell intacta.
+    - **Cartões de Calendário (`CalendarHeaderCard.qml` & `CalendarMonthCard.qml`)**: Cabeçalhos de mês traduzidos para Português em maiúsculas (`SETEMBRO`, `SETEMBRO 2026`) e dias da semana abreviados como `DOM`, `SEG`, `TER`, `QUA`, `QUI`, `SEX`, `SÁB`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

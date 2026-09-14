@@ -95,7 +95,11 @@ let
             occupiedColor = "secondary";
             emptyColor = "surfaceVariant";
           }
-          { id = "ActiveWindow"; }
+          {
+            id = "ActiveWindow";
+            maxWidth = 260;
+            scrollingMode = "hover";
+          }
         ];
         center = [
           { id = "Clock"; }
@@ -133,9 +137,18 @@ let
     # Calendário com Cartão de Previsão do Tempo
     calendar = {
       cards = [
-        { id = "calendar-header-card"; enabled = true; }
-        { id = "calendar-month-card"; enabled = true; }
-        { id = "weather-card"; enabled = true; }
+        {
+          id = "calendar-header-card";
+          enabled = true;
+        }
+        {
+          id = "calendar-month-card";
+          enabled = true;
+        }
+        {
+          id = "weather-card";
+          enabled = true;
+        }
       ];
     };
 
@@ -150,7 +163,7 @@ let
       shadowOffsetY = 0;
       enableBlurBehind = true;
       clockStyle = "custom";
-      clockFormat = "hh:mm";
+      clockFormat = "hh:mm:ss";
       compactLockScreen = false;
       lockOnSuspend = true;
       showSessionButtonsOnLockScreen = true;
@@ -241,12 +254,30 @@ let
         ];
       };
       cards = [
-        { enabled = true; id = "profile-card"; }
-        { enabled = true; id = "shortcuts-card"; }
-        { enabled = true; id = "audio-card"; }
-        { enabled = true; id = "brightness-card"; }
-        { enabled = true; id = "weather-card"; }
-        { enabled = true; id = "media-sysmon-card"; }
+        {
+          enabled = true;
+          id = "profile-card";
+        }
+        {
+          enabled = true;
+          id = "shortcuts-card";
+        }
+        {
+          enabled = true;
+          id = "audio-card";
+        }
+        {
+          enabled = true;
+          id = "brightness-card";
+        }
+        {
+          enabled = true;
+          id = "weather-card";
+        }
+        {
+          enabled = true;
+          id = "media-sysmon-card";
+        }
       ];
     };
 
