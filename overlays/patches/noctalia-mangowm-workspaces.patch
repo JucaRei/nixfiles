@@ -1,7 +1,15 @@
 diff -ruN a/Modules/Bar/Widgets/ActiveWindow.qml b/Modules/Bar/Widgets/ActiveWindow.qml
 --- a/Modules/Bar/Widgets/ActiveWindow.qml	2026-09-14 20:08:45.169726065 -0300
-+++ b/Modules/Bar/Widgets/ActiveWindow.qml	2026-09-14 20:32:01.428977783 -0300
-@@ -59,6 +59,39 @@
++++ b/Modules/Bar/Widgets/ActiveWindow.qml	2026-09-14 20:42:41.681964356 -0300
+@@ -4,6 +4,7 @@
+ import Quickshell
+ import Quickshell.Wayland
+ import Quickshell.Widgets
++import Quickshell.Io
+ import qs.Commons
+ import qs.Modules.Bar.Extras
+ import qs.Services.Compositor
+@@ -59,6 +60,39 @@
    readonly property string windowTitle: CompositorService.getFocusedWindowTitle() || "No active window"
    readonly property string fallbackIcon: "user-desktop"
  
@@ -41,7 +49,7 @@ diff -ruN a/Modules/Bar/Widgets/ActiveWindow.qml b/Modules/Bar/Widgets/ActiveWin
    readonly property int iconSize: Style.toOdd(capsuleHeight * 0.75)
    readonly property int verticalSize: Style.toOdd(capsuleHeight * 0.85)
  
-@@ -104,6 +137,10 @@
+@@ -104,6 +138,10 @@
        }
      }
  
@@ -52,7 +60,7 @@ diff -ruN a/Modules/Bar/Widgets/ActiveWindow.qml b/Modules/Bar/Widgets/ActiveWin
      // Text width (use the measured width)
      if (showText) {
        contentWidth += titleContainer.measuredWidth;
-@@ -255,6 +292,39 @@
+@@ -255,6 +293,39 @@
            }
          }
  
@@ -92,7 +100,7 @@ diff -ruN a/Modules/Bar/Widgets/ActiveWindow.qml b/Modules/Bar/Widgets/ActiveWin
          NScrollText {
            id: titleContainer
            text: windowTitle
-@@ -266,8 +336,9 @@
+@@ -266,8 +337,9 @@
            maxWidth: {
              // Calculate available width based on other elements
              var iconWidth = (showIcon && windowIcon.visible ? (iconSize + Style.marginS) : 0);
@@ -103,7 +111,7 @@ diff -ruN a/Modules/Bar/Widgets/ActiveWindow.qml b/Modules/Bar/Widgets/ActiveWin
              return Math.max(20, availableWidth);
            }
            scrollMode: {
-@@ -357,7 +428,9 @@
+@@ -357,7 +429,9 @@
        TooltipService.hide();
      }
      onClicked: mouse => {
