@@ -12,6 +12,10 @@
         };
         browsers = {
           firefox.enable = true;
+          chromium = {
+            enable = true;
+            version = "vivaldi";
+          };
         };
         editors = {
           antigravity.enable = true;

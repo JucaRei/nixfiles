@@ -20,7 +20,7 @@
 }:
 
 let
-  inherit (pkgs.lib) concatStringsSep optionalString;
+  inherit (pkgs.lib) concatStringsSep optionalString optionalAttrs;
 in
 rec {
   # ---------------------------------------------------------------------------
@@ -35,33 +35,42 @@ rec {
     if pkg == null || !(pkg ? outPath) then
       pkg
     else
-      pkgs.runCommandLocal "nixgl-bin-${pkg.name or pkg.pname or "unnamed"}"
-        {
-          inherit (pkg) meta passthru;
-        }
-        ''
-                      set -euo pipefail
+      let
+        drv = pkgs.runCommandLocal "nixgl-bin-${pkg.name or pkg.pname or "unnamed"}"
+          {
+            inherit (pkg) meta passthru;
+          }
+          ''
+            set -euo pipefail
 
-                      # Copia a estrutura original do pacote sem sobrescrever o nix store original
-                      cp -r --no-preserve=mode "${pkg}" "$out"
+            # Copia a estrutura original do pacote sem sobrescrever o nix store original
+            cp -r --no-preserve=mode "${pkg}" "$out"
 
-                      # Recria a pasta bin/ com os scripts envoltos pelo nixGL
-                      rm -rf "$out/bin"
-                      mkdir -p "$out/bin"
+            # Recria a pasta bin/ com os scripts envoltos pelo nixGL
+            rm -rf "$out/bin"
+            mkdir -p "$out/bin"
 
-                      # Itera sobre cada binário do pacote e cria o wrapper
-                      shopt -s nullglob
-                      for bin in "${pkg}"/bin/*; do
-                        if [ -f "$bin" ] && [ -x "$bin" ]; then
-                          cat > "$out/bin/$(basename "$bin")" <<EOF
-          #!${pkgs.runtimeShell}
-          exec ${nixGL}/bin/nixGL "$bin" "\$@"
-          EOF
-                          chmod +x "$out/bin/$(basename "$bin")"
-                        fi
-                      done
-                      shopt -u nullglob
-        '';
+            # Itera sobre cada binário do pacote e cria o wrapper
+            shopt -s nullglob
+            for bin in "${pkg}"/bin/*; do
+              if [ -f "$bin" ] && [ -x "$bin" ]; then
+                cat > "$out/bin/$(basename "$bin")" <<EOF
+#!${pkgs.runtimeShell}
+exec ${nixGL}/bin/nixGL "$bin" "\$@"
+EOF
+                chmod +x "$out/bin/$(basename "$bin")"
+              fi
+            done
+            shopt -u nullglob
+          '';
+      in
+      drv
+      // optionalAttrs (pkg ? override) {
+        override = args: wrapper (pkg.override args);
+      }
+      // optionalAttrs (pkg ? overrideAttrs) {
+        overrideAttrs = f: wrapper (pkg.overrideAttrs f);
+      };
 
   # ---------------------------------------------------------------------------
   # 2. WRAPPER DE ARQUIVOS DESKTOP (`wrapDesktopFiles`)
@@ -73,29 +82,36 @@ rec {
     pkg:
     let
       binWrapped = wrapper pkg;
+      drv = pkgs.runCommandLocal "nixgl-desktop-${pkg.name or pkg.pname or "unnamed"}"
+        {
+          inherit (pkg) meta passthru;
+        }
+        ''
+          set -euo pipefail
+
+          cp -r --no-preserve=mode "${binWrapped}" "$out"
+
+          # Diretório temporário para edição segura dos atalhos .desktop
+          mkdir -p temp_desktop
+
+          shopt -s globstar nullglob
+          for d in "$out"/share/applications/**/*.desktop "$out"/share/gnome/applications/**/*.desktop; do
+            if [ -f "$d" ]; then
+              cp "$d" temp_desktop/temp.desktop
+              sed 's|^Exec=\(.*\)$|Exec=${nixGL}/bin/nixGL \1|' temp_desktop/temp.desktop > "$d"
+              rm temp_desktop/temp.desktop
+            fi
+          done
+          shopt -u globstar nullglob
+
+          rm -rf temp_desktop
+        '';
     in
-    pkgs.runCommandLocal "nixgl-desktop-${pkg.name or pkg.pname}"
-      {
-        inherit (pkg) meta passthru;
-      }
-      ''
-        set -euo pipefail
-
-        cp -r --no-preserve=mode "${binWrapped}" "$out"
-
-        # Diretório temporário para edição segura dos atalhos .desktop
-        mkdir -p temp_desktop
-
-        shopt -s globstar nullglob
-        for d in "$out"/share/applications/**/*.desktop "$out"/share/gnome/applications/**/*.desktop; do
-          if [ -f "$d" ]; then
-            cp "$d" temp_desktop/temp.desktop
-            sed 's|^Exec=\(.*\)$|Exec=${nixGL}/bin/nixGL \1|' temp_desktop/temp.desktop > "$d"
-            rm temp_desktop/temp.desktop
-          fi
-        done
-        shopt -u globstar nullglob
-
-        rm -rf temp_desktop
-      '';
+    drv
+    // optionalAttrs (pkg ? override) {
+      override = args: wrapDesktopFiles (pkg.override args);
+    }
+    // optionalAttrs (pkg ? overrideAttrs) {
+      overrideAttrs = f: wrapDesktopFiles (pkg.overrideAttrs f);
+    };
 }

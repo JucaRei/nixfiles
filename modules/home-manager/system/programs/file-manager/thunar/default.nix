@@ -82,7 +82,7 @@ in
             <icon>code</icon>
             <name>Open in Antigravity</name>
             <unique-id>1612104464586266-1</unique-id>
-            <command>antigravity %f</command>
+            <command>antigravity-ide %f</command>
             <description>Abrir projeto no Antigravity AI IDE</description>
             <patterns>*</patterns>
             <startup-notify/>

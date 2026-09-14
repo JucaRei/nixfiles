@@ -7,7 +7,7 @@
   ...
 }:
 let
-  inherit (lib) optional mkOption mkIf;
+  inherit (lib) optional optionals mkOption mkIf;
   inherit (lib.types) enum bool;
   cfg = config.system.programs.browsers.chromium;
 
@@ -29,7 +29,7 @@ in
         default = false;
         description = "Enable's chrome web based browser.";
       };
-      version = {
+      version = mkOption {
         type = enum [
           "chromium"
           "ungoogled-chromium"
@@ -48,7 +48,7 @@ in
     home = {
       packages =
         optional (cfg.version == "vivaldi") pkgs.vivaldi-ffmpeg-codecs
-        ++ optional (!isNixOS) [ pkgs.libva-utils ];
+        ++ optional (!isNixOS) pkgs.libva-utils;
 
       # Example: Set env var if VA-API detected (e.g., for browsers)
       sessionVariables = {
@@ -72,15 +72,15 @@ in
     programs.chromium = {
       enable = true;
       package =
-        if cfg.browser == "chromium" then
+        if cfg.version == "chromium" then
           nixGLWrapper pkgs.chromium
-        else if cfg.browser == "ungoogled-chromium" then
+        else if cfg.version == "ungoogled-chromium" then
           nixGLWrapper pkgs.ungoogled-chromium
-        else if cfg.browser == "google-chrome" then
+        else if cfg.version == "google-chrome" then
           nixGLWrapper pkgs.google-chrome
-        # else if cfg.browser == "opera" then
+        # else if cfg.version == "opera" then
         #   (pkgs.opera.override { proprietaryCodecs = true; })
-        else if cfg.browser == "vivaldi" then
+        else if cfg.version == "vivaldi" then
           nixGLWrapper pkgs.vivaldi
         # .override
         # {
@@ -88,7 +88,7 @@ in
         #   enableWidevine = false;
         #   # qt = "qt6";
         # }
-        else if cfg.browser == "edge" then
+        else if cfg.version == "edge" then
           nixGLWrapper pkgs.microsoft-edge
         else
           nixGLWrapper pkgs.brave;
@@ -110,14 +110,14 @@ in
         "--enable-features=WebRTCPipeWireCapturer"
         "--enable-features=UseOzonePlatform"
       ]
-      ++ mkIf (config.desktop.display-servers.backend == "wayland") [
+      ++ optionals (config.desktop.display-servers.backend == "wayland") [
         # Force to run on Wayland
         "--ozone-platform-hint=auto"
         "--ozone-platform=wayland"
         "--enable-wayland-ime"
         "--enable-features=WaylandWindowDecorations"
       ]
-      ++ mkIf (hasVaapi) [
+      ++ optionals (hasVaapi) [
         "--enable-features=VaapiVideoDecodeLinuxGL"
         "--enable-features=VaapiVideoDecoder"
       ];
