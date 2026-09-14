@@ -75,5 +75,11 @@
       ripgrep
       htop
     ];
+
+    programs = {
+      antigravity-cli = {
+        enable = true;
+      };
+    };
   };
 }
