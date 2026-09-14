@@ -73,10 +73,10 @@ let
       widgetSpacing = 8;
       contentPadding = 4;
       fontScale = 1.0;
-      enableExclusionZoneInset = true;
+      enableExclusionZoneInset = false;
       backgroundOpacity = 0.88;
-      marginVertical = 6;
-      marginHorizontal = 10;
+      marginVertical = 4;
+      marginHorizontal = 8;
       frameRadius = 12;
       outerCorners = false;
       displayMode = "always_visible";
@@ -106,13 +106,15 @@ let
       rightClickAction = "controlCenter";
     };
 
-    # Aparência Geral e Efeitos
+    # Aparência Geral e Efeitos (sem sombras intrusivas que cortam janelas)
     general = {
       scaleRatio = 1.0;
       radiusRatio = 1.0;
       animationSpeed = 1.2;
       animationDisabled = false;
-      enableShadows = true;
+      enableShadows = false;
+      shadowOffsetX = 0;
+      shadowOffsetY = 0;
       enableBlurBehind = true;
       clockStyle = "custom";
       clockFormat = "hh:mm";
@@ -226,12 +228,12 @@ let
     notifications = {
       enabled = true;
       location = "top_right";
-      density = "default";
+      density = "compact";
       backgroundOpacity = 0.92;
       clearDismissed = true;
       lowUrgencyDuration = 3;
       normalUrgencyDuration = 6;
-      criticalUrgencyDuration = 12;
+      criticalUrgencyDuration = 10;
     };
 
     # OSD (Volume / Brilho)
