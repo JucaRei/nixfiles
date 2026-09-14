@@ -41,6 +41,16 @@
         cp -R $src/*.otf $out/share/fonts/opentype/
       '';
     };
+
+    # Fix for Vivaldi 8.1: link bundled libffmpeg.so to versioned name expected by vivaldi launcher
+    # and ensure opt/vivaldi is in LD_LIBRARY_PATH so dynamic linker finds libffmpeg.so
+    vivaldi = prev.vivaldi.overrideAttrs (old: {
+      postInstall = (old.postInstall or "") + ''
+        ln -sf libffmpeg.so "$out/opt/vivaldi/libffmpeg.so.''${old.version%\.*\.*}"
+        wrapProgram "$out/bin/vivaldi" \
+          --prefix LD_LIBRARY_PATH : "$out/opt/vivaldi"
+      '';
+    });
   };
 
   # Access unstable packages via 'pkgs.unstable.<package>'

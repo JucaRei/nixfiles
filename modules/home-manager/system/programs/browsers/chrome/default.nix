@@ -46,9 +46,7 @@ in
   };
   config = mkIf cfg.enable {
     home = {
-      packages =
-        optional (cfg.version == "vivaldi") pkgs.vivaldi-ffmpeg-codecs
-        ++ optional (!isNixOS) pkgs.libva-utils;
+      packages = optional (!isNixOS) pkgs.libva-utils;
 
       # Example: Set env var if VA-API detected (e.g., for browsers)
       sessionVariables = {

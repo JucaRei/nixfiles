@@ -186,8 +186,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - Adicionado `mkOption` na opção `system.programs.browsers.chromium.version` (evita erro de avaliação ao declarar string em vez de submódulo).
   - Corrigidas as checagens condicionais de seleção do pacote do navegador de `cfg.browser` para `cfg.version`.
   - Substituído `++ mkIf (...) [...]` por `++ optionals (...) [...]` na lista `commandLineArgs` para evitar erro de concatenação lista + attrset (`expected a list but found a set`).
-  - Corrigido `home.packages` para evitar lista aninhada com `libva-utils`.
+  - Corrigido `home.packages` para evitar lista aninhada com `libva-utils` e removido o pacote obsoleto `vivaldi-ffmpeg-codecs` (Chromium 123 incompatível).
   - Em `lib/nixGL.nix`, adicionado repasse transparente de `.override` e `.overrideAttrs` aos pacotes envelopados pelo nixGL, permitindo que módulos como `programs.chromium` apliquem flags customizadas via `package.override`.
+- **Vivaldi 8.1 & Codecs / libffmpeg (`overlays/default.nix`)**:
+  - O binário `vivaldi-bin` possui dependência dinâmica de `libffmpeg.so` localizada diretamente em `opt/vivaldi/libffmpeg.so`.
+  - O script lançador `/opt/vivaldi/vivaldi` procura pelo arquivo versionado `libffmpeg.so.8.1`. Sem esse link, tentava baixar via script de terceiros e falhava com exit code 127 / missing library.
+  - Usar `proprietaryCodecs = true` ou instalar `vivaldi-ffmpeg-codecs` antigo causava crash com `undefined symbol: av_dynamic_hdr_smpte2094_app5_to_t35` por incompatibilidade de versão da ABI.
+  - Adicionado overlay em `overlays/default.nix` que cria o symlink `libffmpeg.so -> libffmpeg.so.8.1` para o codec nativo bundled do Vivaldi e inclui `opt/vivaldi` no `LD_LIBRARY_PATH` do `wrapProgram`.
 
 ---
 
