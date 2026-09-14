@@ -65,6 +65,15 @@ in
           echo "export HAS_VAAPI=$HAS_VAAPI" > "$HOME/.local/scripts/vaapi-status.sh"
         ''
       );
+
+      # Ensure Vivaldi proprietary codecs (H.264 / AAC) are fetched
+      activation.setupVivaldiCodecs = lib.mkIf (cfg.version == "vivaldi") (
+        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          if [ ! -e "$HOME/.local/lib/vivaldi/media-codecs-8.1/libffmpeg.so" ]; then
+            ${pkgs.bash}/bin/bash "${config.programs.chromium.package}/opt/vivaldi/update-ffmpeg" --user || true
+          fi
+        ''
+      );
     };
 
     programs.chromium = {
@@ -97,7 +106,7 @@ in
 
         # Force GPU accleration
         "--ignore-gpu-blocklist"
-        "--enable-zero-copy"
+        # "--enable-zero-copy"
         # "--enable-unsafe-webgpu"
 
         # Reduce memory usage
@@ -106,7 +115,6 @@ in
         # Enable additional features
         "--enable-features=WebUIDarkMode"
         "--enable-features=WebRTCPipeWireCapturer"
-        "--enable-features=UseOzonePlatform"
       ]
       ++ optionals (config.desktop.display-servers.backend == "wayland") [
         # Force to run on Wayland

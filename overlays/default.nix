@@ -46,7 +46,7 @@
     # and ensure opt/vivaldi is in LD_LIBRARY_PATH so dynamic linker finds libffmpeg.so
     vivaldi = prev.vivaldi.overrideAttrs (old: {
       postInstall = (old.postInstall or "") + ''
-        ln -sf libffmpeg.so "$out/opt/vivaldi/libffmpeg.so.${final.lib.versions.majorMinor old.version}"
+        chmod +x "$out/opt/vivaldi/update-ffmpeg"
         wrapProgram "$out/bin/vivaldi" \
           --prefix LD_LIBRARY_PATH : "$out/opt/vivaldi"
       '';

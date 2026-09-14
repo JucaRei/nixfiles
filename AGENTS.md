@@ -188,11 +188,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - Substituído `++ mkIf (...) [...]` por `++ optionals (...) [...]` na lista `commandLineArgs` para evitar erro de concatenação lista + attrset (`expected a list but found a set`).
   - Corrigido `home.packages` para evitar lista aninhada com `libva-utils` e removido o pacote obsoleto `vivaldi-ffmpeg-codecs` (Chromium 123 incompatível).
   - Em `lib/nixGL.nix`, adicionado repasse transparente de `.override` e `.overrideAttrs` aos pacotes envelopados pelo nixGL, permitindo que módulos como `programs.chromium` apliquem flags customizadas via `package.override`.
-- **Vivaldi 8.1 & Codecs / libffmpeg (`overlays/default.nix`)**:
-  - O binário `vivaldi-bin` possui dependência dinâmica de `libffmpeg.so` localizada diretamente em `opt/vivaldi/libffmpeg.so`.
-  - O script lançador `/opt/vivaldi/vivaldi` procura pelo arquivo versionado `libffmpeg.so.8.1`. Sem esse link, tentava baixar via script de terceiros e falhava com exit code 127 / missing library.
-  - Usar `proprietaryCodecs = true` ou instalar `vivaldi-ffmpeg-codecs` antigo causava crash com `undefined symbol: av_dynamic_hdr_smpte2094_app5_to_t35` por incompatibilidade de versão da ABI.
-  - Adicionado overlay em `overlays/default.nix` que cria o symlink `libffmpeg.so -> libffmpeg.so.8.1` para o codec nativo bundled do Vivaldi e inclui `opt/vivaldi` no `LD_LIBRARY_PATH` do `wrapProgram`.
+- **Vivaldi 8.1 & Codecs / libffmpeg (`overlays/default.nix` & `chrome/default.nix`)**:
+  - O binário `vivaldi-bin` possui dependência dinâmica de `libffmpeg.so` localizada diretamente em `opt/vivaldi/libffmpeg.so`. Adicionado `$out/opt/vivaldi` ao `LD_LIBRARY_PATH` no wrapper do Vivaldi para que ele encontre o fallback nativo sem crashar com erro 127.
+  - O pacote que vem no .deb do Vivaldi contém apenas codecs abertos. Codecs proprietários (H.264 / AAC / MP4 para YouTube e streaming) são baixados pelo script oficial `update-ffmpeg` e salvos em `~/.local/lib/vivaldi/media-codecs-8.1-.../libffmpeg.so`.
+  - Criar um symlink `libffmpeg.so.8.1 -> libffmpeg.so` no store enganava o script lançador `/opt/vivaldi/vivaldi`, fazendo-o precarregar a versão aberta e ignorar a versão proprietária em `~/.local`. Esse symlink falso foi removido e o `update-ffmpeg` foi marcado como executável (`chmod +x`).
+  - Adicionada ativação `setupVivaldiCodecs` no módulo do Chrome para garantir que o script `update-ffmpeg --user` seja acionado se os codecs proprietários ainda não estiverem baixados.
+  - Removido `--enable-zero-copy` de `commandLineArgs` que quebrava renderização de vídeo em GPUs legadas (Intel HD 3000 / Sandy Bridge).
 
 ---
 
