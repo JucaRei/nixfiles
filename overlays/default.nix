@@ -51,6 +51,15 @@
           --prefix LD_LIBRARY_PATH : "$out/opt/vivaldi"
       '';
     });
+
+    # Fix for Noctalia Shell on MangoWM: enable ext-workspace-v1 protocol and workspace discovery
+    noctalia-shell = prev.noctalia-shell.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ (
+        final.lib.optional (
+          !(builtins.elem ./patches/noctalia-mangowm-workspaces.patch (old.patches or [ ]))
+        ) ./patches/noctalia-mangowm-workspaces.patch
+      );
+    });
   };
 
   # Access unstable packages via 'pkgs.unstable.<package>'

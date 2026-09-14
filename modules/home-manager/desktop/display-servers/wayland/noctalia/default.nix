@@ -87,7 +87,7 @@ let
           {
             id = "Workspace";
             followFocusedScreen = true;
-            hideUnoccupied = false;
+            hideUnoccupied = true;
             labelMode = "index";
             showLabelsOnlyWhenOccupied = false;
             pillSize = 0.8;

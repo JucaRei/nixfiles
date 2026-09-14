@@ -1,0 +1,83 @@
+--- a/Services/Compositor/CompositorService.qml	1969-12-31 21:00:01.000000000 -0300
++++ b/Services/Compositor/CompositorService.qml	2026-09-14 19:18:25.517000096 -0300
+@@ -78,8 +78,9 @@
+       isSway = false;
+       isMango = true;
+       isLabwc = false;
+-      isExtWorkspace = false;
+-      backendLoader.sourceComponent = mangoComponent;
++      isExtWorkspace = true;
++      backendLoader.sourceComponent = extWorkspaceComponent;
++      Logger.i("CompositorService", "MangoWM detected: using ext-workspace-v1 backend");
+     } else if (labwcPid && labwcPid.length > 0) {
+       isHyprland = false;
+       isNiri = false;
+--- a/Services/Compositor/ExtWorkspaceService.qml	1969-12-31 21:00:01.000000000 -0300
++++ b/Services/Compositor/ExtWorkspaceService.qml	2026-09-14 19:25:12.246828936 -0300
+@@ -45,13 +45,19 @@
+   }
+ 
+   Timer {
+-    interval: 500
++    id: windowsetDiscoveryTimer
++    interval: 200
+     running: true
+-    repeat: false
++    repeat: true
++    property int attempts: 0
+     onTriggered: {
++      attempts++;
+       if (WindowManager.windowsets.length > 0) {
+         root.connectWorkspaceSignals();
+         root.syncWorkspaces();
++        stop();
++      } else if (attempts > 50) {
++        stop();
+       }
+     }
+   }
+@@ -98,11 +104,13 @@
+     * second head because all windowsets were merged into one list. */
+     const perOutputNextIdx = {};
+ 
+-    for (const ws of nativeWs) {
+-      if (!ws.shouldDisplay) {
+-        continue;
+-      }
++    const sortedWs = nativeWs.slice().sort((a, b) => {
++      const aIdx = parseInt(a.name || a.id, 10) || 0;
++      const bIdx = parseInt(b.name || b.id, 10) || 0;
++      return aIdx - bIdx;
++    });
+ 
++    for (const ws of sortedWs) {
+       let outputName = "";
+       if (ws.projection) {
+         const projScreens = ws.projection.screens;
+@@ -110,6 +118,9 @@
+           outputName = projScreens[0].name || "";
+         }
+       }
++      if (!outputName && Quickshell.screens.length > 0) {
++        outputName = Quickshell.screens[0].name || "";
++      }
+ 
+       const groupKey = outputName || "_";
+       let idx;
+@@ -131,7 +142,7 @@
+         "isFocused": ws.active,
+         "isActive": true,
+         "isUrgent": ws.urgent,
+-        "isOccupied": false,
++        "isOccupied": (ws.shouldDisplay && !ws.active),
+         "oid": ws.id || idx.toString()
+       };
+ 
+@@ -140,6 +151,7 @@
+     }
+ 
+     updateWindowWorkspaces();
++    Logger.i("ExtWorkspaceService", "Successfully synced " + workspaces.count + " workspaces");
+     workspaceChanged();
+   }
+ 
