@@ -31,7 +31,17 @@ rec {
       isInstall = !isISO;
       isWorkstation = desktop != null;
 
-      pkgs = inputs.nixpkgs.legacyPackages.${platform};
+      pkgs = import inputs.nixpkgs {
+        system = platform;
+        config = {
+          allowUnfree = true;
+          allowInsecure = true;
+        };
+        overlays = [
+          inputs.nixgl.overlay
+          inputs.nur.overlays.default
+        ] ++ (builtins.attrValues outputs.overlays);
+      };
       nixGLWrapper = if useNixGL then (import ./nixGL.nix { inherit pkgs; }).wrapper else (x: x);
     in
     inputs.home-manager.lib.homeManagerConfiguration {

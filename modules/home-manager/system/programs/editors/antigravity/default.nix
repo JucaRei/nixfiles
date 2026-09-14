@@ -30,7 +30,6 @@ in
 
     home.shellAliases = {
       antigravity = "antigravity-ide";
-      agy = "antigravity-ide";
     };
   };
 }
