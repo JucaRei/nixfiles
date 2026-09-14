@@ -12,10 +12,13 @@ in
     # Allow insecure broadcom-sta (CVE-2019-9501/9502) — required for BCM43xx Wi-Fi
     # on MacBook Pro 4,1. No maintained alternative exists for this chipset.
     nixpkgs.config.permittedInsecurePackages = [
-      "broadcom-sta-6.30.223.271-59-6.18"
-      "broadcom-sta-6.30.223.271-59-6.18.40"
+      "broadcom-sta-6.30.223.271-63-7.1.9"
       "broadcom-sta"
     ];
+    nixpkgs.config.allowInsecurePredicate =
+      pkg:
+      lib.hasPrefix "broadcom-sta" (lib.getName pkg)
+      || lib.strings.hasInfix "broadcom-sta" (lib.getName pkg);
     # --- MacBook Pro 4,1 Specific Hardware ---
     # The MBP 4,1 has a 32-bit EFI booting a 64-bit CPU.
     # Standard NixOS ISOs assume 64-bit EFI and systemd initrd,

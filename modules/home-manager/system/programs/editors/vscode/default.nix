@@ -15,8 +15,7 @@ let
   # nixGLWrapper = if useNixGL then nixGL.wrapDesktopFiles else (x: x);
 
   # Settings
-  jsonPath = "${./settings.json}";
-  userSettingsRaw = builtins.fromJSON (builtins.readFile jsonPath);
+  userSettingsRaw = builtins.fromJSON (builtins.readFile ./settings.json);
   remoteExtensions = {
     "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueID) (userSettingsRaw.extensions or [ ]); # Assume JSON has "extensions" array
   };

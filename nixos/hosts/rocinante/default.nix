@@ -43,9 +43,13 @@ in
     };
 
     # Permitir broadcom-sta apenas no host rocinante (hardware específico)
-    # Predicate por prefixo: cobre qualquer versão/kernel automaticamente
-    nixpkgs.config.allowInsecurePredicate = pkg:
-      builtins.hasPrefix "broadcom-sta" (lib.getName pkg);
+    nixpkgs.config.permittedInsecurePackages = [
+      "broadcom-sta-6.30.223.271-63-7.1.9"
+    ];
+    nixpkgs.config.allowInsecurePredicate =
+      pkg:
+      lib.hasPrefix "broadcom-sta" (lib.getName pkg)
+      || lib.strings.hasInfix "broadcom-sta" (lib.getName pkg);
 
     # --- Hardware & CPU (MacBook Pro 4,1 - Penryn Core 2 Duo) ---
     hardware = {
@@ -297,8 +301,14 @@ in
         enable = true;
         allowPing = true;
         # Abre portas para descoberta de rede (mDNS + WS-Discovery)
-        allowedUDPPorts = [ 5353 3702 ];
-        allowedTCPPorts = [ 5353 3702 ];
+        allowedUDPPorts = [
+          5353
+          3702
+        ];
+        allowedTCPPorts = [
+          5353
+          3702
+        ];
       };
 
       networkmanager = {

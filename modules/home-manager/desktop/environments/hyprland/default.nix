@@ -2,13 +2,8 @@
   config,
   lib,
   pkgs,
-  osConfig ? null,
   ...
 }:
-let
-  inherit (lib) mkIf;
-  isNixOS = osConfig != null;
-in
 {
   imports = [
     ./hyprland.nix
@@ -21,7 +16,7 @@ in
     ./packages.nix
   ];
 
-  config = mkIf config.desktop.hyprland.enable {
+  config = lib.mkIf config.desktop.hyprland.enable {
     desktop.display-servers.backend = "wayland";
 
     # Programas padrão do ambiente
@@ -79,29 +74,19 @@ in
     };
 
     home = {
-      sessionPath = [
-        "$HOME/.local/bin"
-        "$HOME/.local/share/applications"
-      ];
       sessionVariables = {
         GTK_THEME = config.gtk.theme.name;
       };
       file = {
-        ".themes/${config.gtk.theme.name}".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
-        ".themes/Catppuccin-Mocha-Standard-Blue-Dark".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
-        ".local/share/themes/${config.gtk.theme.name}".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
-        ".local/share/themes/Catppuccin-Mocha-Standard-Blue-Dark".source = "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+        ".themes/${config.gtk.theme.name}".source =
+          "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+        ".themes/Catppuccin-Mocha-Standard-Blue-Dark".source =
+          "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+        ".local/share/themes/${config.gtk.theme.name}".source =
+          "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+        ".local/share/themes/Catppuccin-Mocha-Standard-Blue-Dark".source =
+          "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
       };
     };
-
-    xdg = {
-      mimeApps.enable = true;
-      systemDirs = {
-        data = [ "${config.home.homeDirectory}/.nix-profile/share/applications" ];
-        config = [ "/etc/xdg" ];
-      };
-    };
-
-    targets.genericLinux.enable = mkIf (!isNixOS) true;
   };
 }

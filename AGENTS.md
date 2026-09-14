@@ -203,6 +203,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Wrapper do Thunar & Sessão GIO**: Criado `thunar-wrapped` via `symlinkJoin` + `makeWrapper` injetando `GIO_EXTRA_MODULES` (`${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules`) e `XDG_DATA_DIRS` (`${pkgs.gvfs}/share:/usr/share`).
   - Adicionado `pkgs.gvfs` em `home.packages` e exportado `GIO_EXTRA_MODULES` em `home.sessionVariables`, garantindo acesso completo a compartilhamentos Samba (`smb://`), descoberta WS-Discovery/Avahi (`network:///`), lixeira e montagens remotas tanto no terminal quanto no ambiente gráfico.
 
+- **Desktops Home Manager — Limpeza de Redundâncias e Padronização**:
+  - **Remoção de Blocos Duplicados**: Os blocos `xdg.mimeApps.enable`, `xdg.systemDirs` (`data` e `config`) e `targets.genericLinux.enable` estavam repetidos em [mangowm/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/mangowm/default.nix), [hyprland/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/hyprland/default.nix) e [bspwm/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/bspwm/default.nix). Como [desktop/environments/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/default.nix) importa todos os ambientes e já os define centralmente para qualquer workstation, as declarações filhas causavam duplicação de diretórios em listas como `XDG_CONFIG_DIRS` (`["/etc/xdg" "/etc/xdg"]`) e no `sessionPath`.
+  - **Limpeza de `$PATH`**: Removido `$HOME/.local/share/applications` de `home.sessionPath` (que continha `.desktop` em vez de executáveis) e mantido apenas `$HOME/.local/bin` centralizado na raiz.
+  - **Eliminação de Unused Bindings**: Removidos `osConfig ? null` e `isNixOS` não utilizados das assinaturas desses 3 submódulos, seguindo as diretrizes de código limpo.
+  - **Resolução de Conflitos e Inseguranças (`flake check`)**:
+    - **`GIO_EXTRA_MODULES`**: Removida definição redundante e conflitante em [xfce4/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/xfce4/default.nix), deferindo a gestão completa ao módulo centralizado do Thunar.
+    - **VS Code**: `builtins.readFile ./settings.json` adotado no lugar de interpolação em string `"${./settings.json}"`, prevenindo path inválido no Nix store.
+    - **Broadcom STA (`rocinante` / `iso-rocinante`)**: Declarado `broadcom-sta-6.30.223.271-63-7.1.9` em `nixpkgs.config.permittedInsecurePackages` com verificação segura via `lib.hasPrefix` e `lib.strings.hasInfix`.
+
 ---
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
