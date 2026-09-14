@@ -219,7 +219,8 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **Wayland — Arquitetura de Shells Gráficos (`traditional` vs `noctalia`)**:
   - **Reestruturação Modular**: Os componentes visuais e de sessão Wayland foram migrados para `modules/home-manager/desktop/display-servers/wayland/`:
     - `wayland/traditional/`: Agrupa `waybar.nix`, `rofi.nix`, `dunst.nix`, `hyprlock.nix`, `hypridle.nix` e `hyprpaper.nix`. A Waybar foi unificada e detecta automaticamente se o compositor em execução é `mangowm` (carregando `ext/workspaces`, `custom/layout`, `custom/window`) ou `hyprland` (carregando `hyprland/workspaces`, `hyprland/window`), mantendo todos os scripts utilitários (`mangoLayoutSwitcher`, `sessionPowerMenu`, `rofiWifiMenu`, etc.).
-    - `wayland/noctalia/`: Fornece integração com o `pkgs.noctalia-shell` e o script lançador `noctalia-launcher`.
+    - `wayland/noctalia/`: Fornece integração com o `pkgs.noctalia-shell`, gerando declarativamente `~/.config/noctalia/settings.json` e `~/.config/noctalia/colors.json` com o tema **Catppuccin Mocha Dark**. Configura barra superior flutuante (`floating`) com cápsula moderna, dock inferior com auto-hide, launcher de aplicativos centralizado com clipboard, control center com atalhos multimídia/rede e session menu.
+    - **Scripts IPC e Keybindings do Noctalia**: Mapeados comandos IPC (`noctalia-launcher`, `noctalia-cliphist`, `noctalia-control-center`, `noctalia-session-menu`, `noctalia-wallpaper`) com atalhos de teclado integrados no MangoWM e Hyprland (`Super+Space`, `Super+v`, `Super+p`, `Super+Escape`, `Super+Alt+w`).
   - **Opções Declarativas**:
     - `desktop.wayland.shell`: Permite selecionar o shell desejado (`enum [ "traditional" "noctalia" ]`), tendo como default `"traditional"`.
     - `desktop.wayland.compositor`: Define/detecta o compositor em execução (`"hyprland"` ou `"mangowm"`).
