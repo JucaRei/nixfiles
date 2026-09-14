@@ -124,8 +124,8 @@ diff -ruN a/Modules/Bar/Widgets/ActiveWindow.qml b/Modules/Bar/Widgets/ActiveWin
                 }
 diff -ruN a/Modules/Bar/Widgets/Clock.qml b/Modules/Bar/Widgets/Clock.qml
 --- a/Modules/Bar/Widgets/Clock.qml	2026-09-14 20:08:45.168173328 -0300
-+++ b/Modules/Bar/Widgets/Clock.qml	2026-09-14 20:32:01.428283895 -0300
-@@ -47,6 +47,34 @@
++++ b/Modules/Bar/Widgets/Clock.qml	2026-09-14 20:46:54.214689015 -0300
+@@ -47,6 +47,20 @@
  
    readonly property color textColor: Color.resolveColorKey(clockColor)
  
@@ -143,24 +143,10 @@ diff -ruN a/Modules/Bar/Widgets/Clock.qml b/Modules/Bar/Widgets/Clock.qml
 +  }
 +
 +
-+  function formatPtDate(date) {
-+    const days = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-+    const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-+    return days[date.getDay()] + ', ' + date.getDate() + ' de ' + months[date.getMonth()];
-+  }
-+
-+  function formatPtTime(date) {
-+    const h = String(date.getHours()).padStart(2, '0');
-+    const m = String(date.getMinutes()).padStart(2, '0');
-+    const s = String(date.getSeconds()).padStart(2, '0');
-+    return h + ':' + m + ':' + s;
-+  }
-+
-+
    // Content dimensions for implicit sizing
    readonly property real contentWidth: isBarVertical ? capsuleHeight : Math.round((isBarVertical ? verticalLoader.implicitWidth : horizontalLoader.implicitWidth) + Style.margin2M)
    readonly property real contentHeight: isBarVertical ? Math.round(verticalLoader.implicitHeight + Style.margin2S) : capsuleHeight
-@@ -82,7 +110,7 @@
+@@ -82,7 +96,7 @@
            spacing: Settings.data.bar.showCapsule ? -5 : -3
            Repeater {
              id: repeater
@@ -169,7 +155,7 @@ diff -ruN a/Modules/Bar/Widgets/Clock.qml b/Modules/Bar/Widgets/Clock.qml
              NText {
                visible: text !== ""
                text: modelData
-@@ -122,7 +150,7 @@
+@@ -122,7 +136,7 @@
            anchors.centerIn: parent
            spacing: -2
            Repeater {
@@ -178,7 +164,7 @@ diff -ruN a/Modules/Bar/Widgets/Clock.qml b/Modules/Bar/Widgets/Clock.qml
              delegate: NText {
                visible: text !== ""
                text: modelData
-@@ -173,11 +201,7 @@
+@@ -173,11 +187,7 @@
  
    // Build tooltip text with formatted time/date
    function buildTooltipText() {
