@@ -259,15 +259,20 @@ in
       ${if isNoctalia then ''
         bind=SUPER,space,spawn,noctalia-launcher
         bind=SUPER,d,spawn,noctalia-launcher
+        bind=SUPER,v,spawn,noctalia-cliphist
+        bind=SUPER,p,spawn,noctalia-control-center
+        bind=SUPER,Escape,spawn,noctalia-session-menu
+        bind=SUPER+SHIFT,e,spawn,noctalia-session-menu
+        bind=SUPER+ALT,w,spawn,noctalia-wallpaper
       '' else ''
         bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
         bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
+        bind=SUPER,v,spawn,${cliphistMenu}
+        bind=SUPER,Escape,spawn,session-power-menu
+        bind=SUPER+SHIFT,e,spawn,session-power-menu
       ''}
       bind=SUPER,e,spawn,${pkgs.thunar}/bin/thunar
-      bind=SUPER,v,spawn,${cliphistMenu}
       bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
-      bind=SUPER,Escape,spawn,session-power-menu
-      bind=SUPER+SHIFT,e,spawn,session-power-menu
       bind=SUPER+SHIFT,q,quit
 
       # Gerenciamento de Janelas e Estados

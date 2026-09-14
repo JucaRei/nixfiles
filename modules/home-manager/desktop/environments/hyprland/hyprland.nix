@@ -319,8 +319,25 @@ in
             else
               "$mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun"
           )
+          (
+            if isNoctalia then
+              "$mainMod, V, exec, noctalia-cliphist"
+            else
+              "$mainMod, V, exec, hypr-cliphist"
+          )
+          (
+            if isNoctalia then
+              "$mainMod, P, exec, noctalia-control-center"
+            else
+              "$mainMod, P, pseudo,"
+          )
+          (
+            if isNoctalia then
+              "$mainMod, Escape, exec, noctalia-session-menu"
+            else
+              "$mainMod, Escape, exec, session-power-menu"
+          )
           "$mainMod, E, exec, ${pkgs.thunar}/bin/thunar"
-          "$mainMod, V, exec, hypr-cliphist"
           "$mainMod, L, exec, ${pkgs.hyprlock}/bin/hyprlock"
 
           # Gerenciamento de Janelas

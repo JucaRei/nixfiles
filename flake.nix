@@ -60,6 +60,7 @@
         "juca@anubis" = helper.mkHome {
           hostname = "anubis";
           desktop = "mangowm";
+          waylandShell = "noctalia";
         };
 
         "juca@virtualvm" = helper.mkHome {
