@@ -22,6 +22,7 @@ rec {
       hostname,
       username ? "juca",
       desktop ? null,
+      waylandShell ? "traditional",
       platform ? "x86_64-linux",
       stateVersion ? "26.05",
       useNixGL ? true,
@@ -51,6 +52,7 @@ rec {
           inputs
           outputs
           desktop
+          waylandShell
           hostname
           platform
           username
@@ -85,6 +87,7 @@ rec {
       hostname,
       username ? "juca",
       desktop ? null,
+      waylandShell ? "traditional",
       platform ? "x86_64-linux",
       hostid ? null,
       stateVersion ? "24.11",
@@ -102,6 +105,7 @@ rec {
           inputs
           outputs
           desktop
+          waylandShell
           hostname
           platform
           username
@@ -129,6 +133,7 @@ rec {
                 inputs
                 outputs
                 desktop
+                waylandShell
                 hostname
                 platform
                 username

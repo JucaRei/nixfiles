@@ -7,7 +7,9 @@
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
-  cfg = config.desktop.mangowm;
+  cfg = config.desktop.wayland;
+  isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
+  isMango = cfg.compositor == "mangowm" || (config.desktop.mangowm.enable or false);
 
   # Script de Energia / Sessão (Power Menu via Rofi) — agnóstico ao compositor
   powerMenu = pkgs.writeShellScriptBin "session-power-menu" ''
@@ -19,7 +21,7 @@ let
         if [ "$XDG_CURRENT_DESKTOP" = "mango" ] || [ "$DESKTOP_SESSION" = "mango" ] || pgrep -x mango >/dev/null 2>&1; then
           pkill -SIGTERM -x mango 2>/dev/null || loginctl terminate-session "''${XDG_SESSION_ID:-}" 2>/dev/null || loginctl terminate-user "$USER"
         elif command -v hyprctl >/dev/null 2>&1 && pgrep -x Hyprland >/dev/null 2>&1; then
-          hyprctl dispatch exit
+          ${pkgs.hyprland}/bin/hyprctl dispatch exit
         elif [ -n "''${XDG_SESSION_ID:-}" ]; then
           loginctl terminate-session "$XDG_SESSION_ID"
         else
@@ -31,7 +33,11 @@ let
     esac
   '';
 
-  # Script de seleção WiFi via Rofi + nmcli (usa nmcli nativo do Fedora/NixOS)
+  powerMenuHyprland = pkgs.writeShellScriptBin "hyprland-power-menu" ''
+    exec ${powerMenu}/bin/session-power-menu "$@"
+  '';
+
+  # Script de seleção WiFi via Rofi + nmcli
   rofiWifiMenu = pkgs.writeShellScriptBin "rofi-wifi-menu" ''
     NMCLI="/usr/bin/nmcli"
     if ! command -v "$NMCLI" >/dev/null 2>&1; then
@@ -42,7 +48,6 @@ let
       exit 1
     fi
 
-    # Estado atual da conexão
     connected=$($NMCLI -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
     wifi_status=$($NMCLI radio wifi)
 
@@ -54,11 +59,9 @@ let
       exit 0
     fi
 
-    # Escanear redes disponíveis
     $NMCLI dev wifi rescan 2>/dev/null || true
     sleep 1
 
-    # Listar SSIDs com sinal
     networks=$($NMCLI -t -f SSID,SIGNAL,SECURITY dev wifi list | grep -v '^$' | sort -t: -k2 -rn | head -15)
     menu=""
     if [ -n "$connected" ]; then
@@ -100,194 +103,162 @@ let
             $NMCLI dev wifi connect "$ssid" password "$pass" 2>/dev/null
           fi
         fi
-        if $NMCLI -t -f active,ssid dev wifi | grep -q "^yes:$ssid"; then
-          ${pkgs.libnotify}/bin/notify-send -u low "WiFi" "Conectado a $ssid"
-        else
-          ${pkgs.libnotify}/bin/notify-send -u critical "WiFi" "Falha ao conectar a $ssid"
-        fi
         ;;
     esac
   '';
 
-  # Script para exibir o título da janela ativa na Waybar (via mmsg get focusing-client)
-  mangoWindowTitle = pkgs.writeShellScriptBin "mango-window-title" ''
-    set -euo pipefail
-    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
-      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
-    fi
-
-    client=$(mmsg get focusing-client 2>/dev/null || true)
-    if [ -z "$client" ] || echo "$client" | grep -q '"error"'; then
-      echo '{"text":"","tooltip":"Área de Trabalho","class":"empty"}'
-      exit 0
-    fi
-
-    title=$(echo "$client" | ${pkgs.jq}/bin/jq -r '.title // empty' 2>/dev/null || true)
-    appid=$(echo "$client" | ${pkgs.jq}/bin/jq -r '.appid // empty' 2>/dev/null || true)
-
-    if [ -z "$title" ]; then
-      echo '{"text":"","tooltip":"Área de Trabalho","class":"empty"}'
-      exit 0
-    fi
-
-    appid_lower=$(echo "$appid" | tr '[:upper:]' '[:lower:]')
-
-    icon="󰣆"
-    case "$appid_lower" in
-      *firefox*) icon="󰈹" ;;
-      *chrom*) icon="" ;;
-      *code*) icon="󰨞" ;;
-      *zed*) icon="󱓷" ;;
-      *discord*) icon="󰙯" ;;
-      *steam*) icon="󰓓" ;;
-      *alacritty*) icon="" ;;
-      *kitty*) icon="󰄛" ;;
-      *thunar*) icon="󰉋" ;;
-      *pavucontrol*) icon="󰕾" ;;
-    esac
-
-    # Truncar título longo para telas pequenas
-    if [ ''${#title} -gt 28 ]; then
-      display_title="''${title:0:25}…"
-    else
-      display_title="$title"
-    fi
-
-    ${pkgs.jq}/bin/jq -c -n \
-      --arg text "$icon $display_title" \
-      --arg tooltip "$title ($appid)" \
-      --arg class "$appid_lower" \
-      '{"text": $text, "tooltip": $tooltip, "class": $class}'
-  '';
-
-  # Script para exibir o layout ativo na Waybar (via mmsg get all-monitors)
+  # Scripts de utilidade para o MangoWM
   mangoLayoutSwitcher = pkgs.writeShellScriptBin "mango-layout-switcher" ''
-    set -euo pipefail
-    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
-      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
+      SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
+      [ -n "$SOCK" ] && export MANGO_INSTANCE_SIGNATURE=$(basename "$SOCK" .sock | sed 's/^mango-//')
     fi
-
-    declare -A LAYOUT_NAMES=(
-      [T]="Tile"
-      [S]="Scroller"
-      [G]="Grid"
-      [M]="Monocle"
-      [K]="Deck"
-      [CT]="Center Tile"
-      [RT]="Right Tile"
-      [VS]="Vert Scroller"
-      [VT]="Vert Tile"
-      [VG]="Vert Grid"
-      [VK]="Vert Deck"
-      [DW]="Dwindle"
-      [F]="Fair"
-      [VF]="Vert Fair"
-      [TG]="TGMix"
-    )
-
-    declare -A LAYOUT_ICONS=(
-      [T]="󰕰"
-      [S]="󰹑"
-      [G]="󰝘"
-      [M]="󰍹"
-      [K]="󰓩"
-      [CT]="󰕲"
-      [RT]="󰕳"
-      [VS]="󰹒"
-      [VT]="󰕴"
-      [VG]="󰝙"
-      [VK]="󰓪"
-      [DW]="󰕯"
-      [F]="󰕮"
-      [VF]="󰕬"
-      [TG]="󰕱"
-    )
-
-    state=$(mmsg get all-monitors 2>/dev/null || true)
-    if [ -z "$state" ] || echo "$state" | grep -q '"error"'; then
-      echo '{"text":"󰕰 Mango","tooltip":"MangoWM não detectado ou inativo"}'
-      exit 0
-    fi
-
-    code=$(echo "$state" | ${pkgs.jq}/bin/jq -r '.monitors[0].layout_symbol // empty' 2>/dev/null || true)
-    if [ -z "$code" ] || [ -z "''${LAYOUT_NAMES[$code]+x}" ]; then
-      echo "{\"text\":\"󰕰 ''${code:-Tile}\",\"tooltip\":\"Layout atual: ''${code:-Desconhecido}\"}"
-      exit 0
-    fi
-
-    name="''${LAYOUT_NAMES[$code]}"
-    icon="''${LAYOUT_ICONS[$code]:-󰕰}"
-
-    echo "{\"text\":\"$icon $name\",\"tooltip\":\"Layout do MangoWM: $name ($code)\nClique para alternar o layout\",\"class\":\"$code\"}"
+    LAYOUT=$(mmsg get layout 2>/dev/null || echo "tile")
+    case "$LAYOUT" in
+      *tile*)     echo '{"text": "󰕰 Tile", "tooltip": "Layout: Tile (Normal)\nClique para alternar", "class": "tile"}' ;;
+      *scroller*) echo '{"text": "󰍹 Scroll", "tooltip": "Layout: Scroller\nClique para alternar", "class": "scroller"}' ;;
+      *grid*)     echo '{"text": "󰝘 Grid", "tooltip": "Layout: Grid\nClique para alternar", "class": "grid"}' ;;
+      *monocle*)  echo '{"text": "󰍹 Mono", "tooltip": "Layout: Monocle (Fullscreen)\nClique para alternar", "class": "monocle"}' ;;
+      *)          echo "{\"text\": \"󰕰 $LAYOUT\", \"tooltip\": \"Layout: $LAYOUT\", \"class\": \"other\"}" ;;
+    esac
   '';
 
-  # Menu Rofi para seleção rápida de layout do MangoWM
   mangoLayoutPicker = pkgs.writeShellScriptBin "mango-layout-picker" ''
-    set -euo pipefail
-    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
-      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
+      SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
+      [ -n "$SOCK" ] && export MANGO_INSTANCE_SIGNATURE=$(basename "$SOCK" .sock | sed 's/^mango-//')
     fi
-
-    options="󰹑 Scroller (S)\n󰕰 Tile (T)\n󰕲 Center Tile (CT)\n󰝘 Grid (G)\n󰍹 Monocle (M)\n󰓩 Deck (K)\n󰕳 Right Tile (RT)\n󰹒 Vertical Scroller (VS)\n󰕴 Vertical Tile (VT)\n󰝙 Vertical Grid (VG)\n󰓪 Vertical Deck (VK)\n󰕯 Dwindle (DW)\n󰕮 Fair (F)"
-
-    chosen=$(echo -e "$options" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰕰 Layout Mango " -theme-str 'window {width: 320px; height: 440px;} listview {lines: 13;}')
-
+    chosen=$(printf "󰕰 Tile\n󰍹 Scroller\n󰝘 Grid\n󰍹 Monocle" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󱗼 Layout " -theme-str 'window {width: 280px; height: 260px;} listview {lines: 4;}')
     case "$chosen" in
-      *"Scroller (S)") mmsg dispatch setlayout,scroller >/dev/null 2>&1 ;;
-      *"Tile (T)") mmsg dispatch setlayout,tile >/dev/null 2>&1 ;;
-      *"Center Tile (CT)") mmsg dispatch setlayout,center_tile >/dev/null 2>&1 ;;
-      *"Grid (G)") mmsg dispatch setlayout,grid >/dev/null 2>&1 ;;
-      *"Monocle (M)") mmsg dispatch setlayout,monocle >/dev/null 2>&1 ;;
-      *"Deck (K)") mmsg dispatch setlayout,deck >/dev/null 2>&1 ;;
-      *"Right Tile (RT)") mmsg dispatch setlayout,right_tile >/dev/null 2>&1 ;;
-      *"Vertical Scroller (VS)") mmsg dispatch setlayout,vertical_scroller >/dev/null 2>&1 ;;
-      *"Vertical Tile (VT)") mmsg dispatch setlayout,vertical_tile >/dev/null 2>&1 ;;
-      *"Vertical Grid (VG)") mmsg dispatch setlayout,vertical_grid >/dev/null 2>&1 ;;
-      *"Vertical Deck (VK)") mmsg dispatch setlayout,vertical_deck >/dev/null 2>&1 ;;
-      *"Dwindle (DW)") mmsg dispatch setlayout,dwindle >/dev/null 2>&1 ;;
-      *"Fair (F)") mmsg dispatch setlayout,fair >/dev/null 2>&1 ;;
+      *"Tile")     mmsg dispatch switch_layout,tile 2>/dev/null ;;
+      *"Scroller") mmsg dispatch switch_layout,scroller 2>/dev/null ;;
+      *"Grid")     mmsg dispatch switch_layout,grid 2>/dev/null ;;
+      *"Monocle")  mmsg dispatch switch_layout,monocle 2>/dev/null ;;
     esac
+    pkill -RTMIN+8 waybar 2>/dev/null || true
+  '';
+
+  mangoReload = pkgs.writeShellScriptBin "mango-reload" ''
+    if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
+      SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
+      [ -n "$SOCK" ] && export MANGO_INSTANCE_SIGNATURE=$(basename "$SOCK" .sock | sed 's/^mango-//')
+    fi
+    mmsg dispatch reload_config 2>/dev/null || true
+    pkill -SIGUSR2 waybar 2>/dev/null || true
+    ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Configuração e Waybar recarregados com sucesso!"
+  '';
+
+  mangoToggleOuterGaps = pkgs.writeShellScriptBin "mango-toggle-outer-gaps" ''
+    GAPS_FILE="/tmp/.mango_outer_gaps_$USER"
+    if [ -f "$GAPS_FILE" ]; then
+      rm -f "$GAPS_FILE"
+      mmsg dispatch set_outer_gaps,8 2>/dev/null || true
+      ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Gaps externos restaurados (8px)"
+    else
+      touch "$GAPS_FILE"
+      mmsg dispatch set_outer_gaps,0 2>/dev/null || true
+      ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Gaps externos desativados (0px)"
+    fi
+  '';
+
+  mangoWindowTitle = pkgs.writeShellScriptBin "mango-window-title" ''
+    if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
+      SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
+      [ -n "$SOCK" ] && export MANGO_INSTANCE_SIGNATURE=$(basename "$SOCK" .sock | sed 's/^mango-//')
+    fi
+    INFO=$(mmsg get focusing-client 2>/dev/null)
+    if [ -z "$INFO" ] || [ "$INFO" = "null" ]; then
+      echo '{"text": "", "tooltip": "", "class": "empty"}'
+      exit 0
+    fi
+    TITLE=$(echo "$INFO" | ${pkgs.jq}/bin/jq -r '.title // empty' 2>/dev/null)
+    APPID=$(echo "$INFO" | ${pkgs.jq}/bin/jq -r '.appid // empty' 2>/dev/null)
+    if [ -z "$TITLE" ]; then
+      echo '{"text": "", "tooltip": "", "class": "empty"}'
+      exit 0
+    fi
+    ICON="󰣆"
+    case "$APPID" in
+      *alacritty*|*kitty*|*terminal*) ICON="󰞷" ;;
+      *firefox*)  ICON="󰈹" ;;
+      *chrome*)   ICON="󰊯" ;;
+      *code*|*antigravity*) ICON="󰨞" ;;
+      *thunar*)   ICON="󰝰" ;;
+      *mpv*)      ICON="󰕼" ;;
+    esac
+    TRUNCATED=$(echo "$TITLE" | cut -c 1-38)
+    [ "''${#TITLE}" -gt 38 ] && TRUNCATED="$TRUNCATED..."
+    ESCAPED_TEXT=$(echo "$ICON $TRUNCATED" | sed 's/"/\\"/g')
+    ESCAPED_TOOLTIP=$(echo "$APPID: $TITLE" | sed 's/"/\\"/g')
+    echo "{\"text\": \"$ESCAPED_TEXT\", \"tooltip\": \"$ESCAPED_TOOLTIP\", \"class\": \"$APPID\"}"
   '';
 in
 {
-  options.desktop.mangowm.waybar = {
+  options.desktop.wayland.traditional.waybar = {
     enable = mkOption {
       type = bool;
-      default = cfg.enable;
-      description = "Enable modern custom waybar status bar for MangoWM";
+      default = isTraditional;
+      description = "Habilitar waybar moderna no shell tradicional Wayland";
     };
   };
 
-  config = mkIf (cfg.enable && config.desktop.mangowm.waybar.enable) {
+  # Retrocompatibilidade
+  options.desktop.hyprland.waybar = {
+    enable = mkOption {
+      type = bool;
+      default = config.desktop.wayland.traditional.waybar.enable;
+      description = "Opção de retrocompatibilidade para waybar";
+    };
+  };
+
+  options.desktop.mangowm.waybar = {
+    enable = mkOption {
+      type = bool;
+      default = config.desktop.wayland.traditional.waybar.enable;
+      description = "Opção de retrocompatibilidade para waybar";
+    };
+  };
+
+  config = mkIf (isTraditional && config.desktop.wayland.traditional.waybar.enable) {
     home.packages = [
+      powerMenu
+      powerMenuHyprland
+      rofiWifiMenu
       mangoLayoutSwitcher
       mangoLayoutPicker
+      mangoReload
+      mangoToggleOuterGaps
       mangoWindowTitle
-      powerMenu
-      rofiWifiMenu
     ];
 
     programs.waybar = {
       enable = true;
       package = pkgs.waybar;
       systemd.enable = false;
-
       settings = {
         mainBar = {
           layer = "top";
           position = "top";
-          height = 36;
+          height = 34;
           margin-top = 6;
           margin-left = 10;
           margin-right = 10;
           spacing = 6;
 
-          modules-left = [
-            "custom/launcher"
-            "ext/workspaces"
-            "custom/layout"
-            "custom/window"
-          ];
+          modules-left =
+            if isMango then
+              [
+                "custom/launcher"
+                "ext/workspaces"
+                "custom/layout"
+                "custom/window"
+              ]
+            else
+              [
+                "custom/launcher"
+                "hyprland/workspaces"
+                "hyprland/window"
+              ];
 
           modules-center = [
             "clock"
@@ -295,12 +266,10 @@ in
 
           modules-right = [
             "cpu"
-            "temperature"
             "memory"
-            "disk"
-            "network"
-            "pulseaudio"
             "backlight"
+            "pulseaudio"
+            "network"
             "battery"
             "tray"
             "custom/power"
@@ -312,30 +281,77 @@ in
             tooltip = false;
           };
 
+          # Workspaces para MangoWM
           "ext/workspaces" = {
-            format = "{name}";
-            on-click = "activate";
+            format = "{icon}";
+            format-icons = {
+              "1" = "󰮯";
+              "2" = "󰊠";
+              "3" = "󰀦";
+              "4" = "󰅩";
+              "5" = "󰈹";
+              "6" = "󰝚";
+              "7" = "󰒱";
+              "8" = "󰇮";
+              "9" = "󰢹";
+              "urgent" = "󰀨";
+              "default" = "󰮯";
+            };
             sort-by-id = true;
+            on-click = "activate";
+          };
+
+          # Workspaces para Hyprland
+          "hyprland/workspaces" = {
+            format = "{icon}";
+            on-click = "activate";
+            format-icons = {
+              "1" = "󰮯";
+              "2" = "󰊠";
+              "3" = "󰀦";
+              "4" = "󰅩";
+              "5" = "󰈹";
+              "6" = "󰝚";
+              "7" = "󰒱";
+              "8" = "󰇮";
+              "9" = "󰢹";
+              "urgent" = "󰀨";
+              "default" = "󰮯";
+            };
           };
 
           "custom/layout" = {
             exec = "${mangoLayoutSwitcher}/bin/mango-layout-switcher";
-            interval = 1;
             return-type = "json";
+            interval = 2;
+            signal = 8;
             on-click = "${mangoLayoutPicker}/bin/mango-layout-picker";
             tooltip = true;
           };
 
           "custom/window" = {
             exec = "${mangoWindowTitle}/bin/mango-window-title";
-            interval = 1;
             return-type = "json";
+            interval = 1;
+            max-length = 38;
             tooltip = true;
+          };
+
+          "hyprland/window" = {
+            format = "{title}";
+            max-length = 40;
+            separate-outputs = true;
+            rewrite = {
+              "(.*) — Mozilla Firefox" = "󰈹 $1";
+              "(.*) - Google Chrome" = "󰊯 $1";
+              "(.*) - Visual Studio Code" = "󰨞 $1";
+              "Alacritty" = "󰞷 Terminal";
+            };
           };
 
           "clock" = {
             format = "󰥔 {:%H:%M}";
-            format-alt = "󰃭 {:%a, %d %b %Y}";
+            format-alt = "󰃭 {:%d/%m/%Y  󰥔 %H:%M:%S}";
             tooltip-format = "<tt><small>{calendar}</small></tt>";
             calendar = {
               mode = "month";
@@ -345,56 +361,32 @@ in
               format = {
                 months = "<span color='#cba6f7'><b>{}</b></span>";
                 days = "<span color='#cdd6f4'><b>{}</b></span>";
-                weeks = "<span color='#89b4fa'><b>W{}</b></span>";
-                weekdays = "<span color='#fab387'><b>{}</b></span>";
+                weeks = "<span color='#89dceb'><b>W{}</b></span>";
+                weekdays = "<span color='#f9e2af'><b>{}</b></span>";
                 today = "<span color='#f38ba8'><b><u>{}</u></b></span>";
               };
             };
           };
 
           "cpu" = {
-            format = " {usage}%";
+            format = "󰍛 {usage}%";
             interval = 2;
             tooltip = true;
-          };
-
-          "temperature" = {
-            hwmon-path-abs = [
-              "/sys/devices/platform/coretemp.0/hwmon"
-              "/sys/devices/pci0000:00/0000:00:18.3/hwmon"
-              "/sys/devices/pci0000:00/0000:00:19.3/hwmon"
-              "/sys/devices/pci0000:00/0000:00:14.3/hwmon"
-            ];
-            input-filename = "temp1_input";
-            critical-threshold = 80;
-            format-critical = " {temperatureC}°C";
-            format = " {temperatureC}°C";
-            interval = 3;
-            tooltip = true;
-            tooltip-format = "CPU: {temperatureC}°C";
           };
 
           "memory" = {
-            format = "󰍛 {percentage}%";
+            format = "󰘚 {percentage}%";
             interval = 2;
-            tooltip-format = "RAM: {used:0.1f}GiB / {total:0.1f}GiB";
+            tooltip-format = "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)";
           };
 
-          "disk" = {
-            format = "󰋊 {percentage_used}%";
-            path = "/";
-            interval = 30;
-            tooltip-format = "Disco: {used} / {total} ({percentage_used}%)";
-          };
-
-          "network" = {
-            format-wifi = "󰤨 {bandwidthDownBytes} 󰇚";
-            format-ethernet = "󰈀 {bandwidthDownBytes} 󰇚";
-            format-disconnected = "󰤭 Offline";
-            interval = 2;
-            on-click = "${rofiWifiMenu}/bin/rofi-wifi-menu";
-            tooltip-format-wifi = "WiFi: {essid} ({signalStrength}%)\nDown: {bandwidthDownBits} | Up: {bandwidthUpBits}";
-            tooltip-format-ethernet = "Ethernet: {ifname}\nDown: {bandwidthDownBits} | Up: {bandwidthUpBits}";
+          "backlight" = {
+            device = "intel_backlight";
+            format = "{icon} {percent}%";
+            format-icons = [ "󰃞" "󰃟" "󰃠" ];
+            on-scroll-up = "${pkgs.brightnessctl}/bin/brightnessctl -q s +2% || ${pkgs.brightnessctl}/bin/brightnessctl -q s +1";
+            on-scroll-down = "${pkgs.brightnessctl}/bin/brightnessctl -q s 2%- || ${pkgs.brightnessctl}/bin/brightnessctl -q s 1-";
+            tooltip = false;
           };
 
           "pulseaudio" = {
@@ -402,27 +394,23 @@ in
             format-muted = "󰝟 Mudo";
             format-icons = {
               headphone = "󰋋";
-              headset = "󰋋";
-              default = [
-                "󰕿"
-                "󰖀"
-                "󰕾"
-              ];
+              hands-free = "󰋎";
+              headset = "󰋎";
+              default = [ "󰕿" "󰖀" "󰕾" ];
             };
-            on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
-            on-scroll-up = "${pkgs.pamixer}/bin/pamixer -i 5";
-            on-scroll-down = "${pkgs.pamixer}/bin/pamixer -d 5";
+            on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+            on-scroll-up = "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 2%+";
+            on-scroll-down = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-";
+            tooltip = false;
           };
 
-          "backlight" = {
-            format = "{icon} {percent}%";
-            format-icons = [
-              "󰃞"
-              "󰃟"
-              "󰃠"
-            ];
-            on-scroll-up = "${pkgs.brightnessctl}/bin/brightnessctl set +2%";
-            on-scroll-down = "${pkgs.brightnessctl}/bin/brightnessctl set 2%-";
+          "network" = {
+            format-wifi = "󰤨 {essid}";
+            format-ethernet = "󰈀 Conectado";
+            format-linked = "󰈀 Sem IP";
+            format-disconnected = "󰤮 Offline";
+            tooltip-format = "Interface: {ifname}\nIP: {ipaddr}\nSinal: {signalStrength}%";
+            on-click = "${rofiWifiMenu}/bin/rofi-wifi-menu";
           };
 
           "battery" = {
@@ -433,30 +421,19 @@ in
             format = "{icon} {capacity}%";
             format-charging = "󰂄 {capacity}%";
             format-plugged = "󰂄 {capacity}%";
-            format-icons = [
-              "󰂎"
-              "󰁺"
-              "󰁻"
-              "󰁼"
-              "󰁽"
-              "󰁾"
-              "󰁿"
-              "󰂀"
-              "󰂁"
-              "󰂂"
-              "󰁹"
-            ];
+            format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
+            tooltip-format = "{timeTo}\nConsumo: {power}W";
           };
 
           "tray" = {
-            icon-size = 15;
+            icon-size = 14;
             spacing = 8;
           };
 
           "custom/power" = {
             format = "󰐥";
-            tooltip = "Menu de Sessão / Energia";
             on-click = "${powerMenu}/bin/session-power-menu";
+            tooltip = false;
           };
         };
       };
@@ -465,56 +442,53 @@ in
         * {
           border: none;
           border-radius: 0;
-          font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
+          font-family: 'Inter', 'JetBrainsMono Nerd Font', Roboto, Helvetica, Arial, sans-serif;
           font-size: 13px;
-          font-weight: bold;
           min-height: 0;
         }
 
         window#waybar {
-          background-color: rgba(30, 30, 46, 0.88);
-          border: 1px solid rgba(137, 180, 250, 0.2);
-          border-radius: 12px;
+          background-color: transparent;
           color: #cdd6f4;
-          padding: 0 4px;
         }
 
-        /* Launcher */
+        tooltip {
+          background: #1e1e2e;
+          border-radius: 10px;
+          border: 1px solid #89b4fa;
+          color: #cdd6f4;
+        }
+
         #custom-launcher {
-          font-size: 16px;
-          color: #89b4fa;
-          background: rgba(49, 50, 68, 0.6);
-          border: 1px solid rgba(137, 180, 250, 0.25);
+          background: #89b4fa;
+          color: #1e1e2e;
           border-radius: 8px;
-          padding: 2px 10px 2px 8px;
-          margin: 4px 3px;
+          padding: 2px 10px;
+          margin: 4px 2px;
+          font-size: 15px;
           transition: all 0.2s ease-in-out;
         }
 
         #custom-launcher:hover {
-          background: #89b4fa;
-          color: #1e1e2e;
-          border-color: #b4befe;
+          background: #b4befe;
         }
 
-        /* Workspaces / Mango Tags */
         #tags,
         #workspaces {
-          background: rgba(17, 17, 27, 0.4);
-          border: 1px solid rgba(49, 50, 68, 0.6);
+          background: rgba(49, 50, 68, 0.6);
+          border: 1px solid rgba(137, 180, 250, 0.25);
           border-radius: 8px;
-          padding: 1px 4px;
-          margin: 4px 3px;
+          margin: 4px 2px;
+          padding: 0 4px;
         }
 
         #tags button,
         #workspaces button {
-          color: #6c7086;
-          background: transparent;
+          padding: 2px 6px;
+          color: #a6adc8;
           border-radius: 6px;
-          padding: 1px 7px;
-          margin: 1px;
           transition: all 0.2s ease-in-out;
+          font-size: 13px;
         }
 
         #tags button.occupied,
@@ -548,7 +522,6 @@ in
           color: #cdd6f4;
         }
 
-        /* Oculta tags 6-9 quando vazias para economizar espaço em telas pequenas */
         #tags button.empty:nth-child(n+6),
         #workspaces button.empty:nth-child(n+6) {
           padding: 0;
@@ -559,7 +532,6 @@ in
           opacity: 0;
         }
 
-        /* Layout Switcher */
         #custom-layout {
           background: rgba(49, 50, 68, 0.6);
           border: 1px solid rgba(203, 166, 247, 0.35);
@@ -576,7 +548,6 @@ in
           border-color: #f5c2e7;
         }
 
-        /* Window Title */
         #window,
         #custom-window {
           color: #a6adc8;
@@ -591,7 +562,6 @@ in
           margin: 0;
         }
 
-        /* Center Clock */
         #clock {
           background: rgba(49, 50, 68, 0.6);
           border: 1px solid rgba(137, 180, 250, 0.25);
@@ -601,7 +571,6 @@ in
           margin: 4px 0;
         }
 
-        /* Right Hardware / Info Modules */
         #cpu,
         #temperature,
         #memory,

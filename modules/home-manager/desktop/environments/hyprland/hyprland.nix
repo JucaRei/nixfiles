@@ -9,6 +9,7 @@ let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool str listOf;
   cfg = config.desktop.hyprland;
+  isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
 
   screenshotFull = pkgs.writeShellScript "hypr-screenshot-full" ''
     dir="$HOME/Pictures/Screenshots"
@@ -282,22 +283,42 @@ in
           preserve_split = true;
         };
 
-        exec-once = [
-          "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
-          "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
-          "${pkgs.waybar}/bin/waybar"
-          "${pkgs.dunst}/bin/dunst"
-          "${pkgs.hypridle}/bin/hypridle"
-          "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-          "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
-          "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"
-        ];
+        exec-once =
+          [
+            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
+            "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
+            "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
+            "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store"
+            "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store"
+          ]
+          ++ (
+            if isNoctalia then
+              [
+                "${pkgs.noctalia-shell}/bin/noctalia-shell"
+              ]
+            else
+              [
+                "${pkgs.waybar}/bin/waybar"
+                "${pkgs.dunst}/bin/dunst"
+                "${pkgs.hypridle}/bin/hypridle"
+              ]
+          );
 
         bind = [
           # Aplicações e Launcher
           "$mainMod, RETURN, exec, ${pkgs.alacritty}/bin/alacritty"
-          "$mainMod, SPACE, exec, ${pkgs.rofi}/bin/rofi -show drun"
-          "$mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun"
+          (
+            if isNoctalia then
+              "$mainMod, SPACE, exec, noctalia-launcher"
+            else
+              "$mainMod, SPACE, exec, ${pkgs.rofi}/bin/rofi -show drun"
+          )
+          (
+            if isNoctalia then
+              "$mainMod, D, exec, noctalia-launcher"
+            else
+              "$mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun"
+          )
           "$mainMod, E, exec, ${pkgs.thunar}/bin/thunar"
           "$mainMod, V, exec, hypr-cliphist"
           "$mainMod, L, exec, ${pkgs.hyprlock}/bin/hyprlock"

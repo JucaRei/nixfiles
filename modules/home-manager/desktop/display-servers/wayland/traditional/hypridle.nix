@@ -7,18 +7,28 @@
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
-  cfg = config.desktop.hyprland.hypridle;
+  cfg = config.desktop.wayland;
+  isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
 in
 {
-  options.desktop.hyprland.hypridle = {
+  options.desktop.wayland.traditional.hypridle = {
     enable = mkOption {
       type = bool;
-      default = config.desktop.hyprland.enable;
-      description = "Enable hypridle daemon for hyprland";
+      default = isTraditional;
+      description = "Habilitar hypridle daemon para o shell tradicional Wayland";
     };
   };
 
-  config = mkIf cfg.enable {
+  # Retrocompatibilidade
+  options.desktop.hyprland.hypridle = {
+    enable = mkOption {
+      type = bool;
+      default = config.desktop.wayland.traditional.hypridle.enable;
+      description = "Opção de retrocompatibilidade para hypridle";
+    };
+  };
+
+  config = mkIf (isTraditional && config.desktop.wayland.traditional.hypridle.enable) {
     services.hypridle = {
       enable = true;
       package = pkgs.hypridle;
@@ -26,7 +36,11 @@ in
         general = {
           lock_cmd = "pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock";
           before_sleep_cmd = "loginctl lock-session";
-          after_sleep_cmd = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+          after_sleep_cmd =
+            if (cfg.compositor == "hyprland" || config.desktop.hyprland.enable) then
+              "${pkgs.hyprland}/bin/hyprctl dispatch dpms on"
+            else
+              "true";
         };
 
         listener = [
@@ -49,8 +63,16 @@ in
           # 10 min: Desliga os monitores
           {
             timeout = 600;
-            on-timeout = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
-            on-resume = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+            on-timeout =
+              if (cfg.compositor == "hyprland" || config.desktop.hyprland.enable) then
+                "${pkgs.hyprland}/bin/hyprctl dispatch dpms off"
+              else
+                "true";
+            on-resume =
+              if (cfg.compositor == "hyprland" || config.desktop.hyprland.enable) then
+                "${pkgs.hyprland}/bin/hyprctl dispatch dpms on"
+              else
+                "true";
           }
           # 30 min: Suspende o sistema
           {

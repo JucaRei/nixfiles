@@ -7,6 +7,7 @@
 let
   inherit (lib) mkIf;
   cfg = config.desktop.mangowm;
+  isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
 
   # Scripts de Captura de Tela
   screenshotFull = pkgs.writeShellScript "mango-screenshot-full" ''
@@ -232,10 +233,14 @@ in
       tagrule=id:9,layout_name:tile
 
       # --- Autostart (Serviços e Componentes de Sessão) ---
-      exec-once=${pkgs.waybar}/bin/waybar
-      exec-once=${pkgs.dunst}/bin/dunst
-      exec-once=${pkgs.hypridle}/bin/hypridle
-      exec-once=${pkgs.hyprpaper}/bin/hyprpaper
+      ${if isNoctalia then ''
+        exec-once=${pkgs.noctalia-shell}/bin/noctalia-shell
+      '' else ''
+        exec-once=${pkgs.waybar}/bin/waybar
+        exec-once=${pkgs.dunst}/bin/dunst
+        exec-once=${pkgs.hypridle}/bin/hypridle
+        exec-once=${pkgs.hyprpaper}/bin/hyprpaper
+      ''}
       exec-once=${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
       exec-once=${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store
       exec-once=${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store
@@ -251,8 +256,13 @@ in
       # Aplicativos e Utilitários
       bind=SUPER,Return,spawn,${pkgs.alacritty}/bin/alacritty
       bind=SUPER+CTRL,Return,spawn,${pkgs.alacritty}/bin/alacritty --title floating-kitty
-      bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
-      bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
+      ${if isNoctalia then ''
+        bind=SUPER,space,spawn,noctalia-launcher
+        bind=SUPER,d,spawn,noctalia-launcher
+      '' else ''
+        bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
+        bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
+      ''}
       bind=SUPER,e,spawn,${pkgs.thunar}/bin/thunar
       bind=SUPER,v,spawn,${cliphistMenu}
       bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock

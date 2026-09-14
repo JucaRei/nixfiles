@@ -5,10 +5,12 @@
   desktop,
   osConfig ? null,
   platform,
+  waylandShell ? "traditional",
   ...
 }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkOption;
+  inherit (lib.types) nullOr enum;
   backend = config.desktop.display-servers.backend;
   isNixOS = osConfig != null;
   isArm = platform == "aarch64-linux" || platform == "armv7l-linux";
@@ -48,6 +50,39 @@ let
       null;
 in
 {
+  imports = [
+    ./traditional
+    ./noctalia
+  ];
+
+  options.desktop.wayland = {
+    shell = mkOption {
+      type = enum [
+        "traditional"
+        "noctalia"
+      ];
+      default = waylandShell;
+      description = "Ambiente de shell gráfico para Wayland: 'traditional' (Waybar, Rofi, Dunst, etc.) ou 'noctalia' (Noctalia Shell integrado)";
+    };
+
+    compositor = mkOption {
+      type = nullOr (
+        enum [
+          "hyprland"
+          "mangowm"
+        ]
+      );
+      default =
+        if desktop == "mangowm" || desktop == "mango" || (config.desktop.mangowm.enable or false) then
+          "mangowm"
+        else if desktop == "hyprland" || (config.desktop.hyprland.enable or false) then
+          "hyprland"
+        else
+          null;
+      description = "Compositor Wayland ativo associado ao shell";
+    };
+  };
+
   config = mkIf (backend == "wayland") {
 
     home = {

@@ -8,19 +8,10 @@
   imports = [
     ./mango.nix
     ./packages.nix
-    ./waybar.nix
   ];
 
   config = lib.mkIf config.desktop.mangowm.enable {
     desktop.display-servers.backend = "wayland";
-
-    # Habilita os componentes visuais unificados
-    desktop.mangowm.waybar.enable = true;
-    desktop.hyprland.rofi.enable = true;
-    desktop.hyprland.dunst.enable = true;
-    desktop.hyprland.hyprlock.enable = true;
-    desktop.hyprland.hypridle.enable = true;
-    desktop.hyprland.hyprpaper.enable = true;
 
     # Programas padrão do ambiente
     system.programs = {

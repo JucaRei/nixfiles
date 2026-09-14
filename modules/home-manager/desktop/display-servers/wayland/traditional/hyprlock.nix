@@ -7,18 +7,28 @@
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
-  cfg = config.desktop.hyprland.hyprlock;
+  cfg = config.desktop.wayland;
+  isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
 in
 {
-  options.desktop.hyprland.hyprlock = {
+  options.desktop.wayland.traditional.hyprlock = {
     enable = mkOption {
       type = bool;
-      default = config.desktop.hyprland.enable;
-      description = "Enable hyprlock lockscreen for hyprland";
+      default = isTraditional;
+      description = "Habilitar hyprlock lockscreen para o shell tradicional Wayland";
     };
   };
 
-  config = mkIf cfg.enable {
+  # Retrocompatibilidade
+  options.desktop.hyprland.hyprlock = {
+    enable = mkOption {
+      type = bool;
+      default = config.desktop.wayland.traditional.hyprlock.enable;
+      description = "Opção de retrocompatibilidade para hyprlock";
+    };
+  };
+
+  config = mkIf (isTraditional && config.desktop.wayland.traditional.hyprlock.enable) {
     programs.hyprlock = {
       enable = true;
       package = pkgs.hyprlock;

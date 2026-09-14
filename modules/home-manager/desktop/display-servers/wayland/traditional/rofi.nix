@@ -7,22 +7,32 @@
 let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
-  cfg = config.desktop.hyprland.rofi;
+  cfg = config.desktop.wayland;
+  isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
 
   hyprCliphist = pkgs.writeShellScriptBin "hypr-cliphist" ''
     ${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰅌 Clipboard " -theme-str 'window {width: 700px;}' | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
   '';
 in
 {
-  options.desktop.hyprland.rofi = {
+  options.desktop.wayland.traditional.rofi = {
     enable = mkOption {
       type = bool;
-      default = config.desktop.hyprland.enable;
-      description = "Enable rofi application launcher for hyprland";
+      default = isTraditional;
+      description = "Habilitar launcher de aplicações Rofi para shell tradicional Wayland";
     };
   };
 
-  config = mkIf cfg.enable {
+  # Retrocompatibilidade com desktop.hyprland.rofi
+  options.desktop.hyprland.rofi = {
+    enable = mkOption {
+      type = bool;
+      default = config.desktop.wayland.traditional.rofi.enable;
+      description = "Opção de retrocompatibilidade para rofi";
+    };
+  };
+
+  config = mkIf (isTraditional && config.desktop.wayland.traditional.rofi.enable) {
     home.packages = [ hyprCliphist ];
 
     programs.rofi = {
