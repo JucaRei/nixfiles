@@ -297,6 +297,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - `SUPER + R`: Recarrega as configurações na hora sem fechar programas ou matar processos.
     - `SUPER + Shift + R`: Recarrega as configurações e reinicia completamente o serviço do shell (`mango-reload --restart`), acionando `systemctl --user restart noctalia`.
     - Atalhos idênticos propagados para o módulo Hyprland (`hyprctl reload`). Ambos com feedback visual via OSD / notificação desktop.
+- **Catfish — Correção de Dependências de Runtime no Wrapper (`overlays/default.nix`)**:
+  - O utilitário de busca `catfish` (usado nas Custom Actions do Thunar e XFCE4) executa `subprocess.call(['which', 'locate'])` no `CatfishSearchEngine.py` logo na importação para detectar a presença do comando `locate`.
+  - Em sistemas mínimos onde `which` não existe nativamente, o Catfish quebrava imediatamente na inicialização com `FileNotFoundError: [Errno 2] No such file or directory: 'which'`.
+  - Aplicado override no overlay `modifiedPackages` em `overlays/default.nix`, injetando `which`, `findutils` e `file` no `PATH` via `gappsWrapperArgs`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
