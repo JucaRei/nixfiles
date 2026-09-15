@@ -238,23 +238,25 @@ sudo ln -sf ~/.local/share/xsessions/bspwm.desktop /usr/share/xsessions/
 > ```
 
 
-#### 5️⃣ Configurar o PAM e o Wrapper do `unix_chkpwd` (Screen Locker)
-Em sistemas standalone (como Fedora), utilitários como **`hyprlock`** ou **`swaylock`** falham com *"Wrong password!"* por dois motivos:
-1. O módulo `pam_unix.so` compilado pelo Nixpkgs busca o helper de verificação de senha com permissões de root em `/run/wrappers/bin/unix_chkpwd` (no Fedora, o binário nativo fica em `/usr/sbin/unix_chkpwd`).
-2. Módulos extras como `pam_pwquality.so` chamados pelo `system-auth` não existem no Nix Store.
+#### 5️⃣ Configurar o PAM e Wrappers Setuid (`unix_chkpwd` e `polkit-agent-helper-1`)
+Em sistemas standalone (como Fedora), utilitários gráficos do Nixpkgs que realizam autenticação com privilégios de root dependem de helpers setuid em `/run/wrappers/bin/`:
+1. **Screen Lockers (`hyprlock`, `swaylock`)**: O `pam_unix.so` busca `/run/wrappers/bin/unix_chkpwd` (no Fedora, fica em `/usr/sbin/unix_chkpwd`).
+2. **Agente Polkit (`polkit-gnome`)**: Ao digitar a senha e clicar em "Authenticate", o agente busca `/run/wrappers/bin/polkit-agent-helper-1` (no Fedora, fica em `/usr/lib/polkit-1/polkit-agent-helper-1`).
 
 Execute estes comandos uma única vez no terminal do host (Fedora):
 
 ```bash
-# 1. Criar o link simbólico para o helper setuid do PAM:
+# 1. Criar os links simbólicos para os helpers setuid:
 sudo mkdir -p /run/wrappers/bin
 sudo ln -sf /usr/sbin/unix_chkpwd /run/wrappers/bin/unix_chkpwd
+sudo ln -sf /usr/lib/polkit-1/polkit-agent-helper-1 /run/wrappers/bin/polkit-agent-helper-1
 
-# 2. Tornar o link persistente após reinicializações via systemd-tmpfiles:
+# 2. Tornar os links persistentes após reinicializações via systemd-tmpfiles:
 sudo tee /etc/tmpfiles.d/nix-wrappers.conf << 'EOF'
 d /run/wrappers 0755 root root -
 d /run/wrappers/bin 0755 root root -
 L+ /run/wrappers/bin/unix_chkpwd - - - - /usr/sbin/unix_chkpwd
+L+ /run/wrappers/bin/polkit-agent-helper-1 - - - - /usr/lib/polkit-1/polkit-agent-helper-1
 EOF
 
 # 3. Criar a regra dedicada do hyprlock no PAM:

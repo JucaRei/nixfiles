@@ -34,7 +34,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
    - Para qualquer Tiling Manager (Hyprland, BSPWM, etc.):
      - **Wrapper de Inicialização**: Gerar `~/.local/bin/start-<wm>` carregando o profile do Nix (`nix-daemon.sh` e `nix.sh`), drivers gráficos nativos (`GBM_BACKENDS_PATH` e `LIBGL_DRIVERS_PATH` no Wayland) e importação de variáveis (`dbus-update-activation-environment --systemd ...` e `systemctl --user import-environment ...`).
      - **Sessões Desktop**: Gerar `.desktop` em `~/.local/share/wayland-sessions/` ou `~/.local/share/xsessions/`. Em distros standalone, linkar para `/usr/share/*-sessions/` se o Display Manager não escanear diretórios de usuário.
-     - **Autenticação PAM (Lockers)**: Screen lockers (`hyprlock`, `swaylock`) em distros standalone exigem link do helper setuid (`/run/wrappers/bin/unix_chkpwd -> /usr/sbin/unix_chkpwd` mantido via `systemd-tmpfiles`) e `/etc/pam.d/<locker>` configurado com `pam_unix.so try_first_pass nullok` e `pam_deny.so` (evita módulos inexistentes no Nix Store como `pam_pwquality`).
+     - **Autenticação PAM e Privilégios Setuid**: Em distros standalone, utilitários do Nixpkgs exigem links para helpers setuid nativos mantidos via `systemd-tmpfiles` em `/run/wrappers/bin/`:
+       - Screen lockers (`hyprlock`, `swaylock`): `/run/wrappers/bin/unix_chkpwd -> /usr/sbin/unix_chkpwd` e `/etc/pam.d/<locker>` configurado.
+       - Agentes Polkit (`polkit-gnome`): `/run/wrappers/bin/polkit-agent-helper-1 -> /usr/lib/polkit-1/polkit-agent-helper-1`.
      - **Teclado Unificado**: Módulos devem herdar configurações de `home.keyboard` (`layout`, `variant`, `model`).
 
 
