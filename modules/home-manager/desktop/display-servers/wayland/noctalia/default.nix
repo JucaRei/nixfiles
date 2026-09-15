@@ -116,9 +116,9 @@ let
     # Layout de widgets na barra
     start = [
       "launcher",
-      # "workspaces",
-      "yuki/lunar-workspaces:lunar_workspaces",
-      "gambled23/mangowm-keymode:mangowm-keymode",
+      "workspaces",
+      # "yuki/lunar-workspaces:lunar_workspaces",
+      # "gambled23/mangowm-keymode:mangowm-keymode",
       "mango_layout",
       "active_window"
     ]
@@ -130,32 +130,32 @@ let
 
     end = [
       "tray",
-      "notifications",
+      # "notifications",
+      # "yuuto/calculator:bar",
       "clipboard",
       "network",
       "bluetooth",
-      "volume",
       "brightness",
       "prponkshe/mango-displays:bar",
       "blackbartblues/keymap:widget",
-      "yuuto/calculator:bar",
-      "noctalia/timer:bar",
+      # "noctalia/timer:bar",
       "noctalia/notes:notes",
       "noctalia/wallhaven:wallhaven",
+      "volume",
       "battery",
-      "control-center",
-      "session"
+      # "control-center",
+      "session",
     ]
 
     [plugins]
     enabled = [
       "blackbartblues/keymap",
       "prponkshe/mango-displays",
-      "gambled23/mangowm-keymode",
-      "yuki/lunar-workspaces",
-      "yuuto/calculator",
+      # "gambled23/mangowm-keymode",
+      # "yuki/lunar-workspaces",
+      # "yuuto/calculator",
       "noctalia/wallhaven",
-      "noctalia/timer",
+      # "noctalia/timer",
       "noctalia/notes"
     ]
 
