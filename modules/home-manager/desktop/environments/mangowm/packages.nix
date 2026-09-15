@@ -45,28 +45,279 @@ let
     if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
       export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
     fi
-    LAYOUT=$(mmsg get layout 2>/dev/null || echo "tile")
-    case "$LAYOUT" in
-      *tile*)     echo '{"text": "󰕰 Tile", "tooltip": "Layout: Tile (Normal)\nClique para alternar", "class": "tile"}' ;;
-      *scroller*) echo '{"text": "󰍹 Scroll", "tooltip": "Layout: Scroller\nClique para alternar", "class": "scroller"}' ;;
-      *grid*)     echo '{"text": "󰝘 Grid", "tooltip": "Layout: Grid\nClique para alternar", "class": "grid"}' ;;
-      *monocle*)  echo '{"text": "󰍹 Mono", "tooltip": "Layout: Monocle (Fullscreen)\nClique para alternar", "class": "monocle"}' ;;
-      *)          echo "{\"text\": \"󰕰 $LAYOUT\", \"tooltip\": \"Layout: $LAYOUT\", \"class\": \"other\"}" ;;
-    esac
+
+    declare -A LAYOUT_NAMES=(
+      [T]="Tile"
+      [S]="Scroller"
+      [G]="Grid"
+      [M]="Monocle"
+      [K]="Deck"
+      [CT]="Center Tile"
+      [RT]="Right Tile"
+      [VS]="Vert Scroller"
+      [VT]="Vert Tile"
+      [VG]="Vert Grid"
+      [VK]="Vert Deck"
+      [DW]="Dwindle"
+      [F]="Fair"
+      [VF]="Vert Fair"
+      [TG]="TGMix"
+    )
+
+    declare -A LAYOUT_ICONS=(
+      [T]="󰕰"
+      [S]="󰹑"
+      [G]="󰝘"
+      [M]="󰍹"
+      [K]="󰓩"
+      [CT]="󰕲"
+      [RT]="󰕳"
+      [VS]="󰹒"
+      [VT]="󰕴"
+      [VG]="󰝙"
+      [VK]="󰓪"
+      [DW]="󰕯"
+      [F]="󰕮"
+      [VF]="󰕬"
+      [TG]="󰕱"
+    )
+
+    state=$(mmsg get all-monitors 2>/dev/null || true)
+    if [ -z "$state" ] || echo "$state" | grep -q '"error"'; then
+      echo '{"text":"󰕰 Mango","tooltip":"MangoWM não detectado ou inativo"}'
+      exit 0
+    fi
+
+    code=$(echo "$state" | ${pkgs.jq}/bin/jq -r '.monitors[] | select(.active) | .layout_symbol // empty' 2>/dev/null | head -n1 || true)
+    if [ -z "$code" ]; then
+      code=$(echo "$state" | ${pkgs.jq}/bin/jq -r '.monitors[0].layout_symbol // empty' 2>/dev/null || true)
+    fi
+
+    if [ -z "$code" ] || [ -z "''${LAYOUT_NAMES[$code]+x}" ]; then
+      echo "{\"text\":\"󰕰 ''${code:-Tile}\",\"tooltip\":\"Layout atual: ''${code:-Desconhecido}\",\"class\":\"other\"}"
+      exit 0
+    fi
+
+    name="''${LAYOUT_NAMES[$code]}"
+    icon="''${LAYOUT_ICONS[$code]:-󰕰}"
+
+    echo "{\"text\":\"$icon $name\",\"tooltip\":\"Layout do MangoWM: $name ($code)\nClique: Menu de Seleção | Dir: Alternar\",\"class\":\"$code\"}"
   '';
 
   mangoLayoutPicker = pkgs.writeShellScriptBin "mango-layout-picker" ''
     if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
       export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
     fi
-    chosen=$(printf "󰕰 Tile\n󰍹 Scroller\n󰝘 Grid\n󰍹 Monocle" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󱗼 Layout " -theme-str 'window {width: 280px; height: 260px;} listview {lines: 4;}')
+
+    options="󰹑 Scroller (S)\n󰕰 Tile (T)\n󰕲 Center Tile (CT)\n󰝘 Grid (G)\n󰍹 Monocle (M)\n󰓩 Deck (K)\n󰕳 Right Tile (RT)\n󰹒 Vertical Scroller (VS)\n󰕴 Vertical Tile (VT)\n󰝙 Vertical Grid (VG)\n󰓪 Vertical Deck (VK)\n󰕯 Dwindle (DW)\n󰕮 Fair (F)\n󰕬 Vertical Fair (VF)"
+
+    dmenu_sock=$(ls /run/user/$(id -u)/noctalia-dmenu-*.sock 2>/dev/null | head -n1 || true)
+
+    if [ -n "$dmenu_sock" ] && [ -S "$dmenu_sock" ] && command -v noctalia >/dev/null 2>&1; then
+      chosen=$(printf "%b" "$options" | noctalia dmenu -p "Layout MangoWM")
+    else
+      chosen=$(printf "%b" "$options" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Layout Mango " -theme-str '
+        * {
+          bg-col: #1e1e2e;
+          bg-col-light: #181825;
+          border-col: #cba6f7;
+          selected-col: #313244;
+          fg-col: #cdd6f4;
+          grey: #6c7086;
+          font: "Inter 11";
+        }
+        window {
+          width: 360px;
+          height: 520px;
+          border: 2px;
+          border-color: #cba6f7;
+          border-radius: 12px;
+          background-color: #1e1e2e;
+        }
+        mainbox {
+          background-color: #1e1e2e;
+          padding: 12px;
+        }
+        inputbar {
+          children: [prompt, entry];
+          background-color: #181825;
+          border-radius: 8px;
+          padding: 6px 10px;
+          margin: 0px 0px 8px 0px;
+        }
+        prompt {
+          background-color: #cba6f7;
+          padding: 4px 8px;
+          text-color: #11111b;
+          border-radius: 6px;
+          margin: 0px 8px 0px 0px;
+        }
+        entry {
+          padding: 4px;
+          text-color: #cdd6f4;
+          background-color: transparent;
+          placeholder-color: #6c7086;
+        }
+        listview {
+          border: 0px;
+          padding: 4px 0px 0px;
+          margin: 0px;
+          columns: 1;
+          lines: 14;
+          background-color: #1e1e2e;
+        }
+        element {
+          padding: 6px 10px;
+          background-color: #1e1e2e;
+          text-color: #cdd6f4;
+          border-radius: 6px;
+        }
+        element selected {
+          background-color: #313244;
+          text-color: #cba6f7;
+        }
+        element-text, element-icon {
+          background-color: inherit;
+          text-color: inherit;
+        }
+      ')
+    fi
+
     case "$chosen" in
-      *"Tile")     mmsg dispatch switch_layout,tile 2>/dev/null ;;
-      *"Scroller") mmsg dispatch switch_layout,scroller 2>/dev/null ;;
-      *"Grid")     mmsg dispatch switch_layout,grid 2>/dev/null ;;
-      *"Monocle")  mmsg dispatch switch_layout,monocle 2>/dev/null ;;
+      *"Scroller (S)"*)           mmsg dispatch setlayout,scroller >/dev/null 2>&1 ;;
+      *"Tile (T)"*)               mmsg dispatch setlayout,tile >/dev/null 2>&1 ;;
+      *"Center Tile (CT)"*)       mmsg dispatch setlayout,center_tile >/dev/null 2>&1 ;;
+      *"Grid (G)"*)               mmsg dispatch setlayout,grid >/dev/null 2>&1 ;;
+      *"Monocle (M)"*)            mmsg dispatch setlayout,monocle >/dev/null 2>&1 ;;
+      *"Deck (K)"*)               mmsg dispatch setlayout,deck >/dev/null 2>&1 ;;
+      *"Right Tile (RT)"*)        mmsg dispatch setlayout,right_tile >/dev/null 2>&1 ;;
+      *"Vertical Scroller (VS)"*) mmsg dispatch setlayout,vertical_scroller >/dev/null 2>&1 ;;
+      *"Vertical Tile (VT)"*)     mmsg dispatch setlayout,vertical_tile >/dev/null 2>&1 ;;
+      *"Vertical Grid (VG)"*)     mmsg dispatch setlayout,vertical_grid >/dev/null 2>&1 ;;
+      *"Vertical Deck (VK)"*)     mmsg dispatch setlayout,vertical_deck >/dev/null 2>&1 ;;
+      *"Dwindle (DW)"*)           mmsg dispatch setlayout,dwindle >/dev/null 2>&1 ;;
+      *"Fair (F)"*)               mmsg dispatch setlayout,fair >/dev/null 2>&1 ;;
+      *"Vertical Fair (VF)"*)     mmsg dispatch setlayout,vertical_fair >/dev/null 2>&1 ;;
     esac
     pkill -RTMIN+8 waybar 2>/dev/null || true
+  '';
+
+  mangoKeybinds = pkgs.writeShellScriptBin "mango-keybinds" ''
+    dmenu_sock=$(ls /run/user/$(id -u)/noctalia-dmenu-*.sock 2>/dev/null | head -n1 || true)
+
+    shortcuts="[APPS]      SUPER + Space / d         󱗼 Menu de Aplicativos (Launcher)\n\
+[APPS]      SUPER + Return             Terminal Alacritty\n\
+[APPS]      SUPER + CTRL + Return      Terminal Flutuante\n\
+[APPS]      SUPER + e                 󰉋 Gerenciador de Arquivos (Thunar)\n\
+[APPS]      SUPER + v                 󰅌 Área de Transferência (Clipboard)\n\
+[APPS]      SUPER + p / s             󰒓 Centro de Controle (Control Center)\n\
+[APPS]      SUPER + comma             󱗼 Configurações do Noctalia\n\
+[APPS]      SUPER + ALT + w           󰸉 Seletor de Papel de Parede (Wallpaper)\n\
+[APPS]      SUPER + l                 󰌾 Bloquear Tela (Hyprlock)\n\
+[JANELAS]   SUPER + q / c             󰅖 Fechar Janela Ativa\n\
+[JANELAS]   SUPER + w / \\             󰘔 Alternar Janela Flutuante\n\
+[JANELAS]   ALT + Tab                 󱂬 Overview de Janelas\n\
+[JANELAS]   SUPER + Tab               󰘔 Alternar Foco entre Janelas\n\
+[JANELAS]   ALT + f                   󰊓 Tela Cheia (Fullscreen)\n\
+[JANELAS]   ALT + SHIFT + f           󰊓 Fake Fullscreen\n\
+[JANELAS]   ALT + a                   󰊓 Maximizar Janela\n\
+[JANELAS]   SUPER + i                 󰖰 Minimizar Janela\n\
+[JANELAS]   SUPER + SHIFT + i         󰖰 Restaurar Janela Minimizada\n\
+[JANELAS]   ALT + z                   󰆧 Alternar Scratchpad\n\
+[JANELAS]   SUPER + = / -             󰩨 Redimensionar Largura (+20 / -20)\n\
+[JANELAS]   SUPER + CTRL + = / -      󰩨 Redimensionar Altura (+20 / -20)\n\
+[LAYOUT]    CTRL + SHIFT + Space      󱗼 Seletor de Modos de Layout\n\
+[LAYOUT]    CTRL + Space / SUPER + n  󰕰 Alternar Próximo Layout\n\
+[LAYOUT]    ALT + SHIFT + r           󰹑 Ligar / Desligar Gaps\n\
+[LAYOUT]    ALT + SHIFT + x / z       󰹑 Aumentar / Diminuir Gaps (+2 / -2)\n\
+[LAYOUT]    SUPER + SHIFT + a         󰹑 Modo Foco (Outer Gaps)\n\
+[NAVEGAÇÃO] SUPER + Setas / h,j,k,l   󰁔 Mudar Foco da Janela\n\
+[NAVEGAÇÃO] SUPER + SHIFT + Setas     󰁔 Trocar Posição da Janela\n\
+[TAGS]      SUPER + 1..9              󰄰 Ir para Workspace/Tag 1..9\n\
+[TAGS]      SUPER + SHIFT + 1..9      󰄰 Mover Janela para Tag 1..9\n\
+[TAGS]      SUPER + CTRL + Up/Down    󰄰 Ir para Tag Anterior / Próxima\n\
+[TAGS]      SUPER+CTRL+ALT + Up/Down  󰄰 Mover Janela para Tag Anterior / Próxima\n\
+[SISTEMA]   SUPER + F1 / ? / /        󰌌 Lista de Atalhos (Este Menu)\n\
+[SISTEMA]   SUPER + Escape            󰐥 Menu de Sessão (Power / Logout)\n\
+[SISTEMA]   SUPER + SHIFT + e         󰐥 Menu de Sessão (Power / Logout)\n\
+[SISTEMA]   SUPER + SHIFT + q         󰗼 Sair do MangoWM (Quit)\n\
+[SISTEMA]   SUPER + r                 󰑓 Recarregar Configurações\n\
+[SISTEMA]   SUPER + ALT + r           󰑓 Recarregar Mango e Shell\n\
+[SISTEMA]   Print                     󰄄 Captura de Tela Cheia\n\
+[SISTEMA]   SUPER + SHIFT + S         󰄄 Captura de Área Selecionada\n\
+[SISTEMA]   F5 / F6                   󰃠 Brilho do Teclado\n\
+[SISTEMA]   SUPER + F5 / F6           󰃠 Brilho do Teclado (MacBook)\n\
+[SISTEMA]   SUPER + SHIFT + F5        󰃠 Ligar / Desligar Iluminação Teclado"
+
+    if [ -n "$dmenu_sock" ] && [ -S "$dmenu_sock" ] && command -v noctalia >/dev/null 2>&1; then
+      printf "%b" "$shortcuts" | noctalia dmenu -p "Atalhos MangoWM"
+    else
+      printf "%b" "$shortcuts" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Atalhos MangoWM " -theme-str '
+        * {
+          bg-col: #1e1e2e;
+          bg-col-light: #181825;
+          border-col: #cba6f7;
+          selected-col: #313244;
+          fg-col: #cdd6f4;
+          grey: #6c7086;
+          font: "Inter 10";
+        }
+        window {
+          width: 720px;
+          height: 560px;
+          border: 2px;
+          border-color: #cba6f7;
+          border-radius: 12px;
+          background-color: #1e1e2e;
+        }
+        mainbox {
+          background-color: #1e1e2e;
+          padding: 12px;
+        }
+        inputbar {
+          children: [prompt, entry];
+          background-color: #181825;
+          border-radius: 8px;
+          padding: 6px 10px;
+          margin: 0px 0px 8px 0px;
+        }
+        prompt {
+          background-color: #cba6f7;
+          padding: 4px 8px;
+          text-color: #11111b;
+          border-radius: 6px;
+          margin: 0px 8px 0px 0px;
+        }
+        entry {
+          padding: 4px;
+          text-color: #cdd6f4;
+          background-color: transparent;
+          placeholder-color: #6c7086;
+        }
+        listview {
+          border: 0px;
+          padding: 4px 0px 0px;
+          margin: 0px;
+          columns: 1;
+          lines: 16;
+          background-color: #1e1e2e;
+        }
+        element {
+          padding: 6px 10px;
+          background-color: #1e1e2e;
+          text-color: #cdd6f4;
+          border-radius: 6px;
+        }
+        element selected {
+          background-color: #313244;
+          text-color: #cba6f7;
+        }
+        element-text, element-icon {
+          background-color: inherit;
+          text-color: inherit;
+        }
+      '
+    fi
   '';
 in
 {
@@ -85,6 +336,7 @@ in
       mangoToggleOuterGaps
       mangoLayoutSwitcher
       mangoLayoutPicker
+      mangoKeybinds
       wl-clipboard
       cliphist
       pamixer

@@ -294,7 +294,7 @@ in
           ++ (
             if isNoctalia then
               [
-                "${pkgs.noctalia-shell}/bin/noctalia-shell"
+                "${pkgs.noctalia}/bin/noctalia"
               ]
             else
               [

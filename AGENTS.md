@@ -265,6 +265,25 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Relógio com Segundos e pt-BR Exclusivo para Relógio e Calendário**:
     - **Relógio da Barra (`Clock.qml`)**: Exibe horas com segundos (`HH:mm:ss`) na linha superior e data formatada em Português do Brasil na linha inferior (`Segunda, 14 de setembro`), com tooltip no formato `Segunda, 14 de setembro - HH:mm:ss`. A formatação em pt-BR é scoped estritamente para o relógio e calendário, mantendo a linguagem do sistema e do restante do shell intacta.
     - **Cartões de Calendário (`CalendarHeaderCard.qml` & `CalendarMonthCard.qml`)**: Cabeçalhos de mês traduzidos para Português em maiúsculas (`SETEMBRO`, `SETEMBRO 2026`) e dias da semana abreviados como `DOM`, `SEG`, `TER`, `QUA`, `QUI`, `SEX`, `SÁB`.
+- **Migração para Noctalia Desktop Shell v5+ (`pkgs.noctalia`)**:
+  - **Arquitetura Unificada em C++/Wayland**: O Noctalia v5 é um desktop shell nativo e autocontido (sem dependência de Quickshell ou Qt), incorporando internamente barra, system tray (StatusNotifierItem), daemon de notificações, launcher, clipboard, control center, painel de sessão, wallpaper e sistema de OSD.
+  - **Configuração Declarativa em TOML (`~/.config/noctalia/config.toml`)**:
+    - Migrado de `settings.json`/`colors.json` do v4 para `config.toml` conforme a documentação oficial (`docs.noctalia.dev`).
+    - **Tema**: Catppuccin Mocha Dark integrado nativamente (`source = "builtin"`, `builtin = "Catppuccin"`).
+    - **Barra Superior**: Estruturada em `start` (`launcher`, `workspaces`, `mango_layout`, `active_window`), `center` (`clock`, `media`) e `end` (`tray`, `notifications`, `clipboard`, `network`, `bluetooth`, `volume`, `brightness`, `battery`, `control-center`, `session`).
+    - **Tiling Layout Switcher (`mango_layout`)**: Mapeado como widget `custom_button` (`glyph = "layout-dashboard"`, `tooltip = "MangoWM Tiling Layout"`). O clique esquerdo, botão do meio e scroll do mouse ciclam os layouts em tempo real via `exec mmsg dispatch switch_layout`, enquanto o clique com botão direito abre o seletor rápido `mango-layout-picker`.
+    - **Integração Nativa com MangoWM**: O Noctalia v5 conecta-se diretamente ao socket IPC do MangoWM (`/run/user/<uid>/mango-*.sock`) através do seu backend dedicado `workspace_mango`, sincronizando workspaces, foco e estados de janelas em tempo real.
+  - **Resolução de Notificações Duplicadas / "Shell Aninhada" e Dunst**:
+    - Eliminados scripts e processos legados do Quickshell que rodavam instâncias sobrepostas.
+    - Atalhos de brilho de tela (`brightness-up`/`down`), volume (`volume-up`/`down`/`mute`), iluminação do teclado (`keyboard-backlight-up`/`down`/`toggle`) e screenshots (`screenshot-fullscreen`/`region`) foram vinculados aos comandos IPC nativos (`noctalia msg <action>`).
+    - O feedback visual de brilho e volume é processado exclusivamente pelo OSD nativo do Noctalia (`[osd.kinds] brightness = true`, `keyboard_backlight = true`), sem disparar `notify-send`, sem criar notificações de desktop e sem envolvimento do Dunst.
+- **MangoWM — Seletor de Layouts Temático (`mango-layout-picker`) & Cheatsheet de Atalhos (`mango-keybinds`)**:
+  - **Seletor de Layouts Dinâmico**: O script `mango-layout-picker` detecta o socket do `noctalia dmenu` (`/run/user/<uid>/noctalia-dmenu-*.sock`). Quando ativo no Noctalia Shell, apresenta os 14 layouts de tiling (Scroller, Tile, Center Tile, Grid, Monocle, Deck, Right Tile, etc.) diretamente no launcher nativo do Noctalia com a paleta Catppuccin Mocha. Em shells tradicionais ou fallback, invoca o Rofi com folha de estilo Catppuccin Mocha completa injetada inline via `-theme-str` (Mauve `#cba6f7`, Base `#1e1e2e`, Mantle `#181825`, Surface0 `#313244`, Text `#cdd6f4`).
+  - **Cheatsheet Interativo de Atalhos (`mango-keybinds`)**: Criado utilitário que reúne todos os atalhos de teclado do MangoWM categorizados (`[APPS]`, `[JANELAS]`, `[LAYOUT]`, `[NAVEGAÇÃO]`, `[TAGS]`, `[SISTEMA]`), pesquisáveis instantaneamente via `noctalia dmenu` ou `rofi`.
+  - **Keybindings de Acesso Rápido**:
+    - Atalhos de Ajuda: `SUPER + F1`, `SUPER + ?` e `SUPER + /` acionam `mango-keybinds`.
+    - Atalho de Layout: `CTRL + SHIFT + Space` e `SUPER + ALT + Space` acionam `mango-layout-picker`.
+  - **Widget `mango_layout` na Barra do Noctalia**: Clique com botão esquerdo abre o `mango-layout-picker`, enquanto clique com botão direito, botão do meio ou scroll do mouse ciclam os layouts via `mmsg dispatch switch_layout`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

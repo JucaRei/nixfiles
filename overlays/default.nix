@@ -10,6 +10,9 @@
     # Fallback to unstable antigravity-cli if not present in current nixpkgs stable
     antigravity-cli = prev.antigravity-cli or final.unstable.antigravity-cli;
 
+    # Fallback to unstable noctalia (v5+) if not present in current nixpkgs stable
+    noctalia = prev.noctalia or final.unstable.noctalia;
+
     # Fix for nvidia_x11_legacy340 on modern nixpkgs KBuild (Issue #554929 / PR #555840)
     # Permite compilação dos módulos de kernel quando $src aponta para o store read-only do Nix.
     linuxKernel = prev.linuxKernel // {
@@ -52,14 +55,6 @@
       '';
     });
 
-    # Noctalia Shell on MangoWM: enable ext-workspace-v1 protocol, workspace discovery, MangoLayout widget, Portuguese clock/calendar, and minimize toggles
-    noctalia-shell = prev.noctalia-shell.overrideAttrs (old: {
-      postPatch = ''
-        chmod -R u+w .
-        cp ${./noctalia/MangoLayout.qml} Modules/Bar/Widgets/MangoLayout.qml
-        ${final.python3}/bin/python3 ${./noctalia/patch-noctalia.py}
-      '';
-    });
   };
 
   # Access unstable packages via 'pkgs.unstable.<package>'

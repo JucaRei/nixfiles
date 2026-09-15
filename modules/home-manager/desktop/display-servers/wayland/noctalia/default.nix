@@ -10,34 +10,28 @@ let
   cfg = config.desktop.wayland;
   isNoctalia = config.desktop.display-servers.backend == "wayland" && cfg.shell == "noctalia";
 
-  # Scripts de controle via IPC nativo do Noctalia Shell
+  # Scripts de controle via IPC nativo do Noctalia (v5+)
   noctaliaLauncher = pkgs.writeShellScriptBin "noctalia-launcher" ''
-    noctalia-shell ipc call launcher toggle 2>/dev/null || \
-      qs -c noctalia-shell ipc call launcher toggle 2>/dev/null || \
-      ${pkgs.noctalia-shell}/bin/noctalia-shell &
+    ${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
   '';
 
   noctaliaCliphist = pkgs.writeShellScriptBin "noctalia-cliphist" ''
-    noctalia-shell ipc call launcher clipboard 2>/dev/null || \
-      qs -c noctalia-shell ipc call launcher clipboard 2>/dev/null
+    ${pkgs.noctalia}/bin/noctalia msg panel-toggle clipboard
   '';
 
   noctaliaControlCenter = pkgs.writeShellScriptBin "noctalia-control-center" ''
-    noctalia-shell ipc call controlCenter toggle 2>/dev/null || \
-      qs -c noctalia-shell ipc call controlCenter toggle 2>/dev/null
+    ${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
   '';
 
   noctaliaSessionMenu = pkgs.writeShellScriptBin "noctalia-session-menu" ''
-    noctalia-shell ipc call sessionMenu toggle 2>/dev/null || \
-      qs -c noctalia-shell ipc call sessionMenu toggle 2>/dev/null
+    ${pkgs.noctalia}/bin/noctalia msg panel-toggle session
   '';
 
   noctaliaWallpaper = pkgs.writeShellScriptBin "noctalia-wallpaper" ''
-    noctalia-shell ipc call wallpaper toggle 2>/dev/null || \
-      qs -c noctalia-shell ipc call wallpaper toggle 2>/dev/null
+    ${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
   '';
 
-  # Paleta Catppuccin Mocha completa para o Noctalia
+  # Paleta Catppuccin Mocha completa para o Noctalia v5+
   catppuccinColors = {
     mPrimary = "#cba6f7"; # Mauve
     mOnPrimary = "#11111b"; # Crust
@@ -57,279 +51,172 @@ let
     mOnHover = "#11111b";
   };
 
-  # Configurações ricas do Noctalia Shell (Barra flutuante, Dock, Widgets, Launcher, etc.)
-  noctaliaSettings = {
-    settingsVersion = 59;
+  # Configuração declarativa TOML do Noctalia v5+ (baseada na documentação oficial)
+  noctaliaTomlConfig = ''
+    # ============================================================================
+    # Noctalia Desktop Shell Configuration (v5+) - Rice Catppuccin Mocha
+    # ============================================================================
 
-    # Barra Superior Flutuante Moderna (Floating Pill)
-    bar = {
-      barType = "floating";
-      position = "top";
-      density = "comfortable";
-      showOutline = false;
-      showCapsule = true;
-      capsuleOpacity = 0.95;
-      capsuleColorKey = "none";
-      widgetSpacing = 8;
-      contentPadding = 4;
-      fontScale = 1.0;
-      enableExclusionZoneInset = false;
-      backgroundOpacity = 0.88;
-      marginVertical = 4;
-      marginHorizontal = 8;
-      frameRadius = 12;
-      outerCorners = false;
-      displayMode = "always_visible";
+    [theme]
+    mode = "dark"
+    source = "builtin"
+    builtin = "Catppuccin"
 
-      widgets = {
-        left = [
-          { id = "Launcher"; }
-          {
-            id = "Workspace";
-            followFocusedScreen = true;
-            hideUnoccupied = true;
-            labelMode = "index";
-            showLabelsOnlyWhenOccupied = false;
-            pillSize = 0.8;
-            focusedColor = "primary";
-            occupiedColor = "secondary";
-            emptyColor = "surfaceVariant";
-          }
-          { id = "MangoLayout"; }
-          {
-            id = "ActiveWindow";
-            maxWidth = 260;
-            scrollingMode = "hover";
-          }
-        ];
-        center = [
-          { id = "Clock"; }
-          { id = "MediaMini"; }
-        ];
-        right = [
-          { id = "SystemMonitor"; }
-          { id = "Tray"; }
-          { id = "NotificationHistory"; }
-          { id = "Battery"; }
-          { id = "Brightness"; }
-          { id = "Volume"; }
-          { id = "ControlCenter"; }
-        ];
-      };
+    [shell]
+    font_family = "Inter"
+    button_borders = true
+    card_borders = true
+    input_borders = true
+    popup_borders = true
+    popup_shadows = true
+    time_format = "{:%H:%M:%S}"
+    date_format = "%A, %d de %B"
 
-      mouseWheelAction = "none";
-      rightClickAction = "controlCenter";
-    };
+    [shell.animation]
+    enabled = true
+    speed = 1.2
 
-    # Localização e Previsão do Tempo
-    location = {
-      name = "São Paulo, Brazil";
-      autoLocate = true;
-      weatherEnabled = true;
-      weatherShowEffects = true;
-      useFahrenheit = false;
-      use12hourFormat = false;
-      showCalendarEvents = true;
-      showCalendarWeather = true;
-      hideWeatherTimezone = false;
-      hideWeatherCityName = false;
-    };
+    [shell.launcher]
+    categories = true
+    sort_by_usage = true
+    compact = false
+    show_icons = true
 
-    # Calendário com Cartão de Previsão do Tempo
-    calendar = {
-      cards = [
-        {
-          id = "calendar-header-card";
-          enabled = true;
-        }
-        {
-          id = "calendar-month-card";
-          enabled = true;
-        }
-        {
-          id = "weather-card";
-          enabled = true;
-        }
-      ];
-    };
+    [shell.panel]
+    shadow = false
+    borders = true
+    transparency_mode = "solid"
+    floating_layer = "overlay"
 
-    # Aparência Geral e Efeitos (sem sombras intrusivas que cortam janelas)
-    general = {
-      scaleRatio = 1.0;
-      radiusRatio = 1.0;
-      animationSpeed = 1.2;
-      animationDisabled = false;
-      enableShadows = false;
-      shadowOffsetX = 0;
-      shadowOffsetY = 0;
-      enableBlurBehind = true;
-      clockStyle = "custom";
-      clockFormat = "hh:mm:ss";
-      compactLockScreen = false;
-      lockOnSuspend = true;
-      showSessionButtonsOnLockScreen = true;
-      allowPanelsOnScreenWithoutBar = true;
-    };
+    [bar]
+    order = [ "default" ]
 
-    # Interface de Usuário e Tipografia
-    ui = {
-      fontDefault = "Inter";
-      fontFixed = "JetBrainsMono Nerd Font";
-      fontDefaultScale = 1.0;
-      fontFixedScale = 1.0;
-      tooltipsEnabled = true;
-      scrollbarAlwaysVisible = true;
-      panelBackgroundOpacity = 0.92;
-      panelsAttachedToBar = true;
-      settingsPanelMode = "attached";
-    };
+    [bar.default]
+    position = "top"
+    enabled = true
+    thickness = 34
+    background_opacity = 0.88
+    radius = 12
+    margin_edge = 6
+    margin_ends = 12
+    padding = 10
+    widget_spacing = 6
+    shadow = false
+    contact_shadow = false
+    layer = "top"
+    reserve_space = true
 
-    # Esquema de Cores (Catppuccin Mocha Dark)
-    colorSchemes = {
-      predefinedScheme = "Catppuccin";
-      darkMode = true;
-      useWallpaperColors = false;
-      generationMethod = "tonal-spot";
-      syncGsettings = true;
-      schedulingMode = "off";
-    };
+    # Estilo de cápsula (pill) para widgets
+    capsule = true
+    capsule_fill = "surface_variant"
+    capsule_opacity = 0.95
+    capsule_thickness = 0.80
+    capsule_radius = 8.0
 
-    # Dock Inferior Flutuante com Auto-Hide e Ícones Corretos
-    dock = {
-      enabled = true;
-      position = "bottom";
-      dockType = "floating";
-      displayMode = "auto_hide";
-      backgroundOpacity = 0.85;
-      floatingRatio = 1.0;
-      size = 1.0;
-      onlySameOutput = true;
-      pinnedStatic = true;
-      colorizeIcons = false;
-      showLauncherIcon = true;
-      launcherPosition = "start";
-      showDockIndicator = true;
-      indicatorColor = "primary";
-      pinnedApps = [
-        "firefox.desktop"
-        "vivaldi-stable.desktop"
-        "thunar.desktop"
-        "Alacritty.desktop"
-        "antigravity-ide.desktop"
-      ];
-    };
+    # Layout de widgets na barra
+    start = [
+      "launcher",
+      "workspaces",
+      "mango_layout",
+      "active_window"
+    ]
 
-    # Launcher de Aplicações
-    appLauncher = {
-      position = "center";
-      viewMode = "grid";
-      density = "comfortable";
-      showCategories = true;
-      sortByMostUsed = true;
-      iconMode = "tabler";
-      enableClipboardHistory = true;
-      autoPasteClipboard = false;
-      enableClipPreview = true;
-      clipboardWrapText = true;
-      terminalCommand = "alacritty -e";
-      enableSettingsSearch = true;
-      enableWindowsSearch = true;
-      enableSessionSearch = true;
-    };
+    center = [
+      "clock",
+      "media"
+    ]
 
-    # Painel de Controle Rápido (Control Center)
-    controlCenter = {
-      position = "close_to_bar_button";
-      shortcuts = {
-        left = [
-          { id = "Network"; }
-          { id = "Bluetooth"; }
-          { id = "WallpaperSelector"; }
-          { id = "NoctaliaPerformance"; }
-        ];
-        right = [
-          { id = "Notifications"; }
-          { id = "PowerProfile"; }
-          { id = "KeepAwake"; }
-          { id = "NightLight"; }
-        ];
-      };
-      cards = [
-        {
-          enabled = true;
-          id = "profile-card";
-        }
-        {
-          enabled = true;
-          id = "shortcuts-card";
-        }
-        {
-          enabled = true;
-          id = "audio-card";
-        }
-        {
-          enabled = true;
-          id = "brightness-card";
-        }
-        {
-          enabled = true;
-          id = "weather-card";
-        }
-        {
-          enabled = true;
-          id = "media-sysmon-card";
-        }
-      ];
-    };
+    end = [
+      "tray",
+      "notifications",
+      "clipboard",
+      "network",
+      "bluetooth",
+      "volume",
+      "brightness",
+      "battery",
+      "control-center",
+      "session"
+    ]
 
-    # Menu de Sessão / Energia
-    sessionMenu = {
-      position = "center";
-      largeButtonsStyle = true;
-      showHeader = true;
-      showKeybinds = true;
-      enableCountdown = false;
-    };
+    [widget.workspaces]
+    style = "regular"
+    show_labels = true
+    label_source = "id"
+    pill_scale = 1.0
+    active_pill_size = 2.2
+    inactive_pill_size = 1.0
+    focused_color = "primary"
+    occupied_color = "secondary"
+    empty_color = "surface_variant"
+    urgent_color = "error"
 
-    # Notificações
-    notifications = {
-      enabled = true;
-      location = "top_right";
-      density = "compact";
-      backgroundOpacity = 0.92;
-      clearDismissed = true;
-      lowUrgencyDuration = 3;
-      normalUrgencyDuration = 6;
-      criticalUrgencyDuration = 10;
-    };
+    [widget.active_window]
+    icon_size = 14.0
+    max_length = 260.0
+    min_length = 60.0
+    title_scroll = "none"
 
-    # OSD (Volume / Brilho)
-    osd = {
-      enabled = true;
-      location = "top_right";
-      autoHideMs = 2000;
-      backgroundOpacity = 0.90;
-    };
+    [widget.mango_layout]
+    type = "custom_button"
+    glyph = "layout-dashboard"
+    tooltip = "MangoWM Tiling Layout (Clique: Menu de Seleção | Dir/Scroll: Alternar)"
 
-    # Áudio e Brilho
-    audio = {
-      volumeStep = 2;
-      visualizerType = "linear";
-    };
+    [widget.mango_layout.actions]
+    left = "exec mango-layout-picker"
+    right = "exec mmsg dispatch switch_layout"
+    middle = "exec mmsg dispatch switch_layout"
+    scroll_up = "exec mmsg dispatch switch_layout"
+    scroll_down = "exec mmsg dispatch switch_layout"
 
-    brightness = {
-      brightnessStep = 2;
-      enforceMinimum = true;
-    };
+    [widget.clock]
+    format = "{:%H:%M:%S}"
 
-    # Papel de Parede
-    wallpaper = {
-      enabled = true;
-      fillMode = "crop";
-      solidColor = "#1e1e2e";
-      setWallpaperOnAllMonitors = true;
-    };
-  };
+    [widget.clock.actions]
+    left = "panel-toggle control-center calendar"
+
+    [widget.media]
+    art_size = 16.0
+    max_length = 220.0
+    min_length = 80.0
+
+    [widget.tray]
+    hide_passive = false
+    drawer = false
+    match_adjacent_spacing = true
+
+    [osd]
+    enabled = true
+    position = "top_center"
+    border = true
+    scale = 1.0
+
+    [osd.kinds]
+    brightness = true
+    keyboard_backlight = true
+    volume = true
+    volume_input = true
+    volume_output = true
+    wifi = true
+    bluetooth = true
+    media = true
+    power_profile = true
+    nightlight = true
+
+    [brightness]
+    minimum_brightness = 0.0
+    enable_ddcutil = false
+
+    [system.monitor]
+    enabled = true
+    cpu_poll_seconds = 2.0
+    memory_poll_seconds = 2.0
+    network_poll_seconds = 3.0
+
+    [wallpaper]
+    enabled = true
+    fill_mode = "crop"
+  '';
 in
 {
   options.desktop.wayland.noctalia = {
@@ -342,23 +229,22 @@ in
 
   config = mkIf isNoctalia {
     home.packages = [
-      pkgs.noctalia-shell
+      pkgs.noctalia
       noctaliaLauncher
       noctaliaCliphist
       noctaliaControlCenter
       noctaliaSessionMenu
       noctaliaWallpaper
-      pkgs.wlsunset
       pkgs.brightnessctl
       pkgs.wl-clipboard
       pkgs.cliphist
       pkgs.imagemagick
     ];
 
-    # Provisionamento declarativo de temas e configurações do Noctalia Shell
+    # Provisionamento declarativo de configuração TOML e paleta do Noctalia v5+
     xdg.configFile = {
-      "noctalia/settings.json".text = builtins.toJSON noctaliaSettings;
-      "noctalia/colors.json".text = builtins.toJSON catppuccinColors;
+      "noctalia/config.toml".text = noctaliaTomlConfig;
+      "noctalia/palettes/CatppuccinMocha.json".text = builtins.toJSON catppuccinColors;
     };
   };
 }

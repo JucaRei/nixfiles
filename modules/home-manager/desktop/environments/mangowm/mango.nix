@@ -250,7 +250,7 @@ in
 
       # --- Autostart (Serviços e Componentes de Sessão) ---
       ${if isNoctalia then ''
-        exec-once=${pkgs.noctalia-shell}/bin/noctalia-shell
+        exec-once=${pkgs.noctalia}/bin/noctalia
       '' else ''
         exec-once=${pkgs.waybar}/bin/waybar
         exec-once=${pkgs.dunst}/bin/dunst
@@ -273,13 +273,15 @@ in
       bind=SUPER,Return,spawn,${pkgs.alacritty}/bin/alacritty
       bind=SUPER+CTRL,Return,spawn,${pkgs.alacritty}/bin/alacritty --title floating-kitty
       ${if isNoctalia then ''
-        bind=SUPER,space,spawn,noctalia-launcher
-        bind=SUPER,d,spawn,noctalia-launcher
-        bind=SUPER,v,spawn,noctalia-cliphist
-        bind=SUPER,p,spawn,noctalia-control-center
-        bind=SUPER,Escape,spawn,noctalia-session-menu
-        bind=SUPER+SHIFT,e,spawn,noctalia-session-menu
-        bind=SUPER+ALT,w,spawn,noctalia-wallpaper
+        bind=SUPER,space,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
+        bind=SUPER,d,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
+        bind=SUPER,v,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle clipboard
+        bind=SUPER,p,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
+        bind=SUPER,s,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
+        bind=SUPER,Escape,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
+        bind=SUPER+SHIFT,e,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
+        bind=SUPER,comma,spawn,${pkgs.noctalia}/bin/noctalia msg settings-toggle
+        bind=SUPER+ALT,w,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
       '' else ''
         bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
         bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
@@ -290,6 +292,11 @@ in
       bind=SUPER,e,spawn,${pkgs.thunar}/bin/thunar
       bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
       bind=SUPER+SHIFT,q,quit
+
+      # Ajuda e Lista de Atalhos de Teclado
+      bind=SUPER,F1,spawn,mango-keybinds
+      bind=SUPER,question,spawn,mango-keybinds
+      bind=SUPER,slash,spawn,mango-keybinds
 
       # Gerenciamento de Janelas e Estados
       bind=SUPER,q,killclient,
@@ -318,6 +325,7 @@ in
       bind=CTRL,space,switch_layout
       bind=SUPER,n,switch_layout
       bind=CTRL+SHIFT,space,spawn,mango-layout-picker
+      bind=SUPER+ALT,space,spawn,mango-layout-picker
       bind=SUPER+ALT,f,set_proportion,1.0
       bind=ALT,space,switch_proportion_preset,
       bind=SUPER+c,scroller_stack,left
@@ -377,29 +385,55 @@ in
       bind=SUPER+CTRL+ALT,Down,tagtoright,0
 
       # Teclas Multimídia e Áudio
-      bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.pamixer}/bin/pamixer -i 5
-      bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.pamixer}/bin/pamixer -d 5
-      bind=NONE,XF86AudioMute,spawn,${pkgs.pamixer}/bin/pamixer -t
-      bind=NONE,XF86AudioMicMute,spawn,${pkgs.pamixer}/bin/pamixer --default-source -t
-      bind=NONE,XF86AudioPlay,spawn,${pkgs.playerctl}/bin/playerctl play-pause
-      bind=NONE,XF86AudioNext,spawn,${pkgs.playerctl}/bin/playerctl next
-      bind=NONE,XF86AudioPrev,spawn,${pkgs.playerctl}/bin/playerctl previous
+      ${if isNoctalia then ''
+        bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.noctalia}/bin/noctalia msg volume-up
+        bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.noctalia}/bin/noctalia msg volume-down
+        bind=NONE,XF86AudioMute,spawn,${pkgs.noctalia}/bin/noctalia msg volume-mute
+        bind=NONE,XF86AudioMicMute,spawn,${pkgs.noctalia}/bin/noctalia msg mic-mute
+        bind=NONE,XF86AudioPlay,spawn,${pkgs.noctalia}/bin/noctalia msg media toggle
+        bind=NONE,XF86AudioNext,spawn,${pkgs.noctalia}/bin/noctalia msg media next
+        bind=NONE,XF86AudioPrev,spawn,${pkgs.noctalia}/bin/noctalia msg media previous
 
-      # Brilho da Tela (com Feedback OSD)
-      bind=NONE,XF86MonBrightnessUp,spawn,${monBrightnessOsd} up
-      bind=NONE,XF86MonBrightnessDown,spawn,${monBrightnessOsd} down
+        # Brilho da Tela (Feedback OSD Nativo do Noctalia)
+        bind=NONE,XF86MonBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg brightness-up
+        bind=NONE,XF86MonBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg brightness-down
 
-      # Iluminação do Teclado (MacBook / Laptops)
-      bind=NONE,XF86KbdBrightnessUp,spawn,${kbdBrightnessOsd} up
-      bind=NONE,XF86KbdBrightnessDown,spawn,${kbdBrightnessOsd} down
-      bind=NONE,XF86KbdLightOnOff,spawn,${kbdBrightnessOsd} toggle
-      bind=SUPER,F6,spawn,${kbdBrightnessOsd} up
-      bind=SUPER,F5,spawn,${kbdBrightnessOsd} down
-      bind=SUPER+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
+        # Iluminação do Teclado (Feedback OSD Nativo do Noctalia)
+        bind=NONE,XF86KbdBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
+        bind=NONE,XF86KbdBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
+        bind=NONE,XF86KbdLightOnOff,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
+        bind=SUPER,F6,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
+        bind=SUPER,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
+        bind=SUPER+SHIFT,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
 
-      # Captura de Tela (Screenshots)
-      bind=NONE,Print,spawn,${screenshotFull}
-      bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+        # Captura de Tela (Screenshots)
+        bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+        bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+      '' else ''
+        bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.pamixer}/bin/pamixer -i 5
+        bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.pamixer}/bin/pamixer -d 5
+        bind=NONE,XF86AudioMute,spawn,${pkgs.pamixer}/bin/pamixer -t
+        bind=NONE,XF86AudioMicMute,spawn,${pkgs.pamixer}/bin/pamixer --default-source -t
+        bind=NONE,XF86AudioPlay,spawn,${pkgs.playerctl}/bin/playerctl play-pause
+        bind=NONE,XF86AudioNext,spawn,${pkgs.playerctl}/bin/playerctl next
+        bind=NONE,XF86AudioPrev,spawn,${pkgs.playerctl}/bin/playerctl previous
+
+        # Brilho da Tela (com Feedback OSD)
+        bind=NONE,XF86MonBrightnessUp,spawn,${monBrightnessOsd} up
+        bind=NONE,XF86MonBrightnessDown,spawn,${monBrightnessOsd} down
+
+        # Iluminação do Teclado (MacBook / Laptops)
+        bind=NONE,XF86KbdBrightnessUp,spawn,${kbdBrightnessOsd} up
+        bind=NONE,XF86KbdBrightnessDown,spawn,${kbdBrightnessOsd} down
+        bind=NONE,XF86KbdLightOnOff,spawn,${kbdBrightnessOsd} toggle
+        bind=SUPER,F6,spawn,${kbdBrightnessOsd} up
+        bind=SUPER,F5,spawn,${kbdBrightnessOsd} down
+        bind=SUPER+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
+
+        # Captura de Tela (Screenshots)
+        bind=NONE,Print,spawn,${screenshotFull}
+        bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+      ''}
 
       # Mouse
       mousebind=SUPER,btn_left,moveresize,curmove
