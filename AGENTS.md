@@ -301,6 +301,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - O utilitário de busca `catfish` (usado nas Custom Actions do Thunar e XFCE4) executa `subprocess.call(['which', 'locate'])` no `CatfishSearchEngine.py` logo na importação para detectar a presença do comando `locate`.
   - Em sistemas mínimos onde `which` não existe nativamente, o Catfish quebrava imediatamente na inicialização com `FileNotFoundError: [Errno 2] No such file or directory: 'which'`.
   - Aplicado override no overlay `modifiedPackages` em `overlays/default.nix`, injetando `which`, `findutils` e `file` no `PATH` via `gappsWrapperArgs`.
+- **Noctalia Shell — Localização e Clima Declarativos (`[location]` e `[weather]`)**:
+  - A aba/widget de previsão do tempo do Noctalia v5 dependem das seções `[location]` e `[weather]` no `config.toml`. A ausência dessas seções, combinada a um arquivo de cache antigo em `~/.cache/noctalia/location.json` (do v4, onde a latitude era string e causava erro de parsing no C++), resultava em "No location set".
+  - Configurado declarativamente em `modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix` com `auto_locate = true`, coordenadas de São Paulo (`latitude = -23.6293`, `longitude = -46.6351`), `address = "São Paulo, Brazil"` e `[weather]` (`enabled = true`, `effects = true`, `refresh_minutes = 30`, `unit = "metric"`). O cache antigo foi limpo e os dados meteorológicos da Open-Meteo foram carregados com sucesso.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

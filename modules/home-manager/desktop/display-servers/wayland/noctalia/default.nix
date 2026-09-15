@@ -233,6 +233,18 @@ let
     memory_poll_seconds = 2.0
     network_poll_seconds = 3.0
 
+    [location]
+    auto_locate = true
+    address = "São Paulo, Brazil"
+    latitude = -23.6293
+    longitude = -46.6351
+
+    [weather]
+    enabled = true
+    effects = true
+    refresh_minutes = 30
+    unit = "metric"
+
     [wallpaper]
     enabled = true
     fill_mode = "crop"
