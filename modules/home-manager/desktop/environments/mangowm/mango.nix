@@ -293,11 +293,11 @@ in
       bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
       bind=SUPER+SHIFT,q,quit
 
-      # Ajuda e Lista de Atalhos de Teclado (Plugin Keybind Cheatsheet)
+      # Ajuda e Lista de Atalhos de Teclado (Plugin Keymap)
       ${if isNoctalia then ''
-        bind=SUPER,F1,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet
-        bind=SUPER,question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet
-        bind=SUPER,slash,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet
+        bind=SUPER,F1,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+        bind=SUPER,question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+        bind=SUPER,slash,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
       '' else ''
       ''}
 

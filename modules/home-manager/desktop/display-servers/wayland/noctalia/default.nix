@@ -136,7 +136,7 @@ let
       "volume",
       "brightness",
       "plugin:prponkshe/mango-displays:bar",
-      "plugin:kenn/keybind-cheatsheet:keybinds",
+      "plugin:blackbartblues/keymap:widget",
       "battery",
       "control-center",
       "session"
@@ -144,7 +144,7 @@ let
 
     [plugins]
     enabled = [
-      "kenn/keybind-cheatsheet",
+      "blackbartblues/keymap",
       "prponkshe/mango-displays",
       "gambled23/mangowm-keymode"
     ]
