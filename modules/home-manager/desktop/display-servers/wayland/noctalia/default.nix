@@ -117,6 +117,7 @@ let
     start = [
       "launcher",
       "workspaces",
+      "plugin:gambled23/mangowm-keymode:mangowm-keymode",
       "mango_layout",
       "active_window"
     ]
@@ -134,9 +135,18 @@ let
       "bluetooth",
       "volume",
       "brightness",
+      "plugin:prponkshe/mango-displays:bar",
+      "plugin:kenn/keybind-cheatsheet:keybinds",
       "battery",
       "control-center",
       "session"
+    ]
+
+    [plugins]
+    enabled = [
+      "kenn/keybind-cheatsheet",
+      "prponkshe/mango-displays",
+      "gambled23/mangowm-keymode"
     ]
 
     [widget.workspaces]
@@ -239,6 +249,9 @@ in
       pkgs.wl-clipboard
       pkgs.cliphist
       pkgs.imagemagick
+      pkgs.wlr-randr
+      pkgs.wdisplays
+      pkgs.wl-mirror
     ];
 
     # Provisionamento declarativo de configuração TOML e paleta do Noctalia v5+

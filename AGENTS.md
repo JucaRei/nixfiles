@@ -277,13 +277,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Eliminados scripts e processos legados do Quickshell que rodavam instâncias sobrepostas.
     - Atalhos de brilho de tela (`brightness-up`/`down`), volume (`volume-up`/`down`/`mute`), iluminação do teclado (`keyboard-backlight-up`/`down`/`toggle`) e screenshots (`screenshot-fullscreen`/`region`) foram vinculados aos comandos IPC nativos (`noctalia msg <action>`).
     - O feedback visual de brilho e volume é processado exclusivamente pelo OSD nativo do Noctalia (`[osd.kinds] brightness = true`, `keyboard_backlight = true`), sem disparar `notify-send`, sem criar notificações de desktop e sem envolvimento do Dunst.
-- **MangoWM — Seletor de Layouts Temático (`mango-layout-picker`) & Cheatsheet de Atalhos (`mango-keybinds`)**:
-  - **Seletor de Layouts Dinâmico**: O script `mango-layout-picker` detecta o socket do `noctalia dmenu` (`/run/user/<uid>/noctalia-dmenu-*.sock`). Quando ativo no Noctalia Shell, apresenta os 14 layouts de tiling (Scroller, Tile, Center Tile, Grid, Monocle, Deck, Right Tile, etc.) diretamente no launcher nativo do Noctalia com a paleta Catppuccin Mocha. Em shells tradicionais ou fallback, invoca o Rofi com folha de estilo Catppuccin Mocha completa injetada inline via `-theme-str` (Mauve `#cba6f7`, Base `#1e1e2e`, Mantle `#181825`, Surface0 `#313244`, Text `#cdd6f4`).
-  - **Cheatsheet Interativo de Atalhos (`mango-keybinds`)**: Criado utilitário que reúne todos os atalhos de teclado do MangoWM categorizados (`[APPS]`, `[JANELAS]`, `[LAYOUT]`, `[NAVEGAÇÃO]`, `[TAGS]`, `[SISTEMA]`), pesquisáveis instantaneamente via `noctalia dmenu` ou `rofi`.
-  - **Keybindings de Acesso Rápido**:
-    - Atalhos de Ajuda: `SUPER + F1`, `SUPER + ?` e `SUPER + /` acionam `mango-keybinds`.
-    - Atalho de Layout: `CTRL + SHIFT + Space` e `SUPER + ALT + Space` acionam `mango-layout-picker`.
+- **MangoWM — Seletor de Layouts Temático (`mango-layout-picker`) & Plugins do Noctalia Shell**:
+  - **Seletor de Layouts Dinâmico**: O script `mango-layout-picker` detecta o socket do `noctalia dmenu` (`/run/user/<uid>/noctalia-dmenu-*.sock`). Quando ativo no Noctalia Shell, apresenta os 14 layouts de tiling diretamente no launcher nativo com a paleta Catppuccin Mocha. Em shells tradicionais ou fallback, invoca o Rofi com folha de estilo Catppuccin Mocha completa injetada inline via `-theme-str`.
   - **Widget `mango_layout` na Barra do Noctalia**: Clique com botão esquerdo abre o `mango-layout-picker`, enquanto clique com botão direito, botão do meio ou scroll do mouse ciclam os layouts via `mmsg dispatch switch_layout`.
+  - **Adoção de Plugins Nativos do Noctalia v5**:
+    - **`kenn/keybind-cheatsheet`**: Substituiu o script cheatsheet manual. Faz parsing nativo de `~/.config/mango/config.conf`, renderizando painel interativo e pesquisável. Atalhos `SUPER + F1`, `SUPER + ?` e `SUPER + /` vinculados diretamente a `noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet`. Widget `plugin:kenn/keybind-cheatsheet:keybinds` posicionado na barra.
+    - **`prponkshe/mango-displays`**: Gerenciador de displays dedicado para MangoWM com suporte a resolução, escala e espelhamento (`wl-mirror`, `wdisplays`, `wlr-randr`). Widget `plugin:prponkshe/mango-displays:bar` integrado à barra superior.
+    - **`gambled23/mangowm-keymode`**: Monitor do keymode ativo do MangoWM via `mmsg watch keymode`. Widget `plugin:gambled23/mangowm-keymode:mangowm-keymode` integrado à barra superior ao lado dos workspaces.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

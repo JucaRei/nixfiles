@@ -293,10 +293,13 @@ in
       bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
       bind=SUPER+SHIFT,q,quit
 
-      # Ajuda e Lista de Atalhos de Teclado
-      bind=SUPER,F1,spawn,mango-keybinds
-      bind=SUPER,question,spawn,mango-keybinds
-      bind=SUPER,slash,spawn,mango-keybinds
+      # Ajuda e Lista de Atalhos de Teclado (Plugin Keybind Cheatsheet)
+      ${if isNoctalia then ''
+        bind=SUPER,F1,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet
+        bind=SUPER,question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet
+        bind=SUPER,slash,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle kenn/keybind-cheatsheet:cheatsheet
+      '' else ''
+      ''}
 
       # Gerenciamento de Janelas e Estados
       bind=SUPER,q,killclient,
