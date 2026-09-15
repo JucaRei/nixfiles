@@ -310,6 +310,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Hook Lua no MPV (`gvfs-smb.lua`)**: Criado script em `modules/home-manager/system/programs/multimedia/mpv/scripts/gvfs-smb.lua` acionado no hook `on_load`. O script intercepta automaticamente qualquer URL `smb://`, decodifica sequências percentuais (`%20`), traduz para o caminho local FUSE correspondente e redireciona o playback via `mp.set_property("stream-open-filename", new_path)`. Se o compartilhamento ainda não estiver montado, invoca automaticamente `gio mount --anonymous`. Funciona de modo transparente para URLs de arquivos diretos ou pastas inteiras, via terminal, Thunar (`%U`) ou playlists.
   - **Correção em Regras de `systemd.user.tmpfiles.rules`**: Substituído `${username} users` por `- - - -` em regras de usuário no Home Manager (`users/default.nix`, `users/juca/default.nix` e `mpv/default.nix`). Usuários não-root em distribuições standalone não possuem permissão (`CAP_CHOWN`) para alterar o grupo de arquivos para `users`, o que causava falha de ativação no `systemd-tmpfiles-setup` com `fchownat() failed: Operation not permitted`.
 
+- **Polkit & Thunar — Resolução de Conflito de `pkexec` e Suporte Wayland (`admin://`)**:
+  - **Problema de Binário SUID**: A presença de `pkgs.polkit` em `home.packages` instalava `~/.nix-profile/bin/pkexec` sem bit SUID (limitação de segurança do Nix Store `nosuid`), que sobrepunha o `/usr/bin/pkexec` nativo do host no `$PATH` e falhava com `pkexec must be setuid root`.
+  - **Correção**: Removido `pkgs.polkit` de `home.packages` em `thunar/default.nix`, restaurando a resolução direta para `/usr/bin/pkexec` (`-rwsr-xr-x`).
+  - **Ação "Abrir como root" no Thunar (Wayland)**: Atualizada a custom action para invocar `${thunar-wrapped}/bin/thunar admin://%f`. O protocolo `admin://` do GVfs delega operações de arquivos privilegiadas ao `gvfsd-admin` com autenticação Polkit nativa, eliminando a tentativa insegura e bloqueada pelo Wayland de rodar um processo gráfico GTK diretamente como root.
+  - **Modelos do Thunar (`XDG_TEMPLATES_DIR`)**: Provisionados modelos declarativos em `~/.local/share/templates` (`Documento de Texto.txt` e `Arquivo Vazio`) e symlink `~/Templates`, garantindo que o submenu de clique direito "Criar documento" esteja sempre disponível em qualquer pasta (local ou compartilhamento de rede).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

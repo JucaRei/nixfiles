@@ -66,7 +66,6 @@ in
       xfce4-exo
       catfish
       meld
-      polkit
     ];
 
     xdg.mimeApps.defaultApplications = {
@@ -77,6 +76,7 @@ in
     # que não possuem suporte nativo à API GIO/GVfs (como mpv, vlc, scripts bash, etc.)
     systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
       "d %t/gvfs 0700 - - - -"
+      "L+ %h/Templates - - - - .local/share/templates"
     ];
 
     systemd.user.services.gvfs-fuse = mkIf pkgs.stdenv.isLinux {
@@ -99,6 +99,10 @@ in
     };
 
     home.file = {
+      # Modelos padrão para o menu "Criar Documento" do Thunar
+      ".local/share/templates/Documento de Texto.txt".text = "";
+      ".local/share/templates/Arquivo Vazio".text = "";
+
       # Custom Actions do Thunar (uca.xml)
       ".config/Thunar/uca.xml".text = ''
         <?xml version="1.0" encoding="UTF-8"?>
@@ -156,7 +160,7 @@ in
                 <icon>system-file-manager-root</icon>
                 <name>Open folder as root</name>
                 <unique-id>1493475601060449-3</unique-id>
-                <command>${pkgs.polkit}/bin/pkexec ${thunar-wrapped}/bin/thunar %f</command>
+                <command>${thunar-wrapped}/bin/thunar admin://%f</command>
                 <description>Abrir pasta como administrador</description>
                 <patterns>*</patterns>
                 <directories/>
