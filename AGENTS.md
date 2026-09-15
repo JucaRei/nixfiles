@@ -233,6 +233,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - `desktop.wayland.shell`: Permite selecionar o shell desejado (`enum [ "traditional" "noctalia" ]`), tendo como default `"traditional"`.
     - `desktop.wayland.compositor`: Define/detecta o compositor em execução (`"hyprland"` ou `"mangowm"`).
     - `lib/helpers.nix`: Adicionado parâmetro opcional `waylandShell ? "traditional"` às funções `mkHome` e `mkNixos`, repassado via `extraSpecialArgs`.
+- **Mango Layout Switcher e OSD no Noctalia Shell (`anubis` / Wayland)**:
+  - **Widget `MangoLayout.qml`**: Criado componente de barra nativo em QML usando `BarPill` (`overlays/noctalia/MangoLayout.qml`), posicionado entre `Workspace` e `ActiveWindow`. Consulta o layout ativo em tempo real via IPC (`mmsg get layout`), exibindo `Tile`, `Scroll`, `Grid` ou `Mono`. Clique com botão esquerdo abre o `mango-layout-picker` (Rofi), e clique com botão direito alterna o layout (`switch_layout`).
+  - **Prevenção de Janelas Aninhadas no Ajuste de Brilho**:
+    - **Tela**: No Noctalia Shell, desativado o envio de notificações extras pelo script `mango-mon-brightness-osd`, delegando exclusivamente ao serviço nativo `OSD.qml` do Noctalia Shell que detecta alterações em `/sys/class/backlight` e exibe uma barra OSD única.
+    - **Teclado**: O script `mango-kbd-brightness-osd` agora rastreia o ID da notificação em `/tmp/mango_kbd_notif_id` e atualiza a notificação existente no lugar via `notify-send -p -r "$last_id"`, impedindo o empilhamento de múltiplos cards na tela.
+  - **Relógio e Calendário em Português**: Relógio configurado com data por extenso (`Segunda, 14 de setembro`) e segundos no horário (`HH:MM:SS`), com meses e dias traduzidos nativamente no calendário do Noctalia.
+  - **Minimizar ao Clicar**: Clique esquerdo em `ActiveWindow`, `Taskbar` (se focada) e `DockContent` minimiza a janela em foco via `mmsg dispatch minimized`.
+  - **Build Robusto via `postPatch`**: A injeção dos componentes no `noctalia-shell` foi migrada de um patch unificado estático para `postPatch` com script Python idempotente (`overlays/noctalia/patch-noctalia.py`) e cópia direta de `MangoLayout.qml`, garantindo compilações 100% determinísticas sem falhas de hunks.
+
   - **Desacoplamento dos Compositores**: `modules/home-manager/desktop/environments/hyprland/` e `modules/home-manager/desktop/environments/mangowm/` agora cuidam estritamente do gerenciador de janelas, monitores e regras de janelas, com seus blocos de inicialização (`exec-once`) e atalhos de launcher se adaptando dinamicamente ao shell selecionado (`traditional` ou `noctalia`). Eliminadas todas as duplicidades de arquivos entre compositores.
 
 ---

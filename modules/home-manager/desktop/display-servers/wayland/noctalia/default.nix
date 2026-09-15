@@ -95,6 +95,7 @@ let
             occupiedColor = "secondary";
             emptyColor = "surfaceVariant";
           }
+          { id = "MangoLayout"; }
           {
             id = "ActiveWindow";
             maxWidth = 260;

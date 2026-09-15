@@ -41,6 +41,33 @@ let
       ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Modo Foco: Gaps externos expandidos (400px)"
     fi
   '';
+  mangoLayoutSwitcher = pkgs.writeShellScriptBin "mango-layout-switcher" ''
+    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
+      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    fi
+    LAYOUT=$(mmsg get layout 2>/dev/null || echo "tile")
+    case "$LAYOUT" in
+      *tile*)     echo '{"text": "󰕰 Tile", "tooltip": "Layout: Tile (Normal)\nClique para alternar", "class": "tile"}' ;;
+      *scroller*) echo '{"text": "󰍹 Scroll", "tooltip": "Layout: Scroller\nClique para alternar", "class": "scroller"}' ;;
+      *grid*)     echo '{"text": "󰝘 Grid", "tooltip": "Layout: Grid\nClique para alternar", "class": "grid"}' ;;
+      *monocle*)  echo '{"text": "󰍹 Mono", "tooltip": "Layout: Monocle (Fullscreen)\nClique para alternar", "class": "monocle"}' ;;
+      *)          echo "{\"text\": \"󰕰 $LAYOUT\", \"tooltip\": \"Layout: $LAYOUT\", \"class\": \"other\"}" ;;
+    esac
+  '';
+
+  mangoLayoutPicker = pkgs.writeShellScriptBin "mango-layout-picker" ''
+    if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
+      export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
+    fi
+    chosen=$(printf "󰕰 Tile\n󰍹 Scroller\n󰝘 Grid\n󰍹 Monocle" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󱗼 Layout " -theme-str 'window {width: 280px; height: 260px;} listview {lines: 4;}')
+    case "$chosen" in
+      *"Tile")     mmsg dispatch switch_layout,tile 2>/dev/null ;;
+      *"Scroller") mmsg dispatch switch_layout,scroller 2>/dev/null ;;
+      *"Grid")     mmsg dispatch switch_layout,grid 2>/dev/null ;;
+      *"Monocle")  mmsg dispatch switch_layout,monocle 2>/dev/null ;;
+    esac
+    pkill -RTMIN+8 waybar 2>/dev/null || true
+  '';
 in
 {
   options.desktop.mangowm = {
@@ -56,6 +83,8 @@ in
       mangoPkg
       mangoReload
       mangoToggleOuterGaps
+      mangoLayoutSwitcher
+      mangoLayoutPicker
       wl-clipboard
       cliphist
       pamixer

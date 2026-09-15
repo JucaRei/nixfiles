@@ -52,13 +52,13 @@
       '';
     });
 
-    # Fix for Noctalia Shell on MangoWM: enable ext-workspace-v1 protocol and workspace discovery
+    # Noctalia Shell on MangoWM: enable ext-workspace-v1 protocol, workspace discovery, MangoLayout widget, Portuguese clock/calendar, and minimize toggles
     noctalia-shell = prev.noctalia-shell.overrideAttrs (old: {
-      patches = (old.patches or [ ]) ++ (
-        final.lib.optional (
-          !(builtins.elem ./patches/noctalia-mangowm-workspaces.patch (old.patches or [ ]))
-        ) ./patches/noctalia-mangowm-workspaces.patch
-      );
+      postPatch = ''
+        chmod -R u+w .
+        cp ${./noctalia/MangoLayout.qml} Modules/Bar/Widgets/MangoLayout.qml
+        ${final.python3}/bin/python3 ${./noctalia/patch-noctalia.py}
+      '';
     });
   };
 

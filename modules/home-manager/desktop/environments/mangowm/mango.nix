@@ -71,12 +71,23 @@ let
 
       val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
       if [ -n "$val" ]; then
-        ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
+        notif_file="/tmp/mango_kbd_notif_id"
+        last_id=0
+        if [ -f "$notif_file" ]; then
+          last_id=$(cat "$notif_file" 2>/dev/null || echo 0)
+        fi
+        case "$last_id" in
+          '''|*[!0-9]*) last_id=0 ;;
+        esac
+        new_id=$(${pkgs.libnotify}/bin/notify-send -p -r "$last_id" -a "OSD" -u low -i "input-keyboard" -h int:value:"$val" -t 1200 "Luz do Teclado: $val%")
+        if [ -n "$new_id" ]; then
+          echo "$new_id" > "$notif_file"
+        fi
       fi
     fi
   '';
 
-  # Controle de Brilho da Tela com OSD Dunst (passos de 2%)
+  # Controle de Brilho da Tela (passos de 2% com OSD dedicado)
   monBrightnessOsd = pkgs.writeShellScript "mango-mon-brightness-osd" ''
     case "$1" in
       up)
@@ -96,10 +107,15 @@ let
         fi
         ;;
     esac
-    val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
-    if [ -n "$val" ]; then
-      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
-    fi
+    ${if isNoctalia then ''
+      # No Noctalia Shell, o serviço nativo de Brightness detecta a alteração via sysfs
+      # e exibe o OSD centralizado nativo automaticamente, sem criar notificações extras.
+    '' else ''
+      val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
+      if [ -n "$val" ]; then
+        ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+      fi
+    ''}
   '';
 in
 {
