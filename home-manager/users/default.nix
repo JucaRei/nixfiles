@@ -36,7 +36,7 @@ in
         # Create age keys directory for SOPS
         tmpfiles = mkIf isLinux {
           rules = [
-            "d ${config.home.homeDirectory}/.config/sops/age 0755 ${username} users - -"
+            "d ${config.home.homeDirectory}/.config/sops/age 0755 - - - -"
           ];
         };
       };

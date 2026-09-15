@@ -158,6 +158,9 @@ in
       # Atalhos de teclado — todos em input.conf (substitui bindings.conf)
       "mpv/input.conf".source = ./configs/input.conf;
 
+      # Scripts customizados
+      "mpv/scripts/gvfs-smb.lua".source = ./scripts/gvfs-smb.lua;
+
       # Script opts
       "mpv/script-opts/osc.conf".source = ./configs/opts/osc.conf;
       "mpv/script-opts/uosc.conf".source = ./configs/opts/uosc.conf;
@@ -169,8 +172,9 @@ in
     home.packages = [ pkgs.font-dubai ];
 
     systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
-      "d ${config.home.homeDirectory}/.logs 0755 ${config.home.username} users - -"
-      "d ${config.home.homeDirectory}/.logs/mpv 0755 ${config.home.username} users - -"
+      "d ${config.home.homeDirectory}/.logs 0755 - - - -"
+      "d ${config.home.homeDirectory}/.logs/mpv 0755 - - - -"
+      "d ${config.home.homeDirectory}/.cache/mpv/script-opts 0755 - - - -"
     ];
   };
 }

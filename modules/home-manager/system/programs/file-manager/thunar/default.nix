@@ -73,6 +73,31 @@ in
       "inode/directory" = "thunar.desktop";
     };
 
+    # Bridge FUSE do GVfs (/run/user/<uid>/gvfs) para compatibilidade com aplicações
+    # que não possuem suporte nativo à API GIO/GVfs (como mpv, vlc, scripts bash, etc.)
+    systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
+      "d %t/gvfs 0700 - - - -"
+    ];
+
+    systemd.user.services.gvfs-fuse = mkIf pkgs.stdenv.isLinux {
+      Unit = {
+        Description = "Virtual filesystem service - GNOME FUSE daemon";
+        After = [ "gvfs-daemon.service" ];
+        PartOf = [ "default.target" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStartPre = "-/bin/sh -c 'type -p fusermount3 >/dev/null && fusermount3 -u -z %t/gvfs 2>/dev/null || type -p fusermount >/dev/null && fusermount -u -z %t/gvfs 2>/dev/null || true; mkdir -p %t/gvfs'";
+        ExecStart = "${pkgs.gvfs}/libexec/gvfsd-fuse -f %t/gvfs";
+        ExecStop = "-/bin/sh -c 'type -p fusermount3 >/dev/null && fusermount3 -u -z %t/gvfs 2>/dev/null || type -p fusermount >/dev/null && fusermount -u -z %t/gvfs 2>/dev/null || true'";
+        Restart = "on-failure";
+        RestartSec = 3;
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
+
     home.file = {
       # Custom Actions do Thunar (uca.xml)
       ".config/Thunar/uca.xml".text = ''
