@@ -292,6 +292,11 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - **`noctalia/notes`**: Widget na barra `noctalia/notes:notes` e painel lateral flutuante de notas markdown `noctalia/notes:panel`.
       - **`noctalia/wallhaven`**: Widget na barra `noctalia/wallhaven:wallhaven` e navegador de papéis de parede `noctalia/wallhaven:browser`.
       - Todos os painéis abrem diretamente ao clicar nos seus respectivos widgets da barra ou via comando IPC `noctalia msg panel-toggle <autor>/<plugin>:<panel>`.
+  - **Atalhos de Recarregamento para Testes (`SUPER + R` e `SUPER + Shift + R`)**:
+    - O script `mango-reload` foi aprimorado para recarregar simultaneamente as configurações do MangoWM (`mmsg dispatch reload_config`) e a shell Wayland ativa (`noctalia msg config-reload` no Noctalia ou sinal `SIGUSR2` na Waybar).
+    - `SUPER + R`: Recarrega as configurações na hora sem fechar programas ou matar processos.
+    - `SUPER + Shift + R`: Recarrega as configurações e reinicia completamente o serviço do shell (`mango-reload --restart`), acionando `systemctl --user restart noctalia`.
+    - Atalhos idênticos propagados para o módulo Hyprland (`hyprctl reload`). Ambos com feedback visual via OSD / notificação desktop.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

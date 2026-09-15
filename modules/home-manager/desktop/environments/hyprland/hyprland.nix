@@ -340,6 +340,10 @@ in
           "$mainMod, E, exec, ${pkgs.thunar}/bin/thunar"
           "$mainMod, L, exec, ${pkgs.hyprlock}/bin/hyprlock"
 
+          # Recarregar Configurações (Hyprland + Noctalia / Waybar)
+          "$mainMod, R, exec, ${pkgs.hyprland}/bin/hyprctl reload && (noctalia msg config-reload 2>/dev/null || pkill -SIGUSR2 waybar 2>/dev/null || true) && ${pkgs.libnotify}/bin/notify-send -u low -i 'preferences-desktop' 'Hyprland' 'Configurações recarregadas com sucesso!'"
+          "$mainMod SHIFT, R, exec, ${pkgs.hyprland}/bin/hyprctl reload && (systemctl --user restart noctalia 2>/dev/null || systemctl --user restart waybar 2>/dev/null || true) && ${pkgs.libnotify}/bin/notify-send -u low -i 'preferences-desktop' 'Hyprland' 'Configurações recarregadas e Shell reiniciado!'"
+
           # Gerenciamento de Janelas
           "$mainMod, Q, killactive,"
           "$mainMod, C, killactive,"

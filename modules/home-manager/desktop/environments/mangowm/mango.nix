@@ -265,9 +265,10 @@ in
       # Atalhos de Teclado (Keybindings)
       # ============================================================================
 
-      # Recarregar Configuração
+      # Recarregar Configurações (MangoWM + Noctalia / Waybar)
+      bind=SUPER,r,spawn,mango-reload
+      bind=SUPER+SHIFT,r,spawn,mango-reload --restart
       bind=SUPER+ALT,r,spawn,mango-reload
-      bind=SUPER,r,reload_config
 
       # Aplicativos e Utilitários
       bind=SUPER,Return,spawn,${pkgs.alacritty}/bin/alacritty

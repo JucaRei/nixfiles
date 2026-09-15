@@ -20,9 +20,26 @@ let
     if [ -z "''${MANGO_INSTANCE_SIGNATURE:-}" ]; then
       export MANGO_INSTANCE_SIGNATURE=$(ls /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n1 || true)
     fi
+
+    # 1. Recarrega as configurações do MangoWM
     mmsg dispatch reload_config 2>/dev/null || true
-    pkill -SIGUSR2 waybar 2>/dev/null || true
-    ${pkgs.libnotify}/bin/notify-send -u low -i "preferences-desktop" "MangoWM" "Configurações e Waybar recarregados!"
+
+    # 2. Recarrega ou reinicia a barra / shell ativo (Noctalia ou Waybar)
+    if [ "''${1:-}" = "--restart" ]; then
+      if systemctl --user is-active noctalia.service >/dev/null 2>&1; then
+        systemctl --user restart noctalia
+      elif pgrep -x waybar >/dev/null 2>&1; then
+        systemctl --user restart waybar 2>/dev/null || pkill -x waybar || true
+      fi
+      sleep 0.5
+      ${pkgs.libnotify}/bin/notify-send -u low -i "preferences-desktop" "MangoWM" "Configurações recarregadas e Shell reiniciado com sucesso!" 2>/dev/null || true
+    else
+      if command -v noctalia >/dev/null 2>&1 && (pgrep -x .noctalia-wrapp >/dev/null 2>&1 || pgrep -x noctalia >/dev/null 2>&1); then
+        noctalia msg config-reload 2>/dev/null || true
+      fi
+      pkill -SIGUSR2 waybar 2>/dev/null || true
+      ${pkgs.libnotify}/bin/notify-send -u low -i "preferences-desktop" "MangoWM" "Configurações do MangoWM e Shell recarregadas com sucesso!" 2>/dev/null || true
+    fi
   '';
 
   mangoToggleOuterGaps = pkgs.writeShellScriptBin "mango-toggle-outer-gaps" ''

@@ -203,7 +203,9 @@ Os atalhos são definidos através de:
 | `$SUPER + L` | Bloqueia a tela (`hyprlock`) |
 | `$SUPER + Escape` / `$SUPER + Shift + E` | Menu de Energia / Logout |
 | `$SUPER + Shift + Q` | Encerra a sessão imediatamente (`quit`) |
-| `$SUPER + Alt + R` | Recarrega as configurações e Waybar (`mango-reload`) |
+| `$SUPER + R` | Recarrega as configurações do MangoWM e Shell (`mango-reload`) |
+| `$SUPER + Shift + R` | Recarrega as configurações e reinicia o shell (`mango-reload --restart`) |
+| `$SUPER + Alt + R` | Recarrega as configurações (`mango-reload`) |
 
 ### Janelas e Layouts
 | Atalho | Ação |
