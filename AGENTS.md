@@ -281,9 +281,17 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Seletor de Layouts Dinâmico**: O script `mango-layout-picker` detecta o socket do `noctalia dmenu` (`/run/user/<uid>/noctalia-dmenu-*.sock`). Quando ativo no Noctalia Shell, apresenta os 14 layouts de tiling diretamente no launcher nativo com a paleta Catppuccin Mocha. Em shells tradicionais ou fallback, invoca o Rofi com folha de estilo Catppuccin Mocha completa injetada inline via `-theme-str`.
   - **Widget `mango_layout` na Barra do Noctalia**: Clique com botão esquerdo abre o `mango-layout-picker`, enquanto clique com botão direito, botão do meio ou scroll do mouse ciclam os layouts via `mmsg dispatch switch_layout`.
   - **Adoção de Plugins Nativos do Noctalia v5**:
-    - **`blackbartblues/keymap`**: Substituiu o cheatsheet manual e o plugin `kenn/keybind-cheatsheet`. Fornece visualização completa do mapa de teclado (ANSI 100%, 80%, etc.) e lista categorizada com suporte nativo a MangoWC (`mangowc_service.luau`). Atalhos `SUPER + F1`, `SUPER + ?` e `SUPER + /` vinculados diretamente a `noctalia msg panel-toggle blackbartblues/keymap:panel`. Widget `plugin:blackbartblues/keymap:widget` na barra superior.
-    - **`prponkshe/mango-displays`**: Gerenciador de displays dedicado para MangoWM com suporte a resolução, escala e espelhamento (`wl-mirror`, `wdisplays`, `wlr-randr`). Widget `plugin:prponkshe/mango-displays:bar` integrado à barra superior.
-    - **`gambled23/mangowm-keymode`**: Monitor do keymode ativo do MangoWM via `mmsg watch keymode`. Widget `plugin:gambled23/mangowm-keymode:mangowm-keymode` integrado à barra superior ao lado dos workspaces.
+    - **`blackbartblues/keymap`**: Substituiu o cheatsheet manual e o plugin `kenn/keybind-cheatsheet`. Fornece visualização completa do mapa de teclado (ANSI 100%, 80%, etc.) e lista categorizada com suporte nativo a MangoWC (`mangowc_service.luau`). Atalhos `SUPER + F1`, `SUPER + ?` e `SUPER + /` vinculados diretamente a `noctalia msg panel-toggle blackbartblues/keymap:panel`. Widget `blackbartblues/keymap:widget` na barra superior.
+    - **`prponkshe/mango-displays`**: Gerenciador de displays dedicado para MangoWM com suporte a resolução, escala e espelhamento (`wl-mirror`, `wdisplays`, `wlr-randr`). Widget `prponkshe/mango-displays:bar` integrado à barra superior.
+    - **`gambled23/mangowm-keymode`**: Monitor do keymode ativo do MangoWM via `mmsg watch keymode`. Widget `gambled23/mangowm-keymode:mangowm-keymode` integrado à barra superior ao lado dos workspaces.
+    - **Sintaxe de Identificadores de Plugins na Barra**: No Noctalia v5+, os widgets de plugins no `config.toml` são referenciados diretamente no formato `<autor>/<plugin>:<entry>` (ex: `yuuto/calculator:bar`), e **nunca** com prefixo `plugin:`, pois o resolver de C++ divide pelo primeiro `:` e repassa a primeira parte diretamente para `findPlugin()`.
+    - **Widgets e Painéis Adicionais Instalados**:
+      - **`yuki/lunar-workspaces`**: Indicador com fases da lua e estilos por estado (`yuki/lunar-workspaces:lunar_workspaces`), substituindo o widget padrão na barra. O bloco declarativo `[widget.workspaces]` foi mantido comentado para fácil reversão. Dependência `pkgs.socat` adicionada declarativamente.
+      - **`yuuto/calculator`**: Widget na barra `yuuto/calculator:bar` com exibição de resultados e painel interativo `yuuto/calculator:panel`.
+      - **`noctalia/timer`**: Widget na barra `noctalia/timer:bar` com contagem regressiva e painel interativo `noctalia/timer:panel`.
+      - **`noctalia/notes`**: Widget na barra `noctalia/notes:notes` e painel lateral flutuante de notas markdown `noctalia/notes:panel`.
+      - **`noctalia/wallhaven`**: Widget na barra `noctalia/wallhaven:wallhaven` e navegador de papéis de parede `noctalia/wallhaven:browser`.
+      - Todos os painéis abrem diretamente ao clicar nos seus respectivos widgets da barra ou via comando IPC `noctalia msg panel-toggle <autor>/<plugin>:<panel>`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

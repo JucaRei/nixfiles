@@ -116,8 +116,9 @@ let
     # Layout de widgets na barra
     start = [
       "launcher",
-      "workspaces",
-      "plugin:gambled23/mangowm-keymode:mangowm-keymode",
+      # "workspaces",
+      "yuki/lunar-workspaces:lunar_workspaces",
+      "gambled23/mangowm-keymode:mangowm-keymode",
       "mango_layout",
       "active_window"
     ]
@@ -135,8 +136,12 @@ let
       "bluetooth",
       "volume",
       "brightness",
-      "plugin:prponkshe/mango-displays:bar",
-      "plugin:blackbartblues/keymap:widget",
+      "prponkshe/mango-displays:bar",
+      "blackbartblues/keymap:widget",
+      "yuuto/calculator:bar",
+      "noctalia/timer:bar",
+      "noctalia/notes:notes",
+      "noctalia/wallhaven:wallhaven",
       "battery",
       "control-center",
       "session"
@@ -146,20 +151,25 @@ let
     enabled = [
       "blackbartblues/keymap",
       "prponkshe/mango-displays",
-      "gambled23/mangowm-keymode"
+      "gambled23/mangowm-keymode",
+      "yuki/lunar-workspaces",
+      "yuuto/calculator",
+      "noctalia/wallhaven",
+      "noctalia/timer",
+      "noctalia/notes"
     ]
 
-    [widget.workspaces]
-    style = "regular"
-    show_labels = true
-    label_source = "id"
-    pill_scale = 1.0
-    active_pill_size = 2.2
-    inactive_pill_size = 1.0
-    focused_color = "primary"
-    occupied_color = "secondary"
-    empty_color = "surface_variant"
-    urgent_color = "error"
+    # [widget.workspaces]
+    # style = "regular"
+    # show_labels = true
+    # label_source = "id"
+    # pill_scale = 1.0
+    # active_pill_size = 2.2
+    # inactive_pill_size = 1.0
+    # focused_color = "primary"
+    # occupied_color = "secondary"
+    # empty_color = "surface_variant"
+    # urgent_color = "error"
 
     [widget.active_window]
     icon_size = 14.0
@@ -249,6 +259,7 @@ in
       pkgs.wl-clipboard
       pkgs.cliphist
       pkgs.imagemagick
+      pkgs.socat
       pkgs.wlr-randr
       pkgs.wdisplays
       pkgs.wl-mirror
