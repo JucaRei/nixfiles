@@ -273,6 +273,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Migrado de `settings.json`/`colors.json` do v4 para `config.toml` conforme a documentação oficial (`docs.noctalia.dev`).
     - **Tema**: Catppuccin Mocha Dark integrado nativamente (`source = "builtin"`, `builtin = "Catppuccin"`).
     - **Barra Superior**: Estruturada em `start` (`launcher`, `workspaces`, `mango_layout`, `active_window`), `center` (`clock`, `media`) e `end` (`tray`, `notifications`, `clipboard`, `network`, `bluetooth`, `volume`, `brightness`, `battery`, `control-center`, `session`).
+    - **Configuração Declarativa Aberta (`desktop.wayland.noctalia.settings`)**:
+      - Adicionada opção declarativa do tipo `(pkgs.formats.toml { }).type` em `modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix`.
+      - O arquivo `~/.config/noctalia/config.toml` é gerado mesclando as configurações base do rice Catppuccin Mocha (`defaultSettings`) com quaisquer atributos sobrescritos por hosts via `lib.recursiveUpdate defaultSettings cfg.settings`.
+      - Permite que qualquer host (ex: `home-manager/hosts/anubis/default.nix`) defina facilmente parâmetros de `audio`, `location`, `brightness`, etc. diretamente em sintaxe Nix.
     - **Tiling Layout Switcher (`mango_layout`)**: Mapeado como widget `custom_button` (`glyph = "layout-dashboard"`, `tooltip = "MangoWM Tiling Layout"`). O clique esquerdo, botão do meio e scroll do mouse ciclam os layouts em tempo real via `exec mmsg dispatch switch_layout`, enquanto o clique com botão direito abre o seletor rápido `mango-layout-picker`.
     - **Integração Nativa com MangoWM**: O Noctalia v5 conecta-se diretamente ao socket IPC do MangoWM (`/run/user/<uid>/mango-*.sock`) através do seu backend dedicado `workspace_mango`, sincronizando workspaces, foco e estados de janelas em tempo real.
   - **Resolução de Notificações Duplicadas / "Shell Aninhada" e Dunst**:

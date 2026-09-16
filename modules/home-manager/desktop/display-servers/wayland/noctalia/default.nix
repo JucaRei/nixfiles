@@ -7,8 +7,9 @@
 let
   inherit (lib) mkIf mkOption;
   inherit (lib.types) bool;
-  cfg = config.desktop.wayland;
-  isNoctalia = config.desktop.display-servers.backend == "wayland" && cfg.shell == "noctalia";
+  cfg = config.desktop.wayland.noctalia;
+  isNoctalia = config.desktop.display-servers.backend == "wayland" && config.desktop.wayland.shell == "noctalia";
+  tomlFormat = pkgs.formats.toml { };
 
   # Scripts de controle via IPC nativo do Noctalia (v5+)
   noctaliaLauncher = pkgs.writeShellScriptBin "noctalia-launcher" ''
@@ -83,236 +84,219 @@ let
     mOnHover = "#11111b";
   };
 
-  # Configuração declarativa TOML do Noctalia v5+ (baseada na documentação oficial)
-  noctaliaTomlConfig = ''
-    # ============================================================================
-    # Noctalia Desktop Shell Configuration (v5+) - Rice Catppuccin Mocha
-    # ============================================================================
+  # Configuração declarativa base do Noctalia v5+ (Rice Catppuccin Mocha)
+  defaultSettings = {
+    theme = {
+      mode = "dark";
+      source = "builtin";
+      builtin = "Catppuccin";
+    };
 
-    [theme]
-    mode = "dark"
-    source = "builtin"
-    builtin = "Catppuccin"
+    shell = {
+      font_family = "Inter";
+      button_borders = true;
+      card_borders = true;
+      input_borders = true;
+      popup_borders = true;
+      popup_shadows = true;
+      time_format = "{:%H:%M:%S}";
+      date_format = "%A, %d de %B";
 
-    [shell]
-    font_family = "Inter"
-    button_borders = true
-    card_borders = true
-    input_borders = true
-    popup_borders = true
-    popup_shadows = true
-    time_format = "{:%H:%M:%S}"
-    date_format = "%A, %d de %B"
+      animation = {
+        enabled = true;
+        speed = 1.2;
+      };
 
-    [shell.animation]
-    enabled = true
-    speed = 1.2
+      launcher = {
+        categories = true;
+        sort_by_usage = true;
+        compact = false;
+        show_icons = true;
+      };
 
-    [shell.launcher]
-    categories = true
-    sort_by_usage = true
-    compact = false
-    show_icons = true
+      panel = {
+        shadow = false;
+        borders = true;
+        transparency_mode = "solid";
+        floating_layer = "overlay";
+      };
 
-    [shell.panel]
-    shadow = false
-    borders = true
-    transparency_mode = "solid"
-    floating_layer = "overlay"
+      screenshot = {
+        save_to_file = true;
+        copy_to_clipboard = true;
+        freeze_screen = true;
+        directory = "~/Pictures/Screenshots";
+      };
+    };
 
-    [shell.screenshot]
-    save_to_file = true
-    copy_to_clipboard = true
-    freeze_screen = true
-    directory = "~/Pictures/Screenshots"
+    bar = {
+      order = [ "default" ];
+      default = {
+        position = "top";
+        enabled = true;
+        thickness = 34;
+        background_opacity = 0.88;
+        radius = 12;
+        margin_edge = 6;
+        margin_ends = 12;
+        padding = 10;
+        widget_spacing = 6;
+        shadow = false;
+        contact_shadow = false;
+        layer = "top";
+        reserve_space = true;
 
-    [bar]
-    order = [ "default" ]
+        capsule = true;
+        capsule_fill = "surface_variant";
+        capsule_opacity = 0.95;
+        capsule_thickness = 0.80;
+        capsule_radius = 8.0;
 
-    [bar.default]
-    position = "top"
-    enabled = true
-    thickness = 34
-    background_opacity = 0.88
-    radius = 12
-    margin_edge = 6
-    margin_ends = 12
-    padding = 10
-    widget_spacing = 6
-    shadow = false
-    contact_shadow = false
-    layer = "top"
-    reserve_space = true
+        start = [
+          "launcher"
+          "workspaces"
+          "mango_layout"
+          "active_window"
+        ];
 
-    # Estilo de cápsula (pill) para widgets
-    capsule = true
-    capsule_fill = "surface_variant"
-    capsule_opacity = 0.95
-    capsule_thickness = 0.80
-    capsule_radius = 8.0
+        center = [
+          "clock"
+          "media"
+        ];
 
-    # Layout de widgets na barra
-    start = [
-      "launcher",
-      "workspaces",
-      # "yuki/lunar-workspaces:lunar_workspaces",
-      # "gambled23/mangowm-keymode:mangowm-keymode",
-      "mango_layout",
-      "active_window"
-    ]
+        end = [
+          "tray"
+          "network"
+          "bluetooth"
+          "caffeine"
+          "nightlight"
+          "prponkshe/mango-displays:bar"
+          "blackbartblues/keymap:widget"
+          "noctalia/notes:notes"
+          "noctalia/wallhaven:wallhaven"
+          "volume"
+          "battery"
+          "session"
+        ];
+      };
+    };
 
-    center = [
-      "clock",
-      "media"
-    ]
+    plugins = {
+      enabled = [
+        "blackbartblues/keymap"
+        "prponkshe/mango-displays"
+        "noctalia/wallhaven"
+        "noctalia/notes"
+      ];
+    };
 
-    end = [
-      "tray",
-      # "notifications",
-      # "yuuto/calculator:bar",
-      # "clipboard",
-      "network",
-      "bluetooth",
-      "caffeine",
-      "nightlight",
-      # "brightness",
-      # "screenshot",
-      "prponkshe/mango-displays:bar",
-      "blackbartblues/keymap:widget",
-      # "noctalia/timer:bar",
-      "noctalia/notes:notes",
-      "noctalia/wallhaven:wallhaven",
-      "volume",
-      "battery",
-      # "control-center",
-      "session",
-    ]
+    widget = {
+      active_window = {
+        icon_size = 14.0;
+        max_length = 260.0;
+        min_length = 60.0;
+        title_scroll = "none";
+      };
 
-    [plugins]
-    enabled = [
-      "blackbartblues/keymap",
-      "prponkshe/mango-displays",
-      # "gambled23/mangowm-keymode",
-      # "yuki/lunar-workspaces",
-      # "yuuto/calculator",
-      "noctalia/wallhaven",
-      # "noctalia/timer",
-      "noctalia/notes"
-    ]
+      mango_layout = {
+        type = "custom_button";
+        glyph = "layout-dashboard";
+        tooltip = "MangoWM Tiling Layout (Clique: Menu de Seleção | Dir/Scroll: Alternar)";
+        actions = {
+          left = "exec mango-layout-picker";
+          right = "exec mmsg dispatch switch_layout";
+          middle = "exec mmsg dispatch switch_layout";
+          scroll_up = "exec mmsg dispatch switch_layout";
+          scroll_down = "exec mmsg dispatch switch_layout";
+        };
+      };
 
-    # [widget.workspaces]
-    # style = "regular"
-    # show_labels = true
-    # label_source = "id"
-    # pill_scale = 1.0
-    # active_pill_size = 2.2
-    # inactive_pill_size = 1.0
-    # focused_color = "primary"
-    # occupied_color = "secondary"
-    # empty_color = "surface_variant"
-    # urgent_color = "error"
+      clock = {
+        format = "{:%H:%M:%S}";
+        actions = {
+          left = "panel-toggle control-center calendar";
+        };
+      };
 
-    [widget.active_window]
-    icon_size = 14.0
-    max_length = 260.0
-    min_length = 60.0
-    title_scroll = "none"
+      media = {
+        art_size = 16.0;
+        max_length = 220.0;
+        min_length = 80.0;
+      };
 
-    [widget.mango_layout]
-    type = "custom_button"
-    glyph = "layout-dashboard"
-    tooltip = "MangoWM Tiling Layout (Clique: Menu de Seleção | Dir/Scroll: Alternar)"
+      tray = {
+        hide_passive = false;
+        drawer = false;
+        match_adjacent_spacing = true;
+      };
+    };
 
-    [widget.mango_layout.actions]
-    left = "exec mango-layout-picker"
-    right = "exec mmsg dispatch switch_layout"
-    middle = "exec mmsg dispatch switch_layout"
-    scroll_up = "exec mmsg dispatch switch_layout"
-    scroll_down = "exec mmsg dispatch switch_layout"
+    osd = {
+      enabled = true;
+      position = "top_center";
+      border = true;
+      scale = 1.0;
+      kinds = {
+        brightness = true;
+        keyboard_backlight = true;
+        volume = true;
+        volume_input = true;
+        volume_output = true;
+        wifi = true;
+        bluetooth = true;
+        media = true;
+        power_profile = true;
+        nightlight = true;
+        caffeine = true;
+      };
+    };
 
-    [widget.clock]
-    format = "{:%H:%M:%S}"
+    nightlight = {
+      enabled = false;
+      force = false;
+      temperature_day = 6500;
+      temperature_night = 4000;
+    };
 
-    [widget.clock.actions]
-    left = "panel-toggle control-center calendar"
+    control_center = {
+      show_session_button = true;
+      show_shortcut_labels = true;
+      shortcuts = [
+        { type = "wifi"; }
+        { type = "bluetooth"; }
+        { type = "caffeine"; }
+        { type = "nightlight"; }
+        { type = "notification"; }
+        { type = "power_profile"; }
+      ];
+    };
 
-    [widget.media]
-    art_size = 16.0
-    max_length = 220.0
-    min_length = 80.0
+    brightness = {
+      minimum_brightness = 0.0;
+      enable_ddcutil = false;
+    };
 
-    [widget.tray]
-    hide_passive = false
-    drawer = false
-    match_adjacent_spacing = true
+    system = {
+      monitor = {
+        enabled = true;
+        cpu_poll_seconds = 2.0;
+        memory_poll_seconds = 2.0;
+        network_poll_seconds = 3.0;
+      };
+    };
 
-    [osd]
-    enabled = true
-    position = "top_center"
-    border = true
-    scale = 1.0
+    weather = {
+      enabled = true;
+      effects = true;
+      refresh_minutes = 10;
+      unit = "metric";
+    };
 
-    [osd.kinds]
-    brightness = true
-    keyboard_backlight = true
-    volume = true
-    volume_input = true
-    volume_output = true
-    wifi = true
-    bluetooth = true
-    media = true
-    power_profile = true
-    nightlight = true
-    caffeine = true
-
-    [nightlight]
-    enabled = false
-    force = false
-    temperature_day = 6500
-    temperature_night = 4000
-
-    [control_center]
-    show_session_button = true
-    show_shortcut_labels = true
-
-    [[control_center.shortcuts]]
-    type = "wifi"
-
-    [[control_center.shortcuts]]
-    type = "bluetooth"
-
-    [[control_center.shortcuts]]
-    type = "caffeine"
-
-    [[control_center.shortcuts]]
-    type = "nightlight"
-
-    [[control_center.shortcuts]]
-    type = "notification"
-
-    [[control_center.shortcuts]]
-    type = "power_profile"
-
-    [brightness]
-    minimum_brightness = 0.0
-    enable_ddcutil = false
-
-    [system.monitor]
-    enabled = true
-    cpu_poll_seconds = 2.0
-    memory_poll_seconds = 2.0
-    network_poll_seconds = 3.0
-
-    [weather]
-    enabled = true
-    effects = true
-    refresh_minutes = 10
-    unit = "metric"
-
-    [wallpaper]
-    enabled = true
-    fill_mode = "crop"
-  '';
+    wallpaper = {
+      enabled = true;
+      fill_mode = "crop";
+    };
+  };
 in
 {
   options.desktop.wayland.noctalia = {
@@ -320,6 +304,12 @@ in
       type = bool;
       default = isNoctalia;
       description = "Habilitar Noctalia Shell integrado para ambientes Wayland com tema Catppuccin Mocha";
+    };
+
+    settings = mkOption {
+      type = tomlFormat.type;
+      default = { };
+      description = "Configurações declarativas para o Noctalia Desktop Shell (v5+) em config.toml";
     };
   };
 
@@ -351,7 +341,8 @@ in
 
     # Provisionamento declarativo de configuração TOML e paleta do Noctalia v5+
     xdg.configFile = {
-      "noctalia/config.toml".text = noctaliaTomlConfig;
+      "noctalia/config.toml".source =
+        tomlFormat.generate "config.toml" (lib.recursiveUpdate defaultSettings cfg.settings);
       "noctalia/palettes/CatppuccinMocha.json".text = builtins.toJSON catppuccinColors;
     };
   };
