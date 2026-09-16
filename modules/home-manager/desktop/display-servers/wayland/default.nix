@@ -86,6 +86,10 @@ in
   config = mkIf (backend == "wayland") {
 
     home = {
+      shellAliases = {
+        vainfo = "vainfo --display drm";
+      };
+
       sessionVariables = {
         # Common Wayland vars
         QT_QPA_PLATFORM = "wayland;xcb"; # Prefer Wayland, fallback to XCB

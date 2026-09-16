@@ -318,6 +318,11 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Ação "Abrir como root" no Thunar (Wayland)**: Atualizada a custom action para invocar `${thunar-wrapped}/bin/thunar admin://%f`. O protocolo `admin://` do GVfs delega operações de arquivos privilegiadas ao `gvfsd-admin` com autenticação Polkit nativa, eliminando a tentativa insegura e bloqueada pelo Wayland de rodar um processo gráfico GTK diretamente como root.
   - **Modelos do Thunar (`XDG_TEMPLATES_DIR`)**: Provisionados modelos declarativos em `~/.local/share/templates` (`Documento de Texto.txt` e `Arquivo Vazio`) e symlink `~/Templates`, garantindo que o submenu de clique direito "Criar documento" esteja sempre disponível em qualquer pasta (local ou compartilhamento de rede).
 
+- **VA-API no Intel HD 3000 / Sandy Bridge (Wayland vs DRM Backend)**:
+  - **Incompatibilidade do `vainfo` com Wayland Puro**: O driver `i965` (`intel-vaapi-driver`) para Sandy Bridge depende do protocolo legado `wl_drm` para inicialização na interface Wayland. Como compositores Wayland modernos (MangoWM, Hyprland) adotam exclusivamente `linux-dmabuf` e omitem `wl_drm`, rodar `vainfo` sem argumentos resultava em `init failed` (-1).
+  - **Decodificação por Hardware Intacta**: A aceleração por hardware funciona plenamente via DRM direto (`/dev/dri/renderD128`) e EGL DMA-BUF, que é a arquitetura utilizada nativamente por players como o MPV (`hwdec=vaapi` + `vo=gpu`).
+  - **Alias Declarativo**: Configurado `vainfo = "vainfo --display drm"` nos aliases de shell (`modules/home-manager/desktop/display-servers/wayland/default.nix` e `modules/home-manager/system/programs/shells/default.nix`), garantindo que o comando `vainfo` reporte imediatamente os codecs acelerados por hardware no terminal.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
