@@ -104,13 +104,6 @@ let
     time_format = "{:%H:%M:%S}"
     date_format = "%A, %d de %B"
 
-    [audio]
-    enable_overdrive     = true  # allow volume sliders above 100% (up to 150%)
-    enable_sounds        = false  # master toggle for UI sounds
-    sound_volume         = 0.5    # global sound volume (0.0 - 1.0)
-    volume_change_sound  = ""     # empty = bundled default sounds/volume-change.wav
-    notification_sound   = ""     # empty = bundled default sounds/notification.wav
-
     [shell.animation]
     enabled = true
     speed = 1.2
@@ -309,12 +302,6 @@ let
     cpu_poll_seconds = 2.0
     memory_poll_seconds = 2.0
     network_poll_seconds = 3.0
-
-    [location]
-    auto_locate = true
-    address = "São Paulo, Brazil"
-    latitude = -23.6293
-    longitude = -46.6351
 
     [weather]
     enabled = true

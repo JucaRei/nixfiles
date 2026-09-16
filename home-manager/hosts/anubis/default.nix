@@ -40,52 +40,75 @@
     #     );
 
     # Compositor Picom leve
-    desktop.bspwm.picom = {
-      enable = true;
-      backend = "xrender";
-      animations.enable = false;
-      blur.enable = false;
-      useDamage = true;
+    # desktop.
+
+    home = {
+      # Fuso horário America/Sao_Paulo para o Anubis (relógio da Polybar e sessão)
+      sessionVariables = {
+        TZ = "America/Sao_Paulo";
+      };
+
+      # Teclado Mac com dead keys para acentos PT-BR (é, ã, ç)
+      keyboard = {
+        layout = "us";
+        variant = "intl";
+        model = "apple";
+      };
+
+      packages = with pkgs; [
+        direnv
+        nix-direnv
+        nil
+        git
+        nh
+        duf
+        fzf
+        ripgrep
+        htop
+      ];
     };
 
-    # Fuso horário America/Sao_Paulo para o Anubis (relógio da Polybar e sessão)
-    home.sessionVariables = {
-      TZ = "America/Sao_Paulo";
+    desktop = {
+
+      wayland.noctalia.settings = {
+        audio = {
+          enable_overdrive = true;
+          enable_sounds = false;
+          sound_volume = 0.5;
+          volume_change_sound = "";
+          notification_sound = "";
+        };
+        location = {
+          auto_locate = true;
+          address = "São Paulo, Brazil";
+          latitude = -23.6293;
+          longitude = -46.6351;
+        };
+      };
+
+      # bspwm.extraConfig = ''
+      #   export TZ="America/Sao_Paulo"
+      # '';
+
+      # bspwm.picom = {
+      #   enable = true;
+      #   backend = "xrender";
+      #   animations.enable = false;
+      #   blur.enable = false;
+      #   useDamage = true;
+      # };
+
+      # Configuração declarativa de monitor e resolução (MacBook Air 11.6" - LP116WH4-TJA3)
+      monitors = [
+        {
+          name = "eDP-1";
+          width = 1366;
+          height = 768;
+          refresh = 60;
+          primary = true;
+        }
+      ];
     };
-
-    desktop.bspwm.extraConfig = ''
-      export TZ="America/Sao_Paulo"
-    '';
-
-    # Teclado Mac com dead keys para acentos PT-BR (é, ã, ç)
-    home.keyboard = {
-      layout = "us";
-      variant = "intl";
-      model = "apple";
-    };
-
-    # Configuração declarativa de monitor e resolução (MacBook Air 11.6" - LP116WH4-TJA3)
-    desktop.monitors = [
-      {
-        name = "eDP-1";
-        width = 1366;
-        height = 768;
-        refresh = 60;
-        primary = true;
-      }
-    ];
-
-    home.packages = with pkgs; [
-      direnv
-      nix-direnv
-      nil
-      git
-      nh
-      duf
-      fzf
-      ripgrep
-      htop
-    ];
 
     programs = {
       antigravity-cli = {
