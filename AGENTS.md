@@ -323,6 +323,37 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Decodificação por Hardware Intacta**: A aceleração por hardware funciona plenamente via DRM direto (`/dev/dri/renderD128`) e EGL DMA-BUF, que é a arquitetura utilizada nativamente por players como o MPV (`hwdec=vaapi` + `vo=gpu`).
   - **Alias Declarativo**: Configurado `vainfo = "vainfo --display drm"` nos aliases de shell (`modules/home-manager/desktop/display-servers/wayland/default.nix` e `modules/home-manager/system/programs/shells/default.nix`), garantindo que o comando `vainfo` reporte imediatamente os codecs acelerados por hardware no terminal.
 
+- **Noctalia Shell & MangoWM/Hyprland — Window Switcher, Bloqueio de Sessão, Suspensão, Screenshots e Controles de Sistema**:
+  - **Window Switcher (Alt+Tab Overlay)**:
+    - O Noctalia v5 possui um overlay nativo de troca de janelas acionado via IPC (`noctalia msg window-switcher`).
+    - Configurado nos compositores Wayland (`mangowm` e `hyprland`): `Alt+Tab` e `Alt+Shift+Tab` invocam diretamente o `noctalia msg window-switcher`, exibindo uma grade centralizada e translúcida das janelas abertas com navegação fluida por teclado (Tab, setas, Enter, Escape) e mouse.
+  - **Bloqueio de Sessão (Session Lock) e Suspensão (Suspend)**:
+    - **Lock**: Mapeado `Super + L` para `noctalia msg session lock`. Em hardwares Apple (MacBook), mapeado também o atalho nativo do macOS `Super + Ctrl + Q` (`Ctrl + Cmd + Q`). O Noctalia gerencia a tela de bloqueio com autenticação PAM contra a stack `login` (integrada a `/run/wrappers/bin/unix_chkpwd`).
+    - **Suspend**: Mapeado `Super + Alt + S` e a tecla `XF86Sleep` para `noctalia msg session suspend` (ou `systemctl suspend` em shells tradicionais).
+  - **Captura de Tela (Screenshots) com Detecção Inteligente de Hardware Apple**:
+    - Implementada detecção condicional de hardware: `isApple = (config.home.keyboard.model or "") == "apple" || hostname == "anubis" || hostname == "rocinante"`.
+    - **No Hardware Apple (MacBook Air / MacBook Pro)**:
+      - Como teclados Mac não possuem a tecla física `Print Screen`, foram mapeados os atalhos clássicos do macOS:
+        - `Cmd + Shift + 3` (`Super + Shift + 3`): Captura a tela inteira (`noctalia msg screenshot-fullscreen`).
+        - `Cmd + Shift + 4` (`Super + Shift + 4`): Captura uma região selecionada interativamente (`noctalia msg screenshot-region`).
+        - `Cmd + Shift + 5` (`Super + Shift + 5`): Abre o menu/picker de captura (`noctalia msg screenshot-fullscreen pick`).
+      - Para evitar conflitos com o envio de janelas para as tags 3, 4 e 5 no tiling manager, o envio de janelas para qualquer tag/workspace (1 a 9/10) foi mapeado também para `Super + Ctrl + <número>`, mantendo o controle total dos workspaces.
+      - Mantidos `Print` e `Shift + Print` como fallbacks adicionais para o caso de teclados externos USB conectados ao Mac.
+    - **Em PCs Padrão**:
+      - `Print`: Tela inteira (`screenshot-fullscreen`).
+      - `Shift + Print` e `Super + Shift + S`: Região (`screenshot-region`).
+    - **Configuração TOML (`[shell.screenshot]`)**: Definido `save_to_file = true`, `copy_to_clipboard = true`, `freeze_screen = true` e diretório padrão em `~/Pictures/Screenshots`.
+  - **Night Light (Luz Noturna) e Caffeine (Inibidor de Inatividade)**:
+    - **Night Light**:
+      - Seção declarativa `[nightlight]` configurada no `config.toml` (`temperature_day = 6500`, `temperature_night = 4000`), controlando a temperatura de cor via protocolo Wayland `wlr-gamma-control`.
+      - Adicionado widget `"nightlight"` na barra superior (`bar.default.end`) e no Control Center.
+      - Atalhos: `Super + Shift + N` para alternar o modo agendado (`noctalia msg nightlight-toggle`) e `Super + Ctrl + Shift + N` para forçar o modo noturno imediato (`noctalia msg nightlight-force-toggle`).
+    - **Caffeine**:
+      - Adicionado widget `"caffeine"` na barra superior (`bar.default.end`) e no Control Center, inibindo suspensão e bloqueio via protocolo `zwp_idle_inhibit_manager_v1`.
+      - Atalho: `Super + Shift + C` para alternar o inibidor de inatividade (`noctalia msg caffeine-toggle`).
+    - Ambos contam com feedback visual imediato na tela pelo serviço de OSD do Noctalia (`[osd.kinds] nightlight = true`, `caffeine = true`).
+  - **Scripts Utilitários Exportados**: Criados e instalados no `home.packages`: `noctalia-window-switcher`, `noctalia-session-lock`, `noctalia-session-suspend`, `noctalia-screenshot-full`, `noctalia-screenshot-region`, `noctalia-screenshot-pick`, `noctalia-nightlight-toggle` e `noctalia-caffeine-toggle`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

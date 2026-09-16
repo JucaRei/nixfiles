@@ -31,6 +31,38 @@ let
     ${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
   '';
 
+  noctaliaWindowSwitcher = pkgs.writeShellScriptBin "noctalia-window-switcher" ''
+    ${pkgs.noctalia}/bin/noctalia msg window-switcher
+  '';
+
+  noctaliaSessionLock = pkgs.writeShellScriptBin "noctalia-session-lock" ''
+    ${pkgs.noctalia}/bin/noctalia msg session lock
+  '';
+
+  noctaliaSessionSuspend = pkgs.writeShellScriptBin "noctalia-session-suspend" ''
+    ${pkgs.noctalia}/bin/noctalia msg session suspend
+  '';
+
+  noctaliaScreenshotFull = pkgs.writeShellScriptBin "noctalia-screenshot-full" ''
+    ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+  '';
+
+  noctaliaScreenshotRegion = pkgs.writeShellScriptBin "noctalia-screenshot-region" ''
+    ${pkgs.noctalia}/bin/noctalia msg screenshot-region
+  '';
+
+  noctaliaScreenshotPick = pkgs.writeShellScriptBin "noctalia-screenshot-pick" ''
+    ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick
+  '';
+
+  noctaliaNightlightToggle = pkgs.writeShellScriptBin "noctalia-nightlight-toggle" ''
+    ${pkgs.noctalia}/bin/noctalia msg nightlight-toggle
+  '';
+
+  noctaliaCaffeineToggle = pkgs.writeShellScriptBin "noctalia-caffeine-toggle" ''
+    ${pkgs.noctalia}/bin/noctalia msg caffeine-toggle
+  '';
+
   # Paleta Catppuccin Mocha completa para o Noctalia v5+
   catppuccinColors = {
     mPrimary = "#cba6f7"; # Mauve
@@ -88,6 +120,12 @@ let
     transparency_mode = "solid"
     floating_layer = "overlay"
 
+    [shell.screenshot]
+    save_to_file = true
+    copy_to_clipboard = true
+    freeze_screen = true
+    directory = "~/Pictures/Screenshots"
+
     [bar]
     order = [ "default" ]
 
@@ -135,7 +173,10 @@ let
       "clipboard",
       "network",
       "bluetooth",
+      "caffeine",
+      "nightlight",
       "brightness",
+      "screenshot",
       "prponkshe/mango-displays:bar",
       "blackbartblues/keymap:widget",
       # "noctalia/timer:bar",
@@ -222,6 +263,35 @@ let
     media = true
     power_profile = true
     nightlight = true
+    caffeine = true
+
+    [nightlight]
+    enabled = false
+    force = false
+    temperature_day = 6500
+    temperature_night = 4000
+
+    [control_center]
+    show_session_button = true
+    show_shortcut_labels = true
+
+    [[control_center.shortcuts]]
+    type = "wifi"
+
+    [[control_center.shortcuts]]
+    type = "bluetooth"
+
+    [[control_center.shortcuts]]
+    type = "caffeine"
+
+    [[control_center.shortcuts]]
+    type = "nightlight"
+
+    [[control_center.shortcuts]]
+    type = "notification"
+
+    [[control_center.shortcuts]]
+    type = "power_profile"
 
     [brightness]
     minimum_brightness = 0.0
@@ -267,6 +337,14 @@ in
       noctaliaControlCenter
       noctaliaSessionMenu
       noctaliaWallpaper
+      noctaliaWindowSwitcher
+      noctaliaSessionLock
+      noctaliaSessionSuspend
+      noctaliaScreenshotFull
+      noctaliaScreenshotRegion
+      noctaliaScreenshotPick
+      noctaliaNightlightToggle
+      noctaliaCaffeineToggle
       pkgs.brightnessctl
       pkgs.wl-clipboard
       pkgs.cliphist

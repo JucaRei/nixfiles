@@ -3,6 +3,7 @@
   lib,
   pkgs,
   desktop ? null,
+  hostname ? null,
   ...
 }:
 let
@@ -10,6 +11,7 @@ let
   inherit (lib.types) bool str listOf;
   cfg = config.desktop.hyprland;
   isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
+  isApple = (config.home.keyboard.model or "") == "apple" || hostname == "anubis" || hostname == "rocinante";
 
   screenshotFull = pkgs.writeShellScript "hypr-screenshot-full" ''
     dir="$HOME/Pictures/Screenshots"
@@ -29,6 +31,17 @@ let
     ${pkgs.grim}/bin/grim -g "$geometry" "$file"
     ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
     ${pkgs.libnotify}/bin/notify-send -i "$file" "Captura de Tela" "Recorte salvo em Pictures/Screenshots e copiado."
+  '';
+
+  screenshotPick = pkgs.writeShellScript "hypr-screenshot-pick" ''
+    dir="$HOME/Pictures/Screenshots"
+    mkdir -p "$dir"
+    file="$dir/Screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png"
+    geometry="$(${pkgs.slurp}/bin/slurp -o)"
+    [ -z "$geometry" ] && exit 0
+    ${pkgs.grim}/bin/grim -g "$geometry" "$file"
+    ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
+    ${pkgs.libnotify}/bin/notify-send -i "$file" "Captura de Tela" "Monitor capturado salvo em Pictures/Screenshots e copiado."
   '';
 
   kbdBrightnessOsd = pkgs.writeShellScript "hypr-kbd-brightness-osd" ''
@@ -338,7 +351,18 @@ in
               "$mainMod, Escape, exec, session-power-menu"
           )
           "$mainMod, E, exec, ${pkgs.thunar}/bin/thunar"
-          "$mainMod, L, exec, ${pkgs.hyprlock}/bin/hyprlock"
+          (
+            if isNoctalia then
+              "$mainMod, L, exec, ${pkgs.noctalia}/bin/noctalia msg session lock"
+            else
+              "$mainMod, L, exec, ${pkgs.hyprlock}/bin/hyprlock"
+          )
+          (
+            if isNoctalia then
+              "$mainMod ALT, S, exec, ${pkgs.noctalia}/bin/noctalia msg session suspend"
+            else
+              "$mainMod ALT, S, exec, systemctl suspend"
+          )
 
           # Recarregar Configurações (Hyprland + Noctalia / Waybar)
           "$mainMod, R, exec, ${pkgs.hyprland}/bin/hyprctl reload && (noctalia msg config-reload 2>/dev/null || pkill -SIGUSR2 waybar 2>/dev/null || true) && ${pkgs.libnotify}/bin/notify-send -u low -i 'preferences-desktop' 'Hyprland' 'Configurações recarregadas com sucesso!'"
@@ -382,26 +406,109 @@ in
           "$mainMod, 9, workspace, 9"
           "$mainMod, 0, workspace, 10"
 
+          # Mover Janela para Workspace (via CTRL para compatibilidade com Apple)
+          "$mainMod CTRL, 1, movetoworkspace, 1"
+          "$mainMod CTRL, 2, movetoworkspace, 2"
+          "$mainMod CTRL, 3, movetoworkspace, 3"
+          "$mainMod CTRL, 4, movetoworkspace, 4"
+          "$mainMod CTRL, 5, movetoworkspace, 5"
+          "$mainMod CTRL, 6, movetoworkspace, 6"
+          "$mainMod CTRL, 7, movetoworkspace, 7"
+          "$mainMod CTRL, 8, movetoworkspace, 8"
+          "$mainMod CTRL, 9, movetoworkspace, 9"
+          "$mainMod CTRL, 0, movetoworkspace, 10"
+
           # Mover Janela para Workspace (1 a 10)
           "$mainMod SHIFT, 1, movetoworkspace, 1"
           "$mainMod SHIFT, 2, movetoworkspace, 2"
-          "$mainMod SHIFT, 3, movetoworkspace, 3"
-          "$mainMod SHIFT, 4, movetoworkspace, 4"
-          "$mainMod SHIFT, 5, movetoworkspace, 5"
+        ]
+        ++ (
+          if isApple then
+            [ ]
+          else
+            [
+              "$mainMod SHIFT, 3, movetoworkspace, 3"
+              "$mainMod SHIFT, 4, movetoworkspace, 4"
+              "$mainMod SHIFT, 5, movetoworkspace, 5"
+            ]
+        )
+        ++ [
           "$mainMod SHIFT, 6, movetoworkspace, 6"
           "$mainMod SHIFT, 7, movetoworkspace, 7"
           "$mainMod SHIFT, 8, movetoworkspace, 8"
           "$mainMod SHIFT, 9, movetoworkspace, 9"
           "$mainMod SHIFT, 0, movetoworkspace, 10"
+        ]
+        ++ (
+          if isNoctalia then
+            [
+              # Window Switcher (Alt+Tab Overlay)
+              "ALT, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
+              "ALT SHIFT, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
 
-          # Capturas de Tela
-          ", Print, exec, ${screenshotFull}"
-          "SHIFT, Print, exec, ${screenshotArea}"
-          "$mainMod SHIFT, S, exec, ${screenshotArea}"
-
+              # Night Light e Caffeine
+              "$mainMod SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-toggle"
+              "$mainMod CTRL SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle"
+              "$mainMod SHIFT, C, exec, ${pkgs.noctalia}/bin/noctalia msg caffeine-toggle"
+            ]
+          else
+            [ ]
+        )
+        ++ (
+          if isApple then
+            [
+              # Bloqueio de Tela estilo macOS (Ctrl+Cmd+Q)
+              "$mainMod CTRL, Q, exec, ${if isNoctalia then "${pkgs.noctalia}/bin/noctalia msg session lock" else "${pkgs.hyprlock}/bin/hyprlock"}"
+            ]
+          else
+            [ ]
+        )
+        ++ (
+          if isNoctalia then
+            (
+              if isApple then
+                [
+                  # Captura de Tela estilo Apple macOS (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5)
+                  "$mainMod SHIFT, 3, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
+                  "$mainMod SHIFT, 4, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                  "$mainMod SHIFT, 5, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick"
+                  ", Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
+                  "SHIFT, Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                  "$mainMod SHIFT, S, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                ]
+              else
+                [
+                  # Captura de Tela Padrão PC
+                  ", Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
+                  "SHIFT, Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                  "$mainMod SHIFT, S, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                ]
+            )
+          else
+            (
+              if isApple then
+                [
+                  # Captura de Tela estilo Apple macOS (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5)
+                  "$mainMod SHIFT, 3, exec, ${screenshotFull}"
+                  "$mainMod SHIFT, 4, exec, ${screenshotArea}"
+                  "$mainMod SHIFT, 5, exec, ${screenshotPick}"
+                  ", Print, exec, ${screenshotFull}"
+                  "SHIFT, Print, exec, ${screenshotArea}"
+                  "$mainMod SHIFT, S, exec, ${screenshotArea}"
+                ]
+              else
+                [
+                  # Captura de Tela Padrão PC
+                  ", Print, exec, ${screenshotFull}"
+                  "SHIFT, Print, exec, ${screenshotArea}"
+                  "$mainMod SHIFT, S, exec, ${screenshotArea}"
+                ]
+            )
+        )
+        ++ [
           # Menu de Energia / Logout
-          "$mainMod, ESCAPE, exec, hyprland-power-menu"
-          "$mainMod SHIFT, E, exec, hyprland-power-menu"
+          "$mainMod, ESCAPE, exec, ${if isNoctalia then "noctalia-session-menu" else "hyprland-power-menu"}"
+          "$mainMod SHIFT, E, exec, ${if isNoctalia then "noctalia-session-menu" else "hyprland-power-menu"}"
         ];
 
         bindl = [
@@ -411,6 +518,9 @@ in
           ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
           ", XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
           ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
+
+          # Suspensão do Sistema (Sleep Key)
+          ", XF86Sleep, exec, ${if isNoctalia then "${pkgs.noctalia}/bin/noctalia msg session suspend" else "systemctl suspend"}"
 
           # Iluminação do Teclado (Liga/Desliga)
           ", XF86KbdLightOnOff, exec, ${kbdBrightnessOsd} toggle"

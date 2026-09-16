@@ -2,12 +2,14 @@
   config,
   lib,
   pkgs,
+  hostname ? null,
   ...
 }:
 let
   inherit (lib) mkIf;
   cfg = config.desktop.mangowm;
   isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
+  isApple = (config.home.keyboard.model or "") == "apple" || hostname == "anubis" || hostname == "rocinante";
 
   # Scripts de Captura de Tela
   screenshotFull = pkgs.writeShellScript "mango-screenshot-full" ''
@@ -28,6 +30,17 @@ let
     ${pkgs.grim}/bin/grim -g "$geometry" "$file"
     ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
     ${pkgs.libnotify}/bin/notify-send -i "$file" "Captura de Tela" "Recorte salvo em Pictures/Screenshots e copiado."
+  '';
+
+  screenshotPick = pkgs.writeShellScript "mango-screenshot-pick" ''
+    dir="$HOME/Pictures/Screenshots"
+    mkdir -p "$dir"
+    file="$dir/Screenshot_$(date +'%Y-%m-%d_%H-%M-%S').png"
+    geometry="$(${pkgs.slurp}/bin/slurp -o)"
+    [ -z "$geometry" ] && exit 0
+    ${pkgs.grim}/bin/grim -g "$geometry" "$file"
+    ${pkgs.wl-clipboard}/bin/wl-copy < "$file"
+    ${pkgs.libnotify}/bin/notify-send -i "$file" "Captura de Tela" "Monitor capturado salvo em Pictures/Screenshots e copiado."
   '';
 
   cliphistMenu = pkgs.writeShellScript "mango-cliphist" ''
@@ -283,15 +296,38 @@ in
         bind=SUPER+SHIFT,e,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
         bind=SUPER,comma,spawn,${pkgs.noctalia}/bin/noctalia msg settings-toggle
         bind=SUPER+ALT,w,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
+
+        # Window Switcher (Alt+Tab Overlay nativo do Noctalia)
+        bind=ALT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
+        bind=ALT+SHIFT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
+
+        # Sessão: Lock e Suspend
+        bind=SUPER,l,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
+        ${if isApple then ''
+          bind=SUPER+CTRL,q,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
+        '' else ''''}
+        bind=SUPER+ALT,s,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
+        bind=NONE,XF86Sleep,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
+
+        # Night Light e Caffeine
+        bind=SUPER+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-toggle
+        bind=SUPER+CTRL+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle
+        bind=SUPER+SHIFT,c,spawn,${pkgs.noctalia}/bin/noctalia msg caffeine-toggle
       '' else ''
         bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
         bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
         bind=SUPER,v,spawn,${cliphistMenu}
         bind=SUPER,Escape,spawn,session-power-menu
         bind=SUPER+SHIFT,e,spawn,session-power-menu
+        bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
+        ${if isApple then ''
+          bind=SUPER+CTRL,q,spawn,${pkgs.hyprlock}/bin/hyprlock
+        '' else ''''}
+        bind=SUPER+ALT,s,spawn,systemctl suspend
+        bind=NONE,XF86Sleep,spawn,systemctl suspend
+        bind=ALT,Tab,toggleoverview,
       ''}
       bind=SUPER,e,spawn,${pkgs.thunar}/bin/thunar
-      bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
       bind=SUPER+SHIFT,q,quit
 
       # Ajuda e Lista de Atalhos de Teclado (Plugin Keymap)
@@ -308,7 +344,11 @@ in
       bind=SUPER,w,togglefloating,
       bind=SUPER+SHIFT,space,togglefloating,
       bind=SUPER,backslash,togglefloating,
-      bind=ALT,Tab,toggleoverview,
+      ${if isNoctalia then ''
+        # Alt+Tab overlay gerenciado via Noctalia
+      '' else ''
+        bind=ALT,Tab,toggleoverview,
+      ''}
       bind=SUPER,Tab,focusstack,next
       bind=ALT,f,togglefullscreen,
       bind=ALT+SHIFT,f,togglefakefullscreen,
@@ -372,11 +412,27 @@ in
       bind=SUPER,8,view,8
       bind=SUPER,9,view,9
 
+      # Mover Janelas para Tags (1 a 9)
+      bind=SUPER+CTRL,1,tag,1,0
+      bind=SUPER+CTRL,2,tag,2,0
+      bind=SUPER+CTRL,3,tag,3,0
+      bind=SUPER+CTRL,4,tag,4,0
+      bind=SUPER+CTRL,5,tag,5,0
+      bind=SUPER+CTRL,6,tag,6,0
+      bind=SUPER+CTRL,7,tag,7,0
+      bind=SUPER+CTRL,8,tag,8,0
+      bind=SUPER+CTRL,9,tag,9,0
+
       bind=SUPER+SHIFT,1,tag,1,0
       bind=SUPER+SHIFT,2,tag,2,0
-      bind=SUPER+SHIFT,3,tag,3,0
-      bind=SUPER+SHIFT,4,tag,4,0
-      bind=SUPER+SHIFT,5,tag,5,0
+      ${if isApple then ''
+        # No hardware Apple, SUPER+SHIFT+3, 4, 5 são atalhos de Captura de Tela estilo macOS (Cmd+Shift+3/4/5)
+        # O envio de janelas para as tags 3, 4 e 5 é feito via SUPER+CTRL+3, 4, 5
+      '' else ''
+        bind=SUPER+SHIFT,3,tag,3,0
+        bind=SUPER+SHIFT,4,tag,4,0
+        bind=SUPER+SHIFT,5,tag,5,0
+      ''}
       bind=SUPER+SHIFT,6,tag,6,0
       bind=SUPER+SHIFT,7,tag,7,0
       bind=SUPER+SHIFT,8,tag,8,0
@@ -410,9 +466,21 @@ in
         bind=SUPER,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
         bind=SUPER+SHIFT,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
 
-        # Captura de Tela (Screenshots)
-        bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
-        bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+        # Captura de Tela (Screenshots via Noctalia IPC)
+        ${if isApple then ''
+          # Mapeamento oficial Apple macOS: Cmd+Shift+3 (Tela inteira), Cmd+Shift+4 (Região), Cmd+Shift+5 (Menu/Seleção)
+          bind=SUPER+SHIFT,3,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+          bind=SUPER+SHIFT,4,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+          bind=SUPER+SHIFT,5,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick
+          bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+          bind=SHIFT,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+          bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+        '' else ''
+          # Padrão PC
+          bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+          bind=SHIFT,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+          bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+        ''}
       '' else ''
         bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.pamixer}/bin/pamixer -i 5
         bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.pamixer}/bin/pamixer -d 5
@@ -435,8 +503,20 @@ in
         bind=SUPER+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
 
         # Captura de Tela (Screenshots)
-        bind=NONE,Print,spawn,${screenshotFull}
-        bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+        ${if isApple then ''
+          # Mapeamento oficial Apple macOS: Cmd+Shift+3 (Tela inteira), Cmd+Shift+4 (Região), Cmd+Shift+5 (Menu/Seleção)
+          bind=SUPER+SHIFT,3,spawn,${screenshotFull}
+          bind=SUPER+SHIFT,4,spawn,${screenshotArea}
+          bind=SUPER+SHIFT,5,spawn,${screenshotPick}
+          bind=NONE,Print,spawn,${screenshotFull}
+          bind=SHIFT,Print,spawn,${screenshotArea}
+          bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+        '' else ''
+          # Padrão PC
+          bind=NONE,Print,spawn,${screenshotFull}
+          bind=SHIFT,Print,spawn,${screenshotArea}
+          bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+        ''}
       ''}
 
       # Mouse
