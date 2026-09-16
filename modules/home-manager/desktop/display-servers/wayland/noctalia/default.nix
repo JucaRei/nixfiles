@@ -312,7 +312,7 @@ let
     [weather]
     enabled = true
     effects = true
-    refresh_minutes = 30
+    refresh_minutes = 10
     unit = "metric"
 
     [wallpaper]

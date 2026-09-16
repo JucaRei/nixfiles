@@ -352,7 +352,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Adicionado widget `"caffeine"` na barra superior (`bar.default.end`) e no Control Center, inibindo suspensão e bloqueio via protocolo `zwp_idle_inhibit_manager_v1`.
       - Atalho: `Super + Shift + C` para alternar o inibidor de inatividade (`noctalia msg caffeine-toggle`).
     - Ambos contam com feedback visual imediato na tela pelo serviço de OSD do Noctalia (`[osd.kinds] nightlight = true`, `caffeine = true`).
-  - **Scripts Utilitários Exportados**: Criados e instalados no `home.packages`: `noctalia-window-switcher`, `noctalia-session-lock`, `noctalia-session-suspend`, `noctalia-screenshot-full`, `noctalia-screenshot-region`, `noctalia-screenshot-pick`, `noctalia-nightlight-toggle` e `noctalia-caffeine-toggle`.
+- **Wayland — Detecção de Desktop Managers Completos (`fullDesktopManagers`)**:
+  - Em `modules/home-manager/desktop/display-servers/wayland/default.nix`, adicionada lista declarativa de DEs completos (`gnome`, `kde`, `plasma`, `pantheon`, `cosmic`, `cinnamon`, `mate`, `lxqt`, `xfce`, `xfce4`) com a flag `isFullDesktopManager = lib.elem desktop fullDesktopManagers;`.
+  - Quando um DE completo está ativo, `options.desktop.wayland.shell` recebe `default = null` (tipo ampliado para `nullOr (enum [ "traditional" "noctalia" "none" ])`), prevenindo a inicialização acidental de sub-shells standalone (Waybar, Dunst, Rofi, Hypridle, Noctalia) que conflitariam com os painéis e daemons nativos do DE.
+  - `WLR_NO_HARDWARE_CURSORS` e `services.gnome-keyring.enable` foram tornados condicionais a `!isFullDesktopManager`, evitando variáveis exclusivas de wlroots em Mutter/KWin e daemons de keyring redundantes.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

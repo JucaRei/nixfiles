@@ -48,6 +48,21 @@ let
         null
     else
       null;
+
+  # Detecção de Desktop Environments / Desktop Managers completos
+  fullDesktopManagers = [
+    "gnome"
+    "kde"
+    "plasma"
+    "pantheon"
+    "cosmic"
+    "cinnamon"
+    "mate"
+    "lxqt"
+    "xfce"
+    "xfce4"
+  ];
+  isFullDesktopManager = lib.elem desktop fullDesktopManagers;
 in
 {
   imports = [
@@ -57,12 +72,19 @@ in
 
   options.desktop.wayland = {
     shell = mkOption {
-      type = enum [
-        "traditional"
-        "noctalia"
-      ];
-      default = waylandShell;
-      description = "Ambiente de shell gráfico para Wayland: 'traditional' (Waybar, Rofi, Dunst, etc.) ou 'noctalia' (Noctalia Shell integrado)";
+      type = nullOr (
+        enum [
+          "traditional"
+          "noctalia"
+          "none"
+        ]
+      );
+      default =
+        if isFullDesktopManager then
+          null
+        else
+          waylandShell;
+      description = "Ambiente de shell gráfico para Wayland: 'traditional', 'noctalia' ou null/none para DEs completos (GNOME, KDE, etc.)";
     };
 
     compositor = mkOption {
@@ -96,8 +118,8 @@ in
         XDG_SESSION_TYPE = "wayland";
         EGL_PLATFORM = "wayland";
 
-        # Hardware cursors fix (often for NVIDIA)
-        WLR_NO_HARDWARE_CURSORS = "1"; # Often needed on ARM too
+        # Hardware cursors fix (necessário para wlroots/compositors standalone, desnecessário para Mutter/KWin)
+        WLR_NO_HARDWARE_CURSORS = mkIf (!isFullDesktopManager) "1";
 
         # GPU-specific (declarative on NixOS only)
         GBM_BACKEND = mkIf isNixOS (
@@ -209,7 +231,7 @@ in
       };
     };
 
-    services.gnome-keyring.enable = mkIf ((desktop != "kde" && desktop != "pantheon") && isNixOS) {
+    services.gnome-keyring.enable = mkIf (!isFullDesktopManager && isNixOS) {
       enable = true;
     };
   };
