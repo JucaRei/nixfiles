@@ -64,6 +64,17 @@
       model = "apple";
     };
 
+    # Configuração declarativa de monitor e resolução (MacBook Air 11.6" - LP116WH4-TJA3)
+    desktop.monitors = [
+      {
+        name = "eDP-1";
+        width = 1366;
+        height = 768;
+        refresh = 60;
+        primary = true;
+      }
+    ];
+
     home.packages = with pkgs; [
       direnv
       nix-direnv

@@ -8,7 +8,7 @@
 }:
 let
   inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib.types) bool listOf str;
   cfg = config.desktop.mangowm;
 
   mangoPkg =
@@ -225,6 +225,12 @@ in
       type = bool;
       default = (desktop == "mangowm" || desktop == "mango");
       description = "Enable MangoWM Wayland dynamic tiling compositor based on dwl";
+    };
+
+    monitorRules = mkOption {
+      type = listOf str;
+      default = [ ];
+      description = "List of monitor rules for MangoWM (e.g. 'name:eDP-1,width:1366,height:768,refresh:60,scale:1')";
     };
   };
 

@@ -357,7 +357,25 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - Quando um DE completo está ativo, `options.desktop.wayland.shell` recebe `default = null` (tipo ampliado para `nullOr (enum [ "traditional" "noctalia" "none" ])`), prevenindo a inicialização acidental de sub-shells standalone (Waybar, Dunst, Rofi, Hypridle, Noctalia) que conflitariam com os painéis e daemons nativos do DE.
   - `WLR_NO_HARDWARE_CURSORS` e `services.gnome-keyring.enable` foram tornados condicionais a `!isFullDesktopManager`, evitando variáveis exclusivas de wlroots em Mutter/KWin e daemons de keyring redundantes.
 
+- **Módulo Genérico de Monitores e Resoluções (`desktop.monitors`)**:
+  - **Arquitetura Unificada**: Criado o módulo `modules/home-manager/desktop/monitors/default.nix`, importado em `modules/home-manager/desktop/environments/default.nix`. Permite que qualquer host configure suas telas declarativamente em `home-manager/hosts/<host>/default.nix` sob `desktop.monitors = [ { name = "..."; width = ...; height = ...; refresh = ...; primary = true; } ]`.
+  - **Suporte Multi-Ambiente (DEs Completos e Window Managers)**:
+    - **MangoWM (Wayland)**: Gera automaticamente regras `monitorrule=name:<name>,width:<w>,height:<h>,refresh:<r>,x:<x>,y:<y>,scale:<s>` no `~/.config/mango/config.conf` a partir de `desktop.mangowm.monitorRules`.
+    - **Hyprland (Wayland)**: Alimenta declarativamente `desktop.hyprland.monitors` (`<name>, <w>x<h>@<r>, <x>x<y>, <s>`).
+    - **Kanshi Daemon (Wayland)**: Provisiona serviço systemd de usuário e perfis dinâmicos em `services.kanshi` para saídas hotplug.
+    - **X11 (BSPWM, XFCE4, etc.)**: Injeta comandos `xrandr --output <name> --mode <w>x<h> --rate <r> --pos <x>x<y> --primary` diretamente no `xsession.initExtra` e empacota `pkgs.xrandr`.
+    - **Desktop Environments Completos (GNOME, KDE, XFCE4)**: Gera arquivo de inicialização de sessão `~/.config/autostart/setup-monitors.desktop` invocando o script universal `setup-monitors`.
+    - **Script Universal `setup-monitors`**: Utilitário disponível no PATH (`home.packages`) que detecta o ambiente ativo (`WAYLAND_DISPLAY` via `wlr-randr` ou `DISPLAY` via `xrandr`) e reaplica as resoluções e orientações sob demanda.
+  - **Otimização de Renderização de Fontes (`desktop.monitorsFontRendering`)**:
+    - Ativado por padrão (`enable = true`).
+    - Configura `fonts.fontconfig`: antialiasing ativo, hinting leve (`slight`) e renderização de subpixels (`subpixelRendering = "rgb"` via `10-hm-rendering.conf`).
+    - Configura `dconf /org/gnome/desktop/interface`: `font-antialiasing = "rgba"`, `font-hinting = "slight"` e `font-rgba-order = "rgb"`, garantindo máxima nitidez tipográfica em telas de 135 DPI como a do MacBook Air 11.6".
+  - **Hosts Adotados**:
+    - `anubis`: Configurado com a resolução nativa do painel Apple Color LCD / LG Philips LP116WH4-TJA3 (`1366x768 @ 60Hz`, `eDP-1`).
+    - `rocinante-hyperv`: Migrado do script manual do `xsession.initExtra` para o módulo declarativo (`1600x900 @ 60Hz`, `Virtual-1`).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 
 

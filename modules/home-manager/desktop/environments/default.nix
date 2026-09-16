@@ -16,6 +16,7 @@ in
     ./hyprland
     ./mangowm
     ../display-servers
+    ../monitors
   ];
 
   config = {

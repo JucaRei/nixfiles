@@ -138,6 +138,9 @@ in
       # MangoWM Configuration - Rice Catppuccin Mocha
       # ============================================================================
 
+      # --- Configuração de Monitor (Resolução Nativa 1:1) ---
+      ${lib.concatMapStringsSep "\n" (r: "monitorrule=${r}") (cfg.monitorRules or [ ])}
+
       # --- Efeitos Visuais e Janelas ---
       blur=1
       blur_layer=1
@@ -340,9 +343,7 @@ in
 
       # Gerenciamento de Janelas e Estados
       bind=SUPER,q,killclient,
-      bind=SUPER,c,killclient,
       bind=SUPER,w,togglefloating,
-      bind=SUPER+SHIFT,space,togglefloating,
       bind=SUPER,backslash,togglefloating,
       ${if isNoctalia then ''
         # Alt+Tab overlay gerenciado via Noctalia

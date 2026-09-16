@@ -69,8 +69,15 @@
       xrandr
     ];
 
-    xsession.initExtra = ''
-      xrandr --output Virtual-1 --mode 1600x900 --rate 60
-    '';
+    # Configuração declarativa de monitor e resolução (Hyper-V VM)
+    desktop.monitors = [
+      {
+        name = "Virtual-1";
+        width = 1600;
+        height = 900;
+        refresh = 60;
+        primary = true;
+      }
+    ];
   };
 }
