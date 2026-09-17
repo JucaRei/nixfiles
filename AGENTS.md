@@ -377,10 +377,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Hosts Adotados**:
     - `anubis`: Configurado com a resolução nativa do painel Apple Color LCD / LG Philips LP116WH4-TJA3 (`1366x768 @ 60Hz`, `eDP-1`).
     - `rocinante-hyperv`: Migrado do script manual do `xsession.initExtra` para o módulo declarativo (`1600x900 @ 60Hz`, `Virtual-1`).
+- **Diagnóstico de Boot, Bloqueio, Suspensão e Hibernação no Host `anubis` (Fedora Standalone)**:
+  - **Audit de Boot e Serviços**: 0 serviços falhados no systemd do sistema e do usuário (`systemctl --failed`). Logs do journalctl limpos de falhas críticas.
+  - **Lock e Suspend**:
+    - **Lock**: Integrado via Noctalia Shell (`noctalia msg session lock` via `ext-session-lock-v1` + PAM `login` + wrapper `/run/wrappers/bin/unix_chkpwd -> /usr/sbin/unix_chkpwd`).
+    - **Suspend**: ACPI S3 profundo (`s2idle [deep]`) funcional nativamente no kernel e com suporte ao fechamento da tampa do MacBook Air (`HandleLidSwitch=suspend`).
+  - **Configuração e Ativação de Hibernação (S4 / Hibernate to Disk)**:
+    - **Arquitetura de Swap Híbrida**: `/dev/zram0` (1.8G, prioridade 100) para swap diário ultrarrápido em RAM, preservando o SSD; partição física `/dev/sda4` (5G, prioridade -1, UUID `ded62059-8b28-48a8-a251-38a7c3a7c26f`) dedicada como alvo de despejo de memória da hibernação.
+    - **Dracut & Initramfs**: Criado `/etc/dracut.conf.d/resume.conf` com módulo `resume`, incorporando `systemd-hibernate-resume` e gerador no initramfs via `dracut -f`.
+    - **Parâmetros do Kernel & GRUB**: Injetado `resume=UUID=ded62059-8b28-48a8-a251-38a7c3a7c26f` no `/etc/default/grub` e propagado para as entradas de kernel via `grubby --update-kernel=ALL`.
+    - **Validação**: Verificado suporte nativo com `CanHibernate`, `CanHybridSleep` e `CanSuspendThenHibernate` reportando `yes` no `systemd-logind`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
-
-
-
-
-
