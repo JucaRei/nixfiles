@@ -227,7 +227,7 @@ let
 
       clock = {
         # format = "{:%H:%M:%S}";
-        format = "|  {:%d %a} · {:%-I:%M %p}";
+        format = "| {:%d %a} · {:%-H:%M %S} |";
         actions = {
           left = "panel-toggle control-center calendar";
         };
