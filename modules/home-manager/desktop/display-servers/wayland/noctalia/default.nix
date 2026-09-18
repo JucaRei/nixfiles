@@ -132,6 +132,7 @@ let
 
     # dock = {
     #   shadow = false;
+    #   active_monitor_only = true;
     # };
 
     bar = {
@@ -184,6 +185,13 @@ let
           "battery"
           "session"
         ];
+
+        dead_zone = {
+          actions = {
+            scroll_down = "workspace-switch next";
+            scroll_up = "workspace-switch prev";
+          };
+        };
       };
     };
 
@@ -218,7 +226,8 @@ let
       };
 
       clock = {
-        format = "{:%H:%M:%S}";
+        # format = "{:%H:%M:%S}";
+        format = "|  {:%d %a} · {:%-I:%M %p}";
         actions = {
           left = "panel-toggle control-center calendar";
         };
@@ -302,6 +311,10 @@ let
     wallpaper = {
       enabled = true;
       fill_mode = "crop";
+    };
+
+    battery = {
+      warning_threshold = 20;
     };
   };
 in
