@@ -130,6 +130,10 @@ let
       };
     };
 
+    # dock = {
+    #   shadow = false;
+    # };
+
     bar = {
       order = [ "default" ];
       default = {
@@ -163,7 +167,7 @@ let
         center = [
           "clock"
           "weather"
-          "media"
+          # "media"
         ];
 
         end = [

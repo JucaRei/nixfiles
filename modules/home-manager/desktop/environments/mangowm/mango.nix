@@ -9,7 +9,8 @@ let
   inherit (lib) mkIf;
   cfg = config.desktop.mangowm;
   isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
-  isApple = (config.home.keyboard.model or "") == "apple" || hostname == "anubis" || hostname == "rocinante";
+  isApple =
+    (config.home.keyboard.model or "") == "apple" || hostname == "anubis" || hostname == "rocinante";
 
   # Scripts de Captura de Tela
   screenshotFull = pkgs.writeShellScript "mango-screenshot-full" ''
@@ -120,15 +121,20 @@ let
         fi
         ;;
     esac
-    ${if isNoctalia then ''
-      # No Noctalia Shell, o serviço nativo de Brightness detecta a alteração via sysfs
-      # e exibe o OSD centralizado nativo automaticamente, sem criar notificações extras.
-    '' else ''
-      val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
-      if [ -n "$val" ]; then
-        ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
-      fi
-    ''}
+    ${
+      if isNoctalia then
+        ''
+          # No Noctalia Shell, o serviço nativo de Brightness detecta a alteração via sysfs
+          # e exibe o OSD centralizado nativo automaticamente, sem criar notificações extras.
+        ''
+      else
+        ''
+          val=$(${pkgs.brightnessctl}/bin/brightnessctl -m | cut -d, -f4 | tr -d '%')
+          if [ -n "$val" ]; then
+            ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+          fi
+        ''
+    }
   '';
 in
 {
@@ -143,21 +149,23 @@ in
 
       # --- Efeitos Visuais e Janelas ---
       blur=1
-      blur_layer=1
+      blur_layer=0
       blur_optimized=1
       blur_params_num_passes=2
       blur_params_radius=5
       blur_params_noise=0.02
       blur_params_brightness=0.9
       blur_params_contrast=0.9
-      blur_params_saturation=1.2
+      blur_params_saturation=1.0
 
       shadows=1
       layer_shadows=0
-      shadow_only_floating=1
-      shadows_size=10
-      shadows_blur=15
-      shadowscolor=0x11111b88
+      shadow_only_floating=0
+      shadows_size=4
+      shadows_blur=12
+      shadows_position_x=2
+      shadows_position_y=2
+      shadowscolor=0x000000ff
 
       border_radius=10
       no_radius_when_single=0
@@ -166,7 +174,7 @@ in
 
       # --- Animações ---
       animations=1
-      layer_animations=1
+      layer_animations=0
       animation_type_open=slide
       animation_type_close=slide
       animation_fade_in=1
@@ -265,14 +273,19 @@ in
       tagrule=id:9,layout_name:tile
 
       # --- Autostart (Serviços e Componentes de Sessão) ---
-      ${if isNoctalia then ''
-        exec-once=${pkgs.noctalia}/bin/noctalia
-      '' else ''
-        exec-once=${pkgs.waybar}/bin/waybar
-        exec-once=${pkgs.dunst}/bin/dunst
-        exec-once=${pkgs.hypridle}/bin/hypridle
-        exec-once=${pkgs.hyprpaper}/bin/hyprpaper
-      ''}
+      ${
+        if isNoctalia then
+          ''
+            exec-once=${pkgs.noctalia}/bin/noctalia
+          ''
+        else
+          ''
+            exec-once=${pkgs.waybar}/bin/waybar
+            exec-once=${pkgs.dunst}/bin/dunst
+            exec-once=${pkgs.hypridle}/bin/hypridle
+            exec-once=${pkgs.hyprpaper}/bin/hyprpaper
+          ''
+      }
       exec-once=${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
       exec-once=${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store
       exec-once=${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store
@@ -289,67 +302,91 @@ in
       # Aplicativos e Utilitários
       bind=SUPER,Return,spawn,${pkgs.alacritty}/bin/alacritty
       bind=SUPER+CTRL,Return,spawn,${pkgs.alacritty}/bin/alacritty --title floating-kitty
-      ${if isNoctalia then ''
-        bind=SUPER,space,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
-        bind=SUPER,d,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
-        bind=SUPER,v,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle clipboard
-        bind=SUPER,p,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
-        bind=SUPER,s,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
-        bind=SUPER,Escape,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
-        bind=SUPER+SHIFT,e,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
-        bind=SUPER,comma,spawn,${pkgs.noctalia}/bin/noctalia msg settings-toggle
-        bind=SUPER+ALT,w,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
+      ${
+        if isNoctalia then
+          ''
+            bind=SUPER,space,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
+            bind=SUPER,d,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
+            bind=SUPER,v,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle clipboard
+            bind=SUPER,p,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
+            bind=SUPER,s,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
+            bind=SUPER,Escape,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
+            bind=SUPER+SHIFT,e,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
+            bind=SUPER,comma,spawn,${pkgs.noctalia}/bin/noctalia msg settings-toggle
+            bind=SUPER+ALT,w,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
 
-        # Window Switcher (Alt+Tab Overlay nativo do Noctalia)
-        bind=ALT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
-        bind=ALT+SHIFT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
+            # Window Switcher (Alt+Tab Overlay nativo do Noctalia)
+            bind=ALT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
+            bind=ALT+SHIFT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
 
-        # Sessão: Lock e Suspend
-        bind=SUPER,l,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
-        ${if isApple then ''
-          bind=SUPER+CTRL,q,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
-        '' else ''''}
-        bind=SUPER+ALT,s,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
-        bind=NONE,XF86Sleep,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
+            # Sessão: Lock e Suspend
+            bind=SUPER,l,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
+            ${
+              if isApple then
+                ''
+                  bind=SUPER+CTRL,q,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
+                ''
+              else
+                ""
+            }
+            bind=SUPER+ALT,s,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
+            bind=NONE,XF86Sleep,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
 
-        # Night Light e Caffeine
-        bind=SUPER+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-toggle
-        bind=SUPER+CTRL+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle
-        bind=SUPER+SHIFT,c,spawn,${pkgs.noctalia}/bin/noctalia msg caffeine-toggle
-      '' else ''
-        bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
-        bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
-        bind=SUPER,v,spawn,${cliphistMenu}
-        bind=SUPER,Escape,spawn,session-power-menu
-        bind=SUPER+SHIFT,e,spawn,session-power-menu
-        bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
-        ${if isApple then ''
-          bind=SUPER+CTRL,q,spawn,${pkgs.hyprlock}/bin/hyprlock
-        '' else ''''}
-        bind=SUPER+ALT,s,spawn,systemctl suspend
-        bind=NONE,XF86Sleep,spawn,systemctl suspend
-        bind=ALT,Tab,toggleoverview,
-      ''}
+            # Night Light e Caffeine
+            bind=SUPER+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-toggle
+            bind=SUPER+CTRL+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle
+            bind=SUPER+SHIFT,c,spawn,${pkgs.noctalia}/bin/noctalia msg caffeine-toggle
+          ''
+        else
+          ''
+            bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
+            bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
+            bind=SUPER,v,spawn,${cliphistMenu}
+            bind=SUPER,Escape,spawn,session-power-menu
+            bind=SUPER+SHIFT,e,spawn,session-power-menu
+            bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
+            ${
+              if isApple then
+                ''
+                  bind=SUPER+CTRL,q,spawn,${pkgs.hyprlock}/bin/hyprlock
+                ''
+              else
+                ""
+            }
+            bind=SUPER+ALT,s,spawn,systemctl suspend
+            bind=NONE,XF86Sleep,spawn,systemctl suspend
+            bind=ALT,Tab,toggleoverview,
+          ''
+      }
       bind=SUPER,e,spawn,${pkgs.thunar}/bin/thunar
       bind=SUPER+SHIFT,q,quit
 
       # Ajuda e Lista de Atalhos de Teclado (Plugin Keymap)
-      ${if isNoctalia then ''
-        bind=SUPER,F1,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
-        bind=SUPER,question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
-        bind=SUPER,slash,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
-      '' else ''
-      ''}
+      ${
+        if isNoctalia then
+          ''
+            bind=SUPER,F1,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+            bind=SUPER,question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+            bind=SUPER,slash,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+          ''
+        else
+          ""
+      }
 
       # Gerenciamento de Janelas e Estados
       bind=SUPER,q,killclient,
       bind=SUPER,w,togglefloating,
       bind=SUPER,backslash,togglefloating,
-      ${if isNoctalia then ''
-        # Alt+Tab overlay gerenciado via Noctalia
-      '' else ''
-        bind=ALT,Tab,toggleoverview,
-      ''}
+      ${
+        if isNoctalia then
+          ''
+            # Alt+Tab overlay gerenciado via Noctalia
+          ''
+        else
+          ''
+            bind=ALT,Tab,toggleoverview,
+          ''
+      }
       bind=SUPER,Tab,focusstack,next
       bind=ALT,f,togglefullscreen,
       bind=ALT+SHIFT,f,togglefakefullscreen,
@@ -426,14 +463,19 @@ in
 
       bind=SUPER+SHIFT,1,tag,1,0
       bind=SUPER+SHIFT,2,tag,2,0
-      ${if isApple then ''
-        # No hardware Apple, SUPER+SHIFT+3, 4, 5 são atalhos de Captura de Tela estilo macOS (Cmd+Shift+3/4/5)
-        # O envio de janelas para as tags 3, 4 e 5 é feito via SUPER+CTRL+3, 4, 5
-      '' else ''
-        bind=SUPER+SHIFT,3,tag,3,0
-        bind=SUPER+SHIFT,4,tag,4,0
-        bind=SUPER+SHIFT,5,tag,5,0
-      ''}
+      ${
+        if isApple then
+          ''
+            # No hardware Apple, SUPER+SHIFT+3, 4, 5 são atalhos de Captura de Tela estilo macOS (Cmd+Shift+3/4/5)
+            # O envio de janelas para as tags 3, 4 e 5 é feito via SUPER+CTRL+3, 4, 5
+          ''
+        else
+          ''
+            bind=SUPER+SHIFT,3,tag,3,0
+            bind=SUPER+SHIFT,4,tag,4,0
+            bind=SUPER+SHIFT,5,tag,5,0
+          ''
+      }
       bind=SUPER+SHIFT,6,tag,6,0
       bind=SUPER+SHIFT,7,tag,7,0
       bind=SUPER+SHIFT,8,tag,8,0
@@ -446,79 +488,94 @@ in
       bind=SUPER+CTRL+ALT,Down,tagtoright,0
 
       # Teclas Multimídia e Áudio
-      ${if isNoctalia then ''
-        bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.noctalia}/bin/noctalia msg volume-up
-        bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.noctalia}/bin/noctalia msg volume-down
-        bind=NONE,XF86AudioMute,spawn,${pkgs.noctalia}/bin/noctalia msg volume-mute
-        bind=NONE,XF86AudioMicMute,spawn,${pkgs.noctalia}/bin/noctalia msg mic-mute
-        bind=NONE,XF86AudioPlay,spawn,${pkgs.noctalia}/bin/noctalia msg media toggle
-        bind=NONE,XF86AudioNext,spawn,${pkgs.noctalia}/bin/noctalia msg media next
-        bind=NONE,XF86AudioPrev,spawn,${pkgs.noctalia}/bin/noctalia msg media previous
+      ${
+        if isNoctalia then
+          ''
+            bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.noctalia}/bin/noctalia msg volume-up
+            bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.noctalia}/bin/noctalia msg volume-down
+            bind=NONE,XF86AudioMute,spawn,${pkgs.noctalia}/bin/noctalia msg volume-mute
+            bind=NONE,XF86AudioMicMute,spawn,${pkgs.noctalia}/bin/noctalia msg mic-mute
+            bind=NONE,XF86AudioPlay,spawn,${pkgs.noctalia}/bin/noctalia msg media toggle
+            bind=NONE,XF86AudioNext,spawn,${pkgs.noctalia}/bin/noctalia msg media next
+            bind=NONE,XF86AudioPrev,spawn,${pkgs.noctalia}/bin/noctalia msg media previous
 
-        # Brilho da Tela (Feedback OSD Nativo do Noctalia)
-        bind=NONE,XF86MonBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg brightness-up
-        bind=NONE,XF86MonBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg brightness-down
+            # Brilho da Tela (Feedback OSD Nativo do Noctalia)
+            bind=NONE,XF86MonBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg brightness-up
+            bind=NONE,XF86MonBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg brightness-down
 
-        # Iluminação do Teclado (Feedback OSD Nativo do Noctalia)
-        bind=NONE,XF86KbdBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
-        bind=NONE,XF86KbdBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
-        bind=NONE,XF86KbdLightOnOff,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
-        bind=SUPER,F6,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
-        bind=SUPER,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
-        bind=SUPER+SHIFT,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
+            # Iluminação do Teclado (Feedback OSD Nativo do Noctalia)
+            bind=NONE,XF86KbdBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
+            bind=NONE,XF86KbdBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
+            bind=NONE,XF86KbdLightOnOff,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
+            bind=SUPER,F6,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
+            bind=SUPER,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
+            bind=SUPER+SHIFT,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
 
-        # Captura de Tela (Screenshots via Noctalia IPC)
-        ${if isApple then ''
-          # Mapeamento oficial Apple macOS: Cmd+Shift+3 (Tela inteira), Cmd+Shift+4 (Região), Cmd+Shift+5 (Menu/Seleção)
-          bind=SUPER+SHIFT,3,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
-          bind=SUPER+SHIFT,4,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
-          bind=SUPER+SHIFT,5,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick
-          bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
-          bind=SHIFT,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
-          bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
-        '' else ''
-          # Padrão PC
-          bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
-          bind=SHIFT,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
-          bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
-        ''}
-      '' else ''
-        bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.pamixer}/bin/pamixer -i 5
-        bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.pamixer}/bin/pamixer -d 5
-        bind=NONE,XF86AudioMute,spawn,${pkgs.pamixer}/bin/pamixer -t
-        bind=NONE,XF86AudioMicMute,spawn,${pkgs.pamixer}/bin/pamixer --default-source -t
-        bind=NONE,XF86AudioPlay,spawn,${pkgs.playerctl}/bin/playerctl play-pause
-        bind=NONE,XF86AudioNext,spawn,${pkgs.playerctl}/bin/playerctl next
-        bind=NONE,XF86AudioPrev,spawn,${pkgs.playerctl}/bin/playerctl previous
+            # Captura de Tela (Screenshots via Noctalia IPC)
+            ${
+              if isApple then
+                ''
+                  # Mapeamento oficial Apple macOS: Cmd+Shift+3 (Tela inteira), Cmd+Shift+4 (Região), Cmd+Shift+5 (Menu/Seleção)
+                  bind=SUPER+SHIFT,3,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+                  bind=SUPER+SHIFT,4,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+                  bind=SUPER+SHIFT,5,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick
+                  bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+                  bind=SHIFT,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+                  bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+                ''
+              else
+                ''
+                  # Padrão PC
+                  bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+                  bind=SHIFT,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+                  bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+                ''
+            }
+          ''
+        else
+          ''
+            bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.pamixer}/bin/pamixer -i 5
+            bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.pamixer}/bin/pamixer -d 5
+            bind=NONE,XF86AudioMute,spawn,${pkgs.pamixer}/bin/pamixer -t
+            bind=NONE,XF86AudioMicMute,spawn,${pkgs.pamixer}/bin/pamixer --default-source -t
+            bind=NONE,XF86AudioPlay,spawn,${pkgs.playerctl}/bin/playerctl play-pause
+            bind=NONE,XF86AudioNext,spawn,${pkgs.playerctl}/bin/playerctl next
+            bind=NONE,XF86AudioPrev,spawn,${pkgs.playerctl}/bin/playerctl previous
 
-        # Brilho da Tela (com Feedback OSD)
-        bind=NONE,XF86MonBrightnessUp,spawn,${monBrightnessOsd} up
-        bind=NONE,XF86MonBrightnessDown,spawn,${monBrightnessOsd} down
+            # Brilho da Tela (com Feedback OSD)
+            bind=NONE,XF86MonBrightnessUp,spawn,${monBrightnessOsd} up
+            bind=NONE,XF86MonBrightnessDown,spawn,${monBrightnessOsd} down
 
-        # Iluminação do Teclado (MacBook / Laptops)
-        bind=NONE,XF86KbdBrightnessUp,spawn,${kbdBrightnessOsd} up
-        bind=NONE,XF86KbdBrightnessDown,spawn,${kbdBrightnessOsd} down
-        bind=NONE,XF86KbdLightOnOff,spawn,${kbdBrightnessOsd} toggle
-        bind=SUPER,F6,spawn,${kbdBrightnessOsd} up
-        bind=SUPER,F5,spawn,${kbdBrightnessOsd} down
-        bind=SUPER+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
+            # Iluminação do Teclado (MacBook / Laptops)
+            bind=NONE,XF86KbdBrightnessUp,spawn,${kbdBrightnessOsd} up
+            bind=NONE,XF86KbdBrightnessDown,spawn,${kbdBrightnessOsd} down
+            bind=NONE,XF86KbdLightOnOff,spawn,${kbdBrightnessOsd} toggle
+            bind=SUPER,F6,spawn,${kbdBrightnessOsd} up
+            bind=SUPER,F5,spawn,${kbdBrightnessOsd} down
+            bind=SUPER+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
 
-        # Captura de Tela (Screenshots)
-        ${if isApple then ''
-          # Mapeamento oficial Apple macOS: Cmd+Shift+3 (Tela inteira), Cmd+Shift+4 (Região), Cmd+Shift+5 (Menu/Seleção)
-          bind=SUPER+SHIFT,3,spawn,${screenshotFull}
-          bind=SUPER+SHIFT,4,spawn,${screenshotArea}
-          bind=SUPER+SHIFT,5,spawn,${screenshotPick}
-          bind=NONE,Print,spawn,${screenshotFull}
-          bind=SHIFT,Print,spawn,${screenshotArea}
-          bind=SUPER+SHIFT,S,spawn,${screenshotArea}
-        '' else ''
-          # Padrão PC
-          bind=NONE,Print,spawn,${screenshotFull}
-          bind=SHIFT,Print,spawn,${screenshotArea}
-          bind=SUPER+SHIFT,S,spawn,${screenshotArea}
-        ''}
-      ''}
+            # Captura de Tela (Screenshots)
+            ${
+              if isApple then
+                ''
+                  # Mapeamento oficial Apple macOS: Cmd+Shift+3 (Tela inteira), Cmd+Shift+4 (Região), Cmd+Shift+5 (Menu/Seleção)
+                  bind=SUPER+SHIFT,3,spawn,${screenshotFull}
+                  bind=SUPER+SHIFT,4,spawn,${screenshotArea}
+                  bind=SUPER+SHIFT,5,spawn,${screenshotPick}
+                  bind=NONE,Print,spawn,${screenshotFull}
+                  bind=SHIFT,Print,spawn,${screenshotArea}
+                  bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+                ''
+              else
+                ''
+                  # Padrão PC
+                  bind=NONE,Print,spawn,${screenshotFull}
+                  bind=SHIFT,Print,spawn,${screenshotArea}
+                  bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+                ''
+            }
+          ''
+      }
 
       # Mouse
       mousebind=SUPER,btn_left,moveresize,curmove
