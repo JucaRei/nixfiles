@@ -162,6 +162,7 @@ let
 
         center = [
           "clock"
+          "weather"
           "media"
         ];
 
@@ -169,11 +170,11 @@ let
           "tray"
           "network"
           "bluetooth"
-          "caffeine"
+          # "caffeine"
           "nightlight"
-          "prponkshe/mango-displays:bar"
+          # "prponkshe/mango-displays:bar"
           "blackbartblues/keymap:widget"
-          "noctalia/notes:notes"
+          # "noctalia/notes:notes"
           "noctalia/wallhaven:wallhaven"
           "volume"
           "battery"
@@ -238,17 +239,18 @@ let
       border = true;
       scale = 1.0;
       kinds = {
-        brightness = true;
-        keyboard_backlight = true;
-        volume = true;
-        volume_input = true;
-        volume_output = true;
-        wifi = true;
-        bluetooth = true;
-        media = true;
-        power_profile = true;
-        nightlight = true;
-        caffeine = true;
+        # brightness = true; # display brightness
+        # keyboard_backlight = true; # keyboard backlight level
+        volume = true; # master volume OSD toggle
+        volume_input = true; # input (microphone) volume; requires volume = true
+        volume_output = true; # output (speaker) volume; requires volume = true
+        wifi = true; # Wi-Fi toggle
+        dnd = true; # Do Not Disturb toggle
+        bluetooth = true; # Bluetooth toggle
+        media = true; # media controls OSD
+        power_profile = true; # power profile toggle
+        nightlight = true; # night light toggle
+        caffeine = true; # toggle for preventing idle
       };
     };
 
