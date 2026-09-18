@@ -393,6 +393,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Home Manager (`home-manager/users/juca/default.nix` e `nixos/default.nix`)**:
     - Expostos declarativamente ambos os arquivos na home do usuário: `~/.face` (JPEG) e `~/.face.icon` (PNG a partir de `${pkgs.juca-avatar}/share/sddm/faces/juca.face.icon`).
     - Permite que o **SDDM** (e scripts de ativação com `setfacl`) encontrem o arquivo PNG com permissão de leitura correta.
+- **Noctalia Shell — Gestão de Ociosidade (Idle / `ext_idle_notifier_v1`)**:
+  - **Estrutura e Schema Declarativo (`[idle]`)**: O Noctalia v5 implementa nativamente o protocolo Wayland `ext_idle_notifier_v1` via `IdleManager`. As diretivas devem residir sob `[idle.behavior.<nome>]` (e **nunca** com erros de grafia como `bahavior`), com lista de prioridade `behavior_order = [ ... ]` e tempo de esmaecimento `pre_action_fade_seconds`.
+  - **Ações Nativas Suportadas**:
+    - `"lock"`: Dispara tela de bloqueio nativa via `ext-session-lock-v1`.
+    - `"screen_off"`: Desliga displays via backend do compositor (`compositors::mango::setOutputPower`).
+    - `"suspend"`: Dispara suspensão via `logind` (com suporte opcional a `lock_before_suspend = true`).
+    - `"command"`: Executa comandos arbitrários com suporte a `command` e `resume_command`.
+  - **Verificação**: Confirmado registro em runtime no log (`~/.cache/wayland-errors`) com `registered idle behavior '<nome>' timeout=<t>s`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
-

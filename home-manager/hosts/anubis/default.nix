@@ -73,12 +73,19 @@
       wayland.noctalia.settings = {
         idle = {
           behavior_order = [
+            "custom"
             "lock"
             "screen-off"
             "suspend"
           ];
           pre_action_fade_seconds = 30.0;
-          bahavior = {
+          behavior = {
+            custom = {
+              timeout = 200;
+              action = "command";
+              command = "notify-send 'Idle' 'Going idle'";
+              resume_command = "notify-send 'Idle' 'Back from idle'";
+            };
             lock = {
               timeout = 300;
               action = "lock";
@@ -93,12 +100,6 @@
               timeout = 900;
               action = "suspend";
               enabled = true;
-            };
-            custom = {
-              timeout = 200;
-              action = "command";
-              command = "notify-send 'Idle' 'Going idle'";
-              resume_command = "notify-send 'Idle' 'Back from idle'";
             };
           };
         };
