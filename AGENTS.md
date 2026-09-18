@@ -386,6 +386,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Arquitetura de Swap Híbrida**: `/dev/zram0` (1.8G, prioridade 100) para swap diário ultrarrápido em RAM, preservando o SSD; partição física `/dev/sda4` (5G, prioridade -1, UUID `ded62059-8b28-48a8-a251-38a7c3a7c26f`) dedicada como alvo de despejo de memória da hibernação.
     - **Dracut & Initramfs**: Criado `/etc/dracut.conf.d/resume.conf` com módulo `resume`, incorporando `systemd-hibernate-resume` e gerador no initramfs via `dracut -f`.
     - **Parâmetros do Kernel & GRUB**: Injetado `resume=UUID=ded62059-8b28-48a8-a251-38a7c3a7c26f` no `/etc/default/grub` e propagado para as entradas de kernel via `grubby --update-kernel=ALL`.
-    - **Validação**: Verificado suporte nativo com `CanHibernate`, `CanHybridSleep` e `CanSuspendThenHibernate` reportando `yes` no `systemd-logind`.
+- **Avatar Universal de Usuário nos Display Managers (GDM, SDDM, LightDM, ReGreet)**:
+  - **Módulo NixOS Central (`modules/nixos/desktop/display-managers/default.nix`)**:
+    - Quando qualquer Display Manager é ativado (`cfg.name != null` ou `enable = true`), o módulo habilita automaticamente o `services.accounts-daemon.enable = true` e inclui `pkgs.juca-avatar` em `environment.systemPackages`.
+    - Provisiona declarativamente o avatar no **AccountsService** via `systemd.tmpfiles.rules`: linka `/var/lib/AccountsService/icons/${username}` para `${pkgs.juca-avatar}/share/faces/juca.jpg` e inicializa `/var/lib/AccountsService/users/${username}` com `Icon=/var/lib/AccountsService/icons/${username}`. Isso garante a exibição do avatar no **GDM**, **ReGreet** e **LightDM** de forma transparente e segura (sem depender de permissões na home).
+  - **Home Manager (`home-manager/users/juca/default.nix` e `nixos/default.nix`)**:
+    - Expostos declarativamente ambos os arquivos na home do usuário: `~/.face` (JPEG) e `~/.face.icon` (PNG a partir de `${pkgs.juca-avatar}/share/sddm/faces/juca.face.icon`).
+    - Permite que o **SDDM** (e scripts de ativação com `setfacl`) encontrem o arquivo PNG com permissão de leitura correta.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+

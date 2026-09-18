@@ -3,7 +3,6 @@
   lib,
   pkgs,
   desktop,
-  username,
   isWorkstation,
   ...
 }:
@@ -33,6 +32,9 @@ in
       file = {
         ".face" = mkIf (desktop != null) {
           source = "${pkgs.juca-avatar}/share/faces/juca.jpg";
+        };
+        ".face.icon" = mkIf (desktop != null) {
+          source = "${pkgs.juca-avatar}/share/sddm/faces/juca.face.icon";
         };
         "Documents/workspace/lab/vm/nixos-console.conf" = {
           text = ''
