@@ -303,7 +303,7 @@ let
 
     weather = {
       enabled = true;
-      effects = true;
+      effects = false;
       refresh_minutes = 10;
       unit = "metric";
     };

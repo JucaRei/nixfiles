@@ -65,6 +65,8 @@
         fzf
         ripgrep
         htop
+        libva-utils
+        intel-gpu-tools
       ];
     };
 
