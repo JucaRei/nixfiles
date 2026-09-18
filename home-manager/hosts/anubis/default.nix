@@ -75,19 +75,18 @@
       wayland.noctalia.settings = {
         idle = {
           behavior_order = [
-            "custom"
             "lock"
             "screen-off"
             "suspend"
           ];
-          pre_action_fade_seconds = 30.0;
+          pre_action_fade_seconds = 0.0;
           behavior = {
-            custom = {
-              timeout = 200;
-              action = "command";
-              command = "notify-send 'Idle' 'Going idle'";
-              resume_command = "notify-send 'Idle' 'Back from idle'";
-            };
+            # custom = {
+            #   timeout = 200;
+            #   action = "command";
+            #   command = "notify-send 'Idle' 'Going idle'";
+            #   resume_command = "notify-send 'Idle' 'Back from idle'";
+            # };
             lock = {
               timeout = 300;
               action = "lock";
@@ -95,7 +94,9 @@
             };
             screen-off = {
               timeout = 450;
-              action = "screen_off";
+              action = "command";
+              command = "${pkgs.brightnessctl}/bin/brightnessctl -s set 0%";
+              resume_command = "${pkgs.brightnessctl}/bin/brightnessctl -r";
               enabled = true;
             };
             suspend = {

@@ -399,7 +399,8 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - `"lock"`: Dispara tela de bloqueio nativa via `ext-session-lock-v1`.
     - `"screen_off"`: Desliga displays via backend do compositor (`compositors::mango::setOutputPower`).
     - `"suspend"`: Dispara suspensão via `logind` (com suporte opcional a `lock_before_suspend = true`).
-    - `"command"`: Executa comandos arbitrários com suporte a `command` e `resume_command`.
-  - **Verificação**: Confirmado registro em runtime no log (`~/.cache/wayland-errors`) com `registered idle behavior '<nome>' timeout=<t>s`.
+  - **Correção de Flickering / Liga-Desliga Preto no Host `anubis` (Intel HD 3000 / Sandy Bridge)**:
+    - **Causa**: O `pre_action_fade_seconds = 30.0` forçava animação contínua de transparência em overlay, e a ação `screen_off` via DPMS do compositor disparava erro no driver `i915` (`connector eDP-1: Atomic commit failed: Device or resource busy`), fazendo o driver reacender a tela repetidamente em loop. Além disso, a ação `custom` com `notify-send` acordava a sessão no exato momento em que entrava em repouso.
+    - **Solução**: `pre_action_fade_seconds = 0.0`, remoção do `custom` de notificação, e migração do `screen-off` para controle direto do backlight por hardware via `brightnessctl` (`brightnessctl -s set 0%` com restauração transparente em `resume_command = "brightnessctl -r"`), eliminando a falha no DRM e apagando a tela sem ciclos de piscar.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
