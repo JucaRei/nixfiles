@@ -8,7 +8,8 @@ let
   inherit (lib) mkIf mkOption;
   inherit (lib.types) bool;
   cfg = config.desktop.wayland.noctalia;
-  isNoctalia = config.desktop.display-servers.backend == "wayland" && config.desktop.wayland.shell == "noctalia";
+  isNoctalia =
+    config.desktop.display-servers.backend == "wayland" && config.desktop.wayland.shell == "noctalia";
   tomlFormat = pkgs.formats.toml { };
 
   # Scripts de controle via IPC nativo do Noctalia (v5+)
@@ -117,7 +118,7 @@ let
       panel = {
         shadow = false;
         borders = true;
-        transparency_mode = "solid";
+        transparency_mode = "soft"; # "solid";
         floating_layer = "overlay";
       };
 
@@ -341,8 +342,9 @@ in
 
     # Provisionamento declarativo de configuração TOML e paleta do Noctalia v5+
     xdg.configFile = {
-      "noctalia/config.toml".source =
-        tomlFormat.generate "config.toml" (lib.recursiveUpdate defaultSettings cfg.settings);
+      "noctalia/config.toml".source = tomlFormat.generate "config.toml" (
+        lib.recursiveUpdate defaultSettings cfg.settings
+      );
       "noctalia/palettes/CatppuccinMocha.json".text = builtins.toJSON catppuccinColors;
     };
   };
