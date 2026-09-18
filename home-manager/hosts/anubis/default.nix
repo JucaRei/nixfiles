@@ -71,6 +71,37 @@
     desktop = {
 
       wayland.noctalia.settings = {
+        idle = {
+          behavior_order = [
+            "lock"
+            "screen-off"
+            "suspend"
+          ];
+          pre_action_fade_seconds = 30.0;
+          bahavior = {
+            lock = {
+              timeout = 300;
+              action = "lock";
+              enabled = true;
+            };
+            screen-off = {
+              timeout = 450;
+              action = "screen_off";
+              enabled = true;
+            };
+            suspend = {
+              timeout = 900;
+              action = "suspend";
+              enabled = true;
+            };
+            custom = {
+              timeout = 200;
+              action = "command";
+              command = "notify-send 'Idle' 'Going idle'";
+              resume_command = "notify-send 'Idle' 'Back from idle'";
+            };
+          };
+        };
         audio = {
           enable_overdrive = true;
           enable_sounds = false;
