@@ -62,6 +62,10 @@
           desktop = "mangowm";
           waylandShell = "noctalia";
         };
+        "juca@nitro" = helper.mkHome {
+          hostname = "nitro";
+          desktop = "bspwm";
+        };
 
         "juca@virtualvm" = helper.mkHome {
           hostname = "virtualvm";
