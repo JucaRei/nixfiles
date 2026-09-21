@@ -133,7 +133,6 @@ in
         wifi_scan = mkIf isNixOS "${getExe' pkgs.networkmanager "nmcli"} device wifi rescan && ${getExe' pkgs.networkmanager "nmcli"} device wifi list";
 
         search = "${pkgs.ripgrep}/bin/rg -p --glob '!node_modules/*' --glob '!vendor/*' \"\$@\"";
-        vainfo = "vainfo --display drm";
       };
     })
 

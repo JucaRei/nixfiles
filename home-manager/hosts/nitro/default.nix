@@ -64,10 +64,21 @@ in
         fzf
         ripgrep
         htop
-        btop
+        fastfetch
         intel-media-driver
-        libva-utils
+        (pkgs.writeShellScriptBin "vainfo-intel" ''
+          if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then
+            exec vainfo "$@"
+          else
+            intel_render="$(ls /dev/dri/by-path/*00:02.0-render 2>/dev/null || echo /dev/dri/renderD129)"
+            exec vainfo --display drm --device "$intel_render" "$@"
+          fi
+        '')
       ];
+
+      shellAliases = {
+        vainfo = "vainfo-intel";
+      };
 
       sessionPath = [
         "/usr/sbin"
