@@ -98,9 +98,12 @@ in
           package = nixGLWrapper pkgs.bspwm;
           monitors = { };
           settings = {
-            split_ratio = 0.52;
+            split_ratio = 0.51;
             border_width = 2;
-            window_gap = 6; # Gaps arejados estilo Hyprland
+            single_monocle = true;
+            automatic_scheme = "longest_side";
+            initial_polarity = "second_child";
+            window_gap = 5; # Gaps arejados estilo Hyprland
             top_padding = 20; # Altura da Polybar
             bottom_padding = 4;
             left_padding = 4;
@@ -343,11 +346,15 @@ in
             pkill -x sxhkd || true
             ${pkgs.sxhkd}/bin/sxhkd &
 
-            # Cursor padrão
-            xsetroot -cursor_name left_ptr &
+            # Carregar recursos do X11 (incluindo tema e tamanho de cursor Xcursor)
+            [ -f "$HOME/.Xresources" ] && ${pkgs.xorg.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
+
+            # Iniciar daemon de atalhos de teclado (SXHKD)
+            pkill -x sxhkd || true
+            ${pkgs.sxhkd}/bin/sxhkd &
 
             # Importar variáveis de ambiente para serviços do usuário
-            systemctl --user import-environment DISPLAY XAUTHORITY LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER
+            systemctl --user import-environment DISPLAY XAUTHORITY LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE
             systemctl --user start graphical-session.target 2>/dev/null || true
 
             # Iniciar compositor Picom se habilitado
@@ -374,8 +381,8 @@ in
             # Agente de autenticação Polkit
             ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
 
-            # Wallpaper / Fundo
-            xsetroot -solid '#1e1e2e' &
+            # Wallpaper / Fundo e Cursor padrão (garante left_ptr mesmo com fundo sólido)
+            xsetroot -solid '#1e1e2e' -cursor_name left_ptr &
 
             # Applet de Rede (após importar DISPLAY)
             ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &

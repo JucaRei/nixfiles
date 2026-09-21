@@ -36,7 +36,7 @@
         package = pkgs.papirus-icon-theme;
       };
       cursorTheme = {
-        name = "Catppuccin-Mocha-Dark-Cursors";
+        name = "catppuccin-mocha-dark-cursors";
         package = pkgs.catppuccin-cursors.mochaDark;
         size = 24;
       };
@@ -70,6 +70,10 @@
     home = {
       sessionVariables = {
         GTK_THEME = config.gtk.theme.name;
+        XCURSOR_THEME = config.gtk.cursorTheme.name;
+        XCURSOR_SIZE = toString config.gtk.cursorTheme.size;
+        HYPRCURSOR_THEME = config.gtk.cursorTheme.name;
+        HYPRCURSOR_SIZE = toString config.gtk.cursorTheme.size;
       };
       file = {
         ".themes/${config.gtk.theme.name}".source =
@@ -80,6 +84,21 @@
           "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
         ".local/share/themes/Catppuccin-Mocha-Standard-Blue-Dark".source =
           "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
+
+        ".icons/${config.gtk.cursorTheme.name}".source =
+          "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
+        ".icons/Catppuccin-Mocha-Dark-Cursors".source =
+          "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
+        ".icons/default/index.theme".text = ''
+          [Icon Theme]
+          Name=Default
+          Comment=Default Cursor Theme
+          Inherits=${config.gtk.cursorTheme.name}
+        '';
+        ".local/share/icons/${config.gtk.cursorTheme.name}".source =
+          "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
+        ".local/share/icons/Catppuccin-Mocha-Dark-Cursors".source =
+          "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
       };
     };
   };

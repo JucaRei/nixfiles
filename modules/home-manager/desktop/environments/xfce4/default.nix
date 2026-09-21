@@ -39,7 +39,7 @@ in
         package = pkgs.papirus-icon-theme;
       };
       cursorTheme = {
-        name = "Catppuccin-Mocha-Dark-Cursors";
+        name = "catppuccin-mocha-dark-cursors";
         package = pkgs.catppuccin-cursors.mochaDark;
         size = 24;
       };
@@ -82,7 +82,7 @@ in
       xsettings = {
         "Net/ThemeName" = config.gtk.theme.name;
         "Net/IconThemeName" = "Papirus-Dark";
-        "Gtk/CursorThemeName" = "Catppuccin-Mocha-Dark-Cursors";
+        "Gtk/CursorThemeName" = config.gtk.cursorTheme.name;
         "Gtk/CursorThemeSize" = 24;
         "Gtk/FontName" = "Inter 10";
         "Gtk/MonospaceFontName" = "SFMono Nerd Font 10";

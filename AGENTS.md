@@ -491,6 +491,14 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Configurado `programs.git.signing` com `format = "ssh"`, ativando assinatura criptográfica automática de commits e tags (`commit.gpgsign = true`, `tag.gpgsign = true`) utilizando a chave SSH `~/.ssh/nitro.pub`.
     - No módulo `services/ssh/default.nix`, adicionada a opção `system.services.ssh.identityFiles` configurada por padrão com `[ "~/.ssh/nitro" "~/.ssh/id_ed25519" "~/.ssh/id_rsa" ]`.
     - Isso injeta automaticamente a chave privada `~/.ssh/nitro` no bloco `Host *` do `~/.config/ssh/config`, permitindo autenticação transparente via SSH para Git, GitHub, GitLab e conexões remotas.
+- **Tema de Cursor Catppuccin Mocha no BSPWM, X11 e Wayland (`bspwm/default.nix`, `bspwm.nix`)**:
+  - **Causa Raiz 1 (Case Mismatch)**: O pacote `pkgs.catppuccin-cursors.mochaDark` gera o diretório em caixa baixa: `catppuccin-mocha-dark-cursors`. Nos módulos de desktop (`bspwm`, `xfce4`, `hyprland`, `mangowm`), estava declarado em CamelCase (`Catppuccin-Mocha-Dark-Cursors`). No Linux, a busca por temas de cursor é sensível a maiúsculas/minúsculas, impedindo que GTK, Qt e X11 localizassem os cursores e caindo no cursor padrão do X11 (cruz preta) ou Adwaita.
+  - **Causa Raiz 2 (Ausência de Symlinks e Variáveis X11)**: Em ambientes standalone, o Home Manager não criava os links simbólicos em `~/.icons` e `~/.local/share/icons`, nem exportava `XCURSOR_THEME`/`XCURSOR_SIZE` nem definia `xresources.properties` (`Xcursor.theme`, `Xcursor.size`).
+  - **Causa Raiz 3 (Reset do cursor no `xsetroot`)**: No `bspwmrc`, `xsetroot -solid '#1e1e2e'` rodava após `xsetroot -cursor_name left_ptr`, o que no protocolo X11 reseta o cursor da janela raiz de volta para a cruz padrão ("X").
+  - **Correção**:
+    - Unificado o nome em todos os ambientes para `catppuccin-mocha-dark-cursors` (com symlinks retrocompatíveis em `~/.icons` e `~/.local/share/icons` para ambas as grafias e `~/.icons/default/index.theme`).
+    - Declarado `xresources.properties` (`Xcursor.theme`, `Xcursor.size`), adicionado `pkgs.xorg.xrdb` em `packages.nix` e exportado `XCURSOR_THEME`/`XCURSOR_SIZE` nas variáveis de sessão e no `systemctl --user import-environment`.
+    - No `bspwmrc`, adicionado `[ -f "$HOME/.Xresources" ] && xrdb -merge "$HOME/.Xresources"` e unificado `xsetroot -solid '#1e1e2e' -cursor_name left_ptr &`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
