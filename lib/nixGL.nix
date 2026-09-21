@@ -1,161 +1,91 @@
-# lib/nixGL.nix - Wrapper universal do nixGL para binários e arquivos .desktop
+# lib/nixGL.nix - Wrapper nixGL para binários e arquivos .desktop em distros não-NixOS.
 #
-# O QUE É O nixGL E POR QUE ELE É NECESSÁRIO?
-# Em distribuições Linux tradicionais (ex: Fedora, Ubuntu, Debian, Arch), os programas instalados via Nix
-# tentam carregar os drivers de vídeo (Nvidia, Mesa/Intel, Vulkan) a partir do diretório do Nix Store (/nix/store).
-# Como a distribuição hospedeira usa os drivers do próprio sistema (ex: /usr/lib), os apps GUI crasham sem aceleração de hardware.
-# O `nixGL` resolve isso fazendo a ponte entre o app do Nix e o driver OpenGL/Vulkan da distribuição hospedeira.
+# nixGLType: "intel" | "nvidia" | "mesa" | "auto" | null
+#   intel  → nixGLIntel   (Intel/Mesa; recomendado para laptops Optimus onde Intel gerencia o display)
+#   nvidia → nixGLNvidia  (GPU NVIDIA primária)
+#   mesa   → nixGLMesa    (Mesa genérico)
+#   auto   → auto.nixGLDefault (detecção automática — pode falhar no nixpkgs 26.05 com NVIDIA)
+#   null   → nixGLIntel como padrão seguro
 #
-# DETECÇÃO DO NIXGL:
-# - Modo impuro (avaliação com --impure, ex: hm-switch): usa `auto.nixGLDefault` que detecta GPU automaticamente.
-# - Modo puro (nix flake check, build CI): usa `nixGLIntel` como fallback funcional para sistemas Intel/Mesa.
-#   NOTA: O fallback anterior era `exec "$@"` (identidade), que causava erro GL em distros não-NixOS.
-#         Agora usamos nixGLIntel que exporta os paths corretos do Mesa do Nix Store.
-#
-# SELECÇÃO EXPLÍCITA (parâmetro nixGLType):
-# Para evitar a auto-detecção quebrada (ex: nixGLNvidia falha no nixpkgs 26.05 por mudança de API),
-# use o parâmetro `nixGLType` ao chamar este arquivo:
-#   - "intel"  -> nixGLIntel  (Intel/Mesa, recomendado para laptops dual-GPU onde Intel gerencia o display)
-#   - "nvidia" -> nixGLNvidia (somente NVIDIA discreta, xorg/wayland rodando na GPU NVIDIA)
-#   - "mesa"   -> nixGLMesa   (Mesa genérico, sem VA-API Intel)
-#   - "auto"   -> auto.nixGLDefault (detecção automática, pode falhar em alguns sistemas)
-#   - null     -> comportamento padrão (auto se impuro, intel se puro)
+# ATENÇÃO: auto.nixGLDefault tenta construir nixGLNvidia ao ser avaliado (mesmo com --impure).
+# No nixpkgs 26.05 isso falha (API 'kernel' removida). Use nixGLType = "intel" nesses casos.
+# O nixGLOverrideOverlay em lib/helpers.nix previne essa avaliação para hosts com nixGLType explícito.
 
 {
   pkgs,
-  # Tipo de wrapper nixGL a usar. Veja comentários acima.
-  # Valores: "intel" | "nvidia" | "mesa" | "auto" | null
   nixGLType ? null,
-  # Fallback explícito do nixGL caso nixGLType seja null.
-  # Detecção:
-  # 1. nixGLType explícito -> usa o wrapper correspondente diretamente
-  # 2. Modo impuro (builtins.currentTime disponível) e nixGLType=null -> auto.nixGLDefault
-  # 3. Modo puro e nixGLType=null -> nixGLIntel (fallback seguro Intel/Mesa)
-  nixGL ?
-    if nixGLType == "intel" then
-      pkgs.nixgl.nixGLIntel
-    else if nixGLType == "nvidia" then
-      pkgs.nixgl.auto.nixGLNvidia
-    else if nixGLType == "mesa" then
-      pkgs.nixgl.nixGLMesa
-    else if nixGLType == "auto" then
-      pkgs.nixgl.auto.nixGLDefault
-    else if (builtins ? currentTime && pkgs ? nixgl && pkgs.nixgl ? auto) then
-      # Modo impuro com nixGLType=null: tenta auto, com fallback para Intel
-      # ATENÇÃO: auto.nixGLDefault pode falhar se a GPU NVIDIA usar uma versão de driver
-      # incompatível com o nixpkgs atual. Nesse caso, defina nixGLType = "intel" no mkHome.
-      pkgs.nixgl.nixGLIntel
-    else if (pkgs ? nixgl && pkgs.nixgl ? nixGLIntel) then
-      pkgs.nixgl.nixGLIntel
-    else
-      (pkgs.writeShellScriptBin "nixGL" ''exec "$@"''),
 }:
 
 let
-  inherit (pkgs.lib) concatStringsSep optionalString optionalAttrs;
+  inherit (pkgs.lib) optionalAttrs;
+  gl = pkgs.nixgl or { };
 
-  # Nome do binário dentro do pacote nixGL selecionado.
-  # Cada variante do nixGL tem um nome diferente:
-  #   auto.nixGLDefault -> "nixGL"
-  #   nixGLIntel        -> "nixGLIntel"
-  #   nixGLMesa         -> "nixGLMesa"
-  #   nixGLNvidia       -> "nixGLNvidia" (ou "nixGL" em algumas versões)
-  nixGLBin =
-    if nixGLType == "intel" then "nixGLIntel"
-    else if nixGLType == "mesa" then "nixGLMesa"
-    else if nixGLType == "nvidia" then "nixGLNvidia"
-    else "nixGL"; # auto ou null -> auto.nixGLDefault usa "nixGL"
+  # Seleciona o pacote nixGL correto e o nome do seu binário.
+  pick =
+    type:
+    {
+      "intel"  = { pkg = gl.nixGLIntel           or null; bin = "nixGLIntel"; };
+      "nvidia" = { pkg = gl.auto.nixGLNvidia      or null; bin = "nixGLNvidia"; };
+      "mesa"   = { pkg = gl.nixGLMesa             or null; bin = "nixGLMesa"; };
+      "auto"   = { pkg = gl.auto.nixGLDefault     or null; bin = "nixGL"; };
+    }
+    .${type} or { pkg = gl.nixGLIntel or null; bin = "nixGLIntel"; };
+
+  selected = pick (if nixGLType != null then nixGLType else "intel");
+  nixGL    = selected.pkg or (pkgs.writeShellScriptBin "nixGL" ''exec "$@"'');
+  nixGLBin = selected.bin;
+
+  # Cria um wrapper de binários que chama nixGL antes de cada executável.
+  mkBinWrapper =
+    pkg:
+    pkgs.runCommandLocal "nixgl-bin-${pkg.name or pkg.pname or "unnamed"}"
+      { inherit (pkg) meta passthru; }
+      ''
+        set -euo pipefail
+        cp -r --no-preserve=mode "${pkg}" "$out"
+        rm -rf "$out/bin" && mkdir -p "$out/bin"
+        shopt -s nullglob
+        for bin in "${pkg}"/bin/*; do
+          [ -f "$bin" ] && [ -x "$bin" ] || continue
+          printf '#!${pkgs.runtimeShell}\nexec ${nixGL}/bin/${nixGLBin} "%s" "$@"\n' "$bin" \
+            > "$out/bin/$(basename "$bin")"
+          chmod +x "$out/bin/$(basename "$bin")"
+        done
+        shopt -u nullglob
+      '';
+
 in
 rec {
-  # ---------------------------------------------------------------------------
-  # 1. WRAPPER DE BINÁRIOS (`wrapper`)
-  # ---------------------------------------------------------------------------
-  # Recebe um pacote Nix (ex: `pkgs.alacritty`) e empacota todos os seus executáveis em `bin/`.
-  # Em vez de chamar o binário diretamente, ele cria um script shell que executa:
-  #   `nixGL /nix/store/...-alacritty/bin/alacritty "$@"`
-  # Isso garante aceleração de hardware por GPU via terminal.
+  # Envolve os binários de um pacote com nixGL (aceleração de hardware).
   wrapper =
     pkg:
     if pkg == null || !(pkg ? outPath) then
       pkg
     else
-      let
-        drv = pkgs.runCommandLocal "nixgl-bin-${pkg.name or pkg.pname or "unnamed"}"
-          {
-            inherit (pkg) meta passthru;
-          }
-          ''
-            set -euo pipefail
-
-            # Copia a estrutura original do pacote sem sobrescrever o nix store original
-            cp -r --no-preserve=mode "${pkg}" "$out"
-
-            # Recria a pasta bin/ com os scripts envoltos pelo nixGL
-            rm -rf "$out/bin"
-            mkdir -p "$out/bin"
-
-            # Itera sobre cada binário do pacote e cria o wrapper
-            shopt -s nullglob
-            for bin in "${pkg}"/bin/*; do
-              if [ -f "$bin" ] && [ -x "$bin" ]; then
-                cat > "$out/bin/$(basename "$bin")" <<EOF
-#!${pkgs.runtimeShell}
-exec ${nixGL}/bin/${nixGLBin} "$bin" "\$@"
-EOF
-                chmod +x "$out/bin/$(basename "$bin")"
-              fi
-            done
-            shopt -u nullglob
-          '';
-      in
+      let drv = mkBinWrapper pkg; in
       drv
-      // optionalAttrs (pkg ? override) {
-        override = args: wrapper (pkg.override args);
-      }
-      // optionalAttrs (pkg ? overrideAttrs) {
-        overrideAttrs = f: wrapper (pkg.overrideAttrs f);
-      };
+      // optionalAttrs (pkg ? override)     { override     = args: wrapper (pkg.override args); }
+      // optionalAttrs (pkg ? overrideAttrs) { overrideAttrs = f:   wrapper (pkg.overrideAttrs f); };
 
-  # ---------------------------------------------------------------------------
-  # 2. WRAPPER DE ARQUIVOS DESKTOP (`wrapDesktopFiles`)
-  # ---------------------------------------------------------------------------
-  # Além dos binários, altera os atalhos de menu gráfico (arquivos `.desktop`).
-  # Substitui a linha `Exec=programa` por `Exec=nixGL programa`.
-  # Isso garante que abrir o programa pelo menu do sistema (GNOME, XFCE, Rofi, etc) também use a GPU.
+  # Envolve binários e corrige as entradas Exec= nos arquivos .desktop.
   wrapDesktopFiles =
     pkg:
     let
-      binWrapped = wrapper pkg;
+      wrapped = wrapper pkg;
       drv = pkgs.runCommandLocal "nixgl-desktop-${pkg.name or pkg.pname or "unnamed"}"
-        {
-          inherit (pkg) meta passthru;
-        }
+        { inherit (pkg) meta passthru; }
         ''
           set -euo pipefail
-
-          cp -r --no-preserve=mode "${binWrapped}" "$out"
-
-          # Diretório temporário para edição segura dos atalhos .desktop
-          mkdir -p temp_desktop
-
+          cp -r --no-preserve=mode "${wrapped}" "$out"
           shopt -s globstar nullglob
-          for d in "$out"/share/applications/**/*.desktop "$out"/share/gnome/applications/**/*.desktop; do
-            if [ -f "$d" ]; then
-              cp "$d" temp_desktop/temp.desktop
-              sed 's|^Exec=\(.*\)$|Exec=${nixGL}/bin/${nixGLBin} \1|' temp_desktop/temp.desktop > "$d"
-              rm temp_desktop/temp.desktop
-            fi
+          for d in "$out"/share/{,gnome/}applications/**/*.desktop; do
+            [ -f "$d" ] || continue
+            sed -i 's|^Exec=\(.*\)$|Exec=${nixGL}/bin/${nixGLBin} \1|' "$d"
           done
           shopt -u globstar nullglob
-
-          rm -rf temp_desktop
         '';
     in
     drv
-    // optionalAttrs (pkg ? override) {
-      override = args: wrapDesktopFiles (pkg.override args);
-    }
-    // optionalAttrs (pkg ? overrideAttrs) {
-      overrideAttrs = f: wrapDesktopFiles (pkg.overrideAttrs f);
-    };
+    // optionalAttrs (pkg ? override)     { override     = args: wrapDesktopFiles (pkg.override args); }
+    // optionalAttrs (pkg ? overrideAttrs) { overrideAttrs = f:   wrapDesktopFiles (pkg.overrideAttrs f); };
 }
