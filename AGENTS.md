@@ -435,4 +435,19 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - `fix-debian.sh`: Adicionados `iwd` e `wireless-regdb`, provisionamento declarativo do backend iwd e serviço habilitado.
     - Sistema ao vivo atualizado e validado (`nmcli device wifi list` escaneando 100%).
 
+- **zRAM, Otimizações de I/O Btrfs e Partições no Host `nitro` (Debian Standalone)**:
+  - **Instalação e Configuração do zRAM**:
+    - O zRAM não estava instalado nem configurado no script original `nitro-dual-debian.sh`.
+    - Instalado `systemd-zram-generator` e configurado `/etc/systemd/zram-generator.conf` com dispositivo `zram0`, tamanho `min(ram / 2, 8192)` (8 GB), algoritmo `zstd` e prioridade 100.
+    - Otimização do kernel via `/etc/sysctl.d/99-zram.conf`: `vm.swappiness = 100` e `vm.page-cluster = 0` (elimina leitura sequencial desnecessária para swap em RAM).
+    - Topologia híbrida de Swap: `/dev/zram0` com prioridade 100 (RAM rápida com compressão) e `/var/swap/swapfile` (16 GB Btrfs) com prioridade 10 (disco de segurança em NVMe).
+  - **Otimização de Compressão Btrfs**:
+    - Flags legadas `compress-force=zstd:14` e `15` causavam travamentos e sobrecarga severa de CPU durante compilações e atualizações de pacotes.
+    - Unificadas para `compress=zstd:3` (sistema/snapshots/opt) e `compress=zstd:1` (throughput em home/nix/dados), eliminando lentidão no NVMe.
+    - Dracut: otimizado de `compress="zstd --ultra -14"` para `compress="zstd -3"`, reduzindo o tempo de geração de initramfs de minutos para segundos.
+  - **Partição SharedData e Integridade do Nix Multi-usuário**:
+    - Adicionada montagem persistente da partição exFAT `SharedData` no fstab (`LABEL=SharedData` / `UUID=FBF7-F8A5`).
+    - Corrigidas permissões do Nix daemon (`root:root 0755` nas árvores `/nix/var/nix`) e `SocketMode=0666`, eliminando falha de `unsafe path transition` do `systemd-tmpfiles-setup.service`.
+    - Mascarado `systemd-networkd-wait-online.service` para evitar atrasos de boot na rede.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
