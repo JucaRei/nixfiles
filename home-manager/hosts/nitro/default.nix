@@ -17,7 +17,7 @@ in
           name = "HDMI-1-0";
           x = 0;
           y = 0;
-          primary = false;
+          primary = true;
         }
       )
       (
@@ -26,7 +26,7 @@ in
           name = "HDMI-1-1";
           x = 0;
           y = 0;
-          primary = false;
+          primary = true;
         }
       )
       (
@@ -35,7 +35,7 @@ in
           name = "eDP-1";
           x = 1920;
           y = 0;
-          primary = true;
+          primary = false;
         }
       )
     ];

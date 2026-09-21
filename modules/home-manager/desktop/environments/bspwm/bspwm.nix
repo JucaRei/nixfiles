@@ -100,11 +100,11 @@ in
           settings = {
             split_ratio = 0.52;
             border_width = 2;
-            window_gap = 10; # Gaps arejados estilo Hyprland
-            top_padding = 34; # Altura da Polybar
-            bottom_padding = 6;
-            left_padding = 6;
-            right_padding = 6;
+            window_gap = 6; # Gaps arejados estilo Hyprland
+            top_padding = 20; # Altura da Polybar
+            bottom_padding = 4;
+            left_padding = 4;
+            right_padding = 4;
             normal_border_color = "#181825"; # Catppuccin Mantle escuro
             active_border_color = "#313244"; # Catppuccin Surface0
             focused_border_color = "#cba6f7"; # Catppuccin Mauve (Glow característico do Hyprland)
@@ -294,10 +294,26 @@ in
               setup-monitors || true
             fi
 
-            # Configurar workspaces 1 a 10 (onde 0 = 10) em todos os monitores conectados
-            for m in $(bspc query -M); do
-              bspc monitor "$m" -d I II III IV V VI VII VIII IX X
-            done
+            # Distribuir workspaces de acordo com a topologia de monitores:
+            # - Em setup multi-monitor: monitor principal recebe 1 3 5 7 9 e o secundário recebe 2 4 6 8 0
+            # - Em monitor único: recebe todos os workspaces 1 2 3 4 5 6 7 8 9 0
+            primary_mon=$(xrandr --query 2>/dev/null | grep " connected primary" | cut -d" " -f1)
+            [ -z "$primary_mon" ] && primary_mon=$(bspc query -M -m primary --names 2>/dev/null || true)
+            [ -z "$primary_mon" ] && primary_mon=$(bspc query -M --names 2>/dev/null | head -n1)
+
+            other_mons=$(bspc query -M --names 2>/dev/null | grep -v "^$primary_mon$" || true)
+
+            if [ -n "$primary_mon" ] && [ -n "$other_mons" ]; then
+              bspc wm -O "$primary_mon" $other_mons 2>/dev/null || true
+              bspc monitor "$primary_mon" -d 1 3 5 7 9
+              sec_mon=$(echo "$other_mons" | head -n1)
+              bspc monitor "$sec_mon" -d 2 4 6 8 0
+              for extra in $(echo "$other_mons" | tail -n +2); do
+                bspc monitor "$extra" -d 1 2 3 4 5
+              done
+            elif [ -n "$primary_mon" ]; then
+              bspc monitor "$primary_mon" -d 1 2 3 4 5 6 7 8 9 0
+            fi
 
             # Carregar bibliotecas de driver gráfico se presentes (essencial para drivers legados como NVIDIA 340)
             if [ -d /run/opengl-driver/lib ] && [ -f /run/opengl-driver/lib/libGL.so.1 ]; then
@@ -307,10 +323,20 @@ in
             # Configuração do teclado herdada declarativamente de home.keyboard
             ${lib.optionalString (config.home.keyboard != null) ''
               ${pkgs.xorg.setxkbmap}/bin/setxkbmap \
-                ${lib.optionalString (config.home.keyboard.model != null) "-model '${config.home.keyboard.model}'"} \
-                ${lib.optionalString (config.home.keyboard.layout != null) "-layout '${config.home.keyboard.layout}'"} \
-                ${lib.optionalString (config.home.keyboard.variant != null) "-variant '${config.home.keyboard.variant}'"} \
-                ${lib.concatMapStringsSep " " (opt: "-option '${opt}'") (config.home.keyboard.options or [ ])} || true
+                ${
+                  lib.optionalString (config.home.keyboard.model != null) "-model '${config.home.keyboard.model}'"
+                } \
+                ${
+                  lib.optionalString (config.home.keyboard.layout != null) "-layout '${config.home.keyboard.layout}'"
+                } \
+                ${
+                  lib.optionalString (
+                    config.home.keyboard.variant != null
+                  ) "-variant '${config.home.keyboard.variant}'"
+                } \
+                ${
+                  lib.concatMapStringsSep " " (opt: "-option '${opt}'") (config.home.keyboard.options or [ ])
+                } || true
             ''}
 
             # Iniciar daemon de atalhos de teclado (SXHKD)
@@ -424,7 +450,15 @@ in
           "XAUTHORITY"
         ];
         Environment = [
-          "PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.bspwm pkgs.xdotool pkgs.rofi pkgs.xprop ]}:/run/current-system/sw/bin"
+          "PATH=${
+            lib.makeBinPath [
+              pkgs.coreutils
+              pkgs.bspwm
+              pkgs.xdotool
+              pkgs.rofi
+              pkgs.xprop
+            ]
+          }:/run/current-system/sw/bin"
         ];
       };
       Install = {

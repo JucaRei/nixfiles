@@ -78,6 +78,15 @@ let
           else
             "${pkgs.xrandr}/bin/xrandr --output ${m.name} --off 2>/dev/null || true"
         ) cfg.monitors}
+
+        # Fallback dinâmico: se nenhum monitor primário foi ativado (ex: tela externa desconectada),
+        # promove a primeira tela conectada a primária na posição 0x0
+        if ! ${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep -q " connected primary"; then
+          first_conn=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | head -n1 | cut -d" " -f1)
+          if [ -n "$first_conn" ]; then
+            ${pkgs.xrandr}/bin/xrandr --output "$first_conn" --primary --pos 0x0 2>/dev/null || true
+          fi
+        fi
       fi
     fi
   '';
@@ -252,6 +261,15 @@ in
         ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 2>/dev/null || true
         ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-0 2>/dev/null || true
         ${xrandrCommands}
+
+        # Fallback dinâmico: se nenhum monitor primário foi ativado (ex: tela externa desconectada),
+        # promove a primeira tela conectada a primária na posição 0x0
+        if ! ${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep -q " connected primary"; then
+          first_conn=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | head -n1 | cut -d" " -f1)
+          if [ -n "$first_conn" ]; then
+            ${pkgs.xrandr}/bin/xrandr --output "$first_conn" --primary --pos 0x0 2>/dev/null || true
+          fi
+        fi
       ''
     );
 

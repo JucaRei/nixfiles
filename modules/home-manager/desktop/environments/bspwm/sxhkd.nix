@@ -352,9 +352,9 @@ in
         "super + shift + bracketleft" = "bspc node -m prev --follow";
         "super + shift + bracketright" = "bspc node -m next --follow";
 
-        # --- Áreas de Trabalho (Workspaces 1-10) ---
-        "super + {1-9,0}" = "bspc desktop -f '^{1-9,10}'";
-        "super + shift + {1-9,0}" = "bspc node -d '^{1-9,10}'";
+        # --- Áreas de Trabalho (Workspaces 1-10, onde 0 = 10) ---
+        "super + {1-9,0}" = "bspc desktop -f '{1-9,0}'";
+        "super + shift + {1-9,0}" = "bspc node -d '{1-9,0}'";
 
         # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
         "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";

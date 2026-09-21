@@ -471,5 +471,17 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Adicionada montagem persistente da partição exFAT `SharedData` no fstab (`LABEL=SharedData` / `UUID=FBF7-F8A5`).
     - Corrigidas permissões do Nix daemon (`root:root 0755` nas árvores `/nix/var/nix`) e `SocketMode=0666`, eliminando falha de `unsafe path transition` do `systemd-tmpfiles-setup.service`.
     - Mascarado `systemd-networkd-wait-online.service` para evitar atrasos de boot na rede.
+- **BSPWM — Topologia de Monitores e Distribuição de Workspaces (Host `nitro`)**:
+  - **Prioridade de Monitor**: Em `home-manager/hosts/nitro/default.nix`, as saídas HDMI externas (`HDMI-1-0` e `HDMI-1-1`) foram configuradas com `primary = true` e a tela interna do notebook (`eDP-1`) como `primary = false`. No módulo `modules/home-manager/desktop/monitors/default.nix`, foi adicionado fallback automático em `setup-monitors` e `xsession.initExtra` garantindo que se a tela externa for desconectada, a primeira saída ativa (`eDP-1`) é automaticamente promovida a primária na posição `0x0`.
+  - **Distribuição de Workspaces (Ímpares no Principal, Pares no Secundário)**:
+    - Em setup multi-monitor no `bspwm.nix`, os monitores são reordenados via `bspc wm -O` colocando o monitor primário como primeiro.
+    - Monitor Principal: recebe os workspaces ímpares `1 3 5 7 9`.
+    - Monitor Secundário: recebe os workspaces pares `2 4 6 8 0` (onde 0 equivale à 10ª workspace).
+    - Em setup de monitor único (laptop desconectado): recebe todos os workspaces em sequência `1 2 3 4 5 6 7 8 9 0`.
+  - **Polybar (`pin-workspaces = true`)**: A barra no monitor principal renderiza exclusivamente os pills `1 3 5 7 9`, e a barra no secundário renderiza exclusivamente os pills `2 4 6 8 0`.
+  - **Atalhos SXHKD (`sxhkd.nix`)**:
+    - O comando `bspc desktop -f '^{1-9,10}'` endereçava por índice numérico global de desktops. Com a divisão ímpar/par, o desktop `^2` correspondia ao 2º desktop do primeiro monitor (`3`), impedindo o foco no monitor secundário.
+    - Corrigido para endereçamento direto por nome: `bspc desktop -f '{1-9,0}'` e `bspc node -d '{1-9,0}'`. Pressionar `Super + 2, 4, 6, 8, 0` alterna instantaneamente o foco e cursor para o workspace no monitor secundário, e `Super + 1, 3, 5, 7, 9` para o principal.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
