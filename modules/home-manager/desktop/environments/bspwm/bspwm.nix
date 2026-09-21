@@ -288,6 +288,11 @@ in
             bspc rule -a "xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
             bspc rule -a "Xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
 
+            # Aplicar resolução e layout de telas declarativos antes de distribuir os workspaces
+            if command -v setup-monitors >/dev/null 2>&1; then
+              setup-monitors || true
+            fi
+
             # Configurar workspaces 1 a 10 (onde 0 = 10) em todos os monitores conectados
             for m in $(bspc query -M); do
               bspc monitor "$m" -d I II III IV V VI VII VIII IX X
@@ -348,13 +353,22 @@ in
             # Foco segue o ponteiro
             bspc config focus_follows_pointer true
 
-            # Configurar Touchpad: Natural Scrolling (estilo macOS), Tapping e Clickfinger
+            # Configurar Touchpad vs Mouse:
+            # - Touchpad: Natural Scrolling (estilo macOS), Tapping e Clickfinger ativados
+            # - Mouse: Natural Scrolling DESATIVADO (rolagem padrão tradicional)
             if command -v ${pkgs.xinput}/bin/xinput >/dev/null 2>&1; then
               for id in $(${pkgs.xinput}/bin/xinput list --id-only 2>/dev/null); do
-                if ${pkgs.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -q "libinput Natural Scrolling Enabled"; then
+                dev_name=$(${pkgs.xinput}/bin/xinput list --name-only "$id" 2>/dev/null | tr '[:upper:]' '[:lower:]')
+                has_tapping=$(${pkgs.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -c "libinput Tapping Enabled" || true)
+
+                if echo "$dev_name" | grep -q "touchpad" || [ "$has_tapping" -gt 0 ]; then
                   ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 1 2>/dev/null || true
                   ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Tapping Enabled" 1 2>/dev/null || true
                   ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Click Method Enabled" 0 1 2>/dev/null || true
+                else
+                  if ${pkgs.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -q "libinput Natural Scrolling Enabled"; then
+                    ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 0 2>/dev/null || true
+                  fi
                 fi
               done
             fi

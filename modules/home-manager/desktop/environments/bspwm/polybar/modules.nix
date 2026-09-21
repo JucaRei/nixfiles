@@ -53,7 +53,7 @@
   # --- Workspaces do BSPWM (Pills Dinâmicos) ---
   "module/bspwm" = {
     type = "internal/bspwm";
-    pin-workspaces = false;
+    pin-workspaces = true;
     enable-click = true;
     enable-scroll = true;
     reverse-scroll = false;
@@ -297,6 +297,7 @@
   # --- Velocidade de Tráfego de Rede (Download / Upload - Cabo e Wi-Fi) ---
   "module/netspeed" = {
     type = "internal/network";
+    interface-type = "wired";
     accumulate-stats = true;
     interval = 1;
 

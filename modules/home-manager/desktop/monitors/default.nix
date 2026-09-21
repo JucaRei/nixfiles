@@ -66,6 +66,8 @@ let
     # --- 2. X11 (xrandr) ---
     if [ -n "''${DISPLAY:-}" ]; then
       if command -v ${pkgs.xrandr}/bin/xrandr >/dev/null 2>&1; then
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 2>/dev/null || true
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-0 2>/dev/null || true
         ${concatMapStringsSep "\n        " (m:
           if m.enabled then
             let
@@ -247,6 +249,8 @@ in
       in
       ''
         # --- Configuração declarativa de monitores (desktop.monitors) ---
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 2>/dev/null || true
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-0 2>/dev/null || true
         ${xrandrCommands}
       ''
     );

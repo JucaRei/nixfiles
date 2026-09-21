@@ -346,6 +346,12 @@ in
         "super + shift + {h,j,k,l}" = "bspc node -s {west,south,north,east}";
         "super + shift + {Left,Down,Up,Right}" = "bspc node -s {west,south,north,east}";
 
+        # --- Navegação e Envio de Janelas Entre Monitores ---
+        "super + bracketleft" = "bspc monitor -f prev";
+        "super + bracketright" = "bspc monitor -f next";
+        "super + shift + bracketleft" = "bspc node -m prev --follow";
+        "super + shift + bracketright" = "bspc node -m next --follow";
+
         # --- Áreas de Trabalho (Workspaces 1-10) ---
         "super + {1-9,0}" = "bspc desktop -f '^{1-9,10}'";
         "super + shift + {1-9,0}" = "bspc node -d '^{1-9,10}'";

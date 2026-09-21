@@ -24,12 +24,21 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [
-      cfg.package
-    ];
+    home = {
+      packages = [
+        cfg.package
+        pkgs.direnv
+        pkgs.nix-direnv
+      ];
 
-    home.shellAliases = {
-      antigravity = "antigravity-ide";
+      shellAliases = {
+        antigravity = "antigravity-ide";
+      };
+    };
+
+    programs.direnv = {
+      enable = true;
+      nix-direnv.enable = true;
     };
   };
 }

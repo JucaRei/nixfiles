@@ -32,9 +32,11 @@ in
       script = ''
         polybar-msg cmd quit 2>/dev/null || true
         pkill -x polybar || true
-        while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+        while pgrep -u $UID -x polybar >/dev/null; do sleep 0.5; done
 
-        if type xrandr >/dev/null 2>&1; then
+        export PATH="${lib.makeBinPath [ pkgs.xorg.xrandr pkgs.gnugrep pkgs.coreutils pkgs.procps ]}:$PATH"
+
+        if command -v xrandr >/dev/null 2>&1; then
           for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
             MONITOR=$m polybar --reload main &
           done
