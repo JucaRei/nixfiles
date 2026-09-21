@@ -53,6 +53,18 @@
 
 let
   inherit (pkgs.lib) concatStringsSep optionalString optionalAttrs;
+
+  # Nome do binário dentro do pacote nixGL selecionado.
+  # Cada variante do nixGL tem um nome diferente:
+  #   auto.nixGLDefault -> "nixGL"
+  #   nixGLIntel        -> "nixGLIntel"
+  #   nixGLMesa         -> "nixGLMesa"
+  #   nixGLNvidia       -> "nixGLNvidia" (ou "nixGL" em algumas versões)
+  nixGLBin =
+    if nixGLType == "intel" then "nixGLIntel"
+    else if nixGLType == "mesa" then "nixGLMesa"
+    else if nixGLType == "nvidia" then "nixGLNvidia"
+    else "nixGL"; # auto ou null -> auto.nixGLDefault usa "nixGL"
 in
 rec {
   # ---------------------------------------------------------------------------
@@ -88,7 +100,7 @@ rec {
               if [ -f "$bin" ] && [ -x "$bin" ]; then
                 cat > "$out/bin/$(basename "$bin")" <<EOF
 #!${pkgs.runtimeShell}
-exec ${nixGL}/bin/nixGL "$bin" "\$@"
+exec ${nixGL}/bin/${nixGLBin} "$bin" "\$@"
 EOF
                 chmod +x "$out/bin/$(basename "$bin")"
               fi
@@ -130,7 +142,7 @@ EOF
           for d in "$out"/share/applications/**/*.desktop "$out"/share/gnome/applications/**/*.desktop; do
             if [ -f "$d" ]; then
               cp "$d" temp_desktop/temp.desktop
-              sed 's|^Exec=\(.*\)$|Exec=${nixGL}/bin/nixGL \1|' temp_desktop/temp.desktop > "$d"
+              sed 's|^Exec=\(.*\)$|Exec=${nixGL}/bin/${nixGLBin} \1|' temp_desktop/temp.desktop > "$d"
               rm temp_desktop/temp.desktop
             fi
           done
