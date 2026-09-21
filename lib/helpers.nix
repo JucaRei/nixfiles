@@ -26,6 +26,11 @@ rec {
       platform ? "x86_64-linux",
       stateVersion ? "26.05",
       useNixGL ? true,
+      # Tipo de wrapper nixGL: "intel" | "nvidia" | "mesa" | "auto" | null
+      # null = detecção automática (auto se impuro, intel se puro)
+      # Use "intel" em laptops dual-GPU onde Intel gerencia o display (ex: nitro)
+      # para evitar nixGLNvidia quebrado no nixpkgs 26.05.
+      nixGLType ? null,
       isISO ? false,
     }:
     let
@@ -43,7 +48,11 @@ rec {
           inputs.nur.overlays.default
         ] ++ (builtins.attrValues outputs.overlays);
       };
-      nixGLWrapper = if useNixGL then (import ./nixGL.nix { inherit pkgs; }).wrapper else (x: x);
+      nixGLWrapper =
+        if useNixGL then
+          (import ./nixGL.nix { inherit pkgs nixGLType; }).wrapper
+        else
+          (x: x);
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
@@ -58,6 +67,7 @@ rec {
           username
           stateVersion
           useNixGL
+          nixGLType
           isInstall
           isISO
           isWorkstation

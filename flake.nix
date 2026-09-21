@@ -65,6 +65,9 @@
         "juca@nitro" = helper.mkHome {
           hostname = "nitro";
           desktop = "bspwm";
+          # Intel UHD 630 gerencia o display; nixGLNvidia quebrado no nixpkgs 26.05
+          # (argumento 'kernel' incompatível na API do pacote NVIDIA)
+          nixGLType = "intel";
         };
 
         "juca@virtualvm" = helper.mkHome {

@@ -4,6 +4,7 @@
   pkgs,
   useNixGL ? false,
   desktop ? null,
+  nixGLType ? null,
   ...
 }:
 let
@@ -11,7 +12,7 @@ let
   inherit (lib.types) bool listOf str;
   cfg = config.desktop.bspwm;
 
-  nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs; };
+  nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
   externalRulesScript = pkgs.writeShellScript "bspwm-external-rules" ''

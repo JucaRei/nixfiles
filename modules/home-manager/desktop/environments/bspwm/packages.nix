@@ -5,6 +5,7 @@
   useNixGL ? false,
   osConfig ? null,
   username ? "juca",
+  nixGLType ? null,
   ...
 }:
 let
@@ -12,7 +13,7 @@ let
   inherit (lib.types) bool package;
   cfg = config.desktop.bspwm.packages;
 
-  nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs; };
+  nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
   isNixOS = osConfig != null;

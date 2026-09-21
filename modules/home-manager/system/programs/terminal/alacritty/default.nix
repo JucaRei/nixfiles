@@ -3,11 +3,12 @@
   lib,
   pkgs,
   useNixGL ? false,
+  nixGLType ? null,
   ...
 }:
 let
   cfg = config.system.programs.terminal;
-  nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs; };
+  nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
 in

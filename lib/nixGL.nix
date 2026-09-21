@@ -11,16 +11,40 @@
 # - Modo puro (nix flake check, build CI): usa `nixGLIntel` como fallback funcional para sistemas Intel/Mesa.
 #   NOTA: O fallback anterior era `exec "$@"` (identidade), que causava erro GL em distros não-NixOS.
 #         Agora usamos nixGLIntel que exporta os paths corretos do Mesa do Nix Store.
+#
+# SELECÇÃO EXPLÍCITA (parâmetro nixGLType):
+# Para evitar a auto-detecção quebrada (ex: nixGLNvidia falha no nixpkgs 26.05 por mudança de API),
+# use o parâmetro `nixGLType` ao chamar este arquivo:
+#   - "intel"  -> nixGLIntel  (Intel/Mesa, recomendado para laptops dual-GPU onde Intel gerencia o display)
+#   - "nvidia" -> nixGLNvidia (somente NVIDIA discreta, xorg/wayland rodando na GPU NVIDIA)
+#   - "mesa"   -> nixGLMesa   (Mesa genérico, sem VA-API Intel)
+#   - "auto"   -> auto.nixGLDefault (detecção automática, pode falhar em alguns sistemas)
+#   - null     -> comportamento padrão (auto se impuro, intel se puro)
 
 {
   pkgs,
-  # Detecção do nixGL:
-  # 1. Modo impuro (builtins.currentTime disponível): usa auto.nixGLDefault para detecção automática da GPU.
-  # 2. Modo puro (avaliação do flake check/CI): usa nixGLIntel como fallback funcional
-  #    (exporta LIBGL_DRIVERS_PATH e LD_LIBRARY_PATH do Mesa do Nix Store).
+  # Tipo de wrapper nixGL a usar. Veja comentários acima.
+  # Valores: "intel" | "nvidia" | "mesa" | "auto" | null
+  nixGLType ? null,
+  # Fallback explícito do nixGL caso nixGLType seja null.
+  # Detecção:
+  # 1. nixGLType explícito -> usa o wrapper correspondente diretamente
+  # 2. Modo impuro (builtins.currentTime disponível) e nixGLType=null -> auto.nixGLDefault
+  # 3. Modo puro e nixGLType=null -> nixGLIntel (fallback seguro Intel/Mesa)
   nixGL ?
-    if (builtins ? currentTime && pkgs ? nixgl && pkgs.nixgl ? auto) then
+    if nixGLType == "intel" then
+      pkgs.nixgl.nixGLIntel
+    else if nixGLType == "nvidia" then
+      pkgs.nixgl.auto.nixGLNvidia
+    else if nixGLType == "mesa" then
+      pkgs.nixgl.nixGLMesa
+    else if nixGLType == "auto" then
       pkgs.nixgl.auto.nixGLDefault
+    else if (builtins ? currentTime && pkgs ? nixgl && pkgs.nixgl ? auto) then
+      # Modo impuro com nixGLType=null: tenta auto, com fallback para Intel
+      # ATENÇÃO: auto.nixGLDefault pode falhar se a GPU NVIDIA usar uma versão de driver
+      # incompatível com o nixpkgs atual. Nesse caso, defina nixGLType = "intel" no mkHome.
+      pkgs.nixgl.nixGLIntel
     else if (pkgs ? nixgl && pkgs.nixgl ? nixGLIntel) then
       pkgs.nixgl.nixGLIntel
     else
