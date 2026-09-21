@@ -196,9 +196,14 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Causa dos Saltos de 7%**: O kernel Linux no MacBook Air 4,1 registrava por padrão apenas a interface ACPI legada `acpi_video0` (`max_brightness = 15`), onde 1 passo representava 6.67% (~7%).
   - **Ativação PWM Nativa**: Injetado `acpi_backlight=native` nos parâmetros de boot do kernel via `grubby` e `/etc/default/grub` no Fedora, permitindo controle fino do backlight via `intel_backlight`.
   - **Scripts Unificados em 2%**: `mango-mon-brightness-osd`, `mango-kbd-brightness-osd`, `hypr-mon-brightness-osd` e o módulo `backlight` do Waybar atualizados para saltos de **2%** (`+2%` e `2%-`) com fallback para step unitário (`+1`/`1-`).
-- **Antigravity IDE & Terminal Integrado no Fedora Standalone (`anubis`)**:
+- **Antigravity IDE & Automação CDP / Auto Accept**:
   - **Wrapper FHS vs Nativo**: O wrapper `pkgs.unstable.antigravity-ide-fhs` utiliza Bubblewrap (`bwrap`) para isolar o ambiente simulando o FHS no NixOS. No Fedora standalone, isso isolava o `/usr/bin` do host (comandos `sudo`, `systemctl`, `ps`, `ip`, `hostname` e `dnf` sumiam no terminal) e quebrava o link `/etc/os-release`, causando crash do `nitch` com `IOError` a cada inicialização de terminal.
-  - **Módulo `editors/antigravity`**: Ajustado pacote padrão para `if isNixOS then pkgs.unstable.antigravity-ide-fhs else pkgs.unstable.antigravity-ide;`, garantindo execução nativa sem sandbox no Fedora e mantendo `-fhs` no NixOS. Mantido alias `antigravity` apontando para `antigravity-ide` e removido o alias `agy` para não sombrear o binário oficial do `antigravity-cli` (`agy`).
+  - **Módulo `editors/antigravity`**: Ajustado pacote padrão para `if isNixOS then pkgs.unstable.antigravity-ide-fhs else pkgs.unstable.antigravity-ide;`, garantindo execução nativa sem sandbox no Fedora e mantendo `-fhs` no NixOS.
+  - **Suporte a CDP (Chrome DevTools Protocol - Porta 9004)**: Para extensões de automação como `antigravity-auto-accept`:
+    - Adicionada opção `system.programs.editors.antigravity.remoteDebuggingPort` (padrão `"9004"`).
+    - Criado wrapper executável `antigravity` em `home.packages` que injeta `--remote-debugging-port=9004 "$@"`, garantindo compatibilidade com chamadas de terminal e scripts de reinício da extensão.
+    - Provisionados arquivos `.desktop` (`antigravity.desktop` e `antigravity-ide.desktop`) com o flag `--remote-debugging-port=9004`.
+    - Hook de ativação (`configureAntigravityCdp`) que injeta `"remote-debugging-port": "9004"` de forma persistente em `~/.antigravity-ide/argv.json`, garantindo que toda inicialização do Electron abra a porta CDP mesmo se disparada sem parâmetros de linha de comando.
   - **Ação Customizada no Thunar**: Corrigido comando de `antigravity %f` para `antigravity-ide %f` em `thunar/default.nix`.
 - **Módulo Chromium / Chrome (`chrome/default.nix`) & nixGL Wrapper (`nixGL.nix`)**:
   - Adicionado `mkOption` na opção `system.programs.browsers.chromium.version` (evita erro de avaliação ao declarar string em vez de submódulo).
@@ -431,10 +436,14 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Causa Raiz 1 (Pacote iWD Ausente)**: O script `nitro-dual-debian.sh` configurava `/etc/NetworkManager/conf.d/wifi_backend.conf` com `wifi.backend=iwd`, mas o pacote `iwd` estava comentado na linha de instalação (`apt install network-manager rfkill`), e `wpasupplicant` também não estava instalado. Sem um backend sem fio ativo no D-Bus, o NetworkManager marcava a placa `wlp0s20f3` em estado `unavailable`.
   - **Causa Raiz 2 (Conflito de Configuração de IP no iWD)**: O arquivo `/etc/iwd/main.conf` continha `EnableNetworkConfiguration=true`. Ao usar o iWD como backend do NetworkManager, essa opção deve ser estritamente `false`, pois o NetworkManager deve ser o único responsável pelo DHCP e DNS.
   - **Causa Raiz 3 (Conflito com systemd-networkd)**: O `systemd-networkd.service` estava habilitado e concorrendo com o NetworkManager pelo gerenciamento de links. Desativado e mascarado o socket em favor do NetworkManager.
+  - **Causa Raiz 4 (Serviço Destrutivo `iwlwifi-reload.service` no Boot)**:
+    - O script `nitro-dual-debian.sh` criava e habilitava um serviço `/etc/systemd/system/iwlwifi-reload.service` que executava `/sbin/modprobe -r iwlwifi && /sbin/modprobe iwlwifi` após o `network.target`.
+    - Ao descarregar o módulo do kernel durante a inicialização com o `iwd` e o `NetworkManager` já em execução, a interface `wlan0` era destruída por baixo do daemon, invalidando os descritores netlink do `iwd` e deixando a placa permanentemente em estado `unavailable`.
+    - Além disso, o `NetworkManager.service` não possuía dependência explícita de inicialização após o `iwd.service`.
   - **Correções Aplicadas nos Scripts**:
-    - `nitro-dual-debian.sh`: Descomentado `firmware-iwlwifi`, adicionados `iwd` e `wireless-regdb` ao `apt install`, corrigido `EnableNetworkConfiguration=false` no `main.conf`, e desativado `systemd-networkd` habilitando `iwd` e `NetworkManager`.
-    - `fix-debian.sh`: Adicionados `iwd` e `wireless-regdb`, provisionamento declarativo do backend iwd e serviço habilitado.
-    - Sistema ao vivo atualizado e validado (`nmcli device wifi list` escaneando 100%).
+    - `nitro-dual-debian.sh`: Descomentado `firmware-iwlwifi`, adicionados `iwd` e `wireless-regdb` ao `apt install`, corrigido `EnableNetworkConfiguration=false` no `main.conf`, desativado `systemd-networkd`, removido o bloco `iwlwifi-reload.service`, e adicionado drop-in `/etc/systemd/system/NetworkManager.service.d/iwd.conf` com `After=iwd.service Wants=iwd.service`.
+    - `fix-debian.sh`: Adicionados `iwd` e `wireless-regdb`, provisionamento declarativo do backend iwd e serviço habilitado, desativação/remoção de qualquer `iwlwifi-reload.service` existente e injeção do drop-in de dependência no NetworkManager.
+    - Sistema ao vivo: `iwlwifi-reload.service` desativado e removido, drop-in `NetworkManager.service.d/iwd.conf` criado, pilha de rede validada e Wi-Fi reconectando automaticamente no boot.
 
 - **zRAM, Otimizações de I/O Btrfs e Partições no Host `nitro` (Debian Standalone)**:
   - **Instalação e Configuração do zRAM**:
