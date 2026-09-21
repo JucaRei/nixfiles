@@ -4,7 +4,7 @@
   "Cookies": {
     "AcceptThirdParty": "from-visited"
   },
-  "BlockAboutConfig": true,
+  "BlockAboutConfig": false,
   "DefaultDownloadDirectory": "\\${home}/Downloads",
   "DisableAppUpdate": true,
   "DisableDefaultBrowserAgent": true,

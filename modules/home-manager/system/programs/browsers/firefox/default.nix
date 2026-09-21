@@ -68,7 +68,8 @@ in
           checkVaapi = mkIf (!isNixOS) (
             lib.hm.dag.entryAfter [ "writeBoundary" ] ''
               mkdir -p "$HOME/.local/scripts"
-              if vainfo --display drm 2>/dev/null | grep -q VAProfile; then
+              intel_render="$(ls /dev/dri/by-path/*00:02.0-render 2>/dev/null || echo /dev/dri/renderD129)"
+              if ${pkgs.libva-utils}/bin/vainfo 2>/dev/null | grep -q VAProfile || ${pkgs.libva-utils}/bin/vainfo --display drm --device "$intel_render" 2>/dev/null | grep -q VAProfile; then
                 export HAS_VAAPI=1
               else
                 export HAS_VAAPI=0

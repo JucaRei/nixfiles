@@ -14,7 +14,7 @@ let
         osConfig.hardware.graphics.extraPackages or (osConfig.hardware.opengl.extraPackages or [ ])
       )
     else
-      false;
+      true;
 in
 {
   "devtools.theme" = "dark";
