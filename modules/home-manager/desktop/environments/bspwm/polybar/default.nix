@@ -11,7 +11,7 @@ let
 
   colors = import ./colors.nix;
   scripts = import ./scripts.nix { inherit pkgs colors; };
-  polybarModules = import ./modules.nix { inherit pkgs colors scripts; };
+  polybarModules = import ./modules.nix { inherit lib pkgs colors scripts; };
 in
 {
   options.desktop.bspwm.polybar = {
@@ -75,7 +75,7 @@ in
           # --- Organização em Cápsulas/Pills (gh0stzk Rice Style) ---
           modules-left = "bi launcher bd sep bi bspwm bd sep bi xwindow bd sep bi minimized bd";
           modules-center = "bi media bd";
-          modules-right = "bi pulseaudio backlight battery bd sep bi temperature bd sep bi bluetooth bd sep bi network bd sep bi netspeed bd sep bi cpu memory bd sep bi date bd sep bi powermenu bd";
+          modules-right = "bi pulseaudio backlight battery bd sep bi temperature bd sep bi bluetooth bd sep bi network bd sep bi netspeed bd sep bi cpu memory bd sep bi keyboard bd sep bi date bd sep bi powermenu bd";
 
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";

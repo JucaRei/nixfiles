@@ -304,6 +304,15 @@ in
               export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
             fi
 
+            # Configuração do teclado herdada declarativamente de home.keyboard
+            ${lib.optionalString (config.home.keyboard != null) ''
+              ${pkgs.xorg.setxkbmap}/bin/setxkbmap \
+                ${lib.optionalString (config.home.keyboard.model != null) "-model '${config.home.keyboard.model}'"} \
+                ${lib.optionalString (config.home.keyboard.layout != null) "-layout '${config.home.keyboard.layout}'"} \
+                ${lib.optionalString (config.home.keyboard.variant != null) "-variant '${config.home.keyboard.variant}'"} \
+                ${lib.concatMapStringsSep " " (opt: "-option '${opt}'") (config.home.keyboard.options or [ ])} || true
+            ''}
+
             # Iniciar daemon de atalhos de teclado (SXHKD)
             pkill -x sxhkd || true
             ${pkgs.sxhkd}/bin/sxhkd &
@@ -430,6 +439,7 @@ in
         xdotool
         tdrop
         xprop
+        xkb-switch
       ];
 
       sessionVariables = {

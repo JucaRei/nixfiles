@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   colors,
   scripts,
@@ -312,6 +313,27 @@
     label-disconnected = "%{F#89b4fa}󰇚 0KB/s%{F-}  %{F#fab387}󰕒 0KB/s%{F-}";
     label-disconnected-foreground = colors.surface2;
     label-disconnected-padding = 1;
+  };
+
+  # --- Layout do Teclado (Troca Dinâmica ao Clicar / Atalho Alt+Shift / Menu Rofi com Botão Direito) ---
+  "module/keyboard" = {
+    type = "internal/xkeyboard";
+    blacklist-0 = "num lock";
+    blacklist-1 = "scroll lock";
+
+    format = "%{A3:${scripts.rofiKeyboardMenu}:}<label-layout> <label-indicator>%{A}";
+    format-prefix = "󰌌 ";
+    format-prefix-foreground = colors.sapphire;
+    format-background = colors.surface0;
+
+    label-layout = lib.mkDefault "%layout%";
+    label-layout-foreground = colors.text;
+    label-layout-padding = 1;
+
+    label-indicator-on-caps = "CAPS";
+    label-indicator-on-caps-foreground = colors.base;
+    label-indicator-on-caps-background = colors.red;
+    label-indicator-on-caps-padding = 1;
   };
 
   # --- Data & Hora (Cores customizadas para Dia, Mês, Ano e Hora) ---
