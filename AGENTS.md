@@ -163,6 +163,21 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **Overlay `antigravity-cli`**:
   - O módulo `programs.antigravity-cli` do Home Manager busca `pkgs.antigravity-cli`. No canal estável (`nixpkgs`), o pacote ainda se chamava `gemini-cli` e não possuía o alias `antigravity-cli`.
   - Configurado fallback em `overlays/default.nix` (`modifiedPackages`): `antigravity-cli = prev.antigravity-cli or final.unstable.antigravity-cli;`, garantindo resolução transparente para todos os módulos e hosts.
+- **Host `nitro` (Debian Standalone) — nixGL e Alacritty**:
+  - **Problema**: Alacritty falhava com `Error: "failed to find suitable GL configuration."` no Debian. Dual GPU: Intel UHD 630 (display) + NVIDIA GTX 1050 Mobile (discreta).
+  - **Causa raiz em 3 camadas**:
+    1. `nixgl.overlay` avalia `auto.nixGLDefault` ao construir `pkgs`. Com `--impure`, lê `/proc/driver/nvidia/version` (v580.178.04) e tenta construir `nixGLNvidia-580.178.04`.
+    2. O nixpkgs 26.05 **mudou a API do pacote NVIDIA** (removeu argumento `kernel`), causando falha em `nvidiaDrivers.override { libsOnly = true; }`.
+    3. O wrapper em `lib/nixGL.nix` chamava `${nixGL}/bin/nixGL` mas o binário do `nixGLIntel` se chama `nixGLIntel` (não `nixGL`).
+  - **Correção**:
+    - `flake.nix`: `nixGLType = "intel"` para o host `nitro` (Intel gerencia o display).
+    - `lib/helpers.nix`: Quando `nixGLType != null && != "auto"`, aplica `nixGLOverrideOverlay` **após** o `nixgl.overlay` que substitui `auto.nixGLDefault` pelo wrapper correto, prevenindo a avaliação do nixGLNvidia quebrado.
+    - `lib/nixGL.nix`: Adicionado parâmetro `nixGLType` (intel/nvidia/mesa/auto/null) e `nixGLBin` que calcula o nome correto do binário de cada variante (`nixGLIntel`, `nixGLMesa`, `nixGLNvidia`, `nixGL`).
+    - `bspwm/packages.nix`: Criados arquivos `.desktop` para Alacritty (com nixGL no `Exec=`), Pavucontrol, Galculator, LXAppearance e Feh — necessário em Debian onde o menu gráfico não lê XDG_DATA_DIRS do Nix Store.
+    - `bspwm/packages.nix`: Hook `home.activation.updateDesktopDatabase` — roda `update-desktop-database` a cada switch.
+    - `hm-switch.nix`: Verificação pós-switch que testa o Alacritty e notifica via Dunst se GL falhar.
+  - **Regra geral para laptops dual GPU não-NixOS**: sempre definir `nixGLType = "intel"` no `mkHome` quando o Intel gerencia o display (Optimus). A detecção automática (`auto.nixGLDefault`) só é segura quando o nixGL suporta a versão exata do driver NVIDIA presente no nixpkgs usado.
+
 - **MangoWM — Power Menu, WiFi e Tags Inteligentes**:
   - **`session-power-menu` duplicado no MangoWM**: O script era definido apenas no módulo Hyprland (`hyprland/waybar.nix`), causando falha no MangoWM que o referenciava sem path absoluto. Duplicado em `mangowm/waybar.nix` com mesma lógica agnóstica ao compositor e adicionado a `home.packages` + paths absolutos do Nix Store nos `on-click` da Waybar.
   - **`rofi-wifi-menu`**: Novo script de seleção WiFi via Rofi + `nmcli` nativo do Fedora (`/usr/bin/nmcli`). Suporta escanear redes, conectar/desconectar com senha via prompt Rofi, e ligar/desligar rádio WiFi. Vinculado ao `on-click` do módulo `network` da Waybar.
