@@ -31,6 +31,10 @@ in
       inherit username;
       inherit stateVersion;
 
+      packages = optionals (!isNixOS) [
+        config.nix.package
+      ];
+
       activation = {
         diff = lib.hm.dag.entryAnywhere ''
           if [[ -n ''${oldGenPath:-} ]] && [[ -n ''${newGenPath:-} ]]; then

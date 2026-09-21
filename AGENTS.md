@@ -70,6 +70,7 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 
 ## 📝 Histórico de Ajustes e Decisões
 
+- **`modules/home-manager/default.nix`**: Adicionado `config.nix.package` a `home.packages` em hosts não-NixOS (`!isNixOS`). No Home Manager standalone, a opção `nix.package` apenas valida o `nix.conf`, mas não expõe os binários ao PATH; com essa inclusão, a versão mais recente do Nix declarada (`pkgs.nixVersions.latest`) passa a ter precedência sobre o pacote do sistema host (ex: Debian `nix-bin`).
 - **`home-manager/default.nix`**: Removido parâmetro `config` não referenciado na assinatura de argumentos e removidos `isLinux` / `mkIf` não utilizados no bloco `let`.
 - **`flake.nix` & `lib/`**: Simplificação de `homeConfigurations`, modernização do `formatter` para `nixfmt-rfc-style`, redução de sistemas suportados para Linux (`x86_64-linux` e `aarch64-linux`), e adoção de validações pontuais em etapas intermediárias.
 - **`overlays/default.nix` & `overlays/patches/`**: 
