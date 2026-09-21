@@ -17,6 +17,13 @@ let
 
   isNixOS = osConfig != null;
   homeDir = "/home/${username}";
+
+  # Bin do alacritty com nixGL wrapper
+  alacrittyBin =
+    if useNixGL then
+      "${nixGL.wrapper pkgs.alacritty}/bin/alacritty"
+    else
+      "${pkgs.alacritty}/bin/alacritty";
 in
 {
   options.desktop.bspwm.packages = {
@@ -112,6 +119,114 @@ in
         [Desktop]
         Session=bspwm
       '';
+
+      # -----------------------------------------------------------------------
+      # Arquivos .desktop para apps Nix (necessário em distros não-NixOS onde
+      # o menu gráfico não lê automaticamente XDG_DATA_DIRS do Nix Store)
+      # -----------------------------------------------------------------------
+
+      # Alacritty com nixGL wrapper no Exec (corrige erro GL em Debian/Fedora)
+      ".local/share/applications/alacritty.desktop".text = ''
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=Alacritty
+        GenericName=Terminal
+        Comment=A fast, cross-platform, OpenGL terminal emulator
+        Exec=${alacrittyBin} %U
+        Icon=Alacritty
+        Terminal=false
+        Categories=System;TerminalEmulator;
+        Keywords=terminal;shell;
+        StartupWMClass=Alacritty
+        StartupNotify=false
+        Actions=New;Float;
+
+        [Desktop Action New]
+        Name=New Terminal Window
+        Exec=${alacrittyBin}
+
+        [Desktop Action Float]
+        Name=New Floating Terminal
+        Exec=${alacrittyBin} --class AlacrittyFloat
+      '';
+
+      # Pavucontrol
+      ".local/share/applications/pavucontrol.desktop".text = ''
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=PulseAudio Volume Control
+        GenericName=Volume Control
+        Comment=Adjust volume levels for PulseAudio/PipeWire
+        Exec=${pkgs.pavucontrol}/bin/pavucontrol
+        Icon=multimedia-volume-control
+        Terminal=false
+        Categories=AudioVideo;Audio;Mixer;
+        Keywords=audio;volume;sound;pulseaudio;pipewire;
+      '';
+
+      # Galculator
+      ".local/share/applications/galculator.desktop".text = ''
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=Galculator
+        Comment=GTK+ based scientific calculator
+        Exec=${pkgs.galculator}/bin/galculator
+        Icon=galculator
+        Terminal=false
+        Categories=GNOME;GTK;Utility;
+        Keywords=calculator;math;
+      '';
+
+      # LXAppearance
+      ".local/share/applications/lxappearance.desktop".text = ''
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=Customize Look and Feel
+        GenericName=Theme switcher
+        Comment=GTK+ theme switcher for LXDE
+        Exec=${pkgs.lxappearance}/bin/lxappearance
+        Icon=preferences-desktop-theme
+        Terminal=false
+        Categories=Settings;DesktopSettings;
+        Keywords=theme;gtk;appearance;
+      '';
+
+      # Feh (Visualizador de imagens)
+      ".local/share/applications/feh.desktop".text = ''
+        [Desktop Entry]
+        Version=1.0
+        Type=Application
+        Name=Feh
+        GenericName=Image Viewer
+        Comment=Fast and light image viewer
+        Exec=${pkgs.feh}/bin/feh --scale-down --auto-zoom %f
+        Icon=feh
+        Terminal=false
+        Categories=Graphics;Viewer;
+        MimeType=image/bmp;image/gif;image/jpeg;image/png;image/svg+xml;image/tiff;image/webp;
+        Keywords=image;photo;viewer;
+      '';
     };
+
+    # -------------------------------------------------------------------------
+    # Ativação pós-switch: atualizar banco de dados de apps desktop
+    # Garante que o menu gráfico (Rofi, XFCE, etc.) veja os .desktop do Nix Store
+    # e os novos .desktop criados acima em ~/.local/share/applications/
+    # -------------------------------------------------------------------------
+    home.activation.updateDesktopDatabase = lib.mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if command -v update-desktop-database > /dev/null 2>&1; then
+        $DRY_RUN_CMD update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
+      fi
+
+      # Atualizar cache de ícones
+      if command -v gtk-update-icon-cache > /dev/null 2>&1; then
+        $DRY_RUN_CMD gtk-update-icon-cache --force --ignore-theme-index \
+          "$HOME/.local/share/icons" 2>/dev/null || true
+      fi
+    '');
   };
 }

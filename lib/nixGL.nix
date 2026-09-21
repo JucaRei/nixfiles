@@ -1,20 +1,28 @@
 # lib/nixGL.nix - Wrapper universal do nixGL para binários e arquivos .desktop
 #
 # O QUE É O nixGL E POR QUE ELE É NECESSÁRIO?
-# Em distribuições Linux tradicionais (ex: Fedora, Ubuntu, Arch), os programas instalados via Nix
+# Em distribuições Linux tradicionais (ex: Fedora, Ubuntu, Debian, Arch), os programas instalados via Nix
 # tentam carregar os drivers de vídeo (Nvidia, Mesa/Intel, Vulkan) a partir do diretório do Nix Store (/nix/store).
 # Como a distribuição hospedeira usa os drivers do próprio sistema (ex: /usr/lib), os apps GUI crasham sem aceleração de hardware.
 # O `nixGL` resolve isso fazendo a ponte entre o app do Nix e o driver OpenGL/Vulkan da distribuição hospedeira.
+#
+# DETECÇÃO DO NIXGL:
+# - Modo impuro (avaliação com --impure, ex: hm-switch): usa `auto.nixGLDefault` que detecta GPU automaticamente.
+# - Modo puro (nix flake check, build CI): usa `nixGLIntel` como fallback funcional para sistemas Intel/Mesa.
+#   NOTA: O fallback anterior era `exec "$@"` (identidade), que causava erro GL em distros não-NixOS.
+#         Agora usamos nixGLIntel que exporta os paths corretos do Mesa do Nix Store.
 
 {
   pkgs,
   # Detecção do nixGL:
-  # 1. Se estiver rodando no sistema com GPU e em modo impuro, usa a detecção automática `pkgs.nixgl.auto.nixGLDefault`.
-  # 2. Se estiver em modo de avaliação pura do Nix (ex: `nix flake check`), usa um script fallback transparente `exec "$@"`
-  #    para evitar erros de `builtins.currentTime` inexistente na avaliação pura.
+  # 1. Modo impuro (builtins.currentTime disponível): usa auto.nixGLDefault para detecção automática da GPU.
+  # 2. Modo puro (avaliação do flake check/CI): usa nixGLIntel como fallback funcional
+  #    (exporta LIBGL_DRIVERS_PATH e LD_LIBRARY_PATH do Mesa do Nix Store).
   nixGL ?
     if (builtins ? currentTime && pkgs ? nixgl && pkgs.nixgl ? auto) then
       pkgs.nixgl.auto.nixGLDefault
+    else if (pkgs ? nixgl && pkgs.nixgl ? nixGLIntel) then
+      pkgs.nixgl.nixGLIntel
     else
       (pkgs.writeShellScriptBin "nixGL" ''exec "$@"''),
 }:

@@ -52,6 +52,39 @@ pkgs.writeScriptBin "hm-switch" ''
           "Home Manager Atualizado!" "Configurações do usuário reaplicadas com sucesso." 2>/dev/null || true
       fi
 
+      # -------------------------------------------------------------------
+      # Verificação pós-switch: testar OpenGL do Alacritty
+      # Em distros não-NixOS com GPU, o Alacritty precisa do wrapper nixGL.
+      # Testa se o binário do Alacritty consegue inicializar sem erro GL.
+      # -------------------------------------------------------------------
+      echo "🔍 Verificando Alacritty (OpenGL)..."
+      _alacritty_bin="$(command -v alacritty 2>/dev/null)"
+      if [ -n "$_alacritty_bin" ]; then
+        # Teste rápido: --version não precisa de display, mas testa o loader
+        _alacritty_err=$("$_alacritty_bin" --version 2>&1 >/dev/null)
+        if echo "$_alacritty_err" | grep -qi 'failed to find.*GL\|opengl\|egl\|glx'; then
+          echo "⚠️  Alacritty: erro de OpenGL detectado!"
+          echo "   Erro: $_alacritty_err"
+          if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
+            ${pkgs.dunst}/bin/dunstify -a "Alacritty" -u critical -i "dialog-error" -r 9997 -t 12000 \
+              "Alacritty: Erro OpenGL" \
+              "Falha ao inicializar GL. Verifique os drivers ou use: LIBGL_ALWAYS_SOFTWARE=1 alacritty" 2>/dev/null || true
+          fi
+        else
+          echo "✅ Alacritty OK (OpenGL func. corretamente)"
+          # Registrar/atualizar .desktop do Alacritty
+          if command -v update-desktop-database >/dev/null 2>&1; then
+            update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
+          fi
+          if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
+            ${pkgs.dunst}/bin/dunstify -a "Alacritty" -u low -i "utilities-terminal" -r 9997 -t 3000 \
+              "Alacritty OK" "Terminal com OpenGL inicializado corretamente." 2>/dev/null || true
+          fi
+        fi
+      else
+        echo "⚠️  alacritty não encontrado no PATH"
+      fi
+
       echo "🧹 Cleaning old generations (keeping last 5)..."
       ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
     else
