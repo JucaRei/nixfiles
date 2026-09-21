@@ -178,6 +178,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - `bspwm/packages.nix`: Hook `home.activation.updateDesktopDatabase` — roda `update-desktop-database` a cada switch.
     - `hm-switch.nix`: Verificação pós-switch que testa o Alacritty e notifica via Dunst se GL falhar.
   - **Regra geral para laptops dual GPU não-NixOS**: sempre definir `nixGLType = "intel"` no `mkHome` quando o Intel gerencia o display (Optimus). A detecção automática (`auto.nixGLDefault`) só é segura quando o nixGL suporta a versão exata do driver NVIDIA presente no nixpkgs usado.
+  - **Multimídia e Aceleração de Vídeo no MPV (Nitro 5)**:
+    - O binário do `mpv` do Nix roda encapsulado pelo `nixGLIntel` com perfil `[hw-preset]` configurado para `vo=gpu`, `gpu-api=opengl` e `hwdec=vaapi` (Intel UHD 630 via driver `iHD` do `intel-media-driver`). Isso entrega decodificação 100% por hardware com baixíssimo consumo de CPU e bateria.
+    - Tentativas de forçar o MPV do Nix a carregar bibliotecas do driver proprietário do Debian via injeção arbitrária de `LD_LIBRARY_PATH` geravam `Segmentation fault`.
+    - Para integração limpa entre o Home Manager standalone e o stack NVIDIA do Debian:
+      - Adicionado perfil `[nvidia]` no `mpv.conf` (`modules/.../mpv/default.nix`) com `hwdec=auto-safe` e shaders dedicados.
+      - Criado o script executável `mpv-nvidia` em `home.packages` do host `nitro`: executa diretamente o pacote `mpv` do Nix (`${config.programs.mpv.package}/bin/mpv`) encapsulado com as flags do NVIDIA PRIME Offload (`__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia`). O `mpv` nativo do Debian (`/usr/bin/mpv`) falhava em sessões X11 devido a conflitos de provedor GLX (`update-glx`) ao inicializar EGL, enquanto o binário Nix gerenciado com nixGL lida perfeitamente com a alternância de contexto e preserva todos os plugins e scripts (`uosc`, `thumbfast`, `evafast`, `memo`).
 
 - **MangoWM — Power Menu, WiFi e Tags Inteligentes**:
   - **`session-power-menu` duplicado no MangoWM**: O script era definido apenas no módulo Hyprland (`hyprland/waybar.nix`), causando falha no MangoWM que o referenciava sem path absoluto. Duplicado em `mangowm/waybar.nix` com mesma lógica agnóstica ao compositor e adicionado a `home.packages` + paths absolutos do Nix Store nos `on-click` da Waybar.

@@ -20,17 +20,25 @@ let
     # ── Acer Nitro 5 AN52 — Intel (iGPU) + NVIDIA GTX/RTX (dGPU) ─────────────
     # Driver proprietário NVIDIA. Vulkan + nvdec-copy para decodificação acelerada.
     # nvdec-copy é mais compatível que nvdec pois não usa zero-copy com VA-API.
-    if hostname == "nixtro" then
+    if hostname == "nixtro" || hostname == "nitro" then
       ''
         [hw-preset]
-        profile-desc=Nitro 5: NVIDIA dGPU (nvdec-copy, vulkan)
+        profile-desc=Nitro 5: Intel UHD 630 via nixGLIntel (vaapi, opengl)
         vo=gpu
-        gpu-api=vulkan
-        hwdec=nvdec-copy
+        gpu-api=opengl
+        hwdec=vaapi
         gpu-shader-cache-dir=~/.cache/mpv/shaders
-        icc-profile-auto=yes
+        video-sync=display-resample
+
+        [nvidia]
+        profile-desc=Nitro 5: NVIDIA dGPU via PRIME (nvdec/cuda/auto)
+        vo=gpu
+        gpu-api=opengl
+        hwdec=auto-safe
+        gpu-shader-cache-dir=~/.cache/mpv/shaders-nvidia
         video-sync=display-resample
       ''
+
 
     # ── MacBook Pro 4,1 (Early 2008) — NVIDIA 8600M GT / Nouveau (NV50) ────────
     # Nouveau NV50 não suporta Vulkan. OpenGL + VAAPI via Mesa.
@@ -123,10 +131,10 @@ in
           };
           youtubeSupport = true;
           scripts = with pkgs.mpvScripts; [
-            uosc              # UI moderna (substitui o OSC builtin)
-            memo              # Histórico de ficheiros recentes
-            evafast           # Seeking rápido com preview
-            thumbfast         # Thumbnails na barra de progresso
+            uosc # UI moderna (substitui o OSC builtin)
+            memo # Histórico de ficheiros recentes
+            evafast # Seeking rápido com preview
+            thumbfast # Thumbnails na barra de progresso
             mpv-cheatsheet-ng # Overlay de atalhos de teclado
             sponsorblock-minimal # Skip de segmentos SponsorBlock (YouTube)
           ];
@@ -153,7 +161,6 @@ in
         [default]
         profile=hw-preset
       '';
-
 
       # Atalhos de teclado — todos em input.conf (substitui bindings.conf)
       "mpv/input.conf".source = ./configs/input.conf;

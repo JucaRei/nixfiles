@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   fhd = {
     width = 1920;
@@ -55,6 +55,12 @@ in
         enable = true;
         name = "alacritty";
       };
+      multimedia = {
+        mpv.enable = true;
+      };
+      tools = {
+        yt-dlp.enable = true;
+      };
     };
 
     home = {
@@ -74,10 +80,15 @@ in
             exec vainfo --display drm --device "$intel_render" "$@"
           fi
         '')
+        (pkgs.writeShellScriptBin "mpv-nvidia" ''
+          # Executa o MPV do Nix com PRIME Offload na NVIDIA dGPU (mantendo uosc, thumbfast e scripts)
+          exec env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ${config.programs.mpv.package}/bin/mpv "$@"
+        '')
       ];
 
       shellAliases = {
         vainfo = "vainfo-intel";
+        mpv-nvidia = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia mpv";
       };
 
       sessionPath = [
