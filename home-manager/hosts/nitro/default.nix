@@ -65,6 +65,8 @@ in
         ripgrep
         htop
         btop
+        intel-media-driver
+        libva-utils
       ];
 
       sessionPath = [
@@ -75,6 +77,8 @@ in
       sessionVariables = {
         NIX_REMOTE = "daemon";
         LC_ALL = "";
+        LIBVA_DRIVER_NAME = "iHD";
+        LIBVA_DRIVERS_PATH = "${pkgs.intel-media-driver}/lib/dri:/usr/lib/x86_64-linux-gnu/dri:/usr/lib/dri";
       };
 
       language = {

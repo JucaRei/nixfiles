@@ -66,44 +66,35 @@ in
       sessionVariables = {
         # Java fix for non-reparenting WMs (bspwm, etc.)
         "_JAVA_AWT_WM_NONREPARENTING" = lib.mkDefault (if desktop == "bspwm" then "1" else "");
-
-        # Hardware acceleration (declarative on NixOS)
+      }
+      // lib.optionalAttrs isNixOS {
         LIBVA_DRIVER_NAME =
-          if isNixOS then
-            (
-              if hasLegacyNvidia then
-                "vdpau"
-              else if hasIntel || hasGpuFallback == "intel" then
-                "iHD"
-              else if hasNvidia || hasGpuFallback == "nvidia" then
-                "nvidia"
-              else if hasAmd || hasGpuFallback == "amd" then
-                "radeonsi"
-              else if hasArmGpu || hasGpuFallback == "arm" then
-                "v3d"
-              else
-                (osConfig.environment.sessionVariables.LIBVA_DRIVER_NAME or "")
-            )
+          if hasLegacyNvidia then
+            "vdpau"
+          else if hasIntel || hasGpuFallback == "intel" then
+            "iHD"
+          else if hasNvidia || hasGpuFallback == "nvidia" then
+            "nvidia"
+          else if hasAmd || hasGpuFallback == "amd" then
+            "radeonsi"
+          else if hasArmGpu || hasGpuFallback == "arm" then
+            "v3d"
           else
-            "";
+            (osConfig.environment.sessionVariables.LIBVA_DRIVER_NAME or "");
 
         VDPAU_DRIVER =
-          if isNixOS then
-            (
-              if hasLegacyNvidia then
-                "nvidia"
-              else if hasNvidia || hasGpuFallback == "nvidia" then
-                "nvidia"
-              else if hasAmd || hasGpuFallback == "amd" then
-                "radeonsi"
-              else if hasArmGpu || hasGpuFallback == "arm" then
-                "v3d"
-              else
-                (osConfig.environment.sessionVariables.VDPAU_DRIVER or "")
-            )
+          if hasLegacyNvidia then
+            "nvidia"
+          else if hasNvidia || hasGpuFallback == "nvidia" then
+            "nvidia"
+          else if hasAmd || hasGpuFallback == "amd" then
+            "radeonsi"
+          else if hasArmGpu || hasGpuFallback == "arm" then
+            "v3d"
           else
-            "";
-      } // lib.optionalAttrs (isNixOS && (hasLegacyNvidia || (osConfig.environment.sessionVariables ? LD_LIBRARY_PATH))) {
+            (osConfig.environment.sessionVariables.VDPAU_DRIVER or "");
+      }
+      // lib.optionalAttrs (isNixOS && (hasLegacyNvidia || (osConfig.environment.sessionVariables ? LD_LIBRARY_PATH))) {
         LD_LIBRARY_PATH =
           if hasLegacyNvidia then
             "/run/opengl-driver/lib:/run/opengl-driver-32/lib"
@@ -119,15 +110,21 @@ in
           if [ -f /proc/device-tree/model ] && grep -iqE 'raspberry|nanopi|rockchip' /proc/device-tree/model; then
             export LIBVA_DRIVER_NAME="v3d"
             export VDPAU_DRIVER="v3d"
+          elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*intel' >/dev/null; then
+            if lspci | grep -iE '2nd Generation|3rd Gen|4th Gen|HD Graphics 3000|HD Graphics 4000|HD Graphics 2500|HD Graphics 2000' >/dev/null; then
+              export LIBVA_DRIVER_NAME="i965"
+            else
+              export LIBVA_DRIVER_NAME="iHD"
+            fi
+            export LIBVA_DRIVERS_PATH="${pkgs.intel-media-driver}/lib/dri:${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib/x86_64-linux-gnu/dri:/usr/lib/dri"
+          elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*amd|radeon' >/dev/null; then
+            export LIBVA_DRIVER_NAME="radeonsi"
+            export VDPAU_DRIVER="radeonsi"
+            export LIBVA_DRIVERS_PATH="${pkgs.mesa}/lib/dri:/usr/lib/x86_64-linux-gnu/dri:/usr/lib/dri"
           elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*nvidia' >/dev/null; then
             export LIBVA_DRIVER_NAME="nvidia"
             export VDPAU_DRIVER="nvidia"
             export __GLX_VENDOR_LIBRARY_NAME="nvidia"
-          elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*amd|radeon' >/dev/null; then
-            export LIBVA_DRIVER_NAME="radeonsi"
-            export VDPAU_DRIVER="radeonsi"
-          elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*intel' >/dev/null; then
-            export LIBVA_DRIVER_NAME="iHD"
           fi
           EOF
           chmod +x $HOME/.local/scripts/x11-vars.sh
