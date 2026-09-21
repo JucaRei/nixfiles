@@ -1,7 +1,7 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkIf mkOption mdDoc;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf mkOption;
+  inherit (lib.types) bool listOf str;
   cfg = config.system.services.ssh;
 in
 {
@@ -10,7 +10,17 @@ in
       enable = mkOption {
         type = bool;
         default = false;
-        description = mdDoc "Enable's ssh configs.";
+        description = "Enable ssh configs.";
+      };
+
+      identityFiles = mkOption {
+        type = listOf str;
+        default = [
+          "~/.ssh/nitro"
+          "~/.ssh/id_ed25519"
+          "~/.ssh/id_rsa"
+        ];
+        description = "SSH IdentityFiles to load by default.";
       };
     };
   };
@@ -23,6 +33,7 @@ in
             Compression = true;
             ForwardAgent = true;
             ControlMaster = "auto";
+            IdentityFile = cfg.identityFiles;
           };
         };
 

@@ -483,5 +483,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - O comando `bspc desktop -f '^{1-9,10}'` endereçava por índice numérico global de desktops. Com a divisão ímpar/par, o desktop `^2` correspondia ao 2º desktop do primeiro monitor (`3`), impedindo o foco no monitor secundário.
     - Corrigido para endereçamento direto por nome: `bspc desktop -f '{1-9,0}'` e `bspc node -d '{1-9,0}'`. Pressionar `Super + 2, 4, 6, 8, 0` alterna instantaneamente o foco e cursor para o workspace no monitor secundário, e `Super + 1, 3, 5, 7, 9` para o principal.
 
+- **SSH & Git — Chave `~/.ssh/nitro` e Módulo de Serviços**:
+  - **Módulo de Serviços (`modules/home-manager/system/services/`)**:
+    - Reativado o import `./git` em `services/default.nix`.
+    - Modernizado `services/git/default.nix` (removido `mdDoc`).
+    - Adicionadas opções `signingKey` (padrão `"~/.ssh/nitro.pub"`), `signByDefault` (padrão `true`) e `signingFormat` (`"ssh"`).
+    - Configurado `programs.git.signing` com `format = "ssh"`, ativando assinatura criptográfica automática de commits e tags (`commit.gpgsign = true`, `tag.gpgsign = true`) utilizando a chave SSH `~/.ssh/nitro.pub`.
+    - No módulo `services/ssh/default.nix`, adicionada a opção `system.services.ssh.identityFiles` configurada por padrão com `[ "~/.ssh/nitro" "~/.ssh/id_ed25519" "~/.ssh/id_rsa" ]`.
+    - Isso injeta automaticamente a chave privada `~/.ssh/nitro` no bloco `Host *` do `~/.config/ssh/config`, permitindo autenticação transparente via SSH para Git, GitHub, GitLab e conexões remotas.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 

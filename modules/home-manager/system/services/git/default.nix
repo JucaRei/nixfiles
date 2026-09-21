@@ -1,7 +1,7 @@
 { config, lib, ... }:
 let
-  inherit (lib) mkOption mkIf mdDoc;
-  inherit (lib.types) bool nullOr str;
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool str;
   cfg = config.system.services.git;
 in
 {
@@ -10,20 +10,37 @@ in
       enable = mkOption {
         type = bool;
         default = false;
-        description = mdDoc "Enable's git services.";
+        description = "Enable git services.";
       };
 
       userName = mkOption {
-        # Needs mkOption
         type = str;
         default = "";
-        description = mdDoc "The default username.";
+        description = "The default username.";
       };
 
       userEmail = mkOption {
         type = str;
         default = "";
-        description = mdDoc "The default email.";
+        description = "The default email.";
+      };
+
+      signingKey = mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = "~/.ssh/nitro.pub";
+        description = "Path to the SSH public key or GPG key ID used to sign commits.";
+      };
+
+      signByDefault = mkOption {
+        type = bool;
+        default = true;
+        description = "Whether to sign commits by default.";
+      };
+
+      signingFormat = mkOption {
+        type = lib.types.enum [ "ssh" "openpgp" "x509" ];
+        default = "ssh";
+        description = "Format used for signing commits ('ssh', 'openpgp', or 'x509').";
       };
     };
   };
@@ -33,6 +50,12 @@ in
         enable = true;
         userName = cfg.userName;
         userEmail = cfg.userEmail;
+
+        signing = mkIf (cfg.signingKey != null) {
+          key = cfg.signingKey;
+          signByDefault = cfg.signByDefault;
+          format = cfg.signingFormat;
+        };
 
         ignores = [
           # General:

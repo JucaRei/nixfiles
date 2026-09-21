@@ -12,19 +12,29 @@ let
 in
 {
   config = {
-    system.programs.shells = {
-      aliases = lib.mkDefault {
+    system = {
+      programs.shells = {
+        aliases = lib.mkDefault {
+          enable = true;
+          systemd = {
+            enable = true;
+          };
+          process = {
+            enable = true;
+          };
+          nix = {
+            enable = true;
+            diffProgram = "nix-diff";
+          };
+        };
+      };
+
+      services.git = {
         enable = true;
-        systemd = {
-          enable = true;
-        };
-        process = {
-          enable = true;
-        };
-        nix = {
-          enable = true;
-          diffProgram = "nix-diff";
-        };
+        userName = "Reinaldo";
+        userEmail = "reinaldo800@gmail.com";
+        signingKey = "~/.ssh/nitro.pub";
+        signByDefault = true;
       };
     };
 

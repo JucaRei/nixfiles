@@ -86,7 +86,8 @@
     "Home Manager" = {
       urls = [
         {
-          template = "https://mipmip.github.io/home-manager-option-search/";
+          # template = "https://mipmip.github.io/home-manager-option-search/";
+          template = "https://home-manager-options.extranix.com/";
           params = [
             {
               name = "query";
