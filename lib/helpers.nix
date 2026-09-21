@@ -37,6 +37,24 @@ rec {
       isInstall = !isISO;
       isWorkstation = desktop != null;
 
+      # Overlay extra para substituir auto.nixGLDefault quando nixGLType é explícito.
+      # MOTIVO: O nixgl.overlay avalia auto.nixGLDefault ao ser aplicado. Com --impure,
+      # ele lê /proc/driver/nvidia/version, detecta NVIDIA 580 e tenta construir
+      # nixGLNvidia-580.178.04 -- que falha no nixpkgs 26.05 (API 'kernel' mudou).
+      # A substituição deve ocorrer no nível do pkgs, antes de qualquer módulo.
+      nixGLOverrideOverlay = if nixGLType != null && nixGLType != "auto" then [
+        (final: prev: {
+          nixgl = prev.nixgl // {
+            auto = prev.nixgl.auto // {
+              nixGLDefault =
+                if nixGLType == "intel" then prev.nixgl.nixGLIntel
+                else if nixGLType == "mesa" then prev.nixgl.nixGLMesa
+                else prev.nixgl.nixGLIntel; # fallback seguro
+            };
+          };
+        })
+      ] else [ ];
+
       pkgs = import inputs.nixpkgs {
         system = platform;
         config = {
@@ -45,6 +63,7 @@ rec {
         };
         overlays = [
           inputs.nixgl.overlay
+        ] ++ nixGLOverrideOverlay ++ [
           inputs.nur.overlays.default
         ] ++ (builtins.attrValues outputs.overlays);
       };
