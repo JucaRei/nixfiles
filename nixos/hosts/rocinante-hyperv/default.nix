@@ -120,7 +120,7 @@ in
         "nowatchdog"
         "transparent_hugepage=madvise"
         "elevator=none" # VMs com VHDX/SSD se beneficiam de noop/none scheduler
-        "video=hyperv_fb:1920x1080" # Fix: Resolução Full HD nativa no console do Hyper-V
+        "video=hyperv_fb:1600x900" # Resolução 1600x900 no console e framebuffer do Hyper-V
       ];
 
       # Tuning de Memória Virtual para VM
@@ -185,13 +185,14 @@ in
         ];
 
         displayManager = {
-          # setupCommands = ''
-          #   RIGHT='eDP-1'
-          #   LEFT='HDMI-1-0'
-          #   ${lib.getExe pkgs.xorg.xrandr} --output $LEFT --mode 1920x1080 --rotate right --output $LEFT --mode 1920x1080 --rotate left --right-of $LEFT
-          # '';
+          setupCommands = ''
+            ${lib.getExe pkgs.xrandr} -s 1600x900 2>/dev/null || true
+            output=$(${lib.getExe pkgs.xrandr} --query 2>/dev/null | grep " connected" | head -n1 | cut -d" " -f1)
+            if [ -n "$output" ]; then
+              ${lib.getExe pkgs.xrandr} --output "$output" --mode 1600x900 2>/dev/null || true
+            fi
+          '';
           session = "bspwm";
-          # sessionCommands = "${lib.getExe pkgs.xorg.xrandr} --output eDP-1 --primary --mode 1920x1080 --pos 1920x0 --rotate normal --output HDMI-1-0 --mode 1920x1080 --pos 0x0 --rotate normal";
         };
 
         ## xrandrHeads = [

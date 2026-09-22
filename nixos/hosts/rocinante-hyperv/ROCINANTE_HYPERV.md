@@ -25,8 +25,8 @@ Ao criar a Máquina Virtual no **Hyper-V Manager**:
    - Daemons nativos do Hyper-V (VSS para snapshots consistentes, KVP, FCOPY e Heartbeat de status no Windows).
 2. **Drivers Sintéticos Hyper-V**:
    - `hv_vmbus`, `hv_storvsc`, `hv_netvsc`, `hv_balloon`, `hv_utils`, `hyperv_fb`, `hid_hyperv`.
-3. **Resolução Full HD Nativa**:
-   - `video=hyperv_fb:1920x1080` para console nítido em 1080p.
+3. **Resolução Nativa**:
+   - `video=hyperv_fb:1600x900` para console e LightDM nítidos em 1600x900.
 4. **Nix-LD**:
    - Carregador dinâmico de bibliotecas ativo para executar servidores de IDE e extensões do VS Code sem crashes.
 5. **Rede e DNS Technitium**:
