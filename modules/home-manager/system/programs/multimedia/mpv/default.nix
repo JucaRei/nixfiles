@@ -3,13 +3,34 @@
   lib,
   pkgs,
   hostname,
+  desktop ? null,
   nixGLWrapper ? (x: x),
   isNvidia ? false,
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption;
+  inherit (lib) mkIf mkEnableOption optionalString;
   cfg = config.system.programs.multimedia.mpv;
+
+  # Ambientes desktop completos tradicionais (com gerenciamento de janelas próprio, não tiling)
+  fullDesktopEnvironments = [
+    "xfce4"
+    "xfce"
+    "gnome"
+    "mate"
+    "pantheon"
+    "plasma"
+    "kde"
+    "cinnamon"
+    "lxde"
+    "lxqt"
+    "deepin"
+    "budgie"
+    "cosmic"
+  ];
+
+  # Identifica se o ambiente é uma Window Manager (tiling/floating standalone como bspwm, hyprland, mangowm, sway, i3, etc.)
+  isWM = desktop != null && !(builtins.elem desktop fullDesktopEnvironments);
 
   # ─────────────────────────────────────────────────────────────────────────────
   # Perfil de hardware [hw-preset] em formato mpv.conf nativo.
@@ -157,6 +178,13 @@ in
         # ── Perfil de hardware gerado em compilação para: ${hostname} ──────────
         ${hwPresetSection}
 
+        # ── Ajuste de janela flutuante para Window Managers (tiling) ───────────
+        ${optionalString isWM ''
+          # Como ${if desktop != null then desktop else "WM"} é uma Window Manager, assegura dimensões e centralização de janela flutuante
+          autofit-larger=85%x85%
+          geometry=50%:50%
+        ''}
+
         # ── Ativação do perfil de hardware por omissão para todos os ficheiros ──
         [default]
         profile=hw-preset
@@ -176,6 +204,36 @@ in
       "mpv/script-opts/evafast.conf".source = ./configs/opts/evafast.conf;
       "mpv/script-opts/memo.conf".source = ./configs/opts/memo.conf;
     };
+
+    # ─────────────────────────────────────────────────────────────────────────
+    # Regras de janela para Window Managers (quando não for Desktop completo)
+    # Garante que o MPV abra sempre em modo flutuante (floating) e centralizado.
+    # ─────────────────────────────────────────────────────────────────────────
+    xsession.windowManager.bspwm.rules = mkIf (isWM && desktop == "bspwm") {
+      "mpv" = {
+        state = "floating";
+        center = true;
+      };
+      "Mpv" = {
+        state = "floating";
+        center = true;
+      };
+    };
+
+    wayland.windowManager.hyprland.settings.windowrule = mkIf (isWM && desktop == "hyprland") [
+      "match:class ^(mpv)$, float 1"
+      "match:class ^(mpv)$, center 1"
+    ];
+
+    wayland.windowManager.sway.config.floating.criteria = mkIf (isWM && desktop == "sway") [
+      { app_id = "mpv"; }
+      { class = "mpv"; }
+    ];
+
+    xsession.windowManager.i3.config.floating.criteria = mkIf (isWM && desktop == "i3") [
+      { class = "mpv"; }
+      { instance = "mpv"; }
+    ];
 
     xdg.mimeApps.defaultApplications = {
       "video/mp4" = "mpv.desktop";
