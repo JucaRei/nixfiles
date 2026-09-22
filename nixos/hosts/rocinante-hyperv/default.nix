@@ -192,7 +192,6 @@ in
               ${lib.getExe pkgs.xrandr} --output "$output" --mode 1600x900 2>/dev/null || true
             fi
           '';
-          session = "bspwm";
         };
 
         ## xrandrHeads = [
