@@ -23,15 +23,6 @@ in
       (
         fhd
         // {
-          name = "HDMI-1-1";
-          x = 0;
-          y = 0;
-          primary = true;
-        }
-      )
-      (
-        fhd
-        // {
           name = "eDP-1";
           x = 1920;
           y = 0;

@@ -87,9 +87,12 @@ in
       };
       Service = {
         Type = "simple";
-        ExecStartPre = "-/bin/sh -c 'type -p fusermount3 >/dev/null && fusermount3 -u -z %t/gvfs 2>/dev/null || type -p fusermount >/dev/null && fusermount -u -z %t/gvfs 2>/dev/null || true; mkdir -p %t/gvfs'";
+        Environment = [
+          "PATH=/run/wrappers/bin:${pkgs.fuse3}/bin:/usr/bin:/bin"
+        ];
+        ExecStartPre = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true; mkdir -p %t/gvfs'";
         ExecStart = "${pkgs.gvfs}/libexec/gvfsd-fuse -f %t/gvfs";
-        ExecStop = "-/bin/sh -c 'type -p fusermount3 >/dev/null && fusermount3 -u -z %t/gvfs 2>/dev/null || type -p fusermount >/dev/null && fusermount -u -z %t/gvfs 2>/dev/null || true'";
+        ExecStop = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true'";
         Restart = "on-failure";
         RestartSec = 3;
       };

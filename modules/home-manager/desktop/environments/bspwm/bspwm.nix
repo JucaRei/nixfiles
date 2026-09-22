@@ -342,10 +342,6 @@ in
                 } || true
             ''}
 
-            # Iniciar daemon de atalhos de teclado (SXHKD)
-            pkill -x sxhkd || true
-            ${pkgs.sxhkd}/bin/sxhkd &
-
             # Carregar recursos do X11 (incluindo tema e tamanho de cursor Xcursor)
             [ -f "$HOME/.Xresources" ] && ${pkgs.xorg.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
 

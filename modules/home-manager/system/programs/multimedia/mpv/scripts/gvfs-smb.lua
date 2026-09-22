@@ -49,26 +49,50 @@ mp.add_hook("on_load", 10, function()
     relpath = relpath:gsub("/+$", "")
 
     local gvfs_dir = os.getenv("XDG_RUNTIME_DIR") or ("/run/user/" .. (os.getenv("UID") or "1000"))
-    local share_prefix = "smb-share:server=" .. server .. ",share=" .. share
-    local gvfs_share_dir = gvfs_dir .. "/gvfs/" .. share_prefix
-    local new_path = gvfs_share_dir .. (relpath ~= "" and ("/" .. relpath) or "")
 
-    -- Verifica se o compartilhamento já está exposto pelo FUSE
-    local info = utils.file_info(gvfs_share_dir)
-    if not info then
-        msg.info("GVfs mount not active at " .. gvfs_share_dir .. ", attempting gio mount...")
+    -- Função para localizar dinamicamente a pasta do compartilhamento no GVfs FUSE
+    local function find_gvfs_mount(srv, shr)
+        local direct = gvfs_dir .. "/gvfs/smb-share:server=" .. srv .. ",share=" .. shr
+        if utils.file_info(direct) then
+            return direct
+        end
+
+        -- Varredura dinâmica para compartilhamentos com sufixos (ex: ,user=juca) ou variações de maiúsculas/minúsculas
+        local entries = utils.readdir(gvfs_dir .. "/gvfs", "dirs")
+        if entries then
+            local s_srv = srv:lower()
+            local s_shr = shr:lower()
+            for _, entry in ipairs(entries) do
+                local e = entry:lower()
+                if e:find("^smb%-share:") and e:find("server=" .. s_srv, 1, true) and e:find("share=" .. s_shr, 1, true) then
+                    local candidate = gvfs_dir .. "/gvfs/" .. entry
+                    if utils.file_info(candidate) then
+                        return candidate
+                    end
+                end
+            end
+        end
+        return nil
+    end
+
+    local gvfs_share_dir = find_gvfs_mount(server, share)
+
+    -- Se não estiver ativo, tenta montar via GIO
+    if not gvfs_share_dir then
+        msg.info("GVfs mount not active for " .. server .. "/" .. share .. ", attempting gio mount...")
         local mount_url = "smb://" .. server .. "/" .. share
         utils.subprocess({
             args = { "gio", "mount", "--anonymous", mount_url },
             playback_only = false
         })
-        info = utils.file_info(gvfs_share_dir)
+        gvfs_share_dir = find_gvfs_mount(server, share)
     end
 
-    if info then
+    if gvfs_share_dir then
+        local new_path = gvfs_share_dir .. (relpath ~= "" and ("/" .. relpath) or "")
         msg.info("Redirecting MPV stream to GVfs FUSE path: " .. new_path)
         mp.set_property("stream-open-filename", new_path)
     else
-        msg.warn("Could not find or mount GVfs share at: " .. gvfs_share_dir)
+        msg.warn("Could not find or mount GVfs share for server=" .. server .. ", share=" .. share)
     end
 end)

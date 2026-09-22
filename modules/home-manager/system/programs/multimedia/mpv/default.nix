@@ -176,6 +176,22 @@ in
       "mpv/script-opts/memo.conf".source = ./configs/opts/memo.conf;
     };
 
+    xdg.mimeApps.defaultApplications = {
+      "video/mp4" = "mpv.desktop";
+      "video/x-matroska" = "mpv.desktop";
+      "video/mkv" = "mpv.desktop";
+      "video/webm" = "mpv.desktop";
+      "video/x-msvideo" = "mpv.desktop";
+      "video/quicktime" = "mpv.desktop";
+      "video/mpeg" = "mpv.desktop";
+      "video/ogg" = "mpv.desktop";
+      "audio/mp3" = "mpv.desktop";
+      "audio/flac" = "mpv.desktop";
+      "audio/ogg" = "mpv.desktop";
+      "audio/wav" = "mpv.desktop";
+      "audio/aac" = "mpv.desktop";
+    };
+
     home.packages = [ pkgs.font-dubai ];
 
     systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [

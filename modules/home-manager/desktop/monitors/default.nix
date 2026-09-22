@@ -68,13 +68,19 @@ let
       if command -v ${pkgs.xrandr}/bin/xrandr >/dev/null 2>&1; then
         ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 2>/dev/null || true
         ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-0 2>/dev/null || true
+        connected_outputs=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1)
+
         ${concatMapStringsSep "\n        " (m:
           if m.enabled then
             let
               rotateArg = if m.transform != "normal" then " --rotate ${rotateMap.${m.transform}}" else "";
               primaryArg = if m.primary then " --primary" else "";
             in
-            "${pkgs.xrandr}/bin/xrandr --output ${m.name} --mode ${toString m.width}x${toString m.height} --rate ${formatNum m.refresh} --pos ${toString m.x}x${toString m.y}${rotateArg}${primaryArg} 2>/dev/null || true"
+            ''
+              if echo "$connected_outputs" | grep -qw "${m.name}"; then
+                ${pkgs.xrandr}/bin/xrandr --output ${m.name} --mode ${toString m.width}x${toString m.height} --rate ${formatNum m.refresh} --pos ${toString m.x}x${toString m.y}${rotateArg}${primaryArg} 2>/dev/null || true
+              fi
+            ''
           else
             "${pkgs.xrandr}/bin/xrandr --output ${m.name} --off 2>/dev/null || true"
         ) cfg.monitors}
@@ -85,6 +91,30 @@ let
           first_conn=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | head -n1 | cut -d" " -f1)
           if [ -n "$first_conn" ]; then
             ${pkgs.xrandr}/bin/xrandr --output "$first_conn" --primary --pos 0x0 2>/dev/null || true
+          fi
+        fi
+
+        # Se BSPWM estiver rodando, sincronizar workspaces e recarregar Polybar
+        if command -v bspc >/dev/null 2>&1 && bspc query -M >/dev/null 2>&1; then
+          p_mon=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected primary" | cut -d" " -f1)
+          [ -z "$p_mon" ] && p_mon=$(bspc query -M -m primary --names 2>/dev/null || true)
+          [ -z "$p_mon" ] && p_mon=$(bspc query -M --names 2>/dev/null | head -n1)
+          o_mons=$(bspc query -M --names 2>/dev/null | grep -v "^$p_mon$" || true)
+
+          if [ -n "$p_mon" ] && [ -n "$o_mons" ]; then
+            bspc wm -O "$p_mon" $o_mons 2>/dev/null || true
+            bspc monitor "$p_mon" -d 1 3 5 7 9
+            s_mon=$(echo "$o_mons" | head -n1)
+            bspc monitor "$s_mon" -d 2 4 6 8 0
+            for extra in $(echo "$o_mons" | tail -n +2); do
+              bspc monitor "$extra" -d 1 2 3 4 5
+            done
+          elif [ -n "$p_mon" ]; then
+            bspc monitor "$p_mon" -d 1 2 3 4 5 6 7 8 9 0
+          fi
+
+          if command -v polybar-msg >/dev/null 2>&1; then
+            polybar-msg cmd restart 2>/dev/null || true
           fi
         fi
       fi
@@ -251,7 +281,11 @@ in
               rotateArg = if m.transform != "normal" then " --rotate ${rotateMap.${m.transform}}" else "";
               primaryArg = if m.primary then " --primary" else "";
             in
-            "${pkgs.xrandr}/bin/xrandr --output ${m.name} --mode ${toString m.width}x${toString m.height} --rate ${formatNum m.refresh} --pos ${toString m.x}x${toString m.y}${rotateArg}${primaryArg} 2>/dev/null || true"
+            ''
+              if echo "$connected_outputs" | grep -qw "${m.name}"; then
+                ${pkgs.xrandr}/bin/xrandr --output ${m.name} --mode ${toString m.width}x${toString m.height} --rate ${formatNum m.refresh} --pos ${toString m.x}x${toString m.y}${rotateArg}${primaryArg} 2>/dev/null || true
+              fi
+            ''
           else
             "${pkgs.xrandr}/bin/xrandr --output ${m.name} --off 2>/dev/null || true"
         ) cfg.monitors;
@@ -260,6 +294,7 @@ in
         # --- Configuração declarativa de monitores (desktop.monitors) ---
         ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 2>/dev/null || true
         ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-0 2>/dev/null || true
+        connected_outputs=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1)
         ${xrandrCommands}
 
         # Fallback dinâmico: se nenhum monitor primário foi ativado (ex: tela externa desconectada),
