@@ -39,7 +39,6 @@ let
         video-sync=display-resample
       ''
 
-
     # ── MacBook Pro 4,1 (Early 2008) — NVIDIA 8600M GT / Nouveau (NV50) ────────
     # Nouveau NV50 não suporta Vulkan. OpenGL + VAAPI via Mesa.
     # Escaladores bilinear reduzem carga no Core 2 Duo Penryn (2 núcleos, ~2.4GHz).
@@ -131,7 +130,8 @@ in
           };
           youtubeSupport = true;
           scripts = with pkgs.mpvScripts; [
-            uosc # UI moderna (substitui o OSC builtin)
+            # uosc # UI moderna (substitui o OSC builtin)
+            modernz # UI moderna OSC (ModernZ)
             memo # Histórico de ficheiros recentes
             evafast # Seeking rápido com preview
             thumbfast # Thumbnails na barra de progresso
@@ -170,7 +170,8 @@ in
 
       # Script opts
       "mpv/script-opts/osc.conf".source = ./configs/opts/osc.conf;
-      "mpv/script-opts/uosc.conf".source = ./configs/opts/uosc.conf;
+      # "mpv/script-opts/uosc.conf".source = ./configs/opts/uosc.conf;
+      "mpv/script-opts/modernz.conf".source = ./configs/opts/modernz.conf;
       "mpv/script-opts/thumbfast.conf".source = ./configs/opts/thumbfast.conf;
       "mpv/script-opts/evafast.conf".source = ./configs/opts/evafast.conf;
       "mpv/script-opts/memo.conf".source = ./configs/opts/memo.conf;
