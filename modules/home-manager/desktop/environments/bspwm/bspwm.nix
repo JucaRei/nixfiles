@@ -26,6 +26,17 @@ let
         echo "state=floating center=on rectangle=850x550+0+0 follow=on"
         exit 0
         ;;
+      *scrcpy*|*Scrcpy*)
+        echo "state=floating center=on follow=on"
+        exit 0
+        ;;
+    esac
+
+    case "$instance" in
+      *scrcpy*|*Scrcpy*)
+        echo "state=floating center=on follow=on"
+        exit 0
+        ;;
     esac
 
     # Consultar propriedades X11 da nova janela
@@ -276,10 +287,32 @@ in
               center = true;
               follow = true;
             };
+            ".scrcpywrap" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            ".scrcpy-wrapped" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "scrcpy-wrapped" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
           };
           extraConfig = ''
             # Script dinâmico de regras externas para diálogos e seletores de arquivos/pastas
             bspc config external_rules_command "${externalRulesScript}"
+
+            # Regras para scrcpy (todas as variações de nomes/wrappers)
+            bspc rule -a "*scrcpy*" state=floating center=on follow=on
+            bspc rule -a "*Scrcpy*" state=floating center=on follow=on
+            bspc rule -a ".scrcpywrap" state=floating center=on follow=on
+            bspc rule -a ".scrcpy-wrapped" state=floating center=on follow=on
+            bspc rule -a "scrcpy-wrapped" state=floating center=on follow=on
 
             # Regras estáticas para seletores de arquivos e pastas (tamanho compacto e centralizado)
             bspc rule -a "*:*:Open Folder" state=floating center=on rectangle=850x550+0+0 follow=on
@@ -301,8 +334,6 @@ in
             bspc rule -a "*:*:Confirm to replace files" state=floating center=on follow=on
             bspc rule -a "xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
             bspc rule -a "Xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
-            bspc rule -a scrcpy state=floating center=on follow=on
-            bspc rule -a Scrcpy state=floating center=on follow=on
 
             # Aplicar resolução e layout de telas declarativos antes de distribuir os workspaces
             if command -v setup-monitors >/dev/null 2>&1; then

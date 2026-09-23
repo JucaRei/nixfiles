@@ -532,6 +532,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Customizações Declarativas**: Tabelas estilizadas em modo arredondado (`rounded`), banner padrão desativado (`show_banner = false`), autocompletion fuzzy insensível a maiúsculas/minúsculas, histórico sincronizado de até 100k entradas e banner `nitch` na inicialização interativa.
   - **Integração Total**: Conectado ao Starship prompt (`enableNushellIntegration = true`), Direnv (`enableNushellIntegration = true`), Eza (`enableNushellIntegration = true`) e Alacritty (`terminal.shell.program = "${pkgs.nushell}/bin/nu"`).
 
+- **Janelas Flutuantes para Scrcpy em Todos os WMs (`bspwm`, `hyprland`, `mangowm`)**:
+  - **Identificadores Suportados**: Adicionado suporte abrangente a qualquer variante de nome de classe, app_id e wrappers do Nix/Linux (`scrcpy`, `Scrcpy`, `.scrcpywrap`, `scrcpy-wrapped`, `.scrcpy-wrapped` e wildcards `*scrcpy*`).
+  - **BSPWM**: Regras adicionadas em `services.bspwm.rules`, comandos `bspc rule -a` e interceptadas no `externalRulesScript` (`*scrcpy*|*Scrcpy*` em `$class` e `$instance`).
+  - **Hyprland**: Regras atualizadas com expressões regulares `match:class ^(.*[sS]crcpy.*)$` e `match:initialTitle ^(.*[sS]crcpy.*)$` para `float 1` e `center 1`.
+  - **MangoWM**: Declaradas regras `windowrule=isfloating:1,appid:.*[sS]crcpy.*`, `appid:.scrcpywrap`, `appid:scrcpy-wrapped` e `title:.*[sS]crcpy.*`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
