@@ -381,6 +381,21 @@
     click-left = "${scripts.rofiPowerMenu}";
   };
 
+  # --- Filtro Noturno / Redshift (Luz Noturna & Temperatura de Cor) ---
+  "module/redshift" = {
+    type = "custom/script";
+    exec = "${scripts.redshiftScript} status";
+    interval = 3;
+    format = "<label>";
+    format-background = colors.surface0;
+    label = "%output%";
+    label-padding = 1;
+    click-left = "${scripts.redshiftScript} toggle";
+    click-right = "${scripts.redshiftScript} reset";
+    scroll-up = "${scripts.redshiftScript} increase";
+    scroll-down = "${scripts.redshiftScript} decrease";
+  };
+
   "settings" = {
     screenchange-reload = true;
     pseudo-transparency = true;

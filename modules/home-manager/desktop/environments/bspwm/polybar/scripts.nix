@@ -549,4 +549,84 @@
       fi
     fi
   '';
+
+  # --- Script de Controle do Redshift (Temperatura de Cor / Filtro Noturno) ---
+  redshiftScript = pkgs.writeShellScript "polybar-redshift" ''
+    export PATH="${lib.makeBinPath [ pkgs.redshift pkgs.dunst pkgs.coreutils pkgs.gnugrep pkgs.procps ]}:$PATH"
+
+    STATE_FILE="/tmp/polybar_redshift_state"
+    TEMP_FILE="/tmp/polybar_redshift_temp"
+
+    DEFAULT_TEMP=4500
+    DAY_TEMP=6500
+
+    get_temp() {
+      if [ -f "$TEMP_FILE" ]; then
+        cat "$TEMP_FILE" 2>/dev/null || echo "$DEFAULT_TEMP"
+      else
+        echo "$DEFAULT_TEMP"
+      fi
+    }
+
+    set_temp() {
+      temp="$1"
+      echo "$temp" > "$TEMP_FILE"
+      echo "on" > "$STATE_FILE"
+      redshift -P -O "$temp" 2>/dev/null
+      dunstify -a "Redshift" -u low -i "weather-clear-night" -r 9991 -t 1500 "Filtro Noturno: ''${temp}K"
+    }
+
+    toggle() {
+      state=$(cat "$STATE_FILE" 2>/dev/null || echo "off")
+      if [ "$state" = "on" ]; then
+        echo "off" > "$STATE_FILE"
+        redshift -x 2>/dev/null
+        dunstify -a "Redshift" -u low -i "weather-clear" -r 9991 -t 1500 "Filtro Noturno: Desativado (6500K)"
+      else
+        temp=$(get_temp)
+        set_temp "$temp"
+      fi
+    }
+
+    increase() {
+      temp=$(get_temp)
+      temp=$((temp + 500))
+      [ "$temp" -gt 6500 ] && temp=6500
+      set_temp "$temp"
+    }
+
+    decrease() {
+      temp=$(get_temp)
+      temp=$((temp - 500))
+      [ "$temp" -lt 2500 ] && temp=2500
+      set_temp "$temp"
+    }
+
+    case "$1" in
+      toggle)
+        toggle
+        ;;
+      increase)
+        increase
+        ;;
+      decrease)
+        decrease
+        ;;
+      reset)
+        echo "off" > "$STATE_FILE"
+        echo "$DEFAULT_TEMP" > "$TEMP_FILE"
+        redshift -x 2>/dev/null
+        dunstify -a "Redshift" -u low -i "weather-clear" -r 9991 -t 1500 "Filtro Noturno: Resetado (6500K)"
+        ;;
+      status|*)
+        state=$(cat "$STATE_FILE" 2>/dev/null || echo "off")
+        if [ "$state" = "on" ]; then
+          temp=$(get_temp)
+          echo "%{F${colors.peach}}󰛩%{F-} ''${temp}K"
+        else
+          echo "%{F${colors.surface2}}󰛨%{F-} Off"
+        fi
+        ;;
+    esac
+  '';
 }
