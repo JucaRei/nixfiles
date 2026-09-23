@@ -30,6 +30,7 @@ in
     ./bash
     ./fish
     ./zsh
+    ./nushell
     ./direnv
     ./starship
   ];
@@ -46,6 +47,8 @@ in
         "bash"
         "fish"
         "zsh"
+        "nu"
+        "nushell"
       ];
       default = "bash";
       description = "Default shell to configure.";

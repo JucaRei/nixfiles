@@ -59,6 +59,7 @@ in
       enableBashIntegration = mkIf (config.system.programs.shells.default == "bash") true;
       enableFishIntegration = mkIf (config.system.programs.shells.default == "fish") true;
       enableZshIntegration = mkIf (config.system.programs.shells.default == "zsh") true;
+      enableNushellIntegration = mkIf (config.system.programs.shells.default == "nu" || config.system.programs.shells.default == "nushell") true;
       extraOptions = [
         "--color=always"
         "--icons"

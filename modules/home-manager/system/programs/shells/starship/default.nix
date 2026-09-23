@@ -15,6 +15,7 @@ in
       enableBashIntegration = true;
       enableFishIntegration = true;
       enableZshIntegration = true;
+      enableNushellIntegration = true;
 
       # https://github.com/etrigan63/Catppuccin-starship
       settings = {

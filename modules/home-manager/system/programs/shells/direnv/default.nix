@@ -11,7 +11,7 @@ in
       enableBashIntegration = mkIf (cfg.default == "bash") true;
       enableFishIntegration = mkIf (cfg.default == "fish") true;
       enableZshIntegration = mkIf (cfg.default == "zsh") true;
-      enableNushellIntegration = mkIf (cfg.default == "nu") true;
+      enableNushellIntegration = mkIf (cfg.default == "nu" || cfg.default == "nushell") true;
 
       stdlib = mkIf cfg.direnv.nix-direnv ''
         : ''${DIRENV_AUTO_LOAD_FLAKE:=1}

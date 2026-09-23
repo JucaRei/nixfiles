@@ -512,6 +512,27 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Declarado `xresources.properties` (`Xcursor.theme`, `Xcursor.size`), adicionado `pkgs.xorg.xrdb` em `packages.nix` e exportado `XCURSOR_THEME`/`XCURSOR_SIZE` nas variáveis de sessão e no `systemctl --user import-environment`.
     - No `bspwmrc`, adicionado `[ -f "$HOME/.Xresources" ] && xrdb -merge "$HOME/.Xresources"` e unificado `xsetroot -solid '#1e1e2e' -cursor_name left_ptr &`.
 
+- **Bash — Autocompletion, Autosuggestions e Predição de Histórico Estilo Fish/Zsh (`bash/default.nix`)**:
+  - **Bash Line Editor (`pkgs.blesh`)**: Adicionada opção `system.programs.shells.bash.blesh.enable` (padrão `true`). O `ble.sh` traz ao Bash recursos nativos que antes só existiam no Fish ou Zsh:
+    - **Predição de Histórico (Ghost Text)**: Sugere comandos completos anteriores à medida que o usuário digita (`complete_auto_history=1`, latência de 50ms), aceitos com `Seta Direita` ou `End`.
+    - **Menu de Completude Interativo**: Tab abre menu de completude navegável por setas/Tab com filtragem em tempo real (`complete_auto_menu=1`, `complete_menu_complete=1`, `complete_menu_filter=1`).
+    - **Syntax Highlighting em Tempo Real**: Destaca comandos válidos, argumentos, erros de sintaxe e caminhos existentes de arquivos/diretórios em tempo real (`highlight_syntax=1`, `highlight_filename=1`).
+  - **Integração sem Conflitos com Starship**:
+    - O Starship injeta seu hook no `initExtra` com prioridade `mkOrder 1200`.
+    - Para evitar quebras e flickering, o `ble.sh` é pré-carregado no início com `source ble.sh --attach=none` (`mkOrder 500`), permitindo que scripts e o Starship inicializem normalmente, e é acoplado ao final via `ble-attach` (`mkOrder 2000`).
+  - **Fallback Robusto do Readline**:
+    - Caso uma sessão não suporte `ble.sh` (ou em terminais legados), foram configurados `history-search-backward` e `history-search-forward` nas setas Cima/Baixo (busca no histórico filtrando pelo prefixo já digitado) e `menu-complete` no Tab.
+
+- **Shells e Alacritty — Integração Dinâmica e Fix do Zsh (`zsh/default.nix` e `alacritty/default.nix`)**:
+  - **Zsh `dotDir`**: Substituído `$HOME/.config/zsh` por `"${config.xdg.configHome}/zsh"`, atendendo às asserções do Home Manager moderno sem emitir avisos de caminhos relativos ou variáveis não avaliadas em tempo de build. Corrigido typo em `bindkey '^p' history-search-backward`.
+  - **Alacritty Shell Automático**: Configurado `programs.alacritty.settings.terminal.shell.program` apontando dinamicamente para o binário do shell ativo em `system.programs.shells.default` (`zsh`, `fish` ou `bash`). Isso garante que o Alacritty abra imediatamente o shell correto, mesmo que o display manager ou a sessão X11/BSPWM em andamento ainda possua `SHELL=/bin/bash` herdado no ambiente antes do logoff.
+
+- **Suporte ao Nushell (`shells/nushell/default.nix`)**:
+  - **Módulo Dedicado**: Adicionado suporte ao Nushell via `programs.nushell` quando `system.programs.shells.default` for `"nu"` ou `"nushell"`.
+  - **Customizações Declarativas**: Tabelas estilizadas em modo arredondado (`rounded`), banner padrão desativado (`show_banner = false`), autocompletion fuzzy insensível a maiúsculas/minúsculas, histórico sincronizado de até 100k entradas e banner `nitch` na inicialização interativa.
+  - **Integração Total**: Conectado ao Starship prompt (`enableNushellIntegration = true`), Direnv (`enableNushellIntegration = true`), Eza (`enableNushellIntegration = true`) e Alacritty (`terminal.shell.program = "${pkgs.nushell}/bin/nu"`).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 

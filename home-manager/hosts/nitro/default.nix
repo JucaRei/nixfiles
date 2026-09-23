@@ -52,6 +52,9 @@ in
       tools = {
         yt-dlp.enable = true;
       };
+      shells = {
+        default = "zsh";
+      };
     };
 
     home = {

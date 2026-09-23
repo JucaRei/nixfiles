@@ -14,7 +14,7 @@ in
       enable = true;
       enableCompletion = true;
       enableVteIntegration = true;
-      dotDir = "$HOME/.config/zsh";
+      dotDir = "${config.xdg.configHome}/zsh";
       autosuggestion = {
         enable = true;
         strategy = [
@@ -63,7 +63,7 @@ in
         save = 10000;
       };
       initExtra = ''
-        bindkey '^p' history-serach-backward
+        bindkey '^p' history-search-backward
         bindkey '^n' history-search-forward
         bindkey '^y' autosuggest-accept
 

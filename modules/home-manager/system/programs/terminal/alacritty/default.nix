@@ -8,9 +8,21 @@
 }:
 let
   cfg = config.system.programs.terminal;
+  shellsCfg = config.system.programs.shells;
   nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
+  defaultShellPkg =
+    if shellsCfg.enable && shellsCfg.default == "zsh" then
+      "${pkgs.zsh}/bin/zsh"
+    else if shellsCfg.enable && shellsCfg.default == "fish" then
+      "${pkgs.fish}/bin/fish"
+    else if shellsCfg.enable && (shellsCfg.default == "nu" || shellsCfg.default == "nushell") then
+      "${pkgs.nushell}/bin/nu"
+    else if shellsCfg.enable && shellsCfg.default == "bash" then
+      "${pkgs.bashInteractive}/bin/bash"
+    else
+      null;
 in
 {
   config = lib.mkIf (cfg.name == "alacritty") {
@@ -26,6 +38,11 @@ in
         general = {
           live_config_reload = true;
           import = [ (pkgs.alacritty-theme + "/dracula.toml") ];
+        };
+        terminal = lib.optionalAttrs (defaultShellPkg != null) {
+          shell = {
+            program = defaultShellPkg;
+          };
         };
         window = {
           title = "Terminal";
