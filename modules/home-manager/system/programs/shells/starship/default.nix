@@ -133,7 +133,7 @@ in
           Macos = "[ ](fg:text bg:surface1)";
           Manjaro = "[ ](fg:green bg:surface1)";
           Mint = "[ ](fg:teal bg:surface1)";
-          NixOS = "[ ](fg:sky bg:surface1)";
+          NixOS = "[   ](fg:sky bg:surface1)";
           OpenBSD = "[ ](fg:yellow bg:surface1)";
           openSUSE = "[ ](fg:green bg:surface1)";
           Pop = "[ ](fg:sapphire bg:surface1)";
@@ -205,7 +205,8 @@ in
           "Videos" = " ";
           "Volatile" = "󰇚 ";
           "Websites" = "󰖟 ";
-          "nix-config" = " ";
+          "nix-config" = "  ";
+          "nixfiles" = "  ";
           "Zero" = "󰎡 ";
         };
 
@@ -375,9 +376,9 @@ in
           symbol = "▼";
         };
         nix_shell = {
-          format = "[ $symbol]($style)";
+          format = "[ $symbol ]($style)";
           style = "fg:base bg:teal";
-          symbol = "";
+          symbol = " ";
         };
         cmd_duration = {
           format = "[ ⏱ $duration]($style)";
