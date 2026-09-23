@@ -9,7 +9,7 @@ let
   cfg = config.system.programs.shells;
 in
 {
-  config = mkIf (cfg.default == "bash") {
+  config = mkIf (cfg.enable && cfg.default == "bash") {
     programs = {
       bash = {
         enable = true;

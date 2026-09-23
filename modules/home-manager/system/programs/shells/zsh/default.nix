@@ -9,7 +9,7 @@ let
   cfg = config.system.programs.shells;
 in
 {
-  config = mkIf (cfg.default == "zsh") {
+  config = mkIf (cfg.enable && cfg.default == "zsh") {
     programs.zsh = {
       enable = true;
       enableCompletion = true;

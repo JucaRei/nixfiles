@@ -13,7 +13,6 @@ let
     mkMerge
     optional
     mkOption
-    mdDoc
     ;
   inherit (lib.types) enum bool;
 
@@ -22,8 +21,8 @@ let
 
   nixDiff = {
     builtin = "nix store diff-closures";
-    nvd = "${pkgs.nvd}/bin/nvd diff";
-    nix-diff = "${pkgs.nix-diff}/bin/nix-diff";
+    nvd = "${getExe pkgs.nvd} diff";
+    nix-diff = getExe pkgs.nix-diff;
   };
 in
 {
@@ -32,13 +31,14 @@ in
     ./fish
     ./zsh
     ./direnv
+    ./starship
   ];
 
   options.system.programs.shells = {
     enable = mkOption {
       type = bool;
       default = false;
-      description = mdDoc "Enable command-line shell configuration.";
+      description = "Enable command-line shell configuration.";
     };
 
     default = mkOption {
@@ -48,21 +48,21 @@ in
         "zsh"
       ];
       default = "bash";
-      description = mdDoc "Default shell to configure.";
+      description = "Default shell to configure.";
     };
 
     aliases = {
       enable = mkOption {
         type = bool;
         default = false;
-        description = mdDoc "Enable useful shell aliases.";
+        description = "Enable useful shell aliases.";
       };
 
       systemd = {
         enable = mkOption {
           type = bool;
           default = true;
-          description = mdDoc "Enable systemd-related aliases (sc-, scu-, jc- etc.).";
+          description = "Enable systemd-related aliases (sc-, scu-, jc- etc.).";
         };
       };
 
@@ -70,7 +70,7 @@ in
         enable = mkOption {
           type = bool;
           default = true;
-          description = mdDoc "Install process-related tools (procs, fkill).";
+          description = "Install process-related tools (procs).";
         };
       };
 
@@ -78,7 +78,7 @@ in
         enable = mkOption {
           type = bool;
           default = true;
-          description = mdDoc "Enable clean Nix command aliases.";
+          description = "Enable clean Nix command aliases.";
         };
         diffProgram = mkOption {
           type = enum [
@@ -87,21 +87,31 @@ in
             "nix-diff"
           ];
           default = "builtin";
-          description = mdDoc "Tool used by `nd` to show generation differences.";
+          description = "Tool used by `nd` to show generation differences.";
         };
       };
     };
 
-    direnv.enable = mkOption {
-      type = bool;
-      default = false;
-      description = mdDoc "Enable direnv with good Nix integration.";
+    direnv = {
+      enable = mkOption {
+        type = bool;
+        default = true;
+        description = "Enable direnv with good Nix integration.";
+      };
+
+      nix-direnv = mkOption {
+        type = bool;
+        default = true;
+        description = "Use nix-direnv for persistent gc-rooted shells.";
+      };
     };
 
-    direnv.nix-direnv = mkOption {
-      type = bool;
-      default = true;
-      description = mdDoc "Use nix-direnv for persistent gc-rooted shells.";
+    starship = {
+      enable = mkOption {
+        type = bool;
+        default = true;
+        description = "Enable Starship prompt with an aesthetic, lightweight configuration.";
+      };
     };
   };
 
@@ -138,7 +148,12 @@ in
 
     # Systemd aliases
     (mkIf cfg.aliases.systemd.enable {
-      home.shellAliases = import ./aliases/systemd.nix { inherit lib pkgs; };
+      home.shellAliases = import ./aliases/systemd.nix { inherit lib; };
+    })
+
+    # Process inspection tools
+    (mkIf (cfg.aliases.enable && cfg.aliases.process.enable) {
+      home.packages = [ pkgs.procs ];
     })
 
     # Nix aliases + tools
@@ -181,40 +196,6 @@ in
           nst = "nix store";
         };
       };
-    })
-
-    # Direnv
-    (mkIf cfg.direnv.enable {
-      programs.direnv = {
-        enable = true;
-        package = pkgs.direnv;
-        enableNixDirenvIntegration = true;
-
-        stdlib = mkIf cfg.direnv.nix-direnv ''
-          use_nix() {
-            if [ -f shell.nix ] || [ -f flake.nix ] || [ -f default.nix ]; then
-              eval "$(nix-direnv-watch)"
-            fi
-          }
-          : ''${DIRENV_AUTO_LOAD_FLAKE:=1}
-          if [ -f flake.nix ] && [ ! -f .envrc ] && (( DIRENV_AUTO_LOAD_FLAKE )); then
-            echo "use flake" > .envrc
-            direnv allow
-          fi
-        '';
-      };
-
-      programs.bash.initExtra = mkIf (cfg.direnv.nix-direnv && cfg.default == "bash") ''
-        eval "$(${pkgs.nix-direnv}/bin/direnv hook bash)"
-      '';
-      programs.zsh.initExtra = mkIf (cfg.direnv.nix-direnv && cfg.default == "zsh") ''
-        eval "$(${pkgs.nix-direnv}/bin/direnv hook zsh)"
-      '';
-      programs.fish.interactiveShellInit = mkIf (cfg.direnv.nix-direnv && cfg.default == "fish") ''
-        ${pkgs.nix-direnv}/bin/direnv hook fish | source
-      '';
-
-      home.packages = optional cfg.direnv.nix-direnv pkgs.nix-direnv;
     })
 
   ]);

@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -9,17 +8,9 @@ let
   cfg = config.system.programs.shells;
 in
 {
-  config = mkIf (cfg.default == "fish") {
+  config = mkIf (cfg.enable && cfg.default == "fish") {
     programs.fish = {
       enable = true;
-
-      interactiveShellInit = mkIf (cfg.direnv == true) ''
-        ${pkgs.direnv}/bin/direnv hook fish | source
-      '';
-
-      shellInit = mkIf (cfg.direnv == true) ''
-        ${pkgs.direnv}/bin/direnv hook fish | source
-      '';
     };
   };
 }

@@ -1,5 +1,4 @@
-# programs/terminal/console/aliases/systemd.nix
-{ lib, pkgs }:
+{ lib, ... }:
 let
 
   mkSys = c: {
