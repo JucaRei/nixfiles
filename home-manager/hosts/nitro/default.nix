@@ -75,6 +75,7 @@ in
           # Executa o MPV do Nix com PRIME Offload na NVIDIA dGPU (mantendo uosc, thumbfast e scripts)
           exec env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ${config.programs.mpv.package}/bin/mpv "$@"
         '')
+        scrcpy
       ];
 
       shellAliases = {

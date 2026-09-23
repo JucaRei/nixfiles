@@ -266,6 +266,16 @@ in
               follow = true;
               rectangle = "850x550+0+0";
             };
+            "scrcpy" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Scrcpy" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
           };
           extraConfig = ''
             # Script dinâmico de regras externas para diálogos e seletores de arquivos/pastas
@@ -291,6 +301,8 @@ in
             bspc rule -a "*:*:Confirm to replace files" state=floating center=on follow=on
             bspc rule -a "xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
             bspc rule -a "Xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
+            bspc rule -a scrcpy state=floating center=on follow=on
+            bspc rule -a Scrcpy state=floating center=on follow=on
 
             # Aplicar resolução e layout de telas declarativos antes de distribuir os workspaces
             if command -v setup-monitors >/dev/null 2>&1; then

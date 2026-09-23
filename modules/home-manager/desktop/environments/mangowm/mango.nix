@@ -589,6 +589,8 @@ in
       windowrule=isfloating:1,appid:nm-connection-editor
       windowrule=isfloating:1,appid:blueman-manager
       windowrule=isfloating:1,appid:mpv
+      windowrule=isfloating:1,appid:scrcpy
+      windowrule=isfloating:1,appid:Scrcpy
       windowrule=isfloating:1,title:.*Preferences.*
       windowrule=isfloating:1,title:.*Settings.*
       windowrule=isfloating:1,title:.*Choose.*

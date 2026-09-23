@@ -51,6 +51,16 @@ in
             ''
         );
 
+        linkFonts = mkIf (!isNixOS) (
+          lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+            mkdir -p "$HOME/.local/share/fonts"
+            if [ -d "$HOME/.nix-profile/share/fonts" ]; then
+              ln -sfn "$HOME/.nix-profile/share/fonts" "$HOME/.local/share/fonts/nix-fonts"
+            fi
+            ${pkgs.fontconfig}/bin/fc-cache -f "$HOME/.local/share/fonts" 2>/dev/null || true
+          ''
+        );
+
         "user-dirs" = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
           rm -f $VERBOSE_ARG "$HOME/.config/user-dirs.dirs.old"
         '';

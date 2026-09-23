@@ -14,7 +14,10 @@ let
 in
 {
   config = lib.mkIf (cfg.name == "alacritty") {
-    home.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
+    home.packages = with pkgs.nerd-fonts; [
+      jetbrains-mono
+      symbols-only
+    ];
     xdg.configFile."alacritty/alacritty.toml".force = true;
     programs.alacritty = {
       enable = true;

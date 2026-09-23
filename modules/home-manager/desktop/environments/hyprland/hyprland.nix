@@ -561,6 +561,8 @@ in
           "match:class ^(galculator)$, center 1"
           "match:class ^(org.gnome.FileRoller)$, float 1"
           "match:class ^(org.gnome.FileRoller)$, center 1"
+          "match:class ^([sS]crcpy)$, float 1"
+          "match:class ^([sS]crcpy)$, center 1"
 
           # Títulos bilíngues de seleção de arquivo
           "match:title ^(Open Folder|Abrir pasta|Open File|Abrir Arquivo|Select a folder|Selecionar pasta|Save As|Salvar como)$, float 1"
