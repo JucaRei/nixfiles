@@ -538,6 +538,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Hyprland**: Regras atualizadas com expressões regulares `match:class ^(.*[sS]crcpy.*)$` e `match:initialTitle ^(.*[sS]crcpy.*)$` para `float 1` e `center 1`.
   - **MangoWM**: Declaradas regras `windowrule=isfloating:1,appid:.*[sS]crcpy.*`, `appid:.scrcpywrap`, `appid:scrcpy-wrapped` e `title:.*[sS]crcpy.*`.
 
+- **Módulo Discord com Vencord, OpenASAR e Temas Customizados (`chat/discord/default.nix`)**:
+  - **Opção Central**: `system.programs.chat.discord.enable` com seleção de cliente via `client` (`"discord"`, `"vesktop"` ou `"both"`).
+  - **Otimizações**: `openasar.enable = true` (substitui o app.asar para boot mais rápido e menor consumo de RAM) e `vencord.enable = true` (injeta Vencord para plugins e áudio no compartilhamento de tela em Linux).
+  - **Temas Disponíveis**: `theme.scheme` com suporte a `"catppuccin-frappe"` (padrão), `"catppuccin-mocha"`, `"doom"` (Doom One Dark com as cores exatas da paleta) e `"dracula"` (paleta Dracula oficial).
+  - **Deploy Automático**: Gera todos os arquivos `.theme.css` em `~/.config/Vencord/themes/`, `~/.config/vesktop/themes/` e `~/.config/BetterDiscord/themes/`, aponta `current.theme.css` para o selecionado e inicializa o `settings.json` com o tema ativado e plugins essenciais habilitados (zoom de imagem, plataformas, duplo clique em canais de voz, etc.).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

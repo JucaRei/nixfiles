@@ -1,6 +1,7 @@
 _: {
   imports = [
     ./browsers
+    ./chat
     ./console
     ./documents
     ./file-manager
