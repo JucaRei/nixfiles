@@ -104,7 +104,7 @@ in
             automatic_scheme = "longest_side";
             initial_polarity = "second_child";
             window_gap = 5; # Gaps arejados estilo Hyprland
-            top_padding = 20; # Altura da Polybar
+            top_padding = 36; # Altura da Polybar (30px) + gap superior (6px)
             bottom_padding = 4;
             left_padding = 4;
             right_padding = 4;

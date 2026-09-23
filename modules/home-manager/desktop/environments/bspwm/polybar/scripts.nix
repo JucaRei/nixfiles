@@ -1,5 +1,119 @@
-{ pkgs, colors, ... }:
 {
+  pkgs,
+  colors,
+  lib ? pkgs.lib,
+  ...
+}:
+{
+  # --- Taskbar Interativa de Janelas (Polywins para BSPWM) ---
+  polywinsScript = pkgs.writeShellScript "polybar-polywins" ''
+    export PATH="${lib.makeBinPath [ pkgs.bspwm pkgs.xprop pkgs.coreutils pkgs.gnugrep pkgs.gnused pkgs.gawk ]}:$PATH"
+
+    monitor="''${MONITOR:-}"
+
+    get_desktop() {
+      if [ -n "$monitor" ]; then
+        bspc query -D -m "$monitor" -d focused 2>/dev/null || bspc query -D -d focused 2>/dev/null
+      else
+        bspc query -D -d focused 2>/dev/null
+      fi
+    }
+
+    generate_output() {
+      desktop=$(get_desktop)
+      [ -z "$desktop" ] && echo "" && return
+
+      all_nodes=$(bspc query -N -d "$desktop" -n .window 2>/dev/null)
+      if [ -z "$all_nodes" ]; then
+        echo "%{F${colors.surface2}}󰣆 Área de Trabalho%{F-}"
+        return
+      fi
+
+      focused_node=$(bspc query -N -d "$desktop" -n .window.focused 2>/dev/null)
+      hidden_nodes=$(bspc query -N -d "$desktop" -n .window.hidden 2>/dev/null)
+
+      output=""
+      first=true
+      count=0
+
+      for wid in $all_nodes; do
+        if [ "$count" -ge 6 ]; then
+          output="$output %{F${colors.surface1}}·%{F-} %{F${colors.subtext0}}+...%{F-}"
+          break
+        fi
+
+        wm_class=$(xprop -id "$wid" WM_CLASS 2>/dev/null | awk -F'"' '{print $4}')
+        [ -z "$wm_class" ] && wm_class=$(xprop -id "$wid" WM_CLASS 2>/dev/null | awk -F'"' '{print $2}')
+        [ -z "$wm_class" ] && wm_class="Janela"
+
+        case "$wm_class" in
+          Polybar|polybar|Conky|conky|Dunst|dunst) continue ;;
+        esac
+
+        class_lower=$(echo "$wm_class" | tr '[:upper:]' '[:lower:]')
+        case "$class_lower" in
+          *alacritty*|*kitty*|*terminal*)  icon="" ;;
+          *firefox*)                        icon="󰈹" ;;
+          *chrome*|*chromium*)              icon="" ;;
+          *code*|*codium*)                  icon="󰨞" ;;
+          *thunar*|*nemo*|*pcmanfm*)        icon="󰉋" ;;
+          *discord*|*vesktop*)              icon="󰙯" ;;
+          *spotify*)                        icon="󰓇" ;;
+          *mpv*|*vlc*)                      icon="󰎁" ;;
+          *scrcpy*)                         icon="󰄡" ;;
+          *pavucontrol*)                    icon="󰕾" ;;
+          *lxappearance*)                   icon="󰔎" ;;
+          *gimp*)                           icon="" ;;
+          *steam*)                          icon="󰓓" ;;
+          *)                                icon="󰣆" ;;
+        esac
+
+        display_name=$(echo "$wm_class" | cut -c1-12)
+
+        is_focused=false
+        [ "$wid" = "$focused_node" ] && is_focused=true
+
+        is_hidden=false
+        if echo "$hidden_nodes" | grep -qw "$wid" 2>/dev/null; then
+          is_hidden=true
+        fi
+
+        if [ "$is_focused" = true ]; then
+          act_left="${pkgs.bspwm}/bin/bspc node $wid -g hidden=on"
+        elif [ "$is_hidden" = true ]; then
+          act_left="${pkgs.bspwm}/bin/bspc node $wid -g hidden=off -f"
+        else
+          act_left="${pkgs.bspwm}/bin/bspc node $wid -f"
+        fi
+        act_mid="${pkgs.bspwm}/bin/bspc node $wid -c"
+        act_right="${pkgs.bspwm}/bin/bspc node $wid -t ~floating"
+
+        if [ "$is_hidden" = true ]; then
+          item="%{A1:$act_left:}%{A2:$act_mid:}%{A3:$act_right:}%{F${colors.peach}}󰖯 %{F${colors.surface2}}$icon $display_name%{F-}%{A}%{A}%{A}"
+        elif [ "$is_focused" = true ]; then
+          item="%{A1:$act_left:}%{A2:$act_mid:}%{A3:$act_right:}%{F${colors.blue}}$icon %{F${colors.text}}$display_name%{F-}%{A}%{A}%{A}"
+        else
+          item="%{A1:$act_left:}%{A2:$act_mid:}%{A3:$act_right:}%{F${colors.subtext0}}$icon $display_name%{F-}%{A}%{A}%{A}"
+        fi
+
+        if [ "$first" = true ]; then
+          output="$item"
+          first=false
+        else
+          output="$output %{F${colors.surface1}}·%{F-} $item"
+        fi
+        count=$((count + 1))
+      done
+
+      echo "$output"
+    }
+
+    generate_output
+
+    bspc subscribe node_focus node_add node_remove node_flag node_state desktop_focus 2>/dev/null | while read -r _; do
+      generate_output
+    done
+  '';
   # --- Script de Controle de Mídia (Playerctl) ---
   mediaScript = pkgs.writeShellScript "polybar-media" ''
     export PATH="${pkgs.playerctl}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
@@ -10,9 +124,21 @@
     if [ "$status" = "Playing" ]; then
       artist=$(playerctl metadata artist 2>/dev/null)
       title=$(playerctl metadata title 2>/dev/null)
-      echo "󰎈 $artist - $title" | cut -c1-32
+      track="$artist - $title"
+      [ -z "$artist" ] && track="$title"
+      track=$(echo "$track" | cut -c1-28)
+      # Formatação dinâmica em cápsula: só renderiza quando há música ativa
+      echo "%{F${colors.surface0}}%{T5}%{T-}%{F-}%{B${colors.surface0}}%{F${colors.lavender}}󰎈 $track%{F-}%{B-}%{F${colors.surface0}}%{T5}%{T-}%{F-}"
+      # Versão de texto simples (legado):
+      # echo "󰎈 $artist - $title" | cut -c1-32
     elif [ "$status" = "Paused" ]; then
-      echo "󰏤 Pausado"
+      artist=$(playerctl metadata artist 2>/dev/null)
+      title=$(playerctl metadata title 2>/dev/null)
+      track="$artist - $title"
+      [ -z "$artist" ] && track="$title"
+      track=$(echo "$track" | cut -c1-24)
+      echo "%{F${colors.surface0}}%{T5}%{T-}%{F-}%{B${colors.surface0}}%{F${colors.surface2}}󰏤 $track%{F-}%{B-}%{F${colors.surface0}}%{T5}%{T-}%{F-}"
+      # echo "󰏤 Pausado"
     else
       echo ""
     fi
@@ -22,20 +148,23 @@
   bluetoothScript = pkgs.writeShellScript "polybar-bluetooth" ''
     export PATH="${pkgs.bluez}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
     if ! command -v bluetoothctl >/dev/null 2>&1; then
-      echo "󰂲"
+      echo "%{F${colors.surface2}}󰂲%{F-}"
       exit 0
     fi
 
     power=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
     if [ "$power" = "yes" ]; then
-      connected_dev=$(bluetoothctl info 2>/dev/null | grep "Name:" | cut -d: -f2 | sed 's/^ *//')
+      connected_dev=$(bluetoothctl info 2>/dev/null | grep "Name:" | cut -d: -f2 | sed 's/^ *//' | cut -c1-12)
       if [ -n "$connected_dev" ]; then
-        echo "󰂱 $connected_dev" | cut -c1-15
+        echo "%{F${colors.blue}}󰂱%{F-} $connected_dev"
+        # echo "󰂱 $connected_dev" | cut -c1-15
       else
-        echo "󰂯"
+        echo "%{F${colors.sapphire}}󰂯%{F-}"
+        # echo "󰂯"
       fi
     else
-      echo "󰂲"
+      echo "%{F${colors.surface2}}󰂲%{F-}"
+      # echo "󰂲"
     fi
   '';
 
@@ -141,9 +270,10 @@
     # 1. Verifica se há conexão cabeada (Ethernet) ativa
     eth_conn=$(nmcli -t -f TYPE,STATE,CONNECTION device 2>/dev/null | grep "^ethernet:connected:" | head -n1)
     if [ -n "$eth_conn" ]; then
-      con_name=$(echo "$eth_conn" | cut -d: -f3)
+      con_name=$(echo "$eth_conn" | cut -d: -f3 | cut -c1-14)
       [ -z "$con_name" ] && con_name="Ethernet"
       echo "%{F${colors.teal}}󰈀%{F-} $con_name"
+      # echo "%{F${colors.teal}}󰈀%{F-} $con_name" # sem corte de caracteres
       exit 0
     fi
 
@@ -151,10 +281,10 @@
     wifi_conn=$(nmcli -t -f TYPE,STATE,CONNECTION device 2>/dev/null | grep "^wifi:connected:" | head -n1)
     if [ -n "$wifi_conn" ]; then
       wifi_info=$(nmcli -t -f IN-USE,SSID,SIGNAL device wifi 2>/dev/null | grep '^\*' | head -n1)
-      ssid=$(echo "$wifi_info" | cut -d: -f2)
+      ssid=$(echo "$wifi_info" | cut -d: -f2 | cut -c1-14)
       signal=$(echo "$wifi_info" | cut -d: -f3)
       if [ -z "$ssid" ]; then
-        ssid=$(echo "$wifi_conn" | cut -d: -f3)
+        ssid=$(echo "$wifi_conn" | cut -d: -f3 | cut -c1-14)
       fi
       [ -z "$ssid" ] && ssid="Wi-Fi"
 
@@ -289,7 +419,9 @@
     count=$(echo "$hidden_nodes" | grep -v '^$' | wc -l)
 
     if [ "$count" -gt 0 ]; then
-      echo "󰖯 $count"
+      # Cápsula renderizada dinamicamente apenas quando há janelas ocultas
+      echo "%{F${colors.surface0}}%{T5}%{T-}%{F-}%{B${colors.surface0}}%{F${colors.peach}}󰖯 $count%{F-}%{B-}%{F${colors.surface0}}%{T5}%{T-}%{F-}"
+      # echo "󰖯 $count" # Versão de texto simples sem cápsula embutida
     else
       echo ""
     fi

@@ -26,7 +26,7 @@
   "module/sep" = {
     type = "custom/text";
     format = "<label>";
-    label = " ";
+    label = "   ";
     label-foreground = colors.transparent;
     label-background = colors.transparent;
   };
@@ -66,25 +66,25 @@
     label-focused = "󰮯 %name%";
     label-focused-foreground = colors.base;
     label-focused-background = colors.blue;
-    label-focused-padding = 2;
+    label-focused-padding = 1;
     label-focused-margin = 0;
 
     label-occupied = "󰊠 %name%";
     label-occupied-foreground = colors.text;
     label-occupied-background = colors.surface0;
-    label-occupied-padding = 2;
+    label-occupied-padding = 1;
     label-occupied-margin = 0;
 
     label-urgent = "󰀦 %name%";
     label-urgent-foreground = colors.base;
     label-urgent-background = colors.red;
-    label-urgent-padding = 2;
+    label-urgent-padding = 1;
     label-urgent-margin = 0;
 
     label-empty = "%name%";
     label-empty-foreground = colors.surface2;
     label-empty-background = colors.surface0;
-    label-empty-padding = 2;
+    label-empty-padding = 1;
     label-empty-margin = 0;
 
     label-monocle = " 󰍉 ";
@@ -102,35 +102,47 @@
     format-prefix = "󰣆 ";
     format-prefix-foreground = colors.sapphire;
     format-background = colors.surface0;
-    label = "%title:0:28:...%";
+    label = "%title:0:30:...%";
     label-foreground = colors.subtext0;
     label-padding = 1;
+    label-empty = "Área de Trabalho";
+    label-empty-foreground = colors.surface2;
+    label-empty-padding = 1;
   };
 
-  # --- Janelas Minimizadas / Ocultas na Polybar ---
+  # --- Janelas Minimizadas / Ocultas na Polybar (Cápsula dinâmica via script legado) ---
   "module/minimized" = {
     type = "custom/script";
     exec = "${scripts.minimizedScript}";
     interval = 1;
     format = "%{A1:${pkgs.bspwm}/bin/bspc node any.hidden.local -g hidden=off -f:}%{A3:${scripts.restoreMenuScript}:}<label>%{A}%{A}";
-    format-background = colors.surface0;
+    format-background = colors.transparent;
     format-foreground = colors.peach;
     label = "%output%";
-    label-padding = 1;
     click-left = "${pkgs.bspwm}/bin/bspc node any.hidden.local -g hidden=off -f";
     click-right = "${scripts.restoreMenuScript}";
   };
 
-  # --- Mídia / Playerctl ---
+  # --- Taskbar Interativa de Janelas (Polywins - Gestão Completa de Janelas e Minimizadas) ---
+  "module/polywins" = {
+    type = "custom/script";
+    exec = "${scripts.polywinsScript}";
+    tail = true;
+    format = "<label>";
+    format-background = colors.surface0;
+    label = "%output%";
+    label-padding = 1;
+  };
+
+  # --- Mídia / Playerctl (Cápsula dinâmica via script) ---
   "module/media" = {
     type = "custom/script";
     exec = "${scripts.mediaScript}";
     interval = 2;
     format = "<label>";
-    format-background = colors.surface0;
+    format-background = colors.transparent;
     format-foreground = colors.lavender;
     label = "%output%";
-    label-padding = 1;
     click-left = "${pkgs.playerctl}/bin/playerctl play-pause";
     click-right = "${pkgs.playerctl}/bin/playerctl next";
   };
@@ -336,20 +348,23 @@
     label-indicator-on-caps-padding = 1;
   };
 
-  # --- Data & Hora (Cores customizadas para Dia, Mês, Ano e Hora) ---
+  # --- Data & Hora (Elegante e Dinâmico) ---
   "module/date" = {
     type = "internal/date";
     interval = 1;
-    date = "%{F${colors.blue}}%d%{F-}/%{F${colors.teal}}%m%{F-}";
-    time = "%{F${colors.mauve}}%H:%M%{F-}";
-    date-alt = "%{F${colors.lavender}}%A%{F-}, %{F${colors.blue}}%d%{F-} of %{F${colors.teal}}%B%{F-} of %{F${colors.yellow}}%Y%{F-}";
-    time-alt = "%{F${colors.mauve}}%H:%M:%S%{F-}";
+    date = "%d/%m";
+    time = "%H:%M";
+    date-alt = "%a, %d de %b";
+    time-alt = "%H:%M:%S";
+    # Formato anterior:
+    # date = "%{F${colors.blue}}%d%{F-}/%{F${colors.teal}}%m%{F-}";
+    # time = "%{F${colors.mauve}}%H:%M%{F-}";
 
     format = "<label>";
     format-prefix = "󰥔 ";
     format-prefix-foreground = colors.sapphire;
     format-background = colors.surface0;
-    label = "%date% %time%";
+    label = "%{F${colors.blue}}%date%%{F-} %{F${colors.surface2}}%{F-} %{F${colors.mauve}}%time%%{F-}";
     label-foreground = colors.text;
     label-padding = 1;
   };
