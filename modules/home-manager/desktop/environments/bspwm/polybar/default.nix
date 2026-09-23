@@ -53,7 +53,7 @@ in
           width = "100%";
           height = "30";
           radius = 0;
-          fixed-center = true;
+          fixed-center = false;
 
           background = colors.transparent;
           foreground = colors.text;
@@ -77,12 +77,12 @@ in
           modules-left = "bi launcher bd sep bi bspwm bd sep bi polywins bd";
           # modules-left = "bi launcher bd sep bi bspwm bd sep bi xwindow bd sep minimized"; # Layout anterior com xwindow e contador minimizado
           modules-center = "media";
-          modules-right = "bi cpu dots memory dots temperature bd sep bi network dots bluetooth bd sep bi pulseaudio backlight battery bd sep bi date bd sep bi powermenu bd";
+          modules-right = "bi cpu memory temperature bd sep bi network bluetooth bd sep bi pulseaudio bd sep bi date bd sep bi powermenu bd";
 
-          # --- Layout alternativo completo (descomente caso deseje exibir netspeed, layout do teclado ou redshift):
-          # modules-right = "bi cpu dots memory dots temperature bd sep bi network dots bluetooth bd sep bi pulseaudio backlight redshift battery bd sep bi date bd sep bi powermenu bd"; # Com Redshift
-          # modules-right = "bi cpu dots memory dots temperature bd sep bi network dots bluetooth bd sep bi netspeed bd sep bi pulseaudio backlight battery bd sep bi keyboard bd sep bi date bd sep bi powermenu bd";
-          # modules-right = "bi cpu dots memory bd sep bi network bd sep bi pulseaudio backlight battery bd sep bi date bd sep bi powermenu bd"; # Versão ultra minimalista
+          # --- Layout alternativo completo (descomente caso deseje exibir bateria/brilho no laptop, netspeed, teclado ou redshift):
+          # modules-right = "bi cpu memory temperature bd sep bi network bluetooth bd sep bi pulseaudio backlight battery bd sep bi date bd sep bi powermenu bd"; # Com Bateria e Brilho
+          # modules-right = "bi cpu memory temperature bd sep bi network bluetooth bd sep bi pulseaudio backlight redshift battery bd sep bi date bd sep bi powermenu bd"; # Com Redshift
+          # modules-right = "bi cpu dots memory dots temperature bd sep bi network dots bluetooth bd sep bi netspeed bd sep bi pulseaudio backlight battery bd sep bi keyboard bd sep bi date bd sep bi powermenu bd"; # Completo anterior
 
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";

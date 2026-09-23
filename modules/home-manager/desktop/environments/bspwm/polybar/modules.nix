@@ -352,19 +352,16 @@
   "module/date" = {
     type = "internal/date";
     interval = 1;
-    date = "%d/%m";
-    time = "%H:%M";
-    date-alt = "%a, %d de %b";
-    time-alt = "%H:%M:%S";
-    # Formato anterior:
-    # date = "%{F${colors.blue}}%d%{F-}/%{F${colors.teal}}%m%{F-}";
-    # time = "%{F${colors.mauve}}%H:%M%{F-}";
+    date = "%{F${colors.blue}}%d/%m%{F-}";
+    time = "%{F${colors.mauve}}%H:%M%{F-}";
+    date-alt = "%{F${colors.lavender}}%A%{F-}, %{F${colors.blue}}%d%{F-} de %{F${colors.teal}}%B%{F-}";
+    time-alt = "%{F${colors.mauve}}%H:%M:%S%{F-}";
 
     format = "<label>";
     format-prefix = "󰥔 ";
     format-prefix-foreground = colors.sapphire;
     format-background = colors.surface0;
-    label = "%{F${colors.blue}}%date%%{F-} %{F${colors.surface2}}%{F-} %{F${colors.mauve}}%time%%{F-}";
+    label = "%date%  %time%";
     label-foreground = colors.text;
     label-padding = 1;
   };
