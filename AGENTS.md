@@ -552,16 +552,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - **Modo Universal / Compatibilidade Total (`!shouldInstall`)**: O `[hw-preset]` detecta automaticamente quando o binário nativo da distro é utilizado e aplica um perfil universal seguro (`vo = gpu,x11`, `gpu-api = auto`, `hwdec = vaapi-copy,vaapi,no`, `video-sync = audio`), prevenindo deadlocks no driver Vulkan experimental do Intel Gen 9 e garantindo reprodução fluida.
       - **Estilização e Fontes do ModernZ**: Injetado `modernz-icons.ttf` em `~/.config/mpv/fonts/` diretamente do source do script, tipografia configurada com a fonte `Dubai` e paleta completa Catppuccin Mocha aplicada (Mauve `#cba6f7`, Lavender `#b4befe`, Crust `#11111b`, Text `#cdd6f4`), eliminando ícones quebrados e botões laranjas.
       - **Integração GLX/EGL e Dual GPU no Nitro 5 (`!isNixOS`) & `mpv-nvidia`**:
-        - **NVIDIA (`mpv-nvidia`)**:
-          - O binário do Debian `/usr/bin/mpv` utiliza EGL (`x11egl`). A injeção de `__GLX_VENDOR_LIBRARY_NAME=nvidia` quebrava a inicialização do display EGL no X11 gerenciado pela Intel (`Failed to get EGL display`).
-          - O script `mpv-nvidia` utiliza unicamente `__NV_PRIME_RENDER_OFFLOAD=1` e `__VK_LAYER_NV_optimus=NVIDIA_only` com `/usr/bin/mpv --profile=nvidia "$@"`.
-          - Com o pacote Debian `libnvcuvid1` instalado, a reprodução ativa aceleração total direta na dGPU NVIDIA via **NVDEC** (`hwdec=nvdec-copy,cuda-copy,auto-safe`, `VO: [gpu] 1280x720 nv12`).
-        - **Intel (`mpv`)**:
-          - No Nitro 5, o dispositivo DRM primário `/dev/dri/renderD128` pertence à dGPU NVIDIA, enquanto o Intel UHD 630 é `/dev/dri/renderD129` (`pci-0000:00:02.0-render`). Por padrão, a libva consultava o device 128 (NVIDIA), falhando com `unsupported drm device by media driver: nvid`.
-          - Configurado declarativamente no `[hw-preset]` do Nitro 5 o parâmetro `vaapi-device=/dev/dri/by-path/pci-0000:00:02.0-render`.
-          - Com o pacote Debian `intel-media-va-driver-non-free` instalado, a reprodução padrão via Intel ativa aceleração total via **VA-API** (`hwdec=vaapi-copy`, `VO: [gpu] 1280x720 nv12`).
-        - **Drivers de 64-bit no Debian**:
-          - Em `hosts/nitro/default.nix` e `modules/.../x11/default.nix`, `LIBVA_DRIVERS_PATH` prioriza `/usr/lib/x86_64-linux-gnu/dri` e remove caminhos de 32 bits (`/usr/lib/dri`), eliminando erros de ABI (`has no function __vaDriverInit_1_0`) e de formato ELF (`wrong ELF class: ELFCLASS32`).
+        - **NVIDIA (`mpv-nvidia`) & Dual GPU no Nitro 5 (`!isNixOS`)**:
+          - O binário do MPV empacotado pelo Nix é compilado contra a glibc do Nixpkgs (2.42). Em distros standalone como o Debian (glibc 2.36), injetar `/usr/lib/x86_64-linux-gnu` diretamente em `LD_LIBRARY_PATH` expõe a `libc.so.6` do Debian para binários do Nix, causando conflito de símbolos e falhas (`GLIBC_2.42 not found` / Segmentation fault 139).
+          - O Debian organiza as bibliotecas proprietárias da GPU NVIDIA em um diretório isolado: `/usr/lib/x86_64-linux-gnu/nvidia/current/` (contendo exclusivamente `libcuda.so.1`, `libnvcuvid.so.1`, `libGLX_nvidia.so.0`, sem nenhuma biblioteca C padrão do sistema).
+          - O wrapper `mpv-nvidia` detecta automaticamente o binário do MPV (dando preferência ao do Nix quando instalado):
+            - **Quando usa o MPV do Nix**: Injeta unicamente `/usr/lib/x86_64-linux-gnu/nvidia/current` em `LD_LIBRARY_PATH`, permitindo que o ffmpeg/MPV do Nix carregue `libnvcuvid.so.1` e execute aceleração por hardware direta via **NVDEC** (`hwdec=nvdec-copy`, `VO: [gpu] 1280x720 nv12`) com estabilidade absoluta e sem risco de conflito de glibc.
+            - **Quando usa o MPV nativo (`/usr/bin/mpv`)**: Limpa as variáveis injetadas pelo Nix (`LIBVA_DRIVERS_PATH`, `LIBVA_DRIVER_NAME`, `LIBGL_DRIVERS_PATH`, `GBM_BACKENDS_PATH`, `__EGL_VENDOR_LIBRARY_FILENAMES`, `LD_LIBRARY_PATH`) para evitar erros de ABI (`__vaDriverInit_1_0`).
+          - O script executa via PRIME Offload com `__NV_PRIME_RENDER_OFFLOAD=1` e `__VK_LAYER_NV_optimus=NVIDIA_only` utilizando o perfil dedicado `--profile=nvidia`.
     - **Discord (`chat/discord`)**: Quando `useSystemPackage = true`, não instala o binário Nix, mas gerencia todos os temas CSS (`catppuccin-frappe`, `doom`, `dracula`) e configurações do Vencord/BetterDiscord para o Discord nativo (.deb ou flatpak).
     - **yt-dlp (`tools/yt-dlp`)**: Quando `useSystemPackage = true`, gera `~/.config/yt-dlp/config` completo sem instalar o binário do Nix Store.
 
