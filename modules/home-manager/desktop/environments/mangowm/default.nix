@@ -15,7 +15,7 @@
 
     # Programas padrão do ambiente
     system.programs = {
-      file-manager.thunar.enable = true;
+      file-manager.thunar.enable = lib.mkDefault true;
     };
 
     # Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark)

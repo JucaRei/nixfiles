@@ -358,7 +358,7 @@ in
             bind=ALT,Tab,toggleoverview,
           ''
       }
-      bind=SUPER,e,spawn,${pkgs.thunar}/bin/thunar
+      bind=SUPER,e,spawn,${config.system.programs.file-manager.activeCommand or "file-manager"}
       bind=SUPER+SHIFT,q,quit
 
       # Ajuda e Lista de Atalhos de Teclado (Plugin Keymap)
@@ -585,6 +585,10 @@ in
       # Regras de Janela (Window Rules)
       windowrule=isfloating:1,width:850,height:550,title:floating-kitty
       windowrule=isfloating:1,appid:thunar
+      windowrule=isfloating:1,appid:org.gnome.NautilusPreviewer
+      windowrule=isfloating:1,appid:org.gnome.FileRoller
+      windowrule=isfloating:1,appid:nemo
+      windowrule=isfloating:1,appid:pcmanfm
       windowrule=isfloating:1,appid:pavucontrol
       windowrule=isfloating:1,appid:nm-connection-editor
       windowrule=isfloating:1,appid:blueman-manager

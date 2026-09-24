@@ -56,7 +56,7 @@
           *firefox*)                        icon="󰈹" ;;
           *chrome*|*chromium*)              icon="" ;;
           *code*|*codium*)                  icon="󰨞" ;;
-          *thunar*|*nemo*|*pcmanfm*)        icon="󰉋" ;;
+          *thunar*|*nemo*|*pcmanfm*|*nautilus*) icon="󰉋" ;;
           *discord*|*vesktop*)              icon="󰙯" ;;
           *spotify*)                        icon="󰓇" ;;
           *mpv*|*vlc*)                      icon="󰎁" ;;

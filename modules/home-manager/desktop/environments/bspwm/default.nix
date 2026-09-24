@@ -20,7 +20,7 @@
 
     # --- Programas Padrão do BSPWM ---
     system.programs = {
-      file-manager.thunar.enable = true;
+      file-manager.thunar.enable = lib.mkDefault true;
       tools.flameshot.enable = true;
     };
 

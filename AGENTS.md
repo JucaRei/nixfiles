@@ -570,6 +570,45 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Corrigido declarando `xdg.desktopEntries.antigravity-ide` (que substitui/sobrepõe perfeitamente o `.desktop` do Nix Store no escopo do usuário com as flags de CDP) e definindo `xdg.desktopEntries.antigravity = { settings.NoDisplay = "true"; }` para ocultar qualquer entrada legada remanescente.
   - **Alacritty**:
     - Padronizado o arquivo em `bspwm/packages.nix` como `Alacritty.desktop` (em maiúsculo, idêntico ao upstream) para sobrepor o `.desktop` do Nix Store e removido qualquer `alacritty.desktop` residual via hook de ativação.
+- **Gerenciador de Arquivos Agnóstico, Nautilus, Nemo e PCManFM (`file-manager/`)**:
+  - **Arquitetura Agnóstica nos WMs e Atalhos (`system.programs.file-manager`)**:
+    - **Opções Centrais**: `system.programs.file-manager` atua como orquestrador central com `default` (`"auto"`, `"thunar"`, `"nautilus"`, `"nemo"`, `"pcmanfm"`), `activeCommand` (caminho do binário ativo), `activeName` (`"Nautilus"`, `"Nemo"`, `"PCManFM"` ou `"Thunar"`) e `activeDesktopFile` (associação no `xdg.mimeApps.defaultApplications."inode/directory"`).
+    - **Despachante Agnóstico CLI (`file-manager`)**: Binário no PATH do usuário que detecta o gerenciador ativo (`nautilus`, `nemo`, `pcmanfm` ou `thunar`) e executa com `$TARGET`, com fallback para `xdg-open`.
+    - **Teclas de Atalho Dinâmicas**: Todos os WMs (`hyprland`, `mangowm`, `bspwm`/`sxhkd`, `xfce4`) foram atualizados para invocar `${config.system.programs.file-manager.activeCommand}`:
+      - **Hyprland**: `$mainMod, E` executa o comando ativo; regras flutuantes para `org.gnome.NautilusPreviewer` (Sushi) e `org.gnome.FileRoller`.
+      - **BSPWM (`sxhkd`)**: `Super + E` e `Super + Shift + E` executam o comando ativo; manual de atalhos e menu Rofi Quick Settings exibem o nome dinâmico (`󰉋 Gerenciador de Arquivos (${fmName})`).
+      - **MangoWM**: `SUPER + E` executa o comando ativo; regras flutuantes para `appid:thunar`, `appid:nemo`, `appid:pcmanfm`, `appid:org.gnome.NautilusPreviewer` e `appid:org.gnome.FileRoller`.
+      - **XFCE4**: `<Super>e` e `<Super>f` executam o comando ativo.
+      - **Polybar & Waybar**: Regex de detecção de ícones de janela configurada para `*thunar*|*nemo*|*pcmanfm*|*nautilus*)` exibindo o ícone de pasta (`󰉋` / `󰝰`).
+    - **Módulos Desktop Flexíveis**: Ambientes utilizam `file-manager.thunar.enable = lib.mkDefault true;`. Qualquer host pode ativar outro gerenciador simplesmente definindo `file-manager.thunar.enable = false; file-manager.<nautilus|nemo|pcmanfm>.enable = true;` ou `file-manager.default = "<nome>";`.
+  - **Módulos Disponíveis**:
+    - **Nemo (`file-manager/nemo/default.nix`)**: Suporte a GVfs, extensões, configurações dconf e Nemo Actions (`open-terminal`, `open-vscode`, `open-antigravity`, `open-as-root`, `compare-meld`, `checksum`).
+    - **PCManFM (`file-manager/pcmanfm/default.nix`)**: Gerenciador ultra-leve com suporte a GVfs, abas, dotfile declarativo `~/.config/pcmanfm/default/pcmanfm.conf` e thumbnails.
+  - **Módulo Nautilus de Alta Performance (`file-manager/nautilus/default.nix`)**:
+    - **Opções Padrão**: Suporte completo a `installPackage`, `useSystemPackage` (e `useSystemPackages`), `package`, `openAnyTerminal`, `sushi`, `defaultFileManager` e configurações de visualização (`view`).
+    - **Wrapper com GVfs e Extensões (`nautilus-wrapped`)**:
+      - Injeta `GIO_EXTRA_MODULES` (`${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules`) para suporte completo a Samba/SMB, SFTP, MTP, Lixeira e montagem de redes em distribuições standalone (Debian/Fedora).
+      - Injeta `XDG_DATA_DIRS` com os schemas e metadados de `gvfs`, `gsettings-desktop-schemas`, `nautilus`, `sushi` e `nautilus-open-any-terminal`.
+      - Injeta `NAUTILUS_4_EXTENSION_DIR` apontando para `${pkgs.nautilus-python}/lib/nautilus/extensions-4`.
+    - **GNOME Sushi (`pkgs.sushi`)**: Pré-visualização rápida instantânea ao pressionar a Barra de Espaço para vídeos, áudios, imagens, documentos de escritório e PDFs.
+    - **Open Any Terminal (`pkgs.nautilus-open-any-terminal`)**: Integração do terminal preferido (`alacritty` ou configurado) no menu de contexto e atalho `<Ctrl><Alt>T`.
+    - **Suite de Thumbnailers**: `ffmpegthumbnailer` (vídeos), `webp-pixbuf-loader` (WebP), `poppler` (PDFs), `libgsf` (documentos), `freetype` (fontes).
+    - **Configurações Dconf Otimizadas**:
+      - Modo árvore ativado no modo lista (`use-tree-view = true`).
+      - Ordenar pastas antes dos arquivos (`sort-directories-first = true`).
+      - Excluir permanentemente no menu de contexto (`show-delete-permanently = true`).
+      - Criar link simbólico no menu de contexto (`show-create-link = true`).
+      - Relógio em formato 24h.
+    - **Scripts Customizados no Menu de Contexto (`~/.local/share/nautilus/scripts/`)**:
+      - `Abrir no VSCode` / `Abrir no Antigravity`.
+      - `Abrir como Administrador` (via `pkexec` com preservação de display Wayland/X11).
+      - `Comparar com Meld` (diff visual).
+      - `Copiar Caminho Completo` (com suporte automático a `wl-copy` e `xclip` + notificação OSD).
+      - `Verificar Checksum (SHA256)` (cálculo de hash com exibição gráfica via `zenity`).
+      - `Converter Imagem para WebP` (conversão com 85% de qualidade via `imagemagick`).
+      - `Definir como Papel de Parede` (com suporte automático a `hyprpaper`, `feh` e `gsettings`).
+      - `Gerar QR Code` (via `qrencode` e exibição gráfica com `feh` ou `zenity`).
+    - **Modelos para "Novo Documento"**: Texto vazio, Markdown, Script Shell e Arquivo em Branco criados em `~/.local/share/templates/`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

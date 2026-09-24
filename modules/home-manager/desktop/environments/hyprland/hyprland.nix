@@ -350,7 +350,7 @@ in
             else
               "$mainMod, Escape, exec, session-power-menu"
           )
-          "$mainMod, E, exec, ${pkgs.thunar}/bin/thunar"
+          "$mainMod, E, exec, ${config.system.programs.file-manager.activeCommand or "file-manager"}"
           (
             if isNoctalia then
               "$mainMod, L, exec, ${pkgs.noctalia}/bin/noctalia msg session lock"
@@ -561,6 +561,8 @@ in
           "match:class ^(galculator)$, center 1"
           "match:class ^(org.gnome.FileRoller)$, float 1"
           "match:class ^(org.gnome.FileRoller)$, center 1"
+          "match:class ^(org.gnome.NautilusPreviewer)$, float 1"
+          "match:class ^(org.gnome.NautilusPreviewer)$, center 1"
           "match:class ^(.*[sS]crcpy.*)$, float 1"
           "match:class ^(.*[sS]crcpy.*)$, center 1"
           "match:initialTitle ^(.*[sS]crcpy.*)$, float 1"

@@ -8,6 +8,8 @@ let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool attrs;
   cfg = config.desktop.bspwm.sxhkd;
+  fmCmd = config.system.programs.file-manager.activeCommand or "file-manager";
+  fmName = config.system.programs.file-manager.activeName or "Gerenciador de Arquivos";
 
   # --- Script de Notificação de Volume (Dunst OSD) ---
   volumeOsd = pkgs.writeShellScript "volume-osd" ''
@@ -120,7 +122,7 @@ let
           KB_LIST="󰌌  Super + Space / Super + D     ➜  Lançador de Aplicativos (Rofi)
     󰌌  Super + Enter / Super + T     ➜  Abrir Terminal (Alacritty)
     󰌌  Super + B                     ➜  Navegador Web Padrão
-    󰌌  Super + E / Super + Shift + E ➜  Gerenciador de Arquivos (Thunar)
+    󰌌  Super + E / Super + Shift + E ➜  Gerenciador de Arquivos (''${fmName})
     󰌌  Super + , / Super + C / Botão Dir. ➜ Painel Quick Settings / Preferências
     󰌌  Super + / ou Super + F1       ➜  Manual e Guia de Atalhos (Cheat-Sheet)
     󰌌  Alt + Tab / Super + W         ➜  Alternador de Janelas Abertas
@@ -153,7 +155,7 @@ let
             *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
             *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
             *"Navegador Web Padrão"*) if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi ;;
-            *"Gerenciador de Arquivos"*) ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
+            *"Gerenciador de Arquivos"*) ''${fmCmd} ~ & ;;
             *"Painel Quick Settings"*) show_control_center ;;
             *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
             *"Terminal Flutuante"*) ${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty ;;
@@ -176,7 +178,7 @@ let
           OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
           OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
           OPT_BROWSER="󰈹  Navegador Web (Firefox / Padrão)"
-          OPT_FILES="󰉋  Gerenciador de Arquivos (Thunar)"
+          OPT_FILES="󰉋  Gerenciador de Arquivos (''${fmName})"
           OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
           OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
           OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
@@ -219,7 +221,7 @@ let
             "$OPT_BROWSER")
               if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi
               ;;
-            "$OPT_FILES") ${pkgs.xfce.thunar}/bin/thunar ~ & ;;
+            "$OPT_FILES") ''${fmCmd} ~ & ;;
             "$OPT_TERM") ${pkgs.alacritty}/bin/alacritty & ;;
             "$OPT_KEYS") show_manual ;;
             "$OPT_RELOAD")
@@ -291,8 +293,8 @@ in
         "super + t" = "${pkgs.alacritty}/bin/alacritty";
 
         # Finder / Gerenciador de Arquivos (Cmd + Shift + F, Cmd + E)
-        "super + e" = "${pkgs.thunar}/bin/thunar";
-        "super + shift + e" = "${pkgs.thunar}/bin/thunar";
+        "super + e" = fmCmd;
+        "super + shift + e" = fmCmd;
 
         # Alternador de Janelas (Cmd + Tab / Cmd + W)
         "alt + Tab" = "${pkgs.rofi}/bin/rofi -show window";

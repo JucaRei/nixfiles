@@ -19,7 +19,7 @@ in
 
     # --- Programas Padrão do XFCE ---
     system.programs = {
-      file-manager.thunar.enable = true;
+      file-manager.thunar.enable = lib.mkDefault true;
     };
 
     # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---
@@ -97,8 +97,8 @@ in
       xfce4-keyboard-shortcuts = {
         "commands/custom/<Super>Return" = terminalBin;
         "commands/custom/<Super>t" = terminalBin;
-        "commands/custom/<Super>e" = "${pkgs.thunar}/bin/thunar";
-        "commands/custom/<Super>f" = "${pkgs.thunar}/bin/thunar";
+        "commands/custom/<Super>e" = config.system.programs.file-manager.activeCommand or "file-manager";
+        "commands/custom/<Super>f" = config.system.programs.file-manager.activeCommand or "file-manager";
         "commands/custom/<Super>r" = "${pkgs.xfce4-appfinder}/bin/xfce4-appfinder";
         "commands/custom/<Super>space" = "${pkgs.xfce4-appfinder}/bin/xfce4-appfinder";
         "commands/custom/Print" = "${pkgs.xfce4-screenshooter}/bin/xfce4-screenshooter -f";

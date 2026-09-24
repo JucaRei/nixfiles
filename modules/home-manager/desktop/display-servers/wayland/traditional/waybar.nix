@@ -293,7 +293,7 @@ let
       *firefox*)  ICON="󰈹" ;;
       *chrome*)   ICON="󰊯" ;;
       *code*|*antigravity*) ICON="󰨞" ;;
-      *thunar*)   ICON="󰝰" ;;
+      *thunar*|*nautilus*|*nemo*|*pcmanfm*) ICON="󰝰" ;;
       *mpv*)      ICON="󰕼" ;;
     esac
     TRUNCATED=$(echo "$TITLE" | cut -c 1-38)
