@@ -41,9 +41,7 @@ let
   # Activado pela linha `profile=hw-preset` no fim de mpv.conf.
   # ─────────────────────────────────────────────────────────────────────────────
   hwPresetSection =
-    # ── Quando o executável for o nativo da distribuição hospedeira ────────────
-    # Adota perfil universal seguro compatível com qualquer versão do MPV e stack gráfico
-    if !shouldInstall then
+    (if !shouldInstall then
       ''
         [hw-preset]
         profile-desc=Distro Nativa: Perfil Universal Seguro (auto hwdec, vo=gpu,x11)
@@ -64,14 +62,6 @@ let
         gpu-api=opengl
         hwdec=vaapi
         gpu-shader-cache-dir=~/.cache/mpv/shaders
-        video-sync=display-resample
-
-        [nvidia]
-        profile-desc=Nitro 5: NVIDIA dGPU via PRIME (nvdec/cuda/auto)
-        vo=gpu
-        gpu-api=opengl
-        hwdec=auto-safe
-        gpu-shader-cache-dir=~/.cache/mpv/shaders-nvidia
         video-sync=display-resample
       ''
 
@@ -141,7 +131,17 @@ let
         vo=gpu
         gpu-api=auto
         hwdec=auto-safe
-      '';
+      '')
+    + (optionalString (hostname == "nixtro" || hostname == "nitro") ''
+
+      [nvidia]
+      profile-desc=Nitro 5: NVIDIA dGPU via PRIME (nvdec/cuda/auto)
+      vo=gpu
+      gpu-api=opengl
+      hwdec=nvdec-copy,cuda-copy,auto-safe
+      gpu-shader-cache-dir=~/.cache/mpv/shaders-nvidia
+      video-sync=display-resample
+    '');
 in
 {
   # Declara a opção no mesmo módulo que a implementa (padrão do repositório).
@@ -316,13 +316,11 @@ in
       pkgs.font-dubai
     ] ++ lib.optionals (!shouldInstall && !isNixOS) [
       (pkgs.writeShellScriptBin "mpv" ''
-        exec env __GLX_VENDOR_LIBRARY_NAME=mesa /usr/bin/mpv "$@"
+        : ''${__GLX_VENDOR_LIBRARY_NAME:=mesa}
+        export __GLX_VENDOR_LIBRARY_NAME
+        exec /usr/bin/mpv "$@"
       '')
     ];
-
-    home.shellAliases = mkIf (!shouldInstall && !isNixOS) {
-      mpv = "env __GLX_VENDOR_LIBRARY_NAME=mesa mpv";
-    };
 
     xdg.desktopEntries = mkIf (!shouldInstall && !isNixOS) {
       mpv = {

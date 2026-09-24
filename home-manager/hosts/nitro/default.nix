@@ -80,15 +80,20 @@ in
           fi
         '')
         (pkgs.writeShellScriptBin "mpv-nvidia" ''
-          # Executa o MPV com PRIME Offload na NVIDIA dGPU (mantendo uosc, thumbfast e scripts)
-          exec env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia mpv "$@"
+          # Executa o MPV com PRIME Offload na NVIDIA dGPU usando perfil dedicado [nvidia] (NVDEC/CUDA)
+          exec env __NV_PRIME_RENDER_OFFLOAD=1 \
+                   __GLX_VENDOR_LIBRARY_NAME=nvidia \
+                   __VK_LAYER_NV_optimus=NVIDIA_only \
+                   LIBVA_DRIVER_NAME= \
+                   LIBVA_DRIVERS_PATH= \
+                   /usr/bin/mpv --profile=nvidia "$@"
         '')
         scrcpy
       ];
 
       shellAliases = {
         vainfo = "vainfo-intel";
-        mpv-nvidia = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia mpv";
+        mpv-nvidia = "mpv-nvidia";
       };
 
       sessionPath = [
@@ -100,7 +105,7 @@ in
         NIX_REMOTE = "daemon";
         LC_ALL = "";
         LIBVA_DRIVER_NAME = "iHD";
-        LIBVA_DRIVERS_PATH = "${pkgs.intel-media-driver}/lib/dri:/usr/lib/x86_64-linux-gnu/dri:/usr/lib/dri";
+        LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri:${pkgs.intel-media-driver}/lib/dri";
       };
 
       language = {
