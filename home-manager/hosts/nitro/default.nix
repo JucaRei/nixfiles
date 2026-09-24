@@ -81,12 +81,17 @@ in
           fi
         '')
         (pkgs.writeShellScriptBin "mpv-nvidia" ''
-          # Executa o MPV com PRIME Offload na NVIDIA dGPU
-          # O perfil [nvidia] ativa hwdec=nvdec-copy,cuda-copy,auto-safe
-          if [ -x "$HOME/.nix-profile/bin/mpv" ]; then
+          # Executa o MPV com PRIME Offload na NVIDIA dGPU (NVDEC/CUDA)
+          # Prefere o binário nativo do sistema pois tem acesso direto a
+          # libcuda.so.1 e libnvcuvid.so.1 sem conflito com nixGLIntel
+          if [ -x /usr/bin/mpv ]; then
+            mpv_bin="/usr/bin/mpv"
+          elif [ -x "$HOME/.nix-profile/bin/mpv" ]; then
+            # Fallback: Nix mpv com injeção das libs CUDA/NVDEC do host
+            export LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
             mpv_bin="$HOME/.nix-profile/bin/mpv"
           else
-            mpv_bin="/usr/bin/mpv"
+            echo "mpv-nvidia: mpv não encontrado" >&2; exit 1
           fi
           exec env __NV_PRIME_RENDER_OFFLOAD=1 \
                    __VK_LAYER_NV_optimus=NVIDIA_only \
