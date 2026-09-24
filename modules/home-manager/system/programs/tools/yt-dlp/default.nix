@@ -7,18 +7,43 @@
 let
   inherit (lib) mkEnableOption mkIf;
   cfg = config.system.programs.tools.yt-dlp;
+  shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
 in
 {
   options = {
-    system.programs.tools.yt-dlp.enable = mkEnableOption
-      "Enable yt-dlp with custom aliases and aria2 integration.";
+    system.programs.tools.yt-dlp = {
+      enable = mkEnableOption "Enable yt-dlp with custom aliases and aria2 integration.";
+
+      installPackage = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = ''
+          Se deve instalar o executável do yt-dlp via Nix.
+          Se false, apenas o arquivo de configuração (~/.config/yt-dlp/config) e aliases serão gerenciados, utilizando o binário nativo da distro hospedeira.
+        '';
+      };
+
+      useSystemPackage = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          Atalho conveniente: quando true, equivale a installPackage = false.
+        '';
+      };
+
+      useSystemPackages = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Alias para useSystemPackage.";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
     programs = {
       yt-dlp = {
         enable = true;
-        package = pkgs.unstable.yt-dlp;
+        package = if shouldInstall then pkgs.unstable.yt-dlp else pkgs.emptyDirectory;
         settings = {
           # Output & metadata
           output = "%(title)s.%(ext)s";

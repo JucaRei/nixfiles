@@ -127,16 +127,43 @@ let
         gpu-api=auto
         hwdec=auto-safe
       '';
+  shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
 in
 {
   # Declara a opção no mesmo módulo que a implementa (padrão do repositório).
   # Segue o mesmo estilo de editors/vscode e editors/antigravity.
   options.system.programs.multimedia.mpv = {
     enable = mkEnableOption "mpv media player with custom profiles and scripts";
+
+    installPackage = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Se deve instalar o executável do MPV compilado via Nix/Home Manager.
+        Se definido como false, o Home Manager instalará apenas as configurações (mpv.conf, input.conf, scripts e opções de hardware)
+        e utilizará o binário nativo do sistema operacional hospedeiro (ex: Debian /usr/bin/mpv).
+      '';
+    };
+
+    useSystemPackage = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Atalho conveniente: quando true, equivale a installPackage = false.
+        Permite carregar apenas as configurações preservando o MPV da distro nativa.
+      '';
+    };
+
+    useSystemPackages = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Alias para useSystemPackage.";
+    };
   };
 
   config = mkIf cfg.enable {
-    programs.mpv = {
+    # Instalação do binário MPV gerenciado via Nix / nixGL (apenas se shouldInstall = true)
+    programs.mpv = mkIf shouldInstall {
       enable = true;
 
       # nixGLWrapper envolve o binário para resolver libGL em ambientes não-NixOS.
@@ -195,6 +222,23 @@ in
 
       # Scripts customizados
       "mpv/scripts/gvfs-smb.lua".source = ./scripts/gvfs-smb.lua;
+
+      # Scripts comunitários (implantados no ~/.config/mpv/scripts quando o MPV nativo do sistema é utilizado)
+      "mpv/scripts/modernz.lua" = mkIf (!shouldInstall) {
+        source = "${pkgs.mpvScripts.modernz}/share/mpv/scripts/modernz.lua";
+      };
+      "mpv/scripts/memo.lua" = mkIf (!shouldInstall) {
+        source = "${pkgs.mpvScripts.memo}/share/mpv/scripts/memo.lua";
+      };
+      "mpv/scripts/evafast.lua" = mkIf (!shouldInstall) {
+        source = "${pkgs.mpvScripts.evafast}/share/mpv/scripts/evafast.lua";
+      };
+      "mpv/scripts/thumbfast.lua" = mkIf (!shouldInstall) {
+        source = "${pkgs.mpvScripts.thumbfast}/share/mpv/scripts/thumbfast.lua";
+      };
+      "mpv/scripts/sponsorblock_minimal.lua" = mkIf (!shouldInstall) {
+        source = "${pkgs.mpvScripts.sponsorblock-minimal}/share/mpv/scripts/sponsorblock_minimal.lua";
+      };
 
       # Script opts
       "mpv/script-opts/osc.conf".source = ./configs/opts/osc.conf;

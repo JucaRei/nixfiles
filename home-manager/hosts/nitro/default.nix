@@ -47,10 +47,16 @@ in
         name = "alacritty";
       };
       multimedia = {
-        mpv.enable = true;
+        mpv = {
+          enable = true;
+          useSystemPackages = true; # Usa o mpv do sistema com as configs do Nix!
+        };
       };
       tools = {
-        yt-dlp.enable = true;
+        yt-dlp = {
+          enable = true;
+          useSystemPackages = true; # Usa o yt-dlp com aria2c do sistema com as configs do Nix!
+        };
       };
       shells = {
         default = "zsh";

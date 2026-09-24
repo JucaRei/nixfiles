@@ -544,6 +544,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Temas Disponíveis**: `theme.scheme` com suporte a `"catppuccin-frappe"` (padrão), `"catppuccin-mocha"`, `"doom"` (Doom One Dark com as cores exatas da paleta) e `"dracula"` (paleta Dracula oficial).
   - **Deploy Automático**: Gera todos os arquivos `.theme.css` em `~/.config/Vencord/themes/`, `~/.config/vesktop/themes/` e `~/.config/BetterDiscord/themes/`, aponta `current.theme.css` para o selecionado e inicializa o `settings.json` com o tema ativado e plugins essenciais habilitados (zoom de imagem, plataformas, duplo clique em canais de voz, etc.).
 
+- **Suporte a Binários Nativos da Distro vs Compilação Nix (`useSystemPackage` / `installPackage`)**:
+  - Em ambientes standalone (Debian, Fedora, etc.), o usuário pode optar por não instalar o binário via Nix/Home Manager e utilizar o binário nativo da distribuição (`/usr/bin/*`) com integração de drivers de vídeo nativos, aproveitando 100% das configurações, dotfiles, atalhos, scripts e temas gerenciados pelo Home Manager.
+  - Implementadas as opções `installPackage = bool` (padrão `true`) e atalho `useSystemPackage = bool` (padrão `false`):
+    - **MPV (`multimedia/mpv`)**: Quando `useSystemPackage = true`, não inclui o pacote Nix no profile, mas implanta `~/.config/mpv/mpv.conf` (com perfis de hardware por host), `input.conf`, regras de janela e copia os scripts comunitários (`modernz`, `memo`, `evafast`, `thumbfast`, `sponsorblock`) diretamente para `~/.config/mpv/scripts/` para que o `/usr/bin/mpv` nativo os carregue automaticamente.
+    - **Discord (`chat/discord`)**: Quando `useSystemPackage = true`, não instala o binário Nix, mas gerencia todos os temas CSS (`catppuccin-frappe`, `doom`, `dracula`) e configurações do Vencord/BetterDiscord para o Discord nativo (.deb ou flatpak).
+    - **yt-dlp (`tools/yt-dlp`)**: Quando `useSystemPackage = true`, gera `~/.config/yt-dlp/config` completo sem instalar o binário do Nix Store.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

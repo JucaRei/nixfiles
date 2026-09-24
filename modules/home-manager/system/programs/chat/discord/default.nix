@@ -243,6 +243,30 @@ in
       };
     };
 
+    installPackage = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        Se deve instalar o executável do Discord/Vesktop via Nix.
+        Se false, apenas os arquivos de temas (.theme.css) e configurações serão gerenciados, utilizando a versão nativa do sistema hospedeiro (ex: .deb ou flatpak).
+      '';
+    };
+
+    useSystemPackage = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Atalho conveniente: quando true, equivale a installPackage = false.
+        Permite carregar apenas os temas e configurações utilizando o Discord nativo da distro.
+      '';
+    };
+
+    useSystemPackages = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Alias para useSystemPackage.";
+    };
+
     extraCommandLineArgs = mkOption {
       type = types.listOf types.str;
       default = [
@@ -254,10 +278,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    # 1. Instalação dos pacotes selecionados
-    home.packages =
+    # 1. Instalação dos pacotes selecionados (apenas se shouldInstall = true)
+    home.packages = mkIf (cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages) (
       (lib.optional (cfg.client == "discord" || cfg.client == "both") discordPkg)
-      ++ (lib.optional (cfg.client == "vesktop" || cfg.client == "both") pkgs.vesktop);
+      ++ (lib.optional (cfg.client == "vesktop" || cfg.client == "both") pkgs.vesktop)
+    );
 
     # 2. Implantação de todos os arquivos de tema CSS (para troca rápida nas configurações do Vencord/BetterDiscord)
     xdg.configFile = mkIf cfg.theme.enable (
