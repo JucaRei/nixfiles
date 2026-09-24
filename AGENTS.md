@@ -555,6 +555,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Discord (`chat/discord`)**: Quando `useSystemPackage = true`, não instala o binário Nix, mas gerencia todos os temas CSS (`catppuccin-frappe`, `doom`, `dracula`) e configurações do Vencord/BetterDiscord para o Discord nativo (.deb ou flatpak).
     - **yt-dlp (`tools/yt-dlp`)**: Quando `useSystemPackage = true`, gera `~/.config/yt-dlp/config` completo sem instalar o binário do Nix Store.
 
+- **Deduplicação de Entradas Desktop no Rofi (Antigravity IDE & Alacritty)**:
+  - **Antigravity IDE**:
+    - O pacote upstream `pkgs.unstable.antigravity-ide` gera o arquivo `share/applications/antigravity-ide.desktop` no Nix Store (`~/.nix-profile/share/applications/antigravity-ide.desktop`).
+    - O módulo `editors/antigravity` declarava `xdg.desktopEntries.antigravity`, gerando `~/.local/share/applications/antigravity.desktop`.
+    - Como os nomes de arquivo eram divergentes (`antigravity.desktop` vs `antigravity-ide.desktop`), o Rofi não aplicava o mecanismo de *shadowing* do padrão XDG e exibia ambas as entradas como "Antigravity IDE".
+    - Corrigido declarando `xdg.desktopEntries.antigravity-ide` (que substitui/sobrepõe perfeitamente o `.desktop` do Nix Store no escopo do usuário com as flags de CDP) e definindo `xdg.desktopEntries.antigravity = { settings.NoDisplay = "true"; }` para ocultar qualquer entrada legada remanescente.
+  - **Alacritty**:
+    - Padronizado o arquivo em `bspwm/packages.nix` como `Alacritty.desktop` (em maiúsculo, idêntico ao upstream) para sobrepor o `.desktop` do Nix Store e removido qualquer `alacritty.desktop` residual via hook de ativação.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

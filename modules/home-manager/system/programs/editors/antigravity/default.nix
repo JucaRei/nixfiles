@@ -75,21 +75,17 @@ if data.get("remote-debugging-port") != port:
         json.dump(data, f, indent=2)
         f.write("\n")
 '
-          mkdir -p "$HOME/.local/share/applications"
-          rm -f "$HOME/.local/share/applications/antigravity-ide.desktop"
-          if [ -f "$HOME/.nix-profile/share/applications/antigravity.desktop" ] && [ ! -f "$HOME/.local/share/applications/antigravity.desktop" ]; then
-            ln -sf "$HOME/.nix-profile/share/applications/antigravity.desktop" "$HOME/.local/share/applications/antigravity.desktop"
-          fi
         ''
       );
     };
 
-    xdg.desktopEntries = mkIf (cfg.remoteDebuggingPort != null) {
-      antigravity = {
+    xdg.desktopEntries = {
+      # Sobrescreve (shadow) o antigravity-ide.desktop do nix-profile com flags de automação/CDP
+      antigravity-ide = {
         name = "Antigravity IDE";
         comment = "Code Editing. Redefined.";
         genericName = "Text Editor";
-        exec = "antigravity-ide --remote-debugging-port=${toString cfg.remoteDebuggingPort} %F";
+        exec = "antigravity-ide ${optionalString (cfg.remoteDebuggingPort != null) "--remote-debugging-port=${toString cfg.remoteDebuggingPort} "}%F";
         icon = "antigravity-ide";
         startupNotify = true;
         terminal = false;
@@ -112,9 +108,18 @@ if data.get("remote-debugging-port") != port:
         actions = {
           new-empty-window = {
             name = "New Empty Window";
-            exec = "antigravity-ide --remote-debugging-port=${toString cfg.remoteDebuggingPort} --new-window %F";
+            exec = "antigravity-ide ${optionalString (cfg.remoteDebuggingPort != null) "--remote-debugging-port=${toString cfg.remoteDebuggingPort} "}--new-window %F";
             icon = "antigravity-ide";
           };
+        };
+      };
+
+      # Esconde qualquer entrada legada 'antigravity.desktop' para prevenir duplicata no Rofi
+      antigravity = {
+        name = "Antigravity IDE (Legacy)";
+        exec = "true";
+        settings = {
+          NoDisplay = "true";
         };
       };
     };
