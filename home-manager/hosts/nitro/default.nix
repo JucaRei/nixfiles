@@ -82,10 +82,7 @@ in
         (pkgs.writeShellScriptBin "mpv-nvidia" ''
           # Executa o MPV com PRIME Offload na NVIDIA dGPU usando perfil dedicado [nvidia] (NVDEC/CUDA)
           exec env __NV_PRIME_RENDER_OFFLOAD=1 \
-                   __GLX_VENDOR_LIBRARY_NAME=nvidia \
                    __VK_LAYER_NV_optimus=NVIDIA_only \
-                   LIBVA_DRIVER_NAME= \
-                   LIBVA_DRIVERS_PATH= \
                    /usr/bin/mpv --profile=nvidia "$@"
         '')
         scrcpy
@@ -93,7 +90,6 @@ in
 
       shellAliases = {
         vainfo = "vainfo-intel";
-        mpv-nvidia = "mpv-nvidia";
       };
 
       sessionPath = [

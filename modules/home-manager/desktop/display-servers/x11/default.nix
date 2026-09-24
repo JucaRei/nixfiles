@@ -116,11 +116,11 @@ in
             else
               export LIBVA_DRIVER_NAME="iHD"
             fi
-            export LIBVA_DRIVERS_PATH="${pkgs.intel-media-driver}/lib/dri:${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib/x86_64-linux-gnu/dri:/usr/lib/dri"
+            export LIBVA_DRIVERS_PATH="/usr/lib/x86_64-linux-gnu/dri:${pkgs.intel-media-driver}/lib/dri:${pkgs.intel-vaapi-driver}/lib/dri"
           elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*amd|radeon' >/dev/null; then
             export LIBVA_DRIVER_NAME="radeonsi"
             export VDPAU_DRIVER="radeonsi"
-            export LIBVA_DRIVERS_PATH="${pkgs.mesa}/lib/dri:/usr/lib/x86_64-linux-gnu/dri:/usr/lib/dri"
+            export LIBVA_DRIVERS_PATH="/usr/lib/x86_64-linux-gnu/dri:${pkgs.mesa}/lib/dri"
           elif command -v lspci >/dev/null 2>&1 && lspci | grep -iE 'vga.*nvidia' >/dev/null; then
             export LIBVA_DRIVER_NAME="nvidia"
             export VDPAU_DRIVER="nvidia"

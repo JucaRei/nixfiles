@@ -49,6 +49,9 @@ let
         gpu-api=auto
         hwdec=vaapi-copy,vaapi,no
         video-sync=audio
+        ${optionalString (hostname == "nixtro" || hostname == "nitro") ''
+          vaapi-device=/dev/dri/by-path/pci-0000:00:02.0-render
+        ''}
       ''
 
     # ── Acer Nitro 5 AN52 — Intel (iGPU) + NVIDIA GTX/RTX (dGPU) ─────────────
@@ -137,7 +140,7 @@ let
       [nvidia]
       profile-desc=Nitro 5: NVIDIA dGPU via PRIME (nvdec/cuda/auto)
       vo=gpu
-      gpu-api=opengl
+      gpu-api=auto
       hwdec=nvdec-copy,cuda-copy,auto-safe
       gpu-shader-cache-dir=~/.cache/mpv/shaders-nvidia
       video-sync=display-resample
