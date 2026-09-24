@@ -38,7 +38,11 @@ in
       };
 
       signingFormat = mkOption {
-        type = lib.types.enum [ "ssh" "openpgp" "x509" ];
+        type = lib.types.enum [
+          "ssh"
+          "openpgp"
+          "x509"
+        ];
         default = "ssh";
         description = "Format used for signing commits ('ssh', 'openpgp', or 'x509').";
       };
@@ -80,11 +84,33 @@ in
           ".direnv"
           ".vscode"
 
+          # Ignore tags created by etags, ctags, gtags (GNU global) and cscope
+          "TAGS"
+          "!TAGS/"
+          "tags"
+          "!tags/"
+          ".tags"
+          ".tags1"
+          "gtags.files"
+          "tags.lock"
+          "tags.temp"
+          "GTAGS"
+          "GRTAGS"
+          "GPATH"
+          "cscope.files"
+          "cscope.out"
+          "cscope.in.out"
+          "cscope.po.out"
+
+          # Vim
+          "Session.vim"
+          ".netrwhist"
+
           # OS-related:
+          "Desktop.ini"
           ".DS_Store?"
           ".DS_Store"
           ".CFUserTextEncoding"
-          ".Trash"
           ".Xauthority"
           "thumbs.db"
           "Thumbs.db"
@@ -94,6 +120,17 @@ in
           "bin/"
           "dist/"
           "result"
+
+          # Eclipse
+          "workbench.xmi"
+
+          # IntelliJ
+          ".idea/"
+
+          # Files that micght appear on external disks
+          ".Trash"
+          ".Spotlight-V100"
+          ".Trashes"
 
           # Compiled residues:
           "*.class"
@@ -185,6 +222,7 @@ in
           };
           pull = {
             rebase = true;
+            updateRefs = true;
             # ff = "only";
           };
           push = {

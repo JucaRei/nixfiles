@@ -58,7 +58,13 @@
     # Fix for Catfish: requires which, findutils and file in PATH to detect search backend (locate/find)
     catfish = prev.catfish.overrideAttrs (old: {
       preFixup = (old.preFixup or "") + ''
-        gappsWrapperArgs+=(--prefix PATH : "${final.lib.makeBinPath [ final.which final.findutils final.file ]}")
+        gappsWrapperArgs+=(--prefix PATH : "${
+          final.lib.makeBinPath [
+            final.which
+            final.findutils
+            final.file
+          ]
+        }")
       '';
     });
 
