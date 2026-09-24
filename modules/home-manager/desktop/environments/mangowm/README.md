@@ -213,9 +213,7 @@ Os atalhos são definidos através de:
 | `$SUPER + Q` ou `$SUPER + C` | Fecha a janela em foco (`killclient`) |
 | `$SUPER + F` ou `$SUPER + S` / `$SUPER + W` | Alterna entre janela flutuante e ladrilhada (`togglefloating`) |
 | `$ALT + Tab` | Alterna o modo visão geral / overview (`toggleoverview`) |
-| `$SUPER + Shift + F` ou `$ALT + F` | Alterna tela cheia real (`togglefullscreen`) |
-| `$ALT + Shift + F` | Alterna tela cheia simulada (`togglefakefullscreen`) |
-| `$ALT + A` | Alterna estado maximizado (`togglemaximizescreen`) |
+| `Alt + A` | Alterna tela cheia real (`togglefullscreen`) |
 | `$SUPER + I` / `$SUPER + Shift + I` | Minimiza janela / Restaura minimizada |
 | `$ALT + Z` | Alterna exibição do Scratchpad |
 | `Ctrl + Espaço` ou `$SUPER + N` | Alterna para o próximo layout (`switch_layout`) |

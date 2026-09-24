@@ -405,7 +405,7 @@ in
           "$mainMod, C, killactive,"
           "$mainMod, F, togglefloating,"
           "$mainMod, S, togglefloating,"
-          "$mainMod SHIFT, F, fullscreen, 0"
+          "ALT, A, fullscreen, 0"
           "$mainMod SHIFT, SPACE, togglefloating,"
           "$mainMod, P, pseudo,"
           "$mainMod, J, layoutmsg, togglesplit"

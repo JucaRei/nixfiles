@@ -414,10 +414,7 @@ in
           ''
       }
       bind=${mod},Tab,focusstack,next
-      bind=${mod}+SHIFT,f,togglefullscreen,
-      bind=${altMod},f,togglefullscreen,
-      bind=${altMod}+SHIFT,f,togglefakefullscreen,
-      bind=${altMod},a,togglemaximizescreen,
+      bind=ALT,a,togglefullscreen,
       bind=${mod},i,minimized,
       bind=${mod}+SHIFT,i,restore_minimized
       bind=${mod}+SHIFT,o,toggleoverlay,

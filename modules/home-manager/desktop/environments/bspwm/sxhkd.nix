@@ -155,7 +155,7 @@ let
     󰌌  ${modDisplayName} + U                     ➜  Terminal Flutuante Rápido (Scratchpad)
     󰌌  ${modDisplayName} + Q / ${modDisplayName} + Shift + Q ➜  Fechar / Encerrar Janela
     󰌌  ${modDisplayName} + ${if mod == "alt" then "Super" else "Alt"} + Esc             ➜  Forçar Fechamento de Janela Travada
-    󰌌  ${modDisplayName} + Shift + F             ➜  Alternar Tela Cheia (Fullscreen)
+    󰌌  Alt + A                                 ➜  Alternar Tela Cheia (Fullscreen)
     󰌌  ${modDisplayName} + F                     ➜  Alternar Janela Flutuante (Floating/Tiling)
     󰌌  ${modDisplayName} + M                     ➜  Modo Monocle (Foco em Janela Única)
     󰌌  ${modDisplayName} + Y / ${modDisplayName} + Minus     ➜  Esconder / Minimizar Janela Ativa
@@ -344,8 +344,7 @@ in
         # --- Estados de Janela (Alternar Flutuante / Tela Cheia / Monocle) ---
         "${mod} + f" = "bspc node -t '~floating'";
         "${mod} + s" = "bspc node -t '~floating'";
-        "${mod} + shift + f" = "bspc node -t '~fullscreen'";
-        "${mod} + ${ctrlMod} + f" = "bspc node -t '~fullscreen'";
+        "alt + a" = "bspc node -t '~fullscreen'";
         "${mod} + m" = "bspc desktop -l next";
 
         # --- Minimizar / Esconder Janelas (Desktop Environment Style) ---

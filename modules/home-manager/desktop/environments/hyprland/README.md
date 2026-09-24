@@ -181,8 +181,7 @@ EOF
 | :--- | :--- |
 | `$SUPER + Q` ou `$SUPER + C` | Fecha a janela em foco (`killactive`) |
 | `$SUPER + F` ou `$SUPER + S` | Alterna modo flutuante (`togglefloating`) |
-| `$SUPER + Shift + F` | Alterna tela cheia (`fullscreen, 0`) |
-| `$ALT + Shift + F` | Alterna tela cheia fake (`fullscreen, 1`) |
+| `Alt + A` | Alterna tela cheia (`fullscreen, 0`) |
 | `$SUPER + P` | Alterna modo pseudo-tiling (`pseudo`) |
 | `$SUPER + J` | Alterna split horizontal / vertical (`layoutmsg, togglesplit`) |
 | `$SUPER + Tab` | Alterna o foco para a próxima janela |
