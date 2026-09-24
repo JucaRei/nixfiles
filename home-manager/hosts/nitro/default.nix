@@ -49,13 +49,12 @@ in
       multimedia = {
         mpv = {
           enable = true;
-          useSystemPackages = true; # Usa o mpv do sistema com as configs do Nix!
+          useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
         };
       };
       tools = {
         yt-dlp = {
           enable = true;
-          useSystemPackages = true; # Usa o yt-dlp com aria2c do sistema com as configs do Nix!
         };
       };
       shells = {
@@ -81,8 +80,8 @@ in
           fi
         '')
         (pkgs.writeShellScriptBin "mpv-nvidia" ''
-          # Executa o MPV do Nix com PRIME Offload na NVIDIA dGPU (mantendo uosc, thumbfast e scripts)
-          exec env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ${config.programs.mpv.package}/bin/mpv "$@"
+          # Executa o MPV com PRIME Offload na NVIDIA dGPU (mantendo uosc, thumbfast e scripts)
+          exec env __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia mpv "$@"
         '')
         scrcpy
       ];

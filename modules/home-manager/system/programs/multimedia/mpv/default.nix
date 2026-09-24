@@ -6,11 +6,14 @@
   desktop ? null,
   nixGLWrapper ? (x: x),
   isNvidia ? false,
+  osConfig ? null,
   ...
 }:
 let
   inherit (lib) mkIf mkEnableOption optionalString;
   cfg = config.system.programs.multimedia.mpv;
+  isNixOS = osConfig != null;
+  shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
 
   # Ambientes desktop completos tradicionais (com gerenciamento de janelas próprio, não tiling)
   fullDesktopEnvironments = [
@@ -38,14 +41,26 @@ let
   # Activado pela linha `profile=hw-preset` no fim de mpv.conf.
   # ─────────────────────────────────────────────────────────────────────────────
   hwPresetSection =
+    # ── Quando o executável for o nativo da distribuição hospedeira ────────────
+    # Adota perfil universal seguro compatível com qualquer versão do MPV e stack gráfico
+    if !shouldInstall then
+      ''
+        [hw-preset]
+        profile-desc=Distro Nativa: Perfil Universal Seguro (auto hwdec, vo=gpu,x11)
+        vo=gpu,x11
+        gpu-api=auto
+        hwdec=vaapi-copy,vaapi,no
+        video-sync=audio
+      ''
+
     # ── Acer Nitro 5 AN52 — Intel (iGPU) + NVIDIA GTX/RTX (dGPU) ─────────────
     # Driver proprietário NVIDIA. Vulkan + nvdec-copy para decodificação acelerada.
     # nvdec-copy é mais compatível que nvdec pois não usa zero-copy com VA-API.
-    if hostname == "nixtro" || hostname == "nitro" then
+    else if hostname == "nixtro" || hostname == "nitro" then
       ''
         [hw-preset]
         profile-desc=Nitro 5: Intel UHD 630 via nixGLIntel (vaapi, opengl)
-        vo=gpu
+        vo=gpu,x11
         gpu-api=opengl
         hwdec=vaapi
         gpu-shader-cache-dir=~/.cache/mpv/shaders
@@ -127,7 +142,6 @@ let
         gpu-api=auto
         hwdec=auto-safe
       '';
-  shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
 in
 {
   # Declara a opção no mesmo módulo que a implementa (padrão do repositório).
@@ -247,6 +261,9 @@ in
       "mpv/script-opts/thumbfast.conf".source = ./configs/opts/thumbfast.conf;
       "mpv/script-opts/evafast.conf".source = ./configs/opts/evafast.conf;
       "mpv/script-opts/memo.conf".source = ./configs/opts/memo.conf;
+
+      # Fontes customizadas para scripts e OSD (ícones oficiais do ModernZ)
+      "mpv/fonts/modernz-icons.ttf".source = "${pkgs.mpvScripts.modernz.src}/modernz-icons.ttf";
     };
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -295,7 +312,48 @@ in
       "audio/aac" = "mpv.desktop";
     };
 
-    home.packages = [ pkgs.font-dubai ];
+    home.packages = [
+      pkgs.font-dubai
+    ] ++ lib.optionals (!shouldInstall && !isNixOS) [
+      (pkgs.writeShellScriptBin "mpv" ''
+        exec env __GLX_VENDOR_LIBRARY_NAME=mesa /usr/bin/mpv "$@"
+      '')
+    ];
+
+    home.shellAliases = mkIf (!shouldInstall && !isNixOS) {
+      mpv = "env __GLX_VENDOR_LIBRARY_NAME=mesa mpv";
+    };
+
+    xdg.desktopEntries = mkIf (!shouldInstall && !isNixOS) {
+      mpv = {
+        name = "mpv Media Player";
+        genericName = "Multimedia player";
+        comment = "Play movies and songs";
+        icon = "mpv";
+        exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa mpv --player-operation-mode=pseudo-gui -- %U";
+        terminal = false;
+        categories = [
+          "AudioVideo"
+          "Audio"
+          "Video"
+          "Player"
+          "TV"
+        ];
+        mimeType = [
+          "application/ogg"
+          "application/x-ogg"
+          "application/mkv"
+          "application/x-matroska"
+          "audio/mp4"
+          "audio/mpeg"
+          "audio/ogg"
+          "video/mp4"
+          "video/mkv"
+          "video/x-matroska"
+          "video/webm"
+        ];
+      };
+    };
 
     systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
       "d ${config.home.homeDirectory}/.logs 0755 - - - -"
