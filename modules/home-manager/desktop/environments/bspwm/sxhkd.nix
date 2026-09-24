@@ -155,8 +155,8 @@ let
     󰌌  ${modDisplayName} + U                     ➜  Terminal Flutuante Rápido (Scratchpad)
     󰌌  ${modDisplayName} + Q / ${modDisplayName} + Shift + Q ➜  Fechar / Encerrar Janela
     󰌌  ${modDisplayName} + ${if mod == "alt" then "Super" else "Alt"} + Esc             ➜  Forçar Fechamento de Janela Travada
-    󰌌  ${modDisplayName} + ${if mod == "ctrl" then "Super" else "Ctrl"} + F              ➜  Alternar Tela Cheia (Fullscreen)
-    󰌌  ${modDisplayName} + S                     ➜  Alternar Janela Flutuante (Floating/Tiling)
+    󰌌  ${modDisplayName} + Shift + F             ➜  Alternar Tela Cheia (Fullscreen)
+    󰌌  ${modDisplayName} + F                     ➜  Alternar Janela Flutuante (Floating/Tiling)
     󰌌  ${modDisplayName} + M                     ➜  Modo Monocle (Foco em Janela Única)
     󰌌  ${modDisplayName} + Y / ${modDisplayName} + Minus     ➜  Esconder / Minimizar Janela Ativa
     󰌌  ${modDisplayName} + Shift + Y / Shift+-  ➜  Restaurar Última Janela Escondida
@@ -186,8 +186,8 @@ let
             *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
             *"Terminal Flutuante"*) ${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty ;;
             *"Fechar / Encerrar Janela"*) bspc node -c ;;
-            *"Tela Cheia"*) bspc node -t ~fullscreen ;;
-            *"Janela Flutuante"*) bspc node -t ~floating ;;
+            *"Tela Cheia"*) bspc node -t '~fullscreen' ;;
+            *"Janela Flutuante"*) bspc node -t '~floating' ;;
             *"Esconder / Minimizar Janela"*) bspc node -g hidden=on ;;
             *"Restaurar Última Janela"*) bspc node any.hidden.local -g hidden=off -f ;;
             *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/ ;;
@@ -341,9 +341,11 @@ in
         "${mod} + ${altMod} + Escape" = "bspc node -k";
         "${mod} + shift + q" = "bspc node -k";
 
-        # --- Estados de Janela (macOS Style: Cmd + Ctrl + F Fullscreen) ---
-        "${mod} + ${ctrlMod} + f" = "bspc node -t ~fullscreen";
-        "${mod} + s" = "bspc node -t ~floating";
+        # --- Estados de Janela (Alternar Flutuante / Tela Cheia / Monocle) ---
+        "${mod} + f" = "bspc node -t '~floating'";
+        "${mod} + s" = "bspc node -t '~floating'";
+        "${mod} + shift + f" = "bspc node -t '~fullscreen'";
+        "${mod} + ${ctrlMod} + f" = "bspc node -t '~fullscreen'";
         "${mod} + m" = "bspc desktop -l next";
 
         # --- Minimizar / Esconder Janelas (Desktop Environment Style) ---

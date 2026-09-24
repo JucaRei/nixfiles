@@ -399,6 +399,8 @@ in
 
       # Gerenciamento de Janelas e Estados
       bind=${mod},q,killclient,
+      bind=${mod},f,togglefloating,
+      bind=${mod},s,togglefloating,
       bind=${mod},w,togglefloating,
       bind=${mod},backslash,togglefloating,
       ${
@@ -412,6 +414,7 @@ in
           ''
       }
       bind=${mod},Tab,focusstack,next
+      bind=${mod}+SHIFT,f,togglefullscreen,
       bind=${altMod},f,togglefullscreen,
       bind=${altMod}+SHIFT,f,togglefakefullscreen,
       bind=${altMod},a,togglemaximizescreen,

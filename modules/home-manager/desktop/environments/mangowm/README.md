@@ -211,9 +211,9 @@ Os atalhos são definidos através de:
 | Atalho | Ação |
 | :--- | :--- |
 | `$SUPER + Q` ou `$SUPER + C` | Fecha a janela em foco (`killclient`) |
-| `$SUPER + W` ou `$SUPER + Shift + Espaço` | Alterna entre janela flutuante e ladrilhada |
+| `$SUPER + F` ou `$SUPER + S` / `$SUPER + W` | Alterna entre janela flutuante e ladrilhada (`togglefloating`) |
 | `$ALT + Tab` | Alterna o modo visão geral / overview (`toggleoverview`) |
-| `$ALT + F` | Alterna tela cheia real (`togglefullscreen`) |
+| `$SUPER + Shift + F` ou `$ALT + F` | Alterna tela cheia real (`togglefullscreen`) |
 | `$ALT + Shift + F` | Alterna tela cheia simulada (`togglefakefullscreen`) |
 | `$ALT + A` | Alterna estado maximizado (`togglemaximizescreen`) |
 | `$SUPER + I` / `$SUPER + Shift + I` | Minimiza janela / Restaura minimizada |

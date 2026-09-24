@@ -636,6 +636,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Prevenção Inteligente de Conflitos (Inversão Secundária)**:
     - Quando a tecla principal selecionada for `Alt`, atalhos secundários combinados (ex: `Super + Alt + Setas` para redimensionar) invertem o modificador secundário para `Super`, evitando combinações redundantes como `Alt + Alt`.
     - Quando a tecla principal for `Ctrl`, atalhos secundários combinados (ex: `Super + Ctrl + Return` para terminal flutuante) invertem o secundário para `Super`, prevenindo `Ctrl + Ctrl`.
+  - **Estados de Janelas Unificados nos Tiling WMs**:
+    - `Modifier + F`: Alterna janela flutuante (`floating` / `togglefloating`) em todos os gerenciadores (`bspwm`, `hyprland`, `mangowm`), mantendo `Modifier + S` como atalho alternativo.
+    - `Modifier + Shift + F`: Alterna tela cheia (`fullscreen` / `togglefullscreen`).
+    - **Fix de Shell (Zsh/Bash)**: No BSPWM/SXHKD, argumentos de estado utilizam aspas (`'~floating'` e `'~fullscreen'`), prevenindo falhas de expansão de diretório do Zsh (`no such user or named directory: floating`).
   - **Documentação e Menus Dinâmicos**: O menu Rofi de Quick Settings do BSPWM e o cheat-sheet de atalhos renderizam dinamicamente o nome da tecla ativa (`Super + ...`, `Alt + ...` ou `Ctrl + ...`).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
