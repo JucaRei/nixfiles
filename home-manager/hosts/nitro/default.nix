@@ -49,7 +49,8 @@ in
       multimedia = {
         mpv = {
           enable = true;
-          useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
+          # useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
+          installPackage = true;
         };
       };
       tools = {
@@ -80,10 +81,16 @@ in
           fi
         '')
         (pkgs.writeShellScriptBin "mpv-nvidia" ''
-          # Executa o MPV com PRIME Offload na NVIDIA dGPU usando perfil dedicado [nvidia] (NVDEC/CUDA)
+          # Executa o MPV com PRIME Offload na NVIDIA dGPU
+          # O perfil [nvidia] ativa hwdec=nvdec-copy,cuda-copy,auto-safe
+          if [ -x "$HOME/.nix-profile/bin/mpv" ]; then
+            mpv_bin="$HOME/.nix-profile/bin/mpv"
+          else
+            mpv_bin="/usr/bin/mpv"
+          fi
           exec env __NV_PRIME_RENDER_OFFLOAD=1 \
                    __VK_LAYER_NV_optimus=NVIDIA_only \
-                   /usr/bin/mpv --profile=nvidia "$@"
+                   "$mpv_bin" --profile=nvidia "$@"
         '')
         scrcpy
       ];
