@@ -1,7 +1,7 @@
-{ config, lib, ... }:
+{ lib, ... }:
 let
-  inherit (lib) mkOption bool;
-  inherit (lib.types) nullOr enum;
+  inherit (lib) mkOption;
+  inherit (lib.types) bool enum nullOr;
 in
 {
   imports = [

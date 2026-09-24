@@ -12,6 +12,27 @@ let
   inherit (lib.types) bool listOf str;
   cfg = config.desktop.bspwm;
 
+  normMod =
+    let
+      k = lib.toLower (cfg.modifierKey or "super");
+    in
+    if k == "super" || k == "mod4" then
+      "Super"
+    else if k == "alt" || k == "mod1" then
+      "Alt"
+    else if k == "ctrl" || k == "control" then
+      "Ctrl"
+    else
+      "Super";
+
+  pointerMod =
+    if normMod == "Alt" then
+      "mod1"
+    else if normMod == "Ctrl" then
+      "control"
+    else
+      "mod4";
+
   nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
@@ -90,6 +111,12 @@ in
       type = str;
       default = "";
       description = "Additional bspwmrc configuration to append";
+    };
+
+    modifierKey = mkOption {
+      type = str;
+      default = config.desktop.modifierKey or "Super";
+      description = "Tecla modificadora principal do BSPWM (ex: 'Super', 'Alt', 'Ctrl').";
     };
 
     rules = mkOption {
@@ -427,7 +454,7 @@ in
             ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &
 
             # Mouse bindings para mover e redimensionar janelas flutuantes
-            bspc config pointer_modifier mod4
+            bspc config pointer_modifier ${pointerMod}
             bspc config pointer_action1 move
             bspc config pointer_action2 resize_side
             bspc config pointer_action3 resize_corner

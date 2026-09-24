@@ -6,20 +6,66 @@
   ...
 }:
 let
-  inherit (lib) mkIf getExe;
+  inherit (lib) mkIf getExe mkOption;
   terminalBin =
     if config.programs ? alacritty && config.programs.alacritty.enable then
       getExe config.programs.alacritty.package
     else
       "${pkgs.xfce4-terminal or pkgs.alacritty}/bin/xfce4-terminal";
+
+  cfg = config.desktop.xfce4;
+  normMod =
+    let
+      k = lib.toLower (cfg.modifierKey or (config.desktop.modifierKey or "super"));
+    in
+    if k == "super" || k == "mod4" then
+      "Super"
+    else if k == "alt" || k == "mod1" then
+      "Alt"
+    else if k == "ctrl" || k == "control" then
+      "Primary"
+    else
+      "Super";
+
+  xfceMod = "<${normMod}>";
+  altMod = if normMod == "Alt" then "<Super>" else "<Alt>";
 in
 {
+  options.desktop.xfce4 = {
+    modifierKey = mkOption {
+      type = lib.types.enum [
+        "Super"
+        "Alt"
+        "Ctrl"
+        "super"
+        "alt"
+        "ctrl"
+        "SUPER"
+        "ALT"
+        "CTRL"
+        "Mod4"
+        "Mod1"
+        "mod4"
+        "mod1"
+      ];
+      default = config.desktop.modifierKey or "Super";
+      description = ''
+        Tecla modificadora principal (Super Key / Mod Key) para o XFCE4.
+        Padrão herda de desktop.modifierKey ("Super").
+      '';
+    };
+  };
+
   config = mkIf (desktop == "xfce4") {
     desktop.display-servers.backend = "x11";
 
     # --- Programas Padrão do XFCE ---
     system.programs = {
-      file-manager.thunar.enable = lib.mkDefault true;
+      file-manager.thunar.enable = lib.mkDefault (
+        !config.system.programs.file-manager.nautilus.enable
+        && !config.system.programs.file-manager.nemo.enable
+        && !config.system.programs.file-manager.pcmanfm.enable
+      );
     };
 
     # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---
@@ -95,16 +141,16 @@ in
 
       # Atalhos de Teclado
       xfce4-keyboard-shortcuts = {
-        "commands/custom/<Super>Return" = terminalBin;
-        "commands/custom/<Super>t" = terminalBin;
-        "commands/custom/<Super>e" = config.system.programs.file-manager.activeCommand or "file-manager";
-        "commands/custom/<Super>f" = config.system.programs.file-manager.activeCommand or "file-manager";
-        "commands/custom/<Super>r" = "${pkgs.xfce4-appfinder}/bin/xfce4-appfinder";
-        "commands/custom/<Super>space" = "${pkgs.xfce4-appfinder}/bin/xfce4-appfinder";
+        "commands/custom/${xfceMod}Return" = terminalBin;
+        "commands/custom/${xfceMod}t" = terminalBin;
+        "commands/custom/${xfceMod}e" = config.system.programs.file-manager.activeCommand or "file-manager";
+        "commands/custom/${xfceMod}f" = config.system.programs.file-manager.activeCommand or "file-manager";
+        "commands/custom/${xfceMod}r" = "${pkgs.xfce4-appfinder}/bin/xfce4-appfinder";
+        "commands/custom/${xfceMod}space" = "${pkgs.xfce4-appfinder}/bin/xfce4-appfinder";
         "commands/custom/Print" = "${pkgs.xfce4-screenshooter}/bin/xfce4-screenshooter -f";
-        "commands/custom/<Alt>Print" = "${pkgs.xfce4-screenshooter}/bin/xfce4-screenshooter -w";
+        "commands/custom/${altMod}Print" = "${pkgs.xfce4-screenshooter}/bin/xfce4-screenshooter -w";
         "commands/custom/<Shift>Print" = "${pkgs.xfce4-screenshooter}/bin/xfce4-screenshooter -r";
-        "commands/custom/<Super>l" = "${pkgs.xfce4-session}/bin/xflock4";
+        "commands/custom/${xfceMod}l" = "${pkgs.xfce4-session}/bin/xflock4";
       };
 
       # Gestão de Energia

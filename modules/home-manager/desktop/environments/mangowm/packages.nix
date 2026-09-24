@@ -232,6 +232,12 @@ in
       default = [ ];
       description = "List of monitor rules for MangoWM (e.g. 'name:eDP-1,width:1366,height:768,refresh:60,scale:1')";
     };
+
+    modifierKey = mkOption {
+      type = str;
+      default = config.desktop.modifierKey or "Super";
+      description = "Tecla modificadora principal do MangoWM (ex: 'SUPER', 'ALT', 'CTRL').";
+    };
   };
 
   config = mkIf cfg.enable {

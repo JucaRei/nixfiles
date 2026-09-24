@@ -12,6 +12,30 @@ let
   isApple =
     (config.home.keyboard.model or "") == "apple" || hostname == "anubis" || hostname == "rocinante";
 
+  normMod =
+    let
+      k = lib.toLower (cfg.modifierKey or "super");
+    in
+    if k == "super" || k == "mod4" then
+      "Super"
+    else if k == "alt" || k == "mod1" then
+      "Alt"
+    else if k == "ctrl" || k == "control" then
+      "Ctrl"
+    else
+      "Super";
+
+  mod =
+    if normMod == "Alt" then
+      "ALT"
+    else if normMod == "Ctrl" then
+      "CTRL"
+    else
+      "SUPER";
+
+  altMod = if mod == "ALT" then "SUPER" else "ALT";
+  ctrlMod = if mod == "CTRL" then "SUPER" else "CTRL";
+
   # Scripts de Captura de Tela
   screenshotFull = pkgs.writeShellScript "mango-screenshot-full" ''
     dir="$HOME/Pictures/Screenshots"
@@ -255,10 +279,10 @@ in
       gesturebind=none,down,4,focusdir,down
 
       # --- Roda do Mouse (Axisbind) ---
-      axisbind=SUPER,UP,viewtoleft
-      axisbind=SUPER,DOWN,viewtoright
-      axisbind=SUPER+CTRL,UP,tagtoleft
-      axisbind=SUPER+CTRL,DOWN,tagtoright
+      axisbind=${mod},UP,viewtoleft
+      axisbind=${mod},DOWN,viewtoright
+      axisbind=${mod}+${ctrlMod},UP,tagtoleft
+      axisbind=${mod}+${ctrlMod},DOWN,tagtoright
 
       # --- Layouts por Tag (1 a 9) ---
       tag_num=9
@@ -295,88 +319,88 @@ in
       # ============================================================================
 
       # Recarregar Configurações (MangoWM + Noctalia / Waybar)
-      bind=SUPER,r,spawn,mango-reload
-      bind=SUPER+SHIFT,r,spawn,mango-reload --restart
-      bind=SUPER+ALT,r,spawn,mango-reload
+      bind=${mod},r,spawn,mango-reload
+      bind=${mod}+SHIFT,r,spawn,mango-reload --restart
+      bind=${mod}+${altMod},r,spawn,mango-reload
 
       # Aplicativos e Utilitários
-      bind=SUPER,Return,spawn,${pkgs.alacritty}/bin/alacritty
-      bind=SUPER+CTRL,Return,spawn,${pkgs.alacritty}/bin/alacritty --title floating-kitty
+      bind=${mod},Return,spawn,${pkgs.alacritty}/bin/alacritty
+      bind=${mod}+${ctrlMod},Return,spawn,${pkgs.alacritty}/bin/alacritty --title floating-kitty
       ${
         if isNoctalia then
           ''
-            bind=SUPER,space,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
-            bind=SUPER,d,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
-            bind=SUPER,v,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle clipboard
-            bind=SUPER,p,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
-            bind=SUPER,s,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
-            bind=SUPER,Escape,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
-            bind=SUPER+SHIFT,e,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
-            bind=SUPER,comma,spawn,${pkgs.noctalia}/bin/noctalia msg settings-toggle
-            bind=SUPER+ALT,w,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
+            bind=${mod},space,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
+            bind=${mod},d,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
+            bind=${mod},v,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle clipboard
+            bind=${mod},p,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
+            bind=${mod},s,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
+            bind=${mod},Escape,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
+            bind=${mod}+SHIFT,e,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle session
+            bind=${mod},comma,spawn,${pkgs.noctalia}/bin/noctalia msg settings-toggle
+            bind=${mod}+${altMod},w,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
 
             # Window Switcher (Alt+Tab Overlay nativo do Noctalia)
-            bind=ALT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
-            bind=ALT+SHIFT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
+            bind=${altMod},Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
+            bind=${altMod}+SHIFT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
 
             # Sessão: Lock e Suspend
-            bind=SUPER,l,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
+            bind=${mod},l,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
             ${
               if isApple then
                 ''
-                  bind=SUPER+CTRL,q,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
+                  bind=${mod}+${ctrlMod},q,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
                 ''
               else
                 ""
             }
-            bind=SUPER+ALT,s,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
+            bind=${mod}+${altMod},s,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
             bind=NONE,XF86Sleep,spawn,${pkgs.noctalia}/bin/noctalia msg session suspend
 
             # Night Light e Caffeine
-            bind=SUPER+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-toggle
-            bind=SUPER+CTRL+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle
-            bind=SUPER+SHIFT,c,spawn,${pkgs.noctalia}/bin/noctalia msg caffeine-toggle
+            bind=${mod}+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-toggle
+            bind=${mod}+${ctrlMod}+SHIFT,n,spawn,${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle
+            bind=${mod}+SHIFT,c,spawn,${pkgs.noctalia}/bin/noctalia msg caffeine-toggle
           ''
         else
           ''
-            bind=SUPER,space,spawn,${pkgs.rofi}/bin/rofi -show drun
-            bind=SUPER,d,spawn,${pkgs.rofi}/bin/rofi -show drun
-            bind=SUPER,v,spawn,${cliphistMenu}
-            bind=SUPER,Escape,spawn,session-power-menu
-            bind=SUPER+SHIFT,e,spawn,session-power-menu
-            bind=SUPER,l,spawn,${pkgs.hyprlock}/bin/hyprlock
+            bind=${mod},space,spawn,${pkgs.rofi}/bin/rofi -show drun
+            bind=${mod},d,spawn,${pkgs.rofi}/bin/rofi -show drun
+            bind=${mod},v,spawn,${cliphistMenu}
+            bind=${mod},Escape,spawn,session-power-menu
+            bind=${mod}+SHIFT,e,spawn,session-power-menu
+            bind=${mod},l,spawn,${pkgs.hyprlock}/bin/hyprlock
             ${
               if isApple then
                 ''
-                  bind=SUPER+CTRL,q,spawn,${pkgs.hyprlock}/bin/hyprlock
+                  bind=${mod}+${ctrlMod},q,spawn,${pkgs.hyprlock}/bin/hyprlock
                 ''
               else
                 ""
             }
-            bind=SUPER+ALT,s,spawn,systemctl suspend
+            bind=${mod}+${altMod},s,spawn,systemctl suspend
             bind=NONE,XF86Sleep,spawn,systemctl suspend
-            bind=ALT,Tab,toggleoverview,
+            bind=${altMod},Tab,toggleoverview,
           ''
       }
-      bind=SUPER,e,spawn,${config.system.programs.file-manager.activeCommand or "file-manager"}
-      bind=SUPER+SHIFT,q,quit
+      bind=${mod},e,spawn,${config.system.programs.file-manager.activeCommand or "file-manager"}
+      bind=${mod}+SHIFT,q,quit
 
       # Ajuda e Lista de Atalhos de Teclado (Plugin Keymap)
       ${
         if isNoctalia then
           ''
-            bind=SUPER,F1,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
-            bind=SUPER,question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
-            bind=SUPER,slash,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+            bind=${mod},F1,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+            bind=${mod},question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+            bind=${mod},slash,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
           ''
         else
           ""
       }
 
       # Gerenciamento de Janelas e Estados
-      bind=SUPER,q,killclient,
-      bind=SUPER,w,togglefloating,
-      bind=SUPER,backslash,togglefloating,
+      bind=${mod},q,killclient,
+      bind=${mod},w,togglefloating,
+      bind=${mod},backslash,togglefloating,
       ${
         if isNoctalia then
           ''
@@ -384,85 +408,85 @@ in
           ''
         else
           ''
-            bind=ALT,Tab,toggleoverview,
+            bind=${altMod},Tab,toggleoverview,
           ''
       }
-      bind=SUPER,Tab,focusstack,next
-      bind=ALT,f,togglefullscreen,
-      bind=ALT+SHIFT,f,togglefakefullscreen,
-      bind=ALT,a,togglemaximizescreen,
-      bind=SUPER,i,minimized,
-      bind=SUPER+SHIFT,i,restore_minimized
-      bind=SUPER+SHIFT,o,toggleoverlay,
-      bind=SUPER+SHIFT,g,toggleglobal,
-      bind=ALT,z,toggle_scratchpad
+      bind=${mod},Tab,focusstack,next
+      bind=${altMod},f,togglefullscreen,
+      bind=${altMod}+SHIFT,f,togglefakefullscreen,
+      bind=${altMod},a,togglemaximizescreen,
+      bind=${mod},i,minimized,
+      bind=${mod}+SHIFT,i,restore_minimized
+      bind=${mod}+SHIFT,o,toggleoverlay,
+      bind=${mod}+SHIFT,g,toggleglobal,
+      bind=${altMod},z,toggle_scratchpad
 
       # Redimensionamento de Janelas
-      bind=SUPER,equal,resizewin,20,0
-      bind=SUPER,minus,resizewin,-20,0
-      bind=SUPER+CTRL,equal,resizewin,0,20
-      bind=SUPER+CTRL,minus,resizewin,0,-20
+      bind=${mod},equal,resizewin,20,0
+      bind=${mod},minus,resizewin,-20,0
+      bind=${mod}+${ctrlMod},equal,resizewin,0,20
+      bind=${mod}+${ctrlMod},minus,resizewin,0,-20
 
       # Layouts e Proporções
-      bind=CTRL,space,switch_layout
-      bind=SUPER,n,switch_layout
-      bind=CTRL+SHIFT,space,spawn,mango-layout-picker
-      bind=SUPER+ALT,space,spawn,mango-layout-picker
-      bind=SUPER+ALT,f,set_proportion,1.0
-      bind=ALT,space,switch_proportion_preset,
-      bind=SUPER+c,scroller_stack,left
-      bind=SUPER+SHIFT,c,scroller_stack,right
+      bind=${ctrlMod},space,switch_layout
+      bind=${mod},n,switch_layout
+      bind=${ctrlMod}+SHIFT,space,spawn,mango-layout-picker
+      bind=${mod}+${altMod},space,spawn,mango-layout-picker
+      bind=${mod}+${altMod},f,set_proportion,1.0
+      bind=${altMod},space,switch_proportion_preset,
+      bind=${mod}+c,scroller_stack,left
+      bind=${mod}+SHIFT,c,scroller_stack,right
 
       # Ajustes de Gaps
-      bind=ALT+SHIFT,x,incgaps,2
-      bind=ALT+SHIFT,z,incgaps,-2
-      bind=ALT+SHIFT,r,togglegaps
-      bind=SUPER+SHIFT,a,spawn,mango-toggle-outer-gaps
+      bind=${altMod}+SHIFT,x,incgaps,2
+      bind=${altMod}+SHIFT,z,incgaps,-2
+      bind=${altMod}+SHIFT,r,togglegaps
+      bind=${mod}+SHIFT,a,spawn,mango-toggle-outer-gaps
 
       # Foco Direcional (Setas e Vim Keys)
-      bind=SUPER,Left,focusdir,left
-      bind=SUPER,Right,focusdir,right
-      bind=SUPER,Up,focusdir,up
-      bind=SUPER,Down,focusdir,down
-      bind=SUPER,h,focusdir,left
-      bind=SUPER,l,focusdir,right
-      bind=SUPER,k,focusdir,up
-      bind=SUPER,j,focusdir,down
+      bind=${mod},Left,focusdir,left
+      bind=${mod},Right,focusdir,right
+      bind=${mod},Up,focusdir,up
+      bind=${mod},Down,focusdir,down
+      bind=${mod},h,focusdir,left
+      bind=${mod},l,focusdir,right
+      bind=${mod},k,focusdir,up
+      bind=${mod},j,focusdir,down
 
       # Trocar Janelas de Posição (Setas e Vim Keys)
-      bind=SUPER+SHIFT,Left,exchange_client,left
-      bind=SUPER+SHIFT,Right,exchange_client,right
-      bind=SUPER+SHIFT,Up,exchange_client,up
-      bind=SUPER+SHIFT,Down,exchange_client,down
-      bind=SUPER+SHIFT,h,exchange_client,left
-      bind=SUPER+SHIFT,l,exchange_client,right
-      bind=SUPER+SHIFT,k,exchange_client,up
-      bind=SUPER+SHIFT,j,exchange_client,down
+      bind=${mod}+SHIFT,Left,exchange_client,left
+      bind=${mod}+SHIFT,Right,exchange_client,right
+      bind=${mod}+SHIFT,Up,exchange_client,up
+      bind=${mod}+SHIFT,Down,exchange_client,down
+      bind=${mod}+SHIFT,h,exchange_client,left
+      bind=${mod}+SHIFT,l,exchange_client,right
+      bind=${mod}+SHIFT,k,exchange_client,up
+      bind=${mod}+SHIFT,j,exchange_client,down
 
       # Controle de Tags (1 a 9)
-      bind=SUPER,1,view,1
-      bind=SUPER,2,view,2
-      bind=SUPER,3,view,3
-      bind=SUPER,4,view,4
-      bind=SUPER,5,view,5
-      bind=SUPER,6,view,6
-      bind=SUPER,7,view,7
-      bind=SUPER,8,view,8
-      bind=SUPER,9,view,9
+      bind=${mod},1,view,1
+      bind=${mod},2,view,2
+      bind=${mod},3,view,3
+      bind=${mod},4,view,4
+      bind=${mod},5,view,5
+      bind=${mod},6,view,6
+      bind=${mod},7,view,7
+      bind=${mod},8,view,8
+      bind=${mod},9,view,9
 
       # Mover Janelas para Tags (1 a 9)
-      bind=SUPER+CTRL,1,tag,1,0
-      bind=SUPER+CTRL,2,tag,2,0
-      bind=SUPER+CTRL,3,tag,3,0
-      bind=SUPER+CTRL,4,tag,4,0
-      bind=SUPER+CTRL,5,tag,5,0
-      bind=SUPER+CTRL,6,tag,6,0
-      bind=SUPER+CTRL,7,tag,7,0
-      bind=SUPER+CTRL,8,tag,8,0
-      bind=SUPER+CTRL,9,tag,9,0
+      bind=${mod}+${ctrlMod},1,tag,1,0
+      bind=${mod}+${ctrlMod},2,tag,2,0
+      bind=${mod}+${ctrlMod},3,tag,3,0
+      bind=${mod}+${ctrlMod},4,tag,4,0
+      bind=${mod}+${ctrlMod},5,tag,5,0
+      bind=${mod}+${ctrlMod},6,tag,6,0
+      bind=${mod}+${ctrlMod},7,tag,7,0
+      bind=${mod}+${ctrlMod},8,tag,8,0
+      bind=${mod}+${ctrlMod},9,tag,9,0
 
-      bind=SUPER+SHIFT,1,tag,1,0
-      bind=SUPER+SHIFT,2,tag,2,0
+      bind=${mod}+SHIFT,1,tag,1,0
+      bind=${mod}+SHIFT,2,tag,2,0
       ${
         if isApple then
           ''
@@ -471,21 +495,21 @@ in
           ''
         else
           ''
-            bind=SUPER+SHIFT,3,tag,3,0
-            bind=SUPER+SHIFT,4,tag,4,0
-            bind=SUPER+SHIFT,5,tag,5,0
+            bind=${mod}+SHIFT,3,tag,3,0
+            bind=${mod}+SHIFT,4,tag,4,0
+            bind=${mod}+SHIFT,5,tag,5,0
           ''
       }
-      bind=SUPER+SHIFT,6,tag,6,0
-      bind=SUPER+SHIFT,7,tag,7,0
-      bind=SUPER+SHIFT,8,tag,8,0
-      bind=SUPER+SHIFT,9,tag,9,0
+      bind=${mod}+SHIFT,6,tag,6,0
+      bind=${mod}+SHIFT,7,tag,7,0
+      bind=${mod}+SHIFT,8,tag,8,0
+      bind=${mod}+SHIFT,9,tag,9,0
 
       # Navegação entre Tags Adjacentes
-      bind=SUPER+CTRL,Up,viewtoleft,0
-      bind=SUPER+CTRL,Down,viewtoright,0
-      bind=SUPER+CTRL+ALT,Up,tagtoleft,0
-      bind=SUPER+CTRL+ALT,Down,tagtoright,0
+      bind=${mod}+${ctrlMod},Up,viewtoleft,0
+      bind=${mod}+${ctrlMod},Down,viewtoright,0
+      bind=${mod}+${ctrlMod}+${altMod},Up,tagtoleft,0
+      bind=${mod}+${ctrlMod}+${altMod},Down,tagtoright,0
 
       # Teclas Multimídia e Áudio
       ${
@@ -507,28 +531,28 @@ in
             bind=NONE,XF86KbdBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
             bind=NONE,XF86KbdBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
             bind=NONE,XF86KbdLightOnOff,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
-            bind=SUPER,F6,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
-            bind=SUPER,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
-            bind=SUPER+SHIFT,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
+            bind=${mod},F6,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
+            bind=${mod},F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
+            bind=${mod}+SHIFT,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
 
             # Captura de Tela (Screenshots via Noctalia IPC)
             ${
               if isApple then
                 ''
                   # Mapeamento oficial Apple macOS: Cmd+Shift+3 (Tela inteira), Cmd+Shift+4 (Região), Cmd+Shift+5 (Menu/Seleção)
-                  bind=SUPER+SHIFT,3,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
-                  bind=SUPER+SHIFT,4,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
-                  bind=SUPER+SHIFT,5,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick
+                  bind=${mod}+SHIFT,3,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+                  bind=${mod}+SHIFT,4,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+                  bind=${mod}+SHIFT,5,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick
                   bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
                   bind=SHIFT,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
-                  bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+                  bind=${mod}+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
                 ''
               else
                 ''
                   # Padrão PC
                   bind=NONE,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
                   bind=SHIFT,Print,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
-                  bind=SUPER+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
+                  bind=${mod}+SHIFT,S,spawn,${pkgs.noctalia}/bin/noctalia msg screenshot-region
                 ''
             }
           ''
@@ -550,36 +574,36 @@ in
             bind=NONE,XF86KbdBrightnessUp,spawn,${kbdBrightnessOsd} up
             bind=NONE,XF86KbdBrightnessDown,spawn,${kbdBrightnessOsd} down
             bind=NONE,XF86KbdLightOnOff,spawn,${kbdBrightnessOsd} toggle
-            bind=SUPER,F6,spawn,${kbdBrightnessOsd} up
-            bind=SUPER,F5,spawn,${kbdBrightnessOsd} down
-            bind=SUPER+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
+            bind=${mod},F6,spawn,${kbdBrightnessOsd} up
+            bind=${mod},F5,spawn,${kbdBrightnessOsd} down
+            bind=${mod}+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
 
             # Captura de Tela (Screenshots)
             ${
               if isApple then
                 ''
                   # Mapeamento oficial Apple macOS: Cmd+Shift+3 (Tela inteira), Cmd+Shift+4 (Região), Cmd+Shift+5 (Menu/Seleção)
-                  bind=SUPER+SHIFT,3,spawn,${screenshotFull}
-                  bind=SUPER+SHIFT,4,spawn,${screenshotArea}
-                  bind=SUPER+SHIFT,5,spawn,${screenshotPick}
+                  bind=${mod}+SHIFT,3,spawn,${screenshotFull}
+                  bind=${mod}+SHIFT,4,spawn,${screenshotArea}
+                  bind=${mod}+SHIFT,5,spawn,${screenshotPick}
                   bind=NONE,Print,spawn,${screenshotFull}
                   bind=SHIFT,Print,spawn,${screenshotArea}
-                  bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+                  bind=${mod}+SHIFT,S,spawn,${screenshotArea}
                 ''
               else
                 ''
                   # Padrão PC
                   bind=NONE,Print,spawn,${screenshotFull}
                   bind=SHIFT,Print,spawn,${screenshotArea}
-                  bind=SUPER+SHIFT,S,spawn,${screenshotArea}
+                  bind=${mod}+SHIFT,S,spawn,${screenshotArea}
                 ''
             }
           ''
       }
 
       # Mouse
-      mousebind=SUPER,btn_left,moveresize,curmove
-      mousebind=SUPER,btn_right,moveresize,curresize
+      mousebind=${mod},btn_left,moveresize,curmove
+      mousebind=${mod},btn_right,moveresize,curresize
       mousebind=NONE,btn_middle,togglemaximizescreen,0
 
       # Regras de Janela (Window Rules)

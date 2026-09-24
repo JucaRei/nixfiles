@@ -172,19 +172,51 @@ in
         description = "Hyprland keyboard options (defaults to home.keyboard.options)";
       };
     };
+
+    modifierKey = mkOption {
+      type = str;
+      default = config.desktop.modifierKey or "Super";
+      description = "Tecla modificadora principal do Hyprland (ex: 'SUPER', 'ALT', 'CTRL').";
+    };
   };
 
-  config = mkIf cfg.enable {
-    wayland.windowManager.hyprland = {
-      enable = true;
-      package = pkgs.hyprland;
-      xwayland.enable = true;
-      configType = "hyprlang";
+  config =
+    let
+      normMod =
+        let
+          k = lib.toLower (cfg.modifierKey or "super");
+        in
+        if k == "super" || k == "mod4" then
+          "Super"
+        else if k == "alt" || k == "mod1" then
+          "Alt"
+        else if k == "ctrl" || k == "control" then
+          "Ctrl"
+        else
+          "Super";
 
-      settings = {
-        "$mainMod" = "SUPER";
+      mainMod =
+        if normMod == "Alt" then
+          "ALT"
+        else if normMod == "Ctrl" then
+          "CTRL"
+        else
+          "SUPER";
 
-        monitor = cfg.monitors;
+      altMod = if mainMod == "ALT" then "SUPER" else "ALT";
+      ctrlMod = if mainMod == "CTRL" then "SUPER" else "CTRL";
+    in
+    mkIf cfg.enable {
+      wayland.windowManager.hyprland = {
+        enable = true;
+        package = pkgs.hyprland;
+        xwayland.enable = true;
+        configType = "hyprlang";
+
+        settings = {
+          "$mainMod" = mainMod;
+
+          monitor = cfg.monitors;
 
         env = [
           "XDG_CURRENT_DESKTOP,Hyprland"
@@ -359,9 +391,9 @@ in
           )
           (
             if isNoctalia then
-              "$mainMod ALT, S, exec, ${pkgs.noctalia}/bin/noctalia msg session suspend"
+              "$mainMod ${altMod}, S, exec, ${pkgs.noctalia}/bin/noctalia msg session suspend"
             else
-              "$mainMod ALT, S, exec, systemctl suspend"
+              "$mainMod ${altMod}, S, exec, systemctl suspend"
           )
 
           # Recarregar Configurações (Hyprland + Noctalia / Waybar)
@@ -406,17 +438,17 @@ in
           "$mainMod, 9, workspace, 9"
           "$mainMod, 0, workspace, 10"
 
-          # Mover Janela para Workspace (via CTRL para compatibilidade com Apple)
-          "$mainMod CTRL, 1, movetoworkspace, 1"
-          "$mainMod CTRL, 2, movetoworkspace, 2"
-          "$mainMod CTRL, 3, movetoworkspace, 3"
-          "$mainMod CTRL, 4, movetoworkspace, 4"
-          "$mainMod CTRL, 5, movetoworkspace, 5"
-          "$mainMod CTRL, 6, movetoworkspace, 6"
-          "$mainMod CTRL, 7, movetoworkspace, 7"
-          "$mainMod CTRL, 8, movetoworkspace, 8"
-          "$mainMod CTRL, 9, movetoworkspace, 9"
-          "$mainMod CTRL, 0, movetoworkspace, 10"
+          # Mover Janela para Workspace (via ctrlMod para compatibilidade com Apple)
+          "$mainMod ${ctrlMod}, 1, movetoworkspace, 1"
+          "$mainMod ${ctrlMod}, 2, movetoworkspace, 2"
+          "$mainMod ${ctrlMod}, 3, movetoworkspace, 3"
+          "$mainMod ${ctrlMod}, 4, movetoworkspace, 4"
+          "$mainMod ${ctrlMod}, 5, movetoworkspace, 5"
+          "$mainMod ${ctrlMod}, 6, movetoworkspace, 6"
+          "$mainMod ${ctrlMod}, 7, movetoworkspace, 7"
+          "$mainMod ${ctrlMod}, 8, movetoworkspace, 8"
+          "$mainMod ${ctrlMod}, 9, movetoworkspace, 9"
+          "$mainMod ${ctrlMod}, 0, movetoworkspace, 10"
 
           # Mover Janela para Workspace (1 a 10)
           "$mainMod SHIFT, 1, movetoworkspace, 1"
@@ -443,12 +475,12 @@ in
           if isNoctalia then
             [
               # Window Switcher (Alt+Tab Overlay)
-              "ALT, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
-              "ALT SHIFT, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
+              "${altMod}, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
+              "${altMod} SHIFT, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
 
               # Night Light e Caffeine
               "$mainMod SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-toggle"
-              "$mainMod CTRL SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle"
+              "$mainMod ${ctrlMod} SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle"
               "$mainMod SHIFT, C, exec, ${pkgs.noctalia}/bin/noctalia msg caffeine-toggle"
             ]
           else

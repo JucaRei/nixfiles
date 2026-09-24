@@ -158,6 +158,15 @@ in
       default = activeName;
       description = "Nome amigável do gerenciador de arquivos ativo (ex: Nautilus, Nemo, PCManFM, Thunar).";
     };
+
+    cleanInactiveConfigs = mkOption {
+      type = types.bool;
+      default = config.system.cleanup.enable;
+      description = ''
+        Indica se a limpeza declarativa de arquivos residuais para gerenciadores inativos está ativada.
+        Delegado ao módulo centralizado system.cleanup.
+      '';
+    };
   };
 
   config = mkMerge [

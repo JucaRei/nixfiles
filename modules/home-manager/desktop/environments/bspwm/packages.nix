@@ -223,16 +223,6 @@ in
     home.activation.updateDesktopDatabase = lib.mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       # Remove arquivo .desktop em minúsculo antigo para prevenir duplicação no Rofi
       rm -f "$HOME/.local/share/applications/alacritty.desktop"
-
-      if command -v update-desktop-database > /dev/null 2>&1; then
-        $DRY_RUN_CMD update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
-      fi
-
-      # Atualizar cache de ícones
-      if command -v gtk-update-icon-cache > /dev/null 2>&1; then
-        $DRY_RUN_CMD gtk-update-icon-cache --force --ignore-theme-index \
-          "$HOME/.local/share/icons" 2>/dev/null || true
-      fi
     '');
   };
 }

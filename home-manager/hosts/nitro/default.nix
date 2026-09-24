@@ -15,26 +15,30 @@ let
 in
 {
   config = {
-    desktop.monitors = [
-      (
-        fhd
-        // {
-          name = "HDMI-1-0";
-          x = 0;
-          y = 0;
-          primary = true;
-        }
-      )
-      (
-        fhd
-        // {
-          name = "eDP-1";
-          x = 1920;
-          y = 0;
-          primary = false;
-        }
-      )
-    ];
+    desktop = {
+      monitors = [
+        (
+          fhd
+          // {
+            name = "HDMI-1-0";
+            x = 0;
+            y = 0;
+            primary = true;
+          }
+        )
+        (
+          fhd
+          // {
+            name = "eDP-1";
+            x = 1920;
+            y = 0;
+            primary = false;
+          }
+        )
+      ];
+
+      modifierKey = "Alt";
+    };
 
     system.programs = {
       console = {
@@ -46,6 +50,9 @@ in
       };
       editors = {
         antigravity.enable = true;
+      };
+      file-manager = {
+        pcmanfm.enable = true;
       };
       terminal = {
         enable = true;

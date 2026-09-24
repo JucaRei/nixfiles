@@ -19,6 +19,31 @@ in
     ../monitors
   ];
 
+  options.desktop = {
+    modifierKey = lib.mkOption {
+      type = lib.types.enum [
+        "Super"
+        "Alt"
+        "Ctrl"
+        "super"
+        "alt"
+        "ctrl"
+        "SUPER"
+        "ALT"
+        "CTRL"
+        "Mod4"
+        "Mod1"
+        "mod4"
+        "mod1"
+      ];
+      default = "Super";
+      description = ''
+        Tecla modificadora principal (Super Key / Mod Key) para os Window Managers (BSPWM, Hyprland, MangoWM, XFCE4).
+        Valores aceitos: "Super" (ou Mod4/Cmd/Windows), "Alt" (ou Mod1/Option), "Ctrl" (ou Control).
+      '';
+    };
+  };
+
   config = {
 
     home = {

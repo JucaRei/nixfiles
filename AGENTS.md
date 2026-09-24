@@ -609,6 +609,34 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - `Definir como Papel de Parede` (com suporte automático a `hyprpaper`, `feh` e `gsettings`).
       - `Gerar QR Code` (via `qrencode` e exibição gráfica com `feh` ou `zenity`).
     - **Modelos para "Novo Documento"**: Texto vazio, Markdown, Script Shell e Arquivo em Branco criados em `~/.local/share/templates/`.
+- **Limpeza Automática de Aplicações Desativadas e Órfãs (`system.cleanup`)**:
+  - **Problema Resolvido**: No NixOS / Home Manager, a desativação de módulos ou remoção de pacotes desvincula apenas os links simbólicos gerenciados pelo Nix store. Aplicações em execução (Thunar, SpaceFM, Nautilus, Nemo, PCManFM, Discord, Alacritty, VSCode, etc.) geram arquivos mutáveis e não-gerenciados em tempo de execução (`~/.config/<app>`, `~/.cache/<app>`, `~/.local/share/<app>`, atalhos residuais em `~/.local/share/applications/` e caches drun do Rofi), que permaneciam órfãos no sistema indefinidamente.
+  - **Módulo Centralizado (`modules/home-manager/system/cleanup/default.nix`)**:
+    - Importado universalmente em `modules/home-manager/system/default.nix` para todos os hosts e ambientes desktop.
+    - **Registro Declarativo**: Mapeamento estruturado de todas as aplicações conhecidas do Nixfiles (`thunar`, `nautilus`, `nemo`, `pcmanfm`, `spacefm`, `catfish`, `discord`, `vscode`, `alacritty`, `kitty`, `sonixd`, `rhythmbox`, `audio-recorder`, `ncmpcpp`, `bleachbit`, `flameshot`, `meld`, `zathura`, `libreoffice`). Quando qualquer módulo correspondente estiver inativo (`!app.enabled`), seus caminhos de configuração, cache e dados são limpos automaticamente.
+    - **Comparação Dinâmica Entre Gerações (`oldGenPath` vs `newGenPath`)**: Identifica atalhos desktop (`*.desktop`) e binários presentes na geração anterior do Home Manager que foram removidos na nova geração. Extrai os identificadores das aplicações e purga suas pastas mutáveis não gerenciadas, garantindo que qualquer pacote retirado de `home.packages` ou da configuração tenha seus rastros removidos.
+    - **Proteção de Pastas Críticas (`PROTECTED_CONFIGS`)**: Lista estrita de exclusão (dconf, gtk, fontconfig, systemd, environment.d, pulse, nix, home-manager, sops, autostart, git, bspwm, sxhkd, polybar, picom, rofi, dunst, hypr, mango, waybar, zsh, bash, starship, etc.) impedindo qualquer deleção acidental de diretórios essenciais do sistema.
+    - **Links Simbólicos Quebrados & Dead Store Paths**: Detecta e remove links corrompidos (`-xtype l`) e arquivos `.desktop` em `~/.local/share/applications` cujas diretivas `Exec=` apontem para caminhos inexistentes do Nix store.
+    - **Invalidação de Cache de Launchers**: Purgamento imediato de caches do Rofi (`~/.cache/rofi*`, `~/.cache/rofi3.druncache`) e execução de `update-desktop-database` e `gtk-update-icon-cache`, garantindo que aplicativos removidos desapareçam instantaneamente dos menus de aplicativos.
+  - **Hook de Ativação Automático**: Injetado em `home.activation.cleanupOrphanedConfigs` (`entryAfter [ "writeBoundary" ]`), disparado automaticamente a cada switch (`hm-switch`, `home-manager switch` ou `nixos-rebuild switch`).
+  - **Comando CLI Dedicado**: Utilitário `clean-orphaned-configs` (com alias `hm-clean-apps`) disponibilizado no PATH do usuário, com flags `--dry-run` e `--verbose` para auditoria manual a qualquer momento.
+
+- **Tecla Modificadora Universal e Customizável nos Window Managers (`desktop.modifierKey`)**:
+  - **Opção Central**: `desktop.modifierKey` disponível para todos os ambientes (`bspwm`, `hyprland`, `mangowm`, `xfce4`), aceitando `"Super"` (padrão), `"Alt"`, `"Ctrl"` (com suporte a variantes e aliases como `"Mod4"`, `"Mod1"`).
+  - **Sobrescrita por Ambiente / Window Manager**:
+    - `desktop.hyprland.modifierKey`
+    - `desktop.mangowm.modifierKey`
+    - `desktop.bspwm.modifierKey` (e granular em `desktop.bspwm.sxhkd.modifierKey`)
+    - `desktop.xfce4.modifierKey`
+  - **Mapeamento e Tradução Automática**:
+    - **Hyprland**: Variável `$mainMod` configurada para `SUPER`, `ALT` ou `CTRL`, adaptando todos os `bind`, `bindm` e `bindl`.
+    - **MangoWM**: Diretivas `bind=`, `axisbind=` e `mousebind=` geradas dinamicamente com `${mod}` (`SUPER`, `ALT` ou `CTRL`).
+    - **BSPWM & SXHKD**: Atalhos do `sxhkd.nix` compilados com `${mod}` (`super`, `alt` ou `ctrl`) e `bspc config pointer_modifier` com `${pointerMod}` (`mod4`, `mod1` ou `control`).
+    - **XFCE4**: Entradas de atalho em `xfconf.settings.xfce4-keyboard-shortcuts` compiladas com `${xfceMod}` (`<Super>`, `<Alt>` ou `<Primary>`).
+  - **Prevenção Inteligente de Conflitos (Inversão Secundária)**:
+    - Quando a tecla principal selecionada for `Alt`, atalhos secundários combinados (ex: `Super + Alt + Setas` para redimensionar) invertem o modificador secundário para `Super`, evitando combinações redundantes como `Alt + Alt`.
+    - Quando a tecla principal for `Ctrl`, atalhos secundários combinados (ex: `Super + Ctrl + Return` para terminal flutuante) invertem o secundário para `Super`, prevenindo `Ctrl + Ctrl`.
+  - **Documentação e Menus Dinâmicos**: O menu Rofi de Quick Settings do BSPWM e o cheat-sheet de atalhos renderizam dinamicamente o nome da tecla ativa (`Super + ...`, `Alt + ...` ou `Ctrl + ...`).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
