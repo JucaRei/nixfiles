@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 let
   fhd = {
     width = 1920;
@@ -80,6 +85,9 @@ in
             exec vainfo --display drm --device "$intel_render" "$@"
           fi
         '')
+        scrcpy
+      ]
+      ++ lib.optionals config.system.programs.multimedia.mpv.enable [
         (pkgs.writeShellScriptBin "mpv-nvidia" ''
           # Executa o MPV com PRIME Offload na NVIDIA dGPU (NVDEC/CUDA)
           # Detecta automaticamente se utiliza o binário do Nix ou o nativo da distribuição
@@ -111,7 +119,6 @@ in
                    __VK_LAYER_NV_optimus=NVIDIA_only \
                    "$mpv_bin" --profile=nvidia "$@"
         '')
-        scrcpy
       ];
 
       shellAliases = {
