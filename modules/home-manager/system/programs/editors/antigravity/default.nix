@@ -76,11 +76,9 @@ if data.get("remote-debugging-port") != port:
         f.write("\n")
 '
           mkdir -p "$HOME/.local/share/applications"
-          if [ -f "$HOME/.nix-profile/share/applications/antigravity.desktop" ]; then
+          rm -f "$HOME/.local/share/applications/antigravity-ide.desktop"
+          if [ -f "$HOME/.nix-profile/share/applications/antigravity.desktop" ] && [ ! -f "$HOME/.local/share/applications/antigravity.desktop" ]; then
             ln -sf "$HOME/.nix-profile/share/applications/antigravity.desktop" "$HOME/.local/share/applications/antigravity.desktop"
-          fi
-          if [ -f "$HOME/.nix-profile/share/applications/antigravity-ide.desktop" ]; then
-            ln -sf "$HOME/.nix-profile/share/applications/antigravity-ide.desktop" "$HOME/.local/share/applications/antigravity-ide.desktop"
           fi
         ''
       );
@@ -88,38 +86,6 @@ if data.get("remote-debugging-port") != port:
 
     xdg.desktopEntries = mkIf (cfg.remoteDebuggingPort != null) {
       antigravity = {
-        name = "Antigravity IDE";
-        comment = "Code Editing. Redefined.";
-        genericName = "Text Editor";
-        exec = "antigravity-ide --remote-debugging-port=${toString cfg.remoteDebuggingPort} %F";
-        icon = "antigravity-ide";
-        startupNotify = true;
-        terminal = false;
-        type = "Application";
-        categories = [
-          "Utility"
-          "TextEditor"
-          "Development"
-          "IDE"
-        ];
-        mimeType = [
-          "application/x-code-workspace"
-          "text/plain"
-          "inode/directory"
-        ];
-        settings = {
-          StartupWMClass = "Antigravity IDE";
-          Keywords = "vscode";
-        };
-        actions = {
-          new-empty-window = {
-            name = "New Empty Window";
-            exec = "antigravity-ide --remote-debugging-port=${toString cfg.remoteDebuggingPort} --new-window %F";
-            icon = "antigravity-ide";
-          };
-        };
-      };
-      antigravity-ide = {
         name = "Antigravity IDE";
         comment = "Code Editing. Redefined.";
         genericName = "Text Editor";

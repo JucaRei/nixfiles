@@ -128,7 +128,8 @@ in
       # -----------------------------------------------------------------------
 
       # Alacritty com nixGL wrapper no Exec (corrige erro GL em Debian/Fedora)
-      ".local/share/applications/alacritty.desktop".text = ''
+      # Nota: nome em maiúsculo "Alacritty.desktop" é essencial para sobrepor (shadow) o .desktop upstream do Nix Store sem duplicar
+      ".local/share/applications/Alacritty.desktop".text = ''
         [Desktop Entry]
         Version=1.0
         Type=Application
@@ -220,6 +221,9 @@ in
     # e os novos .desktop criados acima em ~/.local/share/applications/
     # -------------------------------------------------------------------------
     home.activation.updateDesktopDatabase = lib.mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      # Remove arquivo .desktop em minúsculo antigo para prevenir duplicação no Rofi
+      rm -f "$HOME/.local/share/applications/alacritty.desktop"
+
       if command -v update-desktop-database > /dev/null 2>&1; then
         $DRY_RUN_CMD update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
       fi

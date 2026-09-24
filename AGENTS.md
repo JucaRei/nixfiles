@@ -217,7 +217,7 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Suporte a CDP (Chrome DevTools Protocol - Porta 9004)**: Para extensões de automação como `antigravity-auto-accept`:
     - Adicionada opção `system.programs.editors.antigravity.remoteDebuggingPort` (padrão `"9004"`).
     - Criado wrapper executável `antigravity` em `home.packages` que injeta `--remote-debugging-port=9004 "$@"`, garantindo compatibilidade com chamadas de terminal e scripts de reinício da extensão.
-    - Provisionados arquivos `.desktop` (`antigravity.desktop` e `antigravity-ide.desktop`) com o flag `--remote-debugging-port=9004`.
+    - Provisionado arquivo `.desktop` unificado (`antigravity.desktop`) com o flag `--remote-debugging-port=9004` (eliminada duplicidade de `antigravity-ide.desktop` que gerava dois itens no Rofi).
     - Hook de ativação (`configureAntigravityCdp`) que injeta `"remote-debugging-port": "9004"` de forma persistente em `~/.antigravity-ide/argv.json`, garantindo que toda inicialização do Electron abra a porta CDP mesmo se disparada sem parâmetros de linha de comando.
   - **Ação Customizada no Thunar**: Corrigido comando de `antigravity %f` para `antigravity-ide %f` em `thunar/default.nix`.
 - **Módulo Chromium / Chrome (`chrome/default.nix`) & nixGL Wrapper (`nixGL.nix`)**:
