@@ -99,19 +99,26 @@ let
     fi
   '';
 
-  # --- Script de Controle e Notificação de Luz do Teclado (MacBook kbd_backlight) ---
+  # --- Script de Controle e Notificação de Luz do Teclado (Logitech MX Keys / MacBook / Laptops) ---
   kbdBrightnessOsd = pkgs.writeShellScript "kbd-brightness-osd" ''
-    # Identificar dispositivo de iluminação de teclado
-    dev="smc::kbd_backlight"
-    if ! ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" info >/dev/null 2>&1; then
-      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list 2>/dev/null | grep -m1 "kbd_backlight" | cut -d\' -f2)
+    # 1. Identificar dispositivo de iluminação de teclado via brightnessctl
+    dev=""
+    for candidate in "smc::kbd_backlight" "apple::kbd_backlight" "dell::kbd_backlight" "asus::kbd_backlight" "tpacpi::kbd_backlight"; do
+      if ${pkgs.brightnessctl}/bin/brightnessctl -d "$candidate" info >/dev/null 2>&1; then
+        dev="$candidate"
+        break
+      fi
+    done
+
+    if [ -z "$dev" ]; then
+      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list 2>/dev/null | grep -E -m1 "kbd_backlight|keyboard" | cut -d\' -f2 || true)
     fi
 
     if [ -n "$dev" ]; then
       case "$1" in
         up)
           prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +2% >/dev/null 2>&1
+          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +5% >/dev/null 2>&1 || ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +1 >/dev/null 2>&1
           curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
           if [ "$prev" = "$curr" ]; then
             ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +1 >/dev/null 2>&1
@@ -119,7 +126,7 @@ let
           ;;
         down)
           prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 2%- >/dev/null 2>&1
+          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 5%- >/dev/null 2>&1 || ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 1- >/dev/null 2>&1
           curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
           if [ "$prev" = "$curr" ]; then
             ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 1- >/dev/null 2>&1
@@ -138,6 +145,37 @@ let
       val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
       if [ -n "$val" ]; then
         ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
+      fi
+    else
+      # 2. Teclados externos (Logitech MX Keys / sem interface direta em /sys/class/leds)
+      SOLAAR_CMD=""
+      if command -v solaar >/dev/null 2>&1; then
+        SOLAAR_CMD="solaar"
+      elif [ -x "${pkgs.solaar}/bin/solaar" ]; then
+        SOLAAR_CMD="${pkgs.solaar}/bin/solaar"
+      fi
+
+      if [ -n "$SOLAAR_CMD" ]; then
+        case "$1" in
+          up|toggle)
+            "$SOLAAR_CMD" config "MX Keys" backlight true 2>/dev/null || \
+            "$SOLAAR_CMD" config active backlight true 2>/dev/null || \
+            "$SOLAAR_CMD" config 1 backlight true 2>/dev/null || true
+            ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (MX Keys): Aumentar / Ativada"
+            ;;
+          down)
+            "$SOLAAR_CMD" config "MX Keys" backlight false 2>/dev/null || \
+            "$SOLAAR_CMD" config active backlight false 2>/dev/null || \
+            "$SOLAAR_CMD" config 1 backlight false 2>/dev/null || true
+            ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (MX Keys): Diminuir / Desativada"
+            ;;
+        esac
+      else
+        case "$1" in
+          up)   ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (F4 / MX Keys): Aumentar" ;;
+          down) ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (F3 / MX Keys): Diminuir" ;;
+          toggle) ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (MX Keys): Alternar" ;;
+        esac
       fi
     fi
   '';
@@ -411,13 +449,30 @@ in
         "XF86MonBrightnessUp" = "${brightnessOsd} up";
         "XF86MonBrightnessDown" = "${brightnessOsd} down";
 
-        # --- Controle de Iluminação do Teclado (MacBook F5 / F6) ---
+        # --- Controle de Iluminação do Teclado (MacBook F5/F6 e Logitech MX Keys F3/F4) ---
         "XF86KbdBrightnessUp" = "${kbdBrightnessOsd} up";
         "XF86KbdBrightnessDown" = "${kbdBrightnessOsd} down";
         "XF86KbdLightOnOff" = "${kbdBrightnessOsd} toggle";
+
+        # MacBook (F5 / F6)
         "${mod} + F6" = "${kbdBrightnessOsd} up";
         "${mod} + F5" = "${kbdBrightnessOsd} down";
         "${mod} + shift + F5" = "${kbdBrightnessOsd} toggle";
+
+        # Logitech MX Keys / Teclados com F3 (down) e F4 (up)
+        "${mod} + F4" = "${kbdBrightnessOsd} up";
+        "${mod} + F3" = "${kbdBrightnessOsd} down";
+        "${mod} + shift + F4" = "${kbdBrightnessOsd} toggle";
+        "${mod} + shift + F3" = "${kbdBrightnessOsd} toggle";
+      } // lib.optionalAttrs (mod != "super") {
+        # Atalhos com Super garantidos mesmo quando mod != "super"
+        "super + F4" = "${kbdBrightnessOsd} up";
+        "super + F3" = "${kbdBrightnessOsd} down";
+        "super + shift + F4" = "${kbdBrightnessOsd} toggle";
+        "super + shift + F3" = "${kbdBrightnessOsd} toggle";
+        "super + F6" = "${kbdBrightnessOsd} up";
+        "super + F5" = "${kbdBrightnessOsd} down";
+        "super + shift + F5" = "${kbdBrightnessOsd} toggle";
       };
     };
   };

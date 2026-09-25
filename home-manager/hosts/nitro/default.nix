@@ -95,6 +95,7 @@ in
             fi
           '')
           scrcpy
+          solaar
         ]
         ++ lib.optionals config.system.programs.multimedia.mpv.enable [
           (pkgs.writeShellScriptBin "mpv-nvidia" ''
@@ -176,6 +177,27 @@ in
       layout-icon-0 = "us;INTL";
       layout-icon-1 = "br;ABNT2";
       label-layout = "%icon%";
+    };
+
+    # Solaar para gerenciamento do teclado Logitech MX Keys e dispositivos Unifying/Bolt
+    systemd.user.services.solaar = {
+      Unit = {
+        Description = "Solaar (Logitech Device Manager)";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.solaar}/bin/solaar --window=hide";
+        Restart = "on-failure";
+        RestartSec = 3;
+        PassEnvironment = [
+          "DISPLAY"
+          "XAUTHORITY"
+        ];
+      };
+      Install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
     };
   };
 }

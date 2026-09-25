@@ -639,8 +639,24 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Estados de Janelas Unificados nos Tiling WMs**:
     - `Modifier + F`: Alterna janela flutuante (`floating` / `togglefloating`) em todos os gerenciadores (`bspwm`, `hyprland`, `mangowm`), mantendo `Modifier + S` como atalho alternativo.
     - `Alt + A`: Alterna tela cheia (`fullscreen` / `togglefullscreen`) em todos os gerenciadores, eliminando qualquer conflito de atalhos em editores/terminais com `Shift + F`.
-    - **Fix de Shell (Zsh/Bash)**: No BSPWM/SXHKD, argumentos de estado utilizam aspas (`'~floating'` e `'~fullscreen'`), prevenindo falhas de expansão de diretório do Zsh (`no such user or named directory: floating`).
   - **Documentação e Menus Dinâmicos**: O menu Rofi de Quick Settings do BSPWM e o cheat-sheet de atalhos renderizam dinamicamente o nome da tecla ativa (`Super + ...`, `Alt + ...` ou `Ctrl + ...`).
+
+- **Suporte a Iluminação de Teclado Logitech MX Keys & Laptops (`kbdBrightnessOsd`)**:
+  - **Teclas F3 e F4 no MX Keys**:
+    - No Logitech MX Keys, os botões físicos de brilho do teclado ficam localizados em **F3** (diminuir) e **F4** (aumentar).
+    - O comportamento de alternância de teclas de função e multimídia pode ser alternado fisicamente no teclado via **`Fn + Esc`** (Fn-Lock). Em modo multimídia, o teclado emite `XF86KbdBrightnessDown` (F3) e `XF86KbdBrightnessUp` (F4).
+    - Sensor de Luz Ambiente do MX Keys: O teclado possui um sensor de luz ambiente de hardware que desativa a iluminação automaticamente em ambientes claros (>100 lux).
+  - **Mapeamentos em BSPWM (`sxhkd.nix`), Hyprland e MangoWM**:
+    - Teclas multimídia globais: `XF86KbdBrightnessUp`, `XF86KbdBrightnessDown` e `XF86KbdLightOnOff`.
+    - Atalhos diretos do MX Keys: `${mod} + F4` (aumentar), `${mod} + F3` (diminuir), `${mod} + Shift + F4/F3` (alternar/toggle).
+    - No BSPWM com `mod != "super"`, também foram mapeados atalhos com `Super` (`super + F4`, `super + F3`, etc.).
+    - Atalhos legados do MacBook (`F5` e `F6`) mantidos para retrocompatibilidade.
+  - **Fallback Dinâmico e Integração com Solaar (`kbdBrightnessOsd`)**:
+    - Dispositivos de kernel padrão (`smc::kbd_backlight`, `asus::kbd_backlight`, etc.) são controlados via `brightnessctl`.
+    - Para teclados externos sem interface em `/sys/class/leds` (como o Logitech MX Keys), o script detecta o binário do `solaar` (no PATH ou Nix Store), aplica a configuração via CLI (`solaar config "MX Keys" backlight true/false`) e emite feedback visual OSD via Dunst (`Luz do Teclado (MX Keys): ...`).
+  - **Host `nitro` (Debian Standalone)**:
+    - Adicionado pacote `pkgs.solaar` em `home.packages`.
+    - Configurado serviço systemd do usuário (`systemd.user.services.solaar`) iniciando em segundo plano no tray (`solaar --window=hide`) atrelado a `graphical-session.target`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

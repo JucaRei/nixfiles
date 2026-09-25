@@ -76,7 +76,7 @@ let
   kbdBrightnessOsd = pkgs.writeShellScript "mango-kbd-brightness-osd" ''
     dev="smc::kbd_backlight"
     if ! ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" info >/dev/null 2>&1; then
-      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list 2>/dev/null | grep -m1 "kbd_backlight" | cut -d\' -f2)
+      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list 2>/dev/null | grep -E -m1 "kbd_backlight|keyboard" | cut -d\' -f2 || true)
     fi
 
     if [ -n "$dev" ]; then
@@ -121,6 +121,37 @@ let
         if [ -n "$new_id" ]; then
           echo "$new_id" > "$notif_file"
         fi
+      fi
+    else
+      # Teclados externos (Logitech MX Keys / sem interface direta em /sys/class/leds)
+      SOLAAR_CMD=""
+      if command -v solaar >/dev/null 2>&1; then
+        SOLAAR_CMD="solaar"
+      elif [ -x "${pkgs.solaar}/bin/solaar" ]; then
+        SOLAAR_CMD="${pkgs.solaar}/bin/solaar"
+      fi
+
+      if [ -n "$SOLAAR_CMD" ]; then
+        case "$1" in
+          up|toggle)
+            "$SOLAAR_CMD" config "MX Keys" backlight true 2>/dev/null || \
+            "$SOLAAR_CMD" config active backlight true 2>/dev/null || \
+            "$SOLAAR_CMD" config 1 backlight true 2>/dev/null || true
+            ${pkgs.libnotify}/bin/notify-send -a "OSD" -u low -i "input-keyboard" -t 1500 "Luz do Teclado (MX Keys): Aumentar / Ativada"
+            ;;
+          down)
+            "$SOLAAR_CMD" config "MX Keys" backlight false 2>/dev/null || \
+            "$SOLAAR_CMD" config active backlight false 2>/dev/null || \
+            "$SOLAAR_CMD" config 1 backlight false 2>/dev/null || true
+            ${pkgs.libnotify}/bin/notify-send -a "OSD" -u low -i "input-keyboard" -t 1500 "Luz do Teclado (MX Keys): Diminuir / Desativada"
+            ;;
+        esac
+      else
+        case "$1" in
+          up)   ${pkgs.libnotify}/bin/notify-send -a "OSD" -u low -i "input-keyboard" -t 1500 "Luz do Teclado (F4 / MX Keys): Aumentar" ;;
+          down) ${pkgs.libnotify}/bin/notify-send -a "OSD" -u low -i "input-keyboard" -t 1500 "Luz do Teclado (F3 / MX Keys): Diminuir" ;;
+          toggle) ${pkgs.libnotify}/bin/notify-send -a "OSD" -u low -i "input-keyboard" -t 1500 "Luz do Teclado (MX Keys): Alternar" ;;
+        esac
       fi
     fi
   '';
@@ -570,13 +601,17 @@ in
             bind=NONE,XF86MonBrightnessUp,spawn,${monBrightnessOsd} up
             bind=NONE,XF86MonBrightnessDown,spawn,${monBrightnessOsd} down
 
-            # Iluminação do Teclado (MacBook / Laptops)
+            # Iluminação do Teclado (MacBook F5/F6 e Logitech MX Keys F3/F4)
             bind=NONE,XF86KbdBrightnessUp,spawn,${kbdBrightnessOsd} up
             bind=NONE,XF86KbdBrightnessDown,spawn,${kbdBrightnessOsd} down
             bind=NONE,XF86KbdLightOnOff,spawn,${kbdBrightnessOsd} toggle
             bind=${mod},F6,spawn,${kbdBrightnessOsd} up
             bind=${mod},F5,spawn,${kbdBrightnessOsd} down
             bind=${mod}+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
+            bind=${mod},F4,spawn,${kbdBrightnessOsd} up
+            bind=${mod},F3,spawn,${kbdBrightnessOsd} down
+            bind=${mod}+SHIFT,F4,spawn,${kbdBrightnessOsd} toggle
+            bind=${mod}+SHIFT,F3,spawn,${kbdBrightnessOsd} toggle
 
             # Captura de Tela (Screenshots)
             ${

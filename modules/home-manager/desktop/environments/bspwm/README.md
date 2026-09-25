@@ -195,9 +195,10 @@ Isso garante aceleração 3D por hardware completa no Alacritty, Picom e reprodu
 | `Print` / `$SUPER + Shift + S` | Captura de tela cheia / Recorte de área |
 | `XF86AudioRaiseVolume` / `Lower` | Aumenta / Diminui volume com feedback OSD |
 | `XF86AudioMute` | Silencia áudio |
-| `XF86MonBrightnessUp` / `Down` | Aumenta / Diminui brilho da tela com feedback OSD |
-| `XF86KbdBrightnessUp` / `Down` | Aumenta / Diminui luz do teclado Apple |
-| `$SUPER + F6` / `$SUPER + F5` | Atalho direto: Aumenta / Diminui luz do teclado |
+| `XF86KbdBrightnessUp` / `Down` | Aumenta / Diminui luz do teclado (Apple / Logitech MX Keys) |
+| `$MOD + F4` / `$MOD + F3` | Atalho direto (Logitech MX Keys): Aumenta / Diminui luz do teclado |
+| `$MOD + F6` / `$MOD + F5` | Atalho direto (Apple MacBook): Aumenta / Diminui luz do teclado |
+| `$MOD + Shift + F3/F4/F5` | Alterna / Liga / Desliga iluminação do teclado |
 
 ---
 
