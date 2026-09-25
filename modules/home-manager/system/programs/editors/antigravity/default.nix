@@ -44,37 +44,42 @@ in
       packages = [
         cfg.package
         (pkgs.writeShellScriptBin "antigravity" ''
-          exec antigravity-ide ${optionalString (cfg.remoteDebuggingPort != null) "--remote-debugging-port=${toString cfg.remoteDebuggingPort}"} "$@"
+          exec antigravity-ide ${
+            optionalString (
+              cfg.remoteDebuggingPort != null
+            ) "--remote-debugging-port=${toString cfg.remoteDebuggingPort}"
+          } "$@"
         '')
         pkgs.direnv
         pkgs.nix-direnv
+        pkgs.nerd-fonts.victor-mono
       ];
 
       activation.configureAntigravityCdp = mkIf (cfg.remoteDebuggingPort != null) (
         lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
-import json, os, re
+                    $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
+          import json, os, re
 
-dir_path = os.path.expanduser("~/.antigravity-ide")
-os.makedirs(dir_path, exist_ok=True)
-path = os.path.join(dir_path, "argv.json")
-data = {}
-if os.path.exists(path):
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            content = f.read()
-        clean = re.sub(r"//.*", "", content)
-        data = json.loads(clean) if clean.strip() else {}
-    except Exception:
-        data = {}
+          dir_path = os.path.expanduser("~/.antigravity-ide")
+          os.makedirs(dir_path, exist_ok=True)
+          path = os.path.join(dir_path, "argv.json")
+          data = {}
+          if os.path.exists(path):
+              try:
+                  with open(path, "r", encoding="utf-8") as f:
+                      content = f.read()
+                  clean = re.sub(r"//.*", "", content)
+                  data = json.loads(clean) if clean.strip() else {}
+              except Exception:
+                  data = {}
 
-port = "${toString cfg.remoteDebuggingPort}"
-if data.get("remote-debugging-port") != port:
-    data["remote-debugging-port"] = port
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
-        f.write("\n")
-'
+          port = "${toString cfg.remoteDebuggingPort}"
+          if data.get("remote-debugging-port") != port:
+              data["remote-debugging-port"] = port
+              with open(path, "w", encoding="utf-8") as f:
+                  json.dump(data, f, indent=2)
+                  f.write("\n")
+          '
         ''
       );
     };
@@ -85,7 +90,11 @@ if data.get("remote-debugging-port") != port:
         name = "Antigravity IDE";
         comment = "Code Editing. Redefined.";
         genericName = "Text Editor";
-        exec = "antigravity-ide ${optionalString (cfg.remoteDebuggingPort != null) "--remote-debugging-port=${toString cfg.remoteDebuggingPort} "}%F";
+        exec = "antigravity-ide ${
+          optionalString (
+            cfg.remoteDebuggingPort != null
+          ) "--remote-debugging-port=${toString cfg.remoteDebuggingPort} "
+        }%F";
         icon = "antigravity-ide";
         startupNotify = true;
         terminal = false;
@@ -108,7 +117,11 @@ if data.get("remote-debugging-port") != port:
         actions = {
           new-empty-window = {
             name = "New Empty Window";
-            exec = "antigravity-ide ${optionalString (cfg.remoteDebuggingPort != null) "--remote-debugging-port=${toString cfg.remoteDebuggingPort} "}--new-window %F";
+            exec = "antigravity-ide ${
+              optionalString (
+                cfg.remoteDebuggingPort != null
+              ) "--remote-debugging-port=${toString cfg.remoteDebuggingPort} "
+            }--new-window %F";
             icon = "antigravity-ide";
           };
         };
@@ -130,4 +143,3 @@ if data.get("remote-debugging-port") != port:
     };
   };
 }
-

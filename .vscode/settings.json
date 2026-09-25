@@ -15,7 +15,7 @@
   },
   "editor.fontWeight": "300",
   "editor.fontSize": 24,
-  "editor.fontFamily": "'JetBrainsMono Nerd Font Propo','Lilex Nerd Font Regular', 'Lilex Nerd Font', 'monospace'",
+  "editor.fontFamily": "'VictorMono NFM Light Obl', 'JetBrainsMono Nerd Font Propo','Lilex Nerd Font Regular', 'Lilex Nerd Font', 'monospace'",
   "editor.fontLigatures": true,
   "editor.stickyScroll.enabled": false,
   "workbench.colorCustomizations": {
