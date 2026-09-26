@@ -725,9 +725,21 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Serviços**: Ativados `qemu-guest-agent.service` e `spice-vdagent.service`.
   - **Sessão DWM no LightDM**:
     - LightDM configurado com `user-session=dwm`.
-    - Wrapper `/usr/local/bin/start-dwm-session` carregando os perfis do daemon do Nix (`/etc/profile.d/nix.sh`, `nix-daemon.sh` e `~/.nix-profile/etc/profile.d/nix.sh`), priorizando `$HOME/.local/bin/start-dwm` gerado pelo módulo DWM do Home Manager, com fallback via xterm indicando a execução de `home-manager switch --flake .#juca@virtualvm`.
+    - Wrapper `/usr/local/bin/start-dwm-session` carregando os perfis do daemon do Nix (`/etc/profile.d/nix.sh`, `nix-daemon.sh` e `~/.nix-profile/etc/profile.d/nix.sh`), priorizando `$HOME/.local/bin/start-dwm` gerado pelo módulo DWM do Home Manager, com fallback via xterm indicando a execução de `home-manager switch --flake .#juca@virtualvm -b backup`.
     - Arquivo de sessão `/usr/share/xsessions/dwm.desktop`, `.dmrc` do usuário com `Session=dwm` e symlink provisionado via `systemd-tmpfiles` em `/etc/tmpfiles.d/nix-desktop-sessions.conf`.
   - **Script de Validação**: Substituído o validador de MOK pelo `/usr/local/bin/check-vm-setup.sh` que afere EFI bootloader, initramfs gerado, arquivos de sessão DWM, agentes QEMU/SPICE e integridade do Nix Daemon.
+
+- **Migração de Depreciações Nixpkgs 26.05 (`xorg.*`) & Resolução de Clobber no Home Manager**:
+  - **Depreciação de `xorg.*`**: No Nixpkgs 26.05, o attrset `pkgs.xorg.*` foi depreciado e substituído por pacotes de primeiro nível (`libx11`, `libxft`, `libxinerama`, `libxrender`, `libxcursor`, `libxcb`, `setxkbmap`, `xrdb`, `xrandr`, `xsetroot`, `xinput`). Todos os módulos (`dwm.nix`, `dwm/packages.nix`, `bspwm.nix`, `bspwm/packages.nix`, `sxhkd.nix`, `polybar/default.nix`, `externalMonitor.nix` e `pkgs/desktop/thorium/default.nix`) foram migrados. No Thorium, o argumento de função `xorg` foi substituído por `libxcb`.
+  - **Conflito de Arquivos no Primeiro Switch do Home Manager Standalone (`.bashrc` / `.profile`)**:
+    - Ao instalar distribuições como Debian ou Fedora, `useradd -m` copia arquivos de `/etc/skel` (`.bashrc`, `.profile`) para a home do usuário.
+    - O Home Manager standalone se recusa a sobrescrever arquivos regulares que não sejam links do Nix store (`Existing file would be clobbered`).
+    - **Solução Imediata**: Usar a flag `-b backup` na chamada:
+      ```bash
+      home-manager switch --flake .#juca@virtualvm -b backup
+      ```
+      Isso move os arquivos conflitantes para `.bashrc.backup` e `.profile.backup` e cria os links do Home Manager sem erros.
+    - **Prevenção nos Scripts de Instalação**: Nos scripts de VM/instalação, remover preventivamente `~/.bashrc` e `~/.profile` após o `useradd` ou instruir o switch sempre com a flag `-b backup`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

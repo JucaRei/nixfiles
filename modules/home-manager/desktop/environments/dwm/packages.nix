@@ -16,10 +16,10 @@ in
       slstatus
       xdotool
       wmctrl
-      xorg.xsetroot
-      xorg.xrandr
-      xorg.xrdb
-      xorg.xinput
+      xsetroot
+      xrandr
+      xrdb
+      xinput
       picom
       rofi-power-menu
       brightnessctl

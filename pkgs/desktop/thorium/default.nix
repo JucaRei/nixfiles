@@ -43,7 +43,7 @@
   pipewire,
   udev,
   wayland,
-  xorg,
+  libxcb,
   zlib,
   xdg-utils,
   snappy,
@@ -114,7 +114,7 @@ let
     pipewire
     udev
     wayland
-    xorg.libxcb
+    libxcb
     zlib
     snappy
     stdenv.cc.cc.lib

@@ -271,11 +271,11 @@ let
 
               RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução ")
               case "$RES" in
-                "$R_1080") ${pkgs.xorg.xrandr}/bin/xrandr -s 1920x1080 ;;
-                "$R_2K")   ${pkgs.xorg.xrandr}/bin/xrandr -s 2560x1440 ;;
-                "$R_900")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1600x900 ;;
-                "$R_768")  ${pkgs.xorg.xrandr}/bin/xrandr -s 1366x768 ;;
-                "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xorg.xrandr}/bin/xrandr ;;
+                "$R_1080") ${pkgs.xrandr}/bin/xrandr -s 1920x1080 ;;
+                "$R_2K")   ${pkgs.xrandr}/bin/xrandr -s 2560x1440 ;;
+                "$R_900")  ${pkgs.xrandr}/bin/xrandr -s 1600x900 ;;
+                "$R_768")  ${pkgs.xrandr}/bin/xrandr -s 1366x768 ;;
+                "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xrandr}/bin/xrandr ;;
               esac
               ;;
             "$OPT_SOUND") ${pkgs.pavucontrol}/bin/pavucontrol & ;;

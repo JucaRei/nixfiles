@@ -82,7 +82,7 @@ in
         xdpyinfo
         xkill
         xsetroot
-        xorg.xrdb
+        xrdb
         xwininfo
         xrandr
         xdg-utils

@@ -43,7 +43,7 @@ in
 
         export PATH="${
           lib.makeBinPath [
-            pkgs.xorg.xrandr
+            pkgs.xrandr
             pkgs.gnugrep
             pkgs.coreutils
             pkgs.procps

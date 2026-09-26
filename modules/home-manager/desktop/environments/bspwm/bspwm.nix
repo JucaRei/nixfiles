@@ -395,7 +395,7 @@ in
 
             # Configuração do teclado herdada declarativamente de home.keyboard
             ${lib.optionalString (config.home.keyboard != null) ''
-              ${pkgs.xorg.setxkbmap}/bin/setxkbmap \
+              ${pkgs.setxkbmap}/bin/setxkbmap \
                 ${
                   lib.optionalString (config.home.keyboard.model != null) "-model '${config.home.keyboard.model}'"
                 } \
@@ -413,7 +413,7 @@ in
             ''}
 
             # Carregar recursos do X11 (incluindo tema e tamanho de cursor Xcursor)
-            [ -f "$HOME/.Xresources" ] && ${pkgs.xorg.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
+            [ -f "$HOME/.Xresources" ] && ${pkgs.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
 
             # Iniciar daemon de atalhos de teclado (SXHKD)
             pkill -x sxhkd || true
@@ -434,8 +434,8 @@ in
               systemctl --user restart polybar 2>/dev/null || (
                 pkill -x polybar || true
                 while pgrep -u $UID -x polybar >/dev/null; do sleep 0.5; done
-                if command -v ${pkgs.xorg.xrandr}/bin/xrandr >/dev/null 2>&1; then
-                  for m in $(${pkgs.xorg.xrandr}/bin/xrandr --query | grep " connected" | cut -d" " -f1); do
+                if command -v ${pkgs.xrandr}/bin/xrandr >/dev/null 2>&1; then
+                  for m in $(${pkgs.xrandr}/bin/xrandr --query | grep " connected" | cut -d" " -f1); do
                     MONITOR=$m ${pkgs.polybar}/bin/polybar --reload main &
                   done
                 else

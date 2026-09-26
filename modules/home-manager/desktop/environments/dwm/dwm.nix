@@ -29,12 +29,12 @@ let
 
     # Dependências declaradas no repositório (config.mk / PKG_MODULES)
     buildInputs = with pkgs; [
-      xorg.libX11
-      xorg.libXft
-      xorg.libXinerama
-      xorg.libXrender
-      xorg.libXcursor
-      xorg.libxcb
+      libx11
+      libxft
+      libxinerama
+      libxrender
+      libxcursor
+      libxcb
       imlib2
       fontconfig
       freetype
@@ -91,7 +91,7 @@ in
         command = ''
           # 1. Configuração do teclado herdada declarativamente de home.keyboard
           ${lib.optionalString (config.home.keyboard != null) ''
-            ${pkgs.xorg.setxkbmap}/bin/setxkbmap \
+            ${pkgs.setxkbmap}/bin/setxkbmap \
               ${lib.optionalString (config.home.keyboard.model != null) "-model '${config.home.keyboard.model}'"} \
               ${lib.optionalString (config.home.keyboard.layout != null) "-layout '${config.home.keyboard.layout}'"} \
               ${lib.optionalString (config.home.keyboard.variant != null) "-variant '${config.home.keyboard.variant}'"} \
@@ -104,7 +104,7 @@ in
           fi
 
           # 3. Carregar recursos do X11 (incluindo tema e tamanho de cursor Xcursor)
-          [ -f "$HOME/.Xresources" ] && ${pkgs.xorg.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
+          [ -f "$HOME/.Xresources" ] && ${pkgs.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
 
           # 4. Importar variáveis de ambiente para serviços do usuário
           systemctl --user import-environment DISPLAY XAUTHORITY LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE
