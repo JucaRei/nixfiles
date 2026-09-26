@@ -252,7 +252,7 @@ in
             "ssh://git@bitbucket.org/" = {
               insteadOf = [
                 "bb"
-                "https://bitbucket.org"
+                "https://bitbucket.org/"
               ];
             };
             "ssh://git@git.sr.ht/".insteadOf = [

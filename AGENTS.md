@@ -713,6 +713,22 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Nix Multi-usuário**: Configuração declarativa do canal `nixpkgs-unstable` para o usuário `juca` e `root`, `nix.conf` com `@nix-users`, `max-jobs = auto` e `cores = 0`, além de export de `NIX_PATH` apontando para o canal unstable.
   - **PAM Lockers**: Inclusão de `i3lock` junto a `hyprlock`, `swaylock` e `noctalia`.
 
+- **Scripts de Instalação e Reparo para Máquina Virtual (`nitro-dual-debian_vm.sh` & `fix-debian_vm.sh` / `virtualvm` com DWM)**:
+  - **Alvo**: Instalação automatizada e script de correção/finalização pós-instalação para Debian Trixie em VM Virt-Manager (`/dev/vda`), testando **Home Manager standalone com DWM** (`flake.nix` -> `juca@virtualvm`).
+  - **Eliminação de Artefatos de Hardware Físico**:
+    - Removidos drivers proprietários NVIDIA (`nvidia-driver`, CUDA, NVDEC, DKMS), Intel Microcode e parâmetros de kernel de GPU/IOMMU (`intel_iommu`, `nvidia-drm.modeset=1`, `i915.enable_psr=0`, `nowatchdog`, `split_lock_detect=off`).
+    - Removidos `thermald`, `powertop --auto-tune` no `rc.local`, e utilitários de periféricos físicos (`solaar`).
+    - Removidos requisitos e scripts de verificação manual de Secure Boot / MOK (`mokutil`, `sbsigntool`, `shim-signed`).
+  - **Otimização para QEMU/KVM**:
+    - **Dracut**: Adicionados drivers de VM em `add_drivers+=" virtio_pci virtio_scsi virtio_blk virtio_net virtio_balloon virtio_console qxl bochs_drm "` e compressão rápida `compress="zstd -3"`.
+    - **Vídeo & Integração**: Instalados `xserver-xorg-video-qxl`, `xserver-xorg-video-all`, `libgl1-mesa-dri`, `mesa-vulkan-drivers`, `qemu-guest-agent` e `spice-vdagent` (auto-redimensionamento de tela e clipboard bidirecional).
+    - **Serviços**: Ativados `qemu-guest-agent.service` e `spice-vdagent.service`.
+  - **Sessão DWM no LightDM**:
+    - LightDM configurado com `user-session=dwm`.
+    - Wrapper `/usr/local/bin/start-dwm-session` carregando os perfis do daemon do Nix (`/etc/profile.d/nix.sh`, `nix-daemon.sh` e `~/.nix-profile/etc/profile.d/nix.sh`), priorizando `$HOME/.local/bin/start-dwm` gerado pelo módulo DWM do Home Manager, com fallback via xterm indicando a execução de `home-manager switch --flake .#juca@virtualvm`.
+    - Arquivo de sessão `/usr/share/xsessions/dwm.desktop`, `.dmrc` do usuário com `Session=dwm` e symlink provisionado via `systemd-tmpfiles` em `/etc/tmpfiles.d/nix-desktop-sessions.conf`.
+  - **Script de Validação**: Substituído o validador de MOK pelo `/usr/local/bin/check-vm-setup.sh` que afere EFI bootloader, initramfs gerado, arquivos de sessão DWM, agentes QEMU/SPICE e integridade do Nix Daemon.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
