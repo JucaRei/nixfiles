@@ -1,0 +1,588 @@
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Controls as Controls
+import qs.core
+
+pragma ComponentBehavior: Bound
+
+Flickable {
+    id: root
+
+    required property var settingsModel
+    property string profileName: ""
+    property string confirmation: ""
+    property var placementAnchors: ({})
+    property string saveAutomaticRole: ""
+
+    function selectPlacementAnchor(output, anchor) {
+        const anchors = Object.assign({}, root.placementAnchors);
+        anchors[output] = anchor;
+        root.placementAnchors = anchors;
+    }
+
+	component DisplayComboBox: Controls.ComboBox {
+		id: comboBox
+
+		required property string accessibleLabel
+		property string valueSuffix: ""
+
+		implicitHeight: Theme.controlHeight
+		activeFocusOnTab: enabled
+		displayText: currentIndex >= 0 ? currentText + valueSuffix : ""
+		font.family: Theme.fontFamily
+		font.pixelSize: Theme.inputFontSize
+		palette.button: Theme.controlNormalFill
+		palette.buttonText: Theme.controlNormalText
+		palette.base: Theme.popupBackground
+		palette.window: Theme.popupBackground
+		palette.text: Theme.popupText
+		palette.highlight: Theme.controlSelectedFill
+		palette.highlightedText: Theme.controlSelectedText
+		Accessible.name: accessibleLabel
+
+		delegate: Controls.ItemDelegate {
+			required property var modelData
+			required property int index
+
+			width: comboBox.width
+			text: modelData + comboBox.valueSuffix
+			font: comboBox.font
+			highlighted: comboBox.highlightedIndex === index
+			hoverEnabled: comboBox.hoverEnabled
+		}
+	}
+
+		onVisibleChanged: {
+			if (!visible) root.confirmation = "";
+            if (!visible) root.saveAutomaticRole = "";
+		}
+
+    contentWidth: width
+    contentHeight: contentColumn.implicitHeight
+    clip: true
+
+    ColumnLayout {
+        id: contentColumn
+        width: root.width
+        spacing: Theme.spacingLg
+
+        Text {
+            Layout.fillWidth: true
+            text: "Automatic layouts - login and dock connection"
+            color: Theme.textStrong
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.bodyFontSize
+            font.bold: true
+        }
+
+        Text {
+            Layout.fillWidth: true
+            text: root.settingsModel.automaticDisplayState.error || ("Matching hardware: "
+                + (root.settingsModel.automaticDisplayState.detected.join(", ") || "no saved match")
+                + " | Currently applied: " + (root.settingsModel.automaticDisplayState.current.join(", ") || "custom / differs from saved")
+                + " | Default fallback: " + (root.settingsModel.automaticDisplayState.default || "not set"))
+            color: Theme.textMuted
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.smallFontSize
+            wrapMode: Text.WordWrap
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: Theme.spacingLg
+            Repeater {
+                model: ["undocked", "docked"]
+                delegate: Rectangle {
+                    id: automaticCard
+                    required property string modelData
+                    readonly property var profile: root.settingsModel.automaticDisplayProfile(modelData)
+                    readonly property var savedLayout: root.settingsModel.automaticDisplayArrangement(modelData)
+                    Layout.fillWidth: true
+                    Layout.preferredWidth: 1
+                    Layout.preferredHeight: automaticContent.implicitHeight + 16
+                    color: Theme.controlNormalFill
+                    border.color: root.settingsModel.displayEditingRole === modelData ? Theme.accent : Theme.controlNormalBorder
+                    radius: Theme.largeSurfaceCardRadius
+                    ColumnLayout {
+                        id: automaticContent
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.margins: 8
+                        spacing: Theme.tightSpacing
+                        Text {
+                            Layout.fillWidth: true
+                            text: automaticCard.modelData === "undocked" ? "Undocked - built-in only" : "Docked - saved monitors"
+                            color: Theme.textStrong
+                            font.family: Theme.fontFamily
+                            font.pixelSize: Theme.bodyFontSize
+                            font.bold: true
+                        }
+                        Item {
+                            id: savedMap
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: automaticCard.profile.saved ? 80 : 0
+                            readonly property real factor: Math.min(width / automaticCard.savedLayout.width, height / automaticCard.savedLayout.height)
+                            Repeater {
+                                model: automaticCard.savedLayout.tiles
+                                delegate: Rectangle {
+                                    id: savedTile
+                                    required property var modelData
+                                    x: (savedMap.width - automaticCard.savedLayout.width * savedMap.factor) / 2
+                                        + (modelData.x - automaticCard.savedLayout.x) * savedMap.factor
+                                    y: (modelData.y - automaticCard.savedLayout.y) * savedMap.factor
+                                    width: modelData.width * savedMap.factor
+                                    height: modelData.height * savedMap.factor
+                                    color: modelData.primary ? Theme.controlSelectedFill : Theme.controlHoverFill
+                                    border.color: Theme.accent
+                                    radius: Theme.controlRadius
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: savedTile.modelData.number
+                                        color: Theme.textStrong
+                                        font.family: Theme.fontFamily
+                                        font.pixelSize: Theme.bodyFontSize
+                                    }
+                                }
+                            }
+                        }
+                        Text {
+                            Layout.fillWidth: true
+                            text: root.settingsModel.automaticDisplaySummary(automaticCard.modelData)
+                            color: automaticCard.profile.error ? Theme.warning : Theme.textMuted
+                            font.family: Theme.fontFamily
+                            font.pixelSize: Theme.smallFontSize
+                            wrapMode: Text.WordWrap
+                        }
+                        Flow {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: implicitHeight
+                            spacing: Theme.tightSpacing
+                            enabled: root.settingsModel.automaticDisplayState.available
+                                && !root.settingsModel.previewOperationLocked && !root.settingsModel.automaticDisplayBusy
+                            ShellButton {
+                                label: automaticCard.profile.saved ? "Edit saved" : "Create draft"
+                                enabled: !automaticCard.profile.error
+                                onActivated: root.settingsModel.editAutomaticDisplay(automaticCard.modelData)
+                            }
+                            ShellButton {
+                                label: "Save draft as " + automaticCard.modelData
+                                onActivated: root.saveAutomaticRole = automaticCard.modelData
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Text {
+            Layout.fillWidth: true
+            text: root.settingsModel.automaticDisplayMessage || "Edit a saved layout below, or save the current draft. Docked matches monitor identities; Undocked enables only the built-in screen. No administrator approval is needed."
+            color: Theme.textMuted
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.smallFontSize
+            wrapMode: Text.WordWrap
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: automaticConfirmation.implicitHeight + 16
+            visible: root.saveAutomaticRole !== ""
+            color: Theme.controlHoverFill
+            border.color: Theme.warning
+            radius: Theme.largeSurfaceCardRadius
+            ColumnLayout {
+                id: automaticConfirmation
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 8
+                Text {
+                    Layout.fillWidth: true
+                    text: "Save the draft below as " + root.saveAutomaticRole
+                        + " for autorandr at login and connection changes? This replaces that saved layout with a backup, without applying it now. Autorandr will ignore session-specific CRTC assignments and output properties. Test with Apply changes first."
+                        + (root.saveAutomaticRole === "undocked" ? " It also becomes the default fallback." : " Save with this dock connected so its monitors can be identified.")
+                    color: Theme.textStrong
+                    font.family: Theme.fontFamily
+                    font.pixelSize: Theme.bodyFontSize
+                    wrapMode: Text.WordWrap
+                }
+                RowLayout {
+                    ShellButton {
+                        label: "Confirm save"
+                        enabled: !root.settingsModel.previewOperationLocked && !root.settingsModel.automaticDisplayBusy
+                        onActivated: { root.settingsModel.saveAutomaticDisplay(root.saveAutomaticRole); root.saveAutomaticRole = ""; }
+                    }
+                    ShellButton { label: "Cancel"; onActivated: root.saveAutomaticRole = "" }
+                }
+            }
+        }
+
+        Text {
+            Layout.fillWidth: true
+            text: "Editing: " + root.settingsModel.displayEditingRole + " draft - not applied until you choose Apply changes"
+            color: Theme.textStrong
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.bodyFontSize
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+
+            Text {
+                Layout.fillWidth: true
+                text: root.settingsModel.displayMessage
+                color: root.settingsModel.displayState === "failure" ? Theme.danger : Theme.textMuted
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.smallFontSize
+            }
+
+            ShellButton { label: "Refresh"; enabled: root.settingsModel.displayState !== "loading"; onActivated: root.settingsModel.refreshDisplays() }
+            ShellButton {
+                label: "Apply changes"
+                primary: true
+                enabled: root.settingsModel.displayState === "ready"
+                    && root.settingsModel.displayHasPendingChanges
+                    && !root.settingsModel.previewOperationLocked
+                onActivated: root.settingsModel.previewDisplay()
+            }
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: root.settingsModel.previewKind === "display" ? Math.max(48, previewRow.implicitHeight + 14) : 0
+            visible: root.settingsModel.previewKind === "display"
+            color: Theme.controlHoverFill
+            border.color: Theme.warning
+            radius: Theme.largeSurfaceCardRadius
+
+            RowLayout {
+                id: previewRow
+                anchors.fill: parent
+                anchors.margins: 7
+				Text {
+					Layout.fillWidth: true
+					text: root.settingsModel.previewSeconds > 0
+						? "Keep these display settings? Reverting in " + root.settingsModel.previewSeconds + " seconds."
+						: "Could not restore the previous layout automatically. Revert retries it; Keep current accepts this layout."
+					color: Theme.textStrong
+					font.family: Theme.fontFamily
+					font.pixelSize: Theme.bodyFontSize
+					wrapMode: Text.WordWrap
+				}
+				ShellButton {
+					label: root.settingsModel.previewRollbackFailed ? "Keep current" : "Keep changes"
+					primary: true
+					onActivated: root.settingsModel.keepPreview()
+				}
+                ShellButton { label: "Revert"; danger: true; onActivated: root.settingsModel.revertPreview() }
+            }
+        }
+
+        Rectangle {
+            id: arrangement
+            Layout.fillWidth: true
+            Layout.preferredHeight: 200
+            color: Theme.controlNormalFill
+            border.color: Theme.controlNormalBorder
+            radius: Theme.largeSurfaceCardRadius
+            readonly property var layout: root.settingsModel.displayArrangement
+            readonly property real scaleFactor: Math.max(0.001, Math.min((width - 32) / layout.width, (height - 48) / layout.height))
+
+            Text {
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.margins: 8
+                text: arrangement.layout.tiles.length ? "Layout preview - numbers match the monitor cards below" : "Enable a monitor to preview its position"
+                color: Theme.textMuted
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.smallFontSize
+            }
+            Item {
+                anchors.horizontalCenter: parent.horizontalCenter
+                y: 32 + (arrangement.height - 40 - height) / 2
+                width: arrangement.layout.width * arrangement.scaleFactor
+                height: arrangement.layout.height * arrangement.scaleFactor
+                Repeater {
+                    model: arrangement.layout.tiles
+                    delegate: Rectangle {
+                        id: monitorTile
+                        required property var modelData
+                        x: (modelData.x - arrangement.layout.x) * arrangement.scaleFactor
+                        y: (modelData.y - arrangement.layout.y) * arrangement.scaleFactor
+                        width: modelData.width * arrangement.scaleFactor
+                        height: modelData.height * arrangement.scaleFactor
+                        color: modelData.primary ? Theme.controlSelectedFill : Theme.controlHoverFill
+                        border.color: modelData.primary ? Theme.accent : Theme.controlNormalBorder
+                        border.width: Theme.controlBorderWidth
+                        radius: Theme.controlRadius
+                        Accessible.name: "Monitor " + modelData.number + " - " + modelData.name + (modelData.primary ? " - primary" : "")
+                        Text {
+                            anchors.centerIn: parent
+                            text: monitorTile.modelData.number
+                            color: Theme.textStrong
+                            font.family: Theme.fontFamily
+                            font.pixelSize: Math.max(10, Math.min(32, monitorTile.height / 3))
+                            font.bold: true
+                        }
+                    }
+                }
+            }
+        }
+
+        Repeater {
+            model: root.settingsModel.displayOutputs
+
+            delegate: Rectangle {
+                id: outputCard
+                required property int index
+                required property var modelData
+                readonly property string anchorName: root.placementAnchors[modelData.name] || ""
+                readonly property var placementTargets: root.settingsModel.displayPlacementTargets(index)
+                readonly property int anchorIndex: {
+                    const selected = placementTargets.find(function(target) { return target.name === outputCard.anchorName; });
+                    return selected ? selected.index : placementTargets.length ? placementTargets[0].index : -1;
+                }
+
+                Layout.fillWidth: true
+                Layout.preferredHeight: Math.max(88, outputContent.implicitHeight + 12)
+                color: Theme.controlNormalFill
+                border.color: outputCard.modelData.enabled ? Theme.controlSelectedBorder : Theme.controlNormalBorder
+                border.width: 1
+                radius: Theme.largeSurfaceCardRadius
+
+                Rectangle {
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    width: 4
+                    color: outputCard.modelData.enabled ? Theme.accentSecondary : Theme.menuMutedText
+                    radius: 2
+                }
+
+                ColumnLayout {
+                    id: outputContent
+
+                    anchors.fill: parent
+                    anchors.leftMargin: 12
+                    anchors.rightMargin: 8
+                    anchors.topMargin: 6
+                    anchors.bottomMargin: 6
+                    spacing: Theme.tightSpacing
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Text { Layout.fillWidth: true; text: "Monitor " + (outputCard.index + 1) + " - " + outputCard.modelData.name; color: Theme.textStrong; font.family: Theme.fontFamily; font.pixelSize: Theme.bodyFontSize; font.bold: true }
+                        Text {
+                            text: outputCard.modelData.fullCompositionPipeline === "available"
+                                ? "NVIDIA anti-tearing available at next login"
+                                : (outputCard.modelData.tearfree === "available" ? "TearFree available" : "Anti-tearing unsupported")
+                            color: Theme.textMuted
+                            font.family: Theme.fontFamily
+                            font.pixelSize: Theme.tinyFontSize
+                        }
+                        ShellButton { label: outputCard.modelData.enabled ? "Enabled" : "Disabled"; onActivated: root.settingsModel.updateDisplay(outputCard.index, "enabled", !outputCard.modelData.enabled) }
+                        ShellButton { label: outputCard.modelData.primary ? "Primary" : "Make primary"; enabled: outputCard.modelData.enabled; onActivated: root.settingsModel.updateDisplay(outputCard.index, "primary", true) }
+                    }
+
+                    Flow {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: implicitHeight
+                        spacing: Theme.tightSpacing
+
+                        Row {
+                            spacing: Theme.tightSpacing
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Resolution"
+                                color: Theme.textMuted
+                                font.family: Theme.fontFamily
+                                font.pixelSize: Theme.bodyFontSize
+                            }
+                            DisplayComboBox {
+                                id: resolutionSelector
+
+                                width: 180
+                                accessibleLabel: "Resolution for " + outputCard.modelData.name
+                                enabled: outputCard.modelData.enabled
+                                model: root.settingsModel.displayResolutionChoices(outputCard.index)
+                                currentIndex: root.settingsModel.displayResolutionIndex(outputCard.index)
+                                onActivated: function(index) {
+                                    root.settingsModel.setDisplayResolution(outputCard.index, model[index]);
+                                }
+                            }
+                        }
+
+                        Row {
+                            spacing: Theme.tightSpacing
+
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: "Refresh rate"
+                                color: Theme.textMuted
+                                font.family: Theme.fontFamily
+                                font.pixelSize: Theme.bodyFontSize
+                            }
+                            DisplayComboBox {
+                                id: refreshRateSelector
+
+                                readonly property var rateChoices: root.settingsModel.displayRefreshRateChoices(outputCard.index)
+
+                                width: 110
+                                accessibleLabel: "Refresh rate for " + outputCard.modelData.name
+                                enabled: outputCard.modelData.enabled
+                                visible: rateChoices.length > 1
+                                model: rateChoices
+                                currentIndex: root.settingsModel.displayRefreshRateIndex(outputCard.index)
+                                valueSuffix: " Hz"
+                                onActivated: function(index) {
+                                    root.settingsModel.setDisplayRefreshRate(outputCard.index, model[index]);
+                                }
+                            }
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                visible: refreshRateSelector.rateChoices.length <= 1
+                                text: outputCard.modelData.rate + " Hz"
+                                color: outputCard.modelData.enabled ? Theme.textStrong : Theme.controlDisabledText
+                                font.family: Theme.fontFamily
+                                font.pixelSize: Theme.bodyFontSize
+                            }
+                        }
+                        ShellButton { label: "Rotation: " + outputCard.modelData.rotation; enabled: outputCard.modelData.enabled; onActivated: root.settingsModel.cycleRotation(outputCard.index) }
+                    }
+
+                    Flow {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: implicitHeight
+                        spacing: Theme.tightSpacing
+                        enabled: outputCard.modelData.enabled && !root.settingsModel.previewOperationLocked
+
+                        DisplayComboBox {
+                            width: 260
+                            enabled: outputCard.placementTargets.length > 0
+                            accessibleLabel: "Position monitor " + (outputCard.index + 1) + " relative to"
+                            model: outputCard.placementTargets.map(function(target) { return target.label; })
+                            currentIndex: Math.max(0, outputCard.placementTargets.findIndex(function(target) {
+                                return target.name === outputCard.anchorName;
+                            }))
+                            onActivated: function(index) {
+                                root.selectPlacementAnchor(outputCard.modelData.name, outputCard.placementTargets[index].name);
+                            }
+                        }
+
+                        Repeater {
+                            model: [
+                                { direction: "left", label: "Left of" },
+                                { direction: "right", label: "Right of" },
+                                { direction: "above", label: "Above" },
+                                { direction: "below", label: "Below" }
+                            ]
+                            delegate: ShellButton {
+                                required property var modelData
+                                label: modelData.label
+                                enabled: outputCard.anchorIndex >= 0
+                                primary: root.settingsModel.displayRelation(outputCard.index, outputCard.anchorIndex) === modelData.direction
+                                accessibleDescription: "Place monitor " + (outputCard.index + 1) + " " + modelData.label.toLowerCase() + " the selected monitor"
+                                onActivated: root.settingsModel.placeDisplay(outputCard.index, outputCard.anchorIndex, modelData.direction)
+                            }
+                        }
+                    }
+                    Text {
+                        visible: outputCard.modelData.enabled && outputCard.placementTargets.length === 0
+                        text: "Enable another monitor to arrange it beside this one."
+                        color: Theme.textMuted
+                        font.family: Theme.fontFamily
+                        font.pixelSize: Theme.smallFontSize
+                    }
+                }
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Text { text: "Layout name"; color: Theme.textMuted; font.family: Theme.fontFamily; font.pixelSize: Theme.bodyFontSize }
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: Math.max(Theme.controlHeight,
+                    profileNameInput.implicitHeight + 12)
+                color: Theme.controlNormalFill; border.color: Theme.controlNormalBorder; radius: Theme.controlRadius
+                TextInput { id: profileNameInput; anchors.fill: parent; anchors.margins: 6; text: root.profileName; color: Theme.textStrong; font.family: Theme.fontFamily; font.pixelSize: Theme.inputFontSize; onTextChanged: root.profileName = text }
+            }
+			ShellButton { label: "Save layout"; enabled: root.profileName.trim().length > 0; onActivated: root.settingsModel.saveDisplay(root.profileName.trim()) }
+			ShellButton {
+				label: "Use at next login"
+				enabled: root.settingsModel.displayPersistenceAvailable && root.settingsModel.displayProfiles.indexOf(root.profileName.trim()) >= 0
+				onActivated: root.confirmation = "install"
+			}
+            ShellButton { label: "Restore login backup"; danger: true; enabled: root.settingsModel.displayPersistenceAvailable; onActivated: root.confirmation = "rollback" }
+        }
+
+        Text {
+            Layout.fillWidth: true
+            visible: !root.settingsModel.displayPersistenceAvailable
+            text: root.settingsModel.displayPersistenceCapability.detail
+            color: Theme.warning
+            font.family: Theme.fontFamily
+            font.pixelSize: Theme.smallFontSize
+            wrapMode: Text.WordWrap
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.preferredHeight: root.confirmation ? confirmationRow.implicitHeight + 16 : 0
+            visible: root.confirmation !== ""
+            color: Theme.controlHoverFill
+            border.color: Theme.warning
+            radius: Theme.largeSurfaceCardRadius
+            RowLayout {
+                id: confirmationRow
+                anchors.fill: parent; anchors.margins: 8
+                Text {
+                    Layout.fillWidth: true
+                    text: root.confirmation === "install"
+                        ? "Use saved layout '" + root.profileName + "' automatically at the next login? Administrator approval is required; the previous dwm-titus next-login layout will be backed up."
+                        : "Restore the previous dwm-titus next-login layout? Administrator approval is required. This changes the next login only."
+                    color: Theme.textStrong; font.family: Theme.fontFamily; font.pixelSize: Theme.bodyFontSize; wrapMode: Text.WordWrap
+                }
+                ShellButton {
+                    label: root.confirmation === "install" ? "Use at next login" : "Restore backup"
+                    primary: root.confirmation === "install"
+                    onActivated: {
+						if (root.confirmation === "install") root.settingsModel.installDisplayProfile(root.profileName.trim());
+                        else root.settingsModel.rollbackDisplaySystem();
+                        root.confirmation = "";
+                    }
+                }
+                ShellButton { label: "Cancel"; onActivated: root.confirmation = "" }
+            }
+        }
+
+        Flow {
+            Layout.fillWidth: true
+            spacing: Theme.tightSpacing
+            Repeater {
+                model: root.settingsModel.displayProfiles
+                delegate: ShellButton {
+                    required property string modelData
+                    label: "Try " + modelData
+                    enabled: !root.settingsModel.previewOperationLocked
+                    onActivated: root.settingsModel.previewDisplayProfile(modelData)
+                }
+            }
+        }
+
+        Repeater {
+            model: root.settingsModel.displayUnsupportedProfiles
+            delegate: Text {
+                required property var modelData
+                Layout.fillWidth: true
+                text: "Saved layout " + modelData.name + ": " + modelData.detail
+                color: Theme.warning
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.smallFontSize
+                wrapMode: Text.WordWrap
+            }
+        }
+    }
+}

@@ -24,6 +24,7 @@ let
 
     nativeBuildInputs = [
       pkgs.pkg-config
+      pkgs.python3
     ];
 
     # Dependências declaradas no repositório (config.mk / PKG_MODULES)
@@ -48,6 +49,18 @@ let
     preInstall = ''
       mkdir -p $out/bin $out/share/man/man1
     '';
+
+    postInstall = ''
+      if [ -d ./scripts ]; then
+        mkdir -p $out/bin
+        find ./scripts -maxdepth 1 -type f -exec cp -f {} $out/bin/ \;
+        chmod +x $out/bin/* || true
+      elif [ -d "$src/scripts" ]; then
+        mkdir -p $out/bin
+        find "$src/scripts" -maxdepth 1 -type f -exec cp -f {} $out/bin/ \;
+        chmod +x $out/bin/* || true
+      fi
+    '';
   };
 in
 {
@@ -66,8 +79,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Arquivos de configuração em tempo de execução do DWM (hotkeys, temas e regras de janelas)
-    xdg.configFile."dwm-titus".source = ./configs/config;
+    # Arquivos de configuração em tempo de execução do DWM e Quickshell
+    xdg.configFile = {
+      "dwm-titus".source = ./configs/config;
+      "quickshell".source = ./configs/config/quickshell;
+    };
 
     xsession = {
       enable = true;
@@ -132,11 +148,9 @@ in
             systemctl --user restart picom 2>/dev/null || (${pkgs.picom}/bin/picom -b 2>/dev/null || true) &
           ''}
 
-          # 10. Iniciar barra de status slstatus se presente
-          if command -v ${pkgs.slstatus}/bin/slstatus >/dev/null 2>&1; then
-            pkill -x slstatus || true
-            ${pkgs.slstatus}/bin/slstatus &
-          fi
+          # 10. Iniciar Quickshell (Barra superior, Launcher e Control Center do dwm-titus)
+          pkill -x quickshell || true
+          ${nixGLWrapper pkgs.quickshell}/bin/quickshell -p "$HOME/.config/quickshell/shell.qml" &
 
           # 11. Executar DWM com nixGL wrapper (para suporte a distros standalone como Fedora/Debian)
           exec ${nixGLWrapper dwmPackage}/bin/dwm
@@ -147,6 +161,7 @@ in
     home = {
       packages = [
         (nixGLWrapper dwmPackage)
+        (nixGLWrapper pkgs.quickshell)
         pkgs.slstatus
         pkgs.polkit_gnome
         pkgs.networkmanagerapplet

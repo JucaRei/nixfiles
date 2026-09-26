@@ -1,0 +1,1108 @@
+import QtQuick
+import Quickshell
+import Quickshell.Io
+import qs.core
+import "DisplayLayout.js" as DisplayLayout
+
+Scope {
+    id: root
+
+    property bool visible: false
+    property bool busy: false
+    property string searchQuery: ""
+    property string selectedSectionId: "displays"
+    property string discoveryState: "idle"
+    property string message: ""
+    property bool capabilityRefreshPending: false
+    property string platformId: "unknown"
+    property string platformFamily: "unknown"
+    property string platformName: "Unknown Linux"
+    property var targetScreen: null
+    property var networkModel: null
+    property var bluetoothModel: null
+    property var controlsModel: null
+    property var powerModel: null
+    property var powerMenuModel: null
+    property var defaultsModel: null
+    property var autostartModel: null
+    property var appearanceModel: null
+    property var accessibilityModel: null
+    property var panelSettingsModel: null
+    property var systemManagementModel: null
+    property var capabilities: []
+    property int selectedIndex: 0
+    property var displayOutputs: []
+    readonly property var displayArrangement: DisplayLayout.preview(root.displayOutputs)
+    property var displayModes: []
+    property var displayProfiles: []
+    property var displayUnsupportedProfiles: []
+    property var automaticDisplayState: ({ available: false, profiles: [], detected: [], current: [], default: "", error: "Loading automatic layouts" })
+    property string automaticDisplayMessage: ""
+    property string displayEditingRole: "live"
+    property bool automaticDisplayRefreshPending: false
+    readonly property bool automaticDisplayBusy: automaticDisplaySaveProcess.running || automaticDisplayStatusProcess.running
+    property string displayState: "idle"
+    property string displayMessage: ""
+    property string displayBaseline: ""
+    property bool displayRefreshPending: false
+    readonly property bool displayActionBusy: displayActionProcess.running
+    property var inputDevices: []
+    property var inputSettings: []
+    property var inputUnsupported: []
+    property string inputState: "idle"
+    property string inputMessage: ""
+    property bool inputRefreshPending: false
+    readonly property bool inputActionBusy: inputActionProcess.running
+    property string previewKind: ""
+    property string previewToken: ""
+    property int previewSeconds: 0
+    property int displayPreviewStatusAttempts: 0
+	property int inputPreviewStatusAttempts: 0
+    property bool previewRollbackFailed: false
+    property bool previewOperationLocked: false
+    property bool closeRollbackPending: false
+    property string pendingAction: ""
+
+    readonly property int maxDisplayPreviewStatusAttempts: 120
+	readonly property int maxInputPreviewStatusAttempts: 120
+    readonly property var displayPersistenceCapability: {
+        for (const capability of root.capabilities) {
+            if (capability.id === "display-persistence") return capability;
+        }
+        return { "status": "restricted", "detail": "Persistent display controls are unavailable" };
+    }
+    readonly property bool displayPersistenceAvailable: root.displayPersistenceCapability.status === "available"
+    readonly property bool displayHasPendingChanges: root.displayBaseline.length > 0
+        && root.displayLayoutKey(root.displayOutputs) !== root.displayBaseline
+
+    readonly property var sections: [
+        { "id": "displays", "label": "Displays", "description": "Resolution, refresh rate, and layouts" },
+        { "id": "input", "label": "Input", "description": "Keyboard, pointer, and touchpad" },
+        { "id": "network", "label": "Network", "description": "Connections and VPN providers" },
+        { "id": "bluetooth", "label": "Bluetooth", "description": "Adapters and devices" },
+        { "id": "audio", "label": "Audio", "description": "Outputs, inputs, and streams" },
+        { "id": "power", "label": "Power", "description": "DPMS, locking, and session policy" },
+        { "id": "defaults", "label": "Defaults", "description": "Applications and autostart" },
+        { "id": "appearance", "label": "Appearance", "description": "Themes and accessibility" },
+        { "id": "system", "label": "System", "description": "Desktop updates, Quickshell, health and administration" }
+    ]
+
+    readonly property var filteredSections: {
+        const query = root.searchQuery.trim().toLowerCase();
+        if (query.length === 0) return root.sections;
+        return root.sections.filter(function(section) {
+            return section.label.toLowerCase().indexOf(query) >= 0
+                || section.description.toLowerCase().indexOf(query) >= 0;
+        });
+    }
+
+    function sectionById(id) {
+        for (const section of root.sections) {
+            if (section.id === id) return section;
+        }
+        return root.sections[0];
+    }
+
+    function selectedSection() {
+        return root.sectionById(root.selectedSectionId);
+    }
+
+    function capabilitiesForSection(id) {
+        return root.capabilities.filter(function(capability) {
+            return capability.section === id;
+        });
+    }
+
+    function capabilityById(id) {
+        if (root.discoveryState !== "ready" || root.capabilityRefreshPending)
+            return { "status": "unavailable", "detail": "Capability discovery is still refreshing" };
+        for (const capability of root.capabilities) {
+            if (capability.id === id) return capability;
+        }
+        return { "status": "unavailable", "detail": "Capability has not been discovered" };
+    }
+
+    function watchOwnerArguments() {
+        const stat = watchOwnerStat.text().trim();
+        const commandEnd = stat.lastIndexOf(") ");
+        if (commandEnd < 0) return [Quickshell.processId.toString(), ""];
+        const fields = stat.substring(commandEnd + 2).trim().split(/\s+/);
+        const starttime = fields.length >= 20 ? fields[19] : "";
+        return [Quickshell.processId.toString(), /^[1-9][0-9]*$/.test(starttime) ? starttime : ""];
+    }
+
+    function activateSection(id) {
+        displayWatchProcess.running = id === "displays" && root.visible;
+        inputWatchProcess.running = id === "input" && root.visible;
+        notificationOwnerWatchProcess.running = id === "appearance" && root.visible;
+			if (id !== "input") inputSettleTimer.stop();
+        if (root.networkModel) {
+            const wantNetwork = id === "network" && root.visible;
+            if (wantNetwork && !root.networkModel.settingsVisible) root.networkModel.openSettings();
+            else if (!wantNetwork && root.networkModel.settingsVisible) root.networkModel.closeSettings();
+        }
+        if (root.bluetoothModel) {
+            const wantBluetooth = id === "bluetooth" && root.visible;
+            if (wantBluetooth && !root.bluetoothModel.settingsVisible) root.bluetoothModel.openSettings();
+            else if (!wantBluetooth && root.bluetoothModel.settingsVisible) root.bluetoothModel.closeSettings();
+        }
+        if (root.controlsModel) {
+            const wantAudio = id === "audio" && root.visible;
+            if (wantAudio && !root.controlsModel.settingsVisible) root.controlsModel.openSettings();
+            else if (!wantAudio && root.controlsModel.settingsVisible) root.controlsModel.closeSettings();
+        }
+        if (root.powerModel) {
+            const wantPower = id === "power" && root.visible;
+            if (wantPower && !root.powerModel.settingsVisible) root.powerModel.openSettings();
+            else if (!wantPower && root.powerModel.settingsVisible) root.powerModel.closeSettings();
+        }
+        if (id !== "power" && root.powerMenuModel)
+            root.powerMenuModel.cancelConfirmation("settings");
+        if (root.defaultsModel) {
+            const wantDefaults = id === "defaults" && root.visible;
+            if (wantDefaults && !root.defaultsModel.settingsVisible) root.defaultsModel.openSettings();
+            else if (!wantDefaults && root.defaultsModel.settingsVisible) root.defaultsModel.closeSettings();
+        }
+        if (root.autostartModel) {
+            const wantAutostart = id === "defaults" && root.visible;
+            if (wantAutostart && !root.autostartModel.settingsVisible) root.autostartModel.openSettings();
+            else if (!wantAutostart && root.autostartModel.settingsVisible) root.autostartModel.closeSettings();
+        }
+        if (root.appearanceModel) {
+            const wantAppearance = id === "appearance" && root.visible;
+            if (wantAppearance && !root.appearanceModel.settingsVisible) root.appearanceModel.openSettings();
+            else if (!wantAppearance && root.appearanceModel.settingsVisible) root.appearanceModel.closeSettings();
+        }
+        if (root.systemManagementModel) {
+            const wantSystem = id === "system" && root.visible;
+            if (wantSystem && !root.systemManagementModel.settingsVisible)
+                root.systemManagementModel.openSettings();
+            else if (!wantSystem && root.systemManagementModel.settingsVisible)
+                root.systemManagementModel.closeSettings();
+        }
+        if (id === "appearance") root.refreshCapabilities();
+        if (id === "appearance" && root.accessibilityModel) root.accessibilityModel.refresh();
+        if (id === "appearance" && root.panelSettingsModel) root.panelSettingsModel.refresh();
+        if (id === "displays") root.refreshDisplays();
+        if (id === "input") root.refreshInput();
+    }
+
+    function parseDisplays(text) {
+        const outputs = [];
+        const modes = [];
+        const modeSizes = [];
+        const profiles = [];
+        const unsupportedProfiles = [];
+        let valid = false;
+        for (const line of text.trim().split("\n")) {
+            const fields = line.split("\t");
+            if (fields[0] === "display-protocol" && fields[1] === "1") {
+                valid = true;
+            } else if (fields[0] === "output" && fields.length >= 9) {
+                const geometry = DisplayLayout.size({ mode: fields[4], rotation: fields[7] });
+                outputs.push({
+                    "name": fields[1], "enabled": fields[2] === "1",
+                    "primary": fields[3] === "1", "mode": fields[4],
+                    "rate": "", "x": Number(fields[5]), "y": Number(fields[6]),
+                    "pixelWidth": geometry ? geometry.width : 0,
+                    "pixelHeight": geometry ? geometry.height : 0,
+                    "rotation": fields[7], "tearfree": fields[8],
+                    "fullCompositionPipeline": fields.length >= 10 ? fields[9] : "unsupported"
+                });
+            } else if (fields[0] === "mode-size" && fields.length >= 6) {
+                modeSizes.push({ output: fields[1], mode: fields[2], rate: fields[3],
+                    pixelWidth: Number(fields[4]), pixelHeight: Number(fields[5]) });
+            } else if (fields[0] === "mode" && fields.length >= 6) {
+                modes.push({
+                    "output": fields[1], "mode": fields[2], "rate": fields[3],
+                    "current": fields[4] === "1", "preferred": fields[5] === "1"
+                });
+            } else if (fields[0] === "profile" && fields.length >= 2) {
+                profiles.push(fields[1]);
+            } else if (fields[0] === "profile-unsupported" && fields.length >= 3) {
+                unsupportedProfiles.push({ "name": fields[1], "detail": fields.slice(2).join("\t") });
+            }
+        }
+        for (const mode of modes) {
+            const dimensions = modeSizes.find(function(item) {
+                return item.output === mode.output && item.mode === mode.mode && item.rate === mode.rate;
+            });
+            const size = DisplayLayout.size(dimensions || mode);
+            mode.pixelWidth = size ? size.width : 0;
+            mode.pixelHeight = size ? size.height : 0;
+        }
+        for (let index = 0; index < outputs.length; index++) {
+            const current = modes.find(function(mode) {
+                return mode.output === outputs[index].name && mode.current;
+            });
+            if (current) {
+                outputs[index].mode = current.mode;
+                outputs[index].rate = current.rate;
+                if (current.pixelWidth && current.pixelHeight) {
+                    outputs[index].pixelWidth = current.pixelWidth;
+                    outputs[index].pixelHeight = current.pixelHeight;
+                }
+            } else {
+                const preferred = modes.find(function(mode) {
+                    return mode.output === outputs[index].name && mode.preferred;
+                });
+                if (preferred) {
+                    outputs[index].mode = preferred.mode;
+                    outputs[index].rate = preferred.rate;
+                    outputs[index].pixelWidth = preferred.pixelWidth;
+                    outputs[index].pixelHeight = preferred.pixelHeight;
+                }
+            }
+        }
+        root.displayOutputs = outputs;
+        root.displayEditingRole = "live";
+        root.displayBaseline = valid ? root.displayLayoutKey(outputs) : "";
+        root.displayModes = modes;
+        root.displayProfiles = profiles;
+        root.displayUnsupportedProfiles = unsupportedProfiles;
+        root.displayState = valid ? "ready" : "failure";
+        root.displayMessage = valid ? outputs.length + " connected outputs" : "Unsupported display provider response";
+    }
+
+    function parseInput(text) {
+        const devices = [];
+        const settings = [];
+        const unsupported = [];
+        let valid = false;
+        for (const line of text.trim().split("\n")) {
+            const fields = line.split("\t");
+            if (fields[0] === "input-protocol" && fields[1] === "1") {
+                valid = true;
+            } else if (fields[0] === "device" && fields.length >= 5) {
+                devices.push({ "key": fields[1], "xid": fields[2], "kind": fields[3], "name": fields[4] });
+            } else if (fields[0] === "setting" && fields.length >= 9) {
+                settings.push({
+                    "device": fields[1], "id": fields[2], "label": fields[3],
+                    "type": fields[4], "value": fields[5], "defaultValue": fields[6],
+                    "minimum": Number(fields[7]), "maximum": Number(fields[8])
+                });
+            } else if (fields[0] === "unsupported" && fields.length >= 4) {
+                unsupported.push({ "device": fields[1], "id": fields[2], "detail": fields[3] });
+            }
+        }
+        root.inputDevices = devices;
+        root.inputSettings = settings;
+        root.inputUnsupported = unsupported;
+        root.inputState = valid ? "ready" : "failure";
+        root.inputMessage = valid ? devices.length + " input groups" : "Unsupported input provider response";
+    }
+
+    function updateDisplay(index, field, value) {
+        if (root.previewOperationLocked) return;
+        const outputs = root.displayOutputs.slice();
+        const changed = Object.assign({}, outputs[index]);
+        changed[field] = value;
+        outputs[index] = changed;
+        if (field === "primary" && value) {
+            for (let other = 0; other < outputs.length; other++) {
+                if (other !== index) outputs[other] = Object.assign({}, outputs[other], { "primary": false });
+            }
+        }
+        root.displayOutputs = outputs;
+        root.displayMessage = root.displayLayoutKey(outputs) !== root.displayBaseline
+            ? "Display changes are ready to apply" : outputs.length + " connected outputs";
+    }
+
+    function displayPlacementTargets(index) {
+        return DisplayLayout.targets(root.displayOutputs, index);
+    }
+
+    function displayRelation(index, anchorIndex) {
+        return DisplayLayout.relation(root.displayOutputs, index, anchorIndex);
+    }
+
+    function placeDisplay(index, anchorIndex, direction) {
+        if (root.previewOperationLocked) return;
+        const outputs = DisplayLayout.place(root.displayOutputs, index, anchorIndex, direction);
+        if (!outputs) return;
+        root.displayOutputs = outputs;
+        root.displayMessage = root.displayLayoutKey(outputs) !== root.displayBaseline
+            ? "Display changes are ready to apply" : outputs.length + " connected outputs";
+    }
+
+    function displayLayoutKey(outputs) {
+        return JSON.stringify(outputs.map(function(output) {
+            return [output.name, output.enabled, output.mode, output.rate, output.x, output.y,
+                output.rotation, output.primary];
+        }));
+    }
+
+    function displaySizeLabel(modeName) {
+        const match = /^(\d+)x(\d+)(.*)$/.exec(modeName);
+        if (!match) return modeName;
+        const scanVariant = /^([ip])/i.exec(match[3]);
+        return match[1] + " x " + match[2]
+            + (scanVariant ? scanVariant[1].toLowerCase() : "");
+    }
+
+    function displayResolutionChoices(index) {
+        const output = root.displayOutputs[index];
+        if (!output) return [];
+        const choices = [];
+        for (const mode of root.displayModes) {
+            if (mode.output !== output.name) continue;
+            const label = root.displaySizeLabel(mode.mode);
+            if (label.length > 0 && choices.indexOf(label) < 0) choices.push(label);
+        }
+        return choices;
+    }
+
+    function displayResolutionIndex(index) {
+        const output = root.displayOutputs[index];
+        if (!output) return -1;
+        return root.displayResolutionChoices(index).indexOf(root.displaySizeLabel(output.mode));
+    }
+
+    function displayRefreshRateChoices(index) {
+        const output = root.displayOutputs[index];
+        if (!output) return [];
+        const size = root.displaySizeLabel(output.mode);
+        const choices = [];
+        for (const mode of root.displayModes) {
+            if (mode.output !== output.name || root.displaySizeLabel(mode.mode) !== size) continue;
+            if (choices.indexOf(mode.rate) < 0) choices.push(mode.rate);
+        }
+        return choices;
+    }
+
+    function displayRefreshRateIndex(index) {
+        const output = root.displayOutputs[index];
+        if (!output) return -1;
+        return root.displayRefreshRateChoices(index).indexOf(output.rate);
+    }
+
+    function updateDisplayMode(index, mode) {
+        if (!mode) return;
+        const outputs = root.displayOutputs.slice();
+        const changed = Object.assign({}, outputs[index]);
+        changed.mode = mode.mode;
+        changed.rate = mode.rate;
+        changed.pixelWidth = mode.pixelWidth;
+        changed.pixelHeight = mode.pixelHeight;
+        outputs[index] = changed;
+        root.displayOutputs = outputs;
+        root.displayMessage = root.displayLayoutKey(outputs) !== root.displayBaseline
+            ? "Display changes are ready to apply" : outputs.length + " connected outputs";
+    }
+
+    function setDisplayResolution(index, size) {
+        const output = root.displayOutputs[index];
+        if (!output) return;
+        const choices = root.displayModes.filter(function(mode) {
+            return mode.output === output.name && root.displaySizeLabel(mode.mode) === size;
+        });
+        if (choices.length === 0) return;
+        const selected = choices.find(function(mode) { return mode.rate === output.rate; })
+            || choices.find(function(mode) { return mode.preferred; }) || choices[0];
+        root.updateDisplayMode(index, selected);
+    }
+
+    function setDisplayRefreshRate(index, rate) {
+        const output = root.displayOutputs[index];
+        if (!output) return;
+        const size = root.displaySizeLabel(output.mode);
+        const choices = root.displayModes.filter(function(mode) {
+            return mode.output === output.name && root.displaySizeLabel(mode.mode) === size
+                && mode.rate === rate;
+        });
+        if (choices.length === 0) return;
+        const selected = choices.find(function(mode) { return mode.mode === output.mode; })
+            || choices.find(function(mode) { return mode.preferred; }) || choices[0];
+        root.updateDisplayMode(index, selected);
+    }
+
+    function cycleRotation(index) {
+        const rotations = ["normal", "left", "right", "inverted"];
+        const current = rotations.indexOf(root.displayOutputs[index].rotation);
+        root.updateDisplay(index, "rotation", rotations[(current + 1) % rotations.length]);
+    }
+
+    function displaySpecs() {
+        const specs = [];
+        for (const output of root.displayOutputs) {
+            if (!output.name || output.name.indexOf("|") >= 0
+                    || (output.enabled && (!output.mode || !output.rate
+                        || !Number.isInteger(output.x) || !Number.isInteger(output.y)))) {
+                root.displayState = "failure";
+                root.displayMessage = "Display data is incomplete; refresh before previewing or saving";
+                return null;
+            }
+            specs.push([output.name, output.enabled ? "1" : "0", output.mode, output.rate,
+                String(output.x), String(output.y), output.rotation, output.primary ? "1" : "0"].join("|"));
+        }
+        return specs;
+    }
+
+    function runDisplay(action, args) {
+        if (displayActionProcess.running) return;
+        root.pendingAction = "display-" + action;
+        displayActionProcess.command = Commands.settingsDisplayCommand(action, args || []);
+        displayActionProcess.running = true;
+    }
+
+    function previewDisplay() {
+        if (root.previewOperationLocked || displayActionProcess.running || inputActionProcess.running) return;
+        const specs = root.displaySpecs();
+        if (!specs || specs.length === 0) return;
+        root.previewOperationLocked = true;
+		root.closeRollbackPending = false;
+        const token = "display-" + Date.now();
+        root.runDisplay("preview", [token, "15"].concat(specs));
+    }
+
+    function previewDisplayProfile(name) {
+        if (root.previewOperationLocked || displayActionProcess.running || inputActionProcess.running) return;
+        root.previewOperationLocked = true;
+		root.closeRollbackPending = false;
+        const token = "display-" + Date.now();
+        root.runDisplay("preview-profile", [token, "15", name]);
+    }
+
+    function keepPreview() {
+        if (root.previewKind === "display") root.runDisplay("keep", [root.previewToken]);
+        else if (root.previewKind === "input") root.runInput("keep", [root.previewToken]);
+    }
+
+    function revertPreview() {
+        if (!root.previewToken) return;
+        if (root.previewKind === "display") root.runDisplay("revert", [root.previewToken]);
+        else if (root.previewKind === "input") root.runInput("revert", [root.previewToken]);
+    }
+
+    function saveDisplay(name) {
+        const specs = root.displaySpecs();
+        if (name.trim().length > 0 && specs && specs.length > 0)
+            root.runDisplay("save", [name.trim()].concat(specs));
+    }
+
+    function automaticDisplayProfile(role) {
+        return root.automaticDisplayState.profiles.find(function(profile) { return profile.role === role; })
+            || { role: role, name: role === "undocked" ? "mobile" : "docked", saved: false, outputs: [], error: "" };
+    }
+
+    function automaticDisplaySummary(role) {
+        const profile = root.automaticDisplayProfile(role);
+        if (profile.error) return profile.error;
+        if (!profile.saved) return "Not saved";
+        return profile.outputs.filter(function(output) { return output.enabled; }).map(function(output) {
+            const index = root.displayOutputs.findIndex(function(item) { return item.name === output.name; });
+            return (index >= 0 ? "Monitor " + (index + 1) + " - " : "") + output.name + ": "
+                + output.mode + " @ " + output.rate + " Hz" + (output.primary ? " (primary)" : "");
+        }).join("\n");
+    }
+
+    function automaticDisplayArrangement(role) {
+        const profile = root.automaticDisplayProfile(role);
+        const ordered = root.displayOutputs.map(function(output) {
+            const saved = profile.outputs.find(function(item) { return item.name === output.name; });
+            if (!saved) return { name: output.name, enabled: false };
+            const mode = root.displayModes.find(function(candidate) {
+                return candidate.output === saved.name && candidate.mode === saved.mode && candidate.rate === saved.rate;
+            });
+            return Object.assign({}, mode || {}, saved);
+        });
+        for (const saved of profile.outputs) {
+            if (!ordered.some(function(item) { return item.name === saved.name; })) ordered.push(saved);
+        }
+        return DisplayLayout.preview(ordered);
+    }
+
+    function editAutomaticDisplay(role) {
+        if (root.previewOperationLocked || root.automaticDisplayBusy) return;
+        const profile = root.automaticDisplayProfile(role);
+        if (profile.error) { root.automaticDisplayMessage = profile.error; return; }
+        if (profile.saved && profile.outputs.some(function(saved) {
+            return saved.enabled && !root.displayOutputs.some(function(live) { return live.name === saved.name; });
+        })) {
+            root.automaticDisplayMessage = "Connect the saved monitors before editing this layout.";
+            return;
+        }
+        if (!profile.saved && role === "undocked"
+                && !root.displayOutputs.some(function(output) { return /^(eDP|LVDS|DSI)[-0-9]/.test(output.name); })) {
+            root.automaticDisplayMessage = "No built-in monitor is connected.";
+            return;
+        }
+        root.displayOutputs = root.displayOutputs.map(function(output) {
+            const saved = profile.outputs.find(function(item) { return item.name === output.name; });
+            const item = Object.assign({}, output);
+            if (profile.saved) {
+                item.enabled = !!saved && saved.enabled;
+                item.primary = item.enabled && saved.primary;
+                if (item.enabled) {
+                    Object.assign(item, saved);
+                    item.pixelWidth = saved.pixelWidth || 0;
+                    item.pixelHeight = saved.pixelHeight || 0;
+                }
+            } else if (role === "undocked") {
+                item.enabled = /^(eDP|LVDS|DSI)[-0-9]/.test(item.name);
+                item.primary = item.enabled;
+                item.x = 0; item.y = 0;
+            }
+            const mode = root.displayModes.find(function(candidate) {
+                return candidate.output === item.name && candidate.mode === item.mode && candidate.rate === item.rate;
+            });
+            if (mode) { item.pixelWidth = mode.pixelWidth; item.pixelHeight = mode.pixelHeight; }
+            return item;
+        });
+        root.displayEditingRole = role;
+        root.automaticDisplayMessage = "Editing " + role + " draft below. Live monitors have not changed.";
+    }
+
+    function saveAutomaticDisplay(role) {
+        if (root.previewOperationLocked || root.automaticDisplayBusy) return;
+        const specs = root.displaySpecs();
+        if (!specs) return;
+        automaticDisplaySaveProcess.command = Commands.settingsDisplayProfilesCommand("save", [role].concat(specs));
+        automaticDisplaySaveProcess.running = true;
+    }
+
+    function refreshAutomaticDisplays() {
+        if (!root.visible) return;
+        if (automaticDisplayStatusProcess.running) { root.automaticDisplayRefreshPending = true; return; }
+        automaticDisplayStatusProcess.running = true;
+        root.automaticDisplayRefreshPending = false;
+    }
+
+    function installDisplayProfile(name) {
+        if (name.trim().length > 0) root.runDisplay("install-profile", [name.trim()]);
+    }
+
+    function rollbackDisplaySystem() {
+        root.runDisplay("rollback-system", []);
+    }
+
+    function pollDisplayPreviewStatus() {
+        if (root.displayPreviewStatusAttempts >= root.maxDisplayPreviewStatusAttempts) {
+            root.previewSeconds = 0;
+            root.previewOperationLocked = true;
+            root.displayMessage = "Automatic rollback status timed out; use Revert to retry the captured layout";
+            return;
+        }
+        root.displayPreviewStatusAttempts++;
+        if (displayActionProcess.running) {
+            root.previewSeconds = 1;
+            return;
+        }
+        root.runDisplay("preview-status", [root.previewToken]);
+    }
+
+    function runInput(action, args) {
+        if (inputActionProcess.running) return;
+        root.pendingAction = "input-" + action;
+        inputActionProcess.command = Commands.settingsInputCommand(action, args || []);
+        inputActionProcess.running = true;
+    }
+
+	function pollInputPreviewStatus() {
+		if (root.inputPreviewStatusAttempts >= root.maxInputPreviewStatusAttempts) {
+			root.previewSeconds = 0;
+			root.previewOperationLocked = true;
+			root.inputMessage = "Automatic rollback status timed out; use Revert to retry the captured value";
+			return;
+		}
+		root.inputPreviewStatusAttempts++;
+		if (inputActionProcess.running) {
+			root.previewSeconds = 1;
+			return;
+		}
+		root.runInput("preview-status", [root.previewToken]);
+	}
+
+	function recoverInputPreview() {
+		if (!root.previewToken && !inputActionProcess.running)
+			root.runInput("preview-status", []);
+	}
+
+	function recoverDisplayPreview() {
+		if (!root.previewToken && !displayActionProcess.running)
+			root.runDisplay("preview-status", []);
+	}
+
+	function requireRecoveredPreviewRollback() {
+		if (!root.visible) root.closeRollbackPending = true;
+	}
+
+    function previewInput(device, setting, value) {
+        if (root.previewOperationLocked || displayActionProcess.running || inputActionProcess.running) return;
+        root.previewOperationLocked = true;
+		root.closeRollbackPending = false;
+        const token = "input-" + Date.now();
+        root.runInput("preview", [token, "15", device, setting, String(value)]);
+    }
+
+    function resetInput(device, setting) {
+        root.runInput("reset", [device, setting]);
+    }
+
+    function refreshDisplays() {
+        if (!root.visible) return;
+        root.refreshAutomaticDisplays();
+        if (displayDiscoverProcess.running) {
+            root.displayRefreshPending = true;
+            return;
+        }
+        root.displayState = "loading";
+        displayDiscoverProcess.running = true;
+        root.displayRefreshPending = false;
+    }
+
+    function refreshInput() {
+        if (!root.visible) return;
+        if (inputDiscoverProcess.running) {
+            root.inputRefreshPending = true;
+            return;
+        }
+        root.inputState = "loading";
+        inputDiscoverProcess.running = true;
+        root.inputRefreshPending = false;
+    }
+
+    function setSearch(value) {
+        if (root.searchQuery === value) return;
+        root.searchQuery = value;
+        root.selectedIndex = 0;
+        if (root.filteredSections.length > 0) {
+            const id = root.filteredSections[0].id;
+            if (root.selectedSectionId !== id) {
+                root.selectedSectionId = id;
+                root.activateSection(id);
+            }
+        }
+    }
+
+    function selectSection(id) {
+        const exists = root.sections.some(function(section) {
+            return section.id === id;
+        });
+        if (!exists) return;
+        if (root.searchQuery.length > 0 && !root.filteredSections.some(function(section) {
+            return section.id === id;
+        })) {
+            root.searchQuery = "";
+        }
+        for (let index = 0; index < root.filteredSections.length; index++) {
+            if (root.filteredSections[index].id === id) {
+                root.selectedIndex = index;
+                if (root.selectedSectionId !== id) {
+                    root.selectedSectionId = id;
+                    root.activateSection(id);
+                }
+                return;
+            }
+        }
+    }
+
+    function selectRelative(delta) {
+        const sections = root.filteredSections;
+        if (sections.length === 0) return;
+        root.selectedIndex = (root.selectedIndex + delta + sections.length) % sections.length;
+        const id = sections[root.selectedIndex].id;
+        if (root.selectedSectionId !== id) {
+            root.selectedSectionId = id;
+            root.activateSection(id);
+        }
+    }
+
+    function parseDiscovery(text) {
+        const capabilities = [];
+        const lines = text.trim().length > 0 ? text.trim().split("\n") : [];
+        let validProtocol = false;
+
+        for (const line of lines) {
+            const fields = line.split("\t");
+            if (fields[0] === "settings-protocol" && fields[1] === "1") {
+                validProtocol = true;
+            } else if (fields[0] === "platform" && fields.length >= 4) {
+                root.platformId = fields[1];
+                root.platformFamily = fields[2];
+                root.platformName = fields[3];
+            } else if (fields[0] === "capability" && fields.length >= 8) {
+                capabilities.push({
+                    "section": fields[1],
+                    "id": fields[2],
+                    "label": fields[3],
+                    "status": fields[4],
+                    "capabilityClass": fields[5],
+                    "provider": fields[6],
+                    "detail": fields[7]
+                });
+            }
+        }
+
+        root.busy = false;
+        if (!validProtocol) {
+            root.discoveryState = "failure";
+            root.message = "Capability provider returned an unsupported response";
+            root.capabilities = [];
+            return;
+        }
+
+        root.capabilities = capabilities;
+        root.discoveryState = "ready";
+        root.message = capabilities.length + " capabilities discovered";
+    }
+
+    function refresh() {
+        if (root.selectedSectionId === "displays") root.refreshDisplays();
+        if (root.selectedSectionId === "input") root.refreshInput();
+        if (root.visible && root.selectedSectionId === "appearance" && root.accessibilityModel)
+            root.accessibilityModel.refresh();
+        if (root.visible && root.selectedSectionId === "appearance" && root.panelSettingsModel)
+            root.panelSettingsModel.refresh();
+        if (root.visible && root.selectedSectionId === "system" && root.systemManagementModel)
+            root.systemManagementModel.refresh();
+        root.refreshCapabilities();
+    }
+
+    function refreshCapabilities() {
+        if (!root.visible) return;
+        if (providerProcess.running) {
+            root.capabilityRefreshPending = true;
+            return;
+        }
+        root.busy = true;
+        root.discoveryState = "loading";
+        root.message = "Discovering capabilities...";
+        providerProcess.running = true;
+        root.capabilityRefreshPending = false;
+    }
+
+    function openWindow() {
+        root.visible = true;
+        root.searchQuery = "";
+        root.selectedIndex = 0;
+        root.selectedSectionId = root.sections[0].id;
+        root.refreshCapabilities();
+        root.activateSection(root.selectedSectionId);
+		root.recoverDisplayPreview();
+		root.recoverInputPreview();
+    }
+
+    function open() {
+        root.targetScreen = null;
+        root.openWindow();
+    }
+
+    function openOnScreen(screen) {
+        root.targetScreen = screen;
+        root.openWindow();
+    }
+
+    function close() {
+			const displayPreviewStarting = displayActionProcess.running
+				&& (root.pendingAction === "display-preview" || root.pendingAction === "display-preview-profile");
+			const inputPreviewStarting = inputActionProcess.running && root.pendingAction === "input-preview";
+			if (!root.previewToken && (displayPreviewStarting || inputPreviewStarting)) {
+				root.closeRollbackPending = true;
+			} else if (root.previewToken) {
+				const actionBusy = root.previewKind === "display" ? displayActionProcess.running : inputActionProcess.running;
+				if (actionBusy) root.closeRollbackPending = true;
+			else {
+				root.closeRollbackPending = false;
+				root.revertPreview();
+			}
+		}
+        providerProcess.running = false;
+        root.capabilityRefreshPending = false;
+        root.displayRefreshPending = false;
+        displayDiscoverProcess.running = false;
+        automaticDisplayStatusProcess.running = false;
+        root.automaticDisplayRefreshPending = false;
+        root.inputRefreshPending = false;
+        inputDiscoverProcess.running = false;
+        displayWatchProcess.running = false;
+        inputWatchProcess.running = false;
+        notificationOwnerWatchProcess.running = false;
+		if (root.networkModel) root.networkModel.closeSettings();
+		if (root.bluetoothModel) root.bluetoothModel.closeSettings();
+		if (root.controlsModel) root.controlsModel.closeSettings();
+		if (root.powerModel) root.powerModel.closeSettings();
+		if (root.powerMenuModel) root.powerMenuModel.cancelConfirmation("settings");
+		if (root.defaultsModel) root.defaultsModel.closeSettings();
+		if (root.autostartModel) root.autostartModel.closeSettings();
+		if (root.appearanceModel) root.appearanceModel.closeSettings();
+		if (root.systemManagementModel) root.systemManagementModel.closeSettings();
+			inputSettleTimer.stop();
+        root.visible = false;
+        root.busy = false;
+        root.searchQuery = "";
+        root.selectedIndex = 0;
+    }
+
+    function toggle() {
+        if (root.visible) root.close(); else root.open();
+    }
+
+    Process {
+        id: providerProcess
+
+        command: Commands.settingsProviderCommand("discover")
+        running: false
+
+        stdout: StdioCollector {
+            onStreamFinished: root.parseDiscovery(this.text)
+        }
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const error = this.text.trim();
+                if (error.length > 0) root.message = error;
+            }
+        }
+
+        onRunningChanged: {
+            if (!running && root.capabilityRefreshPending && root.visible) {
+                Qt.callLater(function() {
+                    if (!providerProcess.running) root.refreshCapabilities();
+                });
+            }
+        }
+    }
+
+    Connections {
+        target: root.appearanceModel
+        enabled: root.appearanceModel !== null
+
+        function onPersonalizationSelectionsChanged() {
+            if (root.visible && root.selectedSectionId === "appearance")
+                root.refreshCapabilities();
+        }
+    }
+
+    FileView {
+        id: watchOwnerStat
+        path: "/proc/" + Quickshell.processId.toString() + "/stat"
+        blockLoading: true
+        printErrors: false
+    }
+
+    Process {
+        id: automaticDisplayStatusProcess
+        command: Commands.settingsDisplayProfilesCommand("status")
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    const state = JSON.parse(this.text);
+                    if (state.version !== 1 || !Array.isArray(state.profiles)
+                            || !Array.isArray(state.detected) || !Array.isArray(state.current)) throw new Error("Invalid profile response");
+                    root.automaticDisplayState = state;
+                } catch (error) {
+                    if (this.text.trim())
+                        root.automaticDisplayMessage = "Could not read automatic layouts: " + error;
+                }
+            }
+        }
+        stderr: StdioCollector { onStreamFinished: { if (this.text.trim()) root.automaticDisplayMessage = this.text.trim(); } }
+        onRunningChanged: {
+            if (!running && root.automaticDisplayRefreshPending && root.visible)
+                Qt.callLater(function() { root.refreshAutomaticDisplays(); });
+        }
+    }
+
+    Process {
+        id: automaticDisplaySaveProcess
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try { root.automaticDisplayMessage = JSON.parse(this.text).message; }
+                catch (error) { if (this.text.trim()) root.automaticDisplayMessage = "Invalid save response"; }
+            }
+        }
+        stderr: StdioCollector { onStreamFinished: { if (this.text.trim()) root.automaticDisplayMessage = this.text.trim(); } }
+        onRunningChanged: { if (!running) root.refreshAutomaticDisplays(); }
+    }
+
+    Process {
+        id: displayDiscoverProcess
+        command: Commands.settingsDisplayCommand("discover")
+        running: false
+        stdout: StdioCollector { onStreamFinished: root.parseDisplays(this.text) }
+        stderr: StdioCollector { onStreamFinished: { const error = this.text.trim(); if (error) { root.displayState = "failure"; root.displayMessage = error; } } }
+        onRunningChanged: {
+            if (!running && root.displayRefreshPending && root.visible) {
+                Qt.callLater(function() {
+                    if (root.visible && !displayDiscoverProcess.running)
+                        root.refreshDisplays();
+                });
+            }
+        }
+    }
+
+    Process {
+        id: inputDiscoverProcess
+        command: Commands.settingsInputCommand("discover")
+        running: false
+        stdout: StdioCollector { onStreamFinished: root.parseInput(this.text) }
+        stderr: StdioCollector { onStreamFinished: { const error = this.text.trim(); if (error) { root.inputState = "failure"; root.inputMessage = error; } } }
+        onRunningChanged: {
+            if (!running && root.inputRefreshPending && root.visible) {
+                Qt.callLater(function() {
+                    if (root.visible && !inputDiscoverProcess.running)
+                        root.refreshInput();
+                });
+            }
+        }
+    }
+
+    Process {
+        id: displayWatchProcess
+        command: Commands.settingsDisplayCommand("watch", root.watchOwnerArguments())
+        running: false
+        stdout: SplitParser { onRead: root.refreshDisplays() }
+    }
+
+    Process {
+        id: inputWatchProcess
+        command: Commands.settingsInputCommand("watch", root.watchOwnerArguments())
+        running: false
+			stdout: SplitParser { onRead: inputSettleTimer.restart() }
+    }
+
+    Process {
+        id: notificationOwnerWatchProcess
+        command: Commands.settingsProviderCommand("watch-notifications", [])
+        running: false
+        stdout: SplitParser { onRead: notificationOwnerSettleTimer.restart() }
+    }
+
+    Process {
+        id: displayActionProcess
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+				const lines = this.text.trim().split("\n");
+				for (const line of lines) {
+					const fields = line.split("\t");
+					if (fields[0] === "preview") {
+						root.previewKind = "display"; root.previewToken = fields[1]; root.previewSeconds = Number(fields[2]);
+						root.previewRollbackFailed = false;
+						root.displayPreviewStatusAttempts = 0;
+						root.displayMessage = "Display preview active";
+						} else if (fields[0] === "preview-active") {
+							root.previewKind = "display"; root.previewToken = fields[1]; root.previewOperationLocked = true;
+							root.previewRollbackFailed = false;
+							root.requireRecoveredPreviewRollback();
+						if (root.displayPreviewStatusAttempts >= root.maxDisplayPreviewStatusAttempts) {
+							root.previewSeconds = 0; root.previewOperationLocked = true;
+							root.displayMessage = "Automatic rollback status timed out; use Revert to retry the captured layout";
+						} else {
+							root.previewSeconds = 1;
+							root.displayMessage = "Waiting for automatic rollback";
+						}
+						} else if (fields[0] === "preview-failed") {
+							root.previewKind = "display"; root.previewToken = fields[1]; root.previewSeconds = 0;
+							root.previewRollbackFailed = true;
+							root.requireRecoveredPreviewRollback();
+						root.displayPreviewStatusAttempts = 0;
+						root.previewOperationLocked = true; root.displayMessage = fields.slice(2).join("\t");
+					} else if (fields[0] === "result") {
+						const finalizesPreview = fields[1] === "kept" || fields[1] === "reverted" || fields[1] === "expired";
+						if (finalizesPreview) {
+							root.previewKind = ""; root.previewToken = ""; root.previewSeconds = 0; root.previewOperationLocked = false;
+							root.previewRollbackFailed = false;
+							root.displayPreviewStatusAttempts = 0;
+						}
+						root.displayMessage = fields.slice(1).join(" ");
+						root.refreshDisplays();
+					}
+                }
+            }
+        }
+        stderr: StdioCollector { onStreamFinished: { const error = this.text.trim(); if (error) root.displayMessage = error; } }
+        onRunningChanged: {
+            if (!running && !root.previewToken) root.previewOperationLocked = false;
+			if (!running && !root.visible && root.previewKind === "display" && root.closeRollbackPending) {
+				root.closeRollbackPending = false;
+				root.revertPreview();
+			}
+        }
+    }
+
+    Process {
+        id: inputActionProcess
+        running: false
+        stdout: StdioCollector {
+            onStreamFinished: {
+				const lines = this.text.trim().split("\n");
+				for (const line of lines) {
+					const fields = line.split("\t");
+					if (fields[0] === "preview") {
+						root.previewKind = "input"; root.previewToken = fields[1]; root.previewSeconds = Number(fields[2]);
+						root.previewRollbackFailed = false;
+						root.inputPreviewStatusAttempts = 0;
+						root.inputMessage = "Input preview active";
+						} else if (fields[0] === "preview-active") {
+							root.previewKind = "input"; root.previewToken = fields[1]; root.previewOperationLocked = true;
+							root.requireRecoveredPreviewRollback();
+						if (root.inputPreviewStatusAttempts >= root.maxInputPreviewStatusAttempts) {
+							root.previewSeconds = 0; root.previewOperationLocked = true;
+							root.inputMessage = "Automatic rollback status timed out; use Revert to retry the captured value";
+						} else {
+							root.previewSeconds = 1;
+							root.inputMessage = "Waiting for automatic input rollback";
+						}
+						} else if (fields[0] === "preview-failed") {
+							root.previewKind = "input"; root.previewToken = fields[1]; root.previewSeconds = 0;
+							root.requireRecoveredPreviewRollback();
+						root.inputPreviewStatusAttempts = 0;
+						root.previewOperationLocked = true; root.inputMessage = fields.slice(2).join("\t");
+					} else if (fields[0] === "result") {
+						if (fields[1] === "keep" || fields[1] === "revert" || fields[1] === "expired") {
+							root.previewKind = ""; root.previewToken = ""; root.previewSeconds = 0; root.previewOperationLocked = false;
+							root.inputPreviewStatusAttempts = 0;
+						}
+						root.inputMessage = fields.slice(1).join(" ");
+						root.refreshInput();
+					}
+					}
+            }
+        }
+        stderr: StdioCollector { onStreamFinished: { const error = this.text.trim(); if (error) root.inputMessage = error; } }
+        onRunningChanged: {
+            if (!running && !root.previewToken) root.previewOperationLocked = false;
+			if (!running && !root.visible && root.previewKind === "input" && root.closeRollbackPending) {
+				root.closeRollbackPending = false;
+				root.revertPreview();
+			}
+        }
+    }
+
+    Timer {
+        interval: 1000
+        repeat: true
+        running: root.previewSeconds > 0
+        onTriggered: {
+            root.previewSeconds = Math.max(0, root.previewSeconds - 1);
+            if (root.previewSeconds === 0) {
+				if (root.previewKind === "display") root.pollDisplayPreviewStatus();
+				else root.pollInputPreviewStatus();
+            }
+        }
+    }
+
+    Timer {
+        id: inputSettleTimer
+        interval: 1200
+			onTriggered: {
+				if (!root.visible || root.selectedSectionId !== "input") return;
+				if (inputDiscoverProcess.running) {
+					inputSettleTimer.restart();
+					return;
+				}
+				root.refreshInput();
+			}
+    }
+
+    Timer {
+        id: notificationOwnerSettleTimer
+        interval: 100
+        onTriggered: {
+            if (root.visible && root.selectedSectionId === "appearance")
+                root.refreshCapabilities();
+        }
+    }
+}

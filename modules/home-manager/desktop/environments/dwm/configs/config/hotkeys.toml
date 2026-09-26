@@ -60,8 +60,8 @@ webapp   = "webapp-launch"
 keys = [
 
   # ── Launchers ────────────────────────────────────────────────────────────────
-  { mod="SUPER",            key="r",       desc="App launcher",            func="spawn",       cmd="rofi -show drun" },
-  { mod="SUPER",            key="d",       desc="App launcher",            func="spawn",       cmd="rofi -show drun" },
+  { mod="SUPER",            key="r",       desc="App launcher",            func="spawn",       cmd="quickshell ipc --path \"${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/shell.qml\" call launcher toggle" },
+  { mod="SUPER",            key="d",       desc="App launcher (Rofi)",     func="spawn",       cmd="rofi -show drun" },
   { mod="SUPER",            key="x",       desc="Terminal",                 func="spawn",       exec=["$terminal"] },
   { mod="SUPER",            key="w",       desc="Looking Glass (VM)",      func="spawn",       cmd="looking-glass-client -F" },
   { mod="SUPER SHIFT",      key="w",       desc="Randomize wallpaper",     func="spawn",       cmd="feh --randomize --bg-fill ~/.dotfiles/assets/wallpapers/* 2>/dev/null || true" },
@@ -130,7 +130,8 @@ keys = [
   # ── Session / power ───────────────────────────────────────────────────────────
   { mod="SUPER",            key="0",       desc="Show all tags",           func="view",        ui=-1 },
   { mod="SUPER SHIFT",      key="q",       desc="Quit dwm",                func="quit" },
-  { mod="SUPER CTRL",       key="q",       desc="Power menu",              func="spawn",       cmd="rofi -show power-menu -modi power-menu:rofi-power-menu || loginctl lock-session" },
+  { mod="SUPER CTRL",       key="q",       desc="Power menu",              func="spawn",       cmd="quickshell ipc --path \"${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/shell.qml\" call power toggle" },
+  { mod="SUPER ALT",        key="q",       desc="Power menu (Rofi)",       func="spawn",       cmd="rofi -show power-menu -modi power-menu:rofi-power-menu || loginctl lock-session" },
   { mod="SUPER CTRL SHIFT", key="r",       desc="Reboot",                  func="spawn",       cmd="systemctl reboot" },
   { mod="SUPER CTRL SHIFT", key="s",       desc="Suspend",                 func="spawn",       cmd="systemctl suspend" },
 

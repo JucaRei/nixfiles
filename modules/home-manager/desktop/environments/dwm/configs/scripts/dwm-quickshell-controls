@@ -1,0 +1,882 @@
+#!/bin/sh
+set -eu
+
+usage() {
+	printf '%s\n' "usage: dwm-quickshell-controls audio-snapshot|audio-watch|volume-status|volume-watch|volume-up [step]|volume-down [step]|volume-set <percent>|volume-toggle-mute|output-status|output-devices|output-set-default <sink>|input-set-default <source>|input-volume-set <source> <percent>|input-toggle-mute <source>|stream-volume-set <index> <percent>|stream-toggle-mute <index>|mic-status|media-status|media-watch|media-play-pause|media-next|media-previous|bluetooth-snapshot|bluetooth-status|bluetooth-devices|bluetooth-scan|bluetooth-power <on|off>|bluetooth-pair <address>|bluetooth-trust <address>|bluetooth-connect <address>|bluetooth-disconnect <address>|bluetooth-remove <address>" >&2
+	exit 2
+}
+
+run_bounded() {
+	duration=$1
+	shift
+	status=0
+	timeout --signal=TERM --kill-after=2 "$duration" "$@" || status=$?
+	if [ "$status" -eq 124 ]; then
+		printf 'operation timed out after %s seconds\n' "$duration" >&2
+	fi
+	return "$status"
+}
+
+run_parent_bound() {
+	parent_pid=$PPID
+	parent_identity=$(sed 's/^.*) //' "/proc/$parent_pid/stat" 2>/dev/null |
+		awk '{ print $1 " " $20 }') || return 1
+	[ -n "$parent_identity" ] || return 1
+	case $parent_identity in
+	Z\ *) return 1 ;;
+	esac
+	"$@" &
+	child_pid=$!
+
+	cleanup_parent_bound() {
+		kill -TERM "$child_pid" 2>/dev/null || :
+		kill -TERM "${watchdog_pid:-}" 2>/dev/null || :
+	}
+	trap cleanup_parent_bound EXIT HUP INT TERM
+	(
+		while :; do
+			current_identity=$(sed 's/^.*) //' "/proc/$parent_pid/stat" 2>/dev/null |
+				awk '{ print $1 " " $20 }' || true)
+			[ "$current_identity" = "$parent_identity" ] || {
+				kill -TERM "$child_pid" 2>/dev/null || :
+				exit 0
+			}
+			sleep 0.25
+		done
+	) &
+	watchdog_pid=$!
+
+	status=0
+	wait "$child_pid" || status=$?
+	kill -TERM "$watchdog_pid" 2>/dev/null || :
+	wait "$watchdog_pid" 2>/dev/null || :
+	trap - EXIT HUP INT TERM
+	return "$status"
+}
+
+volume_step() {
+	step=${1:-5%}
+
+	case "$step" in
+	[0-9]*%)
+		printf '%s\n' "$step"
+		;;
+	*)
+		usage
+		;;
+	esac
+}
+
+volume_percent() {
+	percent=${1:-}
+	percent=${percent%%%}
+
+	case "$percent" in
+	'' | *[!0-9]*)
+		usage
+		;;
+	esac
+
+	if [ "$percent" -gt 100 ]; then
+		usage
+	fi
+
+	printf '%s%%\n' "$percent"
+}
+
+sink_mute_pactl() {
+	pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null |
+		awk '
+			/Mute:/ {
+				print $2
+				found = 1
+				exit
+			}
+			END {
+				if (!found) {
+					exit 1
+				}
+			}
+		'
+}
+
+sink_volume_pactl() {
+	pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null |
+		awk '
+			{
+				for (i = 1; i <= NF; i++) {
+					if ($i ~ /^[0-9]+%$/) {
+						print $i
+						found = 1
+						exit
+					}
+				}
+			}
+			END {
+				if (!found) {
+					exit 1
+				}
+			}
+		'
+}
+
+volume_status_pactl() {
+	command -v pactl >/dev/null 2>&1 || return 1
+
+	mute=$(sink_mute_pactl) || return 1
+	volume=$(sink_volume_pactl) || return 1
+
+	if [ "$mute" = yes ]; then
+		printf 'VOL muted %s\n' "$volume"
+	else
+		printf 'VOL %s\n' "$volume"
+	fi
+}
+
+volume_status_wpctl() {
+	command -v wpctl >/dev/null 2>&1 || return 1
+
+	wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null |
+		awk '
+			/Volume:/ {
+				percent = int(($2 * 100) + 0.5)
+				if ($0 ~ /\[MUTED\]/) {
+					printf "VOL muted %d%%\n", percent
+				} else {
+					printf "VOL %d%%\n", percent
+				}
+				found = 1
+				exit
+			}
+			END {
+				if (!found) {
+					exit 1
+				}
+			}
+		'
+}
+
+volume_status() {
+	if volume_status_pactl; then
+		return 0
+	fi
+
+	if volume_status_wpctl; then
+		return 0
+	fi
+
+	printf '%s\n' "VOL unavailable"
+}
+
+volume_watch() {
+	# Compatibility snapshot for older deployed QML. Audio change notifications
+	# are handled by Quickshell.Services.Pipewire; keeping a pactl subscription
+	# here would orphan one client every time Quickshell reloads.
+	volume_status
+}
+
+volume_up() {
+	step=$(volume_step "${1:-}")
+
+	if command -v pactl >/dev/null 2>&1; then
+		pactl set-sink-volume @DEFAULT_SINK@ "+$step"
+	elif command -v wpctl >/dev/null 2>&1; then
+		wpctl set-volume @DEFAULT_AUDIO_SINK@ "$step+"
+	else
+		printf '%s\n' "pactl or wpctl not found" >&2
+		exit 127
+	fi
+}
+
+volume_down() {
+	step=$(volume_step "${1:-}")
+
+	if command -v pactl >/dev/null 2>&1; then
+		pactl set-sink-volume @DEFAULT_SINK@ "-$step"
+	elif command -v wpctl >/dev/null 2>&1; then
+		wpctl set-volume @DEFAULT_AUDIO_SINK@ "$step-"
+	else
+		printf '%s\n' "pactl or wpctl not found" >&2
+		exit 127
+	fi
+}
+
+volume_set() {
+	percent=$(volume_percent "${1:-}")
+
+	if command -v pactl >/dev/null 2>&1; then
+		pactl set-sink-volume @DEFAULT_SINK@ "$percent"
+	elif command -v wpctl >/dev/null 2>&1; then
+		wpctl set-volume @DEFAULT_AUDIO_SINK@ "$percent"
+	else
+		printf '%s\n' "pactl or wpctl not found" >&2
+		exit 127
+	fi
+}
+
+volume_toggle_mute() {
+	if command -v pactl >/dev/null 2>&1; then
+		pactl set-sink-mute @DEFAULT_SINK@ toggle
+	elif command -v wpctl >/dev/null 2>&1; then
+		wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+	else
+		printf '%s\n' "pactl or wpctl not found" >&2
+		exit 127
+	fi
+}
+
+default_sink_pactl() {
+	pactl info 2>/dev/null |
+		awk -F': ' '
+			$1 == "Default Sink" {
+				print $2
+				found = 1
+				exit
+			}
+			END {
+				if (!found) {
+					exit 1
+				}
+			}
+		'
+}
+
+output_devices_pactl() {
+	command -v pactl >/dev/null 2>&1 || return 1
+
+	default_sink=$(default_sink_pactl) || default_sink=
+
+	pactl list sinks 2>/dev/null |
+		awk -v default_sink="$default_sink" '
+			function emit() {
+				if (name == "") {
+					return
+				}
+				if (description == "") {
+					description = name
+				}
+				is_default = (name == default_sink) ? "1" : "0"
+				printf "%s\t%s\t%s\n", name, description, is_default
+			}
+			/^Sink #[0-9]+/ {
+				emit()
+				name = ""
+				description = ""
+				next
+			}
+			/^[[:space:]]*Name:/ {
+				sub(/^[[:space:]]*Name:[[:space:]]*/, "")
+				name = $0
+				next
+			}
+			/^[[:space:]]*Description:/ {
+				sub(/^[[:space:]]*Description:[[:space:]]*/, "")
+				description = $0
+				next
+			}
+			END {
+				emit()
+				if (!seen) {
+					exit 1
+				}
+			}
+			name != "" {
+				seen = 1
+			}
+		'
+}
+
+output_devices_wpctl() {
+	command -v wpctl >/dev/null 2>&1 || return 1
+
+	wpctl status 2>/dev/null |
+		awk '
+			function trim(value) {
+				sub(/^[[:space:]]+/, "", value)
+				sub(/[[:space:]]+$/, "", value)
+				return value
+			}
+			$0 == "Audio" {
+				audio = 1
+				next
+			}
+			audio && /Sinks:/ {
+				sinks = 1
+				next
+			}
+			sinks && (/Sources:/ || /Filters:/ || /Streams:/ || $0 == "Video" || $0 == "Settings") {
+				exit
+			}
+			sinks {
+				line = $0
+				if (line !~ /[0-9]+\./) {
+					next
+				}
+				is_default = (line ~ /\*/) ? "1" : "0"
+				sub(/^[^0-9]*/, "", line)
+				id = line
+				sub(/\..*/, "", id)
+				description = line
+				sub(/^[0-9]+\.[[:space:]]*/, "", description)
+				sub(/[[:space:]]*\[vol:.*/, "", description)
+				description = trim(description)
+				if (id != "" && description != "") {
+					printf "%s\t%s\t%s\n", id, description, is_default
+					seen = 1
+				}
+			}
+			END {
+				if (!seen) {
+					exit 1
+				}
+			}
+		'
+}
+
+output_devices() {
+	if output_devices_pactl; then
+		return 0
+	fi
+
+	if output_devices_wpctl; then
+		return 0
+	fi
+
+	printf '%s\n' "OUTPUT unavailable"
+}
+
+move_sink_inputs_pactl() {
+	sink=$1
+
+	pactl list short sink-inputs 2>/dev/null |
+		awk 'NF > 0 { print $1 }' |
+		while IFS= read -r input; do
+			[ -n "$input" ] || continue
+			pactl move-sink-input "$input" "$sink" >/dev/null 2>&1 || true
+		done
+}
+
+output_set_default() {
+	[ "$#" -eq 1 ] || usage
+	validate_audio_name "$1"
+
+	if command -v pactl >/dev/null 2>&1; then
+		if pactl set-default-sink "$1"; then
+			move_sink_inputs_pactl "$1"
+			return 0
+		fi
+	fi
+
+	if command -v wpctl >/dev/null 2>&1; then
+		wpctl set-default "$1"
+	else
+		printf '%s\n' "pactl or wpctl not found" >&2
+		exit 127
+	fi
+}
+
+mic_status_pactl() {
+	command -v pactl >/dev/null 2>&1 || return 1
+
+	pactl get-source-mute @DEFAULT_SOURCE@ 2>/dev/null |
+		awk '
+			/Mute:/ {
+				if ($2 == "yes") {
+					print "MIC muted"
+				} else {
+					print "MIC on"
+				}
+				found = 1
+				exit
+			}
+			END {
+				if (!found) {
+					exit 1
+				}
+			}
+		'
+}
+
+mic_status_wpctl() {
+	command -v wpctl >/dev/null 2>&1 || return 1
+
+	wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null |
+		awk '
+			/Volume:/ {
+				if ($0 ~ /\[MUTED\]/) {
+					print "MIC muted"
+				} else {
+					print "MIC on"
+				}
+				found = 1
+				exit
+			}
+			END {
+				if (!found) {
+					exit 1
+				}
+			}
+		'
+}
+
+mic_status() {
+	if mic_status_pactl; then
+		return 0
+	fi
+
+	if mic_status_wpctl; then
+		return 0
+	fi
+
+	printf '%s\n' "MIC unavailable"
+}
+
+output_status() {
+	if command -v pactl >/dev/null 2>&1; then
+		pactl get-default-sink 2>/dev/null || printf '%s\n' "Output unavailable"
+	elif command -v wpctl >/dev/null 2>&1; then
+		wpctl status -n 2>/dev/null | awk '/\*/ { print; exit }' || printf '%s\n' "Output unavailable"
+	else
+		printf '%s\n' "Output unavailable"
+	fi
+}
+
+validate_audio_name() {
+	[ "$#" -eq 1 ] && [ -n "$1" ] || usage
+	case $1 in
+	*[!A-Za-z0-9_.:-]*) usage ;;
+	esac
+}
+
+validate_audio_index() {
+	[ "$#" -eq 1 ] || usage
+	case $1 in '' | *[!0-9]*) usage ;; esac
+}
+
+audio_snapshot() {
+	printf 'audio-protocol\t1\t0\n'
+	if ! command -v pactl >/dev/null 2>&1 || ! command -v jq >/dev/null 2>&1; then
+		printf 'provider\taudio\tunavailable\tread-only\tpactl and jq are required\n'
+		return 0
+	fi
+
+	work=$(mktemp -d "${TMPDIR:-/tmp}/dwm-audio-snapshot.XXXXXX")
+	trap 'rm -rf "$work"' EXIT HUP INT TERM
+	if ! run_bounded 3 pactl --format=json info >"$work/info" ||
+		! run_bounded 3 pactl --format=json list sinks >"$work/sinks" ||
+		! run_bounded 3 pactl --format=json list sources >"$work/sources" ||
+		! run_bounded 3 pactl --format=json list sink-inputs >"$work/streams"; then
+		printf 'provider\taudio\tunavailable\tread-only\tPipeWire PulseAudio interface is unavailable\n'
+		return 0
+	fi
+	if ! jq -e . "$work/info" "$work/sinks" "$work/sources" "$work/streams" >/dev/null 2>&1; then
+		printf 'provider\taudio\tunavailable\tread-only\tMalformed audio provider response\n'
+		return 0
+	fi
+
+	default_sink=$(jq -r '.default_sink_name // ""' "$work/info")
+	default_source=$(jq -r '.default_source_name // ""' "$work/info")
+	printf 'provider\taudio\tavailable\tdelegated\tPipeWire state and user-session actions\n'
+	jq -r --arg default "$default_sink" '
+		def clean: tostring | gsub("[\\t\\r\\n]"; " ");
+	def percent: ([.volume[]?.value_percent | sub("%$"; "") | tonumber] | max // 0 | round) as $p |
+		if $p < 0 then 0 elif $p > 100 then 100 else $p end;
+		.[] | ["audio-output", (.name|clean), (.description // .properties["device.description"] // .name|clean),
+			(if .name == $default then "yes" else "no" end), (if .mute then "yes" else "no" end), (percent|tostring)] | @tsv' "$work/sinks"
+	jq -r --arg default "$default_source" '
+		def clean: tostring | gsub("[\\t\\r\\n]"; " ");
+	def percent: ([.volume[]?.value_percent | sub("%$"; "") | tonumber] | max // 0 | round) as $p |
+		if $p < 0 then 0 elif $p > 100 then 100 else $p end;
+		.[] | select(.name | endswith(".monitor") | not) |
+		["audio-input", (.name|clean), (.description // .properties["device.description"] // .name|clean),
+			(if .name == $default then "yes" else "no" end), (if .mute then "yes" else "no" end), (percent|tostring)] | @tsv' "$work/sources"
+	jq -r '
+		def clean: tostring | gsub("[\\t\\r\\n]"; " ");
+	def percent: ([.volume[]?.value_percent | sub("%$"; "") | tonumber] | max // 0 | round) as $p |
+		if $p < 0 then 0 elif $p > 100 then 100 else $p end;
+		.[] | ["audio-stream", (.index|tostring), (.properties["application.name"] // .name // "Application"|clean),
+			(.properties["media.name"] // .name // "Audio stream"|clean), (if .mute then "yes" else "no" end), (percent|tostring)] | @tsv' "$work/streams"
+}
+
+audio_watch() {
+	command -v pactl >/dev/null 2>&1 || return 127
+	run_parent_bound pactl subscribe
+}
+
+input_set_default() {
+	validate_audio_name "$1"
+	run_bounded 15 pactl set-default-source "$1"
+}
+
+input_volume_set() {
+	[ "$#" -eq 2 ] || usage
+	validate_audio_name "$1"
+	percent=$(volume_percent "$2")
+	run_bounded 15 pactl set-source-volume "$1" "$percent"
+}
+
+input_toggle_mute() {
+	validate_audio_name "$1"
+	run_bounded 15 pactl set-source-mute "$1" toggle
+}
+
+stream_volume_set() {
+	[ "$#" -eq 2 ] || usage
+	validate_audio_index "$1"
+	percent=$(volume_percent "$2")
+	run_bounded 15 pactl set-sink-input-volume "$1" "$percent"
+}
+
+stream_toggle_mute() {
+	validate_audio_index "$1"
+	run_bounded 15 pactl set-sink-input-mute "$1" toggle
+}
+
+media_status() {
+	if ! command -v playerctl >/dev/null 2>&1; then
+		printf '%s\n' "MEDIA unavailable"
+		return 0
+	fi
+
+	format=$(printf '{{playerName}}\t{{status}}\t{{artist}}\t{{title}}')
+	if ! playerctl metadata --format "$format" 2>/dev/null; then
+		printf '%s\n' "MEDIA none"
+	fi
+}
+
+media_watch() {
+	if ! command -v playerctl >/dev/null 2>&1; then
+		printf '%s\n' "MEDIA unavailable"
+		return 0
+	fi
+
+	format=$(printf '{{playerName}}\t{{status}}\t{{artist}}\t{{title}}')
+	if ! run_parent_bound playerctl --follow metadata --format "$format"; then
+		printf '%s\n' "MEDIA none"
+	fi
+}
+
+playerctl_action() {
+	[ "$#" -eq 1 ] || usage
+
+	if ! command -v playerctl >/dev/null 2>&1; then
+		printf '%s\n' "playerctl not found" >&2
+		exit 127
+	fi
+
+	playerctl "$1"
+}
+
+bluetooth_snapshot() {
+	printf 'connectivity-protocol\t1\t0\n'
+
+	if ! command -v busctl >/dev/null 2>&1 || ! command -v jq >/dev/null 2>&1; then
+		printf 'provider\tbluetooth\tunavailable\tread-only\tbusctl and jq are required for BlueZ state\n'
+		printf 'bluetooth-support\tdaemon\tunknown\tD-Bus state tooling is unavailable\n'
+		printf 'bluetooth-support\tadapter\tunknown\tAdapter state cannot be read\n'
+		printf 'bluetooth-support\toperations\tunavailable\tBluetooth actions are disabled\n'
+		return 0
+	fi
+
+	bluez_json=$(run_bounded 5 busctl --system --json=short call org.bluez / \
+		org.freedesktop.DBus.ObjectManager GetManagedObjects 2>/dev/null) || {
+		printf 'provider\tbluetooth\tunavailable\tread-only\tBlueZ daemon is unavailable\n'
+		printf 'bluetooth-support\tdaemon\tunavailable\tBlueZ ObjectManager is unreachable\n'
+		printf 'bluetooth-support\tadapter\tunknown\tAdapter state cannot be read\n'
+		printf 'bluetooth-support\toperations\tunavailable\tBluetooth actions are disabled\n'
+		return 0
+	}
+
+	if ! adapter_count=$(printf '%s\n' "$bluez_json" |
+		jq -er 'select(.data[0] | type == "object") | [.data[0] | to_entries[] | select(.value["org.bluez.Adapter1"] != null)] | length'); then
+		printf 'provider\tbluetooth\tunavailable\tread-only\tBlueZ returned an invalid ObjectManager response\n'
+		printf 'bluetooth-support\tdaemon\tunknown\tBlueZ response could not be validated\n'
+		printf 'bluetooth-support\tadapter\tunknown\tAdapter state cannot be read\n'
+		printf 'bluetooth-support\toperations\tunavailable\tBluetooth actions are disabled\n'
+		return 0
+	fi
+	if [ "$adapter_count" -eq 0 ]; then
+		printf 'provider\tbluetooth\trestricted\tread-only\tBlueZ is available but no adapter is present\n'
+		printf 'bluetooth-support\tdaemon\tavailable\tBlueZ ObjectManager is reachable\n'
+		printf 'bluetooth-support\tadapter\tunavailable\tNo BlueZ adapter object is present\n'
+		printf 'bluetooth-support\toperations\tunavailable\tNo adapter can accept operations\n'
+		return 0
+	fi
+
+	if command -v bluetoothctl >/dev/null 2>&1; then
+		printf 'provider\tbluetooth\tavailable\tdelegated\tBlueZ state and user-authorized device actions\n'
+		operation_state=delegated
+		operation_detail='Fixed bluetoothctl actions are available'
+	else
+		printf 'provider\tbluetooth\tavailable\tread-only\tBlueZ state is readable but bluetoothctl actions are unavailable\n'
+		operation_state=unavailable
+		operation_detail='bluetoothctl is not installed'
+	fi
+	printf 'bluetooth-support\tdaemon\tavailable\tBlueZ ObjectManager is reachable\n'
+	printf 'bluetooth-support\tadapter\tavailable\tA BlueZ adapter object is present\n'
+	printf 'bluetooth-support\toperations\t%s\t%s\n' "$operation_state" "$operation_detail"
+	printf '%s\n' "$bluez_json" | jq -r '
+		def clean: tostring | gsub("[\\t\\r\\n]"; " ");
+		def field: clean | if . == "" then "-" else . end;
+		.data[0] | to_entries[] |
+		select(.value["org.bluez.Adapter1"] != null) |
+		.value["org.bluez.Adapter1"] as $adapter |
+		["bluetooth-adapter", .key,
+		 ($adapter.Address.data // "" | field),
+		 ($adapter.Alias.data // $adapter.Name.data // "" | field),
+		 (if ($adapter.Powered.data // false) then "yes" else "no" end),
+		 (if ($adapter.Discovering.data // false) then "yes" else "no" end),
+		 (if ($adapter.Pairable.data // false) then "yes" else "no" end)] | @tsv'
+	printf '%s\n' "$bluez_json" | jq -r '
+		def clean: tostring | gsub("[\\t\\r\\n]"; " ");
+		def field: clean | if . == "" then "-" else . end;
+		.data[0] | to_entries[] |
+		select(.value["org.bluez.Device1"] != null) |
+		.value["org.bluez.Device1"] as $device |
+		["bluetooth-device", .key,
+		 ($device.Address.data // "" | field),
+		 ($device.Alias.data // $device.Name.data // $device.Address.data // "" | field),
+		 (if ($device.Paired.data // false) then "yes" else "no" end),
+		 (if ($device.Trusted.data // false) then "yes" else "no" end),
+		 (if ($device.Connected.data // false) then "yes" else "no" end),
+		 ($device.Adapter.data // "" | field)] | @tsv'
+}
+
+validate_bluetooth_address() {
+	[ "$#" -eq 1 ] || usage
+	printf '%s\n' "$1" | grep -Eq '^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}$' || usage
+}
+
+bluetooth_status() {
+	if ! command -v bluetoothctl >/dev/null 2>&1; then
+		printf '%s\n' "BT unavailable"
+		return 0
+	fi
+
+	powered=$(bluetoothctl show 2>/dev/null |
+		awk '
+			/^[[:space:]]*Powered:/ {
+				print $2
+				found = 1
+				exit
+			}
+			END {
+				if (!found) {
+					exit 1
+				}
+			}
+		') || {
+		printf '%s\n' "BT unavailable"
+		return 0
+	}
+
+	if [ "$powered" != yes ]; then
+		printf '%s\n' "BT off"
+		return 0
+	fi
+
+	count=$(bluetoothctl devices Connected 2>/dev/null | awk 'NF > 0 { count++ } END { print count + 0 }')
+	printf 'BT %s\n' "$count"
+}
+
+bluetooth_devices() {
+	command -v bluetoothctl >/dev/null 2>&1 || return 0
+	bluetoothctl devices | while IFS=' ' read -r _ address name; do
+		[ -n "$address" ] || continue
+		info=$(bluetoothctl info "$address" 2>/dev/null || true)
+		paired=$(printf '%s\n' "$info" | awk '/Paired:/ { print $2; exit }')
+		connected=$(printf '%s\n' "$info" | awk '/Connected:/ { print $2; exit }')
+		printf '%s\t%s\t%s\t%s\n' "$address" "$name" "${paired:-no}" "${connected:-no}"
+	done
+}
+
+bluetooth_scan() {
+	command -v bluetoothctl >/dev/null 2>&1 || return 1
+	scan_pid=
+	cleanup_bluetooth_scan() {
+		if [ -n "$scan_pid" ]; then
+			kill -TERM "$scan_pid" 2>/dev/null || :
+			wait "$scan_pid" 2>/dev/null || :
+		fi
+		bluetoothctl scan off >/dev/null 2>&1 || :
+	}
+	trap cleanup_bluetooth_scan EXIT
+	trap 'cleanup_bluetooth_scan; exit 1' HUP INT TERM
+	run_bounded 10 bluetoothctl --timeout 8 scan on >/dev/null 2>&1 &
+	scan_pid=$!
+	status=0
+	wait "$scan_pid" || status=$?
+	scan_pid=
+	bluetoothctl scan off >/dev/null 2>&1 || :
+	trap - EXIT HUP INT TERM
+	[ "$status" -eq 0 ] || return "$status"
+	bluetooth_devices
+}
+
+bluetooth_power() {
+	[ "$#" -eq 1 ] || usage
+	case $1 in on | off) run_bounded 15 bluetoothctl power "$1" ;; *) usage ;; esac
+}
+
+bluetooth_pair() {
+	[ "$#" -eq 1 ] || usage
+	validate_bluetooth_address "$1"
+	run_bounded 90 bluetoothctl pair "$1" || return $?
+	run_bounded 15 bluetoothctl trust "$1" || return $?
+	run_bounded 90 bluetoothctl connect "$1"
+}
+
+bluetooth_trust() {
+	[ "$#" -eq 1 ] || usage
+	validate_bluetooth_address "$1"
+	run_bounded 15 bluetoothctl trust "$1"
+}
+
+bluetooth_connect() {
+	[ "$#" -eq 1 ] || usage
+	validate_bluetooth_address "$1"
+	run_bounded 90 bluetoothctl connect "$1"
+}
+
+bluetooth_disconnect() {
+	[ "$#" -eq 1 ] || usage
+	validate_bluetooth_address "$1"
+	run_bounded 15 bluetoothctl disconnect "$1"
+}
+
+bluetooth_remove() {
+	[ "$#" -eq 1 ] || usage
+	validate_bluetooth_address "$1"
+	run_bounded 15 bluetoothctl remove "$1"
+}
+
+[ "$#" -ge 1 ] || usage
+
+command=$1
+shift
+
+case "$command" in
+audio-snapshot)
+	[ "$#" -eq 0 ] || usage
+	audio_snapshot
+	;;
+audio-watch)
+	[ "$#" -eq 0 ] || usage
+	audio_watch
+	;;
+volume-status)
+	[ "$#" -eq 0 ] || usage
+	volume_status
+	;;
+volume-watch)
+	[ "$#" -eq 0 ] || usage
+	volume_watch
+	;;
+volume-up)
+	[ "$#" -le 1 ] || usage
+	volume_up "${1:-}"
+	;;
+volume-down)
+	[ "$#" -le 1 ] || usage
+	volume_down "${1:-}"
+	;;
+volume-set)
+	[ "$#" -eq 1 ] || usage
+	volume_set "$1"
+	;;
+volume-toggle-mute)
+	[ "$#" -eq 0 ] || usage
+	volume_toggle_mute
+	;;
+output-devices)
+	[ "$#" -eq 0 ] || usage
+	output_devices
+	;;
+output-set-default)
+	[ "$#" -eq 1 ] || usage
+	output_set_default "$1"
+	;;
+input-set-default)
+	[ "$#" -eq 1 ] || usage
+	input_set_default "$1"
+	;;
+input-volume-set)
+	input_volume_set "$@"
+	;;
+input-toggle-mute)
+	[ "$#" -eq 1 ] || usage
+	input_toggle_mute "$1"
+	;;
+stream-volume-set)
+	stream_volume_set "$@"
+	;;
+stream-toggle-mute)
+	[ "$#" -eq 1 ] || usage
+	stream_toggle_mute "$1"
+	;;
+mic-status)
+	[ "$#" -eq 0 ] || usage
+	mic_status
+	;;
+output-status)
+	[ "$#" -eq 0 ] || usage
+	output_status
+	;;
+media-status)
+	[ "$#" -eq 0 ] || usage
+	media_status
+	;;
+media-watch)
+	[ "$#" -eq 0 ] || usage
+	media_watch
+	;;
+media-play-pause)
+	[ "$#" -eq 0 ] || usage
+	playerctl_action play-pause
+	;;
+media-next)
+	[ "$#" -eq 0 ] || usage
+	playerctl_action next
+	;;
+media-previous)
+	[ "$#" -eq 0 ] || usage
+	playerctl_action previous
+	;;
+bluetooth-status)
+	[ "$#" -eq 0 ] || usage
+	bluetooth_status
+	;;
+bluetooth-snapshot)
+	[ "$#" -eq 0 ] || usage
+	bluetooth_snapshot
+	;;
+bluetooth-devices)
+	[ "$#" -eq 0 ] || usage
+	bluetooth_devices
+	;;
+bluetooth-scan)
+	[ "$#" -eq 0 ] || usage
+	bluetooth_scan
+	;;
+bluetooth-power)
+	bluetooth_power "$@"
+	;;
+bluetooth-pair)
+	bluetooth_pair "$@"
+	;;
+bluetooth-trust)
+	bluetooth_trust "$@"
+	;;
+bluetooth-connect)
+	bluetooth_connect "$@"
+	;;
+bluetooth-disconnect)
+	bluetooth_disconnect "$@"
+	;;
+bluetooth-remove)
+	bluetooth_remove "$@"
+	;;
+*)
+	usage
+	;;
+esac

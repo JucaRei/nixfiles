@@ -1,0 +1,449 @@
+#!/bin/sh
+set -eu
+
+script_dir=$(
+	unset CDPATH
+	cd -- "$(dirname -- "$0")" && pwd
+)
+session_launcher=$script_dir/dwm-session-launch
+if [ ! -x "$session_launcher" ]; then
+	session_launcher=$(command -v dwm-session-launch 2>/dev/null || true)
+fi
+
+usage() {
+	printf 'usage: %s list|launch <desktop-file>|launch-chatgpt\n' "$0" >&2
+}
+
+desktop_id() {
+	file=$1
+	base=${file##*/}
+	printf '%s\n' "${base%.desktop}"
+}
+
+data_dirs() {
+	sep=
+	seen=:
+
+	add_dir() {
+		case $seen in
+		*:"$1":*) return 0 ;;
+		esac
+
+		printf '%s%s/applications' "$sep" "$1"
+		sep=':'
+		seen=$seen$1:
+	}
+
+	if [ -n "${XDG_DATA_HOME:-}" ]; then
+		add_dir "$XDG_DATA_HOME"
+	elif [ -n "${HOME:-}" ]; then
+		add_dir "$HOME/.local/share"
+	fi
+
+	if [ -n "${HOME:-}" ]; then
+		add_dir "$HOME/.local/share/flatpak/exports/share"
+		add_dir "$HOME/.local/share/snapd"
+		add_dir "$HOME/.nix-profile/share"
+	fi
+	add_dir /var/lib/flatpak/exports/share
+	add_dir /var/lib/snapd/desktop
+	add_dir /nix/var/nix/profiles/default/share
+
+	old_ifs=$IFS
+	IFS=:
+	for dir in ${XDG_DATA_DIRS:-/usr/local/share:/usr/share}; do
+		[ -n "$dir" ] || continue
+		add_dir "$dir"
+	done
+	IFS=$old_ifs
+	printf '\n'
+}
+
+desktop_files() {
+	data_dirs |
+		tr ':' '\n' |
+		while IFS= read -r dir; do
+			[ -d "$dir" ] || continue
+			find "$dir" \( -type f -o -type l \) -name '*.desktop' | sort
+		done
+}
+
+desktop_entry_summary() {
+	file=$1
+	locale=${LC_MESSAGES:-${LANG:-}}
+	locale=${locale%%.*}
+	locale_short=${locale%%_*}
+	current_desktop=${XDG_CURRENT_DESKTOP:-X-DWM:dwm}
+
+	awk -v locale="$locale" -v locale_short="$locale_short" -v current_desktop="$current_desktop" '
+		function clean(value) {
+			gsub(/\t/, " ", value)
+			gsub(/\r/, "", value)
+			return value
+		}
+
+		function key_name(line) {
+			return substr(line, 1, index(line, "=") - 1)
+		}
+
+		function key_value(line) {
+			return substr(line, index(line, "=") + 1)
+		}
+
+		function localized_match(key, base) {
+			return locale != "" &&
+				(key == base "[" locale "]" ||
+				 key == base "[" locale_short "]")
+		}
+
+		function assign_localized(key, value) {
+			if (localized_match(key, "Name")) {
+				name = value
+			} else if (localized_match(key, "GenericName")) {
+				generic = value
+			} else if (localized_match(key, "Comment")) {
+				comment = value
+			} else if (localized_match(key, "Keywords")) {
+				keywords = value
+			}
+		}
+
+		function desktop_matches(list_str) {
+			n_d = split(current_desktop, cur_desks, "[:;]")
+			n_l = split(list_str, target_desks, ";")
+			for (i = 1; i <= n_d; i++) {
+				if (cur_desks[i] == "") continue
+				for (j = 1; j <= n_l; j++) {
+					if (target_desks[j] == "") continue
+					if (cur_desks[i] == target_desks[j]) return 1
+				}
+			}
+			return 0
+		}
+
+		function desktop_entry_visible() {
+			if (type != "Application" || name == "" || exec == "" || hidden == "true" || nodisplay == "true") {
+				return 0
+			}
+			if (has_onlyshowin && has_notshowin) {
+				return 0
+			}
+			if (has_onlyshowin && !desktop_matches(onlyshowin)) {
+				return 0
+			}
+			if (has_notshowin && desktop_matches(notshowin)) {
+				return 0
+			}
+			return 1
+		}
+
+		function emit() {
+			if (desktop_entry_visible()) {
+				printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+					clean(name), clean(generic), clean(comment),
+					clean(exec), clean(icon), clean(file),
+					clean(keywords), clean(categories),
+					clean(startup_wm_class), clean(actions)
+			}
+		}
+
+		BEGIN {
+			file = ARGV[1]
+			entry = 0
+			type = ""
+			name = ""
+			generic = ""
+			comment = ""
+			exec = ""
+			icon = ""
+			keywords = ""
+			categories = ""
+			startup_wm_class = ""
+			actions = ""
+			hidden = "false"
+			nodisplay = "false"
+			onlyshowin = ""
+			notshowin = ""
+			has_onlyshowin = 0
+			has_notshowin = 0
+		}
+
+		$0 == "[Desktop Entry]" {
+			entry = 1
+			next
+		}
+
+		/^\[/ {
+			entry = 0
+			next
+		}
+
+		entry && $0 ~ /^Type=/ {
+			type = substr($0, 6)
+			next
+		}
+
+		entry && $0 ~ /^Name=/ && name == "" {
+			name = substr($0, 6)
+			next
+		}
+
+		entry && $0 ~ /^GenericName=/ && generic == "" {
+			generic = substr($0, 13)
+			next
+		}
+
+		entry && $0 ~ /^Comment=/ && comment == "" {
+			comment = substr($0, 9)
+			next
+		}
+
+		entry && $0 ~ /^Exec=/ && exec == "" {
+			exec = substr($0, 6)
+			next
+		}
+
+		entry && $0 ~ /^Icon=/ && icon == "" {
+			icon = substr($0, 6)
+			next
+		}
+
+		entry && $0 ~ /^Keywords=/ && keywords == "" {
+			keywords = substr($0, 10)
+			next
+		}
+
+		entry && $0 ~ /^Categories=/ && categories == "" {
+			categories = substr($0, 12)
+			next
+		}
+
+		entry && $0 ~ /^StartupWMClass=/ && startup_wm_class == "" {
+			startup_wm_class = substr($0, 16)
+			next
+		}
+
+		entry && $0 ~ /^Actions=/ && actions == "" {
+			actions = substr($0, 9)
+			next
+		}
+
+		entry && $0 ~ /^Hidden=/ {
+			hidden = tolower(substr($0, 8))
+			next
+		}
+
+		entry && $0 ~ /^NoDisplay=/ {
+			nodisplay = tolower(substr($0, 11))
+			next
+		}
+
+		entry && $0 ~ /^OnlyShowIn=/ {
+			onlyshowin = clean(substr($0, 12))
+			has_onlyshowin = 1
+			next
+		}
+
+		entry && $0 ~ /^NotShowIn=/ {
+			notshowin = clean(substr($0, 11))
+			has_notshowin = 1
+			next
+		}
+
+		entry && $0 ~ /^[A-Za-z]+(\[[^]]+\])=/ {
+			assign_localized(key_name($0), key_value($0))
+			next
+		}
+
+		END {
+			emit()
+		}
+	' "$file"
+}
+
+list_apps() {
+	seen_ids=:
+
+	desktop_files |
+		while IFS= read -r file; do
+			id=$(desktop_id "$file")
+			case $seen_ids in
+			*:"$id":*) continue ;;
+			esac
+
+			seen_ids=$seen_ids$id:
+			desktop_entry_summary "$file"
+		done |
+		awk -F '\t' '
+			{
+				row_count++
+				rows[row_count] = $0
+				name = tolower($1)
+				exec_line = tolower($4)
+				categories = ";" tolower($8)
+				web[row_count] = name == "chatgpt" &&
+					(index(exec_line, "chatgpt.com") > 0 ||
+					 index(categories, ";webapp;") > 0)
+				if (name == "chatgpt" && !web[row_count]) {
+					native_chatgpt = 1
+				}
+			}
+
+			END {
+				for (row = 1; row <= row_count; row++) {
+					if (!native_chatgpt || !web[row]) {
+						print rows[row]
+					}
+				}
+			}
+		' |
+		sort -f
+}
+
+desktop_value() {
+	file=$1
+	key=$2
+
+	awk -v key="$key" '
+		$0 == "[Desktop Entry]" {
+			entry = 1
+			next
+		}
+
+		/^\[/ {
+			entry = 0
+			next
+		}
+
+		entry && index($0, key "=") == 1 {
+			print substr($0, length(key) + 2)
+			exit
+		}
+	' "$file"
+}
+
+is_chatgpt_entry() {
+	file=$1
+	name=$(desktop_value "$file" Name | tr '[:upper:]' '[:lower:]')
+	[ "$name" = chatgpt ]
+}
+
+is_chatgpt_web_entry() {
+	file=$1
+	is_chatgpt_entry "$file" || return 1
+
+	exec_line=$(desktop_value "$file" Exec | tr '[:upper:]' '[:lower:]')
+	categories=$(desktop_value "$file" Categories | tr '[:upper:]' '[:lower:]')
+	case $exec_line in
+	*chatgpt.com*) return 0 ;;
+	esac
+	case ";$categories" in
+	*";webapp;"*) return 0 ;;
+	esac
+	return 1
+}
+
+is_chatgpt_native_entry() {
+	file=$1
+	is_chatgpt_entry "$file" || return 1
+	is_chatgpt_web_entry "$file" && return 1
+	[ -n "$(desktop_entry_summary "$file")" ]
+}
+
+chatgpt_native_desktop() {
+	desktop_files |
+		while IFS= read -r file; do
+			if is_chatgpt_native_entry "$file"; then
+				printf '%s\n' "$file"
+				break
+			fi
+		done
+}
+
+fallback_launch() {
+	file=$1
+	exec_line=$(desktop_value "$file" Exec)
+	terminal=$(desktop_value "$file" Terminal | tr '[:upper:]' '[:lower:]')
+	command=$(printf '%s\n' "$exec_line" | sed 's/%[fFuUdDnNickvm]//g; s/[[:space:]][[:space:]]*/ /g; s/^ //; s/ $//')
+
+	[ -n "$command" ] || {
+		printf 'desktop entry has no Exec line: %s\n' "$file" >&2
+		return 1
+	}
+
+	if [ "$terminal" = true ]; then
+		launch_background dwm-terminal -e sh -c "$command"
+	else
+		launch_background sh -c "$command"
+	fi
+}
+
+launch_background() {
+	if [ -n "$session_launcher" ]; then
+		set -- "$session_launcher" "$@"
+	fi
+	if command -v setsid >/dev/null 2>&1; then
+		setsid "$@" >/dev/null 2>&1 &
+	else
+		"$@" >/dev/null 2>&1 &
+	fi
+}
+
+launch_app() {
+	file=$1
+
+	[ -f "$file" ] || {
+		printf 'desktop entry not found: %s\n' "$file" >&2
+		return 1
+	}
+
+	if command -v dex >/dev/null 2>&1; then
+		launch_background dex "$file"
+		return 0
+	fi
+
+	if command -v gtk-launch >/dev/null 2>&1; then
+		launch_background gtk-launch "$(desktop_id "$file")"
+		return 0
+	fi
+
+	fallback_launch "$file"
+}
+
+launch_chatgpt() {
+	file=$(chatgpt_native_desktop)
+	if [ -n "$file" ]; then
+		launch_app "$file"
+		return
+	fi
+
+	command -v webapp-launch >/dev/null 2>&1 || {
+		printf 'ChatGPT is not installed and webapp-launch is unavailable\n' >&2
+		return 1
+	}
+	launch_background env DWM_CHATGPT_WEB_FALLBACK=1 webapp-launch https://chatgpt.com
+}
+
+case ${1:-list} in
+list)
+	list_apps
+	;;
+launch)
+	if [ $# -ne 2 ]; then
+		usage
+		exit 2
+	fi
+	launch_app "$2"
+	;;
+launch-chatgpt)
+	if [ $# -ne 1 ]; then
+		usage
+		exit 2
+	fi
+	launch_chatgpt
+	;;
+*)
+	usage
+	exit 2
+	;;
+esac

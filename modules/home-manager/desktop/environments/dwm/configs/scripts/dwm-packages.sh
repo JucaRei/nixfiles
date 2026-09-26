@@ -1,0 +1,224 @@
+#!/usr/bin/env bash
+# Shared package capability map for dwm-titus installers and diagnostics.
+
+dwm_packages() {
+	local family=$1
+	local profile=$2
+
+	case "$family:$profile" in
+	fedora:build)
+		printf '%s\n' \
+			gcc make pkgconf-pkg-config libX11-devel libXft-devel \
+			libXinerama-devel libXrender-devel imlib2-devel libxcb-devel \
+			xcb-util-devel freetype-devel fontconfig-devel
+		;;
+	fedora:ci-smoke)
+		dwm_packages "$family" build
+		printf '%s\n' quickshell python3 dbus-daemon util-linux procps-ng \
+			xorg-x11-server-Xvfb xdotool xprop xrandr xset xsettingsd \
+			jq inotify-tools gawk google-noto-sans-fonts
+		;;
+	fedora:image-build)
+		printf '%s\n' xorriso rsync squashfs-tools-ng isomd5sum python3-pillow fontconfig google-noto-sans-fonts
+		;;
+	fedora:image-factory)
+		dwm_packages "$family" image-build
+		printf '%s\n' qemu-system-x86 qemu-img edk2-ovmf libguestfs pykickstart xz zstd time
+		;;
+	fedora:image-boot)
+		printf '%s\n' tar dracut-network grub2-pc grub2-pc-modules grub2-efi-x64 shim-x64 \
+			lvm2 cryptsetup btrfs-progs xfsprogs e2fsprogs mdadm dosfstools
+		;;
+	fedora:image-desktop)
+		# Dedicated image defaults; existing-system installs retain user choices.
+		printf '%s\n' brave-origin fastfetch python3-libdnf5
+		;;
+	fedora:media)
+		printf '%s\n' celluloid mpv sxiv python3 desktop-file-utils
+		;;
+	fedora:x11)
+		printf '%s\n' xorg-x11-server-Xorg xorg-x11-xinit xrandr xset xsetroot xinput setxkbmap xkbset
+		;;
+	fedora:runtime-required)
+		printf '%s\n' dbus-x11 curl git procps-ng psmisc unzip util-linux xclip xdotool xprop xdg-utils
+		;;
+	fedora:desktop)
+		# Fedora 44 publishes the compatible Quickshell snapshot in its official
+		# fedora/updates repositories. It is required and belongs in the strict
+		# desktop transaction; the Fedora package-map check proves availability.
+		printf '%s\n' \
+			quickshell picom python3 feh dex-autostart mate-polkit xsettingsd bubblewrap libseccomp \
+			alsa-utils brightnessctl dbus-tools inotify-tools jq pulseaudio-utils pipewire pavucontrol \
+			pipewire-pulseaudio wireplumber libnotify light-locker xorg-x11-drv-libinput \
+			bluez blueman playerctl upower power-profiles-daemon flatpak xdg-desktop-portal-gtk
+		;;
+	fedora:system-management)
+		printf '%s\n' \
+			PackageKit PackageKit-glib python3-gobject python3-rpm accountsservice cups \
+			system-config-printer
+		;;
+	fedora:system-management-optional)
+		printf '%s\n' lxqt-admin dnfdragora
+		;;
+	fedora:source-update)
+		# Dependencies introduced after the initial installation that the supported
+		# source-checkout synchronization path must reconcile for existing systems.
+		printf '%s\n' xsettingsd xkbset bubblewrap libseccomp
+		;;
+	fedora:desktop-optional)
+		printf '%s\n' \
+			Thunar gvfs gvfs-smb tumbler thunar-archive-plugin file-roller \
+			xdg-user-dirs gnome-keyring gnome-keyring-pam NetworkManager \
+			rsync
+		;;
+	fedora:gaming)
+		if [[ ${ARCH:-$(uname -m)} == x86_64 ]]; then
+			printf '%s\n' \
+				steam gamescope gamemode.x86_64 gamemode.i686 \
+				mangohud.x86_64 mangohud.i686
+		fi
+		;;
+	fedora:theme)
+		printf '%s\n' dconf adwaita-icon-theme papirus-icon-theme
+		;;
+	fedora:theme-gtk)
+		printf '%s\n' \
+			arc-theme adw-gtk3-theme numix-gtk-theme \
+			yaru-gtk3-theme yaru-gtk4-theme deepin-gtk-theme \
+			bluebird-gtk3-theme
+		;;
+	fedora:theme-optional)
+		printf '%s\n' qt6ct qt5ct
+		;;
+	fedora:fonts)
+		printf '%s\n' google-noto-color-emoji-fonts google-noto-sans-mono-fonts
+		;;
+	fedora:qml-development)
+		printf '%s\n' qt6-qtdeclarative-devel
+		;;
+	fedora:qml-validation)
+		printf '%s\n' quickshell xsettingsd
+		dwm_packages "$family" qml-development
+		;;
+	fedora:lightdm)
+		printf '%s\n' lightdm slick-greeter
+		;;
+	fedora:terminal)
+		printf '%s\n' alacritty kitty
+		;;
+	fedora:terminal-primary)
+		printf '%s\n' alacritty
+		;;
+	fedora:screenshot-optional)
+		printf '%s\n' maim
+		;;
+	fedora:required)
+		dwm_packages "$family" build
+		dwm_packages "$family" x11
+		dwm_packages "$family" runtime-required
+		dwm_packages "$family" media
+		;;
+	fedora:recommended)
+		dwm_packages "$family" desktop
+		dwm_packages "$family" system-management
+		dwm_packages "$family" screenshot-optional
+		dwm_packages "$family" theme
+		dwm_packages "$family" theme-gtk
+		dwm_packages "$family" fonts
+		;;
+	fedora:optional)
+		dwm_packages "$family" theme-optional
+		dwm_packages "$family" desktop-optional
+		dwm_packages "$family" system-management-optional
+		;;
+	fedora:full)
+		dwm_packages "$family" required
+		dwm_packages "$family" recommended
+		dwm_packages "$family" optional
+		dwm_packages "$family" gaming
+		;;
+	*)
+		return 1
+		;;
+	esac
+}
+
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
+	[[ $# == 2 ]] || {
+		printf 'usage: %s FAMILY PROFILE\n' "$0" >&2
+		exit 2
+	}
+	dwm_packages "$1" "$2"
+	exit $?
+fi
+
+dwm_install_package_profile() {
+	local profile=$1
+	local packages=()
+	local package
+
+	while IFS= read -r package; do
+		[[ -n $package ]] || continue
+		if [[ $package == power-profiles-daemon ]] && dwm_power_profiles_provider_installed; then
+			printf '%s\n' \
+				'Retaining installed Power Profiles provider (ppd-service); skipping power-profiles-daemon.' >&2
+			continue
+		fi
+		packages+=("$package")
+	done < <(dwm_packages "$DISTRO_FAMILY" "$profile")
+
+	if ((${#packages[@]} == 0)); then
+		return 0
+	fi
+
+	install_packages "${packages[@]}"
+}
+
+dwm_power_profiles_provider_installed() {
+	command -v rpm >/dev/null 2>&1 &&
+		rpm -q --whatprovides ppd-service >/dev/null 2>&1
+}
+
+dwm_install_available_package_profile() {
+	local profile=$1
+	local package
+	local status=0
+
+	while IFS= read -r package; do
+		[[ -n $package ]] || continue
+		if ! install_optional_package "$package"; then
+			printf 'Skipping unavailable optional package: %s\n' "$package" >&2
+			status=1
+		fi
+	done < <(dwm_packages "$DISTRO_FAMILY" "$profile")
+
+	return "$status"
+}
+
+dwm_install_first_available_package() {
+	local package
+
+	for package in "$@"; do
+		if install_optional_package "$package" 2>/dev/null; then
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+dwm_install_first_available_profile() {
+	local profile=$1
+	local packages=()
+	local package
+
+	while IFS= read -r package; do
+		[[ -n $package ]] && packages+=("$package")
+	done < <(dwm_packages "$DISTRO_FAMILY" "$profile")
+
+	if ((${#packages[@]} == 0)); then
+		return 1
+	fi
+
+	dwm_install_first_available_package "${packages[@]}"
+}

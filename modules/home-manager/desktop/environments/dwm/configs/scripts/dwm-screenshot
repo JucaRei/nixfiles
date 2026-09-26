@@ -1,0 +1,192 @@
+#!/usr/bin/env bash
+# Portable maim screenshot wrapper for dwm-titus.
+#
+# Usage:
+#   dwm-screenshot screen  - save the monitor containing the cursor as JPEG
+#   dwm-screenshot full    - save all monitors as JPEG
+#   dwm-screenshot gui     - select a region and save it as JPEG
+#   dwm-screenshot clip    - select a region and copy it as PNG
+
+set -euo pipefail
+
+CLIP_CAPTURE_FILE=
+
+cleanup_clip_capture() {
+	[[ -z ${CLIP_CAPTURE_FILE:-} ]] || rm -f -- "$CLIP_CAPTURE_FILE"
+}
+
+active_monitor_geometry() {
+	local key monitor_count monitor_height monitor_line monitor_width
+	local monitor_x monitor_y pointer_x pointer_y value
+	local monitor_list
+
+	if ! command -v xrandr >/dev/null 2>&1; then
+		printf 'dwm-screenshot: xrandr is required to locate the active monitor\n' >&2
+		return 1
+	fi
+	if ! monitor_list=$(xrandr --listmonitors 2>/dev/null); then
+		printf 'dwm-screenshot: unable to list active monitors\n' >&2
+		return 1
+	fi
+	monitor_count=$(awk 'NR == 1 && $1 == "Monitors:" { print $2 }' <<<"$monitor_list")
+	if [[ ! $monitor_count =~ ^[1-9][0-9]*$ ]]; then
+		printf 'dwm-screenshot: xrandr returned no active monitors\n' >&2
+		return 1
+	fi
+
+	if ((monitor_count > 1)); then
+		if ! command -v xdotool >/dev/null 2>&1; then
+			printf 'dwm-screenshot: xdotool is required to locate the pointer\n' >&2
+			return 1
+		fi
+		while IFS='=' read -r key value; do
+			case "$key" in
+			X) pointer_x=$value ;;
+			Y) pointer_y=$value ;;
+			esac
+		done < <(xdotool getmouselocation --shell 2>/dev/null)
+		if [[ ! ${pointer_x:-} =~ ^-?[0-9]+$ || ! ${pointer_y:-} =~ ^-?[0-9]+$ ]]; then
+			printf 'dwm-screenshot: unable to locate the pointer\n' >&2
+			return 1
+		fi
+	fi
+
+	while IFS= read -r monitor_line; do
+		if [[ $monitor_line =~ ^[[:space:]]*[0-9]+:.*[[:space:]]([0-9]+)/[0-9]+x([0-9]+)/[0-9]+([+-][0-9]+)([+-][0-9]+)[[:space:]] ]]; then
+			monitor_width=${BASH_REMATCH[1]}
+			monitor_height=${BASH_REMATCH[2]}
+			monitor_x=${BASH_REMATCH[3]}
+			monitor_y=${BASH_REMATCH[4]}
+			if ((monitor_count == 1 || \
+				pointer_x >= monitor_x && pointer_x < monitor_x + monitor_width && \
+				pointer_y >= monitor_y && pointer_y < monitor_y + monitor_height)); then
+				printf '%sx%s%s%s\n' \
+					"$monitor_width" "$monitor_height" "$monitor_x" "$monitor_y"
+				return
+			fi
+		fi
+	done <<<"$monitor_list"
+
+	printf 'dwm-screenshot: pointer is not on an active monitor\n' >&2
+	return 1
+}
+
+next_capture_path() {
+	local stamp
+
+	stamp=$(date '+%Y-%m-%d_%H-%M-%S')
+	mktemp "$SCREENSHOT_DIR/screenshot_${stamp}.XXXXXX.jpg"
+}
+
+save_capture() {
+	local mode=$1 capture_file capture_status=0 geometry
+	local -a maim_args=(--hidecursor)
+
+	case "$mode" in
+	screen)
+		geometry=$(active_monitor_geometry)
+		maim_args+=(--geometry "$geometry")
+		;;
+	full) ;;
+	gui) maim_args+=(--select) ;;
+	esac
+
+	capture_file=$(next_capture_path)
+	if maim "${maim_args[@]}" "$capture_file"; then
+		if [[ ! -s $capture_file ]]; then
+			printf 'dwm-screenshot: maim produced an empty capture\n' >&2
+			capture_status=1
+		fi
+	else
+		capture_status=$?
+	fi
+
+	if ((capture_status != 0)); then
+		rm -f -- "$capture_file"
+		return "$capture_status"
+	fi
+
+	if command -v notify-send >/dev/null 2>&1; then
+		notify-send -a dwm-titus 'Screenshot saved' "$capture_file" \
+			>/dev/null 2>&1 || true
+	fi
+	printf '%s\n' "$capture_file"
+}
+
+copy_capture_to_clipboard() {
+	local capture_file capture_status=0 runtime_dir
+
+	if ! command -v xclip >/dev/null 2>&1; then
+		printf 'dwm-screenshot: xclip is required for clipboard captures\n' >&2
+		return 127
+	fi
+
+	runtime_dir="${XDG_RUNTIME_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}}/dwm-titus"
+	mkdir -p "$runtime_dir"
+	chmod 700 "$runtime_dir"
+	trap cleanup_clip_capture EXIT
+	trap 'exit 129' HUP
+	trap 'exit 130' INT
+	trap 'exit 143' TERM
+	CLIP_CAPTURE_FILE=$(mktemp "$runtime_dir/clipboard.XXXXXX.png")
+	capture_file=$CLIP_CAPTURE_FILE
+
+	if maim --hidecursor --select "$capture_file"; then
+		if [[ ! -s $capture_file ]]; then
+			printf 'dwm-screenshot: maim produced an empty capture\n' >&2
+			capture_status=1
+		fi
+	else
+		capture_status=$?
+	fi
+	if ((capture_status == 0)); then
+		# Silent mode reads stdin, forks, and returns while the child owns the
+		# clipboard. Spell it out so -loops 0 cannot be mistaken for foreground
+		# operation (xclip's -quiet mode).
+		if xclip -selection clipboard -target image/png -loops 0 -silent -in <"$capture_file"; then
+			:
+		else
+			capture_status=$?
+		fi
+	fi
+
+	cleanup_clip_capture
+	CLIP_CAPTURE_FILE=
+	trap - EXIT HUP INT TERM
+	return "$capture_status"
+}
+
+ACTION=${1:-gui}
+
+# Compatibility no-ops allow a rolling update from older autostart and theme
+# scripts that managed the removed Flameshot daemon.
+case "$ACTION" in
+setup | daemon | restart-daemon) exit 0 ;;
+screen | full | gui | clip) ;;
+*)
+	printf 'Usage: %s {screen|full|gui|clip}\n' "$0" >&2
+	exit 1
+	;;
+esac
+
+if [[ -z ${DISPLAY:-} ]]; then
+	printf 'dwm-screenshot: DISPLAY is not set\n' >&2
+	exit 1
+fi
+if ! command -v maim >/dev/null 2>&1; then
+	printf 'dwm-screenshot: maim is not installed\n' >&2
+	exit 127
+fi
+
+SCREENSHOT_DIR=""
+if command -v xdg-user-dir >/dev/null 2>&1; then
+	pictures_dir=$(xdg-user-dir PICTURES 2>/dev/null || true)
+	[[ -z $pictures_dir ]] || SCREENSHOT_DIR="$pictures_dir/Screenshots"
+fi
+SCREENSHOT_DIR="${SCREENSHOT_DIR:-$HOME/Pictures/Screenshots}"
+mkdir -p "$SCREENSHOT_DIR"
+
+case "$ACTION" in
+screen | full | gui) save_capture "$ACTION" ;;
+clip) copy_capture_to_clipboard ;;
+esac

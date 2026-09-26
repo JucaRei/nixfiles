@@ -1,0 +1,259 @@
+#!/bin/sh
+set -eu
+
+print_default_names() {
+	count=${1:-9}
+	i=1
+	sep=
+	while [ "$i" -le "$count" ]; do
+		printf '%s%s' "$sep" "$i"
+		sep='|'
+		i=$((i + 1))
+	done
+}
+
+clean_line() {
+	tr '\r\n' '  ' | sed 's/[[:space:]][[:space:]]*/ /g; s/^ //; s/ $//'
+}
+
+root_property_value() {
+	prop=$1
+	xprop -root "$prop" 2>/dev/null | sed -n 's/^[^=]*= //p'
+}
+
+root_status() {
+	xprop -root WM_NAME 2>/dev/null |
+		awk -F'= ' '
+			/^WM_NAME/ {
+				status = $2
+				gsub(/^"/, "", status)
+				gsub(/"$/, "", status)
+				print status
+				found = 1
+				exit
+			}
+			END {
+				if (!found) {
+					print ""
+				}
+			}
+		' | clean_line
+}
+
+desktop_names() {
+	names=$(root_property_value _NET_DESKTOP_NAMES | awk '
+		BEGIN { RS = ","; sep = "" }
+		{
+			gsub(/^[[:space:]]*"/, "")
+			gsub(/"[[:space:]]*$/, "")
+			if ($0 != "") {
+				printf "%s%s", sep, $0
+				sep = "|"
+			}
+		}
+	')
+	if [ -n "$names" ]; then
+		printf '%s' "$names"
+	else
+		print_default_names "$1"
+	fi
+}
+
+active_window_id() {
+	xdotool getactivewindow 2>/dev/null || {
+		root_property_value _NET_ACTIVE_WINDOW |
+			sed -n 's/^window id # //p' |
+			awk '$1 != "0x0" { print $1; exit }'
+	}
+}
+
+occupied_workspaces() {
+	root_property_value _NET_CLIENT_LIST |
+		tr ',' '\n' |
+		while IFS= read -r window_id; do
+			window_id=$(printf '%s\n' "$window_id" | awk '{ print $NF }')
+			[ -n "$window_id" ] || continue
+			xprop -id "$window_id" _NET_WM_DESKTOP 2>/dev/null |
+				awk -F'= ' '$2 ~ /^[0-9]+$/ && $2 != 4294967295 { print $2 }'
+		done |
+		sort -nu |
+		paste -sd '|' -
+}
+
+fullscreen_monitors() {
+	root_property_value _DWM_FULLSCREEN_MONITORS |
+		tr ',' '\n' |
+		awk '$1 ~ /^[0-9]+$/ { print $1 }' |
+		sort -nu |
+		paste -sd '|' -
+}
+
+running_apps() {
+	seen='|'
+	root_property_value _NET_CLIENT_LIST |
+		tr ',' '\n' |
+		while IFS= read -r window_id; do
+			window_id=$(printf '%s\n' "$window_id" | awk '{ print $NF }')
+			[ -n "$window_id" ] || continue
+			pid=$(xprop -id "$window_id" _NET_WM_PID 2>/dev/null | awk -F'= ' '$2 ~ /^[0-9]+$/ { print $2; exit }')
+			if [ -n "$pid" ] && [ "$(ps -o uid= -p "$pid" 2>/dev/null | awk '{ print $1 }')" = 0 ]; then
+				continue
+			fi
+			class=$(window_class "$window_id" || true)
+			[ -n "$class" ] || continue
+			case $seen in
+			*"|$class|"*) continue ;;
+			esac
+			seen="$seen$class|"
+			printf '%s:%s\n' "$window_id" "$class"
+		done |
+		paste -sd '|' -
+}
+
+window_title() {
+	window_id=$1
+	[ -n "$window_id" ] || return 1
+	xprop -id "$window_id" _NET_WM_NAME WM_NAME 2>/dev/null |
+		awk -F'= ' '
+			/^_NET_WM_NAME/ {
+				title = $2
+				gsub(/^"/, "", title)
+				gsub(/"$/, "", title)
+				print title
+				found = 1
+				exit
+			}
+			/^WM_NAME/ {
+				title = $2
+				gsub(/^"/, "", title)
+				gsub(/"$/, "", title)
+				fallback = title
+			}
+			END {
+				if (!found && fallback != "") {
+					print fallback
+				}
+			}
+		' | clean_line
+}
+
+window_class() {
+	window_id=$1
+	[ -n "$window_id" ] || return 1
+	xprop -id "$window_id" WM_CLASS 2>/dev/null |
+		awk -F'= ' '/^WM_CLASS/ { gsub(/"/, "", $2); split($2, classes, /, /); print tolower(classes[2]); exit }'
+}
+
+show_state() {
+	current=$(root_property_value _NET_CURRENT_DESKTOP | awk '{ print $1; exit }')
+	count=$(root_property_value _NET_NUMBER_OF_DESKTOPS | awk '{ print $1; exit }')
+	current=${current:-0}
+	count=${count:-9}
+	names=$(desktop_names "$count")
+	window_id=$(active_window_id)
+	title=$(window_title "$window_id" || true)
+	title=${title:-Desktop}
+	class=$(window_class "$window_id" || true)
+	class=${class:-application-x-executable}
+	status=$(root_status)
+	occupied=$(occupied_workspaces)
+	fullscreen_monitors=$(fullscreen_monitors)
+	apps=$(running_apps)
+	monitor_desktops=$(
+		root_property_value _DWM_MONITOR_DESKTOPS |
+			tr -d '[:space:]'
+	)
+	monitor_desktops=${monitor_desktops:-$current}
+	focused_monitor=$(root_property_value _DWM_SELECTED_MONITOR | awk '{ print $1; exit }')
+
+	printf 'current=%s\n' "$current"
+	printf 'monitor_desktops=%s\n' "$monitor_desktops"
+	printf 'focused_monitor=%s\n' "$focused_monitor"
+	printf 'count=%s\n' "$count"
+	printf 'names=%s\n' "$names"
+	printf 'occupied=%s\n' "$occupied"
+	printf 'fullscreen_monitors=%s\n' "$fullscreen_monitors"
+	printf 'apps=%s\n' "$apps"
+	printf 'active_window=%s\n' "$window_id"
+	printf 'title=%s\n' "$title"
+	printf 'class=%s\n' "$class"
+	printf 'status=%s\n' "$status"
+}
+
+watch_state() {
+	show_state
+	printf '\n'
+
+	if xprop -root _DWM_MONITOR_DESKTOPS >/dev/null 2>&1; then
+		xprop -root -spy \
+			DWM_TAG_UPDATE \
+			_DWM_MONITOR_DESKTOPS \
+			_DWM_SELECTED_MONITOR \
+			_NET_NUMBER_OF_DESKTOPS \
+			_NET_DESKTOP_NAMES \
+			_NET_ACTIVE_WINDOW \
+			_NET_CLIENT_LIST \
+			_DWM_FULLSCREEN_MONITORS \
+			WM_NAME 2>/dev/null
+	else
+		xprop -root -spy \
+			DWM_TAG_UPDATE \
+			_NET_CURRENT_DESKTOP \
+			_NET_NUMBER_OF_DESKTOPS \
+			_NET_DESKTOP_NAMES \
+			_NET_ACTIVE_WINDOW \
+			_NET_CLIENT_LIST \
+			_DWM_FULLSCREEN_MONITORS \
+			WM_NAME 2>/dev/null
+	fi |
+		while IFS= read -r _event; do
+			show_state
+			printf '\n'
+		done
+}
+
+switch_workspace() {
+	target=${1:-}
+	case $target in
+	'' | *[!0-9]*)
+		printf 'usage: %s switch <zero-based-workspace>\n' "$0" >&2
+		return 2
+		;;
+	esac
+	command -v wmctrl >/dev/null 2>&1 || {
+		printf 'wmctrl is required for workspace switching\n' >&2
+		return 127
+	}
+	wmctrl -s "$target"
+}
+
+focus_window() {
+	target=${1:-}
+	case $target in
+	0x[0-9a-fA-F]* | [0-9]*) ;;
+	*)
+		printf 'usage: %s focus <window-id>\n' "$0" >&2
+		return 2
+		;;
+	esac
+	wmctrl -ia "$target"
+}
+
+case ${1:-state} in
+state)
+	show_state
+	;;
+watch)
+	watch_state
+	;;
+switch)
+	switch_workspace "${2:-}"
+	;;
+focus)
+	focus_window "${2:-}"
+	;;
+*)
+	printf 'usage: %s [state|watch|switch <zero-based-workspace>|focus <window-id>]\n' "$0" >&2
+	exit 2
+	;;
+esac

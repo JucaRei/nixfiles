@@ -1,0 +1,64 @@
+import QtQuick
+import QtQuick.Layouts
+import qs.core
+
+Rectangle {
+    id: root
+
+    required property var profile
+    property bool active: false
+    property bool actionsEnabled: true
+    signal connectRequested(var profile)
+    signal disconnectRequested(string device)
+
+    height: Theme.confirmButtonHeight
+    color: rowMouse.containsMouse ? Theme.controlHoverFill : Theme.controlNormalFill
+    border.color: rowMouse.containsMouse ? Theme.controlHoverBorder : Theme.controlNormalBorder
+    border.width: Theme.controlBorderWidth
+    radius: Theme.radius
+
+    MouseArea {
+        id: rowMouse
+
+        anchors.fill: parent
+        hoverEnabled: true
+        acceptedButtons: Qt.NoButton
+    }
+
+    RowLayout {
+        anchors.fill: parent
+        anchors.leftMargin: Theme.rowSpacing
+        anchors.rightMargin: Theme.rowSpacing
+        spacing: Theme.rowSpacing
+
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: Theme.compactSpacing
+
+            Text {
+                Layout.fillWidth: true
+                text: root.profile.name
+                color: Theme.readableText(Theme.textStrong, String(root.color))
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.panelFontSize
+                elide: Text.ElideRight
+            }
+
+            Text {
+                Layout.fillWidth: true
+                text: root.active ? root.profile.type + " on " + root.profile.device : root.profile.type
+                color: Theme.readableText(Theme.textMuted, String(root.color))
+                font.family: Theme.fontFamily
+                font.pixelSize: Theme.smallFontSize
+                elide: Text.ElideRight
+            }
+        }
+
+        ShellButton {
+            Layout.preferredHeight: Theme.chipHeight
+            label: root.active ? "Disconnect" : "Connect"
+            enabled: root.actionsEnabled
+            onActivated: root.active ? root.disconnectRequested(root.profile.device) : root.connectRequested(root.profile)
+        }
+    }
+}
