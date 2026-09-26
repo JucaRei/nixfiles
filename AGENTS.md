@@ -704,6 +704,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Discos NTFS/exFAT**: Em sistemas de arquivos sem suporte a permissões POSIX, garantir montagem com `umask=022`.
     - **AppArmor**: Caso continue bloqueando após ajustar permissões, definir `security_driver = "none"` em `/etc/libvirt/qemu.conf` e reiniciar o `libvirtd`.
 
+- **Sincronização do Script de Instalação `nitro-dual-debian.sh`**:
+  - **Virtualização Nativa**: Adicionada instalação e provisionamento completo do Virt-Manager, QEMU/KVM, OVMF, `swtpm`, `qemu-utils`, configuração de `user = "juca"` / `group = "juca"` em `/etc/libvirt/qemu.conf`, regra de Polkit `80-libvirt.rules` e ativação do serviço `libvirtd.service`.
+  - **Xorg, LightDM e Sessão BSPWM**: Substituídos blocos comentados pela instalação completa do servidor Xorg, drivers Intel e libinput, LightDM, GTK Greeter, wrapper `/usr/local/bin/start-bspwm-session` com carregamento de perfis do Nix e fallback amigável, `/usr/share/xsessions/bspwm.desktop`, `~/.dmrc` e ativação do `lightdm.service`.
+  - **Logitech MX Keys & Solaar**: Inclusão de regra de udev `/etc/udev/rules.d/42-logitech-unify-permissions.rules` para acesso aos receptores Bolt e Unifying sem root e adição do grupo `plugdev` ao usuário `juca`.
+  - **Grupos do Usuário**: Atualizado `usermod` para incluir `plugdev`, `libvirt`, `kvm` além dos grupos de sistema e Nix.
+  - **NVIDIA & Multimídia**: Inclusão de `libnvcuvid1` para aceleração NVDEC no `mpv-nvidia`, além de `intel-media-va-driver-non-free`, `vainfo` e `mesa-va-drivers` para a GPU integrada Intel UHD 630.
+  - **Nix Multi-usuário**: Configuração declarativa do canal `nixpkgs-unstable` para o usuário `juca` e `root`, `nix.conf` com `@nix-users`, `max-jobs = auto` e `cores = 0`, além de export de `NIX_PATH` apontando para o canal unstable.
+  - **PAM Lockers**: Inclusão de `i3lock` junto a `hyprlock`, `swaylock` e `noctalia`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
