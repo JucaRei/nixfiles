@@ -11,7 +11,14 @@ let
 
   colors = import ./colors.nix;
   scripts = import ./scripts.nix { inherit pkgs colors; };
-  polybarModules = import ./modules.nix { inherit lib pkgs colors scripts; };
+  polybarModules = import ./modules.nix {
+    inherit
+      lib
+      pkgs
+      colors
+      scripts
+      ;
+  };
 in
 {
   options.desktop.bspwm.polybar = {
@@ -34,7 +41,14 @@ in
         pkill -x polybar || true
         while pgrep -u $UID -x polybar >/dev/null; do sleep 0.5; done
 
-        export PATH="${lib.makeBinPath [ pkgs.xorg.xrandr pkgs.gnugrep pkgs.coreutils pkgs.procps ]}:$PATH"
+        export PATH="${
+          lib.makeBinPath [
+            pkgs.xorg.xrandr
+            pkgs.gnugrep
+            pkgs.coreutils
+            pkgs.procps
+          ]
+        }:$PATH"
 
         if command -v xrandr >/dev/null 2>&1; then
           for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
@@ -77,7 +91,7 @@ in
           modules-left = "bi launcher bd sep bi bspwm bd sep bi polywins bd";
           # modules-left = "bi launcher bd sep bi bspwm bd sep bi xwindow bd sep minimized"; # Layout anterior com xwindow e contador minimizado
           modules-center = "media";
-          modules-right = "bi cpu memory temperature bd sep bi network bluetooth bd sep bi pulseaudio bd sep bi date bd sep bi powermenu bd";
+          modules-right = "bi cpu memory temperature bd sep bi network dots bluetooth bd sep bi pulseaudio bd sep bi keyboard bd sep bi date bd sep bi powermenu bd";
 
           # --- Layout alternativo completo (descomente caso deseje exibir bateria/brilho no laptop, netspeed, teclado ou redshift):
           # modules-right = "bi cpu memory temperature bd sep bi network bluetooth bd sep bi pulseaudio backlight battery bd sep bi date bd sep bi powermenu bd"; # Com Bateria e Brilho

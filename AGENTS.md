@@ -28,6 +28,7 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
    - `overlays/` e `pkgs/`: Pacotes próprios e extensões do nixpkgs.
 3. **Boas Práticas de Modificação e Validação**:
    - Sempre manter comentários informativos e documentação existente.
+   - **Atualização Contínua da Memória (`AGENTS.md`)**: Sempre que um diagnóstico, solução de problema técnico ou decisão arquitetural for realizada, atualizar imediatamente e de forma proativa este arquivo (`AGENTS.md`), mantendo o histórico e os passos de reprodução/correção sem depender de pedido explícito do usuário.
    - **Validação Cirúrgica (Pontual)**: Durante edições passo a passo, valide apenas o que foi alterado (ex: `nix eval` da configuração alterada ou `nix flake check --no-build`) para evitar reavaliações e compilações pesadas desnecessárias.
    - **Verificação Global**: Deixe a execução completa de `nix flake check` apenas para o fechamento final da tarefa ou sob demanda do usuário.
 4. **Padrão de Tiling Managers no Home Manager (NixOS vs Standalone)**:
@@ -658,7 +659,53 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Adicionado pacote `pkgs.solaar` em `home.packages`.
     - Configurado serviço systemd do usuário (`systemd.user.services.solaar`) iniciando em segundo plano no tray (`solaar --window=hide`) atrelado a `graphical-session.target`.
 
+- **Virtualização com QEMU/KVM e Virt-Manager (NixOS vs. Standalone / Debian)**:
+  - **Diretriz de Instalação (NixOS vs. Home Manager / Distros Nativas)**:
+    - O `virt-manager` é exclusivamente o cliente gráfico e depende de componentes em nível de sistema (`libvirtd`, módulos de kernel `kvm_intel`/`kvm_amd`, pontes de rede `virbr0`, iptables/nftables e Polkit).
+    - **NixOS**: Habilitar a nível de SO usando o módulo dedicado do repositório em `modules/nixos/system/services/virt-manager/default.nix` (`nixos.services.virt-manager.enable = true;`), que já configura QEMU, libvirtd, OVMF (UEFI/Secure Boot), TPM (`swtpm`), DConf e grupos (`libvirtd`, `qemu-libvirtd`). Não instalar isoladamente via Home Manager.
+    - **Hosts Standalone (Debian `nitro`, Fedora `anubis`)**: Sempre instalar pelos gerenciadores nativos do sistema (`sudo apt install virt-manager qemu-system libvirt-daemon-system ovmf swtpm swtpm-tools` ou `sudo dnf install @virtualization virt-manager edk2-ovmf swtpm`) para evitar incompatibilidades de Polkit e de sockets `/var/run/libvirt/libvirt-sock` entre o Nixpkgs e o host.
+    - **Exceção Home Manager**: Instalar `pkgs.virt-manager` no Home Manager apenas para gerenciamento puramente remoto de VMs (`qemu+ssh://...`).
+  - **Suporte a Firmware UEFI (OVMF) e TPM no Debian ("Apenas BIOS aparece no Virt-Manager")**:
+    - **Causa Raiz**: No Debian, os binários de firmware UEFI EDK2 não acompanham o pacote base do QEMU. Sem o pacote `ovmf`, o `libvirtd` não localiza os descritores em `/usr/share/qemu/firmware/` e o virt-manager exibe apenas `BIOS (SeaBIOS)` nas opções de firmware.
+    - **Solução**:
+      1. Instalar os pacotes de firmware UEFI e emulador de TPM 2.0:
+         ```bash
+         sudo apt install ovmf swtpm swtpm-tools
+         ```
+      2. Reiniciar o serviço do libvirt para registrar os descritores:
+         ```bash
+         sudo systemctl restart libvirtd
+         ```
+      3. Reabrir o virt-manager. Ao criar uma VM, marcar *"Personalizar a configuração antes de instalar"*, ir em **Visão Geral** (*Overview*) e selecionar o firmware `UEFI x86_64: /usr/share/OVMF/OVMF_CODE_4M.fd` (ou variante Secure Boot).
+  - **Criação de Discos `.qcow2` no Debian (`creation of non-raw file images is not supported without qemu-img`)**:
+    - **Causa Raiz**: O pacote `qemu-system` no Debian não inclui o utilitário `/usr/bin/qemu-img` (pertencente ao pacote `qemu-utils`). Sem ele, o libvirt só consegue criar discos em formato `.raw`, falhando com `RuntimeError: Couldn't create storage volume ... internal error: creation of non-raw file images is not supported without qemu-img` ao gerar volumes `.qcow2`.
+    - **Solução**:
+      1. Instalar o pacote `qemu-utils`:
+         ```bash
+         sudo apt install qemu-utils
+         ```
+      2. Reiniciar o serviço do libvirt:
+         ```bash
+         sudo systemctl restart libvirtd
+         ```
+  - **Permissões de Acesso a ISOs e Armazenamento Externo no Debian (`Permission denied`)**:
+    - **Causa Raiz**: No Debian, o QEMU executa VMs sob o usuário de sistema `libvirt-qemu`. Dispositivos externos montados via desktop ficam em `/media/$USER/...` com permissão restrita `0700` (`rwx------`), impedindo que o `libvirt-qemu` atravesse as pastas até o arquivo `.iso`. O AppArmor também pode restringir caminhos fora de `/var/lib/libvirt/images`.
+    - **Solução Recomendada (Desktop Pessoal)**: Fazer o QEMU rodar sob o próprio usuário local editando `/etc/libvirt/qemu.conf`:
+      ```ini
+      user = "juca"
+      group = "juca"
+      ```
+      e reiniciando o daemon (`sudo systemctl restart libvirtd`).
+    - **Solução via ACLs (Sem alterar usuário do daemon)**:
+      ```bash
+      sudo setfacl -m u:libvirt-qemu:rx /media/$USER
+      sudo setfacl -R -m u:libvirt-qemu:rx /caminho/do/hd_externo
+      ```
+    - **Discos NTFS/exFAT**: Em sistemas de arquivos sem suporte a permissões POSIX, garantir montagem com `umask=022`.
+    - **AppArmor**: Caso continue bloqueando após ajustar permissões, definir `security_driver = "none"` em `/etc/libvirt/qemu.conf` e reiniciar o `libvirtd`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 
 

@@ -52,7 +52,7 @@ in
         antigravity.enable = true;
       };
       file-manager = {
-        pcmanfm.enable = true;
+        thunar.enable = true;
       };
       terminal = {
         enable = true;
