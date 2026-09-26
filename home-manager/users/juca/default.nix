@@ -123,6 +123,10 @@ in
             "${formatted}";
         };
       };
+
+      packages = with pkgs; [
+        cloneit
+      ];
     };
     systemd = {
       user.tmpfiles.rules = mkIf (isLinux && isWorkstation) [

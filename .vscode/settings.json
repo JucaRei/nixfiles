@@ -15,7 +15,7 @@
   },
   "editor.fontWeight": "300",
   "editor.fontSize": 24,
-  "editor.fontFamily": "'VictorMono NFM Light Obl', 'JetBrainsMono Nerd Font Propo','Lilex Nerd Font Regular', 'Lilex Nerd Font', 'monospace'",
+  "editor.fontFamily": "'VictorMono NF SemiBold Obl', 'JetBrainsMono Nerd Font Propo','Lilex Nerd Font Regular', 'Lilex Nerd Font', 'monospace'",
   "editor.fontLigatures": true,
   "editor.stickyScroll.enabled": false,
   "workbench.colorCustomizations": {
@@ -242,6 +242,7 @@
   },
   "editor.minimap.autohide": "mouseover",
   "terminal.integrated.fontSize": 18,
+  "terminal.integrated.fontFamily": "JetBrainsMonoNL Nerd Font Mono",
   "window.zoomLevel": 0,
   "editor.cursorBlinking": "phase",
   "window.titleBarStyle": "native",
