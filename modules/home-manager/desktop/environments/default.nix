@@ -12,6 +12,7 @@ in
 {
   imports = [
     ./bspwm
+    ./dwm
     ./xfce4
     ./hyprland
     ./mangowm
