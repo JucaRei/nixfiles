@@ -97,9 +97,11 @@ in
           # 5. Agente de autenticação Polkit (Agnóstico de distro)
           ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
 
-          # 6. Wallpaper / Fundo e Cursor padrão (garante left_ptr mesmo com fundo sólido)
+          # 6. Wallpaper / Fundo e Cursor padrão (gerenciado via feh)
           xsetroot -solid '#1e1e2e' -cursor_name left_ptr &
-          ${pkgs.nitrogen}/bin/nitrogen --restore 2>/dev/null || true
+          if [ -f "$HOME/.fehbg" ]; then
+            sh "$HOME/.fehbg" &
+          fi
 
           # 7. Applet de Rede (após importar DISPLAY)
           ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &
