@@ -215,122 +215,122 @@ in
         c = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         dart = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         dotnet = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         elixir = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         elm = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         erlang = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         golang = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         haskell = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         haxe = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         java = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         julia = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         kotlin = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         lua = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         nim = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         nodejs = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         perl = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         php = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         python = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         rlang = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "󰟔";
+          symbol = "󰟔 ";
         };
         ruby = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         rust = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         scala = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         swift = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         zig = {
           format = "[ $symbol]($style)";
           style = "fg:base bg:peach";
-          symbol = "";
+          symbol = " ";
         };
         package = {
           format = "[ $version]($style)";
