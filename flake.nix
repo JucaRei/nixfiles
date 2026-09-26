@@ -73,6 +73,7 @@
         "juca@virtualvm" = helper.mkHome {
           hostname = "virtualvm";
           stateVersion = "24.05";
+          desktop = "dwm";
         };
         "juca@anubisvm" = helper.mkHome {
           hostname = "anubisvm";
