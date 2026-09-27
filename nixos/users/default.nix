@@ -17,7 +17,7 @@ in
   config = {
     users.users.${username} = {
       isNormalUser = true;
-      shell = lib.mkForce pkgs.bash;
+      shell = lib.mkDefault pkgs.bash;
       extraGroups = [
         "input"
         "users"

@@ -122,6 +122,14 @@ in
 
     # General aliases
     (mkIf cfg.aliases.enable {
+      home.packages = [
+        (pkgs.writeShellScriptBin "gitpfolders" ''
+          for i in */.git; do
+            (echo "$i"; cd "$i/.." && git pull)
+          done
+        '')
+      ];
+
       home.shellAliases = {
         mkhostid = "head -c4 /dev/urandom | od -A none -t x4";
         lsusb = getExe pkgs.cyme;
@@ -140,12 +148,11 @@ in
         ports = "${pkgs.unixtools.netstat}/bin/netstat -tulanp";
         rsync = "${getExe pkgs.rsync} -aXxtv";
         tree = lib.mkDefault "${getExe pkgs.tree} -Cs";
-        gitpfolders = "for i in */.git; do (echo \$i; cd \$i/..; git pull); done";
 
-        pci = mkIf isNixOS "sudo 'PATH=\$PATH' env ${pkgs.inxi}/bin/inxi --slots";
+        pci = mkIf isNixOS "sudo --preserve-env=PATH ${pkgs.inxi}/bin/inxi --slots";
         wifi_scan = mkIf isNixOS "${getExe' pkgs.networkmanager "nmcli"} device wifi rescan && ${getExe' pkgs.networkmanager "nmcli"} device wifi list";
 
-        search = "${pkgs.ripgrep}/bin/rg -p --glob '!node_modules/*' --glob '!vendor/*' \"\$@\"";
+        search = "${pkgs.ripgrep}/bin/rg -p --glob '!node_modules/*' --glob '!vendor/*'";
       };
     })
 
