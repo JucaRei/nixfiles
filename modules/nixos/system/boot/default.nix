@@ -197,8 +197,11 @@ in
           efiInstallAsRemovable = if (cfg.bootType != "legacy") then true else false;
           default = 0;
           devices = lib.mkForce [ bootDevice ];
-          fsIdentifier = "provided";
           gfxmodeEfi = "auto";
+          gfxmodeBios = "auto";
+          extraConfig = ''
+            set gfxpayload=keep
+          '';
           fontSize = 20;
           configurationLimit = 8;
           # splashImage = ./backgrounds/grub-nixos-3.png;

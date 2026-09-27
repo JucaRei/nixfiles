@@ -116,10 +116,13 @@ in
           "sr_mod"
           "applesmc"
           "btrfs"
+          "simpledrm"
+          "vesafb"
         ];
         kernelModules = [
           "applesmc"
           "hid_apple"
+          "nouveau"
         ];
       };
 
@@ -420,6 +423,10 @@ in
               "nouveau.modeset=0"
               "transparent_hugepage=madvise"
               "elevator=bfq"
+              "splash"
+              "quiet"
+              "fbcon=nodefer"
+              "nomodeset"
             ];
           };
           hardware.graphics.cards.gpu = mkForce "nvidia-legacy";
