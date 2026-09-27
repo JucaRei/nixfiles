@@ -77,6 +77,7 @@ in
           name = "alacritty";
         };
         shells = {
+          enable = true;
           default = "fish";
         };
       };
