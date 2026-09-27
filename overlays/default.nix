@@ -8,7 +8,11 @@
     makeModulesClosure = x: prev.makeModulesClosure (x // { allowMissing = true; });
 
     # Fallback to unstable antigravity-cli if not present in current nixpkgs stable
-    antigravity-cli = prev.antigravity-cli or final.unstable.antigravity-cli;
+    antigravity-cli = (prev.antigravity-cli or final.unstable.antigravity-cli).overrideAttrs (_old: {
+      doInstallCheck = false;
+      installCheckPhase = "true";
+      nativeInstallCheckInputs = [ ];
+    });
 
     # Fallback to unstable noctalia (v5+) if not present in current nixpkgs stable
     noctalia = prev.noctalia or final.unstable.noctalia;

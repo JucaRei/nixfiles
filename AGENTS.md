@@ -823,7 +823,7 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Compatibilidade do `antigravity-cli` no Intel Core 2 Duo (`agy` via QEMU)**:
       - O binário `agy` distribuído pelo Google é pré-compilado (`storage.googleapis.com`) exigindo a instrução `PCLMULQDQ` (ausente fisicamente no Core 2 Duo de 2008), o que causava `SIGILL` via `go/sigill-fail-fast`.
       - Resolvido encapsulando `antigravity-cli` com `qemu-x86_64 -cpu Haswell` via `makeWrapper` no [home-manager/hosts/rocinante/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/hosts/rocinante/default.nix), permitindo que o `agy` execute normalmente no processador legado com emulação pontual das instruções ausentes.
-      - Removido `overrideAttrs` inócuo (`GOAMD64="v1"`) de [overlays/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/overlays/default.nix).
+      - No [overlays/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/overlays/default.nix), configurado `doInstallCheck = false`, `installCheckPhase = "true"` e `nativeInstallCheckInputs = [ ]` no `antigravity-cli` para desativar o `versionCheckHook` (que tentava executar `agy --version` nativamente durante a fase de empacotamento, quebrando o build em máquinas Core 2 Duo).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
