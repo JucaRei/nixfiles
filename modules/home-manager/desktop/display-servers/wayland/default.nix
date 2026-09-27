@@ -223,9 +223,9 @@ in
         );
       };
 
-      file = {
+      file = mkIf (!isNixOS) {
         # Source the script in .profile (shell-agnostic, covers bash/zsh/fish/etc.)
-        ".profile".text = mkIf (!isNixOS) ''
+        ".profile".text = ''
           [ -f "$HOME/.local/scripts/wayland-vars.sh" ] && . "$HOME/.local/scripts/wayland-vars.sh"
         '';
       };

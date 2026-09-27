@@ -131,8 +131,8 @@ in
         ''
       );
 
-      file = {
-        ".profile".text = mkIf (!isNixOS) ''
+      file = mkIf (!isNixOS) {
+        ".profile".text = ''
           [ -f "$HOME/.local/scripts/x11-vars.sh" ] && . "$HOME/.local/scripts/x11-vars.sh"
         '';
       };
