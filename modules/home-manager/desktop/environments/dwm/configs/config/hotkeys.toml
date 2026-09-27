@@ -62,7 +62,7 @@ keys = [
   # ── Launchers ────────────────────────────────────────────────────────────────
   { mod="SUPER",            key="r",       desc="App launcher",            func="spawn",       cmd="quickshell ipc --path \"${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/shell.qml\" call launcher toggle" },
   { mod="SUPER",            key="d",       desc="App launcher (Rofi)",     func="spawn",       cmd="rofi -show drun" },
-  { mod="SUPER",            key="x",       desc="Terminal",                 func="spawn",       exec=["$terminal"] },
+  { mod="SUPER",            key="x",       desc="Terminal",                func="spawn",       exec=["$terminal"] },
   { mod="SUPER",            key="w",       desc="Looking Glass (VM)",      func="spawn",       cmd="looking-glass-client -F" },
   { mod="SUPER SHIFT",      key="w",       desc="Randomize wallpaper",     func="spawn",       cmd="feh --randomize --bg-fill ~/.dotfiles/assets/wallpapers/* 2>/dev/null || true" },
 
@@ -75,16 +75,20 @@ keys = [
   # ── Web apps & Tools ─────────────────────────────────────────────────────────
   { mod="SUPER",            key="a",       desc="ChatGPT",                 func="spawn",       exec=["dwm-quickshell-launcher", "launch-chatgpt"] },
   { mod="SUPER SHIFT",      key="a",       desc="Gemini",                  func="spawn",       exec=["$webapp", "https://gemini.google.com/"] },
-  { mod="SUPER SHIFT",      key="x",       desc="X/Twitter — new post",    func="spawn",       exec=["$webapp", "https://x.com/compose/post"] },
+  { mod="SUPER SHIFT",      key="x",       desc="Lock screen",             func="spawn",       cmd="dwm-lock || loginctl lock-session" },
   { mod="SUPER",            key="b",       desc="Browser",                 func="spawn",       exec=["dwm-default-apps", "open", "https://"] },
+
+  # Atalhos alternativos (comentados para referência):
+  # { mod = "SUPER SHIFT", key = "x", desc = "X/Twitter — new post", func = "spawn", exec = [ "$webapp", "https://x.com/compose/post" ] },
+  # { mod = "SUPER", key = "l", desc = "Lock screen", func = "spawn", cmd = "dwm-lock || loginctl lock-session" },
 
   # Atalhos alternativos de Navegador (comentados para referência):
   # { mod = "SUPER", key = "b", desc = "Browser (Firefox direto)", func = "spawn", cmd = "firefox || xdg-open https://" },
 
   # ── Screenshots ───────────────────────────────────────────────────────────────
   { mod="SUPER",            key="p",       desc="Screenshot active monitor", func="spawn",     cmd="dwm-screenshot screen" },
-  { mod="SUPER SHIFT",      key="p",       desc="Screenshot area → file",  func="spawn",       cmd="dwm-screenshot gui" },
-  { mod="SUPER CTRL",       key="p",       desc="Screenshot area → clip",  func="spawn",       cmd="dwm-screenshot clip" },
+  { mod="SUPER SHIFT",      key="p",       desc="Screenshot area → file",    func="spawn",     cmd="dwm-screenshot gui" },
+  { mod="SUPER CTRL",       key="p",       desc="Screenshot area → clip",    func="spawn",     cmd="dwm-screenshot clip" },
 
   # Atalhos alternativos de Screenshot (comentados para referência):
   # { mod = "", key = "Print", desc = "Screenshot area → file", func = "spawn", cmd = "dwm-screenshot gui" },
@@ -101,8 +105,8 @@ keys = [
   # { mod = "SUPER", key = "e", desc = "File manager (Thunar direto)", func = "spawn", cmd = "thunar || xdg-open ~" },
 
   # ── Volume  (no modifier — press the media key directly) ─────────────────────
-  { mod="",                 key="XF86AudioRaiseVolume",   desc="Volume up",     func="spawn",  cmd="amixer sset Master 5%+ unmute" },
-  { mod="",                 key="XF86AudioLowerVolume",   desc="Volume down",   func="spawn",  cmd="amixer sset Master 5%- unmute" },
+  { mod="",                 key="XF86AudioRaiseVolume",   desc="Volume up",     func="spawn",  cmd="amixer sset Master 2%+ unmute" },
+  { mod="",                 key="XF86AudioLowerVolume",   desc="Volume down",   func="spawn",  cmd="amixer sset Master 2%- unmute" },
   { mod="",                 key="XF86AudioMute",          desc="Mute toggle",   func="spawn",  cmd="amixer sset Master toggle" },
 
   # Atalhos alternativos de Volume (PipeWire wpctl e teclas Apple - comentados para referência):
@@ -113,15 +117,17 @@ keys = [
   # { mod = "SUPER", key = "F11", desc = "Volume down (Apple F11)", func = "spawn", cmd = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- 2>/dev/null || amixer sset Master 5%- unmute" },
   # { mod = "SUPER", key = "F10", desc = "Mute toggle (Apple F10)", func = "spawn", cmd = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 2>/dev/null || amixer sset Master toggle" },
 
-  # ── Brightness (Monitor) ──────────────────────────────────────────────────────
-  { mod="",                 key="XF86MonBrightnessUp",    desc="Brightness +",  func="spawn",  cmd="brightnessctl set 10%+" },
-  { mod="",                 key="XF86MonBrightnessDown",  desc="Brightness -",  func="spawn",  cmd="brightnessctl set 10%-" },
+  # ── Brightness (Monitor com OSD) ──────────────────────────────────────────────
+  { mod="",                 key="XF86MonBrightnessUp",    desc="Screen brightness + (OSD)", func="spawn",  cmd="dwm-mon-brightness-osd up || brightnessctl set 2%+" },
+  { mod="",                 key="XF86MonBrightnessDown",  desc="Screen brightness - (OSD)", func="spawn",  cmd="dwm-mon-brightness-osd down || brightnessctl set 2%-" },
 
-  # Atalhos alternativos de Brilho da Tela (Apple F1/F2 - comentados para referência):
-  # { mod = "SUPER", key = "F2", desc = "Screen brightness +", func = "spawn", cmd = "brightnessctl set 10%+" },
-  # { mod = "SUPER", key = "F1", desc = "Screen brightness -", func = "spawn", cmd = "brightnessctl set 10%-" },
-  # { mod = "", key = "F2", desc = "Screen brightness +", func = "spawn", cmd = "brightnessctl set 10%+" },
-  # { mod = "", key = "F1", desc = "Screen brightness -", func = "spawn", cmd = "brightnessctl set 10%-" },
+  # Atalhos alternativos de Brilho da Tela (comentados para referência):
+  # { mod = "", key = "XF86MonBrightnessUp", desc = "Brightness + (direto)", func = "spawn", cmd = "brightnessctl set 10%+" },
+  # { mod = "", key = "XF86MonBrightnessDown", desc = "Brightness - (direto)", func = "spawn", cmd = "brightnessctl set 10%-" },
+  # { mod = "SUPER", key = "F2", desc = "Screen brightness + (OSD)", func = "spawn", cmd = "dwm-mon-brightness-osd up" },
+  # { mod = "SUPER", key = "F1", desc = "Screen brightness - (OSD)", func = "spawn", cmd = "dwm-mon-brightness-osd down" },
+  # { mod = "", key = "F2", desc = "Screen brightness + (OSD)", func = "spawn", cmd = "dwm-mon-brightness-osd up" },
+  # { mod = "", key = "F1", desc = "Screen brightness - (OSD)", func = "spawn", cmd = "dwm-mon-brightness-osd down" },
 
   # ── Keyboard Backlight (MacBook / Laptops) ────────────────────────────────────
   { mod="",                 key="XF86KbdBrightnessUp",    desc="Keyboard backlight +",      func="spawn",  cmd="dwm-kbd-brightness-osd up" },
@@ -244,10 +250,10 @@ tag_keys = [
 # ─────────────────────────────────────────────────────────────────────────────
 
 buttons = [
-  { click = "ClkTagBar", mod = "SUPER", button = 1, func = "tag" },
-  { click = "ClkTagBar", mod = "SUPER", button = 3, func = "toggletag" },
+  { click = "ClkTagBar",    mod = "SUPER", button = 1, func = "tag" },
+  { click = "ClkTagBar",    mod = "SUPER", button = 3, func = "toggletag" },
   { click = "ClkClientWin", mod = "SUPER", button = 1, func = "moveorplace", i = 2 },
   { click = "ClkClientWin", mod = "SUPER", button = 3, func = "resizemouse" },
-  { click = "ClkTagBar", mod = "", button = 1, func = "view" },
-  { click = "ClkTagBar", mod = "", button = 3, func = "toggleview" },
+  { click = "ClkTagBar",    mod = "", button = 1, func = "view" },
+  { click = "ClkTagBar",    mod = "", button = 3, func = "toggleview" },
 ]

@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# dwm-mon-brightness-osd — Controle de brilho da tela com feedback visual OSD (Dunst)
+set -e
+
+ACTION="${1:-up}"
+STEP="${DWM_MON_BRIGHTNESS_STEP:-5}"
+
+# 1. Identificar dispositivo de tela real (priorizar intel_backlight > nv_backlight > apple_backlight > acpi_video0)
+DEVICE=""
+for d in intel_backlight nv_backlight apple_backlight acpi_video0; do
+  if [ -d "/sys/class/backlight/$d" ]; then
+    DEVICE="$d"
+    break
+  fi
+done
+
+if [ -z "$DEVICE" ] && [ -d /sys/class/backlight ]; then
+  DEVICE=$(ls -1 /sys/class/backlight 2>/dev/null | head -n1 || true)
+fi
+
+dev_args=()
+if [ -n "$DEVICE" ]; then
+  dev_args=(-d "$DEVICE")
+fi
+
+# 2. Executar ação de alteração de brilho
+case "$ACTION" in
+  up)
+    prev=$(brightnessctl "${dev_args[@]}" get 2>/dev/null || echo 0)
+    brightnessctl "${dev_args[@]}" set +"${STEP}%" >/dev/null 2>&1 || brightnessctl "${dev_args[@]}" set +1 >/dev/null 2>&1
+    curr=$(brightnessctl "${dev_args[@]}" get 2>/dev/null || echo 0)
+    if [ "$prev" = "$curr" ]; then
+      brightnessctl "${dev_args[@]}" set +1 >/dev/null 2>&1 || true
+    fi
+    ;;
+  down)
+    prev=$(brightnessctl "${dev_args[@]}" get 2>/dev/null || echo 0)
+    brightnessctl "${dev_args[@]}" set "${STEP}%-" >/dev/null 2>&1 || brightnessctl "${dev_args[@]}" set 1- >/dev/null 2>&1
+    curr=$(brightnessctl "${dev_args[@]}" get 2>/dev/null || echo 0)
+    if [ "$prev" = "$curr" ]; then
+      brightnessctl "${dev_args[@]}" set 1- >/dev/null 2>&1 || true
+    fi
+    ;;
+esac
+
+# 3. Feedback visual OSD via Dunst / libnotify
+val=$(brightnessctl "${dev_args[@]}" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+if [ -n "$val" ]; then
+  if command -v dunstify >/dev/null 2>&1; then
+    dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+  elif command -v notify-send >/dev/null 2>&1; then
+    notify-send -a "OSD" -u low -i "display-brightness" -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+  fi
+fi

@@ -532,6 +532,23 @@ if command -v feh >/dev/null 2>&1; then
 	elif ! pgrep -u "$(id -u)" -x feh >/dev/null 2>&1; then
 		start_once feh feh --no-fehbg --randomize --bg-fill "$HOME/Pictures/backgrounds"
 	fi
+
+	# Pré-cache de baixa prioridade para o Betterlockscreen
+	if command -v betterlockscreen >/dev/null 2>&1 && [ ! -d "$HOME/.cache/betterlockscreen" ]; then
+		(
+			sleep 3
+			wp=""
+			for candidate in "$HOME/Pictures/backgrounds" "$HOME/.dotfiles/assets/wallpapers" "/usr/share/backgrounds"; do
+				if [ -d "$candidate" ]; then
+					wp=$(find "$candidate" -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.webp" \) 2>/dev/null | head -n 1 || true)
+					[ -n "$wp" ] && break
+				fi
+			done
+			if [ -n "$wp" ]; then
+				nice -n 19 betterlockscreen -u "$wp" >/dev/null 2>&1 || true
+			fi
+		) &
+	fi
 fi
 
 # Compositor

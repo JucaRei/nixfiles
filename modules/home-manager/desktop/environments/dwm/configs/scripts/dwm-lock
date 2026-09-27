@@ -65,6 +65,53 @@ try_lock() {
 	"$@" >/dev/null 2>&1
 }
 
+# 1. Betterlockscreen (i3lock-color com blur do wallpaper e Catppuccin Mocha)
+if command -v betterlockscreen >/dev/null 2>&1; then
+	# Se ainda não existe cache do wallpaper, tenta gerar a partir de diretórios conhecidos
+	if [ ! -d "$HOME/.cache/betterlockscreen" ]; then
+		wp=""
+		for candidate in "$HOME/Pictures/backgrounds" "$HOME/.dotfiles/assets/wallpapers" "/usr/share/backgrounds"; do
+			if [ -d "$candidate" ]; then
+				wp=$(find "$candidate" -type f \( -name "*.jpg" -o -name "*.png" -o -name "*.webp" \) 2>/dev/null | head -n 1 || true)
+				[ -n "$wp" ] && break
+			fi
+		done
+		if [ -n "$wp" ]; then
+			betterlockscreen -u "$wp" >/dev/null 2>&1 || true
+		fi
+	fi
+
+	# Trava com dimblur e cores Catppuccin Mocha
+	if try_lock betterlockscreen -l dimblur -- \
+		--insidecolor=1e1e2e00 \
+		--ringcolor=cba6f7ff \
+		--keyhlcolor=a6e3a1ff \
+		--bshlcolor=f38ba8ff \
+		--separatorcolor=00000000 \
+		--insidevercolor=89b4fa00 \
+		--ringvercolor=b4befeff \
+		--insidewrongcolor=f38ba800 \
+		--ringwrongcolor=eba0acff \
+		--timecolor=cdd6f4ff \
+		--datecolor=a6adc8ff \
+		--linecolor=00000000; then
+		exit 0
+	fi
+	if try_lock betterlockscreen -l; then
+		exit 0
+	fi
+fi
+
+# 2. i3lock / i3lock-color direto
+for locker in i3lock-color i3lock; do
+	if command -v "$locker" >/dev/null 2>&1; then
+		if try_lock "$locker" -c 1e1e2e; then
+			exit 0
+		fi
+	fi
+done
+
+# 3. Light-Locker (integração nativa com LightDM)
 if command -v light-locker-command >/dev/null 2>&1; then
 	start_light_locker
 	if try_lock light-locker-command --lock; then
@@ -74,6 +121,7 @@ if command -v light-locker-command >/dev/null 2>&1; then
 	stop_started_light_locker
 fi
 
+# 4. Outros gerenciadores de screensaver X11
 if command -v xdg-screensaver >/dev/null 2>&1 &&
 	try_lock xdg-screensaver lock; then
 	exit 0
@@ -110,7 +158,7 @@ if command -v gnome-screensaver-command >/dev/null 2>&1 &&
 	exit 0
 fi
 
-for locker in i3lock slock xlock; do
+for locker in slock xlock; do
 	if command -v "$locker" >/dev/null 2>&1 &&
 		try_lock "$locker"; then
 		exit 0
@@ -119,5 +167,5 @@ done
 
 printf '%s\n' \
 	'dwm-lock: no usable screen locker found.' \
-	'Install light-locker or another supported locker.' >&2
+	'Install betterlockscreen, i3lock, light-locker or another supported locker.' >&2
 exit 1

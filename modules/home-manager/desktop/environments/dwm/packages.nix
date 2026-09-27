@@ -23,6 +23,8 @@ in
       picom
       rofi-power-menu
       brightnessctl
+      betterlockscreen
+      i3lock-color
       networkmanagerapplet
       libnotify
 

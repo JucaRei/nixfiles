@@ -31,6 +31,7 @@ in
     };
 
     security.polkit.enable = true;
+    security.pam.services.i3lock = { };
     programs.dconf.enable = true;
 
     environment = {
@@ -47,6 +48,10 @@ in
 
         # Autenticação e Polkit
         polkit_gnome
+
+        # Bloqueador de tela X11 (Betterlockscreen + i3lock-color)
+        betterlockscreen
+        i3lock-color
 
         # Utilitários X11
         brightnessctl

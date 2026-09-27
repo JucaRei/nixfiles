@@ -876,6 +876,20 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
           - `# Volume via PipeWire (wpctl)` e atalhos Apple (`SUPER + F10`/`F11`/`F12`).
           - `# Brilho Apple` (`SUPER + F1`/`F2` e `F1`/`F2` diretos).
           - `# Menu de Energia` (`SUPER + Escape` e `SUPER + Shift + e`).
+          - `# Bloqueio alternativo` (`SUPER + l`).
+      - **Bloqueador de Tela (Lockscreen) no DWM (Betterlockscreen / i3lock-color)**:
+        - **Diagnóstico**: O DWM utiliza o helper `dwm-lock` (e o daemon `dwm-lock-watch` que intercepta chamadas D-Bus `loginctl lock-session`). No entanto, nenhum pacote de bloqueio de tela estava instalado no sistema nem declarado nas dependências do DWM, fazendo `dwm-lock` falhar silenciosamente (`no usable screen locker found`).
+        - **Solução Arquitetural**:
+          1. **Pacotes & PAM**: Em [modules/nixos/desktop/environments/dwm/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/nixos/desktop/environments/dwm/default.nix), adicionada a regra declarativa `security.pam.services.i3lock = { };` (obrigatória no NixOS para autenticação segura com PAM sem setuid root) e incluídos os pacotes `betterlockscreen` e `i3lock-color` no sistema e no Home Manager (`packages.nix`).
+          2. **Segurança de Vídeo no Rocinante (Nouveau & NVIDIA 340 Legacy)**: Ao contrário do `light-locker` (que força chaveamento de console virtual/VT e pode gerar travamentos ou corrupção de framebuffer na GeForce 8600M GT), o `betterlockscreen` roda diretamente sobre o display X11 ativo com zero alternância de VT, garantindo 100% de estabilidade e reatividade instantânea.
+          3. **Script `dwm-lock` Modernizado**: Configurado com tema Catppuccin Mocha, pré-caching inteligente e fallbacks para `i3lock-color`, `i3lock` e `light-locker`.
+          4. **Atalho e Integração**: Vinculado a `SUPER + Shift + x` no `hotkeys.toml` e integrado nativamente ao `dwm-lock-watch`, permitindo bloqueio via atalho físico, menu de energia do Rofi/Quickshell, ou `loginctl lock-session`.
+      - **Feedback Visual OSD de Brilho da Tela no DWM (`dwm-mon-brightness-osd`)**:
+        - **Script Dedicado**: Criado `modules/home-manager/desktop/environments/dwm/configs/scripts/dwm-mon-brightness-osd`, espelhando a arquitetura robusta do `dwm-kbd-brightness-osd`:
+          - Detecta automaticamente a controladora de tela física em `/sys/class/backlight` (`intel_backlight`, `nv_backlight`, `apple_backlight`, `acpi_video0`).
+          - Ajusta o nível com incremento suave (passo configurável, padrão 5%).
+          - Emite notificação OSD rica via Dunst (`dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val"` com barra de progresso em tempo real).
+        - **Teclas Físicas e Atalhos**: Mapeadas as teclas de mídia `XF86MonBrightnessUp` e `XF86MonBrightnessDown` no `hotkeys.toml`, com fallbacks diretos preservados.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
