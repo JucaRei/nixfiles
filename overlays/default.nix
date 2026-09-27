@@ -8,18 +8,7 @@
     makeModulesClosure = x: prev.makeModulesClosure (x // { allowMissing = true; });
 
     # Fallback to unstable antigravity-cli if not present in current nixpkgs stable
-    antigravity-cli = (prev.antigravity-cli or final.unstable.antigravity-cli).overrideAttrs (old: {
-      # Força compatibilidade com arquiteturas x86_64 antigas (Core 2 Duo)
-      # desativando instruções modernas como PCLMUL (GOAMD64=v1)
-      GOAMD64 = "v1";
-      doInstallCheck = false;
-      # Garante que o Go trate como um módulo e force a recompilação local
-      preBuild = ''
-        export GO111MODULE=on
-      '';
-      # Força o Nix a considerar este pacote como novo
-      version = "${old.version}-compat";
-    });
+    antigravity-cli = prev.antigravity-cli or final.unstable.antigravity-cli;
 
     # Fallback to unstable noctalia (v5+) if not present in current nixpkgs stable
     noctalia = prev.noctalia or final.unstable.noctalia;

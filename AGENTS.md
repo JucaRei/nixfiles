@@ -816,7 +816,11 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
         - Na especialização `nvidia` (Kernel 6.6 LTS + NVIDIA 340 Legacy): `hardware.graphics.cards.gpu = mkForce "nvidia-legacy"`, e o bloco `home-manager.users.juca` ajusta `desktop.dwm.quickshell.glIntegration = "glx"` e `GPU_DRIVER_PROFILE = "nvidia-legacy"`.
       - **Variáveis de Sessão Globais do NixOS**: No módulo `modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`, foram exportadas globalmente `QT_XCB_GL_INTEGRATION = "glx"`, `QSG_RHI_BACKEND = "opengl"`, `__GL_VRR_ALLOWED = "0"` e `LIBGL_ALWAYS_INDIRECT = "0"`.
       - **Permissões Udev de Backlight do Teclado**: Configurado `services.udev.packages = [ pkgs.brightnessctl ]` e grupo `video` nos usuários do NixOS (`nixos/users/default.nix`), garantindo controle do `/sys/class/leds/smc::kbd_backlight` sem necessidade de privilégios de root.
-      - **Diagnóstico em Tempo Real**: Script `rocinante-gpu-check` adicionado aos pacotes do usuário para inspeção detalhada de drivers (`/proc/driver/nvidia` vs `/sys/module/nouveau`), versão do kernel e extensões GLX.
+      - **Specialisation do Home Manager (`specialisation.nvidia`)**: Em `home-manager/hosts/rocinante/default.nix`, eliminadas checagens condicionais `isNvidiaLegacy`. A configuração padrão atua limpa com Nouveau/Mesa (`glIntegration = "auto"`, `GPU_DRIVER_PROFILE = "nouveau"`), e o bloco `specialisation.nvidia` encapsula a variação para o driver proprietário NVIDIA 340 Legacy (`glIntegration = "glx"`, `GPU_DRIVER_PROFILE = "nvidia-legacy"`), em sintonia com a especialização do NixOS.
+    - **Compatibilidade do `antigravity-cli` no Intel Core 2 Duo (`agy` via QEMU)**:
+      - O binário `agy` distribuído pelo Google é pré-compilado (`storage.googleapis.com`) exigindo a instrução `PCLMULQDQ` (ausente fisicamente no Core 2 Duo de 2008), o que causava `SIGILL` via `go/sigill-fail-fast`.
+      - Resolvido encapsulando `antigravity-cli` com `qemu-x86_64 -cpu Haswell` via `makeWrapper` no [home-manager/hosts/rocinante/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/hosts/rocinante/default.nix), permitindo que o `agy` execute normalmente no processador legado com emulação pontual das instruções ausentes.
+      - Removido `overrideAttrs` inócuo (`GOAMD64="v1"`) de [overlays/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/overlays/default.nix).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

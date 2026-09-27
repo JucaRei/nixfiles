@@ -2,14 +2,9 @@
   config,
   lib,
   pkgs,
-  osConfig ? null,
   ...
 }:
 let
-  # Verificação se o host está configurado com driver proprietário NVIDIA ou open-source Nouveau
-  gpuDriver = osConfig.hardware.graphics.cards.gpu or null;
-  isNvidiaLegacy = (gpuDriver == "nvidia-legacy");
-
   # Utilitário de diagnóstico em tempo real para verificar driver de vídeo ativo no MacBook Pro
   gpuDriverCheck = pkgs.writeShellScriptBin "rocinante-gpu-check" ''
     echo "========================================================"
@@ -41,6 +36,18 @@ let
     fi
     echo "========================================================"
   '';
+
+  # Wrapper para executar o antigravity-cli (agy) via QEMU user-mode no Core 2 Duo (Penryn),
+  # emulando instruções modernas (PCLMULQDQ / AES-NI) exigidas pelo binário pré-compilado do Google
+  antigravityCliCompat = pkgs.runCommand "antigravity-cli-compat-${pkgs.antigravity-cli.version or "1.0"}" {
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+  } ''
+    mkdir -p $out/bin
+    makeWrapper ${pkgs.qemu}/bin/qemu-x86_64 $out/bin/agy \
+      --add-flags "-cpu Haswell" \
+      --add-flags "${pkgs.antigravity-cli}/bin/agy"
+    ln -sf $out/bin/agy $out/bin/antigravity-cli
+  '';
 in
 {
   config = {
@@ -69,7 +76,10 @@ in
       };
     };
 
-    programs.antigravity-cli.enable = true;
+    programs.antigravity-cli = {
+      enable = true;
+      package = antigravityCliCompat;
+    };
 
     # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) especificamente na Rocinante
     programs.vscode.profiles.default.extensions =
@@ -88,10 +98,8 @@ in
     desktop.dwm = {
       bar = "quickshell"; # Quickshell como barra padrão (ou "dwm-status" se preferir a barra nativa do DWM)
       quickshell = {
-        # Se estiver com NVIDIA proprietário: forçar OpenGL (GLX), pois Vulkan e EGL não são suportados
-        # Se estiver com Nouveau (open-source): Mesa suporta OpenGL/EGL nativamente
         qsgBackend = "opengl";
-        glIntegration = if isNvidiaLegacy then "glx" else "auto";
+        glIntegration = "auto"; # Padrão: Mesa Gallium DRI nativa (Nouveau)
       };
       keyboard.brightness = {
         enable = true;
@@ -104,15 +112,6 @@ in
       };
     };
 
-    # Compositor Picom ultra-leve para o BSPWM (mantido comentado como fallback)
-    # desktop.bspwm.picom = {
-    #   enable = true;
-    #   backend = "xrender"; # CPU/GPU ultra-fria: sem shaders pesados na GPU legada
-    #   animations.enable = false; # Desativa animações complexas para resposta instantânea
-    #   blur.enable = false; # Sem blur (dual_kawase), zerando o uso de VRAM
-    #   useDamage = true; # Repinta apenas as regiões modificadas da tela
-    # };
-
     # Teclado Apple MacBook Pro: layout internacional com dead keys, Command = Super (Mod4) e Option = Alt (Mod1)
     home.keyboard = {
       layout = "us";
@@ -122,7 +121,7 @@ in
 
     home = {
       sessionVariables = {
-        GPU_DRIVER_PROFILE = if isNvidiaLegacy then "nvidia-legacy" else "nouveau";
+        GPU_DRIVER_PROFILE = "nouveau";
       };
       packages = with pkgs; [
         gpuDriverCheck
@@ -133,6 +132,18 @@ in
         htop
         btop
       ];
+    };
+
+    # Especialização do Home Manager para boot alternativo com driver proprietário NVIDIA 340 Legacy
+    specialisation = {
+      nvidia = {
+        configuration = {
+          desktop.dwm.quickshell.glIntegration = "glx";
+          home.sessionVariables = {
+            GPU_DRIVER_PROFILE = "nvidia-legacy";
+          };
+        };
+      };
     };
   };
 }
