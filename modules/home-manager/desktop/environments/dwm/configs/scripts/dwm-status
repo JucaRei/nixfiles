@@ -183,8 +183,7 @@ publish() {
 
 	if ! timeout --kill-after=0.2 "$publish_timeout" \
 		xsetroot -name "$power | $volume" 2>/dev/null; then
-		((signal_exit != 0)) && return 0
-		return 1
+		return 0
 	fi
 }
 

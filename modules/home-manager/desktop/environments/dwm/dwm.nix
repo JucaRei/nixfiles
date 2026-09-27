@@ -151,9 +151,13 @@ in
               ${lib.concatMapStringsSep " " (opt: "-option '${opt}'") (config.home.keyboard.options or [ ])} || true
           ''}
 
-          # 2. Carregar bibliotecas de driver gráfico se presentes (ex: NVIDIA 340 no NixOS / Debian)
-          if [ -d /run/opengl-driver/lib ] && [ -f /run/opengl-driver/lib/libGL.so.1 ]; then
-            export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          # 2. Carregar bibliotecas de driver gráfico proprietário legado SE E SOMENTE SE NVIDIA 340 detectada
+          # No Mesa/Nouveau padrão, LD_LIBRARY_PATH não deve ser exportado pois sobrepõe o libglvnd do Nixpkgs
+          # causando "symbol lookup error: undefined symbol: eglDestroyImage" no Quickshell e aplicativos Qt6.
+          if [ -d /proc/driver/nvidia ] || [ -f /run/opengl-driver/lib/libGL.so.340.108 ] || [ -f /usr/lib64/nvidia/libGL.so.340.108 ] || [ -f /usr/lib/x86_64-linux-gnu/libGL.so.340.108 ]; then
+            if [ -d /run/opengl-driver/lib ] && [ -f /run/opengl-driver/lib/libGL.so.1 ]; then
+              export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+            fi
           fi
 
           # 3. Forçar ambiente gráfico X11 e Qt6 para máxima compatibilidade com GPUs legadas
@@ -234,8 +238,8 @@ in
             pkill -x slstatus || true
             pkill -x dwm-status || true
 
-            # Iniciar Quickshell com log para diagnóstico
-            ${nixGLWrapper pkgs.quickshell}/bin/quickshell --path "$HOME/.config/quickshell/shell.qml" --no-duplicate > "$HOME/.local/state/dwm-titus/quickshell.log" 2>&1 &
+            # Iniciar Quickshell com log para diagnóstico (removendo LD_LIBRARY_PATH para garantir resolução correta de símbolos EGL/Qt6)
+            env -u LD_LIBRARY_PATH ${nixGLWrapper pkgs.quickshell}/bin/quickshell --path "$HOME/.config/quickshell/shell.qml" --no-duplicate > "$HOME/.local/state/dwm-titus/quickshell.log" 2>&1 &
             QUICKSHELL_PID=$!
 
             # Watchdog leve em background: se o Quickshell fechar ou falhar na GPU, acionar dwm-status automaticamente
