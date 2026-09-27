@@ -39,15 +39,18 @@ let
 
   # Wrapper para executar o antigravity-cli (agy) via QEMU user-mode no Core 2 Duo (Penryn),
   # emulando instruções modernas (PCLMULQDQ / AES-NI) exigidas pelo binário pré-compilado do Google
-  antigravityCliCompat = pkgs.runCommand "antigravity-cli-compat-${pkgs.antigravity-cli.version or "1.0"}" {
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-  } ''
-    mkdir -p $out/bin
-    makeWrapper ${pkgs.qemu}/bin/qemu-x86_64 $out/bin/agy \
-      --add-flags "-cpu Haswell" \
-      --add-flags "${pkgs.antigravity-cli}/bin/agy"
-    ln -sf $out/bin/agy $out/bin/antigravity-cli
-  '';
+  antigravityCliCompat =
+    pkgs.runCommand "antigravity-cli-compat-${pkgs.antigravity-cli.version or "1.0"}"
+      {
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+      }
+      ''
+        mkdir -p $out/bin
+        makeWrapper ${pkgs.qemu}/bin/qemu-x86_64 $out/bin/agy \
+          --add-flags "-cpu Haswell" \
+          --add-flags "${pkgs.antigravity-cli}/bin/agy"
+        ln -sf $out/bin/agy $out/bin/antigravity-cli
+      '';
 in
 {
   config = {
@@ -72,6 +75,9 @@ in
         terminal = {
           enable = true;
           name = "alacritty";
+        };
+        shells = {
+          default = "fish";
         };
       };
     };
