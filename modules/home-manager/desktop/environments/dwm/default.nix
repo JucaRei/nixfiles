@@ -18,6 +18,10 @@
 
     # Programas Padrão integrados
     system.programs = {
+      terminal = {
+        enable = lib.mkDefault true;
+        name = lib.mkDefault "alacritty";
+      };
       file-manager.thunar.enable = lib.mkDefault (
         !config.system.programs.file-manager.nautilus.enable
         && !config.system.programs.file-manager.nemo.enable

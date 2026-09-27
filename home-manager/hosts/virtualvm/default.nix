@@ -1,10 +1,11 @@
 { config, lib, ... }: {
   config = {
     system.programs = {
-      # browsers.firefox = {
-      #   enable = true;
-      #   version = "firefox-devedition";
-      # };
+      browsers.firefox.enable = true;
+      terminal = {
+        enable = true;
+        name = "alacritty";
+      };
       console = {
         eza.enable = true;
         bat.enable = true;
