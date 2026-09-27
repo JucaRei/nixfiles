@@ -740,6 +740,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       ```
       Isso move os arquivos conflitantes para `.bashrc.backup` e `.profile.backup` e cria os links do Home Manager sem erros.
     - **Prevenção nos Scripts de Instalação**: Nos scripts de VM/instalação, remover preventivamente `~/.bashrc` e `~/.profile` após o `useradd` ou instruir o switch sempre com a flag `-b backup`.
+  - **Permissões de Diretórios de Perfil (`per-user/<user>`)**:
+    - Ao finalizar a geração, o Home Manager e o Nix registram symlinks em `/nix/var/nix/profiles/per-user/<user>` e gcroots em `/nix/var/nix/gcroots/per-user/<user>`.
+    - Se `/nix/var/nix/profiles/per-user` e `/nix/var/nix/gcroots/per-user` não tiverem permissão `1777` (sticky bit) ou a pasta do usuário não for criada com `chown <user>:<user>`, o switch falha com `Permission denied`.
+    - **Correção**:
+      ```bash
+      sudo chmod 1777 /nix/var/nix/profiles/per-user /nix/var/nix/gcroots/per-user
+      sudo mkdir -p /nix/var/nix/profiles/per-user/$USER /nix/var/nix/gcroots/per-user/$USER
+      sudo chown -R $USER:$USER /nix/var/nix/profiles/per-user/$USER /nix/var/nix/gcroots/per-user/$USER
+      ```
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
