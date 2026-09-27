@@ -99,7 +99,7 @@ in
       bar = "quickshell"; # Quickshell como barra padrão (ou "dwm-status" se preferir a barra nativa do DWM)
       quickshell = {
         qsgBackend = "opengl";
-        glIntegration = "auto"; # Padrão: Mesa Gallium DRI nativa (Nouveau)
+        glIntegration = lib.mkDefault "auto"; # Padrão: Mesa Gallium DRI nativa (Nouveau)
       };
       keyboard.brightness = {
         enable = true;
@@ -121,7 +121,7 @@ in
 
     home = {
       sessionVariables = {
-        GPU_DRIVER_PROFILE = "nouveau";
+        GPU_DRIVER_PROFILE = lib.mkDefault "nouveau";
       };
       packages = with pkgs; [
         gpuDriverCheck
@@ -138,9 +138,9 @@ in
     specialisation = {
       nvidia = {
         configuration = {
-          desktop.dwm.quickshell.glIntegration = "glx";
+          desktop.dwm.quickshell.glIntegration = lib.mkForce "glx";
           home.sessionVariables = {
-            GPU_DRIVER_PROFILE = "nvidia-legacy";
+            GPU_DRIVER_PROFILE = lib.mkForce "nvidia-legacy";
           };
         };
       };
