@@ -12,23 +12,20 @@ in
     services = {
       xserver = {
         enable = true;
-        displayManager.session = [
-          {
-            manage = "window";
-            name = "dwm";
-            start = ''
-              if [ -f "$HOME/.local/bin/start-dwm" ]; then
-                exec "$HOME/.local/bin/start-dwm"
-              elif [ -f "$HOME/.xsession" ]; then
-                exec "$HOME/.xsession"
-              else
-                exec dwm
-              fi
-            '';
-          }
-        ];
+        windowManager.dwm = {
+          enable = true;
+          package = pkgs.writeShellScriptBin "dwm" ''
+            if [ -f "$HOME/.local/bin/start-dwm" ]; then
+              exec "$HOME/.local/bin/start-dwm"
+            elif [ -f "$HOME/.xsession" ]; then
+              exec "$HOME/.xsession"
+            else
+              exec ${pkgs.dwm}/bin/dwm "$@"
+            fi
+          '';
+        };
       };
-      displayManager.defaultSession = mkDefault "dwm";
+      displayManager.defaultSession = mkDefault "none+dwm";
       blueman.enable = mkDefault true;
       udev.packages = [ pkgs.brightnessctl ];
     };
@@ -45,7 +42,6 @@ in
       ];
       systemPackages = with pkgs; [
         # Window manager básico e fallback no nível do sistema
-        dwm
         dmenu
         slstatus
 
