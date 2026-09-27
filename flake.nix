@@ -111,6 +111,7 @@
         iso-mate = helper.mkIso { desktop = "mate"; };
         iso-pantheon = helper.mkIso { desktop = "pantheon"; };
         iso-bspwm = helper.mkIso { desktop = "bspwm"; };
+        iso-dwm = helper.mkIso { desktop = "dwm"; };
         iso-console = helper.mkIso { desktop = null; };
 
         # MacBook Pro 4,1 specific ISO (fixes 32-bit EFI boot + Apple hardware)

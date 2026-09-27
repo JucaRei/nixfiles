@@ -750,6 +750,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       sudo chown -R $USER:$USER /nix/var/nix/profiles/per-user/$USER /nix/var/nix/gcroots/per-user/$USER
       ```
 
+- **Módulo DWM Simples para NixOS (`modules/nixos/desktop/environments/dwm/default.nix`)**:
+  - Implementado suporte declarativo e enxuto a DWM no nível do sistema (`services.xserver.windowManager.dwm.enable = true;`).
+  - Configura backend X11, Display Manager (`lightdm` via `mkDefault`), sessão padrão `none+dwm`, Polkit, DConf e pacotes essenciais de fallback (`dwm`, `dmenu`, `slstatus`, `picom`, `feh`).
+  - Arquitetura subordinada: todas as opções usam `lib.mkDefault`, permitindo que o ecossistema avançado do Home Manager (`dwm-titus`, `quickshell`, `hotkeys.toml`, etc.) atue como o configurador principal e prioritário da experiência do usuário.
+  - Adicionado `iso-dwm = helper.mkIso { desktop = "dwm"; };` no `flake.nix`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
