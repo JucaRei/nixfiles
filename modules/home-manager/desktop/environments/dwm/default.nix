@@ -4,6 +4,20 @@
   pkgs,
   ...
 }:
+let
+  gtkThemeName = "catppuccin-mocha-blue-standard+rimless";
+  gtkThemePkg = pkgs.catppuccin-gtk.override {
+    accents = [ "blue" ];
+    size = "standard";
+    tweaks = [ "rimless" ];
+    variant = "mocha";
+  };
+  iconThemeName = "Papirus-Dark";
+  iconThemePkg = pkgs.papirus-icon-theme;
+  cursorThemeName = "catppuccin-mocha-dark-cursors";
+  cursorThemePkg = pkgs.catppuccin-cursors.mochaDark;
+  cursorThemeSize = 24;
+in
 {
   imports = [
     ./dwm.nix
@@ -30,75 +44,47 @@
       tools.flameshot.enable = true;
     };
 
-    # Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark)
-    gtk = {
-      enable = true;
-      colorScheme = "dark";
-      theme = {
-        name = "catppuccin-mocha-blue-standard+rimless";
-        package = pkgs.catppuccin-gtk.override {
-          accents = [ "blue" ];
-          size = "standard";
-          tweaks = [ "rimless" ];
-          variant = "mocha";
-        };
-      };
-      iconTheme = {
-        name = "Papirus-Dark";
-        package = pkgs.papirus-icon-theme;
-      };
-      cursorTheme = {
-        name = "catppuccin-mocha-dark-cursors";
-        package = pkgs.catppuccin-cursors.mochaDark;
-        size = 24;
-      };
-      font = {
-        name = "Inter";
-        size = 10;
-      };
-      gtk3.extraConfig = {
-        gtk-application-prefer-dark-theme = 1;
-        gtk-cursor-theme-size = 24;
-      };
-      gtk4 = {
-        theme = config.gtk.theme;
-        extraConfig = {
-          gtk-application-prefer-dark-theme = 1;
-        };
-      };
-    };
+    # Desativar geração de symlinks read-only do settings.ini pelo Home Manager
+    # para permitir que o motor de temas do dwm-titus (theme-apply.sh e QML) edite os arquivos
+    gtk.enable = lib.mkForce false;
+
+    home.packages = [
+      gtkThemePkg
+      iconThemePkg
+      cursorThemePkg
+    ];
 
     xresources.properties = {
-      "Xcursor.theme" = config.gtk.cursorTheme.name;
-      "Xcursor.size" = config.gtk.cursorTheme.size;
+      "Xcursor.theme" = cursorThemeName;
+      "Xcursor.size" = cursorThemeSize;
     };
 
     dconf.settings = {
       "org/gnome/desktop/interface" = {
         color-scheme = "prefer-dark";
-        gtk-theme = config.gtk.theme.name;
-        icon-theme = config.gtk.iconTheme.name;
-        cursor-theme = config.gtk.cursorTheme.name;
-        cursor-size = config.gtk.cursorTheme.size;
-        font-name = "${config.gtk.font.name} ${toString config.gtk.font.size}";
+        gtk-theme = gtkThemeName;
+        icon-theme = iconThemeName;
+        cursor-theme = cursorThemeName;
+        cursor-size = cursorThemeSize;
+        font-name = "Inter 10";
       };
     };
 
     home = {
       sessionVariables = {
-        GTK_THEME = config.gtk.theme.name;
-        XCURSOR_THEME = config.gtk.cursorTheme.name;
-        XCURSOR_SIZE = toString config.gtk.cursorTheme.size;
+        GTK_THEME = gtkThemeName;
+        XCURSOR_THEME = cursorThemeName;
+        XCURSOR_SIZE = toString cursorThemeSize;
       };
       file = {
-        ".themes/${config.gtk.theme.name}".source =
-          "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
-        ".local/share/themes/${config.gtk.theme.name}".source =
-          "${config.gtk.theme.package}/share/themes/${config.gtk.theme.name}";
-        ".icons/${config.gtk.cursorTheme.name}".source =
-          "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
-        ".local/share/icons/${config.gtk.cursorTheme.name}".source =
-          "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
+        ".themes/${gtkThemeName}".source =
+          "${gtkThemePkg}/share/themes/${gtkThemeName}";
+        ".local/share/themes/${gtkThemeName}".source =
+          "${gtkThemePkg}/share/themes/${gtkThemeName}";
+        ".icons/${cursorThemeName}".source =
+          "${cursorThemePkg}/share/icons/${cursorThemeName}";
+        ".local/share/icons/${cursorThemeName}".source =
+          "${cursorThemePkg}/share/icons/${cursorThemeName}";
       };
     };
   };

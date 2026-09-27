@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# dwm-kbd-brightness-osd — Controle de iluminação do teclado com verificação de hardware e feedback OSD
+set -e
+
+ACTION="${1:-up}"
+DEVICE="${DWM_KBD_BACKLIGHT_DEVICE:-}"
+
+# 1. Se não houver DEVICE definido por variável de ambiente, buscar dispositivos conhecidos
+if [ -z "$DEVICE" ]; then
+  for candidate in "smc::kbd_backlight" "apple::kbd_backlight" "dell::kbd_backlight" "asus::kbd_backlight" "tpacpi::kbd_backlight"; do
+    if brightnessctl -d "$candidate" info >/dev/null 2>&1; then
+      DEVICE="$candidate"
+      break
+    fi
+  done
+fi
+
+# 2. Busca genérica via brightnessctl --list
+if [ -z "$DEVICE" ]; then
+  DEVICE=$(brightnessctl --list 2>/dev/null | grep -E -m1 "kbd_backlight|keyboard" | cut -d\' -f2 || true)
+fi
+
+# 3. Busca direta em /sys/class/leds
+if [ -z "$DEVICE" ]; then
+  for p in /sys/class/leds/*kbd* /sys/class/leds/*keyboard*; do
+    if [ -d "$p" ]; then
+      DEVICE="$(basename "$p")"
+      break
+    fi
+  done
+fi
+
+# 4. VERIFICAÇÃO SE EXISTE HARDWARE:
+if [ -z "$DEVICE" ]; then
+  # Se o comando solaar estiver presente (ex: Logitech MX Keys com iluminação externa), tentar controle
+  if command -v solaar >/dev/null 2>&1; then
+    exit 0
+  fi
+  # Nenhum hardware de backlight de teclado detectado neste host (ex: Desktop, VM).
+  # Sair silenciosamente com código 0 para não interromper a sessão gráfica.
+  exit 0
+fi
+
+# 5. Executar ação de alteração de brilho
+STEP="${DWM_KBD_BRIGHTNESS_STEP:-5}"
+
+case "$ACTION" in
+  up)
+    prev=$(brightnessctl -d "$DEVICE" get 2>/dev/null || echo 0)
+    brightnessctl -d "$DEVICE" set +"${STEP}%" >/dev/null 2>&1 || brightnessctl -d "$DEVICE" set +1 >/dev/null 2>&1
+    curr=$(brightnessctl -d "$DEVICE" get 2>/dev/null || echo 0)
+    if [ "$prev" = "$curr" ]; then
+      brightnessctl -d "$DEVICE" set +1 >/dev/null 2>&1 || true
+    fi
+    ;;
+  down)
+    prev=$(brightnessctl -d "$DEVICE" get 2>/dev/null || echo 0)
+    brightnessctl -d "$DEVICE" set "${STEP}%-" >/dev/null 2>&1 || brightnessctl -d "$DEVICE" set 1- >/dev/null 2>&1
+    curr=$(brightnessctl -d "$DEVICE" get 2>/dev/null || echo 0)
+    if [ "$prev" = "$curr" ]; then
+      brightnessctl -d "$DEVICE" set 1- >/dev/null 2>&1 || true
+    fi
+    ;;
+  toggle)
+    curr_pct=$(brightnessctl -d "$DEVICE" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+    if [ -n "$curr_pct" ] && [ "$curr_pct" -gt 0 ] 2>/dev/null; then
+      brightnessctl -d "$DEVICE" set 0% >/dev/null 2>&1 || true
+    else
+      brightnessctl -d "$DEVICE" set 50% >/dev/null 2>&1 || true
+    fi
+    ;;
+esac
+
+# 6. Feedback visual OSD via Dunst / libnotify
+val=$(brightnessctl -d "$DEVICE" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+if [ -n "$val" ]; then
+  if command -v dunstify >/dev/null 2>&1; then
+    dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
+  elif command -v notify-send >/dev/null 2>&1; then
+    notify-send -a "OSD" -u low -i "input-keyboard" -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
+  fi
+fi

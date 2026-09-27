@@ -4,3 +4,4 @@ result/*
 result
 # .vscode/
 .qwen*
+.test_ssh.sh

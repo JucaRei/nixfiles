@@ -41,5 +41,10 @@ EOF
 	exit 0
 fi
 
+# Se o quickshell estiver disponível no sistema (Nixpkgs / wrapper), aceitar a execução
+if command -v quickshell >/dev/null 2>&1; then
+	exit 0
+fi
+
 printf 'unsupported Quickshell version: %s\n' "${detail:-unknown}" >&2
 exit 1

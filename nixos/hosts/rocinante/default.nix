@@ -421,6 +421,15 @@ in
             ];
           };
           hardware.graphics.cards.gpu = mkForce "nvidia-legacy";
+
+          # Quando bootar na especialização NVIDIA, o Home Manager (módulo do NixOS)
+          # ajusta as configurações de desktop e variáveis de sessão automaticamente
+          home-manager.users.juca = {
+            desktop.dwm.quickshell.glIntegration = "glx";
+            home.sessionVariables = {
+              GPU_DRIVER_PROFILE = "nvidia-legacy";
+            };
+          };
         };
       };
     };

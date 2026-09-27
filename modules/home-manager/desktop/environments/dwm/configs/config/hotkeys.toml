@@ -90,9 +90,17 @@ keys = [
   { mod="",                 key="XF86AudioLowerVolume",   desc="Volume down",   func="spawn",  cmd="amixer sset Master 5%- unmute" },
   { mod="",                 key="XF86AudioMute",          desc="Mute toggle",   func="spawn",  cmd="amixer sset Master toggle" },
 
-  # ── Brightness ────────────────────────────────────────────────────────────────
+  # ── Brightness (Monitor) ──────────────────────────────────────────────────────
   { mod="",                 key="XF86MonBrightnessUp",    desc="Brightness +",  func="spawn",  cmd="brightnessctl set 10%+" },
   { mod="",                 key="XF86MonBrightnessDown",  desc="Brightness -",  func="spawn",  cmd="brightnessctl set 10%-" },
+
+  # ── Keyboard Backlight (MacBook / Laptops) ────────────────────────────────────
+  { mod="",                 key="XF86KbdBrightnessUp",    desc="Keyboard backlight +",      func="spawn",  cmd="dwm-kbd-brightness-osd up" },
+  { mod="",                 key="XF86KbdBrightnessDown",  desc="Keyboard backlight -",      func="spawn",  cmd="dwm-kbd-brightness-osd down" },
+  { mod="",                 key="XF86KbdLightOnOff",      desc="Keyboard backlight toggle", func="spawn",  cmd="dwm-kbd-brightness-osd toggle" },
+  { mod="SUPER",            key="F6",                     desc="Keyboard backlight +",      func="spawn",  cmd="dwm-kbd-brightness-osd up" },
+  { mod="SUPER",            key="F5",                     desc="Keyboard backlight -",      func="spawn",  cmd="dwm-kbd-brightness-osd down" },
+  { mod="SUPER SHIFT",      key="F5",                     desc="Keyboard backlight toggle", func="spawn",  cmd="dwm-kbd-brightness-osd toggle" },
 
   # ── Window focus & movement ───────────────────────────────────────────────────
   { mod="SUPER",            key="j",       desc="Focus next window",       func="focusstack",  i=1 },

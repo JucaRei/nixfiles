@@ -757,13 +757,69 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - Adicionado `iso-dwm = helper.mkIso { desktop = "dwm"; };` no `flake.nix`.
 
 - **Migração do Host `rocinante` para DWM (MacBook Pro 4,1)**:
-  - `flake.nix`: `desktop = "dwm";` com `# desktop = "bspwm";` mantido comentado como fallback.
-  - `home-manager/hosts/rocinante/default.nix`:
-    - Ativado `desktop.dwm.picom = { enable = true; backend = "xrender"; };` para garantir estabilidade e temperatura fria na GeForce 8600M GT legada.
-    - Mantido `desktop.bspwm.picom` comentado como fallback seguro.
-    - Tecla Command (⌘) como Super principal: `desktop.modifierKey = "Super"` e teclado Apple unificado em `home.keyboard` (`layout = "us"`, `variant = "intl"`, `model = "apple"`). O módulo de kernel `hid_apple` em `nixos/hosts/rocinante/default.nix` já roda com `options hid_apple fnmode=1 swap_opt_cmd=0`, garantindo que Command dispare `Super` (Mod4) e Option dispare `Alt` (Mod1).
+- **Estabilização do DWM (Titus) — NVIDIA 340 Legacy, Temas Mutáveis (QML) e Keyboard Backlight**:
+  - **Problema 1: Barra Quickshell Não Aparecia no NVIDIA 340 Legacy (`rocinante`)**:
+    - *Causa*: Quickshell (baseado em Qt 6.8+ / QML) usa Vulkan por padrão para seu Qt Quick Scene Graph (RHI) no Linux X11 e busca EGL através do plugin xcb. A GPU GeForce 8600M GT (driver proprietário 340.108 monolítico pré-libglvnd) não possui suporte a Vulkan nem EGL no X11 (apenas GLX nativo em `libGL.so.1`). Sem configuração explícita, o Quickshell falhava e encerrava sem exibir a barra superior nem gerar logs.
+    - *Correção*:
+      - Exportadas variáveis de ambiente no `xsession`: `QT_QPA_PLATFORM=xcb`, `QT_XCB_GL_INTEGRATION=glx` e `QSG_RHI_BACKEND=opengl`.
+      - Adicionadas flags estáveis para NVIDIA 340: `__GL_VRR_ALLOWED=0` e `LIBGL_ALWAYS_INDIRECT=0`.
+      - Redirecionamento da saída do Quickshell para `~/.local/state/dwm-titus/quickshell.log`.
+      - Watchdog leve em background: se o Quickshell falhar na inicialização da GPU, aciona automaticamente o script nativo `dwm-status` como barra de fallback sem deixar a tela vazia.
+      - `dwm-quickshell-version-check`: Atualizado para aceitar o pacote Quickshell empacotado no Nixpkgs sem rejeitar snapshots de compilação.
+  - **Problema 2: Temas Ficavam "Read Only" e Não Mudavam via QML**:
+    - *Causa*:
+      1. No Home Manager, `xdg.configFile."dwm-titus".source = ./configs/config;` gerava `~/.config/dwm-titus` como um symlink apontando diretamente para o `/nix/store/...` (sistema de arquivos somente-leitura).
+      2. Os scripts `dwm-settings-theme` e `theme-apply.sh` implementam validações estritas de segurança: exigem que `${themes_file%/*}` (`~/.config/dwm-titus`), `themes.toml` e os arquivos de integração sejam arquivos/diretórios reais e graváveis (`! -L` e `-w`). Com o symlink do nix store, a função `mutation_ready` retornava 1 (falso), desativando o painel de temas do Quickshell.
+      3. `gtk.enable = true` no módulo DWM gerava `~/.config/gtk-3.0/settings.ini` como link do nix store, bloqueando os journals de transação do `theme-apply.sh`.
+    - *Correção*:
+      - Removido `xdg.configFile."dwm-titus"`.
+      - Implementado hook de ativação `home.activation.setupDwmConfig`: desfaz symlinks do nix store em `~/.config/dwm-titus`, cria o diretório real editável pertencente ao usuário (`$UID`), sincroniza fallbacks em `~/.local/share/dwm-titus/config` e `scripts`, e inicializa `themes.toml`, `hotkeys.toml`, `window-rules.toml` e arquivos de estado com permissões `u+w`.
+      - Definido `gtk.enable = lib.mkForce false` no DWM, gerenciando temas via `home.packages` e inicializando arquivos GTK reais graváveis.
+      - Atualizado `dwm-settings-theme` para ser tolerante a symlinks do Nix store em `validate_integration_file` e `mutation_ready`, evitando travamentos por arquivos de outras ferramentas.
+  - **Problema 3: Falta de Controle de Iluminação do Teclado (Keyboard Backlight) com Verificação de Hardware**:
+    - Criado o script `dwm-kbd-brightness-osd` em `modules/home-manager/desktop/environments/dwm/configs/scripts/dwm-kbd-brightness-osd`.
+    - *Verificação Inteligente de Hardware*: testa `DWM_KBD_BACKLIGHT_DEVICE`, depois candidatos padrão (`smc::kbd_backlight`, `apple::kbd_backlight`, `dell::kbd_backlight`, `asus::kbd_backlight`, `tpacpi::kbd_backlight`), busca em `/sys/class/leds` e integra fallback a `solaar`. Se o host não tiver hardware de backlight (ex: Desktop, VM), encerra com status 0 sem travar a sessão.
+    - Notificação OSD gráfica via Dunst/libnotify com ícone de teclado e porcentagem.
+    - Atalhos integrados em `configs/config/hotkeys.toml`: teclas de hardware `XF86KbdBrightnessUp`, `XF86KbdBrightnessDown`, `XF86KbdLightOnOff`, além dos atalhos de laptop `SUPER + F6` (aumentar), `SUPER + F5` (diminuir) e `SUPER + Shift + F5` (liga/desliga).
+  - **Arquitetura Agnóstica Declarativa por Host (`desktop.dwm.*`)**:
+    - Configurações disponíveis para qualquer host no Home Manager:
+      - `desktop.dwm.bar`: `"quickshell"` (padrão), `"dwm-status"`, `"slstatus"`, `"polybar"`, `"none"`.
+      - `desktop.dwm.quickshell.qsgBackend`: `"opengl"` (padrão estável para GPUs legadas), `"software"`, `"vulkan"`, `"auto"`.
+      - `desktop.dwm.quickshell.glIntegration`: `"glx"` (padrão para X11/NVIDIA), `"egl"`, `"auto"`.
+      - `desktop.dwm.keyboard.brightness.enable`: booleano (padrão `true`).
+      - `desktop.dwm.keyboard.brightness.device`: string com nome do dispositivo ou `null` para auto-detecção.
+      - `desktop.dwm.keyboard.brightness.step`: porcentagem de incremento (padrão `5`).
+    - Configurado em `home-manager/hosts/rocinante/default.nix`:
+      ```nix
+      desktop.dwm = {
+        bar = "quickshell";
+        quickshell = {
+          qsgBackend = "opengl";
+          glIntegration = "glx";
+        };
+        keyboard.brightness = {
+          enable = true;
+          device = "smc::kbd_backlight";
+          step = 5;
+        };
+        picom = {
+          enable = true;
+          backend = "xrender";
+        };
+      };
+      ```
+    - **Detecção Declarativa NVIDIA 340 Legacy vs Nouveau (NixOS Module & osConfig)**:
+      - Como o Home Manager é integrado diretamente como módulo do NixOS no host `rocinante` (`inputs.home-manager.nixosModules.home-manager`), todos os módulos do Home Manager recebem `osConfig`.
+      - **Agnóstico e Automático via `osConfig`**: Em `modules/home-manager/desktop/environments/dwm/dwm.nix`, `isNvidiaLegacy` avalia `(osConfig.hardware.graphics.cards.gpu or null) == "nvidia-legacy"`, configurando `glIntegration = "glx"` dinamicamente.
+      - **Especializações no NixOS (`specialisation.nvidia`)**:
+        - No boot padrão (Kernel Zen + Nouveau): `hardware.graphics.cards.gpu = null`, Mesa/Gallium é usado com `glIntegration = "auto"`.
+        - Na especialização `nvidia` (Kernel 6.6 LTS + NVIDIA 340 Legacy): `hardware.graphics.cards.gpu = mkForce "nvidia-legacy"`, e o bloco `home-manager.users.juca` ajusta `desktop.dwm.quickshell.glIntegration = "glx"` e `GPU_DRIVER_PROFILE = "nvidia-legacy"`.
+      - **Variáveis de Sessão Globais do NixOS**: No módulo `modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`, foram exportadas globalmente `QT_XCB_GL_INTEGRATION = "glx"`, `QSG_RHI_BACKEND = "opengl"`, `__GL_VRR_ALLOWED = "0"` e `LIBGL_ALWAYS_INDIRECT = "0"`.
+      - **Permissões Udev de Backlight do Teclado**: Configurado `services.udev.packages = [ pkgs.brightnessctl ]` e grupo `video` nos usuários do NixOS (`nixos/users/default.nix`), garantindo controle do `/sys/class/leds/smc::kbd_backlight` sem necessidade de privilégios de root.
+      - **Diagnóstico em Tempo Real**: Script `rocinante-gpu-check` adicionado aos pacotes do usuário para inspeção detalhada de drivers (`/proc/driver/nvidia` vs `/sys/module/nouveau`), versão do kernel e extensões GLX.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 
 

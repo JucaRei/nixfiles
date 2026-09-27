@@ -159,7 +159,7 @@ validate_user_theme_file() {
 
 validate_managed_theme_file() {
 	[[ $managed_themes_file == /* ]] || die 'managed theme path must be absolute'
-	[[ -f $managed_themes_file && ! -L $managed_themes_file && -r $managed_themes_file ]] ||
+	[[ -f $managed_themes_file && -r $managed_themes_file ]] ||
 		die "managed theme file is unavailable: $managed_themes_file"
 	[[ $(stat -c %s -- "$managed_themes_file") -le $max_themes_size ]] ||
 		die 'managed theme file is too large'
@@ -252,11 +252,15 @@ mutation_ready() {
 	fi
 
 	[[ $managed_themes_file == /* ]] || return 1
-	[[ -f $managed_themes_file && ! -L $managed_themes_file && -r $managed_themes_file ]] || return 1
+	[[ -f $managed_themes_file && -r $managed_themes_file ]] || return 1
 	[[ $(stat -c %s -- "$managed_themes_file") -le $max_themes_size ]] || return 1
 	integration_path_list
 	for path in "${integration_paths[@]}"; do
 		validate_integration_file "$path" || return 1
+		# Se for symlink gerenciado pelo Nix store, não falhar verificação de escrita
+		if [[ -L $path ]]; then
+			continue
+		fi
 		[[ ! -e $path || -w $path ]] || return 1
 		directory_path_ready "${path%/*}" || return 1
 	done
@@ -322,7 +326,7 @@ personalization_repair_mutation_ready() {
 	validate_integration_file "$file" || return 1
 	directory_path_ready "${file%/*}" true || return 1
 	[[ $managed_themes_file == /* && -f $managed_themes_file &&
-		! -L $managed_themes_file && -r $managed_themes_file ]] || return 1
+		-r $managed_themes_file ]] || return 1
 	[[ $(stat -c %s -- "$managed_themes_file") -le $max_themes_size ]] || return 1
 	snapshot=$(current_snapshot) || return 1
 	snapshot_source_is_safe "$snapshot" || return 1
@@ -1053,6 +1057,10 @@ validate_integration_file() {
 	local path=$1
 	existing_path_chain_is_safe "$path" || return 1
 	if [[ -e $path || -L $path ]]; then
+		# No Nix / Home-Manager, permitir symlinks gerenciados pelo Nix store se forem legíveis
+		if [[ -L $path && -r $path ]]; then
+			return 0
+		fi
 		[[ -f $path && ! -L $path ]] || return 1
 		[[ $(stat -c %u -- "$path") == "$UID" ]] || return 1
 		[[ $(stat -c %h -- "$path") == 1 ]] || return 1
@@ -1847,7 +1855,7 @@ theme_source_restore_preflight() {
 	[[ $source_kind == managed ]] || return 1
 	source_hash=$(meta_value "$prefix" source_hash) || return 1
 	[[ $source_hash =~ ^[0-9a-f]{64}$ ]] || return 1
-	[[ -f $managed_themes_file && ! -L $managed_themes_file && -r $managed_themes_file &&
+	[[ -f $managed_themes_file && -r $managed_themes_file &&
 		$(stat -c %s -- "$managed_themes_file") -le $max_themes_size ]] || return 2
 	current_hash=$(file_hash "$managed_themes_file") || return 1
 	[[ $current_hash == "$source_hash" ]] || return 2

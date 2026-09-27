@@ -26,6 +26,7 @@ in
       ++ filterExistingGroups [
         "adm"
         "networkmanager"
+        "video"
         # "audio"
         # "docker"
       ];

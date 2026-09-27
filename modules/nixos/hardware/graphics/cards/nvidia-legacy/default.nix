@@ -76,6 +76,10 @@ in
         LIBVA_DRIVER_NAME = "vdpau";
         VDPAU_DRIVER = "nvidia";
         LD_LIBRARY_PATH = "/run/opengl-driver/lib:/run/opengl-driver-32/lib";
+        QT_XCB_GL_INTEGRATION = "glx";
+        QSG_RHI_BACKEND = "opengl";
+        __GL_VRR_ALLOWED = "0";
+        LIBGL_ALWAYS_INDIRECT = "0";
       };
       extraInit = ''
         export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"

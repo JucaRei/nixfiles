@@ -16,6 +16,7 @@ in
       };
       displayManager.defaultSession = mkDefault "none+dwm";
       blueman.enable = mkDefault true;
+      udev.packages = [ pkgs.brightnessctl ];
     };
 
     security.polkit.enable = true;
