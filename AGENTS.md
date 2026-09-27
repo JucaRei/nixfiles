@@ -846,6 +846,36 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
           1. Configurado o Quickshell no host `rocinante` (e por padrão no `dwm.nix` para GPUs legadas) para utilizar o rasterizador por software via CPU (`qsgBackend = "software"`, `QT_QUICK_BACKEND = "software"`) e desativada a inicialização GLX/EGL no plugin X11 (`glIntegration = "none"`, `QT_XCB_GL_INTEGRATION = "none"`).
           2. Removidas as injeções globais de `QT_XCB_GL_INTEGRATION = "glx"` em [modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix) e no script `~/.xsession`.
           3. Com o backend de software, a barra Quickshell renderiza com altíssima fluidez via CPU no Intel Core 2 Duo, com zero consumo desnecessário de memória e 100% de estabilidade imune a limitações de FBConfigs do driver gráfico legado.
+      - **Ativação e Estabilização do Plymouth (Boot Splash em Nouveau e NVIDIA 340)**:
+        - **Causa Raiz 1 (Nouveau)**: O driver DRM `nouveau` não estava em `boot.initrd.kernelModules`. Sem driver KMS no estágio 1, o Plymouth não conseguia inicializar o framebuffer gráfico durante o carregamento do initrd.
+        - **Causa Raiz 2 (NVIDIA 340 Legacy)**: Na especialização `specialisation.nvidia`, a diretiva `kernelParams = mkForce [ ... ]` sobrescreveu e eliminou os parâmetros de splash (`splash`, `quiet`, `fbcon=nodefer`). Como o driver proprietário NVIDIA 340 é pré-KMS, o kernel depende do framebuffer VESA/simpledrm configurado pelo bootloader.
+        - **Causa Raiz 3 (GRUB BIOS / Legacy)**: O GRUB operando em modo BIOS (`bootType = "legacy"`) desativava a saída de vídeo gráfica e retornava ao modo texto VGA (80x25) antes de transferir o controle ao kernel Linux por ausência de `gfxpayload=keep`.
+        - **Solução**:
+          1. Em [modules/nixos/system/boot/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/nixos/system/boot/default.nix), adicionados `gfxmodeBios = "auto";` e `set gfxpayload=keep` no GRUB.
+          2. Em [nixos/hosts/rocinante/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/default.nix), incluídos `"nouveau"` em `boot.initrd.kernelModules`, e `"simpledrm"`, `"vesafb"` em `availableKernelModules`.
+          3. Em `specialisation.nvidia`, adicionados `"splash" "quiet" "fbcon=nodefer" "nomodeset"` aos parâmetros de boot.
+      - **Organização de Atalhos no DWM (`hotkeys.toml`)**:
+        - **Diretriz do Usuário**: Manter as keybinds originais nativas do `dwm-titus` como ativas por padrão e deixar todas as keybinds modificadas/alternativas documentadas e comentadas no arquivo (`hotkeys.toml`), permitindo fácil consulta ou ativação sem perda das opções.
+        - **Atalhos Nativos Mantidos Ativos**:
+          - `SUPER + Return`: Promover para Master (`zoom`).
+          - `SUPER + x`: Terminal (`$terminal` / Alacritty).
+          - `SUPER + r`: Lançador Quickshell (`quickshell ipc call launcher toggle`).
+          - `SUPER + d`: Lançador Rofi (`rofi -show drun`).
+          - `SUPER + space`: Alternar Janela Flutuante (`togglefloating`).
+          - `SUPER + d`: Reduzir número de janelas no Master (`incnmaster -1`).
+          - `SUPER + b`: Abrir Navegador padrão (`dwm-default-apps open https://`).
+          - `SUPER + e`: Abrir Gerenciador de Arquivos (`xdg-open .`).
+          - `SUPER + q`: Fechar janela em foco (`killclient`).
+          - Multimídia e Iluminação de Teclado nativas ativas (`XF86Audio...`, `XF86MonBrightness...`, `XF86KbdBrightness...`, `SUPER + F5`/`F6`).
+        - **Atalhos Modificados/Alternativos (Disponíveis e Comentados)**:
+          - `# SUPER + Return` / `# SUPER + t`: Abrir Terminal diretamente.
+          - `# SUPER + space`: Lançador Rofi.
+          - `# SUPER + Shift + Return`: Promover para Master (`zoom`).
+          - `# SUPER + Shift + space`: Alternar Flutuante.
+          - `# SUPER + u`: Reduzir número de janelas no Master.
+          - `# Volume via PipeWire (wpctl)` e atalhos Apple (`SUPER + F10`/`F11`/`F12`).
+          - `# Brilho Apple` (`SUPER + F1`/`F2` e `F1`/`F2` diretos).
+          - `# Menu de Energia` (`SUPER + Escape` e `SUPER + Shift + e`).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

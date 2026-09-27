@@ -51,7 +51,7 @@
 
 [vars]
 terminal = "alacritty"
-webapp   = "webapp-launch"
+webapp = "webapp-launch"
 
 # ── KEYBINDINGS ───────────────────────────────────────────────────────────────
 # One binding per line.  Save the file to reload instantly.
@@ -66,16 +66,28 @@ keys = [
   { mod="SUPER",            key="w",       desc="Looking Glass (VM)",      func="spawn",       cmd="looking-glass-client -F" },
   { mod="SUPER SHIFT",      key="w",       desc="Randomize wallpaper",     func="spawn",       cmd="feh --randomize --bg-fill ~/.dotfiles/assets/wallpapers/* 2>/dev/null || true" },
 
-  # ── Web apps ─────────────────────────────────────────────────────────────────
+  # Atalhos alternativos de Launcher e Terminal (comentados para referência):
+  # { mod = "SUPER", key = "Return", desc = "Terminal", func = "spawn", exec = [ "$terminal" ] },
+  # { mod = "SUPER", key = "t", desc = "Terminal", func = "spawn", exec = [ "$terminal" ] },
+  # { mod = "SUPER", key = "space", desc = "App launcher (Rofi)", func = "spawn", cmd = "rofi -show drun" },
+  # { mod = "SUPER", key = "r", desc = "App launcher (Quickshell com fallback Rofi)", func = "spawn", cmd = "quickshell ipc --path \"${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/shell.qml\" call launcher toggle || rofi -show drun" },
+
+  # ── Web apps & Tools ─────────────────────────────────────────────────────────
   { mod="SUPER",            key="a",       desc="ChatGPT",                 func="spawn",       exec=["dwm-quickshell-launcher", "launch-chatgpt"] },
   { mod="SUPER SHIFT",      key="a",       desc="Gemini",                  func="spawn",       exec=["$webapp", "https://gemini.google.com/"] },
   { mod="SUPER SHIFT",      key="x",       desc="X/Twitter — new post",    func="spawn",       exec=["$webapp", "https://x.com/compose/post"] },
   { mod="SUPER",            key="b",       desc="Browser",                 func="spawn",       exec=["dwm-default-apps", "open", "https://"] },
 
+  # Atalhos alternativos de Navegador (comentados para referência):
+  # { mod = "SUPER", key = "b", desc = "Browser (Firefox direto)", func = "spawn", cmd = "firefox || xdg-open https://" },
+
   # ── Screenshots ───────────────────────────────────────────────────────────────
   { mod="SUPER",            key="p",       desc="Screenshot active monitor", func="spawn",     cmd="dwm-screenshot screen" },
   { mod="SUPER SHIFT",      key="p",       desc="Screenshot area → file",  func="spawn",       cmd="dwm-screenshot gui" },
   { mod="SUPER CTRL",       key="p",       desc="Screenshot area → clip",  func="spawn",       cmd="dwm-screenshot clip" },
+
+  # Atalhos alternativos de Screenshot (comentados para referência):
+  # { mod = "", key = "Print", desc = "Screenshot area → file", func = "spawn", cmd = "dwm-screenshot gui" },
 
   # ── Files & utilities ─────────────────────────────────────────────────────────
   { mod="SUPER",            key="e",       desc="File manager",            func="spawn",       cmd="xdg-open ." },
@@ -85,14 +97,31 @@ keys = [
   { mod="SUPER SHIFT",      key="r",       desc="Restart Quickshell",      func="spawn",       cmd="dwm-quickshell-controlcenter action restart-quickshell" },
   { mod="SUPER CTRL",       key="r",       desc="Restart Proton/Steam",    func="spawn",       cmd="protonrestart" },
 
+  # Atalhos alternativos de File Manager (comentados para referência):
+  # { mod = "SUPER", key = "e", desc = "File manager (Thunar direto)", func = "spawn", cmd = "thunar || xdg-open ~" },
+
   # ── Volume  (no modifier — press the media key directly) ─────────────────────
   { mod="",                 key="XF86AudioRaiseVolume",   desc="Volume up",     func="spawn",  cmd="amixer sset Master 5%+ unmute" },
   { mod="",                 key="XF86AudioLowerVolume",   desc="Volume down",   func="spawn",  cmd="amixer sset Master 5%- unmute" },
   { mod="",                 key="XF86AudioMute",          desc="Mute toggle",   func="spawn",  cmd="amixer sset Master toggle" },
 
+  # Atalhos alternativos de Volume (PipeWire wpctl e teclas Apple - comentados para referência):
+  # { mod = "", key = "XF86AudioRaiseVolume", desc = "Volume up (PipeWire wpctl)", func = "spawn", cmd = "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ 2>/dev/null || amixer sset Master 5%+ unmute" },
+  # { mod = "", key = "XF86AudioLowerVolume", desc = "Volume down (PipeWire wpctl)", func = "spawn", cmd = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- 2>/dev/null || amixer sset Master 5%- unmute" },
+  # { mod = "", key = "XF86AudioMute", desc = "Mute toggle (PipeWire wpctl)", func = "spawn", cmd = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 2>/dev/null || amixer sset Master toggle" },
+  # { mod = "SUPER", key = "F12", desc = "Volume up (Apple F12)", func = "spawn", cmd = "wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+ 2>/dev/null || amixer sset Master 5%+ unmute" },
+  # { mod = "SUPER", key = "F11", desc = "Volume down (Apple F11)", func = "spawn", cmd = "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- 2>/dev/null || amixer sset Master 5%- unmute" },
+  # { mod = "SUPER", key = "F10", desc = "Mute toggle (Apple F10)", func = "spawn", cmd = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 2>/dev/null || amixer sset Master toggle" },
+
   # ── Brightness (Monitor) ──────────────────────────────────────────────────────
   { mod="",                 key="XF86MonBrightnessUp",    desc="Brightness +",  func="spawn",  cmd="brightnessctl set 10%+" },
   { mod="",                 key="XF86MonBrightnessDown",  desc="Brightness -",  func="spawn",  cmd="brightnessctl set 10%-" },
+
+  # Atalhos alternativos de Brilho da Tela (Apple F1/F2 - comentados para referência):
+  # { mod = "SUPER", key = "F2", desc = "Screen brightness +", func = "spawn", cmd = "brightnessctl set 10%+" },
+  # { mod = "SUPER", key = "F1", desc = "Screen brightness -", func = "spawn", cmd = "brightnessctl set 10%-" },
+  # { mod = "", key = "F2", desc = "Screen brightness +", func = "spawn", cmd = "brightnessctl set 10%+" },
+  # { mod = "", key = "F1", desc = "Screen brightness -", func = "spawn", cmd = "brightnessctl set 10%-" },
 
   # ── Keyboard Backlight (MacBook / Laptops) ────────────────────────────────────
   { mod="",                 key="XF86KbdBrightnessUp",    desc="Keyboard backlight +",      func="spawn",  cmd="dwm-kbd-brightness-osd up" },
@@ -101,6 +130,10 @@ keys = [
   { mod="SUPER",            key="F6",                     desc="Keyboard backlight +",      func="spawn",  cmd="dwm-kbd-brightness-osd up" },
   { mod="SUPER",            key="F5",                     desc="Keyboard backlight -",      func="spawn",  cmd="dwm-kbd-brightness-osd down" },
   { mod="SUPER SHIFT",      key="F5",                     desc="Keyboard backlight toggle", func="spawn",  cmd="dwm-kbd-brightness-osd toggle" },
+
+  # Atalhos alternativos de Iluminação do Teclado (F5/F6 diretos sem Super - comentados para referência):
+  # { mod = "", key = "F6", desc = "Keyboard backlight +", func = "spawn", cmd = "dwm-kbd-brightness-osd up" },
+  # { mod = "", key = "F5", desc = "Keyboard backlight -", func = "spawn", cmd = "dwm-kbd-brightness-osd down" },
 
   # ── Window focus & movement ───────────────────────────────────────────────────
   { mod="SUPER",            key="j",       desc="Focus next window",       func="focusstack",  i=1 },
@@ -111,6 +144,10 @@ keys = [
   { mod="SUPER",            key="Tab",     desc="Previous tag",            func="view" },
   { mod="SUPER",            key="q",       desc="Close window",            func="killclient" },
 
+  # Atalhos alternativos de Janelas (comentados para referência):
+  # { mod = "SUPER SHIFT", key = "Return", desc = "Promote to master", func = "zoom" },
+  # { mod = "SUPER SHIFT", key = "c", desc = "Close window", func = "killclient" },
+
   # ── Master / stack sizing ─────────────────────────────────────────────────────
   { mod="SUPER",            key="i",       desc="Add to master",           func="incnmaster",  i=1 },
   { mod="SUPER",            key="d",       desc="Remove from master",      func="incnmaster",  i=-1 },
@@ -120,6 +157,9 @@ keys = [
   { mod="SUPER SHIFT",      key="l",       desc="Cfact shrink",            func="setcfact",    f=-0.25 },
   { mod="SUPER SHIFT",      key="o",       desc="Cfact reset",             func="setcfact",    f=0.00 },
 
+  # Atalhos alternativos de Master/Stack (comentados para referência):
+  # { mod = "SUPER", key = "u", desc = "Remove from master", func = "incnmaster", i = -1 },
+
   # ── Layouts  (0=tiling  1=floating  2=monocle) ───────────────────────────────
   { mod="SUPER",            key="t",       desc="Tile layout",             func="setlayout",   layout_idx=0 },
   { mod="SUPER",            key="f",       desc="Float layout",            func="setlayout",   layout_idx=1 },
@@ -128,6 +168,9 @@ keys = [
   { mod="SUPER",            key="space",   desc="Toggle float/tile",       func="togglefloating" },
   { mod="SUPER SHIFT",      key="y",       desc="Fake fullscreen",         func="togglefakefullscreen" },
   { mod="SUPER SHIFT",      key="b",       desc="Toggle bar",              func="togglebar" },
+
+  # Atalhos alternativos de Layout (comentados para referência):
+  # { mod = "SUPER SHIFT", key = "space", desc = "Toggle float/tile", func = "togglefloating" },
 
   # ── Multi-monitor ─────────────────────────────────────────────────────────────
   { mod="SUPER",            key="comma",   desc="Focus left monitor",      func="focusmon",    i=-1 },
@@ -143,6 +186,10 @@ keys = [
   { mod="SUPER CTRL SHIFT", key="r",       desc="Reboot",                  func="spawn",       cmd="systemctl reboot" },
   { mod="SUPER CTRL SHIFT", key="s",       desc="Suspend",                 func="spawn",       cmd="systemctl suspend" },
 
+  # Atalhos alternativos de Menu de Energia (comentados para referência):
+  # { mod = "SUPER", key = "Escape", desc = "Power menu", func = "spawn", cmd = "session-power-menu || rofi -show power-menu -modi power-menu:rofi-power-menu || loginctl lock-session" },
+  # { mod = "SUPER SHIFT", key = "e", desc = "Power menu", func = "spawn", cmd = "session-power-menu || rofi -show power-menu -modi power-menu:rofi-power-menu" },
+
 ]
 
 # ── TAG BINDINGS ──────────────────────────────────────────────────────────────
@@ -155,15 +202,15 @@ keys = [
 # key = X11 key name    tag = 0-based index  (0 = tag 1,  8 = tag 9)
 
 tag_keys = [
-  { key="1", tag=0 },
-  { key="2", tag=1 },
-  { key="3", tag=2 },
-  { key="4", tag=3 },
-  { key="5", tag=4 },
-  { key="6", tag=5 },
-  { key="7", tag=6 },
-  { key="8", tag=7 },
-  { key="9", tag=8 },
+  { key = "1", tag = 0 },
+  { key = "2", tag = 1 },
+  { key = "3", tag = 2 },
+  { key = "4", tag = 3 },
+  { key = "5", tag = 4 },
+  { key = "6", tag = 5 },
+  { key = "7", tag = 6 },
+  { key = "8", tag = 7 },
+  { key = "9", tag = 8 },
 ]
 
 # ── CUSTOM SHORTCUTS ──────────────────────────────────────────────────────────
@@ -197,10 +244,10 @@ tag_keys = [
 # ─────────────────────────────────────────────────────────────────────────────
 
 buttons = [
-  { click="ClkTagBar",    mod="SUPER",  button=1,  func="tag" },
-  { click="ClkTagBar",    mod="SUPER",  button=3,  func="toggletag" },
-  { click="ClkClientWin", mod="SUPER",  button=1,  func="moveorplace",  i=2 },
-  { click="ClkClientWin", mod="SUPER",  button=3,  func="resizemouse" },
-  { click="ClkTagBar",    mod="",       button=1,  func="view" },
-  { click="ClkTagBar",    mod="",       button=3,  func="toggleview" },
+  { click = "ClkTagBar", mod = "SUPER", button = 1, func = "tag" },
+  { click = "ClkTagBar", mod = "SUPER", button = 3, func = "toggletag" },
+  { click = "ClkClientWin", mod = "SUPER", button = 1, func = "moveorplace", i = 2 },
+  { click = "ClkClientWin", mod = "SUPER", button = 3, func = "resizemouse" },
+  { click = "ClkTagBar", mod = "", button = 1, func = "view" },
+  { click = "ClkTagBar", mod = "", button = 3, func = "toggleview" },
 ]
