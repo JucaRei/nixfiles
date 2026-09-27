@@ -12,9 +12,23 @@ in
     services = {
       xserver = {
         enable = true;
-        windowManager.dwm.enable = true;
+        displayManager.session = [
+          {
+            manage = "window";
+            name = "dwm";
+            start = ''
+              if [ -f "$HOME/.local/bin/start-dwm" ]; then
+                exec "$HOME/.local/bin/start-dwm"
+              elif [ -f "$HOME/.xsession" ]; then
+                exec "$HOME/.xsession"
+              else
+                exec dwm
+              fi
+            '';
+          }
+        ];
       };
-      displayManager.defaultSession = mkDefault "none+dwm";
+      displayManager.defaultSession = mkDefault "dwm";
       blueman.enable = mkDefault true;
       udev.packages = [ pkgs.brightnessctl ];
     };

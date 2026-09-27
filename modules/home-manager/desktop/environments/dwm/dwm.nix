@@ -338,6 +338,7 @@ in
         $DRY_RUN_CMD cp -rf ${./configs/config}/* "$HOME/.local/share/dwm-titus/config/" 2>/dev/null || true
         $DRY_RUN_CMD cp -rf ${./configs/scripts}/* "$HOME/.local/share/dwm-titus/scripts/" 2>/dev/null || true
         $DRY_RUN_CMD chmod -R u+w "$HOME/.local/share/dwm-titus" 2>/dev/null || true
+        $DRY_RUN_CMD chmod +x "$HOME/.local/share/dwm-titus/scripts/"* 2>/dev/null || true
 
         # Inicializar arquivos de configuração do usuário em ~/.config/dwm-titus se não existirem
         if [ ! -f "$HOME/.config/dwm-titus/themes.toml" ]; then
