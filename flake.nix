@@ -87,7 +87,8 @@
         # Workstations & Testing VMs
         rocinante = helper.mkNixos {
           hostname = "rocinante";
-          desktop = "bspwm";
+          # desktop = "bspwm";
+          desktop = "dwm";
           stateVersion = "22.11";
         };
 

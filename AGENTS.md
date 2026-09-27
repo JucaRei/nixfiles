@@ -756,6 +756,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - Arquitetura subordinada: todas as opções usam `lib.mkDefault`, permitindo que o ecossistema avançado do Home Manager (`dwm-titus`, `quickshell`, `hotkeys.toml`, etc.) atue como o configurador principal e prioritário da experiência do usuário.
   - Adicionado `iso-dwm = helper.mkIso { desktop = "dwm"; };` no `flake.nix`.
 
+- **Migração do Host `rocinante` para DWM (MacBook Pro 4,1)**:
+  - `flake.nix`: `desktop = "dwm";` com `# desktop = "bspwm";` mantido comentado como fallback.
+  - `home-manager/hosts/rocinante/default.nix`:
+    - Ativado `desktop.dwm.picom = { enable = true; backend = "xrender"; };` para garantir estabilidade e temperatura fria na GeForce 8600M GT legada.
+    - Mantido `desktop.bspwm.picom` comentado como fallback seguro.
+    - Tecla Command (⌘) como Super principal: `desktop.modifierKey = "Super"` e teclado Apple unificado em `home.keyboard` (`layout = "us"`, `variant = "intl"`, `model = "apple"`). O módulo de kernel `hid_apple` em `nixos/hosts/rocinante/default.nix` já roda com `options hid_apple fnmode=1 swap_opt_cmd=0`, garantindo que Command dispare `Super` (Mod4) e Option dispare `Alt` (Mod1).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
