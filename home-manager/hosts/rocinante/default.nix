@@ -31,6 +31,8 @@
       };
     };
 
+    programs.antigravity-cli.enable = true;
+
     # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) especificamente na Rocinante
     programs.vscode.profiles.default.extensions =
       lib.mkIf config.system.programs.editors.vscode.enable
