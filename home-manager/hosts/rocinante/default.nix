@@ -145,7 +145,10 @@ in
     specialisation = {
       nvidia = {
         configuration = {
-          desktop.dwm.quickshell.glIntegration = lib.mkForce "glx";
+          desktop.dwm.quickshell = {
+            qsgBackend = lib.mkForce "software";
+            glIntegration = lib.mkForce "none";
+          };
           home.sessionVariables = {
             GPU_DRIVER_PROFILE = lib.mkForce "nvidia-legacy";
           };

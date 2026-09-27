@@ -98,14 +98,14 @@ in
 
       qsgBackend = mkOption {
         type = lib.types.enum [ "opengl" "software" "vulkan" "auto" ];
-        default = if isNvidiaLegacy then "opengl" else "opengl";
-        description = "Backend de renderização do Qt Quick Scene Graph (QSG_RHI_BACKEND). No NVIDIA 340 Legacy (sem suporte a Vulkan), 'opengl' ou 'software' garante o funcionamento da barra.";
+        default = if isNvidiaLegacy then "software" else "opengl";
+        description = "Backend de renderização do Qt Quick Scene Graph (QSG_RHI_BACKEND). No NVIDIA 340 Legacy (sem suporte a Vulkan e com FBConfigs GLX incompatíveis no Qt 6.11), 'software' garante renderização estável via CPU.";
       };
 
       glIntegration = mkOption {
-        type = lib.types.enum [ "glx" "egl" "auto" ];
-        default = if isNvidiaLegacy then "glx" else "auto";
-        description = "Backend de integração GL do Qt XCB (QT_XCB_GL_INTEGRATION). No NVIDIA 340 Legacy, 'glx' é o único backend estável suportado pelo driver proprietário.";
+        type = lib.types.enum [ "glx" "egl" "auto" "none" ];
+        default = if isNvidiaLegacy then "none" else "auto";
+        description = "Backend de integração GL do Qt XCB (QT_XCB_GL_INTEGRATION). No NVIDIA 340 Legacy, 'none' previne falhas de contexto dummy GLX/EGL no Qt6.";
       };
     };
 
@@ -167,6 +167,9 @@ in
           # Qt Quick Scene Graph / RHI backend configurado declarativamente
           ${lib.optionalString (cfg.quickshell.qsgBackend != "auto") ''
             export QSG_RHI_BACKEND="${cfg.quickshell.qsgBackend}"
+            ${lib.optionalString (cfg.quickshell.qsgBackend == "software") ''
+              export QT_QUICK_BACKEND=software
+            ''}
           ''}
           ${lib.optionalString (cfg.quickshell.glIntegration != "auto") ''
             export QT_XCB_GL_INTEGRATION="${cfg.quickshell.glIntegration}"
@@ -174,8 +177,6 @@ in
 
           # Se detectada GPU NVIDIA 340 Legacy (monolítica GLX pré-libglvnd), forçar parâmetros estáveis
           if [ -d /proc/driver/nvidia ] || [ -f /run/opengl-driver/lib/libGL.so.340.108 ] || [ -f /usr/lib64/nvidia/libGL.so.340.108 ] || [ -f /usr/lib/x86_64-linux-gnu/libGL.so.340.108 ]; then
-            export QT_XCB_GL_INTEGRATION=glx
-            export QSG_RHI_BACKEND="${if cfg.quickshell.qsgBackend == "vulkan" then "opengl" else cfg.quickshell.qsgBackend}"
             export __GL_VRR_ALLOWED=0
             export LIBGL_ALWAYS_INDIRECT=0
           fi
@@ -238,8 +239,11 @@ in
             pkill -x slstatus || true
             pkill -x dwm-status || true
 
-            # Iniciar Quickshell com log para diagnóstico (removendo LD_LIBRARY_PATH para garantir resolução correta de símbolos EGL/Qt6)
-            env -u LD_LIBRARY_PATH ${nixGLWrapper pkgs.quickshell}/bin/quickshell --path "$HOME/.config/quickshell/shell.qml" --no-duplicate > "$HOME/.local/state/dwm-titus/quickshell.log" 2>&1 &
+            # Iniciar Quickshell com log para diagnóstico (isolando de LD_LIBRARY_PATH e forçando backend de software/none quando configurado)
+            env -u LD_LIBRARY_PATH \
+              ${lib.optionalString (cfg.quickshell.qsgBackend == "software") "QT_QUICK_BACKEND=software QSG_RHI_BACKEND=software"} \
+              ${lib.optionalString (cfg.quickshell.glIntegration == "none") "QT_XCB_GL_INTEGRATION=none"} \
+              ${nixGLWrapper pkgs.quickshell}/bin/quickshell --path "$HOME/.config/quickshell/shell.qml" --no-duplicate > "$HOME/.local/state/dwm-titus/quickshell.log" 2>&1 &
             QUICKSHELL_PID=$!
 
             # Watchdog leve em background: se o Quickshell fechar ou falhar na GPU, acionar dwm-status automaticamente

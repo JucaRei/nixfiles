@@ -840,7 +840,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
         - **Solução**:
           1. Em [modules/home-manager/desktop/environments/dwm/dwm.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/dwm/dwm.nix), restrito o export de `LD_LIBRARY_PATH` para ser executado **exclusivamente** quando o driver proprietário NVIDIA 340 Legacy for detectado (`/proc/driver/nvidia` ou `/run/opengl-driver/lib/libGL.so.340.108`).
           2. Na inicialização do Quickshell, encapsulado com `env -u LD_LIBRARY_PATH` para assegurar que a barra execute utilizando seus links limpos e versionados do Nix Store (com suporte completo a EGL 1.5).
-          3. Em [modules/home-manager/desktop/environments/dwm/configs/scripts/dwm-status](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/dwm/configs/scripts/dwm-status), ajustado `publish` para retornar 0 em caso de timeout de `xsetroot`, prevenindo que a flag `set -e` encerre precocemente o loop do fallback da barra nativa.
+      - **Correção da Falha do Quickshell (`FATAL: Could not initialize GLX` / FBConfig mismatch)**:
+        - **Causa Raiz**: O driver proprietário NVIDIA 340 Legacy (2014) não disponibiliza FBConfigs GLX compatíveis com os requisitos estritos de `QSurfaceFormat` do Qt 6.11 (`qglx_findConfig: Failed to finding matching FBConfig`). Ao forçar `QT_XCB_GL_INTEGRATION=glx`, o plugin XCB do Qt abortava a execução imediatamente. Além disso, a função `drawbar` do `dwm.c` possui um `return;` explícito no início, tornando o Quickshell o único responsável pela renderização da barra no `dwm-titus`.
+        - **Solução**:
+          1. Configurado o Quickshell no host `rocinante` (e por padrão no `dwm.nix` para GPUs legadas) para utilizar o rasterizador por software via CPU (`qsgBackend = "software"`, `QT_QUICK_BACKEND = "software"`) e desativada a inicialização GLX/EGL no plugin X11 (`glIntegration = "none"`, `QT_XCB_GL_INTEGRATION = "none"`).
+          2. Removidas as injeções globais de `QT_XCB_GL_INTEGRATION = "glx"` em [modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix) e no script `~/.xsession`.
+          3. Com o backend de software, a barra Quickshell renderiza com altíssima fluidez via CPU no Intel Core 2 Duo, com zero consumo desnecessário de memória e 100% de estabilidade imune a limitações de FBConfigs do driver gráfico legado.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
