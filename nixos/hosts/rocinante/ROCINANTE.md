@@ -129,13 +129,12 @@ networking.networkmanager.wifi.powersave = false;            # sem hibernação 
 networking.networkmanager.wifi.macAddress = "preserve";
 
 # Compatibilidade com repetidores modernos e Broadcom wl:
-networking.networkmanager.extraConfig = ''
-  [connection]
-  wifi-sec.pmf=1           # Desativa PMF (802.11w): Broadcom wl não suporta
-  802-11-wireless.mtu=1460 # MTU reduzido contra descarte de pacotes WDS
-  [device]
-  wifi.scan-rand-mac-address=no
-'';
+networking.networkmanager.settings = {
+  connection = {
+    "wifi-sec.pmf" = 1;           # Desativa PMF (802.11w): Broadcom wl não suporta
+    "802-11-wireless.mtu" = 1460; # MTU reduzido contra descarte de pacotes WDS
+  };
+};
 
 # Evita que timeout de DNS local (10.10.10.25) trave conexões no repetidor:
 networking.resolvconf.extraConfig = ''
