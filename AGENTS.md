@@ -912,7 +912,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     1. *Variável em `[vars]`*: Adicionado `filemanager = "file-manager"` em `hotkeys.toml`.
     2. *Atalho Simétrico*: Vinculado `{ mod="SUPER", key="e", desc="File manager", func="spawn", exec=["$filemanager"] }`.
     3. *Migração em Ativação (`dwm.nix`)*: No hook `activation.setupDwmConfig`, adicionada migração com `sed` que assegura `filemanager = "file-manager"` em `[vars]` e migra qualquer atalho antigo para `exec=["$filemanager"]` em `~/.config/dwm-titus/hotkeys.toml` existentes.
-    4. *Dependências*: `pkgs.xdg-utils` adicionado aos pacotes base do DWM.
+- **DWM — Arquivos QML do Quickshell e Configurações 100% Graváveis (`Writable` / Live Mode)**:
+  - **Problema de Read-Only em Live Mode**: O Quickshell era importado via `xdg.configFile."quickshell".source = ...`, o que gerava um symlink de `~/.config/quickshell` apontando para o Nix store (`/nix/store/...`). Como a Nix store é imutável, qualquer edição em arquivos `.qml` para testes em Live Mode / Hot Reload falhava com erro de somente leitura. Além disso, modelos QML que persistiam configurações (Wallpaper, Fontes, Acessibilidade, Notificações, Painel, Picom e Telas) falhavam por ausência ou bloqueio de escrita nos arquivos de estado.
+  - **Solução Arquitetural Aplicada**:
+    1. *Eliminação do Symlink do Store*: Removido `xdg.configFile."quickshell"` em [dwm.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/dwm/dwm.nix).
+    2. *Provisionamento Físico de QML Gravável*: No hook `activation.setupDwmConfig`, o diretório `~/.config/quickshell` é desfeito de symlinks, criado como diretório real e sincronizado com `chmod -R u+w`, permitindo salvar alterações em qualquer arquivo `.qml` e ver o recarregamento ao vivo na tela.
+    3. *Cobertura Total de Funções QML*: Inicializados com permissão `u+w` todos os arquivos de configuração manipulados pelos modelos QML em `~/.config/dwm-titus/` (`wallpaper.conf`, `font.conf`, `accessibility.conf`, `panel-widgets.conf`, `notification-settings.json`, `picom.conf`, `display-profiles.json`, `personalization.conf`, `theme-env.sh`, `cursor.Xresources`, `xsettingsd.conf`, `themes.toml`, `hotkeys.toml` e `window-rules.toml`).
+    4. *Desvinculação de Symlinks em Integrações Externas*: GTK (`settings.ini`), Picom (`picom.conf`), Alacritty (`active-theme.toml`), Kitty (`active-theme.conf`) e Qtct (`qt5ct`/`qt6ct`) convertidos para arquivos e pastas graváveis.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

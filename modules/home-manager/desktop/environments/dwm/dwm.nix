@@ -133,11 +133,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Arquivos QML em tempo de execução do Quickshell
-    xdg.configFile = {
-      "quickshell".source = ./configs/config/quickshell;
-    };
-
     xsession = {
       enable = true;
       windowManager = {
@@ -332,9 +327,9 @@ in
         DWM_KBD_BACKLIGHT_DEVICE = cfg.keyboard.brightness.device;
       };
 
-      # Ativação do Home Manager: provisionar ~/.config/dwm-titus como diretório real editável
+      # Ativação do Home Manager: provisionar ~/.config/dwm-titus e ~/.config/quickshell como diretórios reais e editáveis
       activation.setupDwmConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        # Se ~/.config/dwm-titus for symlink do Nix store (geração anterior), remover para permitir escrita
+        # 1. Se ~/.config/dwm-titus for symlink do Nix store (geração anterior), remover para permitir escrita
         if [ -L "$HOME/.config/dwm-titus" ]; then
           $DRY_RUN_CMD rm -f "$HOME/.config/dwm-titus"
         fi
@@ -349,7 +344,15 @@ in
         $DRY_RUN_CMD chmod -R u+w "$HOME/.local/share/dwm-titus" 2>/dev/null || true
         $DRY_RUN_CMD chmod +x "$HOME/.local/share/dwm-titus/scripts/"* 2>/dev/null || true
 
-        # Inicializar arquivos de configuração do usuário em ~/.config/dwm-titus se não existirem
+        # 2. Provisionar ~/.config/quickshell como diretório REAL gravável (permite testar em Live Mode / Hot Reload)
+        if [ -L "$HOME/.config/quickshell" ]; then
+          $DRY_RUN_CMD rm -f "$HOME/.config/quickshell"
+        fi
+        $DRY_RUN_CMD mkdir -p "$HOME/.config/quickshell"
+        $DRY_RUN_CMD cp -rf ${./configs/config/quickshell}/* "$HOME/.config/quickshell/" 2>/dev/null || true
+        $DRY_RUN_CMD chmod -R u+w "$HOME/.config/quickshell" 2>/dev/null || true
+
+        # 3. Inicializar arquivos de configuração do usuário em ~/.config/dwm-titus se não existirem
         if [ ! -f "$HOME/.config/dwm-titus/themes.toml" ]; then
           $DRY_RUN_CMD cp -f ${./configs/config/themes.toml} "$HOME/.config/dwm-titus/themes.toml"
         fi
@@ -370,15 +373,32 @@ in
           $DRY_RUN_CMD cp -f ${./configs/config/window-rules.toml} "$HOME/.config/dwm-titus/window-rules.toml"
         fi
 
-        # Arquivos de estado e integração para o seletor de temas e xsettings
-        $DRY_RUN_CMD touch "$HOME/.config/dwm-titus/theme-env.sh" \
-          "$HOME/.config/dwm-titus/personalization.conf" \
-          "$HOME/.config/dwm-titus/cursor.Xresources" \
-          "$HOME/.config/dwm-titus/xsettingsd.conf" 2>/dev/null || true
+        # 4. Todos os arquivos de estado, persistência e integração para os modelos QML do Quickshell
+        # (Aparência, Wallpaper, Fontes, Painel, Acessibilidade, Notificações, Picom, Displays)
+        for cfg_file in \
+          "theme-env.sh" \
+          "personalization.conf" \
+          "cursor.Xresources" \
+          "xsettingsd.conf" \
+          "wallpaper.conf" \
+          "font.conf" \
+          "accessibility.conf" \
+          "panel-widgets.conf" \
+          "notification-settings.json" \
+          "picom.conf" \
+          "display-profiles.json"; do
+          if [ -L "$HOME/.config/dwm-titus/$cfg_file" ]; then
+            $DRY_RUN_CMD rm -f "$HOME/.config/dwm-titus/$cfg_file"
+          fi
+          if [ ! -f "$HOME/.config/dwm-titus/$cfg_file" ]; then
+            $DRY_RUN_CMD touch "$HOME/.config/dwm-titus/$cfg_file"
+          fi
+          $DRY_RUN_CMD chmod u+w "$HOME/.config/dwm-titus/$cfg_file" 2>/dev/null || true
+        done
 
         $DRY_RUN_CMD chmod -R u+w "$HOME/.config/dwm-titus" 2>/dev/null || true
 
-        # Converter eventuais symlinks read-only do GTK em cópias reais graváveis
+        # 5. Converter eventuais symlinks read-only do GTK em cópias reais graváveis
         for ini in "$HOME/.config/gtk-3.0/settings.ini" "$HOME/.config/gtk-4.0/settings.ini" "$HOME/.gtkrc-2.0"; do
           if [ -L "$ini" ]; then
             target=$($DRY_RUN_CMD readlink -f "$ini" 2>/dev/null || true)
@@ -389,11 +409,43 @@ in
           fi
         done
 
-        # Inicializar active-theme.toml do Alacritty se o diretório existir
-        if [ -d "$HOME/.config/alacritty" ] && [ ! -f "$HOME/.config/alacritty/active-theme.toml" ]; then
-          $DRY_RUN_CMD touch "$HOME/.config/alacritty/active-theme.toml"
+        # 6. Converter eventuais symlinks read-only do Picom em arquivos reais graváveis
+        for pconf in "$HOME/.config/picom/picom.conf" "$HOME/.config/picom.conf"; do
+          if [ -L "$pconf" ]; then
+            target=$($DRY_RUN_CMD readlink -f "$pconf" 2>/dev/null || true)
+            if [ -n "$target" ] && [ -f "$target" ]; then
+              $DRY_RUN_CMD cp --remove-destination "$target" "$pconf"
+              $DRY_RUN_CMD chmod u+w "$pconf" 2>/dev/null || true
+            fi
+          fi
+        done
+
+        # 7. Inicializar active-theme.toml do Alacritty e kitty se os diretórios existirem
+        if [ -d "$HOME/.config/alacritty" ]; then
+          if [ -L "$HOME/.config/alacritty/active-theme.toml" ]; then
+            $DRY_RUN_CMD rm -f "$HOME/.config/alacritty/active-theme.toml"
+          fi
+          if [ ! -f "$HOME/.config/alacritty/active-theme.toml" ]; then
+            $DRY_RUN_CMD touch "$HOME/.config/alacritty/active-theme.toml"
+          fi
           $DRY_RUN_CMD chmod u+w "$HOME/.config/alacritty/active-theme.toml" 2>/dev/null || true
         fi
+        if [ -d "$HOME/.config/kitty" ]; then
+          if [ -L "$HOME/.config/kitty/active-theme.conf" ]; then
+            $DRY_RUN_CMD rm -f "$HOME/.config/kitty/active-theme.conf"
+          fi
+          if [ ! -f "$HOME/.config/kitty/active-theme.conf" ]; then
+            $DRY_RUN_CMD touch "$HOME/.config/kitty/active-theme.conf"
+          fi
+          $DRY_RUN_CMD chmod u+w "$HOME/.config/kitty/active-theme.conf" 2>/dev/null || true
+        fi
+
+        # 8. Garantir permissão de escrita em diretórios qt5ct e qt6ct
+        for qtdir in "$HOME/.config/qt5ct" "$HOME/.config/qt6ct"; do
+          if [ -d "$qtdir" ]; then
+            $DRY_RUN_CMD chmod -R u+w "$qtdir" 2>/dev/null || true
+          fi
+        done
       '';
     };
   };
