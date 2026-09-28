@@ -123,9 +123,30 @@ nixpkgs.config.permittedInsecurePackages = [
 
 ### Fixes de repetidor Wi-Fi:
 ```nix
+# MAC físico preservado e sem powersave
 networking.networkmanager.wifi.scanRandMacAddress = false;  # MAC fixo
 networking.networkmanager.wifi.powersave = false;            # sem hibernação Wi-Fi
+networking.networkmanager.wifi.macAddress = "preserve";
+
+# Compatibilidade com repetidores modernos e Broadcom wl:
+networking.networkmanager.extraConfig = ''
+  [connection]
+  wifi-sec.pmf=1           # Desativa PMF (802.11w): Broadcom wl não suporta
+  802-11-wireless.mtu=1460 # MTU reduzido contra descarte de pacotes WDS
+  [device]
+  wifi.scan-rand-mac-address=no
+'';
+
+# Evita que timeout de DNS local (10.10.10.25) trave conexões no repetidor:
+networking.resolvconf.extraConfig = ''
+  options timeout:1 attempts:2 rotate
+'';
 ```
+
+### Por que `broadcom-sta` (`wl`) é o melhor driver?
+- **`broadcom-sta` (`wl`)**: Driver proprietário oficial com suporte a 802.11n (até 130/300 Mbps), dual-band e aceleração por hardware.
+- **`b43` (open-source)**: O suporte ao BCM4321 no `b43` é experimental, restrito a 802.11g (máximo 54 Mbps / ~20 Mbps reais), gera alta carga de interrupções (IRQ) na CPU Core 2 Duo e sofre com falhas de calibração de rádio (`PHY calibration failed`).
+- **`brcmsmac` / `brcmfmac`**: Não suportam o chip BCM4321.
 
 ---
 

@@ -888,8 +888,19 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
         - **Script Dedicado**: Criado `modules/home-manager/desktop/environments/dwm/configs/scripts/dwm-mon-brightness-osd`, espelhando a arquitetura robusta do `dwm-kbd-brightness-osd`:
           - Detecta automaticamente a controladora de tela física em `/sys/class/backlight` (`intel_backlight`, `nv_backlight`, `apple_backlight`, `acpi_video0`).
           - Ajusta o nível com incremento suave (passo configurável, padrão 5%).
-          - Emite notificação OSD rica via Dunst (`dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val"` com barra de progresso em tempo real).
-        - **Teclas Físicas e Atalhos**: Mapeadas as teclas de mídia `XF86MonBrightnessUp` e `XF86MonBrightnessDown` no `hotkeys.toml`, com fallbacks diretos preservados.
+      - **Wi-Fi — Seleção de Driver Broadcom e Correção de Conexão em Repetidores (`rocinante`)**:
+        - **Diagnóstico de Driver no MacBook Pro 4,1 (BCM4321 - `14e4:4328`)**:
+          - **`broadcom-sta` (módulo `wl`)**: Veredito: **Driver recomendado e prioritário**. Suporta dual-band e taxas 802.11n (130-300 Mbps) com baixo overhead de CPU.
+          - **`b43` (open-source)**: Não recomendado para este chip. O suporte a BCM4321 é experimental no `b43`, limitado a 802.11g (máx. 54 Mbps / ~20 Mbps reais), e gera alta carga de interrupções de hardware (IRQ) na CPU Core 2 Duo.
+          - **`brcmsmac` / `brcmfmac`**: Incompatíveis com o chip BCM4321.
+        - **Causas Raízes de Falha de Internet ao Conectar no Repetidor Wi-Fi**:
+          1. *Timeout de DNS Estático Local (`10.10.10.25` / `10.10.10.26`)*: Se o repetidor tiver AP/Client Isolation ou subnet separada, requisições UDP 53 para o DNS local não chegam. Com timeout padrão do glibc (5s por servidor x 2 tentativas), o sistema congela por 20s em cada resolução de nome, fazendo o navegador acusar "Sem Conexão".
+          2. *PMF (802.11w - Protected Management Frames)*: Repetidores modernos ativam PMF por padrão. O driver `broadcom-sta` (`wl`) não possui suporte a PMF e a negociação resulta em descarte de pacotes de dados pelo repetidor após o handshake.
+          3. *MTU Black Hole*: O encapsulamento WDS/3-Address de repetidores pode exigir MTU inferior ao padrão de 1500 bytes.
+        - **Solução Arquitetural Aplicada**:
+          1. Em [nixos/hosts/rocinante/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/default.nix), adicionado `resolvconf.extraConfig = "options timeout:1 attempts:2 rotate";`, reduzindo o timeout de DNS para 1 segundo e alternando entre servidores com rotação automática para recorrer imediatamente a `1.1.1.1` e `8.8.8.8` caso o DNS local esteja inacessível.
+          2. No NetworkManager, injetado no `extraConfig` global: `wifi-sec.pmf=1` (desativa PMF nas conexões Wi-Fi prevenindo descarte de pacotes no repetidor) e `802-11-wireless.mtu=1460` (previne descarte de pacotes TCP por fragmentação).
+          3. Documentados comandos `nmcli` pontuais para perfil específico de repetidores.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

@@ -302,6 +302,12 @@ in
         "8.8.8.8" # Fallback público Google
       ];
 
+      # Otimização do resolver DNS: timeout curto (1s) e rotação para não travar
+      # a conexão caso os servidores DNS locais (10.10.10.25/26) estejam inacessíveis no repetidor
+      resolvconf.extraConfig = ''
+        options timeout:1 attempts:2 rotate
+      '';
+
       firewall = {
         enable = true;
         allowPing = true;
@@ -323,6 +329,18 @@ in
           powersave = false; # Fix: evita desconexões e perda de pacotes em repetidores
           macAddress = "preserve"; # Fix: mantém MAC físico permanente para evitar falhas de ARP no repetidor
         };
+        # Configurações globais para compatibilidade com Broadcom wl e repetidores Wi-Fi
+        extraConfig = ''
+          [connection]
+          # Desativa PMF (802.11w) por padrão: o driver broadcom-sta (wl) não suporta
+          # e a tentativa de negociação com repetidores modernos descarta pacotes de dados
+          wifi-sec.pmf=1
+          # MTU reduzido padrão para conexões Wi-Fi (evita descarte por encapsulamento WDS/repetidor)
+          802-11-wireless.mtu=1460
+
+          [device]
+          wifi.scan-rand-mac-address=no
+        '';
         # Alternância automática: Cabo conectado -> Wi-Fi desligado / Cabo desconectado -> Wi-Fi ligado
         dispatcherScripts = [
           {
