@@ -83,19 +83,19 @@ in
       };
     };
 
-    programs.antigravity-cli = {
-      enable = true;
-      package = antigravityCliCompat;
-    };
+    programs = {
+      antigravity-cli = {
+        enable = true;
+        package = antigravityCliCompat;
+      };
 
-    # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) especificamente na Rocinante
-    programs.vscode.profiles.default.extensions =
-      lib.mkIf config.system.programs.editors.vscode.enable
-        (
-          pkgs.nix4vscode.forVscode [
-            "Continue.continue"
-          ]
-        );
+      # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) especificamente na Rocinante
+      vscode.profiles.default.extensions = lib.mkIf config.system.programs.editors.vscode.enable (
+        pkgs.nix4vscode.forVscode [
+          "Continue.continue"
+        ]
+      );
+    };
 
     desktop = {
       modifierKey = "Super"; # Tecla Command (⌘) do Mac como Super (Mod4) principal no DWM

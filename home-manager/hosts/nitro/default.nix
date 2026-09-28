@@ -79,6 +79,7 @@ in
       packages =
         with pkgs;
         [
+          nerd-fonts.lilex
           git
           duf
           fzf
