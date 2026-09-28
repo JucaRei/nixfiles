@@ -1,4 +1,4 @@
-{ config, lib, ... }: {
+{ ... }: {
   config = {
     system.programs = {
       browsers.firefox.enable = true;
@@ -13,6 +13,9 @@
       shells = {
         enable = true;
       };
+    };
+    desktop = {
+      modifierKey = "Super";
     };
   };
 }

@@ -293,6 +293,7 @@ in
         pkgs.libnotify
         pkgs.dunst
         pkgs.xsetroot
+        pkgs.xdg-utils
       ];
 
       file = {
@@ -354,6 +355,16 @@ in
         fi
         if [ ! -f "$HOME/.config/dwm-titus/hotkeys.toml" ]; then
           $DRY_RUN_CMD cp -f ${./configs/config/hotkeys.toml} "$HOME/.config/dwm-titus/hotkeys.toml"
+        else
+          # Assegurar que a variável filemanager exista no bloco [vars]
+          if ! grep -q 'filemanager' "$HOME/.config/dwm-titus/hotkeys.toml" 2>/dev/null; then
+            $DRY_RUN_CMD sed -i '/\[vars\]/a filemanager = "file-manager"' "$HOME/.config/dwm-titus/hotkeys.toml" 2>/dev/null || true
+          fi
+          # Migrar atalhos legados para o despachante agnóstico de gerenciador de arquivos (file-manager)
+          $DRY_RUN_CMD sed -i 's|cmd="xdg-open \."|exec=["$filemanager"]|g' "$HOME/.config/dwm-titus/hotkeys.toml" 2>/dev/null || true
+          $DRY_RUN_CMD sed -i 's|cmd = "xdg-open \."|exec=["$filemanager"]|g' "$HOME/.config/dwm-titus/hotkeys.toml" 2>/dev/null || true
+          $DRY_RUN_CMD sed -i 's|cmd="file-manager \|\| thunar \|\| xdg-open ~"|exec=["$filemanager"]|g' "$HOME/.config/dwm-titus/hotkeys.toml" 2>/dev/null || true
+          $DRY_RUN_CMD sed -i 's|cmd = "file-manager \|\| thunar \|\| xdg-open ~"|exec=["$filemanager"]|g' "$HOME/.config/dwm-titus/hotkeys.toml" 2>/dev/null || true
         fi
         if [ ! -f "$HOME/.config/dwm-titus/window-rules.toml" ]; then
           $DRY_RUN_CMD cp -f ${./configs/config/window-rules.toml} "$HOME/.config/dwm-titus/window-rules.toml"

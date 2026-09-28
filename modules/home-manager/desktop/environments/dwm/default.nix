@@ -36,11 +36,14 @@ in
         enable = lib.mkDefault true;
         name = lib.mkDefault "alacritty";
       };
-      file-manager.thunar.enable = lib.mkDefault (
-        !config.system.programs.file-manager.nautilus.enable
-        && !config.system.programs.file-manager.nemo.enable
-        && !config.system.programs.file-manager.pcmanfm.enable
-      );
+      file-manager = {
+        default = lib.mkDefault "thunar";
+        thunar.enable = lib.mkDefault (
+          !config.system.programs.file-manager.nautilus.enable
+          && !config.system.programs.file-manager.nemo.enable
+          && !config.system.programs.file-manager.pcmanfm.enable
+        );
+      };
       tools.flameshot.enable = true;
     };
 

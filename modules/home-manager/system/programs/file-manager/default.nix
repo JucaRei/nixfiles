@@ -24,14 +24,14 @@ let
   chosenFM =
     if cfg.default != "auto" then
       cfg.default
+    else if (cfgThunar.enable or false) then
+      "thunar"
     else if (cfgNautilus.enable or false) then
       "nautilus"
     else if (cfgNemo.enable or false) then
       "nemo"
     else if (cfgPcmanfm.enable or false) then
       "pcmanfm"
-    else if (cfgThunar.enable or false) then
-      "thunar"
     else
       "auto";
 

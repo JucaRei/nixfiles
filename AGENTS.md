@@ -902,6 +902,18 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
           2. No NetworkManager, injetado no `networking.networkmanager.settings.connection` estruturado: `"wifi-sec.pmf" = 1;` (desativa PMF nas conexões Wi-Fi prevenindo descarte de pacotes no repetidor) e `"802-11-wireless.mtu" = 1460;` (previne descarte de pacotes TCP por fragmentação).
           3. Documentados comandos `nmcli` pontuais para perfil específico de repetidores.
 
+- **DWM — Gerenciador de Arquivos 100% Agnóstico com Thunar como Padrão (`SUPER + e` via `$filemanager`)**:
+  - **Arquitetura Agnóstica**: O ecossistema Nixfiles possui um despachante CLI unificado (`modules/home-manager/system/programs/file-manager/default.nix`) chamado `file-manager`. Ao habilitar qualquer gerenciador no host (`thunar.enable`, `nautilus.enable`, `nemo.enable` ou `pcmanfm.enable`), o script `file-manager` embute o caminho absoluto do binário escolhido no Nix store.
+  - **Thunar como Padrão do DWM**:
+    1. No [dwm/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/dwm/default.nix), configurado `system.programs.file-manager.default = lib.mkDefault "thunar";` e `thunar.enable = lib.mkDefault (!nautilus && !nemo && !pcmanfm);`.
+    2. Em [file-manager/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/system/programs/file-manager/default.nix), atualizada a seleção de fallback de `chosenFM` no modo `auto` para priorizar `thunar`.
+    3. Ao selecionar 1 para instalar no host (ex: `nautilus.enable = true;`), o Thunar é desativado via `lib.mkDefault` e o Nautilus se torna o ativo automaticamente.
+  - **Integração de Atalhos**:
+    1. *Variável em `[vars]`*: Adicionado `filemanager = "file-manager"` em `hotkeys.toml`.
+    2. *Atalho Simétrico*: Vinculado `{ mod="SUPER", key="e", desc="File manager", func="spawn", exec=["$filemanager"] }`.
+    3. *Migração em Ativação (`dwm.nix`)*: No hook `activation.setupDwmConfig`, adicionada migração com `sed` que assegura `filemanager = "file-manager"` em `[vars]` e migra qualquer atalho antigo para `exec=["$filemanager"]` em `~/.config/dwm-titus/hotkeys.toml` existentes.
+    4. *Dependências*: `pkgs.xdg-utils` adicionado aos pacotes base do DWM.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

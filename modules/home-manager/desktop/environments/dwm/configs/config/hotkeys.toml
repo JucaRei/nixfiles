@@ -52,6 +52,7 @@
 [vars]
 terminal = "alacritty"
 webapp = "webapp-launch"
+filemanager = "file-manager"
 
 # ── KEYBINDINGS ───────────────────────────────────────────────────────────────
 # One binding per line.  Save the file to reload instantly.
@@ -94,7 +95,7 @@ keys = [
   # { mod = "", key = "Print", desc = "Screenshot area → file", func = "spawn", cmd = "dwm-screenshot gui" },
 
   # ── Files & utilities ─────────────────────────────────────────────────────────
-  { mod="SUPER",            key="e",       desc="File manager",            func="spawn",       cmd="xdg-open ." },
+  { mod="SUPER",            key="e",       desc="File manager",            func="spawn",       exec=["$filemanager"] },
   { mod="SUPER",            key="slash",   desc="Keybinds cheatsheet",     func="spawn",       cmd="quickshell ipc --path \"${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/shell.qml\" call controlcenter openKeybinds" },
   { mod="SUPER",            key="F1",      desc="Control center",          func="spawn",       cmd="quickshell ipc --path \"${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/shell.qml\" call controlcenter open" },
   { mod="SUPER ALT",        key="F1",      desc="Control center",          func="spawn",       cmd="quickshell ipc --path \"${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/shell.qml\" call controlcenter open" },
@@ -102,6 +103,7 @@ keys = [
   { mod="SUPER CTRL",       key="r",       desc="Restart Proton/Steam",    func="spawn",       cmd="protonrestart" },
 
   # Atalhos alternativos de File Manager (comentados para referência):
+  # { mod = "SUPER", key = "e", desc = "File manager (fallback shell)", func = "spawn", cmd = "file-manager || xdg-open ~" },
   # { mod = "SUPER", key = "e", desc = "File manager (Thunar direto)", func = "spawn", cmd = "thunar || xdg-open ~" },
 
   # ── Volume  (no modifier — press the media key directly) ─────────────────────
