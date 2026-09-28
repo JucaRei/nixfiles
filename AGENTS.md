@@ -940,6 +940,20 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     3. *`dwm.c`*: Em `updatecurrentdesktop()`, adicionada a emissão de `DWM_TAG_UPDATE` (`dwmtagupdateatom`) e chamada explícita de `XFlush(dpy)` para garantir que as alterações no servidor X11 sejam propagadas imediatamente para os clientes sem reter buffers no Xlib.
     4. *`packages.nix`*: Declarado `xorg.xprop` explicitamente em `home.packages`.
 
+- **DWM & Quickshell — Validação da Barra, Geometria Tiled, Window Rules e Hotkeys**:
+  - **Diagnóstico do Sintoma Temporário (Barra encoberta em tiled pré-reboot)**:
+    - Ocorreu devido a um descompasso de processos em tempo de execução: o diretório `~/.config/quickshell` possui hot reload ativo e recarregou `DwmState.qml` e `dwm-quickshell-state` imediatamente após as edições; porém, o processo `dwm` ainda era a instância antiga em execução na memória RAM (que não tinha os novos átomos e o handler compilado sincronizado).
+    - Após o reinício (`reiniciei e voltou`), o binário recém-compilado do `dwm` subiu em conjunto com o `quickshell`, reativando perfeitamente o ciclo de descoberta de altbar (`scanaltbars` e `updatealtbar`), a reserva de altura do painel (`m->bh` e `m->wy = m->my + m->bh`) e a regra de restack onde janelas tiled são sempre alocadas abaixo da barra (`wc.stack_mode = Below`, `wc.sibling = m->barwin`).
+  - **Correção em `window-rules.toml` (`isfloating`)**:
+    - Identificada incompatibilidade na regra `{ class="RAIL", float=1 }`. O parser TOML do `dwm.c` (linha 3869) busca estritamente o atributo `isfloating` (`toml_table_get(&doc, "rules", i, "isfloating")`). O atributo `float` era silenciosamente ignorado, fazendo com que janelas com classe `RAIL` abrissem em modo tiled em vez de floating.
+    - Corrigido para `{ class="RAIL", isfloating=1 }`.
+  - **Correção de Colisão em `hotkeys.toml` (`SUPER + d` vs `SUPER + u`)**:
+    - O atalho `SUPER + d` estava atribuído em dois pontos distintos: na linha 65 para abrir o Rofi (`rofi -show drun`) e na linha 161 para remover janelas do master (`incnmaster`, `i=-1`).
+    - Devido à ordem de captura no X11 (`XGrabKey`), a função de `incnmaster -1` ficava inacessível via teclado. Reatribuído para `SUPER + u` (par harmônico e adjacente a `SUPER + i` para incremento do master).
+  - **Validação de Fullscreen e Altbar**:
+    - Em `dwm.c`, `updatefullscreenmonitors()` emite o átomo `_DWM_FULLSCREEN_MONITORS`. Em ausência de janelas em tela cheia, envia 0 elementos, fazendo o script `dwm-quickshell-state` enviar `fullscreen_monitors=` vazio.
+    - No QML (`DwmPanel.qml`), `aboveWindows: root.state.fullscreenMonitorIndexes.indexOf(root.state.screenIndex(root.screen)) === -1` é avaliado como `true`, mantendo a barra do Quickshell no topo em janelas normais (tiled ou flutuantes) e ocultando-a apenas sob tela cheia real ou ao acionar o atalho `SUPER + m` (que alterna o layout para monocle e aciona `togglebar`, transladando a barra para fora da tela com `selmon->by = -selmon->bh`).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

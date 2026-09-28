@@ -158,7 +158,7 @@ keys = [
 
   # ── Master / stack sizing ─────────────────────────────────────────────────────
   { mod="SUPER",            key="i",       desc="Add to master",           func="incnmaster",  i=1 },
-  { mod="SUPER",            key="d",       desc="Remove from master",      func="incnmaster",  i=-1 },
+  { mod="SUPER",            key="u",       desc="Remove from master",      func="incnmaster",  i=-1 },
   { mod="SUPER",            key="h",       desc="Shrink master",           func="setmfact",    f=-0.05 },
   { mod="SUPER",            key="l",       desc="Grow master",             func="setmfact",    f=0.05 },
   { mod="SUPER SHIFT",      key="h",       desc="Cfact grow",              func="setcfact",    f=0.25 },
@@ -166,7 +166,7 @@ keys = [
   { mod="SUPER SHIFT",      key="o",       desc="Cfact reset",             func="setcfact",    f=0.00 },
 
   # Atalhos alternativos de Master/Stack (comentados para referência):
-  # { mod = "SUPER", key = "u", desc = "Remove from master", func = "incnmaster", i = -1 },
+  # { mod = "SUPER SHIFT", key = "d", desc = "Remove from master", func = "incnmaster", i = -1 },
 
   # ── Layouts  (0=tiling  1=floating  2=monocle) ───────────────────────────────
   { mod="SUPER",            key="t",       desc="Tile layout",             func="setlayout",   layout_idx=0 },
