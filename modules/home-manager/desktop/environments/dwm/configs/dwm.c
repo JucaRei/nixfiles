@@ -5044,6 +5044,9 @@ updatecurrentdesktop(void)
 	free(monitor_desktops);
 	updateselectedmonitor();
 	updatefullscreenmonitors();
+	data[0] = ++tagupdatesequence;
+	ewmh_replace_root_cardinal(dwmtagupdateatom, data, 1);
+	XFlush(dpy);
 }
 
 void

@@ -920,6 +920,26 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     3. *Cobertura Total de Funções QML*: Inicializados com permissão `u+w` todos os arquivos de configuração manipulados pelos modelos QML em `~/.config/dwm-titus/` (`wallpaper.conf`, `font.conf`, `accessibility.conf`, `panel-widgets.conf`, `notification-settings.json`, `picom.conf`, `display-profiles.json`, `personalization.conf`, `theme-env.sh`, `cursor.Xresources`, `xsettingsd.conf`, `themes.toml`, `hotkeys.toml` e `window-rules.toml`).
     4. *Desvinculação de Symlinks em Integrações Externas*: GTK (`settings.ini`), Picom (`picom.conf`), Alacritty (`active-theme.toml`), Kitty (`active-theme.conf`) e Qtct (`qt5ct`/`qt6ct`) convertidos para arquivos e pastas graváveis.
 
+- **DWM & Quickshell — Correção da Troca e Indicação de Workspaces (`continua na 1`)**:
+  - **Sintoma**: Ao alternar de workspace (seja via atalho de teclado `SUPER + 2..9` ou clicando nos botões de workspace da barra do Quickshell), o indicador visual continuava travado no workspace 1.
+  - **Diagnóstico das Causas Raiz**:
+    1. *Omissão de Átomos no `xprop -spy`*: Em `dwm-quickshell-state` (`watch_state`), havia uma ramificação condicional `if xprop -root _DWM_MONITOR_DESKTOPS` que, ao ser executada, omitia o átomo `_NET_CURRENT_DESKTOP` do monitoramento do `xprop -spy`. Como o DWM atualiza `_NET_CURRENT_DESKTOP` em toda mudança de tag (`updatecurrentdesktop`), o script nunca recebia a notificação do X11 ao mudar de workspace sem janelas ativas.
+    2. *Full Buffering no Pipeline Unix (4KB Buffer Block)*: O comando `xprop -root -spy ... | while IFS= read -r _event; do show_state; done` utilizava um pipe em modo não-interativo (`isatty(1) == false`). O runtime `glibc` por padrão adota buffering em blocos de 4096 bytes quando a saída é um pipe. Como cada evento impresso pelo `xprop` possui ~35 bytes e o `xprop` não chama `fflush(stdout)`, os eventos ficavam retidos na memória do buffer e o loop `while read` nunca era acionado.
+    3. *Falta de Atualização Otimista no QML*: Em `DwmState.qml`, a função `switchWorkspace(index)` disparava o processo em background e aguardava passivamente pelo evento do spy. Se houvesse atraso ou se o processo anterior ainda estivesse ativo, o estado ficava defasado.
+    4. *Cálculo e Fallback de Workspaces por Tela*: Em `currentWorkspaceForScreen(screen)`, se o índice do workspace reportado não estivesse no conjunto fatiado da tela (`indexes.indexOf(reported) === -1`), o código caía cegamente no fallback `indexes[0]` (workspace 0 / "1").
+  - **Correções Aplicadas**:
+    1. *`dwm-quickshell-state`*:
+       - Unificado o `xprop -root -spy` para escutar incondicionalmente `_NET_CURRENT_DESKTOP`, `_DWM_MONITOR_DESKTOPS`, `_DWM_SELECTED_MONITOR`, `DWM_TAG_UPDATE` e demais propriedades EWMH.
+       - Envelopado com `stdbuf -oL -eL` (GNU Coreutils) para forçar line-buffering imediato no pipe, liberando cada evento no milissegundo em que ocorre.
+       - Adicionado fallback para `xdotool set_desktop` e `xdotool windowactivate` caso o `wmctrl` falhe ou não esteja disponível.
+    2. *`DwmState.qml`*:
+       - Adicionada atualização otimista instantânea de `root.currentWorkspace` e `root.monitorWorkspaceRows[logicalIndex].desktop` ao clicar no workspace, eliminando latência na interface.
+       - Tratado o ciclo de vida do `switchWorkspaceProcess` (rearmando `running = false` antes de atribuir novo comando).
+       - Atualizado `workspaceIndexes` para exibir todos os 9 workspaces em telas únicas (`screenCount <= 1`).
+       - Robustecido o retorno de `currentWorkspaceForScreen` para validar tipos numéricos e evitar fallback falso para 0.
+    3. *`dwm.c`*: Em `updatecurrentdesktop()`, adicionada a emissão de `DWM_TAG_UPDATE` (`dwmtagupdateatom`) e chamada explícita de `XFlush(dpy)` para garantir que as alterações no servidor X11 sejam propagadas imediatamente para os clientes sem reter buffers no Xlib.
+    4. *`packages.nix`*: Declarado `xorg.xprop` explicitamente em `home.packages`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

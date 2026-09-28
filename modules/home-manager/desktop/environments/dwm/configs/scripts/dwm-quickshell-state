@@ -184,28 +184,22 @@ watch_state() {
 	show_state
 	printf '\n'
 
-	if xprop -root _DWM_MONITOR_DESKTOPS >/dev/null 2>&1; then
-		xprop -root -spy \
-			DWM_TAG_UPDATE \
-			_DWM_MONITOR_DESKTOPS \
-			_DWM_SELECTED_MONITOR \
-			_NET_NUMBER_OF_DESKTOPS \
-			_NET_DESKTOP_NAMES \
-			_NET_ACTIVE_WINDOW \
-			_NET_CLIENT_LIST \
-			_DWM_FULLSCREEN_MONITORS \
-			WM_NAME 2>/dev/null
-	else
-		xprop -root -spy \
-			DWM_TAG_UPDATE \
-			_NET_CURRENT_DESKTOP \
-			_NET_NUMBER_OF_DESKTOPS \
-			_NET_DESKTOP_NAMES \
-			_NET_ACTIVE_WINDOW \
-			_NET_CLIENT_LIST \
-			_DWM_FULLSCREEN_MONITORS \
-			WM_NAME 2>/dev/null
-	fi |
+	spy_cmd="xprop -root -spy"
+	if command -v stdbuf >/dev/null 2>&1; then
+		spy_cmd="stdbuf -oL -eL xprop -root -spy"
+	fi
+
+	$spy_cmd \
+		_NET_CURRENT_DESKTOP \
+		_DWM_MONITOR_DESKTOPS \
+		_DWM_SELECTED_MONITOR \
+		_NET_NUMBER_OF_DESKTOPS \
+		_NET_DESKTOP_NAMES \
+		_NET_ACTIVE_WINDOW \
+		_NET_CLIENT_LIST \
+		_DWM_FULLSCREEN_MONITORS \
+		DWM_TAG_UPDATE \
+		WM_NAME 2>/dev/null |
 		while IFS= read -r _event; do
 			show_state
 			printf '\n'
@@ -220,11 +214,14 @@ switch_workspace() {
 		return 2
 		;;
 	esac
-	command -v wmctrl >/dev/null 2>&1 || {
-		printf 'wmctrl is required for workspace switching\n' >&2
+	if command -v wmctrl >/dev/null 2>&1; then
+		wmctrl -s "$target"
+	elif command -v xdotool >/dev/null 2>&1; then
+		xdotool set_desktop "$target"
+	else
+		printf 'wmctrl or xdotool is required for workspace switching\n' >&2
 		return 127
-	}
-	wmctrl -s "$target"
+	fi
 }
 
 focus_window() {
@@ -236,7 +233,14 @@ focus_window() {
 		return 2
 		;;
 	esac
-	wmctrl -ia "$target"
+	if command -v wmctrl >/dev/null 2>&1; then
+		wmctrl -ia "$target"
+	elif command -v xdotool >/dev/null 2>&1; then
+		xdotool windowactivate "$target"
+	else
+		printf 'wmctrl or xdotool is required for focusing window\n' >&2
+		return 127
+	fi
 }
 
 case ${1:-state} in

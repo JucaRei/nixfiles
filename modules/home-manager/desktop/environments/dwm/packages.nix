@@ -16,6 +16,7 @@ in
       slstatus
       xdotool
       wmctrl
+      xorg.xprop
       xsetroot
       xrandr
       xrdb

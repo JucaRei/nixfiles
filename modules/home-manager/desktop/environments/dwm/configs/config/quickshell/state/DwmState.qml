@@ -161,6 +161,14 @@ Scope {
 
         const screenCount = Math.max(1, root.monitorWorkspaceRows.length > 0
             ? root.monitorWorkspaceRows.length : Quickshell.screens.length);
+
+        if (screenCount <= 1) {
+            for (let i = 0; i < workspaceCount; i++) {
+                indexes.push(i);
+            }
+            return indexes;
+        }
+
         const logicalIndex = Math.min(root.screenIndex(screen), screenCount - 1);
         const workspacesPerScreen = Math.max(1, Math.floor(workspaceCount / screenCount));
         let start = logicalIndex * workspacesPerScreen;
@@ -182,11 +190,24 @@ Scope {
     function currentWorkspaceForScreen(screen) {
         const logicalIndex = root.screenIndex(screen);
         const indexes = root.workspaceIndexes(screen);
-        const reported = logicalIndex < root.monitorWorkspaceRows.length
-            ? root.monitorWorkspaceRows[logicalIndex].desktop : root.currentWorkspace;
+        let reported = root.currentWorkspace;
 
-        return indexes.indexOf(reported) !== -1
-            ? reported : (indexes.length > 0 ? indexes[0] : -1);
+        if (logicalIndex >= 0 && logicalIndex < root.monitorWorkspaceRows.length) {
+            const monDesk = root.monitorWorkspaceRows[logicalIndex].desktop;
+            if (typeof monDesk === "number" && !isNaN(monDesk) && monDesk >= 0) {
+                reported = monDesk;
+            }
+        }
+
+        if (indexes.indexOf(reported) !== -1) {
+            return reported;
+        }
+
+        if (reported >= 0 && reported < root.workspaceNames.length) {
+            return reported;
+        }
+
+        return indexes.length > 0 ? indexes[0] : 0;
     }
 
     function switchWorkspaceForScreen(screen, index) {
@@ -230,6 +251,16 @@ Scope {
     }
 
     function switchWorkspace(index) {
+        root.currentWorkspace = index;
+        const screen = root.focusedScreen();
+        const logicalIndex = root.screenIndex(screen);
+        if (logicalIndex >= 0 && logicalIndex < root.monitorWorkspaceRows.length) {
+            root.monitorWorkspaceRows[logicalIndex].desktop = index;
+        }
+
+        if (switchWorkspaceProcess.running) {
+            switchWorkspaceProcess.running = false;
+        }
         switchWorkspaceProcess.command = ["dwm-quickshell-state", "switch", index.toString()];
         switchWorkspaceProcess.running = true;
     }
