@@ -1026,14 +1026,22 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
        - **Auto-população do Cache (`cached_exchange_supported`)**: O Quickshell executa `dwm-settings-wallpaper status --read-only`, que invoca `mutation_ready true` -> `cached_exchange_supported`. Caso o cache em `$runtime_dir/exchange-support` ainda não tivesse sido gerado por um comando de escrita prévio, a função falhava e nunca criava o arquivo, mantendo o status `restricted` permanentemente. Corrigido adicionando execução e criação imediata via `exchange_supported` como fallback.
     5. *`dwm-settings-personalization`*:
        - Adicionado fallback dinâmico de localização para `dwm-settings-theme` e `dwm-xsettings` em `~/.local/share/dwm-titus/scripts/` e no `$PATH`.
-    6. *Procedimento de Ativação no Host `virtualvm` (192.168.122.106)*:
+    6. *`dwm-accessibility-settings` e `dwm-panel-settings` (Remoção da Trava Coreutils 9.5)*:
+       - Ambos os scripts continham `mv_exchange_options_supported()` exigindo `--exchange` e `--no-copy`, disparando `GNU mv atomic exchange support is unavailable` em acessibilidade e `GNU mv with --exchange and --no-copy is required` em painéis.
+       - Implementado fallback atômico POSIX seguro (`mv -f -T` / `mv -f`) em `mutation_exchange_ready()` e `publish_config()`.
+    7. *`dwm-settings-appearance` (Limpeza dos Erros em "Unresolved Details")*:
+       - **Cursor**: O upstream exigia `Capitaine-Cursors-White`. Adicionada busca/fallback dinâmico para `catppuccin-mocha-dark-cursors` e `Adwaita` no `dwm-settings-appearance` e `theme-apply.sh`.
+       - **Terminal Kitty**: Não emite mais erro de aplicação ausente se o terminal preferencial (`alacritty`) estiver instalado e funcional.
+       - **Alacritty Theme Import**: Adicionado `"~/.config/alacritty/active-theme.toml"` em `programs.alacritty.settings.general.import` no `alacritty/default.nix`, satisfazendo `alacritty_imports_active_theme`.
+       - **GTK Theme**: Adicionado suporte ao nome de diretório gerado pelo Nixpkgs `catppuccin-mocha-blue-standard+rimless`.
+    8. *Procedimento de Ativação no Host `virtualvm` (192.168.122.106)*:
        - No NixOS / Home Manager, apenas reiniciar o sistema não transfere alterações feitas em arquivos da árvore Git local (`~/.dotfiles/nixfiles`) para as pastas de execução do usuário (`~/.local/share/dwm-titus/scripts/` e `~/.config/quickshell/`).
        - É necessário aplicar a configuração com o Home Manager:
          ```bash
          home-manager switch --flake .#juca@virtualvm
          ```
          (ou via NixOS: `sudo nixos-rebuild switch --flake .#virtualvm`)
-       - Em seguida, reiniciar o Quickshell com `pkill -x quickshell` para carregar o novo estado com botões 100% ativos.
+       - Em seguida, reiniciar o Quickshell com `pkill -x quickshell` para carregar o novo estado com botões 100% ativos e sem erros.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

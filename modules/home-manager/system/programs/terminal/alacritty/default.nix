@@ -37,7 +37,10 @@ in
       settings = {
         general = {
           live_config_reload = true;
-          import = [ (pkgs.alacritty-theme + "/dracula.toml") ];
+          import = [
+            (pkgs.alacritty-theme + "/dracula.toml")
+            "~/.config/alacritty/active-theme.toml"
+          ];
         };
         terminal = lib.optionalAttrs (defaultShellPkg != null) {
           shell = {

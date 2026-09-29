@@ -1986,6 +1986,8 @@ emit_integrations() {
 			catppuccin*)
 				if gtk_theme_available "Catppuccin-Mocha"; then
 					requested_gtk=Catppuccin-Mocha
+				elif gtk_theme_available "catppuccin-mocha-blue-standard+rimless"; then
+					requested_gtk=catppuccin-mocha-blue-standard+rimless
 				fi
 				;;
 			tokyonight*)
@@ -1995,7 +1997,9 @@ emit_integrations() {
 				;;
 			esac
 			if [[ -z $requested_gtk ]]; then
-				if gtk_theme_available "adw-gtk3-dark"; then
+				if gtk_theme_available "catppuccin-mocha-blue-standard+rimless"; then
+					requested_gtk=catppuccin-mocha-blue-standard+rimless
+				elif gtk_theme_available "adw-gtk3-dark"; then
 					requested_gtk=adw-gtk3-dark
 				elif gtk_theme_available "Adwaita-dark"; then
 					requested_gtk=Adwaita-dark
@@ -2053,7 +2057,9 @@ emit_integrations() {
 		if gtk_theme_available "Dwm-$resolved_theme"; then
 			fallback_gtk="Dwm-$resolved_theme"
 		elif [[ $dark == true ]]; then
-			if gtk_theme_available "adw-gtk3-dark"; then
+			if gtk_theme_available "catppuccin-mocha-blue-standard+rimless"; then
+				fallback_gtk=catppuccin-mocha-blue-standard+rimless
+			elif gtk_theme_available "adw-gtk3-dark"; then
 				fallback_gtk=adw-gtk3-dark
 			elif gtk_theme_available "Adwaita-dark"; then
 				fallback_gtk=Adwaita-dark
@@ -2095,6 +2101,13 @@ emit_integrations() {
 	if [[ -n $override && $override != follow-theme ]]; then
 		cursor=$override
 	fi
+	if ! asset_available icons "$cursor"; then
+		if asset_available icons "catppuccin-mocha-dark-cursors"; then
+			cursor=catppuccin-mocha-dark-cursors
+		elif asset_available icons "Adwaita"; then
+			cursor=Adwaita
+		fi
+	fi
 	if asset_available icons "$cursor" && cursor_theme_applied "$cursor"; then
 		printf 'integration\tcursor\tavailable\t%s\tManaged cursor theme is installed and applied\n' "$cursor"
 	elif asset_available icons "$cursor"; then
@@ -2113,7 +2126,9 @@ emit_integrations() {
 		fi
 		if ! command -v "$terminal" >/dev/null 2>&1; then
 			printf 'integration\t%s\tunavailable\tmissing-application\tTerminal application is not installed\n' "$terminal"
-			add_error "$terminal" missing-application 'Terminal application is not installed'
+			if ! command -v alacritty >/dev/null 2>&1 && ! command -v kitty >/dev/null 2>&1; then
+				add_error "$terminal" missing-application 'Terminal application is not installed'
+			fi
 		elif terminal_theme_matches "$terminal" "$terminal_theme_file" &&
 			terminal_imports_active_theme "$terminal"; then
 			printf 'integration\t%s\tavailable\tactive-theme\tGenerated terminal theme matches the resolved palette\n' "$terminal"

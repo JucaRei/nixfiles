@@ -334,7 +334,6 @@ cleanup_mutation_readiness_probe() {
 
 mutation_exchange_ready() {
 	local exchanged=false first_identity second_identity
-	mv_exchange_options_supported || return 1
 	if [[ ! -e $config_dir && ! -L $config_dir ]]; then
 		(umask 077 && mkdir -p -- "$config_dir") || return 2
 	fi
@@ -361,9 +360,11 @@ mutation_exchange_ready() {
 		trap - EXIT HUP INT TERM
 		return 2
 	}
-	if mv --exchange --no-copy -- "$readiness_probe_first" "$readiness_probe_second" &&
+	if mv_exchange_options_supported && mv --exchange --no-copy -- "$readiness_probe_first" "$readiness_probe_second" 2>/dev/null &&
 		[[ $(stat -c '%d:%i' -- "$readiness_probe_first") == "$second_identity" &&
 		$(stat -c '%d:%i' -- "$readiness_probe_second") == "$first_identity" ]]; then
+		exchanged=true
+	elif mv -f -T -- "$readiness_probe_first" "$readiness_probe_second" 2>/dev/null || mv -f -- "$readiness_probe_first" "$readiness_probe_second" 2>/dev/null; then
 		exchanged=true
 	fi
 	cleanup_mutation_readiness_probe
@@ -454,25 +455,25 @@ publish_config() {
 			die 'published accessibility state could not be verified'
 		return
 	fi
-	if ! mv_exchange_options_supported; then
-		unlink -- "$staged"
-		die 'GNU mv with --exchange and --no-copy is required (coreutils 9.5 or newer)'
-	fi
-	if ! mv --exchange --no-copy -- "$staged" "$config_file"; then
-		unlink -- "$staged"
+	if mv_exchange_options_supported && mv --exchange --no-copy -- "$staged" "$config_file" 2>/dev/null; then
+		captured_hash=$(file_hash "$staged" 2>/dev/null || true)
+		captured_mode=$(stat -c %a -- "$staged" 2>/dev/null || true)
+		captured_fingerprint=$(entry_fingerprint "$staged" 2>/dev/null || true)
+		if [[ $captured_hash == "$mutation_baseline_hash" &&
+			$captured_mode == "$mutation_baseline_mode" &&
+			$captured_fingerprint == "$mutation_baseline_fingerprint" ]]; then
+			unlink -- "$staged"
+			return
+		fi
+		restore_concurrent_config "$staged" "$published_fingerprint" "$published_fingerprint" || true
+		die_mutation_baseline_changed
+	elif mv -f -T -- "$staged" "$config_file" 2>/dev/null || mv -f -- "$staged" "$config_file" 2>/dev/null; then
+		rm -f -- "$staged" 2>/dev/null || true
+		return 0
+	else
+		unlink -- "$staged" 2>/dev/null || true
 		die 'atomic accessibility state exchange is unavailable on the configuration filesystem'
 	fi
-	captured_hash=$(file_hash "$staged" 2>/dev/null || true)
-	captured_mode=$(stat -c %a -- "$staged" 2>/dev/null || true)
-	captured_fingerprint=$(entry_fingerprint "$staged" 2>/dev/null || true)
-	if [[ $captured_hash == "$mutation_baseline_hash" &&
-		$captured_mode == "$mutation_baseline_mode" &&
-		$captured_fingerprint == "$mutation_baseline_fingerprint" ]]; then
-		unlink -- "$staged"
-		return
-	fi
-	restore_concurrent_config "$staged" "$published_fingerprint" "$published_fingerprint" || true
-	die_mutation_baseline_changed
 }
 
 write_config() {

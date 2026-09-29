@@ -374,6 +374,13 @@ if [[ "$DARK_MODE" == "true" ]]; then
 else
 	CURSOR_THEME="Capitaine-Cursors"
 fi
+if [ ! -d "/usr/share/icons/$CURSOR_THEME" ] && [ ! -d "$HOME/.icons/$CURSOR_THEME" ] && [ ! -d "$HOME/.local/share/icons/$CURSOR_THEME" ]; then
+	if [ -d "$HOME/.icons/catppuccin-mocha-dark-cursors" ] || [ -d "$HOME/.local/share/icons/catppuccin-mocha-dark-cursors" ] || [ -d "/run/current-system/sw/share/icons/catppuccin-mocha-dark-cursors" ]; then
+		CURSOR_THEME="catppuccin-mocha-dark-cursors"
+	elif [ -d "/usr/share/icons/Adwaita" ] || [ -d "$HOME/.icons/Adwaita" ]; then
+		CURSOR_THEME="Adwaita"
+	fi
+fi
 if [[ -n $CURSOR_CHOICE && $CURSOR_CHOICE != follow-theme ]]; then
 	CURSOR_THEME=$CURSOR_CHOICE
 fi
