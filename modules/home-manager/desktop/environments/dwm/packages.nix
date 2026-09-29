@@ -41,6 +41,9 @@ in
       feh
       sxiv
 
+      # Fontes adicionais de compatibilidade de interface
+      cantarell-fonts
+
       # Dependências de captura de tela utilizadas pelos scripts do dwm-titus
       maim
       slop

@@ -270,8 +270,8 @@ mutation_ready() {
 	integration_path_list
 	for path in "${integration_paths[@]}"; do
 		validate_integration_file "$path" || return 1
-		# Se for symlink gerenciado pelo Nix store, não falhar verificação de escrita
-		if [[ -L $path ]]; then
+		# Se for symlink gerenciado pelo Nix store ou caminho na store, não falhar verificação de escrita
+		if [[ -L $path || $path == /nix/store/* ]]; then
 			continue
 		fi
 		[[ ! -e $path || -w $path ]] || return 1
@@ -600,21 +600,40 @@ integration_path_list() {
 }
 
 integration_path_list_for() {
-	local integration_home=$1 integration_config_home=$2 gtk2_path gtk3_path gtk4_path
+	local integration_home=$1 integration_config_home=$2 gtk2_path gtk3_path gtk4_path target_candidate
 	gtk2_path=$integration_home/.gtkrc-2.0
 	gtk3_path=$integration_config_home/gtk-3.0/settings.ini
 	gtk4_path=$integration_config_home/gtk-4.0/settings.ini
+
+	# No NixOS / Home Manager, se arquivos GTK forem symlinks apontando para o /nix/store,
+	# convertê-los em arquivos reais editáveis de propriedade do usuário
+	for p in "$gtk2_path" "$gtk3_path" "$gtk4_path"; do
+		if [[ -L $p ]]; then
+			target_candidate=$(readlink -f -- "$p" 2>/dev/null || true)
+			if [[ $target_candidate == /nix/store/* ]]; then
+				mkdir -p -- "${p%/*}"
+				cp --remove-destination "$target_candidate" "$p" 2>/dev/null && chmod u+w "$p" 2>/dev/null || true
+			fi
+		fi
+	done
+
 	if [[ -L $gtk2_path ]]; then
-		# Journal the file that theme-apply edits while preserving the user's
-		# dotfile link. Rebuilding this list before publish/recovery makes a
-		# retargeted link fail the stored path-hash check.
-		gtk2_path=$(readlink -f -- "$gtk2_path") || gtk2_path=$integration_home/.gtkrc-2.0
+		target_candidate=$(readlink -f -- "$gtk2_path" 2>/dev/null || true)
+		if [[ -n $target_candidate && $target_candidate != /nix/store/* ]]; then
+			gtk2_path=$target_candidate
+		fi
 	fi
 	if [[ -L $gtk3_path ]]; then
-		gtk3_path=$(readlink -f -- "$gtk3_path") || gtk3_path=$integration_config_home/gtk-3.0/settings.ini
+		target_candidate=$(readlink -f -- "$gtk3_path" 2>/dev/null || true)
+		if [[ -n $target_candidate && $target_candidate != /nix/store/* ]]; then
+			gtk3_path=$target_candidate
+		fi
 	fi
 	if [[ -L $gtk4_path ]]; then
-		gtk4_path=$(readlink -f -- "$gtk4_path") || gtk4_path=$integration_config_home/gtk-4.0/settings.ini
+		target_candidate=$(readlink -f -- "$gtk4_path" 2>/dev/null || true)
+		if [[ -n $target_candidate && $target_candidate != /nix/store/* ]]; then
+			gtk4_path=$target_candidate
+		fi
 	fi
 	integration_paths=(
 		"$integration_config_home/alacritty/active-theme.toml"
@@ -1070,8 +1089,8 @@ validate_integration_file() {
 	local path=$1
 	existing_path_chain_is_safe "$path" || return 1
 	if [[ -e $path || -L $path ]]; then
-		# No Nix / Home-Manager, permitir symlinks gerenciados pelo Nix store se forem legíveis
-		if [[ -L $path && -r $path ]]; then
+		# No Nix / Home-Manager, permitir symlinks gerenciados pelo Nix store ou arquivos no store se forem legíveis
+		if [[ -L $path && -r $path ]] || [[ $path == /nix/store/* && -r $path ]]; then
 			return 0
 		fi
 		[[ -f $path && ! -L $path ]] || return 1
@@ -1389,8 +1408,8 @@ validate_atomic_mv_support() {
 	probe_atomic_exchange "$probe" || die "theme filesystem does not support atomic exchange: $probe"
 	integration_path_list
 	for path in "${integration_paths[@]}"; do
-		# Se for symlink (como dotfiles linkados pelo Home Manager), ignorar verificação de dispositivo
-		if [[ -L $path ]]; then
+		# Se for symlink (como dotfiles linkados pelo Home Manager) ou caminho no nix store, ignorar verificação de dispositivo
+		if [[ -L $path || $path == /nix/store/* ]]; then
 			continue
 		fi
 		probe=${path%/*}

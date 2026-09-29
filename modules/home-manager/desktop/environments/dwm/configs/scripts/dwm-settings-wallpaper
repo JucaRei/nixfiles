@@ -236,27 +236,37 @@ probe_status_assets() {
 	local -a targets=()
 	status_configured_available=false
 	status_rollback_available=false
+	if [[ ! -d $wallpaper_dir ]]; then
+		mkdir -p -- "$wallpaper_dir" 2>/dev/null || true
+	fi
 	if [[ $configured == true ]] && valid_asset "$configured_path"; then
 		status_configured_available=true
 		status_rollback_available=true
 		return 0
 	fi
 	[[ ! -d $wallpaper_dir ]] || targets+=("$wallpaper_dir")
-	((${#targets[@]} > 0)) || return 0
-	exec {scan_fd}< <(
-		exec setsid timeout --signal=TERM --kill-after=1 2 \
-			find -L "${targets[@]}" -type f -print0 2>/dev/null
-	)
-	status_scan_pid=$!
-	trap 'cancel_status_scan; exit 143' HUP INT TERM
-	while IFS= read -r -d '' candidate <&"$scan_fd"; do
-		valid_asset "$candidate" || continue
-		status_rollback_available=true
+	for sys_bg in "/run/current-system/sw/share/backgrounds" "/usr/share/backgrounds" "/etc/backgrounds"; do
+		[[ ! -d $sys_bg ]] || targets+=("$sys_bg")
 	done
-	exec {scan_fd}<&-
-	wait "$status_scan_pid" 2>/dev/null || true
-	status_scan_pid=
-	trap - HUP INT TERM
+	if ((${#targets[@]} > 0)); then
+		exec {scan_fd}< <(
+			exec setsid timeout --signal=TERM --kill-after=1 2 \
+				find -L "${targets[@]}" -type f -print0 2>/dev/null
+		)
+		status_scan_pid=$!
+		trap 'cancel_status_scan; exit 143' HUP INT TERM
+		while IFS= read -r -d '' candidate <&"$scan_fd"; do
+			valid_asset "$candidate" || continue
+			status_rollback_available=true
+		done
+		exec {scan_fd}<&-
+		wait "$status_scan_pid" 2>/dev/null || true
+		status_scan_pid=
+		trap - HUP INT TERM
+	fi
+	if [[ $status_rollback_available == false ]] && feh_path >/dev/null 2>&1; then
+		status_rollback_available=true
+	fi
 }
 
 ensure_owned_directory() {
@@ -921,7 +931,13 @@ choose_default_wallpapers() {
 	local deadline=$((SECONDS + max_feh_seconds))
 	local -a candidates=()
 	applied_default_paths=()
-	[[ -n ${DISPLAY:-} && -d $wallpaper_dir ]] || return 1
+	[[ ! -d $wallpaper_dir ]] && mkdir -p -- "$wallpaper_dir" 2>/dev/null || true
+	local -a scan_dirs=()
+	[[ ! -d $wallpaper_dir ]] || scan_dirs+=("$wallpaper_dir")
+	for sys_bg in "/run/current-system/sw/share/backgrounds" "/usr/share/backgrounds" "/etc/backgrounds"; do
+		[[ ! -d $sys_bg ]] || scan_dirs+=("$sys_bg")
+	done
+	[[ -n ${DISPLAY:-} && ${#scan_dirs[@]} -gt 0 ]] || return 1
 	executable=$(feh_path) || return 1
 	monitor_count=$(default_monitor_count) || return 1
 	# Enumerate names without decoding the entire collection. NUL delimiters
@@ -931,7 +947,7 @@ choose_default_wallpapers() {
 		candidates+=("$candidate")
 	done < <(
 		timeout --signal=TERM --kill-after=1 "$max_feh_seconds" \
-			find -L "$wallpaper_dir" -type f -print0 2>/dev/null || true
+			find -L "${scan_dirs[@]}" -type f -print0 2>/dev/null || true
 	)
 	# Draw without replacement, decoding only enough usable images for the
 	# monitors. Corrupt files are skipped within one shared time budget.

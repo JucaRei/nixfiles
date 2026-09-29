@@ -1043,6 +1043,30 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
          (ou via NixOS: `sudo nixos-rebuild switch --flake .#virtualvm`)
        - Em seguida, reiniciar o Quickshell com `pkill -x quickshell` para carregar o novo estado com botões 100% ativos e sem erros.
 
+- **DWM & Quickshell — Resolução Definitiva dos Erros de Appearance (Themes, Wallpapers e Fontes no VirtualVM)**:
+  - **Problema 1: "Theme changes are read-only" (Protected) & Botões Apply/Preview Desabilitados**:
+    - *Causa*: `dwm-settings-theme integration_path_list_for` executava `readlink -f` nos arquivos GTK (`~/.config/gtk-3.0/settings.ini`, `~/.config/gtk-4.0/settings.ini`, `~/.gtkrc-2.0`). No Home Manager, caso ainda fossem symlinks para o Nix store, o caminho resolvia para `/nix/store/...`. A checagem `validate_integration_file` falhava em `stat -c %u == $UID` (pois arquivos no store pertencem ao root, UID 0 != 1000) e o teste de escrita `-w` falhava (`0444`). Isso fazia `mutation_ready` retornar falso, acionando a mensagem *"Inventory and active colors remain available, but a theme source or integration path failed ownership, link, or atomic-update safety checks"* e desabilitando os botões de Preview e Apply de temas.
+    - *Correção*:
+      - Em `dwm-settings-theme`: `integration_path_list_for` converte dinamicamente qualquer symlink apontando para `/nix/store` em cópia local editável pertencente ao usuário (`cp --remove-destination` + `chmod u+w`) e impede que os caminhos sejam canonicamente substituídos por `/nix/store/*`.
+      - Em `validate_integration_file` e `mutation_ready`: caminhos ou symlinks apontando para o Nix store são aceitos como seguros se legíveis, ignorando falhas de ownership do root.
+      - Em `theme-apply.sh`: `gtk_ini_edit_path` e `gtk2_edit_path` desvinculam do store e criam arquivos graváveis antes de invocar `mktemp`.
+  - **Problema 2: "Wallpaper apply and preview unavailable" & "Wallpaper folder is unavailable: /home/juca/Pictures/backgrounds"**:
+    - *Causa*:
+      1. Numa instalação limpa ou na VM, a pasta `~/Pictures/backgrounds` não existia por padrão, gerando a mensagem de pasta indisponível.
+      2. `dwm-settings-wallpaper status` executava `probe_status_assets`. Com a pasta ausente ou vazia e sem wallpaper pré-configurado, `status_rollback_available` ficava como `false`, acionando a condição `mutation_state=restricted` com a mensagem *"Wallpaper changes require a recoverable current or default wallpaper"*.
+    - *Correção*:
+      - Em `dwm-settings-wallpaper`: `probe_status_assets` e `apply_default_candidate_paths` criam automaticamente `~/Pictures/backgrounds` caso ausente (`mkdir -p`), incluem na busca diretórios de wallpapers do sistema (`/run/current-system/sw/share/backgrounds`, `/usr/share/backgrounds`, `/etc/backgrounds`) e estabelecem `status_rollback_available=true` como fallback de primeira inicialização quando o utilitário `feh` estiver disponível.
+      - Em `dwm-settings-appearance`: `emit_wallpaper_inventory` cria `~/Pictures/backgrounds` e busca wallpapers de sistema se a pasta de usuário estiver vazia.
+      - Em `dwm.nix` (`setupDwmConfig`): criado o diretório de estado `~/.local/state/dwm-titus/appearance/wallpaper` e provisionado automaticamente o papel de parede padrão do NixOS (`nixos-artwork.wallpapers.nineish-dark-gray`) em `~/Pictures/backgrounds/nixos-wallpaper.png` se a pasta estiver vazia.
+  - **Problema 3: Cartão de Fonte Vermelho ("Cantarell 11 not installed") e Botão "Apply font" Bloqueado**:
+    - *Causa*:
+      1. O botão "Apply font" depende de `root.personalizationActionsReady`, que requer `personalizationMutationState === "available"`. O status de personalização (`dwm-settings-personalization status`) invocava `dwm-settings-theme personalization-ready` -> `mutation_ready`. Como `mutation_ready` falhava (problema 1), o estado caía em `restricted`, desabilitando o botão de aplicar fonte.
+      2. O GSettings vinha com o padrão do GNOME `font-name = "Cantarell 11"`. A família Cantarell não vinha instalada no Nixpkgs básico da VM, levando `dwm-settings-appearance` a emitir *"Configured desktop font family is not installed"* em vermelho.
+    - *Correção*:
+      - Com a correção de `mutation_ready` no `dwm-settings-theme`, `personalizationMutationState` atinge `available`, desbloqueando os botões **Apply font** e **Follow system font**.
+      - Adicionado pacote `cantarell-fonts` em `modules/home-manager/desktop/environments/dwm/packages.nix` e `default.nix`.
+      - Em `dwm-settings-appearance`: adicionado fallback gracioso via Fontconfig (`fc-match`) caso uma fonte configurada não esteja instalada no sistema, exibindo *"Following system font (<substituto>)"* com status `available` (verde) sem quebrar o painel.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

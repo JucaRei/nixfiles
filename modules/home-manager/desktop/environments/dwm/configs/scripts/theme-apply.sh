@@ -644,12 +644,15 @@ fi
 
 # Helper: set or add a key in a [Settings] ini file without destroying other settings
 gtk_ini_edit_path() {
-	local file=$1
+	local file=$1 target
 	if [[ -L $file ]]; then
-		file=$(readlink -f -- "$file") || {
-			echo "theme-apply: GTK configuration symlink has no valid target" >&2
-			return 1
-		}
+		target=$(readlink -f -- "$file" 2>/dev/null || true)
+		if [[ $target == /nix/store/* ]]; then
+			mkdir -p -- "${file%/*}"
+			cp --remove-destination "$target" "$file" 2>/dev/null && chmod u+w "$file" 2>/dev/null || true
+		else
+			file=$target
+		fi
 		[[ -f $file ]] || {
 			echo "theme-apply: GTK configuration symlink target is not a regular file" >&2
 			return 1
@@ -734,12 +737,15 @@ gtk_ini_unset() {
 }
 
 gtk2_edit_path() {
-	local file=$1
+	local file=$1 target
 	if [[ -L $file ]]; then
-		file=$(readlink -f -- "$file") || {
-			echo "theme-apply: GTK2 configuration symlink has no valid target" >&2
-			return 1
-		}
+		target=$(readlink -f -- "$file" 2>/dev/null || true)
+		if [[ $target == /nix/store/* ]]; then
+			mkdir -p -- "${file%/*}"
+			cp --remove-destination "$target" "$file" 2>/dev/null && chmod u+w "$file" 2>/dev/null || true
+		else
+			file=$target
+		fi
 		[[ -f $file ]] || {
 			echo "theme-apply: GTK2 configuration symlink target is not a regular file" >&2
 			return 1

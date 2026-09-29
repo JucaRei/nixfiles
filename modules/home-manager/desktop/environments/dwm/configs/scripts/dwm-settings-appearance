@@ -777,8 +777,15 @@ emit_wallpaper_inventory() {
 	elif [[ $provider_state != available && $selection_state != unavailable ]]; then
 		selection_state=$provider_state
 		selection_detail=$provider_detail
-	fi
 	if [[ ! -d $wallpaper_dir ]]; then
+		mkdir -p -- "$wallpaper_dir" 2>/dev/null || true
+	fi
+	local -a search_dirs=()
+	[[ ! -d $wallpaper_dir ]] || search_dirs+=("$wallpaper_dir")
+	for sys_bg in "/run/current-system/sw/share/backgrounds" "/usr/share/backgrounds" "/etc/backgrounds"; do
+		[[ ! -d $sys_bg ]] || search_dirs+=("$sys_bg")
+	done
+	if ((${#search_dirs[@]} == 0)); then
 		if [[ $selection_state == available ]]; then
 			emit_inventory_selection wallpaper "$selection_state" "$selection_path" \
 				"$selection_fit" "$selection_detail"
@@ -788,7 +795,7 @@ emit_wallpaper_inventory() {
 		fi
 		return
 	fi
-	start_inventory_stream find -L "$wallpaper_dir" -type f \
+	start_inventory_stream find -L "${search_dirs[@]}" -type f \
 		\( -iname '*.avif' -o -iname '*.bmp' -o -iname '*.gif' -o \
 		-iname '*.jpeg' -o -iname '*.jpg' -o -iname '*.png' -o \
 		-iname '*.svg' -o -iname '*.webp' \) -print0
@@ -944,8 +951,15 @@ emit_font_inventory() {
 		emit_inventory_selection font available "$current_family" "$current_description" \
 			'Current desktop font family is installed'
 	else
-		emit_inventory_selection font unavailable "$current_stem" "$current_description" \
-			'Configured desktop font family is not installed'
+		local fallback_font
+		fallback_font=$(fc-match --format '%{family[0]}\n' "$current_stem:charset=20-7e" 2>/dev/null || true)
+		if [[ -n $fallback_font ]]; then
+			emit_inventory_selection font available "$fallback_font" "$current_description" \
+				"Following system font ($fallback_font)"
+		else
+			emit_inventory_selection font unavailable "$current_stem" "$current_description" \
+				'Configured desktop font family is not installed'
+		fi
 	fi
 }
 

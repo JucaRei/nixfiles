@@ -55,6 +55,7 @@ in
       gtkThemePkg
       iconThemePkg
       cursorThemePkg
+      pkgs.cantarell-fonts
     ];
 
     xresources.properties = {

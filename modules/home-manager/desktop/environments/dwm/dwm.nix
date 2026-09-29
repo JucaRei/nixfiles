@@ -339,8 +339,8 @@ in
         $DRY_RUN_CMD chmod 700 "$HOME/.config/dwm-titus/display-profiles" 2>/dev/null || true
         $DRY_RUN_CMD mkdir -p "$HOME/.local/share/dwm-titus/config"
         $DRY_RUN_CMD mkdir -p "$HOME/.local/share/dwm-titus/scripts"
-        $DRY_RUN_CMD mkdir -p "$HOME/.local/state/dwm-titus"
-        $DRY_RUN_CMD chmod 700 "$HOME/.local/state/dwm-titus" 2>/dev/null || true
+        $DRY_RUN_CMD mkdir -p "$HOME/.local/state/dwm-titus/appearance/wallpaper"
+        $DRY_RUN_CMD chmod 700 "$HOME/.local/state/dwm-titus" "$HOME/.local/state/dwm-titus/appearance" "$HOME/.local/state/dwm-titus/appearance/wallpaper" 2>/dev/null || true
 
         # Sincronizar fallbacks e scripts em ~/.local/share/dwm-titus (usados pelo dwm.c e theme-apply)
         $DRY_RUN_CMD cp -rf ${./configs/config}/* "$HOME/.local/share/dwm-titus/config/" 2>/dev/null || true
@@ -464,6 +464,14 @@ in
             $DRY_RUN_CMD chmod -R u+w "$qtdir" 2>/dev/null || true
           fi
         done
+
+        # 9. Provisionar diretório ~/Pictures/backgrounds e wallpaper base do NixOS se vazio
+        $DRY_RUN_CMD mkdir -p "$HOME/Pictures/backgrounds"
+        if [ -z "$($DRY_RUN_CMD ls -A "$HOME/Pictures/backgrounds" 2>/dev/null)" ]; then
+          if [ -f "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath}" ]; then
+            $DRY_RUN_CMD cp -f "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray.gnomeFilePath}" "$HOME/Pictures/backgrounds/nixos-wallpaper.png" 2>/dev/null || true
+          fi
+        fi
       '';
     };
   };
