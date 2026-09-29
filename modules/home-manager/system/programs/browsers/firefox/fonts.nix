@@ -1,7 +1,7 @@
 _:
 let
   # defaultFont = "Iosevka Comfy";
-  default-Serif = "Georgia"; # "Roboto"
+  default-Serif = "Lato"; # "Roboto"
   default-Mono = "Martian Mono Nerd Font";
   default-Sans-serif = "Fira Sans";
 in
