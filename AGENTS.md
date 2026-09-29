@@ -997,6 +997,8 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
        - Removido `pkgs.dunst` incondicional do `packages` do `dwm.nix`.
     6. *Pacotes de Suporte Injetados em `packages.nix`*:
        - Adicionados `xorg.xset`, `lightlocker`, `xss-lock`, `glib`, `dconf`, `xkbset`, `inotify-tools` e `xsettingsd`.
+    7. *Wiki Completa de Customização do DWM-Titus*:
+       - Criada documentação extensiva em [modules/home-manager/desktop/environments/dwm/README.md](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/README.md) detalhando os três níveis de customização (TOML em tempo de execução, QML em Live Mode com Hot Reload e patches nativos em C), catálogo completo de arquivos, regras de janelas (`window-rules.toml`), paletas de cores (`themes.toml`), atalhos de teclado (`hotkeys.toml`), modelo de segurança/auto-cura de permissões e comandos de diagnóstico, catalogada também no [WIKI.md](file:///home/juca/.dotfiles/nixfiles/WIKI.md).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
