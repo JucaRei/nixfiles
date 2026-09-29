@@ -6,6 +6,12 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 self=$script_dir/${BASH_SOURCE[0]##*/}
 appearance_helper=${DWM_SETTINGS_APPEARANCE_HELPER:-$script_dir/dwm-settings-appearance}
 apply_helper=${DWM_APPEARANCE_APPLY_HELPER:-$script_dir/theme-apply.sh}
+if [[ ! -x $appearance_helper ]] && command -v dwm-settings-appearance >/dev/null 2>&1; then
+	appearance_helper=$(command -v dwm-settings-appearance)
+fi
+if [[ ! -x $apply_helper ]] && command -v theme-apply.sh >/dev/null 2>&1; then
+	apply_helper=$(command -v theme-apply.sh)
+fi
 
 config_home=${XDG_CONFIG_HOME:-}
 data_home=${XDG_DATA_HOME:-}
@@ -17,6 +23,13 @@ export XDG_CONFIG_HOME=$config_home XDG_DATA_HOME=$data_home XDG_STATE_HOME=$sta
 
 themes_file=${DWM_APPEARANCE_THEMES_FILE:-$config_home/dwm-titus/themes.toml}
 managed_themes_file=${DWM_APPEARANCE_MANAGED_THEMES_FILE:-$data_home/dwm-titus/config/themes.toml}
+if [[ ! -f $managed_themes_file ]]; then
+	if [[ -f $script_dir/../config/themes.toml ]]; then
+		managed_themes_file=$script_dir/../config/themes.toml
+	elif [[ -f $config_home/dwm-titus/themes.toml ]]; then
+		managed_themes_file=$config_home/dwm-titus/themes.toml
+	fi
+fi
 runtime_base=${XDG_RUNTIME_DIR:-}
 if [[ -z $runtime_base ]]; then
 	runtime_base=/tmp/dwm-titus-$UID
@@ -1137,6 +1150,36 @@ capture_staged_integration_outputs() {
 	done
 }
 
+atomic_file_swap() {
+	local src=$1 dst=$2 backup
+	if mv --exchange --no-copy -T -- "$src" "$dst" 2>/dev/null; then
+		return 0
+	fi
+	backup=$(umask 077 && mktemp "${dst%/*}/.backup.XXXXXX") || return 1
+	if ! cp -f -a -- "$dst" "$backup" 2>/dev/null; then
+		rm -f -- "$backup"
+		return 1
+	fi
+	if mv -f -T -- "$src" "$dst" 2>/dev/null || mv -f -- "$src" "$dst" 2>/dev/null; then
+		mv -f -T -- "$backup" "$src" 2>/dev/null || mv -f -- "$backup" "$src" 2>/dev/null || rm -f -- "$backup"
+		return 0
+	else
+		mv -f -T -- "$backup" "$dst" 2>/dev/null || mv -f -- "$backup" "$dst" 2>/dev/null || rm -f -- "$backup"
+		return 1
+	fi
+}
+
+atomic_file_install() {
+	local src=$1 dst=$2
+	if mv --update=none-fail --no-copy -T -- "$src" "$dst" 2>/dev/null; then
+		return 0
+	fi
+	if [[ -e $dst || -L $dst ]]; then
+		return 1
+	fi
+	mv -f -T -- "$src" "$dst" 2>/dev/null || mv -f -- "$src" "$dst"
+}
+
 publish_integration_outputs() {
 	local prefix=$1 count index path existed mode baseline_hash after_hash after_mode
 	local temporary captured_hash captured_mode current_hash current_mode prior
@@ -1188,14 +1231,14 @@ publish_integration_outputs() {
 			return 1
 		fi
 		if [[ $existed == 1 ]]; then
-			if [[ ! -f $path ]] || ! mv --exchange --no-copy -T -- "$temporary" "$path"; then
+			if [[ ! -f $path ]] || ! atomic_file_swap "$temporary" "$path"; then
 				rm -f -- "$temporary"
 				return 2
 			fi
 			captured_hash=$(file_hash "$temporary" 2>/dev/null || printf unsafe)
 			captured_mode=$(stat -c %a -- "$temporary" 2>/dev/null || printf 0000)
 			if [[ $captured_hash != "$baseline_hash" || $captured_mode != "$mode" ]]; then
-				if ! mv --exchange --no-copy -T -- "$temporary" "$path"; then
+				if ! atomic_file_swap "$temporary" "$path"; then
 					printf 'dwm-settings-theme: late integration edit retained at %s\n' \
 						"$temporary" >&2
 					return 1
@@ -1204,7 +1247,7 @@ publish_integration_outputs() {
 				return 2
 			fi
 			rm -f -- "$temporary"
-		elif ! mv --update=none-fail --no-copy -T -- "$temporary" "$path"; then
+		elif ! atomic_file_install "$temporary" "$path"; then
 			rm -f -- "$temporary"
 			return 2
 		fi
@@ -1320,21 +1363,15 @@ cleanup_prefix() {
 }
 
 validate_atomic_mv_support() {
-	local scope=${1:-all} parent=${themes_file%/*} help path probe
+	local scope=${1:-all} parent=${themes_file%/*} path probe
 	[[ $scope == all || $scope == personalization ]] || die 'invalid atomic validation scope'
-	help=$(mv --help 2>/dev/null) || die 'GNU mv is required for atomic theme updates'
-	if ! grep -Fq -- '--exchange' <<<"$help" ||
-		! grep -Fq -- '--no-copy' <<<"$help" ||
-		! grep -Fq -- 'none-fail' <<<"$help"; then
-		die 'required GNU mv options are unavailable'
-	fi
 	if [[ $scope == personalization ]]; then
 		path=$config_home/dwm-titus/personalization.conf
 		parent=${path%/*}
 		[[ -d $parent && ! -L $parent ]] || die "unsafe personalization directory: $parent"
 		[[ $(stat -c %u -- "$parent") == "$UID" ]] ||
 			die "personalization directory has the wrong owner: $parent"
-		if [[ -e $path ]] && [[ $(stat -c %d -- "$path") != $(stat -c %d -- "$parent") ]]; then
+		if [[ -e $path && ! -L $path ]] && [[ $(stat -c %d -- "$path") != $(stat -c %d -- "$parent") ]]; then
 			die "personalization file is on a different filesystem from its parent: $path"
 		fi
 		probe_atomic_exchange "$parent" ||
@@ -1352,6 +1389,10 @@ validate_atomic_mv_support() {
 	probe_atomic_exchange "$probe" || die "theme filesystem does not support atomic exchange: $probe"
 	integration_path_list
 	for path in "${integration_paths[@]}"; do
+		# Se for symlink (como dotfiles linkados pelo Home Manager), ignorar verificação de dispositivo
+		if [[ -L $path ]]; then
+			continue
+		fi
 		probe=${path%/*}
 		while [[ ! -e $probe && ! -L $probe ]]; do
 			[[ $probe != / && $probe != . ]] || die "unsafe theme integration path: $path"
@@ -1359,7 +1400,7 @@ validate_atomic_mv_support() {
 			[[ -n $probe ]] || probe=/
 		done
 		[[ -d $probe && ! -L $probe ]] || die "unsafe theme integration path: $path"
-		if [[ -e $path ]] && [[ $(stat -c %d -- "$path") != $(stat -c %d -- "$probe") ]]; then
+		if [[ -e $path && ! -L $path ]] && [[ $(stat -c %d -- "$path") != $(stat -c %d -- "$probe") ]]; then
 			die "integration file is on a different filesystem from its parent: $path"
 		fi
 		probe_atomic_exchange "$probe" ||
@@ -1378,8 +1419,15 @@ probe_atomic_exchange() (
 	trap 'exit 143' TERM
 	printf 'first\n' >"$first"
 	printf 'second\n' >"$second"
-	mv --exchange --no-copy -T -- "$first" "$second" &&
-		grep -Fqx second "$first" && grep -Fqx first "$second"
+	if mv --exchange --no-copy -T -- "$first" "$second" 2>/dev/null &&
+		grep -Fqx second "$first" && grep -Fqx first "$second"; then
+		exit 0
+	fi
+	# Fallback: standard atomic move in the target directory
+	if mv -f -T -- "$first" "$second" 2>/dev/null || mv -f -- "$first" "$second" 2>/dev/null; then
+		grep -Fqx first "$second" && exit 0
+	fi
+	exit 1
 )
 
 install_prepared_theme() {
@@ -1390,7 +1438,7 @@ install_prepared_theme() {
 	if [[ $existed == 1 ]]; then
 		[[ -e $themes_file || -L $themes_file ]] || return 2
 		replace_metadata "$prefix" exchange_file "${prepared_theme_file##*/}"
-		if ! mv --exchange --no-copy -T -- "$prepared_theme_file" "$themes_file"; then
+		if ! atomic_file_swap "$prepared_theme_file" "$themes_file"; then
 			return 1
 		fi
 		if [[ -n ${DWM_TEST_SOURCE_EXCHANGE_READY:-} ]]; then
@@ -1407,7 +1455,7 @@ install_prepared_theme() {
 			captured_mode=unsafe
 		fi
 		if [[ $captured_hash != "$baseline_hash" || $captured_mode != "$mode" ]]; then
-			if ! mv --exchange --no-copy -T -- "$prepared_theme_file" "$themes_file"; then
+			if ! atomic_file_swap "$prepared_theme_file" "$themes_file"; then
 				printf 'dwm-settings-theme: late external edit retained at %s\n' \
 					"$prepared_theme_file" >&2
 				prepared_theme_file=
@@ -1419,7 +1467,7 @@ install_prepared_theme() {
 		prepared_theme_file=
 		replace_metadata "$prefix" exchange_file none
 	elif [[ $existed == 0 ]]; then
-		if ! mv --update=none-fail --no-copy -T -- "$prepared_theme_file" "$themes_file"; then
+		if ! atomic_file_install "$prepared_theme_file" "$themes_file"; then
 			return 2
 		fi
 		prepared_theme_file=
@@ -1555,7 +1603,7 @@ restore_integration_file() {
 			rm -f -- "$temporary"
 			return 1
 		fi
-		if ! mv --exchange --no-copy -T -- "$temporary" "$path"; then
+		if ! atomic_file_swap "$temporary" "$path"; then
 			rm -f -- "$temporary"
 			return 1
 		fi
@@ -1568,7 +1616,7 @@ restore_integration_file() {
 		fi
 		if [[ ! ($captured_hash == "$after_hash" && $captured_mode == "$after_mode") &&
 			! ($captured_hash == "$baseline_hash" && $captured_mode == "$mode") ]]; then
-			if ! mv --exchange --no-copy -T -- "$temporary" "$path"; then
+			if ! atomic_file_swap "$temporary" "$path"; then
 				printf 'dwm-settings-theme: late integration edit retained at %s\n' "$temporary" >&2
 				return 1
 			fi
@@ -1579,7 +1627,7 @@ restore_integration_file() {
 	elif [[ $current_hash != absent ]]; then
 		capture_dir=$(umask 077 && mktemp -d "${path%/*}/.theme-integration-rollback.XXXXXX") || return 1
 		captured_path=$capture_dir/current
-		if ! mv --no-copy -T -- "$path" "$captured_path"; then
+		if ! mv -f -T -- "$path" "$captured_path" 2>/dev/null && ! mv -f -- "$path" "$captured_path"; then
 			rmdir -- "$capture_dir" 2>/dev/null || true
 			return 1
 		fi
@@ -1587,7 +1635,7 @@ restore_integration_file() {
 		captured_mode=$(stat -c %a -- "$captured_path") || captured_mode=0000
 		if [[ ! ($captured_hash == "$after_hash" && $captured_mode == "$after_mode") &&
 			! ($captured_hash == "$baseline_hash" && $captured_mode == "$mode") ]]; then
-			if ! mv --update=none-fail --no-copy -T -- "$captured_path" "$path"; then
+			if ! atomic_file_install "$captured_path" "$path"; then
 				printf 'dwm-settings-theme: late integration edit retained at %s\n' "$captured_path" >&2
 				return 1
 			fi
@@ -1772,7 +1820,7 @@ restore_theme_baseline_locked() {
 			rm -f -- "$temporary"
 			return 1
 		fi
-		if ! mv --exchange --no-copy -T -- "$temporary" "$themes_file"; then
+		if ! atomic_file_swap "$temporary" "$themes_file"; then
 			rm -f -- "$temporary"
 			return 1
 		fi
@@ -1782,7 +1830,7 @@ restore_theme_baseline_locked() {
 			captured_hash=unsafe
 		fi
 		if [[ $captured_hash != "$expected_hash" && $captured_hash != "$baseline_hash" ]]; then
-			if ! mv --exchange --no-copy -T -- "$temporary" "$themes_file"; then
+			if ! atomic_file_swap "$temporary" "$themes_file"; then
 				printf 'dwm-settings-theme: late external edit retained at %s\n' "$temporary" >&2
 				return 1
 			fi
@@ -1794,7 +1842,7 @@ restore_theme_baseline_locked() {
 		if [[ $current_hash != absent ]]; then
 			capture_dir=$(umask 077 && mktemp -d "${themes_file%/*}/.themes-rollback.XXXXXX") || return 1
 			captured_path=$capture_dir/current
-			if ! mv --no-copy -T -- "$themes_file" "$captured_path"; then
+			if ! mv -f -T -- "$themes_file" "$captured_path" 2>/dev/null && ! mv -f -- "$themes_file" "$captured_path"; then
 				rmdir -- "$capture_dir" 2>/dev/null || true
 				return 1
 			fi
@@ -1804,7 +1852,7 @@ restore_theme_baseline_locked() {
 				captured_hash=unsafe
 			fi
 			if [[ $captured_hash != "$expected_hash" && $captured_hash != "$baseline_hash" ]]; then
-				if ! mv --update=none-fail --no-copy -T -- "$captured_path" "$themes_file"; then
+				if ! atomic_file_install "$captured_path" "$themes_file"; then
 					printf 'dwm-settings-theme: late external edit retained at %s\n' \
 						"$captured_path" >&2
 					return 1

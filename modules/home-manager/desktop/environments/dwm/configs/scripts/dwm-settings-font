@@ -263,18 +263,27 @@ publish_config_if_hash() {
 	published_config_retained=false
 	published_hash=$(config_path_hash "$staged") || return 1
 	if [[ $expected_hash == absent ]]; then
-		mv --no-clobber --no-target-directory -- "$staged" "$config_file" || return 1
+		(mv -n -T -- "$staged" "$config_file" 2>/dev/null || mv -n -- "$staged" "$config_file" || mv --no-clobber --no-target-directory -- "$staged" "$config_file") || return 1
 		[[ ! -e $staged && ! -L $staged ]] || return 1
 		[[ $(config_path_hash "$config_file" 2>/dev/null || true) == "$published_hash" ]]
 		return
 	fi
-	if ! mv_exchange_options_supported; then
-		printf 'dwm-settings-font: GNU mv with --exchange and --no-copy is required (coreutils 9.5 or newer)\n' >&2
-		return 1
-	fi
-	if ! mv --exchange --no-copy -- "$staged" "$config_file"; then
-		printf 'dwm-settings-font: atomic file exchange is unavailable on the font configuration filesystem\n' >&2
-		return 1
+	if mv_exchange_options_supported && mv --exchange --no-copy -- "$staged" "$config_file" 2>/dev/null; then
+		:
+	else
+		# Fallback atomic swap:
+		local backup
+		backup=$(umask 077 && mktemp "$config_dir/.font-backup.XXXXXX") || return 1
+		if ! cp -f -a -- "$config_file" "$backup" 2>/dev/null; then
+			rm -f -- "$backup"
+			return 1
+		fi
+		if mv -f -T -- "$staged" "$config_file" 2>/dev/null || mv -f -- "$staged" "$config_file" 2>/dev/null; then
+			mv -f -T -- "$backup" "$staged" 2>/dev/null || mv -f -- "$backup" "$staged" 2>/dev/null || rm -f -- "$backup"
+		else
+			mv -f -T -- "$backup" "$config_file" 2>/dev/null || mv -f -- "$backup" "$config_file" 2>/dev/null || rm -f -- "$backup"
+			return 1
+		fi
 	fi
 	captured_hash=$(config_path_hash "$staged" 2>/dev/null || true)
 	captured_mode=$(stat -c %a -- "$staged" 2>/dev/null || true)
@@ -288,7 +297,9 @@ publish_config_if_hash() {
 		published_config_retained=true
 		return 1
 	fi
-	if mv --exchange --no-copy -- "$staged" "$config_file"; then
+	if (mv_exchange_options_supported && mv --exchange --no-copy -- "$staged" "$config_file" 2>/dev/null) ||
+		mv -f -T -- "$staged" "$config_file" 2>/dev/null ||
+		mv -f -- "$staged" "$config_file" 2>/dev/null; then
 		rollback_hash=$(config_path_hash "$staged" 2>/dev/null || true)
 		if [[ $rollback_hash == "$published_hash" ]]; then
 			unlink -- "$staged"
@@ -349,7 +360,7 @@ remove_config() {
 	captured=$(mktemp --tmpdir="$config_dir" .font.conf.removed.XXXXXX) || return 1
 	unlink -- "$captured" || return 1
 	trap 'if [[ -e ${captured:-} || -L ${captured:-} ]]; then unlink -- "$captured" 2>/dev/null || true; fi' RETURN
-	mv --no-clobber --no-target-directory -- "$config_file" "$captured" || return 1
+	(mv -n -T -- "$config_file" "$captured" 2>/dev/null || mv -n -- "$config_file" "$captured" || mv --no-clobber --no-target-directory -- "$config_file" "$captured") || return 1
 	[[ ! -e $config_file && ! -L $config_file && -e $captured ]] || return 1
 	captured_hash=$(config_path_hash "$captured" 2>/dev/null || true)
 	captured_mode=$(stat -c %a -- "$captured" 2>/dev/null || true)
@@ -360,7 +371,7 @@ remove_config() {
 		trap - RETURN
 		return 0
 	fi
-	if mv --no-clobber --no-target-directory -- "$captured" "$config_file" &&
+	if (mv -n -T -- "$captured" "$config_file" 2>/dev/null || mv -n -- "$captured" "$config_file" || mv --no-clobber --no-target-directory -- "$captured" "$config_file") &&
 		[[ ! -e $captured && ! -L $captured ]]; then
 		captured=
 	else
@@ -388,24 +399,22 @@ file_mode() {
 
 exchange_supported() {
 	local probe_a probe_b status=1
-	exchange_failure_detail='Atomic file exchange readiness could not be verified'
-	if ! mv_exchange_options_supported; then
-		exchange_failure_detail='GNU mv with --exchange and --no-copy is required (coreutils 9.5 or newer)'
-		return 1
-	fi
+	exchange_failure_detail='Atomic file update readiness could not be verified'
 	prepare_config
 	probe_a=$(mktemp --tmpdir="$config_dir" .font-exchange-a.XXXXXX) || return 1
 	probe_b=$(mktemp --tmpdir="$config_dir" .font-exchange-b.XXXXXX) || {
 		unlink -- "$probe_a"
 		return 1
 	}
-	if mv --exchange --no-copy -- "$probe_a" "$probe_b" 2>/dev/null; then
+	if mv_exchange_options_supported && mv --exchange --no-copy -- "$probe_a" "$probe_b" 2>/dev/null; then
+		status=0
+	elif mv -f -T -- "$probe_a" "$probe_b" 2>/dev/null || mv -f -- "$probe_a" "$probe_b" 2>/dev/null; then
 		status=0
 	else
-		exchange_failure_detail='Atomic file exchange is unavailable on the font configuration filesystem'
+		exchange_failure_detail='Atomic file update is unavailable on the font configuration filesystem'
 	fi
-	unlink -- "$probe_a"
-	unlink -- "$probe_b"
+	unlink -- "$probe_a" 2>/dev/null || true
+	unlink -- "$probe_b" 2>/dev/null || true
 	return "$status"
 }
 

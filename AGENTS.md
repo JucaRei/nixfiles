@@ -1000,6 +1000,31 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     7. *Wiki Completa de Customização do DWM-Titus*:
        - Criada documentação extensiva em [modules/home-manager/desktop/environments/dwm/README.md](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/README.md) detalhando os três níveis de customização (TOML em tempo de execução, QML em Live Mode com Hot Reload e patches nativos em C), catálogo completo de arquivos, regras de janelas (`window-rules.toml`), paletas de cores (`themes.toml`), atalhos de teclado (`hotkeys.toml`), modelo de segurança/auto-cura de permissões e comandos de diagnóstico, catalogada também no [WIKI.md](file:///home/juca/.dotfiles/nixfiles/WIKI.md).
 
+- **Ativação dos Botões de Aplicar e Preview de Temas, Wallpapers, Fontes e Personalização (Quickshell / DWM)**:
+  - **Diagnóstico e Causa Raiz**:
+    - No painel `Settings -> Appearance` ([AppearanceSettingsPane.qml](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/configs/config/quickshell/settings/AppearanceSettingsPane.qml)), os botões de **Preview** e **Apply** de temas dependem de `root.appearanceModel.mutationReady`, de papéis de parede dependem de `root.appearanceModel.wallpaperMutationReady`, e de fontes e personalizações do desktop (cursor, ícones, tema GTK/Qt, escala) dependem de `root.personalizationActionsReady`.
+    - Nos modelos QML ([AppearanceModel.qml](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/configs/config/quickshell/appearance/AppearanceModel.qml)), essas variáveis são alimentadas pelas verificações `dwm-settings-theme mutation-ready`, `dwm-settings-wallpaper status --read-only` (checando `mutation.state === "available"`) e `dwm-settings-personalization status` (que chama `dwm-settings-theme personalization-ready`).
+    - Os scripts originais continham travas excessivamente estritas para atualizações atômicas:
+      1. Exigência obrigatória de flags GNU coreutils 9.5+ no comando `mv` (`--exchange`, `--no-copy`, `--backup=none-fail` / `--update=none-fail`). Em sistemas Linux com coreutils < 9.5 ou onde o `mv` padrão não expõe tais flags, a verificação acionava `die 'required GNU mv options are unavailable'` ou retornava `restricted`.
+      2. No `dwm-settings-theme`, a checagem de dispositivo `stat -c %d -- "$path"` comparava os IDs de filesystem seguindo symlinks. Qualquer link simbólico apontando para `/nix/store` gerava ID de filesystem divergente do diretório `$HOME`, falhando com `integration file is on a different filesystem from its parent`.
+      3. No `dwm-settings-wallpaper` e `dwm-settings-font`, a função `exchange_supported` falhava silenciosamente se `mv --exchange` não estivesse disponível no binário ou no sistema de arquivos subjacente.
+  - **Correções Aplicadas**:
+    1. *`dwm-settings-theme`*:
+       - Removida a exigência estrita de coreutils 9.5 no `validate_atomic_mv_support`.
+       - Implementadas funções auxiliares `atomic_file_swap` e `atomic_file_install` com auto-detecção de suporte a `mv --exchange` e fallback automático para renomeação atômica POSIX via arquivo de backup temporário no mesmo diretório (`cp` + `mv -f -T`).
+       - Ignorados links simbólicos (`[[ -L $path ]]`) na comparação cruzada de `stat -c %d`, prevenindo falsos positivos causados por arquivos do Nix store.
+       - Atualizados todos os pontos de publicação e rollback (`install_prepared_theme`, `publish_integration_outputs`, `restore_integration_file`, `restore_source_file`) para usar `atomic_file_swap` e `atomic_file_install`.
+       - Adicionado fallback em PATH para os helpers `dwm-settings-appearance` e `theme-apply.sh` e detecção de `themes.toml` gerenciado.
+    2. *`dwm-settings-wallpaper`*:
+       - Em `exchange_supported`, adicionado fallback de teste de movimentação atômica (`mv -f -T` / `mv -f`) caso `mv --exchange` não esteja disponível, marcando `result=available`.
+       - Em `publish_staged_config`, adicionado fallback atômico com preservação de integridade caso `mv --exchange` falhe, e flexibilizadas as flags de rollback para aceitar `-n -T` ou `--no-clobber`.
+    3. *`dwm-settings-font`*:
+       - Em `exchange_supported`, flexibilizada a checagem para permitir teste atômico via `mv -f -T` quando `mv --exchange` não estiver presente.
+       - Em `publish_config_if_hash` e `remove_config`, implementado fallback seguro de troca atômica e rollback compatível com todas as versões do GNU coreutils.
+    4. *Resultado*:
+       - Os cartões de status "Theme changes are read-only" e "Wallpaper apply and preview unavailable" desaparecem.
+       - Os botões "Preview for 30 seconds" e "Apply" para temas, "Preview wallpaper for 30 seconds" e "Apply wallpaper", além de "Apply font", "Follow system font", "Apply cursor", etc., tornam-se 100% clicáveis e operacionais.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

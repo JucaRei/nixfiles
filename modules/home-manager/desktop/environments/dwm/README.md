@@ -365,9 +365,17 @@ dwm-settings-provider discover
 ```
 *Verifique*: Todas as capacidades de `appearance`, `power`, `input` e `defaults` devem exibir `available user-session`.
 
-### 4. Testar Prontidão de Temas (Mutation Ready)
+### 4. Testar Prontidão de Temas, Wallpapers e Fontes (Mutation Ready)
 ```bash
-dwm-settings-theme mutation-ready && echo "Tema OK (Gravável)" || echo "Tema em Read-Only"
+# Testar Prontidão de Temas e Personalização:
+dwm-settings-theme mutation-ready && echo "Temas OK (Gravável)" || echo "Temas em Read-Only"
+dwm-settings-theme personalization-ready && echo "Personalização OK" || echo "Personalização Restrita"
+
+# Testar Prontidão de Wallpapers:
+dwm-settings-wallpaper status | grep "^mutation"
+
+# Testar Prontidão de Fontes:
+dwm-settings-font mutation-ready && echo "Fontes OK (Gravável)" || echo "Fontes Restritas"
 ```
 
 ### 5. Ver Logs em Tempo Real do Quickshell

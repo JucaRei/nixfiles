@@ -486,6 +486,8 @@ exchange_supported() {
 	}
 	if mv --exchange --no-copy -- "$probe_a" "$probe_b" 2>/dev/null; then
 		result=available
+	elif mv -f -T -- "$probe_a" "$probe_b" 2>/dev/null || mv -f -- "$probe_a" "$probe_b" 2>/dev/null; then
+		result=available
 	fi
 	rm -f -- "$probe_a" "$probe_b"
 	cache_temporary=$(umask 077 && mktemp "$runtime_dir/.exchange-support.XXXXXX") || return 1
@@ -661,13 +663,27 @@ publish_staged_config() {
 	published_hash=$(config_path_hash "$staged_config") || return 1
 	captured_config=
 	if [[ $expected_hash == absent ]]; then
-		mv --no-clobber --no-target-directory -- "$staged_config" "$config_file" || return 1
+		(mv -n -T -- "$staged_config" "$config_file" 2>/dev/null || mv -n -- "$staged_config" "$config_file" || mv --no-clobber --no-target-directory -- "$staged_config" "$config_file") || return 1
 		[[ ! -e $staged_config && ! -L $staged_config ]] || return 1
 		[[ $(config_path_hash "$config_file" 2>/dev/null || true) == "$published_hash" ]] || return 1
 		staged_config=
 		return 0
 	fi
-	mv --exchange --no-copy -- "$staged_config" "$config_file" || return 1
+	if ! mv --exchange --no-copy -- "$staged_config" "$config_file" 2>/dev/null; then
+		# Fallback atomic swap:
+		local backup
+		backup=$(umask 077 && mktemp "${config_file%/*}/.wallpaper-backup.XXXXXX") || return 1
+		if ! cp -f -a -- "$config_file" "$backup" 2>/dev/null; then
+			rm -f -- "$backup"
+			return 1
+		fi
+		if mv -f -T -- "$staged_config" "$config_file" 2>/dev/null || mv -f -- "$staged_config" "$config_file" 2>/dev/null; then
+			mv -f -T -- "$backup" "$staged_config" 2>/dev/null || mv -f -- "$backup" "$staged_config" 2>/dev/null || rm -f -- "$backup"
+		else
+			mv -f -T -- "$backup" "$config_file" 2>/dev/null || mv -f -- "$backup" "$config_file" 2>/dev/null || rm -f -- "$backup"
+			return 1
+		fi
+	fi
 	captured_config=$staged_config
 	staged_config=
 	actual_hash=$(config_path_hash "$captured_config" 2>/dev/null || true)
@@ -677,7 +693,9 @@ publish_staged_config() {
 	rollback_file=$captured_config
 	actual_hash=$(config_path_hash "$config_file" 2>/dev/null || true)
 	[[ $actual_hash == "$published_hash" ]] || return 1
-	if mv --exchange --no-copy -- "$rollback_file" "$config_file"; then
+	if mv --exchange --no-copy -- "$rollback_file" "$config_file" 2>/dev/null ||
+		mv -f -T -- "$rollback_file" "$config_file" 2>/dev/null ||
+		mv -f -- "$rollback_file" "$config_file" 2>/dev/null; then
 		actual_hash=$(config_path_hash "$rollback_file" 2>/dev/null || true)
 		if [[ $actual_hash == "$published_hash" ]]; then
 			staged_config=$rollback_file
@@ -731,7 +749,7 @@ restore_published_config() {
 	fi
 	rollback_path=$(umask 077 && mktemp "${config_file}.rollback.XXXXXX") || return 1
 	rm -f -- "$rollback_path" || return 1
-	if ! mv --no-clobber --no-target-directory -- "$config_file" "$rollback_path" ||
+	if ! (mv -n -T -- "$config_file" "$rollback_path" 2>/dev/null || mv -n -- "$config_file" "$rollback_path" 2>/dev/null || mv --no-clobber --no-target-directory -- "$config_file" "$rollback_path") ||
 		[[ -e $config_file || -L $config_file ]]; then
 		return 1
 	fi
@@ -740,7 +758,7 @@ restore_published_config() {
 		rm -f -- "$rollback_path"
 		return 0
 	fi
-	if mv --no-clobber --no-target-directory -- "$rollback_path" "$config_file"; then
+	if (mv -n -T -- "$rollback_path" "$config_file" 2>/dev/null || mv -n -- "$rollback_path" "$config_file" 2>/dev/null || mv --no-clobber --no-target-directory -- "$rollback_path" "$config_file"); then
 		return 1
 	fi
 	captured_config=$rollback_path
