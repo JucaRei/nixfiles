@@ -685,9 +685,12 @@ discover() {
 		run_bounded_probe gsettings get apps.light-locker lock-after-screensaver; then
 		emit_capability power auto-lock 'Automatic locking' available user-session light-locker \
 			'Light-locker session policy is available'
+	elif run_bounded_probe xset q && { provider_available xss-lock || provider_available dwm-lock || provider_available betterlockscreen || provider_available i3lock-color || provider_available i3lock; }; then
+		emit_capability power auto-lock 'Automatic locking' available user-session screen-locker \
+			'X11 screen locking policy is available'
 	else
 		emit_capability power auto-lock 'Automatic locking' partial user-session light-locker \
-			'Install xset, GLib settings, and light-locker for full support'
+			'Install xset, GLib settings, and light-locker or a screen locker for full support'
 	fi
 
 	if run_bounded_probe xdg-settings get default-web-browser &&

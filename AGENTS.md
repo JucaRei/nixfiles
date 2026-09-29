@@ -954,7 +954,52 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Em `dwm.c`, `updatefullscreenmonitors()` emite o átomo `_DWM_FULLSCREEN_MONITORS`. Em ausência de janelas em tela cheia, envia 0 elementos, fazendo o script `dwm-quickshell-state` enviar `fullscreen_monitors=` vazio.
     - No QML (`DwmPanel.qml`), `aboveWindows: root.state.fullscreenMonitorIndexes.indexOf(root.state.screenIndex(root.screen)) === -1` é avaliado como `true`, mantendo a barra do Quickshell no topo em janelas normais (tiled ou flutuantes) e ocultando-a apenas sob tela cheia real ou ao acionar o atalho `SUPER + m` (que alterna o layout para monocle e aciona `togglebar`, transladando a barra para fora da tela com `selmon->by = -selmon->bh`).
 
+- **DWM & Quickshell — Desbloqueio e Correção dos Bar Widgets, Auto Lock e Painéis Read-Only no Control Center / Settings**:
+  - **Sintomas Reportados**:
+    1. No Control Center, os widgets da barra (Workspaces, Volume, Bluetooth, Network, Power) não eram clicáveis para habilitar ou desabilitar.
+    2. A opção de Auto Lock no Control Center também não era clicável (mostrava "Unknown" ou ficava desabilitada).
+    3. No Control Center Settings, muitas opções de configuração apareciam desabilitadas ou marcadas como somente leitura ("Theme changes are read-only", personalização sem permissão de escrita, notificações desvinculadas, etc.).
+  - **Causas Raízes Identificadas**:
+    1. *Verificação Estrita de Permissões Unix (`umask 002`)*:
+       - Em `dwm-panel-settings` e `dwm-accessibility-settings`, as funções `config_dir_safe()` e `state_file_safe()` exigiam `(((8#$mode & 022) == 0))`.
+       - Em distros com umask padrão de usuário (002/022), pastas e arquivos criados com escrita para grupo (modos `775` e `664`) falhavam no teste de segurança `022`.
+       - Isso fazia com que `dwm-panel-settings status` retornasse `state unavailable`, levando `PanelSettingsModel.qml` a definir `mutationReady = false`. Consequentemente, no `ControlCenterWindow.qml`, a expressão `enabled: root.controlCenterModel.panelSettingsModel.mutationReady` desabilitava os cliques de todos os 5 widgets.
+    2. *Arquivos de Configuração Vazios (0 Bytes)*:
+       - No hook anterior `activation.setupDwmConfig` do `dwm.nix`, os arquivos de estado eram criados com `touch` quando ausentes.
+       - Arquivos de 0 bytes como `panel-widgets.conf`, `font.conf`, `accessibility.conf` ou `notification-settings.json` faziam com que os parsers de estado (como `dwm-settings-font` e `dwm-panel-settings`) acusassem arquivo incompleto ou corrompido (`state partial` / `invalid`), travando a reatividade dos modelos QML.
+    3. *Falta de Pacotes Essenciais para Bloqueio de Tela (Auto Lock)*:
+       - `dwm-quickshell-controlcenter` exigia `xset`, `light-locker` e esquemas do GSettings.
+       - Os pacotes `xorg.xset`, `lightlocker`, `xss-lock`, `glib` (`gsettings`) e `dconf` não estavam declarados no `packages.nix`.
+       - Sem `xset`, `power_xset_available=0` e `power_lock_available=0`, deixando o Auto Lock com status `Unknown` e `enabled: false`.
+    4. *Colisão do Daemon D-Bus de Notificações (Dunst vs Quickshell)*:
+       - O módulo `dunst.nix` ativava o serviço systemd do Dunst incondicionalmente em `desktop.dwm.enable`.
+       - O Dunst assumia a interface D-Bus `org.freedesktop.Notifications`, impedindo o `NotificationServer` embutido do Quickshell de inicializar.
+       - Como consequência, o `dwm-settings-provider` detectava um proprietário estranho no D-Bus e emitia a capacidade como `accessibility-notifications partial read-only`.
+    5. *Dependências Ausentes de Configurações*:
+       - `dwm-settings-personalization`: Exigia `gsettings` e `dconf` para testar escrita nas chaves de interface do GNOME (`org.gnome.desktop.interface`). Sem `dconf`, reportava opções como `read-only`.
+       - Text Scaling / XSettings: Exigia `xsettingsd` e `dump_xsettings` para ajuste dinâmico de DPI.
+       - Autostart: Exigia `inotifywait` (`inotify-tools`) para monitoramento ao vivo, caindo em estado `partial`.
+       - Acessibilidade do Teclado: Exigia `xkbset` para controles de acessibilidade XKB.
+  - **Correções Aplicadas**:
+    1. *Templates Completos Pré-Provisionados*:
+       - Criados e consolidados todos os arquivos de configuração modelo em `modules/home-manager/desktop/environments/dwm/configs/config/` (`panel-widgets.conf`, `accessibility.conf`, `notification-settings.json`, `wallpaper.conf`, `font.conf`, `personalization.conf`, `theme-env.sh`, `cursor.Xresources`, `xsettingsd.conf`).
+    2. *Auto-Cura de Permissões (`Self-Healing`)*:
+       - Em `dwm-panel-settings` e `dwm-accessibility-settings`, `config_dir_safe()` e `state_file_safe()` agora executam `chmod go-w` automaticamente caso o diretório/arquivo pertença ao usuário corrente e possua o bit de grupo ativo, eliminando falsos negativos de permissão.
+    3. *Provisionamento no `dwm.nix`*:
+       - Em `setupDwmConfig`, a verificação de arquivos foi aprimorada: caso o arquivo não exista ou esteja vazio (`[ ! -s ... ]`), o template válido correspondente é copiado de `${./configs/config}/$cfg_file`.
+       - Aplicadas permissões `chmod 700` no diretório e `chmod 600` / `go-w` em todos os arquivos de configuração.
+       - Removida a referência espúria a `display-profiles.json`.
+    4. *Resolução do Auto Lock*:
+       - Adicionado fallback em `dwm-quickshell-controlcenter` (`power_status`, `start_configured_light_locker`, `stop_configured_light_locker`, `power_apply_lock_settings`): se `light-locker` não estiver presente ou seus esquemas GSettings não estiverem instalados, o sistema utiliza transparentemente `xset` + `xss-lock` com `dwm-lock` / `betterlockscreen` / `i3lock-color`.
+       - Adicionada detecção de screen lockers em `dwm-settings-provider`.
+    5. *Isolamento de Notificações*:
+       - Atualizado o padrão de `desktop.dwm.dunst.enable` em `dunst.nix` para ativar o Dunst apenas se `bar != "quickshell"`.
+       - Removido `pkgs.dunst` incondicional do `packages` do `dwm.nix`.
+    6. *Pacotes de Suporte Injetados em `packages.nix`*:
+       - Adicionados `xorg.xset`, `lightlocker`, `xss-lock`, `glib`, `dconf`, `xkbset`, `inotify-tools` e `xsettingsd`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 
 

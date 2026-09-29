@@ -13,8 +13,8 @@ in
   options.desktop.dwm.dunst = {
     enable = mkOption {
       type = bool;
-      default = config.desktop.dwm.enable;
-      description = "Enable dunst notification daemon for dwm";
+      default = (config.desktop.dwm.enable && config.desktop.dwm.bar != "quickshell");
+      description = "Enable dunst notification daemon for dwm (automatically disabled when Quickshell is active to prevent D-Bus collision)";
     };
   };
 

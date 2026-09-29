@@ -286,7 +286,6 @@ in
         pkgs.xinput
         pkgs.brightnessctl
         pkgs.libnotify
-        pkgs.dunst
         pkgs.xsetroot
         pkgs.xdg-utils
       ];
@@ -334,9 +333,14 @@ in
           $DRY_RUN_CMD rm -f "$HOME/.config/dwm-titus"
         fi
         $DRY_RUN_CMD mkdir -p "$HOME/.config/dwm-titus"
+        $DRY_RUN_CMD chmod 700 "$HOME/.config/dwm-titus" 2>/dev/null || true
+        $DRY_RUN_CMD chmod go-w "$HOME/.config/dwm-titus" 2>/dev/null || true
+        $DRY_RUN_CMD mkdir -p "$HOME/.config/dwm-titus/display-profiles"
+        $DRY_RUN_CMD chmod 700 "$HOME/.config/dwm-titus/display-profiles" 2>/dev/null || true
         $DRY_RUN_CMD mkdir -p "$HOME/.local/share/dwm-titus/config"
         $DRY_RUN_CMD mkdir -p "$HOME/.local/share/dwm-titus/scripts"
         $DRY_RUN_CMD mkdir -p "$HOME/.local/state/dwm-titus"
+        $DRY_RUN_CMD chmod 700 "$HOME/.local/state/dwm-titus" 2>/dev/null || true
 
         # Sincronizar fallbacks e scripts em ~/.local/share/dwm-titus (usados pelo dwm.c e theme-apply)
         $DRY_RUN_CMD cp -rf ${./configs/config}/* "$HOME/.local/share/dwm-titus/config/" 2>/dev/null || true
@@ -374,7 +378,8 @@ in
         fi
 
         # 4. Todos os arquivos de estado, persistência e integração para os modelos QML do Quickshell
-        # (Aparência, Wallpaper, Fontes, Painel, Acessibilidade, Notificações, Picom, Displays)
+        # (Aparência, Wallpaper, Fontes, Painel, Acessibilidade, Notificações, Picom)
+        # Se estiverem ausentes ou vazios (0 bytes - gerados por touch anterior), copiar os templates válidos
         for cfg_file in \
           "theme-env.sh" \
           "personalization.conf" \
@@ -385,18 +390,31 @@ in
           "accessibility.conf" \
           "panel-widgets.conf" \
           "notification-settings.json" \
-          "picom.conf" \
-          "display-profiles.json"; do
+          "picom.conf"; do
           if [ -L "$HOME/.config/dwm-titus/$cfg_file" ]; then
             $DRY_RUN_CMD rm -f "$HOME/.config/dwm-titus/$cfg_file"
           fi
-          if [ ! -f "$HOME/.config/dwm-titus/$cfg_file" ]; then
-            $DRY_RUN_CMD touch "$HOME/.config/dwm-titus/$cfg_file"
+          # Se não existir ou tiver 0 bytes: copiar template válido se disponível
+          if [ ! -s "$HOME/.config/dwm-titus/$cfg_file" ]; then
+            if [ -f "${./configs/config}/$cfg_file" ]; then
+              $DRY_RUN_CMD cp -f "${./configs/config}/$cfg_file" "$HOME/.config/dwm-titus/$cfg_file"
+            else
+              $DRY_RUN_CMD touch "$HOME/.config/dwm-titus/$cfg_file"
+            fi
           fi
-          $DRY_RUN_CMD chmod u+w "$HOME/.config/dwm-titus/$cfg_file" 2>/dev/null || true
+          $DRY_RUN_CMD chmod 600 "$HOME/.config/dwm-titus/$cfg_file" 2>/dev/null || true
+          $DRY_RUN_CMD chmod go-w "$HOME/.config/dwm-titus/$cfg_file" 2>/dev/null || true
         done
 
-        $DRY_RUN_CMD chmod -R u+w "$HOME/.config/dwm-titus" 2>/dev/null || true
+        # Limpar arquivo espúrio display-profiles.json se tiver sido criado anteriormente
+        if [ -f "$HOME/.config/dwm-titus/display-profiles.json" ]; then
+          $DRY_RUN_CMD rm -f "$HOME/.config/dwm-titus/display-profiles.json"
+        fi
+
+        # Assegurar permissões estritas para evitar falhas de validação de segurança
+        $DRY_RUN_CMD chmod 700 "$HOME/.config/dwm-titus" 2>/dev/null || true
+        $DRY_RUN_CMD chmod go-w "$HOME/.config/dwm-titus" 2>/dev/null || true
+        $DRY_RUN_CMD chmod -R u+rw,go-w "$HOME/.config/dwm-titus" 2>/dev/null || true
 
         # 5. Converter eventuais symlinks read-only do GTK em cópias reais graváveis
         for ini in "$HOME/.config/gtk-3.0/settings.ini" "$HOME/.config/gtk-4.0/settings.ini" "$HOME/.gtkrc-2.0"; do

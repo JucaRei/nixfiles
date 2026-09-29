@@ -50,12 +50,16 @@ valid_widget() {
 
 state_file_safe() {
 	local path=$1 mode
-	mode=$(stat -c %a -- "$path" 2>/dev/null) || return 1
 	[[ -f $path && ! -L $path && -r $path &&
-		$(stat -c %u -- "$path") == "$UID" &&
-		$(stat -c %h -- "$path") == 1 &&
-		$(stat -c %s -- "$path") -le $max_config_size ]] &&
-		(((8#$mode & 022) == 0))
+		$(stat -c %u -- "$path" 2>/dev/null) == "$UID" &&
+		$(stat -c %h -- "$path" 2>/dev/null) == 1 &&
+		$(stat -c %s -- "$path" 2>/dev/null) -le $max_config_size ]] || return 1
+	mode=$(stat -c %a -- "$path" 2>/dev/null) || return 1
+	if (((8#$mode & 022) != 0)); then
+		chmod go-w -- "$path" 2>/dev/null || true
+		mode=$(stat -c %a -- "$path" 2>/dev/null) || return 1
+	fi
+	(((8#$mode & 022) == 0))
 }
 
 config_file_safe() {
@@ -64,9 +68,13 @@ config_file_safe() {
 
 config_dir_safe() {
 	local mode
+	[[ -d $config_dir && ! -L $config_dir && $(stat -c %u -- "$config_dir" 2>/dev/null) == "$UID" ]] || return 1
 	mode=$(stat -c %a -- "$config_dir" 2>/dev/null) || return 1
-	[[ -d $config_dir && ! -L $config_dir && $(stat -c %u -- "$config_dir") == "$UID" ]] &&
-		(((8#$mode & 022) == 0))
+	if (((8#$mode & 022) != 0)); then
+		chmod go-w -- "$config_dir" 2>/dev/null || true
+		mode=$(stat -c %a -- "$config_dir" 2>/dev/null) || return 1
+	fi
+	(((8#$mode & 022) == 0))
 }
 
 load_config() {

@@ -17,6 +17,7 @@ in
       xdotool
       wmctrl
       xorg.xprop
+      xorg.xset
       xsetroot
       xrandr
       xrdb
@@ -26,6 +27,13 @@ in
       brightnessctl
       betterlockscreen
       i3lock-color
+      lightlocker
+      xss-lock
+      glib
+      dconf
+      xkbset
+      inotify-tools
+      xsettingsd
       networkmanagerapplet
       libnotify
 
