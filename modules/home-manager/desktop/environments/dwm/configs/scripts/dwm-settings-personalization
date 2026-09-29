@@ -6,6 +6,22 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 theme_helper=${DWM_SETTINGS_THEME_HELPER:-$script_dir/dwm-settings-theme}
 xsettings_helper=${DWM_SETTINGS_XSETTINGS_HELPER:-$script_dir/dwm-xsettings}
 
+if [[ ! -x $theme_helper ]]; then
+	if [[ -x "${XDG_DATA_HOME:-$HOME/.local/share}/dwm-titus/scripts/dwm-settings-theme" ]]; then
+		theme_helper="${XDG_DATA_HOME:-$HOME/.local/share}/dwm-titus/scripts/dwm-settings-theme"
+	elif command -v dwm-settings-theme >/dev/null 2>&1; then
+		theme_helper=$(command -v dwm-settings-theme)
+	fi
+fi
+
+if [[ ! -x $xsettings_helper ]]; then
+	if [[ -x "${XDG_DATA_HOME:-$HOME/.local/share}/dwm-titus/scripts/dwm-xsettings" ]]; then
+		xsettings_helper="${XDG_DATA_HOME:-$HOME/.local/share}/dwm-titus/scripts/dwm-xsettings"
+	elif command -v dwm-xsettings >/dev/null 2>&1; then
+		xsettings_helper=$(command -v dwm-xsettings)
+	fi
+fi
+
 config_home=${XDG_CONFIG_HOME:-}
 data_home=${XDG_DATA_HOME:-}
 [[ $config_home == /* ]] || config_home=${HOME:?HOME is required for XDG_CONFIG_HOME fallback}/.config

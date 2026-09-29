@@ -1021,11 +1021,22 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     3. *`dwm-settings-font`*:
        - Em `exchange_supported`, flexibilizada a checagem para permitir teste atômico via `mv -f -T` quando `mv --exchange` não estiver presente.
        - Em `publish_config_if_hash` e `remove_config`, implementado fallback seguro de troca atômica e rollback compatível com todas as versões do GNU coreutils.
-    4. *Resultado*:
-       - Os cartões de status "Theme changes are read-only" e "Wallpaper apply and preview unavailable" desaparecem.
-       - Os botões "Preview for 30 seconds" e "Apply" para temas, "Preview wallpaper for 30 seconds" e "Apply wallpaper", além de "Apply font", "Follow system font", "Apply cursor", etc., tornam-se 100% clicáveis e operacionais.
+    4. *`dwm-settings-wallpaper` (Correção de `DISPLAY` e `cached_exchange_supported`)*:
+       - **Auto-detecção de `DISPLAY`**: Quando testado via SSH (como `ssh juca@192.168.122.106`), a variável `$DISPLAY` não está definida por padrão. O script falhava na checagem `valid_display "${DISPLAY:-}"`, resultando em `mutation restricted Wallpaper changes are unavailable in this session`. Adicionada auto-detecção de sockets em `/tmp/.X11-unix/X*` com fallback para `:0` e `$HOME/.Xauthority`.
+       - **Auto-população do Cache (`cached_exchange_supported`)**: O Quickshell executa `dwm-settings-wallpaper status --read-only`, que invoca `mutation_ready true` -> `cached_exchange_supported`. Caso o cache em `$runtime_dir/exchange-support` ainda não tivesse sido gerado por um comando de escrita prévio, a função falhava e nunca criava o arquivo, mantendo o status `restricted` permanentemente. Corrigido adicionando execução e criação imediata via `exchange_supported` como fallback.
+    5. *`dwm-settings-personalization`*:
+       - Adicionado fallback dinâmico de localização para `dwm-settings-theme` e `dwm-xsettings` em `~/.local/share/dwm-titus/scripts/` e no `$PATH`.
+    6. *Procedimento de Ativação no Host `virtualvm` (192.168.122.106)*:
+       - No NixOS / Home Manager, apenas reiniciar o sistema não transfere alterações feitas em arquivos da árvore Git local (`~/.dotfiles/nixfiles`) para as pastas de execução do usuário (`~/.local/share/dwm-titus/scripts/` e `~/.config/quickshell/`).
+       - É necessário aplicar a configuração com o Home Manager:
+         ```bash
+         home-manager switch --flake .#juca@virtualvm
+         ```
+         (ou via NixOS: `sudo nixos-rebuild switch --flake .#virtualvm`)
+       - Em seguida, reiniciar o Quickshell com `pkill -x quickshell` para carregar o novo estado com botões 100% ativos.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 
 
