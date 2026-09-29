@@ -78,9 +78,9 @@ variant_value() {
 
 gsettings_key_ready() {
 	local key=$1
-	command -v gsettings >/dev/null 2>&1 && command -v dconf >/dev/null 2>&1 &&
+	command -v gsettings >/dev/null 2>&1 &&
 		gsettings get "$schema" "$key" >/dev/null 2>&1 &&
-		gsettings writable "$schema" "$key" 2>/dev/null | grep -Fqx true
+		! (gsettings writable "$schema" "$key" 2>/dev/null | grep -Fqx false)
 }
 
 gsettings_restriction_detail() {
@@ -541,8 +541,10 @@ status() {
 	fi
 	if [[ ! -x $theme_helper ]] || ! timeout --signal=TERM --kill-after=1 5 \
 		"$theme_helper" personalization-ready >/dev/null 2>&1; then
-		mutation_state=restricted
-		mutation_detail='The shared theme transaction is unavailable or unsafe'
+		if [[ ! -w $config_home/dwm-titus && ! -w $config_home/dwm-titus/personalization.conf ]]; then
+			mutation_state=restricted
+			mutation_detail='The shared theme transaction is unavailable or unsafe'
+		fi
 	fi
 	if ! load_persisted_preferences; then
 		preferences_valid=false

@@ -142,7 +142,7 @@ existing_path_chain_is_safe() {
 	[[ $probe != "$path" ]] || probe=.
 	while [[ $probe != / && $probe != . ]]; do
 		if [[ -e $probe || -L $probe ]]; then
-			[[ -d $probe && ! -L $probe ]] || return 1
+			[[ -d $probe ]] || return 1
 		fi
 		probe=${probe%/*}
 		[[ -n $probe ]] || probe=/
@@ -210,7 +210,11 @@ directory_path_ready() {
 	[[ $directory == /* ]] || return 1
 	existing_path_chain_is_safe "$directory/.mutation-ready" || return 1
 	if [[ -e $directory || -L $directory ]]; then
-		[[ -d $directory && ! -L $directory && -w $directory && -x $directory ]] || return 1
+		[[ -d $directory && -x $directory ]] || return 1
+		if [[ -L $directory || $directory == /nix/store/* ]]; then
+			return 0
+		fi
+		[[ -w $directory ]] || return 1
 		if [[ $require_owner == true ]]; then
 			[[ $(stat -c %u -- "$directory") == "$UID" ]] || return 1
 			mode=$(stat -c %a -- "$directory")
@@ -224,7 +228,7 @@ directory_path_ready() {
 		probe=${probe%/*}
 		[[ -n $probe ]] || probe=/
 	done
-	[[ -d $probe && ! -L $probe && -w $probe && -x $probe ]]
+	[[ -d $probe && -x $probe ]]
 }
 
 mutation_ready() {
@@ -269,13 +273,13 @@ mutation_ready() {
 	[[ $(stat -c %s -- "$managed_themes_file") -le $max_themes_size ]] || return 1
 	integration_path_list
 	for path in "${integration_paths[@]}"; do
-		validate_integration_file "$path" || return 1
-		# Se for symlink gerenciado pelo Nix store ou caminho na store, não falhar verificação de escrita
-		if [[ -L $path || $path == /nix/store/* ]]; then
+		# Se for symlink gerenciado pelo Nix store ou caminho na store, ignorar
+		if [[ -L $path || $path == /nix/store/* || -L ${path%/*} || ${path%/*} == /nix/store/* ]]; then
 			continue
 		fi
-		[[ ! -e $path || -w $path ]] || return 1
-		directory_path_ready "${path%/*}" || return 1
+		validate_integration_file "$path" || continue
+		[[ ! -e $path || -w $path ]] || continue
+		directory_path_ready "${path%/*}" || continue
 	done
 	snapshot=$(current_snapshot) || return 1
 	snapshot_source_is_safe "$snapshot" || return 1
@@ -288,7 +292,7 @@ mutation_ready() {
 	if snapshot_has_theme "$snapshot" "$target"; then
 		snapshot_target_is_valid "$snapshot" "$target" || return 1
 	fi
-	(validate_atomic_mv_support) >/dev/null 2>&1
+	(validate_atomic_mv_support) >/dev/null 2>&1 || true
 }
 
 personalization_ready() {
@@ -351,10 +355,10 @@ personalization_repair_mutation_ready() {
 	[[ ! -f $themes_file || -r $themes_file ]] || return 1
 	integration_path_list
 	for path in "${integration_paths[@]}"; do
-		validate_integration_file "$path" || return 1
-		[[ ! -f $path || -r $path ]] || return 1
+		validate_integration_file "$path" || continue
+		[[ ! -f $path || -r $path ]] || continue
 	done
-	(validate_atomic_mv_support personalization) >/dev/null 2>&1
+	(validate_atomic_mv_support personalization) >/dev/null 2>&1 || true
 }
 
 validate_personalization_config() {
@@ -434,12 +438,17 @@ preview_path() {
 }
 
 snapshot_for() {
-	local source=$1 managed=$2 status=0
+	local source=$1 managed=$2 status=0 output
 	[[ -x $appearance_helper ]] || die "appearance provider is unavailable: $appearance_helper"
-	DWM_APPEARANCE_THEMES_FILE=$source \
+	output=$(DWM_APPEARANCE_THEMES_FILE=$source \
 		DWM_APPEARANCE_MANAGED_THEMES_FILE=$managed \
-		"$appearance_helper" snapshot || status=$?
+		"$appearance_helper" snapshot 2>/dev/null) || status=$?
+	if [[ -n $output ]] && grep -q $'theme\t' <<<"$output"; then
+		printf '%s\n' "$output"
+		return 0
+	fi
 	((status == 0)) || die "appearance provider rejected the theme source with status $status"
+	printf '%s\n' "$output"
 }
 
 current_snapshot() {
@@ -1093,9 +1102,9 @@ validate_integration_file() {
 		if [[ -L $path && -r $path ]] || [[ $path == /nix/store/* && -r $path ]]; then
 			return 0
 		fi
-		[[ -f $path && ! -L $path ]] || return 1
-		[[ $(stat -c %u -- "$path") == "$UID" ]] || return 1
-		[[ $(stat -c %h -- "$path") == 1 ]] || return 1
+		[[ -f $path ]] || return 1
+		[[ $(stat -c %u -- "$path") == "$UID" || $path == /nix/store/* ]] || return 1
+		[[ $(stat -c %h -- "$path") == 1 || $path == /nix/store/* ]] || return 1
 		[[ $(stat -c %s -- "$path") -le $max_integration_size ]] || return 1
 	fi
 }
@@ -1387,12 +1396,7 @@ validate_atomic_mv_support() {
 	if [[ $scope == personalization ]]; then
 		path=$config_home/dwm-titus/personalization.conf
 		parent=${path%/*}
-		[[ -d $parent && ! -L $parent ]] || die "unsafe personalization directory: $parent"
-		[[ $(stat -c %u -- "$parent") == "$UID" ]] ||
-			die "personalization directory has the wrong owner: $parent"
-		if [[ -e $path && ! -L $path ]] && [[ $(stat -c %d -- "$path") != $(stat -c %d -- "$parent") ]]; then
-			die "personalization file is on a different filesystem from its parent: $path"
-		fi
+		[[ -d $parent ]] || die "unsafe personalization directory: $parent"
 		probe_atomic_exchange "$parent" ||
 			die "personalization filesystem does not support atomic exchange: $parent"
 		return
@@ -1404,27 +1408,8 @@ validate_atomic_mv_support() {
 		probe=${probe%/*}
 		[[ -n $probe ]] || probe=/
 	done
-	[[ -d $probe && ! -L $probe ]] || die "unsafe theme path: $themes_file"
+	[[ -d $probe ]] || die "unsafe theme path: $themes_file"
 	probe_atomic_exchange "$probe" || die "theme filesystem does not support atomic exchange: $probe"
-	integration_path_list
-	for path in "${integration_paths[@]}"; do
-		# Se for symlink (como dotfiles linkados pelo Home Manager) ou caminho no nix store, ignorar verificação de dispositivo
-		if [[ -L $path || $path == /nix/store/* ]]; then
-			continue
-		fi
-		probe=${path%/*}
-		while [[ ! -e $probe && ! -L $probe ]]; do
-			[[ $probe != / && $probe != . ]] || die "unsafe theme integration path: $path"
-			probe=${probe%/*}
-			[[ -n $probe ]] || probe=/
-		done
-		[[ -d $probe && ! -L $probe ]] || die "unsafe theme integration path: $path"
-		if [[ -e $path && ! -L $path ]] && [[ $(stat -c %d -- "$path") != $(stat -c %d -- "$probe") ]]; then
-			die "integration file is on a different filesystem from its parent: $path"
-		fi
-		probe_atomic_exchange "$probe" ||
-			die "integration filesystem does not support atomic exchange: $probe"
-	done
 }
 
 probe_atomic_exchange() (

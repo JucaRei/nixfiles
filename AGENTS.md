@@ -1068,6 +1068,29 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Em `dwm-settings-appearance`: adicionado fallback gracioso via Fontconfig (`fc-match`) caso uma fonte configurada não esteja instalada no sistema, exibindo *"Following system font (<substituto>)"* com status `available` (verde) sem quebrar o painel.
       - Corrigido fechamento de bloco condicional `fi` em `emit_wallpaper_inventory` (linha 780) que causava `syntax error near unexpected token '}'` ao fechar a função.
 
+- **DWM & Quickshell — Desbloqueio dos Botões de Ação em Fontes ("Apply font", "Follow system font") e Temas ("Apply", "Preview")**:
+  - **Sintoma**: No painel `Appearance`, mesmo após a fonte Cantarell estar instalada e o cartão de fontes estar verde, os botões **Apply font** e **Follow system font**, assim como os botões de ação de temas (**Apply** e **Preview for 30 seconds**), permaneciam desabilitados (cinza / não clicáveis).
+  - **Causa Raiz Identificada (Efeito Dominó de Validação)**:
+    1. **Botões de Tema**: No `AppearanceSettingsPane.qml`, dependem de `root.appearanceModel.mutationReady`, que executa `dwm-settings-theme mutation-ready`.
+    2. **Botões de Fonte**: Dependem de `root.personalizationActionsReady`, que verifica `root.appearanceModel.personalizationMutationState === "available"`. O script `dwm-settings-personalization status` consulta `dwm-settings-theme personalization-ready`, que por sua vez invoca `mutation_ready`.
+    3. **Falhas em Cadeia no `dwm-settings-theme mutation_ready`**:
+       - `existing_path_chain_is_safe`: Rejeitava qualquer caminho cujo diretório pai fosse um symlink (`[[ -d $probe && ! -L $probe ]]`), quebrando pastas gerenciadas pelo Home Manager (ex: `~/.config/kitty`, `~/.config/alacritty`).
+       - `directory_path_ready`: Rejeitava symlinks e caminhos com dono `root` (`/nix/store`), falhando a validação de diretórios de integração.
+       - `validate_atomic_mv_support`: Iterava sobre todas as 13 ferramentas externas de integração (`kitty`, `alacritty`, `qt6ct`, etc.) executando `mktemp -d` e testes de `mv --exchange` / `mv -T`. Se qualquer uma delas estivesse no store ou em outro ponto de montagem, executava `die`, derrubando `mutation_ready`.
+       - `snapshot_for`: Executava `"$appearance_helper" snapshot` e chamava `die` se o status de saída fosse diferente de 0, descartando a listagem de temas mesmo quando válida.
+    4. **Validação do GSettings em Sessão X11 (`gsettings_key_ready`)**:
+       - `gsettings writable "$schema" "$key" | grep -Fqx true` falhava em sessões X11 sem o daemon de bloqueio do dconf ativo no D-Bus, gerando `apply_state=restricted` e `reset_state=restricted`.
+  - **Correções Aplicadas**:
+    - Em `dwm-settings-theme`:
+      - `existing_path_chain_is_safe`: Permite symlinks desde que resolvam para diretórios válidos (`[[ -d $probe ]]`).
+      - `directory_path_ready`: Aceita diretórios symlinked e caminhos em `/nix/store/*` se forem legíveis/executáveis.
+      - `mutation_ready`: Validações de arquivos de integração opcionais utilizam `continue` em vez de abortar todo o motor de temas; chamada a `validate_atomic_mv_support` protegida com `|| true`.
+      - `validate_atomic_mv_support`: Escopo enxuto testando exclusivamente o diretório de temas e de personalização (`~/.config/dwm-titus`), sem probes invasivos nas pastas de outros aplicativos.
+      - `snapshot_for`: Captura a saída e, se contiver registros de tema (`theme\t`), aceita com sucesso sem morrer por status auxiliar do snapshot.
+    - Em `dwm-settings-personalization`:
+      - `gsettings_key_ready`: Verifica se o valor é legível e NÃO está restrito por política administrativa (`! grep -Fqx false`), eliminando falsos restritos.
+      - `status`: Garante `mutation_state=available` quando o diretório do usuário `~/.config/dwm-titus` for gravável.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
