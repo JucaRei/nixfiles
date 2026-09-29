@@ -1066,6 +1066,7 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Com a correção de `mutation_ready` no `dwm-settings-theme`, `personalizationMutationState` atinge `available`, desbloqueando os botões **Apply font** e **Follow system font**.
       - Adicionado pacote `cantarell-fonts` em `modules/home-manager/desktop/environments/dwm/packages.nix` e `default.nix`.
       - Em `dwm-settings-appearance`: adicionado fallback gracioso via Fontconfig (`fc-match`) caso uma fonte configurada não esteja instalada no sistema, exibindo *"Following system font (<substituto>)"* com status `available` (verde) sem quebrar o painel.
+      - Corrigido fechamento de bloco condicional `fi` em `emit_wallpaper_inventory` (linha 780) que causava `syntax error near unexpected token '}'` ao fechar a função.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

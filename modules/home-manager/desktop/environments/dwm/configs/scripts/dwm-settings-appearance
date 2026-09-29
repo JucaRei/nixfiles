@@ -777,6 +777,8 @@ emit_wallpaper_inventory() {
 	elif [[ $provider_state != available && $selection_state != unavailable ]]; then
 		selection_state=$provider_state
 		selection_detail=$provider_detail
+	fi
+
 	if [[ ! -d $wallpaper_dir ]]; then
 		mkdir -p -- "$wallpaper_dir" 2>/dev/null || true
 	fi
