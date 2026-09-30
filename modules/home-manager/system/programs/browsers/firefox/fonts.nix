@@ -1,7 +1,7 @@
 _:
 let
   # defaultFont = "Iosevka Comfy";
-  default-Serif = "Lato"; # "Roboto"
+  default-Serif = "Abel"; # "Lato" # "Roboto"
   default-Mono = "Martian Mono Nerd Font";
   default-Sans-serif = "Fira Sans";
 in
@@ -9,7 +9,7 @@ in
 
   # override fonts
   "font.minimum-size.x-western" = 16;
-  "font.size.fixed.x-western" = 16;
+  "font.size.fixed.x-western" = 20;
   "font.size.monospace.x-western" = 16;
   "font.size.variable.x-western" = 16;
   "font.name.monospace.x-western" = "${default-Mono}";
