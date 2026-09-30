@@ -1107,7 +1107,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Associação XDG MIME**: Quando um navegador padrão é determinado (`activeDesktopFile != null`), associa automaticamente via `xdg.mimeApps.defaultApplications`: `text/html`, `text/xml`, `application/xhtml+xml`, `application/xml`, `application/x-xpinstall`, `x-scheme-handler/http`, `x-scheme-handler/https`, `x-scheme-handler/about`, `x-scheme-handler/unknown` e `x-scheme-handler/chrome` (para Chromium).
     - **Variáveis de Sessão**: Exporta `BROWSER` e `DEFAULT_BROWSER` com o binário executável correspondente (`firefox`, `brave`, `vivaldi`, `google-chrome-stable`, etc.), integrando-se aos atalhos do sxhkd e scripts de sistema.
 
+- **Módulo `system.programs.editors.zitext` e Pacote Customizado ZITEXT**:
+  - **Pacote Customizado (`pkgs/desktop/editors/zitext/default.nix`)**: Empacotado via `appimageTools.wrapType2` com o AppImage oficial da versão 2.1.5 (`ZITEXT-2.1.5-Linux-x64.AppImage`) do repositório `zitrino-oss/zitext-editor`. Instala o binário `zitext`, o arquivo `.desktop` canônico (`zitext.desktop` e link `ZITEXT.desktop`), e ícones de aplicativo.
+  - **Módulo Home Manager (`modules/home-manager/system/programs/editors/zitext/default.nix`)**:
+    - `system.programs.editors.zitext.enable`: Habilita o editor e o adiciona aos pacotes de usuário.
+    - `system.programs.editors.zitext.default` (booleano, default `true`): Associa o ZITEXT como editor padrão de texto plano em `xdg.mimeApps.defaultApplications."text/plain"` e `xdg.mimeApps.associations.added."text/plain"` (`zitext.desktop`), além de exportar `EDITOR = "zitext"` em `home.sessionVariables`.
+  - **Inclusão no Sistema**: Importado no centralizador [modules/home-manager/system/programs/editors/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/system/programs/editors/default.nix) e exposto no overlay global de pacotes via [pkgs/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/pkgs/default.nix).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 
 

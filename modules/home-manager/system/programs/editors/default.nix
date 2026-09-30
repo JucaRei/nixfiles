@@ -3,5 +3,6 @@ _: {
     ./antigravity
     ./sublime
     ./vscode
+    ./zitext
   ];
 }

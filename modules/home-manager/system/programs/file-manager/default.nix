@@ -177,8 +177,13 @@ in
       ];
     }
     (mkIf (activeDesktopFile != null) {
-      xdg.mimeApps.defaultApplications = {
-        "inode/directory" = mkDefault activeDesktopFile;
+      xdg.mimeApps = {
+        defaultApplications = {
+          "inode/directory" = mkDefault activeDesktopFile;
+        };
+        associations.added = {
+          "inode/directory" = activeDesktopFile;
+        };
       };
     })
   ];

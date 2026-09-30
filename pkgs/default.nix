@@ -32,6 +32,9 @@ pkgs: {
   plymouth-catppuccin = pkgs.callPackage ./system/plymouth/plymouth-catppuccin { };
   plymouth-themes = pkgs.callPackage ./system/plymouth/plymouth-themes { };
 
+  # Editors
+  zitext = pkgs.callPackage ./desktop/editors/zitext { };
+
   # Tools
   heynote = pkgs.callPackage ./desktop/tools/heynote { };
   # advmvcp = pkgs.callPackage ./tools/advmvcp { };

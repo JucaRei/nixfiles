@@ -104,8 +104,12 @@ in
 
     # Associações MIME e variáveis de sessão
     (mkIf (activeDesktop != null) {
-      xdg.mimeApps.defaultApplications =
-        builtins.listToAttrs (map (mime: { name = mime; value = mkDefault activeDesktop; }) mimeTypes);
+      xdg.mimeApps = {
+        defaultApplications =
+          builtins.listToAttrs (map (mime: { name = mime; value = mkDefault activeDesktop; }) mimeTypes);
+        associations.added =
+          builtins.listToAttrs (map (mime: { name = mime; value = activeDesktop; }) mimeTypes);
+      };
 
       home.sessionVariables = {
         BROWSER = mkDefault activeBin;
