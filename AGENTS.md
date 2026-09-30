@@ -1111,7 +1111,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Pacote Customizado (`pkgs/desktop/editors/zitext/default.nix`)**: Empacotado via `appimageTools.wrapType2` com o AppImage oficial da versão 2.1.5 (`ZITEXT-2.1.5-Linux-x64.AppImage`) do repositório `zitrino-oss/zitext-editor`. Instala o binário `zitext`, o arquivo `.desktop` canônico (`zitext.desktop` e link `ZITEXT.desktop`), e ícones de aplicativo.
   - **Módulo Home Manager (`modules/home-manager/system/programs/editors/zitext/default.nix`)**:
     - `system.programs.editors.zitext.enable`: Habilita o editor e o adiciona aos pacotes de usuário.
-    - `system.programs.editors.zitext.default` (booleano, default `true`): Associa o ZITEXT como editor padrão de texto plano em `xdg.mimeApps.defaultApplications."text/plain"` e `xdg.mimeApps.associations.added."text/plain"` (`zitext.desktop`), além de exportar `EDITOR = "zitext"` em `home.sessionVariables`.
+    - `system.programs.editors.zitext.default` (booleano, default `true`): Associa o ZITEXT como editor padrão de texto plano em `xdg.mimeApps.defaultApplications."text/plain"` e `xdg.mimeApps.associations.added."text/plain"` (`zitext.desktop`).
+  - **Compatibilidade com Máquinas Virtuais (Renderização WebKitGTK / Tauri)**:
+    - O ZITEXT utiliza Rust + Tauri com WebKitGTK no Linux. Em VMs (`virtualvm`) sem aceleração 3D nativa (Mesa llvmpipe/virgl), o compositing por hardware (EGL/DMABUF) causa renderização defeituosa, flicker, tela transparente ou artefatos visuais.
+    - Resolvido exportando `WEBKIT_DISABLE_COMPOSITING_MODE = "1"` e `WEBKIT_DISABLE_DMABUF_RENDERER = "1"` em `home.sessionVariables` e no wrapper `wrapProgram`, forçando rasterização por software estável.
+  - **Reconhecimento no Control Center / Defaults Applications do DWM (`dwm-default-apps`)**:
+    - O script de retaguarda do DWM (`dwm-default-apps`) realiza checagens estritas:
+      1. Ignora symlinks em `applications` (`[[ -f $file && ! -L $file ]]` e `path_has_no_symlink_components`), rejeitando symlinks diretos do Nix Store.
+      2. Exige que o arquivo `.desktop` anuncie explicitamente o tipo MIME no campo `MimeType` (`desktop_token_present "$desktop_parsed_mime_types" "text/plain"`).
+    - Resolvido provisionando cópia física do arquivo `.desktop` em `~/.local/share/applications/zitext.desktop` via hook de ativação (`home.activation.zitextDesktopEntry`) contendo `MimeType=text/plain;text/markdown;...`.
   - **Inclusão no Sistema**: Importado no centralizador [modules/home-manager/system/programs/editors/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/system/programs/editors/default.nix) e exposto no overlay global de pacotes via [pkgs/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/pkgs/default.nix).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
