@@ -36,6 +36,10 @@ in
         signingKey = "~/.ssh/nitro.pub";
         signByDefault = true;
       };
+
+      services.podman = {
+        enable = lib.mkDefault true;
+      };
     };
 
     home = {

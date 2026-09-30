@@ -1124,6 +1124,26 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - *Causa*: O módulo upstream do NixOS `users-groups.nix` atribui `shell = mkDefault (if u.isNormalUser then config.users.defaultUserShell else ...)` (prioridade 1000). Em `nixos/users/default.nix`, havia `shell = lib.mkDefault pkgs.bash;` (também prioridade 1000). Em perfis onde o usuário não sobrescreve com prioridade normal (como o usuário `nixos` nas ISOs), a colisão de dois `mkDefault` gerava o erro de unicidade da opção.
     - *Correção*: Removida a atribuição redundante `shell = lib.mkDefault pkgs.bash;` em `nixos/users/default.nix`, permitindo que o NixOS defina naturalmente a shell a partir de `config.users.defaultUserShell` (`pkgs.bashInteractive`), eliminando a colisão.
 
+- **Módulo `system.services.podman` (Home Manager - Containers Rootless & Docker Compat)**:
+  - **Localização**: [modules/home-manager/system/services/podman/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/system/services/podman/default.nix) e documentação em [modules/home-manager/system/services/podman/README.md](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/system/services/podman/README.md).
+  - **Design & Boas Práticas**:
+    - **Integração com `services.podman` Upstream do Home Manager**:
+      - Habilita diretamente o módulo nativo `services.podman.enable = true` e repassa `package`, `containers`, `networks`, `volumes` e o timer `autoUpdate.onCalendar`.
+      - Qualquer container declarado em `system.services.podman.containers` ou diretamente em `services.podman.containers` é processado pelo gerador Quadlet oficial do Home Manager.
+    - **Rootless & Portabilidade**: Configurado em espaço de usuário com isolamento via subuid/subgid. Funciona tanto no NixOS quanto em distros standalone (Fedora, Debian, Ubuntu).
+    - **Injeção de Helpers OCI no Nix Store**: `helper_binaries_dir` no `containers.conf` injeta `${pkgs.crun}/bin`, `${pkgs.conmon}/bin`, `${pkgs.passt}/bin`, `${pkgs.slirp4netns}/bin` e `${pkgs.fuse-overlayfs}/bin`, garantindo que o Podman sempre encontre suas ferramentas auxiliares independentemente de variações do `$PATH` do host.
+    - **Performance & Modernidade**: Runtime `crun`, pilha de rede `pasta` (alta velocidade), logging `k8s-file` (evita poluir o journald), compressão de imagens `zstd`, `cgroup_manager = "systemd"`.
+    - **Emulação Docker 100% Transparente (`dockerCompat = true`)**:
+      - Socket systemd do usuário ativado sob demanda (`podman.socket` -> `%t/podman/podman.sock`).
+      - Symlink automático `%t/docker.sock -> %t/podman/podman.sock` gerenciado via `systemd.user.tmpfiles.rules` e hook de ativação.
+      - Variável `DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock"` exportada na sessão do usuário e no systemd.
+      - Wrapper executável `docker` que despacha para `podman`, garantindo compatibilidade com DevContainers do VSCode, JetBrains, DBeaver e scripts CI/locais.
+    - **Registries & Política de Imagens**: Busca em `docker.io`, `quay.io`, `ghcr.io` e `registry.fedoraproject.org` com `short-name-mode = "permissive"` e `policy.json` permissivo em `~/.config/containers/`, prevenindo erros de bloqueio de assinatura ao puxar imagens públicas.
+    - **Ferramental Completo Incluso**: `podman-compose`, `docker-compose`, `lazydocker` (TUI interativa rica), `podman-tui`, `buildah`, `skopeo` e `dive`.
+    - **Diagnóstico Embutido**: Utilitário executável `podman-doctor` para testar rapidamente subuids, socket ativo, DOCKER_HOST e execução de container alpine.
+    - **Manutenção Automatizada**: Suporte a timers do systemd para limpeza periódica de armazenamento (`autoPrune`) e atualização de containers (`autoUpdate`).
+    - Ativado por padrão para o usuário `juca` via `system.services.podman.enable = lib.mkDefault true;` em [home-manager/users/juca/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/users/juca/default.nix).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
