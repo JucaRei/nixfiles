@@ -81,6 +81,8 @@ in
             "@wheel"
           ];
           warn-dirty = false;
+          # Auto-optimize store to reduce disk usage
+          auto-optimise-store = true;
         };
 
         nixPath = mkIf (!isNixOS) (mapAttrsToList (n: _: "${n}=flake:${n}") flakeInputs);
