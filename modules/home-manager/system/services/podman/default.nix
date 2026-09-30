@@ -77,9 +77,13 @@ let
       "${pkgs.conmon}/bin",
       "${pkgs.crun}/bin",
       "${pkgs.fuse-overlayfs}/bin",
+      "/run/wrappers/bin",
       "/usr/libexec/podman",
       "/usr/lib/podman",
       "/usr/bin",
+      "/bin",
+      "/usr/sbin",
+      "/sbin",
     ]
   '';
 
@@ -139,10 +143,22 @@ let
       echo "   -> No Fedora/Debian standalone execute: sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $USER_NAME"
     fi
 
-    echo -n "3. Variável DOCKER_HOST: "
+    echo -n "3. Utilitários newuidmap / newgidmap (shadow setuid): "
+    if command -v newuidmap >/dev/null 2>&1 && command -v newgidmap >/dev/null 2>&1; then
+      echo "OK ($(command -v newuidmap))"
+    elif [ -x "/usr/bin/newuidmap" ] || [ -x "/run/wrappers/bin/newuidmap" ]; then
+      echo "OK (encontrado em caminho padrão)"
+    else
+      echo "FALHA: newuidmap ou newgidmap não encontrados!"
+      echo "   -> No Debian/Ubuntu (ex: virtualvm): execute 'sudo apt install -y uidmap'"
+      echo "   -> No Fedora/RHEL: execute 'sudo dnf install -y shadow-utils'"
+      echo "   -> No NixOS: adicione 'programs.shadow.enable = true' ou 'virtualisation.podman.enable = true'"
+    fi
+
+    echo -n "4. Variável DOCKER_HOST: "
     echo "''${DOCKER_HOST:-<não definida>}"
 
-    echo -n "4. Socket do Podman (%t/podman/podman.sock): "
+    echo -n "5. Socket do Podman (%t/podman/podman.sock): "
     SOCK="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/podman/podman.sock"
     if [ -S "$SOCK" ]; then
       echo "Ativo e ouvindo em $SOCK"
@@ -150,11 +166,11 @@ let
       echo "Inativo no momento (inicia sob demanda via systemd: systemctl --user start podman.socket)"
     fi
 
-    echo -n "5. Driver de Armazenamento: "
+    echo -n "6. Driver de Armazenamento: "
     STORAGE_INFO=$(${cfg.package}/bin/podman info --format '{{.Store.GraphDriverName}} (graphRoot: {{.Store.GraphRoot}})' 2>/dev/null || echo "erro ao obter info")
     echo "$STORAGE_INFO"
 
-    echo -n "6. Teste de execução rootless (alpine): "
+    echo -n "7. Teste de execução rootless (alpine): "
     if ${cfg.package}/bin/podman run --rm alpine:latest echo "Podman funcionando com sucesso!" 2>/dev/null; then
       echo "✅ Sucesso!"
     else
