@@ -48,15 +48,39 @@ let
         "${mod} + shift + 5" = "${pkgs.flameshot}/bin/flameshot gui";
         "Print" = "${pkgs.flameshot}/bin/flameshot gui";
         "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
+        "ctrl + Print" = "${pkgs.flameshot}/bin/flameshot full -c";
+        "super + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
+        "XF86SelectiveScreenshot" = "${pkgs.flameshot}/bin/flameshot gui";
       }
     else
       {
-        # Perfil Standard / PC (Acer, Nitro, PCs, VMs, etc.)
-        # Preserva Super + Shift + 1..0 100% livres para navegação e envio de workspaces!
+        # Perfil Standard / PC (Acer Nitro, PCs, VMs, etc.)
+        # Preserva Super + Shift + 1..0 100% livres para navegação e envio de workspaces quando mod=Super!
+
+        # Tecla física PrtSc / Print Screen
         "Print" = "${pkgs.flameshot}/bin/flameshot gui";
         "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
         "ctrl + Print" = "${pkgs.flameshot}/bin/flameshot full -c";
-        "${mod} + Print" = "${pkgs.flameshot}/bin/flameshot gui";
+        "super + Print" = "${pkgs.flameshot}/bin/flameshot gui";
+        "alt + Print" = "${pkgs.flameshot}/bin/flameshot gui";
+
+        # Em teclados de notebook / Linux X11, Alt + PrtSc gera o keysym Sys_Req
+        "Sys_Req" = "${pkgs.flameshot}/bin/flameshot gui";
+        "alt + Sys_Req" = "${pkgs.flameshot}/bin/flameshot gui";
+
+        # Logitech MX Keys / Windows Snipping / GNOME Area Screenshot
+        # A tecla dedicada de câmera do MX Keys emite Super + Shift + S por hardware em modo PC
+        "super + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
+        "alt + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
+        "XF86SelectiveScreenshot" = "${pkgs.flameshot}/bin/flameshot gui";
+      }
+      // lib.optionalAttrs (mod != "super") {
+        # Se mod != "super" (ex: Nitro onde mod é Alt), Super + Shift + {3,4,5} não colidem
+        # com os workspaces (que usam Alt + Shift + {1-9,0}).
+        # Permite que o MX Keys funcione imediatamente mesmo se estiver em modo Mac (Fn + O).
+        "super + shift + 3" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
+        "super + shift + 4" = "${pkgs.flameshot}/bin/flameshot gui";
+        "super + shift + 5" = "${pkgs.flameshot}/bin/flameshot gui";
       };
 
   normMod =

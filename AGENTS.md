@@ -1158,6 +1158,18 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Perfil `"mac"` (MacBooks como Rocinante e teclados Apple sem tecla Print dedicada): mantém `Super + Shift + 3/4/5`.
       - Perfil `"auto"`: detecta se o teclado é Apple/Macbook ou PC e ativa o perfil correto automaticamente.
       - Padronizado o salvamento em tela cheia com `config.services.flameshot.settings.General.savePath` (`~/Pictures/Screenshots`).
+    - **Diagnóstico e Suporte a Teclados Externos (Logitech MX Keys no Nitro 5)**:
+      - *Causa Raiz*:
+        1. O teclado **Logitech MX Keys** não possui uma tecla física rotulada como `PrtSc`/`Print`. Ele possui um botão dedicado com ícone de câmera (acima do `Insert`), que o firmware/hardware transmite nativamente em sistemas PC/Linux como a combinação `Super + Shift + S` (atalho da ferramenta de captura do Windows) ou `XF86SelectiveScreenshot` (via driver HID++ do kernel/Solaar). No modo Mac (`Fn + O`), transmite `Super + Shift + 4`.
+        2. No host `nitro`, a tecla modificadora principal (`desktop.modifierKey`) é configurada como `"Alt"`, fazendo com que `${mod} + Print` resolvesse para `alt + Print`. Além disso, no Linux X11, segurar Alt ao pressionar Print Screen no teclado do notebook gera o keysym especial `Sys_Req`.
+        3. O sxhkd escutava apenas `Print`, `shift + Print`, `ctrl + Print` e `${mod} + Print`, ignorando silenciosamente qualquer acionamento do botão do MX Keys.
+      - *Solução*:
+        - Expandido o perfil `"standard"` no `sxhkd.nix` para incluir explicitamente:
+          - `super + shift + s` e `alt + shift + s`: acionamento universal do botão de câmera do MX Keys e atalho padrão Windows/GNOME Snipping Tool para `flameshot gui`.
+          - `XF86SelectiveScreenshot`: mapeamento direto de eventos multimídia/HID++ emitidos pelo Solaar/kernel.
+          - `Sys_Req` e `alt + Sys_Req`: captura física no teclado embutido do laptop quando Alt é pressionado.
+          - `super + Print` e `alt + Print`: garantia de disparo com qualquer tecla modificadora.
+          - Em hosts onde `mod != "super"` (como o Nitro onde `mod` é `Alt`), adicionados também `super + shift + 3/4/5` como fallback adicional caso o MX Keys esteja alternado para modo Mac (`Fn + O`), sem gerar colisão com a troca de áreas de trabalho (que no Nitro usam `Alt + Shift + 1..0`).
   - **Mover e Enviar Janelas para Outra Workspace (`bspc node -d`)**:
     - *Causa Raiz da Falha*:
       1. Os atalhos `${mod} + shift + 3/4/5` eram sequestrados pelo Flameshot hardcoded.
