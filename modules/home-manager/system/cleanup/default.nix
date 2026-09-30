@@ -106,6 +106,28 @@ let
       data = [ ];
       desktops = [ ];
     }
+    {
+      name = "gedit";
+      enabled = config.system.programs.editors.gedit.enable or false;
+      configs = [ "$HOME/.config/gedit" ];
+      caches = [ ];
+      data = [ "$HOME/.local/share/gedit" ];
+      desktops = [
+        "$HOME/.local/share/applications/org.gnome.gedit*.desktop"
+        "$HOME/.local/share/applications/gedit*.desktop"
+      ];
+    }
+    {
+      name = "zitext";
+      enabled = false; # Descontinuado / removido permanentemente
+      configs = [ "$HOME/.config/zitext" ];
+      caches = [ "$HOME/.cache/zitext" ];
+      data = [ "$HOME/.local/share/zitext" ];
+      desktops = [
+        "$HOME/.local/share/applications/zitext*.desktop"
+        "$HOME/.local/share/applications/ZITEXT*.desktop"
+      ];
+    }
 
     # --- Terminais ---
     {

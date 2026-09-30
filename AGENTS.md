@@ -1107,20 +1107,16 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Associação XDG MIME**: Quando um navegador padrão é determinado (`activeDesktopFile != null`), associa automaticamente via `xdg.mimeApps.defaultApplications`: `text/html`, `text/xml`, `application/xhtml+xml`, `application/xml`, `application/x-xpinstall`, `x-scheme-handler/http`, `x-scheme-handler/https`, `x-scheme-handler/about`, `x-scheme-handler/unknown` e `x-scheme-handler/chrome` (para Chromium).
     - **Variáveis de Sessão**: Exporta `BROWSER` e `DEFAULT_BROWSER` com o binário executável correspondente (`firefox`, `brave`, `vivaldi`, `google-chrome-stable`, etc.), integrando-se aos atalhos do sxhkd e scripts de sistema.
 
-- **Módulo `system.programs.editors.zitext` e Pacote Customizado ZITEXT**:
-  - **Pacote Customizado (`pkgs/desktop/editors/zitext/default.nix`)**: Empacotado via `appimageTools.wrapType2` com o AppImage oficial da versão 2.1.5 (`ZITEXT-2.1.5-Linux-x64.AppImage`) do repositório `zitrino-oss/zitext-editor`. Instala o binário `zitext`, o arquivo `.desktop` canônico (`zitext.desktop` e link `ZITEXT.desktop`), e ícones de aplicativo.
-  - **Módulo Home Manager (`modules/home-manager/system/programs/editors/zitext/default.nix`)**:
-    - `system.programs.editors.zitext.enable`: Habilita o editor e o adiciona aos pacotes de usuário.
-    - `system.programs.editors.zitext.default` (booleano, default `true`): Associa o ZITEXT como editor padrão de texto plano em `xdg.mimeApps.defaultApplications."text/plain"` e `xdg.mimeApps.associations.added."text/plain"` (`zitext.desktop`).
-  - **Compatibilidade com Máquinas Virtuais (Renderização WebKitGTK / Tauri)**:
-    - O ZITEXT utiliza Rust + Tauri com WebKitGTK no Linux. Em VMs (`virtualvm`) sem aceleração 3D nativa (Mesa llvmpipe/virgl), o compositing por hardware (EGL/DMABUF) causa renderização defeituosa, flicker, tela transparente ou artefatos visuais.
-    - Resolvido exportando `WEBKIT_DISABLE_COMPOSITING_MODE = "1"` e `WEBKIT_DISABLE_DMABUF_RENDERER = "1"` em `home.sessionVariables` e no wrapper `wrapProgram`, forçando rasterização por software estável.
-  - **Reconhecimento no Control Center / Defaults Applications do DWM (`dwm-default-apps`)**:
-    - O script de retaguarda do DWM (`dwm-default-apps`) realiza checagens estritas:
-      1. Ignora symlinks em `applications` (`[[ -f $file && ! -L $file ]]` e `path_has_no_symlink_components`), rejeitando symlinks diretos do Nix Store.
-      2. Exige que o arquivo `.desktop` anuncie explicitamente o tipo MIME no campo `MimeType` (`desktop_token_present "$desktop_parsed_mime_types" "text/plain"`).
-    - Resolvido provisionando cópia física do arquivo `.desktop` em `~/.local/share/applications/zitext.desktop` via hook de ativação (`home.activation.zitextDesktopEntry`) contendo `MimeType=text/plain;text/markdown;...`.
-  - **Inclusão no Sistema**: Importado no centralizador [modules/home-manager/system/programs/editors/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/system/programs/editors/default.nix) e exposto no overlay global de pacotes via [pkgs/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/pkgs/default.nix).
+- **Módulo `system.programs.editors.gedit` (Substituição do ZITEXT pelo Gedit)**:
+  - **Motivação**: ZITEXT apresentava instabilidade gráfica em VMs (Tauri/WebKitGTK). Foi removido e substituído pelo **gedit** (`pkgs.gedit`), que é nativo em GTK, ultraleve e 100% estável em qualquer ambiente (físico ou virtual).
+  - **Módulo Home Manager (`modules/home-manager/system/programs/editors/gedit/default.nix`)**:
+    - `system.programs.editors.gedit.enable`: Habilita o editor nos pacotes do usuário (`pkgs.gedit`). Ativado por padrão em estações de trabalho (`isWorkstation`) em [modules/home-manager/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/default.nix).
+    - `system.programs.editors.gedit.default` (booleano, default `true`): Associa `org.gnome.gedit.desktop` como handler padrão de `text/plain` em `xdg.mimeApps.defaultApplications` e `xdg.mimeApps.associations.added`, além de exportar `EDITOR = "gedit"`.
+    - **Compatibilidade com DWM Quickshell (`dwm-default-apps`)**: O hook `home.activation.geditDesktopEntry` provisiona uma cópia física regular de `org.gnome.gedit.desktop` em `~/.local/share/applications/` (e link `gedit.desktop`), permitindo que a validação estrita sem symlinks do DWM o reconheça instantaneamente no painel de Defaults.
+  - **Limpeza Centralizada no `system.cleanup` (`modules/home-manager/system/cleanup/default.nix`)**:
+    - Remoção de qualquer lógica ad-hoc de deleção dentro de módulos específicos.
+    - O aplicativo `zitext` foi registrado na lista `knownApps` com `enabled = false`, fazendo com que o utilitário `clean-orphaned-configs` (executado a cada switch) purgue automaticamente `.desktop` residuais (`~/.local/share/applications/zitext*.desktop`), configurações, caches e dados locais.
+    - O `gedit` também foi registrado na lista `knownApps` para limpeza declarativa caso venha a ser desativado.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

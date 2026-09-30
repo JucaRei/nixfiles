@@ -27,7 +27,7 @@ in
   ]
   ++ optionals (isWorkstation) [ ./desktop/environments ];
   config = {
-    system.programs.editors.zitext.enable = isWorkstation;
+    system.programs.editors.gedit.enable = isWorkstation;
     home = {
       inherit username;
       inherit stateVersion;
