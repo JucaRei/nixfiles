@@ -20,15 +20,15 @@
           enable = true;
         };
       };
-      desktop = {
-        modifierKey = "Super";
-      };
       services = {
         podman = {
           enable = true;
           autoPrune.enable = true;
         };
       };
+    };
+    desktop = {
+      modifierKey = "Super";
     };
   };
 }
