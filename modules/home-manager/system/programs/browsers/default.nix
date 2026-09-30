@@ -10,6 +10,8 @@
       # msttcorefonts
       nerd-fonts.martian-mono
       lato
+      abel
+      
       ffmpeg # Codecs de vídeo/áudio para YouTube
     ];
   };

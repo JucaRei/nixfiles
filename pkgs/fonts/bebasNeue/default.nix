@@ -4,6 +4,7 @@ stdenv.mkDerivation {
   version = "0.0.1";
   src = ./.;
   dontConfigure = true;
+  dontBuild = true;
 
   installPhase = ''
     runHook preInstall

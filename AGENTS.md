@@ -1091,6 +1091,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - `gsettings_key_ready`: Verifica se o valor é legível e NÃO está restrito por política administrativa (`! grep -Fqx false`), eliminando falsos restritos.
       - `status`: Garante `mutation_state=available` quando o diretório do usuário `~/.config/dwm-titus` for gravável.
 
+- **Fontes Locais em `pkgs/fonts` (`abel`, `bebasNeue`, `fantezy-font`) & `Makefile`**:
+  - **Problema**: A instalação de `pkgs.abel` (ou outras fontes locais) falhava com `nom-build: command not found` durante `switch-home`.
+  - **Causa Raiz**: Esses pacotes utilizam `src = ./.`, copiando os arquivos locais para a sandbox. Pela presença de um `Makefile` de desenvolvimento (`nom-build -E ...`) na pasta e a ausência de `dontBuild = true;`, o `stdenv.mkDerivation` executava automaticamente a fase de build (`make`), acionando o target do Makefile que não existe no sandbox.
+  - **Correção**: Adicionado `dontBuild = true;` nas derivações `pkgs/fonts/abel/default.nix`, `pkgs/fonts/bebasNeue/default.nix` e `pkgs/fonts/fantezy-font/default.nix`.
+- **Módulo `programs.git` (Home Manager 24.11+)**:
+  - As opções `userName`, `userEmail`, `aliases` e `extraConfig` foram consolidadas sob `programs.git.settings` (`settings.user.name`, `settings.user.email`, `settings.alias` e configurações diretas de INI), eliminando avisos de depreciação durante o switch do Home Manager.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
