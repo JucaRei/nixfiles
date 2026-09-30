@@ -284,7 +284,25 @@ in
       in
       {
         mimeApps = {
-          defaultApplications = lib.mkForce {
+          defaultApplications = lib.mkDefault {
+            "application/pdf" = application;
+            "application/oxps" = application;
+            "application/epub+zip" = application;
+            "application/x-fictionbook" = application;
+            "image/vnd.djvu" = application;
+            "image/vnd.djvu+multipage" = application;
+            "application/postscript" = application;
+            "application/eps" = application;
+            "application/x-eps" = application;
+            "image/eps" = application;
+            "image/x-eps" = application;
+            "application/x-cbr" = application;
+            "application/x-cbz" = application;
+            "application/x-cb7" = application;
+            "application/x-cbt" = application;
+          };
+
+          associations.added = lib.mkDefault {
             "application/pdf" = application;
             "application/oxps" = application;
             "application/epub+zip" = application;

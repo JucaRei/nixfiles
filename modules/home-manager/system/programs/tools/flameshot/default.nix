@@ -25,7 +25,7 @@ in
         General = {
           disabledTrayIcon = false;
           showStartupLaunchMessage = false;
-          savePath = "${config.home.homeDirectory}/Pictures";
+          savePath = "${config.home.homeDirectory}/Pictures/Screenshots";
         };
       };
     };

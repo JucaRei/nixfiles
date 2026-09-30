@@ -45,6 +45,7 @@ in
         );
       };
       tools.flameshot.enable = true;
+      documents.zathura.enable = true;
     };
 
     # Desativar geração de symlinks read-only do settings.ini pelo Home Manager
@@ -81,14 +82,10 @@ in
         XCURSOR_SIZE = toString cursorThemeSize;
       };
       file = {
-        ".themes/${gtkThemeName}".source =
-          "${gtkThemePkg}/share/themes/${gtkThemeName}";
-        ".local/share/themes/${gtkThemeName}".source =
-          "${gtkThemePkg}/share/themes/${gtkThemeName}";
-        ".icons/${cursorThemeName}".source =
-          "${cursorThemePkg}/share/icons/${cursorThemeName}";
-        ".local/share/icons/${cursorThemeName}".source =
-          "${cursorThemePkg}/share/icons/${cursorThemeName}";
+        ".themes/${gtkThemeName}".source = "${gtkThemePkg}/share/themes/${gtkThemeName}";
+        ".local/share/themes/${gtkThemeName}".source = "${gtkThemePkg}/share/themes/${gtkThemeName}";
+        ".icons/${cursorThemeName}".source = "${cursorThemePkg}/share/icons/${cursorThemeName}";
+        ".local/share/icons/${cursorThemeName}".source = "${cursorThemePkg}/share/icons/${cursorThemeName}";
       };
     };
   };
