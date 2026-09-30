@@ -1112,11 +1112,17 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Módulo Home Manager (`modules/home-manager/system/programs/editors/gedit/default.nix`)**:
     - `system.programs.editors.gedit.enable`: Habilita o editor nos pacotes do usuário (`pkgs.gedit`). Ativado por padrão em estações de trabalho (`isWorkstation`) em [modules/home-manager/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/default.nix).
     - `system.programs.editors.gedit.default` (booleano, default `true`): Associa `org.gnome.gedit.desktop` como handler padrão de `text/plain` em `xdg.mimeApps.defaultApplications` e `xdg.mimeApps.associations.added`, além de exportar `EDITOR = "gedit"`.
-    - **Compatibilidade com DWM Quickshell (`dwm-default-apps`)**: O hook `home.activation.geditDesktopEntry` provisiona uma cópia física regular de `org.gnome.gedit.desktop` em `~/.local/share/applications/` (e link `gedit.desktop`), permitindo que a validação estrita sem symlinks do DWM o reconheça instantaneamente no painel de Defaults.
+    - Totalmente declarativo e limpo, sem scripts imperativos de ativação ou cópia de arquivos.
+  - **DWM Quickshell — Resolução de Symlinks no `dwm-default-apps` ("Not configured" / "Configured desktop entry is missing")**:
+    - *Causa Raiz*: O script do Quickshell `dwm-default-apps` rejeitava qualquer diretório que contivesse links simbólicos no caminho (`! path_has_no_symlink_components "$applications"`) e qualquer arquivo `.desktop` que fosse um link simbólico (`[[ -f $file && ! -L $file ]]` e `find` sem `-L`). No ecossistema NixOS / Home Manager, todos os perfis (`/run/current-system/sw`, `~/.nix-profile`, `~/.local/state/nix/profiles/home-manager`) são symlinks, o que fazia com que Firefox, Alacritty, Thunar e todos os handlers MIME fossem rejeitados e exibidos como "Not configured".
+    - *Correção*: Em `modules/home-manager/desktop/environments/dwm/configs/scripts/dwm-default-apps`, as verificações estritas que impediam symlinks em diretórios de leitura de `.desktop` foram removidas em `desktop_file_for_id`, `emit_candidates` e `parse_desktop_file`, e a busca foi atualizada para seguir links (`find -L`). Com isso, todos os pacotes gerenciados pelo NixOS e Home Manager são imediatamente reconhecidos e associados no painel Defaults do Quickshell.
   - **Limpeza Centralizada no `system.cleanup` (`modules/home-manager/system/cleanup/default.nix`)**:
-    - Remoção de qualquer lógica ad-hoc de deleção dentro de módulos específicos.
+    - Remoção de qualquer lógica ad-hoc de deleção dentro de módulos específicos de aplicativos.
     - O aplicativo `zitext` foi registrado na lista `knownApps` com `enabled = false`, fazendo com que o utilitário `clean-orphaned-configs` (executado a cada switch) purgue automaticamente `.desktop` residuais (`~/.local/share/applications/zitext*.desktop`), configurações, caches e dados locais.
-    - O `gedit` também foi registrado na lista `knownApps` para limpeza declarativa caso venha a ser desativado.
+  - **Live ISOs & NixOS Users (`users.users.<name>.shell`)**:
+    - *Problema*: Na compilação e avaliação de Live ISOs (`iso-xfce4`, `iso-gnome`), ocorria `error: The option users.users.nixos.shell is defined multiple times while it's expected to be unique.`
+    - *Causa*: O módulo upstream do NixOS `users-groups.nix` atribui `shell = mkDefault (if u.isNormalUser then config.users.defaultUserShell else ...)` (prioridade 1000). Em `nixos/users/default.nix`, havia `shell = lib.mkDefault pkgs.bash;` (também prioridade 1000). Em perfis onde o usuário não sobrescreve com prioridade normal (como o usuário `nixos` nas ISOs), a colisão de dois `mkDefault` gerava o erro de unicidade da opção.
+    - *Correção*: Removida a atribuição redundante `shell = lib.mkDefault pkgs.bash;` em `nixos/users/default.nix`, permitindo que o NixOS defina naturalmente a shell a partir de `config.users.defaultUserShell` (`pkgs.bashInteractive`), eliminando a colisão.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

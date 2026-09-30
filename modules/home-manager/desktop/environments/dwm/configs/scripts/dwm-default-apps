@@ -174,10 +174,10 @@ desktop_file_for_id() {
 	valid_desktop_id "$desktop_id" || return 1
 	while IFS= read -r dir; do
 		applications=$dir/applications
-		if [[ ! -d $applications ]] || ! path_has_no_symlink_components "$applications"; then
+		if [[ ! -d $applications ]]; then
 			continue
 		fi
-		if [[ -f $applications/$desktop_id && ! -L $applications/$desktop_id ]]; then
+		if [[ -f $applications/$desktop_id ]]; then
 			printf '%s\n' "$applications/$desktop_id"
 			return 0
 		fi
@@ -187,7 +187,7 @@ desktop_file_for_id() {
 				printf '%s\n' "$file"
 				return 0
 			fi
-		done < <(find "$applications" -mindepth 2 -type f -name '*.desktop' -print0 2>/dev/null)
+		done < <(find -L "$applications" -mindepth 2 -type f -name '*.desktop' -print0 2>/dev/null)
 	done < <(data_dirs)
 	return 1
 }
@@ -203,7 +203,7 @@ parse_desktop_file() {
 	desktop_parsed_exec=
 	desktop_parsed_categories=
 	desktop_parsed_mime_types=
-	[[ -f $file && ! -L $file ]] || return 1
+	[[ -f $file ]] || return 1
 	size=$(stat -c %s -- "$file" 2>/dev/null) || return 1
 	[[ $size =~ ^[0-9]+$ ]] || return 1
 	((size <= max_desktop_size)) || return 1
@@ -1156,7 +1156,7 @@ emit_candidates() {
 	local -A seen=()
 	while IFS= read -r dir; do
 		applications=$dir/applications
-		if [[ ! -d $applications ]] || ! path_has_no_symlink_components "$applications"; then
+		if [[ ! -d $applications ]]; then
 			continue
 		fi
 		while IFS= read -r -d '' file; do
@@ -1192,7 +1192,7 @@ emit_candidates() {
 				printf 'mime-candidate\t%s\t%s\t%s\tavailable\tInstalled desktop entry\n' \
 					"$mime" "$id" "$(clean_field "$name")"
 			done
-		done < <(find "$applications" -type f -name '*.desktop' -print0 2>/dev/null)
+		done < <(find -L "$applications" -type f -name '*.desktop' -print0 2>/dev/null)
 	done < <(data_dirs)
 }
 
@@ -1417,7 +1417,7 @@ watch_defaults() {
 			applications=$dir/applications
 			[[ -z ${seen[$applications]+x} ]] || continue
 			seen[$applications]=1
-			if [[ -d $applications ]] && path_has_no_symlink_components "$applications"; then
+			if [[ -d $applications ]]; then
 				application_roots[$applications]=1
 				application_dirs+=("$applications")
 				continue
