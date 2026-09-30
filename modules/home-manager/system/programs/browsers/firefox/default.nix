@@ -49,7 +49,6 @@ in
       };
 
       sessionVariables = {
-        DEFAULT_BROWSER = mkDefault "${lib.getExe config.programs.firefox.package}/share/applications/${config.programs.firefox.package}.desktop";
         MOZ_DISABLE_RDD_SANDBOX = "1"; # Disable sandbox for VA-API (security trade-off, test without first
         MOZ_ENABLE_WAYLAND = mkIf (config.desktop.display-servers.backend == "wayland") "1"; # Force Wayland mode (essential for VA-API)
       };

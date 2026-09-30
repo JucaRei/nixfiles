@@ -1,7 +1,12 @@
 { ... }: {
   config = {
     system.programs = {
-      browsers.firefox.enable = true;
+      browsers = {
+        default = "firefox";
+        firefox = {
+          enable = true;
+        };
+      };
       terminal = {
         enable = true;
         name = "alacritty";

@@ -1098,6 +1098,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **Módulo `programs.git` (Home Manager 24.11+)**:
   - As opções `userName`, `userEmail`, `aliases` e `extraConfig` foram consolidadas sob `programs.git.settings` (`settings.user.name`, `settings.user.email`, `settings.alias` e configurações diretas de INI), eliminando avisos de depreciação durante o switch do Home Manager.
 
+- **Módulo `system.programs.browsers` (Seleção de Navegador Padrão e XDG MIME)**:
+  - **Arquitetura**: O módulo centralizador `modules/home-manager/system/programs/browsers/default.nix` agora gerencia declarativamente a seleção do navegador padrão e sua associação a tipos MIME e variáveis de ambiente:
+    - **Opções Adicionadas**:
+      - `system.programs.browsers.enable`: Habilita o ecossistema (instalando fontes auxiliares e codecs `ffmpeg` apenas se algum navegador estiver ativo).
+      - `system.programs.browsers.default`: Enum `[ "auto" "firefox" "chrome" "chromium" "none" ]` (default `"auto"`).
+      - Flags booleanas `default` individuais em `system.programs.browsers.firefox` e `system.programs.browsers.chromium`.
+    - **Associação XDG MIME**: Quando um navegador padrão é determinado (`activeDesktopFile != null`), associa automaticamente via `xdg.mimeApps.defaultApplications`: `text/html`, `text/xml`, `application/xhtml+xml`, `application/xml`, `application/x-xpinstall`, `x-scheme-handler/http`, `x-scheme-handler/https`, `x-scheme-handler/about`, `x-scheme-handler/unknown` e `x-scheme-handler/chrome` (para Chromium).
+    - **Variáveis de Sessão**: Exporta `BROWSER` e `DEFAULT_BROWSER` com o binário executável correspondente (`firefox`, `brave`, `vivaldi`, `google-chrome-stable`, etc.), integrando-se aos atalhos do sxhkd e scripts de sistema.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
