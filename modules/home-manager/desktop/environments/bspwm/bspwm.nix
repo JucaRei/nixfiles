@@ -43,6 +43,10 @@ let
     consequences="$4"
 
     case "$class" in
+      bspwm-scratch)
+        echo "state=floating sticky=on"
+        exit 0
+        ;;
       *xdg-desktop-portal*|*Xdg-desktop-portal*)
         echo "state=floating center=on rectangle=850x550+0+0 follow=on"
         exit 0
@@ -328,6 +332,10 @@ in
               state = "floating";
               center = true;
               follow = true;
+            };
+            "bspwm-scratch" = {
+              state = "floating";
+              sticky = true;
             };
           };
           extraConfig = ''

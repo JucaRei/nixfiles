@@ -11,6 +11,54 @@ let
   fmCmd = config.system.programs.file-manager.activeCommand or "file-manager";
   fmName = config.system.programs.file-manager.activeName or "Gerenciador de Arquivos";
 
+  browserBin = config.system.programs.browsers.activeBin or null;
+  browserLaunchCmd =
+    if browserBin != null then
+      "${browserBin} &"
+    else
+      ''if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi'';
+
+  scratchpadCmd = "${pkgs.tdrop}/bin/tdrop -am -w 80% -h 50% -x 10% -y 5% -s dropdown -n bspwm-scratch ${pkgs.alacritty}/bin/alacritty --class bspwm-scratch,bspwm-scratch";
+
+  flameshotSavePath =
+    config.services.flameshot.settings.General.savePath or "${config.home.homeDirectory}/Pictures/Screenshots";
+
+  isAppleKeyboard =
+    (config.home.keyboard.model or "") == "apple"
+    || (config.home.keyboard.model or "") == "macbook";
+
+  effectiveScreenshotProfile =
+    if cfg.screenshotProfile != "auto" then
+      cfg.screenshotProfile
+    else if isAppleKeyboard then
+      "mac"
+    else
+      "standard";
+
+  screenshotBindings =
+    if effectiveScreenshotProfile == "none" then
+      { }
+    else if effectiveScreenshotProfile == "custom" then
+      cfg.screenshotKeybindings
+    else if effectiveScreenshotProfile == "mac" then
+      {
+        # Perfil macOS (MacBook Pro / Air, teclados Apple sem tecla Print dedicada)
+        "${mod} + shift + 3" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
+        "${mod} + shift + 4" = "${pkgs.flameshot}/bin/flameshot gui";
+        "${mod} + shift + 5" = "${pkgs.flameshot}/bin/flameshot gui";
+        "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+        "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
+      }
+    else
+      {
+        # Perfil Standard / PC (Acer, Nitro, PCs, VMs, etc.)
+        # Preserva Super + Shift + 1..0 100% livres para navegação e envio de workspaces!
+        "Print" = "${pkgs.flameshot}/bin/flameshot gui";
+        "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
+        "ctrl + Print" = "${pkgs.flameshot}/bin/flameshot full -c";
+        "${mod} + Print" = "${pkgs.flameshot}/bin/flameshot gui";
+      };
+
   normMod =
     let
       k = lib.toLower (cfg.modifierKey or "super");
@@ -192,7 +240,9 @@ let
     󰌌  ${altDisplayName} + Tab / ${modDisplayName} + W         ➜  Alternador de Janelas Abertas
     󰌌  ${modDisplayName} + U                     ➜  Terminal Flutuante Rápido (Scratchpad)
     󰌌  ${modDisplayName} + Q / ${modDisplayName} + Shift + Q ➜  Fechar / Encerrar Janela
-    󰌌  ${modDisplayName} + ${if mod == "alt" then "Super" else "Alt"} + Esc             ➜  Forçar Fechamento de Janela Travada
+    󰌌  ${modDisplayName} + ${
+      if mod == "alt" then "Super" else "Alt"
+    } + Esc             ➜  Forçar Fechamento de Janela Travada
     󰌌  Alt + A                                 ➜  Alternar Tela Cheia (Fullscreen)
     󰌌  ${modDisplayName} + F                     ➜  Alternar Janela Flutuante (Floating/Tiling)
     󰌌  ${modDisplayName} + M                     ➜  Modo Monocle (Foco em Janela Única)
@@ -201,7 +251,9 @@ let
     󰌌  ${modDisplayName} + Shift + M            ➜  Mostrar Desktop (Minimizar/Restaurar Todas)
     󰌌  ${modDisplayName} + {H,J,K,L} ou Setas    ➜  Navegar Foco Entre Janelas (Vim/Setas)
     󰌌  ${modDisplayName} + Shift + {H,J,K,L}     ➜  Mover / Trocar Posição da Janela
-    󰌌  ${modDisplayName} + ${if mod == "alt" then "Super" else "Alt"} + {H,J,K,L}/Setas ➜  Redimensionar Tamanho da Janela
+    󰌌  ${modDisplayName} + ${
+      if mod == "alt" then "Super" else "Alt"
+    } + {H,J,K,L}/Setas ➜  Redimensionar Tamanho da Janela
     󰌌  ${modDisplayName} + Botão Esquerdo        ➜  Mover Janela Flutuante com o Mouse
     󰌌  ${modDisplayName} + Botão Direito         ➜  Redimensionar Janela com o Mouse
     󰌌  ${modDisplayName} + 1..9, 0               ➜  Ir para Área de Trabalho (Workspace) 1 a 10
@@ -210,7 +262,9 @@ let
     󰌌  ${modDisplayName} + Shift + 4 / Print     ➜  Seleção de Área para Captura (Flameshot)
     󰌌  ${modDisplayName} + Shift + 5             ➜  Interface Gráfica de Capturas
     󰌌  ${modDisplayName} + Shift + R             ➜  Recarregar BSPWM e Polybar
-    󰌌  ${modDisplayName} + ${if mod == "ctrl" then "Super" else "Ctrl"} + Q              ➜  Bloquear Sessão do Usuário
+    󰌌  ${modDisplayName} + ${
+      if mod == "ctrl" then "Super" else "Ctrl"
+    } + Q              ➜  Bloquear Sessão do Usuário
     󰌌  Teclas de Volume / Brilho     ➜  Controle com Feedback Visual OSD"
 
           CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
@@ -218,17 +272,17 @@ let
           case "$CHOICE" in
             *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
             *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
-            *"Navegador Web Padrão"*) if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi ;;
+            *"Navegador Web Padrão"*) ${browserLaunchCmd} ;;
             *"Gerenciador de Arquivos"*) ''${fmCmd} ~ & ;;
             *"Painel Quick Settings"*) show_control_center ;;
             *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
-            *"Terminal Flutuante"*) ${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty ;;
+            *"Terminal Flutuante"*) ${scratchpadCmd} ;;
             *"Fechar / Encerrar Janela"*) bspc node -c ;;
             *"Tela Cheia"*) bspc node -t '~fullscreen' ;;
             *"Janela Flutuante"*) bspc node -t '~floating' ;;
             *"Esconder / Minimizar Janela"*) bspc node -g hidden=on ;;
             *"Restaurar Última Janela"*) bspc node any.hidden.local -g hidden=off -f ;;
-            *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/ ;;
+            *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath} ;;
             *"Seleção de Área"*) ${pkgs.flameshot}/bin/flameshot gui ;;
             *"Recarregar BSPWM"*) bspc wm -r ;;
             *"Bloquear Sessão"*) loginctl lock-session ;;
@@ -323,6 +377,31 @@ in
       default = { };
       description = "sxhkd keybindings";
     };
+
+    screenshotProfile = mkOption {
+      type = lib.types.enum [
+        "auto"
+        "standard"
+        "mac"
+        "custom"
+        "none"
+      ];
+      default = "auto";
+      description = ''
+        Perfil de teclas de atalho para captura de tela (screenshots):
+        - "auto": detecta automaticamente (teclado Apple/Mac usa "mac", outros usam "standard").
+        - "standard": ideal para PCs (Acer, Nitro, VMs, etc.) usando Print, Shift+Print, Ctrl+Print. Preserva Super+Shift+1..0 livres para workspaces!
+        - "mac": estilo macOS usando Super+Shift+3/4/5 para telas/áreas de captura.
+        - "custom": utiliza os atalhos declarados em screenshotKeybindings.
+        - "none": desativa os atalhos de screenshot do sxhkd.
+      '';
+    };
+
+    screenshotKeybindings = mkOption {
+      type = lib.types.attrsOf lib.types.str;
+      default = { };
+      description = "Mapeamento customizado de atalhos para captura de tela quando screenshotProfile = 'custom'.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -335,145 +414,140 @@ in
     services.sxhkd = {
       enable = true;
       package = pkgs.sxhkd;
-      keybindings = cfg.keybindings // {
-        # --- Clique no Desktop / Control Center (Estilo Hyprland / SwayNC) ---
-        # Botão Direito no Desktop (Root Window sem janela)
-        "~button3" =
-          "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${quickSettings}; fi";
-        "${mod} + button3" = "${quickSettings}";
-        "${mod} + comma" = "${quickSettings}"; # Cmd + , (Atalho universal de Preferências)
-        "${mod} + p" = "${quickSettings}";
-        "${mod} + c" = "${quickSettings}"; # Control Center
-        "${mod} + slash" = "${quickSettings} --manual"; # Cmd + / (Manual & Cheat-Sheet de Atalhos)
-        "${mod} + F1" = "${quickSettings} --manual"; # F1 (Ajuda do Sistema)
+      keybindings =
+        cfg.keybindings
+        // {
+          # --- Clique no Desktop / Control Center (Estilo Hyprland / SwayNC) ---
+          # Botão Direito no Desktop (Root Window sem janela)
+          "~button3" =
+            "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${quickSettings}; fi";
+          "${mod} + button3" = "${quickSettings}";
+          "${mod} + comma" = "${quickSettings}"; # Cmd + , (Atalho universal de Preferências)
+          "${mod} + p" = "${quickSettings}";
+          "${mod} + c" = "${quickSettings}"; # Control Center
+          "${mod} + slash" = "${quickSettings} --manual"; # Cmd + / (Manual & Cheat-Sheet de Atalhos)
+          "${mod} + F1" = "${quickSettings} --manual"; # F1 (Ajuda do Sistema)
 
-        # --- Aplicativos & Launchers (macOS Style) ---
-        # Spotlight (Cmd + Space) e Rofi Drun
-        "${mod} + space" = "${pkgs.rofi}/bin/rofi -show drun";
-        "${mod} + d" = "${pkgs.rofi}/bin/rofi -show drun";
-        "${mod} + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
+          # --- Aplicativos & Launchers (macOS Style) ---
+          # Spotlight (Cmd + Space) e Rofi Drun
+          "${mod} + space" = "${pkgs.rofi}/bin/rofi -show drun";
+          "${mod} + d" = "${pkgs.rofi}/bin/rofi -show drun";
+          "${mod} + shift + d" = "${pkgs.rofi}/bin/rofi -show run";
 
-        # Navegador Web Padrão (Cmd + B)
-        "${mod} + b" =
-          "if [ -n \"$BROWSER\" ]; then \"$BROWSER\" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi";
+          # Navegador Web Padrão (Cmd + B)
+          "${mod} + b" = browserLaunchCmd;
 
-        # Terminal (Cmd + Return, Cmd + T)
-        "${mod} + Return" = "${pkgs.alacritty}/bin/alacritty";
-        "${mod} + KP_Enter" = "${pkgs.alacritty}/bin/alacritty";
-        "${mod} + t" = "${pkgs.alacritty}/bin/alacritty";
+          # Terminal (Cmd + Return, Cmd + T)
+          "${mod} + Return" = "${pkgs.alacritty}/bin/alacritty";
+          "${mod} + KP_Enter" = "${pkgs.alacritty}/bin/alacritty";
+          "${mod} + t" = "${pkgs.alacritty}/bin/alacritty";
 
-        # Finder / Gerenciador de Arquivos (Cmd + Shift + F, Cmd + E)
-        "${mod} + e" = fmCmd;
-        "${mod} + shift + e" = fmCmd;
+          # Finder / Gerenciador de Arquivos (Cmd + Shift + F, Cmd + E)
+          "${mod} + e" = fmCmd;
+          "${mod} + shift + e" = fmCmd;
 
-        # Alternador de Janelas (Cmd + Tab / Cmd + W)
-        "${altMod} + Tab" = "${pkgs.rofi}/bin/rofi -show window";
-        "${mod} + w" = "${pkgs.rofi}/bin/rofi -show window";
+          # Alternador de Janelas (Cmd + Tab / Cmd + W)
+          "${altMod} + Tab" = "${pkgs.rofi}/bin/rofi -show window";
+          "${mod} + w" = "${pkgs.rofi}/bin/rofi -show window";
 
-        # Terminal Scratchpad (Cmd + U)
-        "${mod} + u" =
-          "${pkgs.tdrop}/bin/tdrop -am -w 80% -h 40% -x 10% -y 10% ${pkgs.alacritty}/bin/alacritty";
+          # Terminal Scratchpad (Cmd + U)
+          "${mod} + u" = scratchpadCmd;
 
-        # --- Janelas (macOS Style: Cmd + Q / Cmd + Opt + Esc) ---
-        "${mod} + q" = "bspc node -c";
-        "${mod} + ${altMod} + Escape" = "bspc node -k";
-        "${mod} + shift + q" = "bspc node -k";
+          # --- Janelas (macOS Style: Cmd + Q / Cmd + Opt + Esc) ---
+          "${mod} + q" = "bspc node -c";
+          "${mod} + ${altMod} + Escape" = "bspc node -k";
+          "${mod} + shift + q" = "bspc node -k";
 
-        # --- Estados de Janela (Alternar Flutuante / Tela Cheia / Monocle) ---
-        "${mod} + f" = "bspc node -t '~floating'";
-        "${mod} + s" = "bspc node -t '~floating'";
-        "alt + a" = "bspc node -t '~fullscreen'";
-        "${mod} + m" = "bspc desktop -l next";
+          # --- Estados de Janela (Alternar Flutuante / Tela Cheia / Monocle) ---
+          "${mod} + f" = "bspc node -t '~floating'";
+          "${mod} + s" = "bspc node -t '~floating'";
+          "alt + a" = "bspc node -t '~fullscreen'";
+          "${mod} + m" = "bspc desktop -l next";
 
-        # --- Minimizar / Esconder Janelas (Desktop Environment Style) ---
-        # Esconder/Minimizar a janela ativa (Cmd + Y ou Cmd + -)
-        "${mod} + y" = "bspc node -g hidden=on";
-        "${mod} + minus" = "bspc node -g hidden=on";
+          # --- Minimizar / Esconder Janelas (Desktop Environment Style) ---
+          # Esconder/Minimizar a janela ativa (Cmd + Y ou Cmd + -)
+          "${mod} + y" = "bspc node -g hidden=on";
+          "${mod} + minus" = "bspc node -g hidden=on";
 
-        # Restaurar/Desocultar a última janela escondida (Cmd + Shift + Y ou Cmd + Shift + -)
-        "${mod} + shift + y" = "bspc node any.hidden.local -g hidden=off -f";
-        "${mod} + shift + minus" = "bspc node any.hidden.local -g hidden=off -f";
+          # Restaurar/Desocultar a última janela escondida (Cmd + Shift + Y ou Cmd + Shift + -)
+          "${mod} + shift + y" = "bspc node any.hidden.local -g hidden=off -f";
+          "${mod} + shift + minus" = "bspc node any.hidden.local -g hidden=off -f";
 
-        # Alternar Mostrar Desktop (Minimizar todas / Restaurar todas no workspace ativo)
-        "${mod} + shift + m" =
-          "if [ $(bspc query -N -d focused -n .window.!hidden | wc -l) -gt 0 ]; then for n in $(bspc query -N -d focused -n .window.!hidden); do bspc node $n -g hidden=on; done; else for n in $(bspc query -N -d focused -n .window.hidden); do bspc node $n -g hidden=off; done; fi";
+          # Alternar Mostrar Desktop (Minimizar todas / Restaurar todas no workspace ativo)
+          "${mod} + shift + m" =
+            "if [ $(bspc query -N -d focused -n .window.!hidden | wc -l) -gt 0 ]; then for n in $(bspc query -N -d focused -n .window.!hidden); do bspc node $n -g hidden=on; done; else for n in $(bspc query -N -d focused -n .window.hidden); do bspc node $n -g hidden=off; done; fi";
 
-        # --- Screenshots (macOS Style: Cmd + Shift + 3 / 4 / 5) ---
-        # Cmd + Shift + 3: Captura de tela inteira salva em ~/Pictures
-        "${mod} + shift + 3" = "${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/";
-        # Cmd + Shift + 4: Seleção interativa de área
-        "${mod} + shift + 4" = "${pkgs.flameshot}/bin/flameshot gui";
-        # Cmd + Shift + 5: Ferramenta GUI de captura
-        "${mod} + shift + 5" = "${pkgs.flameshot}/bin/flameshot gui";
-        # Atalhos padrão PrintScreen (fallback)
-        "Print" = "${pkgs.flameshot}/bin/flameshot gui";
-        "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ~/Pictures/";
+          # --- Bloqueio & Sessão (macOS Style: Cmd + Ctrl + Q) ---
+          "${mod} + ${ctrlMod} + q" = "loginctl lock-session";
+          "${mod} + shift + x" = "loginctl lock-session";
 
-        # --- Bloqueio & Sessão (macOS Style: Cmd + Ctrl + Q) ---
-        "${mod} + ${ctrlMod} + q" = "loginctl lock-session";
-        "${mod} + shift + x" = "loginctl lock-session";
+          # --- Foco e Movimento em Janelas (Vim + Setas) ---
+          "${mod} + {h,j,k,l}" = "bspc node -f {west,south,north,east}";
+          "${mod} + {Left,Down,Up,Right}" = "bspc node -f {west,south,north,east}";
+          "${mod} + shift + {h,j,k,l}" = "bspc node -s {west,south,north,east}";
+          "${mod} + shift + {Left,Down,Up,Right}" = "bspc node -s {west,south,north,east}";
 
-        # --- Foco e Movimento em Janelas (Vim + Setas) ---
-        "${mod} + {h,j,k,l}" = "bspc node -f {west,south,north,east}";
-        "${mod} + {Left,Down,Up,Right}" = "bspc node -f {west,south,north,east}";
-        "${mod} + shift + {h,j,k,l}" = "bspc node -s {west,south,north,east}";
-        "${mod} + shift + {Left,Down,Up,Right}" = "bspc node -s {west,south,north,east}";
+          # --- Navegação e Envio de Janelas Entre Monitores ---
+          "${mod} + bracketleft" = "bspc monitor -f prev";
+          "${mod} + bracketright" = "bspc monitor -f next";
+          "${mod} + shift + bracketleft" = "bspc node -m prev --follow";
+          "${mod} + shift + bracketright" = "bspc node -m next --follow";
 
-        # --- Navegação e Envio de Janelas Entre Monitores ---
-        "${mod} + bracketleft" = "bspc monitor -f prev";
-        "${mod} + bracketright" = "bspc monitor -f next";
-        "${mod} + shift + bracketleft" = "bspc node -m prev --follow";
-        "${mod} + shift + bracketright" = "bspc node -m next --follow";
+          # --- Áreas de Trabalho (Workspaces 1-10, onde 0 = 10) ---
+          # Focar área de trabalho (funciona em qualquer monitor)
+          "${mod} + {1-9,0}" = "bspc desktop -f any:{1-9,0}";
+          # Enviar janela para área de trabalho com foco imediato (--follow)
+          "${mod} + shift + {1-9,0}" = "bspc node -d any:{1-9,0} --follow";
+          # Enviar janela para área de trabalho em segundo plano (sem follow)
+          "${mod} + ctrl + {1-9,0}" = "bspc node -d any:{1-9,0}";
 
-        # --- Áreas de Trabalho (Workspaces 1-10, onde 0 = 10) ---
-        "${mod} + {1-9,0}" = "bspc desktop -f '{1-9,0}'";
-        "${mod} + shift + {1-9,0}" = "bspc node -d '{1-9,0}'";
+          # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
+          "${mod} + ${altMod} + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+          "${mod} + ${altMod} + {Left,Down,Up,Right}" =
+            "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
 
-        # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
-        "${mod} + ${altMod} + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
-        "${mod} + ${altMod} + {Left,Down,Up,Right}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+          # --- Reiniciar / Recarregar BSPWM e SXHKD ---
+          "${mod} + shift + r" = "bspc wm -r";
+          "${mod} + Escape" = "pkill -USR1 -x sxhkd";
 
-        # --- Reiniciar / Recarregar BSPWM e SXHKD ---
-        "${mod} + shift + r" = "bspc wm -r";
-        "${mod} + Escape" = "pkill -USR1 -x sxhkd";
+          # --- Controles de Mídia e Áudio com Dunst OSD ---
+          "XF86AudioRaiseVolume" = "${volumeOsd} up";
+          "XF86AudioLowerVolume" = "${volumeOsd} down";
+          "XF86AudioMute" = "${volumeOsd} mute";
+          "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
+          "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
+          "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
 
-        # --- Controles de Mídia e Áudio com Dunst OSD ---
-        "XF86AudioRaiseVolume" = "${volumeOsd} up";
-        "XF86AudioLowerVolume" = "${volumeOsd} down";
-        "XF86AudioMute" = "${volumeOsd} mute";
-        "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
-        "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
-        "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
+          # --- Controle de Brilho da Tela (MacBook F1 / F2) ---
+          "XF86MonBrightnessUp" = "${brightnessOsd} up";
+          "XF86MonBrightnessDown" = "${brightnessOsd} down";
 
-        # --- Controle de Brilho da Tela (MacBook F1 / F2) ---
-        "XF86MonBrightnessUp" = "${brightnessOsd} up";
-        "XF86MonBrightnessDown" = "${brightnessOsd} down";
+          # --- Controle de Iluminação do Teclado (MacBook F5/F6 e Logitech MX Keys F3/F4) ---
+          "XF86KbdBrightnessUp" = "${kbdBrightnessOsd} up";
+          "XF86KbdBrightnessDown" = "${kbdBrightnessOsd} down";
+          "XF86KbdLightOnOff" = "${kbdBrightnessOsd} toggle";
 
-        # --- Controle de Iluminação do Teclado (MacBook F5/F6 e Logitech MX Keys F3/F4) ---
-        "XF86KbdBrightnessUp" = "${kbdBrightnessOsd} up";
-        "XF86KbdBrightnessDown" = "${kbdBrightnessOsd} down";
-        "XF86KbdLightOnOff" = "${kbdBrightnessOsd} toggle";
+          # MacBook (F5 / F6)
+          "${mod} + F6" = "${kbdBrightnessOsd} up";
+          "${mod} + F5" = "${kbdBrightnessOsd} down";
+          "${mod} + shift + F5" = "${kbdBrightnessOsd} toggle";
 
-        # MacBook (F5 / F6)
-        "${mod} + F6" = "${kbdBrightnessOsd} up";
-        "${mod} + F5" = "${kbdBrightnessOsd} down";
-        "${mod} + shift + F5" = "${kbdBrightnessOsd} toggle";
-
-        # Logitech MX Keys / Teclados com F3 (down) e F4 (up)
-        "${mod} + F4" = "${kbdBrightnessOsd} up";
-        "${mod} + F3" = "${kbdBrightnessOsd} down";
-        "${mod} + shift + F4" = "${kbdBrightnessOsd} toggle";
-        "${mod} + shift + F3" = "${kbdBrightnessOsd} toggle";
-      } // lib.optionalAttrs (mod != "super") {
-        # Atalhos com Super garantidos mesmo quando mod != "super"
-        "super + F4" = "${kbdBrightnessOsd} up";
-        "super + F3" = "${kbdBrightnessOsd} down";
-        "super + shift + F4" = "${kbdBrightnessOsd} toggle";
-        "super + shift + F3" = "${kbdBrightnessOsd} toggle";
-        "super + F6" = "${kbdBrightnessOsd} up";
-        "super + F5" = "${kbdBrightnessOsd} down";
-        "super + shift + F5" = "${kbdBrightnessOsd} toggle";
-      };
+          # Logitech MX Keys / Teclados com F3 (down) e F4 (up)
+          "${mod} + F4" = "${kbdBrightnessOsd} up";
+          "${mod} + F3" = "${kbdBrightnessOsd} down";
+          "${mod} + shift + F4" = "${kbdBrightnessOsd} toggle";
+        }
+        // screenshotBindings
+        // lib.optionalAttrs (mod != "super") {
+          # Atalhos com Super garantidos mesmo quando mod != "super"
+          "super + F4" = "${kbdBrightnessOsd} up";
+          "super + F3" = "${kbdBrightnessOsd} down";
+          "super + shift + F4" = "${kbdBrightnessOsd} toggle";
+          "super + shift + F3" = "${kbdBrightnessOsd} toggle";
+          "super + F6" = "${kbdBrightnessOsd} up";
+          "super + F5" = "${kbdBrightnessOsd} down";
+          "super + shift + F5" = "${kbdBrightnessOsd} toggle";
+        };
     };
   };
 }

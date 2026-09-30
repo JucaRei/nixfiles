@@ -1144,6 +1144,29 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Manutenção Automatizada**: Suporte a timers do systemd para limpeza periódica de armazenamento (`autoPrune`) e atualização de containers (`autoUpdate`).
     - Ativado por padrão para o usuário `juca` via `system.services.podman.enable = lib.mkDefault true;` em [home-manager/users/juca/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/users/juca/default.nix).
 
+- **BSPWM e SXHKD — Correções de Navegador, Scratchpad (tdrop), Screenshots por Máquina e Workspaces**:
+  - **Navegador Padrão (`${mod} + b`)**: Vinculado declarativamente ao `config.system.programs.browsers.activeBin` configurado no ecossistema (Firefox, Brave, Vivaldi, Google Chrome, etc.), eliminando checagens desnecessárias e garantindo execução direta do navegador padrão escolhido.
+  - **Terminal Scratchpad Flutuante (`${mod} + u`)**:
+    - *Problema*: `tdrop` sem classe específica e sem flag de nome capturava janelas normais do Alacritty ou falhava ao alternar.
+    - *Correção*: Configurado `tdrop -am -w 80% -h 50% -x 10% -y 5% -s dropdown -n bspwm-scratch alacritty --class bspwm-scratch,bspwm-scratch`.
+    - Adicionada regra `bspc rule -a bspwm-scratch state=floating sticky=on` no `bspwm.nix` e no script `bspwm-external-rules`, isolando completamente o scratchpad dos terminais normais de trabalho.
+  - **Atalhos de Captura de Tela (Flameshot) Configuráveis por Máquina (`desktop.bspwm.sxhkd.screenshotProfile`)**:
+    - *Problema*: Os atalhos hardcoded estilo macOS (`Super + Shift + 3 / 4 / 5`) colidiam com o envio de janelas para as áreas de trabalho 3, 4 e 5 em PCs normais (Acer Nitro, VMs, etc.). Além disso, a pasta de salvamento divergia da padronizada no módulo Flameshot (`~/Pictures/Screenshots`).
+    - *Correção*:
+      - Criada opção `desktop.bspwm.sxhkd.screenshotProfile` (`"auto"`, `"standard"`, `"mac"`, `"custom"`, `"none"`).
+      - Perfil `"standard"` (Acer Nitro, VMs, Fedora, Debian): utiliza exclusivamente `Print` (GUI), `Shift + Print` (tela cheia direta para `savePath`), `Ctrl + Print` (clipboard) e `Super + Print`, deixando `Super + Shift + 1..0` 100% livres para gerenciamento de janelas.
+      - Perfil `"mac"` (MacBooks como Rocinante e teclados Apple sem tecla Print dedicada): mantém `Super + Shift + 3/4/5`.
+      - Perfil `"auto"`: detecta se o teclado é Apple/Macbook ou PC e ativa o perfil correto automaticamente.
+      - Padronizado o salvamento em tela cheia com `config.services.flameshot.settings.General.savePath` (`~/Pictures/Screenshots`).
+  - **Mover e Enviar Janelas para Outra Workspace (`bspc node -d`)**:
+    - *Causa Raiz da Falha*:
+      1. Os atalhos `${mod} + shift + 3/4/5` eram sequestrados pelo Flameshot hardcoded.
+      2. No BSPWM, seletores de desktop sem prefixo de monitor (`bspc node -d 'X'`) limitam a busca ao monitor focado atual; em setups multi-monitor (onde a tela primária possui 1, 3, 5, 7, 9 e a secundária possui 2, 4, 6, 8, 0), tentar enviar uma janela para o outro monitor falhava com `No such desktop: X`.
+    - *Correções*:
+      - Atualizado para escopo universal: `${mod} + {1-9,0}` -> `bspc desktop -f any:{1-9,0}`.
+      - Envio de janela com foco imediato: `${mod} + shift + {1-9,0}` -> `bspc node -d any:{1-9,0} --follow`.
+      - Envio de janela em segundo plano (sem follow): `${mod} + ctrl + {1-9,0}` -> `bspc node -d any:{1-9,0}`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
