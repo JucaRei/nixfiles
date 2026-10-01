@@ -1200,6 +1200,7 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - `qt6Packages.fcitx5-chinese-addons`: Motor para Chinês Pinyin (migrado de `fcitx5-chinese-addons` para `qt6Packages`).
     - `qt6Packages.fcitx5-configtool`: Interface gráfica de ajustes (`fcitx5-config-qt`, migrado de `fcitx5-configtool` para `qt6Packages`).
     - Fontes essenciais incluídas: `noto-fonts-cjk-sans` e `ipafont`.
+    - **Overlay de Compatibilidade (`overlays/default.nix`)**: O Nixpkgs converteu `fcitx5-with-addons`, `fcitx5-configtool` e `fcitx5-chinese-addons` para `throw` no `aliases.nix` ao migrá-los para o Qt6. Foi adicionado overlay de compatibilidade mapeando esses atributos para seus equivalentes em `qt6Packages`, prevenindo quebras internas no módulo de `inputMethod` do Home Manager.
   - **Variáveis de Ambiente Automáticas**: Exportados `GTK_IM_MODULE = "fcitx"`, `QT_IM_MODULE = "fcitx"`, `XMODIFIERS = "@im=fcitx"`, `SDL_IM_MODULE = "fcitx"` e `GLFW_IM_MODULE = "ibus"`.
   - **Configuração Declarativa Pronta para Uso**:
     - `~/.config/fcitx5/profile`: Configura grupo padrão combinando layout do teclado principal (`keyboard-us` ou nativo) com o motor `mozc`.

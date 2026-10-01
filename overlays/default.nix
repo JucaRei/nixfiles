@@ -72,6 +72,10 @@
       '';
     });
 
+    # Compatibility aliases for fcitx5 packages migrated to qt6Packages in recent nixpkgs
+    fcitx5-with-addons = final.qt6Packages.fcitx5-with-addons;
+    fcitx5-configtool = final.qt6Packages.fcitx5-configtool;
+    fcitx5-chinese-addons = final.qt6Packages.fcitx5-chinese-addons;
   };
 
   # Access unstable packages via 'pkgs.unstable.<package>'
