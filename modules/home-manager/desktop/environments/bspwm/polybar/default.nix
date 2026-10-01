@@ -96,7 +96,7 @@ in
           # --- Layout Moderno Coeso (Inspirado no Waybar do Hyprland / MangoWM) ---
           modules-left = "launcher bspwm sep polywins";
           modules-center = "media";
-          modules-right = "cpu memory temperature sep network bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
+          modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
 
           # --- Layout alternativo legado em cápsulas (descomente caso deseje os glifos  e ):
           # modules-left = "bi launcher bd sep bi bspwm bd sep bi polywins bd";
