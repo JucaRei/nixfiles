@@ -94,7 +94,7 @@ in
           font-8 = "Noto Sans CJK SC:weight=Medium:size=10;2";
 
           # --- Layout Moderno Coeso (Inspirado no Waybar do Hyprland / MangoWM) ---
-          modules-left = "launcher bspwm sep polywins";
+          modules-left = "launcher sep bspwm sep polywins";
           modules-center = "media";
           modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
 
