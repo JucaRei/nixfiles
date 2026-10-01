@@ -52,7 +52,7 @@
 
         class_lower=$(echo "$wm_class" | tr '[:upper:]' '[:lower:]')
         case "$class_lower" in
-          *alacritty*|*kitty*|*terminal*)  icon="" ;;
+          *alacritty*|*kitty*|*terminal*)  icon="" ;;
           *firefox*)                        icon="󰈹" ;;
           *chrome*|*chromium*)              icon="" ;;
           *code*|*codium*)                  icon="󰨞" ;;
@@ -126,19 +126,15 @@
       title=$(playerctl metadata title 2>/dev/null)
       track="$artist - $title"
       [ -z "$artist" ] && track="$title"
-      track=$(echo "$track" | cut -c1-28)
-      # Formatação dinâmica em cápsula: só renderiza quando há música ativa
-      echo "%{F${colors.surface0}}%{T5}%{T-}%{F-}%{B${colors.surface0}}%{F${colors.lavender}}󰎈 $track%{F-}%{B-}%{F${colors.surface0}}%{T5}%{T-}%{F-}"
-      # Versão de texto simples (legado):
-      # echo "󰎈 $artist - $title" | cut -c1-32
+      track=$(echo "$track" | cut -c1-35)
+      echo "%{F${colors.mauve}}󰎈%{F-} %{F${colors.lavender}}$track%{F-}"
     elif [ "$status" = "Paused" ]; then
       artist=$(playerctl metadata artist 2>/dev/null)
       title=$(playerctl metadata title 2>/dev/null)
       track="$artist - $title"
       [ -z "$artist" ] && track="$title"
-      track=$(echo "$track" | cut -c1-24)
-      echo "%{F${colors.surface0}}%{T5}%{T-}%{F-}%{B${colors.surface0}}%{F${colors.surface2}}󰏤 $track%{F-}%{B-}%{F${colors.surface0}}%{T5}%{T-}%{F-}"
-      # echo "󰏤 Pausado"
+      track=$(echo "$track" | cut -c1-30)
+      echo "%{F${colors.surface2}}󰏤 $track%{F-}"
     else
       echo ""
     fi
@@ -419,9 +415,7 @@
     count=$(echo "$hidden_nodes" | grep -v '^$' | wc -l)
 
     if [ "$count" -gt 0 ]; then
-      # Cápsula renderizada dinamicamente apenas quando há janelas ocultas
-      echo "%{F${colors.surface0}}%{T5}%{T-}%{F-}%{B${colors.surface0}}%{F${colors.peach}}󰖯 $count%{F-}%{B-}%{F${colors.surface0}}%{T5}%{T-}%{F-}"
-      # echo "󰖯 $count" # Versão de texto simples sem cápsula embutida
+      echo "%{F${colors.peach}}󰖯 $count%{F-}"
     else
       echo ""
     fi

@@ -1179,6 +1179,38 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Envio de janela com foco imediato: `${mod} + shift + {1-9,0}` -> `bspc node -d any:{1-9,0} --follow`.
       - Envio de janela em segundo plano (sem follow): `${mod} + ctrl + {1-9,0}` -> `bspc node -d any:{1-9,0}`.
 
+- **Polybar do BSPWM — Modernização Visual e Estética Inspirada no Waybar (Hyprland / MangoWM)**:
+  - *Problema*: A configuração anterior tentava emular cápsulas (*gh0stzk style*) usando glifos de fonte Powerline `` (`bi`) e `` (`bd`). Como a renderização de fontes varia conforme DPI e tamanho da barra (30px vs glifo de 17pt), isso gerava recortes serrilhados, artefatos circulares escuros, blocos retangulares conflitantes nas workspaces (ex: Pacman `󰮯` e fantasmas `󰊠`) e 6 ilhas desconectadas na direita sobre um fundo transparente.
+  - *Solução & Nova Arquitetura*:
+    - **Barra Flutuante Unificada (`bar/main`)**: Redesenhada como um card flutuante moderno (`width = 99.2%`, `offset-x = 0.4%`, `offset-y = 6`, `height = 32`, `radius = 10`), com fundo Catppuccin Mocha Base (`#1e1e2e`), texto suave (`#cdd6f4`) e borda sutil de 1px em `surface0` (`#313244`). O `top_padding` do BSPWM foi atualizado para `42px` para acomodar o respiro ideal.
+    - **Workspaces em Kanji (一 a 十)**: Mapeamento declarativo via `ws-icon-*` de 1 a 10 em numerais japoneses/Kanji (`一 二 三 四 五 六 七 八 九 十`) com `fuzzy-match = true`. O workspace focado recebe um badge limpo em Azul Catppuccin (`#89b4fa`) com texto escuro e negrito; os ocupados usam texto claro sobre o fundo da barra sem caixas escuras artificiais, e os vazios ficam em tom atenuado discreto (`surface1`). Adicionados os pacotes de fontes `pkgs.noto-fonts-cjk-sans` e `pkgs.ipafont` em `packages.nix` e declaradas `Noto Sans CJK JP / SC` e `IPAGothic` na lista de fontes da Polybar para renderização nítida. Mantida compatibilidade total com os atalhos `${mod} + {1-9,0}` e clique do mouse.
+    - **Separação Coesa com Divisores Finos (`sep`)**: Adicionados divisores elegantes `│` (`#45475a`) sem `label-background = transparent` e com `pseudo-transparency = false`, eliminando os recortes pretos de transparência em compositores X11/Picom.
+    - **Distribuição Balanceada dos Módulos**:
+      - *Esquerda*: `launcher` (logo NixOS `󱄅` azul) + `bspwm` (workspaces limpas) + `sep` + `polywins` (taskbar interativa com ícone `` para terminal e status das janelas).
+      - *Centro*: `media` (widget dinâmico do playerctl com prefixo de nota musical `󰎈` e cor lavanda, sem cápsulas duras).
+      - *Direita*: Grupo de Hardware (`cpu` celeste, `memory` verde, `temperature` dinâmico com cores por faixa térmica) + `sep` + Conectividade (`network` com Wi-Fi/Ethernet e `bluetooth`) + `sep` + Áudio/Bateria (`pulseaudio` e `battery`) + `sep` + Status e Energia (`keyboard`, `date` e `powermenu`).
+    - **Compatibilidade Preservada**: Todos os módulos e scripts legados (`bi`, `bd`, `dots`, `minimized`, `netspeed`, `redshift`) foram mantidos intactos no código para quem desejar alternar no futuro.
+
+- **Módulo Fcitx5 e Entrada Multilíngue (Japonês / CJK / Mozc)**:
+  - **Localização**: [modules/home-manager/system/services/fcitx5/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/services/fcitx5/default.nix), ativado via `system.services.fcitx5.enable = true`.
+  - **Integração Home Manager**: Configurado via `i18n.inputMethod.type = "fcitx5"`, instalando automaticamente `fcitx5-with-addons` com:
+    - `fcitx5-gtk`: Integração com aplicações GTK2, GTK3 e GTK4.
+    - `fcitx5-mozc`: Motor japonês Google Mozc (conversão fonética de Romaji para Hiragana, Katakana e Kanji).
+    - `fcitx5-hangul`: Motor para Coreano.
+    - `qt6Packages.fcitx5-chinese-addons`: Motor para Chinês Pinyin (migrado de `fcitx5-chinese-addons` para `qt6Packages`).
+    - `qt6Packages.fcitx5-configtool`: Interface gráfica de ajustes (`fcitx5-config-qt`, migrado de `fcitx5-configtool` para `qt6Packages`).
+    - Fontes essenciais incluídas: `noto-fonts-cjk-sans` e `ipafont`.
+  - **Variáveis de Ambiente Automáticas**: Exportados `GTK_IM_MODULE = "fcitx"`, `QT_IM_MODULE = "fcitx"`, `XMODIFIERS = "@im=fcitx"`, `SDL_IM_MODULE = "fcitx"` e `GLFW_IM_MODULE = "ibus"`.
+  - **Configuração Declarativa Pronta para Uso**:
+    - `~/.config/fcitx5/profile`: Configura grupo padrão combinando layout do teclado principal (`keyboard-us` ou nativo) com o motor `mozc`.
+    - `~/.config/fcitx5/config`: Configura as teclas de alternância rápida:
+      - `Control + Space`: Alterna instantaneamente entre o teclado normal e o modo japonês Mozc.
+      - `Super + Space`: Alterna entre grupos de entrada.
+      - `Zenkaku_Hankaku` / `Hangul`: Suporte a teclas físicas de teclados CJK.
+  - **Supervisão e Autostart**:
+    - Criado serviço systemd do usuário `fcitx5-daemon.service` atrelado a `graphical-session.target`.
+    - Integrado ao `bspwmrc` com inicialização direta `fcitx5 -d &` e importação de variáveis de ambiente no systemd.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

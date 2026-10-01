@@ -40,6 +40,10 @@ in
       services.podman = {
         enable = lib.mkDefault true;
       };
+
+      services.fcitx5 = {
+        enable = lib.mkDefault (isLinux && isWorkstation);
+      };
     };
 
     home = {

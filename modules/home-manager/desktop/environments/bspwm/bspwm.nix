@@ -146,7 +146,7 @@ in
             automatic_scheme = "longest_side";
             initial_polarity = "second_child";
             window_gap = 5; # Gaps arejados estilo Hyprland
-            top_padding = 36; # Altura da Polybar (30px) + gap superior (6px)
+            top_padding = 42; # Altura da Polybar flutuante (32px) + gap superior (6px) + respiro (4px)
             bottom_padding = 4;
             left_padding = 4;
             right_padding = 4;
@@ -427,9 +427,15 @@ in
             pkill -x sxhkd || true
             ${pkgs.sxhkd}/bin/sxhkd &
 
-            # Importar variáveis de ambiente para serviços do usuário
-            systemctl --user import-environment DISPLAY XAUTHORITY LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE
+            # Importar variáveis de ambiente para serviços do usuário (incluindo método de entrada Fcitx5)
+            systemctl --user import-environment DISPLAY XAUTHORITY LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE
             systemctl --user start graphical-session.target 2>/dev/null || true
+
+            # Iniciar daemon de método de entrada (Fcitx5) se disponível
+            if command -v fcitx5 >/dev/null 2>&1; then
+              pkill -x fcitx5 || true
+              fcitx5 -d &
+            fi
 
             # Iniciar compositor Picom se habilitado
             ${lib.optionalString config.desktop.bspwm.picom.enable ''

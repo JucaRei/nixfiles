@@ -6,7 +6,20 @@
   ...
 }:
 {
-  # --- Cápsulas Decorativas / Pills (gh0stzk style) ---
+  # --- Divisores & Espaçadores Elegantes (Estilo Waybar / Catppuccin) ---
+  "module/sep" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "  %{F#45475a}│%{F-}  ";
+  };
+
+  "module/dots" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "  %{F#45475a}·%{F-}  ";
+  };
+
+  # --- Cápsulas Decorativas Legadas (gh0stzk style com  e  mantidas para compatibilidade) ---
   "module/bi" = {
     type = "custom/text";
     format = "<label>";
@@ -23,35 +36,18 @@
     label-background = colors.transparent;
   };
 
-  "module/sep" = {
-    type = "custom/text";
-    format = "<label>";
-    label = "   ";
-    label-foreground = colors.transparent;
-    label-background = colors.transparent;
-  };
-
-  "module/dots" = {
-    type = "custom/text";
-    format = "<label>";
-    label = "  ";
-    label-foreground = colors.surface2;
-    label-background = colors.surface0;
-  };
-
-  # --- Lançador de Aplicativos (NixOS Logo Pill) ---
+  # --- Lançador de Aplicativos (NixOS Logo) ---
   "module/launcher" = {
     type = "custom/text";
     format = "%{A1:${pkgs.rofi}/bin/rofi -show drun:}<label>%{A}";
     label = "󱄅";
     label-font = 4;
     label-foreground = colors.blue;
-    label-background = colors.surface0;
     label-padding = 1;
     click-left = "${pkgs.rofi}/bin/rofi -show drun";
   };
 
-  # --- Workspaces do BSPWM (Pills Dinâmicos) ---
+  # --- Workspaces do BSPWM (Badges Modernos Estilo Waybar) ---
   "module/bspwm" = {
     type = "internal/bspwm";
     pin-workspaces = true;
@@ -59,40 +55,45 @@
     enable-scroll = true;
     reverse-scroll = false;
     inline-mode = false;
+    fuzzy-match = true;
 
-    format = "<label-state> <label-mode>";
-    format-background = colors.surface0;
+    # Mapeamento dos workspaces de 1 a 10 em numerais Kanji (Japanese numerals)
+    ws-icon-0 = "1;一";
+    ws-icon-1 = "2;二";
+    ws-icon-2 = "3;三";
+    ws-icon-3 = "4;四";
+    ws-icon-4 = "5;五";
+    ws-icon-5 = "6;六";
+    ws-icon-6 = "7;七";
+    ws-icon-7 = "8;八";
+    ws-icon-8 = "9;九";
+    ws-icon-9 = "0;十";
+    ws-icon-10 = "10;十";
+    ws-icon-default = "%name%";
 
-    label-focused = "󰮯 %name%";
+    format = "<label-state>";
+
+    label-focused = "%icon%";
     label-focused-foreground = colors.base;
     label-focused-background = colors.blue;
     label-focused-padding = 1;
-    label-focused-margin = 0;
+    label-focused-margin = 1;
 
-    label-occupied = "󰊠 %name%";
+    label-occupied = "%icon%";
     label-occupied-foreground = colors.text;
-    label-occupied-background = colors.surface0;
     label-occupied-padding = 1;
-    label-occupied-margin = 0;
+    label-occupied-margin = 1;
 
-    label-urgent = "󰀦 %name%";
+    label-urgent = "%icon%";
     label-urgent-foreground = colors.base;
     label-urgent-background = colors.red;
     label-urgent-padding = 1;
-    label-urgent-margin = 0;
+    label-urgent-margin = 1;
 
-    label-empty = "%name%";
-    label-empty-foreground = colors.surface2;
-    label-empty-background = colors.surface0;
+    label-empty = "%icon%";
+    label-empty-foreground = colors.surface1;
     label-empty-padding = 1;
-    label-empty-margin = 0;
-
-    label-monocle = " 󰍉 ";
-    label-monocle-foreground = colors.yellow;
-    label-floating = " 󰖲 ";
-    label-floating-foreground = colors.peach;
-    label-fullscreen = " 󰊓 ";
-    label-fullscreen-foreground = colors.mauve;
+    label-empty-margin = 1;
   };
 
   # --- Título da Janela Ativa (Interativo: Clique para Minimizar, Meio para Fechar, Direito para Fullscreen) ---
@@ -101,7 +102,6 @@
     format = "%{A1:${pkgs.bspwm}/bin/bspc node -g hidden=on:}%{A2:${pkgs.bspwm}/bin/bspc node -c:}%{A3:${pkgs.bspwm}/bin/bspc node -t ~fullscreen:}<label>%{A}%{A}%{A}";
     format-prefix = "󰣆 ";
     format-prefix-foreground = colors.sapphire;
-    format-background = colors.surface0;
     label = "%title:0:30:...%";
     label-foreground = colors.subtext0;
     label-padding = 1;
@@ -110,7 +110,7 @@
     label-empty-padding = 1;
   };
 
-  # --- Janelas Minimizadas / Ocultas na Polybar (Cápsula dinâmica via script legado) ---
+  # --- Janelas Minimizadas / Ocultas na Polybar (Dinâmica via script) ---
   "module/minimized" = {
     type = "custom/script";
     exec = "${scripts.minimizedScript}";
@@ -123,26 +123,24 @@
     click-right = "${scripts.restoreMenuScript}";
   };
 
-  # --- Taskbar Interativa de Janelas (Polywins - Gestão Completa de Janelas e Minimizadas) ---
+  # --- Taskbar Interativa de Janelas (Polywins - Ícones e Gestão de Janelas) ---
   "module/polywins" = {
     type = "custom/script";
     exec = "${scripts.polywinsScript}";
     tail = true;
     format = "<label>";
-    format-background = colors.surface0;
     label = "%output%";
     label-padding = 1;
   };
 
-  # --- Mídia / Playerctl (Cápsula dinâmica via script) ---
+  # --- Mídia / Playerctl (Elegante e Dinâmico) ---
   "module/media" = {
     type = "custom/script";
     exec = "${scripts.mediaScript}";
     interval = 2;
     format = "<label>";
-    format-background = colors.transparent;
-    format-foreground = colors.lavender;
     label = "%output%";
+    label-padding = 1;
     click-left = "${pkgs.playerctl}/bin/playerctl play-pause";
     click-right = "${pkgs.playerctl}/bin/playerctl next";
   };
@@ -153,7 +151,6 @@
     exec = "${scripts.bluetoothScript}";
     interval = 2;
     format = "%{A1:${scripts.rofiBluetoothMenu}:}%{A3:${scripts.rofiBluetoothMenu}:}<label>%{A}%{A}";
-    format-background = colors.surface0;
     label = "%output%";
     label-padding = 1;
     label-foreground = colors.sapphire;
@@ -166,8 +163,7 @@
     interval = 2;
     format = "<label>";
     format-prefix = "󰍛 ";
-    format-prefix-foreground = colors.teal;
-    format-background = colors.surface0;
+    format-prefix-foreground = colors.sky;
     label = "%percentage:2%%";
     label-foreground = colors.text;
     label-padding = 1;
@@ -179,8 +175,7 @@
     interval = 2;
     format = "<label>";
     format-prefix = "󰘚 ";
-    format-prefix-foreground = colors.mauve;
-    format-background = colors.surface0;
+    format-prefix-foreground = colors.green;
     label = "%percentage_used:2%%";
     label-foreground = colors.text;
     label-padding = 1;
@@ -192,7 +187,6 @@
     exec = "${scripts.temperatureScript}";
     interval = 3;
     format = "<label>";
-    format-background = colors.surface0;
     label = "%output%";
     label-padding = 1;
   };
@@ -204,7 +198,6 @@
     interval = 2;
 
     format-volume = "<ramp-volume> <label-volume>";
-    format-volume-background = colors.surface0;
     label-volume = "%percentage%%";
     label-volume-foreground = colors.text;
     label-volume-padding = 1;
@@ -217,7 +210,6 @@
     format-muted = "<label-muted>";
     format-muted-prefix = "󰝟 ";
     format-muted-prefix-foreground = colors.red;
-    format-muted-background = colors.surface0;
     label-muted = "0%";
     label-muted-foreground = colors.subtext0;
     label-muted-padding = 1;
@@ -232,7 +224,6 @@
     enable-scroll = true;
 
     format = "<ramp> <label>";
-    format-background = colors.surface0;
     label = "%percentage%%";
     label-foreground = colors.text;
     label-padding = 1;
@@ -254,11 +245,8 @@
     poll-interval = 5;
 
     format-charging = "<animation-charging> <label-charging>";
-    format-charging-background = colors.surface0;
     format-discharging = "<ramp-capacity> <label-discharging>";
-    format-discharging-background = colors.surface0;
     format-full = "<ramp-capacity> <label-full>";
-    format-full-background = colors.surface0;
 
     label-charging = "%percentage%%";
     label-discharging = "%percentage%%";
@@ -298,7 +286,6 @@
     interval = 2;
 
     format = "%{A1:${scripts.rofiWifiMenu}:}%{A3:${pkgs.networkmanagerapplet}/bin/nm-connection-editor:}<label>%{A}%{A}";
-    format-background = colors.surface0;
     label = "%output%";
     label-foreground = colors.text;
     label-padding = 1;
@@ -315,13 +302,11 @@
     interval = 1;
 
     format-connected = "<label-connected>";
-    format-connected-background = colors.surface0;
     label-connected = "%{F#89b4fa}󰇚 %downspeed:7%%{F-}  %{F#fab387}󰕒 %upspeed:7%%{F-}";
     label-connected-foreground = colors.text;
     label-connected-padding = 1;
 
     format-disconnected = "<label-disconnected>";
-    format-disconnected-background = colors.surface0;
     label-disconnected = "%{F#89b4fa}󰇚 0KB/s%{F-}  %{F#fab387}󰕒 0KB/s%{F-}";
     label-disconnected-foreground = colors.surface2;
     label-disconnected-padding = 1;
@@ -336,7 +321,6 @@
     format = "%{A3:${scripts.rofiKeyboardMenu}:}<label-layout> <label-indicator>%{A}";
     format-prefix = "󰌌 ";
     format-prefix-foreground = colors.sapphire;
-    format-background = colors.surface0;
 
     label-layout = lib.mkDefault "%layout%";
     label-layout-foreground = colors.text;
@@ -352,17 +336,15 @@
   "module/date" = {
     type = "internal/date";
     interval = 1;
-    date = "%{F${colors.blue}}%d/%m%{F-}";
-    time = "%{F${colors.mauve}}%H:%M%{F-}";
-    date-alt = "%{F${colors.lavender}}%A%{F-}, %{F${colors.blue}}%d%{F-} de %{F${colors.teal}}%B%{F-}";
-    time-alt = "%{F${colors.mauve}}%H:%M:%S%{F-}";
+    date = "%d/%m";
+    time = "%H:%M";
+    date-alt = "%A, %d/%m";
+    time-alt = "%H:%M:%S";
 
     format = "<label>";
-    format-prefix = "󰥔 ";
-    format-prefix-foreground = colors.sapphire;
-    format-background = colors.surface0;
-    label = "%date%  %time%";
-    label-foreground = colors.text;
+    format-prefix = "󰃭 ";
+    format-prefix-foreground = colors.blue;
+    label = "%{F${colors.text}}%date%%{F-}  %{F${colors.sapphire}}󰥔%{F-} %{F${colors.text}}%time%%{F-}";
     label-padding = 1;
   };
 
@@ -370,10 +352,9 @@
   "module/powermenu" = {
     type = "custom/text";
     format = "%{A1:${scripts.rofiPowerMenu}:}<label>%{A}";
-    label = " 󰐥 ";
+    label = "󰐥";
     label-font = 4;
     label-foreground = colors.red;
-    label-background = colors.surface0;
     label-padding = 1;
     click-left = "${scripts.rofiPowerMenu}";
   };
@@ -384,7 +365,6 @@
     exec = "${scripts.redshiftScript} status";
     interval = 3;
     format = "<label>";
-    format-background = colors.surface0;
     label = "%output%";
     label-padding = 1;
     click-left = "${scripts.redshiftScript} toggle";
@@ -395,6 +375,6 @@
 
   "settings" = {
     screenchange-reload = true;
-    pseudo-transparency = true;
+    pseudo-transparency = false;
   };
 }

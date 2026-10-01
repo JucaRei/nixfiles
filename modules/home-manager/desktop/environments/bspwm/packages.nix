@@ -60,6 +60,8 @@ in
         papirus-icon-theme
         catppuccin-cursors.mochaDark
         inter
+        noto-fonts-cjk-sans
+        ipafont
 
         # Clipboard e X11
         xclip

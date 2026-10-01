@@ -75,6 +75,10 @@ in
       };
     };
 
+    system.services = {
+      fcitx5.enable = true;
+    };
+
     home = {
       packages =
         with pkgs;

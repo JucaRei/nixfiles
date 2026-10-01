@@ -61,42 +61,46 @@ in
       config = polybarModules // {
         "colors" = colors;
 
-        # --- Barra Principal (Floating Capsules / gh0stzk style) ---
+        # --- Barra Principal (Floating Modern Bar - Estilo Waybar / Catppuccin Mocha) ---
         "bar/main" = {
           monitor = "\${env:MONITOR:}";
-          width = "100%";
-          height = "30";
-          radius = 0;
-          fixed-center = false;
+          width = "99.2%";
+          offset-x = "0.4%";
+          offset-y = 6;
+          height = 32;
+          radius = 10;
+          fixed-center = true;
 
-          background = colors.transparent;
+          background = colors.base;
           foreground = colors.text;
 
           line-size = 2;
           line-color = colors.blue;
 
-          border-size = 0;
-          padding-left = 1;
-          padding-right = 1;
+          border-size = 1;
+          border-color = colors.surface0;
+          padding-left = 2;
+          padding-right = 2;
           module-margin = 0;
 
           font-0 = "Inter:weight=SemiBold:size=10;3";
-          font-1 = "Symbols Nerd Font:size=12;3";
+          font-1 = "Symbols Nerd Font:size=11;3";
           font-2 = "JetBrainsMono Nerd Font:weight=Medium:size=10;3";
-          font-3 = "Symbols Nerd Font:size=15;4"; # Ícone do lançador e power
-          font-4 = "Symbols Nerd Font:size=17;4"; # Glyphs das cápsulas  e 
-          font-5 = "Symbols Nerd Font Mono:size=12;3";
+          font-3 = "Symbols Nerd Font:size=13;3"; # Ícone do lançador e power
+          font-4 = "Symbols Nerd Font:size=15;4"; # Glyphs das cápsulas  e  (mantidas para compatibilidade)
+          font-5 = "Symbols Nerd Font Mono:size=11;3";
+          font-6 = "Noto Sans CJK JP:weight=Medium:size=10;2"; # Kanji (Workspaces 一 二 三 四 五 六 七 八 九 十)
+          font-7 = "IPAGothic:size=10;2";
+          font-8 = "Noto Sans CJK SC:weight=Medium:size=10;2";
 
-          # --- Organização em Cápsulas/Pills (gh0stzk Rice Style) ---
-          modules-left = "bi launcher bd sep bi bspwm bd sep bi polywins bd";
-          # modules-left = "bi launcher bd sep bi bspwm bd sep bi xwindow bd sep minimized"; # Layout anterior com xwindow e contador minimizado
+          # --- Layout Moderno Coeso (Inspirado no Waybar do Hyprland / MangoWM) ---
+          modules-left = "launcher bspwm sep polywins";
           modules-center = "media";
-          modules-right = "bi cpu memory temperature bd sep bi network dots bluetooth bd sep bi pulseaudio bd sep bi keyboard bd sep bi date bd sep bi powermenu bd";
+          modules-right = "cpu memory temperature sep network bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
 
-          # --- Layout alternativo completo (descomente caso deseje exibir bateria/brilho no laptop, netspeed, teclado ou redshift):
-          # modules-right = "bi cpu memory temperature bd sep bi network bluetooth bd sep bi pulseaudio backlight battery bd sep bi date bd sep bi powermenu bd"; # Com Bateria e Brilho
-          # modules-right = "bi cpu memory temperature bd sep bi network bluetooth bd sep bi pulseaudio backlight redshift battery bd sep bi date bd sep bi powermenu bd"; # Com Redshift
-          # modules-right = "bi cpu dots memory dots temperature bd sep bi network dots bluetooth bd sep bi netspeed bd sep bi pulseaudio backlight battery bd sep bi keyboard bd sep bi date bd sep bi powermenu bd"; # Completo anterior
+          # --- Layout alternativo legado em cápsulas (descomente caso deseje os glifos  e ):
+          # modules-left = "bi launcher bd sep bi bspwm bd sep bi polywins bd";
+          # modules-right = "bi cpu memory temperature bd sep bi network dots bluetooth bd sep bi pulseaudio bd sep bi keyboard bd sep bi date bd sep bi powermenu bd";
 
           cursor-click = "pointer";
           cursor-scroll = "ns-resize";
