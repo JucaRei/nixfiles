@@ -13,10 +13,10 @@ let
 
   # Lookup tables: versão → { desktop, bin }
   firefoxMap = {
-    firefox           = { desktop = "firefox.desktop";             bin = "firefox"; };
-    firefox-devedition = { desktop = "firefox-devedition.desktop"; bin = "firefox-devedition"; };
-    firefox-esr       = { desktop = "firefox-esr.desktop";         bin = "firefox-esr"; };
-    floorp            = { desktop = "floorp.desktop";              bin = "floorp"; };
+    firefox            = { desktop = "firefox.desktop";             bin = "firefox"; };
+    firefox-devedition = { desktop = "firefox-devedition.desktop";  bin = "firefox-devedition"; };
+    firefox-esr        = { desktop = "firefox-esr.desktop";         bin = "firefox-esr"; };
+    floorp             = { desktop = "floorp.desktop";              bin = "floorp"; };
   };
 
   chromiumMap = {
