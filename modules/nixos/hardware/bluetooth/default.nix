@@ -7,27 +7,33 @@
   ...
 }:
 let
-  inherit (lib) mkIf;
+  inherit (lib) mkIf mkDefault;
 in
 {
   config = mkIf isInstall {
     hardware.bluetooth = {
       enable = true;
       package = pkgs.unstable.bluez-experimental;
-      powerOnBoot = false;
+      powerOnBoot = mkDefault true;
       settings = {
         General = mkIf isWorkstation {
           Name = config.networking.hostName;
-          Enable = "Source,Sink,Media,Socket"; # Enable A2DP sink
           JustWorksRepairing = "always";
           MultiProfile = "multiple";
-          ControllerMode = "bredr";
+          ControllerMode = "dual"; # Essencial: permite tanto Bluetooth clássico quanto Low Energy (BLE para MX Keys e mouses)
           FastConnectable = true;
           Privacy = "device";
           Experimental = true;
         };
+        Policy = {
+          AutoEnable = "true";
+          ReconnectAttempts = 7;
+          ReconnectIntervals = "1, 2, 4, 8, 16, 32, 64";
+        };
       };
     };
+
+    services.blueman.enable = mkDefault isWorkstation;
 
     system.activationScripts.rfkillUnblockBluetooth = mkIf config.hardware.bluetooth.enable {
       text = ''

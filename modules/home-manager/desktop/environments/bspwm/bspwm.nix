@@ -467,6 +467,15 @@ in
             # Applet de Rede (após importar DISPLAY)
             ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &
 
+            # Applet Bluetooth (fornece agente de autenticação D-Bus para PIN/Passkey)
+            if command -v blueman-applet >/dev/null 2>&1; then
+              pkill -x blueman-applet || true
+              blueman-applet &
+            elif [ -x "${pkgs.blueman}/bin/blueman-applet" ]; then
+              pkill -x blueman-applet || true
+              ${pkgs.blueman}/bin/blueman-applet &
+            fi
+
             # Mouse bindings para mover e redimensionar janelas flutuantes
             bspc config pointer_modifier ${pointerMod}
             bspc config pointer_action1 move

@@ -69,6 +69,7 @@ in
         xdotool
         libnotify
         networkmanagerapplet
+        blueman
         pasystray
         galculator
         lxappearance

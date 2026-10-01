@@ -1210,9 +1210,38 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - `Control + Space`: Alterna instantaneamente entre o teclado normal e o modo japonês Mozc.
       - `Super + Space`: Alterna entre grupos de entrada.
       - `Zenkaku_Hankaku` / `Hangul`: Suporte a teclas físicas de teclados CJK.
-  - **Supervisão e Autostart**:
-    - Gerenciado nativamente pelo Home Manager através do serviço `systemd.user.services.fcitx5-daemon` atrelado a `graphical-session.target`.
-    - Integrado ao `bspwmrc` com importação de variáveis de ambiente no systemd e fallback de inicialização.
+  - **Bluetooth no Debian (Nitro 5) — Pareamento de Teclados (Logitech MX Keys) e Mouses**:
+  - **Causa Raiz da Senha Ausente**:
+    - O teclado Logitech MX Keys (e dispositivos BLE) opera em modo de segurança `KeyboardOnly`. O teclado **não gera o PIN**; o **computador (BlueZ)** gera uma Passkey de 6 dígitos e aguarda um agente Bluetooth (`org.bluez.Agent1`) exibi-la na tela para ser digitada no teclado físico seguido de `<Enter>`.
+    - Ao tentar parear via scripts da barra (como o menu Rofi anterior) ou sem um agente gráfico ativo no BSPWM, o `bluetoothctl pair` rodava em background sem terminal e sem agente D-Bus registrado, fazendo a senha ser descartada silenciosamente e resultando em timeout de pareamento.
+  - **Ajustes Implementados**:
+    - Adicionado `pkgs.blueman` em [modules/home-manager/desktop/environments/bspwm/packages.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/packages.nix).
+    - Inicialização do `blueman-applet` incluída no startup do [bspwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/bspwm.nix): o applet roda residente na sessão do usuário e atua como Bluetooth Authentication Agent permanente, abrindo caixas de diálogo modais com o PIN de pareamento sempre que requisitado.
+    - Adicionada opção *"Gerenciador Bluetooth (Blueman)"* no menu Rofi da Polybar ([scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix)), abrindo a interface completa do `blueman-manager`.
+  - **Pareamento Imediato via Terminal**:
+    - Para parear o MX Keys de forma garantida e instantânea pelo terminal:
+      ```bash
+      bluetoothctl
+      power on
+      agent KeyboardOnly
+      default-agent
+      scan on
+      pair <MAC_DO_MX_KEYS>       # Digitar no MX Keys a Passkey de 6 dígitos exibida no terminal + Enter
+      trust <MAC_DO_MX_KEYS>      # Essencial para reconectar no boot/wake automaticamente
+      connect <MAC_DO_MX_KEYS>
+      ```
+  - **Pareamento de Mouse (MX Master / Pebble / etc.)**:
+    - O mouse utiliza pareamento BLE "Just Works" (sem senha). Deve ser colocado em modo de descoberta (segurar o botão Easy-Switch por 3s até piscar rápido) e pareado com:
+      ```bash
+      pair <MAC_DO_MOUSE>
+      trust <MAC_DO_MOUSE>
+      connect <MAC_DO_MOUSE>
+      ```
+  - **Requisitos de Sistema no Debian Host**:
+    - Pacotes Debian: `sudo apt install bluez blueman`
+    - Serviço BlueZ ativo: `sudo systemctl enable --now bluetooth`
+    - Desbloqueio de rádio: `rfkill unblock bluetooth`
+    - Em `/etc/bluetooth/main.conf`, certificar-se de que `ControllerMode = dual` (nunca `bredr`, pois desativa o Bluetooth Low Energy).
 
 - **Nemo Actions Condicionais (VSCode e Antigravity IDE)**:
   - **Localização**: [modules/home-manager/system/programs/file-manager/nemo/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/system/programs/file-manager/nemo/default.nix).

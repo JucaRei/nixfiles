@@ -166,7 +166,7 @@
 
   # --- Menu Interativo de Bluetooth (Rofi) ---
   rofiBluetoothMenu = pkgs.writeShellScript "rofi-bluetooth" ''
-    export PATH="${pkgs.bluez}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
+    export PATH="${pkgs.bluez}/bin:${pkgs.blueman}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
 
     power=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
     if [ "$power" != "yes" ]; then
@@ -213,7 +213,7 @@
       fi
     done < <(bluetoothctl devices 2>/dev/null)
 
-    header="󰂲  Desativar Bluetooth\n󰑐  Escanear novos dispositivos"
+    header="󰂲  Desativar Bluetooth\n󰑐  Escanear novos dispositivos\n󰂯  Gerenciador Bluetooth (Blueman)"
     if [ -n "$dev_list" ]; then
       menu_items="$header\n$dev_list"
     else
@@ -236,6 +236,12 @@
       dunstify -a "Bluetooth" -u low -i "bluetooth-disabled" -r 9995 -t 1500 "Bluetooth desativado"
     elif [[ "$chosen" =~ "Escanear" ]]; then
       exec "$0" --scan
+    elif [[ "$chosen" =~ "Gerenciador" ]]; then
+      if command -v blueman-manager >/dev/null 2>&1; then
+        blueman-manager &
+      else
+        ${pkgs.blueman}/bin/blueman-manager &
+      fi
     elif [[ "$chosen" =~ \[([0-9A-Fa-f:]{17})\] ]]; then
       mac="''${BASH_REMATCH[1]}"
       name=$(echo "$chosen" | sed -E 's/^[󰂱󰂯󰑐 ]+//;s/  \[.*//')
@@ -248,12 +254,12 @@
       else
         # Parear, Confiar e Conectar
         dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "Pareando e conectando a $name..."
-        bluetoothctl pair "$mac" 2>/dev/null || true
+        bluetoothctl pair "$mac" || true
         bluetoothctl trust "$mac" 2>/dev/null || true
         if bluetoothctl connect "$mac"; then
           dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 -t 3000 "$name conectado com sucesso!"
         else
-          dunstify -a "Bluetooth" -u critical -i "bluetooth-disabled" -r 9995 "Falha ao conectar a $name"
+          dunstify -a "Bluetooth" -u critical -i "bluetooth-disabled" -r 9995 "Falha ao conectar a $name.\nSe for teclado (PIN), use o Blueman ou terminal!"
         fi
       fi
     fi
