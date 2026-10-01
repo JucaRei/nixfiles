@@ -1273,6 +1273,19 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Atalhos Estilo macOS Condicionais (`isDarwin`)**: Os atalhos com a tecla `Command` (`Command + C` para copiar e `Command + V` para colar) são ativados via `lib.optionals pkgs.stdenv.isDarwin` **exclusivamente em sistemas macOS**. Em sistemas Linux (PC / desktops tradicionais), evita-se conflito com a tecla `Super` utilizada por Window Managers (como `Super + C` para abrir o Control Center no BSPWM).
   - **Atalhos Globais de Terminal e Vi Mode**: Configurados para todas as plataformas: `Control + Shift + C` (Copy), `Control + Shift + V` (Paste) e `Control + Shift + Space` (ToggleViMode para navegação e seleção por teclado com `v`/`y`).
 
+- **Janelas de Login e Autenticação em Modo Flutuante (OAuth, Google, GitHub, SSO)**:
+  - **Localizações**:
+    - BSPWM: [modules/home-manager/desktop/environments/bspwm/bspwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/bspwm.nix).
+    - Hyprland: [modules/home-manager/desktop/environments/hyprland/hyprland.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/hyprland/hyprland.nix).
+    - MangoWM: [modules/home-manager/desktop/environments/mangowm/mango.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/mangowm/mango.nix).
+  - **Comportamento Anterior**: Janelas popup criadas ao clicar em "Fazer login com o Google", confirmações OAuth de navegadores (Chrome, Brave, Firefox) e diálogos de senha eram tratadas como clientes normais no tiling manager, dividindo a tela principal ao meio (tiling).
+  - **Solução Implementada**:
+    - *BSPWM*:
+      - No `externalRulesScript` (`bspwm-external-rules`), adicionada detecção de `WM_WINDOW_ROLE.*pop-up` e regex case-insensitive bilíngue em `WM_NAME`/`_NET_WM_NAME` para padrões como `Sign in`, `Fazer login`, `Log in`, `Contas do Google`, `Google Accounts`, `OAuth`, `Authorize`, `Autorizar`, `Bitwarden`, etc., forçando `state=floating center=on follow=on` respeitando as dimensões nativas solicitadas pelo site.
+      - Adicionadas regras estáticas `bspc rule -a "*:pop-up"` e para títulos de login/OAuth.
+    - *Hyprland*: Adicionada `windowrule` com correspondência regex no título para `float 1` e `center 1`.
+    - *MangoWM*: Adicionada `windowrule` correspondente para `isfloating:1`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

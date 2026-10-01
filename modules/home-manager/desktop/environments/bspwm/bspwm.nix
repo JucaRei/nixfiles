@@ -85,6 +85,18 @@ let
       echo "state=floating center=on follow=on"
       exit 0
     fi
+
+    # 4. Janelas pop-up de navegadores (ex: popups de login Google, OAuth, Bitwarden)
+    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -q 'WM_WINDOW_ROLE.*pop-up'; then
+      echo "state=floating center=on follow=on"
+      exit 0
+    fi
+
+    # 5. Títulos de janelas de login, autenticação e OAuth (Google, GitHub, Microsoft, SSO, senhas)
+    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -Ei -q '(WM_NAME|_NET_WM_NAME).*(Sign in|Fazer login|Log in|Login com|Entrar com|Contas do Google|Google Accounts|Sign in with|Log in with|OAuth|Authorize|Autorizar|Autentica[cç][aã]o|Authentication|Bitwarden|1Password|Authenticator|Password Required)'; then
+      echo "state=floating center=on follow=on"
+      exit 0
+    fi
   '';
 
   browserTabSwitch = pkgs.writeShellScript "browser-tab-switch" ''
@@ -367,6 +379,14 @@ in
             bspc rule -a "*:*:File Operation Progress" state=floating center=on follow=on
             bspc rule -a "*:*:Preferences" state=floating center=on follow=on
             bspc rule -a "*:*:Confirm to replace files" state=floating center=on follow=on
+            bspc rule -a "*:pop-up" state=floating center=on follow=on
+            bspc rule -a "*:*:*Sign in*" state=floating center=on follow=on
+            bspc rule -a "*:*:*Fazer login*" state=floating center=on follow=on
+            bspc rule -a "*:*:*Contas do Google*" state=floating center=on follow=on
+            bspc rule -a "*:*:*Google Accounts*" state=floating center=on follow=on
+            bspc rule -a "*:*:*OAuth*" state=floating center=on follow=on
+            bspc rule -a "*:*:*Authorize*" state=floating center=on follow=on
+            bspc rule -a "*:*:*Bitwarden*" state=floating center=on follow=on
             bspc rule -a "xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
             bspc rule -a "Xdg-desktop-portal-gtk" state=floating center=on rectangle=850x550+0+0 follow=on
 

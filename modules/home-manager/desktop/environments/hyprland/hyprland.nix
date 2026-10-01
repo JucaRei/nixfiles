@@ -646,6 +646,10 @@ in
           "match:title ^(Picture-in-Picture)$, float 1"
           "match:title ^(Picture-in-Picture)$, pin 1"
           "match:title ^(Picture-in-Picture)$, size 640 360"
+
+          # Janelas de Autenticação / Login (Google, GitHub, OAuth, SSO, Bitwarden)
+          "match:title ^(.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Autenticação|Authentication|Bitwarden).*)$, float 1"
+          "match:title ^(.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Autenticação|Authentication|Bitwarden).*)$, center 1"
         ];
       };
 

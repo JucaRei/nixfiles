@@ -663,6 +663,7 @@ in
       windowrule=isfloating:1,title:.*Open.*
       windowrule=isfloating:1,title:.*Save.*
       windowrule=isfloating:1,title:.*Confirm.*
+      windowrule=isfloating:1,title:.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Authentication|Autenticação|Bitwarden).*
       windowrule=idleinhibit_when_focus:1,appid:steam
 
       # Regras de Camada (Layer Rules)
