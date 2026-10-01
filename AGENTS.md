@@ -1141,7 +1141,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Registries & Política de Imagens**: Busca em `docker.io`, `quay.io`, `ghcr.io` e `registry.fedoraproject.org` com `short-name-mode = "permissive"` e `policy.json` permissivo em `~/.config/containers/`, prevenindo erros de bloqueio de assinatura ao puxar imagens públicas.
     - **Ferramental Completo Incluso**: `podman-compose`, `docker-compose`, `lazydocker` (TUI interativa rica), `podman-tui`, `buildah`, `skopeo` e `dive`.
     - **Diagnóstico Embutido**: Utilitário executável `podman-doctor` para testar rapidamente subuids, socket ativo, DOCKER_HOST e execução de container alpine.
-    - **Manutenção Automatizada**: Suporte a timers do systemd para limpeza periódica de armazenamento (`autoPrune`) e atualização de containers (`autoUpdate`).
+    - **Requisito Host no Debian/Ubuntu Standalone (`newuidmap` / `uidmap`)**:
+      - Em distros standalone (como Debian no host `nitro`), o Podman rootless necessita de `newuidmap` e `newgidmap` com bit **setuid** (`4755 root:root`) para alocar intervalos de `subuid` e `subgid`. Binários do Nix Store não possuem privilégios setuid no Home Manager do usuário.
+      - Resolução no host: `sudo apt install -y uidmap` e configuração de subuids: `sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $USER && podman system migrate`.
     - Ativado por padrão para o usuário `juca` via `system.services.podman.enable = lib.mkDefault true;` em [home-manager/users/juca/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/users/juca/default.nix).
 
 - **BSPWM e SXHKD — Correções de Navegador, Scratchpad (tdrop), Screenshots por Máquina e Workspaces**:

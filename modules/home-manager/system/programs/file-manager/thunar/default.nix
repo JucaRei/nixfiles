@@ -59,6 +59,7 @@ in
       tumbler
       xarchiver
       file-roller
+      ffmpegthumbnailer
       webp-pixbuf-loader
       libgsf
       poppler
@@ -67,7 +68,6 @@ in
       catfish
       meld
     ];
-
 
     # Bridge FUSE do GVfs (/run/user/<uid>/gvfs) para compatibilidade com aplicações
     # que não possuem suporte nativo à API GIO/GVfs (como mpv, vlc, scripts bash, etc.)
