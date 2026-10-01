@@ -1209,8 +1209,8 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - `Super + Space`: Alterna entre grupos de entrada.
       - `Zenkaku_Hankaku` / `Hangul`: Suporte a teclas físicas de teclados CJK.
   - **Supervisão e Autostart**:
-    - Criado serviço systemd do usuário `fcitx5-daemon.service` atrelado a `graphical-session.target`.
-    - Integrado ao `bspwmrc` com inicialização direta `fcitx5 -d &` e importação de variáveis de ambiente no systemd.
+    - Gerenciado nativamente pelo Home Manager através do serviço `systemd.user.services.fcitx5-daemon` atrelado a `graphical-session.target`.
+    - Integrado ao `bspwmrc` com importação de variáveis de ambiente no systemd e fallback de inicialização.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

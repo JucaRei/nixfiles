@@ -20,10 +20,6 @@ let
     ]
     ++ lib.optional (fcitx5ChineseAddons != null) fcitx5ChineseAddons
     ++ lib.optional (fcitx5Configtool != null) fcitx5Configtool;
-
-  fcitx5Package = pkgs.fcitx5-with-addons.override {
-    addons = fcitx5Addons;
-  };
 in
 {
   options.system.services.fcitx5 = {
@@ -93,22 +89,5 @@ in
       [Hotkey/EnumerateGroupForwardKeys]
       0=Super+space
     '';
-
-    # Serviço systemd do usuário para inicialização automática em sessão gráfica
-    systemd.user.services.fcitx5-daemon = {
-      Unit = {
-        Description = "Fcitx5 Input Method Daemon";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
-      };
-      Service = {
-        ExecStart = "${fcitx5Package}/bin/fcitx5";
-        Restart = "on-failure";
-        RestartSec = 2;
-      };
-      Install = {
-        WantedBy = [ "graphical-session.target" ];
-      };
-    };
   };
 }
