@@ -1214,7 +1214,18 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Gerenciado nativamente pelo Home Manager através do serviço `systemd.user.services.fcitx5-daemon` atrelado a `graphical-session.target`.
     - Integrado ao `bspwmrc` com importação de variáveis de ambiente no systemd e fallback de inicialização.
 
+- **Nemo Actions Condicionais (VSCode e Antigravity IDE)**:
+  - **Localização**: [modules/home-manager/system/programs/file-manager/nemo/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/system/programs/file-manager/nemo/default.nix).
+  - **Comportamento Anterior**: As ações de contexto de clique direito `open-vscode.nemo_action` e `open-antigravity.nemo_action` eram inseridas incondicionalmente em `~/.local/share/nemo/actions/`.
+  - **Correção**:
+    - Adicionadas verificações booleanas de ativação dos módulos:
+      - VSCode: `isVscodeEnabled = (config.system.programs.editors.vscode.enable or false) || (config.programs.vscode.enable or false);`.
+      - Antigravity IDE: `isAntigravityEnabled = config.system.programs.editors.antigravity.enable or false;`.
+    - O bloco `home.file` foi estruturado com `mkMerge` + `mkIf` para renderizar as ações apenas quando os módulos correspondentes estiverem ativos.
+    - Removidos bindings não utilizados do `inherit (lib)` (`mkDefault`, `optionalString`), em conformidade com as diretrizes do repositório.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
+
 
 
 
