@@ -1253,6 +1253,26 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - O bloco `home.file` foi estruturado com `mkMerge` + `mkIf` para renderizar as ações apenas quando os módulos correspondentes estiverem ativos.
     - Removidos bindings não utilizados do `inherit (lib)` (`mkDefault`, `optionalString`), em conformidade com as diretrizes do repositório.
 
+- **BSPWM SXHKD — Correções no Clique Direito (~button3) e Alternar Mostrar Desktop (${mod} + shift + m)**:
+  - **Localização**: [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix).
+  - **Problema 1: `${mod} + shift + m` (Mostrar Desktop / Toggle Minimizar Todas) não funcionava**:
+    - *Causa*: O comando estava escrito inline com lógica condicional shell complexa (`if [ $(bspc query ...) -gt 0 ]; then ... fi`). No SXHKD, comandos inline são invocados pelo `$SHELL` do usuário. Em ambientes com `fish` ou shells estritos, substituições `$(...)` e pipelines inline quebram ou falham silenciosamente. Além disso, ao restaurar as janelas (`hidden=off`), o foco ficava perdido na janela raiz.
+    - *Correção*: Criado o script `toggleDesktopScript` (`bspwm-toggle-desktop`) via `pkgs.writeShellScript`:
+      - Utiliza `/bin/sh` estrito e chamadas diretas a `${pkgs.bspwm}/bin/bspc`.
+      - Detecta nós visíveis (`.window.!hidden`) no workspace focado; se houver, oculta todos (`hidden=on`).
+      - Se todos já estiverem ocultos, desoculta todas as janelas do workspace (`.window.hidden`) e restaura o foco automaticamente na última janela reexibida com `bspc node "$last_node" -f`.
+  - **Problema 2: `~button3` (Clique Direito no Desktop) conflitava com o Thunar e menus de contexto**:
+    - *Causa*: O atalho `~button3` utilizava a verificação `if [ -z "$(bspc query -N -n pointed.window)" ]`. Menus de contexto do Thunar (e janelas popups GTK `override-redirect`) não são nós gerenciados pela árvore do BSPWM. Ao clicar com o botão direito no Thunar para abrir o menu de contexto, `bspc query -N -n pointed.window` retornava vazio, fazendo a condição avaliar como verdadeira e abrindo o `quickSettings` (Rofi/Control Center) sobreposto ao menu de opções do Thunar.
+    - *Correção*: Criado o script `desktopRightClickScript` (`bspwm-desktop-right-click`) via `pkgs.writeShellScript`:
+      - Utiliza `${pkgs.xdotool}/bin/xdotool getmouselocation --shell` e compara o ID da janela sob o cursor (`WINDOW`) diretamente com a Root Window real do X11 (`xdotool getrootwindow`) ou janelas com `_NET_WM_WINDOW_TYPE_DESKTOP`.
+      - Se o cursor estiver sobre o Thunar, menus de contexto, Polybar ou qualquer aplicação (`WINDOW != root_win`), o script sai silenciosamente com status 0, permitindo que a aplicação receba o clique com botão direito sem nenhuma interferência.
+
+- **Alacritty — Seleção Fácil com Auto-Copy e Atalhos Condicionais (macOS)**:
+  - **Localização**: [modules/home-manager/system/programs/terminal/alacritty/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/terminal/alacritty/default.nix).
+  - **Auto-Copy ao Selecionar (`save_to_clipboard = true`)**: Ao arrastar o mouse ou dar duplo/triplo clique no terminal, o texto selecionado é copiado automaticamente para a área de transferência principal (`CLIPBOARD`), permitindo colar diretamente com `Ctrl+V` em qualquer aplicação.
+  - **Atalhos Estilo macOS Condicionais (`isDarwin`)**: Os atalhos com a tecla `Command` (`Command + C` para copiar e `Command + V` para colar) são ativados via `lib.optionals pkgs.stdenv.isDarwin` **exclusivamente em sistemas macOS**. Em sistemas Linux (PC / desktops tradicionais), evita-se conflito com a tecla `Super` utilizada por Window Managers (como `Super + C` para abrir o Control Center no BSPWM).
+  - **Atalhos Globais de Terminal e Vi Mode**: Configurados para todas as plataformas: `Control + Shift + C` (Copy), `Control + Shift + V` (Paste) e `Control + Shift + Space` (ToggleViMode para navegação e seleção por teclado com `v`/`y`).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

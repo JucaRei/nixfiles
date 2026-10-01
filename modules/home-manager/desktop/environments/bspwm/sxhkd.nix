@@ -425,6 +425,50 @@ let
       fi
     fi
   '';
+
+  # Script para tratar clique com botão direito no desktop sem interferir em aplicações (Thunar, popups, etc.)
+  desktopRightClickScript = pkgs.writeShellScript "bspwm-desktop-right-click" ''
+    # Identifica a janela X11 sob as coordenadas atuais do cursor do mouse
+    mouse_win="$(${pkgs.xdotool}/bin/xdotool getmouselocation --shell 2>/dev/null | awk -F= '/WINDOW/{print $2}')"
+    [ -z "$mouse_win" ] && exit 0
+
+    root_win="$(${pkgs.xdotool}/bin/xdotool getrootwindow 2>/dev/null)"
+
+    # Se a janela sob o mouse for exatamente a Root Window (Desktop limpo)
+    if [ -n "$root_win" ] && [ "$mouse_win" = "$root_win" ]; then
+      exec ${quickSettings}
+    fi
+
+    # Se for uma janela com _NET_WM_WINDOW_TYPE_DESKTOP (ex: xfdesktop ou desktop gerenciado)
+    if ${pkgs.xprop}/bin/xprop -id "$mouse_win" _NET_WM_WINDOW_TYPE 2>/dev/null | grep -q "_NET_WM_WINDOW_TYPE_DESKTOP"; then
+      exec ${quickSettings}
+    fi
+  '';
+
+  # Script para alternar visibilidade de janelas no workspace ativo (Mostrar Desktop / Restaurar)
+  toggleDesktopScript = pkgs.writeShellScript "bspwm-toggle-desktop" ''
+    # Busca janelas visíveis (não ocultas) no desktop focado
+    visible_nodes=$(${pkgs.bspwm}/bin/bspc query -N -d focused -n .window.!hidden 2>/dev/null)
+
+    if [ -n "$visible_nodes" ]; then
+      # Oculta todas as janelas visíveis no workspace
+      for node in $visible_nodes; do
+        ${pkgs.bspwm}/bin/bspc node "$node" -g hidden=on
+      done
+    else
+      # Se não há janelas visíveis, restaura as que estavam ocultas neste workspace
+      hidden_nodes=$(${pkgs.bspwm}/bin/bspc query -N -d focused -n .window.hidden 2>/dev/null)
+      last_node=""
+      for node in $hidden_nodes; do
+        ${pkgs.bspwm}/bin/bspc node "$node" -g hidden=off
+        last_node="$node"
+      done
+      # Restaura o foco para a última janela reexibida
+      if [ -n "$last_node" ]; then
+        ${pkgs.bspwm}/bin/bspc node "$last_node" -f 2>/dev/null || true
+      fi
+    fi
+  '';
 in
 {
   options.desktop.bspwm.sxhkd = {
@@ -486,9 +530,8 @@ in
         cfg.keybindings
         // {
           # --- Clique no Desktop / Control Center (Estilo Hyprland / SwayNC) ---
-          # Botão Direito no Desktop (Root Window sem janela)
-          "~button3" =
-            "if [ -z \"$(bspc query -N -n pointed.window 2>/dev/null)\" ]; then ${quickSettings}; fi";
+          # Botão Direito no Desktop (Apenas na Root Window sem janela ou menu de app sob o cursor)
+          "~button3" = "${desktopRightClickScript}";
           "${mod} + button3" = "${quickSettings}";
           "${mod} + comma" = "${quickSettings}"; # Cmd + , (Atalho universal de Preferências)
           "${mod} + p" = "${quickSettings}";
@@ -542,8 +585,7 @@ in
           "${mod} + shift + minus" = "bspc node any.hidden.local -g hidden=off -f";
 
           # Alternar Mostrar Desktop (Minimizar todas / Restaurar todas no workspace ativo)
-          "${mod} + shift + m" =
-            "if [ $(bspc query -N -d focused -n .window.!hidden | wc -l) -gt 0 ]; then for n in $(bspc query -N -d focused -n .window.!hidden); do bspc node $n -g hidden=on; done; else for n in $(bspc query -N -d focused -n .window.hidden); do bspc node $n -g hidden=off; done; fi";
+          "${mod} + shift + m" = "${toggleDesktopScript}";
 
           # --- Bloqueio & Sessão (macOS Style: Cmd + Ctrl + Q) ---
           "${mod} + ${ctrlMod} + q" = "loginctl lock-session";

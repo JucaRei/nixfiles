@@ -12,6 +12,8 @@ let
   nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
   nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
+  isDarwin = pkgs.stdenv.isDarwin;
+
   defaultShellPkg =
     if shellsCfg.enable && shellsCfg.default == "zsh" then
       "${pkgs.zsh}/bin/zsh"
@@ -122,8 +124,37 @@ in
         };
         selection = {
           semantic_escape_chars = ",│`|:\"' ()[]{}<>\t";
-          save_to_clipboard = false;
+          save_to_clipboard = true;
         };
+        keyboard.bindings = [
+          {
+            key = "C";
+            mods = "Control|Shift";
+            action = "Copy";
+          }
+          {
+            key = "V";
+            mods = "Control|Shift";
+            action = "Paste";
+          }
+          {
+            key = "Space";
+            mods = "Control|Shift";
+            action = "ToggleViMode";
+          }
+        ]
+        ++ (lib.optionals isDarwin [
+          {
+            key = "C";
+            mods = "Command";
+            action = "Copy";
+          }
+          {
+            key = "V";
+            mods = "Command";
+            action = "Paste";
+          }
+        ]);
         cursor = {
           style = {
             shape = "Beam";
