@@ -381,6 +381,50 @@ let
           *) show_control_center ;;
         esac
   '';
+
+  # Script universal de foco de workspace (funciona tanto em monitor único quanto em multi-monitor)
+  desktopFocusScript = pkgs.writeShellScript "bspwm-desktop-focus" ''
+    d="$1"
+    # 1. Tenta focar diretamente no monitor atual
+    bspc desktop -f "$d" 2>/dev/null && exit 0
+    # 2. Se o workspace estiver em outro monitor, localiza o monitor e foca
+    for m in $(bspc query -M --names 2>/dev/null); do
+      if bspc query -D -m "$m" --names 2>/dev/null | grep -qx "$d"; then
+        bspc monitor -f "$m" 2>/dev/null && bspc desktop -f "$d" 2>/dev/null
+        exit 0
+      fi
+    done
+  '';
+
+  # Script universal de envio de janela para workspace (funciona tanto em monitor único quanto em multi-monitor)
+  desktopNodeScript = pkgs.writeShellScript "bspwm-node-to-desktop" ''
+    d="$1"
+    follow="$2"
+
+    target_id=""
+    for m in $(bspc query -M 2>/dev/null); do
+      for did in $(bspc query -D -m "$m" 2>/dev/null); do
+        if [ "$(bspc query -D -d "$did" --names 2>/dev/null)" = "$d" ]; then
+          target_id="$did"
+          break 2
+        fi
+      done
+    done
+
+    if [ -n "$target_id" ]; then
+      if [ "$follow" = "true" ]; then
+        bspc node -d "$target_id" --follow
+      else
+        bspc node -d "$target_id"
+      fi
+    else
+      if [ "$follow" = "true" ]; then
+        bspc node -d "$d" --follow 2>/dev/null || true
+      else
+        bspc node -d "$d" 2>/dev/null || true
+      fi
+    fi
+  '';
 in
 {
   options.desktop.bspwm.sxhkd = {
@@ -517,13 +561,13 @@ in
           "${mod} + shift + bracketleft" = "bspc node -m prev --follow";
           "${mod} + shift + bracketright" = "bspc node -m next --follow";
 
-          # --- Áreas de Trabalho (Workspaces 1-10, onde 0 = 10) ---
-          # Focar área de trabalho (funciona em qualquer monitor)
-          "${mod} + {1-9,0}" = "bspc desktop -f any:{1-9,0}";
+          # --- Áreas de Trabalho (Workspaces 1-10, onde 0 = workspace 0/10) ---
+          # Focar área de trabalho (funciona perfeitamente em monitor único e multi-monitor)
+          "${mod} + {1-9,0}" = "${desktopFocusScript} {1-9,0}";
           # Enviar janela para área de trabalho com foco imediato (--follow)
-          "${mod} + shift + {1-9,0}" = "bspc node -d any:{1-9,0} --follow";
+          "${mod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
           # Enviar janela para área de trabalho em segundo plano (sem follow)
-          "${mod} + ctrl + {1-9,0}" = "bspc node -d any:{1-9,0}";
+          "${mod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
 
           # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
           "${mod} + ${altMod} + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";

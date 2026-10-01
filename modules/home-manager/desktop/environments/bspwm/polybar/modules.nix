@@ -67,8 +67,8 @@
     ws-icon-6 = "7;七";
     ws-icon-7 = "8;八";
     ws-icon-8 = "9;九";
-    ws-icon-9 = "0;十";
-    ws-icon-10 = "10;十";
+    ws-icon-9 = "0;0";
+    ws-icon-10 = "10;0";
     ws-icon-default = "%name%";
 
     format = "<label-state>";
