@@ -46,11 +46,11 @@ in
       GLFW_IM_MODULE = "ibus";
     };
 
-    # Pacotes de fontes essenciais e ferramenta de configuração gráfica
+    # Pacotes de fontes essenciais (fcitx5-config-qt já é exportado no PATH pelo fcitx5-with-addons)
     home.packages = [
       pkgs.noto-fonts-cjk-sans
       pkgs.ipafont
-    ] ++ lib.optional (fcitx5Configtool != null) fcitx5Configtool;
+    ];
 
     # Configuração declarativa de perfil (layout padrão + Mozc)
     xdg.configFile."fcitx5/profile".text = ''
