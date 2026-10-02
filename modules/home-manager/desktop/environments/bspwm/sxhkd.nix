@@ -370,7 +370,7 @@ let
             *"Gerenciador de Arquivos"*) ''${fmCmd} ~ & ;;
             *"Painel Quick Settings"*) show_control_center ;;
             *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
-            *"Terminal Flutuante"*) ${scratchpadCmd} ;;
+            *"Terminal Flutuante"*) ${scratchpadScript} ;;
             *"Fechar / Encerrar Janela"*) bspc node -c ;;
             *"Tela Cheia"*) bspc node -t '~fullscreen' ;;
             *"Janela Flutuante"*) bspc node -t '~floating' ;;
