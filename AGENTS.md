@@ -1312,6 +1312,26 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Atalhos integrados e compatíveis tanto com Super quanto com Alt: `${mod} + u` e `${altMod} + u`.
     - Adicionado `xdo` em `home.packages` do BSPWM.
 
+- **BSPWM — Suíte de Scripts Modernos (Inspirado no gh0stzk/dotfiles)**:
+  - **Localizações**:
+    - [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix)
+    - [modules/home-manager/desktop/environments/bspwm/packages.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/packages.nix)
+  - **Implementações e Melhorias**:
+    1. *`ScreenShoTer` (`bspwm-screenshot` / `screenshoter`)*:
+       - Substituídas as chamadas cruas ao Flameshot por um script completo baseado no `gh0stzk/dotfiles/config/bspwm/bin/ScreenShoTer`.
+       - *Multi-Monitor Aware*: Detecta o monitor onde o cursor do mouse está (`bspc query -T -m pointed`) e captura com `maim` sem gerar barras pretas de canvas estendido.
+       - *Múltiplos Modos*: `full` (monitor atual imediato), `area` (seleção interativa com `slop`), `window` (janela focada), `all` (todos os monitores), `in3`/`in5` (temporizador com contagem regressiva OSD no Dunst) e `menu` (menu Rofi interativo). Removida completamente qualquer dependência do Flameshot.
+       - *Feedback Visual e Clipboard*: Copia instantaneamente para a área de transferência (`xclip -selection clipboard -t image/png`) e emite notificação Dunst com a miniatura capturada e botões de ação ("Visualizar", "Abrir Pasta", "Excluir").
+       - *Atalhos*: `Print` (full), `Shift + Print` (area), `Ctrl + Print` (window), `Alt + Print` (in5), `Super + Print` ou `${mod} + Shift + P` (menu Rofi), `Super + Shift + S` (Snipping Tool).
+    2. *OSD de Volume e Brilho (`volumeOsd` / `brightnessOsd`)*:
+       - Ícones dinâmicos de acordo com a intensidade (baixo, médio, alto, mudo).
+       - Barra de progresso Dunst (`-h int:value`) e tags de stack (`x-dunst-stack-tag:volume` e `brightness`) para atualizações suaves sem empilhar popups.
+    3. *Controle de Mídia com OSD (`bspwm-media-control`)*:
+       - Integrado ao `playerctl`: exibe notificação com título, artista e status (`Playing`/`Paused`) ao alternar faixas ou pausar.
+    4. *Conta-gotas de Cor (`bspwm-colorpicker`)*:
+       - Integrado ao `xcolor`: captura o valor HEX do pixel sob o cursor, copia para o clipboard e notifica no Dunst. Atalho: `${mod} + p` ou `${altMod} + p`.
+    5. *Binários no PATH*: Disponibilizados `bspwm-screenshot`, `screenshoter`, `bspwm-colorpicker` e `bspwm-media-control` diretamente em `home.packages`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

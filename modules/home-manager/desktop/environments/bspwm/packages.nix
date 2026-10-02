@@ -63,11 +63,15 @@ in
         noto-fonts-cjk-sans
         ipafont
 
-        # Clipboard e X11
+        # Clipboard, Captura de Tela e X11 (Estilo gh0stzk)
         xclip
         xsel
         xdotool
         libnotify
+        maim
+        slop
+        xcolor
+        jq
         networkmanagerapplet
         blueman
         pasystray

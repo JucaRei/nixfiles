@@ -25,7 +25,6 @@
         && !config.system.programs.file-manager.nemo.enable
         && !config.system.programs.file-manager.pcmanfm.enable
       );
-      tools.flameshot.enable = true;
     };
 
     # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---

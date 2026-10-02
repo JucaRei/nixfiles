@@ -279,11 +279,6 @@ in
               center = true;
               follow = true;
             };
-            "Flameshot" = {
-              state = "floating";
-              center = true;
-              follow = true;
-            };
             "feh" = {
               state = "floating";
               center = true;

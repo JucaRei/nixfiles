@@ -90,8 +90,141 @@ let
     fi
   '';
 
-  flameshotSavePath =
-    config.services.flameshot.settings.General.savePath or "${config.home.homeDirectory}/Pictures/Screenshots";
+  screenshotSavePath = "${config.home.homeDirectory}/Pictures/Screenshots";
+
+  # --- Suite de Captura de Tela Dinâmica e Suave (Inspirado no ScreenShoTer do gh0stzk/dotfiles) ---
+  screenshotScript = pkgs.writeShellScript "bspwm-screenshot" ''
+    dir="${screenshotSavePath}"
+    [ -d "$dir" ] || mkdir -p "$dir"
+    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
+    file="$dir/Screenshot_$timestamp.png"
+
+    notify_shot() {
+      if [ -f "$1" ]; then
+        # Copia imagem diretamente para a área de transferência
+        ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png < "$1" 2>/dev/null || true
+
+        # Dispara notificação Dunst com miniatura e ações interativas
+        action=$(${pkgs.dunst}/bin/dunstify -a "Screenshot" \
+          -i "$1" \
+          -u normal \
+          -t 5000 \
+          -h string:x-dunst-stack-tag:screenshot \
+          "Captura de Tela Realizada" \
+          "Salvo em <i>Pictures/Screenshots</i> e copiado para a área de transferência." \
+          --action="open,Visualizar" \
+          --action="folder,Abrir Pasta" \
+          --action="delete,Excluir" 2>/dev/null || echo "")
+
+        case "$action" in
+          open) ${pkgs.xdg-utils}/bin/xdg-open "$1" 2>/dev/null || ${pkgs.feh}/bin/feh "$1" & ;;
+          folder) ${pkgs.xdg-utils}/bin/xdg-open "$dir" 2>/dev/null || ${fmCmd} "$dir" & ;;
+          delete) rm -f "$1" && ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 1500 "Captura excluída" ;;
+        esac
+      fi
+    }
+
+    get_focused_monitor_geo() {
+      ${pkgs.bspwm}/bin/bspc query -T -m pointed 2>/dev/null | ${pkgs.jq}/bin/jq -r '.rectangle | "\(.width)x\(.height)+\(.x)+\(.y)"' 2>/dev/null
+    }
+
+    case "$1" in
+      full|--now)
+        # Captura apenas o monitor onde o cursor do mouse está (sem barras pretas multi-monitor)
+        geo=$(get_focused_monitor_geo)
+        if [ -n "$geo" ] && [ "$geo" != "null" ]; then
+          ${pkgs.maim}/bin/maim -g "$geo" "$file" 2>/dev/null || ${pkgs.maim}/bin/maim "$file"
+        else
+          ${pkgs.maim}/bin/maim "$file"
+        fi
+        notify_shot "$file"
+        ;;
+
+      all|--all)
+        # Captura todos os monitores combinados
+        ${pkgs.maim}/bin/maim "$file"
+        notify_shot "$file"
+        ;;
+
+      area|--sel|-s)
+        # Seleção interativa retangular
+        ${pkgs.maim}/bin/maim -s -u "$file" 2>/dev/null && notify_shot "$file"
+        ;;
+
+      window|--win|-w)
+        # Captura a janela atualmente focada
+        active_win=$(${pkgs.bspwm}/bin/bspc query -N -n focused 2>/dev/null)
+        if [ -n "$active_win" ]; then
+          ${pkgs.maim}/bin/maim -i "$active_win" "$file" 2>/dev/null && notify_shot "$file"
+        else
+          ${pkgs.maim}/bin/maim -s -u "$file" 2>/dev/null && notify_shot "$file"
+        fi
+        ;;
+
+      in3|--in3)
+        # Temporizador de 3 segundos com contagem regressiva OSD
+        for sec in 3 2 1; do
+          ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 950 -h string:x-dunst-stack-tag:screenshot-timer "Captura em..." "$sec segundo(s)"
+          sleep 1
+        done
+        ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 500 -h string:x-dunst-stack-tag:screenshot-timer "Capturando..." "Sorria! 📸"
+        sleep 0.2
+        geo=$(get_focused_monitor_geo)
+        if [ -n "$geo" ] && [ "$geo" != "null" ]; then
+          ${pkgs.maim}/bin/maim -g "$geo" "$file" 2>/dev/null || ${pkgs.maim}/bin/maim "$file"
+        else
+          ${pkgs.maim}/bin/maim "$file"
+        fi
+        notify_shot "$file"
+        ;;
+
+      in5|--in5)
+        # Temporizador de 5 segundos com contagem regressiva OSD
+        for sec in 5 4 3 2 1; do
+          ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 950 -h string:x-dunst-stack-tag:screenshot-timer "Captura em..." "$sec segundo(s)"
+          sleep 1
+        done
+        ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 500 -h string:x-dunst-stack-tag:screenshot-timer "Capturando..." "Sorria! 📸"
+        sleep 0.2
+        geo=$(get_focused_monitor_geo)
+        if [ -n "$geo" ] && [ "$geo" != "null" ]; then
+          ${pkgs.maim}/bin/maim -g "$geo" "$file" 2>/dev/null || ${pkgs.maim}/bin/maim "$file"
+        else
+          ${pkgs.maim}/bin/maim "$file"
+        fi
+        notify_shot "$file"
+        ;;
+
+      menu|--menu|*)
+        OPT_FULL="󰹑  Monitor Atual           (Imediato)"
+        OPT_AREA="󰆞  Recorte de Área         (Seleção com cursor)"
+        OPT_WIN="󰖲  Janela Ativa            (Focada)"
+        OPT_IN3="󱎫  Temporizador (3s)       (Contagem rápida)"
+        OPT_IN5="󱎫  Temporizador (5s)       (Contagem regressiva)"
+        OPT_ALL="󰍹  Todos os Monitores      (Canvas completo)"
+        OPT_DIR="󰈊  Abrir Pasta de Capturas (~/Pictures/Screenshots)"
+
+        CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+          "$OPT_FULL" \
+          "$OPT_AREA" \
+          "$OPT_WIN" \
+          "$OPT_IN3" \
+          "$OPT_IN5" \
+          "$OPT_ALL" \
+          "$OPT_DIR" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰹑 Screenshot " -theme-str 'window { width: 560px; height: 350px; } listview { columns: 1; lines: 7; }')
+
+        case "$CHOICE" in
+          *"Monitor Atual"*) $0 full ;;
+          *"Recorte de Área"*) sleep 0.2 && $0 area ;;
+          *"Janela Ativa"*) sleep 0.2 && $0 window ;;
+          *"Temporizador (3s)"*) $0 in3 ;;
+          *"Temporizador (5s)"*) $0 in5 ;;
+          *"Todos os Monitores"*) $0 all ;;
+          *"Abrir Pasta"*) ${pkgs.xdg-utils}/bin/xdg-open "$dir" 2>/dev/null || ${fmCmd} "$dir" & ;;
+        esac
+        ;;
+    esac
+  '';
 
   isAppleKeyboard =
     (config.home.keyboard.model or "") == "apple"
@@ -113,36 +246,37 @@ let
     else if effectiveScreenshotProfile == "mac" then
       {
         # Perfil macOS (MacBook Pro / Air, teclados Apple sem tecla Print dedicada)
-        "${mod} + shift + 3" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
-        "${mod} + shift + 4" = "${pkgs.flameshot}/bin/flameshot gui";
-        "${mod} + shift + 5" = "${pkgs.flameshot}/bin/flameshot gui";
-        "Print" = "${pkgs.flameshot}/bin/flameshot gui";
-        "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
-        "ctrl + Print" = "${pkgs.flameshot}/bin/flameshot full -c";
-        "super + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
-        "XF86SelectiveScreenshot" = "${pkgs.flameshot}/bin/flameshot gui";
+        "${mod} + shift + 3" = "${screenshotScript} full";
+        "${mod} + shift + 4" = "${screenshotScript} area";
+        "${mod} + shift + 5" = "${screenshotScript} menu";
+        "Print" = "${screenshotScript} full";
+        "shift + Print" = "${screenshotScript} area";
+        "ctrl + Print" = "${screenshotScript} window";
+        "super + shift + s" = "${screenshotScript} area";
+        "XF86SelectiveScreenshot" = "${screenshotScript} area";
       }
     else
       {
-        # Perfil Standard / PC (Acer Nitro, PCs, VMs, etc.)
-        # Preserva Super + Shift + 1..0 100% livres para navegação e envio de workspaces quando mod=Super!
-
-        # Tecla física PrtSc / Print Screen
-        "Print" = "${pkgs.flameshot}/bin/flameshot gui";
-        "shift + Print" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
-        "ctrl + Print" = "${pkgs.flameshot}/bin/flameshot full -c";
-        "super + Print" = "${pkgs.flameshot}/bin/flameshot gui";
-        "alt + Print" = "${pkgs.flameshot}/bin/flameshot gui";
+        # Perfil Standard / PC (Acer Nitro, PCs, VMs, etc.) - Inspirado no gh0stzk/dotfiles
+        # Captura imediata do monitor com o cursor
+        "Print" = "${screenshotScript} full";
+        # Recorte de área interativo
+        "shift + Print" = "${screenshotScript} area";
+        # Captura da janela ativa
+        "ctrl + Print" = "${screenshotScript} window";
+        # Temporizador de 5 segundos
+        "alt + Print" = "${screenshotScript} in5";
+        # Menu completo interativo no Rofi
+        "super + Print" = "${screenshotScript} menu";
 
         # Em teclados de notebook / Linux X11, Alt + PrtSc gera o keysym Sys_Req
-        "Sys_Req" = "${pkgs.flameshot}/bin/flameshot gui";
-        "alt + Sys_Req" = "${pkgs.flameshot}/bin/flameshot gui";
+        "Sys_Req" = "${screenshotScript} full";
+        "alt + Sys_Req" = "${screenshotScript} area";
 
-        # Logitech MX Keys / Windows Snipping / GNOME Area Screenshot
-        # A tecla dedicada de câmera do MX Keys emite Super + Shift + S por hardware em modo PC
-        "super + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
-        "alt + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
-        "XF86SelectiveScreenshot" = "${pkgs.flameshot}/bin/flameshot gui";
+        # Windows Snipping Tool / GNOME Area Screenshot
+        "super + shift + s" = "${screenshotScript} area";
+        "alt + shift + s" = "${screenshotScript} area";
+        "XF86SelectiveScreenshot" = "${screenshotScript} area";
       };
 
   normMod =
@@ -171,7 +305,7 @@ let
   modDisplayName = normMod; # "Super", "Alt", "Ctrl"
   altDisplayName = if mod == "alt" then "Super" else "Alt";
 
-  # --- Script de Notificação de Volume (Dunst OSD) ---
+  # --- Script de Notificação de Volume Suave (Estilo gh0stzk / Catppuccin) ---
   volumeOsd = pkgs.writeShellScript "volume-osd" ''
     case "$1" in
       up)   ${pkgs.pamixer}/bin/pamixer -i 2 ;;
@@ -183,13 +317,31 @@ let
     is_muted=$(${pkgs.pamixer}/bin/pamixer --get-mute 2>/dev/null || echo "false")
 
     if [ "$is_muted" = "true" ] || [ "$vol" -eq 0 ]; then
-      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "audio-volume-muted" -r 9991 -h int:value:0 -t 1500 "Volume: Mudo"
+      icon="audio-volume-muted"
+      text="Volume: Mudo"
+      bar_val=0
     else
-      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "audio-volume-high" -r 9991 -h int:value:"$vol" -t 1500 "Volume: $vol%"
+      if [ "$vol" -lt 30 ]; then
+        icon="audio-volume-low"
+      elif [ "$vol" -lt 70 ]; then
+        icon="audio-volume-medium"
+      else
+        icon="audio-volume-high"
+      fi
+      text="Volume: $vol%"
+      bar_val="$vol"
     fi
+
+    ${pkgs.dunst}/bin/dunstify -a "OSD" \
+      -u low \
+      -i "$icon" \
+      -h string:x-dunst-stack-tag:volume \
+      -h int:value:"$bar_val" \
+      -t 1500 \
+      "$text"
   '';
 
-  # --- Script de Notificação de Brilho da Tela (Dunst OSD) ---
+  # --- Script de Notificação de Brilho da Tela Suave (Estilo gh0stzk / Catppuccin) ---
   brightnessOsd = pkgs.writeShellScript "brightness-osd" ''
     # Identificar dispositivo de tela real (priorizar intel_backlight > nv_backlight > apple_backlight > acpi_video0)
     dev=""
@@ -229,8 +381,68 @@ let
 
     val=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
     if [ -n "$val" ]; then
-      ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "display-brightness" -r 9992 -h int:value:"$val" -t 1500 "Brilho da Tela: $val%"
+      if [ "$val" -lt 33 ]; then
+        icon="display-brightness-low"
+      elif [ "$val" -lt 66 ]; then
+        icon="display-brightness-medium"
+      else
+        icon="display-brightness-high"
+      fi
+
+      ${pkgs.dunst}/bin/dunstify -a "OSD" \
+        -u low \
+        -i "$icon" \
+        -h string:x-dunst-stack-tag:brightness \
+        -h int:value:"$val" \
+        -t 1500 \
+        "Brilho da Tela: $val%"
     fi
+  '';
+
+  # --- Script de Controle de Mídia com Feedback Visual OSD (Estilo gh0stzk MediaControl) ---
+  mediaControl = pkgs.writeShellScript "bspwm-media-control" ''
+    case "$1" in
+      play-pause) ${pkgs.playerctl}/bin/playerctl play-pause 2>/dev/null ;;
+      next)       ${pkgs.playerctl}/bin/playerctl next 2>/dev/null ;;
+      prev)       ${pkgs.playerctl}/bin/playerctl previous 2>/dev/null ;;
+      stop)       ${pkgs.playerctl}/bin/playerctl stop 2>/dev/null ;;
+    esac
+
+    sleep 0.1
+    status=$(${pkgs.playerctl}/bin/playerctl status 2>/dev/null || echo "Parado")
+    track_info=$(${pkgs.playerctl}/bin/playerctl metadata --format '{{title}} - {{artist}}' 2>/dev/null || true)
+
+    case "$status" in
+      Playing)   icon="media-playback-start"; header="Reproduzindo" ;;
+      Paused)    icon="media-playback-pause"; header="Pausado" ;;
+      *)         icon="media-playback-stop";  header="Reprodutor" ;;
+    esac
+
+    if [ -n "$track_info" ] && [ "$track_info" != " - " ]; then
+      ${pkgs.dunst}/bin/dunstify -a "Mídia" \
+        -u low \
+        -i "$icon" \
+        -h string:x-dunst-stack-tag:media \
+        -t 2000 \
+        "$header" \
+        "<b>$track_info</b>"
+    fi
+  '';
+
+  # --- Conta-gotas / Seletor de Cores Dinâmico (Estilo gh0stzk Colorpicker) ---
+  colorPickerScript = pkgs.writeShellScript "bspwm-colorpicker" ''
+    color=$(${pkgs.xcolor}/bin/xcolor -s 2>/dev/null || true)
+    [ -z "$color" ] && exit 0
+
+    echo -n "$color" | ${pkgs.xclip}/bin/xclip -selection clipboard
+
+    ${pkgs.dunst}/bin/dunstify -a "Colorpicker" \
+      -u low \
+      -i "color-picker" \
+      -h string:x-dunst-stack-tag:colorpicker \
+      -t 3500 \
+      "Cor Capturada" \
+      "Código: <b>$color</b> copiado para a área de transferência!"
   '';
 
   # --- Script de Controle e Notificação de Luz do Teclado (Logitech MX Keys / MacBook / Laptops) ---
@@ -344,14 +556,16 @@ let
     󰌌  ${modDisplayName} + Botão Direito         ➜  Redimensionar Janela com o Mouse
     󰌌  ${modDisplayName} + 1..9, 0               ➜  Ir para Área de Trabalho (Workspace) 1 a 10
     󰌌  ${modDisplayName} + Shift + 1..9, 0       ➜  Enviar Janela para Workspace 1 a 10
-    󰌌  ${modDisplayName} + Shift + 3 / Shift+Prt ➜  Captura de Tela Inteira (salva em ~/Pictures)
-    󰌌  ${modDisplayName} + Shift + 4 / Print     ➜  Seleção de Área para Captura (Flameshot)
-    󰌌  ${modDisplayName} + Shift + 5             ➜  Interface Gráfica de Capturas
+    󰌌  Print / ${modDisplayName} + Shift + P     ➜  Menu de Captura de Tela (ScreenShoTer)
+    󰌌  Shift + Print / ${modDisplayName} + Shift + S ➜  Recorte de Área Interativo
+    󰌌  Ctrl + Print                              ➜  Capturar Janela Ativa
+    󰌌  Alt + Print                               ➜  Captura com Temporizador (5s)
+    󰌌  ${modDisplayName} + P                     ➜  Conta-gotas de Cor (Colorpicker)
     󰌌  ${modDisplayName} + Shift + R             ➜  Recarregar BSPWM e Polybar
     󰌌  ${modDisplayName} + ${
       if mod == "ctrl" then "Super" else "Ctrl"
     } + Q              ➜  Bloquear Sessão do Usuário
-    󰌌  Teclas de Volume / Brilho     ➜  Controle com Feedback Visual OSD"
+    󰌌  Teclas de Volume / Brilho / Mídia ➜  Controle com Feedback Visual OSD"
 
           CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
 
@@ -368,14 +582,17 @@ let
             *"Janela Flutuante"*) bspc node -t '~floating' ;;
             *"Esconder / Minimizar Janela"*) bspc node -g hidden=on ;;
             *"Restaurar Última Janela"*) bspc node any.hidden.local -g hidden=off -f ;;
-            *"Captura de Tela Inteira"*) ${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath} ;;
-            *"Seleção de Área"*) ${pkgs.flameshot}/bin/flameshot gui ;;
+            *"Captura de Tela"*) ${screenshotScript} menu & ;;
+            *"Recorte de Área"*) ${screenshotScript} area & ;;
+            *"Conta-gotas"*) ${colorPickerScript} & ;;
             *"Recarregar BSPWM"*) bspc wm -r ;;
             *"Bloquear Sessão"*) loginctl lock-session ;;
           esac
         }
 
         show_control_center() {
+          OPT_SHOT="󰹑  Captura de Tela & Recorte (ScreenShoTer)"
+          OPT_COLOR="󰈊  Conta-gotas de Cor (Colorpicker)"
           OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
           OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
           OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
@@ -388,7 +605,9 @@ let
           OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
           OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
 
-          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+            "$OPT_SHOT" \
+            "$OPT_COLOR" \
             "$OPT_RES" \
             "$OPT_SOUND" \
             "$OPT_NET" \
@@ -402,6 +621,8 @@ let
             "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings ")
 
           case "$CHOICE" in
+            "$OPT_SHOT") ${screenshotScript} menu & ;;
+            "$OPT_COLOR") ${colorPickerScript} & ;;
             "$OPT_RES")
               R_1080="1920x1080 (Full HD 1080p)"
               R_2K="2560x1440 (Quad HD 2K)"
@@ -597,11 +818,18 @@ in
           # Botão Direito no Desktop (Apenas na Root Window sem janela ou menu de app sob o cursor)
           "~button3" = "${desktopRightClickScript}";
           "${mod} + button3" = "${quickSettings}";
-          "${mod} + comma" = "${quickSettings}"; # Cmd + , (Atalho universal de Preferências)
-          "${mod} + p" = "${quickSettings}";
+          "${mod} + comma" = "${quickSettings}"; # Atalho universal de Preferências
           "${mod} + c" = "${quickSettings}"; # Control Center
-          "${mod} + slash" = "${quickSettings} --manual"; # Cmd + / (Manual & Cheat-Sheet de Atalhos)
+          "${altMod} + comma" = "${quickSettings}";
+          "${altMod} + c" = "${quickSettings}";
+          "${mod} + slash" = "${quickSettings} --manual"; # Manual & Cheat-Sheet de Atalhos
           "${mod} + F1" = "${quickSettings} --manual"; # F1 (Ajuda do Sistema)
+
+          # --- Captura de Tela & Conta-gotas (Estilo gh0stzk) ---
+          "${mod} + p" = "${colorPickerScript}"; # Conta-gotas de cor (Colorpicker)
+          "${altMod} + p" = "${colorPickerScript}";
+          "${mod} + shift + p" = "${screenshotScript} menu"; # Menu Rofi ScreenShoTer
+          "${altMod} + shift + p" = "${screenshotScript} menu";
 
           # --- Aplicativos & Launchers (macOS Style) ---
           # Spotlight (Cmd + Space) e Rofi Drun
@@ -690,13 +918,14 @@ in
           "${mod} + shift + r" = "bspc wm -r; ${pkgs.procps}/bin/pkill -USR1 -x sxhkd; ${pkgs.polybar}/bin/polybar-msg cmd restart";
           "${mod} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd";
 
-          # --- Controles de Mídia e Áudio com Dunst OSD ---
+          # --- Controles de Mídia e Áudio com Dunst OSD (Estilo gh0stzk) ---
           "XF86AudioRaiseVolume" = "${volumeOsd} up";
           "XF86AudioLowerVolume" = "${volumeOsd} down";
           "XF86AudioMute" = "${volumeOsd} mute";
-          "XF86AudioPlay" = "${pkgs.playerctl}/bin/playerctl play-pause";
-          "XF86AudioNext" = "${pkgs.playerctl}/bin/playerctl next";
-          "XF86AudioPrev" = "${pkgs.playerctl}/bin/playerctl previous";
+          "XF86AudioPlay" = "${mediaControl} play-pause";
+          "XF86AudioNext" = "${mediaControl} next";
+          "XF86AudioPrev" = "${mediaControl} prev";
+          "XF86AudioStop" = "${mediaControl} stop";
 
           # --- Controle de Brilho da Tela (MacBook F1 / F2) ---
           "XF86MonBrightnessUp" = "${brightnessOsd} up";
@@ -729,5 +958,13 @@ in
           "super + shift + F5" = "${kbdBrightnessOsd} toggle";
         };
     };
+
+    # Utilitários de linha de comando para uso interativo e scripts
+    home.packages = [
+      (pkgs.writeShellScriptBin "bspwm-screenshot" ''exec ${screenshotScript} "$@"'')
+      (pkgs.writeShellScriptBin "screenshoter" ''exec ${screenshotScript} "$@"'')
+      (pkgs.writeShellScriptBin "bspwm-colorpicker" ''exec ${colorPickerScript} "$@"'')
+      (pkgs.writeShellScriptBin "bspwm-media-control" ''exec ${mediaControl} "$@"'')
+    ];
   };
 }
