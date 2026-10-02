@@ -1296,6 +1296,20 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Script `desktopNodeScript` atualizado para obter explicitamente `cur_node=$(bspc query -N -n focused)` e, em caso de `--follow`, focar tanto o monitor de destino (`bspc monitor -f "$target_m"`) quanto o desktop (`bspc desktop -f "$target_id"`) e o próprio nó (`bspc node "$cur_node" -f`).
     - Adicionado mapeamento duplo para workspaces (`${mod}` e `${altMod}`), permitindo alternar e enviar janelas usando **tanto `Super` quanto `Alt`** indiferentemente em qualquer máquina.
 
+- **BSPWM Scratchpad — Migração de `tdrop` para Script Nativo Dinâmico (gh0stzk/dotfiles)**:
+  - **Localizações**:
+    - [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix).
+    - [modules/home-manager/desktop/environments/bspwm/bspwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/bspwm.nix).
+  - **Componentes Removidos (Não mais necessários)**:
+    - O pacote externo `pkgs.tdrop` foi removido de `home.packages` e da linha de comando do atalho de scratchpad.
+  - **Implementação do Novo Script Nativo (`bspwm-scratchpad`)**:
+    - Inspirado na arquitetura do rice [gh0stzk/dotfiles](https://github.com/gh0stzk/dotfiles), utilizando ferramentas nativas do ecossistema BSPWM (`bspc`, `jq`, `xdo`, `xprop`).
+    - *Monitor-Aware*: Interroga a geometria do monitor atualmente em foco via `bspc query -T -m focused` e calcula largura proporcional (75%) e altura (48%), centralizando a janela horizontalmente e posicionando-a 44px abaixo do topo do monitor (perfeitamente alinhada logo abaixo da Polybar flutuante sem cobri-la).
+    - *Alternância Suave (`Toggle`)*: Consulta o estado da janela `bspwm-scratch` via `bspc query -T -n "$WINDOW_ID"`. Se visível, esconde com `bspc node -g hidden`. Se oculta, move para o monitor em foco (`-m focused`), reposiciona/redimensiona via `xdo` para a resolução do monitor atual e exibe com foco imediato (`-g hidden=off -f`).
+    - *Inicialização com Regra `--one-shot`*: Cria regra temporária no BSPWM com `state=floating sticky=on layer=above` e lança o terminal Alacritty dedicado com `--class bspwm-scratch`.
+    - Atalhos integrados e compatíveis tanto com Super quanto com Alt: `${mod} + u` e `${altMod} + u`.
+    - Adicionado `xdo` em `home.packages` do BSPWM.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

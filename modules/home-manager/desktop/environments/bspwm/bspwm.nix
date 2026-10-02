@@ -587,7 +587,7 @@ in
         libinput-gestures
         wmctrl
         xdotool
-        tdrop
+        xdo
         xprop
         xkb-switch
       ];

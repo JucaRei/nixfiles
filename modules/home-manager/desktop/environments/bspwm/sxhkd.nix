@@ -18,7 +18,77 @@ let
     else
       ''if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi'';
 
-  scratchpadCmd = "${pkgs.tdrop}/bin/tdrop -am -w 80% -h 50% -x 10% -y 5% -s dropdown -n bspwm-scratch ${pkgs.alacritty}/bin/alacritty --class bspwm-scratch,bspwm-scratch";
+  # Script nativo de Scratchpad dinâmico para BSPWM (Inspirado no gh0stzk/dotfiles)
+  # - Monitor-aware (adapta geometria e move instantaneamente para o monitor ativo)
+  # - Alternância suave via flag hidden nativa do bspwm
+  # - Centralizado horizontalmente e posicionado logo abaixo da Polybar
+  scratchpadScript = pkgs.writeShellScript "bspwm-scratchpad" ''
+    SCRATCHPAD_NAME="bspwm-scratch"
+    MAX_WIDTH_PERCENT=75
+    HEIGHT_PERCENT=48
+
+    # 1. Obter geometria do monitor atualmente focado
+    mon_geo=$(${pkgs.bspwm}/bin/bspc query -T -m focused | ${pkgs.jq}/bin/jq -r '.rectangle | "\(.width) \(.height) \(.x) \(.y)"')
+    SCREEN_WIDTH=$(echo "$mon_geo" | awk '{print $1}')
+    SCREEN_HEIGHT=$(echo "$mon_geo" | awk '{print $2}')
+    MONITOR_X=$(echo "$mon_geo" | awk '{print $3}')
+    MONITOR_Y=$(echo "$mon_geo" | awk '{print $4}')
+
+    # 2. Calcular dimensões e posicionamento (respeitando espaçamento da Polybar)
+    WIDTH=$((SCREEN_WIDTH * MAX_WIDTH_PERCENT / 100))
+    HEIGHT=$((SCREEN_HEIGHT * HEIGHT_PERCENT / 100))
+    X_POS=$((MONITOR_X + (SCREEN_WIDTH - WIDTH) / 2))
+    Y_POS=$((MONITOR_Y + 44))
+
+    # 3. Localizar janela existente do scratchpad
+    get_scratchpad_id() {
+      for node in $(${pkgs.bspwm}/bin/bspc query -N -n ".floating.window" 2>/dev/null); do
+        if ${pkgs.xprop}/bin/xprop -id "$node" WM_CLASS 2>/dev/null | grep -q "$SCRATCHPAD_NAME"; then
+          echo "$node"
+          return 0
+        fi
+      done
+    }
+
+    WINDOW_ID=$(get_scratchpad_id)
+
+    if [ -n "$WINDOW_ID" ]; then
+      CURRENT_STATE=$(${pkgs.bspwm}/bin/bspc query -T -n "$WINDOW_ID" | ${pkgs.jq}/bin/jq -r '.hidden')
+
+      if [ "$CURRENT_STATE" = "false" ]; then
+        # Se visível: oculta
+        ${pkgs.bspwm}/bin/bspc node "$WINDOW_ID" -g hidden
+      else
+        # Se oculto: move para o monitor focado, reposiciona, redimensiona e foca
+        ${pkgs.bspwm}/bin/bspc node "$WINDOW_ID" -m focused
+        ${pkgs.xdo}/bin/xdo move -x "$X_POS" -y "$Y_POS" "$WINDOW_ID"
+        ${pkgs.xdo}/bin/xdo resize -w "$WIDTH" -h "$HEIGHT" "$WINDOW_ID"
+        ${pkgs.bspwm}/bin/bspc node "$WINDOW_ID" -g hidden=off -f
+      fi
+    else
+      # Se não existe, cria a regra temporária one-shot no BSPWM
+      ${pkgs.bspwm}/bin/bspc rule -a "$SCRATCHPAD_NAME" \
+        state=floating \
+        sticky=on \
+        layer=above \
+        rectangle="''${WIDTH}x''${HEIGHT}+''${X_POS}+''${Y_POS}" \
+        --one-shot
+
+      # Inicia o terminal dedicado com a classe bspwm-scratch
+      ${pkgs.alacritty}/bin/alacritty --class "$SCRATCHPAD_NAME,$SCRATCHPAD_NAME" &
+
+      # Aguarda a criação e ajusta posição/tamanho se necessário
+      for i in 1 2 3 4 5; do
+        sleep 0.1
+        WINDOW_ID=$(get_scratchpad_id)
+        if [ -n "$WINDOW_ID" ]; then
+          ${pkgs.xdo}/bin/xdo move -x "$X_POS" -y "$Y_POS" "$WINDOW_ID" 2>/dev/null || true
+          ${pkgs.xdo}/bin/xdo resize -w "$WIDTH" -h "$HEIGHT" "$WINDOW_ID" 2>/dev/null || true
+          break
+        fi
+      done
+    fi
+  '';
 
   flameshotSavePath =
     config.services.flameshot.settings.General.savePath or "${config.home.homeDirectory}/Pictures/Screenshots";
@@ -574,8 +644,9 @@ in
           "${altMod} + Tab" = "${pkgs.rofi}/bin/rofi -show window";
           "${mod} + w" = "${pkgs.rofi}/bin/rofi -show window";
 
-          # Terminal Scratchpad (Cmd + U)
-          "${mod} + u" = scratchpadCmd;
+          # Terminal Scratchpad (Cmd + U / Super + U / Alt + U)
+          "${mod} + u" = "${scratchpadScript}";
+          "${altMod} + u" = "${scratchpadScript}";
 
           # --- Janelas (macOS Style: Cmd + Q / Cmd + Opt + Esc) ---
           "${mod} + q" = "bspc node -c";
