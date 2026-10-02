@@ -40,46 +40,57 @@ in
       modifierKey = "Alt";
     };
 
-    system.programs = {
-      console = {
-        bat.enable = true;
-        eza.enable = true;
-      };
-      browsers = {
-        firefox.enable = true;
-      };
-      editors = {
-        antigravity.enable = true;
-      };
-      file-manager = {
-        thunar.enable = true;
-      };
-      terminal = {
-        enable = true;
-        name = "alacritty";
-      };
-      multimedia = {
-        mpv = {
-          enable = true;
-          # useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
-          installPackage = true;
+    system = {
+      programs = {
+        console = {
+          bat.enable = true;
+          eza.enable = true;
         };
-      };
-      tools = {
-        yt-dlp = {
-          enable = true;
-        };
-        fastfetch = {
-          enable = true;
-        };
-      };
-      shells = {
-        default = "zsh";
-      };
-    };
 
-    system.services = {
-      fcitx5.enable = true;
+        browsers = {
+          firefox.enable = true;
+        };
+
+        editors = {
+          antigravity.enable = true;
+        };
+
+        file-manager = {
+          thunar.enable = true;
+        };
+
+        terminal = {
+          enable = true;
+          name = "alacritty";
+        };
+
+        multimedia = {
+          mpv = {
+            enable = true;
+            # useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
+            installPackage = true;
+          };
+        };
+
+        tools = {
+          yt-dlp = {
+            enable = true;
+          };
+
+          fastfetch = {
+            enable = true;
+          };
+        };
+
+        shells = {
+          default = "zsh";
+        };
+
+      };
+
+      services = {
+        fcitx5.enable = true;
+      };
     };
 
     home = {

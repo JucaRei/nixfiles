@@ -319,7 +319,7 @@
         "$OPT_BLOCK" \
         "$OPT_REMOVE" \
         "$OPT_BACK" | ${pkgs.rofi}/bin/rofi -dmenu -i -p "$PROMPT_TEXT" \
-        -theme-str 'window {width: 540px; border-radius: 12px;} listview {lines: 6;}' -no-custom)
+        -theme-str 'window {width: 850px; border-radius: 14px;} listview {columns: 1; lines: 7;}' -no-custom)
 
       case "$CHOICE" in
         *"Conectar")
@@ -392,7 +392,7 @@
         local BM_OPT="󰂯  Abrir Blueman (Gerenciador Avançado)"
         local CH
         CH=$(printf "%s\n%s" "$OFF_OPT" "$BM_OPT" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰂲 Bluetooth Desligado " \
-          -theme-str 'window {width: 420px; border-radius: 12px;} listview {lines: 2;}' -no-custom)
+          -theme-str 'window {width: 560px; border-radius: 14px;} listview {columns: 1; lines: 2;}' -no-custom)
         case "$CH" in
           *"Ligar Bluetooth"*)
             toggle_power
@@ -475,7 +475,7 @@
 
       local SELECTED
       SELECTED=$(printf "%b" "$MENU_CONTENT" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰂯 Bluetooth " \
-        -theme-str 'window {width: 560px; border-radius: 12px;} listview {lines: 12;}' -no-custom)
+        -theme-str 'window {width: 900px; border-radius: 14px;} listview {columns: 1; lines: 14;}' -no-custom)
 
       [ -z "$SELECTED" ] && exit 0
 
@@ -586,7 +586,7 @@
       gsub(/^ +| +$/, "", ssid);
       if (ssid != "") {
         icon = (sec ~ /WPA|WEP/) ? "󰌾" : "󰤨";
-        printf "%s  %-25s [%s]\n", icon, ssid, bars;
+        printf "%s  %-48s  [%s]\n", icon, ssid, bars;
       }
     }' | sort -u)
 
@@ -599,7 +599,7 @@
       -dmenu \
       -i \
       -p "Redes Wi-Fi" \
-      -theme-str 'window {width: 380px; border-radius: 12px;} listview {lines: 10;}' \
+      -theme-str 'window {width: 820px; border-radius: 14px;} listview {columns: 1; lines: 13;}' \
       -no-custom)
 
     if [ -z "$chosen_line" ]; then
@@ -616,7 +616,7 @@
       exec "$0"
     fi
 
-    chosen_ssid=$(echo "$chosen_line" | awk -F'  ' '{print $2}' | sed 's/ \[.*//' | sed 's/^ *//;s/ *$//')
+    chosen_ssid=$(echo "$chosen_line" | sed -E 's/^[󰌾󰤨 ]+//; s/  +\[.*//; s/ +$//')
 
     if [ -n "$chosen_ssid" ]; then
       saved_conn=$(nmcli -g NAME connection show | grep -Fx "$chosen_ssid" || true)
@@ -629,7 +629,7 @@
         fi
       else
         if [[ "$chosen_line" =~ "󰌾" ]]; then
-          wifi_pass=$(rofi -dmenu -password -p "Senha para $chosen_ssid" -theme-str 'window {width: 320px; border-radius: 12px;}')
+          wifi_pass=$(rofi -dmenu -password -p "Senha para $chosen_ssid" -theme-str 'window {width: 600px; border-radius: 14px;}')
           if [ -n "$wifi_pass" ]; then
             dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
             if nmcli device wifi connect "$chosen_ssid" password "$wifi_pass"; then
@@ -655,7 +655,7 @@
           -dmenu \
           -i \
           -p "Power Menu" \
-          -theme-str 'window {width: 280px; border-radius: 12px;} listview {lines: 6;}' \
+          -theme-str 'window {width: 320px; border-radius: 14px;} listview {columns: 1; lines: 6;}' \
           -no-custom)
 
     case "$chosen" in
@@ -695,7 +695,7 @@
       entries="$entries$node: 󰖯 $title\n"
     done
 
-    chosen=$(printf "$entries" | rofi -dmenu -i -p " 󰖯 Restaurar Janela " -theme-str 'window { width: 480px; border-radius: 14px; }')
+    chosen=$(printf "$entries" | rofi -dmenu -i -p " 󰖯 Restaurar Janela " -theme-str 'window { width: 700px; border-radius: 14px; } listview { columns: 1; lines: 8; }')
     if [ -n "$chosen" ]; then
       selected_node=$(echo "$chosen" | cut -d: -f1)
       bspc node "$selected_node" -g hidden=off -f
@@ -792,7 +792,7 @@
       -dmenu \
       -i \
       -p "Layout" \
-      -theme-str 'window {width: 320px; border-radius: 12px;} listview {lines: 4;}' \
+      -theme-str 'window {width: 360px; border-radius: 14px;} listview {columns: 1; lines: 4;}' \
       -no-custom)
 
     if [ -n "$chosen" ]; then

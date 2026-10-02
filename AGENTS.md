@@ -1374,6 +1374,24 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Retrocompatibilidade de Presets**: Link simbólico automático em `~/.config/fastfetch/presets/default.jsonc` apontando para o `config.jsonc` gerado pelo Home Manager, suportando comandos manuais como `fastfetch --preset default`.
     - **Limpeza Automática**: Integrado ao `system.cleanup` (`cleanup/default.nix`) para purgar `~/.config/fastfetch` automaticamente caso o módulo seja desativado.
 
+- **BSPWM / Polybar / Waybar — Dimensionamento e Colunas dos Menus Rofi (Bluetooth, Wi-Fi e Utilitários)**:
+  - **Localizações**:
+    - [modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix)
+    - [modules/home-manager/desktop/display-servers/wayland/traditional/waybar.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/display-servers/wayland/traditional/waybar.nix)
+  - **Causa Raiz do Truncamento dos Nomes**:
+    - No tema global do Rofi (`rofi.nix`), o elemento `listview` foi configurado por padrão com `columns = 2;` para estilo de launcher de aplicativos em grade (`drun`).
+    - Quando scripts com `rofi -dmenu` (Bluetooth, Wi-Fi, Powermenu, Janelas Minimizadas) eram executados sem especificar `columns: 1;` no `-theme-str`, herdavam a divisão em duas colunas, fazendo com que janelas dividissem o espaço horizontal em metades estreitas.
+    - Como linhas de Bluetooth contêm ícone, nome do dispositivo, MAC, status de conexão e nível de bateria (ex: `󰂱 Space Travel [28:11:A5:68:55:01] (󰂱 Conectado 󰁹 80%)`) e o Wi-Fi contém SSIDs longos com segurança e intensidade de sinal (ex: `󰌾 MinhaRede-Fibra-Optica-Casa-5G-SuperRapida [▂▄▆█]`), o texto excedia a largura de meia coluna e era truncado com reticências.
+  - **Correções Aplicadas**:
+    - **Coluna Única Forçada (`columns: 1`)**: Injetado explicitamente `listview { columns: 1; ... }` em todas as invocações de `-dmenu` nos scripts do Rofi.
+    - **Ampliação das Janelas no Rofi**:
+      - Menu Principal Bluetooth: ampliado para `900px` de largura com `lines: 14`, garantindo que nomes extensos de periféricos, MAC e porcentagem de bateria caibam em uma única linha com margens folgadas.
+      - Submenu de Ações do Dispositivo Bluetooth: ampliado para `850px` com `lines: 7` e prompt detalhado sem truncamento.
+      - Estado Bluetooth Desligado: ampliado para `560px` com `lines: 2`.
+      - Menu Wi-Fi: ampliado para `820px` com `lines: 13`, espaçamento de SSID expandido para `%-48s` com barras de intensidade de sinal alinhadas à direita.
+      - Diálogo de Senha Wi-Fi: ampliado para `600px` para acomodar prompts com nomes de rede extensos.
+      - Power Menu, Janelas Minimizadas e Seletor de Teclado: padronizados com `columns: 1` e larguras confortáveis (320px, 700px e 360px, respectivamente).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

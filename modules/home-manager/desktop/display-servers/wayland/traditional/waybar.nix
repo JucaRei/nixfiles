@@ -79,7 +79,7 @@ let
       menu="$menu$icon $ssid ($signal%)$lock\n"
     done <<< "$networks"
 
-    chosen=$(printf "$menu" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰤨 WiFi " -theme-str 'window {width: 420px; height: 480px;} listview {lines: 12;}')
+    chosen=$(printf "$menu" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰤨 WiFi " -theme-str 'window {width: 750px; height: 480px;} listview {columns: 1; lines: 12;}')
     [ -z "$chosen" ] && exit 0
 
     case "$chosen" in
@@ -98,7 +98,7 @@ let
         if $NMCLI -t -f NAME con show | grep -qx "$ssid"; then
           $NMCLI con up id "$ssid" 2>/dev/null
         else
-          pass=$(${pkgs.rofi}/bin/rofi -dmenu -p " 󰌾 Senha WiFi: $ssid " -password -theme-str 'window {width: 420px; height: 100px;} listview {lines: 0;}')
+          pass=$(${pkgs.rofi}/bin/rofi -dmenu -p " 󰌾 Senha WiFi: $ssid " -password -theme-str 'window {width: 580px; height: 100px;} listview {lines: 0;}')
           if [ -n "$pass" ]; then
             $NMCLI dev wifi connect "$ssid" password "$pass" 2>/dev/null
           fi
