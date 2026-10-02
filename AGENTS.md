@@ -1287,14 +1287,16 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - *MangoWM*: Adicionada `windowrule` correspondente para `isfloating:1`.
 
 - **BSPWM SXHKD — Correção no Envio de Janelas para Workspaces (`bspwm-node-to-desktop`)**:
-  - **Localização**: [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix).
+  - **Localização**: [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix) e [home-manager/hosts/nitro/default.nix](file:///home/juca/.dotfiles/nixfiles/home-manager/hosts/nitro/default.nix).
   - **Causas Raiz**:
-    1. *Foco de Monitor em Setups Multi-Monitor*: Em setups com múltiplos monitores (ex: host `nitro` com `HDMI-1-0` e `eDP-1`), ao enviar a janela para um workspace situado no outro monitor com `--follow`, o `bspc node -d "$target_id" --follow` transferia o nó, mas o foco do X11/BSPWM permanecia preso no monitor de origem, dando a impressão de que a janela havia sumido ou não foi transferida.
-    2. *Ausência de Seleção Explícita de Nó*: O comando `bspc node -d` sem o ID explícito da janela sob foco (`focused`) podia falhar dependendo do estado da janela (flutuante ou sem foco estrito).
-    3. *Colisão de Tecla Modificadora (`Super` vs `Alt`)*: Em hosts como o `nitro`, `desktop.modifierKey` é configurado como `"Alt"`, de modo que `${mod}` resolvia para `alt`. Se o usuário tentasse `Super + Shift + {1-9,0}` (tecla Windows), o SXHKD descartava a combinação por não estar mapeada.
+    1. *Interceptação do `Alt + Shift` pelo XKB (`grp:alt_shift_toggle`)*: A opção `options = [ "grp:alt_shift_toggle" ]` no host `nitro` interceptava `Alt + Shift` no nível do servidor X11 para alternância de layout de teclado (US/ABNT2), consumindo o evento de `Shift`. Ao pressionar `Alt + Shift + {1-9,0}`, o SXHKD recebia apenas `Alt + {1-9,0}`, disparando o `bspwm-desktop-focus` em vez do envio de nó (sintoma: *"não envia a janela, somente vai para a área de trabalho"*).
+    2. *Ausência de Mapeamento com `Super` (`${altMod}`)*: Como o `nitro` utiliza `modifierKey = "Alt"`, o envio de janelas estava mapeado apenas para `alt + shift + ...`. Usuários tentando usar a tecla `Super` (Windows) tinham o envio ignorado ou colidindo com screenshots.
+    3. *Foco de Monitor em Setups Multi-Monitor*: Em setups com múltiplos monitores (`HDMI-1-0` com 1, 3, 5, 7, 9 e `eDP-1` com 2, 4, 6, 8, 0), ao enviar a janela para um workspace situado no outro monitor com `--follow`, o `bspc node -d "$d"` transferia o nó, mas o foco do monitor de destino precisava ser ativado explicitamente.
   - **Correções Aplicadas**:
-    - Script `desktopNodeScript` atualizado para obter explicitamente `cur_node=$(bspc query -N -n focused)` e, em caso de `--follow`, focar tanto o monitor de destino (`bspc monitor -f "$target_m"`) quanto o desktop (`bspc desktop -f "$target_id"`) e o próprio nó (`bspc node "$cur_node" -f`).
-    - Adicionado mapeamento duplo para workspaces (`${mod}` e `${altMod}`), permitindo alternar e enviar janelas usando **tanto `Super` quanto `Alt`** indiferentemente em qualquer máquina.
+    - **Host `nitro`**: Alterada a opção de teclado para `options = [ "grp:caps_toggle" ]`, liberando `Alt + Shift` completamente para o gerenciamento de janelas e atribuindo a alternância US/ABNT2 ao Caps Lock.
+    - **`sxhkd.nix`**: Mapeamento duplo para workspaces adicionando `${altMod} + shift + {1-9,0}` e `${altMod} + ctrl + {1-9,0}`, permitindo alternar e enviar janelas usando **tanto `Super` quanto `Alt`**.
+    - **`desktopNodeScript`**: Atualizado para localizar o monitor de destino via `bspc query -M` e focar explicitamente o monitor (`bspc monitor -f "$m"`), o desktop (`bspc desktop -f "$d"`) e o nó transferido (`bspc node "$cur_node" -f`).
+    - **Remoção de Colisão em Screenshots**: Removido o override condicional de `super + shift + {3,4,5}` que capturava workspaces 3, 4 e 5 no perfil PC standard.
 
 - **BSPWM Scratchpad — Migração de `tdrop` para Script Nativo Dinâmico (gh0stzk/dotfiles)**:
   - **Localizações**:

@@ -166,12 +166,12 @@ in
         measurement = pt;
       };
 
-      # Teclado com layouts US Internacional e ABNT2 (alternância via Polybar ou Alt+Shift)
+      # Teclado com layouts US Internacional e ABNT2 (alternância via Caps Lock ou Polybar)
       keyboard = {
         layout = "us,br";
         variant = "intl,abnt2";
         model = "pc105";
-        options = [ "grp:alt_shift_toggle" ];
+        options = [ "grp:caps_toggle" ];
       };
     };
 

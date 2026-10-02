@@ -143,14 +143,6 @@ let
         "super + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
         "alt + shift + s" = "${pkgs.flameshot}/bin/flameshot gui";
         "XF86SelectiveScreenshot" = "${pkgs.flameshot}/bin/flameshot gui";
-      }
-      // lib.optionalAttrs (mod != "super") {
-        # Se mod != "super" (ex: Nitro onde mod é Alt), Super + Shift + {3,4,5} não colidem
-        # com os workspaces (que usam Alt + Shift + {1-9,0}).
-        # Permite que o MX Keys funcione imediatamente mesmo se estiver em modo Mac (Fn + O).
-        "super + shift + 3" = "${pkgs.flameshot}/bin/flameshot full -p ${flameshotSavePath}";
-        "super + shift + 4" = "${pkgs.flameshot}/bin/flameshot gui";
-        "super + shift + 5" = "${pkgs.flameshot}/bin/flameshot gui";
       };
 
   normMod =
@@ -482,12 +474,19 @@ let
       exit 1
     fi
 
+    # Envia a janela para o workspace de destino
+    $BSPC node "$cur_node" -d "$d"
+
     if [ "$follow" = "true" ]; then
-      # Envia a janela e segue o foco
-      $BSPC node "$cur_node" -d "$d" --follow
-    else
-      # Envia a janela sem mudar o foco
-      $BSPC node "$cur_node" -d "$d"
+      # Localiza o monitor onde o desktop de destino está e foca o monitor, o desktop e a janela
+      for m in $($BSPC query -M --names 2>/dev/null); do
+        if $BSPC query -D -m "$m" --names 2>/dev/null | grep -qx "$d"; then
+          $BSPC monitor -f "$m" 2>/dev/null
+          break
+        fi
+      done
+      $BSPC desktop -f "$d" 2>/dev/null
+      $BSPC node "$cur_node" -f 2>/dev/null
     fi
   '';
 
@@ -674,11 +673,13 @@ in
           "${mod} + {1-9,0}" = "${desktopFocusScript} {1-9,0}";
           "${altMod} + {1-9,0}" = "${desktopFocusScript} {1-9,0}";
 
-          # Enviar janela para área de trabalho com foco imediato (--follow)
+          # Enviar janela para área de trabalho com foco imediato (--follow) (compatível com Super e Alt)
           "${mod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
+          "${altMod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
 
-          # Enviar janela para área de trabalho em segundo plano (sem follow)
+          # Enviar janela para área de trabalho em segundo plano (sem follow) (compatível com Super e Alt)
           "${mod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
+          "${altMod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
 
           # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
           "${mod} + ${altMod} + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
