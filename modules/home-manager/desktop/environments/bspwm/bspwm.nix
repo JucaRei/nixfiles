@@ -438,9 +438,9 @@ in
             # Carregar recursos do X11 (incluindo tema e tamanho de cursor Xcursor)
             [ -f "$HOME/.Xresources" ] && ${pkgs.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
 
-            # Iniciar daemon de atalhos de teclado (SXHKD)
+            # Iniciar daemon de atalhos de teclado (SXHKD) a partir de $HOME
             pkill -x sxhkd || true
-            ${pkgs.sxhkd}/bin/sxhkd &
+            (cd "$HOME" && ${pkgs.sxhkd}/bin/sxhkd) &
 
             # Importar variáveis de ambiente para serviços do usuário (incluindo método de entrada Fcitx5)
             systemctl --user import-environment DISPLAY XAUTHORITY LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE

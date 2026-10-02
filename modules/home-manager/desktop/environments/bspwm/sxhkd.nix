@@ -74,8 +74,8 @@ let
         rectangle="''${WIDTH}x''${HEIGHT}+''${X_POS}+''${Y_POS}" \
         --one-shot
 
-      # Inicia o terminal dedicado com a classe bspwm-scratch
-      ${pkgs.alacritty}/bin/alacritty --class "$SCRATCHPAD_NAME,$SCRATCHPAD_NAME" &
+      # Inicia o terminal dedicado com a classe bspwm-scratch em $HOME
+      ${pkgs.alacritty}/bin/alacritty --class "$SCRATCHPAD_NAME,$SCRATCHPAD_NAME" --working-directory "$HOME" &
 
       # Aguarda a criação e ajusta posição/tamanho se necessário
       for i in 1 2 3 4 5; do
@@ -572,7 +572,7 @@ let
 
           case "$CHOICE" in
             *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
-            *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
+            *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty --working-directory "$HOME" & ;;
             *"Navegador Web Padrão"*) ${browserLaunchCmd} ;;
             *"Menu Interativo de Bluetooth"*) rofi-bluetooth & ;;
             *"Gerenciador de Arquivos"*) ''${fmCmd} ~ & ;;
@@ -652,7 +652,7 @@ let
               if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi
               ;;
             "$OPT_FILES") ''${fmCmd} ~ & ;;
-            "$OPT_TERM") ${pkgs.alacritty}/bin/alacritty & ;;
+            "$OPT_TERM") ${pkgs.alacritty}/bin/alacritty --working-directory "$HOME" & ;;
             "$OPT_KEYS") show_manual ;;
             "$OPT_RELOAD")
               bspc wm -r
@@ -849,10 +849,10 @@ in
           "${mod} + shift + b" = "rofi-bluetooth";
           "${altMod} + shift + b" = "rofi-bluetooth";
 
-          # Terminal (Cmd + Return, Cmd + T)
-          "${mod} + Return" = "${pkgs.alacritty}/bin/alacritty";
-          "${mod} + KP_Enter" = "${pkgs.alacritty}/bin/alacritty";
-          "${mod} + t" = "${pkgs.alacritty}/bin/alacritty";
+          # Terminal (Cmd + Return, Cmd + T) - sempre em $HOME
+          "${mod} + Return" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";
+          "${mod} + KP_Enter" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";
+          "${mod} + t" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";
 
           # Finder / Gerenciador de Arquivos (Cmd + Shift + F, Cmd + E)
           "${mod} + e" = fmCmd;

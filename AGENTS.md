@@ -1350,6 +1350,18 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
          - Atalho global de teclado: `${mod} + Shift + B` e `${altMod} + Shift + B`.
          - Adicionado ao menu Quick Settings / Control Center e documentado no Cheat-Sheet de atalhos.
 
+- **BSPWM SXHKD — Diretório Padrão de Trabalho do Terminal (`$HOME` vs Herança de Processo)**:
+  - **Localizações**:
+    - [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix)
+    - [modules/home-manager/desktop/environments/bspwm/bspwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/bspwm.nix)
+  - **Causa Raiz**:
+    - Em sistemas Unix/Linux, todo processo filho (`child process`) gerado herda o diretório de trabalho atual (`$PWD` / `cwd`) do processo pai.
+    - Quando o daemon `sxhkd` é reiniciado manualmente no terminal através de um comando como `pkill -x sxhkd; sxhkd &` de dentro de `~/.dotfiles/nixfiles`, o próprio `sxhkd` passa a ter `~/.dotfiles/nixfiles` como seu `$PWD`.
+    - Ao pressionar <kbd>Super</kbd>/<kbd>Alt</kbd> + <kbd>Return</kbd>, o `sxhkd` chamava o binário do terminal sem argumento de diretório, fazendo o Alacritty herdar `~/.dotfiles/nixfiles`.
+  - **Solução Definitiva**:
+    - No `sxhkd.nix`, os atalhos de abertura do terminal (`${mod} + Return`, `KP_Enter`, `${mod} + t`), o scratchpad (`bspwm-scratchpad`) e os menus Rofi foram parametrizados explicitamente com `--working-directory "$HOME"` (ou `$HOME`).
+    - No `bspwm.nix` (`bspwmrc`), a inicialização do daemon de atalhos foi encapsulada com `(cd "$HOME" && ${pkgs.sxhkd}/bin/sxhkd) &`, garantindo que mesmo reiniciando o BSPWM via `bspc wm -r` em qualquer subpasta, o processo pai sempre opere a partir de `$HOME`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
