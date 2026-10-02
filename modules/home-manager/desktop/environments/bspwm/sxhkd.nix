@@ -454,13 +454,14 @@ let
 
   # Script universal de foco de workspace (funciona tanto em monitor único quanto em multi-monitor)
   desktopFocusScript = pkgs.writeShellScript "bspwm-desktop-focus" ''
+    BSPC="${pkgs.bspwm}/bin/bspc"
     d="$1"
     # 1. Tenta focar diretamente no monitor atual
-    bspc desktop -f "$d" 2>/dev/null && exit 0
+    $BSPC desktop -f "$d" 2>/dev/null && exit 0
     # 2. Se o workspace estiver em outro monitor, localiza o monitor e foca
-    for m in $(bspc query -M --names 2>/dev/null); do
-      if bspc query -D -m "$m" --names 2>/dev/null | grep -qx "$d"; then
-        bspc monitor -f "$m" 2>/dev/null && bspc desktop -f "$d" 2>/dev/null
+    for m in $($BSPC query -M --names 2>/dev/null); do
+      if $BSPC query -D -m "$m" --names 2>/dev/null | grep -qx "$d"; then
+        $BSPC monitor -f "$m" 2>/dev/null && $BSPC desktop -f "$d" 2>/dev/null
         exit 0
       fi
     done
@@ -468,44 +469,25 @@ let
 
   # Script universal de envio de janela para workspace (funciona tanto em monitor único quanto em multi-monitor)
   desktopNodeScript = pkgs.writeShellScript "bspwm-node-to-desktop" ''
+    BSPC="${pkgs.bspwm}/bin/bspc"
     d="$1"
     follow="$2"
 
-    target_id=""
-    target_m=""
-    for m in $(bspc query -M 2>/dev/null); do
-      for did in $(bspc query -D -m "$m" 2>/dev/null); do
-        if [ "$(bspc query -D -d "$did" --names 2>/dev/null)" = "$d" ]; then
-          target_id="$did"
-          target_m="$m"
-          break 2
-        fi
-      done
-    done
-
-    # Identificar o nó focado atual
-    cur_node=$(bspc query -N -n focused 2>/dev/null)
+    # Verifica se há janela focada
+    cur_node=$($BSPC query -N -n focused 2>/dev/null)
     [ -z "$cur_node" ] && exit 0
 
-    if [ -n "$target_id" ]; then
-      if [ "$follow" = "true" ]; then
-        bspc node "$cur_node" -d "$target_id" --follow
-        if [ -n "$target_m" ]; then
-          bspc monitor -f "$target_m" 2>/dev/null || true
-        fi
-        bspc desktop -f "$target_id" 2>/dev/null || true
-        bspc node "$cur_node" -f 2>/dev/null || true
-      else
-        bspc node "$cur_node" -d "$target_id"
-      fi
+    # Verifica se o desktop de destino existe
+    if ! $BSPC query -D -d "$d" --names >/dev/null 2>&1; then
+      exit 1
+    fi
+
+    if [ "$follow" = "true" ]; then
+      # Envia a janela e segue o foco
+      $BSPC node "$cur_node" -d "$d" --follow
     else
-      if [ "$follow" = "true" ]; then
-        bspc node "$cur_node" -d "$d" --follow 2>/dev/null || true
-        bspc desktop -f "$d" 2>/dev/null || true
-        bspc node "$cur_node" -f 2>/dev/null || true
-      else
-        bspc node "$cur_node" -d "$d" 2>/dev/null || true
-      fi
+      # Envia a janela sem mudar o foco
+      $BSPC node "$cur_node" -d "$d"
     fi
   '';
 
