@@ -152,10 +152,21 @@
     if [ "$power" = "yes" ]; then
       connected_dev=$(bluetoothctl info 2>/dev/null | grep "Name:" | cut -d: -f2 | sed 's/^ *//' | cut -c1-12)
       if [ -n "$connected_dev" ]; then
-        batt=$(bluetoothctl info 2>/dev/null | grep -i "Battery Percentage" | awk -F'[(%]' '{print $2}' | tr -d ' ')
-        [ -z "$batt" ] && batt=$(bluetoothctl info 2>/dev/null | grep -i "Battery Percentage" | awk '{print $NF}' | tr -d '%')
-        if [ -n "$batt" ]; then
-          echo "%{F${colors.blue}}󰂱%{F-} $connected_dev %{F${colors.green}}󰁹%{F-}$batt%"
+        batt_raw=$(bluetoothctl info 2>/dev/null | grep -i "Battery Percentage")
+        batt=$(echo "$batt_raw" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
+        if [ -n "$batt" ] && [ "$batt" -le 100 ] 2>/dev/null; then
+          batt_color="${colors.green}"
+          batt_icon="󰁹"
+          if [ "$batt" -le 20 ] 2>/dev/null; then
+            batt_color="${colors.red}"
+            batt_icon="󰂃"
+          elif [ "$batt" -le 40 ] 2>/dev/null; then
+            batt_color="${colors.yellow}"
+            batt_icon="󰁼"
+          elif [ "$batt" -le 70 ] 2>/dev/null; then
+            batt_icon="󰁾"
+          fi
+          echo "%{F${colors.blue}}󰂱%{F-} $connected_dev  %{F$batt_color}$batt_icon $batt%%{F-}"
         else
           echo "%{F${colors.blue}}󰂱%{F-} $connected_dev"
         fi
@@ -264,9 +275,8 @@
       echo "$info" | grep -q "Blocked: yes" && is_blocked="Sim"
 
       local batt_val
-      batt_val=$(echo "$info" | grep -i "Battery Percentage" | awk -F'[(%]' '{print $2}' | tr -d ' ')
-      [ -z "$batt_val" ] && batt_val=$(echo "$info" | grep -i "Battery Percentage" | awk '{print $NF}' | tr -d '%')
-      [ -n "$batt_val" ] && battery=" | 󰁹 Bateria: $batt_val%"
+      batt_val=$(echo "$info" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
+      [ -n "$batt_val" ] && [ "$batt_val" -le 100 ] 2>/dev/null && battery=" | 󰁹 Bateria: $batt_val%"
 
       local OPT_CONN
       if [ "$is_connected" = "Sim" ]; then
@@ -438,9 +448,8 @@
           local status_tag=""
           if echo "$dinfo" | grep -q "Connected: yes"; then
             local batt
-            batt=$(echo "$dinfo" | grep -i "Battery Percentage" | awk -F'[(%]' '{print $2}' | tr -d ' ')
-            [ -z "$batt" ] && batt=$(echo "$dinfo" | grep -i "Battery Percentage" | awk '{print $NF}' | tr -d '%')
-            if [ -n "$batt" ]; then
+            batt=$(echo "$dinfo" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
+            if [ -n "$batt" ] && [ "$batt" -le 100 ] 2>/dev/null; then
               status_tag="  (󰂱 Conectado 󰁹 $batt%)"
             else
               status_tag="  (󰂱 Conectado)"

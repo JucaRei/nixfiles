@@ -1342,7 +1342,8 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
          - Bloquear / Desbloquear dispositivo.
          - Remover / Esquecer dispositivo.
        - **Ícones Nerd Font Inteligentes por Categoria**: Detecta a classe do dispositivo via `bluetoothctl info` e exibe ícones contextuais (fone de ouvido `󰋋`, headphone `󰥰`, caixa de som `󰓃`, teclado `󰌌`, mouse `󰍽`, smartphone `󰏲`, computador `󰌢`, genérico `󰂯`).
-       - **Detecção de Nível de Bateria**: Exibe a porcentagem da bateria tanto na listagem do Rofi (`󰁹 85%`) quanto na Polybar (`󰂱 Sony XM4 󰁹 85%`).
+       - **Detecção e Formatação de Bateria**: Extração resiliente de dígitos via regex (`sed` + `tr -dc '0-9'`) para evitar caracteres residuais como parênteses `(80)` do BlueZ (`80)%`), com ícones dinâmicos (`󰁹`, `󰁾`, `󰁼`, `󰂃`), cores adaptativas (verde, amarelo, vermelho) e espaçamento elegante na Polybar (`󰂱 Space Travel  󰁹 80%`).
+       - **Isolamento de Pacotes**: `bluez` removido de `packages.nix` do Home Manager para evitar redundâncias com o pacote nativo do host Debian, mantendo apenas o applet `blueman` no perfil de usuário.
        - **Disponibilização Universal**:
          - Pacotes executáveis no PATH: `rofi-bluetooth` e `bspwm-bluetooth` exportados em `home.packages`.
          - Ativação direta ao clicar no módulo de Bluetooth da Polybar (botão esquerdo ou direito).

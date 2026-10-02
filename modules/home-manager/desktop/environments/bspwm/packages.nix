@@ -74,7 +74,6 @@ in
         jq
         networkmanagerapplet
         blueman
-        bluez
         pasystray
         galculator
         lxappearance
