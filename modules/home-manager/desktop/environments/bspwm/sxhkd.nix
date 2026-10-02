@@ -532,6 +532,7 @@ let
           KB_LIST="󰌌  ${modDisplayName} + Space / ${modDisplayName} + D     ➜  Lançador de Aplicativos (Rofi)
     󰌌  ${modDisplayName} + Enter / ${modDisplayName} + T     ➜  Abrir Terminal (Alacritty)
     󰌌  ${modDisplayName} + B                     ➜  Navegador Web Padrão
+    󰌌  ${modDisplayName} + Shift + B             ➜  Menu Interativo de Bluetooth
     󰌌  ${modDisplayName} + E / ${modDisplayName} + Shift + E ➜  Gerenciador de Arquivos (''${fmName})
     󰌌  ${modDisplayName} + , / ${modDisplayName} + C / Botão Dir. ➜ Painel Quick Settings / Preferências
     󰌌  ${modDisplayName} + / ou ${modDisplayName} + F1       ➜  Manual e Guia de Atalhos (Cheat-Sheet)
@@ -573,6 +574,7 @@ let
             *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
             *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty & ;;
             *"Navegador Web Padrão"*) ${browserLaunchCmd} ;;
+            *"Menu Interativo de Bluetooth"*) rofi-bluetooth & ;;
             *"Gerenciador de Arquivos"*) ''${fmCmd} ~ & ;;
             *"Painel Quick Settings"*) show_control_center ;;
             *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
@@ -593,6 +595,7 @@ let
         show_control_center() {
           OPT_SHOT="󰹑  Captura de Tela & Recorte (ScreenShoTer)"
           OPT_COLOR="󰈊  Conta-gotas de Cor (Colorpicker)"
+          OPT_BT="󰂯  Dispositivos Bluetooth (rofi-bluetooth)"
           OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
           OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
           OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
@@ -605,9 +608,10 @@ let
           OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
           OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
 
-          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
             "$OPT_SHOT" \
             "$OPT_COLOR" \
+            "$OPT_BT" \
             "$OPT_RES" \
             "$OPT_SOUND" \
             "$OPT_NET" \
@@ -623,6 +627,7 @@ let
           case "$CHOICE" in
             "$OPT_SHOT") ${screenshotScript} menu & ;;
             "$OPT_COLOR") ${colorPickerScript} & ;;
+            "$OPT_BT") rofi-bluetooth & ;;
             "$OPT_RES")
               R_1080="1920x1080 (Full HD 1080p)"
               R_2K="2560x1440 (Quad HD 2K)"
@@ -839,6 +844,10 @@ in
 
           # Navegador Web Padrão (Cmd + B)
           "${mod} + b" = browserLaunchCmd;
+
+          # Menu Interativo de Bluetooth (Cmd + Shift + B / Alt + Shift + B)
+          "${mod} + shift + b" = "rofi-bluetooth";
+          "${altMod} + shift + b" = "rofi-bluetooth";
 
           # Terminal (Cmd + Return, Cmd + T)
           "${mod} + Return" = "${pkgs.alacritty}/bin/alacritty";

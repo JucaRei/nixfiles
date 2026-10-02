@@ -1331,6 +1331,23 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     4. *Conta-gotas de Cor (`bspwm-colorpicker`)*:
        - Integrado ao `xcolor`: captura o valor HEX do pixel sob o cursor, copia para o clipboard e notifica no Dunst. Atalho: `${mod} + p` ou `${altMod} + p`.
     5. *Binários no PATH*: Disponibilizados `bspwm-screenshot`, `screenshoter`, `bspwm-colorpicker` e `bspwm-media-control` diretamente em `home.packages`.
+    6. *Menu Interativo Avançado de Bluetooth (`rofi-bluetooth` / `bspwm-bluetooth`)*:
+       - Implementado com base na arquitetura do rice [gh0stzk/dotfiles/config/bspwm/bin/rofi-bluetooth](https://github.com/gh0stzk/dotfiles/blob/master/config/bspwm/bin/rofi-bluetooth) e `nickclyde/rofi-bluetooth`.
+       - **Controles do Adaptador**: Liga/desliga controlador (com detecção e desbloqueio automático de `rfkill`), alternância em tempo real de varredura/descoberta (`Scan: ON/OFF`), modo pareável (`Pairable: ON/OFF`), visibilidade/descoberta (`Discoverable: ON/OFF`) e atalho direto para o Blueman (`blueman-manager`).
+       - **Submenu por Dispositivo (`device_menu`)**: Ao selecionar um dispositivo na lista, abre um submenu contextual com:
+         - Status detalhado: Conectado (Sim/Não), Pareado (Sim/Não), Confiável (Sim/Não) e Nível de Bateria (se suportado).
+         - Conectar / Desconectar.
+         - Parear / Desparear.
+         - Confiar / Remover Confiança (Trust / Untrust).
+         - Bloquear / Desbloquear dispositivo.
+         - Remover / Esquecer dispositivo.
+       - **Ícones Nerd Font Inteligentes por Categoria**: Detecta a classe do dispositivo via `bluetoothctl info` e exibe ícones contextuais (fone de ouvido `󰋋`, headphone `󰥰`, caixa de som `󰓃`, teclado `󰌌`, mouse `󰍽`, smartphone `󰏲`, computador `󰌢`, genérico `󰂯`).
+       - **Detecção de Nível de Bateria**: Exibe a porcentagem da bateria tanto na listagem do Rofi (`󰁹 85%`) quanto na Polybar (`󰂱 Sony XM4 󰁹 85%`).
+       - **Disponibilização Universal**:
+         - Pacotes executáveis no PATH: `rofi-bluetooth` e `bspwm-bluetooth` exportados em `home.packages`.
+         - Ativação direta ao clicar no módulo de Bluetooth da Polybar (botão esquerdo ou direito).
+         - Atalho global de teclado: `${mod} + Shift + B` e `${altMod} + Shift + B`.
+         - Adicionado ao menu Quick Settings / Control Center e documentado no Cheat-Sheet de atalhos.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

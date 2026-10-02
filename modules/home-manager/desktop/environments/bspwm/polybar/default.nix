@@ -30,6 +30,11 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.packages = [
+      (pkgs.writeShellScriptBin "rofi-bluetooth" ''exec ${scripts.rofiBluetoothMenu} "$@"'')
+      (pkgs.writeShellScriptBin "bspwm-bluetooth" ''exec ${scripts.rofiBluetoothMenu} "$@"'')
+    ];
+
     services.polybar = {
       enable = true;
       package = pkgs.polybar.override {

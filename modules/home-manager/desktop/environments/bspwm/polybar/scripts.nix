@@ -140,7 +140,7 @@
     fi
   '';
 
-  # --- Script de Status do Bluetooth ---
+  # --- Script de Status do Bluetooth com Detecção de Bateria e Conexão ---
   bluetoothScript = pkgs.writeShellScript "polybar-bluetooth" ''
     export PATH="${pkgs.bluez}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
     if ! command -v bluetoothctl >/dev/null 2>&1; then
@@ -152,117 +152,362 @@
     if [ "$power" = "yes" ]; then
       connected_dev=$(bluetoothctl info 2>/dev/null | grep "Name:" | cut -d: -f2 | sed 's/^ *//' | cut -c1-12)
       if [ -n "$connected_dev" ]; then
-        echo "%{F${colors.blue}}󰂱%{F-} $connected_dev"
-        # echo "󰂱 $connected_dev" | cut -c1-15
+        batt=$(bluetoothctl info 2>/dev/null | grep -i "Battery Percentage" | awk -F'[(%]' '{print $2}' | tr -d ' ')
+        [ -z "$batt" ] && batt=$(bluetoothctl info 2>/dev/null | grep -i "Battery Percentage" | awk '{print $NF}' | tr -d '%')
+        if [ -n "$batt" ]; then
+          echo "%{F${colors.blue}}󰂱%{F-} $connected_dev %{F${colors.green}}󰁹%{F-}$batt%"
+        else
+          echo "%{F${colors.blue}}󰂱%{F-} $connected_dev"
+        fi
       else
         echo "%{F${colors.sapphire}}󰂯%{F-}"
-        # echo "󰂯"
       fi
     else
       echo "%{F${colors.surface2}}󰂲%{F-}"
-      # echo "󰂲"
     fi
   '';
 
-  # --- Menu Interativo de Bluetooth (Rofi) ---
+  # --- Menu Interativo de Bluetooth Avançado (Rofi - Inspirado no gh0stzk/dotfiles e nickclyde) ---
   rofiBluetoothMenu = pkgs.writeShellScript "rofi-bluetooth" ''
-    export PATH="${pkgs.bluez}/bin:${pkgs.blueman}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
+    export PATH="${pkgs.bluez}/bin:${pkgs.blueman}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.util-linux}/bin:${pkgs.procps}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
 
-    power=$(bluetoothctl show 2>/dev/null | grep "Powered:" | awk '{print $2}')
-    if [ "$power" != "yes" ]; then
-      chosen=$(echo -e "󰂯  Ativar Bluetooth" | rofi \
-        -dmenu \
-        -i \
-        -p "Bluetooth Desativado" \
-        -theme-str 'window {width: 320px; border-radius: 12px;} listview {lines: 1;}' \
-        -no-custom)
-      if [[ "$chosen" =~ "Ativar" ]]; then
-        bluetoothctl power on
-        bluetoothctl pairable on
-        dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 -t 1500 "Bluetooth ativado"
-        exec "$0"
-      fi
-      exit 0
-    fi
+    notify_bt() {
+      local urgency="$1"
+      local icon="$2"
+      local title="$3"
+      local msg="$4"
+      ${pkgs.dunst}/bin/dunstify -a "Bluetooth" -u "$urgency" -i "$icon" -h string:x-dunst-stack-tag:bluetooth-osd -t 2500 "$title" "$msg"
+    }
 
-    bluetoothctl pairable on 2>/dev/null || true
+    power_on() {
+      bluetoothctl show 2>/dev/null | grep -q "Powered: yes"
+    }
 
-    # Se chamado com argumento "--scan", faz uma busca ativa de 5 segundos
-    if [ "$1" = "--scan" ]; then
-      dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "Escaneando dispositivos Bluetooth (5s)..."
-      bluetoothctl --timeout 5 scan on 2>/dev/null || true
-      dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 -t 1500 "Busca finalizada!"
-    fi
-
-    # Monta a lista formatada de dispositivos
-    dev_list=""
-    while IFS= read -r line; do
-      if [ -n "$line" ]; then
-        mac=$(echo "$line" | awk '{print $2}')
-        name=$(echo "$line" | cut -d' ' -f3-)
-        [ -z "$name" ] && name="Dispositivo sem nome"
-
-        info=$(bluetoothctl info "$mac" 2>/dev/null)
-        if echo "$info" | grep -q "Connected: yes"; then
-          dev_list+="󰂱  $name  [$mac]  (Conectado)\n"
-        elif echo "$info" | grep -q "Paired: yes"; then
-          dev_list+="󰂯  $name  [$mac]  (Pareado)\n"
-        else
-          dev_list+="󰑐  $name  [$mac]  (Disponível)\n"
-        fi
-      fi
-    done < <(bluetoothctl devices 2>/dev/null)
-
-    header="󰂲  Desativar Bluetooth\n󰑐  Escanear novos dispositivos\n󰂯  Gerenciador Bluetooth (Blueman)"
-    if [ -n "$dev_list" ]; then
-      menu_items="$header\n$dev_list"
-    else
-      menu_items="$header\n󰂲  Nenhum dispositivo encontrado (clique em Escanear)"
-    fi
-
-    chosen=$(echo -e "$menu_items" | rofi \
-      -dmenu \
-      -i \
-      -p "Bluetooth" \
-      -theme-str 'window {width: 460px; border-radius: 12px;} listview {lines: 10;}' \
-      -no-custom)
-
-    if [ -z "$chosen" ]; then
-      exit 0
-    fi
-
-    if [[ "$chosen" =~ "Desativar" ]]; then
-      bluetoothctl power off
-      dunstify -a "Bluetooth" -u low -i "bluetooth-disabled" -r 9995 -t 1500 "Bluetooth desativado"
-    elif [[ "$chosen" =~ "Escanear" ]]; then
-      exec "$0" --scan
-    elif [[ "$chosen" =~ "Gerenciador" ]]; then
-      if command -v blueman-manager >/dev/null 2>&1; then
-        blueman-manager &
+    toggle_power() {
+      if power_on; then
+        bluetoothctl power off >/dev/null 2>&1
+        notify_bt "low" "bluetooth-disabled" "Bluetooth Desativado" "Controlador desligado."
       else
-        ${pkgs.blueman}/bin/blueman-manager &
-      fi
-    elif [[ "$chosen" =~ \[([0-9A-Fa-f:]{17})\] ]]; then
-      mac="''${BASH_REMATCH[1]}"
-      name=$(echo "$chosen" | sed -E 's/^[󰂱󰂯󰑐 ]+//;s/  \[.*//')
-
-      if [[ "$chosen" =~ "\(Conectado\)" ]]; then
-        # Desconectar
-        dunstify -a "Bluetooth" -u low -i "bluetooth-active" -r 9995 "Desconectando $name..."
-        bluetoothctl disconnect "$mac"
-        dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "$name desconectado"
-      else
-        # Parear, Confiar e Conectar
-        dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 "Pareando e conectando a $name..."
-        bluetoothctl pair "$mac" || true
-        bluetoothctl trust "$mac" 2>/dev/null || true
-        if bluetoothctl connect "$mac"; then
-          dunstify -a "Bluetooth" -u normal -i "bluetooth-active" -r 9995 -t 3000 "$name conectado com sucesso!"
-        else
-          dunstify -a "Bluetooth" -u critical -i "bluetooth-disabled" -r 9995 "Falha ao conectar a $name.\nSe for teclado (PIN), use o Blueman ou terminal!"
+        if command -v rfkill >/dev/null 2>&1 && rfkill list bluetooth 2>/dev/null | grep -q 'blocked: yes'; then
+          rfkill unblock bluetooth 2>/dev/null && sleep 0.5
         fi
+        bluetoothctl power on >/dev/null 2>&1
+        notify_bt "normal" "bluetooth-active" "Bluetooth Ativado" "Controlador pronto para conexões."
       fi
-    fi
+      show_menu
+    }
+
+    scan_on() {
+      bluetoothctl show 2>/dev/null | grep -q "Discovering: yes"
+    }
+
+    toggle_scan() {
+      if scan_on; then
+        pkill -f "bluetoothctl.*scan on" >/dev/null 2>&1 || true
+        bluetoothctl scan off >/dev/null 2>&1 || true
+        notify_bt "low" "bluetooth-active" "Escaneamento Parado" "Busca por dispositivos interrompida."
+        show_menu
+      else
+        notify_bt "normal" "bluetooth-active" "Buscando Dispositivos..." "Varredura ativa em segundo plano (25s)."
+        bluetoothctl --timeout 25 scan on >/dev/null 2>&1 &
+        sleep 0.8
+        show_menu
+      fi
+    }
+
+    pairable_on() {
+      bluetoothctl show 2>/dev/null | grep -q "Pairable: yes"
+    }
+
+    toggle_pairable() {
+      if pairable_on; then
+        bluetoothctl pairable off >/dev/null 2>&1
+        notify_bt "low" "bluetooth-active" "Modo Pareável" "Desativado."
+      else
+        bluetoothctl pairable on >/dev/null 2>&1
+        notify_bt "normal" "bluetooth-active" "Modo Pareável" "Ativado. Outros dispositivos podem parear."
+      fi
+      show_menu
+    }
+
+    discoverable_on() {
+      bluetoothctl show 2>/dev/null | grep -q "Discoverable: yes"
+    }
+
+    toggle_discoverable() {
+      if discoverable_on; then
+        bluetoothctl discoverable off >/dev/null 2>&1
+        notify_bt "low" "bluetooth-active" "Visibilidade" "Oculto para novos aparelhos."
+      else
+        bluetoothctl discoverable on >/dev/null 2>&1
+        notify_bt "normal" "bluetooth-active" "Visibilidade" "Visível para outros aparelhos."
+      fi
+      show_menu
+    }
+
+    # Submenu de opções para o dispositivo selecionado
+    device_menu() {
+      local mac="$1"
+      local name="$2"
+      local info
+      info=$(bluetoothctl info "$mac" 2>/dev/null)
+
+      local is_connected="Não"
+      local is_paired="Não"
+      local is_trusted="Não"
+      local is_blocked="Não"
+      local battery=""
+
+      echo "$info" | grep -q "Connected: yes" && is_connected="Sim"
+      echo "$info" | grep -q "Paired: yes" && is_paired="Sim"
+      echo "$info" | grep -q "Trusted: yes" && is_trusted="Sim"
+      echo "$info" | grep -q "Blocked: yes" && is_blocked="Sim"
+
+      local batt_val
+      batt_val=$(echo "$info" | grep -i "Battery Percentage" | awk -F'[(%]' '{print $2}' | tr -d ' ')
+      [ -z "$batt_val" ] && batt_val=$(echo "$info" | grep -i "Battery Percentage" | awk '{print $NF}' | tr -d '%')
+      [ -n "$batt_val" ] && battery=" | 󰁹 Bateria: $batt_val%"
+
+      local OPT_CONN
+      if [ "$is_connected" = "Sim" ]; then
+        OPT_CONN="󰂲  Desconectar"
+      else
+        OPT_CONN="󰂱  Conectar"
+      fi
+
+      local OPT_PAIR
+      if [ "$is_paired" = "Sim" ]; then
+        OPT_PAIR="󰌆  Desparear"
+      else
+        OPT_PAIR="󰌆  Parear"
+      fi
+
+      local OPT_TRUST
+      if [ "$is_trusted" = "Sim" ]; then
+        OPT_TRUST="󰤩  Remover Confiança (Untrust)"
+      else
+        OPT_TRUST="󰤨  Confiar no Dispositivo (Trust)"
+      fi
+
+      local OPT_BLOCK
+      if [ "$is_blocked" = "Sim" ]; then
+        OPT_BLOCK="󰂯  Desbloquear Dispositivo"
+      else
+        OPT_BLOCK="󰂲  Bloquear Dispositivo"
+      fi
+
+      local OPT_REMOVE="󰆴  Remover / Esquecer Dispositivo"
+      local OPT_BACK="󰌍  Voltar ao Menu Principal"
+
+      local PROMPT_TEXT=" $name [$mac] (Conectado: $is_connected$battery) "
+
+      local CHOICE
+      CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s" \
+        "$OPT_CONN" \
+        "$OPT_PAIR" \
+        "$OPT_TRUST" \
+        "$OPT_BLOCK" \
+        "$OPT_REMOVE" \
+        "$OPT_BACK" | ${pkgs.rofi}/bin/rofi -dmenu -i -p "$PROMPT_TEXT" \
+        -theme-str 'window {width: 540px; border-radius: 12px;} listview {lines: 6;}' -no-custom)
+
+      case "$CHOICE" in
+        *"Conectar")
+          notify_bt "normal" "bluetooth-active" "Conectando..." "Tentando conectar a $name..."
+          bluetoothctl trust "$mac" >/dev/null 2>&1 || true
+          if bluetoothctl connect "$mac" >/dev/null 2>&1; then
+            notify_bt "normal" "bluetooth-active" "Conectado!" "$name conectado com sucesso."
+          else
+            notify_bt "critical" "bluetooth-disabled" "Erro de Conexão" "Falha ao conectar a $name. Se necessário, abra o Blueman."
+          fi
+          device_menu "$mac" "$name"
+          ;;
+        *"Desconectar")
+          notify_bt "low" "bluetooth-active" "Desconectando..." "Desconectando $name..."
+          bluetoothctl disconnect "$mac" >/dev/null 2>&1
+          notify_bt "normal" "bluetooth-active" "Desconectado" "$name foi desconectado."
+          device_menu "$mac" "$name"
+          ;;
+        *"Parear")
+          notify_bt "normal" "bluetooth-active" "Pareando..." "Pareando com $name..."
+          if bluetoothctl pair "$mac" >/dev/null 2>&1; then
+            bluetoothctl trust "$mac" >/dev/null 2>&1 || true
+            notify_bt "normal" "bluetooth-active" "Pareado!" "$name pareado com sucesso."
+          else
+            notify_bt "critical" "bluetooth-disabled" "Falha no Pareamento" "Não foi possível parear com $name."
+          fi
+          device_menu "$mac" "$name"
+          ;;
+        *"Desparear")
+          bluetoothctl untrust "$mac" >/dev/null 2>&1 || true
+          bluetoothctl remove "$mac" >/dev/null 2>&1 || true
+          notify_bt "low" "bluetooth-disabled" "Despareado" "$name despareado e removido."
+          show_menu
+          ;;
+        *"Confiar"*)
+          bluetoothctl trust "$mac" >/dev/null 2>&1
+          notify_bt "normal" "bluetooth-active" "Confiável" "$name marcado como confiável."
+          device_menu "$mac" "$name"
+          ;;
+        *"Remover Confiança"*)
+          bluetoothctl untrust "$mac" >/dev/null 2>&1
+          notify_bt "low" "bluetooth-active" "Não Confiável" "Confiança removida de $name."
+          device_menu "$mac" "$name"
+          ;;
+        *"Bloquear"*)
+          bluetoothctl block "$mac" >/dev/null 2>&1
+          notify_bt "low" "bluetooth-disabled" "Bloqueado" "$name foi bloqueado."
+          device_menu "$mac" "$name"
+          ;;
+        *"Desbloquear"*)
+          bluetoothctl unblock "$mac" >/dev/null 2>&1
+          notify_bt "normal" "bluetooth-active" "Desbloqueado" "$name foi desbloqueado."
+          device_menu "$mac" "$name"
+          ;;
+        *"Remover"*)
+          bluetoothctl remove "$mac" >/dev/null 2>&1
+          notify_bt "normal" "bluetooth-disabled" "Dispositivo Removido" "$name foi removido."
+          show_menu
+          ;;
+        *"Voltar"*)
+          show_menu
+          ;;
+      esac
+    }
+
+    # Menu Principal
+    show_menu() {
+      if ! power_on; then
+        local OFF_OPT="󰂯  Ligar Bluetooth"
+        local BM_OPT="󰂯  Abrir Blueman (Gerenciador Avançado)"
+        local CH
+        CH=$(printf "%s\n%s" "$OFF_OPT" "$BM_OPT" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰂲 Bluetooth Desligado " \
+          -theme-str 'window {width: 420px; border-radius: 12px;} listview {lines: 2;}' -no-custom)
+        case "$CH" in
+          *"Ligar Bluetooth"*)
+            toggle_power
+            ;;
+          *"Blueman"*)
+            if command -v blueman-manager >/dev/null 2>&1; then
+              blueman-manager &
+            else
+              ${pkgs.blueman}/bin/blueman-manager &
+            fi
+            ;;
+        esac
+        exit 0
+      fi
+
+      local SCAN_TEXT="󰑐  Escanear Dispositivos (Scan: OFF)"
+      scan_on && SCAN_TEXT="󰑐  Parar Escaneamento (Scan: ATIVO)"
+
+      local PAIR_TEXT="󰌆  Modo Pareável (Pairable: OFF)"
+      pairable_on && PAIR_TEXT="󰌆  Modo Pareável (Pairable: ON)"
+
+      local DISC_TEXT="󰈈  Visibilidade (Discoverable: OFF)"
+      discoverable_on && DISC_TEXT="󰈈  Visibilidade (Discoverable: ON)"
+
+      local HEADER_ITEMS="󰂲  Desligar Bluetooth\n$SCAN_TEXT\n$PAIR_TEXT\n$DISC_TEXT\n󰂯  Abrir Blueman (Gerenciador Avançado)"
+
+      local DEV_LIST=""
+      while IFS= read -r line; do
+        if [ -n "$line" ]; then
+          local mac
+          mac=$(echo "$line" | awk '{print $2}')
+          local name
+          name=$(echo "$line" | cut -d' ' -f3-)
+          [ -z "$name" ] && name="Dispositivo Desconhecido"
+
+          local dinfo
+          dinfo=$(bluetoothctl info "$mac" 2>/dev/null)
+
+          local icon="󰂯"
+          local icon_class
+          icon_class=$(echo "$dinfo" | grep -i "Icon:" | awk '{print $2}')
+
+          case "$icon_class" in
+            *audio-card*|*audio-speakers*) icon="󰓃" ;;
+            *audio-headset*) icon="󰋋" ;;
+            *audio-headphones*) icon="󰥰" ;;
+            *input-keyboard*) icon="󰌌" ;;
+            *input-mouse*|*input-gaming*) icon="󰍽" ;;
+            *phone*) icon="󰏲" ;;
+            *computer*) icon="󰌢" ;;
+          esac
+
+          local status_tag=""
+          if echo "$dinfo" | grep -q "Connected: yes"; then
+            local batt
+            batt=$(echo "$dinfo" | grep -i "Battery Percentage" | awk -F'[(%]' '{print $2}' | tr -d ' ')
+            [ -z "$batt" ] && batt=$(echo "$dinfo" | grep -i "Battery Percentage" | awk '{print $NF}' | tr -d '%')
+            if [ -n "$batt" ]; then
+              status_tag="  (󰂱 Conectado 󰁹 $batt%)"
+            else
+              status_tag="  (󰂱 Conectado)"
+            fi
+            icon="󰂱"
+          elif echo "$dinfo" | grep -q "Paired: yes"; then
+            status_tag="  (Pareado)"
+          else
+            status_tag="  (Disponível)"
+            icon="󰑐"
+          fi
+
+          DEV_LIST+="$icon  $name  [$mac]$status_tag\n"
+        fi
+      done < <(bluetoothctl devices 2>/dev/null)
+
+      local MENU_CONTENT="$HEADER_ITEMS"
+      if [ -n "$DEV_LIST" ]; then
+        MENU_CONTENT+="\n------------------------------------\n$DEV_LIST"
+      else
+        MENU_CONTENT+="\n------------------------------------\n󰂲  Nenhum dispositivo encontrado (ative o Escaneamento)"
+      fi
+
+      local SELECTED
+      SELECTED=$(printf "%b" "$MENU_CONTENT" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰂯 Bluetooth " \
+        -theme-str 'window {width: 560px; border-radius: 12px;} listview {lines: 12;}' -no-custom)
+
+      [ -z "$SELECTED" ] && exit 0
+
+      case "$SELECTED" in
+        *"Desligar Bluetooth"*)
+          toggle_power
+          ;;
+        *"Escanear Dispositivos"*|*"Parar Escaneamento"*)
+          toggle_scan
+          ;;
+        *"Modo Pareável"*)
+          toggle_pairable
+          ;;
+        *"Visibilidade"*)
+          toggle_discoverable
+          ;;
+        *"Abrir Blueman"*)
+          if command -v blueman-manager >/dev/null 2>&1; then
+            blueman-manager &
+          else
+            ${pkgs.blueman}/bin/blueman-manager &
+          fi
+          ;;
+        *"----------------"*)
+          show_menu
+          ;;
+        *"Nenhum dispositivo encontrado"*)
+          toggle_scan
+          ;;
+        *)
+          if [[ "$SELECTED" =~ \[([0-9A-Fa-f:]{17})\] ]]; then
+            local dev_mac="''${BASH_REMATCH[1]}"
+            local dev_name
+            dev_name=$(echo "$SELECTED" | sed -E 's/^[󰂱󰂯󰑐󰓃󰋋󰥰󰌌󰍽󰏲󰌢 ]+//;s/  \[.*//')
+            device_menu "$dev_mac" "$dev_name"
+          fi
+          ;;
+      esac
+    }
+
+    show_menu
   '';
 
   # --- Script de Status de Rede (Cabo / Wi-Fi Dinâmico) ---
