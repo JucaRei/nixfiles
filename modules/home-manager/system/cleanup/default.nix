@@ -210,6 +210,14 @@ let
       data = [ "$HOME/.local/share/meld" ];
       desktops = [ ];
     }
+    {
+      name = "fastfetch";
+      enabled = config.system.programs.tools.fastfetch.enable or false;
+      configs = [ "$HOME/.config/fastfetch" ];
+      caches = [ ];
+      data = [ ];
+      desktops = [ ];
+    }
 
     # --- Documentos ---
     {

@@ -1362,6 +1362,18 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - No `sxhkd.nix`, os atalhos de abertura do terminal (`${mod} + Return`, `KP_Enter`, `${mod} + t`), o scratchpad (`bspwm-scratchpad`) e os menus Rofi foram parametrizados explicitamente com `--working-directory "$HOME"` (ou `$HOME`).
     - No `bspwm.nix` (`bspwmrc`), a inicialização do daemon de atalhos foi encapsulada com `(cd "$HOME" && ${pkgs.sxhkd}/bin/sxhkd) &`, garantindo que mesmo reiniciando o BSPWM via `bspc wm -r` em qualquer subpasta, o processo pai sempre opere a partir de `$HOME`.
 
+- **Módulo Fastfetch Declarativo (`system.programs.tools.fastfetch`)**:
+  - **Localizações**:
+    - [modules/home-manager/system/programs/tools/fastfetch/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/tools/fastfetch/default.nix).
+    - [modules/home-manager/system/programs/tools/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/tools/default.nix).
+    - [home-manager/hosts/nitro/default.nix](file:///home/juca/.dotfiles/nixfiles/home-manager/hosts/nitro/default.nix).
+  - **Arquitetura e Recursos**:
+    - Módulo de alto nível integrado a `programs.fastfetch` nativo do Home Manager.
+    - **Conjunto de Módulos Curado (Inspirado no LambBread)**: Configurada lista abrangente de módulos (`title`, `separator`, `os`, `host`, `kernel`, `uptime`, `packages`, `shell`, `display`, `de`, `wm`, `wmtheme`, `theme`, `icons`, `font`, `cursor`, `terminal`, `terminalfont`, `cpu`, `gpu`, `memory`, `swap`, `disk`, `localip`, `battery`, `poweradapter`, `locale`, `break`, `colors`).
+    - **Compatibilidade Dual (Nix vs Distro Nativa)**: Suporte a `installPackage`, `useSystemPackage` e `useSystemPackages`, permitindo gerenciar declarativamente apenas o `config.jsonc` caso o usuário utilize o binário `/usr/bin/fastfetch` da distribuição hospedeira.
+    - **Retrocompatibilidade de Presets**: Link simbólico automático em `~/.config/fastfetch/presets/default.jsonc` apontando para o `config.jsonc` gerado pelo Home Manager, suportando comandos manuais como `fastfetch --preset default`.
+    - **Limpeza Automática**: Integrado ao `system.cleanup` (`cleanup/default.nix`) para purgar `~/.config/fastfetch` automaticamente caso o módulo seja desativado.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

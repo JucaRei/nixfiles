@@ -69,6 +69,9 @@ in
         yt-dlp = {
           enable = true;
         };
+        fastfetch = {
+          enable = true;
+        };
       };
       shells = {
         default = "zsh";
@@ -89,7 +92,6 @@ in
           fzf
           ripgrep
           htop
-          fastfetch
           intel-media-driver
           (pkgs.writeShellScriptBin "vainfo-intel" ''
             if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then

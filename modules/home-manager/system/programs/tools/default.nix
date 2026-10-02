@@ -1,6 +1,7 @@
 _: {
   imports = [
     ./bleachbit
+    ./fastfetch
     ./flameshot
     ./meld
     ./ssh
