@@ -402,26 +402,39 @@ let
     follow="$2"
 
     target_id=""
+    target_m=""
     for m in $(bspc query -M 2>/dev/null); do
       for did in $(bspc query -D -m "$m" 2>/dev/null); do
         if [ "$(bspc query -D -d "$did" --names 2>/dev/null)" = "$d" ]; then
           target_id="$did"
+          target_m="$m"
           break 2
         fi
       done
     done
 
+    # Identificar o nó focado atual
+    cur_node=$(bspc query -N -n focused 2>/dev/null)
+    [ -z "$cur_node" ] && exit 0
+
     if [ -n "$target_id" ]; then
       if [ "$follow" = "true" ]; then
-        bspc node -d "$target_id" --follow
+        bspc node "$cur_node" -d "$target_id" --follow
+        if [ -n "$target_m" ]; then
+          bspc monitor -f "$target_m" 2>/dev/null || true
+        fi
+        bspc desktop -f "$target_id" 2>/dev/null || true
+        bspc node "$cur_node" -f 2>/dev/null || true
       else
-        bspc node -d "$target_id"
+        bspc node "$cur_node" -d "$target_id"
       fi
     else
       if [ "$follow" = "true" ]; then
-        bspc node -d "$d" --follow 2>/dev/null || true
+        bspc node "$cur_node" -d "$d" --follow 2>/dev/null || true
+        bspc desktop -f "$d" 2>/dev/null || true
+        bspc node "$cur_node" -f 2>/dev/null || true
       else
-        bspc node -d "$d" 2>/dev/null || true
+        bspc node "$cur_node" -d "$d" 2>/dev/null || true
       fi
     fi
   '';
@@ -604,12 +617,17 @@ in
           "${mod} + shift + bracketright" = "bspc node -m next --follow";
 
           # --- Áreas de Trabalho (Workspaces 1-10, onde 0 = workspace 0/10) ---
-          # Focar área de trabalho (funciona perfeitamente em monitor único e multi-monitor)
+          # Focar área de trabalho (compatível tanto com Super quanto com Alt)
           "${mod} + {1-9,0}" = "${desktopFocusScript} {1-9,0}";
+          "${altMod} + {1-9,0}" = "${desktopFocusScript} {1-9,0}";
+
           # Enviar janela para área de trabalho com foco imediato (--follow)
           "${mod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
+          "${altMod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
+
           # Enviar janela para área de trabalho em segundo plano (sem follow)
           "${mod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
+          "${altMod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
 
           # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
           "${mod} + ${altMod} + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";

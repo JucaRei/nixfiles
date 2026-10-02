@@ -1286,6 +1286,16 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - *Hyprland*: Adicionada `windowrule` com correspondência regex no título para `float 1` e `center 1`.
     - *MangoWM*: Adicionada `windowrule` correspondente para `isfloating:1`.
 
+- **BSPWM SXHKD — Correção no Envio de Janelas para Workspaces (`bspwm-node-to-desktop`)**:
+  - **Localização**: [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix).
+  - **Causas Raiz**:
+    1. *Foco de Monitor em Setups Multi-Monitor*: Em setups com múltiplos monitores (ex: host `nitro` com `HDMI-1-0` e `eDP-1`), ao enviar a janela para um workspace situado no outro monitor com `--follow`, o `bspc node -d "$target_id" --follow` transferia o nó, mas o foco do X11/BSPWM permanecia preso no monitor de origem, dando a impressão de que a janela havia sumido ou não foi transferida.
+    2. *Ausência de Seleção Explícita de Nó*: O comando `bspc node -d` sem o ID explícito da janela sob foco (`focused`) podia falhar dependendo do estado da janela (flutuante ou sem foco estrito).
+    3. *Colisão de Tecla Modificadora (`Super` vs `Alt`)*: Em hosts como o `nitro`, `desktop.modifierKey` é configurado como `"Alt"`, de modo que `${mod}` resolvia para `alt`. Se o usuário tentasse `Super + Shift + {1-9,0}` (tecla Windows), o SXHKD descartava a combinação por não estar mapeada.
+  - **Correções Aplicadas**:
+    - Script `desktopNodeScript` atualizado para obter explicitamente `cur_node=$(bspc query -N -n focused)` e, em caso de `--follow`, focar tanto o monitor de destino (`bspc monitor -f "$target_m"`) quanto o desktop (`bspc desktop -f "$target_id"`) e o próprio nó (`bspc node "$cur_node" -f`).
+    - Adicionado mapeamento duplo para workspaces (`${mod}` e `${altMod}`), permitindo alternar e enviar janelas usando **tanto `Super` quanto `Alt`** indiferentemente em qualquer máquina.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 
