@@ -676,20 +676,18 @@ in
 
           # Enviar janela para área de trabalho com foco imediato (--follow)
           "${mod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
-          "${altMod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
 
           # Enviar janela para área de trabalho em segundo plano (sem follow)
           "${mod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
-          "${altMod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
 
           # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
           "${mod} + ${altMod} + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
           "${mod} + ${altMod} + {Left,Down,Up,Right}" =
             "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
 
-          # --- Reiniciar / Recarregar BSPWM e SXHKD ---
-          "${mod} + shift + r" = "bspc wm -r";
-          "${mod} + Escape" = "pkill -USR1 -x sxhkd";
+          # --- Reiniciar / Recarregar BSPWM, SXHKD e Polybar ---
+          "${mod} + shift + r" = "bspc wm -r; ${pkgs.procps}/bin/pkill -USR1 -x sxhkd; ${pkgs.polybar}/bin/polybar-msg cmd restart";
+          "${mod} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd";
 
           # --- Controles de Mídia e Áudio com Dunst OSD ---
           "XF86AudioRaiseVolume" = "${volumeOsd} up";
