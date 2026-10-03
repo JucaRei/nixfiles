@@ -7,7 +7,7 @@
   ...
 }:
 let
-  inherit (lib) optional optionals mkOption mkIf;
+  inherit (lib) optionals mkOption mkIf;
   inherit (lib.types) enum bool;
   cfg = config.system.programs.browsers.chromium;
 
@@ -46,26 +46,6 @@ in
   };
   config = mkIf cfg.enable {
     home = {
-      packages = optional (!isNixOS) pkgs.libva-utils;
-
-      # Example: Set env var if VA-API detected (e.g., for browsers)
-      sessionVariables = {
-        HAS_VAAPI = if hasVaapi then "1" else "0";
-      };
-
-      # Runtime detection for non-NixOS (via activation script)
-      activation.checkVaapi = lib.mkIf (!isNixOS) (
-        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          mkdir -p "$HOME/.local/scripts"
-          if vainfo --display drm 2>/dev/null | grep -q VAProfile; then
-            export HAS_VAAPI=1
-          else
-            export HAS_VAAPI=0
-          fi
-          echo "export HAS_VAAPI=$HAS_VAAPI" > "$HOME/.local/scripts/vaapi-status.sh"
-        ''
-      );
-
       # Ensure Vivaldi proprietary codecs (H.264 / AAC) are fetched
       activation.setupVivaldiCodecs = lib.mkIf (cfg.version == "vivaldi") (
         lib.hm.dag.entryAfter [ "writeBoundary" ] ''

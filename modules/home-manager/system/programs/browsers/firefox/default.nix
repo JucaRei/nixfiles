@@ -17,8 +17,6 @@ let
   cfg = config.system.programs.browsers.firefox;
 
   sharedSettings = import ./shared.nix { inherit config lib osConfig; } // import ./fonts.nix { };
-
-  isNixOS = osConfig != null;
 in
 {
   options = {
@@ -53,8 +51,6 @@ in
         MOZ_ENABLE_WAYLAND = mkIf (config.desktop.display-servers.backend == "wayland") "1"; # Force Wayland mode (essential for VA-API)
       };
 
-      packages = mkIf (!isNixOS) [ pkgs.libva-utils ];
-
       activation = {
         beforeCheckLinkTargets = {
           after = [ ];
@@ -63,20 +59,7 @@ in
             find "$HOME/.mozilla/firefox" -name "search.json.mozlz4*" -type f -exec rm -f {} + 2>/dev/null || true
           '';
         };
-
-          checkVaapi = mkIf (!isNixOS) (
-            lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-              mkdir -p "$HOME/.local/scripts"
-              intel_render="$(ls /dev/dri/by-path/*00:02.0-render 2>/dev/null || echo /dev/dri/renderD129)"
-              if ${pkgs.libva-utils}/bin/vainfo 2>/dev/null | grep -q VAProfile || ${pkgs.libva-utils}/bin/vainfo --display drm --device "$intel_render" 2>/dev/null | grep -q VAProfile; then
-                export HAS_VAAPI=1
-              else
-                export HAS_VAAPI=0
-              fi
-              echo "export HAS_VAAPI=$HAS_VAAPI" > "$HOME/.local/scripts/vaapi-status.sh"
-            ''
-          );
-        };
+      };
     };
 
     programs.firefox = {

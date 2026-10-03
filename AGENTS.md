@@ -1417,6 +1417,14 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Menu Quick Settings (Rofi)**:
       - Adicionada opção `󰟸 Velocidade do Touchpad` no Control Center (<kbd>Super</kbd>+<kbd>C</kbd> ou menu de atalhos), com seletores rápidos (`0.0 Padrão`, `0.3 Moderado`, `0.5 Rápido`, `0.7 Muito Rápido`, `1.0 Máximo`).
 
+- **Navegadores & Aceleração de Vídeo — Resolução de Conflito em `home.activation.checkVaapi`**:
+  - **Problema**: Ao habilitar múltiplos navegadores simultaneamente (ex: Firefox e Chromium/Vivaldi em [home-manager/hosts/anubis/default.nix](file:///home/juca/.dotfiles/nixfiles/home-manager/hosts/anubis/default.nix)), o Home Manager falhava na avaliação com `error: The option 'home.activation.checkVaapi.data' has conflicting definition values`.
+  - **Causa Raiz**: Tanto [modules/home-manager/system/programs/browsers/firefox/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/browsers/firefox/default.nix) quanto [modules/home-manager/system/programs/browsers/chrome/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/browsers/chrome/default.nix) continham definições duplicadas e divergentes do hook DAG `activation.checkVaapi` e de `packages = [ pkgs.libva-utils ]`.
+  - **Correção**:
+    - Centralizado o hook `activation.checkVaapi` e o pacote `pkgs.libva-utils` em [modules/home-manager/system/programs/browsers/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/browsers/default.nix), condicionado a `(cfgFf.enable || cfgCr.enable) && !isNixOS`.
+    - Adicionado suporte a `osConfig ? null` no módulo agregador de navegadores.
+    - Removidas as declarações redundantes de `activation.checkVaapi`, `packages = [ pkgs.libva-utils ]` e bindings não utilizados dos submódulos `firefox` e `chrome`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

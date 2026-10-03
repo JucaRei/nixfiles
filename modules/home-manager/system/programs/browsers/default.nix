@@ -2,10 +2,13 @@
   config,
   lib,
   pkgs,
+  osConfig ? null,
   ...
 }:
 let
   inherit (lib) mkIf mkOption mkDefault mkMerge types;
+
+  isNixOS = osConfig != null;
 
   cfg = config.system.programs.browsers;
   cfgFf = cfg.firefox;
@@ -100,6 +103,24 @@ in
         abel
         ffmpeg
       ];
+    })
+
+    # Detecção em tempo de ativação do VA-API para navegadores em ambientes standalone (!isNixOS)
+    (mkIf ((cfgFf.enable || cfgCr.enable) && !isNixOS) {
+      home = {
+        packages = [ pkgs.libva-utils ];
+
+        activation.checkVaapi = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          mkdir -p "$HOME/.local/scripts"
+          intel_render="$(ls /dev/dri/by-path/*00:02.0-render 2>/dev/null || echo /dev/dri/renderD129)"
+          if ${pkgs.libva-utils}/bin/vainfo 2>/dev/null | grep -q VAProfile || ${pkgs.libva-utils}/bin/vainfo --display drm --device "$intel_render" 2>/dev/null | grep -q VAProfile; then
+            export HAS_VAAPI=1
+          else
+            export HAS_VAAPI=0
+          fi
+          echo "export HAS_VAAPI=$HAS_VAAPI" > "$HOME/.local/scripts/vaapi-status.sh"
+        '';
+      };
     })
 
     # Associações MIME e variáveis de sessão
