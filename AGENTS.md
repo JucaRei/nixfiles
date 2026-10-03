@@ -1392,6 +1392,31 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Diálogo de Senha Wi-Fi: ampliado para `600px` para acomodar prompts com nomes de rede extensos.
       - Power Menu, Janelas Minimizadas e Seletor de Teclado: padronizados com `columns: 1` e larguras confortáveis (320px, 700px e 360px, respectivamente).
 
+- **BSPWM / DWM — Configuração Declarativa de Velocidade e Propriedades do Touchpad (`desktop.touchpad`)**:
+  - **Localizações**:
+    - [modules/home-manager/desktop/environments/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/default.nix)
+    - [modules/home-manager/desktop/environments/bspwm/bspwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/bspwm.nix)
+    - [modules/home-manager/desktop/environments/bspwm/packages.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/packages.nix)
+    - [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix)
+    - [modules/home-manager/desktop/environments/dwm/dwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/dwm.nix)
+    - [home-manager/hosts/nitro/default.nix](file:///home/juca/.dotfiles/nixfiles/home-manager/hosts/nitro/default.nix)
+  - **Causa Raiz da Lentidão**:
+    - O driver `libinput` no servidor X11 opera por padrão com velocidade de aceleração neutra (`libinput Accel Speed = 0.0`).
+    - Em telas modernas Full HD (1080p), essa velocidade neutra exige múltiplos deslizes físicos no touchpad para cruzar a área de trabalho.
+  - **Arquitetura Implementada**:
+    - **Opções Declarativas (`desktop.touchpad`)**:
+      - `enable`: ativação geral.
+      - `speed`: velocidade do ponteiro de `-1.0` a `1.0` (padrão elevado para `0.5`, entregando deslocamento ágil e preciso).
+      - `naturalScrolling`: rolagem natural estilo macOS (`true`).
+      - `tapping`: toque leve para clique (`true`).
+      - `clickMethod`: `"clickfinger"` (2 dedos botão direito, 3 dedos botão do meio).
+      - `accelProfile`: `"adaptive"` (curva acelerada para movimentos rápidos e pixel-perfect para movimentos lentos).
+    - **Script Utilitário (`touchpad-speed` / `bspwm-touchpad-speed`)**:
+      - Permite consultar a velocidade atual executando `touchpad-speed` no terminal.
+      - Permite alterar dinamicamente a velocidade em tempo real sem reiniciar o sistema (ex: `touchpad-speed 0.6` ou `touchpad-speed 0.3`), com feedback visual via Dunst.
+    - **Menu Quick Settings (Rofi)**:
+      - Adicionada opção `󰟸 Velocidade do Touchpad` no Control Center (<kbd>Super</kbd>+<kbd>C</kbd> ou menu de atalhos), com seletores rápidos (`0.0 Padrão`, `0.3 Moderado`, `0.5 Rápido`, `0.7 Muito Rápido`, `1.0 Máximo`).
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

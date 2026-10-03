@@ -597,6 +597,7 @@ let
           OPT_COLOR="󰈊  Conta-gotas de Cor (Colorpicker)"
           OPT_BT="󰂯  Dispositivos Bluetooth (rofi-bluetooth)"
           OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
+          OPT_TOUCH="󰟸  Velocidade do Touchpad (Touchpad Speed)"
           OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
           OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
           OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
@@ -608,11 +609,12 @@ let
           OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
           OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
 
-          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
             "$OPT_SHOT" \
             "$OPT_COLOR" \
             "$OPT_BT" \
             "$OPT_RES" \
+            "$OPT_TOUCH" \
             "$OPT_SOUND" \
             "$OPT_NET" \
             "$OPT_THEME" \
@@ -622,7 +624,8 @@ let
             "$OPT_TERM" \
             "$OPT_KEYS" \
             "$OPT_RELOAD" \
-            "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings ")
+            "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings " \
+            -theme-str 'window {width: 620px; border-radius: 14px;} listview {columns: 1; lines: 15;}')
 
           case "$CHOICE" in
             "$OPT_SHOT") ${screenshotScript} menu & ;;
@@ -635,13 +638,28 @@ let
               R_768="1366x768 (HD)"
               R_CUSTOM="⚙ Painel Avançado de Telas (ARandR)"
 
-              RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução ")
+              RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução " -theme-str 'window {width: 500px; border-radius: 14px;} listview {columns: 1; lines: 5;}')
               case "$RES" in
                 "$R_1080") ${pkgs.xrandr}/bin/xrandr -s 1920x1080 ;;
                 "$R_2K")   ${pkgs.xrandr}/bin/xrandr -s 2560x1440 ;;
                 "$R_900")  ${pkgs.xrandr}/bin/xrandr -s 1600x900 ;;
                 "$R_768")  ${pkgs.xrandr}/bin/xrandr -s 1366x768 ;;
                 "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xrandr}/bin/xrandr ;;
+              esac
+              ;;
+            "$OPT_TOUCH")
+              T_DEF="󰟸  0.0  (Padrão do Sistema / Lento)"
+              T_MOD="󰟸  0.3  (Moderado)"
+              T_FAST="󰟸  0.5  (Rápido & Ágil - Recomendado)"
+              T_VFAST="󰟸  0.7  (Muito Rápido)"
+              T_MAX="󰟸  1.0  (Velocidade Máxima)"
+              T_SEL=$(printf "%s\n%s\n%s\n%s\n%s" "$T_DEF" "$T_MOD" "$T_FAST" "$T_VFAST" "$T_MAX" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰟸 Velocidade do Touchpad " -theme-str 'window {width: 540px; border-radius: 14px;} listview {columns: 1; lines: 5;}')
+              case "$T_SEL" in
+                *"0.0"*) touchpad-speed 0.0 ;;
+                *"0.3"*) touchpad-speed 0.3 ;;
+                *"0.5"*) touchpad-speed 0.5 ;;
+                *"0.7"*) touchpad-speed 0.7 ;;
+                *"1.0"*) touchpad-speed 1.0 ;;
               esac
               ;;
             "$OPT_SOUND") ${pkgs.pavucontrol}/bin/pavucontrol & ;;

@@ -501,7 +501,7 @@ in
             bspc config focus_follows_pointer true
 
             # Configurar Touchpad vs Mouse:
-            # - Touchpad: Natural Scrolling (estilo macOS), Tapping e Clickfinger ativados
+            # - Touchpad: Natural Scrolling, Tapping, Clickfinger, Perfil de Aceleração e Velocidade do Ponteiro
             # - Mouse: Natural Scrolling DESATIVADO (rolagem padrão tradicional)
             if command -v ${pkgs.xinput}/bin/xinput >/dev/null 2>&1; then
               for id in $(${pkgs.xinput}/bin/xinput list --id-only 2>/dev/null); do
@@ -509,9 +509,32 @@ in
                 has_tapping=$(${pkgs.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -c "libinput Tapping Enabled" || true)
 
                 if echo "$dev_name" | grep -q "touchpad" || [ "$has_tapping" -gt 0 ]; then
-                  ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 1 2>/dev/null || true
-                  ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Tapping Enabled" 1 2>/dev/null || true
-                  ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Click Method Enabled" 0 1 2>/dev/null || true
+                  ${lib.optionalString (config.desktop.touchpad.enable) ''
+                    ${lib.optionalString (config.desktop.touchpad.naturalScrolling) ''
+                      ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 1 2>/dev/null || true
+                    ''}
+                    ${lib.optionalString (!config.desktop.touchpad.naturalScrolling) ''
+                      ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 0 2>/dev/null || true
+                    ''}
+                    ${lib.optionalString (config.desktop.touchpad.tapping) ''
+                      ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Tapping Enabled" 1 2>/dev/null || true
+                    ''}
+                    ${lib.optionalString (config.desktop.touchpad.clickMethod == "clickfinger") ''
+                      ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Click Method Enabled" 0 1 2>/dev/null || true
+                    ''}
+                    ${lib.optionalString (config.desktop.touchpad.clickMethod == "buttonareas") ''
+                      ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Click Method Enabled" 1 0 2>/dev/null || true
+                    ''}
+                    ${lib.optionalString (config.desktop.touchpad.accelProfile == "adaptive") ''
+                      ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Accel Profile Enabled" 1 0 2>/dev/null || true
+                    ''}
+                    ${lib.optionalString (config.desktop.touchpad.accelProfile == "flat") ''
+                      ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Accel Profile Enabled" 0 1 2>/dev/null || true
+                    ''}
+                    ${lib.optionalString (config.desktop.touchpad.speed != null) ''
+                      ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Accel Speed" ${toString config.desktop.touchpad.speed} 2>/dev/null || true
+                    ''}
+                  ''}
                 else
                   if ${pkgs.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -q "libinput Natural Scrolling Enabled"; then
                     ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 0 2>/dev/null || true

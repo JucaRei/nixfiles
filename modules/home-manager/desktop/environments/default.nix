@@ -43,6 +43,55 @@ in
         Valores aceitos: "Super" (ou Mod4/Cmd/Windows), "Alt" (ou Mod1/Option), "Ctrl" (ou Control).
       '';
     };
+
+    touchpad = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Habilitar configuração declarativa de Touchpad.";
+      };
+
+      speed = lib.mkOption {
+        type = lib.types.either lib.types.str lib.types.number;
+        default = 0.5;
+        description = ''
+          Velocidade do ponteiro / aceleração do touchpad.
+          Aceita valores entre -1.0 e 1.0 (onde 0.0 é o padrão do sistema e 0.5 é ágil e rápido).
+        '';
+      };
+
+      naturalScrolling = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Habilitar rolagem natural (estilo macOS).";
+      };
+
+      tapping = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Habilitar toque para clicar (Tap to click).";
+      };
+
+      clickMethod = lib.mkOption {
+        type = lib.types.enum [
+          "clickfinger"
+          "buttonareas"
+          "default"
+        ];
+        default = "clickfinger";
+        description = "Método de clique físico (clickfinger: 2 dedos botão direito, 3 dedos botão do meio).";
+      };
+
+      accelProfile = lib.mkOption {
+        type = lib.types.enum [
+          "adaptive"
+          "flat"
+          "default"
+        ];
+        default = "adaptive";
+        description = "Perfil de aceleração (adaptive ou flat).";
+      };
+    };
   };
 
   config = {

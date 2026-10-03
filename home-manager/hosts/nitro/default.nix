@@ -38,6 +38,13 @@ in
       ];
 
       modifierKey = "Alt";
+
+      touchpad = {
+        enable = true;
+        speed = 0.5; # Velocidade aumentada (0.0 padrão -> 0.5 ágil e preciso para Full HD)
+        naturalScrolling = true;
+        tapping = true;
+      };
     };
 
     system = {
