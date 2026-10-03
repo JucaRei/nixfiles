@@ -14,8 +14,40 @@
       nativeInstallCheckInputs = [ ];
     });
 
-    # Fallback to unstable noctalia (v5+) if not present in current nixpkgs stable
-    noctalia = prev.noctalia or final.unstable.noctalia;
+    # Noctalia (v5+): fallback unstable + wrapper com xdg-utils no PATH e auto-patch do plugin keymap
+    noctalia =
+      let
+        baseNoctalia = prev.noctalia or final.unstable.noctalia;
+        keymapPatch = ./patches/noctalia-keymap-performance.patch;
+      in
+      final.symlinkJoin {
+        name = "noctalia-${baseNoctalia.version or "5.0.0"}";
+        paths = [ baseNoctalia ];
+        postBuild = ''
+          rm "$out/bin/noctalia"
+          cat > "$out/bin/noctalia" << EOF
+#!${final.bash}/bin/bash
+export PATH="${
+  final.lib.makeBinPath [
+    final.xdg-utils
+    final.patch
+  ]
+}:\$PATH"
+
+KEYMAP_PANEL="\$HOME/.local/state/noctalia/plugins/materialized/community/keymap/panel.luau"
+if [ -f "\$KEYMAP_PANEL" ] && ! grep -q "PANEL_STEP_KEY" "\$KEYMAP_PANEL" 2>/dev/null; then
+  ${final.patch}/bin/patch -s -f "\$KEYMAP_PANEL" < "${keymapPatch}" 2>/dev/null || true
+fi
+
+exec "${baseNoctalia}/bin/noctalia" "\$@"
+EOF
+          chmod +x "$out/bin/noctalia"
+        '';
+        passthru = (baseNoctalia.passthru or { }) // {
+          unwrapped = baseNoctalia;
+          inherit keymapPatch;
+        };
+      };
 
     # Fix for nvidia_x11_legacy340 on modern nixpkgs KBuild (Issue #554929 / PR #555840)
     # Permite compilação dos módulos de kernel quando $src aponta para o store read-only do Nix.
