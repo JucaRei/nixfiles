@@ -1425,6 +1425,32 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Adicionado suporte a `osConfig ? null` no módulo agregador de navegadores.
     - Removidas as declarações redundantes de `activation.checkVaapi`, `packages = [ pkgs.libva-utils ]` e bindings não utilizados dos submódulos `firefox` e `chrome`.
 
+- **Disponibilidade de `xdg-open` na Sessão do Usuário & Noctalia**:
+  - **Problema**: O Noctalia Shell emitia aviso ou erro informando que `xdg-open` não estava disponível no PATH da sessão, impedindo abertura de URLs e arquivos externos.
+  - **Correção**:
+    - Adicionado `pkgs.xdg-utils` a:
+      - [modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix)
+      - [modules/home-manager/desktop/environments/mangowm/packages.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/mangowm/packages.nix)
+      - [modules/home-manager/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/default.nix) (incluso na lista `packages` para qualquer perfil com `isWorkstation`).
+
+- **Noctalia Keymap (`blackbartblues/keymap`) — Otimização Luau, CPU Budget & Limite de Registradores**:
+  - **Problema**: O painel de atalhos de teclado do Noctalia Shell (`blackbartblues/keymap:panel`) falhava ao abrir com os erros:
+    - `script callback 'onOpen' exceeded its CPU budget` (estouro do limite de ~25ms por callback do host C++).
+    - `Out of local registers when trying to allocate ...: exceeded limit 200` ao tentar declarar variáveis locais no escopo do arquivo `panel.luau`.
+  - **Causa Raiz**:
+    1. *Limite de Registradores Luau*: O compilador bytecode da linguagem Luau restringe o escopo de qualquer função ou bloco raiz a no máximo 200 registradores locais. Em scripts grandes da comunidade (~3500 linhas), adicionar variáveis locais no topo estoura o parser do compilador em tempo de carregamento (`luau_load`).
+    2. *Sobrecarga de Renderização Síncrona*: O painel abria por padrão em `viewMode = "keyboard"` tentando computar e dispor centenas de nós de teclado e teclas virtuais em um único passo. No modo lista, 181 atalhos divididos em 15+ categorias eram gerados de uma só vez, com checagens de drag-and-drop (`reorderInsertionZone`), zonas de inserção e operações de string pesadas repetidas para cada bind, ultrapassando os 25ms em hardware com processador modesto (Intel Sandy Bridge dual-core).
+    3. *Invalidação Desnecessária no `onOpen`*: A rotina `onOpen` chamava `clearHostValueCaches()`, descartando todo o cache de nós de interface a cada clique e forçando a reconstrução completa.
+  - **Correções Aplicadas**:
+    - **Tabela Única de Estado (`local Fast = { ... }`)**: Agrupamento de todas as variáveis de controle, paginação e caches em uma única tabela, consumindo apenas 1 registrador local no compilador Luau e eliminando o erro de overflow de registradores.
+    - **Modo Lista Padrão**: Definido `viewMode = "list"` como modo padrão de exibição inicial.
+    - **Renderização Progressiva**: Implementada paginação assíncrona orientada a eventos usando o barramento de estado do Noctalia (`PANEL_STEP_KEY = "keymap.panel_step"`). O painel renderiza inicialmente um lote leve (`renderFirst = 15`), garantindo exibição instantânea no primeiro frame dentro de ~5ms, e agenda lotes subsequentes (`renderStep = 25`) em ciclos de callback isolados com novos orçamentos de CPU até cobrir todos os atalhos.
+    - **Preservação de Cache**: Eliminado `clearHostValueCaches()` de `onOpen`. Os nós construídos em `Fast.rows` e `Fast.pills` são reaproveitados imediatamente em aberturas consecutivas e invalidados cirurgicamente apenas quando a snapshot de atalhos muda (`SNAPSHOT_KEY`) ou as opções são reconfiguradas (`onConfigChanged`).
+    - **Short-circuit de Edição**: `reorderInsertionZone` e checagens de edição de categoria só são avaliadas quando `editorMode == true`.
+    - **Patch Idempotente & Declarativo**:
+      - Criado o patch em [modules/home-manager/desktop/display-servers/wayland/noctalia/keymap-panel-performance.patch](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/display-servers/wayland/noctalia/keymap-panel-performance.patch).
+      - Integrado ao hook de ativação `home.activation.patchNoctaliaKeymap` em [modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix), aplicando o patch com `${pkgs.patch}/bin/patch` caso `PANEL_STEP_KEY` ainda não esteja presente, com fallback para `sed`.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

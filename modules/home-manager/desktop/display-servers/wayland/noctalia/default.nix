@@ -357,7 +357,21 @@ in
       pkgs.wlr-randr
       pkgs.wdisplays
       pkgs.wl-mirror
+      pkgs.xdg-utils
     ];
+
+    # Garante que o plugin de mapa de teclado utilize o modo lista e não estoure o CPU budget do Luau nem o limite de registradores locais (200)
+    home.activation.patchNoctaliaKeymap = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      KEYMAP_PANEL="$HOME/.local/state/noctalia/plugins/materialized/community/keymap/panel.luau"
+      if [ -f "$KEYMAP_PANEL" ]; then
+        if ! grep -q "PANEL_STEP_KEY" "$KEYMAP_PANEL"; then
+          ${pkgs.patch}/bin/patch -s -f "$KEYMAP_PANEL" < "${./keymap-panel-performance.patch}" || {
+            sed -i 's/local viewMode = "keyboard"/local viewMode = "list"/g' "$KEYMAP_PANEL"
+            sed -i 's/viewMode = formMode == "edit" and "list" or "keyboard"/viewMode = "list"/g' "$KEYMAP_PANEL"
+          }
+        fi
+      fi
+    '';
 
     # Provisionamento declarativo de configuração TOML e paleta do Noctalia v5+
     xdg.configFile = {

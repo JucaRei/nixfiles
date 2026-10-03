@@ -1,0 +1,505 @@
+--- a/panel.luau
++++ b/panel.luau
+@@ -37,6 +37,50 @@
+ local CREATE_RESULT_KEY = "keymap.create_result"
+ local UPDATE_REQUEST_KEY = "keymap.update_request"
+ local UPDATE_RESULT_KEY = "keymap.update_result"
++local PANEL_STEP_KEY = "keymap.panel_step"
++
++local Fast = {
++  steps = {},
++  stepCounter = 0,
++  renderFirst = 15,
++  renderStep = 25,
++  renderLimit = 15,
++  renderedRows = 0,
++  renderTruncated = false,
++  fillQueued = false,
++  colors = {},
++  pills = {},
++  rows = {},
++  keys = {},
++  mods = {},
++  sigs = {},
++  expanded = {},
++  normalized = {},
++}
++
++local function schedulePanelStep(fn)
++  table.insert(Fast.steps, fn)
++  Fast.stepCounter += 1
++  noctalia.state.set(PANEL_STEP_KEY, Fast.stepCounter)
++end
++
++noctalia.state.watch(PANEL_STEP_KEY, function(_value)
++  local fn = table.remove(Fast.steps, 1)
++  if fn ~= nil then fn() end
++end)
++
++local function scheduleFill()
++  if Fast.fillQueued then return end
++  Fast.fillQueued = true
++  schedulePanelStep(function()
++    Fast.fillQueued = false
++    if not Fast.renderTruncated then return end
++    Fast.renderLimit += Fast.renderStep
++    if Fast.render ~= nil then
++      Fast.render()
++    end
++  end)
++end
+ 
+ local EMPTY_SNAPSHOT = {
+   status = "idle",
+@@ -50,7 +94,7 @@
+ local snapshot = EMPTY_SNAPSHOT
+ local searchQuery = ""
+ local searchRevision = 0
+-local viewMode = "keyboard"
++local viewMode = "list"
+ local keyboardLayoutId = ""
+ local selectedKeyboardKey = nil
+ local activeModifiers = { SUPER = false, CTRL = false, SHIFT = false, ALT = false }
+@@ -139,6 +183,9 @@
+ local function clearHostValueCaches()
+   configCache = {}
+   translationCache = {}
++  Fast.colors = {}
++  Fast.pills = {}
++  Fast.rows = {}
+ end
+ 
+ local function asString(value, fallback)
+@@ -170,7 +217,12 @@
+ end
+ 
+ local function normalized(value)
+-  return string.lower(noctalia.string.trim(asString(value)))
++  local str = asString(value)
++  local cached = Fast.normalized[str]
++  if cached ~= nil then return cached end
++  local res = string.lower(noctalia.string.trim(str))
++  Fast.normalized[str] = res
++  return res
+ end
+ 
+ local MODIFIER_ORDER = { "SUPER", "CTRL", "SHIFT", "ALT" }
+@@ -226,36 +278,50 @@
+ SYMBOL_ALIASES[string.char(96)] = "grave"
+ 
+ local function canonicalModifier(value)
+-  return MODIFIER_ALIASES[normalized(value)] or string.upper(asString(value))
++  local cached = Fast.mods[value]
++  if cached ~= nil then return cached end
++  local res = MODIFIER_ALIASES[normalized(value)] or string.upper(asString(value))
++  Fast.mods[value] = res
++  return res
+ end
+ 
+ local function canonicalKey(value)
++  local cached = Fast.keys[value]
++  if cached ~= nil then return cached end
+   local raw = normalized(value)
++  local res
+   if SYMBOL_ALIASES[raw] ~= nil then
+-    return SYMBOL_ALIASES[raw]
+-  end
+-  local key = raw:gsub("%s+", "_"):gsub("%-", "_")
+-  local rangeStart, rangeEnd = key:match("^(%d)_(%d)$")
+-  if rangeStart ~= nil then
+-    return rangeStart .. "-" .. rangeEnd
+-  end
+-  if KEY_ALIASES[key] ~= nil then
+-    return KEY_ALIASES[key]
+-  end
+-  local numpad = key:match("^kp_?(%d)$") or key:match("^num_?(%d)$")
+-  if numpad ~= nil then
+-    return "num" .. numpad
+-  end
+-  if key:match("^f%d%d?$") or key:match("^[a-z]$") or key:match("^%d$") then
+-    return key
++    res = SYMBOL_ALIASES[raw]
++  else
++    local key = raw:gsub("%s+", "_"):gsub("%-", "_")
++    local rangeStart, rangeEnd = key:match("^(%d)_(%d)$")
++    if rangeStart ~= nil then
++      res = rangeStart .. "-" .. rangeEnd
++    elseif KEY_ALIASES[key] ~= nil then
++      res = KEY_ALIASES[key]
++    else
++      local numpad = key:match("^kp_?(%d)$") or key:match("^num_?(%d)$")
++      if numpad ~= nil then
++        res = "num" .. numpad
++      else
++        res = key
++      end
++    end
+   end
+-  return key
++  Fast.keys[value] = res
++  return res
+ end
+ 
+ local function modifierSignature(modifiers)
++  local mods = asArray(modifiers)
++  if #mods == 0 then return "" end
++  local cacheKey = table.concat(mods, "+")
++  local cached = Fast.sigs[cacheKey]
++  if cached ~= nil then return cached end
++
+   local enabled = {}
+   local extras = {}
+-  for _, modifier in ipairs(asArray(modifiers)) do
++  for _, modifier in ipairs(mods) do
+     local canonical = canonicalModifier(modifier)
+     if activeModifiers[canonical] ~= nil then
+       enabled[canonical] = true
+@@ -273,7 +339,9 @@
+   for _, modifier in ipairs(extras) do
+     ordered[#ordered + 1] = modifier
+   end
+-  return table.concat(ordered, "+")
++  local res = table.concat(ordered, "+")
++  Fast.sigs[cacheKey] = res
++  return res
+ end
+ 
+ local function activeModifierSignature()
+@@ -314,16 +382,21 @@
+ end
+ 
+ local function expandedKeys(value)
++  local cached = Fast.expanded[value]
++  if cached ~= nil then return cached end
+   local canonical = canonicalKey(value)
+   local first, last = canonical:match("^(%d)%-(%d)$")
++  local res
+   if first ~= nil and tonumber(first) <= tonumber(last) then
+-    local result = {}
++    res = {}
+     for number = tonumber(first), tonumber(last) do
+-      result[#result + 1] = tostring(number)
++      res[#res + 1] = tostring(number)
+     end
+-    return result
++  else
++    res = { canonical }
+   end
+-  return { canonical }
++  Fast.expanded[value] = res
++  return res
+ end
+ 
+ local keyboardIndexSnapshot = nil
+@@ -499,33 +572,54 @@
+   return columns
+ end
+ 
+-local function cardFill()
++local function refreshCachedColors()
++  Fast.colors.super = asString(cfg("super_color"), "primary")
++  Fast.colors.superText = asString(cfg("super_text_color"), "on_primary")
++  Fast.colors.ctrl = asString(cfg("ctrl_color"), "secondary")
++  Fast.colors.ctrlText = asString(cfg("ctrl_text_color"), "on_secondary")
++  Fast.colors.shift = asString(cfg("shift_color"), "tertiary")
++  Fast.colors.shiftText = asString(cfg("shift_text_color"), "on_tertiary")
++  Fast.colors.alt = asString(cfg("alt_color"), "surface_variant")
++  Fast.colors.altText = asString(cfg("alt_text_color"), "on_surface_variant")
++  Fast.colors.key = asString(cfg("key_color"), "surface")
++  Fast.colors.keyText = asString(cfg("key_text_color"), "on_surface")
++  Fast.colors.desc = asString(cfg("description_color"), "on_surface")
++  Fast.colors.category = asString(cfg("category_color"), "primary")
++
+   local color = asString(cfg("card_color"), "surface_variant")
+   local opacity = math.max(0, math.min(100, tonumber(cfg("card_opacity")) or 35)) / 100
+   if string.sub(color, 1, 1) == "#" then
+     local alpha = string.format("%02X", math.floor(opacity * 255 + 0.5))
+     if #color == 7 then
+-      return color .. alpha
++      Fast.colors.cardFill = color .. alpha
+     elseif #color == 9 then
+-      return string.sub(color, 1, 7) .. alpha
++      Fast.colors.cardFill = string.sub(color, 1, 7) .. alpha
++    else
++      Fast.colors.cardFill = color
+     end
+-    return color
++  else
++    Fast.colors.cardFill = color .. "/" .. string.format("%.2f", opacity)
+   end
+-  return color .. "/" .. string.format("%.2f", opacity)
++end
++
++local function cardFill()
++  if not Fast.colors.cardFill then refreshCachedColors() end
++  return Fast.colors.cardFill
+ end
+ 
+ local function modifierStyle(token)
++  if not Fast.colors.super then refreshCachedColors() end
+   local name = normalized(token)
+   if name == "super" or name == "meta" or name == "win" or name == "logo" then
+-    return cfg("super_color"), cfg("super_text_color")
++    return Fast.colors.super, Fast.colors.superText
+   elseif name == "ctrl" or name == "control" then
+-    return cfg("ctrl_color"), cfg("ctrl_text_color")
++    return Fast.colors.ctrl, Fast.colors.ctrlText
+   elseif name == "shift" then
+-    return cfg("shift_color"), cfg("shift_text_color")
++    return Fast.colors.shift, Fast.colors.shiftText
+   elseif name == "alt" or name == "mod1" or name == "option" then
+-    return cfg("alt_color"), cfg("alt_text_color")
++    return Fast.colors.alt, Fast.colors.altText
+   end
+-  return cfg("key_color"), cfg("key_text_color")
++  return Fast.colors.key, Fast.colors.keyText
+ end
+ 
+ -- BEGIN KEYBOARD LAYOUT DATA
+@@ -1760,15 +1854,19 @@
+ 
+ 
+ local function keyPill(token, isKey, compact)
+-  local fill
+-  local textColor
++  local strToken = asString(token, "?")
++  local cacheKey = strToken .. (isKey and ":k:" or ":m:") .. (compact and "c" or "n")
++  local cached = Fast.pills[cacheKey]
++  if cached ~= nil then return cached end
++
++  local fill, textColor
+   if isKey then
+-    fill = cfg("key_color")
+-    textColor = cfg("key_text_color")
++    fill = Fast.colors.key or asString(cfg("key_color"), "surface")
++    textColor = Fast.colors.keyText or asString(cfg("key_text_color"), "on_surface")
+   else
+-    fill, textColor = modifierStyle(token)
++    fill, textColor = modifierStyle(strToken)
+   end
+-  return ui.row({
++  local pill = ui.row({
+     fill = asString(fill, "surface"),
+     border = "outline",
+     borderWidth = 1,
+@@ -1779,13 +1877,15 @@
+     justify = "center",
+   }, {
+     ui.label({
+-      text = asString(token, "?"),
++      text = strToken,
+       color = asString(textColor, "on_surface"),
+       fontSize = compact and 9 or 11,
+       fontWeight = "bold",
+       maxLines = 1,
+     }),
+   })
++  Fast.pills[cacheKey] = pill
++  return pill
+ end
+ 
+ local function keyWidth(columnCount)
+@@ -2203,7 +2303,15 @@
+   return actions
+ end
+ 
++local BIND_ROW_CACHE = {}
++
+ local function bindRow(bind, categoryName, columnCount, rowIndex)
++  local bindId = asString(bind.id, tostring(rowIndex))
++  if not editorMode then
++    local cached = Fast.rows[bindId]
++    if cached ~= nil then return cached end
++  end
++
+   local width = keyWidth(columnCount)
+   local combos = type(bind.combos) == "table" and #bind.combos > 0 and bind.combos
+     or { { modifiers = bind.modifiers, key = bind.key } }
+@@ -2260,7 +2368,7 @@
+   end
+   details[#details + 1] = ui.label({
+     text = description,
+-    color = asString(cfg("description_color"), "on_surface"),
++    color = Fast.colors.desc or asString(cfg("description_color"), "on_surface"),
+     fontSize = 12,
+     maxLines = 2,
+     flexGrow = 1,
+@@ -2270,12 +2378,14 @@
+     keyArea,
+     ui.row({ gap = 6, align = "center", flexGrow = 1 }, details),
+   }
+-  for _, action in ipairs(editBindActions(bind, categoryName)) do
+-    children[#children + 1] = action
++  if editorMode then
++    for _, action in ipairs(editBindActions(bind, categoryName)) do
++      children[#children + 1] = action
++    end
+   end
+ 
+-  return ui.row({
+-    key = "bind-" .. asString(bind.id, tostring(rowIndex)),
++  local rowNode = ui.row({
++    key = "bind-" .. bindId,
+     gap = 10,
+     paddingH = 6,
+     paddingV = 4,
+@@ -2283,6 +2393,11 @@
+     fill = "surface/0.42",
+     align = "center",
+   }, children)
++
++  if not editorMode then
++    Fast.rows[bindId] = rowNode
++  end
++  return rowNode
+ end
+ 
+ local function reorderInsertionZone(bind, placement)
+@@ -2397,7 +2512,7 @@
+   local categoryName = asString(category.name, tr("panel.uncategorized"))
+   local categoryId = asString(category.id, categoryName)
+   local isRenaming = editorMode and renamingCategoryId == categoryId
+-  local canRename = categoryRenameable(category)
++  local canRename = editorMode and categoryRenameable(category) or false
+   local header
+   if isRenaming then
+     local nextName = noctalia.string.trim(renamingCategoryValue)
+@@ -2431,7 +2546,7 @@
+     local headerChildren = {
+       ui.label({
+         text = categoryName,
+-        color = asString(cfg("category_color"), "primary"),
++        color = Fast.colors.category or asString(cfg("category_color"), "primary"),
+         fontSize = 14,
+         fontWeight = "bold",
+         maxLines = 1,
+@@ -2465,16 +2580,29 @@
+   end
+ 
+   local categoryBinds = asArray(category.binds)
+-  for index, bind in ipairs(categoryBinds) do
+-    local insertion = reorderInsertionZone(bind, "before")
+-    if insertion ~= nil then children[#children + 1] = insertion end
+-    children[#children + 1] = bindRow(
+-      bind, categoryName, columnCount, index
+-    )
+-  end
+-  if #categoryBinds > 0 then
+-    local insertion = reorderInsertionZone(categoryBinds[#categoryBinds], "after")
+-    if insertion ~= nil then children[#children + 1] = insertion end
++  if editorMode then
++    for index, bind in ipairs(categoryBinds) do
++      local insertion = reorderInsertionZone(bind, "before")
++      if insertion ~= nil then children[#children + 1] = insertion end
++      children[#children + 1] = bindRow(
++        bind, categoryName, columnCount, index
++      )
++    end
++    if #categoryBinds > 0 then
++      local insertion = reorderInsertionZone(categoryBinds[#categoryBinds], "after")
++      if insertion ~= nil then children[#children + 1] = insertion end
++    end
++  else
++    for index, bind in ipairs(categoryBinds) do
++      if Fast.renderedRows >= Fast.renderLimit then
++        Fast.renderTruncated = true
++        break
++      end
++      Fast.renderedRows += 1
++      children[#children + 1] = bindRow(
++        bind, categoryName, columnCount, index
++      )
++    end
+   end
+   local props = {
+     key = "category-" .. categoryId,
+@@ -2750,6 +2878,8 @@
+ end
+ 
+ render = function()
++  Fast.renderedRows = 0
++  Fast.renderTruncated = false
+   local status = asString(snapshot.status, "idle")
+   local categories = viewMode == "list" and filteredCategories() or EMPTY_ENTRIES
+   local requestedColumns = math.max(1, math.min(4, math.floor(tonumber(cfg("columns")) or 3)))
+@@ -2780,7 +2910,11 @@
+   end
+   children[#children + 1] = body
+   panel.render(ui.column({ flexGrow = 1, gap = 12, align = "stretch" }, children))
++  if Fast.renderTruncated and scheduleFill ~= nil then
++    scheduleFill()
++  end
+ end
++Fast.render = render
+ 
+ local function requestRefresh()
+   local current = tonumber(noctalia.state.get(REFRESH_KEY)) or 0
+@@ -2791,6 +2925,9 @@
+   if type(value) == "table" and value.status == "loading" and snapshot.status == "ready" then
+     return
+   end
++  Fast.pills = {}
++  Fast.rows = {}
++  Fast.renderLimit = Fast.renderFirst
+   if type(value) == "table" then
+     snapshot = value
+   else
+@@ -2851,7 +2988,7 @@
+ end)
+ 
+ function onOpen(_context)
+-  clearHostValueCaches()
++  Fast.renderLimit = Fast.renderFirst
+   local configuredLayout = asString(cfg("keyboard_layout"), "100")
+   keyboardLayoutId = KEYBOARD_LAYOUTS[configuredLayout] ~= nil and configuredLayout or "100"
+   local current = noctalia.state.get(SNAPSHOT_KEY)
+@@ -2860,7 +2997,7 @@
+   searchRevision += 1
+   if creatorBusy then
+     creatorOpen = editingOperation == "update"
+-    viewMode = formMode == "edit" and "list" or "keyboard"
++    viewMode = "list"
+   else
+     creatorOpen = false
+     creatorError = ""
+@@ -2870,6 +3007,7 @@
+     editingOperation = "update"
+     deleteConfirmBindId = ""
+     hiddenDeleteConfirmBindId = ""
++    viewMode = "list"
+     clearCategoryRename()
+   end
+   -- A "loading" snapshot observed at open time cannot still be in flight: the
+@@ -2884,6 +3022,7 @@
+ 
+ function onConfigChanged()
+   clearHostValueCaches()
++  Fast.renderLimit = Fast.renderFirst
+   render()
+ end
+ 
+@@ -2893,12 +3032,16 @@
+ 
+ function onSearchChanged(value)
+   searchQuery = asString(value)
++  Fast.renderLimit = Fast.renderFirst
++  Fast.rows = {}
+   render()
+ end
+ 
+ function onClearSearch()
+   searchQuery = ""
+   searchRevision += 1
++  Fast.renderLimit = Fast.renderFirst
++  Fast.rows = {}
+   render()
+ end
+ 
+@@ -2910,6 +3053,7 @@
+ function onShowList()
+   if creatorBusy then return end
+   viewMode = "list"
++  Fast.renderLimit = Fast.renderFirst
+   creatorOpen = false
+   render()
+ end

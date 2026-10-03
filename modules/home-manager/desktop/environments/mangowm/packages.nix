@@ -257,6 +257,7 @@ in
       slurp
       hicolor-icon-theme
       adwaita-icon-theme
+      xdg-utils
     ];
 
     home.file = {

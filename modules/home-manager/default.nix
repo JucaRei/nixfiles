@@ -33,9 +33,13 @@ in
       inherit username;
       inherit stateVersion;
 
-      packages = optionals (!isNixOS) [
-        config.nix.package
-      ];
+      packages =
+        optionals (!isNixOS) [
+          config.nix.package
+        ]
+        ++ optionals (isWorkstation) [
+          pkgs.xdg-utils
+        ];
 
       activation = {
         diff = lib.hm.dag.entryAnywhere ''
