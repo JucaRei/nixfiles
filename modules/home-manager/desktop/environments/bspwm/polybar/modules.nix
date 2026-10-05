@@ -149,7 +149,7 @@
   "module/bluetooth" = {
     type = "custom/script";
     exec = "${scripts.bluetoothScript}";
-    interval = 2;
+    interval = 10;
     format = "%{A1:${scripts.rofiBluetoothMenu}:}%{A3:${scripts.rofiBluetoothMenu} --toggle:}<label>%{A}%{A}";
     label = "%output%";
     label-padding = 1;
