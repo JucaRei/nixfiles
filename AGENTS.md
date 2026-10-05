@@ -1452,6 +1452,20 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - No [overlays/default.nix](file:///home/juca/.dotfiles/nixfiles/overlays/default.nix), o pacote `noctalia` foi envelopado via `symlinkJoin` com wrapper de inicialização que injeta `xdg-utils` e `patch` no `PATH`, auto-aplica o patch em `panel.luau` antes de disparar o binário real e expõe `passthru.keymapPatch`.
       - O hook `home.activation.patchNoctaliaKeymap` em [modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/display-servers/wayland/noctalia/default.nix) consome diretamente `${pkgs.noctalia.passthru.keymapPatch}`.
 
+- **Bluetooth — Correção de Ativação, Desativação, Remoção e Integração Polybar (`scripts.nix` & `modules.nix`)**:
+  - **Problema**: O script do menu Bluetooth (`rofiBluetoothMenu`) apresentava falhas de ativação ("não ativa"), comportamento em loop ao desligar e persistência de dispositivos removidos ("não tira"):
+    1. *Falha ao Ativar*: Ao tentar ligar com o controlador desligado ou bloqueado por rfkill, `bluetoothctl` não possuía um controlador padrão selecionado (`No default controller available`). Invocação separada de `bluetoothctl select` não persistia entre processos, e o tempo de inicialização do kernel/rfkill (até 1.5s) não era respeitado, resultando em falso negativo e retorno imediato à tela de desligado.
+    2. *Loop ao Desligar*: Ao selecionar "Desligar Bluetooth", o script desligava o rádio e reabria `show_menu`, que ao detectar o rádio desligado abria uma nova janela Rofi perguntando se desejava ligar, dando a falsa impressão de que a ação falhou.
+    3. *Falha de Remoção*: O script listava dispositivos com `bluetoothctl devices` incondicionalmente. O BlueZ retém em cache dispositivos no ar mesmo após despareados, fazendo aparelhos esquecidos continuarem listados como "(Disponível)". Além disso, remover dispositivo conectado falhava com `Device busy` por não desconectar antes.
+  - **Correções Aplicadas**:
+    - **Ativação Robusta (`toggle_power`)**: Desbloqueio do rfkill seguido de polling de até 3s para detecção do controlador em `bluetoothctl list`, envio combinado via pipe (`printf "select %s\npower on\nquit\n" "$ctrl" | bluetoothctl`) e validação via loop de `Powered: yes`.
+    - **Desativação com Saída Limpa**: Interrupção de scans em segundo plano, `power off` e encerramento com `exit 0` sem reabertura de menus.
+    - **Remoção em Cascata Segura**: Sequência obrigatória `disconnect -> wait loop -> untrust -> remove -> sleep 0.5s`, garantindo liberação no D-Bus.
+    - **Extração Real do Nome do Dispositivo (`bluetoothScript` e `rofiBluetoothMenu`)**:
+      - *Causa*: O comando `bluetoothctl devices Connected` só existe no BlueZ >= 5.70. No Debian 12 (BlueZ 5.66), o comando falha emitindo `Invalid command 'devices Connected'` diretamente no stdout. Como o script capturava essa saída com `conn_line=$(... | head -n1)`, o texto de erro era interpretado como se fosse um dispositivo e o trecho `'devices Conne'` era exibido na barra como "lógica do script" em vez do nome do aparelho. Além disso, em dispositivos cujo nome não vem na listagem resumida, o nome ficava em branco ou desconfigurado.
+      - *Correção*: Substituído por iteração segura sobre `paired-devices` e `devices` validando estritamente linhas `Device <MAC>` com regex de MAC address (`^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$`), checando `Connected: yes` via `bluetoothctl info "$mac"` e extraindo o nome real das propriedades `Alias:` ou `Name:`. Dispositivos conectados BLE não pareados também são reconhecidos automaticamente.
+    - **Polybar**: Módulo `module/bluetooth` atualizado com clique com botão direito (`click-right` e `%{A3:...}`) chamando `${scripts.rofiBluetoothMenu} --toggle` para ligar/desligar com um clique sem abrir menus.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

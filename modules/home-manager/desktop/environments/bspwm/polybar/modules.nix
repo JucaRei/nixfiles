@@ -145,16 +145,17 @@
     click-right = "${pkgs.playerctl}/bin/playerctl next";
   };
 
-  # --- Bluetooth ---
+  # --- Bluetooth (Status Dinâmico na Polybar & Menu Rofi) ---
   "module/bluetooth" = {
     type = "custom/script";
     exec = "${scripts.bluetoothScript}";
     interval = 2;
-    format = "%{A1:${scripts.rofiBluetoothMenu}:}%{A3:${scripts.rofiBluetoothMenu}:}<label>%{A}%{A}";
+    format = "%{A1:${scripts.rofiBluetoothMenu}:}%{A3:${scripts.rofiBluetoothMenu} --toggle:}<label>%{A}%{A}";
     label = "%output%";
     label-padding = 1;
     label-foreground = colors.sapphire;
     click-left = "${scripts.rofiBluetoothMenu}";
+    click-right = "${scripts.rofiBluetoothMenu} --toggle";
   };
 
   # --- Uso de CPU ---
