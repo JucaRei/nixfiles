@@ -134,7 +134,6 @@ in
         gpuDriverCheck
         direnv
         duf
-        fzf
         ripgrep
         htop
         btop

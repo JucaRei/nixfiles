@@ -33,6 +33,7 @@ in
     ./nushell
     ./direnv
     ./starship
+    ./fzf
   ];
 
   options.system.programs.shells = {
@@ -114,6 +115,14 @@ in
         type = bool;
         default = true;
         description = "Enable Starship prompt with an aesthetic, lightweight configuration.";
+      };
+    };
+
+    fzf = {
+      enable = mkOption {
+        type = bool;
+        default = true;
+        description = "Enable fzf with rich previews and unified configuration across all shells.";
       };
     };
   };

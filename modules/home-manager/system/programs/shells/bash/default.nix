@@ -119,13 +119,24 @@ in
           # Tab navega no menu, Shift-Tab volta
           bind 'TAB:menu-complete'
           bind '"\e[Z": menu-complete-backward'
+
+          # fcd: Fuzzy change directory com preview dinâmico de árvore eza
+          fcd() {
+            local dir
+            dir=$(fd --type d --hidden --exclude .git --exclude .cache 2>/dev/null | fzf --preview 'eza --tree --level=2 --color=always --icons {} 2>/dev/null | head -100' --preview-window 'right:50%:wrap')
+            if [ -n "$dir" ]; then
+              cd "$dir" || return
+            fi
+          }
         '')
 
         # 3. Acoplamento final do ble.sh (após Starship e PROMPT_COMMAND)
         (mkOrder 2000 ''
           ${lib.optionalString bashCfg.blesh.enable ''
-            # Acoplar o editor ble.sh ao terminal interativo
+            # Integração oficial ble.sh com widgets e completions do fzf
             if [[ $- == *i* && -n "''${BLE_VERSION-}" ]]; then
+              ble-import -d integration/fzf-completion 2>/dev/null || true
+              ble-import -d integration/fzf-key-bindings 2>/dev/null || true
               ble-attach
             fi
           ''}

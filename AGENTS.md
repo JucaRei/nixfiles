@@ -1464,7 +1464,28 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Extração Real do Nome do Dispositivo (`bluetoothScript` e `rofiBluetoothMenu`)**:
       - *Causa*: O comando `bluetoothctl devices Connected` só existe no BlueZ >= 5.70. No Debian 12 (BlueZ 5.66), o comando falha emitindo `Invalid command 'devices Connected'` diretamente no stdout. Como o script capturava essa saída com `conn_line=$(... | head -n1)`, o texto de erro era interpretado como se fosse um dispositivo e o trecho `'devices Conne'` era exibido na barra como "lógica do script" em vez do nome do aparelho. Além disso, em dispositivos cujo nome não vem na listagem resumida, o nome ficava em branco ou desconfigurado.
       - *Correção*: Substituído por iteração segura sobre `paired-devices` e `devices` validando estritamente linhas `Device <MAC>` com regex de MAC address (`^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$`), checando `Connected: yes` via `bluetoothctl info "$mac"` e extraindo o nome real das propriedades `Alias:` ou `Name:`. Dispositivos conectados BLE não pareados também são reconhecidos automaticamente.
-    - **Polybar**: Módulo `module/bluetooth` atualizado com clique com botão direito (`click-right` e `%{A3:...}`) chamando `${scripts.rofiBluetoothMenu} --toggle` para ligar/desligar com um clique sem abrir menus. Intervalo de atualização ajustado de `2s` para `10s` para evitar acordar periféricos Bluetooth Low Energy (como o Logitech MX Keys) repetidamente via polling de status/bateria no D-Bus.
+- **FZF Unificado e de Alta Produtividade para Todos os Shells (`system.programs.shells.fzf`)**:
+  - **Módulo Centralizado**: Criado [modules/home-manager/system/programs/shells/fzf/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/shells/fzf/default.nix) e integrado a [modules/home-manager/system/programs/shells/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/shells/default.nix) com `fzf.enable = true` por padrão para todos os perfis e hosts.
+  - **Motor de Busca Moderno (`fd`)**: Substituído o comando `find` legado pelo `fd` (`pkgs.fd`) para `FZF_DEFAULT_COMMAND`, `fileWidgetCommand` e `changeDirWidgetCommand`, com exclusão de `.git` e `.cache`, suporte a arquivos ocultos e busca indexada ultrarrápida.
+  - **Preview Inteligente Multiuso (`fzf-preview`)**: Script encapsulado no Nix (`fzfPreview`) que detecta dinamicamente os tipos de arquivo:
+    - *Diretórios*: Árvore hierárquica colorida com ícones via `${pkgs.eza}/bin/eza --tree --level=2 --icons`.
+    - *Arquivos de Texto e Código*: Syntax highlighting via `${pkgs.bat}/bin/bat --style=numbers,changes` com preview de até 500 linhas.
+    - *Arquivos Compactados* (`.tar.*`, `.zip`): Listagem interna via `tar` ou `unzip`.
+    - *Imagens e Binários*: Detecção MIME via `${pkgs.file}/bin/file` sem congelar o terminal.
+  - **Estética & Layout Catppuccin Mocha**:
+    - Layout invertido ergonômico (`--layout=reverse`), bordas arredondadas (`--border=rounded`), `--inline-info` e prompt moderno com ícones Nerd Font (`󰭎 `, `▶ `, `✓ `).
+    - Paleta Catppuccin Mocha completa configurada em `programs.fzf.colors`.
+    - Atalhos de controle: `Ctrl-/` (alternar visibilidade do preview), `Ctrl-U`/`Ctrl-D` (scroll no preview), `Alt-A`/`Alt-D` (seleção em lote) e `Ctrl-Y` (copiar seleção para a área de transferência via `wl-copy` ou `xclip`).
+  - **Utilitários Globais de Produtividade**:
+    - `fif` (*Fuzzy Ripgrep*): Busca em tempo real no conteúdo dos arquivos via `rg` + `fzf` com preview do `bat` na linha encontrada, abrindo diretamente no `$EDITOR` na linha exata.
+    - `fkill` (*Fuzzy Process Killer*): Seleção interativa (múltipla com TAB) e finalização de processos com preview de PID, consumo de memória, CPU e comando completo.
+    - `fpreview`: Pré-visualização rápida de arquivos em tela cheia e abertura no editor.
+  - **Integração por Shell**:
+    - **Zsh**: Habilitado o plugin nativo `pkgs.zsh-fzf-tab` via `programs.zsh.plugins` com regras de `zstyle` aprimoradas para `fzf-tab` (previews dinâmicos com `eza` para `cd`/`z`, `systemctl status` colorido, `ps` detalhado para `kill`, `git checkout` e logs de commit), atalhos dentro do menu de completude e função de navegação rápida `fcd`.
+    - **Bash**: Integração automática do Home Manager com keybindings (`Ctrl-R`, `Ctrl-T`, `Alt-C`) e autocompletion (`**<TAB>`). Acoplamento com `ble.sh` via `ble-import -d integration/fzf-completion` e `ble-import -d integration/fzf-key-bindings`, além da função `fcd`.
+    - **Fish**: Integração nativa com `programs.fzf.enableFishIntegration` e função declarativa `fcd`.
+    - **Nushell**: Configurados keybindings declarativos no `extraConfig` para `Ctrl-R` (histórico), `Ctrl-T` (arquivos com preview do bat) e `Alt-C` (diretórios com preview do eza), além do comando nativo `def fcd []`.
+  - **Limpeza de Hosts**: Removida a declaração avulsa redundante de `fzf` em `home.packages` nos hosts `anubis`, `nitro`, `rocinante`, `rocinante-hyperv` e `rocinante-vm`, centralizando a gestão completa no Home Manager.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

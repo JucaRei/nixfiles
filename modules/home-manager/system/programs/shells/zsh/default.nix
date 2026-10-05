@@ -118,8 +118,26 @@ in
             command nixos-rebuild "$@"
           fi
         }
+
+        # fcd: Fuzzy change directory com preview dinâmico de árvore eza
+        fcd() {
+          local dir
+          dir=$(fd --type d --hidden --exclude .git --exclude .cache 2>/dev/null | fzf --preview 'eza --tree --level=2 --color=always --icons {} 2>/dev/null | head -100' --preview-window 'right:50%:wrap')
+          if [ -n "$dir" ]; then
+            cd "$dir" || return
+          fi
+        }
       '';
-      # Plugins
+
+      # Plugins externos via Nixpkgs
+      plugins = [
+        {
+          name = "fzf-tab";
+          src = "${pkgs.zsh-fzf-tab}/share/fzf-tab";
+        }
+      ];
+
+      # Oh-My-Zsh e Configurações avançadas do fzf-tab
       oh-my-zsh = {
         enable = true;
         plugins = [
@@ -128,25 +146,34 @@ in
           "z"
         ];
         extraConfig = ''
-          # don't sort git branches
+          # Não reordenar branches git
           zstyle ':completion:*:git-checkout:*' sort false
 
-          # set descriptions format to enable group support
-          # NOTE: don't use escape sequences here, fzf-tab will ignore them
+          # Formato de descrições e agrupamento para o fzf-tab
           zstyle ':completion:*:descriptions' format '[%d]'
 
-          # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
-          #zstyle ':completion:*' menu no
-
-          # preview directory's content with eza when completing cd
-          zstyle ':fzf-tab:complete:cd:*' fzf-preview '${pkgs.eza} -1 --color=always $realpath'
-          zstyle ':fzf-tab:complete:z:*' fzf-preview '${pkgs.eza} -1 --color=always $realpath'
-          zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word'
-          zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
-          zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=down:3:wrap
-
-          # switch group using `<` and `>`
+          # Atalhos dentro do fzf-tab (alternar preview e scroll)
+          zstyle ':fzf-tab:*' fzf-bindings 'ctrl-/:toggle-preview' 'ctrl-u:preview-half-page-up' 'ctrl-d:preview-half-page-down'
           zstyle ':fzf-tab:*' switch-group '<' '>'
+          zstyle ':fzf-tab:*' prefix ""
+
+          # Preview de diretórios ao dar tab em cd ou z
+          zstyle ':fzf-tab:complete:(cd|z):*' fzf-preview '${pkgs.eza}/bin/eza --tree --level=2 --color=always --icons $realpath 2>/dev/null | head -100'
+
+          # Preview de arquivos genéricos usando script fzf-preview
+          zstyle ':fzf-tab:complete:*:*' fzf-preview 'if [ -d "$realpath" ]; then ${pkgs.eza}/bin/eza --tree --level=2 --color=always --icons "$realpath" 2>/dev/null | head -100; elif [ -f "$realpath" ]; then ${pkgs.bat}/bin/bat --style=numbers,changes --color=always --line-range :300 "$realpath" 2>/dev/null || head -n 300 "$realpath"; fi'
+
+          # Preview de serviços systemd com cores nativas
+          zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word 2>/dev/null'
+
+          # Preview de processos para kill e ps com informações completas
+          zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+          zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-preview '[[ $group == "[process ID]" ]] && ps --pid=$word -o user,pid,ppid,%cpu,%mem,stat,start,time,command -w -w'
+          zstyle ':fzf-tab:complete:(kill|ps):argument-rest' fzf-flags --preview-window=down:4:wrap
+
+          # Preview para git checkout e git log
+          zstyle ':fzf-tab:complete:git-(checkout|switch):*' fzf-preview 'git log --color=always --oneline --graph -n 10 $word 2>/dev/null'
+          zstyle ':fzf-tab:complete:git-(show|diff):*' fzf-preview 'git show --color=always $word 2>/dev/null'
         '';
       };
     };

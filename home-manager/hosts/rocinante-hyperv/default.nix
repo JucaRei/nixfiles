@@ -61,7 +61,6 @@
     home.packages = with pkgs; [
       direnv
       duf
-      fzf
       ripgrep
       htop
       btop

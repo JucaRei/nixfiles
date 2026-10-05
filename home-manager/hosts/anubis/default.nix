@@ -62,7 +62,6 @@
         git
         nh
         duf
-        fzf
         ripgrep
         htop
         libva-utils

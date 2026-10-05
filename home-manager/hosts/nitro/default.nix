@@ -107,7 +107,6 @@ in
           nerd-fonts.lilex
           git
           duf
-          fzf
           ripgrep
           htop
           intel-media-driver
