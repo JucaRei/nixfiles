@@ -1,9 +1,9 @@
 _:
 let
   # defaultFont = "Iosevka Comfy";
-  default-Serif = "Abel"; # "Lato" # "Roboto"
-  default-Mono = "Martian Mono Nerd Font";
-  default-Sans-serif = "Fira Sans";
+  default-Serif = "FiraGO"; # "Lato" # "Roboto"
+  default-Mono = "FantasqueSansM Nerd Font Mono";
+  default-Sans-serif = "Atkinson Hyperlegible";
 in
 {
 
@@ -15,5 +15,6 @@ in
   "font.name.monospace.x-western" = "${default-Mono}";
   "font.name.sans-serif.x-western" = "${default-Sans-serif}";
   "font.name.serif.x-western" = "${default-Serif}";
-  "browser.display.use_document_fonts" = 0;
+  # "browser.display.use_document_fonts" = 0; Disable site fonts
+  "browser.display.use_document_fonts" = 1;
 }

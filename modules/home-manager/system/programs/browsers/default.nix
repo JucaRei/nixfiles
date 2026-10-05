@@ -98,9 +98,13 @@ in
     # Fontes e codecs auxiliares
     (mkIf (cfgFf.enable || cfgCr.enable) {
       home.packages = with pkgs; [
-        nerd-fonts.martian-mono
+        # Fonts
+        nerd-fonts.fantasque-sans-mono
         lato
-        abel
+        fira-go
+        atkinson-hyperlegible
+
+        # Codecs
         ffmpeg
       ];
     })
