@@ -41,100 +41,102 @@ let
   # Activado pela linha `profile=hw-preset` no fim de mpv.conf.
   # ─────────────────────────────────────────────────────────────────────────────
   hwPresetSection =
-    (if !shouldInstall then
-      ''
-        [hw-preset]
-        profile-desc=Distro Nativa: Perfil Universal Seguro (auto hwdec, vo=gpu,x11)
-        vo=gpu,x11
-        gpu-api=auto
-        hwdec=vaapi-copy,vaapi,no
-        video-sync=audio
-        ${optionalString (hostname == "nixtro" || hostname == "nitro") ''
-          vaapi-device=/dev/dri/by-path/pci-0000:00:02.0-render
-        ''}
-      ''
-
-    # ── Acer Nitro 5 AN52 — Intel (iGPU) + NVIDIA GTX/RTX (dGPU) ─────────────
-    # Driver proprietário NVIDIA. Vulkan + nvdec-copy para decodificação acelerada.
-    # nvdec-copy é mais compatível que nvdec pois não usa zero-copy com VA-API.
-    else if hostname == "nixtro" || hostname == "nitro" then
-      ''
-        [hw-preset]
-        profile-desc=Nitro 5: Intel UHD 630 via nixGLIntel (vaapi, opengl)
-        vo=gpu,x11
-        gpu-api=opengl
-        hwdec=vaapi
-        gpu-shader-cache-dir=~/.cache/mpv/shaders
-        video-sync=display-resample
-      ''
-
-    # ── MacBook Pro 4,1 (Early 2008) — NVIDIA 8600M GT / Nouveau (NV50) ────────
-    # Nouveau NV50 não suporta Vulkan. OpenGL + VAAPI via Mesa.
-    # Escaladores bilinear reduzem carga no Core 2 Duo Penryn (2 núcleos, ~2.4GHz).
-    else if hostname == "rocinante" then
-      if isNvidia then
+    (
+      if !shouldInstall then
         ''
           [hw-preset]
-          profile-desc=Rocinante: NVIDIA 340 Legacy (Proprietário)
-          vo=gpu
+          profile-desc=Distro Nativa: Perfil Universal Seguro (auto hwdec, vo=gpu,x11)
+          vo=gpu,x11
+          gpu-api=auto
+          hwdec=vaapi-copy,vaapi,no
+          video-sync=audio
+          ${optionalString (hostname == "nixtro" || hostname == "nitro") ''
+            vaapi-device=/dev/dri/by-path/pci-0000:00:02.0-render
+          ''}
+        ''
+
+      # ── Acer Nitro 5 AN52 — Intel (iGPU) + NVIDIA GTX/RTX (dGPU) ─────────────
+      # Driver proprietário NVIDIA. Vulkan + nvdec-copy para decodificação acelerada.
+      # nvdec-copy é mais compatível que nvdec pois não usa zero-copy com VA-API.
+      else if hostname == "nixtro" || hostname == "nitro" then
+        ''
+          [hw-preset]
+          profile-desc=Nitro 5: Intel UHD 630 via nixGLIntel (vaapi, opengl)
+          vo=gpu,x11
           gpu-api=opengl
-          hwdec=no
-          profile=fast
-          scale=bilinear
-          cscale=bilinear
-          dscale=bilinear
+          hwdec=vaapi
+          gpu-shader-cache-dir=~/.cache/mpv/shaders
+          video-sync=display-resample
         ''
-      else
+
+      # ── MacBook Pro 4,1 (Early 2008) — NVIDIA 8600M GT / Nouveau (NV50) ────────
+      # Nouveau NV50 não suporta Vulkan. OpenGL + VAAPI via Mesa.
+      # Escaladores bilinear reduzem carga no Core 2 Duo Penryn (2 núcleos, ~2.4GHz).
+      else if hostname == "rocinante" then
+        if isNvidia then
+          ''
+            [hw-preset]
+            profile-desc=Rocinante: NVIDIA 340 Legacy (Proprietário)
+            vo=gpu
+            gpu-api=opengl
+            hwdec=no
+            profile=fast
+            scale=bilinear
+            cscale=bilinear
+            dscale=bilinear
+          ''
+        else
+          ''
+            [hw-preset]
+            profile-desc=Rocinante: Nouveau (Open Source)
+            vo=gpu
+            gpu-api=opengl
+            hwdec=vaapi
+            scale=bilinear
+            cscale=bilinear
+            dscale=bilinear
+          ''
+
+      # ── MacBook Air 4,1 — Intel HD 3000, 2 GB RAM ──────────────────────────────
+      # Memória limitada: cache reduzido, escaladores leves, sem pré-processamento.
+      # video-sync=audio evita o overhead de display-resample em hardware fraco.
+      else if hostname == "anubis" then
         ''
           [hw-preset]
-          profile-desc=Rocinante: Nouveau (Open Source)
+          profile-desc=MacBook Air: Intel HD 3000 (vaapi, opengl, 2GB RAM)
           vo=gpu
           gpu-api=opengl
           hwdec=vaapi
           scale=bilinear
           cscale=bilinear
           dscale=bilinear
+          correct-downscaling=no
+          sigmoid-upscaling=no
+          cache-secs=5
+          video-sync=audio
         ''
 
-    # ── MacBook Air 4,1 — Intel HD 3000, 2 GB RAM ──────────────────────────────
-    # Memória limitada: cache reduzido, escaladores leves, sem pré-processamento.
-    # video-sync=audio evita o overhead de display-resample em hardware fraco.
-    else if hostname == "anubis" then
-      ''
-        [hw-preset]
-        profile-desc=MacBook Air: Intel HD 3000 (vaapi, opengl, 2GB RAM)
-        vo=gpu
-        gpu-api=opengl
-        hwdec=vaapi
-        scale=bilinear
-        cscale=bilinear
-        dscale=bilinear
-        correct-downscaling=no
-        sigmoid-upscaling=no
-        cache-secs=5
-        video-sync=audio
-      ''
+      # ── Hyper-V Virtual Machine — sem aceleração 3D por hardware ───────────────
+      # Evita tentativas de Vulkan e DRM KMS que falham no adaptador virtual do Hyper-V.
+      else if hostname == "rocinante-hyperv" then
+        ''
+          [hw-preset]
+          profile-desc=Hyper-V: Software rendering (x11, sem hwdec)
+          vo=x11
+          hwdec=no
+          video-sync=audio
+        ''
 
-    # ── Hyper-V Virtual Machine — sem aceleração 3D por hardware ───────────────
-    # Evita tentativas de Vulkan e DRM KMS que falham no adaptador virtual do Hyper-V.
-    else if hostname == "rocinante-hyperv" then
-      ''
-        [hw-preset]
-        profile-desc=Hyper-V: Software rendering (x11, sem hwdec)
-        vo=x11
-        hwdec=no
-        video-sync=audio
-      ''
-
-    # ── Fallback genérico para outros hosts / VMs ──────────────────────────────
-    else
-      ''
-        [hw-preset]
-        profile-desc=Generic: auto hwdec (auto-safe, opengl)
-        vo=gpu
-        gpu-api=auto
-        hwdec=auto-safe
-      '')
+      # ── Fallback genérico para outros hosts / VMs ──────────────────────────────
+      else
+        ''
+          [hw-preset]
+          profile-desc=Generic: auto hwdec (auto-safe, opengl)
+          vo=gpu
+          gpu-api=auto
+          hwdec=auto-safe
+        ''
+    )
     + (optionalString (hostname == "nixtro" || hostname == "nitro") ''
 
       [nvidia]
@@ -224,7 +226,9 @@ in
 
         # ── Ajuste de janela flutuante para Window Managers (tiling) ───────────
         ${optionalString isWM ''
-          # Como ${if desktop != null then desktop else "WM"} é uma Window Manager, assegura dimensões e centralização de janela flutuante
+          # Como ${
+            if desktop != null then desktop else "WM"
+          } é uma Window Manager, assegura dimensões e centralização de janela flutuante
           autofit-larger=85%x85%
           geometry=50%:50%
         ''}
@@ -317,7 +321,8 @@ in
 
     home.packages = [
       pkgs.font-dubai
-    ] ++ lib.optionals (!shouldInstall && !isNixOS) [
+    ]
+    ++ lib.optionals (!shouldInstall && !isNixOS) [
       (pkgs.writeShellScriptBin "mpv" ''
         : ''${__GLX_VENDOR_LIBRARY_NAME:=mesa}
         export __GLX_VENDOR_LIBRARY_NAME
@@ -351,6 +356,8 @@ in
           "video/mp4"
           "video/mkv"
           "video/x-matroska"
+          "video/mp2t"
+          "video/ts"
           "video/webm"
         ];
       };
