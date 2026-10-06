@@ -1534,7 +1534,21 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Ciclo Contínuo Completo**: A função `next` / `cycle` percorre a lista cíclica `tiled -> tall -> rtall -> wide -> rwide -> grid -> even -> monocle -> tiled`, persistindo o estado em `/tmp/bsp-layout.state/<desktop>` e disparando o Dunst OSD.
   - **Correções de Escopo e Sintaxe no Módulo Polybar (`scripts.nix`)**:
     - **Escopo Recursivo (`rec {`)**: O arquivo [modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix) foi convertido para um conjunto de atributos recursivo (`rec { ... }`), garantindo que derivações internas como `rofiLayoutMenu` possam referenciar derivações irmãs (como `${bspLayoutSwitchScript}`) diretamente pelo caminho do Nix store sem erro de avaliação (`error: undefined variable 'bspLayoutSwitchScript'`).
-    - **Correção de Padrões Rofi**: Padrões de glob limpos sem parênteses desprotegidos evitam erros de sintaxe do Bash durante a geração de scripts (`writeShellScript`).
+  - **Migração Completa para Glyphs Nerd Font (Alacritty / Terminal)**:
+    - Emojis Unicode (como `🏠`, `✨`, `🔍`, `⚠️`, `✅`, `🧹`/`🗑️`, `❌`, `📋`, `🔗`, `📦`, `🚀`, `🔨`) foram substituídos por ícones nativos **Material Design Nerd Font** nos scripts de automação ([hm-switch.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/scripts/hm-switch.nix), [switch-host.nix](file:///home/juca/.dotfiles/nixfiles/modules/nixos/system/scripts/switch-host.nix), [switch-boot.nix](file:///home/juca/.dotfiles/nixfiles/modules/nixos/system/scripts/switch-boot.nix), [hm-build.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/scripts/hm-build.nix), [build-host.nix](file:///home/juca/.dotfiles/nixfiles/modules/nixos/system/scripts/build-host.nix), [build-iso.nix](file:///home/juca/.dotfiles/nixfiles/modules/nixos/system/scripts/build-iso.nix), [cleanup/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/cleanup/default.nix) e [zsh/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/shells/zsh/default.nix)).
+    - **Mapeamento Uniforme**:
+      - Início / Home: `󰋜 ` (`nf-md-home`)
+      - Sucesso / Validação: `󰄬 ` (`nf-md-check`)
+      - Inspeção / Busca: `󰋽 ` (`nf-md-magnify`)
+      - Alerta / Aviso: `󰀦 ` (`nf-md-alert`)
+      - Limpeza / Lixeira: `󰩹 ` (`nf-md-delete_sweep`)
+      - Falha / Erro: `󰅖 ` (`nf-md-close`)
+      - Log / Documento: `󰈙 ` (`nf-md-file_document`)
+      - Link / Atalho: `󰌷 ` (`nf-md-link`)
+      - Pacote / Configuração: `󰏖 ` (`nf-md-package_variant`)
+      - Lançamento / Host: `󰐿 ` (`nf-md-rocket_launch`)
+      - Compilação / Build: `󰑮 ` (`nf-md-hammer`)
+    - **Benefício**: Garante renderização 100% nítida, com espaçamento mono perfeito e sem caracteres tofu/ausentes em terminais como Alacritty que utilizam fontes mono sem camadas de color emoji.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

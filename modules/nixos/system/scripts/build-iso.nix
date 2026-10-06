@@ -45,10 +45,10 @@ pkgs.writeScriptBin "build-iso" ''
       echo "Copying $ISO_NAME to $DOWNLOADS_DIR/..."
       ${pkgs.uutils-coreutils-noprefix}/bin/cp -L "$ISO_PATH" "$DOWNLOADS_DIR/$ISO_NAME"
       ${pkgs.uutils-coreutils-noprefix}/bin/chmod 644 "$DOWNLOADS_DIR/$ISO_NAME"
-      echo "✅ ISO saved to: $DOWNLOADS_DIR/$ISO_NAME"
+      echo "󰄬  ISO saved to: $DOWNLOADS_DIR/$ISO_NAME"
       if [ "$DOWNLOADS_DIR" != "$HOME/Downloads" ] && [ -d "$HOME/Downloads" ]; then
         ${pkgs.uutils-coreutils-noprefix}/bin/cp -L "$ISO_PATH" "$HOME/Downloads/$ISO_NAME"
-        echo "✅ ISO also copied to: $HOME/Downloads/$ISO_NAME"
+        echo "󰄬  ISO also copied to: $HOME/Downloads/$ISO_NAME"
       fi
     fi
   fi

@@ -6,7 +6,7 @@ pkgs.writeScriptBin "hm-switch" ''
   if [ -e "$HOME/.dotfiles/nixfiles" ]; then
     all_cores=$(nproc)
     build_cores=$(${pkgs.uutils-coreutils-noprefix}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
-    echo "🏠 Switching Home Manager with $build_cores cores..."
+    echo "󰋜  Switching Home Manager with $build_cores cores..."
 
     ERROR_DIR="$HOME/.config/errors/nix/home-manager"
     mkdir -p "$ERROR_DIR"
@@ -44,7 +44,7 @@ pkgs.writeScriptBin "hm-switch" ''
       rm -f "$TMP_LOG" 2>/dev/null || true
       # Limpar cache do Rofi pós-atualização
       rm -f "$HOME/.cache/rofi"* 2>/dev/null || true
-      echo "✨ Home Manager switch concluído com sucesso!"
+      echo "󰄬  Home Manager switch concluído com sucesso!"
 
       # Notificação visual de sucesso no desktop
       if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
@@ -57,13 +57,13 @@ pkgs.writeScriptBin "hm-switch" ''
       # Em distros não-NixOS com GPU, o Alacritty precisa do wrapper nixGL.
       # Testa se o binário do Alacritty consegue inicializar sem erro GL.
       # -------------------------------------------------------------------
-      echo "🔍 Verificando Alacritty (OpenGL)..."
+      echo "󰋽  Verificando Alacritty (OpenGL)..."
       _alacritty_bin="$(command -v alacritty 2>/dev/null)"
       if [ -n "$_alacritty_bin" ]; then
         # Teste rápido: --version não precisa de display, mas testa o loader
         _alacritty_err=$("$_alacritty_bin" --version 2>&1 >/dev/null)
         if echo "$_alacritty_err" | grep -qi 'failed to find.*GL\|opengl\|egl\|glx'; then
-          echo "⚠️  Alacritty: erro de OpenGL detectado!"
+          echo "󰀦  Alacritty: erro de OpenGL detectado!"
           echo "   Erro: $_alacritty_err"
           if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
             ${pkgs.dunst}/bin/dunstify -a "Alacritty" -u critical -i "dialog-error" -r 9997 -t 12000 \
@@ -71,7 +71,7 @@ pkgs.writeScriptBin "hm-switch" ''
               "Falha ao inicializar GL. Verifique os drivers ou use: LIBGL_ALWAYS_SOFTWARE=1 alacritty" 2>/dev/null || true
           fi
         else
-          echo "✅ Alacritty OK (OpenGL func. corretamente)"
+          echo "󰄬  Alacritty OK (OpenGL func. corretamente)"
           # Registrar/atualizar .desktop do Alacritty
           if command -v update-desktop-database >/dev/null 2>&1; then
             update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
@@ -82,10 +82,10 @@ pkgs.writeScriptBin "hm-switch" ''
           fi
         fi
       else
-        echo "⚠️  alacritty não encontrado no PATH"
+        echo "󰀦  alacritty não encontrado no PATH"
       fi
 
-      echo "🧹 Cleaning old generations (keeping last 5)..."
+      echo "󰩹  Cleaning old generations (keeping last 5)..."
       ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
     else
       err_code=$?
@@ -96,9 +96,9 @@ pkgs.writeScriptBin "hm-switch" ''
       rm -f "$TMP_LOG" 2>/dev/null || true
 
       echo ""
-      echo "❌ Erro durante o switch do Home Manager (código de saída: $err_code)!"
-      echo "📋 Log de erro salvo em: $error_file"
-      echo "🔗 Último erro disponível em: $ERROR_DIR/last-error.log"
+      echo "󰅖  Erro durante o switch do Home Manager (código de saída: $err_code)!"
+      echo "󰈙  Log de erro salvo em: $error_file"
+      echo "󰌷  Último erro disponível em: $ERROR_DIR/last-error.log"
 
       if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
         ${pkgs.dunst}/bin/dunstify -a "Home Manager" -u critical -i "dialog-error" -r 9998 -t 10000 \

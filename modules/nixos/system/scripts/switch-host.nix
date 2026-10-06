@@ -6,7 +6,7 @@ pkgs.writeScriptBin "switch-host" ''
   if [ -e "$HOME/.dotfiles/nixfiles" ]; then
     all_cores=$(nproc)
     build_cores=$(${pkgs.uutils-coreutils-noprefix}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
-    echo "🚀 Switching NixOS host ($HOSTNAME) with $build_cores cores..."
+    echo "󰐿  Switching NixOS host ($HOSTNAME) with $build_cores cores..."
 
     # Diretório de logs de erro do NixOS
     ERROR_DIR="$HOME/.config/errors/nix/nixos"
@@ -30,7 +30,7 @@ pkgs.writeScriptBin "switch-host" ''
     set -o pipefail
     if ${pkgs.unstable.nh}/bin/nh os switch "$HOME/.dotfiles/nixfiles" -- --show-trace --impure -vL --cores "$build_cores" 2>&1 | tee "$TMP_LOG"; then
       rm -f "$TMP_LOG" 2>/dev/null || true
-      echo "✨ Switch concluído com sucesso! Recarregando ambiente gráfico ao vivo..."
+      echo "󰄬  Switch concluído com sucesso! Recarregando ambiente gráfico ao vivo..."
 
       # Recarregar atalhos do sxhkd
       ${pkgs.procps}/bin/pkill -USR1 -x sxhkd 2>/dev/null || true
@@ -64,9 +64,9 @@ pkgs.writeScriptBin "switch-host" ''
           journalctl -u "home-manager-*.service" --no-pager > "$hm_error_file" 2>/dev/null || true
         ln -sf "$hm_error_file" "$HM_ERROR_DIR/last-error.log" 2>/dev/null || true
 
-        echo "⚠️ Atenção: A ativação do Home Manager falhou!"
-        echo "📋 Log de erro salvo em: $hm_error_file"
-        echo "🔗 Último erro do Home Manager em: $HM_ERROR_DIR/last-error.log"
+        echo "󰀦  Atenção: A ativação do Home Manager falhou!"
+        echo "󰈙  Log de erro salvo em: $hm_error_file"
+        echo "󰌷  Último erro do Home Manager em: $HM_ERROR_DIR/last-error.log"
 
         if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
           ${pkgs.dunst}/bin/dunstify -a "Home Manager" -u critical -i "dialog-error" -r 9998 -t 10000 \
@@ -74,7 +74,7 @@ pkgs.writeScriptBin "switch-host" ''
         fi
       fi
 
-      echo "🧹 Cleaning old generations (keeping last 5)..."
+      echo "󰩹  Cleaning old generations (keeping last 5)..."
       ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
     else
       err_code=$?
@@ -90,16 +90,16 @@ pkgs.writeScriptBin "switch-host" ''
         hm_error_file="$HM_ERROR_DIR/switch-error-$timestamp.log"
         cp "$TMP_LOG" "$hm_error_file" 2>/dev/null || true
         ln -sf "$hm_error_file" "$HM_ERROR_DIR/last-error.log" 2>/dev/null || true
-        echo "⚠️ O erro possui mensagens relacionadas ao Home Manager!"
-        echo "🔗 Log replicado em: $HM_ERROR_DIR/last-error.log"
+        echo "󰀦  O erro possui mensagens relacionadas ao Home Manager!"
+        echo "󰌷  Log replicado em: $HM_ERROR_DIR/last-error.log"
       fi
 
       rm -f "$TMP_LOG" 2>/dev/null || true
 
       echo ""
-      echo "❌ Erro durante o switch do NixOS (código de saída: $err_code)!"
-      echo "📋 Log de erro salvo em: $error_file"
-      echo "🔗 Último erro disponível em: $ERROR_DIR/last-error.log"
+      echo "󰅖  Erro durante o switch do NixOS (código de saída: $err_code)!"
+      echo "󰈙  Log de erro salvo em: $error_file"
+      echo "󰌷  Último erro disponível em: $ERROR_DIR/last-error.log"
 
       if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
         ${pkgs.dunst}/bin/dunstify -a "NixOS" -u critical -i "dialog-error" -r 9999 -t 10000 \

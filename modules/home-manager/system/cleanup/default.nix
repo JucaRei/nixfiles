@@ -526,7 +526,7 @@ let
       fi
     fi
 
-    echo "✨ [clean-orphaned-configs] Limpeza concluída com sucesso!"
+    echo "󰄬  [clean-orphaned-configs] Limpeza concluída com sucesso!"
   '';
 in
 {

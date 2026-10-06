@@ -6,7 +6,7 @@ pkgs.writeScriptBin "switch-boot" ''
   if [ -e "$HOME/.dotfiles/nixfiles" ]; then
     all_cores=$(nproc)
     build_cores=$(${pkgs.uutils-coreutils-noprefix}/bin/printf "%.0f" $(echo "$all_cores * 0.75" | ${pkgs.bc}/bin/bc))
-    echo "📦 Building NixOS boot configuration ($HOSTNAME) with $build_cores cores..."
+    echo "󰏖  Building NixOS boot configuration ($HOSTNAME) with $build_cores cores..."
 
     ERROR_DIR="$HOME/.config/errors/nix/nixos"
     mkdir -p "$ERROR_DIR"
@@ -21,7 +21,7 @@ pkgs.writeScriptBin "switch-boot" ''
     set -o pipefail
     if ${pkgs.unstable.nh}/bin/nh os boot "$HOME/.dotfiles/nixfiles" -- --show-trace --impure -vL --cores "$build_cores" 2>&1 | tee "$TMP_LOG"; then
       rm -f "$TMP_LOG" 2>/dev/null || true
-      echo "🧹 Cleaning old generations (keeping last 5)..."
+      echo "󰩹  Cleaning old generations (keeping last 5)..."
       ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
     else
       err_code=$?
@@ -32,9 +32,9 @@ pkgs.writeScriptBin "switch-boot" ''
       rm -f "$TMP_LOG" 2>/dev/null || true
 
       echo ""
-      echo "❌ Erro durante o boot switch do NixOS (código de saída: $err_code)!"
-      echo "📋 Log de erro salvo em: $error_file"
-      echo "🔗 Último erro disponível em: $ERROR_DIR/last-error.log"
+      echo "󰅖  Erro durante o boot switch do NixOS (código de saída: $err_code)!"
+      echo "󰈙  Log de erro salvo em: $error_file"
+      echo "󰌷  Último erro disponível em: $ERROR_DIR/last-error.log"
       exit $err_code
     fi
   else
