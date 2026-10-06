@@ -1113,4 +1113,180 @@
         ;;
     esac
   '';
+
+  # --- Indicador Dinâmico de Layout do BSPWM na Polybar ---
+  bspLayoutScript = pkgs.writeShellScript "bsp-layout-status" ''
+    export PATH="${lib.makeBinPath [ pkgs.bsp-layout pkgs.bspwm pkgs.jq pkgs.coreutils ]}:$PATH"
+    layout=$(bsp-layout get 2>/dev/null)
+
+    if [ -z "$layout" ] || [ "$layout" = "-" ]; then
+      layout=$(bspc query -T -d focused 2>/dev/null | jq -r '.layout' 2>/dev/null || echo "tiled")
+    fi
+
+    case "$layout" in
+      tall)
+        icon="󰕰"
+        name="Tall"
+        ;;
+      rtall)
+        icon="󰕰"
+        name="RTall"
+        ;;
+      wide)
+        icon="󰕰"
+        name="Wide"
+        ;;
+      rwide)
+        icon="󰕰"
+        name="RWide"
+        ;;
+      grid)
+        icon="󰝘"
+        name="Grid"
+        ;;
+      even)
+        icon="󱒅"
+        name="Even"
+        ;;
+      monocle)
+        icon="󰍹"
+        name="Monocle"
+        ;;
+      tiled|*)
+        icon="󱒆"
+        name="Tiled"
+        ;;
+    esac
+
+    echo "%{F${colors.blue}}$icon%{F-} %{F${colors.text}}$name%{F-}"
+  '';
+
+  # --- Alternador de Layout com Notificação OSD (Dunst) ---
+  bspLayoutSwitchScript = pkgs.writeShellScript "bsp-layout-switch" ''
+    export PATH="${lib.makeBinPath [ pkgs.bsp-layout pkgs.bspwm pkgs.dunst pkgs.jq pkgs.coreutils ]}:$PATH"
+
+    notify_layout() {
+      layout=$(bsp-layout get 2>/dev/null)
+      if [ -z "$layout" ] || [ "$layout" = "-" ]; then
+        layout=$(bspc query -T -d focused 2>/dev/null | jq -r '.layout' 2>/dev/null || echo "tiled")
+      fi
+
+      case "$layout" in
+        tall)
+          icon="preferences-desktop-display"
+          label="Tall (Master-Stack V)"
+          ;;
+        rtall)
+          icon="preferences-desktop-display"
+          label="RTall (Master-Stack Invertido)"
+          ;;
+        wide)
+          icon="preferences-desktop-display"
+          label="Wide (Master-Stack H)"
+          ;;
+        rwide)
+          icon="preferences-desktop-display"
+          label="RWide (Wide Invertido)"
+          ;;
+        grid)
+          icon="preferences-desktop-display"
+          label="Grid (Grade)"
+          ;;
+        even)
+          icon="preferences-desktop-display"
+          label="Even (Divisão Igual)"
+          ;;
+        monocle)
+          icon="view-fullscreen"
+          label="Monocle (Tela Única)"
+          ;;
+        tiled|*)
+          icon="preferences-desktop-display"
+          label="Tiled (Padrão BSPWM)"
+          ;;
+      esac
+
+      dunstify -a "BSPWM Layout" -u low -i "$icon" -r 9993 -t 1500 "Layout: $label"
+    }
+
+    ACTION="''${1:-next}"
+
+    case "$ACTION" in
+      next)
+        bsp-layout next
+        notify_layout
+        ;;
+      prev|previous)
+        bsp-layout previous
+        notify_layout
+        ;;
+      tall|rtall|wide|rwide|grid|even)
+        bsp-layout set "$ACTION"
+        notify_layout
+        ;;
+      monocle)
+        bspc desktop -l monocle
+        notify_layout
+        ;;
+      tiled|remove|reset)
+        bsp-layout remove
+        bspc desktop -l tiled
+        notify_layout
+        ;;
+      *)
+        bsp-layout next
+        notify_layout
+        ;;
+    esac
+  '';
+
+  # --- Menu Rofi para Seleção Interativa de Layouts ---
+  rofiLayoutMenu = pkgs.writeShellScript "rofi-bsp-layout" ''
+    export PATH="${lib.makeBinPath [ pkgs.bsp-layout pkgs.bspwm pkgs.rofi pkgs.dunst pkgs.jq pkgs.coreutils ]}:$PATH"
+
+    curr_layout=$(bsp-layout get 2>/dev/null)
+    if [ -z "$curr_layout" ] || [ "$curr_layout" = "-" ]; then
+      curr_layout=$(bspc query -T -d focused 2>/dev/null | jq -r '.layout' 2>/dev/null || echo "tiled")
+    fi
+
+    OPTIONS="󰕰  Tall (Master vertical)\n󰕰  Wide (Master horizontal)\n󰝘  Grid (Grade balanceada)\n󱒅  Even (Divisão simétrica)\n󰕰  RTall (Master à direita)\n󰕰  RWide (Master abaixo)\n󰍹  Monocle (Janela maximizada)\n󱒆  Tiled (Padrão BSPWM)"
+
+    CHOSEN=$(echo -e "$OPTIONS" | rofi -dmenu -i -p "Layout ($curr_layout)" -theme-str 'window { width: 420px; } listview { lines: 8; }')
+
+    case "$CHOSEN" in
+      *Tall\ (*)
+        bsp-layout set tall
+        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Tall"
+        ;;
+      *Wide\ (*)
+        bsp-layout set wide
+        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Wide"
+        ;;
+      *Grid\ (*)
+        bsp-layout set grid
+        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Grid"
+        ;;
+      *Even\ (*)
+        bsp-layout set even
+        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Even"
+        ;;
+      *RTall\ (*)
+        bsp-layout set rtall
+        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: RTall"
+        ;;
+      *RWide\ (*)
+        bsp-layout set rwide
+        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: RWide"
+        ;;
+      *Monocle\ (*)
+        bspc desktop -l monocle
+        dunstify -a "BSPWM Layout" -u low -i "view-fullscreen" -r 9993 -t 1500 "Layout: Monocle"
+        ;;
+      *Tiled\ (*)
+        bsp-layout remove
+        bspc desktop -l tiled
+        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Tiled"
+        ;;
+    esac
+  '';
 }

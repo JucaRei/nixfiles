@@ -35,6 +35,8 @@ in
       (pkgs.writeShellScriptBin "bspwm-bluetooth" ''exec ${scripts.rofiBluetoothMenu} "$@"'')
       (pkgs.writeShellScriptBin "rofi-wifi-menu" ''exec ${scripts.rofiWifiMenu} "$@"'')
       (pkgs.writeShellScriptBin "bspwm-wifi" ''exec ${scripts.rofiWifiMenu} "$@"'')
+      (pkgs.writeShellScriptBin "rofi-bsp-layout" ''exec ${scripts.rofiLayoutMenu} "$@"'')
+      (pkgs.writeShellScriptBin "bsp-layout-switch" ''exec ${scripts.bspLayoutSwitchScript} "$@"'')
     ];
 
     services.polybar = {
@@ -58,65 +60,80 @@ in
         }:$PATH"
 
         if command -v xrandr >/dev/null 2>&1; then
+          primary_mon=$(xrandr --query | grep " connected primary" | cut -d" " -f1)
+          if [ -z "$primary_mon" ]; then
+            primary_mon=$(xrandr --query | grep " connected" | head -n1 | cut -d" " -f1)
+          fi
+
           for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
-            MONITOR=$m polybar --reload main &
+            if [ "$m" = "$primary_mon" ]; then
+              MONITOR=$m polybar --reload main &
+            else
+              MONITOR=$m polybar --reload secondary &
+            fi
           done
         else
           polybar --reload main &
         fi
       '';
-      config = polybarModules // {
-        "colors" = colors;
+      config =
+        let
+          baseBar = {
+            monitor = "\${env:MONITOR:}";
+            width = "99.2%";
+            offset-x = "0.4%";
+            offset-y = 6;
+            height = 32;
+            radius = 10;
+            fixed-center = true;
 
-        # --- Barra Principal (Floating Modern Bar - Estilo Waybar / Catppuccin Mocha) ---
-        "bar/main" = {
-          monitor = "\${env:MONITOR:}";
-          width = "99.2%";
-          offset-x = "0.4%";
-          offset-y = 6;
-          height = 32;
-          radius = 10;
-          fixed-center = true;
+            background = colors.base;
+            foreground = colors.text;
 
-          background = colors.base;
-          foreground = colors.text;
+            line-size = 2;
+            line-color = colors.blue;
 
-          line-size = 2;
-          line-color = colors.blue;
+            border-size = 1;
+            border-color = colors.surface0;
+            padding-left = 2;
+            padding-right = 2;
+            module-margin = 0;
 
-          border-size = 1;
-          border-color = colors.surface0;
-          padding-left = 2;
-          padding-right = 2;
-          module-margin = 0;
+            font-0 = "Inter:weight=SemiBold:size=10;3";
+            font-1 = "Symbols Nerd Font:size=11;3";
+            font-2 = "JetBrainsMono Nerd Font:weight=Medium:size=10;3";
+            font-3 = "Symbols Nerd Font:size=13;3"; # Ícone do lançador e power
+            font-4 = "Symbols Nerd Font:size=15;4"; # Glyphs das cápsulas  e  (mantidas para compatibilidade)
+            font-5 = "Symbols Nerd Font Mono:size=11;3";
+            font-6 = "Noto Sans CJK JP:weight=Medium:size=10;2"; # Kanji (Workspaces 一 二 三 四 五 六 七 八 九 十)
+            font-7 = "IPAGothic:size=10;2";
+            font-8 = "Noto Sans CJK SC:weight=Medium:size=10;2";
 
-          font-0 = "Inter:weight=SemiBold:size=10;3";
-          font-1 = "Symbols Nerd Font:size=11;3";
-          font-2 = "JetBrainsMono Nerd Font:weight=Medium:size=10;3";
-          font-3 = "Symbols Nerd Font:size=13;3"; # Ícone do lançador e power
-          font-4 = "Symbols Nerd Font:size=15;4"; # Glyphs das cápsulas  e  (mantidas para compatibilidade)
-          font-5 = "Symbols Nerd Font Mono:size=11;3";
-          font-6 = "Noto Sans CJK JP:weight=Medium:size=10;2"; # Kanji (Workspaces 一 二 三 四 五 六 七 八 九 十)
-          font-7 = "IPAGothic:size=10;2";
-          font-8 = "Noto Sans CJK SC:weight=Medium:size=10;2";
+            # --- Layout Moderno Coeso (Inspirado no Waybar do Hyprland / MangoWM) ---
+            modules-left = "launcher bspwm sep bsp-layout sep polywins";
+            modules-center = "media";
 
-          # --- Layout Moderno Coeso (Inspirado no Waybar do Hyprland / MangoWM) ---
-          modules-left = "launcher bspwm sep polywins";
-          modules-center = "media";
-          modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
+            cursor-click = "pointer";
+            cursor-scroll = "ns-resize";
 
-          # --- Layout alternativo legado em cápsulas (descomente caso deseje os glifos  e ):
-          # modules-left = "bi launcher bd sep bi bspwm bd sep bi polywins bd";
-          # modules-right = "bi cpu memory temperature bd sep bi network dots bluetooth bd sep bi pulseaudio bd sep bi keyboard bd sep bi date bd sep bi powermenu bd";
+            enable-ipc = true;
+            wm-restack = "bspwm";
+            screenchange-reload = true;
+          };
+        in
+        polybarModules // {
+          "colors" = colors;
 
-          cursor-click = "pointer";
-          cursor-scroll = "ns-resize";
+          # --- Barra Principal (Floating Modern Bar - com System Tray) ---
+          "bar/main" = baseBar // {
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep tray sep date powermenu";
+          };
 
-          enable-ipc = true;
-          wm-restack = "bspwm";
-          screenchange-reload = true;
+          # --- Barra Secundária para Monitores Adicionais (sem conflito de Tray) ---
+          "bar/secondary" = baseBar // {
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
+          };
         };
-      };
     };
   };
 }

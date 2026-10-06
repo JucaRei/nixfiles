@@ -88,6 +88,8 @@ in
         (nixGLWrapper alacritty)
         touchpadSpeedScript
         (pkgs.writeShellScriptBin "bspwm-touchpad-speed" ''exec ${touchpadSpeedScript}/bin/touchpad-speed "$@"'')
+        bsp-layout
+        bc
 
         # Áudio e Brilho
         pavucontrol

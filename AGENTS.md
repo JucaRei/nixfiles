@@ -1485,7 +1485,37 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - **Bash**: Integração automática do Home Manager com keybindings (`Ctrl-R`, `Ctrl-T`, `Alt-C`) e autocompletion (`**<TAB>`). Acoplamento com `ble.sh` via `ble-import -d integration/fzf-completion` e `ble-import -d integration/fzf-key-bindings`, além da função `fcd`.
     - **Fish**: Integração nativa com `programs.fzf.enableFishIntegration` e função declarativa `fcd`.
     - **Nushell**: Configurados keybindings declarativos no `extraConfig` para `Ctrl-R` (histórico), `Ctrl-T` (arquivos com preview do bat) e `Alt-C` (diretórios com preview do eza), além do comando nativo `def fcd []`.
-  - **Limpeza de Hosts**: Removida a declaração avulsa redundante de `fzf` em `home.packages` nos hosts `anubis`, `nitro`, `rocinante`, `rocinante-hyperv` e `rocinante-vm`, centralizando a gestão completa no Home Manager.
+- **BSPWM — Gerenciamento Dinâmico de Layouts (`bsp-layout`), Alternância de Janelas & Módulo Tray**:
+  - **Empacotamento do `bsp-layout` (`pkgs/desktop/bspwm/bsp-layout/default.nix`)**:
+    - Derivação declarativa no Nix empacotando o utilitário [phenax/bsp-layout](https://github.com/phenax/bsp-layout) (v0.0.10) para suporte a layouts dinâmicos no BSPWM (`tall`, `wide`, `grid`, `even`, `rtall`, `rwide`, `monocle`, `tiled`).
+    - Envelopado via `makeWrapper` garantindo `bash`, `bc`, `bspwm`, `coreutils`, `gnused`, `gawk` e `procps` no `PATH`.
+    - Exposto em `pkgs/default.nix` e adicionado automaticamente a `home.packages` do BSPWM.
+  - **Alternância de Janelas e Foco (`modules/.../bspwm/sxhkd.nix`)**:
+    - **Foco Sequencial Direto**: Adicionados atalhos rápidos sem menus modais para alternar entre janelas do workspace:
+      - `$mod + Tab` e `$mod + ` ` (Grave): Foca a próxima janela (`bspc node -f next.local.!hidden.window`).
+      - `$mod + Shift + Tab` e `$mod + Shift + ` `: Foca a janela anterior (`bspc node -f prev.local.!hidden.window`).
+      - `$altMod + ` ` e `$mod + \`: Alterna instantaneamente o foco com a última janela ativa (`bspc node -f last.local.!hidden.window`).
+      - `$altMod + Tab` e `$mod + W`: Preservados para o seletor visual de janelas via Rofi (`rofi -show window`).
+    - **Troca de Posição de Janelas (Swap)**:
+      - `$mod + Ctrl + Tab` e `$mod + Ctrl + ` `: Troca de lugar com a próxima janela (`bspc node -s next.local.!hidden.window`).
+      - `$mod + Ctrl + Shift + Tab` e `$mod + Ctrl + Shift + ` `: Troca de lugar com a janela anterior (`bspc node -s prev.local.!hidden.window`).
+    - **Navegação na Árvore BSP**:
+      - `$mod + Ctrl + P` e `$mod + Ctrl + B`: Focar nó pai (`@parent`) ou nó irmão (`@brother`).
+      - `$mod + Ctrl + Shift + P` e `$mod + Ctrl + Shift + B`: Trocar posição com pai ou irmão.
+    - **Atalhos do `bsp-layout`**:
+      - `$mod + Ctrl + Space`: Ciclar para o próximo layout dinâmico (`bsp-layout-switch next`).
+      - `$mod + Ctrl + Shift + Space`: Ciclar para o layout anterior (`bsp-layout-switch prev`).
+      - `$mod + Ctrl + L`: Menu interativo Rofi para seleção de layouts (`rofi-bsp-layout`).
+      - `$mod + Ctrl + {T, W, G, E, M, R}`: Atalhos diretos para Tall (`T`), Wide (`W`), Grid (`G`), Even (`E`), Monocle (`M`) e Reset para Tiled padrão (`R`).
+    - **Quick Settings & Cheat-Sheet**: Atualizados com as novas combinações de teclas e opção `󰕰 Gerenciador de Layouts (rofi-bsp-layout)` no painel de controle rápido.
+  - **Módulo de Layout na Polybar (`module/bsp-layout`)**:
+    - Script dinâmico (`bspLayoutScript`) que identifica se um layout do `bsp-layout` está ativo ou recai para o layout nativo do BSPWM, exibindo ícone e nome formatado com a paleta Catppuccin Mocha.
+    - Interatividade completa: clique esquerdo cicla layouts, clique direito abre o menu Rofi, clique do meio reseta para o padrão tiled, e scroll do mouse avança/retrocede.
+    - Feedback visual OSD via Dunst (`dunstify`) a cada mudança de layout com ícone representativo.
+  - **Módulo System Tray na Polybar (`module/tray` - Polybar 3.7+)**:
+    - Configurado módulo `internal/tray` moderno com `format-background = colors.base`, `tray-spacing = 8px` e `tray-size = 16px`.
+    - Inserido na barra principal (`bar/main`) em `modules-right` antes do relógio (`date`) e menu de energia (`powermenu`), acomodando perfeitamente ícones de segundo plano como Solaar, Discord, Telegram e NetworkManager.
+    - **Multi-Monitor Seguro**: O script de inicialização da Polybar (`polybar/default.nix`) detecta a tela primária (`xrandr`) e lança `bar/main` (com o tray) apenas no display primário, lançando `bar/secondary` (sem o tray) nos monitores extras, prevenindo colisões de aquisição do protocolo X11 `_NET_SYSTEM_TRAY_S0`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

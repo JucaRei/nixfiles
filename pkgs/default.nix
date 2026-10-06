@@ -34,6 +34,7 @@ pkgs: {
 
 
   # Tools
+  bsp-layout = pkgs.callPackage ./desktop/bspwm/bsp-layout { };
   heynote = pkgs.callPackage ./desktop/tools/heynote { };
   # advmvcp = pkgs.callPackage ./tools/advmvcp { };
   cloneit = pkgs.callPackage ./tools/cloneit { };

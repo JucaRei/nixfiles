@@ -548,6 +548,11 @@ let
     󰌌  ${modDisplayName} + Y / ${modDisplayName} + Minus     ➜  Esconder / Minimizar Janela Ativa
     󰌌  ${modDisplayName} + Shift + Y / Shift+-  ➜  Restaurar Última Janela Escondida
     󰌌  ${modDisplayName} + Shift + M            ➜  Mostrar Desktop (Minimizar/Restaurar Todas)
+    󰌌  ${modDisplayName} + Tab / Shift + Tab       ➜  Alternar Foco Entre Janelas (Próxima/Anterior)
+    󰌌  ${modDisplayName} + ` (Grave) / Shift + `   ➜  Alternar Foco Entre Janelas (Próxima/Anterior)
+    󰌌  ${modDisplayName} + Ctrl + Tab / Shift+Tab  ➜  Trocar Janela com Próxima / Anterior (Swap)
+    󰌌  ${modDisplayName} + Ctrl + Space           ➜  Ciclar Layouts (Tall, Wide, Grid, Even, Monocle...)
+    󰌌  ${modDisplayName} + Ctrl + L               ➜  Menu Interativo de Layouts (bsp-layout)
     󰌌  ${modDisplayName} + {H,J,K,L} ou Setas    ➜  Navegar Foco Entre Janelas (Vim/Setas)
     󰌌  ${modDisplayName} + Shift + {H,J,K,L}     ➜  Mover / Trocar Posição da Janela
     󰌌  ${modDisplayName} + ${
@@ -578,6 +583,9 @@ let
             *"Gerenciador de Arquivos"*) ''${fmCmd} ~ & ;;
             *"Painel Quick Settings"*) show_control_center ;;
             *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
+            *"Alternar Foco Entre Janelas"*) bspc node -f next.local.!hidden.window || bspc node -f next.local.window ;;
+            *"Menu Interativo de Layouts"*) rofi-bsp-layout & ;;
+            *"Ciclar Layouts"*) bsp-layout-switch next & ;;
             *"Terminal Flutuante"*) ${scratchpadScript} ;;
             *"Fechar / Encerrar Janela"*) bspc node -c ;;
             *"Tela Cheia"*) bspc node -t '~fullscreen' ;;
@@ -596,6 +604,7 @@ let
           OPT_SHOT="󰹑  Captura de Tela & Recorte (ScreenShoTer)"
           OPT_COLOR="󰈊  Conta-gotas de Cor (Colorpicker)"
           OPT_BT="󰂯  Dispositivos Bluetooth (rofi-bluetooth)"
+          OPT_LAYOUT="󰕰  Gerenciador de Layouts (rofi-bsp-layout)"
           OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
           OPT_TOUCH="󰟸  Velocidade do Touchpad (Touchpad Speed)"
           OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
@@ -609,10 +618,11 @@ let
           OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
           OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
 
-          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
             "$OPT_SHOT" \
             "$OPT_COLOR" \
             "$OPT_BT" \
+            "$OPT_LAYOUT" \
             "$OPT_RES" \
             "$OPT_TOUCH" \
             "$OPT_SOUND" \
@@ -625,12 +635,13 @@ let
             "$OPT_KEYS" \
             "$OPT_RELOAD" \
             "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings " \
-            -theme-str 'window {width: 620px; border-radius: 14px;} listview {columns: 1; lines: 15;}')
+            -theme-str 'window {width: 620px; border-radius: 14px;} listview {columns: 1; lines: 16;}')
 
           case "$CHOICE" in
             "$OPT_SHOT") ${screenshotScript} menu & ;;
             "$OPT_COLOR") ${colorPickerScript} & ;;
             "$OPT_BT") rofi-bluetooth & ;;
+            "$OPT_LAYOUT") rofi-bsp-layout & ;;
             "$OPT_RES")
               R_1080="1920x1080 (Full HD 1080p)"
               R_2K="2560x1440 (Quad HD 2K)"
@@ -916,6 +927,37 @@ in
           "${mod} + {Left,Down,Up,Right}" = "bspc node -f {west,south,north,east}";
           "${mod} + shift + {h,j,k,l}" = "bspc node -s {west,south,north,east}";
           "${mod} + shift + {Left,Down,Up,Right}" = "bspc node -s {west,south,north,east}";
+
+          # Alternar foco sequencial direto entre janelas da área de trabalho (Próxima / Anterior)
+          "${mod} + Tab" = "bspc node -f next.local.!hidden.window || bspc node -f next.local.window";
+          "${mod} + shift + Tab" = "bspc node -f prev.local.!hidden.window || bspc node -f prev.local.window";
+          "${mod} + grave" = "bspc node -f next.local.!hidden.window || bspc node -f next.local.window";
+          "${mod} + shift + grave" = "bspc node -f prev.local.!hidden.window || bspc node -f prev.local.window";
+          "${altMod} + grave" = "bspc node -f last.local.!hidden.window";
+          "${mod} + backslash" = "bspc node -f last.local.!hidden.window";
+
+          # Alternar e trocar posição (swap) sequencial entre janelas
+          "${mod} + ctrl + Tab" = "bspc node -s next.local.!hidden.window";
+          "${mod} + ctrl + shift + Tab" = "bspc node -s prev.local.!hidden.window";
+          "${mod} + ctrl + grave" = "bspc node -s next.local.!hidden.window";
+          "${mod} + ctrl + shift + grave" = "bspc node -s prev.local.!hidden.window";
+
+          # Navegação avançada na árvore BSP (focar/trocar pai e irmão)
+          "${mod} + ctrl + p" = "bspc node -f @parent";
+          "${mod} + ctrl + b" = "bspc node -f @brother";
+          "${mod} + ctrl + shift + p" = "bspc node -s @parent";
+          "${mod} + ctrl + shift + b" = "bspc node -s @brother";
+
+          # --- Gerenciamento Dinâmico de Layouts (bsp-layout) ---
+          "${mod} + ctrl + space" = "bsp-layout-switch next";
+          "${mod} + ctrl + shift + space" = "bsp-layout-switch prev";
+          "${mod} + ctrl + l" = "rofi-bsp-layout";
+          "${mod} + ctrl + t" = "bsp-layout-switch tall";
+          "${mod} + ctrl + w" = "bsp-layout-switch wide";
+          "${mod} + ctrl + g" = "bsp-layout-switch grid";
+          "${mod} + ctrl + e" = "bsp-layout-switch even";
+          "${mod} + ctrl + m" = "bsp-layout-switch monocle";
+          "${mod} + ctrl + r" = "bsp-layout-switch reset";
 
           # --- Navegação e Envio de Janelas Entre Monitores ---
           "${mod} + bracketleft" = "bspc monitor -f prev";

@@ -374,6 +374,31 @@
     scroll-down = "${scripts.redshiftScript} decrease";
   };
 
+  # --- Indicador Dinâmico de Layout do BSPWM (bsp-layout) ---
+  "module/bsp-layout" = {
+    type = "custom/script";
+    exec = "${scripts.bspLayoutScript}";
+    interval = 1;
+    format = "<label>";
+    label = "%output%";
+    label-padding = 1;
+    click-left = "${scripts.bspLayoutSwitchScript} next";
+    click-right = "${scripts.rofiLayoutMenu}";
+    click-middle = "${scripts.bspLayoutSwitchScript} reset";
+    scroll-up = "${scripts.bspLayoutSwitchScript} next";
+    scroll-down = "${scripts.bspLayoutSwitchScript} prev";
+  };
+
+  # --- Bandeja do Sistema (System Tray - Polybar 3.7+) ---
+  "module/tray" = {
+    type = "internal/tray";
+    format = "<tray>";
+    format-background = colors.base;
+    tray-spacing = "8px";
+    tray-size = "16px";
+    tray-background = colors.base;
+  };
+
   "settings" = {
     screenchange-reload = true;
     pseudo-transparency = false;
