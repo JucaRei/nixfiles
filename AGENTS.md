@@ -1550,6 +1550,11 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Compilação / Build: `󰑮 ` (`nf-md-hammer`)
     - **Benefício**: Garante renderização 100% nítida, com espaçamento mono perfeito e sem caracteres tofu/ausentes em terminais como Alacritty que utilizam fontes mono sem camadas de color emoji.
 
+- **Resolução do Pacote Zathura e Plugins no Home Manager (`programs.zathura.package`)**:
+  - **Problema**: Ao executar `nix flake check --no-build`, a avaliação falhava com `error: attribute 'zathura-pdf-mupdf' missing` (e `attribute 'zathura_pdf_mupdf' missing`) em [modules/home-manager/system/programs/documents/zathura/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/documents/zathura/default.nix).
+  - **Causa Raiz**: No Nixpkgs, os plugins do Zathura não são expostos como pacotes de nível superior (`pkgs.zathura-pdf-mupdf` ou `pkgs.zathura_pdf_mupdf`). Em vez disso, o pacote `pkgs.zathura` é um wrapper (`zathura-with-plugins`) que já embute por padrão os plugins necessários, incluindo MuPDF (`useMupdf ? true`), DjVu, PS e CB. Os plugins isolados pertencem ao escopo interno `pkgs.zathuraPkgs`.
+  - **Solução**: Ajustado `package = pkgs.zathura;` em `programs.zathura`, utilizando o binário completo já encapsulado com os plugins do nixpkgs e alinhando com a convenção do Home Manager.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

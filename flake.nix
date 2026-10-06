@@ -18,6 +18,7 @@
     catppuccin.url = "github:catppuccin/nix";
     nixos-hardware.url = "https://flakehub.com/f/NixOS/nixos-hardware/*";
     nix-flatpak.url = "https://flakehub.com/f/gmodena/nix-flatpak/*.tar.gz";
+    nix-snapd.url = "https://flakehub.com/f/nix-community/nix-snapd/*.tar.gz";
     nur.url = "github:nix-community/nur";
     nixos-needsreboot.url = "https://flakehub.com/f/wimpysworld/nixos-needsreboot/*.tar.gz";
     disko.url = "github:nix-community/disko";

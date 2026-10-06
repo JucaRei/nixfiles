@@ -33,7 +33,7 @@ in
     programs = {
       zathura = {
         enable = true;
-        package = pkgs.zathura-pdf-mupdf;
+        package = pkgs.zathura;
         # options = {
         #   font = "JetBrains Mono 9";
         #   # Enable dark mode by default
