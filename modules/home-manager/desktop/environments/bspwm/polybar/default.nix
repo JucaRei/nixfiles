@@ -124,12 +124,14 @@ in
         polybarModules // {
           "colors" = colors;
 
-          # --- Barra Principal (Floating Modern Bar - com System Tray) ---
+          # --- Barra Principal (Floating Modern Bar) ---
           "bar/main" = baseBar // {
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep tray sep date powermenu";
+            # System tray desativado/comentado (para reativar, inclua 'sep tray')
+            # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep tray sep date powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
           };
 
-          # --- Barra Secundária para Monitores Adicionais (sem conflito de Tray) ---
+          # --- Barra Secundária para Monitores Adicionais ---
           "bar/secondary" = baseBar // {
             modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
           };
