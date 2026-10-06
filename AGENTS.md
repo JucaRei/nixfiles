@@ -1524,12 +1524,17 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       3. O comando `set <layout>` apenas registrava o nome em `/tmp` e aguardava criação de futuras janelas via listener, **nunca reorganizando as janelas já abertas na tela**.
     - **Solução Implementada**: Criado motor nativo de layout em [pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh](file:///home/juca/.dotfiles/nixfiles/pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh) e empacotado hermeticamente com `makeWrapper` (`bspwm`, `bash`, `coreutils`, `jq`).
     - **Reorganização Imediata e Reativa**: A cada invocação (`bsp-layout set <layout>`, `bsp-layout next`, `bsp-layout prev` ou seleção via Rofi/Polybar), as janelas ativas da tela são **instantaneamente reestruturadas** no nó BSP:
-      - `Tall`: Janela master à esquerda com proporção de 55% (`bspc node '@/1' -r 0.55`) e pilha balanceada verticalmente à direita (`bspc node '@/2' -B`);
-      - `Wide`: Janela master no topo e pilha balanceada horizontalmente embaixo;
+      - `Tall`: Pré-seleção explícita no alvo (`bspc node "$master" -p east && bspc node "$node" -n "$master"`), pilha vertical (`bspc node "$prev" -p south && bspc node "$node" -n "$prev"`), divisão de 55% no nó raiz (`bspc node '@/' -r 0.55`) e pilha balanceada à direita (`bspc node '@/2' -B`);
+      - `RTall`: Master à direita com pré-seleção west (`bspc node "$master" -p west`) e master ratio de 55% (`bspc node '@/' -r 0.45`);
+      - `Wide`: Master no topo com pré-seleção south (`bspc node "$master" -p south`), pilha horizontal (`bspc node "$prev" -p east`) e ratio de 55% (`bspc node '@/' -r 0.55`);
+      - `RWide`: Master na base com pré-seleção north e ratio de 55% (`bspc node '@/' -r 0.45`);
       - `Grid` e `Even`: Árvore balanceada e equalizada (`bspc node '@/' -B -E`);
       - `Monocle`: Maximizado nativo (`bspc desktop -l monocle`);
       - `Tiled`: Tiling padrão do BSPWM (`bspc desktop -l tiled && bspc node '@/' -B`).
-    - **Ciclo Contínuo**: A função `next` / `cycle` percorre a lista cíclica `tiled -> tall -> wide -> grid -> even -> monocle -> tiled`, persistindo o estado em `/tmp/bsp-layout.state/<desktop>` e disparando o Dunst OSD.
+    - **Ciclo Contínuo Completo**: A função `next` / `cycle` percorre a lista cíclica `tiled -> tall -> rtall -> wide -> rwide -> grid -> even -> monocle -> tiled`, persistindo o estado em `/tmp/bsp-layout.state/<desktop>` e disparando o Dunst OSD.
+  - **Correções de Escopo e Sintaxe no Módulo Polybar (`scripts.nix`)**:
+    - **Escopo Recursivo (`rec {`)**: O arquivo [modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix) foi convertido para um conjunto de atributos recursivo (`rec { ... }`), garantindo que derivações internas como `rofiLayoutMenu` possam referenciar derivações irmãs (como `${bspLayoutSwitchScript}`) diretamente pelo caminho do Nix store sem erro de avaliação (`error: undefined variable 'bspLayoutSwitchScript'`).
+    - **Correção de Padrões Rofi**: Padrões de glob limpos sem parênteses desprotegidos evitam erros de sintaxe do Bash durante a geração de scripts (`writeShellScript`).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

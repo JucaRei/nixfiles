@@ -4,7 +4,7 @@
   lib ? pkgs.lib,
   ...
 }:
-{
+rec {
   # --- Taskbar Interativa de Janelas (Polywins para BSPWM) ---
   polywinsScript = pkgs.writeShellScript "polybar-polywins" ''
     export PATH="${lib.makeBinPath [ pkgs.bspwm pkgs.xprop pkgs.coreutils pkgs.gnugrep pkgs.gnused pkgs.gawk ]}:$PATH"
