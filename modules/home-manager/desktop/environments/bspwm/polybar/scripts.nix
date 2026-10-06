@@ -1212,25 +1212,20 @@
     ACTION="''${1:-next}"
 
     case "$ACTION" in
-      next)
+      next|cycle)
         bsp-layout next
         notify_layout
         ;;
       prev|previous)
-        bsp-layout previous
+        bsp-layout prev
         notify_layout
         ;;
-      tall|rtall|wide|rwide|grid|even)
+      tall|rtall|wide|rwide|grid|even|monocle|tiled)
         bsp-layout set "$ACTION"
         notify_layout
         ;;
-      monocle)
-        bspc desktop -l monocle
-        notify_layout
-        ;;
-      tiled|remove|reset)
+      remove|reset)
         bsp-layout remove
-        bspc desktop -l tiled
         notify_layout
         ;;
       *)
@@ -1254,38 +1249,29 @@
     CHOSEN=$(echo -e "$OPTIONS" | rofi -dmenu -i -p "Layout ($curr_layout)" -theme-str 'window { width: 420px; } listview { lines: 8; }')
 
     case "$CHOSEN" in
-      *Tall\ (*)
-        bsp-layout set tall
-        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Tall"
+      *RTall*)
+        ${bspLayoutSwitchScript} rtall
         ;;
-      *Wide\ (*)
-        bsp-layout set wide
-        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Wide"
+      *Tall*)
+        ${bspLayoutSwitchScript} tall
         ;;
-      *Grid\ (*)
-        bsp-layout set grid
-        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Grid"
+      *RWide*)
+        ${bspLayoutSwitchScript} rwide
         ;;
-      *Even\ (*)
-        bsp-layout set even
-        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Even"
+      *Wide*)
+        ${bspLayoutSwitchScript} wide
         ;;
-      *RTall\ (*)
-        bsp-layout set rtall
-        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: RTall"
+      *Grid*)
+        ${bspLayoutSwitchScript} grid
         ;;
-      *RWide\ (*)
-        bsp-layout set rwide
-        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: RWide"
+      *Even*)
+        ${bspLayoutSwitchScript} even
         ;;
-      *Monocle\ (*)
-        bspc desktop -l monocle
-        dunstify -a "BSPWM Layout" -u low -i "view-fullscreen" -r 9993 -t 1500 "Layout: Monocle"
+      *Monocle*)
+        ${bspLayoutSwitchScript} monocle
         ;;
-      *Tiled\ (*)
-        bsp-layout remove
-        bspc desktop -l tiled
-        dunstify -a "BSPWM Layout" -u low -i "preferences-desktop-display" -r 9993 -t 1500 "Layout: Tiled"
+      *Tiled*)
+        ${bspLayoutSwitchScript} tiled
         ;;
     esac
   '';

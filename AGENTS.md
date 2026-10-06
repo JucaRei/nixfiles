@@ -1516,6 +1516,20 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Configurado módulo `internal/tray` moderno com `format-background = colors.base`, `tray-spacing = 8px` e `tray-size = 16px`.
     - Inserido na barra principal (`bar/main`) em `modules-right` antes do relógio (`date`) e menu de energia (`powermenu`), acomodando perfeitamente ícones de segundo plano como Solaar, Discord, Telegram e NetworkManager.
     - **Multi-Monitor Seguro**: O script de inicialização da Polybar (`polybar/default.nix`) detecta a tela primária (`xrandr`) e lança `bar/main` (com o tray) apenas no display primário, lançando `bar/secondary` (sem o tray) nos monitores extras, prevenindo colisões de aquisição do protocolo X11 `_NET_SYSTEM_TRAY_S0`.
+    - **Correção de Sintaxe Bash no Menu Rofi**: No script `rofi-bsp-layout` gerado via `pkgs.writeShellScript`, padrões do bloco `case` com parêntese escapado não cotado (ex: `*Tall\ (*)`) causavam erro de compilação da derivação (`syntax error near unexpected token '('`). Substituído por padrões glob limpos e ordenados (`*RTall*`, `*Tall*`, `*RWide*`, `*Wide*`, etc.).
+  - **Arquitetura Nativa e Reativa do `bsp-layout` (`pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh`)**:
+    - **Causa Raiz de Inoperância do Pacote Externo**: O repositório legado [phenax/bsp-layout](https://github.com/phenax/bsp-layout) possuía problemas estruturais críticos:
+      1. Tentava cálculos de ponto flutuante em subshells via `$(( $master_size * $mon_width ))` com `master_size=0.6`, causando `syntax error: invalid arithmetic operator (error token is ".6 * ...")` em qualquer chamada de layout;
+      2. As funções de utilitários como `jget` não eram exportadas para os subshells dos layouts (`command not found`);
+      3. O comando `set <layout>` apenas registrava o nome em `/tmp` e aguardava criação de futuras janelas via listener, **nunca reorganizando as janelas já abertas na tela**.
+    - **Solução Implementada**: Criado motor nativo de layout em [pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh](file:///home/juca/.dotfiles/nixfiles/pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh) e empacotado hermeticamente com `makeWrapper` (`bspwm`, `bash`, `coreutils`, `jq`).
+    - **Reorganização Imediata e Reativa**: A cada invocação (`bsp-layout set <layout>`, `bsp-layout next`, `bsp-layout prev` ou seleção via Rofi/Polybar), as janelas ativas da tela são **instantaneamente reestruturadas** no nó BSP:
+      - `Tall`: Janela master à esquerda com proporção de 55% (`bspc node '@/1' -r 0.55`) e pilha balanceada verticalmente à direita (`bspc node '@/2' -B`);
+      - `Wide`: Janela master no topo e pilha balanceada horizontalmente embaixo;
+      - `Grid` e `Even`: Árvore balanceada e equalizada (`bspc node '@/' -B -E`);
+      - `Monocle`: Maximizado nativo (`bspc desktop -l monocle`);
+      - `Tiled`: Tiling padrão do BSPWM (`bspc desktop -l tiled && bspc node '@/' -B`).
+    - **Ciclo Contínuo**: A função `next` / `cycle` percorre a lista cíclica `tiled -> tall -> wide -> grid -> even -> monocle -> tiled`, persistindo o estado em `/tmp/bsp-layout.state/<desktop>` e disparando o Dunst OSD.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
