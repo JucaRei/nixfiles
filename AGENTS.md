@@ -1638,6 +1638,15 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Correção**:
     - **Overlay Global (`overlays/default.nix`)**: Adicionado override em `modifiedPackages` configurando `polybar = prev.polybar.override { pulseSupport = true; i3Support = false; };`, garantindo que qualquer referência a `pkgs.polybar` no repositório receba a compilação com `pulseSupport`.
     - **Injeção em `scripts.nix` e `default.nix`**: Declarado `polybarPkg` com `pulseSupport = true` em [default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/default.nix), repassado explicitamente para [scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix), exportado em `home.packages` e referenciado com `${polybar}/bin/polybar` no `polybarLaunchScript`.
+- **BSPWM — Foco Apenas ao Clicar (Click-to-Focus) e Remoção de Conflito no `extraConfig`**:
+  - **Problema**: O foco das janelas continuava seguindo o ponteiro do mouse (focus-follows-mouse / hover) mesmo configurando `focus_follows_pointer = false` em `settings`.
+  - **Causa Raiz**:
+    1. No final de [bspwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/bspwm.nix), dentro de `extraConfig`, havia uma linha legada `bspc config focus_follows_pointer true` que sobrescrevia a configuração gerada pelo bloco `settings` a cada inicialização/recarregamento.
+    2. Existiam parâmetros inválidos/indesejados em `settings`: `focus_follows_mouse = 2` (parâmetro inexistente no BSPWM) e `pointer_follows_focus = true` (que teleportava o cursor para o centro da janela focada).
+  - **Correção**:
+    - Em `settings`: definidos `focus_follows_pointer = false;`, `pointer_follows_focus = false;` e `click_to_focus = "button1";`.
+    - Em `extraConfig`: removida a linha conflitante `bspc config focus_follows_pointer true`.
+    - Aplicado imediatamente na sessão ativa via `bspc config`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

@@ -163,6 +163,8 @@ in
             left_padding = 4;
             right_padding = 4;
             focus_follows_pointer = false;
+            pointer_follows_focus = false;
+            click_to_focus = "button1";
             normal_border_color = "#181825"; # Catppuccin Mantle escuro
             active_border_color = "#313244"; # Catppuccin Surface0
             focused_border_color = "#cba6f7"; # Catppuccin Mauve (Glow característico do Hyprland)
@@ -494,8 +496,6 @@ in
             bspc config pointer_action2 resize_side
             bspc config pointer_action3 resize_corner
 
-            # Foco segue o ponteiro
-            bspc config focus_follows_pointer true
 
             # Configurar Touchpad vs Mouse:
             # - Touchpad: Natural Scrolling, Tapping, Clickfinger, Perfil de Aceleração e Velocidade do Ponteiro
