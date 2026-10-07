@@ -162,6 +162,7 @@ in
             bottom_padding = 4;
             left_padding = 4;
             right_padding = 4;
+            focus_follows_pointer = false;
             normal_border_color = "#181825"; # Catppuccin Mantle escuro
             active_border_color = "#313244"; # Catppuccin Surface0
             focused_border_color = "#cba6f7"; # Catppuccin Mauve (Glow característico do Hyprland)
