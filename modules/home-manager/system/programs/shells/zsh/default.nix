@@ -15,6 +15,10 @@ in
       enableCompletion = true;
       enableVteIntegration = true;
       dotDir = "${config.xdg.configHome}/zsh";
+      envExtra = ''
+        # Limpar variáveis legadas herdadas do ambiente de login antes do carregamento dos plugins
+        unset FZF_TAB_OPTS FZF_TAB_COMMAND FZF_TAB_QUERY FZF_TAB_SINGLE_GROUP fzf_tab_preview_init 2>/dev/null || true
+      '';
       autosuggestion = {
         enable = true;
         strategy = [
@@ -146,6 +150,9 @@ in
           "z"
         ];
         extraConfig = ''
+          # Limpar variáveis legadas herdadas de processos pais que acionam aviso do fzf-tab (PR #132)
+          unset FZF_TAB_OPTS FZF_TAB_COMMAND FZF_TAB_QUERY FZF_TAB_SINGLE_GROUP fzf_tab_preview_init 2>/dev/null || true
+
           # Não reordenar branches git
           zstyle ':completion:*:git-checkout:*' sort false
 
