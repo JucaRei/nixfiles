@@ -1122,15 +1122,17 @@ rec {
     }
 
     increase() {
+      step="''${1:-100}"
       temp=$(get_temp)
-      temp=$((temp + 500))
+      temp=$((temp + step))
       [ "$temp" -gt 6500 ] && temp=6500
       set_temp "$temp"
     }
 
     decrease() {
+      step="''${1:-100}"
       temp=$(get_temp)
-      temp=$((temp - 500))
+      temp=$((temp - step))
       [ "$temp" -lt 2500 ] && temp=2500
       set_temp "$temp"
     }
@@ -1140,10 +1142,10 @@ rec {
         toggle
         ;;
       increase)
-        increase
+        increase "''${2:-100}"
         ;;
       decrease)
-        decrease
+        decrease "''${2:-100}"
         ;;
       reset)
         echo "off" > "$STATE_FILE"

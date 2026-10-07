@@ -1647,6 +1647,9 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - Em `settings`: definidos `focus_follows_pointer = false;`, `pointer_follows_focus = false;` e `click_to_focus = "button1";`.
     - Em `extraConfig`: removida a linha conflitante `bspc config focus_follows_pointer true`.
     - Aplicado imediatamente na sessão ativa via `bspc config`.
+- **Polybar — Ajuste Fino do Redshift (Passo de 100K no Scroll)**:
+  - **Problema**: O scroll do mouse no módulo `module/redshift` da Polybar aumentava e diminuía a temperatura de cor em saltos muito bruscos (500K por pulso).
+  - **Correção**: Em [scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix), as ações `increase` e `decrease` do script `polybar-redshift` foram ajustadas para o passo padrão de **100K** (`step="${1:-100}"`), permitindo um controle muito mais suave e progressivo da temperatura da tela.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
