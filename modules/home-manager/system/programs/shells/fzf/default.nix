@@ -132,7 +132,8 @@ in
 
       # Opções ergonômicas de UI: layout invertido, bordas arredondadas e atalhos de controle
       defaultOptions = [
-        "--height=45%"
+        "--height=85%"
+        "--min-height=25"
         "--layout=reverse"
         "--border=rounded"
         "--inline-info"
@@ -140,7 +141,9 @@ in
         "--pointer='▶ '"
         "--marker='✓ '"
         "--tabstop=2"
+        "--preview-window='right:65%:wrap'"
         "--bind 'ctrl-/:toggle-preview'"
+        "--bind 'ctrl-p:change-preview-window(right:80%|right:65%|right:50%|hidden)'"
         "--bind 'ctrl-u:preview-half-page-up,ctrl-d:preview-half-page-down'"
         "--bind 'alt-a:select-all,alt-d:deselect-all'"
         "--bind 'ctrl-y:execute-silent(echo -n {+} | wl-copy 2>/dev/null || xclip -selection clipboard 2>/dev/null || true)'"
@@ -149,15 +152,17 @@ in
       # Widget Ctrl-T: preview inteligente de arquivos com bat e pastas com eza
       fileWidgetOptions = [
         "--preview '${fzfPreview}/bin/fzf-preview {}'"
-        "--preview-window 'right:55%:wrap:hidden'"
+        "--preview-window 'right:65%:wrap'"
         "--bind 'ctrl-/:toggle-preview'"
+        "--bind 'ctrl-p:change-preview-window(right:80%|right:65%|right:50%|hidden)'"
       ];
 
       # Widget Alt-C: navegação de diretórios com árvore eza e ícones
       changeDirWidgetOptions = [
         "--preview '${pkgs.eza}/bin/eza --tree --level=2 --color=always --icons {} 2>/dev/null | head -200'"
-        "--preview-window 'right:55%:wrap'"
+        "--preview-window 'right:65%:wrap'"
         "--bind 'ctrl-/:toggle-preview'"
+        "--bind 'ctrl-p:change-preview-window(right:80%|right:65%|right:50%|hidden)'"
       ];
 
       # Widget Ctrl-R: busca refinada no histórico de comandos com atalho de cópia
@@ -206,6 +211,7 @@ in
         FZF_CTRL_T_COMMAND = "${pkgs.fd}/bin/fd --type f --hidden --strip-cwd-prefix --exclude .git --exclude .cache";
         FZF_ALT_C_COMMAND = "${pkgs.fd}/bin/fd --type d --hidden --strip-cwd-prefix --exclude .git --exclude .cache";
         FZF_PREVIEW_COMMAND = "${fzfPreview}/bin/fzf-preview {}";
+        FZF_TAB_OPTS = "--height=85% --min-height=25 --preview-window=right:65%:wrap";
       };
 
       shellAliases = {

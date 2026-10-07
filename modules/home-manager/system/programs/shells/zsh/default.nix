@@ -122,7 +122,7 @@ in
         # fcd: Fuzzy change directory com preview dinâmico de árvore eza
         fcd() {
           local dir
-          dir=$(fd --type d --hidden --exclude .git --exclude .cache 2>/dev/null | fzf --preview 'eza --tree --level=2 --color=always --icons {} 2>/dev/null | head -100' --preview-window 'right:50%:wrap')
+          dir=$(fd --type d --hidden --exclude .git --exclude .cache 2>/dev/null | fzf --preview 'eza --tree --level=2 --color=always --icons {} 2>/dev/null | head -200' --preview-window 'right:65%:wrap')
           if [ -n "$dir" ]; then
             cd "$dir" || return
           fi
@@ -152,16 +152,24 @@ in
           # Formato de descrições e agrupamento para o fzf-tab
           zstyle ':completion:*:descriptions' format '[%d]'
 
-          # Atalhos dentro do fzf-tab (alternar preview e scroll)
-          zstyle ':fzf-tab:*' fzf-bindings 'ctrl-/:toggle-preview' 'ctrl-u:preview-half-page-up' 'ctrl-d:preview-half-page-down'
+          # Dimensões e comportamento responsivo do fzf-tab:
+          # Garante altura proporcional à janela do terminal (85%) e mínimo de 25 linhas,
+          # fazendo a janela de preview de texto/scripts expandir conforme o tamanho do terminal.
+          zstyle ':fzf-tab:*' fzf-min-height 25
+          zstyle ':fzf-tab:*' fzf-pad 4
+          zstyle ':fzf-tab:*' fzf-flags '--height=85%' '--min-height=25' '--preview-window=right:65%:wrap'
+          zstyle ':fzf-tab:complete:*:*' fzf-flags '--height=85%' '--min-height=25' '--preview-window=right:65%:wrap'
+
+          # Atalhos dentro do fzf-tab (alternar preview, redimensionar janela e scroll)
+          zstyle ':fzf-tab:*' fzf-bindings 'ctrl-/:toggle-preview' 'ctrl-p:change-preview-window(right:80%|right:65%|right:50%|hidden)' 'ctrl-u:preview-half-page-up' 'ctrl-d:preview-half-page-down'
           zstyle ':fzf-tab:*' switch-group '<' '>'
           zstyle ':fzf-tab:*' prefix ""
 
           # Preview de diretórios ao dar tab em cd ou z
           zstyle ':fzf-tab:complete:(cd|z):*' fzf-preview '${pkgs.eza}/bin/eza --tree --level=2 --color=always --icons $realpath 2>/dev/null | head -100'
 
-          # Preview de arquivos genéricos usando script fzf-preview
-          zstyle ':fzf-tab:complete:*:*' fzf-preview 'if [ -d "$realpath" ]; then ${pkgs.eza}/bin/eza --tree --level=2 --color=always --icons "$realpath" 2>/dev/null | head -100; elif [ -f "$realpath" ]; then ${pkgs.bat}/bin/bat --style=numbers,changes --color=always --line-range :300 "$realpath" 2>/dev/null || head -n 300 "$realpath"; fi'
+          # Preview de arquivos genéricos usando bat com syntax highlighting completo
+          zstyle ':fzf-tab:complete:*:*' fzf-preview 'if [ -d "$realpath" ]; then ${pkgs.eza}/bin/eza --tree --level=2 --color=always --icons "$realpath" 2>/dev/null | head -100; elif [ -f "$realpath" ]; then ${pkgs.bat}/bin/bat --style=numbers,changes --color=always --line-range :500 "$realpath" 2>/dev/null || head -n 500 "$realpath"; fi'
 
           # Preview de serviços systemd com cores nativas
           zstyle ':fzf-tab:complete:systemctl-*:*' fzf-preview 'SYSTEMD_COLORS=1 systemctl status $word 2>/dev/null'

@@ -1622,7 +1622,18 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Scroll para baixo (`scroll-down`): Faixa anterior (`prev`).
       - Clique com botão direito: Próxima faixa (`next`).
       - Clique com botão do meio: Parar reprodução (`stop`).
-    - **Script de Controle Dedicado (`polybar-media-control`)**: Implementado em [scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix) e exposto no `PATH`. Controla qualquer tocador MPRIS (Spotify, MPV, Firefox, Chromium) com OSD instantâneo via Dunst (`stack-tag:media`).
+- **FZF e FZF-Tab — Janela de Visualização (Preview) Responsiva e Proporcional à Janela do Terminal**:
+  - **Problema**: Ao utilizar o completion do Zsh (`fzf-tab`) com poucos itens (ex: 2 arquivos ao autocompletar `/etc/apt/sources.list.d/debian.sources`), o fzf-tab encolhia a interface verticalmente para apenas 3 ou 4 linhas. A janela de preview na direita ficava restrita a essa mesma altura, exibindo apenas uma única linha do arquivo e deixando mais de 80% da tela do terminal vazia abaixo. No FZF tradicional (`fzf/default.nix`), a altura estava fixada em apenas 45% (`--height=45%`).
+  - **Solução no Zsh / FZF-Tab (`shells/zsh/default.nix`)**:
+    - Declarados `fzf-min-height 25` e `fzf-pad 4` via `zstyle ':fzf-tab:*'`, garantindo que a janela de completion nunca encolha abaixo de 25 linhas, mantendo o preview de código/texto perfeitamente legível mesmo quando houver apenas 1 ou 2 candidatos.
+    - Configuradas flags `--height=85%`, `--min-height=25` e `--preview-window=right:65%:wrap` tanto em `zstyle ':fzf-tab:*' fzf-flags` quanto em `zstyle ':fzf-tab:complete:*:*' fzf-flags`.
+    - Adicionado atalho dinâmico no `fzf-bindings`: `'ctrl-p:change-preview-window(right:80%|right:65%|right:50%|hidden)'`, permitindo alternar instantaneamente entre preview largo (80%), padrão (65%), meio a meio (50%) ou ocultar.
+    - Aumentado o range de linhas do `bat` no preview de arquivos de 300 para 500 linhas (`--line-range :500`).
+  - **Solução no FZF Global (`shells/fzf/default.nix`)**:
+    - `defaultOptions`: Atualizado de `--height=45%` para `--height=85%` e `--min-height=25`, com `--preview-window='right:65%:wrap'` e atalho `ctrl-p:change-preview-window(right:80%|right:65%|right:50%|hidden)`.
+    - `fileWidgetOptions` (Ctrl-T): Removido `:hidden` e expandido para `--preview-window 'right:65%:wrap'` com atalho `Ctrl-P`.
+    - `changeDirWidgetOptions` (Alt-C): Expandido de 55% para `--preview-window 'right:65%:wrap'` com atalho `Ctrl-P`.
+    - `sessionVariables`: Adicionada variável de ambiente `FZF_TAB_OPTS = "--height=85% --min-height=25 --preview-window=right:65%:wrap";`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
