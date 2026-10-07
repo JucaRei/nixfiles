@@ -1608,7 +1608,21 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
     - `module/disk`: Monitoramento de armazenamento SSD raiz (`internal/fs`) exibindo espaço livre e com clique para abrir o gerenciador de arquivos.
     - `module/uptime`: Script ultrarrápido (`uptimeScript`) que lê `/proc/uptime` diretamente com custo computacional mínimo.
     - `module/netspeed`: Script universal (`netspeedScript`) que lê a interface ativa da rota default em `/proc/net/dev`, calculando velocidade real em Wi-Fi e cabo.
-    - `module/backlight`: Script dinâmico (`backlightScript`) que identifica o dispositivo em `/sys/class/backlight` e suporta rolagem do scroll para aumentar/diminuir brilho.
+- **Polybar — Mini-Player de Mídia Interativo Completo (`module/media` com botões Play, Pause, Next, Prev, Stop)**:
+  - **Problema**: O módulo de mídia apenas exibia o texto do artista/música e aceitava clique para play/pause e clique direito para next, sem botões visíveis para retroceder faixa (`prev`), parar (`stop`), pausar/despausar ou feedback de estado.
+  - **Solução**:
+    - **Botões Visíveis e Interativos**:
+      - `󰒮` (Anterior / Previous): Executa `playerctl previous` com notificação OSD.
+      - `󰐊` / `󰏤` (Play / Pause dinâmico): Exibe ícone de Pause verde (`󰏤`) quando tocando e ícone de Play pêssego (`󰐊`) quando pausado.
+      - `󰒭` (Próximo / Next): Executa `playerctl next` com notificação OSD.
+      - `󰓛` (Parar / Stop): Executa `playerctl stop` em vermelho (`colors.red`).
+      - `󰎈 Artista - Faixa`: Rótulo clicável para alternar Play/Pause.
+    - **Ações de Mouse Globais no Módulo**:
+      - Scroll para cima (`scroll-up`): Próxima faixa (`next`).
+      - Scroll para baixo (`scroll-down`): Faixa anterior (`prev`).
+      - Clique com botão direito: Próxima faixa (`next`).
+      - Clique com botão do meio: Parar reprodução (`stop`).
+    - **Script de Controle Dedicado (`polybar-media-control`)**: Implementado em [scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix) e exposto no `PATH`. Controla qualquer tocador MPRIS (Spotify, MPV, Firefox, Chromium) com OSD instantâneo via Dunst (`stack-tag:media`).
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

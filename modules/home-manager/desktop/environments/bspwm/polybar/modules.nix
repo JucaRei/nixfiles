@@ -134,16 +134,18 @@
     label-padding = 1;
   };
 
-  # --- Mídia / Playerctl (Elegante e Dinâmico) ---
+  # --- Mídia / Playerctl (Interativo com Botões, Scroll e OSD) ---
   "module/media" = {
     type = "custom/script";
     exec = "${scripts.mediaScript}";
-    interval = 2;
+    interval = 1;
     format = "<label>";
     label = "%output%";
     label-padding = 1;
-    click-left = "${pkgs.playerctl}/bin/playerctl play-pause";
-    click-right = "${pkgs.playerctl}/bin/playerctl next";
+    scroll-up = "${scripts.mediaControlScript} next";
+    scroll-down = "${scripts.mediaControlScript} prev";
+    click-right = "${scripts.mediaControlScript} next";
+    click-middle = "${scripts.mediaControlScript} stop";
   };
 
   # --- Bluetooth (Status Dinâmico na Polybar & Menu Rofi) ---

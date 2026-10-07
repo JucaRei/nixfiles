@@ -114,27 +114,75 @@ rec {
       generate_output
     done
   '';
-  # --- Script de Controle de Mídia (Playerctl) ---
+  # --- Script de Controle de Mídia Interativo (Playerctl com OSD) ---
+  mediaControlScript = pkgs.writeShellScript "polybar-media-control" ''
+    export PATH="${lib.makeBinPath [ pkgs.playerctl pkgs.dunst pkgs.coreutils ]}:$PATH"
+
+    action="''${1:-play-pause}"
+    case "$action" in
+      play-pause|toggle) playerctl play-pause 2>/dev/null ;;
+      next)              playerctl next 2>/dev/null ;;
+      prev|previous)      playerctl previous 2>/dev/null ;;
+      stop)              playerctl stop 2>/dev/null ;;
+    esac
+
+    sleep 0.1
+    status=$(playerctl status 2>/dev/null || echo "Parado")
+    track_info=$(playerctl metadata --format '{{title}} - {{artist}}' 2>/dev/null || true)
+
+    case "$status" in
+      Playing) icon="media-playback-start"; header="󰐊 Reproduzindo" ;;
+      Paused)  icon="media-playback-pause"; header="󰏤 Pausado" ;;
+      *)       icon="media-playback-stop";  header="󰓛 Reprodutor Parado" ;;
+    esac
+
+    if [ -n "$track_info" ] && [ "$track_info" != " - " ]; then
+      dunstify -a "Mídia" \
+        -u low \
+        -i "$icon" \
+        -h string:x-dunst-stack-tag:media \
+        -t 1500 \
+        "$header" \
+        "<b>$track_info</b>" 2>/dev/null || true
+    fi
+  '';
+
+  # --- Script de Visualização de Mídia com Botões Interativos (Playerctl) ---
   mediaScript = pkgs.writeShellScript "polybar-media" ''
-    export PATH="${pkgs.playerctl}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
+    export PATH="${lib.makeBinPath [ pkgs.playerctl pkgs.coreutils pkgs.gnused ]}:$PATH"
     if ! command -v playerctl >/dev/null 2>&1; then
       exit 0
     fi
-    status=$(playerctl status 2>/dev/null)
+
+    status=$(playerctl status 2>/dev/null || echo "")
+    [ -z "$status" ] && exit 0
+
+    title=$(playerctl metadata title 2>/dev/null || echo "")
+    artist=$(playerctl metadata artist 2>/dev/null || echo "")
+
+    if [ -n "$artist" ] && [ -n "$title" ]; then
+      track="$artist - $title"
+    elif [ -n "$title" ]; then
+      track="$title"
+    else
+      track="Mídia"
+    fi
+
+    display_track=$(echo "$track" | cut -c1-35)
+    [ "''${#track}" -gt 35 ] && display_track="''${display_track}..."
+
+    btn_prev="%{A1:${mediaControlScript} prev:}%{F${colors.blue}}󰒮%{F-}%{A}"
+    btn_next="%{A1:${mediaControlScript} next:}%{F${colors.blue}}󰒭%{F-}%{A}"
+    btn_stop="%{A1:${mediaControlScript} stop:}%{F${colors.red}}󰓛%{F-}%{A}"
+
     if [ "$status" = "Playing" ]; then
-      artist=$(playerctl metadata artist 2>/dev/null)
-      title=$(playerctl metadata title 2>/dev/null)
-      track="$artist - $title"
-      [ -z "$artist" ] && track="$title"
-      track=$(echo "$track" | cut -c1-35)
-      echo "%{F${colors.mauve}}󰎈%{F-} %{F${colors.lavender}}$track%{F-}"
+      btn_play_pause="%{A1:${mediaControlScript} play-pause:}%{F${colors.green}}󰏤%{F-}%{A}"
+      track_label="%{A1:${mediaControlScript} play-pause:}%{F${colors.mauve}}󰎈%{F-} %{F${colors.text}}$display_track%{F-}%{A}"
+      echo "$btn_prev  $btn_play_pause  $btn_next  $btn_stop  %{F${colors.surface1}}│%{F-}  $track_label"
     elif [ "$status" = "Paused" ]; then
-      artist=$(playerctl metadata artist 2>/dev/null)
-      title=$(playerctl metadata title 2>/dev/null)
-      track="$artist - $title"
-      [ -z "$artist" ] && track="$title"
-      track=$(echo "$track" | cut -c1-30)
-      echo "%{F${colors.surface2}}󰏤 $track%{F-}"
+      btn_play_pause="%{A1:${mediaControlScript} play-pause:}%{F${colors.peach}}󰐊%{F-}%{A}"
+      track_label="%{A1:${mediaControlScript} play-pause:}%{F${colors.surface2}}󰎊 $display_track%{F-}%{A}"
+      echo "$btn_prev  $btn_play_pause  $btn_next  $btn_stop  %{F${colors.surface1}}│%{F-}  $track_label"
     else
       echo ""
     fi
