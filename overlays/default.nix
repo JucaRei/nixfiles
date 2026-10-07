@@ -11,8 +11,13 @@
     antigravity-cli = (prev.antigravity-cli or final.unstable.antigravity-cli).overrideAttrs (_old: {
       doInstallCheck = false;
       installCheckPhase = "true";
-      nativeInstallCheckInputs = [ ];
     });
+
+    # Polybar com suporte nativo a PulseAudio habilitado globalmente (necessário para internal/pulseaudio)
+    polybar = prev.polybar.override {
+      pulseSupport = true;
+      i3Support = false;
+    };
 
     # Noctalia (v5+): fallback unstable + wrapper com xdg-utils no PATH e auto-patch do plugin keymap
     noctalia =

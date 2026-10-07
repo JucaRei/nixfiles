@@ -211,7 +211,6 @@ in
         FZF_CTRL_T_COMMAND = "${pkgs.fd}/bin/fd --type f --hidden --strip-cwd-prefix --exclude .git --exclude .cache";
         FZF_ALT_C_COMMAND = "${pkgs.fd}/bin/fd --type d --hidden --strip-cwd-prefix --exclude .git --exclude .cache";
         FZF_PREVIEW_COMMAND = "${fzfPreview}/bin/fzf-preview {}";
-        FZF_TAB_OPTS = "--height=85% --min-height=25 --preview-window=right:65%:wrap";
       };
 
       shellAliases = {

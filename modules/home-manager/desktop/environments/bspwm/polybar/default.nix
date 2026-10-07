@@ -10,7 +10,14 @@ let
   cfg = config.desktop.bspwm.polybar;
 
   colors = import ./colors.nix;
-  scripts = import ./scripts.nix { inherit pkgs colors; };
+  polybarPkg = pkgs.polybar.override {
+    pulseSupport = true;
+    i3Support = false;
+  };
+  scripts = import ./scripts.nix {
+    inherit pkgs colors;
+    polybar = polybarPkg;
+  };
   polybarModules = import ./modules.nix {
     inherit
       lib
@@ -31,6 +38,7 @@ in
 
   config = mkIf cfg.enable {
     home.packages = [
+      polybarPkg
       (pkgs.writeShellScriptBin "rofi-bluetooth" ''exec ${scripts.rofiBluetoothMenu} "$@"'')
       (pkgs.writeShellScriptBin "bspwm-bluetooth" ''exec ${scripts.rofiBluetoothMenu} "$@"'')
       (pkgs.writeShellScriptBin "rofi-wifi-menu" ''exec ${scripts.rofiWifiMenu} "$@"'')
@@ -44,10 +52,7 @@ in
 
     services.polybar = {
       enable = true;
-      package = pkgs.polybar.override {
-        pulseSupport = true;
-        i3Support = false;
-      };
+      package = polybarPkg;
       script = ''
         exec ${scripts.polybarLaunchScript}
       '';

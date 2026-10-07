@@ -2,6 +2,7 @@
   pkgs,
   colors,
   lib ? pkgs.lib,
+  polybar ? (pkgs.polybar.override { pulseSupport = true; i3Support = false; }),
   ...
 }:
 rec {
@@ -1567,9 +1568,9 @@ rec {
 
   # --- Script Inteligente de Inicialização Multi-Monitor da Polybar ---
   polybarLaunchScript = pkgs.writeShellScript "polybar-launch" ''
-    export PATH="${lib.makeBinPath [ pkgs.polybar pkgs.xrandr pkgs.gnugrep pkgs.coreutils pkgs.procps ]}:$PATH"
+    export PATH="${lib.makeBinPath [ polybar pkgs.xrandr pkgs.gnugrep pkgs.coreutils pkgs.procps ]}:$PATH"
 
-    polybar-msg cmd quit 2>/dev/null || true
+    ${polybar}/bin/polybar-msg cmd quit 2>/dev/null || true
     pkill -x polybar 2>/dev/null || true
     while pgrep -u $UID -x polybar >/dev/null; do sleep 0.2; done
 
@@ -1584,19 +1585,19 @@ rec {
         # Multi-Monitor: Barras complementares contínuas (sem repetição de módulos)
         for m in "''${connected_mons[@]}"; do
           if [ "$m" = "$primary_mon" ]; then
-            MONITOR=$m polybar --reload primary &
+            MONITOR=$m ${polybar}/bin/polybar --reload primary &
           else
-            MONITOR=$m polybar --reload secondary &
+            MONITOR=$m ${polybar}/bin/polybar --reload secondary &
           fi
         done
       elif [ "$mon_count" -eq 1 ]; then
         # Monitor Único: Barra completa com todos os módulos essenciais
-        MONITOR="$primary_mon" polybar --reload main &
+        MONITOR="$primary_mon" ${polybar}/bin/polybar --reload main &
       else
-        polybar --reload main &
+        ${polybar}/bin/polybar --reload main &
       fi
     else
-      polybar --reload main &
+      ${polybar}/bin/polybar --reload main &
     fi
   '';
 }

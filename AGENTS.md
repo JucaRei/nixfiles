@@ -1632,8 +1632,12 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Solução no FZF Global (`shells/fzf/default.nix`)**:
     - `defaultOptions`: Atualizado de `--height=45%` para `--height=85%` e `--min-height=25`, com `--preview-window='right:65%:wrap'` e atalho `ctrl-p:change-preview-window(right:80%|right:65%|right:50%|hidden)`.
     - `fileWidgetOptions` (Ctrl-T): Removido `:hidden` e expandido para `--preview-window 'right:65%:wrap'` com atalho `Ctrl-P`.
-    - `changeDirWidgetOptions` (Alt-C): Expandido de 55% para `--preview-window 'right:65%:wrap'` com atalho `Ctrl-P`.
-    - `sessionVariables`: Adicionada variável de ambiente `FZF_TAB_OPTS = "--height=85% --min-height=25 --preview-window=right:65%:wrap";`.
+- **Polybar — Ícone de Volume (`module/pulseaudio`) Invisível / Não Renderizado**:
+  - **Problema**: O módulo de volume (`internal/pulseaudio`) não aparecia na Polybar (exibindo apenas o separador e os dots vazios `| ·`).
+  - **Causa Raiz**: No Nixpkgs, o pacote padrão `pkgs.polybar` é compilado sem suporte a PulseAudio (`pulseSupport = false`). Quando a Polybar é iniciada pelo script `polybar-launch` ([scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix)), o script injetava `pkgs.polybar` padrão no `PATH`. Ao encontrar `type = "internal/pulseaudio"`, a Polybar desativava o módulo silenciosamente (`Disabling module "pulseaudio" (reason: No built-in module "internal/pulseaudio")`).
+  - **Correção**:
+    - **Overlay Global (`overlays/default.nix`)**: Adicionado override em `modifiedPackages` configurando `polybar = prev.polybar.override { pulseSupport = true; i3Support = false; };`, garantindo que qualquer referência a `pkgs.polybar` no repositório receba a compilação com `pulseSupport`.
+    - **Injeção em `scripts.nix` e `default.nix`**: Declarado `polybarPkg` com `pulseSupport = true` em [default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/default.nix), repassado explicitamente para [scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix), exportado em `home.packages` e referenciado com `${polybar}/bin/polybar` no `polybarLaunchScript`.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
