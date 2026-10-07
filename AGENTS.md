@@ -1550,6 +1550,20 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
       - Compilação / Build: `󰑮 ` (`nf-md-hammer`)
     - **Benefício**: Garante renderização 100% nítida, com espaçamento mono perfeito e sem caracteres tofu/ausentes em terminais como Alacritty que utilizam fontes mono sem camadas de color emoji.
 
+- **Polybar — Logo Dinâmico do Sistema Operacional no Lançador (`module/launcher`)**:
+  - **Problema**: O módulo `module/launcher` em [modules.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/modules.nix) possuía o ícone do NixOS (`󱄅`) codificado estaticamente como `custom/text`. Em hosts standalone (como Debian no `nitro` ou Fedora no `fedora`), a barra exibia o logo do NixOS em vez do logo da distribuição Linux em uso.
+  - **Solução**:
+    - Implementado script dinâmico `osLogoScript` (`polybar-os-logo`) em [scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix). O script inspeciona `/etc/os-release` (campos `ID` e `ID_LIKE`), com fallback para `/usr/lib/os-release` e `/etc/NIXOS`, mapeando cada SO para seu respectivo glifo Nerd Font e cor correspondente na paleta Catppuccin Mocha:
+      - **Debian**: Ícone `` (`nf-linux-debian`), cor vermelha (`${colors.red}`).
+      - **Fedora**: Ícone `` (`nf-linux-fedora`), cor azul (`${colors.blue}`).
+      - **NixOS**: Ícone `󱄅` (`nf-md-nix`), cor azul-celeste (`${colors.sky}`).
+      - **Arch Linux / EndeavourOS / Artix**: Ícones `󰣇` / `` / ``, cor safira (`${colors.sapphire}`).
+      - **Ubuntu / Pop!_OS / Mint**: Ícones `` / `` / ``, cores pêssego (`${colors.peach}`), teal (`${colors.teal}`) e verde (`${colors.green}`).
+      - **openSUSE / Void / Alpine / Gentoo / CentOS / RHEL**: Ícones dedicados (``, ``, ``, ``, ``, ``) e cores temáticas.
+      - **Linux Genérico**: Fallback Tux `` (`nf-linux-tux`) em amarelo (`${colors.yellow}`).
+      - **Suporte a Flag e Override**: Permite `--icon-only` para emitir apenas o glifo sem tags de cor, e variável `OS_LOGO_ICON` para override manual.
+    - O módulo `module/launcher` foi convertido para `type = "custom/script"` com `exec = "${scripts.osLogoScript}";` e `label = "%output%";`. Por não definir `interval`, a Polybar executa a detecção exatamente uma vez no startup da barra, com custo zero de CPU durante o uso.
+    - Exposto o binário `polybar-os-logo` em `home.packages` em [default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/default.nix) para testes diretos pelo terminal.
 - **Resolução do Pacote Zathura e Plugins no Home Manager (`programs.zathura.package`)**:
   - **Problema**: Ao executar `nix flake check --no-build`, a avaliação falhava com `error: attribute 'zathura-pdf-mupdf' missing` (e `attribute 'zathura_pdf_mupdf' missing`) em [modules/home-manager/system/programs/documents/zathura/default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/system/programs/documents/zathura/default.nix).
   - **Causa Raiz**: No Nixpkgs, os plugins do Zathura não são expostos como pacotes de nível superior (`pkgs.zathura-pdf-mupdf` ou `pkgs.zathura_pdf_mupdf`). Em vez disso, o pacote `pkgs.zathura` é um wrapper (`zathura-with-plugins`) que já embute por padrão os plugins necessários, incluindo MuPDF (`useMupdf ? true`), DjVu, PS e CB. Os plugins isolados pertencem ao escopo interno `pkgs.zathuraPkgs`.

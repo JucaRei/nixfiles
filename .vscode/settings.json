@@ -14,7 +14,7 @@
     }
   },
   "editor.fontWeight": "300",
-  "editor.fontSize": 24,
+  "editor.fontSize": 26,
   "editor.fontFamily": "'Lilex Nerd Font Propo Medium', 'VictorMono NFP SemiBold', 'JetBrainsMono Nerd Font Propo', 'monospace'",
   "editor.fontLigatures": true,
   "editor.stickyScroll.enabled": false,

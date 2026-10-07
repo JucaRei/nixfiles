@@ -58,6 +58,10 @@ in
           firefox.enable = true;
         };
 
+        documents = {
+          zathura.enable = true;
+        };
+
         editors = {
           antigravity.enable = true;
         };

@@ -1275,4 +1275,148 @@ rec {
         ;;
     esac
   '';
+
+  # --- Script de Detecção do Logo do Sistema Operacional (Ícone e Cor Dinâmicos) ---
+  osLogoScript = pkgs.writeShellScript "polybar-os-logo" ''
+    export PATH="${
+      lib.makeBinPath [
+        pkgs.coreutils
+        pkgs.gnugrep
+        pkgs.gnused
+      ]
+    }:$PATH"
+
+    if [ -n "''${OS_LOGO_ICON:-}" ]; then
+      echo "$OS_LOGO_ICON"
+      exit 0
+    fi
+
+    os_id=""
+    os_like=""
+
+    if [ -r /etc/os-release ]; then
+      . /etc/os-release 2>/dev/null
+      os_id="''${ID:-}"
+      os_like="''${ID_LIKE:-}"
+    elif [ -r /usr/lib/os-release ]; then
+      . /usr/lib/os-release 2>/dev/null
+      os_id="''${ID:-}"
+      os_like="''${ID_LIKE:-}"
+    fi
+
+    if [ -z "$os_id" ] && [ -e /etc/NIXOS ]; then
+      os_id="nixos"
+    fi
+
+    os_id=$(echo "$os_id" | tr '[:upper:]' '[:lower:]')
+    os_like=$(echo "$os_like" | tr '[:upper:]' '[:lower:]')
+
+    icon=""
+    color="${colors.yellow}"
+
+    case "$os_id" in
+      nixos)
+        icon="󱄅"
+        color="${colors.sky}"
+        ;;
+      debian)
+        icon=""
+        color="${colors.red}"
+        ;;
+      fedora)
+        icon=""
+        color="${colors.blue}"
+        ;;
+      arch|archarm)
+        icon="󰣇"
+        color="${colors.sapphire}"
+        ;;
+      endeavouros)
+        icon=""
+        color="${colors.mauve}"
+        ;;
+      artix)
+        icon=""
+        color="${colors.sapphire}"
+        ;;
+      ubuntu)
+        icon=""
+        color="${colors.peach}"
+        ;;
+      pop)
+        icon=""
+        color="${colors.teal}"
+        ;;
+      linuxmint|mint)
+        icon=""
+        color="${colors.green}"
+        ;;
+      void)
+        icon=""
+        color="${colors.green}"
+        ;;
+      opensuse*|suse)
+        icon=""
+        color="${colors.green}"
+        ;;
+      gentoo)
+        icon=""
+        color="${colors.lavender}"
+        ;;
+      alpine)
+        icon=""
+        color="${colors.blue}"
+        ;;
+      manjaro)
+        icon=""
+        color="${colors.teal}"
+        ;;
+      centos)
+        icon=""
+        color="${colors.mauve}"
+        ;;
+      rhel|redhat|almalinux|rocky)
+        icon=""
+        color="${colors.red}"
+        ;;
+      kali)
+        icon=""
+        color="${colors.blue}"
+        ;;
+      *)
+        case "$os_like" in
+          *arch*)
+            icon="󰣇"
+            color="${colors.sapphire}"
+            ;;
+          *debian*)
+            icon=""
+            color="${colors.red}"
+            ;;
+          *fedora*|*rhel*)
+            icon=""
+            color="${colors.blue}"
+            ;;
+          *ubuntu*)
+            icon=""
+            color="${colors.peach}"
+            ;;
+          *suse*)
+            icon=""
+            color="${colors.green}"
+            ;;
+          *)
+            icon=""
+            color="${colors.yellow}"
+            ;;
+        esac
+        ;;
+    esac
+
+    if [ "''${1:-}" = "--icon-only" ]; then
+      echo "$icon"
+    else
+      echo "%{F$color}$icon%{F-}"
+    fi
+  '';
 }

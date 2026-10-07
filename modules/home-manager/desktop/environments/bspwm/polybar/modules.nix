@@ -36,11 +36,12 @@
     label-background = colors.transparent;
   };
 
-  # --- Lançador de Aplicativos (NixOS Logo) ---
+  # --- Lançador de Aplicativos (Logo do Sistema Operacional Dinâmico) ---
   "module/launcher" = {
-    type = "custom/text";
+    type = "custom/script";
+    exec = "${scripts.osLogoScript}";
     format = "%{A1:${pkgs.rofi}/bin/rofi -show drun:}<label>%{A}";
-    label = "󱄅";
+    label = "%output%";
     label-font = 4;
     label-foreground = colors.blue;
     label-padding = 1;
