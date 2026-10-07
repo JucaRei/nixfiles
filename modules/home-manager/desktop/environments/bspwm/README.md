@@ -161,7 +161,7 @@ Isso garante aceleração 3D por hardware completa no Alacritty, Picom e reprodu
 | `$SUPER + Q` ou `$SUPER + C` | Fecha a janela em foco (`bspc node -c`) |
 | `$SUPER + W` | Alterna modo flutuante / tiled |
 | `$SUPER + F` | Alterna modo tela cheia (`fullscreen`) |
-| `$SUPER + Shift + F` | Alterna modo pseudo-tiled |
+| `$SUPER + Shift + F` / `$SUPER + Shift + T` | Alterna modo pseudo-tiled (mantém dimensões originais na grade) |
 | `$SUPER + Tab` | Alterna foco com a última janela usada |
 
 ### Foco e Troca de Posição (Setas e Vim Keys)

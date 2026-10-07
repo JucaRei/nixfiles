@@ -1569,6 +1569,24 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Causa Raiz**: No Nixpkgs, os plugins do Zathura não são expostos como pacotes de nível superior (`pkgs.zathura-pdf-mupdf` ou `pkgs.zathura_pdf_mupdf`). Em vez disso, o pacote `pkgs.zathura` é um wrapper (`zathura-with-plugins`) que já embute por padrão os plugins necessários, incluindo MuPDF (`useMupdf ? true`), DjVu, PS e CB. Os plugins isolados pertencem ao escopo interno `pkgs.zathuraPkgs`.
   - **Solução**: Ajustado `package = pkgs.zathura;` em `programs.zathura`, utilizando o binário completo já encapsulado com os plugins do nixpkgs e alinhando com a convenção do Home Manager.
 
+- **BSPWM — Suporte Completo a Pseudo-Tiling (`pseudo_tiled`) e Feedback Visual OSD**:
+  - **Conceito e Comportamento**: No BSPWM, o estado `pseudo_tiled` permite que uma janela permaneça ancorada na árvore de particionamento BSP (obedecendo à ordem de foco, layout dinâmico `bsp-layout`, gaps e paddings), mas preservando suas dimensões flutuantes naturais (sem ser esticada para preencher a célula inteira do split).
+  - **Script de Gestão (`pseudoTileScript` / `bspwm-toggle-pseudo-tile` e `bspwm-pseudo-tile`)**:
+    - Implementado em [modules/home-manager/desktop/environments/bspwm/sxhkd.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/sxhkd.nix).
+    - Validação de nó inteligente: verifica se há janela ativa real (`.window`) antes de alternar estado, evitando disparos em falso no desktop vazio.
+    - Suporte a comandos via CLI: aceita argumentos `toggle` (padrão), `on` / `enable`, `off` / `disable`, `status` (consulta de estado para scripts) ou ID específico de janela X11 (`0x...`).
+    - Feedback OSD via Dunst com stack-tag (`x-dunst-stack-tag:window-state`):
+      - Ativado: `󱒆 Janela: Pseudo-Tiled` — "Janela em grade preservando dimensões naturais" (ícone `view-restore`).
+      - Desativado: `󰄬 Janela: Tiled` — "Modo tiling em grade completa restaurado" (ícone `view-grid`).
+  - **Atalhos de Teclado (SXHKD)**:
+    - `$SUPER + Shift + F` e `$SUPER + Shift + T`: Alterna modo pseudo-tiled na janela em foco (também mapeados para `$ALT + Shift + F` / `$ALT + Shift + T`).
+    - Redimensionamento suave: janelas pseudo-tiled podem ser redimensionadas tanto via mouse (`$SUPER + Botão Direito`) quanto via teclado (`$SUPER + Alt + H/J/K/L`).
+  - **Integração com Quick Settings e Cheat-Sheet**:
+    - Adicionada entrada interativa `󱒆 Alternar Janela Pseudo-Tiled (Pseudo-Tiling)` no Control Center do Rofi (`$SUPER + Comma` / `$SUPER + C` / Botão Direito no Desktop).
+    - Adicionado atalho correspondente na lista do Manual de Atalhos (`$SUPER + /` ou `$SUPER + F1`).
+  - **Unificação de Pacotes no Home Manager**:
+    - Consolidada a declaração de `home.packages` em `sxhkd.nix`, eliminando definições duplicadas no conjunto de atributos e expondo os binários `bspwm-pseudo-tile` e `bspwm-toggle-pseudo-tile` no PATH do usuário.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

@@ -526,6 +526,63 @@ let
     fi
   '';
 
+  # Script nativo de alternância de Pseudo-Tiling com notificação visual OSD
+  pseudoTileScript = pkgs.writeShellScript "bspwm-toggle-pseudo-tile" ''
+    export PATH="${lib.makeBinPath [ pkgs.bspwm pkgs.dunst pkgs.jq pkgs.coreutils ]}:$PATH"
+
+    target="focused"
+    action="toggle"
+
+    case "''${1:-}" in
+      on|enable|--on|--enable)
+        action="on"
+        ;;
+      off|disable|--off|--disable)
+        action="off"
+        ;;
+      status|--status|-s)
+        action="status"
+        ;;
+      toggle|--toggle|"")
+        action="toggle"
+        ;;
+      0x*|[0-9]*)
+        target="$1"
+        case "''${2:-}" in
+          on|enable) action="on" ;;
+          off|disable) action="off" ;;
+          status) action="status" ;;
+          *) action="toggle" ;;
+        esac
+        ;;
+    esac
+
+    # Validar se há janela válida focada ou selecionada
+    wid=$(bspc query -N -n "$target.window" 2>/dev/null || bspc query -N -n "focused.window" 2>/dev/null)
+    if [ -z "$wid" ]; then
+      exit 0
+    fi
+
+    if [ "$action" = "status" ]; then
+      state=$(bspc query -T -n "$wid" 2>/dev/null | jq -r '.client.state // empty' 2>/dev/null)
+      echo "''${state:-unknown}"
+      exit 0
+    elif [ "$action" = "on" ]; then
+      bspc node "$wid" -t pseudo_tiled 2>/dev/null || true
+    elif [ "$action" = "off" ]; then
+      bspc node "$wid" -t tiled 2>/dev/null || true
+    else
+      bspc node "$wid" -t '~pseudo_tiled' 2>/dev/null || true
+    fi
+
+    state=$(bspc query -T -n "$wid" 2>/dev/null | jq -r '.client.state // empty' 2>/dev/null)
+    if [ "$state" = "pseudo_tiled" ]; then
+      dunstify -a "BSPWM" -u low -i "view-restore" -h string:x-dunst-stack-tag:window-state -r 9994 -t 1500 "󱒆 Janela: Pseudo-Tiled" "Janela em grade preservando dimensões naturais" 2>/dev/null || true
+    else
+      dunstify -a "BSPWM" -u low -i "view-grid" -h string:x-dunst-stack-tag:window-state -r 9994 -t 1500 "󰄬 Janela: Tiled" "Modo tiling em grade completa restaurado" 2>/dev/null || true
+    fi
+  '';
+
   # --- Dashboard Unificado: Quick Settings + Manual de Atalhos (Estilo Hyprland) ---
   quickSettings = pkgs.writeShellScript "quick-settings" ''
         show_manual() {
@@ -544,6 +601,7 @@ let
     } + Esc             ➜  Forçar Fechamento de Janela Travada
     󰌌  Alt + A                                 ➜  Alternar Tela Cheia (Fullscreen)
     󰌌  ${modDisplayName} + F                     ➜  Alternar Janela Flutuante (Floating/Tiling)
+    󰌌  ${modDisplayName} + Shift + F / Shift + T ➜  Alternar Janela Pseudo-Tiled (Grade com Tamanho Natural)
     󰌌  ${modDisplayName} + M                     ➜  Modo Monocle (Foco em Janela Única)
     󰌌  ${modDisplayName} + Y / ${modDisplayName} + Minus     ➜  Esconder / Minimizar Janela Ativa
     󰌌  ${modDisplayName} + Shift + Y / Shift+-  ➜  Restaurar Última Janela Escondida
@@ -590,6 +648,7 @@ let
             *"Fechar / Encerrar Janela"*) bspc node -c ;;
             *"Tela Cheia"*) bspc node -t '~fullscreen' ;;
             *"Janela Flutuante"*) bspc node -t '~floating' ;;
+            *"Pseudo-Tiled"*|*"Pseudo-tiled"*) ${pseudoTileScript} ;;
             *"Esconder / Minimizar Janela"*) bspc node -g hidden=on ;;
             *"Restaurar Última Janela"*) bspc node any.hidden.local -g hidden=off -f ;;
             *"Captura de Tela"*) ${screenshotScript} menu & ;;
@@ -605,6 +664,7 @@ let
           OPT_COLOR="󰈊  Conta-gotas de Cor (Colorpicker)"
           OPT_BT="󰂯  Dispositivos Bluetooth (rofi-bluetooth)"
           OPT_LAYOUT="󰕰  Gerenciador de Layouts (rofi-bsp-layout)"
+          OPT_PSEUDO="󱒆  Alternar Janela Pseudo-Tiled (Pseudo-Tiling)"
           OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
           OPT_TOUCH="󰟸  Velocidade do Touchpad (Touchpad Speed)"
           OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
@@ -618,11 +678,12 @@ let
           OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
           OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
 
-          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
             "$OPT_SHOT" \
             "$OPT_COLOR" \
             "$OPT_BT" \
             "$OPT_LAYOUT" \
+            "$OPT_PSEUDO" \
             "$OPT_RES" \
             "$OPT_TOUCH" \
             "$OPT_SOUND" \
@@ -635,13 +696,14 @@ let
             "$OPT_KEYS" \
             "$OPT_RELOAD" \
             "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings " \
-            -theme-str 'window {width: 620px; border-radius: 14px;} listview {columns: 1; lines: 16;}')
+            -theme-str 'window {width: 620px; border-radius: 14px;} listview {columns: 1; lines: 17;}')
 
           case "$CHOICE" in
             "$OPT_SHOT") ${screenshotScript} menu & ;;
             "$OPT_COLOR") ${colorPickerScript} & ;;
             "$OPT_BT") rofi-bluetooth & ;;
             "$OPT_LAYOUT") rofi-bsp-layout & ;;
+            "$OPT_PSEUDO") ${pseudoTileScript} ;;
             "$OPT_RES")
               R_1080="1920x1080 (Full HD 1080p)"
               R_2K="2560x1440 (Quad HD 2K)"
@@ -900,10 +962,14 @@ in
           "${mod} + ${altMod} + Escape" = "bspc node -k";
           "${mod} + shift + q" = "bspc node -k";
 
-          # --- Estados de Janela (Alternar Flutuante / Tela Cheia / Monocle) ---
+          # --- Estados de Janela (Alternar Flutuante / Tela Cheia / Pseudo-Tiled / Monocle) ---
           "${mod} + f" = "bspc node -t '~floating'";
           "${mod} + s" = "bspc node -t '~floating'";
           "alt + a" = "bspc node -t '~fullscreen'";
+          "${mod} + shift + f" = "${pseudoTileScript}";
+          "${altMod} + shift + f" = "${pseudoTileScript}";
+          "${mod} + shift + t" = "${pseudoTileScript}";
+          "${altMod} + shift + t" = "${pseudoTileScript}";
           "${mod} + m" = "bspc desktop -l next";
 
           # --- Minimizar / Esconder Janelas (Desktop Environment Style) ---
@@ -1030,6 +1096,8 @@ in
 
     # Utilitários de linha de comando para uso interativo e scripts
     home.packages = [
+      (pkgs.writeShellScriptBin "bspwm-pseudo-tile" ''exec ${pseudoTileScript} "$@"'')
+      (pkgs.writeShellScriptBin "bspwm-toggle-pseudo-tile" ''exec ${pseudoTileScript} "$@"'')
       (pkgs.writeShellScriptBin "bspwm-screenshot" ''exec ${screenshotScript} "$@"'')
       (pkgs.writeShellScriptBin "screenshoter" ''exec ${screenshotScript} "$@"'')
       (pkgs.writeShellScriptBin "bspwm-colorpicker" ''exec ${colorPickerScript} "$@"'')
