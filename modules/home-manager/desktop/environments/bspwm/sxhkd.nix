@@ -901,7 +901,11 @@ in
     # Recarregar automaticamente o sxhkd e polybar ao rodar switch-home (sem reiniciar o bspwm para não derrubar a sessão X11)
     home.activation.reloadSxhkd = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -USR1 -x sxhkd 2>/dev/null || true
-      $DRY_RUN_CMD ${pkgs.polybar}/bin/polybar-msg cmd restart 2>/dev/null || true
+      if command -v polybar-launch >/dev/null 2>&1; then
+        $DRY_RUN_CMD polybar-launch 2>/dev/null || true
+      else
+        $DRY_RUN_CMD ${pkgs.polybar}/bin/polybar-msg cmd restart 2>/dev/null || true
+      fi
     '';
 
     services.sxhkd = {
@@ -1050,7 +1054,7 @@ in
             "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
 
           # --- Reiniciar / Recarregar BSPWM, SXHKD e Polybar ---
-          "${mod} + shift + r" = "bspc wm -r; ${pkgs.procps}/bin/pkill -USR1 -x sxhkd; ${pkgs.polybar}/bin/polybar-msg cmd restart";
+          "${mod} + shift + r" = "bspc wm -r; ${pkgs.procps}/bin/pkill -USR1 -x sxhkd; polybar-launch &";
           "${mod} + Escape" = "${pkgs.procps}/bin/pkill -USR1 -x sxhkd";
 
           # --- Controles de Mídia e Áudio com Dunst OSD (Estilo gh0stzk) ---

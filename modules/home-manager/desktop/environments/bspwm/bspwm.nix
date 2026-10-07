@@ -461,12 +461,8 @@ in
             # Iniciar barra de status Polybar se habilitada
             ${lib.optionalString config.desktop.bspwm.polybar.enable ''
               systemctl --user restart polybar 2>/dev/null || (
-                pkill -x polybar || true
-                while pgrep -u $UID -x polybar >/dev/null; do sleep 0.5; done
-                if command -v ${pkgs.xrandr}/bin/xrandr >/dev/null 2>&1; then
-                  for m in $(${pkgs.xrandr}/bin/xrandr --query | grep " connected" | cut -d" " -f1); do
-                    MONITOR=$m ${pkgs.polybar}/bin/polybar --reload main &
-                  done
+                if command -v polybar-launch >/dev/null 2>&1; then
+                  polybar-launch &
                 else
                   ${pkgs.polybar}/bin/polybar --reload main &
                 fi

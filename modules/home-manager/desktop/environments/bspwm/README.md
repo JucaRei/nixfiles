@@ -67,8 +67,13 @@ modules/home-manager/desktop/environments/bspwm/
 - **Regras Externas (`bspwm-external-rules`)**: Script automatizado executado a cada nova janela mapeada. Se for modal de diálogo, janela de preferências ou seletor de arquivos, força `state=floating center=on rectangle=850x550+0+0 follow=on`.
 
 ### Barra Polybar (`polybar/`)
-- **Workspaces Dinâmicos**: Pílulas coloridas para workspaces 1 a 6 (`󰮯`, `󰊠`, `󰀦`, `󰈹`, `󰓇`, `󰭹`).
-- **Módulo de Rede Inteligente**: Identifica a interface ativa sem necessidade de hardcode. Mostra nome do Wi-Fi ou conexão cabeada, com medidor de velocidade agregado (`accumulate-stats = true`).
+- **Arquitetura Multi-Monitor Sem Repetição (Modo Continuação)**:
+  - **Monitor Único (`bar/main`)**: Barra flutuante completa com todos os módulos essenciais (workspaces, layout, janelas, mídia, CPU, RAM, temperatura, rede, Bluetooth, volume, bateria, teclado, relógio e power).
+  - **Múltiplos Monitores (`bar/primary` e `bar/secondary`)**: Os módulos **não se repetem** entre os monitores e agem como uma extensão contínua de painéis:
+    - **Monitor Primário (`bar/primary`)**: Foco em Sistema, Performance & Rede: Logo do SO (`launcher`), Workspaces (`1 3 5 7 9`), Layout dinâmico (`bsp-layout`), Janelas locais (`polywins`), Mídia centralizada (`media`), CPU (`cpu`), Memória (`memory`), Temperatura (`temperature`), Armazenamento SSD (`disk`), Conexão de Rede (`network`), Velocidade em tempo real (`netspeed`) e Uptime (`uptime`).
+    - **Monitor Secundário (`bar/secondary`)**: Foco em Espaço de Trabalho, Controles de Usuário & Sessão: Workspaces (`2 4 6 8 0`), Janelas locais (`polywins`), Título da janela ativa centralizada (`xwindow`), Bluetooth (`bluetooth`), Volume (`pulseaudio`), Brilho (`backlight`), Bateria (`battery`), Layout do teclado (`keyboard`), Luz noturna (`redshift`), Relógio/Calendário (`date`) e Menu de energia (`powermenu`).
+  - **Script de Lançamento Inteligente (`polybar-launch`)**: Detecta dinamicamente a quantidade de displays conectados via `xrandr` e distribui as barras apropriadas sem necessidade de configuração manual.
+- **Módulo de Rede Inteligente**: Identifica a interface ativa sem necessidade de hardcode. Mostra nome do Wi-Fi ou conexão cabeada, com medidor de velocidade em tempo real (`netspeed`).
 - **Menus Rápidos Rofi**: Clique no ícone de Wi-Fi abre o seletor de redes sem fio; clique no Bluetooth abre dispositivos pareados; clique no relógio abre calendário; clique no botão power abre menu de logout.
 
 ### Compositor Picom (`picom.nix`)

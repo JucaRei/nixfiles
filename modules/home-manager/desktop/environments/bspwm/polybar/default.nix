@@ -38,6 +38,7 @@ in
       (pkgs.writeShellScriptBin "rofi-bsp-layout" ''exec ${scripts.rofiLayoutMenu} "$@"'')
       (pkgs.writeShellScriptBin "bsp-layout-switch" ''exec ${scripts.bspLayoutSwitchScript} "$@"'')
       (pkgs.writeShellScriptBin "polybar-os-logo" ''exec ${scripts.osLogoScript} "$@"'')
+      (pkgs.writeShellScriptBin "polybar-launch" ''exec ${scripts.polybarLaunchScript} "$@"'')
     ];
 
     services.polybar = {
@@ -47,35 +48,7 @@ in
         i3Support = false;
       };
       script = ''
-        polybar-msg cmd quit 2>/dev/null || true
-        pkill -x polybar || true
-        while pgrep -u $UID -x polybar >/dev/null; do sleep 0.5; done
-
-        export PATH="${
-          lib.makeBinPath [
-            pkgs.xrandr
-            pkgs.gnugrep
-            pkgs.coreutils
-            pkgs.procps
-          ]
-        }:$PATH"
-
-        if command -v xrandr >/dev/null 2>&1; then
-          primary_mon=$(xrandr --query | grep " connected primary" | cut -d" " -f1)
-          if [ -z "$primary_mon" ]; then
-            primary_mon=$(xrandr --query | grep " connected" | head -n1 | cut -d" " -f1)
-          fi
-
-          for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
-            if [ "$m" = "$primary_mon" ]; then
-              MONITOR=$m polybar --reload main &
-            else
-              MONITOR=$m polybar --reload secondary &
-            fi
-          done
-        else
-          polybar --reload main &
-        fi
+        exec ${scripts.polybarLaunchScript}
       '';
       config =
         let
@@ -111,7 +84,7 @@ in
             font-8 = "Noto Sans CJK SC:weight=Medium:size=10;2";
 
             # --- Layout Moderno Coeso (Inspirado no Waybar do Hyprland / MangoWM) ---
-            modules-left = "launcher bspwm sep bsp-layout sep polywins";
+            modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
             modules-center = "media";
 
             cursor-click = "pointer";
@@ -125,16 +98,25 @@ in
         polybarModules // {
           "colors" = colors;
 
-          # --- Barra Principal (Floating Modern Bar) ---
+          # --- Barra para Monitor Único (Single Monitor - Completa com Todos os Módulos) ---
           "bar/main" = baseBar // {
-            # System tray desativado/comentado (para reativar, inclua 'sep tray')
-            # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep tray sep date powermenu";
+            modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
+            modules-center = "media";
             modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
           };
 
-          # --- Barra Secundária para Monitores Adicionais ---
+          # --- Barra Primária (Multi-Monitor: Sistema, Performance, Armazenamento, Rede & Continuação) ---
+          "bar/primary" = baseBar // {
+            modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
+            modules-center = "media";
+            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime";
+          };
+
+          # --- Barra Secundária (Multi-Monitor: Continuação - Workspaces, Título, Áudio, Periféricos, Sessão) ---
           "bar/secondary" = baseBar // {
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
+            modules-left = "bspwm sep polywins";
+            modules-center = "xwindow";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift sep date powermenu";
           };
         };
     };

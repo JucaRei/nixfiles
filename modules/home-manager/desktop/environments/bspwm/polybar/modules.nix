@@ -193,6 +193,34 @@
     label-padding = 1;
   };
 
+  # --- Armazenamento em Disco (SSD / Raiz) ---
+  "module/disk" = {
+    type = "internal/fs";
+    mount-0 = "/";
+    interval = 30;
+    fixed-values = true;
+    spacing = 1;
+
+    format-mounted = "<label-mounted>";
+    format-mounted-prefix = "󰋊 ";
+    format-mounted-prefix-foreground = colors.peach;
+    label-mounted = "%free%";
+    label-mounted-foreground = colors.text;
+    label-mounted-padding = 1;
+
+    format-unmounted = "";
+  };
+
+  # --- Tempo de Atividade do Sistema (Uptime) ---
+  "module/uptime" = {
+    type = "custom/script";
+    exec = "${scripts.uptimeScript}";
+    interval = 60;
+    format = "<label>";
+    label = "%output%";
+    label-padding = 1;
+  };
+
   # --- Volume & Áudio ---
   "module/pulseaudio" = {
     type = "internal/pulseaudio";
@@ -219,22 +247,16 @@
     click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
   };
 
-  # --- Brilho da Tela ---
+  # --- Brilho da Tela (Script com Controle Dinâmico e Scroll) ---
   "module/backlight" = {
-    type = "internal/backlight";
-    use-actual-brightness = true;
-    enable-scroll = true;
-
-    format = "<ramp> <label>";
-    label = "%percentage%%";
-    label-foreground = colors.text;
+    type = "custom/script";
+    exec = "${scripts.backlightScript}";
+    interval = 2;
+    format = "<label>";
+    label = "%output%";
     label-padding = 1;
-
-    ramp-0 = "󰃞";
-    ramp-1 = "󰃝";
-    ramp-2 = "󰃟";
-    ramp-3 = "󰃠";
-    ramp-foreground = colors.yellow;
+    scroll-up = "${scripts.backlightScript} up";
+    scroll-down = "${scripts.backlightScript} down";
   };
 
   # --- Bateria ---
@@ -296,22 +318,14 @@
     click-right = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor";
   };
 
-  # --- Velocidade de Tráfego de Rede (Download / Upload - Cabo e Wi-Fi) ---
+  # --- Velocidade de Tráfego de Rede (Download / Upload Universal) ---
   "module/netspeed" = {
-    type = "internal/network";
-    interface-type = "wired";
-    accumulate-stats = true;
+    type = "custom/script";
+    exec = "${scripts.netspeedScript}";
     interval = 1;
-
-    format-connected = "<label-connected>";
-    label-connected = "%{F#89b4fa}󰇚 %downspeed:7%%{F-}  %{F#fab387}󰕒 %upspeed:7%%{F-}";
-    label-connected-foreground = colors.text;
-    label-connected-padding = 1;
-
-    format-disconnected = "<label-disconnected>";
-    label-disconnected = "%{F#89b4fa}󰇚 0KB/s%{F-}  %{F#fab387}󰕒 0KB/s%{F-}";
-    label-disconnected-foreground = colors.surface2;
-    label-disconnected-padding = 1;
+    format = "<label>";
+    label = "%output%";
+    label-padding = 1;
   };
 
   # --- Layout do Teclado (Troca Dinâmica ao Clicar / Atalho Alt+Shift / Menu Rofi com Botão Direito) ---

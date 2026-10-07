@@ -1587,6 +1587,29 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
   - **Unificação de Pacotes no Home Manager**:
     - Consolidada a declaração de `home.packages` em `sxhkd.nix`, eliminando definições duplicadas no conjunto de atributos e expondo os binários `bspwm-pseudo-tile` e `bspwm-toggle-pseudo-tile` no PATH do usuário.
 
+- **Polybar — Arquitetura Multi-Monitor Sem Repetição de Módulos (Modo Continuação)**:
+  - **Problema**: Em configurações com múltiplos monitores, a Polybar duplicava quase todos os módulos em ambas as telas (Logo do SO, layout, tocador de mídia, CPU, RAM, temperatura, Wi-Fi, Bluetooth, volume, bateria, relógio e power menu), desperdiçando espaço visual útil e gerando poluição redundante.
+  - **Solução (Modo Continuação Coesa)**:
+    - **Monitor Único (`bar/main`)**: Barra completa e equilibrada com todos os módulos essenciais para operação em tela única ou laptop desconectado.
+    - **Monitor Primário (`bar/primary`)**: Foco em **Sistema, Performance, Armazenamento & Rede**:
+      - Esquerda: `launcher` (Logo SO), `bspwm` (Workspaces 1 3 5 7 9), `bsp-layout` (Layout dinâmico Tiled/Tall/Wide), `polywins` (Janelas do display 1) e `minimized` (Contador de janelas ocultas).
+      - Centro: `media` (Tocador de mídia playerctl).
+      - Direita: `cpu`, `memory`, `temperature`, `disk` (Uso de armazenamento SSD via `internal/fs`), `network` (Wi-Fi SSID ou Ethernet), `netspeed` (Tráfego Download/Upload dinâmico universal) e `uptime` (Tempo de atividade do sistema via `/proc/uptime`).
+    - **Monitor Secundário (`bar/secondary`)**: Foco em **Espaço de Trabalho, Produtividade, Controles de Usuário & Sessão**:
+      - Esquerda: `bspwm` (Workspaces 2 4 6 8 0) e `polywins` (Janelas do display 2). Sem duplicação de logo de SO ou pílula de layout.
+      - Centro: `xwindow` (Título detalhado da janela ativa no display secundário com ações interativas). Sem duplicação do tocador de mídia.
+      - Direita: `bluetooth` (Periféricos pareados e bateria), `pulseaudio` (Volume), `backlight` (Brilho da tela via script dinâmico com scroll), `battery` (Bateria), `keyboard` (Layout de entrada), `redshift` (Filtro noturno de temperatura de cor), `date` (Data e hora) e `powermenu` (Menu de energia e logout).
+    - **Zero Duplicação**: Nenhum módulo informativo da direita ou do centro se repete entre os monitores. As barras funcionam como uma extensão harmoniosa uma da outra.
+  - **Script Inteligente de Lançamento (`polybar-launch`)**:
+    - Implementado em [scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix) e exposto no `PATH`.
+    - Detecta dinamicamente a topologia de telas via `xrandr`. Se `mon_count > 1`, executa `primary` na tela principal e `secondary` nas telas adicionais. Se `mon_count == 1`, executa `main`.
+    - Integrado ao `services.polybar.script`, ao startup do `bspwmrc` ([bspwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/bspwm.nix)), ao atalho de recarga `$SUPER + Shift + R` e ao hook pós-switch (`home.activation.reloadSxhkd`).
+  - **Novos Módulos e Scripts Implementados**:
+    - `module/disk`: Monitoramento de armazenamento SSD raiz (`internal/fs`) exibindo espaço livre e com clique para abrir o gerenciador de arquivos.
+    - `module/uptime`: Script ultrarrápido (`uptimeScript`) que lê `/proc/uptime` diretamente com custo computacional mínimo.
+    - `module/netspeed`: Script universal (`netspeedScript`) que lê a interface ativa da rota default em `/proc/net/dev`, calculando velocidade real em Wi-Fi e cabo.
+    - `module/backlight`: Script dinâmico (`backlightScript`) que identifica o dispositivo em `/sys/class/backlight` e suporta rolagem do scroll para aumentar/diminuir brilho.
+
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 
 

@@ -1419,4 +1419,136 @@ rec {
       echo "%{F$color}$icon%{F-}"
     fi
   '';
+
+  # --- Tempo de Atividade do Sistema (Uptime) ---
+  uptimeScript = pkgs.writeShellScript "polybar-uptime" ''
+    export PATH="${lib.makeBinPath [ pkgs.coreutils pkgs.gawk ]}:$PATH"
+    if [ -f /proc/uptime ]; then
+      seconds=$(awk '{print int($1)}' /proc/uptime 2>/dev/null)
+      hours=$((seconds / 3600))
+      minutes=$(((seconds % 3600) / 60))
+      if [ "$hours" -gt 0 ]; then
+        echo "%{F${colors.lavender}}󰔚%{F-} ''${hours}h ''${minutes}m"
+      else
+        echo "%{F${colors.lavender}}󰔚%{F-} ''${minutes}m"
+      fi
+    else
+      echo "%{F${colors.lavender}}󰔚%{F-} up"
+    fi
+  '';
+
+  # --- Velocidade Dinâmica de Rede (Download / Upload Universal) ---
+  netspeedScript = pkgs.writeShellScript "polybar-netspeed" ''
+    export PATH="${lib.makeBinPath [ pkgs.coreutils pkgs.gawk pkgs.iproute2 ]}:$PATH"
+
+    cache_file="/tmp/.polybar-netspeed-cache"
+
+    iface=$(ip route 2>/dev/null | awk '/^default/ {print $5; exit}')
+    if [ -z "$iface" ]; then
+      iface=$(awk -F: '/^[a-zA-Z0-9]+:/ && !/lo/ {gsub(/ /, "", $1); print $1; exit}' /proc/net/dev 2>/dev/null)
+    fi
+
+    if [ -z "$iface" ]; then
+      echo "%{F${colors.blue}}󰇚 0K%{F-}  %{F${colors.peach}}󰕒 0K%{F-}"
+      exit 0
+    fi
+
+    read -r rx tx < <(awk -v dev="$iface:" '$1 == dev {print $2, $10}' /proc/net/dev 2>/dev/null)
+    now=$(date +%s)
+
+    if [ -f "$cache_file" ]; then
+      read -r prev_time prev_rx prev_tx prev_iface < "$cache_file"
+      if [ "$prev_iface" = "$iface" ] && [ -n "$prev_time" ] && [ "$now" -gt "$prev_time" ]; then
+        dt=$((now - prev_time))
+        rx_speed=$(( (rx - prev_rx) / dt ))
+        tx_speed=$(( (tx - prev_tx) / dt ))
+      else
+        rx_speed=0
+        tx_speed=0
+      fi
+    else
+      rx_speed=0
+      tx_speed=0
+    fi
+
+    echo "$now $rx $tx $iface" > "$cache_file"
+
+    format_speed() {
+      local bytes=$1
+      if [ "$bytes" -ge 1048576 ]; then
+        awk -v b="$bytes" 'BEGIN {printf "%.1fM", b/1048576}'
+      elif [ "$bytes" -ge 1024 ]; then
+        echo "$((bytes / 1024))K"
+      else
+        echo "0K"
+      fi
+    }
+
+    down_str=$(format_speed "$rx_speed")
+    up_str=$(format_speed "$tx_speed")
+
+    echo "%{F${colors.blue}}󰇚 $down_str%{F-}  %{F${colors.peach}}󰕒 $up_str%{F-}"
+  '';
+
+  # --- Controle e Status de Brilho da Tela ---
+  backlightScript = pkgs.writeShellScript "polybar-backlight" ''
+    export PATH="${lib.makeBinPath [ pkgs.brightnessctl pkgs.coreutils ]}:$PATH"
+    dev=""
+    for d in intel_backlight nv_backlight apple_backlight acpi_video0; do
+      if [ -d "/sys/class/backlight/$d" ]; then
+        dev="$d"
+        break
+      fi
+    done
+    if [ -z "$dev" ] && [ -d /sys/class/backlight ]; then
+      dev=$(ls -1 /sys/class/backlight 2>/dev/null | head -n1)
+    fi
+    [ -z "$dev" ] && exit 0
+
+    case "''${1:-}" in
+      up) brightnessctl -d "$dev" set +5% >/dev/null 2>&1 ;;
+      down) brightnessctl -d "$dev" set 5%- >/dev/null 2>&1 ;;
+      *)
+        pct=$(brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' || true)
+        if [ -n "$pct" ]; then
+          echo "%{F${colors.yellow}}󰃠%{F-} $pct%"
+        fi
+        ;;
+    esac
+  '';
+
+  # --- Script Inteligente de Inicialização Multi-Monitor da Polybar ---
+  polybarLaunchScript = pkgs.writeShellScript "polybar-launch" ''
+    export PATH="${lib.makeBinPath [ pkgs.polybar pkgs.xrandr pkgs.gnugrep pkgs.coreutils pkgs.procps ]}:$PATH"
+
+    polybar-msg cmd quit 2>/dev/null || true
+    pkill -x polybar 2>/dev/null || true
+    while pgrep -u $UID -x polybar >/dev/null; do sleep 0.2; done
+
+    if command -v xrandr >/dev/null 2>&1; then
+      primary_mon=$(xrandr --query 2>/dev/null | grep " connected primary" | cut -d" " -f1)
+      [ -z "$primary_mon" ] && primary_mon=$(xrandr --query 2>/dev/null | grep " connected" | head -n1 | cut -d" " -f1)
+
+      connected_mons=($(xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1))
+      mon_count=''${#connected_mons[@]}
+
+      if [ "$mon_count" -gt 1 ]; then
+        # Multi-Monitor: Barras complementares contínuas (sem repetição de módulos)
+        for m in "''${connected_mons[@]}"; do
+          if [ "$m" = "$primary_mon" ]; then
+            MONITOR=$m polybar --reload primary &
+          else
+            MONITOR=$m polybar --reload secondary &
+          fi
+        done
+      elif [ "$mon_count" -eq 1 ]; then
+        # Monitor Único: Barra completa com todos os módulos essenciais
+        MONITOR="$primary_mon" polybar --reload main &
+      else
+        polybar --reload main &
+      fi
+    else
+      polybar --reload main &
+    fi
+  '';
 }
