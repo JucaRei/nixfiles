@@ -1581,22 +1581,28 @@ rec {
       pkgs.bspwm
     ]}:$PATH"
 
-    # 1. Prevenir concorrência e condições de corrida entre scripts chamadores (flock)
+    MY_PID=$$
+
+    # 1. Prevenir concorrência entre invocações simultâneas via lock (flock)
     LOCK_FILE="/tmp/polybar-launch.lock"
     exec 200>"$LOCK_FILE"
     if ! flock -n 200; then
       flock -w 3 200 || exit 0
     fi
 
-    # 2. Debounce: evitar reinicializações duplicadas consecutivas (intervalo de 2s)
+    # 2. Debounce: se a Polybar real já estiver ativa e foi iniciada há menos de 1s, sai
     LAST_RUN_FILE="/tmp/.polybar-last-launch"
     now=$(date +%s)
     if [ -f "$LAST_RUN_FILE" ]; then
       last_run=$(cat "$LAST_RUN_FILE" 2>/dev/null || echo 0)
-      if [ $((now - last_run)) -lt 2 ] && pgrep -u "$UID" -f "polybar" >/dev/null; then
-        flock -u 200
-        exec 200>&-
-        exit 0
+      if [ $((now - last_run)) -lt 1 ]; then
+        if pgrep -u "$UID" -x "polybar" >/dev/null 2>&1 || \
+           pgrep -u "$UID" -x ".polybar-wrapped" >/dev/null 2>&1 || \
+           pgrep -u "$UID" -f "polybar.*--reload" >/dev/null 2>&1; then
+          flock -u 200
+          exec 200>&-
+          exit 0
+        fi
       fi
     fi
 
@@ -1609,19 +1615,40 @@ rec {
     [ -n "''${XDG_RUNTIME_DIR:-}" ] && rm -rf "$XDG_RUNTIME_DIR"/polybar*.sock 2>/dev/null || true
     rm -rf "$HOME/.cache/polybar" 2>/dev/null || true
 
-    # 4. Encerrar instâncias anteriores (gracioso via IPC + pkill abrangente para wrappers Nix)
+    # 4. Encerrar instâncias anteriores da Polybar (NUNCA matando o próprio polybar-launch)
     ${polybar}/bin/polybar-msg cmd quit 2>/dev/null || true
-    pkill -u "$UID" -x polybar 2>/dev/null || true
-    pkill -u "$UID" -f "polybar.*reload" 2>/dev/null || true
-    pkill -u "$UID" -f "polybar" 2>/dev/null || true
+    pkill -u "$UID" -x "polybar" 2>/dev/null || true
+    pkill -u "$UID" -x ".polybar-wrapped" 2>/dev/null || true
+    pkill -u "$UID" -f "polybar.*--reload" 2>/dev/null || true
 
-    # Aguardar até 1s para que sockets e janelas X11 sejam liberados
+    # Matar quaisquer outros processos do polybar (excluindo explicitamente este script)
+    for p in $(pgrep -u "$UID" -f "polybar" 2>/dev/null); do
+      if [ "$p" != "$MY_PID" ] && ! grep -q "polybar-launch" "/proc/$p/cmdline" 2>/dev/null; then
+        kill -15 "$p" 2>/dev/null || true
+      fi
+    done
+
+    # Aguardar até 0.5s para que processos e janelas X11 sejam liberados
     wait_count=0
-    while pgrep -u "$UID" -f "polybar" >/dev/null && [ "$wait_count" -lt 10 ]; do
+    while [ "$wait_count" -lt 5 ]; do
+      active_pids=0
+      for p in $(pgrep -u "$UID" -f "polybar" 2>/dev/null); do
+        if [ "$p" != "$MY_PID" ] && ! grep -q "polybar-launch" "/proc/$p/cmdline" 2>/dev/null; then
+          active_pids=1
+          break
+        fi
+      done
+      [ "$active_pids" -eq 0 ] && break
       sleep 0.1
       wait_count=$((wait_count + 1))
     done
-    pkill -9 -u "$UID" -f "polybar" 2>/dev/null || true
+
+    # Forçar término de processos rebeldes da Polybar se ainda restarem
+    for p in $(pgrep -u "$UID" -f "polybar" 2>/dev/null); do
+      if [ "$p" != "$MY_PID" ] && ! grep -q "polybar-launch" "/proc/$p/cmdline" 2>/dev/null; then
+        kill -9 "$p" 2>/dev/null || true
+      fi
+    done
 
     # 5. Sincronizar detecção de telas e layout multi-monitor
     if command -v xrandr >/dev/null 2>&1; then
