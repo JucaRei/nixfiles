@@ -1570,22 +1570,89 @@ rec {
 
   # --- Script Inteligente de Inicialização Multi-Monitor da Polybar ---
   polybarLaunchScript = pkgs.writeShellScript "polybar-launch" ''
-    export PATH="${lib.makeBinPath [ polybar pkgs.xrandr pkgs.gnugrep pkgs.coreutils pkgs.procps ]}:$PATH"
+    export PATH="${lib.makeBinPath [
+      polybar
+      pkgs.xrandr
+      pkgs.gnugrep
+      pkgs.gawk
+      pkgs.coreutils
+      pkgs.procps
+      pkgs.util-linux
+      pkgs.bspwm
+    ]}:$PATH"
 
+    # 1. Prevenir concorrência e condições de corrida entre scripts chamadores (flock)
+    LOCK_FILE="/tmp/polybar-launch.lock"
+    exec 200>"$LOCK_FILE"
+    if ! flock -n 200; then
+      flock -w 3 200 || exit 0
+    fi
+
+    # 2. Debounce: evitar reinicializações duplicadas consecutivas (intervalo de 2s)
+    LAST_RUN_FILE="/tmp/.polybar-last-launch"
+    now=$(date +%s)
+    if [ -f "$LAST_RUN_FILE" ]; then
+      last_run=$(cat "$LAST_RUN_FILE" 2>/dev/null || echo 0)
+      if [ $((now - last_run)) -lt 2 ] && pgrep -u "$UID" -f "polybar" >/dev/null; then
+        flock -u 200
+        exec 200>&-
+        exit 0
+      fi
+    fi
+
+    # 3. Limpar cache de estado, arquivos temporários e sockets IPC da Polybar
+    rm -f /tmp/.polybar-netspeed-cache 2>/dev/null || true
+    rm -f /tmp/polybar_redshift_* 2>/dev/null || true
+    rm -f /tmp/polybar_mqueue.* 2>/dev/null || true
+    rm -rf /tmp/polybar-*.log 2>/dev/null || true
+    rm -rf /tmp/polybar-*.sock 2>/dev/null || true
+    [ -n "''${XDG_RUNTIME_DIR:-}" ] && rm -rf "$XDG_RUNTIME_DIR"/polybar*.sock 2>/dev/null || true
+    rm -rf "$HOME/.cache/polybar" 2>/dev/null || true
+
+    # 4. Encerrar instâncias anteriores (gracioso via IPC + pkill abrangente para wrappers Nix)
     ${polybar}/bin/polybar-msg cmd quit 2>/dev/null || true
-    pkill -x polybar 2>/dev/null || true
-    while pgrep -u $UID -x polybar >/dev/null; do sleep 0.2; done
+    pkill -u "$UID" -x polybar 2>/dev/null || true
+    pkill -u "$UID" -f "polybar.*reload" 2>/dev/null || true
+    pkill -u "$UID" -f "polybar" 2>/dev/null || true
 
+    # Aguardar até 1s para que sockets e janelas X11 sejam liberados
+    wait_count=0
+    while pgrep -u "$UID" -f "polybar" >/dev/null && [ "$wait_count" -lt 10 ]; do
+      sleep 0.1
+      wait_count=$((wait_count + 1))
+    done
+    pkill -9 -u "$UID" -f "polybar" 2>/dev/null || true
+
+    # 5. Sincronizar detecção de telas e layout multi-monitor
     if command -v xrandr >/dev/null 2>&1; then
-      primary_mon=$(xrandr --query 2>/dev/null | grep " connected primary" | cut -d" " -f1)
-      [ -z "$primary_mon" ] && primary_mon=$(xrandr --query 2>/dev/null | grep " connected" | head -n1 | cut -d" " -f1)
+      export _POLYBAR_LAUNCHING=1
 
-      connected_mons=($(xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1))
-      mon_count=''${#connected_mons[@]}
+      # Se nenhum monitor primário estiver configurado e houver setup-monitors, sincroniza o layout
+      if ! xrandr --query 2>/dev/null | grep -q " connected primary"; then
+        if command -v setup-monitors >/dev/null 2>&1; then
+          setup-monitors 2>/dev/null || true
+        fi
+      fi
+
+      # Identificar saídas ativas com resolução configurada (evita saídas fantasmas)
+      active_mons=($(xrandr --query 2>/dev/null | awk '/ connected/ && /[0-9]+x[0-9]+\+[0-9]+\+[0-9]+/ {print $1}'))
+      [ ''${#active_mons[@]} -eq 0 ] && active_mons=($(xrandr --query 2>/dev/null | awk '/ connected/ {print $1}'))
+
+      # Identificar monitor primário de forma determinística
+      primary_mon=$(xrandr --query 2>/dev/null | awk '/ connected primary/ {print $1}')
+      [ -z "$primary_mon" ] && command -v bspc >/dev/null 2>&1 && primary_mon=$(bspc query -M -m primary --names 2>/dev/null || true)
+      [ -z "$primary_mon" ] && [ ''${#active_mons[@]} -gt 0 ] && primary_mon="''${active_mons[0]}"
+
+      mon_count=''${#active_mons[@]}
+
+      # Atualizar timestamp de inicialização e liberar lock antes do spawn em background
+      echo "$(date +%s)" > "$LAST_RUN_FILE"
+      flock -u 200
+      exec 200>&-
 
       if [ "$mon_count" -gt 1 ]; then
-        # Multi-Monitor: Barras complementares contínuas (sem repetição de módulos)
-        for m in "''${connected_mons[@]}"; do
+        # Multi-Monitor: Barra 1 (primary) no monitor principal e Barra 2 (secondary) nas demais telas
+        for m in "''${active_mons[@]}"; do
           if [ "$m" = "$primary_mon" ]; then
             MONITOR=$m ${polybar}/bin/polybar --reload primary &
           else
@@ -1599,6 +1666,9 @@ rec {
         ${polybar}/bin/polybar --reload main &
       fi
     else
+      echo "$(date +%s)" > "$LAST_RUN_FILE"
+      flock -u 200
+      exec 200>&-
       ${polybar}/bin/polybar --reload main &
     fi
   '';

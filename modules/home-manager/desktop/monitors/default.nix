@@ -113,8 +113,12 @@ let
             bspc monitor "$p_mon" -d 1 2 3 4 5 6 7 8 9 0
           fi
 
-          if command -v polybar-msg >/dev/null 2>&1; then
-            polybar-msg cmd restart 2>/dev/null || true
+          if [ -z "''${_POLYBAR_LAUNCHING:-}" ]; then
+            if command -v polybar-launch >/dev/null 2>&1; then
+              polybar-launch 2>/dev/null || true
+            elif command -v polybar-msg >/dev/null 2>&1; then
+              polybar-msg cmd restart 2>/dev/null || true
+            fi
           fi
         fi
       fi
