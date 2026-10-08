@@ -45,6 +45,11 @@ in
         naturalScrolling = true;
         tapping = true;
       };
+
+      bspwm.polybar = {
+        battery = "BAT1";
+        adapter = "ACAD";
+      };
     };
 
     system = {

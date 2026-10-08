@@ -3,6 +3,10 @@
   pkgs,
   colors,
   scripts,
+  cfg ? {
+    battery = "BAT0";
+    adapter = "ADP1";
+  },
   ...
 }:
 {
@@ -266,8 +270,8 @@
     type = "internal/battery";
     full-at = 98;
     low-at = 15;
-    battery = "BAT0";
-    adapter = "ADP1";
+    battery = cfg.battery;
+    adapter = cfg.adapter;
     poll-interval = 5;
 
     format-charging = "<animation-charging> <label-charging>";

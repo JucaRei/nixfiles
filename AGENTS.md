@@ -1650,6 +1650,13 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 - **Polybar — Ajuste Fino do Redshift (Passo de 100K no Scroll)**:
   - **Problema**: O scroll do mouse no módulo `module/redshift` da Polybar aumentava e diminuía a temperatura de cor em saltos muito bruscos (500K por pulso).
   - **Correção**: Em [scripts.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/scripts.nix), as ações `increase` e `decrease` do script `polybar-redshift` foram ajustadas para o passo padrão de **100K** (`step="${1:-100}"`), permitindo um controle muito mais suave e progressivo da temperatura da tela.
+- **Polybar — Módulo de Bateria (`module/battery`) Invisível e Suporte a `BAT1`/`ACAD`**:
+  - **Problema**: O módulo de bateria não aparecia na Polybar nem na configuração com múltiplos monitores.
+  - **Causa Raiz**:
+    1. O módulo `internal/battery` tinha hardcoded `battery = "BAT0"` e `adapter = "ADP1"`. No laptop Acer Nitro 5 (host `nitro`), os dispositivos reais em `/sys/class/power_supply/` são `BAT1` e `ACAD`. O Polybar, ao não encontrar `BAT0`, desativava o módulo silenciosamente.
+    - Em [default.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/default.nix), criadas as opções declarativas `desktop.bspwm.polybar.battery` (padrão `"BAT0"`) e `adapter` (padrão `"ADP1"`), repassando-as ao [modules.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/modules.nix).
+    - Em [home-manager/hosts/nitro/default.nix](file:///home/juca/.dotfiles/nixfiles/home-manager/hosts/nitro/default.nix), declarado `desktop.bspwm.polybar = { battery = "BAT1"; adapter = "ACAD"; };`.
+    - Preservada a arquitetura multi-monitor de **Zero Duplicação**: `bar/primary` foca em hardware/rede (`cpu memory temperature disk sep network dots netspeed sep uptime`), enquanto `bar/secondary` foca em periféricos/sessão (`bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift sep date powermenu`). A barra única `bar/main` mantém todos os módulos quando apenas 1 tela estiver conectada.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.
 

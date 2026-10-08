@@ -6,7 +6,7 @@
 }:
 let
   inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib.types) bool str;
   cfg = config.desktop.bspwm.polybar;
 
   colors = import ./colors.nix;
@@ -24,6 +24,7 @@ let
       pkgs
       colors
       scripts
+      cfg
       ;
   };
 in
@@ -33,6 +34,18 @@ in
       type = bool;
       default = config.desktop.bspwm.enable;
       description = "Enable gh0stzk-inspired modular Polybar for bspwm";
+    };
+
+    battery = mkOption {
+      type = str;
+      default = "BAT0";
+      description = "Nome do dispositivo da bateria em /sys/class/power_supply";
+    };
+
+    adapter = mkOption {
+      type = str;
+      default = "ADP1";
+      description = "Nome do adaptador AC em /sys/class/power_supply";
     };
   };
 
