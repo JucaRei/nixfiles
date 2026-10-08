@@ -44,6 +44,10 @@ pkgs.writeScriptBin "hm-switch" ''
       rm -f "$TMP_LOG" 2>/dev/null || true
       # Limpar cache do Rofi pós-atualização
       rm -f "$HOME/.cache/rofi"* 2>/dev/null || true
+      # Recarregar Polybar se estiver ativa
+      if pgrep -u "$UID" -x "polybar" >/dev/null 2>&1 || pgrep -u "$UID" -x ".polybar-wrapped" >/dev/null 2>&1; then
+        polybar-msg cmd restart 2>/dev/null || true
+      fi
       echo "󰄬  Home Manager switch concluído com sucesso!"
 
       # Notificação visual de sucesso no desktop
