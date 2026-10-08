@@ -121,7 +121,7 @@ in
           "bar/main" = baseBar // {
             modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date sep powermenu";
           };
 
           # --- Barra Primária (Multi-Monitor: Sistema, Performance, Armazenamento, Rede & Continuação) ---
@@ -135,7 +135,7 @@ in
           "bar/secondary" = baseBar // {
             modules-left = "bspwm sep polywins";
             modules-center = "xwindow";
-            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift sep date powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift sep date sep powermenu";
           };
         };
     };
