@@ -23,6 +23,18 @@
     label = "  %{F#45475a}·%{F-}  ";
   };
 
+  # --- Lançador de Aplicativos (Logo do Sistema Operacional com Cor Oficial Dinâmica) ---
+  "module/launcher" = {
+    type = "custom/script";
+    exec = "${scripts.osLogoScript}";
+    interval = 3600;
+    format = "%{A1:${pkgs.rofi}/bin/rofi -show drun:}<label>%{A}";
+    label = "%output%";
+    label-font = 4;
+    label-padding = 1;
+    click-left = "${pkgs.rofi}/bin/rofi -show drun";
+  };
+
   # --- Cápsulas Decorativas Legadas (gh0stzk style com  e  mantidas para compatibilidade) ---
   "module/bi" = {
     type = "custom/text";
@@ -38,18 +50,6 @@
     label = "%{T5}%{T-}";
     label-foreground = colors.surface0;
     label-background = colors.transparent;
-  };
-
-  # --- Lançador de Aplicativos (Logo do Sistema Operacional Dinâmico) ---
-  "module/launcher" = {
-    type = "custom/script";
-    exec = "${scripts.osLogoScript}";
-    format = "%{A1:${pkgs.rofi}/bin/rofi -show drun:}<label>%{A}";
-    label = "%output%";
-    label-font = 4;
-    label-foreground = colors.blue;
-    label-padding = 1;
-    click-left = "${pkgs.rofi}/bin/rofi -show drun";
   };
 
   # --- Workspaces do BSPWM (Badges Modernos Estilo Waybar) ---

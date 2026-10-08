@@ -1464,8 +1464,12 @@ rec {
         ;;
     esac
 
-    if [ "''${1:-}" = "--icon-only" ]; then
+    if [ "''${1:-}" = "--pill" ]; then
+      echo "%{T5}%{F$color}%{F-}%{T-}%{O-1}%{B$color}%{F${colors.crust}}%{T4}$icon%{T-}%{F-}%{B-}%{O-1}%{T5}%{F$color}%{F-}%{T-}"
+    elif [ "''${1:-}" = "--icon-only" ]; then
       echo "$icon"
+    elif [ "''${1:-}" = "--color-only" ]; then
+      echo "$color"
     else
       echo "%{F$color}$icon%{F-}"
     fi
