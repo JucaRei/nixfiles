@@ -302,10 +302,6 @@ in
               center = true;
               follow = true;
             };
-            "Thunar" = {
-              # Diálogos internos do Thunar (Progresso, Propriedades, Substituição)
-              # Janelas normais do Thunar serão tiled, mas diálogos com class/instance serão floating
-            };
             "xdg-desktop-portal-gtk" = {
               state = "floating";
               center = true;
