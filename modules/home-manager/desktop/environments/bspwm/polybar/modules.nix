@@ -156,12 +156,13 @@
   "module/bluetooth" = {
     type = "custom/script";
     exec = "${scripts.bluetoothScript}";
-    interval = 10;
-    format = "%{A1:${scripts.rofiBluetoothMenu}:}%{A3:${scripts.rofiBluetoothMenu} --toggle:}<label>%{A}%{A}";
+    interval = 5;
+    format = "%{A1:${scripts.rofiBluetoothMenu}:}%{A2:${pkgs.blueman}/bin/blueman-manager:}%{A3:${scripts.rofiBluetoothMenu} --toggle:}<label>%{A}%{A}%{A}";
     label = "%output%";
     label-padding = 1;
     label-foreground = colors.sapphire;
     click-left = "${scripts.rofiBluetoothMenu}";
+    click-middle = "${pkgs.blueman}/bin/blueman-manager";
     click-right = "${scripts.rofiBluetoothMenu} --toggle";
   };
 
@@ -227,30 +228,19 @@
     label-padding = 1;
   };
 
-  # --- Volume & Áudio ---
+  # --- Volume & Áudio (Detecção Dinâmica de Saída: Fones, Alto-Falantes, HDMI, Bluetooth) ---
   "module/pulseaudio" = {
-    type = "internal/pulseaudio";
-    use-ui-max = true;
-    interval = 2;
-
-    format-volume = "<ramp-volume> <label-volume>";
-    label-volume = "%percentage%%";
-    label-volume-foreground = colors.text;
-    label-volume-padding = 1;
-
-    ramp-volume-0 = "󰕿";
-    ramp-volume-1 = "󰖀";
-    ramp-volume-2 = "󰕾";
-    ramp-volume-foreground = colors.blue;
-
-    format-muted = "<label-muted>";
-    format-muted-prefix = "󰝟 ";
-    format-muted-prefix-foreground = colors.red;
-    label-muted = "0%";
-    label-muted-foreground = colors.subtext0;
-    label-muted-padding = 1;
-
+    type = "custom/script";
+    exec = "${scripts.audioScript}";
+    tail = true;
+    format = "<label>";
+    label = "%output%";
+    label-padding = 1;
+    click-left = "${scripts.audioControlScript} toggle-mute";
     click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
+    click-middle = "${scripts.audioControlScript} next-sink";
+    scroll-up = "${scripts.audioControlScript} volume-up";
+    scroll-down = "${scripts.audioControlScript} volume-down";
   };
 
   # --- Brilho da Tela (Script com Controle Dinâmico e Scroll) ---

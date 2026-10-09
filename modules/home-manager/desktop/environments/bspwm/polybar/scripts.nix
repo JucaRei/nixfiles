@@ -189,7 +189,75 @@ rec {
     fi
   '';
 
-  # --- Script de Status do Bluetooth com Detecção de Bateria e Conexão ---
+  # --- Função Auxiliar Bash para Detecção de Ícones Bluetooth (Nerd Fonts) ---
+  btDeviceIconFn = ''
+    get_device_icon() {
+      local icon_class="''${1:-}"
+      local class_hex="''${2:-}"
+      local uuids="''${3:-}"
+      local dev_name="''${4:-}"
+      local dev_name_lower
+      dev_name_lower=$(echo "$dev_name" | tr '[:upper:]' '[:lower:]')
+
+      # 1. Pelo atributo Icon do BlueZ
+      case "$icon_class" in
+        *audio-headphones*) echo "󰥰"; return ;;
+        *audio-headset*)    echo "󰋋"; return ;;
+        *audio-card*|*audio-speakers*) echo "󰓃"; return ;;
+        *input-keyboard*)   echo "󰌌"; return ;;
+        *input-mouse*)      echo "󰍽"; return ;;
+        *input-gaming*)     echo "󰊴"; return ;;
+        *phone*)            echo "󰏲"; return ;;
+        *computer*)         echo "󰌢"; return ;;
+        *wearable*|*watch*) echo "󰟾"; return ;;
+      esac
+
+      # 2. Pelo Device Class Hexadecimal (CoD)
+      case "$class_hex" in
+        *0x*540*|*0x*2540*) echo "󰌌"; return ;; # Teclado
+        *0x*580*|*0x*2580*) echo "󰍽"; return ;; # Mouse
+        *0x*504*|*0x*508*)  echo "󰊴"; return ;; # Gamepad / Controle
+        *0x*404*|*0x*408*)  echo "󰋋"; return ;; # Headset / Handsfree
+        *0x*418*)           echo "󰥰"; return ;; # Headphones / Fone
+        *0x*414*|*0x*420*)  echo "󰓃"; return ;; # Caixa de som / Áudio veicular
+      esac
+
+      # 3. Pelo Nome do dispositivo (marcas e modelos populares)
+      case "$dev_name_lower" in
+        *mouse*|*trackball*|*"mx master"*|*mx-master*|*m590*|*m720*|*deathadder*|*g305*|*g502*|*g703*|*viper*)
+          echo "󰍽"; return ;;
+        *keyboard*|*teclado*|*"mx keys"*|*mx-keys*|*keychron*|*k380*|*k480*|*nuphy*|*anne*|*ducky*)
+          echo "󰌌"; return ;;
+        *headset*|*evolve*|*void*|*arctis*|*cloud*|*kraken*|*hs70*|*hs80*)
+          echo "󰋋"; return ;;
+        *headphone*|*fone*|*buds*|*airpod*|*freebud*|*soundcore*|*wh-*|*wf-*|*tune*|*live*|*earphone*|*earbuds*)
+          echo "󰥰"; return ;;
+        *speaker*|*caixa*|*soundbar*|*jbl*|*echo*|*boombox*|*flip*|*charge*|*xtreme*|*wonderboom*)
+          echo "󰓃"; return ;;
+        *gamepad*|*controller*|*xbox*|*dualshock*|*dualsense*|*joy-con*|*8bitdo*|*pro\ controller*)
+          echo "󰊴"; return ;;
+        *watch*|*miband*|*band*|*fitbit*|*garmin*)
+          echo "󰟾"; return ;;
+        *iphone*|*android*|*galaxy*|*pixel*|*celular*|*smartphone*|*xiaomi*|*redmi*)
+          echo "󰏲"; return ;;
+        *macbook*|*laptop*|*notebook*|*thinkpad*)
+          echo "󰌢"; return ;;
+      esac
+
+      # 4. Pelas UUIDs anunciadas
+      if echo "$uuids" | grep -qi "Headset\|Handsfree"; then
+        echo "󰋋"; return
+      elif echo "$uuids" | grep -qi "Audio Sink"; then
+        echo "󰥰"; return
+      elif echo "$uuids" | grep -qi "Human Interface Device"; then
+        echo "󰍽"; return
+      fi
+
+      echo "󰂱"
+    }
+  '';
+
+  # --- Script de Status do Bluetooth com Detecção de Dispositivos e Bateria ---
   bluetoothScript = pkgs.writeShellScript "polybar-bluetooth" ''
     export PATH="/usr/bin:/usr/sbin:${pkgs.bluez}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
     if ! command -v bluetoothctl >/dev/null 2>&1; then
@@ -197,10 +265,33 @@ rec {
       exit 0
     fi
 
+    ${btDeviceIconFn}
+
+    format_batt() {
+      local b="$1"
+      [ -z "$b" ] && return
+      local b_color="${colors.green}"
+      local b_icon="󰁹"
+      if [ "$b" -le 20 ] 2>/dev/null; then
+        b_color="${colors.red}"
+        b_icon="󰂃"
+      elif [ "$b" -le 40 ] 2>/dev/null; then
+        b_color="${colors.yellow}"
+        b_icon="󰁼"
+      elif [ "$b" -le 70 ] 2>/dev/null; then
+        b_color="${colors.yellow}"
+        b_icon="󰁾"
+      fi
+      echo "%{F$b_color}$b_icon $b%%{F-}"
+    }
+
     power=$(bluetoothctl show 2>/dev/null | grep -i "Powered:" | awk '{print $2}')
     if [ "$power" = "yes" ]; then
-      conn_mac=""
-      conn_name=""
+      seen_macs=()
+      conn_macs=()
+      conn_names=()
+      conn_icons=()
+      conn_batts=()
 
       # Busca dispositivos conectados iterando sobre os dispositivos conhecidos pelo BlueZ
       while IFS= read -r dev_line; do
@@ -209,9 +300,13 @@ rec {
         pmac=$(echo "$dev_line" | awk '{print $2}')
         [[ "$pmac" =~ ^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$ ]] || continue
 
+        for sm in "''${seen_macs[@]}"; do
+          [ "$sm" = "$pmac" ] && continue 2
+        done
+        seen_macs+=("$pmac")
+
         pinfo=$(bluetoothctl info "$pmac" 2>/dev/null)
         if echo "$pinfo" | grep -q "Connected: yes"; then
-          conn_mac="$pmac"
           pname=$(echo "$pinfo" | grep -E '^[[:space:]]*Alias:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
           if [ -z "$pname" ]; then
             pname=$(echo "$pinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
@@ -219,44 +314,261 @@ rec {
           if [ -z "$pname" ]; then
             pname=$(echo "$dev_line" | cut -d' ' -f3-)
           fi
-          conn_name="$pname"
-          break
+          [ -z "$pname" ] && pname="Dispositivo"
+
+          icon_class=$(echo "$pinfo" | grep -i "Icon:" | awk '{print $2}')
+          class_hex=$(echo "$pinfo" | grep -i "Class:" | awk '{print $2}')
+          uuids=$(echo "$pinfo" | grep -i "UUID:")
+          dev_icon=$(get_device_icon "$icon_class" "$class_hex" "$uuids" "$pname")
+
+          batt_val=$(echo "$pinfo" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
+          [ -n "$batt_val" ] && [ "$batt_val" -gt 100 ] 2>/dev/null && batt_val=""
+
+          conn_macs+=("$pmac")
+          conn_names+=("$pname")
+          conn_icons+=("$dev_icon")
+          conn_batts+=("$batt_val")
         fi
       done < <(bluetoothctl paired-devices 2>/dev/null; bluetoothctl devices 2>/dev/null)
 
-      if [ -n "$conn_mac" ]; then
-        display_name=$(echo "$conn_name" | cut -c1-14)
-        [ -z "$display_name" ] && display_name="Conectado"
-        dinfo=$(bluetoothctl info "$conn_mac" 2>/dev/null)
-        batt_val=$(echo "$dinfo" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
-        if [ -n "$batt_val" ] && [ "$batt_val" -le 100 ] 2>/dev/null; then
-          batt_color="${colors.green}"
-          batt_icon="󰁹"
-          if [ "$batt_val" -le 20 ] 2>/dev/null; then
-            batt_color="${colors.red}"
-            batt_icon="󰂃"
-          elif [ "$batt_val" -le 40 ] 2>/dev/null; then
-            batt_color="${colors.yellow}"
-            batt_icon="󰁼"
-          elif [ "$batt_val" -le 70 ] 2>/dev/null; then
-            batt_color="${colors.yellow}"
-            batt_icon="󰁾"
-          fi
-          echo "%{F${colors.blue}}󰂱%{F-} $display_name  %{F$batt_color}$batt_icon $batt_val%%{F-}"
+      num_conn="''${#conn_macs[@]}"
+      if [ "$num_conn" -eq 0 ]; then
+        echo "%{F${colors.sapphire}}󰂯%{F-}"
+      elif [ "$num_conn" -eq 1 ]; then
+        icon="''${conn_icons[0]}"
+        name="''${conn_names[0]}"
+        short_name=$(echo "$name" | cut -c1-14)
+        batt="''${conn_batts[0]}"
+        batt_str=$(format_batt "$batt")
+        if [ -n "$batt_str" ]; then
+          echo "%{F${colors.blue}}$icon%{F-} $short_name  $batt_str"
         else
-          echo "%{F${colors.blue}}󰂱%{F-} $display_name"
+          echo "%{F${colors.blue}}$icon%{F-} $short_name"
         fi
       else
-        echo "%{F${colors.sapphire}}󰂯%{F-}"
+        icons_str=""
+        main_idx=0
+        for i in "''${!conn_icons[@]}"; do
+          ic="''${conn_icons[$i]}"
+          icons_str="$icons_str%{F${colors.blue}}$ic%{F-} "
+          if [ "$ic" = "󰥰" ] || [ "$ic" = "󰋋" ] || [ "$ic" = "󰓃" ]; then
+            main_idx=$i
+          fi
+        done
+        main_name=$(echo "''${conn_names[$main_idx]}" | cut -c1-12)
+        main_batt="''${conn_batts[$main_idx]}"
+        batt_str=$(format_batt "$main_batt")
+        if [ -n "$batt_str" ]; then
+          echo "$icons_str$main_name  $batt_str"
+        else
+          echo "$icons_str$main_name"
+        fi
       fi
     else
       echo "%{F${colors.surface2}}󰂲%{F-}"
     fi
   '';
 
+  # --- Script de Áudio Dinâmico com Detecção de Saída (Fones, Caixas, HDMI, Bluetooth) ---
+  audioScript = pkgs.writeShellScript "polybar-audio" ''
+    export PATH="/usr/bin:/usr/sbin:${lib.makeBinPath [ pkgs.pulseaudio pkgs.pamixer pkgs.coreutils pkgs.gnugrep pkgs.gnused pkgs.gawk ]}:$PATH"
+
+    get_audio_info() {
+      local vol=""
+      local is_muted="false"
+
+      if command -v pamixer >/dev/null 2>&1; then
+        vol=$(pamixer --get-volume 2>/dev/null)
+        is_muted=$(pamixer --get-mute 2>/dev/null || echo "false")
+      fi
+
+      if [ -z "$vol" ] && command -v pactl >/dev/null 2>&1; then
+        vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -o -E '[0-9]+%' | head -n1 | tr -d '%')
+        pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | grep -qi "yes" && is_muted="true"
+      fi
+
+      [ -z "$vol" ] && vol="0"
+
+      local dev_type="speaker"
+      if command -v pactl >/dev/null 2>&1; then
+        local default_sink
+        default_sink=$(pactl get-default-sink 2>/dev/null)
+        [ -z "$default_sink" ] && default_sink=$(pactl info 2>/dev/null | grep "Default Sink:" | cut -d: -f2- | xargs)
+
+        local sink_info
+        sink_info=$(pactl list sinks 2>/dev/null | awk -v sink="$default_sink" '
+          $1 == "Sink" { in_sink=0 }
+          $1 == "Name:" && $2 == sink { in_sink=1 }
+          in_sink { print }
+        ')
+        [ -z "$sink_info" ] && sink_info=$(pactl list sinks 2>/dev/null)
+
+        local active_port
+        active_port=$(echo "$sink_info" | grep -E '^[[:space:]]*Active Port:' | head -n1 | cut -d: -f2- | tr '[:upper:]' '[:lower:]' | xargs)
+
+        local form_factor
+        form_factor=$(echo "$sink_info" | grep -E 'device.form_factor' | head -n1 | cut -d= -f2- | tr -d ' "' | tr '[:upper:]' '[:lower:]' | xargs)
+
+        local bus
+        bus=$(echo "$sink_info" | grep -E 'device.bus' | head -n1 | cut -d= -f2- | tr -d ' "' | tr '[:upper:]' '[:lower:]' | xargs)
+
+        local desc
+        desc=$(echo "$sink_info" | grep -E '^[[:space:]]*Description:' | head -n1 | cut -d: -f2- | xargs)
+        local desc_lower
+        desc_lower=$(echo "$desc" | tr '[:upper:]' '[:lower:]')
+
+        if [ "$bus" = "bluetooth" ] || [[ "$default_sink" =~ bluez_sink|bluez_output ]]; then
+          dev_type="bluetooth"
+        elif [[ "$active_port" =~ hdmi|displayport ]] || [[ "$default_sink" =~ hdmi ]] || [[ "$desc_lower" =~ hdmi|displayport ]]; then
+          dev_type="hdmi"
+        elif [[ "$active_port" =~ headset ]] || [ "$form_factor" = "headset" ] || [[ "$desc_lower" =~ headset ]]; then
+          dev_type="headset"
+        elif [[ "$active_port" =~ headphone ]] || [ "$form_factor" = "headphone" ] || [[ "$desc_lower" =~ headphone|fone|earphone|earbuds|buds|airpod ]]; then
+          dev_type="headphone"
+        elif [ "$bus" = "usb" ]; then
+          dev_type="usb"
+        else
+          dev_type="speaker"
+        fi
+      fi
+
+      if [ "$is_muted" = "true" ] || [ "$vol" -eq 0 ]; then
+        echo "%{F${colors.red}}󰝟%{F-} %{F${colors.subtext0}}0%%{F-}"
+        return
+      fi
+
+      local icon="󰕾"
+      local icon_color="${colors.blue}"
+
+      case "$dev_type" in
+        headphone)
+          icon="󰋋"
+          icon_color="${colors.sapphire}"
+          ;;
+        headset)
+          icon="󰋎"
+          icon_color="${colors.sapphire}"
+          ;;
+        bluetooth)
+          icon="󰂰"
+          icon_color="${colors.lavender}"
+          ;;
+        hdmi)
+          icon="󰡁"
+          icon_color="${colors.sky}"
+          ;;
+        usb)
+          icon="󰟵"
+          icon_color="${colors.teal}"
+          ;;
+        speaker|*)
+          if [ "$vol" -lt 30 ]; then
+            icon="󰕿"
+          elif [ "$vol" -lt 70 ]; then
+            icon="󰖀"
+          else
+            icon="󰕾"
+          fi
+          icon_color="${colors.blue}"
+          ;;
+      esac
+
+      echo "%{F$icon_color}$icon%{F-} %{F${colors.text}}$vol%%{F-}"
+    }
+
+    get_audio_info
+
+    while true; do
+      if command -v pactl >/dev/null 2>&1; then
+        pactl subscribe 2>/dev/null | grep --line-buffered -E "('change'|'remove'|'new') on (sink|server)" | while read -r _; do
+          get_audio_info
+        done
+      fi
+      sleep 2
+      get_audio_info
+    done
+  '';
+
+  # --- Script de Controle de Áudio (Volume, Mute e Troca Cíclica de Saída) ---
+  audioControlScript = pkgs.writeShellScript "polybar-audio-control" ''
+    export PATH="/usr/bin:/usr/sbin:${lib.makeBinPath [ pkgs.pulseaudio pkgs.pamixer pkgs.dunst pkgs.coreutils pkgs.gnugrep pkgs.gnused pkgs.gawk ]}:$PATH"
+
+    action="''${1:-}"
+
+    notify_vol() {
+      local vol
+      vol=$(pamixer --get-volume 2>/dev/null || echo "0")
+      local is_muted
+      is_muted=$(pamixer --get-mute 2>/dev/null || echo "false")
+      local icon="audio-volume-medium"
+      local text="Volume: $vol%"
+      local bar_val="$vol"
+
+      if [ "$is_muted" = "true" ] || [ "$vol" -eq 0 ]; then
+        icon="audio-volume-muted"
+        text="Volume: Mudo"
+        bar_val=0
+      elif [ "$vol" -lt 30 ]; then
+        icon="audio-volume-low"
+      elif [ "$vol" -gt 70 ]; then
+        icon="audio-volume-high"
+      fi
+
+      if command -v dunstify >/dev/null 2>&1; then
+        dunstify -a "OSD" -u low -i "$icon" -h string:x-dunst-stack-tag:volume -h int:value:"$bar_val" -t 1200 "$text"
+      fi
+    }
+
+    case "$action" in
+      volume-up)
+        pamixer -i 2 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ +2% 2>/dev/null || true
+        notify_vol
+        ;;
+      volume-down)
+        pamixer -d 2 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ -2% 2>/dev/null || true
+        notify_vol
+        ;;
+      toggle-mute)
+        pamixer -t 2>/dev/null || pactl set-sink-mute @DEFAULT_SINK@ toggle 2>/dev/null || true
+        notify_vol
+        ;;
+      next-sink)
+        if command -v pactl >/dev/null 2>&1; then
+          sinks=($(pactl list short sinks 2>/dev/null | awk '{print $2}'))
+          if [ "''${#sinks[@]}" -gt 1 ]; then
+            current=$(pactl get-default-sink 2>/dev/null)
+            next_sink=""
+            for i in "''${!sinks[@]}"; do
+              if [ "''${sinks[$i]}" = "$current" ]; then
+                next_idx=$(( (i + 1) % ''${#sinks[@]} ))
+                next_sink="''${sinks[$next_idx]}"
+                break
+              fi
+            done
+            [ -z "$next_sink" ] && next_sink="''${sinks[0]}"
+            pactl set-default-sink "$next_sink" 2>/dev/null
+            for input in $(pactl list short sink-inputs 2>/dev/null | awk '{print $1}'); do
+              pactl move-sink-input "$input" "$next_sink" 2>/dev/null || true
+            done
+            desc=$(pactl list sinks 2>/dev/null | awk -v s="$next_sink" '
+              $1 == "Name:" && $2 == s { f=1 }
+              f && /Description:/ { sub(/^[[:space:]]*Description:[[:space:]]*/, ""); print; exit }
+            ')
+            [ -z "$desc" ] && desc="$next_sink"
+            if command -v dunstify >/dev/null 2>&1; then
+              dunstify -a "Áudio" -u low -i "audio-card" -h string:x-dunst-stack-tag:audio-sink -t 2000 "Saída de Áudio" "$desc"
+            fi
+          fi
+        fi
+        ;;
+    esac
+  '';
+
   # --- Menu Interativo de Bluetooth Avançado (Rofi - Inspirado no gh0stzk/dotfiles e nickclyde) ---
   rofiBluetoothMenu = pkgs.writeShellScript "rofi-bluetooth" ''
     export PATH="/usr/bin:/usr/sbin:${pkgs.bluez}/bin:${pkgs.blueman}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.util-linux}/bin:${pkgs.procps}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
+
+    ${btDeviceIconFn}
 
     notify_bt() {
       local urgency="$1"
@@ -454,7 +766,12 @@ rec {
       local OPT_REMOVE="󰆴  Remover / Esquecer Dispositivo"
       local OPT_BACK="󰌍  Voltar ao Menu Principal"
 
-      local PROMPT_TEXT=" $name [$mac] (Conectado: $is_connected$battery) "
+      local dicon_class; dicon_class=$(echo "$info" | grep -i "Icon:" | awk '{print $2}')
+      local dclass_hex; dclass_hex=$(echo "$info" | grep -i "Class:" | awk '{print $2}')
+      local duuids; duuids=$(echo "$info" | grep -i "UUID:")
+      local dev_icon; dev_icon=$(get_device_icon "$dicon_class" "$dclass_hex" "$duuids" "$name")
+
+      local PROMPT_TEXT=" $dev_icon $name [$mac] (Conectado: $is_connected$battery) "
 
       local CHOICE
       CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s" \
@@ -627,19 +944,10 @@ rec {
         fi
         [ -z "$name" ] && name="Dispositivo Desconhecido"
 
-        local icon="󰂯"
-        local icon_class
-        icon_class=$(echo "$dinfo" | grep -i "Icon:" | awk '{print $2}')
-
-        case "$icon_class" in
-          *audio-card*|*audio-speakers*) icon="󰓃" ;;
-          *audio-headset*) icon="󰋋" ;;
-          *audio-headphones*) icon="󰥰" ;;
-          *input-keyboard*) icon="󰌌" ;;
-          *input-mouse*|*input-gaming*) icon="󰍽" ;;
-          *phone*) icon="󰏲" ;;
-          *computer*) icon="󰌢" ;;
-        esac
+        local icon_class; icon_class=$(echo "$dinfo" | grep -i "Icon:" | awk '{print $2}')
+        local class_hex; class_hex=$(echo "$dinfo" | grep -i "Class:" | awk '{print $2}')
+        local uuids; uuids=$(echo "$dinfo" | grep -i "UUID:")
+        local icon; icon=$(get_device_icon "$icon_class" "$class_hex" "$uuids" "$name")
 
         if echo "$dinfo" | grep -q "Connected: yes"; then
           local batt
@@ -685,12 +993,17 @@ rec {
           fi
           [ -z "$cname" ] && cname="Dispositivo Desconhecido"
 
+          local cicon_class; cicon_class=$(echo "$cdinfo" | grep -i "Icon:" | awk '{print $2}')
+          local cclass_hex; cclass_hex=$(echo "$cdinfo" | grep -i "Class:" | awk '{print $2}')
+          local cuuids; cuuids=$(echo "$cdinfo" | grep -i "UUID:")
+          local cicon; cicon=$(get_device_icon "$cicon_class" "$cclass_hex" "$cuuids" "$cname")
+
           local cbatt
           cbatt=$(echo "$cdinfo" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
           if [ -n "$cbatt" ] && [ "$cbatt" -le 100 ] 2>/dev/null; then
-            CONN_ITEMS+="󰂱  $cname  [$cmac]  (󰂱 Conectado 󰁹 $cbatt%)\n"
+            CONN_ITEMS+="$cicon  $cname  [$cmac]  (󰂱 Conectado 󰁹 $cbatt%)\n"
           else
-            CONN_ITEMS+="󰂱  $cname  [$cmac]  (󰂱 Conectado)\n"
+            CONN_ITEMS+="$cicon  $cname  [$cmac]  (󰂱 Conectado)\n"
           fi
         fi
       done < <(bluetoothctl devices 2>/dev/null)
@@ -726,7 +1039,13 @@ rec {
           fi
           [ -z "$name" ] && name="Dispositivo Desconhecido"
 
-          SCANNED_ITEMS+="󰑐  $name  [$mac]  (Disponível)\n"
+          local sicon_class; sicon_class=$(echo "$sdinfo" | grep -i "Icon:" | awk '{print $2}')
+          local sclass_hex; sclass_hex=$(echo "$sdinfo" | grep -i "Class:" | awk '{print $2}')
+          local suuids; suuids=$(echo "$sdinfo" | grep -i "UUID:")
+          local sicon; sicon=$(get_device_icon "$sicon_class" "$sclass_hex" "$suuids" "$name")
+          [ "$sicon" = "󰂱" ] && sicon="󰑐"
+
+          SCANNED_ITEMS+="$sicon  $name  [$mac]  (Disponível)\n"
         done < <(bluetoothctl devices 2>/dev/null)
       fi
 

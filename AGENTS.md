@@ -229,6 +229,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **BSPWM `bsp-layout`**: Motor nativo reescrito em `pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh` (original phenax tinha bugs de float/subshell).
 - **Polybar Multi-Monitor**: `bar/primary` (sistema/perf/rede) + `bar/secondary` (controles/sessão). Zero duplicação. `polybar-launch` com `flock` + debounce.
 - **Polybar Bateria**: Opções declarativas `desktop.bspwm.polybar.battery`/`adapter` (nitro usa `BAT1`/`ACAD`).
+- **Polybar Bluetooth & Áudio Dinâmicos**: `bluetoothScript` identifica fones (`󰥰`), headset (`󰋋`), caixas (`󰓃`), mouse (`󰍽`), teclado (`󰌌`), etc. e exibe múltiplos dispositivos. Módulo `pulseaudio` usa `custom/script` (`tail = true` via `pactl subscribe`) detectando fones (`󰋋`), headset (`󰋎`), bluetooth (`󰂰`), HDMI (`󰡁`), USB (`󰟵`), alto-falantes (`󰕾`), mudo (`󰝟`) e ciclo de sinks via clique do meio.
 - **Polkit no Home Manager**: Não instalar `pkgs.polkit` em `home.packages` (binário sem setuid).
 - **Scrcpy**: Regras flutuantes em todos os WMs para variantes `scrcpy`, `Scrcpy`, `.scrcpywrap`, `scrcpy-wrapped`.
 - **Janelas de Login/OAuth**: Regras flutuantes para `WM_WINDOW_ROLE.*pop-up` e títulos de autenticação.
