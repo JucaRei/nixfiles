@@ -156,7 +156,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **Btrfs**: `compress=zstd:3` (sistema) e `compress=zstd:1` (home/dados). Dracut `compress="zstd -3"`.
 - **`mpv-nvidia`**: Injeta apenas `/usr/lib/x86_64-linux-gnu/nvidia/current` em `LD_LIBRARY_PATH` para NVDEC, sem risco de conflito de glibc.
 - **Solaar**: `pkgs.solaar` + serviço systemd do usuário para teclados Logitech sem interface em `/sys/class/leds`.
-- **Bluetooth (MX Keys)**: Agente `KeyboardOnly` no `bluetoothctl`. `blueman-applet` como agente gráfico permanente.
+- **Bluetooth (Fones / MX Keys / Autorização)**: Fones (ex: Space Travel 2) presos em "precisa de autorização" ocorrem quando pareados com `Trusted: no`. No BlueZ, reconexões de dispositivos não-confiáveis exigem aprovação via `AuthorizeService(device, uuid)`. Como o Dunst fechava notificações no clique esquerdo e o Blueman delegava ao daemon de notificações, o diálogo nunca aparecia e a conexão caía por timeout. Solução quádrupla: 1) Marcado `bluetoothctl trust <MAC>` imediatamente; 2) Rotina de auto-trust em background no startup do `bspwm.nix` para todos os dispositivos pareados; 3) `dconf` com `org/blueman/general.notification-daemon = false` para forçar janelas modais reais do GTK com regras flutuantes/centradas no BSPWM; 4) Dunst com `mouse_left_click = "do_action, close_current"`.
 
 ### `rocinante` (NixOS / MacBook Pro 4,1 / GeForce 8600M GT)
 

@@ -79,6 +79,9 @@
         cursor-size = config.gtk.cursorTheme.size;
         font-name = "${config.gtk.font.name} ${toString config.gtk.font.size}";
       };
+      "org/blueman/general" = {
+        notification-daemon = false;
+      };
     };
 
     home = {

@@ -47,8 +47,8 @@ in
           icon_position = "left";
           min_icon_size = 24;
           max_icon_size = 48;
-          mouse_left_click = "close_current";
-          mouse_middle_click = "do_action, close_current";
+          mouse_left_click = "do_action, close_current";
+          mouse_middle_click = "close_current";
           mouse_right_click = "close_all";
         };
 

@@ -252,6 +252,21 @@ in
               center = true;
               follow = true;
             };
+            "Blueman-assistant" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Blueman-services" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
+            "Blueman-sendto" = {
+              state = "floating";
+              center = true;
+              follow = true;
+            };
             "GParted" = {
               state = "floating";
               center = true;
@@ -485,6 +500,16 @@ in
               pkill -x blueman-applet || true
               ${pkgs.blueman}/bin/blueman-applet &
             fi
+
+            # Auto-trust de dispositivos Bluetooth pareados (elimina bloqueios de autorização do BlueZ)
+            (
+              sleep 2
+              if command -v bluetoothctl >/dev/null 2>&1; then
+                for dev in $(bluetoothctl devices Paired 2>/dev/null | awk '{print $2}'); do
+                  bluetoothctl trust "$dev" >/dev/null 2>&1 || true
+                done
+              fi
+            ) &
 
             # Mouse bindings para mover e redimensionar janelas flutuantes
             bspc config pointer_modifier ${pointerMod}
