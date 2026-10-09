@@ -229,6 +229,8 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **BSPWM `bsp-layout`**: Motor nativo reescrito em `pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh` (original phenax tinha bugs de float/subshell).
 - **Polybar Multi-Monitor**: `bar/primary` (sistema/perf/rede) + `bar/secondary` (controles/sessão). Zero duplicação. `polybar-launch` com `flock` + debounce.
 - **Polybar Bateria**: Opções declarativas `desktop.bspwm.polybar.battery`/`adapter` (nitro usa `BAT1`/`ACAD`).
+- **Polybar Estilos (`desktop.bspwm.polybar.style`)**: `"zproger"` (padrão ativo: cápsulas flutuantes `#2b2f37`, workspaces coloridos, tempo em pill, hardware minimalista) vs `"modern"` (Waybar/Catppuccin coeso). Configuração anterior preservada comentada em `polybar/default.nix`.
+- **Polybar Tipagem no Home Manager**: Valores numéricos em `services.polybar.config` devem ser inteiros (`int`) ou `str`, nunca floats (`interval = 3`, não `3.0`).
 - **Polybar Bluetooth & Áudio Dinâmicos**: `bluetoothScript` identifica fones (`󰥰`), headset (`󰋋`), caixas (`󰓃`), mouse (`󰍽`), teclado (`󰌌`), etc. e exibe múltiplos dispositivos. Módulo `pulseaudio` usa `custom/script` (`tail = true` via `pactl subscribe`) detectando fones (`󰋋`), headset (`󰋎`), bluetooth (`󰂰`), HDMI (`󰡁`), USB (`󰟵`), alto-falantes (`󰕾`), mudo (`󰝟`) e ciclo de sinks via clique do meio.
 - **Polkit no Home Manager**: Não instalar `pkgs.polkit` em `home.packages` (binário sem setuid).
 - **Scrcpy**: Regras flutuantes em todos os WMs para variantes `scrcpy`, `Scrcpy`, `.scrcpywrap`, `scrcpy-wrapped`.
