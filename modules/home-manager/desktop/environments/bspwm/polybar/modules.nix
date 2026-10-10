@@ -35,21 +35,45 @@
     click-left = "${pkgs.rofi}/bin/rofi -show drun";
   };
 
-  # --- Cápsulas Decorativas Legadas (gh0stzk style com  e  mantidas para compatibilidade) ---
+  # --- Cápsulas Decorativas / Pills (com  e  em colors.pill) ---
   "module/bi" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.surface0;
-    label-background = colors.transparent;
+    label-foreground = colors.pill;
   };
 
   "module/bd" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.surface0;
-    label-background = colors.transparent;
+    label-foreground = colors.pill;
+  };
+
+  "module/round-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/round-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/sp" = {
+    type = "custom/text";
+    format = "<label>";
+    label = " ";
+  };
+
+  "module/space" = {
+    type = "custom/text";
+    format = "<label>";
+    label = " ";
   };
 
   # --- Workspaces do BSPWM (Badges Modernos Estilo Waybar) ---
@@ -72,8 +96,8 @@
     ws-icon-6 = "7;七";
     ws-icon-7 = "8;八";
     ws-icon-8 = "9;九";
-    ws-icon-9 = "0;〇";
-    ws-icon-10 = "10;〇";
+    ws-icon-9 = "0;十";
+    ws-icon-10 = "10;十";
     ws-icon-default = "%name%";
 
     format = "<label-state>";
@@ -209,7 +233,7 @@
     spacing = 1;
 
     format-mounted = "<label-mounted>";
-    format-mounted-prefix = "󰋊 ";
+    format-mounted-prefix = "󰋊";
     format-mounted-prefix-foreground = colors.peach;
     label-mounted = "%free%";
     label-mounted-foreground = colors.text;
@@ -399,255 +423,12 @@
     scroll-up = "${scripts.bspLayoutSwitchScript} next";
     scroll-down = "${scripts.bspLayoutSwitchScript} prev";
   };
-
   # --- Bandeja do Sistema (System Tray - Polybar 3.7+) ---
   "module/tray" = {
     type = "internal/tray";
     format = "<tray>";
     tray-spacing = "8px";
     tray-size = "16px";
-  };
-
-  # =========================================================================
-  # MÓDULOS ESTILO ZPROGER (https://github.com/Zproger/bspwm-dotfiles)
-  # Cápsulas arredondadas (#2b2f37), workspaces numerados e coloridos,
-  # estatísticas com ícones temáticos, relógio em cápsula e botões diretos
-  # =========================================================================
-
-  "module/z-round-left" = {
-    type = "custom/text";
-    format = "<label>";
-    label = "%{T4}%{T-}";
-    label-foreground = "#2b2f37";
-  };
-
-  "module/z-round-right" = {
-    type = "custom/text";
-    format = "<label>";
-    label = "%{T4}%{T-}";
-    label-foreground = "#2b2f37";
-  };
-
-  "module/z-space" = {
-    type = "custom/text";
-    format = "<label>";
-    label = " ";
-  };
-
-  "module/z-launcher" = {
-    type = "custom/script";
-    exec = "${scripts.osLogoScript}";
-    interval = 3600;
-    format = "%{A1:${pkgs.rofi}/bin/rofi -show drun:}<label>%{A}";
-    label = "%output% ";
-    label-font = 4;
-    label-padding = 1;
-    label-foreground = "#61afef";
-    click-left = "${pkgs.rofi}/bin/rofi -show drun";
-  };
-
-  "module/z-bspwm" = {
-    type = "internal/bspwm";
-    pin-workspaces = true;
-    inline-mode = false;
-    enable-click = true;
-    enable-scroll = true;
-    reverse-scroll = false;
-    fuzzy-match = true;
-
-    format = "<label-state>";
-    ws-icon-0 = "1;%{F#F9DE8F}1%{F-}";
-    ws-icon-1 = "2;%{F#ff9b93}2%{F-}";
-    ws-icon-2 = "3;%{F#95e1d3}3%{F-}";
-    ws-icon-3 = "4;%{F#81A1C1}4%{F-}";
-    ws-icon-4 = "5;%{F#A3BE8C}5%{F-}";
-    ws-icon-5 = "6;%{F#F9DE8F}6%{F-}";
-    ws-icon-6 = "7;%{F#ff9b93}7%{F-}";
-    ws-icon-7 = "8;%{F#95e1d3}8%{F-}";
-    ws-icon-8 = "9;%{F#81A1C1}9%{F-}";
-    ws-icon-9 = "0;%{F#F9DE8F}0%{F-}";
-    ws-icon-10 = "10;%{F#F9DE8F}0%{F-}";
-    ws-icon-default = "%name%";
-
-    label-separator = "";
-    label-separator-background = "#2b2f37";
-
-    label-focused = "%icon%";
-    label-focused-foreground = "#abb2bf";
-    label-focused-underline = "#565c64";
-    label-focused-padding = 1;
-    label-focused-background = "#2b2f37";
-
-    label-occupied = "%icon%";
-    label-occupied-foreground = "#646870";
-    label-occupied-background = "#2b2f37";
-    label-occupied-padding = 1;
-
-    label-empty = "%icon%";
-    label-empty-foreground = "#5c6370";
-    label-empty-background = "#2b2f37";
-    label-empty-padding = 1;
-
-    label-urgent = "%icon%";
-    label-urgent-foreground = "#88C0D0";
-    label-urgent-background = "#2b2f37";
-    label-urgent-padding = 1;
-  };
-
-  "module/z-temperature" = {
-    type = "internal/temperature";
-    thermal-zone = 0;
-    warn-temperature = 70;
-    format = "<ramp> <label>";
-    format-warn = "<ramp> <label-warn>";
-    format-padding = 0;
-    label = "%temperature-c%";
-    label-warn = "%temperature-c%";
-    ramp-0 = "";
-    ramp-foreground = "#a4ebf3";
-  };
-
-  "module/z-memory" = {
-    type = "internal/memory";
-    interval = 2;
-    format = "<label>";
-    format-prefix = " ";
-    format-padding = 1;
-    format-foreground = "#d19a66";
-    label = "%gb_used%";
-  };
-
-  "module/z-cpu" = {
-    type = "internal/cpu";
-    interval = 2;
-    format-prefix = " ";
-    format = "<label>";
-    label = "%percentage%%";
-    format-foreground = "#989cff";
-  };
-
-  "module/z-time" = {
-    type = "internal/date";
-    interval = 30;
-    format = "<label>";
-    format-background = "#2b2f37";
-    date = "%{F#888e96}  %H:%M %p%{F-}";
-    date-alt = "%{F#61afef}󰃭  %a, %d %b %Y%{F-}";
-    label = "%date%";
-    label-padding = 1;
-  };
-
-  "module/z-battery" = {
-    type = "internal/battery";
-    full-at = 98;
-    low-at = 10;
-    battery = cfg.battery;
-    adapter = cfg.adapter;
-    poll-interval = 5;
-    time-format = "%H:%M";
-
-    format-charging = "<animation-charging> <label-charging>";
-    format-discharging = "<ramp-capacity> <label-discharging>";
-    format-full = "<ramp-capacity> <label-full>";
-    format-low = "<label-low> <animation-low>";
-
-    label-charging = "%percentage%% ";
-    label-discharging = "%percentage%% ";
-    label-full = " 100% ";
-    label-low = "%percentage%% ";
-
-    ramp-capacity-0 = "󰂎 ";
-    ramp-capacity-1 = "󰁺 ";
-    ramp-capacity-2 = "󰁼 ";
-    ramp-capacity-3 = "󰁾 ";
-    ramp-capacity-4 = "󰂀 ";
-    ramp-capacity-foreground = "#A0E8A2";
-
-    animation-charging-0 = "󰂎 ";
-    animation-charging-1 = "󰁺 ";
-    animation-charging-2 = "󰁼 ";
-    animation-charging-3 = "󰁾 ";
-    animation-charging-4 = "󰂀 ";
-    animation-charging-framerate = 910;
-    animation-charging-foreground = "#DF8890";
-
-    animation-low-0 = "󰂎  ";
-    animation-low-1 = "󰁺  ";
-    animation-low-framerate = 1500;
-    animation-low-foreground = "#D35F5D";
-
-    format-discharging-foreground = "#abb2bf";
-    format-charging-foreground = "#DF8890";
-    format-full-prefix-foreground = "#A0E8A2";
-  };
-
-  "module/z-backlight" = {
-    type = "internal/backlight";
-    card = "\${env:BACKLIGHT_CARD:intel_backlight}";
-    use-actual-brightness = true;
-    enable-scroll = true;
-    scroll-interval = 5;
-    format = "<label>";
-    format-prefix = "  ";
-    format-prefix-foreground = "#61afef";
-    format-padding = 1;
-  };
-
-  "module/z-wlan" = {
-    type = "internal/network";
-    interface = "\${env:WLAN_IFACE:wlan0}";
-    interval = 3;
-    format-connected = "<label-connected>";
-    label-connected = "%{A1:${scripts.rofiWifiMenu}:}󰤨 %{A}";
-    label-connected-foreground = "#A3BE8C";
-    format-disconnected = "<label-disconnected>";
-    label-disconnected = "%{A1:${scripts.rofiWifiMenu}:}󰤭 %{A}";
-    label-disconnected-foreground = "#D35F5E";
-  };
-
-  "module/z-powermenu" = {
-    type = "custom/text";
-    format = "%{A1:${scripts.rofiPowerMenu}:}<label>%{A}";
-    label = " ";
-    label-padding = 1;
-    click-left = "${scripts.rofiPowerMenu}";
-    label-foreground = "#d35f5e";
-  };
-
-  "module/z-xkeyboard" = {
-    type = "internal/xkeyboard";
-    blacklist-0 = "num lock";
-    blacklist-1 = "scroll lock";
-    format = "%{A3:${scripts.rofiKeyboardMenu}:}<label-layout> <label-indicator>%{A}";
-    label-layout = "%layout%";
-    label-layout-padding = 1;
-    label-layout-foreground = "#abb2bf";
-    label-indicator-on = "%name%";
-    label-indicator-on-caps = "!";
-    label-indicator-on-caps-foreground = "#d35f5e";
-  };
-
-  "module/z-alsa" = {
-    type = "internal/alsa";
-    format-volume = "<ramp-volume> <label-volume>";
-    format-volume-padding = 1;
-    format-muted = "󰝟";
-    format-muted-padding = 1;
-    label-volume = "%percentage%%";
-    ramp-volume-0 = "%{F#d35f5e}󰕿 %{F-}";
-    ramp-volume-1 = "%{F#d35f5e}󰕿 %{F-}";
-    ramp-volume-2 = "%{F#d35f5e}󰕿 %{F-}";
-    ramp-volume-3 = "%{F#d35f5e}󰕿 %{F-}";
-    ramp-volume-4 = "%{F#d35f5e}󰕿 %{F-}";
-    ramp-volume-5 = "%{F#d35f5e}󰕾 %{F-}";
-    ramp-volume-6 = "%{F#d35f5e}󰕾 %{F-}";
-    ramp-volume-7 = "%{F#d35f5e}󰕾 %{F-}";
-    ramp-volume-8 = "%{F#d35f5e}󰕾 %{F-}";
-    ramp-volume-9 = "%{F#d35f5e}󰕾 %{F-}";
-    ramp-headphones-0 = "󰋋";
-    ramp-headphones-1 = "󰋋";
-    format-volume-foreground = "#abb2bf";
-    format-muted-foreground = "#d35f5e";
   };
 
   "settings" = {

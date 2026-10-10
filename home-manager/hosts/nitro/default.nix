@@ -49,6 +49,7 @@ in
       bspwm.polybar = {
         battery = "BAT1";
         adapter = "ACAD";
+        style = lib.mkForce "pills";
       };
     };
 

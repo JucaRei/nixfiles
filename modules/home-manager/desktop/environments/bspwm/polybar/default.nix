@@ -37,9 +37,13 @@ in
     };
 
     style = mkOption {
-      type = lib.types.enum [ "modern" "zproger" ];
-      default = "modern";
-      description = "Estilo visual da Polybar: 'zproger' (cápsulas flutuantes com workspaces coloridos) ou 'modern' (estilo Waybar / Catppuccin coeso)";
+      type = lib.types.enum [
+        "modern"
+        "zproger"
+        "pills"
+      ];
+      default = "zproger";
+      description = "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills #2b2f37) ou 'modern' (estilo Waybar / Catppuccin coeso)";
     };
 
     battery = mkOption {
@@ -77,7 +81,7 @@ in
       '';
       config =
         let
-          isZproger = cfg.style == "zproger";
+          isPills = cfg.style == "zproger" || cfg.style == "pills";
 
           # =========================================================================
           # ESTILO 1: MODERNO (WAYBAR / CATPPUCCIN COESO)
@@ -144,36 +148,41 @@ in
           };
 
           # =========================================================================
-          # ESTILO 2: ZPROGER (https://github.com/Zproger/bspwm-dotfiles)
-          # Flutuante, cápsulas arredondadas #2b2f37, workspaces numerados e coloridos
+          # ESTILO 2: ZPROGER / PILLS (https://github.com/Zproger/bspwm-dotfiles)
+          # Flutuante, cápsulas arredondadas (#2b2f37) para workspaces e relógio,
+          # com dimensões 100% uniformes ao estilo moderno e paleta vibrante pastel.
           # =========================================================================
-          zprogerBaseBar = {
+          pillsBaseBar = {
             monitor = "\${env:MONITOR:}";
-            width = "98%";
-            offset-x = "1%";
+            width = "99.2%";
+            offset-x = "0.4%";
             offset-y = 6;
-            height = 28;
+            height = 32;
+            radius = 10;
             fixed-center = true;
             bottom = false;
 
-            background = "#1e222a";
-            foreground = "#abb2bf";
+            background = colors.dark;
+            foreground = colors.text-alt;
 
-            line-size = 3;
-            line-color = "#565c64";
+            line-size = 2;
+            line-color = colors.gray;
 
-            padding-left = 1;
-            padding-right = 1;
+            border-size = 1;
+            border-color = colors.pill;
+            padding-left = 2;
+            padding-right = 2;
             module-margin = 0;
 
-            font-0 = "JetBrainsMono Nerd Font:weight=Bold:size=10;3";
-            font-1 = "Symbols Nerd Font:size=12;3";
-            font-2 = "JetBrainsMono Nerd Font:size=14;4";
-            font-3 = "Symbols Nerd Font:size=15;4"; # Cápsulas  e  (T4)
-            font-4 = "Symbols Nerd Font Mono:size=11;3";
-            font-5 = "Noto Sans CJK JP:weight=Medium:size=10;2";
-            font-6 = "IPAGothic:size=10;2";
-            font-7 = "Inter:weight=SemiBold:size=10;3";
+            font-0 = "Inter:weight=SemiBold:size=10;3";
+            font-1 = "Symbols Nerd Font:size=11;3";
+            font-2 = "JetBrainsMono Nerd Font:weight=Medium:size=10;3";
+            font-3 = "Symbols Nerd Font:size=13;3"; # Ícone do lançador e power
+            font-4 = "JetBrainsMono Nerd Font:size=24;6"; # Glyphs das cápsulas  e  (T5 - preenchimento vertical contínuo de 32px)
+            font-5 = "Symbols Nerd Font Mono:size=11;3";
+            font-6 = "Noto Sans CJK JP:weight=Medium:size=10;2";
+            font-7 = "IPAGothic:size=10;2";
+            font-8 = "Noto Sans CJK SC:weight=Medium:size=10;2";
 
             cursor-click = "pointer";
             cursor-scroll = "ns-resize";
@@ -183,56 +192,201 @@ in
             screenchange-reload = true;
           };
 
-          zprogerMainBar = zprogerBaseBar // {
-            modules-left = "z-launcher z-round-left z-bspwm z-round-right";
-            modules-center = "z-temperature z-space z-space z-memory z-space z-space z-cpu";
-            modules-right = "z-battery z-backlight bluetooth z-space pulseaudio z-xkeyboard z-round-left z-time z-round-right z-space z-wlan tray z-powermenu";
+          pillsMainBar = pillsBaseBar // {
+            modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
+            modules-center = "media";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard sp round-left date round-right sp powermenu";
           };
 
-          zprogerPrimaryBar = zprogerBaseBar // {
-            modules-left = "z-launcher z-round-left z-bspwm z-round-right";
-            modules-center = "z-temperature z-space z-space z-memory z-space z-space z-cpu";
-            modules-right = "z-battery z-backlight disk z-space z-wlan uptime";
+          pillsPrimaryBar = pillsBaseBar // {
+            modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
+            modules-center = "media";
+            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime";
           };
 
-          zprogerSecondaryBar = zprogerBaseBar // {
-            modules-left = "z-round-left z-bspwm z-round-right";
+          pillsSecondaryBar = pillsBaseBar // {
+            modules-left = "round-left bspwm round-right sp polywins";
             modules-center = "xwindow";
-            modules-right = "bluetooth z-space pulseaudio z-space z-xkeyboard z-round-left z-time z-round-right z-space z-powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift sp round-left date round-right sp powermenu";
+          };
+
+          # Overrides aplicados aos módulos existentes quando o estilo pills/zproger está ativo.
+          # 1. Workspaces com números coloridos pastel (#F9DE8F, #ff9b93, #95e1d3, #81A1C1, #A3BE8C) dentro da cápsula #2b2f37
+          # 2. Playerctl/Media no centro, idêntico ao estilo moderno
+          # 3. Módulos com ícone único sem duplicações (sem prefixos colidindo com scripts)
+          # 4. Relógio dentro da cápsula #2b2f37 com ícone único  em cinza suave #888e96
+          pillModuleOverrides = lib.optionalAttrs isPills {
+            "module/bspwm" = {
+              ws-icon-0 = "1;%{F${colors.yellow-alt}}1%{F-}";
+              ws-icon-1 = "2;%{F${colors.coral}}2%{F-}";
+              ws-icon-2 = "3;%{F${colors.mint}}3%{F-}";
+              ws-icon-3 = "4;%{F${colors.nord}}4%{F-}";
+              ws-icon-4 = "5;%{F${colors.green-alt}}5%{F-}";
+              ws-icon-5 = "6;%{F${colors.yellow-alt}}6%{F-}";
+              ws-icon-6 = "7;%{F${colors.coral}}7%{F-}";
+              ws-icon-7 = "8;%{F${colors.mint}}8%{F-}";
+              ws-icon-8 = "9;%{F${colors.nord}}9%{F-}";
+              ws-icon-9 = "0;%{F${colors.green-alt}}10%{F-}";
+              ws-icon-10 = "10;%{F${colors.green-alt}}10%{F-}";
+              ws-icon-default = "%name%";
+
+              label-focused = "%icon%";
+              label-focused-foreground = colors.text-alt;
+              label-focused-underline = colors.gray;
+              label-focused-background = colors.pill;
+              label-focused-padding = 1;
+              label-focused-margin = 0;
+
+              label-occupied = "%icon%";
+              label-occupied-foreground = colors.muted;
+              label-occupied-background = colors.pill;
+              label-occupied-padding = 1;
+              label-occupied-margin = 0;
+
+              label-urgent = "%icon%";
+              label-urgent-foreground = colors.nord;
+              label-urgent-background = colors.pill;
+              label-urgent-padding = 1;
+              label-urgent-margin = 0;
+
+              label-empty = "%icon%";
+              label-empty-foreground = colors.surface1;
+              label-empty-background = colors.pill;
+              label-empty-padding = 1;
+              label-empty-margin = 0;
+
+              label-separator = "";
+              label-separator-background = colors.pill;
+            };
+
+            "module/cpu" = {
+              format = "<label>";
+              format-prefix = " ";
+              format-prefix-foreground = colors.purple;
+              label = "%percentage%%";
+              label-foreground = colors.text-alt;
+              label-padding = 0;
+            };
+
+            "module/memory" = {
+              format = "<label>";
+              format-prefix = " ";
+              format-prefix-foreground = colors.orange;
+              label = "%percentage_used%%";
+              label-foreground = colors.text-alt;
+              label-padding = 0;
+            };
+
+            "module/temperature" = {
+              type = "internal/temperature";
+              thermal-zone = 0;
+              warn-temperature = 75;
+              format = "<ramp> <label>";
+              format-warn = "<ramp> <label-warn>";
+              format-padding = 0;
+              label = "%temperature-c%";
+              label-warn = "%temperature-c%";
+              label-foreground = colors.text-alt;
+              ramp-0 = "";
+              ramp-foreground = colors.ice;
+            };
+
+            "module/pulseaudio" = {
+              label-foreground = colors.red-alt;
+            };
+
+            "module/bluetooth" = {
+              label-foreground = colors.blue-alt;
+            };
+
+            "module/backlight" = {
+              format = "<label>";
+              format-prefix = "";
+            };
+
+            "module/battery" = {
+              ramp-capacity-foreground = colors.bat-green;
+              animation-charging-foreground = colors.bat-charging;
+              label-charging-foreground = colors.text-alt;
+              label-discharging-foreground = colors.text-alt;
+              label-full-foreground = colors.text-alt;
+            };
+
+            "module/keyboard" = {
+              format-prefix-foreground = colors.text-alt;
+              label-layout-foreground = colors.text-alt;
+            };
+
+            "module/date" = {
+              interval = 1;
+              format = "<label>";
+              format-prefix = "";
+              format-prefix-foreground = colors.pill;
+              format-background = colors.pill;
+              date = "%{F${colors.time-alt}}  %H:%M:%S%{F-}";
+              date-alt = "%{F${colors.blue-alt}}  %a, %d %b %Y  %{F${colors.time-alt}}  %H:%M:%S%{F-}";
+              time = "";
+              time-alt = "";
+              label = "%date%";
+              label-foreground = colors.time-alt;
+              label-background = colors.pill;
+              label-padding = 1;
+            };
+
+            "module/network" = {
+              label-foreground = colors.green-alt;
+            };
+
+            "module/netspeed" = {
+              label-foreground = colors.nord;
+            };
+
+            "module/disk" = {
+              format-mounted-prefix-foreground = colors.orange;
+              label-mounted-foreground = colors.text-alt;
+            };
+
+            "module/uptime" = {
+              label-foreground = colors.mint;
+            };
+
+            "module/bsp-layout" = {
+              label-foreground = colors.coral;
+            };
+
+            "module/media" = {
+              label-foreground = colors.purple;
+            };
+
+            "module/minimized" = {
+              label-foreground = colors.yellow-alt;
+            };
+
+            "module/powermenu" = {
+              label = "";
+              label-foreground = colors.red-alt;
+            };
           };
         in
-        polybarModules // {
+        (lib.recursiveUpdate polybarModules pillModuleOverrides)
+        // {
           "colors" = colors;
 
           /*
-          # =========================================================================
-          # [CONFIGURAÇÃO ANTERIOR - DESATIVADA, NÃO APAGADA]
-          # Conforme solicitado ("não apague como esta agora, somente comente desativando"):
-          #
-          # "bar/main" = baseBar // {
-          #   modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
-          #   modules-center = "media";
-          #   modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date sep powermenu";
-          # };
-          #
-          # "bar/primary" = baseBar // {
-          #   modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
-          #   modules-center = "media";
-          #   modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime";
-          # };
-          #
-          # "bar/secondary" = baseBar // {
-          #   modules-left = "bspwm sep polywins";
-          #   modules-center = "xwindow";
-          #   modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift sep date sep powermenu";
-          # };
-          # =========================================================================
+            # =========================================================================
+            # [CONFIGURAÇÃO ANTERIOR - DESATIVADA, NÃO APAGADA]
+            # Conforme solicitado ("não apague como esta agora, somente comente desativando"):
+            #
+            # "bar/main" = modernMainBar;
+            # "bar/primary" = modernPrimaryBar;
+            # "bar/secondary" = modernSecondaryBar;
+            # =========================================================================
           */
 
-          # --- Definição das Barras Ativas (Alternável via desktop.bspwm.polybar.style: "zproger" ou "modern") ---
-          "bar/main" = if isZproger then zprogerMainBar else modernMainBar;
-          "bar/primary" = if isZproger then zprogerPrimaryBar else modernPrimaryBar;
-          "bar/secondary" = if isZproger then zprogerSecondaryBar else modernSecondaryBar;
+          # --- Definição das Barras Ativas (Alternável via desktop.bspwm.polybar.style: "zproger"/"pills" ou "modern") ---
+          "bar/main" = if isPills then pillsMainBar else modernMainBar;
+          "bar/primary" = if isPills then pillsPrimaryBar else modernPrimaryBar;
+          "bar/secondary" = if isPills then pillsSecondaryBar else modernSecondaryBar;
         };
     };
   };
