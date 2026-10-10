@@ -191,7 +191,7 @@ in
           modernPrimaryBar = modernBaseBar // {
             modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime${modernTray}";
+            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime";
           };
 
           modernSecondaryBar = modernBaseBar // {
@@ -254,7 +254,7 @@ in
           pillsPrimaryBar = pillsBaseBar // {
             modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime${pillsTray}";
+            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime";
           };
 
           pillsSecondaryBar = pillsBaseBar // {

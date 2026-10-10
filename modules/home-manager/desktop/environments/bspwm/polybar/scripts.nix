@@ -1197,7 +1197,12 @@ rec {
     }
 
     get_wired_device() {
-      nmcli -t -f DEVICE,TYPE device 2>/dev/null | grep ':ethernet$' | head -n1 | cut -d: -f1
+      local dev
+      dev=$(nmcli -t -f DEVICE,TYPE,STATE device 2>/dev/null | grep ':ethernet:connected$' | head -n1 | cut -d: -f1)
+      if [ -z "$dev" ]; then
+        dev=$(nmcli -t -f DEVICE,TYPE device 2>/dev/null | grep ':ethernet$' | head -n1 | cut -d: -f1)
+      fi
+      echo "$dev"
     }
 
     wifi_radio_on() {
@@ -1249,6 +1254,304 @@ rec {
       fi
     }
 
+    show_wired_details() {
+      local dev="$1"
+      local state="$2"
+      local conn="$3"
+      local ip="$4"
+
+      local details=()
+      details+=("󰈀  Interface:         $dev")
+      details+=("󰌘  Status:            $([ "$state" = "connected" ] && echo "Conectada (Ativa)" || echo "Desconectada")")
+      details+=("󱦂  Perfil Ativo:      ''${conn:-Nenhum}")
+
+      if [ -n "$ip" ]; then
+        details+=("󱦂  Endereço IP:       $ip")
+      fi
+
+      local gw_info dns_info mac_info speed_info
+      gw_info=$(nmcli -t -f IP4.GATEWAY dev show "$dev" 2>/dev/null | head -n1 | cut -d: -f2-)
+      dns_info=$(nmcli -t -f IP4.DNS dev show "$dev" 2>/dev/null | tr '\n' ' ' | sed 's/IP4.DNS:[[:space:]]*//g')
+      mac_info=$(nmcli -t -f GENERAL.HWADDR dev show "$dev" 2>/dev/null | head -n1 | cut -d: -f2-)
+      speed_info=$(nmcli -t -f WIRED-PROPERTIES.SPEED dev show "$dev" 2>/dev/null | head -n1 | cut -d: -f2-)
+
+      [ -n "$gw_info" ] && details+=("󰒍  Gateway:           $gw_info")
+      [ -n "$dns_info" ] && details+=("󰀂  Servidores DNS:    $dns_info")
+      [ -n "$mac_info" ] && details+=("󰈀  Endereço MAC:      $mac_info")
+      [ -n "$speed_info" ] && details+=("󰓅  Velocidade Link:   ''${speed_info} Mb/s")
+      details+=("󰌍  Voltar")
+
+      printf "%s\n" "''${details[@]}" | rofi \
+        -dmenu \
+        -i \
+        -p "Detalhes: $dev" \
+        -theme-str 'window {width: 650px; border-radius: 14px;} listview {columns: 1; lines: 9;}' \
+        -no-custom >/dev/null 2>&1 || true
+    }
+
+    forget_wired_profile() {
+      local puuid="$1"
+      local pname="$2"
+
+      local confirm
+      confirm=$(printf "󰀦  Sim, excluir perfil\n󰌍  Cancelar" | rofi \
+        -dmenu \
+        -i \
+        -p "Excluir perfil cabeado \"$pname\"?" \
+        -theme-str 'window {width: 540px; border-radius: 14px;} listview {columns: 1; lines: 2;}' \
+        -no-custom)
+
+      if [[ "$confirm" =~ "Sim" ]]; then
+        if nmcli connection delete uuid "$puuid" 2>/dev/null || nmcli connection delete id "$pname" 2>/dev/null; then
+          notify_wifi "normal" "network-wired" "Perfil Excluído" "O perfil cabeado \"$pname\" foi removido com sucesso."
+        else
+          notify_wifi "critical" "network-wired-disconnected" "Erro" "Não foi possível excluir o perfil \"$pname\"."
+        fi
+      fi
+    }
+
+    wired_profile_menu() {
+      local puuid="$1"
+      local pname="$2"
+      local pdev="$3"
+
+      local actions=(
+        "󰈂  Desconectar esta Conexão"
+        "󰑐  Reconectar / Renovar IP"
+        "󰋼  Ver Detalhes da Conexão"
+      )
+      if [ "$puuid" != "auto" ]; then
+        actions+=("󰀦  Esquecer / Excluir Perfil ($pname)")
+      fi
+      actions+=("󰌍  Voltar")
+
+      local act
+      act=$(printf "%s\n" "''${actions[@]}" | rofi \
+        -dmenu \
+        -i \
+        -p "Perfil Ativo: $pname" \
+        -theme-str 'window {width: 580px; border-radius: 14px;} listview {columns: 1; lines: 5;}' \
+        -no-custom)
+
+      [ -z "$act" ] && { wired_menu; return; }
+
+      case "$act" in
+        *"Desconectar"*)
+          notify_wifi "low" "network-wired-disconnected" "Rede Cabeada" "Desconectando perfil \"$pname\"..."
+          nmcli device disconnect "$pdev" 2>/dev/null || true
+          sleep 0.5
+          notify_wifi "normal" "network-wired-disconnected" "Desconectado" "Perfil \"$pname\" desconectado."
+          wired_menu
+          ;;
+        *"Reconectar"*)
+          notify_wifi "low" "network-wired" "Rede Cabeada" "Reconectando \"$pname\"..."
+          nmcli connection up uuid "$puuid" 2>/dev/null || nmcli connection up id "$pname" 2>/dev/null || true
+          sleep 1.2
+          local new_ip
+          new_ip=$(nmcli -t -f IP4.ADDRESS dev show "$pdev" 2>/dev/null | head -n1 | cut -d: -f2)
+          notify_wifi "normal" "network-wired" "Reconectado" "Conexão restabelecida!''${new_ip:+ IP: $new_ip}"
+          wired_menu
+          ;;
+        *"Detalhes"*)
+          local pip pstate
+          pstate="Ativa"
+          pip=$(nmcli -t -f IP4.ADDRESS dev show "$pdev" 2>/dev/null | head -n1 | cut -d: -f2)
+          show_wired_details "$pdev" "$pstate" "$pname" "$pip"
+          wired_profile_menu "$puuid" "$pname" "$pdev"
+          ;;
+        *"Esquecer"*)
+          forget_wired_profile "$puuid" "$pname"
+          wired_menu
+          ;;
+        *)
+          wired_menu
+          ;;
+      esac
+    }
+
+    wired_menu() {
+      local eth_dev
+      eth_dev=$(get_wired_device)
+      if [ -z "$eth_dev" ]; then
+        notify_wifi "critical" "network-wired-disconnected" "Rede Cabeada" "Nenhuma interface Ethernet detectada."
+        show_main_menu
+        return
+      fi
+
+      # Recarregar conexões caso tenham sido criadas recentemente em editores ou terminal
+      nmcli connection reload 2>/dev/null || true
+
+      local eth_state
+      eth_state=$(nmcli -t -f DEVICE,STATE device 2>/dev/null | grep "^$eth_dev:" | head -n1 | cut -d: -f2)
+      local eth_conn
+      eth_conn=$(nmcli -t -f DEVICE,CONNECTION device 2>/dev/null | grep "^$eth_dev:" | head -n1 | cut -d: -f2)
+      local eth_ip
+      eth_ip=$(nmcli -t -f IP4.ADDRESS dev show "$eth_dev" 2>/dev/null | head -n1 | cut -d: -f2)
+
+      local raw_conns
+      raw_conns=$(nmcli -t -f TYPE,UUID,DEVICE,NAME connection show 2>/dev/null | grep '^802-3-ethernet:' | cut -d: -f2-)
+
+      local conn_items=()
+      local conn_uuids=()
+      local conn_names=()
+      local conn_states=()
+
+      if [ -n "$raw_conns" ]; then
+        while IFS=: read -r cuuid cdev cname; do
+          cname=$(echo "$cname" | sed 's/\\:/:/g')
+          [ -z "$cuuid" ] || [ -z "$cname" ] && continue
+
+          # Pular se estiver explicitamente vinculado a outro dispositivo que não seja eth_dev
+          if [ -n "$cdev" ] && [ "$cdev" != "--" ] && [ "$cdev" != "$eth_dev" ]; then
+            continue
+          fi
+
+          local is_active=false
+          if [ "$eth_state" = "connected" ] && [ "$cname" = "$eth_conn" ]; then
+            is_active=true
+          fi
+
+          conn_uuids+=("$cuuid")
+          conn_names+=("$cname")
+          conn_states+=("$is_active")
+
+          local prefix="󰈀  ○"
+          local status_tag="[Disponível]"
+          if [ "$is_active" = true ]; then
+            prefix="󰈁  ●"
+            status_tag="[Ativa''${eth_ip:+ - $eth_ip}]"
+          fi
+
+          local line
+          line=$(printf "%s  %-30s  %s" "$prefix" "$cname" "$status_tag")
+          conn_items+=("$line")
+        done <<< "$raw_conns"
+      fi
+
+      if [ "''${#conn_items[@]}" -eq 0 ]; then
+        local def_line
+        if [ "$eth_state" = "connected" ]; then
+          def_line=$(printf "󰈁  ●  %-30s  [Ativa%s]" "Conexão Automática ($eth_dev)" "''${eth_ip:+ - $eth_ip}")
+        else
+          def_line=$(printf "󰈀  ○  %-30s  [Disponível - Conectar DHCP]" "Conexão Padrão ($eth_dev)")
+        fi
+        conn_items+=("$def_line")
+        conn_uuids+=("auto")
+        conn_names+=("Conexão Automática ($eth_dev)")
+        conn_states+=("$([ "$eth_state" = "connected" ] && echo true || echo false)")
+      fi
+
+      local options=()
+      options+=("󰌍  Voltar ao Menu Principal")
+
+      if [ "$eth_state" = "connected" ]; then
+        options+=("󰈂  Desconectar Cabo da Interface $eth_dev")
+        options+=("󰑐  Reconectar / Renovar IP ($eth_conn)")
+      fi
+
+      options+=("────────────────────────────────────────────────────────────────────────")
+      for item in "''${conn_items[@]}"; do
+        options+=("$item")
+      done
+      options+=("────────────────────────────────────────────────────────────────────────")
+      options+=("󰋼  Detalhes da Interface ($eth_dev)")
+      options+=("󰒓  Criar / Configurar Conexões (nm-connection-editor)")
+
+      local chosen_wired
+      chosen_wired=$(printf "%s\n" "''${options[@]}" | rofi \
+        -dmenu \
+        -i \
+        -p "Rede Cabeada ($eth_dev)" \
+        -theme-str 'window {width: 720px; border-radius: 14px;} listview {columns: 1; lines: 10;}' \
+        -no-custom)
+
+      [ -z "$chosen_wired" ] && { show_main_menu; return; }
+
+      case "$chosen_wired" in
+        *"Voltar ao Menu Principal"*)
+          show_main_menu
+          return
+          ;;
+        *"Desconectar Cabo"*)
+          notify_wifi "low" "network-wired-disconnected" "Rede Cabeada" "Desconectando interface $eth_dev..."
+          nmcli device disconnect "$eth_dev" 2>/dev/null || true
+          sleep 0.5
+          notify_wifi "normal" "network-wired-disconnected" "Rede Cabeada Desconectada" "Interface $eth_dev desconectada."
+          wired_menu
+          return
+          ;;
+        *"Reconectar"*)
+          notify_wifi "low" "network-wired" "Rede Cabeada" "Reconectando interface $eth_dev..."
+          nmcli connection up id "$eth_conn" 2>/dev/null || nmcli device connect "$eth_dev" 2>/dev/null || true
+          sleep 1.2
+          local new_ip
+          new_ip=$(nmcli -t -f IP4.ADDRESS dev show "$eth_dev" 2>/dev/null | head -n1 | cut -d: -f2)
+          notify_wifi "normal" "network-wired" "Rede Cabeada Reconectada" "Interface $eth_dev conectada com sucesso!''${new_ip:+ IP: $new_ip}"
+          wired_menu
+          return
+          ;;
+        *"Detalhes da Interface"*)
+          show_wired_details "$eth_dev" "$eth_state" "$eth_conn" "$eth_ip"
+          wired_menu
+          return
+          ;;
+        *"Criar / Configurar"*)
+          if command -v nm-connection-editor >/dev/null 2>&1; then
+            nm-connection-editor &
+          elif [ -x "${pkgs.networkmanagerapplet}/bin/nm-connection-editor" ]; then
+            ${pkgs.networkmanagerapplet}/bin/nm-connection-editor &
+          fi
+          exit 0
+          ;;
+        *"────"*)
+          wired_menu
+          return
+          ;;
+        *)
+          local sel_idx=-1
+          local i=0
+          while [ "$i" -lt "''${#conn_items[@]}" ]; do
+            if [ "''${conn_items[$i]}" = "$chosen_wired" ]; then
+              sel_idx=$i
+              break
+            fi
+            i=$((i + 1))
+          done
+
+          if [ "$sel_idx" -ge 0 ]; then
+            local target_uuid="''${conn_uuids[$sel_idx]}"
+            local target_name="''${conn_names[$sel_idx]}"
+            local target_active="''${conn_states[$sel_idx]}"
+
+            if [ "$target_active" = true ]; then
+              wired_profile_menu "$target_uuid" "$target_name" "$eth_dev"
+            else
+              notify_wifi "low" "network-wired" "Conectando..." "Iniciando conexão \"$target_name\" em $eth_dev..."
+              local conn_ok=false
+              if [ "$target_uuid" = "auto" ]; then
+                nmcli device connect "$eth_dev" 2>/dev/null && conn_ok=true
+              else
+                (nmcli connection up uuid "$target_uuid" 2>/dev/null || nmcli connection up id "$target_name" 2>/dev/null) && conn_ok=true
+              fi
+
+              if [ "$conn_ok" = true ]; then
+                sleep 1.2
+                local new_ip
+                new_ip=$(nmcli -t -f IP4.ADDRESS dev show "$eth_dev" 2>/dev/null | head -n1 | cut -d: -f2)
+                notify_wifi "normal" "network-wired" "Rede Cabeada Conectada" "Perfil \"$target_name\" ativado com sucesso!''${new_ip:+ IP: $new_ip}"
+              else
+                notify_wifi "critical" "network-wired-disconnected" "Falha na Conexão" "Não foi possível ativar o perfil \"$target_name\"."
+              fi
+              wired_menu
+            fi
+          else
+            wired_menu
+          fi
+          return
+          ;;
+      esac
+    }
+
     toggle_wired() {
       local eth_dev
       eth_dev=$(get_wired_device)
@@ -1265,16 +1568,11 @@ rec {
         notify_wifi "low" "network-wired-disconnected" "Rede Cabeada" "Desconectando interface $eth_dev..."
         nmcli device disconnect "$eth_dev" 2>/dev/null || true
         sleep 0.5
-        notify_wifi "normal" "network-wired-disconnected" "Rede Cabeada Desconectada" "Interface $eth_dev desconectada. Sistema agora em Wi-Fi/offline."
+        notify_wifi "normal" "network-wired-disconnected" "Rede Cabeada Desconectada" "Interface $eth_dev desconectada."
+        show_main_menu
       else
-        notify_wifi "low" "network-wired" "Rede Cabeada" "Conectando interface $eth_dev..."
-        nmcli device connect "$eth_dev" 2>/dev/null || true
-        sleep 1.2
-        local eth_ip
-        eth_ip=$(nmcli -t -f IP4.ADDRESS dev show "$eth_dev" 2>/dev/null | head -n1 | cut -d: -f2)
-        notify_wifi "normal" "network-wired" "Rede Cabeada Conectada" "Interface $eth_dev conectada com sucesso!''${eth_ip:+ IP: $eth_ip}"
+        wired_menu
       fi
-      show_main_menu
     }
 
     connect_to_network() {
@@ -1598,12 +1896,13 @@ rec {
 
       local top_options=()
 
-      # Controle da Rede Cabeada (Wired Toggle)
+      # Controle da Rede Cabeada (Wired)
       if [ -n "$eth_dev" ]; then
         if [ "$eth_state" = "connected" ]; then
-          top_options+=("󰈂  Desconectar Rede Cabeada        [Cabo: $eth_dev (''${eth_conn:-Ativo})''${eth_ip:+ - $eth_ip}]")
+          top_options+=("󰈁  Rede Cabeada: ''${eth_conn:-Conectada}        [Cabo: $eth_dev - Ativa''${eth_ip:+ ($eth_ip)} | Selecionar/Alternar]")
+          top_options+=("󰈂  Desconectar Rede Cabeada        [Desconectar interface $eth_dev]")
         else
-          top_options+=("󰈀  Conectar Rede Cabeada           [Cabo: $eth_dev Desconectado]")
+          top_options+=("󰈀  Conectar Rede Cabeada           [Cabo: $eth_dev Desconectado - Escolher Conexão para Iniciar]")
         fi
       fi
 
@@ -1703,11 +2002,14 @@ rec {
       [ -z "$chosen" ] && exit 0
 
       case "$chosen" in
+        *"Rede Cabeada:"*)
+          wired_menu
+          ;;
         *"Desconectar Rede Cabeada"*)
           toggle_wired
           ;;
         *"Conectar Rede Cabeada"*)
-          toggle_wired
+          wired_menu
           ;;
         *"Desativar Rádio Wi-Fi"*)
           toggle_wifi_radio
