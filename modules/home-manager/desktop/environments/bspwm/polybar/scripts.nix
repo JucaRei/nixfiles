@@ -1169,79 +1169,534 @@ rec {
     echo "%{F${colors.red}}󰤮%{F-} %{F${colors.subtext0}}Offline%{F-}"
   '';
 
-  # --- Menu Interativo de Wi-Fi (Rofi) ---
+  # --- Menu Interativo de Redes & Wi-Fi (Rofi) ---
   rofiWifiMenu = pkgs.writeShellScript "rofi-wifi-menu" ''
-    export PATH="${pkgs.networkmanager}/bin:${pkgs.rofi}/bin:${pkgs.dunst}/bin:${pkgs.gawk}/bin:${pkgs.gnused}/bin:${pkgs.gnugrep}/bin:${pkgs.uutils-coreutils-noprefix}/bin:$PATH"
+    export PATH="/usr/bin:/usr/sbin:${lib.makeBinPath [
+      pkgs.networkmanager
+      pkgs.networkmanagerapplet
+      pkgs.rofi
+      pkgs.dunst
+      pkgs.iproute2
+      pkgs.gawk
+      pkgs.gnused
+      pkgs.gnugrep
+      pkgs.uutils-coreutils-noprefix
+      pkgs.procps
+    ]}:$PATH"
 
-    dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 -t 1500 "Escaneando redes Wi-Fi..."
+    notify_wifi() {
+      local urgency="$1"
+      local icon="$2"
+      local title="$3"
+      local msg="$4"
+      ${pkgs.dunst}/bin/dunstify -a "Rede" -u "$urgency" -i "$icon" -h string:x-dunst-stack-tag:network-osd -t 3500 "$title" "$msg"
+    }
 
-    wifi_list=$(nmcli --fields "SECURITY,SSID,BARS" device wifi list --rescan yes 2>/dev/null | sed 1d | sed -E "s/  +/ /g" | sed -E "s/^ *//" | grep -v "^--" | awk -F' ' '{
-      sec=$1;
-      bars=$NF;
-      $1="";
-      $NF="";
-      ssid=$0;
-      gsub(/^ +| +$/, "", ssid);
-      if (ssid != "") {
-        icon = (sec ~ /WPA|WEP/) ? "󰌾" : "󰤨";
-        printf "%s  %-48s  [%s]\n", icon, ssid, bars;
-      }
-    }' | sort -u)
+    get_wifi_device() {
+      nmcli -t -f DEVICE,TYPE device 2>/dev/null | grep ':wifi$' | head -n1 | cut -d: -f1
+    }
 
-    if [ -z "$wifi_list" ]; then
-      dunstify -a "Wi-Fi" -u normal -i "network-wireless-offline" -r 9994 "Nenhuma rede Wi-Fi encontrada"
-      exit 0
-    fi
+    get_wired_device() {
+      nmcli -t -f DEVICE,TYPE device 2>/dev/null | grep ':ethernet$' | head -n1 | cut -d: -f1
+    }
 
-    chosen_line=$(echo -e "$wifi_list\n󰑐  Escanear novamente\n󰤮  Desconectar Wi-Fi" | rofi \
-      -dmenu \
-      -i \
-      -p "Redes Wi-Fi" \
-      -theme-str 'window {width: 820px; border-radius: 14px;} listview {columns: 1; lines: 13;}' \
-      -no-custom)
+    wifi_radio_on() {
+      [ "$(nmcli radio wifi 2>/dev/null)" = "enabled" ]
+    }
 
-    if [ -z "$chosen_line" ]; then
-      exit 0
-    fi
+    toggle_wifi_radio() {
+      if wifi_radio_on; then
+        nmcli radio wifi off 2>/dev/null || true
+        notify_wifi "low" "network-wireless-offline" "Wi-Fi Desativado" "O rádio Wi-Fi foi desligado."
+      else
+        nmcli radio wifi on 2>/dev/null || true
+        notify_wifi "normal" "network-wireless" "Wi-Fi Ativado" "O rádio Wi-Fi foi ligado. Escaneando redes..."
+        sleep 1.5
+      fi
+      show_main_menu
+    }
 
-    if [[ "$chosen_line" =~ "Desconectar" ]]; then
-      nmcli device disconnect wlan0 2>/dev/null || nmcli device disconnect wlp3s0 2>/dev/null || nmcli radio wifi off
-      dunstify -a "Wi-Fi" -u low -i "network-wireless-offline" -r 9994 "Wi-Fi desconectado"
-      exit 0
-    fi
+    toggle_wired() {
+      local eth_dev
+      eth_dev=$(get_wired_device)
+      if [ -z "$eth_dev" ]; then
+        notify_wifi "critical" "network-wired-disconnected" "Rede Cabeada" "Nenhuma interface Ethernet detectada."
+        show_main_menu
+        return
+      fi
 
-    if [[ "$chosen_line" =~ "Escanear" ]]; then
-      exec "$0"
-    fi
+      local eth_state
+      eth_state=$(nmcli -t -f DEVICE,STATE device 2>/dev/null | grep "^$eth_dev:" | head -n1 | cut -d: -f2)
 
-    chosen_ssid=$(echo "$chosen_line" | sed -E 's/^[󰌾󰤨 ]+//; s/  +\[.*//; s/ +$//')
+      if [ "$eth_state" = "connected" ]; then
+        notify_wifi "low" "network-wired-disconnected" "Rede Cabeada" "Desconectando interface $eth_dev..."
+        nmcli device disconnect "$eth_dev" 2>/dev/null || true
+        sleep 0.5
+        notify_wifi "normal" "network-wired-disconnected" "Rede Cabeada Desconectada" "Interface $eth_dev desconectada. Sistema agora em Wi-Fi/offline."
+      else
+        notify_wifi "low" "network-wired" "Rede Cabeada" "Conectando interface $eth_dev..."
+        nmcli device connect "$eth_dev" 2>/dev/null || true
+        sleep 1.2
+        local eth_ip
+        eth_ip=$(nmcli -t -f IP4.ADDRESS dev show "$eth_dev" 2>/dev/null | head -n1 | cut -d: -f2)
+        notify_wifi "normal" "network-wired" "Rede Cabeada Conectada" "Interface $eth_dev conectada com sucesso!''${eth_ip:+ IP: $eth_ip}"
+      fi
+      show_main_menu
+    }
 
-    if [ -n "$chosen_ssid" ]; then
-      saved_conn=$(nmcli -g NAME connection show | grep -Fx "$chosen_ssid" || true)
-      if [ -n "$saved_conn" ]; then
-        dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
-        if nmcli connection up "$chosen_ssid"; then
-          dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\"!"
+    connect_to_network() {
+      local ssid="$1"
+      local security="$2"
+      local is_saved="$3"
+      local wifi_dev
+      wifi_dev=$(get_wifi_device)
+
+      if [ "$is_saved" = true ]; then
+        notify_wifi "low" "network-wireless" "Conectando..." "Conectando à rede salva \"$ssid\"..."
+        if nmcli connection up id "$ssid" 2>/dev/null || nmcli connection up "$ssid" 2>/dev/null; then
+          notify_wifi "normal" "network-wireless" "Wi-Fi Conectado" "Conectado com sucesso a \"$ssid\"!"
         else
-          dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Falha ao conectar a \"$chosen_ssid\""
+          notify_wifi "critical" "network-wireless-offline" "Falha na Conexão" "Não foi possível conectar a \"$ssid\". Tente esquecer e redigitar a senha."
         fi
       else
-        if [[ "$chosen_line" =~ "󰌾" ]]; then
-          wifi_pass=$(rofi -dmenu -password -p "Senha para $chosen_ssid" -theme-str 'window {width: 600px; border-radius: 14px;}')
-          if [ -n "$wifi_pass" ]; then
-            dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
-            if nmcli device wifi connect "$chosen_ssid" password "$wifi_pass"; then
-              dunstify -a "Wi-Fi" -u normal -i "network-wireless" -r 9994 "Conectado a \"$chosen_ssid\"!"
-            else
-              dunstify -a "Wi-Fi" -u critical -i "network-wireless-offline" -r 9994 "Senha incorreta ou erro de conexão"
-            fi
+        if [[ "$security" =~ WPA|WEP|802.1X ]]; then
+          local wifi_pass
+          wifi_pass=$(rofi -dmenu -password -p "Senha para $ssid" -theme-str 'window {width: 600px; border-radius: 14px;}')
+          [ -z "$wifi_pass" ] && return
+
+          notify_wifi "low" "network-wireless" "Autenticando..." "Conectando a \"$ssid\"..."
+          if nmcli device wifi connect "$ssid" password "$wifi_pass" ''${wifi_dev:+ifname "$wifi_dev"} 2>/dev/null; then
+            notify_wifi "normal" "network-wireless" "Wi-Fi Conectado" "Conectado com sucesso a \"$ssid\"!"
+          else
+            notify_wifi "critical" "network-wireless-offline" "Falha na Senha" "Senha incorreta ou erro ao conectar a \"$ssid\"."
           fi
         else
-          dunstify -a "Wi-Fi" -u low -i "network-wireless" -r 9994 "Conectando a \"$chosen_ssid\"..."
-          nmcli device wifi connect "$chosen_ssid"
+          notify_wifi "low" "network-wireless" "Conectando..." "Conectando à rede aberta \"$ssid\"..."
+          if nmcli device wifi connect "$ssid" ''${wifi_dev:+ifname "$wifi_dev"} 2>/dev/null; then
+            notify_wifi "normal" "network-wireless" "Wi-Fi Conectado" "Conectado com sucesso a \"$ssid\"!"
+          else
+            notify_wifi "critical" "network-wireless-offline" "Falha ao Conectar" "Não foi possível conectar à rede \"$ssid\"."
+          fi
         fi
       fi
-    fi
+    }
+
+    forget_network() {
+      local ssid="$1"
+      local confirm
+      confirm=$(printf "󰀦  Sim, esquecer rede\n󰌍  Cancelar" | rofi \
+        -dmenu \
+        -i \
+        -p "Esquecer perfil da rede \"$ssid\"?" \
+        -theme-str 'window {width: 520px; border-radius: 14px;} listview {columns: 1; lines: 2;}' \
+        -no-custom)
+
+      if [[ "$confirm" =~ "Sim" ]]; then
+        if nmcli connection delete id "$ssid" 2>/dev/null || nmcli connection delete "$ssid" 2>/dev/null; then
+          notify_wifi "normal" "network-wireless" "Rede Esquecida" "O perfil e a senha da rede \"$ssid\" foram removidos."
+        else
+          notify_wifi "critical" "network-wireless-offline" "Erro" "Não foi possível excluir o perfil da rede \"$ssid\"."
+        fi
+      fi
+    }
+
+    connect_hidden_network() {
+      local hidden_ssid
+      hidden_ssid=$(rofi -dmenu -p "Nome da Rede Oculta (SSID)" -theme-str 'window {width: 580px; border-radius: 14px;}')
+      [ -z "$hidden_ssid" ] && { show_main_menu; return; }
+
+      local sec_choice
+      sec_choice=$(printf "󰌾  WPA/WPA2/WPA3 Personal (Senha)\n󰤨  Aberta (Sem Senha)" | rofi \
+        -dmenu \
+        -i \
+        -p "Segurança de $hidden_ssid" \
+        -theme-str 'window {width: 520px; border-radius: 14px;} listview {columns: 1; lines: 2;}' \
+        -no-custom)
+
+      local wifi_dev
+      wifi_dev=$(get_wifi_device)
+
+      if [[ "$sec_choice" =~ "WPA" ]]; then
+        local hidden_pass
+        hidden_pass=$(rofi -dmenu -password -p "Senha para $hidden_ssid" -theme-str 'window {width: 580px; border-radius: 14px;}')
+        [ -z "$hidden_pass" ] && { show_main_menu; return; }
+
+        notify_wifi "low" "network-wireless" "Conectando..." "Conectando à rede oculta \"$hidden_ssid\"..."
+        if nmcli device wifi connect "$hidden_ssid" password "$hidden_pass" hidden yes ''${wifi_dev:+ifname "$wifi_dev"} 2>/dev/null; then
+          notify_wifi "normal" "network-wireless" "Wi-Fi Conectado" "Conectado com sucesso à rede oculta \"$hidden_ssid\"!"
+        else
+          notify_wifi "critical" "network-wireless-offline" "Falha" "Não foi possível conectar à rede oculta."
+        fi
+      else
+        notify_wifi "low" "network-wireless" "Conectando..." "Conectando à rede oculta \"$hidden_ssid\"..."
+        if nmcli device wifi connect "$hidden_ssid" hidden yes ''${wifi_dev:+ifname "$wifi_dev"} 2>/dev/null; then
+          notify_wifi "normal" "network-wireless" "Wi-Fi Conectado" "Conectado com sucesso à rede oculta \"$hidden_ssid\"!"
+        else
+          notify_wifi "critical" "network-wireless-offline" "Falha" "Não foi possível conectar à rede oculta."
+        fi
+      fi
+      show_main_menu
+    }
+
+    saved_networks_menu() {
+      local saved_list
+      saved_list=$(nmcli -t -f NAME,TYPE connection show 2>/dev/null | grep ':802-11-wireless$' | cut -d: -f1)
+
+      if [ -z "$saved_list" ]; then
+        notify_wifi "low" "network-wireless" "Redes Salvas" "Nenhum perfil Wi-Fi salvo encontrado."
+        show_main_menu
+        return
+      fi
+
+      local options=("󰌍  Voltar ao Menu Principal")
+      while IFS= read -r sname; do
+        [ -n "$sname" ] && options+=("󰤨  $sname")
+      done <<< "$saved_list"
+
+      local chosen_saved
+      chosen_saved=$(printf "%s\n" "''${options[@]}" | rofi \
+        -dmenu \
+        -i \
+        -p "Gerenciar Redes Salvas" \
+        -theme-str 'window {width: 650px; border-radius: 14px;} listview {columns: 1; lines: 10;}' \
+        -no-custom)
+
+      [ -z "$chosen_saved" ] && { show_main_menu; return; }
+
+      if [[ "$chosen_saved" =~ "Voltar" ]]; then
+        show_main_menu
+        return
+      fi
+
+      local target_ssid
+      target_ssid=$(echo "$chosen_saved" | sed 's/^󰤨  //; s/^ *//; s/ *$//')
+      if [ -n "$target_ssid" ]; then
+        local act
+        act=$(printf "󰤨  Conectar Agora\n󰀦  Esquecer / Excluir Rede Salva\n󰌍  Voltar" | rofi \
+          -dmenu \
+          -i \
+          -p "Perfil Salvo: $target_ssid" \
+          -theme-str 'window {width: 550px; border-radius: 14px;} listview {columns: 1; lines: 3;}' \
+          -no-custom)
+
+        case "$act" in
+          *"Conectar Agora"*)
+            notify_wifi "low" "network-wireless" "Conectando..." "Conectando a \"$target_ssid\"..."
+            if nmcli connection up id "$target_ssid" 2>/dev/null || nmcli connection up "$target_ssid" 2>/dev/null; then
+              notify_wifi "normal" "network-wireless" "Wi-Fi Conectado" "Conectado com sucesso a \"$target_ssid\"!"
+            else
+              notify_wifi "critical" "network-wireless-offline" "Falha" "Não foi possível conectar. Rede pode estar fora de alcance."
+            fi
+            show_main_menu
+            ;;
+          *"Esquecer"*)
+            forget_network "$target_ssid"
+            saved_networks_menu
+            ;;
+          *)
+            saved_networks_menu
+            ;;
+        esac
+      fi
+    }
+
+    show_network_details() {
+      local ssid="$1"
+      local bssid="$2"
+      local chan="$3"
+      local freq="$4"
+      local signal="$5"
+      local bars="$6"
+      local security="$7"
+      local is_connected="$8"
+
+      local wifi_dev
+      wifi_dev=$(get_wifi_device)
+      local ip_info="" gw_info="" dns_info=""
+
+      if [ "$is_connected" = true ] && [ -n "$wifi_dev" ]; then
+        ip_info=$(nmcli -t -f IP4.ADDRESS dev show "$wifi_dev" 2>/dev/null | head -n1 | cut -d: -f2)
+        gw_info=$(nmcli -t -f IP4.GATEWAY dev show "$wifi_dev" 2>/dev/null | head -n1 | cut -d: -f2)
+        dns_info=$(nmcli -t -f IP4.DNS dev show "$wifi_dev" 2>/dev/null | tr '\n' ' ' | sed 's/IP4.DNS:[[:space:]]*//g')
+      fi
+
+      local details=()
+      details+=("󰤨  SSID:              ''${ssid}")
+      details+=("󰌘  Status:            $([ "$is_connected" = true ] && echo "Conectada (Ativa)" || echo "Ao alcance")")
+      [ -n "$ip_info" ] && details+=("󱦂  Endereço IP:       $ip_info")
+      [ -n "$gw_info" ] && details+=("󰒍  Gateway:           $gw_info")
+      [ -n "$dns_info" ] && details+=("󰀂  Servidores DNS:    $dns_info")
+      [ -n "$signal" ] && details+=("󰤨  Sinal:             ''${signal}% (''${bars})")
+      [ -n "$security" ] && details+=("󰌾  Segurança:         ''${security}")
+      [ -n "$chan" ] && details+=("󰀝  Canal / Freq:      Canal ''${chan} (''${freq})")
+      [ -n "$bssid" ] && details+=("󰈀  BSSID (MAC AP):    ''${bssid}")
+      [ -n "$wifi_dev" ] && details+=("󰞌  Interface:         ''${wifi_dev}")
+      details+=("󰌍  Voltar")
+
+      printf "%s\n" "''${details[@]}" | rofi \
+        -dmenu \
+        -i \
+        -p "Detalhes: $ssid" \
+        -theme-str 'window {width: 650px; border-radius: 14px;} listview {columns: 1; lines: 11;}' \
+        -no-custom >/dev/null 2>&1 || true
+    }
+
+    network_menu() {
+      local ssid="$1"
+      [ -z "$ssid" ] && { show_main_menu; return; }
+
+      local wifi_dev
+      wifi_dev=$(get_wifi_device)
+      local active_ssid
+      active_ssid=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | grep '^yes:' | head -n1 | cut -d: -f2)
+
+      local is_connected=false
+      [ "$active_ssid" = "$ssid" ] && is_connected=true
+
+      local is_saved=false
+      nmcli -t -f NAME,TYPE connection show 2>/dev/null | grep ':802-11-wireless$' | grep -Fxq "$ssid:802-11-wireless" && is_saved=true
+
+      local net_info
+      net_info=$(nmcli -t -f SSID,BSSID,CHAN,FREQ,SIGNAL,BARS,SECURITY dev wifi list 2>/dev/null | grep -E "^$ssid:" | head -n1)
+      local bssid chan freq signal bars security
+      IFS=: read -r _ bssid chan freq signal bars security <<< "$net_info"
+
+      local options=()
+      if [ "$is_connected" = true ]; then
+        options+=("󰤮  Desconectar da Rede (\"$ssid\")")
+        options+=("󰑐  Reconectar / Renovar IP")
+      else
+        options+=("󰤨  Conectar a esta Rede (\"$ssid\")")
+      fi
+
+      if [ "$is_saved" = true ]; then
+        options+=("󰀦  Esquecer Rede (Excluir perfil salvo e senha)")
+      fi
+
+      options+=("󰋼  Detalhes da Rede e Conexão")
+      options+=("󰌍  Voltar ao Menu Principal")
+
+      local sub_prompt="Wi-Fi: $ssid"
+      [ "$is_connected" = true ] && sub_prompt="[Conectada] Wi-Fi: $ssid"
+
+      local chosen_sub
+      chosen_sub=$(printf "%s\n" "''${options[@]}" | rofi \
+        -dmenu \
+        -i \
+        -p "$sub_prompt" \
+        -theme-str 'window {width: 680px; border-radius: 14px;} listview {columns: 1; lines: 6;}' \
+        -no-custom)
+
+      [ -z "$chosen_sub" ] && { show_main_menu; return; }
+
+      case "$chosen_sub" in
+        *"Desconectar da Rede"*)
+          notify_wifi "low" "network-wireless-offline" "Wi-Fi" "Desconectando de \"$ssid\"..."
+          nmcli device disconnect "$wifi_dev" 2>/dev/null || nmcli connection down "$ssid" 2>/dev/null || true
+          sleep 0.5
+          notify_wifi "normal" "network-wireless-offline" "Wi-Fi Desconectado" "Você foi desconectado da rede \"$ssid\"."
+          show_main_menu
+          ;;
+        *"Reconectar"*)
+          notify_wifi "low" "network-wireless" "Wi-Fi" "Reconectando a \"$ssid\"..."
+          nmcli connection up id "$ssid" 2>/dev/null || nmcli connection up "$ssid" 2>/dev/null || nmcli device wifi connect "$ssid" 2>/dev/null || true
+          sleep 1
+          notify_wifi "normal" "network-wireless" "Wi-Fi Reconectado" "Conexão com \"$ssid\" restabelecida."
+          show_main_menu
+          ;;
+        *"Conectar a esta Rede"*)
+          connect_to_network "$ssid" "$security" "$is_saved"
+          show_main_menu
+          ;;
+        *"Esquecer Rede"*)
+          forget_network "$ssid"
+          show_main_menu
+          ;;
+        *"Detalhes da Rede"*)
+          show_network_details "$ssid" "$bssid" "$chan" "$freq" "$signal" "$bars" "$security" "$is_connected"
+          network_menu "$ssid"
+          ;;
+        *"Voltar"*)
+          show_main_menu
+          ;;
+      esac
+    }
+
+    show_main_menu() {
+      local wifi_dev
+      wifi_dev=$(get_wifi_device)
+      local is_wifi_on=false
+      wifi_radio_on && is_wifi_on=true
+
+      local active_wifi_ssid=""
+      local active_wifi_ip=""
+      if [ "$is_wifi_on" = true ] && [ -n "$wifi_dev" ]; then
+        active_wifi_ssid=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | grep '^yes:' | head -n1 | cut -d: -f2)
+        active_wifi_ip=$(nmcli -t -f IP4.ADDRESS dev show "$wifi_dev" 2>/dev/null | head -n1 | cut -d: -f2)
+      fi
+
+      local eth_dev
+      eth_dev=$(get_wired_device)
+      local eth_state="unavailable"
+      local eth_conn=""
+      local eth_ip=""
+      if [ -n "$eth_dev" ]; then
+        eth_state=$(nmcli -t -f DEVICE,STATE device 2>/dev/null | grep "^$eth_dev:" | head -n1 | cut -d: -f2)
+        eth_conn=$(nmcli -t -f DEVICE,CONNECTION device 2>/dev/null | grep "^$eth_dev:" | head -n1 | cut -d: -f2)
+        eth_ip=$(nmcli -t -f IP4.ADDRESS dev show "$eth_dev" 2>/dev/null | head -n1 | cut -d: -f2)
+      fi
+
+      local top_options=()
+
+      # Controle da Rede Cabeada (Wired Toggle)
+      if [ -n "$eth_dev" ]; then
+        if [ "$eth_state" = "connected" ]; then
+          top_options+=("󰈂  Desconectar Rede Cabeada        [Cabo: $eth_dev (''${eth_conn:-Ativo})''${eth_ip:+ - $eth_ip}]")
+        else
+          top_options+=("󰈀  Conectar Rede Cabeada           [Cabo: $eth_dev Desconectado]")
+        fi
+      fi
+
+      # Controle do Rádio Wi-Fi
+      if [ "$is_wifi_on" = true ]; then
+        top_options+=("󰤮  Desativar Rádio Wi-Fi           [Wi-Fi Ligado''${active_wifi_ssid:+ - $active_wifi_ssid}]")
+      else
+        top_options+=("󰤨  Ativar Rádio Wi-Fi              [Wi-Fi Desligado]")
+      fi
+
+      if [ "$is_wifi_on" = true ]; then
+        top_options+=("󰑐  Escanear Redes Novamente        [Atualizar lista ao alcance]")
+        top_options+=("󱛂  Conectar a Rede Oculta          [Digitar SSID e Senha manual]")
+        top_options+=("󰁯  Gerenciar Redes Salvas          [Ver perfis e esquecer redes]")
+        top_options+=("󰒓  Abrir Editor de Conexões        [Interface gráfica completa]")
+      fi
+
+      local wifi_entries=()
+      if [ "$is_wifi_on" = true ]; then
+        local saved_names
+        saved_names=$(nmcli -t -f NAME,TYPE connection show 2>/dev/null | grep ':802-11-wireless$' | cut -d: -f1)
+
+        local raw_list
+        raw_list=$(nmcli -t -f IN-USE,BSSID,SSID,SIGNAL,BARS,SECURITY dev wifi list 2>/dev/null)
+
+        local seen_ssids="|"
+        while IFS=: read -r in_use bssid ssid signal bars security; do
+          [ -z "$ssid" ] && continue
+          if [[ "$seen_ssids" =~ "|$ssid|" ]]; then
+            continue
+          fi
+          seen_ssids="$seen_ssids$ssid|"
+
+          local prefix="󰌾"
+          local status_tag=""
+          local is_sec="WPA"
+          if [[ "$security" =~ WPA|WEP|802.1X ]]; then
+            prefix="󰌾"
+            is_sec="$security"
+          else
+            prefix="󰤨"
+            is_sec="Aberta"
+          fi
+
+          if [ "$in_use" = "*" ]; then
+            status_tag="[Conectada]"
+            prefix="󰤨"
+          elif echo "$saved_names" | grep -Fxq "$ssid"; then
+            status_tag="[Salva]"
+          else
+            status_tag="[$is_sec]"
+          fi
+
+          local line
+          line=$(printf "%s  %-34s  %-14s  [%s] %s%%" "$prefix" "$ssid" "$status_tag" "$bars" "$signal")
+          wifi_entries+=("$line")
+        done <<< "$raw_list"
+      fi
+
+      local menu_content=""
+      for opt in "''${top_options[@]}"; do
+        menu_content="''${menu_content}''${opt}\n"
+      done
+
+      if [ "''${#wifi_entries[@]}" -gt 0 ]; then
+        menu_content="''${menu_content}────────────────────────────────────────────────────────────────────────\n"
+        for w in "''${wifi_entries[@]}"; do
+          menu_content="''${menu_content}''${w}\n"
+        done
+      elif [ "$is_wifi_on" = true ]; then
+        menu_content="''${menu_content}────────────────────────────────────────────────────────────────────────\n"
+        menu_content="''${menu_content}󰤮  Nenhuma rede Wi-Fi encontrada ao alcance\n"
+      fi
+
+      local prompt_title="Redes & Wi-Fi"
+      if [ -n "$active_wifi_ssid" ]; then
+        prompt_title="Wi-Fi: $active_wifi_ssid"
+      elif [ "$eth_state" = "connected" ]; then
+        prompt_title="Cabo: $eth_dev"
+      fi
+
+      local chosen
+      chosen=$(printf "%b" "$menu_content" | rofi \
+        -dmenu \
+        -i \
+        -p "$prompt_title" \
+        -theme-str 'window {width: 820px; border-radius: 14px;} listview {columns: 1; lines: 15;}' \
+        -no-custom)
+
+      [ -z "$chosen" ] && exit 0
+
+      case "$chosen" in
+        *"Desconectar Rede Cabeada"*)
+          toggle_wired
+          ;;
+        *"Conectar Rede Cabeada"*)
+          toggle_wired
+          ;;
+        *"Desativar Rádio Wi-Fi"*)
+          toggle_wifi_radio
+          ;;
+        *"Ativar Rádio Wi-Fi"*)
+          toggle_wifi_radio
+          ;;
+        *"Escanear Redes Novamente"*)
+          notify_wifi "low" "network-wireless" "Escaneando..." "Buscando redes Wi-Fi disponíveis..."
+          nmcli device wifi rescan 2>/dev/null || true
+          sleep 1.2
+          show_main_menu
+          ;;
+        *"Conectar a Rede Oculta"*)
+          connect_hidden_network
+          ;;
+        *"Gerenciar Redes Salvas"*)
+          saved_networks_menu
+          ;;
+        *"Abrir Editor de Conexões"*)
+          if command -v nm-connection-editor >/dev/null 2>&1; then
+            nm-connection-editor &
+          elif [ -x "${pkgs.networkmanagerapplet}/bin/nm-connection-editor" ]; then
+            ${pkgs.networkmanagerapplet}/bin/nm-connection-editor &
+          fi
+          exit 0
+          ;;
+        *"────"*)
+          show_main_menu
+          ;;
+        *"Nenhuma rede Wi-Fi"*)
+          show_main_menu
+          ;;
+        *)
+          local sel_ssid
+          sel_ssid=$(echo "$chosen" | sed -E 's/^[󰌾󰤨 ]+//; s/  +\[.*//; s/ +$//')
+          if [ -n "$sel_ssid" ]; then
+            network_menu "$sel_ssid"
+          else
+            show_main_menu
+          fi
+          ;;
+      esac
+    }
+
+    show_main_menu
   '';
 
   # --- Menu de Desligamento com Rofi ---
