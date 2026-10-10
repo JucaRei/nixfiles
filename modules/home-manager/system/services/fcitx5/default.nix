@@ -89,5 +89,15 @@ in
       [Hotkey/EnumerateGroupForwardKeys]
       0=Super+space
     '';
+
+    # Desativar ícone da bandeja do Fcitx5 (mantendo o método de entrada 100% ativo em segundo plano)
+    xdg.configFile."fcitx5/conf/notificationitem.config".text = ''
+      [Addon]
+      Enabled=False
+    '';
+    xdg.configFile."fcitx5/addon/notificationitem.conf".text = ''
+      [Addon]
+      Enabled=False
+    '';
   };
 }

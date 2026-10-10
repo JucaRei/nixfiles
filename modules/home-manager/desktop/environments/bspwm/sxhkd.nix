@@ -939,11 +939,6 @@ in
           "${mod} + shift + b" = "rofi-bluetooth";
           "${altMod} + shift + b" = "rofi-bluetooth";
 
-          # Bandeja do Sistema Stalonetray (Cmd + I / Alt + I / Cmd + Shift + I)
-          "${mod} + i" = "stalonetray-toggle";
-          "${altMod} + i" = "stalonetray-toggle";
-          "${mod} + shift + i" = "stalonetray-toggle";
-
           # Terminal (Cmd + Return, Cmd + T) - sempre em $HOME
           "${mod} + Return" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";
           "${mod} + KP_Enter" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";
@@ -1086,6 +1081,12 @@ in
           "${mod} + shift + F4" = "${kbdBrightnessOsd} toggle";
         }
         // screenshotBindings
+        // lib.optionalAttrs (config.desktop.bspwm.polybar.enable && config.desktop.bspwm.polybar.tray.enable) {
+          # Bandeja do Sistema Stalonetray (Cmd + I / Alt + I / Cmd + Shift + I)
+          "${mod} + i" = "stalonetray-toggle";
+          "${altMod} + i" = "stalonetray-toggle";
+          "${mod} + shift + i" = "stalonetray-toggle";
+        }
         // lib.optionalAttrs (mod != "super") {
           # Atalhos com Super garantidos mesmo quando mod != "super"
           "super + F4" = "${kbdBrightnessOsd} up";

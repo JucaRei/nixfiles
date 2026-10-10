@@ -501,8 +501,8 @@ in
             # Wallpaper / Fundo e Cursor padrão (garante left_ptr mesmo com fundo sólido)
             xsetroot -solid '#1e1e2e' -cursor_name left_ptr &
 
-            # Applet de Rede (após importar DISPLAY)
-            ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &
+            # Applet de Rede desativado para manter o tray limpo apenas para apps externos (Wi-Fi gerenciado via Polybar/Rofi)
+            # ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &
 
             # Applet Bluetooth (fornece agente de autenticação D-Bus para PIN/Passkey)
             if command -v blueman-applet >/dev/null 2>&1; then
@@ -513,14 +513,16 @@ in
               ${pkgs.blueman}/bin/blueman-applet &
             fi
 
-            # Bandeja do sistema (Stalonetray)
-            if command -v stalonetray >/dev/null 2>&1; then
-              pkill -x stalonetray || true
-              stalonetray &
-            elif [ -x "${pkgs.stalonetray}/bin/stalonetray" ]; then
-              pkill -x stalonetray || true
-              ${pkgs.stalonetray}/bin/stalonetray &
-            fi
+            ${lib.optionalString (config.desktop.bspwm.polybar.enable && config.desktop.bspwm.polybar.tray.enable) ''
+              # Bandeja do sistema (Stalonetray)
+              if command -v stalonetray >/dev/null 2>&1; then
+                pkill -x stalonetray || true
+                stalonetray &
+              elif [ -x "${pkgs.stalonetray}/bin/stalonetray" ]; then
+                pkill -x stalonetray || true
+                ${pkgs.stalonetray}/bin/stalonetray &
+              fi
+            ''}
 
             # Auto-trust de dispositivos Bluetooth pareados (elimina bloqueios de autorização do BlueZ)
             (

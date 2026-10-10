@@ -57,6 +57,14 @@ in
       default = "ADP1";
       description = "Nome do adaptador AC em /sys/class/power_supply";
     };
+
+    tray = {
+      enable = mkOption {
+        type = bool;
+        default = true;
+        description = "Habilitar módulo e serviço de bandeja do sistema (Stalonetray) na Polybar";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -71,8 +79,40 @@ in
       (pkgs.writeShellScriptBin "polybar-os-logo" ''exec ${scripts.osLogoScript} "$@"'')
       (pkgs.writeShellScriptBin "polybar-launch" ''exec ${scripts.polybarLaunchScript} "$@"'')
       (pkgs.writeShellScriptBin "polybar-media-control" ''exec ${scripts.mediaControlScript} "$@"'')
+    ] ++ lib.optionals cfg.tray.enable [
+      pkgs.stalonetray
       (pkgs.writeShellScriptBin "stalonetray-toggle" ''exec ${scripts.stalonetrayToggleScript} "$@"'')
     ];
+
+    # Serviços do Stalonetray (apenas se bandeja habilitada na Polybar)
+    services.stalonetray = mkIf cfg.tray.enable {
+      enable = true;
+      package = pkgs.stalonetray;
+      config = {
+        background = "#2b2f37";
+        decorations = "none";
+        dockapp_mode = "none";
+        geometry = "5x1-16+44";
+        max_geometry = "8x1-16+44";
+        grow_gravity = "NW";
+        icon_gravity = "NE";
+        icon_size = 20;
+        slot_size = 24;
+        sticky = true;
+        skip_taskbar = true;
+        window_type = "dock";
+        window_layer = "top";
+        kludges = "force_icons_size";
+        ignore_classes = "nm-applet Nm-applet blueman-applet Blueman-applet blueman-tray Blueman-tray fcitx fcitx5 Fcitx5 solaar Solaar";
+      };
+    };
+
+    # Recarregar automaticamente o Stalonetray ao rodar switch-home se habilitado
+    home.activation.reloadStalonetray = mkIf (cfg.tray.enable && config.services.stalonetray.enable) (
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        $DRY_RUN_CMD systemctl --user restart stalonetray 2>/dev/null || (${pkgs.procps}/bin/pkill -x stalonetray 2>/dev/null && ${pkgs.stalonetray}/bin/stalonetray 2>/dev/null || true) &
+      ''
+    );
 
     # Recarregar automaticamente a Polybar ao rodar switch-home
     home.activation.reloadPolybar = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -92,6 +132,9 @@ in
       config =
         let
           isPills = cfg.style == "zproger" || cfg.style == "pills";
+          hasTray = cfg.tray.enable;
+          modernTray = if hasTray then " sep tray" else "";
+          pillsTray = if hasTray then " sp round-left tray round-right" else "";
 
           # =========================================================================
           # ESTILO 1: MODERNO (WAYBAR / CATPPUCCIN COESO)
@@ -142,19 +185,19 @@ in
           modernMainBar = modernBaseBar // {
             modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard sep date sep powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard${modernTray} sep date sep powermenu";
           };
 
           modernPrimaryBar = modernBaseBar // {
             modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime";
+            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime${modernTray}";
           };
 
           modernSecondaryBar = modernBaseBar // {
             modules-left = "bspwm sep polywins";
             modules-center = "xwindow";
-            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift sep date sep powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift${modernTray} sep date sep powermenu";
           };
 
           # =========================================================================
@@ -205,19 +248,19 @@ in
           pillsMainBar = pillsBaseBar // {
             modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard sp round-left date round-right sp powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard${pillsTray} sp round-left date round-right sp powermenu";
           };
 
           pillsPrimaryBar = pillsBaseBar // {
             modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime";
+            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime${pillsTray}";
           };
 
           pillsSecondaryBar = pillsBaseBar // {
             modules-left = "round-left bspwm round-right sp polywins";
             modules-center = "xwindow";
-            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift sp round-left date round-right sp powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift${pillsTray} sp round-left date round-right sp powermenu";
           };
 
           # Overrides aplicados aos módulos existentes quando o estilo pills/zproger está ativo.
@@ -372,15 +415,16 @@ in
               label-foreground = colors.yellow-alt;
             };
 
+            "module/powermenu" = {
+              label = "";
+              label-foreground = colors.red-alt;
+            };
+          }
+          // lib.optionalAttrs hasTray {
             "module/tray" = {
               format-background = colors.pill;
               label-background = colors.pill;
               label-foreground = colors.blue-alt;
-            };
-
-            "module/powermenu" = {
-              label = "";
-              label-foreground = colors.red-alt;
             };
           };
         in

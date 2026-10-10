@@ -6,6 +6,9 @@
   cfg ? {
     battery = "BAT0";
     adapter = "ADP1";
+    tray = {
+      enable = true;
+    };
   },
   ...
 }:
@@ -423,6 +426,12 @@
     scroll-up = "${scripts.bspLayoutSwitchScript} next";
     scroll-down = "${scripts.bspLayoutSwitchScript} prev";
   };
+  "settings" = {
+    screenchange-reload = true;
+    pseudo-transparency = false;
+  };
+}
+// lib.optionalAttrs (cfg.tray.enable or false) {
   # --- Bandeja do Sistema (Stalonetray Toggle Button) ---
   "module/tray" = {
     type = "custom/text";
@@ -432,10 +441,5 @@
     label-foreground = colors.blue-alt;
     label-padding = 1;
     click-left = "${scripts.stalonetrayToggleScript}";
-  };
-
-  "settings" = {
-    screenchange-reload = true;
-    pseudo-transparency = false;
   };
 }
