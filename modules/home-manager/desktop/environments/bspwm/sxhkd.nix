@@ -898,14 +898,9 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Recarregar automaticamente o sxhkd e polybar ao rodar switch-home (sem reiniciar o bspwm para não derrubar a sessão X11)
+    # Recarregar automaticamente o sxhkd ao rodar switch-home (sem reiniciar o bspwm)
     home.activation.reloadSxhkd = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -USR1 -x sxhkd 2>/dev/null || true
-      if command -v polybar-launch >/dev/null 2>&1; then
-        $DRY_RUN_CMD polybar-launch 2>/dev/null || true
-      else
-        $DRY_RUN_CMD ${pkgs.polybar}/bin/polybar-msg cmd restart 2>/dev/null || true
-      fi
+      $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -USR1 -x sxhkd 2>/dev/null || (cd "$HOME" && ${pkgs.sxhkd}/bin/sxhkd &)
     '';
 
     services.sxhkd = {
@@ -943,6 +938,11 @@ in
           # Menu Interativo de Bluetooth (Cmd + Shift + B / Alt + Shift + B)
           "${mod} + shift + b" = "rofi-bluetooth";
           "${altMod} + shift + b" = "rofi-bluetooth";
+
+          # Bandeja do Sistema Stalonetray (Cmd + I / Alt + I / Cmd + Shift + I)
+          "${mod} + i" = "stalonetray-toggle";
+          "${altMod} + i" = "stalonetray-toggle";
+          "${mod} + shift + i" = "stalonetray-toggle";
 
           # Terminal (Cmd + Return, Cmd + T) - sempre em $HOME
           "${mod} + Return" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";

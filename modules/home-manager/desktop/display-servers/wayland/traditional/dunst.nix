@@ -89,6 +89,31 @@ in
           frame_color = "#f38ba8"; # Red
           timeout = 10;
         };
+
+        # Regras com timer automático para Bluetooth e Blueman
+        bluetooth = {
+          appname = "*[Bb]luetooth*";
+          override_dbus_timeout = true;
+          timeout = 4;
+        };
+
+        blueman = {
+          appname = "*[Bb]lueman*";
+          override_dbus_timeout = true;
+          timeout = 4;
+        };
+
+        bluetooth_stack = {
+          stack_tag = "bluetooth-osd";
+          override_dbus_timeout = true;
+          timeout = 4;
+        };
+
+        bluetooth_summary = {
+          summary = "*[Bb]luetooth*";
+          override_dbus_timeout = true;
+          timeout = 4;
+        };
       };
     };
   };

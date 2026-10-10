@@ -70,6 +70,11 @@ in
   config = mkIf (config.desktop.bspwm.enable && cfg.enable) {
     home.packages = [ pkgs.picom ];
 
+    # Recarregar automaticamente o compositor Picom ao rodar switch-home
+    home.activation.reloadPicom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD systemctl --user restart picom 2>/dev/null || (${pkgs.procps}/bin/pkill -x picom 2>/dev/null && ${pkgs.picom}/bin/picom -b 2>/dev/null || true)
+    '';
+
     # Em vez de utilizar services.picom do Home Manager (que injeta diretivas obsoletas da v10
     # como inactive-opacity, active-opacity, shadow-exclude, fade-exclude, wintypes, gerando popup de warnings),
     # escrevemos diretamente o picom.conf moderno e puro no padrão libconfig da v12.

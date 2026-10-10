@@ -71,7 +71,17 @@ in
       (pkgs.writeShellScriptBin "polybar-os-logo" ''exec ${scripts.osLogoScript} "$@"'')
       (pkgs.writeShellScriptBin "polybar-launch" ''exec ${scripts.polybarLaunchScript} "$@"'')
       (pkgs.writeShellScriptBin "polybar-media-control" ''exec ${scripts.mediaControlScript} "$@"'')
+      (pkgs.writeShellScriptBin "stalonetray-toggle" ''exec ${scripts.stalonetrayToggleScript} "$@"'')
     ];
+
+    # Recarregar automaticamente a Polybar ao rodar switch-home
+    home.activation.reloadPolybar = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if command -v polybar-launch >/dev/null 2>&1; then
+        $DRY_RUN_CMD polybar-launch 2>/dev/null || true
+      else
+        $DRY_RUN_CMD ${polybarPkg}/bin/polybar-msg cmd restart 2>/dev/null || true
+      fi
+    '';
 
     services.polybar = {
       enable = true;
@@ -176,7 +186,7 @@ in
 
             font-0 = "Inter:weight=SemiBold:size=10;3";
             font-1 = "Symbols Nerd Font:size=11;3";
-            font-2 = "JetBrainsMono Nerd Font:weight=Medium:size=10;3";
+            font-2 = "JetBrainsMono Nerd Font:weight=Bold:size=11;3"; # T3: Números dos workspaces (sutilmente maior que 10)
             font-3 = "Symbols Nerd Font:size=13;3"; # Ícone do lançador e power
             font-4 = "JetBrainsMono Nerd Font:size=24;6"; # Glyphs das cápsulas  e  (T5 - preenchimento vertical contínuo de 32px)
             font-5 = "Symbols Nerd Font Mono:size=11;3";
@@ -230,26 +240,26 @@ in
               ws-icon-10 = "10;%{F${colors.green-alt}}10%{F-}";
               ws-icon-default = "%name%";
 
-              label-focused = "%icon%";
+              label-focused = "%{T3}%icon%%{T-}";
               label-focused-foreground = colors.text-alt;
               label-focused-underline = colors.gray;
               label-focused-background = colors.pill;
               label-focused-padding = 1;
               label-focused-margin = 0;
 
-              label-occupied = "%icon%";
+              label-occupied = "%{T3}%icon%%{T-}";
               label-occupied-foreground = colors.muted;
               label-occupied-background = colors.pill;
               label-occupied-padding = 1;
               label-occupied-margin = 0;
 
-              label-urgent = "%icon%";
+              label-urgent = "%{T3}%icon%%{T-}";
               label-urgent-foreground = colors.nord;
               label-urgent-background = colors.pill;
               label-urgent-padding = 1;
               label-urgent-margin = 0;
 
-              label-empty = "%icon%";
+              label-empty = "%{T3}%icon%%{T-}";
               label-empty-foreground = colors.surface1;
               label-empty-background = colors.pill;
               label-empty-padding = 1;
@@ -360,6 +370,12 @@ in
 
             "module/minimized" = {
               label-foreground = colors.yellow-alt;
+            };
+
+            "module/tray" = {
+              format-background = colors.pill;
+              label-background = colors.pill;
+              label-foreground = colors.blue-alt;
             };
 
             "module/powermenu" = {

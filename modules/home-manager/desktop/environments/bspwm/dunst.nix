@@ -19,6 +19,16 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Recarregar automaticamente o Dunst ao rodar switch-home
+    home.activation.reloadDunst = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if command -v dunstctl >/dev/null 2>&1; then
+        $DRY_RUN_CMD dunstctl reload 2>/dev/null || true
+      elif [ -x "${pkgs.dunst}/bin/dunstctl" ]; then
+        $DRY_RUN_CMD ${pkgs.dunst}/bin/dunstctl reload 2>/dev/null || true
+      fi
+      $DRY_RUN_CMD systemctl --user restart dunst 2>/dev/null || true
+    '';
+
     services.dunst = {
       enable = true;
       package = pkgs.dunst;
@@ -28,6 +38,7 @@ in
           corner_radius = 12;
           origin = "top-right";
           offset = "16x46";
+          follow = "mouse";
           width = "(260, 420)";
           height = "(50, 220)";
           progress_bar = true;
@@ -70,7 +81,32 @@ in
           background = "#1e1e2e";
           foreground = "#cdd6f4";
           frame_color = "#f38ba8";
-          timeout = 0;
+          timeout = 8;
+        };
+
+        # Regras com timer automático para Bluetooth e Blueman (desaparecem em 4s sem exigir clique manual)
+        bluetooth = {
+          appname = "*[Bb]luetooth*";
+          override_dbus_timeout = true;
+          timeout = 4;
+        };
+
+        blueman = {
+          appname = "*[Bb]lueman*";
+          override_dbus_timeout = true;
+          timeout = 4;
+        };
+
+        bluetooth_stack = {
+          stack_tag = "bluetooth-osd";
+          override_dbus_timeout = true;
+          timeout = 4;
+        };
+
+        bluetooth_summary = {
+          summary = "*[Bb]luetooth*";
+          override_dbus_timeout = true;
+          timeout = 4;
         };
       };
     };

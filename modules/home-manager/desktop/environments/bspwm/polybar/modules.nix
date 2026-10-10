@@ -423,12 +423,15 @@
     scroll-up = "${scripts.bspLayoutSwitchScript} next";
     scroll-down = "${scripts.bspLayoutSwitchScript} prev";
   };
-  # --- Bandeja do Sistema (System Tray - Polybar 3.7+) ---
+  # --- Bandeja do Sistema (Stalonetray Toggle Button) ---
   "module/tray" = {
-    type = "internal/tray";
-    format = "<tray>";
-    tray-spacing = "8px";
-    tray-size = "16px";
+    type = "custom/text";
+    format = "<label>";
+    label = "󱊖";
+    label-font = 4;
+    label-foreground = colors.blue-alt;
+    label-padding = 1;
+    click-left = "${scripts.stalonetrayToggleScript}";
   };
 
   "settings" = {

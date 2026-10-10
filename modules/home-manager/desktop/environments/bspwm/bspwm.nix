@@ -267,6 +267,18 @@ in
               center = true;
               follow = true;
             };
+            "Stalonetray" = {
+              state = "floating";
+              sticky = true;
+              border = false;
+              manage = false;
+            };
+            "stalonetray" = {
+              state = "floating";
+              sticky = true;
+              border = false;
+              manage = false;
+            };
             "GParted" = {
               state = "floating";
               center = true;
@@ -499,6 +511,15 @@ in
             elif [ -x "${pkgs.blueman}/bin/blueman-applet" ]; then
               pkill -x blueman-applet || true
               ${pkgs.blueman}/bin/blueman-applet &
+            fi
+
+            # Bandeja do sistema (Stalonetray)
+            if command -v stalonetray >/dev/null 2>&1; then
+              pkill -x stalonetray || true
+              stalonetray &
+            elif [ -x "${pkgs.stalonetray}/bin/stalonetray" ]; then
+              pkill -x stalonetray || true
+              ${pkgs.stalonetray}/bin/stalonetray &
             fi
 
             # Auto-trust de dispositivos Bluetooth pareados (elimina bloqueios de autorização do BlueZ)

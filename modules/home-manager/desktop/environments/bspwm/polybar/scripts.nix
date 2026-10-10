@@ -575,7 +575,7 @@ rec {
       local icon="$2"
       local title="$3"
       local msg="$4"
-      ${pkgs.dunst}/bin/dunstify -a "Bluetooth" -u "$urgency" -i "$icon" -h string:x-dunst-stack-tag:bluetooth-osd -t 2500 "$title" "$msg"
+      ${pkgs.dunst}/bin/dunstify -a "Bluetooth" -u "$urgency" -i "$icon" -h string:x-dunst-stack-tag:bluetooth-osd -t 3000 "$title" "$msg"
     }
 
     power_on() {
@@ -1889,6 +1889,36 @@ rec {
         fi
         ;;
     esac
+  '';
+
+  # --- Script de Alternância da Bandeja do Sistema (Stalonetray) ---
+  stalonetrayToggleScript = pkgs.writeShellScript "stalonetray-toggle" ''
+    export PATH="${lib.makeBinPath [
+      pkgs.stalonetray
+      pkgs.xdotool
+      pkgs.procps
+      pkgs.coreutils
+    ]}:$PATH"
+
+    if ! pgrep -x "stalonetray" >/dev/null 2>&1; then
+      stalonetray &
+      sleep 0.2
+      wid=$(xdotool search --class Stalonetray 2>/dev/null | head -n1 || xdotool search --class stalonetray 2>/dev/null | head -n1)
+      [ -n "$wid" ] && xdotool windowraise "$wid"
+    else
+      wid=$(xdotool search --class Stalonetray 2>/dev/null | head -n1 || xdotool search --class stalonetray 2>/dev/null | head -n1)
+      if [ -n "$wid" ]; then
+        if xdotool search --onlyvisible --class Stalonetray 2>/dev/null | grep -q "^$wid$" || xdotool search --onlyvisible --class stalonetray 2>/dev/null | grep -q "^$wid$"; then
+          xdotool windowunmap "$wid"
+        else
+          xdotool windowmap "$wid"
+          xdotool windowraise "$wid"
+        fi
+      else
+        pkill -x stalonetray || true
+        stalonetray &
+      fi
+    fi
   '';
 
   # --- Script Inteligente de Inicialização Multi-Monitor da Polybar ---

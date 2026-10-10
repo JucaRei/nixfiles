@@ -80,9 +80,36 @@
         font-name = "${config.gtk.font.name} ${toString config.gtk.font.size}";
       };
       "org/blueman/general" = {
-        notification-daemon = false;
+        notification-daemon = true;
       };
     };
+
+    services.stalonetray = {
+      enable = true;
+      config = {
+        background = "#2b2f37";
+        decorations = "none";
+        dockapp_mode = "none";
+        geometry = "5x1-16+44";
+        max_geometry = "8x1-16+44";
+        grow_gravity = "NW";
+        icon_gravity = "NE";
+        icon_size = 20;
+        slot_size = 24;
+        sticky = true;
+        skip_taskbar = true;
+        window_type = "dock";
+        window_layer = "top";
+        kludges = "force_icons_size";
+      };
+    };
+
+    # Recarregar automaticamente o Stalonetray ao rodar switch-home se habilitado
+    home.activation.reloadStalonetray = lib.mkIf config.services.stalonetray.enable (
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        $DRY_RUN_CMD systemctl --user restart stalonetray 2>/dev/null || (${pkgs.procps}/bin/pkill -x stalonetray 2>/dev/null && ${pkgs.stalonetray}/bin/stalonetray 2>/dev/null || true) &
+      ''
+    );
 
     home = {
       sessionVariables = {
