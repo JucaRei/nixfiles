@@ -203,7 +203,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 | Thunar | `file-manager/thunar` | Wrapper GVfs (`GIO_EXTRA_MODULES`). Sem `pkgs.polkit` em `home.packages` (setuid). `admin://` para root. |
 | Nautilus | `file-manager/nautilus` | Wrapper GVfs, Sushi, Open Any Terminal, scripts contextuais. |
 | Git | `services/git` | `signing.format = "ssh"`, `signingKey = "~/.ssh/nitro.pub"`. |
-| SSH | `services/ssh` | `identityFiles = [ "~/.ssh/nitro" "~/.ssh/id_ed25519" "~/.ssh/id_rsa" ]`. |
+| SSH | `services/ssh` & `tools/ssh` | `identityFiles = [ "~/.ssh/nitro" ... ]`, hosts locais (`*.lan`), e compatibilidade legacy (`sharecenter.home.lan` / `10.10.10.10` com `+ssh-dss`, wrappers herméticos `ssh-legacy`, `scp-legacy`, `ssh-sharecenter` e alias `sharecenter` via `nixpkgs-oldstable`). |
 | Bash/ble.sh | `shells/bash` | `ble.sh` pré-carregado com `--attach=none` (mkOrder 500), acoplado após Starship (mkOrder 2000). |
 | FZF | `shells/fzf` | Motor `fd`, preview `bat`+`eza`, palette Catppuccin. `fif` (ripgrep fuzzy), `fkill`, `fpreview`. |
 | Fastfetch | `tools/fastfetch` | Suporte `useSystemPackage`. Preset default linkado. |
