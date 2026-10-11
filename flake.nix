@@ -6,6 +6,7 @@
     nixpkgs.url = "https://flakehub.com/f/nixos/nixpkgs/0.2605.*";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-oldstable.url = "https://flakehub.com/f/nixos/nixpkgs/0.2405.*";
+    nixpkgs-older.url = "https://flakehub.com/f/nixos/nixpkgs/0.2211.*";
 
     # Home-Manager
     home-manager.url = "github:nix-community/home-manager/release-26.05";

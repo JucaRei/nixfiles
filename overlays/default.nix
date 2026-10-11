@@ -142,4 +142,18 @@ EOF
       };
     };
   };
+
+  # Access older packages (NixOS 22.11) via 'pkgs.older.<package>'
+  olderPackages = final: _prev: {
+    older = import inputs.nixpkgs-older {
+      inherit (final.stdenv.hostPlatform) system;
+      config = {
+        allowUnfree = true;
+        allowBroken = true;
+        allowInsecure = true;
+        nvidia.acceptLicense = true;
+        permittedInsecurePackages = final.config.permittedInsecurePackages or [ ];
+      };
+    };
+  };
 }

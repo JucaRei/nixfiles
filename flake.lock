@@ -476,6 +476,20 @@
         "type": "github"
       }
     },
+    "nixpkgs-older": {
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-R/glsgjybw9RkBhTdwOaYQ2idpYePWy/v6KJt8t8iJU=",
+        "rev": "ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b",
+        "revCount": 433406,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/nixos/nixpkgs/0.2211.433406%2Brev-ea4c80b39be4c09702b0cb3b42eab59e2ba4f24b/0189fafc-845c-7413-9955-bd16e2eb8844/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/nixos/nixpkgs/0.2211.%2A"
+      }
+    },
     "nixpkgs-oldstable": {
       "locked": {
         "lastModified": 1735563628,
@@ -624,6 +638,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixos-needsreboot": "nixos-needsreboot",
         "nixpkgs": "nixpkgs_4",
+        "nixpkgs-older": "nixpkgs-older",
         "nixpkgs-oldstable": "nixpkgs-oldstable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur",

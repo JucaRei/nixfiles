@@ -186,6 +186,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **Fcitx5**: Overlay de compatibilidade Qt6 (`fcitx5-with-addons` → `qt6Packages`). Não incluir `fcitx5-configtool` em `home.packages` (colisão de `buildEnv`).
 - **Noctalia Shell**: Patches em `overlays/patches/`. Overlay `symlinkJoin` com wrapper.
 - **`inherit (final.stdenv.hostPlatform) system`**: Não usar `inherit (final) system` (deprecation warning).
+- **`olderPackages` (`pkgs.older`)**: Overlay importando `inputs.nixpkgs-older` (NixOS 22.11 / OpenSSH 9.1p1). Necessário para compatibilidade com NAS e dispositivos legados (D-Link ShareCenter `10.10.10.10`), pois o OpenSSH 9.8+ (em Nixpkgs 26.05 e 24.05 recente) removeu suporte a DSA gerando erro `Bad key types '+ssh-dss'`.
 - **Fontes locais (`pkgs/fonts/`)**: Requerem `dontBuild = true;` (presença de Makefile causa `nom-build: command not found`).
 - **Zathura**: `package = pkgs.zathura` (wrapper com plugins embarcados). Não usar `pkgs.zathura-pdf-mupdf`.
 
@@ -203,7 +204,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 | Thunar | `file-manager/thunar` | Wrapper GVfs (`GIO_EXTRA_MODULES`). Sem `pkgs.polkit` em `home.packages` (setuid). `admin://` para root. |
 | Nautilus | `file-manager/nautilus` | Wrapper GVfs, Sushi, Open Any Terminal, scripts contextuais. |
 | Git | `services/git` | `signing.format = "ssh"`, `signingKey = "~/.ssh/nitro.pub"`. |
-| SSH | `services/ssh` & `tools/ssh` | `identityFiles = [ "~/.ssh/nitro" ... ]`, hosts locais (`*.lan`), e compatibilidade legacy (`sharecenter.home.lan` / `10.10.10.10` com `+ssh-dss`, wrappers herméticos `ssh-legacy`, `scp-legacy`, `ssh-sharecenter` e alias `sharecenter` via `nixpkgs-oldstable`). |
+| SSH | `services/ssh` & `tools/ssh` | `identityFiles = [ "~/.ssh/nitro" ... ]`, hosts locais (`*.lan`), e compatibilidade legacy (`sharecenter.home.lan` / `10.10.10.10` com `+ssh-dss`, wrappers herméticos `ssh-legacy`, `scp-legacy`, `ssh-sharecenter` e alias `sharecenter` via `nixpkgs-older` / `pkgs.older`). |
 | Bash/ble.sh | `shells/bash` | `ble.sh` pré-carregado com `--attach=none` (mkOrder 500), acoplado após Starship (mkOrder 2000). |
 | FZF | `shells/fzf` | Motor `fd`, preview `bat`+`eza`, palette Catppuccin. `fif` (ripgrep fuzzy), `fkill`, `fpreview`. |
 | Fastfetch | `tools/fastfetch` | Suporte `useSystemPackage`. Preset default linkado. |
