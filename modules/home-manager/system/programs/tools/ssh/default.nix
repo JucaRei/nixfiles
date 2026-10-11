@@ -109,14 +109,18 @@ in
           UserKnownHostsFile = "/dev/null";
         };
 
-        "sharecenter.home.lan 10.10.10.10" = {
+        # Host configuration for legacy NAS D-Link ShareCenter.
+        # NOTE: Do NOT place '+ssh-dss', legacy Kex or CBC ciphers here in global ~/.ssh/config,
+        # because modern OpenSSH (used by git push and modern tools) validates key types across
+        # the entire config file on startup and will fatal-terminate on '+ssh-dss'.
+        # All legacy protocols are encapsulated inside the 'ssh-legacy' / 'ssh-sharecenter' wrappers.
+        "sharecenter.home.lan" = {
+          HostName = "10.10.10.10";
           User = "root";
-          HostKeyAlgorithms = "+ssh-dss";
-          KexAlgorithms = "+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1";
-          PubkeyAcceptedAlgorithms = "+ssh-dss";
-          PubkeyAcceptedKeyTypes = "+ssh-dss";
-          Ciphers = "+aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc";
-          MACs = "+hmac-sha1,hmac-sha1-96";
+        };
+
+        "10.10.10.10" = {
+          User = "root";
         };
       };
 
