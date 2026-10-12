@@ -308,13 +308,33 @@ let
   # --- Script de Notificação de Volume Suave (Estilo gh0stzk / Catppuccin) ---
   volumeOsd = pkgs.writeShellScript "volume-osd" ''
     case "$1" in
-      up)   ${pkgs.pamixer}/bin/pamixer -i 2 ;;
-      down) ${pkgs.pamixer}/bin/pamixer -d 2 ;;
-      mute) ${pkgs.pamixer}/bin/pamixer -t ;;
+      up)
+        ${pkgs.pamixer}/bin/pamixer --allow-boost --set-limit 150 -i 2 2>/dev/null || {
+          if command -v pactl >/dev/null 2>&1; then
+            curr_vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -o -E '[0-9]+%' | head -n1 | tr -d '%')
+            if [ -n "$curr_vol" ] && [ "$curr_vol" -lt 150 ]; then
+              next_vol=$(( curr_vol + 2 ))
+              [ "$next_vol" -gt 150 ] && next_vol=150
+              pactl set-sink-volume @DEFAULT_SINK@ "$next_vol%" 2>/dev/null || true
+            fi
+          fi
+        }
+        ;;
+      down)
+        ${pkgs.pamixer}/bin/pamixer -d 2 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ -2% 2>/dev/null || true
+        ;;
+      mute)
+        ${pkgs.pamixer}/bin/pamixer -t 2>/dev/null || pactl set-sink-mute @DEFAULT_SINK@ toggle 2>/dev/null || true
+        ;;
     esac
 
-    vol=$(${pkgs.pamixer}/bin/pamixer --get-volume 2>/dev/null || echo "0")
+    vol=$(${pkgs.pamixer}/bin/pamixer --get-volume 2>/dev/null)
     is_muted=$(${pkgs.pamixer}/bin/pamixer --get-mute 2>/dev/null || echo "false")
+    if [ -z "$vol" ] && command -v pactl >/dev/null 2>&1; then
+      vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -o -E '[0-9]+%' | head -n1 | tr -d '%')
+      pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | grep -qi "yes" && is_muted="true"
+    fi
+    [ -z "$vol" ] && vol="0"
 
     if [ "$is_muted" = "true" ] || [ "$vol" -eq 0 ]; then
       icon="audio-volume-muted"
@@ -329,7 +349,8 @@ let
         icon="audio-volume-high"
       fi
       text="Volume: $vol%"
-      bar_val="$vol"
+      bar_val=$(( vol * 100 / 150 ))
+      [ "$bar_val" -gt 100 ] && bar_val=100
     fi
 
     ${pkgs.dunst}/bin/dunstify -a "OSD" \

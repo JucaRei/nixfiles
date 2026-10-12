@@ -473,7 +473,12 @@ rec {
           ;;
       esac
 
-      echo "%{F$icon_color}$icon%{F-} %{F${colors.text}}$vol%%{F-}"
+      local vol_color="${colors.text}"
+      if [ "$vol" -gt 100 ]; then
+        vol_color="${colors.peach}"
+      fi
+
+      echo "%{F$icon_color}$icon%{F-} %{F$vol_color}$vol%%{F-}"
     }
 
     get_audio_info
@@ -502,16 +507,20 @@ rec {
       is_muted=$(pamixer --get-mute 2>/dev/null || echo "false")
       local icon="audio-volume-medium"
       local text="Volume: $vol%"
-      local bar_val="$vol"
+      local bar_val=0
 
       if [ "$is_muted" = "true" ] || [ "$vol" -eq 0 ]; then
         icon="audio-volume-muted"
         text="Volume: Mudo"
         bar_val=0
-      elif [ "$vol" -lt 30 ]; then
-        icon="audio-volume-low"
-      elif [ "$vol" -gt 70 ]; then
-        icon="audio-volume-high"
+      else
+        if [ "$vol" -lt 30 ]; then
+          icon="audio-volume-low"
+        elif [ "$vol" -gt 70 ]; then
+          icon="audio-volume-high"
+        fi
+        bar_val=$(( vol * 100 / 150 ))
+        [ "$bar_val" -gt 100 ] && bar_val=100
       fi
 
       if command -v dunstify >/dev/null 2>&1; then
@@ -521,7 +530,14 @@ rec {
 
     case "$action" in
       volume-up)
-        pamixer -i 2 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ +2% 2>/dev/null || true
+        pamixer --allow-boost --set-limit 150 -i 2 2>/dev/null || {
+          curr_vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -o -E '[0-9]+%' | head -n1 | tr -d '%')
+          if [ -n "$curr_vol" ] && [ "$curr_vol" -lt 150 ]; then
+            next_vol=$(( curr_vol + 2 ))
+            [ "$next_vol" -gt 150 ] && next_vol=150
+            pactl set-sink-volume @DEFAULT_SINK@ "$next_vol%" 2>/dev/null || true
+          fi
+        }
         notify_vol
         ;;
       volume-down)

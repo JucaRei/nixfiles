@@ -426,6 +426,7 @@
     scroll-up = "${scripts.bspLayoutSwitchScript} next";
     scroll-down = "${scripts.bspLayoutSwitchScript} prev";
   };
+
   "settings" = {
     screenchange-reload = true;
     pseudo-transparency = false;

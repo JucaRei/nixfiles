@@ -589,7 +589,7 @@ in
           ''
         else
           ''
-            bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.pamixer}/bin/pamixer -i 5
+            bind=NONE,XF86AudioRaiseVolume,spawn,${pkgs.pamixer}/bin/pamixer --allow-boost --set-limit 150 -i 5
             bind=NONE,XF86AudioLowerVolume,spawn,${pkgs.pamixer}/bin/pamixer -d 5
             bind=NONE,XF86AudioMute,spawn,${pkgs.pamixer}/bin/pamixer -t
             bind=NONE,XF86AudioMicMute,spawn,${pkgs.pamixer}/bin/pamixer --default-source -t

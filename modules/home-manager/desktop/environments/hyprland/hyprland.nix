@@ -596,7 +596,7 @@ in
 
         binde = [
           # Volume e Brilho com repetição contínua
-          ", XF86AudioRaiseVolume, exec, ${pkgs.pamixer}/bin/pamixer -i 5"
+          ", XF86AudioRaiseVolume, exec, ${pkgs.pamixer}/bin/pamixer --allow-boost --set-limit 150 -i 5"
           ", XF86AudioLowerVolume, exec, ${pkgs.pamixer}/bin/pamixer -d 5"
           ", XF86MonBrightnessUp, exec, ${monBrightnessOsd} up"
           ", XF86MonBrightnessDown, exec, ${monBrightnessOsd} down"
