@@ -197,6 +197,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 | Módulo | Caminho | Notas |
 |--------|---------|-------|
 | Antigravity IDE | `editors/antigravity` | `-fhs` no NixOS, nativo no standalone. CDP porta 9004. |
+| Gedit | `editors/gedit` | Editor padrão para `text/plain`. Tema Dracula nativo provisionado via GtkSourceView e `dconf.settings`. |
 | Chromium/Chrome | `browsers/chrome` | `cfg.version` (não `cfg.browser`). `optionals` (não `mkIf`) em listas. |
 | Vivaldi | `browsers/chrome` + overlays | `update-ffmpeg --user` para codecs proprietários. Sem `--enable-zero-copy` em GPUs legadas. |
 | MPV | `multimedia/mpv` | `[hw-preset]` no `[default]` no final do conf. `useSystemPackage` gera modo universal seguro. Opção `defaultNvidia` configura `mpv.desktop` para usar `mpv-nvidia` com ação secundária para Intel. |

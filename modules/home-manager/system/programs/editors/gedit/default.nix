@@ -29,6 +29,12 @@ in
       default = pkgs.gedit;
       description = "Pacote do gedit a ser utilizado.";
     };
+
+    theme = mkOption {
+      type = types.str;
+      default = "dracula";
+      description = "Tema / esquema de cores padrão do gedit.";
+    };
   };
 
   config = mkIf cfg.enable {
@@ -40,6 +46,18 @@ in
       EDITOR = mkDefault "gedit";
     };
 
+    xdg.dataFile = {
+      "gedit/styles/dracula.xml".source = ./dracula.xml;
+      "gtksourceview-4/styles/dracula.xml".source = ./dracula.xml;
+      "gtksourceview-3.0/styles/dracula.xml".source = ./dracula.xml;
+      "libgedit-gtksourceview-300/styles/dracula.xml".source = ./dracula.xml;
+    };
+
+    dconf.settings = {
+      "org/gnome/gedit/preferences/editor" = {
+        scheme = cfg.theme;
+      };
+    };
 
     xdg.mimeApps = mkIf cfg.default {
       defaultApplications = {
