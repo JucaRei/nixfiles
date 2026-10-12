@@ -36,7 +36,9 @@ let
   };
 
   terminalCmd =
-    if config.programs ? alacritty && config.programs.alacritty.enable then
+    if (config.system.programs.terminal.activeWorkingDirCommand or "") != "" then
+      "${config.system.programs.terminal.activeWorkingDirCommand} %f"
+    else if config.programs ? alacritty && config.programs.alacritty.enable then
       "${pkgs.alacritty}/bin/alacritty --working-directory %f"
     else
       "${pkgs.xfce4-exo}/bin/exo-open --working-directory %f --launch TerminalEmulator";

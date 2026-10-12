@@ -8,7 +8,9 @@
 let
   inherit (lib) mkIf getExe mkOption;
   terminalBin =
-    if config.programs ? alacritty && config.programs.alacritty.enable then
+    if (config.system.programs.terminal.activeCommand or "") != "" then
+      config.system.programs.terminal.activeCommand
+    else if config.programs ? alacritty && config.programs.alacritty.enable then
       getExe config.programs.alacritty.package
     else
       "${pkgs.xfce4-terminal or pkgs.alacritty}/bin/xfce4-terminal";

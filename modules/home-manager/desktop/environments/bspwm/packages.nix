@@ -85,7 +85,6 @@ in
       [
         # Utilitários e Desktop
         feh
-        (nixGLWrapper alacritty)
         touchpadSpeedScript
         (pkgs.writeShellScriptBin "bspwm-touchpad-speed" ''exec ${touchpadSpeedScript}/bin/touchpad-speed "$@"'')
         bsp-layout
@@ -119,6 +118,9 @@ in
         pasystray
         galculator
         lxappearance
+      ]
+      ++ optionals ((config.system.programs.terminal.name or "") == "alacritty") [
+        (nixGLWrapper alacritty)
       ]
       ++ optionals (!isNixOS) [
         glibcLocales
@@ -178,30 +180,32 @@ in
 
       # Alacritty com nixGL wrapper no Exec (corrige erro GL em Debian/Fedora)
       # Nota: nome em maiúsculo "Alacritty.desktop" é essencial para sobrepor (shadow) o .desktop upstream do Nix Store sem duplicar
-      ".local/share/applications/Alacritty.desktop".text = ''
-        [Desktop Entry]
-        Version=1.0
-        Type=Application
-        Name=Alacritty
-        GenericName=Terminal
-        Comment=A fast, cross-platform, OpenGL terminal emulator
-        Exec=${alacrittyBin} %U
-        Icon=Alacritty
-        Terminal=false
-        Categories=System;TerminalEmulator;
-        Keywords=terminal;shell;
-        StartupWMClass=Alacritty
-        StartupNotify=false
-        Actions=New;Float;
+      ".local/share/applications/Alacritty.desktop" = lib.mkIf ((config.system.programs.terminal.name or "") == "alacritty") {
+        text = ''
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=Alacritty
+          GenericName=Terminal
+          Comment=A fast, cross-platform, OpenGL terminal emulator
+          Exec=${alacrittyBin} %U
+          Icon=Alacritty
+          Terminal=false
+          Categories=System;TerminalEmulator;
+          Keywords=terminal;shell;
+          StartupWMClass=Alacritty
+          StartupNotify=false
+          Actions=New;Float;
 
-        [Desktop Action New]
-        Name=New Terminal Window
-        Exec=${alacrittyBin}
+          [Desktop Action New]
+          Name=New Terminal Window
+          Exec=${alacrittyBin}
 
-        [Desktop Action Float]
-        Name=New Floating Terminal
-        Exec=${alacrittyBin} --class AlacrittyFloat
-      '';
+          [Desktop Action Float]
+          Name=New Floating Terminal
+          Exec=${alacrittyBin} --class AlacrittyFloat
+        '';
+      };
 
       # Pavucontrol
       ".local/share/applications/pavucontrol.desktop".text = ''

@@ -57,14 +57,15 @@ pkgs.writeScriptBin "hm-switch" ''
       fi
 
       # -------------------------------------------------------------------
-      # Verificação pós-switch: testar OpenGL do Alacritty
-      # Em distros não-NixOS com GPU, o Alacritty precisa do wrapper nixGL.
-      # Testa se o binário do Alacritty consegue inicializar sem erro GL.
+      # Verificação pós-switch: testar terminal
       # -------------------------------------------------------------------
-      echo "󰋽  Verificando Alacritty (OpenGL)..."
+      if command -v terminal >/dev/null 2>&1; then
+        echo "󰄬  Terminal agnóstico (terminal) pronto no PATH"
+      fi
+
       _alacritty_bin="$(command -v alacritty 2>/dev/null)"
       if [ -n "$_alacritty_bin" ]; then
-        # Teste rápido: --version não precisa de display, mas testa o loader
+        echo "󰋽  Verificando Alacritty (OpenGL)..."
         _alacritty_err=$("$_alacritty_bin" --version 2>&1 >/dev/null)
         if echo "$_alacritty_err" | grep -qi 'failed to find.*GL\|opengl\|egl\|glx'; then
           echo "󰀦  Alacritty: erro de OpenGL detectado!"
@@ -76,17 +77,10 @@ pkgs.writeScriptBin "hm-switch" ''
           fi
         else
           echo "󰄬  Alacritty OK (OpenGL func. corretamente)"
-          # Registrar/atualizar .desktop do Alacritty
           if command -v update-desktop-database >/dev/null 2>&1; then
             update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
           fi
-          if command -v ${pkgs.dunst}/bin/dunstify >/dev/null 2>&1; then
-            ${pkgs.dunst}/bin/dunstify -a "Alacritty" -u low -i "utilities-terminal" -r 9997 -t 3000 \
-              "Alacritty OK" "Terminal com OpenGL inicializado corretamente." 2>/dev/null || true
-          fi
         fi
-      else
-        echo "󰀦  alacritty não encontrado no PATH"
       fi
 
       echo "󰩹  Cleaning old generations (keeping last 5)..."

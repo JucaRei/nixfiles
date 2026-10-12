@@ -117,6 +117,17 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - CLI unificado `file-manager` com `default` (`auto/thunar/nautilus/nemo/pcmanfm`), `activeCommand`, `activeName`, `activeDesktopFile`.
 - Todos os WMs usam `config.system.programs.file-manager.activeCommand` nos atalhos.
 
+### Emulador de Terminal Agnóstico (`system.programs.terminal`)
+
+- CLI unificado `terminal` e wrapper `~/.local/bin/term` no PATH, exportando `TERMINAL = "terminal"`.
+- Totalmente agnóstico: aceita qualquer terminal via `name` (string aberta: `"urxvt"`, `"rxvt"`, `"alacritty"`, `"kitty"`, `"foot"`, `"wezterm"`, `"xfce4-terminal"`, `"ghostty"`, `"st"`, etc.), comando arbitrário (`command = "..."`) ou pacote customizado (`package = pkgs....`).
+- Opções declarativas exportadas para todos os WMs e ferramentas:
+  - `activeCommand`: comando executável para abrir o terminal.
+  - `activeName`: nome amigável para menus e manuais de atalhos.
+  - `activeWorkingDirCommand`: comando base para abrir em diretório específico (usado pelo Thunar/uca.xml via `%f`).
+  - `scratchpadCommand`: comando adaptado para o modo flutuante/scratchpad (com classe/nome `-name $SCRATCHPAD_NAME` para URxvt/RXVT ou `--class` para Alacritty/Kitty).
+- Todos os WMs (BSPWM, Hyprland, MangoWM, DWM, XFCE4), launchers (Rofi) e gerenciadores de arquivos (Thunar) usam `config.system.programs.terminal.activeCommand` nos atalhos universais (`Super + Return`, `Super + T`).
+
 ### Limpeza Automática (`system.cleanup`)
 
 - Módulo centralizado purga configs/caches/dados de apps desativadas a cada switch.
@@ -210,6 +221,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 | FZF | `shells/fzf` | Motor `fd`, preview `bat`+`eza`, palette Catppuccin. `fif` (ripgrep fuzzy), `fkill`, `fpreview`. |
 | Fastfetch | `tools/fastfetch` | Suporte `useSystemPackage`. Preset default linkado. |
 | Picom | `bspwm/picom.nix` | v12: Conf via `xdg.configFile` (não `services.picom`). Dual-Kawase blur. Sem opções legadas. |
+| URxvt | `terminal/urxvt` | Emulador rxvt-unicode com paleta Gruvbox 256, plugins Perl (`tabbedex`, `clipboard`, `vtwheel`, `resize-font`/`font-size`), daemon `urxvtd` via systemd, entradas desktop (`rxvt.desktop`, `urxvt.desktop`), wrapper `~/.local/bin/term` e integração dinâmica no SXHKD/BSPWM via `activeCommand`. |
 
 ---
 
@@ -247,5 +259,6 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **Menu Interativo de Redes Rofi (`rofi-wifi-menu` / `bspwm-wifi`)**: Totalmente redesenhado no padrão do `rofiBluetoothMenu`: 1) **Gerenciador e Seletor de Redes Cabeadas (Wired Profiles)**: Detecta interface Ethernet (`eth_dev`), sincroniza e lista perfis em tempo real (`nmcli connection reload` + `802-3-ethernet`), exibindo todos os perfis criados para a mesma interface (`󰈁 ●` ativa com IP e `󰈀 ○` disponíveis para iniciar), permitindo selecionar qual perfil iniciar com 1 clique (ótimo para alternar DHCP vs IP Estático/Lab), desconectar, reconectar, ver detalhes técnicos (IP, Gateway, DNS, MAC, Speed) ou esquecer perfis; 2) **Submenu Completo por Rede Wi-Fi**: Ao clicar em qualquer SSID, abre menu contextual com Conectar/Desconectar, Reconectar/Renovar IP, Esquecer Rede (com confirmação e expurgo de credenciais), e Detalhes da Conexão (IP, Gateway, DNS, Sinal, Canal/Freq, BSSID); 3) **Controles Globais**: Alternar rádio Wi-Fi (Power On/Off), escanear redes, conectar a rede oculta (Hidden SSID), gerenciar lista de redes salvas e atalho para o editor gráfico (`nm-connection-editor`); 4) Notificações Dunst dedicadas em pilha `network-osd`.
 - **Parsing do `nmcli -t` e Scan de Wi-Fi no Rofi**: Nunca incluir `BSSID` em comandos `nmcli -t -f ...` fatiados via `IFS=:`, pois os 5 dois-pontos do MAC corrompem os campos subsequentes (gerando anomalias tipo `[81:juca`). O `SSID` deve ficar como último campo (`IN-USE,SIGNAL,SECURITY,SSID`) e conexões salvas devem consultar `TYPE,NAME` (`grep '^802-11-wireless:'`). Ao ligar o rádio (`nmcli radio wifi on`) ou re-escanear, aguardar polling da interface e sleep de 2.0-2.5s antes de abrir o Rofi para garantir que o kernel popule os beacons dos APs.
 - **SSH Legado vs Modern OpenSSH (Gotcha `Bad key types '+ssh-dss'`)**: O OpenSSH 9.8+ (usado pelo `git`, NixOS e distros recentes) removeu completamente o suporte e parsing de DSA (`ssh-dss`). Ao iniciar qualquer comando (como `git push`), o OpenSSH faz validação estrita de sintaxe em TODO o `~/.ssh/config`. Se existir `HostKeyAlgorithms +ssh-dss`, `PubkeyAcceptedKeyTypes +ssh-dss` ou `PubkeyAcceptedAlgorithms +ssh-dss` no arquivo global (mesmo restrito a blocos `Host sharecenter.home.lan`), o OpenSSH moderno encerra com erro fatal `terminating, 3 bad configuration options`. Por isso, NUNCA colocar `+ssh-dss` no `programs.ssh.settings` global; parâmetros legados de cifras/chaves devem ficar exclusivamente encapsulados nos wrappers `ssh-legacy` e `scp-legacy` (que invocam o binário hermético OpenSSH 9.1p1 do `pkgs.older`), deixando no `~/.ssh/config` apenas opções universais seguras como `HostName 10.10.10.10` e `User root`.
+- **URxvt & Xresources Gruvbox (`system.programs.terminal.urxvt`)**: Módulo modular em `modules/home-manager/system/programs/terminal/urxvt/default.nix`. Configura `rxvt-unicode` com todos os plugins Perl empacotados (`perls`, `resize-font`, `urxvt-tabbedex`, `vtwheel`) via `availablePlugins` e symlinks bidirecionais entre `font-size` e `resize-font` para total compatibilidade com atalhos de redimensionamento dinâmico de fontes. Cria o script wrapper `~/.local/bin/term` (com reload de `xrdb -merge ~/.Xresources` e fallback automático para o daemon `urxvtd -q -o -f`), entradas `.desktop` (`rxvt.desktop` e `urxvt.desktop`), daemon de usuário `systemd.user.services.urxvtd`, paleta Gruvbox 256 (.Xresources) e preservação dos atributos do cursor X11 (evitando clobber de `Xcursor.*` sem usar `mkForce`). Integração com `sxhkd` via `activeCommand` e suporte ao scratchpad (`-name $SCRATCHPAD_NAME`). **Renderização de Glifos/Nerd Fonts**: URxvt não faz fallback dinâmico de fontes automático; foi provisionada cadeia explícita de fontes Xft (`Hack Nerd Font` -> `JetBrainsMono Nerd Font` -> `Symbols Nerd Font Mono` -> `Hack` -> `Noto Color Emoji`), `URxvt.letterSpace = "-1"` para eliminar espaçamento artificial de glifos/Powerline, `skipBuiltinGlyphs = false`, e hook de ativação `home.activation.reloadUrxvt` para reiniciar o daemon `urxvtd` e recarregar `xrdb` a cada switch.
 
 > 💡 **Dica**: Você pode adicionar novas preferências ou regras a qualquer momento neste arquivo ou utilizando o comando `/learn`.

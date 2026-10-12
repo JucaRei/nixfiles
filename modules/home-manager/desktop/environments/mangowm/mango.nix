@@ -355,8 +355,8 @@ in
       bind=${mod}+${altMod},r,spawn,mango-reload
 
       # Aplicativos e Utilitários
-      bind=${mod},Return,spawn,${pkgs.alacritty}/bin/alacritty
-      bind=${mod}+${ctrlMod},Return,spawn,${pkgs.alacritty}/bin/alacritty --title floating-kitty
+      bind=${mod},Return,spawn,${config.system.programs.terminal.activeCommand or "terminal"}
+      bind=${mod}+${ctrlMod},Return,spawn,${config.system.programs.terminal.scratchpadCommand or "terminal"}
       ${
         if isNoctalia then
           ''

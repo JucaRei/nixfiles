@@ -39,7 +39,7 @@ in
       enable = true;
       package = pkgs.rofi;
       font = "Inter 11";
-      terminal = "${pkgs.alacritty}/bin/alacritty";
+      terminal = config.system.programs.terminal.activeCommand or "terminal";
       extraConfig = {
         modi = "drun,run,window";
         show-icons = true;

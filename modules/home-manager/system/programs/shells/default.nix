@@ -157,6 +157,7 @@ in
         ports = "${pkgs.unixtools.netstat}/bin/netstat -tulanp";
         rsync = "${getExe pkgs.rsync} -aXxtv";
         tree = lib.mkDefault "${getExe pkgs.tree} -Cs";
+        pdate = "date '+%a, %d %b %Y %T %Z'";
 
         pci = mkIf isNixOS "sudo --preserve-env=PATH ${pkgs.inxi}/bin/inxi --slots";
         wifi_scan = mkIf isNixOS "${getExe' pkgs.networkmanager "nmcli"} device wifi rescan && ${getExe' pkgs.networkmanager "nmcli"} device wifi list";

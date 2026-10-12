@@ -150,6 +150,20 @@ let
       data = [ ];
       desktops = [ ];
     }
+    {
+      name = "urxvt";
+      enabled =
+        ((config.system.programs.terminal.enable or false)
+        && (((config.system.programs.terminal.name or "") == "urxvt") || ((config.system.programs.terminal.name or "") == "rxvt")))
+        || (config.system.programs.terminal.urxvt.enable or false);
+      configs = [ "$HOME/.urxvt" ];
+      caches = [ ];
+      data = [ ];
+      desktops = [
+        "$HOME/.local/share/applications/rxvt.desktop"
+        "$HOME/.local/share/applications/urxvt.desktop"
+      ];
+    }
 
     # --- Multimídia ---
     {

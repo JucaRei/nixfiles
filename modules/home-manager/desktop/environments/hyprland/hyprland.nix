@@ -382,7 +382,7 @@ in
 
         bind = [
           # Aplicações e Launcher
-          "$mainMod, RETURN, exec, ${pkgs.alacritty}/bin/alacritty"
+          "$mainMod, RETURN, exec, ${config.system.programs.terminal.activeCommand or "terminal"}"
           (
             if isNoctalia then
               "$mainMod, SPACE, exec, noctalia-launcher"

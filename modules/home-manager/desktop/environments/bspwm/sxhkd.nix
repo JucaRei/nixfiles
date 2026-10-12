@@ -11,6 +11,11 @@ let
   fmCmd = config.system.programs.file-manager.activeCommand or "file-manager";
   fmName = config.system.programs.file-manager.activeName or "Gerenciador de Arquivos";
 
+  terminalCfg = config.system.programs.terminal;
+  termCmd = terminalCfg.activeCommand;
+  termDisplayName = terminalCfg.activeName;
+  scratchpadLaunchCmd = "${terminalCfg.scratchpadCommand} &";
+
   browserBin = config.system.programs.browsers.activeBin or null;
   browserLaunchCmd =
     if browserBin != null then
@@ -75,7 +80,7 @@ let
         --one-shot
 
       # Inicia o terminal dedicado com a classe bspwm-scratch em $HOME
-      ${pkgs.alacritty}/bin/alacritty --class "$SCRATCHPAD_NAME,$SCRATCHPAD_NAME" --working-directory "$HOME" &
+      ${scratchpadLaunchCmd}
 
       # Aguarda a criação e ajusta posição/tamanho se necessário
       for i in 1 2 3 4 5; do
@@ -608,7 +613,7 @@ let
   quickSettings = pkgs.writeShellScript "quick-settings" ''
         show_manual() {
           KB_LIST="󰌌  ${modDisplayName} + Space / ${modDisplayName} + D     ➜  Lançador de Aplicativos (Rofi)
-    󰌌  ${modDisplayName} + Enter / ${modDisplayName} + T     ➜  Abrir Terminal (Alacritty)
+    󰌌  ${modDisplayName} + Enter / ${modDisplayName} + T     ➜  Abrir Terminal (${termDisplayName})
     󰌌  ${modDisplayName} + B                     ➜  Navegador Web Padrão
     󰌌  ${modDisplayName} + Shift + B             ➜  Menu Interativo de Bluetooth
     󰌌  ${modDisplayName} + E / ${modDisplayName} + Shift + E ➜  Gerenciador de Arquivos (''${fmName})
@@ -656,7 +661,7 @@ let
 
           case "$CHOICE" in
             *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
-            *"Abrir Terminal"*) ${pkgs.alacritty}/bin/alacritty --working-directory "$HOME" & ;;
+            *"Abrir Terminal"*) ${termCmd} & ;;
             *"Navegador Web Padrão"*) ${browserLaunchCmd} ;;
             *"Menu Interativo de Bluetooth"*) rofi-bluetooth & ;;
             *"Gerenciador de Arquivos"*) ''${fmCmd} ~ & ;;
@@ -694,7 +699,7 @@ let
           OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
           OPT_BROWSER="󰈹  Navegador Web (Firefox / Padrão)"
           OPT_FILES="󰉋  Gerenciador de Arquivos (''${fmName})"
-          OPT_TERM="󰞷  Abrir Terminal (Alacritty)"
+          OPT_TERM="󰞷  Abrir Terminal (${termDisplayName})"
           OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
           OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
           OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
@@ -764,7 +769,7 @@ let
               if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi
               ;;
             "$OPT_FILES") ''${fmCmd} ~ & ;;
-            "$OPT_TERM") ${pkgs.alacritty}/bin/alacritty --working-directory "$HOME" & ;;
+            "$OPT_TERM") ${termCmd} & ;;
             "$OPT_KEYS") show_manual ;;
             "$OPT_RELOAD")
               bspc wm -r
@@ -961,9 +966,9 @@ in
           "${altMod} + shift + b" = "rofi-bluetooth";
 
           # Terminal (Cmd + Return, Cmd + T) - sempre em $HOME
-          "${mod} + Return" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";
-          "${mod} + KP_Enter" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";
-          "${mod} + t" = "${pkgs.alacritty}/bin/alacritty --working-directory $HOME";
+          "${mod} + Return" = termCmd;
+          "${mod} + KP_Enter" = termCmd;
+          "${mod} + t" = termCmd;
 
           # Finder / Gerenciador de Arquivos (Cmd + Shift + F, Cmd + E)
           "${mod} + e" = fmCmd;
