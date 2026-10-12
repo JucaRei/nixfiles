@@ -10,10 +10,17 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption optionalString;
+  inherit (lib) mkIf mkEnableOption optionalString optionalAttrs;
   cfg = config.system.programs.multimedia.mpv;
   isNixOS = osConfig != null;
   shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
+
+  intelExec =
+    if (!shouldInstall && !isNixOS) then
+      "env __GLX_VENDOR_LIBRARY_NAME=mesa mpv --player-operation-mode=pseudo-gui -- %U"
+    else
+      "mpv --player-operation-mode=pseudo-gui -- %U";
+  nvidiaExec = "mpv-nvidia --player-operation-mode=pseudo-gui -- %U";
 
   # Ambientes desktop completos tradicionais (com gerenciamento de janelas próprio, não tiling)
   fullDesktopEnvironments = [
@@ -178,6 +185,16 @@ in
       default = false;
       description = "Alias para useSystemPackage.";
     };
+
+    defaultNvidia = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Se o MPV deve abrir por padrão utilizando a dGPU NVIDIA (PRIME offload / mpv-nvidia)
+        no arquivo .desktop (sobrescrevendo mpv.desktop), incluindo uma ação secundária
+        no menu de contexto para abrir com a iGPU Intel.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -330,13 +347,13 @@ in
       '')
     ];
 
-    xdg.desktopEntries = mkIf (!shouldInstall && !isNixOS) {
+    xdg.desktopEntries = mkIf (cfg.defaultNvidia || (!shouldInstall && !isNixOS) || (hostname == "nitro" || hostname == "nixtro")) {
       mpv = {
         name = "mpv Media Player";
         genericName = "Multimedia player";
-        comment = "Play movies and songs";
+        comment = "Play movies and songs" + optionalString cfg.defaultNvidia " (NVIDIA dGPU)";
         icon = "mpv";
-        exec = "env __GLX_VENDOR_LIBRARY_NAME=mesa mpv --player-operation-mode=pseudo-gui -- %U";
+        exec = if cfg.defaultNvidia then nvidiaExec else intelExec;
         terminal = false;
         categories = [
           "AudioVideo"
@@ -360,6 +377,18 @@ in
           "video/ts"
           "video/webm"
         ];
+        actions =
+          if cfg.defaultNvidia then {
+            open-intel = {
+              name = "Open with Intel iGPU";
+              exec = intelExec;
+            };
+          } else (optionalAttrs (hostname == "nitro" || hostname == "nixtro") {
+            open-nvidia = {
+              name = "Open with NVIDIA dGPU";
+              exec = nvidiaExec;
+            };
+          });
       };
     };
 

@@ -84,6 +84,7 @@ in
         multimedia = {
           mpv = {
             enable = true;
+            defaultNvidia = true; # Abre com NVIDIA dGPU por padrão no .desktop (com ação secundária para Intel)
             # useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
             installPackage = true;
           };
@@ -135,6 +136,7 @@ in
           (pkgs.writeShellScriptBin "mpv-nvidia" ''
             # Executa o MPV com PRIME Offload na NVIDIA dGPU (NVDEC/CUDA)
             # Detecta automaticamente se utiliza o binário do Nix ou o nativo da distribuição
+            # Utilizado como padrão no .desktop quando multimedia.mpv.defaultNvidia = true
             if [ -x "$HOME/.nix-profile/bin/mpv" ]; then
               mpv_bin="$HOME/.nix-profile/bin/mpv"
               # Injeta apenas os diretórios dedicados do driver proprietário NVIDIA (sem libc do Debian)

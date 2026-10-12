@@ -154,7 +154,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **Teclado**: `options = [ "grp:caps_toggle" ]` (não `grp:alt_shift_toggle`, que intercepta `Alt+Shift` para layout XKB).
 - **zRAM**: `systemd-zram-generator`, `vm.swappiness = 100`, `vm.page-cluster = 0`.
 - **Btrfs**: `compress=zstd:3` (sistema) e `compress=zstd:1` (home/dados). Dracut `compress="zstd -3"`.
-- **`mpv-nvidia`**: Injeta apenas `/usr/lib/x86_64-linux-gnu/nvidia/current` em `LD_LIBRARY_PATH` para NVDEC, sem risco de conflito de glibc.
+- **`mpv-nvidia`**: Injeta apenas `/usr/lib/x86_64-linux-gnu/nvidia/current` em `LD_LIBRARY_PATH` para NVDEC, sem risco de conflito de glibc. Integrado a `system.programs.multimedia.mpv.defaultNvidia = true`, gerando `mpv.desktop` padrão com PRIME Offload (`__NV_PRIME_RENDER_OFFLOAD=1`) e ação secundária no menu de contexto (clique direito) "Open with Intel iGPU".
 - **Solaar**: `pkgs.solaar` + serviço systemd do usuário para teclados Logitech sem interface em `/sys/class/leds`.
 - **Bluetooth (Fones / MX Keys / Autorização / Notificações Dunst)**: Fones (ex: Space Travel 2) presos em "precisa de autorização" ocorrem quando pareados com `Trusted: no`. No BlueZ, reconexões de dispositivos não-confiáveis exigem aprovação via `AuthorizeService(device, uuid)`. A solução definitiva adotada: 1) Rotina de auto-trust em background no startup do `bspwm.nix` para todos os dispositivos pareados (`bluetoothctl trust "$dev"`); 2) Dunst com `mouse_left_click = "do_action, close_current"`; 3) `dconf` com `org/blueman/general.notification-daemon = true` (SEMPRE true: quando `false`, o Blueman ignora o Dunst e cria janelas modais GTK `_NotificationDialog` com `Gtk.WindowPosition.CENTER` que aparecem no centro da tela, ficam presas sem fechar sozinhas e poluem o `polywins` como janelas normais `.blueman-app`); 4) Dunst configurado com `origin = "top-right"`, `offset = "16x46"`, `follow = "mouse"` e regras (`bluetooth`, `blueman`, `bluetooth_stack`, `bluetooth_summary`) com `override_dbus_timeout = true` e `timeout = 4`, garantindo que toda notificação de conexão e desconexão apareça no topo direito como em qualquer desktop manager completo e desapareça suavemente em 4 segundos sem exigir clique manual.
 
@@ -199,7 +199,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 | Antigravity IDE | `editors/antigravity` | `-fhs` no NixOS, nativo no standalone. CDP porta 9004. |
 | Chromium/Chrome | `browsers/chrome` | `cfg.version` (não `cfg.browser`). `optionals` (não `mkIf`) em listas. |
 | Vivaldi | `browsers/chrome` + overlays | `update-ffmpeg --user` para codecs proprietários. Sem `--enable-zero-copy` em GPUs legadas. |
-| MPV | `multimedia/mpv` | `[hw-preset]` no `[default]` no final do conf. `useSystemPackage` gera modo universal seguro. |
+| MPV | `multimedia/mpv` | `[hw-preset]` no `[default]` no final do conf. `useSystemPackage` gera modo universal seguro. Opção `defaultNvidia` configura `mpv.desktop` para usar `mpv-nvidia` com ação secundária para Intel. |
 | Discord | `chat/discord` | Vencord + OpenASAR. Temas: `catppuccin-frappe/mocha`, `doom`, `dracula`. |
 | Thunar | `file-manager/thunar` | Wrapper GVfs (`GIO_EXTRA_MODULES`). Sem `pkgs.polkit` em `home.packages` (setuid). `admin://` para root. |
 | Nautilus | `file-manager/nautilus` | Wrapper GVfs, Sushi, Open Any Terminal, scripts contextuais. |
