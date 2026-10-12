@@ -75,6 +75,15 @@ in
           #   multiplier = 3;
           # };
         };
+        bell = {
+          animation = "EaseOutExpo"; # "Linear";
+          duration = 0; # 20;
+          color = "0xffffff";
+          command = {
+            program = "paplay";
+            args = [ "${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo/dialog-error.oga" ];
+          };
+        };
         font = {
           normal.family = "JetBrainsMono Nerd Font";
           normal.style = "Regular";

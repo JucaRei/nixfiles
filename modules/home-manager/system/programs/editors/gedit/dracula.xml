@@ -3,8 +3,9 @@
 Dracula Theme for Gedit / GtkSourceView
 https://github.com/dracula/gedit
 -->
-<style-scheme id="dracula" _name="Dracula" version="1.0" kind="dark">
-  <_description>A dark theme for Gedit and GtkSourceView</_description>
+<style-scheme id="dracula" name="Dracula" version="1.0" kind="dark">
+  <author>Ricardo Madriz</author>
+  <description>A dark theme for Gedit and GtkSourceView</description>
 
   <!-- Dracula Palette -->
   <color name="background" value="#282a36"/>

@@ -48,14 +48,25 @@ in
 
     xdg.dataFile = {
       "gedit/styles/dracula.xml".source = ./dracula.xml;
+      "libgedit-gtksourceview-300/styles/dracula.xml".source = ./dracula.xml;
+      "gtksourceview-5/styles/dracula.xml".source = ./dracula.xml;
       "gtksourceview-4/styles/dracula.xml".source = ./dracula.xml;
       "gtksourceview-3.0/styles/dracula.xml".source = ./dracula.xml;
-      "libgedit-gtksourceview-300/styles/dracula.xml".source = ./dracula.xml;
+      "gtksourceview-2.0/styles/dracula.xml".source = ./dracula.xml;
     };
 
     dconf.settings = {
       "org/gnome/gedit/preferences/editor" = {
         scheme = cfg.theme;
+        style-scheme-for-dark-theme-variant = cfg.theme;
+        style-scheme-for-light-theme-variant = cfg.theme;
+      };
+      "org/gnome/gedit/preferences/ui" = {
+        theme-variant = "dark";
+      };
+      "org/gnome/TextEditor" = {
+        style-scheme = cfg.theme;
+        style-variant = "dark";
       };
     };
 
