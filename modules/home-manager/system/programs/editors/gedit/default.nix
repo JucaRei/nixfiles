@@ -58,6 +58,7 @@ in
     dconf.settings = {
       "org/gnome/gedit/preferences/editor" = {
         scheme = cfg.theme;
+        style-scheme = cfg.theme;
         style-scheme-for-dark-theme-variant = cfg.theme;
         style-scheme-for-light-theme-variant = cfg.theme;
       };
