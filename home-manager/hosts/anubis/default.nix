@@ -27,6 +27,9 @@
           enable = true;
           name = "alacritty";
         };
+        shells = {
+          default = "zsh";
+        };
       };
     };
 
