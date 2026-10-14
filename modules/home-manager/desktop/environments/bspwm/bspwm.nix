@@ -114,6 +114,49 @@ let
         ;;
     esac
   '';
+
+  # Daemon para elevar automaticamente a janela selecionada/focada para o topo (layer above)
+  # e rebaixar janelas flutuantes não-focadas para o layer inferior (below). Isso garante que,
+  # ao selecionar qualquer janela (seja ela flutuante ou lado a lado), a janela selecionada
+  # fique 100% à frente da outra.
+  autoRaiseScript = pkgs.writeShellScript "bspwm-auto-raise" ''
+    export PATH="${lib.makeBinPath [ pkgs.bspwm pkgs.coreutils ]}:$PATH"
+
+    prev_node=""
+
+    # Normaliza janelas flutuantes não-focadas para 'below' e eleva a janela ativa na inicialização
+    for wid in $(bspc query -N -n ".floating.window.!focused" 2>/dev/null); do
+      bspc node "$wid" -l below 2>/dev/null || true
+    done
+    focused=$(bspc query -N -n focused 2>/dev/null || true)
+    if [ -n "$focused" ]; then
+      bspc node "$focused" -l above 2>/dev/null || true
+      prev_node="$focused"
+    fi
+
+    # Monitora eventos de foco de janelas via IPC do bspwm
+    bspc subscribe node_focus | while read -r line; do
+      node_id="''${line##* }"
+      [ -z "$node_id" ] && continue
+
+      # Rebaixa todas as janelas flutuantes não-focadas para 'below' para que
+      # qualquer janela selecionada (seja tiled ou outra flutuante) fique 100% à frente
+      for wid in $(bspc query -N -n ".floating.window.!focused" 2>/dev/null); do
+        bspc node "$wid" -l below 2>/dev/null || true
+      done
+
+      # Se a janela anterior era tiled, restaura para 'normal'
+      if [ -n "$prev_node" ] && [ "$prev_node" != "$node_id" ]; then
+        if ! bspc query -N -n "$prev_node.floating" >/dev/null 2>&1; then
+          bspc node "$prev_node" -l normal 2>/dev/null || true
+        fi
+      fi
+
+      # A janela recém-selecionada é sempre promovida para 'above'
+      bspc node "$node_id" -l above 2>/dev/null || true
+      prev_node="$node_id"
+    done
+  '';
 in
 {
   options.desktop.bspwm = {
@@ -164,7 +207,7 @@ in
             right_padding = 4;
             focus_follows_pointer = false;
             pointer_follows_focus = false;
-            click_to_focus = "button1";
+            click_to_focus = "any";
             normal_border_color = "#181825"; # Catppuccin Mantle escuro
             active_border_color = "#313244"; # Catppuccin Surface0
             focused_border_color = "#cba6f7"; # Catppuccin Mauve (Glow característico do Hyprland)
@@ -540,6 +583,10 @@ in
             bspc config pointer_action2 resize_side
             bspc config pointer_action3 resize_corner
 
+            # Daemon para trazer a janela selecionada/focada sempre para frente (auto-raise em janelas flutuantes e lado a lado)
+            pkill -f bspwm-auto-raise || true
+            ${autoRaiseScript} &
+
 
             # Configurar Touchpad vs Mouse:
             # - Touchpad: Natural Scrolling, Tapping, Clickfinger, Perfil de Aceleração e Velocidade do Ponteiro
@@ -641,7 +688,42 @@ in
       };
     };
 
+    systemd.user.services.bspwm-auto-raise = {
+      Unit = {
+        Description = "BSPWM Auto-Raise Window Daemon";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${autoRaiseScript}";
+        Restart = "always";
+        RestartSec = 1;
+        PassEnvironment = [
+          "DISPLAY"
+          "XAUTHORITY"
+        ];
+        Environment = [
+          "PATH=${
+            lib.makeBinPath [
+              pkgs.coreutils
+              pkgs.bspwm
+            ]
+          }:/run/current-system/sw/bin"
+        ];
+      };
+      Install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
+    };
+
     home = {
+      activation.reloadBspwmAutoRaise = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || pgrep -f bspwm >/dev/null 2>&1; then
+          systemctl --user daemon-reload 2>/dev/null || true
+          systemctl --user restart bspwm-auto-raise.service 2>/dev/null || (${autoRaiseScript} &)
+        fi
+      '';
+
       packages = with pkgs; [
         libinput-gestures
         wmctrl

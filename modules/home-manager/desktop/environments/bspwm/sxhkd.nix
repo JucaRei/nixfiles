@@ -75,7 +75,6 @@ let
       ${pkgs.bspwm}/bin/bspc rule -a "$SCRATCHPAD_NAME" \
         state=floating \
         sticky=on \
-        layer=above \
         rectangle="''${WIDTH}x''${HEIGHT}+''${X_POS}+''${Y_POS}" \
         --one-shot
 
@@ -996,6 +995,11 @@ in
           "${mod} + shift + t" = "${pseudoTileScript}";
           "${altMod} + shift + t" = "${pseudoTileScript}";
           "${mod} + m" = "bspc desktop -l next";
+
+          # --- Camadas e Sobreposição (Trazer para frente / Enviar para trás) ---
+          "${mod} + equal" = "bspc node focused -l above";
+          "${mod} + plus" = "bspc node focused -l above";
+          "${mod} + underscore" = "bspc node focused -l normal";
 
           # --- Minimizar / Esconder Janelas (Desktop Environment Style) ---
           # Esconder/Minimizar a janela ativa (Cmd + Y ou Cmd + -)
