@@ -49,6 +49,7 @@ modules/home-manager/desktop/environments/bspwm/
 ├── picom.nix         # Compositor X11 com blur, cantos arredondados e sombras
 ├── rofi.nix          # Menus interativos (launcher drun, wifi, bluetooth, clipboard)
 ├── dunst.nix         # Notificações e barras de progresso OSD
+├── lock.nix          # Bloqueador de tela minimalista e customizável (i3lock-color + xss-lock)
 ├── packages.nix      # Pacotes X11, utilitários de tela e ferramentas CLI
 ├── polybar/          # Módulos modulares e temas da Polybar
 └── README.md         # Esta documentação
@@ -157,6 +158,7 @@ Isso garante aceleração 3D por hardware completa no Alacritty, Picom e reprodu
 | `$SUPER + N` | Menu Rofi de redes Wi-Fi |
 | `$SUPER + B` | Menu Rofi de dispositivos Bluetooth |
 | `$SUPER + S` | Painel Quick Settings / Manual de Atalhos |
+| `$SUPER + Shift + X` / `$SUPER + Ctrl + Q` | Bloqueia a tela instantaneamente (`bspwm-lock`) |
 | `$SUPER + Escape` / `$SUPER + Shift + E` | Menu de Energia / Logout |
 | `$SUPER + Alt + R` | Recarrega BSPWM e SXHKD (`bspc wm -r`) |
 

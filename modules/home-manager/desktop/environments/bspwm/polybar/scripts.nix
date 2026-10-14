@@ -2094,7 +2094,7 @@ rec {
       *"Suspender"*)   systemctl suspend || loginctl suspend ;;
       *"Hibernar"*)    systemctl hibernate || loginctl hibernate ;;
       *"Sair"*)       bspc quit ;;
-      *"Bloquear"*)    loginctl lock-session ;;
+      *"Bloquear"*)    bspwm-lock || loginctl lock-session ;;
     esac
   '';
 

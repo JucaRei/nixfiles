@@ -680,7 +680,7 @@ let
             *"Recorte de Área"*) ${screenshotScript} area & ;;
             *"Conta-gotas"*) ${colorPickerScript} & ;;
             *"Recarregar BSPWM"*) bspc wm -r ;;
-            *"Bloquear Sessão"*) loginctl lock-session ;;
+            *"Bloquear Sessão"*) bspwm-lock || loginctl lock-session ;;
           esac
         }
 
@@ -775,7 +775,7 @@ let
               ${pkgs.dunst}/bin/dunstify -a "Sistema" -u low -i "view-refresh" -t 2000 "BSPWM e Polybar recarregados com sucesso!"
               ;;
             "$OPT_POWER")
-              ${pkgs.rofi}/bin/rofi -show power-menu -modi "power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu" || loginctl lock-session
+              ${pkgs.rofi}/bin/rofi -show power-menu -modi "power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu" || bspwm-lock || loginctl lock-session
               ;;
           esac
         }
@@ -1014,8 +1014,8 @@ in
           "${mod} + shift + m" = "${toggleDesktopScript}";
 
           # --- Bloqueio & Sessão (macOS Style: Cmd + Ctrl + Q) ---
-          "${mod} + ${ctrlMod} + q" = "loginctl lock-session";
-          "${mod} + shift + x" = "loginctl lock-session";
+          "${mod} + ${ctrlMod} + q" = "bspwm-lock || loginctl lock-session";
+          "${mod} + shift + x" = "bspwm-lock || loginctl lock-session";
 
           # --- Foco e Movimento em Janelas (Vim + Setas) ---
           "${mod} + {h,j,k,l}" = "bspc node -f {west,south,north,east}";

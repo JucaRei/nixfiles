@@ -259,8 +259,15 @@ L+ /run/wrappers/bin/unix_chkpwd - - - - /usr/sbin/unix_chkpwd
 L+ /run/wrappers/bin/polkit-agent-helper-1 - - - - /usr/lib/polkit-1/polkit-agent-helper-1
 EOF
 
-# 3. Criar a regra dedicada do hyprlock no PAM:
+# 3. Criar as regras dedicadas no PAM para hyprlock e i3lock:
 sudo tee /etc/pam.d/hyprlock << 'EOF'
+#%PAM-1.0
+auth        sufficient    pam_unix.so try_first_pass nullok
+auth        required      pam_deny.so
+account     required      pam_unix.so
+EOF
+
+sudo tee /etc/pam.d/i3lock << 'EOF'
 #%PAM-1.0
 auth        sufficient    pam_unix.so try_first_pass nullok
 auth        required      pam_deny.so

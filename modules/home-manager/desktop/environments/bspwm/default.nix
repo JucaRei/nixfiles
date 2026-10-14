@@ -13,6 +13,7 @@
     ./dunst.nix
     ./rofi.nix
     ./packages.nix
+    ./lock.nix
   ];
 
   config = lib.mkIf config.desktop.bspwm.enable {

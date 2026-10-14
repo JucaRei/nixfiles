@@ -538,6 +538,14 @@ in
               ) &
             ''}
 
+            # Iniciar daemon de bloqueio de tela (xss-lock) se habilitado
+            ${lib.optionalString (config.desktop.bspwm.lock.enable or true) ''
+              systemctl --user restart xss-lock 2>/dev/null || (
+                pkill -x xss-lock || true
+                ${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- bspwm-lock --nofork &
+              ) &
+            ''}
+
             # Agente de autenticação Polkit
             ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
 

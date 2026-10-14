@@ -436,9 +436,18 @@ in
           ''}
         },
 
+        # Bloqueador de Tela (i3lock / i3lock-color): tela cheia pura sem cantos arredondados, sem sombra e sem animações
+        {
+          match = "class_g = 'i3lock' || class_g = 'i3lock-color'";
+          shadow = false;
+          corner-radius = 0;
+          fade = false;
+          blur-background = false;
+        },
+
         # Exclusão de sombras em apps que desenham suas próprias bordas ou onde causa artefatos
         {
-          match = "class_g = 'Polybar' || class_g = 'Eww' || class_g = 'jgmenu' || class_g = 'Spotify' || class_g = 'retroarch' || class_g = 'firefox' || class_g = 'Screenkey' || class_g = 'mpv' || class_g = 'Viewnior' || _GTK_FRAME_EXTENTS@";
+          match = "class_g = 'Polybar' || class_g = 'Eww' || class_g = 'jgmenu' || class_g = 'Spotify' || class_g = 'retroarch' || class_g = 'firefox' || class_g = 'Screenkey' || class_g = 'mpv' || class_g = 'Viewnior' || class_g = 'i3lock' || class_g = 'i3lock-color' || _GTK_FRAME_EXTENTS@";
           shadow = false;
         }
         ${lib.optionalString cfg.animations.enable ''
