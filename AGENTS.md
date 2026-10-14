@@ -154,6 +154,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **Backlight**: `acpi_backlight=native` via `grubby`. Passos de 2%.
 - **PAM do Hyprlock**: Provisionar `/etc/pam.d/hyprlock` com `system-auth`.
 - **Hibernate**: Swap híbrida (zram prioridade 100 + partição física prioridade -1). `resume=UUID=...` no GRUB + Dracut.
+- **MangoWM `monitor_rule`**: A diretiva de configuração de monitores no MangoWM é `monitor_rule=` (com underscore, não `monitorrule=`).
 
 ### `nitro` (Debian / Acer Nitro 5 / Intel UHD 630 + NVIDIA GTX 1050)
 

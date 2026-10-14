@@ -200,7 +200,7 @@ in
       # ============================================================================
 
       # --- Configuração de Monitor (Resolução Nativa 1:1) ---
-      ${lib.concatMapStringsSep "\n" (r: "monitorrule=${r}") (cfg.monitorRules or [ ])}
+      ${lib.concatMapStringsSep "\n" (r: "monitor_rule=${r}") (cfg.monitorRules or [ ])}
 
       # --- Efeitos Visuais e Janelas ---
       blur=1
