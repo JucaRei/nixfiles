@@ -163,7 +163,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
   - Sombras: `shadows_color=` (não `shadowscolor=`)
   - Dimensões e Gaps: `border_px=` (não `borderpx=`), `gap_inner_horizontal=`, `gap_inner_vertical=`, `gap_outer_horizontal=`, `gap_outer_vertical=` (não `gappih`/`gappiv`/`gappoh`/`gappov=`), `smart_gaps=` (não `smartgaps=`)
   - Cores: `root_color=`, `border_color=`, `focus_color=`, `drop_color=`, `split_color=`, `urgent_color=`, `maximized_screen_color=`, `scratchpad_color=`, `global_color=`, `overlay_color=`
-  - Overview: `overview_gap_inner=`, `overview_gap_outer=`
+  - Overview: `overview_gap_inner=`, `overview_gap_outer=` (`ov_tab_mode` descontinuado no upstream v0.18+, migrado para dispatcher `overcircle`)
   - Entrada e Comportamento: `numlock_on=`, `sloppy_focus=` (não `sloppyfocus=`), `warp_cursor=` (não `warpcursor=`)
   - Regras: `tag_rule=`, `window_rule=` (com `is_floating:1`, `app_id:`, `idle_inhibit_when_focus:`), `layer_rule=`
   - Teste Sintático: `mango -c ~/.config/mango/config.conf -p` valida o arquivo sem precisar iniciar o compositor.

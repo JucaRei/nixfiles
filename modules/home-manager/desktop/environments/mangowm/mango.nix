@@ -272,7 +272,6 @@ in
 
       hotarea_size=10
       enable_hotarea=0
-      ov_tab_mode=1
       overview_gap_inner=6
       overview_gap_outer=20
 
