@@ -120,8 +120,8 @@ scroller_proportion_preset=0.5,0.7,1.0 # Predefinições alternáveis (ALT+Espa�
 Atalhos do Scroller:
 - `$SUPER + Alt + F`: Força a janela em foco para tela cheia dentro do scroller (`proportion 1.0`).
 - `$ALT + Espaço`: Alterna entre os presets de largura (50% → 70% → 100%).
-- `$SUPER + C`: Agrupa/empilha a coluna para a esquerda (`scroller_stack left`).
-- `$SUPER + Shift + C`: Agrupa/empilha a coluna para a direita (`scroller_stack right`).
+- `$SUPER + Alt + C`: Agrupa/empilha a coluna para a esquerda (`scroller_stack left`).
+- `$SUPER + Alt + Shift + C`: Agrupa/empilha a coluna para a direita (`scroller_stack right`).
 
 ### 3. Regras de Janelas (`window_rule`)
 Para fazer aplicativos específicos abrirem flutuando, centralizados ou com dimensões fixas:

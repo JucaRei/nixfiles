@@ -330,19 +330,19 @@ in
       ${
         if isNoctalia then
           ''
-            exec-once=${pkgs.noctalia}/bin/noctalia
+            exec_once=${pkgs.noctalia}/bin/noctalia
           ''
         else
           ''
-            exec-once=${pkgs.waybar}/bin/waybar
-            exec-once=${pkgs.dunst}/bin/dunst
-            exec-once=${pkgs.hypridle}/bin/hypridle
-            exec-once=${pkgs.hyprpaper}/bin/hyprpaper
+            exec_once=${pkgs.waybar}/bin/waybar
+            exec_once=${pkgs.dunst}/bin/dunst
+            exec_once=${pkgs.hypridle}/bin/hypridle
+            exec_once=${pkgs.hyprpaper}/bin/hyprpaper
           ''
       }
-      exec-once=${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
-      exec-once=${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store
-      exec-once=${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store
+      exec_once=${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1
+      exec_once=${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store
+      exec_once=${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store
 
       # ============================================================================
       # Atalhos de Teclado (Keybindings)
@@ -370,11 +370,11 @@ in
             bind=${mod}+${altMod},w,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
 
             # Window Switcher (Alt+Tab Overlay nativo do Noctalia)
-            bind=${altMod},Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
-            bind=${altMod}+SHIFT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
+            bindc=${altMod},Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
+            bindc=${altMod}+SHIFT,Tab,spawn,${pkgs.noctalia}/bin/noctalia msg window-switcher
 
             # Sessão: Lock e Suspend
-            bind=${mod},l,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
+            bind=${mod}+${altMod},l,spawn,${pkgs.noctalia}/bin/noctalia msg session lock
             ${
               if isApple then
                 ''
@@ -398,7 +398,7 @@ in
             bind=${mod},v,spawn,${cliphistMenu}
             bind=${mod},Escape,spawn,session-power-menu
             bind=${mod}+SHIFT,e,spawn,session-power-menu
-            bind=${mod},l,spawn,${pkgs.hyprlock}/bin/hyprlock
+            bind=${mod}+${altMod},l,spawn,${pkgs.hyprlock}/bin/hyprlock
             ${
               if isApple then
                 ''
@@ -409,7 +409,7 @@ in
             }
             bind=${mod}+${altMod},s,spawn,systemctl suspend
             bind=NONE,XF86Sleep,spawn,systemctl suspend
-            bind=${altMod},Tab,toggleoverview,
+            bindc=${altMod},Tab,toggleoverview,
           ''
       }
       bind=${mod},e,spawn,${config.system.programs.file-manager.activeCommand or "file-manager"}
@@ -430,8 +430,6 @@ in
       # Gerenciamento de Janelas e Estados
       bind=${mod},q,killclient,
       bind=${mod},f,togglefloating,
-      bind=${mod},s,togglefloating,
-      bind=${mod},w,togglefloating,
       bind=${mod},backslash,togglefloating,
       ${
         if isNoctalia then
@@ -464,8 +462,8 @@ in
       bind=${mod}+${altMod},space,spawn,mango-layout-picker
       bind=${mod}+${altMod},f,set_proportion,1.0
       bind=${altMod},space,switch_proportion_preset,
-      bind=${mod}+c,scroller_stack,left
-      bind=${mod}+SHIFT,c,scroller_stack,right
+      bind=${mod}+${altMod},c,scroller_stack,left
+      bind=${mod}+${altMod}+SHIFT,c,scroller_stack,right
 
       # Ajustes de Gaps
       bind=${altMod}+SHIFT,x,incgaps,2
@@ -668,8 +666,6 @@ in
       # Regras de Camada (Layer Rules)
       layer_rule=animation_type_open:zoom,layer_name:rofi
       layer_rule=animation_type_close:zoom,layer_name:rofi
-      layer_rule=blur:1,layer_name:waybar
-      layer_rule=blur:1,layer_name:rofi
     '';
   };
 }

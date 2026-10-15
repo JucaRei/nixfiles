@@ -165,7 +165,9 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
   - Cores: `root_color=`, `border_color=`, `focus_color=`, `drop_color=`, `split_color=`, `urgent_color=`, `maximized_screen_color=`, `scratchpad_color=`, `global_color=`, `overlay_color=`
   - Overview: `overview_gap_inner=`, `overview_gap_outer=` (`ov_tab_mode` descontinuado no upstream v0.18+, migrado para dispatcher `overcircle`)
   - Entrada e Comportamento: `numlock_on=`, `sloppy_focus=` (não `sloppyfocus=`), `warp_cursor=` (não `warpcursor=`)
-  - Regras: `tag_rule=`, `window_rule=` (com `is_floating:1`, `app_id:`, `idle_inhibit_when_focus:`), `layer_rule=`
+  - Autostart: `exec_once=` (não `exec-once=`)
+  - Regras: `tag_rule=`, `window_rule=` (com `is_floating:1`, `app_id:`, `idle_inhibit_when_focus:`), `layer_rule=` (apenas exclusões como `no_blur:1`, `no_animation:1`; `blur:1` não existe em layer rules)
+  - Atalhos e Colisões: `bind` exige `bind=MODIFIERS,KEY,COMMAND,PARAMETERS` (`scroller_stack` não pode ficar colado com `+` no modificador); usar `bindc` para variantes de uma mesma tecla (como `Tab` e `Shift+Tab`) para suprimir warnings de conflito.
   - Teste Sintático: `mango -c ~/.config/mango/config.conf -p` valida o arquivo sem precisar iniciar o compositor.
 
 ### `nitro` (Debian / Acer Nitro 5 / Intel UHD 630 + NVIDIA GTX 1050)
