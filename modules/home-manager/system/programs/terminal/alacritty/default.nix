@@ -25,6 +25,21 @@ let
       "${pkgs.bashInteractive}/bin/bash"
     else
       null;
+
+  bellSound = "${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo/dialog-error.oga";
+  bellScript = pkgs.writeShellScript "alacritty-bell" ''
+    if [ -f "${bellSound}" ]; then
+      if [ -x "${pkgs.pulseaudio}/bin/paplay" ]; then
+        exec "${pkgs.pulseaudio}/bin/paplay" "${bellSound}" 2>/dev/null
+      elif command -v paplay >/dev/null 2>&1; then
+        exec paplay "${bellSound}" 2>/dev/null
+      elif command -v canberra-gtk-play >/dev/null 2>&1; then
+        exec canberra-gtk-play -f "${bellSound}" 2>/dev/null
+      elif command -v pw-play >/dev/null 2>&1; then
+        exec pw-play "${bellSound}" 2>/dev/null
+      fi
+    fi
+  '';
 in
 {
   config = lib.mkIf (cfg.name == "alacritty") {
@@ -80,8 +95,8 @@ in
           duration = 0; # 20;
           color = "0xffffff";
           command = {
-            program = "paplay";
-            args = [ "${pkgs.sound-theme-freedesktop}/share/sounds/freedesktop/stereo/dialog-error.oga" ];
+            program = "${bellScript}";
+            args = [ ];
           };
         };
         font = {
