@@ -167,7 +167,7 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
   - Entrada e Comportamento: `numlock_on=`, `sloppy_focus=` (não `sloppyfocus=`), `warp_cursor=` (não `warpcursor=`)
   - Autostart: `exec_once=` (não `exec-once=`)
   - Regras: `tag_rule=`, `window_rule=` (com `is_floating:1`, `app_id:`, `idle_inhibit_when_focus:`), `layer_rule=` (apenas exclusões como `no_blur:1`, `no_animation:1`; `blur:1` não existe em layer rules)
-  - Atalhos e Colisões: `bind` exige `bind=MODIFIERS,KEY,COMMAND,PARAMETERS` (`scroller_stack` não pode ficar colado com `+` no modificador); usar `bindc` para variantes de uma mesma tecla (como `Tab` e `Shift+Tab`) para suprimir warnings de conflito.
+  - Atalhos e Colisões: `bind` exige `bind=MODIFIERS,KEY,COMMAND,PARAMETERS` (`scroller_stack` não pode ficar colado com `+` no modificador); usar `bindc` para variantes de uma mesma tecla (como `Tab` e `Shift+Tab`); teclas que compartilham o mesmo keycode físico (como `/` e `?`) devem ter modificadores distintos (`SUPER,slash` e `SUPER+SHIFT,question`) para evitar colisão.
   - Teste Sintático: `mango -c ~/.config/mango/config.conf -p` valida o arquivo sem precisar iniciar o compositor.
 
 ### `nitro` (Debian / Acer Nitro 5 / Intel UHD 630 + NVIDIA GTX 1050)

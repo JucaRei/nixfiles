@@ -420,8 +420,8 @@ in
         if isNoctalia then
           ''
             bind=${mod},F1,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
-            bind=${mod},question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
             bind=${mod},slash,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
+            bind=${mod}+SHIFT,question,spawn,${pkgs.noctalia}/bin/noctalia msg panel-toggle blackbartblues/keymap:panel
           ''
         else
           ""
