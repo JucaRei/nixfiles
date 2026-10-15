@@ -209,8 +209,10 @@ in
       };
     };
 
-    programs.antigravity-cli.enable = true;
-
+    programs = {
+      antigravity-cli.enable = true;
+      # claude-code.enable = true;
+    };
     # Exibição personalizada do teclado na Polybar para o host Nitro
     services.polybar.config."module/keyboard" = {
       layout-icon-0 = "us;INTL";
