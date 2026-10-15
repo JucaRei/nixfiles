@@ -154,7 +154,14 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **Backlight**: `acpi_backlight=native` via `grubby`. Passos de 2%.
 - **PAM do Hyprlock**: Provisionar `/etc/pam.d/hyprlock` com `system-auth`.
 - **Hibernate**: Swap híbrida (zram prioridade 100 + partição física prioridade -1). `resume=UUID=...` no GRUB + Dracut.
-- **MangoWM `monitor_rule` e `shadows_color`**: As diretivas de configuração de monitores e cor de sombras no MangoWM exigem underscore (`monitor_rule=` e `shadows_color=`, e não `monitorrule=` ou `shadowscolor=`).
+- **MangoWM Sintaxe Oficial `snake_case`**: Todas as diretivas de configuração, dimensões, gaps, cores e regras no MangoWM exigem underscore:
+  - Monitores: `monitor_rule=` (não `monitorrule=`)
+  - Sombras: `shadows_color=` (não `shadowscolor=`)
+  - Dimensões e Gaps: `border_px=` (não `borderpx=`), `gap_inner_horizontal=`, `gap_inner_vertical=`, `gap_outer_horizontal=`, `gap_outer_vertical=` (não `gappih`/`gappiv`/`gappoh`/`gappov=`)
+  - Cores: `root_color=`, `border_color=`, `focus_color=`, `drop_color=`, `split_color=`, `urgent_color=`, `maximized_screen_color=`, `scratchpad_color=`, `global_color=`, `overlay_color=`
+  - Overview: `overview_gap_inner=`, `overview_gap_outer=`
+  - Entrada: `numlock_on=`
+  - Regras: `tag_rule=`, `window_rule=` (com `is_floating:1`, `app_id:`, `idle_inhibit_when_focus:`), `layer_rule=`
 
 ### `nitro` (Debian / Acer Nitro 5 / Intel UHD 630 + NVIDIA GTX 1050)
 

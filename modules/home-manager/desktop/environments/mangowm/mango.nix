@@ -241,24 +241,24 @@ in
       animation_duration_close=400
 
       # --- Dimensões e Gaps ---
-      borderpx=2
-      gappih=6
-      gappiv=6
-      gappoh=12
-      gappov=12
+      border_px=2
+      gap_inner_horizontal=6
+      gap_inner_vertical=6
+      gap_outer_horizontal=12
+      gap_outer_vertical=12
       smartgaps=0
 
       # --- Paleta Catppuccin Mocha ---
-      rootcolor=0x1e1e2eff
-      bordercolor=0x313244ff
-      focuscolor=0x89b4faff
-      dropcolor=0x89b4fa55
-      splitcolor=0xfab387ff
-      maximizescreencolor=0xa6e3a1ff
-      urgentcolor=0xf38ba8ff
-      scratchpadcolor=0x89b4faff
-      globalcolor=0xcba6f7ff
-      overlaycolor=0x89dcebff
+      root_color=0x1e1e2eff
+      border_color=0x313244ff
+      focus_color=0x89b4faff
+      drop_color=0x89b4fa55
+      split_color=0xfab387ff
+      maximized_screen_color=0xa6e3a1ff
+      urgent_color=0xf38ba8ff
+      scratchpad_color=0x89b4faff
+      global_color=0xcba6f7ff
+      overlay_color=0x89dcebff
 
       # --- Layout Scroller & Overview ---
       scroller_structs=450
@@ -273,13 +273,13 @@ in
       hotarea_size=10
       enable_hotarea=0
       ov_tab_mode=1
-      overviewgappi=6
-      overviewgappo=20
+      overview_gap_inner=6
+      overview_gap_outer=20
 
       # --- Configuração de Entrada (Teclado e Touchpad) ---
       repeat_rate=30
       repeat_delay=300
-      numlockon=0
+      numlock_on=0
       xkb_rules_layout=${config.home.keyboard.layout}
       xkb_rules_variant=${config.home.keyboard.variant}
       xkb_rules_model=${config.home.keyboard.model}
@@ -317,15 +317,15 @@ in
 
       # --- Layouts por Tag (1 a 9) ---
       tag_num=9
-      tagrule=id:1,layout_name:tile
-      tagrule=id:2,layout_name:tile
-      tagrule=id:3,layout_name:tile
-      tagrule=id:4,layout_name:tile
-      tagrule=id:5,layout_name:tile
-      tagrule=id:6,layout_name:tile
-      tagrule=id:7,layout_name:tile
-      tagrule=id:8,layout_name:tile
-      tagrule=id:9,layout_name:tile
+      tag_rule=id:1,layout_name:tile
+      tag_rule=id:2,layout_name:tile
+      tag_rule=id:3,layout_name:tile
+      tag_rule=id:4,layout_name:tile
+      tag_rule=id:5,layout_name:tile
+      tag_rule=id:6,layout_name:tile
+      tag_rule=id:7,layout_name:tile
+      tag_rule=id:8,layout_name:tile
+      tag_rule=id:9,layout_name:tile
 
       # --- Autostart (Serviços e Componentes de Sessão) ---
       ${
@@ -642,35 +642,35 @@ in
       mousebind=NONE,btn_middle,togglemaximizescreen,0
 
       # Regras de Janela (Window Rules)
-      windowrule=isfloating:1,width:850,height:550,title:floating-kitty
-      windowrule=isfloating:1,appid:thunar
-      windowrule=isfloating:1,appid:org.gnome.NautilusPreviewer
-      windowrule=isfloating:1,appid:org.gnome.FileRoller
-      windowrule=isfloating:1,appid:nemo
-      windowrule=isfloating:1,appid:pcmanfm
-      windowrule=isfloating:1,appid:pavucontrol
-      windowrule=isfloating:1,appid:nm-connection-editor
-      windowrule=isfloating:1,appid:blueman-manager
-      windowrule=isfloating:1,appid:mpv
-      windowrule=isfloating:1,appid:.*[sS]crcpy.*
-      windowrule=isfloating:1,appid:.scrcpywrap
-      windowrule=isfloating:1,appid:scrcpy-wrapped
-      windowrule=isfloating:1,appid:.scrcpy-wrapped
-      windowrule=isfloating:1,title:.*[sS]crcpy.*
-      windowrule=isfloating:1,title:.*Preferences.*
-      windowrule=isfloating:1,title:.*Settings.*
-      windowrule=isfloating:1,title:.*Choose.*
-      windowrule=isfloating:1,title:.*Open.*
-      windowrule=isfloating:1,title:.*Save.*
-      windowrule=isfloating:1,title:.*Confirm.*
-      windowrule=isfloating:1,title:.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Authentication|Autenticação|Bitwarden).*
-      windowrule=idleinhibit_when_focus:1,appid:steam
+      window_rule=is_floating:1,width:850,height:550,title:floating-kitty
+      window_rule=is_floating:1,app_id:thunar
+      window_rule=is_floating:1,app_id:org.gnome.NautilusPreviewer
+      window_rule=is_floating:1,app_id:org.gnome.FileRoller
+      window_rule=is_floating:1,app_id:nemo
+      window_rule=is_floating:1,app_id:pcmanfm
+      window_rule=is_floating:1,app_id:pavucontrol
+      window_rule=is_floating:1,app_id:nm-connection-editor
+      window_rule=is_floating:1,app_id:blueman-manager
+      window_rule=is_floating:1,app_id:mpv
+      window_rule=is_floating:1,app_id:.*[sS]crcpy.*
+      window_rule=is_floating:1,app_id:.scrcpywrap
+      window_rule=is_floating:1,app_id:scrcpy-wrapped
+      window_rule=is_floating:1,app_id:.scrcpy-wrapped
+      window_rule=is_floating:1,title:.*[sS]crcpy.*
+      window_rule=is_floating:1,title:.*Preferences.*
+      window_rule=is_floating:1,title:.*Settings.*
+      window_rule=is_floating:1,title:.*Choose.*
+      window_rule=is_floating:1,title:.*Open.*
+      window_rule=is_floating:1,title:.*Save.*
+      window_rule=is_floating:1,title:.*Confirm.*
+      window_rule=is_floating:1,title:.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Authentication|Autenticação|Bitwarden).*
+      window_rule=idle_inhibit_when_focus:1,app_id:steam
 
       # Regras de Camada (Layer Rules)
-      layerrule=animation_type_open:zoom,layer_name:rofi
-      layerrule=animation_type_close:zoom,layer_name:rofi
-      layerrule=blur:1,layer_name:waybar
-      layerrule=blur:1,layer_name:rofi
+      layer_rule=animation_type_open:zoom,layer_name:rofi
+      layer_rule=animation_type_close:zoom,layer_name:rofi
+      layer_rule=blur:1,layer_name:waybar
+      layer_rule=blur:1,layer_name:rofi
     '';
   };
 }

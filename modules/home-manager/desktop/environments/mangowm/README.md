@@ -97,16 +97,16 @@ Em [mango.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/des
 
 ```nix
 # Define o layout padrão de cada tag (1 a 9)
-tagrule=id:1,layout_name:scroller
-tagrule=id:2,layout_name:tile
-tagrule=id:3,layout_name:grid
+tag_rule=id:1,layout_name:scroller
+tag_rule=id:2,layout_name:tile
+tag_rule=id:3,layout_name:grid
 ```
 
 Para aplicar layouts diferentes dependendo do monitor:
 ```nix
 # Exemplo: Monitor eDP-1 usa scroller, monitor externo HDMI-A-1 usa tile
-tagrule=id:1,monitor_name:^eDP-1$,layout_name:scroller
-tagrule=id:1,monitor_name:^HDMI-A-1$,layout_name:tile
+tag_rule=id:1,monitor_name:^eDP-1$,layout_name:scroller
+tag_rule=id:1,monitor_name:^HDMI-A-1$,layout_name:tile
 ```
 
 ### 2. Ajustar o Layout Scroller
@@ -123,23 +123,23 @@ Atalhos do Scroller:
 - `$SUPER + C`: Agrupa/empilha a coluna para a esquerda (`scroller_stack left`).
 - `$SUPER + Shift + C`: Agrupa/empilha a coluna para a direita (`scroller_stack right`).
 
-### 3. Regras de Janelas (`windowrule`)
+### 3. Regras de Janelas (`window_rule`)
 Para fazer aplicativos específicos abrirem flutuando, centralizados ou com dimensões fixas:
 
 ```nix
 # Forçar janela flutuante com tamanho específico
-windowrule=isfloating:1,width:850,height:550,title:floating-kitty
+window_rule=is_floating:1,width:850,height:550,title:floating-kitty
 
-# Forçar flutuante por appid (Thunar, Pavucontrol, etc.)
-windowrule=isfloating:1,appid:thunar
-windowrule=isfloating:1,appid:pavucontrol
-windowrule=isfloating:1,appid:nm-connection-editor
+# Forçar flutuante por app_id (Thunar, Pavucontrol, etc.)
+window_rule=is_floating:1,app_id:thunar
+window_rule=is_floating:1,app_id:pavucontrol
+window_rule=is_floating:1,app_id:nm-connection-editor
 
 # Inibir bloqueio de tela quando um app ou jogo estiver focado
-windowrule=idleinhibit_when_focus:1,appid:steam
+window_rule=idle_inhibit_when_focus:1,app_id:steam
 ```
 
-> **Dica**: Para descobrir o `appid` de uma janela Wayland em execução, execute `mmsg -g` ou consulte o terminal ao inicializar o aplicativo.
+> **Dica**: Para descobrir o `app_id` de uma janela Wayland em execução, execute `mmsg -g` ou consulte o terminal ao inicializar o aplicativo.
 
 ### 4. Efeitos Visuais (Blur, Sombras, Cantos e Opacidade)
 Em [mango.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/mangowm/mango.nix):
@@ -158,27 +158,27 @@ shadows_blur=15
 border_radius=10                # Raio de arredondamento dos cantos (pixels)
 focused_opacity=1.0             # Opacidade da janela ativa
 unfocused_opacity=0.95          # Opacidade das janelas inativas
-borderpx=2                      # Espessura da borda
-gappih=6                        # Gaps internos horizontais
-gappiv=6                        # Gaps internos verticais
-gappoh=12                       # Gaps externos horizontais
-gappov=12                       # Gaps externos verticais
+border_px=2                     # Espessura da borda
+gap_inner_horizontal=6          # Gaps internos horizontais
+gap_inner_vertical=6            # Gaps internos verticais
+gap_outer_horizontal=12         # Gaps externos horizontais
+gap_outer_vertical=12           # Gaps externos verticais
 ```
 
 ### 5. Cores e Paletas de Tema
 As cores no MangoWM utilizam a sintaxe hexadecimal com canal alpha `0xRRGGBBAA`:
 
 ```nix
-rootcolor=0x1e1e2eff           # Fundo da área de trabalho
-bordercolor=0x313244ff         # Borda de janelas inativas
-focuscolor=0x89b4faff          # Borda da janela ativa (Azul Catppuccin)
-dropcolor=0x89b4fa55           # Indicador de arraste
-splitcolor=0xfab387ff          # Divisor de split
-maximizescreencolor=0xa6e3a1ff # Indicador de janela maximizada
-urgentcolor=0xf38ba8ff         # Indicador de alerta / urgente
-scratchpadcolor=0x89b4faff     # Borda do scratchpad
-globalcolor=0xcba6f7ff         # Borda de janelas globais/fixas
-overlaycolor=0x89dcebff        # Borda de janelas overlay
+root_color=0x1e1e2eff           # Fundo da área de trabalho
+border_color=0x313244ff         # Borda de janelas inativas
+focus_color=0x89b4faff          # Borda da janela ativa (Azul Catppuccin)
+drop_color=0x89b4fa55           # Indicador de arraste
+split_color=0xfab387ff          # Divisor de split
+maximized_screen_color=0xa6e3a1ff # Indicador de janela maximizada
+urgent_color=0xf38ba8ff         # Indicador de alerta / urgente
+scratchpad_color=0x89b4faff     # Borda do scratchpad
+global_color=0xcba6f7ff         # Borda de janelas globais/fixas
+overlay_color=0x89dcebff        # Borda de janelas overlay
 ```
 
 ### 6. Atalhos de Teclado, Mouse e Gestos
