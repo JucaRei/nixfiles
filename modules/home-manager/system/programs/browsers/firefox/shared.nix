@@ -111,6 +111,7 @@ in
   # "browser.contentblocking.category" = "strict";
   "intl.accept_languages" = "en-US, en";
   "javascript.use_us_english_locale" = true;
+  "privacy.sanitize.sanitizeOnShutdown" = false;
   "privacy.clearOnShutdown.cache" = false;
   "privacy.clearOnShutdown.cookies" = false;
   "privacy.clearOnShutdown.downloads" = false;
@@ -118,6 +119,10 @@ in
   "privacy.clearOnShutdown.history" = false;
   "privacy.clearOnShutdown.offlineApps" = true;
   "privacy.clearOnShutdown.sessions" = false;
+  "privacy.clearOnShutdown_v2.cache" = false;
+  "privacy.clearOnShutdown_v2.cookiesAndStorage" = false;
+  "privacy.clearOnShutdown_v2.historyFormDataAndDownloads" = false;
+  "privacy.clearOnShutdown_v2.browsingHistoryAndDownloads" = false;
   "privacy.fingerprintingProtection" = true;
   "privacy.trackingprotection.enabled" = true;
   "privacy.trackingprotection.emailtracking.enabled" = true;

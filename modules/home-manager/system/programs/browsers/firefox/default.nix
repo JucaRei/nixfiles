@@ -144,6 +144,18 @@ in
       file = {
         ".mozilla/native-messaging-hosts/ff2mpv.json".source =
           "${pkgs.ff2mpv-rust}/lib/mozilla/native-messaging-hosts/ff2mpv.json";
+      } // lib.optionalAttrs (cfg.version == "librewolf") {
+        ".librewolf/librewolf.overrides.cfg".text = ''
+          // LibreWolf Overrides - Preservar abas e sessoes ao fechar
+          defaultPref("browser.startup.page", 3);
+          defaultPref("privacy.sanitize.sanitizeOnShutdown", false);
+          defaultPref("privacy.clearOnShutdown.history", false);
+          defaultPref("privacy.clearOnShutdown.sessions", false);
+          defaultPref("privacy.clearOnShutdown.cookies", false);
+          defaultPref("privacy.clearOnShutdown_v2.historyFormDataAndDownloads", false);
+          defaultPref("privacy.clearOnShutdown_v2.browsingHistoryAndDownloads", false);
+          defaultPref("privacy.clearOnShutdown_v2.cookiesAndStorage", false);
+        '';
       };
 
       sessionVariables = {
