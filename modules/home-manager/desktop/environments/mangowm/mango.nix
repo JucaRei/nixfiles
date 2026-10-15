@@ -220,7 +220,7 @@ in
       shadows_blur=12
       shadows_position_x=2
       shadows_position_y=2
-      shadowscolor=0x000000ff
+      shadows_color=0x000000ff
 
       border_radius=10
       no_radius_when_single=0
