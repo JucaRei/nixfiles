@@ -15,6 +15,16 @@ let
     ;
   cfg = config.system.programs.shells;
   bashCfg = cfg.bash;
+
+  targetShellPkg =
+    if cfg.default == "zsh" then
+      "${pkgs.zsh}/bin/zsh"
+    else if cfg.default == "fish" then
+      "${pkgs.fish}/bin/fish"
+    else if cfg.default == "nu" || cfg.default == "nushell" then
+      "${pkgs.nushell}/bin/nu"
+    else
+      null;
 in
 {
   options.system.programs.shells.bash = {
@@ -27,10 +37,12 @@ in
     };
   };
 
-  config = mkIf (cfg.enable && cfg.default == "bash") {
-    home.packages = lib.optional bashCfg.blesh.enable pkgs.blesh;
+  config = mkIf cfg.enable (mkMerge [
+    # 1. Quando o shell padrão é o Bash: ambiente completo
+    (mkIf (cfg.default == "bash") {
+      home.packages = lib.optional bashCfg.blesh.enable pkgs.blesh;
 
-    programs.bash = {
+      programs.bash = {
       enable = true;
       enableCompletion = true;
       enableVteIntegration = true;
@@ -147,5 +159,37 @@ in
         TERM = "xterm-256color";
       };
     };
-  };
+  })
+
+  # 2. Quando o shell padrão NÃO é o Bash (ex: Zsh em hosts standalone onde /etc/passwd aponta para /bin/bash):
+  # Garante que conexões SSH e logins interativos sejam redirecionados automaticamente para o shell configurado
+  (mkIf (cfg.default != "bash" && targetShellPkg != null) {
+    programs.bash = {
+      enable = true;
+      profileExtra = ''
+        # Redirecionamento automático de login/SSH para o shell padrão (${cfg.default})
+        if [[ $- == *i* ]] && [ -z "''${__HM_SHELL_EXECED-}" ] && [ -z "''${ZSH_VERSION-}" ] && [ -z "''${FISH_VERSION-}" ] && [ -z "''${NU_VERSION-}" ]; then
+          export __HM_SHELL_EXECED=1
+          if [ -x "${targetShellPkg}" ]; then
+            exec "${targetShellPkg}" -l
+          elif command -v "${cfg.default}" >/dev/null 2>&1; then
+            exec "${cfg.default}" -l
+          fi
+        fi
+      '';
+      initExtra = ''
+        # Redirecionamento automático para sessões interativas que não sejam de login
+        if [[ $- == *i* ]] && [ -z "''${__HM_SHELL_EXECED-}" ] && [ -z "''${ZSH_VERSION-}" ] && [ -z "''${FISH_VERSION-}" ] && [ -z "''${NU_VERSION-}" ]; then
+          export __HM_SHELL_EXECED=1
+          if [ -x "${targetShellPkg}" ]; then
+            exec "${targetShellPkg}" -l
+          elif command -v "${cfg.default}" >/dev/null 2>&1; then
+            exec "${cfg.default}" -l
+          fi
+        fi
+      '';
+    };
+  })
+]);
 }
+
