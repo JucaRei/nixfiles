@@ -163,6 +163,7 @@ gap_inner_horizontal=6          # Gaps internos horizontais
 gap_inner_vertical=6            # Gaps internos verticais
 gap_outer_horizontal=12         # Gaps externos horizontais
 gap_outer_vertical=12           # Gaps externos verticais
+smart_gaps=0                    # 1 = desativa gaps quando houver apenas 1 janela na tag
 ```
 
 ### 5. Cores e Paletas de Tema

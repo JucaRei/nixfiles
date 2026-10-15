@@ -246,7 +246,7 @@ in
       gap_inner_vertical=6
       gap_outer_horizontal=12
       gap_outer_vertical=12
-      smartgaps=0
+      smart_gaps=0
 
       # --- Paleta Catppuccin Mocha ---
       root_color=0x1e1e2eff
@@ -293,8 +293,8 @@ in
 
       # --- Comportamento ---
       focus_on_activate=1
-      sloppyfocus=1
-      warpcursor=1
+      sloppy_focus=1
+      warp_cursor=1
       cursor_size=24
 
       # --- Gestos de Touchpad (Swipe de Workspaces com 3 dedos) ---

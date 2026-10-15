@@ -30,6 +30,10 @@ Este arquivo serve como **memória persistente** e guia de diretrizes para o ass
 3. **Boas Práticas de Modificação e Validação**:
    - Sempre manter comentários informativos e documentação existente.
    - **Atualização Contínua**: Atualizar este `AGENTS.md` imediatamente a cada diagnóstico, solução ou decisão arquitetural.
+   - **Auditoria Proativa de Versão e Breaking Changes Upstream**: A cada erro em runtime/switch ou atualização de pacote/flake, nunca corrigir apenas o sintoma isolado:
+     1. **Investigar Upstream e Versão**: Consultar o repositório upstream, wiki oficial, commits ou release notes da versão instalada para identificar quebras de compatibilidade, renomeações de diretivas ou palavras-chave descontinuadas.
+     2. **Varredura Completa da Configuração**: Vasculhar imediatamente todos os arquivos do módulo afetado à procura de qualquer outro parâmetro legado ou inconsistente, corrigindo todo o conjunto de uma só vez (evitando loops de erro linha a linha).
+     3. **Testes e Validação Obrigatória**: Sempre fornecer e executar comandos de verificação sintática e de configuração (ex: `mango -c <config> -p`, `nix eval`, `bspwm -c`, etc.) antes de orientar o switch final.
    - **Validação Cirúrgica**: Usar `nix eval` ou `nix flake check --no-build` durante edições incrementais.
    - **Verificação Global**: `nix flake check` apenas no fechamento final ou sob demanda.
 4. **Padrão de Tiling Managers no Home Manager (NixOS vs Standalone)**:
@@ -157,11 +161,12 @@ sudo nixos-rebuild switch --flake .#<host>        # NixOS
 - **MangoWM Sintaxe Oficial `snake_case`**: Todas as diretivas de configuração, dimensões, gaps, cores e regras no MangoWM exigem underscore:
   - Monitores: `monitor_rule=` (não `monitorrule=`)
   - Sombras: `shadows_color=` (não `shadowscolor=`)
-  - Dimensões e Gaps: `border_px=` (não `borderpx=`), `gap_inner_horizontal=`, `gap_inner_vertical=`, `gap_outer_horizontal=`, `gap_outer_vertical=` (não `gappih`/`gappiv`/`gappoh`/`gappov=`)
+  - Dimensões e Gaps: `border_px=` (não `borderpx=`), `gap_inner_horizontal=`, `gap_inner_vertical=`, `gap_outer_horizontal=`, `gap_outer_vertical=` (não `gappih`/`gappiv`/`gappoh`/`gappov=`), `smart_gaps=` (não `smartgaps=`)
   - Cores: `root_color=`, `border_color=`, `focus_color=`, `drop_color=`, `split_color=`, `urgent_color=`, `maximized_screen_color=`, `scratchpad_color=`, `global_color=`, `overlay_color=`
   - Overview: `overview_gap_inner=`, `overview_gap_outer=`
-  - Entrada: `numlock_on=`
+  - Entrada e Comportamento: `numlock_on=`, `sloppy_focus=` (não `sloppyfocus=`), `warp_cursor=` (não `warpcursor=`)
   - Regras: `tag_rule=`, `window_rule=` (com `is_floating:1`, `app_id:`, `idle_inhibit_when_focus:`), `layer_rule=`
+  - Teste Sintático: `mango -c ~/.config/mango/config.conf -p` valida o arquivo sem precisar iniciar o compositor.
 
 ### `nitro` (Debian / Acer Nitro 5 / Intel UHD 630 + NVIDIA GTX 1050)
 

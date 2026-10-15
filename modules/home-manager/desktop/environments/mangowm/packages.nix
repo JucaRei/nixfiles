@@ -50,12 +50,12 @@ let
     mkdir -p "$HOME/.cache"
     if [ -f "$STATE_FILE" ]; then
       rm -f "$STATE_FILE"
-      mmsg dispatch setgappo,12,12 2>/dev/null || true
-      ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Modo Normal: Gaps externos (12px)"
+      mmsg dispatch togglegaps 2>/dev/null || true
+      ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Modo Normal: Gaps restaurados"
     else
       touch "$STATE_FILE"
-      mmsg dispatch setgappo,400,12 2>/dev/null || true
-      ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Modo Foco: Gaps externos expandidos (400px)"
+      mmsg dispatch togglegaps 2>/dev/null || true
+      ${pkgs.libnotify}/bin/notify-send -u low "MangoWM" "Modo Foco: Gaps desativados"
     fi
   '';
   mangoLayoutSwitcher = pkgs.writeShellScriptBin "mango-layout-switcher" ''
