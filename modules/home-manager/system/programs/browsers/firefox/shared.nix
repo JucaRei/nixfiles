@@ -2,6 +2,7 @@
   config,
   lib,
   osConfig ? null,
+  version ? "firefox",
   ...
 }:
 let
@@ -32,7 +33,7 @@ in
   "browser.toolbars.bookmarks.visibility" = "never";
   "browser.search.openintab" = false;
   "browser.startup.page" = 3; # Restore previous tabs
-  "browser.uiCustomization.state" = lib.mkIf (cfg.enable == true) ''
+  "browser.uiCustomization.state" = lib.mkIf (cfg.enable == true && version != "floorp") ''
     {
       "placements":{
         "widget-overflow-fixed-list":[],"unified-extensions-area":["_2e5ff8c8-32fe-46d0-9fc8-6b8986621f3c_-browser-action","_762f9885-5a13-4abd-9c77-433dcd38b8fd_-browser-action","dontfuckwithpaste_raim_ist-browser-action","tab-stash_condordes_net-browser-action","_48be9eda-8d28-4a3c-8c1c-cd6161dbf076_-browser-action"],
@@ -82,16 +83,24 @@ in
   "media.gmp-widevinecdm.enabled" = true;
   "media.ffmpeg.vaapi.enabled" = lib.mkIf (hasVaapi) true; # # keep this with ff 96
   "media.rdd-ffmpeg.enabled" = lib.mkIf (hasVaapi) true; # # keep this with ff 96
+  "media.hardware-video-decoding.force-enabled" = lib.mkIf (hasVaapi) true;
   "media.rdd-vpx.enabled" = lib.mkIf (hasVaapi) false; # # remove on ff 96
+  "media.rdd-ffvpx.enabled" = lib.mkIf (hasVaapi) false; # Force RDD to use FFmpeg VA-API instead of internal software ffvpx
   "media.navigator.mediadatadecoder_vpx_enabled" = lib.mkIf (hasVaapi) true; # # remove on ff 96
   "media.ffvpx.enabled" = lib.mkIf (hasVaapi) false;
+  "widget.dmabuf.force-enabled" = lib.mkIf (hasVaapi) true; # Required for zero-copy VA-API DMABuf surfaces
   # disable av1, vaapi on old hardware does not support av1
   "media.av1.enabled" = false;
   "media.peerconnection.enabled" = true;
+  "media.webrtc.camera.allow-pipewire" = true;
+  "identity.fxaccounts.enabled" = true; # Allow Firefox Sync/Accounts across all forks including LibreWolf
   "gfx.webrender.all" = lib.mkIf (hasVaapi) true;
+  "gfx.x11-egl.force-enabled" = true;
+  "layers.acceleration.force-enabled" = true;
   "places.history.enabled" = true;
   "security.ssl.errorReporting.enabled" = false;
   "widget.use-xdg-desktop-portal.file-picker" = 1; # Always use XDG portals for stuff
+  "widget.use-xdg-desktop-portal.mime-handler" = 1;
   # "security.identityblock.show_extended_validation" = true;
   # Show more ssl cert infos
   "experiments.supported" = false;

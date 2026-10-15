@@ -61,7 +61,10 @@ in
         };
 
         browsers = {
-          firefox.enable = true;
+          firefox = {
+            enable = true;
+            version = "librewolf";
+          };
         };
 
         documents = {

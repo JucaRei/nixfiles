@@ -20,6 +20,7 @@ let
     firefox-devedition = { desktop = "firefox-devedition.desktop";  bin = "firefox-devedition"; };
     firefox-esr        = { desktop = "firefox-esr.desktop";         bin = "firefox-esr"; };
     floorp             = { desktop = "floorp.desktop";              bin = "floorp"; };
+    librewolf          = { desktop = "librewolf.desktop";          bin = "librewolf"; };
   };
 
   chromiumMap = {

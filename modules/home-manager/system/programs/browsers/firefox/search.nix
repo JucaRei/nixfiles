@@ -131,10 +131,10 @@
           ];
         }
       ];
-      icon = "${config.programs.brave.package}/share/icons/hicolor/64x64/apps/brave-browser.png";
+      icon = "${pkgs.brave}/share/icons/hicolor/64x64/apps/brave-browser.png";
       definedAliases = [
         "@brave"
-        "@b"
+        "@br"
       ];
     };
 

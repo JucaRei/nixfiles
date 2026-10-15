@@ -16,6 +16,11 @@ let
 
   cfg = config.system.programs.terminal;
   isUrxvt = (cfg.name or "") == "urxvt" || (cfg.name or "") == "rxvt";
+  alacrittyPkg =
+    if config.programs.alacritty.enable then
+      config.programs.alacritty.package
+    else
+      pkgs.alacritty;
 
   # Determina o nome canônico amigável do terminal ativo
   activeName =
@@ -45,7 +50,7 @@ let
     else if isUrxvt then
       "${config.home.homeDirectory}/.local/bin/term"
     else if cfg.name == "alacritty" then
-      "${pkgs.alacritty}/bin/alacritty --working-directory $HOME"
+      "${alacrittyPkg}/bin/alacritty --working-directory $HOME"
     else if cfg.name == "kitty" then
       "${pkgs.kitty}/bin/kitty --directory $HOME"
     else if cfg.name == "foot" then
@@ -64,7 +69,7 @@ let
     if isUrxvt then
       "${config.home.homeDirectory}/.local/bin/term -cd"
     else if cfg.name == "alacritty" then
-      "${pkgs.alacritty}/bin/alacritty --working-directory"
+      "${alacrittyPkg}/bin/alacritty --working-directory"
     else if cfg.name == "kitty" then
       "${pkgs.kitty}/bin/kitty --directory"
     else if cfg.name == "foot" then
@@ -81,7 +86,7 @@ let
     if isUrxvt then
       "${computedActiveCommand} -name \"$SCRATCHPAD_NAME\""
     else if cfg.name == "alacritty" then
-      "${pkgs.alacritty}/bin/alacritty --class \"$SCRATCHPAD_NAME,$SCRATCHPAD_NAME\" --working-directory \"$HOME\""
+      "${alacrittyPkg}/bin/alacritty --class \"$SCRATCHPAD_NAME,$SCRATCHPAD_NAME\" --working-directory \"$HOME\""
     else if cfg.name == "kitty" then
       "${pkgs.kitty}/bin/kitty --class \"$SCRATCHPAD_NAME\" --directory \"$HOME\""
     else if cfg.name == "foot" then
@@ -153,9 +158,9 @@ let
     # 3. Se for Alacritty
     ${optionalString (cfg.name == "alacritty") ''
       if [ -n "$RUN_CMD" ]; then
-        exec ${pkgs.alacritty}/bin/alacritty -e $RUN_CMD
+        exec ${alacrittyPkg}/bin/alacritty -e $RUN_CMD
       else
-        exec ${pkgs.alacritty}/bin/alacritty --working-directory "''${TARGET_DIR:-$HOME}"
+        exec ${alacrittyPkg}/bin/alacritty --working-directory "''${TARGET_DIR:-$HOME}"
       fi
     ''}
 
