@@ -2,15 +2,13 @@
   config,
   lib,
   pkgs,
-  hostname ? null,
   ...
 }:
 let
   inherit (lib) mkIf;
   cfg = config.desktop.mangowm;
   isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
-  isApple =
-    (config.home.keyboard.model or "") == "apple" || hostname == "anubis" || hostname == "rocinante";
+  isApple = (config.home.keyboard.model or "") == "apple";
 
   normMod =
     let

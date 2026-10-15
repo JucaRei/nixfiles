@@ -79,7 +79,7 @@ modules/home-manager/desktop/environments/hyprland/
 ## 🛠️ 4. Como Fazer Customizações e Alterações
 
 ### 1. Configurar Monitores
-Em [hyprland.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/hyprland/hyprland.nix) ou nas configurações da máquina:
+Em [hyprland.nix](./hyprland.nix) ou nas configurações da máquina:
 
 ```nix
 desktop.hyprland.monitors = [
@@ -92,7 +92,7 @@ desktop.hyprland.monitors = [
 > **Dica**: Use o comando `hyprctl monitors` no terminal para inspecionar os nomes, resoluções e taxas de atualização dos monitores conectados.
 
 ### 2. Configurar Teclado e Dead Keys (MacBook / US-Intl)
-Para garantir que dead keys (`'c` → `ç`, `~a` → `ã`, `'e` → `é`) funcionem perfeitamente, configure no [home-manager/default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/default.nix):
+Para garantir que dead keys (`'c` → `ç`, `~a` → `ã`, `'e` → `é`) funcionem perfeitamente, configure no [home-manager/default.nix](../../../../home-manager/default.nix):
 
 ```nix
 home.keyboard = {
@@ -116,7 +116,7 @@ windowrule = [
 ```
 
 ### 4. Animações e Curvas Bezier
-Em [hyprland.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/hyprland/hyprland.nix):
+Em [hyprland.nix](./hyprland.nix):
 
 ```nix
 bezier = [

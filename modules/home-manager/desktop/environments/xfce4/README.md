@@ -42,7 +42,7 @@ modules/home-manager/desktop/environments/xfce4/
 ## ⚙️ 3. Configurações Declarativas (Xfconf)
 
 ### Gerenciador de Janelas (XFWM4)
-Em [default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/xfce4/default.nix):
+Em [default.nix](./default.nix):
 - `theme`: Herda o tema Catppuccin Mocha.
 - `title_font`: `Inter Bold 10`.
 - `button_layout`: `O|HMC` (Botão de opções à esquerda; Minimizar, Maximizar e Fechar à direita).

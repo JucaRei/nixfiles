@@ -3,7 +3,6 @@
   lib,
   pkgs,
   desktop ? null,
-  hostname ? null,
   ...
 }:
 let
@@ -11,7 +10,7 @@ let
   inherit (lib.types) bool str listOf;
   cfg = config.desktop.hyprland;
   isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
-  isApple = (config.home.keyboard.model or "") == "apple" || hostname == "anubis" || hostname == "rocinante";
+  isApple = (config.home.keyboard.model or "") == "apple";
 
   screenshotFull = pkgs.writeShellScript "hypr-screenshot-full" ''
     dir="$HOME/Pictures/Screenshots"

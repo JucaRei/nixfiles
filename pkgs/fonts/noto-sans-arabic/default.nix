@@ -12,7 +12,9 @@ in
 stdenv.mkDerivation {
   name = "${pname}-${version}";
   src = ./NotoSansArabic-v2.010.zip;
-  buildInputs = [ unzip ];
+  nativeBuildInputs = [ unzip ];
+  dontConfigure = true;
+  dontBuild = true;
   installPhase = ''
     install -m444 -Dt $out/share/fonts/opentype full/otf/*.otf
   '';

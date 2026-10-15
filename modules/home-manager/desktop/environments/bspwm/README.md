@@ -91,7 +91,7 @@ modules/home-manager/desktop/environments/bspwm/
 ## 🛠️ 4. Como Fazer Customizações e Alterações
 
 ### 1. Configurar Desktops / Workspaces
-Em [bspwm.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/bspwm/bspwm.nix):
+Em [bspwm.nix](./bspwm.nix):
 
 ```nix
 bspc monitor -d 1 2 3 4 5 6
@@ -118,12 +118,12 @@ fi
 ```
 
 ### 3. Customizar a Polybar
-Os módulos e layout da barra estão organizados dentro do subdiretório [polybar/](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/bspwm/polybar/):
+Os módulos e layout da barra estão organizados dentro do subdiretório [polybar/](./polybar/):
 - `modules.nix`: Definição de cada bloco visual (cpu, memória, pulseaudio, network, workspaces, clock, powermenu).
 - `config.ini`: Posição da barra, margens, fontes, altura e espaçamento entre módulos.
 
 ### 4. Efeitos Visuais no Picom (Blur, Cantos e Sombras)
-Em [picom.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/bspwm/picom.nix):
+Em [picom.nix](./picom.nix):
 
 ```nix
 corner-radius = 10;

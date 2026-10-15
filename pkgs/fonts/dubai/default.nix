@@ -13,7 +13,9 @@ stdenv.mkDerivation {
   name = "${pname}-${version}";
   src = ./Dubai-v2023-02-11.zip;
   sourceRoot = "ot_ttf";
-  buildInputs = [ unzip ];
+  nativeBuildInputs = [ unzip ];
+  dontConfigure = true;
+  dontBuild = true;
   installPhase = ''
     install -m444 -Dt $out/share/fonts/truetype *.ttf
   '';

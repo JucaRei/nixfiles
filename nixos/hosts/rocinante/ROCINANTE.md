@@ -27,11 +27,11 @@
 ## 🗂️ Ficheiros Relevantes
 
 | Ficheiro | Papel |
-| [`default.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/default.nix) | Configuração principal do host |
-| [`filesystem.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/filesystem.nix) | Montagens BTRFS e swap partition (sem EFI em legacy) |
-| [`disko-legacy.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/disko-legacy.nix) | Particionamento declarativo MBR (msdos) puro para BIOS/CSM |
-| [`disko.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/nixos/hosts/rocinante/disko.nix) | Particionamento GPT anterior (referência) |
-| [`modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`](file:///mnt/d/workspace/MyRepos/nixfiles/modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix) | Módulo do driver NVIDIA 340 Legacy (ativado pela `specialisation`) |
+| [`default.nix`](./default.nix) | Configuração principal do host |
+| [`filesystem.nix`](./filesystem.nix) | Montagens BTRFS e swap partition (sem EFI em legacy) |
+| [`disko-legacy.nix`](./disko-legacy.nix) | Particionamento declarativo MBR (msdos) puro para BIOS/CSM |
+| [`disko.nix`](./disko.nix) | Particionamento GPT anterior (referência) |
+| [`modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix`](../../../modules/nixos/hardware/graphics/cards/nvidia-legacy/default.nix) | Módulo do driver NVIDIA 340 Legacy (ativado pela `specialisation`) |
 
 ---
 

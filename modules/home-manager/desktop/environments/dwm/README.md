@@ -100,7 +100,7 @@ modules/home-manager/desktop/environments/dwm/
 
 ## 🔨 3. Como o Nix Compila e Provisiona o DWM
 
-No arquivo [dwm.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/dwm.nix), o DWM é compilado como um pacote isolado do Nix:
+No arquivo [dwm.nix](./dwm.nix), o DWM é compilado como um pacote isolado do Nix:
 
 1. **Compilação (`dwmPackage`)**:
    - O `pkgs.stdenv.mkDerivation` compila os fontes da pasta `configs/` usando `libX11`, `libXft`, `libXinerama`, `libXrender`, `libXcursor`, `imlib2` e `fontconfig`.
@@ -258,14 +258,14 @@ O Quickshell monitora alterações de arquivos automaticamente em tempo real!
 
 Existem duas formas de iniciar programas automaticamente no login do DWM:
 
-1. **Via Script Mestre**: Edite [`modules/.../dwm/configs/scripts/autostart.sh`](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/configs/scripts/autostart.sh). Utilize a função `start_detached_once <processo>` para evitar instâncias duplicadas.
+1. **Via Script Mestre**: Edite [`configs/scripts/autostart.sh`](./configs/scripts/autostart.sh). Utilize a função `start_detached_once <processo>` para evitar instâncias duplicadas.
 2. **Via XDG Autostart Padrão**: Arquivos `.desktop` colocados em `~/.config/autostart/` são executados automaticamente pelo helper `dwm-xdg-autostart`.
 
 ---
 
 ### 5.6 Efeitos Visuais, Transparência e Blur (Picom)
 
-O Picom é gerenciado pelo Home Manager no arquivo [picom.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/picom.nix).
+O Picom é gerenciado pelo Home Manager no arquivo [picom.nix](./picom.nix).
 
 - **Habilitar/Desabilitar**:
   ```nix
@@ -295,7 +295,7 @@ Ao selecionar `"dwm-status"` ou `"slstatus"`, o daemon de notificações Dunst �
 ### 5.8 Adicionar Pacotes e Dependências ao Ambiente
 
 Se você precisar de novas ferramentas ou comandos disponíveis no ambiente DWM:
-1. Abra [packages.nix](file:///home/juca/.dotfiles/nixfiles/modules/home-manager/desktop/environments/dwm/packages.nix).
+1. Abra [packages.nix](./packages.nix).
 2. Adicione os pacotes desejados na lista `home.packages = with pkgs; [ ... ];`.
 3. Aplique com `home-manager switch`.
 

@@ -2,7 +2,7 @@
 
 Configuração declarativa e modular para **NixOS** e **Home Manager** (standalone), utilizando **Nix Flakes**.
 
-> 📖 **Documentação Completa**: Consulte o arquivo **[WIKI.md](file:///d:/workspace/MyRepos/nixfiles/WIKI.md)** para o guia detalhado de arquitetura, todos os comandos do NixOS, Home Manager, testes e manutenção.
+> 📖 **Documentação Completa**: Consulte o arquivo **[WIKI.md](./WIKI.md)** para o guia detalhado de arquitetura, todos os comandos do NixOS, Home Manager, testes e manutenção.
 
 ---
 

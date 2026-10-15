@@ -93,7 +93,7 @@ Exibe o título da janela em foco com substituição automática por ícones Ner
 ## 🛠️ 4. Como Fazer Customizações e Alterações
 
 ### 1. Alterar Layouts por Tag ou Monitor
-Em [mango.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/mangowm/mango.nix):
+Em [mango.nix](./mango.nix):
 
 ```nix
 # Define o layout padrão de cada tag (1 a 9)
@@ -142,7 +142,7 @@ window_rule=idle_inhibit_when_focus:1,app_id:steam
 > **Dica**: Para descobrir o `app_id` de uma janela Wayland em execução, execute `mmsg -g` ou consulte o terminal ao inicializar o aplicativo.
 
 ### 4. Efeitos Visuais (Blur, Sombras, Cantos e Opacidade)
-Em [mango.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/mangowm/mango.nix):
+Em [mango.nix](./mango.nix):
 
 ```nix
 blur=1                          # 1 = Ativa blur, 0 = Desativa

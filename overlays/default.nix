@@ -1,7 +1,7 @@
 { inputs, ... }:
 {
   # Brings custom local packages from the 'pkgs' directory
-  localPackages = final: _prev: import ../pkgs final.pkgs;
+  localPackages = final: _prev: import ../pkgs final;
 
   # Modifications to standard packages
   modifiedPackages = final: prev: {

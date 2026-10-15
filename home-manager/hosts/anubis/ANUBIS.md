@@ -56,10 +56,10 @@ Layout Mac com dead keys para acentos PT-BR (`layout = "us"`, `variant = "intl"`
    - `localectl set-x11-keymap us apple intl`
    - Arquivo `/etc/X11/xorg.conf.d/00-keyboard.conf` gerado automaticamente garantindo suporte no Xorg e no console virtual (`us-intl`).
 2. **Nível de Usuário (Home Manager)**:
-   - `home.keyboard = { layout = "us"; variant = "intl"; model = "apple"; };` em [default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/hosts/anubis/default.nix).
+   - `home.keyboard = { layout = "us"; variant = "intl"; model = "apple"; };` em [default.nix](./default.nix).
 
 ### Fuso Horário (Timezone - America/Sao_Paulo)
-- Configurado especificamente para o Anubis em [default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/hosts/anubis/default.nix):
+- Configurado especificamente para o Anubis em [default.nix](./default.nix):
   - `home.sessionVariables.TZ = "America/Sao_Paulo";`
   - `desktop.bspwm.extraConfig = "export TZ=\"America/Sao_Paulo\"";` garantindo que a Polybar e toda a sessão gráfica operem no horário correto de Brasília.
 - No Fedora (nível de sistema):
@@ -129,7 +129,7 @@ Com apenas 2 GB de RAM, evitar pacotes redundantes. Preferir ferramentas leves (
 
 ## 🔗 Referências
 
-- Configuração do host: [default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/home-manager/hosts/anubis/default.nix)
-- Flake entry: [flake.nix L55-58](file:///mnt/d/workspace/MyRepos/nixfiles/flake.nix#L55-L58)
-- Módulo BSPWM (Home Manager): [bspwm/](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/bspwm/)
-- Sessão xsessions (não-NixOS): [packages.nix L88-115](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/bspwm/packages.nix#L88-L115)
+- Configuração do host: [default.nix](./default.nix)
+- Flake entry: [flake.nix](../../../flake.nix)
+- Módulo BSPWM (Home Manager): [bspwm/](../../../modules/home-manager/desktop/environments/bspwm/)
+- Sessão xsessions (não-NixOS): [packages.nix](../../../modules/home-manager/desktop/environments/bspwm/packages.nix)
