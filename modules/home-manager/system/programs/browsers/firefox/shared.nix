@@ -28,7 +28,7 @@ in
   # "browser.uidensity" = 0; # Set UI density to normal
   "browser.uidensity" = 1; # enable compact mode
   "ui.systemUsesDarkTheme" = 1; # force dark theme
-  "browser.tabs.tabMinWidth" = 16;
+  "browser.tabs.tabMinWidth" = 76; # Reset to default minimum tab width to prevent tab borders overlapping
   "browser.tabs.firefox-view" = true; # Sync tabs across devices
   "browser.toolbars.bookmarks.visibility" = "never";
   "browser.search.openintab" = false;
@@ -97,8 +97,10 @@ in
   "gfx.webrender.all" = lib.mkIf (hasVaapi) true;
   "gfx.x11-egl.force-enabled" = true;
   "layers.acceleration.force-enabled" = true;
+  "mozilla.widget.use-argb-visuals" = true; # Transparency for window and popup corners on X11
   "places.history.enabled" = true;
   "security.ssl.errorReporting.enabled" = false;
+  "security.OCSP.require" = false; # Soft-fail OCSP - fixes "The add-on could not be downloaded because of a connection failure"
   "widget.use-xdg-desktop-portal.file-picker" = 1; # Always use XDG portals for stuff
   "widget.use-xdg-desktop-portal.mime-handler" = 1;
   # "security.identityblock.show_extended_validation" = true;
@@ -123,6 +125,7 @@ in
   "privacy.clearOnShutdown_v2.cookiesAndStorage" = false;
   "privacy.clearOnShutdown_v2.historyFormDataAndDownloads" = false;
   "privacy.clearOnShutdown_v2.browsingHistoryAndDownloads" = false;
+  "privacy.resistFingerprinting.block_mozAddonManager" = false; # Permite que a loja da Mozilla instale temas e extensões
   "privacy.fingerprintingProtection" = true;
   "privacy.trackingprotection.enabled" = true;
   "privacy.trackingprotection.emailtracking.enabled" = true;

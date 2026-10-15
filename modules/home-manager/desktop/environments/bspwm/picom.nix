@@ -447,7 +447,14 @@ in
 
         # Exclusão de sombras em apps que desenham suas próprias bordas ou onde causa artefatos
         {
-          match = "class_g = 'Polybar' || class_g = 'Eww' || class_g = 'jgmenu' || class_g = 'Spotify' || class_g = 'retroarch' || class_g = 'firefox' || class_g = 'Screenkey' || class_g = 'mpv' || class_g = 'Viewnior' || class_g = 'i3lock' || class_g = 'i3lock-color' || _GTK_FRAME_EXTENTS@";
+          match = "class_g = 'Polybar' || class_g = 'Eww' || class_g = 'jgmenu' || class_g = 'Spotify' || class_g = 'retroarch' || class_g = 'firefox' || class_g = 'LibreWolf' || class_g = 'librewolf' || class_g = 'floorp' || class_g = 'Floorp' || class_g = 'Screenkey' || class_g = 'mpv' || class_g = 'Viewnior' || class_g = 'i3lock' || class_g = 'i3lock-color' || _GTK_FRAME_EXTENTS@";
+          shadow = false;
+        },
+
+        # Popups e menus de navegadores (Firefox, LibreWolf, Floorp): desenham suas próprias bordas arredondadas e sombras
+        {
+          match = "(class_g = 'firefox' || class_g = 'LibreWolf' || class_g = 'librewolf' || class_g = 'floorp' || class_g = 'Floorp') && (window_type = 'popup_menu' || window_type = 'dropdown_menu' || window_type = 'menu' || window_type = 'popup' || window_type = 'utility' || window_type = 'dialog')";
+          corner-radius = 0;
           shadow = false;
         }
         ${lib.optionalString cfg.animations.enable ''

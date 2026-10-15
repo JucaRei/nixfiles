@@ -155,6 +155,18 @@ in
           defaultPref("privacy.clearOnShutdown_v2.historyFormDataAndDownloads", false);
           defaultPref("privacy.clearOnShutdown_v2.browsingHistoryAndDownloads", false);
           defaultPref("privacy.clearOnShutdown_v2.cookiesAndStorage", false);
+
+          // Permitir download de temas e extensões (evitar "connection failure" por OCSP)
+          defaultPref("security.OCSP.require", false);
+
+          // Largura mínima de abas normal para evitar bordas sobrepondo
+          defaultPref("browser.tabs.tabMinWidth", 76);
+
+          // Transparência ARGB para evitar cantos brancos quadrados em popups no X11
+          defaultPref("mozilla.widget.use-argb-visuals", true);
+
+          // Desbloquear API de instalação de extensões e temas na loja da Mozilla
+          defaultPref("privacy.resistFingerprinting.block_mozAddonManager", false);
         '';
       };
 
