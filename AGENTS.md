@@ -42,6 +42,7 @@ Diretórios em `nixos/hosts/` **sem** saída no flake (legado, não assumir que 
 4. **Módulos não conhecem hosts.** Não usar `hostname == "..."` dentro de `modules/`. Criar uma option e defini-la em `hosts/<host>/default.nix`.
 5. **Nixpkgs config e overlays** vêm de um único lugar. Não duplicar `allowInsecure`; preferir `permittedInsecurePackages`.
 6. **Comentários e docs existentes** são preservados ao editar.
+7. **Aceleração gráfica (nixGLWrapper):** Qualquer aplicação gráfica que utilize aceleração de hardware (OpenGL, Vulkan, EGL, VAAPI ou apps Electron como navegadores, terminais GPU, players multimídia, IDEs, Discord e WMs/shells) DEVE receber `nixGLWrapper ? lib.id` nos argumentos do módulo e envolver seus pacotes (`(nixGLWrapper pkgs.<app>)` ou `package = nixGLWrapper ...;`). No NixOS ou com nixGL desativado, `nixGLWrapper` é automaticamente `lib.id` (no-op).
 
 ## Validação (obrigatória antes de pedir o switch)
 
@@ -78,6 +79,7 @@ sudo nixos-rebuild switch --flake .#<host>           # NixOS
 ## Gotchas críticos (os que quebram o sistema)
 
 - **nixGL em Optimus:** definir `nixGLType = "intel"` no `mkHome` quando a Intel gerencia o display (ex.: `nitro`). `auto` só é seguro se o nixGL suportar a versão exata da NVIDIA no nixpkgs.
+- **Aceleração gráfica no HM standalone:** Nunca declarar pacotes com aceleração gráfica puros sem `nixGLWrapper` em módulos do Home Manager. Em distros como Debian ou Fedora, a ausência do wrapper causa falhas de contexto GLX/EGL/Vulkan ou fallback lento em software rendering.
 - **`nitro` (Debian):** nunca ativar `nvidia-drm.modeset=1`; quebra o GLX da Intel (`failed to find suitable GL configuration`).
 - **`rocinante`:** NVIDIA 340 exige boot CSM/legacy (`bootType = "legacy"`); não usar `hardware.nvidia`, usar `boot.extraModulePackages` + `services.xserver.drivers`.
 - **Polkit/setuid no HM:** não instalar `pkgs.polkit` em `home.packages`. Em standalone, helpers setuid vêm de `/run/wrappers/bin/` ou da distro.

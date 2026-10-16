@@ -34,3 +34,18 @@ Para mudar a lógica, edite `wrapper.sh` e rode `shellcheck lib/nixgl/wrapper.sh
 Mudanças de comportamento em relação à versão anterior:
 - `FORCE_NVIDIA=1` agora funciona (estava documentado, mas era ignorado).
 - `wrapDesktopFiles` foi removido (só aparecia em código comentado).
+
+## Convenção de uso nos módulos Home Manager
+
+Todo módulo com programas gráficos acelerados por hardware (OpenGL, Vulkan, EGL, VAAPI, Electron) deve receber `nixGLWrapper ? lib.id` e envolver o pacote:
+
+```nix
+{ config, lib, pkgs, nixGLWrapper ? lib.id, ... }:
+
+# Para opções do tipo package:
+programs.exemplo.package = nixGLWrapper pkgs.exemplo;
+
+# Para listas em home.packages:
+home.packages = [ (nixGLWrapper pkgs.exemplo) ];
+```
+No NixOS (`mkNixos`) e em HM com `useNixGL = false`, `nixGLWrapper` é automaticamente `lib.id` (no-op).

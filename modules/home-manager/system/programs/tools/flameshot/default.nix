@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -16,11 +17,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages = [ pkgs.flameshot ];
+    home.packages = [ (nixGLWrapper pkgs.flameshot) ];
 
     services.flameshot = {
       enable = true;
-      package = pkgs.flameshot;
+      package = nixGLWrapper pkgs.flameshot;
       settings = {
         General = {
           disabledTrayIcon = false;

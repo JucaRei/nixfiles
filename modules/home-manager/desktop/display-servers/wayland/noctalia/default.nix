@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -11,58 +12,59 @@ let
   isNoctalia =
     config.desktop.display-servers.backend == "wayland" && config.desktop.wayland.shell == "noctalia";
   tomlFormat = pkgs.formats.toml { };
+  noctaliaPkg = nixGLWrapper pkgs.noctalia;
 
   # Scripts de controle via IPC nativo do Noctalia (v5+)
   noctaliaLauncher = pkgs.writeShellScriptBin "noctalia-launcher" ''
-    ${pkgs.noctalia}/bin/noctalia msg panel-toggle launcher
+    ${noctaliaPkg}/bin/noctalia msg panel-toggle launcher
   '';
 
   noctaliaCliphist = pkgs.writeShellScriptBin "noctalia-cliphist" ''
-    ${pkgs.noctalia}/bin/noctalia msg panel-toggle clipboard
+    ${noctaliaPkg}/bin/noctalia msg panel-toggle clipboard
   '';
 
   noctaliaControlCenter = pkgs.writeShellScriptBin "noctalia-control-center" ''
-    ${pkgs.noctalia}/bin/noctalia msg panel-toggle control-center
+    ${noctaliaPkg}/bin/noctalia msg panel-toggle control-center
   '';
 
   noctaliaSessionMenu = pkgs.writeShellScriptBin "noctalia-session-menu" ''
-    ${pkgs.noctalia}/bin/noctalia msg panel-toggle session
+    ${noctaliaPkg}/bin/noctalia msg panel-toggle session
   '';
 
   noctaliaWallpaper = pkgs.writeShellScriptBin "noctalia-wallpaper" ''
-    ${pkgs.noctalia}/bin/noctalia msg panel-toggle wallpaper
+    ${noctaliaPkg}/bin/noctalia msg panel-toggle wallpaper
   '';
 
   noctaliaWindowSwitcher = pkgs.writeShellScriptBin "noctalia-window-switcher" ''
-    ${pkgs.noctalia}/bin/noctalia msg window-switcher
+    ${noctaliaPkg}/bin/noctalia msg window-switcher
   '';
 
   noctaliaSessionLock = pkgs.writeShellScriptBin "noctalia-session-lock" ''
-    ${pkgs.noctalia}/bin/noctalia msg session lock
+    ${noctaliaPkg}/bin/noctalia msg session lock
   '';
 
   noctaliaSessionSuspend = pkgs.writeShellScriptBin "noctalia-session-suspend" ''
-    ${pkgs.noctalia}/bin/noctalia msg session suspend
+    ${noctaliaPkg}/bin/noctalia msg session suspend
   '';
 
   noctaliaScreenshotFull = pkgs.writeShellScriptBin "noctalia-screenshot-full" ''
-    ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen
+    ${noctaliaPkg}/bin/noctalia msg screenshot-fullscreen
   '';
 
   noctaliaScreenshotRegion = pkgs.writeShellScriptBin "noctalia-screenshot-region" ''
-    ${pkgs.noctalia}/bin/noctalia msg screenshot-region
+    ${noctaliaPkg}/bin/noctalia msg screenshot-region
   '';
 
   noctaliaScreenshotPick = pkgs.writeShellScriptBin "noctalia-screenshot-pick" ''
-    ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick
+    ${noctaliaPkg}/bin/noctalia msg screenshot-fullscreen pick
   '';
 
   noctaliaNightlightToggle = pkgs.writeShellScriptBin "noctalia-nightlight-toggle" ''
-    ${pkgs.noctalia}/bin/noctalia msg nightlight-toggle
+    ${noctaliaPkg}/bin/noctalia msg nightlight-toggle
   '';
 
   noctaliaCaffeineToggle = pkgs.writeShellScriptBin "noctalia-caffeine-toggle" ''
-    ${pkgs.noctalia}/bin/noctalia msg caffeine-toggle
+    ${noctaliaPkg}/bin/noctalia msg caffeine-toggle
   '';
 
   # Paleta Catppuccin Mocha completa para o Noctalia v5+
@@ -335,7 +337,7 @@ in
 
   config = mkIf isNoctalia {
     home.packages = [
-      pkgs.noctalia
+      noctaliaPkg
       noctaliaLauncher
       noctaliaCliphist
       noctaliaControlCenter

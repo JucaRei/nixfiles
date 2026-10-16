@@ -520,7 +520,7 @@ in
             # Iniciar compositor Picom se habilitado
             ${lib.optionalString config.desktop.bspwm.picom.enable ''
               pkill -x picom || true
-              systemctl --user restart picom 2>/dev/null || (${pkgs.picom}/bin/picom -b 2>/dev/null || true) &
+              systemctl --user restart picom 2>/dev/null || (${nixGLWrapper pkgs.picom}/bin/picom -b 2>/dev/null || true) &
             ''}
 
             # Iniciar barra de status Polybar se habilitada

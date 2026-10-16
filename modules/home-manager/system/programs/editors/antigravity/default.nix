@@ -3,6 +3,7 @@
   lib,
   pkgs,
   osConfig ? null,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -28,7 +29,11 @@ in
       enable = mkEnableOption "Google Antigravity AI IDE";
       package = mkOption {
         type = package;
-        default = if isNixOS then pkgs.unstable.antigravity-ide-fhs else pkgs.unstable.antigravity-ide;
+        default =
+          if isNixOS then
+            pkgs.unstable.antigravity-ide-fhs
+          else
+            nixGLWrapper pkgs.unstable.antigravity-ide;
         description = "Package or wrapper for Antigravity IDE.";
       };
       remoteDebuggingPort = mkOption {

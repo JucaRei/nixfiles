@@ -3,6 +3,7 @@
   lib,
   pkgs,
   desktop ? null,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -239,7 +240,7 @@ in
     mkIf cfg.enable {
       wayland.windowManager.hyprland = {
         enable = true;
-        package = pkgs.hyprland;
+        package = nixGLWrapper pkgs.hyprland;
         xwayland.enable = true;
         configType = "hyprlang";
 

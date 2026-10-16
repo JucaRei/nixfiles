@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -20,7 +21,10 @@ let
     if config.programs.alacritty.enable then
       config.programs.alacritty.package
     else
-      pkgs.alacritty;
+      nixGLWrapper pkgs.alacritty;
+  kittyPkg = nixGLWrapper pkgs.kitty;
+  footPkg = nixGLWrapper pkgs.foot;
+  weztermPkg = nixGLWrapper pkgs.wezterm;
 
   # Determina o nome canônico amigável do terminal ativo
   activeName =
@@ -52,11 +56,11 @@ let
     else if cfg.name == "alacritty" then
       "${alacrittyPkg}/bin/alacritty --working-directory $HOME"
     else if cfg.name == "kitty" then
-      "${pkgs.kitty}/bin/kitty --directory $HOME"
+      "${kittyPkg}/bin/kitty --directory $HOME"
     else if cfg.name == "foot" then
-      "${pkgs.foot}/bin/foot"
+      "${footPkg}/bin/foot"
     else if cfg.name == "wezterm" then
-      "${pkgs.wezterm}/bin/wezterm start --cwd $HOME"
+      "${weztermPkg}/bin/wezterm start --cwd $HOME"
     else if cfg.name == "xfce4-terminal" then
       "${pkgs.xfce4-terminal}/bin/xfce4-terminal --working-directory=$HOME"
     else if cfg.name != null && cfg.name != "" then
@@ -71,11 +75,11 @@ let
     else if cfg.name == "alacritty" then
       "${alacrittyPkg}/bin/alacritty --working-directory"
     else if cfg.name == "kitty" then
-      "${pkgs.kitty}/bin/kitty --directory"
+      "${kittyPkg}/bin/kitty --directory"
     else if cfg.name == "foot" then
-      "${pkgs.foot}/bin/foot -D"
+      "${footPkg}/bin/foot -D"
     else if cfg.name == "wezterm" then
-      "${pkgs.wezterm}/bin/wezterm start --cwd"
+      "${weztermPkg}/bin/wezterm start --cwd"
     else if cfg.name == "xfce4-terminal" then
       "${pkgs.xfce4-terminal}/bin/xfce4-terminal --working-directory="
     else
@@ -88,11 +92,11 @@ let
     else if cfg.name == "alacritty" then
       "${alacrittyPkg}/bin/alacritty --class \"$SCRATCHPAD_NAME,$SCRATCHPAD_NAME\" --working-directory \"$HOME\""
     else if cfg.name == "kitty" then
-      "${pkgs.kitty}/bin/kitty --class \"$SCRATCHPAD_NAME\" --directory \"$HOME\""
+      "${kittyPkg}/bin/kitty --class \"$SCRATCHPAD_NAME\" --directory \"$HOME\""
     else if cfg.name == "foot" then
-      "${pkgs.foot}/bin/foot --app-id \"$SCRATCHPAD_NAME\""
+      "${footPkg}/bin/foot --app-id \"$SCRATCHPAD_NAME\""
     else if cfg.name == "wezterm" then
-      "${pkgs.wezterm}/bin/wezterm start --class \"$SCRATCHPAD_NAME\" --cwd \"$HOME\""
+      "${weztermPkg}/bin/wezterm start --class \"$SCRATCHPAD_NAME\" --cwd \"$HOME\""
     else
       "${computedActiveCommand}";
 
@@ -167,27 +171,27 @@ let
     # 4. Se for Kitty
     ${optionalString (cfg.name == "kitty") ''
       if [ -n "$RUN_CMD" ]; then
-        exec ${pkgs.kitty}/bin/kitty $RUN_CMD
+        exec ${kittyPkg}/bin/kitty $RUN_CMD
       else
-        exec ${pkgs.kitty}/bin/kitty --directory "''${TARGET_DIR:-$HOME}"
+        exec ${kittyPkg}/bin/kitty --directory "''${TARGET_DIR:-$HOME}"
       fi
     ''}
 
     # 5. Se for Foot
     ${optionalString (cfg.name == "foot") ''
       if [ -n "$RUN_CMD" ]; then
-        exec ${pkgs.foot}/bin/foot $RUN_CMD
+        exec ${footPkg}/bin/foot $RUN_CMD
       else
-        exec ${pkgs.foot}/bin/foot -D "''${TARGET_DIR:-$HOME}"
+        exec ${footPkg}/bin/foot -D "''${TARGET_DIR:-$HOME}"
       fi
     ''}
 
     # 6. Se for Wezterm
     ${optionalString (cfg.name == "wezterm") ''
       if [ -n "$RUN_CMD" ]; then
-        exec ${pkgs.wezterm}/bin/wezterm start -- $RUN_CMD
+        exec ${weztermPkg}/bin/wezterm start -- $RUN_CMD
       else
-        exec ${pkgs.wezterm}/bin/wezterm start --cwd "''${TARGET_DIR:-$HOME}"
+        exec ${weztermPkg}/bin/wezterm start --cwd "''${TARGET_DIR:-$HOME}"
       fi
     ''}
 
@@ -280,7 +284,7 @@ in
       # Disponibiliza o despachante agnóstico 'terminal' no PATH
       home.packages = [
         terminalDispatcher
-      ] ++ (lib.optional (cfg.package != null) cfg.package);
+      ] ++ (lib.optional (cfg.package != null) (nixGLWrapper cfg.package));
 
       # Define a variável de ambiente $TERMINAL para ferramentas do sistema
       home.sessionVariables = {

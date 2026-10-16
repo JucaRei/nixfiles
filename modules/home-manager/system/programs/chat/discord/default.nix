@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -280,8 +281,8 @@ in
   config = mkIf cfg.enable {
     # 1. Instalação dos pacotes selecionados (apenas se shouldInstall = true)
     home.packages = mkIf (cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages) (
-      (lib.optional (cfg.client == "discord" || cfg.client == "both") discordPkg)
-      ++ (lib.optional (cfg.client == "vesktop" || cfg.client == "both") pkgs.vesktop)
+      (lib.optional (cfg.client == "discord" || cfg.client == "both") (nixGLWrapper discordPkg))
+      ++ (lib.optional (cfg.client == "vesktop" || cfg.client == "both") (nixGLWrapper pkgs.vesktop))
     );
 
     # 2. Implantação de todos os arquivos de tema CSS (para troca rápida nas configurações do Vencord/BetterDiscord)

@@ -3,6 +3,7 @@
   lib,
   pkgs,
   osConfig ? null,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -15,6 +16,7 @@ let
   isNvidiaLegacy = gpuDriver == "nvidia-legacy";
   isNouveauOrLegacy = isNvidiaLegacy || gpuDriver == "nouveau" || gpuDriver == "unknown" || gpuDriver == null;
   hasBlur = cfg.blur.enable && (!isNouveauOrLegacy) && (cfg.backend != "xrender");
+  picomPkg = nixGLWrapper pkgs.picom;
 in
 {
   options.desktop.bspwm.picom = {
@@ -68,11 +70,11 @@ in
   };
 
   config = mkIf (config.desktop.bspwm.enable && cfg.enable) {
-    home.packages = [ pkgs.picom ];
+    home.packages = [ picomPkg ];
 
     # Recarregar automaticamente o compositor Picom ao rodar switch-home
     home.activation.reloadPicom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      $DRY_RUN_CMD systemctl --user restart picom 2>/dev/null || (${pkgs.procps}/bin/pkill -x picom 2>/dev/null && ${pkgs.picom}/bin/picom -b 2>/dev/null || true)
+      $DRY_RUN_CMD systemctl --user restart picom 2>/dev/null || (${pkgs.procps}/bin/pkill -x picom 2>/dev/null && ${picomPkg}/bin/picom -b 2>/dev/null || true)
     '';
 
     # Em vez de utilizar services.picom do Home Manager (que injeta diretivas obsoletas da v10
@@ -537,7 +539,7 @@ in
         After = [ "graphical-session.target" ];
       };
       Service = {
-        ExecStart = "${pkgs.picom}/bin/picom";
+        ExecStart = "${picomPkg}/bin/picom";
         Restart = "on-failure";
         RestartSec = 2;
       };
