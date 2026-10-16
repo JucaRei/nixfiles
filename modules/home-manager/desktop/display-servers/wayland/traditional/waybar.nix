@@ -289,12 +289,19 @@ let
     fi
     ICON="󰣆"
     case "$APPID" in
-      *alacritty*|*kitty*|*terminal*) ICON="󰞷" ;;
-      *firefox*)  ICON="󰈹" ;;
-      *chrome*)   ICON="󰊯" ;;
-      *code*|*antigravity*) ICON="󰨞" ;;
-      *thunar*|*nautilus*|*nemo*|*pcmanfm*) ICON="󰝰" ;;
-      *mpv*)      ICON="󰕼" ;;
+      *alacritty*|*kitty*|*terminal*|*foot*|*wezterm*|*ghostty*|*st*) ICON="" ;;
+      *firefox*|*librewolf*|*floorp*|*zen*|*tor*) ICON="󰈹" ;;
+      *chrome*|*chromium*|*brave*|*edge*|*vivaldi*|*opera*) ICON="" ;;
+      *code*|*codium*|*vscode*|*antigravity*|*cursor*) ICON="󰨞" ;;
+      *zed*)      ICON="󱓷" ;;
+      *nvim*|*neovim*|*vim*) ICON="" ;;
+      *thunar*|*nautilus*|*nemo*|*pcmanfm*|*dolphin*|*yazi*) ICON="󰉋" ;;
+      *discord*|*vesktop*) ICON="󰙯" ;;
+      *spotify*)  ICON="󰓇" ;;
+      *mpv*|*vlc*) ICON="󰎁" ;;
+      *steam*)    ICON="󰓓" ;;
+      *zathura*|*pdf*) ICON="󰈦" ;;
+      *obsidian*) ICON="󱓧" ;;
     esac
     TRUNCATED=$(echo "$TITLE" | cut -c 1-38)
     [ "''${#TITLE}" -gt 38 ] && TRUNCATED="$TRUNCATED..."

@@ -53,20 +53,69 @@ rec {
 
         class_lower=$(echo "$wm_class" | tr '[:upper:]' '[:lower:]')
         case "$class_lower" in
-          *alacritty*|*kitty*|*terminal*)  icon="" ;;
-          *firefox*)                        icon="󰈹" ;;
-          *chrome*|*chromium*)              icon="" ;;
-          *code*|*codium*)                  icon="󰨞" ;;
-          *thunar*|*nemo*|*pcmanfm*|*nautilus*) icon="󰉋" ;;
-          *discord*|*vesktop*)              icon="󰙯" ;;
-          *spotify*)                        icon="󰓇" ;;
-          *mpv*|*vlc*)                      icon="󰎁" ;;
-          *scrcpy*)                         icon="󰄡" ;;
-          *pavucontrol*)                    icon="󰕾" ;;
-          *lxappearance*)                   icon="󰔎" ;;
-          *gimp*)                           icon="" ;;
-          *steam*)                          icon="󰓓" ;;
-          *)                                icon="󰣆" ;;
+          # Terminais
+          *alacritty*|*kitty*|*terminal*|*foot*|*wezterm*|*ghostty*|*st*|*urxvt*|*xterm*) icon="" ;;
+
+          # Navegadores Web
+          *firefox*|*librewolf*|*floorp*|*zen*|*waterfox*|*tor*)                         icon="󰈹" ;;
+          *chrome*|*chromium*|*brave*|*edge*|*vivaldi*|*opera*)                          icon="" ;;
+
+          # Editores de Código e IDEs
+          *code*|*codium*|*vscode*|*antigravity*|*cursor*)                                icon="󰨞" ;;
+          *zed*)                                                                         icon="󱓷" ;;
+          *nvim*|*neovim*|*vim*)                                                         icon="" ;;
+          *emacs*)                                                                       icon="" ;;
+          *sublime*)                                                                     icon="" ;;
+
+          # Gerenciadores de Arquivos
+          *thunar*|*nemo*|*pcmanfm*|*nautilus*|*dolphin*|*ranger*|*yazi*|*nnn*|*lf*)      icon="󰉋" ;;
+
+          # Documentos, Leitores de PDF e Notas
+          *zathura*|*evince*|*okular*|*pdf*)                                             icon="󰈦" ;;
+          *obsidian*|*notion*|*logseq*)                                                  icon="󱓧" ;;
+          *libreoffice*|*soffice*)                                                       icon="󰈙" ;;
+
+          # Comunicação e Mensagens
+          *discord*|*vesktop*|*webcord*|*legcord*)                                       icon="󰙯" ;;
+          *telegram*|*tg*)                                                               icon="" ;;
+          *slack*)                                                                       icon="󰒱" ;;
+          *whatsapp*)                                                                    icon="󰖣" ;;
+          *signal*)                                                                      icon="󰭹" ;;
+          *element*)                                                                     icon="󰚀" ;;
+          *thunderbird*|*betterbird*|*mail*)                                             icon="󰇮" ;;
+
+          # Música e Áudio
+          *spotify*)                                                                     icon="󰓇" ;;
+          *audacity*)                                                                    icon="󱑽" ;;
+          *cava*)                                                                        icon="󰝚" ;;
+          *ncmpcpp*)                                                                     icon="󰎆" ;;
+
+          # Vídeo e Transmissão
+          *mpv*|*vlc*|*celluloid*|*clapper*)                                             icon="󰎁" ;;
+          *obs*|*obs-studio*)                                                            icon="󰑋" ;;
+
+          # Imagem, Gráficos e Design
+          *gimp*)                                                                        icon="" ;;
+          *inkscape*)                                                                    icon="󰫐" ;;
+          *blender*)                                                                     icon="󰂫" ;;
+          *viewnior*|*feh*|*sxiv*|*nsxiv*|*imv*)                                         icon="󰋩" ;;
+
+          # Jogos e Emuladores
+          *steam*|*lutris*|*heroic*)                                                     icon="󰓓" ;;
+          *retroarch*)                                                                   icon="󰊴" ;;
+          *minecraft*|*prism*)                                                           icon="󰍳" ;;
+
+          # Utilitários, Sistema e Configuração
+          *pavucontrol*|*pulsemixer*|*alsamixer*)                                        icon="󰕾" ;;
+          *lxappearance*|*nwg-look*|*kvantum*)                                           icon="󰔎" ;;
+          *btop*|*htop*|*bottom*)                                                        icon="󰄧" ;;
+          *scrcpy*)                                                                      icon="󰄡" ;;
+          *virtualbox*|*virt-manager*|*qemu*)                                            icon="󰢹" ;;
+          *rofi*|*dmenu*)                                                                icon="󰍉" ;;
+          *nitrogen*)                                                                    icon="󰸉" ;;
+
+          # Ícone genérico de janela padrão
+          *)                                                                             icon="󰣆" ;;
         esac
 
         display_name=$(echo "$wm_class" | cut -c1-12)

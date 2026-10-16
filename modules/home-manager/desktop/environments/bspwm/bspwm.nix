@@ -105,7 +105,7 @@ let
     [ -z "$wid" ] && exit 0
     wclass="$(${pkgs.xprop}/bin/xprop -id "$wid" WM_CLASS 2>/dev/null | ${pkgs.coreutils}/bin/tr '[:upper:]' '[:lower:]')"
     case "$wclass" in
-      *firefox*|*chrome*|*chromium*|*brave*|*opera*|*vivaldi*|*edge*|*zen*|*code*|*alacritty*)
+      *firefox*|*librewolf*|*floorp*|*chrome*|*chromium*|*brave*|*opera*|*vivaldi*|*edge*|*zen*|*code*|*antigravity*|*alacritty*)
         if [ "$action" = "next" ]; then
           ${pkgs.xdotool}/bin/xdotool key --clearmodifiers ctrl+Page_Down
         else
