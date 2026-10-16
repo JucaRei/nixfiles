@@ -2,6 +2,9 @@
   pkgs ? (import ./nixpkgs.nix) { },
   ...
 }:
+let
+  nixCheckCapped = pkgs.callPackage ./pkgs/tools/nix-check-capped { };
+in
 {
   default = pkgs.mkShell {
     name = "Flakes SHELL";
@@ -20,6 +23,7 @@
       duf
       # dropbear # ssh server
       nix-output-monitor # better output from builds
+      nixCheckCapped
       # micro
       # nh
       # nixfmt
@@ -34,8 +38,11 @@
     shellHook = ''
       # exec fish
       # alias ssh="dbclient"
+      alias nfc60="nix-check-capped"
+      alias check60="nix-check-capped"
       echo "🔨 Welcome to flakes" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
       echo ">>>> ❄️ Entering Nix Development Environment"
+      echo ">>>> 💡 Execute 'nfc60' para 'nix flake check --no-build' limitado a 60% de CPU e RAM."
     '';
   };
 }
