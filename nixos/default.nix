@@ -43,8 +43,13 @@ in
     inputs.lanzaboote.nixosModules.lanzaboote
   ];
 
-  # Main configuration for the NixOS base profile
   config = {
+    # Suprimir warning do catppuccin/nix
+    catppuccin = {
+      enable = mkDefault true;
+      autoEnable = mkDefault false;
+    };
+
     # --- Localization & Language ---
     i18n = {
       defaultLocale = mkDefault "en_US.UTF-8";

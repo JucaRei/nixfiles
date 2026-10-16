@@ -8,6 +8,7 @@ stdenvNoCC.mkDerivation {
   version = "1.0.0";
 
   src = fetchzip {
+    name = "cyberre-grub-theme-1.0.0";
     url = "https://github.com/alealexpro100/various_files/raw/master/Grub2-theme%20CyberRe%201.0.0.tar.gz";
     hash = "sha256-RWEQHqWjSZtDlFjJlsQBig/bBaZL/srfez1qTzE+Qrw=";
   };

@@ -32,6 +32,7 @@ let
     # };
 
     src = fetchurl {
+      name = "GBPCEFwr64.deb";
       url = "https://cloud.gastecnologia.com.br/cef/warsaw/install/GBPCEFwr64.deb";
       sha256 = "sha256-wzfIqKaU7ZTCF859KsI3J3pn3V5LUAhIP4JAshCgcN0=";
     };

@@ -2,7 +2,7 @@
   config,
   lib,
   pkgs,
-  useNixGL ? false,
+  nixGLWrapper ? lib.id,
   osConfig ? null,
   ...
 }:
@@ -10,9 +10,6 @@ let
   inherit (lib) mkOption mkIf optionals;
   inherit (lib.types) bool package listOf;
   cfg = config.desktop.hyprland.packages;
-
-  nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs; };
-  nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
   isNixOS = osConfig != null;
 in

@@ -2,9 +2,8 @@
   config,
   lib,
   pkgs,
-  useNixGL ? false,
+  nixGLWrapper ? lib.id,
   desktop ? null,
-  nixGLType ? null,
   ...
 }:
 let
@@ -32,9 +31,6 @@ let
       "control"
     else
       "mod4";
-
-  nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
-  nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
   externalRulesScript = pkgs.writeShellScript "bspwm-external-rules" ''
     wid="$1"

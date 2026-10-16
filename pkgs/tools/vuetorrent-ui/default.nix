@@ -10,6 +10,7 @@ stdenv.mkDerivation (finalAttrs: {
   version = "2.12.0";
 
   src = fetchzip {
+    name = "vuetorrent-${finalAttrs.version}.zip";
     url = "https://github.com/WDaan/VueTorrent/releases/download/v${finalAttrs.version}/vuetorrent.zip";
     sha256 = "sha256-JN9jbslu2B1h5WWtge2vR59ZGytRYuRP7njOBdu14Tk=";
   };

@@ -4,20 +4,6 @@
   pkgs,
   ...
 }:
-let
-  gtkThemeName = "catppuccin-mocha-blue-standard+rimless";
-  gtkThemePkg = pkgs.catppuccin-gtk.override {
-    accents = [ "blue" ];
-    size = "standard";
-    tweaks = [ "rimless" ];
-    variant = "mocha";
-  };
-  iconThemeName = "Papirus-Dark";
-  iconThemePkg = pkgs.papirus-icon-theme;
-  cursorThemeName = "catppuccin-mocha-dark-cursors";
-  cursorThemePkg = pkgs.catppuccin-cursors.mochaDark;
-  cursorThemeSize = 24;
-in
 {
   imports = [
     ./dwm.nix
@@ -53,40 +39,15 @@ in
     gtk.enable = lib.mkForce false;
 
     home.packages = [
-      gtkThemePkg
-      iconThemePkg
-      cursorThemePkg
+      config.desktop.theme.gtk.package
+      config.desktop.theme.icons.package
+      config.desktop.theme.cursor.package
       pkgs.cantarell-fonts
     ];
 
     xresources.properties = {
-      "Xcursor.theme" = cursorThemeName;
-      "Xcursor.size" = cursorThemeSize;
-    };
-
-    dconf.settings = {
-      "org/gnome/desktop/interface" = {
-        color-scheme = "prefer-dark";
-        gtk-theme = gtkThemeName;
-        icon-theme = iconThemeName;
-        cursor-theme = cursorThemeName;
-        cursor-size = cursorThemeSize;
-        font-name = "Inter 10";
-      };
-    };
-
-    home = {
-      sessionVariables = {
-        GTK_THEME = gtkThemeName;
-        XCURSOR_THEME = cursorThemeName;
-        XCURSOR_SIZE = toString cursorThemeSize;
-      };
-      file = {
-        ".themes/${gtkThemeName}".source = "${gtkThemePkg}/share/themes/${gtkThemeName}";
-        ".local/share/themes/${gtkThemeName}".source = "${gtkThemePkg}/share/themes/${gtkThemeName}";
-        ".icons/${cursorThemeName}".source = "${cursorThemePkg}/share/icons/${cursorThemeName}";
-        ".local/share/icons/${cursorThemeName}".source = "${cursorThemePkg}/share/icons/${cursorThemeName}";
-      };
+      "Xcursor.theme" = config.desktop.theme.cursor.name;
+      "Xcursor.size" = config.desktop.theme.cursor.size;
     };
   };
 }

@@ -1,4 +1,9 @@
-{ isInstall, pkgs, ... }:
+{
+  isInstall,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   config = {
@@ -52,14 +57,14 @@
 
     services = {
       gnome = {
-        evolution-data-server.enable = false; # isInstall;
+        evolution-data-server.enable = lib.mkForce false; # isInstall;
         gnome-online-accounts.enable = isInstall;
         gnome-keyring.enable = true;
       };
       desktopManager.pantheon = {
         enable = true;
         extraWingpanelIndicators = with pkgs; [
-          wingpanel-indicator-ayatana
+          wingpanel-indicator-namarupa
           monitor
         ];
       };

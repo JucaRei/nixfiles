@@ -9,6 +9,7 @@ let
   version = "2.1.1";
   pname = "heynote";
   src = fetchurl {
+    name = "Heynote_${version}_x86_64.AppImage";
     url = "https://github.com/heyman/heynote/releases/download/v${version}/Heynote_${version}_x86_64.AppImage";
     hash = "sha256-qiNQtCBERmGyJh9bRmOQEfkjYyZmPrAjAJl+839jO3M=";
   };

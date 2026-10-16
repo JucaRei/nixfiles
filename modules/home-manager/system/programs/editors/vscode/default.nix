@@ -4,15 +4,12 @@
   pkgs,
   inputs,
   useNixGL ? false,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.editors.vscode;
-
-  nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs; };
-  nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
-  # nixGLWrapper = if useNixGL then nixGL.wrapDesktopFiles else (x: x);
 
   # Settings
   userSettingsRaw = builtins.fromJSON (builtins.readFile ./settings.json);

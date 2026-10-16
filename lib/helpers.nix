@@ -1,155 +1,167 @@
+# lib/helpers.nix — construtores de hosts (NixOS, Home Manager standalone e ISO).
 { inputs, outputs, ... }:
 
 let
   inherit (inputs.nixpkgs) lib;
+
+  defaults = {
+    username = "juca";
+    platform = "x86_64-linux";
+  };
+
+  # Hosts com NVIDIA legacy (340). Vira o specialArg `isNvidia` dentro do HM integrado.
+  # TODO: trocar por option de hardware lida via osConfig (como o dwm.nix já faz).
+  nvidiaLegacyHosts = [ "rocinante" ];
+
+  # Plataformas suportadas. Darwin fica de fora para acelerar `nix flake check`.
+  systems = [
+    "x86_64-linux"
+    "aarch64-linux"
+  ];
+
+  # Argumentos entregues a TODO módulo (NixOS e Home Manager).
+  mkCommonArgs =
+    {
+      hostname,
+      username,
+      desktop,
+      waylandShell,
+      platform,
+      stateVersion,
+      isISO,
+    }:
+    {
+      inherit
+        inputs
+        outputs
+        hostname
+        username
+        desktop
+        waylandShell
+        platform
+        stateVersion
+        isISO
+        ;
+      isInstall = !isISO;
+      isWorkstation = desktop != null;
+    };
+
+  # nixgl.auto.nixGLDefault lê a NVIDIA do host (com --impure) e tenta construir um
+  # nixGLNvidia que falha no nixpkgs 26.05. Com tipo explícito, fixa o default em
+  # Intel/Mesa antes de qualquer módulo avaliá-lo.
+  pinNixGLDefault =
+    type: _final: prev: {
+      nixgl = prev.nixgl // {
+        auto = prev.nixgl.auto // {
+          nixGLDefault = if type == "mesa" then prev.nixgl.nixGLMesa else prev.nixgl.nixGLIntel;
+        };
+      };
+    };
+
+  # pkgs do Home Manager standalone (o nixpkgs.* do módulo HM não vale quando `pkgs` é passado).
+  mkPkgs =
+    { platform, nixGLType }:
+    import inputs.nixpkgs {
+      system = platform;
+      config = {
+        allowUnfree = true;
+        allowInsecure = true;
+      };
+      overlays = [
+        inputs.nixgl.overlay
+      ]
+      ++ lib.optional (nixGLType != null && nixGLType != "auto") (pinNixGLDefault nixGLType)
+      ++ [
+        inputs.nur.overlays.default
+      ]
+      ++ builtins.attrValues outputs.overlays;
+    };
+
+  forAllSystems = lib.genAttrs systems;
 in
 rec {
+  inherit forAllSystems;
 
-  # ============================================================================
-  # mkHome: Gera configurações standalone do Home Manager (distros não-NixOS)
-  # ============================================================================
-  # Parâmetros:
-  #   - hostname     : (String, obrigatório) Nome do host (usado para carregar hosts/${hostname} e dotfiles)
-  #   - username     : (String, default: "juca") Usuário do sistema
-  #   - desktop      : (String | null, default: null) Ambiente gráfico ("bspwm", "xfce4", etc). Se não nulo, ativa `isWorkstation`
-  #   - platform     : (String, default: "x86_64-linux") Arquitetura do sistema alvo
-  #   - stateVersion : (String, default: "26.05") Versão de compatibilidade do Home Manager (alinhado com o flake.nix)
-  #   - useNixGL     : (Bool, default: true) Aplica wrapper NixGL para aceleração 3D/OpenGL em distros não-NixOS
-  #   - isISO        : (Bool, default: false) Define se a configuração pertence a uma ISO live
-  # ============================================================================
+  # Home Manager standalone (Debian, Fedora, etc.).
+  #   hostname     carrega home-manager/hosts/<hostname>
+  #   desktop      "bspwm" | "dwm" | "hyprland" | "mangowm" | "xfce4" | null (null = sem desktop)
+  #   waylandShell "traditional" | "noctalia"
+  #   useNixGL     envolve apps gráficos com nixGL (distros não-NixOS)
+  #   nixGLType    "intel" | "mesa" | "auto" | "nvidia" | null (ver lib/nixgl/default.nix)
   mkHome =
     {
       hostname,
-      username ? "juca",
+      username ? defaults.username,
       desktop ? null,
       waylandShell ? "traditional",
-      platform ? "x86_64-linux",
+      platform ? defaults.platform,
       stateVersion ? "26.05",
       useNixGL ? true,
-      # Tipo de wrapper nixGL: "intel" | "nvidia" | "mesa" | "auto" | null
-      # null = detecção automática (auto se impuro, intel se puro)
-      # Use "intel" em laptops dual-GPU onde Intel gerencia o display (ex: nitro)
-      # para evitar nixGLNvidia quebrado no nixpkgs 26.05.
       nixGLType ? null,
       isISO ? false,
     }:
     let
-      isInstall = !isISO;
-      isWorkstation = desktop != null;
-
-      # Overlay extra para substituir auto.nixGLDefault quando nixGLType é explícito.
-      # MOTIVO: O nixgl.overlay avalia auto.nixGLDefault ao ser aplicado. Com --impure,
-      # ele lê /proc/driver/nvidia/version, detecta NVIDIA 580 e tenta construir
-      # nixGLNvidia-580.178.04 -- que falha no nixpkgs 26.05 (API 'kernel' mudou).
-      # A substituição deve ocorrer no nível do pkgs, antes de qualquer módulo.
-      nixGLOverrideOverlay = if nixGLType != null && nixGLType != "auto" then [
-        (final: prev: {
-          nixgl = prev.nixgl // {
-            auto = prev.nixgl.auto // {
-              nixGLDefault =
-                if nixGLType == "intel" then prev.nixgl.nixGLIntel
-                else if nixGLType == "mesa" then prev.nixgl.nixGLMesa
-                else prev.nixgl.nixGLIntel; # fallback seguro
-            };
-          };
-        })
-      ] else [ ];
-
-      pkgs = import inputs.nixpkgs {
-        system = platform;
-        config = {
-          allowUnfree = true;
-          allowInsecure = true;
-        };
-        overlays = [
-          inputs.nixgl.overlay
-        ] ++ nixGLOverrideOverlay ++ [
-          inputs.nur.overlays.default
-        ] ++ (builtins.attrValues outputs.overlays);
-      };
-      nixGLWrapper =
-        if useNixGL then
-          (import ./nixGL.nix { inherit pkgs nixGLType; }).wrapper
-        else
-          (x: x);
+      pkgs = mkPkgs { inherit platform nixGLType; };
+      nixGLWrapper = if useNixGL then (import ./nixgl { inherit pkgs nixGLType; }).wrapper else lib.id;
     in
     inputs.home-manager.lib.homeManagerConfiguration {
       inherit pkgs;
-      extraSpecialArgs = {
-        inherit
-          inputs
-          outputs
-          desktop
-          waylandShell
-          hostname
-          platform
-          username
-          stateVersion
-          useNixGL
-          nixGLType
-          isInstall
-          isISO
-          isWorkstation
-          nixGLWrapper
-          ;
-      };
-      modules = [
-        ../home-manager
-      ];
+      extraSpecialArgs =
+        mkCommonArgs {
+          inherit
+            hostname
+            username
+            desktop
+            waylandShell
+            platform
+            stateVersion
+            isISO
+            ;
+        }
+        // {
+          inherit useNixGL nixGLType nixGLWrapper;
+        };
+      modules = [ ../home-manager ];
     };
 
-  # ============================================================================
-  # mkNixos: Gera configurações completas do NixOS (com Home Manager integrado)
-  # ============================================================================
-  # Parâmetros:
-  #   - hostname     : (String, obrigatório) Hostname do sistema NixOS
-  #   - username     : (String, default: "juca") Usuário principal para o Home Manager embutido
-  #   - desktop      : (String | null, default: null) Ambiente de desktop do sistema
-  #   - platform     : (String, default: "x86_64-linux") Arquitetura do hardware
-  #   - hostid       : (String | null, default: null) Host ID para ZFS / rede (8 caracteres hexadecimais)
-  #   - stateVersion : (String, default: "24.11") Versão de compatibilidade do NixOS
-  #   - isISO        : (Bool, default: auto) Detecta se é ISO através do prefixo "iso-" no hostname
-  #   - isVM         : (Bool, default: false) Sinaliza se a máquina roda em ambiente virtualizado
-  # ============================================================================
+  # NixOS completo, com Home Manager integrado.
+  #   hostid  8 hex para ZFS/rede      isVM  máquina virtual
+  #   isISO   por padrão, hostname com prefixo "iso-"
   mkNixos =
     {
       hostname,
-      username ? "juca",
+      username ? defaults.username,
       desktop ? null,
       waylandShell ? "traditional",
-      platform ? "x86_64-linux",
+      platform ? defaults.platform,
       hostid ? null,
       stateVersion ? "24.11",
       isISO ? lib.hasPrefix "iso-" hostname,
       isVM ? false,
     }:
     let
-      isInstall = !isISO;
-      isWorkstation = desktop != null;
-      notVM = !isVM;
-    in
-    lib.nixosSystem {
-      specialArgs = {
+      commonArgs = mkCommonArgs {
         inherit
-          inputs
-          outputs
+          hostname
+          username
           desktop
           waylandShell
-          hostname
           platform
-          username
-          hostid
           stateVersion
-          isInstall
           isISO
-          isWorkstation
-          notVM
           ;
+      };
+      installerModule =
+        if desktop == null then "installation-cd-minimal.nix" else "installation-cd-graphical-base.nix";
+    in
+    lib.nixosSystem {
+      specialArgs = commonArgs // {
+        inherit hostid;
+        notVM = !isVM;
       };
       modules = [
         ../nixos
 
-        # Provisionamento automático do Home Manager durante nixos-rebuild switch
         inputs.home-manager.nixosModules.home-manager
         {
           home-manager = {
@@ -157,74 +169,53 @@ rec {
             useUserPackages = true;
             backupFileExtension = "hm.backup";
             users.${username} = import ../home-manager;
-            extraSpecialArgs = {
-              inherit
-                inputs
-                outputs
-                desktop
-                waylandShell
-                hostname
-                platform
-                username
-                stateVersion
-                isInstall
-                isISO
-                isWorkstation
-                ;
+            extraSpecialArgs = commonArgs // {
               useNixGL = false;
-              nixGLWrapper = (pkg: pkg);
-              isNvidia = (hostname == "rocinante"); # Detecta se é o driver legado da NVIDIA no host rocinante
+              nixGLWrapper = lib.id;
+              isNvidia = builtins.elem hostname nvidiaLegacyHosts;
             };
           };
         }
       ]
-      ++ lib.optionals isISO [
-        (
-          if desktop == null then
-            inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-          else
-            inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-graphical-base.nix"
-        )
-      ];
+      ++ lib.optional isISO (inputs.nixpkgs + "/nixos/modules/installer/cd-dvd/${installerModule}");
     };
 
-  # ============================================================================
-  # mkIso: Helper para gerar imagens ISO inicializáveis (minimal ou gráficas)
-  # ============================================================================
-  # Parâmetros:
-  #   - desktop      : (String | null, default: null) Interface gráfica da ISO (ex: "xfce4", "gnome" ou null para console)
-  #   - platform     : (String, default: "x86_64-linux") Arquitetura da mídia
-  #   - stateVersion : (String, default: "24.11") Versão de estado
-  # ============================================================================
+  # Imagem ISO (minimal ou gráfica).
   mkIso =
     {
       desktop ? null,
-      platform ? "x86_64-linux",
+      platform ? defaults.platform,
       stateVersion ? "24.11",
     }:
     mkNixos {
       hostname = if desktop != null then "iso-${desktop}" else "iso-console";
       username = "nixos";
-      inherit desktop platform stateVersion;
       isISO = true;
-      isVM = false;
+      inherit desktop platform stateVersion;
     };
 
-  # ============================================================================
-  # forAllSystems: Mapeia atributos para as arquiteturas suportadas
-  # ============================================================================
-  # Nota: Plataformas Darwin desabilitadas por padrão para acelerar o `nix flake check`
-  # e evitar warnings de build incompatível no Linux. Reative se for compilar no macOS.
-  # ============================================================================
-  forAllSystems = lib.genAttrs [
-    "x86_64-linux"
-    "aarch64-linux"
-    # "x86_64-darwin"
-    # "aarch64-darwin"
-  ];
-
-  # ============================================================================
-  # mkChecks: Gera checks automatizados para o `nix flake check`
-  # ============================================================================
-  mkChecks = { self, inputs }: forAllSystems (_system: { });
+  # `nix flake check`: só AVALIA cada host (não builda), pegando erros de módulo
+  # em NixOS e em Home Manager (o flake check padrão não avalia homeConfigurations).
+  mkChecks =
+    { self, ... }:
+    forAllSystems (
+      system:
+      let
+        pkgs = inputs.nixpkgs.legacyPackages.${system};
+        # drvPath sem contexto: força a avaliação mas não vira dependência de build.
+        evalOnly =
+          name: drv: pkgs.writeText "eval-${name}" (builtins.unsafeDiscardStringContext drv.drvPath);
+        nixos = lib.mapAttrs' (
+          name: cfg: lib.nameValuePair "nixos-${name}" (evalOnly name cfg.config.system.build.toplevel)
+        ) self.nixosConfigurations;
+        home = lib.mapAttrs' (
+          name: cfg:
+          lib.nameValuePair "home-${lib.replaceStrings [ "@" ] [ "-" ] name}" (
+            evalOnly name cfg.activationPackage
+          )
+        ) self.homeConfigurations;
+      in
+      # Todos os hosts atuais são x86_64; evita avaliar em aarch64.
+      lib.optionalAttrs (system == defaults.platform) (nixos // home)
+    );
 }

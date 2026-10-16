@@ -2,9 +2,8 @@
   config,
   lib,
   pkgs,
-  useNixGL ? false,
+  nixGLWrapper ? lib.id,
   desktop ? null,
-  nixGLType ? null,
   osConfig ? null,
   ...
 }:
@@ -14,9 +13,6 @@ let
   cfg = config.desktop.dwm;
 
   isNvidiaLegacy = (osConfig.hardware.graphics.cards.gpu or null) == "nvidia-legacy";
-
-  nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
-  nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
   # DWM construído a partir do código-fonte e C configs da pasta ./configs
   dwmPackage = pkgs.stdenv.mkDerivation {

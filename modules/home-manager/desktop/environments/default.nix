@@ -18,6 +18,7 @@ in
     ./mangowm
     ../display-servers
     ../monitors
+    ../theme
   ];
 
   options.desktop = {
@@ -95,6 +96,7 @@ in
   };
 
   config = {
+    desktop.theme.enable = lib.mkDefault true;
 
     home = {
       packages =

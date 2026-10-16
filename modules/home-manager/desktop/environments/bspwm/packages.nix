@@ -3,9 +3,9 @@
   lib,
   pkgs,
   useNixGL ? false,
+  nixGLWrapper ? lib.id,
   osConfig ? null,
   username ? "juca",
-  nixGLType ? null,
   ...
 }:
 let
@@ -13,16 +13,13 @@ let
   inherit (lib.types) bool package;
   cfg = config.desktop.bspwm.packages;
 
-  nixGL = import ../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
-  nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
-
   isNixOS = osConfig != null;
   homeDir = "/home/${username}";
 
   # Bin do alacritty com nixGL wrapper
   alacrittyBin =
     if useNixGL then
-      "${nixGL.wrapper pkgs.alacritty}/bin/alacritty"
+      "${nixGLWrapper pkgs.alacritty}/bin/alacritty"
     else
       "${pkgs.alacritty}/bin/alacritty";
 

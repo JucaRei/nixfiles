@@ -70,43 +70,6 @@ in
       );
     };
 
-    # --- Tema e Aparência GTK (Catppuccin Mocha + Papirus Dark) ---
-    gtk = {
-      enable = true;
-      theme = {
-        name = "catppuccin-mocha-blue-standard+rimless";
-        package = pkgs.catppuccin-gtk.override {
-          accents = [ "blue" ];
-          size = "standard";
-          tweaks = [ "rimless" ];
-          variant = "mocha";
-        };
-      };
-      iconTheme = {
-        name = "Papirus-Dark";
-        package = pkgs.papirus-icon-theme;
-      };
-      cursorTheme = {
-        name = "catppuccin-mocha-dark-cursors";
-        package = pkgs.catppuccin-cursors.mochaDark;
-        size = 24;
-      };
-      font = {
-        name = "Inter";
-        size = 10;
-      };
-      gtk3.extraConfig = {
-        gtk-application-prefer-dark-theme = 1;
-        gtk-cursor-theme-size = 24;
-      };
-      gtk4 = {
-        theme = config.gtk.theme;
-        extraConfig = {
-          gtk-application-prefer-dark-theme = 1;
-        };
-      };
-    };
-
     # --- Configurações Declarativas do XFCE (Xfconf) ---
     xfconf.settings = {
       # Gerenciador de Janelas (XFWM4)

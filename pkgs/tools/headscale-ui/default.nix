@@ -9,6 +9,7 @@ stdenv.mkDerivation rec {
   version = "2023.01.30-beta-1";
 
   src = fetchurl {
+    name = "${pname}-${version}.zip";
     url = "https://github.com/gurucomputing/${pname}/releases/download/${version}/headscale-ui.zip";
     sha256 = "sha256-6SUgtSTFvJWNdsWz6AiOfUM9p33+8EhDwyqHX7O2+NQ=";
   };

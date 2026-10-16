@@ -38,6 +38,7 @@ in
       ];
 
       modifierKey = "Alt";
+      theme.enable = true;
 
       touchpad = {
         enable = true;

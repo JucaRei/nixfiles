@@ -142,6 +142,7 @@ stdenv.mkDerivation rec {
   version = "M150.0.7871.101";
 
   src = fetchurl {
+    name = "thorium-browser_${version}_SSE4.deb";
     #https://github.com/alex313031/thorium/releases/download/M112.0.5615.166/thorium-browser_112.0.5615.166-1_amd64.deb
     # url = "https://github.com/alex313031/thorium/releases/download/M${version}/thorium-browser_${version}_amd64.deb";
     # url = "https://github.com/alex313031/thorium/releases/download/M${version}/thorium-browser_${version}_SSE3.deb";

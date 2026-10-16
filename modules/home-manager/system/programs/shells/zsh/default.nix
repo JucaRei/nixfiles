@@ -66,7 +66,7 @@ in
         size = 10000;
         save = 10000;
       };
-      initExtra = ''
+      initContent = ''
         bindkey '^p' history-search-backward
         bindkey '^n' history-search-forward
         bindkey '^y' autosuggest-accept

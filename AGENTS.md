@@ -13,11 +13,11 @@ Usuário padrão: `juca`. Idioma: comentários e docs em pt-BR; identificadores 
 | Caminho | Conteúdo |
 |---|---|
 | `flake.nix` | Entrada: inputs, hosts, devShells, overlays, packages, checks |
-| `lib/` | `helpers.nix` (`mkNixos`, `mkHome`, `mkIso`, `mkChecks`) e `nixGL.nix` |
+| `lib/` | `helpers.nix` (`mkNixos`, `mkHome`, `mkIso`, `mkChecks`) e `nixgl/` |
 | `nixos/` | Entrada do sistema (`default.nix`), `hosts/<host>/`, `users/` |
 | `home-manager/` | Entrada do usuário (`default.nix`), `hosts/<host>/`, `users/` |
 | `modules/nixos/` | Módulos NixOS reutilizáveis (desktop, hardware, system) |
-| `modules/home-manager/` | Módulos HM reutilizáveis (`desktop/`, `system/`) |
+| `modules/home-manager/` | Módulos HM reutilizáveis (`desktop/` incluindo `theme/`, `system/`) |
 | `overlays/`, `pkgs/` | Overlays e pacotes próprios |
 
 ## Hosts

@@ -2,15 +2,12 @@
   config,
   lib,
   pkgs,
-  useNixGL ? false,
-  nixGLType ? null,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
   cfg = config.system.programs.terminal;
   shellsCfg = config.system.programs.shells;
-  nixGL = import ../../../../../../lib/nixGL.nix { inherit pkgs nixGLType; };
-  nixGLWrapper = if useNixGL then nixGL.wrapper else (x: x);
 
   isDarwin = pkgs.stdenv.isDarwin;
 

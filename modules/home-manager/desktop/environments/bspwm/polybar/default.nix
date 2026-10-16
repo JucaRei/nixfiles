@@ -9,7 +9,7 @@ let
   inherit (lib.types) bool str;
   cfg = config.desktop.bspwm.polybar;
 
-  colors = import ./colors.nix;
+  colors = import ./colors.nix { theme = config.desktop.theme; };
   polybarPkg = pkgs.polybar.override {
     pulseSupport = true;
     i3Support = false;
