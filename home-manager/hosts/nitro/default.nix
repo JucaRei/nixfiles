@@ -185,6 +185,8 @@ in
         LC_ALL = "";
         LIBVA_DRIVER_NAME = "iHD";
         LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri:${pkgs.intel-media-driver}/lib/dri";
+        TZ = "America/Sao_Paulo";
+        TZDIR = "${pkgs.tzdata}/share/zoneinfo";
       };
 
       language = {

@@ -27,6 +27,9 @@ in
         flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
       in
       {
+        # Opção A: Usar Lix ao invés do C++ Nix
+        package = pkgs.lix;
+
         # give nix-daemon the lowest priority
         daemonIOSchedClass = "idle";
         daemonCPUSchedPolicy = "idle";

@@ -78,7 +78,9 @@ in
         flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
       in
       {
-        package = mkIf (!isNixOS) (mkDefault pkgs.nixVersions.latest);
+        # Opção A: Usar Lix ao invés do C++ Nix
+        # package = mkIf (!isNixOS) (mkDefault pkgs.nixVersions.latest);
+        package = mkIf (!isNixOS) (mkDefault pkgs.lix);
 
         settings = {
           experimental-features = "flakes nix-command";
