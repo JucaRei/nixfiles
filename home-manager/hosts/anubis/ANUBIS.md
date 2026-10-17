@@ -61,6 +61,7 @@ Layout Mac com dead keys para acentos PT-BR (`layout = "us"`, `variant = "intl"`
 ### Fuso Horário (Timezone - America/Sao_Paulo)
 - Configurado especificamente para o Anubis em [default.nix](./default.nix):
   - `home.sessionVariables.TZ = "America/Sao_Paulo";`
+  - `home.sessionVariables.TZDIR = "${pkgs.tzdata}/share/zoneinfo";` (necessário para a glibc do Nix encontrar a base de fusos no Fedora)
   - `desktop.bspwm.extraConfig = "export TZ=\"America/Sao_Paulo\"";` garantindo que a Polybar e toda a sessão gráfica operem no horário correto de Brasília.
 - No Fedora (nível de sistema):
   ```bash

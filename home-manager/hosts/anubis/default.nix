@@ -46,9 +46,10 @@
     # desktop.
 
     home = {
-      # Fuso horário America/Sao_Paulo para o Anubis (relógio da Polybar e sessão)
+      # Fuso horário America/Sao_Paulo e base de dados tzdata para o Anubis (relógio do Noctalia/Polybar e sessão)
       sessionVariables = {
         TZ = "America/Sao_Paulo";
+        TZDIR = "${pkgs.tzdata}/share/zoneinfo";
       };
 
       # Teclado Mac com dead keys para acentos PT-BR (é, ã, ç)
