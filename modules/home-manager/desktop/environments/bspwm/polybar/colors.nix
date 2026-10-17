@@ -32,25 +32,25 @@ in
   rosewater = extra "rosewater" "pink";
   transparent = "#00000000";
 
-  # --- Paleta Zproger / Cápsulas & Pills (fixa; independe do tema) ---
-  base-alt = "#1e222a";
-  text-alt = "#abb2bf";
-  pill = "#2b2f37"; # Fundo das cápsulas / pills
-  pill-alt = "#32363e";
-  dark = "#1e222a"; # Fundo da barra escura
-  gray = "#565c64"; # Linha de foco e bordas
-  muted = "#646870"; # Texto sutil / ocupado
-  yellow-alt = "#F9DE8F"; # Workspace 1
-  coral = "#ff9b93"; # Workspace 2
-  mint = "#95e1d3"; # Workspace 3
-  nord = "#81A1C1"; # Workspace 4
-  green-alt = "#A3BE8C"; # Workspace 5 / Wi-Fi
-  ice = "#a4ebf3"; # Temperatura
-  orange = "#d19a66"; # Memória
-  purple = "#989cff"; # CPU
-  red-alt = "#d35f5e"; # Som / Power / Alerta
-  blue-alt = "#61afef"; # Launcher / Brilho
-  bat-green = "#A0E8A2"; # Verde bateria
-  bat-charging = "#DF8890"; # Vermelho suave recarga
-  time-alt = "#888e96"; # Cinza do relógio
+  # --- Paleta Cápsulas & Pills (adaptada dinamicamente ao tema) ---
+  base-alt = c.bgAlt;
+  text-alt = c.fgMuted;
+  pill = c.surface; # Fundo das cápsulas / pills
+  pill-alt = c.surfaceAlt;
+  dark = c.bgDark; # Fundo da barra escura
+  gray = c.border; # Linha de foco e bordas
+  muted = c.fgSubtle; # Texto sutil / ocupado
+  yellow-alt = c.yellow; # Workspace 1
+  coral = c.pink; # Workspace 2
+  mint = c.teal; # Workspace 3
+  nord = c.blue; # Workspace 4
+  green-alt = c.green; # Workspace 5 / Wi-Fi
+  ice = c.cyan; # Temperatura
+  orange = c.orange; # Memória
+  purple = c.purple; # CPU
+  red-alt = c.red; # Som / Power / Alerta
+  blue-alt = c.accent; # Launcher / Brilho
+  bat-green = c.green; # Verde bateria
+  bat-charging = c.red; # Vermelho suave recarga
+  time-alt = c.fgMuted; # Cinza do relógio
 }

@@ -204,10 +204,10 @@ in
             focus_follows_pointer = false;
             pointer_follows_focus = false;
             click_to_focus = "any";
-            normal_border_color = "#181825"; # Catppuccin Mantle escuro
-            active_border_color = "#313244"; # Catppuccin Surface0
-            focused_border_color = "#cba6f7"; # Catppuccin Mauve (Glow característico do Hyprland)
-            presel_feedback_color = "#f2cdcd"; # Catppuccin Flamingo
+            normal_border_color = config.desktop.theme.colors.border;
+            active_border_color = config.desktop.theme.colors.surfaceAlt;
+            focused_border_color = config.desktop.theme.colors.accent;
+            presel_feedback_color = config.desktop.theme.colors.accent;
           };
           rules = {
             # --- Utilitários de Sistema, Áudio e Vídeo ---
@@ -546,7 +546,7 @@ in
             ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
 
             # Wallpaper / Fundo e Cursor padrão (garante left_ptr mesmo com fundo sólido)
-            xsetroot -solid '#1e1e2e' -cursor_name left_ptr &
+            xsetroot -solid '${config.desktop.theme.colors.bg}' -cursor_name left_ptr &
 
             # Applet de Rede desativado para manter o tray limpo apenas para apps externos (Wi-Fi gerenciado via Polybar/Rofi)
             # ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &
@@ -721,6 +721,15 @@ in
     };
 
     home = {
+      activation.reloadBspwmColors = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if ${pkgs.procps}/bin/pgrep -x bspwm >/dev/null 2>&1; then
+          ${pkgs.bspwm}/bin/bspc config normal_border_color "${config.desktop.theme.colors.border}" 2>/dev/null || true
+          ${pkgs.bspwm}/bin/bspc config active_border_color "${config.desktop.theme.colors.surfaceAlt}" 2>/dev/null || true
+          ${pkgs.bspwm}/bin/bspc config focused_border_color "${config.desktop.theme.colors.accent}" 2>/dev/null || true
+          ${pkgs.bspwm}/bin/bspc config presel_feedback_color "${config.desktop.theme.colors.accent}" 2>/dev/null || true
+        fi
+      '';
+
       activation.reloadBspwmAutoRaise = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || pgrep -f bspwm >/dev/null 2>&1; then
           systemctl --user daemon-reload 2>/dev/null || true

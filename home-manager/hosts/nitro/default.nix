@@ -38,7 +38,12 @@ in
       ];
 
       modifierKey = "Alt";
-      theme.enable = true;
+
+      theme = {
+        enable = true;
+        name = "tokyo-night";
+        accent = "red";
+      };
 
       touchpad = {
         enable = true;
@@ -52,6 +57,7 @@ in
         adapter = "ACAD";
         style = lib.mkForce "pills";
       };
+
     };
 
     system = {

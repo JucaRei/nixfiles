@@ -265,8 +265,8 @@ in
           gaps_in = 5;
           gaps_out = 10;
           border_size = 2;
-          "col.active_border" = "rgba(cba6f7ee) rgba(89b4faee) 45deg"; # Mauve to Blue gradient
-          "col.inactive_border" = "rgba(313244aa)"; # Surface0
+          "col.active_border" = "rgba(${config.desktop.theme.colorsBare.accent}ee) rgba(${config.desktop.theme.colorsBare.blue}ee) 45deg";
+          "col.inactive_border" = "rgba(${config.desktop.theme.colorsBare.surfaceAlt}aa)";
           layout = "dwindle";
           allow_tearing = false;
         };

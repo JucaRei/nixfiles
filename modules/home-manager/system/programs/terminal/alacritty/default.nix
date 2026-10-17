@@ -8,6 +8,7 @@
 let
   cfg = config.system.programs.terminal;
   shellsCfg = config.system.programs.shells;
+  c = config.desktop.theme.colors;
 
   isDarwin = pkgs.stdenv.isDarwin;
 
@@ -44,6 +45,12 @@ in
       jetbrains-mono
       symbols-only
     ];
+    home.activation.initAlacrittyTheme = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      mkdir -p "$HOME/.config/alacritty"
+      if [ ! -f "$HOME/.config/alacritty/active-theme.toml" ]; then
+        $DRY_RUN_CMD touch "$HOME/.config/alacritty/active-theme.toml"
+      fi
+    '';
     xdg.configFile."alacritty/alacritty.toml".force = true;
     programs.alacritty = {
       enable = true;
@@ -52,7 +59,6 @@ in
         general = {
           live_config_reload = true;
           import = [
-            (pkgs.alacritty-theme + "/dracula.toml")
             "~/.config/alacritty/active-theme.toml"
           ];
         };
@@ -119,28 +125,36 @@ in
         colors = {
           draw_bold_text_with_bright_colors = true;
           primary = {
-            background = "#282a36";
-            foreground = "#f8f8f2";
+            background = c.bg;
+            foreground = c.fg;
+          };
+          cursor = {
+            text = c.bg;
+            cursor = c.accent;
+          };
+          selection = {
+            text = c.fg;
+            background = c.surfaceAlt;
           };
           normal = {
-            black = "#000000";
-            red = "#ff5555";
-            green = "#50fa7b";
-            yellow = "#f1fa8c";
-            blue = "#caa9fa";
-            magenta = "#ff79c6";
-            cyan = "#8be9fd";
-            white = "#bfbfbf";
+            black = c.bgDark;
+            red = c.red;
+            green = c.green;
+            yellow = c.yellow;
+            blue = c.blue;
+            magenta = c.purple;
+            cyan = c.cyan;
+            white = c.fgMuted;
           };
           bright = {
-            black = "#575b70";
-            red = "#ff6e67";
-            green = "#5af78e";
-            yellow = "#f4f99d";
-            blue = "#caa9fa";
-            magenta = "#ff92d0";
-            cyan = "#9aedfe";
-            white = "#e6e6e6";
+            black = c.border;
+            red = c.red;
+            green = c.green;
+            yellow = c.yellow;
+            blue = c.blue;
+            magenta = c.pink;
+            cyan = c.teal;
+            white = c.fg;
           };
         };
         selection = {

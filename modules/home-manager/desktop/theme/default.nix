@@ -188,6 +188,11 @@ in
         font-name = mkDefault "${cfg.font.name} ${toString cfg.font.size}";
       };
 
+      xresources.properties = {
+        "Xcursor.theme" = mkDefault cfg.cursor.name;
+        "Xcursor.size" = mkDefault cfg.cursor.size;
+      };
+
       home = {
         sessionVariables = {
           GTK_THEME = mkDefault cfg.gtk.name;

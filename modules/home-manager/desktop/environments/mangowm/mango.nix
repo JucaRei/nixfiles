@@ -246,17 +246,17 @@ in
       gap_outer_vertical=12
       smart_gaps=0
 
-      # --- Paleta Catppuccin Mocha ---
-      root_color=0x1e1e2eff
-      border_color=0x313244ff
-      focus_color=0x89b4faff
-      drop_color=0x89b4fa55
-      split_color=0xfab387ff
-      maximized_screen_color=0xa6e3a1ff
-      urgent_color=0xf38ba8ff
-      scratchpad_color=0x89b4faff
-      global_color=0xcba6f7ff
-      overlay_color=0x89dcebff
+      # --- Paleta Dinâmica (desktop.theme) ---
+      root_color=0x${config.desktop.theme.colorsBare.bg}ff
+      border_color=0x${config.desktop.theme.colorsBare.surfaceAlt}ff
+      focus_color=0x${config.desktop.theme.colorsBare.accent}ff
+      drop_color=0x${config.desktop.theme.colorsBare.accent}55
+      split_color=0x${config.desktop.theme.colorsBare.orange}ff
+      maximized_screen_color=0x${config.desktop.theme.colorsBare.green}ff
+      urgent_color=0x${config.desktop.theme.colorsBare.red}ff
+      scratchpad_color=0x${config.desktop.theme.colorsBare.accent}ff
+      global_color=0x${config.desktop.theme.colorsBare.purple}ff
+      overlay_color=0x${config.desktop.theme.colorsBare.cyan}ff
 
       # --- Layout Scroller & Overview ---
       scroller_structs=450

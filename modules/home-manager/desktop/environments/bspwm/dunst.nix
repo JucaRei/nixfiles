@@ -8,6 +8,7 @@ let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
   cfg = config.desktop.bspwm.dunst;
+  c = config.desktop.theme.colors;
 in
 {
   options.desktop.bspwm.dunst = {
@@ -47,9 +48,9 @@ in
           progress_bar_min_width = 160;
           progress_bar_max_width = 320;
           progress_bar_corner_radius = 6;
-          highlight = "#cba6f7";
+          highlight = c.accent;
           frame_width = 2;
-          frame_color = "#cba6f7";
+          frame_color = c.accent;
           separator_color = "frame";
           gap_size = 8;
           padding = 14;
@@ -64,23 +65,23 @@ in
         };
 
         urgency_low = {
-          background = "#1e1e2e";
-          foreground = "#cdd6f4";
-          frame_color = "#585b70";
+          background = c.bg;
+          foreground = c.fg;
+          frame_color = c.border;
           timeout = 4;
         };
 
         urgency_normal = {
-          background = "#1e1e2e";
-          foreground = "#cdd6f4";
-          frame_color = "#cba6f7";
+          background = c.bg;
+          foreground = c.fg;
+          frame_color = c.accent;
           timeout = 6;
         };
 
         urgency_critical = {
-          background = "#1e1e2e";
-          foreground = "#cdd6f4";
-          frame_color = "#f38ba8";
+          background = c.bg;
+          foreground = c.fg;
+          frame_color = c.red;
           timeout = 8;
         };
 
