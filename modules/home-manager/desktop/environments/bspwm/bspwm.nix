@@ -523,6 +523,16 @@ in
               systemctl --user restart picom 2>/dev/null || (${nixGLWrapper pkgs.picom}/bin/picom -b 2>/dev/null || true) &
             ''}
 
+            # Iniciar daemon de notificações Dunst se habilitado
+            ${lib.optionalString config.desktop.bspwm.dunst.enable ''
+              systemctl --user restart dunst 2>/dev/null || true
+              sleep 0.1
+              if ! systemctl --user is-active --quiet dunst 2>/dev/null && ! pgrep -x dunst >/dev/null 2>&1; then
+                pkill -x dunst 2>/dev/null || true
+                ${pkgs.dunst}/bin/dunst &
+              fi
+            ''}
+
             # Iniciar barra de status Polybar se habilitada
             ${lib.optionalString config.desktop.bspwm.polybar.enable ''
               systemctl --user restart polybar 2>/dev/null || (

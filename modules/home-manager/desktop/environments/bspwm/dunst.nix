@@ -20,14 +20,26 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Recarregar automaticamente o Dunst ao rodar switch-home
+    home.packages = [
+      pkgs.dunst
+    ];
+
+    # Recarregar ou iniciar automaticamente o Dunst ao rodar switch-home
     home.activation.reloadDunst = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       if command -v dunstctl >/dev/null 2>&1; then
         $DRY_RUN_CMD dunstctl reload 2>/dev/null || true
       elif [ -x "${pkgs.dunst}/bin/dunstctl" ]; then
         $DRY_RUN_CMD ${pkgs.dunst}/bin/dunstctl reload 2>/dev/null || true
       fi
-      $DRY_RUN_CMD systemctl --user restart dunst 2>/dev/null || true
+
+      systemctl --user restart dunst 2>/dev/null || true
+      sleep 0.1
+      if ! systemctl --user is-active --quiet dunst 2>/dev/null && ! pgrep -x dunst >/dev/null 2>&1; then
+        if pgrep -x bspwm >/dev/null 2>&1; then
+          $DRY_RUN_CMD pkill -x dunst 2>/dev/null || true
+          $DRY_RUN_CMD ${pkgs.dunst}/bin/dunst &
+        fi
+      fi
     '';
 
     services.dunst = {
