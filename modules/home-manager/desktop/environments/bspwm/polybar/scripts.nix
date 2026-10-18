@@ -2939,6 +2939,9 @@ rec {
     export PATH="${lib.makeBinPath [ pkgs.dunst pkgs.coreutils ]}:$PATH"
 
     if ! dunstctl ping >/dev/null 2>&1; then
+      if ! pgrep -x dunst >/dev/null 2>&1; then
+        systemctl --user start dunst 2>/dev/null || (${pkgs.dunst}/bin/dunst &)
+      fi
       echo "%{F${colors.muted}}󰂚%{F-}"
       exit 0
     fi
@@ -2979,6 +2982,13 @@ rec {
       pkgs.gnused
       pkgs.gawk
     ]}:$PATH"
+
+    if ! dunstctl ping >/dev/null 2>&1; then
+      if ! pgrep -x dunst >/dev/null 2>&1; then
+        systemctl --user start dunst 2>/dev/null || (${pkgs.dunst}/bin/dunst &)
+        sleep 0.3
+      fi
+    fi
 
     if ! dunstctl ping >/dev/null 2>&1; then
       rofi -e "O daemon de notificações Dunst não está em execução."
