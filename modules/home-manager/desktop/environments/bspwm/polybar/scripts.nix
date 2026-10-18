@@ -2933,4 +2933,179 @@ rec {
       ${polybar}/bin/polybar --reload main &
     fi
   '';
+
+  # --- Status Dinâmico de Notificações na Polybar (Dunst) ---
+  notificationStatusScript = pkgs.writeShellScript "polybar-notifications-status" ''
+    export PATH="${lib.makeBinPath [ pkgs.dunst pkgs.coreutils ]}:$PATH"
+
+    if ! dunstctl ping >/dev/null 2>&1; then
+      echo "%{F${colors.muted}}󰂚%{F-}"
+      exit 0
+    fi
+
+    is_paused=$(dunstctl is-paused 2>/dev/null || echo "false")
+    if [ "$is_paused" = "true" ]; then
+      echo "%{F${colors.red}}󰂛%{F-} %{F${colors.muted}}DND%{F-}"
+      exit 0
+    fi
+
+    count_history=$(dunstctl count history 2>/dev/null || echo "0")
+    count_waiting=$(dunstctl count waiting 2>/dev/null || echo "0")
+    total=$(( count_history + count_waiting ))
+
+    if [ "$total" -gt 0 ]; then
+      echo "%{F${colors.yellow}}󱅫%{F-} %{F${colors.text}}$total%{F-}"
+    else
+      echo "%{F${colors.subtext0}}󰂚%{F-}"
+    fi
+  '';
+
+  # --- Alternador Rápido de Modo Não Perturbe (DND) ---
+  notificationToggleDndScript = pkgs.writeShellScript "polybar-notifications-dnd" ''
+    export PATH="${lib.makeBinPath [ pkgs.dunst pkgs.coreutils ]}:$PATH"
+    if dunstctl ping >/dev/null 2>&1; then
+      dunstctl set-paused toggle
+    fi
+  '';
+
+  # --- Menu Interativo de Notificações / Histórico de Não Abertas (Rofi + Dunst) ---
+  rofiNotificationMenu = pkgs.writeShellScript "rofi-notifications" ''
+    export PATH="${lib.makeBinPath [
+      pkgs.dunst
+      pkgs.rofi
+      pkgs.jq
+      pkgs.coreutils
+      pkgs.gnugrep
+      pkgs.gnused
+      pkgs.gawk
+    ]}:$PATH"
+
+    if ! dunstctl ping >/dev/null 2>&1; then
+      rofi -e "O daemon de notificações Dunst não está em execução."
+      exit 0
+    fi
+
+    while true; do
+      is_paused=$(dunstctl is-paused 2>/dev/null || echo "false")
+      if [ "$is_paused" = "true" ]; then
+        dnd_label="Desativar Modo Não Perturbe (DND está ATIVADO)"
+        dnd_icon="󰂛"
+      else
+        dnd_label="Ativar Modo Não Perturbe (DND está DESATIVADO)"
+        dnd_icon="󰂚"
+      fi
+
+      history_json=$(dunstctl history 2>/dev/null || echo '{"data":[[]]}')
+
+      mapfile -t notif_entries < <(echo "$history_json" | jq -r '
+        .data[0][]? |
+        [
+          (.id.data // 0 | tostring),
+          (.appname.data // "Sistema" | gsub("[\\r\\n\\t]+"; " ")),
+          (.summary.data // "Sem título" | gsub("[\\r\\n\\t]+"; " ")),
+          (.body.data // "" | gsub("[\\r\\n\\t]+"; " ")),
+          ((.timestamp.data // 0) / 1000000 | floor | strftime("%H:%M") catch "")
+        ] | @tsv
+      ')
+
+      total_notifs=''${#notif_entries[@]}
+
+      menu_lines=()
+      declare -A item_to_id
+      declare -A item_to_app
+      declare -A item_to_summary
+      declare -A item_to_body
+      declare -A item_to_time
+
+      OPT_DND="$dnd_icon  $dnd_label"
+      OPT_CLEAR="󰆴  Limpar todo o histórico de notificações"
+      OPT_POP="󰵅  Reexibir última notificação na tela"
+      OPT_SEP="────────────────────────────────────────────────────────"
+
+      menu_lines+=("$OPT_DND")
+      if [ "$total_notifs" -gt 0 ]; then
+        menu_lines+=("$OPT_CLEAR")
+        menu_lines+=("$OPT_POP")
+        menu_lines+=("$OPT_SEP")
+
+        for line in "''${notif_entries[@]}"; do
+          [ -z "$line" ] && continue
+          IFS=$'\t' read -r nid napp nsum nbody ntime <<< "$line"
+
+          time_str=""
+          [ -n "$ntime" ] && time_str=" ($ntime)"
+
+          preview="$nsum"
+          if [ -n "$nbody" ]; then
+            preview="$preview — $nbody"
+          fi
+          if [ ''${#preview} -gt 75 ]; then
+            preview="''${preview:0:72}..."
+          fi
+
+          label="󰂞  [$napp] $preview$time_str"
+          menu_lines+=("$label")
+          item_to_id["$label"]="$nid"
+          item_to_app["$label"]="$napp"
+          item_to_summary["$label"]="$nsum"
+          item_to_body["$label"]="$nbody"
+          item_to_time["$label"]="$ntime"
+        done
+      else
+        menu_lines+=("󰂚  Nenhuma notificação não aberta no histórico")
+      fi
+
+      prompt="Notificações ($total_notifs)"
+      chosen=$(printf "%s\n" "''${menu_lines[@]}" | rofi -dmenu -i -p " $prompt " \
+        -theme-str 'window { width: 750px; border-radius: 14px; } listview { lines: 12; }')
+
+      [ -z "$chosen" ] && exit 0
+
+      if [ "$chosen" = "$OPT_DND" ]; then
+        dunstctl set-paused toggle
+        sleep 0.1
+        continue
+      elif [ "$chosen" = "$OPT_CLEAR" ]; then
+        dunstctl history-clear
+        dunstify -u low -t 1500 "Notificações" "Histórico limpo com sucesso." 2>/dev/null || true
+        continue
+      elif [ "$chosen" = "$OPT_POP" ]; then
+        dunstctl history-pop
+        exit 0
+      elif [ "$chosen" = "$OPT_SEP" ] || [ "$chosen" = "󰂚  Nenhuma notificação não aberta no histórico" ]; then
+        continue
+      else
+        nid="''${item_to_id["$chosen"]:-}"
+        if [ -n "$nid" ]; then
+          napp="''${item_to_app["$chosen"]:-"Sistema"}"
+          nsum="''${item_to_summary["$chosen"]:-"Sem título"}"
+          nbody="''${item_to_body["$chosen"]:-""}"
+          ntime="''${item_to_time["$chosen"]:-""}"
+
+          detail_text="Origem: $napp"
+          [ -n "$ntime" ] && detail_text="$detail_text | Horário: $ntime"
+          detail_text="$detail_text\nAssunto: $nsum"
+          [ -n "$nbody" ] && detail_text="$detail_text\n\nMensagem:\n$nbody"
+
+          ACT_POP="󰵅  Reexibir esta notificação na tela (Popup)"
+          ACT_BACK="󰌍  Voltar à lista"
+          ACT_CLOSE="󰅖  Fechar"
+
+          detail_choice=$(printf "%b\n%s\n%s" "$ACT_POP" "$ACT_BACK" "$ACT_CLOSE" | rofi -dmenu -i \
+            -mesg "$detail_text" \
+            -p " [$napp] Detalhes " \
+            -theme-str 'window { width: 750px; border-radius: 14px; } listview { lines: 3; }')
+
+          if [ "$detail_choice" = "$ACT_POP" ]; then
+            dunstctl history-pop "$nid"
+            exit 0
+          elif [ "$detail_choice" = "$ACT_BACK" ]; then
+            continue
+          else
+            exit 0
+          fi
+        fi
+      fi
+    done
+  '';
 }

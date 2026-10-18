@@ -62,6 +62,7 @@ in
           mouse_left_click = "do_action, close_current";
           mouse_middle_click = "close_current";
           mouse_right_click = "close_all";
+          history_length = 50;
         };
 
         urgency_low = {

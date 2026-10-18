@@ -79,6 +79,8 @@ in
       (pkgs.writeShellScriptBin "polybar-os-logo" ''exec ${scripts.osLogoScript} "$@"'')
       (pkgs.writeShellScriptBin "polybar-launch" ''exec ${scripts.polybarLaunchScript} "$@"'')
       (pkgs.writeShellScriptBin "polybar-media-control" ''exec ${scripts.mediaControlScript} "$@"'')
+      (pkgs.writeShellScriptBin "rofi-notifications" ''exec ${scripts.rofiNotificationMenu} "$@"'')
+      (pkgs.writeShellScriptBin "polybar-notifications" ''exec ${scripts.notificationStatusScript} "$@"'')
     ] ++ lib.optionals cfg.tray.enable [
       pkgs.stalonetray
       (pkgs.writeShellScriptBin "stalonetray-toggle" ''exec ${scripts.stalonetrayToggleScript} "$@"'')
@@ -185,7 +187,7 @@ in
           modernMainBar = modernBaseBar // {
             modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard${modernTray} sep date sep powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard dots notifications${modernTray} sep date sep powermenu";
           };
 
           modernPrimaryBar = modernBaseBar // {
@@ -197,7 +199,7 @@ in
           modernSecondaryBar = modernBaseBar // {
             modules-left = "bspwm sep polywins";
             modules-center = "xwindow";
-            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift${modernTray} sep date sep powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${modernTray} sep date sep powermenu";
           };
 
           # =========================================================================
@@ -248,7 +250,7 @@ in
           pillsMainBar = pillsBaseBar // {
             modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard${pillsTray} sp round-left date round-right sp powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications${pillsTray} sp round-left date round-right sp powermenu";
           };
 
           pillsPrimaryBar = pillsBaseBar // {
@@ -260,7 +262,7 @@ in
           pillsSecondaryBar = pillsBaseBar // {
             modules-left = "round-left bspwm round-right sp polywins";
             modules-center = "xwindow";
-            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift${pillsTray} sp round-left date round-right sp powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${pillsTray} sp round-left date round-right sp powermenu";
           };
 
           # Overrides aplicados aos módulos existentes quando o estilo pills/zproger está ativo.
@@ -418,6 +420,10 @@ in
             "module/powermenu" = {
               label = "";
               label-foreground = colors.red-alt;
+            };
+
+            "module/notifications" = {
+              label-foreground = colors.text-alt;
             };
           }
           // lib.optionalAttrs hasTray {

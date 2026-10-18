@@ -427,6 +427,19 @@
     scroll-down = "${scripts.bspLayoutSwitchScript} prev";
   };
 
+  # --- Notificações (Dunst / Central Interativa Rofi) ---
+  "module/notifications" = {
+    type = "custom/script";
+    exec = "${scripts.notificationStatusScript}";
+    interval = 2;
+    format = "<label>";
+    label = "%output%";
+    label-padding = 1;
+    click-left = "${scripts.rofiNotificationMenu}";
+    click-right = "${scripts.notificationToggleDndScript}";
+    click-middle = "${pkgs.dunst}/bin/dunstctl history-clear";
+  };
+
   "settings" = {
     screenchange-reload = true;
     pseudo-transparency = false;
