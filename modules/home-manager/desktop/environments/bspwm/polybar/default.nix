@@ -81,7 +81,8 @@ in
       (pkgs.writeShellScriptBin "polybar-media-control" ''exec ${scripts.mediaControlScript} "$@"'')
       (pkgs.writeShellScriptBin "rofi-notifications" ''exec ${scripts.rofiNotificationMenu} "$@"'')
       (pkgs.writeShellScriptBin "polybar-notifications" ''exec ${scripts.notificationStatusScript} "$@"'')
-    ] ++ lib.optionals cfg.tray.enable [
+    ]
+    ++ lib.optionals cfg.tray.enable [
       pkgs.stalonetray
       (pkgs.writeShellScriptBin "stalonetray-toggle" ''exec ${scripts.stalonetrayToggleScript} "$@"'')
     ];
@@ -187,7 +188,8 @@ in
           modernMainBar = modernBaseBar // {
             modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard dots notifications${modernTray} sep date sep powermenu";
+            # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard dots notifications${modernTray} sep date sep powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard dots notifications sep date sep powermenu";
           };
 
           modernPrimaryBar = modernBaseBar // {
@@ -199,7 +201,8 @@ in
           modernSecondaryBar = modernBaseBar // {
             modules-left = "bspwm sep polywins";
             modules-center = "xwindow";
-            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${modernTray} sep date sep powermenu";
+            # modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${modernTray} sep date sep powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications sep date sep powermenu";
           };
 
           # =========================================================================
@@ -270,169 +273,170 @@ in
           # 2. Playerctl/Media no centro, idêntico ao estilo moderno
           # 3. Módulos com ícone único sem duplicações (sem prefixos colidindo com scripts)
           # 4. Relógio dentro da cápsula #2b2f37 com ícone único  em cinza suave #888e96
-          pillModuleOverrides = lib.optionalAttrs isPills {
-            "module/bspwm" = {
-              ws-icon-0 = "1;%{F${colors.yellow-alt}}1%{F-}";
-              ws-icon-1 = "2;%{F${colors.coral}}2%{F-}";
-              ws-icon-2 = "3;%{F${colors.mint}}3%{F-}";
-              ws-icon-3 = "4;%{F${colors.nord}}4%{F-}";
-              ws-icon-4 = "5;%{F${colors.green-alt}}5%{F-}";
-              ws-icon-5 = "6;%{F${colors.yellow-alt}}6%{F-}";
-              ws-icon-6 = "7;%{F${colors.coral}}7%{F-}";
-              ws-icon-7 = "8;%{F${colors.mint}}8%{F-}";
-              ws-icon-8 = "9;%{F${colors.nord}}9%{F-}";
-              ws-icon-9 = "0;%{F${colors.green-alt}}10%{F-}";
-              ws-icon-10 = "10;%{F${colors.green-alt}}10%{F-}";
-              ws-icon-default = "%name%";
+          pillModuleOverrides =
+            lib.optionalAttrs isPills {
+              "module/bspwm" = {
+                ws-icon-0 = "1;%{F${colors.yellow-alt}}1%{F-}";
+                ws-icon-1 = "2;%{F${colors.coral}}2%{F-}";
+                ws-icon-2 = "3;%{F${colors.mint}}3%{F-}";
+                ws-icon-3 = "4;%{F${colors.nord}}4%{F-}";
+                ws-icon-4 = "5;%{F${colors.green-alt}}5%{F-}";
+                ws-icon-5 = "6;%{F${colors.yellow-alt}}6%{F-}";
+                ws-icon-6 = "7;%{F${colors.coral}}7%{F-}";
+                ws-icon-7 = "8;%{F${colors.mint}}8%{F-}";
+                ws-icon-8 = "9;%{F${colors.nord}}9%{F-}";
+                ws-icon-9 = "0;%{F${colors.green-alt}}10%{F-}";
+                ws-icon-10 = "10;%{F${colors.green-alt}}10%{F-}";
+                ws-icon-default = "%name%";
 
-              label-focused = "%{T3}%icon%%{T-}";
-              label-focused-foreground = colors.text-alt;
-              label-focused-underline = colors.gray;
-              label-focused-background = colors.pill;
-              label-focused-padding = 1;
-              label-focused-margin = 0;
+                label-focused = "%{T3}%icon%%{T-}";
+                label-focused-foreground = colors.text-alt;
+                label-focused-underline = colors.gray;
+                label-focused-background = colors.pill;
+                label-focused-padding = 1;
+                label-focused-margin = 0;
 
-              label-occupied = "%{T3}%icon%%{T-}";
-              label-occupied-foreground = colors.muted;
-              label-occupied-background = colors.pill;
-              label-occupied-padding = 1;
-              label-occupied-margin = 0;
+                label-occupied = "%{T3}%icon%%{T-}";
+                label-occupied-foreground = colors.muted;
+                label-occupied-background = colors.pill;
+                label-occupied-padding = 1;
+                label-occupied-margin = 0;
 
-              label-urgent = "%{T3}%icon%%{T-}";
-              label-urgent-foreground = colors.nord;
-              label-urgent-background = colors.pill;
-              label-urgent-padding = 1;
-              label-urgent-margin = 0;
+                label-urgent = "%{T3}%icon%%{T-}";
+                label-urgent-foreground = colors.nord;
+                label-urgent-background = colors.pill;
+                label-urgent-padding = 1;
+                label-urgent-margin = 0;
 
-              label-empty = "%{T3}%icon%%{T-}";
-              label-empty-foreground = colors.surface1;
-              label-empty-background = colors.pill;
-              label-empty-padding = 1;
-              label-empty-margin = 0;
+                label-empty = "%{T3}%icon%%{T-}";
+                label-empty-foreground = colors.surface1;
+                label-empty-background = colors.pill;
+                label-empty-padding = 1;
+                label-empty-margin = 0;
 
-              label-separator = "";
-              label-separator-background = colors.pill;
+                label-separator = "";
+                label-separator-background = colors.pill;
+              };
+
+              "module/cpu" = {
+                format = "<label>";
+                format-prefix = " ";
+                format-prefix-foreground = colors.purple;
+                label = "%percentage%%";
+                label-foreground = colors.text-alt;
+                label-padding = 0;
+              };
+
+              "module/memory" = {
+                format = "<label>";
+                format-prefix = " ";
+                format-prefix-foreground = colors.orange;
+                label = "%percentage_used%%";
+                label-foreground = colors.text-alt;
+                label-padding = 0;
+              };
+
+              "module/temperature" = {
+                type = "internal/temperature";
+                thermal-zone = 0;
+                warn-temperature = 75;
+                format = "<ramp> <label>";
+                format-warn = "<ramp> <label-warn>";
+                format-padding = 0;
+                label = "%temperature-c%";
+                label-warn = "%temperature-c%";
+                label-foreground = colors.text-alt;
+                ramp-0 = "";
+                ramp-foreground = colors.ice;
+              };
+
+              "module/pulseaudio" = {
+                label-foreground = colors.red-alt;
+              };
+
+              "module/bluetooth" = {
+                label-foreground = colors.blue-alt;
+              };
+
+              "module/backlight" = {
+                format = "<label>";
+                format-prefix = "";
+              };
+
+              "module/battery" = {
+                ramp-capacity-foreground = colors.bat-green;
+                animation-charging-foreground = colors.bat-charging;
+                label-charging-foreground = colors.text-alt;
+                label-discharging-foreground = colors.text-alt;
+                label-full-foreground = colors.text-alt;
+              };
+
+              "module/keyboard" = {
+                format-prefix-foreground = colors.text-alt;
+                label-layout-foreground = colors.text-alt;
+              };
+
+              "module/date" = {
+                interval = 1;
+                format = "<label>";
+                format-prefix = "";
+                format-prefix-foreground = colors.pill;
+                format-background = colors.pill;
+                date = "%{F${colors.time-alt}}  %H:%M:%S%{F-}";
+                date-alt = "%{F${colors.blue-alt}}  %a, %d %b %Y  %{F${colors.time-alt}}  %H:%M:%S%{F-}";
+                time = "";
+                time-alt = "";
+                label = "%date%";
+                label-foreground = colors.time-alt;
+                label-background = colors.pill;
+                label-padding = 1;
+              };
+
+              "module/network" = {
+                label-foreground = colors.green-alt;
+              };
+
+              "module/netspeed" = {
+                label-foreground = colors.nord;
+              };
+
+              "module/disk" = {
+                format-mounted-prefix-foreground = colors.orange;
+                label-mounted-foreground = colors.text-alt;
+              };
+
+              "module/uptime" = {
+                label-foreground = colors.mint;
+              };
+
+              "module/bsp-layout" = {
+                label-foreground = colors.coral;
+              };
+
+              "module/media" = {
+                label-foreground = colors.purple;
+              };
+
+              "module/minimized" = {
+                label-foreground = colors.yellow-alt;
+              };
+
+              "module/powermenu" = {
+                label = "";
+                label-foreground = colors.red-alt;
+              };
+
+              "module/notifications" = {
+                label-foreground = colors.text-alt;
+              };
+            }
+            // lib.optionalAttrs hasTray {
+              "module/tray" = {
+                format-background = colors.pill;
+                label-background = colors.pill;
+                label-foreground = colors.blue-alt;
+              };
             };
-
-            "module/cpu" = {
-              format = "<label>";
-              format-prefix = " ";
-              format-prefix-foreground = colors.purple;
-              label = "%percentage%%";
-              label-foreground = colors.text-alt;
-              label-padding = 0;
-            };
-
-            "module/memory" = {
-              format = "<label>";
-              format-prefix = " ";
-              format-prefix-foreground = colors.orange;
-              label = "%percentage_used%%";
-              label-foreground = colors.text-alt;
-              label-padding = 0;
-            };
-
-            "module/temperature" = {
-              type = "internal/temperature";
-              thermal-zone = 0;
-              warn-temperature = 75;
-              format = "<ramp> <label>";
-              format-warn = "<ramp> <label-warn>";
-              format-padding = 0;
-              label = "%temperature-c%";
-              label-warn = "%temperature-c%";
-              label-foreground = colors.text-alt;
-              ramp-0 = "";
-              ramp-foreground = colors.ice;
-            };
-
-            "module/pulseaudio" = {
-              label-foreground = colors.red-alt;
-            };
-
-            "module/bluetooth" = {
-              label-foreground = colors.blue-alt;
-            };
-
-            "module/backlight" = {
-              format = "<label>";
-              format-prefix = "";
-            };
-
-            "module/battery" = {
-              ramp-capacity-foreground = colors.bat-green;
-              animation-charging-foreground = colors.bat-charging;
-              label-charging-foreground = colors.text-alt;
-              label-discharging-foreground = colors.text-alt;
-              label-full-foreground = colors.text-alt;
-            };
-
-            "module/keyboard" = {
-              format-prefix-foreground = colors.text-alt;
-              label-layout-foreground = colors.text-alt;
-            };
-
-            "module/date" = {
-              interval = 1;
-              format = "<label>";
-              format-prefix = "";
-              format-prefix-foreground = colors.pill;
-              format-background = colors.pill;
-              date = "%{F${colors.time-alt}}  %H:%M:%S%{F-}";
-              date-alt = "%{F${colors.blue-alt}}  %a, %d %b %Y  %{F${colors.time-alt}}  %H:%M:%S%{F-}";
-              time = "";
-              time-alt = "";
-              label = "%date%";
-              label-foreground = colors.time-alt;
-              label-background = colors.pill;
-              label-padding = 1;
-            };
-
-            "module/network" = {
-              label-foreground = colors.green-alt;
-            };
-
-            "module/netspeed" = {
-              label-foreground = colors.nord;
-            };
-
-            "module/disk" = {
-              format-mounted-prefix-foreground = colors.orange;
-              label-mounted-foreground = colors.text-alt;
-            };
-
-            "module/uptime" = {
-              label-foreground = colors.mint;
-            };
-
-            "module/bsp-layout" = {
-              label-foreground = colors.coral;
-            };
-
-            "module/media" = {
-              label-foreground = colors.purple;
-            };
-
-            "module/minimized" = {
-              label-foreground = colors.yellow-alt;
-            };
-
-            "module/powermenu" = {
-              label = "";
-              label-foreground = colors.red-alt;
-            };
-
-            "module/notifications" = {
-              label-foreground = colors.text-alt;
-            };
-          }
-          // lib.optionalAttrs hasTray {
-            "module/tray" = {
-              format-background = colors.pill;
-              label-background = colors.pill;
-              label-foreground = colors.blue-alt;
-            };
-          };
         in
         (lib.recursiveUpdate polybarModules pillModuleOverrides)
         // {
