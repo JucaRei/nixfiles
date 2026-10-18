@@ -253,7 +253,8 @@ in
           pillsMainBar = pillsBaseBar // {
             modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications${pillsTray} sp round-left date round-right sp powermenu";
+            # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications${pillsTray} sp round-left date round-right sp powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications sp round-left date round-right sp powermenu";
           };
 
           pillsPrimaryBar = pillsBaseBar // {
@@ -265,7 +266,8 @@ in
           pillsSecondaryBar = pillsBaseBar // {
             modules-left = "round-left bspwm round-right sp polywins";
             modules-center = "xwindow";
-            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${pillsTray} sp round-left date round-right sp powermenu";
+            # modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${pillsTray} sp round-left date round-right sp powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications sp round-left date round-right sp powermenu";
           };
 
           # Overrides aplicados aos módulos existentes quando o estilo pills/zproger está ativo.
