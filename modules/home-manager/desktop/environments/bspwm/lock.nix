@@ -30,7 +30,7 @@ let
     }:$PATH"
 
     # Evita lançar múltiplas instâncias concorrentes caso a tela já esteja travada
-    if pgrep -u "$UID" -x i3lock >/dev/null 2>&1; then
+    if pgrep -u "$UID" -x i3lock >/dev/null 2>&1 || pgrep -u "$UID" -x i3lock-color >/dev/null 2>&1; then
       exit 0
     fi
 
@@ -182,6 +182,18 @@ in
       type = bool;
       default = bspwmCfg.enable;
       description = "Habilitar bloqueador de tela moderno, minimalista e customizável para BSPWM (i3lock-color + xss-lock)";
+    };
+
+    timeout = mkOption {
+      type = int;
+      default = 600;
+      description = "Tempo de inatividade em segundos para bloqueio automático de tela via X11 screensaver / xss-lock (0 para desativar, padrão: 600 = 10 min).";
+    };
+
+    dpmsTimeout = mkOption {
+      type = int;
+      default = 900;
+      description = "Tempo de inatividade em segundos para desligamento da tela via DPMS (0 para desativar, padrão: 900 = 15 min).";
     };
 
     package = mkOption {
@@ -382,9 +394,15 @@ in
         After = [ "graphical-session.target" ];
       };
       Service = {
+        ExecStartPre = pkgs.writeShellScript "xss-lock-pre" ''
+          if [ "${toString cfg.timeout}" -gt 0 ]; then
+            ${pkgs.xset}/bin/xset s "${toString cfg.timeout}" "${toString cfg.timeout}" 2>/dev/null || true
+            ${pkgs.xset}/bin/xset +dpms dpms "${toString cfg.timeout}" "${toString cfg.dpmsTimeout}" "${toString (cfg.dpmsTimeout + 300)}" 2>/dev/null || true
+          fi
+        '';
         ExecStart = "${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- ${lockScript}/bin/bspwm-lock --nofork";
         Restart = "always";
-        RestartSec = 1;
+        RestartSec = 2;
         PassEnvironment = [
           "DISPLAY"
           "XAUTHORITY"

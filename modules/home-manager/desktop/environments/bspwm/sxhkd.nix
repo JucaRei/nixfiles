@@ -1013,9 +1013,14 @@ in
           # Alternar Mostrar Desktop (Minimizar todas / Restaurar todas no workspace ativo)
           "${mod} + shift + m" = "${toggleDesktopScript}";
 
-          # --- Bloqueio & Sessão (macOS Style: Cmd + Ctrl + Q) ---
+          # --- Bloqueio & Sessão (Atalhos Universais: macOS, Linux e Windows) ---
           "${mod} + ${ctrlMod} + q" = "bspwm-lock || loginctl lock-session";
           "${mod} + shift + x" = "bspwm-lock || loginctl lock-session";
+          "${mod} + shift + l" = "bspwm-lock || loginctl lock-session";
+          "ctrl + alt + l" = "bspwm-lock || loginctl lock-session";
+          "super + ctrl + l" = "bspwm-lock || loginctl lock-session";
+          "super + shift + l" = "bspwm-lock || loginctl lock-session";
+          "XF86ScreenSaver" = "bspwm-lock || loginctl lock-session";
 
           # --- Foco e Movimento em Janelas (Vim + Setas) ---
           "${mod} + {h,j,k,l}" = "bspc node -f {west,south,north,east}";
@@ -1119,6 +1124,7 @@ in
         }
         // lib.optionalAttrs (mod != "super") {
           # Atalhos com Super garantidos mesmo quando mod != "super"
+          "super + l" = "bspwm-lock || loginctl lock-session"; # Bloqueio de tela clássico Win+L
           "super + F4" = "${kbdBrightnessOsd} up";
           "super + F3" = "${kbdBrightnessOsd} down";
           "super + shift + F4" = "${kbdBrightnessOsd} toggle";

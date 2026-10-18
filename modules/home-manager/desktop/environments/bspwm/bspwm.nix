@@ -534,12 +534,21 @@ in
               ) &
             ''}
 
-            # Iniciar daemon de bloqueio de tela (xss-lock) se habilitado
+            # Iniciar daemon de bloqueio de tela (xss-lock) e configurar inatividade (XSS / DPMS)
             ${lib.optionalString (config.desktop.bspwm.lock.enable or true) ''
-              systemctl --user restart xss-lock 2>/dev/null || (
-                pkill -x xss-lock || true
+              if [ "${toString (config.desktop.bspwm.lock.timeout or 600)}" -gt 0 ]; then
+                ${pkgs.xset}/bin/xset s "${toString (config.desktop.bspwm.lock.timeout or 600)}" "${toString (config.desktop.bspwm.lock.timeout or 600)}" 2>/dev/null || true
+                ${pkgs.xset}/bin/xset +dpms dpms "${toString (config.desktop.bspwm.lock.timeout or 600)}" "${toString (config.desktop.bspwm.lock.dpmsTimeout or 900)}" "${toString ((config.desktop.bspwm.lock.dpmsTimeout or 900) + 300)}" 2>/dev/null || true
+              else
+                ${pkgs.xset}/bin/xset s off 2>/dev/null || true
+              fi
+
+              systemctl --user restart xss-lock 2>/dev/null || true
+              sleep 0.2
+              if ! systemctl --user is-active --quiet xss-lock 2>/dev/null; then
+                pkill -x xss-lock 2>/dev/null || true
                 ${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- bspwm-lock --nofork &
-              ) &
+              fi
             ''}
 
             # Agente de autenticação Polkit
