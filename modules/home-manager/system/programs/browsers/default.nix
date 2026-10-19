@@ -68,6 +68,7 @@ in
   imports = [
     ./firefox
     ./chrome
+    ./psd.nix
   ];
 
   options.system.programs.browsers = {

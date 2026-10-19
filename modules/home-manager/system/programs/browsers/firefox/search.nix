@@ -183,18 +183,40 @@
       definedAliases = [ "@gh" ];
     };
 
-    "google".metaData.alias = "@g";
+    "Google" = {
+      urls = [
+        {
+          template = "https://www.google.com/search";
+          params = [
+            {
+              name = "q";
+              value = "{searchTerms}";
+            }
+          ];
+        }
+      ];
+      icon = "https://www.google.com/favicon.ico";
+      updateInterval = 24 * 60 * 60 * 1000;
+      definedAliases = [
+        "@go"
+        "@g"
+      ];
+    };
+
+    # Metadados adicionais para compatibilidade caso o motor já venha embutido (ex: Firefox padrão)
+    "google".metaData.alias = "@go";
 
     "wikipedia".metaData.alias = "@wiki";
   };
 
   order = [
+    "Google"
     "google"
     "bing"
     "Brave"
     "ddg"
   ];
 
-  default = "google";
-  force = false;
+  default = "Google";
+  force = true;
 }

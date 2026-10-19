@@ -19,6 +19,116 @@
       i3Support = false;
     };
 
+    # Profile-sync-daemon com suporte estendido (LibreWolf, Floorp, Brave, Edge e wrappers do Nix)
+    profile-sync-daemon = prev.profile-sync-daemon.overrideAttrs (oldAttrs: {
+      nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ final.makeWrapper ];
+      postInstall = (oldAttrs.postInstall or "") + ''
+        # Copia navegadores adicionais da pasta contrib se presentes
+        if [ -d contrib ]; then
+          cp -r contrib/* $out/share/psd/browsers/ 2>/dev/null || true
+        fi
+
+        # Patch para detecção de processos com wrappers do Nix
+        if [ -f $out/share/psd/browsers/firefox ]; then
+          sed -i 's/PSNAME="$browser"/PSNAME="(firefox|\\.firefox-wra.*)"/' $out/share/psd/browsers/firefox 2>/dev/null || true
+        fi
+        if [ -f $out/share/psd/browsers/chromium ]; then
+          sed -i 's/PSNAME="$browser"/PSNAME="(chromium|\\.chromium-wra.*)"/' $out/share/psd/browsers/chromium 2>/dev/null || true
+        fi
+        if [ -f $out/share/psd/browsers/google-chrome ]; then
+          sed -i 's/PSNAME="chrome"/PSNAME="(chrome|google-chrome|\\.chrome-wra.*|\\.google-chrome-wra.*)"/' $out/share/psd/browsers/google-chrome 2>/dev/null || true
+        fi
+        if [ -f $out/share/psd/browsers/vivaldi ]; then
+          sed -i 's/PSNAME="$browser"/PSNAME="(vivaldi|\\.vivaldi-wra.*)"/' $out/share/psd/browsers/vivaldi 2>/dev/null || true
+        fi
+
+        # Suporte nativo para LibreWolf
+        cat << 'EOF' > $out/share/psd/browsers/librewolf
+librewolf_dir=""
+if [[ -d "$HOME/.librewolf" ]]; then
+    librewolf_dir="$HOME/.librewolf"
+elif [[ -d "''${XDG_CONFIG_HOME:-$HOME/.config}/librewolf" ]]; then
+    librewolf_dir="''${XDG_CONFIG_HOME:-$HOME/.config}/librewolf"
+fi
+
+if [[ -n "$librewolf_dir" && -f "$librewolf_dir/profiles.ini" ]]; then
+    index=0
+    PSNAME="(librewolf|\.librewolf-wra.*)"
+    while read -r profileItem; do
+        if [[ $(echo "$profileItem" | cut -c1) = "/" ]]; then
+            DIRArr[$index]="$profileItem"
+        else
+            DIRArr[$index]="$librewolf_dir/$profileItem"
+        fi
+        (( index=index+1 ))
+    done < <(grep -i '^path=' "$librewolf_dir/profiles.ini" 2>/dev/null | sed -e 's/^[Pp]ath=//')
+fi
+check_suffix=1
+EOF
+
+        # Suporte nativo para Floorp
+        cat << 'EOF' > $out/share/psd/browsers/floorp
+floorp_dir=""
+if [[ -d "$HOME/.floorp" ]]; then
+    floorp_dir="$HOME/.floorp"
+elif [[ -d "''${XDG_CONFIG_HOME:-$HOME/.config}/floorp" ]]; then
+    floorp_dir="''${XDG_CONFIG_HOME:-$HOME/.config}/floorp"
+fi
+
+if [[ -n "$floorp_dir" && -f "$floorp_dir/profiles.ini" ]]; then
+    index=0
+    PSNAME="(floorp|\.floorp-wra.*)"
+    while read -r profileItem; do
+        if [[ $(echo "$profileItem" | cut -c1) = "/" ]]; then
+            DIRArr[$index]="$profileItem"
+        else
+            DIRArr[$index]="$floorp_dir/$profileItem"
+        fi
+        (( index=index+1 ))
+    done < <(grep -i '^path=' "$floorp_dir/profiles.ini" 2>/dev/null | sed -e 's/^[Pp]ath=//')
+fi
+check_suffix=1
+EOF
+
+        # Suporte para Brave
+        cat << 'EOF' > $out/share/psd/browsers/brave
+if [[ -d "''${XDG_CONFIG_HOME:-$HOME/.config}/BraveSoftware/Brave-Browser" ]]; then
+    DIRArr[0]="''${XDG_CONFIG_HOME:-$HOME/.config}/BraveSoftware/Brave-Browser"
+    PSNAME="(brave|\.brave-wra.*)"
+fi
+check_suffix=1
+EOF
+
+        # Suporte para Microsoft Edge
+        cat << 'EOF' > $out/share/psd/browsers/microsoft-edge
+if [[ -d "''${XDG_CONFIG_HOME:-$HOME/.config}/microsoft-edge" ]]; then
+    DIRArr[0]="''${XDG_CONFIG_HOME:-$HOME/.config}/microsoft-edge"
+    PSNAME="(msedge|microsoft-edge|\.msedge-wra.*|\.microsoft-edge-wra.*)"
+elif [[ -d "''${XDG_CONFIG_HOME:-$HOME/.config}/microsoft-edge-dev" ]]; then
+    DIRArr[0]="''${XDG_CONFIG_HOME:-$HOME/.config}/microsoft-edge-dev"
+    PSNAME="(msedge|microsoft-edge|\.msedge-wra.*|\.microsoft-edge-wra.*)"
+fi
+check_suffix=1
+EOF
+      '';
+      postFixup = (oldAttrs.postFixup or "") + ''
+        wrapProgram $out/bin/profile-sync-daemon \
+          --prefix PATH : ${final.lib.makeBinPath [
+            final.rsync
+            final.kmod
+            final.gawk
+            final.procps
+            final.util-linux
+            final.coreutils
+            final.findutils
+            final.gnugrep
+            final.gnused
+            final.fuse-overlayfs
+            final.fuse3
+          ]}
+      '';
+    });
+
     # Noctalia (v5+): fallback unstable + wrapper com xdg-utils no PATH e auto-patch do plugin keymap
     noctalia =
       let
