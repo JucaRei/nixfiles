@@ -525,12 +525,14 @@ in
 
             # Iniciar daemon de notificações Dunst se habilitado
             ${lib.optionalString config.desktop.bspwm.dunst.enable ''
-              pkill -x xfce4-notifyd 2>/dev/null || true
-              pkill -x notification-daemon 2>/dev/null || true
-              pkill -x mako 2>/dev/null || true
+              pkill -f notification-daemon 2>/dev/null || true
+              pkill -f xfce4-notifyd 2>/dev/null || true
+              pkill -f mate-notification-daemon 2>/dev/null || true
+              pkill -f mako 2>/dev/null || true
+              systemctl --user reset-failed dunst 2>/dev/null || true
               systemctl --user restart dunst 2>/dev/null || true
               sleep 0.2
-              if ! ${pkgs.dunst}/bin/dunstctl ping >/dev/null 2>&1; then
+              if ! ${pkgs.dunst}/bin/dunstctl is-paused >/dev/null 2>&1; then
                 pkill -x dunst 2>/dev/null || true
                 nohup ${pkgs.dunst}/bin/dunst >/dev/null 2>&1 &
               fi

@@ -2938,24 +2938,26 @@ rec {
   notificationStatusScript = pkgs.writeShellScript "polybar-notifications-status" ''
     export PATH="${lib.makeBinPath [ pkgs.dunst pkgs.coreutils pkgs.procps ]}:$PATH"
 
-    if ! dunstctl ping >/dev/null 2>&1; then
+    if ! dunstctl is-paused >/dev/null 2>&1; then
       if [ -n "$DISPLAY" ] && ! pgrep -x dunst >/dev/null 2>&1; then
-        pkill -x xfce4-notifyd 2>/dev/null || true
-        pkill -x notification-daemon 2>/dev/null || true
-        pkill -x mako 2>/dev/null || true
+        pkill -f notification-daemon 2>/dev/null || true
+        pkill -f xfce4-notifyd 2>/dev/null || true
+        pkill -f mate-notification-daemon 2>/dev/null || true
+        pkill -f mako 2>/dev/null || true
         if command -v systemctl >/dev/null 2>&1; then
-          systemctl --user import-environment DISPLAY XAUTHORITY 2>/dev/null || true
+          systemctl --user import-environment DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS 2>/dev/null || true
+          systemctl --user reset-failed dunst 2>/dev/null || true
           systemctl --user start dunst 2>/dev/null || true
         fi
         sleep 0.1
-        if ! dunstctl ping >/dev/null 2>&1; then
+        if ! dunstctl is-paused >/dev/null 2>&1; then
           nohup ${pkgs.dunst}/bin/dunst >/dev/null 2>&1 &
           sleep 0.2
         fi
       fi
     fi
 
-    if ! dunstctl ping >/dev/null 2>&1; then
+    if ! dunstctl is-paused >/dev/null 2>&1; then
       echo "%{F${colors.muted}}󰂚%{F-}"
       exit 0
     fi
@@ -2980,7 +2982,7 @@ rec {
   # --- Alternador Rápido de Modo Não Perturbe (DND) ---
   notificationToggleDndScript = pkgs.writeShellScript "polybar-notifications-dnd" ''
     export PATH="${lib.makeBinPath [ pkgs.dunst pkgs.coreutils ]}:$PATH"
-    if dunstctl ping >/dev/null 2>&1; then
+    if dunstctl is-paused >/dev/null 2>&1; then
       dunstctl set-paused toggle
     fi
   '';
@@ -2999,27 +3001,31 @@ rec {
     ]}:$PATH"
 
     # Garantir que o Dunst esteja em execução e respondendo
-    if ! dunstctl ping >/dev/null 2>&1; then
-      pkill -x xfce4-notifyd 2>/dev/null || true
-      pkill -x notification-daemon 2>/dev/null || true
-      pkill -x mako 2>/dev/null || true
+    if ! dunstctl is-paused >/dev/null 2>&1; then
+      pkill -f notification-daemon 2>/dev/null || true
+      pkill -f xfce4-notifyd 2>/dev/null || true
+      pkill -f mate-notification-daemon 2>/dev/null || true
+      pkill -f mako 2>/dev/null || true
       pkill -x dunst 2>/dev/null || true
 
       if command -v systemctl >/dev/null 2>&1 && [ -n "$DISPLAY" ]; then
-        systemctl --user import-environment DISPLAY XAUTHORITY 2>/dev/null || true
+        systemctl --user import-environment DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS 2>/dev/null || true
+        systemctl --user reset-failed dunst 2>/dev/null || true
         systemctl --user restart dunst 2>/dev/null || true
       fi
 
       sleep 0.2
-      if ! dunstctl ping >/dev/null 2>&1; then
+      if ! dunstctl is-paused >/dev/null 2>&1; then
         pkill -x dunst 2>/dev/null || true
         nohup ${pkgs.dunst}/bin/dunst >/dev/null 2>&1 &
-        sleep 0.3
+        sleep 0.4
       fi
     fi
 
-    if ! dunstctl ping >/dev/null 2>&1; then
-      rofi -e "Não foi possível comunicar com o Dunst. Execute 'dunst &' no terminal."
+    if ! dunstctl is-paused >/dev/null 2>&1; then
+      err_msg=$(${pkgs.dunst}/bin/dunst 2>&1 & pid=$!; sleep 0.4; kill $pid 2>/dev/null || true)
+      rofi -e "Erro ao iniciar o Dunst:
+''${err_msg:-'Dunst não respondeu ao D-Bus. Execute dunst no terminal para testar.'}"
       exit 0
     fi
 
