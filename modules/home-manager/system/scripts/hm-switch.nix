@@ -84,7 +84,7 @@ pkgs.writeScriptBin "hm-switch" ''
       fi
 
       echo "󰩹  Cleaning old generations (keeping last 5)..."
-      ${pkgs.unstable.nh}/bin/nh clean all --keep 5 2>/dev/null || true
+      ${pkgs.unstable.nh}/bin/nh clean user --keep 5 2>/dev/null || true
     else
       err_code=$?
       timestamp=$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S)

@@ -3042,24 +3042,33 @@ rec {
       history_json=$(dunstctl history 2>/dev/null || echo '{"data":[[]]}')
 
       mapfile -t notif_entries < <(echo "$history_json" | jq -r '
-        .data[0][]? |
+        ((.data | flatten(1))? // []) | reverse | .[]? |
         [
-          (.id.data // 0 | tostring),
-          (.appname.data // "Sistema" | gsub("[\\r\\n\\t]+"; " ")),
-          (.summary.data // "Sem título" | gsub("[\\r\\n\\t]+"; " ")),
-          (.body.data // "" | gsub("[\\r\\n\\t]+"; " ")),
-          ((.timestamp.data // 0) / 1000000 | floor | strftime("%H:%M") catch "")
+          (try (.id.data // .id // 0 | tostring) catch "0"),
+          (try (.appname.data // .appname // "Sistema" | tostring | gsub("\n"; " ") | gsub("\t"; " ")) catch "Sistema"),
+          (try (.summary.data // .summary // "Sem título" | tostring | gsub("\n"; " ") | gsub("\t"; " ")) catch "Sem título"),
+          (try (.body.data // .body // "" | tostring | gsub("\n"; " ") | gsub("\t"; " ")) catch ""),
+          (try (
+            ((.timestamp.data // .timestamp // 0 | tonumber) / 1000000 | floor) as $sec |
+            if $sec > 100000 then ($sec | strftime("%H:%M")) else "" end
+          ) catch "")
         ] | @tsv
       ')
 
+      clean_entries=()
+      for entry in "''${notif_entries[@]}"; do
+        [ -n "$entry" ] && clean_entries+=("$entry")
+      done
+      notif_entries=("''${clean_entries[@]}")
       total_notifs=''${#notif_entries[@]}
 
       menu_lines=()
-      declare -A item_to_id
-      declare -A item_to_app
-      declare -A item_to_summary
-      declare -A item_to_body
-      declare -A item_to_time
+      unset item_to_id item_to_app item_to_summary item_to_body item_to_time
+      declare -A item_to_id=()
+      declare -A item_to_app=()
+      declare -A item_to_summary=()
+      declare -A item_to_body=()
+      declare -A item_to_time=()
 
       OPT_DND="$dnd_icon  $dnd_label"
       OPT_CLEAR="󰆴  Limpar todo o histórico de notificações"
@@ -3087,7 +3096,7 @@ rec {
             preview="''${preview:0:72}..."
           fi
 
-          label="󰂞  [$napp] $preview$time_str"
+          label="󰂞  #$nid [$napp] $preview$time_str"
           menu_lines+=("$label")
           item_to_id["$label"]="$nid"
           item_to_app["$label"]="$napp"
@@ -3096,7 +3105,14 @@ rec {
           item_to_time["$label"]="$ntime"
         done
       else
-        menu_lines+=("󰂚  Nenhuma notificação não aberta no histórico")
+        count_hist=$(dunstctl count history 2>/dev/null || echo "0")
+        count_wait=$(dunstctl count waiting 2>/dev/null || echo "0")
+        count_disp=$(dunstctl count displayed 2>/dev/null || echo "0")
+        menu_lines+=("󰂚  Nenhuma no histórico ($count_hist histórico, $count_wait na fila, $count_disp na tela)")
+        if [ "$count_wait" -gt 0 ] || [ "$count_disp" -gt 0 ]; then
+          menu_lines+=("󰵅  Reexibir/liberar notificações pendentes")
+        fi
+        menu_lines+=("󰂞  Enviar notificação de teste")
       fi
 
       prompt="Notificações ($total_notifs)"
@@ -3111,12 +3127,16 @@ rec {
         continue
       elif [ "$chosen" = "$OPT_CLEAR" ]; then
         dunstctl history-clear
-        dunstify -u low -t 1500 "Notificações" "Histórico limpo com sucesso." 2>/dev/null || true
+        ${pkgs.dunst}/bin/dunstify -u low -t 1500 "Notificações" "Histórico limpo com sucesso." 2>/dev/null || true
         continue
-      elif [ "$chosen" = "$OPT_POP" ]; then
+      elif [ "$chosen" = "$OPT_POP" ] || [ "$chosen" = "󰵅  Reexibir/liberar notificações pendentes" ]; then
         dunstctl history-pop
         exit 0
-      elif [ "$chosen" = "$OPT_SEP" ] || [ "$chosen" = "󰂚  Nenhuma notificação não aberta no histórico" ]; then
+      elif [ "$chosen" = "󰂞  Enviar notificação de teste" ]; then
+        ${pkgs.dunst}/bin/dunstify -u normal -a "Sistema" "Teste de Notificação" "O Dunst e o Rofi estão funcionando perfeitamente!" 2>/dev/null || true
+        sleep 0.5
+        continue
+      elif [ "$chosen" = "$OPT_SEP" ] || [[ "$chosen" == "󰂚  Nenhuma no histórico"* ]]; then
         continue
       else
         nid="''${item_to_id["$chosen"]:-}"
