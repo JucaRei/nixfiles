@@ -2936,7 +2936,7 @@ rec {
 
   # --- Status Dinâmico de Notificações na Polybar (Dunst) ---
   notificationStatusScript = pkgs.writeShellScript "polybar-notifications-status" ''
-    export PATH="${lib.makeBinPath [ pkgs.dunst pkgs.coreutils pkgs.procps ]}:$PATH"
+    export PATH="${lib.makeBinPath [ pkgs.systemd pkgs.dunst pkgs.coreutils pkgs.procps ]}:/usr/bin:/bin:$PATH"
 
     if ! dunstctl is-paused >/dev/null 2>&1; then
       if [ -n "$DISPLAY" ] && ! pgrep -x dunst >/dev/null 2>&1; then
@@ -2970,7 +2970,8 @@ rec {
 
     count_history=$(dunstctl count history 2>/dev/null || echo "0")
     count_waiting=$(dunstctl count waiting 2>/dev/null || echo "0")
-    total=$(( count_history + count_waiting ))
+    count_displayed=$(dunstctl count displayed 2>/dev/null || echo "0")
+    total=$(( count_history + count_waiting + count_displayed ))
 
     if [ "$total" -gt 0 ]; then
       echo "%{F${colors.yellow}}󱅫%{F-} %{F${colors.text}}$total%{F-}"
@@ -2981,7 +2982,7 @@ rec {
 
   # --- Alternador Rápido de Modo Não Perturbe (DND) ---
   notificationToggleDndScript = pkgs.writeShellScript "polybar-notifications-dnd" ''
-    export PATH="${lib.makeBinPath [ pkgs.dunst pkgs.coreutils ]}:$PATH"
+    export PATH="${lib.makeBinPath [ pkgs.systemd pkgs.dunst pkgs.coreutils ]}:/usr/bin:/bin:$PATH"
     if dunstctl is-paused >/dev/null 2>&1; then
       dunstctl set-paused toggle
     fi
@@ -2990,6 +2991,7 @@ rec {
   # --- Menu Interativo de Notificações / Histórico de Não Abertas (Rofi + Dunst) ---
   rofiNotificationMenu = pkgs.writeShellScript "rofi-notifications" ''
     export PATH="${lib.makeBinPath [
+      pkgs.systemd
       pkgs.dunst
       pkgs.rofi
       pkgs.jq
@@ -2998,7 +3000,7 @@ rec {
       pkgs.gnused
       pkgs.gawk
       pkgs.procps
-    ]}:$PATH"
+    ]}:/usr/bin:/bin:$PATH"
 
     # Garantir que o Dunst esteja em execução e respondendo
     if ! dunstctl is-paused >/dev/null 2>&1; then
@@ -3030,6 +3032,13 @@ rec {
     fi
 
     while true; do
+      # Fecha notificações ativas na tela para movê-las ao histórico para que fiquem listadas no Rofi
+      count_disp=$(dunstctl count displayed 2>/dev/null || echo "0")
+      if [ "$count_disp" -gt 0 ]; then
+        dunstctl close-all 2>/dev/null || true
+        sleep 0.1
+      fi
+
       is_paused=$(dunstctl is-paused 2>/dev/null || echo "false")
       if [ "$is_paused" = "true" ]; then
         dnd_label="Desativar Modo Não Perturbe (DND está ATIVADO)"
@@ -3039,21 +3048,31 @@ rec {
         dnd_icon="󰂚"
       fi
 
-      history_json=$(dunstctl history 2>/dev/null || echo '{"data":[[]]}')
+      history_err_file="/tmp/dunstctl_err_$USER.txt"
+      history_raw_file="/tmp/dunstctl_raw_$USER.json"
+      jq_err_file="/tmp/dunstctl_jq_err_$USER.txt"
+
+      history_json=$(dunstctl history 2>"$history_err_file")
+      hist_exit=$?
+
+      if [ $hist_exit -ne 0 ] || [ -z "$history_json" ]; then
+        history_json='{"data":[[]]}'
+      else
+        echo "$history_json" > "$history_raw_file" 2>/dev/null || true
+      fi
 
       mapfile -t notif_entries < <(echo "$history_json" | jq -r '
-        ((.data | flatten(1))? // []) | reverse | .[]? |
         [
-          (try (.id.data // .id // 0 | tostring) catch "0"),
-          (try (.appname.data // .appname // "Sistema" | tostring | gsub("\n"; " ") | gsub("\t"; " ")) catch "Sistema"),
-          (try (.summary.data // .summary // "Sem título" | tostring | gsub("\n"; " ") | gsub("\t"; " ")) catch "Sem título"),
-          (try (.body.data // .body // "" | tostring | gsub("\n"; " ") | gsub("\t"; " ")) catch ""),
-          (try (
-            ((.timestamp.data // .timestamp // 0 | tonumber) / 1000000 | floor) as $sec |
-            if $sec > 100000 then ($sec | strftime("%H:%M")) else "" end
-          ) catch "")
-        ] | @tsv
-      ')
+          .. | objects |
+          select(has("summary") or has("message") or has("body")) |
+          [
+            (try (.id.data // .id // 0 | tostring) catch "0"),
+            (try ((.appname.data // .appname // "Sistema") | tostring | gsub("[\r\n\t]"; " ")) catch "Sistema"),
+            (try ((.summary.data // .summary // .message.data // .message // "Sem título") | tostring | gsub("[\r\n\t]"; " ")) catch "Sem título"),
+            (try ((.body.data // .body // "") | tostring | gsub("[\r\n\t]"; " ")) catch "")
+          ]
+        ] | reverse | .[]? | @tsv
+      ' 2>"$jq_err_file")
 
       clean_entries=()
       for entry in "''${notif_entries[@]}"; do
@@ -3063,12 +3082,11 @@ rec {
       total_notifs=''${#notif_entries[@]}
 
       menu_lines=()
-      unset item_to_id item_to_app item_to_summary item_to_body item_to_time
+      unset item_to_id item_to_app item_to_summary item_to_body
       declare -A item_to_id=()
       declare -A item_to_app=()
       declare -A item_to_summary=()
       declare -A item_to_body=()
-      declare -A item_to_time=()
 
       OPT_DND="$dnd_icon  $dnd_label"
       OPT_CLEAR="󰆴  Limpar todo o histórico de notificações"
@@ -3081,12 +3099,13 @@ rec {
         menu_lines+=("$OPT_POP")
         menu_lines+=("$OPT_SEP")
 
+        idx=0
         for line in "''${notif_entries[@]}"; do
           [ -z "$line" ] && continue
-          IFS=$'\t' read -r nid napp nsum nbody ntime <<< "$line"
+          IFS=$'\t' read -r nid napp nsum nbody <<< "$line"
 
-          time_str=""
-          [ -n "$ntime" ] && time_str=" ($ntime)"
+          [ -z "$napp" ] && napp="Sistema"
+          [ -z "$nsum" ] && nsum="Sem título"
 
           preview="$nsum"
           if [ -n "$nbody" ]; then
@@ -3096,21 +3115,31 @@ rec {
             preview="''${preview:0:72}..."
           fi
 
-          label="󰂞  #$nid [$napp] $preview$time_str"
+          idx=$(( idx + 1 ))
+          label="󰂞  [$idx] #$nid [$napp] $preview"
           menu_lines+=("$label")
           item_to_id["$label"]="$nid"
           item_to_app["$label"]="$napp"
           item_to_summary["$label"]="$nsum"
           item_to_body["$label"]="$nbody"
-          item_to_time["$label"]="$ntime"
         done
       else
         count_hist=$(dunstctl count history 2>/dev/null || echo "0")
         count_wait=$(dunstctl count waiting 2>/dev/null || echo "0")
         count_disp=$(dunstctl count displayed 2>/dev/null || echo "0")
-        menu_lines+=("󰂚  Nenhuma no histórico ($count_hist histórico, $count_wait na fila, $count_disp na tela)")
-        if [ "$count_wait" -gt 0 ] || [ "$count_disp" -gt 0 ]; then
-          menu_lines+=("󰵅  Reexibir/liberar notificações pendentes")
+        menu_lines+=("󰂚  Nenhuma notificação no histórico ($count_hist no Dunst, $count_wait na fila, $count_disp na tela)")
+
+        if [ -s "$history_err_file" ]; then
+          err_txt=$(head -n 1 "$history_err_file" | tr '\n' ' ')
+          [ -n "$err_txt" ] && menu_lines+=("󰅖  Erro dunstctl: $err_txt")
+        fi
+        if [ -s "$jq_err_file" ]; then
+          jq_txt=$(head -n 1 "$jq_err_file" | tr '\n' ' ')
+          [ -n "$jq_txt" ] && menu_lines+=("󰅖  Erro jq: $jq_txt")
+        fi
+
+        if [ "$count_wait" -gt 0 ]; then
+          menu_lines+=("󰵅  Liberar $count_wait notificação(ões) pendente(s) na fila")
         fi
         menu_lines+=("󰂞  Enviar notificação de teste")
       fi
@@ -3127,16 +3156,23 @@ rec {
         continue
       elif [ "$chosen" = "$OPT_CLEAR" ]; then
         dunstctl history-clear
-        ${pkgs.dunst}/bin/dunstify -u low -t 1500 "Notificações" "Histórico limpo com sucesso." 2>/dev/null || true
         continue
-      elif [ "$chosen" = "$OPT_POP" ] || [ "$chosen" = "󰵅  Reexibir/liberar notificações pendentes" ]; then
+      elif [ "$chosen" = "$OPT_POP" ]; then
         dunstctl history-pop
         exit 0
+      elif [[ "$chosen" == "󰵅  Liberar "* ]]; then
+        dunstctl set-paused false 2>/dev/null || true
+        sleep 0.1
+        dunstctl close-all 2>/dev/null || true
+        sleep 0.1
+        continue
       elif [ "$chosen" = "󰂞  Enviar notificação de teste" ]; then
         ${pkgs.dunst}/bin/dunstify -u normal -a "Sistema" "Teste de Notificação" "O Dunst e o Rofi estão funcionando perfeitamente!" 2>/dev/null || true
-        sleep 0.5
+        sleep 0.3
+        dunstctl close-all 2>/dev/null || true
+        sleep 0.1
         continue
-      elif [ "$chosen" = "$OPT_SEP" ] || [[ "$chosen" == "󰂚  Nenhuma no histórico"* ]]; then
+      elif [ "$chosen" = "$OPT_SEP" ] || [[ "$chosen" == "󰂚  Nenhuma notificação"* ]] || [[ "$chosen" == "󰅖  Erro "* ]]; then
         continue
       else
         nid="''${item_to_id["$chosen"]:-}"
@@ -3144,18 +3180,22 @@ rec {
           napp="''${item_to_app["$chosen"]:-"Sistema"}"
           nsum="''${item_to_summary["$chosen"]:-"Sem título"}"
           nbody="''${item_to_body["$chosen"]:-""}"
-          ntime="''${item_to_time["$chosen"]:-""}"
 
           detail_text="Origem: $napp"
-          [ -n "$ntime" ] && detail_text="$detail_text | Horário: $ntime"
-          detail_text="$detail_text\nAssunto: $nsum"
-          [ -n "$nbody" ] && detail_text="$detail_text\n\nMensagem:\n$nbody"
+          detail_text="$detail_text
+Assunto: $nsum"
+          if [ -n "$nbody" ]; then
+            detail_text="$detail_text
+
+Mensagem:
+$nbody"
+          fi
 
           ACT_POP="󰵅  Reexibir esta notificação na tela (Popup)"
           ACT_BACK="󰌍  Voltar à lista"
           ACT_CLOSE="󰅖  Fechar"
 
-          detail_choice=$(printf "%b\n%s\n%s" "$ACT_POP" "$ACT_BACK" "$ACT_CLOSE" | rofi -dmenu -i \
+          detail_choice=$(printf "%s\n%s\n%s\n" "$ACT_POP" "$ACT_BACK" "$ACT_CLOSE" | rofi -dmenu -i \
             -mesg "$detail_text" \
             -p " [$napp] Detalhes " \
             -theme-str 'window { width: 750px; border-radius: 14px; } listview { lines: 3; }')
