@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: {
+{ pkgs, ... }: {
   engines = {
     "NixOS Wiki" = {
       urls = [
