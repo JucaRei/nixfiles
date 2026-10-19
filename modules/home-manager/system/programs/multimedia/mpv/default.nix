@@ -45,9 +45,15 @@ let
   # Tipos MIME multimídia suportados pelo MPV (vídeo, áudio e playlists)
   mediaMimeTypes = [
     # Vídeo - MPEG Transport Stream (.ts, .m2t)
+    # Nota: No freedesktop/shared-mime-info, a extensão .ts é historicamente associada
+    # a text/vnd.trolltech.linguist ("Message catalog" do Qt Linguist).
+    # Mapeamos também ao MPV para que esses arquivos de vídeo abram diretamente
+    # no player pelo gerenciador de arquivos sem disparar erro de permissão no mimeapps.list.
     "video/mp2t"
     "video/ts"
     "video/vnd.dlna.mpeg-tts"
+    "text/vnd.trolltech.linguist"
+    "application/x-linguist"
 
     # Vídeo - Matroska / MKV (.mkv)
     "video/x-matroska"
@@ -516,5 +522,24 @@ in
       "d ${config.home.homeDirectory}/.logs/mpv 0755 - - - -"
       "d ${config.home.homeDirectory}/.cache/mpv/script-opts 0755 - - - -"
     ];
+
+    # Sobrescreve a prioridade de .ts para que o shared-mime-info o identifique como vídeo MPEG-2 TS
+    # em vez de catálogo de mensagens do Qt Linguist (weight 60 > weight 50 padrão)
+    xdg.dataFile."mime/packages/override-ts.xml".text = ''
+      <?xml version="1.0" encoding="utf-8"?>
+      <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+        <mime-type type="video/mp2t">
+          <comment>MPEG-2 transport stream</comment>
+          <glob pattern="*.ts" weight="60"/>
+        </mime-type>
+      </mime-info>
+    '';
+
+    # Atualiza o banco de dados MIME do usuário caso update-mime-database esteja disponível
+    home.activation.updateMimeDatabase = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      if command -v update-mime-database >/dev/null 2>&1; then
+        $DRY_RUN_CMD update-mime-database "$HOME/.local/share/mime" >/dev/null 2>&1 || true
+      fi
+    '';
   };
 }
