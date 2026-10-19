@@ -562,7 +562,7 @@ in
               sleep 0.2
               if ! systemctl --user is-active --quiet xss-lock 2>/dev/null; then
                 pkill -x xss-lock 2>/dev/null || true
-                ${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- bspwm-lock --nofork &
+                ${pkgs.xss-lock}/bin/xss-lock --transfer-sleep-lock -- ${config.desktop.bspwm.lock.lockScript}/bin/bspwm-lock --nofork &
               fi
             ''}
 

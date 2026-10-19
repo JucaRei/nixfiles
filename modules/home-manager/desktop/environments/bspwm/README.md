@@ -225,6 +225,29 @@ Isso garante aceleração 3D por hardware completa no Alacritty, Picom e reprodu
   ```
 - **Identificar classe de janela para regras**:
   Execute `xprop WM_CLASS` no terminal e clique na janela desejada.
+- **Tela de bloqueio (`bspwm-lock`) — Senha incorreta / Erro de autenticação**:
+  Em sistemas standalone (Debian / Fedora), o binário do Nixpkgs (`i3lock-color`) necessita da regra de serviço do PAM em `/etc/pam.d/i3lock` e do helper setuid/sgid em `/run/wrappers/bin/unix_chkpwd` para ler `/etc/shadow`.
+  Execute uma única vez no host (com `sudo`):
+  ```bash
+  # 1. Cria o diretório de wrappers e o link para o helper da distro:
+  sudo mkdir -p /run/wrappers/bin
+  sudo ln -sf /usr/sbin/unix_chkpwd /run/wrappers/bin/unix_chkpwd
+
+  # 2. Torna persistente após reboots via systemd-tmpfiles:
+  sudo tee /etc/tmpfiles.d/nix-wrappers.conf << 'EOF'
+  d /run/wrappers 0755 root root -
+  d /run/wrappers/bin 0755 root root -
+  L+ /run/wrappers/bin/unix_chkpwd - - - - /usr/sbin/unix_chkpwd
+  EOF
+
+  # 3. Cria a regra PAM para o serviço i3lock:
+  sudo tee /etc/pam.d/i3lock << 'EOF'
+  #%PAM-1.0
+  auth        sufficient    pam_unix.so try_first_pass nullok
+  auth        required      pam_deny.so
+  account     required      pam_unix.so
+  EOF
+  ```
 
 ---
 

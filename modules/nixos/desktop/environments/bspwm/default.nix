@@ -20,6 +20,7 @@ in
     };
 
     security.polkit.enable = true;
+    security.pam.services.i3lock = { };
     programs.dconf.enable = true;
 
     environment = {

@@ -26,12 +26,24 @@ let
         pkgs.procps
         pkgs.gnugrep
         pkgs.xset
+        pkgs.libnotify
       ]
     }:$PATH"
 
     # Evita lançar múltiplas instâncias concorrentes caso a tela já esteja travada
     if pgrep -u "$UID" -x i3lock >/dev/null 2>&1 || pgrep -u "$UID" -x i3lock-color >/dev/null 2>&1; then
       exit 0
+    fi
+
+    # Validação de segurança PAM para evitar prender o usuário para fora sem conseguir destravar a sessão
+    if [ ! -f /etc/pam.d/i3lock ] || [ ! -x /run/wrappers/bin/unix_chkpwd ]; then
+      ERR="[bspwm-lock] ERRO: Pré-requisitos de autenticação PAM ausentes no host!\n"
+      [ ! -f /etc/pam.d/i3lock ] && ERR="''${ERR}  - Falta o arquivo de serviço: /etc/pam.d/i3lock\n"
+      [ ! -x /run/wrappers/bin/unix_chkpwd ] && ERR="''${ERR}  - Falta o helper setuid: /run/wrappers/bin/unix_chkpwd\n"
+      ERR="''${ERR}\nExecute os comandos de configuração do PAM e dos wrappers descritos no WIKI.md para poder desbloquear a tela com sua senha."
+      echo -e "$ERR" >&2
+      notify-send -u critical -i dialog-error "BSPWM Lock" "Falha PAM: configure /etc/pam.d/i3lock e /run/wrappers/bin/unix_chkpwd para poder desbloquear com sua senha." 2>/dev/null || true
+      exit 1
     fi
 
     # Configurações padrão compiladas declarativamente pelo Nix
@@ -115,7 +127,7 @@ EOF
     if [ -n "$WALLPAPER" ] && [ -f "$WALLPAPER" ]; then
       BG_OPTS+=("-i" "$WALLPAPER")
     elif [ "$BLUR" -gt 0 ] 2>/dev/null; then
-      BG_OPTS+=("--blur" "$BLUR")
+      BG_OPTS+=("--blur=$BLUR")
     else
       BG_OPTS+=("-c" "$COLOR_BASE")
     fi
@@ -163,8 +175,9 @@ EOF
       --wrong-font="$FONT" \
       --wrong-size=16 \
       --modif-color="''${COLOR_PEACH}ff" \
-      --modif-font="$FONT" \
-      --modif-size=14 \
+      --keylayout 1 \
+      --layout-font="$FONT" \
+      --layout-size=14 \
       --layout-color="''${COLOR_SUBTEXT}ff" \
       --ignore-empty-password \
       --show-failed-attempts \
@@ -182,6 +195,12 @@ in
       type = bool;
       default = bspwmCfg.enable;
       description = "Habilitar bloqueador de tela moderno, minimalista e customizável para BSPWM (i3lock-color + xss-lock)";
+    };
+
+    lockScript = mkOption {
+      type = types.package;
+      default = lockScript;
+      description = "Pacote derivado com o script executável bspwm-lock";
     };
 
     timeout = mkOption {
