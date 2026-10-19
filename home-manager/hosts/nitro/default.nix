@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -121,17 +122,19 @@ in
         flatpak = {
           enable = true;
           packages = [
-            (let
-              sha256 = "fbcf116fb905c556f4b8665cf4ad0f0a63339e6520d0d12dc5fba31357d8a887";
-            in
-            {
-              appId = "io.github.karem505.whatRust";
-              inherit sha256;
-              bundle = "${pkgs.fetchurl {
-                url = "https://github.com/karem505/whatRust/releases/download/v0.6.7/whatRust_x86_64.flatpak";
+            (
+              let
+                sha256 = "fbcf116fb905c556f4b8665cf4ad0f0a63339e6520d0d12dc5fba31357d8a887";
+              in
+              {
+                appId = "io.github.karem505.whatRust";
                 inherit sha256;
-              }}";
-            })
+                bundle = "${pkgs.fetchurl {
+                  url = "https://github.com/karem505/whatRust/releases/download/v0.6.7/whatRust_x86_64.flatpak";
+                  inherit sha256;
+                }}";
+              }
+            )
             # Adicione outros Flatpaks aqui quando quiser (ex: "com.spotify.Client")
           ];
         };
@@ -158,6 +161,8 @@ in
           '')
           scrcpy
           solaar
+
+          (nixGLWrapper mdhero)
         ]
         ++ lib.optionals config.system.programs.multimedia.mpv.enable [
           (pkgs.writeShellScriptBin "mpv-nvidia" ''

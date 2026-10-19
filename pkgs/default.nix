@@ -36,6 +36,7 @@ pkgs: {
   # Tools
   bsp-layout = pkgs.callPackage ./desktop/bspwm/bsp-layout { };
   heynote = pkgs.callPackage ./desktop/tools/heynote { };
+  mdhero = pkgs.callPackage ./desktop/tools/mdhero { };
   # advmvcp = pkgs.callPackage ./tools/advmvcp { };
   cloneit = pkgs.callPackage ./tools/cloneit { };
   image-colorizer = pkgs.python3Packages.callPackage ./tools/image-colorizer { };
