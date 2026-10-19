@@ -22,7 +22,10 @@
     # Profile-sync-daemon com suporte estendido (LibreWolf, Floorp, Brave, Edge e wrappers do Nix)
     profile-sync-daemon = prev.profile-sync-daemon.overrideAttrs (oldAttrs: {
       nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ final.makeWrapper ];
-      postInstall = (oldAttrs.postInstall or "") + ''
+      installPhase = (oldAttrs.installPhase or "") + ''
+        # Cria diretório de browsers caso não exista
+        mkdir -p $out/share/psd/browsers
+
         # Copia navegadores adicionais da pasta contrib se presentes
         if [ -d contrib ]; then
           cp -r contrib/* $out/share/psd/browsers/ 2>/dev/null || true
@@ -51,9 +54,9 @@ elif [[ -d "''${XDG_CONFIG_HOME:-$HOME/.config}/librewolf" ]]; then
     librewolf_dir="''${XDG_CONFIG_HOME:-$HOME/.config}/librewolf"
 fi
 
+index=0
+PSNAME="(librewolf|\.librewolf-wra.*)"
 if [[ -n "$librewolf_dir" && -f "$librewolf_dir/profiles.ini" ]]; then
-    index=0
-    PSNAME="(librewolf|\.librewolf-wra.*)"
     while read -r profileItem; do
         if [[ $(echo "$profileItem" | cut -c1) = "/" ]]; then
             DIRArr[$index]="$profileItem"
@@ -61,7 +64,15 @@ if [[ -n "$librewolf_dir" && -f "$librewolf_dir/profiles.ini" ]]; then
             DIRArr[$index]="$librewolf_dir/$profileItem"
         fi
         (( index=index+1 ))
-    done < <(grep -i '^path=' "$librewolf_dir/profiles.ini" 2>/dev/null | sed -e 's/^[Pp]ath=//')
+    done < <(grep -i '^path=' "$librewolf_dir/profiles.ini" 2>/dev/null | sed -e 's/^[Pp]ath=//' | tr -d '\r')
+fi
+if [[ ''${#DIRArr[@]} -eq 0 && -n "$librewolf_dir" ]]; then
+    for prof in "$librewolf_dir"/*.default*; do
+        if [[ -d "$prof" ]]; then
+            DIRArr[$index]="$prof"
+            (( index=index+1 ))
+        fi
+    done
 fi
 check_suffix=1
 EOF
@@ -75,9 +86,9 @@ elif [[ -d "''${XDG_CONFIG_HOME:-$HOME/.config}/floorp" ]]; then
     floorp_dir="''${XDG_CONFIG_HOME:-$HOME/.config}/floorp"
 fi
 
+index=0
+PSNAME="(floorp|\.floorp-wra.*)"
 if [[ -n "$floorp_dir" && -f "$floorp_dir/profiles.ini" ]]; then
-    index=0
-    PSNAME="(floorp|\.floorp-wra.*)"
     while read -r profileItem; do
         if [[ $(echo "$profileItem" | cut -c1) = "/" ]]; then
             DIRArr[$index]="$profileItem"
@@ -85,7 +96,15 @@ if [[ -n "$floorp_dir" && -f "$floorp_dir/profiles.ini" ]]; then
             DIRArr[$index]="$floorp_dir/$profileItem"
         fi
         (( index=index+1 ))
-    done < <(grep -i '^path=' "$floorp_dir/profiles.ini" 2>/dev/null | sed -e 's/^[Pp]ath=//')
+    done < <(grep -i '^path=' "$floorp_dir/profiles.ini" 2>/dev/null | sed -e 's/^[Pp]ath=//' | tr -d '\r')
+fi
+if [[ ''${#DIRArr[@]} -eq 0 && -n "$floorp_dir" ]]; then
+    for prof in "$floorp_dir"/*.default*; do
+        if [[ -d "$prof" ]]; then
+            DIRArr[$index]="$prof"
+            (( index=index+1 ))
+        fi
+    done
 fi
 check_suffix=1
 EOF
@@ -110,6 +129,10 @@ elif [[ -d "''${XDG_CONFIG_HOME:-$HOME/.config}/microsoft-edge-dev" ]]; then
 fi
 check_suffix=1
 EOF
+
+        # Patch no binário profile-sync-daemon para também buscar em ~/.config/psd/browsers
+        sed -i 's|if \[\[ ! -f "$SHAREDIR/browsers/$browser" \]\]; then|if [[ ! -f "$SHAREDIR/browsers/$browser" \&\& ! -f "$PSDCONFDIR/browsers/$browser" ]]; then|g' $out/bin/profile-sync-daemon 2>/dev/null || true
+        sed -i 's|\. "$SHAREDIR/browsers/$browser"|if [[ -f "$PSDCONFDIR/browsers/$browser" ]]; then . "$PSDCONFDIR/browsers/$browser"; else . "$SHAREDIR/browsers/$browser"; fi|g' $out/bin/profile-sync-daemon 2>/dev/null || true
       '';
       postFixup = (oldAttrs.postFixup or "") + ''
         wrapProgram $out/bin/profile-sync-daemon \
