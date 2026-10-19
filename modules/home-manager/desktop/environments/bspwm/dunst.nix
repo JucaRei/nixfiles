@@ -26,21 +26,49 @@ in
 
     # Recarregar ou iniciar automaticamente o Dunst ao rodar switch-home
     home.activation.reloadDunst = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      if command -v dunstctl >/dev/null 2>&1; then
-        $DRY_RUN_CMD dunstctl reload 2>/dev/null || true
-      elif [ -x "${pkgs.dunst}/bin/dunstctl" ]; then
-        $DRY_RUN_CMD ${pkgs.dunst}/bin/dunstctl reload 2>/dev/null || true
+      if [ -n "$DISPLAY" ]; then
+        systemctl --user import-environment DISPLAY XAUTHORITY 2>/dev/null || true
       fi
 
-      systemctl --user restart dunst 2>/dev/null || true
-      sleep 0.1
-      if ! systemctl --user is-active --quiet dunst 2>/dev/null && ! pgrep -x dunst >/dev/null 2>&1; then
-        if pgrep -x bspwm >/dev/null 2>&1; then
-          $DRY_RUN_CMD pkill -x dunst 2>/dev/null || true
-          $DRY_RUN_CMD ${pkgs.dunst}/bin/dunst &
+      pkill -x xfce4-notifyd 2>/dev/null || true
+      pkill -x notification-daemon 2>/dev/null || true
+
+      if command -v dunstctl >/dev/null 2>&1 && dunstctl ping >/dev/null 2>&1; then
+        $DRY_RUN_CMD dunstctl reload 2>/dev/null || true
+      elif [ -x "${pkgs.dunst}/bin/dunstctl" ] && ${pkgs.dunst}/bin/dunstctl ping >/dev/null 2>&1; then
+        $DRY_RUN_CMD ${pkgs.dunst}/bin/dunstctl reload 2>/dev/null || true
+      else
+        systemctl --user restart dunst 2>/dev/null || true
+        sleep 0.2
+        if ! ${pkgs.dunst}/bin/dunstctl ping >/dev/null 2>&1; then
+          if [ -n "$DISPLAY" ] || pgrep -x bspwm >/dev/null 2>&1; then
+            pkill -x dunst 2>/dev/null || true
+            $DRY_RUN_CMD nohup ${pkgs.dunst}/bin/dunst >/dev/null 2>&1 &
+          fi
         fi
       fi
     '';
+
+    # Garantir que o serviço systemd do Dunst passe as variáveis de display e reinicie em caso de falha
+    systemd.user.services.dunst = {
+      Unit = {
+        Description = "Dunst notification daemon";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        Restart = "always";
+        RestartSec = 2;
+        PassEnvironment = [
+          "DISPLAY"
+          "XAUTHORITY"
+          "WAYLAND_DISPLAY"
+          "XDG_CURRENT_DESKTOP"
+          "XDG_SESSION_TYPE"
+          "DBUS_SESSION_BUS_ADDRESS"
+        ];
+      };
+    };
 
     services.dunst = {
       enable = true;
@@ -52,8 +80,8 @@ in
           origin = "top-right";
           offset = "16x46";
           follow = "mouse";
-          width = "(260, 420)";
-          height = "(50, 220)";
+          width = 380;
+          height = 240;
           progress_bar = true;
           progress_bar_height = 8;
           progress_bar_frame_width = 0;
