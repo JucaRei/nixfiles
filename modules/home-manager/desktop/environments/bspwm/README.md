@@ -248,6 +248,20 @@ Isso garante aceleração 3D por hardware completa no Alacritty, Picom e reprodu
   account     required      pam_unix.so
   EOF
   ```
+- **XDG Desktop Portal & Flatpaks — Erro ao abrir links externos ("Couldn't open the link" / "No browser could be started")**:
+  Em sistemas standalone (Debian / Fedora), o D-Bus de sessão e o `systemd --user` do sistema operacional hospedeiro necessitam das unidades de serviço do `xdg-desktop-portal` instaladas nativamente para que aplicativos Flatpak e WebViews possam delegar links ao navegador padrão via `org.freedesktop.portal.OpenURI`:
+  ```bash
+  # Debian / Ubuntu:
+  sudo apt update && sudo apt install -y xdg-desktop-portal xdg-desktop-portal-gtk
+
+  # Fedora:
+  sudo dnf install -y xdg-desktop-portal xdg-desktop-portal-gtk
+  ```
+  Após a instalação dos pacotes, recarregue os serviços:
+  ```bash
+  systemctl --user daemon-reload
+  systemctl --user restart xdg-desktop-portal xdg-desktop-portal-gtk
+  ```
 
 ---
 
