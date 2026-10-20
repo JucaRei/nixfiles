@@ -142,6 +142,25 @@ in
 
     xdg.enable = true;
 
+    # Configuração dos Portals XDG para o BSPWM (necessário para xdg-desktop-portal 1.18+ e Flatpaks abrirem links/arquivos)
+    xdg.configFile = {
+      "xdg-desktop-portal/bspwm-portals.conf".text = ''
+        [preferred]
+        default=gtk
+        org.freedesktop.impl.portal.FileChooser=gtk
+        org.freedesktop.impl.portal.AppChooser=gtk
+        org.freedesktop.impl.portal.OpenURI=gtk
+      '';
+
+      "xdg-desktop-portal/portals.conf".text = ''
+        [preferred]
+        default=gtk
+        org.freedesktop.impl.portal.FileChooser=gtk
+        org.freedesktop.impl.portal.AppChooser=gtk
+        org.freedesktop.impl.portal.OpenURI=gtk
+      '';
+    };
+
     # Sessão para LightDM em sistemas não-NixOS
     home.file = mkIf (!isNixOS) {
       ".local/share/xsessions/bspwm.desktop".text = ''
@@ -161,6 +180,14 @@ in
         if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
           . "$HOME/.nix-profile/etc/profile.d/nix.sh"
         fi
+        if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+          . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        fi
+
+        export XDG_CURRENT_DESKTOP=bspwm
+        export XDG_SESSION_DESKTOP=bspwm
+        export XDG_SESSION_TYPE=x11
+
         exec "$HOME/.xsession"
       '';
       ".local/bin/start-bspwm".executable = true;

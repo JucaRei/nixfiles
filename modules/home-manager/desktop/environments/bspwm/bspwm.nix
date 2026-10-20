@@ -507,9 +507,19 @@ in
             pkill -x sxhkd || true
             (cd "$HOME" && ${pkgs.sxhkd}/bin/sxhkd) &
 
-            # Importar variáveis de ambiente para serviços do usuário (incluindo método de entrada Fcitx5)
-            systemctl --user import-environment DISPLAY XAUTHORITY LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE
+            # Propagação do ambiente gráfico para D-Bus e Systemd do usuário (essencial para XDG Portals e Flatpaks)
+            export XDG_CURRENT_DESKTOP="bspwm"
+            export XDG_SESSION_DESKTOP="bspwm"
+            export XDG_SESSION_TYPE="x11"
+
+            if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+              dbus-update-activation-environment --systemd DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE PATH XDG_DATA_DIRS LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE
+            fi
+            systemctl --user import-environment DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE PATH XDG_DATA_DIRS LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE 2>/dev/null || true
             systemctl --user start graphical-session.target 2>/dev/null || true
+
+            # Reiniciar Portals para garantir sincronia com as variáveis gráficas recém-importadas
+            systemctl --user restart xdg-desktop-portal.service xdg-desktop-portal-gtk.service 2>/dev/null || true
 
             # Iniciar daemon de método de entrada (Fcitx5) se disponível
             if command -v fcitx5 >/dev/null 2>&1; then
