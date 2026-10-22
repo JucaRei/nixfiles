@@ -6,7 +6,7 @@
 }:
 let
   inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool attrs;
+  inherit (lib.types) attrsOf bool str;
   cfg = config.desktop.bspwm.sxhkd;
   fmCmd = config.system.programs.file-manager.activeCommand or "file-manager";
   fmName = config.system.programs.file-manager.activeName or "Gerenciador de Arquivos";
@@ -256,7 +256,7 @@ let
         "Print" = "${screenshotScript} full";
         "shift + Print" = "${screenshotScript} area";
         "ctrl + Print" = "${screenshotScript} window";
-        "super + shift + s" = "${screenshotScript} area";
+        "${mod} + shift + s" = "${screenshotScript} area";
         "XF86SelectiveScreenshot" = "${screenshotScript} area";
       }
     else
@@ -269,17 +269,16 @@ let
         # Captura da janela ativa
         "ctrl + Print" = "${screenshotScript} window";
         # Temporizador de 5 segundos
-        "alt + Print" = "${screenshotScript} in5";
+        "${mod} + shift + Print" = "${screenshotScript} in5";
         # Menu completo interativo no Rofi
-        "super + Print" = "${screenshotScript} menu";
+        "${mod} + Print" = "${screenshotScript} menu";
 
-        # Em teclados de notebook / Linux X11, Alt + PrtSc gera o keysym Sys_Req
+        # Em teclados de notebook / Linux X11, PrtSc pode gerar Sys_Req
         "Sys_Req" = "${screenshotScript} full";
-        "alt + Sys_Req" = "${screenshotScript} area";
+        "shift + Sys_Req" = "${screenshotScript} area";
 
-        # Windows Snipping Tool / GNOME Area Screenshot
-        "super + shift + s" = "${screenshotScript} area";
-        "alt + shift + s" = "${screenshotScript} area";
+        # Recorte de área com a tecla modificadora
+        "${mod} + shift + s" = "${screenshotScript} area";
         "XF86SelectiveScreenshot" = "${screenshotScript} area";
       };
 
@@ -304,10 +303,8 @@ let
     else
       "super";
 
-  altMod = if mod == "alt" then "super" else "alt";
   ctrlMod = if mod == "ctrl" then "super" else "ctrl";
   modDisplayName = normMod; # "Super", "Alt", "Ctrl"
-  altDisplayName = if mod == "alt" then "Super" else "Alt";
 
   # --- Script de Notificação de Volume Suave (Estilo gh0stzk / Catppuccin) ---
   volumeOsd = pkgs.writeShellScript "volume-osd" ''
@@ -618,14 +615,12 @@ let
     󰌌  ${modDisplayName} + E / ${modDisplayName} + Shift + E ➜  Gerenciador de Arquivos (''${fmName})
     󰌌  ${modDisplayName} + , / ${modDisplayName} + C / Botão Dir. ➜ Painel Quick Settings / Preferências
     󰌌  ${modDisplayName} + / ou ${modDisplayName} + F1       ➜  Manual e Guia de Atalhos (Cheat-Sheet)
-    󰌌  ${altDisplayName} + Tab / ${modDisplayName} + W         ➜  Alternador de Janelas Abertas
+    󰌌  ${modDisplayName} + W                     ➜  Alternador de Janelas Abertas
     󰌌  ${modDisplayName} + U                     ➜  Terminal Flutuante Rápido (Scratchpad)
     󰌌  ${modDisplayName} + Q / ${modDisplayName} + Shift + Q ➜  Fechar / Encerrar Janela
-    󰌌  ${modDisplayName} + ${
-      if mod == "alt" then "Super" else "Alt"
-    } + Esc             ➜  Forçar Fechamento de Janela Travada
-    󰌌  Alt + A                                 ➜  Alternar Tela Cheia (Fullscreen)
-    󰌌  ${modDisplayName} + F                     ➜  Alternar Janela Flutuante (Floating/Tiling)
+    󰌌  ${modDisplayName} + Shift + Escape        ➜  Forçar Fechamento de Janela Travada
+    󰌌  ${modDisplayName} + A                     ➜  Alternar Tela Cheia (Fullscreen)
+    󰌌  ${modDisplayName} + F / ${modDisplayName} + S ➜  Alternar Janela Flutuante (Floating/Tiling)
     󰌌  ${modDisplayName} + Shift + F / Shift + T ➜  Alternar Janela Pseudo-Tiled (Grade com Tamanho Natural)
     󰌌  ${modDisplayName} + M                     ➜  Modo Monocle (Foco em Janela Única)
     󰌌  ${modDisplayName} + Y / ${modDisplayName} + Minus     ➜  Esconder / Minimizar Janela Ativa
@@ -638,22 +633,19 @@ let
     󰌌  ${modDisplayName} + Ctrl + L               ➜  Menu Interativo de Layouts (bsp-layout)
     󰌌  ${modDisplayName} + {H,J,K,L} ou Setas    ➜  Navegar Foco Entre Janelas (Vim/Setas)
     󰌌  ${modDisplayName} + Shift + {H,J,K,L}     ➜  Mover / Trocar Posição da Janela
-    󰌌  ${modDisplayName} + ${
-      if mod == "alt" then "Super" else "Alt"
-    } + {H,J,K,L}/Setas ➜  Redimensionar Tamanho da Janela
+    󰌌  ${modDisplayName} + Ctrl + Setas          ➜  Redimensionar Tamanho da Janela
     󰌌  ${modDisplayName} + Botão Esquerdo        ➜  Mover Janela Flutuante com o Mouse
     󰌌  ${modDisplayName} + Botão Direito         ➜  Redimensionar Janela com o Mouse
     󰌌  ${modDisplayName} + 1..9, 0               ➜  Ir para Área de Trabalho (Workspace) 1 a 10
     󰌌  ${modDisplayName} + Shift + 1..9, 0       ➜  Enviar Janela para Workspace 1 a 10
-    󰌌  Print / ${modDisplayName} + Shift + P     ➜  Menu de Captura de Tela (ScreenShoTer)
+    󰌌  ${modDisplayName} + Ctrl + 1..9, 0        ➜  Enviar Janela sem Seguir (Segundo Plano)
+    󰌌  Print / ${modDisplayName} + Print         ➜  Captura Imediata / Menu ScreenShoTer
     󰌌  Shift + Print / ${modDisplayName} + Shift + S ➜  Recorte de Área Interativo
     󰌌  Ctrl + Print                              ➜  Capturar Janela Ativa
-    󰌌  Alt + Print                               ➜  Captura com Temporizador (5s)
+    󰌌  ${modDisplayName} + Shift + Print         ➜  Captura com Temporizador (5s)
     󰌌  ${modDisplayName} + P                     ➜  Conta-gotas de Cor (Colorpicker)
     󰌌  ${modDisplayName} + Shift + R             ➜  Recarregar BSPWM e Polybar
-    󰌌  ${modDisplayName} + ${
-      if mod == "ctrl" then "Super" else "Ctrl"
-    } + Q              ➜  Bloquear Sessão do Usuário
+    󰌌  ${modDisplayName} + Shift + L / ${modDisplayName} + Ctrl + Q ➜ Bloquear Sessão do Usuário
     󰌌  Teclas de Volume / Brilho / Mídia ➜  Controle com Feedback Visual OSD"
 
           CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
@@ -891,9 +883,15 @@ in
     };
 
     keybindings = mkOption {
-      type = attrs;
+      type = attrsOf str;
       default = { };
-      description = "sxhkd keybindings";
+      description = "sxhkd keybindings adicionais ou customizadas.";
+    };
+
+    extraKeybindings = mkOption {
+      type = attrsOf str;
+      default = { };
+      description = "Atalhos adicionais ou personalizados do SXHKD definidos no host.";
     };
 
     screenshotProfile = mkOption {
@@ -932,24 +930,19 @@ in
       enable = true;
       package = pkgs.sxhkd;
       keybindings =
-        cfg.keybindings
-        // {
+        {
           # --- Clique no Desktop / Control Center (Estilo Hyprland / SwayNC) ---
           # Botão Direito no Desktop (Apenas na Root Window sem janela ou menu de app sob o cursor)
           "~button3" = "${desktopRightClickScript}";
           "${mod} + button3" = "${quickSettings}";
           "${mod} + comma" = "${quickSettings}"; # Atalho universal de Preferências
           "${mod} + c" = "${quickSettings}"; # Control Center
-          "${altMod} + comma" = "${quickSettings}";
-          "${altMod} + c" = "${quickSettings}";
           "${mod} + slash" = "${quickSettings} --manual"; # Manual & Cheat-Sheet de Atalhos
           "${mod} + F1" = "${quickSettings} --manual"; # F1 (Ajuda do Sistema)
 
           # --- Captura de Tela & Conta-gotas (Estilo gh0stzk) ---
           "${mod} + p" = "${colorPickerScript}"; # Conta-gotas de cor (Colorpicker)
-          "${altMod} + p" = "${colorPickerScript}";
           "${mod} + shift + p" = "${screenshotScript} menu"; # Menu Rofi ScreenShoTer
-          "${altMod} + shift + p" = "${screenshotScript} menu";
 
           # --- Aplicativos & Launchers (macOS Style) ---
           # Spotlight (Cmd + Space) e Rofi Drun
@@ -960,9 +953,8 @@ in
           # Navegador Web Padrão (Cmd + B)
           "${mod} + b" = browserLaunchCmd;
 
-          # Menu Interativo de Bluetooth (Cmd + Shift + B / Alt + Shift + B)
+          # Menu Interativo de Bluetooth
           "${mod} + shift + b" = "rofi-bluetooth";
-          "${altMod} + shift + b" = "rofi-bluetooth";
 
           # Terminal (Cmd + Return, Cmd + T) - sempre em $HOME
           "${mod} + Return" = termCmd;
@@ -973,27 +965,23 @@ in
           "${mod} + e" = fmCmd;
           "${mod} + shift + e" = fmCmd;
 
-          # Alternador de Janelas (Cmd + Tab / Cmd + W)
-          "${altMod} + Tab" = "${pkgs.rofi}/bin/rofi -show window";
+          # Alternador de Janelas (Cmd + W)
           "${mod} + w" = "${pkgs.rofi}/bin/rofi -show window";
 
-          # Terminal Scratchpad (Cmd + U / Super + U / Alt + U)
+          # Terminal Scratchpad (Cmd + U)
           "${mod} + u" = "${scratchpadScript}";
-          "${altMod} + u" = "${scratchpadScript}";
 
-          # --- Janelas (macOS Style: Cmd + Q / Cmd + Opt + Esc) ---
+          # --- Janelas (Fechar / Forçar Encerramento) ---
           "${mod} + q" = "bspc node -c";
-          "${mod} + ${altMod} + Escape" = "bspc node -k";
           "${mod} + shift + q" = "bspc node -k";
+          "${mod} + shift + Escape" = "bspc node -k";
 
           # --- Estados de Janela (Alternar Flutuante / Tela Cheia / Pseudo-Tiled / Monocle) ---
           "${mod} + f" = "bspc node -t '~floating'";
           "${mod} + s" = "bspc node -t '~floating'";
-          "alt + a" = "bspc node -t '~fullscreen'";
+          "${mod} + a" = "bspc node -t '~fullscreen'";
           "${mod} + shift + f" = "${pseudoTileScript}";
-          "${altMod} + shift + f" = "${pseudoTileScript}";
           "${mod} + shift + t" = "${pseudoTileScript}";
-          "${altMod} + shift + t" = "${pseudoTileScript}";
           "${mod} + m" = "bspc desktop -l next";
 
           # --- Camadas e Sobreposição (Trazer para frente / Enviar para trás) ---
@@ -1013,13 +1001,10 @@ in
           # Alternar Mostrar Desktop (Minimizar todas / Restaurar todas no workspace ativo)
           "${mod} + shift + m" = "${toggleDesktopScript}";
 
-          # --- Bloqueio & Sessão (Atalhos Universais: macOS, Linux e Windows) ---
+          # --- Bloqueio & Sessão ---
           "${mod} + ${ctrlMod} + q" = "bspwm-lock || loginctl lock-session";
           "${mod} + shift + x" = "bspwm-lock || loginctl lock-session";
           "${mod} + shift + l" = "bspwm-lock || loginctl lock-session";
-          "ctrl + alt + l" = "bspwm-lock || loginctl lock-session";
-          "super + ctrl + l" = "bspwm-lock || loginctl lock-session";
-          "super + shift + l" = "bspwm-lock || loginctl lock-session";
           "XF86ScreenSaver" = "bspwm-lock || loginctl lock-session";
 
           # --- Foco e Movimento em Janelas (Vim + Setas) ---
@@ -1033,7 +1018,6 @@ in
           "${mod} + shift + Tab" = "bspc node -f prev.local.!hidden.window || bspc node -f prev.local.window";
           "${mod} + grave" = "bspc node -f next.local.!hidden.window || bspc node -f next.local.window";
           "${mod} + shift + grave" = "bspc node -f prev.local.!hidden.window || bspc node -f prev.local.window";
-          "${altMod} + grave" = "bspc node -f last.local.!hidden.window";
           "${mod} + backslash" = "bspc node -f last.local.!hidden.window";
 
           # Alternar e trocar posição (swap) sequencial entre janelas
@@ -1066,21 +1050,19 @@ in
           "${mod} + shift + bracketright" = "bspc node -m next --follow";
 
           # --- Áreas de Trabalho (Workspaces 1-10, onde 0 = workspace 0/10) ---
-          # Focar área de trabalho (compatível tanto com Super quanto com Alt)
+          # Focar área de trabalho
           "${mod} + {1-9,0}" = "${desktopFocusScript} {1-9,0}";
-          "${altMod} + {1-9,0}" = "${desktopFocusScript} {1-9,0}";
 
-          # Enviar janela para área de trabalho com foco imediato (--follow) (compatível com Super e Alt)
+          # Enviar janela para área de trabalho com foco imediato (--follow)
           "${mod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
-          "${altMod} + shift + {1-9,0}" = "${desktopNodeScript} {1-9,0} true";
 
-          # Enviar janela para área de trabalho em segundo plano (sem follow) (compatível com Super e Alt)
+          # Enviar janela para área de trabalho em segundo plano (sem follow)
           "${mod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
-          "${altMod} + ctrl + {1-9,0}" = "${desktopNodeScript} {1-9,0} false";
 
-          # --- Redimensionar Janelas (Super + Alt + Setas/Vim) ---
-          "${mod} + ${altMod} + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
-          "${mod} + ${altMod} + {Left,Down,Up,Right}" =
+          # --- Redimensionar Janelas (Setas / Vim) ---
+          "${mod} + ctrl + {Left,Down,Up,Right}" =
+            "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+          "${mod} + ctrl + shift + {h,j,k,l}" =
             "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
 
           # --- Reiniciar / Recarregar BSPWM, SXHKD e Polybar ---
@@ -1117,22 +1099,19 @@ in
         }
         // screenshotBindings
         // lib.optionalAttrs (config.desktop.bspwm.polybar.enable && config.desktop.bspwm.polybar.tray.enable) {
-          # Bandeja do Sistema Stalonetray (Cmd + I / Alt + I / Cmd + Shift + I)
+          # Bandeja do Sistema Stalonetray
           "${mod} + i" = "stalonetray-toggle";
-          "${altMod} + i" = "stalonetray-toggle";
           "${mod} + shift + i" = "stalonetray-toggle";
         }
-        // lib.optionalAttrs (mod != "super") {
-          # Atalhos com Super garantidos mesmo quando mod != "super"
-          "super + l" = "bspwm-lock || loginctl lock-session"; # Bloqueio de tela clássico Win+L
-          "super + F4" = "${kbdBrightnessOsd} up";
-          "super + F3" = "${kbdBrightnessOsd} down";
-          "super + shift + F4" = "${kbdBrightnessOsd} toggle";
-          "super + shift + F3" = "${kbdBrightnessOsd} toggle";
-          "super + F6" = "${kbdBrightnessOsd} up";
-          "super + F5" = "${kbdBrightnessOsd} down";
-          "super + shift + F5" = "${kbdBrightnessOsd} toggle";
-        };
+        // lib.optionalAttrs (mod == "super") {
+          # Atalhos adicionais de redimensionamento tradicionais para Super
+          "super + alt + {Left,Down,Up,Right}" =
+            "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+          "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+        }
+        // (config.desktop.bspwm.extraKeybindings or { })
+        // cfg.keybindings
+        // cfg.extraKeybindings;
     };
 
     # Utilitários de linha de comando para uso interativo e scripts

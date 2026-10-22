@@ -53,10 +53,16 @@ in
         tapping = true;
       };
 
-      bspwm.polybar = {
-        battery = "BAT1";
-        adapter = "ACAD";
-        style = lib.mkForce "pills";
+      bspwm = {
+        polybar = {
+          battery = "BAT1";
+          adapter = "ACAD";
+          style = lib.mkForce "pills";
+        };
+
+        extraKeybindings = {
+          "ctrl + shift + t" = "bspc node -t '~floating'";
+        };
       };
 
     };
@@ -98,6 +104,7 @@ in
             defaultNvidia = true; # Abre com NVIDIA dGPU por padrão no .desktop (com ação secundária para Intel)
             # useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
             installPackage = true;
+            floating = false;
           };
         };
 
@@ -135,6 +142,7 @@ in
                 }}";
               }
             )
+            "com.mikrotik.WinBox"
             # Adicione outros Flatpaks aqui quando quiser (ex: "com.spotify.Client")
           ];
         };

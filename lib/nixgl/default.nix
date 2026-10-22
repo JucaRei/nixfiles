@@ -67,7 +67,21 @@ let
       pkg
     else
       wrapBinaries pkg
-      // lib.optionalAttrs (pkg ? override) { override = args: wrapper (pkg.override args); }
+      // lib.optionalAttrs (pkg ? override) {
+        override = lib.setFunctionArgs
+          (
+            args:
+            let
+              cleanArgs =
+                if lib.isFunction args then
+                  old: builtins.removeAttrs (args old) [ "appDataDir" ]
+                else
+                  builtins.removeAttrs args [ "appDataDir" ];
+            in
+            wrapper (pkg.override cleanArgs)
+          )
+          (lib.functionArgs pkg.override // { appDataDir = true; });
+      }
       // lib.optionalAttrs (pkg ? overrideAttrs) { overrideAttrs = f: wrapper (pkg.overrideAttrs f); };
 in
 {

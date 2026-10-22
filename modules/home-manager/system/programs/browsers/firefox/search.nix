@@ -183,7 +183,7 @@
       definedAliases = [ "@gh" ];
     };
 
-    "Google" = {
+    "google" = {
       urls = [
         {
           template = "https://www.google.com/search";
@@ -201,22 +201,19 @@
         "@go"
         "@g"
       ];
+      metaData.alias = "@go";
     };
-
-    # Metadados adicionais para compatibilidade caso o motor já venha embutido (ex: Firefox padrão)
-    "google".metaData.alias = "@go";
 
     "wikipedia".metaData.alias = "@wiki";
   };
 
   order = [
-    "Google"
     "google"
     "bing"
     "Brave"
     "ddg"
   ];
 
-  default = "Google";
+  default = "google";
   force = true;
 }

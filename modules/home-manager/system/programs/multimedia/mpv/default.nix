@@ -348,6 +348,15 @@ in
         no menu de contexto para abrir com a iGPU Intel.
       '';
     };
+
+    floating = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Se o MPV deve abrir em modo flutuante (floating) em Window Managers (BSPWM, Hyprland, Sway, i3).
+        Defina como false para abrir diretamente em modo tiled na grade.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -395,7 +404,7 @@ in
         ${hwPresetSection}
 
         # ── Ajuste de janela flutuante para Window Managers (tiling) ───────────
-        ${optionalString isWM ''
+        ${optionalString (isWM && cfg.floating) ''
           # Como ${
             if desktop != null then desktop else "WM"
           } é uma Window Manager, assegura dimensões e centralização de janela flutuante
@@ -445,9 +454,9 @@ in
 
     # ─────────────────────────────────────────────────────────────────────────
     # Regras de janela para Window Managers (quando não for Desktop completo)
-    # Garante que o MPV abra sempre em modo flutuante (floating) e centralizado.
+    # Garante que o MPV abra em modo flutuante apenas quando cfg.floating = true.
     # ─────────────────────────────────────────────────────────────────────────
-    xsession.windowManager.bspwm.rules = mkIf (isWM && desktop == "bspwm") {
+    xsession.windowManager.bspwm.rules = mkIf (isWM && desktop == "bspwm" && cfg.floating) {
       "mpv" = {
         state = "floating";
         center = true;
@@ -458,17 +467,17 @@ in
       };
     };
 
-    wayland.windowManager.hyprland.settings.windowrule = mkIf (isWM && desktop == "hyprland") [
+    wayland.windowManager.hyprland.settings.windowrule = mkIf (isWM && desktop == "hyprland" && cfg.floating) [
       "match:class ^(mpv)$, float 1"
       "match:class ^(mpv)$, center 1"
     ];
 
-    wayland.windowManager.sway.config.floating.criteria = mkIf (isWM && desktop == "sway") [
+    wayland.windowManager.sway.config.floating.criteria = mkIf (isWM && desktop == "sway" && cfg.floating) [
       { app_id = "mpv"; }
       { class = "mpv"; }
     ];
 
-    xsession.windowManager.i3.config.floating.criteria = mkIf (isWM && desktop == "i3") [
+    xsession.windowManager.i3.config.floating.criteria = mkIf (isWM && desktop == "i3" && cfg.floating) [
       { class = "mpv"; }
       { instance = "mpv"; }
     ];

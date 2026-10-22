@@ -102,7 +102,26 @@ bspc monitor DP-1 -d 1 2 3 4
 bspc monitor HDMI-1 -d 5 6 7 8
 ```
 
-### 2. Regras de Janelas e Diálogos Flutuantes Dinâmicos
+### 2. Tecla Modificadora e Atalhos Extras no Host
+O BSPWM e o SXHKD respeitam estritamente a tecla modificadora definida no host (`desktop.modifierKey` ou `desktop.bspwm.modifierKey`), sem vazar ou duplicar atalhos com outros modificadores (por exemplo, quando configurado como `"Alt"`, atalhos de Super não são aplicados aos desktops, screenshots ou janelas).
+
+Para adicionar atalhos extras específicos ou usar modificadores secundários no seu host (como `home-manager/hosts/<host>/default.nix`):
+
+```nix
+desktop = {
+  modifierKey = "Alt"; # Define Alt como modificador principal
+
+  bspwm.extraKeybindings = {
+    # Atalho específico fora da tecla modificadora principal:
+    "super + l" = "bspwm-lock || loginctl lock-session";
+    "super + space" = "rofi -show drun";
+  };
+};
+```
+
+Também é possível declarar via `desktop.bspwm.sxhkd.extraKeybindings` ou sobrescrever atalhos existentes com `desktop.bspwm.sxhkd.keybindings`.
+
+### 3. Regras de Janelas e Diálogos Flutuantes Dinâmicos
 Regras estáticas são declaradas no `bspwm.nix`:
 ```nix
 bspc rule -a Thunar state=floating center=on rectangle=900x600+0+0

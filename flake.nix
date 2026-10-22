@@ -131,7 +131,7 @@
         system:
         let
           pkgs = import nixpkgs {
-            inherit system;
+            localSystem = system;
             config.allowUnfree = true;
           };
         in
@@ -146,7 +146,7 @@
         system:
         let
           pkgsWithOverlays = import nixpkgs {
-            inherit system;
+            localSystem = system;
             config.allowUnfree = true;
             overlays = builtins.attrValues self.overlays;
           };
@@ -155,7 +155,10 @@
       );
 
       # Formatter for .nix files ('nix fmt')
-      formatter = helper.forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+      formatter = helper.forAllSystems (
+        system:
+        nixpkgs.legacyPackages.${system}.nixfmt-rfc-style or nixpkgs.legacyPackages.${system}.nixfmt
+      );
 
       # Automated checks run via 'nix flake check'
       checks = helper.mkChecks { inherit self inputs; };

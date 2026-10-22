@@ -62,7 +62,7 @@ let
   mkPkgs =
     { platform, nixGLType }:
     import inputs.nixpkgs {
-      system = platform;
+      localSystem = platform;
       config = {
         allowUnfree = true;
         allowInsecure = true;

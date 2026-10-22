@@ -174,6 +174,12 @@ in
       description = "Tecla modificadora principal do BSPWM (ex: 'Super', 'Alt', 'Ctrl').";
     };
 
+    extraKeybindings = mkOption {
+      type = lib.types.attrsOf str;
+      default = { };
+      description = "Atalhos adicionais ou personalizados do SXHKD definidos no host.";
+    };
+
     rules = mkOption {
       type = listOf str;
       default = [ ];

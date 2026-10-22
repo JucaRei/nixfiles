@@ -5,7 +5,13 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption optionalString;
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    optionalString
+    ;
   cfg = config.system.programs.file-manager.thunar;
 
   thunar-with-plugins = pkgs.thunar.override {
@@ -47,10 +53,73 @@ in
   options = {
     system.programs.file-manager.thunar = {
       enable = mkEnableOption "Enable Thunar file manager with plugins, custom actions (uca.xml), and thumbnails support.";
+
+      rememberViewSettings = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Relembrar configurações de exibição específicas para cada pasta no Thunar (misc-directory-specific-settings).";
+      };
+
+      restoreTabs = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Restaurar abas abertas anteriormente ao iniciar o Thunar (last-restore-tabs).";
+      };
     };
   };
 
   config = mkIf cfg.enable {
+    # Configuração de preferências de visualização por pasta e restauração de abas no Thunar.
+    # O arquivo ~/.config/xfce4/xfconf/xfce-perchannel-xml/thunar.xml é o backend nativo do Xfconf.
+    # Evita o módulo interno xfconf.settings do Home Manager (load-xfconf) que falha com
+    # 'Failed to set property' em distros standalone onde o xfconfd não está ativo durante a ativação.
+    home.activation.configureThunarSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
+import os
+import xml.etree.ElementTree as ET
+
+xml_dir = os.path.expanduser("~/.config/xfce4/xfconf/xfce-perchannel-xml")
+xml_file = os.path.join(xml_dir, "thunar.xml")
+os.makedirs(xml_dir, exist_ok=True)
+
+tree = None
+root = None
+
+if os.path.isfile(xml_file):
+    try:
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+    except Exception:
+        root = None
+
+if root is None or root.tag != "channel":
+    root = ET.Element("channel", attrib={"name": "thunar", "version": "1.0"})
+    tree = ET.ElementTree(root)
+
+settings = {
+    "misc-directory-specific-settings": "${if cfg.rememberViewSettings then "true" else "false"}",
+    "last-restore-tabs": "${if cfg.restoreTabs then "true" else "false"}",
+}
+
+for name, val in settings.items():
+    prop = root.find(f"./property[@name=\"{name}\"]")
+    if prop is None:
+        ET.SubElement(root, "property", attrib={"name": name, "type": "bool", "value": val})
+    else:
+        prop.set("type", "bool")
+        prop.set("value", val)
+
+if hasattr(ET, "indent"):
+    ET.indent(tree, space="  ", level=0)
+
+tree.write(xml_file, encoding="UTF-8", xml_declaration=True)
+'
+      if command -v ${pkgs.xfconf}/bin/xfconf-query >/dev/null 2>&1; then
+        $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /misc-directory-specific-settings -n -t bool -s ${if cfg.rememberViewSettings then "true" else "false"} 2>/dev/null || true
+        $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${if cfg.restoreTabs then "true" else "false"} 2>/dev/null || true
+      fi
+    '';
+
     home.sessionVariables = {
       GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
     };
