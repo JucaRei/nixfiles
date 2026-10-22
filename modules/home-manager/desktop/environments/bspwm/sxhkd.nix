@@ -762,7 +762,15 @@ let
             "$OPT_SOUND") ${pkgs.pavucontrol}/bin/pavucontrol & ;;
             "$OPT_NET") ${pkgs.networkmanagerapplet}/bin/nm-connection-editor & ;;
             "$OPT_THEME") ${pkgs.lxappearance}/bin/lxappearance & ;;
-            "$OPT_WALL") ${pkgs.nitrogen}/bin/nitrogen || ${pkgs.feh}/bin/feh & ;;
+            "$OPT_WALL")
+              if command -v set-wallpaper >/dev/null 2>&1; then
+                set-wallpaper --random &
+              elif [ -x "${pkgs.nitrogen}/bin/nitrogen" ]; then
+                ${pkgs.nitrogen}/bin/nitrogen &
+              else
+                ${pkgs.feh}/bin/feh &
+              fi
+              ;;
             "$OPT_BROWSER")
               if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi
               ;;

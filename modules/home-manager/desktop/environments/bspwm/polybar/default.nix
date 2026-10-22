@@ -157,7 +157,7 @@ in
             line-size = 2;
             line-color = colors.blue;
 
-            border-size = 1;
+            border-size = 0;
             border-color = colors.surface0;
             padding-left = 2;
             padding-right = 2;
@@ -223,10 +223,10 @@ in
             background = colors.dark;
             foreground = colors.text-alt;
 
-            line-size = 2;
+            line-size = 0;
             line-color = colors.gray;
 
-            border-size = 1;
+            border-size = 0;
             border-color = colors.pill;
             padding-left = 2;
             padding-right = 2;
@@ -292,8 +292,7 @@ in
                 ws-icon-default = "%name%";
 
                 label-focused = "%{T3}%icon%%{T-}";
-                label-focused-foreground = colors.text-alt;
-                label-focused-underline = colors.gray;
+                label-focused-foreground = colors.text;
                 label-focused-background = colors.pill;
                 label-focused-padding = 1;
                 label-focused-margin = 0;

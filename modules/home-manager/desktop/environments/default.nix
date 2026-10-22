@@ -19,6 +19,7 @@ in
     ../display-servers
     ../monitors
     ../theme
+    ../wallpaper
   ];
 
   options.desktop = {

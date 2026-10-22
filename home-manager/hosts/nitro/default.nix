@@ -46,6 +46,13 @@ in
         accent = "red";
       };
 
+      wallpaper = {
+        enable = true;
+        directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
+        randomOnStart = true;
+        interval = "15m";
+      };
+
       touchpad = {
         enable = true;
         speed = 0.5; # Velocidade aumentada (0.0 padrão -> 0.5 ágil e preciso para Full HD)

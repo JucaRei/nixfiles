@@ -588,6 +588,24 @@ in
             # Wallpaper / Fundo e Cursor padrão (garante left_ptr mesmo com fundo sólido)
             xsetroot -solid '${config.desktop.theme.colors.bg}' -cursor_name left_ptr &
 
+            ${lib.optionalString (config.desktop.wallpaper.enable or false) ''
+              # Inicializar wallpaper agnóstico
+              if command -v set-wallpaper >/dev/null 2>&1; then
+                set-wallpaper ${if (config.desktop.wallpaper.randomOnStart or false) then "--random" else "--restore"} --quiet &
+                ${lib.optionalString (config.desktop.wallpaper.interval != null) ''
+                  # Iniciar timer de rotação periódica (systemd timer com fallback para daemon)
+                  (
+                    systemctl --user start wallpaper-rotate.timer 2>/dev/null || true
+                    sleep 0.5
+                    if ! systemctl --user is-active --quiet wallpaper-rotate.timer 2>/dev/null; then
+                      pkill -f "set-wallpaper.*--(timer|daemon)" 2>/dev/null || true
+                      set-wallpaper --timer "${config.desktop.wallpaper.interval}" --quiet &
+                    fi
+                  ) &
+                ''}
+              fi
+            ''}
+
             # Applet de Rede desativado para manter o tray limpo apenas para apps externos (Wi-Fi gerenciado via Polybar/Rofi)
             # ${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable &
 
