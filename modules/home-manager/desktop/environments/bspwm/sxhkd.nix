@@ -256,8 +256,12 @@ let
         "Print" = "${screenshotScript} full";
         "shift + Print" = "${screenshotScript} area";
         "ctrl + Print" = "${screenshotScript} window";
-        "${mod} + shift + s" = "${screenshotScript} area";
+        # Teclados modernos onde a tecla Print emite Win+Shift+S
+        "super + shift + s" = "${screenshotScript} menu";
         "XF86SelectiveScreenshot" = "${screenshotScript} area";
+      }
+      // lib.optionalAttrs (mod != "super") {
+        "${mod} + shift + s" = "${screenshotScript} area";
       }
     else
       {
@@ -277,9 +281,12 @@ let
         "Sys_Req" = "${screenshotScript} full";
         "shift + Sys_Req" = "${screenshotScript} area";
 
-        # Recorte de área com a tecla modificadora
-        "${mod} + shift + s" = "${screenshotScript} area";
+        # Tecla Print em teclados de notebooks modernos (firmware emite Win+Shift+S)
+        "super + shift + s" = "${screenshotScript} menu";
         "XF86SelectiveScreenshot" = "${screenshotScript} area";
+      }
+      // lib.optionalAttrs (mod != "super") {
+        "${mod} + shift + s" = "${screenshotScript} area";
       };
 
   normMod =

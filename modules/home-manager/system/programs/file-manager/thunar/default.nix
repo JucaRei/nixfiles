@@ -22,7 +22,7 @@ let
     ];
   };
 
-  # Wrapper para garantir suporte a GVfs (Samba/SMB, Rede, Lixeira, MTP) no Thunar
+  # Wrapper para garantir suporte a GVfs (Samba/SMB, Rede, Lixeira, MTP) e integração completa no Thunar
   thunar-wrapped = pkgs.symlinkJoin {
     name = "thunar-with-gvfs";
     paths = [ thunar-with-plugins ];
@@ -35,7 +35,7 @@ let
         if [ -x "$bin" ]; then
           makeWrapper "$bin" "$out/bin/$(basename "$bin")" \
             --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
-            --prefix XDG_DATA_DIRS : "${pkgs.gvfs}/share:/usr/share"
+            --prefix XDG_DATA_DIRS : "$out/share:${thunar-with-plugins}/share:${pkgs.gvfs}/share:${pkgs.tumbler}/share:${pkgs.xfconf}/share:${pkgs.shared-mime-info}/share:/usr/local/share:/usr/share"
         fi
       done
     '';
@@ -69,11 +69,33 @@ in
   };
 
   config = mkIf cfg.enable {
+    # Daemon de suporte essencial para persistência de preferências no Thunar (Xfconf)
+    systemd.user.services.xfconfd = mkIf pkgs.stdenv.isLinux {
+      Unit = {
+        Description = "Xfce Configuration Daemon";
+        PartOf = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "dbus";
+        BusName = "org.xfce.Xfconf";
+        ExecStart = "${pkgs.xfconf}/lib/xfce4/xfconf/xfconfd";
+        Restart = "on-failure";
+        RestartSec = 3;
+        Environment = [
+          "XDG_DATA_DIRS=${pkgs.xfconf}/share:/usr/local/share:/usr/share"
+        ];
+      };
+      Install = {
+        WantedBy = [ "graphical-session.target" "default.target" ];
+      };
+    };
+
     # Configuração de preferências de visualização por pasta e restauração de abas no Thunar.
-    # O arquivo ~/.config/xfce4/xfconf/xfce-perchannel-xml/thunar.xml é o backend nativo do Xfconf.
-    # Evita o módulo interno xfconf.settings do Home Manager (load-xfconf) que falha com
-    # 'Failed to set property' em distros standalone onde o xfconfd não está ativo durante a ativação.
     home.activation.configureThunarSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      # Encerra instâncias ativas do Thunar para aplicar mudanças de canal e recarregar conexão com xfconfd
+      $DRY_RUN_CMD ${pkgs.thunar}/bin/thunar -q 2>/dev/null || true
+
+      # Escreve a configuração declarativa diretamente no XML do canal Thunar como garantia
       $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
 import os
 import xml.etree.ElementTree as ET
@@ -114,11 +136,27 @@ if hasattr(ET, "indent"):
 
 tree.write(xml_file, encoding="UTF-8", xml_declaration=True)
 '
+
+      # Reinicia o xfconfd caso o systemd do usuário esteja ativo nesta sessão
+      if systemctl --user is-active --quiet xfconfd.service 2>/dev/null; then
+        $DRY_RUN_CMD systemctl --user restart xfconfd.service 2>/dev/null || true
+      fi
+
+      # Aplica as opções diretamente no barramento Xfconf caso o daemon esteja respondendo
       if command -v ${pkgs.xfconf}/bin/xfconf-query >/dev/null 2>&1; then
         $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /misc-directory-specific-settings -n -t bool -s ${if cfg.rememberViewSettings then "true" else "false"} 2>/dev/null || true
         $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${if cfg.restoreTabs then "true" else "false"} 2>/dev/null || true
       fi
     '';
+
+    # Arquivo de ativação D-Bus para permitir auto-ativação do xfconfd pelo dbus-daemon da sessão
+    xdg.dataFile = {
+      "dbus-1/services/org.xfce.Xfconf.service".text = ''
+        [D-BUS Service]
+        Name=org.xfce.Xfconf
+        Exec=${pkgs.xfconf}/lib/xfce4/xfconf/xfconfd
+      '';
+    };
 
     home.sessionVariables = {
       GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
@@ -127,14 +165,9 @@ tree.write(xml_file, encoding="UTF-8", xml_declaration=True)
     home.packages = with pkgs; [
       thunar-wrapped
       gvfs
-      tumbler
+      xfconf
       xarchiver
       file-roller
-      ffmpegthumbnailer
-      webp-pixbuf-loader
-      libgsf
-      poppler
-      freetype
       xfce4-exo
       catfish
       meld

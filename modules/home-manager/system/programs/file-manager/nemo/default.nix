@@ -43,7 +43,7 @@ let
         if [ -x "$bin" ]; then
           makeWrapper "$bin" "$out/bin/$(basename "$bin")" \
             --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
-            --prefix XDG_DATA_DIRS : "${pkgs.gvfs}/share:${pkgs.gsettings-desktop-schemas}/share:${pkgs.cinnamon-desktop}/share:${cfg.package}/share:/usr/share"
+            --prefix XDG_DATA_DIRS : "${pkgs.gvfs}/share:${pkgs.gsettings-desktop-schemas}/share:${pkgs.cinnamon-desktop}/share:${cfg.package}/share:${pkgs.tumbler}/share:${pkgs.shared-mime-info}/share:/usr/share"
         fi
       done
     '';

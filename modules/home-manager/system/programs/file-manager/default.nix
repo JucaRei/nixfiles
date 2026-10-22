@@ -122,6 +122,11 @@ let
       exec xdg-open "$TARGET"
     fi
   '';
+  anyFMEnabled =
+    (cfgThunar.enable or false)
+    || (cfgNautilus.enable or false)
+    || (cfgNemo.enable or false)
+    || (cfgPcmanfm.enable or false);
 in
 {
   imports = [
@@ -167,6 +172,15 @@ in
         Delegado ao módulo centralizado system.cleanup.
       '';
     };
+
+    enableThumbnails = mkOption {
+      type = types.bool;
+      default = true;
+      description = ''
+        Habilitar serviço global de miniaturas (Tumbler / Freedesktop Thumbnailer) e geradores
+        (ffmpegthumbnailer, webp, poppler, libgsf, freetype, shared-mime-info) para todos os gerenciadores de arquivos.
+      '';
+    };
   };
 
   config = mkMerge [
@@ -185,6 +199,82 @@ in
           "inode/directory" = activeDesktopFile;
         };
       };
+    })
+    (mkIf (cfg.enableThumbnails && anyFMEnabled) {
+      # Serviço de usuário Systemd para o daemon de miniaturas do FreeDesktop (Tumbler)
+      systemd.user.services.tumbler = mkIf pkgs.stdenv.isLinux {
+        Unit = {
+          Description = "Thumbnail generator service (Tumbler / FreeDesktop)";
+          PartOf = [ "graphical-session.target" ];
+        };
+        Service = {
+          Type = "dbus";
+          BusName = "org.freedesktop.thumbnails.Thumbnailer1";
+          ExecStart = "${pkgs.tumbler}/lib/tumbler-1/tumblerd";
+          Restart = "on-failure";
+          RestartSec = 3;
+          Environment = [
+            "GIO_EXTRA_MODULES=${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules"
+            "XDG_DATA_DIRS=${pkgs.tumbler}/share:${pkgs.shared-mime-info}/share:${pkgs.gdk-pixbuf}/share:/usr/local/share:/usr/share"
+          ];
+        };
+        Install = {
+          WantedBy = [ "graphical-session.target" "default.target" ];
+        };
+      };
+
+      # Arquivos de ativação D-Bus para o barramento de sessão do usuário (~/.local/share/dbus-1/services)
+      xdg.dataFile = {
+        "dbus-1/services/org.freedesktop.thumbnails.Thumbnailer1.service".text = ''
+          [D-BUS Service]
+          Name=org.freedesktop.thumbnails.Thumbnailer1
+          Exec=${pkgs.tumbler}/lib/tumbler-1/tumblerd
+        '';
+        "dbus-1/services/org.freedesktop.thumbnails.Manager1.service".text = ''
+          [D-BUS Service]
+          Name=org.freedesktop.thumbnails.Manager1
+          Exec=${pkgs.tumbler}/lib/tumbler-1/tumblerd
+        '';
+        "dbus-1/services/org.freedesktop.thumbnails.Cache1.service".text = ''
+          [D-BUS Service]
+          Name=org.freedesktop.thumbnails.Cache1
+          Exec=${pkgs.tumbler}/lib/tumbler-1/tumblerd
+        '';
+        "dbus-1/services/org.xfce.Tumbler.Thumbnailer1.service".text = ''
+          [D-BUS Service]
+          Name=org.xfce.Tumbler.Thumbnailer1
+          Exec=${pkgs.tumbler}/lib/tumbler-1/tumblerd
+        '';
+        "dbus-1/services/org.xfce.Tumbler.Manager1.service".text = ''
+          [D-BUS Service]
+          Name=org.xfce.Tumbler.Manager1
+          Exec=${pkgs.tumbler}/lib/tumbler-1/tumblerd
+        '';
+        "dbus-1/services/org.xfce.Tumbler.Cache1.service".text = ''
+          [D-BUS Service]
+          Name=org.xfce.Tumbler.Cache1
+          Exec=${pkgs.tumbler}/lib/tumbler-1/tumblerd
+        '';
+      };
+
+      # Limpa miniaturas marcadas como erro e reinicia o serviço Tumbler para todos os gerenciadores
+      home.activation.cleanThumbnailFailCache = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        $DRY_RUN_CMD rm -rf "$HOME/.cache/thumbnails/fail" 2>/dev/null || true
+        if systemctl --user is-active --quiet tumbler.service 2>/dev/null; then
+          $DRY_RUN_CMD systemctl --user restart tumbler.service 2>/dev/null || true
+        fi
+      '';
+
+      # Pacotes essenciais de thumbnailing compartilhados por todos os file managers
+      home.packages = with pkgs; [
+        tumbler
+        ffmpegthumbnailer
+        webp-pixbuf-loader
+        libgsf
+        poppler
+        freetype
+        shared-mime-info
+      ];
     })
   ];
 }
