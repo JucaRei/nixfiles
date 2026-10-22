@@ -97,7 +97,7 @@ in
 
     # Recarregar automaticamente o compositor Picom ao rodar switch-home
     home.activation.reloadPicom = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      $DRY_RUN_CMD systemctl --user restart picom 2>/dev/null || (${pkgs.procps}/bin/pkill -x picom 2>/dev/null && ${picomPkg}/bin/picom -b 2>/dev/null || true)
+      $DRY_RUN_CMD systemctl --user restart picom 2>/dev/null || ${pkgs.procps}/bin/pkill -USR1 -x picom 2>/dev/null || (${pkgs.procps}/bin/pkill -x picom 2>/dev/null && sleep 0.2 && ${picomPkg}/bin/picom -b 2>/dev/null || true)
     '';
 
     # Em vez de utilizar services.picom do Home Manager (que injeta diretivas obsoletas da v10
@@ -144,18 +144,53 @@ in
         blur: {
           method = "dual_kawase";
           strength = ${toString cfg.blur.strength};
-          background = true;
+          background = false;
           background-frame = false;
           background-fixed = false;
         };
+
+        # Exclusão global de blur para ferramentas de seleção (slop), docks e áreas de trabalho
+        blur-background-exclude = [
+          "window_type = 'dock'",
+          "window_type = 'desktop'",
+          "class_g = 'slop'",
+          "class_g = 'Slop'",
+          "class_g ?= 'slop'",
+          "class_i = 'slop'",
+          "name = 'slop'",
+          "name ?= 'slop'",
+          "_GTK_FRAME_EXTENTS@:c"
+        ];
       ''}
+
+      shadow-exclude = [
+        "class_g = 'slop'",
+        "class_g ?= 'slop'",
+        "name = 'slop'"
+      ];
 
       # --- 5. Regras Declarativas Modernas (Rules v12) ---
       rules = (
-        # Regra padrão: sem blur e sem fade desnecessários em janelas genéricas
+        # 1. Ferramentas de captura e seleção de tela (slop do maim, flameshot, slurp, xrectsel, etc):
+        # PRIORIDADE MÁXIMA: NUNCA aplicar blur, sombra, cantos arredondados, fade ou animação!
+        # Sem essa regra prioritária no topo, o slop (overlay de seleção do maim -s) herda o blur global do picom,
+        # embaçando a tela inteira durante o recorte e impedindo a visualização da área a selecionar.
         {
+          match = "class_g ?= 'slop' || class_i ?= 'slop' || name ?= 'slop' || class_g ?= 'slurp' || class_g ?= 'flameshot' || class_g ?= 'Gnome-screenshot' || class_g ?= 'xrectsel'";
+          corner-radius = 0;
+          shadow = false;
           blur-background = false;
           fade = false;
+          opacity = 1.0;
+        },
+
+        # 2. Bloqueador de Tela (i3lock / i3lock-color): tela cheia pura sem cantos, sem sombra e sem animações
+        {
+          match = "class_g ?= 'i3lock'";
+          shadow = false;
+          corner-radius = 0;
+          fade = false;
+          blur-background = false;
         },
 
         # Janelas normais: sombra, cantos arredondados, fade suave e opacidade diferenciada
@@ -472,26 +507,9 @@ in
           ''}
         },
 
-        # Bloqueador de Tela (i3lock / i3lock-color): tela cheia pura sem cantos arredondados, sem sombra e sem animações
-        {
-          match = "class_g = 'i3lock' || class_g = 'i3lock-color'";
-          shadow = false;
-          corner-radius = 0;
-          fade = false;
-          blur-background = false;
-        },
-
-        # Ferramentas de captura de tela: sem cantos e sem blur para não interferir na área recortada
-        {
-          match = "class_g = 'slurp' || class_g = 'flameshot' || class_g = 'Gnome-screenshot'";
-          corner-radius = 0;
-          shadow = false;
-          blur-background = false;
-        },
-
         # Exclusão de sombras em apps que desenham suas próprias bordas ou onde causa artefatos
         {
-          match = "class_g = 'Polybar' || class_g = 'Eww' || class_g = 'jgmenu' || class_g = 'Spotify' || class_g = 'retroarch' || class_g = 'firefox' || class_g = 'LibreWolf' || class_g = 'librewolf' || class_g = 'floorp' || class_g = 'Floorp' || class_g = 'Screenkey' || class_g = 'mpv' || class_g = 'Viewnior' || class_g = 'i3lock' || class_g = 'i3lock-color' || _GTK_FRAME_EXTENTS@";
+          match = "class_g ?= 'slop' || class_g = 'Polybar' || class_g = 'Eww' || class_g = 'jgmenu' || class_g = 'Spotify' || class_g = 'retroarch' || class_g = 'firefox' || class_g = 'LibreWolf' || class_g = 'librewolf' || class_g = 'floorp' || class_g = 'Floorp' || class_g = 'Screenkey' || class_g = 'mpv' || class_g = 'Viewnior' || class_g ?= 'i3lock' || _GTK_FRAME_EXTENTS@";
           shadow = false;
         },
 

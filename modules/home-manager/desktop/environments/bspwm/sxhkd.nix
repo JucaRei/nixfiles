@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  nixGLWrapper ? lib.id,
   ...
 }:
 let
@@ -22,6 +23,8 @@ let
       "${browserBin} &"
     else
       ''if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi'';
+
+  picomBin = "${nixGLWrapper pkgs.picom}/bin/picom";
 
   # Script nativo de Scratchpad dinâmico para BSPWM (Inspirado no gh0stzk/dotfiles)
   # - Monitor-aware (adapta geometria e move instantaneamente para o monitor ativo)
@@ -152,16 +155,34 @@ let
 
       area|--sel|-s)
         # Seleção interativa retangular
-        ${pkgs.maim}/bin/maim -s -u "$file" 2>/dev/null && notify_shot "$file"
+        sleep 0.2
+        # Desativa temporariamente o picom durante o recorte para garantir 100% que a tela fique limpa e sem nenhum blur
+        was_picom=0
+        if ${pkgs.procps}/bin/pgrep -x picom >/dev/null 2>&1; then
+          was_picom=1
+          ${pkgs.procps}/bin/pkill -x picom 2>/dev/null || true
+          sleep 0.05
+        fi
+
+        ${pkgs.maim}/bin/maim -s -u "$file" 2>/dev/null
+        ret=$?
+
+        # Restaura o compositor imediatamente após o recorte (ou cancelamento com Esc)
+        if [ "$was_picom" -eq 1 ]; then
+          (${picomBin} -b 2>/dev/null || ${pkgs.picom}/bin/picom -b 2>/dev/null || true) &
+        fi
+
+        [ "$ret" -eq 0 ] && notify_shot "$file"
         ;;
 
       window|--win|-w)
         # Captura a janela atualmente focada
+        sleep 0.2
         active_win=$(${pkgs.bspwm}/bin/bspc query -N -n focused 2>/dev/null)
         if [ -n "$active_win" ]; then
           ${pkgs.maim}/bin/maim -i "$active_win" "$file" 2>/dev/null && notify_shot "$file"
         else
-          ${pkgs.maim}/bin/maim -s -u "$file" 2>/dev/null && notify_shot "$file"
+          $0 area
         fi
         ;;
 

@@ -241,6 +241,7 @@ in
             font-6 = "Noto Sans CJK JP:weight=Medium:size=10;2";
             font-7 = "IPAGothic:size=10;2";
             font-8 = "Noto Sans CJK SC:weight=Medium:size=10;2";
+            font-9 = "Symbols Nerd Font:size=5;9"; # T10: Ponto indicador rebaixado abaixo do número
 
             cursor-click = "pointer";
             cursor-scroll = "ns-resize";
@@ -291,26 +292,30 @@ in
                 ws-icon-10 = "10;%{F${colors.green-alt}}10%{F-}";
                 ws-icon-default = "%name%";
 
-                label-focused = "%{T3}%icon%%{T-}";
+                # Workspace focado: Pac-Man (󰮯) no workspace ativo mantendo o número colorido e cápsula elevada
+                label-focused = "%{T2}%{F${colors.yellow-alt}}󰮯 %{F-}%{T-}%{T3}%icon%%{T-}";
                 label-focused-foreground = colors.text;
-                label-focused-background = colors.pill;
+                label-focused-background = colors.pill-alt;
                 label-focused-padding = 1;
                 label-focused-margin = 0;
 
+                # Workspace ocupado (com janelas): número colorido pastel no fundo padrão
                 label-occupied = "%{T3}%icon%%{T-}";
-                label-occupied-foreground = colors.muted;
+                label-occupied-foreground = colors.text;
                 label-occupied-background = colors.pill;
                 label-occupied-padding = 1;
                 label-occupied-margin = 0;
 
-                label-urgent = "%{T3}%icon%%{T-}";
+                # Workspace com urgência / alerta: fantasma do Pac-Man (󰊠) em vermelho
+                label-urgent = "%{T2}%{F${colors.red}}󰊠 %{F-}%{T-}%{T3}%icon%%{T-}";
                 label-urgent-foreground = colors.nord;
                 label-urgent-background = colors.pill;
                 label-urgent-padding = 1;
                 label-urgent-margin = 0;
 
-                label-empty = "%{T3}%icon%%{T-}";
-                label-empty-foreground = colors.surface1;
+                # Workspace vazio: número atenuado e sutil (%name%), sem cor de ícone ativa
+                label-empty = "%{T3}%name%%{T-}";
+                label-empty-foreground = colors.muted;
                 label-empty-background = colors.pill;
                 label-empty-padding = 1;
                 label-empty-margin = 0;
