@@ -43,7 +43,7 @@ in
       theme = {
         enable = true;
         name = "tokyo-night";
-        accent = "red";
+        accent = "purple";
       };
 
       wallpaper = {
