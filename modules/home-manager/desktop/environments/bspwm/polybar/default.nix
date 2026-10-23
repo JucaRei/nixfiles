@@ -41,9 +41,91 @@ in
         "modern"
         "zproger"
         "pills"
+        "shapes"
       ];
       default = "zproger";
-      description = "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills #2b2f37) ou 'modern' (estilo Waybar / Catppuccin coeso)";
+      description = "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills #2b2f37), 'shapes' (estilo shapes / pixelated squares / como no debian-bspwm-e300) ou 'modern' (estilo Waybar / Catppuccin coeso)";
+    };
+
+    encapsulation = mkOption {
+      type =
+        lib.types.coercedTo
+          (lib.types.enum [
+            "pill"
+            "shapes"
+            "slant"
+            "powerline"
+          ])
+          (val: {
+            default = val;
+            workspaces = "default";
+            date = "default";
+            tray = "default";
+          })
+          (
+            lib.types.submodule {
+              options = {
+                default = mkOption {
+                  type = lib.types.enum [
+                    "pill"
+                    "shapes"
+                    "slant"
+                    "powerline"
+                  ];
+                  default = "pill";
+                  description = "Encapsulamento padrão para todas as cápsulas";
+                };
+
+                workspaces = mkOption {
+                  type = lib.types.enum [
+                    "default"
+                    "pill"
+                    "shapes"
+                    "slant"
+                    "powerline"
+                  ];
+                  default = "default";
+                  description = "Encapsulamento específico da cápsula de workspaces (ou 'default' para herdar)";
+                };
+
+                date = mkOption {
+                  type = lib.types.enum [
+                    "default"
+                    "pill"
+                    "shapes"
+                    "slant"
+                    "powerline"
+                  ];
+                  default = "default";
+                  description = "Encapsulamento específico da cápsula de data/relógio (ou 'default' para herdar)";
+                };
+
+                tray = mkOption {
+                  type = lib.types.enum [
+                    "default"
+                    "pill"
+                    "shapes"
+                    "slant"
+                    "powerline"
+                  ];
+                  default = "default";
+                  description = "Encapsulamento específico da cápsula da bandeja (ou 'default' para herdar)";
+                };
+              };
+            }
+          );
+      default = "pill";
+      description = ''
+        Formato de encapsulamento das cápsulas. Pode ser uma string direta ("pill", "shapes", "slant", "powerline")
+        ou uma configuração granular para misturar estilos:
+          {
+            default = "pill";
+            workspaces = "shapes"; # usa  e  nos workspaces
+            date = "pill";         # usa  e  no relógio
+          }
+        Também é possível usar diretamente os módulos 'round-left'/'round-right', 'shape-left'/'shape-right',
+        'slant-left'/'slant-right' ou 'powerline-left'/'powerline-right' na lista de módulos das barras.
+      '';
     };
 
     battery = mkOption {
@@ -134,10 +216,54 @@ in
       '';
       config =
         let
-          isPills = cfg.style == "zproger" || cfg.style == "pills";
+          isPills = cfg.style == "zproger" || cfg.style == "pills" || cfg.style == "shapes";
           hasTray = cfg.tray.enable;
+
+          # Resolução do tipo de encapsulamento por módulo (permite misturar livremente)
+          rawDefaultEncap =
+            if builtins.isAttrs cfg.encapsulation then
+              cfg.encapsulation.default
+            else if cfg.encapsulation != "pill" then
+              cfg.encapsulation
+            else if cfg.style == "shapes" then
+              "shapes"
+            else
+              "pill";
+
+          resolveEncap =
+            specific:
+            let
+              s =
+                if builtins.isAttrs cfg.encapsulation then
+                  (cfg.encapsulation.${specific} or "default")
+                else
+                  "default";
+            in
+            if s != "default" then s else rawDefaultEncap;
+
+          wsEncap = resolveEncap "workspaces";
+          dateEncap = resolveEncap "date";
+          trayEncap = resolveEncap "tray";
+
+          # Normalizar prefixo do módulo (shapes -> shape, pill -> round)
+          normalizeEncap =
+            e:
+            if e == "shapes" then
+              "shape"
+            else if e == "pill" then
+              "round"
+            else
+              e;
+
+          wsLeft = "${normalizeEncap wsEncap}-left";
+          wsRight = "${normalizeEncap wsEncap}-right";
+          dateLeft = "${normalizeEncap dateEncap}-left";
+          dateRight = "${normalizeEncap dateEncap}-right";
+          trayLeft = "${normalizeEncap trayEncap}-left";
+          trayRight = "${normalizeEncap trayEncap}-right";
+
           modernTray = if hasTray then " sep tray" else "";
-          pillsTray = if hasTray then " sp round-left tray round-right" else "";
+          pillsTray = if hasTray then " sp ${trayLeft} tray ${trayRight}" else "";
 
           # =========================================================================
           # ESTILO 1: MODERNO (WAYBAR / CATPPUCCIN COESO)
@@ -252,26 +378,26 @@ in
           };
 
           pillsMainBar = pillsBaseBar // {
-            modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
+            modules-left = "launcher sp ${wsLeft} bspwm ${wsRight} sp bsp-layout sep polywins minimized";
             modules-center = "media";
-            # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications${pillsTray} sp round-left date round-right sp powermenu";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications sp round-left date round-right sp powermenu";
+            # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications${pillsTray} sp ${dateLeft} date ${dateRight} sp powermenu";
+            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications sp ${dateLeft} date ${dateRight} sp powermenu";
           };
 
           pillsPrimaryBar = pillsBaseBar // {
-            modules-left = "launcher sp round-left bspwm round-right sp bsp-layout sep polywins minimized";
+            modules-left = "launcher sp ${wsLeft} bspwm ${wsRight} sp bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "cpu memory temperature disk sep network dots netspeed sep uptime";
+            modules-right = "shape-left sp cpu memory temperature disk shape-right sep network dots netspeed sep uptime";
           };
 
           pillsSecondaryBar = pillsBaseBar // {
-            modules-left = "round-left bspwm round-right sp polywins";
+            modules-left = "${wsLeft} bspwm ${wsRight} sp polywins";
             modules-center = "xwindow";
-            # modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${pillsTray} sp round-left date round-right sp powermenu";
-            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications sp round-left date round-right sp powermenu";
+            # modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${pillsTray} sp ${dateLeft} date ${dateRight} sp powermenu";
+            modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications sp ${dateLeft} date ${dateRight} sp powermenu";
           };
 
-          # Overrides aplicados aos módulos existentes quando o estilo pills/zproger está ativo.
+          # Overrides aplicados aos módulos existentes quando o estilo pills/zproger ou shapes está ativo.
           # 1. Workspaces com números coloridos pastel (#F9DE8F, #ff9b93, #95e1d3, #81A1C1, #A3BE8C) dentro da cápsula #2b2f37
           # 2. Playerctl/Media no centro, idêntico ao estilo moderno
           # 3. Módulos com ícone único sem duplicações (sem prefixos colidindo com scripts)
@@ -448,18 +574,7 @@ in
         // {
           "colors" = colors;
 
-          /*
-            # =========================================================================
-            # [CONFIGURAÇÃO ANTERIOR - DESATIVADA, NÃO APAGADA]
-            # Conforme solicitado ("não apague como esta agora, somente comente desativando"):
-            #
-            # "bar/main" = modernMainBar;
-            # "bar/primary" = modernPrimaryBar;
-            # "bar/secondary" = modernSecondaryBar;
-            # =========================================================================
-          */
-
-          # --- Definição das Barras Ativas (Alternável via desktop.bspwm.polybar.style: "zproger"/"pills" ou "modern") ---
+          # --- Definição das Barras Ativas (Alternável via desktop.bspwm.polybar.style: "zproger"/"pills"/"shapes" ou "modern") ---
           "bar/main" = if isPills then pillsMainBar else modernMainBar;
           "bar/primary" = if isPills then pillsPrimaryBar else modernPrimaryBar;
           "bar/secondary" = if isPills then pillsSecondaryBar else modernSecondaryBar;

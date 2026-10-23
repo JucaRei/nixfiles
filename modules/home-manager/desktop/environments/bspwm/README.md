@@ -138,8 +138,44 @@ fi
 
 ### 3. Customizar a Polybar
 Os módulos e layout da barra estão organizados dentro do subdiretório [polybar/](./polybar/):
-- `modules.nix`: Definição de cada bloco visual (cpu, memória, pulseaudio, network, workspaces, clock, powermenu).
-- `config.ini`: Posição da barra, margens, fontes, altura e espaçamento entre módulos.
+- `default.nix`: Opções declarativas de estilo, encapsulamento e definição das barras (`main`, `primary`, `secondary`).
+- `modules.nix`: Definição de cada bloco visual (cpu, memória, pulseaudio, network, workspaces, clock, powermenu, glifos de encapsulamento).
+- `colors.nix`: Integração com o tema ativo e paletas de cores (pills e shades).
+- `scripts.nix`: Scripts auxiliares de áudio, bateria, rede, bluetooth, backlight, etc.
+
+#### Opções de Estilo e Encapsulamento
+Você pode configurar o estilo geral e o formato de encapsulamento dos módulos no arquivo do seu host (ex: `home-manager/hosts/<host>/default.nix`):
+
+```nix
+desktop.bspwm.polybar = {
+  enable = true;
+
+  # Estilo geral da barra:
+  # - "zproger" / "pills": Cápsulas flutuantes com fundo suave (#2b2f37 / colors.pill)
+  # - "shapes": Idêntico ao pills com malha de pixels ( / ) por padrão
+  # - "modern": Estilo coeso e limpo inspirado no Waybar
+  style = "pills";
+
+  # Formato do encapsulamento (pode ser uma string global ou configuração modular para misturar):
+  # Opção A — Global para todas as cápsulas:
+  encapsulation = "shapes"; # "pill" (/), "shapes" (/), "slant" (/) ou "powerline" (/)
+
+  # Opção B — Granular (misturando estilos livremente):
+  # encapsulation = {
+  #   default = "pill";
+  #   workspaces = "shapes"; # usa  e  nos workspaces
+  #   date = "pill";         # usa  e  no relógio
+  #   tray = "slant";        # usa  e  na bandeja
+  # };
+};
+```
+
+Também é possível usar diretamente qualquer um dos módulos de encapsulamento nas strings das barras (`modules-left`, `modules-right`):
+- `round-left` / `round-right` ou `pill-left` / `pill-right`: Cápsula arredondada (`` e ``)
+- `shape-left` / `shape-right`: Malha de pixels / dithering (`` e ``)
+- `slant-left` / `slant-right`: Corte diagonal paralelo (`` e ``)
+- `slant-up-left` / `slant-up-right`: Corte diagonal para cima (`` e ``)
+- `powerline-left` / `powerline-right`: Triângulos Powerline (`` e ``)
 
 ### 4. Efeitos Visuais no Picom (Blur, Cantos e Sombras)
 Em [picom.nix](./picom.nix):

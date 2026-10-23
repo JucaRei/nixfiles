@@ -6,12 +6,54 @@
   cfg ? {
     battery = "BAT0";
     adapter = "ADP1";
+    encapsulation = "pill";
     tray = {
       enable = true;
     };
   },
   ...
 }:
+let
+  rawEncap =
+    if builtins.isAttrs (cfg.encapsulation or null) then
+      cfg.encapsulation.default or "pill"
+    else
+      cfg.encapsulation or "pill";
+
+  encapType =
+    if rawEncap != "pill" then
+      rawEncap
+    else if (cfg.style or "") == "shapes" then
+      "shapes"
+    else
+      "pill";
+
+  # Mapeamento do tipo de encapsulamento para os respectivos glifos
+  # pill: cápsulas arredondadas ( e )
+  # shapes: blocos de pixel/malha ( e ) como no debian-bspwm-e300
+  # slant: cortes diagonais paralelos ( e )
+  # powerline: triângulos clássicos ( e )
+  encapGlyphs = {
+    pill = {
+      left = "";
+      right = "";
+    };
+    shapes = {
+      left = "";
+      right = "";
+    };
+    slant = {
+      left = "";
+      right = "";
+    };
+    powerline = {
+      left = "";
+      right = "";
+    };
+  };
+
+  currentEncap = encapGlyphs.${encapType} or encapGlyphs.pill;
+in
 {
   # --- Divisores & Espaçadores Elegantes (Estilo Waybar / Catppuccin) ---
   "module/sep" = {
@@ -38,7 +80,36 @@
     click-left = "${pkgs.rofi}/bin/rofi -show drun";
   };
 
-  # --- Cápsulas Decorativas / Pills (com  e  em colors.pill) ---
+  # --- Encapsulamento Dinâmico (Respeita desktop.bspwm.polybar.encapsulation: pill, shapes, slant, powerline) ---
+  "module/encap-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}${currentEncap.left}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/encap-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}${currentEncap.right}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  # Aliases clássicos de cápsula arredondada (pill)
+  "module/round-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/round-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
   "module/bi" = {
     type = "custom/text";
     format = "<label>";
@@ -53,18 +124,173 @@
     label-foreground = colors.pill;
   };
 
-  "module/round-left" = {
+  # Módulos explícitos com glifos fixos (permite misturar estilos livremente na mesma barra)
+  "module/pill-left" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
     label-foreground = colors.pill;
   };
 
-  "module/round-right" = {
+  "module/pill-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
     label-foreground = colors.pill;
+  };
+
+  "module/shape-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/shape-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/shapes-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/shapes-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  # 3. Estilo Slant / Diagonal Paralelo ( e )
+  "module/slant-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/slant-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  # Variações para baixo com direção alternada ( e )
+  "module/slant-down-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/slant-down-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  # Variações com corte para cima ( e )
+  "module/slant-up-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/slant-up-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/powerline-left" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  "module/powerline-right" = {
+    type = "custom/text";
+    format = "<label>";
+    label = "%{T5}%{T-}";
+    label-foreground = colors.pill;
+  };
+
+  # --- Módulos de Transição Sombreada Estilo Shapes (debian-bspwm-e300 / adi1090x) ---
+  # Lado esquerdo: transições com  (gleft) entre os blocos sombreados shade1 -> shade2 -> shade3...
+  "module/left1" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = colors.shade2;
+    format-foreground = colors.shade1;
+    label = "%{T5}%{T-}";
+  };
+
+  "module/left2" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = colors.shade3;
+    format-foreground = colors.shade2;
+    label = "%{T5}%{T-}";
+  };
+
+  "module/left3" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = colors.dark;
+    format-foreground = colors.shade3;
+    label = "%{T5}%{T-}";
+  };
+
+  "module/left4" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = colors.dark;
+    format-foreground = colors.shade4;
+    label = "%{T5}%{T-}";
+  };
+
+  # Lado direito: transições com  (gright) fluindo do fundo para shade4 -> shade3 -> shade2 -> shade1
+  "module/right1" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = colors.shade2;
+    format-foreground = colors.shade1;
+    label = "%{T5}%{T-}";
+  };
+
+  "module/right2" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = colors.shade3;
+    format-foreground = colors.shade2;
+    label = "%{T5}%{T-}";
+  };
+
+  "module/right3" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = colors.shade4;
+    format-foreground = colors.shade3;
+    label = "%{T5}%{T-}";
+  };
+
+  "module/right4" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = colors.dark;
+    format-foreground = colors.shade4;
+    label = "%{T5}%{T-}";
   };
 
   "module/sp" = {

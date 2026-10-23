@@ -4,8 +4,15 @@
 { theme }:
 let
   c = theme.colors;
-  # Extras do Catppuccin; em outras paletas cai para o papel mais próximo
-  extra = name: fallback: c.${name} or c.${fallback};
+  # Extras do Catppuccin; em outras paletas cai para o papel mais próximo ou valor literal
+  extra =
+    name: fallback:
+    if c ? ${name} then
+      c.${name}
+    else if c ? ${fallback} then
+      c.${fallback}
+    else
+      fallback;
 in
 {
   base = c.bg;
@@ -53,4 +60,14 @@ in
   bat-green = c.green; # Verde bateria
   bat-charging = c.red; # Vermelho suave recarga
   time-alt = c.fgMuted; # Cinza do relógio
+
+  # --- Tons Dinâmicos do Tema (adaptam-se dinamicamente ao tema ativo) ---
+  shade1 = extra "shade1" (extra "surfaceAlt" "bgAlt");
+  shade2 = extra "shade2" (extra "purple" "surface");
+  shade3 = extra "shade3" (extra "surface" "bgAlt");
+  shade4 = extra "shade4" (extra "accent" "blue");
+  shade5 = extra "shade5" (extra "surfaceAlt" "bgAlt");
+  shade6 = extra "shade6" (extra "teal" "surface");
+  shade7 = extra "shade7" (extra "surface" "bgAlt");
+  shade8 = extra "shade8" (extra "fgMuted" "fg");
 }

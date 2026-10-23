@@ -64,7 +64,10 @@ in
         polybar = {
           battery = "BAT1";
           adapter = "ACAD";
-          style = lib.mkForce "pills";
+          style = lib.mkDefault "pills";
+          encapsulation = {
+            workspaces = "powerline";
+          };
         };
 
         extraKeybindings = {
