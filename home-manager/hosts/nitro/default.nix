@@ -70,7 +70,7 @@ in
             stats = lib.mkForce "shapes";
             netspeed = "slant";
             colors = {
-              netspeed = "#573280";
+              netspeed = "#29339B"; # "#573280" # "#2A1E5C"
             };
           };
         };
