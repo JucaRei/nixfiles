@@ -2704,7 +2704,7 @@ rec {
     fi
 
     if [ -z "$iface" ]; then
-      echo "%{F${colors.blue}}󰇚 0K%{F-}  %{F${colors.peach}}󰕒 0K%{F-}"
+      echo "%{F${colors.green}}󰇚 0K%{F-}  %{F${colors.red}}󰕒 0K%{F-}"
       exit 0
     fi
 
@@ -2742,7 +2742,7 @@ rec {
     down_str=$(format_speed "$rx_speed")
     up_str=$(format_speed "$tx_speed")
 
-    echo "%{F${colors.blue}}󰇚 $down_str%{F-}  %{F${colors.peach}}󰕒 $up_str%{F-}"
+    echo "%{F${colors.green}}󰇚 $down_str%{F-}  %{F${colors.red}}󰕒 $up_str%{F-}"
   '';
 
   # --- Controle e Status de Brilho da Tela ---
