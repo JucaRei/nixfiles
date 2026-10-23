@@ -160,22 +160,30 @@ desktop.bspwm.polybar = {
   # Opção A — Global para todas as cápsulas:
   encapsulation = "shapes"; # "pill" (/), "shapes" (/), "slant" (/) ou "powerline" (/)
 
-  # Opção B — Granular (misturando estilos livremente):
+  # Opção B — Granular e Colorida (misturando formatos e cores livremente):
   # encapsulation = {
   #   default = "pill";
-  #   workspaces = "shapes"; # usa  e  nos workspaces
-  #   date = "pill";         # usa  e  no relógio
-  #   tray = "slant";        # usa  e  na bandeja
+  #   workspaces = "shapes";    # usa  e  nos workspaces
+  #   stats = "shapes";         # usa  e  nas métricas (cpu, mem, temp, disk)
+  #   date = "pill";            # usa  e  no relógio
+  #   tray = "slant";           # usa  e  na bandeja
+  #   colors = {
+  #     glyph = "pill";         # cor padrão dos glifos (ou "red", "purple", "#hex", etc.)
+  #     focused = "red";        # destaque vibrante do workspace ativo (alto contraste com fundo)
+  #     focusedNumber = "#541422"; # cor suave e amena do número quando focado (ou "dark")
+  #     stats = "pill";         # cor de fundo e glifos da cápsula de métricas de hardware
+  #   };
   # };
 };
 ```
 
 Também é possível usar diretamente qualquer um dos módulos de encapsulamento nas strings das barras (`modules-left`, `modules-right`):
 - `round-left` / `round-right` ou `pill-left` / `pill-right`: Cápsula arredondada (`` e ``)
-- `shape-left` / `shape-right`: Malha de pixels / dithering (`` e ``)
+- `shape-left` / `shape-right`: Malha de pixels / dithering (`` e ``)
 - `slant-left` / `slant-right`: Corte diagonal paralelo (`` e ``)
 - `slant-up-left` / `slant-up-right`: Corte diagonal para cima (`` e ``)
 - `powerline-left` / `powerline-right`: Triângulos Powerline (`` e ``)
+- **Variantes Coloridas Geradas**: `shape-left-<cor>`, `round-left-<cor>`, `slant-left-<cor>`, `powerline-left-<cor>` (onde `<cor>` pode ser `red`, `purple`, `cyan`, `orange`, `green`, `accent`, etc.).
 
 ### 4. Efeitos Visuais no Picom (Blur, Cantos e Sombras)
 Em [picom.nix](./picom.nix):

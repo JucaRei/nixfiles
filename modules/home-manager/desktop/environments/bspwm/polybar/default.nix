@@ -44,7 +44,7 @@ in
         "shapes"
       ];
       default = "zproger";
-      description = "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills #2b2f37), 'shapes' (estilo shapes / pixelated squares / como no debian-bspwm-e300) ou 'modern' (estilo Waybar / Catppuccin coeso)";
+      description = "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills #2b2f37), 'shapes' (estilo shapes / pixelated squares / como no debian-bspwm-e300) ou 'modern' (estilo Waybar / Catppuccin coeso)";
     };
 
     encapsulation = mkOption {
@@ -59,8 +59,11 @@ in
           (val: {
             default = val;
             workspaces = "default";
+            stats = "default";
+            netspeed = "default";
             date = "default";
             tray = "default";
+            colors = { };
           })
           (
             lib.types.submodule {
@@ -88,6 +91,30 @@ in
                   description = "Encapsulamento específico da cápsula de workspaces (ou 'default' para herdar)";
                 };
 
+                stats = mkOption {
+                  type = lib.types.enum [
+                    "default"
+                    "pill"
+                    "shapes"
+                    "slant"
+                    "powerline"
+                  ];
+                  default = "default";
+                  description = "Encapsulamento específico da cápsula de métricas/hardware (cpu, ram, temp, disk)";
+                };
+
+                netspeed = mkOption {
+                  type = lib.types.enum [
+                    "default"
+                    "pill"
+                    "shapes"
+                    "slant"
+                    "powerline"
+                  ];
+                  default = "default";
+                  description = "Encapsulamento específico da cápsula de velocidade de rede (netspeed) (ou 'default' para herdar)";
+                };
+
                 date = mkOption {
                   type = lib.types.enum [
                     "default"
@@ -111,6 +138,23 @@ in
                   default = "default";
                   description = "Encapsulamento específico da cápsula da bandeja (ou 'default' para herdar)";
                 };
+
+                colors = mkOption {
+                  type = lib.types.attrsOf (lib.types.either lib.types.str (lib.types.nullOr lib.types.str));
+                  default = { };
+                  description = ''
+                    Cores customizadas opcionais para os glifos e fundos das cápsulas.
+                    Chaves suportadas:
+                    - glyph: cor padrão dos glifos (ex: "pill", "red", "#ff0000", "shade1")
+                    - workspaces: cor de fundo e glifos da cápsula de workspaces
+                    - focused: cor de destaque do workspace ativo (ex: "red", "#f7768e")
+                    - focusedNumber: cor do número do workspace quando focado/ativo (ex: "dark", "#541422")
+                    - stats: cor de fundo e glifos da cápsula de métricas (cpu, memory, temp, disk)
+                    - netspeed: cor de fundo e glifos da cápsula de velocidade de rede (netspeed)
+                    - date: cor de fundo e glifos da cápsula de data/relógio
+                    - tray: cor de fundo e glifos da cápsula da bandeja
+                  '';
+                };
               };
             }
           );
@@ -121,10 +165,19 @@ in
           {
             default = "pill";
             workspaces = "shapes"; # usa  e  nos workspaces
+            stats = "shapes";      # usa  e  nas métricas (cpu, mem, temp, disk)
+            netspeed = "slant";    # usa  e  na velocidade de rede
             date = "pill";         # usa  e  no relógio
+            colors = {
+              glyph = "pill";      # ou qualquer cor da paleta/hex
+              focused = "red";     # destaque vibrante para o workspace ativo
+              focusedNumber = "#541422"; # cor suave e amena do número quando focado
+              stats = "pill";
+              netspeed = "pill";
+            };
           }
         Também é possível usar diretamente os módulos 'round-left'/'round-right', 'shape-left'/'shape-right',
-        'slant-left'/'slant-right' ou 'powerline-left'/'powerline-right' na lista de módulos das barras.
+        'slant-left'/'slant-right', 'powerline-left'/'powerline-right' (ou suas variantes coloridas como 'shape-left-red') na lista de módulos das barras.
       '';
     };
 
@@ -241,26 +294,83 @@ in
             in
             if s != "default" then s else rawDefaultEncap;
 
+          resolveColor =
+            val: defaultVal:
+            if val == null || val == "" then
+              defaultVal
+            else if lib.strings.hasPrefix "#" val then
+              val
+            else if colors ? ${val} then
+              colors.${val}
+            else
+              defaultVal;
+
+          encapColors = if builtins.isAttrs cfg.encapsulation then (cfg.encapsulation.colors or { }) else { };
+          baseGlyphColor = resolveColor (encapColors.glyph or encapColors.default or null) colors.pill;
+          wsColor = resolveColor (encapColors.workspaces or null) baseGlyphColor;
+          statsColor = resolveColor (encapColors.stats or null) baseGlyphColor;
+          netspeedColor = resolveColor (encapColors.netspeed or null) baseGlyphColor;
+          dateColor = resolveColor (encapColors.date or null) baseGlyphColor;
+          trayColor = resolveColor (encapColors.tray or null) baseGlyphColor;
+          focusedWsColor = resolveColor (encapColors.focused or encapColors.active or null) (
+            if colors ? pill-active && colors.pill-active != "" then colors.pill-active else colors.red
+          );
+          focusedNumColor = resolveColor (encapColors.focusedNumber or encapColors.focused_number or null) (
+            if
+              focusedWsColor == colors.red || focusedWsColor == colors.pill-active || focusedWsColor == "#f7768e"
+            then
+              "#541422"
+            else
+              colors.dark
+          );
+
           wsEncap = resolveEncap "workspaces";
+          statsEncap = resolveEncap "stats";
+          netspeedEncap = resolveEncap "netspeed";
           dateEncap = resolveEncap "date";
           trayEncap = resolveEncap "tray";
 
-          # Normalizar prefixo do módulo (shapes -> shape, pill -> round)
-          normalizeEncap =
-            e:
-            if e == "shapes" then
-              "shape"
-            else if e == "pill" then
-              "round"
-            else
-              e;
+          # Glifos mapeados para os módulos de encapsulamento dedicados
+          encapGlyphMap = {
+            pill = {
+              left = "";
+              right = "";
+            };
+            shapes = {
+              left = "";
+              right = "";
+            };
+            shape = {
+              left = "";
+              right = "";
+            };
+            slant = {
+              left = "";
+              right = "";
+            };
+            powerline = {
+              left = "";
+              right = "";
+            };
+          };
 
-          wsLeft = "${normalizeEncap wsEncap}-left";
-          wsRight = "${normalizeEncap wsEncap}-right";
-          dateLeft = "${normalizeEncap dateEncap}-left";
-          dateRight = "${normalizeEncap dateEncap}-right";
-          trayLeft = "${normalizeEncap trayEncap}-left";
-          trayRight = "${normalizeEncap trayEncap}-right";
+          getGlyphs = e: encapGlyphMap.${e} or encapGlyphMap.pill;
+          wsGlyphs = getGlyphs wsEncap;
+          statsGlyphs = getGlyphs statsEncap;
+          netspeedGlyphs = getGlyphs netspeedEncap;
+          dateGlyphs = getGlyphs dateEncap;
+          trayGlyphs = getGlyphs trayEncap;
+
+          wsLeft = "encap-ws-left";
+          wsRight = "encap-ws-right";
+          statsLeft = "encap-stats-left";
+          statsRight = "encap-stats-right";
+          netspeedLeft = "encap-netspeed-left";
+          netspeedRight = "encap-netspeed-right";
+          dateLeft = "encap-date-left";
+          dateRight = "encap-date-right";
+          trayLeft = "encap-tray-left";
+          trayRight = "encap-tray-right";
 
           modernTray = if hasTray then " sep tray" else "";
           pillsTray = if hasTray then " sp ${trayLeft} tray ${trayRight}" else "";
@@ -288,6 +398,8 @@ in
             padding-left = 2;
             padding-right = 2;
             module-margin = 0;
+            module-margin-left = 0;
+            module-margin-right = 0;
 
             font-0 = "Inter:weight=SemiBold:size=10;3";
             font-1 = "Symbols Nerd Font:size=11;3";
@@ -357,6 +469,8 @@ in
             padding-left = 2;
             padding-right = 2;
             module-margin = 0;
+            module-margin-left = 0;
+            module-margin-right = 0;
 
             font-0 = "Inter:weight=SemiBold:size=10;3";
             font-1 = "Symbols Nerd Font:size=11;3";
@@ -381,13 +495,13 @@ in
             modules-left = "launcher sp ${wsLeft} bspwm ${wsRight} sp bsp-layout sep polywins minimized";
             modules-center = "media";
             # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications${pillsTray} sp ${dateLeft} date ${dateRight} sp powermenu";
-            modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications sp ${dateLeft} date ${dateRight} sp powermenu";
+            modules-right = "${statsLeft} cpu memory temperature ${statsRight} sp network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications sp ${dateLeft} date ${dateRight} sp powermenu";
           };
 
           pillsPrimaryBar = pillsBaseBar // {
             modules-left = "launcher sp ${wsLeft} bspwm ${wsRight} sp bsp-layout sep polywins minimized";
             modules-center = "media";
-            modules-right = "shape-left sp cpu memory temperature disk shape-right sep network dots netspeed sep uptime";
+            modules-right = "${statsLeft} cpu memory temperature disk ${statsRight} sp network sp ${netspeedLeft} netspeed ${netspeedRight} sep uptime";
           };
 
           pillsSecondaryBar = pillsBaseBar // {
@@ -418,68 +532,193 @@ in
                 ws-icon-10 = "10;%{F${colors.green-alt}}10%{F-}";
                 ws-icon-default = "%name%";
 
-                # Workspace focado: Pac-Man (󰮯) no workspace ativo mantendo o número colorido e cápsula elevada
-                label-focused = "%{T2}%{F${colors.yellow-alt}}󰮯 %{F-}%{T-}%{T3}%icon%%{T-}";
-                label-focused-foreground = colors.text;
-                label-focused-background = colors.pill-alt;
+                # Workspace focado: Pac-Man (󰮯) e número com cor amena e elegante no fundo ativo
+                label-focused = "%{T2}%{F${colors.dark}}󰮯 %{F-}%{T-}%{T3}%{F${focusedNumColor}}%name%%{F-}%{T-}";
+                label-focused-foreground = focusedNumColor;
+                label-focused-background = focusedWsColor;
                 label-focused-padding = 1;
                 label-focused-margin = 0;
 
-                # Workspace ocupado (com janelas): número colorido pastel no fundo padrão
+                # Workspace ocupado (com janelas): número colorido pastel no fundo padrão da cápsula
                 label-occupied = "%{T3}%icon%%{T-}";
                 label-occupied-foreground = colors.text;
-                label-occupied-background = colors.pill;
+                label-occupied-background = wsColor;
                 label-occupied-padding = 1;
                 label-occupied-margin = 0;
 
                 # Workspace com urgência / alerta: fantasma do Pac-Man (󰊠) em vermelho
                 label-urgent = "%{T2}%{F${colors.red}}󰊠 %{F-}%{T-}%{T3}%icon%%{T-}";
                 label-urgent-foreground = colors.nord;
-                label-urgent-background = colors.pill;
+                label-urgent-background = wsColor;
                 label-urgent-padding = 1;
                 label-urgent-margin = 0;
 
                 # Workspace vazio: número atenuado e sutil (%name%), sem cor de ícone ativa
                 label-empty = "%{T3}%name%%{T-}";
                 label-empty-foreground = colors.muted;
-                label-empty-background = colors.pill;
+                label-empty-background = wsColor;
                 label-empty-padding = 1;
                 label-empty-margin = 0;
 
                 label-separator = "";
-                label-separator-background = colors.pill;
+                label-separator-background = wsColor;
+              };
+
+              # Módulos dedicados para cada seção da barra, sincronizando glifos e cores com perfeição
+              "module/encap-ws-left" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${wsGlyphs.left}%{T-}";
+                label-foreground = wsColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-ws-right" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${wsGlyphs.right}%{T-}";
+                label-foreground = wsColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-stats-left" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${statsGlyphs.left}%{T-}";
+                label-foreground = statsColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-stats-right" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${statsGlyphs.right}%{T-}";
+                label-foreground = statsColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-netspeed-left" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${netspeedGlyphs.left}%{T-}";
+                label-foreground = netspeedColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-netspeed-right" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${netspeedGlyphs.right}%{T-}";
+                label-foreground = netspeedColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-date-left" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${dateGlyphs.left}%{T-}";
+                label-foreground = dateColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-date-right" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${dateGlyphs.right}%{T-}";
+                label-foreground = dateColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-tray-left" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${trayGlyphs.left}%{T-}";
+                label-foreground = trayColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/encap-tray-right" = {
+                type = "custom/text";
+                format = "<label>";
+                label = "%{T5}${trayGlyphs.right}%{T-}";
+                label-foreground = trayColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+
+              # Sobrescrita direta de compatibilidade para módulos shape-left/shape-right manuais
+              "module/shape-left" = {
+                label = "%{T5}%{T-}";
+                label-foreground = statsColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/shape-right" = {
+                label = "%{T5}%{T-}";
+                label-foreground = statsColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/shapes-left" = {
+                label = "%{T5}%{T-}";
+                label-foreground = statsColor;
+                format-margin = 0;
+                format-padding = 0;
+              };
+              "module/shapes-right" = {
+                label = "%{T5}%{T-}";
+                label-foreground = statsColor;
+                format-margin = 0;
+                format-padding = 0;
               };
 
               "module/cpu" = {
                 format = "<label>";
-                format-prefix = " ";
-                format-prefix-foreground = colors.purple;
-                label = "%percentage%%";
+                format-prefix = "";
+                format-background = statsColor;
+                format-margin = 0;
+                format-padding = 0;
+                label = " %{T2}%{F${colors.purple}} %{F-}%{T-}%percentage%% ";
                 label-foreground = colors.text-alt;
+                label-background = statsColor;
                 label-padding = 0;
+                label-margin = 0;
               };
 
               "module/memory" = {
                 format = "<label>";
-                format-prefix = " ";
-                format-prefix-foreground = colors.orange;
-                label = "%percentage_used%%";
+                format-prefix = "";
+                format-background = statsColor;
+                format-margin = 0;
+                format-padding = 0;
+                label = " %{T2}%{F${colors.orange}} %{F-}%{T-}%percentage_used%% ";
                 label-foreground = colors.text-alt;
+                label-background = statsColor;
                 label-padding = 0;
+                label-margin = 0;
               };
 
               "module/temperature" = {
                 type = "internal/temperature";
                 thermal-zone = 0;
                 warn-temperature = 75;
-                format = "<ramp> <label>";
-                format-warn = "<ramp> <label-warn>";
+                format = "<label>";
+                format-warn = "<label-warn>";
+                format-prefix = "";
+                format-background = statsColor;
+                format-warn-background = statsColor;
+                format-margin = 0;
                 format-padding = 0;
-                label = "%temperature-c%";
-                label-warn = "%temperature-c%";
+                format-warn-padding = 0;
+                label = " %{T2}%{F${colors.ice}} %{F-}%{T-}%temperature-c% ";
+                label-warn = " %{T2}%{F${colors.red}} %{F-}%{T-}%temperature-c% ";
                 label-foreground = colors.text-alt;
-                ramp-0 = "";
-                ramp-foreground = colors.ice;
+                label-warn-foreground = colors.red;
+                label-background = statsColor;
+                label-warn-background = statsColor;
+                label-padding = 0;
+                label-warn-padding = 0;
+                label-margin = 0;
               };
 
               "module/pulseaudio" = {
@@ -512,16 +751,19 @@ in
                 interval = 1;
                 format = "<label>";
                 format-prefix = "";
-                format-prefix-foreground = colors.pill;
-                format-background = colors.pill;
+                format-prefix-foreground = dateColor;
+                format-background = dateColor;
+                format-margin = 0;
+                format-padding = 0;
                 date = "%{F${colors.time-alt}}  %H:%M:%S%{F-}";
                 date-alt = "%{F${colors.blue-alt}}  %a, %d %b %Y  %{F${colors.time-alt}}  %H:%M:%S%{F-}";
                 time = "";
                 time-alt = "";
-                label = "%date%";
+                label = " %date% ";
                 label-foreground = colors.time-alt;
-                label-background = colors.pill;
-                label-padding = 1;
+                label-background = dateColor;
+                label-padding = 0;
+                label-margin = 0;
               };
 
               "module/network" = {
@@ -529,12 +771,29 @@ in
               };
 
               "module/netspeed" = {
+                format = "<label>";
+                format-background = netspeedColor;
+                format-margin = 0;
+                format-padding = 0;
+                label = " %output% ";
                 label-foreground = colors.nord;
+                label-background = netspeedColor;
+                label-padding = 0;
+                label-margin = 0;
               };
 
               "module/disk" = {
-                format-mounted-prefix-foreground = colors.orange;
+                spacing = 0;
+                format-mounted = "<label-mounted>";
+                format-mounted-prefix = "";
+                format-mounted-background = statsColor;
+                format-mounted-margin = 0;
+                format-mounted-padding = 0;
+                label-mounted = " %{T2}%{F${colors.orange}} %{F-}%{T-}%free% ";
                 label-mounted-foreground = colors.text-alt;
+                label-mounted-background = statsColor;
+                label-mounted-padding = 0;
+                label-mounted-margin = 0;
               };
 
               "module/uptime" = {
@@ -564,8 +823,8 @@ in
             }
             // lib.optionalAttrs hasTray {
               "module/tray" = {
-                format-background = colors.pill;
-                label-background = colors.pill;
+                format-background = trayColor;
+                label-background = trayColor;
                 label-foreground = colors.blue-alt;
               };
             };

@@ -148,26 +148,7 @@ in
           background-frame = false;
           background-fixed = false;
         };
-
-        # Exclusão global de blur para ferramentas de seleção (slop), docks e áreas de trabalho
-        blur-background-exclude = [
-          "window_type = 'dock'",
-          "window_type = 'desktop'",
-          "class_g = 'slop'",
-          "class_g = 'Slop'",
-          "class_g ?= 'slop'",
-          "class_i = 'slop'",
-          "name = 'slop'",
-          "name ?= 'slop'",
-          "_GTK_FRAME_EXTENTS@:c"
-        ];
       ''}
-
-      shadow-exclude = [
-        "class_g = 'slop'",
-        "class_g ?= 'slop'",
-        "name = 'slop'"
-      ];
 
       # --- 5. Regras Declarativas Modernas (Rules v12) ---
       rules = (
@@ -176,7 +157,7 @@ in
         # Sem essa regra prioritária no topo, o slop (overlay de seleção do maim -s) herda o blur global do picom,
         # embaçando a tela inteira durante o recorte e impedindo a visualização da área a selecionar.
         {
-          match = "class_g ?= 'slop' || class_i ?= 'slop' || name ?= 'slop' || class_g ?= 'slurp' || class_g ?= 'flameshot' || class_g ?= 'Gnome-screenshot' || class_g ?= 'xrectsel'";
+          match = "class_g ?= 'slop' || class_i ?= 'slop' || name ?= 'slop' || class_g ?= 'Slop' || class_g ?= 'slurp' || class_g ?= 'flameshot' || class_g ?= 'Gnome-screenshot' || class_g ?= 'xrectsel'";
           corner-radius = 0;
           shadow = false;
           blur-background = false;
@@ -335,6 +316,15 @@ in
           blur-background = false;
           opacity = 1.0;
           unredir-if-possible = false;
+        },
+
+        # Desktop (fundo da área de trabalho)
+        {
+          match = "window_type = 'desktop'";
+          corner-radius = 0;
+          fade = false;
+          shadow = false;
+          blur-background = false;
         },
 
         # Menus de contexto GTK/Qt

@@ -28,6 +28,7 @@ in
   lavender = extra "lavender" "purple";
   sapphire = extra "sapphire" "blue";
   sky = extra "sky" "cyan";
+  cyan = c.cyan;
   teal = c.teal;
   green = c.green;
   yellow = c.yellow;
@@ -37,6 +38,7 @@ in
   mauve = c.purple;
   flamingo = extra "flamingo" "pink";
   rosewater = extra "rosewater" "pink";
+  accent = c.accent;
   transparent = "#00000000";
 
   # --- Paleta Cápsulas & Pills (adaptada dinamicamente ao tema) ---
@@ -44,6 +46,7 @@ in
   text-alt = c.fgMuted;
   pill = c.surface; # Fundo das cápsulas / pills
   pill-alt = c.surfaceAlt;
+  pill-active = c.accent; # Fundo vibrante de destaque do workspace ativo
   dark = c.bgDark; # Fundo da barra escura
   gray = c.border; # Linha de foco e bordas
   muted = c.fgSubtle; # Texto sutil / ocupado

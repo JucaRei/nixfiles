@@ -169,7 +169,7 @@ let
 
         # Restaura o compositor imediatamente após o recorte (ou cancelamento com Esc)
         if [ "$was_picom" -eq 1 ]; then
-          (${picomBin} -b 2>/dev/null || ${pkgs.picom}/bin/picom -b 2>/dev/null || true) &
+          (${picomBin} -b >/dev/null 2>&1 || ${pkgs.picom}/bin/picom -b >/dev/null 2>&1 || true) &
         fi
 
         [ "$ret" -eq 0 ] && notify_shot "$file"

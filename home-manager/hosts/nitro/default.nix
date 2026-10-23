@@ -66,7 +66,12 @@ in
           adapter = "ACAD";
           style = lib.mkDefault "pills";
           encapsulation = {
-            workspaces = "powerline";
+            workspaces = lib.mkForce "powerline";
+            stats = lib.mkForce "shapes";
+            netspeed = "slant";
+            colors = {
+              netspeed = "#573280";
+            };
           };
         };
 

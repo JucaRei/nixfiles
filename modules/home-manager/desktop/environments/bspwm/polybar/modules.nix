@@ -20,6 +20,23 @@ let
     else
       cfg.encapsulation or "pill";
 
+  resolveColor =
+    val: defaultVal:
+    if val == null || val == "" then
+      defaultVal
+    else if lib.strings.hasPrefix "#" val then
+      val
+    else if colors ? ${val} then
+      colors.${val}
+    else
+      defaultVal;
+
+  customGlyphColor =
+    if builtins.isAttrs (cfg.encapsulation or null) then
+      resolveColor (cfg.encapsulation.colors.glyph or cfg.encapsulation.colors.default or null) colors.pill
+    else
+      colors.pill;
+
   encapType =
     if rawEncap != "pill" then
       rawEncap
@@ -53,6 +70,104 @@ let
   };
 
   currentEncap = encapGlyphs.${encapType} or encapGlyphs.pill;
+
+  colorList = [
+    "pill"
+    "pill-alt"
+    "pill-active"
+    "red"
+    "orange"
+    "yellow"
+    "green"
+    "teal"
+    "cyan"
+    "blue"
+    "purple"
+    "pink"
+    "accent"
+    "ice"
+    "coral"
+    "mint"
+    "nord"
+    "dark"
+    "surface0"
+    "surface1"
+    "surface2"
+    "shade1"
+    "shade2"
+    "shade3"
+    "shade4"
+    "shade5"
+    "shade6"
+    "shade7"
+    "shade8"
+  ];
+
+  # Gerar dinamicamente módulos de encapsulamento coloridos (ex: shape-left-purple, shape-left-red, etc.)
+  mkColoredEncapModules = lib.foldl' (
+    acc: cName:
+    let
+      cVal = colors.${cName} or colors.pill;
+    in
+    acc
+    // {
+      "module/shape-left-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        label = "%{T5}%{T-}";
+        label-foreground = cVal;
+      };
+      "module/shape-right-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        label = "%{T5}%{T-}";
+        label-foreground = cVal;
+      };
+      "module/round-left-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        label = "%{T5}%{T-}";
+        label-foreground = cVal;
+      };
+      "module/round-right-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        label = "%{T5}%{T-}";
+        label-foreground = cVal;
+      };
+      "module/slant-left-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        label = "%{T5}%{T-}";
+        label-foreground = cVal;
+      };
+      "module/slant-right-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        label = "%{T5}%{T-}";
+        label-foreground = cVal;
+      };
+      "module/powerline-left-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        label = "%{T5}%{T-}";
+        label-foreground = cVal;
+      };
+      "module/powerline-right-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        label = "%{T5}%{T-}";
+        label-foreground = cVal;
+      };
+      "module/sp-${cName}" = {
+        type = "custom/text";
+        format = "<label>";
+        format-background = cVal;
+        label = " ";
+        label-background = cVal;
+      };
+    }
+  ) { } colorList;
 in
 {
   # --- Divisores & Espaçadores Elegantes (Estilo Waybar / Catppuccin) ---
@@ -85,14 +200,14 @@ in
     type = "custom/text";
     format = "<label>";
     label = "%{T5}${currentEncap.left}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/encap-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}${currentEncap.right}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   # Aliases clássicos de cápsula arredondada (pill)
@@ -100,28 +215,28 @@ in
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/round-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/bi" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/bd" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   # Módulos explícitos com glifos fixos (permite misturar estilos livremente na mesma barra)
@@ -129,42 +244,42 @@ in
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/pill-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/shape-left" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/shape-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/shapes-left" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/shapes-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   # 3. Estilo Slant / Diagonal Paralelo ( e )
@@ -172,14 +287,14 @@ in
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/slant-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   # Variações para baixo com direção alternada ( e )
@@ -187,14 +302,14 @@ in
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/slant-down-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   # Variações com corte para cima ( e )
@@ -202,28 +317,28 @@ in
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/slant-up-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/powerline-left" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   "module/powerline-right" = {
     type = "custom/text";
     format = "<label>";
     label = "%{T5}%{T-}";
-    label-foreground = colors.pill;
+    label-foreground = customGlyphColor;
   };
 
   # --- Módulos de Transição Sombreada Estilo Shapes (debian-bspwm-e300 / adi1090x) ---
@@ -297,6 +412,14 @@ in
     type = "custom/text";
     format = "<label>";
     label = " ";
+  };
+
+  "module/sp-pill" = {
+    type = "custom/text";
+    format = "<label>";
+    format-background = customGlyphColor;
+    label = " ";
+    label-background = customGlyphColor;
   };
 
   "module/space" = {
@@ -459,7 +582,7 @@ in
     mount-0 = "/";
     interval = 30;
     fixed-values = true;
-    spacing = 1;
+    spacing = 0;
 
     format-mounted = "<label-mounted>";
     format-mounted-prefix = "󰋊";
@@ -671,6 +794,7 @@ in
     pseudo-transparency = false;
   };
 }
+// mkColoredEncapModules
 // lib.optionalAttrs (cfg.tray.enable or false) {
   # --- Bandeja do Sistema (Stalonetray Toggle Button) ---
   "module/tray" = {
