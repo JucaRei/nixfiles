@@ -92,6 +92,7 @@ sudo nixos-rebuild switch --flake .#<host>           # NixOS
 - **Aliases de shell:** não usar `"$@"` (Fish rejeita); comandos POSIX complexos viram `pkgs.writeShellScriptBin`.
 - **Tiling managers no HM:** wrapper `~/.local/bin/start-<wm>`, sessão `.desktop` em `~/.local/share/{wayland,x}-sessions/`, teclado herdado de `home.keyboard`.
 - **Sintaxe de WM:** MangoWM usa `snake_case` (`border_px`, `exec_once`, `window_rule`); Hyprland 0.55+ usa `windowrule` (não `windowrulev2`). Detalhes no README do ambiente.
+- **Low-RAM hosts e PSD:** em hosts com pouca RAM (ex.: 2 GB no `anubis`), desativar `system.programs.browsers.psd.enable`; o `tmpfs` em `/run/user/1000` limitado a 10% da RAM (~180 MB) estoura rapidamente e causa falhas de `No space left on device (28)` e crashes em navegadores.
 
 ## Onde documentar
 

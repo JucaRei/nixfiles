@@ -123,8 +123,10 @@ pci=nomsi pcie_aspm=off iwlwifi.power_save=0 i915.enable_psr=0
 zswap.enabled=1 zswap.compressor=lz4 mitigations=auto
 ```
 
-### Otimização de Memória
-Com apenas 2 GB de RAM, evitar pacotes redundantes. Preferir ferramentas leves (ex: `htop` em vez de `btop`).
+### Otimização de Memória e Navegadores (Desativação de PSD)
+- Com apenas 2 GB de RAM física, o `tmpfs` em `/run/user/1000` (`$XDG_RUNTIME_DIR`) é limitado a 10% da RAM (~180 MB).
+- O **Profile-Sync-Daemon (PSD)** deve permanecer desativado (`system.programs.browsers.psd.enable = false;` em [default.nix](./default.nix)), pois manter perfis de navegadores na RAM estoura o limite de 180 MB (Firefox ocupa sozinho ~170 MB), provocando falhas generalizadas de `No space left on device (28)` e crash por segmentation fault em navegadores Chromium/Vivaldi.
+- Evitar pacotes redundantes; preferir ferramentas leves (ex: `htop` em vez de `btop`).
 
 ---
 

@@ -16,6 +16,8 @@
             enable = true;
             version = "vivaldi";
           };
+          # Desativa Profile-Sync-Daemon no Anubis para preservar a RAM de 2GB e evitar estouro de /run/user/1000
+          psd.enable = false;
         };
         editors = {
           antigravity.enable = true;

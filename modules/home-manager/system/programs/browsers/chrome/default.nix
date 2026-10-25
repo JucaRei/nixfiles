@@ -102,6 +102,7 @@ in
         "--ozone-platform=wayland"
         "--enable-wayland-ime"
         "--enable-features=WaylandWindowDecorations"
+        "--disable-features=Vulkan"
       ]
       ++ optionals (hasVaapi) [
         "--enable-features=VaapiVideoDecodeLinuxGL"
