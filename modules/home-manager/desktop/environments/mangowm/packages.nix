@@ -10,6 +10,7 @@ let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool listOf str;
   cfg = config.desktop.mangowm;
+  c = config.desktop.theme.colors;
 
   mangoPkg =
     if (inputs ? mangowm && inputs.mangowm ? packages && inputs.mangowm.packages ? ${pkgs.stdenv.hostPlatform.system}) then
@@ -135,45 +136,45 @@ let
     else
       chosen=$(printf "%b" "$options" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Layout Mango " -theme-str '
         * {
-          bg-col: #1e1e2e;
-          bg-col-light: #181825;
-          border-col: #cba6f7;
-          selected-col: #313244;
-          fg-col: #cdd6f4;
-          grey: #6c7086;
+          bg-col: ${c.bg};
+          bg-col-light: ${c.bgAlt};
+          border-col: ${c.accent};
+          selected-col: ${c.surface};
+          fg-col: ${c.fg};
+          grey: ${c.fgMuted};
           font: "Inter 11";
         }
         window {
           width: 360px;
           height: 520px;
           border: 2px;
-          border-color: #cba6f7;
+          border-color: ${c.accent};
           border-radius: 12px;
-          background-color: #1e1e2e;
+          background-color: ${c.bg};
         }
         mainbox {
-          background-color: #1e1e2e;
+          background-color: ${c.bg};
           padding: 12px;
         }
         inputbar {
           children: [prompt, entry];
-          background-color: #181825;
+          background-color: ${c.bgAlt};
           border-radius: 8px;
           padding: 6px 10px;
           margin: 0px 0px 8px 0px;
         }
         prompt {
-          background-color: #cba6f7;
+          background-color: ${c.accent};
           padding: 4px 8px;
-          text-color: #11111b;
+          text-color: ${c.bgDark};
           border-radius: 6px;
           margin: 0px 8px 0px 0px;
         }
         entry {
           padding: 4px;
-          text-color: #cdd6f4;
+          text-color: ${c.fg};
           background-color: transparent;
-          placeholder-color: #6c7086;
+          placeholder-color: ${c.fgMuted};
         }
         listview {
           border: 0px;
@@ -181,17 +182,17 @@ let
           margin: 0px;
           columns: 1;
           lines: 14;
-          background-color: #1e1e2e;
+          background-color: ${c.bg};
         }
         element {
           padding: 6px 10px;
-          background-color: #1e1e2e;
-          text-color: #cdd6f4;
+          background-color: ${c.bg};
+          text-color: ${c.fg};
           border-radius: 6px;
         }
         element selected {
-          background-color: #313244;
-          text-color: #cba6f7;
+          background-color: ${c.surface};
+          text-color: ${c.accent};
         }
         element-text, element-icon {
           background-color: inherit;

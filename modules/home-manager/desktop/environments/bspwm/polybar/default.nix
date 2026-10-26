@@ -227,7 +227,7 @@ in
       enable = true;
       package = pkgs.stalonetray;
       config = {
-        background = "#2b2f37";
+        background = colors.surface;
         decorations = "none";
         dockapp_mode = "none";
         geometry = "5x1-16+44";

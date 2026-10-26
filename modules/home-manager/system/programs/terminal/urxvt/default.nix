@@ -9,6 +9,7 @@ let
 
   cfg = config.system.programs.terminal;
   urxvtCfg = config.system.programs.terminal.urxvt;
+  c = config.desktop.theme.colors;
 
   # rxvt-unicode com todos os plugins disponíveis empacotados (perls, resize-font, vtwheel, urxvt-tabbedex, etc.)
   # e symlinks bidirecionais para compatibilidade com atalhos de resize-font e font-size.
@@ -50,7 +51,7 @@ in
 {
   options = {
     system.programs.terminal.urxvt = {
-      enable = mkEnableOption "URxvt (rxvt-unicode) terminal emulator with Gruvbox colors and tabbedex/clipboard/vtwheel extensions.";
+      enable = mkEnableOption "URxvt (rxvt-unicode) terminal emulator with dynamic theme colors and tabbedex/clipboard/vtwheel extensions.";
     };
   };
 
@@ -113,68 +114,27 @@ in
       };
     };
 
-    # Paleta de cores Gruvbox 256
-    xresources.extraConfig = ''
-      ! -----------------------------------------------------------------------------
-      ! File: gruvbox-urxvt256.xresources
-      ! Description: Retro groove colorscheme generalized
-      ! Author: morhetz <morhetz@gmail.com>
-      ! Source: https://github.com/morhetz/gruvbox-generalized
-      ! Last Modified: 13 Dec 2013
-      ! -----------------------------------------------------------------------------
-      URxvt.color24:  #076678
-      URxvt.color66:  #427b58
-      URxvt.color88:  #9d0006
-      URxvt.color96:  #8f3f71
-      URxvt.color100: #79740e
-      URxvt.color108: #8ec07c
-      URxvt.color109: #83a598
-      URxvt.color130: #af3a03
-      URxvt.color136: #b57614
-      URxvt.color142: #b8bb26
-      URxvt.color167: #fb4934
-      URxvt.color175: #d3869b
-      URxvt.color208: #fe8019
-      URxvt.color214: #fabd2f
-      URxvt.color223: #ebdbb2
-      URxvt.color228: #f2e5bc
-      URxvt.color229: #fbf1c7
-      URxvt.color230: #f9f5d7
-      URxvt.color234: #1d2021
-      URxvt.color235: #282828
-      URxvt.color236: #32302f
-      URxvt.color237: #3c3836
-      URxvt.color239: #504945
-      URxvt.color241: #665c54
-      URxvt.color243: #7c6f64
-      URxvt.color244: #928374
-      URxvt.color245: #928374
-      URxvt.color246: #a89984
-      URxvt.color248: #bdae93
-      URxvt.color250: #d5c4a1
-    '';
-
-    # Configurações de comportamento, abas, clipboard, atalhos e fontes
+    # Configurações de comportamento, abas, clipboard, atalhos, fontes e cores do tema ativo
     xresources.properties = {
-      # colors
-      "*background" = "#32302f";
-      "*foreground" = "#ebdbb2";
-      "*color0" = "#282828";
-      "*color1" = "#cc241d";
-      "*color2" = "#98971a";
-      "*color3" = "#d79921";
-      "*color4" = "#458588";
-      "*color5" = "#b16286";
-      "*color6" = "#689d6a";
-      "*color7" = "#a89984";
-      "*color8" = "#928374";
-      "*color9" = "#fb4934";
-      "*color10" = "#b8bb26";
-      "*color11" = "#fabd2f";
-      "*color12" = "#83a598";
-      "*color13" = "#d3869b";
-      "*color14" = "#8ec07c";
-      "*color15" = "#ebdbb2";
+      # Cores derivadas do tema desktop ativo
+      "*background" = c.bg;
+      "*foreground" = c.fg;
+      "*color0" = c.bgDark;
+      "*color1" = c.red;
+      "*color2" = c.green;
+      "*color3" = c.yellow;
+      "*color4" = c.blue;
+      "*color5" = c.purple;
+      "*color6" = c.cyan;
+      "*color7" = c.fgMuted;
+      "*color8" = c.border;
+      "*color9" = c.red;
+      "*color10" = c.green;
+      "*color11" = c.yellow;
+      "*color12" = c.blue;
+      "*color13" = c.pink;
+      "*color14" = c.teal;
+      "*color15" = c.fg;
 
       # extensions i use
       "URxvt.perl-ext-common" = "default,clipboard,matcher,tabbedex,vtwheel";
@@ -220,7 +180,7 @@ in
       "URxvt.iso14755_52" = "false";
       "URxvt.geometry" = "100x50";
       "URxvt.depth" = "32";
-      "URxvt.background" = "[95]#32302f";
+      "URxvt.background" = "[95]${c.bg}";
       "URxvt.skipBuiltinGlyphs" = "false";
 
       # Espaçamento (alinha ícones Nerd Font perfeitamente e evita corte/distorção)

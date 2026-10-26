@@ -15,6 +15,19 @@ let
       fallback;
 in
 {
+  # --- Papéis semânticos universais ---
+  bg = c.bg;
+  bgAlt = c.bgAlt;
+  bgDark = c.bgDark;
+  surface = c.surface;
+  surfaceAlt = c.surfaceAlt;
+  border = c.border;
+  fg = c.fg;
+  fgMuted = c.fgMuted;
+  fgSubtle = c.fgSubtle;
+  pink = c.pink;
+
+  # --- Equivalentes Catppuccin (consumidos por modules.nix) ---
   base = c.bg;
   mantle = c.bgAlt;
   crust = c.bgDark;

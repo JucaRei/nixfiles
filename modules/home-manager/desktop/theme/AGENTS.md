@@ -8,7 +8,7 @@ Aplica paleta, GTK, ícones, cursor e fonte em **qualquer host e desktop** (BSPW
 # home-manager/hosts/<host>/default.nix
 desktop.theme = {
   enable = true;
-  name = "dracula";   # catppuccin-mocha | catppuccin-macchiato | dracula | nord | gruvbox-dark | tokyo-night
+  name = "dracula";   # catppuccin-mocha | catppuccin-macchiato | dracula | nord | gruvbox-dark | tokyo-night | tokyonight | kanagawa-wave
   accent = "purple";  # red orange yellow green teal cyan blue purple pink
 };
 ```

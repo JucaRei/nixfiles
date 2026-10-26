@@ -174,13 +174,13 @@ in
   "module/sep" = {
     type = "custom/text";
     format = "<label>";
-    label = "  %{F#45475a}│%{F-}  ";
+    label = "  %{F${colors.surface1}}│%{F-}  ";
   };
 
   "module/dots" = {
     type = "custom/text";
     format = "<label>";
-    label = "  %{F#45475a}·%{F-}  ";
+    label = "  %{F${colors.surface1}}·%{F-}  ";
   };
 
   # --- Lançador de Aplicativos (Logo do Sistema Operacional com Cor Oficial Dinâmica) ---

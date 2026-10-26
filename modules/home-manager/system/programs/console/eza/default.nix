@@ -19,15 +19,72 @@ let
 
   predefinedThemes = {
     "kanagawa-wave" = ./themes/kanagawa-wave.yml;
+    "kanagawa" = ./themes/kanagawa-wave.yml;
     "catppuccin-mocha" = ./themes/catppuccin-mocha.yml;
+    "catppuccin-macchiato" = ./themes/catppuccin-mocha.yml;
+    "catppuccin" = ./themes/catppuccin-mocha.yml;
     "tokyonight" = ./themes/tokyonight.yml;
+    "tokyo-night" = ./themes/tokyonight.yml;
+    "dracula" = ./themes/dracula.yml;
+    "nord" = ./themes/nord.yml;
+    "gruvbox-dark" = ./themes/gruvbox-dark.yml;
+    "gruvbox" = ./themes/gruvbox-dark.yml;
   };
 
+  selectedTheme =
+    if cfg.theme == "auto" then
+      (config.desktop.theme.name or "kanagawa-wave")
+    else
+      cfg.theme;
+
   normalizedTheme =
-    if builtins.isString cfg.theme then
-      toLower (builtins.replaceStrings [ " " "_" ] [ "-" "-" ] cfg.theme)
+    if builtins.isString selectedTheme then
+      toLower (builtins.replaceStrings [ " " "_" ] [ "-" "-" ] selectedTheme)
     else
       null;
+
+  dynamicThemeText =
+    let
+      c = config.desktop.theme.colors;
+    in
+    ''
+      colourful: true
+      filekinds:
+        normal: { foreground: "${c.fg}" }
+        directory: { foreground: "${c.blue}" }
+        symlink: { foreground: "${c.cyan}" }
+        pipe: { foreground: "${c.fgSubtle}" }
+        block_device: { foreground: "${c.orange}" }
+        char_device: { foreground: "${c.orange}" }
+        socket: { foreground: "${c.fgSubtle}" }
+        special: { foreground: "${c.purple}" }
+        executable: { foreground: "${c.green}" }
+        mount_point: { foreground: "${c.teal}" }
+      perms:
+        user_read: { foreground: "${c.cyan}" }
+        user_write: { foreground: "${c.orange}" }
+        user_execute_file: { foreground: "${c.green}" }
+        user_execute_other: { foreground: "${c.green}" }
+        group_read: { foreground: "${c.cyan}" }
+        group_write: { foreground: "${c.yellow}" }
+        group_execute: { foreground: "${c.green}" }
+        other_read: { foreground: "${c.fgSubtle}" }
+        other_write: { foreground: "${c.red}" }
+        other_execute: { foreground: "${c.green}" }
+      size:
+        major: { foreground: "${c.fgSubtle}" }
+        minor: { foreground: "${c.cyan}" }
+        number_byte: { foreground: "${c.fg}" }
+        number_kilo: { foreground: "${c.cyan}" }
+        number_mega: { foreground: "${c.blue}" }
+        number_giga: { foreground: "${c.purple}" }
+        number_huge: { foreground: "${c.pink}" }
+      git:
+        new: { foreground: "${c.green}" }
+        modified: { foreground: "${c.yellow}" }
+        deleted: { foreground: "${c.red}" }
+        renamed: { foreground: "${c.purple}" }
+    '';
 in
 {
   options = {
@@ -39,11 +96,11 @@ in
       };
 
       theme = mkOption {
-        default = "kanagawa-wave";
+        default = if (config.desktop.theme ? name) then config.desktop.theme.name else "kanagawa-wave";
         type = nullOr (either str (attrsOf anything));
         description = ''
-          Theme for eza. Can be a predefined theme name (e.g. "kanagawa-wave" / "Kanagawa Wave",
-          "catppuccin-mocha", "tokyonight") or a custom YAML attrset. Set to null to disable custom theming.
+          Theme for eza. Defaults to the active desktop.theme.name (e.g. "tokyo-night", "tokyonight",
+          "kanagawa-wave", "catppuccin-mocha", "dracula", "nord", "gruvbox-dark"). Set to null to disable custom theming.
         '';
       };
     };
@@ -70,11 +127,12 @@ in
       ];
     };
 
-    xdg.configFile."eza/theme.yml" = mkIf (normalizedTheme != null && normalizedTheme != "") {
-      source =
-        predefinedThemes.${normalizedTheme}
-          or (throw "Unknown eza theme: '${cfg.theme}'. Available: ${concatStringsSep ", " (builtins.attrNames predefinedThemes)}");
-    };
+    xdg.configFile."eza/theme.yml" = mkIf (normalizedTheme != null && normalizedTheme != "") (
+      if predefinedThemes ? ${normalizedTheme} then
+        { source = predefinedThemes.${normalizedTheme}; }
+      else
+        { text = dynamicThemeText; }
+    );
 
     home = {
       shellAliases = {

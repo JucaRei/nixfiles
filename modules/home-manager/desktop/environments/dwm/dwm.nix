@@ -189,7 +189,7 @@ in
           ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
 
           # 7. Wallpaper / Fundo e Cursor padrão (gerenciado via feh)
-          xsetroot -solid '#1e1e2e' -cursor_name left_ptr &
+          xsetroot -solid '${config.desktop.theme.colors.bg}' -cursor_name left_ptr &
           if [ -f "$HOME/.fehbg" ]; then
             sh "$HOME/.fehbg" &
           fi

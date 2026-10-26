@@ -1,0 +1,62 @@
+colourful: true
+
+filekinds:
+  normal: { foreground: "#EBDBB2" }
+  directory: { foreground: "#83A598" }
+  symlink: { foreground: "#8EC07C" }
+  pipe: { foreground: "#928374" }
+  block_device: { foreground: "#FABD2F" }
+  char_device: { foreground: "#FABD2F" }
+  socket: { foreground: "#928374" }
+  special: { foreground: "#D3869B" }
+  executable: { foreground: "#B8BB26" }
+  mount_point: { foreground: "#8EC07C" }
+
+perms:
+  user_read: { foreground: "#83A598" }
+  user_write: { foreground: "#FE8019" }
+  user_execute_file: { foreground: "#B8BB26" }
+  user_execute_other: { foreground: "#B8BB26" }
+  group_read: { foreground: "#83A598" }
+  group_write: { foreground: "#FABD2F" }
+  group_execute: { foreground: "#B8BB26" }
+  other_read: { foreground: "#928374" }
+  other_write: { foreground: "#FB4934" }
+  other_execute: { foreground: "#B8BB26" }
+  special_user_file: { foreground: "#D3869B" }
+  special_other: { foreground: "#928374" }
+  attribute: { foreground: "#928374" }
+
+size:
+  major: { foreground: "#928374" }
+  minor: { foreground: "#83A598" }
+  number_byte: { foreground: "#EBDBB2" }
+  number_kilo: { foreground: "#83A598" }
+  number_mega: { foreground: "#8EC07C" }
+  number_giga: { foreground: "#D3869B" }
+  number_huge: { foreground: "#D3869B" }
+  unit_byte: { foreground: "#928374" }
+  unit_kilo: { foreground: "#83A598" }
+  unit_mega: { foreground: "#8EC07C" }
+  unit_giga: { foreground: "#D3869B" }
+  unit_huge: { foreground: "#D3869B" }
+
+users:
+  user_you: { foreground: "#B8BB26" }
+  user_root: { foreground: "#FB4934" }
+  user_other: { foreground: "#D3869B" }
+  group_yours: { foreground: "#83A598" }
+  group_other: { foreground: "#928374" }
+  group_root: { foreground: "#FB4934" }
+
+links:
+  normal: { foreground: "#8EC07C" }
+  multi_link_file: { foreground: "#83A598" }
+
+git:
+  new: { foreground: "#B8BB26" }
+  modified: { foreground: "#FABD2F" }
+  deleted: { foreground: "#FB4934" }
+  renamed: { foreground: "#D3869B" }
+  typechange: { foreground: "#83A598" }
+  ignored: { foreground: "#928374" }
