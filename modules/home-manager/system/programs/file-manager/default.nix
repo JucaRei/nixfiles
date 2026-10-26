@@ -41,7 +41,11 @@ let
     else
       "${cfgNautilus.package or pkgs.nautilus}/bin/nautilus";
 
-  thunarBin = "${pkgs.thunar}/bin/thunar";
+  thunarBin =
+    if (cfgThunar.enable or false) then
+      "${cfgThunar.package or pkgs.thunar}/bin/thunar"
+    else
+      "${pkgs.thunar}/bin/thunar";
 
   nemoBin =
     if (cfgNemo.useSystemPackage or false) || (cfgNemo.useSystemPackages or false) then

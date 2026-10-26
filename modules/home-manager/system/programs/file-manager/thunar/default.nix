@@ -22,7 +22,11 @@ let
     ];
   };
 
-  # Wrapper para garantir suporte a GVfs (Samba/SMB, Rede, Lixeira, MTP) e integração completa no Thunar
+  themeDataDir = lib.optionalString (config.gtk ? theme && config.gtk.theme ? package && config.gtk.theme.package != null) "${config.gtk.theme.package}/share:";
+  iconDataDir = lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? package && config.gtk.iconTheme.package != null) "${config.gtk.iconTheme.package}/share:";
+  gtkThemeDefault = lib.optionalString (config.gtk ? theme && config.gtk.theme ? name && config.gtk.theme.name != null) "--set-default GTK_THEME ${config.gtk.theme.name}";
+
+  # Wrapper para garantir suporte a GVfs (Samba/SMB, Rede, Lixeira, MTP), temas GTK e integração completa no Thunar
   thunar-wrapped = pkgs.symlinkJoin {
     name = "thunar-with-gvfs";
     paths = [ thunar-with-plugins ];
@@ -35,7 +39,8 @@ let
         if [ -x "$bin" ]; then
           makeWrapper "$bin" "$out/bin/$(basename "$bin")" \
             --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
-            --prefix XDG_DATA_DIRS : "$out/share:${thunar-with-plugins}/share:${pkgs.gvfs}/share:${pkgs.tumbler}/share:${pkgs.xfconf}/share:${pkgs.shared-mime-info}/share:/usr/local/share:/usr/share"
+            --prefix XDG_DATA_DIRS : "$out/share:${thunar-with-plugins}/share:${pkgs.gvfs}/share:${pkgs.tumbler}/share:${pkgs.xfconf}/share:${pkgs.shared-mime-info}/share:${themeDataDir}${iconDataDir}${config.home.homeDirectory}/.local/share:${config.home.homeDirectory}/.nix-profile/share:/usr/local/share:/usr/share" \
+            ${gtkThemeDefault}
         fi
       done
     '';
@@ -53,6 +58,12 @@ in
   options = {
     system.programs.file-manager.thunar = {
       enable = mkEnableOption "Enable Thunar file manager with plugins, custom actions (uca.xml), and thumbnails support.";
+
+      package = mkOption {
+        type = types.package;
+        default = thunar-wrapped;
+        description = "Pacote do Thunar empacotado com plugins, GVfs e temas.";
+      };
 
       rememberViewSettings = mkOption {
         type = types.bool;
@@ -90,51 +101,97 @@ in
       };
     };
 
-    # Configuração de preferências de visualização por pasta e restauração de abas no Thunar.
+    # Configuração de preferências de visualização por pasta, restauração de abas e sincronização de tema no Thunar.
     home.activation.configureThunarSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       # Encerra instâncias ativas do Thunar para aplicar mudanças de canal e recarregar conexão com xfconfd
       $DRY_RUN_CMD ${pkgs.thunar}/bin/thunar -q 2>/dev/null || true
+      $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -9 -i -f thunar 2>/dev/null || true
 
-      # Escreve a configuração declarativa diretamente no XML do canal Thunar como garantia
+      # Escreve a configuração declarativa diretamente no XML dos canais Thunar e Xsettings
       $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
 import os
 import xml.etree.ElementTree as ET
 
 xml_dir = os.path.expanduser("~/.config/xfce4/xfconf/xfce-perchannel-xml")
-xml_file = os.path.join(xml_dir, "thunar.xml")
 os.makedirs(xml_dir, exist_ok=True)
 
-tree = None
-root = None
+def load_or_create(channel):
+    xml_file = os.path.join(xml_dir, f"{channel}.xml")
+    tree = None
+    root = None
+    if os.path.isfile(xml_file):
+        try:
+            tree = ET.parse(xml_file)
+            root = tree.getroot()
+        except Exception:
+            root = None
+    if root is None or root.tag != "channel":
+        root = ET.Element("channel", attrib={"name": channel, "version": "1.0"})
+        tree = ET.ElementTree(root)
+    return tree, root, xml_file
 
-if os.path.isfile(xml_file):
-    try:
-        tree = ET.parse(xml_file)
-        root = tree.getroot()
-    except Exception:
-        root = None
-
-if root is None or root.tag != "channel":
-    root = ET.Element("channel", attrib={"name": "thunar", "version": "1.0"})
-    tree = ET.ElementTree(root)
-
-settings = {
+# Canal thunar.xml
+t_tree, t_root, t_file = load_or_create("thunar")
+t_settings = {
     "misc-directory-specific-settings": "${if cfg.rememberViewSettings then "true" else "false"}",
     "last-restore-tabs": "${if cfg.restoreTabs then "true" else "false"}",
 }
-
-for name, val in settings.items():
-    prop = root.find(f"./property[@name=\"{name}\"]")
+for name, val in t_settings.items():
+    prop = t_root.find(f"./property[@name=\"{name}\"]")
     if prop is None:
-        ET.SubElement(root, "property", attrib={"name": name, "type": "bool", "value": val})
+        ET.SubElement(t_root, "property", attrib={"name": name, "type": "bool", "value": val})
     else:
         prop.set("type", "bool")
         prop.set("value", val)
 
 if hasattr(ET, "indent"):
-    ET.indent(tree, space="  ", level=0)
+    ET.indent(t_tree, space="  ", level=0)
+t_tree.write(t_file, encoding="UTF-8", xml_declaration=True)
 
-tree.write(xml_file, encoding="UTF-8", xml_declaration=True)
+# Canal xsettings.xml (Tema GTK, ícones, cursor e fonte para apps XFCE como Thunar)
+x_tree, x_root, x_file = load_or_create("xsettings")
+def set_nested(root_node, path, ptype, pvalue):
+    parts = path.strip("/").split("/")
+    curr = root_node
+    for i, part in enumerate(parts):
+        is_leaf = (i == len(parts) - 1)
+        node = curr.find(f"./property[@name=\"{part}\"]")
+        if node is None:
+            attrs = {"name": part}
+            if is_leaf:
+                attrs["type"] = ptype
+                attrs["value"] = str(pvalue)
+            else:
+                attrs["type"] = "empty"
+            node = ET.SubElement(curr, "property", attrib=attrs)
+        else:
+            if is_leaf:
+                node.set("type", ptype)
+                node.set("value", str(pvalue))
+        curr = node
+
+theme_name = "${config.gtk.theme.name or ""}"
+icon_name = "${config.gtk.iconTheme.name or ""}"
+cursor_name = "${config.desktop.theme.cursor.name or ""}"
+cursor_size = "${toString (config.desktop.theme.cursor.size or 24)}"
+font_name = "${config.desktop.theme.font.name or "Inter"} ${toString (config.desktop.theme.font.size or 10)}"
+
+if theme_name:
+    set_nested(x_root, "Net/ThemeName", "string", theme_name)
+    set_nested(x_root, "Gtk/ThemeName", "string", theme_name)
+if icon_name:
+    set_nested(x_root, "Net/IconThemeName", "string", icon_name)
+if cursor_name:
+    set_nested(x_root, "Gtk/CursorThemeName", "string", cursor_name)
+    set_nested(x_root, "Gtk/CursorThemeSize", "int", cursor_size)
+if font_name:
+    set_nested(x_root, "Gtk/FontName", "string", font_name)
+set_nested(x_root, "Gtk/DecorationLayout", "string", ":minimize,maximize,close")
+set_nested(x_root, "Gtk/ApplicationPreferDarkTheme", "int", "1")
+
+if hasattr(ET, "indent"):
+    ET.indent(x_tree, space="  ", level=0)
+x_tree.write(x_file, encoding="UTF-8", xml_declaration=True)
 '
 
       # Reinicia o xfconfd caso o systemd do usuário esteja ativo nesta sessão
@@ -146,6 +203,22 @@ tree.write(xml_file, encoding="UTF-8", xml_declaration=True)
       if command -v ${pkgs.xfconf}/bin/xfconf-query >/dev/null 2>&1; then
         $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /misc-directory-specific-settings -n -t bool -s ${if cfg.rememberViewSettings then "true" else "false"} 2>/dev/null || true
         $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${if cfg.restoreTabs then "true" else "false"} 2>/dev/null || true
+        ${lib.optionalString (config.gtk ? theme && config.gtk.theme ? name) ''
+          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
+          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
+          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ApplicationPreferDarkTheme -n -t int -s 1 2>/dev/null || true
+        ''}
+        ${lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? name) ''
+          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "${config.gtk.iconTheme.name}" 2>/dev/null || true
+        ''}
+        ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? cursor) ''
+          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeName -n -t string -s "${config.desktop.theme.cursor.name}" 2>/dev/null || true
+          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeSize -n -t int -s "${toString config.desktop.theme.cursor.size}" 2>/dev/null || true
+        ''}
+        ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? font) ''
+          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/FontName -n -t string -s "${config.desktop.theme.font.name} ${toString config.desktop.theme.font.size}" 2>/dev/null || true
+        ''}
+        $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/DecorationLayout -n -t string -s ":minimize,maximize,close" 2>/dev/null || true
       fi
     '';
 
@@ -163,7 +236,7 @@ tree.write(xml_file, encoding="UTF-8", xml_declaration=True)
     };
 
     home.packages = with pkgs; [
-      thunar-wrapped
+      cfg.package
       gvfs
       xfconf
       xarchiver

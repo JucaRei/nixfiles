@@ -31,15 +31,19 @@ in
   variant = if isLight then "light" else "dark";
 
   gtk = {
-    name = "catppuccin-${variant}-${accentName}-standard+rimless";
+    name = "catppuccin-${variant}-${accentName}-standard";
     package = pkgs.catppuccin-gtk.override {
       accents = [ accentName ];
       size = "standard";
-      tweaks = [ "rimless" ];
       inherit variant;
     };
-    # Nomes antigos que alguns apps ainda procuram
-    aliases = [ "Catppuccin-${cap variant}-Standard-${cap accentName}-Dark" ];
+    # Nomes alternativos e legados que outros apps podem consultar
+    aliases = [
+      "catppuccin-${variant}-${accentName}-standard+default"
+      "catppuccin-${variant}-${accentName}-standard+rimless"
+      "Catppuccin-${cap variant}-Standard-${cap accentName}-Dark"
+      "Catppuccin-${cap variant}-${cap accentName}"
+    ];
   };
 
   icons = {

@@ -4,7 +4,6 @@
 }:
 let
   nixCheckCapped = pkgs.callPackage ./pkgs/tools/nix-check-capped { };
-in
   shell = pkgs.mkShell {
     name = "Flakes SHELL";
     # Enable experimental features without having to specify the argument

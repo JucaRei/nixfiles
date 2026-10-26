@@ -193,6 +193,55 @@ in
         "Xcursor.size" = mkDefault cfg.cursor.size;
       };
 
+      # Configuração declarativa para xsettingsd (gerenciador XSETTINGS leve para X11/BSPWM/DWM)
+      xdg.configFile = {
+        "xsettingsd/xsettingsd.conf".text = mkDefault ''
+          Net/ThemeName "${cfg.gtk.name}"
+          Net/IconThemeName "${cfg.icons.name}"
+          Gtk/ThemeName "${cfg.gtk.name}"
+          Gtk/CursorThemeName "${cfg.cursor.name}"
+          Gtk/CursorThemeSize ${toString cfg.cursor.size}
+          Gtk/FontName "${cfg.font.name} ${toString cfg.font.size}"
+          Gtk/ApplicationPreferDarkTheme ${if isDark then "1" else "0"}
+          Gtk/DecorationLayout ":minimize,maximize,close"
+          Net/EnableEventSounds 0
+          Net/EnableInputFeedbackSounds 0
+          Xft/Antialias 1
+          Xft/Hinting 1
+          Xft/HintStyle "hintslight"
+          Xft/RGBA "rgb"
+        '';
+
+        # Injeção direta de CSS nos perfis GTK3 e GTK4 do usuário para garantir aplicação imediata
+        "gtk-3.0/gtk.css".text = mkDefault ''
+          @import url("${cfg.gtk.package}/share/themes/${cfg.gtk.name}/gtk-3.0/gtk.css");
+        '';
+        "gtk-4.0/gtk.css".text = mkDefault ''
+          @import url("${cfg.gtk.package}/share/themes/${cfg.gtk.name}/gtk-4.0/gtk.css");
+        '';
+      };
+
+      # Serviço de usuário do Systemd para xsettingsd no X11
+      systemd.user.services.xsettingsd = mkIf pkgs.stdenv.isLinux {
+        Unit = {
+          Description = "XSettings Daemon";
+          After = [ "graphical-session.target" ];
+          PartOf = [ "graphical-session.target" ];
+        };
+        Service = {
+          Type = "simple";
+          ExecStart = "${pkgs.xsettingsd}/bin/xsettingsd";
+          Restart = "on-failure";
+          RestartSec = 3;
+          Environment = [
+            "DISPLAY=:0"
+          ];
+        };
+        Install = {
+          WantedBy = [ "graphical-session.target" ];
+        };
+      };
+
       home = {
         sessionVariables = {
           GTK_THEME = mkDefault cfg.gtk.name;
@@ -200,12 +249,33 @@ in
           XCURSOR_SIZE = mkDefault (toString cfg.cursor.size);
         };
 
+        # Recarrega xsettingsd e sincroniza gsettings imediatamente na ativação da sessão gráfica
+        activation.reloadXsettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          if [ -n "''${DISPLAY:-}" ]; then
+            ${pkgs.procps}/bin/pkill -HUP -x xsettingsd 2>/dev/null || (${pkgs.xsettingsd}/bin/xsettingsd &) 2>/dev/null || true
+          fi
+          if [ -n "''${DBUS_SESSION_BUS_ADDRESS:-}" ] || [ -n "''${DISPLAY:-}" ]; then
+            ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface gtk-theme "${cfg.gtk.name}" 2>/dev/null || true
+            ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface icon-theme "${cfg.icons.name}" 2>/dev/null || true
+            ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface color-scheme "${if isDark then "prefer-dark" else "prefer-light"}" 2>/dev/null || true
+            ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface cursor-theme "${cfg.cursor.name}" 2>/dev/null || true
+            ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface cursor-size ${toString cfg.cursor.size} 2>/dev/null || true
+            ${pkgs.glib}/bin/gsettings set org.gnome.desktop.interface font-name "${cfg.font.name} ${toString cfg.font.size}" 2>/dev/null || true
+          fi
+        '';
+
         # Symlinks para apps que não leem o perfil do Home Manager (Flatpak, Qt, WMs puros)
         file =
           linkTheme ".themes" "themes" cfg.gtk
           // linkTheme ".local/share/themes" "themes" cfg.gtk
+          // linkTheme ".icons" "icons" cfg.icons
+          // linkTheme ".local/share/icons" "icons" cfg.icons
           // linkTheme ".icons" "icons" cfg.cursor
           // linkTheme ".local/share/icons" "icons" cfg.cursor
+          // lib.optionalAttrs (cfg.icons.package == pkgs.papirus-icon-theme) {
+            ".icons/Papirus".source = mkDefault "${pkgs.papirus-icon-theme}/share/icons/Papirus";
+            ".local/share/icons/Papirus".source = mkDefault "${pkgs.papirus-icon-theme}/share/icons/Papirus";
+          }
           // {
             ".icons/default/index.theme".text = mkDefault ''
               [Icon Theme]

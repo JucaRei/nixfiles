@@ -93,10 +93,7 @@ in
         playerctl
         brightnessctl
 
-        # Temas e Fontes
-        catppuccin-gtk
-        papirus-icon-theme
-        catppuccin-cursors.mochaDark
+        # Temas e Fontes (gerenciados centralmente por desktop.theme)
         inter
         noto-fonts-cjk-sans
         ipafont
@@ -115,6 +112,7 @@ in
         pasystray
         galculator
         lxappearance
+        xsettingsd
       ]
       ++ optionals ((config.system.programs.terminal.name or "") == "alacritty") [
         (nixGLWrapper alacritty)

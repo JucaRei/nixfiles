@@ -42,15 +42,15 @@ in
 
       theme = {
         enable = true;
-        name = "tokyo-night";
-        accent = "purple";
+        name = "catppuccin-macchiato"; # "tokyo-night"
+        accent = "cyan"; # "purple"
       };
 
       wallpaper = {
         enable = true;
         directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
         randomOnStart = true;
-        interval = "15m";
+        interval = "5m";
       };
 
       touchpad = {

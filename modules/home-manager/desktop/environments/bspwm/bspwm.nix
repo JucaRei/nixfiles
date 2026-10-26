@@ -509,6 +509,17 @@ in
             # Carregar recursos do X11 (incluindo tema e tamanho de cursor Xcursor)
             [ -f "$HOME/.Xresources" ] && ${pkgs.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
 
+            # Iniciar daemon XSETTINGS (xsettingsd) para compatibilidade instantânea com GTK2/GTK3/XFCE
+            if command -v ${pkgs.xsettingsd}/bin/xsettingsd >/dev/null 2>&1; then
+              pkill -x xsettingsd || true
+              ${pkgs.xsettingsd}/bin/xsettingsd &
+            fi
+
+            # Propagar variáveis do tema declarativo para sessão e aplicações
+            export GTK_THEME="${config.gtk.theme.name}"
+            export XCURSOR_THEME="${config.desktop.theme.cursor.name}"
+            export XCURSOR_SIZE="${toString config.desktop.theme.cursor.size}"
+
             # Iniciar daemon de atalhos de teclado (SXHKD) a partir de $HOME
             pkill -x sxhkd || true
             (cd "$HOME" && ${pkgs.sxhkd}/bin/sxhkd) &
@@ -519,9 +530,9 @@ in
             export XDG_SESSION_TYPE="x11"
 
             if command -v dbus-update-activation-environment >/dev/null 2>&1; then
-              dbus-update-activation-environment --systemd DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE PATH XDG_DATA_DIRS LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE
+              dbus-update-activation-environment --systemd DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE PATH XDG_DATA_DIRS LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER GTK_THEME XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE
             fi
-            systemctl --user import-environment DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE PATH XDG_DATA_DIRS LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE 2>/dev/null || true
+            systemctl --user import-environment DISPLAY XAUTHORITY XDG_CURRENT_DESKTOP XDG_SESSION_DESKTOP XDG_SESSION_TYPE PATH XDG_DATA_DIRS LD_LIBRARY_PATH LIBVA_DRIVER_NAME VDPAU_DRIVER GTK_THEME XCURSOR_THEME XCURSOR_SIZE GTK_IM_MODULE QT_IM_MODULE XMODIFIERS SDL_IM_MODULE GLFW_IM_MODULE 2>/dev/null || true
             systemctl --user start graphical-session.target 2>/dev/null || true
 
             # Reiniciar Portals para garantir sincronia com as variáveis gráficas recém-importadas
