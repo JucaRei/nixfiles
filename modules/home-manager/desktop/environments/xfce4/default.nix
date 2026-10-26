@@ -93,8 +93,8 @@ in
       xsettings = {
         "Net/ThemeName" = config.gtk.theme.name;
         "Net/IconThemeName" = "Papirus-Dark";
-        "Gtk/CursorThemeName" = config.gtk.cursorTheme.name;
-        "Gtk/CursorThemeSize" = 24;
+        "Gtk/CursorThemeName" = config.desktop.theme.cursor.name;
+        "Gtk/CursorThemeSize" = config.desktop.theme.cursor.size;
         "Gtk/FontName" = "Inter 10";
         "Gtk/MonospaceFontName" = "SFMono Nerd Font 10";
         "Gtk/DecorationLayout" = ":minimize,maximize,close";

@@ -8,6 +8,7 @@ let
   inherit (lib) mkOption mkIf;
   inherit (lib.types) bool;
   cfg = config.desktop.wayland;
+  c = config.desktop.theme.colors;
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
   isMango = cfg.compositor == "mangowm" || (config.desktop.mangowm.enable or false);
 
@@ -187,45 +188,45 @@ let
     else
       chosen=$(printf "%b" "$options" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Layout Mango " -theme-str '
         * {
-          bg-col: #1e1e2e;
-          bg-col-light: #181825;
-          border-col: #cba6f7;
-          selected-col: #313244;
-          fg-col: #cdd6f4;
-          grey: #6c7086;
+          bg-col: ${c.bg};
+          bg-col-light: ${c.bgAlt};
+          border-col: ${c.accent};
+          selected-col: ${c.surface};
+          fg-col: ${c.fg};
+          grey: ${c.fgMuted};
           font: "Inter 11";
         }
         window {
           width: 360px;
           height: 520px;
           border: 2px;
-          border-color: #cba6f7;
+          border-color: ${c.accent};
           border-radius: 12px;
-          background-color: #1e1e2e;
+          background-color: ${c.bg};
         }
         mainbox {
-          background-color: #1e1e2e;
+          background-color: ${c.bg};
           padding: 12px;
         }
         inputbar {
           children: [prompt, entry];
-          background-color: #181825;
+          background-color: ${c.bgAlt};
           border-radius: 8px;
           padding: 6px 10px;
           margin: 0px 0px 8px 0px;
         }
         prompt {
-          background-color: #cba6f7;
+          background-color: ${c.accent};
           padding: 4px 8px;
-          text-color: #11111b;
+          text-color: ${c.bgDark};
           border-radius: 6px;
           margin: 0px 8px 0px 0px;
         }
         entry {
           padding: 4px;
-          text-color: #cdd6f4;
+          text-color: ${c.fg};
           background-color: transparent;
-          placeholder-color: #6c7086;
+          placeholder-color: ${c.fgMuted};
         }
         listview {
           border: 0px;
@@ -233,17 +234,17 @@ let
           margin: 0px;
           columns: 1;
           lines: 14;
-          background-color: #1e1e2e;
+          background-color: ${c.bg};
         }
         element {
           padding: 6px 10px;
-          background-color: #1e1e2e;
-          text-color: #cdd6f4;
+          background-color: ${c.bg};
+          text-color: ${c.fg};
           border-radius: 6px;
         }
         element selected {
-          background-color: #313244;
-          text-color: #cba6f7;
+          background-color: ${c.surface};
+          text-color: ${c.accent};
         }
         element-text, element-icon {
           background-color: inherit;
@@ -474,11 +475,11 @@ in
               weeks-pos = "right";
               on-scroll = 1;
               format = {
-                months = "<span color='#cba6f7'><b>{}</b></span>";
-                days = "<span color='#cdd6f4'><b>{}</b></span>";
-                weeks = "<span color='#89dceb'><b>W{}</b></span>";
-                weekdays = "<span color='#f9e2af'><b>{}</b></span>";
-                today = "<span color='#f38ba8'><b><u>{}</u></b></span>";
+                months = "<span color='${c.purple}'><b>{}</b></span>";
+                days = "<span color='${c.fg}'><b>{}</b></span>";
+                weeks = "<span color='${c.cyan}'><b>W{}</b></span>";
+                weekdays = "<span color='${c.yellow}'><b>{}</b></span>";
+                today = "<span color='${c.red}'><b><u>{}</u></b></span>";
               };
             };
           };
@@ -564,19 +565,19 @@ in
 
         window#waybar {
           background-color: transparent;
-          color: #cdd6f4;
+          color: ${c.fg};
         }
 
         tooltip {
-          background: #1e1e2e;
+          background: ${c.bgDark};
           border-radius: 10px;
-          border: 1px solid #89b4fa;
-          color: #cdd6f4;
+          border: 1px solid ${c.accent};
+          color: ${c.fg};
         }
 
         #custom-launcher {
-          background: #89b4fa;
-          color: #1e1e2e;
+          background: ${c.accent};
+          color: ${c.bg};
           border-radius: 8px;
           padding: 2px 10px;
           margin: 4px 2px;
@@ -585,13 +586,13 @@ in
         }
 
         #custom-launcher:hover {
-          background: #b4befe;
+          background: ${c.purple};
         }
 
         #tags,
         #workspaces {
-          background: rgba(49, 50, 68, 0.6);
-          border: 1px solid rgba(137, 180, 250, 0.25);
+          background: ${c.surface};
+          border: 1px solid ${c.border};
           border-radius: 8px;
           margin: 4px 2px;
           padding: 0 4px;
@@ -600,7 +601,7 @@ in
         #tags button,
         #workspaces button {
           padding: 2px 6px;
-          color: #a6adc8;
+          color: ${c.fgMuted};
           border-radius: 6px;
           transition: all 0.2s ease-in-out;
           font-size: 13px;
@@ -608,33 +609,33 @@ in
 
         #tags button.occupied,
         #workspaces button.occupied {
-          color: #f9e2af;
+          color: ${c.yellow};
         }
 
         #tags button.empty,
         #workspaces button.empty {
-          color: #585b70;
+          color: ${c.fgSubtle};
         }
 
         #tags button.focused,
         #tags button.active,
         #workspaces button.focused,
         #workspaces button.active {
-          color: #1e1e2e;
-          background: #89b4fa;
+          color: ${c.bg};
+          background: ${c.accent};
           font-weight: 800;
         }
 
         #tags button.urgent,
         #workspaces button.urgent {
-          color: #1e1e2e;
-          background: #f38ba8;
+          color: ${c.bg};
+          background: ${c.red};
         }
 
         #tags button:hover,
         #workspaces button:hover {
-          background: rgba(137, 180, 250, 0.25);
-          color: #cdd6f4;
+          background: ${c.surfaceAlt};
+          color: ${c.fg};
         }
 
         #tags button.empty:nth-child(n+6),
@@ -648,9 +649,9 @@ in
         }
 
         #custom-layout {
-          background: rgba(49, 50, 68, 0.6);
-          border: 1px solid rgba(203, 166, 247, 0.35);
-          color: #cba6f7;
+          background: ${c.surface};
+          border: 1px solid ${c.border};
+          color: ${c.purple};
           border-radius: 8px;
           padding: 2px 10px;
           margin: 4px 3px;
@@ -658,14 +659,14 @@ in
         }
 
         #custom-layout:hover {
-          background: #cba6f7;
-          color: #1e1e2e;
-          border-color: #f5c2e7;
+          background: ${c.purple};
+          color: ${c.bg};
+          border-color: ${c.pink};
         }
 
         #window,
         #custom-window {
-          color: #a6adc8;
+          color: ${c.fgMuted};
           padding: 2px 8px;
           margin: 4px 3px;
           font-weight: 600;
@@ -678,9 +679,9 @@ in
         }
 
         #clock {
-          background: rgba(49, 50, 68, 0.6);
-          border: 1px solid rgba(137, 180, 250, 0.25);
-          color: #89b4fa;
+          background: ${c.surface};
+          border: 1px solid ${c.border};
+          color: ${c.accent};
           border-radius: 8px;
           padding: 2px 12px;
           margin: 4px 0;
@@ -695,78 +696,78 @@ in
         #backlight,
         #battery,
         #tray {
-          background: rgba(49, 50, 68, 0.5);
-          border: 1px solid rgba(49, 50, 68, 0.8);
+          background: ${c.surface};
+          border: 1px solid ${c.border};
           border-radius: 8px;
           padding: 2px 8px;
           margin: 4px 2px;
         }
 
         #cpu {
-          color: #89dceb;
+          color: ${c.cyan};
         }
 
         #temperature {
-          color: #fab387;
+          color: ${c.orange};
         }
 
         #temperature.critical {
-          color: #f38ba8;
+          color: ${c.red};
         }
 
         #memory {
-          color: #a6e3a1;
+          color: ${c.green};
         }
 
         #disk {
-          color: #f9e2af;
+          color: ${c.yellow};
         }
 
         #network {
-          color: #cba6f7;
+          color: ${c.purple};
         }
 
         #pulseaudio {
-          color: #f5c2e7;
+          color: ${c.pink};
         }
 
         #pulseaudio.muted {
-          color: #6c7086;
-          background: rgba(30, 30, 46, 0.6);
+          color: ${c.fgMuted};
+          background: ${c.bgDark};
         }
 
         #backlight {
-          color: #f9e2af;
+          color: ${c.yellow};
         }
 
         #battery {
-          color: #a6e3a1;
+          color: ${c.green};
         }
 
         #battery.charging {
-          color: #94e2d5;
+          color: ${c.teal};
         }
 
         #battery.warning:not(.charging) {
-          color: #fab387;
+          color: ${c.orange};
         }
 
         #battery.critical:not(.charging) {
-          color: #f38ba8;
+          color: ${c.red};
           animation: blink 1s steps(2) infinite;
         }
 
         @keyframes blink {
           to {
-            background-color: #f38ba8;
-            color: #1e1e2e;
+            background-color: ${c.red};
+            color: ${c.bg};
           }
         }
 
         #custom-power {
-          background: rgba(243, 139, 168, 0.15);
-          border: 1px solid rgba(243, 139, 168, 0.35);
-          color: #f38ba8;
+          background: ${c.surface};
+          border: 1px solid ${c.red};
+          color: ${c.red};
           border-radius: 8px;
           padding: 2px 10px;
           margin: 4px 2px 4px 4px;
@@ -774,9 +775,9 @@ in
         }
 
         #custom-power:hover {
-          background: #f38ba8;
-          color: #1e1e2e;
-          border-color: #f38ba8;
+          background: ${c.red};
+          color: ${c.bg};
+          border-color: ${c.red};
         }
       '';
     };

@@ -28,8 +28,8 @@
     };
 
     xresources.properties = {
-      "Xcursor.theme" = config.gtk.cursorTheme.name;
-      "Xcursor.size" = config.gtk.cursorTheme.size;
+      "Xcursor.theme" = config.desktop.theme.cursor.name;
+      "Xcursor.size" = config.desktop.theme.cursor.size;
     };
 
     dconf.settings = {

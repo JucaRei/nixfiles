@@ -22,8 +22,8 @@
     };
 
     home.sessionVariables = {
-      HYPRCURSOR_THEME = config.gtk.cursorTheme.name;
-      HYPRCURSOR_SIZE = toString config.gtk.cursorTheme.size;
+      HYPRCURSOR_THEME = config.desktop.theme.cursor.name;
+      HYPRCURSOR_SIZE = toString config.desktop.theme.cursor.size;
     };
   };
 }

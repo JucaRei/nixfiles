@@ -77,7 +77,7 @@ Mapeamento direto dos mesmos atalhos dos tiling managers:
 
 ## 🛠️ 4. Como Fazer Customizações e Alterações
 
-Para alterar qualquer propriedade do XFCE de forma declarativa, edite o bloco `xfconf.settings` em [default.nix](file:///mnt/d/workspace/MyRepos/nixfiles/modules/home-manager/desktop/environments/xfce4/default.nix):
+Para alterar qualquer propriedade do XFCE de forma declarativa, edite o bloco `xfconf.settings` em [default.nix](./default.nix):
 
 ```nix
 # Exemplo: Aumentar a quantidade de áreas de trabalho para 6

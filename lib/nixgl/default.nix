@@ -68,6 +68,10 @@ let
     else
       wrapBinaries pkg
       // lib.optionalAttrs (pkg ? override) {
+        # Mantém compatibilidade com chamadas encadeadas de .override em pacotes envolvidos.
+        # "appDataDir" é um argumento aceito pelo wrapper do Firefox no Nixpkgs (usado para
+        # redirecionar MOZ_APP_DATA / perfis XDG/macOS). Filtrá-lo aqui evita erros de atributos
+        # inesperados ao repassar os argumentos ao derivador subjacente.
         override = lib.setFunctionArgs
           (
             args:

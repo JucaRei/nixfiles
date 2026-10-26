@@ -5,8 +5,7 @@
 let
   nixCheckCapped = pkgs.callPackage ./pkgs/tools/nix-check-capped { };
 in
-{
-  default = pkgs.mkShell {
+  shell = pkgs.mkShell {
     name = "Flakes SHELL";
     # Enable experimental features without having to specify the argument
     NIX_CONFIG = "extra-experimental-features = nix-command flakes";
@@ -45,4 +44,5 @@ in
       echo ">>>> 💡 Execute 'nfc60' para 'nix flake check --no-build' limitado a 60% de CPU e RAM."
     '';
   };
-}
+in
+shell // { default = shell; }

@@ -15,9 +15,46 @@ let
     ;
 
   cfg = config.system.programs.chat.discord;
+  c = config.desktop.theme.colors;
 
   # Paletas e Definições de Temas
   themeDefinitions = {
+    "theme" = {
+      name = "Desktop Theme (${config.desktop.theme.name})";
+      fileName = "desktop-theme.theme.css";
+      css = ''
+        /**
+         * @name Desktop Theme (${config.desktop.theme.name})
+         * @author nixfiles
+         * @version 1.0.0
+         * @description Dynamic theme based on config.desktop.theme
+        **/
+        :root {
+          --theme-name: "${config.desktop.theme.name}";
+          --background-primary: ${c.bg};
+          --background-secondary: ${c.bgAlt};
+          --background-secondary-alt: ${c.bgDark};
+          --background-tertiary: ${c.bgDark};
+          --background-accent: ${c.surfaceAlt};
+          --background-floating: ${c.bgDark};
+          --channeltextarea-background: ${c.surface};
+          --text-normal: ${c.fg};
+          --text-muted: ${c.fgMuted};
+          --text-link: ${c.accent};
+          --text-positive: ${c.green};
+          --text-warning: ${c.yellow};
+          --text-danger: ${c.red};
+          --interactive-normal: ${c.fgMuted};
+          --interactive-hover: ${c.fg};
+          --interactive-active: #ffffff;
+          --interactive-muted: ${c.border};
+          --brand-experiment: ${c.accent};
+          --header-primary: ${c.fg};
+          --header-secondary: ${c.fgMuted};
+        }
+      '';
+    };
+
     "catppuccin-frappe" = {
       name = "Catppuccin Frappé";
       fileName = "catppuccin-frappe.theme.css";
@@ -187,7 +224,7 @@ let
     };
   };
 
-  activeTheme = themeDefinitions.${cfg.theme.scheme} or themeDefinitions."catppuccin-frappe";
+  activeTheme = themeDefinitions.${cfg.theme.scheme} or themeDefinitions."theme";
 
   discordPkg = pkgs.discord.override {
     withOpenASAR = cfg.openasar.enable;
@@ -234,12 +271,13 @@ in
 
       scheme = mkOption {
         type = types.enum [
+          "theme"
           "catppuccin-frappe"
           "catppuccin-mocha"
           "doom"
           "dracula"
         ];
-        default = "catppuccin-frappe";
+        default = "theme";
         description = "Active color theme scheme for Discord.";
       };
     };

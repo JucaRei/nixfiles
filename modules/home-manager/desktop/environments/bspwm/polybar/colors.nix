@@ -65,12 +65,12 @@ in
   time-alt = c.fgMuted; # Cinza do relógio
 
   # --- Tons Dinâmicos do Tema (adaptam-se dinamicamente ao tema ativo) ---
-  shade1 = extra "shade1" (extra "surfaceAlt" "bgAlt");
-  shade2 = extra "shade2" (extra "purple" "surface");
-  shade3 = extra "shade3" (extra "surface" "bgAlt");
-  shade4 = extra "shade4" (extra "accent" "blue");
-  shade5 = extra "shade5" (extra "surfaceAlt" "bgAlt");
-  shade6 = extra "shade6" (extra "teal" "surface");
-  shade7 = extra "shade7" (extra "surface" "bgAlt");
-  shade8 = extra "shade8" (extra "fgMuted" "fg");
+  shade1 = c.surfaceAlt;
+  shade2 = c.purple;
+  shade3 = c.surface;
+  shade4 = c.accent;
+  shade5 = c.surfaceAlt;
+  shade6 = c.teal;
+  shade7 = c.surface;
+  shade8 = c.fgMuted;
 }
