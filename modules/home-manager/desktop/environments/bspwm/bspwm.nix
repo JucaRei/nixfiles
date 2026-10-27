@@ -32,132 +32,37 @@ let
     else
       "mod4";
 
-  externalRulesScript = pkgs.writeShellScript "bspwm-external-rules" ''
-    wid="$1"
-    class="$2"
-    instance="$3"
-    consequences="$4"
+  externalRulesScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-external-rules";
+    runtimeInputs = [
+      pkgs.xprop
+      pkgs.gnugrep
+    ];
+    text = builtins.readFile ./scripts/bspwm-external-rules.sh;
+  };
+  externalRulesScript = lib.getExe externalRulesScriptPkg;
 
-    case "$class" in
-      bspwm-scratch)
-        echo "state=floating sticky=on"
-        exit 0
-        ;;
-      *xdg-desktop-portal*|*Xdg-desktop-portal*)
-        echo "state=floating center=on rectangle=850x550+0+0 follow=on"
-        exit 0
-        ;;
-      *scrcpy*|*Scrcpy*)
-        echo "state=floating center=on follow=on"
-        exit 0
-        ;;
-    esac
+  browserTabSwitchPkg = pkgs.writeShellApplication {
+    name = "browser-tab-switch";
+    runtimeInputs = [
+      pkgs.xdotool
+      pkgs.xprop
+      pkgs.coreutils
+    ];
+    text = builtins.readFile ./scripts/browser-tab-switch.sh;
+  };
+  browserTabSwitch = lib.getExe browserTabSwitchPkg;
 
-    case "$instance" in
-      *scrcpy*|*Scrcpy*)
-        echo "state=floating center=on follow=on"
-        exit 0
-        ;;
-    esac
+  autoRaiseScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-auto-raise";
+    runtimeInputs = [
+      pkgs.bspwm
+      pkgs.coreutils
+    ];
+    text = builtins.readFile ./scripts/bspwm-auto-raise.sh;
+  };
+  autoRaiseScript = lib.getExe autoRaiseScriptPkg;
 
-    # Consultar propriedades X11 da nova janela
-    PROPS="$(${pkgs.xprop}/bin/xprop -id "$wid" WM_NAME _NET_WM_NAME WM_WINDOW_ROLE _NET_WM_WINDOW_TYPE 2>/dev/null)"
-    [ -z "$PROPS" ] && exit 0
-
-    # 1. Diálogos nativos de seleção de arquivos (GtkFileChooserDialog) -> tamanho compacto e centralizado
-    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -q 'WM_WINDOW_ROLE.*GtkFileChooserDialog'; then
-      echo "state=floating center=on rectangle=850x550+0+0 follow=on"
-      exit 0
-    fi
-
-    # 2. Títulos de janelas de seleção de pastas e arquivos (VSCode, navegadores, Electron, GTK, Qt)
-    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -Ei -q '(WM_NAME|_NET_WM_NAME).*"(Open Folder|Abrir [Pp]asta|Open File|Abrir [Aa]rquivo|Select a? [Ff]older|Selecionar .*pasta|Select a? [Ff]ile|Selecionar .*arquivo|Choose [Ff]older|Escolher [Pp]asta|Choose [Ff]ile|Escolher [Aa]rquivo|Save As|Salvar [Cc]omo|Save File|Salvar [Aa]rquivo|File Upload|Enviar [Aa]rquivo|Open Workspace|Abrir [Ee]spaço|Add Folder|Adicionar [Pp]asta)'; then
-      echo "state=floating center=on rectangle=850x550+0+0 follow=on"
-      exit 0
-    fi
-
-    # 3. Janelas modais/diálogos genéricos -> flutuantes e centralizadas preservando tamanho padrão
-    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -q '_NET_WM_WINDOW_TYPE_DIALOG'; then
-      echo "state=floating center=on follow=on"
-      exit 0
-    fi
-
-    # 4. Janelas pop-up de navegadores (ex: popups de login Google, OAuth, Bitwarden)
-    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -q 'WM_WINDOW_ROLE.*pop-up'; then
-      echo "state=floating center=on follow=on"
-      exit 0
-    fi
-
-    # 5. Títulos de janelas de login, autenticação e OAuth (Google, GitHub, Microsoft, SSO, senhas)
-    if echo "$PROPS" | ${pkgs.gnugrep}/bin/grep -Ei -q '(WM_NAME|_NET_WM_NAME).*(Sign in|Fazer login|Log in|Login com|Entrar com|Contas do Google|Google Accounts|Sign in with|Log in with|OAuth|Authorize|Autorizar|Autentica[cç][aã]o|Authentication|Bitwarden|1Password|Authenticator|Password Required)'; then
-      echo "state=floating center=on follow=on"
-      exit 0
-    fi
-  '';
-
-  browserTabSwitch = pkgs.writeShellScript "browser-tab-switch" ''
-    action="$1" # "next" or "prev"
-    wid="$(${pkgs.xdotool}/bin/xdotool getactivewindow 2>/dev/null)"
-    [ -z "$wid" ] && exit 0
-    wclass="$(${pkgs.xprop}/bin/xprop -id "$wid" WM_CLASS 2>/dev/null | ${pkgs.coreutils}/bin/tr '[:upper:]' '[:lower:]')"
-    case "$wclass" in
-      *firefox*|*librewolf*|*floorp*|*chrome*|*chromium*|*brave*|*opera*|*vivaldi*|*edge*|*zen*|*code*|*antigravity*|*alacritty*)
-        if [ "$action" = "next" ]; then
-          ${pkgs.xdotool}/bin/xdotool key --clearmodifiers ctrl+Page_Down
-        else
-          ${pkgs.xdotool}/bin/xdotool key --clearmodifiers ctrl+Page_Up
-        fi
-        ;;
-    esac
-  '';
-
-  # Daemon para elevar automaticamente a janela selecionada/focada para o topo (layer above)
-  # e rebaixar janelas flutuantes não-focadas para o layer inferior (below). Isso garante que,
-  # ao selecionar qualquer janela (seja ela flutuante ou lado a lado), a janela selecionada
-  # fique 100% à frente da outra.
-  autoRaiseScript = pkgs.writeShellScript "bspwm-auto-raise" ''
-    export PATH="${
-      lib.makeBinPath [
-        pkgs.bspwm
-        pkgs.coreutils
-      ]
-    }:$PATH"
-
-    prev_node=""
-
-    # Normaliza janelas flutuantes não-focadas para 'below' e eleva a janela ativa na inicialização
-    for wid in $(bspc query -N -n ".floating.window.!focused" 2>/dev/null); do
-      bspc node "$wid" -l below 2>/dev/null || true
-    done
-    focused=$(bspc query -N -n focused 2>/dev/null || true)
-    if [ -n "$focused" ]; then
-      bspc node "$focused" -l above 2>/dev/null || true
-      prev_node="$focused"
-    fi
-
-    # Monitora eventos de foco de janelas via IPC do bspwm
-    bspc subscribe node_focus | while read -r line; do
-      node_id="''${line##* }"
-      [ -z "$node_id" ] && continue
-
-      # Rebaixa todas as janelas flutuantes não-focadas para 'below' para que
-      # qualquer janela selecionada (seja tiled ou outra flutuante) fique 100% à frente
-      for wid in $(bspc query -N -n ".floating.window.!focused" 2>/dev/null); do
-        bspc node "$wid" -l below 2>/dev/null || true
-      done
-
-      # Se a janela anterior era tiled, restaura para 'normal'
-      if [ -n "$prev_node" ] && [ "$prev_node" != "$node_id" ]; then
-        if ! bspc query -N -n "$prev_node.floating" >/dev/null 2>&1; then
-          bspc node "$prev_node" -l normal 2>/dev/null || true
-        fi
-      fi
-
-      # A janela recém-selecionada é sempre promovida para 'above'
-      bspc node "$node_id" -l above 2>/dev/null || true
-      prev_node="$node_id"
-    done
-  '';
 in
 {
   options.desktop.bspwm = {
