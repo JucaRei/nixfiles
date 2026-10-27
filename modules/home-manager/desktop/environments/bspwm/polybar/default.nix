@@ -205,21 +205,22 @@ in
   config = mkIf cfg.enable {
     home.packages = [
       polybarPkg
-      (pkgs.writeShellScriptBin "rofi-bluetooth" ''exec ${scripts.rofiBluetoothMenu} "$@"'')
+      scripts.rofiBluetoothMenuPkg
       (pkgs.writeShellScriptBin "bspwm-bluetooth" ''exec ${scripts.rofiBluetoothMenu} "$@"'')
-      (pkgs.writeShellScriptBin "rofi-wifi-menu" ''exec ${scripts.rofiWifiMenu} "$@"'')
+      scripts.rofiWifiMenuPkg
       (pkgs.writeShellScriptBin "bspwm-wifi" ''exec ${scripts.rofiWifiMenu} "$@"'')
-      (pkgs.writeShellScriptBin "rofi-bsp-layout" ''exec ${scripts.rofiLayoutMenu} "$@"'')
-      (pkgs.writeShellScriptBin "bsp-layout-switch" ''exec ${scripts.bspLayoutSwitchScript} "$@"'')
-      (pkgs.writeShellScriptBin "polybar-os-logo" ''exec ${scripts.osLogoScript} "$@"'')
-      (pkgs.writeShellScriptBin "polybar-launch" ''exec ${scripts.polybarLaunchScript} "$@"'')
-      (pkgs.writeShellScriptBin "polybar-media-control" ''exec ${scripts.mediaControlScript} "$@"'')
-      (pkgs.writeShellScriptBin "rofi-notifications" ''exec ${scripts.rofiNotificationMenu} "$@"'')
+      scripts.rofiLayoutMenuPkg
+      scripts.bspLayoutSwitchScriptPkg
+      scripts.osLogoScriptPkg
+      scripts.polybarLaunchScriptPkg
+      scripts.mediaControlScriptPkg
+      scripts.rofiNotificationMenuPkg
+      scripts.notificationStatusScriptPkg
       (pkgs.writeShellScriptBin "polybar-notifications" ''exec ${scripts.notificationStatusScript} "$@"'')
     ]
     ++ lib.optionals cfg.tray.enable [
       pkgs.stalonetray
-      (pkgs.writeShellScriptBin "stalonetray-toggle" ''exec ${scripts.stalonetrayToggleScript} "$@"'')
+      scripts.stalonetrayToggleScriptPkg
     ];
 
     # Serviços do Stalonetray (apenas se bandeja habilitada na Polybar)
