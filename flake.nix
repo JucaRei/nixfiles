@@ -132,7 +132,7 @@
         let
           pkgs = import nixpkgs {
             localSystem = system;
-            config.allowUnfree = true;
+            config = helper.nixpkgsConfig;
           };
         in
         {
@@ -149,7 +149,7 @@
         let
           pkgsWithOverlays = import nixpkgs {
             localSystem = system;
-            config.allowUnfree = true;
+            config = helper.nixpkgsConfig;
             overlays = builtins.attrValues self.overlays;
           };
         in

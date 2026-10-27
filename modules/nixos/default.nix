@@ -103,13 +103,7 @@ in
 
     nixpkgs = {
       overlays = builtins.attrValues outputs.overlays;
-      # Configure your nixpkgs instance
-      config = {
-        allowUnfree = true;
-        allowBroken = true;
-        allowInsecure = true;
-        nvidia.acceptLicense = true;
-      };
+      config = import ../../lib/nixpkgs-config.nix;
       hostPlatform = mkDefault "${platform}";
     };
 

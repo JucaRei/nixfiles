@@ -68,10 +68,7 @@ in
       ]
       ++ (builtins.attrValues outputs.overlays);
 
-      config = {
-        allowUnfree = true;
-        allowInsecure = true;
-      };
+      config = import ../../lib/nixpkgs-config.nix;
     };
 
     nix =

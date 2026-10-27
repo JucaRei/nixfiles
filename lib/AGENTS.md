@@ -2,14 +2,17 @@
 
 ```
 lib/
-├── default.nix     reexporta helpers.nix
-├── helpers.nix     mkHome, mkNixos, mkIso, mkChecks, forAllSystems
+├── default.nix        reexporta helpers.nix
+├── helpers.nix        mkHome, mkNixos, mkIso, mkChecks, forAllSystems
+├── nixpkgs-config.nix configuração canônica unificada de nixpkgs
 └── nixgl/
-    ├── default.nix construtor do wrapper (Nix)
-    └── wrapper.sh  lógica de seleção de GPU (shell real, com shellcheck)
+    ├── default.nix    construtor do wrapper (Nix)
+    └── wrapper.sh     lógica de seleção de GPU (shell real, com shellcheck)
 ```
 
-## helpers.nix
+## helpers.nix e nixpkgs-config.nix
+
+- `nixpkgs-config.nix`: único ponto canônico definindo `allowUnfree = true;`, `allowBroken = true;` e `nvidia.acceptLicense = true;`. Sem `allowInsecure = true;` global; pacotes inseguros são permitidos exclusivamente via `permittedInsecurePackages` no host que deles necessita (ex.: `rocinante`).
 
 - `mkCommonArgs`: único lugar que define os `specialArgs` (antes repetidos 5 vezes).
 - `mkPkgs`: `pkgs` do HM standalone (overlays nixgl, nur e `outputs.overlays`; `nixpkgs.*` do módulo HM não vale nesse caso).

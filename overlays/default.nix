@@ -1,14 +1,12 @@
 { inputs, ... }:
 let
+  nixpkgsConfig = import ../lib/nixpkgs-config.nix;
+
   mkChannel =
     final: input:
     import input {
       inherit (final.stdenv.hostPlatform) system;
-      config = {
-        allowUnfree = true;
-        allowBroken = true;
-        allowInsecure = true;
-        nvidia.acceptLicense = true;
+      config = nixpkgsConfig // {
         permittedInsecurePackages = final.config.permittedInsecurePackages or [ ];
       };
     };

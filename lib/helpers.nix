@@ -57,15 +57,14 @@ let
     };
   };
 
+  nixpkgsConfig = import ./nixpkgs-config.nix;
+
   # pkgs do Home Manager standalone (o nixpkgs.* do módulo HM não vale quando `pkgs` é passado).
   mkPkgs =
     { platform, nixGLType }:
     import inputs.nixpkgs {
       localSystem = platform;
-      config = {
-        allowUnfree = true;
-        allowInsecure = true;
-      };
+      config = nixpkgsConfig;
       overlays = [
         inputs.nixgl.overlay
       ]
@@ -79,7 +78,7 @@ let
   forAllSystems = lib.genAttrs systems;
 in
 rec {
-  inherit forAllSystems;
+  inherit forAllSystems nixpkgsConfig;
 
   # Home Manager standalone (Debian, Fedora, etc.).
   #   hostname     carrega home-manager/hosts/<hostname>
