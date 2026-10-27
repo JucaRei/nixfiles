@@ -12,304 +12,61 @@ let
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
   isMango = cfg.compositor == "mangowm" || (config.desktop.mangowm.enable or false);
 
-  # Script de Energia / Sessão (Power Menu via Rofi) — agnóstico ao compositor
-  powerMenu = pkgs.writeShellScriptBin "session-power-menu" ''
-    chosen=$(printf "󰌾 Bloquear\n󰤄 Suspender\n󰍃 Encerrar Sessão\n󰑐 Reiniciar\n󰐥 Desligar" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰐥 Energia " -theme-str 'window {width: 320px; height: 320px;} listview {columns: 1; lines: 5;}')
-    case "$chosen" in
-      *"Bloquear") ${pkgs.hyprlock}/bin/hyprlock ;;
-      *"Suspender") systemctl suspend ;;
-      *"Encerrar Sessão")
-        if [ "$XDG_CURRENT_DESKTOP" = "mango" ] || [ "$DESKTOP_SESSION" = "mango" ] || pgrep -x mango >/dev/null 2>&1; then
-          pkill -SIGTERM -x mango 2>/dev/null || loginctl terminate-session "''${XDG_SESSION_ID:-}" 2>/dev/null || loginctl terminate-user "$USER"
-        elif command -v hyprctl >/dev/null 2>&1 && pgrep -x Hyprland >/dev/null 2>&1; then
-          ${pkgs.hyprland}/bin/hyprctl dispatch exit
-        elif [ -n "''${XDG_SESSION_ID:-}" ]; then
-          loginctl terminate-session "$XDG_SESSION_ID"
-        else
-          loginctl terminate-user "$USER"
-        fi
-        ;;
-      *"Reiniciar") systemctl reboot ;;
-      *"Desligar") systemctl poweroff ;;
-    esac
-  '';
+  # Scripts utilitários extraídos e validados hermeticamente
+  powerMenu = pkgs.writeShellApplication {
+    name = "session-power-menu";
+    runtimeInputs = [
+      pkgs.rofi
+      pkgs.hyprlock
+      pkgs.systemd
+    ];
+    text = builtins.readFile ./scripts/session-power-menu.sh;
+  };
 
-  powerMenuHyprland = pkgs.writeShellScriptBin "hyprland-power-menu" ''
-    exec ${powerMenu}/bin/session-power-menu "$@"
-  '';
+  powerMenuHyprland = pkgs.writeShellApplication {
+    name = "hyprland-power-menu";
+    runtimeInputs = [ powerMenu ];
+    text = ''exec session-power-menu "$@"'';
+  };
 
-  # Script de seleção WiFi via Rofi + nmcli
-  rofiWifiMenu = pkgs.writeShellScriptBin "rofi-wifi-menu" ''
-    NMCLI="/usr/bin/nmcli"
-    if ! command -v "$NMCLI" >/dev/null 2>&1; then
-      NMCLI=$(command -v nmcli 2>/dev/null || true)
-    fi
-    if [ -z "$NMCLI" ]; then
-      ${pkgs.libnotify}/bin/notify-send -u critical "WiFi" "nmcli não encontrado. Instale o NetworkManager."
-      exit 1
-    fi
+  rofiWifiMenu = pkgs.writeShellApplication {
+    name = "rofi-wifi-menu";
+    runtimeInputs = [
+      pkgs.rofi
+      pkgs.libnotify
+      pkgs.networkmanager
+    ];
+    text = builtins.readFile ./scripts/rofi-wifi-menu.sh;
+  };
 
-    connected=$($NMCLI -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
-    wifi_status=$($NMCLI radio wifi)
+  mangoLayoutSwitcher = pkgs.writeShellApplication {
+    name = "mango-layout-switcher";
+    runtimeInputs = [
+      pkgs.procps
+      pkgs.jq
+    ];
+    text = builtins.readFile ./scripts/mango-layout-switcher.sh;
+  };
 
-    if [ "$wifi_status" = "disabled" ]; then
-      action=$(printf "󰤮 WiFi Desligado\n󰖩 Ligar WiFi" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰤮 WiFi " -theme-str 'window {width: 360px; height: 200px;} listview {lines: 2;}')
-      case "$action" in
-        *"Ligar WiFi") $NMCLI radio wifi on; ${pkgs.libnotify}/bin/notify-send -u low "WiFi" "Rádio WiFi ligado!" ;;
-      esac
-      exit 0
-    fi
+  mangoLayoutPicker = pkgs.writeShellApplication {
+    name = "mango-layout-picker";
+    runtimeInputs = [
+      pkgs.rofi
+      pkgs.procps
+    ];
+    text = builtins.readFile ./scripts/mango-layout-picker.sh;
+  };
 
-    $NMCLI dev wifi rescan 2>/dev/null || true
-    sleep 1
+  mangoWindowTitle = pkgs.writeShellApplication {
+    name = "mango-window-title";
+    runtimeInputs = [
+      pkgs.jq
+      pkgs.coreutils
+      pkgs.gnused
+    ];
+    text = builtins.readFile ./scripts/mango-window-title.sh;
+  };
 
-    networks=$($NMCLI -t -f SSID,SIGNAL,SECURITY dev wifi list | grep -v '^$' | sort -t: -k2 -rn | head -15)
-    menu=""
-    if [ -n "$connected" ]; then
-      menu="󰤨 Conectado: $connected\n󰤭 Desconectar\n"
-    fi
-    menu="$menu󰤯 Desligar WiFi\n─────────────\n"
-
-    while IFS=: read -r ssid signal security; do
-      [ -z "$ssid" ] && continue
-      if [ "$signal" -ge 75 ]; then icon="󰤨";
-      elif [ "$signal" -ge 50 ]; then icon="󰤥";
-      elif [ "$signal" -ge 25 ]; then icon="󰤢";
-      else icon="󰤟"; fi
-      lock=""; [ -n "$security" ] && [ "$security" != "--" ] && lock=" 󰌾"
-      menu="$menu$icon $ssid ($signal%)$lock\n"
-    done <<< "$networks"
-
-    chosen=$(printf "$menu" | ${pkgs.rofi}/bin/rofi -dmenu -p " 󰤨 WiFi " -theme-str 'window {width: 750px; height: 480px;} listview {columns: 1; lines: 12;}')
-    [ -z "$chosen" ] && exit 0
-
-    case "$chosen" in
-      *"Desconectar")
-        $NMCLI dev disconnect iface wlp2s0b1 2>/dev/null || $NMCLI con down id "$connected" 2>/dev/null
-        ${pkgs.libnotify}/bin/notify-send -u low "WiFi" "Desconectado de $connected"
-        ;;
-      *"Desligar WiFi")
-        $NMCLI radio wifi off
-        ${pkgs.libnotify}/bin/notify-send -u low "WiFi" "Rádio WiFi desligado"
-        ;;
-      *"Conectado"*) ;;
-      *"─────"*) ;;
-      *)
-        ssid=$(echo "$chosen" | sed 's/^[^ ]* //' | sed 's/ ([0-9]*%).*$//')
-        if $NMCLI -t -f NAME con show | grep -qx "$ssid"; then
-          $NMCLI con up id "$ssid" 2>/dev/null
-        else
-          pass=$(${pkgs.rofi}/bin/rofi -dmenu -p " 󰌾 Senha WiFi: $ssid " -password -theme-str 'window {width: 580px; height: 100px;} listview {lines: 0;}')
-          if [ -n "$pass" ]; then
-            $NMCLI dev wifi connect "$ssid" password "$pass" 2>/dev/null
-          fi
-        fi
-        ;;
-    esac
-  '';
-
-  # Scripts de utilidade para o MangoWM
-  mangoLayoutSwitcher = pkgs.writeShellScriptBin "mango-layout-switcher" ''
-    if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
-      SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
-      [ -n "$SOCK" ] && export MANGO_INSTANCE_SIGNATURE=$(basename "$SOCK" .sock | sed 's/^mango-//')
-    fi
-
-    declare -A LAYOUT_NAMES=(
-      [T]="Tile"
-      [S]="Scroller"
-      [G]="Grid"
-      [M]="Monocle"
-      [K]="Deck"
-      [CT]="Center Tile"
-      [RT]="Right Tile"
-      [VS]="Vert Scroller"
-      [VT]="Vert Tile"
-      [VG]="Vert Grid"
-      [VK]="Vert Deck"
-      [DW]="Dwindle"
-      [F]="Fair"
-      [VF]="Vert Fair"
-      [TG]="TGMix"
-    )
-
-    declare -A LAYOUT_ICONS=(
-      [T]="󰕰"
-      [S]="󰹑"
-      [G]="󰝘"
-      [M]="󰍹"
-      [K]="󰓩"
-      [CT]="󰕲"
-      [RT]="󰕳"
-      [VS]="󰹒"
-      [VT]="󰕴"
-      [VG]="󰝙"
-      [VK]="󰓪"
-      [DW]="󰕯"
-      [F]="󰕮"
-      [VF]="󰕬"
-      [TG]="󰕱"
-    )
-
-    state=$(mmsg get all-monitors 2>/dev/null || true)
-    if [ -z "$state" ] || echo "$state" | grep -q '"error"'; then
-      echo '{"text":"󰕰 Mango","tooltip":"MangoWM não detectado ou inativo"}'
-      exit 0
-    fi
-
-    code=$(echo "$state" | ${pkgs.jq}/bin/jq -r '.monitors[] | select(.active) | .layout_symbol // empty' 2>/dev/null | head -n1 || true)
-    if [ -z "$code" ]; then
-      code=$(echo "$state" | ${pkgs.jq}/bin/jq -r '.monitors[0].layout_symbol // empty' 2>/dev/null || true)
-    fi
-
-    if [ -z "$code" ] || [ -z "''${LAYOUT_NAMES[$code]+x}" ]; then
-      echo "{\"text\":\"󰕰 ''${code:-Tile}\",\"tooltip\":\"Layout atual: ''${code:-Desconhecido}\",\"class\":\"other\"}"
-      exit 0
-    fi
-
-    name="''${LAYOUT_NAMES[$code]}"
-    icon="''${LAYOUT_ICONS[$code]:-󰕰}"
-
-    echo "{\"text\":\"$icon $name\",\"tooltip\":\"Layout do MangoWM: $name ($code)\nClique: Menu de Seleção | Dir: Alternar\",\"class\":\"$code\"}"
-  '';
-
-  mangoLayoutPicker = pkgs.writeShellScriptBin "mango-layout-picker" ''
-    if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
-      SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
-      [ -n "$SOCK" ] && export MANGO_INSTANCE_SIGNATURE=$(basename "$SOCK" .sock | sed 's/^mango-//')
-    fi
-
-    options="󰹑 Scroller (S)\n󰕰 Tile (T)\n󰕲 Center Tile (CT)\n󰝘 Grid (G)\n󰍹 Monocle (M)\n󰓩 Deck (K)\n󰕳 Right Tile (RT)\n󰹒 Vertical Scroller (VS)\n󰕴 Vertical Tile (VT)\n󰝙 Vertical Grid (VG)\n󰓪 Vertical Deck (VK)\n󰕯 Dwindle (DW)\n󰕮 Fair (F)\n󰕬 Vertical Fair (VF)"
-
-    dmenu_sock=$(ls /run/user/$(id -u)/noctalia-dmenu-*.sock 2>/dev/null | head -n1 || true)
-
-    if [ -n "$dmenu_sock" ] && [ -S "$dmenu_sock" ] && command -v noctalia >/dev/null 2>&1; then
-      chosen=$(printf "%b" "$options" | noctalia dmenu -p "Layout MangoWM")
-    else
-      chosen=$(printf "%b" "$options" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Layout Mango " -theme-str '
-        * {
-          bg-col: ${c.bg};
-          bg-col-light: ${c.bgAlt};
-          border-col: ${c.accent};
-          selected-col: ${c.surface};
-          fg-col: ${c.fg};
-          grey: ${c.fgMuted};
-          font: "Inter 11";
-        }
-        window {
-          width: 360px;
-          height: 520px;
-          border: 2px;
-          border-color: ${c.accent};
-          border-radius: 12px;
-          background-color: ${c.bg};
-        }
-        mainbox {
-          background-color: ${c.bg};
-          padding: 12px;
-        }
-        inputbar {
-          children: [prompt, entry];
-          background-color: ${c.bgAlt};
-          border-radius: 8px;
-          padding: 6px 10px;
-          margin: 0px 0px 8px 0px;
-        }
-        prompt {
-          background-color: ${c.accent};
-          padding: 4px 8px;
-          text-color: ${c.bgDark};
-          border-radius: 6px;
-          margin: 0px 8px 0px 0px;
-        }
-        entry {
-          padding: 4px;
-          text-color: ${c.fg};
-          background-color: transparent;
-          placeholder-color: ${c.fgMuted};
-        }
-        listview {
-          border: 0px;
-          padding: 4px 0px 0px;
-          margin: 0px;
-          columns: 1;
-          lines: 14;
-          background-color: ${c.bg};
-        }
-        element {
-          padding: 6px 10px;
-          background-color: ${c.bg};
-          text-color: ${c.fg};
-          border-radius: 6px;
-        }
-        element selected {
-          background-color: ${c.surface};
-          text-color: ${c.accent};
-        }
-        element-text, element-icon {
-          background-color: inherit;
-          text-color: inherit;
-        }
-      ')
-    fi
-
-    case "$chosen" in
-      *"Scroller (S)"*)           mmsg dispatch setlayout,scroller >/dev/null 2>&1 ;;
-      *"Tile (T)"*)               mmsg dispatch setlayout,tile >/dev/null 2>&1 ;;
-      *"Center Tile (CT)"*)       mmsg dispatch setlayout,center_tile >/dev/null 2>&1 ;;
-      *"Grid (G)"*)               mmsg dispatch setlayout,grid >/dev/null 2>&1 ;;
-      *"Monocle (M)"*)            mmsg dispatch setlayout,monocle >/dev/null 2>&1 ;;
-      *"Deck (K)"*)               mmsg dispatch setlayout,deck >/dev/null 2>&1 ;;
-      *"Right Tile (RT)"*)        mmsg dispatch setlayout,right_tile >/dev/null 2>&1 ;;
-      *"Vertical Scroller (VS)"*) mmsg dispatch setlayout,vertical_scroller >/dev/null 2>&1 ;;
-      *"Vertical Tile (VT)"*)     mmsg dispatch setlayout,vertical_tile >/dev/null 2>&1 ;;
-      *"Vertical Grid (VG)"*)     mmsg dispatch setlayout,vertical_grid >/dev/null 2>&1 ;;
-      *"Vertical Deck (VK)"*)     mmsg dispatch setlayout,vertical_deck >/dev/null 2>&1 ;;
-      *"Dwindle (DW)"*)           mmsg dispatch setlayout,dwindle >/dev/null 2>&1 ;;
-      *"Fair (F)"*)               mmsg dispatch setlayout,fair >/dev/null 2>&1 ;;
-      *"Vertical Fair (VF)"*)     mmsg dispatch setlayout,vertical_fair >/dev/null 2>&1 ;;
-    esac
-    pkill -RTMIN+8 waybar 2>/dev/null || true
-  '';
-
-  mangoWindowTitle = pkgs.writeShellScriptBin "mango-window-title" ''
-    if [ -z "$MANGO_INSTANCE_SIGNATURE" ]; then
-      SOCK=$(ls -t /run/user/$(id -u)/mango-*.sock 2>/dev/null | head -n 1)
-      [ -n "$SOCK" ] && export MANGO_INSTANCE_SIGNATURE=$(basename "$SOCK" .sock | sed 's/^mango-//')
-    fi
-    INFO=$(mmsg get focusing-client 2>/dev/null)
-    if [ -z "$INFO" ] || [ "$INFO" = "null" ]; then
-      echo '{"text": "", "tooltip": "", "class": "empty"}'
-      exit 0
-    fi
-    TITLE=$(echo "$INFO" | ${pkgs.jq}/bin/jq -r '.title // empty' 2>/dev/null)
-    APPID=$(echo "$INFO" | ${pkgs.jq}/bin/jq -r '.appid // empty' 2>/dev/null)
-    if [ -z "$TITLE" ]; then
-      echo '{"text": "", "tooltip": "", "class": "empty"}'
-      exit 0
-    fi
-    ICON="󰣆"
-    case "$APPID" in
-      *alacritty*|*kitty*|*terminal*|*foot*|*wezterm*|*ghostty*|*st*) ICON="" ;;
-      *firefox*|*librewolf*|*floorp*|*zen*|*tor*) ICON="󰈹" ;;
-      *chrome*|*chromium*|*brave*|*edge*|*vivaldi*|*opera*) ICON="" ;;
-      *code*|*codium*|*vscode*|*antigravity*|*cursor*) ICON="󰨞" ;;
-      *zed*)      ICON="󱓷" ;;
-      *nvim*|*neovim*|*vim*) ICON="" ;;
-      *thunar*|*nautilus*|*nemo*|*pcmanfm*|*dolphin*|*yazi*) ICON="󰉋" ;;
-      *discord*|*vesktop*) ICON="󰙯" ;;
-      *spotify*)  ICON="󰓇" ;;
-      *mpv*|*vlc*) ICON="󰎁" ;;
-      *steam*)    ICON="󰓓" ;;
-      *zathura*|*pdf*) ICON="󰈦" ;;
-      *obsidian*) ICON="󱓧" ;;
-    esac
-    TRUNCATED=$(echo "$TITLE" | cut -c 1-38)
-    [ "''${#TITLE}" -gt 38 ] && TRUNCATED="$TRUNCATED..."
-    ESCAPED_TEXT=$(echo "$ICON $TRUNCATED" | sed 's/"/\\"/g')
-    ESCAPED_TOOLTIP=$(echo "$APPID: $TITLE" | sed 's/"/\\"/g')
-    echo "{\"text\": \"$ESCAPED_TEXT\", \"tooltip\": \"$ESCAPED_TOOLTIP\", \"class\": \"$APPID\"}"
-  '';
 in
 {
   options.desktop.wayland.traditional.waybar = {
