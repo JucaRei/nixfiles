@@ -8,11 +8,9 @@ let
   inherit (lib)
     mkIf
     mkMerge
-    mkDefault
     mkEnableOption
     mkOption
     types
-    optionalString
     optionals
     ;
 
