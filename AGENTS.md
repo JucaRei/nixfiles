@@ -24,11 +24,11 @@ Usuário padrão: `juca`. Idioma: comentários e docs em pt-BR; identificadores 
 
 | Host | Tipo | Distro | Desktop | Saída do flake | Doc |
 |---|---|---|---|---|---|
-| `anubis` | HM standalone | Fedora | MangoWM + Noctalia | `homeConfigurations."juca@anubis"` | `home-manager/hosts/anubis/` |
-| `nitro` | HM standalone | Debian | BSPWM (X11) | `homeConfigurations."juca@nitro"` | `home-manager/hosts/nitro/` |
+| `anubis` | HM standalone | Fedora | MangoWM + Noctalia | `homeConfigurations."juca@anubis"` | [AGENTS.md](home-manager/hosts/anubis/AGENTS.md) |
+| `nitro` | HM standalone | Debian | BSPWM (X11) | `homeConfigurations."juca@nitro"` | [AGENTS.md](home-manager/hosts/nitro/AGENTS.md) |
 | `fedora`, `anubisvm` | HM standalone | Fedora | BSPWM | `homeConfigurations."juca@<host>"` | — |
-| `virtualvm` | HM standalone | VM | DWM | `homeConfigurations."juca@virtualvm"` | — |
-| `rocinante` | NixOS | NixOS | DWM-Titus + Quickshell | `nixosConfigurations.rocinante` | `nixos/hosts/rocinante/` |
+| `virtualvm` | HM standalone | VM | DWM | `homeConfigurations."juca@virtualvm"` | [AGENTS.md](home-manager/hosts/virtualvm/AGENTS.md) |
+| `rocinante` | NixOS | NixOS | DWM-Titus + Quickshell | `nixosConfigurations.rocinante` | [AGENTS.md](nixos/hosts/rocinante/AGENTS.md) |
 | `rocinante-vm`, `rocinante-hyperv` | NixOS (VM) | NixOS | BSPWM | `nixosConfigurations.<host>` | `nixos/hosts/<host>/` |
 | `iso-*` | ISO live | NixOS | variável | `nixosConfigurations.iso-<desktop>` | — |
 
@@ -91,14 +91,14 @@ sudo nixos-rebuild switch --flake .#<host>           # NixOS
 - **Overlays:** usar `inherit (final.stdenv.hostPlatform) system`, não `inherit (final) system`. Fontes em `pkgs/fonts/` exigem `dontBuild = true;`.
 - **Aliases de shell:** não usar `"$@"` (Fish rejeita); comandos POSIX complexos viram `pkgs.writeShellScriptBin`.
 - **Tiling managers no HM:** wrapper `~/.local/bin/start-<wm>`, sessão `.desktop` em `~/.local/share/{wayland,x}-sessions/`, teclado herdado de `home.keyboard`.
-- **Sintaxe de WM:** MangoWM usa `snake_case` (`border_px`, `exec_once`, `window_rule`); Hyprland 0.55+ usa `windowrule` (não `windowrulev2`). Detalhes no README do ambiente.
+- **Sintaxe de WM:** MangoWM usa `snake_case` (`border_px`, `exec_once`, `window_rule`); Hyprland 0.55+ usa `windowrule` (não `windowrulev2`). Detalhes no `AGENTS.md` do ambiente.
 - **Low-RAM hosts e PSD:** em hosts com pouca RAM (ex.: 2 GB no `anubis`), desativar `system.programs.browsers.psd.enable`; o `tmpfs` em `/run/user/1000` limitado a 10% da RAM (~180 MB) estoura rapidamente e causa falhas de `No space left on device (28)` e crashes em navegadores.
 
 ## Onde documentar
 
 - Regra que vale para o repo inteiro → este arquivo (curta).
-- Gotcha de um host → `home-manager/hosts/<host>/README.md` ou `nixos/hosts/<host>/README.md`.
-- Gotcha de um módulo/ambiente → README em `modules/.../<ambiente>/` ou comentário no `.nix`.
+- Gotcha de um host → `home-manager/hosts/<host>/AGENTS.md` ou `nixos/hosts/<host>/AGENTS.md`.
+- Gotcha de um módulo/ambiente → `modules/.../<modulo>/AGENTS.md` ou comentário no `.nix`.
 - Comandos e guia de instalação → `WIKI.md`.
 
 Não adicionar changelog de decisões aqui. Links sempre **relativos** (nunca `file:///` ou caminhos absolutos).
