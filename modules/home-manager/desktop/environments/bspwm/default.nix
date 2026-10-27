@@ -17,6 +17,7 @@
 
   config = lib.mkIf config.desktop.bspwm.enable {
     desktop.display-servers.backend = "x11";
+    desktop.theme.xsettingsd.enable = lib.mkDefault true;
 
     # --- Programas Padrão do BSPWM ---
     system.programs = {

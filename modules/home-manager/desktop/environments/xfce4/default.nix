@@ -60,6 +60,7 @@ in
 
   config = mkIf (desktop == "xfce4") {
     desktop.display-servers.backend = "x11";
+    desktop.theme.xsettingsd.enable = lib.mkDefault true;
 
     # --- Programas Padrão do XFCE ---
     system.programs = {
