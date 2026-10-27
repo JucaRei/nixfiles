@@ -26,297 +26,7 @@ let
 
   picomBin = "${nixGLWrapper pkgs.picom}/bin/picom";
 
-  # Script nativo de Scratchpad dinâmico para BSPWM (Inspirado no gh0stzk/dotfiles)
-  # - Monitor-aware (adapta geometria e move instantaneamente para o monitor ativo)
-  # - Alternância suave via flag hidden nativa do bspwm
-  # - Centralizado horizontalmente e posicionado logo abaixo da Polybar
-  scratchpadScript = pkgs.writeShellScript "bspwm-scratchpad" ''
-    SCRATCHPAD_NAME="bspwm-scratch"
-    MAX_WIDTH_PERCENT=75
-    HEIGHT_PERCENT=48
-
-    # 1. Obter geometria do monitor atualmente focado
-    mon_geo=$(${pkgs.bspwm}/bin/bspc query -T -m focused | ${pkgs.jq}/bin/jq -r '.rectangle | "\(.width) \(.height) \(.x) \(.y)"')
-    SCREEN_WIDTH=$(echo "$mon_geo" | awk '{print $1}')
-    SCREEN_HEIGHT=$(echo "$mon_geo" | awk '{print $2}')
-    MONITOR_X=$(echo "$mon_geo" | awk '{print $3}')
-    MONITOR_Y=$(echo "$mon_geo" | awk '{print $4}')
-
-    # 2. Calcular dimensões e posicionamento (respeitando espaçamento da Polybar)
-    WIDTH=$((SCREEN_WIDTH * MAX_WIDTH_PERCENT / 100))
-    HEIGHT=$((SCREEN_HEIGHT * HEIGHT_PERCENT / 100))
-    X_POS=$((MONITOR_X + (SCREEN_WIDTH - WIDTH) / 2))
-    Y_POS=$((MONITOR_Y + 44))
-
-    # 3. Localizar janela existente do scratchpad
-    get_scratchpad_id() {
-      for node in $(${pkgs.bspwm}/bin/bspc query -N -n ".floating.window" 2>/dev/null); do
-        if ${pkgs.xprop}/bin/xprop -id "$node" WM_CLASS 2>/dev/null | grep -q "$SCRATCHPAD_NAME"; then
-          echo "$node"
-          return 0
-        fi
-      done
-    }
-
-    WINDOW_ID=$(get_scratchpad_id)
-
-    if [ -n "$WINDOW_ID" ]; then
-      CURRENT_STATE=$(${pkgs.bspwm}/bin/bspc query -T -n "$WINDOW_ID" | ${pkgs.jq}/bin/jq -r '.hidden')
-
-      if [ "$CURRENT_STATE" = "false" ]; then
-        # Se visível: oculta
-        ${pkgs.bspwm}/bin/bspc node "$WINDOW_ID" -g hidden
-      else
-        # Se oculto: move para o monitor focado, reposiciona, redimensiona e foca
-        ${pkgs.bspwm}/bin/bspc node "$WINDOW_ID" -m focused
-        ${pkgs.xdo}/bin/xdo move -x "$X_POS" -y "$Y_POS" "$WINDOW_ID"
-        ${pkgs.xdo}/bin/xdo resize -w "$WIDTH" -h "$HEIGHT" "$WINDOW_ID"
-        ${pkgs.bspwm}/bin/bspc node "$WINDOW_ID" -g hidden=off -f
-      fi
-    else
-      # Se não existe, cria a regra temporária one-shot no BSPWM
-      ${pkgs.bspwm}/bin/bspc rule -a "$SCRATCHPAD_NAME" \
-        state=floating \
-        sticky=on \
-        rectangle="''${WIDTH}x''${HEIGHT}+''${X_POS}+''${Y_POS}" \
-        --one-shot
-
-      # Inicia o terminal dedicado com a classe bspwm-scratch em $HOME
-      ${scratchpadLaunchCmd}
-
-      # Aguarda a criação e ajusta posição/tamanho se necessário
-      for i in 1 2 3 4 5; do
-        sleep 0.1
-        WINDOW_ID=$(get_scratchpad_id)
-        if [ -n "$WINDOW_ID" ]; then
-          ${pkgs.xdo}/bin/xdo move -x "$X_POS" -y "$Y_POS" "$WINDOW_ID" 2>/dev/null || true
-          ${pkgs.xdo}/bin/xdo resize -w "$WIDTH" -h "$HEIGHT" "$WINDOW_ID" 2>/dev/null || true
-          break
-        fi
-      done
-    fi
-  '';
-
   screenshotSavePath = "${config.home.homeDirectory}/Pictures/Screenshots";
-
-  # --- Suite de Captura de Tela Dinâmica e Suave (Inspirado no ScreenShoTer do gh0stzk/dotfiles) ---
-  screenshotScript = pkgs.writeShellScript "bspwm-screenshot" ''
-    dir="${screenshotSavePath}"
-    [ -d "$dir" ] || mkdir -p "$dir"
-    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
-    file="$dir/Screenshot_$timestamp.png"
-
-    notify_shot() {
-      if [ -f "$1" ]; then
-        # Copia imagem diretamente para a área de transferência
-        ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png < "$1" 2>/dev/null || true
-
-        # Dispara notificação Dunst com miniatura e ações interativas
-        action=$(${pkgs.dunst}/bin/dunstify -a "Screenshot" \
-          -i "$1" \
-          -u normal \
-          -t 5000 \
-          -h string:x-dunst-stack-tag:screenshot \
-          "Captura de Tela Realizada" \
-          "Salvo em <i>Pictures/Screenshots</i> e copiado para a área de transferência." \
-          --action="open,Visualizar" \
-          --action="folder,Abrir Pasta" \
-          --action="delete,Excluir" 2>/dev/null || echo "")
-
-        case "$action" in
-          open) ${pkgs.xdg-utils}/bin/xdg-open "$1" 2>/dev/null || ${pkgs.feh}/bin/feh "$1" & ;;
-          folder) ${pkgs.xdg-utils}/bin/xdg-open "$dir" 2>/dev/null || ${fmCmd} "$dir" & ;;
-          delete) rm -f "$1" && ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 1500 "Captura excluída" ;;
-        esac
-      fi
-    }
-
-    get_focused_monitor_geo() {
-      ${pkgs.bspwm}/bin/bspc query -T -m pointed 2>/dev/null | ${pkgs.jq}/bin/jq -r '.rectangle | "\(.width)x\(.height)+\(.x)+\(.y)"' 2>/dev/null
-    }
-
-    case "$1" in
-      full|--now)
-        # Captura apenas o monitor onde o cursor do mouse está (sem barras pretas multi-monitor)
-        geo=$(get_focused_monitor_geo)
-        if [ -n "$geo" ] && [ "$geo" != "null" ]; then
-          ${pkgs.maim}/bin/maim -g "$geo" "$file" 2>/dev/null || ${pkgs.maim}/bin/maim "$file"
-        else
-          ${pkgs.maim}/bin/maim "$file"
-        fi
-        notify_shot "$file"
-        ;;
-
-      all|--all)
-        # Captura todos os monitores combinados
-        ${pkgs.maim}/bin/maim "$file"
-        notify_shot "$file"
-        ;;
-
-      area|--sel|-s)
-        # Seleção interativa retangular
-        sleep 0.2
-        # Desativa temporariamente o picom durante o recorte para garantir 100% que a tela fique limpa e sem nenhum blur
-        was_picom=0
-        if ${pkgs.procps}/bin/pgrep -x picom >/dev/null 2>&1; then
-          was_picom=1
-          ${pkgs.procps}/bin/pkill -x picom 2>/dev/null || true
-          sleep 0.05
-        fi
-
-        ${pkgs.maim}/bin/maim -s -u "$file" 2>/dev/null
-        ret=$?
-
-        # Restaura o compositor imediatamente após o recorte (ou cancelamento com Esc)
-        if [ "$was_picom" -eq 1 ]; then
-          (${picomBin} -b >/dev/null 2>&1 || ${pkgs.picom}/bin/picom -b >/dev/null 2>&1 || true) &
-        fi
-
-        [ "$ret" -eq 0 ] && notify_shot "$file"
-        ;;
-
-      window|--win|-w)
-        # Captura a janela atualmente focada
-        sleep 0.2
-        active_win=$(${pkgs.bspwm}/bin/bspc query -N -n focused 2>/dev/null)
-        if [ -n "$active_win" ]; then
-          ${pkgs.maim}/bin/maim -i "$active_win" "$file" 2>/dev/null && notify_shot "$file"
-        else
-          $0 area
-        fi
-        ;;
-
-      in3|--in3)
-        # Temporizador de 3 segundos com contagem regressiva OSD
-        for sec in 3 2 1; do
-          ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 950 -h string:x-dunst-stack-tag:screenshot-timer "Captura em..." "$sec segundo(s)"
-          sleep 1
-        done
-        ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 500 -h string:x-dunst-stack-tag:screenshot-timer "Capturando..." "Sorria! 📸"
-        sleep 0.2
-        geo=$(get_focused_monitor_geo)
-        if [ -n "$geo" ] && [ "$geo" != "null" ]; then
-          ${pkgs.maim}/bin/maim -g "$geo" "$file" 2>/dev/null || ${pkgs.maim}/bin/maim "$file"
-        else
-          ${pkgs.maim}/bin/maim "$file"
-        fi
-        notify_shot "$file"
-        ;;
-
-      in5|--in5)
-        # Temporizador de 5 segundos com contagem regressiva OSD
-        for sec in 5 4 3 2 1; do
-          ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 950 -h string:x-dunst-stack-tag:screenshot-timer "Captura em..." "$sec segundo(s)"
-          sleep 1
-        done
-        ${pkgs.dunst}/bin/dunstify -a "Screenshot" -u low -t 500 -h string:x-dunst-stack-tag:screenshot-timer "Capturando..." "Sorria! 📸"
-        sleep 0.2
-        geo=$(get_focused_monitor_geo)
-        if [ -n "$geo" ] && [ "$geo" != "null" ]; then
-          ${pkgs.maim}/bin/maim -g "$geo" "$file" 2>/dev/null || ${pkgs.maim}/bin/maim "$file"
-        else
-          ${pkgs.maim}/bin/maim "$file"
-        fi
-        notify_shot "$file"
-        ;;
-
-      menu|--menu|*)
-        OPT_FULL="󰹑  Monitor Atual           (Imediato)"
-        OPT_AREA="󰆞  Recorte de Área         (Seleção com cursor)"
-        OPT_WIN="󰖲  Janela Ativa            (Focada)"
-        OPT_IN3="󱎫  Temporizador (3s)       (Contagem rápida)"
-        OPT_IN5="󱎫  Temporizador (5s)       (Contagem regressiva)"
-        OPT_ALL="󰍹  Todos os Monitores      (Canvas completo)"
-        OPT_DIR="󰈊  Abrir Pasta de Capturas (~/Pictures/Screenshots)"
-
-        CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s" \
-          "$OPT_FULL" \
-          "$OPT_AREA" \
-          "$OPT_WIN" \
-          "$OPT_IN3" \
-          "$OPT_IN5" \
-          "$OPT_ALL" \
-          "$OPT_DIR" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰹑 Screenshot " -theme-str 'window { width: 560px; height: 350px; } listview { columns: 1; lines: 7; }')
-
-        case "$CHOICE" in
-          *"Monitor Atual"*) $0 full ;;
-          *"Recorte de Área"*) sleep 0.2 && $0 area ;;
-          *"Janela Ativa"*) sleep 0.2 && $0 window ;;
-          *"Temporizador (3s)"*) $0 in3 ;;
-          *"Temporizador (5s)"*) $0 in5 ;;
-          *"Todos os Monitores"*) $0 all ;;
-          *"Abrir Pasta"*) ${pkgs.xdg-utils}/bin/xdg-open "$dir" 2>/dev/null || ${fmCmd} "$dir" & ;;
-        esac
-        ;;
-    esac
-  '';
-
-  isAppleKeyboard =
-    (config.home.keyboard.model or "") == "apple" || (config.home.keyboard.model or "") == "macbook";
-
-  effectiveScreenshotProfile =
-    if cfg.screenshotProfile != "auto" then
-      cfg.screenshotProfile
-    else if isAppleKeyboard then
-      "mac"
-    else
-      "standard";
-
-  screenshotBindings =
-    if effectiveScreenshotProfile == "none" then
-      { }
-    else if effectiveScreenshotProfile == "custom" then
-      cfg.screenshotKeybindings
-    else if effectiveScreenshotProfile == "mac" then
-      {
-        # --- Perfil macOS (MacBook Pro / Air e teclados Apple sem tecla Print física) ---
-        # Super + Shift + 3: captura imediata da tela inteira (estilo macOS)
-        "${mod} + shift + 3" = "${screenshotScript} full";
-        # Super + Shift + 4: recorte interativo de área retangular com seleção visual
-        "${mod} + shift + 4" = "${screenshotScript} area";
-        # Super + Shift + 5: abre o menu interativo com todas as opções de captura
-        "${mod} + shift + 5" = "${screenshotScript} menu";
-        # Tecla Print dedicada (se disponível): captura de tela inteira
-        "Print" = "${screenshotScript} full";
-        # Shift + Print: recorte de área
-        "shift + Print" = "${screenshotScript} area";
-        # Ctrl + Print: captura da janela ativa
-        "ctrl + Print" = "${screenshotScript} window";
-        # Super + Shift + S: atalho de teclado moderno / tecla Print de notebooks
-        "super + shift + s" = "${screenshotScript} menu";
-        # Tecla de hardware de captura seletiva
-        "XF86SelectiveScreenshot" = "${screenshotScript} area";
-      }
-      // lib.optionalAttrs (mod != "super") {
-        "${mod} + shift + s" = "${screenshotScript} area";
-      }
-    else
-      {
-        # --- Perfil Standard / PC (Acer Nitro, PCs desktop, VMs, etc.) ---
-        # Print / PrtSc: captura imediata da tela do monitor onde está o cursor
-        "Print" = "${screenshotScript} full";
-        # Shift + Print: recorte interativo de área retangular com seleção visual
-        "shift + Print" = "${screenshotScript} area";
-        # Ctrl + Print: captura apenas a janela atualmente em foco
-        "ctrl + Print" = "${screenshotScript} window";
-        # Super + Shift + Print: captura com contagem regressiva de 5 segundos
-        "${mod} + shift + Print" = "${screenshotScript} in5";
-        # Super + Print: menu completo interativo no Rofi (ScreenShoTer)
-        "${mod} + Print" = "${screenshotScript} menu";
-
-        # Sys_Req: tratamento para teclados de notebook onde PrtSc emite Sys_Req no X11
-        "Sys_Req" = "${screenshotScript} full";
-        # Shift + Sys_Req: recorte de área via Sys_Req
-        "shift + Sys_Req" = "${screenshotScript} area";
-
-        # Super + Shift + S: tecla Print em notebooks modernos (cujo firmware emite Win+Shift+S)
-        "super + shift + s" = "${screenshotScript} menu";
-        # Tecla de hardware de captura seletiva (Fn + PrtSc)
-        "XF86SelectiveScreenshot" = "${screenshotScript} area";
-      }
-      // lib.optionalAttrs (mod != "super") {
-        "${mod} + shift + s" = "${screenshotScript} area";
-      };
 
   normMod =
     let
@@ -340,584 +50,218 @@ let
       "super";
 
   ctrlMod = if mod == "ctrl" then "super" else "ctrl";
-  modDisplayName = normMod; # "Super", "Alt", "Ctrl"
+  modDisplayName = normMod;
 
-  # --- Script de Notificação de Volume Suave (Estilo gh0stzk / Catppuccin) ---
-  volumeOsd = pkgs.writeShellScript "volume-osd" ''
-    case "$1" in
-      up)
-        ${pkgs.pamixer}/bin/pamixer --allow-boost --set-limit 150 -i 2 2>/dev/null || {
-          if command -v pactl >/dev/null 2>&1; then
-            curr_vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -o -E '[0-9]+%' | head -n1 | tr -d '%')
-            if [ -n "$curr_vol" ] && [ "$curr_vol" -lt 150 ]; then
-              next_vol=$(( curr_vol + 2 ))
-              [ "$next_vol" -gt 150 ] && next_vol=150
-              pactl set-sink-volume @DEFAULT_SINK@ "$next_vol%" 2>/dev/null || true
-            fi
-          fi
-        }
-        ;;
-      down)
-        ${pkgs.pamixer}/bin/pamixer -d 2 2>/dev/null || pactl set-sink-volume @DEFAULT_SINK@ -2% 2>/dev/null || true
-        ;;
-      mute)
-        ${pkgs.pamixer}/bin/pamixer -t 2>/dev/null || pactl set-sink-mute @DEFAULT_SINK@ toggle 2>/dev/null || true
-        ;;
-    esac
+  scratchpadScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-scratchpad";
+    runtimeInputs = [
+      pkgs.bspwm
+      pkgs.jq
+      pkgs.xdo
+      pkgs.xprop
+    ];
+    runtimeEnv = {
+      SCRATCHPAD_LAUNCH_CMD = scratchpadLaunchCmd;
+    };
+    text = builtins.readFile ./scripts/bspwm-scratchpad.sh;
+  };
+  scratchpadScript = lib.getExe scratchpadScriptPkg;
 
-    vol=$(${pkgs.pamixer}/bin/pamixer --get-volume 2>/dev/null)
-    is_muted=$(${pkgs.pamixer}/bin/pamixer --get-mute 2>/dev/null || echo "false")
-    if [ -z "$vol" ] && command -v pactl >/dev/null 2>&1; then
-      vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -o -E '[0-9]+%' | head -n1 | tr -d '%')
-      pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | grep -qi "yes" && is_muted="true"
-    fi
-    [ -z "$vol" ] && vol="0"
+  screenshotScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-screenshot";
+    runtimeInputs = [
+      pkgs.bspwm
+      pkgs.dunst
+      pkgs.feh
+      pkgs.jq
+      pkgs.maim
+      (nixGLWrapper pkgs.picom)
+      pkgs.procps
+      pkgs.rofi
+      pkgs.xclip
+      pkgs.xdg-utils
+    ];
+    runtimeEnv = {
+      FILE_MANAGER_CMD = fmCmd;
+      PICOM_BIN = picomBin;
+      SCREENSHOT_SAVE_PATH = screenshotSavePath;
+    };
+    text = builtins.readFile ./scripts/bspwm-screenshot.sh;
+  };
+  screenshotScript = lib.getExe screenshotScriptPkg;
 
-    if [ "$is_muted" = "true" ] || [ "$vol" -eq 0 ]; then
-      icon="audio-volume-muted"
-      text="Volume: Mudo"
-      bar_val=0
+  isAppleKeyboard =
+    (config.home.keyboard.model or "") == "apple" || (config.home.keyboard.model or "") == "macbook";
+
+  effectiveScreenshotProfile =
+    if cfg.screenshotProfile != "auto" then
+      cfg.screenshotProfile
+    else if isAppleKeyboard then
+      "mac"
     else
-      if [ "$vol" -lt 30 ]; then
-        icon="audio-volume-low"
-      elif [ "$vol" -lt 70 ]; then
-        icon="audio-volume-medium"
-      else
-        icon="audio-volume-high"
-      fi
-      text="Volume: $vol%"
-      bar_val=$(( vol * 100 / 150 ))
-      [ "$bar_val" -gt 100 ] && bar_val=100
-    fi
+      "standard";
 
-    ${pkgs.dunst}/bin/dunstify -a "OSD" \
-      -u low \
-      -i "$icon" \
-      -h string:x-dunst-stack-tag:volume \
-      -h int:value:"$bar_val" \
-      -t 1500 \
-      "$text"
-  '';
-
-  # --- Script de Notificação de Brilho da Tela Suave (Estilo gh0stzk / Catppuccin) ---
-  brightnessOsd = pkgs.writeShellScript "brightness-osd" ''
-    # Identificar dispositivo de tela real (priorizar intel_backlight > nv_backlight > apple_backlight > acpi_video0)
-    dev=""
-    for d in intel_backlight nv_backlight apple_backlight acpi_video0; do
-      if [ -d "/sys/class/backlight/$d" ]; then
-        dev="$d"
-        break
-      fi
-    done
-    if [ -z "$dev" ] && [ -d /sys/class/backlight ]; then
-      dev=$(ls -1 /sys/class/backlight 2>/dev/null | head -n1)
-    fi
-
-    dev_args=()
-    if [ -n "$dev" ]; then
-      dev_args=(-d "$dev")
-    fi
-
-    case "$1" in
-      up)
-        prev=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" get 2>/dev/null)
-        ${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" set +2% >/dev/null 2>&1
-        curr=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" get 2>/dev/null)
-        if [ "$prev" = "$curr" ]; then
-          ${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" set +1 >/dev/null 2>&1
-        fi
-        ;;
-      down)
-        prev=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" get 2>/dev/null)
-        ${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" set 2%- >/dev/null 2>&1
-        curr=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" get 2>/dev/null)
-        if [ "$prev" = "$curr" ]; then
-          ${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" set 1- >/dev/null 2>&1
-        fi
-        ;;
-    esac
-
-    val=$(${pkgs.brightnessctl}/bin/brightnessctl "''${dev_args[@]}" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
-    if [ -n "$val" ]; then
-      if [ "$val" -lt 33 ]; then
-        icon="display-brightness-low"
-      elif [ "$val" -lt 66 ]; then
-        icon="display-brightness-medium"
-      else
-        icon="display-brightness-high"
-      fi
-
-      ${pkgs.dunst}/bin/dunstify -a "OSD" \
-        -u low \
-        -i "$icon" \
-        -h string:x-dunst-stack-tag:brightness \
-        -h int:value:"$val" \
-        -t 1500 \
-        "Brilho da Tela: $val%"
-    fi
-  '';
-
-  # --- Script de Controle de Mídia com Feedback Visual OSD (Estilo gh0stzk MediaControl) ---
-  mediaControl = pkgs.writeShellScript "bspwm-media-control" ''
-    case "$1" in
-      play-pause) ${pkgs.playerctl}/bin/playerctl play-pause 2>/dev/null ;;
-      next)       ${pkgs.playerctl}/bin/playerctl next 2>/dev/null ;;
-      prev)       ${pkgs.playerctl}/bin/playerctl previous 2>/dev/null ;;
-      stop)       ${pkgs.playerctl}/bin/playerctl stop 2>/dev/null ;;
-    esac
-
-    sleep 0.1
-    status=$(${pkgs.playerctl}/bin/playerctl status 2>/dev/null || echo "Parado")
-    track_info=$(${pkgs.playerctl}/bin/playerctl metadata --format '{{title}} - {{artist}}' 2>/dev/null || true)
-
-    case "$status" in
-      Playing)   icon="media-playback-start"; header="Reproduzindo" ;;
-      Paused)    icon="media-playback-pause"; header="Pausado" ;;
-      *)         icon="media-playback-stop";  header="Reprodutor" ;;
-    esac
-
-    if [ -n "$track_info" ] && [ "$track_info" != " - " ]; then
-      ${pkgs.dunst}/bin/dunstify -a "Mídia" \
-        -u low \
-        -i "$icon" \
-        -h string:x-dunst-stack-tag:media \
-        -t 2000 \
-        "$header" \
-        "<b>$track_info</b>"
-    fi
-  '';
-
-  # --- Conta-gotas / Seletor de Cores Dinâmico (Estilo gh0stzk Colorpicker) ---
-  colorPickerScript = pkgs.writeShellScript "bspwm-colorpicker" ''
-    color=$(${pkgs.xcolor}/bin/xcolor -s 2>/dev/null || true)
-    [ -z "$color" ] && exit 0
-
-    echo -n "$color" | ${pkgs.xclip}/bin/xclip -selection clipboard
-
-    ${pkgs.dunst}/bin/dunstify -a "Colorpicker" \
-      -u low \
-      -i "color-picker" \
-      -h string:x-dunst-stack-tag:colorpicker \
-      -t 3500 \
-      "Cor Capturada" \
-      "Código: <b>$color</b> copiado para a área de transferência!"
-  '';
-
-  # --- Script de Controle e Notificação de Luz do Teclado (Logitech MX Keys / MacBook / Laptops) ---
-  kbdBrightnessOsd = pkgs.writeShellScript "kbd-brightness-osd" ''
-    # 1. Identificar dispositivo de iluminação de teclado via brightnessctl
-    dev=""
-    for candidate in "smc::kbd_backlight" "apple::kbd_backlight" "dell::kbd_backlight" "asus::kbd_backlight" "tpacpi::kbd_backlight"; do
-      if ${pkgs.brightnessctl}/bin/brightnessctl -d "$candidate" info >/dev/null 2>&1; then
-        dev="$candidate"
-        break
-      fi
-    done
-
-    if [ -z "$dev" ]; then
-      dev=$(${pkgs.brightnessctl}/bin/brightnessctl --list 2>/dev/null | grep -E -m1 "kbd_backlight|keyboard" | cut -d\' -f2 || true)
-    fi
-
-    if [ -n "$dev" ]; then
-      case "$1" in
-        up)
-          prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +5% >/dev/null 2>&1 || ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +1 >/dev/null 2>&1
-          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          if [ "$prev" = "$curr" ]; then
-            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +1 >/dev/null 2>&1
-          fi
-          ;;
-        down)
-          prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 5%- >/dev/null 2>&1 || ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 1- >/dev/null 2>&1
-          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          if [ "$prev" = "$curr" ]; then
-            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 1- >/dev/null 2>&1
-          fi
-          ;;
-        toggle)
-          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
-          if [ "$curr" -gt 0 ] 2>/dev/null; then
-            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 0%
-          else
-            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 50%
-          fi
-          ;;
-      esac
-
-      val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
-      if [ -n "$val" ]; then
-        ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
-      fi
+  screenshotBindings =
+    if effectiveScreenshotProfile == "none" then
+      { }
+    else if effectiveScreenshotProfile == "custom" then
+      cfg.screenshotKeybindings
+    else if effectiveScreenshotProfile == "mac" then
+      {
+        # --- Perfil macOS (MacBook Pro / Air e teclados Apple sem tecla Print física) ---
+        "${mod} + shift + 3" = "${screenshotScript} full";
+        "${mod} + shift + 4" = "${screenshotScript} area";
+        "${mod} + shift + 5" = "${screenshotScript} menu";
+        "Print" = "${screenshotScript} full";
+        "shift + Print" = "${screenshotScript} area";
+        "ctrl + Print" = "${screenshotScript} window";
+        "super + shift + s" = "${screenshotScript} menu";
+        "XF86SelectiveScreenshot" = "${screenshotScript} area";
+      }
+      // lib.optionalAttrs (mod != "super") {
+        "${mod} + shift + s" = "${screenshotScript} area";
+      }
     else
-      # 2. Teclados externos (Logitech MX Keys / sem interface direta em /sys/class/leds)
-      SOLAAR_CMD=""
-      if command -v solaar >/dev/null 2>&1; then
-        SOLAAR_CMD="solaar"
-      elif [ -x "${pkgs.solaar}/bin/solaar" ]; then
-        SOLAAR_CMD="${pkgs.solaar}/bin/solaar"
-      fi
+      {
+        # --- Perfil Standard / PC (Acer Nitro, PCs desktop, VMs, etc.) ---
+        "Print" = "${screenshotScript} full";
+        "shift + Print" = "${screenshotScript} area";
+        "ctrl + Print" = "${screenshotScript} window";
+        "${mod} + shift + Print" = "${screenshotScript} in5";
+        "${mod} + Print" = "${screenshotScript} menu";
+        "Sys_Req" = "${screenshotScript} full";
+        "shift + Sys_Req" = "${screenshotScript} area";
+        "super + shift + s" = "${screenshotScript} menu";
+        "XF86SelectiveScreenshot" = "${screenshotScript} area";
+      }
+      // lib.optionalAttrs (mod != "super") {
+        "${mod} + shift + s" = "${screenshotScript} area";
+      };
 
-      if [ -n "$SOLAAR_CMD" ]; then
-        case "$1" in
-          up|toggle)
-            "$SOLAAR_CMD" config "MX Keys" backlight true 2>/dev/null || \
-            "$SOLAAR_CMD" config active backlight true 2>/dev/null || \
-            "$SOLAAR_CMD" config 1 backlight true 2>/dev/null || true
-            ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (MX Keys): Aumentar / Ativada"
-            ;;
-          down)
-            "$SOLAAR_CMD" config "MX Keys" backlight false 2>/dev/null || \
-            "$SOLAAR_CMD" config active backlight false 2>/dev/null || \
-            "$SOLAAR_CMD" config 1 backlight false 2>/dev/null || true
-            ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (MX Keys): Diminuir / Desativada"
-            ;;
-        esac
-      else
-        case "$1" in
-          up)   ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (F4 / MX Keys): Aumentar" ;;
-          down) ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (F3 / MX Keys): Diminuir" ;;
-          toggle) ${pkgs.dunst}/bin/dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -t 1500 "Luz do Teclado (MX Keys): Alternar" ;;
-        esac
-      fi
-    fi
-  '';
+  volumeOsdPkg = pkgs.writeShellApplication {
+    name = "volume-osd";
+    runtimeInputs = [
+      pkgs.dunst
+      pkgs.pamixer
+    ];
+    text = builtins.readFile ./scripts/volume-osd.sh;
+  };
+  volumeOsd = lib.getExe volumeOsdPkg;
 
-  # Script nativo de alternância de Pseudo-Tiling com notificação visual OSD
-  pseudoTileScript = pkgs.writeShellScript "bspwm-toggle-pseudo-tile" ''
-    export PATH="${
-      lib.makeBinPath [
-        pkgs.bspwm
-        pkgs.dunst
-        pkgs.jq
-        pkgs.coreutils
-      ]
-    }:$PATH"
+  brightnessOsdPkg = pkgs.writeShellApplication {
+    name = "brightness-osd";
+    runtimeInputs = [
+      pkgs.brightnessctl
+      pkgs.dunst
+    ];
+    text = builtins.readFile ./scripts/brightness-osd.sh;
+  };
+  brightnessOsd = lib.getExe brightnessOsdPkg;
 
-    target="focused"
-    action="toggle"
+  mediaControlPkg = pkgs.writeShellApplication {
+    name = "bspwm-media-control";
+    runtimeInputs = [
+      pkgs.dunst
+      pkgs.playerctl
+    ];
+    text = builtins.readFile ./scripts/bspwm-media-control.sh;
+  };
+  mediaControl = lib.getExe mediaControlPkg;
 
-    case "''${1:-}" in
-      on|enable|--on|--enable)
-        action="on"
-        ;;
-      off|disable|--off|--disable)
-        action="off"
-        ;;
-      status|--status|-s)
-        action="status"
-        ;;
-      toggle|--toggle|"")
-        action="toggle"
-        ;;
-      0x*|[0-9]*)
-        target="$1"
-        case "''${2:-}" in
-          on|enable) action="on" ;;
-          off|disable) action="off" ;;
-          status) action="status" ;;
-          *) action="toggle" ;;
-        esac
-        ;;
-    esac
+  colorPickerScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-colorpicker";
+    runtimeInputs = [
+      pkgs.dunst
+      pkgs.xclip
+      pkgs.xcolor
+    ];
+    text = builtins.readFile ./scripts/bspwm-colorpicker.sh;
+  };
+  colorPickerScript = lib.getExe colorPickerScriptPkg;
 
-    # Validar se há janela válida focada ou selecionada
-    wid=$(bspc query -N -n "$target.window" 2>/dev/null || bspc query -N -n "focused.window" 2>/dev/null)
-    if [ -z "$wid" ]; then
-      exit 0
-    fi
+  kbdBrightnessOsdPkg = pkgs.writeShellApplication {
+    name = "kbd-brightness-osd";
+    runtimeInputs = [
+      pkgs.brightnessctl
+      pkgs.dunst
+      pkgs.solaar
+    ];
+    text = builtins.readFile ./scripts/kbd-brightness-osd.sh;
+  };
+  kbdBrightnessOsd = lib.getExe kbdBrightnessOsdPkg;
 
-    if [ "$action" = "status" ]; then
-      state=$(bspc query -T -n "$wid" 2>/dev/null | jq -r '.client.state // empty' 2>/dev/null)
-      echo "''${state:-unknown}"
-      exit 0
-    elif [ "$action" = "on" ]; then
-      bspc node "$wid" -t pseudo_tiled 2>/dev/null || true
-    elif [ "$action" = "off" ]; then
-      bspc node "$wid" -t tiled 2>/dev/null || true
-    else
-      bspc node "$wid" -t '~pseudo_tiled' 2>/dev/null || true
-    fi
+  pseudoTileScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-toggle-pseudo-tile";
+    runtimeInputs = [
+      pkgs.bspwm
+      pkgs.dunst
+    ];
+    text = builtins.readFile ./scripts/bspwm-toggle-pseudo-tile.sh;
+  };
+  pseudoTileScript = lib.getExe pseudoTileScriptPkg;
 
-    state=$(bspc query -T -n "$wid" 2>/dev/null | jq -r '.client.state // empty' 2>/dev/null)
-    if [ "$state" = "pseudo_tiled" ]; then
-      dunstify -a "BSPWM" -u low -i "view-restore" -h string:x-dunst-stack-tag:window-state -r 9994 -t 1500 "󱒆 Janela: Pseudo-Tiled" "Janela em grade preservando dimensões naturais" 2>/dev/null || true
-    else
-      dunstify -a "BSPWM" -u low -i "view-grid" -h string:x-dunst-stack-tag:window-state -r 9994 -t 1500 "󰄬 Janela: Tiled" "Modo tiling em grade completa restaurado" 2>/dev/null || true
-    fi
-  '';
+  quickSettingsPkg = pkgs.writeShellApplication {
+    name = "quick-settings";
+    runtimeInputs = [
+      pkgs.arandr
+      pkgs.dunst
+      pkgs.feh
+      pkgs.firefox
+      pkgs.lxappearance
+      pkgs.networkmanagerapplet
+      pkgs.nitrogen
+      pkgs.pavucontrol
+      pkgs.rofi
+      pkgs.rofi-power-menu
+      pkgs.xdg-utils
+      pkgs.xrandr
+      scratchpadScriptPkg
+      screenshotScriptPkg
+      colorPickerScriptPkg
+      pseudoTileScriptPkg
+    ];
+    runtimeEnv = {
+      BROWSER_CMD = browserLaunchCmd;
+      TERMINAL_CMD = termCmd;
+      TERMINAL_NAME = termDisplayName;
+      MOD_NAME = modDisplayName;
+      FILE_MANAGER_CMD = fmCmd;
+    };
+    text = builtins.readFile ./scripts/quick-settings.sh;
+  };
+  quickSettings = lib.getExe quickSettingsPkg;
 
-  # --- Dashboard Unificado: Quick Settings + Manual de Atalhos (Estilo Hyprland) ---
-  quickSettings = pkgs.writeShellScript "quick-settings" ''
-        show_manual() {
-          KB_LIST="󰌌  ${modDisplayName} + Space / ${modDisplayName} + D     ➜  Lançador de Aplicativos (Rofi)
-    󰌌  ${modDisplayName} + Enter / ${modDisplayName} + T     ➜  Abrir Terminal (${termDisplayName})
-    󰌌  ${modDisplayName} + B                     ➜  Navegador Web Padrão
-    󰌌  ${modDisplayName} + Shift + B             ➜  Menu Interativo de Bluetooth
-    󰌌  ${modDisplayName} + E / ${modDisplayName} + Shift + E ➜  Gerenciador de Arquivos (''${fmName})
-    󰌌  ${modDisplayName} + , / ${modDisplayName} + C / Botão Dir. ➜ Painel Quick Settings / Preferências
-    󰌌  ${modDisplayName} + / ou ${modDisplayName} + F1       ➜  Manual e Guia de Atalhos (Cheat-Sheet)
-    󰌌  ${modDisplayName} + W                     ➜  Alternador de Janelas Abertas
-    󰌌  ${modDisplayName} + U                     ➜  Terminal Flutuante Rápido (Scratchpad)
-    󰌌  ${modDisplayName} + Q / ${modDisplayName} + Shift + Q ➜  Fechar / Encerrar Janela
-    󰌌  ${modDisplayName} + Shift + Escape        ➜  Forçar Fechamento de Janela Travada
-    󰌌  ${modDisplayName} + A                     ➜  Alternar Tela Cheia (Fullscreen)
-    󰌌  ${modDisplayName} + F / ${modDisplayName} + S ➜  Alternar Janela Flutuante (Floating/Tiling)
-    󰌌  ${modDisplayName} + Shift + F / Shift + T ➜  Alternar Janela Pseudo-Tiled (Grade com Tamanho Natural)
-    󰌌  ${modDisplayName} + M                     ➜  Modo Monocle (Foco em Janela Única)
-    󰌌  ${modDisplayName} + Y / ${modDisplayName} + Minus     ➜  Esconder / Minimizar Janela Ativa
-    󰌌  ${modDisplayName} + Shift + Y / Shift+-  ➜  Restaurar Última Janela Escondida
-    󰌌  ${modDisplayName} + Shift + M            ➜  Mostrar Desktop (Minimizar/Restaurar Todas)
-    󰌌  ${modDisplayName} + Tab / Shift + Tab       ➜  Alternar Foco Entre Janelas (Próxima/Anterior)
-    󰌌  ${modDisplayName} + ` (Grave) / Shift + `   ➜  Alternar Foco Entre Janelas (Próxima/Anterior)
-    󰌌  ${modDisplayName} + Ctrl + Tab / Shift+Tab  ➜  Trocar Janela com Próxima / Anterior (Swap)
-    󰌌  ${modDisplayName} + Ctrl + Space           ➜  Ciclar Layouts (Tall, Wide, Grid, Even, Monocle...)
-    󰌌  ${modDisplayName} + Ctrl + L               ➜  Menu Interativo de Layouts (bsp-layout)
-    󰌌  ${modDisplayName} + {H,J,K,L} ou Setas    ➜  Navegar Foco Entre Janelas (Vim/Setas)
-    󰌌  ${modDisplayName} + Shift + {H,J,K,L}     ➜  Mover / Trocar Posição da Janela
-    󰌌  ${modDisplayName} + Ctrl + Setas          ➜  Redimensionar Tamanho da Janela
-    󰌌  ${modDisplayName} + Botão Esquerdo        ➜  Mover Janela Flutuante com o Mouse
-    󰌌  ${modDisplayName} + Botão Direito         ➜  Redimensionar Janela com o Mouse
-    󰌌  ${modDisplayName} + 1..9, 0               ➜  Ir para Área de Trabalho (Workspace) 1 a 10
-    󰌌  ${modDisplayName} + Shift + 1..9, 0       ➜  Enviar Janela para Workspace 1 a 10
-    󰌌  ${modDisplayName} + Ctrl + 1..9, 0        ➜  Enviar Janela sem Seguir (Segundo Plano)
-    󰌌  Print / ${modDisplayName} + Print         ➜  Captura Imediata / Menu ScreenShoTer
-    󰌌  Shift + Print / ${modDisplayName} + Shift + S ➜  Recorte de Área Interativo
-    󰌌  Ctrl + Print                              ➜  Capturar Janela Ativa
-    󰌌  ${modDisplayName} + Shift + Print         ➜  Captura com Temporizador (5s)
-    󰌌  ${modDisplayName} + P                     ➜  Conta-gotas de Cor (Colorpicker)
-    󰌌  ${modDisplayName} + Shift + R             ➜  Recarregar BSPWM e Polybar
-    󰌌  ${modDisplayName} + Shift + L / ${modDisplayName} + Ctrl + Q ➜ Bloquear Sessão do Usuário
-    󰌌  Teclas de Volume / Brilho / Mídia ➜  Controle com Feedback Visual OSD"
+  desktopFocusScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-desktop-focus";
+    runtimeInputs = [ pkgs.bspwm ];
+    text = builtins.readFile ./scripts/bspwm-desktop-focus.sh;
+  };
+  desktopFocusScript = lib.getExe desktopFocusScriptPkg;
 
-          CHOICE=$(echo "$KB_LIST" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰌌 Manual de Atalhos (Keybinds) " -theme-str 'window { width: 720px; height: 520px; } listview { columns: 1; lines: 12; }')
+  desktopNodeScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-node-to-desktop";
+    runtimeInputs = [ pkgs.bspwm ];
+    text = builtins.readFile ./scripts/bspwm-node-to-desktop.sh;
+  };
+  desktopNodeScript = lib.getExe desktopNodeScriptPkg;
 
-          case "$CHOICE" in
-            *"Lançador de Aplicativos"*) ${pkgs.rofi}/bin/rofi -show drun ;;
-            *"Abrir Terminal"*) ${termCmd} & ;;
-            *"Navegador Web Padrão"*) ${browserLaunchCmd} ;;
-            *"Menu Interativo de Bluetooth"*) rofi-bluetooth & ;;
-            *"Gerenciador de Arquivos"*) ''${fmCmd} ~ & ;;
-            *"Painel Quick Settings"*) show_control_center ;;
-            *"Alternador de Janelas"*) ${pkgs.rofi}/bin/rofi -show window ;;
-            *"Alternar Foco Entre Janelas"*) bspc node -f next.local.!hidden.window || bspc node -f next.local.window ;;
-            *"Menu Interativo de Layouts"*) rofi-bsp-layout & ;;
-            *"Ciclar Layouts"*) bsp-layout-switch next & ;;
-            *"Terminal Flutuante"*) ${scratchpadScript} ;;
-            *"Fechar / Encerrar Janela"*) bspc node -c ;;
-            *"Tela Cheia"*) bspc node -t '~fullscreen' ;;
-            *"Janela Flutuante"*) bspc node -t '~floating' ;;
-            *"Pseudo-Tiled"*|*"Pseudo-tiled"*) ${pseudoTileScript} ;;
-            *"Esconder / Minimizar Janela"*) bspc node -g hidden=on ;;
-            *"Restaurar Última Janela"*) bspc node any.hidden.local -g hidden=off -f ;;
-            *"Captura de Tela"*) ${screenshotScript} menu & ;;
-            *"Recorte de Área"*) ${screenshotScript} area & ;;
-            *"Conta-gotas"*) ${colorPickerScript} & ;;
-            *"Recarregar BSPWM"*) bspc wm -r ;;
-            *"Bloquear Sessão"*) bspwm-lock || loginctl lock-session ;;
-          esac
-        }
+  desktopRightClickScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-desktop-right-click";
+    runtimeInputs = [
+      pkgs.xdotool
+      pkgs.xprop
+      quickSettingsPkg
+    ];
+    text = builtins.readFile ./scripts/bspwm-desktop-right-click.sh;
+  };
+  desktopRightClickScript = lib.getExe desktopRightClickScriptPkg;
 
-        show_control_center() {
-          OPT_SHOT="󰹑  Captura de Tela & Recorte (ScreenShoTer)"
-          OPT_COLOR="󰈊  Conta-gotas de Cor (Colorpicker)"
-          OPT_BT="󰂯  Dispositivos Bluetooth (rofi-bluetooth)"
-          OPT_LAYOUT="󰕰  Gerenciador de Layouts (rofi-bsp-layout)"
-          OPT_PSEUDO="󱒆  Alternar Janela Pseudo-Tiled (Pseudo-Tiling)"
-          OPT_RES="󰍹  Resolução da Tela (Display Resolution)"
-          OPT_TOUCH="󰟸  Velocidade do Touchpad (Touchpad Speed)"
-          OPT_SOUND="󰕾  Controle de Áudio & Volume (Pavucontrol)"
-          OPT_NET="󰖩  Wi-Fi & Conexões (NetworkManager)"
-          OPT_THEME="󰔎  Aparência, Ícones & Temas (LXAppearance)"
-          OPT_WALL="󰸉  Papel de Parede (Wallpaper)"
-          OPT_BROWSER="󰈹  Navegador Web (Firefox / Padrão)"
-          OPT_FILES="󰉋  Gerenciador de Arquivos (''${fmName})"
-          OPT_TERM="󰞷  Abrir Terminal (${termDisplayName})"
-          OPT_KEYS="󰌌  Manual & Guia de Atalhos (Keybinds)"
-          OPT_RELOAD="󰑐  Recarregar BSPWM & Polybar"
-          OPT_POWER="󰐥  Menu de Energia & Bloqueio de Sessão"
-
-          CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
-            "$OPT_SHOT" \
-            "$OPT_COLOR" \
-            "$OPT_BT" \
-            "$OPT_LAYOUT" \
-            "$OPT_PSEUDO" \
-            "$OPT_RES" \
-            "$OPT_TOUCH" \
-            "$OPT_SOUND" \
-            "$OPT_NET" \
-            "$OPT_THEME" \
-            "$OPT_WALL" \
-            "$OPT_BROWSER" \
-            "$OPT_FILES" \
-            "$OPT_TERM" \
-            "$OPT_KEYS" \
-            "$OPT_RELOAD" \
-            "$OPT_POWER" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󱗼 Quick Settings " \
-            -theme-str 'window {width: 620px; border-radius: 14px;} listview {columns: 1; lines: 17;}')
-
-          case "$CHOICE" in
-            "$OPT_SHOT") ${screenshotScript} menu & ;;
-            "$OPT_COLOR") ${colorPickerScript} & ;;
-            "$OPT_BT") rofi-bluetooth & ;;
-            "$OPT_LAYOUT") rofi-bsp-layout & ;;
-            "$OPT_PSEUDO") ${pseudoTileScript} ;;
-            "$OPT_RES")
-              R_1080="1920x1080 (Full HD 1080p)"
-              R_2K="2560x1440 (Quad HD 2K)"
-              R_900="1600x900 (HD+)"
-              R_768="1366x768 (HD)"
-              R_CUSTOM="⚙ Painel Avançado de Telas (ARandR)"
-
-              RES=$(printf "%s\n%s\n%s\n%s\n%s" "$R_1080" "$R_2K" "$R_900" "$R_768" "$R_CUSTOM" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰍹 Selecionar Resolução " -theme-str 'window {width: 500px; border-radius: 14px;} listview {columns: 1; lines: 5;}')
-              case "$RES" in
-                "$R_1080") ${pkgs.xrandr}/bin/xrandr -s 1920x1080 ;;
-                "$R_2K")   ${pkgs.xrandr}/bin/xrandr -s 2560x1440 ;;
-                "$R_900")  ${pkgs.xrandr}/bin/xrandr -s 1600x900 ;;
-                "$R_768")  ${pkgs.xrandr}/bin/xrandr -s 1366x768 ;;
-                "$R_CUSTOM") ${pkgs.arandr}/bin/arandr || ${pkgs.xrandr}/bin/xrandr ;;
-              esac
-              ;;
-            "$OPT_TOUCH")
-              T_DEF="󰟸  0.0  (Padrão do Sistema / Lento)"
-              T_MOD="󰟸  0.3  (Moderado)"
-              T_FAST="󰟸  0.5  (Rápido & Ágil - Recomendado)"
-              T_VFAST="󰟸  0.7  (Muito Rápido)"
-              T_MAX="󰟸  1.0  (Velocidade Máxima)"
-              T_SEL=$(printf "%s\n%s\n%s\n%s\n%s" "$T_DEF" "$T_MOD" "$T_FAST" "$T_VFAST" "$T_MAX" | ${pkgs.rofi}/bin/rofi -dmenu -i -p " 󰟸 Velocidade do Touchpad " -theme-str 'window {width: 540px; border-radius: 14px;} listview {columns: 1; lines: 5;}')
-              case "$T_SEL" in
-                *"0.0"*) touchpad-speed 0.0 ;;
-                *"0.3"*) touchpad-speed 0.3 ;;
-                *"0.5"*) touchpad-speed 0.5 ;;
-                *"0.7"*) touchpad-speed 0.7 ;;
-                *"1.0"*) touchpad-speed 1.0 ;;
-              esac
-              ;;
-            "$OPT_SOUND") ${pkgs.pavucontrol}/bin/pavucontrol & ;;
-            "$OPT_NET") ${pkgs.networkmanagerapplet}/bin/nm-connection-editor & ;;
-            "$OPT_THEME") ${pkgs.lxappearance}/bin/lxappearance & ;;
-            "$OPT_WALL")
-              if command -v set-wallpaper >/dev/null 2>&1; then
-                set-wallpaper --random &
-              elif [ -x "${pkgs.nitrogen}/bin/nitrogen" ]; then
-                ${pkgs.nitrogen}/bin/nitrogen &
-              else
-                ${pkgs.feh}/bin/feh &
-              fi
-              ;;
-            "$OPT_BROWSER")
-              if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi
-              ;;
-            "$OPT_FILES") ''${fmCmd} ~ & ;;
-            "$OPT_TERM") ${termCmd} & ;;
-            "$OPT_KEYS") show_manual ;;
-            "$OPT_RELOAD")
-              bspc wm -r
-              ${pkgs.dunst}/bin/dunstify -a "Sistema" -u low -i "view-refresh" -t 2000 "BSPWM e Polybar recarregados com sucesso!"
-              ;;
-            "$OPT_POWER")
-              ${pkgs.rofi}/bin/rofi -show power-menu -modi "power-menu:${pkgs.rofi-power-menu}/bin/rofi-power-menu" || bspwm-lock || loginctl lock-session
-              ;;
-          esac
-        }
-
-        case "$1" in
-          --manual) show_manual ;;
-          *) show_control_center ;;
-        esac
-  '';
-
-  # Script universal de foco de workspace (funciona tanto em monitor único quanto em multi-monitor)
-  desktopFocusScript = pkgs.writeShellScript "bspwm-desktop-focus" ''
-    BSPC="${pkgs.bspwm}/bin/bspc"
-    d="$1"
-    # 1. Tenta focar diretamente no monitor atual
-    $BSPC desktop -f "$d" 2>/dev/null && exit 0
-    # 2. Se o workspace estiver em outro monitor, localiza o monitor e foca
-    for m in $($BSPC query -M --names 2>/dev/null); do
-      if $BSPC query -D -m "$m" --names 2>/dev/null | grep -qx "$d"; then
-        $BSPC monitor -f "$m" 2>/dev/null && $BSPC desktop -f "$d" 2>/dev/null
-        exit 0
-      fi
-    done
-  '';
-
-  # Script universal de envio de janela para workspace (funciona tanto em monitor único quanto em multi-monitor)
-  desktopNodeScript = pkgs.writeShellScript "bspwm-node-to-desktop" ''
-    BSPC="${pkgs.bspwm}/bin/bspc"
-    d="$1"
-    follow="$2"
-
-    # Verifica se há janela focada
-    cur_node=$($BSPC query -N -n focused 2>/dev/null)
-    [ -z "$cur_node" ] && exit 0
-
-    # Verifica se o desktop de destino existe
-    if ! $BSPC query -D -d "$d" --names >/dev/null 2>&1; then
-      exit 1
-    fi
-
-    # Envia a janela para o workspace de destino
-    $BSPC node "$cur_node" -d "$d"
-
-    if [ "$follow" = "true" ]; then
-      # Localiza o monitor onde o desktop de destino está e foca o monitor, o desktop e a janela
-      for m in $($BSPC query -M --names 2>/dev/null); do
-        if $BSPC query -D -m "$m" --names 2>/dev/null | grep -qx "$d"; then
-          $BSPC monitor -f "$m" 2>/dev/null
-          break
-        fi
-      done
-      $BSPC desktop -f "$d" 2>/dev/null
-      $BSPC node "$cur_node" -f 2>/dev/null
-    fi
-  '';
-
-  # Script para tratar clique com botão direito no desktop sem interferir em aplicações (Thunar, popups, etc.)
-  desktopRightClickScript = pkgs.writeShellScript "bspwm-desktop-right-click" ''
-    # Identifica a janela X11 sob as coordenadas atuais do cursor do mouse
-    mouse_win="$(${pkgs.xdotool}/bin/xdotool getmouselocation --shell 2>/dev/null | awk -F= '/WINDOW/{print $2}')"
-    [ -z "$mouse_win" ] && exit 0
-
-    root_win="$(${pkgs.xdotool}/bin/xdotool getrootwindow 2>/dev/null)"
-
-    # Se a janela sob o mouse for exatamente a Root Window (Desktop limpo)
-    if [ -n "$root_win" ] && [ "$mouse_win" = "$root_win" ]; then
-      exec ${quickSettings}
-    fi
-
-    # Se for uma janela com _NET_WM_WINDOW_TYPE_DESKTOP (ex: xfdesktop ou desktop gerenciado)
-    if ${pkgs.xprop}/bin/xprop -id "$mouse_win" _NET_WM_WINDOW_TYPE 2>/dev/null | grep -q "_NET_WM_WINDOW_TYPE_DESKTOP"; then
-      exec ${quickSettings}
-    fi
-  '';
-
-  # Script para alternar visibilidade de janelas no workspace ativo (Mostrar Desktop / Restaurar)
-  toggleDesktopScript = pkgs.writeShellScript "bspwm-toggle-desktop" ''
-    # Busca janelas visíveis (não ocultas) no desktop focado
-    visible_nodes=$(${pkgs.bspwm}/bin/bspc query -N -d focused -n .window.!hidden 2>/dev/null)
-
-    if [ -n "$visible_nodes" ]; then
-      # Oculta todas as janelas visíveis no workspace
-      for node in $visible_nodes; do
-        ${pkgs.bspwm}/bin/bspc node "$node" -g hidden=on
-      done
-    else
-      # Se não há janelas visíveis, restaura as que estavam ocultas neste workspace
-      hidden_nodes=$(${pkgs.bspwm}/bin/bspc query -N -d focused -n .window.hidden 2>/dev/null)
-      last_node=""
-      for node in $hidden_nodes; do
-        ${pkgs.bspwm}/bin/bspc node "$node" -g hidden=off
-        last_node="$node"
-      done
-      # Restaura o foco para a última janela reexibida
-      if [ -n "$last_node" ]; then
-        ${pkgs.bspwm}/bin/bspc node "$last_node" -f 2>/dev/null || true
-      fi
-    fi
-  '';
+  toggleDesktopScriptPkg = pkgs.writeShellApplication {
+    name = "bspwm-toggle-desktop";
+    runtimeInputs = [ pkgs.bspwm ];
+    text = builtins.readFile ./scripts/bspwm-toggle-desktop.sh;
+  };
+  toggleDesktopScript = lib.getExe toggleDesktopScriptPkg;
 in
 {
   options.desktop.bspwm.sxhkd = {
@@ -1278,12 +622,12 @@ in
 
     # Utilitários de linha de comando para uso interativo e scripts
     home.packages = [
+      pseudoTileScriptPkg
       (pkgs.writeShellScriptBin "bspwm-pseudo-tile" ''exec ${pseudoTileScript} "$@"'')
-      (pkgs.writeShellScriptBin "bspwm-toggle-pseudo-tile" ''exec ${pseudoTileScript} "$@"'')
-      (pkgs.writeShellScriptBin "bspwm-screenshot" ''exec ${screenshotScript} "$@"'')
+      screenshotScriptPkg
       (pkgs.writeShellScriptBin "screenshoter" ''exec ${screenshotScript} "$@"'')
-      (pkgs.writeShellScriptBin "bspwm-colorpicker" ''exec ${colorPickerScript} "$@"'')
-      (pkgs.writeShellScriptBin "bspwm-media-control" ''exec ${mediaControl} "$@"'')
+      colorPickerScriptPkg
+      mediaControlPkg
     ];
   };
 }
