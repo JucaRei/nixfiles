@@ -32,7 +32,6 @@ pkgs: {
   plymouth-catppuccin = pkgs.callPackage ./system/plymouth/plymouth-catppuccin { };
   plymouth-themes = pkgs.callPackage ./system/plymouth/plymouth-themes { };
 
-
   # Tools
   bsp-layout = pkgs.callPackage ./desktop/bspwm/bsp-layout { };
   heynote = pkgs.callPackage ./desktop/tools/heynote { };

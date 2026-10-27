@@ -14,11 +14,7 @@ let
   inherit (lib.types) enum nullOr;
   cfg = config.desktop.display-managers;
   dmEnabled =
-    cfg.name != null
-    || cfg.lightdm.enable
-    || cfg.sddm.enable
-    || cfg.regreet.enable
-    || cfg.gdm.enable;
+    cfg.name != null || cfg.lightdm.enable || cfg.sddm.enable || cfg.regreet.enable || cfg.gdm.enable;
 in
 
 {

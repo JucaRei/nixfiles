@@ -144,7 +144,8 @@ in
       file = {
         ".mozilla/native-messaging-hosts/ff2mpv.json".source =
           "${pkgs.ff2mpv-rust}/lib/mozilla/native-messaging-hosts/ff2mpv.json";
-      } // lib.optionalAttrs (cfg.version == "librewolf") {
+      }
+      // lib.optionalAttrs (cfg.version == "librewolf") {
         ".librewolf/librewolf.overrides.cfg".text = ''
           // LibreWolf Overrides - Preservar abas e sessoes ao fechar
           defaultPref("browser.startup.page", 3);
@@ -235,17 +236,20 @@ in
           "x-scheme-handler/https"
         ];
         actions =
-          if cfg.preferNvidia then {
-            open-intel = {
-              name = "Open with Intel iGPU";
-              exec = "${binName}-intel %U";
+          if cfg.preferNvidia then
+            {
+              open-intel = {
+                name = "Open with Intel iGPU";
+                exec = "${binName}-intel %U";
+              };
+            }
+          else
+            {
+              open-nvidia = {
+                name = "Open with NVIDIA dGPU";
+                exec = "${binName}-nvidia %U";
+              };
             };
-          } else {
-            open-nvidia = {
-              name = "Open with NVIDIA dGPU";
-              exec = "${binName}-nvidia %U";
-            };
-          };
       };
     };
 
@@ -304,7 +308,10 @@ in
           containersForce = true; # Recommended: Overwrites existing container config on Firefox launch (prevents symlink issues)
 
           settings = sharedSettings;
-          search = { force = true; } // import ./search.nix { inherit pkgs config; };
+          search = {
+            force = true;
+          }
+          // import ./search.nix { inherit pkgs config; };
           bookmarks = {
             force = true;
             settings = import ./bookmarks.nix;

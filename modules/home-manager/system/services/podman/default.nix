@@ -94,13 +94,15 @@ let
     ${optionalString (cfg.storage.graphroot != null) ''graphroot = "${cfg.storage.graphroot}"''}
 
     [storage.options]
-    ${optionalString (cfg.storage.mountProgram != null) ''mount_program = "${cfg.storage.mountProgram}"''}
+    ${optionalString (
+      cfg.storage.mountProgram != null
+    ) ''mount_program = "${cfg.storage.mountProgram}"''}
     pull_options = { enable_partial_images = "true", use_hard_links = "false" }
   '';
 
   registriesConf = ''
     unqualified-search-registries = [
-    ${concatMapStringsSep "\n" (r: ''  "${r}",'') cfg.registries.search}
+    ${concatMapStringsSep "\n" (r: ''"${r}",'') cfg.registries.search}
     ]
 
     short-name-mode = "${cfg.registries.shortNameMode}"
@@ -420,34 +422,33 @@ in
     };
 
     # Packages
-    home.packages =
-      [
-        podmanDoctor
-        pkgs.crun
-        pkgs.conmon
-        pkgs.fuse-overlayfs
-        pkgs.passt
-        pkgs.slirp4netns
-      ]
-      ++ optionals cfg.dockerCompat [
-        dockerWrapper
-      ]
-      ++ optionals cfg.extraPackages.compose [
-        pkgs.podman-compose
-        pkgs.docker-compose
-      ]
-      ++ optionals cfg.extraPackages.tui [
-        pkgs.podman-tui
-      ]
-      ++ optionals cfg.extraPackages.lazydocker [
-        pkgs.lazydocker
-      ]
-      ++ optionals cfg.extraPackages.inspection [
-        pkgs.skopeo
-        pkgs.buildah
-        pkgs.dive
-      ]
-      ++ cfg.extraPackages.packages;
+    home.packages = [
+      podmanDoctor
+      pkgs.crun
+      pkgs.conmon
+      pkgs.fuse-overlayfs
+      pkgs.passt
+      pkgs.slirp4netns
+    ]
+    ++ optionals cfg.dockerCompat [
+      dockerWrapper
+    ]
+    ++ optionals cfg.extraPackages.compose [
+      pkgs.podman-compose
+      pkgs.docker-compose
+    ]
+    ++ optionals cfg.extraPackages.tui [
+      pkgs.podman-tui
+    ]
+    ++ optionals cfg.extraPackages.lazydocker [
+      pkgs.lazydocker
+    ]
+    ++ optionals cfg.extraPackages.inspection [
+      pkgs.skopeo
+      pkgs.buildah
+      pkgs.dive
+    ]
+    ++ cfg.extraPackages.packages;
 
     # Configuration files in ~/.config/containers/
     xdg.configFile = mkMerge [

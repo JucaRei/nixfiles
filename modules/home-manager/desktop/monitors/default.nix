@@ -51,7 +51,8 @@ let
     # --- 1. Wayland (wlr-randr / wlroots) ---
     if [ -n "''${WAYLAND_DISPLAY:-}" ]; then
       if command -v ${pkgs.wlr-randr}/bin/wlr-randr >/dev/null 2>&1; then
-        ${concatMapStringsSep "\n        " (m:
+        ${concatMapStringsSep "\n        " (
+          m:
           if m.enabled then
             let
               transformArg = if m.transform != "normal" then " --transform ${m.transform}" else "";
@@ -70,7 +71,8 @@ let
         ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-0 2>/dev/null || true
         connected_outputs=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1)
 
-        ${concatMapStringsSep "\n        " (m:
+        ${concatMapStringsSep "\n        " (
+          m:
           if m.enabled then
             let
               rotateArg = if m.transform != "normal" then " --rotate ${rotateMap.${m.transform}}" else "";

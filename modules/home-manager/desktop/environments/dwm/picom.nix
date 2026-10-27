@@ -12,7 +12,8 @@ let
 
   gpuDriver = osConfig.hardware.graphics.cards.gpu or "unknown";
   isNvidiaLegacy = gpuDriver == "nvidia-legacy";
-  isNouveauOrLegacy = isNvidiaLegacy || gpuDriver == "nouveau" || gpuDriver == "unknown" || gpuDriver == null;
+  isNouveauOrLegacy =
+    isNvidiaLegacy || gpuDriver == "nouveau" || gpuDriver == "unknown" || gpuDriver == null;
 in
 {
   options.desktop.dwm.picom = {
@@ -23,7 +24,11 @@ in
     };
 
     backend = mkOption {
-      type = lib.types.enum [ "xrender" "glx" "egl" ];
+      type = lib.types.enum [
+        "xrender"
+        "glx"
+        "egl"
+      ];
       default = if isNouveauOrLegacy then "xrender" else "glx";
       description = "Picom rendering backend";
     };
@@ -37,7 +42,10 @@ in
       vSync = true;
       shadow = true;
       shadowOpacity = 0.6;
-      shadowOffsets = [ (-12) (-12) ];
+      shadowOffsets = [
+        (-12)
+        (-12)
+      ];
       fade = true;
       fadeDelta = 4;
       settings = {

@@ -10,7 +10,12 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkEnableOption optionalString optionalAttrs;
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    optionalString
+    optionalAttrs
+    ;
   cfg = config.system.programs.multimedia.mpv;
   isNixOS = osConfig != null;
   shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
@@ -467,20 +472,26 @@ in
       };
     };
 
-    wayland.windowManager.hyprland.settings.windowrule = mkIf (isWM && desktop == "hyprland" && cfg.floating) [
-      "match:class ^(mpv)$, float 1"
-      "match:class ^(mpv)$, center 1"
-    ];
+    wayland.windowManager.hyprland.settings.windowrule =
+      mkIf (isWM && desktop == "hyprland" && cfg.floating)
+        [
+          "match:class ^(mpv)$, float 1"
+          "match:class ^(mpv)$, center 1"
+        ];
 
-    wayland.windowManager.sway.config.floating.criteria = mkIf (isWM && desktop == "sway" && cfg.floating) [
-      { app_id = "mpv"; }
-      { class = "mpv"; }
-    ];
+    wayland.windowManager.sway.config.floating.criteria =
+      mkIf (isWM && desktop == "sway" && cfg.floating)
+        [
+          { app_id = "mpv"; }
+          { class = "mpv"; }
+        ];
 
-    xsession.windowManager.i3.config.floating.criteria = mkIf (isWM && desktop == "i3" && cfg.floating) [
-      { class = "mpv"; }
-      { instance = "mpv"; }
-    ];
+    xsession.windowManager.i3.config.floating.criteria =
+      mkIf (isWM && desktop == "i3" && cfg.floating)
+        [
+          { class = "mpv"; }
+          { instance = "mpv"; }
+        ];
 
     xdg.mimeApps.defaultApplications = lib.genAttrs mediaMimeTypes (_: "mpv.desktop");
 
@@ -495,36 +506,42 @@ in
       '')
     ];
 
-    xdg.desktopEntries = mkIf (cfg.defaultNvidia || (!shouldInstall && !isNixOS) || (hostname == "nitro" || hostname == "nixtro")) {
-      mpv = {
-        name = "mpv Media Player";
-        genericName = "Multimedia player";
-        comment = "Play movies and songs" + optionalString cfg.defaultNvidia " (NVIDIA dGPU)";
-        icon = "mpv";
-        exec = if cfg.defaultNvidia then nvidiaExec else intelExec;
-        terminal = false;
-        categories = [
-          "AudioVideo"
-          "Audio"
-          "Video"
-          "Player"
-          "TV"
-        ];
-        mimeType = mediaMimeTypes;
-        actions =
-          if cfg.defaultNvidia then {
-            open-intel = {
-              name = "Open with Intel iGPU";
-              exec = intelExec;
-            };
-          } else (optionalAttrs (hostname == "nitro" || hostname == "nixtro") {
-            open-nvidia = {
-              name = "Open with NVIDIA dGPU";
-              exec = nvidiaExec;
-            };
-          });
-      };
-    };
+    xdg.desktopEntries =
+      mkIf
+        (cfg.defaultNvidia || (!shouldInstall && !isNixOS) || (hostname == "nitro" || hostname == "nixtro"))
+        {
+          mpv = {
+            name = "mpv Media Player";
+            genericName = "Multimedia player";
+            comment = "Play movies and songs" + optionalString cfg.defaultNvidia " (NVIDIA dGPU)";
+            icon = "mpv";
+            exec = if cfg.defaultNvidia then nvidiaExec else intelExec;
+            terminal = false;
+            categories = [
+              "AudioVideo"
+              "Audio"
+              "Video"
+              "Player"
+              "TV"
+            ];
+            mimeType = mediaMimeTypes;
+            actions =
+              if cfg.defaultNvidia then
+                {
+                  open-intel = {
+                    name = "Open with Intel iGPU";
+                    exec = intelExec;
+                  };
+                }
+              else
+                (optionalAttrs (hostname == "nitro" || hostname == "nixtro") {
+                  open-nvidia = {
+                    name = "Open with NVIDIA dGPU";
+                    exec = nvidiaExec;
+                  };
+                });
+          };
+        };
 
     systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
       "d ${config.home.homeDirectory}/.logs 0755 - - - -"

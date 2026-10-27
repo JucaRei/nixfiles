@@ -196,7 +196,7 @@ in
       options = mkOption {
         type = str;
         default =
-          if config.home.keyboard != null && config.home.keyboard.options != [] then
+          if config.home.keyboard != null && config.home.keyboard.options != [ ] then
             lib.concatStringsSep "," config.home.keyboard.options
           else
             "";
@@ -249,118 +249,118 @@ in
 
           monitor = cfg.monitors;
 
-        env = [
-          "XDG_CURRENT_DESKTOP,Hyprland"
-          "XDG_SESSION_TYPE,wayland"
-          "XDG_SESSION_DESKTOP,Hyprland"
-          "QT_QPA_PLATFORM,wayland;xcb"
-          "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
-          "GDK_BACKEND,wayland,x11,*"
-          "CLUTTER_BACKEND,wayland"
-          "SDL_VIDEODRIVER,wayland"
-          "MOZ_ENABLE_WAYLAND,1"
-        ];
-
-        general = {
-          gaps_in = 5;
-          gaps_out = 10;
-          border_size = 2;
-          "col.active_border" = "rgba(${config.desktop.theme.colorsBare.accent}ee) rgba(${config.desktop.theme.colorsBare.blue}ee) 45deg";
-          "col.inactive_border" = "rgba(${config.desktop.theme.colorsBare.surfaceAlt}aa)";
-          layout = "dwindle";
-          allow_tearing = false;
-        };
-
-        cursor = {
-          no_hardware_cursors = true;
-        };
-
-        render = {
-          direct_scanout = 0;
-        };
-
-        debug = {
-          vfr = false;
-        };
-
-        misc = {
-          disable_hyprland_logo = true;
-          disable_splash_rendering = true;
-          disable_watchdog_warning = true;
-          vrr = 0;
-        };
-
-        ecosystem = {
-          no_update_news = true;
-          no_donation_nag = true;
-        };
-
-        decoration = {
-          rounding = 10;
-          active_opacity = 0.98;
-          inactive_opacity = 0.90;
-          fullscreen_opacity = 1.0;
-
-          blur = {
-            enabled = true;
-            size = 6;
-            passes = 2;
-            new_optimizations = true;
-            xray = false;
-          };
-
-          shadow = {
-            enabled = true;
-            range = 15;
-            render_power = 3;
-            color = "rgba(17, 17, 27, 0.65)"; # Catppuccin Crust shadow
-          };
-
-          dim_inactive = true;
-          dim_strength = 0.12;
-        };
-
-        animations = {
-          enabled = true;
-          bezier = [
-            "fastBezier, 0.05, 0.9, 0.1, 1.05"
-            "overshot, 0.13, 0.99, 0.29, 1.1"
+          env = [
+            "XDG_CURRENT_DESKTOP,Hyprland"
+            "XDG_SESSION_TYPE,wayland"
+            "XDG_SESSION_DESKTOP,Hyprland"
+            "QT_QPA_PLATFORM,wayland;xcb"
+            "QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+            "GDK_BACKEND,wayland,x11,*"
+            "CLUTTER_BACKEND,wayland"
+            "SDL_VIDEODRIVER,wayland"
+            "MOZ_ENABLE_WAYLAND,1"
           ];
-          animation = [
-            "windows, 1, 4, fastBezier, slide"
-            "windowsOut, 1, 4, default, popin 80%"
-            "border, 1, 6, default"
-            "borderangle, 1, 6, default"
-            "fade, 1, 4, default"
-            "workspaces, 1, 5, overshot, slide"
-          ];
-        };
 
-        input = {
-          kb_layout = cfg.keyboard.layout;
-          kb_variant = cfg.keyboard.variant;
-          kb_model = cfg.keyboard.model;
-          kb_options = cfg.keyboard.options;
-          follow_mouse = 1;
-          sensitivity = 0;
-
-          touchpad = {
-            natural_scroll = true;
-            tap-to-click = true;
-            disable_while_typing = true;
+          general = {
+            gaps_in = 5;
+            gaps_out = 10;
+            border_size = 2;
+            "col.active_border" =
+              "rgba(${config.desktop.theme.colorsBare.accent}ee) rgba(${config.desktop.theme.colorsBare.blue}ee) 45deg";
+            "col.inactive_border" = "rgba(${config.desktop.theme.colorsBare.surfaceAlt}aa)";
+            layout = "dwindle";
+            allow_tearing = false;
           };
-        };
 
-        gesture = [
-          "3, horizontal, workspace"
-        ];
+          cursor = {
+            no_hardware_cursors = true;
+          };
 
-        dwindle = {
-          preserve_split = true;
-        };
+          render = {
+            direct_scanout = 0;
+          };
 
-        exec-once =
-          [
+          debug = {
+            vfr = false;
+          };
+
+          misc = {
+            disable_hyprland_logo = true;
+            disable_splash_rendering = true;
+            disable_watchdog_warning = true;
+            vrr = 0;
+          };
+
+          ecosystem = {
+            no_update_news = true;
+            no_donation_nag = true;
+          };
+
+          decoration = {
+            rounding = 10;
+            active_opacity = 0.98;
+            inactive_opacity = 0.90;
+            fullscreen_opacity = 1.0;
+
+            blur = {
+              enabled = true;
+              size = 6;
+              passes = 2;
+              new_optimizations = true;
+              xray = false;
+            };
+
+            shadow = {
+              enabled = true;
+              range = 15;
+              render_power = 3;
+              color = "rgba(17, 17, 27, 0.65)"; # Catppuccin Crust shadow
+            };
+
+            dim_inactive = true;
+            dim_strength = 0.12;
+          };
+
+          animations = {
+            enabled = true;
+            bezier = [
+              "fastBezier, 0.05, 0.9, 0.1, 1.05"
+              "overshot, 0.13, 0.99, 0.29, 1.1"
+            ];
+            animation = [
+              "windows, 1, 4, fastBezier, slide"
+              "windowsOut, 1, 4, default, popin 80%"
+              "border, 1, 6, default"
+              "borderangle, 1, 6, default"
+              "fade, 1, 4, default"
+              "workspaces, 1, 5, overshot, slide"
+            ];
+          };
+
+          input = {
+            kb_layout = cfg.keyboard.layout;
+            kb_variant = cfg.keyboard.variant;
+            kb_model = cfg.keyboard.model;
+            kb_options = cfg.keyboard.options;
+            follow_mouse = 1;
+            sensitivity = 0;
+
+            touchpad = {
+              natural_scroll = true;
+              tap-to-click = true;
+              disable_while_typing = true;
+            };
+          };
+
+          gesture = [
+            "3, horizontal, workspace"
+          ];
+
+          dwindle = {
+            preserve_split = true;
+          };
+
+          exec-once = [
             "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
             "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE"
             "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
@@ -380,280 +380,277 @@ in
               ]
           );
 
-        bind = [
-          # Aplicações e Launcher
-          "$mainMod, RETURN, exec, ${config.system.programs.terminal.activeCommand or "terminal"}"
-          (
-            if isNoctalia then
-              "$mainMod, SPACE, exec, noctalia-launcher"
-            else
-              "$mainMod, SPACE, exec, ${pkgs.rofi}/bin/rofi -show drun"
-          )
-          (
-            if isNoctalia then
-              "$mainMod, D, exec, noctalia-launcher"
-            else
-              "$mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun"
-          )
-          (
-            if isNoctalia then
-              "$mainMod, V, exec, noctalia-cliphist"
-            else
-              "$mainMod, V, exec, hypr-cliphist"
-          )
-          (
-            if isNoctalia then
-              "$mainMod, P, exec, noctalia-control-center"
-            else
-              "$mainMod, P, pseudo,"
-          )
-          (
-            if isNoctalia then
-              "$mainMod, Escape, exec, noctalia-session-menu"
-            else
-              "$mainMod, Escape, exec, session-power-menu"
-          )
-          "$mainMod, E, exec, ${config.system.programs.file-manager.activeCommand or "file-manager"}"
-          (
-            if isNoctalia then
-              "$mainMod, L, exec, ${pkgs.noctalia}/bin/noctalia msg session lock"
-            else
-              "$mainMod, L, exec, ${pkgs.hyprlock}/bin/hyprlock"
-          )
-          (
-            if isNoctalia then
-              "$mainMod ${altMod}, S, exec, ${pkgs.noctalia}/bin/noctalia msg session suspend"
-            else
-              "$mainMod ${altMod}, S, exec, systemctl suspend"
-          )
-
-          # Recarregar Configurações (Hyprland + Noctalia / Waybar)
-          "$mainMod, R, exec, ${pkgs.hyprland}/bin/hyprctl reload && (noctalia msg config-reload 2>/dev/null || pkill -SIGUSR2 waybar 2>/dev/null || true) && ${pkgs.libnotify}/bin/notify-send -u low -i 'preferences-desktop' 'Hyprland' 'Configurações recarregadas com sucesso!'"
-          "$mainMod SHIFT, R, exec, ${pkgs.hyprland}/bin/hyprctl reload && (systemctl --user restart noctalia 2>/dev/null || systemctl --user restart waybar 2>/dev/null || true) && ${pkgs.libnotify}/bin/notify-send -u low -i 'preferences-desktop' 'Hyprland' 'Configurações recarregadas e Shell reiniciado!'"
-
-          # Gerenciamento de Janelas
-          "$mainMod, Q, killactive,"
-          "$mainMod, C, killactive,"
-          "$mainMod, F, togglefloating,"
-          "$mainMod, S, togglefloating,"
-          "ALT, A, fullscreen, 0"
-          "$mainMod SHIFT, SPACE, togglefloating,"
-          "$mainMod, P, pseudo,"
-          "$mainMod, J, layoutmsg, togglesplit"
-
-          # Navegação de Foco (Setas e Vim Keys)
-          "$mainMod, left, movefocus, l"
-          "$mainMod, right, movefocus, r"
-          "$mainMod, up, movefocus, u"
-          "$mainMod, down, movefocus, d"
-          "$mainMod, h, movefocus, l"
-          "$mainMod, l, movefocus, r"
-          "$mainMod, k, movefocus, u"
-
-          # Movimentação de Janelas
-          "$mainMod SHIFT, left, movewindow, l"
-          "$mainMod SHIFT, right, movewindow, r"
-          "$mainMod SHIFT, up, movewindow, u"
-          "$mainMod SHIFT, down, movewindow, d"
-          "$mainMod SHIFT, h, movewindow, l"
-          "$mainMod SHIFT, l, movewindow, r"
-          "$mainMod SHIFT, k, movewindow, u"
-
-          # Alternar Workspaces (1 a 10)
-          "$mainMod, 1, workspace, 1"
-          "$mainMod, 2, workspace, 2"
-          "$mainMod, 3, workspace, 3"
-          "$mainMod, 4, workspace, 4"
-          "$mainMod, 5, workspace, 5"
-          "$mainMod, 6, workspace, 6"
-          "$mainMod, 7, workspace, 7"
-          "$mainMod, 8, workspace, 8"
-          "$mainMod, 9, workspace, 9"
-          "$mainMod, 0, workspace, 10"
-
-          # Mover Janela para Workspace (via ctrlMod para compatibilidade com Apple)
-          "$mainMod ${ctrlMod}, 1, movetoworkspace, 1"
-          "$mainMod ${ctrlMod}, 2, movetoworkspace, 2"
-          "$mainMod ${ctrlMod}, 3, movetoworkspace, 3"
-          "$mainMod ${ctrlMod}, 4, movetoworkspace, 4"
-          "$mainMod ${ctrlMod}, 5, movetoworkspace, 5"
-          "$mainMod ${ctrlMod}, 6, movetoworkspace, 6"
-          "$mainMod ${ctrlMod}, 7, movetoworkspace, 7"
-          "$mainMod ${ctrlMod}, 8, movetoworkspace, 8"
-          "$mainMod ${ctrlMod}, 9, movetoworkspace, 9"
-          "$mainMod ${ctrlMod}, 0, movetoworkspace, 10"
-
-          # Mover Janela para Workspace (1 a 10)
-          "$mainMod SHIFT, 1, movetoworkspace, 1"
-          "$mainMod SHIFT, 2, movetoworkspace, 2"
-        ]
-        ++ (
-          if isApple then
-            [ ]
-          else
-            [
-              "$mainMod SHIFT, 3, movetoworkspace, 3"
-              "$mainMod SHIFT, 4, movetoworkspace, 4"
-              "$mainMod SHIFT, 5, movetoworkspace, 5"
-            ]
-        )
-        ++ [
-          "$mainMod SHIFT, 6, movetoworkspace, 6"
-          "$mainMod SHIFT, 7, movetoworkspace, 7"
-          "$mainMod SHIFT, 8, movetoworkspace, 8"
-          "$mainMod SHIFT, 9, movetoworkspace, 9"
-          "$mainMod SHIFT, 0, movetoworkspace, 10"
-        ]
-        ++ (
-          if isNoctalia then
-            [
-              # Window Switcher (Alt+Tab Overlay)
-              "${altMod}, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
-              "${altMod} SHIFT, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
-
-              # Night Light e Caffeine
-              "$mainMod SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-toggle"
-              "$mainMod ${ctrlMod} SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle"
-              "$mainMod SHIFT, C, exec, ${pkgs.noctalia}/bin/noctalia msg caffeine-toggle"
-            ]
-          else
-            [ ]
-        )
-        ++ (
-          if isApple then
-            [
-              # Bloqueio de Tela estilo macOS (Ctrl+Cmd+Q)
-              "$mainMod CTRL, Q, exec, ${if isNoctalia then "${pkgs.noctalia}/bin/noctalia msg session lock" else "${pkgs.hyprlock}/bin/hyprlock"}"
-            ]
-          else
-            [ ]
-        )
-        ++ (
-          if isNoctalia then
+          bind = [
+            # Aplicações e Launcher
+            "$mainMod, RETURN, exec, ${config.system.programs.terminal.activeCommand or "terminal"}"
             (
-              if isApple then
-                [
-                  # Captura de Tela estilo Apple macOS (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5)
-                  "$mainMod SHIFT, 3, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
-                  "$mainMod SHIFT, 4, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
-                  "$mainMod SHIFT, 5, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick"
-                  ", Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
-                  "SHIFT, Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
-                  "$mainMod SHIFT, S, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
-                ]
+              if isNoctalia then
+                "$mainMod, SPACE, exec, noctalia-launcher"
               else
-                [
-                  # Captura de Tela Padrão PC
-                  ", Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
-                  "SHIFT, Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
-                  "$mainMod SHIFT, S, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
-                ]
+                "$mainMod, SPACE, exec, ${pkgs.rofi}/bin/rofi -show drun"
             )
-          else
             (
-              if isApple then
-                [
-                  # Captura de Tela estilo Apple macOS (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5)
-                  "$mainMod SHIFT, 3, exec, ${screenshotFull}"
-                  "$mainMod SHIFT, 4, exec, ${screenshotArea}"
-                  "$mainMod SHIFT, 5, exec, ${screenshotPick}"
-                  ", Print, exec, ${screenshotFull}"
-                  "SHIFT, Print, exec, ${screenshotArea}"
-                  "$mainMod SHIFT, S, exec, ${screenshotArea}"
-                ]
+              if isNoctalia then
+                "$mainMod, D, exec, noctalia-launcher"
               else
-                [
-                  # Captura de Tela Padrão PC
-                  ", Print, exec, ${screenshotFull}"
-                  "SHIFT, Print, exec, ${screenshotArea}"
-                  "$mainMod SHIFT, S, exec, ${screenshotArea}"
-                ]
+                "$mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun"
             )
-        )
-        ++ [
-          # Menu de Energia / Logout
-          "$mainMod, ESCAPE, exec, ${if isNoctalia then "noctalia-session-menu" else "hyprland-power-menu"}"
-          "$mainMod SHIFT, E, exec, ${if isNoctalia then "noctalia-session-menu" else "hyprland-power-menu"}"
-        ];
+            (if isNoctalia then "$mainMod, V, exec, noctalia-cliphist" else "$mainMod, V, exec, hypr-cliphist")
+            (if isNoctalia then "$mainMod, P, exec, noctalia-control-center" else "$mainMod, P, pseudo,")
+            (
+              if isNoctalia then
+                "$mainMod, Escape, exec, noctalia-session-menu"
+              else
+                "$mainMod, Escape, exec, session-power-menu"
+            )
+            "$mainMod, E, exec, ${config.system.programs.file-manager.activeCommand or "file-manager"}"
+            (
+              if isNoctalia then
+                "$mainMod, L, exec, ${pkgs.noctalia}/bin/noctalia msg session lock"
+              else
+                "$mainMod, L, exec, ${pkgs.hyprlock}/bin/hyprlock"
+            )
+            (
+              if isNoctalia then
+                "$mainMod ${altMod}, S, exec, ${pkgs.noctalia}/bin/noctalia msg session suspend"
+              else
+                "$mainMod ${altMod}, S, exec, systemctl suspend"
+            )
 
-        bindl = [
-          # Teclas de Mídia e Áudio
-          ", XF86AudioMute, exec, ${pkgs.pamixer}/bin/pamixer -t"
-          ", XF86AudioMicMute, exec, ${pkgs.pamixer}/bin/pamixer --default-source -t"
-          ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
-          ", XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
-          ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
+            # Recarregar Configurações (Hyprland + Noctalia / Waybar)
+            "$mainMod, R, exec, ${pkgs.hyprland}/bin/hyprctl reload && (noctalia msg config-reload 2>/dev/null || pkill -SIGUSR2 waybar 2>/dev/null || true) && ${pkgs.libnotify}/bin/notify-send -u low -i 'preferences-desktop' 'Hyprland' 'Configurações recarregadas com sucesso!'"
+            "$mainMod SHIFT, R, exec, ${pkgs.hyprland}/bin/hyprctl reload && (systemctl --user restart noctalia 2>/dev/null || systemctl --user restart waybar 2>/dev/null || true) && ${pkgs.libnotify}/bin/notify-send -u low -i 'preferences-desktop' 'Hyprland' 'Configurações recarregadas e Shell reiniciado!'"
 
-          # Suspensão do Sistema (Sleep Key)
-          ", XF86Sleep, exec, ${if isNoctalia then "${pkgs.noctalia}/bin/noctalia msg session suspend" else "systemctl suspend"}"
+            # Gerenciamento de Janelas
+            "$mainMod, Q, killactive,"
+            "$mainMod, C, killactive,"
+            "$mainMod, F, togglefloating,"
+            "$mainMod, S, togglefloating,"
+            "ALT, A, fullscreen, 0"
+            "$mainMod SHIFT, SPACE, togglefloating,"
+            "$mainMod, P, pseudo,"
+            "$mainMod, J, layoutmsg, togglesplit"
 
-          # Iluminação do Teclado (Liga/Desliga)
-          ", XF86KbdLightOnOff, exec, ${kbdBrightnessOsd} toggle"
-          "$mainMod SHIFT, F5, exec, ${kbdBrightnessOsd} toggle"
-          "$mainMod SHIFT, F4, exec, ${kbdBrightnessOsd} toggle"
-          "$mainMod SHIFT, F3, exec, ${kbdBrightnessOsd} toggle"
-        ];
+            # Navegação de Foco (Setas e Vim Keys)
+            "$mainMod, left, movefocus, l"
+            "$mainMod, right, movefocus, r"
+            "$mainMod, up, movefocus, u"
+            "$mainMod, down, movefocus, d"
+            "$mainMod, h, movefocus, l"
+            "$mainMod, l, movefocus, r"
+            "$mainMod, k, movefocus, u"
 
-        binde = [
-          # Volume e Brilho com repetição contínua
-          ", XF86AudioRaiseVolume, exec, ${pkgs.pamixer}/bin/pamixer --allow-boost --set-limit 150 -i 5"
-          ", XF86AudioLowerVolume, exec, ${pkgs.pamixer}/bin/pamixer -d 5"
-          ", XF86MonBrightnessUp, exec, ${monBrightnessOsd} up"
-          ", XF86MonBrightnessDown, exec, ${monBrightnessOsd} down"
+            # Movimentação de Janelas
+            "$mainMod SHIFT, left, movewindow, l"
+            "$mainMod SHIFT, right, movewindow, r"
+            "$mainMod SHIFT, up, movewindow, u"
+            "$mainMod SHIFT, down, movewindow, d"
+            "$mainMod SHIFT, h, movewindow, l"
+            "$mainMod SHIFT, l, movewindow, r"
+            "$mainMod SHIFT, k, movewindow, u"
 
-          # Iluminação do Teclado (MacBook F5/F6 e Logitech MX Keys F3/F4)
-          ", XF86KbdBrightnessUp, exec, ${kbdBrightnessOsd} up"
-          ", XF86KbdBrightnessDown, exec, ${kbdBrightnessOsd} down"
-          "$mainMod, F6, exec, ${kbdBrightnessOsd} up"
-          "$mainMod, F5, exec, ${kbdBrightnessOsd} down"
-          "$mainMod, F4, exec, ${kbdBrightnessOsd} up"
-          "$mainMod, F3, exec, ${kbdBrightnessOsd} down"
-        ];
+            # Alternar Workspaces (1 a 10)
+            "$mainMod, 1, workspace, 1"
+            "$mainMod, 2, workspace, 2"
+            "$mainMod, 3, workspace, 3"
+            "$mainMod, 4, workspace, 4"
+            "$mainMod, 5, workspace, 5"
+            "$mainMod, 6, workspace, 6"
+            "$mainMod, 7, workspace, 7"
+            "$mainMod, 8, workspace, 8"
+            "$mainMod, 9, workspace, 9"
+            "$mainMod, 0, workspace, 10"
 
-        bindm = [
-          "$mainMod, mouse:272, movewindow"
-          "$mainMod, mouse:273, resizewindow"
-        ];
+            # Mover Janela para Workspace (via ctrlMod para compatibilidade com Apple)
+            "$mainMod ${ctrlMod}, 1, movetoworkspace, 1"
+            "$mainMod ${ctrlMod}, 2, movetoworkspace, 2"
+            "$mainMod ${ctrlMod}, 3, movetoworkspace, 3"
+            "$mainMod ${ctrlMod}, 4, movetoworkspace, 4"
+            "$mainMod ${ctrlMod}, 5, movetoworkspace, 5"
+            "$mainMod ${ctrlMod}, 6, movetoworkspace, 6"
+            "$mainMod ${ctrlMod}, 7, movetoworkspace, 7"
+            "$mainMod ${ctrlMod}, 8, movetoworkspace, 8"
+            "$mainMod ${ctrlMod}, 9, movetoworkspace, 9"
+            "$mainMod ${ctrlMod}, 0, movetoworkspace, 10"
 
-        windowrule = [
-          # Diálogos de Seleção de Pastas e Arquivos -> Flutuantes e Centralizados
-          "match:class ^(xdg-desktop-portal.*)$, float 1"
-          "match:class ^(xdg-desktop-portal.*)$, center 1"
-          "match:class ^(pavucontrol)$, float 1"
-          "match:class ^(pavucontrol)$, center 1"
-          "match:class ^(pavucontrol)$, size 680 480"
-          "match:class ^(blueman-manager)$, float 1"
-          "match:class ^(blueman-manager)$, center 1"
-          "match:class ^(nm-connection-editor)$, float 1"
-          "match:class ^(nm-connection-editor)$, center 1"
-          "match:class ^(galculator)$, float 1"
-          "match:class ^(galculator)$, center 1"
-          "match:class ^(org.gnome.FileRoller)$, float 1"
-          "match:class ^(org.gnome.FileRoller)$, center 1"
-          "match:class ^(org.gnome.NautilusPreviewer)$, float 1"
-          "match:class ^(org.gnome.NautilusPreviewer)$, center 1"
-          "match:class ^(.*[sS]crcpy.*)$, float 1"
-          "match:class ^(.*[sS]crcpy.*)$, center 1"
-          "match:initialTitle ^(.*[sS]crcpy.*)$, float 1"
-          "match:initialTitle ^(.*[sS]crcpy.*)$, center 1"
+            # Mover Janela para Workspace (1 a 10)
+            "$mainMod SHIFT, 1, movetoworkspace, 1"
+            "$mainMod SHIFT, 2, movetoworkspace, 2"
+          ]
+          ++ (
+            if isApple then
+              [ ]
+            else
+              [
+                "$mainMod SHIFT, 3, movetoworkspace, 3"
+                "$mainMod SHIFT, 4, movetoworkspace, 4"
+                "$mainMod SHIFT, 5, movetoworkspace, 5"
+              ]
+          )
+          ++ [
+            "$mainMod SHIFT, 6, movetoworkspace, 6"
+            "$mainMod SHIFT, 7, movetoworkspace, 7"
+            "$mainMod SHIFT, 8, movetoworkspace, 8"
+            "$mainMod SHIFT, 9, movetoworkspace, 9"
+            "$mainMod SHIFT, 0, movetoworkspace, 10"
+          ]
+          ++ (
+            if isNoctalia then
+              [
+                # Window Switcher (Alt+Tab Overlay)
+                "${altMod}, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
+                "${altMod} SHIFT, TAB, exec, ${pkgs.noctalia}/bin/noctalia msg window-switcher"
 
-          # Títulos bilíngues de seleção de arquivo
-          "match:title ^(Open Folder|Abrir pasta|Open File|Abrir Arquivo|Select a folder|Selecionar pasta|Save As|Salvar como)$, float 1"
-          "match:title ^(Open Folder|Abrir pasta|Open File|Abrir Arquivo|Select a folder|Selecionar pasta|Save As|Salvar como)$, center 1"
-          "match:title ^(Open Folder|Abrir pasta|Open File|Abrir Arquivo|Select a folder|Selecionar pasta|Save As|Salvar como)$, size 850 550"
+                # Night Light e Caffeine
+                "$mainMod SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-toggle"
+                "$mainMod ${ctrlMod} SHIFT, N, exec, ${pkgs.noctalia}/bin/noctalia msg nightlight-force-toggle"
+                "$mainMod SHIFT, C, exec, ${pkgs.noctalia}/bin/noctalia msg caffeine-toggle"
+              ]
+            else
+              [ ]
+          )
+          ++ (
+            if isApple then
+              [
+                # Bloqueio de Tela estilo macOS (Ctrl+Cmd+Q)
+                "$mainMod CTRL, Q, exec, ${
+                  if isNoctalia then
+                    "${pkgs.noctalia}/bin/noctalia msg session lock"
+                  else
+                    "${pkgs.hyprlock}/bin/hyprlock"
+                }"
+              ]
+            else
+              [ ]
+          )
+          ++ (
+            if isNoctalia then
+              (
+                if isApple then
+                  [
+                    # Captura de Tela estilo Apple macOS (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5)
+                    "$mainMod SHIFT, 3, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
+                    "$mainMod SHIFT, 4, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                    "$mainMod SHIFT, 5, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen pick"
+                    ", Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
+                    "SHIFT, Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                    "$mainMod SHIFT, S, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                  ]
+                else
+                  [
+                    # Captura de Tela Padrão PC
+                    ", Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-fullscreen"
+                    "SHIFT, Print, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                    "$mainMod SHIFT, S, exec, ${pkgs.noctalia}/bin/noctalia msg screenshot-region"
+                  ]
+              )
+            else
+              (
+                if isApple then
+                  [
+                    # Captura de Tela estilo Apple macOS (Cmd+Shift+3, Cmd+Shift+4, Cmd+Shift+5)
+                    "$mainMod SHIFT, 3, exec, ${screenshotFull}"
+                    "$mainMod SHIFT, 4, exec, ${screenshotArea}"
+                    "$mainMod SHIFT, 5, exec, ${screenshotPick}"
+                    ", Print, exec, ${screenshotFull}"
+                    "SHIFT, Print, exec, ${screenshotArea}"
+                    "$mainMod SHIFT, S, exec, ${screenshotArea}"
+                  ]
+                else
+                  [
+                    # Captura de Tela Padrão PC
+                    ", Print, exec, ${screenshotFull}"
+                    "SHIFT, Print, exec, ${screenshotArea}"
+                    "$mainMod SHIFT, S, exec, ${screenshotArea}"
+                  ]
+              )
+          )
+          ++ [
+            # Menu de Energia / Logout
+            "$mainMod, ESCAPE, exec, ${if isNoctalia then "noctalia-session-menu" else "hyprland-power-menu"}"
+            "$mainMod SHIFT, E, exec, ${if isNoctalia then "noctalia-session-menu" else "hyprland-power-menu"}"
+          ];
 
-          # Picture-in-Picture
-          "match:title ^(Picture-in-Picture)$, float 1"
-          "match:title ^(Picture-in-Picture)$, pin 1"
-          "match:title ^(Picture-in-Picture)$, size 640 360"
+          bindl = [
+            # Teclas de Mídia e Áudio
+            ", XF86AudioMute, exec, ${pkgs.pamixer}/bin/pamixer -t"
+            ", XF86AudioMicMute, exec, ${pkgs.pamixer}/bin/pamixer --default-source -t"
+            ", XF86AudioPlay, exec, ${pkgs.playerctl}/bin/playerctl play-pause"
+            ", XF86AudioNext, exec, ${pkgs.playerctl}/bin/playerctl next"
+            ", XF86AudioPrev, exec, ${pkgs.playerctl}/bin/playerctl previous"
 
-          # Janelas de Autenticação / Login (Google, GitHub, OAuth, SSO, Bitwarden)
-          "match:title ^(.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Autenticação|Authentication|Bitwarden).*)$, float 1"
-          "match:title ^(.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Autenticação|Authentication|Bitwarden).*)$, center 1"
-        ];
+            # Suspensão do Sistema (Sleep Key)
+            ", XF86Sleep, exec, ${
+              if isNoctalia then "${pkgs.noctalia}/bin/noctalia msg session suspend" else "systemctl suspend"
+            }"
+
+            # Iluminação do Teclado (Liga/Desliga)
+            ", XF86KbdLightOnOff, exec, ${kbdBrightnessOsd} toggle"
+            "$mainMod SHIFT, F5, exec, ${kbdBrightnessOsd} toggle"
+            "$mainMod SHIFT, F4, exec, ${kbdBrightnessOsd} toggle"
+            "$mainMod SHIFT, F3, exec, ${kbdBrightnessOsd} toggle"
+          ];
+
+          binde = [
+            # Volume e Brilho com repetição contínua
+            ", XF86AudioRaiseVolume, exec, ${pkgs.pamixer}/bin/pamixer --allow-boost --set-limit 150 -i 5"
+            ", XF86AudioLowerVolume, exec, ${pkgs.pamixer}/bin/pamixer -d 5"
+            ", XF86MonBrightnessUp, exec, ${monBrightnessOsd} up"
+            ", XF86MonBrightnessDown, exec, ${monBrightnessOsd} down"
+
+            # Iluminação do Teclado (MacBook F5/F6 e Logitech MX Keys F3/F4)
+            ", XF86KbdBrightnessUp, exec, ${kbdBrightnessOsd} up"
+            ", XF86KbdBrightnessDown, exec, ${kbdBrightnessOsd} down"
+            "$mainMod, F6, exec, ${kbdBrightnessOsd} up"
+            "$mainMod, F5, exec, ${kbdBrightnessOsd} down"
+            "$mainMod, F4, exec, ${kbdBrightnessOsd} up"
+            "$mainMod, F3, exec, ${kbdBrightnessOsd} down"
+          ];
+
+          bindm = [
+            "$mainMod, mouse:272, movewindow"
+            "$mainMod, mouse:273, resizewindow"
+          ];
+
+          windowrule = [
+            # Diálogos de Seleção de Pastas e Arquivos -> Flutuantes e Centralizados
+            "match:class ^(xdg-desktop-portal.*)$, float 1"
+            "match:class ^(xdg-desktop-portal.*)$, center 1"
+            "match:class ^(pavucontrol)$, float 1"
+            "match:class ^(pavucontrol)$, center 1"
+            "match:class ^(pavucontrol)$, size 680 480"
+            "match:class ^(blueman-manager)$, float 1"
+            "match:class ^(blueman-manager)$, center 1"
+            "match:class ^(nm-connection-editor)$, float 1"
+            "match:class ^(nm-connection-editor)$, center 1"
+            "match:class ^(galculator)$, float 1"
+            "match:class ^(galculator)$, center 1"
+            "match:class ^(org.gnome.FileRoller)$, float 1"
+            "match:class ^(org.gnome.FileRoller)$, center 1"
+            "match:class ^(org.gnome.NautilusPreviewer)$, float 1"
+            "match:class ^(org.gnome.NautilusPreviewer)$, center 1"
+            "match:class ^(.*[sS]crcpy.*)$, float 1"
+            "match:class ^(.*[sS]crcpy.*)$, center 1"
+            "match:initialTitle ^(.*[sS]crcpy.*)$, float 1"
+            "match:initialTitle ^(.*[sS]crcpy.*)$, center 1"
+
+            # Títulos bilíngues de seleção de arquivo
+            "match:title ^(Open Folder|Abrir pasta|Open File|Abrir Arquivo|Select a folder|Selecionar pasta|Save As|Salvar como)$, float 1"
+            "match:title ^(Open Folder|Abrir pasta|Open File|Abrir Arquivo|Select a folder|Selecionar pasta|Save As|Salvar como)$, center 1"
+            "match:title ^(Open Folder|Abrir pasta|Open File|Abrir Arquivo|Select a folder|Selecionar pasta|Save As|Salvar como)$, size 850 550"
+
+            # Picture-in-Picture
+            "match:title ^(Picture-in-Picture)$, float 1"
+            "match:title ^(Picture-in-Picture)$, pin 1"
+            "match:title ^(Picture-in-Picture)$, size 640 360"
+
+            # Janelas de Autenticação / Login (Google, GitHub, OAuth, SSO, Bitwarden)
+            "match:title ^(.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Autenticação|Authentication|Bitwarden).*)$, float 1"
+            "match:title ^(.*(Sign in|Fazer login|Log in|Login|Contas do Google|Google Accounts|OAuth|Authorize|Autorizar|Autenticação|Authentication|Bitwarden).*)$, center 1"
+          ];
+        };
+
+        extraConfig = cfg.extraConfig;
       };
-
-      extraConfig = cfg.extraConfig;
     };
-  };
 }

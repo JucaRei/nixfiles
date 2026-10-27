@@ -326,13 +326,11 @@ in
     # 2. Implantação de todos os arquivos de tema CSS (para troca rápida nas configurações do Vencord/BetterDiscord)
     xdg.configFile = mkIf cfg.theme.enable (
       lib.mkMerge (
-        lib.mapAttrsToList (
-          _id: theme: {
-            "Vencord/themes/${theme.fileName}".text = theme.css;
-            "vesktop/themes/${theme.fileName}".text = theme.css;
-            "BetterDiscord/themes/${theme.fileName}".text = theme.css;
-          }
-        ) themeDefinitions
+        lib.mapAttrsToList (_id: theme: {
+          "Vencord/themes/${theme.fileName}".text = theme.css;
+          "vesktop/themes/${theme.fileName}".text = theme.css;
+          "BetterDiscord/themes/${theme.fileName}".text = theme.css;
+        }) themeDefinitions
         ++ [
           # Symlink para o tema corrente selecionado
           {
@@ -348,54 +346,54 @@ in
     # Ativa o tema selecionado por padrão e plugins de conveniência sem bloquear o arquivo como read-only
     home.activation.initDiscordSettings = mkIf cfg.theme.enable (
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        for dir in "$HOME/.config/Vencord/settings" "$HOME/.config/vesktop/settings"; do
-          mkdir -p "$dir"
-          settings_file="$dir/settings.json"
-          if [ ! -f "$settings_file" ]; then
-            cat > "$settings_file" << 'EOF'
-{
-  "notifyAboutUpdates": false,
-  "autoUpdate": false,
-  "autoUpdateNotification": false,
-  "useQuickCss": true,
-  "themeLinks": [],
-  "enabledThemes": ["${activeTheme.fileName}"],
-  "enableReactDevtools": false,
-  "plugins": {
-    "WebContextMenus": { "enabled": true },
-    "VoiceChatDoubleClick": { "enabled": true },
-    "Translate": { "enabled": true },
-    "ShowConnections": { "enabled": true },
-    "PlatformIndicators": { "enabled": true },
-    "OpenInApp": { "enabled": true },
-    "ImageZoom": { "enabled": true },
-    "FixSpotifyEmbeds": { "enabled": true },
-    "CopyUserURLs": { "enabled": true },
-    "BetterRoleDot": { "enabled": true },
-    "BetterGifPicker": { "enabled": true },
-    "AnonymiseFileNames": { "enabled": true }
-  }
-}
-EOF
-          fi
-        done
+                for dir in "$HOME/.config/Vencord/settings" "$HOME/.config/vesktop/settings"; do
+                  mkdir -p "$dir"
+                  settings_file="$dir/settings.json"
+                  if [ ! -f "$settings_file" ]; then
+                    cat > "$settings_file" << 'EOF'
+        {
+          "notifyAboutUpdates": false,
+          "autoUpdate": false,
+          "autoUpdateNotification": false,
+          "useQuickCss": true,
+          "themeLinks": [],
+          "enabledThemes": ["${activeTheme.fileName}"],
+          "enableReactDevtools": false,
+          "plugins": {
+            "WebContextMenus": { "enabled": true },
+            "VoiceChatDoubleClick": { "enabled": true },
+            "Translate": { "enabled": true },
+            "ShowConnections": { "enabled": true },
+            "PlatformIndicators": { "enabled": true },
+            "OpenInApp": { "enabled": true },
+            "ImageZoom": { "enabled": true },
+            "FixSpotifyEmbeds": { "enabled": true },
+            "CopyUserURLs": { "enabled": true },
+            "BetterRoleDot": { "enabled": true },
+            "BetterGifPicker": { "enabled": true },
+            "AnonymiseFileNames": { "enabled": true }
+          }
+        }
+        EOF
+                  fi
+                done
 
-        # Configuração inicial do OpenASAR (se habilitado)
-        ${lib.optionalString cfg.openasar.enable ''
-          discord_config_dir="$HOME/.config/discord"
-          mkdir -p "$discord_config_dir"
-          openasar_file="$discord_config_dir/settings.json"
-          if [ ! -f "$openasar_file" ]; then
-            cat > "$openasar_file" << 'EOF'
-{
-  "openasar": {
-    "setup": true,
-    "quickstart": true
-  }
-}
-EOF
-          fi
-        ''}
+                # Configuração inicial do OpenASAR (se habilitado)
+                ${lib.optionalString cfg.openasar.enable ''
+                            discord_config_dir="$HOME/.config/discord"
+                            mkdir -p "$discord_config_dir"
+                            openasar_file="$discord_config_dir/settings.json"
+                            if [ ! -f "$openasar_file" ]; then
+                              cat > "$openasar_file" << 'EOF'
+                  {
+                    "openasar": {
+                      "setup": true,
+                      "quickstart": true
+                    }
+                  }
+                  EOF
+                            fi
+                ''}
       ''
     );
   };

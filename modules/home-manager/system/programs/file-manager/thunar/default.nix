@@ -22,9 +22,15 @@ let
     ];
   };
 
-  themeDataDir = lib.optionalString (config.gtk ? theme && config.gtk.theme ? package && config.gtk.theme.package != null) "${config.gtk.theme.package}/share:";
-  iconDataDir = lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? package && config.gtk.iconTheme.package != null) "${config.gtk.iconTheme.package}/share:";
-  gtkThemeDefault = lib.optionalString (config.gtk ? theme && config.gtk.theme ? name && config.gtk.theme.name != null) "--set-default GTK_THEME ${config.gtk.theme.name}";
+  themeDataDir = lib.optionalString (
+    config.gtk ? theme && config.gtk.theme ? package && config.gtk.theme.package != null
+  ) "${config.gtk.theme.package}/share:";
+  iconDataDir = lib.optionalString (
+    config.gtk ? iconTheme && config.gtk.iconTheme ? package && config.gtk.iconTheme.package != null
+  ) "${config.gtk.iconTheme.package}/share:";
+  gtkThemeDefault = lib.optionalString (
+    config.gtk ? theme && config.gtk.theme ? name && config.gtk.theme.name != null
+  ) "--set-default GTK_THEME ${config.gtk.theme.name}";
 
   # Wrapper para garantir suporte a GVfs (Samba/SMB, Rede, Lixeira, MTP), temas GTK e integração completa no Thunar
   thunar-wrapped = pkgs.symlinkJoin {
@@ -97,129 +103,138 @@ in
         ];
       };
       Install = {
-        WantedBy = [ "graphical-session.target" "default.target" ];
+        WantedBy = [
+          "graphical-session.target"
+          "default.target"
+        ];
       };
     };
 
     # Configuração de preferências de visualização por pasta, restauração de abas e sincronização de tema no Thunar.
     home.activation.configureThunarSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      # Encerra instâncias ativas do Thunar para aplicar mudanças de canal e recarregar conexão com xfconfd
-      $DRY_RUN_CMD ${pkgs.thunar}/bin/thunar -q 2>/dev/null || true
-      $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -9 -i -f thunar 2>/dev/null || true
+            # Encerra instâncias ativas do Thunar para aplicar mudanças de canal e recarregar conexão com xfconfd
+            $DRY_RUN_CMD ${pkgs.thunar}/bin/thunar -q 2>/dev/null || true
+            $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -9 -i -f thunar 2>/dev/null || true
 
-      # Escreve a configuração declarativa diretamente no XML dos canais Thunar e Xsettings
-      $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
-import os
-import xml.etree.ElementTree as ET
+            # Escreve a configuração declarativa diretamente no XML dos canais Thunar e Xsettings
+            $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
+      import os
+      import xml.etree.ElementTree as ET
 
-xml_dir = os.path.expanduser("~/.config/xfce4/xfconf/xfce-perchannel-xml")
-os.makedirs(xml_dir, exist_ok=True)
+      xml_dir = os.path.expanduser("~/.config/xfce4/xfconf/xfce-perchannel-xml")
+      os.makedirs(xml_dir, exist_ok=True)
 
-def load_or_create(channel):
-    xml_file = os.path.join(xml_dir, f"{channel}.xml")
-    tree = None
-    root = None
-    if os.path.isfile(xml_file):
-        try:
-            tree = ET.parse(xml_file)
-            root = tree.getroot()
-        except Exception:
-            root = None
-    if root is None or root.tag != "channel":
-        root = ET.Element("channel", attrib={"name": channel, "version": "1.0"})
-        tree = ET.ElementTree(root)
-    return tree, root, xml_file
+      def load_or_create(channel):
+          xml_file = os.path.join(xml_dir, f"{channel}.xml")
+          tree = None
+          root = None
+          if os.path.isfile(xml_file):
+              try:
+                  tree = ET.parse(xml_file)
+                  root = tree.getroot()
+              except Exception:
+                  root = None
+          if root is None or root.tag != "channel":
+              root = ET.Element("channel", attrib={"name": channel, "version": "1.0"})
+              tree = ET.ElementTree(root)
+          return tree, root, xml_file
 
-# Canal thunar.xml
-t_tree, t_root, t_file = load_or_create("thunar")
-t_settings = {
-    "misc-directory-specific-settings": "${if cfg.rememberViewSettings then "true" else "false"}",
-    "last-restore-tabs": "${if cfg.restoreTabs then "true" else "false"}",
-}
-for name, val in t_settings.items():
-    prop = t_root.find(f"./property[@name=\"{name}\"]")
-    if prop is None:
-        ET.SubElement(t_root, "property", attrib={"name": name, "type": "bool", "value": val})
-    else:
-        prop.set("type", "bool")
-        prop.set("value", val)
+      # Canal thunar.xml
+      t_tree, t_root, t_file = load_or_create("thunar")
+      t_settings = {
+          "misc-directory-specific-settings": "${if cfg.rememberViewSettings then "true" else "false"}",
+          "last-restore-tabs": "${if cfg.restoreTabs then "true" else "false"}",
+      }
+      for name, val in t_settings.items():
+          prop = t_root.find(f"./property[@name=\"{name}\"]")
+          if prop is None:
+              ET.SubElement(t_root, "property", attrib={"name": name, "type": "bool", "value": val})
+          else:
+              prop.set("type", "bool")
+              prop.set("value", val)
 
-if hasattr(ET, "indent"):
-    ET.indent(t_tree, space="  ", level=0)
-t_tree.write(t_file, encoding="UTF-8", xml_declaration=True)
+      if hasattr(ET, "indent"):
+          ET.indent(t_tree, space="  ", level=0)
+      t_tree.write(t_file, encoding="UTF-8", xml_declaration=True)
 
-# Canal xsettings.xml (Tema GTK, ícones, cursor e fonte para apps XFCE como Thunar)
-x_tree, x_root, x_file = load_or_create("xsettings")
-def set_nested(root_node, path, ptype, pvalue):
-    parts = path.strip("/").split("/")
-    curr = root_node
-    for i, part in enumerate(parts):
-        is_leaf = (i == len(parts) - 1)
-        node = curr.find(f"./property[@name=\"{part}\"]")
-        if node is None:
-            attrs = {"name": part}
-            if is_leaf:
-                attrs["type"] = ptype
-                attrs["value"] = str(pvalue)
-            else:
-                attrs["type"] = "empty"
-            node = ET.SubElement(curr, "property", attrib=attrs)
-        else:
-            if is_leaf:
-                node.set("type", ptype)
-                node.set("value", str(pvalue))
-        curr = node
+      # Canal xsettings.xml (Tema GTK, ícones, cursor e fonte para apps XFCE como Thunar)
+      x_tree, x_root, x_file = load_or_create("xsettings")
+      def set_nested(root_node, path, ptype, pvalue):
+          parts = path.strip("/").split("/")
+          curr = root_node
+          for i, part in enumerate(parts):
+              is_leaf = (i == len(parts) - 1)
+              node = curr.find(f"./property[@name=\"{part}\"]")
+              if node is None:
+                  attrs = {"name": part}
+                  if is_leaf:
+                      attrs["type"] = ptype
+                      attrs["value"] = str(pvalue)
+                  else:
+                      attrs["type"] = "empty"
+                  node = ET.SubElement(curr, "property", attrib=attrs)
+              else:
+                  if is_leaf:
+                      node.set("type", ptype)
+                      node.set("value", str(pvalue))
+              curr = node
 
-theme_name = "${config.gtk.theme.name or ""}"
-icon_name = "${config.gtk.iconTheme.name or ""}"
-cursor_name = "${config.desktop.theme.cursor.name or ""}"
-cursor_size = "${toString (config.desktop.theme.cursor.size or 24)}"
-font_name = "${config.desktop.theme.font.name or "Inter"} ${toString (config.desktop.theme.font.size or 10)}"
+      theme_name = "${config.gtk.theme.name or ""}"
+      icon_name = "${config.gtk.iconTheme.name or ""}"
+      cursor_name = "${config.desktop.theme.cursor.name or ""}"
+      cursor_size = "${toString (config.desktop.theme.cursor.size or 24)}"
+      font_name = "${config.desktop.theme.font.name or "Inter"} ${
+        toString (config.desktop.theme.font.size or 10)
+      }"
 
-if theme_name:
-    set_nested(x_root, "Net/ThemeName", "string", theme_name)
-    set_nested(x_root, "Gtk/ThemeName", "string", theme_name)
-if icon_name:
-    set_nested(x_root, "Net/IconThemeName", "string", icon_name)
-if cursor_name:
-    set_nested(x_root, "Gtk/CursorThemeName", "string", cursor_name)
-    set_nested(x_root, "Gtk/CursorThemeSize", "int", cursor_size)
-if font_name:
-    set_nested(x_root, "Gtk/FontName", "string", font_name)
-set_nested(x_root, "Gtk/DecorationLayout", "string", ":minimize,maximize,close")
-set_nested(x_root, "Gtk/ApplicationPreferDarkTheme", "int", "1")
+      if theme_name:
+          set_nested(x_root, "Net/ThemeName", "string", theme_name)
+          set_nested(x_root, "Gtk/ThemeName", "string", theme_name)
+      if icon_name:
+          set_nested(x_root, "Net/IconThemeName", "string", icon_name)
+      if cursor_name:
+          set_nested(x_root, "Gtk/CursorThemeName", "string", cursor_name)
+          set_nested(x_root, "Gtk/CursorThemeSize", "int", cursor_size)
+      if font_name:
+          set_nested(x_root, "Gtk/FontName", "string", font_name)
+      set_nested(x_root, "Gtk/DecorationLayout", "string", ":minimize,maximize,close")
+      set_nested(x_root, "Gtk/ApplicationPreferDarkTheme", "int", "1")
 
-if hasattr(ET, "indent"):
-    ET.indent(x_tree, space="  ", level=0)
-x_tree.write(x_file, encoding="UTF-8", xml_declaration=True)
-'
+      if hasattr(ET, "indent"):
+          ET.indent(x_tree, space="  ", level=0)
+      x_tree.write(x_file, encoding="UTF-8", xml_declaration=True)
+      '
 
-      # Reinicia o xfconfd caso o systemd do usuário esteja ativo nesta sessão
-      if systemctl --user is-active --quiet xfconfd.service 2>/dev/null; then
-        $DRY_RUN_CMD systemctl --user restart xfconfd.service 2>/dev/null || true
-      fi
+            # Reinicia o xfconfd caso o systemd do usuário esteja ativo nesta sessão
+            if systemctl --user is-active --quiet xfconfd.service 2>/dev/null; then
+              $DRY_RUN_CMD systemctl --user restart xfconfd.service 2>/dev/null || true
+            fi
 
-      # Aplica as opções diretamente no barramento Xfconf caso o daemon esteja respondendo
-      if command -v ${pkgs.xfconf}/bin/xfconf-query >/dev/null 2>&1; then
-        $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /misc-directory-specific-settings -n -t bool -s ${if cfg.rememberViewSettings then "true" else "false"} 2>/dev/null || true
-        $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${if cfg.restoreTabs then "true" else "false"} 2>/dev/null || true
-        ${lib.optionalString (config.gtk ? theme && config.gtk.theme ? name) ''
-          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
-          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
-          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ApplicationPreferDarkTheme -n -t int -s 1 2>/dev/null || true
-        ''}
-        ${lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? name) ''
-          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "${config.gtk.iconTheme.name}" 2>/dev/null || true
-        ''}
-        ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? cursor) ''
-          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeName -n -t string -s "${config.desktop.theme.cursor.name}" 2>/dev/null || true
-          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeSize -n -t int -s "${toString config.desktop.theme.cursor.size}" 2>/dev/null || true
-        ''}
-        ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? font) ''
-          $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/FontName -n -t string -s "${config.desktop.theme.font.name} ${toString config.desktop.theme.font.size}" 2>/dev/null || true
-        ''}
-        $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/DecorationLayout -n -t string -s ":minimize,maximize,close" 2>/dev/null || true
-      fi
+            # Aplica as opções diretamente no barramento Xfconf caso o daemon esteja respondendo
+            if command -v ${pkgs.xfconf}/bin/xfconf-query >/dev/null 2>&1; then
+              $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /misc-directory-specific-settings -n -t bool -s ${
+                if cfg.rememberViewSettings then "true" else "false"
+              } 2>/dev/null || true
+              $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${
+                if cfg.restoreTabs then "true" else "false"
+              } 2>/dev/null || true
+              ${lib.optionalString (config.gtk ? theme && config.gtk.theme ? name) ''
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ApplicationPreferDarkTheme -n -t int -s 1 2>/dev/null || true
+              ''}
+              ${lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? name) ''
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "${config.gtk.iconTheme.name}" 2>/dev/null || true
+              ''}
+              ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? cursor) ''
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeName -n -t string -s "${config.desktop.theme.cursor.name}" 2>/dev/null || true
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeSize -n -t int -s "${toString config.desktop.theme.cursor.size}" 2>/dev/null || true
+              ''}
+              ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? font) ''
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/FontName -n -t string -s "${config.desktop.theme.font.name} ${toString config.desktop.theme.font.size}" 2>/dev/null || true
+              ''}
+              $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/DecorationLayout -n -t string -s ":minimize,maximize,close" 2>/dev/null || true
+            fi
     '';
 
     # Arquivo de ativação D-Bus para permitir auto-ativação do xfconfd pelo dbus-daemon da sessão

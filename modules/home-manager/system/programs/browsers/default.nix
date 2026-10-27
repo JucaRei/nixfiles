@@ -6,7 +6,13 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption mkDefault mkMerge types;
+  inherit (lib)
+    mkIf
+    mkOption
+    mkDefault
+    mkMerge
+    types
+    ;
 
   isNixOS = osConfig != null;
 
@@ -16,42 +22,89 @@ let
 
   # Lookup tables: versão → { desktop, bin }
   firefoxMap = {
-    firefox            = { desktop = "firefox.desktop";             bin = "firefox"; };
-    firefox-devedition = { desktop = "firefox-devedition.desktop";  bin = "firefox-devedition"; };
-    firefox-esr        = { desktop = "firefox-esr.desktop";         bin = "firefox-esr"; };
-    floorp             = { desktop = "floorp.desktop";              bin = "floorp"; };
-    librewolf          = { desktop = "librewolf.desktop";          bin = "librewolf"; };
+    firefox = {
+      desktop = "firefox.desktop";
+      bin = "firefox";
+    };
+    firefox-devedition = {
+      desktop = "firefox-devedition.desktop";
+      bin = "firefox-devedition";
+    };
+    firefox-esr = {
+      desktop = "firefox-esr.desktop";
+      bin = "firefox-esr";
+    };
+    floorp = {
+      desktop = "floorp.desktop";
+      bin = "floorp";
+    };
+    librewolf = {
+      desktop = "librewolf.desktop";
+      bin = "librewolf";
+    };
   };
 
   chromiumMap = {
-    chromium            = { desktop = "chromium-browser.desktop";  bin = "chromium"; };
-    ungoogled-chromium  = { desktop = "chromium-browser.desktop";  bin = "chromium"; };
-    google-chrome       = { desktop = "google-chrome.desktop";     bin = "google-chrome-stable"; };
-    brave               = { desktop = "brave-browser.desktop";     bin = "brave"; };
-    vivaldi             = { desktop = "vivaldi-stable.desktop";    bin = "vivaldi"; };
-    edge                = { desktop = "microsoft-edge.desktop";    bin = "microsoft-edge"; };
+    chromium = {
+      desktop = "chromium-browser.desktop";
+      bin = "chromium";
+    };
+    ungoogled-chromium = {
+      desktop = "chromium-browser.desktop";
+      bin = "chromium";
+    };
+    google-chrome = {
+      desktop = "google-chrome.desktop";
+      bin = "google-chrome-stable";
+    };
+    brave = {
+      desktop = "brave-browser.desktop";
+      bin = "brave";
+    };
+    vivaldi = {
+      desktop = "vivaldi-stable.desktop";
+      bin = "vivaldi";
+    };
+    edge = {
+      desktop = "microsoft-edge.desktop";
+      bin = "microsoft-edge";
+    };
   };
 
-  ffInfo  = firefoxMap.${cfgFf.version or "firefox"};
-  crInfo  = chromiumMap.${cfgCr.version or "brave"};
+  ffInfo = firefoxMap.${cfgFf.version or "firefox"};
+  crInfo = chromiumMap.${cfgCr.version or "brave"};
 
   # Determina o navegador padrão
   chosen =
-    if cfg.default == "none"     then null
-    else if cfg.default == "firefox"  then (if cfgFf.enable then "firefox" else null)
-    else if cfg.default == "chromium" then (if cfgCr.enable then "chromium" else null)
-    else # "auto"
-      if      cfgFf.enable then "firefox"
-      else if cfgCr.enable then "chromium"
-      else null;
+    if cfg.default == "none" then
+      null
+    else if cfg.default == "firefox" then
+      (if cfgFf.enable then "firefox" else null)
+    else if cfg.default == "chromium" then
+      (if cfgCr.enable then "chromium" else null)
+    # "auto"
+    else if cfgFf.enable then
+      "firefox"
+    else if cfgCr.enable then
+      "chromium"
+    else
+      null;
 
-  activeDesktop = if chosen == "firefox" then ffInfo.desktop
-                  else if chosen == "chromium" then crInfo.desktop
-                  else null;
+  activeDesktop =
+    if chosen == "firefox" then
+      ffInfo.desktop
+    else if chosen == "chromium" then
+      crInfo.desktop
+    else
+      null;
 
-  activeBin = if chosen == "firefox" then ffInfo.bin
-              else if chosen == "chromium" then crInfo.bin
-              else null;
+  activeBin =
+    if chosen == "firefox" then
+      ffInfo.bin
+    else if chosen == "chromium" then
+      crInfo.bin
+    else
+      null;
 
   mimeTypes = [
     "text/html"
@@ -62,7 +115,8 @@ let
     "x-scheme-handler/https"
     "x-scheme-handler/about"
     "x-scheme-handler/unknown"
-  ] ++ lib.optional (chosen == "chromium") "x-scheme-handler/chrome";
+  ]
+  ++ lib.optional (chosen == "chromium") "x-scheme-handler/chrome";
 in
 {
   imports = [
@@ -73,7 +127,12 @@ in
 
   options.system.programs.browsers = {
     default = mkOption {
-      type = types.enum [ "auto" "firefox" "chromium" "none" ];
+      type = types.enum [
+        "auto"
+        "firefox"
+        "chromium"
+        "none"
+      ];
       default = "auto";
       description = ''
         Navegador padrão do sistema (x-scheme-handler/http, text/html, etc).
@@ -132,10 +191,18 @@ in
     # Associações MIME e variáveis de sessão
     (mkIf (activeDesktop != null) {
       xdg.mimeApps = {
-        defaultApplications =
-          builtins.listToAttrs (map (mime: { name = mime; value = mkDefault activeDesktop; }) mimeTypes);
-        associations.added =
-          builtins.listToAttrs (map (mime: { name = mime; value = activeDesktop; }) mimeTypes);
+        defaultApplications = builtins.listToAttrs (
+          map (mime: {
+            name = mime;
+            value = mkDefault activeDesktop;
+          }) mimeTypes
+        );
+        associations.added = builtins.listToAttrs (
+          map (mime: {
+            name = mime;
+            value = activeDesktop;
+          }) mimeTypes
+        );
       };
 
       home.sessionVariables = {

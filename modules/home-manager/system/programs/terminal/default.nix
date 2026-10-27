@@ -284,7 +284,8 @@ in
       # Disponibiliza o despachante agnóstico 'terminal' no PATH
       home.packages = [
         terminalDispatcher
-      ] ++ (lib.optional (cfg.package != null) (nixGLWrapper cfg.package));
+      ]
+      ++ (lib.optional (cfg.package != null) (nixGLWrapper cfg.package));
 
       # Define a variável de ambiente $TERMINAL para ferramentas do sistema
       home.sessionVariables = {

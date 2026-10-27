@@ -116,7 +116,12 @@ let
   # ao selecionar qualquer janela (seja ela flutuante ou lado a lado), a janela selecionada
   # fique 100% à frente da outra.
   autoRaiseScript = pkgs.writeShellScript "bspwm-auto-raise" ''
-    export PATH="${lib.makeBinPath [ pkgs.bspwm pkgs.coreutils ]}:$PATH"
+    export PATH="${
+      lib.makeBinPath [
+        pkgs.bspwm
+        pkgs.coreutils
+      ]
+    }:$PATH"
 
     prev_node=""
 
@@ -579,8 +584,12 @@ in
             # Iniciar daemon de bloqueio de tela (xss-lock) e configurar inatividade (XSS / DPMS)
             ${lib.optionalString (config.desktop.bspwm.lock.enable or true) ''
               if [ "${toString (config.desktop.bspwm.lock.timeout or 600)}" -gt 0 ]; then
-                ${pkgs.xset}/bin/xset s "${toString (config.desktop.bspwm.lock.timeout or 600)}" "${toString (config.desktop.bspwm.lock.timeout or 600)}" 2>/dev/null || true
-                ${pkgs.xset}/bin/xset +dpms dpms "${toString (config.desktop.bspwm.lock.timeout or 600)}" "${toString (config.desktop.bspwm.lock.dpmsTimeout or 900)}" "${toString ((config.desktop.bspwm.lock.dpmsTimeout or 900) + 300)}" 2>/dev/null || true
+                ${pkgs.xset}/bin/xset s "${toString (config.desktop.bspwm.lock.timeout or 600)}" "${
+                  toString (config.desktop.bspwm.lock.timeout or 600)
+                }" 2>/dev/null || true
+                ${pkgs.xset}/bin/xset +dpms dpms "${toString (config.desktop.bspwm.lock.timeout or 600)}" "${
+                  toString (config.desktop.bspwm.lock.dpmsTimeout or 900)
+                }" "${toString ((config.desktop.bspwm.lock.dpmsTimeout or 900) + 300)}" 2>/dev/null || true
               else
                 ${pkgs.xset}/bin/xset s off 2>/dev/null || true
               fi
@@ -602,7 +611,9 @@ in
             ${lib.optionalString (config.desktop.wallpaper.enable or false) ''
               # Inicializar wallpaper agnóstico
               if command -v set-wallpaper >/dev/null 2>&1; then
-                set-wallpaper ${if (config.desktop.wallpaper.randomOnStart or false) then "--random" else "--restore"} --quiet &
+                set-wallpaper ${
+                  if (config.desktop.wallpaper.randomOnStart or false) then "--random" else "--restore"
+                } --quiet &
                 ${lib.optionalString (config.desktop.wallpaper.interval != null) ''
                   # Iniciar timer de rotação periódica (systemd timer com fallback para daemon)
                   (
@@ -629,16 +640,19 @@ in
               ${pkgs.blueman}/bin/blueman-applet &
             fi
 
-            ${lib.optionalString (config.desktop.bspwm.polybar.enable && config.desktop.bspwm.polybar.tray.enable) ''
-              # Bandeja do sistema (Stalonetray)
-              if command -v stalonetray >/dev/null 2>&1; then
-                pkill -x stalonetray || true
-                stalonetray &
-              elif [ -x "${pkgs.stalonetray}/bin/stalonetray" ]; then
-                pkill -x stalonetray || true
-                ${pkgs.stalonetray}/bin/stalonetray &
-              fi
-            ''}
+            ${lib.optionalString
+              (config.desktop.bspwm.polybar.enable && config.desktop.bspwm.polybar.tray.enable)
+              ''
+                # Bandeja do sistema (Stalonetray)
+                if command -v stalonetray >/dev/null 2>&1; then
+                  pkill -x stalonetray || true
+                  stalonetray &
+                elif [ -x "${pkgs.stalonetray}/bin/stalonetray" ]; then
+                  pkill -x stalonetray || true
+                  ${pkgs.stalonetray}/bin/stalonetray &
+                fi
+              ''
+            }
 
             # Auto-trust de dispositivos Bluetooth pareados (elimina bloqueios de autorização do BlueZ)
             (

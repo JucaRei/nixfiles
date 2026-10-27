@@ -33,7 +33,8 @@ let
 
   customGlyphColor =
     if builtins.isAttrs (cfg.encapsulation or null) then
-      resolveColor (cfg.encapsulation.colors.glyph or cfg.encapsulation.colors.default or null) colors.pill
+      resolveColor (cfg.encapsulation.colors.glyph or cfg.encapsulation.colors.default or null
+      ) colors.pill
     else
       colors.pill;
 

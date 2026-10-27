@@ -72,28 +72,20 @@ in
 
   options.desktop.wayland = {
     shell = mkOption {
-      type = nullOr (
-        enum [
-          "traditional"
-          "noctalia"
-          "none"
-        ]
-      );
-      default =
-        if isFullDesktopManager then
-          null
-        else
-          waylandShell;
+      type = nullOr (enum [
+        "traditional"
+        "noctalia"
+        "none"
+      ]);
+      default = if isFullDesktopManager then null else waylandShell;
       description = "Ambiente de shell gráfico para Wayland: 'traditional', 'noctalia' ou null/none para DEs completos (GNOME, KDE, etc.)";
     };
 
     compositor = mkOption {
-      type = nullOr (
-        enum [
-          "hyprland"
-          "mangowm"
-        ]
-      );
+      type = nullOr (enum [
+        "hyprland"
+        "mangowm"
+      ]);
       default =
         if desktop == "mangowm" || desktop == "mango" || (config.desktop.mangowm.enable or false) then
           "mangowm"
@@ -153,7 +145,8 @@ in
               else
                 null
             )
-          else (if hasIntel || hasGpuFallback == "intel" then "i965" else null);
+          else
+            (if hasIntel || hasGpuFallback == "intel" then "i965" else null);
         VDPAU_DRIVER = mkIf isNixOS (
           if hasNvidia || hasGpuFallback == "nvidia" then
             "nvidia"

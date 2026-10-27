@@ -33,11 +33,12 @@
 
     # Adiciona a extensão Continue (Chat + Autocomplete com Gemini) no VS Code da VM
     programs.vscode.profiles.default.extensions =
-      lib.mkIf config.system.programs.editors.vscode.enable (
-        pkgs.nix4vscode.forVscode [
-          "Continue.continue"
-        ]
-      );
+      lib.mkIf config.system.programs.editors.vscode.enable
+        (
+          pkgs.nix4vscode.forVscode [
+            "Continue.continue"
+          ]
+        );
 
     home.packages = with pkgs; [
       direnv

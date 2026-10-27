@@ -1,7 +1,13 @@
 { pkgs, inputs, ... }:
 let
   mangoPkg =
-    if (inputs ? mangowm && inputs.mangowm ? packages && inputs.mangowm.packages ? ${pkgs.stdenv.hostPlatform.system}) then
+    if
+      (
+        inputs ? mangowm
+        && inputs.mangowm ? packages
+        && inputs.mangowm.packages ? ${pkgs.stdenv.hostPlatform.system}
+      )
+    then
       inputs.mangowm.packages.${pkgs.stdenv.hostPlatform.system}.mango
     else
       pkgs.emptyDirectory;

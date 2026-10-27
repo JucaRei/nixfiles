@@ -42,8 +42,7 @@ let
   # Copia o pacote e troca cada bin/* por um script que chama o original via `body`.
   wrapBinaries =
     pkg:
-    pkgs.runCommandLocal "nixgl-${pkg.name or pkg.pname or "unnamed"}"
-      { inherit (pkg) meta passthru; }
+    pkgs.runCommandLocal "nixgl-${pkg.name or pkg.pname or "unnamed"}" { inherit (pkg) meta passthru; }
       ''
         set -euo pipefail
         shopt -s nullglob
@@ -72,19 +71,17 @@ let
         # "appDataDir" é um argumento aceito pelo wrapper do Firefox no Nixpkgs (usado para
         # redirecionar MOZ_APP_DATA / perfis XDG/macOS). Filtrá-lo aqui evita erros de atributos
         # inesperados ao repassar os argumentos ao derivador subjacente.
-        override = lib.setFunctionArgs
-          (
-            args:
-            let
-              cleanArgs =
-                if lib.isFunction args then
-                  old: builtins.removeAttrs (args old) [ "appDataDir" ]
-                else
-                  builtins.removeAttrs args [ "appDataDir" ];
-            in
-            wrapper (pkg.override cleanArgs)
-          )
-          (lib.functionArgs pkg.override // { appDataDir = true; });
+        override = lib.setFunctionArgs (
+          args:
+          let
+            cleanArgs =
+              if lib.isFunction args then
+                old: builtins.removeAttrs (args old) [ "appDataDir" ]
+              else
+                builtins.removeAttrs args [ "appDataDir" ];
+          in
+          wrapper (pkg.override cleanArgs)
+        ) (lib.functionArgs pkg.override // { appDataDir = true; });
       }
       // lib.optionalAttrs (pkg ? overrideAttrs) { overrideAttrs = f: wrapper (pkg.overrideAttrs f); };
 in

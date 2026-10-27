@@ -25,7 +25,16 @@ let
 
   # Script utilitário para consulta e alteração dinâmica da velocidade do touchpad via CLI ou atalho
   touchpadSpeedScript = pkgs.writeShellScriptBin "touchpad-speed" ''
-    export PATH="${lib.makeBinPath [ pkgs.xinput pkgs.gnugrep pkgs.gawk pkgs.gnused pkgs.coreutils pkgs.dunst ]}:$PATH"
+    export PATH="${
+      lib.makeBinPath [
+        pkgs.xinput
+        pkgs.gnugrep
+        pkgs.gawk
+        pkgs.gnused
+        pkgs.coreutils
+        pkgs.dunst
+      ]
+    }:$PATH"
     NEW_SPEED="$1"
 
     COUNT=0
@@ -202,32 +211,34 @@ in
 
       # Alacritty com nixGL wrapper no Exec (corrige erro GL em Debian/Fedora)
       # Nota: nome em maiúsculo "Alacritty.desktop" é essencial para sobrepor (shadow) o .desktop upstream do Nix Store sem duplicar
-      ".local/share/applications/Alacritty.desktop" = lib.mkIf ((config.system.programs.terminal.name or "") == "alacritty") {
-        text = ''
-          [Desktop Entry]
-          Version=1.0
-          Type=Application
-          Name=Alacritty
-          GenericName=Terminal
-          Comment=A fast, cross-platform, OpenGL terminal emulator
-          Exec=${alacrittyBin} %U
-          Icon=Alacritty
-          Terminal=false
-          Categories=System;TerminalEmulator;
-          Keywords=terminal;shell;
-          StartupWMClass=Alacritty
-          StartupNotify=false
-          Actions=New;Float;
+      ".local/share/applications/Alacritty.desktop" =
+        lib.mkIf ((config.system.programs.terminal.name or "") == "alacritty")
+          {
+            text = ''
+              [Desktop Entry]
+              Version=1.0
+              Type=Application
+              Name=Alacritty
+              GenericName=Terminal
+              Comment=A fast, cross-platform, OpenGL terminal emulator
+              Exec=${alacrittyBin} %U
+              Icon=Alacritty
+              Terminal=false
+              Categories=System;TerminalEmulator;
+              Keywords=terminal;shell;
+              StartupWMClass=Alacritty
+              StartupNotify=false
+              Actions=New;Float;
 
-          [Desktop Action New]
-          Name=New Terminal Window
-          Exec=${alacrittyBin}
+              [Desktop Action New]
+              Name=New Terminal Window
+              Exec=${alacrittyBin}
 
-          [Desktop Action Float]
-          Name=New Floating Terminal
-          Exec=${alacrittyBin} --class AlacrittyFloat
-        '';
-      };
+              [Desktop Action Float]
+              Name=New Floating Terminal
+              Exec=${alacrittyBin} --class AlacrittyFloat
+            '';
+          };
 
       # Pavucontrol
       ".local/share/applications/pavucontrol.desktop".text = ''
@@ -295,9 +306,11 @@ in
     # Garante que o menu gráfico (Rofi, XFCE, etc.) veja os .desktop do Nix Store
     # e os novos .desktop criados acima em ~/.local/share/applications/
     # -------------------------------------------------------------------------
-    home.activation.updateDesktopDatabase = lib.mkIf (!isNixOS) (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      # Remove arquivo .desktop em minúsculo antigo para prevenir duplicação no Rofi
-      rm -f "$HOME/.local/share/applications/alacritty.desktop"
-    '');
+    home.activation.updateDesktopDatabase = lib.mkIf (!isNixOS) (
+      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        # Remove arquivo .desktop em minúsculo antigo para prevenir duplicação no Rofi
+        rm -f "$HOME/.local/share/applications/alacritty.desktop"
+      ''
+    );
   };
 }

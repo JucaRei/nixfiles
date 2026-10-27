@@ -24,12 +24,14 @@ stdenv.mkDerivation {
     chmod +x $out/bin/bsp-layout
 
     wrapProgram $out/bin/bsp-layout \
-      --prefix PATH : ${lib.makeBinPath [
-        bash
-        bspwm
-        coreutils
-        jq
-      ]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          bash
+          bspwm
+          coreutils
+          jq
+        ]
+      }
 
     runHook postInstall
   '';

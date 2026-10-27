@@ -49,14 +49,13 @@ let
   # nixgl.auto.nixGLDefault lê a NVIDIA do host (com --impure) e tenta construir um
   # nixGLNvidia que falha no nixpkgs 26.05. Com tipo explícito, fixa o default em
   # Intel/Mesa antes de qualquer módulo avaliá-lo.
-  pinNixGLDefault =
-    type: _final: prev: {
-      nixgl = prev.nixgl // {
-        auto = prev.nixgl.auto // {
-          nixGLDefault = if type == "mesa" then prev.nixgl.nixGLMesa else prev.nixgl.nixGLIntel;
-        };
+  pinNixGLDefault = type: _final: prev: {
+    nixgl = prev.nixgl // {
+      auto = prev.nixgl.auto // {
+        nixGLDefault = if type == "mesa" then prev.nixgl.nixGLMesa else prev.nixgl.nixGLIntel;
       };
     };
+  };
 
   # pkgs do Home Manager standalone (o nixpkgs.* do módulo HM não vale quando `pkgs` é passado).
   mkPkgs =

@@ -80,7 +80,13 @@ in
     };
 
     bar = mkOption {
-      type = lib.types.enum [ "quickshell" "dwm-status" "slstatus" "polybar" "none" ];
+      type = lib.types.enum [
+        "quickshell"
+        "dwm-status"
+        "slstatus"
+        "polybar"
+        "none"
+      ];
       default = "quickshell";
       description = "Barra de status/painel do DWM. Opções: 'quickshell' (painel moderno do dwm-titus com launcher e control center), 'dwm-status' (script de status nativo do dwm usando xsetroot), 'slstatus', 'polybar' ou 'none'.";
     };
@@ -93,13 +99,23 @@ in
       };
 
       qsgBackend = mkOption {
-        type = lib.types.enum [ "opengl" "software" "vulkan" "auto" ];
+        type = lib.types.enum [
+          "opengl"
+          "software"
+          "vulkan"
+          "auto"
+        ];
         default = if isNvidiaLegacy then "software" else "opengl";
         description = "Backend de renderização do Qt Quick Scene Graph (QSG_RHI_BACKEND). No NVIDIA 340 Legacy (sem suporte a Vulkan e com FBConfigs GLX incompatíveis no Qt 6.11), 'software' garante renderização estável via CPU.";
       };
 
       glIntegration = mkOption {
-        type = lib.types.enum [ "glx" "egl" "auto" "none" ];
+        type = lib.types.enum [
+          "glx"
+          "egl"
+          "auto"
+          "none"
+        ];
         default = if isNvidiaLegacy then "none" else "auto";
         description = "Backend de integração GL do Qt XCB (QT_XCB_GL_INTEGRATION). No NVIDIA 340 Legacy, 'none' previne falhas de contexto dummy GLX/EGL no Qt6.";
       };
@@ -136,10 +152,20 @@ in
           # 1. Configuração do teclado herdada declarativamente de home.keyboard
           ${lib.optionalString (config.home.keyboard != null) ''
             ${pkgs.setxkbmap}/bin/setxkbmap \
-              ${lib.optionalString (config.home.keyboard.model != null) "-model '${config.home.keyboard.model}'"} \
-              ${lib.optionalString (config.home.keyboard.layout != null) "-layout '${config.home.keyboard.layout}'"} \
-              ${lib.optionalString (config.home.keyboard.variant != null) "-variant '${config.home.keyboard.variant}'"} \
-              ${lib.concatMapStringsSep " " (opt: "-option '${opt}'") (config.home.keyboard.options or [ ])} || true
+              ${
+                lib.optionalString (config.home.keyboard.model != null) "-model '${config.home.keyboard.model}'"
+              } \
+              ${
+                lib.optionalString (config.home.keyboard.layout != null) "-layout '${config.home.keyboard.layout}'"
+              } \
+              ${
+                lib.optionalString (
+                  config.home.keyboard.variant != null
+                ) "-variant '${config.home.keyboard.variant}'"
+              } \
+              ${
+                lib.concatMapStringsSep " " (opt: "-option '${opt}'") (config.home.keyboard.options or [ ])
+              } || true
           ''}
 
           # 2. Carregar bibliotecas de driver gráfico proprietário legado SE E SOMENTE SE NVIDIA 340 detectada
@@ -248,46 +274,61 @@ in
 
           # 11. Iniciar Barra de Status / Painel configurado declarativamente
           mkdir -p "$HOME/.local/state/dwm-titus"
-          ${if cfg.bar == "quickshell" then ''
-            pkill -x quickshell || true
-            pkill -x slstatus || true
-            pkill -x dwm-status || true
+          ${
+            if cfg.bar == "quickshell" then
+              ''
+                pkill -x quickshell || true
+                pkill -x slstatus || true
+                pkill -x dwm-status || true
 
-            # Iniciar Quickshell com log para diagnóstico (isolando de LD_LIBRARY_PATH e forçando backend de software/none quando configurado)
-            env -u LD_LIBRARY_PATH \
-              ${lib.optionalString (cfg.quickshell.qsgBackend == "software") "QT_QUICK_BACKEND=software QSG_RHI_BACKEND=software"} \
-              ${lib.optionalString (cfg.quickshell.glIntegration == "none") "QT_XCB_GL_INTEGRATION=none"} \
-              ${nixGLWrapper pkgs.quickshell}/bin/quickshell --path "$HOME/.config/quickshell/shell.qml" --no-duplicate > "$HOME/.local/state/dwm-titus/quickshell.log" 2>&1 &
-            QUICKSHELL_PID=$!
+                # Iniciar Quickshell com log para diagnóstico (isolando de LD_LIBRARY_PATH e forçando backend de software/none quando configurado)
+                env -u LD_LIBRARY_PATH \
+                  ${
+                    lib.optionalString (
+                      cfg.quickshell.qsgBackend == "software"
+                    ) "QT_QUICK_BACKEND=software QSG_RHI_BACKEND=software"
+                  } \
+                  ${lib.optionalString (cfg.quickshell.glIntegration == "none") "QT_XCB_GL_INTEGRATION=none"} \
+                  ${nixGLWrapper pkgs.quickshell}/bin/quickshell --path "$HOME/.config/quickshell/shell.qml" --no-duplicate > "$HOME/.local/state/dwm-titus/quickshell.log" 2>&1 &
+                QUICKSHELL_PID=$!
 
-            # Watchdog leve em background: se o Quickshell fechar ou falhar na GPU, acionar dwm-status automaticamente
-            (
-              sleep 3
-              if ! kill -0 "$QUICKSHELL_PID" 2>/dev/null && ! pgrep -x quickshell >/dev/null 2>&1; then
-                echo "Quickshell falhou em iniciar na GPU. Ativando fallback dwm-status..." >> "$HOME/.local/state/dwm-titus/quickshell.log"
+                # Watchdog leve em background: se o Quickshell fechar ou falhar na GPU, acionar dwm-status automaticamente
+                (
+                  sleep 3
+                  if ! kill -0 "$QUICKSHELL_PID" 2>/dev/null && ! pgrep -x quickshell >/dev/null 2>&1; then
+                    echo "Quickshell falhou em iniciar na GPU. Ativando fallback dwm-status..." >> "$HOME/.local/state/dwm-titus/quickshell.log"
+                    ${dwmPackage}/bin/dwm-status &
+                  fi
+                ) &
+              ''
+            else if cfg.bar == "dwm-status" then
+              ''
+                pkill -x quickshell || true
+                pkill -x slstatus || true
+                pkill -x dwm-status || true
                 ${dwmPackage}/bin/dwm-status &
-              fi
-            ) &
-          '' else if cfg.bar == "dwm-status" then ''
-            pkill -x quickshell || true
-            pkill -x slstatus || true
-            pkill -x dwm-status || true
-            ${dwmPackage}/bin/dwm-status &
-          '' else if cfg.bar == "slstatus" then ''
-            pkill -x quickshell || true
-            pkill -x dwm-status || true
-            pkill -x slstatus || true
-            ${pkgs.slstatus}/bin/slstatus &
-          '' else if cfg.bar == "polybar" then ''
-            pkill -x quickshell || true
-            pkill -x dwm-status || true
-            pkill -x slstatus || true
-            systemctl --user restart polybar 2>/dev/null || true
-          '' else ''
-            pkill -x quickshell || true
-            pkill -x dwm-status || true
-            pkill -x slstatus || true
-          ''}
+              ''
+            else if cfg.bar == "slstatus" then
+              ''
+                pkill -x quickshell || true
+                pkill -x dwm-status || true
+                pkill -x slstatus || true
+                ${pkgs.slstatus}/bin/slstatus &
+              ''
+            else if cfg.bar == "polybar" then
+              ''
+                pkill -x quickshell || true
+                pkill -x dwm-status || true
+                pkill -x slstatus || true
+                systemctl --user restart polybar 2>/dev/null || true
+              ''
+            else
+              ''
+                pkill -x quickshell || true
+                pkill -x dwm-status || true
+                pkill -x slstatus || true
+              ''
+          }
 
           # 12. Executar DWM com nixGL wrapper (para suporte a distros standalone como Fedora/Debian)
           exec ${nixGLWrapper dwmPackage}/bin/dwm
@@ -341,7 +382,8 @@ in
         TERM = "alacritty";
         QT_QPA_PLATFORM = "xcb";
         DWM_KBD_BRIGHTNESS_STEP = toString cfg.keyboard.brightness.step;
-      } // lib.optionalAttrs (cfg.keyboard.brightness.device != null) {
+      }
+      // lib.optionalAttrs (cfg.keyboard.brightness.device != null) {
         DWM_KBD_BACKLIGHT_DEVICE = cfg.keyboard.brightness.device;
       };
 

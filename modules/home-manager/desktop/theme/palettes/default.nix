@@ -7,7 +7,8 @@
 }:
 let
   isPalette =
-    name: type: type == "regular" && lib.hasSuffix ".nix" name && !lib.hasPrefix "_" name && name != "default.nix";
+    name: type:
+    type == "regular" && lib.hasSuffix ".nix" name && !lib.hasPrefix "_" name && name != "default.nix";
 in
 lib.mapAttrs' (
   file: _:

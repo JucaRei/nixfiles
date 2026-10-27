@@ -32,10 +32,7 @@ let
   };
 
   selectedTheme =
-    if cfg.theme == "auto" then
-      (config.desktop.theme.name or "kanagawa-wave")
-    else
-      cfg.theme;
+    if cfg.theme == "auto" then (config.desktop.theme.name or "kanagawa-wave") else cfg.theme;
 
   normalizedTheme =
     if builtins.isString selectedTheme then
@@ -116,7 +113,9 @@ in
       enableBashIntegration = mkIf (config.system.programs.shells.default == "bash") true;
       enableFishIntegration = mkIf (config.system.programs.shells.default == "fish") true;
       enableZshIntegration = mkIf (config.system.programs.shells.default == "zsh") true;
-      enableNushellIntegration = mkIf (config.system.programs.shells.default == "nu" || config.system.programs.shells.default == "nushell") true;
+      enableNushellIntegration = mkIf (
+        config.system.programs.shells.default == "nu" || config.system.programs.shells.default == "nushell"
+      ) true;
       extraOptions = [
         "--color=always"
         "--icons"

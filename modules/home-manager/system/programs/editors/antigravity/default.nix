@@ -30,10 +30,7 @@ in
       package = mkOption {
         type = package;
         default =
-          if isNixOS then
-            pkgs.unstable.antigravity-ide-fhs
-          else
-            nixGLWrapper pkgs.unstable.antigravity-ide;
+          if isNixOS then pkgs.unstable.antigravity-ide-fhs else nixGLWrapper pkgs.unstable.antigravity-ide;
         description = "Package or wrapper for Antigravity IDE.";
       };
       remoteDebuggingPort = mkOption {

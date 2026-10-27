@@ -94,13 +94,16 @@ in
           else
             (osConfig.environment.sessionVariables.VDPAU_DRIVER or "");
       }
-      // lib.optionalAttrs (isNixOS && (hasLegacyNvidia || (osConfig.environment.sessionVariables ? LD_LIBRARY_PATH))) {
-        LD_LIBRARY_PATH =
-          if hasLegacyNvidia then
-            "/run/opengl-driver/lib:/run/opengl-driver-32/lib"
-          else
-            osConfig.environment.sessionVariables.LD_LIBRARY_PATH;
-      };
+      //
+        lib.optionalAttrs
+          (isNixOS && (hasLegacyNvidia || (osConfig.environment.sessionVariables ? LD_LIBRARY_PATH)))
+          {
+            LD_LIBRARY_PATH =
+              if hasLegacyNvidia then
+                "/run/opengl-driver/lib:/run/opengl-driver-32/lib"
+              else
+                osConfig.environment.sessionVariables.LD_LIBRARY_PATH;
+          };
 
       activation.setX11Vars = mkIf (!isNixOS) (
         lib.hm.dag.entryAfter [ "writeBoundary" ] ''

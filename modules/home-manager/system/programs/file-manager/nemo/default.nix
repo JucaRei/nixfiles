@@ -18,11 +18,9 @@ let
   shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
 
   isVscodeEnabled =
-    (config.system.programs.editors.vscode.enable or false)
-    || (config.programs.vscode.enable or false);
+    (config.system.programs.editors.vscode.enable or false) || (config.programs.vscode.enable or false);
 
-  isAntigravityEnabled =
-    config.system.programs.editors.antigravity.enable or false;
+  isAntigravityEnabled = config.system.programs.editors.antigravity.enable or false;
 
   preferredTerminal =
     if config.programs ? alacritty && config.programs.alacritty.enable then

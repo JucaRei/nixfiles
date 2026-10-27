@@ -223,7 +223,10 @@ in
           ];
         };
         Install = {
-          WantedBy = [ "graphical-session.target" "default.target" ];
+          WantedBy = [
+            "graphical-session.target"
+            "default.target"
+          ];
         };
       };
 

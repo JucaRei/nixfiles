@@ -188,10 +188,14 @@ in
       "URxvt.lineSpace" = "0";
 
       # Fontes & Fallbacks para glifos Nerd Fonts, ícones de arquivo e símbolos Powerline
-      "URxvt.font" = "xft:Hack Nerd Font:size=12,xft:JetBrainsMono Nerd Font:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:size=12,xft:Noto Color Emoji:size=12";
-      "URxvt.boldFont" = "xft:Hack Nerd Font:bold:size=12,xft:JetBrainsMono Nerd Font:bold:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:bold:size=12";
-      "URxvt.italicFont" = "xft:Hack Nerd Font:italic:size=12,xft:JetBrainsMono Nerd Font:italic:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:italic:size=12";
-      "URxvt.boldItalicFont" = "xft:Hack Nerd Font:bold:italic:size=12,xft:JetBrainsMono Nerd Font:bold:italic:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:bold:italic:size=12";
+      "URxvt.font" =
+        "xft:Hack Nerd Font:size=12,xft:JetBrainsMono Nerd Font:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:size=12,xft:Noto Color Emoji:size=12";
+      "URxvt.boldFont" =
+        "xft:Hack Nerd Font:bold:size=12,xft:JetBrainsMono Nerd Font:bold:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:bold:size=12";
+      "URxvt.italicFont" =
+        "xft:Hack Nerd Font:italic:size=12,xft:JetBrainsMono Nerd Font:italic:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:italic:size=12";
+      "URxvt.boldItalicFont" =
+        "xft:Hack Nerd Font:bold:italic:size=12,xft:JetBrainsMono Nerd Font:bold:italic:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:bold:italic:size=12";
     };
 
     # Daemon urxvtd via systemd do usuário

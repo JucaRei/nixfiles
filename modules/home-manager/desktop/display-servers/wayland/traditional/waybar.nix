@@ -499,7 +499,11 @@ in
           "backlight" = {
             device = "intel_backlight";
             format = "{icon} {percent}%";
-            format-icons = [ "󰃞" "󰃟" "󰃠" ];
+            format-icons = [
+              "󰃞"
+              "󰃟"
+              "󰃠"
+            ];
             on-scroll-up = "${pkgs.brightnessctl}/bin/brightnessctl -q s +2% || ${pkgs.brightnessctl}/bin/brightnessctl -q s +1";
             on-scroll-down = "${pkgs.brightnessctl}/bin/brightnessctl -q s 2%- || ${pkgs.brightnessctl}/bin/brightnessctl -q s 1-";
             tooltip = false;
@@ -512,7 +516,11 @@ in
               headphone = "󰋋";
               hands-free = "󰋎";
               headset = "󰋎";
-              default = [ "󰕿" "󰖀" "󰕾" ];
+              default = [
+                "󰕿"
+                "󰖀"
+                "󰕾"
+              ];
             };
             on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
             on-scroll-up = "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 2%+";
@@ -537,7 +545,18 @@ in
             format = "{icon} {capacity}%";
             format-charging = "󰂄 {capacity}%";
             format-plugged = "󰂄 {capacity}%";
-            format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
+            format-icons = [
+              "󰁺"
+              "󰁻"
+              "󰁼"
+              "󰁽"
+              "󰁾"
+              "󰁿"
+              "󰂀"
+              "󰂁"
+              "󰂂"
+              "󰁹"
+            ];
             tooltip-format = "{timeTo}\nConsumo: {power}W";
           };
 
