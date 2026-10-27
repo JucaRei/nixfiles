@@ -9,6 +9,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ unzip ];
 
   src = requireFile {
+    name = "${name}.zip";
     url = "file://path/to/${name}.zip";
     sha256 = "0k2l18lzwqmyhv5g55pd3rwiia8gbkvdngjhbb867ilm89ad2fq9";
   };

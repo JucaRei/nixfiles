@@ -19,7 +19,6 @@ in
     ../display-servers
     ../monitors
     ../shared
-    ../theme
     ../wallpaper
   ];
 

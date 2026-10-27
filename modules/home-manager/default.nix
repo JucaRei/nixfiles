@@ -24,6 +24,7 @@ in
 {
   imports = [
     ./system
+    ./desktop/theme
   ]
   ++ optionals (isWorkstation) [ ./desktop/environments ];
   config = {
