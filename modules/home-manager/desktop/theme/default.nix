@@ -265,6 +265,8 @@ in
       };
 
       home = {
+        packages = mkIf cfg.xsettingsd.enable [ pkgs.xsettingsd ];
+
         sessionVariables = {
           GTK_THEME = mkDefault cfg.gtk.name;
           XCURSOR_THEME = mkDefault cfg.cursor.name;

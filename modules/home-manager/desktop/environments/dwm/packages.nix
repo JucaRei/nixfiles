@@ -33,7 +33,6 @@ in
       dconf
       xkbset
       inotify-tools
-      xsettingsd
       networkmanagerapplet
       libnotify
 

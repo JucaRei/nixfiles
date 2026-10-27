@@ -514,11 +514,6 @@ in
             # Carregar recursos do X11 (incluindo tema e tamanho de cursor Xcursor)
             [ -f "$HOME/.Xresources" ] && ${pkgs.xrdb}/bin/xrdb -merge "$HOME/.Xresources" || true
 
-            # Iniciar daemon XSETTINGS (xsettingsd) para compatibilidade instantânea com GTK2/GTK3/XFCE
-            if command -v ${pkgs.xsettingsd}/bin/xsettingsd >/dev/null 2>&1; then
-              pkill -x xsettingsd || true
-              ${pkgs.xsettingsd}/bin/xsettingsd &
-            fi
 
             # Propagar variáveis do tema declarativo para sessão e aplicações
             export GTK_THEME="${config.gtk.theme.name}"

@@ -121,7 +121,6 @@ in
         pasystray
         galculator
         lxappearance
-        xsettingsd
       ]
       ++ optionals ((config.system.programs.terminal.name or "") == "alacritty") [
         (nixGLWrapper alacritty)

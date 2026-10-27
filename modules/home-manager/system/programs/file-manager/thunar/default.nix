@@ -223,7 +223,12 @@ in
                 curr = node
 
         theme_name = "${themeName}"
-        icon_name = "${if config.desktop.theme ? icons && config.desktop.theme.icons ? name then config.desktop.theme.icons.name else config.gtk.iconTheme.name or ""}"
+        icon_name = "${
+          if config.desktop.theme ? icons && config.desktop.theme.icons ? name then
+            config.desktop.theme.icons.name
+          else
+            config.gtk.iconTheme.name or ""
+        }"
         cursor_name = "${config.desktop.theme.cursor.name or ""}"
         cursor_size = "${toString (config.desktop.theme.cursor.size or 24)}"
         font_name = "${config.desktop.theme.font.name or "Inter"} ${
