@@ -56,16 +56,17 @@ import ./_catppuccin.nix (
       fgMuted = macchiato.subtext0;
       fgSubtle = macchiato.overlay0;
 
-      # ── Cores de Acento & Destaque ─────────────────────────────────
-      red = macchiato.red;
+      inherit (macchiato)
+        red
+        yellow
+        green
+        teal
+        blue
+        pink
+        ;
       orange = macchiato.peach;
-      yellow = macchiato.yellow;
-      green = macchiato.green;
-      teal = macchiato.teal;
       cyan = macchiato.sky;
-      blue = macchiato.blue;
       purple = macchiato.mauve;
-      pink = macchiato.pink;
 
       # ── Tokens Canônicos Catppuccin Exportados ─────────────────────
       inherit (macchiato)

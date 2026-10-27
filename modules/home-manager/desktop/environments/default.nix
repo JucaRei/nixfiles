@@ -150,7 +150,17 @@ in
     };
 
     xdg = {
-      mimeApps.enable = true;
+      mimeApps = {
+        enable = true;
+        defaultApplications = lib.mkIf config.desktop.dwm.enable {
+          "image/png" = [ "sxiv.desktop" ];
+          "image/jpeg" = [ "sxiv.desktop" ];
+          "image/jpg" = [ "sxiv.desktop" ];
+          "image/gif" = [ "sxiv.desktop" ];
+          "image/webp" = [ "sxiv.desktop" ];
+          "image/bmp" = [ "sxiv.desktop" ];
+        };
+      };
       mime.enable = true;
       systemDirs = {
         data = [

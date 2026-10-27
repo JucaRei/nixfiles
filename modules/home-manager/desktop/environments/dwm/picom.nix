@@ -38,7 +38,7 @@ in
     services.picom = {
       enable = true;
       package = pkgs.picom;
-      backend = cfg.backend;
+      inherit (cfg) backend;
       vSync = true;
       shadow = true;
       shadowOpacity = 0.6;

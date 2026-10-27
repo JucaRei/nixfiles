@@ -69,7 +69,7 @@ in
   options.desktop.dwm = {
     enable = mkOption {
       type = bool;
-      default = (desktop == "dwm");
+      default = desktop == "dwm";
       description = "Enable DWM window manager with custom config.def.h and dwm-titus runtime configuration";
     };
 
@@ -94,7 +94,7 @@ in
     quickshell = {
       enable = mkOption {
         type = lib.types.bool;
-        default = (cfg.bar == "quickshell");
+        default = cfg.bar == "quickshell";
         description = "Habilitar Quickshell no DWM";
       };
 
@@ -232,14 +232,14 @@ in
               has_tapping=$(${pkgs.xinput}/bin/xinput list-props "$id" 2>/dev/null | grep -c "libinput Tapping Enabled" || true)
 
               if echo "$dev_name" | grep -q "touchpad" || [ "$has_tapping" -gt 0 ]; then
-                ${lib.optionalString (config.desktop.touchpad.enable) ''
-                  ${lib.optionalString (config.desktop.touchpad.naturalScrolling) ''
+                ${lib.optionalString config.desktop.touchpad.enable ''
+                  ${lib.optionalString config.desktop.touchpad.naturalScrolling ''
                     ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 1 2>/dev/null || true
                   ''}
                   ${lib.optionalString (!config.desktop.touchpad.naturalScrolling) ''
                     ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Natural Scrolling Enabled" 0 2>/dev/null || true
                   ''}
-                  ${lib.optionalString (config.desktop.touchpad.tapping) ''
+                  ${lib.optionalString config.desktop.touchpad.tapping ''
                     ${pkgs.xinput}/bin/xinput set-prop "$id" "libinput Tapping Enabled" 1 2>/dev/null || true
                   ''}
                   ${lib.optionalString (config.desktop.touchpad.clickMethod == "clickfinger") ''

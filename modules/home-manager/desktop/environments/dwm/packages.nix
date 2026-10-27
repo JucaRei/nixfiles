@@ -56,18 +56,5 @@ in
       bc
       jq
     ];
-
-    # Associações padrão de mimetypes para imagens usando sxiv
-    xdg.mimeApps = {
-      enable = true;
-      defaultApplications = {
-        "image/png" = [ "sxiv.desktop" ];
-        "image/jpeg" = [ "sxiv.desktop" ];
-        "image/jpg" = [ "sxiv.desktop" ];
-        "image/gif" = [ "sxiv.desktop" ];
-        "image/webp" = [ "sxiv.desktop" ];
-        "image/bmp" = [ "sxiv.desktop" ];
-      };
-    };
   };
 }

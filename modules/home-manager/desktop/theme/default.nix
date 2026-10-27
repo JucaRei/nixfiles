@@ -38,10 +38,35 @@ let
   ];
 
   loadPalettes = accent: import ./palettes { inherit lib pkgs accent; };
-  paletteNames = builtins.attrNames (loadPalettes "blue"); # só nomes: não força nenhum pacote
-  palette = (loadPalettes cfg.accent).${cfg.name};
-  colors = palette.colors // {
+  paletteNames = lib.unique (builtins.attrNames (loadPalettes "blue") ++ [ "tokyonight" ]);
+  resolvedName = if cfg.name == "tokyonight" then "tokyo-night" else cfg.name;
+  palette = (loadPalettes cfg.accent).${resolvedName};
+  rawColors = palette.colors // {
     accent = palette.colors.${cfg.accent};
+  };
+
+  # Camada única de compatibilidade: aliases Catppuccin calculados uma vez para todas as paletas
+  colors = rawColors // {
+    lavender = rawColors.lavender or rawColors.purple;
+    sapphire = rawColors.sapphire or rawColors.blue;
+    sky = rawColors.sky or rawColors.cyan;
+    maroon = rawColors.maroon or rawColors.red;
+    peach = rawColors.peach or rawColors.orange;
+    mauve = rawColors.mauve or rawColors.purple;
+    flamingo = rawColors.flamingo or rawColors.pink;
+    rosewater = rawColors.rosewater or rawColors.pink;
+    subtext1 = rawColors.subtext1 or rawColors.fgMuted;
+    subtext0 = rawColors.subtext0 or rawColors.fgMuted;
+    overlay2 = rawColors.overlay2 or rawColors.fgSubtle;
+    overlay1 = rawColors.overlay1 or rawColors.fgSubtle;
+    overlay0 = rawColors.overlay0 or rawColors.fgSubtle;
+    surface2 = rawColors.surface2 or rawColors.surfaceAlt;
+    surface1 = rawColors.surface1 or rawColors.surface;
+    surface0 = rawColors.surface0 or rawColors.surface;
+    base = rawColors.base or rawColors.bg;
+    mantle = rawColors.mantle or rawColors.bgDark;
+    crust = rawColors.crust or rawColors.bgDark;
+    text = rawColors.text or rawColors.fg;
   };
 
   assetOptions = {

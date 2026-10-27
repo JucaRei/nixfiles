@@ -56,16 +56,17 @@ import ./_catppuccin.nix (
       fgMuted = mocha.subtext0;
       fgSubtle = mocha.overlay0;
 
-      # ── Cores de Acento & Destaque ─────────────────────────────────
-      red = mocha.red;
+      inherit (mocha)
+        red
+        yellow
+        green
+        teal
+        blue
+        pink
+        ;
       orange = mocha.peach;
-      yellow = mocha.yellow;
-      green = mocha.green;
-      teal = mocha.teal;
       cyan = mocha.sky;
-      blue = mocha.blue;
       purple = mocha.mauve;
-      pink = mocha.pink;
 
       # ── Tokens Canônicos Catppuccin Exportados ─────────────────────
       inherit (mocha)

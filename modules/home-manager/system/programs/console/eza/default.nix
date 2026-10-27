@@ -4,8 +4,6 @@ let
     mkOption
     mkIf
     getExe
-    toLower
-    concatStringsSep
     ;
   inherit (lib.types)
     bool
@@ -16,29 +14,6 @@ let
     anything
     ;
   cfg = config.system.programs.console.eza;
-
-  predefinedThemes = {
-    "kanagawa-wave" = ./themes/kanagawa-wave.yml;
-    "kanagawa" = ./themes/kanagawa-wave.yml;
-    "catppuccin-mocha" = ./themes/catppuccin-mocha.yml;
-    "catppuccin-macchiato" = ./themes/catppuccin-mocha.yml;
-    "catppuccin" = ./themes/catppuccin-mocha.yml;
-    "tokyonight" = ./themes/tokyonight.yml;
-    "tokyo-night" = ./themes/tokyonight.yml;
-    "dracula" = ./themes/dracula.yml;
-    "nord" = ./themes/nord.yml;
-    "gruvbox-dark" = ./themes/gruvbox-dark.yml;
-    "gruvbox" = ./themes/gruvbox-dark.yml;
-  };
-
-  selectedTheme =
-    if cfg.theme == "auto" then (config.desktop.theme.name or "kanagawa-wave") else cfg.theme;
-
-  normalizedTheme =
-    if builtins.isString selectedTheme then
-      toLower (builtins.replaceStrings [ " " "_" ] [ "-" "-" ] selectedTheme)
-    else
-      null;
 
   dynamicThemeText =
     let
@@ -84,22 +59,23 @@ let
     '';
 in
 {
-  options = {
-    system.programs.console.eza = {
-      enable = mkOption {
-        default = false;
-        type = bool;
-        description = "Enable's eza.";
-      };
+  options.system.programs.console.eza = {
+    enable = mkOption {
+      default = false;
+      type = bool;
+      description = "Enable eza.";
+    };
 
-      theme = mkOption {
-        default = if (config.desktop.theme ? name) then config.desktop.theme.name else "kanagawa-wave";
-        type = nullOr (either str (attrsOf anything));
-        description = ''
-          Theme for eza. Defaults to the active desktop.theme.name (e.g. "tokyo-night", "tokyonight",
-          "kanagawa-wave", "catppuccin-mocha", "dracula", "nord", "gruvbox-dark"). Set to null to disable custom theming.
-        '';
-      };
+    customTheme = mkOption {
+      default = null;
+      type = nullOr str;
+      description = "Conteúdo YAML customizado para o tema do eza. Se nulo, gerado dinamicamente a partir de desktop.theme.";
+    };
+
+    theme = mkOption {
+      default = if (config.desktop.theme ? name) then config.desktop.theme.name else "catppuccin-mocha";
+      type = nullOr (either str (attrsOf anything));
+      description = "Tema de eza (legado/compatibilidade).";
     };
   };
 
@@ -126,21 +102,15 @@ in
       ];
     };
 
-    xdg.configFile."eza/theme.yml" = mkIf (normalizedTheme != null && normalizedTheme != "") (
-      if predefinedThemes ? ${normalizedTheme} then
-        { source = predefinedThemes.${normalizedTheme}; }
-      else
-        { text = dynamicThemeText; }
-    );
+    xdg.configFile."eza/theme.yml".text =
+      if cfg.customTheme != null then cfg.customTheme else dynamicThemeText;
 
-    home = {
-      shellAliases = {
-        l2 = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -l -T -h -L=2";
-        lt = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -a -h";
-        lla = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -l -a";
-        tree = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso --tree -l";
-        la = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -l -h -a";
-      };
+    home.shellAliases = {
+      l2 = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -l -T -h -L=2";
+      lt = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -a -h";
+      lla = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -l -a";
+      tree = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso --tree -l";
+      la = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -l -h -a";
     };
   };
 }
