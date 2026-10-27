@@ -22,15 +22,31 @@ let
     ];
   };
 
-  themeDataDir = lib.optionalString (
-    config.gtk ? theme && config.gtk.theme ? package && config.gtk.theme.package != null
-  ) "${config.gtk.theme.package}/share:";
-  iconDataDir = lib.optionalString (
-    config.gtk ? iconTheme && config.gtk.iconTheme ? package && config.gtk.iconTheme.package != null
-  ) "${config.gtk.iconTheme.package}/share:";
-  gtkThemeDefault = lib.optionalString (
-    config.gtk ? theme && config.gtk.theme ? name && config.gtk.theme.name != null
-  ) "--set-default GTK_THEME ${config.gtk.theme.name}";
+  isDark = (config.desktop.theme.variant or "dark") == "dark";
+  themeName =
+    if config.desktop.theme ? gtk && config.desktop.theme.gtk ? name then
+      config.desktop.theme.gtk.name
+    else if config.gtk ? theme && config.gtk.theme ? name then
+      config.gtk.theme.name
+    else
+      "";
+  themePackage =
+    if config.desktop.theme ? gtk && config.desktop.theme.gtk ? package then
+      config.desktop.theme.gtk.package
+    else if config.gtk ? theme && config.gtk.theme ? package then
+      config.gtk.theme.package
+    else
+      null;
+  iconPackage =
+    if config.desktop.theme ? icons && config.desktop.theme.icons ? package then
+      config.desktop.theme.icons.package
+    else if config.gtk ? iconTheme && config.gtk.iconTheme ? package then
+      config.gtk.iconTheme.package
+    else
+      null;
+
+  themeDataDir = lib.optionalString (themePackage != null) "${themePackage}/share:";
+  iconDataDir = lib.optionalString (iconPackage != null) "${iconPackage}/share:";
 
   # Wrapper para garantir suporte a GVfs (Samba/SMB, Rede, Lixeira, MTP), temas GTK e integração completa no Thunar
   thunar-wrapped = pkgs.symlinkJoin {
@@ -46,7 +62,13 @@ let
           makeWrapper "$bin" "$out/bin/$(basename "$bin")" \
             --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
             --prefix XDG_DATA_DIRS : "$out/share:${thunar-with-plugins}/share:${pkgs.gvfs}/share:${pkgs.tumbler}/share:${pkgs.xfconf}/share:${pkgs.shared-mime-info}/share:${themeDataDir}${iconDataDir}${config.home.homeDirectory}/.local/share:${config.home.homeDirectory}/.nix-profile/share:/usr/local/share:/usr/share" \
-            ${gtkThemeDefault}
+            --set-default GTK_APPLICATION_PREFER_DARK_THEME "${if isDark then "1" else "0"}" \
+            --run '
+              _clean_theme="''${GTK_THEME%%:*}"
+              if [ -z "$_clean_theme" ] || [ ! -d "$HOME/.themes/$_clean_theme" -a ! -d "$HOME/.local/share/themes/$_clean_theme" -a ! -d "/usr/share/themes/$_clean_theme" ]; then
+                export GTK_THEME="${themeName}${if isDark then ":dark" else ""}"
+              fi
+            '
         fi
       done
     '';
@@ -200,8 +222,8 @@ in
                         node.set("value", str(pvalue))
                 curr = node
 
-        theme_name = "${config.gtk.theme.name or ""}"
-        icon_name = "${config.gtk.iconTheme.name or ""}"
+        theme_name = "${themeName}"
+        icon_name = "${if config.desktop.theme ? icons && config.desktop.theme.icons ? name then config.desktop.theme.icons.name else config.gtk.iconTheme.name or ""}"
         cursor_name = "${config.desktop.theme.cursor.name or ""}"
         cursor_size = "${toString (config.desktop.theme.cursor.size or 24)}"
         font_name = "${config.desktop.theme.font.name or "Inter"} ${
@@ -219,7 +241,7 @@ in
         if font_name:
             set_nested(x_root, "Gtk/FontName", "string", font_name)
         set_nested(x_root, "Gtk/DecorationLayout", "string", ":minimize,maximize,close")
-        set_nested(x_root, "Gtk/ApplicationPreferDarkTheme", "int", "1")
+        set_nested(x_root, "Gtk/ApplicationPreferDarkTheme", "int", "${if isDark then "1" else "0"}")
 
         if hasattr(ET, "indent"):
             ET.indent(x_tree, space="  ", level=0)
@@ -239,10 +261,10 @@ in
                 $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${
                   if cfg.restoreTabs then "true" else "false"
                 } 2>/dev/null || true
-                ${lib.optionalString (config.gtk ? theme && config.gtk.theme ? name) ''
-                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
-                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
-                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ApplicationPreferDarkTheme -n -t int -s 1 2>/dev/null || true
+                ${lib.optionalString (themeName != "") ''
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "${themeName}" 2>/dev/null || true
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ThemeName -n -t string -s "${themeName}" 2>/dev/null || true
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ApplicationPreferDarkTheme -n -t int -s ${if isDark then "1" else "0"} 2>/dev/null || true
                 ''}
                 ${lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? name) ''
                   $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "${config.gtk.iconTheme.name}" 2>/dev/null || true

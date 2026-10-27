@@ -230,10 +230,13 @@ in
       xdg.configFile = mkIf cfg.xsettingsd.enable {
         "xsettingsd/xsettingsd.conf".text = mkDefault ''
           Net/ThemeName "${cfg.gtk.name}"
+          Gtk/ThemeName "${cfg.gtk.name}"
           Net/IconThemeName "${cfg.icons.name}"
           Gtk/CursorThemeName "${cfg.cursor.name}"
           Gtk/CursorThemeSize ${toString cfg.cursor.size}
           Gtk/FontName "${cfg.font.name} ${toString cfg.font.size}"
+          Gtk/ApplicationPreferDarkTheme ${if isDark then "1" else "0"}
+          Gtk/DecorationLayout ":minimize,maximize,close"
           Net/EnableEventSounds 0
           Net/EnableInputFeedbackSounds 0
           Xft/Antialias 1
@@ -268,11 +271,17 @@ in
           XCURSOR_SIZE = mkDefault (toString cfg.cursor.size);
         };
 
-        # Recarrega o xsettingsd se estiver ativo na sessão gráfica atual
+        # Recarrega o xsettingsd e sincroniza variáveis de sessão na sessão gráfica atual
         activation.reloadXsettings = mkIf cfg.xsettingsd.enable (
           lib.hm.dag.entryAfter [ "writeBoundary" ] ''
             if [ -n "''${DISPLAY:-}" ]; then
               ${pkgs.procps}/bin/pkill -HUP -x xsettingsd 2>/dev/null || true
+              if command -v ${pkgs.dbus}/bin/dbus-update-activation-environment >/dev/null 2>&1; then
+                ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd GTK_THEME XCURSOR_THEME XCURSOR_SIZE 2>/dev/null || true
+              fi
+              if command -v systemctl >/dev/null 2>&1; then
+                systemctl --user set-environment GTK_THEME="${cfg.gtk.name}" XCURSOR_THEME="${cfg.cursor.name}" XCURSOR_SIZE="${toString cfg.cursor.size}" 2>/dev/null || true
+              fi
             fi
           ''
         );
