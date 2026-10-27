@@ -43,7 +43,7 @@ in
       theme = {
         enable = true;
         name = "catppuccin-macchiato"; # "tokyo-night"
-        accent = "cyan"; # "purple"
+        accent = "yellow"; # "purple"
       };
 
       wallpaper = {
