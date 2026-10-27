@@ -14,7 +14,7 @@ let
       statix
       deadnix
       home-manager
-      nixfmt
+      (nixfmt-tree or nixfmt)
       nix-direnv
       direnv
       htop
