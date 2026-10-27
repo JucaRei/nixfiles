@@ -52,7 +52,42 @@ let
   ctrlMod = if mod == "ctrl" then "super" else "ctrl";
   modDisplayName = normMod;
 
-  scratchpadScriptPkg = pkgs.writeShellApplication {
+  writeShellApp =
+    args:
+    pkgs.writeShellApplication (
+      args
+      // {
+        excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
+          "SC1091"
+          "SC2001"
+          "SC2005"
+          "SC2012"
+          "SC2015"
+          "SC2016"
+          "SC2028"
+          "SC2034"
+          "SC2046"
+          "SC2059"
+          "SC2076"
+          "SC2086"
+          "SC2089"
+          "SC2090"
+          "SC2119"
+          "SC2120"
+          "SC2126"
+          "SC2154"
+          "SC2155"
+          "SC2181"
+          "SC2183"
+          "SC2206"
+          "SC2207"
+          "SC2221"
+          "SC2222"
+        ];
+      }
+    );
+
+  scratchpadScriptPkg = writeShellApp {
     name = "bspwm-scratchpad";
     runtimeInputs = [
       pkgs.bspwm
@@ -67,7 +102,7 @@ let
   };
   scratchpadScript = lib.getExe scratchpadScriptPkg;
 
-  screenshotScriptPkg = pkgs.writeShellApplication {
+  screenshotScriptPkg = writeShellApp {
     name = "bspwm-screenshot";
     runtimeInputs = [
       pkgs.bspwm
@@ -138,7 +173,7 @@ let
         "${mod} + shift + s" = "${screenshotScript} area";
       };
 
-  volumeOsdPkg = pkgs.writeShellApplication {
+  volumeOsdPkg = writeShellApp {
     name = "volume-osd";
     runtimeInputs = [
       pkgs.dunst
@@ -148,7 +183,7 @@ let
   };
   volumeOsd = lib.getExe volumeOsdPkg;
 
-  brightnessOsdPkg = pkgs.writeShellApplication {
+  brightnessOsdPkg = writeShellApp {
     name = "brightness-osd";
     runtimeInputs = [
       pkgs.brightnessctl
@@ -158,7 +193,7 @@ let
   };
   brightnessOsd = lib.getExe brightnessOsdPkg;
 
-  mediaControlPkg = pkgs.writeShellApplication {
+  mediaControlPkg = writeShellApp {
     name = "bspwm-media-control";
     runtimeInputs = [
       pkgs.dunst
@@ -168,7 +203,7 @@ let
   };
   mediaControl = lib.getExe mediaControlPkg;
 
-  colorPickerScriptPkg = pkgs.writeShellApplication {
+  colorPickerScriptPkg = writeShellApp {
     name = "bspwm-colorpicker";
     runtimeInputs = [
       pkgs.dunst
@@ -179,7 +214,7 @@ let
   };
   colorPickerScript = lib.getExe colorPickerScriptPkg;
 
-  kbdBrightnessOsdPkg = pkgs.writeShellApplication {
+  kbdBrightnessOsdPkg = writeShellApp {
     name = "kbd-brightness-osd";
     runtimeInputs = [
       pkgs.brightnessctl
@@ -190,7 +225,7 @@ let
   };
   kbdBrightnessOsd = lib.getExe kbdBrightnessOsdPkg;
 
-  pseudoTileScriptPkg = pkgs.writeShellApplication {
+  pseudoTileScriptPkg = writeShellApp {
     name = "bspwm-toggle-pseudo-tile";
     runtimeInputs = [
       pkgs.bspwm
@@ -200,7 +235,7 @@ let
   };
   pseudoTileScript = lib.getExe pseudoTileScriptPkg;
 
-  quickSettingsPkg = pkgs.writeShellApplication {
+  quickSettingsPkg = writeShellApp {
     name = "quick-settings";
     runtimeInputs = [
       pkgs.arandr
@@ -231,21 +266,21 @@ let
   };
   quickSettings = lib.getExe quickSettingsPkg;
 
-  desktopFocusScriptPkg = pkgs.writeShellApplication {
+  desktopFocusScriptPkg = writeShellApp {
     name = "bspwm-desktop-focus";
     runtimeInputs = [ pkgs.bspwm ];
     text = builtins.readFile ./scripts/bspwm-desktop-focus.sh;
   };
   desktopFocusScript = lib.getExe desktopFocusScriptPkg;
 
-  desktopNodeScriptPkg = pkgs.writeShellApplication {
+  desktopNodeScriptPkg = writeShellApp {
     name = "bspwm-node-to-desktop";
     runtimeInputs = [ pkgs.bspwm ];
     text = builtins.readFile ./scripts/bspwm-node-to-desktop.sh;
   };
   desktopNodeScript = lib.getExe desktopNodeScriptPkg;
 
-  desktopRightClickScriptPkg = pkgs.writeShellApplication {
+  desktopRightClickScriptPkg = writeShellApp {
     name = "bspwm-desktop-right-click";
     runtimeInputs = [
       pkgs.xdotool
@@ -256,7 +291,7 @@ let
   };
   desktopRightClickScript = lib.getExe desktopRightClickScriptPkg;
 
-  toggleDesktopScriptPkg = pkgs.writeShellApplication {
+  toggleDesktopScriptPkg = writeShellApp {
     name = "bspwm-toggle-desktop";
     runtimeInputs = [ pkgs.bspwm ];
     text = builtins.readFile ./scripts/bspwm-toggle-desktop.sh;

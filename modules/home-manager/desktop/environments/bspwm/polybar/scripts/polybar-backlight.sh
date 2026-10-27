@@ -9,7 +9,12 @@ dev=""
       fi
     done
     if [ -z "$dev" ] && [ -d /sys/class/backlight ]; then
-      dev=$(ls -1 /sys/class/backlight 2>/dev/null | head -n1)
+      for b in /sys/class/backlight/*; do
+        if [ -d "$b" ]; then
+          dev=$(basename "$b")
+          break
+        fi
+      done
     fi
     [ -z "$dev" ] && exit 0
 

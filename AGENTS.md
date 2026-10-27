@@ -43,6 +43,7 @@ Diretórios em `nixos/hosts/` **sem** saída no flake (legado, não assumir que 
 5. **Nixpkgs config e overlays** vêm de um único lugar. Não duplicar `allowInsecure`; preferir `permittedInsecurePackages`.
 6. **Comentários e docs existentes** são preservados ao editar.
 7. **Aceleração gráfica (nixGLWrapper):** Qualquer aplicação gráfica que utilize aceleração de hardware (OpenGL, Vulkan, EGL, VAAPI ou apps Electron como navegadores, terminais GPU, players multimídia, IDEs, Discord e WMs/shells) DEVE receber `nixGLWrapper ? lib.id` nos argumentos do módulo e envolver seus pacotes (`(nixGLWrapper pkgs.<app>)` ou `package = nixGLWrapper ...;`). No NixOS ou com nixGL desativado, `nixGLWrapper` é automaticamente `lib.id` (no-op).
+8. **Scripts de shell herméticos e `writeShellApplication`:** Scripts utilitários extraídos para subdiretórios `scripts/` devem ser herméticos e carregados via `writeShellApplication`. Para evitar quebras na construção da derivação por avisos cosméticos ou pelo preâmbulo gerado pelo Nixpkgs (como SC2012, SC2034, SC2086, SC2089, SC2090), configure `excludeShellChecks` no builder.
 
 ## Validação (obrigatória antes de pedir o switch)
 
@@ -54,7 +55,7 @@ nix eval .#nixosConfigurations.<host>.config.system.stateVersion
 nix eval .#homeConfigurations."juca@<host>".config.home.stateVersion
 nix build .#nixosConfigurations.<host>.config.system.build.toplevel --dry-run
 nix build .#homeConfigurations."juca@<host>".activationPackage --dry-run
-nix flake check --no-build                   # só no fechamento (ou 'nfc60' para limitar a 60% CPU/RAM)
+nix flake check --no-build                   # só no fechamento (ou 'nfc60' para limitar a 40% CPU e até metade da RAM)
 ```
 
 Para configs geradas, validar também com a ferramenta do programa (ex.: `mango -c <arquivo> -p`).

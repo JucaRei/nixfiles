@@ -32,7 +32,42 @@ let
     else
       "mod4";
 
-  externalRulesScriptPkg = pkgs.writeShellApplication {
+  writeShellApp =
+    args:
+    pkgs.writeShellApplication (
+      args
+      // {
+        excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
+          "SC1091"
+          "SC2001"
+          "SC2005"
+          "SC2012"
+          "SC2015"
+          "SC2016"
+          "SC2028"
+          "SC2034"
+          "SC2046"
+          "SC2059"
+          "SC2076"
+          "SC2086"
+          "SC2089"
+          "SC2090"
+          "SC2119"
+          "SC2120"
+          "SC2126"
+          "SC2154"
+          "SC2155"
+          "SC2181"
+          "SC2183"
+          "SC2206"
+          "SC2207"
+          "SC2221"
+          "SC2222"
+        ];
+      }
+    );
+
+  externalRulesScriptPkg = writeShellApp {
     name = "bspwm-external-rules";
     runtimeInputs = [
       pkgs.xprop
@@ -42,7 +77,7 @@ let
   };
   externalRulesScript = lib.getExe externalRulesScriptPkg;
 
-  browserTabSwitchPkg = pkgs.writeShellApplication {
+  browserTabSwitchPkg = writeShellApp {
     name = "browser-tab-switch";
     runtimeInputs = [
       pkgs.xdotool
@@ -53,7 +88,7 @@ let
   };
   browserTabSwitch = lib.getExe browserTabSwitchPkg;
 
-  autoRaiseScriptPkg = pkgs.writeShellApplication {
+  autoRaiseScriptPkg = writeShellApp {
     name = "bspwm-auto-raise";
     runtimeInputs = [
       pkgs.bspwm

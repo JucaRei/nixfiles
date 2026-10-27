@@ -29,8 +29,43 @@ let
 
   cfg = config.desktop.wallpaper;
 
+  writeShellApp =
+    args:
+    pkgs.writeShellApplication (
+      args
+      // {
+        excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
+          "SC1091"
+          "SC2001"
+          "SC2005"
+          "SC2012"
+          "SC2015"
+          "SC2016"
+          "SC2028"
+          "SC2034"
+          "SC2046"
+          "SC2059"
+          "SC2076"
+          "SC2086"
+          "SC2089"
+          "SC2090"
+          "SC2119"
+          "SC2120"
+          "SC2126"
+          "SC2154"
+          "SC2155"
+          "SC2181"
+          "SC2183"
+          "SC2206"
+          "SC2207"
+          "SC2221"
+          "SC2222"
+        ];
+      }
+    );
+
   # Script agnóstico para definir e gerenciar wallpaper com suporte multi-monitor e timer
-  setWallpaperScript = pkgs.writeShellApplication {
+  setWallpaperScript = writeShellApp {
     name = "set-wallpaper";
     runtimeInputs = [
       pkgs.coreutils

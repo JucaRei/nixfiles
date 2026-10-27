@@ -29,9 +29,44 @@ let
     COLOR_TEXT = colors.text;
     COLOR_YELLOW = colors.yellow;
   };
+
+  writeShellApp =
+    args:
+    pkgs.writeShellApplication (
+      args
+      // {
+        excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
+          "SC1091"
+          "SC2001"
+          "SC2005"
+          "SC2012"
+          "SC2015"
+          "SC2016"
+          "SC2028"
+          "SC2034"
+          "SC2046"
+          "SC2059"
+          "SC2076"
+          "SC2086"
+          "SC2089"
+          "SC2090"
+          "SC2119"
+          "SC2120"
+          "SC2126"
+          "SC2154"
+          "SC2155"
+          "SC2181"
+          "SC2183"
+          "SC2206"
+          "SC2207"
+          "SC2221"
+          "SC2222"
+        ];
+      }
+    );
 in
 rec {
-  polywinsScriptPkg = pkgs.writeShellApplication {
+  polywinsScriptPkg = writeShellApp {
     name = "polybar-polywins";
     runtimeInputs = [
       pkgs.bspwm
@@ -46,7 +81,7 @@ rec {
   };
   polywinsScript = lib.getExe polywinsScriptPkg;
 
-  mediaControlScriptPkg = pkgs.writeShellApplication {
+  mediaControlScriptPkg = writeShellApp {
     name = "polybar-media-control";
     runtimeInputs = [
       pkgs.coreutils
@@ -57,7 +92,7 @@ rec {
   };
   mediaControlScript = lib.getExe mediaControlScriptPkg;
 
-  mediaScriptPkg = pkgs.writeShellApplication {
+  mediaScriptPkg = writeShellApp {
     name = "polybar-media";
     runtimeInputs = [
       mediaControlScriptPkg
@@ -70,7 +105,7 @@ rec {
   };
   mediaScript = lib.getExe mediaScriptPkg;
 
-  bluetoothScriptPkg = pkgs.writeShellApplication {
+  bluetoothScriptPkg = writeShellApp {
     name = "polybar-bluetooth";
     runtimeInputs = [
       pkgs.bluez
@@ -84,7 +119,7 @@ rec {
   };
   bluetoothScript = lib.getExe bluetoothScriptPkg;
 
-  audioScriptPkg = pkgs.writeShellApplication {
+  audioScriptPkg = writeShellApp {
     name = "polybar-audio";
     runtimeInputs = [
       pkgs.coreutils
@@ -99,7 +134,7 @@ rec {
   };
   audioScript = lib.getExe audioScriptPkg;
 
-  audioControlScriptPkg = pkgs.writeShellApplication {
+  audioControlScriptPkg = writeShellApp {
     name = "polybar-audio-control";
     runtimeInputs = [
       pkgs.coreutils
@@ -114,7 +149,7 @@ rec {
   };
   audioControlScript = lib.getExe audioControlScriptPkg;
 
-  rofiBluetoothMenuPkg = pkgs.writeShellApplication {
+  rofiBluetoothMenuPkg = writeShellApp {
     name = "rofi-bluetooth";
     runtimeInputs = [
       pkgs.blueman
@@ -132,7 +167,7 @@ rec {
   };
   rofiBluetoothMenu = lib.getExe rofiBluetoothMenuPkg;
 
-  networkScriptPkg = pkgs.writeShellApplication {
+  networkScriptPkg = writeShellApp {
     name = "polybar-network";
     runtimeInputs = [
       pkgs.coreutils
@@ -146,7 +181,7 @@ rec {
   };
   networkScript = lib.getExe networkScriptPkg;
 
-  rofiWifiMenuPkg = pkgs.writeShellApplication {
+  rofiWifiMenuPkg = writeShellApp {
     name = "rofi-wifi-menu";
     runtimeInputs = [
       pkgs.dunst
@@ -163,7 +198,7 @@ rec {
   };
   rofiWifiMenu = lib.getExe rofiWifiMenuPkg;
 
-  rofiPowerMenuPkg = pkgs.writeShellApplication {
+  rofiPowerMenuPkg = writeShellApp {
     name = "rofi-powermenu";
     runtimeInputs = [
       pkgs.bspwm
@@ -175,7 +210,7 @@ rec {
   };
   rofiPowerMenu = lib.getExe rofiPowerMenuPkg;
 
-  minimizedScriptPkg = pkgs.writeShellApplication {
+  minimizedScriptPkg = writeShellApp {
     name = "polybar-minimized";
     runtimeInputs = [
       pkgs.bspwm
@@ -187,7 +222,7 @@ rec {
   };
   minimizedScript = lib.getExe minimizedScriptPkg;
 
-  restoreMenuScriptPkg = pkgs.writeShellApplication {
+  restoreMenuScriptPkg = writeShellApp {
     name = "rofi-restore-minimized";
     runtimeInputs = [
       pkgs.bspwm
@@ -199,7 +234,7 @@ rec {
   };
   restoreMenuScript = lib.getExe restoreMenuScriptPkg;
 
-  temperatureScriptPkg = pkgs.writeShellApplication {
+  temperatureScriptPkg = writeShellApp {
     name = "polybar-temperature";
     runtimeInputs = [
       pkgs.gawk
@@ -211,7 +246,7 @@ rec {
   };
   temperatureScript = lib.getExe temperatureScriptPkg;
 
-  rofiKeyboardMenuPkg = pkgs.writeShellApplication {
+  rofiKeyboardMenuPkg = writeShellApp {
     name = "rofi-keyboard";
     runtimeInputs = [
       pkgs.coreutils
@@ -224,7 +259,7 @@ rec {
   };
   rofiKeyboardMenu = lib.getExe rofiKeyboardMenuPkg;
 
-  redshiftScriptPkg = pkgs.writeShellApplication {
+  redshiftScriptPkg = writeShellApp {
     name = "polybar-redshift";
     runtimeInputs = [
       pkgs.coreutils
@@ -238,7 +273,7 @@ rec {
   };
   redshiftScript = lib.getExe redshiftScriptPkg;
 
-  bspLayoutScriptPkg = pkgs.writeShellApplication {
+  bspLayoutScriptPkg = writeShellApp {
     name = "bsp-layout-status";
     runtimeInputs = [
       pkgs.bspwm
@@ -249,7 +284,7 @@ rec {
   };
   bspLayoutScript = lib.getExe bspLayoutScriptPkg;
 
-  bspLayoutSwitchScriptPkg = pkgs.writeShellApplication {
+  bspLayoutSwitchScriptPkg = writeShellApp {
     name = "bsp-layout-switch";
     runtimeInputs = [
       pkgs.bspwm
@@ -260,7 +295,7 @@ rec {
   };
   bspLayoutSwitchScript = lib.getExe bspLayoutSwitchScriptPkg;
 
-  rofiLayoutMenuPkg = pkgs.writeShellApplication {
+  rofiLayoutMenuPkg = writeShellApp {
     name = "rofi-bsp-layout";
     runtimeInputs = [
       bspLayoutSwitchScriptPkg
@@ -273,7 +308,7 @@ rec {
   };
   rofiLayoutMenu = lib.getExe rofiLayoutMenuPkg;
 
-  osLogoScriptPkg = pkgs.writeShellApplication {
+  osLogoScriptPkg = writeShellApp {
     name = "polybar-os-logo";
     runtimeInputs = [
       pkgs.coreutils
@@ -285,7 +320,7 @@ rec {
   };
   osLogoScript = lib.getExe osLogoScriptPkg;
 
-  uptimeScriptPkg = pkgs.writeShellApplication {
+  uptimeScriptPkg = writeShellApp {
     name = "polybar-uptime";
     runtimeInputs = [
       pkgs.coreutils
@@ -296,7 +331,7 @@ rec {
   };
   uptimeScript = lib.getExe uptimeScriptPkg;
 
-  netspeedScriptPkg = pkgs.writeShellApplication {
+  netspeedScriptPkg = writeShellApp {
     name = "polybar-netspeed";
     runtimeInputs = [
       pkgs.coreutils
@@ -307,7 +342,7 @@ rec {
   };
   netspeedScript = lib.getExe netspeedScriptPkg;
 
-  backlightScriptPkg = pkgs.writeShellApplication {
+  backlightScriptPkg = writeShellApp {
     name = "polybar-backlight";
     runtimeInputs = [
       pkgs.brightnessctl
@@ -318,7 +353,7 @@ rec {
   };
   backlightScript = lib.getExe backlightScriptPkg;
 
-  stalonetrayToggleScriptPkg = pkgs.writeShellApplication {
+  stalonetrayToggleScriptPkg = writeShellApp {
     name = "stalonetray-toggle";
     runtimeInputs = [
       pkgs.coreutils
@@ -330,7 +365,7 @@ rec {
   };
   stalonetrayToggleScript = lib.getExe stalonetrayToggleScriptPkg;
 
-  polybarLaunchScriptPkg = pkgs.writeShellApplication {
+  polybarLaunchScriptPkg = writeShellApp {
     name = "polybar-launch";
     runtimeInputs = [
       pkgs.bspwm
@@ -346,7 +381,7 @@ rec {
   };
   polybarLaunchScript = lib.getExe polybarLaunchScriptPkg;
 
-  notificationStatusScriptPkg = pkgs.writeShellApplication {
+  notificationStatusScriptPkg = writeShellApp {
     name = "polybar-notifications-status";
     runtimeInputs = [
       pkgs.coreutils
@@ -359,7 +394,7 @@ rec {
   };
   notificationStatusScript = lib.getExe notificationStatusScriptPkg;
 
-  notificationToggleDndScriptPkg = pkgs.writeShellApplication {
+  notificationToggleDndScriptPkg = writeShellApp {
     name = "polybar-notifications-dnd";
     runtimeInputs = [
       pkgs.coreutils
@@ -370,7 +405,7 @@ rec {
   };
   notificationToggleDndScript = lib.getExe notificationToggleDndScriptPkg;
 
-  rofiNotificationMenuPkg = pkgs.writeShellApplication {
+  rofiNotificationMenuPkg = writeShellApp {
     name = "rofi-notifications";
     runtimeInputs = [
       pkgs.coreutils

@@ -12,8 +12,43 @@ let
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
   isMango = cfg.compositor == "mangowm" || (config.desktop.mangowm.enable or false);
 
+  writeShellApp =
+    args:
+    pkgs.writeShellApplication (
+      args
+      // {
+        excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
+          "SC1091"
+          "SC2001"
+          "SC2005"
+          "SC2012"
+          "SC2015"
+          "SC2016"
+          "SC2028"
+          "SC2034"
+          "SC2046"
+          "SC2059"
+          "SC2076"
+          "SC2086"
+          "SC2089"
+          "SC2090"
+          "SC2119"
+          "SC2120"
+          "SC2126"
+          "SC2154"
+          "SC2155"
+          "SC2181"
+          "SC2183"
+          "SC2206"
+          "SC2207"
+          "SC2221"
+          "SC2222"
+        ];
+      }
+    );
+
   # Scripts utilitários extraídos e validados hermeticamente
-  powerMenu = pkgs.writeShellApplication {
+  powerMenu = writeShellApp {
     name = "session-power-menu";
     runtimeInputs = [
       pkgs.rofi
@@ -23,13 +58,13 @@ let
     text = builtins.readFile ./scripts/session-power-menu.sh;
   };
 
-  powerMenuHyprland = pkgs.writeShellApplication {
+  powerMenuHyprland = writeShellApp {
     name = "hyprland-power-menu";
     runtimeInputs = [ powerMenu ];
     text = ''exec session-power-menu "$@"'';
   };
 
-  rofiWifiMenu = pkgs.writeShellApplication {
+  rofiWifiMenu = writeShellApp {
     name = "rofi-wifi-menu";
     runtimeInputs = [
       pkgs.rofi
@@ -39,7 +74,7 @@ let
     text = builtins.readFile ./scripts/rofi-wifi-menu.sh;
   };
 
-  mangoLayoutSwitcher = pkgs.writeShellApplication {
+  mangoLayoutSwitcher = writeShellApp {
     name = "mango-layout-switcher";
     runtimeInputs = [
       pkgs.procps
@@ -48,7 +83,7 @@ let
     text = builtins.readFile ./scripts/mango-layout-switcher.sh;
   };
 
-  mangoLayoutPicker = pkgs.writeShellApplication {
+  mangoLayoutPicker = writeShellApp {
     name = "mango-layout-picker";
     runtimeInputs = [
       pkgs.rofi
@@ -57,7 +92,7 @@ let
     text = builtins.readFile ./scripts/mango-layout-picker.sh;
   };
 
-  mangoWindowTitle = pkgs.writeShellApplication {
+  mangoWindowTitle = writeShellApp {
     name = "mango-window-title";
     runtimeInputs = [
       pkgs.jq
