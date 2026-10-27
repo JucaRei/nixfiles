@@ -135,7 +135,9 @@
             config.allowUnfree = true;
           };
         in
-        import ./shell.nix { inherit pkgs; }
+        {
+          default = import ./shell.nix { inherit pkgs; };
+        }
       );
 
       # Custom packages & modifications exported as overlays

@@ -44,4 +44,4 @@ let
     '';
   };
 in
-shell // { default = shell; }
+shell
