@@ -91,7 +91,7 @@ writePython3Bin "polywins" { libraries = with pkgs.python3Packages; [ ]; }
             )
 
             if node["id"] == focused_node_id:
-                return "%{u#A4B9EF}%{+u}%{F#A4B9EF}" + stringified + "%{F-}%{-u}"
+                return "%{u#A4B9EF}%{+u}%{F#A4B9EF}" + stringified + "%{F-}%{-u}"  # exceção: script python upstream
 
             return stringified
 

@@ -68,7 +68,7 @@ in
                 ];
                 # https://github.com/Xubuntu/lightdm-gtk-greeter/blob/master/data/lightdm-gtk-greeter.conf
                 extraConfig = ''
-                  # background = Background file to use, either an image path or a color (e.g. #772953)
+                  # background = Background file to use, either an image path or a color (e.g. #772953) # exceção: doc upstream
                   # font-name = Work Sans 12
                   xft-antialias = true
                   xft-dpi = 96

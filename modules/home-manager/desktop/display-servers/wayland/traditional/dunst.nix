@@ -9,13 +9,14 @@ let
   inherit (lib.types) bool;
   cfg = config.desktop.wayland;
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
+  c = config.desktop.theme.colors;
 in
 {
   options.desktop.wayland.traditional.dunst = {
     enable = mkOption {
       type = bool;
       default = isTraditional;
-      description = "Habilitar daemon de notificações Dunst para Wayland (Rice Catppuccin Mocha)";
+      description = "Habilitar daemon de notificações Dunst para Wayland";
     };
   };
 
@@ -63,30 +64,30 @@ in
           progress_bar_max_width = 300;
           progress_bar_corner_radius = 4;
 
-          # Paleta Catppuccin Mocha
-          frame_color = "#89b4fa"; # Sapphire / Blue accent
+          # Paleta dinâmica derivada do tema
+          frame_color = c.accent;
           separator_color = "frame";
-          highlight = "#89b4fa";
+          highlight = c.accent;
         };
 
         urgency_low = {
-          background = "#1e1e2e";
-          foreground = "#cdd6f4";
-          frame_color = "#585b70";
+          background = c.bg;
+          foreground = c.fg;
+          frame_color = c.border;
           timeout = 4;
         };
 
         urgency_normal = {
-          background = "#1e1e2e";
-          foreground = "#cdd6f4";
-          frame_color = "#89b4fa";
+          background = c.bg;
+          foreground = c.fg;
+          frame_color = c.accent;
           timeout = 6;
         };
 
         urgency_critical = {
-          background = "#1e1e2e";
-          foreground = "#cdd6f4";
-          frame_color = "#f38ba8"; # Red
+          background = c.bg;
+          foreground = c.fg;
+          frame_color = c.red;
           timeout = 10;
         };
 

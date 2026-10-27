@@ -67,32 +67,34 @@ let
     ${noctaliaPkg}/bin/noctalia msg caffeine-toggle
   '';
 
-  # Paleta Catppuccin Mocha completa para o Noctalia v5+
-  catppuccinColors = {
-    mPrimary = "#cba6f7"; # Mauve
-    mOnPrimary = "#11111b"; # Crust
-    mSecondary = "#fab387"; # Peach
-    mOnSecondary = "#11111b";
-    mTertiary = "#94e2d5"; # Teal
-    mOnTertiary = "#11111b";
-    mError = "#f38ba8"; # Red
-    mOnError = "#11111b";
-    mSurface = "#1e1e2e"; # Base
-    mOnSurface = "#cdd6f4"; # Text
-    mSurfaceVariant = "#313244"; # Surface0
-    mOnSurfaceVariant = "#a6adc8"; # Subtext0
-    mOutline = "#45475a"; # Surface1
-    mShadow = "#11111b";
-    mHover = "#89b4fa"; # Blue
-    mOnHover = "#11111b";
+  c = config.desktop.theme.colors;
+
+  # Paleta dinâmica gerada a partir de config.desktop.theme.colors
+  noctaliaColors = {
+    mPrimary = c.accent;
+    mOnPrimary = c.bgDark;
+    mSecondary = c.orange;
+    mOnSecondary = c.bgDark;
+    mTertiary = c.teal;
+    mOnTertiary = c.bgDark;
+    mError = c.red;
+    mOnError = c.bgDark;
+    mSurface = c.bg;
+    mOnSurface = c.fg;
+    mSurfaceVariant = c.surface;
+    mOnSurfaceVariant = c.fgMuted;
+    mOutline = c.border;
+    mShadow = c.bgDark;
+    mHover = c.blue;
+    mOnHover = c.bgDark;
   };
 
-  # Configuração declarativa base do Noctalia v5+ (Rice Catppuccin Mocha)
+  # Configuração declarativa base do Noctalia v5+
   defaultSettings = {
     theme = {
-      mode = "dark";
-      source = "builtin";
-      builtin = "Catppuccin";
+      mode = config.desktop.theme.variant;
+      source = "custom";
+      custom_palette = config.desktop.theme.name;
     };
 
     shell = {
@@ -380,7 +382,7 @@ in
       "noctalia/config.toml".source = tomlFormat.generate "config.toml" (
         lib.recursiveUpdate defaultSettings cfg.settings
       );
-      "noctalia/palettes/CatppuccinMocha.json".text = builtins.toJSON catppuccinColors;
+      "noctalia/palettes/${config.desktop.theme.name}.json".text = builtins.toJSON noctaliaColors;
     };
   };
 }

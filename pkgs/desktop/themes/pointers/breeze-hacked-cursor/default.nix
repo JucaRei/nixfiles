@@ -26,36 +26,24 @@ stdenvNoCC.mkDerivation {
     xcursorgen
   ];
 
-  postPatch =
-    let
-      colors = [
-        accentColor
-        baseColor
-        borderColor
-        textColor
-      ];
-    in
-    ''
-      patchShebangs build.sh
-      substituteInPlace Makefile \
-        --replace "~/.icons" "$out/share/icons"
-    ''
-    + lib.optionalString (builtins.any (x: x != null) colors) ''
-      substituteInPlace src/cursors.svg \
-    ''
-    + lib.optionalString (accentColor != null) ''
-      --replace "#79f5f3" "${accentColor}" \
-    ''
-    + lib.optionalString (baseColor != null) ''
-      --replace "#192629" "${baseColor}" \
-    ''
-    + lib.optionalString (borderColor != null) ''
-      --replace "#666666" "${borderColor}" \
-    ''
-    + lib.optionalString (textColor != null) ''
-      --replace "#fcfcfc" "${textColor}" \
-      --replace "#ffffff" "${textColor}"
-    '';
+  postPatch = ''
+    patchShebangs build.sh
+    substituteInPlace Makefile \
+      --replace "~/.icons" "$out/share/icons"
+  ''
+  + lib.optionalString (accentColor != null) ''
+    substituteInPlace src/cursors.svg --replace "#79f5f3" "${accentColor}" # exceção: hex original do upstream
+  ''
+  + lib.optionalString (baseColor != null) ''
+    substituteInPlace src/cursors.svg --replace "#192629" "${baseColor}" # exceção: hex original do upstream
+  ''
+  + lib.optionalString (borderColor != null) ''
+    substituteInPlace src/cursors.svg --replace "#666666" "${borderColor}" # exceção: hex original do upstream
+  ''
+  + lib.optionalString (textColor != null) ''
+    substituteInPlace src/cursors.svg --replace "#fcfcfc" "${textColor}" # exceção: hex original do upstream
+    substituteInPlace src/cursors.svg --replace "#ffffff" "${textColor}" # exceção: hex original do upstream
+  '';
 
   meta = with lib; {
     homepage = "https://github.com/clayrisser/breeze-hacked-cursor-theme";

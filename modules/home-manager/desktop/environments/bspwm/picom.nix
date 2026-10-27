@@ -129,7 +129,7 @@ in
       shadow-opacity = 0.55;
       shadow-offset-x = -16;
       shadow-offset-y = -16;
-      shadow-color = "#000000";
+      shadow-color = "#000000"; # exceção: sombra preta de compositor
 
       # --- 3. Transições e Fading Suave ---
       fading = true;

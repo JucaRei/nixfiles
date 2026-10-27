@@ -175,22 +175,26 @@ in
         "--bind 'ctrl-y:execute-silent(echo -n {2..} | wl-copy 2>/dev/null || echo -n {2..} | xclip -selection clipboard 2>/dev/null || true)'"
       ];
 
-      # Paleta Catppuccin Mocha oficial integrada ao tema global do sistema
-      colors = {
-        "bg+" = "#313244";
-        bg = "#1e1e2e";
-        spinner = "#f5e0dc";
-        hl = "#f38ba8";
-        fg = "#cdd6f4";
-        header = "#f38ba8";
-        info = "#cba6f7";
-        pointer = "#f5e0dc";
-        marker = "#b4befe";
-        "fg+" = "#cdd6f4";
-        prompt = "#cba6f7";
-        "hl+" = "#f38ba8";
-        "selected-bg" = "#45475a";
-      };
+      # Cores derivadas dinamicamente de config.desktop.theme.colors
+      colors =
+        let
+          c = config.desktop.theme.colors;
+        in
+        {
+          "bg+" = c.surfaceAlt;
+          bg = c.bg;
+          spinner = c.accent;
+          hl = c.red;
+          fg = c.fg;
+          header = c.red;
+          info = c.purple;
+          pointer = c.accent;
+          marker = c.teal;
+          "fg+" = c.fg;
+          prompt = c.accent;
+          "hl+" = c.red;
+          "selected-bg" = c.surface;
+        };
     };
 
     home = {

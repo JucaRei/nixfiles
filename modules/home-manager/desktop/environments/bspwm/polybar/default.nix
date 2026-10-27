@@ -44,7 +44,7 @@ in
         "shapes"
       ];
       default = "zproger";
-      description = "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills #2b2f37), 'shapes' (estilo shapes / pixelated squares / como no debian-bspwm-e300) ou 'modern' (estilo Waybar / Catppuccin coeso)";
+      description = "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills), 'shapes' (estilo shapes / pixelated squares / como no debian-bspwm-e300) ou 'modern' (estilo Waybar / Catppuccin coeso)";
     };
 
     encapsulation = mkOption {
@@ -145,10 +145,10 @@ in
                   description = ''
                     Cores customizadas opcionais para os glifos e fundos das cápsulas.
                     Chaves suportadas:
-                    - glyph: cor padrão dos glifos (ex: "pill", "red", "#ff0000", "shade1")
+                    - glyph: cor padrão dos glifos (ex: "pill", "red", "shade1")
                     - workspaces: cor de fundo e glifos da cápsula de workspaces
-                    - focused: cor de destaque do workspace ativo (ex: "red", "#f7768e")
-                    - focusedNumber: cor do número do workspace quando focado/ativo (ex: "dark", "#541422")
+                    - focused: cor de destaque do workspace ativo (ex: "red", "accent")
+                    - focusedNumber: cor do número do workspace quando focado/ativo (ex: "dark", "bgDark")
                     - stats: cor de fundo e glifos da cápsula de métricas (cpu, memory, temp, disk)
                     - netspeed: cor de fundo e glifos da cápsula de velocidade de rede (netspeed)
                     - date: cor de fundo e glifos da cápsula de data/relógio
@@ -171,7 +171,7 @@ in
             colors = {
               glyph = "pill";      # ou qualquer cor da paleta/hex
               focused = "red";     # destaque vibrante para o workspace ativo
-              focusedNumber = "#541422"; # cor suave e amena do número quando focado
+              focusedNumber = "dark"; # cor suave e amena do número quando focado
               stats = "pill";
               netspeed = "pill";
             };
@@ -315,14 +315,8 @@ in
           focusedWsColor = resolveColor (encapColors.focused or encapColors.active or null) (
             if colors ? pill-active && colors.pill-active != "" then colors.pill-active else colors.red
           );
-          focusedNumColor = resolveColor (encapColors.focusedNumber or encapColors.focused_number or null) (
-            if
-              focusedWsColor == colors.red || focusedWsColor == colors.pill-active || focusedWsColor == "#f7768e"
-            then
-              "#541422"
-            else
-              colors.dark
-          );
+          focusedNumColor = resolveColor (encapColors.focusedNumber or encapColors.focused_number or null
+          ) colors.dark;
 
           wsEncap = resolveEncap "workspaces";
           statsEncap = resolveEncap "stats";
@@ -445,7 +439,7 @@ in
 
           # =========================================================================
           # ESTILO 2: ZPROGER / PILLS (https://github.com/Zproger/bspwm-dotfiles)
-          # Flutuante, cápsulas arredondadas (#2b2f37) para workspaces e relógio,
+          # Flutuante, cápsulas arredondadas para workspaces e relógio,
           # com dimensões 100% uniformes ao estilo moderno e paleta vibrante pastel.
           # =========================================================================
           pillsBaseBar = {
@@ -512,10 +506,10 @@ in
           };
 
           # Overrides aplicados aos módulos existentes quando o estilo pills/zproger ou shapes está ativo.
-          # 1. Workspaces com números coloridos pastel (#F9DE8F, #ff9b93, #95e1d3, #81A1C1, #A3BE8C) dentro da cápsula #2b2f37
+          # 1. Workspaces com números coloridos pastel dentro da cápsula
           # 2. Playerctl/Media no centro, idêntico ao estilo moderno
           # 3. Módulos com ícone único sem duplicações (sem prefixos colidindo com scripts)
-          # 4. Relógio dentro da cápsula #2b2f37 com ícone único  em cinza suave #888e96
+          # 4. Relógio dentro da cápsula com ícone único  em cinza suave
           pillModuleOverrides =
             lib.optionalAttrs isPills {
               "module/bspwm" = {

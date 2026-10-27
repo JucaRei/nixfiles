@@ -140,13 +140,13 @@ in
           map F toggle_fullscreen
           map [fullscreen] F toggle_fullscreen
 
-          # Color Schemes
-          map <A-F1> set 'recolor-lightcolor "#2c333d"'
-          map <A-F2> set 'recolor-darkcolor "#FFFFFF"'
-          map <A-F3> set 'recolor-lightcolor "#d8cfbf"'
-          map <A-F4> set 'recolor-darkcolor "#000000"'
-          map <A-F5> set 'recolor-lightcolor "#181E27"'
-          map <A-F6> set 'recolor-darkcolor "#EFE7DD"'
+          # Color Schemes (# exceção: esquemas legados de atalhos de recolor para leitura)
+          map <A-F1> set 'recolor-lightcolor "#2c333d"' # exceção: esquema escuro
+          map <A-F2> set 'recolor-darkcolor "#FFFFFF"' # exceção: esquema escuro
+          map <A-F3> set 'recolor-lightcolor "#d8cfbf"' # exceção: esquema sepia
+          map <A-F4> set 'recolor-darkcolor "#000000"' # exceção: esquema sepia
+          map <A-F5> set 'recolor-lightcolor "#181E27"' # exceção: esquema noite
+          map <A-F6> set 'recolor-darkcolor "#EFE7DD"' # exceção: esquema noite
           set recolor-keephue true
 
           # Keybinds for Colorschemes

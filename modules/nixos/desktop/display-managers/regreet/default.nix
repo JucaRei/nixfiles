@@ -49,8 +49,8 @@ in
       etc."greetd/regreet-custom.css".text = ''
         window{background-color:rgba(0,0,0,0.8);}
         entry{border-radius:5px;padding:10px;}
-        button{background-color:#cba6f7;transition:background-color 0.3s ease;}
-        button:hover{background-color:#94e2d5;}
+        button{background-color:#cba6f7;transition:background-color 0.3s ease;} /* # exceção: tema CSS regreet */
+        button:hover{background-color:#94e2d5;} /* # exceção: tema CSS regreet */
       '';
       systemPackages = with pkgs; [
         dracula-theme

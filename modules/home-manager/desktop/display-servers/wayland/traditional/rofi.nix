@@ -55,17 +55,18 @@ in
       theme =
         let
           inherit (config.lib.formats.rasi) mkLiteral;
+          c = config.desktop.theme.colors;
         in
         {
           "*" = {
-            bg-col = mkLiteral "#1e1e2e";
-            bg-col-light = mkLiteral "#181825";
-            border-col = mkLiteral "#cba6f7";
-            selected-col = mkLiteral "#313244";
-            blue = mkLiteral "#cba6f7"; # Catppuccin Mauve accent
-            fg-col = mkLiteral "#cdd6f4";
-            fg-col2 = mkLiteral "#f38ba8";
-            grey = mkLiteral "#6c7086";
+            bg-col = mkLiteral c.bg;
+            bg-col-light = mkLiteral c.bgDark;
+            border-col = mkLiteral c.accent;
+            selected-col = mkLiteral c.surface;
+            blue = mkLiteral c.accent;
+            fg-col = mkLiteral c.fg;
+            fg-col2 = mkLiteral c.red;
+            grey = mkLiteral c.fgMuted;
             width = mkLiteral "620";
           };
 
