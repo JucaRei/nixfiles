@@ -126,9 +126,6 @@ in
 
       # Arquivo de configuração declarativo do PCManFM (~/.config/pcmanfm/default/pcmanfm.conf)
       file = {
-        ".local/share/templates/Documento de Texto.txt".text = "";
-        ".local/share/templates/Arquivo Vazio".text = "";
-
         ".config/pcmanfm/default/pcmanfm.conf".text = ''
           [config]
           bm_open_method=0

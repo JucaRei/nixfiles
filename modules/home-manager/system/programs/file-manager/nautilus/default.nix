@@ -247,14 +247,8 @@ in
             pkgs.sushi
           ];
 
-        # Modelos de novos arquivos e Scripts no menu de contexto do Nautilus
+        # Scripts no menu de contexto do Nautilus
         file = {
-          # Modelos para "Novo documento"
-          ".local/share/templates/Documento de Texto.txt".text = "";
-          ".local/share/templates/Arquivo Vazio".text = "";
-          ".local/share/templates/Script Shell.sh".text = "#!/usr/bin/env bash\n\n";
-          ".local/share/templates/Documento Markdown.md".text = "# Título\n\n";
-
           # Scripts do Nautilus (~/.local/share/nautilus/scripts/)
           ".local/share/nautilus/scripts/Abrir no VSCode" = {
             executable = true;

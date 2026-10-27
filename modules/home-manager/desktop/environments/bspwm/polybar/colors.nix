@@ -4,54 +4,49 @@
 { theme }:
 let
   c = theme.colors;
-  # Extras do Catppuccin; em outras paletas cai para o papel mais próximo ou valor literal
-  extra =
-    name: fallback:
-    if c ? ${name} then
-      c.${name}
-    else if c ? ${fallback} then
-      c.${fallback}
-    else
-      fallback;
 in
 {
   # --- Papéis semânticos universais ---
-  bg = c.bg;
-  bgAlt = c.bgAlt;
-  bgDark = c.bgDark;
-  surface = c.surface;
-  surfaceAlt = c.surfaceAlt;
-  border = c.border;
-  fg = c.fg;
-  fgMuted = c.fgMuted;
-  fgSubtle = c.fgSubtle;
-  pink = c.pink;
+  inherit (c)
+    bg
+    bgAlt
+    bgDark
+    surface
+    surfaceAlt
+    border
+    fg
+    fgMuted
+    fgSubtle
+    pink
+    cyan
+    teal
+    green
+    yellow
+    red
+    accent
+    ;
 
   # --- Equivalentes Catppuccin (consumidos por modules.nix) ---
-  base = c.bg;
-  mantle = c.bgAlt;
-  crust = c.bgDark;
-  surface0 = c.surface;
-  surface1 = c.surfaceAlt;
-  surface2 = c.border;
-  text = c.fg;
-  subtext0 = c.fgMuted;
-  subtext1 = extra "subtext1" "fgMuted";
-  blue = c.blue;
-  lavender = extra "lavender" "purple";
-  sapphire = extra "sapphire" "blue";
-  sky = extra "sky" "cyan";
-  cyan = c.cyan;
-  teal = c.teal;
-  green = c.green;
-  yellow = c.yellow;
+  inherit (c)
+    base
+    mantle
+    crust
+    surface0
+    surface1
+    surface2
+    text
+    subtext0
+    subtext1
+    blue
+    lavender
+    sapphire
+    sky
+    maroon
+    mauve
+    flamingo
+    rosewater
+    ;
   peach = c.orange;
-  maroon = extra "maroon" "red";
-  red = c.red;
-  mauve = c.purple;
-  flamingo = extra "flamingo" "pink";
-  rosewater = extra "rosewater" "pink";
-  accent = c.accent;
   transparent = "#00000000";
 
   # --- Paleta Cápsulas & Pills (adaptada dinamicamente ao tema) ---

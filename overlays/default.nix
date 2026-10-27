@@ -1,4 +1,18 @@
 { inputs, ... }:
+let
+  mkChannel =
+    final: input:
+    import input {
+      inherit (final.stdenv.hostPlatform) system;
+      config = {
+        allowUnfree = true;
+        allowBroken = true;
+        allowInsecure = true;
+        nvidia.acceptLicense = true;
+        permittedInsecurePackages = final.config.permittedInsecurePackages or [ ];
+      };
+    };
+in
 {
   # Brings custom local packages from the 'pkgs' directory
   localPackages = final: _prev: import ../pkgs final;
@@ -250,45 +264,16 @@
     fcitx5-chinese-addons = final.qt6Packages.fcitx5-chinese-addons;
   };
 
-  # Access unstable packages via 'pkgs.unstable.<package>'
+  # Access extra channel packages via 'pkgs.<channel>.<package>'
   unstablePackages = final: _prev: {
-    unstable = import inputs.nixpkgs-unstable {
-      inherit (final.stdenv.hostPlatform) system;
-      config = {
-        allowUnfree = true;
-        allowBroken = true;
-        allowInsecure = true;
-        nvidia.acceptLicense = true;
-        permittedInsecurePackages = final.config.permittedInsecurePackages or [ ];
-      };
-    };
+    unstable = mkChannel final inputs.nixpkgs-unstable;
   };
 
-  # Access oldstable packages via 'pkgs.oldstable.<package>'
   oldstablePackages = final: _prev: {
-    oldstable = import inputs.nixpkgs-oldstable {
-      inherit (final.stdenv.hostPlatform) system;
-      config = {
-        allowUnfree = true;
-        allowBroken = true;
-        allowInsecure = true;
-        nvidia.acceptLicense = true;
-        permittedInsecurePackages = final.config.permittedInsecurePackages or [ ];
-      };
-    };
+    oldstable = mkChannel final inputs.nixpkgs-oldstable;
   };
 
-  # Access older packages (NixOS 22.11) via 'pkgs.older.<package>'
   olderPackages = final: _prev: {
-    older = import inputs.nixpkgs-older {
-      inherit (final.stdenv.hostPlatform) system;
-      config = {
-        allowUnfree = true;
-        allowBroken = true;
-        allowInsecure = true;
-        nvidia.acceptLicense = true;
-        permittedInsecurePackages = final.config.permittedInsecurePackages or [ ];
-      };
-    };
+    older = mkChannel final inputs.nixpkgs-older;
   };
 }

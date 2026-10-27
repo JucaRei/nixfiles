@@ -1,0 +1,167 @@
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  inherit (lib) mkOption mkIf;
+  inherit (lib.types) bool;
+  cfg = config.desktop.shared.rofi;
+in
+{
+  options.desktop.shared.rofi = {
+    enable = mkOption {
+      type = bool;
+      default = false;
+      description = "Enable shared rofi application launcher for desktop environments (BSPWM, DWM, etc.)";
+    };
+  };
+
+  config = mkIf cfg.enable {
+    programs.rofi = {
+      enable = true;
+      package = pkgs.rofi;
+      font = "Inter 11";
+      terminal = config.system.programs.terminal.activeCommand or "terminal";
+      extraConfig = {
+        modi = "drun,run,window";
+        show-icons = true;
+        icon-theme = "Papirus-Dark";
+        drun-display-format = "{name}";
+        disable-history = false;
+        hide-scrollbar = true;
+        display-drun = "   Apps ";
+        display-run = "   Run ";
+        display-window = " 󱂬  Window ";
+        sidebar-mode = true;
+      };
+      theme =
+        let
+          inherit (config.lib.formats.rasi) mkLiteral;
+          c = config.desktop.theme.colors;
+        in
+        {
+          "*" = {
+            bg-col = mkLiteral c.bg;
+            bg-col-light = mkLiteral c.bgAlt;
+            border-col = mkLiteral c.accent;
+            selected-col = mkLiteral c.surfaceAlt;
+            blue = mkLiteral c.accent;
+            fg-col = mkLiteral c.fg;
+            fg-col2 = mkLiteral c.red;
+            grey = mkLiteral c.fgSubtle;
+            width = mkLiteral "600";
+          };
+
+          "element-text, element-icon , mode-switcher" = {
+            background-color = mkLiteral "inherit";
+            text-color = mkLiteral "inherit";
+          };
+
+          "window" = {
+            height = mkLiteral "400px";
+            border = mkLiteral "2px";
+            border-color = mkLiteral "@border-col";
+            border-radius = mkLiteral "16px";
+            background-color = mkLiteral "@bg-col";
+          };
+
+          "mainbox" = {
+            background-color = mkLiteral "@bg-col";
+            padding = mkLiteral "10px";
+          };
+
+          "inputbar" = {
+            children = map mkLiteral [
+              "prompt"
+              "entry"
+            ];
+            background-color = mkLiteral "@bg-col-light";
+            border-radius = mkLiteral "10px";
+            padding = mkLiteral "4px 8px";
+            margin = mkLiteral "8px 12px 0px 12px";
+          };
+
+          "prompt" = {
+            background-color = mkLiteral "@blue";
+            padding = mkLiteral "6px 12px";
+            text-color = mkLiteral "@bg-col-light";
+            border-radius = mkLiteral "8px";
+            margin = mkLiteral "4px 0px 4px 4px";
+          };
+
+          "textbox-prompt-colon" = {
+            expand = false;
+            str = ":";
+          };
+
+          "entry" = {
+            padding = mkLiteral "8px";
+            margin = mkLiteral "0px 0px 0px 6px";
+            text-color = mkLiteral "@fg-col";
+            background-color = mkLiteral "transparent";
+            placeholder = "Pesquisar...";
+            placeholder-color = mkLiteral "@grey";
+          };
+
+          "listview" = {
+            border = mkLiteral "0px";
+            padding = mkLiteral "8px 0px 0px";
+            margin = mkLiteral "10px 12px 0px 12px";
+            columns = 2;
+            lines = 6;
+            background-color = mkLiteral "@bg-col";
+          };
+
+          "element" = {
+            padding = mkLiteral "8px 12px";
+            background-color = mkLiteral "@bg-col";
+            text-color = mkLiteral "@fg-col";
+            border-radius = mkLiteral "10px";
+          };
+
+          "element-icon" = {
+            size = mkLiteral "24px";
+            margin = mkLiteral "0px 10px 0px 0px";
+          };
+
+          "element selected" = {
+            background-color = mkLiteral "@selected-col";
+            text-color = mkLiteral "@blue";
+          };
+
+          "mode-switcher" = {
+            spacing = 0;
+          };
+
+          "button" = {
+            padding = mkLiteral "10px";
+            background-color = mkLiteral "@bg-col-light";
+            text-color = mkLiteral "@grey";
+            vertical-align = mkLiteral "0.5";
+            horizontal-align = mkLiteral "0.5";
+          };
+
+          "button selected" = {
+            background-color = mkLiteral "@bg-col";
+            text-color = mkLiteral "@blue";
+          };
+
+          "message" = {
+            background-color = mkLiteral "@bg-col-light";
+            margin = mkLiteral "2px";
+            padding = mkLiteral "2px";
+            border-radius = mkLiteral "5px";
+          };
+
+          "textbox" = {
+            padding = mkLiteral "6px";
+            margin = mkLiteral "20px 0px 0px 20px";
+            text-color = mkLiteral "@blue";
+            background-color = mkLiteral "@bg-col-light";
+          };
+        };
+    };
+  };
+}

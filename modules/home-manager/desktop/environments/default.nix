@@ -18,6 +18,7 @@ in
     ./mangowm
     ../display-servers
     ../monitors
+    ../shared
     ../theme
     ../wallpaper
   ];

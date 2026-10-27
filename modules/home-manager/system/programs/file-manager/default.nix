@@ -205,8 +205,18 @@ in
       };
     })
     (mkIf anyFMEnabled {
-      home.sessionVariables = {
-        GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
+      home = {
+        sessionVariables = {
+          GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
+        };
+
+        # Modelos padrão para o menu "Criar Documento" / "Novo Documento"
+        file = {
+          ".local/share/templates/Documento de Texto.txt".text = "";
+          ".local/share/templates/Arquivo Vazio".text = "";
+          ".local/share/templates/Script Shell.sh".text = "#!/usr/bin/env bash\n\n";
+          ".local/share/templates/Documento Markdown.md".text = "# Título\n\n";
+        };
       };
 
       systemd.user = mkIf pkgs.stdenv.isLinux {

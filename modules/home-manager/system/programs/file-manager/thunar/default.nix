@@ -259,10 +259,6 @@ in
       '';
 
       file = {
-        # Modelos padrão para o menu "Criar Documento" do Thunar
-        ".local/share/templates/Documento de Texto.txt".text = "";
-        ".local/share/templates/Arquivo Vazio".text = "";
-
         # Custom Actions do Thunar (uca.xml)
         ".config/Thunar/uca.xml".text = ''
           <?xml version="1.0" encoding="UTF-8"?>
