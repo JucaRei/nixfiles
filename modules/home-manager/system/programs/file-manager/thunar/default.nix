@@ -86,158 +86,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Daemon de suporte essencial para persistência de preferências no Thunar (Xfconf)
-    systemd.user.services.xfconfd = mkIf pkgs.stdenv.isLinux {
-      Unit = {
-        Description = "Xfce Configuration Daemon";
-        PartOf = [ "graphical-session.target" ];
-      };
-      Service = {
-        Type = "dbus";
-        BusName = "org.xfce.Xfconf";
-        ExecStart = "${pkgs.xfconf}/lib/xfce4/xfconf/xfconfd";
-        Restart = "on-failure";
-        RestartSec = 3;
-        Environment = [
-          "XDG_DATA_DIRS=${pkgs.xfconf}/share:/usr/local/share:/usr/share"
-        ];
-      };
-      Install = {
-        WantedBy = [
-          "graphical-session.target"
-          "default.target"
-        ];
-      };
-    };
-
-    # Configuração de preferências de visualização por pasta, restauração de abas e sincronização de tema no Thunar.
-    home.activation.configureThunarSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-            # Encerra instâncias ativas do Thunar para aplicar mudanças de canal e recarregar conexão com xfconfd
-            $DRY_RUN_CMD ${pkgs.thunar}/bin/thunar -q 2>/dev/null || true
-            $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -9 -i -f thunar 2>/dev/null || true
-
-            # Escreve a configuração declarativa diretamente no XML dos canais Thunar e Xsettings
-            $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
-      import os
-      import xml.etree.ElementTree as ET
-
-      xml_dir = os.path.expanduser("~/.config/xfce4/xfconf/xfce-perchannel-xml")
-      os.makedirs(xml_dir, exist_ok=True)
-
-      def load_or_create(channel):
-          xml_file = os.path.join(xml_dir, f"{channel}.xml")
-          tree = None
-          root = None
-          if os.path.isfile(xml_file):
-              try:
-                  tree = ET.parse(xml_file)
-                  root = tree.getroot()
-              except Exception:
-                  root = None
-          if root is None or root.tag != "channel":
-              root = ET.Element("channel", attrib={"name": channel, "version": "1.0"})
-              tree = ET.ElementTree(root)
-          return tree, root, xml_file
-
-      # Canal thunar.xml
-      t_tree, t_root, t_file = load_or_create("thunar")
-      t_settings = {
-          "misc-directory-specific-settings": "${if cfg.rememberViewSettings then "true" else "false"}",
-          "last-restore-tabs": "${if cfg.restoreTabs then "true" else "false"}",
-      }
-      for name, val in t_settings.items():
-          prop = t_root.find(f"./property[@name=\"{name}\"]")
-          if prop is None:
-              ET.SubElement(t_root, "property", attrib={"name": name, "type": "bool", "value": val})
-          else:
-              prop.set("type", "bool")
-              prop.set("value", val)
-
-      if hasattr(ET, "indent"):
-          ET.indent(t_tree, space="  ", level=0)
-      t_tree.write(t_file, encoding="UTF-8", xml_declaration=True)
-
-      # Canal xsettings.xml (Tema GTK, ícones, cursor e fonte para apps XFCE como Thunar)
-      x_tree, x_root, x_file = load_or_create("xsettings")
-      def set_nested(root_node, path, ptype, pvalue):
-          parts = path.strip("/").split("/")
-          curr = root_node
-          for i, part in enumerate(parts):
-              is_leaf = (i == len(parts) - 1)
-              node = curr.find(f"./property[@name=\"{part}\"]")
-              if node is None:
-                  attrs = {"name": part}
-                  if is_leaf:
-                      attrs["type"] = ptype
-                      attrs["value"] = str(pvalue)
-                  else:
-                      attrs["type"] = "empty"
-                  node = ET.SubElement(curr, "property", attrib=attrs)
-              else:
-                  if is_leaf:
-                      node.set("type", ptype)
-                      node.set("value", str(pvalue))
-              curr = node
-
-      theme_name = "${config.gtk.theme.name or ""}"
-      icon_name = "${config.gtk.iconTheme.name or ""}"
-      cursor_name = "${config.desktop.theme.cursor.name or ""}"
-      cursor_size = "${toString (config.desktop.theme.cursor.size or 24)}"
-      font_name = "${config.desktop.theme.font.name or "Inter"} ${
-        toString (config.desktop.theme.font.size or 10)
-      }"
-
-      if theme_name:
-          set_nested(x_root, "Net/ThemeName", "string", theme_name)
-          set_nested(x_root, "Gtk/ThemeName", "string", theme_name)
-      if icon_name:
-          set_nested(x_root, "Net/IconThemeName", "string", icon_name)
-      if cursor_name:
-          set_nested(x_root, "Gtk/CursorThemeName", "string", cursor_name)
-          set_nested(x_root, "Gtk/CursorThemeSize", "int", cursor_size)
-      if font_name:
-          set_nested(x_root, "Gtk/FontName", "string", font_name)
-      set_nested(x_root, "Gtk/DecorationLayout", "string", ":minimize,maximize,close")
-      set_nested(x_root, "Gtk/ApplicationPreferDarkTheme", "int", "1")
-
-      if hasattr(ET, "indent"):
-          ET.indent(x_tree, space="  ", level=0)
-      x_tree.write(x_file, encoding="UTF-8", xml_declaration=True)
-      '
-
-            # Reinicia o xfconfd caso o systemd do usuário esteja ativo nesta sessão
-            if systemctl --user is-active --quiet xfconfd.service 2>/dev/null; then
-              $DRY_RUN_CMD systemctl --user restart xfconfd.service 2>/dev/null || true
-            fi
-
-            # Aplica as opções diretamente no barramento Xfconf caso o daemon esteja respondendo
-            if command -v ${pkgs.xfconf}/bin/xfconf-query >/dev/null 2>&1; then
-              $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /misc-directory-specific-settings -n -t bool -s ${
-                if cfg.rememberViewSettings then "true" else "false"
-              } 2>/dev/null || true
-              $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${
-                if cfg.restoreTabs then "true" else "false"
-              } 2>/dev/null || true
-              ${lib.optionalString (config.gtk ? theme && config.gtk.theme ? name) ''
-                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
-                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
-                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ApplicationPreferDarkTheme -n -t int -s 1 2>/dev/null || true
-              ''}
-              ${lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? name) ''
-                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "${config.gtk.iconTheme.name}" 2>/dev/null || true
-              ''}
-              ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? cursor) ''
-                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeName -n -t string -s "${config.desktop.theme.cursor.name}" 2>/dev/null || true
-                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeSize -n -t int -s "${toString config.desktop.theme.cursor.size}" 2>/dev/null || true
-              ''}
-              ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? font) ''
-                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/FontName -n -t string -s "${config.desktop.theme.font.name} ${toString config.desktop.theme.font.size}" 2>/dev/null || true
-              ''}
-              $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/DecorationLayout -n -t string -s ":minimize,maximize,close" 2>/dev/null || true
-            fi
-    '';
-
-    # Arquivo de ativação D-Bus para permitir auto-ativação do xfconfd pelo dbus-daemon da sessão
     xdg.dataFile = {
       "dbus-1/services/org.xfce.Xfconf.service".text = ''
         [D-BUS Service]
@@ -246,137 +94,258 @@ in
       '';
     };
 
-    home.sessionVariables = {
-      GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
-    };
-
-    home.packages = with pkgs; [
-      cfg.package
-      gvfs
-      xfconf
-      xarchiver
-      file-roller
-      xfce4-exo
-      catfish
-      meld
-    ];
-
-    # Bridge FUSE do GVfs (/run/user/<uid>/gvfs) para compatibilidade com aplicações
-    # que não possuem suporte nativo à API GIO/GVfs (como mpv, vlc, scripts bash, etc.)
-    systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
-      "d %t/gvfs 0700 - - - -"
-      "L+ %h/Templates - - - - .local/share/templates"
-    ];
-
-    systemd.user.services.gvfs-fuse = mkIf pkgs.stdenv.isLinux {
-      Unit = {
-        Description = "Virtual filesystem service - GNOME FUSE daemon";
-        After = [ "gvfs-daemon.service" ];
-        PartOf = [ "default.target" ];
-      };
-      Service = {
-        Type = "simple";
-        Environment = [
-          "PATH=/run/wrappers/bin:/usr/bin:/bin:${pkgs.fuse3}/bin"
-        ];
-        ExecStartPre = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true; mkdir -p %t/gvfs'";
-        ExecStart = "${pkgs.gvfs}/libexec/gvfsd-fuse -f %t/gvfs";
-        ExecStop = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true'";
-        Restart = "on-failure";
-        RestartSec = 3;
-      };
-      Install = {
-        WantedBy = [ "default.target" ];
+    systemd.user = mkIf pkgs.stdenv.isLinux {
+      services.xfconfd = {
+        Unit = {
+          Description = "Xfce Configuration Daemon";
+          PartOf = [ "graphical-session.target" ];
+        };
+        Service = {
+          Type = "dbus";
+          BusName = "org.xfce.Xfconf";
+          ExecStart = "${pkgs.xfconf}/lib/xfce4/xfconf/xfconfd";
+          Restart = "on-failure";
+          RestartSec = 3;
+          Environment = [
+            "XDG_DATA_DIRS=${pkgs.xfconf}/share:/usr/local/share:/usr/share"
+          ];
+        };
+        Install = {
+          WantedBy = [
+            "graphical-session.target"
+            "default.target"
+          ];
+        };
       };
     };
 
-    home.file = {
-      # Modelos padrão para o menu "Criar Documento" do Thunar
-      ".local/share/templates/Documento de Texto.txt".text = "";
-      ".local/share/templates/Arquivo Vazio".text = "";
+    home = {
+      packages = with pkgs; [
+        cfg.package
+        gvfs
+        xfconf
+        xarchiver
+        file-roller
+        xfce4-exo
+        catfish
+        meld
+      ];
 
-      # Custom Actions do Thunar (uca.xml)
-      ".config/Thunar/uca.xml".text = ''
-        <?xml version="1.0" encoding="UTF-8"?>
-        <actions>
-            <action>
-                <icon>utilities-terminal</icon>
-                <name>Open Terminal Here</name>
-                <unique-id>1612104464586264-1</unique-id>
-                <command>${terminalCmd}</command>
-                <description>Abrir terminal no diretório atual</description>
-                <patterns>*</patterns>
-                <startup-notify/>
-                <directories/>
-            </action>
-      ''
-      + optionalString (config.system.programs.editors.vscode.enable or false) ''
-        <action>
-            <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
-            <name>Open VSCode Here</name>
-            <unique-id>1612104464586265-1</unique-id>
-            <command>code %f</command>
-            <description>Abrir pasta no VSCode</description>
-            <patterns>*</patterns>
-            <startup-notify/>
-            <directories/>
-        </action>
-      ''
-      + optionalString (config.system.programs.editors.antigravity.enable or false) ''
-        <action>
-            <icon>code</icon>
-            <name>Open in Antigravity</name>
-            <unique-id>1612104464586266-1</unique-id>
-            <command>antigravity-ide %f</command>
-            <description>Abrir projeto no Antigravity AI IDE</description>
-            <patterns>*</patterns>
-            <startup-notify/>
-            <directories/>
-            <text-files/>
-        </action>
-      ''
-      + ''
-            <action>
-                <icon>${pkgs.meld}/share/icons/hicolor/symbolic/apps/org.gnome.Meld-symbolic.svg</icon>
-                <name>Compare</name>
-                <submenu></submenu>
-                <unique-id>1622791692322694-4</unique-id>
-                <command>${pkgs.meld}/bin/meld %F</command>
-                <description>Comparar arquivos e diretórios com Meld</description>
-                <range></range>
-                <patterns>*</patterns>
-                <directories/>
-                <text-files/>
-            </action>
-            <action>
-                <icon>system-file-manager-root</icon>
-                <name>Open folder as root</name>
-                <unique-id>1493475601060449-3</unique-id>
-                <command>${thunar-wrapped}/bin/thunar admin://%f</command>
-                <description>Abrir pasta como administrador</description>
-                <patterns>*</patterns>
-                <directories/>
-            </action>
-            <action>
-                <icon>catfish</icon>
-                <name>Search with catfish</name>
-                <unique-id>1489089852658523-2</unique-id>
-                <command>${pkgs.catfish}/bin/catfish --path=$f$d</command>
-                <description>Buscar arquivos com Catfish</description>
-                <patterns>*</patterns>
-                <directories/>
-            </action>
-            <action>
-                <icon>archive-extract</icon>
-                <name>Extract here</name>
-                <unique-id>1489091300385082-4</unique-id>
-                <command>${pkgs.xarchiver}/bin/xarchiver -e %f</command>
-                <description>Extrair arquivo compactado aqui</description>
-                <patterns>*.tar.gz;*.tgz;*.tar.bz2;*.tbz2;*.tar.xz;*.txz;*.zip;*.7z;*.rar;*.tar.zst</patterns>
-                <other-files/>
-            </action>
-        </actions>
+      # Configuração de preferências de visualização por pasta, restauração de abas e sincronização de tema no Thunar.
+      activation.configureThunarSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+              # Encerra instâncias ativas do Thunar para aplicar mudanças de canal e recarregar conexão com xfconfd
+              $DRY_RUN_CMD ${pkgs.thunar}/bin/thunar -q 2>/dev/null || true
+              $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -9 -i -f thunar 2>/dev/null || true
+
+              # Escreve a configuração declarativa diretamente no XML dos canais Thunar e Xsettings
+              $DRY_RUN_CMD ${pkgs.python3}/bin/python3 -c '
+        import os
+        import xml.etree.ElementTree as ET
+
+        xml_dir = os.path.expanduser("~/.config/xfce4/xfconf/xfce-perchannel-xml")
+        os.makedirs(xml_dir, exist_ok=True)
+
+        def load_or_create(channel):
+            xml_file = os.path.join(xml_dir, f"{channel}.xml")
+            tree = None
+            root = None
+            if os.path.isfile(xml_file):
+                try:
+                    tree = ET.parse(xml_file)
+                    root = tree.getroot()
+                except Exception:
+                    root = None
+            if root is None or root.tag != "channel":
+                root = ET.Element("channel", attrib={"name": channel, "version": "1.0"})
+                tree = ET.ElementTree(root)
+            return tree, root, xml_file
+
+        # Canal thunar.xml
+        t_tree, t_root, t_file = load_or_create("thunar")
+        t_settings = {
+            "misc-directory-specific-settings": "${if cfg.rememberViewSettings then "true" else "false"}",
+            "last-restore-tabs": "${if cfg.restoreTabs then "true" else "false"}",
+        }
+        for name, val in t_settings.items():
+            prop = t_root.find(f"./property[@name=\"{name}\"]")
+            if prop is None:
+                ET.SubElement(t_root, "property", attrib={"name": name, "type": "bool", "value": val})
+            else:
+                prop.set("type", "bool")
+                prop.set("value", val)
+
+        if hasattr(ET, "indent"):
+            ET.indent(t_tree, space="  ", level=0)
+        t_tree.write(t_file, encoding="UTF-8", xml_declaration=True)
+
+        # Canal xsettings.xml (Tema GTK, ícones, cursor e fonte para apps XFCE como Thunar)
+        x_tree, x_root, x_file = load_or_create("xsettings")
+        def set_nested(root_node, path, ptype, pvalue):
+            parts = path.strip("/").split("/")
+            curr = root_node
+            for i, part in enumerate(parts):
+                is_leaf = (i == len(parts) - 1)
+                node = curr.find(f"./property[@name=\"{part}\"]")
+                if node is None:
+                    attrs = {"name": part}
+                    if is_leaf:
+                        attrs["type"] = ptype
+                        attrs["value"] = str(pvalue)
+                    else:
+                        attrs["type"] = "empty"
+                    node = ET.SubElement(curr, "property", attrib=attrs)
+                else:
+                    if is_leaf:
+                        node.set("type", ptype)
+                        node.set("value", str(pvalue))
+                curr = node
+
+        theme_name = "${config.gtk.theme.name or ""}"
+        icon_name = "${config.gtk.iconTheme.name or ""}"
+        cursor_name = "${config.desktop.theme.cursor.name or ""}"
+        cursor_size = "${toString (config.desktop.theme.cursor.size or 24)}"
+        font_name = "${config.desktop.theme.font.name or "Inter"} ${
+          toString (config.desktop.theme.font.size or 10)
+        }"
+
+        if theme_name:
+            set_nested(x_root, "Net/ThemeName", "string", theme_name)
+            set_nested(x_root, "Gtk/ThemeName", "string", theme_name)
+        if icon_name:
+            set_nested(x_root, "Net/IconThemeName", "string", icon_name)
+        if cursor_name:
+            set_nested(x_root, "Gtk/CursorThemeName", "string", cursor_name)
+            set_nested(x_root, "Gtk/CursorThemeSize", "int", cursor_size)
+        if font_name:
+            set_nested(x_root, "Gtk/FontName", "string", font_name)
+        set_nested(x_root, "Gtk/DecorationLayout", "string", ":minimize,maximize,close")
+        set_nested(x_root, "Gtk/ApplicationPreferDarkTheme", "int", "1")
+
+        if hasattr(ET, "indent"):
+            ET.indent(x_tree, space="  ", level=0)
+        x_tree.write(x_file, encoding="UTF-8", xml_declaration=True)
+        '
+
+              # Reinicia o xfconfd caso o systemd do usuário esteja ativo nesta sessão
+              if systemctl --user is-active --quiet xfconfd.service 2>/dev/null; then
+                $DRY_RUN_CMD systemctl --user restart xfconfd.service 2>/dev/null || true
+              fi
+
+              # Aplica as opções diretamente no barramento Xfconf caso o daemon esteja respondendo
+              if command -v ${pkgs.xfconf}/bin/xfconf-query >/dev/null 2>&1; then
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /misc-directory-specific-settings -n -t bool -s ${
+                  if cfg.rememberViewSettings then "true" else "false"
+                } 2>/dev/null || true
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${
+                  if cfg.restoreTabs then "true" else "false"
+                } 2>/dev/null || true
+                ${lib.optionalString (config.gtk ? theme && config.gtk.theme ? name) ''
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ThemeName -n -t string -s "${config.gtk.theme.name}" 2>/dev/null || true
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/ApplicationPreferDarkTheme -n -t int -s 1 2>/dev/null || true
+                ''}
+                ${lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? name) ''
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "${config.gtk.iconTheme.name}" 2>/dev/null || true
+                ''}
+                ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? cursor) ''
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeName -n -t string -s "${config.desktop.theme.cursor.name}" 2>/dev/null || true
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeSize -n -t int -s "${toString config.desktop.theme.cursor.size}" 2>/dev/null || true
+                ''}
+                ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? font) ''
+                  $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/FontName -n -t string -s "${config.desktop.theme.font.name} ${toString config.desktop.theme.font.size}" 2>/dev/null || true
+                ''}
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/DecorationLayout -n -t string -s ":minimize,maximize,close" 2>/dev/null || true
+              fi
       '';
+
+      file = {
+        # Modelos padrão para o menu "Criar Documento" do Thunar
+        ".local/share/templates/Documento de Texto.txt".text = "";
+        ".local/share/templates/Arquivo Vazio".text = "";
+
+        # Custom Actions do Thunar (uca.xml)
+        ".config/Thunar/uca.xml".text = ''
+          <?xml version="1.0" encoding="UTF-8"?>
+          <actions>
+              <action>
+                  <icon>utilities-terminal</icon>
+                  <name>Open Terminal Here</name>
+                  <unique-id>1612104464586264-1</unique-id>
+                  <command>${terminalCmd}</command>
+                  <description>Abrir terminal no diretório atual</description>
+                  <patterns>*</patterns>
+                  <startup-notify/>
+                  <directories/>
+              </action>
+        ''
+        + optionalString (config.system.programs.editors.vscode.enable or false) ''
+          <action>
+              <icon>${config.programs.vscode.package}/share/pixmaps/vscode.png</icon>
+              <name>Open VSCode Here</name>
+              <unique-id>1612104464586265-1</unique-id>
+              <command>code %f</command>
+              <description>Abrir pasta no VSCode</description>
+              <patterns>*</patterns>
+              <startup-notify/>
+              <directories/>
+          </action>
+        ''
+        + optionalString (config.system.programs.editors.antigravity.enable or false) ''
+          <action>
+              <icon>code</icon>
+              <name>Open in Antigravity</name>
+              <unique-id>1612104464586266-1</unique-id>
+              <command>antigravity-ide %f</command>
+              <description>Abrir projeto no Antigravity AI IDE</description>
+              <patterns>*</patterns>
+              <startup-notify/>
+              <directories/>
+              <text-files/>
+          </action>
+        ''
+        + ''
+              <action>
+                  <icon>${pkgs.meld}/share/icons/hicolor/symbolic/apps/org.gnome.Meld-symbolic.svg</icon>
+                  <name>Compare</name>
+                  <submenu></submenu>
+                  <unique-id>1622791692322694-4</unique-id>
+                  <command>${pkgs.meld}/bin/meld %F</command>
+                  <description>Comparar arquivos e diretórios com Meld</description>
+                  <range></range>
+                  <patterns>*</patterns>
+                  <directories/>
+                  <text-files/>
+              </action>
+              <action>
+                  <icon>system-file-manager-root</icon>
+                  <name>Open folder as root</name>
+                  <unique-id>1493475601060449-3</unique-id>
+                  <command>${thunar-wrapped}/bin/thunar admin://%f</command>
+                  <description>Abrir pasta como administrador</description>
+                  <patterns>*</patterns>
+                  <directories/>
+              </action>
+              <action>
+                  <icon>catfish</icon>
+                  <name>Search with catfish</name>
+                  <unique-id>1489089852658523-2</unique-id>
+                  <command>${pkgs.catfish}/bin/catfish --path=$f$d</command>
+                  <description>Buscar arquivos com Catfish</description>
+                  <patterns>*</patterns>
+                  <directories/>
+              </action>
+              <action>
+                  <icon>archive-extract</icon>
+                  <name>Extract here</name>
+                  <unique-id>1489091300385082-4</unique-id>
+                  <command>${pkgs.xarchiver}/bin/xarchiver -e %f</command>
+                  <description>Extrair arquivo compactado aqui</description>
+                  <patterns>*.tar.gz;*.tgz;*.tar.bz2;*.tbz2;*.tar.xz;*.txz;*.zip;*.7z;*.rar;*.tar.zst</patterns>
+                  <other-files/>
+              </action>
+          </actions>
+        '';
+      };
     };
   };
 }

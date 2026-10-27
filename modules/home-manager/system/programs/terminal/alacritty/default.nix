@@ -138,20 +138,24 @@ in
           };
           normal = {
             black = c.bgDark;
-            red = c.red;
-            green = c.green;
-            yellow = c.yellow;
-            blue = c.blue;
+            inherit (c)
+              red
+              green
+              yellow
+              blue
+              cyan
+              ;
             magenta = c.purple;
-            cyan = c.cyan;
             white = c.fgMuted;
           };
           bright = {
             black = c.border;
-            red = c.red;
-            green = c.green;
-            yellow = c.yellow;
-            blue = c.blue;
+            inherit (c)
+              red
+              green
+              yellow
+              blue
+              ;
             magenta = c.pink;
             cyan = c.teal;
             white = c.fg;

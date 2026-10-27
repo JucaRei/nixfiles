@@ -106,81 +106,50 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Variáveis de sessão para suporte a GVfs
-    home.sessionVariables = {
-      GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
-    };
-
-    # Pacotes essenciais, descompactadores e geradores de miniaturas
-    home.packages =
-      optionals shouldInstall [
-        pcmanfm-wrapped
-      ]
-      ++ [
-        pkgs.gvfs
-        pkgs.xarchiver
-        pkgs.ffmpegthumbnailer
-        pkgs.webp-pixbuf-loader
-        pkgs.poppler
-        pkgs.libgsf
-        pkgs.freetype
-        pkgs.meld
-        pkgs.zenity
-      ];
-
-    # Arquivo de configuração declarativo do PCManFM (~/.config/pcmanfm/default/pcmanfm.conf)
-    home.file = {
-      ".local/share/templates/Documento de Texto.txt".text = "";
-      ".local/share/templates/Arquivo Vazio".text = "";
-
-      ".config/pcmanfm/default/pcmanfm.conf".text = ''
-        [config]
-        bm_open_method=0
-
-        [volume]
-        mount_on_startup=1
-        mount_removable=1
-        autorun=1
-
-        [ui]
-        always_show_tabs=1
-        max_tab_chars=32
-        win_width=900
-        win_height=560
-        splitter_pos=160
-        view_mode=${cfg.view.viewMode}
-        show_hidden=${if cfg.view.showHidden then "1" else "0"}
-        sort_type=name
-        sort_by=ascending
-        terminal=${preferredTerminal}
-      '';
-    };
-
-    # Bridge FUSE do GVfs (/run/user/<uid>/gvfs)
-    systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
-      "d %t/gvfs 0700 - - - -"
-      "L+ %h/Templates - - - - .local/share/templates"
-    ];
-
-    systemd.user.services.gvfs-fuse = mkIf pkgs.stdenv.isLinux {
-      Unit = {
-        Description = "Virtual filesystem service - GNOME FUSE daemon";
-        After = [ "gvfs-daemon.service" ];
-        PartOf = [ "default.target" ];
-      };
-      Service = {
-        Type = "simple";
-        Environment = [
-          "PATH=/run/wrappers/bin:/usr/bin:/bin:${pkgs.fuse3}/bin"
+    home = {
+      # Pacotes essenciais, descompactadores e geradores de miniaturas
+      packages =
+        optionals shouldInstall [
+          pcmanfm-wrapped
+        ]
+        ++ [
+          pkgs.gvfs
+          pkgs.xarchiver
+          pkgs.ffmpegthumbnailer
+          pkgs.webp-pixbuf-loader
+          pkgs.poppler
+          pkgs.libgsf
+          pkgs.freetype
+          pkgs.meld
+          pkgs.zenity
         ];
-        ExecStartPre = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true; mkdir -p %t/gvfs'";
-        ExecStart = "${pkgs.gvfs}/libexec/gvfsd-fuse -f %t/gvfs";
-        ExecStop = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true'";
-        Restart = "on-failure";
-        RestartSec = 3;
-      };
-      Install = {
-        WantedBy = [ "default.target" ];
+
+      # Arquivo de configuração declarativo do PCManFM (~/.config/pcmanfm/default/pcmanfm.conf)
+      file = {
+        ".local/share/templates/Documento de Texto.txt".text = "";
+        ".local/share/templates/Arquivo Vazio".text = "";
+
+        ".config/pcmanfm/default/pcmanfm.conf".text = ''
+          [config]
+          bm_open_method=0
+
+          [volume]
+          mount_on_startup=1
+          mount_removable=1
+          autorun=1
+
+          [ui]
+          always_show_tabs=1
+          max_tab_chars=32
+          win_width=900
+          win_height=560
+          splitter_pos=160
+          view_mode=${cfg.view.viewMode}
+          show_hidden=${if cfg.view.showHidden then "1" else "0"}
+          sort_type=name
+          sort_by=ascending
+          terminal=${preferredTerminal}
+        '';
       };
     };
   };

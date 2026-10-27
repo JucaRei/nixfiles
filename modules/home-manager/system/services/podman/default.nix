@@ -412,43 +412,96 @@ in
     # Upstream Home Manager native Podman integration (services.podman)
     services.podman = {
       enable = true;
-      package = cfg.package;
+      inherit (cfg)
+        package
+        containers
+        networks
+        volumes
+        ;
       autoUpdate = mkIf cfg.autoUpdate.enable {
         onCalendar = cfg.autoUpdate.schedule;
       };
-      containers = cfg.containers;
-      networks = cfg.networks;
-      volumes = cfg.volumes;
     };
 
-    # Packages
-    home.packages = [
-      podmanDoctor
-      pkgs.crun
-      pkgs.conmon
-      pkgs.fuse-overlayfs
-      pkgs.passt
-      pkgs.slirp4netns
-    ]
-    ++ optionals cfg.dockerCompat [
-      dockerWrapper
-    ]
-    ++ optionals cfg.extraPackages.compose [
-      pkgs.podman-compose
-      pkgs.docker-compose
-    ]
-    ++ optionals cfg.extraPackages.tui [
-      pkgs.podman-tui
-    ]
-    ++ optionals cfg.extraPackages.lazydocker [
-      pkgs.lazydocker
-    ]
-    ++ optionals cfg.extraPackages.inspection [
-      pkgs.skopeo
-      pkgs.buildah
-      pkgs.dive
-    ]
-    ++ cfg.extraPackages.packages;
+    home = {
+      # Packages
+      packages = [
+        podmanDoctor
+        pkgs.crun
+        pkgs.conmon
+        pkgs.fuse-overlayfs
+        pkgs.passt
+        pkgs.slirp4netns
+      ]
+      ++ optionals cfg.dockerCompat [
+        dockerWrapper
+      ]
+      ++ optionals cfg.extraPackages.compose [
+        pkgs.podman-compose
+        pkgs.docker-compose
+      ]
+      ++ optionals cfg.extraPackages.tui [
+        pkgs.podman-tui
+      ]
+      ++ optionals cfg.extraPackages.lazydocker [
+        pkgs.lazydocker
+      ]
+      ++ optionals cfg.extraPackages.inspection [
+        pkgs.skopeo
+        pkgs.buildah
+        pkgs.dive
+      ]
+      ++ cfg.extraPackages.packages;
+
+      # Environment variables for Docker CLI and API compatibility
+      sessionVariables = mkIf cfg.dockerCompat {
+        DOCKER_HOST = "unix://\${XDG_RUNTIME_DIR}/podman/podman.sock";
+      };
+
+      # Activation hook to guarantee docker.sock symlink is active immediately
+      activation.podmanDockerCompat = mkIf (cfg.enableSocket && cfg.dockerCompat) (
+        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          if [ -n "''${XDG_RUNTIME_DIR:-}" ]; then
+            mkdir -p "$XDG_RUNTIME_DIR/podman"
+            ln -sfn "$XDG_RUNTIME_DIR/podman/podman.sock" "$XDG_RUNTIME_DIR/docker.sock" 2>/dev/null || true
+          fi
+        ''
+      );
+
+      # Shell aliases
+      shellAliases = mkIf cfg.aliases.enable (
+        {
+          # Native Podman aliases
+          p = "podman";
+          p-ps = "podman ps --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}'";
+          p-psa = "podman ps -a --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}'";
+          p-img = "podman images";
+          p-stop = "podman stop $(podman ps -q)";
+          p-rm = "podman rm -f $(podman ps -aq)";
+          p-rmi = "podman rmi -f $(podman images -q)";
+          p-prune = "podman system prune -af --volumes";
+          p-logs = "podman logs -f";
+          p-exec = "podman exec -it";
+          p-stats = "podman stats --no-stream";
+          p-top = "podman top";
+        }
+        // optionalAttrs cfg.dockerCompat {
+          # Docker compatibility aliases
+          d = "podman";
+          dps = "podman ps --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}'";
+          dpsa = "podman ps -a --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}'";
+          dimg = "podman images";
+          dstop = "podman stop $(podman ps -q)";
+          drm = "podman rm -f $(podman ps -aq)";
+          drmi = "podman rmi -f $(podman images -q)";
+          dprune = "podman system prune -af --volumes";
+          dlogs = "podman logs -f";
+          dexec = "podman exec -it";
+          dstats = "podman stats --no-stream";
+          dc = if cfg.extraPackages.compose then "podman-compose" else "podman compose";
+        }
+      );
+    };
 
     # Configuration files in ~/.config/containers/
     xdg.configFile = mkMerge [
@@ -466,127 +519,74 @@ in
       ) cfg.quadlets)
     ];
 
-    # Environment variables for Docker CLI and API compatibility
-    home.sessionVariables = mkMerge [
-      (mkIf cfg.dockerCompat {
-        DOCKER_HOST = "unix://\${XDG_RUNTIME_DIR}/podman/podman.sock";
-      })
-    ];
-
-    # Systemd user session variables
-    systemd.user.sessionVariables = mkMerge [
-      (mkIf cfg.dockerCompat {
+    systemd.user = {
+      # Systemd user session variables
+      sessionVariables = mkIf cfg.dockerCompat {
         DOCKER_HOST = "unix://%t/podman/podman.sock";
-      })
-    ];
+      };
 
-    # Systemd tmpfiles rule to ensure runtime directory and docker.sock symlink exist
-    systemd.user.tmpfiles.rules = mkMerge [
-      [
+      # Systemd tmpfiles rule to ensure runtime directory and docker.sock symlink exist
+      tmpfiles.rules = [
         "d %t/podman 0700 - - - -"
       ]
-      (mkIf cfg.dockerCompat [
+      ++ optionals cfg.dockerCompat [
         "L+ %t/docker.sock - - - - %t/podman/podman.sock"
-      ])
-    ];
+      ];
 
-    # Activation hook to guarantee docker.sock symlink is active immediately
-    home.activation.podmanDockerCompat = mkIf (cfg.enableSocket && cfg.dockerCompat) (
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if [ -n "''${XDG_RUNTIME_DIR:-}" ]; then
-          mkdir -p "$XDG_RUNTIME_DIR/podman"
-          ln -sfn "$XDG_RUNTIME_DIR/podman/podman.sock" "$XDG_RUNTIME_DIR/docker.sock" 2>/dev/null || true
-        fi
-      ''
-    );
+      # Podman API Socket
+      sockets.podman = mkIf cfg.enableSocket {
+        Unit = {
+          Description = "Podman API Socket";
+          Documentation = "man:podman-system-service(1)";
+        };
+        Socket = {
+          ListenStream = "%t/podman/podman.sock";
+          SocketMode = "0660";
+        };
+        Install = {
+          WantedBy = [ "sockets.target" ];
+        };
+      };
 
-    # Podman API Socket
-    systemd.user.sockets.podman = mkIf cfg.enableSocket {
-      Unit = {
-        Description = "Podman API Socket";
-        Documentation = "man:podman-system-service(1)";
+      # Podman API Service (socket activated)
+      services.podman = mkIf cfg.enableSocket {
+        Unit = {
+          Description = "Podman API Service";
+          Documentation = "man:podman-system-service(1)";
+          Requires = [ "podman.socket" ];
+          After = [ "podman.socket" ];
+        };
+        Service = {
+          Type = "exec";
+          KillMode = "process";
+          ExecStart = "${cfg.package}/bin/podman system service --time=0 unix://%t/podman/podman.sock";
+        };
       };
-      Socket = {
-        ListenStream = "%t/podman/podman.sock";
-        SocketMode = "0660";
+
+      # Auto-prune periodic service & timer
+      services.podman-prune = mkIf cfg.autoPrune.enable {
+        Unit = {
+          Description = "Podman periodic storage prune";
+          Documentation = "man:podman-system-prune(1)";
+        };
+        Service = {
+          Type = "oneshot";
+          ExecStart = "${cfg.package}/bin/podman system prune ${escapeShellArgs cfg.autoPrune.flags}";
+        };
       };
-      Install = {
-        WantedBy = [ "sockets.target" ];
+
+      timers.podman-prune = mkIf cfg.autoPrune.enable {
+        Unit = {
+          Description = "Periodic Podman storage prune timer";
+        };
+        Timer = {
+          OnCalendar = cfg.autoPrune.schedule;
+          Persistent = true;
+        };
+        Install = {
+          WantedBy = [ "timers.target" ];
+        };
       };
     };
-
-    # Podman API Service (socket activated)
-    systemd.user.services.podman = mkIf cfg.enableSocket {
-      Unit = {
-        Description = "Podman API Service";
-        Documentation = "man:podman-system-service(1)";
-        Requires = [ "podman.socket" ];
-        After = [ "podman.socket" ];
-      };
-      Service = {
-        Type = "exec";
-        KillMode = "process";
-        ExecStart = "${cfg.package}/bin/podman system service --time=0 unix://%t/podman/podman.sock";
-      };
-    };
-
-    # Auto-prune periodic service & timer
-    systemd.user.services.podman-prune = mkIf cfg.autoPrune.enable {
-      Unit = {
-        Description = "Podman periodic storage prune";
-        Documentation = "man:podman-system-prune(1)";
-      };
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${cfg.package}/bin/podman system prune ${escapeShellArgs cfg.autoPrune.flags}";
-      };
-    };
-
-    systemd.user.timers.podman-prune = mkIf cfg.autoPrune.enable {
-      Unit = {
-        Description = "Periodic Podman storage prune timer";
-      };
-      Timer = {
-        OnCalendar = cfg.autoPrune.schedule;
-        Persistent = true;
-      };
-      Install = {
-        WantedBy = [ "timers.target" ];
-      };
-    };
-
-    # Shell aliases
-    home.shellAliases = mkIf cfg.aliases.enable (
-      {
-        # Native Podman aliases
-        p = "podman";
-        p-ps = "podman ps --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}'";
-        p-psa = "podman ps -a --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}'";
-        p-img = "podman images";
-        p-stop = "podman stop $(podman ps -q)";
-        p-rm = "podman rm -f $(podman ps -aq)";
-        p-rmi = "podman rmi -f $(podman images -q)";
-        p-prune = "podman system prune -af --volumes";
-        p-logs = "podman logs -f";
-        p-exec = "podman exec -it";
-        p-stats = "podman stats --no-stream";
-        p-top = "podman top";
-      }
-      // optionalAttrs cfg.dockerCompat {
-        # Docker compatibility aliases
-        d = "podman";
-        dps = "podman ps --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}'";
-        dpsa = "podman ps -a --format 'table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}'";
-        dimg = "podman images";
-        dstop = "podman stop $(podman ps -q)";
-        drm = "podman rm -f $(podman ps -aq)";
-        drmi = "podman rmi -f $(podman images -q)";
-        dprune = "podman system prune -af --volumes";
-        dlogs = "podman logs -f";
-        dexec = "podman exec -it";
-        dstats = "podman stats --no-stream";
-        dc = if cfg.extraPackages.compose then "podman-compose" else "podman compose";
-      }
-    );
   };
 }

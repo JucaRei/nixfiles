@@ -56,28 +56,40 @@ in
   };
 
   config = mkIf ((cfg.enable && (cfg.name == "urxvt" || cfg.name == "rxvt")) || urxvtCfg.enable) {
-    home.packages = [
-      rxvtPackage
-      pkgs.xrdb
-      hackNerdFontPkg
-      jetbrainsMonoNerdFontPkg
-      symbolsNerdFontPkg
-      hackFontPkg
-      anonymousProPkg
-    ];
+    home = {
+      packages = [
+        rxvtPackage
+        pkgs.xrdb
+        hackNerdFontPkg
+        jetbrainsMonoNerdFontPkg
+        symbolsNerdFontPkg
+        hackFontPkg
+        anonymousProPkg
+      ];
 
-    # Wrapper de inicialização: recarrega Xresources e conecta ao daemon urxvtd com fallback automático
-    home.file.".local/bin/term" = {
-      executable = true;
-      text = ''
-        #!/bin/sh
+      # Wrapper de inicialização: recarrega Xresources e conecta ao daemon urxvtd com fallback automático
+      file.".local/bin/term" = {
+        executable = true;
+        text = ''
+          #!/bin/sh
 
-        ${pkgs.xrdb}/bin/xrdb -merge ~/.Xresources
+          ${pkgs.xrdb}/bin/xrdb -merge ~/.Xresources
 
-        ${rxvtPackage}/bin/urxvtc "$@"
-        if [ $? -eq 2 ]; then
-          ${rxvtPackage}/bin/urxvtd -q -o -f
           ${rxvtPackage}/bin/urxvtc "$@"
+          if [ $? -eq 2 ]; then
+            ${rxvtPackage}/bin/urxvtd -q -o -f
+            ${rxvtPackage}/bin/urxvtc "$@"
+          fi
+        '';
+      };
+
+      # Recarrega recursos do X11 e reinicia o daemon urxvtd para atualizar as fontes imediatamente
+      activation.reloadUrxvt = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        ${pkgs.xrdb}/bin/xrdb -merge "$HOME/.Xresources" 2>/dev/null || true
+        if systemctl --user is-active --quiet urxvtd.service 2>/dev/null; then
+          systemctl --user restart urxvtd.service 2>/dev/null || true
+        else
+          pkill -x urxvtd 2>/dev/null || true
         fi
       '';
     };
@@ -214,15 +226,5 @@ in
         WantedBy = [ "default.target" ];
       };
     };
-
-    # Recarrega recursos do X11 e reinicia o daemon urxvtd para atualizar as fontes imediatamente
-    home.activation.reloadUrxvt = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      ${pkgs.xrdb}/bin/xrdb -merge "$HOME/.Xresources" 2>/dev/null || true
-      if systemctl --user is-active --quiet urxvtd.service 2>/dev/null; then
-        systemctl --user restart urxvtd.service 2>/dev/null || true
-      else
-        pkill -x urxvtd 2>/dev/null || true
-      fi
-    '';
   };
 }

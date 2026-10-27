@@ -115,29 +115,103 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Variáveis de sessão para suporte a GVfs
-    home.sessionVariables = {
-      GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
-    };
+    home = {
+      # Pacotes essenciais, geradores de miniaturas e integração
+      packages =
+        optionals shouldInstall [
+          nemo-wrapped
+        ]
+        ++ [
+          pkgs.gvfs
+          pkgs.file-roller
+          pkgs.ffmpegthumbnailer
+          pkgs.webp-pixbuf-loader
+          pkgs.poppler
+          pkgs.libgsf
+          pkgs.freetype
+          pkgs.meld
+          pkgs.zenity
+          pkgs.imagemagick
+          pkgs.qrencode
+        ];
 
-    # Pacotes essenciais, geradores de miniaturas e integração
-    home.packages =
-      optionals shouldInstall [
-        nemo-wrapped
-      ]
-      ++ [
-        pkgs.gvfs
-        pkgs.file-roller
-        pkgs.ffmpegthumbnailer
-        pkgs.webp-pixbuf-loader
-        pkgs.poppler
-        pkgs.libgsf
-        pkgs.freetype
-        pkgs.meld
-        pkgs.zenity
-        pkgs.imagemagick
-        pkgs.qrencode
+      # Modelos e Nemo Actions personalizadas (~/.local/share/nemo/actions/)
+      file = mkMerge [
+        {
+          ".local/share/templates/Documento de Texto.txt".text = "";
+          ".local/share/templates/Arquivo Vazio".text = "";
+
+          # Ações de Contexto do Nemo
+          ".local/share/nemo/actions/open-terminal.nemo_action".text = ''
+            [Nemo Action]
+            Active=true
+            Name=Abrir no Terminal
+            Comment=Abrir pasta atual no terminal
+            Exec=${preferredTerminal}
+            Icon-Name=utilities-terminal
+            Selection=Any
+            Extensions=dir;
+          '';
+
+          ".local/share/nemo/actions/open-as-root.nemo_action".text = ''
+            [Nemo Action]
+            Active=true
+            Name=Abrir como Administrador
+            Comment=Abrir diretório com privilégios de root
+            Exec=pkexec env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" WAYLAND_DISPLAY="$WAYLAND_DISPLAY" nemo %F
+            Icon-Name=system-file-manager-root
+            Selection=Any
+            Extensions=dir;
+          '';
+
+          ".local/share/nemo/actions/compare-meld.nemo_action".text = ''
+            [Nemo Action]
+            Active=true
+            Name=Comparar com Meld
+            Comment=Comparar arquivos ou diretórios selecionados
+            Exec=${pkgs.meld}/bin/meld %F
+            Icon-Name=org.gnome.Meld
+            Selection=Any
+            Extensions=any;
+          '';
+
+          ".local/share/nemo/actions/checksum.nemo_action".text = ''
+            [Nemo Action]
+            Active=true
+            Name=Verificar Checksum (SHA256)
+            Comment=Calcular hash SHA256 do arquivo selecionado
+            Exec=sh -c 'H=$(sha256sum "%F" | awk "{print \$1}"); if command -v zenity >/dev/null; then echo "$H" | zenity --text-info --title="Checksum SHA256" --width=500 --height=200; else notify-send "SHA256" "$H"; fi'
+            Icon-Name=dialog-information
+            Selection=s
+            Extensions=nodirs;
+          '';
+        }
+        (mkIf isVscodeEnabled {
+          ".local/share/nemo/actions/open-vscode.nemo_action".text = ''
+            [Nemo Action]
+            Active=true
+            Name=Abrir no VSCode
+            Comment=Abrir no Visual Studio Code
+            Exec=code %F
+            Icon-Name=code
+            Selection=Any
+            Extensions=any;
+          '';
+        })
+        (mkIf isAntigravityEnabled {
+          ".local/share/nemo/actions/open-antigravity.nemo_action".text = ''
+            [Nemo Action]
+            Active=true
+            Name=Abrir no Antigravity IDE
+            Comment=Abrir no Antigravity AI IDE
+            Exec=antigravity-ide %F
+            Icon-Name=code
+            Selection=Any
+            Extensions=any;
+          '';
+        })
       ];
+    };
 
     # Configurações dconf / GSettings para Nemo
     dconf.settings = {
@@ -159,110 +233,5 @@ in
         default-zoom-level = "standard";
       };
     };
-
-    # Bridge FUSE do GVfs (/run/user/<uid>/gvfs)
-    systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
-      "d %t/gvfs 0700 - - - -"
-      "L+ %h/Templates - - - - .local/share/templates"
-    ];
-
-    systemd.user.services.gvfs-fuse = mkIf pkgs.stdenv.isLinux {
-      Unit = {
-        Description = "Virtual filesystem service - GNOME FUSE daemon";
-        After = [ "gvfs-daemon.service" ];
-        PartOf = [ "default.target" ];
-      };
-      Service = {
-        Type = "simple";
-        Environment = [
-          "PATH=/run/wrappers/bin:/usr/bin:/bin:${pkgs.fuse3}/bin"
-        ];
-        ExecStartPre = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true; mkdir -p %t/gvfs'";
-        ExecStart = "${pkgs.gvfs}/libexec/gvfsd-fuse -f %t/gvfs";
-        ExecStop = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true'";
-        Restart = "on-failure";
-        RestartSec = 3;
-      };
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
-    };
-
-    # Modelos e Nemo Actions personalizadas (~/.local/share/nemo/actions/)
-    home.file = mkMerge [
-      {
-        ".local/share/templates/Documento de Texto.txt".text = "";
-        ".local/share/templates/Arquivo Vazio".text = "";
-
-        # Ações de Contexto do Nemo
-        ".local/share/nemo/actions/open-terminal.nemo_action".text = ''
-          [Nemo Action]
-          Active=true
-          Name=Abrir no Terminal
-          Comment=Abrir pasta atual no terminal
-          Exec=${preferredTerminal}
-          Icon-Name=utilities-terminal
-          Selection=Any
-          Extensions=dir;
-        '';
-
-        ".local/share/nemo/actions/open-as-root.nemo_action".text = ''
-          [Nemo Action]
-          Active=true
-          Name=Abrir como Administrador
-          Comment=Abrir diretório com privilégios de root
-          Exec=pkexec env DISPLAY="$DISPLAY" XAUTHORITY="$XAUTHORITY" WAYLAND_DISPLAY="$WAYLAND_DISPLAY" nemo %F
-          Icon-Name=system-file-manager-root
-          Selection=Any
-          Extensions=dir;
-        '';
-
-        ".local/share/nemo/actions/compare-meld.nemo_action".text = ''
-          [Nemo Action]
-          Active=true
-          Name=Comparar com Meld
-          Comment=Comparar arquivos ou diretórios selecionados
-          Exec=${pkgs.meld}/bin/meld %F
-          Icon-Name=org.gnome.Meld
-          Selection=Any
-          Extensions=any;
-        '';
-
-        ".local/share/nemo/actions/checksum.nemo_action".text = ''
-          [Nemo Action]
-          Active=true
-          Name=Verificar Checksum (SHA256)
-          Comment=Calcular hash SHA256 do arquivo selecionado
-          Exec=sh -c 'H=$(sha256sum "%F" | awk "{print \$1}"); if command -v zenity >/dev/null; then echo "$H" | zenity --text-info --title="Checksum SHA256" --width=500 --height=200; else notify-send "SHA256" "$H"; fi'
-          Icon-Name=dialog-information
-          Selection=s
-          Extensions=nodirs;
-        '';
-      }
-      (mkIf isVscodeEnabled {
-        ".local/share/nemo/actions/open-vscode.nemo_action".text = ''
-          [Nemo Action]
-          Active=true
-          Name=Abrir no VSCode
-          Comment=Abrir no Visual Studio Code
-          Exec=code %F
-          Icon-Name=code
-          Selection=Any
-          Extensions=any;
-        '';
-      })
-      (mkIf isAntigravityEnabled {
-        ".local/share/nemo/actions/open-antigravity.nemo_action".text = ''
-          [Nemo Action]
-          Active=true
-          Name=Abrir no Antigravity IDE
-          Comment=Abrir no Antigravity AI IDE
-          Exec=antigravity-ide %F
-          Icon-Name=code
-          Selection=Any
-          Extensions=any;
-        '';
-      })
-    ];
   };
 }

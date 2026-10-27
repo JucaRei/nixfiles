@@ -204,6 +204,41 @@ in
         };
       };
     })
+    (mkIf anyFMEnabled {
+      home.sessionVariables = {
+        GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
+      };
+
+      systemd.user = mkIf pkgs.stdenv.isLinux {
+        # Bridge FUSE do GVfs (/run/user/<uid>/gvfs) e diretório de templates
+        tmpfiles.rules = [
+          "d %t/gvfs 0700 - - - -"
+          "L+ %h/Templates - - - - .local/share/templates"
+        ];
+
+        services.gvfs-fuse = {
+          Unit = {
+            Description = "Virtual filesystem service - GNOME FUSE daemon";
+            After = [ "gvfs-daemon.service" ];
+            PartOf = [ "default.target" ];
+          };
+          Service = {
+            Type = "simple";
+            Environment = [
+              "PATH=/run/wrappers/bin:/usr/bin:/bin:${pkgs.fuse3}/bin"
+            ];
+            ExecStartPre = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true; mkdir -p %t/gvfs'";
+            ExecStart = "${pkgs.gvfs}/libexec/gvfsd-fuse -f %t/gvfs";
+            ExecStop = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true'";
+            Restart = "on-failure";
+            RestartSec = 3;
+          };
+          Install = {
+            WantedBy = [ "default.target" ];
+          };
+        };
+      };
+    })
     (mkIf (cfg.enableThumbnails && anyFMEnabled) {
       # Serviço de usuário Systemd para o daemon de miniaturas do FreeDesktop (Tumbler)
       systemd.user.services.tumbler = mkIf pkgs.stdenv.isLinux {

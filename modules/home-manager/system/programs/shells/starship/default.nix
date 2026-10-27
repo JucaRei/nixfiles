@@ -25,32 +25,34 @@ in
         palette = "current_theme";
 
         palettes.current_theme = {
-          rosewater = c.pink;
-          flamingo = c.pink;
-          pink = c.pink;
-          mauve = c.purple;
-          red = c.red;
-          maroon = c.red;
-          peach = c.orange;
-          yellow = c.yellow;
-          green = c.green;
-          teal = c.teal;
-          sapphire = c.blue;
-          sky = c.cyan;
-          blue = c.blue;
-          lavender = c.purple;
-          text = c.fg;
-          subtext1 = c.fgMuted;
-          subtext0 = c.fgSubtle;
-          overlay2 = c.fgSubtle;
-          overlay1 = c.fgMuted;
-          overlay0 = c.border;
-          surface2 = c.surfaceAlt;
-          surface1 = c.surface;
-          surface0 = c.bgAlt;
-          base = c.bg;
-          mantle = c.bgAlt;
-          crust = c.bgDark;
+          inherit (c)
+            rosewater
+            flamingo
+            pink
+            mauve
+            red
+            maroon
+            peach
+            yellow
+            green
+            teal
+            sapphire
+            sky
+            blue
+            lavender
+            text
+            subtext1
+            subtext0
+            overlay2
+            overlay1
+            overlay0
+            surface2
+            surface1
+            surface0
+            base
+            mantle
+            crust
+            ;
         };
 
         time = {
