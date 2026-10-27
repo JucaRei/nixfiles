@@ -226,6 +226,34 @@ in
         "Xcursor.size" = mkDefault cfg.cursor.size;
       };
 
+      # Style Scheme dinâmico para GtkSourceView (gedit, meld, gnome-text-editor)
+      xdg.dataFile =
+        let
+          schemeId = builtins.replaceStrings [ "-" ] [ "_" ] cfg.name;
+          schemeXml = import ./gtksourceview.nix {
+            id = schemeId;
+            name = cfg.name;
+            inherit (palette) variant;
+            inherit colors;
+          };
+          styleDirs = [
+            "gedit/styles"
+            "libgedit-gtksourceview-300/styles"
+            "gtksourceview-5/styles"
+            "gtksourceview-4/styles"
+            "gtksourceview-3.0/styles"
+            "gtksourceview-2.0/styles"
+          ];
+        in
+        lib.listToAttrs (
+          map (dir: {
+            name = "${dir}/${schemeId}.xml";
+            value = {
+              text = schemeXml;
+            };
+          }) styleDirs
+        );
+
       # Configuração declarativa para xsettingsd (gerenciador XSETTINGS leve para X11/BSPWM/DWM)
       xdg.configFile = mkIf cfg.xsettingsd.enable {
         "xsettingsd/xsettingsd.conf".text = mkDefault ''

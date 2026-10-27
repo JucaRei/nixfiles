@@ -2,19 +2,16 @@
   config,
   lib,
   pkgs,
-  username,
   ...
 }:
 let
-  # installFor = [ "juca" ];
   inherit (pkgs.stdenv) isLinux;
   inherit (lib) mkIf mkEnableOption;
   cfg = config.system.programs.tools.meld;
+  isDark = (config.desktop.theme.variant or "dark") == "dark";
+  schemeId = builtins.replaceStrings [ "-" ] [ "_" ] config.desktop.theme.name;
 in
 {
-  # lib.mkIf (lib.elem username installFor) {
-  # Install meld for Linux and macOS but only apply configuration to Linux.
-
   options = {
     system.programs.tools.meld = {
       enable = mkEnableOption "Enable's meld";
@@ -23,11 +20,7 @@ in
 
   config = mkIf cfg.enable {
     home = {
-      file = mkIf isLinux {
-        "${config.home.homeDirectory}/.local/share/libgedit-gtksourceview-300/styles/catppuccin-mocha.xml".text =
-          builtins.readFile ./gedit-catppuccin-mocha.xml;
-      };
-      packages = with pkgs; [ meld ];
+      packages = [ pkgs.meld ];
     };
 
     # User specific dconf settings; only intended as override for NixOS dconf profile user database
@@ -40,11 +33,10 @@ in
           insert-spaces-instead-of-tabs = true;
           highlight-current-line = true;
           show-line-numbers = true;
-          prefer-dark-theme = true;
+          prefer-dark-theme = isDark;
           highlight-syntax = true;
-          style-scheme = "catppuccin_mocha";
+          style-scheme = schemeId;
         };
       };
   };
-  # }
 }

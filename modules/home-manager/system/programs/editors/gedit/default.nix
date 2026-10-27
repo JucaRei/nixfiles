@@ -16,46 +16,15 @@ let
     ;
 
   isDark = (config.desktop.theme.variant or "dark") == "dark";
-  themeName =
-    if config.desktop.theme ? gtk && config.desktop.theme.gtk ? name then
-      config.desktop.theme.gtk.name
-    else if config.gtk ? theme && config.gtk.theme ? name then
-      config.gtk.theme.name
-    else
-      "";
-  themePackage =
-    if config.desktop.theme ? gtk && config.desktop.theme.gtk ? package then
-      config.desktop.theme.gtk.package
-    else if config.gtk ? theme && config.gtk.theme ? package then
-      config.gtk.theme.package
-    else
-      null;
-  iconPackage =
-    if config.desktop.theme ? icons && config.desktop.theme.icons ? package then
-      config.desktop.theme.icons.package
-    else if config.gtk ? iconTheme && config.gtk.iconTheme ? package then
-      config.gtk.iconTheme.package
-    else
-      null;
+  themeName = config.desktop.theme.gtk.name;
+  themePackage = config.desktop.theme.gtk.package;
+  iconPackage = config.desktop.theme.icons.package;
 
   themeDataDir = lib.optionalString (themePackage != null) "${themePackage}/share:";
   iconDataDir = lib.optionalString (iconPackage != null) "${iconPackage}/share:";
 
-  # Esquema de sintaxe padrão sincronizado com a paleta declarativa
-  defaultTheme =
-    if config.desktop.theme ? name then
-      (
-        if config.desktop.theme.name == "catppuccin-macchiato" then
-          "catppuccin_macchiato"
-        else if config.desktop.theme.name == "catppuccin-mocha" then
-          "catppuccin_mocha"
-        else if config.desktop.theme.name == "dracula" then
-          "dracula"
-        else
-          "catppuccin_macchiato"
-      )
-    else
-      "catppuccin_macchiato";
+  # Esquema de sintaxe padrão derivado da paleta declarativa
+  defaultTheme = builtins.replaceStrings [ "-" ] [ "_" ] config.desktop.theme.name;
 
   gedit-base = nixGLWrapper pkgs.gedit;
 
@@ -82,29 +51,6 @@ let
       done
     '';
   };
-
-  styleDirs = [
-    "gedit/styles"
-    "libgedit-gtksourceview-300/styles"
-    "gtksourceview-5/styles"
-    "gtksourceview-4/styles"
-    "gtksourceview-3.0/styles"
-    "gtksourceview-2.0/styles"
-  ];
-  styleFiles = {
-    "catppuccin-macchiato.xml" = ./catppuccin-macchiato.xml;
-    "catppuccin-mocha.xml" = ./catppuccin-mocha.xml;
-    "dracula.xml" = ./dracula.xml;
-  };
-  styleDataFiles = lib.listToAttrs (
-    lib.concatMap (
-      dir:
-      lib.mapAttrsToList (name: source: {
-        name = "${dir}/${name}";
-        value = { inherit source; };
-      }) styleFiles
-    ) styleDirs
-  );
 in
 {
   options.system.programs.editors.gedit = {
@@ -137,8 +83,6 @@ in
     home.sessionVariables = mkIf cfg.default {
       EDITOR = mkDefault "gedit";
     };
-
-    xdg.dataFile = styleDataFiles;
 
     dconf.settings = {
       "org/gnome/gedit/preferences/editor" = {
