@@ -22,15 +22,7 @@ in
       ];
       kernelModules = [ "kvm-intel" ];
     };
-    #servicesxserver.videoDrivers = [ "modesetting" ];
-
-    # if (device.gpu == "hybrid-nvidia") then
-    #   [ "modesetting" ]
-    # else if (hostname == "anubis") then [
-    #   "i965"
-    # ]
-    # else [ "intel" ];
-    # else [ "i965" ];
+    # services.xserver.videoDrivers = [ "modesetting" ];
 
     # hardware.graphics = (mkIf (device.gpu == "hybrid-nvidia") {
     #   enable = true;

@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  hostname,
   desktop ? null,
   nixGLWrapper ? (x: x),
   isNvidia ? false,
@@ -215,15 +214,11 @@ let
           gpu-api=auto
           hwdec=vaapi-copy,vaapi,no
           video-sync=audio
-          ${optionalString (hostname == "nixtro" || hostname == "nitro") ''
-            vaapi-device=/dev/dri/by-path/pci-0000:00:02.0-render
+          ${optionalString (cfg.vaapiDevice != null) ''
+            vaapi-device=${cfg.vaapiDevice}
           ''}
         ''
-
-      # ── Acer Nitro 5 AN52 — Intel (iGPU) + NVIDIA GTX/RTX (dGPU) ─────────────
-      # Driver proprietário NVIDIA. Vulkan + nvdec-copy para decodificação acelerada.
-      # nvdec-copy é mais compatível que nvdec pois não usa zero-copy com VA-API.
-      else if hostname == "nixtro" || hostname == "nitro" then
+      else if cfg.profile == "nitro" then
         ''
           [hw-preset]
           profile-desc=Nitro 5: Intel UHD 630 via nixGLIntel (vaapi, opengl)
@@ -233,39 +228,30 @@ let
           gpu-shader-cache-dir=~/.cache/mpv/shaders
           video-sync=display-resample
         ''
-
-      # ── MacBook Pro 4,1 (Early 2008) — NVIDIA 8600M GT / Nouveau (NV50) ────────
-      # Nouveau NV50 não suporta Vulkan. OpenGL + VAAPI via Mesa.
-      # Escaladores bilinear reduzem carga no Core 2 Duo Penryn (2 núcleos, ~2.4GHz).
-      else if hostname == "rocinante" then
-        if isNvidia then
-          ''
-            [hw-preset]
-            profile-desc=Rocinante: NVIDIA 340 Legacy (Proprietário)
-            vo=gpu
-            gpu-api=opengl
-            hwdec=no
-            profile=fast
-            scale=bilinear
-            cscale=bilinear
-            dscale=bilinear
-          ''
-        else
-          ''
-            [hw-preset]
-            profile-desc=Rocinante: Nouveau (Open Source)
-            vo=gpu
-            gpu-api=opengl
-            hwdec=vaapi
-            scale=bilinear
-            cscale=bilinear
-            dscale=bilinear
-          ''
-
-      # ── MacBook Air 4,1 — Intel HD 3000, 2 GB RAM ──────────────────────────────
-      # Memória limitada: cache reduzido, escaladores leves, sem pré-processamento.
-      # video-sync=audio evita o overhead de display-resample em hardware fraco.
-      else if hostname == "anubis" then
+      else if cfg.profile == "legacy-nvidia" then
+        ''
+          [hw-preset]
+          profile-desc=Rocinante: NVIDIA 340 Legacy (Proprietário)
+          vo=gpu
+          gpu-api=opengl
+          hwdec=no
+          profile=fast
+          scale=bilinear
+          cscale=bilinear
+          dscale=bilinear
+        ''
+      else if cfg.profile == "legacy-nouveau" then
+        ''
+          [hw-preset]
+          profile-desc=Rocinante: Nouveau (Open Source)
+          vo=gpu
+          gpu-api=opengl
+          hwdec=vaapi
+          scale=bilinear
+          cscale=bilinear
+          dscale=bilinear
+        ''
+      else if cfg.profile == "low-ram" then
         ''
           [hw-preset]
           profile-desc=MacBook Air: Intel HD 3000 (vaapi, opengl, 2GB RAM)
@@ -280,10 +266,7 @@ let
           cache-secs=5
           video-sync=audio
         ''
-
-      # ── Hyper-V Virtual Machine — sem aceleração 3D por hardware ───────────────
-      # Evita tentativas de Vulkan e DRM KMS que falham no adaptador virtual do Hyper-V.
-      else if hostname == "rocinante-hyperv" then
+      else if cfg.profile == "software" then
         ''
           [hw-preset]
           profile-desc=Hyper-V: Software rendering (x11, sem hwdec)
@@ -291,8 +274,6 @@ let
           hwdec=no
           video-sync=audio
         ''
-
-      # ── Fallback genérico para outros hosts / VMs ──────────────────────────────
       else
         ''
           [hw-preset]
@@ -302,7 +283,7 @@ let
           hwdec=auto-safe
         ''
     )
-    + (optionalString (hostname == "nixtro" || hostname == "nitro") ''
+    + (optionalString cfg.hybridGraphics ''
 
       [nvidia]
       profile-desc=Nitro 5: NVIDIA dGPU via PRIME (nvdec/cuda/auto)
@@ -352,6 +333,39 @@ in
         no arquivo .desktop (sobrescrevendo mpv.desktop), incluindo uma ação secundária
         no menu de contexto para abrir com a iGPU Intel.
       '';
+    };
+
+    profile = lib.mkOption {
+      type = lib.types.enum [
+        "auto"
+        "nitro"
+        "legacy-nvidia"
+        "legacy-nouveau"
+        "low-ram"
+        "software"
+      ];
+      default = if isNvidia then "legacy-nvidia" else "auto";
+      description = ''
+        Perfil de hardware para reprodução no MPV:
+        - "auto": decodificação segura automática (vo=gpu, gpu-api=auto, hwdec=auto-safe)
+        - "nitro": perfil otimizado para Intel UHD 630 + NVIDIA dGPU
+        - "legacy-nvidia": perfil para GPUs legadas com driver proprietário antigo (ex: NVIDIA 340)
+        - "legacy-nouveau": perfil para GPUs legadas com driver Nouveau / Mesa
+        - "low-ram": perfil econômico para máquinas com pouca RAM (ex: MacBook Air 2GB)
+        - "software": perfil para renderização puramente por software em VMs sem aceleração 3D
+      '';
+    };
+
+    vaapiDevice = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Dispositivo de renderização VA-API opcional (ex: /dev/dri/by-path/pci-0000:00:02.0-render).";
+    };
+
+    hybridGraphics = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Habilitar suporte e ações de dGPU NVIDIA / PRIME no desktop entry e perfil [nvidia].";
     };
 
     floating = lib.mkOption {
@@ -405,7 +419,7 @@ in
       "mpv/mpv.conf".text = ''
         ${builtins.readFile ./configs/mpv.conf}
 
-        # ── Perfil de hardware gerado em compilação para: ${hostname} ──────────
+        # ── Perfil de hardware gerado em compilação para perfil: ${cfg.profile} ──────────
         ${hwPresetSection}
 
         # ── Ajuste de janela flutuante para Window Managers (tiling) ───────────
@@ -507,8 +521,7 @@ in
     ];
 
     xdg.desktopEntries =
-      mkIf
-        (cfg.defaultNvidia || (!shouldInstall && !isNixOS) || (hostname == "nitro" || hostname == "nixtro"))
+      mkIf (cfg.defaultNvidia || (!shouldInstall && !isNixOS) || cfg.hybridGraphics)
         {
           mpv = {
             name = "mpv Media Player";
@@ -534,7 +547,7 @@ in
                   };
                 }
               else
-                (optionalAttrs (hostname == "nitro" || hostname == "nixtro") {
+                (optionalAttrs cfg.hybridGraphics {
                   open-nvidia = {
                     name = "Open with NVIDIA dGPU";
                     exec = nvidiaExec;

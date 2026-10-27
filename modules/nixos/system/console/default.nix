@@ -28,7 +28,6 @@ in
     console = {
       enable = true;
       useXkbConfig = true;
-      # keyMap = mkIf (hostname == "nitro" || hostname == "scrubber") "br-abnt";
       earlySetup = false;
       font = "${pkgs.tamzen}/share/consolefonts/TamzenForPowerline10x20.psf";
       # font = "ter-powerline-v26n";

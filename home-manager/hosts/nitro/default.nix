@@ -116,6 +116,9 @@ in
         multimedia = {
           mpv = {
             enable = true;
+            profile = "nitro";
+            hybridGraphics = true;
+            vaapiDevice = "/dev/dri/by-path/pci-0000:00:02.0-render";
             defaultNvidia = true; # Abre com NVIDIA dGPU por padrão no .desktop (com ação secundária para Intel)
             # useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
             installPackage = true;

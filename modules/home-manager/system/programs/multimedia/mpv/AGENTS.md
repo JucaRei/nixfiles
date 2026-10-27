@@ -13,7 +13,7 @@ Controlado por `system.programs.multimedia.mpv.enable`.
 - **Perfis de Hardware**: Configuração `[hw-preset]` inserida no bloco `[default]` do `mpv.conf`.
 - **Suporte a Multi-GPU / Wrappers**: Em laptops com GPU híbrida (ex.: `nitro`), gera ações secundárias no menu de contexto do `.desktop` para alternar entre Intel e NVIDIA.
 - **Rede e SMB**: Suporte a URLs `smb://` através do hook Lua `gvfs-smb.lua` e do FUSE do sistema.
-- **Presets Limpos**: Preferir options declarativas em vez de testar `hostname == "..."` diretamente no módulo.
+- **Presets Declarativos**: Opções `profile` ('auto', 'nitro', 'legacy-nvidia', 'legacy-nouveau', 'low-ram', 'software'), `hybridGraphics` e `vaapiDevice` substituem totalmente checagens de `hostname` no módulo.
 
 ## Como prosseguir
 

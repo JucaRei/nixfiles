@@ -1,5 +1,4 @@
 {
-  hostname,
   isISO,
   config,
   lib,
@@ -7,13 +6,9 @@
   ...
 }:
 let
-  installOn = [
-    "nitro"
-  ];
   inherit (lib)
     mkOption
     mkIf
-    elem
     types
     ;
   cfg = config.nixos.services.bcachefs;
@@ -23,7 +18,7 @@ in
     nixos.services.bcachefs = {
       enable = mkOption {
         type = types.bool;
-        default = if (elem hostname installOn || isISO) then true else false;
+        default = isISO;
         description = "Enables bcachefs filesystem.";
       };
     };

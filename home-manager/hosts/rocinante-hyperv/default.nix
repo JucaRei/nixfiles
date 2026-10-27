@@ -30,6 +30,7 @@
         };
         multimedia.mpv = {
           enable = true;
+          profile = "software";
         };
       };
     };

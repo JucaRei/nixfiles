@@ -4,7 +4,6 @@
   lib,
   isWorkstation,
   isInstall,
-  hostname,
   ...
 }:
 let

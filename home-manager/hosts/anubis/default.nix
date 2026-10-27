@@ -23,7 +23,10 @@
           antigravity.enable = true;
         };
         multimedia = {
-          mpv.enable = true;
+          mpv = {
+            enable = true;
+            profile = "low-ram";
+          };
         };
         terminal = {
           enable = true;

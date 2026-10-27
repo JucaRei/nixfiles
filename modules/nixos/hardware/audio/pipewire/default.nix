@@ -1,6 +1,5 @@
 {
   config,
-  hostname,
   isInstall,
   isWorkstation,
   lib,
