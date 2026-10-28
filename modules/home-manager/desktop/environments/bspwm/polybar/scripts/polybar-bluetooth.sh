@@ -11,8 +11,7 @@ if ! command -v bluetoothctl >/dev/null 2>&1; then
       local class_hex="${2:-}"
       local uuids="${3:-}"
       local dev_name="${4:-}"
-      local dev_name_lower
-      dev_name_lower=$(echo "$dev_name" | tr '[:upper:]' '[:lower:]')
+      local dev_name_lower="${dev_name,,}"
 
       # 1. Pelo atributo Icon do BlueZ
       case "$icon_class" in
@@ -45,7 +44,7 @@ if ! command -v bluetoothctl >/dev/null 2>&1; then
           echo "󰌌"; return ;;
         *headset*|*evolve*|*void*|*arctis*|*cloud*|*kraken*|*hs70*|*hs80*)
           echo "󰋋"; return ;;
-        *headphone*|*fone*|*buds*|*airpod*|*freebud*|*soundcore*|*wh-*|*wf-*|*tune*|*live*|*earphone*|*earbuds*)
+        *headphone*|*fone*|*buds*|*airpod*|*freebud*|*soundcore*|*space*travel*|*moondrop*|*wh-*|*wf-*|*tune*|*live*|*earphone*|*earbuds*)
           echo "󰥰"; return ;;
         *speaker*|*caixa*|*soundbar*|*jbl*|*echo*|*boombox*|*flip*|*charge*|*xtreme*|*wonderboom*)
           echo "󰓃"; return ;;
@@ -125,8 +124,32 @@ if ! command -v bluetoothctl >/dev/null 2>&1; then
           uuids=$(echo "$pinfo" | grep -i "UUID:")
           dev_icon=$(get_device_icon "$icon_class" "$class_hex" "$uuids" "$pname")
 
-          batt_val=$(echo "$pinfo" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
-          [ -n "$batt_val" ] && [ "$batt_val" -gt 100 ] 2>/dev/null && batt_val=""
+          batt_val=""
+          if [[ "$pinfo" =~ [Bb]attery.*\(+([0-9]+)\)+ ]]; then
+            batt_val="${BASH_REMATCH[1]}"
+          elif [[ "$pinfo" =~ [Bb]attery[^:]*:[[:space:]]*0x([0-9a-fA-F]+) ]]; then
+            batt_val=$(( 16#${BASH_REMATCH[1]} ))
+          elif [[ "$pinfo" =~ [Bb]attery[^:]*:[[:space:]]*([0-9]+)%? ]]; then
+            batt_val="${BASH_REMATCH[1]}"
+          fi
+
+          # Fallback para sysfs (/sys/class/power_supply) caso não venha no bluetoothctl info
+          if [ -z "$batt_val" ] && [ -d /sys/class/power_supply ]; then
+            mac_clean="${pmac//:/_}"
+            mac_clean_lower="${mac_clean,,}"
+            for pdir in /sys/class/power_supply/*"$mac_clean"* /sys/class/power_supply/*"$mac_clean_lower"*; do
+              if [ -f "$pdir/capacity" ]; then
+                batt_val=$(cat "$pdir/capacity" 2>/dev/null || true)
+                [ -n "$batt_val" ] && break
+              fi
+            done
+          fi
+
+          if [ -n "$batt_val" ]; then
+            if ! [[ "$batt_val" =~ ^[0-9]+$ ]] || [ "$batt_val" -gt 100 ]; then
+              batt_val=""
+            fi
+          fi
 
           conn_macs+=("$pmac")
           conn_names+=("$pname")

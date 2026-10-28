@@ -27,7 +27,7 @@ MY_PID=$$
     fi
 
     # 3. Limpar cache de estado, arquivos temporários e sockets IPC da Polybar
-    rm -f /tmp/.polybar-netspeed-cache 2>/dev/null || true
+    rm -f /tmp/.polybar-netspeed* "${XDG_RUNTIME_DIR:-/tmp}"/.polybar-netspeed* 2>/dev/null || true
     rm -f /tmp/polybar_redshift_* 2>/dev/null || true
     rm -f /tmp/polybar_mqueue.* 2>/dev/null || true
     rm -rf /tmp/polybar-*.log 2>/dev/null || true

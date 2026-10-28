@@ -33,7 +33,11 @@
           fi
           ;;
         toggle)
-          curr=$(brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+          b_curr=$(brightnessctl -d "$dev" -m 2>/dev/null || true)
+          curr=0
+          if [[ "$b_curr" =~ ,([0-9]+)% ]]; then
+            curr="${BASH_REMATCH[1]}"
+          fi
           if [ "$curr" -gt 0 ] 2>/dev/null; then
             brightnessctl -d "$dev" set 0%
           else
@@ -42,7 +46,11 @@
           ;;
       esac
 
-      val=$(brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+      b_val=$(brightnessctl -d "$dev" -m 2>/dev/null || true)
+      val=""
+      if [[ "$b_val" =~ ,([0-9]+)% ]]; then
+        val="${BASH_REMATCH[1]}"
+      fi
       if [ -n "$val" ]; then
         dunstify -a "OSD" -u low -i "input-keyboard" -r 9993 -h int:value:"$val" -t 1500 "Luz do Teclado: $val%"
       fi

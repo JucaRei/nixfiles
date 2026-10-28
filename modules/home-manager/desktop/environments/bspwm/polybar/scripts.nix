@@ -35,6 +35,7 @@ let
     pkgs.writeShellApplication (
       args
       // {
+        bashOptions = args.bashOptions or [ ];
         excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
           "SC1091"
           "SC2001"
@@ -276,8 +277,10 @@ rec {
   bspLayoutScriptPkg = writeShellApp {
     name = "bsp-layout-status";
     runtimeInputs = [
+      pkgs.bsp-layout
       pkgs.bspwm
       pkgs.coreutils
+      pkgs.jq
     ];
     runtimeEnv = colorEnv;
     text = builtins.readFile ./scripts/bsp-layout-status.sh;
@@ -287,9 +290,11 @@ rec {
   bspLayoutSwitchScriptPkg = writeShellApp {
     name = "bsp-layout-switch";
     runtimeInputs = [
+      pkgs.bsp-layout
       pkgs.bspwm
       pkgs.coreutils
       pkgs.dunst
+      pkgs.jq
     ];
     text = builtins.readFile ./scripts/bsp-layout-switch.sh;
   };
@@ -299,9 +304,11 @@ rec {
     name = "rofi-bsp-layout";
     runtimeInputs = [
       bspLayoutSwitchScriptPkg
+      pkgs.bsp-layout
       pkgs.bspwm
       pkgs.coreutils
       pkgs.dunst
+      pkgs.jq
       pkgs.rofi
     ];
     text = builtins.readFile ./scripts/rofi-bsp-layout.sh;
@@ -336,6 +343,7 @@ rec {
     runtimeInputs = [
       pkgs.coreutils
       pkgs.gawk
+      pkgs.iproute2
     ];
     runtimeEnv = colorEnv;
     text = builtins.readFile ./scripts/polybar-netspeed.sh;
@@ -347,6 +355,8 @@ rec {
     runtimeInputs = [
       pkgs.brightnessctl
       pkgs.coreutils
+      pkgs.dunst
+      pkgs.polybar
     ];
     runtimeEnv = colorEnv;
     text = builtins.readFile ./scripts/polybar-backlight.sh;
@@ -413,6 +423,7 @@ rec {
       pkgs.gawk
       pkgs.gnugrep
       pkgs.gnused
+      pkgs.jq
       pkgs.procps
       pkgs.rofi
       pkgs.systemd

@@ -624,7 +624,7 @@ in
   "module/backlight" = {
     type = "custom/script";
     exec = "${scripts.backlightScript}";
-    interval = 2;
+    interval = 1;
     format = "<label>";
     label = "%output%";
     label-padding = 1;
@@ -770,8 +770,8 @@ in
     format = "<label>";
     label = "%output%";
     label-padding = 1;
-    click-left = "${scripts.bspLayoutSwitchScript} next";
-    click-right = "${scripts.rofiLayoutMenu}";
+    click-left = "${scripts.rofiLayoutMenu}";
+    click-right = "${scripts.bspLayoutSwitchScript} next";
     click-middle = "${scripts.bspLayoutSwitchScript} reset";
     scroll-up = "${scripts.bspLayoutSwitchScript} next";
     scroll-down = "${scripts.bspLayoutSwitchScript} prev";

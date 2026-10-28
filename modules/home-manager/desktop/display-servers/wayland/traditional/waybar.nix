@@ -17,6 +17,7 @@ let
     pkgs.writeShellApplication (
       args
       // {
+        bashOptions = args.bashOptions or [ ];
         excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
           "SC1091"
           "SC2001"

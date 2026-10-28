@@ -37,6 +37,7 @@ let
     pkgs.writeShellApplication (
       args
       // {
+        bashOptions = args.bashOptions or [ ];
         excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
           "SC1091"
           "SC2001"
@@ -515,6 +516,9 @@ in
                 fi
               ) &
             ''}
+
+            # Matar processos residuais de bsp-layout watcher se existirem
+            pkill -f "bsp-layout.*watch" 2>/dev/null || true
 
             # Iniciar daemon de bloqueio de tela (xss-lock) e configurar inatividade (XSS / DPMS)
             ${lib.optionalString (config.desktop.bspwm.lock.enable or true) ''

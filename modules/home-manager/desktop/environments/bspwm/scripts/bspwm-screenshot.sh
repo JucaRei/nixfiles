@@ -1,79 +1,154 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2001,SC2005,SC2012,SC2034,SC2059,SC2076,SC2126,SC2154,SC2155,SC2183,SC2207,SC1091,SC2221,SC2222
 
-dir="${SCREENSHOT_SAVE_PATH:-$HOME/Imagens/Capturas}"
-    [ -d "$dir" ] || mkdir -p "$dir"
-    timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
-    file="$dir/Screenshot_$timestamp.png"
+dir="${SCREENSHOT_SAVE_PATH:-$HOME/Pictures/Screenshots}"
+[ -d "$dir" ] || mkdir -p "$dir" 2>/dev/null || true
+timestamp=$(date +'%Y-%m-%d_%H-%M-%S')
+file="$dir/Screenshot_$timestamp.png"
+gif_file="$dir/Recording_$timestamp.gif"
 
-    notify_shot() {
-      if [ -f "$1" ]; then
-        # Copia imagem diretamente para a área de transferência
-        xclip -selection clipboard -t image/png < "$1" 2>/dev/null || true
+notify_shot() {
+  if [ -f "$1" ]; then
+    # Copia imagem diretamente para a área de transferência
+    xclip -selection clipboard -t image/png < "$1" 2>/dev/null || true
 
-        # Dispara notificação Dunst com miniatura e ações interativas
-        action=$(dunstify -a "Screenshot" \
-          -i "$1" \
-          -u normal \
-          -t 5000 \
-          -h string:x-dunst-stack-tag:screenshot \
-          "Captura de Tela Realizada" \
-          "Salvo em <i>Pictures/Screenshots</i> e copiado para a área de transferência." \
-          --action="open,Visualizar" \
-          --action="folder,Abrir Pasta" \
-          --action="delete,Excluir" 2>/dev/null || echo "")
+    # Dispara notificação Dunst com miniatura e ações interativas
+    action=$(dunstify -a "Screenshot" \
+      -i "$1" \
+      -u normal \
+      -t 5000 \
+      -h string:x-dunst-stack-tag:screenshot \
+      "Captura de Tela Realizada" \
+      "Salvo em <i>Pictures/Screenshots</i> e copiado para a área de transferência." \
+      --action="open,Visualizar" \
+      --action="folder,Abrir Pasta" \
+      --action="delete,Excluir" 2>/dev/null || echo "")
 
-        case "$action" in
-          open) xdg-open "$1" 2>/dev/null || feh "$1" & ;;
-          folder) xdg-open "$dir" 2>/dev/null || ${FILE_MANAGER_CMD:-thunar} "$dir" & ;;
-          delete) rm -f "$1" && dunstify -a "Screenshot" -u low -t 1500 "Captura excluída" ;;
-        esac
+    case "$action" in
+      open) xdg-open "$1" 2>/dev/null || feh "$1" & ;;
+      folder) xdg-open "$dir" 2>/dev/null || ${FILE_MANAGER_CMD:-thunar} "$dir" & ;;
+      delete) rm -f "$1" && dunstify -a "Screenshot" -u low -t 1500 "Captura excluída" ;;
+    esac
+  fi
+}
+
+notify_gif() {
+  local target="$1"
+  if [ -f "$target" ]; then
+    xclip -selection clipboard -t image/gif < "$target" 2>/dev/null || true
+
+    action=$(dunstify -a "Screenshot" \
+      -i "$target" \
+      -u normal \
+      -t 6000 \
+      -h string:x-dunst-stack-tag:screenshot \
+      "GIF Gravado com Sucesso (4s)" \
+      "Salvo em <i>Pictures/Screenshots</i> e copiado para a área de transferência." \
+      --action="open,Visualizar" \
+      --action="folder,Abrir Pasta" \
+      --action="delete,Excluir" 2>/dev/null || echo "")
+
+    case "$action" in
+      open) xdg-open "$target" 2>/dev/null || feh "$target" & ;;
+      folder) xdg-open "$dir" 2>/dev/null || ${FILE_MANAGER_CMD:-thunar} "$dir" & ;;
+      delete) rm -f "$target" && dunstify -a "Screenshot" -u low -t 1500 "GIF excluído" ;;
+    esac
+  else
+    dunstify -a "Screenshot" -u critical "Erro ao Gravar GIF" "O arquivo não foi gerado. Verifique /tmp/screenshot_gif_err.log"
+  fi
+}
+
+get_focused_monitor_geo() {
+  bspc query -T -m pointed 2>/dev/null | jq -r '.rectangle | "\(.width)x\(.height)+\(.x)+\(.y)"' 2>/dev/null
+}
+
+case "$1" in
+  full|--now)
+    # Captura apenas o monitor onde o cursor do mouse está (sem barras pretas multi-monitor)
+    geo=$(get_focused_monitor_geo)
+    if [ -n "$geo" ] && [ "$geo" != "null" ]; then
+      maim -g "$geo" "$file" 2>/dev/null || maim "$file"
+    else
+      maim "$file"
+    fi
+    notify_shot "$file"
+    ;;
+
+  all|--all)
+    # Captura todos os monitores combinados
+    maim "$file"
+    notify_shot "$file"
+    ;;
+
+  area|--sel|-s)
+    # Seleção interativa retangular
+    sleep 0.2
+    was_picom=0
+    if pgrep -x picom >/dev/null 2>&1; then
+      was_picom=1
+      pkill -x picom 2>/dev/null || true
+      sleep 0.05
+    fi
+
+    maim -s -u "$file" 2>/dev/null
+    ret=$?
+
+    if [ "$was_picom" -eq 1 ]; then
+      (picom -b >/dev/null 2>&1 || true) &
+    fi
+
+    [ "$ret" -eq 0 ] && notify_shot "$file"
+    ;;
+
+  gif|--gif|gif-area)
+    # Gravação de GIF animado de 4s em recorte interativo via slop e byzanz
+    sleep 0.2
+    geo=$(slop -f "%x %y %w %h" -b 2 -c 0.4,0.6,0.9,0.5 2>/dev/null || true)
+    [ -z "$geo" ] && exit 0
+    read -r X Y W H <<< "$geo"
+    [ -z "$W" ] || [ -z "$H" ] && exit 0
+    [ "$W" -lt 10 ] || [ "$H" -lt 10 ] && exit 0
+
+    dunstify -a "Screenshot" -u low -t 4000 -h string:x-dunst-stack-tag:screenshot-gif "Gravando GIF (4s)..." "Área selecionada (${W}x${H}). Gravando animação..." &
+
+    if command -v byzanz-record >/dev/null 2>&1; then
+      byzanz-record --cursor --duration=4 --delay=0 --x="$X" --y="$Y" --width="$W" --height="$H" "$gif_file" >/tmp/screenshot_gif_err.log 2>&1
+    else
+      echo "byzanz-record não encontrado no sistema" >/tmp/screenshot_gif_err.log
+    fi
+
+    notify_gif "$gif_file"
+    ;;
+
+  gif-full|--gif-full)
+    # Gravação de GIF animado de 4s no monitor atual via byzanz
+    geo=$(get_focused_monitor_geo)
+    X=0; Y=0
+    if [ -n "$geo" ] && [ "$geo" != "null" ]; then
+      if [[ "$geo" =~ ([0-9]+)x([0-9]+)\+([0-9]+)\+([0-9]+) ]]; then
+        W="${BASH_REMATCH[1]}"
+        H="${BASH_REMATCH[2]}"
+        X="${BASH_REMATCH[3]}"
+        Y="${BASH_REMATCH[4]}"
       fi
-    }
+    fi
+    if [ -z "${W:-}" ] || [ -z "${H:-}" ]; then
+      W=1920
+      H=1080
+      X=0
+      Y=0
+    fi
 
-    get_focused_monitor_geo() {
-      bspc query -T -m pointed 2>/dev/null | jq -r '.rectangle | "\(.width)x\(.height)+\(.x)+\(.y)"' 2>/dev/null
-    }
+    dunstify -a "Screenshot" -u low -t 4000 -h string:x-dunst-stack-tag:screenshot-gif "Gravando GIF (4s)..." "Gravando monitor atual (${W}x${H})..." &
 
-    case "$1" in
-      full|--now)
-        # Captura apenas o monitor onde o cursor do mouse está (sem barras pretas multi-monitor)
-        geo=$(get_focused_monitor_geo)
-        if [ -n "$geo" ] && [ "$geo" != "null" ]; then
-          maim -g "$geo" "$file" 2>/dev/null || maim "$file"
-        else
-          maim "$file"
-        fi
-        notify_shot "$file"
-        ;;
+    if command -v byzanz-record >/dev/null 2>&1; then
+      byzanz-record --cursor --duration=4 --delay=0 --x="$X" --y="$Y" --width="$W" --height="$H" "$gif_file" >/tmp/screenshot_gif_err.log 2>&1
+    else
+      echo "byzanz-record não encontrado no sistema" >/tmp/screenshot_gif_err.log
+    fi
 
-      all|--all)
-        # Captura todos os monitores combinados
-        maim "$file"
-        notify_shot "$file"
-        ;;
-
-      area|--sel|-s)
-        # Seleção interativa retangular
-        sleep 0.2
-        # Desativa temporariamente o picom durante o recorte para garantir 100% que a tela fique limpa e sem nenhum blur
-        was_picom=0
-        if pgrep -x picom >/dev/null 2>&1; then
-          was_picom=1
-          pkill -x picom 2>/dev/null || true
-          sleep 0.05
-        fi
-
-        maim -s -u "$file" 2>/dev/null
-        ret=$?
-
-        # Restaura o compositor imediatamente após o recorte (ou cancelamento com Esc)
-        if [ "$was_picom" -eq 1 ]; then
-          (picom -b >/dev/null 2>&1 || picom -b >/dev/null 2>&1 || true) &
-        fi
-
-        [ "$ret" -eq 0 ] && notify_shot "$file"
-        ;;
+    notify_gif "$gif_file"
+    ;;
 
       window|--win|-w)
         # Captura a janela atualmente focada
@@ -124,24 +199,30 @@ dir="${SCREENSHOT_SAVE_PATH:-$HOME/Imagens/Capturas}"
         OPT_FULL="󰹑  Monitor Atual           (Imediato)"
         OPT_AREA="󰆞  Recorte de Área         (Seleção com cursor)"
         OPT_WIN="󰖲  Janela Ativa            (Focada)"
+        OPT_GIF="󰕧  Gravar GIF (Área ~4s)   (Recorte animado)"
+        OPT_GIFFULL="󰕧  Gravar GIF (Tela ~4s)   (Monitor animado)"
         OPT_IN3="󱎫  Temporizador (3s)       (Contagem rápida)"
         OPT_IN5="󱎫  Temporizador (5s)       (Contagem regressiva)"
         OPT_ALL="󰍹  Todos os Monitores      (Canvas completo)"
         OPT_DIR="󰈊  Abrir Pasta de Capturas (~/Pictures/Screenshots)"
 
-        CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s" \
+        CHOICE=$(printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s" \
           "$OPT_FULL" \
           "$OPT_AREA" \
           "$OPT_WIN" \
+          "$OPT_GIF" \
+          "$OPT_GIFFULL" \
           "$OPT_IN3" \
           "$OPT_IN5" \
           "$OPT_ALL" \
-          "$OPT_DIR" | rofi -dmenu -i -p " 󰹑 Screenshot " -theme-str 'window { width: 560px; height: 350px; } listview { columns: 1; lines: 7; }')
+          "$OPT_DIR" | rofi -dmenu -i -p " 󰹑 Screenshot " -theme-str 'window { width: 580px; height: 420px; } listview { columns: 1; lines: 9; }')
 
         case "$CHOICE" in
           *"Monitor Atual"*) $0 full ;;
           *"Recorte de Área"*) sleep 0.2 && $0 area ;;
           *"Janela Ativa"*) sleep 0.2 && $0 window ;;
+          *"Gravar GIF (Área"*) sleep 0.2 && $0 gif ;;
+          *"Gravar GIF (Tela"*) sleep 0.2 && $0 gif-full ;;
           *"Temporizador (3s)"*) $0 in3 ;;
           *"Temporizador (5s)"*) $0 in5 ;;
           *"Todos os Monitores"*) $0 all ;;

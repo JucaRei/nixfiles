@@ -192,8 +192,8 @@ rec {
       inherit desktop platform stateVersion;
     };
 
-  # `nix flake check`: só AVALIA cada host (não builda), pegando erros de módulo
-  # em NixOS e em Home Manager (o flake check padrão não avalia homeConfigurations).
+  # `nix flake check`: o flake check nativo já avalia todas as nixosConfigurations.
+  # Adicionamos em `checks` apenas as homeConfigurations standalone para validação completa.
   mkChecks =
     { self, ... }:
     forAllSystems (
@@ -203,9 +203,6 @@ rec {
         # drvPath sem contexto: força a avaliação mas não vira dependência de build.
         evalOnly =
           name: drv: pkgs.writeText "eval-${name}" (builtins.unsafeDiscardStringContext drv.drvPath);
-        nixos = lib.mapAttrs' (
-          name: cfg: lib.nameValuePair "nixos-${name}" (evalOnly name cfg.config.system.build.toplevel)
-        ) self.nixosConfigurations;
         home = lib.mapAttrs' (
           name: cfg:
           lib.nameValuePair "home-${lib.replaceStrings [ "@" ] [ "-" ] name}" (
@@ -214,6 +211,6 @@ rec {
         ) self.homeConfigurations;
       in
       # Todos os hosts atuais são x86_64; evita avaliar em aarch64.
-      lib.optionalAttrs (system == defaults.platform) (nixos // home)
+      lib.optionalAttrs (system == defaults.platform) home
     );
 }

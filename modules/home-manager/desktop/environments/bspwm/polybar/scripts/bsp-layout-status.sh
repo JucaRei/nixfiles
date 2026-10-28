@@ -12,6 +12,10 @@ layout=$(bsp-layout get 2>/dev/null)
         icon="󰕰"
         name="Tall"
         ;;
+      columns|niri)
+        icon="󰹑"
+        name="Columns"
+        ;;
       rtall)
         icon="󰕰"
         name="RTall"

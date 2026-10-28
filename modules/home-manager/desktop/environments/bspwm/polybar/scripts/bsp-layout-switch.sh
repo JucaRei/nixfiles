@@ -10,7 +10,11 @@ notify_layout() {
       case "$layout" in
         tall)
           icon="preferences-desktop-display"
-          label="Tall (Master-Stack V)"
+          label="Tall (Master-Stack DWL)"
+          ;;
+        columns|niri)
+          icon="preferences-desktop-display"
+          label="Columns (Estilo Niri)"
           ;;
         rtall)
           icon="preferences-desktop-display"
@@ -56,7 +60,7 @@ notify_layout() {
         bsp-layout prev
         notify_layout
         ;;
-      tall|rtall|wide|rwide|grid|even|monocle|tiled)
+      tall|rtall|wide|rwide|columns|niri|grid|even|monocle|tiled)
         bsp-layout set "$ACTION"
         notify_layout
         ;;

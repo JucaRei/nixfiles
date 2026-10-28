@@ -23,8 +23,8 @@ if [ -n "${OS_LOGO_ICON:-}" ]; then
       os_id="nixos"
     fi
 
-    os_id=$(echo "$os_id" | tr '[:upper:]' '[:lower:]')
-    os_like=$(echo "$os_like" | tr '[:upper:]' '[:lower:]')
+    os_id="${os_id,,}"
+    os_like="${os_like,,}"
 
     icon=""
     color="${COLOR_YELLOW:-}"

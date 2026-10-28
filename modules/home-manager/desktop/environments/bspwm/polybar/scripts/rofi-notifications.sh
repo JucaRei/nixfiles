@@ -1,34 +1,18 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2001,SC2005,SC2012,SC2034,SC2059,SC2076,SC2126,SC2154,SC2155,SC2183,SC2207,SC1091,SC2221,SC2222
 
-# Garantir que o Dunst esteja em execução e respondendo
-        if ! dunstctl is-paused >/dev/null 2>&1; then
-          pkill -f notification-daemon 2>/dev/null || true
-          pkill -f xfce4-notifyd 2>/dev/null || true
-          pkill -f mate-notification-daemon 2>/dev/null || true
-          pkill -f mako 2>/dev/null || true
-          pkill -x dunst 2>/dev/null || true
+# Garantir que o Dunst esteja em execução
+if ! pgrep -x dunst >/dev/null 2>&1; then
+  if command -v systemctl >/dev/null 2>&1 && [ -n "$DISPLAY" ]; then
+    systemctl --user import-environment DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS 2>/dev/null || true
+    systemctl --user start dunst 2>/dev/null || true
+  fi
 
-          if command -v systemctl >/dev/null 2>&1 && [ -n "$DISPLAY" ]; then
-            systemctl --user import-environment DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS 2>/dev/null || true
-            systemctl --user reset-failed dunst 2>/dev/null || true
-            systemctl --user restart dunst 2>/dev/null || true
-          fi
-
-          sleep 0.2
-          if ! dunstctl is-paused >/dev/null 2>&1; then
-            pkill -x dunst 2>/dev/null || true
-            nohup dunst >/dev/null 2>&1 &
-            sleep 0.4
-          fi
-        fi
-
-        if ! dunstctl is-paused >/dev/null 2>&1; then
-          err_msg=$(dunst 2>&1 & pid=$!; sleep 0.4; kill $pid 2>/dev/null || true)
-          rofi -e "Erro ao iniciar o Dunst:
-    ${err_msg:-'Dunst não respondeu ao D-Bus. Execute dunst no terminal para testar.'}"
-          exit 0
-        fi
+  if ! pgrep -x dunst >/dev/null 2>&1; then
+    nohup dunst >/dev/null 2>&1 &
+    sleep 0.3
+  fi
+fi
 
         while true; do
           # Fecha notificações ativas na tela para movê-las ao histórico para que fiquem listadas no Rofi

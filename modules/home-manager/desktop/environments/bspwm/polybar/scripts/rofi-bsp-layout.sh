@@ -6,11 +6,14 @@ curr_layout=$(bsp-layout get 2>/dev/null)
       curr_layout=$(bspc query -T -d focused 2>/dev/null | jq -r '.layout' 2>/dev/null || echo "tiled")
     fi
 
-    OPTIONS="󰕰  Tall (Master vertical)\n󰕰  Wide (Master horizontal)\n󰝘  Grid (Grade balanceada)\n󱒅  Even (Divisão simétrica)\n󰕰  RTall (Master à direita)\n󰕰  RWide (Master abaixo)\n󰍹  Monocle (Janela maximizada)\n󱒆  Tiled (Padrão BSPWM)"
+    OPTIONS="󰕰  Tall (Master DWL)\n󰹑  Columns (Colunas Niri)\n󰕰  Wide (Bottom-Stack DWM)\n󰝘  Grid (Grade balanceada)\n󱒅  Even (Divisão simétrica)\n󰕰  RTall (Master à direita)\n󰕰  RWide (Master abaixo)\n󰍹  Monocle (Janela cheia DWL)\n󱒆  Tiled (Padrão BSPWM)"
 
-    CHOSEN=$(echo -e "$OPTIONS" | rofi -dmenu -i -p "Layout ($curr_layout)" -theme-str 'window { width: 420px; } listview { lines: 8; }')
+    CHOSEN=$(echo -e "$OPTIONS" | rofi -dmenu -i -p "Layout ($curr_layout)" -theme-str 'window { width: 440px; } listview { lines: 9; }')
 
     case "$CHOSEN" in
+      *Columns*)
+        bsp-layout-switch columns
+        ;;
       *RTall*)
         bsp-layout-switch rtall
         ;;

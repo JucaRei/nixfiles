@@ -34,8 +34,12 @@ action="${1:-}"
     case "$action" in
       volume-up)
         pamixer --allow-boost --set-limit 150 -i 2 2>/dev/null || {
-          curr_vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | grep -o -E '[0-9]+%' | head -n1 | tr -d '%')
-          if [ -n "$curr_vol" ] && [ "$curr_vol" -lt 150 ]; then
+          raw_vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null || true)
+          curr_vol=0
+          if [[ "$raw_vol" =~ ([0-9]+)% ]]; then
+            curr_vol="${BASH_REMATCH[1]}"
+          fi
+          if [ "$curr_vol" -lt 150 ]; then
             next_vol=$(( curr_vol + 2 ))
             [ "$next_vol" -gt 150 ] && next_vol=150
             pactl set-sink-volume @DEFAULT_SINK@ "$next_vol%" 2>/dev/null || true

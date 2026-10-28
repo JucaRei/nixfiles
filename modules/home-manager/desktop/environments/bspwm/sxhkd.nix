@@ -22,7 +22,7 @@ let
     if browserBin != null then
       "${browserBin} &"
     else
-      ''if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || ${pkgs.firefox}/bin/firefox & fi'';
+      ''if [ -n "$BROWSER" ]; then "$BROWSER" & else ${pkgs.xdg-utils}/bin/xdg-open https:// 2>/dev/null || firefox 2>/dev/null || x-www-browser & fi'';
 
   picomBin = "${nixGLWrapper pkgs.picom}/bin/picom";
 
@@ -57,6 +57,7 @@ let
     pkgs.writeShellApplication (
       args
       // {
+        bashOptions = args.bashOptions or [ ];
         excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
           "SC1091"
           "SC2001"
@@ -106,13 +107,16 @@ let
     name = "bspwm-screenshot";
     runtimeInputs = [
       pkgs.bspwm
+      pkgs.byzanz
       pkgs.dunst
       pkgs.feh
+      pkgs.ffmpeg
       pkgs.jq
       pkgs.maim
       (nixGLWrapper pkgs.picom)
       pkgs.procps
       pkgs.rofi
+      pkgs.slop
       pkgs.xclip
       pkgs.xdg-utils
     ];
@@ -147,10 +151,13 @@ let
         "${mod} + shift + 3" = "${screenshotScript} full";
         "${mod} + shift + 4" = "${screenshotScript} area";
         "${mod} + shift + 5" = "${screenshotScript} menu";
+        "${mod} + shift + 6" = "${screenshotScript} gif";
         "Print" = "${screenshotScript} full";
         "shift + Print" = "${screenshotScript} area";
         "ctrl + Print" = "${screenshotScript} window";
+        "ctrl + shift + Print" = "${screenshotScript} gif";
         "super + shift + s" = "${screenshotScript} menu";
+        "${mod} + ctrl + shift + s" = "${screenshotScript} gif";
         "XF86SelectiveScreenshot" = "${screenshotScript} area";
       }
       // lib.optionalAttrs (mod != "super") {
@@ -162,11 +169,13 @@ let
         "Print" = "${screenshotScript} full";
         "shift + Print" = "${screenshotScript} area";
         "ctrl + Print" = "${screenshotScript} window";
+        "ctrl + shift + Print" = "${screenshotScript} gif";
         "${mod} + shift + Print" = "${screenshotScript} in5";
         "${mod} + Print" = "${screenshotScript} menu";
         "Sys_Req" = "${screenshotScript} full";
         "shift + Sys_Req" = "${screenshotScript} area";
         "super + shift + s" = "${screenshotScript} menu";
+        "${mod} + ctrl + shift + s" = "${screenshotScript} gif";
         "XF86SelectiveScreenshot" = "${screenshotScript} area";
       }
       // lib.optionalAttrs (mod != "super") {
@@ -241,7 +250,6 @@ let
       pkgs.arandr
       pkgs.dunst
       pkgs.feh
-      pkgs.firefox
       pkgs.lxappearance
       pkgs.networkmanagerapplet
       pkgs.nitrogen
@@ -535,8 +543,12 @@ in
         "${mod} + ctrl + shift + space" = "bsp-layout-switch prev";
         # Super + Ctrl + L: abre menu interativo no Rofi para escolher o layout do workspace
         "${mod} + ctrl + l" = "rofi-bsp-layout";
-        # Super + Ctrl + T: aplica diretamente o layout 'Tall' (coluna mestre à esquerda)
+        # Super + Ctrl + T: aplica diretamente o layout 'Tall' (Master-Stack DWL)
         "${mod} + ctrl + t" = "bsp-layout-switch tall";
+        # Super + Ctrl + C: aplica diretamente o layout 'Columns' (Colunas paralelas Niri)
+        "${mod} + ctrl + c" = "bsp-layout-switch columns";
+        # Super + Ctrl + Z: promove a janela ativa para Master (Zoom estilo DWL/DWM)
+        "${mod} + ctrl + z" = "bsp-layout zoom";
         # Super + Ctrl + W: aplica diretamente o layout 'Wide' (linha mestre no topo)
         "${mod} + ctrl + w" = "bsp-layout-switch wide";
         # Super + Ctrl + G: aplica diretamente o layout 'Grid' (grade simétrica balanceada)

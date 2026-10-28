@@ -42,7 +42,11 @@
         ;;
     esac
 
-    val=$(brightnessctl "${dev_args[@]}" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
+    b_out=$(brightnessctl "${dev_args[@]}" -m 2>/dev/null || true)
+    val=""
+    if [[ "$b_out" =~ ,([0-9]+)% ]]; then
+      val="${BASH_REMATCH[1]}"
+    fi
     if [ -n "$val" ]; then
       if [ "$val" -lt 33 ]; then
         icon="display-brightness-low"

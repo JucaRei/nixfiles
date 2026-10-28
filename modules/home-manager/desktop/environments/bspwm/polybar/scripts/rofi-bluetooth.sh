@@ -227,8 +227,14 @@ get_device_icon() {
       echo "$info" | grep -q "Trusted: yes" && is_trusted="Sim"
       echo "$info" | grep -q "Blocked: yes" && is_blocked="Sim"
 
-      local batt_val
-      batt_val=$(echo "$info" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
+      local batt_val=""
+      if [[ "$info" =~ [Bb]attery.*\(+([0-9]+)\)+ ]]; then
+        batt_val="${BASH_REMATCH[1]}"
+      elif [[ "$info" =~ [Bb]attery[^:]*:[[:space:]]*0x([0-9a-fA-F]+) ]]; then
+        batt_val=$(( 16#${BASH_REMATCH[1]} ))
+      elif [[ "$info" =~ [Bb]attery[^:]*:[[:space:]]*([0-9]+)%? ]]; then
+        batt_val="${BASH_REMATCH[1]}"
+      fi
       [ -n "$batt_val" ] && [ "$batt_val" -le 100 ] 2>/dev/null && battery=" | 󰁹 Bateria: $batt_val%"
 
       local OPT_CONN
@@ -446,8 +452,14 @@ get_device_icon() {
         local icon; icon=$(get_device_icon "$icon_class" "$class_hex" "$uuids" "$name")
 
         if echo "$dinfo" | grep -q "Connected: yes"; then
-          local batt
-          batt=$(echo "$dinfo" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
+          local batt=""
+          if [[ "$dinfo" =~ [Bb]attery.*\(+([0-9]+)\)+ ]]; then
+            batt="${BASH_REMATCH[1]}"
+          elif [[ "$dinfo" =~ [Bb]attery[^:]*:[[:space:]]*0x([0-9a-fA-F]+) ]]; then
+            batt=$(( 16#${BASH_REMATCH[1]} ))
+          elif [[ "$dinfo" =~ [Bb]attery[^:]*:[[:space:]]*([0-9]+)%? ]]; then
+            batt="${BASH_REMATCH[1]}"
+          fi
           if [ -n "$batt" ] && [ "$batt" -le 100 ] 2>/dev/null; then
             CONN_ITEMS+="$icon  $name  [$mac]  (󰂱 Conectado 󰁹 $batt%)\n"
           else
@@ -494,8 +506,14 @@ get_device_icon() {
           local cuuids; cuuids=$(echo "$cdinfo" | grep -i "UUID:")
           local cicon; cicon=$(get_device_icon "$cicon_class" "$cclass_hex" "$cuuids" "$cname")
 
-          local cbatt
-          cbatt=$(echo "$cdinfo" | grep -i "Battery Percentage" | sed -E 's/.*\(([0-9]+)\).*/\1/; s/.*:[[:space:]]*([0-9]+).*/\1/' | tr -dc '0-9')
+          local cbatt=""
+          if [[ "$cdinfo" =~ [Bb]attery.*\(+([0-9]+)\)+ ]]; then
+            cbatt="${BASH_REMATCH[1]}"
+          elif [[ "$cdinfo" =~ [Bb]attery[^:]*:[[:space:]]*0x([0-9a-fA-F]+) ]]; then
+            cbatt=$(( 16#${BASH_REMATCH[1]} ))
+          elif [[ "$cdinfo" =~ [Bb]attery[^:]*:[[:space:]]*([0-9]+)%? ]]; then
+            cbatt="${BASH_REMATCH[1]}"
+          fi
           if [ -n "$cbatt" ] && [ "$cbatt" -le 100 ] 2>/dev/null; then
             CONN_ITEMS+="$cicon  $cname  [$cmac]  (󰂱 Conectado 󰁹 $cbatt%)\n"
           else

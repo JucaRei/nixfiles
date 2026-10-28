@@ -42,7 +42,7 @@ monitor="${MONITOR:-}"
           Polybar|polybar|Conky|conky|Dunst|dunst) continue ;;
         esac
 
-        class_lower=$(echo "$wm_class" | tr '[:upper:]' '[:lower:]')
+        class_lower="${wm_class,,}"
         case "$class_lower" in
           # Terminais
           *alacritty*|*kitty*|*terminal*|*foot*|*wezterm*|*ghostty*|*st*|*urxvt*|*xterm*) icon="" ;;
