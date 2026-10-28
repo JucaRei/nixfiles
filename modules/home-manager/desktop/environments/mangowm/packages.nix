@@ -230,7 +230,7 @@ in
   options.desktop.mangowm = {
     enable = mkOption {
       type = bool;
-      default = (desktop == "mangowm" || desktop == "mango");
+      default = desktop == "mangowm" || desktop == "mango";
       description = "Enable MangoWM Wayland dynamic tiling compositor based on dwl";
     };
 

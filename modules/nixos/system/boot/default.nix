@@ -67,7 +67,7 @@ in
         description = "Default's boot option.";
       };
       device = mkOption {
-        type = nullOr (str);
+        type = nullOr str;
         default = null;
         description = "Device for GRUB loader (e.g., /dev/sda, /dev/vda, /dev/nvme0n1).";
       };
@@ -128,7 +128,7 @@ in
         };
       };
 
-      extraModprobeConfig = mkIf (cfg.plymouth) ''
+      extraModprobeConfig = mkIf cfg.plymouth ''
         blacklist iTCO_wdt
         blacklist iTCO_vendor_support
         blacklist sp5100_tco
@@ -138,7 +138,7 @@ in
 
       kernel = {
         sysctl = mkMerge [
-          (mkIf (cfg.silentBoot) {
+          (mkIf cfg.silentBoot {
             "kernel.printk" = "3 3 3 3"; # "4 4 1 7";
             "kernel.ftrace_enabled" = false; # Disable ftrace debugging
             "kernel.nmi_watchdog" = 0; # Disable NMI watchdog
@@ -155,14 +155,14 @@ in
         "cgroup_no_v1=all"
         "systemd.unified_cgroup_hierarchy=yes"
       ]
-      ++ optionals (cfg.plymouth) [
+      ++ optionals cfg.plymouth [
         "quiet"
         "splash"
         "fbcon=nodefer"
         "nowatchdog" # Disable watchdog
         "nmi_watchdog=0" # Disable watchdog
       ]
-      ++ optionals (cfg.silentBoot) [
+      ++ optionals cfg.silentBoot [
         "quiet" # tell the kernel to not be verbose
         "loglevel=3" # 1: system is unusable | 3: error condition | 7: very verbose
         "udev.log_level=3" # udev log message level
@@ -175,7 +175,7 @@ in
       ]
       ++ optionals (cfg.bootManager == "raspberry") [ "cma=32M" ];
 
-      lanzaboote = mkIf (cfg.secureBoot) {
+      lanzaboote = mkIf cfg.secureBoot {
         enable = true;
         pkiBundle = "/etc/secureboot";
       };
@@ -240,7 +240,7 @@ in
     };
 
     systemd = {
-      settings.Manager = mkIf (cfg.plymouth) {
+      settings.Manager = mkIf cfg.plymouth {
         RebootWatchdogSec = "0";
       };
     };

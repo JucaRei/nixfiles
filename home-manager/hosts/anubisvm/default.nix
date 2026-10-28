@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   config = {
     desktop.bspwm = {
       enable = true;

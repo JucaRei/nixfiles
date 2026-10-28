@@ -33,7 +33,7 @@ in
             settings = {
               daemon = {
                 # Enable fingerprint authentication in GDM
-                FingerprintAuthentication = mkIf (config.services.fprintd.enable) true;
+                FingerprintAuthentication = mkIf config.services.fprintd.enable true;
               };
               Theme = {
                 CursorTheme = {

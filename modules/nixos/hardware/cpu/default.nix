@@ -49,7 +49,7 @@ in
         options ${optionalString (cfg.cpuVendor != "other") "kvm_${cfg.cpuVendor}"} nested=1
       '';
 
-      kernelModules = mkIf (cfg.improveTCP) [ "tcp_bbr" ];
+      kernelModules = mkIf cfg.improveTCP [ "tcp_bbr" ];
 
       kernel = {
         sysctl =
@@ -143,19 +143,17 @@ in
           ];
       };
 
-      kernelParams = (optional (cfg.cpuVendor == "intel") "intel_iommu=on");
+      kernelParams = optional (cfg.cpuVendor == "intel") "intel_iommu=on";
 
     };
 
-    environment.systemPackages = (
-      optionals isWorkstation (
+    environment.systemPackages = optionals isWorkstation (
         with pkgs;
         [
           usbutils
           pciutils
         ]
-      )
-    );
+      );
 
     hardware = {
       cpu = {

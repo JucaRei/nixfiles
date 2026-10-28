@@ -30,7 +30,7 @@ in
       # Enables simultaneous use of processor threads.
       allowSimultaneousMultithreading = true;
 
-      polkit = mkIf (isWorkstation) {
+      polkit = mkIf isWorkstation {
         enable = true;
         debug = true;
         # the below configuration depends on security.polkit.debug being set to true
@@ -67,7 +67,7 @@ in
         '';
       };
 
-      pam = mkIf (isWorkstation) {
+      pam = mkIf isWorkstation {
         # Increase open file limit for sudoers
         # fix "too many files open" errors while writing a lot of data at once
         loginLimits = [
@@ -113,7 +113,7 @@ in
 
       virtualisation = {
         #  flush the L1 data cache before entering guests
-        flushL1DataCache = mkIf (config.nixos.services.virt-manager.enable) "always";
+        flushL1DataCache = mkIf config.nixos.services.virt-manager.enable "always";
       };
     };
   };

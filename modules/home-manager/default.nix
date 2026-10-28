@@ -26,7 +26,7 @@ in
     ./system
     ./desktop/theme
   ]
-  ++ optionals (isWorkstation) [ ./desktop/environments ];
+  ++ optionals isWorkstation [ ./desktop/environments ];
   config = {
     system.programs.editors.gedit.enable = isWorkstation;
 
@@ -38,7 +38,7 @@ in
         optionals (!isNixOS) [
           config.nix.package
         ]
-        ++ optionals (isWorkstation) [
+        ++ optionals isWorkstation [
           pkgs.xdg-utils
         ];
 

@@ -31,13 +31,13 @@ in
         oxygen
       ];
 
-      variables = mkIf (hasNvidia) {
+      variables = mkIf hasNvidia {
         NVD_GPU = 1;
       };
     };
 
     programs = {
-      kdeconnect = mkIf (notVM) {
+      kdeconnect = mkIf notVM {
         enable = true;
         package = pkgs.gnomeExtensions.gsconnect;
       };
