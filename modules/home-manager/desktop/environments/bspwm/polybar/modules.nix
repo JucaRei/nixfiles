@@ -8,17 +8,19 @@
     adapter = "ADP1";
     encapsulation = "pill";
     tray = {
-      enable = true;
+      enable = false;
     };
   },
   ...
 }:
 let
-  rawEncap =
+  rawDefault =
     if builtins.isAttrs (cfg.encapsulation or null) then
       cfg.encapsulation.default or "pill"
     else
       cfg.encapsulation or "pill";
+
+  rawEncap = if builtins.isAttrs rawDefault then rawDefault.style or "pill" else rawDefault;
 
   resolveColor =
     val: defaultVal:
@@ -28,12 +30,22 @@ let
       val
     else if colors ? ${val} then
       colors.${val}
+    else if
+      builtins.match "^[0-9a-fA-F]{6}$" val != null || builtins.match "^[0-9a-fA-F]{8}$" val != null
+    then
+      "#${val}"
     else
       defaultVal;
 
   customGlyphColor =
     if builtins.isAttrs (cfg.encapsulation or null) then
-      resolveColor (cfg.encapsulation.colors.glyph or cfg.encapsulation.colors.default or null
+      resolveColor (cfg.encapsulation.colors.glyph or cfg.encapsulation.colors.default
+        or cfg.encapsulation.color or (
+          if builtins.isAttrs (cfg.encapsulation.default or null) then
+            cfg.encapsulation.default.color or null
+          else
+            null
+        )
       ) colors.pill
     else
       colors.pill;

@@ -27,6 +27,54 @@ let
       cfg
       ;
   };
+
+  encapStyleEnum = [
+    "pill"
+    "shapes"
+    "slant"
+    "powerline"
+  ];
+
+  encapStyleWithDefaultEnum = [ "default" ] ++ encapStyleEnum;
+
+  # Submódulo flexível para cada cápsula: aceita string de estilo ou attrset com { style, color, accent }
+  mkEncapModuleType =
+    {
+      defaultStyle ? "default",
+      allowDefault ? true,
+      description ? "Configuração de estilo, cor de fundo e cor de destaque do encapsulamento",
+    }:
+    let
+      validStyles = if allowDefault then encapStyleWithDefaultEnum else encapStyleEnum;
+      submoduleType = lib.types.submodule {
+        options = {
+          style = mkOption {
+            type = lib.types.enum validStyles;
+            default = defaultStyle;
+            description = "Estilo geométrico do encapsulamento ('pill', 'shapes', 'slant', 'powerline'${
+              if allowDefault then ", ou 'default' para herdar" else ""
+            })";
+          };
+
+          color = mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "Cor de fundo da cápsula e de seus glifos delimitadores (nome da paleta como 'pill', 'surface', 'red', ou código HEX direto como '#29339B' ou '29339B')";
+          };
+
+          accent = mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "Cor de destaque dos ícones, textos ativos ou elementos de destaque dentro da cápsula (nome da paleta ou código HEX direto como '#FF5555' ou 'FF5555')";
+          };
+        };
+      };
+    in
+    lib.types.coercedTo (lib.types.enum validStyles) (val: {
+      style = val;
+      color = null;
+      accent = null;
+    }) submoduleType;
 in
 {
   options.desktop.bspwm.polybar = {
@@ -49,110 +97,116 @@ in
 
     encapsulation = mkOption {
       type =
-        lib.types.coercedTo
-          (lib.types.enum [
-            "pill"
-            "shapes"
-            "slant"
-            "powerline"
-          ])
+        lib.types.coercedTo (lib.types.enum encapStyleEnum)
           (val: {
-            default = val;
+            default = {
+              style = val;
+              color = null;
+              accent = null;
+            };
             workspaces = "default";
             stats = "default";
             netspeed = "default";
             date = "default";
             tray = "default";
+            color = null;
+            accent = null;
             colors = { };
           })
           (
             lib.types.submodule {
               options = {
                 default = mkOption {
-                  type = lib.types.enum [
-                    "pill"
-                    "shapes"
-                    "slant"
-                    "powerline"
-                  ];
+                  type = mkEncapModuleType {
+                    defaultStyle = "pill";
+                    allowDefault = false;
+                    description = "Encapsulamento padrão herdado por todas as cápsulas";
+                  };
                   default = "pill";
-                  description = "Encapsulamento padrão para todas as cápsulas";
+                  description = "Encapsulamento padrão herdado por todas as cápsulas (pode ser string 'pill'/'shapes'/'slant'/'powerline' ou attrset { style, color, accent })";
                 };
 
                 workspaces = mkOption {
-                  type = lib.types.enum [
-                    "default"
-                    "pill"
-                    "shapes"
-                    "slant"
-                    "powerline"
-                  ];
+                  type = mkEncapModuleType {
+                    defaultStyle = "default";
+                    allowDefault = true;
+                    description = "Encapsulamento da cápsula de workspaces";
+                  };
                   default = "default";
-                  description = "Encapsulamento específico da cápsula de workspaces (ou 'default' para herdar)";
+                  description = "Encapsulamento específico da cápsula de workspaces (string ou { style, color, accent })";
                 };
 
                 stats = mkOption {
-                  type = lib.types.enum [
-                    "default"
-                    "pill"
-                    "shapes"
-                    "slant"
-                    "powerline"
-                  ];
+                  type = mkEncapModuleType {
+                    defaultStyle = "default";
+                    allowDefault = true;
+                    description = "Encapsulamento da cápsula de métricas/hardware (cpu, ram, temp, disk)";
+                  };
                   default = "default";
-                  description = "Encapsulamento específico da cápsula de métricas/hardware (cpu, ram, temp, disk)";
+                  description = "Encapsulamento específico da cápsula de métricas/hardware (string ou { style, color, accent })";
                 };
 
                 netspeed = mkOption {
-                  type = lib.types.enum [
-                    "default"
-                    "pill"
-                    "shapes"
-                    "slant"
-                    "powerline"
-                  ];
+                  type = mkEncapModuleType {
+                    defaultStyle = "default";
+                    allowDefault = true;
+                    description = "Encapsulamento da cápsula de velocidade de rede (netspeed)";
+                  };
                   default = "default";
-                  description = "Encapsulamento específico da cápsula de velocidade de rede (netspeed) (ou 'default' para herdar)";
+                  description = "Encapsulamento específico da cápsula de velocidade de rede (string ou { style, color, accent })";
                 };
 
                 date = mkOption {
-                  type = lib.types.enum [
-                    "default"
-                    "pill"
-                    "shapes"
-                    "slant"
-                    "powerline"
-                  ];
+                  type = mkEncapModuleType {
+                    defaultStyle = "default";
+                    allowDefault = true;
+                    description = "Encapsulamento da cápsula de data/relógio";
+                  };
                   default = "default";
-                  description = "Encapsulamento específico da cápsula de data/relógio (ou 'default' para herdar)";
+                  description = "Encapsulamento específico da cápsula de data/relógio (string ou { style, color, accent })";
                 };
 
                 tray = mkOption {
-                  type = lib.types.enum [
-                    "default"
-                    "pill"
-                    "shapes"
-                    "slant"
-                    "powerline"
-                  ];
+                  type = mkEncapModuleType {
+                    defaultStyle = "default";
+                    allowDefault = true;
+                    description = "Encapsulamento da cápsula da bandeja (stalonetray)";
+                  };
                   default = "default";
-                  description = "Encapsulamento específico da cápsula da bandeja (ou 'default' para herdar)";
+                  description = "Encapsulamento específico da cápsula da bandeja (string ou { style, color, accent })";
+                };
+
+                color = mkOption {
+                  type = lib.types.nullOr lib.types.str;
+                  default = null;
+                  description = "Cor de fundo padrão global para todas as cápsulas (nome da paleta ou HEX direto com ou sem '#')";
+                };
+
+                accent = mkOption {
+                  type = lib.types.nullOr lib.types.str;
+                  default = null;
+                  description = "Cor de destaque padrão global para todas as cápsulas (nome da paleta ou HEX direto com ou sem '#')";
                 };
 
                 colors = mkOption {
                   type = lib.types.attrsOf (lib.types.either lib.types.str (lib.types.nullOr lib.types.str));
                   default = { };
                   description = ''
-                    Cores customizadas opcionais para os glifos e fundos das cápsulas.
+                    Cores customizadas opcionais para os glifos, fundos e destaques das cápsulas.
                     Chaves suportadas:
-                    - glyph: cor padrão dos glifos (ex: "pill", "red", "shade1")
+                    - glyph: cor padrão dos glifos e fundos (ex: "pill", "red", "shade1", "#29339B")
+                    - accent: cor de destaque padrão global (ex: "red", "accent", "#ff5555")
                     - workspaces: cor de fundo e glifos da cápsula de workspaces
-                    - focused: cor de destaque do workspace ativo (ex: "red", "accent")
+                    - workspacesAccent / focused: cor de destaque do workspace ativo (ex: "red", "coral", "#ff5555")
                     - focusedNumber: cor do número do workspace quando focado/ativo (ex: "dark", "bgDark")
                     - stats: cor de fundo e glifos da cápsula de métricas (cpu, memory, temp, disk)
+                    - statsAccent: cor de destaque dos ícones de hardware (cpu, ram, temp, disk)
                     - netspeed: cor de fundo e glifos da cápsula de velocidade de rede (netspeed)
+                    - netspeedAccent: cor de destaque do texto da velocidade de rede
                     - date: cor de fundo e glifos da cápsula de data/relógio
+                    - dateAccent: cor de destaque dos ícones e textos da data/relógio
                     - tray: cor de fundo e glifos da cápsula da bandeja
+                    - trayAccent: cor de destaque da bandeja
                   '';
                 };
               };
@@ -160,20 +214,32 @@ in
           );
       default = "pill";
       description = ''
-        Formato de encapsulamento das cápsulas. Pode ser uma string direta ("pill", "shapes", "slant", "powerline")
-        ou uma configuração granular para misturar estilos:
+        Formato de encapsulamento e estilização de cores e destaques das cápsulas.
+        Pode ser uma string direta ("pill", "shapes", "slant", "powerline")
+        ou uma configuração granular especificando estilo, cor de fundo e cor de destaque:
           {
             default = "pill";
-            workspaces = "shapes"; # usa  e  nos workspaces
-            stats = "shapes";      # usa  e  nas métricas (cpu, mem, temp, disk)
-            netspeed = "slant";    # usa  e  na velocidade de rede
-            date = "pill";         # usa  e  no relógio
+            accent = "#ff5555"; # Cor de destaque global padrão
+            workspaces = {
+              style = "powerline";
+              accent = "#ff5555"; # Destaque do workspace ativo (nome da paleta ou HEX direto)
+            };
+            stats = {
+              style = "shapes";
+              color = "#1e1e2e";
+              accent = "mint";    # Ícones de hardware (cpu, mem, temp, disk) destacados em mint
+            };
+            netspeed = {
+              style = "slant";
+              color = "#29339B";  # Fundo customizado da cápsula de velocidade de rede
+              accent = "#8be9fd"; # Velocidade de rede em destaque ciano
+            };
+            date = {
+              style = "pill";
+              accent = "coral";   # Relógio e calendário em destaque coral
+            };
             colors = {
-              glyph = "pill";      # ou qualquer cor da paleta/hex
-              focused = "red";     # destaque vibrante para o workspace ativo
-              focusedNumber = "dark"; # cor suave e amena do número quando focado
-              stats = "pill";
-              netspeed = "pill";
+              focusedNumber = "dark"; # Cor suave do número quando focado
             };
           }
         Também é possível usar diretamente os módulos 'round-left'/'round-right', 'shape-left'/'shape-right',
@@ -273,27 +339,44 @@ in
           isPills = cfg.style == "zproger" || cfg.style == "pills" || cfg.style == "shapes";
           hasTray = cfg.tray.enable;
 
-          # Resolução do tipo de encapsulamento por módulo (permite misturar livremente)
-          rawDefaultEncap =
-            if builtins.isAttrs cfg.encapsulation then
-              cfg.encapsulation.default
-            else if cfg.encapsulation != "pill" then
-              cfg.encapsulation
-            else if cfg.style == "shapes" then
-              "shapes"
+          # Resolução e normalização granular de cada encapsulamento (style, color, accent)
+          normalizeEncap =
+            item: defaultStyle:
+            if builtins.isAttrs item then
+              {
+                style = if (item.style or "default") != "default" then item.style else defaultStyle;
+                color = item.color or null;
+                accent = item.accent or null;
+              }
+            else if builtins.isString item && item != "default" then
+              {
+                style = item;
+                color = null;
+                accent = null;
+              }
             else
-              "pill";
+              {
+                style = defaultStyle;
+                color = null;
+                accent = null;
+              };
 
-          resolveEncap =
+          baseDefaultStyle = if cfg.style == "shapes" then "shapes" else "pill";
+
+          defaultEncapObj =
+            if builtins.isAttrs cfg.encapsulation then
+              normalizeEncap (cfg.encapsulation.default or baseDefaultStyle) baseDefaultStyle
+            else if builtins.isString cfg.encapsulation && cfg.encapsulation != "pill" then
+              normalizeEncap cfg.encapsulation baseDefaultStyle
+            else
+              normalizeEncap baseDefaultStyle baseDefaultStyle;
+
+          getEncapConfig =
             specific:
-            let
-              s =
-                if builtins.isAttrs cfg.encapsulation then
-                  (cfg.encapsulation.${specific} or "default")
-                else
-                  "default";
-            in
-            if s != "default" then s else rawDefaultEncap;
+            if builtins.isAttrs cfg.encapsulation then
+              normalizeEncap (cfg.encapsulation.${specific} or "default") defaultEncapObj.style
+            else
+              defaultEncapObj;
 
           resolveColor =
             val: defaultVal:
@@ -303,27 +386,115 @@ in
               val
             else if colors ? ${val} then
               colors.${val}
+            else if
+              builtins.match "^[0-9a-fA-F]{6}$" val != null || builtins.match "^[0-9a-fA-F]{8}$" val != null
+            then
+              "#${val}"
             else
               defaultVal;
 
           encapColors = if builtins.isAttrs cfg.encapsulation then (cfg.encapsulation.colors or { }) else { };
-          baseGlyphColor = resolveColor (encapColors.glyph or encapColors.default or null) colors.pill;
-          wsColor = resolveColor (encapColors.workspaces or null) baseGlyphColor;
-          statsColor = resolveColor (encapColors.stats or null) baseGlyphColor;
-          netspeedColor = resolveColor (encapColors.netspeed or null) baseGlyphColor;
-          dateColor = resolveColor (encapColors.date or null) baseGlyphColor;
-          trayColor = resolveColor (encapColors.tray or null) baseGlyphColor;
-          focusedWsColor = resolveColor (encapColors.focused or encapColors.active or null) (
-            if colors ? pill-active && colors.pill-active != "" then colors.pill-active else colors.red
-          );
+
+          globalEncapColor =
+            if builtins.isAttrs cfg.encapsulation then
+              (
+                if cfg.encapsulation.color != null then
+                  cfg.encapsulation.color
+                else if defaultEncapObj.color != null then
+                  defaultEncapObj.color
+                else
+                  null
+              )
+            else
+              null;
+
+          globalAccentFallback =
+            if colors ? pill-active && colors.pill-active != "" then colors.pill-active else colors.accent;
+
+          globalAccent = resolveColor (
+            if builtins.isAttrs cfg.encapsulation then
+              (
+                if cfg.encapsulation.accent != null then
+                  cfg.encapsulation.accent
+                else if encapColors ? accent && encapColors.accent != null then
+                  encapColors.accent
+                else if defaultEncapObj.accent != null then
+                  defaultEncapObj.accent
+                else
+                  null
+              )
+            else
+              null
+          ) globalAccentFallback;
+
+          baseGlyphColor = resolveColor (encapColors.glyph or encapColors.default or globalEncapColor
+          ) colors.pill;
+
+          wsEncapCfg = getEncapConfig "workspaces";
+          statsEncapCfg = getEncapConfig "stats";
+          netspeedEncapCfg = getEncapConfig "netspeed";
+          dateEncapCfg = getEncapConfig "date";
+          trayEncapCfg = getEncapConfig "tray";
+
+          wsColor = resolveColor (
+            if wsEncapCfg.color != null then wsEncapCfg.color else encapColors.workspaces or null
+          ) baseGlyphColor;
+          statsColor = resolveColor (
+            if statsEncapCfg.color != null then statsEncapCfg.color else encapColors.stats or null
+          ) baseGlyphColor;
+          netspeedColor = resolveColor (
+            if netspeedEncapCfg.color != null then netspeedEncapCfg.color else encapColors.netspeed or null
+          ) baseGlyphColor;
+          dateColor = resolveColor (
+            if dateEncapCfg.color != null then dateEncapCfg.color else encapColors.date or null
+          ) baseGlyphColor;
+          trayColor = resolveColor (
+            if trayEncapCfg.color != null then trayEncapCfg.color else encapColors.tray or null
+          ) baseGlyphColor;
+
+          focusedWsColor = resolveColor (
+            if wsEncapCfg.accent != null then
+              wsEncapCfg.accent
+            else if encapColors ? workspacesAccent && encapColors.workspacesAccent != null then
+              encapColors.workspacesAccent
+            else if encapColors ? focused && encapColors.focused != null then
+              encapColors.focused
+            else if encapColors ? active && encapColors.active != null then
+              encapColors.active
+            else
+              null
+          ) globalAccent;
           focusedNumColor = resolveColor (encapColors.focusedNumber or encapColors.focused_number or null
           ) colors.dark;
 
-          wsEncap = resolveEncap "workspaces";
-          statsEncap = resolveEncap "stats";
-          netspeedEncap = resolveEncap "netspeed";
-          dateEncap = resolveEncap "date";
-          trayEncap = resolveEncap "tray";
+          statsAccent = resolveColor (
+            if statsEncapCfg.accent != null then statsEncapCfg.accent else encapColors.statsAccent or null
+          ) null;
+          cpuIconColor = if statsAccent != null then statsAccent else colors.purple;
+          memIconColor = if statsAccent != null then statsAccent else colors.orange;
+          tempIconColor = if statsAccent != null then statsAccent else colors.ice;
+          diskIconColor = if statsAccent != null then statsAccent else colors.orange;
+
+          netspeedAccent = resolveColor (
+            if netspeedEncapCfg.accent != null then
+              netspeedEncapCfg.accent
+            else
+              encapColors.netspeedAccent or null
+          ) colors.nord;
+
+          dateAccent = resolveColor (
+            if dateEncapCfg.accent != null then dateEncapCfg.accent else encapColors.dateAccent or null
+          ) colors.time-alt;
+
+          trayAccent = resolveColor (
+            if trayEncapCfg.accent != null then trayEncapCfg.accent else encapColors.trayAccent or null
+          ) colors.blue-alt;
+
+          wsEncap = wsEncapCfg.style;
+          statsEncap = statsEncapCfg.style;
+          netspeedEncap = netspeedEncapCfg.style;
+          dateEncap = dateEncapCfg.style;
+          trayEncap = trayEncapCfg.style;
 
           # Glifos mapeados para os módulos de encapsulamento dedicados
           encapGlyphMap = {
@@ -673,7 +844,7 @@ in
                 format-background = statsColor;
                 format-margin = 0;
                 format-padding = 0;
-                label = " %{T2}%{F${colors.purple}} %{F-}%{T-}%percentage%% ";
+                label = " %{T2}%{F${cpuIconColor}} %{F-}%{T-}%percentage%% ";
                 label-foreground = colors.text-alt;
                 label-background = statsColor;
                 label-padding = 0;
@@ -686,7 +857,7 @@ in
                 format-background = statsColor;
                 format-margin = 0;
                 format-padding = 0;
-                label = " %{T2}%{F${colors.orange}} %{F-}%{T-}%percentage_used%% ";
+                label = " %{T2}%{F${memIconColor}} %{F-}%{T-}%percentage_used%% ";
                 label-foreground = colors.text-alt;
                 label-background = statsColor;
                 label-padding = 0;
@@ -705,7 +876,7 @@ in
                 format-margin = 0;
                 format-padding = 0;
                 format-warn-padding = 0;
-                label = " %{T2}%{F${colors.ice}} %{F-}%{T-}%temperature-c% ";
+                label = " %{T2}%{F${tempIconColor}} %{F-}%{T-}%temperature-c% ";
                 label-warn = " %{T2}%{F${colors.red}} %{F-}%{T-}%temperature-c% ";
                 label-foreground = colors.text-alt;
                 label-warn-foreground = colors.red;
@@ -746,16 +917,16 @@ in
                 interval = 1;
                 format = "<label>";
                 format-prefix = "";
-                format-prefix-foreground = dateColor;
+                format-prefix-foreground = dateAccent;
                 format-background = dateColor;
                 format-margin = 0;
                 format-padding = 0;
-                date = "%{F${colors.time-alt}}  %H:%M:%S%{F-}";
-                date-alt = "%{F${colors.blue-alt}}  %a, %d %b %Y  %{F${colors.time-alt}}  %H:%M:%S%{F-}";
+                date = "%{F${dateAccent}}  %H:%M:%S%{F-}";
+                date-alt = "%{F${dateAccent}}  %a, %d %b %Y  %{F${dateAccent}}  %H:%M:%S%{F-}";
                 time = "";
                 time-alt = "";
                 label = " %date% ";
-                label-foreground = colors.time-alt;
+                label-foreground = dateAccent;
                 label-background = dateColor;
                 label-padding = 0;
                 label-margin = 0;
@@ -771,7 +942,7 @@ in
                 format-margin = 0;
                 format-padding = 0;
                 label = " %output% ";
-                label-foreground = colors.nord;
+                label-foreground = netspeedAccent;
                 label-background = netspeedColor;
                 label-padding = 0;
                 label-margin = 0;
@@ -784,7 +955,7 @@ in
                 format-mounted-background = statsColor;
                 format-mounted-margin = 0;
                 format-mounted-padding = 0;
-                label-mounted = " %{T2}%{F${colors.orange}} %{F-}%{T-}%free% ";
+                label-mounted = " %{T2}%{F${diskIconColor}} %{F-}%{T-}%free% ";
                 label-mounted-foreground = colors.text-alt;
                 label-mounted-background = statsColor;
                 label-mounted-padding = 0;
@@ -820,7 +991,7 @@ in
               "module/tray" = {
                 format-background = trayColor;
                 label-background = trayColor;
-                label-foreground = colors.blue-alt;
+                label-foreground = trayAccent;
               };
             };
         in

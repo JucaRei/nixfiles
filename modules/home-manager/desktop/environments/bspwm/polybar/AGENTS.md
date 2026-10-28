@@ -16,6 +16,10 @@ Submódulo de `desktop/environments/bspwm/polybar/`. Controlado por `desktop.bsp
 - **Áudio e Volume Boost (150%)**: Módulo customizado com `pactl subscribe` e suporte a boost de volume até 150% via `pamixer`. Cores de destaque (`colors.peach`) acima de 100%.
 - **Bluetooth Dinâmico**: Script `bluetoothScript` que identifica tipos de dispositivos pareados (fones, teclado, mouse).
 - **Stalonetray Integrado**: Ativado via `desktop.bspwm.polybar.tray.enable`, exclusivo na barra secundária (ou primária se single-monitor). `ignore_classes` filtra apps que já possuem módulos nativos (Wi-Fi, Bluetooth, Fcitx5, Solaar).
+- **Encapsulamento Modular e Cores (`desktop.bspwm.polybar.encapsulation`)**:
+  - Aceita string direta (`"pill"`, `"shapes"`, `"slant"`, `"powerline"`) ou submódulo granular por cápsula (`workspaces`, `stats`, `netspeed`, `date`, `tray`) com `{ style, color, accent }`.
+  - Resolução de cores via `resolveColor`: aceita nomes da paleta semântica (`"accent"`, `"mint"`, `"coral"`, `"nord"`, `"pill"`, etc.) e código `#HEX` direto (tanto `"#RRGGBB"` quanto `"RRGGBB"` sem cerquilha).
+  - Prioridade estrita: campo no submódulo da cápsula -> `encapsulation.colors.<nome>` -> cor padrão global da cápsula / tema.
 
 ## Como prosseguir
 

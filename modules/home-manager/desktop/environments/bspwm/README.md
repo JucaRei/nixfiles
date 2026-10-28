@@ -156,22 +156,51 @@ desktop.bspwm.polybar = {
   # - "modern": Estilo coeso e limpo inspirado no Waybar
   style = "pills";
 
-  # Formato do encapsulamento (pode ser uma string global ou configuração modular para misturar):
-  # Opção A — Global para todas as cápsulas:
+  # Formato do encapsulamento (pode ser uma string global ou configuração granular por cápsula):
+  # Opção A — Global simples para todas as cápsulas:
   encapsulation = "shapes"; # "pill" (/), "shapes" (/), "slant" (/) ou "powerline" (/)
 
-  # Opção B — Granular e Colorida (misturando formatos e cores livremente):
+  # Opção B — Granular e Colorida (estilo, cor de fundo e cor de destaque por cápsula):
+  # Aceita tanto nomes da paleta ("mint", "coral", "accent", "red", "ice") quanto #HEX direto ("#29339B", "#ff5555" ou "29339B"):
   # encapsulation = {
   #   default = "pill";
-  #   workspaces = "shapes";    # usa  e  nos workspaces
-  #   stats = "shapes";         # usa  e  nas métricas (cpu, mem, temp, disk)
-  #   date = "pill";            # usa  e  no relógio
-  #   tray = "slant";           # usa  e  na bandeja
+  #   accent = "coral"; # Destaque global padrão
+  #
+  #   # Workspaces: 'accent' colore o fundo do workspace ativo/focado
+  #   workspaces = {
+  #     style = "powerline";
+  #     accent = "#ff5555"; # Destaque do workspace ativo (nome da paleta ou HEX)
+  #   };
+  #
+  #   # Métricas (cpu, mem, temp, disk): 'accent' colore os ícones de hardware
+  #   stats = {
+  #     style = "shapes";
+  #     color = "#1e1e2e";  # Fundo customizado da cápsula
+  #     accent = "mint";    # Ícones de hardware destacados em mint (ou HEX)
+  #   };
+  #
+  #   # Netspeed: 'accent' colore o texto de velocidade de rede
+  #   netspeed = {
+  #     style = "slant";
+  #     color = "#29339B";  # Cor da cápsula
+  #     accent = "#8be9fd"; # Texto da velocidade em destaque
+  #   };
+  #
+  #   # Relógio / Data: 'accent' colore os glifos  /  e o horário
+  #   date = {
+  #     style = "pill";
+  #     accent = "coral";
+  #   };
+  #
+  #   # Bandeja (tray / stalonetray): 'accent' colore o ícone
+  #   tray = {
+  #     style = "slant";
+  #     accent = "blue";
+  #   };
+  #
+  #   # Cores adicionais opcionais:
   #   colors = {
-  #     glyph = "pill";         # cor padrão dos glifos (ou "red", "purple", "#hex", etc.)
-  #     focused = "red";        # destaque vibrante do workspace ativo (alto contraste com fundo)
-  #     focusedNumber = "#541422"; # cor suave e amena do número quando focado (ou "dark")
-  #     stats = "pill";         # cor de fundo e glifos da cápsula de métricas de hardware
+  #     focusedNumber = "dark"; # Cor suave do número do workspace quando focado
   #   };
   # };
 };

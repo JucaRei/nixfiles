@@ -42,8 +42,8 @@ in
 
       theme = {
         enable = true;
-        name = "catppuccin-macchiato"; # "tokyo-night"
-        accent = "purple";
+        name = "catppuccin-macchiato"; #"doom" #"tokyo-night"
+        accent = "red";
       };
 
       wallpaper = {
@@ -66,11 +66,20 @@ in
           adapter = "ACAD";
           style = lib.mkDefault "pills";
           encapsulation = {
-            workspaces = lib.mkForce "powerline";
-            stats = lib.mkForce "shapes";
-            netspeed = "slant";
-            colors = {
-              netspeed = "#29339B"; # exceção: cor customizada da cápsula netspeed do nitro
+            workspaces =  {
+              style = "powerline";
+              # color = "#22202070";
+              accent = "#ff5555";
+            };
+            stats = {
+              style = "shapes";
+              # accent = "coral";
+              # color = "#2c2c35b7";  # cor de fundo da cápsula
+            };
+            netspeed = {
+              style = "slant";
+              color = "#29339B";  # cor de fundo da cápsula
+              accent = "#8be9fd"; # texto de velocidade em destaque
             };
           };
         };
