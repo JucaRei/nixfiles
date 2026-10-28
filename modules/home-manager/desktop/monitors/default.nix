@@ -268,7 +268,7 @@ in
             criteria = m.name;
             mode = "${toString m.width}x${toString m.height}@${formatNum m.refresh}Hz";
             position = "${toString m.x},${toString m.y}";
-            scale = m.scale;
+            inherit (m) scale;
             status = if m.enabled then "enable" else "disable";
           }) cfg.monitors;
         }

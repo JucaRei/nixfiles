@@ -101,9 +101,9 @@ in
     # Integração com o módulo upstream nix-flatpak
     services.flatpak = {
       enable = true;
-      packages = cfg.packages;
-      remotes = cfg.remotes;
-      uninstallUnmanaged = cfg.uninstallUnmanaged;
+      inherit (cfg) packages;
+      inherit (cfg) remotes;
+      inherit (cfg) uninstallUnmanaged;
       update = {
         onActivation = cfg.update.onActivation;
         auto = {
@@ -111,7 +111,7 @@ in
           onCalendar = cfg.update.auto.onCalendar;
         };
       };
-      overrides = cfg.overrides;
+      inherit (cfg) overrides;
     };
 
     # Exporta caminhos para que os launchers (.desktop) e binários dos Flatpaks sejam detectados pelos menus e WMs

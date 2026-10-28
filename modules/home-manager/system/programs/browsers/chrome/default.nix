@@ -104,7 +104,7 @@ in
         "--enable-features=WaylandWindowDecorations"
         "--disable-features=Vulkan"
       ]
-      ++ optionals (hasVaapi) [
+      ++ optionals hasVaapi [
         "--enable-features=VaapiVideoDecodeLinuxGL"
         "--enable-features=VaapiVideoDecoder"
       ];

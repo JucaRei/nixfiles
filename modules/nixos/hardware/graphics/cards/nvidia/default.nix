@@ -104,9 +104,9 @@ in
     environment = {
       sessionVariables = {
         LIBVA_DRIVER_NAME = mkIf (
-            device.gpu == "nvidia"
-            || (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable)
-          ) "nvidia";
+          device.gpu == "nvidia"
+          || (device.gpu == "hybrid-nvidia" && !config.hardware.nvidia.prime.offload.enable)
+        ) "nvidia";
       };
 
       # systemPackages = (optionals (config.hardware.nvidia.nvidiaSettings) with pkgs;

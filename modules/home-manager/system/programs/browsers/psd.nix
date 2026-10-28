@@ -241,11 +241,11 @@ in
       # Delega para o módulo oficial nativo do Home Manager (services.psd)
       services.psd = {
         enable = true;
-        package = cfg.package;
+        inherit (cfg) package;
         browsers = activeBrowsers;
-        resyncTimer = cfg.resyncTimer;
-        useBackup = cfg.useBackup;
-        backupLimit = cfg.backupLimit;
+        inherit (cfg) resyncTimer;
+        inherit (cfg) useBackup;
+        inherit (cfg) backupLimit;
       };
 
       # Reinicia o serviço no switch se estiver em execução para recarregar o novo navegador/config

@@ -182,10 +182,10 @@ in
         in
         {
           "bg+" = c.surfaceAlt;
-          bg = c.bg;
+          inherit (c) bg;
           spinner = c.accent;
           hl = c.red;
-          fg = c.fg;
+          inherit (c) fg;
           header = c.red;
           info = c.purple;
           pointer = c.accent;

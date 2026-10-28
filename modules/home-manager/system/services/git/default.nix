@@ -55,7 +55,7 @@ in
 
         signing = mkIf (cfg.signingKey != null) {
           key = cfg.signingKey;
-          signByDefault = cfg.signByDefault;
+          inherit (cfg) signByDefault;
           format = cfg.signingFormat;
         };
 

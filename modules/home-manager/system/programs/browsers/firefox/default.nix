@@ -43,7 +43,7 @@ let
   sharedSettings =
     import ./shared.nix {
       inherit config lib osConfig;
-      version = cfg.version;
+      inherit (cfg) version;
     }
     // import ./fonts.nix { };
 

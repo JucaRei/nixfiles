@@ -146,7 +146,7 @@ in
   options.desktop.hyprland = {
     enable = mkOption {
       type = bool;
-      default = (desktop == "hyprland");
+      default = desktop == "hyprland";
       description = "Enable Hyprland dynamic tiling Wayland compositor";
     };
 
@@ -650,7 +650,7 @@ in
           ];
         };
 
-        extraConfig = cfg.extraConfig;
+        inherit (cfg) extraConfig;
       };
     };
 }

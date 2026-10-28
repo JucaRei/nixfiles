@@ -64,8 +64,8 @@ in
   nord = c.blue; # Workspace 4
   green-alt = c.green; # Workspace 5 / Wi-Fi
   ice = c.cyan; # Temperatura
-  orange = c.orange; # Memória
-  purple = c.purple; # CPU
+  inherit (c) orange; # Memória
+  inherit (c) purple; # CPU
   red-alt = c.red; # Som / Power / Alerta
   blue-alt = c.accent; # Launcher / Brilho
   bat-green = c.green; # Verde bateria

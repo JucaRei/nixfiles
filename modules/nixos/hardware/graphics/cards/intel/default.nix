@@ -6,7 +6,7 @@
 }:
 let
   inherit (lib) mkIf;
-  gpu = device.gpu;
+  inherit (device) gpu;
   device = config.hardware.graphics.cards;
 in
 {
@@ -50,11 +50,9 @@ in
       # ]));
     };
 
-    nixpkgs.config.packageOverrides = (
-      mkIf (gpu == "hybrid-nvidia") (pkgs: {
-        vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-      })
-    );
+    nixpkgs.config.packageOverrides = mkIf (gpu == "hybrid-nvidia") (pkgs: {
+      vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+    });
 
     hardware = {
       graphics = mkIf (device.enable && (device.acceleration == true)) {

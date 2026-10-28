@@ -28,14 +28,15 @@ let
       defaultVal
     else if lib.strings.hasPrefix "#" val then
       val
-    else if colors ? ${val} then
-      colors.${val}
-    else if
-      builtins.match "^[0-9a-fA-F]{6}$" val != null || builtins.match "^[0-9a-fA-F]{8}$" val != null
-    then
-      "#${val}"
     else
-      defaultVal;
+      colors.${val} or (
+        if
+          builtins.match "^[0-9a-fA-F]{6}$" val != null || builtins.match "^[0-9a-fA-F]{8}$" val != null
+        then
+          "#${val}"
+        else
+          defaultVal
+      );
 
   customGlyphColor =
     if builtins.isAttrs (cfg.encapsulation or null) then
@@ -649,8 +650,8 @@ in
     type = "internal/battery";
     full-at = 98;
     low-at = 15;
-    battery = cfg.battery;
-    adapter = cfg.adapter;
+    inherit (cfg) battery;
+    inherit (cfg) adapter;
     poll-interval = 5;
 
     format-charging = "<animation-charging> <label-charging>";

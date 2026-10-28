@@ -232,7 +232,7 @@ in
           schemeId = builtins.replaceStrings [ "-" ] [ "_" ] cfg.name;
           schemeXml = import ./gtksourceview.nix {
             id = schemeId;
-            name = cfg.name;
+            inherit (cfg) name;
             inherit (palette) variant;
             inherit colors;
           };

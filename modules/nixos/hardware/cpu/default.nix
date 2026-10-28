@@ -148,12 +148,12 @@ in
     };
 
     environment.systemPackages = optionals isWorkstation (
-        with pkgs;
-        [
-          usbutils
-          pciutils
-        ]
-      );
+      with pkgs;
+      [
+        usbutils
+        pciutils
+      ]
+    );
 
     hardware = {
       cpu = {
