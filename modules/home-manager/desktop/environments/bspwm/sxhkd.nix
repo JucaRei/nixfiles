@@ -103,6 +103,16 @@ let
   };
   scratchpadScript = lib.getExe scratchpadScriptPkg;
 
+  resizeScriptPkg = writeShellApp {
+    name = "bspwm-resize";
+    runtimeInputs = [
+      pkgs.bspwm
+      pkgs.coreutils
+    ];
+    text = builtins.readFile ./scripts/bspwm-resize.sh;
+  };
+  resizeScript = lib.getExe resizeScriptPkg;
+
   screenshotScriptPkg = writeShellApp {
     name = "bspwm-screenshot";
     runtimeInputs = [
@@ -585,11 +595,12 @@ in
         # =========================================================================
         # REDIMENSIONAMENTO DE JANELAS (EXPANDIR / CONTRAIR)
         # =========================================================================
-        # Super + Ctrl + Setas: expande ou contrai a janela em 20px na direção das setas
-        "${mod} + ctrl + {Left,Down,Up,Right}" =
-          "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
-        # Super + Ctrl + Shift + H/J/K/L: expande ou contrai a janela em 20px usando as teclas Vim
-        "${mod} + ctrl + shift + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+        # Super + Ctrl + Setas: redimensionamento inteligente (expande ou contrai conforme a posição da janela)
+        "${mod} + ctrl + {Left,Down,Up,Right}" = "${resizeScript} {left,down,up,right}";
+        # Super + Ctrl + H/J/K/L: redimensionamento inteligente usando as teclas Vim
+        "${mod} + ctrl + {h,j,k,l}" = "${resizeScript} {left,down,up,right}";
+        # Super + Ctrl + Shift + H/J/K/L: atalho alternativo Vim
+        "${mod} + ctrl + shift + {h,j,k,l}" = "${resizeScript} {left,down,up,right}";
 
         # =========================================================================
         # REINICIALIZAÇÃO DO AMBIENTE
@@ -659,8 +670,8 @@ in
           }
       // lib.optionalAttrs (mod == "super") {
         # Super + Alt + Setas / H,J,K,L: redimensionamento rápido tradicional de janelas
-        "super + alt + {Left,Down,Up,Right}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
-        "super + alt + {h,j,k,l}" = "bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}";
+        "super + alt + {Left,Down,Up,Right}" = "${resizeScript} {left,down,up,right}";
+        "super + alt + {h,j,k,l}" = "${resizeScript} {left,down,up,right}";
       }
       // (config.desktop.bspwm.extraKeybindings or { })
       // cfg.keybindings
@@ -673,6 +684,7 @@ in
       (pkgs.writeShellScriptBin "bspwm-pseudo-tile" ''exec ${pseudoTileScript} "$@"'')
       screenshotScriptPkg
       (pkgs.writeShellScriptBin "screenshoter" ''exec ${screenshotScript} "$@"'')
+      resizeScriptPkg
       colorPickerScriptPkg
       mediaControlPkg
     ];
