@@ -224,11 +224,11 @@ in
         timeout = 7;
       };
 
-      plymouth = rec {
+      plymouth = {
         enable = cfg.plymouth;
         theme = "lone";
-        themePackages = with pkgs; [
-          (adi1090x-plymouth-themes.override { selected_themes = [ theme ]; })
+        themePackages = [
+          (pkgs.adi1090x-plymouth-themes.override { selected_themes = [ "lone" ]; })
         ];
       };
 

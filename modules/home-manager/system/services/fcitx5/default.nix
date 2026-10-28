@@ -52,52 +52,54 @@ in
       pkgs.ipafont
     ];
 
-    # Configuração declarativa de perfil (layout padrão + Mozc)
-    xdg.configFile."fcitx5/profile".text = ''
-      [Groups/0]
-      Name=Default
-      Default Layout=us
-      DefaultIM=keyboard-us
+    # Configurações declarativas do Fcitx5
+    xdg.configFile = {
+      "fcitx5/profile".text = ''
+        [Groups/0]
+        Name=Default
+        Default Layout=us
+        DefaultIM=keyboard-us
 
-      [Groups/0/Items/0]
-      Name=keyboard-us
-      Layout=
+        [Groups/0/Items/0]
+        Name=keyboard-us
+        Layout=
 
-      [Groups/0/Items/1]
-      Name=mozc
-      Layout=
+        [Groups/0/Items/1]
+        Name=mozc
+        Layout=
 
-      [GroupOrder]
-      0=Default
-    '';
+        [GroupOrder]
+        0=Default
+      '';
 
-    # Configuração declarativa global (Atalhos de ativação: Control+Space, Zenkaku_Hankaku, Super+Space)
-    xdg.configFile."fcitx5/config".text = ''
-      [Hotkey]
-      EnumerateForwardKeys=
-      EnumerateBackwardKeys=
-      EnumerateSkipFirst=False
+      # Configuração declarativa global (Atalhos de ativação: Control+Space, Zenkaku_Hankaku, Super+Space)
+      "fcitx5/config".text = ''
+        [Hotkey]
+        EnumerateForwardKeys=
+        EnumerateBackwardKeys=
+        EnumerateSkipFirst=False
 
-      [Hotkey/TriggerKeys]
-      0=Control+space
-      1=Zenkaku_Hankaku
-      2=Hangul
+        [Hotkey/TriggerKeys]
+        0=Control+space
+        1=Zenkaku_Hankaku
+        2=Hangul
 
-      [Hotkey/AltTriggerKeys]
-      0=Shift_L
+        [Hotkey/AltTriggerKeys]
+        0=Shift_L
 
-      [Hotkey/EnumerateGroupForwardKeys]
-      0=Super+space
-    '';
+        [Hotkey/EnumerateGroupForwardKeys]
+        0=Super+space
+      '';
 
-    # Desativar ícone da bandeja do Fcitx5 (mantendo o método de entrada 100% ativo em segundo plano)
-    xdg.configFile."fcitx5/conf/notificationitem.config".text = ''
-      [Addon]
-      Enabled=False
-    '';
-    xdg.configFile."fcitx5/addon/notificationitem.conf".text = ''
-      [Addon]
-      Enabled=False
-    '';
+      # Desativar ícone da bandeja do Fcitx5 (mantendo o método de entrada 100% ativo em segundo plano)
+      "fcitx5/conf/notificationitem.config".text = ''
+        [Addon]
+        Enabled=False
+      '';
+      "fcitx5/addon/notificationitem.conf".text = ''
+        [Addon]
+        Enabled=False
+      '';
+    };
   };
 }

@@ -39,10 +39,12 @@ in
   };
 
   config = {
-    desktop.display-managers.lightdm.enable = mkDefault (cfg.name == "lightdm");
-    desktop.display-managers.sddm.enable = mkDefault (cfg.name == "sddm");
-    desktop.display-managers.regreet.enable = mkDefault (cfg.name == "regreet");
-    desktop.display-managers.gdm.enable = mkDefault (cfg.name == "gdm");
+    desktop.display-managers = {
+      lightdm.enable = mkDefault (cfg.name == "lightdm");
+      sddm.enable = mkDefault (cfg.name == "sddm");
+      regreet.enable = mkDefault (cfg.name == "regreet");
+      gdm.enable = mkDefault (cfg.name == "gdm");
+    };
 
     # Provedor universal de avatar do usuário para qualquer display manager (GDM, SDDM, LightDM, ReGreet)
     services.accounts-daemon.enable = mkDefault dmEnabled;

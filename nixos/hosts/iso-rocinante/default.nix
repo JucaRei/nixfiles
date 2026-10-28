@@ -26,68 +26,94 @@ in
     # Standard NixOS ISOs assume 64-bit EFI and systemd initrd,
     # both of which fail on this hardware.
 
-    # Use LTS kernel for stability on legacy hardware
-    boot.kernelPackages = mkForce pkgs.linuxPackages;
+    boot = {
+      # Use LTS kernel for stability on legacy hardware
+      kernelPackages = mkForce pkgs.linuxPackages;
 
-    # Disable systemd initrd — the scripted initrd is more compatible
-    # with legacy boot (32-bit EFI / BIOS CSM) and Ventoy/USB quirks.
-    # Systemd initrd's "initrd-find-nixos-closure" service fails on
-    # non-standard media layouts (Ventoy, dd with wrong labels, etc.)
-    boot.initrd.systemd.enable = mkForce false;
+      # Disable systemd initrd — the scripted initrd is more compatible
+      # with legacy boot (32-bit EFI / BIOS CSM) and Ventoy/USB quirks.
+      # Systemd initrd's "initrd-find-nixos-closure" service fails on
+      # non-standard media layouts (Ventoy, dd with wrong labels, etc.)
+      initrd = {
+        systemd.enable = mkForce false;
 
-    # Essential initrd modules for MacBook Pro 4,1 hardware
-    boot.initrd = {
-      availableKernelModules = [
-        # USB controllers (MacBook Pro 4,1 uses UHCI + EHCI, no xHCI)
-        "uhci_hcd"
-        "ehci_pci"
-        "ehci_hcd"
-        "usb_storage"
-        "uas"
-        # Disk controllers
-        "ahci"
-        "sd_mod"
-        "sr_mod"
-        # FireWire (present on MBP 4,1)
-        "firewire_ohci"
-        # Apple hardware
+        # Essential initrd modules for MacBook Pro 4,1 hardware
+        availableKernelModules = [
+          # USB controllers (MacBook Pro 4,1 uses UHCI + EHCI, no xHCI)
+          "uhci_hcd"
+          "ehci_pci"
+          "ehci_hcd"
+          "usb_storage"
+          "uas"
+          # Disk controllers
+          "ahci"
+          "sd_mod"
+          "sr_mod"
+          # FireWire (present on MBP 4,1)
+          "firewire_ohci"
+          # Apple hardware
+          "applesmc"
+          "usbhid"
+          "hid_apple"
+          # ISO media & filesystem support
+          "iso9660"
+          "squashfs"
+          "overlay"
+          "loop"
+          # Common filesystems for rescue
+          "btrfs"
+        ];
+      };
+
+      # Kernel modules for runtime Apple hardware
+      kernelModules = [
         "applesmc"
-        "usbhid"
         "hid_apple"
-        # ISO media & filesystem support
-        "iso9660"
-        "squashfs"
-        "overlay"
-        "loop"
-        # Common filesystems for rescue
+        "coretemp"
+      ];
+
+      # Apple keyboard: fnmode=1 (native F-keys), swap_opt_cmd=1
+      extraModprobeConfig = ''
+        options hid_apple fnmode=1 swap_opt_cmd=1
+      '';
+
+      # Kernel params for stable boot on Penryn hardware
+      kernelParams = [
+        # NOTE: nomodeset is intentionally ABSENT — nouveau needs KMS for X11/LightDM
+        "mitigations=off" # Penryn: CPU mitigations are expensive and barely relevant
+        "nowatchdog"
+      ];
+
+      # Disable Plymouth — hangs at "terminate Plymouth Boot Screen" on 8600M GT + nouveau
+      plymouth.enable = mkForce false;
+
+      # Blacklist open-source Broadcom drivers that conflict with broadcom_sta (wl)
+      blacklistedKernelModules = [
+        "b43"
+        "b43legacy"
+        "bcma"
+        "brcmsmac"
+        "brcmfmac"
+        "ssb"
+      ];
+
+      # Load broadcom_sta for BCM43xx Wi-Fi in the live environment
+      extraModulePackages = [
+        config.boot.kernelPackages.broadcom_sta
+      ];
+
+      # Support common filesystems for rescue & installation
+      supportedFilesystems = [
         "btrfs"
+        "ext4"
+        "xfs"
+        "vfat"
+        "ntfs"
       ];
     };
 
-    # Kernel modules for runtime Apple hardware
-    boot.kernelModules = [
-      "applesmc"
-      "hid_apple"
-      "coretemp"
-    ];
-
-    # Apple keyboard: fnmode=1 (native F-keys), swap_opt_cmd=1
-    boot.extraModprobeConfig = ''
-      options hid_apple fnmode=1 swap_opt_cmd=1
-    '';
-
     # Disable VM guest drivers (they produce hv_vmbus errors on bare metal)
     virtualisation.hypervGuest.enable = mkForce false;
-
-    # Kernel params for stable boot on Penryn hardware
-    boot.kernelParams = [
-      # NOTE: nomodeset is intentionally ABSENT — nouveau needs KMS for X11/LightDM
-      "mitigations=off" # Penryn: CPU mitigations are expensive and barely relevant
-      "nowatchdog"
-    ];
-
-    # Disable Plymouth — hangs at "terminate Plymouth Boot Screen" on 8600M GT + nouveau
-    boot.plymouth.enable = mkForce false;
 
     # Enable all firmware for broadest Wi-Fi/Bluetooth/GPU compatibility
     hardware = {
@@ -101,37 +127,17 @@ in
       };
     };
 
-    # Blacklist open-source Broadcom drivers that conflict with broadcom_sta (wl)
-    boot.blacklistedKernelModules = [
-      "b43"
-      "b43legacy"
-      "bcma"
-      "brcmsmac"
-      "brcmfmac"
-      "ssb"
-    ];
-
-    # Load broadcom_sta for BCM43xx Wi-Fi in the live environment
-    boot.extraModulePackages = [
-      config.boot.kernelPackages.broadcom_sta
-    ];
-
-    # Support common filesystems for rescue & installation
-    boot.supportedFilesystems = [
-      "btrfs"
-      "ext4"
-      "xfs"
-      "vfat"
-      "ntfs"
-    ];
-
     # --- Network ---
     networking = {
-      networkmanager.enable = true;
+      networkmanager = {
+        enable = true;
+        # Fix: repetidores rejeitam MAC aleatório / desconexões com powersave
+        wifi = {
+          scanRandMacAddress = false;
+          powersave = false;
+        };
+      };
       wireless.enable = mkForce false;
-      # Fix: repetidores rejeitam MAC aleatório / desconexões com powersave
-      networkmanager.wifi.scanRandMacAddress = false;
-      networkmanager.wifi.powersave = false;
     };
 
     # --- ZRAM Swap ---

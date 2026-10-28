@@ -105,25 +105,21 @@ let
 
 in
 {
-  options.desktop.wayland.traditional.waybar = {
-    enable = mkOption {
+  options.desktop = {
+    wayland.traditional.waybar.enable = mkOption {
       type = bool;
       default = isTraditional;
       description = "Habilitar waybar moderna no shell tradicional Wayland";
     };
-  };
 
-  # Retrocompatibilidade
-  options.desktop.hyprland.waybar = {
-    enable = mkOption {
+    # Retrocompatibilidade
+    hyprland.waybar.enable = mkOption {
       type = bool;
       default = config.desktop.wayland.traditional.waybar.enable;
       description = "Opção de retrocompatibilidade para waybar";
     };
-  };
 
-  options.desktop.mangowm.waybar = {
-    enable = mkOption {
+    mangowm.waybar.enable = mkOption {
       type = bool;
       default = config.desktop.wayland.traditional.waybar.enable;
       description = "Opção de retrocompatibilidade para waybar";

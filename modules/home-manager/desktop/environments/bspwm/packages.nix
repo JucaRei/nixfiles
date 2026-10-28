@@ -86,230 +86,234 @@ in
   };
 
   config = mkIf cfg.enable {
-    home.packages =
-      with pkgs;
-      [
-        # Utilitários e Desktop
-        feh
-        touchpadSpeedScript
-        (pkgs.writeShellScriptBin "bspwm-touchpad-speed" ''exec ${touchpadSpeedScript}/bin/touchpad-speed "$@"'')
-        bsp-layout
-        bc
+    home = {
+      packages =
+        with pkgs;
+        [
+          # Utilitários e Desktop
+          feh
+          touchpadSpeedScript
+          (pkgs.writeShellScriptBin "bspwm-touchpad-speed" ''exec ${touchpadSpeedScript}/bin/touchpad-speed "$@"'')
+          bsp-layout
+          bc
 
-        # Áudio e Brilho
-        pavucontrol
-        pamixer
-        playerctl
-        brightnessctl
+          # Áudio e Brilho
+          pavucontrol
+          pamixer
+          playerctl
+          brightnessctl
 
-        # Temas e Fontes (gerenciados centralmente por desktop.theme)
-        inter
-        noto-fonts-cjk-sans
-        ipafont
+          # Temas e Fontes (gerenciados centralmente por desktop.theme)
+          inter
+          noto-fonts-cjk-sans
+          ipafont
 
-        # Clipboard, Captura de Tela e X11 (Estilo gh0stzk)
-        xclip
-        xsel
-        xdotool
-        libnotify
-        maim
-        slop
-        xcolor
-        jq
-        networkmanagerapplet
-        blueman
-        pasystray
-        galculator
-        lxappearance
-      ]
-      ++ optionals ((config.system.programs.terminal.name or "") == "alacritty") [
-        (nixGLWrapper alacritty)
-      ]
-      ++ optionals (!isNixOS) [
-        glibcLocales
-        at-spi2-atk
-        xinit
-        libxcomposite
-        libxinerama
-        xprop
-        libxcb
-        xdpyinfo
-        xkill
-        xsetroot
-        xrdb
-        xwininfo
-        xrandr
-        xdg-utils
-        xdg-user-dirs
-        xdg-desktop-portal-gtk
-        dialog
-      ]
-      ++ cfg.extraPackages;
+          # Clipboard, Captura de Tela e X11 (Estilo gh0stzk)
+          xclip
+          xsel
+          xdotool
+          libnotify
+          maim
+          slop
+          xcolor
+          jq
+          networkmanagerapplet
+          blueman
+          pasystray
+          galculator
+          lxappearance
+        ]
+        ++ optionals ((config.system.programs.terminal.name or "") == "alacritty") [
+          (nixGLWrapper alacritty)
+        ]
+        ++ optionals (!isNixOS) [
+          glibcLocales
+          at-spi2-atk
+          xinit
+          libxcomposite
+          libxinerama
+          xprop
+          libxcb
+          xdpyinfo
+          xkill
+          xsetroot
+          xrdb
+          xwininfo
+          xrandr
+          xdg-utils
+          xdg-user-dirs
+          xdg-desktop-portal-gtk
+          dialog
+        ]
+        ++ cfg.extraPackages;
 
-    xdg.enable = true;
+      # Sessão para LightDM em sistemas não-NixOS
+      file = mkIf (!isNixOS) {
+        ".local/share/xsessions/bspwm.desktop".text = ''
+          [Desktop Entry]
+          Name=BSPWM
+          Comment=Binary space partitioning window manager
+          Exec=${homeDir}/.local/bin/start-bspwm
+          Type=Application
+          DesktopNames=bspwm
+        '';
 
-    # Configuração dos Portals XDG para o BSPWM (necessário para xdg-desktop-portal 1.18+ e Flatpaks abrirem links/arquivos)
-    xdg.configFile = {
-      "xdg-desktop-portal/bspwm-portals.conf".text = ''
-        [preferred]
-        default=gtk
-        org.freedesktop.impl.portal.FileChooser=gtk
-        org.freedesktop.impl.portal.AppChooser=gtk
-        org.freedesktop.impl.portal.OpenURI=gtk
-      '';
+        ".local/bin/start-bspwm".text = ''
+          #!/bin/sh
+          if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
+            . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+          fi
+          if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+            . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+          fi
+          if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
+            . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+          fi
 
-      "xdg-desktop-portal/portals.conf".text = ''
-        [preferred]
-        default=gtk
-        org.freedesktop.impl.portal.FileChooser=gtk
-        org.freedesktop.impl.portal.AppChooser=gtk
-        org.freedesktop.impl.portal.OpenURI=gtk
-      '';
+          export XDG_CURRENT_DESKTOP=bspwm
+          export XDG_SESSION_DESKTOP=bspwm
+          export XDG_SESSION_TYPE=x11
+
+          exec "$HOME/.xsession"
+        '';
+        ".local/bin/start-bspwm".executable = true;
+
+        ".dmrc".text = ''
+          [Desktop]
+          Session=bspwm
+        '';
+
+        # -----------------------------------------------------------------------
+        # Arquivos .desktop para apps Nix (necessário em distros não-NixOS onde
+        # o menu gráfico não lê automaticamente XDG_DATA_DIRS do Nix Store)
+        # -----------------------------------------------------------------------
+
+        # Alacritty com nixGL wrapper no Exec (corrige erro GL em Debian/Fedora)
+        # Nota: nome em maiúsculo "Alacritty.desktop" é essencial para sobrepor (shadow) o .desktop upstream do Nix Store sem duplicar
+        ".local/share/applications/Alacritty.desktop" =
+          lib.mkIf ((config.system.programs.terminal.name or "") == "alacritty")
+            {
+              text = ''
+                [Desktop Entry]
+                Version=1.0
+                Type=Application
+                Name=Alacritty
+                GenericName=Terminal
+                Comment=A fast, cross-platform, OpenGL terminal emulator
+                Exec=${alacrittyBin} %U
+                Icon=Alacritty
+                Terminal=false
+                Categories=System;TerminalEmulator;
+                Keywords=terminal;shell;
+                StartupWMClass=Alacritty
+                StartupNotify=false
+                Actions=New;Float;
+
+                [Desktop Action New]
+                Name=New Terminal Window
+                Exec=${alacrittyBin}
+
+                [Desktop Action Float]
+                Name=New Floating Terminal
+                Exec=${alacrittyBin} --class AlacrittyFloat
+              '';
+            };
+
+        # Pavucontrol
+        ".local/share/applications/pavucontrol.desktop".text = ''
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=PulseAudio Volume Control
+          GenericName=Volume Control
+          Comment=Adjust volume levels for PulseAudio/PipeWire
+          Exec=${pkgs.pavucontrol}/bin/pavucontrol
+          Icon=multimedia-volume-control
+          Terminal=false
+          Categories=AudioVideo;Audio;Mixer;
+          Keywords=audio;volume;sound;pulseaudio;pipewire;
+        '';
+
+        # Galculator
+        ".local/share/applications/galculator.desktop".text = ''
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=Galculator
+          Comment=GTK+ based scientific calculator
+          Exec=${pkgs.galculator}/bin/galculator
+          Icon=galculator
+          Terminal=false
+          Categories=GNOME;GTK;Utility;
+          Keywords=calculator;math;
+        '';
+
+        # LXAppearance
+        ".local/share/applications/lxappearance.desktop".text = ''
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=Customize Look and Feel
+          GenericName=Theme switcher
+          Comment=GTK+ theme switcher for LXDE
+          Exec=${pkgs.lxappearance}/bin/lxappearance
+          Icon=preferences-desktop-theme
+          Terminal=false
+          Categories=Settings;DesktopSettings;
+          Keywords=theme;gtk;appearance;
+        '';
+
+        # Feh (Visualizador de imagens)
+        ".local/share/applications/feh.desktop".text = ''
+          [Desktop Entry]
+          Version=1.0
+          Type=Application
+          Name=Feh
+          GenericName=Image Viewer
+          Comment=Fast and light image viewer
+          Exec=${pkgs.feh}/bin/feh --scale-down --auto-zoom %f
+          Icon=feh
+          Terminal=false
+          Categories=Graphics;Viewer;
+          MimeType=image/bmp;image/gif;image/jpeg;image/png;image/svg+xml;image/tiff;image/webp;
+          Keywords=image;photo;viewer;
+        '';
+      };
+
+      # -------------------------------------------------------------------------
+      # Ativação pós-switch: atualizar banco de dados de apps desktop
+      # Garante que o menu gráfico (Rofi, XFCE, e etc.) veja os .desktop do Nix Store
+      # e os novos .desktop criados acima em ~/.local/share/applications/
+      # -------------------------------------------------------------------------
+      activation.updateDesktopDatabase = lib.mkIf (!isNixOS) (
+        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          # Remove arquivo .desktop em minúsculo antigo para prevenir duplicação no Rofi
+          rm -f "$HOME/.local/share/applications/alacritty.desktop"
+        ''
+      );
     };
 
-    # Sessão para LightDM em sistemas não-NixOS
-    home.file = mkIf (!isNixOS) {
-      ".local/share/xsessions/bspwm.desktop".text = ''
-        [Desktop Entry]
-        Name=BSPWM
-        Comment=Binary space partitioning window manager
-        Exec=${homeDir}/.local/bin/start-bspwm
-        Type=Application
-        DesktopNames=bspwm
-      '';
+    xdg = {
+      enable = true;
 
-      ".local/bin/start-bspwm".text = ''
-        #!/bin/sh
-        if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
-          . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-        fi
-        if [ -f "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
-          . "$HOME/.nix-profile/etc/profile.d/nix.sh"
-        fi
-        if [ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]; then
-          . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
-        fi
+      # Configuração dos Portals XDG para o BSPWM (necessário para xdg-desktop-portal 1.18+ e Flatpaks abrirem links/arquivos)
+      configFile = {
+        "xdg-desktop-portal/bspwm-portals.conf".text = ''
+          [preferred]
+          default=gtk
+          org.freedesktop.impl.portal.FileChooser=gtk
+          org.freedesktop.impl.portal.AppChooser=gtk
+          org.freedesktop.impl.portal.OpenURI=gtk
+        '';
 
-        export XDG_CURRENT_DESKTOP=bspwm
-        export XDG_SESSION_DESKTOP=bspwm
-        export XDG_SESSION_TYPE=x11
-
-        exec "$HOME/.xsession"
-      '';
-      ".local/bin/start-bspwm".executable = true;
-
-      ".dmrc".text = ''
-        [Desktop]
-        Session=bspwm
-      '';
-
-      # -----------------------------------------------------------------------
-      # Arquivos .desktop para apps Nix (necessário em distros não-NixOS onde
-      # o menu gráfico não lê automaticamente XDG_DATA_DIRS do Nix Store)
-      # -----------------------------------------------------------------------
-
-      # Alacritty com nixGL wrapper no Exec (corrige erro GL em Debian/Fedora)
-      # Nota: nome em maiúsculo "Alacritty.desktop" é essencial para sobrepor (shadow) o .desktop upstream do Nix Store sem duplicar
-      ".local/share/applications/Alacritty.desktop" =
-        lib.mkIf ((config.system.programs.terminal.name or "") == "alacritty")
-          {
-            text = ''
-              [Desktop Entry]
-              Version=1.0
-              Type=Application
-              Name=Alacritty
-              GenericName=Terminal
-              Comment=A fast, cross-platform, OpenGL terminal emulator
-              Exec=${alacrittyBin} %U
-              Icon=Alacritty
-              Terminal=false
-              Categories=System;TerminalEmulator;
-              Keywords=terminal;shell;
-              StartupWMClass=Alacritty
-              StartupNotify=false
-              Actions=New;Float;
-
-              [Desktop Action New]
-              Name=New Terminal Window
-              Exec=${alacrittyBin}
-
-              [Desktop Action Float]
-              Name=New Floating Terminal
-              Exec=${alacrittyBin} --class AlacrittyFloat
-            '';
-          };
-
-      # Pavucontrol
-      ".local/share/applications/pavucontrol.desktop".text = ''
-        [Desktop Entry]
-        Version=1.0
-        Type=Application
-        Name=PulseAudio Volume Control
-        GenericName=Volume Control
-        Comment=Adjust volume levels for PulseAudio/PipeWire
-        Exec=${pkgs.pavucontrol}/bin/pavucontrol
-        Icon=multimedia-volume-control
-        Terminal=false
-        Categories=AudioVideo;Audio;Mixer;
-        Keywords=audio;volume;sound;pulseaudio;pipewire;
-      '';
-
-      # Galculator
-      ".local/share/applications/galculator.desktop".text = ''
-        [Desktop Entry]
-        Version=1.0
-        Type=Application
-        Name=Galculator
-        Comment=GTK+ based scientific calculator
-        Exec=${pkgs.galculator}/bin/galculator
-        Icon=galculator
-        Terminal=false
-        Categories=GNOME;GTK;Utility;
-        Keywords=calculator;math;
-      '';
-
-      # LXAppearance
-      ".local/share/applications/lxappearance.desktop".text = ''
-        [Desktop Entry]
-        Version=1.0
-        Type=Application
-        Name=Customize Look and Feel
-        GenericName=Theme switcher
-        Comment=GTK+ theme switcher for LXDE
-        Exec=${pkgs.lxappearance}/bin/lxappearance
-        Icon=preferences-desktop-theme
-        Terminal=false
-        Categories=Settings;DesktopSettings;
-        Keywords=theme;gtk;appearance;
-      '';
-
-      # Feh (Visualizador de imagens)
-      ".local/share/applications/feh.desktop".text = ''
-        [Desktop Entry]
-        Version=1.0
-        Type=Application
-        Name=Feh
-        GenericName=Image Viewer
-        Comment=Fast and light image viewer
-        Exec=${pkgs.feh}/bin/feh --scale-down --auto-zoom %f
-        Icon=feh
-        Terminal=false
-        Categories=Graphics;Viewer;
-        MimeType=image/bmp;image/gif;image/jpeg;image/png;image/svg+xml;image/tiff;image/webp;
-        Keywords=image;photo;viewer;
-      '';
+        "xdg-desktop-portal/portals.conf".text = ''
+          [preferred]
+          default=gtk
+          org.freedesktop.impl.portal.FileChooser=gtk
+          org.freedesktop.impl.portal.AppChooser=gtk
+          org.freedesktop.impl.portal.OpenURI=gtk
+        '';
+      };
     };
-
-    # -------------------------------------------------------------------------
-    # Ativação pós-switch: atualizar banco de dados de apps desktop
-    # Garante que o menu gráfico (Rofi, XFCE, etc.) veja os .desktop do Nix Store
-    # e os novos .desktop criados acima em ~/.local/share/applications/
-    # -------------------------------------------------------------------------
-    home.activation.updateDesktopDatabase = lib.mkIf (!isNixOS) (
-      lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        # Remove arquivo .desktop em minúsculo antigo para prevenir duplicação no Rofi
-        rm -f "$HOME/.local/share/applications/alacritty.desktop"
-      ''
-    );
   };
 }

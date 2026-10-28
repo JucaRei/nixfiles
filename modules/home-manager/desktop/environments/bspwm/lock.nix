@@ -343,14 +343,35 @@ in
   };
 
   config = mkIf cfg.enable {
-    # Pacotes instalados no ambiente do usuário
-    home.packages = [
-      cfg.package
-      pkgs.xss-lock
-      lockScript
-      (pkgs.writeShellScriptBin "lock-screen" ''exec ${lockScript}/bin/bspwm-lock "$@"'')
-      (pkgs.writeShellScriptBin "lock" ''exec ${lockScript}/bin/bspwm-lock "$@"'')
-    ];
+    home = {
+      # Pacotes instalados no ambiente do usuário
+      packages = [
+        cfg.package
+        pkgs.xss-lock
+        lockScript
+        (pkgs.writeShellScriptBin "lock-screen" ''exec ${lockScript}/bin/bspwm-lock "$@"'')
+        (pkgs.writeShellScriptBin "lock" ''exec ${lockScript}/bin/bspwm-lock "$@"'')
+      ];
+
+      # Inicializa ~/.config/bspwm/lock.conf como arquivo gravável real se ainda não existir
+      activation.setupBspwmLockConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        LOCK_CONF="$HOME/.config/bspwm/lock.conf"
+        LOCK_DEFAULT="$HOME/.config/bspwm/lock.conf.default"
+        if [ -f "$LOCK_DEFAULT" ] && [ ! -f "$LOCK_CONF" ]; then
+          $DRY_RUN_CMD mkdir -p "$HOME/.config/bspwm"
+          $DRY_RUN_CMD cp -f "$LOCK_DEFAULT" "$LOCK_CONF"
+          $DRY_RUN_CMD chmod 644 "$LOCK_CONF" 2>/dev/null || true
+        fi
+      '';
+
+      # Recarrega o serviço xss-lock automaticamente ao rodar switch
+      activation.reloadXssLock = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || pgrep -f bspwm >/dev/null 2>&1; then
+          systemctl --user daemon-reload 2>/dev/null || true
+          systemctl --user restart xss-lock.service 2>/dev/null || true
+        fi
+      '';
+    };
 
     # Template de configuração padrão em ~/.config/bspwm/lock.conf.default
     xdg.configFile."bspwm/lock.conf.default".text = ''
@@ -394,17 +415,6 @@ in
       EXTRA_ARGS="${lib.concatStringsSep " " cfg.extraArgs}"
     '';
 
-    # Inicializa ~/.config/bspwm/lock.conf como arquivo gravável real se ainda não existir
-    home.activation.setupBspwmLockConfig = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      LOCK_CONF="$HOME/.config/bspwm/lock.conf"
-      LOCK_DEFAULT="$HOME/.config/bspwm/lock.conf.default"
-      if [ -f "$LOCK_DEFAULT" ] && [ ! -f "$LOCK_CONF" ]; then
-        $DRY_RUN_CMD mkdir -p "$HOME/.config/bspwm"
-        $DRY_RUN_CMD cp -f "$LOCK_DEFAULT" "$LOCK_CONF"
-        $DRY_RUN_CMD chmod 644 "$LOCK_CONF" 2>/dev/null || true
-      fi
-    '';
-
     # Serviço systemd do usuário gerenciando o daemon xss-lock
     systemd.user.services.xss-lock = {
       Unit = {
@@ -433,13 +443,5 @@ in
         WantedBy = [ "graphical-session.target" ];
       };
     };
-
-    # Recarrega o serviço xss-lock automaticamente ao rodar switch
-    home.activation.reloadXssLock = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || pgrep -f bspwm >/dev/null 2>&1; then
-        systemctl --user daemon-reload 2>/dev/null || true
-        systemctl --user restart xss-lock.service 2>/dev/null || true
-      fi
-    '';
   };
 }

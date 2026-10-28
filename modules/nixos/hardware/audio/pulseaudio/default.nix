@@ -56,10 +56,12 @@ in
     systemd.services.audio-off = {
       description = "Mute audio before suspend";
       enable = true;
-      serviceConfig.ExecStart = "${pkgs.pamixer}/bin/pamixer --mute";
-      serviceConfig.RemainAfterExit = true;
-      serviceConfig.Type = "oneshot";
-      serviceConfig.User = "${username}";
+      serviceConfig = {
+        ExecStart = "${pkgs.pamixer}/bin/pamixer --mute";
+        RemainAfterExit = true;
+        Type = "oneshot";
+        User = "${username}";
+      };
       wantedBy = [ "sleep.target" ];
     };
   };

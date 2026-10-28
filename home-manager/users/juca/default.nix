@@ -29,20 +29,22 @@ in
         };
       };
 
-      services.git = {
-        enable = true;
-        userName = "Reinaldo";
-        userEmail = "reinaldo800@gmail.com";
-        signingKey = "~/.ssh/nitro.pub";
-        signByDefault = true;
-      };
+      services = {
+        git = {
+          enable = true;
+          userName = "Reinaldo";
+          userEmail = "reinaldo800@gmail.com";
+          signingKey = "~/.ssh/nitro.pub";
+          signByDefault = true;
+        };
 
-      services.podman = {
-        enable = lib.mkDefault true;
-      };
+        podman = {
+          enable = lib.mkDefault true;
+        };
 
-      services.fcitx5 = {
-        enable = lib.mkDefault (isLinux && isWorkstation);
+        fcitx5 = {
+          enable = lib.mkDefault (isLinux && isWorkstation);
+        };
       };
     };
 

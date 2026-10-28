@@ -409,66 +409,114 @@ in
     };
 
     # ─────────────────────────────────────────────────────────────────────────
-    # Toda a configuração é gerida como ficheiros — sem attrsOf em Nix.
-    # Vantagem: editável directamente, sem recompilar o flake para ajustes.
+    # Configurações XDG (arquivos de config, associações MIME e entradas desktop)
     # ─────────────────────────────────────────────────────────────────────────
-    xdg.configFile = {
+    xdg = {
+      configFile = {
+        # mpv.conf base (configs/mpv.conf) + perfil de hardware injetado via Nix
+        # O perfil [hw-preset] define as configurações de hardware e é activado no [default].
+        "mpv/mpv.conf".text = ''
+          ${builtins.readFile ./configs/mpv.conf}
 
-      # mpv.conf base (configs/mpv.conf) + perfil de hardware injetado via Nix
-      # O perfil [hw-preset] define as configurações de hardware e é activado no [default].
-      "mpv/mpv.conf".text = ''
-        ${builtins.readFile ./configs/mpv.conf}
+          # ── Perfil de hardware gerado em compilação para perfil: ${cfg.profile} ──────────
+          ${hwPresetSection}
 
-        # ── Perfil de hardware gerado em compilação para perfil: ${cfg.profile} ──────────
-        ${hwPresetSection}
+          # ── Ajuste de janela flutuante para Window Managers (tiling) ───────────
+          ${optionalString (isWM && cfg.floating) ''
+            # Como ${
+              if desktop != null then desktop else "WM"
+            } é uma Window Manager, assegura dimensões e centralização de janela flutuante
+            autofit-larger=85%x85%
+            geometry=50%:50%
+          ''}
 
-        # ── Ajuste de janela flutuante para Window Managers (tiling) ───────────
-        ${optionalString (isWM && cfg.floating) ''
-          # Como ${
-            if desktop != null then desktop else "WM"
-          } é uma Window Manager, assegura dimensões e centralização de janela flutuante
-          autofit-larger=85%x85%
-          geometry=50%:50%
-        ''}
+          # ── Ativação do perfil de hardware por omissão para todos os ficheiros ──
+          [default]
+          profile=hw-preset
+        '';
 
-        # ── Ativação do perfil de hardware por omissão para todos os ficheiros ──
-        [default]
-        profile=hw-preset
+        # Atalhos de teclado — todos em input.conf (substitui bindings.conf)
+        "mpv/input.conf".source = ./configs/input.conf;
+
+        # Scripts customizados
+        "mpv/scripts/gvfs-smb.lua".source = ./scripts/gvfs-smb.lua;
+
+        # Scripts comunitários (implantados no ~/.config/mpv/scripts quando o MPV nativo do sistema é utilizado)
+        "mpv/scripts/modernz.lua" = mkIf (!shouldInstall) {
+          source = "${pkgs.mpvScripts.modernz}/share/mpv/scripts/modernz.lua";
+        };
+        "mpv/scripts/memo.lua" = mkIf (!shouldInstall) {
+          source = "${pkgs.mpvScripts.memo}/share/mpv/scripts/memo.lua";
+        };
+        "mpv/scripts/evafast.lua" = mkIf (!shouldInstall) {
+          source = "${pkgs.mpvScripts.evafast}/share/mpv/scripts/evafast.lua";
+        };
+        "mpv/scripts/thumbfast.lua" = mkIf (!shouldInstall) {
+          source = "${pkgs.mpvScripts.thumbfast}/share/mpv/scripts/thumbfast.lua";
+        };
+        "mpv/scripts/sponsorblock_minimal.lua" = mkIf (!shouldInstall) {
+          source = "${pkgs.mpvScripts.sponsorblock-minimal}/share/mpv/scripts/sponsorblock_minimal.lua";
+        };
+
+        # Script opts
+        "mpv/script-opts/osc.conf".source = ./configs/opts/osc.conf;
+        # "mpv/script-opts/uosc.conf".source = ./configs/opts/uosc.conf;
+        "mpv/script-opts/modernz.conf".source = ./configs/opts/modernz.conf;
+        "mpv/script-opts/thumbfast.conf".source = ./configs/opts/thumbfast.conf;
+        "mpv/script-opts/evafast.conf".source = ./configs/opts/evafast.conf;
+        "mpv/script-opts/memo.conf".source = ./configs/opts/memo.conf;
+
+        # Fontes customizadas para scripts e OSD (ícones oficiais do ModernZ)
+        "mpv/fonts/modernz-icons.ttf".source = "${pkgs.mpvScripts.modernz.src}/modernz-icons.ttf";
+      };
+
+      mimeApps.defaultApplications = lib.genAttrs mediaMimeTypes (_: "mpv.desktop");
+
+      desktopEntries = mkIf (cfg.defaultNvidia || (!shouldInstall && !isNixOS) || cfg.hybridGraphics) {
+        mpv = {
+          name = "mpv Media Player";
+          genericName = "Multimedia player";
+          comment = "Play movies and songs" + optionalString cfg.defaultNvidia " (NVIDIA dGPU)";
+          icon = "mpv";
+          exec = if cfg.defaultNvidia then nvidiaExec else intelExec;
+          terminal = false;
+          categories = [
+            "AudioVideo"
+            "Audio"
+            "Video"
+            "Player"
+            "TV"
+          ];
+          mimeType = mediaMimeTypes;
+          actions =
+            if cfg.defaultNvidia then
+              {
+                open-intel = {
+                  name = "Open with Intel iGPU";
+                  exec = intelExec;
+                };
+              }
+            else
+              (optionalAttrs cfg.hybridGraphics {
+                open-nvidia = {
+                  name = "Open with NVIDIA dGPU";
+                  exec = nvidiaExec;
+                };
+              });
+        };
+      };
+
+      # Sobrescreve a prioridade de .ts para que o shared-mime-info o identifique como vídeo MPEG-2 TS
+      # em vez de catálogo de mensagens do Qt Linguist (weight 60 > weight 50 padrão)
+      dataFile."mime/packages/override-ts.xml".text = ''
+        <?xml version="1.0" encoding="utf-8"?>
+        <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+          <mime-type type="video/mp2t">
+            <comment>MPEG-2 transport stream</comment>
+            <glob pattern="*.ts" weight="60"/>
+          </mime-type>
+        </mime-info>
       '';
-
-      # Atalhos de teclado — todos em input.conf (substitui bindings.conf)
-      "mpv/input.conf".source = ./configs/input.conf;
-
-      # Scripts customizados
-      "mpv/scripts/gvfs-smb.lua".source = ./scripts/gvfs-smb.lua;
-
-      # Scripts comunitários (implantados no ~/.config/mpv/scripts quando o MPV nativo do sistema é utilizado)
-      "mpv/scripts/modernz.lua" = mkIf (!shouldInstall) {
-        source = "${pkgs.mpvScripts.modernz}/share/mpv/scripts/modernz.lua";
-      };
-      "mpv/scripts/memo.lua" = mkIf (!shouldInstall) {
-        source = "${pkgs.mpvScripts.memo}/share/mpv/scripts/memo.lua";
-      };
-      "mpv/scripts/evafast.lua" = mkIf (!shouldInstall) {
-        source = "${pkgs.mpvScripts.evafast}/share/mpv/scripts/evafast.lua";
-      };
-      "mpv/scripts/thumbfast.lua" = mkIf (!shouldInstall) {
-        source = "${pkgs.mpvScripts.thumbfast}/share/mpv/scripts/thumbfast.lua";
-      };
-      "mpv/scripts/sponsorblock_minimal.lua" = mkIf (!shouldInstall) {
-        source = "${pkgs.mpvScripts.sponsorblock-minimal}/share/mpv/scripts/sponsorblock_minimal.lua";
-      };
-
-      # Script opts
-      "mpv/script-opts/osc.conf".source = ./configs/opts/osc.conf;
-      # "mpv/script-opts/uosc.conf".source = ./configs/opts/uosc.conf;
-      "mpv/script-opts/modernz.conf".source = ./configs/opts/modernz.conf;
-      "mpv/script-opts/thumbfast.conf".source = ./configs/opts/thumbfast.conf;
-      "mpv/script-opts/evafast.conf".source = ./configs/opts/evafast.conf;
-      "mpv/script-opts/memo.conf".source = ./configs/opts/memo.conf;
-
-      # Fontes customizadas para scripts e OSD (ícones oficiais do ModernZ)
-      "mpv/fonts/modernz-icons.ttf".source = "${pkgs.mpvScripts.modernz.src}/modernz-icons.ttf";
     };
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -507,78 +555,30 @@ in
           { instance = "mpv"; }
         ];
 
-    xdg.mimeApps.defaultApplications = lib.genAttrs mediaMimeTypes (_: "mpv.desktop");
+    home = {
+      packages = [
+        pkgs.font-dubai
+      ]
+      ++ lib.optionals (!shouldInstall && !isNixOS) [
+        (pkgs.writeShellScriptBin "mpv" ''
+          : ''${__GLX_VENDOR_LIBRARY_NAME:=mesa}
+          export __GLX_VENDOR_LIBRARY_NAME
+          exec /usr/bin/mpv "$@"
+        '')
+      ];
 
-    home.packages = [
-      pkgs.font-dubai
-    ]
-    ++ lib.optionals (!shouldInstall && !isNixOS) [
-      (pkgs.writeShellScriptBin "mpv" ''
-        : ''${__GLX_VENDOR_LIBRARY_NAME:=mesa}
-        export __GLX_VENDOR_LIBRARY_NAME
-        exec /usr/bin/mpv "$@"
-      '')
-    ];
-
-    xdg.desktopEntries =
-      mkIf (cfg.defaultNvidia || (!shouldInstall && !isNixOS) || cfg.hybridGraphics)
-        {
-          mpv = {
-            name = "mpv Media Player";
-            genericName = "Multimedia player";
-            comment = "Play movies and songs" + optionalString cfg.defaultNvidia " (NVIDIA dGPU)";
-            icon = "mpv";
-            exec = if cfg.defaultNvidia then nvidiaExec else intelExec;
-            terminal = false;
-            categories = [
-              "AudioVideo"
-              "Audio"
-              "Video"
-              "Player"
-              "TV"
-            ];
-            mimeType = mediaMimeTypes;
-            actions =
-              if cfg.defaultNvidia then
-                {
-                  open-intel = {
-                    name = "Open with Intel iGPU";
-                    exec = intelExec;
-                  };
-                }
-              else
-                (optionalAttrs cfg.hybridGraphics {
-                  open-nvidia = {
-                    name = "Open with NVIDIA dGPU";
-                    exec = nvidiaExec;
-                  };
-                });
-          };
-        };
+      # Atualiza o banco de dados MIME do usuário caso update-mime-database esteja disponível
+      activation.updateMimeDatabase = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if command -v update-mime-database >/dev/null 2>&1; then
+          $DRY_RUN_CMD update-mime-database "$HOME/.local/share/mime" >/dev/null 2>&1 || true
+        fi
+      '';
+    };
 
     systemd.user.tmpfiles.rules = mkIf pkgs.stdenv.isLinux [
       "d ${config.home.homeDirectory}/.logs 0755 - - - -"
       "d ${config.home.homeDirectory}/.logs/mpv 0755 - - - -"
       "d ${config.home.homeDirectory}/.cache/mpv/script-opts 0755 - - - -"
     ];
-
-    # Sobrescreve a prioridade de .ts para que o shared-mime-info o identifique como vídeo MPEG-2 TS
-    # em vez de catálogo de mensagens do Qt Linguist (weight 60 > weight 50 padrão)
-    xdg.dataFile."mime/packages/override-ts.xml".text = ''
-      <?xml version="1.0" encoding="utf-8"?>
-      <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
-        <mime-type type="video/mp2t">
-          <comment>MPEG-2 transport stream</comment>
-          <glob pattern="*.ts" weight="60"/>
-        </mime-type>
-      </mime-info>
-    '';
-
-    # Atualiza o banco de dados MIME do usuário caso update-mime-database esteja disponível
-    home.activation.updateMimeDatabase = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      if command -v update-mime-database >/dev/null 2>&1; then
-        $DRY_RUN_CMD update-mime-database "$HOME/.local/share/mime" >/dev/null 2>&1 || true
-      fi
-    '';
   };
 }

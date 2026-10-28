@@ -76,9 +76,6 @@ let
     };
 
   forAllSystems = lib.genAttrs systems;
-in
-rec {
-  inherit forAllSystems nixpkgsConfig;
 
   # Home Manager standalone (Debian, Fedora, etc.).
   #   hostname     carrega home-manager/hosts/<hostname>
@@ -214,4 +211,14 @@ rec {
       # Todos os hosts atuais são x86_64; evita avaliar em aarch64.
       lib.optionalAttrs (system == defaults.platform) home
     );
+in
+{
+  inherit
+    forAllSystems
+    nixpkgsConfig
+    mkHome
+    mkNixos
+    mkIso
+    mkChecks
+    ;
 }
