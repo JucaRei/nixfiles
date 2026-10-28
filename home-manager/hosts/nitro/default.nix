@@ -42,7 +42,7 @@ in
 
       theme = {
         enable = true;
-        name = "catppuccin-macchiato"; #"doom" #"tokyo-night"
+        name = "catppuccin-macchiato"; # "doom" #"tokyo-night"
         accent = "red";
       };
 
@@ -66,7 +66,7 @@ in
           adapter = "ACAD";
           style = lib.mkDefault "pills";
           encapsulation = {
-            workspaces =  {
+            workspaces = {
               style = "powerline";
               # color = "#22202070";
               accent = "#ff5555";
@@ -78,7 +78,7 @@ in
             };
             netspeed = {
               style = "slant";
-              color = "#29339B";  # cor de fundo da cápsula
+              color = "#29339B"; # cor de fundo da cápsula
               accent = "#8be9fd"; # texto de velocidade em destaque
             };
           };

@@ -118,6 +118,7 @@ rec {
         }
         // {
           inherit useNixGL nixGLType nixGLWrapper;
+          isNvidia = false;
         };
       modules = [ ../home-manager ];
     };
