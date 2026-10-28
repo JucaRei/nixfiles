@@ -6,10 +6,7 @@
 }:
 let
   inherit (lib)
-    concatMapStringsSep
     concatStringsSep
-    mkDefault
-    mkEnableOption
     mkIf
     mkOption
     optionalString

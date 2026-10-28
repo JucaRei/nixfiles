@@ -8,12 +8,10 @@
 }:
 let
   inherit (lib)
-    mkDefault
     mkIf
     mdDoc
     mkOption
     mkEnableOption
-    types
     optionalString
     optional
     optionals

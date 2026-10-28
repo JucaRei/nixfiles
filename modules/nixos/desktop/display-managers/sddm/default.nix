@@ -10,13 +10,9 @@ let
     mkIf
     mkOption
     stringAfter
-    getExe'
     ;
   inherit (lib.types)
-    listOf
     enum
-    str
-    nullOr
     bool
     ;
   cfg = config.desktop.display-managers.sddm;

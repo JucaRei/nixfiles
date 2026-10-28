@@ -1,10 +1,6 @@
 {
-  lib,
   stdenv,
   writeShellScript,
-  systemd,
-  util-linux,
-  coreutils,
   ...
 }:
 

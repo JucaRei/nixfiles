@@ -1,11 +1,10 @@
 {
-  config,
   lib,
   pkgs,
   ...
 }:
 let
-  inherit (lib) mkDefault mkForce;
+  inherit (lib) mkForce;
 in
 {
   imports = [

@@ -1,6 +1,6 @@
 # This module is a compatibility shim for catppuccin
 # When catppuccin is disabled, this provides stub options to avoid errors
-{ config, lib, ... }:
+{ lib, ... }:
 
 {
   # Provide stub programs.delta options so catppuccin delta module (if imported) doesn't error

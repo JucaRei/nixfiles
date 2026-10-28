@@ -7,11 +7,9 @@
 let
   inherit (lib)
     mkIf
-    mkDefault
     mkEnableOption
     mkOption
     types
-    optionalString
     optionals
     ;
 

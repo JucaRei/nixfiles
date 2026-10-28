@@ -1,6 +1,5 @@
 {
   pkgs ? import <nixpkgs> { },
-  lib ? pkgs.lib,
   writePython3Bin ? pkgs.writers.writePython3Bin,
 }:
 

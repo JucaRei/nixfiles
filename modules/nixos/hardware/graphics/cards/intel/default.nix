@@ -6,7 +6,6 @@
 }:
 let
   inherit (lib) mkIf;
-  acceleration = config.hardware.graphics.cards.acceleration;
   gpu = device.gpu;
   device = config.hardware.graphics.cards;
 in

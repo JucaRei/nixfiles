@@ -2,7 +2,6 @@
   lib,
   stdenvNoCC,
   fetchzip,
-  pkgs,
   util-linux,
 }:
 stdenvNoCC.mkDerivation rec {

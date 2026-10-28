@@ -9,11 +9,9 @@ let
   inherit (lib)
     mkOption
     mkIf
-    mkDefault
     concatStringsSep
     optionalString
     length
-    optionals
     ;
   inherit (lib.types)
     bool

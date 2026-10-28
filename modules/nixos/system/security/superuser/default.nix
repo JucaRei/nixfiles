@@ -1,5 +1,4 @@
 {
-  options,
   config,
   lib,
   username,
@@ -9,9 +8,7 @@ let
   inherit (lib) mkIf mkOption mdDoc;
   inherit (lib.types)
     enum
-    nullOr
     bool
-    submodule
     ;
 in
 {

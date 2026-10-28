@@ -2,7 +2,6 @@
   lib,
   stdenv,
   fetchurl,
-  unzip,
   p7zip,
 }:
 stdenv.mkDerivation rec {

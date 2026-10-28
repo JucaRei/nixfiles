@@ -10,7 +10,6 @@ let
   inherit (lib.types) attrsOf bool str;
   cfg = config.desktop.bspwm.sxhkd;
   fmCmd = config.system.programs.file-manager.activeCommand or "file-manager";
-  fmName = config.system.programs.file-manager.activeName or "Gerenciador de Arquivos";
 
   terminalCfg = config.system.programs.terminal;
   termCmd = terminalCfg.activeCommand;

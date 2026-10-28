@@ -42,7 +42,7 @@ let
     {
       defaultStyle ? "default",
       allowDefault ? true,
-      description ? "Configuração de estilo, cor de fundo e cor de destaque do encapsulamento",
+      ...
     }:
     let
       validStyles = if allowDefault then encapStyleWithDefaultEnum else encapStyleEnum;
@@ -535,11 +535,6 @@ in
           netspeedRight = "encap-netspeed-right";
           dateLeft = "encap-date-left";
           dateRight = "encap-date-right";
-          trayLeft = "encap-tray-left";
-          trayRight = "encap-tray-right";
-
-          modernTray = if hasTray then " sep tray" else "";
-          pillsTray = if hasTray then " sp ${trayLeft} tray ${trayRight}" else "";
 
           # =========================================================================
           # ESTILO 1: MODERNO (WAYBAR / CATPPUCCIN COESO)

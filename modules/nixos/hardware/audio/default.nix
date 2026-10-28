@@ -5,10 +5,9 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf types;
+  inherit (lib) mkOption mkIf;
   inherit (lib.types) nullOr enum bool;
   cfg = config.hardware.audio;
-  manager = cfg.manager;
 in
 {
   imports = [
