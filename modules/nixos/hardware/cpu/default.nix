@@ -9,38 +9,25 @@
 let
   inherit (lib)
     mkIf
-    mdDoc
-    mkOption
     mkEnableOption
     optionalString
     optional
     optionals
     mkMerge
     ;
-  inherit (lib.types) bool enum;
   cfg = config.hardware.cpu;
 in
 {
   options.hardware.cpu = {
-    enable = mkOption {
-      type = bool;
-      default = true;
-      description = " Enables cpu hardware defaults";
-    };
+    enable = lib.my.mkBool true "Enables cpu hardware defaults";
     hardenKernel = mkEnableOption "kernel hardening options";
     improveTCP = mkEnableOption "tcp extra config.";
     enableKvm = mkEnableOption "kernel hardening options";
-    cpuVendor = mkOption {
-      type = enum [
-        "intel"
-        "amd"
-        "other"
-      ];
-      default = "other";
-      description = mdDoc ''
-        Vendor for the CPU, meant mostly for x86/x86_64 systems.
-      '';
-    };
+    cpuVendor = lib.my.mkEnum [
+      "intel"
+      "amd"
+      "other"
+    ] "other" "Vendor for the CPU, meant mostly for x86/x86_64 systems.";
   };
 
   config = mkIf cfg.enable {

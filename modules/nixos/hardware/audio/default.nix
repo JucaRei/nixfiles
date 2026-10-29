@@ -5,8 +5,8 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) nullOr enum bool;
+  inherit (lib) mkIf;
+  inherit (lib.types) nullOr enum;
   cfg = config.hardware.audio;
 in
 {
@@ -17,19 +17,11 @@ in
 
   options = {
     hardware.audio = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable audio system manager";
-      };
-      manager = mkOption {
-        type = nullOr (enum [
-          "pipewire"
-          "pulseaudio"
-        ]);
-        default = null;
-        description = "Default audio system manager";
-      };
+      enable = lib.my.mkBool false "Enable audio system manager";
+      manager = lib.my.mkOpt (nullOr (enum [
+        "pipewire"
+        "pulseaudio"
+      ])) null "Default audio system manager";
     };
   };
 

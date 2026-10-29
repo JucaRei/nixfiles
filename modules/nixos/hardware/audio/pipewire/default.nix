@@ -13,18 +13,13 @@ let
     mkForce
     optionals
     optional
-    mkOption
-    types
     ;
   cfg = config.hardware.audio;
-  low_latency = config.hardware.audio."pipewire".useLowLatencyPipewire;
+  low_latency = config.hardware.audio.pipewire.useLowLatencyPipewire;
 in
 {
-  options.hardware.audio."pipewire".useLowLatencyPipewire = mkOption {
-    type = types.bool;
-    default = false;
-    description = "Whether enable low latency configuration.";
-  };
+  options.hardware.audio.pipewire.useLowLatencyPipewire =
+    lib.my.mkBool false "Whether enable low latency configuration.";
 
   config = mkIf (cfg.manager == "pipewire") {
 

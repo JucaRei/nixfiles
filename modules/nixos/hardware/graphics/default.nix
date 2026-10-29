@@ -9,8 +9,6 @@
 let
   inherit (lib)
     mkIf
-    mkOption
-    types
     optionals
     ;
   backend = config.desktop.display-servers.backend or null;
@@ -24,20 +22,12 @@ in
   ];
 
   options.hardware.graphics.cards = {
-    enable = mkOption {
-      type = types.bool;
-      default = isWorkstation;
-      description = "Enable graphics for selected device.";
-    };
+    enable = lib.my.mkBool isWorkstation "Enable graphics for selected device.";
 
-    acceleration = mkOption {
-      default = false;
-      type = with types; bool;
-      description = "Enables graphics acceleration";
-    };
+    acceleration = lib.my.mkBool false "Enables graphics acceleration";
 
-    gpu = mkOption {
-      type = types.enum [
+    gpu = lib.my.mkOpt (lib.types.nullOr (
+      lib.types.enum [
         "amd"
         "intel"
         "nvidia"
@@ -47,11 +37,8 @@ in
         "integrated-amd"
         # "pi"
         # "mali-gpu"
-        null
-      ];
-      default = null;
-      description = "Manufacturer/type of the primary system GPU";
-    };
+      ]
+    )) null "Manufacturer/type of the primary system GPU";
   };
 
   config = {
