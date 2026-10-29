@@ -7,11 +7,9 @@
 let
   inherit (lib)
     mkIf
-    mkOption
     mkDefault
     concatMapStringsSep
     optionals
-    types
     ;
 
   cfg = config.desktop;
@@ -129,94 +127,49 @@ let
 in
 {
   options.desktop = {
-    monitors = mkOption {
-      type = types.listOf (
-        types.submodule {
+    monitors =
+      lib.my.mkListOf
+        (lib.types.submodule {
           options = {
-            name = mkOption {
-              type = types.str;
-              example = "eDP-1";
-              description = "Identificador da saída/monitor (ex: eDP-1, HDMI-A-1, DP-1, Virtual-1)";
-            };
+            name = lib.my.mkStr "" "Identificador da saída/monitor (ex: eDP-1, HDMI-A-1, DP-1, Virtual-1)";
 
-            width = mkOption {
-              type = types.int;
-              default = 1920;
-              example = 1366;
-              description = "Largura em pixels da resolução nativa ou desejada";
-            };
+            width = lib.my.mkInt 1920 "Largura em pixels da resolução nativa ou desejada";
 
-            height = mkOption {
-              type = types.int;
-              default = 1080;
-              example = 768;
-              description = "Altura em pixels da resolução nativa ou desejada";
-            };
+            height = lib.my.mkInt 1080 "Altura em pixels da resolução nativa ou desejada";
 
-            refresh = mkOption {
-              type = types.either types.int types.float;
-              default = 60;
-              example = 60;
-              description = "Taxa de atualização em Hz";
-            };
+            refresh =
+              lib.my.mkOpt (lib.types.either lib.types.int lib.types.float) 60
+                "Taxa de atualização em Hz";
 
-            x = mkOption {
-              type = types.int;
-              default = 0;
-              description = "Posição X horizontal no canvas de monitores";
-            };
+            x = lib.my.mkInt 0 "Posição X horizontal no canvas de monitores";
 
-            y = mkOption {
-              type = types.int;
-              default = 0;
-              description = "Posição Y vertical no canvas de monitores";
-            };
+            y = lib.my.mkInt 0 "Posição Y vertical no canvas de monitores";
 
-            scale = mkOption {
-              type = types.either types.int types.float;
-              default = 1.0;
-              description = "Fator de escala de renderização (DPI scale)";
-            };
+            scale =
+              lib.my.mkOpt (lib.types.either lib.types.int lib.types.float) 1.0
+                "Fator de escala de renderização (DPI scale)";
 
-            primary = mkOption {
-              type = types.bool;
-              default = false;
-              description = "Define se o monitor é primário (relevante no X11/xrandr)";
-            };
+            primary = lib.my.mkBool false "Define se o monitor é primário (relevante no X11/xrandr)";
 
-            enabled = mkOption {
-              type = types.bool;
-              default = true;
-              description = "Se o monitor está ativo e habilitado";
-            };
+            enabled = lib.my.mkBool true "Se o monitor está ativo e habilitado";
 
-            transform = mkOption {
-              type = types.enum [
-                "normal"
-                "90"
-                "180"
-                "270"
-                "flipped"
-                "flipped-90"
-                "flipped-180"
-                "flipped-270"
-              ];
-              default = "normal";
-              description = "Rotação e orientação da tela";
-            };
+            transform = lib.my.mkEnum [
+              "normal"
+              "90"
+              "180"
+              "270"
+              "flipped"
+              "flipped-90"
+              "flipped-180"
+              "flipped-270"
+            ] "normal" "Rotação e orientação da tela";
           };
-        }
-      );
-      default = [ ];
-      description = "Lista declarativa de monitores e resoluções unificada para todos os ambientes de desktop e WMs";
-    };
+        })
+        [ ]
+        "Lista declarativa de monitores e resoluções unificada para todos os ambientes de desktop e WMs";
 
     monitorsFontRendering = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Otimizar nitidez de renderização de fontes (subpixel RGB + slight hinting + RGBA antialiasing)";
-      };
+      enable = lib.my.mkBool true "Otimizar nitidez de renderização de fontes (subpixel RGB + slight hinting + RGBA antialiasing)";
     };
   };
 

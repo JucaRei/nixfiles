@@ -78,20 +78,15 @@ let
       type = types.package;
       description = "Pacote que fornece o tema.";
     };
-    aliases = mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-      description = "Nomes alternativos que também apontam para o mesmo tema (symlinks).";
-    };
+    aliases =
+      lib.my.mkListOf types.str [ ]
+        "Nomes alternativos que também apontam para o mesmo tema (symlinks).";
   };
 
   # name + package (+ aliases), com o default vindo da paleta escolhida
   assetOption =
     default: description:
-    mkOption {
-      type = types.submodule { options = assetOptions; };
-      inherit default description;
-    };
+    lib.my.mkOpt (types.submodule { options = assetOptions; }) default description;
 
   isDark = palette.variant == "dark";
 
@@ -106,61 +101,33 @@ in
   options.desktop.theme = {
     enable = mkEnableOption "aplicação do tema (GTK, ícones, cursor, fonte) neste host";
 
-    name = mkOption {
-      type = types.enum paletteNames;
-      default = "catppuccin-mocha";
-      description = "Paleta. Uma por arquivo em desktop/theme/palettes/.";
-    };
+    name =
+      lib.my.mkEnum paletteNames "catppuccin-mocha"
+        "Paleta. Uma por arquivo em desktop/theme/palettes/.";
 
-    accent = mkOption {
-      type = types.enum accents;
-      default = "blue";
-      description = "Papel de cor usado como destaque (`colors.accent`) e, no Catppuccin, no tema GTK.";
-    };
+    accent =
+      lib.my.mkEnum accents "blue"
+        "Papel de cor usado como destaque (`colors.accent`) e, no Catppuccin, no tema GTK.";
 
     gtk = assetOption palette.gtk "Tema GTK.";
     icons = assetOption palette.icons "Tema de ícones.";
 
-    cursor = mkOption {
-      type = types.submodule {
-        options = assetOptions // {
-          size = mkOption {
-            type = types.int;
-            default = 24;
-          };
-        };
+    cursor = lib.my.mkOpt (types.submodule {
+      options = assetOptions // {
+        size = lib.my.mkInt 24 "Tamanho do cursor em pixels.";
       };
-      default = palette.cursor;
-      description = "Tema de cursor.";
-    };
+    }) palette.cursor "Tema de cursor.";
 
-    font = mkOption {
-      type = types.submodule {
-        options = {
-          name = mkOption {
-            type = types.str;
-            default = "Inter";
-          };
-          package = mkOption {
-            type = types.package;
-            default = pkgs.inter;
-          };
-          size = mkOption {
-            type = types.int;
-            default = 10;
-          };
-        };
+    font = lib.my.mkOpt (types.submodule {
+      options = {
+        name = lib.my.mkStr "Inter" "Nome da família de fonte.";
+        package = lib.my.mkPkg pkgs.inter "Pacote que fornece a fonte.";
+        size = lib.my.mkInt 10 "Tamanho da fonte em pontos.";
       };
-      default = { };
-      description = "Fonte da interface (GTK).";
-    };
+    }) { } "Fonte da interface (GTK).";
 
     xsettingsd = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Ativar serviço e configuração do xsettingsd para ambientes X11.";
-      };
+      enable = lib.my.mkBool false "Ativar serviço e configuração do xsettingsd para ambientes X11.";
     };
 
     # Somente leitura: calculados a partir da paleta

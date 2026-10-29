@@ -5,17 +5,12 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.shared.rofi;
 in
 {
   options.desktop.shared.rofi = {
-    enable = mkOption {
-      type = bool;
-      default = false;
-      description = "Enable shared rofi application launcher for desktop environments (BSPWM, DWM, etc.)";
-    };
+    enable = lib.my.mkBool false "Enable shared rofi application launcher for desktop environments (BSPWM, DWM, etc.)";
   };
 
   config = mkIf cfg.enable {

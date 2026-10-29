@@ -23,8 +23,6 @@ let
   inherit (lib)
     mkEnableOption
     mkIf
-    mkOption
-    types
     ;
 
   cfg = config.desktop.wallpaper;
@@ -94,64 +92,43 @@ in
   options.desktop.wallpaper = {
     enable = mkEnableOption "gerenciador e script agnóstico de wallpaper (X11 / Wayland) com suporte multi-monitor e timer";
 
-    directory = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      example = "/home/juca/Pictures/Wallpapers";
-      description = "Caminho da pasta de wallpapers no host.";
-    };
+    directory =
+      lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+        "Caminho da pasta de wallpapers no host.";
 
-    default = mkOption {
-      type = types.nullOr (types.either types.path types.str);
-      default = null;
-      example = "/home/juca/Pictures/Wallpapers/default.png";
-      description = "Imagem específica padrão (opcional). Se omitido, restaura as últimas ou sorteia da pasta.";
-    };
+    default = lib.my.mkOpt (lib.types.nullOr (
+      lib.types.either lib.types.path lib.types.str
+    )) null "Imagem específica padrão (opcional). Se omitido, restaura as últimas ou sorteia da pasta.";
 
-    interval = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      example = "15m";
-      description = "Intervalo de tempo para rotacionar o wallpaper automaticamente (ex: '30s', '5m', '15m', '1h'). Se null, não rotaciona por tempo.";
-    };
+    interval =
+      lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+        "Intervalo de tempo para rotacionar o wallpaper automaticamente (ex: '30s', '5m', '15m', '1h'). Se null, não rotaciona por tempo.";
 
-    mode = mkOption {
-      type = types.enum [
-        "fill"
-        "center"
-        "tile"
-        "scale"
-        "max"
-      ];
-      default = "fill";
-      description = "Modo de preenchimento ou ajuste da imagem na tela.";
-    };
+    mode = lib.my.mkEnum [
+      "fill"
+      "center"
+      "tile"
+      "scale"
+      "max"
+    ] "fill" "Modo de preenchimento ou ajuste da imagem na tela.";
 
-    backend = mkOption {
-      type = types.enum [
+    backend =
+      lib.my.mkEnum
+        [
+          "auto"
+          "feh"
+          "swaybg"
+          "hyprpaper"
+          "swww"
+          "xfconf"
+          "gsettings"
+        ]
         "auto"
-        "feh"
-        "swaybg"
-        "hyprpaper"
-        "swww"
-        "xfconf"
-        "gsettings"
-      ];
-      default = "auto";
-      description = "Backend para aplicar o wallpaper ('auto' detecta o desktop/display server automaticamente).";
-    };
+        "Backend para aplicar o wallpaper ('auto' detecta o desktop/display server automaticamente).";
 
-    randomOnStart = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Se verdadeiro, sorteia wallpapers aleatórios e diferentes para cada monitor ao iniciar a sessão.";
-    };
+    randomOnStart = lib.my.mkBool false "Se verdadeiro, sorteia wallpapers aleatórios e diferentes para cada monitor ao iniciar a sessão.";
 
-    autostart = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Iniciar automaticamente ao abrir a sessão gráfica (via XDG autostart).";
-    };
+    autostart = lib.my.mkBool true "Iniciar automaticamente ao abrir a sessão gráfica (via XDG autostart).";
   };
 
   config = mkIf cfg.enable {

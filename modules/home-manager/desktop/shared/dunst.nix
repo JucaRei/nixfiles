@@ -5,24 +5,15 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.shared.dunst;
   c = config.desktop.theme.colors;
 in
 {
   options.desktop.shared.dunst = {
-    enable = mkOption {
-      type = bool;
-      default = false;
-      description = "Habilitar daemon de notificações Dunst compartilhado.";
-    };
+    enable = lib.my.mkBool false "Habilitar daemon de notificações Dunst compartilhado.";
 
-    reloadOnSwitch = mkOption {
-      type = bool;
-      default = true;
-      description = "Recarregar ou reiniciar automaticamente o Dunst na ativação do Home Manager.";
-    };
+    reloadOnSwitch = lib.my.mkBool true "Recarregar ou reiniciar automaticamente o Dunst na ativação do Home Manager.";
   };
 
   config = mkIf cfg.enable {
