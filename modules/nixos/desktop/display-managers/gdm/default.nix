@@ -17,11 +17,6 @@ in
         default = false;
         description = "Enable GDM as the display manager.";
       };
-      wayland-session = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable Wayland support.";
-      };
     };
   };
   config = mkIf cfg.enable {

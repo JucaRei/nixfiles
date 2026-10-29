@@ -56,12 +56,6 @@ in
     system.programs.file-manager.nautilus = {
       enable = mkEnableOption "Enable GNOME Files (Nautilus) with GVfs, Sushi preview, extensions, dconf settings, and custom scripts.";
 
-      defaultFileManager = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Definir Nautilus como gerenciador de arquivos padrão no XDG MIME (inode/directory).";
-      };
-
       installPackage = mkOption {
         type = types.bool;
         default = true;

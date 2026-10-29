@@ -337,7 +337,7 @@ in
     };
   };
 
-  config = mkIf isNoctalia {
+  config = mkIf cfg.enable {
     home.packages = [
       noctaliaPkg
       noctaliaLauncher

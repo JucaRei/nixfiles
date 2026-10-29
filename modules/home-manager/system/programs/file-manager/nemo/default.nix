@@ -52,12 +52,6 @@ in
     system.programs.file-manager.nemo = {
       enable = mkEnableOption "Enable Nemo file manager (Cinnamon) with GVfs, thumbnailers, extensions, and custom actions.";
 
-      defaultFileManager = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Definir Nemo como gerenciador de arquivos padrão no XDG MIME (inode/directory).";
-      };
-
       installPackage = mkOption {
         type = types.bool;
         default = true;

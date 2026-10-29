@@ -46,12 +46,6 @@ in
     system.programs.file-manager.pcmanfm = {
       enable = mkEnableOption "Enable PCManFM ultra-lightweight file manager with GVfs, thumbnailers, and tabbed browsing.";
 
-      defaultFileManager = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Definir PCManFM como gerenciador de arquivos padrão no XDG MIME (inode/directory).";
-      };
-
       installPackage = mkOption {
         type = types.bool;
         default = true;

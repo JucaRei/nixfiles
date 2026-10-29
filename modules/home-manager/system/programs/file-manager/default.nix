@@ -71,18 +71,6 @@ let
     else
       "file-manager";
 
-  activeName =
-    if chosenFM == "nautilus" then
-      "Nautilus"
-    else if chosenFM == "nemo" then
-      "Nemo"
-    else if chosenFM == "pcmanfm" then
-      "PCManFM"
-    else if chosenFM == "thunar" then
-      "Thunar"
-    else
-      "Gerenciador de Arquivos";
-
   activeDesktopFile =
     if chosenFM == "nautilus" then
       "org.gnome.Nautilus.desktop"
@@ -160,21 +148,6 @@ in
       type = types.str;
       default = activeCommand;
       description = "Comando executável para invocar o gerenciador de arquivos ativo em atalhos de WM e scripts.";
-    };
-
-    activeName = mkOption {
-      type = types.str;
-      default = activeName;
-      description = "Nome amigável do gerenciador de arquivos ativo (ex: Nautilus, Nemo, PCManFM, Thunar).";
-    };
-
-    cleanInactiveConfigs = mkOption {
-      type = types.bool;
-      default = config.system.cleanup.enable;
-      description = ''
-        Indica se a limpeza declarativa de arquivos residuais para gerenciadores inativos está ativada.
-        Delegado ao módulo centralizado system.cleanup.
-      '';
     };
 
     enableThumbnails = mkOption {

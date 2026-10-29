@@ -140,13 +140,6 @@ in
       '';
     };
 
-    activeDesktopFile = mkOption {
-      type = types.nullOr types.str;
-      default = activeDesktop;
-      readOnly = true;
-      description = "Arquivo .desktop do navegador padrão ativo.";
-    };
-
     activeBin = mkOption {
       type = types.nullOr types.str;
       default = activeBin;
