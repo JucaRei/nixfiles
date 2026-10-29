@@ -23,76 +23,56 @@ in
   ];
 
   options.desktop = {
-    modifierKey = lib.mkOption {
-      type = lib.types.enum [
+    modifierKey =
+      lib.my.mkEnum
+        [
+          "Super"
+          "Alt"
+          "Ctrl"
+          "super"
+          "alt"
+          "ctrl"
+          "SUPER"
+          "ALT"
+          "CTRL"
+          "Mod4"
+          "Mod1"
+          "mod4"
+          "mod1"
+        ]
         "Super"
-        "Alt"
-        "Ctrl"
-        "super"
-        "alt"
-        "ctrl"
-        "SUPER"
-        "ALT"
-        "CTRL"
-        "Mod4"
-        "Mod1"
-        "mod4"
-        "mod1"
-      ];
-      default = "Super";
-      description = ''
-        Tecla modificadora principal (Super Key / Mod Key) para os Window Managers (BSPWM, Hyprland, MangoWM, XFCE4).
-        Valores aceitos: "Super" (ou Mod4/Cmd/Windows), "Alt" (ou Mod1/Option), "Ctrl" (ou Control).
-      '';
-    };
+        ''
+          Tecla modificadora principal (Super Key / Mod Key) para os Window Managers (BSPWM, Hyprland, MangoWM, XFCE4).
+          Valores aceitos: "Super" (ou Mod4/Cmd/Windows), "Alt" (ou Mod1/Option), "Ctrl" (ou Control).
+        '';
 
     touchpad = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Habilitar configuração declarativa de Touchpad.";
-      };
+      enable = lib.my.mkBool true "Habilitar configuração declarativa de Touchpad.";
 
-      speed = lib.mkOption {
-        type = lib.types.either lib.types.str lib.types.number;
-        default = 0.5;
-        description = ''
-          Velocidade do ponteiro / aceleração do touchpad.
-          Aceita valores entre -1.0 e 1.0 (onde 0.0 é o padrão do sistema e 0.5 é ágil e rápido).
-        '';
-      };
+      speed = lib.my.mkOpt (lib.types.either lib.types.str lib.types.number) 0.5 ''
+        Velocidade do ponteiro / aceleração do touchpad.
+        Aceita valores entre -1.0 e 1.0 (onde 0.0 é o padrão do sistema e 0.5 é ágil e rápido).
+      '';
 
-      naturalScrolling = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Habilitar rolagem natural (estilo macOS).";
-      };
+      naturalScrolling = lib.my.mkBool true "Habilitar rolagem natural (estilo macOS).";
 
-      tapping = lib.mkOption {
-        type = lib.types.bool;
-        default = true;
-        description = "Habilitar toque para clicar (Tap to click).";
-      };
+      tapping = lib.my.mkBool true "Habilitar toque para clicar (Tap to click).";
 
-      clickMethod = lib.mkOption {
-        type = lib.types.enum [
+      clickMethod =
+        lib.my.mkEnum
+          [
+            "clickfinger"
+            "buttonareas"
+            "default"
+          ]
           "clickfinger"
-          "buttonareas"
-          "default"
-        ];
-        default = "clickfinger";
-        description = "Método de clique físico (clickfinger: 2 dedos botão direito, 3 dedos botão do meio).";
-      };
+          "Método de clique físico (clickfinger: 2 dedos botão direito, 3 dedos botão do meio).";
 
-      accelProfile = lib.mkOption {
-        type = lib.types.enum [
-          "adaptive"
-          "flat"
-          "default"
-        ];
-        default = "adaptive";
-        description = "Perfil de aceleração (adaptive ou flat).";
-      };
+      accelProfile = lib.my.mkEnum [
+        "adaptive"
+        "flat"
+        "default"
+      ] "adaptive" "Perfil de aceleração (adaptive ou flat).";
     };
   };
 

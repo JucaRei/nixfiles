@@ -7,25 +7,16 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf optionals;
-  inherit (lib.types) bool package listOf;
+  inherit (lib) mkIf optionals;
   cfg = config.desktop.hyprland.packages;
 
   isNixOS = osConfig != null;
 in
 {
   options.desktop.hyprland.packages = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.hyprland.enable;
-      description = "Enable hyprland-related packages";
-    };
+    enable = lib.my.mkBool config.desktop.hyprland.enable "Enable hyprland-related packages";
 
-    extraPackages = mkOption {
-      type = listOf package;
-      default = [ ];
-      description = "Additional packages to include";
-    };
+    extraPackages = lib.my.mkListOf lib.types.package [ ] "Additional packages to include";
   };
 
   config = mkIf cfg.enable {

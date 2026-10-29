@@ -6,8 +6,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.dwm.picom;
 
   gpuDriver = osConfig.hardware.graphics.cards.gpu or "unknown";
@@ -17,21 +16,13 @@ let
 in
 {
   options.desktop.dwm.picom = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.dwm.enable;
-      description = "Enable picom compositor for dwm";
-    };
+    enable = lib.my.mkBool config.desktop.dwm.enable "Enable picom compositor for dwm";
 
-    backend = mkOption {
-      type = lib.types.enum [
-        "xrender"
-        "glx"
-        "egl"
-      ];
-      default = if isNouveauOrLegacy then "xrender" else "glx";
-      description = "Picom rendering backend";
-    };
+    backend = lib.my.mkEnum [
+      "xrender"
+      "glx"
+      "egl"
+    ] (if isNouveauOrLegacy then "xrender" else "glx") "Picom rendering backend";
   };
 
   config = mkIf cfg.enable {

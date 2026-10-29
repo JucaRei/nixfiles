@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf getExe mkOption;
+  inherit (lib) mkIf getExe;
   terminalBin =
     if (config.system.programs.terminal.activeCommand or "") != "" then
       config.system.programs.terminal.activeCommand
@@ -34,28 +34,28 @@ let
 in
 {
   options.desktop.xfce4 = {
-    modifierKey = mkOption {
-      type = lib.types.enum [
-        "Super"
-        "Alt"
-        "Ctrl"
-        "super"
-        "alt"
-        "ctrl"
-        "SUPER"
-        "ALT"
-        "CTRL"
-        "Mod4"
-        "Mod1"
-        "mod4"
-        "mod1"
-      ];
-      default = config.desktop.modifierKey or "Super";
-      description = ''
-        Tecla modificadora principal (Super Key / Mod Key) para o XFCE4.
-        Padrão herda de desktop.modifierKey ("Super").
-      '';
-    };
+    modifierKey =
+      lib.my.mkEnum
+        [
+          "Super"
+          "Alt"
+          "Ctrl"
+          "super"
+          "alt"
+          "ctrl"
+          "SUPER"
+          "ALT"
+          "CTRL"
+          "Mod4"
+          "Mod1"
+          "mod4"
+          "mod1"
+        ]
+        (config.desktop.modifierKey or "Super")
+        ''
+          Tecla modificadora principal (Super Key / Mod Key) para o XFCE4.
+          Padrão herda de desktop.modifierKey ("Super").
+        '';
   };
 
   config = mkIf (desktop == "xfce4") {

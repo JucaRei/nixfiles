@@ -7,8 +7,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool listOf str;
+  inherit (lib) mkIf;
   cfg = config.desktop.mangowm;
   c = config.desktop.theme.colors;
 
@@ -228,23 +227,16 @@ let
 in
 {
   options.desktop.mangowm = {
-    enable = mkOption {
-      type = bool;
-      default = desktop == "mangowm" || desktop == "mango";
-      description = "Enable MangoWM Wayland dynamic tiling compositor based on dwl";
-    };
+    enable = lib.my.mkBool (
+      desktop == "mangowm" || desktop == "mango"
+    ) "Enable MangoWM Wayland dynamic tiling compositor based on dwl";
 
-    monitorRules = mkOption {
-      type = listOf str;
-      default = [ ];
-      description = "List of monitor rules for MangoWM (e.g. 'name:eDP-1,width:1366,height:768,refresh:60,scale:1')";
-    };
+    monitorRules =
+      lib.my.mkListOf lib.types.str [ ]
+        "List of monitor rules for MangoWM (e.g. 'name:eDP-1,width:1366,height:768,refresh:60,scale:1')";
 
-    modifierKey = mkOption {
-      type = str;
-      default = config.desktop.modifierKey or "Super";
-      description = "Tecla modificadora principal do MangoWM (ex: 'SUPER', 'ALT', 'CTRL').";
-    };
+    modifierKey = lib.my.mkStr (config.desktop.modifierKey or "Super"
+    ) "Tecla modificadora principal do MangoWM (ex: 'SUPER', 'ALT', 'CTRL').";
   };
 
   config = mkIf cfg.enable {

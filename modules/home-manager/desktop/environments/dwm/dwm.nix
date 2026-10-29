@@ -8,8 +8,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool str;
+  inherit (lib) mkIf;
   cfg = config.desktop.dwm;
 
   isNvidiaLegacy = (osConfig.hardware.graphics.cards.gpu or null) == "nvidia-legacy";
@@ -67,79 +66,60 @@ let
 in
 {
   options.desktop.dwm = {
-    enable = mkOption {
-      type = bool;
-      default = desktop == "dwm";
-      description = "Enable DWM window manager with custom config.def.h and dwm-titus runtime configuration";
-    };
+    enable = lib.my.mkBool (
+      desktop == "dwm"
+    ) "Enable DWM window manager with custom config.def.h and dwm-titus runtime configuration";
 
-    modifierKey = mkOption {
-      type = str;
-      default = config.desktop.modifierKey or "Super";
-      description = "Tecla modificadora principal do DWM (Super ou Alt).";
-    };
+    modifierKey = lib.my.mkStr (config.desktop.modifierKey or "Super"
+    ) "Tecla modificadora principal do DWM (Super ou Alt).";
 
-    bar = mkOption {
-      type = lib.types.enum [
+    bar =
+      lib.my.mkEnum
+        [
+          "quickshell"
+          "dwm-status"
+          "slstatus"
+          "polybar"
+          "none"
+        ]
         "quickshell"
-        "dwm-status"
-        "slstatus"
-        "polybar"
-        "none"
-      ];
-      default = "quickshell";
-      description = "Barra de status/painel do DWM. Opções: 'quickshell' (painel moderno do dwm-titus com launcher e control center), 'dwm-status' (script de status nativo do dwm usando xsetroot), 'slstatus', 'polybar' ou 'none'.";
-    };
+        "Barra de status/painel do DWM. Opções: 'quickshell' (painel moderno do dwm-titus com launcher e control center), 'dwm-status' (script de status nativo do dwm usando xsetroot), 'slstatus', 'polybar' ou 'none'.";
 
     quickshell = {
-      enable = mkOption {
-        type = lib.types.bool;
-        default = cfg.bar == "quickshell";
-        description = "Habilitar Quickshell no DWM";
-      };
+      enable = lib.my.mkBool (cfg.bar == "quickshell") "Habilitar Quickshell no DWM";
 
-      qsgBackend = mkOption {
-        type = lib.types.enum [
-          "opengl"
-          "software"
-          "vulkan"
-          "auto"
-        ];
-        default = if isNvidiaLegacy then "software" else "opengl";
-        description = "Backend de renderização do Qt Quick Scene Graph (QSG_RHI_BACKEND). No NVIDIA 340 Legacy (sem suporte a Vulkan e com FBConfigs GLX incompatíveis no Qt 6.11), 'software' garante renderização estável via CPU.";
-      };
+      qsgBackend =
+        lib.my.mkEnum
+          [
+            "opengl"
+            "software"
+            "vulkan"
+            "auto"
+          ]
+          (if isNvidiaLegacy then "software" else "opengl")
+          "Backend de renderização do Qt Quick Scene Graph (QSG_RHI_BACKEND). No NVIDIA 340 Legacy (sem suporte a Vulkan e com FBConfigs GLX incompatíveis no Qt 6.11), 'software' garante renderização estável via CPU.";
 
-      glIntegration = mkOption {
-        type = lib.types.enum [
-          "glx"
-          "egl"
-          "auto"
-          "none"
-        ];
-        default = if isNvidiaLegacy then "none" else "auto";
-        description = "Backend de integração GL do Qt XCB (QT_XCB_GL_INTEGRATION). No NVIDIA 340 Legacy, 'none' previne falhas de contexto dummy GLX/EGL no Qt6.";
-      };
+      glIntegration =
+        lib.my.mkEnum
+          [
+            "glx"
+            "egl"
+            "auto"
+            "none"
+          ]
+          (if isNvidiaLegacy then "none" else "auto")
+          "Backend de integração GL do Qt XCB (QT_XCB_GL_INTEGRATION). No NVIDIA 340 Legacy, 'none' previne falhas de contexto dummy GLX/EGL no Qt6.";
     };
 
     keyboard = {
       brightness = {
-        enable = mkOption {
-          type = lib.types.bool;
-          default = true;
-          description = "Habilitar script dwm-kbd-brightness-osd e atalhos de iluminação do teclado com OSD Dunst";
-        };
+        enable = lib.my.mkBool true "Habilitar script dwm-kbd-brightness-osd e atalhos de iluminação do teclado com OSD Dunst";
 
-        device = mkOption {
-          type = lib.types.nullOr lib.types.str;
-          default = null;
-          description = "Dispositivo específico em /sys/class/leds (ex: 'smc::kbd_backlight'), ou null para detecção automática";
-        };
+        device =
+          lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+            "Dispositivo específico em /sys/class/leds (ex: 'smc::kbd_backlight'), ou null para detecção automática";
 
-        step = mkOption {
-          type = lib.types.int;
-          default = 5;
-          description = "Passo de alteração de brilho do teclado em porcentagem (padrão 5%)";
-        };
+        step = lib.my.mkInt 5 "Passo de alteração de brilho do teclado em porcentagem (padrão 5%)";
       };
     };
   };

@@ -4,17 +4,12 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.dwm.rofi;
 in
 {
   options.desktop.dwm.rofi = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.dwm.enable;
-      description = "Enable rofi application launcher for dwm";
-    };
+    enable = lib.my.mkBool config.desktop.dwm.enable "Enable rofi application launcher for dwm";
   };
 
   config = mkIf cfg.enable {

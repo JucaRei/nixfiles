@@ -7,8 +7,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool str listOf;
+  inherit (lib) mkIf;
   cfg = config.desktop.hyprland;
   isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
   isApple = (config.home.keyboard.model or "") == "apple";
@@ -144,71 +143,44 @@ let
 in
 {
   options.desktop.hyprland = {
-    enable = mkOption {
-      type = bool;
-      default = desktop == "hyprland";
-      description = "Enable Hyprland dynamic tiling Wayland compositor";
-    };
+    enable = lib.my.mkBool (desktop == "hyprland") "Enable Hyprland dynamic tiling Wayland compositor";
 
-    extraConfig = mkOption {
-      type = str;
-      default = "";
-      description = "Additional Hyprland configuration lines to append";
-    };
+    extraConfig = lib.my.mkStr "" "Additional Hyprland configuration lines to append";
 
-    monitors = mkOption {
-      type = listOf str;
-      default = [ ",preferred,auto,1" ];
-      description = "Hyprland monitor configurations";
-    };
+    monitors = lib.my.mkListOf lib.types.str [ ",preferred,auto,1" ] "Hyprland monitor configurations";
 
     keyboard = {
-      layout = mkOption {
-        type = str;
-        default =
-          if config.home.keyboard != null && config.home.keyboard.layout != null then
-            config.home.keyboard.layout
-          else
-            "br,us";
-        description = "Hyprland keyboard layout (defaults to home.keyboard.layout)";
-      };
+      layout = lib.my.mkStr (
+        if config.home.keyboard != null && config.home.keyboard.layout != null then
+          config.home.keyboard.layout
+        else
+          "br,us"
+      ) "Hyprland keyboard layout (defaults to home.keyboard.layout)";
 
-      variant = mkOption {
-        type = str;
-        default =
-          if config.home.keyboard != null && config.home.keyboard.variant != null then
-            config.home.keyboard.variant
-          else
-            "";
-        description = "Hyprland keyboard variant (defaults to home.keyboard.variant)";
-      };
+      variant = lib.my.mkStr (
+        if config.home.keyboard != null && config.home.keyboard.variant != null then
+          config.home.keyboard.variant
+        else
+          ""
+      ) "Hyprland keyboard variant (defaults to home.keyboard.variant)";
 
-      model = mkOption {
-        type = str;
-        default =
-          if config.home.keyboard != null && config.home.keyboard.model != null then
-            config.home.keyboard.model
-          else
-            "";
-        description = "Hyprland keyboard model (defaults to home.keyboard.model)";
-      };
+      model = lib.my.mkStr (
+        if config.home.keyboard != null && config.home.keyboard.model != null then
+          config.home.keyboard.model
+        else
+          ""
+      ) "Hyprland keyboard model (defaults to home.keyboard.model)";
 
-      options = mkOption {
-        type = str;
-        default =
-          if config.home.keyboard != null && config.home.keyboard.options != [ ] then
-            lib.concatStringsSep "," config.home.keyboard.options
-          else
-            "";
-        description = "Hyprland keyboard options (defaults to home.keyboard.options)";
-      };
+      options = lib.my.mkStr (
+        if config.home.keyboard != null && config.home.keyboard.options != [ ] then
+          lib.concatStringsSep "," config.home.keyboard.options
+        else
+          ""
+      ) "Hyprland keyboard options (defaults to home.keyboard.options)";
     };
 
-    modifierKey = mkOption {
-      type = str;
-      default = config.desktop.modifierKey or "Super";
-      description = "Tecla modificadora principal do Hyprland (ex: 'SUPER', 'ALT', 'CTRL').";
-    };
+    modifierKey = lib.my.mkStr (config.desktop.modifierKey or "Super"
+    ) "Tecla modificadora principal do Hyprland (ex: 'SUPER', 'ALT', 'CTRL').";
   };
 
   config =
