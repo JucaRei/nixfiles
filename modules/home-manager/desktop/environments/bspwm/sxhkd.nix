@@ -6,8 +6,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) attrsOf bool str;
+  inherit (lib) mkIf;
   cfg = config.desktop.bspwm.sxhkd;
   fmCmd = config.system.programs.file-manager.activeCommand or "file-manager";
 
@@ -317,54 +316,42 @@ let
 in
 {
   options.desktop.bspwm.sxhkd = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.bspwm.enable;
-      description = "Enable sxhkd keybindings for bspwm";
-    };
+    enable = lib.my.mkBool config.desktop.bspwm.enable "Enable sxhkd keybindings for bspwm";
 
-    modifierKey = mkOption {
-      type = lib.types.str;
-      default = config.desktop.bspwm.modifierKey or (config.desktop.modifierKey or "Super");
-      description = "Tecla modificadora principal do SXHKD (ex: 'super', 'alt', 'ctrl').";
-    };
+    modifierKey = lib.my.mkStr (config.desktop.bspwm.modifierKey
+      or (config.desktop.modifierKey or "Super")
+    ) "Tecla modificadora principal do SXHKD (ex: 'super', 'alt', 'ctrl').";
 
-    keybindings = mkOption {
-      type = attrsOf str;
-      default = { };
-      description = "sxhkd keybindings adicionais ou customizadas.";
-    };
+    keybindings =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.str) { }
+        "sxhkd keybindings adicionais ou customizadas.";
 
-    extraKeybindings = mkOption {
-      type = attrsOf str;
-      default = { };
-      description = "Atalhos adicionais ou personalizados do SXHKD definidos no host.";
-    };
+    extraKeybindings =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.str) { }
+        "Atalhos adicionais ou personalizados do SXHKD definidos no host.";
 
-    screenshotProfile = mkOption {
-      type = lib.types.enum [
+    screenshotProfile =
+      lib.my.mkEnum
+        [
+          "auto"
+          "standard"
+          "mac"
+          "custom"
+          "none"
+        ]
         "auto"
-        "standard"
-        "mac"
-        "custom"
-        "none"
-      ];
-      default = "auto";
-      description = ''
-        Perfil de teclas de atalho para captura de tela (screenshots):
-        - "auto": detecta automaticamente (teclado Apple/Mac usa "mac", outros usam "standard").
-        - "standard": ideal para PCs (Acer, Nitro, VMs, etc.) usando Print, Shift+Print, Ctrl+Print. Preserva Super+Shift+1..0 livres para workspaces!
-        - "mac": estilo macOS usando Super+Shift+3/4/5 para telas/áreas de captura.
-        - "custom": utiliza os atalhos declarados em screenshotKeybindings.
-        - "none": desativa os atalhos de screenshot do sxhkd.
-      '';
-    };
+        ''
+          Perfil de teclas de atalho para captura de tela (screenshots):
+          - "auto": detecta automaticamente (teclado Apple/Mac usa "mac", outros usam "standard").
+          - "standard": ideal para PCs (Acer, Nitro, VMs, etc.) usando Print, Shift+Print, Ctrl+Print. Preserva Super+Shift+1..0 livres para workspaces!
+          - "mac": estilo macOS usando Super+Shift+3/4/5 para telas/áreas de captura.
+          - "custom": utiliza os atalhos declarados em screenshotKeybindings.
+          - "none": desativa os atalhos de screenshot do sxhkd.
+        '';
 
-    screenshotKeybindings = mkOption {
-      type = lib.types.attrsOf lib.types.str;
-      default = { };
-      description = "Mapeamento customizado de atalhos para captura de tela quando screenshotProfile = 'custom'.";
-    };
+    screenshotKeybindings =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.str) { }
+        "Mapeamento customizado de atalhos para captura de tela quando screenshotProfile = 'custom'.";
   };
 
   config = mkIf cfg.enable {

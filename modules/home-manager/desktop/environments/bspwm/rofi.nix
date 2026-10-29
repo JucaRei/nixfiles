@@ -4,17 +4,12 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.bspwm.rofi;
 in
 {
   options.desktop.bspwm.rofi = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.bspwm.enable;
-      description = "Enable rofi application launcher for bspwm";
-    };
+    enable = lib.my.mkBool config.desktop.bspwm.enable "Enable rofi application launcher for bspwm";
   };
 
   config = mkIf cfg.enable {

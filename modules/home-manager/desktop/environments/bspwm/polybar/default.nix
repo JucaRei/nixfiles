@@ -5,8 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool str;
+  inherit (lib) mkIf;
   cfg = config.desktop.bspwm.polybar;
 
   colors = import ./colors.nix { theme = config.desktop.theme; };
@@ -48,25 +47,19 @@ let
       validStyles = if allowDefault then encapStyleWithDefaultEnum else encapStyleEnum;
       submoduleType = lib.types.submodule {
         options = {
-          style = mkOption {
-            type = lib.types.enum validStyles;
-            default = defaultStyle;
-            description = "Estilo geométrico do encapsulamento ('pill', 'shapes', 'slant', 'powerline'${
-              if allowDefault then ", ou 'default' para herdar" else ""
-            })";
-          };
+          style =
+            lib.my.mkEnum validStyles defaultStyle
+              "Estilo geométrico do encapsulamento ('pill', 'shapes', 'slant', 'powerline'${
+                if allowDefault then ", ou 'default' para herdar" else ""
+              })";
 
-          color = mkOption {
-            type = lib.types.nullOr lib.types.str;
-            default = null;
-            description = "Cor de fundo da cápsula e de seus glifos delimitadores (nome da paleta como 'pill', 'surface', 'red', ou código HEX direto como '#29339B' ou '29339B')";
-          };
+          color =
+            lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+              "Cor de fundo da cápsula e de seus glifos delimitadores (nome da paleta como 'pill', 'surface', 'red', ou código HEX direto como '#29339B' ou '29339B')";
 
-          accent = mkOption {
-            type = lib.types.nullOr lib.types.str;
-            default = null;
-            description = "Cor de destaque dos ícones, textos ativos ou elementos de destaque dentro da cápsula (nome da paleta ou código HEX direto como '#FF5555' ou 'FF5555')";
-          };
+          accent =
+            lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+              "Cor de destaque dos ícones, textos ativos ou elementos de destaque dentro da cápsula (nome da paleta ou código HEX direto como '#FF5555' ou 'FF5555')";
         };
       };
     in
@@ -78,26 +71,22 @@ let
 in
 {
   options.desktop.bspwm.polybar = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.bspwm.enable;
-      description = "Enable modular Polybar for bspwm";
-    };
+    enable = lib.my.mkBool config.desktop.bspwm.enable "Enable modular Polybar for bspwm";
 
-    style = mkOption {
-      type = lib.types.enum [
-        "modern"
+    style =
+      lib.my.mkEnum
+        [
+          "modern"
+          "zproger"
+          "pills"
+          "shapes"
+        ]
         "zproger"
-        "pills"
-        "shapes"
-      ];
-      default = "zproger";
-      description = "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills), 'shapes' (estilo shapes / pixelated squares / como no debian-bspwm-e300) ou 'modern' (estilo Waybar / Catppuccin coeso)";
-    };
+        "Estilo visual da Polybar: 'zproger'/'pills' (cápsulas flutuantes em pills), 'shapes' (estilo shapes / pixelated squares / como no debian-bspwm-e300) ou 'modern' (estilo Waybar / Catppuccin coeso)";
 
-    encapsulation = mkOption {
-      type =
-        lib.types.coercedTo (lib.types.enum encapStyleEnum)
+    encapsulation =
+      lib.my.mkOpt
+        (lib.types.coercedTo (lib.types.enum encapStyleEnum)
           (val: {
             default = {
               style = val;
@@ -116,155 +105,134 @@ in
           (
             lib.types.submodule {
               options = {
-                default = mkOption {
-                  type = mkEncapModuleType {
-                    defaultStyle = "pill";
-                    allowDefault = false;
-                    description = "Encapsulamento padrão herdado por todas as cápsulas";
-                  };
-                  default = "pill";
-                  description = "Encapsulamento padrão herdado por todas as cápsulas (pode ser string 'pill'/'shapes'/'slant'/'powerline' ou attrset { style, color, accent })";
-                };
+                default =
+                  lib.my.mkOpt
+                    (mkEncapModuleType {
+                      defaultStyle = "pill";
+                      allowDefault = false;
+                      description = "Encapsulamento padrão herdado por todas as cápsulas";
+                    })
+                    "pill"
+                    "Encapsulamento padrão herdado por todas as cápsulas (pode ser string 'pill'/'shapes'/'slant'/'powerline' ou attrset { style, color, accent })";
 
-                workspaces = mkOption {
-                  type = mkEncapModuleType {
-                    defaultStyle = "default";
-                    allowDefault = true;
-                    description = "Encapsulamento da cápsula de workspaces";
-                  };
-                  default = "default";
-                  description = "Encapsulamento específico da cápsula de workspaces (string ou { style, color, accent })";
-                };
+                workspaces =
+                  lib.my.mkOpt
+                    (mkEncapModuleType {
+                      defaultStyle = "default";
+                      allowDefault = true;
+                      description = "Encapsulamento da cápsula de workspaces";
+                    })
+                    "default"
+                    "Encapsulamento específico da cápsula de workspaces (string ou { style, color, accent })";
 
-                stats = mkOption {
-                  type = mkEncapModuleType {
-                    defaultStyle = "default";
-                    allowDefault = true;
-                    description = "Encapsulamento da cápsula de métricas/hardware (cpu, ram, temp, disk)";
-                  };
-                  default = "default";
-                  description = "Encapsulamento específico da cápsula de métricas/hardware (string ou { style, color, accent })";
-                };
+                stats =
+                  lib.my.mkOpt
+                    (mkEncapModuleType {
+                      defaultStyle = "default";
+                      allowDefault = true;
+                      description = "Encapsulamento da cápsula de métricas/hardware (cpu, ram, temp, disk)";
+                    })
+                    "default"
+                    "Encapsulamento específico da cápsula de métricas/hardware (string ou { style, color, accent })";
 
-                netspeed = mkOption {
-                  type = mkEncapModuleType {
-                    defaultStyle = "default";
-                    allowDefault = true;
-                    description = "Encapsulamento da cápsula de velocidade de rede (netspeed)";
-                  };
-                  default = "default";
-                  description = "Encapsulamento específico da cápsula de velocidade de rede (string ou { style, color, accent })";
-                };
+                netspeed =
+                  lib.my.mkOpt
+                    (mkEncapModuleType {
+                      defaultStyle = "default";
+                      allowDefault = true;
+                      description = "Encapsulamento da cápsula de velocidade de rede (netspeed)";
+                    })
+                    "default"
+                    "Encapsulamento específico da cápsula de velocidade de rede (string ou { style, color, accent })";
 
-                date = mkOption {
-                  type = mkEncapModuleType {
-                    defaultStyle = "default";
-                    allowDefault = true;
-                    description = "Encapsulamento da cápsula de data/relógio";
-                  };
-                  default = "default";
-                  description = "Encapsulamento específico da cápsula de data/relógio (string ou { style, color, accent })";
-                };
+                date =
+                  lib.my.mkOpt
+                    (mkEncapModuleType {
+                      defaultStyle = "default";
+                      allowDefault = true;
+                      description = "Encapsulamento da cápsula de data/relógio";
+                    })
+                    "default"
+                    "Encapsulamento específico da cápsula de data/relógio (string ou { style, color, accent })";
 
-                tray = mkOption {
-                  type = mkEncapModuleType {
-                    defaultStyle = "default";
-                    allowDefault = true;
-                    description = "Encapsulamento da cápsula da bandeja (stalonetray)";
-                  };
-                  default = "default";
-                  description = "Encapsulamento específico da cápsula da bandeja (string ou { style, color, accent })";
-                };
+                tray = lib.my.mkOpt (mkEncapModuleType {
+                  defaultStyle = "default";
+                  allowDefault = true;
+                  description = "Encapsulamento da cápsula da bandeja (stalonetray)";
+                }) "default" "Encapsulamento específico da cápsula da bandeja (string ou { style, color, accent })";
 
-                color = mkOption {
-                  type = lib.types.nullOr lib.types.str;
-                  default = null;
-                  description = "Cor de fundo padrão global para todas as cápsulas (nome da paleta ou HEX direto com ou sem '#')";
-                };
+                color =
+                  lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+                    "Cor de fundo padrão global para todas as cápsulas (nome da paleta ou HEX direto com ou sem '#')";
 
-                accent = mkOption {
-                  type = lib.types.nullOr lib.types.str;
-                  default = null;
-                  description = "Cor de destaque padrão global para todas as cápsulas (nome da paleta ou HEX direto com ou sem '#')";
-                };
+                accent =
+                  lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+                    "Cor de destaque padrão global para todas as cápsulas (nome da paleta ou HEX direto com ou sem '#')";
 
-                colors = mkOption {
-                  type = lib.types.attrsOf (lib.types.either lib.types.str (lib.types.nullOr lib.types.str));
-                  default = { };
-                  description = ''
-                    Cores customizadas opcionais para os glifos, fundos e destaques das cápsulas.
-                    Chaves suportadas:
-                    - glyph: cor padrão dos glifos e fundos (ex: "pill", "red", "shade1", "#29339B")
-                    - accent: cor de destaque padrão global (ex: "red", "accent", "#ff5555")
-                    - workspaces: cor de fundo e glifos da cápsula de workspaces
-                    - workspacesAccent / focused: cor de destaque do workspace ativo (ex: "red", "coral", "#ff5555")
-                    - focusedNumber: cor do número do workspace quando focado/ativo (ex: "dark", "bgDark")
-                    - stats: cor de fundo e glifos da cápsula de métricas (cpu, memory, temp, disk)
-                    - statsAccent: cor de destaque dos ícones de hardware (cpu, ram, temp, disk)
-                    - netspeed: cor de fundo e glifos da cápsula de velocidade de rede (netspeed)
-                    - netspeedAccent: cor de destaque do texto da velocidade de rede
-                    - date: cor de fundo e glifos da cápsula de data/relógio
-                    - dateAccent: cor de destaque dos ícones e textos da data/relógio
-                    - tray: cor de fundo e glifos da cápsula da bandeja
-                    - trayAccent: cor de destaque da bandeja
-                  '';
-                };
+                colors =
+                  lib.my.mkOpt (lib.types.attrsOf (lib.types.either lib.types.str (lib.types.nullOr lib.types.str)))
+                    { }
+                    ''
+                      Cores customizadas opcionais para os glifos, fundos e destaques das cápsulas.
+                      Chaves suportadas:
+                      - glyph: cor padrão dos glifos e fundos (ex: "pill", "red", "shade1", "#29339B")
+                      - accent: cor de destaque padrão global (ex: "red", "accent", "#ff5555")
+                      - workspaces: cor de fundo e glifos da cápsula de workspaces
+                      - workspacesAccent / focused: cor de destaque do workspace ativo (ex: "red", "coral", "#ff5555")
+                      - focusedNumber: cor do número do workspace quando focado/ativo (ex: "dark", "bgDark")
+                      - stats: cor de fundo e glifos da cápsula de métricas (cpu, memory, temp, disk)
+                      - statsAccent: cor de destaque dos ícones de hardware (cpu, ram, temp, disk)
+                      - netspeed: cor de fundo e glifos da cápsula de velocidade de rede (netspeed)
+                      - netspeedAccent: cor de destaque do texto da velocidade de rede
+                      - date: cor de fundo e glifos da cápsula de data/relógio
+                      - dateAccent: cor de destaque dos ícones e textos da data/relógio
+                      - tray: cor de fundo e glifos da cápsula da bandeja
+                      - trayAccent: cor de destaque da bandeja
+                    '';
               };
             }
-          );
-      default = "pill";
-      description = ''
-        Formato de encapsulamento e estilização de cores e destaques das cápsulas.
-        Pode ser uma string direta ("pill", "shapes", "slant", "powerline")
-        ou uma configuração granular especificando estilo, cor de fundo e cor de destaque:
-          {
-            default = "pill";
-            accent = "#ff5555"; # Cor de destaque global padrão
-            workspaces = {
-              style = "powerline";
-              accent = "#ff5555"; # Destaque do workspace ativo (nome da paleta ou HEX direto)
-            };
-            stats = {
-              style = "shapes";
-              color = "#1e1e2e";
-              accent = "mint";    # Ícones de hardware (cpu, mem, temp, disk) destacados em mint
-            };
-            netspeed = {
-              style = "slant";
-              color = "#29339B";  # Fundo customizado da cápsula de velocidade de rede
-              accent = "#8be9fd"; # Velocidade de rede em destaque ciano
-            };
-            date = {
-              style = "pill";
-              accent = "coral";   # Relógio e calendário em destaque coral
-            };
-            colors = {
-              focusedNumber = "dark"; # Cor suave do número quando focado
-            };
-          }
-        Também é possível usar diretamente os módulos 'round-left'/'round-right', 'shape-left'/'shape-right',
-        'slant-left'/'slant-right', 'powerline-left'/'powerline-right' (ou suas variantes coloridas como 'shape-left-red') na lista de módulos das barras.
-      '';
-    };
+          )
+        )
+        "pill"
+        ''
+          Formato de encapsulamento e estilização de cores e destaques das cápsulas.
+          Pode ser uma string direta ("pill", "shapes", "slant", "powerline")
+          ou uma configuração granular especificando estilo, cor de fundo e cor de destaque:
+            {
+              default = "pill";
+              accent = "#ff5555"; # Cor de destaque global padrão
+              workspaces = {
+                style = "powerline";
+                accent = "#ff5555"; # Destaque do workspace ativo (nome da paleta ou HEX direto)
+              };
+              stats = {
+                style = "shapes";
+                color = "#1e1e2e";
+                accent = "mint";    # Ícones de hardware (cpu, mem, temp, disk) destacados em mint
+              };
+              netspeed = {
+                style = "slant";
+                color = "#29339B";  # Fundo customizado da cápsula de velocidade de rede
+                accent = "#8be9fd"; # Velocidade de rede em destaque ciano
+              };
+              date = {
+                style = "pill";
+                accent = "coral";   # Relógio e calendário em destaque coral
+              };
+              colors = {
+                focusedNumber = "dark"; # Cor suave do número quando focado
+              };
+            }
+          Também é possível usar diretamente os módulos 'round-left'/'round-right', 'shape-left'/'shape-right',
+          'slant-left'/'slant-right', 'powerline-left'/'powerline-right' (ou suas variantes coloridas como 'shape-left-red') na lista de módulos das barras.
+        '';
 
-    battery = mkOption {
-      type = str;
-      default = "BAT0";
-      description = "Nome do dispositivo da bateria em /sys/class/power_supply";
-    };
+    battery = lib.my.mkStr "BAT0" "Nome do dispositivo da bateria em /sys/class/power_supply";
 
-    adapter = mkOption {
-      type = str;
-      default = "ADP1";
-      description = "Nome do adaptador AC em /sys/class/power_supply";
-    };
+    adapter = lib.my.mkStr "ADP1" "Nome do adaptador AC em /sys/class/power_supply";
 
     tray = {
-      enable = mkOption {
-        type = bool;
-        default = true;
-        description = "Habilitar módulo e serviço de bandeja do sistema (Stalonetray) na Polybar";
-      };
+      enable = lib.my.mkBool true "Habilitar módulo e serviço de bandeja do sistema (Stalonetray) na Polybar";
     };
   };
 

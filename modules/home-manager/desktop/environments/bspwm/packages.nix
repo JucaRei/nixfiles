@@ -9,8 +9,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf optionals;
-  inherit (lib.types) bool package;
+  inherit (lib) mkIf optionals;
   cfg = config.desktop.bspwm.packages;
 
   isNixOS = osConfig != null;
@@ -72,17 +71,9 @@ let
 in
 {
   options.desktop.bspwm.packages = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.bspwm.enable;
-      description = "Enable bspwm-related packages";
-    };
+    enable = lib.my.mkBool config.desktop.bspwm.enable "Enable bspwm-related packages";
 
-    extraPackages = mkOption {
-      type = lib.types.listOf package;
-      default = [ ];
-      description = "Additional packages to include";
-    };
+    extraPackages = lib.my.mkListOf lib.types.package [ ] "Additional packages to include";
   };
 
   config = mkIf cfg.enable {

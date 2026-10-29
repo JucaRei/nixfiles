@@ -7,8 +7,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool listOf str;
+  inherit (lib) mkIf;
   cfg = config.desktop.bspwm;
 
   normMod =
@@ -102,35 +101,18 @@ let
 in
 {
   options.desktop.bspwm = {
-    enable = mkOption {
-      type = bool;
-      default = desktop == "bspwm";
-      description = "Enable bspwm window manager";
-    };
+    enable = lib.my.mkBool (desktop == "bspwm") "Enable bspwm window manager";
 
-    extraConfig = mkOption {
-      type = str;
-      default = "";
-      description = "Additional bspwmrc configuration to append";
-    };
+    extraConfig = lib.my.mkStr "" "Additional bspwmrc configuration to append";
 
-    modifierKey = mkOption {
-      type = str;
-      default = config.desktop.modifierKey or "Super";
-      description = "Tecla modificadora principal do BSPWM (ex: 'Super', 'Alt', 'Ctrl').";
-    };
+    modifierKey = lib.my.mkStr (config.desktop.modifierKey or "Super"
+    ) "Tecla modificadora principal do BSPWM (ex: 'Super', 'Alt', 'Ctrl').";
 
-    extraKeybindings = mkOption {
-      type = lib.types.attrsOf str;
-      default = { };
-      description = "Atalhos adicionais ou personalizados do SXHKD definidos no host.";
-    };
+    extraKeybindings =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.str) { }
+        "Atalhos adicionais ou personalizados do SXHKD definidos no host.";
 
-    rules = mkOption {
-      type = listOf str;
-      default = [ ];
-      description = "bspwm rules for specific applications";
-    };
+    rules = lib.my.mkListOf lib.types.str [ ] "bspwm rules for specific applications";
   };
 
   config = mkIf cfg.enable {

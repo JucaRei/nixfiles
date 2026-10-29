@@ -7,8 +7,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.bspwm.picom;
 
   # Detecta se o módulo nvidia-legacy está ativo via osConfig (NixOS integrado)
@@ -21,75 +20,49 @@ let
 in
 {
   options.desktop.bspwm.picom = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.bspwm.enable;
-      description = "Enable picom compositor for bspwm";
-    };
+    enable = lib.my.mkBool config.desktop.bspwm.enable "Enable picom compositor for bspwm";
 
-    backend = mkOption {
-      type = lib.types.enum [
-        "xrender"
-        "glx"
-        "egl"
-      ];
-      default = if isNouveauOrLegacy then "xrender" else "glx";
-      description = "Picom rendering backend (glx for GPU acceleration, xrender for VMs/legacy)";
-    };
+    backend =
+      lib.my.mkEnum
+        [
+          "xrender"
+          "glx"
+          "egl"
+        ]
+        (if isNouveauOrLegacy then "xrender" else "glx")
+        "Picom rendering backend (glx for GPU acceleration, xrender for VMs/legacy)";
 
-    cornerRadius = mkOption {
-      type = lib.types.int;
-      default = if isNouveauOrLegacy then 10 else 16;
-      description = "Raio dos cantos arredondados das janelas em pixels (ex: 16 para visual moderno e suave)";
-    };
+    cornerRadius = lib.my.mkInt (
+      if isNouveauOrLegacy then 10 else 16
+    ) "Raio dos cantos arredondados das janelas em pixels (ex: 16 para visual moderno e suave)";
 
-    activeOpacity = mkOption {
-      type = lib.types.numbers.between 0.0 1.0;
-      default = 1.0;
-      description = "Opacidade das janelas ativas em foco (1.0 = totalmente opaco)";
-    };
+    activeOpacity =
+      lib.my.mkOpt (lib.types.numbers.between 0.0 1.0) 1.0
+        "Opacidade das janelas ativas em foco (1.0 = totalmente opaco)";
 
-    inactiveOpacity = mkOption {
-      type = lib.types.numbers.between 0.0 1.0;
-      default = 0.97;
-      description = "Opacidade das janelas inativas/desfocadas (menos translúcido, alta legibilidade)";
-    };
+    inactiveOpacity =
+      lib.my.mkOpt (lib.types.numbers.between 0.0 1.0) 0.97
+        "Opacidade das janelas inativas/desfocadas (menos translúcido, alta legibilidade)";
 
     blur = {
-      enable = mkOption {
-        type = bool;
-        default = !isNouveauOrLegacy && cfg.backend != "xrender";
-        description = "Enable dual_kawase background blur (requires glx/egl backend and capable GPU)";
-      };
+      enable = lib.my.mkBool (
+        !isNouveauOrLegacy && cfg.backend != "xrender"
+      ) "Enable dual_kawase background blur (requires glx/egl backend and capable GPU)";
 
-      strength = mkOption {
-        type = lib.types.int;
-        default = 7;
-        description = "Dual-Kawase blur strength (1-20, default 7 for optimal frosted glass aesthetics)";
-      };
+      strength = lib.my.mkInt 7 "Dual-Kawase blur strength (1-20, default 7 for optimal frosted glass aesthetics)";
     };
 
     animations = {
-      enable = mkOption {
-        type = bool;
-        default = !isNouveauOrLegacy;
-        description = "Enable modern smooth window animations in picom (requires glx/egl backend)";
-      };
+      enable = lib.my.mkBool (
+        !isNouveauOrLegacy
+      ) "Enable modern smooth window animations in picom (requires glx/egl backend)";
     };
 
     shadows = {
-      enable = mkOption {
-        type = bool;
-        default = true;
-        description = "Enable window shadows in picom";
-      };
+      enable = lib.my.mkBool true "Enable window shadows in picom";
     };
 
-    useDamage = mkOption {
-      type = bool;
-      default = isNouveauOrLegacy; # true por padrão em hardware legado para minimizar repintura de tela
-      description = "Only repaint modified regions of the screen to save CPU/GPU cycles";
-    };
+    useDamage = lib.my.mkBool isNouveauOrLegacy "Only repaint modified regions of the screen to save CPU/GPU cycles";
   };
 
   config = mkIf (config.desktop.bspwm.enable && cfg.enable) {

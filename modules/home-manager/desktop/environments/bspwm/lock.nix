@@ -5,16 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf types;
-  inherit (types)
-    bool
-    int
-    str
-    listOf
-    nullOr
-    either
-    path
-    ;
+  inherit (lib) mkIf;
   cfg = config.desktop.bspwm.lock;
   bspwmCfg = config.desktop.bspwm;
 
@@ -191,155 +182,55 @@ let
 in
 {
   options.desktop.bspwm.lock = {
-    enable = mkOption {
-      type = bool;
-      default = bspwmCfg.enable;
-      description = "Habilitar bloqueador de tela moderno, minimalista e customizável para BSPWM (i3lock-color + xss-lock)";
-    };
+    enable = lib.my.mkBool bspwmCfg.enable "Habilitar bloqueador de tela moderno, minimalista e customizável para BSPWM (i3lock-color + xss-lock)";
 
-    lockScript = mkOption {
-      type = types.package;
-      default = lockScript;
-      description = "Pacote derivado com o script executável bspwm-lock";
-    };
+    lockScript = lib.my.mkPkg lockScript "Pacote derivado com o script executável bspwm-lock";
 
-    timeout = mkOption {
-      type = int;
-      default = 600;
-      description = "Tempo de inatividade em segundos para bloqueio automático de tela via X11 screensaver / xss-lock (0 para desativar, padrão: 600 = 10 min).";
-    };
+    timeout = lib.my.mkInt 600 "Tempo de inatividade em segundos para bloqueio automático de tela via X11 screensaver / xss-lock (0 para desativar, padrão: 600 = 10 min).";
 
-    dpmsTimeout = mkOption {
-      type = int;
-      default = 900;
-      description = "Tempo de inatividade em segundos para desligamento da tela via DPMS (0 para desativar, padrão: 900 = 15 min).";
-    };
+    dpmsTimeout = lib.my.mkInt 900 "Tempo de inatividade em segundos para desligamento da tela via DPMS (0 para desativar, padrão: 900 = 15 min).";
 
-    package = mkOption {
-      type = types.package;
-      default = pkgs.i3lock-color;
-      description = "Pacote do i3lock-color a ser utilizado";
-    };
+    package = lib.my.mkPkg pkgs.i3lock-color "Pacote do i3lock-color a ser utilizado";
 
-    blur = mkOption {
-      type = int;
-      default = 8;
-      description = "Raio do desfoque gaussiano da tela atual (0 para desativar blur)";
-    };
+    blur = lib.my.mkInt 8 "Raio do desfoque gaussiano da tela atual (0 para desativar blur)";
 
-    wallpaper = mkOption {
-      type = nullOr (either path str);
-      default = null;
-      description = "Papel de parede fixo opcional para a tela de bloqueio (se nulo, usa o screenshot com blur)";
-    };
+    wallpaper =
+      lib.my.mkOpt (lib.types.nullOr (lib.types.either lib.types.path lib.types.str)) null
+        "Papel de parede fixo opcional para a tela de bloqueio (se nulo, usa o screenshot com blur)";
 
-    font = mkOption {
-      type = str;
-      default = "Inter";
-      description = "Família de fonte padrão para a interface da lockscreen";
-    };
+    font = lib.my.mkStr "Inter" "Família de fonte padrão para a interface da lockscreen";
 
-    timeFont = mkOption {
-      type = str;
-      default = "Inter Bold";
-      description = "Família de fonte para o relógio da lockscreen";
-    };
+    timeFont = lib.my.mkStr "Inter Bold" "Família de fonte para o relógio da lockscreen";
 
-    dateFont = mkOption {
-      type = str;
-      default = "Inter Medium";
-      description = "Família de fonte para a data da lockscreen";
-    };
+    dateFont = lib.my.mkStr "Inter Medium" "Família de fonte para a data da lockscreen";
 
-    timeFormat = mkOption {
-      type = str;
-      default = "%H:%M:%S";
-      description = "Formato de exibição do horário (strftime)";
-    };
+    timeFormat = lib.my.mkStr "%H:%M:%S" "Formato de exibição do horário (strftime)";
 
-    dateFormat = mkOption {
-      type = str;
-      default = "%A, %d de %B de %Y";
-      description = "Formato de exibição da data (strftime)";
-    };
+    dateFormat = lib.my.mkStr "%A, %d de %B de %Y" "Formato de exibição da data (strftime)";
 
-    timeSize = mkOption {
-      type = int;
-      default = 64;
-      description = "Tamanho da tipografia do relógio";
-    };
+    timeSize = lib.my.mkInt 64 "Tamanho da tipografia do relógio";
 
-    dateSize = mkOption {
-      type = int;
-      default = 16;
-      description = "Tamanho da tipografia da data";
-    };
+    dateSize = lib.my.mkInt 16 "Tamanho da tipografia da data";
 
-    radius = mkOption {
-      type = int;
-      default = 110;
-      description = "Raio do anel circular de desbloqueio em pixels";
-    };
+    radius = lib.my.mkInt 110 "Raio do anel circular de desbloqueio em pixels";
 
-    ringWidth = mkOption {
-      type = int;
-      default = 7;
-      description = "Espessura da linha do anel de desbloqueio em pixels";
-    };
+    ringWidth = lib.my.mkInt 7 "Espessura da linha do anel de desbloqueio em pixels";
 
     colors = {
-      base = mkOption {
-        type = str;
-        default = "1e1e2e";
-        description = "Cor de fundo / interior padrão (Catppuccin Base, hex sem #)";
-      };
-      mantle = mkOption {
-        type = str;
-        default = "181825";
-        description = "Cor de verificação / interior secundário (Catppuccin Mantle)";
-      };
-      mauve = mkOption {
-        type = str;
-        default = "cba6f7";
-        description = "Cor de destaque principal / anel padrão (Catppuccin Mauve)";
-      };
-      blue = mkOption {
-        type = str;
-        default = "89b4fa";
-        description = "Cor do anel em estado de verificação (Catppuccin Blue)";
-      };
-      green = mkOption {
-        type = str;
-        default = "a6e3a1";
-        description = "Cor dos destaques de teclas no anel (Catppuccin Green)";
-      };
-      red = mkOption {
-        type = str;
-        default = "f38ba8";
-        description = "Cor de erro ou backspace (Catppuccin Red)";
-      };
-      peach = mkOption {
-        type = str;
-        default = "fab387";
-        description = "Cor de aviso do Caps Lock (Catppuccin Peach)";
-      };
-      text = mkOption {
-        type = str;
-        default = "cdd6f4";
-        description = "Cor do texto do relógio e verificação (Catppuccin Text)";
-      };
-      subtext = mkOption {
-        type = str;
-        default = "a6adc8";
-        description = "Cor do texto secundário e data (Catppuccin Subtext0)";
-      };
+      base = lib.my.mkStr "1e1e2e" "Cor de fundo / interior padrão (Catppuccin Base, hex sem #)";
+      mantle = lib.my.mkStr "181825" "Cor de verificação / interior secundário (Catppuccin Mantle)";
+      mauve = lib.my.mkStr "cba6f7" "Cor de destaque principal / anel padrão (Catppuccin Mauve)";
+      blue = lib.my.mkStr "89b4fa" "Cor do anel em estado de verificação (Catppuccin Blue)";
+      green = lib.my.mkStr "a6e3a1" "Cor dos destaques de teclas no anel (Catppuccin Green)";
+      red = lib.my.mkStr "f38ba8" "Cor de erro ou backspace (Catppuccin Red)";
+      peach = lib.my.mkStr "fab387" "Cor de aviso do Caps Lock (Catppuccin Peach)";
+      text = lib.my.mkStr "cdd6f4" "Cor do texto do relógio e verificação (Catppuccin Text)";
+      subtext = lib.my.mkStr "a6adc8" "Cor do texto secundário e data (Catppuccin Subtext0)";
     };
 
-    extraArgs = mkOption {
-      type = listOf str;
-      default = [ ];
-      description = "Argumentos adicionais repassados diretamente para o binário i3lock-color";
-    };
+    extraArgs =
+      lib.my.mkListOf lib.types.str [ ]
+        "Argumentos adicionais repassados diretamente para o binário i3lock-color";
   };
 
   config = mkIf cfg.enable {
