@@ -5,6 +5,7 @@ lib/
 ├── default.nix        reexporta helpers.nix
 ├── helpers.nix        mkHome, mkNixos, mkIso, mkChecks, forAllSystems
 ├── nixpkgs-config.nix configuração canônica unificada de nixpkgs
+├── options.nix        helpers de criação de opções (mkOpt, mkBool, mkStr, etc.)
 └── nixgl/
     ├── default.nix    construtor do wrapper (Nix)
     └── wrapper.sh     lógica de seleção de GPU (shell real, com shellcheck)
@@ -19,6 +20,21 @@ lib/
 - `pinNixGLDefault`: com `nixGLType` explícito, fixa `nixgl.auto.nixGLDefault` em Intel/Mesa. Ainda é necessário porque `desktop/environments/default.nix` usa `pkgs.nixgl.auto.nixGLDefault`. Se esse uso for trocado por um script `nixGL` próprio, o overlay pode ser removido.
 - `nvidiaLegacyHosts`: lista que gera `isNvidia` no HM integrado. Pendência: trocar por option de hardware via `osConfig`.
 - `mkChecks`: só **avalia** cada `nixosConfiguration` e `homeConfiguration` em `nix flake check` (não builda).
+
+## options.nix (`lib.my` / `myLib`)
+
+Centraliza a criação de opções concisas com descrição obrigatória para reduzir boilerplate em todos os módulos NixOS e Home Manager:
+- `mkOpt type default description`: opção genérica com tipo, padrão e doc obrigatória.
+- `mkBool default description`: opção booleana.
+- `mkStr default description`: opção do tipo string.
+- `mkInt default description`: opção inteira.
+- `mkPath default description`: opção do tipo caminho (path).
+- `mkEnum values default description`: opção enumerada.
+- `mkPkg default description`: opção do tipo pacote.
+- `mkListOf elemType default description`: lista de elementos do tipo especificado.
+- `mkReadOnly type default description`: opção somente-leitura.
+
+Disponível automaticamente em todos os módulos via `lib.my.*` ou pelo argumento `myLib.*`.
 
 ## nixGL (`nixgl/`)
 

@@ -2,7 +2,11 @@
 { inputs, outputs, ... }:
 
 let
-  inherit (inputs.nixpkgs) lib;
+  lib = inputs.nixpkgs.lib.extend (
+    self: _super: {
+      my = import ./options.nix { lib = self; };
+    }
+  );
 
   defaults = {
     username = "juca";
@@ -44,6 +48,7 @@ let
         ;
       isInstall = !isISO;
       isWorkstation = desktop != null;
+      myLib = lib.my;
     };
 
   # nixgl.auto.nixGLDefault lê a NVIDIA do host (com --impure) e tenta construir um
@@ -100,7 +105,7 @@ let
       nixGLWrapper = if useNixGL then (import ./nixgl { inherit pkgs nixGLType; }).wrapper else lib.id;
     in
     inputs.home-manager.lib.homeManagerConfiguration {
-      inherit pkgs;
+      inherit pkgs lib;
       extraSpecialArgs =
         mkCommonArgs {
           inherit
@@ -220,5 +225,7 @@ in
     mkNixos
     mkIso
     mkChecks
+    lib
     ;
+  inherit (lib) my;
 }
