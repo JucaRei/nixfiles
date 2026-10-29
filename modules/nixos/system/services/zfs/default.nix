@@ -8,21 +8,16 @@ let
 
   inherit (lib)
     mkEnableOption
-    mkOption
     mkIf
     mkDefault
     ;
-  inherit (lib.types) listOf str;
+  inherit (lib.types) str;
 in
 {
   options.nixos.services.zfs = {
     enable = mkEnableOption "ZFS support";
 
-    pools = mkOption {
-      type = listOf str;
-      default = [ "rpool" ];
-      description = "The ZFS pools to manage.";
-    };
+    pools = lib.my.mkListOf str [ "rpool" ] "The ZFS pools to manage.";
     auto-snapshot = {
       enable = mkEnableOption "ZFS auto snapshotting";
     };

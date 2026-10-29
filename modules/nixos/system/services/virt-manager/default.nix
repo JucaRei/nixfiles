@@ -7,17 +7,13 @@
 }:
 let
   inherit (lib)
-    mkOption
     mkIf
     concatStringsSep
     optionalString
     length
     ;
   inherit (lib.types)
-    bool
-    listOf
     str
-    enum
     ;
   cfg = config.nixos.services.virt-manager;
   user = "${username}";
@@ -25,31 +21,17 @@ in
 {
   options = {
     nixos.services.virt-manager = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable virt-manager service.";
-      };
-      vfioIds = mkOption {
-        type = listOf str;
-        default = [ ];
-        description = "The hardware IDs to pass through to a virtual machine.";
-      };
-      platform = mkOption {
-        type = enum [
-          "amd"
-          "intel"
-        ];
-        default = "intel";
-        description = "Which CPU platform the machine is using.";
-      };
+      enable = lib.my.mkBool false "Enable virt-manager service.";
+      vfioIds = lib.my.mkListOf str [ ] "The hardware IDs to pass through to a virtual machine.";
+      platform = lib.my.mkEnum [
+        "amd"
+        "intel"
+      ] "intel" "Which CPU platform the machine is using.";
       # Use `machinectl` and then `machinectl status <name>` to
       # get the unit "*.scope" of the virtual machine.
-      machineUnits = mkOption {
-        type = listOf str;
-        default = [ ];
-        description = "The systemd *.scope units to wait for before starting Scream.";
-      };
+      machineUnits =
+        lib.my.mkListOf str [ ]
+          "The systemd *.scope units to wait for before starting Scream.";
     };
   };
 

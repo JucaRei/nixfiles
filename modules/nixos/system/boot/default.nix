@@ -9,13 +9,11 @@
 let
   inherit (lib)
     mkDefault
-    mkOption
     mkIf
     mkMerge
     optionals
     ;
   inherit (lib.types)
-    bool
     nullOr
     enum
     str
@@ -51,56 +49,24 @@ in
 {
   options = {
     system.boot = {
-      enable = mkOption {
-        default = isInstall;
-        type = bool;
-        description = "Enable`s boot for installation.";
-      };
-      bootType = mkOption {
-        type = nullOr (enum [
-          "efi"
-          "legacy"
-          "hybrid-legacy"
-          null
-        ]);
-        default = null;
-        description = "Default's boot option.";
-      };
-      device = mkOption {
-        type = nullOr str;
-        default = null;
-        description = "Device for GRUB loader (e.g., /dev/sda, /dev/vda, /dev/nvme0n1).";
-      };
-      bootManager = mkOption {
-        type = nullOr (enum [
-          "grub"
-          "systemd-boot"
-          "raspberry"
-          null
-        ]);
-        default = null;
-        description = "Select the Default boot Manager.";
-      };
-      isDualBoot = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable's dualboot options.";
-      };
-      plymouth = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable's plymouth.";
-      };
-      silentBoot = mkOption {
-        type = bool;
-        default = false;
-        description = "Whether or not to enable silent boot.";
-      };
-      secureBoot = mkOption {
-        type = bool;
-        default = false;
-        description = "Whether or not to enable secure boot.";
-      };
+      enable = lib.my.mkBool isInstall "Enable`s boot for installation.";
+      bootType = lib.my.mkOpt (nullOr (enum [
+        "efi"
+        "legacy"
+        "hybrid-legacy"
+      ])) null "Default's boot option.";
+      device =
+        lib.my.mkOpt (nullOr str) null
+          "Device for GRUB loader (e.g., /dev/sda, /dev/vda, /dev/nvme0n1).";
+      bootManager = lib.my.mkOpt (nullOr (enum [
+        "grub"
+        "systemd-boot"
+        "raspberry"
+      ])) null "Select the Default boot Manager.";
+      isDualBoot = lib.my.mkBool false "Enable's dualboot options.";
+      plymouth = lib.my.mkBool false "Enable's plymouth.";
+      silentBoot = lib.my.mkBool false "Whether or not to enable silent boot.";
+      secureBoot = lib.my.mkBool false "Whether or not to enable secure boot.";
     };
   };
 

@@ -5,17 +5,13 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption types;
+  inherit (lib) mkIf;
   cfg = config.nixos.services.flatpak-appcenter;
 in
 {
   options = {
     nixos.services.flatpak-appcenter = {
-      enable = mkOption {
-        default = false;
-        type = types.bool;
-        description = "Enables Flatpak Appcenter.";
-      };
+      enable = lib.my.mkBool false "Enables Flatpak Appcenter.";
     };
   };
 

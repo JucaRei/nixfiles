@@ -5,11 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption mdDoc;
-  inherit (lib.types)
-    enum
-    bool
-    ;
+  inherit (lib) mkIf;
 in
 {
   imports = [
@@ -19,19 +15,11 @@ in
 
   options = {
     system.security.superuser = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Whether or not enable superuser manager.";
-      };
-      manager = mkOption {
-        type = enum [
-          "sudo"
-          "doas"
-        ];
-        default = "sudo";
-        description = mdDoc "The super user manager to use.";
-      };
+      enable = lib.my.mkBool false "Whether or not enable superuser manager.";
+      manager = lib.my.mkEnum [
+        "sudo"
+        "doas"
+      ] "sudo" "The super user manager to use.";
     };
   };
   config = mkIf config.system.security.superuser.enable {

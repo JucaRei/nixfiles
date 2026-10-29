@@ -7,20 +7,14 @@
 }:
 let
   inherit (lib)
-    mkOption
     mkIf
-    types
     ;
   cfg = config.nixos.services.bcachefs;
 in
 {
   options = {
     nixos.services.bcachefs = {
-      enable = mkOption {
-        type = types.bool;
-        default = isISO;
-        description = "Enables bcachefs filesystem.";
-      };
+      enable = lib.my.mkBool isISO "Enables bcachefs filesystem.";
     };
   };
 

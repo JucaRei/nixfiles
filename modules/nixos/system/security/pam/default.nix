@@ -5,17 +5,12 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkDefault mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkDefault mkIf;
   cfg = config.system.security.pam;
 in
 {
   options.system.security.pam = {
-    enable = mkOption {
-      type = bool;
-      default = false;
-      description = "Enable optimizations module.";
-    };
+    enable = lib.my.mkBool false "Enable optimizations module.";
   };
 
   config = mkIf cfg.enable {
