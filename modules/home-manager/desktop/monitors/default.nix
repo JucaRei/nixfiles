@@ -7,7 +7,6 @@
 let
   inherit (lib)
     mkIf
-    mkDefault
     concatMapStringsSep
     optionals
     ;
