@@ -5,18 +5,13 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.display-managers.regreet;
 in
 {
   options = {
     desktop.display-managers.regreet = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable's regreet as display manager.";
-      };
+      enable = lib.my.mkBool false "Enable's regreet as display manager.";
     };
   };
 

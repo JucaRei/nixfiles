@@ -5,19 +5,14 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
 
   cfg = config.desktop.display-managers.lightdm;
 in
 {
   options = {
     desktop.display-managers.lightdm = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable LightDM as the display manager.";
-      };
+      enable = lib.my.mkBool false "Enable LightDM as the display manager.";
     };
   };
 

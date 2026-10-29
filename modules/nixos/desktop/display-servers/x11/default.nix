@@ -5,16 +5,12 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption mkOptionDefault;
+  inherit (lib) mkIf mkOptionDefault;
   backend = config.desktop.display-servers.backend;
 in
 {
   options.desktop.display-servers.x11 = {
-    numlock = mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Ativar numlock na inicializacao da sessao X11 via numlockx.";
-    };
+    numlock = lib.my.mkBool false "Ativar numlock na inicializacao da sessao X11 via numlockx.";
   };
 
   config = mkIf (backend == "x11") {

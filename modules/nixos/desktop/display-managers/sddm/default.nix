@@ -8,39 +8,22 @@
 let
   inherit (lib)
     mkIf
-    mkOption
     stringAfter
-    ;
-  inherit (lib.types)
-    enum
-    bool
     ;
   cfg = config.desktop.display-managers.sddm;
 in
 {
   options = {
     desktop.display-managers.sddm = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable SDDM as the display manager.";
-      };
-      sddm-theme = mkOption {
-        type = enum [
-          "sddm-astronaut"
-          "catppuccin-sddm-corners"
-          "sddm-sugar-dark"
-          "sddm-chili-theme"
-          "abstractdark-sddm-theme"
-        ];
-        default = "sddm-astronaut";
-        description = "The SDDM theme to use.";
-      };
-      wayland-session = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable Wayland support.";
-      };
+      enable = lib.my.mkBool false "Enable SDDM as the display manager.";
+      sddm-theme = lib.my.mkEnum [
+        "sddm-astronaut"
+        "catppuccin-sddm-corners"
+        "sddm-sugar-dark"
+        "sddm-chili-theme"
+        "abstractdark-sddm-theme"
+      ] "sddm-astronaut" "The SDDM theme to use.";
+      wayland-session = lib.my.mkBool false "Enable Wayland support.";
     };
   };
 

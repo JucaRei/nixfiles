@@ -7,7 +7,6 @@
 }:
 let
   inherit (lib)
-    mkOption
     mkDefault
     mkIf
     ;
@@ -26,16 +25,12 @@ in
   ];
 
   options = {
-    desktop.display-managers.name = mkOption {
-      type = nullOr (enum [
-        "lightdm"
-        "sddm"
-        "regreet"
-        "gdm"
-      ]);
-      default = null;
-      description = "The selected display-manager for your desktop environment.";
-    };
+    desktop.display-managers.name = lib.my.mkOpt (nullOr (enum [
+      "lightdm"
+      "sddm"
+      "regreet"
+      "gdm"
+    ])) null "The selected display-manager for your desktop environment.";
   };
 
   config = {
