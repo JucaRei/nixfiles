@@ -1,51 +1,28 @@
 { config, lib, ... }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool str;
+  inherit (lib) mkIf;
   cfg = config.system.services.git;
 in
 {
   options = {
     system.services.git = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable git services.";
-      };
+      enable = lib.my.mkBool false "Enable git services.";
 
-      userName = mkOption {
-        type = str;
-        default = "";
-        description = "The default username.";
-      };
+      userName = lib.my.mkStr "" "The default username.";
 
-      userEmail = mkOption {
-        type = str;
-        default = "";
-        description = "The default email.";
-      };
+      userEmail = lib.my.mkStr "" "The default email.";
 
-      signingKey = mkOption {
-        type = lib.types.nullOr lib.types.str;
-        default = "~/.ssh/nitro.pub";
-        description = "Path to the SSH public key or GPG key ID used to sign commits.";
-      };
+      signingKey =
+        lib.my.mkOpt (lib.types.nullOr lib.types.str) "~/.ssh/nitro.pub"
+          "Path to the SSH public key or GPG key ID used to sign commits.";
 
-      signByDefault = mkOption {
-        type = bool;
-        default = true;
-        description = "Whether to sign commits by default.";
-      };
+      signByDefault = lib.my.mkBool true "Whether to sign commits by default.";
 
-      signingFormat = mkOption {
-        type = lib.types.enum [
-          "ssh"
-          "openpgp"
-          "x509"
-        ];
-        default = "ssh";
-        description = "Format used for signing commits ('ssh', 'openpgp', or 'x509').";
-      };
+      signingFormat = lib.my.mkEnum [
+        "ssh"
+        "openpgp"
+        "x509"
+      ] "ssh" "Format used for signing commits ('ssh', 'openpgp', or 'x509').";
     };
   };
   config = mkIf cfg.enable {

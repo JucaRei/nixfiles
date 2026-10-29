@@ -7,8 +7,6 @@ let
   inherit (lib)
     mkEnableOption
     mkIf
-    mkOption
-    types
     ;
 
   cfg = config.system.services.flatpak;
@@ -17,84 +15,35 @@ in
   options.system.services.flatpak = {
     enable = mkEnableOption "Gerenciamento declarativo de Flatpaks via nix-flatpak no Home Manager";
 
-    packages = mkOption {
-      type = types.listOf (types.either types.str (types.attrsOf types.anything));
-      default = [ ];
-      example = [
-        "com.spotify.Client"
-        "org.mozilla.firefox"
-        {
-          appId = "im.riot.Riot";
-          origin = "flathub";
-        }
-        {
-          appId = "org.libretro.RetroArch";
-          commit = "e6be1463c90ba15e8f023e994dfc6fb0567e40730d8eb254ae356205391d0dc5";
-        }
-        {
-          appId = "io.github.karem505.whatRust";
-          sha256 = "<hash>";
-          bundle = "<path-or-fetchurl>";
-        }
-      ];
-      description = ''
-        Lista declarativa de pacotes Flatpak a serem instalados no host.
-        Suporta strings com App ID ou attribute sets configurando appId, origin, commit, flatpakref ou bundle.
-      '';
-    };
+    packages =
+      lib.my.mkListOf (lib.types.either lib.types.str (lib.types.attrsOf lib.types.anything)) [ ]
+        ''
+          Lista declarativa de pacotes Flatpak a serem instalados no host.
+          Suporta strings com App ID ou attribute sets configurando appId, origin, commit, flatpakref ou bundle.
+        '';
 
-    remotes = mkOption {
-      type = types.listOf (types.attrsOf types.anything);
-      default = [
-        {
-          name = "flathub";
-          location = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-        }
-      ];
-      description = "Lista de repositórios remotos do Flatpak (Flathub configurado por padrão).";
-    };
+    remotes = lib.my.mkListOf (lib.types.attrsOf lib.types.anything) [
+      {
+        name = "flathub";
+        location = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+      }
+    ] "Lista de repositórios remotos do Flatpak (Flathub configurado por padrão).";
 
     update = {
-      onActivation = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Se verdadeiro, atualiza os Flatpaks a cada home-manager switch (falso por padrão para manter o switch rápido).";
-      };
+      onActivation = lib.my.mkBool false "Se verdadeiro, atualiza os Flatpaks a cada home-manager switch (falso por padrão para manter o switch rápido).";
 
       auto = {
-        enable = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Habilitar atualizações automáticas periódicas em background via systemd user timer.";
-        };
+        enable = lib.my.mkBool false "Habilitar atualizações automáticas periódicas em background via systemd user timer.";
 
-        onCalendar = mkOption {
-          type = types.str;
-          default = "weekly";
-          description = "Expressão OnCalendar do systemd para o timer de auto-atualização (ex: 'weekly', 'daily').";
-        };
+        onCalendar = lib.my.mkStr "weekly" "Expressão OnCalendar do systemd para o timer de auto-atualização (ex: 'weekly', 'daily').";
       };
     };
 
-    overrides = mkOption {
-      type = types.attrsOf types.anything;
-      default = { };
-      example = {
-        global = {
-          Context.sockets = [
-            "wayland"
-            "!x11"
-          ];
-        };
-      };
-      description = "Permissões e overrides declarativos por aplicativo Flatpak (equivalente ao Flatseal via código).";
-    };
+    overrides =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.anything) { }
+        "Permissões e overrides declarativos por aplicativo Flatpak (equivalente ao Flatseal via código).";
 
-    uninstallUnmanaged = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Se verdadeiro, remove Flatpaks instalados manualmente fora do Nix (convergência estrita).";
-    };
+    uninstallUnmanaged = lib.my.mkBool false "Se verdadeiro, remove Flatpaks instalados manualmente fora do Nix (convergência estrita).";
   };
 
   config = mkIf cfg.enable {

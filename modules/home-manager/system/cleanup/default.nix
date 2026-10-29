@@ -8,9 +8,7 @@ let
   inherit (lib)
     concatStringsSep
     mkIf
-    mkOption
     optionalString
-    types
     ;
 
   cfg = config.system.cleanup;
@@ -547,45 +545,23 @@ let
 in
 {
   options.system.cleanup = {
-    enable = mkOption {
-      type = types.bool;
-      default = true;
-      description = ''
-        Ativa a limpeza automática e declarativa de configurações residuais (~/.config),
-        caches (~/.cache), dados locais (~/.local/share) e atalhos de desktop de qualquer
-        aplicação que tenha sido removida ou desativada no Nixfiles.
-      '';
-    };
+    enable = lib.my.mkBool true ''
+      Ativa a limpeza automática e declarativa de configurações residuais (~/.config),
+      caches (~/.cache), dados locais (~/.local/share) e atalhos de desktop de qualquer
+      aplicação que tenha sido removida ou desativada no Nixfiles.
+    '';
 
-    cleanCaches = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Remove diretórios de cache (~/.cache/<app>) de aplicações desativadas.";
-    };
+    cleanCaches = lib.my.mkBool true "Remove diretórios de cache (~/.cache/<app>) de aplicações desativadas.";
 
-    cleanData = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Remove diretórios de dados locais (~/.local/share/<app>) de aplicações desativadas.";
-    };
+    cleanData = lib.my.mkBool true "Remove diretórios de dados locais (~/.local/share/<app>) de aplicações desativadas.";
 
-    cleanBrokenSymlinks = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Remove links simbólicos corrompidos em ~/.local/share/applications e ~/.config.";
-    };
+    cleanBrokenSymlinks = lib.my.mkBool true "Remove links simbólicos corrompidos em ~/.local/share/applications e ~/.config.";
 
-    cleanOrphanedDesktops = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Remove arquivos .desktop residuais cujos binários apontem para store paths inexistentes.";
-    };
+    cleanOrphanedDesktops = lib.my.mkBool true "Remove arquivos .desktop residuais cujos binários apontem para store paths inexistentes.";
 
-    extraPaths = mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-      description = "Lista adicional de diretórios ou arquivos a serem limpos caso existam.";
-    };
+    extraPaths =
+      lib.my.mkListOf lib.types.str [ ]
+        "Lista adicional de diretórios ou arquivos a serem limpos caso existam.";
   };
 
   config = mkIf cfg.enable {

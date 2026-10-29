@@ -1,27 +1,18 @@
 { lib, config, ... }:
 let
-  inherit (lib) mkIf mkOption;
-  inherit (lib.types) bool listOf str;
+  inherit (lib) mkIf;
   cfg = config.system.services.ssh;
 in
 {
   options = {
     system.services.ssh = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable ssh configs.";
-      };
+      enable = lib.my.mkBool false "Enable ssh configs.";
 
-      identityFiles = mkOption {
-        type = listOf str;
-        default = [
-          "~/.ssh/nitro"
-          "~/.ssh/id_ed25519"
-          "~/.ssh/id_rsa"
-        ];
-        description = "SSH IdentityFiles to load by default.";
-      };
+      identityFiles = lib.my.mkListOf lib.types.str [
+        "~/.ssh/nitro"
+        "~/.ssh/id_ed25519"
+        "~/.ssh/id_rsa"
+      ] "SSH IdentityFiles to load by default.";
     };
   };
   config = mkIf cfg.enable {
