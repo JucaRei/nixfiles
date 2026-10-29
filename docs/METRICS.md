@@ -18,19 +18,25 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | — | — | — | — | — | — | — | — | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | — | — | — | — | — | — | — | — | $\le 29.000$ |
-| **`mkOption`** | 439 (117 simples) | 439 | 427 | — | — | — | — | — | — | — | — | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | — | — | — | — | — | — | — | — | $\le 15$ |
-| **`with pkgs;`** | 71 | 71 | 70 | — | — | — | — | — | — | — | — | 0 |
-| **`rec {`** | 38 | 38 | 36 | — | — | — | — | — | — | — | — | 0 |
-| **Stubs `"{ }"`** | 7 | 7 | 3* | — | — | — | — | — | — | — | — | 0 |
-| **Avisos `statix`** | 76 | 76 | 0 | — | — | — | — | — | — | — | — | 0 |
-| **Avisos `deadnix`**| 30 | 30 | 0 | — | — | — | — | — | — | — | — | 0 |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | — | — | — | — | — | — | — | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | — | — | — | — | — | — | — | $\le 29.000$ |
+| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | — | — | — | — | — | — | — | Helpers `lib.my` |
+| **`mkForce`** | 100 | 100 | 99 | 99 | — | — | — | — | — | — | — | $\le 15$ |
+| **`with pkgs;`** | 71 | 71 | 70 | 70 | — | — | — | — | — | — | — | 0 |
+| **`rec {`** | 38 | 38 | 36 | 37 | — | — | — | — | — | — | — | 0 |
+| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | — | — | — | — | — | — | — | 0 |
+| **Avisos `statix`** | 76 | 76 | 0 | 0 | — | — | — | — | — | — | — | 0 |
+| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | — | — | — | — | — | — | — | 0 |
 
 ---
 
 ## Notas de Evolução
+
+### Fase 2 — Helpers de opções (lib/options.nix)
+- **Helpers `lib.my.*`**: Criado `lib/options.nix` expondo `mkBool`, `mkStr`, `mkInt`, `mkPath`, `mkEnum`, `mkPkg`, `mkListOf`, `mkOpt` e `mkReadOnly` (com asserção estrita de descrição não-vazia).
+- **Redução expressiva de boilerplate**: `mkOption` reduzido de 427 para apenas 13 em todo o repositório (os 13 restantes são atributos complexos com sub-opções dinâmicas ou opções especiais).
+- **Linhas `.nix` reduzidas**: Redução líquida de 1.271 linhas em relação à Fase 1 (-1.396 linhas em relação ao Baseline), superando largamente a meta esperada da fase ($\ge 400$ linhas).
+- **Qualidade mantida**: 0 avisos em `statix check .` e `deadnix .`.
 
 ### Fase 1 — Remover o que é morto
 - **Stubs `"{ }"` (3*)**: os stubs de hosts legados em `nixos/hosts/` (`soyoz`, `virtual`, `zion`, `nixtro`) foram preservados a pedido do usuário para testes e simulações em VM/máquina real. Os stubs de módulos mortos (`gnome`, `sublime`, `zitext`) foram removidos.
@@ -44,4 +50,3 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 - **Scripts criados**:
   - `scripts/snapshot.sh`: extrai snapshot JSON com packages, files, systemd, bootloader, filesystems e opções `desktop.*`/`system.*`.
   - `scripts/metrics.sh`: afere contagem de linhas, arquivos, opções e avisos de linters.
-
