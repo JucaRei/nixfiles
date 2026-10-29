@@ -5,8 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.wayland;
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
 
@@ -16,20 +15,12 @@ let
 in
 {
   options.desktop.wayland.traditional.rofi = {
-    enable = mkOption {
-      type = bool;
-      default = isTraditional;
-      description = "Habilitar launcher de aplicações Rofi para shell tradicional Wayland";
-    };
+    enable = lib.my.mkBool isTraditional "Habilitar launcher de aplicações Rofi para shell tradicional Wayland";
   };
 
   # Retrocompatibilidade com desktop.hyprland.rofi
   options.desktop.hyprland.rofi = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.wayland.traditional.rofi.enable;
-      description = "Opção de retrocompatibilidade para rofi";
-    };
+    enable = lib.my.mkBool config.desktop.wayland.traditional.rofi.enable "Opção de retrocompatibilidade para rofi";
   };
 
   config = mkIf (isTraditional && config.desktop.wayland.traditional.rofi.enable) {

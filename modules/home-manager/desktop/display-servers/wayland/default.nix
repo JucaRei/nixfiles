@@ -9,7 +9,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption;
+  inherit (lib) mkIf;
   inherit (lib.types) nullOr enum;
   backend = config.desktop.display-servers.backend;
   isNixOS = osConfig != null;
@@ -71,30 +71,31 @@ in
   ];
 
   options.desktop.wayland = {
-    shell = mkOption {
-      type = nullOr (enum [
-        "traditional"
-        "noctalia"
-        "none"
-      ]);
-      default = if isFullDesktopManager then null else waylandShell;
-      description = "Ambiente de shell gráfico para Wayland: 'traditional', 'noctalia' ou null/none para DEs completos (GNOME, KDE, etc.)";
-    };
+    shell =
+      lib.my.mkOpt
+        (nullOr (enum [
+          "traditional"
+          "noctalia"
+          "none"
+        ]))
+        (if isFullDesktopManager then null else waylandShell)
+        "Ambiente de shell gráfico para Wayland: 'traditional', 'noctalia' ou null/none para DEs completos (GNOME, KDE, etc.)";
 
-    compositor = mkOption {
-      type = nullOr (enum [
-        "hyprland"
-        "mangowm"
-      ]);
-      default =
-        if desktop == "mangowm" || desktop == "mango" || (config.desktop.mangowm.enable or false) then
-          "mangowm"
-        else if desktop == "hyprland" || (config.desktop.hyprland.enable or false) then
+    compositor =
+      lib.my.mkOpt
+        (nullOr (enum [
           "hyprland"
-        else
-          null;
-      description = "Compositor Wayland ativo associado ao shell";
-    };
+          "mangowm"
+        ]))
+        (
+          if desktop == "mangowm" || desktop == "mango" || (config.desktop.mangowm.enable or false) then
+            "mangowm"
+          else if desktop == "hyprland" || (config.desktop.hyprland.enable or false) then
+            "hyprland"
+          else
+            null
+        )
+        "Compositor Wayland ativo associado ao shell";
   };
 
   config = mkIf (backend == "wayland") {

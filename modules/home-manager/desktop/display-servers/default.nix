@@ -1,6 +1,5 @@
 { lib, ... }:
 let
-  inherit (lib) mkOption;
   inherit (lib.types) nullOr enum;
 in
 {
@@ -10,13 +9,9 @@ in
   ];
 
   options = {
-    desktop.display-servers.backend = mkOption {
-      type = nullOr (enum [
-        "x11"
-        "wayland"
-      ]);
-      default = null;
-      description = "Default backend for the system";
-    };
+    desktop.display-servers.backend = lib.my.mkOpt (nullOr (enum [
+      "x11"
+      "wayland"
+    ])) null "Default backend for the system";
   };
 }

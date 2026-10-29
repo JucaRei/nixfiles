@@ -5,19 +5,14 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.wayland;
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
   c = config.desktop.theme.colors;
 in
 {
   options.desktop.wayland.traditional.dunst = {
-    enable = mkOption {
-      type = bool;
-      default = isTraditional;
-      description = "Habilitar daemon de notificações Dunst para Wayland";
-    };
+    enable = lib.my.mkBool isTraditional "Habilitar daemon de notificações Dunst para Wayland";
   };
 
   config = mkIf (isTraditional && config.desktop.wayland.traditional.dunst.enable) {

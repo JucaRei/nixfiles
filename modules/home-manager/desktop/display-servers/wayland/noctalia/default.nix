@@ -6,8 +6,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkOption;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.wayland.noctalia;
   isNoctalia =
     config.desktop.display-servers.backend == "wayland" && config.desktop.wayland.shell == "noctalia";
@@ -324,17 +323,11 @@ let
 in
 {
   options.desktop.wayland.noctalia = {
-    enable = mkOption {
-      type = bool;
-      default = isNoctalia;
-      description = "Habilitar Noctalia Shell integrado para ambientes Wayland com tema Catppuccin Mocha";
-    };
+    enable = lib.my.mkBool isNoctalia "Habilitar Noctalia Shell integrado para ambientes Wayland com tema Catppuccin Mocha";
 
-    settings = mkOption {
-      inherit (tomlFormat) type;
-      default = { };
-      description = "Configurações declarativas para o Noctalia Desktop Shell (v5+) em config.toml";
-    };
+    settings =
+      lib.my.mkOpt tomlFormat.type { }
+        "Configurações declarativas para o Noctalia Desktop Shell (v5+) em config.toml";
   };
 
   config = mkIf cfg.enable {

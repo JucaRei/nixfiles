@@ -5,8 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.wayland;
   c = config.desktop.theme.colors;
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
@@ -106,24 +105,12 @@ let
 in
 {
   options.desktop = {
-    wayland.traditional.waybar.enable = mkOption {
-      type = bool;
-      default = isTraditional;
-      description = "Habilitar waybar moderna no shell tradicional Wayland";
-    };
+    wayland.traditional.waybar.enable = lib.my.mkBool isTraditional "Habilitar waybar moderna no shell tradicional Wayland";
 
     # Retrocompatibilidade
-    hyprland.waybar.enable = mkOption {
-      type = bool;
-      default = config.desktop.wayland.traditional.waybar.enable;
-      description = "Opção de retrocompatibilidade para waybar";
-    };
+    hyprland.waybar.enable = lib.my.mkBool config.desktop.wayland.traditional.waybar.enable "Opção de retrocompatibilidade para waybar";
 
-    mangowm.waybar.enable = mkOption {
-      type = bool;
-      default = config.desktop.wayland.traditional.waybar.enable;
-      description = "Opção de retrocompatibilidade para waybar";
-    };
+    mangowm.waybar.enable = lib.my.mkBool config.desktop.wayland.traditional.waybar.enable "Opção de retrocompatibilidade para waybar";
   };
 
   config = mkIf (isTraditional && config.desktop.wayland.traditional.waybar.enable) {

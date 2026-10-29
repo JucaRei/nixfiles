@@ -5,27 +5,18 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.wayland;
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
 in
 {
   options.desktop.wayland.traditional.hypridle = {
-    enable = mkOption {
-      type = bool;
-      default = isTraditional;
-      description = "Habilitar hypridle daemon para o shell tradicional Wayland";
-    };
+    enable = lib.my.mkBool isTraditional "Habilitar hypridle daemon para o shell tradicional Wayland";
   };
 
   # Retrocompatibilidade
   options.desktop.hyprland.hypridle = {
-    enable = mkOption {
-      type = bool;
-      default = config.desktop.wayland.traditional.hypridle.enable;
-      description = "Opção de retrocompatibilidade para hypridle";
-    };
+    enable = lib.my.mkBool config.desktop.wayland.traditional.hypridle.enable "Opção de retrocompatibilidade para hypridle";
   };
 
   config = mkIf (isTraditional && config.desktop.wayland.traditional.hypridle.enable) {

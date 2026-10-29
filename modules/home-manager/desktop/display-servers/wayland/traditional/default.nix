@@ -4,8 +4,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.desktop.wayland;
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
 in
@@ -20,11 +19,7 @@ in
   ];
 
   options.desktop.wayland.traditional = {
-    enable = mkOption {
-      type = bool;
-      default = isTraditional;
-      description = "Habilitar conjunto de componentes do Shell Tradicional para Wayland (Waybar, Rofi, Dunst, Hyprlock, Hypridle, Hyprpaper)";
-    };
+    enable = lib.my.mkBool isTraditional "Habilitar conjunto de componentes do Shell Tradicional para Wayland (Waybar, Rofi, Dunst, Hyprlock, Hypridle, Hyprpaper)";
   };
 
   config = mkIf isTraditional {
