@@ -9,8 +9,6 @@ let
     mkIf
     mkMerge
     mkEnableOption
-    mkOption
-    types
     optionals
     ;
 
@@ -52,58 +50,30 @@ in
     system.programs.file-manager.nemo = {
       enable = mkEnableOption "Enable Nemo file manager (Cinnamon) with GVfs, thumbnailers, extensions, and custom actions.";
 
-      installPackage = mkOption {
-        type = types.bool;
-        default = true;
-        description = ''
-          Se deve instalar o executável do Nemo compilado via Nix/Home Manager.
-          Se false, utiliza o binário da distro nativa (ex: /usr/bin/nemo), mantendo ações, configurações e dotfiles.
-        '';
-      };
+      installPackage = lib.my.mkBool true ''
+        Se deve instalar o executável do Nemo compilado via Nix/Home Manager.
+        Se false, utiliza o binário da distro nativa (ex: /usr/bin/nemo), mantendo ações, configurações e dotfiles.
+      '';
 
-      useSystemPackage = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          Atalho conveniente: quando true, equivale a installPackage = false.
-          Permite carregar apenas configurações e ações preservando o Nemo nativo do sistema.
-        '';
-      };
+      useSystemPackage = lib.my.mkBool false ''
+        Atalho conveniente: quando true, equivale a installPackage = false.
+        Permite carregar apenas configurações e ações preservando o Nemo nativo do sistema.
+      '';
 
-      useSystemPackages = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Alias para useSystemPackage.";
-      };
+      useSystemPackages = lib.my.mkBool false "Alias para useSystemPackage.";
 
-      package = mkOption {
-        type = types.package;
-        default = pkgs.nemo-with-extensions;
-        description = "Pacote do Nemo a ser utilizado (padrão com extensões compiladas).";
-      };
+      package = lib.my.mkPkg pkgs.nemo-with-extensions "Pacote do Nemo a ser utilizado (padrão com extensões compiladas).";
 
       view = {
-        defaultView = mkOption {
-          type = types.enum [
-            "icon-view"
-            "compact-view"
-            "list-view"
-          ];
-          default = "icon-view";
-          description = "Modo de visualização padrão no Nemo.";
-        };
+        defaultView = lib.my.mkEnum [
+          "icon-view"
+          "compact-view"
+          "list-view"
+        ] "icon-view" "Modo de visualização padrão no Nemo.";
 
-        showHiddenFiles = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Exibir arquivos ocultos por padrão.";
-        };
+        showHiddenFiles = lib.my.mkBool false "Exibir arquivos ocultos por padrão.";
 
-        showFullPathTitles = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Exibir caminho completo no título da janela.";
-        };
+        showFullPathTitles = lib.my.mkBool true "Exibir caminho completo no título da janela.";
       };
     };
   };

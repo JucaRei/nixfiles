@@ -8,10 +8,8 @@ let
   inherit (lib)
     mkIf
     getExe
-    mkOption
     mkMerge
     mkOrder
-    types
     ;
   cfg = config.system.programs.shells;
   bashCfg = cfg.bash;
@@ -29,11 +27,7 @@ in
 {
   options.system.programs.shells.bash = {
     blesh = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Habilitar ble.sh (Bash Line Editor) para predições de histórico, auto-sugestões e completude estilo Fish/Zsh.";
-      };
+      enable = lib.my.mkBool true "Habilitar ble.sh (Bash Line Editor) para predições de histórico, auto-sugestões e completude estilo Fish/Zsh.";
     };
   };
 

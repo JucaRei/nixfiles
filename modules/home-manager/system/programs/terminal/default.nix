@@ -9,9 +9,7 @@ let
   inherit (lib)
     mkIf
     mkMerge
-    mkOption
     optionalString
-    types
     ;
 
   cfg = config.system.programs.terminal;
@@ -221,60 +219,30 @@ in
 
   options = {
     system.programs.terminal = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Enable terminal emulator configuration.";
-      };
+      enable = lib.my.mkBool false "Enable terminal emulator configuration.";
 
-      name = mkOption {
-        type = types.nullOr types.str;
-        default = "alacritty";
-        description = ''
-          Nome do emulador de terminal selecionado para o ambiente de trabalho.
-          Pode ser qualquer terminal suportado (ex: "alacritty", "urxvt", "kitty", "foot", "wezterm", "xfce4-terminal", "ghostty", "st", "xterm")
-          ou qualquer comando customizado presente no PATH.
-        '';
-      };
+      name = lib.my.mkOpt (lib.types.nullOr lib.types.str) "alacritty" ''
+        Nome do emulador de terminal selecionado para o ambiente de trabalho.
+        Pode ser qualquer terminal suportado (ex: "alacritty", "urxvt", "kitty", "foot", "wezterm", "xfce4-terminal", "ghostty", "st", "xterm")
+        ou qualquer comando customizado presente no PATH.
+      '';
 
-      command = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-        description = ''
-          Comando de invocação customizado para o terminal (ex: "ghostty", "st -e tmux", "urxvtc").
-          Se fornecido, substitui a geração automática de comando baseada em `name`.
-        '';
-      };
+      command = lib.my.mkOpt (lib.types.nullOr lib.types.str) null ''
+        Comando de invocação customizado para o terminal (ex: "ghostty", "st -e tmux", "urxvtc").
+        Se fornecido, substitui a geração automática de comando baseada em `name`.
+      '';
 
-      package = mkOption {
-        type = types.nullOr types.package;
-        default = null;
-        description = "Pacote opcional do emulador de terminal a ser instalado em home.packages.";
-      };
+      package =
+        lib.my.mkOpt (lib.types.nullOr lib.types.package) null
+          "Pacote opcional do emulador de terminal a ser instalado em home.packages.";
 
-      activeCommand = mkOption {
-        type = types.str;
-        default = computedActiveCommand;
-        description = "Comando executável agnóstico para invocar o terminal ativo em atalhos de WM e scripts.";
-      };
+      activeCommand = lib.my.mkStr computedActiveCommand "Comando executável agnóstico para invocar o terminal ativo em atalhos de WM e scripts.";
 
-      activeName = mkOption {
-        type = types.str;
-        default = activeName;
-        description = "Nome amigável do terminal ativo para exibição em menus e manuais de atalhos.";
-      };
+      activeName = lib.my.mkStr activeName "Nome amigável do terminal ativo para exibição em menus e manuais de atalhos.";
 
-      activeWorkingDirCommand = mkOption {
-        type = types.str;
-        default = computedWorkingDirCommand;
-        description = "Comando base para abrir o terminal em um diretório de trabalho específico.";
-      };
+      activeWorkingDirCommand = lib.my.mkStr computedWorkingDirCommand "Comando base para abrir o terminal em um diretório de trabalho específico.";
 
-      scratchpadCommand = mkOption {
-        type = types.str;
-        default = computedScratchpadCommand;
-        description = "Comando adaptado para abrir o terminal no modo flutuante/scratchpad.";
-      };
+      scratchpadCommand = lib.my.mkStr computedScratchpadCommand "Comando adaptado para abrir o terminal no modo flutuante/scratchpad.";
     };
   };
 

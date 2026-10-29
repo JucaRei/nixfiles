@@ -8,8 +8,6 @@ let
   inherit (lib)
     mkEnableOption
     mkIf
-    mkOption
-    types
     ;
   cfg = config.system.programs.tools.fastfetch;
   shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
@@ -50,56 +48,30 @@ in
   options.system.programs.tools.fastfetch = {
     enable = mkEnableOption "Enable Fastfetch system information fetch tool with custom display modules.";
 
-    package = mkOption {
-      type = types.package;
-      default = pkgs.fastfetch;
-      description = "Pacote do Fastfetch a ser utilizado.";
-    };
+    package = lib.my.mkPkg pkgs.fastfetch "Pacote do Fastfetch a ser utilizado.";
 
-    installPackage = mkOption {
-      type = types.bool;
-      default = true;
-      description = ''
-        Se deve instalar o executável do fastfetch via Nix.
-        Se false, apenas a configuração (~/.config/fastfetch/config.jsonc) será gerenciada, utilizando o binário nativo da distro hospedeira.
-      '';
-    };
+    installPackage = lib.my.mkBool true ''
+      Se deve instalar o executável do fastfetch via Nix.
+      Se false, apenas a configuração (~/.config/fastfetch/config.jsonc) será gerenciada, utilizando o binário nativo da distro hospedeira.
+    '';
 
-    useSystemPackage = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Atalho conveniente: quando true, equivale a installPackage = false.";
-    };
+    useSystemPackage = lib.my.mkBool false "Atalho conveniente: quando true, equivale a installPackage = false.";
 
-    useSystemPackages = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Alias para useSystemPackage.";
-    };
+    useSystemPackages = lib.my.mkBool false "Alias para useSystemPackage.";
 
-    modules = mkOption {
-      type = types.listOf (types.either types.str types.attrs);
-      default = defaultModules;
-      description = "Lista declarativa de módulos a serem exibidos no Fastfetch (baseado na suíte do LambBread).";
-    };
+    modules =
+      lib.my.mkListOf (lib.types.either lib.types.str lib.types.attrs) defaultModules
+        "Lista declarativa de módulos a serem exibidos no Fastfetch (baseado na suíte do LambBread).";
 
-    logo = mkOption {
-      type = types.attrs;
-      default = { };
-      description = "Configurações de logo do Fastfetch.";
-    };
+    logo = lib.my.mkOpt lib.types.attrs { } "Configurações de logo do Fastfetch.";
 
-    display = mkOption {
-      type = types.attrs;
-      default = { };
-      description = "Configurações visuais de exibição (display) do Fastfetch.";
-    };
+    display =
+      lib.my.mkOpt lib.types.attrs { }
+        "Configurações visuais de exibição (display) do Fastfetch.";
 
-    extraSettings = mkOption {
-      type = types.attrs;
-      default = { };
-      description = "Configurações adicionais mescladas ao config.jsonc gerado pelo Home Manager.";
-    };
+    extraSettings =
+      lib.my.mkOpt lib.types.attrs { }
+        "Configurações adicionais mescladas ao config.jsonc gerado pelo Home Manager.";
   };
 
   config = mkIf cfg.enable {

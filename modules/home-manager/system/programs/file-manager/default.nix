@@ -6,8 +6,6 @@
 }:
 let
   inherit (lib)
-    mkOption
-    types
     optionalString
     mkDefault
     mkIf
@@ -129,35 +127,27 @@ in
   ];
 
   options.system.programs.file-manager = {
-    default = mkOption {
-      type = types.enum [
+    default =
+      lib.my.mkEnum
+        [
+          "auto"
+          "thunar"
+          "nautilus"
+          "nemo"
+          "pcmanfm"
+        ]
         "auto"
-        "thunar"
-        "nautilus"
-        "nemo"
-        "pcmanfm"
-      ];
-      default = "auto";
-      description = ''
-        Gerenciador de arquivos preferido do sistema.
-        Se 'auto', seleciona automaticamente entre nautilus, nemo, pcmanfm ou thunar conforme ativado.
-      '';
-    };
+        ''
+          Gerenciador de arquivos preferido do sistema.
+          Se 'auto', seleciona automaticamente entre nautilus, nemo, pcmanfm ou thunar conforme ativado.
+        '';
 
-    activeCommand = mkOption {
-      type = types.str;
-      default = activeCommand;
-      description = "Comando executável para invocar o gerenciador de arquivos ativo em atalhos de WM e scripts.";
-    };
+    activeCommand = lib.my.mkStr activeCommand "Comando executável para invocar o gerenciador de arquivos ativo em atalhos de WM e scripts.";
 
-    enableThumbnails = mkOption {
-      type = types.bool;
-      default = true;
-      description = ''
-        Habilitar serviço global de miniaturas (Tumbler / Freedesktop Thumbnailer) e geradores
-        (ffmpegthumbnailer, webp, poppler, libgsf, freetype, shared-mime-info) para todos os gerenciadores de arquivos.
-      '';
-    };
+    enableThumbnails = lib.my.mkBool true ''
+      Habilitar serviço global de miniaturas (Tumbler / Freedesktop Thumbnailer) e geradores
+      (ffmpegthumbnailer, webp, poppler, libgsf, freetype, shared-mime-info) para todos os gerenciadores de arquivos.
+    '';
   };
 
   config = mkMerge [

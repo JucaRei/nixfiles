@@ -12,9 +12,7 @@ let
     mkIf
     mkMerge
     optional
-    mkOption
     ;
-  inherit (lib.types) enum bool;
 
   cfg = config.system.programs.shells;
   isNixOS = osConfig != null;
@@ -37,93 +35,49 @@ in
   ];
 
   options.system.programs.shells = {
-    enable = mkOption {
-      type = bool;
-      default = false;
-      description = "Enable command-line shell configuration.";
-    };
+    enable = lib.my.mkBool false "Enable command-line shell configuration.";
 
-    default = mkOption {
-      type = enum [
-        "bash"
-        "fish"
-        "zsh"
-        "nu"
-        "nushell"
-      ];
-      default = "bash";
-      description = "Default shell to configure.";
-    };
+    default = lib.my.mkEnum [
+      "bash"
+      "fish"
+      "zsh"
+      "nu"
+      "nushell"
+    ] "bash" "Default shell to configure.";
 
     aliases = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable useful shell aliases.";
-      };
+      enable = lib.my.mkBool false "Enable useful shell aliases.";
 
       systemd = {
-        enable = mkOption {
-          type = bool;
-          default = true;
-          description = "Enable systemd-related aliases (sc-, scu-, jc- etc.).";
-        };
+        enable = lib.my.mkBool true "Enable systemd-related aliases (sc-, scu-, jc- etc.).";
       };
 
       process = {
-        enable = mkOption {
-          type = bool;
-          default = true;
-          description = "Install process-related tools (procs).";
-        };
+        enable = lib.my.mkBool true "Install process-related tools (procs).";
       };
 
       nix = {
-        enable = mkOption {
-          type = bool;
-          default = true;
-          description = "Enable clean Nix command aliases.";
-        };
-        diffProgram = mkOption {
-          type = enum [
-            "builtin"
-            "nvd"
-            "nix-diff"
-          ];
-          default = "builtin";
-          description = "Tool used by `nd` to show generation differences.";
-        };
+        enable = lib.my.mkBool true "Enable clean Nix command aliases.";
+        diffProgram = lib.my.mkEnum [
+          "builtin"
+          "nvd"
+          "nix-diff"
+        ] "builtin" "Tool used by `nd` to show generation differences.";
       };
     };
 
     direnv = {
-      enable = mkOption {
-        type = bool;
-        default = true;
-        description = "Enable direnv with good Nix integration.";
-      };
+      enable = lib.my.mkBool true "Enable direnv with good Nix integration.";
 
-      nix-direnv = mkOption {
-        type = bool;
-        default = true;
-        description = "Use nix-direnv for persistent gc-rooted shells.";
-      };
+      nix-direnv = lib.my.mkBool true "Use nix-direnv for persistent gc-rooted shells.";
     };
 
     starship = {
-      enable = mkOption {
-        type = bool;
-        default = true;
-        description = "Enable Starship prompt with an aesthetic, lightweight configuration.";
-      };
+      enable = lib.my.mkBool true "Enable Starship prompt with an aesthetic, lightweight configuration.";
     };
 
     fzf = {
-      enable = mkOption {
-        type = bool;
-        default = true;
-        description = "Enable fzf with rich previews and unified configuration across all shells.";
-      };
+      enable = lib.my.mkBool true "Enable fzf with rich previews and unified configuration across all shells.";
     };
   };
 

@@ -300,82 +300,56 @@ in
   options.system.programs.multimedia.mpv = {
     enable = mkEnableOption "mpv media player with custom profiles and scripts";
 
-    installPackage = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Se deve instalar o executável do MPV compilado via Nix/Home Manager.
-        Se definido como false, o Home Manager instalará apenas as configurações (mpv.conf, input.conf, scripts e opções de hardware)
-        e utilizará o binário nativo do sistema operacional hospedeiro (ex: Debian /usr/bin/mpv).
-      '';
-    };
+    installPackage = lib.my.mkBool true ''
+      Se deve instalar o executável do MPV compilado via Nix/Home Manager.
+      Se definido como false, o Home Manager instalará apenas as configurações (mpv.conf, input.conf, scripts e opções de hardware)
+      e utilizará o binário nativo do sistema operacional hospedeiro (ex: Debian /usr/bin/mpv).
+    '';
 
-    useSystemPackage = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = ''
-        Atalho conveniente: quando true, equivale a installPackage = false.
-        Permite carregar apenas as configurações preservando o MPV da distro nativa.
-      '';
-    };
+    useSystemPackage = lib.my.mkBool false ''
+      Atalho conveniente: quando true, equivale a installPackage = false.
+      Permite carregar apenas as configurações preservando o MPV da distro nativa.
+    '';
 
-    useSystemPackages = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Alias para useSystemPackage.";
-    };
+    useSystemPackages = lib.my.mkBool false "Alias para useSystemPackage.";
 
-    defaultNvidia = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = ''
-        Se o MPV deve abrir por padrão utilizando a dGPU NVIDIA (PRIME offload / mpv-nvidia)
-        no arquivo .desktop (sobrescrevendo mpv.desktop), incluindo uma ação secundária
-        no menu de contexto para abrir com a iGPU Intel.
-      '';
-    };
+    defaultNvidia = lib.my.mkBool false ''
+      Se o MPV deve abrir por padrão utilizando a dGPU NVIDIA (PRIME offload / mpv-nvidia)
+      no arquivo .desktop (sobrescrevendo mpv.desktop), incluindo uma ação secundária
+      no menu de contexto para abrir com a iGPU Intel.
+    '';
 
-    profile = lib.mkOption {
-      type = lib.types.enum [
-        "auto"
-        "nitro"
-        "legacy-nvidia"
-        "legacy-nouveau"
-        "low-ram"
-        "software"
-      ];
-      default = if isNvidia then "legacy-nvidia" else "auto";
-      description = ''
-        Perfil de hardware para reprodução no MPV:
-        - "auto": decodificação segura automática (vo=gpu, gpu-api=auto, hwdec=auto-safe)
-        - "nitro": perfil otimizado para Intel UHD 630 + NVIDIA dGPU
-        - "legacy-nvidia": perfil para GPUs legadas com driver proprietário antigo (ex: NVIDIA 340)
-        - "legacy-nouveau": perfil para GPUs legadas com driver Nouveau / Mesa
-        - "low-ram": perfil econômico para máquinas com pouca RAM (ex: MacBook Air 2GB)
-        - "software": perfil para renderização puramente por software em VMs sem aceleração 3D
-      '';
-    };
+    profile =
+      lib.my.mkEnum
+        [
+          "auto"
+          "nitro"
+          "legacy-nvidia"
+          "legacy-nouveau"
+          "low-ram"
+          "software"
+        ]
+        (if isNvidia then "legacy-nvidia" else "auto")
+        ''
+          Perfil de hardware para reprodução no MPV:
+          - "auto": decodificação segura automática (vo=gpu, gpu-api=auto, hwdec=auto-safe)
+          - "nitro": perfil otimizado para Intel UHD 630 + NVIDIA dGPU
+          - "legacy-nvidia": perfil para GPUs legadas com driver proprietário antigo (ex: NVIDIA 340)
+          - "legacy-nouveau": perfil para GPUs legadas com driver Nouveau / Mesa
+          - "low-ram": perfil econômico para máquinas com pouca RAM (ex: MacBook Air 2GB)
+          - "software": perfil para renderização puramente por software em VMs sem aceleração 3D
+        '';
 
-    vaapiDevice = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      description = "Dispositivo de renderização VA-API opcional (ex: /dev/dri/by-path/pci-0000:00:02.0-render).";
-    };
+    vaapiDevice =
+      lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+        "Dispositivo de renderização VA-API opcional (ex: /dev/dri/by-path/pci-0000:00:02.0-render).";
 
-    hybridGraphics = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Habilitar suporte e ações de dGPU NVIDIA / PRIME no desktop entry e perfil [nvidia].";
-    };
+    hybridGraphics = lib.my.mkBool false "Habilitar suporte e ações de dGPU NVIDIA / PRIME no desktop entry e perfil [nvidia].";
 
-    floating = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Se o MPV deve abrir em modo flutuante (floating) em Window Managers (BSPWM, Hyprland, Sway, i3).
-        Defina como false para abrir diretamente em modo tiled na grade.
-      '';
-    };
+    floating = lib.my.mkBool true ''
+      Se o MPV deve abrir em modo flutuante (floating) em Window Managers (BSPWM, Hyprland, Sway, i3).
+      Defina como false para abrir diretamente em modo tiled na grade.
+    '';
   };
 
   config = mkIf cfg.enable {

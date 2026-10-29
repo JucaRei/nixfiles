@@ -10,10 +10,8 @@
 let
   inherit (lib)
     mkIf
-    mkOption
     mkForce
     ;
-  inherit (lib.types) bool enum;
   cfg = config.system.programs.browsers.firefox;
 
   # Definição dinâmica do configPath por versão/fork:
@@ -109,27 +107,15 @@ in
 {
   options = {
     system.programs.browsers.firefox = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable's firefox web based browser.";
-      };
-      version = mkOption {
-        type = enum [
-          "firefox"
-          "firefox-devedition"
-          "firefox-esr"
-          "floorp"
-          "librewolf"
-        ];
-        default = "firefox";
-        description = "Choose which firefox version you want.";
-      };
-      preferNvidia = mkOption {
-        type = bool;
-        default = false;
-        description = "Prefer NVIDIA dGPU via PRIME offload for browser rendering and video acceleration.";
-      };
+      enable = lib.my.mkBool false "Enable's firefox web based browser.";
+      version = lib.my.mkEnum [
+        "firefox"
+        "firefox-devedition"
+        "firefox-esr"
+        "floorp"
+        "librewolf"
+      ] "firefox" "Choose which firefox version you want.";
+      preferNvidia = lib.my.mkBool false "Prefer NVIDIA dGPU via PRIME offload for browser rendering and video acceleration.";
     };
   };
 

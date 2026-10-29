@@ -7,8 +7,7 @@
   ...
 }:
 let
-  inherit (lib) optionals mkOption mkIf;
-  inherit (lib.types) enum bool;
+  inherit (lib) optionals mkIf;
   cfg = config.system.programs.browsers.chromium;
 
   isNixOS = osConfig != null;
@@ -24,24 +23,15 @@ in
 {
   options = {
     system.programs.browsers.chromium = {
-      enable = mkOption {
-        type = bool;
-        default = false;
-        description = "Enable's chrome web based browser.";
-      };
-      version = mkOption {
-        type = enum [
-          "chromium"
-          "ungoogled-chromium"
-          "google-chrome"
-          "brave"
-          "vivaldi"
-          "edge"
-          # "opera"
-        ];
-        default = "brave";
-        description = "Choose which chromium version you want.";
-      };
+      enable = lib.my.mkBool false "Enable's chrome web based browser.";
+      version = lib.my.mkEnum [
+        "chromium"
+        "ungoogled-chromium"
+        "google-chrome"
+        "brave"
+        "vivaldi"
+        "edge"
+      ] "brave" "Choose which chromium version you want.";
     };
   };
   config = mkIf cfg.enable {

@@ -5,16 +5,12 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf types;
+  inherit (lib) mkIf;
   cfg = config.system.programs.multimedia.ncmpcpp;
 in
 {
   options.system.programs.multimedia.ncmpcpp = {
-    enable = mkOption {
-      default = false;
-      type = types.bool;
-      description = "Enables ncmpcpp";
-    };
+    enable = lib.my.mkBool false "Enables ncmpcpp";
   };
   config = mkIf cfg.enable {
     home = {

@@ -1,17 +1,8 @@
 { config, lib, ... }:
 let
   inherit (lib)
-    mkOption
     mkIf
     getExe
-    ;
-  inherit (lib.types)
-    bool
-    str
-    nullOr
-    either
-    attrsOf
-    anything
     ;
   cfg = config.system.programs.console.eza;
 
@@ -60,23 +51,17 @@ let
 in
 {
   options.system.programs.console.eza = {
-    enable = mkOption {
-      default = false;
-      type = bool;
-      description = "Enable eza.";
-    };
+    enable = lib.my.mkBool false "Enable eza.";
 
-    customTheme = mkOption {
-      default = null;
-      type = nullOr str;
-      description = "Conteúdo YAML customizado para o tema do eza. Se nulo, gerado dinamicamente a partir de desktop.theme.";
-    };
+    customTheme =
+      lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+        "Conteúdo YAML customizado para o tema do eza. Se nulo, gerado dinamicamente a partir de desktop.theme.";
 
-    theme = mkOption {
-      default = if (config.desktop.theme ? name) then config.desktop.theme.name else "catppuccin-mocha";
-      type = nullOr (either str (attrsOf anything));
-      description = "Tema de eza (legado/compatibilidade).";
-    };
+    theme =
+      lib.my.mkOpt
+        (lib.types.nullOr (lib.types.either lib.types.str (lib.types.attrsOf lib.types.anything)))
+        (if (config.desktop.theme ? name) then config.desktop.theme.name else "catppuccin-mocha")
+        "Tema de eza (legado/compatibilidade).";
   };
 
   config = mkIf cfg.enable {

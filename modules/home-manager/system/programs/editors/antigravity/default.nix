@@ -10,15 +10,7 @@ let
   inherit (lib)
     mkIf
     mkEnableOption
-    mkOption
     optionalString
-    ;
-  inherit (lib.types)
-    package
-    nullOr
-    port
-    str
-    either
     ;
   cfg = config.system.programs.editors.antigravity;
   isNixOS = osConfig != null;
@@ -27,17 +19,12 @@ in
   options = {
     system.programs.editors.antigravity = {
       enable = mkEnableOption "Google Antigravity AI IDE";
-      package = mkOption {
-        type = package;
-        default =
-          if isNixOS then pkgs.unstable.antigravity-ide-fhs else nixGLWrapper pkgs.unstable.antigravity-ide;
-        description = "Package or wrapper for Antigravity IDE.";
-      };
-      remoteDebuggingPort = mkOption {
-        type = nullOr (either port str);
-        default = "9004";
-        description = "Port to open Chrome DevTools Protocol (CDP) for automation (e.g. Antigravity Auto Accept).";
-      };
+      package = lib.my.mkPkg (
+        if isNixOS then pkgs.unstable.antigravity-ide-fhs else nixGLWrapper pkgs.unstable.antigravity-ide
+      ) "Package or wrapper for Antigravity IDE.";
+      remoteDebuggingPort =
+        lib.my.mkOpt (lib.types.nullOr (lib.types.either lib.types.port lib.types.str)) "9004"
+          "Port to open Chrome DevTools Protocol (CDP) for automation (e.g. Antigravity Auto Accept).";
     };
   };
 

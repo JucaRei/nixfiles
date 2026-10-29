@@ -11,8 +11,6 @@ let
     mkEnableOption
     mkIf
     mkDefault
-    mkOption
-    types
     ;
 
   isDark = (config.desktop.theme.variant or "dark") == "dark";
@@ -56,23 +54,11 @@ in
   options.system.programs.editors.gedit = {
     enable = mkEnableOption "GNOME Text Editor (gedit)";
 
-    default = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Define o gedit como editor padrão de texto plano (text/plain).";
-    };
+    default = lib.my.mkBool true "Define o gedit como editor padrão de texto plano (text/plain).";
 
-    package = mkOption {
-      type = types.package;
-      default = gedit-wrapped;
-      description = "Pacote do gedit a ser utilizado.";
-    };
+    package = lib.my.mkPkg gedit-wrapped "Pacote do gedit a ser utilizado.";
 
-    theme = mkOption {
-      type = types.str;
-      default = defaultTheme;
-      description = "Tema / esquema de cores padrão do gedit.";
-    };
+    theme = lib.my.mkStr defaultTheme "Tema / esquema de cores padrão do gedit.";
   };
 
   config = mkIf cfg.enable {

@@ -8,8 +8,6 @@ let
   inherit (lib)
     mkIf
     mkEnableOption
-    mkOption
-    types
     optionals
     ;
 
@@ -46,53 +44,29 @@ in
     system.programs.file-manager.pcmanfm = {
       enable = mkEnableOption "Enable PCManFM ultra-lightweight file manager with GVfs, thumbnailers, and tabbed browsing.";
 
-      installPackage = mkOption {
-        type = types.bool;
-        default = true;
-        description = ''
-          Se deve instalar o executável do PCManFM compilado via Nix/Home Manager.
-          Se false, utiliza o binário da distro nativa (ex: /usr/bin/pcmanfm), mantendo configurações e dotfiles.
-        '';
-      };
+      installPackage = lib.my.mkBool true ''
+        Se deve instalar o executável do PCManFM compilado via Nix/Home Manager.
+        Se false, utiliza o binário da distro nativa (ex: /usr/bin/pcmanfm), mantendo configurações e dotfiles.
+      '';
 
-      useSystemPackage = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          Atalho conveniente: quando true, equivale a installPackage = false.
-          Permite carregar apenas as configurações preservando o PCManFM do sistema hospedeiro.
-        '';
-      };
+      useSystemPackage = lib.my.mkBool false ''
+        Atalho conveniente: quando true, equivale a installPackage = false.
+        Permite carregar apenas as configurações preservando o PCManFM do sistema hospedeiro.
+      '';
 
-      useSystemPackages = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Alias para useSystemPackage.";
-      };
+      useSystemPackages = lib.my.mkBool false "Alias para useSystemPackage.";
 
-      package = mkOption {
-        type = types.package;
-        default = pkgs.pcmanfm;
-        description = "Pacote do PCManFM a ser utilizado.";
-      };
+      package = lib.my.mkPkg pkgs.pcmanfm "Pacote do PCManFM a ser utilizado.";
 
       view = {
-        viewMode = mkOption {
-          type = types.enum [
-            "icon"
-            "compact"
-            "detailed"
-            "thumbnail"
-          ];
-          default = "detailed";
-          description = "Modo de visualização padrão de arquivos.";
-        };
+        viewMode = lib.my.mkEnum [
+          "icon"
+          "compact"
+          "detailed"
+          "thumbnail"
+        ] "detailed" "Modo de visualização padrão de arquivos.";
 
-        showHidden = mkOption {
-          type = types.bool;
-          default = false;
-          description = "Mostrar arquivos ocultos por padrão.";
-        };
+        showHidden = lib.my.mkBool false "Mostrar arquivos ocultos por padrão.";
       };
     };
   };

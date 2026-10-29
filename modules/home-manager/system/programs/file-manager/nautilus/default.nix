@@ -9,8 +9,6 @@ let
     mkIf
     mkMerge
     mkEnableOption
-    mkOption
-    types
     optionals
     ;
 
@@ -46,107 +44,51 @@ in
   options = {
     # Alias legado para compatibilidade com configurações anteriores
     programs.nautilus = {
-      enable = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Alias legado para system.programs.file-manager.nautilus.enable.";
-      };
+      enable = lib.my.mkBool false "Alias legado para system.programs.file-manager.nautilus.enable.";
     };
 
     system.programs.file-manager.nautilus = {
       enable = mkEnableOption "Enable GNOME Files (Nautilus) with GVfs, Sushi preview, extensions, dconf settings, and custom scripts.";
 
-      installPackage = mkOption {
-        type = types.bool;
-        default = true;
-        description = ''
-          Se deve instalar o executável do Nautilus compilado via Nix/Home Manager.
-          Se false, utiliza o binário da distro nativa (ex: Debian /usr/bin/nautilus), mantendo configurações, extensões e scripts.
-        '';
-      };
+      installPackage = lib.my.mkBool true ''
+        Se deve instalar o executável do Nautilus compilado via Nix/Home Manager.
+        Se false, utiliza o binário da distro nativa (ex: Debian /usr/bin/nautilus), mantendo configurações, extensões e scripts.
+      '';
 
-      useSystemPackage = mkOption {
-        type = types.bool;
-        default = false;
-        description = ''
-          Atalho conveniente: quando true, equivale a installPackage = false.
-          Permite carregar apenas as configurações, scripts e extensões preservando o Nautilus da distribuição nativa.
-        '';
-      };
+      useSystemPackage = lib.my.mkBool false ''
+        Atalho conveniente: quando true, equivale a installPackage = false.
+        Permite carregar apenas as configurações, scripts e extensões preservando o Nautilus da distribuição nativa.
+      '';
 
-      useSystemPackages = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Alias para useSystemPackage.";
-      };
+      useSystemPackages = lib.my.mkBool false "Alias para useSystemPackage.";
 
-      package = mkOption {
-        type = types.package;
-        default = pkgs.nautilus;
-        description = "Pacote do Nautilus a ser utilizado.";
-      };
+      package = lib.my.mkPkg pkgs.nautilus "Pacote do Nautilus a ser utilizado.";
 
       openAnyTerminal = {
-        enable = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Habilitar extensão nautilus-open-any-terminal.";
-        };
+        enable = lib.my.mkBool true "Habilitar extensão nautilus-open-any-terminal.";
 
-        terminal = mkOption {
-          type = types.str;
-          default = preferredTerminal;
-          description = "Terminal preferido para o nautilus-open-any-terminal (ex: alacritty, kitty, auto).";
-        };
+        terminal = lib.my.mkStr preferredTerminal "Terminal preferido para o nautilus-open-any-terminal (ex: alacritty, kitty, auto).";
 
-        keybinding = mkOption {
-          type = types.str;
-          default = "<Ctrl><Alt>t";
-          description = "Atalho de teclado para abrir o terminal no diretório atual.";
-        };
+        keybinding = lib.my.mkStr "<Ctrl><Alt>t" "Atalho de teclado para abrir o terminal no diretório atual.";
       };
 
       sushi = {
-        enable = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Habilitar GNOME Sushi (pré-visualização rápida com Barra de Espaço).";
-        };
+        enable = lib.my.mkBool true "Habilitar GNOME Sushi (pré-visualização rápida com Barra de Espaço).";
       };
 
       view = {
-        defaultView = mkOption {
-          type = types.enum [
-            "icon-view"
-            "list-view"
-          ];
-          default = "icon-view";
-          description = "Modo de visualização padrão de pastas no Nautilus.";
-        };
+        defaultView = lib.my.mkEnum [
+          "icon-view"
+          "list-view"
+        ] "icon-view" "Modo de visualização padrão de pastas no Nautilus.";
 
-        useTreeView = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Habilitar expansão em árvore de pastas (tree view) no modo lista.";
-        };
+        useTreeView = lib.my.mkBool true "Habilitar expansão em árvore de pastas (tree view) no modo lista.";
 
-        sortDirectoriesFirst = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Exibir pastas antes dos arquivos na ordenação.";
-        };
+        sortDirectoriesFirst = lib.my.mkBool true "Exibir pastas antes dos arquivos na ordenação.";
 
-        showDeletePermanently = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Exibir opção 'Excluir Permanentemente' no menu de contexto (sem passar pela lixeira).";
-        };
+        showDeletePermanently = lib.my.mkBool true "Exibir opção 'Excluir Permanentemente' no menu de contexto (sem passar pela lixeira).";
 
-        showCreateLink = mkOption {
-          type = types.bool;
-          default = true;
-          description = "Exibir opção 'Criar Link' no menu de contexto.";
-        };
+        showCreateLink = lib.my.mkBool true "Exibir opção 'Criar Link' no menu de contexto.";
       };
     };
   };

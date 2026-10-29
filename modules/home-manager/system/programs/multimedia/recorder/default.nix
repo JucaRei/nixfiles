@@ -6,15 +6,12 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf types;
+  inherit (lib) mkIf;
   cfg = config.system.programs.multimedia.audio-recorder;
 in
 {
   options.system.programs.multimedia.audio-recorder = {
-    enable = mkOption {
-      default = false;
-      type = types.bool;
-    };
+    enable = lib.my.mkBool false "Enable audio-recorder tool.";
   };
 
   config = mkIf cfg.enable {

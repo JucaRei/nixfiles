@@ -8,10 +8,8 @@
 let
   inherit (lib)
     mkIf
-    mkOption
     mkDefault
     mkMerge
-    types
     ;
 
   isNixOS = osConfig != null;
@@ -126,26 +124,23 @@ in
   ];
 
   options.system.programs.browsers = {
-    default = mkOption {
-      type = types.enum [
+    default =
+      lib.my.mkEnum
+        [
+          "auto"
+          "firefox"
+          "chromium"
+          "none"
+        ]
         "auto"
-        "firefox"
-        "chromium"
-        "none"
-      ];
-      default = "auto";
-      description = ''
-        Navegador padrão do sistema (x-scheme-handler/http, text/html, etc).
-        "auto" seleciona o primeiro navegador habilitado (firefox > chromium).
-      '';
-    };
+        ''
+          Navegador padrão do sistema (x-scheme-handler/http, text/html, etc).
+          "auto" seleciona o primeiro navegador habilitado (firefox > chromium).
+        '';
 
-    activeBin = mkOption {
-      type = types.nullOr types.str;
-      default = activeBin;
-      readOnly = true;
-      description = "Binário executável do navegador padrão ativo.";
-    };
+    activeBin =
+      lib.my.mkReadOnly (lib.types.nullOr lib.types.str) activeBin
+        "Binário executável do navegador padrão ativo.";
   };
 
   config = mkMerge [

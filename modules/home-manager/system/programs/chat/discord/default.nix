@@ -8,9 +8,7 @@
 let
   inherit (lib)
     mkEnableOption
-    mkOption
     mkIf
-    types
     concatStringsSep
     ;
 
@@ -60,72 +58,44 @@ in
   options.system.programs.chat.discord = {
     enable = mkEnableOption "Discord client with performance tweaks and dynamic desktop theme";
 
-    client = mkOption {
-      type = types.enum [
+    client =
+      lib.my.mkEnum
+        [
+          "discord"
+          "vesktop"
+          "both"
+        ]
         "discord"
-        "vesktop"
-        "both"
-      ];
-      default = "discord";
-      description = "Discord client variant to install (discord = official + OpenASAR/Vencord, vesktop = modern Wayland app).";
-    };
+        "Discord client variant to install (discord = official + OpenASAR/Vencord, vesktop = modern Wayland app).";
 
     vencord = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Inject Vencord into Discord for plugins, themes and screen audio on Linux.";
-      };
+      enable = lib.my.mkBool true "Inject Vencord into Discord for plugins, themes and screen audio on Linux.";
     };
 
     openasar = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Use OpenASAR replacement for faster boot and reduced memory usage.";
-      };
+      enable = lib.my.mkBool true "Use OpenASAR replacement for faster boot and reduced memory usage.";
     };
 
     theme = {
-      enable = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Deploy and enable dynamic theme for Discord/Vesktop/Vencord.";
-      };
+      enable = lib.my.mkBool true "Deploy and enable dynamic theme for Discord/Vesktop/Vencord.";
     };
 
-    installPackage = mkOption {
-      type = types.bool;
-      default = true;
-      description = ''
-        Se deve instalar o executável do Discord/Vesktop via Nix.
-        Se false, apenas os arquivos de temas (.theme.css) e configurações serão gerenciados, utilizando a versão nativa do sistema hospedeiro (ex: .deb ou flatpak).
-      '';
-    };
+    installPackage = lib.my.mkBool true ''
+      Se deve instalar o executável do Discord/Vesktop via Nix.
+      Se false, apenas os arquivos de temas (.theme.css) e configurações serão gerenciados, utilizando a versão nativa do sistema hospedeiro (ex: .deb ou flatpak).
+    '';
 
-    useSystemPackage = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        Atalho conveniente: quando true, equivale a installPackage = false.
-        Permite carregar apenas os temas e configurações utilizando o Discord nativo da distro.
-      '';
-    };
+    useSystemPackage = lib.my.mkBool false ''
+      Atalho conveniente: quando true, equivale a installPackage = false.
+      Permite carregar apenas os temas e configurações utilizando o Discord nativo da distro.
+    '';
 
-    useSystemPackages = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Alias para useSystemPackage.";
-    };
+    useSystemPackages = lib.my.mkBool false "Alias para useSystemPackage.";
 
-    extraCommandLineArgs = mkOption {
-      type = types.listOf types.str;
-      default = [
-        "--ozone-platform-hint=auto"
-        "--enable-features=WaylandWindowDecorations"
-      ];
-      description = "Extra command line flags passed to Discord Electron.";
-    };
+    extraCommandLineArgs = lib.my.mkListOf lib.types.str [
+      "--ozone-platform-hint=auto"
+      "--enable-features=WaylandWindowDecorations"
+    ] "Extra command line flags passed to Discord Electron.";
   };
 
   config = mkIf cfg.enable {

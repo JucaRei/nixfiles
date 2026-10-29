@@ -8,8 +8,6 @@ let
   inherit (lib)
     mkIf
     mkEnableOption
-    mkOption
-    types
     optionalString
     ;
   cfg = config.system.programs.file-manager.thunar;
@@ -87,23 +85,11 @@ in
     system.programs.file-manager.thunar = {
       enable = mkEnableOption "Enable Thunar file manager with plugins, custom actions (uca.xml), and thumbnails support.";
 
-      package = mkOption {
-        type = types.package;
-        default = thunar-wrapped;
-        description = "Pacote do Thunar empacotado com plugins, GVfs e temas.";
-      };
+      package = lib.my.mkPkg thunar-wrapped "Pacote do Thunar empacotado com plugins, GVfs e temas.";
 
-      rememberViewSettings = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Relembrar configurações de exibição específicas para cada pasta no Thunar (misc-directory-specific-settings).";
-      };
+      rememberViewSettings = lib.my.mkBool true "Relembrar configurações de exibição específicas para cada pasta no Thunar (misc-directory-specific-settings).";
 
-      restoreTabs = mkOption {
-        type = types.bool;
-        default = true;
-        description = "Restaurar abas abertas anteriormente ao iniciar o Thunar (last-restore-tabs).";
-      };
+      restoreTabs = lib.my.mkBool true "Restaurar abas abertas anteriormente ao iniciar o Thunar (last-restore-tabs).";
     };
   };
 

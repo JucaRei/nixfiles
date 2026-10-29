@@ -6,19 +6,14 @@
 }:
 let
   inherit (lib)
-    mkOption
     mkIf
-    types
     mkForce
     ;
   cfg = config.system.programs.console.bat;
 in
 {
   options.system.programs.console.bat = {
-    enable = mkOption {
-      default = false;
-      type = types.bool;
-    };
+    enable = lib.my.mkBool false "Enable bat cat clone with syntax highlighting.";
   };
 
   config = mkIf cfg.enable {

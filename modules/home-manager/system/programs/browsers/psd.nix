@@ -43,56 +43,27 @@ let
 in
 {
   options.system.programs.browsers.psd = {
-    enable = lib.mkOption {
-      type = lib.types.bool;
-      default = anyBrowserEnabled;
-      description = ''
-        Habilitar Profile-Sync-Daemon (psd) via o módulo oficial services.psd do Home Manager.
-        Por padrão é true se algum navegador estiver habilitado (Firefox/LibreWolf/Floorp ou Chromium/Brave/etc).
-      '';
-    };
+    enable = lib.my.mkBool anyBrowserEnabled ''
+      Habilitar Profile-Sync-Daemon (psd) via o módulo oficial services.psd do Home Manager.
+      Por padrão é true se algum navegador estiver habilitado (Firefox/LibreWolf/Floorp ou Chromium/Brave/etc).
+    '';
 
-    resyncTimer = lib.mkOption {
-      type = lib.types.str;
-      default = "1h";
-      example = "30min";
-      description = "Intervalo de ressincronização automática dos perfis da RAM para o disco.";
-    };
+    resyncTimer = lib.my.mkStr "1h" "Intervalo de ressincronização automática dos perfis da RAM para o disco.";
 
-    browsers = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      example = [
-        "librewolf"
-        "brave"
-      ];
-      description = ''
-        Lista explícita de navegadores a serem gerenciados pelo PSD.
-        Se vazia, detecta automaticamente os navegadores configurados ou disponíveis no sistema.
-      '';
-    };
+    browsers = lib.my.mkListOf lib.types.str [ ] ''
+      Lista explícita de navegadores a serem gerenciados pelo PSD.
+      Se vazia, detecta automaticamente os navegadores configurados ou disponíveis no sistema.
+    '';
 
-    useBackup = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Habilitar backups automáticos de segurança para recuperação em caso de travamentos ou falhas de energia.
-      '';
-    };
+    useBackup = lib.my.mkBool true ''
+      Habilitar backups automáticos de segurança para recuperação em caso de travamentos ou falhas de energia.
+    '';
 
-    backupLimit = lib.mkOption {
-      type = lib.types.int;
-      default = 5;
-      description = ''
-        Número máximo de snapshots de recuperação a manter no disco.
-      '';
-    };
+    backupLimit = lib.my.mkInt 5 ''
+      Número máximo de snapshots de recuperação a manter no disco.
+    '';
 
-    package = lib.mkOption {
-      type = lib.types.package;
-      default = pkgs.profile-sync-daemon;
-      description = "Pacote do profile-sync-daemon utilizado.";
-    };
+    package = lib.my.mkPkg pkgs.profile-sync-daemon "Pacote do profile-sync-daemon utilizado.";
   };
 
   config = lib.mkMerge [

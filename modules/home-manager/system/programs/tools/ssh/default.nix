@@ -6,8 +6,7 @@
   ...
 }:
 let
-  inherit (lib) mkOption mkIf;
-  inherit (lib.types) bool;
+  inherit (lib) mkIf;
   cfg = config.system.programs.tools.ssh;
 
   # Versão legada (NixOS 22.11 / OpenSSH 9.1p1 via pkgs.older / inputs.nixpkgs-older)
@@ -69,11 +68,7 @@ in
 {
   options = {
     system.programs.tools.ssh = {
-      enable = mkOption {
-        default = false;
-        type = bool;
-        description = "Enable's ssh configs.";
-      };
+      enable = lib.my.mkBool false "Enable's ssh configs.";
     };
   };
 
