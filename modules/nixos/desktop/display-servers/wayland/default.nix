@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkForce;
+  inherit (lib) mkIf;
   graphics = config.hardware.graphics.cards;
   backend = config.desktop.display-servers.backend;
 
@@ -37,7 +37,7 @@ in
       };
       pathsToLink = [ "/libexec" ];
       shellAliases = {
-        check-drm = mkForce "${pkgs.drm_info}/bin/drm_info -j | ${pkgs.jq}/bin/jq 'with_entries(.value |= .driver.desc)'";
+        check-drm = "${pkgs.drm_info}/bin/drm_info -j | ${pkgs.jq}/bin/jq 'with_entries(.value |= .driver.desc)'";
       };
     };
     services = mkIf (desktop == "gnome" && graphics.gpu == "hybrid-nvidia") {

@@ -1,11 +1,7 @@
 {
-  lib,
   pkgs,
   ...
 }:
-let
-  inherit (lib) mkForce;
-in
 {
   imports = [
     ./disk-default.nix
@@ -13,7 +9,7 @@ in
   ];
 
   config = {
-    timeZone = mkForce "America/Sao_Paulo";
+    timeZone = "America/Sao_Paulo";
 
     programs = {
       nix-ld = {

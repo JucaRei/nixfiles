@@ -10,7 +10,6 @@
 let
   inherit (lib)
     mkIf
-    mkForce
     ;
   cfg = config.system.programs.browsers.firefox;
 
@@ -167,17 +166,13 @@ in
       # LIBVA_DRIVER_NAME (e.g. "iHD" on nitro). They are injected per-process via nvOffloadScript.
 
       activation = {
-        beforeCheckLinkTargets = {
-          after = [ ];
-          before = mkForce [ "checkLinkTargets" ];
-          data = mkForce ''
-            for d in "$HOME/.mozilla/firefox" "$HOME/.floorp" "$HOME/.librewolf"; do
-              if [ -d "$d" ]; then
-                find "$d" -name "search.json.mozlz4*" -type f -exec rm -f {} + 2>/dev/null || true
-              fi
-            done
-          '';
-        };
+        beforeCheckLinkTargets = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
+          for d in "$HOME/.mozilla/firefox" "$HOME/.floorp" "$HOME/.librewolf"; do
+            if [ -d "$d" ]; then
+              find "$d" -name "search.json.mozlz4*" -type f -exec rm -f {} + 2>/dev/null || true
+            fi
+          done
+        '';
 
         setupFirefoxNativeMessagingHosts = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           mkdir -p "$HOME/.mozilla/native-messaging-hosts"

@@ -90,7 +90,7 @@ in
       initrd = {
         verbose = mkIf cfg.silentBoot false;
         systemd = {
-          enable = if (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") then true else false;
+          enable = mkDefault (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy");
         };
       };
 

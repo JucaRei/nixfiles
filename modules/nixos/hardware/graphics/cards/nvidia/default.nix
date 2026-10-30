@@ -6,7 +6,6 @@
 }:
 let
   inherit (lib)
-    mkForce
     mkIf
     mkMerge
     mkDefault
@@ -72,7 +71,7 @@ in
     ];
 
     boot = {
-      blacklistedKernelModules = mkForce [
+      blacklistedKernelModules = [
         "nouveau"
       ];
       initrd.kernelModules = [
@@ -133,7 +132,7 @@ in
     hardware = {
       nvidia = {
         package = mkDefault nvidiaPackage;
-        modesetting.enable = mkForce true;
+        modesetting.enable = true;
         prime = {
           offload = {
             enable = if (device.gpu == "hybrid-nvidia") then true else false;

@@ -61,13 +61,13 @@ in
   "browser.disableResetPrompt" = false;
   "browser.download.panel.shown" = true;
   "browser.startup.homepage" = "https://www.google.com/";
-  "browser.shell.checkDefaultBrowser" = lib.mkForce false;
+  "browser.shell.checkDefaultBrowser" = false;
   "browser.shell.defaultBrowserCheckCount" = 1;
 
   # Enable userContent.css and userChrome.css for our theme modules
   "browser.crashReports.unsubmittedCheck.autoSubmit2" = false;
   "browser.crashReports.unsubmittedCheck.enabled" = false;
-  "browser.search.update" = lib.mkForce false;
+  "browser.search.update" = false;
   "browser.urlbar.suggest.bookmark" = true;
   "browser.urlbar.suggest.history" = true;
   "browser.urlbar.suggest.openpage" = false;

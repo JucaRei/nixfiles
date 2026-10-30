@@ -28,7 +28,7 @@ in
 
     boot = {
       # Use stable LTS kernel for ISOs (ensures pre-built binary cache & full ZFS compatibility)
-      kernelPackages = mkForce pkgs.linuxPackages;
+      kernelPackages = pkgs.linuxPackages;
 
       # Ensure all USB storage, disk controllers and filesystem drivers are available in early initrd
       initrd = {
@@ -135,15 +135,9 @@ in
     users.users = {
       nixos = {
         password = "admin";
-        hashedPassword = mkForce null;
-        initialPassword = mkForce null;
-        initialHashedPassword = mkForce null;
       };
       root = {
         password = "admin";
-        hashedPassword = mkForce null;
-        initialPassword = mkForce null;
-        initialHashedPassword = mkForce null;
       };
     };
   };

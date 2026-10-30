@@ -57,7 +57,7 @@ in
     };
 
     # All workstation configurations for live media are below.
-    isoImage = mkIf isWorkstationISO { edition = mkForce "${desktop}"; };
+    isoImage = mkIf isWorkstationISO { edition = "${desktop}"; };
 
     programs = {
       dconf.profiles.user.databases = [

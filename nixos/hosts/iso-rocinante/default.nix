@@ -28,14 +28,14 @@ in
 
     boot = {
       # Use LTS kernel for stability on legacy hardware
-      kernelPackages = mkForce pkgs.linuxPackages;
+      kernelPackages = pkgs.linuxPackages;
 
       # Disable systemd initrd — the scripted initrd is more compatible
       # with legacy boot (32-bit EFI / BIOS CSM) and Ventoy/USB quirks.
       # Systemd initrd's "initrd-find-nixos-closure" service fails on
       # non-standard media layouts (Ventoy, dd with wrong labels, etc.)
       initrd = {
-        systemd.enable = mkForce false;
+        systemd.enable = false;
 
         # Essential initrd modules for MacBook Pro 4,1 hardware
         availableKernelModules = [
@@ -200,15 +200,9 @@ in
     users.users = {
       nixos = {
         password = "admin";
-        hashedPassword = mkForce null;
-        initialPassword = mkForce null;
-        initialHashedPassword = mkForce null;
       };
       root = {
         password = "admin";
-        hashedPassword = mkForce null;
-        initialPassword = mkForce null;
-        initialHashedPassword = mkForce null;
       };
     };
   };

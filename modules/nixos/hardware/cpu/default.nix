@@ -4,11 +4,13 @@
   lib,
   isWorkstation,
   isInstall,
+  isVM ? false,
   ...
 }:
 let
   inherit (lib)
     mkIf
+    mkDefault
     mkEnableOption
     optionalString
     optional
@@ -152,7 +154,7 @@ in
 
     services = {
       fwupd = {
-        enable = if (isInstall && isWorkstation) then true else false;
+        enable = mkIf (isInstall && isWorkstation && !isVM) (mkDefault true);
       };
       udev.extraRules = ''
         ACTION=="add|change", KERNEL=="[sv]d[a-z]", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"

@@ -7,7 +7,7 @@
 let
   inherit (lib)
     mkIf
-    mkForce
+    mkDefault
     ;
   cfg = config.system.programs.console.bat;
 in
@@ -21,7 +21,7 @@ in
       enable = true;
       config = {
         # theme = "Catppuccin-mocha";
-        theme = mkForce "tokyo_night";
+        theme = mkDefault "tokyo_night";
         style = "plain"; # remove line numbers
         pager = "less -FR";
       };
