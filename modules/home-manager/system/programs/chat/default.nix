@@ -1,5 +1,4 @@
-_: {
-  imports = [
-    ./discord
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }

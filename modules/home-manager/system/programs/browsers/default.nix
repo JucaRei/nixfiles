@@ -117,11 +117,7 @@ let
   ++ lib.optional (chosen == "chromium") "x-scheme-handler/chrome";
 in
 {
-  imports = [
-    ./firefox
-    ./chrome
-    ./psd.nix
-  ];
+  imports = lib.my.importDir ./.;
 
   options.system.programs.browsers = {
     default =

@@ -1,8 +1,4 @@
-_: {
-  imports = [
-    ./cleanup
-    ./programs
-    ./scripts
-    ./services
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }

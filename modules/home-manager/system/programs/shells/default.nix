@@ -24,15 +24,7 @@ let
   };
 in
 {
-  imports = [
-    ./bash
-    ./fish
-    ./zsh
-    ./nushell
-    ./direnv
-    ./starship
-    ./fzf
-  ];
+  imports = lib.my.importDir ./.;
 
   options.system.programs.shells = {
     enable = lib.my.mkBool false "Enable command-line shell configuration.";

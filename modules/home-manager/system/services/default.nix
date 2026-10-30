@@ -1,9 +1,4 @@
-_: {
-  imports = [
-    ./fcitx5
-    ./flatpak
-    ./git
-    ./podman
-    ./ssh
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }

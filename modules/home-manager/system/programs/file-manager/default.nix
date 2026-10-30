@@ -119,12 +119,7 @@ let
     || (cfgPcmanfm.enable or false);
 in
 {
-  imports = [
-    ./thunar
-    ./nautilus
-    ./nemo
-    ./pcmanfm
-  ];
+  imports = lib.my.importDir ./.;
 
   options.system.programs.file-manager = {
     default =

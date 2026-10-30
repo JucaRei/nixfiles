@@ -1,7 +1,4 @@
-_: {
-  imports = [
-    ./antigravity
-    ./vscode
-    ./gedit
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }

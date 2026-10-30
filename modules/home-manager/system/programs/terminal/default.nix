@@ -208,14 +208,7 @@ let
   '';
 in
 {
-  imports = [
-    ./alacritty
-    ./urxvt
-    # ./kitty
-    # ./foot
-    # ./wezterm
-    # ./xfce4-terminal
-  ];
+  imports = lib.my.importDir ./.;
 
   options = {
     system.programs.terminal = {

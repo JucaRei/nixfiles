@@ -1,6 +1,4 @@
-_: {
-  imports = [
-    ./eza
-    ./bat
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }
