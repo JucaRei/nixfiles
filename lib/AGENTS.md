@@ -4,6 +4,7 @@
 lib/
 ├── default.nix        reexporta helpers.nix
 ├── helpers.nix        mkHome, mkNixos, mkIso, mkChecks, forAllSystems
+├── import-dir.nix     auto-descoberta e importação declarativa de diretórios de módulos
 ├── nixpkgs-config.nix configuração canônica unificada de nixpkgs
 ├── options.nix        helpers de criação de opções (mkOpt, mkBool, mkStr, etc.)
 └── nixgl/
@@ -35,6 +36,18 @@ Centraliza a criação de opções concisas com descrição obrigatória para re
 - `mkReadOnly type default description`: opção somente-leitura.
 
 Disponível automaticamente em todos os módulos via `lib.my.*` ou pelo argumento `myLib.*`.
+
+## import-dir.nix (`lib.my.importDir` / `lib.my.importSubdirs`)
+
+Implementa auto-descoberta e importação declarativa de módulos em diretórios agregadores, eliminando listas manuais de `imports`:
+- `lib.my.importDir ./.`: importa todos os módulos válidos do diretório (subpastas com `default.nix` e arquivos `.nix` regulares).
+- `lib.my.importSubdirs ./.`: importa apenas subpastas diretas que contenham `default.nix`.
+
+### Convenção:
+- Arquivos ou subpastas cujo nome começa com `_` (ex: `_template/`, `_common.nix`) são ignorados.
+- Pastas chamadas `disabled/` ou arquivos chamados `disabled` são ignorados (permite desligar módulos facilmente).
+- O próprio arquivo `default.nix` do diretório é ignorado para evitar inclusão recursiva.
+- Adicionar um novo módulo no repositório resume-se a criar a pasta com seu `default.nix`, sem necessidade de editar listas agregadoras.
 
 ## nixGL (`nixgl/`)
 
