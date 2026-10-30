@@ -451,7 +451,7 @@ in
         Service = {
           Type = "exec";
           KillMode = "process";
-          ExecStart = "${cfg.package}/bin/podman system service --time=0 unix://%t/podman/podman.sock";
+          ExecStart = "${cfg.package}/bin/podman system service";
         };
       };
 
