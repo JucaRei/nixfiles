@@ -26,10 +26,15 @@ in
         )
       ];
 
-      bspwm.extraKeybindings = {
-        "ctrl + shift + t" = "bspc node -t '~floating'";
+      bspwm = {
+        picom.enable = false;
+        extraKeybindings = {
+          "ctrl + shift + t" = "bspc node -t '~floating'";
+        };
       };
     };
+
+    systemd.user.services.libinput-gestures.enable = false;
 
     home = {
       packages = [
