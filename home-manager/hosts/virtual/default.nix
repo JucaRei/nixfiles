@@ -7,8 +7,8 @@
 }:
 let
   fhd = {
-    width = 1600;
-    height = 900;
+    width = 1920;
+    height = 1080;
     refresh = 60;
   };
   pt = "pt_BR.UTF-8";
@@ -116,9 +116,7 @@ in
         multimedia = {
           mpv = {
             enable = true;
-            # profile = "nitro";
-            hybridGraphics = true;
-            # useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
+            hybridGraphics = false;
             installPackage = true;
             floating = false;
           };
@@ -150,17 +148,15 @@ in
     };
 
     home = {
-      packages =
-        with pkgs;
-        [
-          nerd-fonts.lilex
-          git
-          duf
-          ripgrep
-          htop
+      packages = with pkgs; [
+        nerd-fonts.lilex
+        git
+        duf
+        ripgrep
+        htop
 
-          (nixGLWrapper mdhero)
-        ];
+        (nixGLWrapper mdhero)
+      ];
 
       shellAliases = {
         # vainfo = "vainfo-intel";
@@ -174,8 +170,6 @@ in
       sessionVariables = {
         NIX_REMOTE = "daemon";
         LC_ALL = "";
-        # LIBVA_DRIVER_NAME = "iHD";
-        # LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri:${pkgs.intel-media-driver}/lib/dri";
         TZ = "America/Sao_Paulo";
         TZDIR = "${pkgs.tzdata}/share/zoneinfo";
       };
@@ -207,7 +201,7 @@ in
       # antigravity-cli.enable = true;
       # claude-code.enable = true;
     };
-    # Exibição personalizada do teclado na Polybar para o host Nitro
+    # Exibição personalizada do teclado na Polybar para o host Virtual
     services.polybar.config."module/keyboard" = {
       layout-icon-0 = "us;INTL";
       layout-icon-1 = "br;ABNT2";

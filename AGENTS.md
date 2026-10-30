@@ -26,6 +26,7 @@ Usuário padrão: `juca`. Idioma: comentários e docs em pt-BR; identificadores 
 |---|---|---|---|---|---|
 | `anubis` | HM standalone | Fedora | MangoWM + Noctalia | `homeConfigurations."juca@anubis"` | [AGENTS.md](home-manager/hosts/anubis/AGENTS.md) |
 | `nitro` | HM standalone | Debian | BSPWM (X11) | `homeConfigurations."juca@nitro"` | [AGENTS.md](home-manager/hosts/nitro/AGENTS.md) |
+| `virtual` | HM standalone (VM) | Debian | BSPWM (X11) | `homeConfigurations."juca@virtual"` | [AGENTS.md](home-manager/hosts/virtual/AGENTS.md) |
 | `fedora`, `anubisvm` | HM standalone | Fedora | BSPWM | `homeConfigurations."juca@<host>"` | — |
 | `virtualvm` | HM standalone | VM | DWM | `homeConfigurations."juca@virtualvm"` | [AGENTS.md](home-manager/hosts/virtualvm/AGENTS.md) |
 | `rocinante` | NixOS | NixOS | DWM-Titus + Quickshell | `nixosConfigurations.rocinante` | [AGENTS.md](nixos/hosts/rocinante/AGENTS.md) |

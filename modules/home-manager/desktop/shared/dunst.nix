@@ -106,7 +106,7 @@ in
     # Recarregar ou iniciar automaticamente o Dunst ao rodar switch-home
     home.activation.reloadDunst = mkIf cfg.reloadOnSwitch (
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        if [ -n "$DISPLAY" ]; then
+        if [ -n "''${DISPLAY:-}" ]; then
           systemctl --user import-environment DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS 2>/dev/null || true
         fi
 
@@ -124,7 +124,7 @@ in
           systemctl --user restart dunst 2>/dev/null || true
           sleep 0.2
           if ! ${pkgs.dunst}/bin/dunstctl is-paused >/dev/null 2>&1; then
-            if [ -n "$DISPLAY" ] || pgrep -x bspwm >/dev/null 2>&1 || pgrep -x dwm >/dev/null 2>&1; then
+            if [ -n "''${DISPLAY:-}" ] || pgrep -x bspwm >/dev/null 2>&1 || pgrep -x dwm >/dev/null 2>&1; then
               pkill -x dunst 2>/dev/null || true
               $DRY_RUN_CMD nohup ${pkgs.dunst}/bin/dunst >/dev/null 2>&1 &
             fi

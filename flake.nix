@@ -74,9 +74,7 @@
         "juca@virtual" = helper.mkHome {
           hostname = "virtual";
           desktop = "bspwm";
-          # Intel UHD 630 gerencia o display; nixGLNvidia quebrado no nixpkgs 26.05
-          # (argumento 'kernel' incompatível na API do pacote NVIDIA)
-          # nixGLType = "intel";
+          # VM Proxmox (QEMU Standard VGA / Debian) simulando o host nitro para testes
         };
 
         "juca@virtualvm" = helper.mkHome {

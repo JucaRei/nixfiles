@@ -295,7 +295,6 @@ in
           window_type = "dock";
           window_layer = "top";
           kludges = "force_icons_size";
-          ignore_classes = "nm-applet Nm-applet blueman-applet Blueman-applet blueman-tray Blueman-tray fcitx fcitx5 Fcitx5 solaar Solaar";
         };
       };
 
