@@ -6,6 +6,8 @@
   osConfig ? null,
   inputs,
   hostname,
+  isWorkstation ? false,
+  isVM ? false,
   ...
 }:
 let
@@ -23,6 +25,9 @@ in
     inputs.nix-index-database.homeModules.nix-index
     inputs.nix-flatpak.homeManagerModules.nix-flatpak
   ]
+  ++ lib.optional isWorkstation ../profiles/home/workstation.nix
+  ++ lib.optional (!isWorkstation) ../profiles/home/minimal.nix
+  ++ lib.optional isVM ../profiles/home/vm.nix
   ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
 
   config = {

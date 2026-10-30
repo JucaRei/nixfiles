@@ -10,6 +10,7 @@
   isISO ? false,
   username,
   isWorkstation,
+  isVM ? false,
   ...
 }:
 let
@@ -31,6 +32,9 @@ in
     ../modules/nixos
     (modulesPath + "/installer/scan/not-detected.nix")
   ]
+  ++ lib.optional isWorkstation ../profiles/nixos/desktop.nix
+  ++ lib.optional (!isWorkstation) ../profiles/nixos/server.nix
+  ++ lib.optional isVM ../profiles/nixos/vm.nix
   ++ [
     inputs.nur.modules.nixos.default
     inputs.disko.nixosModules.disko
