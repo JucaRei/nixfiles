@@ -1,6 +1,4 @@
-_: {
-  imports = [
-    ./pam
-    ./superuser
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }

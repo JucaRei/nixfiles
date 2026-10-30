@@ -3,10 +3,7 @@ let
   inherit (lib.types) nullOr enum;
 in
 {
-  imports = [
-    ./x11
-    ./wayland
-  ];
+  imports = lib.my.importDir ./.;
 
   options = {
     desktop.display-servers.backend = lib.my.mkOpt (nullOr (enum [

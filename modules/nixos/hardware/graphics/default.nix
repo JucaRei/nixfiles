@@ -14,12 +14,7 @@ let
   backend = config.desktop.display-servers.backend or null;
 in
 {
-  imports = [
-    ./cards/amd
-    ./cards/nvidia
-    ./cards/nvidia-legacy
-    ./cards/intel
-  ];
+  imports = lib.my.importDir ./cards;
 
   options.hardware.graphics.cards = {
     enable = lib.my.mkBool isWorkstation "Enable graphics for selected device.";

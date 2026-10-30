@@ -8,10 +8,7 @@ let
   inherit (lib) mkIf;
 in
 {
-  imports = [
-    ./doas
-    ./sudo
-  ];
+  imports = lib.my.importDir ./.;
 
   options = {
     system.security.superuser = {

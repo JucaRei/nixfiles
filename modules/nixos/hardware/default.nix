@@ -1,8 +1,4 @@
-_: {
-  imports = [
-    ./audio
-    ./bluetooth
-    ./cpu
-    ./graphics
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }

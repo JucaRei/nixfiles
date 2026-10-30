@@ -9,13 +9,11 @@ let
   desktopEnv = if desktop == "mango" then "mangowm" else desktop;
 in
 {
-  imports = [
-    ./display-servers
-    ./display-managers
-  ]
-  ++ lib.optionals (desktopEnv != null && builtins.pathExists (./. + "/environments/${desktopEnv}")) [
-    (./. + "/environments/${desktopEnv}")
-  ];
+  imports =
+    (lib.my.importDir ./.)
+    ++ lib.optionals (desktopEnv != null && builtins.pathExists (./. + "/environments/${desktopEnv}")) [
+      (./. + "/environments/${desktopEnv}")
+    ];
 
   config = {
     environment = {

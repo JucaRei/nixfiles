@@ -10,10 +10,7 @@ let
   cfg = config.hardware.audio;
 in
 {
-  imports = [
-    ./pipewire
-    ./pulseaudio
-  ];
+  imports = lib.my.importDir ./.;
 
   options = {
     hardware.audio = {

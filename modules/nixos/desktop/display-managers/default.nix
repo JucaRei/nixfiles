@@ -17,12 +17,7 @@ let
 in
 
 {
-  imports = [
-    ./lightdm
-    ./sddm
-    ./regreet
-    ./gdm
-  ];
+  imports = lib.my.importDir ./.;
 
   options = {
     desktop.display-managers.name = lib.my.mkOpt (nullOr (enum [

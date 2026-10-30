@@ -1,10 +1,4 @@
-_: {
-  imports = [
-    ./boot
-    ./console
-    ./memory
-    ./scripts
-    ./security
-    ./services
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }

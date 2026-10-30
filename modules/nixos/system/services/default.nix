@@ -1,10 +1,4 @@
-_: {
-  imports = [
-    ./bcachefs
-    ./chrony
-    ./flatpak-appcenter
-    ./openssh
-    ./virt-manager
-    ./zfs
-  ];
+{ lib, ... }:
+{
+  imports = lib.my.importDir ./.;
 }
