@@ -6,4 +6,5 @@ result
 .qwen*
 .test_ssh.sh
 .snapshots/
-
+install.sh
+install-rsync.sh

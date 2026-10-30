@@ -71,6 +71,14 @@
           nixGLType = "intel";
         };
 
+        "juca@virtual" = helper.mkHome {
+          hostname = "virtual";
+          desktop = "bspwm";
+          # Intel UHD 630 gerencia o display; nixGLNvidia quebrado no nixpkgs 26.05
+          # (argumento 'kernel' incompatível na API do pacote NVIDIA)
+          # nixGLType = "intel";
+        };
+
         "juca@virtualvm" = helper.mkHome {
           hostname = "virtualvm";
           stateVersion = "24.05";
