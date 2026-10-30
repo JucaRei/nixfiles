@@ -34,7 +34,6 @@ in
     home = {
       packages = [
         (nixGLWrapper pkgs.mdhero)
-        pkgs.rustdesk
       ];
 
       sessionPath = [
@@ -45,6 +44,7 @@ in
       sessionVariables = {
         NIX_REMOTE = "daemon";
         LC_ALL = "";
+        TMPDIR = "/var/tmp";
       };
     };
 
@@ -54,6 +54,11 @@ in
       label-layout = "%icon%";
     };
 
-    system.services.flatpak.enable = true;
+    system.services.flatpak = {
+      enable = true;
+      packages = [
+        "com.rustdesk.RustDesk"
+      ];
+    };
   };
 }
