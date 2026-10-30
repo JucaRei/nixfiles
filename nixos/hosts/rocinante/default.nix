@@ -1,12 +1,10 @@
 {
-  config,
   lib,
   pkgs,
   ...
 }:
 let
-  inherit (lib) mkForce mkIf mkDefault;
-  isX11 = (config.desktop.display-servers.backend == "x11") || config.services.xserver.enable;
+  inherit (lib) mkForce;
 
   # Helper: verifica se há alguma interface Ethernet ativa (cabo conectado)
   hasActiveEthernet = pkgs.writeShellScript "has-active-ethernet" ''
@@ -23,189 +21,11 @@ in
   imports = [
     ./filesystem.nix
     ./disko-legacy.nix
-    # ./disko.nix # Legado GPT/EFI
+    ./hardware-macbook.nix
   ];
 
   config = {
-    time.timeZone = mkForce "America/Sao_Paulo";
-
-    programs.nix-ld = {
-      enable = true;
-      libraries = with pkgs; [
-        stdenv.cc.cc.lib
-        zlib
-        openssl
-        curl
-        glib
-        util-linux
-        icu
-      ];
-    };
-
-    programs.fish.enable = true;
-
-    # Permitir broadcom-sta apenas no host rocinante (hardware específico)
-    nixpkgs.config.permittedInsecurePackages = [
-      "broadcom-sta-6.30.223.271-63-7.1.9"
-      "broadcom-sta-6.30.223.271-63-7.2.9"
-      "broadcom-sta-6.30.223.271-63-7.2.11"
-    ];
-    nixpkgs.config.allowInsecurePredicate =
-      pkg:
-      lib.hasPrefix "broadcom-sta" (lib.getName pkg)
-      || lib.strings.hasInfix "broadcom-sta" (lib.getName pkg);
-
-    # --- Hardware & CPU (MacBook Pro 4,1 - Penryn Core 2 Duo) ---
-    hardware = {
-      cpu = {
-        enable = true;
-        cpuVendor = "intel";
-        enableKvm = true;
-        improveTCP = true;
-      };
-
-      audio = {
-        enable = true;
-        manager = "pipewire";
-      };
-
-      graphics.cards = {
-        enable = true;
-        acceleration = true;
-        gpu = null; # Padrão: driver open-source nouveau + Mesa nativa
-      };
-
-      # Firmware redistribuível (essencial para Wi-Fi Broadcom e Microcode Intel)
-      enableRedistributableFirmware = true;
-
-      # Domínio regulatório Brasil
-      wirelessRegulatoryDatabase = true;
-    };
-
-    # --- Boot & GRUB BIOS/CSM (i386-pc obrigatório para a VBIOS da NVIDIA GeForce 8600M GT) ---
-    system.boot = {
-      enable = true;
-      bootType = "legacy";
-      bootManager = "grub";
-      device = "/dev/sda";
-      plymouth = true;
-      silentBoot = true;
-    };
-
-    boot = {
-      # Kernel padrão: Linux Zen do unstable (otimizado para agilidade de desktop em CPUs dual-core) + Nouveau
-      kernelPackages = pkgs.unstable.linuxPackages_zen;
-
-      supportedFilesystems = [
-        "btrfs"
-        "vfat"
-        "ext4"
-      ];
-
-      initrd = {
-        systemd.enable = lib.mkForce false; # Evita falhas de montagem do /sysroot em hardware legado Intel ICH8-M
-        availableKernelModules = [
-          "ahci"
-          "ata_piix"
-          "pata_acpi"
-          "ata_generic"
-          "uhci_hcd"
-          "ehci_pci"
-          "firewire_ohci"
-          "usb_storage"
-          "usbhid"
-          "sd_mod"
-          "sr_mod"
-          "applesmc"
-          "btrfs"
-          "simpledrm"
-          "vesafb"
-        ];
-        kernelModules = [
-          "applesmc"
-          "hid_apple"
-          "nouveau"
-        ];
-      };
-
-      # Módulos carregados para o hardware do MacBook Pro 4,1
-      kernelModules = [
-        "applesmc"
-        "hid_apple"
-        "coretemp"
-      ];
-
-      # Teclado Apple: fnmode=1 (teclas multimídia/brilho nativas), swap_opt_cmd=0 (Command = Super, Option = Alt)
-      extraModprobeConfig = ''
-        options hid_apple fnmode=1 swap_opt_cmd=0
-      '';
-
-      # Blacklist dos módulos open-source que conflitam com o broadcom-sta (wl)
-      blacklistedKernelModules = [
-        "b43"
-        "b43legacy"
-        "bcma"
-        "brcmsmac"
-        "brcmfmac"
-        "ssb"
-      ];
-
-      # Driver Broadcom STA para chip BCM43xx
-      extraModulePackages = [
-        config.boot.kernelPackages.broadcom_sta
-      ];
-
-      # Parâmetros de kernel para estabilidade térmica, GPU Nouveau e economia de energia
-      kernelParams = [
-        "pcie_aspm=force" # Força economia de energia nos barramentos PCIe (ICH8-M)
-        "zswap.enabled=0" # Desativado: ZRAM gerencia 100% da compressão de memória
-        "mitigations=off" # Desativa mitigações de CPU (ganho de 15-25% em Core 2 Duo Penryn)
-        "nowatchdog" # Economiza ciclos de CPU desativando lockup detectors
-        "nouveau.modeset=1" # Garante KMS ativo para a GPU NVIDIA GeForce 8600M GT
-        "transparent_hugepage=madvise" # Reduz fragmentação e overhead de memória nos 6 GB RAM
-        "elevator=bfq" # Scheduler de I/O de baixa latência para o SSD
-      ];
-
-      # Tuning avançado de Memória Virtual para ZRAM + 6GB RAM (Canal Assimétrico)
-      kernel.sysctl = {
-        "vm.swappiness" = 180; # Com ZRAM: prioriza compactação em RAM antes de tocar o SSD
-        "vm.vfs_cache_pressure" = 50; # Mantém caches de diretórios e inodes em RAM
-        "vm.page-cluster" = 0; # Desativa swap em bloco: essencial para descompactação ZRAM sem latência
-        "vm.dirty_background_ratio" = 5;
-        "vm.dirty_ratio" = 15;
-        "vm.dirty_writeback_centisecs" = 1500;
-      };
-    };
-
-    # --- ZRAM Swap com LZ4 ---
-    # LZ4: menor latência de compressão que zstd — ideal para swap em tempo real
-    # no Core 2 Duo (Penryn).
-    zramSwap = {
-      enable = true;
-      algorithm = "lz4";
-      memoryPercent = 75; # ~4.5 GB de ZRAM (compactados) — suficiente para os 6 GB RAM
-      priority = 100; # Maior prioridade: kernel usa ZRAM antes do swapfile em disco
-    };
-
-    # --- Serviços de Hardware do MacBook Pro ---
     services = {
-      # Controle térmico agressivo das ventoinhas do MacBook Pro (máximo acima de 60°C)
-      mbpfan = {
-        enable = true;
-        settings.general = {
-          min_fan1_speed = 2000;
-          max_fan1_speed = 6000;
-          min_fan2_speed = 2000;
-          max_fan2_speed = 6000;
-          low_temp = 45;
-          high_temp = 55;
-          max_temp = 60; # Acima de 60°C opera na rotação máxima (6000 RPM)
-          polling_interval = 1;
-        };
-      };
-
-      # --- Suporte a Samba (Cliente) ---
-      # Permite acessar compartilhamentos SMB, inclusive legados (SMBv1)
       samba-wsdd = {
         enable = true;
         openFirewall = true;
@@ -215,7 +35,7 @@ in
 
       avahi = {
         enable = true;
-        nssmdns4 = true; # Habilita resolução .local
+        nssmdns4 = true;
         publish = {
           enable = true;
           addresses = true;
@@ -223,89 +43,27 @@ in
         };
       };
 
-      # Gestão de energia e temperatura (TLP com governors otimizados para Core 2 Duo)
-      tlp = {
-        enable = true;
-        settings = {
-          CPU_SCALING_GOVERNOR_ON_AC = "schedutil";
-          CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-          CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
-          CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
-          SATA_LINKPWR_ON_AC = "med_power_with_dipm";
-          SATA_LINKPWR_ON_BAT = "min_power";
-          SCHED_POWERSAVE_ON_BAT = 1;
-        };
-      };
-
-      # Sincronização automática de relógio/NTP (corrige bateria RTC/PRAM descarregada em Macs antigos)
-      timesyncd = {
-        enable = true;
-        servers = [
-          "a.st1.ntp.br"
-          "b.st1.ntp.br"
-          "c.st1.ntp.br"
-          "pool.ntp.org"
-        ];
-      };
-
-      thermald.enable = false; # Desativado: usa Intel DPTF (Sandy Bridge+). Penryn/ICH8-M não suporta.
-      earlyoom = {
-        enable = true;
-        freeMemThreshold = 5;
-        freeSwapThreshold = 10;
-      };
-      irqbalance.enable = true;
-      acpid.enable = true;
-
-      # Regras UDEV: Permissões de controle de brilho da tela e iluminação do teclado
-      udev.extraRules = ''
-        ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.uutils-coreutils-noprefix}/bin/chmod a+w /sys/class/backlight/%k/brightness"
-        ACTION=="add", SUBSYSTEM=="leds", RUN+="${pkgs.uutils-coreutils-noprefix}/bin/chmod a+w /sys/class/leds/%k/brightness"
-      '';
-
-      xserver = mkIf isX11 {
-        # Resolução nativa da tela WUXGA (MacBook Pro 17" - 1920x1200 @ 60Hz)
-        resolutions = [
-          {
-            x = 1920;
-            y = 1200;
-          }
-        ];
-        dpi = 133;
-
-        # Teclado Apple US International no X11 (dead keys para acentos PT-BR)
-        xkb = {
-          layout = "us";
-          variant = "intl";
-          options = "terminate:ctrl_alt_bksp";
-        };
-      };
-
-      # SSH com autenticação por senha habilitada e serviço contínuo (apenas no rocinante)
       openssh = {
         enable = true;
         settings = {
-          PasswordAuthentication = lib.mkForce true;
-          KbdInteractiveAuthentication = lib.mkForce true;
+          PasswordAuthentication = true;
+          KbdInteractiveAuthentication = true;
           PermitRootLogin = lib.mkDefault "no";
         };
-        startWhenNeeded = lib.mkForce true;
+        startWhenNeeded = true;
       };
     };
 
-    # --- Rede, Wi-Fi & Fixes de Repetidor ---
     networking = {
       hostName = "rocinante";
       search = [ "home.lan" ];
       nameservers = [
-        "10.10.10.25" # DNS Local (Technitium DNS Server + Unbound em dns01.home.lan)
-        "10.10.10.26" # Fallback (Technitium DNS Server + Unbound em dns02.home.lan)
-        "1.1.1.1" # Fallback público Cloudflare
-        "8.8.8.8" # Fallback público Google
+        "10.10.10.25"
+        "10.10.10.26"
+        "1.1.1.1"
+        "8.8.8.8"
       ];
 
-      # Otimização do resolver DNS: timeout curto (1s) e rotação para não travar
-      # a conexão caso os servidores DNS locais (10.10.10.25/26) estejam inacessíveis no repetidor
       resolvconf.extraConfig = ''
         options timeout:1 attempts:2 rotate
       '';
@@ -313,7 +71,6 @@ in
       firewall = {
         enable = true;
         allowPing = true;
-        # Abre portas para descoberta de rede (mDNS + WS-Discovery)
         allowedUDPPorts = [
           5353
           3702
@@ -327,22 +84,17 @@ in
       networkmanager = {
         enable = true;
         wifi = {
-          scanRandMacAddress = false; # Fix: repetidores rejeitam MAC aleatório ao escanear
-          powersave = false; # Fix: evita desconexões e perda de pacotes em repetidores
-          macAddress = "preserve"; # Fix: mantém MAC físico permanente para evitar falhas de ARP no repetidor
+          scanRandMacAddress = false;
+          powersave = false;
+          macAddress = "preserve";
         };
-        # Configurações globais para compatibilidade com Broadcom wl e repetidores Wi-Fi
         settings = {
           connection = {
-            # Desativa PMF (802.11w) por padrão: o driver broadcom-sta (wl) não suporta
-            # e a tentativa de negociação com repetidores modernos descarta pacotes de dados
             "wifi-sec.pmf" = 1;
             "802-11-wireless-security.pmf" = 1;
-            # MTU reduzido padrão para conexões Wi-Fi (evita descarte por encapsulamento WDS/repetidor)
             "802-11-wireless.mtu" = 1460;
           };
         };
-        # Alternância automática: Cabo conectado -> Wi-Fi desligado / Cabo desconectado -> Wi-Fi ligado
         dispatcherScripts = [
           {
             source = pkgs.writeShellScript "wifi-wired-autoswitch" ''
@@ -360,7 +112,6 @@ in
                   nmcli radio wifi off
                   ;;
                 down|post-down)
-                  # Reativa Wi-Fi se nenhum outro cabo estiver conectado
                   ${hasActiveEthernet} || nmcli radio wifi on
                   ;;
               esac
@@ -371,7 +122,6 @@ in
       };
     };
 
-    # Sincronização do estado de rede no boot
     systemd.services.wifi-wired-autoswitch = {
       description = "Sincroniza rádio Wi-Fi com conexão cabeada no boot";
       after = [ "NetworkManager.service" ];
@@ -391,23 +141,15 @@ in
       };
     };
 
-    # --- Pacotes e Variáveis do Sistema ---
     environment = {
-      # Variáveis de aceleração gráfica para Mesa / Nouveau (padrão)
-      sessionVariables = {
-        LIBVA_DRIVER_NAME = mkDefault "nouveau";
-        VDPAU_DRIVER = mkDefault "nouveau";
-      };
-
       systemPackages = with pkgs; [
         libva-utils
         vdpauinfo
         mesa-demos
         lm_sensors
         gptfdisk
-
-        cifs-utils # Necessário para montar compartilhamentos via mount -t cifs
-        samba # Contém o cliente smbclient
+        cifs-utils
+        samba
       ];
 
       etc."samba/smb.conf".text = ''
@@ -424,10 +166,6 @@ in
       '';
     };
 
-    # Teclado no console TTY
-    console.useXkbConfig = true;
-
-    # --- Specialisation: Boot alternativo com Kernel 6.6 LTS + Driver NVIDIA 340 Legacy ---
     specialisation = {
       nvidia = {
         inheritParentConfig = true;
@@ -450,8 +188,6 @@ in
           };
           hardware.graphics.cards.gpu = mkForce "nvidia-legacy";
 
-          # Quando bootar na especialização NVIDIA, o Home Manager (módulo do NixOS)
-          # ajusta as configurações de desktop e variáveis de sessão automaticamente
           home-manager.users.juca = {
             desktop.dwm.quickshell = {
               qsgBackend = mkForce "software";

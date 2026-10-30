@@ -11,8 +11,6 @@ let
     height = 1080;
     refresh = 60;
   };
-  pt = "pt_BR.UTF-8";
-  en = "en_US.UTF-8";
 in
 {
   config = {
@@ -38,201 +36,82 @@ in
         )
       ];
 
-      modifierKey = "Alt";
-
-      theme = {
-        enable = true;
-        name = "catppuccin-macchiato"; # "doom" #"tokyo-night"
-        accent = "red";
+      bspwm.extraKeybindings = {
+        "ctrl + shift + t" = "bspc node -t '~floating'";
       };
-
-      wallpaper = {
-        enable = true;
-        directory = "${config.home.homeDirectory}/Pictures/Wallpapers";
-        randomOnStart = true;
-        interval = "5m";
-      };
-
-      touchpad = {
-        enable = true;
-        speed = 0.5; # Velocidade aumentada (0.0 padrão -> 0.5 ágil e preciso para Full HD)
-        naturalScrolling = true;
-        tapping = true;
-      };
-
-      bspwm = {
-        polybar = {
-          battery = "BAT1";
-          adapter = "ACAD";
-          style = lib.mkDefault "pills";
-          encapsulation = {
-            workspaces = {
-              style = "powerline";
-              # color = "#22202070";
-              accent = "#ff5555";
-            };
-            stats = {
-              style = "shapes";
-              # accent = "coral";
-              # color = "#2c2c35b7";  # cor de fundo da cápsula
-            };
-            netspeed = {
-              style = "slant";
-              color = "#29339B"; # cor de fundo da cápsula
-              accent = "#8be9fd"; # texto de velocidade em destaque
-            };
-          };
-        };
-
-        extraKeybindings = {
-          "ctrl + shift + t" = "bspc node -t '~floating'";
-        };
-      };
-
     };
 
     system = {
-      programs = {
-        console = {
-          bat.enable = true;
-          eza.enable = true;
-        };
-
-        browsers = {
-          firefox = {
-            enable = true;
-            version = "librewolf";
-          };
-        };
-
-        documents = {
-          zathura.enable = true;
-        };
-
-        editors = {
-          antigravity.enable = true;
-        };
-
-        file-manager = {
-          thunar.enable = true;
-        };
-
-        terminal = {
-          enable = true;
-          name = "alacritty";
-        };
-
-        multimedia = {
-          mpv = {
-            enable = true;
-            profile = "nitro";
-            hybridGraphics = true;
-            vaapiDevice = "/dev/dri/by-path/pci-0000:00:02.0-render";
-            defaultNvidia = true; # Abre com NVIDIA dGPU por padrão no .desktop (com ação secundária para Intel)
-            # useSystemPackages = true; # Usa o mpv nativo do Debian com o perfil universal seguro!
-            installPackage = true;
-            floating = false;
-          };
-        };
-
-        tools = {
-          yt-dlp = {
-            enable = true;
-          };
-
-          fastfetch = {
-            enable = true;
-          };
-        };
-
-        shells = {
-          default = "zsh";
-        };
-
+      programs.multimedia.mpv = {
+        profile = "nitro";
+        hybridGraphics = true;
+        vaapiDevice = "/dev/dri/by-path/pci-0000:00:02.0-render";
+        defaultNvidia = true;
       };
 
-      services = {
-        fcitx5.enable = true;
-        flatpak = {
-          enable = true;
-          packages = [
-            (
-              let
-                sha256 = "fbcf116fb905c556f4b8665cf4ad0f0a63339e6520d0d12dc5fba31357d8a887";
-              in
-              {
-                appId = "io.github.karem505.whatRust";
+      services.flatpak = {
+        enable = true;
+        packages = [
+          (
+            let
+              sha256 = "fbcf116fb905c556f4b8665cf4ad0f0a63339e6520d0d12dc5fba31357d8a887";
+            in
+            {
+              appId = "io.github.karem505.whatRust";
+              inherit sha256;
+              bundle = "${pkgs.fetchurl {
+                url = "https://github.com/karem505/whatRust/releases/download/v0.6.7/whatRust_x86_64.flatpak";
                 inherit sha256;
-                bundle = "${pkgs.fetchurl {
-                  url = "https://github.com/karem505/whatRust/releases/download/v0.6.7/whatRust_x86_64.flatpak";
-                  inherit sha256;
-                }}";
-              }
-            )
-            "com.mikrotik.WinBox"
-            # Adicione outros Flatpaks aqui quando quiser (ex: "com.spotify.Client")
-          ];
-        };
+              }}";
+            }
+          )
+          "com.mikrotik.WinBox"
+        ];
       };
     };
 
     home = {
-      packages =
-        with pkgs;
-        [
-          nerd-fonts.lilex
-          git
-          duf
-          ripgrep
-          htop
-          intel-media-driver
-          (pkgs.writeShellScriptBin "vainfo-intel" ''
-            if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then
-              exec vainfo "$@"
-            else
-              intel_render="$(ls /dev/dri/by-path/*00:02.0-render 2>/dev/null || echo /dev/dri/renderD129)"
-              exec vainfo --display drm --device "$intel_render" "$@"
-            fi
-          '')
-          scrcpy
-          solaar
+      packages = [
+        pkgs.intel-media-driver
+        (pkgs.writeShellScriptBin "vainfo-intel" ''
+          if [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then
+            exec vainfo "$@"
+          else
+            intel_render="$(ls /dev/dri/by-path/*00:02.0-render 2>/dev/null || echo /dev/dri/renderD129)"
+            exec vainfo --display drm --device "$intel_render" "$@"
+          fi
+        '')
+        pkgs.scrcpy
+        pkgs.solaar
+        (nixGLWrapper pkgs.mdhero)
+      ]
+      ++ lib.optionals config.system.programs.multimedia.mpv.enable [
+        (pkgs.writeShellScriptBin "mpv-nvidia" ''
+          if [ -x "$HOME/.nix-profile/bin/mpv" ]; then
+            mpv_bin="$HOME/.nix-profile/bin/mpv"
+            for nv_dir in /usr/lib/x86_64-linux-gnu/nvidia/current /usr/lib64/nvidia; do
+              if [ -d "$nv_dir" ]; then
+                export LD_LIBRARY_PATH="$nv_dir''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+              fi
+            done
+          elif [ -x /usr/bin/mpv ]; then
+            unset LD_LIBRARY_PATH
+            unset LIBVA_DRIVERS_PATH
+            unset LIBVA_DRIVER_NAME
+            unset LIBGL_DRIVERS_PATH
+            unset GBM_BACKENDS_PATH
+            unset __EGL_VENDOR_LIBRARY_FILENAMES
+            mpv_bin="/usr/bin/mpv"
+          else
+            echo "mpv-nvidia: nenhum binário do mpv (Nix ou /usr/bin/mpv) encontrado!" >&2
+            exit 1
+          fi
 
-          (nixGLWrapper mdhero)
-        ]
-        ++ lib.optionals config.system.programs.multimedia.mpv.enable [
-          (pkgs.writeShellScriptBin "mpv-nvidia" ''
-            # Executa o MPV com PRIME Offload na NVIDIA dGPU (NVDEC/CUDA)
-            # Detecta automaticamente se utiliza o binário do Nix ou o nativo da distribuição
-            # Utilizado como padrão no .desktop quando multimedia.mpv.defaultNvidia = true
-            if [ -x "$HOME/.nix-profile/bin/mpv" ]; then
-              mpv_bin="$HOME/.nix-profile/bin/mpv"
-              # Injeta apenas os diretórios dedicados do driver proprietário NVIDIA (sem libc do Debian)
-              # Isso expõe libcuda.so.1 e libnvcuvid.so.1 para aceleração por hardware (NVDEC/CUDA)
-              # sem conflitar com a glibc do Nix Store.
-              for nv_dir in /usr/lib/x86_64-linux-gnu/nvidia/current /usr/lib64/nvidia; do
-                if [ -d "$nv_dir" ]; then
-                  export LD_LIBRARY_PATH="$nv_dir''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
-                fi
-              done
-            elif [ -x /usr/bin/mpv ]; then
-              # Modo nativo: limpa variáveis do Nix que causam conflito de ABI com bibliotecas do Debian
-              unset LD_LIBRARY_PATH
-              unset LIBVA_DRIVERS_PATH
-              unset LIBVA_DRIVER_NAME
-              unset LIBGL_DRIVERS_PATH
-              unset GBM_BACKENDS_PATH
-              unset __EGL_VENDOR_LIBRARY_FILENAMES
-              mpv_bin="/usr/bin/mpv"
-            else
-              echo "mpv-nvidia: nenhum binário do mpv (Nix ou /usr/bin/mpv) encontrado!" >&2
-              exit 1
-            fi
-
-            exec env __NV_PRIME_RENDER_OFFLOAD=1 \
-                     __VK_LAYER_NV_optimus=NVIDIA_only \
-                     "$mpv_bin" --profile=nvidia "$@"
-          '')
-        ];
+          exec env __NV_PRIME_RENDER_OFFLOAD=1 \
+                   __VK_LAYER_NV_optimus=NVIDIA_only \
+                   "$mpv_bin" --profile=nvidia "$@"
+        '')
+      ];
 
       shellAliases = {
         vainfo = "vainfo-intel";
@@ -248,45 +127,17 @@ in
         LC_ALL = "";
         LIBVA_DRIVER_NAME = "iHD";
         LIBVA_DRIVERS_PATH = "/usr/lib/x86_64-linux-gnu/dri:${pkgs.intel-media-driver}/lib/dri";
-        TZ = "America/Sao_Paulo";
-        TZDIR = "${pkgs.tzdata}/share/zoneinfo";
-      };
-
-      language = {
-        base = en;
-        messages = en;
-        ctype = pt;
-        time = pt;
-        numeric = pt;
-        monetary = pt;
-        paper = pt;
-        name = pt;
-        address = pt;
-        telephone = pt;
-        measurement = pt;
-      };
-
-      # Teclado com layouts US Internacional e ABNT2 (alternância via Caps Lock ou Polybar)
-      keyboard = {
-        layout = "us,br";
-        variant = "intl,abnt2";
-        model = "pc105";
-        options = [ "grp:caps_toggle" ];
       };
     };
 
-    programs = {
-      antigravity-cli.enable = true;
-      # claude-code.enable = true;
-    };
-    # Exibição personalizada do teclado na Polybar para o host Nitro
+    programs.antigravity-cli.enable = true;
+
     services.polybar.config."module/keyboard" = {
       layout-icon-0 = "us;INTL";
       layout-icon-1 = "br;ABNT2";
       label-layout = "%icon%";
     };
 
-    # Solaar para gerenciamento do teclado Logitech MX Keys e dispositivos Unifying/Bolt
     systemd.user.services.solaar = {
       Unit = {
         Description = "Solaar (Logitech Device Manager)";

@@ -4,59 +4,19 @@
 }:
 {
   config = {
-    system = {
-      programs = {
-        console = {
-          bat.enable = true;
-          eza.enable = true;
-        };
-        browsers = {
-          firefox.enable = true;
-          chromium = {
-            enable = true;
-            version = "vivaldi";
-          };
-          # Desativa Profile-Sync-Daemon no Anubis para preservar a RAM de 2GB e evitar estouro de /run/user/1000
-          psd.enable = false;
-        };
-        editors = {
-          antigravity.enable = true;
-        };
-        multimedia = {
-          mpv = {
-            enable = true;
-            profile = "low-ram";
-          };
-        };
-        terminal = {
+    system.programs = {
+      browsers = {
+        chromium = {
           enable = true;
-          name = "alacritty";
+          version = "vivaldi";
         };
-        shells = {
-          default = "zsh";
-        };
+        # Desativa Profile-Sync-Daemon no Anubis para preservar a RAM de 2GB e evitar estouro de /run/user/1000
+        psd.enable = false;
       };
+      multimedia.mpv.profile = "low-ram";
     };
 
-    # Extensão Continue (Chat + Autocomplete com Gemini)
-    # programs.vscode.profiles.default.extensions =
-    #   lib.mkIf config.system.programs.editors.vscode.enable
-    #     (
-    #       pkgs.nix4vscode.forVscode [
-    #         "Continue.continue"
-    #       ]
-    #     );
-
-    # Compositor Picom leve
-    # desktop.
-
     home = {
-      # Fuso horário America/Sao_Paulo e base de dados tzdata para o Anubis (relógio do Noctalia/Polybar e sessão)
-      sessionVariables = {
-        TZ = "America/Sao_Paulo";
-        TZDIR = "${pkgs.tzdata}/share/zoneinfo";
-      };
-
       # Teclado Mac com dead keys para acentos PT-BR (é, ã, ç)
       keyboard = {
         layout = "us";
@@ -64,22 +24,17 @@
         model = "apple";
       };
 
-      packages = with pkgs; [
-        direnv
-        nix-direnv
-        nil
-        git
-        nh
-        duf
-        ripgrep
-        htop
-        libva-utils
-        intel-gpu-tools
+      packages = [
+        pkgs.direnv
+        pkgs.nix-direnv
+        pkgs.nil
+        pkgs.nh
+        pkgs.libva-utils
+        pkgs.intel-gpu-tools
       ];
     };
 
     desktop = {
-
       wayland.noctalia.settings = {
         idle = {
           behavior_order = [
@@ -89,12 +44,6 @@
           ];
           pre_action_fade_seconds = 0.0;
           behavior = {
-            # custom = {
-            #   timeout = 200;
-            #   action = "command";
-            #   command = "notify-send 'Idle' 'Going idle'";
-            #   resume_command = "notify-send 'Idle' 'Back from idle'";
-            # };
             lock = {
               timeout = 300;
               action = "lock";
@@ -129,18 +78,6 @@
         };
       };
 
-      # bspwm.extraConfig = ''
-      #   export TZ="America/Sao_Paulo"
-      # '';
-
-      # bspwm.picom = {
-      #   enable = true;
-      #   backend = "xrender";
-      #   animations.enable = false;
-      #   blur.enable = false;
-      #   useDamage = true;
-      # };
-
       # Configuração declarativa de monitor e resolução (MacBook Air 11.6" - LP116WH4-TJA3)
       monitors = [
         {
@@ -153,10 +90,6 @@
       ];
     };
 
-    programs = {
-      antigravity-cli = {
-        enable = true;
-      };
-    };
+    programs.antigravity-cli.enable = true;
   };
 }

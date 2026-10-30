@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkForce mkIf;
+  inherit (lib) mkIf;
   isX11 = (config.desktop.display-servers.backend == "x11") || config.services.xserver.enable;
 in
 {
@@ -15,46 +15,13 @@ in
   ];
 
   config = {
-    time.timeZone = mkForce "America/Sao_Paulo";
-
-    # --- Suporte a Binários Dinâmicos (VS Code / Antigravity / Language Servers) ---
-    programs.nix-ld = {
+    hardware.cpu = {
       enable = true;
-      libraries = with pkgs; [
-        stdenv.cc.cc.lib
-        zlib
-        openssl
-        curl
-        glib
-        util-linux
-        icu
-      ];
+      cpuVendor = "intel";
+      enableKvm = true;
+      improveTCP = true;
     };
 
-    # --- Hardware & Virtualização Proxmox / QEMU KVM ---
-    hardware = {
-      cpu = {
-        enable = true;
-        cpuVendor = "intel";
-        enableKvm = true;
-        improveTCP = true;
-      };
-
-      audio = {
-        enable = true;
-        manager = "pipewire";
-      };
-
-      graphics.cards = {
-        enable = true;
-        acceleration = true;
-        gpu = null; # Usa driver Mesa 3D / VirtIO-GPU / QXL nativo
-      };
-
-      enableRedistributableFirmware = true;
-    };
-
-    # --- Boot EFI com GRUB / Plymouth ---
     system.boot = {
       enable = true;
       bootType = "efi";
@@ -65,23 +32,14 @@ in
     };
 
     boot = {
-      # Kernel padrão otimizado
       kernelPackages = pkgs.unstable.linuxPackages_zen;
-
-      supportedFilesystems = [
-        "btrfs"
-        "vfat"
-        "ext4"
-      ];
-
       initrd = {
-        systemd.enable = lib.mkForce false;
+        systemd.enable = false;
         supportedFilesystems = [
           "btrfs"
           "vfat"
         ];
         availableKernelModules = [
-          # VirtIO Drivers (Proxmox / KVM)
           "virtio_pci"
           "virtio_scsi"
           "virtio_blk"
@@ -91,8 +49,6 @@ in
           "virtio_gpu"
           "qxl"
           "bochs_drm"
-
-          # Controladores de Armazenamento & USB
           "ahci"
           "xhci_pci"
           "nvme"
@@ -110,16 +66,14 @@ in
         ];
       };
 
-      # Parâmetros de kernel para desempenho em VM
       kernelParams = [
-        "mitigations=off" # Desativa mitigações para performance máxima na VM
+        "mitigations=off"
         "nowatchdog"
         "transparent_hugepage=madvise"
-        "elevator=none" # VMs com SSD/VirtIO se beneficiam de noop/none scheduler
-        "video=hyperv_fb:1920x1080" # Ex: 2560x1440, 1920x1200, etc.
+        "elevator=none"
+        "video=hyperv_fb:1920x1080"
       ];
 
-      # Tuning de Memória Virtual para VM
       kernel.sysctl = {
         "vm.swappiness" = 150;
         "vm.vfs_cache_pressure" = 50;
@@ -127,7 +81,6 @@ in
       };
     };
 
-    # --- ZRAM Swap com LZ4 ---
     zramSwap = {
       enable = true;
       algorithm = "lz4";
@@ -135,40 +88,8 @@ in
       priority = 100;
     };
 
-    # --- Serviços de Integração Proxmox / QEMU ---
     services = {
-      # QEMU Guest Agent (relatórios de IP, fsfreeze para backup consistente, shutdown limpo no PVE)
-      qemuGuest.enable = true;
-
-      # SPICE vdagent (Redimensionamento automático de tela no noVNC/SPICE e clipboard compartilhado)
-      spice-vdagentd.enable = true;
-
-      # Sincronização de horário NTP
-      timesyncd = {
-        enable = true;
-        servers = [
-          "a.st1.ntp.br"
-          "b.st1.ntp.br"
-          "c.st1.ntp.br"
-          "pool.ntp.org"
-        ];
-      };
-
-      # Desativa fwupd (inútil em VMs e evita falhas de boot/serviço)
-      fwupd.enable = lib.mkForce false;
-
-      earlyoom = {
-        enable = true;
-        freeMemThreshold = 5;
-        freeSwapThreshold = 10;
-      };
-
-      irqbalance.enable = true;
-      acpid.enable = true;
-
-      # Configurações do X11 / BSPWM
       xserver = mkIf isX11 {
-        # Teclado US International (dead keys para acentos PT-BR)
         xkb = {
           layout = "us";
           variant = "intl";
@@ -176,33 +97,28 @@ in
         };
       };
 
-      # SSH para acesso remoto no laboratório Proxmox
       openssh = {
         enable = true;
         settings = {
-          PasswordAuthentication = lib.mkForce true;
-          KbdInteractiveAuthentication = lib.mkForce true;
-          PermitRootLogin = lib.mkForce "yes";
+          PasswordAuthentication = true;
+          KbdInteractiveAuthentication = true;
+          PermitRootLogin = "yes";
         };
-        startWhenNeeded = lib.mkForce false;
+        startWhenNeeded = false;
       };
     };
 
-    # --- Rede & DNS Technitium ---
     networking = {
       hostName = "rocinante-vm";
       search = [ "home.lan" ];
       nameservers = [
-        "10.10.10.25" # DNS Local Primário (Technitium + Unbound em dns01.home.lan)
-        "1.1.1.1" # Fallback público Cloudflare
-        "8.8.8.8" # Fallback público Google
+        "10.10.10.25"
+        "1.1.1.1"
+        "8.8.8.8"
       ];
-      networkmanager = {
-        enable = true;
-      };
+      networkmanager.enable = true;
     };
 
-    # --- Pacotes do Sistema ---
     environment.systemPackages = with pkgs; [
       brightnessctl
       pamixer
@@ -212,8 +128,5 @@ in
       lm_sensors
       spice-vdagent
     ];
-
-    # Teclado no console TTY
-    console.useXkbConfig = true;
   };
 }
