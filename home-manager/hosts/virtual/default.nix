@@ -26,6 +26,8 @@ in
         )
       ];
 
+      touchpad.enable = false;
+
       bspwm = {
         picom.enable = false;
         extraKeybindings = {
@@ -33,8 +35,6 @@ in
         };
       };
     };
-
-    systemd.user.services.libinput-gestures.enable = false;
 
     home = {
       packages = [

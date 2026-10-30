@@ -639,8 +639,10 @@ in
               done
             fi
 
-            # Iniciar daemon de gestos do Touchpad
-            systemctl --user restart libinput-gestures 2>/dev/null || (pkill -f libinput-gestures || true; pkill -f libinput-debug-events || true; sleep 0.2; ${pkgs.libinput-gestures}/bin/libinput-gestures -c ~/.config/libinput-gestures.conf &)
+            ${lib.optionalString config.desktop.touchpad.enable ''
+              # Iniciar daemon de gestos do Touchpad
+              systemctl --user restart libinput-gestures 2>/dev/null || (pkill -f libinput-gestures || true; pkill -f libinput-debug-events || true; sleep 0.2; ${pkgs.libinput-gestures}/bin/libinput-gestures -c ~/.config/libinput-gestures.conf &)
+            ''}
 
             # Regras customizadas adicionais
             ${lib.concatStringsSep "\n" cfg.rules}
@@ -651,21 +653,23 @@ in
       };
     };
 
-    xdg.configFile."libinput-gestures.conf".text = ''
-      # Gestos de 3 dedos para trocar de Desktop (Workspaces)
-      gesture swipe left 3  ${pkgs.bspwm}/bin/bspc desktop -f next.local
-      gesture swipe right 3 ${pkgs.bspwm}/bin/bspc desktop -f prev.local
+    xdg.configFile."libinput-gestures.conf" = mkIf config.desktop.touchpad.enable {
+      text = ''
+        # Gestos de 3 dedos para trocar de Desktop (Workspaces)
+        gesture swipe left 3  ${pkgs.bspwm}/bin/bspc desktop -f next.local
+        gesture swipe right 3 ${pkgs.bspwm}/bin/bspc desktop -f prev.local
 
-      # Gestos de 4 dedos para alternar abas do navegador (se estiver em uso)
-      gesture swipe left 4  ${browserTabSwitch} next
-      gesture swipe right 4 ${browserTabSwitch} prev
+        # Gestos de 4 dedos para alternar abas do navegador (se estiver em uso)
+        gesture swipe left 4  ${browserTabSwitch} next
+        gesture swipe right 4 ${browserTabSwitch} prev
 
-      # Outros gestos de 3 dedos
-      gesture swipe up 3 ${pkgs.rofi}/bin/rofi -show drun
-      gesture swipe down 3 ${pkgs.bspwm}/bin/bspc node -c
-    '';
+        # Outros gestos de 3 dedos
+        gesture swipe up 3 ${pkgs.rofi}/bin/rofi -show drun
+        gesture swipe down 3 ${pkgs.bspwm}/bin/bspc node -c
+      '';
+    };
 
-    systemd.user.services.libinput-gestures = {
+    systemd.user.services.libinput-gestures = mkIf config.desktop.touchpad.enable {
       Unit = {
         Description = "Touchpad gesture daemon";
         PartOf = [ "graphical-session.target" ];

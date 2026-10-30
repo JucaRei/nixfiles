@@ -15,7 +15,7 @@ Configuração Home Manager standalone para VM de testes no Proxmox rodando Debi
 
 - **Finalidade**: Host de testes para validação de switches e integridade de módulos antes ou após alterações no repositório.
 - **Gráficos**: Como roda sob QEMU VGA no Debian, utiliza fallback de software rasterizer (swrast/Mesa). Gráficos híbridos desativados (`multimedia.mpv.hybridGraphics = false`) e compositor `picom` desativado (`desktop.bspwm.picom.enable = false`) para evitar gargalo severo de CPU na renderização por software.
-- **Touchpad / Gestos**: `systemd.user.services.libinput-gestures.enable = false;` desativado para evitar crash loop contínuo na ausência de touchpad físico em VM.
+- **Touchpad / Gestos**: Desativado via `desktop.touchpad.enable = false` para desabilitar o `libinput-gestures` e evitar crash loop contínuo na ausência de touchpad físico em VM.
 - **Polybar**: O módulo de bateria é desativado automaticamente pela Polybar na ausência de sensores físicos de bateria (`/sys/class/power_supply`).
 
 ## Validação e Teste de Switch
