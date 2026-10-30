@@ -17,20 +17,35 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 ## Tabela de Acompanhamento por Fase
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | — | — | — | — | — | — | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | — | — | — | — | — | — | $\le 29.000$ |
-| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | — | — | — | — | — | — | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | — | — | — | — | — | — | $\le 15$ |
-| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | — | — | — | — | — | — | 0 |
-| **`rec {`** | 38 | 38 | 36 | 37 | 37 | — | — | — | — | — | — | 0 |
-| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | — | — | — | — | — | — | 0 |
-| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | — | — | — | — | — | — | 0 |
-| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | — | — | — | — | — | — | 0 |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | — | — | — | — | — | — | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | — | — | — | — | — | — | $\le 29.000$ |
+| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | — | — | — | — | — | — | Helpers `lib.my` |
+| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | — | — | — | — | — | — | $\le 15$ |
+| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | — | — | — | — | — | — | 0 |
+| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | — | — | — | — | — | — | 0 |
+| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | — | — | — | — | — | — | 0 |
+| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | — | — | — | — | — | — | 0 |
+| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | — | — | — | — | — | — | 0 |
 
 ---
 
 ## Notas de Evolução
+
+### Fase 4 — Perfis compartilhados e hosts enxutos
+- **Perfis Compartilhados (`profiles/`)**: Criados perfis reutilizáveis em `profiles/home/{workstation,minimal,vm}.nix` e `profiles/nixos/{desktop,server,vm}.nix`, injetados automaticamente e incondicionalmente em `home-manager/default.nix` e `nixos/default.nix` via `isWorkstation` e `isVM`.
+- **Declaração Unificada de Hosts (`hosts.nix`)**: Criado `hosts.nix` como fonte única da verdade para os 6 hosts Home Manager, 4 hosts NixOS e 7 imagens ISO. O `flake.nix` foi simplificado com `lib.mkHosts` em `lib/helpers.nix`, caindo de 171 para 97 linhas (-43%).
+- **Redução Massiva de `mkForce`**: Eliminadas 53 ocorrências de `mkForce` ao resolver falsos conflitos na raiz dos módulos (`boot.initrd.systemd.enable`, `services.openssh.startWhenNeeded`, `services.fwupd.enable`, senhas de usuários em ISOs, overrides de temas e pacotes em `bat`, `pipewire` e `firefox` via DAG entries). O total caiu de 99 para 46 (as 46 restantes pertencem a `specialisation.nvidia`, partições de disco do Disko e live ISOs upstream).
+- **Enxugamento Radical dos Hosts**:
+  - `home-manager/hosts/virtual/default.nix`: 212 $\to$ 58 linhas (-72%, meta $\le 100$).
+  - `home-manager/hosts/anubis/default.nix`: 162 $\to$ 89 linhas (-45%, meta $\le 100$).
+  - `home-manager/hosts/nitro/default.nix`: 310 $\to$ 154 linhas (-50%).
+  - `nixos/hosts/rocinante-vm/default.nix`: 219 $\to$ 118 linhas (-46%, meta $\le 120$).
+  - `nixos/hosts/rocinante-hyperv/default.nix`: 313 $\to$ 137 linhas (-56%).
+  - `nixos/hosts/rocinante/default.nix`: 468 $\to$ 184 linhas (-60%), modularizando o hardware específico em `hardware-macbook.nix`.
+- **Linhas `.nix` Reduzidas**: 32.333 linhas no total (redução líquida de 354 linhas vs Fase 3 e -1.627 linhas vs baseline).
+- **Qualidade e Linters**: `statix check .` e `deadnix .` zerados (0 avisos). `nix fmt` limpo em todo o repositório.
+- **Validação de Ativação Real**: Build e ativação bem-sucedidos na VM Proxmox Debian `juca@virtual` (`10.10.10.233`), com inicialização completa de Polybar, Dunst, Stalonetray e tmpfiles sem nenhum erro.
 
 ### Fase 3 — Auto-import declarativo (lib/import-dir.nix)
 - **Helper `lib.my.importDir` e `importSubdirs`**: Criado `lib/import-dir.nix` com suporte a exclusão de arquivos/diretórios iniciados por `_`, pasta `disabled` e `default.nix`.
