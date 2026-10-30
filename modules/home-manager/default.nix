@@ -25,8 +25,8 @@ in
   imports = [
     ./system
     ./desktop/theme
-  ]
-  ++ optionals isWorkstation [ ./desktop/environments ];
+    ./desktop/environments
+  ];
   config = {
     system.programs.editors.gedit.enable = isWorkstation;
 

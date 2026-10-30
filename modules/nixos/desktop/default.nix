@@ -2,10 +2,11 @@
   lib,
   pkgs,
   desktop,
+  isWorkstation,
   ...
 }:
 let
-  inherit (lib) mkDefault;
+  inherit (lib) mkDefault mkIf;
   desktopEnv = if desktop == "mango" then "mangowm" else desktop;
 in
 {
@@ -15,7 +16,7 @@ in
       (./. + "/environments/${desktopEnv}")
     ];
 
-  config = {
+  config = mkIf isWorkstation {
     environment = {
       etc = {
         # Allow mounting FUSE filesystems as a user.

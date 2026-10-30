@@ -3,6 +3,7 @@
   lib,
   pkgs,
   osConfig ? null,
+  isWorkstation ? true,
   ...
 }:
 let
@@ -71,7 +72,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf isWorkstation {
     desktop.theme.enable = lib.mkDefault true;
 
     home = {

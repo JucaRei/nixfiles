@@ -8,18 +8,13 @@
   isInstall,
   stateVersion,
   username,
-  isWorkstation,
   ...
 }:
 let
   inherit (lib) mkDefault mkOptionDefault mkIf;
 in
 {
-  imports = [
-    ./hardware
-    ./system
-  ]
-  ++ lib.optional isWorkstation ./desktop;
+  imports = lib.my.importDir ./.;
 
   config = {
     nix =
