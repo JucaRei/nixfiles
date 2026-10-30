@@ -34,6 +34,7 @@ in
     home = {
       packages = [
         (nixGLWrapper pkgs.mdhero)
+        pkgs.rustdesk
       ];
 
       sessionPath = [
