@@ -65,10 +65,7 @@ let
   isFullDesktopManager = lib.elem desktop fullDesktopManagers;
 in
 {
-  imports = [
-    ./traditional
-    ./noctalia
-  ];
+  imports = lib.my.importDir ./.;
 
   options.desktop.wayland = {
     shell =

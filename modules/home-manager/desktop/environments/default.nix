@@ -10,12 +10,7 @@ let
   isNixOS = osConfig != null;
 in
 {
-  imports = [
-    ./bspwm
-    ./dwm
-    ./xfce4
-    ./hyprland
-    ./mangowm
+  imports = (lib.my.importDir ./.) ++ [
     ../display-servers
     ../monitors
     ../shared

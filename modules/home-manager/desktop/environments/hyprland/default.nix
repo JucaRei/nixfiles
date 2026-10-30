@@ -4,10 +4,7 @@
   ...
 }:
 {
-  imports = [
-    ./hyprland.nix
-    ./packages.nix
-  ];
+  imports = lib.my.importDir ./.;
 
   config = lib.mkIf config.desktop.hyprland.enable {
     desktop.display-servers.backend = "wayland";

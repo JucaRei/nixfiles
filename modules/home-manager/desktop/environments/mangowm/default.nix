@@ -4,10 +4,7 @@
   ...
 }:
 {
-  imports = [
-    ./mango.nix
-    ./packages.nix
-  ];
+  imports = lib.my.importDir ./.;
 
   config = lib.mkIf config.desktop.mangowm.enable {
     desktop.display-servers.backend = "wayland";

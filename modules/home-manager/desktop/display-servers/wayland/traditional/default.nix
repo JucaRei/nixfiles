@@ -9,14 +9,7 @@ let
   isTraditional = config.desktop.display-servers.backend == "wayland" && cfg.shell == "traditional";
 in
 {
-  imports = [
-    ./waybar.nix
-    ./rofi.nix
-    ./dunst.nix
-    ./hyprlock.nix
-    ./hypridle.nix
-    ./hyprpaper.nix
-  ];
+  imports = lib.my.importDir ./.;
 
   options.desktop.wayland.traditional = {
     enable = lib.my.mkBool isTraditional "Habilitar conjunto de componentes do Shell Tradicional para Wayland (Waybar, Rofi, Dunst, Hyprlock, Hypridle, Hyprpaper)";

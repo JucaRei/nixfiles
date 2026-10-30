@@ -5,13 +5,7 @@
   ...
 }:
 {
-  imports = [
-    ./dwm.nix
-    ./picom.nix
-    ./dunst.nix
-    ./rofi.nix
-    ./packages.nix
-  ];
+  imports = lib.my.importDir ./.;
 
   config = lib.mkIf config.desktop.dwm.enable {
     desktop.display-servers.backend = "x11";

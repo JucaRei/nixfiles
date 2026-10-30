@@ -1,6 +1,4 @@
+{ lib, ... }:
 {
-  imports = [
-    ./rofi.nix
-    ./dunst.nix
-  ];
+  imports = lib.my.importDir ./.;
 }
