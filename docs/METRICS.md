@@ -18,19 +18,26 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | — | — | — | — | — | — | — | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | — | — | — | — | — | — | — | $\le 29.000$ |
-| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | — | — | — | — | — | — | — | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | 99 | — | — | — | — | — | — | — | $\le 15$ |
-| **`with pkgs;`** | 71 | 71 | 70 | 70 | — | — | — | — | — | — | — | 0 |
-| **`rec {`** | 38 | 38 | 36 | 37 | — | — | — | — | — | — | — | 0 |
-| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | — | — | — | — | — | — | — | 0 |
-| **Avisos `statix`** | 76 | 76 | 0 | 0 | — | — | — | — | — | — | — | 0 |
-| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | — | — | — | — | — | — | — | 0 |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | — | — | — | — | — | — | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | — | — | — | — | — | — | $\le 29.000$ |
+| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | — | — | — | — | — | — | Helpers `lib.my` |
+| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | — | — | — | — | — | — | $\le 15$ |
+| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | — | — | — | — | — | — | 0 |
+| **`rec {`** | 38 | 38 | 36 | 37 | 37 | — | — | — | — | — | — | 0 |
+| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | — | — | — | — | — | — | 0 |
+| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | — | — | — | — | — | — | 0 |
+| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | — | — | — | — | — | — | 0 |
 
 ---
 
 ## Notas de Evolução
+
+### Fase 3 — Auto-import declarativo (lib/import-dir.nix)
+- **Helper `lib.my.importDir` e `importSubdirs`**: Criado `lib/import-dir.nix` com suporte a exclusão de arquivos/diretórios iniciados por `_`, pasta `disabled` e `default.nix`.
+- **Eliminação de listas estáticas de imports**: Todos os agregadores em `modules/home-manager/system/`, `modules/home-manager/desktop/`, `modules/nixos/` e raízes migrados para auto-descoberta. Novos módulos em qualquer subdiretório funcionam automaticamente sem editar `default.nix`.
+- **Validação de runtime na VM `virtual`**: O switch e a ativação completa do Home Manager foram executados e validados na VM Proxmox (`10.10.10.233`), confirmando criação de diretórios de usuário, execução de hooks systemd, recarregamento de daemons e estabilidade sem regressões.
+- **Invariância de configuração**: Snapshot `.snapshots/fase3` gerado e comparado contra fases anteriores: pacotes, serviços systemd, arquivos de usuário e unidades permanecem idênticos.
+- **Desempenho de avaliação**: Tempo de eval de `rocinante` toplevel mantido excelente em ~2m31s.
 
 ### Fase 2 — Helpers de opções (lib/options.nix)
 - **Helpers `lib.my.*`**: Criado `lib/options.nix` expondo `mkBool`, `mkStr`, `mkInt`, `mkPath`, `mkEnum`, `mkPkg`, `mkListOf`, `mkOpt` e `mkReadOnly` (com asserção estrita de descrição não-vazia).
