@@ -19,6 +19,14 @@ in
         speedtest-go
         htop
       ];
+
+      activation.runUserTmpfiles = mkIf isLinux (
+        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          if command -v systemd-tmpfiles >/dev/null 2>&1; then
+            $DRY_RUN_CMD systemd-tmpfiles --user --create 2>/dev/null || true
+          fi
+        ''
+      );
     };
 
     system.programs.shells = {
@@ -54,7 +62,7 @@ in
         setSessionVariables = true;
         createDirectories = isWorkstation;
         download = "${config.home.homeDirectory}/Downloads";
-        # desktop = "${config.home.homeDirectory}/Desktop";
+        desktop = "${config.home.homeDirectory}/Desktop";
         documents = "${config.home.homeDirectory}/Documents";
         publicShare = "${config.home.homeDirectory}/.local/share/public";
         templates = "${config.home.homeDirectory}/.local/share/templates";
