@@ -33,6 +33,7 @@ let
       platform,
       stateVersion,
       isISO,
+      isVM ? false,
     }:
     {
       inherit
@@ -45,6 +46,7 @@ let
         platform
         stateVersion
         isISO
+        isVM
         ;
       isInstall = !isISO;
       isWorkstation = desktop != null;
@@ -99,6 +101,7 @@ let
       useNixGL ? true,
       nixGLType ? null,
       isISO ? false,
+      isVM ? false,
     }:
     let
       pkgs = mkPkgs { inherit platform nixGLType; };
@@ -116,6 +119,7 @@ let
             platform
             stateVersion
             isISO
+            isVM
             ;
         }
         // {
@@ -150,6 +154,7 @@ let
           platform
           stateVersion
           isISO
+          isVM
           ;
       };
       installerModule =
@@ -195,6 +200,53 @@ let
       inherit desktop platform stateVersion;
     };
 
+  # Constrói todas as configurações a partir de um hosts.nix declarativo
+  mkHosts =
+    hostsFile:
+    let
+      spec = import hostsFile;
+      inherit (defaults) username;
+
+      homeConfigurations = lib.mapAttrs' (
+        name: args:
+        lib.nameValuePair "${username}@${name}" (
+          mkHome (
+            args
+            // {
+              hostname = name;
+              inherit username;
+            }
+          )
+        )
+      ) (spec.home or { });
+
+      nixosConfigurations =
+        lib.mapAttrs (
+          name: args:
+          mkNixos (
+            args
+            // {
+              hostname = name;
+              inherit username;
+            }
+          )
+        ) (spec.nixos or { })
+        // lib.listToAttrs (
+          map (
+            desktop:
+            let
+              name = if desktop != null then "iso-${desktop}" else "iso-console";
+            in
+            lib.nameValuePair name (mkIso {
+              inherit desktop;
+            })
+          ) (spec.isos or [ ])
+        );
+    in
+    {
+      inherit homeConfigurations nixosConfigurations;
+    };
+
   # `nix flake check`: o flake check nativo já avalia todas as nixosConfigurations.
   # Adicionamos em `checks` apenas as homeConfigurations standalone para validação completa.
   mkChecks =
@@ -224,6 +276,7 @@ in
     mkHome
     mkNixos
     mkIso
+    mkHosts
     mkChecks
     lib
     ;

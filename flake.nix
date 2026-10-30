@@ -48,87 +48,10 @@
     let
       inherit (self) outputs;
       helper = import ./lib { inherit inputs outputs; };
+      hosts = helper.mkHosts ./hosts.nix;
     in
     {
-      # Standalone Home-Manager configurations (for non-NixOS hosts like Fedora/Debian/macOS)
-      # Usage: home-manager switch --flake .#username@hostname
-      homeConfigurations = {
-        # Non-NixOS Standalone Hosts
-        "juca@fedora" = helper.mkHome {
-          hostname = "fedora";
-          desktop = "bspwm";
-        };
-        "juca@anubis" = helper.mkHome {
-          hostname = "anubis";
-          desktop = "mangowm";
-          waylandShell = "noctalia";
-        };
-        "juca@nitro" = helper.mkHome {
-          hostname = "nitro";
-          desktop = "bspwm";
-          # Intel UHD 630 gerencia o display; nixGLNvidia quebrado no nixpkgs 26.05
-          # (argumento 'kernel' incompatível na API do pacote NVIDIA)
-          nixGLType = "intel";
-        };
-
-        "juca@virtual" = helper.mkHome {
-          hostname = "virtual";
-          desktop = "bspwm";
-          # VM Proxmox (QEMU Standard VGA / Debian) simulando o host nitro para testes
-        };
-
-        "juca@virtualvm" = helper.mkHome {
-          hostname = "virtualvm";
-          stateVersion = "24.05";
-          desktop = "dwm";
-        };
-        "juca@anubisvm" = helper.mkHome {
-          hostname = "anubisvm";
-          desktop = "bspwm";
-        };
-      };
-
-      # Full NixOS System configurations (includes integrated Home-Manager)
-      # Usage: sudo nixos-rebuild switch --flake .#hostname
-      nixosConfigurations = {
-        # Workstations & Testing VMs
-        rocinante = helper.mkNixos {
-          hostname = "rocinante";
-          desktop = "dwm";
-          stateVersion = "22.11";
-        };
-
-        rocinante-vm = helper.mkNixos {
-          hostname = "rocinante-vm";
-          desktop = "bspwm";
-          stateVersion = "24.11";
-          isVM = true;
-        };
-
-        rocinante-hyperv = helper.mkNixos {
-          hostname = "rocinante-hyperv";
-          desktop = "bspwm";
-          stateVersion = "24.11";
-          isVM = true;
-        };
-
-        # Generic & Minimal Live ISOs
-        iso-xfce4 = helper.mkIso { desktop = "xfce4"; };
-        iso-gnome = helper.mkIso { desktop = "gnome"; };
-        iso-mate = helper.mkIso { desktop = "mate"; };
-        iso-pantheon = helper.mkIso { desktop = "pantheon"; };
-        iso-bspwm = helper.mkIso { desktop = "bspwm"; };
-        iso-dwm = helper.mkIso { desktop = "dwm"; };
-        iso-console = helper.mkIso { desktop = null; };
-
-        # MacBook Pro 4,1 specific ISO (fixes 32-bit EFI boot + Apple hardware)
-        iso-rocinante = helper.mkNixos {
-          hostname = "iso-rocinante";
-          desktop = "xfce4";
-          stateVersion = "24.11";
-          isISO = true;
-        };
-      };
+      inherit (hosts) homeConfigurations nixosConfigurations;
 
       # Development environment
       devShells = helper.forAllSystems (
