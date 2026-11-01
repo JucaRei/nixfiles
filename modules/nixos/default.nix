@@ -35,9 +35,9 @@ in
           experimental-features = [
             "nix-command" # Enable the new 'nix' command
             "flakes" # Enable flakes
-            "pipe-operators" # Enable pipe operators
-            "ca-derivations" # content addressed nix
             "auto-allocate-uids" # allow nix to automatically pick UIDs, rather than creating nixbld* user accounts
+            # "pipe-operators" # C++ Nix >= 2.22 only (não suportado pelo Lix)
+            # "ca-derivations" # Depreciado/não suportado pelo Lix
             # "repl-flake" # repl to inspect a flake
             # "recursive-nix" # let nix invoke itself
             # "configurable-impure-env" # allow impure environments

@@ -89,7 +89,7 @@ pkgs.writeScriptBin "hm-switch" ''
       err_code=$?
       timestamp=$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S)
       error_file="$ERROR_DIR/switch-error-$timestamp.log"
-      cp "$TMP_LOG" "$error_file" 2>/dev/null || true
+      ${pkgs.coreutils}/bin/tail -n 200 "$TMP_LOG" | ${pkgs.gnused}/bin/sed -r 's/\x1b\[[0-9;]*[a-zA-Z]//g' > "$error_file" 2>/dev/null || cp "$TMP_LOG" "$error_file" 2>/dev/null || true
       ln -sf "$error_file" "$ERROR_DIR/last-error.log" 2>/dev/null || true
       rm -f "$TMP_LOG" 2>/dev/null || true
 

@@ -88,7 +88,7 @@ in
               local timestamp
               timestamp=$(date +%Y-%m-%d_%H-%M-%S)
               local error_file="$error_dir/switch-error-$timestamp.log"
-              cp "$tmp_log" "$error_file" 2>/dev/null || true
+              tail -n 200 "$tmp_log" | sed -r 's/\x1b\[[0-9;]*[a-zA-Z]//g' > "$error_file" 2>/dev/null || cp "$tmp_log" "$error_file" 2>/dev/null || true
               ln -sf "$error_file" "$error_dir/last-error.log" 2>/dev/null || true
               echo -e "\n󰅖  Erro no home-manager switch (código $exit_code)!\n󰈙  Log de erro: $error_file\n󰌷  Atalho: $error_dir/last-error.log"
             fi
@@ -112,7 +112,7 @@ in
               local timestamp
               timestamp=$(date +%Y-%m-%d_%H-%M-%S)
               local error_file="$error_dir/$action-error-$timestamp.log"
-              cp "$tmp_log" "$error_file" 2>/dev/null || true
+              tail -n 200 "$tmp_log" | sed -r 's/\x1b\[[0-9;]*[a-zA-Z]//g' > "$error_file" 2>/dev/null || cp "$tmp_log" "$error_file" 2>/dev/null || true
               ln -sf "$error_file" "$error_dir/last-error.log" 2>/dev/null || true
               echo -e "\n󰅖  Erro no nixos-rebuild $action (código $exit_code)!\n󰈙  Log de erro: $error_file\n󰌷  Atalho: $error_dir/last-error.log"
             fi

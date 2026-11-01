@@ -60,8 +60,8 @@ pkgs.writeScriptBin "switch-host" ''
         mkdir -p "$HM_ERROR_DIR"
         hm_timestamp=$(${pkgs.uutils-coreutils-noprefix}/bin/date +%Y-%m-%d_%H-%M-%S)
         hm_error_file="$HM_ERROR_DIR/activation-error-$hm_timestamp.log"
-        journalctl --user -u "home-manager-*.service" --no-pager > "$hm_error_file" 2>/dev/null || \
-          journalctl -u "home-manager-*.service" --no-pager > "$hm_error_file" 2>/dev/null || true
+        journalctl --user -u "home-manager-*.service" --no-pager -n 200 > "$hm_error_file" 2>/dev/null || \
+          journalctl -u "home-manager-*.service" --no-pager -n 200 > "$hm_error_file" 2>/dev/null || true
         ln -sf "$hm_error_file" "$HM_ERROR_DIR/last-error.log" 2>/dev/null || true
 
         echo "󰀦  Atenção: A ativação do Home Manager falhou!"
@@ -80,7 +80,7 @@ pkgs.writeScriptBin "switch-host" ''
       err_code=$?
       timestamp=$(${pkgs.uutils-coreutils-noprefix}/bin/date +%Y-%m-%d_%H-%M-%S)
       error_file="$ERROR_DIR/switch-error-$timestamp.log"
-      cp "$TMP_LOG" "$error_file" 2>/dev/null || true
+      ${pkgs.uutils-coreutils-noprefix}/bin/tail -n 200 "$TMP_LOG" | ${pkgs.gnused}/bin/sed -r 's/\x1b\[[0-9;]*[a-zA-Z]//g' > "$error_file" 2>/dev/null || cp "$TMP_LOG" "$error_file" 2>/dev/null || true
       ln -sf "$error_file" "$ERROR_DIR/last-error.log" 2>/dev/null || true
 
       # Se o erro envolver o Home Manager, replicar também na pasta de erro do home-manager
@@ -88,7 +88,7 @@ pkgs.writeScriptBin "switch-host" ''
         HM_ERROR_DIR="$HOME/.config/errors/nix/home-manager"
         mkdir -p "$HM_ERROR_DIR"
         hm_error_file="$HM_ERROR_DIR/switch-error-$timestamp.log"
-        cp "$TMP_LOG" "$hm_error_file" 2>/dev/null || true
+        cp "$error_file" "$hm_error_file" 2>/dev/null || true
         ln -sf "$hm_error_file" "$HM_ERROR_DIR/last-error.log" 2>/dev/null || true
         echo "󰀦  O erro possui mensagens relacionadas ao Home Manager!"
         echo "󰌷  Log replicado em: $HM_ERROR_DIR/last-error.log"
