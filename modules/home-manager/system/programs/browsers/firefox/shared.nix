@@ -16,9 +16,15 @@ let
       )
     else
       true;
+  isLightTheme = config.desktop.theme.variant == "light";
+  themePrefs = lib.optionalAttrs (config.desktop.theme.targets.firefox or true) {
+    "devtools.theme" = if isLightTheme then "light" else "dark";
+    "ui.systemUsesDarkTheme" = if isLightTheme then 0 else 1;
+    "browser.theme.toolbar-theme" = if isLightTheme then 1 else 0;
+    "browser.theme.content-theme" = if isLightTheme then 1 else 0;
+  };
 in
 {
-  "devtools.theme" = "dark";
   "distribution.searchplugins.defaultLocale" = "en-US";
   "general.useragent.locale" = "en-US";
   "general.useragent.compatMode.firefox" = true;
@@ -27,7 +33,6 @@ in
   "browser.compactmode.show" = true;
   # "browser.uidensity" = 0; # Set UI density to normal
   "browser.uidensity" = 1; # enable compact mode
-  "ui.systemUsesDarkTheme" = 1; # force dark theme
   "browser.tabs.tabMinWidth" = 76; # Reset to default minimum tab width to prevent tab borders overlapping
   "browser.tabs.firefox-view" = true; # Sync tabs across devices
   "browser.toolbars.bookmarks.visibility" = "never";
@@ -212,3 +217,4 @@ in
   "toolkit.telemetry.bhrPing.enabled" = false;
   "toolkit.telemetry.firstShutdownPing.enabled" = false;
 }
+// themePrefs

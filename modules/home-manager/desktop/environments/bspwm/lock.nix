@@ -217,15 +217,15 @@ in
     ringWidth = lib.my.mkInt 7 "Espessura da linha do anel de desbloqueio em pixels";
 
     colors = {
-      base = lib.my.mkStr "1e1e2e" "Cor de fundo / interior padrão (Catppuccin Base, hex sem #)";
-      mantle = lib.my.mkStr "181825" "Cor de verificação / interior secundário (Catppuccin Mantle)";
-      mauve = lib.my.mkStr "cba6f7" "Cor de destaque principal / anel padrão (Catppuccin Mauve)";
-      blue = lib.my.mkStr "89b4fa" "Cor do anel em estado de verificação (Catppuccin Blue)";
-      green = lib.my.mkStr "a6e3a1" "Cor dos destaques de teclas no anel (Catppuccin Green)";
-      red = lib.my.mkStr "f38ba8" "Cor de erro ou backspace (Catppuccin Red)";
-      peach = lib.my.mkStr "fab387" "Cor de aviso do Caps Lock (Catppuccin Peach)";
-      text = lib.my.mkStr "cdd6f4" "Cor do texto do relógio e verificação (Catppuccin Text)";
-      subtext = lib.my.mkStr "a6adc8" "Cor do texto secundário e data (Catppuccin Subtext0)";
+      base = lib.my.mkStr config.desktop.theme.colorsBare.bg "Cor de fundo / interior padrão (hex sem #)";
+      mantle = lib.my.mkStr config.desktop.theme.colorsBare.bgDark "Cor de verificação / interior secundário";
+      mauve = lib.my.mkStr config.desktop.theme.colorsBare.accent "Cor de destaque principal / anel padrão";
+      blue = lib.my.mkStr config.desktop.theme.colorsBare.blue "Cor do anel em estado de verificação";
+      green = lib.my.mkStr config.desktop.theme.colorsBare.green "Cor dos destaques de teclas no anel";
+      red = lib.my.mkStr config.desktop.theme.colorsBare.red "Cor de erro ou backspace";
+      peach = lib.my.mkStr config.desktop.theme.colorsBare.orange "Cor de aviso do Caps Lock";
+      text = lib.my.mkStr config.desktop.theme.colorsBare.fg "Cor do texto do relógio e verificação";
+      subtext = lib.my.mkStr config.desktop.theme.colorsBare.fgMuted "Cor do texto secundário e data";
     };
 
     extraArgs =

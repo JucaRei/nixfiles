@@ -10,6 +10,36 @@ let
     mkDefault
     ;
   cfg = config.system.programs.console.bat;
+
+  themeLib = config.desktop.theme.lib;
+  themeName = config.desktop.theme.name;
+  c = config.desktop.theme.colors;
+
+  # Mapeamento de paletas do repo para temas conhecidos do bat
+  themeMap = {
+    catppuccin-mocha = "Catppuccin Mocha";
+    catppuccin-latte = "Catppuccin Latte";
+    catppuccin-frappe = "Catppuccin Frappe";
+    catppuccin-macchiato = "Catppuccin Macchiato";
+    dracula = "Dracula";
+    nord = "Nord";
+    gruvbox = "gruvbox-dark";
+    solarized = "Solarized (dark)";
+    tokyo-night = "tokyo_night";
+    rose-pine = "rose_pine_moon";
+    cyberpunk = "cyberpunk-neon";
+  };
+
+  isCustom = config.desktop.theme.custom != null || config.desktop.theme.overrides != { };
+  matchedTheme = if isCustom then null else (themeMap.${themeName} or null);
+  selectedTheme = if matchedTheme != null then matchedTheme else "custom-desktop-theme";
+
+  generatedThemePkg = pkgs.writeTextDir "custom-desktop-theme.tmTheme" (
+    themeLib.generateTmTheme {
+      name = "CustomDesktopTheme";
+      colors = c;
+    }
+  );
 in
 {
   options.system.programs.console.bat = {
@@ -24,28 +54,27 @@ in
         pager = "less -FR";
       }
       // lib.optionalAttrs config.desktop.theme.targets.bat {
-        theme = mkDefault "tokyo_night";
+        theme = mkDefault selectedTheme;
       };
       themes = {
-        #   # cyberpunk-neon =
-        #   #   builtins.readFile ../../config/bat/themes/cyberpunk-neon.tmTheme;
-        #   # Catppuccin-mocha =
-        #   #   builtins.readFile ../../config/bat/themes/Catppuccin-mocha.tmTheme;
-        #   # rose_pine_moon =
-        #   #   builtins.readFile ../../config/bat/themes/rose_pine_moon.tmTheme;
-        # tokyo_night = lib.fileContents ../../../dots/bat/themes/tokyo_night.tmTheme;
         tokyo_night = {
           src = ./themes;
           file = "tokyo_night.tmTheme";
         };
-        #   # Catppuccin-mocha = builtins.readFile (pkgs.fetchFromGitHub
-        #   #   {
-        #   #     owner = "catppuccin";
-        #   #     repo = "bat";
-        #   #     rev = "ba4d16880d63e656acced2b7d4e034e4a93f74b1";
-        #   #     sha256 = "sha256-6WVKQErGdaqb++oaXnY3i6/GuH2FhTgK0v4TN4Y0Wbw=";
-        #   #   }
-        #   # + "/Catppuccin-mocha.tmTheme");
+        rose_pine_moon = {
+          src = ./themes;
+          file = "rose_pine_moon.tmTheme";
+        };
+        cyberpunk-neon = {
+          src = ./themes;
+          file = "cyberpunk-neon.tmTheme";
+        };
+      }
+      // lib.optionalAttrs (config.desktop.theme.targets.bat && matchedTheme == null) {
+        custom-desktop-theme = {
+          src = generatedThemePkg;
+          file = "custom-desktop-theme.tmTheme";
+        };
       };
 
       extraPackages = with pkgs.bat-extras; [

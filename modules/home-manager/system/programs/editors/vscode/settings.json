@@ -146,11 +146,5 @@
   "workbench.settings.editor": "ui",
   "workbench.settings.enableNaturalLanguageSearch": true,
   "workbench.tree.indent": 4,
-  "workbench.colorCustomizations": {
-    "editor.background": "#1e1e2e",
-    "tab.activeBackground": "#1e1e2e",
-    "tab.inactiveBackground": "#181825",
-    "editorGroupHeader.tabsBackground": "#11111b"
-  },
   "zenMode.hideLineNumbers": false
 }

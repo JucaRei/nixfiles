@@ -7,6 +7,7 @@
 let
   inherit (lib) mkIf;
   cfg = config.system.programs.shells;
+  c = config.desktop.theme.colors;
 in
 {
   config = mkIf (cfg.enable && cfg.default == "zsh") {
@@ -21,6 +22,7 @@ in
       '';
       autosuggestion = {
         enable = true;
+        highlight = if config.desktop.theme.targets.zsh then "fg=${c.fgMuted}" else null;
         strategy = [
           "history"
           "completion"
@@ -28,7 +30,7 @@ in
         ];
       };
       syntaxHighlighting = {
-        enable = false;
+        enable = lib.mkDefault true;
         highlighters = [
           "main"
           "brackets"
@@ -39,8 +41,30 @@ in
           "line"
         ];
         patterns = {
-          unknown-token = "fg=magenta";
+          unknown-token = "fg=${c.red}";
           WORDCHARS = "*?_-.[]~=&;!#$%^(){}<>";
+        };
+        styles = lib.optionalAttrs config.desktop.theme.targets.zsh {
+          comment = "fg=${c.fgMuted}";
+          alias = "fg=${c.cyan}";
+          suffix-alias = "fg=${c.cyan}";
+          builtin = "fg=${c.purple}";
+          function = "fg=${c.blue}";
+          command = "fg=${c.green}";
+          precommand = "fg=${c.teal}";
+          commandseparator = "fg=${c.accent}";
+          path = "fg=${c.fg},underline";
+          autodirectory = "fg=${c.yellow},underline";
+          unknown-token = "fg=${c.red}";
+          reserved-word = "fg=${c.purple}";
+          single-hyphen-option = "fg=${c.orange}";
+          double-hyphen-option = "fg=${c.orange}";
+          back-quoted-argument = "fg=${c.teal}";
+          single-quoted-argument = "fg=${c.yellow}";
+          double-quoted-argument = "fg=${c.yellow}";
+          dollar-quoted-argument = "fg=${c.yellow}";
+          back-double-quoted-argument = "fg=${c.teal}";
+          assign = "fg=${c.fg}";
         };
       };
       autocd = true;

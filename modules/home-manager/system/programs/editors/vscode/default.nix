@@ -16,7 +16,19 @@ let
   remoteExtensions = {
     "remote.SSH.defaultExtensions" = map (x: x.vscodeExtUniqueID) (userSettingsRaw.extensions or [ ]); # Assume JSON has "extensions" array
   };
-  userSettings = userSettingsRaw // remoteExtensions;
+  themeColors = config.desktop.theme.colors;
+  vscodeThemeCustomizations = lib.optionalAttrs config.desktop.theme.targets.vscode {
+    "workbench.colorCustomizations" = {
+      "editor.background" = themeColors.bg;
+      "tab.activeBackground" = themeColors.bg;
+      "tab.inactiveBackground" = themeColors.bgDark;
+      "editorGroupHeader.tabsBackground" = themeColors.surfaceAlt;
+      "activityBar.background" = themeColors.bgDark;
+      "sideBar.background" = themeColors.bgDark;
+      "statusBar.background" = themeColors.surfaceAlt;
+    };
+  };
+  userSettings = userSettingsRaw // remoteExtensions // vscodeThemeCustomizations;
 in
 {
   options = {

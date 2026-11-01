@@ -10,6 +10,23 @@ let
     mkIf
     ;
   cfg = config.system.programs.tools.fastfetch;
+  themeLib = config.desktop.theme.lib;
+  c = config.desktop.theme.colors;
+  ansi24b =
+    hex:
+    let
+      t = themeLib.hexToTuple hex;
+    in
+    "38;2;${toString (builtins.elemAt t 0)};${toString (builtins.elemAt t 1)};${toString (builtins.elemAt t 2)}";
+
+  themeDisplay = lib.optionalAttrs config.desktop.theme.targets.fastfetch {
+    color = {
+      keys = ansi24b c.accent;
+      title = ansi24b c.blue;
+      separator = ansi24b c.fgSubtle;
+    };
+  };
+
   shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
 
   defaultModules = [
@@ -86,8 +103,8 @@ in
         (lib.optionalAttrs (cfg.logo != { }) {
           inherit (cfg) logo;
         })
-        (lib.optionalAttrs (cfg.display != { }) {
-          inherit (cfg) display;
+        (lib.optionalAttrs (config.desktop.theme.targets.fastfetch || cfg.display != { }) {
+          display = themeDisplay // cfg.display;
         })
         cfg.extraSettings
       ];
