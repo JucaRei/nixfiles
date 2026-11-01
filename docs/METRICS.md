@@ -18,10 +18,10 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | — | — | — | — | — | — | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | — | — | — | — | — | — | $\le 29.000$ |
-| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | — | — | — | — | — | — | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | — | — | — | — | — | — | $\le 15$ |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | — | — | — | — | — | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | — | — | — | — | — | $\le 29.000$ |
+| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | — | — | — | — | — | Helpers `lib.my` |
+| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | — | — | — | — | — | $\le 15$ |
 | **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | — | — | — | — | — | — | 0 |
 | **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | — | — | — | — | — | — | 0 |
 | **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | — | — | — | — | — | — | 0 |
@@ -31,6 +31,17 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 ---
 
 ## Notas de Evolução
+
+### Fase 5 — Disk e filesystem declarativo (lib/disk/btrfs.nix)
+- **Helper Parametrizado (`lib/disk/btrfs.nix`)**: Criada função geradora unificada de particionamento Disko e montagens de `fileSystems` Btrfs (`lib.my.disk.btrfs`), suportando tabelas `gpt` (UEFI) e `msdos` (CSM/Legacy), compressão Zstandard configurável, subvolumes Btrfs padronizados (`@`, `@home`, `@snapshots`, `@nix`, `@var_log`), swap parametrizável e suporte a LUKS.
+- **Eliminação de 7 Arquivos Repetitivos**:
+  - Removidos `nixos/hosts/rocinante/{disko.nix, disko-legacy.nix, filesystem.nix}`.
+  - Removidos `nixos/hosts/rocinante-vm/{disko.nix, filesystem.nix}`.
+  - Removidos `nixos/hosts/rocinante-hyperv/{disko.nix, filesystem.nix}`.
+  - Redução líquida de 308 linhas e eliminação de 6 arquivos no repositório.
+- **Redução Adicional de `mkForce`**: `mkForce` reduzido de 46 para 30 (-16 `mkForce` duplicados eliminados).
+- **Invariância Absoluta**: Snapshot `fase5` gerado com comparação contra `fase4`: `fileSystems`, `swapDevices` e `boot.initrd.luks` permaneceram 100% idênticos em todos os hosts NixOS (`rocinante`, `rocinante-vm`, `rocinante-hyperv`).
+- **Qualidade Mantida**: 0 avisos em `statix check .` e `deadnix .`. `nix fmt` limpo.
 
 ### Fase 4 — Perfis compartilhados e hosts enxutos
 - **Perfis Compartilhados (`profiles/`)**: Criados perfis reutilizáveis em `profiles/home/{workstation,minimal,vm}.nix` e `profiles/nixos/{desktop,server,vm}.nix`, injetados automaticamente e incondicionalmente em `home-manager/default.nix` e `nixos/default.nix` via `isWorkstation` e `isVM`.

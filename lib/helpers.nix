@@ -4,7 +4,14 @@
 let
   lib = inputs.nixpkgs.lib.extend (
     self: _super: {
-      my = (import ./options.nix { lib = self; }) // (import ./import-dir.nix { lib = self; });
+      my =
+        (import ./options.nix { lib = self; })
+        // (import ./import-dir.nix { lib = self; })
+        // {
+          disk = {
+            btrfs = import ./disk/btrfs.nix;
+          };
+        };
     }
   );
 

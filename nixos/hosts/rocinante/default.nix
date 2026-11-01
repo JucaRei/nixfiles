@@ -19,8 +19,11 @@ let
 in
 {
   imports = [
-    ./filesystem.nix
-    ./disko-legacy.nix
+    (lib.my.disk.btrfs {
+      device = "/dev/sda";
+      tableType = "msdos";
+      swapSize = "6G";
+    })
     ./hardware-macbook.nix
   ];
 

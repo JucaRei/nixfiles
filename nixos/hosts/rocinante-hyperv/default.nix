@@ -10,8 +10,11 @@ let
 in
 {
   imports = [
-    ./filesystem.nix
-    ./disko.nix
+    (lib.my.disk.btrfs {
+      device = lib.mkDefault "/dev/sda";
+      tableType = "gpt";
+      swapSize = "4G";
+    })
   ];
 
   config = {
