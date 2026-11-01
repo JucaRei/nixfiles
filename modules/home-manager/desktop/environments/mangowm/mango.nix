@@ -7,6 +7,8 @@
 let
   inherit (lib) mkIf;
   cfg = config.desktop.mangowm;
+  themeLib = config.desktop.theme.lib;
+  c = config.desktop.theme.colors;
   isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
   isApple = (config.home.keyboard.model or "") == "apple";
 
@@ -247,16 +249,16 @@ in
       smart_gaps=0
 
       # --- Paleta Dinâmica (desktop.theme) ---
-      root_color=0x${config.desktop.theme.colorsBare.bg}ff
-      border_color=0x${config.desktop.theme.colorsBare.surfaceAlt}ff
-      focus_color=0x${config.desktop.theme.colorsBare.accent}ff
-      drop_color=0x${config.desktop.theme.colorsBare.accent}55
-      split_color=0x${config.desktop.theme.colorsBare.orange}ff
-      maximized_screen_color=0x${config.desktop.theme.colorsBare.green}ff
-      urgent_color=0x${config.desktop.theme.colorsBare.red}ff
-      scratchpad_color=0x${config.desktop.theme.colorsBare.accent}ff
-      global_color=0x${config.desktop.theme.colorsBare.purple}ff
-      overlay_color=0x${config.desktop.theme.colorsBare.cyan}ff
+      root_color=${themeLib.hexTo0x c.bg "ff"}
+      border_color=${themeLib.hexTo0x c.surfaceAlt "ff"}
+      focus_color=${themeLib.hexTo0x c.accent "ff"}
+      drop_color=${themeLib.hexTo0x c.accent "55"}
+      split_color=${themeLib.hexTo0x c.orange "ff"}
+      maximized_screen_color=${themeLib.hexTo0x c.green "ff"}
+      urgent_color=${themeLib.hexTo0x c.red "ff"}
+      scratchpad_color=${themeLib.hexTo0x c.accent "ff"}
+      global_color=${themeLib.hexTo0x c.purple "ff"}
+      overlay_color=${themeLib.hexTo0x c.cyan "ff"}
 
       # --- Layout Scroller & Overview ---
       scroller_structs=450

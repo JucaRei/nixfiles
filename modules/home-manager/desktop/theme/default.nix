@@ -25,6 +25,8 @@ let
     ;
   cfg = config.desktop.theme;
 
+  themeLib = import ./lib.nix { inherit lib; };
+
   accents = [
     "red"
     "orange"
@@ -297,6 +299,12 @@ in
       readOnly = true;
       description = "Claro ou escuro, conforme a paleta.";
     };
+
+    lib = mkOption {
+      type = types.attrsOf types.anything;
+      readOnly = true;
+      description = "Helpers utilitários de cor e geração de temas (rgb, rgba, cssRgb, cssRgba, hexTo0x, hexToTuple, withAlpha, generateTmTheme).";
+    };
   };
 
   config = mkMerge [
@@ -319,6 +327,7 @@ in
         targets = lib.genAttrs (lib.unique (registeredTargets ++ cfg.exclude)) (
           name: !(builtins.elem name cfg.exclude)
         );
+        lib = themeLib;
       };
     }
 

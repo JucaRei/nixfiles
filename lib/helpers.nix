@@ -11,6 +11,7 @@ let
           disk = {
             btrfs = import ./disk/btrfs.nix;
           };
+          theme = import ../modules/home-manager/desktop/theme/lib.nix { lib = self; };
         };
     }
   );

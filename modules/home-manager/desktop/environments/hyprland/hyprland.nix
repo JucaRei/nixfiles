@@ -9,6 +9,8 @@
 let
   inherit (lib) mkIf;
   cfg = config.desktop.hyprland;
+  themeLib = config.desktop.theme.lib;
+  c = config.desktop.theme.colors;
   isNoctalia = (config.desktop.wayland.shell or "traditional") == "noctalia";
   isApple = (config.home.keyboard.model or "") == "apple";
 
@@ -237,9 +239,8 @@ in
             gaps_in = 5;
             gaps_out = 10;
             border_size = 2;
-            "col.active_border" =
-              "rgba(${config.desktop.theme.colorsBare.accent}ee) rgba(${config.desktop.theme.colorsBare.blue}ee) 45deg";
-            "col.inactive_border" = "rgba(${config.desktop.theme.colorsBare.surfaceAlt}aa)";
+            "col.active_border" = "${themeLib.rgba c.accent "ee"} ${themeLib.rgba c.blue "ee"} 45deg";
+            "col.inactive_border" = "${themeLib.rgba c.surfaceAlt "aa"}";
             layout = "dwindle";
             allow_tearing = false;
           };
@@ -286,7 +287,7 @@ in
               enabled = true;
               range = 15;
               render_power = 3;
-              color = "rgba(17, 17, 27, 0.65)"; # Catppuccin Crust shadow
+              color = themeLib.cssRgba c.bgDark 0.65;
             };
 
             dim_inactive = true;
