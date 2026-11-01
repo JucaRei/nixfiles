@@ -17,20 +17,24 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 ## Tabela de Acompanhamento por Fase
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | — | — | — | — | — | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | — | — | — | — | — | $\le 29.000$ |
-| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | — | — | — | — | — | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | — | — | — | — | — | $\le 15$ |
-| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | — | — | — | — | — | — | 0 |
-| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | — | — | — | — | — | — | 0 |
-| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | — | — | — | — | — | — | 0 |
-| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | — | — | — | — | — | — | 0 |
-| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | — | — | — | — | — | — | 0 |
 
 ---
 
 ## Notas de Evolução
+
+### Fase 6 — Motor de tema customizável
+- **Overrides e Custom Inline (`T6.1`)**: Adicionado `desktop.theme.overrides` (sobrescrita pontual de papéis) e `desktop.theme.custom` (declaração de paleta inline completa sem necessidade de arquivo físico). Adicionadas asserções estritas com validação de formato `#rrggbb` e presença dos 18 papéis obrigatórios, com tabela de fallback para mensagens de erro claras sem quebras prematuras.
+- **Registro Único de Alvos e Exclusão (`T6.2`)**: Adicionado `desktop.theme.exclude` e o registro dinâmico `desktop.theme.targets.<alvo>` abrangendo todos os alvos conhecidos (`alacritty`, `bat`, `btop`, `dunst`, `eza`, `fastfetch`, `firefox`, `fzf`, `gedit`, `gtk`, `hyprland`, `kitty`, `mangowm`, `meld`, `mpv`, `noctalia`, `polybar`, `qt`, `rofi`, `starship`, `thunar`, `urxvt`, `vesktop`, `vscode`, `waybar`, `wlogout`, `wofi`, `xsettingsd`, `zathura`, `zsh`). Eliminadas checagens ad-hoc e opções dispersas nos módulos.
+- **Biblioteca de Cores e Manipulação (`T6.3`)**: Criado `modules/home-manager/desktop/theme/lib.nix` expondo `rgb`, `rgba`, `cssRgb`, `cssRgba`, `hexTo0x`, `hexToTuple`, `stripHash`, `withAlpha` e `generateTmTheme`. Helpers expostos em `config.desktop.theme.lib` e `lib.my.theme`. Montagens manuais de string de cor em Hyprland e MangoWM substituídas pelos helpers.
+- **Conexão Dinâmica de Alvos Restantes (`T6.4`)**:
+  - `bspwm/lock.nix`: Cores migradas para derivar dinamicamente de `config.desktop.theme.colorsBare`.
+  - `bat`: Mapeamento automático de temas para paletas conhecidas e geração dinâmica on-the-fly de `.tmTheme` via `generateTmTheme` para temas customizados ou com overrides. Com `nord` ou `dracula`, nada cai em Catppuccin.
+  - `vscode`: Customizações dinâmicas de interface (`workbench.colorCustomizations`) injetadas via `desktop.theme.colors`, eliminando valores hardcoded em `settings.json`.
+  - `zsh`: Sintaxe (`syntaxHighlighting.styles`) e autosugestão (`autosuggestion.highlight`) conectadas às cores do tema ativo.
+  - `firefox`: Preferências de tema claro/escuro (`shared.nix`) condicionadas a `desktop.theme.variant`.
+  - `fastfetch`: Cores de chaves, títulos e separadores (`display.color`) conectadas via TrueColor ANSI 24-bit (`themeLib.hexToTuple`).
+- **Investigação e Descarte de Base16 via Derivação (`T6.5`)**: Confirmado que `pkgs.base16-schemes` é uma derivação (`stdenv.mkDerivation`) e que a leitura de seus arquivos YAML em tempo de avaliação requer IFD (Import From Derivation). Conforme especificado no roteiro, o recurso via derivação foi formalmente descartado para manter a hermeticidade pura e a velocidade de avaliação do flake.
+- **Qualidade e Estabilidade Mantidas**: 0 avisos em `statix check .` e `deadnix .`, `nix fmt` limpo, dry-run 100% aprovado para `juca@nitro` e `nixosConfigurations.rocinante`.
 
 ### Fase 5 — Disk e filesystem declarativo (lib/disk/btrfs.nix)
 - **Helper Parametrizado (`lib/disk/btrfs.nix`)**: Criada função geradora unificada de particionamento Disko e montagens de `fileSystems` Btrfs (`lib.my.disk.btrfs`), suportando tabelas `gpt` (UEFI) e `msdos` (CSM/Legacy), compressão Zstandard configurável, subvolumes Btrfs padronizados (`@`, `@home`, `@snapshots`, `@nix`, `@var_log`), swap parametrizável e suporte a LUKS.
