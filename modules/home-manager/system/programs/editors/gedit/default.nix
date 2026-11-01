@@ -72,16 +72,18 @@ in
 
     dconf.settings = {
       "org/gnome/gedit/preferences/editor" = {
+        syntax-highlighting = true;
+      }
+      // lib.optionalAttrs config.desktop.theme.targets.gedit {
         scheme = cfg.theme;
         style-scheme = cfg.theme;
         style-scheme-for-dark-theme-variant = cfg.theme;
         style-scheme-for-light-theme-variant = cfg.theme;
-        syntax-highlighting = true;
       };
-      "org/gnome/gedit/preferences/ui" = {
+      "org/gnome/gedit/preferences/ui" = lib.optionalAttrs config.desktop.theme.targets.gedit {
         theme-variant = if isDark then "dark" else "light";
       };
-      "org/gnome/TextEditor" = {
+      "org/gnome/TextEditor" = lib.optionalAttrs config.desktop.theme.targets.gedit {
         style-scheme = cfg.theme;
         style-variant = if isDark then "dark" else "light";
       };

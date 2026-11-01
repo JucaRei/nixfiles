@@ -20,10 +20,11 @@ in
     programs.bat = {
       enable = true;
       config = {
-        # theme = "Catppuccin-mocha";
-        theme = mkDefault "tokyo_night";
         style = "plain"; # remove line numbers
         pager = "less -FR";
+      }
+      // lib.optionalAttrs config.desktop.theme.targets.bat {
+        theme = mkDefault "tokyo_night";
       };
       themes = {
         #   # cyberpunk-neon =

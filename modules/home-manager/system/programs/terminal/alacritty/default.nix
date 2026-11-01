@@ -122,7 +122,7 @@ in
             y = 0;
           };
         };
-        colors = {
+        colors = lib.mkIf config.desktop.theme.targets.alacritty {
           draw_bold_text_with_bright_colors = true;
           primary = {
             background = c.bg;

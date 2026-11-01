@@ -140,6 +140,39 @@ let
     && !(lib.isString withOverrides.${role} && lib.hasPrefix "#" withOverrides.${role})
   ) requiredRoles;
 
+  registeredTargets = [
+    "alacritty"
+    "bat"
+    "btop"
+    "dunst"
+    "eza"
+    "fastfetch"
+    "firefox"
+    "fzf"
+    "gedit"
+    "gtk"
+    "hyprland"
+    "kitty"
+    "mangowm"
+    "meld"
+    "mpv"
+    "noctalia"
+    "polybar"
+    "qt"
+    "rofi"
+    "starship"
+    "thunar"
+    "urxvt"
+    "vesktop"
+    "vscode"
+    "waybar"
+    "wlogout"
+    "wofi"
+    "xsettingsd"
+    "zathura"
+    "zsh"
+  ];
+
   assetOptions = {
     name = mkOption {
       type = types.str;
@@ -214,6 +247,10 @@ in
       lib.my.mkOpt (types.attrsOf types.str) { }
         "Sobrescritas pontuais de papéis de cores (ex.: { bg = \"#1e1e2e\"; border = \"#ff0000\"; }). Aplicadas sobre a paleta ativa.";
 
+    exclude =
+      lib.my.mkListOf types.str [ ]
+        "Lista de alvos que não devem receber o tema automático (ex.: [ \"bat\" \"vscode\" ]).";
+
     gtk = assetOption palette.gtk "Tema GTK.";
     icons = assetOption palette.icons "Tema de ícones.";
 
@@ -233,6 +270,12 @@ in
 
     xsettingsd = {
       enable = lib.my.mkBool false "Ativar serviço e configuração do xsettingsd para ambientes X11.";
+    };
+
+    targets = mkOption {
+      type = types.attrsOf types.bool;
+      readOnly = true;
+      description = "Registro único de alvos de tema. Cada alvo é booleano (true se ativo para receber o tema, false se listado em desktop.theme.exclude).";
     };
 
     # Somente leitura: calculados a partir da paleta
@@ -273,11 +316,14 @@ in
         inherit colors;
         colorsBare = lib.mapAttrs (_: lib.removePrefix "#") colors;
         inherit (palette) variant;
+        targets = lib.genAttrs (lib.unique (registeredTargets ++ cfg.exclude)) (
+          name: !(builtins.elem name cfg.exclude)
+        );
       };
     }
 
     # mkDefault em tudo: blocos antigos por ambiente continuam vencendo durante a migração.
-    (mkIf cfg.enable {
+    (mkIf (cfg.enable && cfg.targets.gtk) {
       gtk = {
         enable = mkDefault true;
         colorScheme = mkDefault cfg.variant;
@@ -310,7 +356,7 @@ in
       };
 
       # Style Scheme dinâmico para GtkSourceView (gedit, meld, gnome-text-editor)
-      xdg.dataFile =
+      xdg.dataFile = mkIf (cfg.targets.gedit or true) (
         let
           schemeId = builtins.replaceStrings [ "-" " " ] [ "_" "_" ] (lib.strings.toLower paletteName);
           schemeXml = import ./gtksourceview.nix {
@@ -335,10 +381,11 @@ in
               text = schemeXml;
             };
           }) styleDirs
-        );
+        )
+      );
 
       # Configuração declarativa para xsettingsd (gerenciador XSETTINGS leve para X11/BSPWM/DWM)
-      xdg.configFile = mkIf cfg.xsettingsd.enable {
+      xdg.configFile = mkIf (cfg.xsettingsd.enable && cfg.targets.xsettingsd) {
         "xsettingsd/xsettingsd.conf".text = mkDefault ''
           Net/ThemeName "${cfg.gtk.name}"
           Gtk/ThemeName "${cfg.gtk.name}"
@@ -358,7 +405,7 @@ in
       };
 
       # Serviço de usuário do Systemd para xsettingsd no X11
-      systemd.user.services.xsettingsd = mkIf cfg.xsettingsd.enable {
+      systemd.user.services.xsettingsd = mkIf (cfg.xsettingsd.enable && cfg.targets.xsettingsd) {
         Unit = {
           Description = "XSettings Daemon";
           After = [ "graphical-session.target" ];
@@ -376,7 +423,7 @@ in
       };
 
       home = {
-        packages = mkIf cfg.xsettingsd.enable [ pkgs.xsettingsd ];
+        packages = mkIf (cfg.xsettingsd.enable && cfg.targets.xsettingsd) [ pkgs.xsettingsd ];
 
         sessionVariables = {
           GTK_THEME = mkDefault cfg.gtk.name;
@@ -385,7 +432,7 @@ in
         };
 
         # Recarrega o xsettingsd e sincroniza variáveis de sessão na sessão gráfica atual
-        activation.reloadXsettings = mkIf cfg.xsettingsd.enable (
+        activation.reloadXsettings = mkIf (cfg.xsettingsd.enable && cfg.targets.xsettingsd) (
           lib.hm.dag.entryAfter [ "writeBoundary" ] ''
             if [ -n "''${DISPLAY:-}" ]; then
               ${pkgs.procps}/bin/pkill -HUP -x xsettingsd 2>/dev/null || true

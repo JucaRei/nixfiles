@@ -33,8 +33,10 @@ in
           insert-spaces-instead-of-tabs = true;
           highlight-current-line = true;
           show-line-numbers = true;
-          prefer-dark-theme = isDark;
           highlight-syntax = true;
+        }
+        // lib.optionalAttrs config.desktop.theme.targets.meld {
+          prefer-dark-theme = isDark;
           style-scheme = schemeId;
         };
       };

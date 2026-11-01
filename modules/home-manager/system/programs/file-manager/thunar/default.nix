@@ -22,21 +22,21 @@ let
 
   isDark = (config.desktop.theme.variant or "dark") == "dark";
   themeName =
-    if config.desktop.theme ? gtk && config.desktop.theme.gtk ? name then
+    if config.desktop.theme.targets.thunar then
       config.desktop.theme.gtk.name
     else if config.gtk ? theme && config.gtk.theme ? name then
       config.gtk.theme.name
     else
       "";
   themePackage =
-    if config.desktop.theme ? gtk && config.desktop.theme.gtk ? package then
+    if config.desktop.theme.targets.thunar then
       config.desktop.theme.gtk.package
     else if config.gtk ? theme && config.gtk.theme ? package then
       config.gtk.theme.package
     else
       null;
   iconPackage =
-    if config.desktop.theme ? icons && config.desktop.theme.icons ? package then
+    if config.desktop.theme.targets.thunar then
       config.desktop.theme.icons.package
     else if config.gtk ? iconTheme && config.gtk.iconTheme ? package then
       config.gtk.iconTheme.package
@@ -260,11 +260,9 @@ in
                 ${lib.optionalString (config.gtk ? iconTheme && config.gtk.iconTheme ? name) ''
                   $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/IconThemeName -n -t string -s "${config.gtk.iconTheme.name}" 2>/dev/null || true
                 ''}
-                ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? cursor) ''
+                ${lib.optionalString config.desktop.theme.targets.thunar ''
                   $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeName -n -t string -s "${config.desktop.theme.cursor.name}" 2>/dev/null || true
                   $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/CursorThemeSize -n -t int -s "${toString config.desktop.theme.cursor.size}" 2>/dev/null || true
-                ''}
-                ${lib.optionalString (config.desktop ? theme && config.desktop.theme ? font) ''
                   $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/FontName -n -t string -s "${config.desktop.theme.font.name} ${toString config.desktop.theme.font.size}" 2>/dev/null || true
                 ''}
                 $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Gtk/DecorationLayout -n -t string -s ":minimize,maximize,close" 2>/dev/null || true

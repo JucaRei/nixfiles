@@ -55,6 +55,22 @@ in
           unmap = "f";
           font = "Liga SFMono Nerd Font Italic 12";
 
+          # sandbox = "none";
+
+          database = "sqlite";
+          incremental-search = true;
+          abort-clear-search = true;
+          dbus-service = false;
+          show-recent = 10;
+          show-hidden = true;
+          link-zoom = true;
+          link-hadjust = true;
+          show-directories = true;
+
+          n-completion-items = 25;
+          continuous-hist-save = true;
+        }
+        // lib.optionalAttrs config.desktop.theme.targets.zathura {
           notification-error-bg = c.bg;
           notification-error-fg = c.red;
           notification-warning-bg = c.bg;
@@ -95,21 +111,6 @@ in
           recolor-darkcolor = c.fg;
           recolor = true;
           # recolor-keephue             true      # keep original color
-
-          # sandbox = "none";
-
-          database = "sqlite";
-          incremental-search = true;
-          abort-clear-search = true;
-          dbus-service = false;
-          show-recent = 10;
-          show-hidden = true;
-          link-zoom = true;
-          link-hadjust = true;
-          show-directories = true;
-
-          n-completion-items = 25;
-          continuous-hist-save = true;
         };
         extraConfig = ''
           # set adjust-open width

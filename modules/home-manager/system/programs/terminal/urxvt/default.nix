@@ -128,26 +128,6 @@ in
 
     # Configurações de comportamento, abas, clipboard, atalhos, fontes e cores do tema ativo
     xresources.properties = {
-      # Cores derivadas do tema desktop ativo
-      "*background" = c.bg;
-      "*foreground" = c.fg;
-      "*color0" = c.bgDark;
-      "*color1" = c.red;
-      "*color2" = c.green;
-      "*color3" = c.yellow;
-      "*color4" = c.blue;
-      "*color5" = c.purple;
-      "*color6" = c.cyan;
-      "*color7" = c.fgMuted;
-      "*color8" = c.border;
-      "*color9" = c.red;
-      "*color10" = c.green;
-      "*color11" = c.yellow;
-      "*color12" = c.blue;
-      "*color13" = c.pink;
-      "*color14" = c.teal;
-      "*color15" = c.fg;
-
       # extensions i use
       "URxvt.perl-ext-common" = "default,clipboard,matcher,tabbedex,vtwheel";
       "URxvt.perl-lib" = "${rxvtPackage}/lib/urxvt/perl";
@@ -192,7 +172,6 @@ in
       "URxvt.iso14755_52" = "false";
       "URxvt.geometry" = "100x50";
       "URxvt.depth" = "32";
-      "URxvt.background" = "[95]${c.bg}";
       "URxvt.skipBuiltinGlyphs" = "false";
 
       # Espaçamento (alinha ícones Nerd Font perfeitamente e evita corte/distorção)
@@ -208,6 +187,27 @@ in
         "xft:Hack Nerd Font:italic:size=12,xft:JetBrainsMono Nerd Font:italic:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:italic:size=12";
       "URxvt.boldItalicFont" =
         "xft:Hack Nerd Font:bold:italic:size=12,xft:JetBrainsMono Nerd Font:bold:italic:size=12,xft:Symbols Nerd Font Mono:size=12,xft:Hack:bold:italic:size=12";
+    }
+    // lib.optionalAttrs config.desktop.theme.targets.urxvt {
+      "*background" = c.bg;
+      "*foreground" = c.fg;
+      "*color0" = c.bgDark;
+      "*color1" = c.red;
+      "*color2" = c.green;
+      "*color3" = c.yellow;
+      "*color4" = c.blue;
+      "*color5" = c.purple;
+      "*color6" = c.cyan;
+      "*color7" = c.fgMuted;
+      "*color8" = c.border;
+      "*color9" = c.red;
+      "*color10" = c.green;
+      "*color11" = c.yellow;
+      "*color12" = c.blue;
+      "*color13" = c.pink;
+      "*color14" = c.teal;
+      "*color15" = c.fg;
+      "URxvt.background" = "[95]${c.bg}";
     };
 
     # Daemon urxvtd via systemd do usuário

@@ -22,9 +22,9 @@ in
         add_newline = false;
         command_timeout = 1000;
 
-        palette = "current_theme";
+        palette = lib.mkIf config.desktop.theme.targets.starship "current_theme";
 
-        palettes.current_theme = {
+        palettes.current_theme = lib.mkIf config.desktop.theme.targets.starship {
           inherit (c)
             rosewater
             flamingo

@@ -176,7 +176,7 @@ in
       ];
 
       # Cores derivadas dinamicamente de config.desktop.theme.colors
-      colors =
+      colors = mkIf config.desktop.theme.targets.fzf (
         let
           c = config.desktop.theme.colors;
         in
@@ -194,7 +194,8 @@ in
           prompt = c.accent;
           "hl+" = c.red;
           "selected-bg" = c.surface;
-        };
+        }
+      );
     };
 
     home = {

@@ -87,8 +87,9 @@ in
       ];
     };
 
-    xdg.configFile."eza/theme.yml".text =
-      if cfg.customTheme != null then cfg.customTheme else dynamicThemeText;
+    xdg.configFile."eza/theme.yml" = mkIf config.desktop.theme.targets.eza {
+      text = if cfg.customTheme != null then cfg.customTheme else dynamicThemeText;
+    };
 
     home.shellAliases = {
       l2 = "${getExe config.programs.eza.package} --color=always --icons --header --time-style=long-iso -l -T -h -L=2";
