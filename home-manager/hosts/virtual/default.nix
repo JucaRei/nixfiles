@@ -65,5 +65,7 @@ in
         "com.rustdesk.RustDesk"
       ];
     };
+
+    programs.antigravity-cli.enable = true;
   };
 }
