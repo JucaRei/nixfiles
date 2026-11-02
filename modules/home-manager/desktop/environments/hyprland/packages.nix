@@ -9,58 +9,34 @@
 let
   inherit (lib) mkIf optionals;
   cfg = config.desktop.hyprland.packages;
+  sets = import ../../packages/sets.nix { inherit pkgs; };
 
   isNixOS = osConfig != null;
 in
 {
   options.desktop.hyprland.packages = {
     enable = lib.my.mkBool config.desktop.hyprland.enable "Enable hyprland-related packages";
-
     extraPackages = lib.my.mkListOf lib.types.package [ ] "Additional packages to include";
   };
 
   config = mkIf cfg.enable {
     home.packages =
-      with pkgs;
-      [
-        # Terminal e utilitários
-        (nixGLWrapper alacritty)
-
-        # Captura de tela e Clipboard
-        grim
-        slurp
-        wl-clipboard
-        cliphist
-        swappy
-
-        # Áudio, Brilho e Mídia
-        pavucontrol
-        pamixer
-        playerctl
-        brightnessctl
-
-        # Polkit e Notificações
+      sets.wayland
+      ++ [ (nixGLWrapper pkgs.alacritty) ]
+      ++ (with pkgs; [
         polkit_gnome
-        libnotify
-
-        # Utilitários Desktop e Aparência
-        networkmanagerapplet
-        galculator
         wtype
-        xdg-utils
-
-        # Temas e Fontes
         catppuccin-gtk
         papirus-icon-theme
         catppuccin-cursors.mochaDark
-        inter
-      ]
-      ++ optionals (!isNixOS) [
-        glibcLocales
-        xdg-desktop-portal-gtk
-        xdg-desktop-portal-hyprland
-        intel-vaapi-driver
-      ]
+      ])
+      ++ optionals (!isNixOS) (
+        sets.wayland-standalone
+        ++ (with pkgs; [
+          xdg-desktop-portal-hyprland
+          intel-vaapi-driver
+        ])
+      )
       ++ cfg.extraPackages;
 
     xdg.enable = true;
@@ -79,10 +55,7 @@ in
       ".local/bin/start-hyprland" = {
         text = ''
           #!/bin/sh
-          # Limpa variáveis herdadas do compositor do Display Manager (ex: Weston no SDDM)
-          # para que o Aquamarine acesse diretamente o backend DRM no hardware
-          unset WAYLAND_DISPLAY
-          unset DISPLAY
+          unset WAYLAND_DISPLAY DISPLAY
 
           if [ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]; then
             . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -94,23 +67,14 @@ in
             . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
           fi
 
-          # Suporte a drivers gráficos Mesa e GBM em distribuições não-NixOS (Fedora standalone)
-          # Garante que libgbm e Aquamarine encontrem dri_gbm.so sem falhar na busca de /run/opengl-driver
           export GBM_BACKENDS_PATH="${pkgs.mesa}/lib/gbm:/usr/lib64/gbm''${GBM_BACKENDS_PATH:+:$GBM_BACKENDS_PATH}"
           export LIBGL_DRIVERS_PATH="${pkgs.mesa}/lib/dri:/usr/lib64/dri''${LIBGL_DRIVERS_PATH:+:$LIBGL_DRIVERS_PATH}"
           export __EGL_VENDOR_LIBRARY_DIRS="${pkgs.mesa}/share/glvnd/egl_vendor.d:/usr/share/glvnd/egl_vendor.d''${__EGL_VENDOR_LIBRARY_DIRS:+:$__EGL_VENDOR_LIBRARY_DIRS}"
-
-          # Aceleração de hardware VA-API para Intel Sandy Bridge (i965)
           export LIBVA_DRIVER_NAME="i965"
           export LIBVA_DRIVERS_PATH="${pkgs.intel-vaapi-driver}/lib/dri:/usr/lib64/dri''${LIBVA_DRIVERS_PATH:+:$LIBVA_DRIVERS_PATH}"
-
-          # Tema GTK escuro unificado
           export GTK_THEME="catppuccin-mocha-blue-standard+rimless"
 
-          # Sincroniza ambiente de drivers gráficos com o systemd do usuário
           systemctl --user set-environment GBM_BACKENDS_PATH="$GBM_BACKENDS_PATH" LIBGL_DRIVERS_PATH="$LIBGL_DRIVERS_PATH" __EGL_VENDOR_LIBRARY_DIRS="$__EGL_VENDOR_LIBRARY_DIRS" LIBVA_DRIVER_NAME="$LIBVA_DRIVER_NAME" LIBVA_DRIVERS_PATH="$LIBVA_DRIVERS_PATH" GTK_THEME="$GTK_THEME" 2>/dev/null || true
-
-          # Evita tentativa de carregar backend Vulkan inexistente no Intel Sandy Bridge (HD 3000)
           unset WLR_BACKEND
 
           exec ${pkgs.hyprland}/bin/start-hyprland "$@"

@@ -7,53 +7,25 @@
 let
   inherit (lib) mkIf;
   cfg = config.desktop.dwm;
+  sets = import ../../packages/sets.nix { inherit pkgs; };
 in
 {
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [
-      # Utilitários do DWM
-      dmenu
-      slstatus
-      xdotool
-      wmctrl
-      xprop
-      xset
-      xsetroot
-      xrandr
-      xrdb
-      xinput
-      picom
-      rofi-power-menu
-      brightnessctl
-      betterlockscreen
-      i3lock-color
-      lightlocker
-      xss-lock
-      glib
-      dconf
-      xkbset
-      inotify-tools
-      networkmanagerapplet
-      libnotify
-
-      # Wallpaper e Visualização de Imagens
-      feh
-      sxiv
-
-      # Fontes adicionais de compatibilidade de interface
-      cantarell-fonts
-
-      # Dependências de captura de tela utilizadas pelos scripts do dwm-titus
-      maim
-      slop
-      xclip
-
-      # Dependências de sistema / ferramentas usadas pelos scripts do Titus
-      gawk
-      gnused
-      coreutils
-      bc
-      jq
-    ];
+    home.packages =
+      sets.x11
+      ++ (with pkgs; [
+        # Utilitários específicos do DWM e scripts do Titus
+        dmenu
+        slstatus
+        rofi-power-menu
+        betterlockscreen
+        i3lock-color
+        lightlocker
+        inotify-tools
+        sxiv
+        gawk
+        gnused
+        coreutils
+      ]);
   };
 }
