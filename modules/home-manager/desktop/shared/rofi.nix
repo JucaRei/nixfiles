@@ -7,16 +7,32 @@
 let
   inherit (lib) mkIf;
   cfg = config.desktop.shared.rofi;
+  rofiPkg = if cfg.backend == "wayland" then pkgs.rofi-wayland else pkgs.rofi;
+
+  hyprCliphist = pkgs.writeShellScriptBin "hypr-cliphist" ''
+    ${pkgs.cliphist}/bin/cliphist list | ${rofiPkg}/bin/rofi -dmenu -p " 󰅌 Clipboard " -theme-str 'window {width: 700px;}' | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
+  '';
 in
 {
   options.desktop.shared.rofi = {
-    enable = lib.my.mkBool false "Enable shared rofi application launcher for desktop environments (BSPWM, DWM, etc.)";
+    enable = lib.my.mkBool false "Enable shared rofi application launcher for desktop environments (BSPWM, DWM, Hyprland, etc.)";
+
+    backend =
+      lib.my.mkEnum
+        [
+          "x11"
+          "wayland"
+        ]
+        (if config.desktop.display-servers.backend == "wayland" then "wayland" else "x11")
+        "Rofi backend package (x11 -> pkgs.rofi, wayland -> pkgs.rofi-wayland)";
   };
 
   config = mkIf cfg.enable {
+    home.packages = lib.optional (cfg.backend == "wayland") hyprCliphist;
+
     programs.rofi = {
       enable = true;
-      package = pkgs.rofi;
+      package = rofiPkg;
       font = "Inter 11";
       terminal = config.system.programs.terminal.activeCommand or "terminal";
       extraConfig = {
@@ -35,18 +51,19 @@ in
         let
           inherit (config.lib.formats.rasi) mkLiteral;
           c = config.desktop.theme.colors;
+          isWayland = cfg.backend == "wayland";
         in
         {
           "*" = {
             bg-col = mkLiteral c.bg;
-            bg-col-light = mkLiteral c.bgAlt;
+            bg-col-light = mkLiteral (if isWayland then c.bgDark else c.bgAlt);
             border-col = mkLiteral c.accent;
-            selected-col = mkLiteral c.surfaceAlt;
+            selected-col = mkLiteral (if isWayland then c.surface else c.surfaceAlt);
             blue = mkLiteral c.accent;
             fg-col = mkLiteral c.fg;
             fg-col2 = mkLiteral c.red;
-            grey = mkLiteral c.fgSubtle;
-            width = mkLiteral "600";
+            grey = mkLiteral (if isWayland then c.fgMuted else c.fgSubtle);
+            width = mkLiteral (if isWayland then "620" else "600");
           };
 
           "element-text, element-icon , mode-switcher" = {
@@ -55,7 +72,7 @@ in
           };
 
           "window" = {
-            height = mkLiteral "400px";
+            height = mkLiteral (if isWayland then "420px" else "400px");
             border = mkLiteral "2px";
             border-color = mkLiteral "@border-col";
             border-radius = mkLiteral "16px";
@@ -64,7 +81,7 @@ in
 
           "mainbox" = {
             background-color = mkLiteral "@bg-col";
-            padding = mkLiteral "10px";
+            padding = mkLiteral (if isWayland then "12px" else "10px");
           };
 
           "inputbar" = {
@@ -96,7 +113,7 @@ in
             margin = mkLiteral "0px 0px 0px 6px";
             text-color = mkLiteral "@fg-col";
             background-color = mkLiteral "transparent";
-            placeholder = "Pesquisar...";
+            placeholder = if isWayland then "Pesquisar ou executar..." else "Pesquisar...";
             placeholder-color = mkLiteral "@grey";
           };
 
