@@ -17,10 +17,26 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 ## Tabela de Acompanhamento por Fase
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 284 | 285 | — | — | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 32.618 | 32.308 | — | — | $\le 29.000$ |
+| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | 16 | 16 | — | — | Helpers `lib.my` |
+| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 30 | 30 | — | — | $\le 15$ |
+| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | 66 | 83 | 83 | — | — | 0 |
+| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | 37 | 38 | 38 | — | — | 0 |
+| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | 3* | 3* | 3* | — | — | 0 |
+| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — | — | 0 |
+| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — | — | 0 |
 
 ---
 
 ## Notas de Evolução
+
+### Fase 7 — Compartilhar o que é comum
+- **Sets de Pacotes Centralizados (`T7.1`)**: Criado `modules/home-manager/desktop/packages/sets.nix` definindo `x11-core`, `x11-standalone`, `wayland-core`, `wayland-standalone`, `launcher`, `screenshot`, `clipboard`, `notifications` e `fonts`. Os 4 módulos `packages.nix` (`bspwm`, `dwm`, `hyprland`, `mangowm`) foram unificados e reduzidos de 846 linhas para 479 linhas (meta $\le 500$ linhas superada). Scripts utilitários de shell inline com templates extensos em `mangowm` e `bspwm` foram extraídos hermeticamente para subpastas `scripts/` e validados com `shellcheck`.
+- **Compositor Picom Compartilhado (`T7.2`)**: Criado `modules/home-manager/desktop/shared/picom.nix` comum a BSPWM e DWM com backend dinâmico (`glx`/`xrender`/`egl`), cantos arredondados, sombras e blur dual-kawase. As regras libconfig v12 foram extraídas para o template hermético `_picom-template.nix`, eliminando mais de 500 linhas duplicadas e obsoletas do `bspwm/picom.nix` (que caiu de 574 para 74 linhas) e `dwm/picom.nix` (que caiu de 60 para 29 linhas). O DWM e o Quickshell ganharam suporte nativo a `nixGLWrapper` e compatibilidade total com o painel de opacidade via marcadores gerenciados `# dwm-titus opacity defaults`.
+- **Rofi Unificado X11 e Wayland (`T7.3`)**: O módulo `desktop/shared/rofi.nix` foi unificado para suportar `backend = "x11" | "wayland"` com troca automática de pacote (`pkgs.rofi` vs `pkgs.rofi-wayland`) e clipboard (`hypr-cliphist`). O antigo `modules/home-manager/desktop/display-servers/wayland/traditional/rofi.nix` teve suas 174 linhas substituídas por um delegator enxuto de 25 linhas, mantendo retrocompatibilidade total com `desktop.wayland.traditional.rofi` e `desktop.hyprland.rofi`.
+- **Redução e Estabilidade**: Redução líquida de 310 linhas de código `.nix`. Linters `statix` e `deadnix` zerados (0 avisos). `nix fmt` limpo. Dry-run 100% aprovado para `juca@nitro` e `nixosConfigurations.rocinante`. Snapshot `fase7` gravado e verificado.
 
 ### Fase 6 — Motor de tema customizável
 - **Overrides e Custom Inline (`T6.1`)**: Adicionado `desktop.theme.overrides` (sobrescrita pontual de papéis) e `desktop.theme.custom` (declaração de paleta inline completa sem necessidade de arquivo físico). Adicionadas asserções estritas com validação de formato `#rrggbb` e presença dos 18 papéis obrigatórios, com tabela de fallback para mensagens de erro claras sem quebras prematuras.
