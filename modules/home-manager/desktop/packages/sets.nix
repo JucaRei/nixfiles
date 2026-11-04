@@ -14,7 +14,6 @@ rec {
     xrandr
     xrdb
     xinput
-    picom
     xss-lock
     glib
     dconf

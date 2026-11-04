@@ -65,8 +65,15 @@ let
     # --- 2. X11 (xrandr) ---
     if [ -n "''${DISPLAY:-}" ]; then
       if command -v ${pkgs.xrandr}/bin/xrandr >/dev/null 2>&1; then
-        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 2>/dev/null || true
-        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-0 2>/dev/null || true
+        _sink=$(${pkgs.xrandr}/bin/xrandr --listproviders 2>/dev/null | grep -i "Sink Output" | grep -v "Source Output" | head -n1 | sed -n 's/.*name:\([^ ]*\).*/\1/p' || true)
+        _source=$(${pkgs.xrandr}/bin/xrandr --listproviders 2>/dev/null | grep -i "Source Output" | head -n1 | sed -n 's/.*name:\([^ ]*\).*/\1/p' || true)
+        if [ -n "$_sink" ] && [ -n "$_source" ]; then
+          ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource "$_sink" "$_source" 2>/dev/null || true
+        fi
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting >/dev/null 2>&1 || true
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-0 modesetting >/dev/null 2>&1 || true
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 >/dev/null 2>&1 || true
+        ${pkgs.xrandr}/bin/xrandr --auto >/dev/null 2>&1 || true
         connected_outputs=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1)
 
         ${concatMapStringsSep "\n        " (
@@ -99,7 +106,8 @@ let
           p_mon=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected primary" | cut -d" " -f1)
           [ -z "$p_mon" ] && p_mon=$(bspc query -M -m primary --names 2>/dev/null || true)
           [ -z "$p_mon" ] && p_mon=$(bspc query -M --names 2>/dev/null | head -n1)
-          o_mons=$(bspc query -M --names 2>/dev/null | grep -v "^$p_mon$" || true)
+          o_mons=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1 | grep -v "^$p_mon$" || true)
+          [ -z "$o_mons" ] && o_mons=$(bspc query -M --names 2>/dev/null | grep -v "^$p_mon$" || true)
 
           if [ -n "$p_mon" ] && [ -n "$o_mons" ]; then
             bspc wm -O "$p_mon" $o_mons 2>/dev/null || true
@@ -251,8 +259,15 @@ in
       in
       ''
         # --- Configuração declarativa de monitores (desktop.monitors) ---
-        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 2>/dev/null || true
-        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource modesetting NVIDIA-0 2>/dev/null || true
+        _sink=$(${pkgs.xrandr}/bin/xrandr --listproviders 2>/dev/null | grep -i "Sink Output" | grep -v "Source Output" | head -n1 | sed -n 's/.*name:\([^ ]*\).*/\1/p' || true)
+        _source=$(${pkgs.xrandr}/bin/xrandr --listproviders 2>/dev/null | grep -i "Source Output" | head -n1 | sed -n 's/.*name:\([^ ]*\).*/\1/p' || true)
+        if [ -n "$_sink" ] && [ -n "$_source" ]; then
+          ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource "$_sink" "$_source" 2>/dev/null || true
+        fi
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-G0 modesetting >/dev/null 2>&1 || true
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource NVIDIA-0 modesetting >/dev/null 2>&1 || true
+        ${pkgs.xrandr}/bin/xrandr --setprovideroutputsource 1 0 >/dev/null 2>&1 || true
+        ${pkgs.xrandr}/bin/xrandr --auto >/dev/null 2>&1 || true
         connected_outputs=$(${pkgs.xrandr}/bin/xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1)
         ${xrandrCommands}
 

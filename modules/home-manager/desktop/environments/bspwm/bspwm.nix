@@ -396,7 +396,8 @@ in
             [ -z "$primary_mon" ] && primary_mon=$(bspc query -M -m primary --names 2>/dev/null || true)
             [ -z "$primary_mon" ] && primary_mon=$(bspc query -M --names 2>/dev/null | head -n1)
 
-            other_mons=$(bspc query -M --names 2>/dev/null | grep -v "^$primary_mon$" || true)
+            other_mons=$(xrandr --query 2>/dev/null | grep " connected" | cut -d" " -f1 | grep -v "^$primary_mon$" || true)
+            [ -z "$other_mons" ] && other_mons=$(bspc query -M --names 2>/dev/null | grep -v "^$primary_mon$" || true)
 
             if [ -n "$primary_mon" ] && [ -n "$other_mons" ]; then
               bspc wm -O "$primary_mon" $other_mons 2>/dev/null || true
