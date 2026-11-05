@@ -42,11 +42,19 @@ in
     };
 
     system = {
-      programs.multimedia.mpv = {
-        profile = "nitro";
-        hybridGraphics = true;
-        vaapiDevice = "/dev/dri/by-path/pci-0000:00:02.0-render";
-        defaultNvidia = true;
+      programs  = {
+        multimedia.mpv = {
+          profile = "nitro";
+          hybridGraphics = true;
+          vaapiDevice = "/dev/dri/by-path/pci-0000:00:02.0-render";
+          defaultNvidia = true;
+        };
+
+        editors = {
+          antigravity = {
+            enable = true;
+          };
+        };
       };
 
       services.flatpak = {

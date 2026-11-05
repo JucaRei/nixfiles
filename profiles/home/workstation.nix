@@ -76,7 +76,7 @@ in
         };
 
         editors = {
-          antigravity.enable = mkDefault true;
+          antigravity.enable = mkDefault false;
         };
 
         file-manager = {

@@ -20,7 +20,19 @@ in
     system.programs.editors.antigravity = {
       enable = mkEnableOption "Google Antigravity AI IDE";
       package = lib.my.mkPkg (
-        if isNixOS then pkgs.unstable.antigravity-ide-fhs else nixGLWrapper pkgs.unstable.antigravity-ide
+        let
+          base =
+            if isNixOS then pkgs.unstable.antigravity-ide-fhs else nixGLWrapper pkgs.unstable.antigravity-ide;
+        in
+        pkgs.symlinkJoin {
+          name = "antigravity-ide";
+          paths = [ base ];
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram $out/bin/antigravity-ide \
+              --set NODE_TLS_REJECT_UNAUTHORIZED 0
+          '';
+        }
       ) "Package or wrapper for Antigravity IDE.";
       remoteDebuggingPort =
         lib.my.mkOpt (lib.types.nullOr (lib.types.either lib.types.port lib.types.str)) "9004"
@@ -33,6 +45,7 @@ in
       packages = [
         cfg.package
         (pkgs.writeShellScriptBin "antigravity" ''
+          export NODE_TLS_REJECT_UNAUTHORIZED=0
           exec antigravity-ide ${
             optionalString (
               cfg.remoteDebuggingPort != null

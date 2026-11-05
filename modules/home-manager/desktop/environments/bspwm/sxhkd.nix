@@ -357,7 +357,7 @@ in
   config = mkIf cfg.enable {
     # Recarregar automaticamente o sxhkd ao rodar switch-home (sem reiniciar o bspwm)
     home.activation.reloadSxhkd = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -USR1 -x sxhkd 2>/dev/null || (cd "$HOME" && ${pkgs.sxhkd}/bin/sxhkd &)
+      $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -USR1 -x sxhkd 2>/dev/null || (cd "$HOME" && $DRY_RUN_CMD nohup ${pkgs.sxhkd}/bin/sxhkd >/dev/null 2>&1 &)
     '';
 
     services.sxhkd = {

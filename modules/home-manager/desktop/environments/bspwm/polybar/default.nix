@@ -261,7 +261,12 @@ in
       # Recarregar automaticamente o Stalonetray ao rodar switch-home se habilitado
       activation.reloadStalonetray = mkIf (cfg.tray.enable && config.services.stalonetray.enable) (
         lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          $DRY_RUN_CMD systemctl --user restart stalonetray 2>/dev/null || (${pkgs.procps}/bin/pkill -x stalonetray 2>/dev/null && ${pkgs.stalonetray}/bin/stalonetray 2>/dev/null || true) &
+          if systemctl --user is-active --quiet stalonetray.service 2>/dev/null; then
+            $DRY_RUN_CMD systemctl --user restart stalonetray.service 2>/dev/null || true
+          elif ${pkgs.procps}/bin/pgrep -x stalonetray >/dev/null 2>&1; then
+            $DRY_RUN_CMD ${pkgs.procps}/bin/pkill -x stalonetray 2>/dev/null || true
+            $DRY_RUN_CMD nohup ${pkgs.stalonetray}/bin/stalonetray >/dev/null 2>&1 &
+          fi
         ''
       );
 
