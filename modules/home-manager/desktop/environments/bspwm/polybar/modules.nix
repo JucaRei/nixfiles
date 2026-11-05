@@ -546,14 +546,16 @@ in
   "module/bluetooth" = {
     type = "custom/script";
     exec = "${scripts.bluetoothScript}";
-    interval = 5;
-    format = "%{A1:${scripts.rofiBluetoothMenu}:}%{A2:${pkgs.blueman}/bin/blueman-manager:}%{A3:${scripts.rofiBluetoothMenu} --toggle:}<label>%{A}%{A}%{A}";
+    interval = 3;
+    format = "%{A1:${scripts.rofiBluetoothMenu}:}%{A2:${pkgs.blueman}/bin/blueman-manager:}%{A3:${scripts.rofiBluetoothMenu} --toggle:}%{A4:${scripts.rofiBluetoothMenu} --scan:}%{A5:${scripts.rofiBluetoothMenu} --scan:}<label>%{A}%{A}%{A}%{A}%{A}";
     label = "%output%";
     label-padding = 1;
     label-foreground = colors.sapphire;
     click-left = "${scripts.rofiBluetoothMenu}";
     click-middle = "${pkgs.blueman}/bin/blueman-manager";
     click-right = "${scripts.rofiBluetoothMenu} --toggle";
+    scroll-up = "${scripts.rofiBluetoothMenu} --scan";
+    scroll-down = "${scripts.rofiBluetoothMenu} --scan";
   };
 
   # --- Uso de CPU ---

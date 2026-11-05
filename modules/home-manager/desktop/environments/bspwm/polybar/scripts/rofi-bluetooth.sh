@@ -74,8 +74,12 @@ get_device_icon() {
       dunstify -a "Bluetooth" -u "$urgency" -i "$icon" -h string:x-dunst-stack-tag:bluetooth-osd -t 3000 "$title" "$msg"
     }
 
+    bt_cmd() {
+      printf "%s\nquit\n" "$*" | bluetoothctl 2>/dev/null | tr -d '\r' | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g'
+    }
+
     power_on() {
-      bluetoothctl show 2>/dev/null | grep -i "Powered:" | grep -q "yes"
+      bt_cmd "show" | grep -i "Powered:" | grep -q "yes"
     }
 
     toggle_power() {
@@ -83,14 +87,15 @@ get_device_icon() {
       if power_on; then
         # 1. Parar qualquer escaneamento em andamento
         pkill -f "bluetoothctl.*scan" >/dev/null 2>&1 || true
+        bt_cmd "scan off" >/dev/null 2>&1 || true
 
         # 2. Desligar o controlador via pipe e direto
         local ctrl
-        ctrl=$(bluetoothctl list 2>/dev/null | head -n1 | awk '{print $2}')
+        ctrl=$(bt_cmd "list" | head -n1 | awk '{print $2}')
         if [ -n "$ctrl" ]; then
           printf "select %s\npower off\nquit\n" "$ctrl" | bluetoothctl >/dev/null 2>&1 || true
         fi
-        bluetoothctl power off >/dev/null 2>&1 || true
+        bt_cmd "power off" >/dev/null 2>&1 || true
 
         # 3. Aguardar confirmação do desligamento
         local i=0
@@ -110,7 +115,7 @@ get_device_icon() {
         local k=0
         local ctrl=""
         while [ "$k" -lt 15 ]; do
-          ctrl=$(bluetoothctl list 2>/dev/null | head -n1 | awk '{print $2}')
+          ctrl=$(bt_cmd "list" | head -n1 | awk '{print $2}')
           [ -n "$ctrl" ] && break
           sleep 0.2
           k=$((k + 1))
@@ -120,7 +125,7 @@ get_device_icon() {
         if [ -n "$ctrl" ]; then
           printf "select %s\npower on\nquit\n" "$ctrl" | bluetoothctl >/dev/null 2>&1 || true
         fi
-        bluetoothctl power on >/dev/null 2>&1 || true
+        bt_cmd "power on" >/dev/null 2>&1 || true
 
         # 4. Aguardar o controlador efetivamente ligar
         local i=0
@@ -129,7 +134,7 @@ get_device_icon() {
             if [ -n "$ctrl" ]; then
               printf "select %s\npower on\nquit\n" "$ctrl" | bluetoothctl >/dev/null 2>&1 || true
             else
-              bluetoothctl power on >/dev/null 2>&1 || true
+              bt_cmd "power on" >/dev/null 2>&1 || true
             fi
           fi
           sleep 0.2
@@ -150,33 +155,39 @@ get_device_icon() {
     }
 
     scan_on() {
-      bluetoothctl show 2>/dev/null | grep -i "Discovering:" | grep -q "yes"
+      pgrep -f "bluetoothctl.*scan" >/dev/null 2>&1 || bt_cmd "show" | grep -i "Discovering:" | grep -q "yes"
     }
 
     toggle_scan() {
       if scan_on; then
         pkill -f "bluetoothctl.*scan" >/dev/null 2>&1 || true
-        bluetoothctl scan off >/dev/null 2>&1 || true
-        sleep 0.2
+        bt_cmd "scan off" >/dev/null 2>&1 || true
+        sleep 0.3
         notify_bt "low" "bluetooth-active" "Escaneamento Parado" "Busca por dispositivos interrompida."
       else
-        notify_bt "normal" "bluetooth-active" "Buscando Dispositivos..." "Varredura ativa em segundo plano."
-        bluetoothctl scan on >/dev/null 2>&1 &
-        sleep 1.2
+        notify_bt "normal" "bluetooth-active" "Buscando Dispositivos..." "Varredura ativa em segundo plano por 60s."
+        pkill -f "bluetoothctl.*scan" >/dev/null 2>&1 || true
+        (
+          printf "scan on\n"
+          sleep 60
+          printf "scan off\nquit\n"
+        ) | bluetoothctl >/dev/null 2>&1 &
+        # Aguarda brevemente para que os primeiros beacons sejam capturados
+        sleep 2.5
       fi
       show_menu
     }
 
     pairable_on() {
-      bluetoothctl show 2>/dev/null | grep -i "Pairable:" | grep -q "yes"
+      bt_cmd "show" | grep -i "Pairable:" | grep -q "yes"
     }
 
     toggle_pairable() {
       if pairable_on; then
-        bluetoothctl pairable off >/dev/null 2>&1 || true
+        bt_cmd "pairable off" >/dev/null 2>&1 || true
         notify_bt "low" "bluetooth-active" "Modo Pareável" "Desativado."
       else
-        bluetoothctl pairable on >/dev/null 2>&1 || true
+        bt_cmd "pairable on" >/dev/null 2>&1 || true
         notify_bt "normal" "bluetooth-active" "Modo Pareável" "Ativado. Outros dispositivos podem parear."
       fi
       sleep 0.2
@@ -184,15 +195,15 @@ get_device_icon() {
     }
 
     discoverable_on() {
-      bluetoothctl show 2>/dev/null | grep -i "Discoverable:" | grep -q "yes"
+      bt_cmd "show" | grep -i "Discoverable:" | grep -q "yes"
     }
 
     toggle_discoverable() {
       if discoverable_on; then
-        bluetoothctl discoverable off >/dev/null 2>&1 || true
+        bt_cmd "discoverable off" >/dev/null 2>&1 || true
         notify_bt "low" "bluetooth-active" "Visibilidade" "Oculto para novos aparelhos."
       else
-        bluetoothctl discoverable on >/dev/null 2>&1 || true
+        bt_cmd "discoverable on" >/dev/null 2>&1 || true
         notify_bt "normal" "bluetooth-active" "Visibilidade" "Visível para outros aparelhos."
       fi
       sleep 0.2
@@ -206,7 +217,7 @@ get_device_icon() {
       [ -z "$mac" ] && { show_menu; return; }
 
       local info
-      info=$(bluetoothctl info "$mac" 2>/dev/null)
+      info=$(bt_cmd "info $mac")
 
       local rname
       rname=$(echo "$info" | grep -E '^[[:space:]]*Alias:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
@@ -288,10 +299,9 @@ get_device_icon() {
       case "$CHOICE" in
         *"Desconectar"*)
           notify_bt "low" "bluetooth-active" "Desconectando..." "Desconectando $name..."
-          bluetoothctl disconnect "$mac" >/dev/null 2>&1 || true
-          printf "disconnect %s\nquit\n" "$mac" | bluetoothctl >/dev/null 2>&1 || true
+          bt_cmd "disconnect $mac" >/dev/null 2>&1 || true
           local i=0
-          while bluetoothctl info "$mac" 2>/dev/null | grep -q "Connected: yes" && [ "$i" -lt 15 ]; do
+          while bt_cmd "info $mac" | grep -q "Connected: yes" && [ "$i" -lt 15 ]; do
             sleep 0.1
             i=$((i + 1))
           done
@@ -300,19 +310,18 @@ get_device_icon() {
           ;;
         *"Conectar"*)
           notify_bt "normal" "bluetooth-active" "Conectando..." "Tentando conectar a $name..."
-          bluetoothctl trust "$mac" >/dev/null 2>&1 || true
+          bt_cmd "trust $mac" >/dev/null 2>&1 || true
           if [ "$is_paired" != "Sim" ]; then
-            bluetoothctl pair "$mac" >/dev/null 2>&1 || true
+            bt_cmd "pair $mac" >/dev/null 2>&1 || true
             sleep 0.4
           fi
-          printf "trust %s\nconnect %s\nquit\n" "$mac" "$mac" | bluetoothctl >/dev/null 2>&1 || true
-          bluetoothctl connect "$mac" >/dev/null 2>&1 || true
+          bt_cmd "connect $mac" >/dev/null 2>&1 || true
           local i=0
-          while ! bluetoothctl info "$mac" 2>/dev/null | grep -q "Connected: yes" && [ "$i" -lt 20 ]; do
+          while ! bt_cmd "info $mac" | grep -q "Connected: yes" && [ "$i" -lt 20 ]; do
             sleep 0.1
             i=$((i + 1))
           done
-          if bluetoothctl info "$mac" 2>/dev/null | grep -q "Connected: yes"; then
+          if bt_cmd "info $mac" | grep -q "Connected: yes"; then
             notify_bt "normal" "bluetooth-active" "Conectado!" "$name conectado com sucesso."
           else
             notify_bt "critical" "bluetooth-disabled" "Erro de Conexão" "Falha ao conectar a $name. Se necessário, abra o Blueman."
@@ -321,60 +330,59 @@ get_device_icon() {
           ;;
         *"Desparear"*)
           notify_bt "low" "bluetooth-active" "Despareando..." "Desconectando e despareando $name..."
-          bluetoothctl disconnect "$mac" >/dev/null 2>&1 || true
+          bt_cmd "disconnect $mac" >/dev/null 2>&1 || true
           sleep 0.2
-          bluetoothctl untrust "$mac" >/dev/null 2>&1 || true
-          bluetoothctl remove "$mac" >/dev/null 2>&1 || true
+          bt_cmd "untrust $mac" >/dev/null 2>&1 || true
+          bt_cmd "remove $mac" >/dev/null 2>&1 || true
           sleep 0.4
           notify_bt "normal" "bluetooth-disabled" "Dispositivo Despareado" "$name foi despareado com sucesso."
           show_menu
           ;;
         *"Remover"*|*"Esquecer"*)
           notify_bt "low" "bluetooth-active" "Removendo..." "Desconectando e esquecendo $name..."
-          bluetoothctl disconnect "$mac" >/dev/null 2>&1 || true
+          bt_cmd "disconnect $mac" >/dev/null 2>&1 || true
           local i=0
-          while bluetoothctl info "$mac" 2>/dev/null | grep -q "Connected: yes" && [ "$i" -lt 15 ]; do
+          while bt_cmd "info $mac" | grep -q "Connected: yes" && [ "$i" -lt 15 ]; do
             sleep 0.1
             i=$((i + 1))
           done
-          bluetoothctl untrust "$mac" >/dev/null 2>&1 || true
-          bluetoothctl remove "$mac" >/dev/null 2>&1 || true
-          printf "disconnect %s\nuntrust %s\nremove %s\nquit\n" "$mac" "$mac" "$mac" | bluetoothctl >/dev/null 2>&1 || true
+          bt_cmd "untrust $mac" >/dev/null 2>&1 || true
+          bt_cmd "remove $mac" >/dev/null 2>&1 || true
           sleep 0.5
           notify_bt "normal" "bluetooth-disabled" "Dispositivo Removido" "$name foi esquecido com sucesso."
           show_menu
           ;;
         *"Parear"*)
           notify_bt "normal" "bluetooth-active" "Pareando..." "Pareando com $name..."
-          bluetoothctl pair "$mac" >/dev/null 2>&1 || true
-          bluetoothctl trust "$mac" >/dev/null 2>&1 || true
-          printf "pair %s\ntrust %s\nconnect %s\nquit\n" "$mac" "$mac" "$mac" | bluetoothctl >/dev/null 2>&1 || true
+          bt_cmd "pair $mac" >/dev/null 2>&1 || true
+          bt_cmd "trust $mac" >/dev/null 2>&1 || true
+          bt_cmd "connect $mac" >/dev/null 2>&1 || true
           sleep 0.5
           notify_bt "normal" "bluetooth-active" "Pareado!" "$name pareado com sucesso."
           show_menu
           ;;
         *"Remover Confiança"*)
-          bluetoothctl untrust "$mac" >/dev/null 2>&1 || true
+          bt_cmd "untrust $mac" >/dev/null 2>&1 || true
           notify_bt "low" "bluetooth-active" "Não Confiável" "Confiança removida de $name."
           sleep 0.2
           device_menu "$mac" "$name"
           ;;
         *"Confiar"*)
-          bluetoothctl trust "$mac" >/dev/null 2>&1 || true
+          bt_cmd "trust $mac" >/dev/null 2>&1 || true
           notify_bt "normal" "bluetooth-active" "Confiável" "$name marcado como confiável."
           sleep 0.2
           device_menu "$mac" "$name"
           ;;
         *"Desbloquear"*)
-          bluetoothctl unblock "$mac" >/dev/null 2>&1 || true
+          bt_cmd "unblock $mac" >/dev/null 2>&1 || true
           notify_bt "normal" "bluetooth-active" "Desbloqueado" "$name foi desbloqueado."
           sleep 0.2
           device_menu "$mac" "$name"
           ;;
         *"Bloquear"*)
-          bluetoothctl disconnect "$mac" >/dev/null 2>&1 || true
+          bt_cmd "disconnect $mac" >/dev/null 2>&1 || true
           sleep 0.2
-          bluetoothctl block "$mac" >/dev/null 2>&1 || true
+          bt_cmd "block $mac" >/dev/null 2>&1 || true
           notify_bt "low" "bluetooth-disabled" "Bloqueado" "$name foi bloqueado."
           sleep 0.2
           device_menu "$mac" "$name"
@@ -398,18 +406,21 @@ get_device_icon() {
             toggle_power
             ;;
           *"Blueman"*)
-            if command -v blueman-manager >/dev/null 2>&1; then
-              blueman-manager &
-            else
-              blueman-manager &
-            fi
+            blueman-manager &
             ;;
         esac
         exit 0
       fi
 
+      local is_scan_active=0
+      scan_on && is_scan_active=1
+
       local SCAN_TEXT="󰑐  Escanear Novos Dispositivos (Scan: OFF)"
-      scan_on && SCAN_TEXT="󰑐  Parar Escaneamento (Scan: ATIVO)"
+      local REFRESH_ITEM=""
+      if [ "$is_scan_active" -eq 1 ]; then
+        SCAN_TEXT="󰑐  Parar Escaneamento (Scan: ATIVO)"
+        REFRESH_ITEM="󰑐  Atualizar Lista (Escaneamento Ativo)\n"
+      fi
 
       local PAIR_TEXT="󰌆  Modo Pareável (Pairable: OFF)"
       pairable_on && PAIR_TEXT="󰌆  Modo Pareável (Pairable: ON)"
@@ -417,7 +428,7 @@ get_device_icon() {
       local DISC_TEXT="󰈈  Visibilidade (Discoverable: OFF)"
       discoverable_on && DISC_TEXT="󰈈  Visibilidade (Discoverable: ON)"
 
-      local HEADER_ITEMS="󰂲  Desligar Bluetooth\n$SCAN_TEXT\n$PAIR_TEXT\n$DISC_TEXT\n󰂯  Abrir Blueman (Gerenciador Avançado)"
+      local HEADER_ITEMS="󰂲  Desligar Bluetooth\n$SCAN_TEXT\n$REFRESH_ITEM$PAIR_TEXT\n$DISC_TEXT\n󰂯  Abrir Blueman (Gerenciador Avançado)"
 
       local CONN_ITEMS=""
       local PAIRED_ITEMS=""
@@ -427,111 +438,54 @@ get_device_icon() {
       # 1. Obter dispositivos pareados e checar conexões
       while IFS= read -r line; do
         [ -z "$line" ] && continue
-        echo "$line" | grep -q "^Device " || continue
-        local mac
-        mac=$(echo "$line" | awk '{print $2}')
-        [[ "$mac" =~ ^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$ ]] || continue
-        SEEN_MACS+=("$mac")
+        if [[ "$line" =~ Device[[:space:]]+(([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}) ]]; then
+          local mac="${BASH_REMATCH[1]}"
+          SEEN_MACS+=("$mac")
 
-        local dinfo
-        dinfo=$(bluetoothctl info "$mac" 2>/dev/null)
+          local dinfo
+          dinfo=$(bt_cmd "info $mac")
 
-        local name
-        name=$(echo "$dinfo" | grep -E '^[[:space:]]*Alias:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
-        if [ -z "$name" ]; then
-          name=$(echo "$dinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
-        fi
-        if [ -z "$name" ]; then
-          name=$(echo "$line" | cut -d' ' -f3-)
-        fi
-        [ -z "$name" ] && name="Dispositivo Desconhecido"
-
-        local icon_class; icon_class=$(echo "$dinfo" | grep -i "Icon:" | awk '{print $2}')
-        local class_hex; class_hex=$(echo "$dinfo" | grep -i "Class:" | awk '{print $2}')
-        local uuids; uuids=$(echo "$dinfo" | grep -i "UUID:")
-        local icon; icon=$(get_device_icon "$icon_class" "$class_hex" "$uuids" "$name")
-
-        if echo "$dinfo" | grep -q "Connected: yes"; then
-          local batt=""
-          if [[ "$dinfo" =~ [Bb]attery.*\(+([0-9]+)\)+ ]]; then
-            batt="${BASH_REMATCH[1]}"
-          elif [[ "$dinfo" =~ [Bb]attery[^:]*:[[:space:]]*0x([0-9a-fA-F]+) ]]; then
-            batt=$(( 16#${BASH_REMATCH[1]} ))
-          elif [[ "$dinfo" =~ [Bb]attery[^:]*:[[:space:]]*([0-9]+)%? ]]; then
-            batt="${BASH_REMATCH[1]}"
+          local name
+          name=$(echo "$dinfo" | grep -E '^[[:space:]]*Alias:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
+          if [ -z "$name" ]; then
+            name=$(echo "$dinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
           fi
-          if [ -n "$batt" ] && [ "$batt" -le 100 ] 2>/dev/null; then
-            CONN_ITEMS+="$icon  $name  [$mac]  (󰂱 Conectado 󰁹 $batt%)\n"
+          if [ -z "$name" ]; then
+            name=$(echo "$line" | sed -E "s/.*$mac[[:space:]]*//")
+          fi
+          [ -z "$name" ] && name="Dispositivo Desconhecido"
+
+          local icon_class; icon_class=$(echo "$dinfo" | grep -i "Icon:" | awk '{print $2}')
+          local class_hex; class_hex=$(echo "$dinfo" | grep -i "Class:" | awk '{print $2}')
+          local uuids; uuids=$(echo "$dinfo" | grep -i "UUID:")
+          local icon; icon=$(get_device_icon "$icon_class" "$class_hex" "$uuids" "$name")
+
+          if echo "$dinfo" | grep -q "Connected: yes"; then
+            local batt=""
+            if [[ "$dinfo" =~ [Bb]attery.*\(+([0-9]+)\)+ ]]; then
+              batt="${BASH_REMATCH[1]}"
+            elif [[ "$dinfo" =~ [Bb]attery[^:]*:[[:space:]]*0x([0-9a-fA-F]+) ]]; then
+              batt=$(( 16#${BASH_REMATCH[1]} ))
+            elif [[ "$dinfo" =~ [Bb]attery[^:]*:[[:space:]]*([0-9]+)%? ]]; then
+              batt="${BASH_REMATCH[1]}"
+            fi
+            if [ -n "$batt" ] && [ "$batt" -le 100 ] 2>/dev/null; then
+              CONN_ITEMS+="$icon  $name  [$mac]  (󰂱 Conectado 󰁹 $batt%)\n"
+            else
+              CONN_ITEMS+="$icon  $name  [$mac]  (󰂱 Conectado)\n"
+            fi
           else
-            CONN_ITEMS+="$icon  $name  [$mac]  (󰂱 Conectado)\n"
-          fi
-        else
-          PAIRED_ITEMS+="$icon  $name  [$mac]  (Pareado)\n"
-        fi
-      done < <(bluetoothctl paired-devices 2>/dev/null)
-
-      # 2. Também verificar se há algum dispositivo conectado não pareado (ex: BLE)
-      while IFS= read -r cline; do
-        [ -z "$cline" ] && continue
-        echo "$cline" | grep -q "^Device " || continue
-        local cmac
-        cmac=$(echo "$cline" | awk '{print $2}')
-        [[ "$cmac" =~ ^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$ ]] || continue
-
-        local already_seen=0
-        for seen in "${SEEN_MACS[@]}"; do
-          if [ "$seen" = "$cmac" ]; then
-            already_seen=1
-            break
-          fi
-        done
-        [ "$already_seen" -eq 1 ] && continue
-
-        local cdinfo
-        cdinfo=$(bluetoothctl info "$cmac" 2>/dev/null)
-        if echo "$cdinfo" | grep -q "Connected: yes"; then
-          SEEN_MACS+=("$cmac")
-          local cname
-          cname=$(echo "$cdinfo" | grep -E '^[[:space:]]*Alias:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
-          if [ -z "$cname" ]; then
-            cname=$(echo "$cdinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
-          fi
-          if [ -z "$cname" ]; then
-            cname=$(echo "$cline" | cut -d' ' -f3-)
-          fi
-          [ -z "$cname" ] && cname="Dispositivo Desconhecido"
-
-          local cicon_class; cicon_class=$(echo "$cdinfo" | grep -i "Icon:" | awk '{print $2}')
-          local cclass_hex; cclass_hex=$(echo "$cdinfo" | grep -i "Class:" | awk '{print $2}')
-          local cuuids; cuuids=$(echo "$cdinfo" | grep -i "UUID:")
-          local cicon; cicon=$(get_device_icon "$cicon_class" "$cclass_hex" "$cuuids" "$cname")
-
-          local cbatt=""
-          if [[ "$cdinfo" =~ [Bb]attery.*\(+([0-9]+)\)+ ]]; then
-            cbatt="${BASH_REMATCH[1]}"
-          elif [[ "$cdinfo" =~ [Bb]attery[^:]*:[[:space:]]*0x([0-9a-fA-F]+) ]]; then
-            cbatt=$(( 16#${BASH_REMATCH[1]} ))
-          elif [[ "$cdinfo" =~ [Bb]attery[^:]*:[[:space:]]*([0-9]+)%? ]]; then
-            cbatt="${BASH_REMATCH[1]}"
-          fi
-          if [ -n "$cbatt" ] && [ "$cbatt" -le 100 ] 2>/dev/null; then
-            CONN_ITEMS+="$cicon  $cname  [$cmac]  (󰂱 Conectado 󰁹 $cbatt%)\n"
-          else
-            CONN_ITEMS+="$cicon  $cname  [$cmac]  (󰂱 Conectado)\n"
+            PAIRED_ITEMS+="$icon  $name  [$mac]  (Pareado)\n"
           fi
         fi
-      done < <(bluetoothctl devices 2>/dev/null)
+      done < <(bt_cmd "paired-devices")
 
-      # 3. Se o escaneamento estiver ativo, listar dispositivos descobertos não pareados
-      if scan_on; then
-        while IFS= read -r line; do
-          [ -z "$line" ] && continue
-          echo "$line" | grep -q "^Device " || continue
-          local mac
-          mac=$(echo "$line" | awk '{print $2}')
-          [[ "$mac" =~ ^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$ ]] || continue
+      # 2. Obter todos os dispositivos conhecidos/descobertos pelo BlueZ (conectados não pareados e disponíveis)
+      while IFS= read -r line; do
+        [ -z "$line" ] && continue
+        if [[ "$line" =~ Device[[:space:]]+(([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}) ]]; then
+          local mac="${BASH_REMATCH[1]}"
 
-          # Pula se já estiver na lista de pareados ou conectados
           local already_seen=0
           for seen in "${SEEN_MACS[@]}"; do
             if [ "$seen" = "$mac" ]; then
@@ -540,28 +494,46 @@ get_device_icon() {
             fi
           done
           [ "$already_seen" -eq 1 ] && continue
+          SEEN_MACS+=("$mac")
 
-          local sdinfo
-          sdinfo=$(bluetoothctl info "$mac" 2>/dev/null)
+          local dinfo
+          dinfo=$(bt_cmd "info $mac")
+
           local name
-          name=$(echo "$sdinfo" | grep -E '^[[:space:]]*Alias:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
+          name=$(echo "$dinfo" | grep -E '^[[:space:]]*Alias:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
           if [ -z "$name" ]; then
-            name=$(echo "$sdinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
+            name=$(echo "$dinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
           fi
           if [ -z "$name" ]; then
-            name=$(echo "$line" | cut -d' ' -f3-)
+            name=$(echo "$line" | sed -E "s/.*$mac[[:space:]]*//")
           fi
           [ -z "$name" ] && name="Dispositivo Desconhecido"
 
-          local sicon_class; sicon_class=$(echo "$sdinfo" | grep -i "Icon:" | awk '{print $2}')
-          local sclass_hex; sclass_hex=$(echo "$sdinfo" | grep -i "Class:" | awk '{print $2}')
-          local suuids; suuids=$(echo "$sdinfo" | grep -i "UUID:")
-          local sicon; sicon=$(get_device_icon "$sicon_class" "$sclass_hex" "$suuids" "$name")
-          [ "$sicon" = "󰂱" ] && sicon="󰑐"
+          local icon_class; icon_class=$(echo "$dinfo" | grep -i "Icon:" | awk '{print $2}')
+          local class_hex; class_hex=$(echo "$dinfo" | grep -i "Class:" | awk '{print $2}')
+          local uuids; uuids=$(echo "$dinfo" | grep -i "UUID:")
+          local icon; icon=$(get_device_icon "$icon_class" "$class_hex" "$uuids" "$name")
 
-          SCANNED_ITEMS+="$sicon  $name  [$mac]  (Disponível)\n"
-        done < <(bluetoothctl devices 2>/dev/null)
-      fi
+          if echo "$dinfo" | grep -q "Connected: yes"; then
+            local batt=""
+            if [[ "$dinfo" =~ [Bb]attery.*\(+([0-9]+)\)+ ]]; then
+              batt="${BASH_REMATCH[1]}"
+            elif [[ "$dinfo" =~ [Bb]attery[^:]*:[[:space:]]*0x([0-9a-fA-F]+) ]]; then
+              batt=$(( 16#${BASH_REMATCH[1]} ))
+            elif [[ "$dinfo" =~ [Bb]attery[^:]*:[[:space:]]*([0-9]+)%? ]]; then
+              batt="${BASH_REMATCH[1]}"
+            fi
+            if [ -n "$batt" ] && [ "$batt" -le 100 ] 2>/dev/null; then
+              CONN_ITEMS+="$icon  $name  [$mac]  (󰂱 Conectado 󰁹 $batt%)\n"
+            else
+              CONN_ITEMS+="$icon  $name  [$mac]  (󰂱 Conectado)\n"
+            fi
+          else
+            [ "$icon" = "󰂱" ] && icon="󰑐"
+            SCANNED_ITEMS+="$icon  $name  [$mac]  (Disponível)\n"
+          fi
+        fi
+      done < <(bt_cmd "devices")
 
       local DEV_LIST=""
       [ -n "$CONN_ITEMS" ] && DEV_LIST+="$CONN_ITEMS"
@@ -572,7 +544,11 @@ get_device_icon() {
       if [ -n "$DEV_LIST" ]; then
         MENU_CONTENT+="\n------------------------------------\n$DEV_LIST"
       else
-        MENU_CONTENT+="\n------------------------------------\n󰂲  Nenhum dispositivo pareado (ative o Escaneamento)"
+        if [ "$is_scan_active" -eq 1 ]; then
+          MENU_CONTENT+="\n------------------------------------\n󰑐  Escaneando dispositivos ao redor... (Clique para Atualizar)"
+        else
+          MENU_CONTENT+="\n------------------------------------\n󰂲  Nenhum dispositivo encontrado (Clique em Escanear)"
+        fi
       fi
 
       local SELECTED
@@ -585,6 +561,9 @@ get_device_icon() {
         *"Desligar Bluetooth"*)
           toggle_power
           ;;
+        *"Atualizar Lista"*)
+          show_menu
+          ;;
         *"Escanear Novos Dispositivos"*|*"Parar Escaneamento"*)
           toggle_scan
           ;;
@@ -595,17 +574,17 @@ get_device_icon() {
           toggle_discoverable
           ;;
         *"Abrir Blueman"*)
-          if command -v blueman-manager >/dev/null 2>&1; then
-            blueman-manager &
-          else
-            blueman-manager &
-          fi
+          blueman-manager &
           ;;
         *"----------------"*)
           show_menu
           ;;
-        *"Nenhum dispositivo"*)
-          toggle_scan
+        *"Nenhum dispositivo"*|*"Escaneando dispositivos"*)
+          if [ "$is_scan_active" -eq 1 ]; then
+            show_menu
+          else
+            toggle_scan
+          fi
           ;;
         *)
           if [[ "$SELECTED" =~ \[([0-9A-Fa-f:]{17})\] ]]; then

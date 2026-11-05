@@ -113,6 +113,7 @@ rec {
       pkgs.gawk
       pkgs.gnugrep
       pkgs.gnused
+      pkgs.procps
       pkgs.uutils-coreutils-noprefix
     ];
     runtimeEnv = colorEnv;
