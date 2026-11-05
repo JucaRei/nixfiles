@@ -193,8 +193,12 @@ let
   volumeOsdPkg = writeShellApp {
     name = "volume-osd";
     runtimeInputs = [
+      pkgs.coreutils
       pkgs.dunst
+      pkgs.gawk
+      pkgs.gnugrep
       pkgs.pamixer
+      pkgs.pulseaudio
     ];
     text = builtins.readFile ./scripts/volume-osd.sh;
   };

@@ -4,31 +4,43 @@
 get_audio_info() {
   local vol=""
   local is_muted="false"
+  local default_sink=""
 
-  if command -v pamixer >/dev/null 2>&1; then
-    vol=$(pamixer --get-volume 2>/dev/null || true)
-    is_muted=$(pamixer --get-mute 2>/dev/null || echo "false")
-  fi
+  if command -v pactl >/dev/null 2>&1; then
+    default_sink=$(pactl get-default-sink 2>/dev/null || true)
+    if [ -z "$default_sink" ]; then
+      default_sink=$(pactl info 2>/dev/null | awk -F': ' '/Default Sink:/{print $2}' || true)
+    fi
+    [ -z "$default_sink" ] && default_sink="@DEFAULT_SINK@"
 
-  if [ -z "$vol" ] && command -v pactl >/dev/null 2>&1; then
     local raw_vol
-    raw_vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null || true)
+    raw_vol=$(pactl get-sink-volume "$default_sink" 2>/dev/null || true)
     if [[ "$raw_vol" =~ ([0-9]+)% ]]; then
       vol="${BASH_REMATCH[1]}"
     fi
-    pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | grep -qi "yes" && is_muted="true"
+    pactl get-sink-mute "$default_sink" 2>/dev/null | grep -qi "yes" && is_muted="true"
+  fi
+
+  if [ -z "$vol" ] && command -v wpctl >/dev/null 2>&1; then
+    local wp_out
+    wp_out=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null || true)
+    if [[ "$wp_out" =~ [Vv]olume:[[:space:]]*([0-9]+(\.[0-9]+)?) ]]; then
+      vol=$(awk -v v="${BASH_REMATCH[1]}" 'BEGIN { printf "%d", (v * 100 + 0.5) }')
+    fi
+    if [[ "$wp_out" =~ \[MUTED\] ]]; then
+      is_muted="true"
+    fi
+  fi
+
+  if [ -z "$vol" ] && command -v pamixer >/dev/null 2>&1; then
+    vol=$(pamixer --get-volume 2>/dev/null || true)
+    is_muted=$(pamixer --get-mute 2>/dev/null || echo "false")
   fi
 
   [ -z "$vol" ] && vol="0"
 
   local dev_type="speaker"
-  if command -v pactl >/dev/null 2>&1; then
-    local default_sink
-    default_sink=$(pactl get-default-sink 2>/dev/null || true)
-    if [ -z "$default_sink" ]; then
-      default_sink=$(pactl info 2>/dev/null | awk -F': ' '/Default Sink:/{print $2}' || true)
-    fi
-
+  if [ -n "$default_sink" ] && [ "$default_sink" != "@DEFAULT_SINK@" ] && command -v pactl >/dev/null 2>&1; then
     local sink_info
     sink_info=$(pactl list sinks 2>/dev/null | awk -v sink="$default_sink" '
       $1 == "Sink" { in_sink=0 }
@@ -76,8 +88,13 @@ get_audio_info() {
     fi
   fi
 
-  if [ "$is_muted" = "true" ] || [ "$vol" -eq 0 ] 2>/dev/null; then
-    echo "%{F${COLOR_RED:-}}󰝟%{F-} %{F${COLOR_SUBTEXT0:-}}0%%{F-}"
+  if [ "$is_muted" = "true" ]; then
+    echo "%{F${COLOR_RED:-}}󰝟%{F-} %{F${COLOR_SUBTEXT0:-}}$vol%%{F-}"
+    return
+  fi
+
+  if [ "$vol" -eq 0 ] 2>/dev/null; then
+    echo "%{F${COLOR_SUBTEXT0:-}}󰕿%{F-} %{F${COLOR_TEXT:-}}0%%{F-}"
     return
   fi
 
@@ -129,7 +146,7 @@ get_audio_info
 
 while true; do
   if command -v pactl >/dev/null 2>&1; then
-    pactl subscribe 2>/dev/null | grep --line-buffered -E "('change'|'remove'|'new') on (sink|server)" 2>/dev/null | while read -r _; do
+    stdbuf -oL pactl subscribe 2>/dev/null | grep --line-buffered -E "on (sink|server)" 2>/dev/null | while read -r _; do
       get_audio_info
     done
   fi
