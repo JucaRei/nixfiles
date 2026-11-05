@@ -123,7 +123,7 @@ if [ "$power" = "yes" ]; then
           pname=$(echo "$pinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
         fi
         if [ -z "$pname" ]; then
-          pname=$(echo "$dev_line" | sed -E "s/.*$pmac[[:space:]]*//")
+          pname=$(echo "$dev_line" | sed -E "s/.*${pmac}[[:space:]]*//")
         fi
         [ -z "$pname" ] && pname="Dispositivo"
 

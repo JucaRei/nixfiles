@@ -451,7 +451,7 @@ get_device_icon() {
             name=$(echo "$dinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
           fi
           if [ -z "$name" ]; then
-            name=$(echo "$line" | sed -E "s/.*$mac[[:space:]]*//")
+            name=$(echo "$line" | sed -E "s/.*${mac}[[:space:]]*//")
           fi
           [ -z "$name" ] && name="Dispositivo Desconhecido"
 
@@ -505,7 +505,7 @@ get_device_icon() {
             name=$(echo "$dinfo" | grep -E '^[[:space:]]*Name:' | head -n1 | cut -d: -f2- | sed 's/^[[:space:]]*//')
           fi
           if [ -z "$name" ]; then
-            name=$(echo "$line" | sed -E "s/.*$mac[[:space:]]*//")
+            name=$(echo "$line" | sed -E "s/.*${mac}[[:space:]]*//")
           fi
           [ -z "$name" ] && name="Dispositivo Desconhecido"
 

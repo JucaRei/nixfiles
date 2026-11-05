@@ -37,6 +37,7 @@ let
       // {
         bashOptions = args.bashOptions or [ ];
         excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
+          "SC1087"
           "SC1091"
           "SC2001"
           "SC2005"
