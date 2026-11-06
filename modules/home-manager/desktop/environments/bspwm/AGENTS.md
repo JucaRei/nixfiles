@@ -5,7 +5,17 @@ Ambiente gráfico X11 baseado no gerenciador de janelas em tiling BSPWM.
 ## Contexto
 
 Utilizado principalmente em hosts X11 standalone como `nitro` (Debian) e VMs.
-Entrada do módulo: `default.nix`. Configuração do WM: `bspwm.nix`. Atalhos: `sxhkd.nix`. Barra: `polybar/`.
+
+### Estrutura do módulo
+- `default.nix`: Ponto de entrada (importação dinâmica via `lib.my.importDir`).
+- `options.nix`: Declaração de opções raiz (`desktop.bspwm.*`).
+- `bspwm.nix`: Integração do WM, settings, daemons systemd (`bspwm-auto-raise`, `bsp-layout`), activation e variáveis.
+- `rules.nix`: Regras declarativas de janelas (`xsession.windowManager.bspwm.rules`).
+- `_bspwmrc.nix`: Template do script de inicialização (`extraConfig`).
+- `sxhkd.nix`: Módulo do daemon SXHKD, opções de atalhos e montagem final de keybindings.
+- `_sxhkd-scripts.nix`: Wrappers herméticos dos scripts auxiliares (`writeShellApplication`).
+- `_sxhkd-bindings.nix`: Atalhos particionados por grupos lógicos (apps, janelas, navegação, layouts, workspaces, mídia/brilho).
+- `polybar/`: Barra de status Polybar modularizada.
 
 ## Decisões em vigor
 
