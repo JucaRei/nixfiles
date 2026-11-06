@@ -369,6 +369,7 @@ rec {
     name = "stalonetray-toggle";
     runtimeInputs = [
       pkgs.coreutils
+      pkgs.gnugrep
       pkgs.procps
       pkgs.stalonetray
       pkgs.xdotool

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2001,SC2005,SC2012,SC2034,SC2059,SC2076,SC2126,SC2154,SC2155,SC2183,SC2207,SC1091,SC2221,SC2222
+export LC_ALL=C
 
 get_audio_info() {
   local vol=""
@@ -18,7 +19,24 @@ get_audio_info() {
     if [[ "$raw_vol" =~ ([0-9]+)% ]]; then
       vol="${BASH_REMATCH[1]}"
     fi
-    pactl get-sink-mute "$default_sink" 2>/dev/null | grep -qi "yes" && is_muted="true"
+
+    local raw_mute
+    raw_mute=$(pactl get-sink-mute "$default_sink" 2>/dev/null || true)
+    if [[ "$raw_mute" =~ [Yy]es|[Ss]im ]]; then
+      is_muted="true"
+    fi
+
+    # Fallback direto caso o sink nominal não responda
+    if [ -z "$vol" ]; then
+      raw_vol=$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null || true)
+      if [[ "$raw_vol" =~ ([0-9]+)% ]]; then
+        vol="${BASH_REMATCH[1]}"
+      fi
+      raw_mute=$(pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null || true)
+      if [[ "$raw_mute" =~ [Yy]es|[Ss]im ]]; then
+        is_muted="true"
+      fi
+    fi
   fi
 
   if [ -z "$vol" ] && command -v wpctl >/dev/null 2>&1; then
@@ -33,13 +51,21 @@ get_audio_info() {
   fi
 
   if [ -z "$vol" ] && command -v pamixer >/dev/null 2>&1; then
-    vol=$(pamixer --get-volume 2>/dev/null || true)
-    is_muted=$(pamixer --get-mute 2>/dev/null || echo "false")
+    vol=$(pamixer --get-volume 2>/dev/null || echo "0")
+    local p_mute
+    p_mute=$(pamixer --get-mute 2>/dev/null || echo "false")
+    if [ "$p_mute" = "true" ]; then
+      is_muted="true"
+    fi
   fi
 
   [ -z "$vol" ] && vol="0"
 
   local dev_type="speaker"
+  if [ "$default_sink" = "@DEFAULT_SINK@" ] && command -v pactl >/dev/null 2>&1; then
+    default_sink=$(pactl get-default-sink 2>/dev/null || true)
+  fi
+
   if [ -n "$default_sink" ] && [ "$default_sink" != "@DEFAULT_SINK@" ] && command -v pactl >/dev/null 2>&1; then
     local sink_info
     sink_info=$(pactl list sinks 2>/dev/null | awk -v sink="$default_sink" '
@@ -90,12 +116,12 @@ get_audio_info() {
 
   if [ "$is_muted" = "true" ]; then
     echo "%{F${COLOR_RED:-}}󰝟%{F-} %{F${COLOR_SUBTEXT0:-}}$vol%%{F-}"
-    return
+    return 0
   fi
 
   if [ "$vol" -eq 0 ] 2>/dev/null; then
     echo "%{F${COLOR_SUBTEXT0:-}}󰕿%{F-} %{F${COLOR_TEXT:-}}0%%{F-}"
-    return
+    return 0
   fi
 
   local icon="󰕾"
@@ -140,16 +166,38 @@ get_audio_info() {
   fi
 
   echo "%{F$icon_color}$icon%{F-} %{F$vol_color}$vol%%{F-}"
+  return 0
 }
 
-get_audio_info
+# 1. Primeira renderização imediata para a Polybar
+get_audio_info || true
 
-while true; do
-  if command -v pactl >/dev/null 2>&1; then
-    stdbuf -oL pactl subscribe 2>/dev/null | grep --line-buffered -E "on (sink|server)" 2>/dev/null | while read -r _; do
-      get_audio_info
-    done
-  fi
-  sleep 2
-  get_audio_info
-done
+# 2. Polling periódico de segurança em background a cada 2s
+# (garante consistência contínua mesmo se eventos do daemon forem perdidos ou alterados externamente)
+(
+  while true; do
+    sleep 2
+    get_audio_info || true
+  done
+) &
+POLL_PID=$!
+trap 'kill "$POLL_PID" 2>/dev/null || true' EXIT INT TERM
+
+# 3. Escuta em tempo real através do pactl subscribe
+if command -v pactl >/dev/null 2>&1; then
+  while true; do
+    stdbuf -oL pactl subscribe 2>/dev/null | while IFS= read -r line; do
+      case "$line" in
+        *sink*|*server*|*card*|*destino*|*servidor*|*placa*)
+          get_audio_info || true
+          ;;
+      esac
+    done || true
+    sleep 1
+  done
+else
+  while true; do
+    sleep 2
+    get_audio_info || true
+  done
+fi

@@ -821,5 +821,6 @@ in
     label-foreground = colors.blue-alt;
     label-padding = 1;
     click-left = "${scripts.stalonetrayToggleScript}";
+    click-right = "${scripts.stalonetrayToggleScript} restart";
   };
 }

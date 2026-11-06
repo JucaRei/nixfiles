@@ -232,7 +232,7 @@ in
     adapter = lib.my.mkStr "ADP1" "Nome do adaptador AC em /sys/class/power_supply";
 
     tray = {
-      enable = lib.my.mkBool true "Habilitar módulo e serviço de bandeja do sistema (Stalonetray) na Polybar";
+      enable = lib.my.mkBool false "Habilitar módulo e serviço de bandeja do sistema (Stalonetray) na Polybar";
     };
   };
 
@@ -511,6 +511,11 @@ in
             netspeedRight = "encap-netspeed-right";
             dateLeft = "encap-date-left";
             dateRight = "encap-date-right";
+            trayLeft = "encap-tray-left";
+            trayRight = "encap-tray-right";
+
+            modernTray = if cfg.tray.enable then " sep tray" else "";
+            pillsTray = if cfg.tray.enable then " sp \${trayLeft} tray \${trayRight}" else "";
 
             # =========================================================================
             # ESTILO 1: MODERNO (WAYBAR / CATPPUCCIN COESO)
@@ -563,8 +568,7 @@ in
             modernMainBar = modernBaseBar // {
               modules-left = "launcher bspwm sep bsp-layout sep polywins minimized";
               modules-center = "media";
-              # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard dots notifications${modernTray} sep date sep powermenu";
-              modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard dots notifications sep date sep powermenu";
+              modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio battery sep keyboard dots notifications${modernTray} sep date sep powermenu";
             };
 
             modernPrimaryBar = modernBaseBar // {
@@ -576,8 +580,7 @@ in
             modernSecondaryBar = modernBaseBar // {
               modules-left = "bspwm sep polywins";
               modules-center = "xwindow";
-              # modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${modernTray} sep date sep powermenu";
-              modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications sep date sep powermenu";
+              modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${modernTray} sep date sep powermenu";
             };
 
             # =========================================================================
@@ -631,8 +634,7 @@ in
             pillsMainBar = pillsBaseBar // {
               modules-left = "launcher sp ${wsLeft} bspwm ${wsRight} sp bsp-layout sep polywins minimized";
               modules-center = "media";
-              # modules-right = "cpu memory temperature sep network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications${pillsTray} sp ${dateLeft} date ${dateRight} sp powermenu";
-              modules-right = "${statsLeft} cpu memory temperature ${statsRight} sp network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications sp ${dateLeft} date ${dateRight} sp powermenu";
+              modules-right = "${statsLeft} cpu memory temperature ${statsRight} sp network dots bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots notifications${pillsTray} sp ${dateLeft} date ${dateRight} sp powermenu";
             };
 
             pillsPrimaryBar = pillsBaseBar // {
@@ -644,8 +646,7 @@ in
             pillsSecondaryBar = pillsBaseBar // {
               modules-left = "${wsLeft} bspwm ${wsRight} sp polywins";
               modules-center = "xwindow";
-              # modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${pillsTray} sp ${dateLeft} date ${dateRight} sp powermenu";
-              modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications sp ${dateLeft} date ${dateRight} sp powermenu";
+              modules-right = "bluetooth sep pulseaudio dots backlight dots battery sep keyboard dots redshift dots notifications${pillsTray} sp ${dateLeft} date ${dateRight} sp powermenu";
             };
 
             # Overrides aplicados aos módulos existentes quando o estilo pills/zproger ou shapes está ativo.

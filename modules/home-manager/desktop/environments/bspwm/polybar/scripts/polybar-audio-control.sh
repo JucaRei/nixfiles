@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2001,SC2005,SC2012,SC2034,SC2059,SC2076,SC2126,SC2154,SC2155,SC2183,SC2207,SC1091,SC2221,SC2222
+export LC_ALL=C
 
 action="${1:-}"
 
@@ -13,7 +14,11 @@ notify_vol() {
     if [[ "$raw_vol" =~ ([0-9]+)% ]]; then
       vol="${BASH_REMATCH[1]}"
     fi
-    pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null | grep -qi "yes" && is_muted="true"
+    local raw_mute
+    raw_mute=$(pactl get-sink-mute @DEFAULT_SINK@ 2>/dev/null || true)
+    if [[ "$raw_mute" =~ [Yy]es|[Ss]im ]]; then
+      is_muted="true"
+    fi
   fi
 
   if [ -z "$vol" ] && command -v wpctl >/dev/null 2>&1; then
