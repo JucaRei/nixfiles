@@ -32,25 +32,35 @@ get_layout() {
   fi
 }
 
+cancel_presel() {
+  local d="$1"
+  for n in $(bspc query -N -d "$d" 2>/dev/null); do
+    bspc node "$n" -p cancel 2>/dev/null || true
+  done
+}
+
 apply_tall() {
   local d="$1"
   bspc desktop "$d" -l tiled 2>/dev/null || true
   local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
   local count=${#nodes[@]}
-  [ "$count" -lt 2 ] && return 0
+  [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
   local master="${nodes[0]}"
   for ((i=1; i<count; i++)); do
     local node="${nodes[$i]}"
     if [ "$i" -eq 1 ]; then
-      bspc node "$node" -n "$master" -p east 2>/dev/null || true
+      bspc node "$master" -p east 2>/dev/null || true
+      bspc node "$node" -n "$master" 2>/dev/null || true
     else
       local prev="${nodes[$((i-1))]}"
-      bspc node "$node" -n "$prev" -p south 2>/dev/null || true
+      bspc node "$prev" -p south 2>/dev/null || true
+      bspc node "$node" -n "$prev" 2>/dev/null || true
     fi
   done
   bspc node '@/2' -B 2>/dev/null || true
   bspc node '@/' -r 0.55 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_rtall() {
@@ -58,20 +68,23 @@ apply_rtall() {
   bspc desktop "$d" -l tiled 2>/dev/null || true
   local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
   local count=${#nodes[@]}
-  [ "$count" -lt 2 ] && return 0
+  [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
   local master="${nodes[0]}"
   for ((i=1; i<count; i++)); do
     local node="${nodes[$i]}"
     if [ "$i" -eq 1 ]; then
-      bspc node "$node" -n "$master" -p west 2>/dev/null || true
+      bspc node "$master" -p west 2>/dev/null || true
+      bspc node "$node" -n "$master" 2>/dev/null || true
     else
       local prev="${nodes[$((i-1))]}"
-      bspc node "$node" -n "$prev" -p south 2>/dev/null || true
+      bspc node "$prev" -p south 2>/dev/null || true
+      bspc node "$node" -n "$prev" 2>/dev/null || true
     fi
   done
   bspc node '@/1' -B 2>/dev/null || true
   bspc node '@/' -r 0.45 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_wide() {
@@ -79,20 +92,23 @@ apply_wide() {
   bspc desktop "$d" -l tiled 2>/dev/null || true
   local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
   local count=${#nodes[@]}
-  [ "$count" -lt 2 ] && return 0
+  [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
   local master="${nodes[0]}"
   for ((i=1; i<count; i++)); do
     local node="${nodes[$i]}"
     if [ "$i" -eq 1 ]; then
-      bspc node "$node" -n "$master" -p south 2>/dev/null || true
+      bspc node "$master" -p south 2>/dev/null || true
+      bspc node "$node" -n "$master" 2>/dev/null || true
     else
       local prev="${nodes[$((i-1))]}"
-      bspc node "$node" -n "$prev" -p east 2>/dev/null || true
+      bspc node "$prev" -p east 2>/dev/null || true
+      bspc node "$node" -n "$prev" 2>/dev/null || true
     fi
   done
   bspc node '@/2' -B 2>/dev/null || true
   bspc node '@/' -r 0.55 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_rwide() {
@@ -100,20 +116,23 @@ apply_rwide() {
   bspc desktop "$d" -l tiled 2>/dev/null || true
   local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
   local count=${#nodes[@]}
-  [ "$count" -lt 2 ] && return 0
+  [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
   local master="${nodes[0]}"
   for ((i=1; i<count; i++)); do
     local node="${nodes[$i]}"
     if [ "$i" -eq 1 ]; then
-      bspc node "$node" -n "$master" -p north 2>/dev/null || true
+      bspc node "$master" -p north 2>/dev/null || true
+      bspc node "$node" -n "$master" 2>/dev/null || true
     else
       local prev="${nodes[$((i-1))]}"
-      bspc node "$node" -n "$prev" -p east 2>/dev/null || true
+      bspc node "$prev" -p east 2>/dev/null || true
+      bspc node "$node" -n "$prev" 2>/dev/null || true
     fi
   done
   bspc node '@/1' -B 2>/dev/null || true
   bspc node '@/' -r 0.45 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_columns() {
@@ -121,15 +140,17 @@ apply_columns() {
   bspc desktop "$d" -l tiled 2>/dev/null || true
   local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
   local count=${#nodes[@]}
-  [ "$count" -lt 2 ] && return 0
+  [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
   for ((i=1; i<count; i++)); do
     local node="${nodes[$i]}"
     local prev="${nodes[$((i-1))]}"
-    bspc node "$node" -n "$prev" -p east 2>/dev/null || true
+    bspc node "$prev" -p east 2>/dev/null || true
+    bspc node "$node" -n "$prev" 2>/dev/null || true
   done
   bspc node '@/' -E 2>/dev/null || true
   bspc node '@/' -B 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_grid() {
@@ -137,15 +158,19 @@ apply_grid() {
   bspc desktop "$d" -l tiled 2>/dev/null || true
   local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
   local count=${#nodes[@]}
-  [ "$count" -lt 2 ] && return 0
+  [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
   if [ "$count" -eq 4 ]; then
-    bspc node "${nodes[1]}" -n "${nodes[0]}" -p east 2>/dev/null || true
-    bspc node "${nodes[2]}" -n "${nodes[0]}" -p south 2>/dev/null || true
-    bspc node "${nodes[3]}" -n "${nodes[1]}" -p south 2>/dev/null || true
+    bspc node "${nodes[0]}" -p east 2>/dev/null || true
+    bspc node "${nodes[1]}" -n "${nodes[0]}" 2>/dev/null || true
+    bspc node "${nodes[0]}" -p south 2>/dev/null || true
+    bspc node "${nodes[2]}" -n "${nodes[0]}" 2>/dev/null || true
+    bspc node "${nodes[1]}" -p south 2>/dev/null || true
+    bspc node "${nodes[3]}" -n "${nodes[1]}" 2>/dev/null || true
   fi
   bspc node '@/' -E 2>/dev/null || true
   bspc node '@/' -B 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_even() {
@@ -153,11 +178,13 @@ apply_even() {
   bspc desktop "$d" -l tiled 2>/dev/null || true
   bspc node '@/' -E 2>/dev/null || true
   bspc node '@/' -B 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_monocle() {
   local d="$1"
   bspc desktop "$d" -l monocle 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_tiled() {
@@ -165,6 +192,7 @@ apply_tiled() {
   bspc desktop "$d" -l tiled 2>/dev/null || true
   bspc node '@/' -B 2>/dev/null || true
   bspc node '@/' -E 2>/dev/null || true
+  cancel_presel "$d"
 }
 
 apply_layout() {
@@ -181,6 +209,7 @@ apply_layout() {
     monocle) apply_monocle "$d" ;;
     tiled|*) apply_tiled "$d" ;;
   esac
+  cancel_presel "$d"
 }
 
 set_layout() {
