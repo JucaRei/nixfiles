@@ -22,3 +22,4 @@
     rules = lib.my.mkListOf lib.types.str [ ] "bspwm rules for specific applications";
   };
 }
+

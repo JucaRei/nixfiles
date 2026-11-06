@@ -58,3 +58,4 @@ else
   echo "⚠️ Falha ao executar container de teste. Verifique logs com 'podman info'."
 fi
 echo "========================================"
+

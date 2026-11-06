@@ -4,3 +4,4 @@
 
 set -euo pipefail
 exec clean-orphaned-configs "$@"
+

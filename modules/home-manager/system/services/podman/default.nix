@@ -9,6 +9,7 @@ let
     concatMapStringsSep
     escapeShellArgs
     mapAttrs'
+    mkEnableOption
     mkIf
     mkMerge
     nameValuePair
@@ -115,42 +116,189 @@ let
     '') cfg.registries.block}
   '';
 
-  writeShellApp =
-    args:
-    pkgs.writeShellApplication (
-      args
-      // {
-        bashOptions = args.bashOptions or [ ];
-        excludeShellChecks = (args.excludeShellChecks or [ ]) ++ [
-          "SC2012"
-          "SC2034"
-          "SC2086"
-          "SC2089"
-          "SC2090"
-        ];
-      }
-    );
+  dockerWrapper = pkgs.writeShellScriptBin "docker" ''
+    exec ${cfg.package}/bin/podman "$@"
+  '';
 
-  dockerWrapper = writeShellApp {
-    name = "docker";
-    runtimeInputs = [ cfg.package ];
-    text = ''
-      exec podman "$@"
-    '';
-  };
+  podmanDoctor = pkgs.writeShellScriptBin "podman-doctor" ''
+    set -euo pipefail
 
-  podmanDoctor = writeShellApp {
-    name = "podman-doctor";
-    runtimeInputs = [
-      cfg.package
-      pkgs.coreutils
-      pkgs.gnugrep
-    ];
-    text = builtins.readFile ./scripts/podman-doctor.sh;
-  };
+    echo "========================================"
+    echo "🩺 Diagnóstico do Ambiente Podman"
+    echo "========================================"
+
+    echo -n "1. Binário do Podman: "
+    if command -v podman >/dev/null 2>&1; then
+      echo "OK ($(${cfg.package}/bin/podman --version))"
+    else
+      echo "FALHA: podman não encontrado no PATH"
+    fi
+
+    echo -n "2. SubUID / SubGID do usuário: "
+    USER_NAME="$(id -un)"
+    if grep -q "^$USER_NAME:" /etc/subuid 2>/dev/null && grep -q "^$USER_NAME:" /etc/subgid 2>/dev/null; then
+      echo "OK (subuid: $(grep "^$USER_NAME:" /etc/subuid | cut -d: -f2-3), subgid: $(grep "^$USER_NAME:" /etc/subgid | cut -d: -f2-3))"
+    else
+      echo "AVISO: /etc/subuid ou /etc/subgid não encontrados para '$USER_NAME'."
+      echo "   -> No Fedora/Debian standalone execute: sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 $USER_NAME"
+    fi
+
+    echo -n "3. Utilitários newuidmap / newgidmap (shadow setuid): "
+    if command -v newuidmap >/dev/null 2>&1 && command -v newgidmap >/dev/null 2>&1; then
+      echo "OK ($(command -v newuidmap))"
+    elif [ -x "/usr/bin/newuidmap" ] || [ -x "/run/wrappers/bin/newuidmap" ]; then
+      echo "OK (encontrado em caminho padrão)"
+    else
+      echo "FALHA: newuidmap ou newgidmap não encontrados!"
+      echo "   -> No Debian/Ubuntu (ex: virtualvm): execute 'sudo apt install -y uidmap'"
+      echo "   -> No Fedora/RHEL: execute 'sudo dnf install -y shadow-utils'"
+      echo "   -> No NixOS: adicione 'programs.shadow.enable = true' ou 'virtualisation.podman.enable = true'"
+    fi
+
+    echo -n "4. Variável DOCKER_HOST: "
+    echo "''${DOCKER_HOST:-<não definida>}"
+
+    echo -n "5. Socket do Podman (%t/podman/podman.sock): "
+    SOCK="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/podman/podman.sock"
+    if [ -S "$SOCK" ]; then
+      echo "Ativo e ouvindo em $SOCK"
+    else
+      echo "Inativo no momento (inicia sob demanda via systemd: systemctl --user start podman.socket)"
+    fi
+
+    echo -n "6. Driver de Armazenamento: "
+    STORAGE_INFO=$(${cfg.package}/bin/podman info --format '{{.Store.GraphDriverName}} (graphRoot: {{.Store.GraphRoot}})' 2>/dev/null || echo "erro ao obter info")
+    echo "$STORAGE_INFO"
+
+    echo -n "7. Teste de execução rootless (alpine): "
+    if ${cfg.package}/bin/podman run --rm alpine:latest echo "Podman funcionando com sucesso!" 2>/dev/null; then
+      echo "✅ Sucesso!"
+    else
+      echo "⚠️ Falha ao executar container de teste. Verifique logs com 'podman info'."
+    fi
+    echo "========================================"
+  '';
 in
 {
-  imports = [ ./options.nix ];
+  options.system.services.podman = {
+    enable = mkEnableOption "Podman rootless container engine with best practices and upstream Home Manager integration.";
+
+    package = lib.my.mkPkg pkgs.podman "The Podman package to use.";
+
+    dockerCompat = lib.my.mkBool true "Enable Docker compatibility (docker CLI wrapper, DOCKER_HOST variable and docker.sock symlink).";
+
+    enableSocket = lib.my.mkBool true "Enable Podman API systemd user socket for Docker API compatibility (DevContainers, Compose, etc.).";
+
+    cgroupManager = lib.my.mkEnum [
+      "systemd"
+      "cgroupfs"
+    ] "systemd" "Cgroup manager to use for rootless containers.";
+
+    runtime = lib.my.mkEnum [
+      "crun"
+      "runc"
+    ] "crun" "OCI container runtime (crun is fast, lightweight, and modern).";
+
+    network =
+      lib.my.mkEnum
+        [
+          "pasta"
+          "slirp4netns"
+        ]
+        "pasta"
+        "Default rootless network mode (pasta is high-performance, slirp4netns is classic fallback).";
+
+    registries = {
+      search = lib.my.mkListOf lib.types.str [
+        "docker.io"
+        "quay.io"
+        "ghcr.io"
+        "registry.fedoraproject.org"
+      ] "List of registries to search when image name is unqualified.";
+
+      insecure = lib.my.mkListOf lib.types.str [ ] "List of insecure registries (HTTP or untrusted TLS).";
+
+      block = lib.my.mkListOf lib.types.str [ ] "List of blocked registries.";
+
+      shortNameMode =
+        lib.my.mkEnum
+          [
+            "permissive"
+            "enforcing"
+            "disabled"
+          ]
+          "permissive"
+          "Short-name resolution mode. 'permissive' avoids interactive prompt blocking in scripts.";
+    };
+
+    storage = {
+      driver = lib.my.mkStr "overlay" "Storage driver to use.";
+
+      runroot =
+        lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+          "Path to the storage runroot (tmpfs). Defaults to /run/user/<UID>/containers.";
+
+      graphroot =
+        lib.my.mkOpt (lib.types.nullOr lib.types.str) null
+          "Path to the storage graphroot. Defaults to ~/.local/share/containers/storage.";
+
+      mountProgram =
+        lib.my.mkOpt (lib.types.nullOr lib.types.str) "${pkgs.fuse-overlayfs}/bin/fuse-overlayfs"
+          "Mount program for rootless overlay (fuse-overlayfs ensures high compatibility).";
+    };
+
+    autoPrune = {
+      enable = lib.my.mkBool false "Enable periodic systemd user timer to prune unused containers, images, and volumes.";
+
+      schedule = lib.my.mkStr "weekly" "Systemd OnCalendar expression for auto-prune.";
+
+      flags = lib.my.mkListOf lib.types.str [
+        "--all"
+        "--volumes"
+        "--force"
+        "--filter"
+        "until=168h"
+      ] "Flags passed to 'podman system prune'.";
+    };
+
+    autoUpdate = {
+      enable = lib.my.mkBool false "Enable periodic systemd user timer to auto-update containers via upstream Home Manager services.podman.";
+
+      schedule = lib.my.mkStr "daily" "Systemd OnCalendar expression for auto-update.";
+    };
+
+    containers =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.anything) { }
+        "Declarative container definitions forwarded to upstream Home Manager 'services.podman.containers'.";
+
+    networks =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.anything) { }
+        "Declarative network definitions forwarded to upstream Home Manager 'services.podman.networks'.";
+
+    volumes =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.anything) { }
+        "Declarative volume definitions forwarded to upstream Home Manager 'services.podman.volumes'.";
+
+    quadlets =
+      lib.my.mkOpt (lib.types.attrsOf lib.types.lines) { }
+        "Raw Quadlet definitions placed in ~/.config/containers/systemd/.";
+
+    extraPackages = {
+      compose = lib.my.mkBool true "Install podman-compose and docker-compose.";
+
+      tui = lib.my.mkBool true "Install podman-tui (terminal UI for Podman).";
+
+      lazydocker = lib.my.mkBool true "Install lazydocker (rich interactive TUI dashboard for containers).";
+
+      inspection = lib.my.mkBool true "Install skopeo, buildah, and dive for image inspection, building, and layer analysis.";
+
+      packages = lib.my.mkListOf lib.types.package [ ] "Additional container packages to install.";
+    };
+
+    aliases = {
+      enable = lib.my.mkBool true "Enable convenient shell aliases for Podman and Docker.";
+    };
+  };
 
   config = mkIf cfg.enable {
     # Upstream Home Manager native Podman integration (services.podman)
