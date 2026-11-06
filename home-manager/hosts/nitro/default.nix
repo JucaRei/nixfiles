@@ -42,7 +42,7 @@ in
     };
 
     system = {
-      programs  = {
+      programs = {
         multimedia.mpv = {
           profile = "nitro";
           hybridGraphics = true;
